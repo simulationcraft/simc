@@ -47,7 +47,6 @@ namespace pets {
   struct lord_of_flames_infernal_t;
   struct darkglare_t;
   struct thal_kiel_t;
-  struct soul_effigy_t;
   namespace shadowy_tear {
     struct shadowy_tear_t;
   }
@@ -60,7 +59,6 @@ namespace pets {
 }
 
 namespace actions{
-  struct effigy_damage_override_t;
 }
 
 #define MAX_UAS 5
@@ -139,7 +137,6 @@ public:
     std::array<pets::lord_of_flames_infernal_t*, LORD_OF_FLAMES_INFERNAL_LIMIT> lord_of_flames_infernal;
     std::array<pets::darkglare_t*, DARKGLARE_LIMIT> darkglare;
 
-    pets::soul_effigy_t* soul_effigy;
   } warlock_pet_list;
 
   std::vector<std::string> pet_name_list;
@@ -153,7 +150,6 @@ public:
     action_t* rend_soul;
     spell_t* rain_of_fire;
     spell_t* corruption;
-    actions::effigy_damage_override_t* effigy_damage_override;
 
   } active;
 
@@ -211,7 +207,6 @@ public:
     const spell_data_t* grimoire_of_sacrifice;
     const spell_data_t* grimoire_of_synergy;
 
-    const spell_data_t* soul_effigy;
     const spell_data_t* deaths_embrace;
     const spell_data_t* phantom_singularity;
 
@@ -566,7 +561,6 @@ public:
   virtual expr_t*   create_expression( action_t* a, const std::string& name_str ) override;
 
   void trigger_lof_infernal();
-  void trigger_effigy(pets::soul_effigy_t *effigy);
 
   target_specific_t<warlock_td_t> target_data;
 
@@ -1426,23 +1420,6 @@ struct eye_laser_t : public warlock_pet_spell_t
   }
 };
 
-struct soul_effigy_spell_t : public warlock_pet_spell_t
-{
-  soul_effigy_t *effi;
-  soul_effigy_spell_t( warlock_pet_t* p , soul_effigy_t *effi) :
-    warlock_pet_spell_t( "soul_effigy", p, p -> find_spell( 205260 ) )
-  {
-    this->effi = effi;
-    background = true;
-    may_miss = may_crit = false;
-  }
-
-  void execute() override
-  {
-    this->p()->o()->trigger_effigy(effi);
-  }
-};
-
 //} // pets::actions
 
 warlock_pet_t::warlock_pet_t( sim_t* sim, warlock_t* owner, const std::string& pet_name, pet_e pt, bool guardian ):
@@ -2262,61 +2239,6 @@ struct darkglare_t : public warlock_pet_t
   }
 };
 
-struct soul_effigy_t : public warlock_pet_t
-{
-  const spell_data_t* soul_effigy_passive;
-  soul_effigy_spell_t* damage;
-
-  soul_effigy_t( warlock_t* owner ) :
-    warlock_pet_t( owner -> sim, owner, "soul_effigy", PET_WARLOCK ),
-    soul_effigy_passive( owner -> find_spell( 205247 ) ), damage( nullptr )
-  {
-    regen_type = REGEN_DISABLED;
-  }
-
-  bool create_actions() override
-  {
-    damage = new soul_effigy_spell_t( this, this ); //lmfao
-
-    return warlock_pet_t::create_actions();
-  }
-
-  void arise() override
-  {
-    warlock_pet_t::arise();
-
-    // TODO: Does this need to loop pets too?
-    range::for_each( owner -> action_list, []( action_t* a ) { a -> target_cache.is_valid = false; } );
-  }
-
-  void demise() override
-  {
-    warlock_pet_t::demise();
-
-    // TODO: Does this need to loop pets too?
-    range::for_each( owner -> action_list, []( action_t* a ) { a -> target_cache.is_valid = false; } );
-  }
-
-  // Soul Effigy does not run pet_t::assess_damage (that has aoe avoidance)
-  void assess_damage( school_e school, dmg_e type, action_state_t* s ) override
-  { player_t::assess_damage( school, type, s ); }
-
-  // Damage the bound target (target is bound by the warlock soul_effigy_t action upon summon).
-  void do_damage( action_state_t* incoming_state ) override
-  {
-    warlock_pet_t::do_damage( incoming_state );
-
-    if ( incoming_state -> result_amount > 0 )
-    {
-      double multiplier = o()->composite_player_target_multiplier(o()->target, incoming_state -> action -> get_school() );
-      double amount = soul_effigy_passive -> effectN( 1 ).percent() * incoming_state -> result_amount * multiplier;
-      damage -> target = target;
-      damage -> base_dd_min = damage -> base_dd_max = amount;
-      damage -> execute();
-    }
-  }
-};
-
 } // end namespace pets
 
 // Spells
@@ -2373,22 +2295,16 @@ public:
   bool destro_mastery;
   bool can_feretory;
 
-  // Warlock module overrides the "target" option handling to properly target their own Soul Effigy
-  // if it's enabled
-  std::string target_str_override;
-
   warlock_spell_t( warlock_t* p, const std::string& n ):
     spell_t( n, p, p -> find_class_spell( n ) )
   {
     _init_warlock_spell_t();
-    add_option( opt_string( "target", target_str_override ) );
   }
 
   warlock_spell_t( const std::string& token, warlock_t* p, const spell_data_t* s = spell_data_t::nil() ):
     spell_t( token, p, s )
   {
     _init_warlock_spell_t();
-    add_option( opt_string( "target", target_str_override ) );
   }
 
   warlock_t* p()
@@ -2411,39 +2327,6 @@ public:
       return false;
 
     return true;
-  }
-
-  bool init_finished() override
-  {
-    if ( ! target_str_override.empty() )
-    {
-      // "target=soul_effigy" overrides default sim target option parsing for actions
-      if ( util::str_compare_ci( target_str_override, "soul_effigy" ) )
-      {
-        // If soul effigy is enabled, skip global sim target parsing, and instead target the
-        // warlock's own soul effigy.
-        if ( p() -> talents.soul_effigy -> ok() && p() -> warlock_pet_list.soul_effigy )
-        {
-          default_target = target = p() -> warlock_pet_list.soul_effigy;
-        }
-        // Soul Effigy not used / not talented, suppress the action using it
-        else
-        {
-          background = true;
-        }
-      }
-      // .. otherwise, parse the target option using the global target option parsing
-      else
-      {
-        option.target_str = target_str_override;
-        parse_target_str();
-        // Setting default target here is necessary, as it has been done earlier on in the action
-        // init process (in action_t::init()).
-        default_target = target;
-      }
-    }
-
-    return spell_t::init_finished();
   }
 
   void reset() override
@@ -2486,35 +2369,6 @@ public:
       return 2;
 
     return spell_t::n_targets();
-  }
-
-  void record_data( action_state_t* state ) override
-  {
-    if ( state -> target == p() -> warlock_pet_list.soul_effigy )
-    {
-      return;
-    }
-
-    spell_t::record_data( state );
-  }
-
-  size_t available_targets( std::vector< player_t* >& tl ) const override
-  {
-    spell_t::available_targets( tl );
-
-    // If Soul Effigy is active, add it to the end of the target list
-    // TODO: Should Effigy actually come directly after the "main target"?
-    if ( p() -> talents.soul_effigy -> ok() &&
-         ! p() -> warlock_pet_list.soul_effigy -> is_sleeping() &&
-         n_targets() == 0 )
-    {
-      if ( range::find( tl, p() -> warlock_pet_list.soul_effigy ) == tl.end() )
-      {
-        tl.push_back( p() -> warlock_pet_list.soul_effigy );
-      }
-    }
-
-    return tl.size();
   }
 
   std::vector< player_t* >& target_list() const override
@@ -5020,53 +4874,6 @@ struct call_dreadstalkers_t : public warlock_spell_t
   }
 };
 
-// TODO: Melee range dropping shenanigans?
-struct summon_soul_effigy_t : public warlock_spell_t
-{
-  summon_soul_effigy_t( warlock_t* p ) :
-    warlock_spell_t( "soul_effigy", p, p -> talents.soul_effigy )
-  {
-    may_crit = may_miss = false;
-  }
-
-  void execute() override
-  {
-    warlock_spell_t::execute();
-
-    // Bind Soul Effigy to the enemy targeted by this spell
-    p() -> warlock_pet_list.soul_effigy -> target = execute_state -> target;
-    p() -> warlock_pet_list.soul_effigy -> summon( data().duration() );
-  }
-};
-
-struct effigy_damage_override_t: public warlock_spell_t
-{
-  effigy_damage_override_t( warlock_t * p ):
-    warlock_spell_t( "effigy_damage", p, NULL )
-  {
-    may_crit = may_miss = false;
-  }
-
-  void init() override
-  {
-    warlock_spell_t::init();
-    snapshot_flags = STATE_TGT_MUL_DA;
-  }
-
-  void setupEffigyStuff( pets::soul_effigy_spell_t *t )
-  {
-    this->target = t->target;
-    this->base_dd_min = t->base_dd_min;
-    this->base_dd_max = t->base_dd_min;
-  }
-
-  void execute() override
-  {
-    warlock_spell_t::execute();
-  }
-
-};
-
 // TALENT SPELLS
 
 // DEMONOLOGY
@@ -5540,6 +5347,7 @@ struct siphon_life_t : public warlock_spell_t
 
 struct soul_harvest_t : public warlock_spell_t
 {
+  int agony_action_id;
   int doom_action_id;
   int immolate_action_id;
   timespan_t base_duration;
@@ -5560,19 +5368,7 @@ struct soul_harvest_t : public warlock_spell_t
 
     if ( p() -> specialization() == WARLOCK_AFFLICTION )
     {
-      size_t num_targets = 0;
-      for ( size_t j = 0; j < sim -> target_non_sleeping_list.size(); ++j )
-      {
-        if ( sim -> target_non_sleeping_list[j] == p() -> warlock_pet_list.soul_effigy )
-          continue;
-        warlock_td_t* td = this -> td( sim -> target_non_sleeping_list[j] );
-        if ( td -> dots_agony && td -> dots_agony -> is_ticking() )
-        {
-          num_targets++;
-        }
-      }
-      total_duration = base_duration + timespan_t::from_seconds( 2.0 ) * num_targets;
-
+      total_duration = base_duration + timespan_t::from_seconds( 2.0 ) * p() -> get_active_dots( agony_action_id );
       p() -> buffs.soul_harvest -> trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, std::min( total_duration, timespan_t::from_seconds( 35 ) ) );
     }
 
@@ -5593,6 +5389,7 @@ struct soul_harvest_t : public warlock_spell_t
   {
     warlock_spell_t::init();
 
+    agony_action_id = p() -> find_action_id( "agony" );
     doom_action_id = p() -> find_action_id( "doom" );
     immolate_action_id = p() -> find_action_id( "immolate" );
   }
@@ -6315,7 +6112,6 @@ action_t* warlock_t::create_action( const std::string& action_name,
   else if ( action_name == "reap_souls"            ) a = new                        reap_souls_t( this );
   else if ( action_name == "dimensional_rift"      ) a = new                  dimensional_rift_t( this );
   else if ( action_name == "call_dreadstalkers"    ) a = new                call_dreadstalkers_t( this );
-  else if ( action_name == "soul_effigy"           ) a = new                summon_soul_effigy_t( this );
   else if ( action_name == "summon_infernal"       ) a = new                   summon_infernal_t( this );
   else if ( action_name == "summon_doomguard"      ) a = new                  summon_doomguard_t( this );
   else if ( action_name == "summon_darkglare"      ) a = new                  summon_darkglare_t( this );
@@ -6439,11 +6235,6 @@ void warlock_t::create_pets()
       }
     }
   }
-
-  if ( talents.soul_effigy -> ok() && find_action( "soul_effigy" ) )
-  {
-    warlock_pet_list.soul_effigy = new pets::soul_effigy_t( this );
-  }
 }
 
 void warlock_t::init_spells()
@@ -6541,7 +6332,6 @@ void warlock_t::init_spells()
   talents.grimoire_of_sacrifice  = find_talent_spell( "Grimoire of Sacrifice" );
   talents.grimoire_of_synergy    = find_talent_spell( "Grimoire of Synergy" );
 
-  talents.soul_effigy            = find_talent_spell( "Soul Effigy" );
   talents.deaths_embrace         = find_talent_spell( "Death's Embrace" );
   talents.phantom_singularity    = find_talent_spell( "Phantom Singularity" );
 
@@ -6629,7 +6419,6 @@ void warlock_t::init_spells()
   active.harvester_of_souls = new actions::harvester_of_souls_t( this );
   active.cry_havoc = new actions::cry_havoc_t( this );
   active.rend_soul = new actions::rend_soul_t( this );
-  active.effigy_damage_override = new actions::effigy_damage_override_t(this);
   if ( specialization() == WARLOCK_AFFLICTION )
   {
     active.corruption = new actions::corruption_t( this );
@@ -7276,12 +7065,6 @@ void warlock_t::reset()
       }
     } );
   } );
-
-  if ( talents.soul_effigy -> ok() && warlock_pet_list.soul_effigy )
-  {
-    warlock_td_t* td = target_data[ warlock_pet_list.soul_effigy ];
-    if ( td ) td -> reset();
-  }
 
   warlock_pet_list.active = nullptr;
   shard_react = timespan_t::zero();
@@ -8034,13 +7817,6 @@ void warlock_t::trigger_lof_infernal()
     }
   }
 }
-
-void warlock_t::trigger_effigy(pets::soul_effigy_t *effigy)
-{
-    this->active.effigy_damage_override->setupEffigyStuff(effigy->damage);
-    this->active.effigy_damage_override->execute();
-}
-
 
 /* Report Extension Class
  * Here you can define class specific report extensions/overrides
