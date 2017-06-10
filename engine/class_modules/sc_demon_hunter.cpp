@@ -2831,7 +2831,7 @@ struct spirit_bomb_t : public demon_hunter_spell_t
   struct spirit_bomb_damage_t : public demon_hunter_spell_t
   {
     spirit_bomb_damage_t( demon_hunter_t* p )
-      : demon_hunter_spell_t( "spirit_bomb_dmg", p, p -> find_spell( 218677 ) )
+      : demon_hunter_spell_t( "spirit_bomb_dmg", p, p -> find_spell(247455) )
     {
       background = true;
       aoe        = -1;
