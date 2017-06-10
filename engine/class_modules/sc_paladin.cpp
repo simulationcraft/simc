@@ -384,8 +384,8 @@ public:
     artifact_power_t light_of_the_titans;
     artifact_power_t tyrs_enforcer;
     artifact_power_t unrelenting_light;
-	artifact_power_t holy_aegis;
-	artifact_power_t bulwark_of_the_silver_hand;
+  artifact_power_t holy_aegis;
+  artifact_power_t bulwark_of_the_silver_hand;
 
   } artifact;
 
@@ -1189,12 +1189,12 @@ struct avengers_shield_t : public paladin_spell_t
 
   void init() override
   {
-	  paladin_spell_t::init();
+    paladin_spell_t::init();
 
-	  if (p()->ferren_marcuss_strength){
-		  aoe += (p()->spells.ferren_marcuss_strength->effectN(1).base_value());
-		  base_multiplier *= 1.0 + p()->spells.ferren_marcuss_strength->effectN(2).percent();
-	  }
+    if (p()->ferren_marcuss_strength){
+      aoe += (p()->spells.ferren_marcuss_strength->effectN(1).base_value());
+      base_multiplier *= 1.0 + p()->spells.ferren_marcuss_strength->effectN(2).percent();
+    }
 
   }
 
@@ -1206,10 +1206,10 @@ struct avengers_shield_t : public paladin_spell_t
     if ( p() -> artifact.bulwark_of_order.rank() )
       p() -> buffs.bulwark_of_order -> trigger( 1, p() -> buffs.bulwark_of_order -> value() + s -> result_amount * p() -> artifact.bulwark_of_order.percent() );
 
-	if (p()->gift_of_the_golden_valkyr){
-		timespan_t reduction = timespan_t::from_seconds(-1.0 * p()->spells.gift_of_the_golden_valkyr->effectN(1).base_value());
-		p()->cooldowns.guardian_of_ancient_kings ->adjust(reduction);
-	}
+  if (p()->gift_of_the_golden_valkyr){
+    timespan_t reduction = timespan_t::from_seconds(-1.0 * p()->spells.gift_of_the_golden_valkyr->effectN(1).base_value());
+    p()->cooldowns.guardian_of_ancient_kings ->adjust(reduction);
+  }
 
     p() -> trigger_tyrs_enforcer( s );
 
@@ -1499,11 +1499,11 @@ struct blessed_hammer_tick_t : public paladin_spell_t
 
   double action_multiplier() const override
   {
-	  double am = paladin_spell_t::action_multiplier();
+    double am = paladin_spell_t::action_multiplier();
 
-	  am *= 1.0 + p()->artifact.hammer_time.percent(1);
+    am *= 1.0 + p()->artifact.hammer_time.percent(1);
 
-	  return am;
+    return am;
   }
 
   virtual void impact( action_state_t* s ) override
@@ -1583,10 +1583,10 @@ struct consecration_tick_t: public paladin_spell_t {
       base_multiplier *= 1.0 + p -> passives.retribution_paladin -> effectN( 8 ).percent();
     }
 
-	if (p->specialization() == PALADIN_PROTECTION)
-	{
-		base_multiplier *= 1.0 + p->passives.protection_paladin->effectN(4).percent();
-	}
+  if (p->specialization() == PALADIN_PROTECTION)
+  {
+    base_multiplier *= 1.0 + p->passives.protection_paladin->effectN(4).percent();
+  }
 
   }
 };
@@ -2499,20 +2499,20 @@ struct light_of_the_protector_t : public paladin_heal_t
 
   void init() override
   {
-	  paladin_heal_t::init();
+    paladin_heal_t::init();
 
-	  if (p()->saruans_resolve){
-		  cooldown->charges = 2;
-	  }
+    if (p()->saruans_resolve){
+      cooldown->charges = 2;
+    }
 
   }
 
   double recharge_multiplier() const override{
-	  double cdr = paladin_heal_t::recharge_multiplier();
-	  if (p()->saruans_resolve){
-		  cdr *= (1 + p()->spells.saruans_resolve->effectN(3).percent());
-	  }
-	  return cdr;
+    double cdr = paladin_heal_t::recharge_multiplier();
+    if (p()->saruans_resolve){
+      cdr *= (1 + p()->spells.saruans_resolve->effectN(3).percent());
+    }
+    return cdr;
   }
 
   double action_multiplier() const override
@@ -2580,20 +2580,20 @@ struct hand_of_the_protector_t : public paladin_heal_t
 
   void init() override
   {
-	  paladin_heal_t::init();
+    paladin_heal_t::init();
 
-	  if (p()->saruans_resolve){
-		  cooldown->charges = 2;
-	  }
+    if (p()->saruans_resolve){
+      cooldown->charges = 2;
+    }
 
   }
 
   double recharge_multiplier() const override{
-	  double cdr = paladin_heal_t::recharge_multiplier();
-	  if (p()->saruans_resolve){
-		  cdr *= (1 + p()->spells.saruans_resolve->effectN(3).percent());
-	  }
-	  return cdr;
+    double cdr = paladin_heal_t::recharge_multiplier();
+    if (p()->saruans_resolve){
+      cdr *= (1 + p()->spells.saruans_resolve->effectN(3).percent());
+    }
+    return cdr;
   }
 
   double action_multiplier() const override
@@ -3814,9 +3814,8 @@ struct judgment_t : public paladin_melee_attack_t
       double reduction = p() -> talents.fist_of_justice -> effectN( 1 ).base_value();
       p() -> cooldowns.hammer_of_justice -> ready -= timespan_t::from_seconds( reduction );
     }
-    if ( maybe_ptr( p() -> dbc.ptr ) )
-      if ( p() -> sets -> has_set_bonus( PALADIN_RETRIBUTION, T20, B4 ) )
-        p() -> buffs.sacred_judgment -> trigger();
+    if ( p() -> sets -> has_set_bonus( PALADIN_RETRIBUTION, T20, B4 ) )
+      p() -> buffs.sacred_judgment -> trigger();
   }
 
   proc_types proc_type() const override
@@ -5683,10 +5682,7 @@ double paladin_t::composite_attribute( attribute_e attr ) const
     if ( artifact.blessing_of_the_ashbringer.rank() )
     {
       // TODO(mserrano): fix this to grab from spelldata
-      if ( maybe_ptr( dbc.ptr ) )
-        m *= 1.04;
-      else
-        m += 2000; // spells.blessing_of_the_ashbringer -> effectN( 1 ).value();
+      m *= 1.04;
     }
   }
 
@@ -6070,11 +6066,11 @@ double paladin_t::composite_parry_rating() const
 
 double paladin_t::composite_parry() const
 {
-	double p_r = player_t::composite_parry();
+  double p_r = player_t::composite_parry();
 
-	p_r += artifact.holy_aegis.percent(1);
+  p_r += artifact.holy_aegis.percent(1);
 
-	return p_r;
+  return p_r;
 }
 
 // paladin_t::temporary_movement_modifier =====================================
