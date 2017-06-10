@@ -622,7 +622,7 @@ public:
   void enrage()
   {
     buff.enrage -> trigger();
-    if ( legendary.ceannar_charger )
+    if ( legendary.ceannar_charger->found() )
     {
       resource_gain( RESOURCE_RAGE, legendary.ceannar_charger -> effectN( 1 ).trigger() -> effectN( 1 ).resource( RESOURCE_RAGE ), gain.ceannar_rage );
     }
@@ -1439,7 +1439,6 @@ struct mortal_strike_t20_t : public warrior_attack_t
     p() -> buff.shattered_defenses -> expire();
     p() -> buff.precise_strikes -> expire();
     p() -> buff.executioners_precision -> expire();
-    p() -> resource_gain( RESOURCE_RAGE, p() -> legendary.archavons_heavy_hand -> effectN( 1 ).resource( RESOURCE_RAGE ), p() -> gain.archavons_heavy_hand );
   }
 
   void impact( action_state_t* s ) override
@@ -1491,7 +1490,8 @@ struct mortal_strike_t : public warrior_attack_t
   {
     double c = warrior_attack_t::cost();
 
-    c += p() -> legendary.archavons_heavy_hand -> effectN(1).resource( RESOURCE_RAGE );
+	if( p() -> legendary.archavons_heavy_hand != nullptr )
+		c += p() -> legendary.archavons_heavy_hand -> effectN(1).resource( RESOURCE_RAGE );
 
     return c;
   }
@@ -3898,9 +3898,9 @@ struct fury_whirlwind_parent_t: public warrior_attack_t
 
   timespan_t composite_dot_duration( const action_state_t* /* s */ ) const override
   {
-    if ( as<int>( target_list().size() ) >= p() -> legendary.najentuss_vertebrae -> effectN( 1 ).base_value() )
+    if  (p() -> legendary.najentuss_vertebrae != nullptr && as<int>( target_list().size() ) >= p() -> legendary.najentuss_vertebrae -> effectN( 1 ).base_value() )
     {
-      return base_tick_time * 4.0;
+	  return dot_duration + (base_tick_time * p() -> legendary.najentuss_vertebrae -> effectN( 2 ).base_value());
     }
 
     return dot_duration;
@@ -4072,9 +4072,9 @@ struct arms_whirlwind_parent_t: public warrior_attack_t
 
   timespan_t composite_dot_duration( const action_state_t* /* s */ ) const override
   {
-    if ( as<int>( target_list().size() ) >= p() -> legendary.najentuss_vertebrae -> effectN( 1 ).base_value() )
+    if (  p() -> legendary.najentuss_vertebrae != nullptr && as<int>( target_list().size() ) >= p() -> legendary.najentuss_vertebrae -> effectN( 1 ).base_value() )
     {
-      return base_tick_time * 4.0;
+      return dot_duration + (base_tick_time * p()->legendary.najentuss_vertebrae -> effectN( 2 ).base_value() );
     }
 
     return dot_duration;
