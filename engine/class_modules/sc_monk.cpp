@@ -9978,19 +9978,19 @@ void monk_t::apl_combat_windwalker()
   sef -> add_action( "call_action_list,name=st" );
 
   // Serenity
-  serenity -> add_action(this, "Tiger Palm", "cycle_targets=1,if=!prev_gcd.1.tiger_palm&energy=energy.max&chi<1&!buff.serenity.up");
+  serenity -> add_action( this, "Tiger Palm", "cycle_targets=1,if=!prev_gcd.1.tiger_palm&energy=energy.max&chi<1&!buff.serenity.up" );
   serenity -> add_action( "call_action_list,name=cd" );
   serenity -> add_talent( this, "Serenity" );
-  serenity -> add_action( this, "Fists of Fury", "interrupt_if=cooldown.rising_sun_kick.remains<=1" );
-  serenity -> add_action( this, "Rising Sun Kick", "cycle_targets=1,if=active_enemies<3" );
+  serenity -> add_action( this, "Rising Sun Kick", "cycle_targets=1,if=active_enemies<3");
   serenity -> add_action( this, "Strike of the Windlord" );
-  serenity -> add_action( this, "Fists of Fury", "if=((equipped.drinking_horn_cover&buff.pressure_point.remains<=1&set_bonus.tier20_2pc)&(cooldown.rising_sun_kick.remains>1|active_enemies>1))" );
-  serenity -> add_action( this, "Fists of Fury", "if=((!equipped.drinking_horn_cover|buff.bloodlust.up|buff.serenity.remains<1)&(cooldown.rising_sun_kick.remains>1|active_enemies>1))" );
+  serenity -> add_action( this, "Blackout Kick", "cycle_targets=1,if=(!prev_gcd.1.blackout_kick)&(prev_gcd.1.strike_of_the_windlord|prev_gcd.1.fists_of_fury)&active_enemies<2|spinning_crane_kick.count>=2" );
+  serenity -> add_action( this, "Fists of Fury", "if=((equipped.drinking_horn_cover&buff.pressure_point.remains<=2&set_bonus.tier20_2pc)&(cooldown.rising_sun_kick.remains>1|active_enemies>1)),interrupt=1" );
+  serenity -> add_action( this, "Fists of Fury", "if=((!equipped.drinking_horn_cover|buff.bloodlust.up|buff.serenity.remains<1)&(cooldown.rising_sun_kick.remains>1|active_enemies>1)),interrupt=1" );
   serenity -> add_action( this, "Spinning Crane Kick", "if=active_enemies>=3&!prev_gcd.1.spinning_crane_kick" );
   serenity -> add_action( this, "Rising Sun Kick", "cycle_targets=1,if=active_enemies>=3" );
   serenity -> add_action( this, "Spinning Crane Kick", "if=!prev_gcd.1.spinning_crane_kick" );
-  serenity -> add_talent( this, "Rushing Jade Wind", "if=!prev_gcd.1.rushing_jade_wind" );
   serenity -> add_action( this, "Blackout Kick", "cycle_targets=1,if=!prev_gcd.1.blackout_kick" );
+  serenity -> add_talent( this, "Rushing Jade Wind", "if=!prev_gcd.1.rushing_jade_wind" );
 
   // Single Target
   st -> add_action( "call_action_list,name=cd" );
@@ -10005,10 +10005,11 @@ void monk_t::apl_combat_windwalker()
 
   st -> add_action( this, "Tiger Palm", "cycle_targets=1,if=!prev_gcd.1.tiger_palm&energy.time_to_max<=0.5&chi.max-chi>=2" );
   st -> add_action( this, "Strike of the Windlord", "if=!talent.serenity.enabled|cooldown.serenity.remains>=10" );
-  st -> add_action( this, "Rising Sun Kick", "cycle_targets=1,if=active_enemies<=3&((chi>=3&energy>=40)|chi>=5)&(!talent.serenity.enabled|cooldown.serenity.remains>=5)" );
+  st -> add_action( this, "Rising Sun Kick", "cycle_targets=1,if=((chi>=3&energy>=40)|chi>=5)&(!talent.serenity.enabled|cooldown.serenity.remains>=6)" );
   st -> add_action( this, "Fists of Fury", "if=talent.serenity.enabled&!equipped.drinking_horn_cover&cooldown.serenity.remains>=5&energy.time_to_max>2" );
-  st -> add_action( this, "Fists of Fury", "if=!(talent.serenity.enabled&!equipped.drinking_horn_cover)&energy.time_to_max>2" );
-  st -> add_action( this, "Rising Sun Kick", "cycle_targets=1,if=active_enemies<=3&(!talent.serenity.enabled|cooldown.serenity.remains>=5)" );
+  st -> add_action( this, "Fists of Fury", "if=talent.serenity.enabled&equipped.drinking_horn_cover&(cooldown.serenity.remains>=15|cooldown.serenity.remains<=4)&energy.time_to_max>2" );
+  st -> add_action( this, "Fists of Fury", "if=!talent.serenity.enabled&energy.time_to_max>2" );
+  st -> add_action( this, "Rising Sun Kick", "cycle_targets=1,if=!talent.serenity.enabled|cooldown.serenity.remains>=5" );
   st -> add_talent( this, "Whirling Dragon Punch" );
   st -> add_action( this, "Crackling Jade Lightning", "if=equipped.the_emperors_capacitor&buff.the_emperors_capacitor.stack>=19&energy.time_to_max>3" );
   st -> add_action( this, "Crackling Jade Lightning", "if=equipped.the_emperors_capacitor&buff.the_emperors_capacitor.stack>=14&cooldown.serenity.remains<13&talent.serenity.enabled&energy.time_to_max>3" );
