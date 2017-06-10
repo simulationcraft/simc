@@ -7575,15 +7575,17 @@ void mage_t::apl_frost()
   default_list -> add_action( "variable,name=time_until_fof,value=10-(time-variable.iv_start-floor((time-variable.iv_start)%10)*10)",
     "This variable tracks the remaining time until FoF proc from Lady Vashj's Grasp. Note that it doesn't check whether the actor "
     "actually has the legendary or that Icy Veins are currently active." );
-
   default_list -> add_action( "variable,name=fof_react,value=buff.fingers_of_frost.react",
     "Replacement for buff.fingers_of_frost.react. Since some of the FoFs are not random and can be anticipated (Freeze, "
     "Lady Vashj's Grasp), we can bypass the .react check." );
-  default_list -> add_action( "variable,name=fof_react,value=buff.fingers_of_frost.stack,if=equipped.lady_vashjs_grasp&buff.icy_veins.up&variable.time_until_fof>9|prev_off_gcd.freeze" );
+  default_list -> add_action( "variable,name=fof_react,value=buff.fingers_of_frost.stack,if=equipped.lady_vashjs_grasp&buff.icy_veins.up&"
+    "variable.time_until_fof>9|prev_off_gcd.freeze" );
   default_list -> add_action( this, "Ice Lance", "if=variable.fof_react=0&prev_gcd.1.flurry",
     "Free Ice Lance after Flurry. This action has rather high priority to ensure that we don't cast Rune of Power, Ray of Frost, "
     "etc. after Flurry and break up the combo. If FoF was already active, we do not lose anything by delaying the Ice Lance." );
-  default_list -> add_action( this, "Time Warp", "if=buff.bloodlust.down&(buff.exhaustion.down|equipped.shard_of_the_exodar)&(time=0|cooldown.icy_veins.remains<1|target.time_to_die<50)",
+  default_list -> add_action( this, "Time Warp",
+    "if=buff.bloodlust.down&(buff.exhaustion.down|equipped.shard_of_the_exodar)&(time=0|cooldown.icy_veins.remains<1|target.time_to_die<50)",
+
     "Time Warp is used right at the start. If the actor has Shard of the Exodar, try to synchronize the second Time Warp with "
     "Icy Veins. If the target is about to die, use Time Warp regardless." );
   default_list -> add_action( mage_t::get_special_use_items( "horn_of_valor" ) );
@@ -7598,8 +7600,8 @@ void mage_t::apl_frost()
 
   single -> add_talent( this, "Ice Nova", "if=debuff.winters_chill.up",
     "In some circumstances, it is possible for both Ice Lance and Ice Nova to benefit from a single Winter's Chill." );
-  single -> add_action( this, "Frozen Orb", "",
-    "With the T20 Set Bonuses we want Frozen Orb used above most other actions" );
+  single -> add_action( this, "Frozen Orb", "if=set_bonus.tier20_2pc",
+    "With T20 2pc, Frozen Orb should be used as soon as it comes off CD." );
   single -> add_action( this, "Frostbolt", "if=prev_off_gcd.water_jet" );
   single -> add_action( "water_jet,if=prev_gcd.1.frostbolt&buff.fingers_of_frost.stack<(2+artifact.icy_hand.enabled)&buff.brain_freeze.react=0",
     "Basic Water Jet combo. Since Water Jet can only be used if the actor is not casting, we use it right after Frostbolt is executed. "
@@ -7608,12 +7610,15 @@ void mage_t::apl_frost()
     "most haste values (roughly from 0% to 160%). When changing the default distance, great care must be taken otherwise this action "
     "won't produce two FoFs." );
   single -> add_talent( this, "Ray of Frost", "if=buff.icy_veins.up|(cooldown.icy_veins.remains>action.ray_of_frost.cooldown&buff.rune_of_power.down)" );
-  single -> add_action( this, "Flurry", "if=prev_gcd.1.ebonbolt|buff.brain_freeze.react&((!talent.glacial_spike.enabled&prev_gcd.1.frostbolt)|(talent.glacial_spike.enabled&(prev_gcd.1.glacial_spike|prev_gcd.1.frostbolt&(buff.icicles.react<=2|(cooldown.frozen_orb.remains<=10&cooldown.frozen_orb.remains>0&set_bonus.tier20_4pc)))))",
+  single -> add_action( this, "Flurry",
+    "if=prev_gcd.1.ebonbolt|buff.brain_freeze.react&(!talent.glacial_spike.enabled&prev_gcd.1.frostbolt|talent.glacial_spike.enabled&"
+    "(prev_gcd.1.glacial_spike|prev_gcd.1.frostbolt&(buff.icicles.stack<=3|cooldown.frozen_orb.remains<=10&set_bonus.tier20_2pc)))",
+
     "Winter's Chill from Flurry can apply to the spell cast right before (provided the travel time is long enough). This can be "
     "exploited to a great effect with Ebonbolt, Glacial Spike (which deal a lot of damage by themselves) and Frostbolt (as a "
-    "guaranteed way to proc Frozen Veins and Chain Reaction). With T20 Bonuses, it is worth it to sit on BrainFreeze procs in order to shatter " 
-    "Glacial Spike inside the Frozen Orb duration Critical Damage Buff, but only if Frozen Orb is nearly ready to be used. Additionally, "
-    "we do not want to sit on BrainFreeze procs too long; so unless we have a high Icicle count we ignore Glacial Spike and continue with standard use." );
+    "guaranteed way to proc Frozen Veins and Chain Reaction). When using Glacial Spike, it is worth saving a Brain Freeze proc "
+    "when Glacial Spike is right around the corner (i.e. with 4 or more Icicles). However, when the actor also has T20 2pc, "
+    "Glacial Spike is delayed to fit into Frozen Mass, so we do not want to sit on a Brain Freeze proc for too long in that case." );
   single -> add_action( this, "Blizzard", "if=cast_time=0&active_enemies>1&variable.fof_react<3",
     "Freezing Rain Blizzard. While the normal Blizzard action is usually enough, right after Frozen Orb the actor will be "
     "getting a lot of FoFs, which might delay Blizzard to the point where we miss out on Freezing Rain. Therefore, if we are "
@@ -7621,18 +7626,25 @@ void mage_t::apl_frost()
   single -> add_talent( this, "Frost Bomb", "if=debuff.frost_bomb.remains<action.ice_lance.travel_time&variable.fof_react>0" );
   single -> add_action( this, "Ice Lance", "if=variable.fof_react>0&cooldown.icy_veins.remains>10|variable.fof_react>2" );
   single -> add_action( this, "Ebonbolt", "if=buff.brain_freeze.react=0" );
+  single -> add_action( this, "Frozen Orb" );
   single -> add_talent( this, "Ice Nova" );
   single -> add_talent( this, "Comet Storm" );
-  single -> add_action( this, "Blizzard", "if=active_enemies>2|active_enemies>1&!(talent.glacial_spike.enabled&talent.splitting_ice.enabled)|(buff.zannesu_journey.stack=5&buff.zannesu_journey.remains>cast_time)",
+  single -> add_action( this, "Blizzard",
+    "if=active_enemies>2|active_enemies>1&!(talent.glacial_spike.enabled&talent.splitting_ice.enabled)|(buff.zannesu_journey.stack=5&"
+    "buff.zannesu_journey.remains>cast_time)",
+
     "Against low number of targets, Blizzard is used as a filler. Use it only against 2 or more targets, 3 or more when using Glacial "
     "Spike and Splitting Ice. Zann'esu buffed Blizzard is used only at 5 stacks." );
-  single -> add_action( this, "Frostbolt", "if=buff.frozen_mass.remains>action.glacial_spike.execute_time+gcd&buff.brain_freeze.react=0&talent.glacial_spike.enabled",
-    "If we're inside the T20 Frozen Mass buff with Glacial Spike talented we want to generate as many Crit Buff Icicles as possible for the following Glacial Spikes - "
-    "but not at the expense of a final Glacial Spike being fit into the buff." );
-  single -> add_talent( this, "Glacial Spike", "if=(action.glacial_spike.execute_time<buff.frozen_mass.remains)&(buff.frozen_mass.remains<action.glacial_spike.execute_time+2)|cooldown.frozen_orb.remains>10",
-    "Glacial Spike is generally used as it is available, unless we have T20 Bonuses. Then we want to: A) use it if it's the last thing we can fit into Frozen Mass, and B) Sit on it if Frozen Mass is about to be gained." );
-  single -> add_action( this, "Frostbolt" );
+  single -> add_action( this, "Frostbolt",
+    "if=buff.frozen_mass.remains>execute_time+action.glacial_spike.execute_time+action.glacial_spike.travel_time&buff.brain_freeze.react=0&"
+    "talent.glacial_spike.enabled",
 
+    "While Frozen Mass is active, we want to generate as many buffed Icicles as possible. However, we do not want to do this at "
+    "the expense of the final Glacial Spike, which should be also used while Frozen Mass is active." );
+  single -> add_talent( this, "Glacial Spike", "if=cooldown.frozen_orb.remains>10|!set_bonus.tier20_2pc",
+    "Glacial Spike is generally used as it is available, unless we have T20 2pc. In that case, Glacial Spike is delay when "
+    "Frozen Mass is happening soon (in less than 10 s)." );
+  single -> add_action( this, "Frostbolt" );
   single -> add_action( this, "Blizzard", "if=cast_time=0",
     "While on the move, use instant Blizzard if available." );
   single -> add_action( this, "Ice Lance", "",
@@ -7645,8 +7657,7 @@ void mage_t::apl_frost()
   aoe -> add_action( this, "Blizzard" );
   aoe -> add_talent( this, "Comet Storm" );
   aoe -> add_talent( this, "Ice Nova" );
-  aoe -> add_action( "water_jet,if=prev_gcd.1.frostbolt&buff.fingers_of_frost.stack<(2+artifact.icy_hand.enabled)&buff.brain_freeze.react=0",
-    "Only use Water Jet if we've just set a frostbolt in flight and we have enough free FoF buff slots to not munch the incoming two." );
+  aoe -> add_action( "water_jet,if=prev_gcd.1.frostbolt&buff.fingers_of_frost.stack<(2+artifact.icy_hand.enabled)&buff.brain_freeze.react=0" );
   aoe -> add_action( this, "Flurry", "if=prev_gcd.1.ebonbolt|(prev_gcd.1.glacial_spike|prev_gcd.1.frostbolt)&buff.brain_freeze.react" );
   aoe -> add_talent( this, "Frost Bomb", "if=debuff.frost_bomb.remains<action.ice_lance.travel_time&variable.fof_react>0" );
   aoe -> add_action( this, "Ice Lance", "if=variable.fof_react>0" );
@@ -7655,7 +7666,10 @@ void mage_t::apl_frost()
   aoe -> add_action( this, "Frostbolt" );
   aoe -> add_action( this, "Ice Lance" );
 
-  cooldowns -> add_talent( this, "Rune of Power", "if=cooldown.icy_veins.remains<cast_time|charges_fractional>1.9&cooldown.icy_veins.remains>10|buff.icy_veins.up|target.time_to_die.remains+5<charges_fractional*10",
+  cooldowns -> add_talent( this, "Rune of Power",
+    "if=cooldown.icy_veins.remains<cast_time|charges_fractional>1.9&cooldown.icy_veins.remains>10|buff.icy_veins.up|"
+    "target.time_to_die.remains+5<charges_fractional*10",
+
     "Rune of Power is used when going into Icy Veins and while Icy Veins are up. Outside of Icy Veins, use Rune of Power "
     "when about to cap on charges or the target is about to die." );
   cooldowns -> add_action( "potion,if=cooldown.icy_veins.remains<1" );
