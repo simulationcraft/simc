@@ -92,9 +92,10 @@ class profile_set_t
   std::string      m_name;
   sim_control_t*   m_options;
   profile_result_t m_result;
+  bool             m_has_output;
 
 public:
-  profile_set_t( const std::string& name, sim_control_t* opts );
+  profile_set_t( const std::string& name, sim_control_t* opts, bool has_ouput );
 
   ~profile_set_t();
 
@@ -111,8 +112,8 @@ public:
   profile_result_t& result()
   { return m_result; }
 
-  void set_result( const profile_result_t& result )
-  { m_result = result; }
+  bool has_output() const
+  { return m_has_output; }
 
   static sim_control_t* create_sim_options( const sim_control_t*,
       const std::vector<std::string>& opts );

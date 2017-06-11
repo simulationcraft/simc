@@ -46,8 +46,8 @@ sim_control_t* profile_set_t::create_sim_options( const sim_control_t*          
   return new_options;
 }
 
-profile_set_t::profile_set_t( const std::string& name, sim_control_t* opts ) :
-  m_name( name ), m_options( opts )
+profile_set_t::profile_set_t( const std::string& name, sim_control_t* opts, bool has_output ) :
+  m_name( name ), m_options( opts ), m_has_output( has_output )
 {
 }
 
@@ -101,6 +101,13 @@ bool profilesets_t::parse( sim_t* sim )
       return false;
     }
 
+    auto has_output_opts = range::find_if( it -> second, []( const std::string& opt ) {
+      return opt.find( "output", 0, opt.find( "=" ) ) != std::string::npos ||
+             opt.find( "html", 0, opt.find( "=" ) ) != std::string::npos ||
+             opt.find( "xml", 0, opt.find( "=" ) ) != std::string::npos ||
+             opt.find( "json2", 0, opt.find( "=" ) ) != std::string::npos;
+    } ) != it -> second.end();
+
     sim -> control = control;
 
     // Test that profileset options are OK, up to the simulation initialization
@@ -126,7 +133,7 @@ bool profilesets_t::parse( sim_t* sim )
     }
 
     m_profilesets.push_back( std::unique_ptr<profile_set_t>(
-        new profile_set_t( it -> first, control ) ) );
+        new profile_set_t( it -> first, control, has_output_opts ) ) );
   }
 
   sim -> control = original_control;
@@ -149,7 +156,12 @@ bool profilesets_t::iterate( sim_t* parent )
     profile_sim -> profileset_enabled = true;
     profile_sim -> report_details = 0;
     profile_sim -> set_sim_base_str( set -> name() );
+
     auto ret = profile_sim -> execute();
+    if ( ret && set -> has_output() )
+    {
+      report::print_suite( profile_sim );
+    }
 
     set -> done();
 
