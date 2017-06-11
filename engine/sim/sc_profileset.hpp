@@ -94,6 +94,8 @@ class profilesets_t
 
   bool validate( sim_t* sim );
 
+  int max_name_length() const;
+
 public:
   profilesets_t()
   { }
@@ -105,6 +107,7 @@ public:
   bool iterate( sim_t* parent_sim );
 
   void output( const sim_t& sim, js::JsonOutput& root ) const;
+  void output( const sim_t& sim, FILE* out ) const;
 };
 
 void create_options( sim_t* sim );

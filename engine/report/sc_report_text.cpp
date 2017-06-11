@@ -1326,6 +1326,8 @@ void print_text_report( FILE* file, sim_t* sim, bool detail )
     }
   }
 
+  sim -> profilesets.output( *sim, file );
+
   if ( detail )
   {
     print_text_waiting_all( file, sim );

@@ -176,6 +176,20 @@ bool profilesets_t::iterate( sim_t* parent )
   return true;
 }
 
+int profilesets_t::max_name_length() const
+{
+  size_t len = 0;
+
+  range::for_each( m_profilesets, [ &len ]( const profileset_entry_t& profileset ) {
+    if ( profileset -> name().size() > len )
+    {
+      len = profileset -> name().size();
+    }
+  } );
+
+  return len;
+}
+
 void profilesets_t::output( const sim_t& sim, js::JsonOutput& root ) const
 {
   root[ "metric" ] = util::scale_metric_type_string( sim.profileset_metric );
@@ -195,6 +209,23 @@ void profilesets_t::output( const sim_t& sim, js::JsonOutput& root ) const
     obj[ "value" ] = result.metric();
     obj[ "stddev" ] = result.stddev();
     obj[ "iterations" ] = as<uint64_t>( result.iterations() );
+  } );
+}
+
+void profilesets_t::output( const sim_t& sim, FILE* out ) const
+{
+  if ( m_profilesets.size() == 0 )
+  {
+    return;
+  }
+
+  util::fprintf( out, "\n\nProfilesets (%s):\n",
+    util::scale_metric_type_string( sim.profileset_metric ) );
+
+  auto len = max_name_length();
+  range::for_each( m_profilesets, [ len, out ]( const profileset_entry_t& profileset ) {
+    util::fprintf( out, "    %-10.3f : %-*s\n",
+      profileset -> result().metric(), len, profileset -> name().c_str() );
   } );
 }
 
