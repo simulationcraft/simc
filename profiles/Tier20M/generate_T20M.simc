@@ -27,7 +27,7 @@ generate_Hunter_T20M.simc
 generate_Mage_T20M.simc
 
 # Monk
-#generate_Monk_T20M.simc
+generate_Monk_T20M.simc
 
 # Paladin
 generate_Paladin_T20M.simc
