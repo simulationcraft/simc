@@ -1551,7 +1551,7 @@ class SpellDataGenerator(DataGenerator):
           ( 225102, 0 ), # Fel Eruption damage
 
           # Havoc
-          ( 203557, 1 ), # Felblade proc rate
+          ( 236167, 1 ), # Felblade proc rate
           ( 208605, 1 ), # Nemesis player buff
           ( 203796, 1 ), # Demon Blade proc
           ( 217070, 1 ), # Rage of the Illidari explosion
@@ -1561,8 +1561,10 @@ class SpellDataGenerator(DataGenerator):
           ( 211796, 1 ), # Chaos Blades damage spell
 
           # Vengeance
+		  ( 203557, 2 ), # Felblade proc rate
           ( 209245, 2 ), # Fiery Brand damage reduction
           ( 213011, 2 ), # Charred Warblades heal
+		  ( 212818, 2 ), # Fiery Demise debuff
        ),
     ]
 
