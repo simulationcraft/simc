@@ -2914,7 +2914,8 @@ struct unstable_affliction_t: public warlock_spell_t
           p() -> buffs.stretens_insanity -> decrement( 1 );
       }
 
-      p() -> buffs.active_uas -> decrement( 1 );
+      if(!triggered)
+        p() -> buffs.active_uas -> decrement( 1 );
 
       warlock_spell_t::last_tick( d );
     }
@@ -3067,7 +3068,7 @@ struct unstable_affliction_t: public warlock_spell_t
     {
       p() -> resource_gain( RESOURCE_SOUL_SHARD, 1.0, p() -> gains.power_cord_of_lethtendris );
     }
-    else if ( !flag )
+    if ( !flag )
     {
       // Only increment if the dot wasn't already there.
       if ( p() -> legendary.stretens_insanity )
