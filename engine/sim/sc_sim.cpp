@@ -1425,6 +1425,7 @@ sim_t::sim_t( sim_t* p, int index ) :
   display_hotfixes( false ),
   disable_hotfixes( false ),
   display_bonus_ids( false ),
+  profileset_metric( SCALE_METRIC_DPS ),
   profileset_enabled( false )
 {
   item_db_sources.assign( std::begin( default_item_db_sources ),

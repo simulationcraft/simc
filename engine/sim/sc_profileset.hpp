@@ -29,7 +29,7 @@ class profile_result_t
 
 public:
   profile_result_t() :
-    m_metric_type( SCALE_METRIC_NONE ), m_metric( 0 ), m_stddev( 0 ), m_iterations( 0 )
+    m_metric_type( SCALE_METRIC_DPS ), m_metric( 0 ), m_stddev( 0 ), m_iterations( 0 )
   { }
 
   profile_result_t( scale_metric_e type ) :

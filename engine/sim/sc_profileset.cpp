@@ -23,7 +23,7 @@ sim_control_t* profile_set_t::create_sim_options( const sim_control_t*          
   while ( it != new_options -> options.end() )
   {
     const auto& opt = *it;
-    if ( util::str_in_str_ci( opt.name, "profileset." ) )
+    if ( util::str_in_str_ci( opt.name, "profileset" ) )
     {
       it = new_options -> options.erase( it );
     }
@@ -165,10 +165,10 @@ bool profilesets_t::iterate( sim_t* parent )
     }
 
     const auto player = profile_sim -> player_no_pet_list.data().front();
-    auto metric = player -> scaling_for_metric( SCALE_METRIC_DPS );
+    auto metric = player -> scaling_for_metric( parent -> profileset_metric );
 
     set -> result()
-      .metric_type( SCALE_METRIC_DPS )
+      .metric_type( parent -> profileset_metric )
       .metric( metric.value )
       .stddev( metric.stddev )
       .iterations( player -> collected_data.total_iterations );
@@ -207,6 +207,18 @@ void profilesets_t::output( js::JsonOutput& root ) const
 void create_options( sim_t* sim )
 {
   sim -> add_option( opt_map_list( "profileset.", sim -> profileset_map ) );
+  sim -> add_option( opt_func( "profileset_metric", []( sim_t*             sim,
+                                                        const std::string&,
+                                                        const std::string& value ) {
+    scale_metric_e metric = util::parse_scale_metric( value );
+    if ( metric == SCALE_METRIC_NONE )
+    {
+      return false;
+    }
+
+    sim -> profileset_metric = metric;
+    return true;
+  } ) );
 }
 
 } /* Namespace profileset ends */
