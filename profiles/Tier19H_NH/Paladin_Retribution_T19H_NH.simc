@@ -24,7 +24,7 @@ actions.precombat+=/potion,name=old_war
 # Executed every time the actor is available.
 actions=auto_attack
 actions+=/rebuke
-actions+=/call_action_list,name=opener,if=time<2
+actions+=/call_action_list,name=opener,if=time<2&(cooldown.judgment.up|cooldown.blade_of_justice.up|cooldown.divine_hammer.up|cooldown.wake_of_ashes.up)
 actions+=/call_action_list,name=cooldowns
 actions+=/call_action_list,name=priority
 
@@ -41,8 +41,9 @@ actions.opener=blood_fury
 actions.opener+=/berserking
 actions.opener+=/arcane_torrent
 actions.opener+=/judgment
-actions.opener+=/blade_of_justice,if=(equipped.137048|race.blood_elf)
-actions.opener+=/wake_of_ashes,if=!(equipped.137048|race.blood_elf)
+actions.opener+=/blade_of_justice,if=equipped.137048|race.blood_elf|!cooldown.wake_of_ashes.up
+actions.opener+=/divine_hammer,if=equipped.137048|race.blood_elf|!cooldown.wake_of_ashes.up
+actions.opener+=/wake_of_ashes,if=!(equipped.137048|race.blood_elf)|!cooldown.blade_of_justice.up|!cooldown.divine_hammer.up
 
 actions.priority=execution_sentence,if=spell_targets.divine_storm<=3&(cooldown.judgment.remains<gcd*4.5|debuff.judgment.remains>gcd*4.5)&(!talent.crusade.enabled|cooldown.crusade.remains>gcd*2)
 actions.priority+=/divine_storm,if=debuff.judgment.up&(spell_targets.divine_storm>=2|buff.scarlet_inquisitors_expurgation.stack>=29&((buff.avenging_wrath.up|buff.crusade.up&buff.crusade.stack>=15)|(cooldown.crusade.remains>15&!buff.crusade.up|cooldown.avenging_wrath.remains>15)))&buff.divine_purpose.up&buff.divine_purpose.remains<gcd*2

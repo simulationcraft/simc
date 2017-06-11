@@ -75,7 +75,7 @@ actions.execute=mortal_strike,if=cooldown_react&buff.battle_cry.up&buff.focused_
 actions.execute+=/execute,if=buff.battle_cry_deadly_calm.up
 actions.execute+=/colossus_smash,if=cooldown_react&buff.shattered_defenses.down
 actions.execute+=/execute,if=buff.shattered_defenses.up&(rage>=17.6|buff.stone_heart.react)
-actions.execute+=/mortal_strike,if=cooldown_react&equipped.archavons_heavy_hand&rage<60|talent.in_for_the_kill.enabled&buff.shattered_defenses.down
+actions.execute+=/mortal_strike,if=cooldown_react&equipped.archavons_heavy_hand&rage<60
 actions.execute+=/execute,if=buff.shattered_defenses.down
 actions.execute+=/bladestorm,interrupt=1,if=raid_event.adds.in>90|!raid_event.adds.exists|spell_targets.bladestorm_mh>desired_targets
 
