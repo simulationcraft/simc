@@ -22,29 +22,17 @@ namespace profileset
 {
 class profile_result_t
 {
-  scale_metric_e m_metric_type;
   double         m_metric;
   double         m_stddev;
   size_t         m_iterations;
 
 public:
-  profile_result_t() :
-    m_metric_type( SCALE_METRIC_DPS ), m_metric( 0 ), m_stddev( 0 ), m_iterations( 0 )
+  profile_result_t() : m_metric( 0 ), m_stddev( 0 ), m_iterations( 0 )
   { }
 
-  profile_result_t( scale_metric_e type ) :
-    m_metric_type( type ), m_metric( 0 ), m_stddev( 0 )
+  profile_result_t( double metric, double stddev ) :
+    m_metric( metric ), m_stddev( stddev )
   { }
-
-  profile_result_t( scale_metric_e metric_type, double metric, double stddev ) :
-    m_metric_type( metric_type ), m_metric( metric ), m_stddev( stddev )
-  { }
-
-  scale_metric_e metric_type() const
-  { return m_metric_type; }
-
-  profile_result_t& metric_type( scale_metric_e t )
-  { m_metric_type = t; return *this; }
 
   double metric() const
   { return m_metric; }
@@ -116,7 +104,7 @@ public:
   bool parse( sim_t* );
   bool iterate( sim_t* parent_sim );
 
-  void output( js::JsonOutput& root ) const;
+  void output( const sim_t& sim, js::JsonOutput& root ) const;
 };
 
 void create_options( sim_t* sim );

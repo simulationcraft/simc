@@ -95,11 +95,6 @@ bool profilesets_t::parse( sim_t* sim )
 
   for ( auto it = sim -> profileset_map.begin(); it != sim -> profileset_map.end(); ++it )
   {
-    if ( it -> second.size() == 0 )
-    {
-      continue;
-    }
-
     auto control = profile_set_t::create_sim_options( original_control, it -> second );
     if ( control == nullptr )
     {
@@ -169,7 +164,6 @@ bool profilesets_t::iterate( sim_t* parent )
     auto progress = profile_sim -> progress( nullptr, 0 );
 
     set -> result()
-      .metric_type( parent -> profileset_metric )
       .metric( metric.value )
       .stddev( metric.stddev )
       .iterations( progress.current_iterations );
@@ -182,10 +176,9 @@ bool profilesets_t::iterate( sim_t* parent )
   return true;
 }
 
-void profilesets_t::output( js::JsonOutput& root ) const
+void profilesets_t::output( const sim_t& sim, js::JsonOutput& root ) const
 {
-  root[ "metric" ] = util::scale_metric_type_string(
-      m_profilesets.front() -> result().metric_type() );
+  root[ "metric" ] = util::scale_metric_type_string( sim.profileset_metric );
 
   auto& results = root[ "results" ].make_array();
 
