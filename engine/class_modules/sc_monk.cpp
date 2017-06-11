@@ -545,6 +545,7 @@ public:
     cooldown_t* fists_of_fury;
     cooldown_t* fortifying_brew;
     cooldown_t* healing_elixir;
+    cooldown_t* keg_smash;
     cooldown_t* rising_sun_kick;
     cooldown_t* refreshing_jade_wind;
     cooldown_t* rushing_jade_wind;
@@ -731,6 +732,7 @@ public:
     cooldown.fortifying_brew              = get_cooldown( "fortifying_brew" );
     cooldown.fists_of_fury                = get_cooldown( "fists_of_fury" );
     cooldown.healing_elixir               = get_cooldown( "healing_elixir" );
+    cooldown.keg_smash                    = get_cooldown( "keg_smash" );
     cooldown.rising_sun_kick              = get_cooldown( "rising_sun_kick" );
     cooldown.refreshing_jade_wind         = get_cooldown( "refreshing_jade_wind" );
     cooldown.rushing_jade_wind            = get_cooldown( "rushing_jade_wind" );
@@ -4578,7 +4580,7 @@ struct keg_smash_t: public monk_melee_attack_t
 
     cooldown -> duration = p.spec.keg_smash -> cooldown();
     cooldown -> duration = p.spec.keg_smash -> charge_cooldown();
-
+    
     // Keg Smash does not appear to be picking up the baseline Trigger GCD reduction
     // Forcing the trigger GCD to 1 second.
     trigger_gcd = timespan_t::from_seconds( 1 );
@@ -4605,6 +4607,9 @@ struct keg_smash_t: public monk_melee_attack_t
     if ( p() -> artifact.full_keg.rank() )
       am *= 1 + p() -> artifact.full_keg.percent();
 
+    if ( p() -> legendary.stormstouts_last_gasp )
+      am *= 1 + p() -> legendary.stormstouts_last_gasp -> effectN( 2 ).percent();
+
     return am;
   }
 
@@ -4620,7 +4625,8 @@ struct keg_smash_t: public monk_melee_attack_t
     monk_melee_attack_t::execute();
 
     if ( p() -> legendary.salsalabims_lost_tunic != nullptr )
-      p() -> cooldown.breath_of_fire -> reset( false );
+      p() -> cooldown.breath_of_fire -> reset( true );
+
     // If cooldown was reset by Secret Ingredients talent, to end the buff
     if ( p() -> buff.keg_smash_talent -> check() )
       p() -> buff.keg_smash_talent -> expire();
@@ -9361,6 +9367,14 @@ void monk_t::assess_damage(school_e school,
 
       if ( artifact.gifted_student.rank() )
         buff.gifted_student -> trigger();
+
+      if ( legendary.anvil_hardened_wristwraps )
+        cooldown.brewmaster_active_mitigation -> adjust( -1 * timespan_t::from_seconds( legendary.anvil_hardened_wristwraps -> effectN( 1 ).base_value() / 10 ) );
+    }
+    if ( s -> result == RESULT_MISS )
+    {
+      if ( legendary.anvil_hardened_wristwraps )
+        cooldown.brewmaster_active_mitigation -> adjust( -1 * timespan_t::from_seconds( legendary.anvil_hardened_wristwraps -> effectN( 1 ).base_value() / 10 ) );
     }
   }
 
@@ -10633,6 +10647,7 @@ struct stormstouts_last_gasp_t : public unique_gear::scoped_actor_callback_t<mon
   void manipulate( monk_t* monk, const special_effect_t& e ) override
   {
     monk -> legendary.stormstouts_last_gasp = e.driver();
+    monk -> cooldown.keg_smash -> charges += monk -> legendary.stormstouts_last_gasp -> effectN( 1 ).base_value();
   }
 };
 
@@ -10768,7 +10783,7 @@ struct the_wind_blows_t : public unique_gear::scoped_actor_callback_t<monk_t>
   void manipulate( monk_t* monk, const special_effect_t& e ) override
   { 
     monk -> legendary.the_wind_blows = e.driver(); 
-    monk->cooldown.strike_of_the_windlord->duration *= 1 + monk -> legendary.the_wind_blows -> effectN( 1 ).percent();
+    monk -> cooldown.strike_of_the_windlord -> duration *= 1 + monk -> legendary.the_wind_blows -> effectN( 1 ).percent();
   }
 };
 
