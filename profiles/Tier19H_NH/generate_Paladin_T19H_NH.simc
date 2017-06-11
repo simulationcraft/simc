@@ -15,7 +15,7 @@ paladin="Paladin_Retribution_T19H_NH"
 level=110
 race=blood_elf
 position=back
-talents=2212212
+talents=1202102
 artifact=2:0:0:0:0:40:1:41:3:42:3:43:3:44:3:47:3:49:1:50:3:51:3:52:3:53:3:54:1:350:1:351:1:352:1:353:1:1118:6:1275:1
 spec=retribution
 head=helmet_of_the_highlord,id=138356,bonus_id=3444
