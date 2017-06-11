@@ -16,7 +16,7 @@ sim_control_t* profile_set_t::create_sim_options( const sim_control_t*          
     return nullptr;
   }
 
-  sim_control_t* new_options = new sim_control_t( *original );
+  auto new_options = new sim_control_t( *original );
 
   // Remove profileset options
   auto it = new_options -> options.begin();
@@ -63,6 +63,8 @@ profile_set_t::~profile_set_t()
 
 void profile_set_t::done()
 {
+  // Deleting the profileset simulator object will free the sim_control_t object, so nullptr ours to
+  // avoid a double-free.
   m_options = nullptr;
 }
 
@@ -106,8 +108,9 @@ bool profilesets_t::parse( sim_t* sim )
 
     sim -> control = control;
 
-    // Test that profileset options are OK
-    try {
+    // Test that profileset options are OK, up to the simulation initialization
+    try
+    {
       auto test_sim = new sim_t( sim );
       auto ret = test_sim -> init();
       if ( ! ret || ! validate( test_sim ) )
@@ -121,12 +124,14 @@ bool profilesets_t::parse( sim_t* sim )
     }
     catch ( const std::exception& e )
     {
-      std::cerr <<  "ERROR! Profileset '" << it -> first << "' Setup failure: " << e.what() << std::endl;
+      std::cerr <<  "ERROR! Profileset '" << it -> first << "' Setup failure: "
+                << e.what() << std::endl;
       sim -> control = original_control;
       return false;
     }
 
-    m_profilesets.push_back( std::unique_ptr<profile_set_t>( new profile_set_t( it -> first, control ) ) );
+    m_profilesets.push_back( std::unique_ptr<profile_set_t>(
+        new profile_set_t( it -> first, control ) ) );
   }
 
   sim -> control = original_control;
@@ -136,7 +141,7 @@ bool profilesets_t::parse( sim_t* sim )
 
 bool profilesets_t::iterate( sim_t* parent )
 {
-  sim_control_t* original_opts = parent -> control;
+  auto original_opts = parent -> control;
 
   for ( auto& set : m_profilesets )
   {
@@ -147,6 +152,7 @@ bool profilesets_t::iterate( sim_t* parent )
     // Reset random seed for the profileset sims
     profile_sim -> seed = 0;
     profile_sim -> profileset_enabled = true;
+    profile_sim -> report_details = 0;
     profile_sim -> set_sim_base_str( set -> name() );
     auto ret = profile_sim -> execute();
 
@@ -180,9 +186,9 @@ void profilesets_t::output( js::JsonOutput& root ) const
   root[ "metric" ] = util::scale_metric_type_string(
       m_profilesets.front() -> result().metric_type() );
 
-  auto results = root[ "results" ];
-  results.make_array();
-  range::for_each( m_profilesets, [ &results ]( const std::unique_ptr<profile_set_t>& profileset ) {
+  auto& results = root[ "results" ].make_array();
+
+  range::for_each( m_profilesets, [ &results ]( const profileset_entry_t& profileset ) {
     if ( profileset -> result().metric() == 0 )
     {
       return;
@@ -194,6 +200,7 @@ void profilesets_t::output( js::JsonOutput& root ) const
     obj[ "name" ] = profileset -> name();
     obj[ "value" ] = result.metric();
     obj[ "stddev" ] = result.stddev();
+    obj[ "iterations" ] = as<uint64_t>( result.iterations() );
   } );
 }
 

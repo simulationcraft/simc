@@ -2510,7 +2510,7 @@ void sim_t::analyze()
        scaling -> calculate_scale_factors == 0 &&
        plot -> dps_plot_stat_str.empty() &&
        reforge_plot -> reforge_plot_stat_str.empty() &&
-       ! profileset_enabled )
+       profileset_map.size() == 0 && ! profileset_enabled )
   {
     std::cout << "Analyzing actor data ..." << std::endl;
   }
@@ -2693,7 +2693,7 @@ void sim_t::merge( sim_t& other_sim )
        scaling -> calculate_scale_factors == 0 &&
        plot -> dps_plot_stat_str.empty() &&
        reforge_plot -> reforge_plot_stat_str.empty() &&
-       ! profileset_enabled )
+       profileset_map.size() == 0 && ! profileset_enabled )
   {
     std::cout << "Merging data from thread-" << other_sim.thread_index << " ..." << std::endl;
   }
