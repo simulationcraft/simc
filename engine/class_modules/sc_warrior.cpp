@@ -209,7 +209,6 @@ public:
     gain_t* archavons_heavy_hand;
     gain_t* avoided_attacks;
     gain_t* critical_block;
-    gain_t* in_for_the_kill;
     gain_t* mannoroths_bloodletting_manacles;
     gain_t* melee_crit;
     gain_t* melee_main_hand;
@@ -396,7 +395,7 @@ public:
     const spell_data_t* ararats_bloodmirror;
 
     legendary_t() :
-      sephuzs_secret( nullptr ), valarjar_berserkers( nullptr ),
+      sephuzs_secret( spell_data_t::not_found() ), valarjar_berserkers( spell_data_t::not_found() ),
       mannoroths_bloodletting_manacles( spell_data_t::not_found() ),
       ceannar_charger( spell_data_t::not_found() ),
       archavons_heavy_hand( spell_data_t::not_found() ),
@@ -2001,8 +2000,7 @@ struct colossus_smash_t: public warrior_attack_t
 
       p() -> buff.shattered_defenses -> trigger();
       p() -> buff.precise_strikes -> trigger();
-      if ( p() -> buff.in_for_the_kill != nullptr )
-        p() -> buff.in_for_the_kill -> trigger();
+      p() -> buff.in_for_the_kill -> trigger();
       if ( p() -> talents.ravager -> ok() )
         p() -> cooldown.ravager -> adjust( t20_2p_reduction );
       else
@@ -2254,7 +2252,7 @@ struct execute_arms_t: public warrior_attack_t
 {
   execute_sweep_t* execute_sweeping_strike;
   double max_rage;
-  execute_arms_t( warrior_t* p, const std::string& options_str ):
+  execute_arms_t( warrior_t* p, const std::string& options_str ) :
     warrior_attack_t( "execute", p, p -> spec.execute ), execute_sweeping_strike( nullptr ),
     max_rage( 0 )
   {
@@ -2262,7 +2260,7 @@ struct execute_arms_t: public warrior_attack_t
     weapon = &( p -> main_hand_weapon );
 
     base_crit += p -> artifact.deathblow.percent();
-    max_rage = p -> talents.dauntless -> ok() ? 40 * (1 + p->talents.dauntless->effectN(1).percent()) : 40;
+    max_rage = p -> talents.dauntless -> ok() ? 40 * ( 1 + p -> talents.dauntless -> effectN( 1 ).percent() ) : 40;
     if ( p -> talents.sweeping_strikes -> ok() )
     {
       execute_sweeping_strike = new execute_sweep_t( p );
@@ -2286,16 +2284,24 @@ struct execute_arms_t: public warrior_attack_t
   {
     double am = warrior_attack_t::action_multiplier();
 
-    if ( is_it_free() )
+    if ( p() -> buff.ayalas_stone_heart -> check() )
     {
       am *= 4.0;
     }
     else
     {
-      am *= 4.0 * ( std::min( max_rage, p() -> resources.current[RESOURCE_RAGE] ) / max_rage );
+      double temp_max_rage = max_rage;
+      if ( p() -> buff.battle_cry_deadly_calm -> check() )
+      {
+        temp_max_rage *= 1.0 + p() -> buff.battle_cry_deadly_calm -> data().effectN( 2 ).percent();
+      }
+      am *= 4.0 * ( std::min( temp_max_rage, p() -> resources.current[RESOURCE_RAGE] ) / temp_max_rage );
     }
-    if ( execute_sweeping_strike ) execute_sweeping_strike -> dmg_mult = am; // The sweeping strike deals damage based on the action multiplier of the original attack before shattered defenses.
+    if ( execute_sweeping_strike ) 
+      execute_sweeping_strike -> dmg_mult = am; // The sweeping strike deals damage based on the action multiplier of the original attack before shattered defenses.
+
     am *= 1.0 + p() -> buff.shattered_defenses -> stack_value();
+
     return am;
   }
 
@@ -2310,9 +2316,9 @@ struct execute_arms_t: public warrior_attack_t
 
   double tactician_cost() const override
   {
-    double c = 40;
+    double c = max_rage;
 
-    if ( !is_it_free() )
+    if ( !p() -> buff.ayalas_stone_heart -> check() )
     {
       c = std::min( max_rage, p() -> resources.current[RESOURCE_RAGE] );
       c = ( c / max_rage ) * 40;
@@ -2327,14 +2333,10 @@ struct execute_arms_t: public warrior_attack_t
     return c;
   }
 
-  bool is_it_free() const
-  {
-    return ( p() -> buff.ayalas_stone_heart -> up() || p() -> buff.battle_cry_deadly_calm -> up() );
-  }
-
   double cost() const override
   {
     double c = warrior_attack_t::cost();
+    c = std::min( max_rage, std::max( p() -> resources.current[RESOURCE_RAGE], c ) );
 
     if ( p() -> buff.ayalas_stone_heart -> check() )
     {
@@ -2342,11 +2344,7 @@ struct execute_arms_t: public warrior_attack_t
     }
     if ( p() -> buff.battle_cry_deadly_calm -> check() )
     {
-      return c *= 1.0 + p() -> talents.deadly_calm  -> effectN( 1 ).percent();
-    }
-    if ( p() -> mastery.colossal_might -> ok() )
-    {
-      c = std::min( max_rage, std::max( p() -> resources.current[RESOURCE_RAGE], c ) );
+      c *= 1.0 + p() -> talents.deadly_calm  -> effectN( 1 ).percent();
     }
     return c;
   }
@@ -2355,7 +2353,7 @@ struct execute_arms_t: public warrior_attack_t
   {
     warrior_attack_t::execute();
 
-    p() -> resource_gain( RESOURCE_RAGE, last_resource_cost * 0.3, p() -> gain.execute_refund );
+    p() -> resource_gain( RESOURCE_RAGE, last_resource_cost * 0.3, p() -> gain.execute_refund ); //TODO, is it necessary to check if the target died? Probably too much trouble.
 
     if ( execute_sweeping_strike )
     {
@@ -3335,11 +3333,11 @@ struct ravager_tick_t: public warrior_attack_t
     rage_from_ravager = p -> find_spell( 248439 ) -> effectN( 1 ).resource( RESOURCE_RAGE );
   }
 
-
-  void impact( action_state_t* s ) override
+  void execute()
   {
-    warrior_attack_t::impact( s );
-    p() -> resource_gain( RESOURCE_RAGE, rage_from_ravager, p() -> gain.ravager );
+    warrior_attack_t::execute();
+    if ( execute_state -> n_targets > 0 )
+      p() -> resource_gain( RESOURCE_RAGE, rage_from_ravager, p() -> gain.ravager );
   }
 };
 
@@ -4946,7 +4944,6 @@ void warrior_t::init_spells()
     }
     this -> odyns_champion_cds.push_back( cooldown.enraged_regeneration );
   }
-  legendary.sephuzs_secret = nullptr;
 }
 
 // warrior_t::init_base =====================================================
@@ -5340,7 +5337,7 @@ void warrior_t::apl_arms()
   execute -> add_action( this, "Execute", "if=buff.battle_cry_deadly_calm.up", "actions.execute+=/heroic_charge,if=rage.deficit>=40&(!cooldown.heroic_leap.remains|swing.mh.remains>1.2)\n#Remove the # above to run out of melee and charge back in for rage." );
   execute -> add_action( this, "Colossus Smash", "if=cooldown_react&buff.shattered_defenses.down" );
   execute -> add_action( this, "Execute", "if=buff.shattered_defenses.up&(rage>=17.6|buff.stone_heart.react)" );
-  execute -> add_action( this, "Mortal Strike", "if=cooldown_react&equipped.archavons_heavy_hand&rage<60|talent.in_for_the_kill.enabled&buff.shattered_defenses.down" );
+  execute -> add_action( this, "Mortal Strike", "if=cooldown_react&equipped.archavons_heavy_hand&rage<60" );
   execute -> add_action( this, "Execute", "if=buff.shattered_defenses.down" );
   execute -> add_action( this, "Bladestorm", "interrupt=1,if=raid_event.adds.in>90|!raid_event.adds.exists|spell_targets.bladestorm_mh>desired_targets" );
 
@@ -5845,7 +5842,6 @@ void warrior_t::init_gains()
   gain.archavons_heavy_hand = get_gain( "archavons_heavy_hand" );
   gain.avoided_attacks = get_gain( "avoided_attacks" );
   gain.critical_block = get_gain( "critical_block" );
-  gain.in_for_the_kill = get_gain( "in_for_the_kill" );
   gain.mannoroths_bloodletting_manacles = get_gain( "mannoroths_bloodletting_manacles" );
   gain.melee_crit = get_gain( "melee_crit" );
   gain.melee_main_hand = get_gain( "melee_main_hand" );
@@ -6171,8 +6167,7 @@ double warrior_t::composite_melee_haste() const
 
   a *= 1.0 / ( 1.0 + buff.sephuzs_secret -> check_value() );
 
-  if ( buff.in_for_the_kill != nullptr )
-    a *= 1.0 / ( 1.0 + buff.in_for_the_kill -> check_value() );
+  a *= 1.0 / ( 1.0 + buff.in_for_the_kill -> check_value() );
 
   return a;
 }
