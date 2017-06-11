@@ -158,7 +158,7 @@ bool profilesets_t::iterate( sim_t* parent )
 
     set -> done();
 
-    if ( ret == false )
+    if ( ret == false || profile_sim -> is_canceled() )
     {
       delete profile_sim;
       return false;

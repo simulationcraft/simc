@@ -23,9 +23,11 @@ struct sim_signal_handler_t
   static void report( int signal )
   {
     const char* name = strsignal( signal );
-    fprintf( stderr, "sim_signal_handler: %s! Iteration=%d Seed=%lu TargetHealth=%lu\n",
-       name, global_sim -> current_iteration, global_sim -> seed,
-       (uint64_t) global_sim -> target -> resources.initial[ RESOURCE_HEALTH ] );
+    std::cerr << "sim_signal_handler: " << name
+              << "! Iteration=" << global_sim -> current_iteration
+              << " Seed=" << global_sim -> seed
+              << " TargetHealth=" << global_sim -> target -> resources.initial[ RESOURCE_HEALTH ]
+              << std::endl;
     fflush( stderr );
   }
 
@@ -39,6 +41,10 @@ struct sim_signal_handler_t
         global_sim -> cancel();
       }
       else if ( global_sim -> single_actor_batch )
+      {
+        global_sim -> cancel();
+      }
+      else if ( global_sim -> profileset_map.size() > 0 )
       {
         global_sim -> cancel();
       }
@@ -269,7 +275,7 @@ int sim_t::main( const std::vector<std::string>& args )
       plot         -> analyze();
       reforge_plot -> analyze();
 
-      if ( ! profilesets.iterate( this ) )
+      if ( canceled == 0 && ! profilesets.iterate( this ) )
       {
         canceled = 1;
       }
