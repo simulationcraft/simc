@@ -3230,12 +3230,13 @@ struct aimed_shot_t: public aimed_shot_base_t
   trick_shot_t* trick_shot;
   legacy_of_the_windrunners_t* legacy_of_the_windrunners;
   vulnerability_stats_t vulnerability_stats;
+  bool lock_and_loaded;
 
   aimed_shot_t( hunter_t* p, const std::string& options_str ):
     aimed_shot_base_t( "aimed_shot", p, p -> find_specialization_spell( "Aimed Shot" ) ),
     aimed_in_ca( p -> get_benefit( "aimed_in_careful_aim" ) ),
     trick_shot( nullptr ), legacy_of_the_windrunners( nullptr ),
-    vulnerability_stats( p, this )
+    vulnerability_stats( p, this ), lock_and_loaded( false )
   {
     parse_options( options_str );
 
@@ -3258,7 +3259,7 @@ struct aimed_shot_t: public aimed_shot_base_t
   {
     double cost = aimed_shot_base_t::cost();
 
-    if ( p() -> buffs.lock_and_load -> check() )
+    if ( lock_and_loaded )
       return 0;
 
     if ( p() -> buffs.t20_4p_precision -> check() )
@@ -3269,6 +3270,8 @@ struct aimed_shot_t: public aimed_shot_base_t
 
   void schedule_execute( action_state_t* s ) override
   {
+    lock_and_loaded = p() -> buffs.lock_and_load -> up();
+
     aimed_shot_base_t::schedule_execute( s );
 
     if ( legacy_of_the_windrunners && rng().roll( p() -> artifacts.legacy_of_the_windrunners.data().proc_chance() ) )
@@ -3291,8 +3294,9 @@ struct aimed_shot_t: public aimed_shot_base_t
 
     aimed_in_ca -> update( p() -> buffs.careful_aim -> check() != 0 );
 
-    if ( p() -> buffs.lock_and_load -> up() )
+    if ( lock_and_loaded )
       p() -> buffs.lock_and_load -> decrement();
+    lock_and_loaded = false;
 
     if ( p() -> buffs.sentinels_sight -> up() )
       p() -> buffs.sentinels_sight -> expire();
