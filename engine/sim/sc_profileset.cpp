@@ -61,7 +61,12 @@ profile_set_t::~profile_set_t()
   delete m_options;
 }
 
-bool validate_profileset( sim_t* ps_sim )
+void profile_set_t::done()
+{
+  m_options = nullptr;
+}
+
+bool profilesets_t::validate( sim_t* ps_sim )
 {
   if ( ps_sim -> player_no_pet_list.size() > 1 )
   {
@@ -72,14 +77,14 @@ bool validate_profileset( sim_t* ps_sim )
   return true;
 }
 
-bool parse_profilesets( sim_t* sim )
+bool profilesets_t::parse( sim_t* sim )
 {
   if ( sim -> profileset_map.size() == 0 )
   {
     return true;
   }
 
-  if ( ! validate_profileset( sim ) )
+  if ( ! validate( sim ) )
   {
     return false;
   }
@@ -105,7 +110,7 @@ bool parse_profilesets( sim_t* sim )
     try {
       auto test_sim = new sim_t( sim );
       auto ret = test_sim -> init();
-      if ( ! ret || ! validate_profileset( test_sim ) )
+      if ( ! ret || ! validate( test_sim ) )
       {
         sim -> control = original_control;
         delete test_sim;
@@ -121,7 +126,7 @@ bool parse_profilesets( sim_t* sim )
       return false;
     }
 
-    sim -> profilesets.push_back( new profile_set_t( it -> first, control ) );
+    m_profilesets.push_back( std::unique_ptr<profile_set_t>( new profile_set_t( it -> first, control ) ) );
   }
 
   sim -> control = original_control;
@@ -129,28 +134,20 @@ bool parse_profilesets( sim_t* sim )
   return true;
 }
 
-void create_options( sim_t* sim )
+bool profilesets_t::iterate( sim_t* parent )
 {
-  sim -> add_option( opt_map_list( "profileset.", sim -> profileset_map ) );
-}
+  sim_control_t* original_opts = parent -> control;
 
-bool iterate_profilesets( sim_t* sim )
-{
-  if ( sim -> profilesets.size() == 0 )
+  for ( auto& set : m_profilesets )
   {
-    return true;
-  }
+    parent -> control = set -> options();
 
-  sim_control_t* original_opts = sim -> control;
-
-  for ( auto set : sim -> profilesets )
-  {
-    sim -> control = set -> options();
-
-    auto profile_sim = new sim_t( sim );
+    auto profile_sim = new sim_t( parent );
 
     profile_sim -> set_sim_base_str( set -> name() );
     auto ret = profile_sim -> execute();
+
+    set -> done();
 
     if ( ret == false )
     {
@@ -170,9 +167,14 @@ bool iterate_profilesets( sim_t* sim )
     delete profile_sim;
   }
 
-  sim -> control = original_opts;
+  parent -> control = original_opts;
 
   return true;
+}
+
+void create_options( sim_t* sim )
+{
+  sim -> add_option( opt_map_list( "profileset.", sim -> profileset_map ) );
 }
 
 } /* Namespace profileset ends */

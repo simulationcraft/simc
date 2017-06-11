@@ -72,6 +72,8 @@ public:
 
   ~profile_set_t();
 
+  void done();
+
   const std::string& name() const
   { return m_name; }
 
@@ -90,20 +92,21 @@ public:
       const std::vector<std::string>& opts );
 };
 
-using profileset_vector_t = std::vector<std::unique_ptr<profile_set_t>>;
 
 class profilesets_t
 {
+  using profileset_vector_t = std::vector<std::unique_ptr<profile_set_t>>;
   profileset_vector_t m_profilesets;
+
+  bool validate( sim_t* sim );
 
 public:
   profilesets_t()
   { }
-};
 
-bool parse_profilesets( sim_t* sim );
-bool iterate_profilesets( sim_t* sim );
-bool validate_profileset( sim_t* profileset_sim );
+  bool parse( sim_t* );
+  bool iterate( sim_t* parent_sim );
+};
 
 void create_options( sim_t* sim );
 

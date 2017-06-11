@@ -108,10 +108,6 @@ namespace highchart {
   struct chart_t;
 }
 
-namespace profileset {
-  class profile_set_t;
-}
-
 #include "dbc/data_enums.hh"
 #include "dbc/data_definitions.hh"
 #include "util/utf8.h"
@@ -141,6 +137,8 @@ namespace profileset {
 
 // Cache Control ============================================================
 #include "util/cache.hpp"
+
+#include "sim/sc_profileset.hpp"
 
 // Talent Translation =======================================================
 
@@ -1857,7 +1855,7 @@ struct sim_t : private sc_thread_t
 
   // Profilesets
   opts::map_list_t profileset_map;
-  auto_dispose<std::vector<profileset::profile_set_t*>> profilesets;
+  profileset::profilesets_t profilesets;
 
   sim_t( sim_t* parent = nullptr, int thread_index = 0 );
   virtual ~sim_t();

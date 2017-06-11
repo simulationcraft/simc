@@ -269,7 +269,7 @@ int sim_t::main( const std::vector<std::string>& args )
       plot         -> analyze();
       reforge_plot -> analyze();
 
-      if ( ! profileset::iterate_profilesets( this ) )
+      if ( ! profilesets.iterate( this ) )
       {
         canceled = 1;
       }
