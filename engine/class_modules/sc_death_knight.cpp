@@ -798,21 +798,22 @@ public:
     const spell_data_t* seal_of_necrofantasia;
     const spell_data_t* perseverance_of_the_ebon_martyr;
     const spell_data_t* sephuzs_secret;
+    const spell_data_t* death_march;
     double toravons;
 
     // Unholy
     unsigned the_instructors_fourth_lesson;
     double draugr_girdle_everlasting_king;
     double uvanimor_the_unbeautiful;
-    timespan_t death_march;
 
     legendary_t() :
       koltiras_newfound_will( spell_data_t::not_found() ),
       seal_of_necrofantasia( spell_data_t::not_found() ),
       perseverance_of_the_ebon_martyr( spell_data_t::not_found() ),
       sephuzs_secret( nullptr ),
+      death_march( spell_data_t::not_found() ),
       toravons( 0 ), the_instructors_fourth_lesson( 0 ), draugr_girdle_everlasting_king( 0 ),
-      uvanimor_the_unbeautiful( 0 ), death_march( timespan_t::zero() )
+      uvanimor_the_unbeautiful( 0 )
     { }
 
   } legendary;
@@ -4353,6 +4354,7 @@ struct death_coil_t : public death_knight_spell_t
 
     attack_power_mod.direct = p -> find_spell( 47632 ) -> effectN( 1 ).ap_coeff();
     base_multiplier *= 1.0 + p -> artifact.deadliest_coil.percent();
+    base_multiplier *= 1.0 + p -> legendary.death_march -> effectN( 2 ).percent();
   }
 
   double cost() const override
@@ -4444,7 +4446,8 @@ struct death_strike_offhand_t : public death_knight_melee_attack_t
   {
     background       = true;
     weapon           = &( p -> off_hand_weapon );
-    base_multiplier  = 1.0 + p -> spec.veteran_of_the_third_war -> effectN( 7 ).percent();
+    base_multiplier *= 1.0 + p -> spec.veteran_of_the_third_war -> effectN( 7 ).percent();
+    base_multiplier *= 1.0 + p -> legendary.death_march -> effectN( 2 ).percent();
   }
 };
 
@@ -4562,6 +4565,7 @@ struct death_strike_t : public death_knight_melee_attack_t
     parse_options( options_str );
     may_parry = false;
     base_multiplier *= 1.0 + p -> spec.blood_death_knight -> effectN( 1 ).percent();
+    base_multiplier *= 1.0 + p -> legendary.death_march -> effectN( 2 ).percent();
 
     base_costs[ RESOURCE_RUNIC_POWER ] += p -> sets -> set( DEATH_KNIGHT_BLOOD, T18, B4 ) -> effectN( 1 ).resource( RESOURCE_RUNIC_POWER );
 
@@ -6965,13 +6969,15 @@ void death_knight_t::burst_festering_wound( const action_state_t* state, unsigne
 
 void death_knight_t::trigger_death_march( const action_state_t* /* state */ )
 {
-  if ( legendary.death_march == timespan_t::zero() )
+  if ( ! legendary.death_march -> ok() )
   {
     return;
   }
 
-  cooldown.defile -> adjust( legendary.death_march );
-  cooldown.death_and_decay -> adjust( legendary.death_march );
+  timespan_t adjust = -timespan_t::from_seconds( legendary.death_march -> effectN( 1 ).base_value() / 10.0 );
+
+  cooldown.defile -> adjust( adjust );
+  cooldown.death_and_decay -> adjust( adjust );
 }
 
 // ==========================================================================
@@ -9120,7 +9126,7 @@ struct death_march_t : public scoped_actor_callback_t<death_knight_t>
 
   // Make adjustment time negative here, spell data value is positive
   void manipulate( death_knight_t* p, const special_effect_t& e ) override
-  { p -> legendary.death_march = timespan_t::from_seconds( -e.driver() -> effectN( 1 ).base_value() / 10 ); }
+  { p -> legendary.death_march = e.driver(); }
 };
 
 struct sephuzs_secret_t: public unique_gear::scoped_actor_callback_t<death_knight_t>
