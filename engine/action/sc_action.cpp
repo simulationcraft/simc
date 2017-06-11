@@ -1684,7 +1684,19 @@ void action_t::queue_execute( bool off_gcd )
   {
     if ( off_gcd )
     {
-      do_off_gcd_execute( this );
+      // If the charge cooldown is recharging on the same timestamp, we need to create a zero-time
+      // event to execute the (queued) action, so that the charge cooldown can regenerate.
+      if ( cooldown -> charges > 1 && cooldown -> current_charge == 0 &&
+           cooldown -> recharge_event &&
+           cooldown -> recharge_event -> remains() == timespan_t::zero() )
+      {
+        queue_event = make_event<queued_action_execute_event_t>( *sim, this, timespan_t::zero(), off_gcd );
+        player -> queueing = this;
+      }
+      else
+      {
+        do_off_gcd_execute( this );
+      }
     }
     else
     {
