@@ -5776,7 +5776,20 @@ struct ironskin_brew_t : public monk_spell_t
       p() -> buff.brew_stache -> trigger();
 
     if ( p() -> artifact.quick_sip.rank() )
-      p() -> partial_clear_stagger( p()-> artifact.quick_sip.data().effectN( 2 ).percent() );
+      p() -> partial_clear_stagger( p() -> artifact.quick_sip.data().effectN( 2 ).percent() );
+
+    if ( p() -> sets -> has_set_bonus( MONK_BREWMASTER, T20, B2 ) )
+    {
+      if ( p() -> artifact.overflow.rank() )
+      { 
+        if ( rng().roll( p() -> artifact.overflow.percent() ) )
+          p() -> buff.greater_gift_of_the_ox -> trigger();
+        else
+          p() -> buff.gift_of_the_ox -> trigger();
+      }
+      else
+        p() -> buff.gift_of_the_ox -> trigger();
+    }
   }
 };
 
@@ -5830,7 +5843,7 @@ struct purifying_brew_t: public monk_spell_t
     if ( p() -> artifact.staggering_around.rank() )
       purifying_brew_percent += p() -> artifact.staggering_around.percent();
 
-    //double stagger_dmg = p() -> partial_clear_stagger( purifying_brew_percent );
+    double stagger_dmg = p() -> partial_clear_stagger( purifying_brew_percent );
 
     // Optional addition: Track and report amount of damage cleared
     if ( stagger_pct > p() -> heavy_stagger_threshold )
@@ -5903,6 +5916,19 @@ struct purifying_brew_t: public monk_spell_t
 
     if ( p() -> artifact.quick_sip.rank() )
       p() -> buff.ironskin_brew -> trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, timespan_t::from_seconds( p() -> artifact.quick_sip.data().effectN( 3 ).base_value() ) );
+
+    if ( p() -> sets -> has_set_bonus( MONK_BREWMASTER, T20, B2 ) )
+    {
+      if ( p() -> artifact.overflow.rank() )
+      { 
+        if ( rng().roll( p() -> artifact.overflow.percent() ) )
+          p() -> buff.greater_gift_of_the_ox -> trigger();
+        else
+          p() -> buff.gift_of_the_ox -> trigger();
+      }
+      else
+        p() -> buff.gift_of_the_ox -> trigger();
+    }
   }
 };
 
@@ -6749,6 +6775,9 @@ struct gift_of_the_ox_t: public monk_heal_t
 
     if ( p() -> artifact.gifted_student.rank() )
       p() -> buff.gifted_student -> trigger();
+
+    if ( p() -> sets -> has_set_bonus( MONK_BREWMASTER, T20, B4 ) )
+      p() -> partial_clear_stagger( p() -> sets -> set( MONK_BREWMASTER,T20, B4 ) -> effectN( 1 ).percent() );
   }
 };
 
@@ -6794,6 +6823,9 @@ struct greater_gift_of_the_ox_t: public monk_heal_t
 
     if ( p() -> artifact.gifted_student.rank() )
       p() -> buff.gifted_student -> trigger();
+
+    if ( p() -> sets -> has_set_bonus( MONK_BREWMASTER, T20, B4 ) )
+      p() -> partial_clear_stagger( p() -> sets -> set( MONK_BREWMASTER,T20, B4 ) -> effectN( 1 ).percent() );
   }
 };
 
