@@ -1561,10 +1561,10 @@ class SpellDataGenerator(DataGenerator):
           ( 211796, 1 ), # Chaos Blades damage spell
 
           # Vengeance
-		  ( 203557, 2 ), # Felblade proc rate
+          ( 203557, 2 ), # Felblade proc rate
           ( 209245, 2 ), # Fiery Brand damage reduction
           ( 213011, 2 ), # Charred Warblades heal
-		  ( 212818, 2 ), # Fiery Demise debuff
+          ( 212818, 2 ), # Fiery Demise debuff
        ),
     ]
 
