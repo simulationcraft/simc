@@ -30,7 +30,7 @@ generate_Hunter_T20H.simc
 generate_Monk_T20H.simc
 
 # Paladin
-#generate_Paladin_T20H.simc
+generate_Paladin_T20H.simc
 
 # Priest
 generate_Priest_T20H.simc
