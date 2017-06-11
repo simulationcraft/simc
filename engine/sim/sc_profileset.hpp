@@ -22,23 +22,55 @@ namespace profileset
 {
 class profile_result_t
 {
-  double         m_metric;
+  double         m_mean;
+  double         m_median;
+  double         m_min;
+  double         m_max;
+  double         m_1stquartile;
+  double         m_3rdquartile;
   double         m_stddev;
   size_t         m_iterations;
 
 public:
-  profile_result_t() : m_metric( 0 ), m_stddev( 0 ), m_iterations( 0 )
+  profile_result_t() : m_mean( 0 ), m_median( 0 ), m_min( 0 ), m_max( 0 ), m_1stquartile( 0 ),
+    m_3rdquartile( 0 ), m_stddev( 0 ), m_iterations( 0 )
   { }
 
-  profile_result_t( double metric, double stddev ) :
-    m_metric( metric ), m_stddev( stddev )
-  { }
+  double mean() const
+  { return m_mean; }
 
-  double metric() const
-  { return m_metric; }
+  profile_result_t& mean( double v )
+  { m_mean = v; return *this; }
 
-  profile_result_t& metric( double m )
-  { m_metric = m; return *this; }
+  double median() const
+  { return m_median; }
+
+  profile_result_t& median( double v )
+  { m_median = v; return *this; }
+
+  double min() const
+  { return m_min; }
+
+  profile_result_t& min( double v )
+  { m_min = v; return *this; }
+
+  double max() const
+  { return m_max; }
+
+  profile_result_t& max( double v )
+  { m_max = v; return *this; }
+
+  double first_quartile() const
+  { return m_1stquartile; }
+
+  profile_result_t& first_quartile( double v )
+  { m_1stquartile = v; return *this; }
+
+  double third_quartile() const
+  { return m_3rdquartile; }
+
+  profile_result_t& third_quartile( double v )
+  { m_3rdquartile = v; return *this; }
 
   double stddev() const
   { return m_stddev; }

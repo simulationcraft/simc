@@ -163,10 +163,22 @@ bool profilesets_t::iterate( sim_t* parent )
     auto metric = player -> scaling_for_metric( parent -> profileset_metric );
     auto progress = profile_sim -> progress( nullptr, 0 );
 
+    const auto& metric_data = player -> collected_data.dps;
+
     set -> result()
-      .metric( metric.value )
-      .stddev( metric.stddev )
+      .mean( metric_data.mean() )
+      .stddev( metric_data.std_dev )
+      .min( metric_data.min() )
+      .max( metric_data.max() )
       .iterations( progress.current_iterations );
+
+    if ( ! metric_data.simple )
+    {
+      set -> result()
+        .first_quartile( metric_data.percentile( 0.25 ) )
+        .median( metric_data.percentile( 0.5 ) )
+        .third_quartile( metric_data.percentile( 0.75 ) );
+    }
 
     delete profile_sim;
   }
@@ -197,7 +209,7 @@ void profilesets_t::output( const sim_t& sim, js::JsonOutput& root ) const
   auto& results = root[ "results" ].make_array();
 
   range::for_each( m_profilesets, [ &results ]( const profileset_entry_t& profileset ) {
-    if ( profileset -> result().metric() == 0 )
+    if ( profileset -> result().mean() == 0 )
     {
       return;
     }
@@ -206,8 +218,18 @@ void profilesets_t::output( const sim_t& sim, js::JsonOutput& root ) const
     const auto& result = profileset -> result();
 
     obj[ "name" ] = profileset -> name();
-    obj[ "value" ] = result.metric();
+    obj[ "mean" ] = result.mean();
+    obj[ "min" ] = result.min();
+    obj[ "max" ] = result.max();
     obj[ "stddev" ] = result.stddev();
+
+    if ( result.median() != 0 )
+    {
+      obj[ "median" ] = result.median();
+      obj[ "first_quartile" ] = result.first_quartile();
+      obj[ "third_quartile" ] = result.third_quartile();
+    }
+
     obj[ "iterations" ] = as<uint64_t>( result.iterations() );
   } );
 }
@@ -222,10 +244,9 @@ void profilesets_t::output( const sim_t& sim, FILE* out ) const
   util::fprintf( out, "\n\nProfilesets (%s):\n",
     util::scale_metric_type_string( sim.profileset_metric ) );
 
-  auto len = max_name_length();
-  range::for_each( m_profilesets, [ len, out ]( const profileset_entry_t& profileset ) {
-    util::fprintf( out, "    %-10.3f : %-*s\n",
-      profileset -> result().metric(), len, profileset -> name().c_str() );
+  range::for_each( m_profilesets, [ out ]( const profileset_entry_t& profileset ) {
+    util::fprintf( out, "    %-10.3f : %*s\n",
+      profileset -> result().mean(), profileset -> name().c_str() );
   } );
 }
 
