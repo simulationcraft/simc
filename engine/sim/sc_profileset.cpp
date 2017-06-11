@@ -146,6 +146,7 @@ bool profilesets_t::iterate( sim_t* parent )
 
     // Reset random seed for the profileset sims
     profile_sim -> seed = 0;
+    profile_sim -> profileset_enabled = true;
     profile_sim -> set_sim_base_str( set -> name() );
     auto ret = profile_sim -> execute();
 

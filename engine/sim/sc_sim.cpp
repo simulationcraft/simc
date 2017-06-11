@@ -1424,7 +1424,8 @@ sim_t::sim_t( sim_t* p, int index ) :
   chart_boxplot_percentile( .25 ),
   display_hotfixes( false ),
   disable_hotfixes( false ),
-  display_bonus_ids( false )
+  display_bonus_ids( false ),
+  profileset_enabled( false )
 {
   item_db_sources.assign( std::begin( default_item_db_sources ),
                           std::end( default_item_db_sources ) );
@@ -2508,7 +2509,8 @@ void sim_t::analyze()
   if ( scaling -> scale_stat == STAT_NONE &&
        scaling -> calculate_scale_factors == 0 &&
        plot -> dps_plot_stat_str.empty() &&
-       reforge_plot -> reforge_plot_stat_str.empty() )
+       reforge_plot -> reforge_plot_stat_str.empty() &&
+       ! profileset_enabled )
   {
     std::cout << "Analyzing actor data ..." << std::endl;
   }
@@ -2690,7 +2692,8 @@ void sim_t::merge( sim_t& other_sim )
   if ( scaling -> scale_stat == STAT_NONE &&
        scaling -> calculate_scale_factors == 0 &&
        plot -> dps_plot_stat_str.empty() &&
-       reforge_plot -> reforge_plot_stat_str.empty() )
+       reforge_plot -> reforge_plot_stat_str.empty() &&
+       ! profileset_enabled )
   {
     std::cout << "Merging data from thread-" << other_sim.thread_index << " ..." << std::endl;
   }
