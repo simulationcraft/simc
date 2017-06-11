@@ -5564,12 +5564,13 @@ demon_hunter_t::demon_hunter_t(sim_t* sim, const std::string& name, race_e r)
 
   regen_type = REGEN_DISABLED;
 
+  // Soul of the Slayer Legendary
   // Register a custom talent validity function for talents added by Soul of the Slayer
   talent_points.register_validity_fn([this](const spell_data_t* spell) {
     if(specialization() == DEMON_HUNTER_HAVOC)
       return spell->id() == 206416 /* First Blood */ && find_item(151639) != nullptr;
     else // DEMON_HUNTER_VENGEANCE
-      return spell->id() == 207697 /* Feast of Souls */ && find_item(151639) != nullptr;
+      return spell->id() == 227174 /* Fallout */ && find_item(151639) != nullptr;
   });
 }
 
