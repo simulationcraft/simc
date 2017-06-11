@@ -2544,7 +2544,7 @@ struct immolation_aura_t : public demon_hunter_spell_t
         // FIXME: placeholder proc chance, lack of info on real proc chance.
         if ( initial && p() -> talent.fallout -> ok() && rng().roll( 0.60 ) )
         {
-          p() -> spawn_soul_fragment( SOUL_FRAGMENT_LESSER, 1, p() -> bugs );
+          p() -> spawn_soul_fragment( SOUL_FRAGMENT_LESSER, 1 );
         }
 
         if ( p() -> legendary.kirel_narak < timespan_t::zero() )
