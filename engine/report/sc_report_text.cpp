@@ -1369,6 +1369,11 @@ void print_text( sim_t* sim, bool detail )
   try
   {
     Timer t( "text report" );
+    if ( ! sim -> profileset_enabled )
+    {
+      t.start();
+    }
+
     print_text_report( text_out, sim, detail );
   }
   catch ( const std::exception& e )

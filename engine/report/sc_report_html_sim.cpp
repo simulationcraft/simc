@@ -1508,6 +1508,10 @@ void print_html( sim_t& sim )
     return;
 
   Timer t( "html report" );
+  if ( ! sim.profileset_enabled )
+  {
+    t.start();
+  }
 
   // Setup file stream and open file
   report::sc_html_stream s;

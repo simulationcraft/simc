@@ -861,7 +861,10 @@ void report::print_spell_query( xml_node_t* root, FILE* file, const sim_t& sim,
 
 void report::print_suite( sim_t* sim )
 {
-  std::cout << "\nGenerating reports...";
+  if ( ! sim -> profileset_enabled )
+  {
+    std::cout << "\nGenerating reports...";
+  }
 
   report::print_text( sim, sim->report_details != 0 );
 

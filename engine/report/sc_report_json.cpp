@@ -1745,6 +1745,11 @@ void print_json( sim_t& sim )
     try
     {
       Timer t( "JSON report" );
+      if ( ! sim.profileset_enabled )
+      {
+        t.start();
+      }
+
       print_json_pretty( s, sim );
     }
     catch ( const std::exception& e )
@@ -1768,6 +1773,10 @@ void print_json( sim_t& sim )
     try
     {
       Timer t( "JSON-New report" );
+      if ( ! sim.profileset_enabled )
+      {
+        t.start();
+      }
       print_json2_pretty( s, sim );
     }
     catch ( const std::exception& e )
