@@ -5079,7 +5079,7 @@ void paladin_t::generate_action_prio_list_ret()
   opener -> add_action( this, "Judgment" );
   opener -> add_action( this, "Blade of Justice", "if=equipped.137048|race.blood_elf|!cooldown.wake_of_ashes.up" );
   opener -> add_talent( this, "Divine Hammer", "if=equipped.137048|race.blood_elf|!cooldown.wake_of_ashes.up" );
-  opener -> add_action( this, "Wake of Ashes", "if=!(equipped.137048|race.blood_elf)|!cooldown.blade_of_justice.up|!cooldown.divine_hammer.up" );
+  opener -> add_action( this, "Wake of Ashes" );
 
   priority -> add_talent( this, "Execution Sentence", "if=spell_targets.divine_storm<=3&(cooldown.judgment.remains<gcd*4.5|debuff.judgment.remains>gcd*4.5)&(!talent.crusade.enabled|cooldown.crusade.remains>gcd*2)" );
   priority -> add_action( this, "Divine Storm", "if=debuff.judgment.up&(spell_targets.divine_storm>=2|buff.scarlet_inquisitors_expurgation.stack>=29&((buff.avenging_wrath.up|buff.crusade.up&buff.crusade.stack>=15)|(cooldown.crusade.remains>15&!buff.crusade.up|cooldown.avenging_wrath.remains>15)))&buff.divine_purpose.up&buff.divine_purpose.remains<gcd*2" );
