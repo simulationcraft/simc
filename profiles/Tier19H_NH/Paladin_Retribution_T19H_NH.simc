@@ -46,8 +46,8 @@ actions.opener+=/divine_hammer,if=equipped.137048|race.blood_elf|!cooldown.wake_
 actions.opener+=/wake_of_ashes
 
 actions.priority=execution_sentence,if=spell_targets.divine_storm<=3&(cooldown.judgment.remains<gcd*4.5|debuff.judgment.remains>gcd*4.5)
-actions.priority+=/variable,name=ds_castable,value=(spell_targets.divine_storm>=2|buff.scarlet_inquisitors_expurgation.stack>=29&((buff.avenging_wrath.up|buff.crusade.up&buff.crusade.stack>=15)|(cooldown.crusade.remains>15&!buff.crusade.up|cooldown.avenging_wrath.remains>15)))
-actions.priority+=/variable,name=crusade,value=(!talent.crusade.enabled|cooldown.crusade.remains>gcd*3)
+actions.priority+=/variable,name=ds_castable,value=spell_targets.divine_storm>=2|(buff.scarlet_inquisitors_expurgation.stack>=29&(buff.avenging_wrath.up|(buff.crusade.up&buff.crusade.stack>=15)|(cooldown.crusade.remains>15&!buff.crusade.up)|cooldown.avenging_wrath.remains>15))
+actions.priority+=/variable,name=crusade,value=!talent.crusade.enabled|cooldown.crusade.remains>gcd*3
 actions.priority+=/divine_storm,if=debuff.judgment.up&variable.ds_castable&buff.divine_purpose.up&buff.divine_purpose.remains<gcd*2
 actions.priority+=/divine_storm,if=debuff.judgment.up&variable.ds_castable&holy_power>=5&buff.divine_purpose.react
 actions.priority+=/divine_storm,if=debuff.judgment.up&spell_targets.divine_storm>=2&holy_power>=3&(buff.crusade.up&buff.crusade.stack<15|buff.liadrins_fury_unleashed.up)
@@ -58,9 +58,9 @@ actions.priority+=/templars_verdict,if=debuff.judgment.up&buff.divine_purpose.up
 actions.priority+=/templars_verdict,if=debuff.judgment.up&holy_power>=5&buff.divine_purpose.react
 actions.priority+=/templars_verdict,if=debuff.judgment.up&holy_power>=3&(buff.crusade.up&buff.crusade.stack<15|buff.liadrins_fury_unleashed.up)
 actions.priority+=/templars_verdict,if=debuff.judgment.up&holy_power>=5&variable.crusade
-actions.priority+=/divine_storm,if=debuff.judgment.up&variable.ds_castable&cooldown.wake_of_ashes.remains<gcd*2&artifact.wake_of_ashes.enabled&variable.crusade
+actions.priority+=/divine_storm,if=debuff.judgment.up&variable.ds_castable&artifact.wake_of_ashes.enabled&cooldown.wake_of_ashes.remains<gcd*2&variable.crusade
 actions.priority+=/divine_storm,if=debuff.judgment.up&variable.ds_castable&buff.whisper_of_the_nathrezim.up&buff.whisper_of_the_nathrezim.remains<gcd*1.5&variable.crusade
-actions.priority+=/templars_verdict,if=(equipped.137020|!equipped.137020&debuff.judgment.up)&cooldown.wake_of_ashes.remains<gcd*2&artifact.wake_of_ashes.enabled&variable.crusade
+actions.priority+=/templars_verdict,if=(equipped.137020|debuff.judgment.up)&artifact.wake_of_ashes.enabled&cooldown.wake_of_ashes.remains<gcd*2&variable.crusade
 actions.priority+=/templars_verdict,if=debuff.judgment.up&buff.whisper_of_the_nathrezim.up&buff.whisper_of_the_nathrezim.remains<gcd*1.5&variable.crusade
 actions.priority+=/judgment,if=dot.execution_sentence.ticking&dot.execution_sentence.remains<gcd*2&debuff.judgment.remains<gcd*2
 actions.priority+=/consecration,if=(cooldown.blade_of_justice.remains>gcd*2|cooldown.divine_hammer.remains>gcd*2)
@@ -69,8 +69,8 @@ actions.priority+=/blade_of_justice,if=holy_power<=3-set_bonus.tier20_2pc
 actions.priority+=/divine_hammer,if=holy_power<=3-set_bonus.tier20_2pc
 actions.priority+=/hammer_of_justice,if=equipped.137065&target.health.pct>=75&holy_power<=4
 actions.priority+=/judgment
-actions.priority+=/zeal,if=cooldown.zeal.charges_fractional>=1.65&holy_power<=4&(cooldown.divine_hammer.remains>gcd*2|cooldown.blade_of_justice.remains>gcd*2)&debuff.judgment.remains>gcd
-actions.priority+=/crusader_strike,if=(talent.the_fires_of_justice.enabled&cooldown.crusader_strike.charges_fractional>=1.4|!talent.the_fires_of_justice.enabled&cooldown.crusader_strike.charges_fractional>=1.65)&holy_power<=4&(cooldown.divine_hammer.remains>gcd*2|cooldown.blade_of_justice.remains>gcd*2)&debuff.judgment.remains>gcd
+actions.priority+=/zeal,if=cooldown.zeal.charges_fractional>=1.65&holy_power<=4&(cooldown.blade_of_justice.remains>gcd*2|cooldown.divine_hammer.remains>gcd*2)&debuff.judgment.remains>gcd
+actions.priority+=/crusader_strike,if=cooldown.crusader_strike.charges_fractional>=1.65-talent.the_fires_of_justice.enabled*0.25&holy_power<=4&(cooldown.blade_of_justice.remains>gcd*2|cooldown.divine_hammer.remains>gcd*2)&debuff.judgment.remains>gcd
 actions.priority+=/consecration
 actions.priority+=/divine_storm,if=debuff.judgment.up&variable.ds_castable&buff.divine_purpose.react
 actions.priority+=/divine_storm,if=debuff.judgment.up&variable.ds_castable&buff.the_fires_of_justice.react&variable.crusade
