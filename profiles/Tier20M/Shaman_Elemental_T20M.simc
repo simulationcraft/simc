@@ -138,10 +138,10 @@ actions.single_lr+=/flame_shock,moving=1,if=movement.distance>6
 
 head=helmet_of_the_skybreaker,id=147178,ilevel=930
 neck=string_of_extracted_incisors,id=147013,ilevel=930,enchant=mark_of_the_claw
-shoulders=mantle_of_waning_radiance,ilevel=930
+shoulders=mantle_of_waning_radiance,id=147054,ilevel=930
 back=drape_of_the_skybreaker,id=147176,ilevel=930,enchant=binding_of_intellect
 chest=harness_of_the_skybreaker,id=147175,ilevel=930
-wrists=pain_singed_armguards,ilevel=930
+wrists=painsinged_armguards,id=147057,ilevel=930
 hands=smoldering_heart,id=151819,ilevel=970
 waist=pristine_protoscale_girdle,id=137083,ilevel=970
 legs=legguards_of_the_skybreaker,id=147179,ilevel=930
@@ -155,12 +155,12 @@ off_hand=the_highkeepers_ward,id=128936
 
 # Gear Summary
 # gear_ilvl=938.63
-# gear_stamina=40778
-# gear_intellect=44688
-# gear_crit_rating=5239
-# gear_haste_rating=10160
-# gear_mastery_rating=7660
+# gear_stamina=46429
+# gear_intellect=48456
+# gear_crit_rating=5603
+# gear_haste_rating=11737
+# gear_mastery_rating=8145
 # gear_versatility_rating=2624
-# gear_armor=2679
+# gear_armor=3309
 # set_bonus=tier20_2pc=1
 # set_bonus=tier20_4pc=1
