@@ -5035,10 +5035,6 @@ void priest_t::apl_shadow()
       "surrender_to_madness,if=talent.surrender_to_madness.enabled&target.time_"
       "to_die<=variable.s2mcheck" );
   main->add_action(
-      "mindbender,if=!set_bonus.tier20_4pc&(talent.mindbender.enabled&((talent"
-      ".surrender_to_madness.enabled&target.time_to_die>variable.s2mcheck+60)|"
-      "!talent.surrender_to_madness.enabled))" );
-  main->add_action(
       "shadow_word_pain,if=talent.misery.enabled&dot.shadow_word_pain.remains<"
       "gcd.max,moving=1,cycle_targets=1" );
   main->add_action(
@@ -5202,11 +5198,11 @@ if ( race == RACE_BLOOD_ELF )
       ".surrender_to_madness.enabled|(talent.surrender_to_madness.enabled&"
       "target.time_to_die>variable.s2mcheck-buff.insanity_drain_stacks.value))" );
     vf->add_action(
-      "mindbender,if=!set_bonus.tier20_4pc&(!talent.surrender_to_madness."
-      "enabled"
-      "|(talent.surrender_to_madness.enabled&target.time_to_die>variable."
-      "s2mcheck-"
-      "(buff.insanity_drain_stacks.value)+30))" );
+      "mindbender,if=!set_bonus.tier20_4pc&buff.insanity_drain_stacks.value>=(10+"
+      "2*set_bonus.tier19_2pc+5*buff.bloodlust.up*(1+1*set_bonus.tier20_4pc)+3*equipped"
+      ".mangazas_madness+6*set_bonus.tier20_4pc+2*artifact.lash_of_insanity.rank)"
+      "&(!talent.surrender_to_madness.enabled|(talent.surrender_to_madness.enabled&"
+      "target.time_to_die>variable.s2mcheck-(buff.insanity_drain_stacks.value)+30))" );
   vf->add_action(
       "power_infusion,if=buff.insanity_drain_stacks.value>=(10+2*set_bonus."
       "tier19_2pc+5*buff.bloodlust.up*(1+1*set_bonus.tier20_4pc)+3*equipped"
