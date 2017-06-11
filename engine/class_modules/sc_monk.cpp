@@ -1532,7 +1532,7 @@ struct storm_earth_and_fire_pet_t : public pet_t
     sef_spinning_crane_kick_t( storm_earth_and_fire_pet_t* player ) :
       sef_melee_attack_t( "spinning_crane_kick", player, player -> o() -> spec.spinning_crane_kick )
     {
-      tick_zero = interrupt_auto_attack = true;
+      tick_zero = hasted_ticks = interrupt_auto_attack = true;
       may_crit = may_miss = may_block = may_dodge = may_parry = callbacks = false;
 
       weapon_power_mod = 0;
@@ -2137,7 +2137,7 @@ public:
     main_hand_weapon.max_dmg = dbc.spell_scaling( o() -> type, level() );
     main_hand_weapon.damage = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
     main_hand_weapon.swing_time = timespan_t::from_seconds( 2.0 );
-    owner_coeff.ap_from_ap = 3.30;
+    owner_coeff.ap_from_ap = 4.95;
   }
 
   monk_t* o()
@@ -2187,6 +2187,11 @@ struct monk_action_t: public Base
 {
   sef_ability_e sef_ability;
   bool hasted_gcd;
+  bool brewmaster_damage_increase;
+  bool brewmaster_damage_increase_dot;
+  bool brewmaster_damage_increase_dot_two;
+  bool brewmaster_damage_increase_two;
+  bool brewmaster_damage_increase_dot_three;
   bool windwalker_damage_increase;
   bool windwalker_damage_increase_dot;
   bool windwalker_damage_increase_two;
@@ -2201,7 +2206,12 @@ public:
     ab( n, player, s ),
     sef_ability( SEF_NONE ),
     hasted_gcd( ab::data().affected_by( player -> spec.mistweaver_monk -> effectN( 4 ) ) ),
+    brewmaster_damage_increase( ab::data().affected_by( player -> spec.brewmaster_monk -> effectN( 1 ) ) ),
+    brewmaster_damage_increase_dot( ab::data().affected_by( player -> spec.brewmaster_monk -> effectN( 2 ) ) ),
+    brewmaster_damage_increase_dot_two( ab::data().affected_by( player -> spec.brewmaster_monk -> effectN( 5 ) ) ),
+    brewmaster_damage_increase_two( ab::data().affected_by( player -> spec.brewmaster_monk -> effectN( 6 ) ) ),
     windwalker_damage_increase( ab::data().affected_by( player -> spec.windwalker_monk -> effectN( 1 ) ) ),
+    brewmaster_damage_increase_dot_three( ab::data().affected_by( player -> spec.brewmaster_monk -> effectN( 5 ) ) ),
     windwalker_damage_increase_dot( ab::data().affected_by( player -> spec.windwalker_monk -> effectN( 2 ) ) ),
     windwalker_damage_increase_two( ab::data().affected_by( player -> spec.windwalker_monk -> effectN( 6 ) ) )
   {
@@ -2210,6 +2220,7 @@ public:
     ab::trigger_gcd = timespan_t::from_seconds( 1.5 );
     switch ( player -> specialization() )
     {
+
       case MONK_BREWMASTER:
       {
         // Reduce GCD from 1.5 sec to 1 sec
@@ -2221,13 +2232,15 @@ public:
         if ( ab::data().affected_by( player -> spec.stagger -> effectN( 14 ) ) )
           ab::base_costs[RESOURCE_CHI] *= 1 + player -> spec.stagger -> effectN( 14 ).percent(); // -100% for Brewmasters
         // Hasted Cooldown
-        ab::cooldown -> hasted = ab::data().affected_by( player -> spec.brewmaster_monk -> effectN( 3 ) );
+        ab::cooldown -> hasted = ( ab::data().affected_by( player -> spec.brewmaster_monk -> effectN( 3 ) )
+                                  || ab::data().affected_by( player -> passives.aura_monk -> effectN( 1 ) ) );
         break;
       }
       case MONK_MISTWEAVER:
       {
         // Hasted Cooldown
-        ab::cooldown -> hasted = ab::data().affected_by( player -> spec.mistweaver_monk -> effectN( 5 ) );
+        ab::cooldown -> hasted = ( ab::data().affected_by( player -> spec.mistweaver_monk -> effectN( 5 ) )
+                                  || ab::data().affected_by( player -> passives.aura_monk -> effectN( 1 ) ) );
         break;
       }
       case MONK_WINDWALKER:
@@ -3656,9 +3669,19 @@ struct blackout_strike_t: public monk_melee_attack_t
     if ( p() -> talent.blackout_combo -> ok() )
       p() -> buff.blackout_combo -> trigger();
 
+  }
+
+
+  virtual void impact( action_state_t* s ) override
+  {
+    monk_melee_attack_t::impact( s );
+
+    if ( result_is_hit( s -> result ) )
+    {
       // if player level >= 78
-    if ( p() -> mastery.elusive_brawler )
-      p() -> buff.elusive_brawler -> trigger();
+      if ( p() -> mastery.elusive_brawler )
+        p() -> buff.elusive_brawler -> trigger();
+    }
   }
 };
 
@@ -3702,9 +3725,11 @@ struct rushing_jade_wind_t : public monk_melee_attack_t
     tick_zero = hasted_ticks = true;
 
     spell_power_mod.direct = 0.0;
+    cooldown -> duration = p -> talent.rushing_jade_wind -> cooldown();
     cooldown -> hasted = true;
 
     dot_duration *= 1 + p -> spec.brewmaster_monk -> effectN( 11 ).percent();
+    dot_behavior = DOT_REFRESH; // Spell uses Pandemic Mechanics.
 
     tick_action = new tick_action_t( "rushing_jade_wind_tick", p, p -> talent.rushing_jade_wind -> effectN( 1 ).trigger() );
   }
@@ -3789,7 +3814,7 @@ struct spinning_crane_kick_t: public monk_melee_attack_t
     sef_ability = SEF_SPINNING_CRANE_KICK;
 
     may_crit = may_miss = may_block = may_dodge = may_parry = callbacks = false;
-    tick_zero = interrupt_auto_attack = true;
+    tick_zero = hasted_ticks = interrupt_auto_attack = true;
 
     spell_power_mod.direct = 0.0;
     dot_behavior = DOT_REFRESH; // Spell uses Pandemic Mechanics.
@@ -5715,16 +5740,21 @@ struct ironskin_brew_t : public monk_spell_t
   void execute() override
   {
     monk_spell_t::execute();
-
-    p() -> buff.ironskin_brew -> trigger();
+    
+    if ( p() -> buff.ironskin_brew -> up() )
+    {
+      timespan_t base_time = p() -> buff.ironskin_brew -> buff_duration;
+      timespan_t max_time = p() -> passives.ironskin_brew -> effectN( 2 ).base_value() * base_time;
+      timespan_t max_extension = max_time - p() -> buff.ironskin_brew -> remains();
+      p() -> buff.ironskin_brew -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, std::min( base_time, max_extension ) );
+    }
+    else
+      p() -> buff.ironskin_brew -> trigger();
 
     if ( p() -> talent.special_delivery -> ok() )
     {
-      if ( rng().roll( p() -> talent.special_delivery -> proc_chance() ) )
-      {
         delivery -> target = target;
         delivery -> execute();
-      }
     }
 
     if ( p() -> buff.blackout_combo -> up() )
@@ -5849,7 +5879,7 @@ struct purifying_brew_t: public monk_spell_t
 
     if ( p() -> talent.special_delivery -> ok() )
     {
-      if ( rng().roll( p() -> talent.special_delivery -> proc_chance() ) )
+        delivery -> target = target;
         delivery -> execute();
     }
 
