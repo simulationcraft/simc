@@ -48,7 +48,7 @@ actions+=/multishot,if=spell_targets>4&(pet.cat.buff.beast_cleave.remains<gcd.ma
 actions+=/kill_command
 actions+=/multishot,if=spell_targets>1&(pet.cat.buff.beast_cleave.remains<gcd.max*2|pet.cat.buff.beast_cleave.down)
 actions+=/chimaera_shot,if=focus<90
-actions+=/cobra_shot,if=(cooldown.kill_command.remains>focus.time_to_max&cooldown.bestial_wrath.remains>focus.time_to_max)|(buff.bestial_wrath.up&focus.regen*cooldown.kill_command.remains>30)|target.time_to_die<cooldown.kill_command.remains
+actions+=/cobra_shot,if=(cooldown.kill_command.remains>focus.time_to_max&cooldown.bestial_wrath.remains>focus.time_to_max)|(buff.bestial_wrath.up&focus.regen*cooldown.kill_command.remains>action.kill_command.cost)|target.time_to_die<cooldown.kill_command.remains|(equipped.parsels_tongue&buff.parsels_tongue.remains<=gcd.max*2)
 
 head=collar_of_honorable_exultation,id=136777,ilevel=840
 neck=strand_of_the_stars,id=137487,ilevel=840,enchant=mark_of_the_distant_army
