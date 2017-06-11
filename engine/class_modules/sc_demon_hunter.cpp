@@ -168,8 +168,7 @@ public:
   auto_dispose<std::vector<soul_fragment_t*>> soul_fragments;
   event_t* soul_fragment_pick_up;
 
-  std::vector<cooldown_t*>
-    sigil_cooldowns;  // For Defiler's Lost Vambraces legendary
+  std::vector<cooldown_t*> sigil_cooldowns;  // For Defiler's Lost Vambraces legendary
 
   double spirit_bomb;  // Spirit Bomb healing accumulator
   event_t* spirit_bomb_driver;
@@ -2712,6 +2711,8 @@ struct metamorphosis_t : public demon_hunter_spell_t
         p()->cooldown.sigil_of_flame->reset(false, true);
         p()->cooldown.sigil_of_misery->reset(false, true);
         p()->cooldown.sigil_of_silence->reset(false, true);
+        p()->cooldown.demon_spikes->reset(false);
+        p()->cooldown.empower_wards->reset(false);
       }
     }
   }
@@ -4680,6 +4681,7 @@ struct soul_cleave_t : public demon_hunter_attack_t
 
     if (p()->legendary.the_defilers_lost_vambraces < timespan_t::zero())
     {
+      // TODO: Investigate if this can select cooldowns that are not up()
       unsigned roll = as<unsigned>(p()->rng().range(0, (double)p()->sigil_cooldowns.size()));
       p()->sigil_cooldowns[roll]->adjust(p()->legendary.the_defilers_lost_vambraces);
     }
