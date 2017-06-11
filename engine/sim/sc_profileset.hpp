@@ -14,6 +14,10 @@
 struct sim_t;
 struct sim_control_t;
 
+namespace js {
+struct JsonOutput;
+}
+
 namespace profileset
 {
 class profile_result_t
@@ -104,8 +108,13 @@ public:
   profilesets_t()
   { }
 
+  size_t n_profilesets() const
+  { return m_profilesets.size(); }
+
   bool parse( sim_t* );
   bool iterate( sim_t* parent_sim );
+
+  void output( js::JsonOutput& root ) const;
 };
 
 void create_options( sim_t* sim );

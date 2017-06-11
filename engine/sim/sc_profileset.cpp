@@ -144,6 +144,8 @@ bool profilesets_t::iterate( sim_t* parent )
 
     auto profile_sim = new sim_t( parent );
 
+    // Reset random seed for the profileset sims
+    profile_sim -> seed = 0;
     profile_sim -> set_sim_base_str( set -> name() );
     auto ret = profile_sim -> execute();
 
@@ -170,6 +172,28 @@ bool profilesets_t::iterate( sim_t* parent )
   parent -> control = original_opts;
 
   return true;
+}
+
+void profilesets_t::output( js::JsonOutput& root ) const
+{
+  root[ "metric" ] = util::scale_metric_type_string(
+      m_profilesets.front() -> result().metric_type() );
+
+  auto results = root[ "results" ];
+  results.make_array();
+  range::for_each( m_profilesets, [ &results ]( const std::unique_ptr<profile_set_t>& profileset ) {
+    if ( profileset -> result().metric() == 0 )
+    {
+      return;
+    }
+
+    auto obj = results.add();
+    const auto& result = profileset -> result();
+
+    obj[ "name" ] = profileset -> name();
+    obj[ "value" ] = result.metric();
+    obj[ "stddev" ] = result.stddev();
+  } );
 }
 
 void create_options( sim_t* sim )

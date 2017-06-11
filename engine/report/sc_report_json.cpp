@@ -1498,6 +1498,12 @@ void to_json( JsonOutput root, const sim_t& sim )
     to_json( players_arr, *p );
   } );
 
+  if ( sim.profilesets.n_profilesets() > 0 )
+  {
+    auto profileset_root = root[ "profilesets" ];
+    sim.profilesets.output( profileset_root );
+  }
+
   if ( sim.report_details != 0 )
   {
     // Targets
