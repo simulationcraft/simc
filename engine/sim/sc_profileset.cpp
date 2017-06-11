@@ -166,12 +166,13 @@ bool profilesets_t::iterate( sim_t* parent )
 
     const auto player = profile_sim -> player_no_pet_list.data().front();
     auto metric = player -> scaling_for_metric( parent -> profileset_metric );
+    auto progress = profile_sim -> progress( nullptr, 0 );
 
     set -> result()
       .metric_type( parent -> profileset_metric )
       .metric( metric.value )
       .stddev( metric.stddev )
-      .iterations( player -> collected_data.total_iterations );
+      .iterations( progress.current_iterations );
 
     delete profile_sim;
   }
