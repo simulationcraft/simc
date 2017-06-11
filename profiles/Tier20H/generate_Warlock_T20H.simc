@@ -47,7 +47,7 @@ legs=,id=147184,ilevel=915
 feet=,id=146987,ilevel=915
 finger1=,id=147020,enchant_id=5428,ilevel=915
 finger2=,id=147195,enchant_id=5428,ilevel=925
-trinket1=tarnished_sentinel_medallion,id=147017,ilevel=915
+trinket1=,id=147002,ilevel=915
 trinket2=tome_of_unraveling_sanity,id=147019,ilevel=925
 main_hand=,id=137246,relic_id=0/0,gem_id=0/0/0/0,ilevel=939
 off_hand=,id=128943,bonus_id=748,gem_id=147087/147091/147110,ilevel=939
