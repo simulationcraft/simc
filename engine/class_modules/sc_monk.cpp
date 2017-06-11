@@ -5468,7 +5468,7 @@ struct breath_of_fire_t: public monk_spell_t
       hasted_ticks = false;
 
       if ( p.artifact.dragonfire_brew.rank() )
-        dot_duration *= p.artifact.dragonfire_brew.data().effectN( 2 ).percent();
+        dot_duration *= 1 + p.artifact.dragonfire_brew.data().effectN( 2 ).percent();
     }
 
     double action_multiplier() const override
