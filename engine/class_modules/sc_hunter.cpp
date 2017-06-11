@@ -6304,8 +6304,9 @@ void hunter_t::apl_bm()
   default_list -> add_action( this, "Multi-Shot", "if=spell_targets>1&(pet.cat.buff.beast_cleave.remains<gcd.max*2|pet.cat.buff.beast_cleave.down)" );
   default_list -> add_talent( this, "Chimaera Shot", "if=focus<90" );
   default_list -> add_action( this, "Cobra Shot", "if=(cooldown.kill_command.remains>focus.time_to_max&cooldown.bestial_wrath.remains>focus.time_to_max)|"
-                                                  "(buff.bestial_wrath.up&focus.regen*cooldown.kill_command.remains>30)|"
-                                                  "target.time_to_die<cooldown.kill_command.remains" );
+                                                  "(buff.bestial_wrath.up&focus.regen*cooldown.kill_command.remains>action.kill_command.cost)|"
+                                                  "target.time_to_die<cooldown.kill_command.remains|"
+                                                  "(equipped.parsels_tongue&buff.parsels_tongue.remains<=gcd.max*2)" );
 }
 
 // Marksman Action List ======================================================================
