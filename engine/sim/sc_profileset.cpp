@@ -100,7 +100,7 @@ bool profilesets_t::parse( sim_t* sim )
       continue;
     }
 
-    auto control = profile_set_t::create_sim_options( sim -> control, it -> second );
+    auto control = profile_set_t::create_sim_options( original_control, it -> second );
     if ( control == nullptr )
     {
       return false;
