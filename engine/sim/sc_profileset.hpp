@@ -13,6 +13,8 @@
 
 struct sim_t;
 struct sim_control_t;
+struct player_t;
+class extended_sample_data_t;
 
 namespace js {
 struct JsonOutput;
@@ -142,7 +144,15 @@ public:
   void output( const sim_t& sim, FILE* out ) const;
 };
 
+struct statistical_data_t
+{
+  double min, first_quartile, median, mean, third_quartile, max, std_dev;
+};
+
 void create_options( sim_t* sim );
+
+statistical_data_t collect( const extended_sample_data_t& c );
+statistical_data_t metric_data( const player_t* player );
 
 } /* Namespace profileset ends */
 

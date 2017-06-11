@@ -160,25 +160,18 @@ bool profilesets_t::iterate( sim_t* parent )
     }
 
     const auto player = profile_sim -> player_no_pet_list.data().front();
-    auto metric = player -> scaling_for_metric( parent -> profileset_metric );
     auto progress = profile_sim -> progress( nullptr, 0 );
-
-    const auto& metric_data = player -> collected_data.dps;
+    auto data = metric_data( player );
 
     set -> result()
-      .mean( metric_data.mean() )
-      .stddev( metric_data.std_dev )
-      .min( metric_data.min() )
-      .max( metric_data.max() )
+      .min( data.min )
+      .first_quartile( data.first_quartile )
+      .median( data.median )
+      .mean( data.mean )
+      .third_quartile( data.third_quartile )
+      .max( data.max )
+      .stddev( data.std_dev )
       .iterations( progress.current_iterations );
-
-    if ( ! metric_data.simple )
-    {
-      set -> result()
-        .first_quartile( metric_data.percentile( 0.25 ) )
-        .median( metric_data.percentile( 0.5 ) )
-        .third_quartile( metric_data.percentile( 0.75 ) );
-    }
 
     delete profile_sim;
   }
@@ -245,7 +238,7 @@ void profilesets_t::output( const sim_t& sim, FILE* out ) const
     util::scale_metric_type_string( sim.profileset_metric ) );
 
   range::for_each( m_profilesets, [ out ]( const profileset_entry_t& profileset ) {
-    util::fprintf( out, "    %-10.3f : %*s\n",
+    util::fprintf( out, "    %-10.3f : %s\n",
       profileset -> result().mean(), profileset -> name().c_str() );
   } );
 }
@@ -265,6 +258,48 @@ void create_options( sim_t* sim )
     sim -> profileset_metric = metric;
     return true;
   } ) );
+}
+
+statistical_data_t collect( const extended_sample_data_t& c )
+{
+  return { c.min(), c.percentile( 0.25 ), c.mean(),
+           c.percentile( 0.5 ), c.percentile( 0.75 ), c.max(), c.std_dev };
+}
+
+statistical_data_t metric_data( const player_t* player )
+{
+  const auto& d = player -> collected_data;
+
+  switch ( player -> sim -> profileset_metric )
+  {
+    case SCALE_METRIC_DPS:       return collect( d.dps );
+    case SCALE_METRIC_DPSE:      return collect( d.dpse );
+    case SCALE_METRIC_HPS:       return collect( d.hps );
+    case SCALE_METRIC_HPSE:      return collect( d.hpse );
+    case SCALE_METRIC_APS:       return collect( d.aps );
+    case SCALE_METRIC_DPSP:      return collect( d.prioritydps );
+    case SCALE_METRIC_DTPS:      return collect( d.dtps );
+    case SCALE_METRIC_DMG_TAKEN: return collect( d.dmg_taken );
+    case SCALE_METRIC_HTPS:      return collect( d.htps );
+    case SCALE_METRIC_TMI:       return collect( d.theck_meloree_index );
+    case SCALE_METRIC_ETMI:      return collect( d.effective_theck_meloree_index );
+    case SCALE_METRIC_DEATHS:    return collect( d.deaths );
+    case SCALE_METRIC_HAPS:
+    {
+      auto hps = collect( d.hps );
+      auto aps = collect( d.aps );
+      return {
+        hps.min + aps.min,
+        hps.first_quartile + aps.first_quartile,
+        hps.mean + aps.mean,
+        hps.median + aps.median,
+        hps.third_quartile + aps.first_quartile,
+        hps.max + aps.max,
+        sqrt( d.aps.mean_variance + d.hps.mean_variance )
+      };
+    }
+    default:                     return { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 };
+  }
 }
 
 } /* Namespace profileset ends */
