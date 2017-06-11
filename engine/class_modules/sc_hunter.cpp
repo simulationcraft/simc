@@ -3090,6 +3090,16 @@ struct aimed_shot_base_t: public hunter_ranged_attack_t
     crit_bonus_multiplier *= 1.0 + p -> artifacts.deadly_aim.percent();
   }
 
+  timespan_t execute_time() const override
+  {
+    timespan_t t = hunter_ranged_attack_t::execute_time();
+
+    if ( p() -> buffs.t20_4p_precision -> check() )
+      t *= 1.0 + p() -> buffs.t20_4p_precision -> data().effectN( 1 ).percent();
+
+    return t;
+  }
+
   double action_multiplier() const override
   {
     double am = hunter_ranged_attack_t::action_multiplier();
@@ -3314,11 +3324,7 @@ struct aimed_shot_t: public aimed_shot_base_t
     timespan_t t = aimed_shot_base_t::execute_time();
 
     if ( p() -> buffs.lock_and_load -> up() )
-      t = timespan_t::zero();
-
-    // may have to be moved to the base class as it affects lotw arrows
-    if ( p() -> buffs.t20_4p_precision -> check() )
-      t *= 1.0 + p() -> buffs.t20_4p_precision -> data().effectN( 1 ).percent();
+      return timespan_t::zero();
 
     return t;
   }
