@@ -4681,9 +4681,22 @@ struct soul_cleave_t : public demon_hunter_attack_t
 
     if (p()->legendary.the_defilers_lost_vambraces < timespan_t::zero())
     {
-      // TODO: Investigate if this can select cooldowns that are not up()
-      unsigned roll = as<unsigned>(p()->rng().range(0, (double)p()->sigil_cooldowns.size()));
-      p()->sigil_cooldowns[roll]->adjust(p()->legendary.the_defilers_lost_vambraces);
+      std::vector<cooldown_t*> active_sigil_cooldowns;
+
+      // Only select from cooldowns that are currently down
+      for (unsigned i = 0; i < p()->sigil_cooldowns.size(); i++)
+      {
+        if (p()->sigil_cooldowns[i]->down())
+        {
+          active_sigil_cooldowns.push_back(p()->sigil_cooldowns[i]);
+        }
+      }
+
+      if (active_sigil_cooldowns.size() > 0)
+      {
+        int roll = static_cast<int>(p()->rng().range(0, (double)active_sigil_cooldowns.size()));
+        active_sigil_cooldowns[roll]->adjust(p()->legendary.the_defilers_lost_vambraces);
+      }
     }
 
     // T19 2pc bonus is a distinct gain proc after using the ability
