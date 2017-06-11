@@ -2711,9 +2711,9 @@ struct death_knight_action_t : public Base
       }
     }
 
-    if ( this -> base_costs[ RESOURCE_RUNE ] > 0 )
+    if ( this -> base_costs[ RESOURCE_RUNE ] > 0 && this -> last_resource_cost > 0 )
     {
-      p() -> trigger_t20_4pc_frost( this -> base_costs[ RESOURCE_RUNE ] );
+      p() -> trigger_t20_4pc_frost( this -> last_resource_cost );
     }
 
     if ( this -> base_costs[ RESOURCE_RUNIC_POWER ] > 0 && this -> last_resource_cost > 0 )
