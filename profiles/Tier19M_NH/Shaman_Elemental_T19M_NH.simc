@@ -96,7 +96,7 @@ actions.single_if+=/elemental_blast
 actions.single_if+=/earth_shock,if=maelstrom>=117|!artifact.swelling_maelstrom.enabled&maelstrom>=92
 # Keep SK for large or soon spawning add waves.
 actions.single_if+=/stormkeeper,if=raid_event.adds.count<3|raid_event.adds.in>50
-actions.single_if+=/icefury,if=(raid_event.movement.in<5|maelstrom<=101)&!buff.ascendance.up
+actions.single_if+=/icefury,if=(raid_event.movement.in<5|maelstrom<=101&artifact.swelling_maelstrom.enabled|!artifact.swelling_maelstrom.enabled&maelstrom<=76)&!buff.ascendance.up
 actions.single_if+=/liquid_magma_totem,if=raid_event.adds.count<3|raid_event.adds.in>50
 actions.single_if+=/lightning_bolt,if=buff.power_of_the_maelstrom.up&buff.stormkeeper.up&spell_targets.chain_lightning<3
 actions.single_if+=/lava_burst,if=dot.flame_shock.remains>cast_time&cooldown_react

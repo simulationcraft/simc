@@ -7433,7 +7433,7 @@ void shaman_t::init_action_list_elemental()
   single_if -> add_talent( this, "Elemental Blast", "", "Keep your EB always on Cooldown." );
   single_if -> add_action( this, "Earth Shock", "if=maelstrom>=117|!artifact.swelling_maelstrom.enabled&maelstrom>=92" );
   single_if -> add_action( this, "Stormkeeper", "if=raid_event.adds.count<3|raid_event.adds.in>50", "Keep SK for large or soon spawning add waves." );
-  single_if -> add_talent( this, "Icefury", "if=(raid_event.movement.in<5|maelstrom<=101)&!buff.ascendance.up" );
+  single_if -> add_talent( this, "Icefury", "if=(raid_event.movement.in<5|maelstrom<=101&artifact.swelling_maelstrom.enabled|!artifact.swelling_maelstrom.enabled&maelstrom<=76)&!buff.ascendance.up" );
   single_if -> add_talent( this, "Liquid Magma Totem", "if=raid_event.adds.count<3|raid_event.adds.in>50" );
   single_if -> add_action( this, "Lightning Bolt", "if=buff.power_of_the_maelstrom.up&buff.stormkeeper.up&spell_targets.chain_lightning<3" );
   single_if -> add_action( this, "Lava Burst", "if=dot.flame_shock.remains>cast_time&cooldown_react" );

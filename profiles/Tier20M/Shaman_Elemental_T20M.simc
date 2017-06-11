@@ -1,11 +1,11 @@
-shaman="Shaman_Elemental_T19P"
+shaman="Shaman_Elemental_T20M"
 spec=elemental
 level=110
-race=orc
+race=tauren
 role=spell
-position=ranged_back
-talents=2112333
-artifact=40:0:0:0:0:291:1:292:1:293:1:294:1:296:1:300:2:301:3:302:3:303:3:304:3:1350:1
+position=back
+talents=3111231
+artifact=40:0:0:0:0:291:1:292:1:293:1:294:1:295:1:296:1:297:1:298:4:299:4:300:5:301:4:302:4:303:4:304:4:305:4:306:4:1350:1:1387:1:1589:4:1590:1:1591:1:1592:1:1683:1
 
 # Default consumables
 potion=prolonged_power
@@ -136,30 +136,31 @@ actions.single_lr+=/flame_shock,moving=1,target_if=refreshable
 actions.single_lr+=/earth_shock,moving=1
 actions.single_lr+=/flame_shock,moving=1,if=movement.distance>6
 
-head=shadow_archers_helm,id=139244,bonus_id=1492/1727
-neck=breathless_choker,id=137461,bonus_id=1492/1727,enchant=mark_of_the_hidden_satyr
-shoulders=epaulets_of_deceitful_intent,id=134480,bonus_id=1492/1727
-back=cloak_of_fading_echoes,id=134405,bonus_id=1492/1727,enchant=binding_of_intellect
-chest=tunic_of_screaming_earth,id=137354,bonus_id=1492/1727
-wrists=remorseless_chain_armbands,id=137405,bonus_id=1492/1727
-hands=gloves_of_fleshshaping,id=134468,bonus_id=1492/1727
-waist=permafrost_waistband,id=137520,bonus_id=1492/1727
-legs=leggings_of_acidic_venom,id=137450,bonus_id=1492/1727
-feet=striders_of_furious_flight,id=137517,bonus_id=1492/1727
-finger1=band_of_callous_dominance,id=134528,bonus_id=1492/1727,enchant_id=5427
-finger2=seal_of_the_nazjatar_empire,id=134525,bonus_id=1492/1727,enchant_id=5427
-trinket1=oakhearts_gnarled_root,id=137306,bonus_id=1492/1727
-trinket2=naraxas_spiked_tongue,id=137349,bonus_id=1492/1727
-main_hand=the_fist_of_raden,id=128935,bonus_id=744,gem_id=137365/137272/137365,relic_id=1492:3412/1492:3412/1492:3412
-off_hand=the_highkeepers_ward,id=128936,ilevel=870
+head=helmet_of_the_skybreaker,id=147178,ilevel=930
+neck=string_of_extracted_incisors,id=147013,ilevel=930,enchant=mark_of_the_claw
+shoulders=mantle_of_waning_radiance,ilevel=930
+back=drape_of_the_skybreaker,id=147176,ilevel=930,enchant=binding_of_intellect
+chest=harness_of_the_skybreaker,id=147175,ilevel=930
+wrists=pain_singed_armguards,ilevel=930
+hands=smoldering_heart,id=151819,ilevel=970
+waist=pristine_protoscale_girdle,id=137083,ilevel=970
+legs=legguards_of_the_skybreaker,id=147179,ilevel=930
+feet=insulated_finpads,id=147045,ilevel=930
+finger1=seal_of_the_second_duumvirate,id=147195,ilevel=940,enchant=200haste
+finger2=scaled_band_of_servitude,id=147020,ilevel=930,enchant=200haste
+trinket1=tarnished_sentinel_medallion,id=147017,ilevel=930
+trinket2=charm_of_the_rising_tide,id=147002,ilevel=930
+main_hand=the_fist_of_raden,id=128935,bonus_id=744,gem_id=147112/147095/147112,relic_ilevel=930/940/930
+off_hand=the_highkeepers_ward,id=128936
 
 # Gear Summary
-# gear_ilvl=843.75
-# gear_stamina=18842
-# gear_intellect=19614
-# gear_crit_rating=11104
-# gear_haste_rating=4674
-# gear_mastery_rating=2539
-# gear_versatility_rating=943
-# gear_armor=2433
-# set_bonus=tier19p_mail_2pc=1
+# gear_ilvl=938.63
+# gear_stamina=40778
+# gear_intellect=44688
+# gear_crit_rating=5239
+# gear_haste_rating=10160
+# gear_mastery_rating=7660
+# gear_versatility_rating=2624
+# gear_armor=2679
+# set_bonus=tier20_2pc=1
+# set_bonus=tier20_4pc=1
