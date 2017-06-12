@@ -15,7 +15,7 @@ artifact=35:0:0:0:0:980:1:981:1:982:1:984:1:985:1:986:1:987:1:988:3:989:3:990:3:
 
 # Executed before combat begins. Accepts non-harmful actions only.
 actions.precombat=flask,type=countless_armies
-actions.precombat+=/food,type=azshari_salad
+actions.precombat+=/food,type=lavish_suramar_feast
 actions.precombat+=/augmentation,type=defiled
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
