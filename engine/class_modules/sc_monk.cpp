@@ -3213,6 +3213,11 @@ struct rising_sun_kick_tornado_kick_t : public monk_melee_attack_t
         s -> target -> debuffs.mortal_wounds -> trigger();
       }
       p() -> trigger_mark_of_the_crane( s );
+
+      if ( p() -> sets -> has_set_bonus( MONK_WINDWALKER, T20, B4 ) && ( s -> result == RESULT_CRIT ) )
+        // -1 to reduce the spell cooldown instead of increasing
+        // saved as 2000
+        p() -> cooldown.fists_of_fury -> adjust( -1 * p() -> sets -> set( MONK_WINDWALKER, T20, B4 ) -> effectN( 1 ).time_value() );
     }
   }
 };
@@ -3364,6 +3369,11 @@ struct rising_sun_kick_t: public monk_melee_attack_t
           s -> target -> debuffs.mortal_wounds -> trigger();
         }
 
+        if ( p() -> sets -> has_set_bonus( MONK_WINDWALKER, T20, B4 ) && ( s -> result == RESULT_CRIT ) )
+          // -1 to reduce the spell cooldown instead of increasing
+          // saved as 2000
+          p() -> cooldown.fists_of_fury -> adjust( -1 * p() -> sets -> set( MONK_WINDWALKER, T20, B4 ) -> effectN( 1 ).time_value() );
+
         if ( p() -> artifact.tornado_kicks.rank() )
         {
           double raw = s -> result_raw * p() -> artifact.tornado_kicks.data().effectN( 1 ).percent();
@@ -3372,11 +3382,6 @@ struct rising_sun_kick_t: public monk_melee_attack_t
           rsk_tornado_kick -> base_dd_min = raw;
           rsk_tornado_kick -> execute();
         }
-
-        if ( p() -> sets -> has_set_bonus( MONK_WINDWALKER, T20, B4 ) && ( s -> result == RESULT_CRIT ) )
-          // -1 to reduce the spell cooldown instead of increasing
-          // saved as 2000
-          p() -> cooldown.fists_of_fury -> adjust( timespan_t::from_millis( -1 * p() -> sets -> set( MONK_WINDWALKER, T20, B4 ) -> effectN( 1 ).base_value() ) );
       }
     }
   }
