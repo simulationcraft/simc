@@ -7456,7 +7456,7 @@ void druid_t::apl_precombat()
   if ( specialization() == DRUID_FERAL )
   {
      precombat -> add_action( "variable,name=rake_refresh,op=set,value=7", "Rake_refresh controls how aggresively to refresh rake. Lower means less aggresively." );
-     precombat -> add_action( "variable,name=rake_refresh,op=set,value=3,if=equipped.ailuro_pouncers|talent.soul_of_the_forest.enabled" );
+     precombat -> add_action( "variable,name=rake_refresh,op=set,value=3,if=equipped.ailuro_pouncers" );
      precombat -> add_action( "variable,name=pooling,op=set,value=3", "Pooling controlls how aggresively to pool. Lower means more aggresively" );
      precombat -> add_action( "variable,name=pooling,op=set,value=10,if=equipped.chatoyant_signet" );
      precombat -> add_action( "variable,name=pooling,op=set,value=3,if=equipped.the_wildshapers_clutch&!equipped.chatoyant_signet" );
