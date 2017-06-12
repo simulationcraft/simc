@@ -2216,9 +2216,6 @@ struct dire_frenzy_t: public hunter_main_pet_attack_t
 
       if ( p -> o() -> artifacts.titans_thunder.rank() )
         titans_frenzy = new titans_frenzy_t( p );
-
-      // Not sure if this is intended, but beast master also buffs Dire Frenzy damage
-      base_multiplier *= 1.0 + o() -> artifacts.beast_master.percent();
   }
 
   void schedule_execute( action_state_t* state = nullptr ) override
