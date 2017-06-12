@@ -135,10 +135,7 @@ public:
   // Buffs
   struct buffs_t
   {
-    buff_t* aspect_of_the_cheetah;
-    buff_t* aspect_of_the_turtle;
     buff_t* aspect_of_the_wild;
-    buff_t* beast_cleave;
     buff_t* bestial_wrath;
     buff_t* big_game_hunter;
     buff_t* bombardment;
@@ -177,15 +174,12 @@ public:
   // Cooldowns
   struct cooldowns_t
   {
-    cooldown_t* explosive_shot;
-    cooldown_t* black_arrow;
     cooldown_t* bestial_wrath;
     cooldown_t* trueshot;
     cooldown_t* dire_beast;
     cooldown_t* dire_frenzy;
     cooldown_t* kill_command;
     cooldown_t* mongoose_bite;
-    cooldown_t* lacerate;
     cooldown_t* flanking_strike;
     cooldown_t* harpoon;
     cooldown_t* aspect_of_the_eagle;
@@ -199,14 +193,9 @@ public:
   // Gains
   struct gains_t
   {
-    gain_t* arcane_shot;
     gain_t* critical_focus;
     gain_t* steady_focus;
-    gain_t* cobra_shot;
-    gain_t* aimed_shot;
     gain_t* dire_regen;
-    gain_t* multi_shot;
-    gain_t* chimaera_shot;
     gain_t* aspect_of_the_wild;
     gain_t* spitting_cobra;
     gain_t* nesingwarys_trapping_treads;
@@ -451,15 +440,12 @@ public:
     clear_next_hunters_mark( true )
   {
     // Cooldowns
-    cooldowns.explosive_shot  = get_cooldown( "explosive_shot" );
-    cooldowns.black_arrow     = get_cooldown( "black_arrow" );
     cooldowns.bestial_wrath   = get_cooldown( "bestial_wrath" );
     cooldowns.trueshot        = get_cooldown( "trueshot" );
     cooldowns.dire_beast      = get_cooldown( "dire_beast" );
     cooldowns.dire_frenzy     = get_cooldown( "dire_frenzy" );
     cooldowns.kill_command    = get_cooldown( "kill_command" );
     cooldowns.mongoose_bite   = get_cooldown( "mongoose_bite" );
-    cooldowns.lacerate        = get_cooldown( "lacerate" );
     cooldowns.flanking_strike = get_cooldown( "flanking_strike" );
     cooldowns.harpoon         = get_cooldown( "harpoon" );
     cooldowns.aspect_of_the_eagle = get_cooldown( "aspect_of_the_eagle" );
@@ -1563,6 +1549,7 @@ struct hati_t: public hunter_secondary_pet_t
     hunter_secondary_pet_t( owner, std::string( "hati" ) ),
     active( actives_t() )
   {
+    owner_coeff.ap_from_ap = 0.6 * 1.6;
   }
 
   void init_base_stats() override
@@ -2230,9 +2217,6 @@ struct dire_frenzy_t: public hunter_main_pet_attack_t
 
       if ( p -> o() -> artifacts.titans_thunder.rank() )
         titans_frenzy = new titans_frenzy_t( p );
-
-      // Not sure if this is intended, but beast master also buffs Dire Frenzy damage
-      base_multiplier *= 1.0 + o() -> artifacts.beast_master.percent();
   }
 
   void schedule_execute( action_state_t* state = nullptr ) override
@@ -2751,7 +2735,7 @@ struct barrage_t: public hunter_spell_t
 struct multi_shot_t: public hunter_ranged_attack_t
 {
   multi_shot_t( hunter_t* p, const std::string& options_str ):
-    hunter_ranged_attack_t( "multi_shot", p, p -> find_class_spell( "Multi-Shot" ) )
+    hunter_ranged_attack_t( "multishot", p, p -> find_class_spell( "Multi-Shot" ) )
   {
     parse_options( options_str );
     may_proc_mm_feet = true;
@@ -5234,15 +5218,6 @@ struct steel_trap_t: public hunter_spell_t
         p() -> resource_gain( RESOURCE_FOCUS, p() -> find_spell( 212575 ) -> effectN( 1 ).resource( RESOURCE_FOCUS ), p() -> gains.nesingwarys_trapping_treads );
     }
 
-    void impact( action_state_t* s ) override
-    {
-      hunter_spell_t::impact( s );
-
-      // 02/02/2017 nuoHep: Steel Trap triggers twice
-      if ( result_is_hit( s -> result ) )
-        get_dot( s -> target ) -> trigger( dot_duration );
-    }
-
     double target_armor( player_t* ) const override
     {
       // the trap does bleed damage which ignores armor
@@ -6047,14 +6022,9 @@ void hunter_t::init_gains()
 {
   player_t::init_gains();
 
-  gains.arcane_shot          = get_gain( "arcane_shot" );
   gains.critical_focus       = get_gain( "critical_focus" );
   gains.steady_focus         = get_gain( "steady_focus" );
-  gains.cobra_shot           = get_gain( "cobra_shot" );
-  gains.aimed_shot           = get_gain( "aimed_shot" );
   gains.dire_regen           = get_gain( talents.dire_frenzy -> ok() ? "dire_frenzy" : "dire_beast" );
-  gains.multi_shot           = get_gain( "multi_shot" );
-  gains.chimaera_shot        = get_gain( "chimaera_shot" );
   gains.aspect_of_the_wild   = get_gain( "aspect_of_the_wild" );
   gains.spitting_cobra       = get_gain( "spitting_cobra" );
   gains.nesingwarys_trapping_treads = get_gain( "nesingwarys_trapping_treads" );
@@ -6347,9 +6317,9 @@ void hunter_t::apl_mm()
   non_patient_sniper -> add_action( this, "Aimed Shot", "if=talent.sidewinders.enabled&debuff.vulnerability.remains>cast_time" );
   non_patient_sniper -> add_action( this, "Aimed Shot", "if=!talent.sidewinders.enabled&debuff.vulnerability.remains>cast_time&(!variable.pooling_for_piercing|(buff.lock_and_load.up&lowest_vuln_within.5>gcd.max))&(spell_targets.multishot<4|talent.trick_shot.enabled|buff.sentinels_sight.stack=20)" );
   non_patient_sniper -> add_action( this, "Marked Shot" );
-  non_patient_sniper -> add_action( this, "Aimed Shot", "if=talent.sidewinders.enabled&spell_targets.multi_shot=1&focus>110" );
-  non_patient_sniper -> add_action( this, "Multi-Shot", "if=spell_targets.multi_shot>1&!variable.waiting_for_sentinel" );
-  non_patient_sniper -> add_action( this, "Arcane Shot", "if=spell_targets.multi_shot<2&!variable.waiting_for_sentinel" );
+  non_patient_sniper -> add_action( this, "Aimed Shot", "if=talent.sidewinders.enabled&spell_targets.multishot=1&focus>110" );
+  non_patient_sniper -> add_action( this, "Multi-Shot", "if=spell_targets.multishot>1&!variable.waiting_for_sentinel" );
+  non_patient_sniper -> add_action( this, "Arcane Shot", "if=spell_targets.multishot<2&!variable.waiting_for_sentinel" );
 
   // Patient Sniper APL
   patient_sniper -> add_action( "variable,name=vuln_window,op=setif,"
@@ -6381,14 +6351,14 @@ void hunter_t::apl_mm()
   patient_sniper -> add_action( this, "Aimed Shot", "if=debuff.vulnerability.up&buff.lock_and_load.up&(!variable.pooling_for_piercing|lowest_vuln_within.5>gcd.max)" );
   patient_sniper -> add_action( this, "Aimed Shot", "if=spell_targets.multishot>1&debuff.vulnerability.remains>execute_time&(!variable.pooling_for_piercing|(focus>100&lowest_vuln_within.5>(execute_time+gcd.max)))" );
   patient_sniper -> add_action( this, "Multi-Shot", "if=spell_targets>1&variable.can_gcd&focus+cast_regen+action.aimed_shot.cast_regen<focus.max&(!variable.pooling_for_piercing|lowest_vuln_within.5>gcd.max)" );
-  patient_sniper -> add_action( this, "Arcane Shot", "if=spell_targets.multi_shot=1&(!set_bonus.tier20_2pc|!buff.trueshot.up|buff.t20_2p_critical_aimed_damage.up)&variable.vuln_aim_casts>0&variable.can_gcd&focus+cast_regen+action.aimed_shot.cast_regen<focus.max&(!variable.pooling_for_piercing|lowest_vuln_within.5>gcd.max)" );
+  patient_sniper -> add_action( this, "Arcane Shot", "if=spell_targets.multishot=1&(!set_bonus.tier20_2pc|!buff.trueshot.up|buff.t20_2p_critical_aimed_damage.up)&variable.vuln_aim_casts>0&variable.can_gcd&focus+cast_regen+action.aimed_shot.cast_regen<focus.max&(!variable.pooling_for_piercing|lowest_vuln_within.5>gcd.max)" );
   patient_sniper -> add_action( this, "Aimed Shot", "if=talent.sidewinders.enabled&(debuff.vulnerability.remains>cast_time|(buff.lock_and_load.down&action.windburst.in_flight))&(variable.vuln_window-(execute_time*variable.vuln_aim_casts)<1|focus.deficit<25|buff.trueshot.up)&(spell_targets.multishot=1|focus>100)" );
   patient_sniper -> add_action( this, "Aimed Shot", "if=!talent.sidewinders.enabled&debuff.vulnerability.remains>cast_time&(!variable.pooling_for_piercing|(focus>100&lowest_vuln_within.5>(execute_time+gcd.max)))" );
   patient_sniper -> add_action( this, "Marked Shot", "if=!talent.sidewinders.enabled&!variable.pooling_for_piercing&!action.windburst.in_flight" );
   patient_sniper -> add_action( this, "Marked Shot", "if=talent.sidewinders.enabled&(variable.vuln_aim_casts<1|buff.trueshot.up|variable.vuln_window<action.aimed_shot.cast_time)" );
-  patient_sniper -> add_action( this, "Aimed Shot", "if=spell_targets.multi_shot=1&focus>110" );
+  patient_sniper -> add_action( this, "Aimed Shot", "if=spell_targets.multishot=1&focus>110" );
   patient_sniper -> add_talent( this, "Sidewinders", "if=(!debuff.hunters_mark.up|(!buff.marking_targets.up&!buff.trueshot.up))&((buff.marking_targets.up&variable.vuln_aim_casts<1)|buff.trueshot.up|charges_fractional>1.9)" );
-  patient_sniper -> add_action( this, "Arcane Shot", "if=spell_targets.multi_shot=1&(!variable.pooling_for_piercing|lowest_vuln_within.5>gcd.max)" );
+  patient_sniper -> add_action( this, "Arcane Shot", "if=spell_targets.multishot=1&(!variable.pooling_for_piercing|lowest_vuln_within.5>gcd.max)" );
   patient_sniper -> add_action( this, "Multi-Shot", "if=spell_targets>1&(!variable.pooling_for_piercing|lowest_vuln_within.5>gcd.max)" );
 
   // APL for the last few actions of a fight
