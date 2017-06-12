@@ -311,12 +311,19 @@ std::string tooltip_parser_t::parse()
             throw error();
           pos += 9;
 
+          auto prev_spell = spell;
           spell = parse_spell();
           if ( !spell )
             throw error();
           assert( player );
-          replacement_text =
-              report::pretty_spell_text( *spell, spell->desc(), *player );
+
+          // References in tooltips/descriptions don't seem to form DAG, check
+          // for cycles of length 1 here (which should hopefully be enough).
+          if ( spell -> id() != prev_spell -> id() )
+          {
+            replacement_text =
+                report::pretty_spell_text( *spell, spell->desc(), *player );
+          }
           break;
         }
 
