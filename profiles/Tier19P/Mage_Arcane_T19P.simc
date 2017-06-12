@@ -1,11 +1,17 @@
 mage="Mage_Arcane_T19P"
+spec=arcane
 level=110
 race=troll
 role=spell
 position=back
 talents=1021012
 artifact=4:132810:136692:132810:0:73:1:74:3:75:6:80:1:81:3:82:3:84:3:87:1:290:1:1339:1
-spec=arcane
+
+# Default consumables
+potion=deadly_grace
+flask=whispered_pact
+food=lemon_herb_filet
+augmentation=defiled
 
 # This default action priority list is automatically created based on your character.
 # It is a attempt to provide you with a action list that is both simple and practicable,
@@ -14,13 +20,13 @@ spec=arcane
 # SimulationCraft is always looking for updates and improvements to the default action lists.
 
 # Executed before combat begins. Accepts non-harmful actions only.
-actions.precombat=flask,type=flask_of_the_whispered_pact
-actions.precombat+=/food,type=the_hungry_magister
-actions.precombat+=/augmentation,type=defiled
+actions.precombat=flask
+actions.precombat+=/food
+actions.precombat+=/augmentation
 actions.precombat+=/summon_arcane_familiar
 actions.precombat+=/snapshot_stats
 actions.precombat+=/mirror_image
-actions.precombat+=/potion,name=deadly_grace
+actions.precombat+=/potion
 actions.precombat+=/arcane_blast
 
 # Executed every time the actor is available.
@@ -74,7 +80,8 @@ actions.cooldowns+=/arcane_power
 actions.cooldowns+=/blood_fury
 actions.cooldowns+=/berserking
 actions.cooldowns+=/arcane_torrent
-actions.cooldowns+=/potion,name=deadly_grace,if=buff.arcane_power.up&(buff.berserking.up|buff.blood_fury.up)
+actions.cooldowns+=/use_items
+actions.cooldowns+=/potion,if=buff.arcane_power.up&(buff.berserking.up|buff.blood_fury.up)
 
 actions.init_burn=mark_of_aluneth
 actions.init_burn+=/nether_tempest,if=dot.nether_tempest.remains<10&(prev_gcd.1.mark_of_aluneth|(talent.rune_of_power.enabled&cooldown.rune_of_power.remains<gcd.max))
@@ -105,12 +112,12 @@ trinket2=naraxas_spiked_tongue,id=137349,bonus_id=1727
 main_hand=aluneth,id=127857,ilevel=870
 
 # Gear Summary
-# gear_ilvl=842.00
-# gear_stamina=18862
-# gear_intellect=19631
-# gear_crit_rating=8564
-# gear_haste_rating=4287
-# gear_mastery_rating=1683
-# gear_versatility_rating=4747
-# gear_armor=1570
+# gear_ilvl=865.33
+# gear_stamina=23161
+# gear_intellect=21946
+# gear_crit_rating=9524
+# gear_haste_rating=4725
+# gear_mastery_rating=1776
+# gear_versatility_rating=5363
+# gear_armor=1715
 # set_bonus=tier19p_cloth_2pc=1

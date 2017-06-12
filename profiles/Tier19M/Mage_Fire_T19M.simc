@@ -33,7 +33,7 @@ actions=counterspell,if=target.debuff.casting.react
 actions+=/time_warp,if=(time=0&buff.bloodlust.down)|(buff.bloodlust.down&equipped.132410&(cooldown.combustion.remains<1|target.time_to_die.remains<50))
 actions+=/mirror_image,if=buff.combustion.down
 # Standard Talent RoP Logic.
-actions+=/rune_of_power,if=((firestarter.active)&action.rune_of_power.charges=2)|cooldown.combustion.remains>40&buff.combustion.down&!talent.kindling.enabled|target.time_to_die.remains<11|talent.kindling.enabled&(charges_fractional>1.8|time<40)&cooldown.combustion.remains>40
+actions+=/rune_of_power,if=firestarter.active&action.rune_of_power.charges=2|cooldown.combustion.remains>40&buff.combustion.down&!talent.kindling.enabled|target.time_to_die.remains<11|talent.kindling.enabled&(charges_fractional>1.8|time<40)&cooldown.combustion.remains>40
 # RoP use while using Legendary Items.
 actions+=/rune_of_power,if=(buff.kaelthas_ultimate_ability.react&(cooldown.combustion.remains>40|action.rune_of_power.charges>1))|(buff.erupting_infernal_core.up&(cooldown.combustion.remains>40|action.rune_of_power.charges>1))
 actions+=/call_action_list,name=combustion_phase,if=cooldown.combustion.remains<=action.rune_of_power.cast_time+(!talent.kindling.enabled*gcd)&(!talent.firestarter.enabled|!firestarter.active|active_enemies>=4|active_enemies>=2&talent.flame_patch.enabled)|buff.combustion.up
@@ -69,9 +69,9 @@ actions.rop_phase+=/flamestrike,if=((talent.flame_patch.enabled&active_enemies>1
 actions.rop_phase+=/pyroblast,if=buff.hot_streak.up
 actions.rop_phase+=/call_action_list,name=active_talents
 actions.rop_phase+=/pyroblast,if=buff.kaelthas_ultimate_ability.react&execute_time<buff.kaelthas_ultimate_ability.remains
-actions.rop_phase+=/fire_blast,if=!prev_off_gcd.fire_blast&buff.heating_up.up&firestarter.active=1&charges_fractional>1.7
-actions.rop_phase+=/phoenixs_flames,if=!prev_gcd.1.phoenixs_flames&charges_fractional>2.7&firestarter.active=1
-actions.rop_phase+=/fire_blast,if=!prev_off_gcd.fire_blast&firestarter.active=0
+actions.rop_phase+=/fire_blast,if=!prev_off_gcd.fire_blast&buff.heating_up.up&firestarter.active&charges_fractional>1.7
+actions.rop_phase+=/phoenixs_flames,if=!prev_gcd.1.phoenixs_flames&charges_fractional>2.7&firestarter.active
+actions.rop_phase+=/fire_blast,if=!prev_off_gcd.fire_blast&!firestarter.active
 actions.rop_phase+=/phoenixs_flames,if=!prev_gcd.1.phoenixs_flames
 actions.rop_phase+=/scorch,if=target.health.pct<=30&equipped.132454
 actions.rop_phase+=/dragons_breath,if=active_enemies>2
