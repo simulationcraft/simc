@@ -7672,6 +7672,7 @@ void death_knight_t::default_apl_frost()
   def -> add_action( this, "Pillar of Frost", "if=talent.breath_of_sindragosa.enabled&!cooldown.breath_of_sindragosa.remains&runic_power>=50&equipped.140806&cooldown.hungering_rune_weapon.remains<10" );
   def -> add_action( this, "Pillar of Frost", "if=talent.breath_of_sindragosa.enabled&!cooldown.breath_of_sindragosa.remains&runic_power>=50&!equipped.140806&(cooldown.hungering_rune_weapon.remains<15|target.time_to_die>135)" );
   def -> add_talent( this, "Breath of Sindragosa", "if=buff.pillar_of_frost.up" );
+  def -> add_action( this, "Chains of Ice", "if=buff.cold_heart.stack=20|(buff.pillar_of_frost.remains<gcd&buff.pillar_of_frost.up&(buff.cold_heart.stack>=11|(buff.cold_heart.stack>=10&set_bonus.tier20_4pc)))" );
   
   // Choose APL
   def -> add_action( "call_action_list,name=generic,if=!talent.breath_of_sindragosa.enabled&!(talent.gathering_storm.enabled&buff.remorseless_winter.remains)" );
@@ -7712,11 +7713,12 @@ void death_knight_t::default_apl_frost()
   bos -> add_action( this, "Howling Blast", "if=buff.rime.react&rune.time_to_4<(gcd*2)" );
   bos -> add_action( this, "Obliterate", "if=rune.time_to_6<gcd&!talent.gathering_storm.enabled" );
   bos -> add_action( this, "Obliterate", "if=rune.time_to_4<gcd&(cooldown.breath_of_sindragosa.remains|runic_power<70)" );
-  bos -> add_action( this, "Frost Strike", "if=runic_power>=90&set_bonus.tier19_4pc&cooldown.breath_of_sindragosa.remains" );
+  bos -> add_action( this, "Frost Strike", "if=runic_power>=95&set_bonus.tier19_4pc&cooldown.breath_of_sindragosa.remains" );
   bos -> add_action( this, "Remorseless Winter", "if=buff.rime.react&equipped.132459" );
   bos -> add_action( this, "Howling Blast", "if=buff.rime.react&(dot.remorseless_winter.ticking|cooldown.remorseless_winter.remains>gcd|(!equipped.132459&!talent.gathering_storm.enabled))" );
   bos -> add_action( this, "Obliterate", "if=!buff.rime.react&!(talent.gathering_storm.enabled&!(cooldown.remorseless_winter.remains>(gcd*2)|rune>4))&rune>3" );
   bos -> add_action( this, "Sindragosa's Fury", "if=(equipped.144293|buff.pillar_of_frost.up)&buff.unholy_strength.up&debuff.razorice.stack=5&!buff.obliteration.up");
+  bos -> add_talent( this, "Frostscythe", "if=buff.killing_machine.up&(!equipped.132366|spell_targets.frostscythe>=2)" );
   bos -> add_action( this, "Frost Strike", "if=runic_power>=70" );
   bos -> add_action( this, "Remorseless Winter", "if=spell_targets.remorseless_winter>=2");
   bos -> add_action( this, "Frost Strike", "if=(cooldown.remorseless_winter.remains<(gcd*2)|buff.gathering_storm.stack=10)&cooldown.breath_of_sindragosa.remains>rune.time_to_4&talent.gathering_storm.enabled" );
@@ -7728,15 +7730,17 @@ void death_knight_t::default_apl_frost()
   bos_ticking -> add_action( this, "Howling Blast", "target_if=!dot.frost_fever.ticking" );
   bos_ticking -> add_action( this, "Remorseless Winter", "if=(runic_power>=30|buff.hungering_rune_weapon.up)&((buff.rime.react&equipped.132459)|(talent.gathering_storm.enabled&(dot.remorseless_winter.remains<=gcd|!dot.remorseless_winter.ticking)))" );
   bos_ticking -> add_action( this, "Howling Blast", "if=((runic_power>=20&set_bonus.tier19_4pc)|runic_power>=30|buff.hungering_rune_weapon.up)&buff.rime.react" );
+  bos_ticking -> add_action( this, "Frost Strike", "if=set_bonus.tier20_2pc&runic_power>85&rune<=3&buff.pillar_of_frost.up" );
   bos_ticking -> add_action( this, "Obliterate", "if=runic_power<=45|rune.time_to_5<gcd|buff.hungering_rune_weapon.remains>=2" );
-  bos_ticking -> add_action( this, "Sindragosa's Fury", "if=(equipped.144293|buff.pillar_of_frost.up)&buff.unholy_strength.up&debuff.razorice.stack=5&!buff.obliteration.up" );
-  bos_ticking -> add_action( this, "Remorseless Winter", "if=spell_targets.remorseless_winter>=2" );
-  bos_ticking -> add_action( this, "Obliterate", "if=runic_power<=75|rune>3" );
-  bos_ticking -> add_talent( this, "Horn of Winter", "if=runic_power<70&!buff.hungering_rune_weapon.up&rune.time_to_3>gcd" );
   bos_ticking -> add_talent( this, "Hungering Rune Weapon", "if=runic_power<70&!buff.hungering_rune_weapon.up&rune<2&cooldown.breath_of_sindragosa.remains>35&equipped.140806" );
   bos_ticking -> add_talent( this, "Hungering Rune Weapon", "if=runic_power<50&!buff.hungering_rune_weapon.up&rune.time_to_2>=3&cooldown.breath_of_sindragosa.remains>30" );
   bos_ticking -> add_talent( this, "Hungering Rune Weapon", "if=runic_power<35&!buff.hungering_rune_weapon.up&rune.time_to_2>=2&cooldown.breath_of_sindragosa.remains>30" );
   bos_ticking -> add_talent( this, "Hungering Rune Weapon", "if=runic_power<20&!buff.hungering_rune_weapon.up&rune.time_to_2>=1&cooldown.breath_of_sindragosa.remains>30" );
+  bos_ticking -> add_action( this, "Sindragosa's Fury", "if=(equipped.144293|buff.pillar_of_frost.up)&buff.unholy_strength.up&debuff.razorice.stack=5&!buff.obliteration.up" );
+  bos_ticking -> add_talent( this, "Frostscythe", "if=buff.killing_machine.up&((!equipped.132366|talent.gathering_storm.enabled)|spell_targets.frostscythe>=2)" );
+  bos_ticking -> add_action( this, "Remorseless Winter", "if=spell_targets.remorseless_winter>=2" );
+  bos_ticking -> add_action( this, "Obliterate", "if=runic_power<=75|rune>3" );
+  bos_ticking -> add_talent( this, "Horn of Winter", "if=runic_power<70&!buff.hungering_rune_weapon.up&rune.time_to_3>gcd" );
   bos_ticking -> add_action( this, "Empower Rune Weapon", "if=runic_power<20" );
 
   // Gathering Storm ticking rotation
@@ -7747,6 +7751,7 @@ void death_knight_t::default_apl_frost()
   gs_ticking -> add_talent( this, "Obliteration", "if=(!talent.frozen_pulse.enabled|(rune<2&runic_power<28))" );
   gs_ticking -> add_action( this, "Obliterate", "if=rune>3|buff.killing_machine.react|buff.obliteration.up" );
   gs_ticking -> add_action( this, "Sindragosa's Fury", "if=(equipped.144293|buff.pillar_of_frost.up)&buff.unholy_strength.up&debuff.razorice.stack=5&!buff.obliteration.up" );
+  gs_ticking -> add_talent( this, "Frostscythe", "if=buff.killing_machine.up&((!equipped.132366|talent.gathering_storm.enabled)|spell_targets.frostscythe>=2" );
   gs_ticking -> add_action( this, "Frost Strike", "if=runic_power>80|(buff.obliteration.up&!buff.killing_machine.react)" );
   gs_ticking -> add_action( this, "Obliterate" );
   gs_ticking -> add_talent( this, "Horn of Winter", "if=runic_power<70&!buff.hungering_rune_weapon.up" );
@@ -7806,12 +7811,13 @@ void death_knight_t::default_apl_unholy()
   // Pick an APL to run
   def->add_action("run_action_list,name=valkyr,if=talent.dark_arbiter.enabled&pet.valkyr_battlemaiden.active");
   def->add_action("call_action_list,name=generic");
-
+  
   // Default generic target APL
 
   generic->add_talent(this, "Dark Arbiter", "if=!equipped.137075&runic_power.deficit<30");
   generic->add_talent(this, "Dark Arbiter", "if=equipped.137075&runic_power.deficit<30&cooldown.dark_transformation.remains<2");
   generic->add_action(this, "Summon Gargoyle", "if=!equipped.137075,if=rune<=3");
+  generic->add_action(this, "Chains of Ice", "if=buff.unholy_strength.up&buff.cold_heart.stack>19");
   generic->add_action(this, "Summon Gargoyle", "if=equipped.137075&cooldown.dark_transformation.remains<10&rune<=3");
 
   // Apocalypso
