@@ -4558,7 +4558,7 @@ struct  keg_smash_stave_off_t: public monk_melee_attack_t
     monk_melee_attack_t::execute();
 
     // Reduces the remaining cooldown on your Brews by 4 sec.
-    brew_cooldown_reduction( p() -> spec.keg_smash -> effectN( 3 ).base_value() );
+    brew_cooldown_reduction( p() -> spec.keg_smash -> effectN( 4 ).base_value() );
   }
 };
 
