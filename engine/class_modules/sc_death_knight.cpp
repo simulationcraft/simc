@@ -7737,7 +7737,7 @@ void death_knight_t::default_apl_frost()
   bos_ticking -> add_talent( this, "Hungering Rune Weapon", "if=runic_power<35&!buff.hungering_rune_weapon.up&rune.time_to_2>=2&cooldown.breath_of_sindragosa.remains>30" );
   bos_ticking -> add_talent( this, "Hungering Rune Weapon", "if=runic_power<20&!buff.hungering_rune_weapon.up&rune.time_to_2>=1&cooldown.breath_of_sindragosa.remains>30" );
   bos_ticking -> add_action( this, "Sindragosa's Fury", "if=(equipped.144293|buff.pillar_of_frost.up)&buff.unholy_strength.up&debuff.razorice.stack=5&!buff.obliteration.up" );
-  bos_ticking -> add_talent( this, "Frostscythe", "if=buff.killing_machine.up&((!equipped.132366|talent.gathering_storm.enabled|spell_targets.frostscythe>=2)" );
+  bos_ticking -> add_talent( this, "Frostscythe", "if=buff.killing_machine.up&(!equipped.132366|talent.gathering_storm.enabled|spell_targets.frostscythe>=2)" );
   bos_ticking -> add_action( this, "Remorseless Winter", "if=spell_targets.remorseless_winter>=2" );
   bos_ticking -> add_action( this, "Obliterate", "if=runic_power<=75|rune>3" );
   bos_ticking -> add_talent( this, "Horn of Winter", "if=runic_power<70&!buff.hungering_rune_weapon.up&rune.time_to_3>gcd" );
