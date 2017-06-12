@@ -42,8 +42,8 @@ actions+=/call_action_list,name=sef,if=!talent.serenity.enabled&!equipped.drinki
 actions+=/call_action_list,name=st
 
 actions.cd=invoke_xuen
-actions.cd+=/use_items
-actions.cd+=/use_items
+actions.cd+=/use_item,name=specter_of_betrayal,if=(cooldown.serenity.remains>10|buff.serenity.up)|!talent.serenity.enabled
+actions.cd+=/use_item,name=vial_of_ceaseless_toxins,if=(buff.serenity.up&!equipped.specter_of_betrayal)|(equipped.specter_of_betrayal&(time<5|cooldown.serenity.remains<=8))|!talent.serenity.enabled
 actions.cd+=/blood_fury
 actions.cd+=/berserking
 actions.cd+=/arcane_torrent,if=chi.max-chi>=1&energy.time_to_max>=0.5
