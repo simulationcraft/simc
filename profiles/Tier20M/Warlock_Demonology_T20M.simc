@@ -85,16 +85,16 @@ finger2=seal_of_the_second_duumvirate,id=147195,ilevel=940,enchant_id=5428
 trinket1=charm_of_the_rising_tide,id=147002,ilevel=930
 trinket2=tome_of_unraveling_sanity,id=147019,ilevel=940
 main_hand=spine_of_thalkiel,id=137246,ilevel=939,gem_id=0/0/0/0,relic_id=0/0
-off_hand=skull_of_the_manari,id=128943,bonus_id=748,ilevel=939,gem_id=147087/147091/147110
+off_hand=skull_of_the_manari,id=128943,bonus_id=748,ilevel=954,gem_id=147087/147091/147110
 
 # Gear Summary
-# gear_ilvl=937.38
-# gear_stamina=46220
-# gear_intellect=31733
-# gear_spell_power=17871
-# gear_crit_rating=4750
-# gear_haste_rating=12005
-# gear_mastery_rating=6847
+# gear_ilvl=939.25
+# gear_stamina=46916
+# gear_intellect=32198
+# gear_spell_power=20554
+# gear_crit_rating=4774
+# gear_haste_rating=12048
+# gear_mastery_rating=6890
 # gear_versatility_rating=3161
 # gear_armor=2246
 # set_bonus=tier20_2pc=1

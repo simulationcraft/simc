@@ -21,7 +21,7 @@ finger1=scaled_band_of_servitude,id=147020,ilevel=930,enchant_id=5428
 finger2=seal_of_the_second_duumvirate,id=147195,ilevel=940,enchant_id=5428
 trinket1=tarnished_sentinel_medallion,id=147017,ilevel=930
 trinket2=tome_of_unraveling_sanity,id=147019,ilevel=940
-main_hand=ulthalesh_the_deadwind_harvester,id=128942,gem_id=147110/147082/147110,ilevel=939
+main_hand=ulthalesh_the_deadwind_harvester,id=128942,gem_id=147110/147082/147110,ilevel=954
 default_pet=felhunter
 
 save=Warlock_Affliction_T20M.simc
@@ -50,7 +50,7 @@ finger2=,id=147195,enchant_id=5428,ilevel=940
 trinket1=,id=147002,ilevel=930
 trinket2=tome_of_unraveling_sanity,id=147019,ilevel=940
 main_hand=,id=137246,relic_id=0/0,gem_id=0/0/0/0,ilevel=939
-off_hand=,id=128943,bonus_id=748,gem_id=147087/147091/147110,ilevel=939
+off_hand=,id=128943,bonus_id=748,gem_id=147087/147091/147110,ilevel=954
 default_pet=felguard
 
 save=Warlock_Demonology_T20M.simc
@@ -78,7 +78,7 @@ finger1=yathaes_thumb_ring,id=147021,ilevel=930,enchant_id=5428
 finger2=seal_of_the_second_duumvirate,id=147195,ilevel=940,enchant_id=5428
 trinket1=tarnished_sentinel_medallion,id=147017,ilevel=930
 trinket2=tome_of_unraveling_sanity,id=147019,ilevel=940
-main_hand=scepter_of_sargeras,id=128941,gem_id=147090/147091/147090,ilevel=942
+main_hand=scepter_of_sargeras,id=128941,gem_id=147087/147090/147087,ilevel=957
 default_pet=imp
 
 save=Warlock_Destruction_T20M.simc

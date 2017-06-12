@@ -86,15 +86,15 @@ finger1=yathaes_thumb_ring,id=147021,ilevel=930,enchant_id=5428
 finger2=seal_of_the_second_duumvirate,id=147195,ilevel=940,enchant_id=5428
 trinket1=tarnished_sentinel_medallion,id=147017,ilevel=930
 trinket2=tome_of_unraveling_sanity,id=147019,ilevel=940
-main_hand=scepter_of_sargeras,id=128941,ilevel=942,gem_id=147090/147091/147090
+main_hand=scepter_of_sargeras,id=128941,ilevel=957,gem_id=147087/147090/147087
 
 # Gear Summary
-# gear_ilvl=937.47
-# gear_stamina=45907
-# gear_intellect=46303
+# gear_ilvl=938.47
+# gear_stamina=46630
+# gear_intellect=49413
 # gear_crit_rating=7369
-# gear_haste_rating=10208
-# gear_mastery_rating=6625
+# gear_haste_rating=10264
+# gear_mastery_rating=6681
 # gear_versatility_rating=3849
 # gear_armor=2233
 # set_bonus=tier20_2pc=1
