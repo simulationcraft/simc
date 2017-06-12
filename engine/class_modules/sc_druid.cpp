@@ -86,6 +86,7 @@ enum moon_stage_e {
   NEW_MOON,
   HALF_MOON,
   FULL_MOON,
+  FREE_FULL_MOON,
 };
 
 struct druid_td_t : public actor_target_data_t
@@ -5223,8 +5224,9 @@ struct elunes_guidance_t : public druid_spell_t
 
 struct full_moon_t : public druid_spell_t
 {
+  bool radiant_moonlight;
   full_moon_t( druid_t* player, const std::string& options_str ) :
-    druid_spell_t( "full_moon", player, player -> find_spell( 202771 ), options_str )
+    druid_spell_t( "full_moon", player, player -> find_spell( 202771 ), options_str ), radiant_moonlight(false)
   {
     aoe = -1;
     split_aoe_damage = true;
@@ -5242,19 +5244,25 @@ struct full_moon_t : public druid_spell_t
     }
 
     return da;
-  }
+  }  
 
   void execute() override
   {
     druid_spell_t::execute();
-    p()->moon_stage = NEW_MOON; // TOCHECK: Requires hit?
+    if (p()->moon_stage == FULL_MOON && radiant_moonlight) {
+      p()->moon_stage = FREE_FULL_MOON; //Requires hit
+      p()->cooldown.moon_cd->reset(true);
+    }
+    else {
+      p()->moon_stage = NEW_MOON; //Requires hit
+    }
   }
 
   bool ready() override
   {
     if ( ! p() -> artifact.new_moon.rank() )
       return false;
-    if ( p() -> moon_stage != FULL_MOON )
+    if ( p() -> moon_stage != FULL_MOON & p()->moon_stage != FREE_FULL_MOON)
       return false;
     if ( ! p() -> cooldown.moon_cd -> up() )
       return false;
@@ -9759,6 +9767,16 @@ struct impeccable_fel_essence_t : public scoped_actor_callback_t<druid_t>
   }
 };
 
+struct radiant_moonlight_t : public scoped_action_callback_t<full_moon_t>
+{
+    radiant_moonlight_t() : super(DRUID, "full_moon")
+    {}
+
+    void manipulate(full_moon_t* p, const special_effect_t&/* e */) override {
+        p->radiant_moonlight = true;
+    }
+};
+
 struct promise_of_elune_t : public class_buff_cb_t<druid_t>
 {
   promise_of_elune_t() : super( DRUID, "power_of_elune_the_moon_goddess" )
@@ -10047,6 +10065,7 @@ struct druid_module_t : public module_t
     register_special_effect( 208051, sephuzs_t() );
     register_special_effect( 208051, sephuzs_secret_t(), true);
     register_special_effect( 248081, behemoth_headdress_t() );
+    register_special_effect( 248163, radiant_moonlight_t());
     // register_special_effect( 208220, amanthuls_wisdom );
     // register_special_effect( 207943, edraith_bonds_of_aglaya );
     // register_special_effect( 210667, ekowraith_creator_of_worlds );
