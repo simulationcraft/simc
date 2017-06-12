@@ -7806,12 +7806,13 @@ void death_knight_t::default_apl_unholy()
   // Pick an APL to run
   def->add_action("run_action_list,name=valkyr,if=talent.dark_arbiter.enabled&pet.valkyr_battlemaiden.active");
   def->add_action("call_action_list,name=generic");
-
+  
   // Default generic target APL
 
   generic->add_talent(this, "Dark Arbiter", "if=!equipped.137075&runic_power.deficit<30");
   generic->add_talent(this, "Dark Arbiter", "if=equipped.137075&runic_power.deficit<30&cooldown.dark_transformation.remains<2");
   generic->add_action(this, "Summon Gargoyle", "if=!equipped.137075,if=rune<=3");
+  generic->add_action(this, "Chains of Ice", "if=buff.unholy_strength.up&buff.cold_heart.stack>19");
   generic->add_action(this, "Summon Gargoyle", "if=equipped.137075&cooldown.dark_transformation.remains<10&rune<=3");
 
   // Apocalypso
