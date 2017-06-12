@@ -5270,7 +5270,7 @@ void warrior_t::apl_arms()
 
   if ( sim -> allow_potions && true_level >= 80 )
   {
-    default_list -> add_action( "potion,name=" + potion_name + ",if=buff.avatar.up&buff.battle_cry.up&debuff.colossus_smash.up|target.time_to_die<=26" );
+    default_list -> add_action( "potion,name=" + potion_name + ",if=(!talent.avatar.enabled|buff.avatar.up)&buff.battle_cry.up&debuff.colossus_smash.up|target.time_to_die<=26" );
   }
 
   for ( size_t i = 0; i < racial_actions.size(); i++ )

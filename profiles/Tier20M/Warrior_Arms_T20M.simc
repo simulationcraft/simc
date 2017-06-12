@@ -24,7 +24,7 @@ actions.precombat+=/potion,name=old_war
 # Executed every time the actor is available.
 actions=charge
 actions+=/auto_attack
-actions+=/potion,name=old_war,if=buff.avatar.up&buff.battle_cry.up&debuff.colossus_smash.up|target.time_to_die<=26
+actions+=/potion,name=old_war,if=(!talent.avatar.enabled|buff.avatar.up)&buff.battle_cry.up&debuff.colossus_smash.up|target.time_to_die<=26
 actions+=/blood_fury,if=buff.battle_cry.up|target.time_to_die<=16
 actions+=/berserking,if=buff.battle_cry.up|target.time_to_die<=11
 actions+=/arcane_torrent,if=buff.battle_cry_deadly_calm.down&rage.deficit>40&cooldown.battle_cry.remains
