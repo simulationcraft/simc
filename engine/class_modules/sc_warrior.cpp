@@ -5197,7 +5197,7 @@ void warrior_t::apl_fury()
   single_target -> add_action( this, "Bloodthirst" );
   single_target -> add_action( this, "Furious Slash", "if=set_bonus.tier19_2pc&!talent.inner_rage.enabled" );
   single_target -> add_action( this, "Raging Blow" );
-  single_target -> add_action( this, "Whirlwind", "if=spell_targets.whirlwind>2" );
+  single_target -> add_action( this, "Whirlwind", "if=buff.wrecking_ball.react&buff.enrage.up" );
   single_target -> add_action( this, "Furious Slash" );
 
   cooldowns -> add_action( this, "Rampage", "if=talent.massacre.enabled&buff.massacre.react&buff.enrage.remains<1" );
@@ -5211,13 +5211,13 @@ void warrior_t::apl_fury()
     }
   }
   cooldowns -> add_action( this, "Odyn's Fury", "if=buff.enrage.up&cooldown.raging_blow.remains>0&target.health.pct>20" );
-  cooldowns -> add_action( this, "Whirlwind", "if=spell_targets.whirlwind>1&buff.meat_cleaver.down" );
   cooldowns -> add_action( this, "Execute" );
   cooldowns -> add_action( this, "Raging Blow", "if=talent.inner_rage.enabled&buff.enrage.up" );
   cooldowns -> add_action( this, "Rampage", "if=talent.reckless_abandon.enabled&!talent.frothing_berserker.enabled|(talent.frothing_berserker.enabled&rage>=100)" );
   cooldowns -> add_action( this, "Berserker Rage", "if=talent.outburst.enabled&buff.enrage.down&buff.battle_cry.up" );
   cooldowns -> add_action( this, "Bloodthirst", "if=buff.enrage.remains<1&!talent.outburst.enabled" );
   cooldowns -> add_action( this, "Raging Blow" );
+  cooldowns -> add_action( this, "Bloodthirst" );
   cooldowns -> add_action( this, "Whirlwind", "if=buff.wrecking_ball.react&buff.enrage.up" );
   cooldowns -> add_action( this, "Furious Slash" );
 
@@ -5241,7 +5241,7 @@ void warrior_t::apl_fury()
   aoe -> add_action( this, "Whirlwind" );
 
   three_target -> add_action( this, "Execute", "if=buff.stone_heart.react" );
-  three_target -> add_talent( this, "Rampage", "if=buff.meat_cleaver.up&((buff.enrage.down&!talent.frothing_berserker.enabled)|(rage>=100&talent.frothing_berserker.enabled))|buff.massacre.react" );
+  three_target -> add_action( this, "Rampage", "if=buff.meat_cleaver.up&((buff.enrage.down&!talent.frothing_berserker.enabled)|(rage>=100&talent.frothing_berserker.enabled))|buff.massacre.react" );
   three_target -> add_action( this, "Raging Blow", "if=talent.inner_rage.enabled" );
   three_target -> add_action( this, "Bloodthirst" );
   three_target -> add_action( this, "Whirlwind" );

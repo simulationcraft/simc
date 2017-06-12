@@ -57,13 +57,13 @@ actions.cooldowns=rampage,if=talent.massacre.enabled&buff.massacre.react&buff.en
 actions.cooldowns+=/bloodthirst,if=target.health.pct<20&buff.enrage.remains<1
 actions.cooldowns+=/execute,if=equipped.draught_of_souls&cooldown.draught_of_souls.remains<1&buff.juggernaut.remains<3
 actions.cooldowns+=/odyns_fury,if=buff.enrage.up&cooldown.raging_blow.remains>0&target.health.pct>20
-actions.cooldowns+=/whirlwind,if=spell_targets.whirlwind>1&buff.meat_cleaver.down
 actions.cooldowns+=/execute
 actions.cooldowns+=/raging_blow,if=talent.inner_rage.enabled&buff.enrage.up
 actions.cooldowns+=/rampage,if=talent.reckless_abandon.enabled&!talent.frothing_berserker.enabled|(talent.frothing_berserker.enabled&rage>=100)
 actions.cooldowns+=/berserker_rage,if=talent.outburst.enabled&buff.enrage.down&buff.battle_cry.up
 actions.cooldowns+=/bloodthirst,if=buff.enrage.remains<1&!talent.outburst.enabled
 actions.cooldowns+=/raging_blow
+actions.cooldowns+=/bloodthirst
 actions.cooldowns+=/whirlwind,if=buff.wrecking_ball.react&buff.enrage.up
 actions.cooldowns+=/furious_slash
 
@@ -89,10 +89,11 @@ actions.single_target+=/execute,if=buff.stone_heart.react&((talent.inner_rage.en
 actions.single_target+=/bloodthirst
 actions.single_target+=/furious_slash,if=set_bonus.tier19_2pc&!talent.inner_rage.enabled
 actions.single_target+=/raging_blow
-actions.single_target+=/whirlwind,if=spell_targets.whirlwind>2
+actions.single_target+=/whirlwind,if=buff.wrecking_ball.react&buff.enrage.up
 actions.single_target+=/furious_slash
 
 actions.three_targets=execute,if=buff.stone_heart.react
+actions.three_targets+=/rampage,if=buff.meat_cleaver.up&((buff.enrage.down&!talent.frothing_berserker.enabled)|(rage>=100&talent.frothing_berserker.enabled))|buff.massacre.react
 actions.three_targets+=/raging_blow,if=talent.inner_rage.enabled
 actions.three_targets+=/bloodthirst
 actions.three_targets+=/whirlwind
