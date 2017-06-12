@@ -5217,15 +5217,6 @@ struct steel_trap_t: public hunter_spell_t
         p() -> resource_gain( RESOURCE_FOCUS, p() -> find_spell( 212575 ) -> effectN( 1 ).resource( RESOURCE_FOCUS ), p() -> gains.nesingwarys_trapping_treads );
     }
 
-    void impact( action_state_t* s ) override
-    {
-      hunter_spell_t::impact( s );
-
-      // 02/02/2017 nuoHep: Steel Trap triggers twice
-      if ( result_is_hit( s -> result ) )
-        get_dot( s -> target ) -> trigger( dot_duration );
-    }
-
     double target_armor( player_t* ) const override
     {
       // the trap does bleed damage which ignores armor
