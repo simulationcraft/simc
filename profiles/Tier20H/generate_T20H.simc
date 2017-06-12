@@ -1,11 +1,10 @@
 # T20H
 # Tier 20 Tomb of Sargeras
-# * Ilvl Cap: 915 (925 for Sargeras gear)
-# * Artifact Rank Cap: 52
-# * 3 Relics with max ilevel of 915 (925 for Sargeras gear)
+# * Ilvl Cap: 915 (925 for Kil'jaeden gear)
+# * Artifact Rank Cap: 52 (Concordance 1/50)
+# * 3 Relics with max ilevel of 915 (925 for Kil'jaeden gear)
 # * 2 Legendaries
-# * No items from World Bosses / World Quests / BoEs
-# * Mythic+ gear is permitted up to the Mythic+ item level cap
+# * Tomb of Sargeras gear only, except that Tier 19 sets can be used up to 905 ilvl.
 # * No Random Gems (ie. Bonus RNG Gem Slots)
 # * No Tertiary Stats
 # * No Hardcoded Stats (generally if an item gives wrong stats: either bonus_id is wrong, either the item no longer exists in-game)

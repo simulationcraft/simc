@@ -1,17 +1,3 @@
-# T20H
-# Tier 20 Tomb of Sargeras
-# * Ilvl Cap: 915 (925 for KJ gear)
-# * Artifact Rank Cap: 52
-# * 3 Relics with max ilevel of 915 (925 for Sargeras gear)
-# * 2 Legendaries
-# * No items from World Bosses / World Quests / BoEs
-# * Mythic+ gear is permitted up to the Mythic+ item level cap
-# * No Random Gems (ie. Bonus RNG Gem Slots)
-# * No Tertiary Stats
-# * No Hardcoded Stats (generally if an item gives wrong stats: either bonus_id is wrong, either the item no longer exists in-game)
-# * It is recommended to use enchant name (ex : ",enchant=binding_of_mastery") rather than id/hardcoded stats.
-
-
 deathknight="Death_Knight_Frost_T20H"
 spec=frost
 race=blood_elf
