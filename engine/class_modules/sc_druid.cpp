@@ -5264,7 +5264,7 @@ struct full_moon_t : public druid_spell_t
   {
     if ( ! p() -> artifact.new_moon.rank() )
       return false;
-    if ( p() -> moon_stage != FULL_MOON & p()->moon_stage != FREE_FULL_MOON)
+    if ( p() -> moon_stage != FULL_MOON && p()->moon_stage != FREE_FULL_MOON)
       return false;
     if ( ! p() -> cooldown.moon_cd -> up() )
       return false;
