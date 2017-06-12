@@ -6479,6 +6479,7 @@ void hunter_t::apl_surv()
   biteFill -> add_talent( this, "Caltrops", "if=!dot.caltrops.ticking" );
 
   bitePhase -> add_action( this, "Fury of the Eagle", "if=(!talent.way_of_the_moknathal.enabled|buff.moknathal_tactics.remains>(gcd*(8%3)))&buff.mongoose_fury.stack=6,interrupt_if=(talent.way_of_the_moknathal.enabled&buff.moknathal_tactics.remains<=tick_time)");
+  bitePhase -> add_action( this, "Lacerate", "if=!dot.lacerate.ticking&set_bonus.tier20_4pc&buff.mongoose_fury.duration>cooldown.mongoose_bite.charges*gcd");
   bitePhase -> add_action( this, "Mongoose Bite", "if=charges>=2&cooldown.mongoose_bite.remains<gcd*2" );
   bitePhase -> add_action( this, "Flanking Strike", "if=((buff.mongoose_fury.remains>(gcd*(cooldown.mongoose_bite.charges+2)))&cooldown.mongoose_bite.charges<=1)&!buff.aspect_of_the_eagle.up" );
   bitePhase -> add_action( this, "Mongoose Bite", "if=buff.mongoose_fury.up" );
