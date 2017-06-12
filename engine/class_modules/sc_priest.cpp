@@ -4612,13 +4612,13 @@ void priest_t::init_spells()
   specs.divine_aegis    = find_specialization_spell( "Divine Aegis" );
   specs.evangelism      = find_specialization_spell( "Evangelism" );
   specs.grace           = find_specialization_spell( "Grace" );
-  specs.meditation_disc = find_specialization_spell( "Meditation", "meditation_disc", PRIEST_DISCIPLINE );
+  specs.meditation_disc = find_specialization_spell( "Meditation", PRIEST_DISCIPLINE );
   specs.mysticism       = find_specialization_spell( "Mysticism" );
   specs.spirit_shell    = find_specialization_spell( "Spirit Shell" );
   specs.enlightenment   = find_specialization_spell( "Enlightenment" );
 
   // Holy
-  specs.meditation_holy   = find_specialization_spell( "Meditation", "meditation_holy", PRIEST_HOLY );
+  specs.meditation_holy   = find_specialization_spell( "Meditation", PRIEST_HOLY );
   specs.serendipity       = find_specialization_spell( "Serendipity" );
   specs.rapid_renewal     = find_specialization_spell( "Rapid Renewal" );
   specs.divine_providence = find_specialization_spell( "Divine Providence" );

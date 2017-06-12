@@ -327,7 +327,9 @@ action_priority_t* action_priority_list_t::add_action( const player_t* p,
   const spell_data_t* s = p -> find_class_spell( name );
   if ( s == spell_data_t::not_found() )
     s = p -> find_specialization_spell( name );
-  return add_action( p, s, dbc::get_token( s -> id() ), action_options, comment );
+  std::string tokenized_name = s -> name_cstr();
+  util::tokenize( tokenized_name );
+  return add_action( p, s, tokenized_name, action_options, comment );
 }
 
 /**
@@ -348,8 +350,10 @@ action_priority_t* action_priority_list_t::add_talent( const player_t* p,
                                                        const std::string& action_options,
                                                        const std::string& comment )
 {
-  const spell_data_t* s = p -> find_talent_spell( name, "", SPEC_NONE, false, false );
-  return add_action( p, s, dbc::get_token( s -> id() ), action_options, comment );
+  const spell_data_t* s = p -> find_talent_spell( name, SPEC_NONE, false, false );
+  std::string tokenized_name = s -> name_cstr();
+  util::tokenize( tokenized_name );
+  return add_action( p, s, tokenized_name, action_options, comment );
 }
 
 action_t::options_t::options_t()
