@@ -1549,6 +1549,7 @@ struct hati_t: public hunter_secondary_pet_t
     hunter_secondary_pet_t( owner, std::string( "hati" ) ),
     active( actives_t() )
   {
+    owner_coeff.ap_from_ap = 0.6 * 1.6;
   }
 
   void init_base_stats() override
