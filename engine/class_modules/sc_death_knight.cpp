@@ -7730,14 +7730,14 @@ void death_knight_t::default_apl_frost()
   bos_ticking -> add_action( this, "Howling Blast", "target_if=!dot.frost_fever.ticking" );
   bos_ticking -> add_action( this, "Remorseless Winter", "if=(runic_power>=30|buff.hungering_rune_weapon.up)&((buff.rime.react&equipped.132459)|(talent.gathering_storm.enabled&(dot.remorseless_winter.remains<=gcd|!dot.remorseless_winter.ticking)))" );
   bos_ticking -> add_action( this, "Howling Blast", "if=((runic_power>=20&set_bonus.tier19_4pc)|runic_power>=30|buff.hungering_rune_weapon.up)&buff.rime.react" );
-  bos.ticking -> add_action( this, "Frost Strike", "if=set_bonus.tier20_2pc&runic_power>85&rune<=3&buff.pillar_of_frost.up" );
+  bos_ticking -> add_action( this, "Frost Strike", "if=set_bonus.tier20_2pc&runic_power>85&rune<=3&buff.pillar_of_frost.up" );
   bos_ticking -> add_action( this, "Obliterate", "if=runic_power<=45|rune.time_to_5<gcd|buff.hungering_rune_weapon.remains>=2" );
   bos_ticking -> add_talent( this, "Hungering Rune Weapon", "if=runic_power<70&!buff.hungering_rune_weapon.up&rune<2&cooldown.breath_of_sindragosa.remains>35&equipped.140806" );
   bos_ticking -> add_talent( this, "Hungering Rune Weapon", "if=runic_power<50&!buff.hungering_rune_weapon.up&rune.time_to_2>=3&cooldown.breath_of_sindragosa.remains>30" );
   bos_ticking -> add_talent( this, "Hungering Rune Weapon", "if=runic_power<35&!buff.hungering_rune_weapon.up&rune.time_to_2>=2&cooldown.breath_of_sindragosa.remains>30" );
   bos_ticking -> add_talent( this, "Hungering Rune Weapon", "if=runic_power<20&!buff.hungering_rune_weapon.up&rune.time_to_2>=1&cooldown.breath_of_sindragosa.remains>30" );
   bos_ticking -> add_action( this, "Sindragosa's Fury", "if=(equipped.144293|buff.pillar_of_frost.up)&buff.unholy_strength.up&debuff.razorice.stack=5&!buff.obliteration.up" );
-  bos.ticking -> add_talent( this, "Frostscythe", "if=buff.killing_machine.up&((!equipped.132366|talent.gathering_storm.enabled)|spell_targets.frostscythe>=2)" );
+  bos_ticking -> add_talent( this, "Frostscythe", "if=buff.killing_machine.up&((!equipped.132366|talent.gathering_storm.enabled)|spell_targets.frostscythe>=2)" );
   bos_ticking -> add_action( this, "Remorseless Winter", "if=spell_targets.remorseless_winter>=2" );
   bos_ticking -> add_action( this, "Obliterate", "if=runic_power<=75|rune>3" );
   bos_ticking -> add_talent( this, "Horn of Winter", "if=runic_power<70&!buff.hungering_rune_weapon.up&rune.time_to_3>gcd" );
