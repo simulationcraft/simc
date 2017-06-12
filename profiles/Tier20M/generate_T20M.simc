@@ -41,7 +41,7 @@ generate_Rogue_T20M.simc
 generate_Shaman_T20M.simc
 
 # Warlock
-#generate_Warlock_T20M.simc
+generate_Warlock_T20M.simc
 
 # Warrior
 #generate_Warrior_T20M.simc
