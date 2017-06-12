@@ -3631,7 +3631,7 @@ struct havoc_t: public warlock_spell_t
     havoc_duration = p -> find_spell( 80240 ) -> duration();
     if ( p -> talents.wreak_havoc -> ok() )
     {
-      havoc_duration = -p -> find_spell( 196410 ) -> effectN( 1 ).time_value();
+      cooldown -> duration += p -> find_spell( 196410 ) -> effectN( 1 ).time_value();
     }
   }
 
@@ -6611,7 +6611,7 @@ void warlock_t::create_buffs()
   buffs.active_havoc = buff_creator_t( this, "active_havoc" )
     .tick_behavior( BUFF_TICK_NONE )
     .refresh_behavior( BUFF_REFRESH_NONE )
-    .duration( timespan_t::from_seconds( talents.wreak_havoc -> ok() ? 20 : 10 ) );
+    .duration( timespan_t::from_seconds( 10 ) );
 }
 
 void warlock_t::init_rng()
@@ -6987,7 +6987,7 @@ void warlock_t::apl_destruction()
   add_action( "Summon Infernal", "if=talent.grimoire_of_supremacy.enabled&spell_targets.summon_infernal>1&equipped.132379&!cooldown.sindorei_spite_icd.remains" );
   action_list_str += "/soul_harvest,if=!buff.soul_harvest.remains";
   add_action( "Chaos Bolt", "if=active_enemies<4&buff.active_havoc.remains>cast_time" );
-  action_list_str += "/channel_demonfire,if=dot.immolate.remains>cast_time&(active_enemies=1|buff.active_havoc.remains<action.chaos_bolt.cast_time|talent.wreak_havoc.enabled)";
+  action_list_str += "/channel_demonfire,if=dot.immolate.remains>cast_time&(active_enemies=1|buff.active_havoc.remains<action.chaos_bolt.cast_time)";
   add_action( "Rain of Fire", "if=active_enemies>=3");
   add_action( "Rain of Fire", "if=active_enemies>=6&talent.wreak_havoc.enabled");
   add_action( "Dimensional Rift", "if=target.time_to_die<=32|!equipped.144369|charges>1|((!talent.grimoire_of_service.enabled|recharge_time<cooldown.service_pet.remains)&(!talent.soul_harvest.enabled|recharge_time<cooldown.soul_harvest.remains)&(!talent.grimoire_of_supremacy.enabled|recharge_time<cooldown.summon_doomguard.remains))" );
