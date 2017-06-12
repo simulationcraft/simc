@@ -3,7 +3,7 @@ level=110
 race=blood_elf
 position=back
 talents=1202102
-artifact=2:0:0:0:0:40:1:41:3:42:3:43:3:44:3:47:3:49:1:50:3:51:3:52:3:53:3:54:1:350:1:351:1:352:1:353:1:1118:20:1275:1
+artifact=2:0:0:0:0:40:1:41:4:42:4:43:4:44:4:47:4:49:1:50:4:51:4:52:4:53:4:54:1:350:1:351:1:352:1:353:1:1118:1:1275:1:1561:4:1562:1:1563:1:1564:1:1647:1
 spec=retribution
 head=helmet_of_the_highlord,id=138356,bonus_id=3519
 neck=brooch_of_the_astral_scryer,id=140900,bonus_id=3519,enchant_id=5439
