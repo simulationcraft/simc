@@ -1,10 +1,10 @@
-deathknight="Death_Knight_Unholy_T20M"
+deathknight="Death_Knight_Unholy_T20H"
 spec=unholy
 level=110
 race=blood_elf
 role=attack
 position=back
-talents=3310011
+talents=3310013
 artifact=16:0:0:0:0:149:1:150:1:151:1:152:1:153:1:154:1:156:4:157:4:158:4:262:4:263:1:264:4:265:4:266:4:267:4:1119:4:1333:1:1361:1:1489:4:1490:1:1491:1:1492:1:1629:1
 
 # Default consumables
@@ -124,30 +124,30 @@ actions.valkyr+=/festering_strike,if=debuff.festering_wound.stack<=3
 actions.valkyr+=/scourge_strike,if=debuff.festering_wound.up
 actions.valkyr+=/clawing_shadows,if=debuff.festering_wound.up
 
-head=gravewarden_visage,id=147124,bonus_id=1512/3563
-neck=locket_of_splintered_souls,id=147014,bonus_id=1512/3563,enchant=mark_of_the_trained_soldier
+head=gravewarden_visage,id=147124,bonus_id=1497/3562
+neck=locket_of_splintered_souls,id=147014,bonus_id=1497/3562,enchant=mark_of_the_trained_soldier
 shoulders=taktheritrixs_shoulderpads,id=137075,bonus_id=3570
-back=gravewarden_cloak,id=147122,bonus_id=1512/3563,enchant=binding_of_strength
+back=gravewarden_cloak,id=147122,bonus_id=1497/3562,enchant=binding_of_strength
 chest=cold_heart,id=151796,bonus_id=3570
-wrists=bonemealcrusted_armplates,id=147073,bonus_id=1512/3563
-hands=gravewarden_handguards,id=147123,bonus_id=1512/3563
-waist=shiversleet_waistguard,id=147071,bonus_id=1512/3563
-legs=gravewarden_legplates,id=147125,bonus_id=1512/3563
-feet=iron_ballast_sabatons,id=147059,bonus_id=1512/3563
-finger1=band_of_rescinded_truths,id=147194,bonus_id=1512/3563,enchant=binding_of_mastery
-finger2=scaled_band_of_servitude,id=147020,bonus_id=1512/3563,enchant=binding_of_mastery
-trinket1=specter_of_betrayal,id=151190,bonus_id=1522/3563
-trinket2=cradle_of_anguish,id=147010,bonus_id=1512/3563
-main_hand=apocalypse,id=128403,gem_id=147091/147111/151189,relic_id=1522:3563/1522:3563/1522:3563,enchant=rune_of_the_fallen_crusader
+wrists=bonemealcrusted_armplates,id=147073,bonus_id=1497/3562
+hands=gravewarden_handguards,id=147123,bonus_id=1497/3562
+waist=shiversleet_waistguard,id=147071,bonus_id=1497/3562
+legs=gravewarden_legplates,id=147125,bonus_id=1497/3562
+feet=iron_ballast_sabatons,id=147059,bonus_id=1497/3562
+finger1=band_of_rescinded_truths,id=147194,bonus_id=1497/3562,enchant=binding_of_mastery
+finger2=scaled_band_of_servitude,id=147020,bonus_id=1497/3562,enchant=binding_of_mastery
+trinket1=specter_of_betrayal,id=151190,bonus_id=1507/3562
+trinket2=cradle_of_anguish,id=147010,bonus_id=1497/3562
+main_hand=apocalypse,id=128403,gem_id=147091/147111/151189,relic_id=1507:3562/1507:3562/1507:3562,enchant=rune_of_the_fallen_crusader
 
 # Gear Summary
-# gear_ilvl=938.00
-# gear_strength=29708
-# gear_stamina=47037
-# gear_crit_rating=6553
-# gear_haste_rating=6456
-# gear_mastery_rating=11314
-# gear_versatility_rating=4309
-# gear_armor=4988
+# gear_ilvl=925.00
+# gear_strength=26810
+# gear_stamina=42329
+# gear_crit_rating=6205
+# gear_haste_rating=6095
+# gear_mastery_rating=10689
+# gear_versatility_rating=4003
+# gear_armor=4874
 # set_bonus=tier20_2pc=1
 # set_bonus=tier20_4pc=1
