@@ -135,10 +135,7 @@ public:
   // Buffs
   struct buffs_t
   {
-    buff_t* aspect_of_the_cheetah;
-    buff_t* aspect_of_the_turtle;
     buff_t* aspect_of_the_wild;
-    buff_t* beast_cleave;
     buff_t* bestial_wrath;
     buff_t* big_game_hunter;
     buff_t* bombardment;
@@ -177,15 +174,12 @@ public:
   // Cooldowns
   struct cooldowns_t
   {
-    cooldown_t* explosive_shot;
-    cooldown_t* black_arrow;
     cooldown_t* bestial_wrath;
     cooldown_t* trueshot;
     cooldown_t* dire_beast;
     cooldown_t* dire_frenzy;
     cooldown_t* kill_command;
     cooldown_t* mongoose_bite;
-    cooldown_t* lacerate;
     cooldown_t* flanking_strike;
     cooldown_t* harpoon;
     cooldown_t* aspect_of_the_eagle;
@@ -199,14 +193,9 @@ public:
   // Gains
   struct gains_t
   {
-    gain_t* arcane_shot;
     gain_t* critical_focus;
     gain_t* steady_focus;
-    gain_t* cobra_shot;
-    gain_t* aimed_shot;
     gain_t* dire_regen;
-    gain_t* multi_shot;
-    gain_t* chimaera_shot;
     gain_t* aspect_of_the_wild;
     gain_t* spitting_cobra;
     gain_t* nesingwarys_trapping_treads;
@@ -451,15 +440,12 @@ public:
     clear_next_hunters_mark( true )
   {
     // Cooldowns
-    cooldowns.explosive_shot  = get_cooldown( "explosive_shot" );
-    cooldowns.black_arrow     = get_cooldown( "black_arrow" );
     cooldowns.bestial_wrath   = get_cooldown( "bestial_wrath" );
     cooldowns.trueshot        = get_cooldown( "trueshot" );
     cooldowns.dire_beast      = get_cooldown( "dire_beast" );
     cooldowns.dire_frenzy     = get_cooldown( "dire_frenzy" );
     cooldowns.kill_command    = get_cooldown( "kill_command" );
     cooldowns.mongoose_bite   = get_cooldown( "mongoose_bite" );
-    cooldowns.lacerate        = get_cooldown( "lacerate" );
     cooldowns.flanking_strike = get_cooldown( "flanking_strike" );
     cooldowns.harpoon         = get_cooldown( "harpoon" );
     cooldowns.aspect_of_the_eagle = get_cooldown( "aspect_of_the_eagle" );
@@ -6047,14 +6033,9 @@ void hunter_t::init_gains()
 {
   player_t::init_gains();
 
-  gains.arcane_shot          = get_gain( "arcane_shot" );
   gains.critical_focus       = get_gain( "critical_focus" );
   gains.steady_focus         = get_gain( "steady_focus" );
-  gains.cobra_shot           = get_gain( "cobra_shot" );
-  gains.aimed_shot           = get_gain( "aimed_shot" );
   gains.dire_regen           = get_gain( talents.dire_frenzy -> ok() ? "dire_frenzy" : "dire_beast" );
-  gains.multi_shot           = get_gain( "multi_shot" );
-  gains.chimaera_shot        = get_gain( "chimaera_shot" );
   gains.aspect_of_the_wild   = get_gain( "aspect_of_the_wild" );
   gains.spitting_cobra       = get_gain( "spitting_cobra" );
   gains.nesingwarys_trapping_treads = get_gain( "nesingwarys_trapping_treads" );
