@@ -1,4 +1,4 @@
-SimulationCraft 725-01 for World of Warcraft 7.2.5 Live (wow build 24287, git build e007545)
+SimulationCraft 725-01 for World of Warcraft 7.2.5 Live (wow build 24287, git build ba56295)
 
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
 Class            : Discipline Shadow Priest
@@ -376,8 +376,8 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=3283)     : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.75000 | Target: Enemy (6)
-                   Hotfixed: Chain Multiplier (0 -> 1)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 3.10000 | Target: Enemy (6)
+                   Hotfixed: SP Coefficient (2.75 -> 3.1), Chain Multiplier (0 -> 1)
 #2 (id=139174)   : Energize Power (30)
                    Base Value: 1500 | Scaled Value: 1500 | Misc Value: insanity | Target: Self (1)
 Description      : Blasts the target's mind for $s1 Shadow damage.$?a185916[
@@ -529,8 +529,8 @@ Attributes       : ........ ........ x....... ........   ..x..... ......x. .....
                  : Channeled (34)
 Effects          :
 #1 (id=7301)     : Apply Aura (6) | Periodic Damage (3): shadow every 0.75 seconds
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.55000 | Target: Enemy (6)
-                   Hotfixed: Chain Multiplier (0 -> 1)
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.65000 | Target: Enemy (6)
+                   Hotfixed: SP Coefficient (0.55 -> 0.65), Chain Multiplier (0 -> 1)
 #2 (id=7302)     : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -50 | Scaled Value: -50 | Mechanic: Unknown(88) | Target: Enemy (6)
 #3 (id=303457)   : Apply Aura (6) | Periodic Energize Power (24): every 0.75 seconds
