@@ -7055,7 +7055,7 @@ void mage_t::create_buffs()
   // Buff to track icicles. This does not, however, track the true amount of icicles present.
   // Instead, as it does in game, it tracks icicle buff stack count based on the number of *casts*
   // of icicle generating spells. icicles are generated on impact, so they are slightly de-synced.
-  buffs.icicles                = buff_creator_t( this, "icicles", find_spell( 148012 ) ).max_stack( 5 );
+  buffs.icicles                = buff_creator_t( this, "icicles", find_spell( 205473 ) );
   buffs.icy_veins              = new buffs::icy_veins_buff_t( this );
   buffs.ray_of_frost           = new buffs::ray_of_frost_buff_t( this );
 

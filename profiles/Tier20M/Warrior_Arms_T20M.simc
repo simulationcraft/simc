@@ -102,7 +102,7 @@ shoulders=titanic_onslaught_pauldrons,id=147192,ilevel=930
 back=titanic_onslaught_cloak,id=147188,ilevel=930,enchant=binding_of_strength
 chest=titanic_onslaught_breastplate,id=147187,ilevel=930
 wrists=vambraces_of_resolute_justice,id=147074,ilevel=930
-hands=dusk_crusher_handguards,id=147061,bonus_id=3561,ilevel=930
+hands=duskcrusher_handguards,id=147061,bonus_id=3561,ilevel=930
 waist=girdle_of_the_crumbling_sanctum,id=147429,ilevel=930
 legs=titanic_onslaught_greaves,id=147191,ilevel=930
 feet=iron_ballast_sabatons,id=147059,ilevel=930
@@ -114,11 +114,11 @@ main_hand=stromkar_the_warbreaker,id=128910,ilevel=951
 
 # Gear Summary
 # gear_ilvl=936.73
-# gear_strength=25438
+# gear_strength=25437
 # gear_stamina=46214
 # gear_crit_rating=6068
-# gear_haste_rating=8000
-# gear_mastery_rating=15855
+# gear_haste_rating=7901
+# gear_mastery_rating=15674
 # gear_versatility_rating=1241
 # gear_armor=4918
 # set_bonus=tier20_2pc=1

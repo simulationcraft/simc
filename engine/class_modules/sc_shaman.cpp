@@ -363,6 +363,7 @@ public:
     proc_t* windfury;
 
     proc_t* surge_during_lvb;
+    proc_t* t19_4pc_enhancement;
   } proc;
 
   struct
@@ -629,7 +630,7 @@ public:
   void trigger_t18_4pc_elemental();
   void trigger_t19_oh_8pc( const action_state_t* );
   void trigger_t20_4pc_elemental(const action_state_t*);
-  void trigger_stormbringer( const action_state_t* state );
+  void trigger_stormbringer( const action_state_t* state, double proc_chance = -1.0, proc_t* proc_obj = nullptr );
   void trigger_elemental_focus( const action_state_t* state );
   void trigger_lightning_shield( const action_state_t* state );
   void trigger_earthen_rage( const action_state_t* state );
@@ -1666,8 +1667,8 @@ struct shaman_spell_t : public shaman_spell_base_t<spell_t>
 
   void impact( action_state_t* state ) override
   {
-    base_t::impact(state);
-    
+    base_t::impact( state );
+
     p() -> trigger_stormbringer( state );
   }
 
@@ -3358,15 +3359,6 @@ struct lava_lash_t : public shaman_attack_t
     }
   }
 
-  double stormbringer_proc_chance() const override
-  {
-    auto proc_chance = shaman_attack_t::stormbringer_proc_chance();
-
-    proc_chance += p() -> sets -> set( SHAMAN_ENHANCEMENT, T19, B4 ) -> proc_chance();
-
-    return proc_chance;
-  }
-
   void init() override
   {
     shaman_attack_t::init();
@@ -3430,6 +3422,14 @@ struct lava_lash_t : public shaman_attack_t
     p() -> trigger_doom_vortex( state );
 
     td( state -> target ) -> debuff.lashing_flames -> expire();
+
+    // T19 4PC is a separate chance to proc a stormbringer, not additional proc chance
+    if ( p() -> sets -> has_set_bonus( SHAMAN_ENHANCEMENT, T19, B4 ) )
+    {
+      p() -> trigger_stormbringer( state,
+        p() -> sets -> set( SHAMAN_ENHANCEMENT, T19, B4 ) -> proc_chance(),
+        p() -> proc.t19_4pc_enhancement );
+    }
   }
 };
 
@@ -3524,8 +3524,6 @@ struct stormstrike_base_t : public shaman_attack_t
       {
         p() -> cooldown.feral_spirits -> adjust( - p() -> sets -> set( SHAMAN_ENHANCEMENT, T17, B2 ) -> effectN( 1 ).time_value() );
       }
-      
-      
     }
 
     p() -> buff.stormbringer -> decrement();
@@ -3569,7 +3567,6 @@ struct stormstrike_t : public stormstrike_base_t
     if ( p() -> off_hand_weapon.type != WEAPON_NONE )
     {
       oh = new stormstrike_attack_t( "stormstrike_offhand", player, data().effectN( 2 ).trigger(), &( player -> off_hand_weapon ) );
-    oh -> may_proc_stormbringer = false;
       add_child( oh );
     }
   }
@@ -3608,7 +3605,6 @@ struct windstrike_t : public stormstrike_base_t
     if ( p() -> off_hand_weapon.type != WEAPON_NONE )
     {
       oh = new windstrike_attack_t( "windstrike_offhand", player, data().effectN( 2 ).trigger(), &( player -> off_hand_weapon ) );
-    oh -> may_proc_stormbringer = false;
       add_child( oh );
     }
   }
@@ -6613,7 +6609,9 @@ bool shaman_t::active_elemental_pet() const
 // Shaman Ability Triggers
 // ==========================================================================
 
-void shaman_t::trigger_stormbringer( const action_state_t* state )
+void shaman_t::trigger_stormbringer( const action_state_t* state,
+                                     double                override_proc_chance,
+                                     proc_t*               override_proc_obj )
 {
   //assert( debug_cast< shaman_attack_t* >( state -> action ) != nullptr &&
   //        "Stormbringer called on invalid action type" );
@@ -6639,25 +6637,46 @@ void shaman_t::trigger_stormbringer( const action_state_t* state )
   {
     if ( attack -> may_proc_stormbringer )
     {
-      if ( rng().roll( attack -> stormbringer_proc_chance() ) )
+      if ( override_proc_chance < 0 )
+      {
+        override_proc_chance = attack -> stormbringer_proc_chance();
+      }
+
+      if ( override_proc_obj == nullptr )
+      {
+        override_proc_obj = attack -> proc_sb;
+      }
+
+      if ( rng().roll( override_proc_chance ) )
       {
         buff.stormbringer -> trigger( buff.stormbringer->max_stack() );
         cooldown.strike -> reset( true );
         buff.wind_strikes -> trigger();
-        attack -> proc_sb -> occur();
+        override_proc_obj -> occur();
       }
     }
   }
+
   if ( spell )
   {
     if ( spell -> may_proc_stormbringer )
     {
-      if ( rng().roll( spell -> stormbringer_proc_chance() ) )
+      if ( override_proc_chance < 0 )
+      {
+        override_proc_chance = spell -> stormbringer_proc_chance();
+      }
+
+      if ( override_proc_obj == nullptr )
+      {
+        override_proc_obj = spell -> proc_sb;
+      }
+
+      if ( rng().roll( override_proc_chance ) )
       {
         buff.stormbringer -> trigger( buff.stormbringer -> max_stack() );
         cooldown.strike -> reset( true );
         buff.wind_strikes -> trigger();
-        spell -> proc_sb -> occur();
+        override_proc_obj -> occur();
       }
     }
   }
@@ -7209,6 +7228,7 @@ void shaman_t::init_procs()
   proc.wasted_lava_surge  = get_proc( "Lava Surge: Wasted"      );
   proc.windfury           = get_proc( "Windfury"                );
   proc.surge_during_lvb   = get_proc( "Lava Surge: During Lava Burst" );
+  proc.t19_4pc_enhancement= get_proc( "Stormbringer: T19 4PC"   );
 }
 
 // shaman_t::init_rng =======================================================
@@ -7488,83 +7508,103 @@ void shaman_t::init_action_list_enhancement()
 
   action_priority_list_t* precombat = get_action_priority_list( "precombat" );
   action_priority_list_t* def       = get_action_priority_list( "default"   );
+  action_priority_list_t* cds       = get_action_priority_list( "CDs"       );
+  action_priority_list_t* buffs     = get_action_priority_list( "buffs"     );
+  action_priority_list_t* core      = get_action_priority_list( "core"      );
+  action_priority_list_t* filler    = get_action_priority_list( "filler"    );
+  action_priority_list_t* opener    = get_action_priority_list( "opener"    );
+
 
   // Flask
   precombat -> add_action( "flask" );
-
   // Food
   precombat -> add_action( "food" );
-
   // Rune
   precombat -> add_action( "augmentation" );
-
   // Snapshot stats
   precombat -> add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
-
   // Precombat potion
   precombat -> add_action( "potion" );
-
   // Lightning shield can be turned on pre-combat
   precombat -> add_talent( this, "Lightning Shield" );
-
   // All Shamans Bloodlust and Wind Shear by default
   def -> add_action( this, "Wind Shear" );
-
-  def -> add_action( this, "Bloodlust", generate_bloodlust_options(),
-    "Bloodlust casting behavior mirrors the simulator settings for proxy bloodlust. See options 'bloodlust_percent', and 'bloodlust_time'. " );
+  def -> add_action( "variable,name=hailstormCheck,value=((talent.hailstorm.enabled&!buff.frostbrand.up)|!talent.hailstorm.enabled)" );
+  def -> add_action( "variable,name=furyCheck80,value=(!talent.fury_of_air.enabled|(talent.fury_of_air.enabled&maelstrom>80))" );
+  def -> add_action( "variable,name=furyCheck70,value=(!talent.fury_of_air.enabled|(talent.fury_of_air.enabled&maelstrom>70))" );
+  def -> add_action( "variable,name=furyCheck45,value=(!talent.fury_of_air.enabled|(talent.fury_of_air.enabled&maelstrom>45))" );
+  def -> add_action( "variable,name=furyCheck25,value=(!talent.fury_of_air.enabled|(talent.fury_of_air.enabled&maelstrom>25))" );
+  def -> add_action( "variable,name=OCPool70,value=(!talent.overcharge.enabled|(talent.overcharge.enabled&maelstrom>70))" );
+  def -> add_action( "variable,name=OCPool60,value=(!talent.overcharge.enabled|(talent.overcharge.enabled&maelstrom>60))" );
+  def -> add_action( "variable,name=heartEquipped,value=(equipped.151819)" );
+  def -> add_action( "variable,name=akainuEquipped,value=(equipped.137084)" );
+  def -> add_action( "variable,name=akainuAS,value=(variable.akainuEquipped&buff.hot_hand.react&!buff.frostbrand.up)" );
+  def -> add_action( "variable,name=LightningCrashNotUp,value=(!buff.lightning_crash.up&set_bonus.tier20_2pc)" );
+  def -> add_action( "variable,name=alphaWolfCheck,value=((pet.frost_wolf.buff.alpha_wolf.remains<2&pet.fiery_wolf.buff.alpha_wolf.remains<2&pet.lightning_wolf.buff.alpha_wolf.remains<2)&feral_spirit.remains>4)" );
 
   // Turn on auto-attack first thing
   def -> add_action( "auto_attack" );
-
-  // Use Feral Spirits before off-GCD CDs.
-  def -> add_action( this, "Feral Spirit", "if=!artifact.alpha_wolf.rank|(maelstrom>=20&cooldown.crash_lightning.remains<=gcd)" );
-  // Ensure Feral Spirits start using alpha wolf abilities immediately
-  def -> add_action( this, "Crash Lightning", "if=artifact.alpha_wolf.rank&prev_gcd.1.feral_spirit" );
-
   // On-use actions
   def -> add_action( "use_items" );
 
-  // Racials
-  def -> add_action( "berserking,if=buff.ascendance.up|(feral_spirit.remains>5)|level<100" );
-  def -> add_action( "blood_fury,if=buff.ascendance.up|(feral_spirit.remains>5)|level<100" );
+  def -> add_action( "call_action_list,name=opener" );
+  def -> add_action( this, "Windstrike", "if=(variable.heartEquipped|set_bonus.tier19_2pc)&(!talent.earthen_spike.enabled|(cooldown.earthen_spike.remains>1&cooldown.doom_winds.remains>1)|debuff.earthen_spike.up)" );
+  def -> add_action( "call_action_list,name=buffs" );
+  def -> add_action( "call_action_list,name=CDs" );
+  def -> add_action( "call_action_list,name=core" );
+  def -> add_action( "call_action_list,name=filler" );
 
-  // In-combat potion
-  def -> add_action( "potion,if=feral_spirit.remains>5|target.time_to_die<=60" );
 
-  // Core rotation
-  def -> add_action( this, "Rockbiter", "if=talent.landslide.enabled&buff.landslide.remains<gcd" );
-  def -> add_talent( this, "Fury of Air", "if=!ticking&maelstrom>22" );
-  def -> add_action( this, "Frostbrand", "if=talent.hailstorm.enabled&buff.frostbrand.remains<gcd&((!talent.fury_of_air.enabled)|(talent.fury_of_air.enabled&maelstrom>25))" );
-  def -> add_action( this, "Flametongue", "if=buff.flametongue.remains<gcd|(cooldown.doom_winds.remains<6&buff.flametongue.remains<4)");
-  def -> add_action( this, "Doom Winds");
-  def -> add_action( this, "Crash Lightning", "if=talent.crashing_storm.enabled&active_enemies>=3&(!talent.hailstorm.enabled|buff.frostbrand.remains>gcd)");
-  def -> add_talent( this, "Earthen Spike");
-  def -> add_action( this, "Lightning Bolt", "if=(talent.overcharge.enabled&maelstrom>=40&!talent.fury_of_air.enabled)|(talent.overcharge.enabled&talent.fury_of_air.enabled&maelstrom>46)" );
-  def -> add_action( this, "Crash Lightning", "if=buff.crash_lightning.remains<gcd&active_enemies>=2" );
-  def -> add_talent( this, "Windsong" );
-  def -> add_talent( this, "Ascendance", "if=buff.stormbringer.react" );
-  def -> add_action( this, "Windstrike", "if=buff.stormbringer.react&((talent.fury_of_air.enabled&maelstrom>=26)|(!talent.fury_of_air.enabled))" );
-  def -> add_action( this, "Stormstrike", "if=buff.stormbringer.react&((talent.fury_of_air.enabled&maelstrom>=26)|(!talent.fury_of_air.enabled))" );
-  def -> add_action( this, "Frostbrand", "if=equipped.137084&talent.hot_hand.enabled&buff.hot_hand.react&!buff.frostbrand.up&((!talent.fury_of_air.enabled)|(talent.fury_of_air.enabled&maelstrom>25))" );
-  def -> add_action( this, "Lava Lash", "if=talent.hot_hand.enabled&buff.hot_hand.react" );
-  def -> add_talent( this, "Sundering", "if=active_enemies>=3" );
-  def -> add_action( this, "Crash Lightning", "if=active_enemies>=4" );
-  def -> add_action( this, "Windstrike", "if=talent.overcharge.enabled&cooldown.lightning_bolt.remains<gcd&maelstrom>80" );
-  def -> add_action( this, "Windstrike", "if=talent.fury_of_air.enabled&maelstrom>46&(cooldown.lightning_bolt.remains>gcd|!talent.overcharge.enabled)" );
-  def -> add_action( this, "Windstrike", "if=!talent.overcharge.enabled&!talent.fury_of_air.enabled" );
-  def -> add_action( this, "Stormstrike", "if=talent.overcharge.enabled&cooldown.lightning_bolt.remains<gcd&maelstrom>80" );
-  def -> add_action( this, "Stormstrike", "if=talent.fury_of_air.enabled&maelstrom>46&(cooldown.lightning_bolt.remains>gcd|!talent.overcharge.enabled)" );
-  def -> add_action( this, "Stormstrike", "if=!talent.overcharge.enabled&!talent.fury_of_air.enabled" );
-  def -> add_action( this, "Crash Lightning", "if=((active_enemies>1|talent.crashing_storm.enabled|talent.boulderfist.enabled)&!set_bonus.tier19_4pc)|feral_spirit.remains>5" );
-  def -> add_action( this, "Crash Lightning", "if=active_enemies>=3" );
-  def -> add_action( this, "Frostbrand", "if=talent.hailstorm.enabled&buff.frostbrand.remains<4.8&((!talent.fury_of_air.enabled)|(talent.fury_of_air.enabled&maelstrom>25))" );
-  def -> add_action( this, "Frostbrand", "if=equipped.137084&!buff.frostbrand.up&((!talent.fury_of_air.enabled)|(talent.fury_of_air.enabled&maelstrom>25))" );
-  def -> add_action( this, "Lava Lash", "if=talent.fury_of_air.enabled&talent.overcharge.enabled&(set_bonus.tier19_4pc&maelstrom>=80)" );
-  def -> add_action( this, "Lava Lash", "if=talent.fury_of_air.enabled&!talent.overcharge.enabled&(set_bonus.tier19_4pc&maelstrom>=53)" );
-  def -> add_action( this, "Lava Lash", "if=(!set_bonus.tier19_4pc&maelstrom>=120)|(!talent.fury_of_air.enabled&set_bonus.tier19_4pc&maelstrom>=40)" );
-  def -> add_action( this, "Flametongue", "if=buff.flametongue.remains<4.8");
-  def -> add_action( this, "Rockbiter" );
-  def -> add_action( this, "Flametongue" );
+  opener -> add_action( this, "Rockbiter", "if=maelstrom<15&time<2" );
+
+
+  buffs -> add_action( this, "Rockbiter", "if=talent.landslide.enabled&!buff.landslide.up" );
+  buffs -> add_talent( this, "Fury of Air", "if=buff.ascendance.up|(feral_spirit.remains>5)|level<100" );
+  buffs -> add_action( this, "Crash Lightning", "if=artifact.alpha_wolf.rank&prev_gcd.1.feral_spirit" );
+  buffs -> add_action( this, "Flametongue", "if=!buff.flametongue.up" );
+  buffs -> add_action( this, "Frostbrand", "if=talent.hailstorm.enabled&!buff.frostbrand.up&variable.furyCheck45" );
+  buffs -> add_action( this, "Flametongue", "if=buff.flametongue.remains<6+gcd&cooldown.doom_winds.remains<gcd*2" );
+  buffs -> add_action( this, "Frostbrand", "if=talent.hailstorm.enabled&buff.frostbrand.remains<6+gcd&cooldown.doom_winds.remains<gcd*2" );
+  
+
+  cds -> add_action( this, "Bloodlust", generate_bloodlust_options(),
+    "Bloodlust casting behavior mirrors the simulator settings for proxy bloodlust. See options 'bloodlust_percent', and 'bloodlust_time'. " );
+  cds -> add_action( "berserking,if=buff.ascendance.up|(feral_spirit.remains>5)|level<100" );
+  cds -> add_action( "blood_fury,if=buff.ascendance.up|(feral_spirit.remains>5)|level<100" );
+  cds -> add_action( "potion,if=buff.ascendance.up|!talent.ascendance.enabled&feral_spirit.remains>5|target.time_to_die<=60" );
+  cds -> add_action( this, "Feral Spirit" );
+  cds -> add_action( this, "Doom Winds", "if=debuff.earthen_spike.up&talent.earthen_spike.enabled|!talent.earthen_spike.enabled" );
+  cds -> add_talent( this, "Ascendance", "if=buff.doom_winds.up" );
+
+  
+  core -> add_talent( this, "Earthen Spike", "if=variable.furyCheck25" );
+  core -> add_action( this, "Crash Lightning", "if=!buff.crash_lightning.up&active_enemies>=2" );
+  core -> add_talent( this, "Windsong" );
+  core -> add_action( this, "Crash Lightning", "if=active_enemies>=8|(active_enemies>=6&talent.crashing_storm.enabled)" );
+  core -> add_action( this, "Windstrike" );
+  core -> add_action( this, "Stormstrike", "if=buff.stormbringer.up&variable.furyCheck25" );
+  core -> add_action( this, "Crash Lightning", "if=active_enemies>=4|(active_enemies>=2&talent.crashing_storm.enabled)" );
+  core -> add_action( this, "Lightning Bolt", "if=talent.overcharge.enabled&variable.furyCheck45&maelstrom>=40" );
+  core -> add_action( this, "Stormstrike", "if=(!talent.overcharge.enabled&variable.furyCheck45)|(talent.overcharge.enabled&variable.furyCheck80)" );
+  core -> add_action( this, "Frostbrand", "if=variable.akainuAS" );
+  core -> add_action( this, "Lava Lash", "if=buff.hot_hand.react&((variable.akainuEquipped&buff.frostbrand.up)|!variable.akainuEquipped)" );
+  core -> add_talent( this, "Sundering", "if=active_enemies>=3" );
+  core -> add_action( this, "Crash Lightning", "if=active_enemies>=3|variable.LightningCrashNotUp|variable.alphaWolfCheck" );
+
+  
+  filler -> add_action( this, "Rockbiter", "if=maelstrom<120" );
+  filler -> add_action( this, "Flametongue", "if=buff.flametongue.remains<4.8" );
+  filler -> add_action( this, "Rockbiter", "if=maelstrom<=40" );
+  filler -> add_action( this, "Crash Lightning", "if=(talent.crashing_storm.enabled|active_enemies>=2)&debuff.earthen_spike.up&maelstrom>=40&variable.OCPool60" );
+  filler -> add_action( this, "Frostbrand", "if=talent.hailstorm.enabled&buff.frostbrand.remains<4.8&maelstrom>40" );
+  filler -> add_action( this, "Frostbrand", "if=variable.akainuEquipped&!buff.frostbrand.up&maelstrom>=75" );
+  filler -> add_talent( this, "Sundering" );
+  filler -> add_action( this, "Lava Lash", "if=maelstrom>=50&variable.OCPool70&variable.furyCheck80" );
+  filler -> add_action( this, "Rockbiter" );
+  filler -> add_action( this, "Crash Lightning", "if=(maelstrom>=65|talent.crashing_storm.enabled|active_enemies>=2)&variable.OCPool60&variable.furyCheck45" );
+  filler -> add_action( this, "Flametongue" );
+
+  
 }
 
 // shaman_t::init_actions ===================================================

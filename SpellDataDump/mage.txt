@@ -1,4 +1,4 @@
-SimulationCraft 725-01 for World of Warcraft 7.2.0 Live (wow build 23826, git build 824e588)
+SimulationCraft 725-01 for World of Warcraft 7.2.5 Live (wow build 24287)
 
 Name             : Invisibility (id=66) [Spell Family (3)] 
 Class            : Arcane Fire Frost Mage
@@ -1149,7 +1149,7 @@ Spell Level      : 20
 Range            : 40 yards
 Cast Time        : 3 seconds
 GCD              : 1.5 seconds
-Velocity         : 45 yards/sec
+Velocity         : 50 yards/sec
 Affecting spells : Icy Veins (12472 effect#2), Shatter (12982 effect#1), Ice Floes (108839 effect#1), Mage (137018 effect#2), Enhanced Pyrotechnics (157644 effect#1), Brain Freeze (190446 effect#1), Ice Form (198144 effect#2), Norgannon's Foresight (236380 effect#1)
 Attributes       : ........ ........ x....... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4408,6 +4408,26 @@ Effects          :
 #1 (id=303428)   : School Damage (2): fire
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.29500 | Radius: 0 - 8 yards | Target: Unknown(87) -> AOE enemy (instant) (16)
 Description      : Burning enemies for $s1 Fire damage.
+
+Name             : Icicles (id=205473) [Spell Family (3)] 
+Class            : Mage
+School           : Frost
+Spell Level      : 80
+Duration         : 61 seconds
+Stacks           : 5 maximum
+Proc Chance      : 101%
+Attributes       : ........ ........ ........ .......x   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Cannot cancel aura (31)
+Effects          :
+#1 (id=303431)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 911 | Target: Self (1)
+Description      : A percentage of all Frostbolt damage you deal is stored as an Icicle for $148012d. Casting Ice Lance causes any Icicles stored to begin launching at the target. Up to $s2 Icicles can be stored. Excess Icicles will automatically be launched.
+Tooltip          : $w1 Icicles stored.
 
 Name             : Chilled (id=205708) [Spell Family (3)] 
 Class            : Mage

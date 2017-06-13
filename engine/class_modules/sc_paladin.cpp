@@ -130,6 +130,7 @@ public:
     buff_t* infusion_of_light;
     buff_t* shield_of_the_righteous;
     absorb_buff_t* bulwark_of_order;
+    buff_t* last_defender;
 
     // talents
     absorb_buff_t* holy_shield_absorb; // Dummy buff to trigger spell damage "blocking" absorb effect
@@ -528,6 +529,7 @@ public:
   virtual void      create_options() override;
   virtual double    matching_gear_multiplier( attribute_e attr ) const override;
   virtual action_t* create_action( const std::string& name, const std::string& options_str ) override;
+  void       activate() override;
   virtual resource_e primary_resource() const override { return RESOURCE_MANA; }
   virtual role_e    primary_role() const override;
   virtual stat_e    convert_hybrid_stat( stat_e s ) const override;
@@ -4725,6 +4727,11 @@ void paladin_t::create_buffs()
                                                  .tick_callback([this](buff_t*, int, const timespan_t&) { buffs.scarlet_inquisitors_expurgation -> trigger(); })
                                                  .tick_time_behavior( BUFF_TICK_TIME_UNHASTED );
 
+  buffs.last_defender = buff_creator_t( this, "last_defender", talents.last_defender  )
+    .chance( talents.last_defender -> ok() )
+    .max_stack( 99 ) //Spell doesn't cite any limits, just has diminishing returns.
+    .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+
   // Tier Bonuses
 
   buffs.vindicators_fury       = buff_creator_t( this, "vindicators_fury", find_spell( 165903 ) )
@@ -5889,8 +5896,7 @@ double paladin_t::composite_player_multiplier( school_e school ) const
     // Last defender gives the same amount of damage increase as it gives mitigation.
     // Mitigation is 0.97^n, or (1-0.03)^n, where the 0.03 is in the spell data.
     // The damage buff is then 1+(1-0.97^n), or 2-(1-0.03)^n.
-    int num_enemies = get_local_enemies( talents.last_defender -> effectN( 1 ).base_value() );
-    m *= 2.0 - std::pow( 1.0 - talents.last_defender -> effectN( 2 ).percent(), num_enemies );
+    m *= 2.0 - std::pow( 1.0 - talents.last_defender -> effectN( 2 ).percent(), buffs.last_defender -> current_stack );
   }
 
   // artifacts
@@ -6112,7 +6118,7 @@ void paladin_t::target_mitigation( school_e school,
   if ( talents.last_defender -> ok() )
   {
     // Last Defender gives a multiplier of 0.97^N - coded using spell data in case that changes
-    s -> result_amount *= std::pow( 1.0 - talents.last_defender -> effectN( 2 ).percent(), get_local_enemies( talents.last_defender -> effectN( 1 ).base_value() ) );
+    s -> result_amount *= std::pow( 1.0 - talents.last_defender -> effectN( 2 ).percent(), buffs.last_defender -> current_stack );
   }
 
   // heathcliffs
@@ -6453,6 +6459,40 @@ void paladin_t::combat_begin()
     buffs.scarlet_inquisitors_expurgation_driver -> trigger();
   }
 }
+
+
+// Last defender ===========================================================
+
+struct last_defender_callback_t
+{
+  paladin_t* p;
+  double last_defender_distance;
+  last_defender_callback_t( paladin_t* p ) : p( p ), last_defender_distance( 0 )
+  {
+    last_defender_distance = p -> talents.last_defender -> effectN( 1 ).base_value();
+  }
+
+  void operator()( player_t* )
+  {
+    int num_enemies = p -> get_local_enemies( last_defender_distance );
+
+    p -> buffs.last_defender -> expire();
+    p -> buffs.last_defender -> trigger( num_enemies );
+  }
+};
+
+// paladin_t::create_actions ================================================
+
+void paladin_t::activate()
+{
+  player_t::activate();
+
+  if ( talents.last_defender -> ok() )
+  {
+    sim -> target_non_sleeping_list.register_callback( last_defender_callback_t( this ) );
+  }
+}
+
 
 // paladin_t::get_divine_judgment =============================================
 

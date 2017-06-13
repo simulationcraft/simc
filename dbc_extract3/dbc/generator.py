@@ -1436,6 +1436,7 @@ class SpellDataGenerator(DataGenerator):
           ( 222305, 0 ),                            # Sorcerous Fireball
           ( 222320, 0 ),                            # Sorcerous Frostbolt
           ( 222321, 0 ),                            # Sorcerous Arcane Blast
+          ( 205473, 0 ),                            # Icicles buff
         ),
 
         # Warlock:
