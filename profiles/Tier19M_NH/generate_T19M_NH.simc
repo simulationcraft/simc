@@ -32,7 +32,7 @@ generate_Monk_T19M_NH.simc
 # Paladin
 generate_Paladin_T19M_NH.simc
 
-# Paladin
+# Priest
 generate_Priest_T19M_NH.simc
 
 # Rogue
@@ -41,6 +41,8 @@ generate_Rogue_T19M_NH.simc
 # Shaman
 generate_Shaman_T19M_NH.simc
 
+# Warlock
 generate_Warlock_T19M_NH.simc
 
+# Warrior
 generate_Warrior_T19M_NH.simc

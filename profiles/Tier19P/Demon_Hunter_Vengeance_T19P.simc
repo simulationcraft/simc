@@ -32,12 +32,13 @@ actions.precombat+=/potion
 actions=auto_attack
 actions+=/consume_magic
 actions+=/use_item,slot=trinket2
+actions+=/demonic_infusion,if=cooldown.demon_spikes.charges=0&pain.deficit>60
 actions+=/fiery_brand,if=buff.demon_spikes.down&buff.metamorphosis.down
 actions+=/demon_spikes,if=charges=2|buff.demon_spikes.down&!dot.fiery_brand.ticking&buff.metamorphosis.down
 actions+=/empower_wards,if=debuff.casting.up
 actions+=/infernal_strike,if=!sigil_placed&!in_flight&remains-travel_time-delay<0.3*duration&artifact.fiery_demise.enabled&dot.fiery_brand.ticking
 actions+=/infernal_strike,if=!sigil_placed&!in_flight&remains-travel_time-delay<0.3*duration&(!artifact.fiery_demise.enabled|(max_charges-charges_fractional)*recharge_time<cooldown.fiery_brand.remains+5)&(cooldown.sigil_of_flame.remains>7|charges=2)
-actions+=/spirit_bomb,if=debuff.frailty.down
+actions+=/spirit_bomb,if=soul_fragments=5|debuff.frailty.down
 actions+=/soul_carver,if=dot.fiery_brand.ticking
 actions+=/immolation_aura,if=pain<=80
 actions+=/felblade,if=pain<=70
@@ -50,6 +51,7 @@ actions+=/fel_eruption
 actions+=/sigil_of_flame,if=remains-delay<=0.3*duration
 actions+=/fracture,if=pain>=80&soul_fragments<4&incoming_damage_4s<=health.max*0.20
 actions+=/soul_cleave,if=pain>=80
+actions+=/sever
 actions+=/shear
 
 head=hood_of_the_blind_executioner,id=137511

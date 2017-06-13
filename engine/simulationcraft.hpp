@@ -1757,9 +1757,19 @@ struct sim_t : private sc_thread_t
     void batches( size_t n ) { AUTO_LOCK(m); _total_work.resize( n ); _work.resize( n ); _projected_work.resize( n ); }
 
     void flush()          { AUTO_LOCK(m); _total_work[ index ] = _projected_work[ index ] = _work[ index ]; }
-    void project( int w ) { AUTO_LOCK(m); _projected_work[ index ] = w; assert( w >= _work[ index ] ); }
     int  size()           { AUTO_LOCK(m); return index < _total_work.size() ? _total_work[ index ] : _total_work.back(); }
     bool more_work()      { AUTO_LOCK(m); return index < _total_work.size() && _work[ index ] < _total_work[ index ]; }
+
+    void project( int w )
+    {
+      AUTO_LOCK(m);
+      _projected_work[ index ] = w;
+#ifdef NDEBUG
+      if ( w > _work[ index ] )
+      {
+      }
+#endif
+    }
 
     // Single-actor batch pop, uses several indices of work (per active actor), each thread has it's
     // own state on what index it is simulating
@@ -4407,15 +4417,15 @@ struct player_t : public actor_t
   void create_talents_armory();
   void create_talents_wowhead();
 
-  const spell_data_t* find_racial_spell( const std::string& name, const std::string& token = std::string(), race_e s = RACE_NONE ) const;
-  const spell_data_t* find_class_spell( const std::string& name, const std::string& token = std::string(), specialization_e s = SPEC_NONE ) const;
-  const spell_data_t* find_pet_spell( const std::string& name, const std::string& token = std::string() ) const;
-  const spell_data_t* find_talent_spell( const std::string& name, const std::string& token = std::string(), specialization_e s = SPEC_NONE, bool name_tokenized = false, bool check_validity = true ) const;
-  const spell_data_t* find_specialization_spell( const std::string& name, const std::string& token = std::string(), specialization_e s = SPEC_NONE ) const;
+  const spell_data_t* find_racial_spell( const std::string& name, race_e s = RACE_NONE ) const;
+  const spell_data_t* find_class_spell( const std::string& name, specialization_e s = SPEC_NONE ) const;
+  const spell_data_t* find_pet_spell( const std::string& name ) const;
+  const spell_data_t* find_talent_spell( const std::string& name, specialization_e s = SPEC_NONE, bool name_tokenized = false, bool check_validity = true ) const;
+  const spell_data_t* find_specialization_spell( const std::string& name, specialization_e s = SPEC_NONE ) const;
   const spell_data_t* find_specialization_spell( unsigned spell_id, specialization_e s = SPEC_NONE ) const;
-  const spell_data_t* find_mastery_spell( specialization_e s, const std::string& token = std::string(), uint32_t idx = 0 ) const;
-  const spell_data_t* find_spell( const std::string& name, const std::string& token = std::string(), specialization_e s = SPEC_NONE ) const;
-  const spell_data_t* find_spell( unsigned int id, const std::string& token = std::string() ) const;
+  const spell_data_t* find_mastery_spell( specialization_e s, uint32_t idx = 0 ) const;
+  const spell_data_t* find_spell( const std::string& name, specialization_e s = SPEC_NONE ) const;
+  const spell_data_t* find_spell( unsigned int id ) const;
 
   artifact_power_t find_artifact_spell( const std::string& name, bool tokenized = false ) const;
 
@@ -4892,7 +4902,7 @@ public:
   virtual const player_t* get_owner_or_self() const override
   { return owner; }
 
-  const spell_data_t* find_pet_spell( const std::string& name, const std::string& token = std::string() );
+  const spell_data_t* find_pet_spell( const std::string& name );
 
   virtual double composite_attribute( attribute_e attr ) const override;
   virtual double composite_player_multiplier( school_e ) const override;

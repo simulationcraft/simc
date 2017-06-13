@@ -23,59 +23,6 @@
 
 namespace { // ANONYMOUS namespace ==========================================
 
-// Global spell token map
-class spelltoken_t
-{
-private:
-  typedef std::unordered_map<unsigned int, std::string> token_map_t;
-  token_map_t map;
-  mutex_t mutex;
-
-public:
-  const std::string& get( unsigned int id_spell )
-  {
-    static const std::string empty;
-
-    auto_lock_t lock( mutex );
-
-    auto it = map.find( id_spell );
-    if ( it == map.end() )
-      return empty;
-
-    return it -> second;
-  }
-
-  unsigned int get_id( const std::string& token )
-  {
-    auto_lock_t lock( mutex );
-
-    for ( auto it = map.begin(); it != map.end(); ++it )
-      if ( it -> second == token ) return it -> first;
-
-    return 0;
-  }
-
-  bool add( unsigned int id_spell, const std::string& token_name )
-  {
-    auto_lock_t lock( mutex );
-
-    std::pair<token_map_t::iterator, bool> pr =
-      map.insert( std::make_pair( id_spell, token_name ) );
-
-    // New entry
-    if ( pr.second )
-      return true;
-
-    // Already exists with that token
-    if ( pr.first -> second == token_name )
-      return true;
-
-    // Trying to specify a new token for an existing spell id
-    return false;
-  }
-};
-spelltoken_t tokens;
-
 dbc_index_t<spell_data_t> spell_data_index;
 dbc_index_t<spelleffect_data_t> spelleffect_data_index;
 dbc_index_t<talent_data_t> talent_data_index;
@@ -850,36 +797,6 @@ specialization_e dbc::spec_by_idx( const player_e c, unsigned idx )
     return SPEC_NONE;
   }
   return __class_spec_id[ cid ][ idx ];
-}
-
-const std::string& dbc::get_token( unsigned int id_spell )
-{
-  return tokens.get( id_spell );
-}
-
-
-bool dbc::add_token( unsigned int id_spell, const std::string& token, bool ptr )
-{
-  spell_data_t* sp = spell_data_index.get( ptr, id_spell );
-  if ( sp && sp -> ok() )
-  {
-    if ( ! token.empty() )
-    {
-      return tokens.add( id_spell, token );
-    }
-    else
-    {
-      std::string t = sp -> name_cstr();
-      util::tokenize( t );
-      return tokens.add( id_spell, t );
-    }
-  }
-  return false;
-}
-
-unsigned int dbc::get_token_id( const std::string& token )
-{
-  return tokens.get_id( token );
 }
 
 uint32_t dbc::get_school_mask( school_e s )

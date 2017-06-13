@@ -1037,6 +1037,11 @@ void buff_t::extend_duration( player_t* p, timespan_t extra_seconds )
   {
     expiration.front() -> reschedule( expiration.front() -> remains() + extra_seconds );
 
+    if (sim->log)
+      sim->out_log.printf("%s extends buff %s by %.1f seconds. New expiration time: %.1f",
+                          p->name(), name_str.c_str(), extra_seconds.total_seconds(), 
+                          expiration.front()->occurs().total_seconds());
+
     if ( sim -> debug )
       sim -> out_debug.printf( "%s extends buff %s by %.1f seconds. New expiration time: %.1f",
                      p -> name(), name_str.c_str(), extra_seconds.total_seconds(), expiration.front() -> occurs().total_seconds() );
@@ -1133,11 +1138,13 @@ void buff_t::start( int        stacks,
   if ( d > timespan_t::zero() )
   {
     expiration.push_back( make_event<expiration_t>( *sim, this, stacks, d ) );
+    /* TOCHECK: This seems wrong, since bump() already removes expiration events when we are at max stacks
     if ( check() == before_stacks && stack_behavior == BUFF_STACK_ASYNCHRONOUS )
     {
       event_t::cancel( expiration.front() );
       expiration.erase( expiration.begin() );
     }
+    */
   }
 
   timespan_t period = tick_time();

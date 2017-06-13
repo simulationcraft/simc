@@ -1,18 +1,17 @@
 # T20M
 # Tier 20 Tomb of Sargeras
-# * Ilvl Cap: 930 (940 for Sargeras gear)
-# * Artifact Rank Cap: 52
-# * 3 Relics with max ilevel of 930 (940 for Sargeras gear)
+# * Ilvl Cap: 930 (940 for Kil'jaeden gear)
+# * Artifact Rank Cap: 52 (Concordance 1/50)
+# * 3 Relics with max ilevel of 930 (940 for Kil'jaeden gear)
 # * 2 Legendaries
-# * No items from World Bosses / World Quests / BoEs
-# * Mythic+ gear is permitted up to the Mythic+ item level cap
+# * Tomb of Sargeras gear only, except that Tier 19 sets can be used up to 905 ilvl.
 # * No Random Gems (ie. Bonus RNG Gem Slots)
 # * No Tertiary Stats
 # * No Hardcoded Stats (generally if an item gives wrong stats: either bonus_id is wrong, either the item no longer exists in-game)
 # * It is recommended to use enchant name (ex : ",enchant=binding_of_mastery") rather than id/hardcoded stats.
 
 # Death Knight
-#generate_Death_Knight_T20M.simc
+generate_Death_Knight_T20M.simc
 
 # Demon Hunter
 generate_Demon_Hunter_T20M.simc
@@ -27,7 +26,7 @@ generate_Hunter_T20M.simc
 generate_Mage_T20M.simc
 
 # Monk
-#generate_Monk_T20M.simc
+generate_Monk_T20M.simc
 
 # Paladin
 generate_Paladin_T20M.simc
@@ -39,8 +38,10 @@ generate_Priest_T20M.simc
 generate_Rogue_T20M.simc
 
 # Shaman
-#generate_Shaman_T20M.simc
+generate_Shaman_T20M.simc
 
-#generate_Warlock_T20M.simc
+# Warlock
+generate_Warlock_T20M.simc
 
-#generate_Warrior_T20M.simc
+# Warrior
+generate_Warrior_T20M.simc

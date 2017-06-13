@@ -1,11 +1,11 @@
 paladin="Paladin_Protection_T19P"
+spec=protection
 level=110
 race=blood_elf
 role=tank
 position=front
 talents=2231223
 artifact=49:137548:136778:137547:0:1120:1:1121:3:1124:3:1125:1:1126:3:1128:6:1129:3:1133:1:1135:1:1343:1
-spec=protection
 
 # This default action priority list is automatically created based on your character.
 # It is a attempt to provide you with a action list that is both simple and practicable,
@@ -98,13 +98,13 @@ main_hand=oathseeker,id=128867,gem_id=137548/136778/137547,relic_id=3412/3412/34
 off_hand=truthguard,id=128866,ilevel=870
 
 # Gear Summary
-# gear_ilvl=843.75
-# gear_strength=10465
-# gear_stamina=20611
-# gear_crit_rating=1966
-# gear_haste_rating=10382
+# gear_ilvl=865.63
+# gear_strength=12780
+# gear_stamina=25373
+# gear_crit_rating=2046
+# gear_haste_rating=11660
 # gear_mastery_rating=714
-# gear_versatility_rating=5252
-# gear_armor=3965
+# gear_versatility_rating=5908
+# gear_armor=4194
 # set_bonus=march_of_the_legion_2pc=1
 # set_bonus=tier19p_plate_2pc=1

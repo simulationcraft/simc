@@ -3902,7 +3902,9 @@ struct bear_melee_t : public bear_attack_t
 
     energize_type     = ENERGIZE_ON_HIT;
     energize_resource = RESOURCE_RAGE;
-    energize_amount   = 7; // https://worldofwarcraft.com/en-gb/news/20457825#_ClassChanges
+    // Note: This is not *exactly* 6 in-game (actual value is slightly less), but close enough to be within margin of error.
+    // TODO(guardian): determine actual value
+    energize_amount   = 6; // https://worldofwarcraft.com/en-gb/news/20812012/world-of-warcraft-7-2-5-patch-notes
   }
 
   virtual timespan_t execute_time() const override
@@ -5262,7 +5264,7 @@ struct full_moon_t : public druid_spell_t
   {
     if ( ! p() -> artifact.new_moon.rank() )
       return false;
-    if ( p() -> moon_stage != FULL_MOON & p()->moon_stage != FREE_FULL_MOON)
+    if ( p() -> moon_stage != FULL_MOON && p()->moon_stage != FREE_FULL_MOON)
       return false;
     if ( ! p() -> cooldown.moon_cd -> up() )
       return false;
@@ -7462,7 +7464,7 @@ void druid_t::apl_precombat()
   if ( specialization() == DRUID_FERAL )
   {
      precombat -> add_action( "variable,name=rake_refresh,op=set,value=7", "Rake_refresh controls how aggresively to refresh rake. Lower means less aggresively." );
-     precombat -> add_action( "variable,name=rake_refresh,op=set,value=3,if=equipped.ailuro_pouncers|talent.soul_of_the_forest.enabled" );
+     precombat -> add_action( "variable,name=rake_refresh,op=set,value=3,if=equipped.ailuro_pouncers" );
      precombat -> add_action( "variable,name=pooling,op=set,value=3", "Pooling controlls how aggresively to pool. Lower means more aggresively" );
      precombat -> add_action( "variable,name=pooling,op=set,value=10,if=equipped.chatoyant_signet" );
      precombat -> add_action( "variable,name=pooling,op=set,value=3,if=equipped.the_wildshapers_clutch&!equipped.chatoyant_signet" );
@@ -7575,67 +7577,71 @@ void druid_t::apl_default()
 
 void druid_t::apl_feral()
 {
-  action_priority_list_t* def      = get_action_priority_list( "default"    );
-  action_priority_list_t* opener   = get_action_priority_list( "opener"     );
-  action_priority_list_t* finish   = get_action_priority_list( "finisher"   );
-  action_priority_list_t* generate = get_action_priority_list( "generator"  );
-  action_priority_list_t* sbt      = get_action_priority_list( "sbt_opener" );
+   action_priority_list_t* def = get_action_priority_list("default");
+   action_priority_list_t* opener = get_action_priority_list("opener");
+   action_priority_list_t* finish = get_action_priority_list("finisher");
+   action_priority_list_t* generate = get_action_priority_list("generator");
+   action_priority_list_t* sbt = get_action_priority_list("sbt_opener");
 
-  std::string              potion_action  = "potion,name=";
-  if ( true_level > 100 )
-    potion_action += "old_war";
-  else if ( true_level > 90 )
-    potion_action += "draenic_agility";
-  else
-    potion_action += "tolvir";
+   std::string              potion_action = "potion,name=";
+   if (true_level > 100)
+      potion_action += "old_war";
+   else if (true_level > 90)
+      potion_action += "draenic_agility";
+   else
+      potion_action += "tolvir";
 
-  // Opener =================================================================
-  opener ->add_action( this, "Rake", "if=buff.prowl.up" );
-  opener ->add_talent( this, "Savage Roar", "if=buff.savage_roar.down" );
-  opener ->add_action( this, "Berserk", "if=buff.savage_roar.up&!equipped.draught_of_souls" );
-  opener ->add_action( this, "Tiger's Fury", "if=buff.berserk.up&!equipped.draught_of_souls" );
-  opener ->add_action( this, artifact.ashamanes_frenzy, "frenzy", "if=buff.bloodtalons.up&!equipped.draught_of_souls" );
-  opener ->add_action( this, "Regrowth", "if=combo_points=5&buff.bloodtalons.down&buff.predatory_swiftness.up&!equipped.draught_of_souls" );
-  opener ->add_action( this, "Rip", "if=combo_points=5&buff.bloodtalons.up&!equipped.draught_of_souls" );
-  if ( sets -> has_set_bonus( DRUID_FERAL, T19, B4 ))
-   opener -> add_action( "thrash_cat,if=combo_points<5&!ticking&!equipped.draught_of_souls" );
-  opener ->add_action( this, "Shred", "if=combo_points<5&buff.savage_roar.up&!equipped.draught_of_souls" );
+   // Opener =================================================================
+   opener->add_action(this, "Rake", "if=buff.prowl.up");
+   opener->add_talent(this, "Savage Roar", "if=buff.savage_roar.down");
+   opener->add_action(this, "Berserk", "if=buff.savage_roar.up&!equipped.draught_of_souls");
+   opener->add_action(this, "Tiger's Fury", "if=buff.berserk.up&!equipped.draught_of_souls");
+   opener->add_action(this, artifact.ashamanes_frenzy, "frenzy", "if=buff.bloodtalons.up&!equipped.draught_of_souls");
+   opener->add_action(this, "Regrowth", "if=combo_points=5&buff.bloodtalons.down&buff.predatory_swiftness.up&!equipped.draught_of_souls");
+   opener->add_action(this, "Rip", "if=combo_points=5&buff.bloodtalons.up&!equipped.draught_of_souls");
+   if (sets->has_set_bonus(DRUID_FERAL, T19, B4))
+      opener->add_action("thrash_cat,if=combo_points<5&!ticking&!equipped.draught_of_souls");
+   opener->add_action(this, "Shred", "if=combo_points<5&buff.savage_roar.up&!equipped.draught_of_souls");
 
-  // Main List ==============================================================
+   // Main List ==============================================================
+
+   def->add_action(this, "Dash", "if=!buff.cat_form.up");
+   def->add_action(this, "Cat Form");
+   def->add_action("call_action_list,name=opener,if=!dot.rip.ticking&time<15&talent.savage_roar.enabled&talent.jagged_wounds.enabled&talent.bloodtalons.enabled&desired_targets<=1");
+   def->add_talent(this, "Wild Charge");
+   def->add_talent(this, "Displacer Beast", "if=movement.distance>10");
+   def->add_action(this, "Dash", "if=movement.distance&buff.displacer_beast.down&buff.wild_charge_movement.down");
+   if (race == RACE_NIGHT_ELF)
+      def->add_action(this, "Rake", "if=buff.prowl.up|buff.shadowmeld.up");
+   else
+      def->add_action(this, "Rake", "if=buff.prowl.up");
+   def->add_action("auto_attack");
+   def->add_action(this, "Skull Bash");
+   def->add_action(this, "Berserk", "if=buff.tigers_fury.up");
+   def->add_action("incarnation,if=cooldown.tigers_fury.remains<gcd");
+
+   // On-Use Items
+   //for ( size_t i = 0; i < items.size(); i++ )
+   //{
+   //  if ( items[i].has_use_special_effect() )
+   //  {
+   //    std::string line = std::string( "use_item,slot=" ) + items[i].slot_name();
+   //    if (items[i].name_str == "mirror_of_the_blademaster")
+   //       line += ",if=raid_event.adds.in>60|!raid_event.adds.exists|spell_targets.swipe_cat>desired_targets";
+   //    else if (items[i].name_str == "ring_of_collapsing_futures")
+   //       line += ",if=(buff.tigers_fury.up|target.time_to_die<45)";
+   //    else if (items[i].name_str == "draught_of_souls")
+   //       line += ",if=buff.tigers_fury.up&energy.time_to_max>3&(!talent.savage_roar.enabled|buff.savage_roar.up)";
+   //    else if (items[i].slot == SLOT_WAIST) continue;
+   //    else if (items[i].name_str != "maalus_the_blood_drinker") //NOTE: must be on the bottom of the if chain.
+   //       line += ",if=(buff.tigers_fury.up&(target.time_to_die>trinket.stat.any.cooldown|target.time_to_die<45))|buff.incarnation.remains>20";
+   //    def -> add_action( line );
+   //  }
+   //}
+   if ( items[SLOT_FINGER_1].name_str == "ring_of_collapsing_futures" || items[SLOT_FINGER_2].name_str == "ring_of_collapsing_futures")
+     def -> add_action( "use_item,name=ring_of_collapsing_futures,if=(buff.tigers_fury.up|target.time_to_die<45)" );
   
-  def -> add_action( this, "Dash", "if=!buff.cat_form.up" );
-  def -> add_action( this, "Cat Form" );
-  def -> add_action( "call_action_list,name=opener,if=!dot.rip.ticking&time<15&talent.savage_roar.enabled&talent.jagged_wounds.enabled&talent.bloodtalons.enabled&desired_targets<=1" );
-  def -> add_talent( this, "Wild Charge" );
-  def -> add_talent( this, "Displacer Beast", "if=movement.distance>10" );
-  def -> add_action( this, "Dash", "if=movement.distance&buff.displacer_beast.down&buff.wild_charge_movement.down" );
-  if ( race == RACE_NIGHT_ELF )
-    def -> add_action( this, "Rake", "if=buff.prowl.up|buff.shadowmeld.up" );
-  else
-    def -> add_action( this, "Rake", "if=buff.prowl.up" );
-  def -> add_action( "auto_attack" );
-  def -> add_action( this, "Skull Bash" );
-  def -> add_action( this, "Berserk", "if=buff.tigers_fury.up" );
-  def -> add_action( "incarnation,if=cooldown.tigers_fury.remains<gcd" );
-
-  // On-Use Items
-  for ( size_t i = 0; i < items.size(); i++ )
-  {
-    if ( items[i].has_use_special_effect() )
-    {
-      std::string line = std::string( "use_item,slot=" ) + items[i].slot_name();
-      if (items[i].name_str == "mirror_of_the_blademaster")
-         line += ",if=raid_event.adds.in>60|!raid_event.adds.exists|spell_targets.swipe_cat>desired_targets";
-      else if (items[i].name_str == "ring_of_collapsing_futures")
-         line += ",if=(buff.tigers_fury.up|target.time_to_die<45)";
-      else if (items[i].name_str == "draught_of_souls")
-         line += ",if=buff.tigers_fury.up&energy.time_to_max>3&(!talent.savage_roar.enabled|buff.savage_roar.up)";
-      else if (items[i].slot == SLOT_WAIST) continue;
-      else if (items[i].name_str != "maalus_the_blood_drinker") //NOTE: must be on the bottom of the if chain.
-         line += ",if=(buff.tigers_fury.up&(target.time_to_die>trinket.stat.any.cooldown|target.time_to_die<45))|buff.incarnation.remains>20";
-      def -> add_action( line );
-    }
-  }
+  def -> add_action( "use_items" );
 
   if ( sim -> allow_potions && true_level >= 80 )
     def -> add_action( potion_action +
@@ -7661,7 +7667,10 @@ void druid_t::apl_feral()
     "Special logic for Ailuro Pouncers legendary." );
   def -> add_action( "call_action_list,name=finisher" );
   def -> add_action( "call_action_list,name=generator" );
+  if (items[SLOT_TRINKET_1].name_str == "draught_of_souls" || items[SLOT_TRINKET_2].name_str == "draught_of_souls")
+     def->add_action("use_item,name=draught_of_souls");
   def -> add_action( "wait,sec=1,if=energy.time_to_max>3", "The Following line massively increases performance of the simulation but can be safely removed." );
+
 
   // Finishers
   finish -> add_action( "pool_resource,for_next=1",

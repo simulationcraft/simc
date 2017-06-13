@@ -7414,7 +7414,7 @@ void shaman_t::init_action_list_elemental()
   single_lr -> add_talent( this, "Liquid Magma Totem", "if=raid_event.adds.count<3|raid_event.adds.in>50" );
   single_lr -> add_action( this, "Lava Burst", "if=dot.flame_shock.remains>cast_time&cooldown_react" );
   single_lr -> add_action( this, "Flame Shock", "if=maelstrom>=20&buff.elemental_focus.up,target_if=refreshable" );
-  single_lr -> add_action( this, "Earth Shock", "if=maelstrom>=111|!artifact.swelling_maelstrom.enabled&maelstrom>=86" );
+  single_lr -> add_action( this, "Earth Shock", "if=maelstrom>=111|!artifact.swelling_maelstrom.enabled&maelstrom>=86|equipped.smoldering_heart&equipped.the_deceivers_blood_pact&maelstrom>70&talent.aftershock.enabled", "If you equipped Smoldering Heart, Deceivers Blood Pact and skilled Aftershock, you essentially gamble for procs." );
   single_lr -> add_talent( this, "Totem Mastery", "if=buff.resonance_totem.remains<10|(buff.resonance_totem.remains<(buff.ascendance.duration+cooldown.ascendance.remains)&cooldown.ascendance.remains<15)" );
   single_lr -> add_action( this, "Lightning Bolt", "if=buff.power_of_the_maelstrom.up&spell_targets.chain_lightning<3,target_if=debuff.lightning_rod.down" );
   single_lr -> add_action( this, "Lightning Bolt", "if=buff.power_of_the_maelstrom.up&spell_targets.chain_lightning<3" );
@@ -7433,14 +7433,14 @@ void shaman_t::init_action_list_elemental()
   single_if -> add_talent( this, "Elemental Blast", "", "Keep your EB always on Cooldown." );
   single_if -> add_action( this, "Earth Shock", "if=maelstrom>=117|!artifact.swelling_maelstrom.enabled&maelstrom>=92" );
   single_if -> add_action( this, "Stormkeeper", "if=raid_event.adds.count<3|raid_event.adds.in>50", "Keep SK for large or soon spawning add waves." );
-  single_if -> add_talent( this, "Icefury", "if=(raid_event.movement.in<5|maelstrom<=101)&!buff.ascendance.up" );
+  single_if -> add_talent( this, "Icefury", "if=(raid_event.movement.in<5|maelstrom<=101&artifact.swelling_maelstrom.enabled|!artifact.swelling_maelstrom.enabled&maelstrom<=76)&!buff.ascendance.up" );
   single_if -> add_talent( this, "Liquid Magma Totem", "if=raid_event.adds.count<3|raid_event.adds.in>50" );
   single_if -> add_action( this, "Lightning Bolt", "if=buff.power_of_the_maelstrom.up&buff.stormkeeper.up&spell_targets.chain_lightning<3" );
   single_if -> add_action( this, "Lava Burst", "if=dot.flame_shock.remains>cast_time&cooldown_react" );
   single_if -> add_action( this, "Frost Shock", "if=buff.icefury.up&((maelstrom>=20&raid_event.movement.in>buff.icefury.remains)|buff.icefury.remains<(1.5*spell_haste*buff.icefury.stack+1))" );
   single_if -> add_action( this, "Flame Shock","if=maelstrom>=20&buff.elemental_focus.up,target_if=refreshable" );
   single_if -> add_action( this, "Frost Shock", "moving=1,if=buff.icefury.up" );
-  single_if -> add_action( this, "Earth Shock", "if=maelstrom>=111|!artifact.swelling_maelstrom.enabled&maelstrom>=86" );
+  single_if -> add_action( this, "Earth Shock", "if=maelstrom>=111|!artifact.swelling_maelstrom.enabled&maelstrom>=86|equipped.smoldering_heart&equipped.the_deceivers_blood_pact&maelstrom>70&talent.aftershock.enabled", "If you equipped Smoldering Heart, Deceivers Blood Pact and skilled Aftershock, you essentially gamble for procs." );
   single_if -> add_talent( this, "Totem Mastery", "if=buff.resonance_totem.remains<10" );
   single_if -> add_action( this, "Earthquake", "if=buff.echoes_of_the_great_sundering.up" );
   single_if -> add_action( this, "Lightning Bolt", "if=buff.power_of_the_maelstrom.up&spell_targets.chain_lightning<3" );
@@ -7462,7 +7462,7 @@ void shaman_t::init_action_list_elemental()
   single_asc -> add_action( this, "Lightning Bolt", "if=buff.power_of_the_maelstrom.up&buff.stormkeeper.up&spell_targets.chain_lightning<3" );
   single_asc -> add_action( this, "Lava Burst", "if=dot.flame_shock.remains>cast_time&(cooldown_react|buff.ascendance.up)" );
   single_asc -> add_action( this, "Flame Shock", "if=maelstrom>=20&buff.elemental_focus.up,target_if=refreshable" );
-  single_asc -> add_action( this, "Earth Shock", "if=maelstrom>=111|!artifact.swelling_maelstrom.enabled&maelstrom>=86" );
+  single_asc -> add_action( this, "Earth Shock", "if=maelstrom>=111|!artifact.swelling_maelstrom.enabled&maelstrom>=86|equipped.smoldering_heart&equipped.the_deceivers_blood_pact&maelstrom>70&talent.aftershock.enabled", "If you equipped Smoldering Heart, Deceivers Blood Pact and skilled Aftershock, you essentially gamble for procs." );
   single_asc -> add_talent( this, "Totem Mastery", "if=buff.resonance_totem.remains<10|(buff.resonance_totem.remains<(buff.ascendance.duration+cooldown.ascendance.remains)&cooldown.ascendance.remains<15)" );
   single_asc -> add_action( this, "Lava Beam", "if=active_enemies>1&spell_targets.lava_beam>1" );
   single_asc -> add_action( this, "Lightning Bolt", "if=buff.power_of_the_maelstrom.up&spell_targets.chain_lightning<3" );

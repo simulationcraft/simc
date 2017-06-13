@@ -327,7 +327,9 @@ action_priority_t* action_priority_list_t::add_action( const player_t* p,
   const spell_data_t* s = p -> find_class_spell( name );
   if ( s == spell_data_t::not_found() )
     s = p -> find_specialization_spell( name );
-  return add_action( p, s, dbc::get_token( s -> id() ), action_options, comment );
+  std::string tokenized_name = s -> name_cstr();
+  util::tokenize( tokenized_name );
+  return add_action( p, s, tokenized_name, action_options, comment );
 }
 
 /**
@@ -348,8 +350,10 @@ action_priority_t* action_priority_list_t::add_talent( const player_t* p,
                                                        const std::string& action_options,
                                                        const std::string& comment )
 {
-  const spell_data_t* s = p -> find_talent_spell( name, "", SPEC_NONE, false, false );
-  return add_action( p, s, dbc::get_token( s -> id() ), action_options, comment );
+  const spell_data_t* s = p -> find_talent_spell( name, SPEC_NONE, false, false );
+  std::string tokenized_name = s -> name_cstr();
+  util::tokenize( tokenized_name );
+  return add_action( p, s, tokenized_name, action_options, comment );
 }
 
 action_t::options_t::options_t()
@@ -1684,7 +1688,19 @@ void action_t::queue_execute( bool off_gcd )
   {
     if ( off_gcd )
     {
-      do_off_gcd_execute( this );
+      // If the charge cooldown is recharging on the same timestamp, we need to create a zero-time
+      // event to execute the (queued) action, so that the charge cooldown can regenerate.
+      if ( cooldown -> charges > 1 && cooldown -> current_charge == 0 &&
+           cooldown -> recharge_event &&
+           cooldown -> recharge_event -> remains() == timespan_t::zero() )
+      {
+        queue_event = make_event<queued_action_execute_event_t>( *sim, this, timespan_t::zero(), off_gcd );
+        player -> queueing = this;
+      }
+      else
+      {
+        do_off_gcd_execute( this );
+      }
     }
     else
     {

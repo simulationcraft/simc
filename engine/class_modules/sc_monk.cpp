@@ -3213,6 +3213,11 @@ struct rising_sun_kick_tornado_kick_t : public monk_melee_attack_t
         s -> target -> debuffs.mortal_wounds -> trigger();
       }
       p() -> trigger_mark_of_the_crane( s );
+
+      if ( p() -> sets -> has_set_bonus( MONK_WINDWALKER, T20, B4 ) && ( s -> result == RESULT_CRIT ) )
+        // -1 to reduce the spell cooldown instead of increasing
+        // saved as 2000
+        p() -> cooldown.fists_of_fury -> adjust( -1 * p() -> sets -> set( MONK_WINDWALKER, T20, B4 ) -> effectN( 1 ).time_value() );
     }
   }
 };
@@ -3364,6 +3369,11 @@ struct rising_sun_kick_t: public monk_melee_attack_t
           s -> target -> debuffs.mortal_wounds -> trigger();
         }
 
+        if ( p() -> sets -> has_set_bonus( MONK_WINDWALKER, T20, B4 ) && ( s -> result == RESULT_CRIT ) )
+          // -1 to reduce the spell cooldown instead of increasing
+          // saved as 2000
+          p() -> cooldown.fists_of_fury -> adjust( -1 * p() -> sets -> set( MONK_WINDWALKER, T20, B4 ) -> effectN( 1 ).time_value() );
+
         if ( p() -> artifact.tornado_kicks.rank() )
         {
           double raw = s -> result_raw * p() -> artifact.tornado_kicks.data().effectN( 1 ).percent();
@@ -3372,11 +3382,6 @@ struct rising_sun_kick_t: public monk_melee_attack_t
           rsk_tornado_kick -> base_dd_min = raw;
           rsk_tornado_kick -> execute();
         }
-
-        if ( p() -> sets -> has_set_bonus( MONK_WINDWALKER, T20, B4 ) && ( s -> result == RESULT_CRIT ) )
-          // -1 to reduce the spell cooldown instead of increasing
-          // saved as 2000
-          p() -> cooldown.fists_of_fury -> adjust( timespan_t::from_millis( -1 * p() -> sets -> set( MONK_WINDWALKER, T20, B4 ) -> effectN( 1 ).base_value() ) );
       }
     }
   }
@@ -4553,7 +4558,7 @@ struct  keg_smash_stave_off_t: public monk_melee_attack_t
     monk_melee_attack_t::execute();
 
     // Reduces the remaining cooldown on your Brews by 4 sec.
-    brew_cooldown_reduction( p() -> spec.keg_smash -> effectN( 3 ).base_value() );
+    brew_cooldown_reduction( p() -> spec.keg_smash -> effectN( 4 ).base_value() );
   }
 };
 
@@ -5115,7 +5120,7 @@ public:
 struct xuen_spell_t: public summon_pet_t
 {
   xuen_spell_t( monk_t* p, const std::string& options_str ):
-    summon_pet_t( "invoke_xuen", "xuen_the_white_tiger", p, p -> talent.invoke_xuen )
+    summon_pet_t( "invoke_xuen_the_white_tiger", "xuen_the_white_tiger", p, p -> talent.invoke_xuen )
   {
     parse_options( options_str );
 
@@ -5132,7 +5137,7 @@ struct xuen_spell_t: public summon_pet_t
 struct niuzao_spell_t: public summon_pet_t
 {
   niuzao_spell_t( monk_t* p, const std::string& options_str ):
-    summon_pet_t( "invoke_niuzao", "niuzao_the_black_ox", p, p -> talent.invoke_niuzao )
+    summon_pet_t( "invoke_niuzao_the_black_ox", "niuzao_the_black_ox", p, p -> talent.invoke_niuzao )
   {
     parse_options( options_str );
 
@@ -7693,6 +7698,7 @@ action_t* monk_t::create_action( const std::string& name,
   if ( name == "gift_of_the_ox" ) return new            gift_of_the_ox_t( *this, options_str );
   if ( name == "greater_gift_of_the_ox" ) return new    greater_gift_of_the_ox_t( *this, options_str );
   if ( name == "invoke_niuzao" ) return new             niuzao_spell_t( this, options_str );
+  if ( name == "invoke_niuzao_the_black_ox" ) return new niuzao_spell_t( this, options_str );
   if ( name == "ironskin_brew" ) return new             ironskin_brew_t( *this, options_str );
   if ( name == "keg_smash" ) return new                 keg_smash_t( *this, options_str );
   if ( name == "purifying_brew" ) return new            purifying_brew_t( *this, options_str );
@@ -7721,6 +7727,7 @@ action_t* monk_t::create_action( const std::string& name,
   if ( name == "diffuse_magic" ) return new             diffuse_magic_t( *this, options_str );
   if ( name == "energizing_elixir" ) return new         energizing_elixir_t( this, options_str );
   if ( name == "invoke_xuen" ) return new               xuen_spell_t( this, options_str );
+  if ( name == "invoke_xuen_the_white_tiger" ) return new xuen_spell_t( this, options_str );
   if ( name == "mistwalk" ) return new                  mistwalk_t( *this, options_str );
   if ( name == "refreshing_jade_wind" ) return new      refreshing_jade_wind_t( this, options_str );
   if ( name == "rushing_jade_wind" ) return new         rushing_jade_wind_t( this, options_str );
@@ -7928,12 +7935,12 @@ void monk_t::create_pets()
 {
   base_t::create_pets();
 
-  if ( talent.invoke_xuen -> ok() && find_action( "invoke_xuen" ) )
+  if ( talent.invoke_xuen -> ok() && ( find_action( "invoke_xuen" ) || find_action( "invoke_xuen_the_white_tiger" ) ) )
   {
     create_pet( "xuen_the_white_tiger" );
   }
 
-  if ( talent.invoke_niuzao -> ok() && find_action( "invoke_niuzao" ) )
+  if ( talent.invoke_niuzao -> ok() && ( find_action( "invoke_niuzao" ) || find_action( "invoke_niuzao_the_black_ox" ) ) )
   {
     create_pet( "niuzao_the_black_ox" );
   }
@@ -8008,14 +8015,14 @@ void monk_t::init_spells()
   // Tier 90 Talents
   talent.rushing_jade_wind           = find_talent_spell( "Rushing Jade Wind" ); // Brewmaster & Windwalker
   // Brewmaster
-  talent.invoke_niuzao               = find_talent_spell( "Invoke Niuzao, the Black Ox", "invoke_niuzao" );
+  talent.invoke_niuzao               = find_talent_spell( "Invoke Niuzao, the Black Ox" );
   talent.special_delivery            = find_talent_spell( "Special Delivery" );
   // Windwalker
-  talent.invoke_xuen                 = find_talent_spell( "Invoke Xuen, the White Tiger", "invoke_xuen" );
+  talent.invoke_xuen                 = find_talent_spell( "Invoke Xuen, the White Tiger" );
   talent.hit_combo                   = find_talent_spell( "Hit Combo" );
   // Mistweaver
   talent.refreshing_jade_wind        = find_talent_spell( "Refreshing Jade Wind" );
-  talent.invoke_chi_ji               = find_talent_spell( "Invoke Chi-Ji, the Red Crane", "invoke_chi_ji" );
+  talent.invoke_chi_ji               = find_talent_spell( "Invoke Chi-Ji, the Red Crane" );
   talent.summon_jade_serpent_statue  = find_talent_spell( "Summon Jade Serpent Statue" );
 
   // Tier 100 Talents
@@ -9930,7 +9937,7 @@ void monk_t::apl_combat_brewmaster()
     if ( racial_actions[i] != "arcane_torrent" )
       st -> add_action( racial_actions[i] );
   }
-  st -> add_action( "invoke_niuzao,if=talent.invoke_niuzao.enabled&target.time_to_die>45" );
+  st -> add_talent( this, "Invoke Niuzao, the Black Ox", "if=target.time_to_die>45" );
   st -> add_action( this, "Ironskin Brew", "if=buff.blackout_combo.down&cooldown.brews.charges>=1" );
   st -> add_talent( this, "Black Ox Brew", "if=energy<31&cooldown.brews.charges<1" );
   for ( size_t i = 0; i < racial_actions.size(); i++ )
@@ -9991,7 +9998,7 @@ void monk_t::apl_combat_windwalker()
   def -> add_action( "call_action_list,name=st" );
 
   // Cooldowns
-  cd -> add_action( "invoke_xuen" );
+  cd -> add_talent( this, "Invoke Xuen, the White Tiger" );
   int num_items = (int)items.size();
 
   // On-use items
@@ -10008,6 +10015,10 @@ void monk_t::apl_combat_windwalker()
         cd -> add_action( "use_item,name=" + items[i].name_str + ",if=buff.congealing_goo.stack>=6" );
       else if ( items[i].name_str == "horn_of_valor" )
         cd -> add_action( "use_item,name=" + items[i].name_str + ",if=!talent.serenity.enabled|cooldown.serenity.remains<18|cooldown.serenity.remains>50|target.time_to_die<=30" );
+      else if ( items[i].name_str == "vial_of_ceaseless_toxins" )
+        cd -> add_action( "use_item,name=" + items[i].name_str + ",if=(buff.serenity.up&!equipped.specter_of_betrayal)|(equipped.specter_of_betrayal&(time<5|cooldown.serenity.remains<=8))|!talent.serenity.enabled" );
+      else if ( items[i].name_str == "specter_of_betrayal" )
+        cd -> add_action( "use_item,name=" + items[i].name_str + ",if=(cooldown.serenity.remains>10|buff.serenity.up)|!talent.serenity.enabled" );
       else if ( items[i].name_str != "draught_of_souls" )
         cd -> add_action( "use_items" );
     }

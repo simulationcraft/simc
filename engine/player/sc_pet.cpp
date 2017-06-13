@@ -276,7 +276,7 @@ void pet_t::combat_begin()
 
 // pet_t::find_pet_spell ====================================================
 
-const spell_data_t* pet_t::find_pet_spell( const std::string& name, const std::string& token )
+const spell_data_t* pet_t::find_pet_spell( const std::string& name )
 {
   unsigned spell_id = dbc.pet_ability_id( type, name.c_str() );
 
@@ -285,10 +285,8 @@ const spell_data_t* pet_t::find_pet_spell( const std::string& name, const std::s
     if ( ! owner )
       return spell_data_t::not_found();
 
-    return owner -> find_pet_spell( name, token );
+    return owner -> find_pet_spell( name );
   }
-
-  dbc.add_token( spell_id, token );
 
   return dbc::find_spell( this, spell_id );
 }

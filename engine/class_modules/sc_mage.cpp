@@ -3038,7 +3038,7 @@ struct arcane_orb_t : public arcane_mage_spell_t
 
   arcane_orb_t( mage_t* p, const std::string& options_str, bool legendary = false ) :
     arcane_mage_spell_t( legendary ? "legendary_arcane_orb" : "arcane_orb", p,
-                         p -> find_talent_spell( "Arcane Orb", "", SPEC_NONE, false, ! legendary ) ),
+                         p -> find_talent_spell( "Arcane Orb", SPEC_NONE, false, ! legendary ) ),
     orb_bolt( new arcane_orb_bolt_t( p, legendary ) )
   {
     parse_options( options_str );
@@ -3423,7 +3423,7 @@ struct comet_storm_t : public frost_mage_spell_t
 
   comet_storm_t( mage_t* p, const std::string& options_str, bool legendary = false ) :
     frost_mage_spell_t( legendary ? "legendary_comet_storm" : "comet_storm",
-                        p, p -> find_talent_spell( "Comet Storm", "", SPEC_NONE, false, ! legendary ) ),
+                        p, p -> find_talent_spell( "Comet Storm", SPEC_NONE, false, ! legendary ) ),
     projectile( new comet_storm_projectile_t( p, legendary ) )
   {
     parse_options( options_str );
@@ -5105,7 +5105,7 @@ struct meteor_t : public fire_mage_spell_t
 
   meteor_t( mage_t* p, const std::string& options_str, bool legendary = false ) :
     fire_mage_spell_t( legendary ? "legendary_meteor" : "meteor",
-                       p, p -> find_talent_spell( "Meteor", "", SPEC_NONE, false, ! legendary ) ),
+                       p, p -> find_talent_spell( "Meteor", SPEC_NONE, false, ! legendary ) ),
     targets( -1 ),
     meteor_delay( p -> find_spell( 177345 ) -> duration() )
   {
