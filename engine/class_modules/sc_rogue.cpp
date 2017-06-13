@@ -121,7 +121,6 @@ struct rogue_td_t : public actor_target_data_t
     buff_t* wound_poison;
     buff_t* crippling_poison;
     buff_t* leeching_poison;
-    buff_t* agonizing_poison;
     buffs::marked_for_death_debuff_t* marked_for_death;
     buff_t* ghostly_strike;
     buff_t* garrote; // Hidden proxy buff for garrote to get Thuggee working easily(ish)
@@ -138,7 +137,6 @@ struct rogue_td_t : public actor_target_data_t
   bool lethal_poisoned() const
   {
     return dots.deadly_poison -> is_ticking() ||
-           debuffs.agonizing_poison -> check() ||
            debuffs.wound_poison -> check();
   }
 
@@ -146,8 +144,6 @@ struct rogue_td_t : public actor_target_data_t
   {
     if ( dots.deadly_poison -> is_ticking() ) {
       return dots.deadly_poison -> remains();
-    } else if ( debuffs.agonizing_poison -> check() ) {
-      return debuffs.agonizing_poison -> remains();
     } else if ( debuffs.wound_poison -> check() ) {
       return debuffs.wound_poison -> remains();
     } else {
@@ -496,7 +492,6 @@ struct rogue_t : public player_t
     const spell_data_t* dirty_tricks;
 
     // Tier 6 - Level 90
-    const spell_data_t* agonizing_poison;
     const spell_data_t* toxic_blade;
     const spell_data_t* exsanguinate;
 
@@ -804,9 +799,6 @@ struct rogue_t : public player_t
   void trigger_shadow_nova( const action_state_t* );
   void trigger_sephuzs_secret( const action_state_t* state, spell_mechanic mechanic, double proc_chance = -1.0 );
 
-  // Computes the composite Agonizing Poison stack multiplier for Assassination Rogue
-  double agonizing_poison_stack_multiplier( const rogue_td_t* ) const;
-
   // On-death trigger for Venomous Wounds energy replenish
   void trigger_venomous_wounds_death( player_t* );
 
@@ -917,7 +909,6 @@ struct rogue_attack_t : public melee_attack_t
     bool weaponmaster;
     bool ghostly_strike;
     bool vendetta;
-    bool agonizing_poison;
     bool alacrity;
     bool adrenaline_rush_gcd;
     bool lesser_adrenaline_rush_gcd;
@@ -1021,7 +1012,6 @@ struct rogue_attack_t : public melee_attack_t
     affected_by.vendetta = data().affected_by( p() -> spec.vendetta -> effectN( 1 ) );
     affected_by.weaponmaster = p() -> talent.weaponmaster -> ok() && harmful && special &&
                                ( weapon_multiplier > 0 || attack_power_mod.direct > 0 );
-    affected_by.agonizing_poison = p() -> talent.agonizing_poison -> ok();
     affected_by.alacrity = base_costs[ RESOURCE_COMBO_POINT ] > 0;
     affected_by.adrenaline_rush_gcd = data().affected_by( p() -> buffs.adrenaline_rush -> data().effectN( 3 ) );
     affected_by.lesser_adrenaline_rush_gcd = data().affected_by( p() -> buffs.t20_4pc_outlaw -> data().effectN( 3 ) );
@@ -1816,8 +1806,6 @@ struct mutilated_flesh_t : public residual_periodic_action_t<melee_attack_t>
   {
     rogue_td_t* tdata = rogue -> get_target_data( state -> target );
 
-    dmg_multiplier *= 1.0 + rogue -> agonizing_poison_stack_multiplier( tdata );;
-
     return residual_periodic_action_t::calculate_tick_amount( state, dmg_multiplier );
   }
 };
@@ -2179,48 +2167,6 @@ struct leeching_poison_t : public rogue_poison_t
   }
 };
 
-// Numbing poison =========================================================
-
-struct agonizing_poison_t : public rogue_poison_t
-{
-  struct agonizing_poison_proc_t : public rogue_poison_t
-  {
-    agonizing_poison_proc_t( rogue_t* rogue ) :
-      rogue_poison_t( "agonizing_poison", rogue, rogue -> find_spell( 200803 ) )
-    { }
-
-    void impact( action_state_t* state ) override
-    {
-      rogue_poison_t::impact( state );
-
-      td( state -> target ) -> debuffs.agonizing_poison -> trigger();
-      if ( result_is_hit( state -> result ) &&
-           td( state -> target ) -> dots.kingsbane -> is_ticking() )
-      {
-        td( state -> target ) -> debuffs.kingsbane -> trigger();
-      }
-    }
-  };
-
-  agonizing_poison_proc_t* proc;
-
-  agonizing_poison_t( rogue_t* player ) :
-    rogue_poison_t( "agonizing_poison_driver", player, player -> find_talent_spell( "Agonizing Poison" ) ),
-    proc( new agonizing_poison_proc_t( player ) )
-  {
-    dual = true;
-    may_miss = may_crit = false;
-  }
-
-  void impact( action_state_t* state ) override
-  {
-    rogue_poison_t::impact( state );
-
-    proc -> target = state -> target;
-    proc -> execute();
-  }
-};
-
 // Apply Poison =============================================================
 
 struct apply_poison_t : public action_t
@@ -2231,8 +2177,7 @@ struct apply_poison_t : public action_t
     DEADLY_POISON,
     WOUND_POISON,
     CRIPPLING_POISON,
-    LEECHING_POISON,
-    AGONIZING_POISON
+    LEECHING_POISON
   };
 
   poison_e lethal_poison;
@@ -2258,10 +2203,9 @@ struct apply_poison_t : public action_t
     if ( p -> main_hand_weapon.type != WEAPON_NONE || p -> off_hand_weapon.type != WEAPON_NONE )
     {
       // Default to agonizing -> deadly, if no option given
-      if      ( lethal_str.empty()        ) lethal_poison = p -> talent.agonizing_poison -> ok() ? AGONIZING_POISON : DEADLY_POISON;
+      if      ( lethal_str.empty()        ) lethal_poison = DEADLY_POISON;
       else if ( lethal_str == "deadly"    ) lethal_poison = DEADLY_POISON;
       else if ( lethal_str == "wound"     ) lethal_poison = WOUND_POISON;
-      else if ( lethal_str == "agonizing" ) lethal_poison = AGONIZING_POISON;
 
       if ( nonlethal_str == "crippling" ) nonlethal_poison = CRIPPLING_POISON;
       if ( nonlethal_str == "leeching"  ) nonlethal_poison = LEECHING_POISON;
@@ -2271,7 +2215,6 @@ struct apply_poison_t : public action_t
     {
       if ( lethal_poison == DEADLY_POISON  ) p -> active_lethal_poison = new deadly_poison_t( p );
       if ( lethal_poison == WOUND_POISON   ) p -> active_lethal_poison = new wound_poison_t( p );
-      if ( lethal_poison == AGONIZING_POISON ) p -> active_lethal_poison = new agonizing_poison_t( p );
     }
 
     if ( ! p -> active_nonlethal_poison )
@@ -6493,16 +6436,6 @@ struct leeching_poison_t : public rogue_poison_buff_t
   { }
 };
 
-struct agonizing_poison_t : public rogue_poison_buff_t
-{
-  agonizing_poison_t( rogue_td_t& r ) :
-    rogue_poison_buff_t( r, "agonizing_poison", r.source -> find_spell( 200803 ) )
-  {
-    default_value = data().effectN( 1 ).percent() * ( 1.0 + r.source -> find_spell( 137037 ) -> effectN( 5 ).percent() );
-    refresh_behavior = BUFF_REFRESH_PANDEMIC;
-  }
-};
-
 struct marked_for_death_debuff_t : public buff_t
 {
   cooldown_t* mod_cd;
@@ -6763,7 +6696,6 @@ rogue_td_t::rogue_td_t( player_t* target, rogue_t* source ) :
 
   debuffs.marked_for_death = new buffs::marked_for_death_debuff_t( *this );
 
-  debuffs.agonizing_poison = new buffs::agonizing_poison_t( *this );
   debuffs.wound_poison = new buffs::wound_poison_t( *this );
   debuffs.crippling_poison = new buffs::crippling_poison_t( *this );
   debuffs.leeching_poison = new buffs::leeching_poison_t( *this );
@@ -6988,62 +6920,6 @@ double rogue_t::composite_player_multiplier( school_e school ) const
   return m;
 }
 
-// rogue_t::agonizing_poison_stack_multiplier ===============================
-
-double rogue_t::agonizing_poison_stack_multiplier( const rogue_td_t* td ) const
-{
-  if ( ! td -> debuffs.agonizing_poison -> check() )
-  {
-    return 0;
-  }
-
-  // 0.04 to 0.20 base
-  double multiplier = td -> debuffs.agonizing_poison -> stack_value();
-
-  // Mastery, Master Alchemist, and Poison Knives apply additively
-  double additive_multiplier = 1.0;
-
-  additive_multiplier += cache.mastery() * mastery.potent_poisons -> effectN( 4 ).mastery_value();
-  if ( artifact.master_alchemist.rank() )
-  {
-    // Hardcoded divisor for now, not available in the spell data
-    additive_multiplier += artifact.master_alchemist.percent() / 5;
-  }
-
-  if ( artifact.poison_knives.rank() )
-  {
-    // Hardcoded divisor for now, not available in the spell data
-    additive_multiplier += artifact.poison_knives.percent() / 2;
-  }
-
-  multiplier *= additive_multiplier;
-
-  // Master Poisoner and Surge of Toxins apply as normal multipliers
-
-  if ( talent.master_poisoner -> ok() )
-  {
-    multiplier *= 1.0 + talent.master_poisoner -> effectN( 1 ).percent();
-  }
-
-  // Technically in game "features" and this should only apply after triggering a poison after the
-  // Surge of Toxing buff goes up.
-  if ( td -> debuffs.surge_of_toxins -> up() )
-  {
-    // Note, half effectiveness on Agonizing Poison
-    multiplier *= 1.0 + td -> debuffs.surge_of_toxins -> stack_value() / 2;
-  }
-
-  // To be confirmed: behavior of Zoldyck Family Training Shackles with Agonizing Poison
-  /* Looks like it is no longer working as of 01/16/2017 (7.1.5)
-  if ( legendary.zoldyck_family_training_shackles &&
-       td -> target -> health_percentage() < legendary.zoldyck_family_training_shackles -> effectN( 2 ).base_value() )
-  {
-    multiplier *= 1.0 + legendary.zoldyck_family_training_shackles -> effectN( 1 ).percent();
-  }*/
-
-  return multiplier;
-}
-
 // rogue_t::composite_player_target_multiplier ==============================
 
 double rogue_t::composite_player_target_multiplier( player_t* target, school_e school ) const
@@ -7051,8 +6927,6 @@ double rogue_t::composite_player_target_multiplier( player_t* target, school_e s
   double m = player_t::composite_player_target_multiplier( target, school );
 
   rogue_td_t* tdata = get_target_data( target );
-
-  m *= 1.0 + agonizing_poison_stack_multiplier( tdata );
 
   m *= 1.0 + tdata -> debuffs.ghostly_strike -> stack_value();
 
@@ -7168,18 +7042,17 @@ void rogue_t::init_action_list()
     // Builders
     action_priority_list_t* build = get_action_priority_list( "build", "Builders" );
     build -> add_talent( this, "Hemorrhage", "if=refreshable" );
-    build -> add_talent( this, "Hemorrhage", "cycle_targets=1,if=refreshable&dot.rupture.ticking&spell_targets.fan_of_knives<2+talent.agonizing_poison.enabled+equipped.insignia_of_ravenholdt" );
-    build -> add_action( this, "Fan of Knives", "if=spell_targets>=2+talent.agonizing_poison.enabled+equipped.insignia_of_ravenholdt|buff.the_dreadlords_deceit.stack>=29" );
+    build -> add_talent( this, "Hemorrhage", "cycle_targets=1,if=refreshable&dot.rupture.ticking&spell_targets.fan_of_knives<2+equipped.insignia_of_ravenholdt" );
+    build -> add_action( this, "Fan of Knives", "if=spell_targets>=2+equipped.insignia_of_ravenholdt|buff.the_dreadlords_deceit.stack>=29" );
       // We want to apply poison on the unit that have the most bleeds on and that meet the condition for Venomous Wound (and also for T19 dmg bonus).
       // This would be done with target_if=max:bleeds but it seems to be bugged atm
-    build -> add_action( this, "Mutilate", "cycle_targets=1,if=(!talent.agonizing_poison.enabled&dot.deadly_poison_dot.refreshable)|(talent.agonizing_poison.enabled&debuff.agonizing_poison.remains<debuff.agonizing_poison.duration*0.3)" );
+    build -> add_action( this, "Mutilate", "cycle_targets=1,if=dot.deadly_poison_dot.refreshable" );
     build -> add_action( this, "Mutilate" );
-    build -> add_action( this, "Poisoned Knife", "cycle_targets=1,if=talent.agonizing_poison.enabled&debuff.agonizing_poison.remains<debuff.agonizing_poison.duration*0.3&debuff.agonizing_poison.stack>=5" );
 
     // Cooldowns
     action_priority_list_t* cds = get_action_priority_list( "cds", "Cooldowns" );
     cds -> add_action( potion_action );
-    cds -> add_action( "use_item,name=draught_of_souls,if=energy.deficit>=35+variable.energy_regen_combined*2&(!equipped.mantle_of_the_master_assassin|cooldown.vanish.remains>8)&(!talent.agonizing_poison.enabled|debuff.agonizing_poison.stack>=5&debuff.surge_of_toxins.remains>=3)" );
+    cds -> add_action( "use_item,name=draught_of_souls,if=energy.deficit>=35+variable.energy_regen_combined*2&(!equipped.mantle_of_the_master_assassin|cooldown.vanish.remains>8)" );
     cds -> add_action( "use_item,name=draught_of_souls,if=mantle_duration>0&mantle_duration<3.5&dot.kingsbane.ticking" );
     for ( size_t i = 0; i < items.size(); i++ )
     {
@@ -7796,7 +7669,6 @@ void rogue_t::init_spells()
   talent.thuggee            = find_talent_spell( "Thuggee" );
   talent.internal_bleeding  = find_talent_spell( "Internal Bleeding" );
 
-  talent.agonizing_poison   = find_talent_spell( "Agonizing Poison" );
   talent.toxic_blade        = find_talent_spell( "Toxic Blade" );
   talent.exsanguinate       = find_talent_spell( "Exsanguinate" );
 
