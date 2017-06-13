@@ -5718,6 +5718,7 @@ struct sunfire_t : public druid_spell_t
       
       dual = background = true;
       aoe = -1;
+      base_aoe_multiplier = 0;
       dot_duration += p -> spec.balance_overrides -> effectN( 4 ).time_value();
       stellar_empowerment = true;
 
