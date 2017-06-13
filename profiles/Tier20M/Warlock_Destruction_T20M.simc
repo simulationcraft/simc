@@ -56,7 +56,7 @@ actions+=/summon_doomguard,if=talent.grimoire_of_supremacy.enabled&spell_targets
 actions+=/summon_infernal,if=talent.grimoire_of_supremacy.enabled&spell_targets.summon_infernal>1&equipped.132379&!cooldown.sindorei_spite_icd.remains
 actions+=/soul_harvest,if=!buff.soul_harvest.remains
 actions+=/chaos_bolt,if=active_enemies<4&buff.active_havoc.remains>cast_time
-actions+=/channel_demonfire,if=dot.immolate.remains>cast_time&(active_enemies=1|buff.active_havoc.remains<action.chaos_bolt.cast_time|talent.wreak_havoc.enabled)
+actions+=/channel_demonfire,if=dot.immolate.remains>cast_time&(active_enemies=1|buff.active_havoc.remains<action.chaos_bolt.cast_time)
 actions+=/rain_of_fire,if=active_enemies>=3
 actions+=/rain_of_fire,if=active_enemies>=6&talent.wreak_havoc.enabled
 actions+=/dimensional_rift,if=target.time_to_die<=32|!equipped.144369|charges>1|((!talent.grimoire_of_service.enabled|recharge_time<cooldown.service_pet.remains)&(!talent.soul_harvest.enabled|recharge_time<cooldown.soul_harvest.remains)&(!talent.grimoire_of_supremacy.enabled|recharge_time<cooldown.summon_doomguard.remains))
