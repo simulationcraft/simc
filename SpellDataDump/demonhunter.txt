@@ -1,4 +1,4 @@
-SimulationCraft 725-01 for World of Warcraft 7.2.0 Live (wow build 23826, git build 824e588)
+SimulationCraft 725-01 for World of Warcraft 7.2.5 Live (wow build 24287)
 
 Name             : Dual Wield (Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
@@ -1869,7 +1869,7 @@ Duration         : 3 seconds
 Proc Chance      : 100%
 Proc Flags       : ....x... ........ ........ ........ 
                  : Yellow Melee
-Triggered by     : Felblade (203557)
+Triggered by     : Felblade (203557), Felblade (236167)
 Attributes       : .......x ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3097,6 +3097,42 @@ Description      : $@spelldesc198589
 Tooltip          : Dodge increased by $s2%.
 Damage taken reduced by $s3%.
 
+Name             : Fiery Demise (id=212817) [Spell Family (107), Passive] 
+Class            : Demon Hunter
+School           : Physical
+Proc Chance      : 101%
+Artifact Power   : Id: 1231, Index: 9, Max Rank: 8, Values: [ 10, 20, 30, 40, 50, 60, 70, 80 ]
+Proc Flags       : ....x... ....x... x....... ........ 
+                 : Yellow Melee, AOE Hostile Spell, Hostile Spell
+Attributes       : ......x. ........ ........ .......x   ........ ........ ........ ....x... 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ..x..... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6), Cannot cancel aura (31)
+Effects          :
+#1 (id=315666)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 10 | Scaled Value: 10 | Target: Self (1)
+Description      : Fiery Brand also increases Fire damage you deal to the target by $s1%.
+
+Name             : Fiery Demise (id=212818) [Spell Family (107)] 
+Class            : Demon Hunter
+School           : Fire
+Range            : 100 yards
+Duration         : 8 seconds
+Attributes       : ........ ........ ........ ..x.....   ........ ........ ........ ........ 
+                 : ..x..... ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=315667)   : Apply Aura (6) | Unknown(270)
+                   Base Value: 10 | Scaled Value: 10 | Misc Value: 4 | Target: Enemy (6)
+Description      : $@spelldesc212817
+Tooltip          : Fire damage taken increased by $w1%.
+
 Name             : Charred Warblades (id=213011) [Spell Family (107)] 
 Class            : Demon Hunter
 School           : Fire
@@ -3729,6 +3765,24 @@ Effects          :
 Description      : Strike an enemy for $sw2 Physical damage, and shatter a Lesser Soul Fragment from your target that heals you for $203794s1 health when consumed.
 
 |cFFFFFFFFGenerates ${$m3/10} Pain.|r
+
+Name             : Felblade (id=236167) [Spell Family (107), Passive, Hidden] 
+Class            : Demon Hunter
+School           : Physical
+Proc Chance      : 101%
+Real PPM         : 4.5 (Haste multiplier)
+Proc Flags       : ....x... ....x... ........ ........ 
+                 : Yellow Melee, AOE Hostile Spell
+Attributes       : ......xx x....... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ..x..... 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6), Hidden (7)
+Effects          :
+#1 (id=357027)   : Apply Aura (6) | Proc Trigger Spell (42): Felblade
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 204497 | Target: Self (1)
 
 Name             : Demonic Infusion (id=236189) [Spell Family (107)] 
 Class            : Demon Hunter

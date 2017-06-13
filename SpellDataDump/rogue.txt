@@ -1,4 +1,4 @@
-SimulationCraft 725-01 for World of Warcraft 7.2.0 Live (wow build 23826, git build 824e588)
+SimulationCraft 725-01 for World of Warcraft 7.2.5 Live (wow build 24287)
 
 Name             : Backstab (id=53) [Spell Family (8)] 
 Class            : Subtlety Rogue
