@@ -7430,7 +7430,7 @@ void mage_t::apl_arcane()
 
   pom_cdr_variables -> add_action( "variable,name=total_poms,op=add,value=1,if=prev_off_gcd.presence_of_mind" );
   pom_cdr_variables -> add_action( "variable,name=pom_cdr,op=add,value=4,if=prev_gcd.1.arcane_missiles&cooldown.presence_of_mind.remains" );
-  pom_cdr_variables -> add_action( "variable,name=average_pom_cdr,op=set,value=(variable.average_pom_cdr*variable.total_poms-variable.average_pom_cdr+variable.pom_cdr)%variable.total_poms,if=prev_off_gcd.presence_of_mind)" );
+  pom_cdr_variables -> add_action( "variable,name=average_pom_cdr,op=set,value=(variable.average_pom_cdr*variable.total_poms-variable.average_pom_cdr+variable.pom_cdr)%variable.total_poms,if=prev_off_gcd.presence_of_mind" );
   pom_cdr_variables -> add_action( "variable,name=pom_cdr,op=reset,if=prev_off_gcd.presence_of_mind" );
 
   build -> add_talent( this, "Arcane Orb" );
