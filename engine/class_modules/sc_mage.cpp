@@ -7664,8 +7664,8 @@ void mage_t::apl_frost()
     "if=buff.frozen_mass.remains>execute_time+action.glacial_spike.execute_time+action.glacial_spike.travel_time&buff.brain_freeze.react=0&"
     "talent.glacial_spike.enabled",
 
-    "While Frozen Mass is active, we want to generate as many buffed Icicles as possible. However, we do not want to do this at "
-    "the expense of the final Glacial Spike, which should be also used while Frozen Mass is active." );
+    "While Frozen Mass is active, we want to fish for Brain Freeze for the next Glacial Spike. Stop when Frozen Mass is about to run out "
+    "and we wouldn't be able to cast Glacial Spike in time." );
   single -> add_talent( this, "Glacial Spike", "if=cooldown.frozen_orb.remains>10|!set_bonus.tier20_2pc",
     "Glacial Spike is generally used as it is available, unless we have T20 2pc. In that case, Glacial Spike is delayed when "
     "Frozen Mass is happening soon (in less than 10 s)." );
