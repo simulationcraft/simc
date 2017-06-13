@@ -7508,83 +7508,103 @@ void shaman_t::init_action_list_enhancement()
 
   action_priority_list_t* precombat = get_action_priority_list( "precombat" );
   action_priority_list_t* def       = get_action_priority_list( "default"   );
+  action_priority_list_t* cds       = get_action_priority_list( "CDs"       );
+  action_priority_list_t* buffs     = get_action_priority_list( "buffs"     );
+  action_priority_list_t* core      = get_action_priority_list( "core"      );
+  action_priority_list_t* filler    = get_action_priority_list( "filler"    );
+  action_priority_list_t* opener    = get_action_priority_list( "opener"    );
+
 
   // Flask
   precombat -> add_action( "flask" );
-
   // Food
   precombat -> add_action( "food" );
-
   // Rune
   precombat -> add_action( "augmentation" );
-
   // Snapshot stats
   precombat -> add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
-
   // Precombat potion
   precombat -> add_action( "potion" );
-
   // Lightning shield can be turned on pre-combat
   precombat -> add_talent( this, "Lightning Shield" );
-
   // All Shamans Bloodlust and Wind Shear by default
   def -> add_action( this, "Wind Shear" );
-
-  def -> add_action( this, "Bloodlust", generate_bloodlust_options(),
-    "Bloodlust casting behavior mirrors the simulator settings for proxy bloodlust. See options 'bloodlust_percent', and 'bloodlust_time'. " );
+  def -> add_action( "variable,name=hailstormCheck,value=((talent.hailstorm.enabled&!buff.frostbrand.up)|!talent.hailstorm.enabled)" );
+  def -> add_action( "variable,name=furyCheck80,value=(!talent.fury_of_air.enabled|(talent.fury_of_air.enabled&maelstrom>80))" );
+  def -> add_action( "variable,name=furyCheck70,value=(!talent.fury_of_air.enabled|(talent.fury_of_air.enabled&maelstrom>70))" );
+  def -> add_action( "variable,name=furyCheck45,value=(!talent.fury_of_air.enabled|(talent.fury_of_air.enabled&maelstrom>45))" );
+  def -> add_action( "variable,name=furyCheck25,value=(!talent.fury_of_air.enabled|(talent.fury_of_air.enabled&maelstrom>25))" );
+  def -> add_action( "variable,name=OCPool70,value=(!talent.overcharge.enabled|(talent.overcharge.enabled&maelstrom>70))" );
+  def -> add_action( "variable,name=OCPool60,value=(!talent.overcharge.enabled|(talent.overcharge.enabled&maelstrom>60))" );
+  def -> add_action( "variable,name=heartEquipped,value=(equipped.151819)" );
+  def -> add_action( "variable,name=akainuEquipped,value=(equipped.137084)" );
+  def -> add_action( "variable,name=akainuAS,value=(variable.akainuEquipped&buff.hot_hand.react&!buff.frostbrand.up)" );
+  def -> add_action( "variable,name=LightningCrashNotUp,value=(!buff.lightning_crash.up&set_bonus.tier20_2pc)" );
+  def -> add_action( "variable,name=alphaWolfCheck,value=((pet.frost_wolf.buff.alpha_wolf.remains<2&pet.fiery_wolf.buff.alpha_wolf.remains<2&pet.lightning_wolf.buff.alpha_wolf.remains<2)&feral_spirit.remains>4)" );
 
   // Turn on auto-attack first thing
   def -> add_action( "auto_attack" );
-
-  // Use Feral Spirits before off-GCD CDs.
-  def -> add_action( this, "Feral Spirit", "if=!artifact.alpha_wolf.rank|(maelstrom>=20&cooldown.crash_lightning.remains<=gcd)" );
-  // Ensure Feral Spirits start using alpha wolf abilities immediately
-  def -> add_action( this, "Crash Lightning", "if=artifact.alpha_wolf.rank&prev_gcd.1.feral_spirit" );
-
   // On-use actions
   def -> add_action( "use_items" );
 
-  // Racials
-  def -> add_action( "berserking,if=buff.ascendance.up|(feral_spirit.remains>5)|level<100" );
-  def -> add_action( "blood_fury,if=buff.ascendance.up|(feral_spirit.remains>5)|level<100" );
+  def -> add_action( "call_action_list,name=opener" );
+  def -> add_action( this, "Windstrike", "if=(variable.heartEquipped|set_bonus.tier19_2pc)&(!talent.earthen_spike.enabled|(cooldown.earthen_spike.remains>1&cooldown.doom_winds.remains>1)|debuff.earthen_spike.up)" );
+  def -> add_action( "call_action_list,name=buffs" );
+  def -> add_action( "call_action_list,name=CDs" );
+  def -> add_action( "call_action_list,name=core" );
+  def -> add_action( "call_action_list,name=filler" );
 
-  // In-combat potion
-  def -> add_action( "potion,if=feral_spirit.remains>5|target.time_to_die<=60" );
 
-  // Core rotation
-  def -> add_action( this, "Rockbiter", "if=talent.landslide.enabled&buff.landslide.remains<gcd" );
-  def -> add_talent( this, "Fury of Air", "if=!ticking&maelstrom>22" );
-  def -> add_action( this, "Frostbrand", "if=talent.hailstorm.enabled&buff.frostbrand.remains<gcd&((!talent.fury_of_air.enabled)|(talent.fury_of_air.enabled&maelstrom>25))" );
-  def -> add_action( this, "Flametongue", "if=buff.flametongue.remains<gcd|(cooldown.doom_winds.remains<6&buff.flametongue.remains<4)");
-  def -> add_action( this, "Doom Winds");
-  def -> add_action( this, "Crash Lightning", "if=talent.crashing_storm.enabled&active_enemies>=3&(!talent.hailstorm.enabled|buff.frostbrand.remains>gcd)");
-  def -> add_talent( this, "Earthen Spike");
-  def -> add_action( this, "Lightning Bolt", "if=(talent.overcharge.enabled&maelstrom>=40&!talent.fury_of_air.enabled)|(talent.overcharge.enabled&talent.fury_of_air.enabled&maelstrom>46)" );
-  def -> add_action( this, "Crash Lightning", "if=buff.crash_lightning.remains<gcd&active_enemies>=2" );
-  def -> add_talent( this, "Windsong" );
-  def -> add_talent( this, "Ascendance", "if=buff.stormbringer.react" );
-  def -> add_action( this, "Windstrike", "if=buff.stormbringer.react&((talent.fury_of_air.enabled&maelstrom>=26)|(!talent.fury_of_air.enabled))" );
-  def -> add_action( this, "Stormstrike", "if=buff.stormbringer.react&((talent.fury_of_air.enabled&maelstrom>=26)|(!talent.fury_of_air.enabled))" );
-  def -> add_action( this, "Frostbrand", "if=equipped.137084&talent.hot_hand.enabled&buff.hot_hand.react&!buff.frostbrand.up&((!talent.fury_of_air.enabled)|(talent.fury_of_air.enabled&maelstrom>25))" );
-  def -> add_action( this, "Lava Lash", "if=talent.hot_hand.enabled&buff.hot_hand.react" );
-  def -> add_talent( this, "Sundering", "if=active_enemies>=3" );
-  def -> add_action( this, "Crash Lightning", "if=active_enemies>=4" );
-  def -> add_action( this, "Windstrike", "if=talent.overcharge.enabled&cooldown.lightning_bolt.remains<gcd&maelstrom>80" );
-  def -> add_action( this, "Windstrike", "if=talent.fury_of_air.enabled&maelstrom>46&(cooldown.lightning_bolt.remains>gcd|!talent.overcharge.enabled)" );
-  def -> add_action( this, "Windstrike", "if=!talent.overcharge.enabled&!talent.fury_of_air.enabled" );
-  def -> add_action( this, "Stormstrike", "if=talent.overcharge.enabled&cooldown.lightning_bolt.remains<gcd&maelstrom>80" );
-  def -> add_action( this, "Stormstrike", "if=talent.fury_of_air.enabled&maelstrom>46&(cooldown.lightning_bolt.remains>gcd|!talent.overcharge.enabled)" );
-  def -> add_action( this, "Stormstrike", "if=!talent.overcharge.enabled&!talent.fury_of_air.enabled" );
-  def -> add_action( this, "Crash Lightning", "if=((active_enemies>1|talent.crashing_storm.enabled|talent.boulderfist.enabled)&!set_bonus.tier19_4pc)|feral_spirit.remains>5" );
-  def -> add_action( this, "Crash Lightning", "if=active_enemies>=3" );
-  def -> add_action( this, "Frostbrand", "if=talent.hailstorm.enabled&buff.frostbrand.remains<4.8&((!talent.fury_of_air.enabled)|(talent.fury_of_air.enabled&maelstrom>25))" );
-  def -> add_action( this, "Frostbrand", "if=equipped.137084&!buff.frostbrand.up&((!talent.fury_of_air.enabled)|(talent.fury_of_air.enabled&maelstrom>25))" );
-  def -> add_action( this, "Lava Lash", "if=talent.fury_of_air.enabled&talent.overcharge.enabled&(set_bonus.tier19_4pc&maelstrom>=80)" );
-  def -> add_action( this, "Lava Lash", "if=talent.fury_of_air.enabled&!talent.overcharge.enabled&(set_bonus.tier19_4pc&maelstrom>=53)" );
-  def -> add_action( this, "Lava Lash", "if=(!set_bonus.tier19_4pc&maelstrom>=120)|(!talent.fury_of_air.enabled&set_bonus.tier19_4pc&maelstrom>=40)" );
-  def -> add_action( this, "Flametongue", "if=buff.flametongue.remains<4.8");
-  def -> add_action( this, "Rockbiter" );
-  def -> add_action( this, "Flametongue" );
+  opener -> add_action( this, "Rockbiter", "if=maelstrom<15&time<2" );
+
+
+  buffs -> add_action( this, "Rockbiter", "if=talent.landslide.enabled&!buff.landslide.up" );
+  buffs -> add_talent( this, "Fury of Air", "if=buff.ascendance.up|(feral_spirit.remains>5)|level<100" );
+  buffs -> add_action( this, "Crash Lightning", "if=artifact.alpha_wolf.rank&prev_gcd.1.feral_spirit" );
+  buffs -> add_action( this, "Flametongue", "if=!buff.flametongue.up" );
+  buffs -> add_action( this, "Frostbrand", "if=talent.hailstorm.enabled&!buff.frostbrand.up&variable.furyCheck45" );
+  buffs -> add_action( this, "Flametongue", "if=buff.flametongue.remains<6+gcd&cooldown.doom_winds.remains<gcd*2" );
+  buffs -> add_action( this, "Frostbrand", "if=talent.hailstorm.enabled&buff.frostbrand.remains<6+gcd&cooldown.doom_winds.remains<gcd*2" );
+  
+
+  cds -> add_action( this, "Bloodlust", generate_bloodlust_options(),
+    "Bloodlust casting behavior mirrors the simulator settings for proxy bloodlust. See options 'bloodlust_percent', and 'bloodlust_time'. " );
+  cds -> add_action( "berserking,if=buff.ascendance.up|(feral_spirit.remains>5)|level<100" );
+  cds -> add_action( "blood_fury,if=buff.ascendance.up|(feral_spirit.remains>5)|level<100" );
+  cds -> add_action( "potion,if=buff.ascendance.up|!talent.ascendance.enabled&feral_spirit.remains>5|target.time_to_die<=60" );
+  cds -> add_action( this, "Feral Spirit" );
+  cds -> add_action( this, "Doom Winds", "if=debuff.earthen_spike.up&talent.earthen_spike.enabled|!talent.earthen_spike.enabled" );
+  cds -> add_talent( this, "Ascendance", "if=buff.doom_winds.up" );
+
+  
+  core -> add_talent( this, "Earthen Spike", "if=variable.furyCheck25" );
+  core -> add_action( this, "Crash Lightning", "if=!buff.crash_lightning.up&active_enemies>=2" );
+  core -> add_talent( this, "Windsong" );
+  core -> add_action( this, "Crash Lightning", "if=active_enemies>=8|(active_enemies>=6&talent.crashing_storm.enabled)" );
+  core -> add_action( this, "Windstrike" );
+  core -> add_action( this, "Stormstrike", "if=buff.stormbringer.up&variable.furyCheck25" );
+  core -> add_action( this, "Crash Lightning", "if=active_enemies>=4|(active_enemies>=2&talent.crashing_storm.enabled)" );
+  core -> add_action( this, "Lightning Bolt", "if=talent.overcharge.enabled&variable.furyCheck45&maelstrom>=40" );
+  core -> add_action( this, "Stormstrike", "if=(!talent.overcharge.enabled&variable.furyCheck45)|(talent.overcharge.enabled&variable.furyCheck80)" );
+  core -> add_action( this, "Frostbrand", "if=variable.akainuAS" );
+  core -> add_action( this, "Lava Lash", "if=buff.hot_hand.react&((variable.akainuEquipped&buff.frostbrand.up)|!variable.akainuEquipped)" );
+  core -> add_talent( this, "Sundering", "if=active_enemies>=3" );
+  core -> add_action( this, "Crash Lightning", "if=active_enemies>=3|variable.LightningCrashNotUp|variable.alphaWolfCheck" );
+
+  
+  filler -> add_action( this, "Rockbiter", "if=maelstrom<120" );
+  filler -> add_action( this, "Flametongue", "if=buff.flametongue.remains<4.8" );
+  filler -> add_action( this, "Rockbiter", "if=maelstrom<=40" );
+  filler -> add_action( this, "Crash Lightning", "if=(talent.crashing_storm.enabled|active_enemies>=2)&debuff.earthen_spike.up&maelstrom>=40&variable.OCPool60" );
+  filler -> add_action( this, "Frostbrand", "if=talent.hailstorm.enabled&buff.frostbrand.remains<4.8&maelstrom>40" );
+  filler -> add_action( this, "Frostbrand", "if=variable.akainuEquipped&!buff.frostbrand.up&maelstrom>=75" );
+  filler -> add_talent( this, "Sundering" );
+  filler -> add_action( this, "Lava Lash", "if=maelstrom>=50&variable.OCPool70&variable.furyCheck80" );
+  filler -> add_action( this, "Rockbiter" );
+  filler -> add_action( this, "Crash Lightning", "if=(maelstrom>=65|talent.crashing_storm.enabled|active_enemies>=2)&variable.OCPool60&variable.furyCheck45" );
+  filler -> add_action( this, "Flametongue" );
+
+  
 }
 
 // shaman_t::init_actions ===================================================
