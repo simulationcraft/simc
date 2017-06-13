@@ -41,7 +41,7 @@ actions+=/call_action_list,name=sef,if=!talent.serenity.enabled&equipped.drinkin
 actions+=/call_action_list,name=sef,if=!talent.serenity.enabled&!equipped.drinking_horn_cover&(cooldown.strike_of_the_windlord.remains<=14&cooldown.fists_of_fury.remains<=6&chi>=3&cooldown.rising_sun_kick.remains<=1|target.time_to_die<=15|cooldown.touch_of_death.remains>112)&cooldown.storm_earth_and_fire.charges=1
 actions+=/call_action_list,name=st
 
-actions.cd=invoke_xuen_the_white_tiger
+actions.cd=invoke_xuen
 actions.cd+=/blood_fury
 actions.cd+=/berserking
 actions.cd+=/arcane_torrent,if=chi.max-chi>=1&energy.time_to_max>=0.5
