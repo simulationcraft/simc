@@ -1,4 +1,4 @@
-druid="druid"
+druid="Druid_Feral_T20M"
 spec=feral
 level=110
 race=night_elf
@@ -138,11 +138,11 @@ off_hand=fangs_of_ashamane,id=128859,gem_id=0/0/0/0,relic_id=0/0
 
 # Gear Summary
 # gear_ilvl=938.25
-# gear_agility=28134
+# gear_agility=28133
 # gear_stamina=45466
-# gear_crit_rating=9317
+# gear_crit_rating=8994
 # gear_haste_rating=1912
-# gear_mastery_rating=12053
+# gear_mastery_rating=11878
 # gear_versatility_rating=4685
 # gear_armor=2690
 # set_bonus=tier20_2pc=1
