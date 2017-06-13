@@ -5335,7 +5335,7 @@ struct mind_freeze_t : public death_knight_spell_t
 
   bool ready() override
   {
-    if ( target -> debuffs.casting || ! target -> debuffs.casting -> check() )
+    if ( ! target -> debuffs.casting || ! target -> debuffs.casting -> check() )
       return false;
 
     return death_knight_spell_t::ready();
