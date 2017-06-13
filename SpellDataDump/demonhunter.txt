@@ -1,4 +1,4 @@
-SimulationCraft 725-01 for World of Warcraft 7.2.5 Live (wow build 24287)
+SimulationCraft 725-01 for World of Warcraft 7.2.5 Live (wow build 24287, git build e007545)
 
 Name             : Dual Wield (Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
@@ -1721,9 +1721,11 @@ Effects          :
 #1 (id=300651)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
 #2 (id=300652)   : Weapon Damage% (31)
-                   Base Value: 85 | Scaled Value: 0.85 | Target: Enemy (6)
+                   Base Value: 50 | Scaled Value: 0.5 | Target: Enemy (6)
+                   Hotfixed: Base Value (85 -> 50), Chain Multiplier (0 -> 1)
 #3 (id=300653)   : Energize Power (30)
                    Base Value: 11 | Scaled Value: 12 - 20 | Value Range: 9 | Misc Value: fury | Target: Self (1)
+                   Hotfixed: Chain Multiplier (0 -> 1)
 Description      : Inflicts $sw1 Shadow damage and generates $m3 to $M3 Fury.
 
 Name             : Demon Spikes (id=203819) [Spell Family (107)] 
@@ -2138,6 +2140,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=305378)   : Apply Aura (6) | Unknown(270)
                    Base Value: 25 | Scaled Value: 25 | Misc Value: 127 | Target: Enemy (6)
+                   Hotfixed: Chain Multiplier (0 -> 1)
 Description      : Increases damage you inflict against the target by $s1% for $d. 
 
 When the target is slain, you will inflict $s1% additional damage against all creature types matching the original target (Humanoid, Dragonkin, etc.) for the remaining duration.
@@ -2775,6 +2778,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=312614)   : School Damage (2): chromatic
                    Base Value: 0 | Scaled Value: 0 (avg=0, dl=0.1) | AP Coefficient: 3.00000 | Radius: 4 - 8 yards | Target: Unknown(86) -> AOE enemy (instant) (16)
+                   Hotfixed: Chain Multiplier (0 -> 1)
 Description      : $@spelldesc211053
 
 Name             : Fel Barrage (id=211053) [Spell Family (107)] 
@@ -2992,10 +2996,12 @@ Effects          :
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 247 (Label) | Target: Self (1)
                    Affected Spells (Label): Infernal Contract (225140), Living Carapace (225033), Sands of Time (225124), Vampiric Aura (225130), Wailing Souls (242609), Unending Hunger (242536)
 #6 (id=315240)   : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
-                   Base Value: 8 | Scaled Value: 8 | Target: Self (1)
+                   Base Value: 9 | Scaled Value: 9 | Target: Self (1)
                    Affected Spells: Demon's Bite (162243), Chaos Nova (179057), Throw Glaive (185123), Blade Dance (188499), Fel Rush (192611), Eye Beam (198030), Chaos Strike (199547), Blade Dance (199552), Metamorphosis (200166), Blade Dance (200685), Annihilation (201428), Fury of the Illidari (201467), Fury of the Illidari (201628), Fury of the Illidari (201789), Demon Blades (203796), Throw Glaive (204157), Death Sweep (210152), Death Sweep (210153), Death Sweep (210155), Fel Barrage (211052), Fel Barrage (211053), Felblade (213241), Felblade (213243), Chaos Strike (222031), Fel Eruption (225102), Annihilation (227518), Felblade (232893), Metamorphosis (247121)
+                   Hotfixed: Base Value (8 -> 9), Chain Multiplier (0 -> 1)
 #7 (id=315241)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Damage (22)
-                   Base Value: 8 | Scaled Value: 8 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 9 | Scaled Value: 9 | Misc Value: 22 | Target: Self (1)
+                   Hotfixed: Base Value (8 -> 9), Chain Multiplier (0 -> 1)
 #8 (id=315242)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #9 (id=315243)   : Apply Aura (6) | Dummy (4)
@@ -3943,6 +3949,7 @@ Effects          :
                    Base Value: 150 | Scaled Value: 150 | Misc Value: 211796 | Trigger Spell: 211797 | Target: Self (1)
 #2 (id=464520)   : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 30 | Scaled Value: 30 | Misc Value: 0x7f | Target: Self (1)
+                   Hotfixed: Chain Multiplier (0 -> 1)
 Description      : Increases all damage done by $s2% for $d.
 
 While active, your auto attack deals $s1% increased damage, and causes Chaos damage.
