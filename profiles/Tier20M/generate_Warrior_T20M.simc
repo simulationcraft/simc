@@ -13,7 +13,7 @@ shoulders=titanic_onslaught_pauldrons,id=147192,ilevel=930
 back=titanic_onslaught_cloak,id=147188,enchant=binding_of_strength,ilevel=930
 chest=titanic_onslaught_breastplate,id=147187,ilevel=930
 wrists=vambraces_of_resolute_justice,id=147074,ilevel=930
-hands=dusk_crusher_handguards,id=147061,bonus_id=3561,ilevel=930
+hands=duskcrusher_handguards,id=147061,bonus_id=3561,ilevel=930
 waist=girdle_of_the_crumbling_sanctum,id=147429,ilevel=930
 legs=titanic_onslaught_greaves,id=147191,ilevel=930
 feet=iron_ballast_sabatons,id=147059,ilevel=930
@@ -39,7 +39,7 @@ shoulders=titanic_onslaught_pauldrons,id=147192,ilevel=930
 back=titanic_onslaught_cloak,id=147188,enchant=binding_of_strength,ilevel=930
 chest=titanic_onslaught_breastplate,id=147187,ilevel=930
 wrists=vambraces_of_resolute_justice,id=147074,ilevel=930
-hands=dusk_crusher_handguards,id=147061,bonus_id=3561,ilevel=930
+hands=duskcrusher_handguards,id=147061,bonus_id=3561,ilevel=930
 waist=girdle_of_the_crumbling_sanctum,id=147429,ilevel=930
 legs=titanic_onslaught_greaves,id=147191,ilevel=930
 feet=iron_ballast_sabatons,id=147059,ilevel=930
