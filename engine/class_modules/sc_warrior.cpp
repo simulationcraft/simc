@@ -1484,7 +1484,6 @@ struct mortal_strike_t : public warrior_attack_t
   {
     double c = warrior_attack_t::cost();
 
-  if( p() -> legendary.archavons_heavy_hand != nullptr )
     c += p() -> legendary.archavons_heavy_hand -> effectN(1).resource( RESOURCE_RAGE );
 
     return c;
@@ -1839,7 +1838,7 @@ struct charge_t: public warrior_attack_t
 
     p() -> buff.furious_charge -> trigger();
 
-    if ( p() -> legendary.sephuzs_secret != nullptr && execute_state -> target -> type == ENEMY_ADD )
+    if ( p() -> legendary.sephuzs_secret != spell_data_t::not_found() && execute_state -> target -> type == ENEMY_ADD )
     {
       p() -> buff.sephuzs_secret -> trigger();
     }
@@ -2898,7 +2897,7 @@ struct pummel_t: public warrior_attack_t
   {
     warrior_attack_t::execute();
 
-    if ( p() -> legendary.sephuzs_secret != nullptr )
+    if ( p() -> legendary.sephuzs_secret != spell_data_t::not_found() )
     {
       p() -> buff.sephuzs_secret -> trigger();
     }
@@ -3182,7 +3181,7 @@ struct rampage_attack_t: public warrior_attack_t
     {// If the first attack misses, all of the rest do as well. However, if any other attack misses, the attacks after continue.
                                 // The animations and timing of everything else -- such as odyns champion proccing after the last attack -- still occur, so we can't just cancel rampage.
       warrior_attack_t::impact( s );
-      if ( p() -> legendary.valarjar_berserkers != nullptr && s -> result == RESULT_CRIT && target == s -> target )
+      if ( p() -> legendary.valarjar_berserkers != spell_data_t::not_found() && s -> result == RESULT_CRIT && target == s -> target )
       {
         p() -> resource_gain( RESOURCE_RAGE, rage_from_valarjar_berserking, p() -> gain.valarjar_berserking  );
       }
@@ -3891,7 +3890,7 @@ struct fury_whirlwind_parent_t: public warrior_attack_t
 
   timespan_t composite_dot_duration( const action_state_t* /* s */ ) const override
   {
-    if ( p() -> legendary.najentuss_vertebrae != nullptr && as<int>( target_list().size() ) >= p() -> legendary.najentuss_vertebrae -> effectN( 1 ).base_value() )
+    if ( p() -> legendary.najentuss_vertebrae != spell_data_t::not_found() && as<int>( target_list().size() ) >= p() -> legendary.najentuss_vertebrae -> effectN( 1 ).base_value() )
     {
       return dot_duration + ( base_tick_time * p() -> legendary.najentuss_vertebrae -> effectN( 2 ).base_value() );
     }
@@ -4065,7 +4064,7 @@ struct arms_whirlwind_parent_t: public warrior_attack_t
 
   timespan_t composite_dot_duration( const action_state_t* /* s */ ) const override
   {
-    if (  p() -> legendary.najentuss_vertebrae != nullptr && as<int>( target_list().size() ) >= p() -> legendary.najentuss_vertebrae -> effectN( 1 ).base_value() )
+    if (  p() -> legendary.najentuss_vertebrae != spell_data_t::not_found() && as<int>( target_list().size() ) >= p() -> legendary.najentuss_vertebrae -> effectN( 1 ).base_value() )
     {
       return dot_duration + (base_tick_time * p()->legendary.najentuss_vertebrae -> effectN( 2 ).base_value() );
     }

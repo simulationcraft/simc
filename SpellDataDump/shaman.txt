@@ -1,4 +1,4 @@
-SimulationCraft 725-01 for World of Warcraft 7.2.5 Live (wow build 24287)
+SimulationCraft 725-01 for World of Warcraft 7.2.5 Live (wow build 24287, git build e007545)
 
 Name             : Block (Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
@@ -322,7 +322,8 @@ Attributes       : ........ ........ x.x..... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=3248)     : School Damage (2): nature
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 11.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 11.50000 | Target: Enemy (6)
+                   Hotfixed: SP Coefficient (11 -> 11.5), Chain Multiplier (0 -> 1)
 Description      : Instantly shocks the target with concussive force, causing up to $s1 Nature damage based on Maelstrom spent.
 
 Name             : Fire Nova (id=8349) [Scaling Spell (10), Spell Family (11)] 
@@ -1029,6 +1030,7 @@ Attributes       : ........ ........ ........ ...x....   ........ ..x..... ...x.
 Effects          :
 #1 (id=44468)    : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.82000 | Radius: 0 - 40 yards | Target: Custom (18) -> AOE friendly (31)
+                   Hotfixed: Chain Multiplier (0 -> 1)
 Description      : Heals an injured nearby raid or party member.
 
 Name             : Tidal Waves (id=53390) [Spell Family (11)] 
@@ -1346,8 +1348,10 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=55127)    : Direct Heal (10)
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 2.50000 | Target: Friend (21)
+                   Hotfixed: Chain Multiplier (0 -> 1)
 #2 (id=55128)    : Apply Aura (6) | Periodic Heal (8): every 3 seconds
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.50000 | Target: Friend (21)
+                   Hotfixed: Chain Multiplier (0 -> 1)
 Description      : Restorative waters wash over a friendly target, healing them for $s1 and an additional $o2 over $d.
 Tooltip          : Heals $w2 every $t2 seconds.
 
@@ -1367,6 +1371,7 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
 
 Name             : Earthquake (id=61882) [Spell Family (11)] 
+Hotfixed         : Variables
 Class            : Elemental Shaman
 School           : Nature
 Resource         : 50 Maelstrom (11) (id=2792)
@@ -1390,7 +1395,7 @@ Effects          :
 #3 (id=263791)   : Unknown(179)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 3691 | Radius: 0 - 8 yards | Target: Unknown(87) -> AOE enemy (instant) (16)
 Description      : Causes the earth within $a1 yards of the target location to tremble and break, dealing $<damage> Physical damage over $d and sometimes knocking down enemies.
-Variables        : $damage=${$SPN*0.65*6}
+Variables        : $damage=${$SPN*0.775*6}
 
 Name             : Glyph of Deluge (Restoration) (id=63279) [Spell Family (11), Passive, Hidden] 
 Class            : Shaman
@@ -4588,7 +4593,8 @@ Attributes       : ........ ........ x.x..... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=288995)   : School Damage (2): frost
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.64400 | Target: Enemy (6)
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.80000 | Target: Enemy (6)
+                   Hotfixed: SP Coefficient (0.644 -> 0.8), Chain Multiplier (0 -> 1)
 #2 (id=288996)   : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -50 | Scaled Value: -50 | Mechanic: Unknown(88) | Target: Enemy (6)
 #3 (id=313061)   : Dummy (3)

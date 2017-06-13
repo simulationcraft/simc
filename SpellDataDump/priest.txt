@@ -1,4 +1,4 @@
-SimulationCraft 725-01 for World of Warcraft 7.2.5 Live (wow build 24287)
+SimulationCraft 725-01 for World of Warcraft 7.2.5 Live (wow build 24287, git build e007545)
 
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
 Class            : Discipline Shadow Priest
@@ -48,6 +48,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=95)       : Apply Aura (6) | Periodic Heal (8): every 3 seconds
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.62000 | Target: Friend (21)
+                   Hotfixed: Chain Multiplier (0 -> 1)
 #2 (id=256131)   : Direct Heal (10)
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.62000 | Target: Friend (21)
 #3 (id=355489)   : Apply Aura (6) | Unknown(87)
@@ -160,8 +161,10 @@ Attributes       : ........ ........ x.x..... ........   ........ ........ .....
 Effects          :
 #1 (id=242)      : School Damage (2): shadow
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.38000 | Target: Enemy (6)
+                   Hotfixed: Chain Multiplier (0 -> 1)
 #2 (id=254257)   : Apply Aura (6) | Periodic Damage (3): shadow every 2 seconds
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.38000 | Target: Enemy (6)
+                   Hotfixed: Chain Multiplier (0 -> 1)
 #3 (id=323674)   : Energize Power (30)
                    Base Value: 400 | Scaled Value: 400 | Misc Value: insanity | Target: Self (1)
 Description      : A word of darkness that causes $s1 Shadow damage instantly, and an additional $o2 Shadow damage over $d.$?a185916[
@@ -374,6 +377,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=3283)     : School Damage (2): shadow
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.75000 | Target: Enemy (6)
+                   Hotfixed: Chain Multiplier (0 -> 1)
 #2 (id=139174)   : Energize Power (30)
                    Base Value: 1500 | Scaled Value: 1500 | Misc Value: insanity | Target: Self (1)
 Description      : Blasts the target's mind for $s1 Shadow damage.$?a185916[
@@ -526,6 +530,7 @@ Attributes       : ........ ........ x....... ........   ..x..... ......x. .....
 Effects          :
 #1 (id=7301)     : Apply Aura (6) | Periodic Damage (3): shadow every 0.75 seconds
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.55000 | Target: Enemy (6)
+                   Hotfixed: Chain Multiplier (0 -> 1)
 #2 (id=7302)     : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -50 | Scaled Value: -50 | Mechanic: Unknown(88) | Target: Enemy (6)
 #3 (id=303457)   : Apply Aura (6) | Periodic Energize Power (24): every 0.75 seconds
@@ -946,6 +951,7 @@ Effects          :
                    Base Value: 2 | Scaled Value: 2 | Target: Enemy (6)
 #2 (id=25010)    : Apply Aura (6) | Periodic Health Leech (53)
                    Base Value: 1 | Scaled Value: 1 | Value Multiplier: 0.5 | SP Coefficient: 0.71000 | Target: Enemy (6)
+                   Hotfixed: Chain Multiplier (0 -> 1)
 #3 (id=323673)   : Energize Power (30)
                    Base Value: 600 | Scaled Value: 600 | Misc Value: insanity | Target: Self (1)
 Description      : A touch of darkness that causes $34914o2 Shadow damage over $34914d, and heals the Priest for ${$e2*100}% of damage dealt.
@@ -4012,6 +4018,7 @@ Attributes       : ........ ........ ........ ..x.....   ..x..... ......x. .....
 Effects          :
 #1 (id=302733)   : Apply Aura (6) | Periodic Damage (3): shadow every 1 seconds
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 2.20000 | Target: Enemy (6)
+                   Hotfixed: Chain Multiplier (0 -> 1)
 #2 (id=302734)   : Apply Aura (6) | Dummy (4)
                    Base Value: 2 | Scaled Value: 2 | Target: Self (1)
 Description      : Raise your dagger into the sky, channeling a torrent of void energy into the target for $o Shadow damage over $d. Insanity does not drain during this channel.
@@ -4041,6 +4048,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=303208)   : School Damage (2): shadow
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 2.20000 | Target: Enemy (6)
+                   Hotfixed: Chain Multiplier (0 -> 1)
 #2 (id=303209)   : Energize Power (30)
                    Base Value: 2500 | Scaled Value: 2500 | Misc Value: insanity | Target: Self (1)
 Description      : Blasts the target's mind for $s1 Shadow damage.$?a185916[
@@ -4431,10 +4439,11 @@ Description      : Attack the enemy's soul with a surge of Shadow energy, dealin
 Tooltip          : Taking $s2% increased damage from the Priest.
 
 Name             : Spirit of Redemption (Honor Talent) (id=215769) [Spell Family (6)] 
+Hotfixed         : Cooldown (300000 -> 180000)
 Class            : Priest
 School           : Holy
-Duration         : 10 seconds
-Cooldown         : 300 seconds
+Duration         : 7 seconds
+Cooldown         : 180 seconds
 Proc Chance      : 100%
 Proc Flags       : ........ ..x...x. .....x.. ........ 
                  : AOE Heal, Heal, Trap Triggered
@@ -4758,6 +4767,7 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | Misc Value: 0x20 | Target: Self (1)
 #2 (id=351200)   : Apply Aura (6) | Unknown(87)
                    Base Value: -10 | Scaled Value: -10 | Misc Value: 0x1 | Target: Self (1)
+                   Hotfixed: Chain Multiplier (0 -> 1)
 #3 (id=351464)   : Apply Aura (6) | Shapeshift (36)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 28 | Misc Value 2: 0x2
 #4 (id=351465)   : Trigger Spell (64): (210195)

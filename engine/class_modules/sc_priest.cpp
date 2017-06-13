@@ -1784,6 +1784,9 @@ public:
     {
       base_multiplier *= 1.0 + player.artifact.mind_shattering.percent();
     }
+    
+    // TODO Remove once hotfix spelldata gets pushed
+    base_multiplier *= 1.13;
   }
 
   void init() override
@@ -2020,6 +2023,9 @@ struct mind_flay_t final : public priest_spell_t
     {
       base_multiplier *= 1.0 + p.artifact.void_siphon.percent();
     }
+    
+    // TODO Remove once hotfix spelldata gets pushed
+    base_multiplier *= 1.18;
 
     spell_power_mod.tick *= 1.0 + p.talents.fortress_of_the_mind->effectN( 3 ).percent();
   }
@@ -2586,8 +2592,6 @@ struct shadow_word_pain_t final : public priest_spell_t
     {
       base_multiplier *= 1.0 + p.artifact.to_the_pain.percent();
     }
-    // TODO Remove after 7.2.5 data adds this
-      base_multiplier *= 1.1;
 
     if ( priest.specs.shadowy_apparitions->ok() && !priest.active_spells.shadowy_apparitions )
     {
@@ -3131,6 +3135,9 @@ struct void_bolt_t final : public priest_spell_t
     cooldown->hasted = true;
 
     void_bolt_extension = new void_bolt_extension_t( player );
+    
+    // TODO Remove once hotfix spelldata gets pushed
+    base_multiplier *= 1.1;
   }
 
   void execute() override

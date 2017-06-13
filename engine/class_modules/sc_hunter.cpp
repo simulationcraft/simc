@@ -6204,7 +6204,30 @@ void hunter_t::add_item_actions( action_priority_list_t* list )
   for ( const item_t& item : items )
   {
     if ( item.has_special_effect( SPECIAL_EFFECT_SOURCE_ITEM, SPECIAL_EFFECT_USE ) )
-      list -> add_action( "use_item,name=" + item.name_str );
+
+      if ( specialization() == HUNTER_MARKSMANSHIP )
+      {
+        if ( item.name_str == "tarnished_sentinel_medallion" )
+        {
+          list -> add_action( "use_item,name=" + item.name_str + ",if=((buff.trueshot.up|cooldown.trueshot.remains<6|cooldown.trueshot.remains>30)&(target.time_to_die>cooldown+duration))|target.time_to_die<25|buff.bullseye.react=30" );
+        }
+        else if ( item.name_str == "tome_of_unraveling_sanity" )
+        {
+          list -> add_action( "use_item,name=" + item.name_str + ",if=((buff.trueshot.up|cooldown.trueshot.remains<13|cooldown.trueshot.remains>30)&(target.time_to_die>cooldown+duration*2))|target.time_to_die<26|buff.bullseye.react=30" );
+        }
+        else if ( item.name_str == "kiljaedens_burning_wish" )
+        {
+          list -> add_action( "use_item,name=" + item.name_str + ",if=buff.trueshot.up|cooldown.trueshot.remains>20" );
+        }
+        else
+        {
+          list -> add_action( "use_item,name=" + item.name_str );
+        }
+      }
+      else
+      {
+        list -> add_action( "use_item,name=" + item.name_str );
+      }
   }
 }
 

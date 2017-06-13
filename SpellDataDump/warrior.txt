@@ -1,4 +1,4 @@
-SimulationCraft 725-01 for World of Warcraft 7.2.5 Live (wow build 24287)
+SimulationCraft 725-01 for World of Warcraft 7.2.5 Live (wow build 24287, git build e007545)
 
 Name             : Defensive Stance (id=71) [Spell Family (4), Passive, Hidden] 
 Class            : Protection Warrior
@@ -2219,6 +2219,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=132982)   : Direct Heal% (136)
                    Base Value: 4 | Scaled Value: 4 | Target: Self (1)
+                   Hotfixed: Chain Multiplier (0 -> 1)
 Description      : Bloodthirst heals the Warrior for $s1% of their health.
 
 Name             : Dragon Roar (id=118000) [Spell Family (4)] 

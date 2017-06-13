@@ -1,10 +1,10 @@
-shaman="Shaman_Elemental_T20M"
+shaman="Shaman_Elemental_Gambling_T20M"
 spec=elemental
 level=110
 race=tauren
 role=spell
 position=back
-talents=3112331
+talents=3111231
 artifact=40:0:0:0:0:291:1:292:1:293:1:294:1:295:1:296:1:297:1:298:4:299:4:300:4:301:4:302:4:303:4:304:4:305:4:306:4:1350:1:1387:1:1589:4:1590:1:1591:1:1592:1:1683:1
 
 # Default consumables
@@ -148,22 +148,22 @@ wrists=painsinged_armguards,id=147057,ilevel=930
 hands=smoldering_heart,id=151819,ilevel=970
 waist=waistguard_of_interminable_unity,id=147056,ilevel=930
 legs=legguards_of_the_skybreaker,id=147179,ilevel=930
-feet=starstalker_treads,id=147046,ilevel=940
+feet=the_deceivers_blood_pact,id=137035,ilevel=970
 finger1=seal_of_the_second_duumvirate,id=147195,ilevel=940,enchant=200haste
-finger2=eye_of_the_twisting_nether,id=137050,ilevel=970,gems=200intellect,enchant=200haste
+finger2=scaled_band_of_servitude,id=147020,ilevel=930,enchant=200haste
 trinket1=tarnished_sentinel_medallion,id=147017,ilevel=930
 trinket2=tome_of_unraveling_sanity,id=147019,ilevel=940
 main_hand=the_fist_of_raden,id=128935,bonus_id=744,gem_id=147112/147095/147112,relic_ilevel=930/940/930
 off_hand=the_highkeepers_ward,id=128936
 
 # Gear Summary
-# gear_ilvl=939.88
-# gear_stamina=46379
-# gear_intellect=48160
-# gear_crit_rating=5587
-# gear_haste_rating=13112
-# gear_mastery_rating=7580
+# gear_ilvl=939.25
+# gear_stamina=46429
+# gear_intellect=48722
+# gear_crit_rating=5718
+# gear_haste_rating=12312
+# gear_mastery_rating=7455
 # gear_versatility_rating=2624
-# gear_armor=3282
+# gear_armor=3319
 # set_bonus=tier20_2pc=1
 # set_bonus=tier20_4pc=1
