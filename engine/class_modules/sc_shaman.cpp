@@ -363,6 +363,7 @@ public:
     proc_t* windfury;
 
     proc_t* surge_during_lvb;
+    proc_t* t19_4pc_enhancement;
   } proc;
 
   struct
@@ -629,7 +630,7 @@ public:
   void trigger_t18_4pc_elemental();
   void trigger_t19_oh_8pc( const action_state_t* );
   void trigger_t20_4pc_elemental(const action_state_t*);
-  void trigger_stormbringer( const action_state_t* state );
+  void trigger_stormbringer( const action_state_t* state, double proc_chance = -1.0, proc_t* proc_obj = nullptr );
   void trigger_elemental_focus( const action_state_t* state );
   void trigger_lightning_shield( const action_state_t* state );
   void trigger_earthen_rage( const action_state_t* state );
@@ -1666,8 +1667,8 @@ struct shaman_spell_t : public shaman_spell_base_t<spell_t>
 
   void impact( action_state_t* state ) override
   {
-    base_t::impact(state);
-    
+    base_t::impact( state );
+
     p() -> trigger_stormbringer( state );
   }
 
@@ -3358,15 +3359,6 @@ struct lava_lash_t : public shaman_attack_t
     }
   }
 
-  double stormbringer_proc_chance() const override
-  {
-    auto proc_chance = shaman_attack_t::stormbringer_proc_chance();
-
-    proc_chance += p() -> sets -> set( SHAMAN_ENHANCEMENT, T19, B4 ) -> proc_chance();
-
-    return proc_chance;
-  }
-
   void init() override
   {
     shaman_attack_t::init();
@@ -3430,6 +3422,14 @@ struct lava_lash_t : public shaman_attack_t
     p() -> trigger_doom_vortex( state );
 
     td( state -> target ) -> debuff.lashing_flames -> expire();
+
+    // T19 4PC is a separate chance to proc a stormbringer, not additional proc chance
+    if ( p() -> sets -> has_set_bonus( SHAMAN_ENHANCEMENT, T19, B4 ) )
+    {
+      p() -> trigger_stormbringer( state,
+        p() -> sets -> set( SHAMAN_ENHANCEMENT, T19, B4 ) -> proc_chance(),
+        p() -> proc.t19_4pc_enhancement );
+    }
   }
 };
 
@@ -6613,7 +6613,9 @@ bool shaman_t::active_elemental_pet() const
 // Shaman Ability Triggers
 // ==========================================================================
 
-void shaman_t::trigger_stormbringer( const action_state_t* state )
+void shaman_t::trigger_stormbringer( const action_state_t* state,
+                                     double                override_proc_chance,
+                                     proc_t*               override_proc_obj )
 {
   //assert( debug_cast< shaman_attack_t* >( state -> action ) != nullptr &&
   //        "Stormbringer called on invalid action type" );
@@ -6639,25 +6641,46 @@ void shaman_t::trigger_stormbringer( const action_state_t* state )
   {
     if ( attack -> may_proc_stormbringer )
     {
-      if ( rng().roll( attack -> stormbringer_proc_chance() ) )
+      if ( override_proc_chance < 0 )
+      {
+        override_proc_chance = attack -> stormbringer_proc_chance();
+      }
+
+      if ( override_proc_obj == nullptr )
+      {
+        override_proc_obj = attack -> proc_sb;
+      }
+
+      if ( rng().roll( override_proc_chance ) )
       {
         buff.stormbringer -> trigger( buff.stormbringer->max_stack() );
         cooldown.strike -> reset( true );
         buff.wind_strikes -> trigger();
-        attack -> proc_sb -> occur();
+        override_proc_obj -> occur();
       }
     }
   }
+
   if ( spell )
   {
     if ( spell -> may_proc_stormbringer )
     {
-      if ( rng().roll( spell -> stormbringer_proc_chance() ) )
+      if ( override_proc_chance < 0 )
+      {
+        override_proc_chance = spell -> stormbringer_proc_chance();
+      }
+
+      if ( override_proc_obj == nullptr )
+      {
+        override_proc_obj = spell -> proc_sb;
+      }
+
+      if ( rng().roll( override_proc_chance ) )
       {
         buff.stormbringer -> trigger( buff.stormbringer -> max_stack() );
         cooldown.strike -> reset( true );
         buff.wind_strikes -> trigger();
-        spell -> proc_sb -> occur();
+        override_proc_obj -> occur();
       }
     }
   }
@@ -7209,6 +7232,7 @@ void shaman_t::init_procs()
   proc.wasted_lava_surge  = get_proc( "Lava Surge: Wasted"      );
   proc.windfury           = get_proc( "Windfury"                );
   proc.surge_during_lvb   = get_proc( "Lava Surge: During Lava Burst" );
+  proc.t19_4pc_enhancement= get_proc( "Stormbringer: T19 4PC"   );
 }
 
 // shaman_t::init_rng =======================================================
