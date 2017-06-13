@@ -3524,8 +3524,6 @@ struct stormstrike_base_t : public shaman_attack_t
       {
         p() -> cooldown.feral_spirits -> adjust( - p() -> sets -> set( SHAMAN_ENHANCEMENT, T17, B2 ) -> effectN( 1 ).time_value() );
       }
-      
-      
     }
 
     p() -> buff.stormbringer -> decrement();
@@ -3569,7 +3567,6 @@ struct stormstrike_t : public stormstrike_base_t
     if ( p() -> off_hand_weapon.type != WEAPON_NONE )
     {
       oh = new stormstrike_attack_t( "stormstrike_offhand", player, data().effectN( 2 ).trigger(), &( player -> off_hand_weapon ) );
-    oh -> may_proc_stormbringer = false;
       add_child( oh );
     }
   }
@@ -3608,7 +3605,6 @@ struct windstrike_t : public stormstrike_base_t
     if ( p() -> off_hand_weapon.type != WEAPON_NONE )
     {
       oh = new windstrike_attack_t( "windstrike_offhand", player, data().effectN( 2 ).trigger(), &( player -> off_hand_weapon ) );
-    oh -> may_proc_stormbringer = false;
       add_child( oh );
     }
   }
