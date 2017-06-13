@@ -1,4 +1,4 @@
-druid="druid"
+druid="Druid_Feral_T20M"
 spec=feral
 level=110
 race=night_elf
@@ -29,7 +29,7 @@ off_hand=fangs_of_ashamane,id=128859,gem_id=0/0/0/0,relic_id=0/0
 
 save=Druid_Feral_T20M.simc
 
-druid="balance"
+druid="Druid_Balance_T20M"
 spec=balance
 level=110
 race=troll
