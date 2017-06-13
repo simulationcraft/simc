@@ -6118,7 +6118,7 @@ void paladin_t::target_mitigation( school_e school,
   if ( talents.last_defender -> ok() )
   {
     // Last Defender gives a multiplier of 0.97^N - coded using spell data in case that changes
-    s -> result_amount *= std::pow( 1.0 - talents.last_defender -> effectN( 2 ).percent(), get_local_enemies( talents.last_defender -> effectN( 1 ).base_value() ) );
+    s -> result_amount *= std::pow( 1.0 - talents.last_defender -> effectN( 2 ).percent(), buffs.last_defender -> current_stack );
   }
 
   // heathcliffs
