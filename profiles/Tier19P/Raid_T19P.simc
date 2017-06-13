@@ -1,16 +1,3 @@
-# T19P
-# Tier 19 Pre-Raid
-# * Ilvl Cap: 840 (no cap on weapon ilvl, only relics)
-# * Artifact Relics: 3
-# * Artifact Rank Cap: 19
-# * Standard Mythic 5 Man Loot Only
-# * No Legendaries
-# * No Random Gems (ie. Bonus RNG Gem Slots)
-# * No Tertiary Stats
-# * No Ranked Gear (ie. Warforged/Titanforged)
-# * No Hardcoded Stats (generally if an item gives wrong stats: either bonus_id is wrong, either the item no longer exists in-game)
-# * It is recommended to use enchant name (ex : ",enchant=binding_of_mastery") rather than id/hardcoded stats.
-
 optimal_raid=1
 default_actions=1
 # tmi_boss=TMI_Standard_Boss_T17L
@@ -21,10 +8,12 @@ Death_Knight_Unholy_T19P.simc
 
 # Demon Hunter
 Demon_Hunter_Havoc_T19P.simc
+Demon_Hunter_Vengeance_T19P.simc
 
 # Druid
 Druid_Balance_T19P.simc
 Druid_Feral_T19P.simc
+Druid_Guardian_T19P.simc
 
 # Hunter
 Hunter_Beast_Mastery_T19P.simc
@@ -40,6 +29,7 @@ Mage_Frost_T19P.simc
 Monk_Windwalker_T19P.simc
 
 # Paladin
+Paladin_Protection_T19P.simc
 Paladin_Retribution_T19P.simc
 
 # Priest
@@ -53,14 +43,15 @@ Rogue_Outlaw_T19P.simc
 Rogue_Subtlety_T19P.simc
 
 # Shaman
-Shaman_Enhancement_T19P.simc
 Shaman_Elemental_T19P.simc
+Shaman_Enhancement_T19P.simc
 
 # Warlock
+Warlock_Affliction_T19P.simc
 Warlock_Demonology_T19P.simc
 Warlock_Destruction_T19P.simc
-Warlock_Affliction_T19P.simc
 
 # Warrior
-Warrior_Fury_T19P.simc
 Warrior_Arms_T19P.simc
+Warrior_Fury_T19P.simc
+Warrior_Protection_T19P.simc

@@ -2586,8 +2586,6 @@ struct shadow_word_pain_t final : public priest_spell_t
     {
       base_multiplier *= 1.0 + p.artifact.to_the_pain.percent();
     }
-    // TODO Remove after 7.2.5 data adds this
-      base_multiplier *= 1.1;
 
     if ( priest.specs.shadowy_apparitions->ok() && !priest.active_spells.shadowy_apparitions )
     {
@@ -4612,13 +4610,13 @@ void priest_t::init_spells()
   specs.divine_aegis    = find_specialization_spell( "Divine Aegis" );
   specs.evangelism      = find_specialization_spell( "Evangelism" );
   specs.grace           = find_specialization_spell( "Grace" );
-  specs.meditation_disc = find_specialization_spell( "Meditation", "meditation_disc", PRIEST_DISCIPLINE );
+  specs.meditation_disc = find_specialization_spell( "Meditation", PRIEST_DISCIPLINE );
   specs.mysticism       = find_specialization_spell( "Mysticism" );
   specs.spirit_shell    = find_specialization_spell( "Spirit Shell" );
   specs.enlightenment   = find_specialization_spell( "Enlightenment" );
 
   // Holy
-  specs.meditation_holy   = find_specialization_spell( "Meditation", "meditation_holy", PRIEST_HOLY );
+  specs.meditation_holy   = find_specialization_spell( "Meditation", PRIEST_HOLY );
   specs.serendipity       = find_specialization_spell( "Serendipity" );
   specs.rapid_renewal     = find_specialization_spell( "Rapid Renewal" );
   specs.divine_providence = find_specialization_spell( "Divine Providence" );
@@ -5035,10 +5033,6 @@ void priest_t::apl_shadow()
       "surrender_to_madness,if=talent.surrender_to_madness.enabled&target.time_"
       "to_die<=variable.s2mcheck" );
   main->add_action(
-      "mindbender,if=!set_bonus.tier20_4pc&(talent.mindbender.enabled&((talent"
-      ".surrender_to_madness.enabled&target.time_to_die>variable.s2mcheck+60)|"
-      "!talent.surrender_to_madness.enabled))" );
-  main->add_action(
       "shadow_word_pain,if=talent.misery.enabled&dot.shadow_word_pain.remains<"
       "gcd.max,moving=1,cycle_targets=1" );
   main->add_action(
@@ -5202,11 +5196,11 @@ if ( race == RACE_BLOOD_ELF )
       ".surrender_to_madness.enabled|(talent.surrender_to_madness.enabled&"
       "target.time_to_die>variable.s2mcheck-buff.insanity_drain_stacks.value))" );
     vf->add_action(
-      "mindbender,if=!set_bonus.tier20_4pc&(!talent.surrender_to_madness."
-      "enabled"
-      "|(talent.surrender_to_madness.enabled&target.time_to_die>variable."
-      "s2mcheck-"
-      "(buff.insanity_drain_stacks.value)+30))" );
+      "mindbender,if=!set_bonus.tier20_4pc&buff.insanity_drain_stacks.value>=(10+"
+      "2*set_bonus.tier19_2pc+5*buff.bloodlust.up*(1+1*set_bonus.tier20_4pc)+3*equipped"
+      ".mangazas_madness+6*set_bonus.tier20_4pc+2*artifact.lash_of_insanity.rank)"
+      "&(!talent.surrender_to_madness.enabled|(talent.surrender_to_madness.enabled&"
+      "target.time_to_die>variable.s2mcheck-(buff.insanity_drain_stacks.value)+30))" );
   vf->add_action(
       "power_infusion,if=buff.insanity_drain_stacks.value>=(10+2*set_bonus."
       "tier19_2pc+5*buff.bloodlust.up*(1+1*set_bonus.tier20_4pc)+3*equipped"

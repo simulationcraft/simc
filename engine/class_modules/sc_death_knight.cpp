@@ -798,21 +798,22 @@ public:
     const spell_data_t* seal_of_necrofantasia;
     const spell_data_t* perseverance_of_the_ebon_martyr;
     const spell_data_t* sephuzs_secret;
+    const spell_data_t* death_march;
     double toravons;
 
     // Unholy
     unsigned the_instructors_fourth_lesson;
     double draugr_girdle_everlasting_king;
     double uvanimor_the_unbeautiful;
-    timespan_t death_march;
 
     legendary_t() :
       koltiras_newfound_will( spell_data_t::not_found() ),
       seal_of_necrofantasia( spell_data_t::not_found() ),
       perseverance_of_the_ebon_martyr( spell_data_t::not_found() ),
       sephuzs_secret( nullptr ),
+      death_march( spell_data_t::not_found() ),
       toravons( 0 ), the_instructors_fourth_lesson( 0 ), draugr_girdle_everlasting_king( 0 ),
-      uvanimor_the_unbeautiful( 0 ), death_march( timespan_t::zero() )
+      uvanimor_the_unbeautiful( 0 )
     { }
 
   } legendary;
@@ -2687,10 +2688,7 @@ struct death_knight_action_t : public Base
   {
     auto ret = action_base_t::consume_cost_per_tick( dot );
 
-    if ( maybe_ptr( p() -> dbc.ptr ) )
-    {
-      p() -> trigger_t20_2pc_frost( this -> last_resource_cost );
-    }
+    p() -> trigger_t20_2pc_frost( this -> last_resource_cost );
 
     return ret;
   }
@@ -2714,9 +2712,9 @@ struct death_knight_action_t : public Base
       }
     }
 
-    if ( maybe_ptr( p() -> dbc.ptr ) && this -> base_costs[ RESOURCE_RUNE ] > 0 )
+    if ( this -> base_costs[ RESOURCE_RUNE ] > 0 && this -> last_resource_cost > 0 )
     {
-      p() -> trigger_t20_4pc_frost( this -> base_costs[ RESOURCE_RUNE ] );
+      p() -> trigger_t20_4pc_frost( this -> last_resource_cost );
     }
 
     if ( this -> base_costs[ RESOURCE_RUNIC_POWER ] > 0 && this -> last_resource_cost > 0 )
@@ -2733,10 +2731,7 @@ struct death_knight_action_t : public Base
         p() -> cooldown.vampiric_blood -> adjust( -sec );
       }
 
-      if ( maybe_ptr( p() -> dbc.ptr ) )
-      {
-        p() -> trigger_t20_2pc_frost( this -> last_resource_cost );
-      }
+      p() -> trigger_t20_2pc_frost( this -> last_resource_cost );
     }
   }
 
@@ -4359,6 +4354,7 @@ struct death_coil_t : public death_knight_spell_t
 
     attack_power_mod.direct = p -> find_spell( 47632 ) -> effectN( 1 ).ap_coeff();
     base_multiplier *= 1.0 + p -> artifact.deadliest_coil.percent();
+    base_multiplier *= 1.0 + p -> legendary.death_march -> effectN( 2 ).percent();
   }
 
   double cost() const override
@@ -4450,7 +4446,8 @@ struct death_strike_offhand_t : public death_knight_melee_attack_t
   {
     background       = true;
     weapon           = &( p -> off_hand_weapon );
-    base_multiplier  = 1.0 + p -> spec.veteran_of_the_third_war -> effectN( 7 ).percent();
+    base_multiplier *= 1.0 + p -> spec.veteran_of_the_third_war -> effectN( 7 ).percent();
+    base_multiplier *= 1.0 + p -> legendary.death_march -> effectN( 2 ).percent();
   }
 };
 
@@ -4568,6 +4565,7 @@ struct death_strike_t : public death_knight_melee_attack_t
     parse_options( options_str );
     may_parry = false;
     base_multiplier *= 1.0 + p -> spec.blood_death_knight -> effectN( 1 ).percent();
+    base_multiplier *= 1.0 + p -> legendary.death_march -> effectN( 2 ).percent();
 
     base_costs[ RESOURCE_RUNIC_POWER ] += p -> sets -> set( DEATH_KNIGHT_BLOOD, T18, B4 ) -> effectN( 1 ).resource( RESOURCE_RUNIC_POWER );
 
@@ -4825,15 +4823,18 @@ struct festering_strike_t : public death_knight_melee_attack_t
 
 struct frostscythe_t : public death_knight_melee_attack_t
 {
+  double rime_proc_chance;
+
   frostscythe_t( death_knight_t* p, const std::string& options_str ) :
-    death_knight_melee_attack_t( "frostscythe", p, p -> talent.frostscythe )
+    death_knight_melee_attack_t( "frostscythe", p, p -> talent.frostscythe ),
+    rime_proc_chance( ( p -> spec.rime -> proc_chance() +
+                        p -> sets -> set( DEATH_KNIGHT_FROST, T19, B2 ) -> effectN( 1 ).percent() ) / 2.0 )
   {
     parse_options( options_str );
 
     weapon = &( player -> main_hand_weapon );
     aoe = -1;
 
-    // TODO: Check how this is exactly in game
     crit_bonus_multiplier *= 1.0 + p -> spec.death_knight -> effectN( 5 ).percent();
   }
 
@@ -4843,6 +4844,16 @@ struct frostscythe_t : public death_knight_melee_attack_t
 
     consume_killing_machine( execute_state, p() -> procs.fs_killing_machine );
     trigger_icecap( execute_state );
+
+    // Frostscythe procs rime at half the chance of Obliterate
+    p() -> buffs.rime -> trigger( 1, buff_t::DEFAULT_VALUE(), rime_proc_chance );
+
+    // Frostscythe procs Thronebreaker at half the chance of Obliterate
+    if ( rng().roll( p() -> artifact.thronebreaker.data().effectN( 2 ).percent() ) )
+    {
+      p() -> active_spells.thronebreaker -> set_target( execute_state -> target );
+      p() -> active_spells.thronebreaker -> execute();
+    }
   }
 
   double composite_crit_chance() const override
@@ -6808,45 +6819,7 @@ void death_knight_t::trigger_t20_2pc_unholy( const action_state_t* state )
     return;
   }
 
-  // PTR has a completely different T20 set bonus
-  if ( maybe_ptr( dbc.ptr ) )
-  {
-  }
-  else
-  {
-    // Prefer Apocalypse ghouls over Army of the Dead ghouls. Note that we check that the pets
-    // are there (check non-null pointer for the first array entry). This is because if the user for
-    // some reason has no Apocalypse power (unlikely), or has not specified apocalypse to be used on
-    // the APL, the pets will not be created.
-    if ( artifact.apocalypse.rank() && pets.apocalypse_ghoul[ 0 ] )
-    {
-      for ( auto pet : pets.apocalypse_ghoul )
-      {
-        if ( ! pet -> is_sleeping() )
-        {
-          active_spells.t20_2pc_unholy -> set_target( state -> target );
-          active_spells.t20_2pc_unholy -> execute();
-          pet -> cast_pet() -> dismiss();
-          return; // Explosion done, bail out
-        }
-      }
-    }
-
-    // Look for an Army ghoul to explode
-    if ( pets.army_ghoul[ 0 ] )
-    {
-      for ( auto pet : pets.army_ghoul )
-      {
-        if ( ! pet -> is_sleeping() )
-        {
-          active_spells.t20_2pc_unholy -> set_target( state -> target );
-          active_spells.t20_2pc_unholy -> execute();
-          pet -> cast_pet() -> dismiss();
-          return; // Explosion done, bail out
-        }
-      }
-    }
-  }
+  //FIXME - Not implemented
 }
 
 unsigned death_knight_t::replenish_rune( unsigned n, gain_t* gain )
@@ -6996,13 +6969,15 @@ void death_knight_t::burst_festering_wound( const action_state_t* state, unsigne
 
 void death_knight_t::trigger_death_march( const action_state_t* /* state */ )
 {
-  if ( legendary.death_march == timespan_t::zero() )
+  if ( ! legendary.death_march -> ok() )
   {
     return;
   }
 
-  cooldown.defile -> adjust( legendary.death_march );
-  cooldown.death_and_decay -> adjust( legendary.death_march );
+  timespan_t adjust = -timespan_t::from_seconds( legendary.death_march -> effectN( 1 ).base_value() / 10.0 );
+
+  cooldown.defile -> adjust( adjust );
+  cooldown.death_and_decay -> adjust( adjust );
 }
 
 // ==========================================================================
@@ -7697,6 +7672,7 @@ void death_knight_t::default_apl_frost()
   def -> add_action( this, "Pillar of Frost", "if=talent.breath_of_sindragosa.enabled&!cooldown.breath_of_sindragosa.remains&runic_power>=50&equipped.140806&cooldown.hungering_rune_weapon.remains<10" );
   def -> add_action( this, "Pillar of Frost", "if=talent.breath_of_sindragosa.enabled&!cooldown.breath_of_sindragosa.remains&runic_power>=50&!equipped.140806&(cooldown.hungering_rune_weapon.remains<15|target.time_to_die>135)" );
   def -> add_talent( this, "Breath of Sindragosa", "if=buff.pillar_of_frost.up" );
+  def -> add_action( this, "Chains of Ice", "if=buff.cold_heart.stack=20|(buff.pillar_of_frost.remains<gcd&buff.pillar_of_frost.up&(buff.cold_heart.stack>=11|(buff.cold_heart.stack>=10&set_bonus.tier20_4pc)))" );
   
   // Choose APL
   def -> add_action( "call_action_list,name=generic,if=!talent.breath_of_sindragosa.enabled&!(talent.gathering_storm.enabled&buff.remorseless_winter.remains)" );
@@ -7717,7 +7693,7 @@ void death_knight_t::default_apl_frost()
   generic -> add_action( this, "Frost Strike", "if=runic_power.deficit<=10" );
   generic -> add_action( this, "Frost Strike", "if=buff.obliteration.up&!buff.killing_machine.react" );
   generic -> add_action( this, "Remorseless Winter", "if=spell_targets.remorseless_winter>=2&!(talent.frostscythe.enabled&buff.killing_machine.react&spell_targets.frostscythe>=2)" );
-  generic -> add_talent( this, "Frostscythe", "if=(buff.killing_machine.react&spell_targets.frostscythe>=2)" );
+  generic -> add_talent( this, "Frostscythe", "if=buff.killing_machine.up&(!equipped.132366|spell_targets.frostscythe>=2)" );
   generic -> add_talent( this, "Glacial Advance", "if=spell_targets.glacial_advance>=2" );
   generic -> add_talent( this, "Frostscythe", "if=spell_targets.frostscythe>=3" );
   generic -> add_action( this, "Obliterate", "if=buff.killing_machine.react" );
@@ -7737,11 +7713,12 @@ void death_knight_t::default_apl_frost()
   bos -> add_action( this, "Howling Blast", "if=buff.rime.react&rune.time_to_4<(gcd*2)" );
   bos -> add_action( this, "Obliterate", "if=rune.time_to_6<gcd&!talent.gathering_storm.enabled" );
   bos -> add_action( this, "Obliterate", "if=rune.time_to_4<gcd&(cooldown.breath_of_sindragosa.remains|runic_power<70)" );
-  bos -> add_action( this, "Frost Strike", "if=runic_power>=90&set_bonus.tier19_4pc&cooldown.breath_of_sindragosa.remains" );
+  bos -> add_action( this, "Frost Strike", "if=runic_power>=95&set_bonus.tier19_4pc&cooldown.breath_of_sindragosa.remains" );
   bos -> add_action( this, "Remorseless Winter", "if=buff.rime.react&equipped.132459" );
   bos -> add_action( this, "Howling Blast", "if=buff.rime.react&(dot.remorseless_winter.ticking|cooldown.remorseless_winter.remains>gcd|(!equipped.132459&!talent.gathering_storm.enabled))" );
   bos -> add_action( this, "Obliterate", "if=!buff.rime.react&!(talent.gathering_storm.enabled&!(cooldown.remorseless_winter.remains>(gcd*2)|rune>4))&rune>3" );
   bos -> add_action( this, "Sindragosa's Fury", "if=(equipped.144293|buff.pillar_of_frost.up)&buff.unholy_strength.up&debuff.razorice.stack=5&!buff.obliteration.up");
+  bos -> add_talent( this, "Frostscythe", "if=buff.killing_machine.up&(!equipped.132366|spell_targets.frostscythe>=2)" );
   bos -> add_action( this, "Frost Strike", "if=runic_power>=70" );
   bos -> add_action( this, "Remorseless Winter", "if=spell_targets.remorseless_winter>=2");
   bos -> add_action( this, "Frost Strike", "if=(cooldown.remorseless_winter.remains<(gcd*2)|buff.gathering_storm.stack=10)&cooldown.breath_of_sindragosa.remains>rune.time_to_4&talent.gathering_storm.enabled" );
@@ -7753,15 +7730,17 @@ void death_knight_t::default_apl_frost()
   bos_ticking -> add_action( this, "Howling Blast", "target_if=!dot.frost_fever.ticking" );
   bos_ticking -> add_action( this, "Remorseless Winter", "if=(runic_power>=30|buff.hungering_rune_weapon.up)&((buff.rime.react&equipped.132459)|(talent.gathering_storm.enabled&(dot.remorseless_winter.remains<=gcd|!dot.remorseless_winter.ticking)))" );
   bos_ticking -> add_action( this, "Howling Blast", "if=((runic_power>=20&set_bonus.tier19_4pc)|runic_power>=30|buff.hungering_rune_weapon.up)&buff.rime.react" );
+  bos_ticking -> add_action( this, "Frost Strike", "if=set_bonus.tier20_2pc&runic_power>85&rune<=3&buff.pillar_of_frost.up" );
   bos_ticking -> add_action( this, "Obliterate", "if=runic_power<=45|rune.time_to_5<gcd|buff.hungering_rune_weapon.remains>=2" );
-  bos_ticking -> add_action( this, "Sindragosa's Fury", "if=(equipped.144293|buff.pillar_of_frost.up)&buff.unholy_strength.up&debuff.razorice.stack=5&!buff.obliteration.up" );
-  bos_ticking -> add_action( this, "Remorseless Winter", "if=spell_targets.remorseless_winter>=2" );
-  bos_ticking -> add_action( this, "Obliterate", "if=runic_power<=75|rune>3" );
-  bos_ticking -> add_talent( this, "Horn of Winter", "if=runic_power<70&!buff.hungering_rune_weapon.up&rune.time_to_3>gcd" );
   bos_ticking -> add_talent( this, "Hungering Rune Weapon", "if=runic_power<70&!buff.hungering_rune_weapon.up&rune<2&cooldown.breath_of_sindragosa.remains>35&equipped.140806" );
   bos_ticking -> add_talent( this, "Hungering Rune Weapon", "if=runic_power<50&!buff.hungering_rune_weapon.up&rune.time_to_2>=3&cooldown.breath_of_sindragosa.remains>30" );
   bos_ticking -> add_talent( this, "Hungering Rune Weapon", "if=runic_power<35&!buff.hungering_rune_weapon.up&rune.time_to_2>=2&cooldown.breath_of_sindragosa.remains>30" );
   bos_ticking -> add_talent( this, "Hungering Rune Weapon", "if=runic_power<20&!buff.hungering_rune_weapon.up&rune.time_to_2>=1&cooldown.breath_of_sindragosa.remains>30" );
+  bos_ticking -> add_action( this, "Sindragosa's Fury", "if=(equipped.144293|buff.pillar_of_frost.up)&buff.unholy_strength.up&debuff.razorice.stack=5&!buff.obliteration.up" );
+  bos_ticking -> add_talent( this, "Frostscythe", "if=buff.killing_machine.up&(!equipped.132366|talent.gathering_storm.enabled|spell_targets.frostscythe>=2)" );
+  bos_ticking -> add_action( this, "Remorseless Winter", "if=spell_targets.remorseless_winter>=2" );
+  bos_ticking -> add_action( this, "Obliterate", "if=runic_power<=75|rune>3" );
+  bos_ticking -> add_talent( this, "Horn of Winter", "if=runic_power<70&!buff.hungering_rune_weapon.up&rune.time_to_3>gcd" );
   bos_ticking -> add_action( this, "Empower Rune Weapon", "if=runic_power<20" );
 
   // Gathering Storm ticking rotation
@@ -7772,6 +7751,7 @@ void death_knight_t::default_apl_frost()
   gs_ticking -> add_talent( this, "Obliteration", "if=(!talent.frozen_pulse.enabled|(rune<2&runic_power<28))" );
   gs_ticking -> add_action( this, "Obliterate", "if=rune>3|buff.killing_machine.react|buff.obliteration.up" );
   gs_ticking -> add_action( this, "Sindragosa's Fury", "if=(equipped.144293|buff.pillar_of_frost.up)&buff.unholy_strength.up&debuff.razorice.stack=5&!buff.obliteration.up" );
+  gs_ticking -> add_talent( this, "Frostscythe", "if=buff.killing_machine.up&(!equipped.132366|talent.gathering_storm.enabled|spell_targets.frostscythe>=2)" );
   gs_ticking -> add_action( this, "Frost Strike", "if=runic_power>80|(buff.obliteration.up&!buff.killing_machine.react)" );
   gs_ticking -> add_action( this, "Obliterate" );
   gs_ticking -> add_talent( this, "Horn of Winter", "if=runic_power<70&!buff.hungering_rune_weapon.up" );
@@ -7831,12 +7811,13 @@ void death_knight_t::default_apl_unholy()
   // Pick an APL to run
   def->add_action("run_action_list,name=valkyr,if=talent.dark_arbiter.enabled&pet.valkyr_battlemaiden.active");
   def->add_action("call_action_list,name=generic");
-
+  
   // Default generic target APL
 
   generic->add_talent(this, "Dark Arbiter", "if=!equipped.137075&runic_power.deficit<30");
   generic->add_talent(this, "Dark Arbiter", "if=equipped.137075&runic_power.deficit<30&cooldown.dark_transformation.remains<2");
   generic->add_action(this, "Summon Gargoyle", "if=!equipped.137075,if=rune<=3");
+  generic->add_action(this, "Chains of Ice", "if=buff.unholy_strength.up&buff.cold_heart.stack>19");
   generic->add_action(this, "Summon Gargoyle", "if=equipped.137075&cooldown.dark_transformation.remains<10&rune<=3");
 
   // Apocalypso
@@ -9151,7 +9132,7 @@ struct death_march_t : public scoped_actor_callback_t<death_knight_t>
 
   // Make adjustment time negative here, spell data value is positive
   void manipulate( death_knight_t* p, const special_effect_t& e ) override
-  { p -> legendary.death_march = timespan_t::from_seconds( -e.driver() -> effectN( 1 ).base_value() / 10 ); }
+  { p -> legendary.death_march = e.driver(); }
 };
 
 struct sephuzs_secret_t: public unique_gear::scoped_actor_callback_t<death_knight_t>

@@ -1,16 +1,3 @@
-# T19H_NH
-# Tier 19 Heroic Nighthold
-# * Ilvl Cap: 895
-# * Artifact Rank Cap: 42
-# * 3 Relics with max ilevel of 895
-# * No Legendaries (see Raid_T19x_Legendary.simc)
-# * No items from World Bosses / World Quests / BoEs
-# * Mythic+ gear is permitted up to the Mythic+ item level cap
-# * No Random Gems (ie. Bonus RNG Gem Slots)
-# * No Tertiary Stats
-# * No Hardcoded Stats (generally if an item gives wrong stats: either bonus_id is wrong, either the item no longer exists in-game)
-# * It is recommended to use enchant name (ex : ",enchant=binding_of_mastery") rather than id/hardcoded stats.
-
 rogue="Rogue_Assassination_T19H_NH"
 level=110
 race=pandaren
@@ -26,7 +13,7 @@ shoulder=mantle_of_the_torn_sky,id=140864,bonus_id=3517
 back=doomblade_shadowwrap,id=138371,bonus_id=3517,enchant=binding_of_agility
 chest=doomblade_tunic,id=138326,bonus_id=3517
 wrists=bracers_of_impossible_choices,id=140889,bonus_id=3517
-hands=gloves_of_synchronus_elements,id=140905,bonus_id=3517
+hands=gloves_of_synchronous_elements,id=140905,bonus_id=3517
 waist=high_shadow_councilors_wrap,id=140919,bonus_id=3517
 legs=doomblade_pants,id=138335,bonus_id=3517
 feet=grovetenders_moccasins,id=140861,bonus_id=3517
@@ -53,7 +40,7 @@ shoulder=mantle_of_the_torn_sky,id=140864,bonus_id=3517
 back=doomblade_shadowwrap,id=138371,bonus_id=3517,enchant=binding_of_agility
 chest=doomblade_tunic,id=138326,bonus_id=3517
 wrists=bracers_of_impossible_choices,id=140889,bonus_id=3517
-hands=gloves_of_synchronus_elements,id=140905,bonus_id=3517
+hands=gloves_of_synchronous_elements,id=140905,bonus_id=3517
 waist=high_shadow_councilors_wrap,id=140919,bonus_id=3517
 legs=doomblade_pants,id=138335,bonus_id=3517
 feet=grovetenders_moccasins,id=140861,bonus_id=3517
@@ -99,7 +86,7 @@ race=night_elf
 timeofday=day
 role=attack
 position=back
-talents=1210011
+talents=1310031
 artifact=17:0:0:0:0:851:1:852:3:853:3:854:3:855:3:856:3:857:3:858:3:859:3:860:3:861:1:862:1:863:1:864:1:865:1:866:1:1349:1:1386:1:1585:4:1586:1:1587:1:1653:1
 spec=subtlety
 
@@ -109,12 +96,12 @@ shoulder=mantle_of_the_torn_sky,id=140864,bonus_id=3517
 back=doomblade_shadowwrap,id=138371,bonus_id=3517,enchant=binding_of_agility
 chest=doomblade_tunic,id=138326,bonus_id=3517
 wrists=bracers_of_impossible_choices,id=140889,bonus_id=3517
-hands=gloves_of_synchronus_elements,id=140905,bonus_id=3517
+hands=gloves_of_synchronous_elements,id=140905,bonus_id=3517
 waist=high_shadow_councilors_wrap,id=140919,bonus_id=3517
 legs=doomblade_pants,id=138335,bonus_id=3517
 feet=grovetenders_moccasins,id=140861,bonus_id=3517
-finger1=ring_of_exclusive_servitude,id=140906,bonus_id=3517,enchant=binding_of_mastery
-finger2=ring_of_the_scoured_clan,id=140897,bonus_id=3517,enchant=binding_of_mastery
+finger1=ring_of_exclusive_servitude,id=140906,bonus_id=3517,enchant=binding_of_critical_strike
+finger2=ring_of_the_scoured_clan,id=140897,bonus_id=3517,enchant=binding_of_critical_strike
 trinket1=nightblooming_frond,id=140802,bonus_id=3517
 trinket2=convergence_of_fates,id=140806,bonus_id=3517
 main_hand=fangs_of_the_devourer,id=128476,bonus_id=743,gem_id=140826/140822/140826,relic_id=3517/3517/3517

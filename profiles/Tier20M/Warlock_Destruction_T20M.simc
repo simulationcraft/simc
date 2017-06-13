@@ -1,11 +1,11 @@
-warlock="Warlock_Destruction_T19H"
+warlock="Warlock_Destruction_T20M"
 spec=destruction
 level=110
 race=troll
 role=spell
 position=back
-talents=2203022
-artifact=38:133764:137316:133764:0:803:1:804:3:805:3:807:4:808:3:809:5:811:3:812:3:814:1:815:1:817:1:818:1:1355:1
+talents=1203012
+artifact=38:0:0:0:0:803:1:804:4:805:4:806:4:807:4:808:4:809:4:810:4:811:4:812:4:813:1:814:1:815:1:816:1:817:1:818:1:1355:1:1392:1:1609:4:1610:1:1611:1:1612:1:1713:1
 
 # This default action priority list is automatically created based on your character.
 # It is a attempt to provide you with a action list that is both simple and practicable,
@@ -28,14 +28,16 @@ actions.precombat+=/potion,name=prolonged_power
 actions.precombat+=/chaos_bolt
 
 # Executed every time the actor is available.
-actions=havoc,target=2,if=active_enemies>1&(active_enemies<4|talent.wreak_havoc.enabled&active_enemies<6)&!debuff.havoc.remains
+actions=immolate,cycle_targets=1,if=active_enemies=2&talent.roaring_blaze.enabled&!cooldown.havoc.remains&dot.immolate.remains<=buff.active_havoc.duration
+actions+=/havoc,target=2,if=active_enemies>1&(active_enemies<4|talent.wreak_havoc.enabled&active_enemies<6)&!debuff.havoc.remains
 actions+=/dimensional_rift,if=charges=3
-actions+=/immolate,if=remains<=tick_time
-actions+=/immolate,cycle_targets=1,if=active_enemies>1&remains<=tick_time&(!talent.roaring_blaze.enabled|(!debuff.roaring_blaze.remains&action.conflagrate.charges<2+set_bonus.tier19_4pc))
+actions+=/cataclysm,if=spell_targets.cataclysm>=3
+actions+=/immolate,if=(active_enemies<5|!talent.fire_and_brimstone.enabled)&remains<=tick_time
+actions+=/immolate,cycle_targets=1,if=(active_enemies<5|!talent.fire_and_brimstone.enabled)&(!talent.cataclysm.enabled|cooldown.cataclysm.remains>=action.immolate.cast_time*active_enemies)&active_enemies>1&remains<=tick_time&(!talent.roaring_blaze.enabled|(!debuff.roaring_blaze.remains&action.conflagrate.charges<2+set_bonus.tier19_4pc))
 actions+=/immolate,if=talent.roaring_blaze.enabled&remains<=duration&!debuff.roaring_blaze.remains&target.time_to_die>10&(action.conflagrate.charges=2+set_bonus.tier19_4pc|(action.conflagrate.charges>=1+set_bonus.tier19_4pc&action.conflagrate.recharge_time<cast_time+gcd)|target.time_to_die<24)
 actions+=/berserking
 actions+=/blood_fury
-actions+=/arcane_torrent
+actions+=/use_items
 actions+=/potion,name=deadly_grace,if=(buff.soul_harvest.remains|trinket.proc.any.react|target.time_to_die<=45)
 actions+=/shadowburn,if=buff.conflagration_of_chaos.remains<=action.chaos_bolt.cast_time
 actions+=/shadowburn,if=(charges=1+set_bonus.tier19_4pc&recharge_time<action.chaos_bolt.cast_time|charges=2+set_bonus.tier19_4pc)&soul_shard<5
@@ -52,45 +54,49 @@ actions+=/summon_infernal,if=!talent.grimoire_of_supremacy.enabled&spell_targets
 actions+=/summon_doomguard,if=talent.grimoire_of_supremacy.enabled&spell_targets.summon_infernal=1&artifact.lord_of_flames.rank>0&buff.lord_of_flames.remains&!pet.doomguard.active
 actions+=/summon_doomguard,if=talent.grimoire_of_supremacy.enabled&spell_targets.summon_infernal=1&equipped.132379&!cooldown.sindorei_spite_icd.remains
 actions+=/summon_infernal,if=talent.grimoire_of_supremacy.enabled&spell_targets.summon_infernal>1&equipped.132379&!cooldown.sindorei_spite_icd.remains
-actions+=/soul_harvest
-actions+=/channel_demonfire,if=dot.immolate.remains>cast_time
-actions+=/havoc,if=active_enemies=1&talent.wreak_havoc.enabled&equipped.132375&!debuff.havoc.remains
-actions+=/rain_of_fire,if=active_enemies>=3&cooldown.havoc.remains<=12&!talent.wreak_havoc.enabled
+actions+=/soul_harvest,if=!buff.soul_harvest.remains
+actions+=/chaos_bolt,if=active_enemies<4&buff.active_havoc.remains>cast_time
+actions+=/channel_demonfire,if=dot.immolate.remains>cast_time&(active_enemies=1|buff.active_havoc.remains<action.chaos_bolt.cast_time)
+actions+=/rain_of_fire,if=active_enemies>=3
 actions+=/rain_of_fire,if=active_enemies>=6&talent.wreak_havoc.enabled
-actions+=/dimensional_rift,if=!equipped.144369|charges>1|((!talent.grimoire_of_service.enabled|recharge_time<cooldown.service_pet.remains)&(!talent.soul_harvest.enabled|recharge_time<cooldown.soul_harvest.remains)&(!talent.grimoire_of_supremacy.enabled|recharge_time<cooldown.summon_doomguard.remains))
+actions+=/dimensional_rift,if=target.time_to_die<=32|!equipped.144369|charges>1|((!talent.grimoire_of_service.enabled|recharge_time<cooldown.service_pet.remains)&(!talent.soul_harvest.enabled|recharge_time<cooldown.soul_harvest.remains)&(!talent.grimoire_of_supremacy.enabled|recharge_time<cooldown.summon_doomguard.remains))
 actions+=/life_tap,if=talent.empowered_life_tap.enabled&buff.empowered_life_tap.remains<duration*0.3
 actions+=/cataclysm
-actions+=/chaos_bolt,if=(cooldown.havoc.remains>12&cooldown.havoc.remains|active_enemies<3|talent.wreak_havoc.enabled&active_enemies<6)&(set_bonus.tier19_4pc=0|!talent.eradication.enabled|buff.embrace_chaos.remains<=cast_time|soul_shard>=3)
+actions+=/chaos_bolt,if=active_enemies<3&target.time_to_die<=10
+actions+=/chaos_bolt,if=active_enemies<3&(cooldown.havoc.remains>12&cooldown.havoc.remains|active_enemies=1|soul_shard>=5-spell_targets.infernal_awakening*0.5)&(soul_shard>=5-spell_targets.infernal_awakening*0.5|buff.soul_harvest.remains>cast_time|buff.concordance_of_the_legionfall.remains>cast_time)
+actions+=/chaos_bolt,if=active_enemies<3&(cooldown.havoc.remains>12&cooldown.havoc.remains|active_enemies=1|soul_shard>=5-spell_targets.infernal_awakening*0.5)&(trinket.proc.mastery.react&trinket.proc.mastery.remains>cast_time|trinket.proc.crit.react&trinket.proc.crit.remains>cast_time|trinket.proc.versatility.react&trinket.proc.versatility.remains>cast_time|trinket.proc.intellect.react&trinket.proc.intellect.remains>cast_time|trinket.proc.spell_power.react&trinket.proc.spell_power.remains>cast_time)
+actions+=/chaos_bolt,if=active_enemies<3&(cooldown.havoc.remains>12&cooldown.havoc.remains|active_enemies=1|soul_shard>=5-spell_targets.infernal_awakening*0.5)&(trinket.stacking_proc.mastery.react&trinket.stacking_proc.mastery.remains>cast_time|trinket.stacking_proc.crit.react&trinket.stacking_proc.crit.remains>cast_time|trinket.stacking_proc.versatility.react&trinket.stacking_proc.versatility.remains>cast_time|trinket.stacking_proc.intellect.react&trinket.stacking_proc.intellect.remains>cast_time|trinket.stacking_proc.spell_power.react&trinket.stacking_proc.spell_power.remains>cast_time)
 actions+=/shadowburn
 actions+=/conflagrate,if=!talent.roaring_blaze.enabled&buff.backdraft.stack<3
-actions+=/immolate,if=!talent.roaring_blaze.enabled&remains<=duration*0.3
+actions+=/immolate,if=(active_enemies<5|!talent.fire_and_brimstone.enabled)&(!talent.cataclysm.enabled|cooldown.cataclysm.remains>=action.immolate.cast_time*active_enemies)&!talent.roaring_blaze.enabled&remains<=duration*0.3
 actions+=/incinerate
 actions+=/life_tap
 
-head=collar_of_enclosure,id=134424,bonus_id=1727/1517
-neck=pendant_of_the_watchful_eye,id=137536,bonus_id=1727/1517,enchant=mark_of_the_claw
-shoulders=amice_of_the_unfurling_tempest,id=134432,bonus_id=1727/1517
-back=goldscar_pelt,id=133639,bonus_id=1727/1517,enchant_id=5436
-chest=fluxflow_robes,id=134413,bonus_id=1727/1517
-wrists=clasp_of_cosmic_insignificance,id=139187,bonus_id=1805
-hands=silken_bloodscent_gloves,id=133609,bonus_id=1727/1517
-waist=waistband_of_spiritual_doom,id=137507,bonus_id=1727/1517
-legs=legwraps_of_reverberating_shadows,id=137404,bonus_id=1727/1517
-feet=cozy_dryad_hoofsocks,id=139194,bonus_id=1805
-finger1=jeweled_signet_of_melandrus,id=134542,bonus_id=1727/1517,enchant_id=5428
-finger2=band_of_fused_coral,id=134532,bonus_id=1727/1517,enchant_id=5428
-trinket1=naraxas_spiked_tongue,id=137349,bonus_id=1727/1517
-trinket2=oakhearts_gnarled_root,id=137306,bonus_id=1727/1517
-main_hand=scepter_of_sargeras,id=128941,gem_id=133764/137316/133764,relic_id=1517:1727/1517:1727/1517:1727
+head=diabolic_helm,id=147183,ilevel=930
+neck=string_of_extracted_incisors,id=147013,ilevel=930,enchant_id=5437
+shoulders=lessons_of_spacetime,id=144369,ilevel=970
+back=diabolic_shroud,id=147181,ilevel=930,enchant_id=5436
+chest=diabolic_robe,id=147185,ilevel=930
+wrists=oathbreakers_cuffs,id=147001,ilevel=930
+hands=gloves_of_furtive_oppression,id=146988,ilevel=930
+waist=feretory_of_souls,id=132456,ilevel=970
+legs=diabolic_leggings,id=147184,ilevel=930
+feet=slippers_of_enduring_vigilance,id=146987,ilevel=930
+finger1=yathaes_thumb_ring,id=147021,ilevel=930,enchant_id=5428
+finger2=seal_of_the_second_duumvirate,id=147195,ilevel=940,enchant_id=5428
+trinket1=tarnished_sentinel_medallion,id=147017,ilevel=930
+trinket2=tome_of_unraveling_sanity,id=147019,ilevel=940
+main_hand=scepter_of_sargeras,id=128941,ilevel=957,gem_id=147087/147090/147087
 
 # Gear Summary
-# gear_ilvl=866.93
-# gear_stamina=23777
-# gear_intellect=24598
-# gear_crit_rating=6984
-# gear_haste_rating=11408
-# gear_mastery_rating=2095
-# gear_versatility_rating=1036
-# gear_armor=1715
-# set_bonus=tier19p_cloth_2pc=1
+# gear_ilvl=938.47
+# gear_stamina=46630
+# gear_intellect=49413
+# gear_crit_rating=7369
+# gear_haste_rating=10264
+# gear_mastery_rating=6681
+# gear_versatility_rating=3849
+# gear_armor=2233
+# set_bonus=tier20_2pc=1
+# set_bonus=tier20_4pc=1
 default_pet=imp

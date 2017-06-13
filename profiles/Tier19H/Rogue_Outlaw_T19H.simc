@@ -30,14 +30,11 @@ actions.precombat+=/stealth
 actions.precombat+=/potion
 actions.precombat+=/marked_for_death,if=raid_event.adds.in>40
 actions.precombat+=/roll_the_bones,if=!talent.slice_and_dice.enabled
-actions.precombat+=/curse_of_the_dreadblades,if=ptr
+actions.precombat+=/curse_of_the_dreadblades
 
 # Executed every time the actor is available.
-# PTR: Fish for '2 Buffs' when Loaded Dice is up. With SnD, consider that we never have to reroll.
-actions=variable,name=rtb_reroll_ptr,value=!talent.slice_and_dice.enabled&rtb_buffs<2&buff.loaded_dice.up
-# Fish for '3 Buffs' or 'True Bearing'. With SnD, consider that we never have to reroll.
-actions+=/variable,name=rtb_reroll_live,value=!talent.slice_and_dice.enabled&(rtb_buffs<=2&!rtb_list.any.6)
-actions+=/variable,name=rtb_reroll,value=(ptr&variable.rtb_reroll_ptr)|(!ptr&variable.rtb_reroll_live)
+# Fish for '2 Buffs' when Loaded Dice is up. With SnD, consider that we never have to reroll.
+actions=variable,name=rtb_reroll,value=!talent.slice_and_dice.enabled&rtb_buffs<2&buff.loaded_dice.up
 # Condition to use Saber Slash when not rerolling RtB or when using SnD
 actions+=/variable,name=ss_useable_noreroll,value=(combo_points<5+talent.deeper_stratagem.enabled-(buff.broadsides.up|buff.jolly_roger.up)-(talent.alacrity.enabled&buff.alacrity.stack<=4))
 # Condition to use Saber Slash, when you have RtB or not
@@ -77,14 +74,14 @@ actions.cds+=/adrenaline_rush,if=!buff.adrenaline_rush.up&energy.deficit>0
 actions.cds+=/marked_for_death,target_if=min:target.time_to_die,if=target.time_to_die<combo_points.deficit|((raid_event.adds.in>40|buff.true_bearing.remains>15-buff.adrenaline_rush.up*5)&!stealthed.rogue&combo_points.deficit>=cp_max_spend-1)
 actions.cds+=/sprint,if=equipped.thraxis_tricksy_treads&!variable.ss_useable
 actions.cds+=/darkflight,if=equipped.thraxis_tricksy_treads&!variable.ss_useable&buff.sprint.down
-actions.cds+=/curse_of_the_dreadblades,if=(!stealthed.all|ptr)&combo_points.deficit>=4&(!talent.ghostly_strike.enabled|debuff.ghostly_strike.up)
+actions.cds+=/curse_of_the_dreadblades,if=combo_points.deficit>=4&(!talent.ghostly_strike.enabled|debuff.ghostly_strike.up)
 
 # Finishers
 actions.finish=between_the_eyes,if=(mantle_duration>=gcd.remains+0.2&!equipped.thraxis_tricksy_treads)|(equipped.greenskins_waterlogged_wristcuffs&!buff.greenskins_waterlogged_wristcuffs.up)
 actions.finish+=/run_through,if=!talent.death_from_above.enabled|energy.time_to_max<cooldown.death_from_above.remains+3.5
 
 # Stealth
-actions.stealth=variable,name=ambush_condition,value=combo_points.deficit>=2+2*(talent.ghostly_strike.enabled&!debuff.ghostly_strike.up)+buff.broadsides.up&energy>60&!buff.jolly_roger.up&!buff.hidden_blade.up&(!buff.curse_of_the_dreadblades.up|ptr)
+actions.stealth=variable,name=ambush_condition,value=combo_points.deficit>=2+2*(talent.ghostly_strike.enabled&!debuff.ghostly_strike.up)+buff.broadsides.up&energy>60&!buff.jolly_roger.up&!buff.hidden_blade.up
 actions.stealth+=/ambush,if=variable.ambush_condition
 actions.stealth+=/vanish,if=variable.ambush_condition|(equipped.mantle_of_the_master_assassin&mantle_duration=0&!variable.rtb_reroll&!variable.ss_useable)
 actions.stealth+=/shadowmeld,if=variable.ambush_condition

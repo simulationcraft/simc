@@ -1536,6 +1536,9 @@ struct majordomos_dinner_bell_t : proc_spell_t
     // If you don't have a food buff, it is random
 
     // 5/18/2017 - Reports are that this was hotfixed on PTR to always be random
+
+    // CHECK IF STILL TRUE - 6/9/2017
+    /*
     if( player->consumables.food && !maybe_ptr(player->dbc.ptr) )
     {
       const stat_buff_t* food_buff = dynamic_cast<stat_buff_t*>(player->consumables.food);
@@ -1556,6 +1559,7 @@ struct majordomos_dinner_bell_t : proc_spell_t
         }
       }
     }
+    */
 
     // We didn't find a matching food buff, so pick randomly
     const int selected_buff = (int)(player->sim->rng().real() * buffs.size());
@@ -1979,9 +1983,7 @@ struct insidious_corruption_t : public proc_spell_t
 
   insidious_corruption_t( const special_effect_t& effect, stat_buff_t* b ) :
     proc_spell_t( effect ), buff( b )
-  {
-    may_crit = tick_may_crit = false;
-  }
+  { }
 
   void last_tick( dot_t* d ) override
   {
@@ -2079,7 +2081,7 @@ struct ceaseless_toxin_t : public proc_spell_t
       target -> callbacks_on_demise.push_back( [ this ]( player_t* actor ) {
         if ( get_dot( actor ) -> is_ticking() )
         {
-          cooldown -> adjust( -timespan_t::from_seconds( data().effectN( maybe_ptr( player -> dbc.ptr ) ? 3 : 2 ).base_value() ) );
+          cooldown -> adjust( -timespan_t::from_seconds( data().effectN( 3 ).base_value() ) );
         }
       } );
     } );

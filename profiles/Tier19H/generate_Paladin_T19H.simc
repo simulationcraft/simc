@@ -1,25 +1,9 @@
-# T19H
-# Tier 19 Heroic
-# * Ilvl Cap: 865
-# * Artifact Rank Cap: 26
-# * 3 Relics with max ilevel of 865
-# * Mythic+ gear is permitted up to the item level cap.
-# * No items from Violet Hold (unless 840 ilevel)
-# * No items from World Bosses / World Quests / BoEs
-# * No items from Nighthold (including set bonuses)
-# * No Legendaries
-# * No Random Gems (ie. Bonus RNG Gem Slots)
-# * No Tertiary Stats
-# * No Ranked Gear (ie. Warforged/Titanforged)
-# * No Hardcoded Stats (generally if an item gives wrong stats: either bonus_id is wrong, either the item no longer exists in-game)
-# * It is recommended to use enchant name (ex : ",enchant=binding_of_mastery") rather than id/hardcoded stats.
-
 paladin="Paladin_Retribution_T19H"
 level=110
 race=blood_elf
 role=attack
 position=back
-talents=2212212
+talents=1202102
 spec=retribution
 artifact=2:0:0:0:0:40:1:41:3:42:3:44:3:47:3:49:1:50:3:51:3:53:3:54:1:350:1:353:1:1275:1
 

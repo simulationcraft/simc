@@ -31,7 +31,7 @@ struct item_t;
 
 const unsigned NUM_SPELL_FLAGS = 12;
 const unsigned NUM_CLASS_FAMILY_FLAGS = 4;
-#define SC_USE_PTR 1
+#define SC_USE_PTR 0
 
 struct stat_data_t
 {
@@ -91,9 +91,6 @@ const gem_property_data_t* gem_properties( bool ptr );
 specialization_e translate_spec_str   ( player_e ptype, const std::string& spec_str );
 std::string specialization_string     ( specialization_e spec );
 double fmt_value( double v, effect_type_t type, effect_subtype_t sub_type );
-const std::string& get_token( unsigned int id_spell );
-bool add_token( unsigned int id_spell, const std::string& token_name, bool ptr );
-unsigned int get_token_id( const std::string& token );
 bool valid_gem_color( unsigned color );
 
 const char* item_name_description( unsigned, bool ptr );
@@ -1447,9 +1444,6 @@ public:
 
   const gem_property_data_t* gem_properties() const
   { return dbc::gem_properties( ptr ); }
-
-  bool add_token( unsigned int id_spell, const std::string& token_name ) const
-  { return dbc::add_token( id_spell, token_name, ptr ); }
 
   // Gametables removed in Legion
   double melee_crit_base( player_e, unsigned ) const

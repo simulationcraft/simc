@@ -135,10 +135,7 @@ public:
   // Buffs
   struct buffs_t
   {
-    buff_t* aspect_of_the_cheetah;
-    buff_t* aspect_of_the_turtle;
     buff_t* aspect_of_the_wild;
-    buff_t* beast_cleave;
     buff_t* bestial_wrath;
     buff_t* big_game_hunter;
     buff_t* bombardment;
@@ -177,15 +174,12 @@ public:
   // Cooldowns
   struct cooldowns_t
   {
-    cooldown_t* explosive_shot;
-    cooldown_t* black_arrow;
     cooldown_t* bestial_wrath;
     cooldown_t* trueshot;
     cooldown_t* dire_beast;
     cooldown_t* dire_frenzy;
     cooldown_t* kill_command;
     cooldown_t* mongoose_bite;
-    cooldown_t* lacerate;
     cooldown_t* flanking_strike;
     cooldown_t* harpoon;
     cooldown_t* aspect_of_the_eagle;
@@ -199,14 +193,9 @@ public:
   // Gains
   struct gains_t
   {
-    gain_t* arcane_shot;
     gain_t* critical_focus;
     gain_t* steady_focus;
-    gain_t* cobra_shot;
-    gain_t* aimed_shot;
     gain_t* dire_regen;
-    gain_t* multi_shot;
-    gain_t* chimaera_shot;
     gain_t* aspect_of_the_wild;
     gain_t* spitting_cobra;
     gain_t* nesingwarys_trapping_treads;
@@ -451,15 +440,12 @@ public:
     clear_next_hunters_mark( true )
   {
     // Cooldowns
-    cooldowns.explosive_shot  = get_cooldown( "explosive_shot" );
-    cooldowns.black_arrow     = get_cooldown( "black_arrow" );
     cooldowns.bestial_wrath   = get_cooldown( "bestial_wrath" );
     cooldowns.trueshot        = get_cooldown( "trueshot" );
     cooldowns.dire_beast      = get_cooldown( "dire_beast" );
     cooldowns.dire_frenzy     = get_cooldown( "dire_frenzy" );
     cooldowns.kill_command    = get_cooldown( "kill_command" );
     cooldowns.mongoose_bite   = get_cooldown( "mongoose_bite" );
-    cooldowns.lacerate        = get_cooldown( "lacerate" );
     cooldowns.flanking_strike = get_cooldown( "flanking_strike" );
     cooldowns.harpoon         = get_cooldown( "harpoon" );
     cooldowns.aspect_of_the_eagle = get_cooldown( "aspect_of_the_eagle" );
@@ -592,8 +578,7 @@ public:
       ab::cooldown -> hasted = true;
 
     affected_by.sniper_training = ab::data().affected_by( p() -> mastery.sniper_training -> effectN( 2 ) );
-    affected_by.aotw_gcd_reduce = maybe_ptr( ab::player -> dbc.ptr ) &&
-                                  ab::data().affected_by( p() -> specs.aspect_of_the_wild -> effectN( 3 ) );
+    affected_by.aotw_gcd_reduce = ab::data().affected_by( p() -> specs.aspect_of_the_wild -> effectN( 3 ) );
     affected_by.sv_legendary_cloak = ab::data().affected_by( p() -> find_spell( 248212 ) -> effectN( 1 ) );
   }
 
@@ -644,7 +629,7 @@ public:
     if ( g == timespan_t::zero() )
       return g;
 
-    if ( maybe_ptr( ab::player -> dbc.ptr ) && affected_by.aotw_gcd_reduce && p() -> buffs.aspect_of_the_wild -> check() )
+    if ( affected_by.aotw_gcd_reduce && p() -> buffs.aspect_of_the_wild -> check() )
       g += p() -> specs.aspect_of_the_wild -> effectN( 3 ).time_value();
 
     if ( hasted_gcd )
@@ -696,17 +681,18 @@ public:
       cost += cost * p() -> find_spell( 211327 ) -> effectN( 1 ).percent();
 
     if ( p() -> legendary.bm_waist -> ok() && p() -> buffs.bestial_wrath -> check() )
-      cost *= 1.0 + p() -> find_spell( 207318 ) -> effectN( 1 ).percent();
+      cost *= 1.0 + p() -> legendary.bm_waist -> effectN( 1 ).trigger() -> effectN( 1 ).percent();
 
     return cost;
   }
 
   virtual double cast_regen() const
   {
-    double cast_seconds = std::max( ab::execute_time().total_seconds(), ab::gcd().total_seconds() );
-    double sf_seconds = std::min( cast_seconds, p() -> buffs.steady_focus -> remains().total_seconds() );
-    double regen = p() -> focus_regen_per_second();
-    return ( regen * cast_seconds ) + ( regen * p() -> buffs.steady_focus -> check_value() * sf_seconds );
+    const timespan_t cast_time = std::max( this -> execute_time(), this -> gcd() );
+    const timespan_t sf_time = std::min( cast_time, p() -> buffs.steady_focus -> remains() );
+    const double regen = p() -> focus_regen_per_second();
+    const double sf_mult = p() -> buffs.steady_focus -> check_value();
+    return ( regen * cast_time.total_seconds() ) + ( regen * sf_mult * sf_time.total_seconds() );
   }
 
 // action list expressions
@@ -1004,6 +990,13 @@ public:
   {
     return static_cast<hunter_t*>( owner );
   }
+
+  double beast_cleave_value() const
+  {
+    double value = o() -> specs.beast_cleave -> effectN( 1 ).percent();
+    value *= 1.0 + o() -> artifacts.furious_swipes.percent();
+    return value;
+  }
 };
 
 // Template for common hunter pet action code. See priest_action_t.
@@ -1181,7 +1174,7 @@ public:
   {
     base_t::create_buffs();
 
-    buffs.aspect_of_the_wild = 
+    buffs.aspect_of_the_wild =
       buff_creator_t( this, "aspect_of_the_wild", o() -> specs.aspect_of_the_wild )
         .cd( timespan_t::zero() )
         .default_value( o() -> specs.aspect_of_the_wild -> effectN( 1 ).percent() )
@@ -1192,37 +1185,30 @@ public:
     buffs.aspect_of_the_wild -> buff_duration += o() -> artifacts.wilderness_expert.time_value();
 
     // Bestial Wrath
-    buffs.bestial_wrath = 
+    buffs.bestial_wrath =
       buff_creator_t( this, "bestial_wrath", o() -> specs.bestial_wrath )
         .activated( true )
         .cd( timespan_t::zero() )
         .default_value( o() -> specs.bestial_wrath -> effectN( 1 ).percent() +
                         o() -> talents.bestial_fury -> effectN( 1 ).percent() +
                         o() -> artifacts.unleash_the_beast.percent() )
-        .duration( timespan_t::from_seconds( 15.0 ) )
         .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
     // Beast Cleave
-    double cleave_value = o() -> find_specialization_spell( "Beast Cleave" ) 
-                              -> effectN( 1 )
-                                .percent();
-    cleave_value *= 1.0 + o() -> artifacts.furious_swipes.percent();
-    if ( o() -> find_spell( 118459 ) -> affected_by ( o() -> specs.beast_mastery_hunter -> effectN( 1 ) ) )
-      cleave_value *= 1.0 + o() -> specs.beast_mastery_hunter -> effectN( 1 ).percent();
-    buffs.beast_cleave = 
+    buffs.beast_cleave =
       buff_creator_t( this, "beast_cleave", find_spell(118455) )
         .activated( true )
-        .default_value( cleave_value );
+        .default_value( beast_cleave_value() );
 
     // Dire Frenzy
-    buffs.dire_frenzy = 
+    buffs.dire_frenzy =
       buff_creator_t( this, "dire_frenzy", o() -> talents.dire_frenzy )
         .default_value ( o() -> talents.dire_frenzy -> effectN( 2 ).percent() +
                          o() -> artifacts.beast_master.percent( 2 ) )
         .cd( timespan_t::zero() )
         .add_invalidate( CACHE_ATTACK_HASTE );
 
-    buffs.titans_frenzy = 
+    buffs.titans_frenzy =
       buff_creator_t( this, "titans_frenzy", o() -> artifacts.titans_thunder )
         .duration( timespan_t::from_seconds( 30.0 ) );
 
@@ -1516,7 +1502,7 @@ struct dire_critter_t: public hunter_secondary_pet_t
   {
     hunter_secondary_pet_t::create_buffs();
 
-    buffs.bestial_wrath = 
+    buffs.bestial_wrath =
       make_buff( this, "bestial_wrath", find_spell( 211183 ) )
         -> set_default_value( find_spell( 211183 ) -> effectN( 1 ).percent() )
         -> add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
@@ -1563,6 +1549,7 @@ struct hati_t: public hunter_secondary_pet_t
     hunter_secondary_pet_t( owner, std::string( "hati" ) ),
     active( actives_t() )
   {
+    owner_coeff.ap_from_ap = 0.6 * 1.6;
   }
 
   void init_base_stats() override
@@ -1579,27 +1566,20 @@ struct hati_t: public hunter_secondary_pet_t
     hunter_secondary_pet_t::create_buffs();
 
     // Bestial Wrath
-    buffs.bestial_wrath = 
+    buffs.bestial_wrath =
       buff_creator_t( this, "bestial_wrath", o() -> specs.bestial_wrath )
         .activated( true )
         .cd( timespan_t::zero() )
         .default_value( o() -> specs.bestial_wrath -> effectN( 1 ).percent() +
                         o() -> talents.bestial_fury -> effectN( 1 ).percent() +
                         o() -> artifacts.unleash_the_beast.percent() )
-        .duration( timespan_t::from_seconds( 15.0 ) )
         .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
     // Beast Cleave
-    double cleave_value = o() -> find_specialization_spell( "Beast Cleave" ) 
-                              -> effectN( 1 )
-                                .percent();
-    cleave_value *= 1.0 + o() -> artifacts.furious_swipes.percent();
-    if ( o() -> find_spell( 118459 ) -> affected_by ( o() -> specs.beast_mastery_hunter -> effectN( 1 ) ) )
-      cleave_value *= 1.0 + o() -> specs.beast_mastery_hunter -> effectN( 1 ).percent();
-    buffs.beast_cleave = 
-      buff_creator_t( this, "beast_cleave", find_spell(118455) )
+    buffs.beast_cleave =
+      buff_creator_t( this, "beast_cleave", find_spell( 118455 ) )
         .activated( true )
-        .default_value( cleave_value );
+        .default_value( beast_cleave_value() );
   }
 
   double composite_player_multiplier( school_e school ) const override
@@ -1919,8 +1899,11 @@ struct bestial_ferocity_t: public hunter_main_pet_attack_t
 struct kill_command_t: public hunter_pet_action_t < hunter_pet_t, attack_t >
 {
   jaws_of_thunder_t* jaws_of_thunder;
+  double jaws_of_thunder_mult;
+
   kill_command_t( hunter_pet_t* p ):
-    base_t( "kill_command", p, p -> find_spell( 83381 ) ), jaws_of_thunder( nullptr )
+    base_t( "kill_command", p, p -> find_spell( 83381 ) ),
+    jaws_of_thunder( nullptr ), jaws_of_thunder_mult( 0 )
   {
     background = true;
     may_crit = true;
@@ -1930,12 +1913,15 @@ struct kill_command_t: public hunter_pet_action_t < hunter_pet_t, attack_t >
 
     // The hardcoded parameter is taken from the $damage value in teh tooltip. e.g., 1.36 below
     // $damage = ${ 1.5*($83381m1 + ($RAP*  1.632   ))*$<bmMastery> }
-    attack_power_mod.direct  = maybe_ptr( p -> dbc.ptr ) ? 3.6 : 3.0; // Hard-coded in tooltip.
+    attack_power_mod.direct  = 3.6; // Hard-coded in tooltip.
 
     base_multiplier *= 1.0 + o() -> artifacts.pack_leader.percent();
 
     if ( o() -> artifacts.jaws_of_thunder.rank() )
+    {
       jaws_of_thunder = new jaws_of_thunder_t( p );
+      jaws_of_thunder_mult = o() -> find_spell( 197163 ) -> effectN( 2 ).percent();
+    }
   }
 
   void impact( action_state_t* s ) override
@@ -1944,10 +1930,7 @@ struct kill_command_t: public hunter_pet_action_t < hunter_pet_t, attack_t >
 
     if ( rng().roll( o() -> artifacts.jaws_of_thunder.percent() ) )
     {
-      jaws_of_thunder -> base_dd_min =  o() -> find_spell( 197163 ) 
-                                            -> effectN( 2 )
-                                            .percent() * 
-                                            s -> result_amount;
+      jaws_of_thunder -> base_dd_min = s -> result_amount * jaws_of_thunder_mult;
       jaws_of_thunder -> base_dd_max = jaws_of_thunder -> base_dd_min;
       jaws_of_thunder -> target = s -> target;
       jaws_of_thunder -> execute();
@@ -2234,9 +2217,6 @@ struct dire_frenzy_t: public hunter_main_pet_attack_t
 
       if ( p -> o() -> artifacts.titans_thunder.rank() )
         titans_frenzy = new titans_frenzy_t( p );
-
-      // Not sure if this is intended, but beast master also buffs Dire Frenzy damage
-      base_multiplier *= 1.0 + o() -> artifacts.beast_master.percent();
   }
 
   void schedule_execute( action_state_t* state = nullptr ) override
@@ -2755,7 +2735,7 @@ struct barrage_t: public hunter_spell_t
 struct multi_shot_t: public hunter_ranged_attack_t
 {
   multi_shot_t( hunter_t* p, const std::string& options_str ):
-    hunter_ranged_attack_t( "multi_shot", p, p -> find_class_spell( "Multi-Shot" ) )
+    hunter_ranged_attack_t( "multishot", p, p -> find_class_spell( "Multi-Shot" ) )
   {
     parse_options( options_str );
     may_proc_mm_feet = true;
@@ -3091,6 +3071,16 @@ struct aimed_shot_base_t: public hunter_ranged_attack_t
     crit_bonus_multiplier *= 1.0 + p -> artifacts.deadly_aim.percent();
   }
 
+  timespan_t execute_time() const override
+  {
+    timespan_t t = hunter_ranged_attack_t::execute_time();
+
+    if ( p() -> buffs.t20_4p_precision -> check() )
+      t *= 1.0 + p() -> buffs.t20_4p_precision -> data().effectN( 1 ).percent();
+
+    return t;
+  }
+
   double action_multiplier() const override
   {
     double am = hunter_ranged_attack_t::action_multiplier();
@@ -3221,12 +3211,13 @@ struct aimed_shot_t: public aimed_shot_base_t
   trick_shot_t* trick_shot;
   legacy_of_the_windrunners_t* legacy_of_the_windrunners;
   vulnerability_stats_t vulnerability_stats;
+  bool lock_and_loaded;
 
   aimed_shot_t( hunter_t* p, const std::string& options_str ):
     aimed_shot_base_t( "aimed_shot", p, p -> find_specialization_spell( "Aimed Shot" ) ),
     aimed_in_ca( p -> get_benefit( "aimed_in_careful_aim" ) ),
     trick_shot( nullptr ), legacy_of_the_windrunners( nullptr ),
-    vulnerability_stats( p, this )
+    vulnerability_stats( p, this ), lock_and_loaded( false )
   {
     parse_options( options_str );
 
@@ -3249,7 +3240,7 @@ struct aimed_shot_t: public aimed_shot_base_t
   {
     double cost = aimed_shot_base_t::cost();
 
-    if ( p() -> buffs.lock_and_load -> check() )
+    if ( lock_and_loaded )
       return 0;
 
     if ( p() -> buffs.t20_4p_precision -> check() )
@@ -3260,6 +3251,8 @@ struct aimed_shot_t: public aimed_shot_base_t
 
   void schedule_execute( action_state_t* s ) override
   {
+    lock_and_loaded = p() -> buffs.lock_and_load -> up();
+
     aimed_shot_base_t::schedule_execute( s );
 
     if ( legacy_of_the_windrunners && rng().roll( p() -> artifacts.legacy_of_the_windrunners.data().proc_chance() ) )
@@ -3282,8 +3275,9 @@ struct aimed_shot_t: public aimed_shot_base_t
 
     aimed_in_ca -> update( p() -> buffs.careful_aim -> check() != 0 );
 
-    if ( p() -> buffs.lock_and_load -> up() )
+    if ( lock_and_loaded )
       p() -> buffs.lock_and_load -> decrement();
+    lock_and_loaded = false;
 
     if ( p() -> buffs.sentinels_sight -> up() )
       p() -> buffs.sentinels_sight -> expire();
@@ -3315,11 +3309,7 @@ struct aimed_shot_t: public aimed_shot_base_t
     timespan_t t = aimed_shot_base_t::execute_time();
 
     if ( p() -> buffs.lock_and_load -> up() )
-      t = timespan_t::zero();
-
-    // may have to be moved to the base class as it affects lotw arrows
-    if ( p() -> buffs.t20_4p_precision -> check() )
-      t *= 1.0 + p() -> buffs.t20_4p_precision -> data().effectN( 1 ).percent();
+      return timespan_t::zero();
 
     return t;
   }
@@ -3991,6 +3981,7 @@ struct flanking_strike_t: hunter_melee_attack_t
   };
 
   echo_of_ohnara_t* echo_of_ohnara;
+  timespan_t base_animal_instincts_cdr;
 
   flanking_strike_t( hunter_t* p, const std::string& options_str ):
     hunter_melee_attack_t( "flanking_strike", p, p -> specs.flanking_strike ),
@@ -4005,6 +3996,9 @@ struct flanking_strike_t: hunter_melee_attack_t
       echo_of_ohnara = new echo_of_ohnara_t( p );
       add_child( echo_of_ohnara );
     }
+
+    if ( p -> talents.animal_instincts -> ok() )
+      base_animal_instincts_cdr = -p -> find_spell( 232646 ) -> effectN( 1 ).time_value() * 1000;
   }
 
   bool init_finished() override
@@ -4019,13 +4013,13 @@ struct flanking_strike_t: hunter_melee_attack_t
   {
     hunter_melee_attack_t::execute();
 
-    timespan_t animal_instincts = -p() -> find_spell( 232646 ) -> effectN( 1 ).time_value() * 1000 * p() -> cache.spell_haste();
-
     if ( p() -> active.pet )
       p() -> active.pet -> active.flanking_strike -> execute();
 
     if ( p() -> talents.animal_instincts -> ok() )
     {
+      const timespan_t animal_instincts = base_animal_instincts_cdr * p() -> cache.spell_haste();
+
       p() -> animal_instincts_cds.clear();
 
       if ( !p() -> cooldowns.flanking_strike -> up() )
@@ -4648,24 +4642,16 @@ struct counter_shot_t: public interrupt_base_t
 // Beast Mastery spells
 //==============================
 
-// Dire Beast ===============================================================
+// Dire Spell ===============================================================
+// Base class for Dire Beast & Dire Frenzy
 
-struct dire_beast_t: public hunter_spell_t
+struct dire_spell_t: public hunter_spell_t
 {
-  dire_beast_t( hunter_t* player, const std::string& options_str ):
-    hunter_spell_t( "dire_beast", player, player -> specs.dire_beast )
+  dire_spell_t( const std::string& n, hunter_t* p, const spell_data_t* s ) :
+    hunter_spell_t( n, p, s )
   {
-    parse_options( options_str );
-
     harmful = may_hit = false;
     dot_duration = timespan_t::zero();
-  }
-
-  bool init_finished() override
-  {
-    add_pet_stats( p() -> pets.dire_beasts[ 0 ], { "dire_beast_melee", "stomp" } );
-
-    return hunter_spell_t::init_finished();
   }
 
   void execute() override
@@ -4696,8 +4682,31 @@ struct dire_beast_t: public hunter_spell_t
     if ( p() -> legendary.bm_feet -> ok() )
       p() -> cooldowns.kill_command -> adjust( p() -> legendary.bm_feet -> effectN( 1 ).time_value() );
 
-    if ( maybe_ptr( p() -> dbc.ptr ) && p() -> legendary.bm_shoulders -> ok() )
+    if ( p() -> legendary.bm_shoulders -> ok() )
       p() -> buffs.the_mantle_of_command -> trigger();
+  }
+};
+
+// Dire Beast ===============================================================
+
+struct dire_beast_t: public dire_spell_t
+{
+  dire_beast_t( hunter_t* player, const std::string& options_str ):
+    dire_spell_t( "dire_beast", player, player -> specs.dire_beast )
+  {
+    parse_options( options_str );
+  }
+
+  bool init_finished() override
+  {
+    add_pet_stats( p() -> pets.dire_beasts[ 0 ], { "dire_beast_melee", "stomp" } );
+
+    return dire_spell_t::init_finished();
+  }
+
+  void execute() override
+  {
+    dire_spell_t::execute();
 
     pet_t* beast = nullptr;
     for( size_t i = 0; i < p() -> pets.dire_beasts.size(); i++ )
@@ -4743,7 +4752,7 @@ struct dire_beast_t: public hunter_spell_t
   {
     if ( p() -> talents.dire_frenzy -> ok() ) return false;
 
-    return hunter_spell_t::ready();
+    return dire_spell_t::ready();
   }
 };
 
@@ -4843,18 +4852,12 @@ struct kill_command_t: public hunter_spell_t
 
 // Dire Frenzy ==============================================================
 
-struct dire_frenzy_t: public hunter_spell_t
+struct dire_frenzy_t: public dire_spell_t
 {
   dire_frenzy_t( hunter_t* p, const std::string& options_str ):
-    hunter_spell_t( "dire_frenzy", p, p -> talents.dire_frenzy )
+    dire_spell_t( "dire_frenzy", p, p -> talents.dire_frenzy )
   {
     parse_options( options_str );
-
-    harmful = may_hit = false;
-    dot_duration = timespan_t::zero();
-
-    if ( !maybe_ptr( p -> dbc.ptr ) && p -> talents.dire_stable -> ok() )
-      energize_amount += p -> talents.dire_stable -> effectN( 2 ).base_value();
   }
 
   bool init_finished() override
@@ -4862,39 +4865,12 @@ struct dire_frenzy_t: public hunter_spell_t
     for (auto pet : p() -> pet_list)
       add_pet_stats( pet, { "dire_frenzy", "titans_frenzy" } );
 
-    return hunter_spell_t::init_finished();
+    return dire_spell_t::init_finished();
   }
 
   void execute() override
   {
-    hunter_spell_t::execute();
-
-    if ( maybe_ptr( p() -> dbc.ptr ) )
-    {
-      for ( buff_t* buff : p() -> buffs.dire_regen )
-      {
-        if ( ! buff -> check() )
-        {
-          buff -> trigger();
-          break;
-        }
-      }
-    }
-
-    // Adjust BW cd
-    timespan_t t = timespan_t::from_seconds( p() -> specs.dire_beast -> effectN( 1 ).base_value() );
-    // FIXME: spell data still shows the new 4 set as the 2 set, it may be swapped out from under us sometime. For now check for 4 set and use 2 set values.
-    if ( p() -> sets -> has_set_bonus( HUNTER_BEAST_MASTERY, T19, B4 ) )
-      // t += timespan_t::from_seconds( p() -> sets -> set( HUNTER_BEAST_MASTERY, T19, B2 ) -> effectN( 1 ).base_value() );
-      // Not getting the right number from that for some reason.
-      t += timespan_t::from_seconds( p() -> dbc.effect( 312803 ) -> base_value() );
-    p() -> cooldowns.bestial_wrath -> adjust( -t );
-
-    if ( p() -> legendary.bm_feet -> ok() )
-      p() -> cooldowns.kill_command -> adjust( p() -> legendary.bm_feet -> effectN( 1 ).time_value() );
-
-    if ( maybe_ptr( p() -> dbc.ptr ) && p() -> legendary.bm_shoulders -> ok() )
-      p() -> buffs.the_mantle_of_command -> trigger();
+    dire_spell_t::execute();
 
     if ( p() -> active.pet )
     {
@@ -5242,15 +5218,6 @@ struct steel_trap_t: public hunter_spell_t
         p() -> resource_gain( RESOURCE_FOCUS, p() -> find_spell( 212575 ) -> effectN( 1 ).resource( RESOURCE_FOCUS ), p() -> gains.nesingwarys_trapping_treads );
     }
 
-    void impact( action_state_t* s ) override
-    {
-      hunter_spell_t::impact( s );
-
-      // 02/02/2017 nuoHep: Steel Trap triggers twice
-      if ( result_is_hit( s -> result ) )
-        get_dot( s -> target ) -> trigger( dot_duration );
-    }
-
     double target_armor( player_t* ) const override
     {
       // the trap does bleed damage which ignores armor
@@ -5446,7 +5413,7 @@ hunter_td_t::hunter_td_t( player_t* target, hunter_t* p ):
   dots.on_the_trail = target -> get_dot( "on_the_trail", p );
   dots.a_murder_of_crows = target -> get_dot( "a_murder_of_crows", p );
 
-  debuffs.hunters_mark = 
+  debuffs.hunters_mark =
     buff_creator_t( *this, "hunters_mark", p -> find_spell( 185365 ) );
 
   debuffs.vulnerable =
@@ -5455,17 +5422,13 @@ hunter_td_t::hunter_td_t( player_t* target, hunter_t* p ):
                       p -> artifacts.unerring_arrows.percent() )
       .refresh_behavior( BUFF_REFRESH_DURATION );
 
-  debuffs.true_aim = 
+  debuffs.true_aim =
     buff_creator_t( *this, "true_aim", p -> find_spell( 199803 ) )
-        .default_value( p -> find_spell( 199803 ) 
-                          -> effectN( 1 )
-                            .percent() );
+        .default_value( p -> find_spell( 199803 ) -> effectN( 1 ).percent() );
 
-  debuffs.mark_of_helbrine = 
+  debuffs.mark_of_helbrine =
     buff_creator_t( *this, "mark_of_helbrine", p -> find_spell( 213156 ) )
-        .default_value( p -> find_spell( 213154 ) 
-                          -> effectN( 1 )
-                            .percent() );
+        .default_value( p -> find_spell( 213154 ) -> effectN( 1 ).percent() );
 
   debuffs.unseen_predators_cloak =
     buff_creator_t( *this, "unseen_predators_cloak", p -> find_spell( 248212 ) )
@@ -5855,13 +5818,13 @@ void hunter_t::create_buffs()
   player_t::create_buffs();
 
   // General
-  
-  buffs.volley = 
+
+  buffs.volley =
     buff_creator_t( this, "volley", talents.volley );
 
   // Beast Mastery
 
-  buffs.aspect_of_the_wild           
+  buffs.aspect_of_the_wild
     = buff_creator_t( this, "aspect_of_the_wild", find_spell(193530) )
       .cd( timespan_t::zero() )
       .add_invalidate( CACHE_CRIT_CHANCE )
@@ -5871,23 +5834,22 @@ void hunter_t::create_buffs()
                       } );
   buffs.aspect_of_the_wild -> buff_duration += artifacts.wilderness_expert.time_value();
 
-  buffs.bestial_wrath 
+  buffs.bestial_wrath
     = buff_creator_t( this, "bestial_wrath", specs.bestial_wrath )
         .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
         .cd( timespan_t::zero() )
         .default_value( specs.bestial_wrath -> effectN( 1 ).percent() +
                         talents.bestial_fury -> effectN( 1 ).percent() +
-                        artifacts.unleash_the_beast.percent() )
-        .duration( timespan_t::from_seconds( 15.0 ) );
+                        artifacts.unleash_the_beast.percent() );
 
-  buffs.big_game_hunter = 
+  buffs.big_game_hunter =
     buff_creator_t( this, "big_game_hunter", talents.big_game_hunter )
       .activated( true )
       .default_value( talents.big_game_hunter -> effectN( 1 ).percent() );
 
   // initialize dire beast/frenzy buffs
   const spell_data_t* dire_spell =
-    find_spell( maybe_ptr( dbc.ptr ) && talents.dire_frenzy -> ok() ? 246152 : 120694 );
+    find_spell( talents.dire_frenzy -> ok() ? 246152 : 120694 );
   for ( size_t i = 0; i < buffs.dire_regen.size(); i++ )
   {
     buffs.dire_regen[ i ] =
@@ -5901,110 +5863,86 @@ void hunter_t::create_buffs()
 
   // Marksmanship
 
-  buffs.bullseye = 
-    buff_creator_t( this, "bullseye", artifacts.bullseye.data()
-                                     .effectN( 1 )
-                                     .trigger() )
+  buffs.bullseye =
+    buff_creator_t( this, "bullseye", artifacts.bullseye.data().effectN( 1 ).trigger() )
       .add_invalidate( CACHE_CRIT_CHANCE )
-      .default_value( find_spell( 204090 ) 
-                   -> effectN( 1 )
-                     .percent() )
-      .max_stack( 30 );
+      .default_value( find_spell( 204090 ) -> effectN( 1 ).percent() )
+      .max_stack( find_spell( 204090 ) -> max_stacks() );
 
-  buffs.bombardment = 
-    buff_creator_t( this, "bombardment", specs.bombardment 
-                                      -> effectN( 1 )
-                                        .trigger() );
+  buffs.bombardment =
+    buff_creator_t( this, "bombardment", specs.bombardment -> effectN( 1 ).trigger() );
 
-  buffs.careful_aim 
+  buffs.careful_aim
     = buff_creator_t( this, "careful_aim", talents.careful_aim )
         .activated( true )
         .default_value( talents.careful_aim -> effectN( 1 ).percent() );
 
-  buffs.hunters_mark_exists 
+  buffs.hunters_mark_exists
     = new buffs::hunters_mark_exists_buff_t( this );
 
-  buffs.lock_and_load = 
-    buff_creator_t( this, "lock_and_load", talents.lock_and_load 
-                                        -> effectN( 1 )
-                                          .trigger() )
-      .max_stack( 2 );
+  buffs.lock_and_load =
+    buff_creator_t( this, "lock_and_load", talents.lock_and_load -> effectN( 1 ).trigger() )
+      .max_stack( find_spell( 194594 ) -> initial_stacks() );
 
-  buffs.marking_targets = 
+  buffs.marking_targets =
     buff_creator_t( this, "marking_targets", find_spell(223138) );
 
-  buffs.pre_steady_focus = 
+  buffs.pre_steady_focus =
     buff_creator_t( this, "pre_steady_focus" )
       .max_stack( 2 )
       .quiet( true );
 
-  buffs.rapid_killing = 
+  buffs.rapid_killing =
     buff_creator_t( this, "rapid_killing", find_spell(191342) )
-      .default_value( find_spell( 191342 ) 
-                   -> effectN( 1 )
-                     .percent() );
+      .default_value( find_spell( 191342 ) -> effectN( 1 ).percent() );
 
-  buffs.steady_focus 
+  buffs.steady_focus
     = buff_creator_t( this, "steady_focus", find_spell(193534) )
         .chance( talents.steady_focus -> ok() );
 
-  buffs.trick_shot = 
+  buffs.trick_shot =
     buff_creator_t( this, "trick_shot", find_spell(227272) )
-      .default_value( find_spell( 227272 ) 
-                   -> effectN( 1 )
-                     .percent() );
+      .default_value( find_spell( 227272 ) -> effectN( 1 ).percent() );
 
-  buffs.trueshot = 
+  buffs.trueshot =
     haste_buff_creator_t( this, "trueshot", specs.trueshot )
       .default_value( specs.trueshot -> effectN( 1 ).percent() )
       .cd( timespan_t::zero() );
 
   // Survival
 
-  buffs.aspect_of_the_eagle = 
+  buffs.aspect_of_the_eagle =
     buff_creator_t( this, "aspect_of_the_eagle", specs.aspect_of_the_eagle )
       .cd( timespan_t::zero() )
       .add_invalidate( CACHE_CRIT_CHANCE )
       .default_value( specs.aspect_of_the_eagle -> effectN( 1 ).percent() +
-                      find_specialization_spell( 231555 )-> effectN( 1 ).percent() +
-                      find_specialization_spell( 237327 ) ->effectN( 1 ).percent() );
+                      find_specialization_spell( 231555 ) -> effectN( 1 ).percent() +
+                      find_specialization_spell( 237327 ) -> effectN( 1 ).percent() );
   if ( artifacts.aspect_of_the_skylord.rank() )
-  {
-    buffs.aspect_of_the_eagle 
-      -> add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
-  }
+    buffs.aspect_of_the_eagle -> add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
-  buffs.fury_of_the_eagle = 
-    buff_creator_t( this, "fury_of_the_eagle", find_spell(203415) )
+  buffs.fury_of_the_eagle =
+    buff_creator_t( this, "fury_of_the_eagle", find_spell( 203415 ) )
       .cd( timespan_t::zero() )
       .max_stack( 6 );
 
-  buffs.moknathal_tactics = 
-    buff_creator_t( this, "moknathal_tactics", talents.way_of_the_moknathal
-                                            -> effectN( 1 )
-                                              .trigger() )
-      .default_value( find_spell( 201081 ) 
-                   -> effectN( 1 )
-                     .percent() )
-      .max_stack( 4 );
+  buffs.moknathal_tactics =
+    buff_creator_t( this, "moknathal_tactics", talents.way_of_the_moknathal -> effectN( 1 ).trigger() )
+      .default_value( find_spell( 201081 ) -> effectN( 1 ).percent() )
+      .max_stack( find_spell( 201081 ) -> max_stacks() );
 
-  buffs.mongoose_fury = 
-    buff_creator_t( this, "mongoose_fury", find_spell(190931) )
-      .default_value( find_spell( 190931 ) 
-                   -> effectN( 1 )
-                     .percent() )
-      .duration( timespan_t::from_seconds( 14.0 ) )
+  buffs.mongoose_fury =
+    buff_creator_t( this, "mongoose_fury", find_spell( 190931 ) )
+      .default_value( find_spell( 190931 ) -> effectN( 1 ).percent() )
       .refresh_behavior( BUFF_REFRESH_DISABLED )
-      .max_stack( 6 );
+      .max_stack( find_spell( 190931 ) -> max_stacks() );
 
-  buffs.sentinels_sight = 
-    buff_creator_t( this, "sentinels_sight", find_spell(208913) )
-      .default_value( find_spell( 208913 ) 
-                   -> effectN( 1 )
-                     .percent() )
-      .max_stack( 20 );
+  buffs.sentinels_sight =
+    buff_creator_t( this, "sentinels_sight", find_spell( 208913 ) )
+      .default_value( find_spell( 208913 ) -> effectN( 1 ).percent() )
+      .max_stack( find_spell( 208913 ) -> max_stacks() );
 
-  buffs.spitting_cobra = 
+  buffs.spitting_cobra =
     buff_creator_t( this, "spitting_cobra", talents.spitting_cobra )
       .default_value( find_spell( 194407 ) -> effectN( 2 ).resource( RESOURCE_FOCUS ) )
       .tick_callback( [ this ]( buff_t *buff, int, const timespan_t& ){
@@ -6069,12 +6007,6 @@ bool hunter_t::init_special_effects()
 
   // Cooldown adjustments
 
-  if ( legendary.bm_shoulders -> ok() && ! maybe_ptr( dbc.ptr ) )
-  {
-    cooldowns.dire_beast -> charges += legendary.bm_shoulders -> effectN( 1 ).base_value();
-    cooldowns.dire_frenzy -> charges += legendary.bm_shoulders -> effectN( 1 ).base_value();
-  }
-
   if ( legendary.wrist -> ok() )
   {
     cooldowns.aspect_of_the_wild -> duration *= 1.0 + legendary.wrist -> effectN( 1 ).percent();
@@ -6090,14 +6022,9 @@ void hunter_t::init_gains()
 {
   player_t::init_gains();
 
-  gains.arcane_shot          = get_gain( "arcane_shot" );
   gains.critical_focus       = get_gain( "critical_focus" );
   gains.steady_focus         = get_gain( "steady_focus" );
-  gains.cobra_shot           = get_gain( "cobra_shot" );
-  gains.aimed_shot           = get_gain( "aimed_shot" );
   gains.dire_regen           = get_gain( talents.dire_frenzy -> ok() ? "dire_frenzy" : "dire_beast" );
-  gains.multi_shot           = get_gain( "multi_shot" );
-  gains.chimaera_shot        = get_gain( "chimaera_shot" );
   gains.aspect_of_the_wild   = get_gain( "aspect_of_the_wild" );
   gains.spitting_cobra       = get_gain( "spitting_cobra" );
   gains.nesingwarys_trapping_treads = get_gain( "nesingwarys_trapping_treads" );
@@ -6307,16 +6234,7 @@ void hunter_t::apl_bm()
   default_list -> add_talent( this, "A Murder of Crows" );
   default_list -> add_talent( this, "Stampede", "if=buff.bloodlust.up|buff.bestial_wrath.up|cooldown.bestial_wrath.remains<=2|target.time_to_die<=14" );
   default_list -> add_action( this, "Dire Beast", "if=cooldown.bestial_wrath.remains>3" );
-  if ( maybe_ptr( dbc.ptr ) )
-  {
-    default_list -> add_talent( this, "Dire Frenzy", "if=(pet.cat.buff.dire_frenzy.remains<=gcd.max*1.2)|(charges_fractional>=1.8)|target.time_to_die<9" );
-  }
-  else
-  {
-    default_list -> add_talent( this, "Dire Frenzy", "if=(cooldown.bestial_wrath.remains>6&(!equipped.the_mantle_of_command|pet.cat.buff.dire_frenzy.remains<=gcd.max*1.2))|"
-                                                     "(charges>=2&focus.deficit>=25+talent.dire_stable.enabled*12)|"
-                                                     "target.time_to_die<9" );
-  }
+  default_list -> add_talent( this, "Dire Frenzy", "if=(pet.cat.buff.dire_frenzy.remains<=gcd.max*1.2)|(charges_fractional>=1.8)|target.time_to_die<9" );
   default_list -> add_action( this, "Aspect of the Wild", "if=buff.bestial_wrath.up|target.time_to_die<12" );
   default_list -> add_talent( this, "Barrage", "if=spell_targets.barrage>1" );
   default_list -> add_action( this, "Bestial Wrath" );
@@ -6326,8 +6244,9 @@ void hunter_t::apl_bm()
   default_list -> add_action( this, "Multi-Shot", "if=spell_targets>1&(pet.cat.buff.beast_cleave.remains<gcd.max*2|pet.cat.buff.beast_cleave.down)" );
   default_list -> add_talent( this, "Chimaera Shot", "if=focus<90" );
   default_list -> add_action( this, "Cobra Shot", "if=(cooldown.kill_command.remains>focus.time_to_max&cooldown.bestial_wrath.remains>focus.time_to_max)|"
-                                                  "(buff.bestial_wrath.up&focus.regen*cooldown.kill_command.remains>30)|"
-                                                  "target.time_to_die<cooldown.kill_command.remains" );
+                                                  "(buff.bestial_wrath.up&focus.regen*cooldown.kill_command.remains>action.kill_command.cost)|"
+                                                  "target.time_to_die<cooldown.kill_command.remains|"
+                                                  "(equipped.parsels_tongue&buff.parsels_tongue.remains<=gcd.max*2)" );
 }
 
 // Marksman Action List ======================================================================
@@ -6398,9 +6317,9 @@ void hunter_t::apl_mm()
   non_patient_sniper -> add_action( this, "Aimed Shot", "if=talent.sidewinders.enabled&debuff.vulnerability.remains>cast_time" );
   non_patient_sniper -> add_action( this, "Aimed Shot", "if=!talent.sidewinders.enabled&debuff.vulnerability.remains>cast_time&(!variable.pooling_for_piercing|(buff.lock_and_load.up&lowest_vuln_within.5>gcd.max))&(spell_targets.multishot<4|talent.trick_shot.enabled|buff.sentinels_sight.stack=20)" );
   non_patient_sniper -> add_action( this, "Marked Shot" );
-  non_patient_sniper -> add_action( this, "Aimed Shot", "if=talent.sidewinders.enabled&spell_targets.multi_shot=1&focus>110" );
-  non_patient_sniper -> add_action( this, "Multi-Shot", "if=spell_targets.multi_shot>1&!variable.waiting_for_sentinel" );
-  non_patient_sniper -> add_action( this, "Arcane Shot", "if=spell_targets.multi_shot<2&!variable.waiting_for_sentinel" );
+  non_patient_sniper -> add_action( this, "Aimed Shot", "if=talent.sidewinders.enabled&spell_targets.multishot=1&focus>110" );
+  non_patient_sniper -> add_action( this, "Multi-Shot", "if=spell_targets.multishot>1&!variable.waiting_for_sentinel" );
+  non_patient_sniper -> add_action( this, "Arcane Shot", "if=spell_targets.multishot<2&!variable.waiting_for_sentinel" );
 
   // Patient Sniper APL
   patient_sniper -> add_action( "variable,name=vuln_window,op=setif,"
@@ -6416,30 +6335,30 @@ void hunter_t::apl_mm()
                                 "value=floor((focus+action.aimed_shot.cast_regen*(variable.vuln_aim_casts-1))%action.aimed_shot.cost),"
                                 "if=variable.vuln_aim_casts>0&variable.vuln_aim_casts>floor((focus+action.aimed_shot.cast_regen*(variable.vuln_aim_casts-1))%action.aimed_shot.cost)" );
 
-  patient_sniper -> add_action( "variable,name=can_gcd,value=variable.vuln_window>variable.vuln_aim_casts*action.aimed_shot.execute_time+gcd.max" );
+  patient_sniper -> add_action( "variable,name=can_gcd,value=variable.vuln_window<action.aimed_shot.cast_time|variable.vuln_window>variable.vuln_aim_casts*action.aimed_shot.execute_time+gcd.max" );
 
   patient_sniper -> add_action( "call_action_list,name=targetdie,if=target.time_to_die<variable.vuln_window&spell_targets.multishot=1" );
 
   patient_sniper -> add_talent( this, "Piercing Shot", "if=cooldown.piercing_shot.up&spell_targets=1&lowest_vuln_within.5>0&lowest_vuln_within.5<1" );
   patient_sniper -> add_talent( this, "Piercing Shot", "if=cooldown.piercing_shot.up&spell_targets>1&lowest_vuln_within.5>0&((!buff.trueshot.up&focus>80&(lowest_vuln_within.5<1|debuff.hunters_mark.up))|(buff.trueshot.up&focus>105&lowest_vuln_within.5<6))" );
-  patient_sniper -> add_action( this, "Aimed Shot", "if=spell_targets>1&debuff.vulnerability.remains>cast_time&talent.trick_shot.enabled&(buff.sentinels_sight.stack=20|(buff.trueshot.up&buff.sentinels_sight.stack>=spell_targets.multishot*5))" );
+  patient_sniper -> add_action( this, "Aimed Shot", "if=spell_targets>1&debuff.vulnerability.remains>cast_time&talent.trick_shot.enabled&(buff.lock_and_load.up|buff.sentinels_sight.stack=20|(buff.trueshot.up&buff.sentinels_sight.stack>=spell_targets.multishot*5))" );
   patient_sniper -> add_action( this, "Marked Shot", "if=spell_targets>1" );
-  patient_sniper -> add_action( this, "Multi-Shot", "if=spell_targets>1&(buff.marking_targets.up|buff.trueshot.up)" );
+  patient_sniper -> add_action( this, "Multi-Shot", "if=spell_targets>1&(buff.marking_targets.up|buff.trueshot.up)&focus+cast_regen+action.aimed_shot.cast_regen<focus.max" );
   patient_sniper -> add_action( this, "Windburst", "if=variable.vuln_aim_casts<1&!variable.pooling_for_piercing" );
-  patient_sniper -> add_talent( this, "Black Arrow", "if=variable.can_gcd&(talent.sidewinders.enabled|spell_targets.multishot<6)&(!variable.pooling_for_piercing|(lowest_vuln_within.5>gcd.max&focus>85))" );
-  patient_sniper -> add_talent( this, "A Murder of Crows", "if=(!variable.pooling_for_piercing|lowest_vuln_within.5>gcd.max)&(target.time_to_die>=cooldown+duration|target.health.pct<20|target.time_to_die<16)" );
+  patient_sniper -> add_talent( this, "Black Arrow", "if=variable.can_gcd&(!variable.pooling_for_piercing|(lowest_vuln_within.5>gcd.max&focus>85))" );
+  patient_sniper -> add_talent( this, "A Murder of Crows", "if=(!variable.pooling_for_piercing|lowest_vuln_within.5>gcd.max)&(target.time_to_die>=cooldown+duration|target.health.pct<20|target.time_to_die<16)&variable.vuln_aim_casts=0" );
   patient_sniper -> add_talent( this, "Barrage", "if=spell_targets>2|(target.health.pct<20&buff.bullseye.stack<25)" );
-  patient_sniper -> add_action( this, "Aimed Shot", "if=debuff.vulnerability.up&buff.lock_and_load.up&(!variable.pooling_for_piercing|lowest_vuln_within.5>gcd.max)&(spell_targets.multi_shot<4|talent.trick_shot.enabled)" );
-  patient_sniper -> add_action( this, "Aimed Shot", "if=spell_targets.multishot>1&debuff.vulnerability.remains>execute_time&(!variable.pooling_for_piercing|(focus>100&lowest_vuln_within.5>(execute_time+gcd.max)))&(spell_targets.multishot<4|buff.sentinels_sight.stack=20|talent.trick_shot.enabled)" );
+  patient_sniper -> add_action( this, "Aimed Shot", "if=debuff.vulnerability.up&buff.lock_and_load.up&(!variable.pooling_for_piercing|lowest_vuln_within.5>gcd.max)" );
+  patient_sniper -> add_action( this, "Aimed Shot", "if=spell_targets.multishot>1&debuff.vulnerability.remains>execute_time&(!variable.pooling_for_piercing|(focus>100&lowest_vuln_within.5>(execute_time+gcd.max)))" );
   patient_sniper -> add_action( this, "Multi-Shot", "if=spell_targets>1&variable.can_gcd&focus+cast_regen+action.aimed_shot.cast_regen<focus.max&(!variable.pooling_for_piercing|lowest_vuln_within.5>gcd.max)" );
-  patient_sniper -> add_action( this, "Arcane Shot", "if=spell_targets.multi_shot=1&variable.vuln_aim_casts>0&variable.can_gcd&focus+cast_regen+action.aimed_shot.cast_regen<focus.max&(!variable.pooling_for_piercing|lowest_vuln_within.5>gcd.max)" );
+  patient_sniper -> add_action( this, "Arcane Shot", "if=spell_targets.multishot=1&(!set_bonus.tier20_2pc|!buff.trueshot.up|buff.t20_2p_critical_aimed_damage.up)&variable.vuln_aim_casts>0&variable.can_gcd&focus+cast_regen+action.aimed_shot.cast_regen<focus.max&(!variable.pooling_for_piercing|lowest_vuln_within.5>gcd.max)" );
   patient_sniper -> add_action( this, "Aimed Shot", "if=talent.sidewinders.enabled&(debuff.vulnerability.remains>cast_time|(buff.lock_and_load.down&action.windburst.in_flight))&(variable.vuln_window-(execute_time*variable.vuln_aim_casts)<1|focus.deficit<25|buff.trueshot.up)&(spell_targets.multishot=1|focus>100)" );
   patient_sniper -> add_action( this, "Aimed Shot", "if=!talent.sidewinders.enabled&debuff.vulnerability.remains>cast_time&(!variable.pooling_for_piercing|(focus>100&lowest_vuln_within.5>(execute_time+gcd.max)))" );
-  patient_sniper -> add_action( this, "Marked Shot", "if=!talent.sidewinders.enabled&!variable.pooling_for_piercing&(focus>=70|buff.trueshot.up)&!action.windburst.in_flight" );
+  patient_sniper -> add_action( this, "Marked Shot", "if=!talent.sidewinders.enabled&!variable.pooling_for_piercing&!action.windburst.in_flight" );
   patient_sniper -> add_action( this, "Marked Shot", "if=talent.sidewinders.enabled&(variable.vuln_aim_casts<1|buff.trueshot.up|variable.vuln_window<action.aimed_shot.cast_time)" );
-  patient_sniper -> add_action( this, "Aimed Shot", "if=spell_targets.multi_shot=1&focus>110" );
+  patient_sniper -> add_action( this, "Aimed Shot", "if=spell_targets.multishot=1&focus>110" );
   patient_sniper -> add_talent( this, "Sidewinders", "if=(!debuff.hunters_mark.up|(!buff.marking_targets.up&!buff.trueshot.up))&((buff.marking_targets.up&variable.vuln_aim_casts<1)|buff.trueshot.up|charges_fractional>1.9)" );
-  patient_sniper -> add_action( this, "Arcane Shot", "if=spell_targets.multi_shot=1&(!variable.pooling_for_piercing|lowest_vuln_within.5>gcd.max)" );
+  patient_sniper -> add_action( this, "Arcane Shot", "if=spell_targets.multishot=1&(!variable.pooling_for_piercing|lowest_vuln_within.5>gcd.max)" );
   patient_sniper -> add_action( this, "Multi-Shot", "if=spell_targets>1&(!variable.pooling_for_piercing|lowest_vuln_within.5>gcd.max)" );
 
   // APL for the last few actions of a fight
@@ -6530,6 +6449,7 @@ void hunter_t::apl_surv()
   biteFill -> add_talent( this, "Caltrops", "if=!dot.caltrops.ticking" );
 
   bitePhase -> add_action( this, "Fury of the Eagle", "if=(!talent.way_of_the_moknathal.enabled|buff.moknathal_tactics.remains>(gcd*(8%3)))&buff.mongoose_fury.stack=6,interrupt_if=(talent.way_of_the_moknathal.enabled&buff.moknathal_tactics.remains<=tick_time)");
+  bitePhase -> add_action( this, "Lacerate", "if=!dot.lacerate.ticking&set_bonus.tier20_4pc&buff.mongoose_fury.duration>cooldown.mongoose_bite.charges*gcd");
   bitePhase -> add_action( this, "Mongoose Bite", "if=charges>=2&cooldown.mongoose_bite.remains<gcd*2" );
   bitePhase -> add_action( this, "Flanking Strike", "if=((buff.mongoose_fury.remains>(gcd*(cooldown.mongoose_bite.charges+2)))&cooldown.mongoose_bite.charges<=1)&!buff.aspect_of_the_eagle.up" );
   bitePhase -> add_action( this, "Mongoose Bite", "if=buff.mongoose_fury.up" );
@@ -6712,7 +6632,7 @@ double hunter_t::composite_player_multiplier( school_e school ) const
     m *= 1.0 + artifacts.iron_talons.data().effectN( 1 ).percent();
 
   if ( artifacts.aspect_of_the_skylord.rank() && buffs.aspect_of_the_eagle -> check() )
-    m *= 1.0 + find_spell( 203927 ) -> effectN( 1 ).percent();
+    m *= 1.0 + artifacts.aspect_of_the_skylord.data().effectN( 1 ).trigger() -> effectN( 1 ).percent();
 
   m *= 1.0 + artifacts.spiritbound.percent();
   m *= 1.0 + artifacts.windflight_arrows.percent();
@@ -6763,7 +6683,7 @@ double hunter_t::composite_player_pet_damage_multiplier( const action_state_t* s
   m *= 1.0 + artifacts.acuity_of_the_unseen_path.percent( 3 );
   m *= 1.0 + artifacts.ferocity_of_the_unseen_path.percent( 3 );
 
-  if ( maybe_ptr( dbc.ptr ) && specs.beast_mastery_hunter -> ok() )
+  if ( specs.beast_mastery_hunter -> ok() )
     m *= 1.0 + specs.beast_mastery_hunter -> effectN( 3 ).percent();
 
   if ( buffs.the_mantle_of_command -> check() )

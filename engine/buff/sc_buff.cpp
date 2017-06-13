@@ -157,7 +157,7 @@ struct expiration_delay_t : public buff_event_t
 }
 
 buff_t::buff_t(actor_pair_t q, const std::string& name, const spell_data_t* spell_data) :
-		buff_t( buff_creation::buff_creator_basics_t(q, name, spell_data ) )
+    buff_t( buff_creation::buff_creator_basics_t(q, name, spell_data ) )
 {
 
 }
@@ -365,23 +365,23 @@ buff_t* buff_t::set_duration( timespan_t duration )
   // Set Buff duration
   if ( duration == timespan_t::min() )
   {
-	if ( data().ok() )
-	{
-	  buff_duration = data().duration();
-	}
-	else
-	{
-	  buff_duration = timespan_t();
-	}
+  if ( data().ok() )
+  {
+    buff_duration = data().duration();
   }
   else
   {
-	  buff_duration = duration;
+    buff_duration = timespan_t();
+  }
+  }
+  else
+  {
+    buff_duration = duration;
   }
 
   if ( buff_duration < timespan_t::zero() )
   {
-	buff_duration = timespan_t::zero();
+  buff_duration = timespan_t::zero();
   }
   return this;
 }
@@ -391,29 +391,29 @@ buff_t* buff_t::set_max_stack( int max_stack )
   // Set Max stacks
   if ( max_stack == -1 )
   {
-	if ( data().ok() )
-	{
-	  if ( data().max_stacks() != 0 )
-	  {
-	    _max_stack = data().max_stacks();
-	  }
-	  else if ( data().initial_stacks() != 0 )
-	  {
-	    _max_stack = std::abs( data().initial_stacks() );
-	  }
+  if ( data().ok() )
+  {
+    if ( data().max_stacks() != 0 )
+    {
+      _max_stack = data().max_stacks();
+    }
+    else if ( data().initial_stacks() != 0 )
+    {
+      _max_stack = std::abs( data().initial_stacks() );
+    }
     else
     {
       _max_stack = 1;
     }
-	}
-	else
-	{
-		_max_stack = 1;
-	}
   }
   else
   {
-	_max_stack = max_stack;
+    _max_stack = 1;
+  }
+  }
+  else
+  {
+  _max_stack = max_stack;
   }
 
   if ( _max_stack < 1 )
@@ -1037,6 +1037,11 @@ void buff_t::extend_duration( player_t* p, timespan_t extra_seconds )
   {
     expiration.front() -> reschedule( expiration.front() -> remains() + extra_seconds );
 
+    if (sim->log)
+      sim->out_log.printf("%s extends buff %s by %.1f seconds. New expiration time: %.1f",
+                          p->name(), name_str.c_str(), extra_seconds.total_seconds(), 
+                          expiration.front()->occurs().total_seconds());
+
     if ( sim -> debug )
       sim -> out_debug.printf( "%s extends buff %s by %.1f seconds. New expiration time: %.1f",
                      p -> name(), name_str.c_str(), extra_seconds.total_seconds(), expiration.front() -> occurs().total_seconds() );
@@ -1133,11 +1138,13 @@ void buff_t::start( int        stacks,
   if ( d > timespan_t::zero() )
   {
     expiration.push_back( make_event<expiration_t>( *sim, this, stacks, d ) );
+    /* TOCHECK: This seems wrong, since bump() already removes expiration events when we are at max stacks
     if ( check() == before_stacks && stack_behavior == BUFF_STACK_ASYNCHRONOUS )
     {
       event_t::cancel( expiration.front() );
       expiration.erase( expiration.begin() );
     }
+    */
   }
 
   timespan_t period = tick_time();

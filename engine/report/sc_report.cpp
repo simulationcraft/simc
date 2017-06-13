@@ -315,8 +315,14 @@ std::string tooltip_parser_t::parse()
           if ( !spell )
             throw error();
           assert( player );
-          replacement_text =
-              report::pretty_spell_text( *spell, spell->desc(), *player );
+
+          // References in tooltips/descriptions don't seem to form DAG, check
+          // for cycles of length 1 here (which should hopefully be enough).
+          if ( spell -> id() != default_spell.id() )
+          {
+            replacement_text =
+                report::pretty_spell_text( *spell, spell->desc(), *player );
+          }
           break;
         }
 
@@ -390,8 +396,8 @@ bool report::check_gear_ilevel( player_t& p, sim_t& sim )
 
   if ( p.report_information.save_str.find( "T19P" ) != std::string::npos )
   {
-    max_ilevel_allowed        = 840;
-    max_weapon_ilevel_allowed = 870;
+    max_ilevel_allowed        = 875;
+    max_weapon_ilevel_allowed = 903;
     tier_name                 = "T19P";
   }
   else if ( p.report_information.save_str.find( "T19H_NH" ) != std::string::npos )
@@ -400,17 +406,17 @@ bool report::check_gear_ilevel( player_t& p, sim_t& sim )
     max_weapon_ilevel_allowed    = 927;
     tier_name                    = "T19H_NH";
   }
-  else if ( p.report_information.save_str.find( "T19H" ) != std::string::npos )
-  {
-    max_ilevel_allowed        = 865;
-    max_weapon_ilevel_allowed = 900;
-    tier_name                 = "T19H";
-  }
   else if ( p.report_information.save_str.find( "T19M_NH" ) != std::string::npos )
   {
     max_ilevel_allowed           = 910;
     max_weapon_ilevel_allowed    = 933;
     tier_name                    = "T19M_NH";
+  }
+  else if ( p.report_information.save_str.find( "T19H" ) != std::string::npos )
+  {
+    max_ilevel_allowed        = 865;
+    max_weapon_ilevel_allowed = 900;
+    tier_name                 = "T19H";
   }
   else if ( p.report_information.save_str.find( "T19M" ) != std::string::npos )
   {
@@ -418,12 +424,26 @@ bool report::check_gear_ilevel( player_t& p, sim_t& sim )
     max_weapon_ilevel_allowed    = 918;
     tier_name                    = "T19M";
   }
+  else if ( p.report_information.save_str.find( "T20H" ) != std::string::npos )
+  {
+    legendary_items_allowed   = 2;
+    max_ilevel_allowed        = 925;
+    max_weapon_ilevel_allowed = 945;
+    tier_name                 = "T20H";
+  }
+  else if ( p.report_information.save_str.find( "T20M" ) != std::string::npos )
+  {
+    legendary_items_allowed      = 2;
+    max_ilevel_allowed           = 940;
+    max_weapon_ilevel_allowed    = 960;
+    tier_name                    = "T20M";
+  }
   else
   {
     return return_value;
   }
 
-  max_legendary_ilevel_allowed = 905;
+  max_legendary_ilevel_allowed = 970;
 
   const slot_e SLOT_OUT_ORDER[] = {
       SLOT_HEAD,      SLOT_NECK,     SLOT_SHOULDERS, SLOT_BACK,
@@ -558,49 +578,62 @@ bool report::check_artifact_points( const player_t& p, sim_t& sim )
 
   if ( p.report_information.save_str.find( "T19P" ) != std::string::npos )
   {
-    max_allowed = 22;
+    max_allowed = 19;
     tier_name   = "T19P";
   }
   else if ( p.report_information.save_str.find( "T19H_NH" ) != std::string::npos )
   {
-    max_allowed = 45;
+    max_allowed = 42;
     tier_name   = "T19H_NH";
-  }
-  else if ( p.report_information.save_str.find( "T19H" ) != std::string::npos )
-  {
-    max_allowed = 38;
-    tier_name   = "T19H";
   }
   else if ( p.report_information.save_str.find( "T19M_NH" ) != std::string::npos )
   {
-    max_allowed = 55;
+    max_allowed = 52;
     tier_name   = "T19M_NH";
+  }
+  else if ( p.report_information.save_str.find( "T19H" ) != std::string::npos )
+  {
+    max_allowed = 35;
+    tier_name   = "T19H";
   }
   else if ( p.report_information.save_str.find( "T19M" ) != std::string::npos )
   {
-    max_allowed = 39;
+    max_allowed = 36;
     tier_name   = "T19M";
+  }
+  else if ( p.report_information.save_str.find( "T20H" ) != std::string::npos )
+  {
+    max_allowed = 52;
+    tier_name   = "T20H";
+  }
+  else if ( p.report_information.save_str.find( "T20M" ) != std::string::npos )
+  {
+    max_allowed = 52;
+    tier_name   = "T20M";
   }
   else
   {
     return true;
   }
 
-  if ( p.artifact.n_points - 1 > max_allowed )
+  // Relics must be added on top of the limit!
+  max_allowed += 3;
+
+  if ( p.artifact.n_points > max_allowed )
   {
     sim.errorf(
         "Player %s has %s artifact points, maximum allowed (including relics) "
         "for %s is %s.\n",
-        p.name(), util::to_string( p.artifact.n_points - 1 ).c_str(),
+        p.name(), util::to_string( p.artifact.n_points ).c_str(),
         tier_name.c_str(), util::to_string( max_allowed ).c_str() );
     return false;
   }
-  else if ( ( p.artifact.n_points - 1 ) < max_allowed && p.level() == 110 )
+  else if ( p.artifact.n_points < max_allowed && p.level() == 110 )
   {
     sim.errorf(
         "Player %s has %s artifact points, maximum allowed (including relics) "
         "for %s is %s. Add more!\n",
-        p.name(), util::to_string( p.artifact.n_points - 1 ).c_str(),
+        p.name(), util::to_string( p.artifact.n_points ).c_str(),
         tier_name.c_str(), util::to_string( max_allowed ).c_str() );
     return true;
   }
