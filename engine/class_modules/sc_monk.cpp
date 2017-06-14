@@ -3216,8 +3216,9 @@ struct rising_sun_kick_tornado_kick_t : public monk_melee_attack_t
 
       if ( p() -> sets -> has_set_bonus( MONK_WINDWALKER, T20, B4 ) && ( s -> result == RESULT_CRIT ) )
         // -1 to reduce the spell cooldown instead of increasing
-        // saved as 2000
-        p() -> cooldown.fists_of_fury -> adjust( -1 * p() -> sets -> set( MONK_WINDWALKER, T20, B4 ) -> effectN( 1 ).time_value() );
+        // saved as 3000
+        // p() -> sets -> set( MONK_WINDWALKER, T20, B4 ) -> effectN( 1 ).time_value();
+        p() -> cooldown.fists_of_fury -> adjust( -1 * p() -> find_spell( 242260 ) -> effectN( 1 ).time_value() );
     }
   }
 };
@@ -3370,9 +3371,12 @@ struct rising_sun_kick_t: public monk_melee_attack_t
         }
 
         if ( p() -> sets -> has_set_bonus( MONK_WINDWALKER, T20, B4 ) && ( s -> result == RESULT_CRIT ) )
+        {
           // -1 to reduce the spell cooldown instead of increasing
-          // saved as 2000
-          p() -> cooldown.fists_of_fury -> adjust( -1 * p() -> sets -> set( MONK_WINDWALKER, T20, B4 ) -> effectN( 1 ).time_value() );
+          // saved as 3000
+          // p() -> sets -> set( MONK_WINDWALKER, T20, B4 ) -> effectN( 1 ).time_value();
+          p() -> cooldown.fists_of_fury -> adjust( -1 * p() -> find_spell( 242260 ) -> effectN( 1 ).time_value() );
+        }
 
         if ( p() -> artifact.tornado_kicks.rank() )
         {
@@ -6782,7 +6786,7 @@ struct gift_of_the_ox_t: public monk_heal_t
       p() -> buff.gifted_student -> trigger();
 
     if ( p() -> sets -> has_set_bonus( MONK_BREWMASTER, T20, B4 ) )
-      p() -> partial_clear_stagger( p() -> sets -> set( MONK_BREWMASTER,T20, B4 ) -> effectN( 1 ).percent() );
+      p() -> partial_clear_stagger( p() -> sets -> set( MONK_BREWMASTER, T20, B4 ) -> effectN( 1 ).percent() );
   }
 };
 
