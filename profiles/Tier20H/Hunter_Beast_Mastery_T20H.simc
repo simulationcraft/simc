@@ -65,15 +65,15 @@ finger1=scaled_band_of_servitude,id=147020,bonus_id=1497/3562,enchant=binding_of
 finger2=seal_of_the_second_duumvirate,id=147195,bonus_id=1507/3562,enchant=binding_of_mastery
 trinket1=tarnished_sentinel_medallion,id=147017,bonus_id=1497/3562
 trinket2=engine_of_eradication,id=147015,bonus_id=1497/3562
-main_hand=titanstrike,id=128861,gem_id=147113/147076/147102,relic_ilevel=1497:3562/1497:3562/1497:3562
+main_hand=titanstrike,id=128861,gem_id=147113/147076/147102,relic_id=1497:3562/1497:3562/1497:3562
 
 # Gear Summary
-# gear_ilvl=924.33
-# gear_agility=23768
-# gear_stamina=41876
-# gear_crit_rating=7204
+# gear_ilvl=925.73
+# gear_agility=24306
+# gear_stamina=42684
+# gear_crit_rating=7276
 # gear_haste_rating=8508
-# gear_mastery_rating=10921
+# gear_mastery_rating=10991
 # gear_versatility_rating=1098
 # gear_armor=3247
 # set_bonus=tier20_2pc=1
