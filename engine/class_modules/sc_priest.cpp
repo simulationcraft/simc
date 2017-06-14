@@ -612,8 +612,9 @@ public:
       double drain_multiplier = 1.0 
                               - ( actor.sets->has_set_bonus(PRIEST_SHADOW, T20, B4)
                                 * (  actor.talents.surrender_to_madness->ok()
-                                     ? actor.sets->set( PRIEST_SHADOW, T20, B4 )->effectN( 2 ).percent()
-                                     : actor.sets->set( PRIEST_SHADOW, T20, B4 )->effectN( 1 ).percent() 
+                                    // TODO Remove Manual Hotfix
+                                     ? 0.1//actor.sets->set( PRIEST_SHADOW, T20, B4 )->effectN( 2 ).percent()
+                                     : 0.05//actor.sets->set( PRIEST_SHADOW, T20, B4 )->effectN( 1 ).percent() 
                                   ) 
                                 );
 
