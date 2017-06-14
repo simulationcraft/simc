@@ -8465,7 +8465,7 @@ double druid_t::composite_spell_haste() const
 
   sh /= 1.0 + buff.star_power -> check_stack_value();
 
-  sh *= 1.0 + buff.astral_acceleration -> check_stack_value();
+  sh *= 1.0 / ( 1.0 + buff.astral_acceleration -> check_stack_value() );
 
   if ( buff.sephuzs_secret -> check() )
      sh *= 1.0 / ( 1.0 + buff.sephuzs_secret -> stack_value() );
