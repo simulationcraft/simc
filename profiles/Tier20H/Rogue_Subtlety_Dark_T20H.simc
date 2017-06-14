@@ -51,7 +51,7 @@ actions.build+=/backstab
 
 # Cooldowns
 actions.cds=potion,if=buff.bloodlust.react|target.time_to_die<=25|buff.shadow_blades.up
-actions.cds+=/use_item,name=specter_of_betrayal,if=!stealthed.rogue&energy.deficit>30+talent.vigor.enabled*10
+actions.cds+=/use_item,name=specter_of_betrayal
 actions.cds+=/blood_fury,if=stealthed.rogue
 actions.cds+=/berserking,if=stealthed.rogue
 actions.cds+=/arcane_torrent,if=stealthed.rogue&energy.deficit>70
