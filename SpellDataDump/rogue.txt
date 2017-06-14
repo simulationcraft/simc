@@ -5277,7 +5277,7 @@ Name             : Lesser Adrenaline Rush (id=246558) [Spell Family (8)]
 Class            : Rogue
 School           : Physical
 Spell Level      : 56
-Duration         : 10 seconds
+Duration         : 8 seconds
 Cooldown         : 180 seconds
 Attributes       : ....x... ........ x....... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 

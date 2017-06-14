@@ -4224,7 +4224,8 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=303382)   : School Damage (2): shadow
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 2.00000 | Target: Enemy (6)
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 2.20000 | Target: Enemy (6)
+                   Hotfixed: SP Coefficient (2 -> 2.2), Chain Multiplier (0 -> 1)
 #2 (id=303383)   : Trigger Missiles (32)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 234746 | Target: Enemy (6)
 #3 (id=308158)   : Energize Power (30)

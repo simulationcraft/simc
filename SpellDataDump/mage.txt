@@ -5749,7 +5749,8 @@ Attributes       : ........ ........ ........ ........   ........ ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=367839)   : Apply Aura (6) | Unknown(163)
-                   Base Value: 30 | Scaled Value: 30 | Misc Value: 127 | Target: Self (1)
+                   Base Value: 20 | Scaled Value: 20 | Misc Value: 127 | Target: Self (1)
+                   Hotfixed: Base Value (30 -> 20), Chain Multiplier (0 -> 1)
 Description      : $@spelldesc242252
 Tooltip          : Critical strike damage increased by $s1%.
 
