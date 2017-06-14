@@ -338,7 +338,7 @@ public:
     cooldown_t* lava_lash;
     cooldown_t* storm_elemental;
     cooldown_t* strike;
-  cooldown_t* t20_4pc_elemental;
+    cooldown_t* t20_2pc_elemental;
   } cooldown;
 
   // Gains
@@ -580,7 +580,7 @@ public:
     cooldown.lava_burst           = get_cooldown( "lava_burst"            );
     cooldown.lava_lash            = get_cooldown( "lava_lash"             );
     cooldown.strike               = get_cooldown( "strike"                );
-  cooldown.t20_4pc_elemental	  = get_cooldown( "t20_4pc_elemental"                );
+    cooldown.t20_2pc_elemental	  = get_cooldown( "t20_2pc_elemental"     );
 
     melee_mh = nullptr;
     melee_oh = nullptr;
@@ -629,7 +629,7 @@ public:
   void trigger_t17_4pc_elemental( int );
   void trigger_t18_4pc_elemental();
   void trigger_t19_oh_8pc( const action_state_t* );
-  void trigger_t20_4pc_elemental(const action_state_t*);
+  void trigger_t20_2pc_elemental(const action_state_t*);
   void trigger_stormbringer( const action_state_t* state, double proc_chance = -1.0, proc_t* proc_obj = nullptr );
   void trigger_elemental_focus( const action_state_t* state );
   void trigger_lightning_shield( const action_state_t* state );
@@ -5265,7 +5265,7 @@ struct flame_shock_t : public shaman_spell_t
   {
     double m = shaman_spell_t::composite_crit_chance();
 
-    if ( player -> sets -> has_set_bonus( SHAMAN_ELEMENTAL, T20, B2 ) &&
+    if ( player -> sets -> has_set_bonus( SHAMAN_ELEMENTAL, T20, B4 ) &&
          p() -> active_elemental_pet() )
     {
       m += p() -> find_spell( 246594 ) -> effectN( 1 ).percent();
@@ -5286,7 +5286,7 @@ struct flame_shock_t : public shaman_spell_t
       m *= p () -> buff.ember_totem -> check_value();
     }
 
-    if ( player -> sets -> has_set_bonus( SHAMAN_ELEMENTAL, T20, B2 ) &&
+    if ( player -> sets -> has_set_bonus( SHAMAN_ELEMENTAL, T20, B4 ) &&
          p() -> active_elemental_pet() )
     {
       m *= 1.0 + p() -> find_spell( 246594 ) -> effectN( 2 ).percent();
@@ -5320,9 +5320,9 @@ struct flame_shock_t : public shaman_spell_t
     }
 
     if ( d -> state -> result == RESULT_CRIT &&
-         player -> sets -> has_set_bonus( SHAMAN_ELEMENTAL, T20, B4 ) )
+         player -> sets -> has_set_bonus( SHAMAN_ELEMENTAL, T20, B2 ) )
     {
-    p() -> trigger_t20_4pc_elemental( execute_state );
+    p() -> trigger_t20_2pc_elemental( execute_state );
     }
   }
 
@@ -7001,22 +7001,22 @@ void shaman_t::trigger_t19_oh_8pc( const action_state_t* )
   buff.t19_oh_8pc -> trigger();
 }
 
-void shaman_t::trigger_t20_4pc_elemental(const action_state_t*)
+void shaman_t::trigger_t20_2pc_elemental(const action_state_t*)
 {
-  if (!sets->has_set_bonus(SHAMAN_ELEMENTAL, T20, B4))
+  if (!sets->has_set_bonus(SHAMAN_ELEMENTAL, T20, B2))
   {
     return;
   }
 
-  if (cooldown.t20_4pc_elemental -> down())
+  if (cooldown.t20_2pc_elemental -> down())
   {
     return;
   }
 
-  cooldown.fire_elemental->adjust(timespan_t::from_seconds(-1.0 * sets->set(SHAMAN_ELEMENTAL, T20, B4)->effectN(1).base_value() / 10.0));
-  cooldown.storm_elemental->adjust(timespan_t::from_seconds(-1.0 * sets->set(SHAMAN_ELEMENTAL, T20, B4)->effectN(2).base_value() / 10.0));
+  cooldown.fire_elemental->adjust(timespan_t::from_seconds(-1.0 * sets->set(SHAMAN_ELEMENTAL, T20, B2)->effectN(1).base_value() / 10.0));
+  cooldown.storm_elemental->adjust(timespan_t::from_seconds(-1.0 * sets->set(SHAMAN_ELEMENTAL, T20, B2)->effectN(2).base_value() / 10.0));
 
-  cooldown.t20_4pc_elemental->start(timespan_t::from_seconds(1));
+  cooldown.t20_2pc_elemental->start(timespan_t::from_seconds(1));
 }
 
 void shaman_t::trigger_flametongue_weapon( const action_state_t* state )
