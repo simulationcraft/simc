@@ -4546,8 +4546,16 @@ struct  keg_smash_stave_off_t: public monk_melee_attack_t
 
     if ( p() -> artifact.full_keg.rank() )
       am *= 1 + p() -> artifact.full_keg.percent();
+    
+    if ( p() -> legendary.stormstouts_last_gasp )
+      am *= 1 + p() -> legendary.stormstouts_last_gasp -> effectN( 2 ).percent();
 
     return am;
+  }
+
+  virtual double cost() const override
+  {
+    return 0;
   }
 
   virtual void impact( action_state_t* s ) override
