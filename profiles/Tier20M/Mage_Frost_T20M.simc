@@ -119,7 +119,7 @@ finger1=seal_of_the_second_duumvirate,id=147195,ilevel=940,enchant=binding_of_ve
 finger2=shard_of_the_exodar,id=132410,ilevel=970,gems=150vers,enchant=binding_of_versatility
 trinket1=tarnished_sentinel_medallion,id=147017,ilevel=930
 trinket2=terror_from_below,id=147016,ilevel=930
-main_hand=ebonchill,id=128862,ilevel=960,gem_id=147095/147079/147095
+main_hand=ebonchill,id=128862,gem_id=147095/147079/147095,relic_ilevel=940/940/940
 
 # Gear Summary
 # gear_ilvl=938.67

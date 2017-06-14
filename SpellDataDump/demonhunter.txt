@@ -1,4 +1,4 @@
-SimulationCraft 725-01 for World of Warcraft 7.2.5 Live (wow build 24287, git build e007545)
+SimulationCraft 725-01 for World of Warcraft 7.2.5 Live (wow build 24287, git build ba56295)
 
 Name             : Dual Wield (Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
@@ -1482,9 +1482,10 @@ Effects          :
 Description      : Reduces the cooldown of Vengeful Retreat by 10 sec, and generates ${($203650s1/5)*$203650d} Fury over $203650d if you damage at least one enemy with Vengeful Retreat.
 
 Name             : Demon Blades (id=203555) [Spell Family (107), Passive] 
+Hotfixed         : Proc Chance (60 -> 100)
 Class            : Demon Hunter
 School           : Physical
-Proc Chance      : 60%
+Proc Chance      : 100%
 Proc Flags       : ..x..... ........ ........ ........ 
                  : White Melee
 Attributes       : ......x. x....... ........ ........   ........ ........ ........ ........ 

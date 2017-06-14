@@ -2296,10 +2296,11 @@ struct execute_arms_t: public warrior_attack_t
       }
       am *= 4.0 * ( std::min( temp_max_rage, p() -> resources.current[RESOURCE_RAGE] ) / temp_max_rage );
     }
-    if ( execute_sweeping_strike ) 
-      execute_sweeping_strike -> dmg_mult = am; // The sweeping strike deals damage based on the action multiplier of the original attack before shattered defenses.
 
     am *= 1.0 + p() -> buff.shattered_defenses -> stack_value();
+
+    if ( execute_sweeping_strike )
+      execute_sweeping_strike -> dmg_mult = am; // Sweeping strikes uses damage multiplier from this.
 
     return am;
   }

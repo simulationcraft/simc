@@ -32,7 +32,7 @@ actions.precombat+=/windburst
 # Executed every time the actor is available.
 actions=auto_shot
 actions+=/counter_shot,if=target.debuff.casting.react
-actions+=/use_item,name=tarnished_sentinel_medallion
+actions+=/use_item,name=tarnished_sentinel_medallion,if=((buff.trueshot.up|cooldown.trueshot.remains<6|cooldown.trueshot.remains>30)&(target.time_to_die>cooldown+duration))|target.time_to_die<25|buff.bullseye.react=30
 actions+=/volley,toggle=on
 # Start being conservative with focus if expecting a Piercing Shot at the end of the current window.
 actions+=/variable,name=pooling_for_piercing,value=talent.piercing_shot.enabled&cooldown.piercing_shot.remains<5&lowest_vuln_within.5>0&lowest_vuln_within.5>cooldown.piercing_shot.remains&(buff.trueshot.down|spell_targets=1)
@@ -119,15 +119,15 @@ finger1=soul_of_the_huntmaster,id=151641,bonus_id=3570,gems=150mastery,enchant=b
 finger2=seal_of_the_second_duumvirate,id=147195,bonus_id=1507/3562,enchant=binding_of_mastery
 trinket1=tarnished_sentinel_medallion,id=147017,bonus_id=1497/3562
 trinket2=convergence_of_fates,id=140806,bonus_id=3518
-main_hand=thasdorah_legacy_of_the_windrunners,id=128826,gem_id=147112/147082/147105,relic_ilevel=1497:3562/1507:3562/1497:3562
+main_hand=thasdorah_legacy_of_the_windrunners,id=128826,gem_id=147112/147082/147105,relic_id=1497:3562/1507:3562/1497:3562
 
 # Gear Summary
-# gear_ilvl=923.00
-# gear_agility=24077
-# gear_stamina=40505
-# gear_crit_rating=8687
+# gear_ilvl=924.60
+# gear_agility=24702
+# gear_stamina=41442
+# gear_crit_rating=8770
 # gear_haste_rating=6084
-# gear_mastery_rating=10787
+# gear_mastery_rating=10867
 # gear_versatility_rating=486
 # gear_armor=3154
 # set_bonus=tier20_2pc=1

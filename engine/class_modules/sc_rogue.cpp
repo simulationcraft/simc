@@ -7104,7 +7104,7 @@ void rogue_t::init_action_list()
   {
     // Pre-Combat
     precombat -> add_action( this, "Roll the Bones", "if=!talent.slice_and_dice.enabled" );
-    precombat -> add_action( this, "Curse of the Dreadblades" );
+    precombat -> add_action( this, "Curse of the Dreadblades", "if=combo_points.deficit>=4" );
 
     // Main Rotation
     def -> add_action( "variable,name=rtb_reroll,value=!talent.slice_and_dice.enabled&rtb_buffs<2&buff.loaded_dice.up", "Fish for '2 Buffs' when Loaded Dice is up. With SnD, consider that we never have to reroll." );
