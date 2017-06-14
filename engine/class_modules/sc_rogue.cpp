@@ -7199,9 +7199,9 @@ void rogue_t::init_action_list()
     for ( size_t i = 0; i < items.size(); i++ )
     {
       if ( items[i].has_special_effect( SPECIAL_EFFECT_SOURCE_ITEM, SPECIAL_EFFECT_USE ) )
-        if ( items[i].name_str != "draught_of_souls" )
+        if ( items[i].name_str == "draught_of_souls" )
           cds -> add_action( "use_item,name=" + items[i].name_str + ",if=!stealthed.rogue&energy.deficit>30+talent.vigor.enabled*10" );
-        else if ( items[i].name_str != "specter_of_betrayal" )
+        else if ( items[i].name_str == "specter_of_betrayal" )
           cds -> add_action( "use_item,name=" + items[i].name_str );
         else
           cds -> add_action( "use_item,name=" + items[i].name_str + ",if=(buff.shadow_blades.up&stealthed.rogue)|target.time_to_die<20" );
