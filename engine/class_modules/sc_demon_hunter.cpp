@@ -1390,7 +1390,7 @@ public:
 
   void trigger_felblade(action_state_t* s)
   {
-    if (result_is_miss(s->result))
+    if (ab::result_is_miss(s->result))
       return;
 
     if (p()->talent.felblade->ok() && p()->rppm.felblade->trigger())
