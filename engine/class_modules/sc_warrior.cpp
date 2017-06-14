@@ -1605,7 +1605,7 @@ struct bladestorm_t: public warrior_attack_t
     {
       bladestorm_oh -> execute();
     }
-    if ( mortal_strike && d -> ticks_left() > 0 )
+    if ( mortal_strike && d -> ticks_left() % 2 != 0)
     {
       auto t = select_random_target();
 
@@ -3381,7 +3381,8 @@ struct ravager_t: public warrior_attack_t
   {
     warrior_attack_t::tick( d );
     ravager -> execute();
-    if ( mortal_strike && d -> ticks_left() > 2 )
+	int ticksRemain = d->ticks_left();
+	if (mortal_strike && ticksRemain > 2 & ticksRemain % 2 != 0)
     {
       auto t = select_random_target();
 
