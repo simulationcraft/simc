@@ -63,7 +63,7 @@ actions.serenity+=/serenity
 actions.serenity+=/rising_sun_kick,cycle_targets=1,if=active_enemies<3
 actions.serenity+=/strike_of_the_windlord
 actions.serenity+=/blackout_kick,cycle_targets=1,if=(!prev_gcd.1.blackout_kick)&(prev_gcd.1.strike_of_the_windlord|prev_gcd.1.fists_of_fury)&active_enemies<2|spinning_crane_kick.count>=2
-actions.serenity+=/fists_of_fury,if=((equipped.drinking_horn_cover&buff.pressure_point.remains<=2&set_bonus.tier20_2pc)&(cooldown.rising_sun_kick.remains>1|active_enemies>1)),interrupt=1
+actions.serenity+=/fists_of_fury,if=((equipped.drinking_horn_cover&buff.pressure_point.remains<=2&set_bonus.tier20_4pc)&(cooldown.rising_sun_kick.remains>1|active_enemies>1)),interrupt=1
 actions.serenity+=/fists_of_fury,if=((!equipped.drinking_horn_cover|buff.bloodlust.up|buff.serenity.remains<1)&(cooldown.rising_sun_kick.remains>1|active_enemies>1)),interrupt=1
 actions.serenity+=/spinning_crane_kick,if=active_enemies>=3&!prev_gcd.1.spinning_crane_kick
 actions.serenity+=/rising_sun_kick,cycle_targets=1,if=active_enemies>=3
@@ -95,13 +95,13 @@ actions.st+=/chi_burst
 
 head=xuens_helm,id=147154,ilevel=915
 neck=locket_of_splintered_souls,id=147014,ilevel=915,enchant=mark_of_the_hidden_satyr
-shoulders=pauldrons_of_enveloped_dissonance,id=138337,bonus_id=3517
+shoulders=pauldrons_of_enveloped_dissonance,id=138337,bonus_id=3519
 back=shroud_of_the_drowned_adherent,id=146985,ilevel=915,enchant=binding_of_agility
 chest=the_emperors_capacitor,id=144239,ilevel=970
 wrists=drinking_horn_cover,id=137097,ilevel=970
 hands=xuens_gauntlets,id=147153,ilevel=915
 waist=waistguard_of_profane_duplicity,id=147347,ilevel=925
-legs=leggings_of_enveloped_dissonance,id=138334,bonus_id=3517
+legs=leggings_of_enveloped_dissonance,id=138334,bonus_id=3519
 feet=felscape_pathfinders,id=147030,ilevel=915
 finger1=yathaes_thumb_ring,id=147021,ilevel=915,enchant=binding_of_mastery
 finger2=band_of_rescinded_truths,id=147194,ilevel=915,enchant=binding_of_mastery
@@ -111,13 +111,13 @@ main_hand=fists_of_the_heavens,id=128940,bonus_id=734,gem_id=147113/147101/14711
 off_hand=fists_of_the_heavens,id=133948
 
 # Gear Summary
-# gear_ilvl=923.25
-# gear_agility=27608
-# gear_stamina=39968
-# gear_crit_rating=7265
+# gear_ilvl=925.13
+# gear_agility=28152
+# gear_stamina=40784
+# gear_crit_rating=7294
 # gear_haste_rating=1911
-# gear_mastery_rating=10701
-# gear_versatility_rating=4685
-# gear_armor=2596
+# gear_mastery_rating=10811
+# gear_versatility_rating=4710
+# gear_armor=2628
 # set_bonus=tier19_2pc=1
 # set_bonus=tier20_2pc=1
