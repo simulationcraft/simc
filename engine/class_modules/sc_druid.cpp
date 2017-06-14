@@ -530,7 +530,6 @@ public:
 
     // Balance
     const spell_data_t* balance;
-    const spell_data_t* balance_overrides;
     const spell_data_t* astral_influence; // Balance Affinity
     const spell_data_t* astral_power;
     const spell_data_t* blessing_of_anshe;
@@ -2130,7 +2129,7 @@ struct moonfire_t : public druid_spell_t
       triggers_galactic_guardian = false;
       benefits_from_galactic_guardian = true;
       dual = background = true;
-      dot_duration       += p -> spec.balance_overrides -> effectN( 4 ).time_value();
+      dot_duration       += p -> spec.balance -> effectN( 3 ).time_value();
       base_dd_multiplier *= 1.0 + p -> spec.guardian -> effectN( 8 ).percent();
 
       /* June 2016: This hotfix is negated if you shift into Moonkin Form (ever),
@@ -5719,9 +5718,9 @@ struct sunfire_t : public druid_spell_t
       
       dual = background = true;
       aoe = -1;
-      dot_duration += p -> spec.balance_overrides -> effectN( 4 ).time_value();
+      base_aoe_multiplier = 0;
+      dot_duration += p -> spec.balance -> effectN( 3 ).time_value();
       stellar_empowerment = true;
-
       base_multiplier *= 1.0 + p -> artifact.sunfire_burns.percent();
       radius += p -> artifact.sunblind.value();
     }
@@ -6776,7 +6775,6 @@ void druid_t::init_spells()
   // Balance
   spec.astral_power               = find_specialization_spell( "Astral Power" );
   spec.balance                    = find_specialization_spell( "Balance Druid" );
-  spec.balance_overrides          = find_specialization_spell( "Balance Overrides Passive" );
   spec.blessing_of_anshe          = find_talent_spell( "Blessing of the Ancients" ) -> ok() ? find_spell( 202739 ) : spell_data_t::not_found();
   spec.blessing_of_elune          = find_talent_spell( "Blessing of the Ancients" ) -> ok() ? find_spell( 202737 ) : spell_data_t::not_found();
   spec.celestial_alignment        = find_specialization_spell( "Celestial Alignment" );
