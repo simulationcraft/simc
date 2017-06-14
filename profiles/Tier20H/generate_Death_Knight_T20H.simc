@@ -22,7 +22,7 @@ feet=iron_ballast_sabatons,id=147059,bonus_id=1497/3562
 finger1=scaled_band_of_servitude,id=147020,bonus_id=1497/3562,enchant=binding_of_mastery
 finger2=seal_of_the_second_duumvirate,id=147195,bonus_id=1497/3562,enchant=binding_of_mastery
 trinket1=convergence_of_fates,id=140806,bonus_id=3516
-trinket2=cradle_of_anguish,id=147010,bonus_id=1497/3562
+trinket2=specter_of_betrayal,id=151190,bonus_id=1507/3562
 main_hand=blades_of_the_fallen_prince,id=128292,gem_id=147095/147111/147095,relic_id=1507:3562/1507:3562/1507:3562,enchant=rune_of_razorice
 off_hand=blades_of_the_fallen_prince,id=128293,enchant=rune_of_the_fallen_crusader
 

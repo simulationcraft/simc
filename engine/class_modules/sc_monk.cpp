@@ -3214,10 +3214,11 @@ struct rising_sun_kick_tornado_kick_t : public monk_melee_attack_t
       }
       p() -> trigger_mark_of_the_crane( s );
 
-      if ( p() -> sets -> has_set_bonus( MONK_WINDWALKER, T20, B4 ) && ( s -> result == RESULT_CRIT ) )
+      if ( p() -> sets -> has_set_bonus( MONK_WINDWALKER, T20, B2 ) && ( s -> result == RESULT_CRIT ) )
         // -1 to reduce the spell cooldown instead of increasing
-        // saved as 2000
-        p() -> cooldown.fists_of_fury -> adjust( -1 * p() -> sets -> set( MONK_WINDWALKER, T20, B4 ) -> effectN( 1 ).time_value() );
+        // saved as 3000
+        // p() -> sets -> set( MONK_WINDWALKER, T20, B2 ) -> effectN( 1 ).time_value();
+        p() -> cooldown.fists_of_fury -> adjust( -1 * p() -> find_spell( 242260 ) -> effectN( 1 ).time_value() );
     }
   }
 };
@@ -3369,10 +3370,11 @@ struct rising_sun_kick_t: public monk_melee_attack_t
           s -> target -> debuffs.mortal_wounds -> trigger();
         }
 
-        if ( p() -> sets -> has_set_bonus( MONK_WINDWALKER, T20, B4 ) && ( s -> result == RESULT_CRIT ) )
+        if ( p() -> sets -> has_set_bonus( MONK_WINDWALKER, T20, B2 ) && ( s -> result == RESULT_CRIT ) )
           // -1 to reduce the spell cooldown instead of increasing
-          // saved as 2000
-          p() -> cooldown.fists_of_fury -> adjust( -1 * p() -> sets -> set( MONK_WINDWALKER, T20, B4 ) -> effectN( 1 ).time_value() );
+          // saved as 3000
+          // p() -> sets -> set( MONK_WINDWALKER, T20, B2 ) -> effectN( 1 ).time_value();
+          p() -> cooldown.fists_of_fury -> adjust( -1 * p() -> find_spell( 242260 ) -> effectN( 1 ).time_value() );
 
         if ( p() -> artifact.tornado_kicks.rank() )
         {
@@ -4095,7 +4097,7 @@ struct fists_of_fury_t: public monk_melee_attack_t
     if ( p() -> buff.transfer_the_power -> up() )
       p() -> buff.transfer_the_power -> expire();
 
-    if ( p() -> sets -> has_set_bonus( MONK_WINDWALKER, T20, B2 ) )
+    if ( p() -> sets -> has_set_bonus( MONK_WINDWALKER, T20, B4 ) )
       p() -> buff.pressure_point -> trigger();
 
     // Windwalker Tier 18 (WoD 6.2) trinket effect is in use, adjust Rising Sun Kick proc chance based on spell data
@@ -4542,8 +4544,16 @@ struct  keg_smash_stave_off_t: public monk_melee_attack_t
 
     if ( p() -> artifact.full_keg.rank() )
       am *= 1 + p() -> artifact.full_keg.percent();
+    
+    if ( p() -> legendary.stormstouts_last_gasp )
+      am *= 1 + p() -> legendary.stormstouts_last_gasp -> effectN( 2 ).percent();
 
     return am;
+  }
+
+  virtual double cost() const override
+  {
+    return 0;
   }
 
   virtual void impact( action_state_t* s ) override
@@ -6782,7 +6792,7 @@ struct gift_of_the_ox_t: public monk_heal_t
       p() -> buff.gifted_student -> trigger();
 
     if ( p() -> sets -> has_set_bonus( MONK_BREWMASTER, T20, B4 ) )
-      p() -> partial_clear_stagger( p() -> sets -> set( MONK_BREWMASTER,T20, B4 ) -> effectN( 1 ).percent() );
+      p() -> partial_clear_stagger( p() -> sets -> set( MONK_BREWMASTER, T20, B4 ) -> effectN( 1 ).percent() );
   }
 };
 
@@ -10890,12 +10900,12 @@ struct monk_module_t: public module_t
 
   virtual void register_hotfixes() const override
   {
-    hotfix::register_effect( "Monk", "2017-06-13", "Windwalker Monks now deal 8% more damage with Tiger Palm, Blackout Kick, and Rising Sun Kick.", 260817 )
+    /*hotfix::register_effect( "Monk", "2017-06-13", "Windwalker Monks now deal 8% more damage with Tiger Palm, Blackout Kick, and Rising Sun Kick.", 260817 )
       .field( "base_value" )
       .operation( hotfix::HOTFIX_MUL)
       .modifier( 1.08 )
-      .verification_value( 17 );
-    /*    hotfix::register_effect( "Monk", "2017-03-29", "Split Personality cooldown reduction increased to 5 seconds per rank (was 3 seconds per rank). [SEF]", 360744 )
+      .verification_value( 26 );
+        hotfix::register_effect( "Monk", "2017-03-29", "Split Personality cooldown reduction increased to 5 seconds per rank (was 3 seconds per rank). [SEF]", 360744 )
       .field( "base_value" )
       .operation( hotfix::HOTFIX_SET )
       .modifier( -5000 )

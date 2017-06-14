@@ -1108,8 +1108,6 @@ public:
   bool may_proc_fel_barrage;
   bool may_extend_fiery_brand;
   bool affected_by_blade_turning;
-  bool havoc_damage_increase;
-  bool vengeance_damage_increase;
   unsigned energize_die_sides;
 
   demon_hunter_action_t(const std::string& n, demon_hunter_t* p,
@@ -1117,13 +1115,11 @@ public:
     const std::string& o = std::string())
     : ab(n, p, s),
     demonic_presence(ab::data().affected_by(p->mastery_spell.demonic_presence->effectN(1))),
-    havoc_t19_2pc(ab::data().affected_by(p -> sets->set(DEMON_HUNTER_HAVOC, T19, B2))),
+    havoc_t19_2pc(ab::data().affected_by(p->sets->set(DEMON_HUNTER_HAVOC, T19, B2))),
     hasted_gcd(false),
     may_proc_fel_barrage(false),
     may_extend_fiery_brand(false),
     affected_by_blade_turning(false),
-    havoc_damage_increase(ab::data().affected_by(p->spec.havoc->effectN(6))),
-    vengeance_damage_increase(ab::data().affected_by(p->spec.vengeance->effectN(1))),
     energize_die_sides(0)
   {
     ab::parse_options( o );
@@ -1142,10 +1138,9 @@ public:
       if (ab::data().category() == p->spec.havoc->effectN(4).misc_value1())
         ab::cooldown->hasted = true;
 
-      if (havoc_damage_increase)
-      {
+      // Class Damage Multiplier
+      if (ab::data().affected_by(p->spec.havoc->effectN(6)))
         ab::base_dd_multiplier *= 1 + p->spec.havoc->effectN(6).percent();
-      }
     }
     else // DEMON_HUNTER_VENGEANCE
     {
@@ -1159,10 +1154,9 @@ public:
       if(ab::data().category() == p->spec.demonic_wards->effectN(6).misc_value1())
         ab::cooldown->hasted = true;
 
-      if (vengeance_damage_increase)
-      {
+      // Class Damage Multiplier
+      if (ab::data().affected_by(p->spec.vengeance->effectN(1)))
         ab::base_dd_multiplier *= 1 + p->spec.vengeance->effectN(1).percent();
-      }
     }
   }
 
@@ -1394,7 +1388,19 @@ public:
     p()->spirit_bomb += s->result_amount * multiplier;
   }
 
-  void trigger_fel_barrage( action_state_t* s )
+  void trigger_felblade(action_state_t* s)
+  {
+    if (ab::result_is_miss(s->result))
+      return;
+
+    if (p()->talent.felblade->ok() && p()->rppm.felblade->trigger())
+    {
+      p()->proc.felblade_reset->occur();
+      p()->cooldown.felblade->reset(true);
+    }
+  }
+
+  void trigger_fel_barrage(action_state_t* s)
   {
     if (!may_proc_fel_barrage)
       return;
@@ -1718,8 +1724,7 @@ struct chaos_nova_t : public demon_hunter_spell_t
     cooldown -> duration += p -> talent.unleashed_power -> effectN( 1 ).time_value();
     base_costs[ RESOURCE_FURY ] *=
       1.0 + p -> talent.unleashed_power -> effectN( 2 ).percent();
-    school = SCHOOL_CHAOS;  // Jun 27 2016: Spell data states Chromatic damage,
-    // just override it.
+    school = SCHOOL_CHAOS;  // Jun 27 2016: Spell data states Chromatic damage, just override it.
     may_proc_fel_barrage = true;  // Jul 12 2016
   }
 
@@ -1855,11 +1860,10 @@ struct eye_beam_t : public demon_hunter_spell_t
     {
       aoe  = -1;
       dual = background = true;
-      base_crit += p -> spec.havoc -> effectN( 3 ).percent();
       may_proc_fel_barrage = true;  // Jul 12 2016
+      school = SCHOOL_CHAOS;  // Jun 27 2016: Spell data states Chromatic damage, just override it.
 
-      school = SCHOOL_CHAOS;  // Jun 27 2016: Spell data states Chromatic
-      // damage, just override it.
+      base_crit += p->spec.havoc->effectN(3).percent();
 
       base_multiplier *= 1.0 + p -> artifact.chaos_vision.percent();
     }
@@ -2100,8 +2104,7 @@ struct fel_eruption_t : public demon_hunter_spell_t
       may_miss = false;
       // Assume the target is stun immune.
       base_multiplier *= 1.0 + p -> talent.fel_eruption -> effectN( 1 ).percent();
-      school = SCHOOL_CHAOS;        // Jun 27 2016: Spell data states Chromatic
-      // damage, just override it.
+      school = SCHOOL_CHAOS;        // Jun 27 2016: Spell data states Chromatic damage, just override it.
       may_proc_fel_barrage = true;  // Jul 12 2016
 
       // Damage penalty for Vengeance DH
@@ -3048,7 +3051,7 @@ struct demon_hunter_attack_t : public demon_hunter_action_t<melee_attack_t>
       return;
 
     // All hits have an x% chance to generate 1 charge.
-    const double percent = p()->talent.demon_blades->proc_chance();
+    const double percent = p()->talent.demon_blades->effectN(1).percent();
     if (!rng().roll(percent))
       return;
 
@@ -4019,13 +4022,7 @@ struct demons_bite_t : public demon_hunter_attack_t
   void impact( action_state_t* s ) override
   {
     demon_hunter_attack_t::impact( s );
-
-    if ( result_is_hit( s -> result ) && p() -> talent.felblade -> ok() &&
-         p() -> rppm.felblade_havoc-> trigger() )
-    {
-      p() -> proc.felblade_reset -> occur();
-      p() -> cooldown.felblade -> reset( true );
-    }
+    trigger_felblade(s);
   }
 
   bool ready() override
@@ -4057,13 +4054,7 @@ struct demon_blades_t : public demon_hunter_attack_t
   void impact( action_state_t* s ) override
   {
     demon_hunter_attack_t::impact( s );
-
-    if ( result_is_hit( s -> result ) && p() -> talent.felblade -> ok() &&
-         p() -> rppm.felblade_havoc-> trigger() )
-    {
-      p() -> proc.felblade_reset -> occur();
-      p() -> cooldown.felblade -> reset( true );
-    }
+    trigger_felblade(s);
   }
 
   void execute() override
@@ -4454,15 +4445,7 @@ struct shear_t : public demon_hunter_attack_t
   void impact( action_state_t* s ) override
   {
     demon_hunter_attack_t::impact( s );
-
-    if ( result_is_hit( s -> result ) )
-    {
-      if ( p() -> talent.felblade -> ok() && p() -> rppm.felblade -> trigger() )
-      {
-        p() -> proc.felblade_reset -> occur();
-        p() -> cooldown.felblade -> reset( true );
-      }
-    }
+    trigger_felblade(s);
   }
 
   void execute() override
@@ -4500,15 +4483,7 @@ struct sever_t : public demon_hunter_attack_t
   void impact(action_state_t* s) override
   {
     demon_hunter_attack_t::impact(s);
-
-    if (result_is_hit(s->result))
-    {
-      if (p()->talent.felblade->ok() && p()->rppm.felblade->trigger())
-      {
-        p()->proc.felblade_reset->occur();
-        p()->cooldown.felblade->reset(true);
-      }
-    }
+    trigger_felblade(s);
   }
 
   void execute() override
@@ -5522,12 +5497,9 @@ demon_hunter_td_t::demon_hunter_td_t( player_t* target, demon_hunter_t& p )
     dots.fiery_brand = target->get_dot("fiery_brand", &p);
     dots.sigil_of_flame = target->get_dot("sigil_of_flame", &p);
     debuffs.frailty = make_buff(target, "frailty", p.find_spell(247456))
-      -> set_default_value(p.find_spell(247456)->effectN(1).percent());
-    // FIX: Swap to 212818 when it is in the generated spell data
-    debuffs.fiery_demise = make_buff(target, "fiery_demise", p.artifact.fiery_demise)
-      ->set_default_value(p.artifact.fiery_demise.data().effectN(1).percent())
-      ->set_duration(timespan_t::from_seconds(8))
-      ->set_refresh_behavior(BUFF_REFRESH_DURATION);
+      ->set_default_value(p.find_spell(247456)->effectN(1).percent());
+    debuffs.fiery_demise = make_buff(target, "fiery_demise", p.find_spell(212818))
+      ->set_default_value(p.find_spell(212818)->effectN(1).percent());
   }
 }
 
@@ -6452,14 +6424,13 @@ void demon_hunter_t::init_rng()
   // RPPM objects
 
   // General
-  rppm.felblade = get_rppm( "felblade", find_spell( 203557 ) );
-
   if (specialization() == DEMON_HUNTER_HAVOC)
   {
-      //rppm.felblade_havoc = get_rppm("felblade", find_spell( 236167 ));
-      //havoc's is 50% higher, current spelldata is borked
-      rppm.felblade_havoc = get_rppm("felblade", find_spell(203557));
-      rppm.felblade_havoc->set_frequency(rppm.felblade_havoc->get_frequency()*1.5);
+    rppm.felblade = get_rppm("felblade", find_spell(236167));
+  }
+  else // DEMON_HUNTER_VENGEANCE
+  {
+    rppm.felblade = get_rppm("felblade", find_spell(203557));
   }
 
   // Havoc

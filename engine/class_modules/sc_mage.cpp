@@ -4012,8 +4012,6 @@ struct flurry_t : public frost_mage_spell_t
     add_child( flurry_bolt );
 
     // TODO: Remove hardcoded values once it exists in spell data for bolt impact timing.
-    // TODO: When 7.2.5 goes live, confirm that the PTR "tick time scales with haste" is
-    // correct.
     dot_duration = timespan_t::from_seconds( 0.8 );
     base_tick_time = timespan_t::from_seconds( 0.4 );
   }
