@@ -10081,7 +10081,7 @@ void monk_t::apl_combat_windwalker()
   serenity -> add_action( this, "Rising Sun Kick", "cycle_targets=1,if=active_enemies<3");
   serenity -> add_action( this, "Strike of the Windlord" );
   serenity -> add_action( this, "Blackout Kick", "cycle_targets=1,if=(!prev_gcd.1.blackout_kick)&(prev_gcd.1.strike_of_the_windlord|prev_gcd.1.fists_of_fury)&active_enemies<2|spinning_crane_kick.count>=2" );
-  serenity -> add_action( this, "Fists of Fury", "if=((equipped.drinking_horn_cover&buff.pressure_point.remains<=2&set_bonus.tier20_2pc)&(cooldown.rising_sun_kick.remains>1|active_enemies>1)),interrupt=1" );
+  serenity -> add_action( this, "Fists of Fury", "if=((equipped.drinking_horn_cover&buff.pressure_point.remains<=2&set_bonus.tier20_4pc)&(cooldown.rising_sun_kick.remains>1|active_enemies>1)),interrupt=1" );
   serenity -> add_action( this, "Fists of Fury", "if=((!equipped.drinking_horn_cover|buff.bloodlust.up|buff.serenity.remains<1)&(cooldown.rising_sun_kick.remains>1|active_enemies>1)),interrupt=1" );
   serenity -> add_action( this, "Spinning Crane Kick", "if=active_enemies>=3&!prev_gcd.1.spinning_crane_kick" );
   serenity -> add_action( this, "Rising Sun Kick", "cycle_targets=1,if=active_enemies>=3" );

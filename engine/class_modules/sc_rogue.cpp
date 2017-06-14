@@ -7175,7 +7175,7 @@ void rogue_t::init_action_list()
   {
     // Pre-Combat
     precombat -> add_action( "variable,name=ssw_refund,value=equipped.shadow_satyrs_walk*(6+ssw_refund_offset)", "Defined variables that doesn't change during the fight" );
-    precombat -> add_action( "variable,name=stealth_threshold,value=(15+talent.vigor.enabled*35+talent.master_of_shadows.enabled*25+variable.ssw_refund)" );
+    precombat -> add_action( "variable,name=stealth_threshold,value=(65+talent.vigor.enabled*35+talent.master_of_shadows.enabled*10+variable.ssw_refund)" );
     precombat -> add_action( "variable,name=shd_fractionnal,value=1.725+0.725*talent.enveloping_shadows.enabled" );
     precombat -> add_action( this, "Symbols of Death" );
 
@@ -7183,7 +7183,7 @@ void rogue_t::init_action_list()
     def -> add_action( "call_action_list,name=cds" );
     def -> add_action( "run_action_list,name=stealthed,if=stealthed.all", "Fully switch to the Stealthed Rotation (by doing so, it forces pooling if nothing is available)" );
     def -> add_action( this, "Nightblade", "if=target.time_to_die>8&remains<gcd.max&combo_points>=4" );
-    def -> add_action( "call_action_list,name=stealth_als,if=(combo_points.deficit>=3|cooldown.shadow_dance.charges_fractional>=2.9)" );
+    def -> add_action( "call_action_list,name=stealth_als,if=(combo_points.deficit>=3|cooldown.shadow_dance.charges_fractional>=2.9)&(!talent.dark_shadow.enabled|cooldown.shadow_dance.charges_fractional>=1.9|dot.nightblade.remains>4+talent.subterfuge.enabled)" );
     def -> add_action( "call_action_list,name=finish,if=combo_points>=5|(combo_points>=4&combo_points.deficit<=2&spell_targets.shuriken_storm>=3&spell_targets.shuriken_storm<=4)" );
     def -> add_action( "call_action_list,name=build,if=energy.deficit<=variable.stealth_threshold" );
 
@@ -7196,11 +7196,15 @@ void rogue_t::init_action_list()
     // Cooldowns
     action_priority_list_t* cds = get_action_priority_list( "cds", "Cooldowns" );
     cds -> add_action( potion_action );
-    cds -> add_action( "use_item,name=draught_of_souls,if=!stealthed.rogue&energy.deficit>30+talent.vigor.enabled*10" );
     for ( size_t i = 0; i < items.size(); i++ )
     {
-      if ( items[i].has_special_effect( SPECIAL_EFFECT_SOURCE_ITEM, SPECIAL_EFFECT_USE ) && items[i].name_str != "draught_of_souls" )
-        cds -> add_action( "use_item,name=" + items[i].name_str + ",if=(buff.shadow_blades.up&stealthed.rogue)|target.time_to_die<20" );
+      if ( items[i].has_special_effect( SPECIAL_EFFECT_SOURCE_ITEM, SPECIAL_EFFECT_USE ) )
+        if ( items[i].name_str != "draught_of_souls" )
+          cds -> add_action( "use_item,name=" + items[i].name_str + ",if=!stealthed.rogue&energy.deficit>30+talent.vigor.enabled*10" );
+        else if ( items[i].name_str != "specter_of_betrayal" )
+          cds -> add_action( "use_item,name=" + items[i].name_str );
+        else
+          cds -> add_action( "use_item,name=" + items[i].name_str + ",if=(buff.shadow_blades.up&stealthed.rogue)|target.time_to_die<20" );
     }
     for ( size_t i = 0; i < racial_actions.size(); i++ )
     {
@@ -7209,7 +7213,7 @@ void rogue_t::init_action_list()
       else
         cds -> add_action( racial_actions[i] + ",if=stealthed.rogue" );
     }
-    cds -> add_action( this, "Symbols of Death", "if=!stealthed.all|talent.dark_shadow.enabled" );
+    cds -> add_action( this, "Symbols of Death", "if=energy.deficit>=40-stealthed.all*30" );
     cds -> add_action( this, "Shadow Blades", "if=combo_points.deficit>=2+stealthed.all-equipped.mantle_of_the_master_assassin" );
     cds -> add_action( this, "Goremaw's Bite", "if=!stealthed.all&cooldown.shadow_dance.charges_fractional<=variable.shd_fractionnal&((combo_points.deficit>=4-(time<10)*2&energy.deficit>50+talent.vigor.enabled*25-(time>=10)*15)|(combo_points.deficit>=1&target.time_to_die<8))" );
     cds -> add_talent( this, "Marked for Death", "target_if=min:target.time_to_die,if=target.time_to_die<combo_points.deficit|(raid_event.adds.in>40&combo_points.deficit>=cp_max_spend)" );

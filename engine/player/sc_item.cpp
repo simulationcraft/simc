@@ -693,7 +693,7 @@ bool item_t::parse_options()
 
   if ( ! option_gem_id_str.empty() )
   {
-    std::vector<std::string> spl = util::string_split( option_gem_id_str, "/" );
+    std::vector<std::string> spl = util::string_split( option_gem_id_str, ":/" );
     for ( size_t i = 0, end = std::min( sizeof_array( parsed.gem_id ), spl.size() ); i < end; i++ )
     {
       unsigned gem_id = util::to_unsigned( spl[ i ] );
@@ -751,7 +751,7 @@ bool item_t::parse_options()
 
   if ( ! option_bonus_id_str.empty() )
   {
-    std::vector<std::string> split = util::string_split( option_bonus_id_str, "/" );
+    std::vector<std::string> split = util::string_split( option_bonus_id_str, "/:" );
     for (auto & elem : split)
     {
       int bonus_id = util::to_int( elem );
