@@ -3381,8 +3381,8 @@ struct ravager_t: public warrior_attack_t
   {
     warrior_attack_t::tick( d );
     ravager -> execute();
-	int ticksRemain = d->ticks_left();
-	if (mortal_strike && ticksRemain > 2 && ticksRemain % 2 != 0)
+  int ticksRemain = d->ticks_left();
+  if (mortal_strike && ticksRemain > 2 && ticksRemain % 2 != 0)
     {
       auto t = select_random_target();
 
