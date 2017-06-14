@@ -101,16 +101,16 @@ neck=string_of_extracted_incisors,id=147013,ilevel=930,enchant=mark_of_the_hidde
 shoulders=mantle_of_the_first_kirin_tor,id=151808,ilevel=970
 back=drape_of_the_arcane_tempest,id=147145,ilevel=930,enchant=binding_of_intellect
 chest=robes_of_the_arcane_tempest,id=147149,ilevel=930
-wrists=oathbreakers_cuffs,id=147001,bonus_id=3561,ilevel=930
+wrists=oathbreakers_cuffs,id=147001,ilevel=930
 hands=gloves_of_the_arcane_tempest,id=147146,ilevel=930
 waist=braided_torture_lash,id=146998,ilevel=930
 legs=leggings_of_the_arcane_tempest,id=147148,ilevel=930
 feet=slippers_of_enduring_vigilance,id=146987,ilevel=930
-finger1=seal_of_the_second_duumvirate,id=147195,ilevel=940,enchant=200vers
-finger2=shard_of_the_exodar,id=132410,ilevel=970,gems=200int,enchant=200vers
+finger1=seal_of_the_second_duumvirate,id=147195,ilevel=940,enchant=binding_of_versatility
+finger2=shard_of_the_exodar,id=132410,ilevel=970,gems=200int,enchant=binding_of_versatility
 trinket1=tarnished_sentinel_medallion,id=147017,ilevel=930
 trinket2=terror_from_below,id=147016,ilevel=930
-main_hand=aluneth,id=127857,gem_id=147079/147095/147079,relic_id=3563/3563/3563,relic_ilevel=940/940/940
+main_hand=aluneth,id=127857,gem_id=147079/147095/147079,relic_ilevel=940/940/940
 
 # Gear Summary
 # gear_ilvl=938.00

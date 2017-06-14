@@ -30,7 +30,7 @@ actions.precombat+=/stealth
 actions.precombat+=/potion
 actions.precombat+=/marked_for_death,if=raid_event.adds.in>40
 actions.precombat+=/roll_the_bones,if=!talent.slice_and_dice.enabled
-actions.precombat+=/curse_of_the_dreadblades
+actions.precombat+=/curse_of_the_dreadblades,if=combo_points.deficit>=4
 
 # Executed every time the actor is available.
 # Fish for '2 Buffs' when Loaded Dice is up. With SnD, consider that we never have to reroll.

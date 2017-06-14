@@ -108,7 +108,7 @@ finger1=band_of_rescinded_truths,id=147194,ilevel=930,enchant=binding_of_versati
 finger2=seal_of_the_second_duumvirate,id=147195,ilevel=940,enchant=binding_of_versatility
 trinket1=tarnished_sentinel_medallion,id=147017,ilevel=930
 trinket2=terror_from_below,id=147016,ilevel=930
-main_hand=felomelorn,id=128820,ilevel=954,gem_id=147089/147079/147089
+main_hand=felomelorn,id=128820,gem_id=147089/147079/147089,relic_ilevel=930/940/930
 off_hand=heart_of_the_phoenix,id=133959
 
 # Gear Summary
