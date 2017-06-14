@@ -3025,8 +3025,9 @@ struct ashamanes_rip_t : public cat_attack_t
       
     base_tick_time *= 1.0 + p -> talent.jagged_wounds -> effectN( 1 ).percent();
     base_multiplier *= 1.0 + p -> artifact.razor_fangs.percent();
-    if (p->t20_4pc || p->sets->has_set_bonus(DRUID_FERAL, T20, B4))
-       base_multiplier *= 1.15;
+    if (p->t20_4pc || p->sets->has_set_bonus(DRUID_FERAL, T20, B4) )
+       base_multiplier *= (1.0 + p->find_spell(242235)->effectN(1).percent());
+
 
   }
 
@@ -3492,13 +3493,13 @@ struct rip_t : public cat_attack_t
     
     if (p->t20_4pc || p->sets -> has_set_bonus(DRUID_FERAL, T20, B4))
     {
-       base_multiplier *= 1.15; //TODO(feral): add spelldata once available
-       dot_duration *= 1.333334; // as above
+      base_multiplier *= (1.0 + p -> find_spell(242235) -> effectN(1).percent() );
+      dot_duration *= (1.0 + (p -> find_spell(242235) -> effectN(2).base_value() / 24000)); // as above
     }
 
     if (p->t20_2pc || p->sets -> has_set_bonus(DRUID_FERAL, T20, B2))
     {
-       energize_amount = 2; //TODO(feral): Add spelldata once available
+       energize_amount = p->find_spell(245591)->effectN(1).base_value();
        energize_resource = RESOURCE_ENERGY;
        energize_type = ENERGIZE_PER_TICK;
     }
@@ -7215,13 +7216,12 @@ void druid_t::create_buffs()
   buff.wax_and_wane          = buff_creator_t( this, "wax_and_wane", find_spell( 239952 ) )
                                 .default_value(  find_spell( 239952 ) -> effectN(1).percent() );
 
-  buff.astral_acceleration   = haste_buff_creator_t( this, "astral_acceleration", sets -> set(DRUID_BALANCE, T20, B4) )
-                                .cd( timespan_t::zero() )
-                                .default_value( sets -> set( DRUID_BALANCE, T20, B4 ) -> effectN(1).percent() )
-                                .max_stack( 5 )
-                                .refresh_behavior( BUFF_REFRESH_DISABLED )
-                                .duration( timespan_t::from_seconds( 15.0 ) );
-     
+  buff.astral_acceleration   = haste_buff_creator_t(this, "astral_acceleration", find_spell(242232))
+                                 .cd(timespan_t::zero())
+                                 .default_value(find_spell(242232)->effectN(1).percent())
+                                 .max_stack(5)
+                                 .refresh_behavior(BUFF_REFRESH_DISABLED);
+                                //.duration( timespan_t::from_seconds( 20.0 ) );
 
   // Feral
 
@@ -10085,6 +10085,29 @@ struct druid_module_t : public module_t
 
   virtual void register_hotfixes() const override 
   {
+     hotfix::register_effect("Druid", "2017-06-14", "Feral T20 2pc reduced to 1 energy per tick from 2", 373694)
+        .field("base_value")
+        .operation(hotfix::HOTFIX_SET)
+        .modifier(1)
+        .verification_value(2);
+
+     hotfix::register_effect("Druid", "2017-06-14", "Feral T20 4pc reduced to 10% damage increase", 367818)
+        .field("base_value")
+        .operation(hotfix::HOTFIX_SET)
+        .modifier(10)
+        .verification_value(15);
+
+     hotfix::register_effect("Druid", "2017-06-14", "Feral T20 4pc now only increase duration by 4 seconds", 367819)
+        .field("base_value")
+        .operation(hotfix::HOTFIX_SET)
+        .modifier(4000)
+        .verification_value(8000);  
+
+     hotfix::register_effect("Druid", "2017-06-14", "Balance T20 4pc now last for 20 seconds.", 242232)
+        .field("duration")
+        .operation(hotfix::HOTFIX_SET)
+        .modifier(20)
+        .verification_value(15);
     
     /*
     hotfix::register_spell( "Druid", "2016-12-18", "Incorrect spell level for starfall damage component.", 191037 )
