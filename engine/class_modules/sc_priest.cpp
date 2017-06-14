@@ -5193,8 +5193,9 @@ if ( race == RACE_BLOOD_ELF )
       "value)+60))" );
   vf->add_action(
       "mindbender,if=set_bonus.tier20_4pc&buff.insanity_drain_stacks.value>="
-      "(25-(3*(raid_event.movement.in<15)*((active_enemies-target.adds)=1))+"
-      "2*buff.bloodlust.up+2*talent.fortress_of_the_mind.enabled)&(!talent"
+      "(21-(3*(raid_event.movement.in<15)*((active_enemies-target.adds)=1))+"
+      "2*buff.bloodlust.up+2*talent.fortress_of_the_mind.enabled+2*artifact."
+      "lash_of_insanity.rank)&(!talent"
       ".surrender_to_madness.enabled|(talent.surrender_to_madness.enabled&"
       "target.time_to_die>variable.s2mcheck-buff.insanity_drain_stacks.value))" );
     vf->add_action(
