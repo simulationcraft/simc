@@ -2994,19 +2994,19 @@ struct garrote_t : public rogue_attack_t
     base_multiplier *= 1.0 + p -> artifact.strangler.percent();
     may_crit = false;
 
-    if ( p -> sets -> has_set_bonus( ROGUE_ASSASSINATION, T20, B4 ) )
-      cooldown -> duration = data().cooldown() + p -> sets -> set( ROGUE_ASSASSINATION, T20, B4 ) -> effectN( 1 ).time_value();
-
     if ( p -> sets -> has_set_bonus( ROGUE_ASSASSINATION, T20, B2 ) )
-      base_multiplier *= 1.0 + p -> sets -> set( ROGUE_ASSASSINATION, T20, B2 ) -> effectN( 1 ).percent();
+      cooldown -> duration = data().cooldown() + p -> sets -> set( ROGUE_ASSASSINATION, T20, B2 ) -> effectN( 1 ).time_value();
+
+    if ( p -> sets -> has_set_bonus( ROGUE_ASSASSINATION, T20, B4 ) )
+      base_multiplier *= 1.0 + p -> sets -> set( ROGUE_ASSASSINATION, T20, B4 ) -> effectN( 1 ).percent();
   }
 
   double cost() const override
   {
     double c = rogue_attack_t::cost();
 
-    if ( p() -> sets -> has_set_bonus( ROGUE_ASSASSINATION, T20, B4 ) )
-      c += p() -> sets -> set( ROGUE_ASSASSINATION, T20, B4 ) -> effectN( 2 ).base_value();
+    if ( p() -> sets -> has_set_bonus( ROGUE_ASSASSINATION, T20, B2 ) )
+      c += p() -> sets -> set( ROGUE_ASSASSINATION, T20, B2 ) -> effectN( 2 ).base_value();
 
     return c;
   }
