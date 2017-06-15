@@ -4031,7 +4031,6 @@ struct maul_t : public bear_attack_t
     bear_attack_t( "maul", player, player -> find_specialization_spell( "Maul" ), options_str )
   {
     gore = true;
-    normalize_weapon_speed = false;
 
     base_crit += player -> artifact.mauler.percent();
   }
