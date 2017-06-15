@@ -2188,6 +2188,17 @@ struct flanking_strike_t: public hunter_main_pet_attack_t
     return am;
   }
 
+  double composite_target_crit_chance( player_t* t ) const override
+  {
+    double cc = hunter_main_pet_attack_t::composite_target_crit_chance( t );
+
+    const hunter_td_t* otd = o() -> get_target_data( t );
+    if ( otd -> debuffs.unseen_predators_cloak -> up() )
+      cc += otd -> debuffs.unseen_predators_cloak -> check_value();
+
+    return cc;
+  }
+
   double composite_attack_power() const override
   { return o() -> cache.attack_power() * o() -> composite_attack_power_multiplier(); }
 };
