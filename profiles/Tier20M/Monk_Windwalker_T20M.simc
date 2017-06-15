@@ -96,13 +96,13 @@ actions.st+=/chi_burst
 head=xuens_helm,id=147154,ilevel=930
 neck=locket_of_splintered_souls,id=147014,ilevel=930,enchant=mark_of_the_hidden_satyr
 shoulders=pauldrons_of_enveloped_dissonance,id=138337,bonus_id=3519
-back=shroud_of_the_drowned_adherent,id=146985,ilevel=930,enchant=binding_of_agility
-chest=the_emperors_capacitor,id=144239,ilevel=970
+back=cloak_of_enveloped_dissonance,id=138367,bonus_id=3519
+chest=xuens_tunic,id=147151,ilevel=930
 wrists=drinking_horn_cover,id=137097,ilevel=970
 hands=xuens_gauntlets,id=147153,ilevel=930
 waist=waistguard_of_profane_duplicity,id=147347,ilevel=940
-legs=leggings_of_enveloped_dissonance,id=138334,bonus_id=3519
-feet=felscape_pathfinders,id=147030,ilevel=930
+legs=xuens_legguards,id=147155,ilevel=930
+feet=katsuos_eclipse,id=137029,ilevel=970
 finger1=yathaes_thumb_ring,id=147021,ilevel=930,enchant=binding_of_mastery
 finger2=band_of_rescinded_truths,id=147194,ilevel=930,enchant=binding_of_mastery
 trinket1=specter_of_betrayal,id=151190,ilevel=940
@@ -112,12 +112,13 @@ off_hand=fists_of_the_heavens,id=133948
 
 # Gear Summary
 # gear_ilvl=936.38
-# gear_agility=30744
-# gear_stamina=44501
-# gear_crit_rating=7725
-# gear_haste_rating=1976
-# gear_mastery_rating=11353
-# gear_versatility_rating=5067
-# gear_armor=2693
+# gear_agility=30432
+# gear_stamina=44334
+# gear_crit_rating=7680
+# gear_haste_rating=5161
+# gear_mastery_rating=8780
+# gear_versatility_rating=4481
+# gear_armor=2686
 # set_bonus=tier19_2pc=1
 # set_bonus=tier20_2pc=1
+# set_bonus=tier20_4pc=1

@@ -9932,7 +9932,10 @@ void monk_t::apl_combat_brewmaster()
   for ( int i = 0; i < num_items; i++ )
   {
     if ( items[i].has_special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE ) )
-      def -> add_action( "use_item,name=" + items[i].name_str ); //+ ",if=incoming_damage_1500ms&(buff.dampen_harm.down|buff.diffuse_magic.down)&buff.fortifying_brew.down" );
+    {
+      if ( items[i].name_str != "archimondes_hatred_reborn" )
+        def -> add_action( "use_item,name=" + items[i].name_str ); //+ ",if=incoming_damage_1500ms&(buff.dampen_harm.down|buff.diffuse_magic.down)&buff.fortifying_brew.down" );
+    }
   }
 
   def -> add_action( "call_action_list,name=st,if=active_enemies<3" );
@@ -10029,8 +10032,8 @@ void monk_t::apl_combat_windwalker()
         cd -> add_action( "use_item,name=" + items[i].name_str + ",if=(buff.serenity.up&!equipped.specter_of_betrayal)|(equipped.specter_of_betrayal&(time<5|cooldown.serenity.remains<=8))|!talent.serenity.enabled" );
       else if ( items[i].name_str == "specter_of_betrayal" )
         cd -> add_action( "use_item,name=" + items[i].name_str + ",if=(cooldown.serenity.remains>10|buff.serenity.up)|!talent.serenity.enabled" );
-      else if ( items[i].name_str != "draught_of_souls" )
-        cd -> add_action( "use_items" );
+      else if ( ( items[i].name_str != "draught_of_souls" ) || ( items[i].name_str != "archimondes_hatred_reborn" ) )
+        cd -> add_action( "use_items,name=" + items[i].name_str );
     }
   }
 
