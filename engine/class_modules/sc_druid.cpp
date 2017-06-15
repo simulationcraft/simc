@@ -7354,7 +7354,6 @@ void druid_t::create_buffs()
 }
 
 // ALL Spec Pre-Combat Action Priority List =================================
-
 void druid_t::apl_precombat()
 {
   action_priority_list_t* precombat = get_action_priority_list( "precombat" );
@@ -10082,31 +10081,7 @@ struct druid_module_t : public module_t
   }
 
   virtual void register_hotfixes() const override 
-  {
-     hotfix::register_effect("Druid", "2017-06-14", "Feral T20 2pc reduced to 1 energy per tick from 2", 373694)
-        .field("base_value")
-        .operation(hotfix::HOTFIX_SET)
-        .modifier(1)
-        .verification_value(2);
-
-     hotfix::register_effect("Druid", "2017-06-14", "Feral T20 4pc reduced to 10% damage increase", 367818)
-        .field("base_value")
-        .operation(hotfix::HOTFIX_SET)
-        .modifier(10)
-        .verification_value(15);
-
-     hotfix::register_effect("Druid", "2017-06-14", "Feral T20 4pc now only increase duration by 4 seconds", 367819)
-        .field("base_value")
-        .operation(hotfix::HOTFIX_SET)
-        .modifier(4000)
-        .verification_value(8000);  
-
-     hotfix::register_effect("Druid", "2017-06-14", "Balance T20 4pc now last for 20 seconds.", 242232)
-        .field("duration")
-        .operation(hotfix::HOTFIX_SET)
-        .modifier(20)
-        .verification_value(15);
-    
+  { 
     /*
     hotfix::register_spell( "Druid", "2016-12-18", "Incorrect spell level for starfall damage component.", 191037 )
       .field( "spell_level" )
