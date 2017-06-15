@@ -3079,7 +3079,7 @@ struct scarlet_inquisitors_expurgation_expiry_event_t : public event_t
 
   void execute() override
   {
-    p() -> buffs.scarlet_inquisitors_expurgation -> expire();
+    paladin -> buffs.scarlet_inquisitors_expurgation -> expire();
   }
 };
 
