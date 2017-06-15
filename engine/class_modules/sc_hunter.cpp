@@ -4136,6 +4136,9 @@ struct carve_base_t: public hunter_melee_attack_t
     hunter_melee_attack_t( n, p, s )
   {
     aoe = -1;
+
+    if ( p -> talents.serpent_sting -> ok() )
+      impact_action = new serpent_sting_t( p );
   }
 
   void execute() override
@@ -4200,9 +4203,6 @@ struct carve_t: public carve_base_t
     carve_base_t( "carve", p, p -> specs.carve )
   {
     parse_options( options_str );
-
-    if ( p -> talents.serpent_sting -> ok() )
-      impact_action = new serpent_sting_t( p );
   }
 
   bool ready() override
