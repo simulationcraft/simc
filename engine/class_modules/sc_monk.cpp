@@ -10033,7 +10033,7 @@ void monk_t::apl_combat_windwalker()
       else if ( items[i].name_str == "specter_of_betrayal" )
         cd -> add_action( "use_item,name=" + items[i].name_str + ",if=(cooldown.serenity.remains>10|buff.serenity.up)|!talent.serenity.enabled" );
       else if ( ( items[i].name_str != "draught_of_souls" ) || ( items[i].name_str != "archimondes_hatred_reborn" ) )
-        cd -> add_action( "use_items,name=" + items[i].name_str );
+        cd -> add_action( "use_item,name=" + items[i].name_str );
     }
   }
 
