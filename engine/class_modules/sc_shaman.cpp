@@ -4077,6 +4077,11 @@ struct chained_overload_base_t: public elemental_overload_spell_t
     energize_type = ENERGIZE_NONE; // disable resource generation from spell data.
     maelstrom_gain = mg;
     radius = 10.0;
+
+    if ( data().affected_by( p -> spec.chain_lightning_2 -> effectN( 1 ) ) )
+    {
+      aoe += p -> spec.chain_lightning_2 -> effectN( 1 ).base_value();
+    }
   }
 
   proc_types proc_type() const override
