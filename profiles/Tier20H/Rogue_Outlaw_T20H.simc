@@ -87,21 +87,21 @@ actions.stealth+=/ambush,if=variable.ambush_condition
 actions.stealth+=/vanish,if=variable.ambush_condition|(equipped.mantle_of_the_master_assassin&mantle_duration=0&!variable.rtb_reroll&!variable.ss_useable)
 actions.stealth+=/shadowmeld,if=variable.ambush_condition
 
-head=fanged_slayers_helm,id=147172,ilevel=915
-neck=string_of_extracted_incisors,id=147013,ilevel=915,enchant=mark_of_the_hidden_satyr
-shoulders=mantle_of_the_master_assassin,id=144236,ilevel=970
-back=cloak_of_stifling_brimstone,id=146984,ilevel=915,enchant=binding_of_agility
-chest=fanged_slayers_chestguard,id=147169,ilevel=915
-wrists=greenskins_waterlogged_wristcuffs,id=137099,ilevel=970
-hands=fanged_slayers_handguards,id=147171,ilevel=915
-waist=waistguard_of_profane_duplicity,id=147347,ilevel=925
-legs=fanged_slayers_legguards,id=147173,ilevel=915
-feet=felscape_pathfinders,id=147030,ilevel=915
-finger1=yathaes_thumb_ring,id=147021,ilevel=915,enchant=binding_of_haste
-finger2=band_of_rescinded_truths,id=147194,ilevel=915,enchant=binding_of_haste
-trinket1=vial_of_ceaseless_toxins,id=147011,ilevel=915
-trinket2=specter_of_betrayal,id=151190,ilevel=925
-main_hand=the_dreadblades,id=128872,bonus_id=742,gem_id=151189/147100/147114,relic_ilevel=915/915/915
+head=fanged_slayers_helm,id=147172,bonus_id=1497/3562
+neck=string_of_extracted_incisors,id=147013,bonus_id=1497/3562,enchant=mark_of_the_hidden_satyr
+shoulders=mantle_of_the_master_assassin,id=144236,bonus_id=3570
+back=cloak_of_stifling_brimstone,id=146984,bonus_id=1497/3562,enchant=binding_of_agility
+chest=fanged_slayers_chestguard,id=147169,bonus_id=1497/3562
+wrists=greenskins_waterlogged_wristcuffs,id=137099,bonus_id=3570
+hands=fanged_slayers_handguards,id=147171,bonus_id=1497/3562
+waist=waistguard_of_profane_duplicity,id=147347,bonus_id=1507/3562
+legs=fanged_slayers_legguards,id=147173,bonus_id=1497/3562
+feet=felscape_pathfinders,id=147030,bonus_id=1497/3562
+finger1=yathaes_thumb_ring,id=147021,bonus_id=1497/3562,enchant=binding_of_haste
+finger2=band_of_rescinded_truths,id=147194,bonus_id=1497/3562,enchant=binding_of_haste
+trinket1=vial_of_ceaseless_toxins,id=147011,bonus_id=1497/3562
+trinket2=specter_of_betrayal,id=151190,bonus_id=1507/3562
+main_hand=the_dreadblades,id=128872,bonus_id=742,gem_id=151189/147100/147114,relic_id=1497:3562/1497:3562/1497:3562
 off_hand=the_dreadblades,id=134552
 
 # Gear Summary

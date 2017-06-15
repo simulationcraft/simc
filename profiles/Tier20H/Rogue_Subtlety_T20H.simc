@@ -5,7 +5,7 @@ race=night_elf
 timeofday=day
 role=attack
 position=back
-talents=1310031
+talents=1310032
 artifact=17:0:0:0:0:851:1:852:4:853:4:854:4:855:4:856:4:857:4:858:4:859:4:860:4:861:1:862:1:863:1:864:1:865:1:866:1:1349:1:1386:1:1585:4:1586:1:1587:1:1588:1:1653:1
 
 # Default consumables
@@ -87,21 +87,21 @@ actions.stealthed+=/shuriken_storm,if=buff.shadowmeld.down&((combo_points.defici
 actions.stealthed+=/call_action_list,name=finish,if=combo_points>=5&combo_points.deficit<3+buff.shadow_blades.up-equipped.mantle_of_the_master_assassin
 actions.stealthed+=/shadowstrike
 
-head=fanged_slayers_helm,id=147172,ilevel=915
-neck=locket_of_splintered_souls,id=147014,ilevel=915,enchant=mark_of_the_hidden_satyr
-shoulders=mantle_of_the_master_assassin,id=144236,ilevel=970
-back=shroud_of_the_drowned_adherent,id=146985,ilevel=915,enchant=binding_of_agility
-chest=fanged_slayers_chestguard,id=147169,ilevel=915
-wrists=denial_of_the_halfgiants,id=137100,ilevel=970
-hands=fanged_slayers_handguards,id=147171,ilevel=915
-waist=waistguard_of_profane_duplicity,id=147347,ilevel=925
-legs=fanged_slayers_legguards,id=147173,ilevel=915
-feet=felscape_pathfinders,id=147030,ilevel=915
-finger1=yathaes_thumb_ring,id=147021,ilevel=915,enchant=binding_of_versatility
-finger2=band_of_rescinded_truths,id=147194,ilevel=915,enchant=binding_of_versatility
-trinket1=engine_of_eradication,id=147015,ilevel=915
-trinket2=specter_of_betrayal,id=151190,ilevel=925
-main_hand=fangs_of_the_devourer,id=128476,bonus_id=743,gem_id=147084/147109/147084,relic_ilevel=915/915/915
+head=fanged_slayers_helm,id=147172,bonus_id=1497/3562
+neck=locket_of_splintered_souls,id=147014,bonus_id=1497/3562,enchant=mark_of_the_hidden_satyr
+shoulders=mantle_of_the_master_assassin,id=144236,bonus_id=3570
+back=shroud_of_the_drowned_adherent,id=146985,bonus_id=1497/3562,enchant=binding_of_agility
+chest=fanged_slayers_chestguard,id=147169,bonus_id=1497/3562
+wrists=denial_of_the_halfgiants,id=137100,bonus_id=3570
+hands=fanged_slayers_handguards,id=147171,bonus_id=1497/3562
+waist=waistguard_of_profane_duplicity,id=147347,bonus_id=1507/3562
+legs=fanged_slayers_legguards,id=147173,bonus_id=1497/3562
+feet=felscape_pathfinders,id=147030,bonus_id=1497/3562
+finger1=yathaes_thumb_ring,id=147021,bonus_id=1497/3562,enchant=binding_of_versatility
+finger2=band_of_rescinded_truths,id=147194,bonus_id=1497/3562,enchant=binding_of_versatility
+trinket1=engine_of_eradication,id=147015,bonus_id=1497/3562
+trinket2=specter_of_betrayal,id=151190,bonus_id=1507/3562
+main_hand=fangs_of_the_devourer,id=128476,bonus_id=743,gem_id=147084/147110/147084,relic_id=1497:3562/1497:3562/1497:3562
 off_hand=fangs_of_the_devourer,id=128479,gem_id=0/0/0/0
 
 # Gear Summary
