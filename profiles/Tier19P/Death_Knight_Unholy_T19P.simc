@@ -124,20 +124,20 @@ actions.valkyr+=/festering_strike,if=debuff.festering_wound.stack<=3
 actions.valkyr+=/scourge_strike,if=debuff.festering_wound.up
 actions.valkyr+=/clawing_shadows,if=debuff.festering_wound.up
 
-head=crown_of_ash,id=137526,bonus_id=1492/1826
-neck=pendant_of_the_watchful_eye,id=137536,bonus_id=1492/1826,enchant=mark_of_the_hidden_satyr
-shoulders=frozen_pendulum_shoulderguards,id=134518,bonus_id=1492/1826
-back=goldscar_pelt,id=133639,bonus_id=1492/1826,enchant=binding_of_strength
-chest=inferno_breastplate,id=134503,bonus_id=1492/1826
-wrists=voidtouched_wristplates,id=133632,bonus_id=1492/1826
-hands=serrated_mandible_grips,id=137429,bonus_id=1492/1826
-waist=slack_tide_girdle,id=133770,bonus_id=1492/1826
-legs=keelhauler_legplates,id=134514,bonus_id=1492/1826
-feet=rook_footmans_warboots,id=139241,bonus_id=1492/1826
-finger1=jeweled_signet_of_melandrus,id=134542,bonus_id=1492/1826,enchant=binding_of_haste
-finger2=band_of_fused_coral,id=134532,bonus_id=1492/1826,enchant=binding_of_haste
-trinket1=faulty_countermeasure,id=137539,bonus_id=1492/1826
-trinket2=chaos_talisman,id=137459,bonus_id=1492/1826
+head=crown_of_ash,id=137526,bonus_id=1492
+neck=pendant_of_the_watchful_eye,id=137536,bonus_id=1492,enchant=mark_of_the_hidden_satyr
+shoulders=frozen_pendulum_shoulderguards,id=134518,bonus_id=1492
+back=goldscar_pelt,id=133639,bonus_id=1492,enchant=binding_of_strength
+chest=inferno_breastplate,id=134503,bonus_id=1492
+wrists=voidtouched_wristplates,id=133632,bonus_id=1492
+hands=serrated_mandible_grips,id=137429,bonus_id=1492
+waist=slack_tide_girdle,id=133770,bonus_id=1492
+legs=keelhauler_legplates,id=134514,bonus_id=1492
+feet=rook_footmans_warboots,id=139241,bonus_id=1492
+finger1=jeweled_signet_of_melandrus,id=134542,bonus_id=1492,enchant=binding_of_haste
+finger2=band_of_fused_coral,id=134532,bonus_id=1492,enchant=binding_of_haste
+trinket1=faulty_countermeasure,id=137539,bonus_id=1492
+trinket2=chaos_talisman,id=137459,bonus_id=1492
 main_hand=apocalypse,id=128403,gem_id=137492/137549/136718,relic_id=1492:1727/1492:1727/1492:1727,enchant=rune_of_the_fallen_crusader
 
 # Gear Summary
