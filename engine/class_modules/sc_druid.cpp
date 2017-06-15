@@ -40,6 +40,7 @@ namespace { // UNNAMED NAMESPACE
   Statistics?
   Incarnation CD modifier rework
   Check Galactic Guardian proc sources
+  Find missing damage multipliers
 
   Resto =====================================================================
   All the things
