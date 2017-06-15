@@ -3520,11 +3520,6 @@ struct divine_storm_t: public holy_power_consumer_t
     if ( p() -> artifact.echo_of_the_highlord.rank() )
     {
       make_event<echoed_spell_event_t>( *sim, p(), echoed_spell, timespan_t::from_millis( 600 ) );
-    } else {
-      if ( p() -> scarlet_inquisitors_expurgation )
-      {
-        p() -> buffs.scarlet_inquisitors_expurgation -> expire();
-      }
     }
 
     if ( p() -> whisper_of_the_nathrezim )
