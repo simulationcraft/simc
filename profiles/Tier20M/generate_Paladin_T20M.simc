@@ -20,7 +20,7 @@ feet=spiked_terrorwake_greatboots,id=147428,ilevel=930
 finger1=liadrins_fury_unleashed,id=137048,ilevel=970,gem_id=130246,enchant_id=5428
 finger2=seal_of_the_second_duumvirate,id=147195,ilevel=940,enchant=200haste
 trinket1=specter_of_betrayal,id=151190,ilevel=940
-trinket2=vial_of_ceaseless_toxins,id=147011,ilevel=930
+trinket2=infernal_cinders,id=147009,ilevel=930
 main_hand=ashbringer,id=120978,bonus_id=737,ilevel=952,gem_id=147097/147088/147097/0
 
 save=Paladin_Retribution_T20M.simc

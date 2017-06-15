@@ -3065,6 +3065,24 @@ struct whisper_of_the_nathrezim_event_t : public event_t
   }
 };
 
+struct scarlet_inquisitors_expurgation_expiry_event_t : public event_t
+{
+  paladin_t* paladin;
+
+  scarlet_inquisitors_expurgation_expiry_event_t( paladin_t* p, timespan_t delay ) :
+    event_t( *p, delay ), paladin( p )
+  {
+  }
+
+  const char* name() const override
+  { return "scarlet_inquisitors_expurgation_expiry_delay"; }
+
+  void execute() override
+  {
+    paladin -> buffs.scarlet_inquisitors_expurgation -> expire();
+  }
+};
+
 struct echoed_spell_event_t : public event_t
 {
   paladin_melee_attack_t* echo;
@@ -3283,7 +3301,7 @@ struct blade_of_justice_t : public holy_power_generator_t
     double am = holy_power_generator_t::action_multiplier();
     if ( p() -> buffs.righteous_verdict -> up() )
       am *= 1.0 + p() -> artifact.righteous_verdict.rank() * 0.08; // todo: fix
-    if ( p() -> sets -> has_set_bonus( PALADIN_RETRIBUTION, T20, B4 ) )
+    if ( p() -> sets -> has_set_bonus( PALADIN_RETRIBUTION, T20, B2 ) )
       if ( p() -> buffs.sacred_judgment -> up() )
         am *= 1.0 + p() -> buffs.sacred_judgment -> data().effectN( 1 ).percent();
     return am;
@@ -3295,7 +3313,7 @@ struct blade_of_justice_t : public holy_power_generator_t
     if ( p() -> buffs.righteous_verdict -> up() )
       p() -> buffs.righteous_verdict -> expire();
 
-    if ( p() -> sets -> has_set_bonus( PALADIN_RETRIBUTION, T20, B2 ) )
+    if ( p() -> sets -> has_set_bonus( PALADIN_RETRIBUTION, T20, B4 ) )
       p() -> resource_gain( RESOURCE_HOLY_POWER, 1, p() -> gains.hp_t20_2p );
   }
 };
@@ -3358,7 +3376,7 @@ struct divine_hammer_t : public paladin_spell_t
     double am = paladin_spell_t::composite_persistent_multiplier( s );
     if ( p() -> buffs.righteous_verdict -> up() )
       am *= 1.0 + p() -> artifact.righteous_verdict.rank() * 0.08; // todo: fix
-    if ( p() -> sets -> has_set_bonus( PALADIN_RETRIBUTION, T20, B4 ) )
+    if ( p() -> sets -> has_set_bonus( PALADIN_RETRIBUTION, T20, B2 ) )
       if ( p() -> buffs.sacred_judgment -> up() )
         am *= 1.0 + p() -> buffs.sacred_judgment -> data().effectN( 1 ).percent();
     return am;
@@ -3370,7 +3388,7 @@ struct divine_hammer_t : public paladin_spell_t
     if ( p() -> buffs.righteous_verdict -> up() )
       p() -> buffs.righteous_verdict -> expire();
 
-    if ( p() -> sets -> has_set_bonus( PALADIN_RETRIBUTION, T20, B2 ) )
+    if ( p() -> sets -> has_set_bonus( PALADIN_RETRIBUTION, T20, B4 ) )
       p() -> resource_gain( RESOURCE_HOLY_POWER, 1, p() -> gains.hp_t20_2p );
   }
 };
@@ -3426,6 +3444,8 @@ struct echoed_divine_storm_t: public paladin_melee_attack_t
     double am = paladin_melee_attack_t::action_multiplier();
     if ( p() -> buffs.whisper_of_the_nathrezim -> check() )
       am *= 1.0 + p() -> buffs.whisper_of_the_nathrezim -> data().effectN( 1 ).percent();
+    if ( p() -> buffs.scarlet_inquisitors_expurgation -> up() )
+      am *= 1.0 + p() -> buffs.scarlet_inquisitors_expurgation -> check_stack_value();
     return am;
   }
 };
@@ -3499,7 +3519,7 @@ struct divine_storm_t: public holy_power_consumer_t
 
     if ( p() -> artifact.echo_of_the_highlord.rank() )
     {
-      make_event<echoed_spell_event_t>( *sim, p(), echoed_spell, timespan_t::from_millis( 800 ) );
+      make_event<echoed_spell_event_t>( *sim, p(), echoed_spell, timespan_t::from_millis( 600 ) );
     }
 
     if ( p() -> whisper_of_the_nathrezim )
@@ -3512,7 +3532,7 @@ struct divine_storm_t: public holy_power_consumer_t
 
     if ( p() -> scarlet_inquisitors_expurgation )
     {
-      p() -> buffs.scarlet_inquisitors_expurgation -> expire();
+      make_event<scarlet_inquisitors_expurgation_expiry_event_t>( *sim, p(), timespan_t::from_millis( 800 ) );
     }
   }
 
@@ -3816,7 +3836,7 @@ struct judgment_t : public paladin_melee_attack_t
       double reduction = p() -> talents.fist_of_justice -> effectN( 1 ).base_value();
       p() -> cooldowns.hammer_of_justice -> ready -= timespan_t::from_seconds( reduction );
     }
-    if ( p() -> sets -> has_set_bonus( PALADIN_RETRIBUTION, T20, B4 ) )
+    if ( p() -> sets -> has_set_bonus( PALADIN_RETRIBUTION, T20, B2 ) )
       p() -> buffs.sacred_judgment -> trigger();
   }
 
@@ -5005,7 +5025,7 @@ void paladin_t::generate_action_prio_list_ret()
 
   def -> add_action( "auto_attack" );
   def -> add_action( this, "Rebuke" );
-  def -> add_action( "call_action_list,name=opener,if=time<2&(cooldown.judgment.up|cooldown.blade_of_justice.up|cooldown.divine_hammer.up|cooldown.wake_of_ashes.up)" );
+  def -> add_action( "call_action_list,name=opener,if=time<2" );
   def -> add_action( "call_action_list,name=cooldowns" );
   def -> add_action( "call_action_list,name=priority" );
 
@@ -5080,8 +5100,9 @@ void paladin_t::generate_action_prio_list_ret()
     }
   }
   cds -> add_talent( this, "Holy Wrath" );
+  cds -> add_action( this, "Shield of Vengeance" );
   cds -> add_action( this, "Avenging Wrath" );
-  cds -> add_talent( this, "Crusade", "if=holy_power>=5&!equipped.137048|((equipped.137048|race.blood_elf)&holy_power>=2)" );
+  cds -> add_talent( this, "Crusade", "if=holy_power>=3|((equipped.137048|race.blood_elf)&holy_power>=2)" );
 
   opener -> add_action( this, "Judgment" );
   opener -> add_action( this, "Blade of Justice", "if=equipped.137048|race.blood_elf|!cooldown.wake_of_ashes.up" );
@@ -5090,38 +5111,37 @@ void paladin_t::generate_action_prio_list_ret()
 
   priority -> add_talent( this, "Execution Sentence", "if=spell_targets.divine_storm<=3&(cooldown.judgment.remains<gcd*4.5|debuff.judgment.remains>gcd*4.5)" );
   priority -> add_action( "variable,name=ds_castable,value=spell_targets.divine_storm>=2|(buff.scarlet_inquisitors_expurgation.stack>=29&(buff.avenging_wrath.up|(buff.crusade.up&buff.crusade.stack>=15)|(cooldown.crusade.remains>15&!buff.crusade.up)|cooldown.avenging_wrath.remains>15))" );
-  priority -> add_action( "variable,name=crusade,value=!talent.crusade.enabled|cooldown.crusade.remains>gcd*3" );
   priority -> add_action( this, "Divine Storm", "if=debuff.judgment.up&variable.ds_castable&buff.divine_purpose.up&buff.divine_purpose.remains<gcd*2" );
   priority -> add_action( this, "Divine Storm", "if=debuff.judgment.up&variable.ds_castable&holy_power>=5&buff.divine_purpose.react" );
   priority -> add_action( this, "Divine Storm", "if=debuff.judgment.up&spell_targets.divine_storm>=2&holy_power>=3&(buff.crusade.up&buff.crusade.stack<15|buff.liadrins_fury_unleashed.up)" );
-  priority -> add_action( this, "Divine Storm", "if=debuff.judgment.up&variable.ds_castable&holy_power>=5&variable.crusade" );
+  priority -> add_action( this, "Divine Storm", "if=debuff.judgment.up&variable.ds_castable&holy_power>=5" );
   priority -> add_talent( this, "Justicar's Vengeance", "if=debuff.judgment.up&buff.divine_purpose.up&buff.divine_purpose.remains<gcd*2&!equipped.137020" );
   priority -> add_talent( this, "Justicar's Vengeance", "if=debuff.judgment.up&holy_power>=5&buff.divine_purpose.react&!equipped.137020" );
   priority -> add_action( this, "Templar's Verdict", "if=debuff.judgment.up&buff.divine_purpose.up&buff.divine_purpose.remains<gcd*2" );
   priority -> add_action( this, "Templar's Verdict", "if=debuff.judgment.up&holy_power>=5&buff.divine_purpose.react" );
   priority -> add_action( this, "Templar's Verdict", "if=debuff.judgment.up&holy_power>=3&(buff.crusade.up&buff.crusade.stack<15|buff.liadrins_fury_unleashed.up)" );
-  priority -> add_action( this, "Templar's Verdict", "if=debuff.judgment.up&holy_power>=5&variable.crusade" );
-  priority -> add_action( this, "Divine Storm", "if=debuff.judgment.up&variable.ds_castable&artifact.wake_of_ashes.enabled&cooldown.wake_of_ashes.remains<gcd*2&variable.crusade" );
-  priority -> add_action( this, "Divine Storm", "if=debuff.judgment.up&variable.ds_castable&buff.whisper_of_the_nathrezim.up&buff.whisper_of_the_nathrezim.remains<gcd*1.5&variable.crusade" );
-  priority -> add_action( this, "Templar's Verdict", "if=(equipped.137020|debuff.judgment.up)&artifact.wake_of_ashes.enabled&cooldown.wake_of_ashes.remains<gcd*2&variable.crusade" );
-  priority -> add_action( this, "Templar's Verdict", "if=debuff.judgment.up&buff.whisper_of_the_nathrezim.up&buff.whisper_of_the_nathrezim.remains<gcd*1.5&variable.crusade" );
+  priority -> add_action( this, "Templar's Verdict", "if=debuff.judgment.up&holy_power>=5" );
+  priority -> add_action( this, "Divine Storm", "if=debuff.judgment.up&variable.ds_castable&artifact.wake_of_ashes.enabled&cooldown.wake_of_ashes.remains<gcd*2" );
+  priority -> add_action( this, "Divine Storm", "if=debuff.judgment.up&variable.ds_castable&buff.whisper_of_the_nathrezim.up&buff.whisper_of_the_nathrezim.remains<gcd*1.5" );
+  priority -> add_action( this, "Templar's Verdict", "if=(equipped.137020|debuff.judgment.up)&artifact.wake_of_ashes.enabled&cooldown.wake_of_ashes.remains<gcd*2" );
+  priority -> add_action( this, "Templar's Verdict", "if=debuff.judgment.up&buff.whisper_of_the_nathrezim.up&buff.whisper_of_the_nathrezim.remains<gcd*1.5" );
   priority -> add_action( this, "Judgment", "if=dot.execution_sentence.ticking&dot.execution_sentence.remains<gcd*2&debuff.judgment.remains<gcd*2" );
   priority -> add_talent( this, "Consecration", "if=(cooldown.blade_of_justice.remains>gcd*2|cooldown.divine_hammer.remains>gcd*2)" );
   priority -> add_action( this, "Wake of Ashes", "if=(!raid_event.adds.exists|raid_event.adds.in>15)&(holy_power<=0|holy_power=1&(cooldown.blade_of_justice.remains>gcd|cooldown.divine_hammer.remains>gcd)|holy_power=2&((cooldown.zeal.charges_fractional<=0.65|cooldown.crusader_strike.charges_fractional<=0.65)))" );
-  priority -> add_action( this, "Blade of Justice", "if=holy_power<=3-set_bonus.tier20_2pc" );
-  priority -> add_talent( this, "Divine Hammer", "if=holy_power<=3-set_bonus.tier20_2pc" );
-  priority -> add_action( this, "Hammer of Justice", "if=equipped.137065&target.health.pct>=75&holy_power<=4" );
+  priority -> add_action( this, "Blade of Justice", "if=holy_power<=3-set_bonus.tier20_4pc" );
+  priority -> add_talent( this, "Divine Hammer", "if=holy_power<=3-set_bonus.tier20_4pc" );
   priority -> add_action( this, "Judgment" );
   priority -> add_talent( this, "Zeal", "if=cooldown.zeal.charges_fractional>=1.65&holy_power<=4&(cooldown.blade_of_justice.remains>gcd*2|cooldown.divine_hammer.remains>gcd*2)&debuff.judgment.remains>gcd" );
   priority -> add_action( this, "Crusader Strike", "if=cooldown.crusader_strike.charges_fractional>=1.65-talent.the_fires_of_justice.enabled*0.25&holy_power<=4&(cooldown.blade_of_justice.remains>gcd*2|cooldown.divine_hammer.remains>gcd*2)&debuff.judgment.remains>gcd" );
   priority -> add_talent( this, "Consecration" );
   priority -> add_action( this, "Divine Storm", "if=debuff.judgment.up&variable.ds_castable&buff.divine_purpose.react" );
-  priority -> add_action( this, "Divine Storm", "if=debuff.judgment.up&variable.ds_castable&buff.the_fires_of_justice.react&variable.crusade" );
-  priority -> add_action( this, "Divine Storm", "if=debuff.judgment.up&variable.ds_castable&variable.crusade" );
+  priority -> add_action( this, "Divine Storm", "if=debuff.judgment.up&variable.ds_castable&buff.the_fires_of_justice.react" );
+  priority -> add_action( this, "Divine Storm", "if=debuff.judgment.up&variable.ds_castable" );
   priority -> add_talent( this, "Justicar's Vengeance", "if=debuff.judgment.up&buff.divine_purpose.react&!equipped.137020" );
   priority -> add_action( this, "Templar's Verdict", "if=debuff.judgment.up&buff.divine_purpose.react" );
-  priority -> add_action( this, "Templar's Verdict", "if=debuff.judgment.up&buff.the_fires_of_justice.react&variable.crusade" );
-  priority -> add_action( this, "Templar's Verdict", "if=debuff.judgment.up&variable.crusade&(!talent.execution_sentence.enabled|cooldown.execution_sentence.remains>gcd*2)" );
+  priority -> add_action( this, "Templar's Verdict", "if=debuff.judgment.up&buff.the_fires_of_justice.react" );
+  priority -> add_action( this, "Templar's Verdict", "if=debuff.judgment.up&(!talent.execution_sentence.enabled|cooldown.execution_sentence.remains>gcd*2)" );
+  priority -> add_action( this, "Hammer of Justice", "if=equipped.137065&target.health.pct>=75&holy_power<=4" );
   priority -> add_talent( this, "Zeal", "if=holy_power<=4" );
   priority -> add_action( this, "Crusader Strike", "if=holy_power<=4" );
 }

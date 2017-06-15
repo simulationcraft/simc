@@ -87,21 +87,21 @@ actions.maintain+=/pool_resource,for_next=1
 actions.maintain+=/garrote,cycle_targets=1,if=(!talent.subterfuge.enabled|!(cooldown.vanish.up&cooldown.vendetta.remains<=4))&combo_points.deficit>=1&refreshable&(pmultiplier<=1|remains<=tick_time)&(!exsanguinated|remains<=tick_time*2)&target.time_to_die-remains>4
 actions.maintain+=/toxic_blade,if=combo_points.deficit>=1+(mantle_duration>=gcd.remains+0.2)&dot.rupture.remains>8
 
-head=fanged_slayers_helm,id=147172,ilevel=915
-neck=locket_of_splintered_souls,id=147014,ilevel=915,enchant=mark_of_the_hidden_satyr
-shoulders=mantle_of_the_master_assassin,id=144236,ilevel=970
-back=shroud_of_the_drowned_adherent,id=146985,ilevel=915,enchant=binding_of_agility
-chest=fanged_slayers_chestguard,id=147169,ilevel=915
-wrists=zoldyck_family_training_shackles,id=137098,ilevel=970
-hands=fanged_slayers_handguards,id=147171,ilevel=915
-waist=waistguard_of_profane_duplicity,id=147347,ilevel=925
-legs=fanged_slayers_legguards,id=147173,ilevel=915
-feet=felscape_pathfinders,id=147030,ilevel=915
-finger1=yathaes_thumb_ring,id=147021,ilevel=915,enchant=binding_of_mastery
-finger2=band_of_rescinded_truths,id=147194,ilevel=915,enchant=binding_of_mastery
-trinket1=engine_of_eradication,id=147015,ilevel=915
-trinket2=specter_of_betrayal,id=151190,ilevel=925
-main_hand=the_kingslayers,id=128870,bonus_id=741,gem_id=147110/147102/151189,relic_ilevel=915/915/915
+head=fanged_slayers_helm,id=147172,bonus_id=1497/3562
+neck=locket_of_splintered_souls,id=147014,bonus_id=1497/3562,enchant=mark_of_the_hidden_satyr
+shoulders=mantle_of_the_master_assassin,id=144236,bonus_id=3570
+back=shroud_of_the_drowned_adherent,id=146985,bonus_id=1497/3562,enchant=binding_of_agility
+chest=fanged_slayers_chestguard,id=147169,bonus_id=1497/3562
+wrists=zoldyck_family_training_shackles,id=137098,bonus_id=3570
+hands=fanged_slayers_handguards,id=147171,bonus_id=1497/3562
+waist=waistguard_of_profane_duplicity,id=147347,bonus_id=1507/3562
+legs=fanged_slayers_legguards,id=147173,bonus_id=1497/3562
+feet=felscape_pathfinders,id=147030,bonus_id=1497/3562
+finger1=yathaes_thumb_ring,id=147021,bonus_id=1497/3562,enchant=binding_of_mastery
+finger2=band_of_rescinded_truths,id=147194,bonus_id=1497/3562,enchant=binding_of_mastery
+trinket1=engine_of_eradication,id=147015,bonus_id=1497/3562
+trinket2=specter_of_betrayal,id=151190,bonus_id=1507/3562
+main_hand=the_kingslayers,id=128870,bonus_id=741,gem_id=147110/147102/151189,relic_id=1497:3562/1497:3562/1497:3562
 off_hand=the_kingslayers,id=128869
 
 # Gear Summary

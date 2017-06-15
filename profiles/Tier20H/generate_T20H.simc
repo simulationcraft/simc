@@ -38,7 +38,7 @@ generate_Priest_T20H.simc
 generate_Rogue_T20H.simc
 
 # Shaman
-#generate_Shaman_T20H.simc
+generate_Shaman_T20H.simc
 
 # Warlock
 generate_Warlock_T20H.simc

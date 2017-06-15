@@ -2188,6 +2188,17 @@ struct flanking_strike_t: public hunter_main_pet_attack_t
     return am;
   }
 
+  double composite_target_crit_chance( player_t* t ) const override
+  {
+    double cc = hunter_main_pet_attack_t::composite_target_crit_chance( t );
+
+    const hunter_td_t* otd = o() -> get_target_data( t );
+    if ( otd -> debuffs.unseen_predators_cloak -> up() )
+      cc += otd -> debuffs.unseen_predators_cloak -> check_value();
+
+    return cc;
+  }
+
   double composite_attack_power() const override
   { return o() -> cache.attack_power() * o() -> composite_attack_power_multiplier(); }
 };
@@ -4125,6 +4136,9 @@ struct carve_base_t: public hunter_melee_attack_t
     hunter_melee_attack_t( n, p, s )
   {
     aoe = -1;
+
+    if ( p -> talents.serpent_sting -> ok() )
+      impact_action = new serpent_sting_t( p );
   }
 
   void execute() override
@@ -4189,9 +4203,6 @@ struct carve_t: public carve_base_t
     carve_base_t( "carve", p, p -> specs.carve )
   {
     parse_options( options_str );
-
-    if ( p -> talents.serpent_sting -> ok() )
-      impact_action = new serpent_sting_t( p );
   }
 
   bool ready() override

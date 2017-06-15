@@ -4451,7 +4451,7 @@ struct demonwrath_tick_t: public warlock_spell_t
         p() -> shard_react = timespan_t::max();
     }
 
-    if ( p() -> sets -> has_set_bonus( WARLOCK_DEMONOLOGY, T20, B2 ) && p() -> rng().roll( p() -> sets -> set( WARLOCK_DEMONOLOGY, T20, B2 ) -> proc_chance() ) )
+    if ( p() -> sets -> has_set_bonus( WARLOCK_DEMONOLOGY, T20, B2 ) && p() -> rng().roll( p() -> sets -> set( WARLOCK_DEMONOLOGY, T20, B2 ) -> proc_chance() / 3.0 ) )
     {
       p() -> cooldowns.call_dreadstalkers -> reset( true );
       p() -> procs.demonology_t20_2pc -> occur();

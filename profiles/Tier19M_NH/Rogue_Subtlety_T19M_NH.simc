@@ -5,7 +5,7 @@ race=night_elf
 timeofday=day
 role=attack
 position=back
-talents=1310031
+talents=2310012
 artifact=17:0:0:0:0:851:1:852:4:853:4:854:4:855:4:856:4:857:4:858:4:859:4:860:4:861:1:862:1:863:1:864:1:865:1:866:1:1349:1:1386:1:1585:4:1586:1:1587:1:1588:1:1653:1
 
 # Default consumables
@@ -40,7 +40,7 @@ actions=call_action_list,name=cds
 # Fully switch to the Stealthed Rotation (by doing so, it forces pooling if nothing is available)
 actions+=/run_action_list,name=stealthed,if=stealthed.all
 actions+=/nightblade,if=target.time_to_die>8&remains<gcd.max&combo_points>=4
-actions+=/call_action_list,name=stealth_als,if=(combo_points.deficit>=3|cooldown.shadow_dance.charges_fractional>=2.9)&(!talent.dark_shadow.enabled|cooldown.shadow_dance.charges_fractional>=1.9|dot.nightblade.remains>4+talent.subterfuge.enabled)
+actions+=/call_action_list,name=stealth_als,if=(combo_points.deficit>=3&(!talent.dark_shadow.enabled|dot.nightblade.remains>4+talent.subterfuge.enabled|cooldown.shadow_dance.charges_fractional>=1.9))|cooldown.shadow_dance.charges_fractional>=2.9
 actions+=/call_action_list,name=finish,if=combo_points>=5|(combo_points>=4&combo_points.deficit<=2&spell_targets.shuriken_storm>=3&spell_targets.shuriken_storm<=4)
 actions+=/call_action_list,name=build,if=energy.deficit<=variable.stealth_threshold
 
