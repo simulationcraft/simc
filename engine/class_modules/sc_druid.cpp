@@ -4030,8 +4030,8 @@ struct maul_t : public bear_attack_t
   maul_t( druid_t* player, const std::string& options_str ) :
     bear_attack_t( "maul", player, player -> find_specialization_spell( "Maul" ), options_str )
   {
-    weapon = &( player -> main_hand_weapon );
-    use_off_gcd = true;
+    gore = true;
+    normalize_weapon_speed = false;
 
     base_crit += player -> artifact.mauler.percent();
   }
