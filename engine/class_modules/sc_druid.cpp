@@ -3653,7 +3653,7 @@ public:
       player -> spec.swipe_cat : spell_data_t::not_found(), options_str )
   {
     aoe = -1;
-    energize_amount = data().effectN( 1 ).percent();
+    energize_amount = data().effectN(1).base_value();
     energize_resource = RESOURCE_COMBO_POINT;
     energize_type = ENERGIZE_ON_HIT;
 
