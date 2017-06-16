@@ -5811,7 +5811,7 @@ void rogue_t::trigger_sinister_circulation( const action_state_t* )
 
   cooldowns.kingsbane -> adjust( - timespan_t::from_seconds( artifact.sinister_circulation.percent() ), false );
   // FIXME Hotfix 03-30-2017: Sinister Circulation got a 0.5s ICD
-  cooldowns.sinister_circulation -> start( timespan_t::from_seconds( 0.5 ) );
+  cooldowns.sinister_circulation -> start( artifact.sinister_circulation.data().internal_cooldown() );
 }
 
 void rogue_t::trigger_surge_of_toxins( const action_state_t* s )
@@ -5834,8 +5834,11 @@ void rogue_t::trigger_surge_of_toxins( const action_state_t* s )
     max_cp = std::min( max_cp, static_cast<int>( COMBO_POINT_MAX ) );
   }
 
-  // 2% per combo point, nowhere to be found in spell data. Agonizing Poison halves it to 1%.
-  get_target_data( s -> target ) -> debuffs.surge_of_toxins -> trigger( 1, max_cp * 0.02 );
+  
+  rogue_td_t* td = get_target_data( s -> target );
+  // Spell data only give us 10%, so we transform it since it's 2% per cp.
+  double sot_mod = td -> debuffs.surge_of_toxins -> data().effectN( 1 ).base_value() * 0.002;
+  td -> debuffs.surge_of_toxins -> trigger( 1, max_cp * sot_mod );
 }
 
 void rogue_t::trigger_poison_knives( const action_state_t* state )
