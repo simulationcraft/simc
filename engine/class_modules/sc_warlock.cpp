@@ -303,8 +303,6 @@ public:
     bool stretens_insanity;
     timespan_t wilfreds_sigil_of_superior_summoning;
     double power_cord_of_lethtendris_chance;
-    int wakeners_shard_counter;
-    double wakeners_loyalty_percent;
     bool wakeners_loyalty_enabled;
     bool lessons_of_spacetime;
     timespan_t lessons_of_spacetime1;
@@ -423,6 +421,7 @@ public:
     buff_t* lessons_of_spacetime;
     haste_buff_t* sephuzs_secret;
     buff_t* alythesss_pyrogenics;
+    buff_t* wakeners_loyalty;
   } buffs;
 
   // Gains
@@ -2435,7 +2434,7 @@ public:
   {
     spell_t::consume_resource();
 
-    if ( resource_current == RESOURCE_SOUL_SHARD )
+    if ( resource_current == RESOURCE_SOUL_SHARD && p() -> in_combat )
     {
       if ( p() -> legendary.the_master_harvester )
       {
@@ -2478,12 +2477,11 @@ public:
           }
         }
       }
-      if ( p()->legendary.wakeners_loyalty_enabled
-        && p()->specialization() == WARLOCK_DEMONOLOGY )
+      if ( p() -> legendary.wakeners_loyalty_enabled && p() -> specialization() == WARLOCK_DEMONOLOGY )
       {
         for ( int i = 0; i < last_resource_cost; i++ )
         {
-          p()->legendary.wakeners_shard_counter++;
+          p() -> buffs.wakeners_loyalty -> trigger();
         }
       }
 
@@ -4242,13 +4240,9 @@ struct thalkiels_consumption_t : public warlock_spell_t
         }
       }
     }
-    if(p()->legendary.wakeners_loyalty_enabled)
+    if( p() -> legendary.wakeners_loyalty_enabled )
     {
-        double wakenersMod = 1 + (p()->legendary.wakeners_loyalty_percent *
-                (double) p()->legendary.wakeners_shard_counter);
-
-        p()->legendary.wakeners_shard_counter = 0;
-        damage *= wakenersMod;
+      damage *= 1.0 + p() -> buffs.wakeners_loyalty -> stack_value();
     }
 
     damage *= ta_mult;
@@ -4257,6 +4251,8 @@ struct thalkiels_consumption_t : public warlock_spell_t
     this -> base_dd_min = damage;
     this -> base_dd_max = damage;
     //do other stuff
+
+    p() -> buffs.wakeners_loyalty -> expire();
   }
 };
 
@@ -6561,6 +6557,9 @@ void warlock_t::create_buffs()
   buffs.alythesss_pyrogenics = buff_creator_t( this, "alythesss_pyrogenics", find_spell( 205675 ) )
     .default_value( find_spell( 205675 ) -> effectN( 1 ).percent() )
     .refresh_behavior( BUFF_REFRESH_DISABLED );
+  buffs.wakeners_loyalty = buff_creator_t( this, "wakeners_loyalty", find_spell( 236200 ) )
+    .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
+    .default_value( find_spell( 236200 ) -> effectN( 1 ).percent() );
 
   //affliction buffs
   buffs.shard_instability = buff_creator_t( this, "shard_instability", find_spell( 216457 ) )
@@ -7046,7 +7045,6 @@ void warlock_t::init_resources( bool force )
 
 void warlock_t::combat_begin()
 {
-
   player_t::combat_begin();
 }
 
@@ -7887,12 +7885,9 @@ struct wakeners_loyalty_t : public scoped_actor_callback_t<warlock_t>
 {
     wakeners_loyalty_t() : super ( WARLOCK ){}
 
-    void manipulate (warlock_t* p, const special_effect_t& ) override
+    void manipulate ( warlock_t* p, const special_effect_t& ) override
     {
-        const spell_data_t * tmp = p->find_spell(236200);
-        p->legendary.wakeners_loyalty_enabled = true;
-        double tmp2 = (double)tmp->effectN(1).base_value();
-        p->legendary.wakeners_loyalty_percent = tmp2 / 100.0;   //fixing this later?
+        p -> legendary.wakeners_loyalty_enabled = true;
     }
 };
 
