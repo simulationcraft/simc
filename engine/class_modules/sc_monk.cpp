@@ -8560,7 +8560,8 @@ void monk_t::create_buffs()
                               .cd( timespan_t::zero() );
 
   buff.pressure_point = buff_creator_t( this, "pressure_point", passives.pressure_point )
-                       .default_value( passives.pressure_point -> effectN( 1 ).percent() );
+                       .default_value( passives.pressure_point -> effectN( 1 ).percent() )
+                       .refresh_behavior( BUFF_REFRESH_NONE );
 
   buff.thunderfist = buff_creator_t( this, "thunderfist", passives.thunderfist_buff );
 
