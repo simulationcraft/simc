@@ -85,18 +85,18 @@ actions.priority+=/crusader_strike,if=holy_power<=4
 head=radiant_lightbringer_crown,id=147160,ilevel=930
 neck=string_of_extracted_incisors,id=147013,ilevel=930,enchant=mark_of_the_hidden_satyr
 shoulders=gravedredged_pauldrons,id=147070,ilevel=930
-back=radiant_lightbringer_cape,id=147158,ilevel=930,enchant=200str
+back=whisper_of_the_nathrezim,id=137020,ilevel=970,enchant=200str
 chest=radiant_lightbringer_breastplate,id=147157,ilevel=930
 wrists=bonemealcrusted_armplates,id=147073,ilevel=930
 hands=radiant_lightbringer_gauntlets,id=147159,ilevel=930
 waist=chain_of_thrayn,id=137086,ilevel=970
 legs=radiant_lightbringer_greaves,id=147161,ilevel=930
 feet=spiked_terrorwake_greatboots,id=147428,ilevel=930
-finger1=liadrins_fury_unleashed,id=137048,ilevel=970,gem_id=130246,enchant_id=5428
+finger1=yathaes_thumb_ring,id=147021,ilevel=930,enchant_id=5428
 finger2=seal_of_the_second_duumvirate,id=147195,ilevel=940,enchant=200haste
 trinket1=specter_of_betrayal,id=151190,ilevel=940
 trinket2=infernal_cinders,id=147009,ilevel=930
-main_hand=ashbringer,id=120978,bonus_id=737,ilevel=952,gem_id=147097/147088/147097/0
+main_hand=ashbringer,id=120978,bonus_id=737,gem_id=147099/147088/147099/0,relic_ilevel=940/930/940
 
 # Gear Summary
 # gear_ilvl=938.13
