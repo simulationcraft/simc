@@ -7,6 +7,12 @@ position=back
 talents=3200233
 artifact=59:137303:137381:137303:0:1035:3:1036:3:1037:3:1039:3:1040:3:1041:4:1042:5:1043:1:1044:1:1046:1:1047:1:1049:1:1294:1
 
+# Default consumables
+potion=deadly_grace
+flask=whispered_pact
+food=lavish_suramar_feast
+augmentation=defiled
+
 # This default action priority list is automatically created based on your character.
 # It is a attempt to provide you with a action list that is both simple and practicable,
 # while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
@@ -14,14 +20,14 @@ artifact=59:137303:137381:137303:0:1035:3:1036:3:1037:3:1039:3:1040:3:1041:4:104
 # SimulationCraft is always looking for updates and improvements to the default action lists.
 
 # Executed before combat begins. Accepts non-harmful actions only.
-actions.precombat=flask,type=flask_of_the_whispered_pact
-actions.precombat+=/food,type=lavish_suramar_feast
-actions.precombat+=/augmentation,type=defiled
+actions.precombat=flask
+actions.precombat+=/food
+actions.precombat+=/augmentation
 actions.precombat+=/moonkin_form
 actions.precombat+=/blessing_of_elune
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
-actions.precombat+=/potion,name=deadly_grace
+actions.precombat+=/potion
 actions.precombat+=/new_moon
 
 # Executed every time the actor is available.
