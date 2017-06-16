@@ -5466,6 +5466,9 @@ void rogue_t::trigger_combat_potency( const action_state_t* state )
     return;
 
   double chance = spec.combat_potency -> effectN( 1 ).percent() + artifact.fortune_strikes.percent();
+  // Looks like CP proc chance is normalized by weapon speed again
+  if ( state -> action != active_main_gauche )
+    chance *= state -> action -> weapon -> swing_time.total_seconds() / 1.4;
   if ( ! rng().roll( chance ) )
     return;
 
