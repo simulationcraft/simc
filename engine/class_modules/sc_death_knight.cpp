@@ -4358,7 +4358,6 @@ struct death_coil_t : public death_knight_spell_t
 
     attack_power_mod.direct = p -> find_spell( 47632 ) -> effectN( 1 ).ap_coeff();
     base_multiplier *= 1.0 + p -> artifact.deadliest_coil.percent();
-    base_multiplier *= 1.0 + p -> legendary.death_march -> effectN( 2 ).percent();
   }
 
   double cost() const override
@@ -4451,7 +4450,6 @@ struct death_strike_offhand_t : public death_knight_melee_attack_t
     background       = true;
     weapon           = &( p -> off_hand_weapon );
     base_multiplier *= 1.0 + p -> spec.veteran_of_the_third_war -> effectN( 7 ).percent();
-    base_multiplier *= 1.0 + p -> legendary.death_march -> effectN( 2 ).percent();
   }
 };
 
@@ -4569,7 +4567,6 @@ struct death_strike_t : public death_knight_melee_attack_t
     parse_options( options_str );
     may_parry = false;
     base_multiplier *= 1.0 + p -> spec.blood_death_knight -> effectN( 1 ).percent();
-    base_multiplier *= 1.0 + p -> legendary.death_march -> effectN( 2 ).percent();
 
     base_costs[ RESOURCE_RUNIC_POWER ] += p -> sets -> set( DEATH_KNIGHT_BLOOD, T18, B4 ) -> effectN( 1 ).resource( RESOURCE_RUNIC_POWER );
 
@@ -9130,9 +9127,18 @@ struct death_march_t : public scoped_actor_callback_t<death_knight_t>
   death_march_t() : super( DEATH_KNIGHT )
   { }
 
-  // Make adjustment time negative here, spell data value is positive
   void manipulate( death_knight_t* p, const special_effect_t& e ) override
   { p -> legendary.death_march = e.driver(); }
+};
+
+template <typename T>
+struct death_march_passive_t : public scoped_action_callback_t<T>
+{
+  death_march_passive_t( const std::string& n ) : scoped_action_callback_t<T>( DEATH_KNIGHT, n )
+  { }
+
+  void manipulate( T* a, const special_effect_t& e ) override
+  { a -> base_multiplier *= 1.0 + e.driver() -> effectN( 2 ).percent(); }
 };
 
 struct sephuzs_secret_t: public unique_gear::scoped_actor_callback_t<death_knight_t>
@@ -9256,6 +9262,9 @@ struct death_knight_module_t : public module_t {
     // 7.1.5
     unique_gear::register_special_effect( 235605, consorts_cold_core_t() );
     unique_gear::register_special_effect( 235556, death_march_t() );
+    unique_gear::register_special_effect( 235556, death_march_passive_t<death_knight_spell_t>( "death_coil" ) );
+    unique_gear::register_special_effect( 235556, death_march_passive_t<death_knight_melee_attack_t>( "death_strike" ) );
+    unique_gear::register_special_effect( 235556, death_march_passive_t<death_knight_melee_attack_t>( "death_strike_offhand" ) );
     unique_gear::register_special_effect( 235558, skullflowers_haemostasis_t(), true );
     unique_gear::register_special_effect( 208051, sephuzs_secret_t() );
     // 7.2.5
