@@ -3642,7 +3642,7 @@ struct trauma_dot_t: public residual_action::residual_periodic_action_t < warrio
     crit_chance_of_last_ability( 0 )
   {
     dual = true;
-    tick_may_crit = true;
+    tick_may_crit = false;
   }
 
   double calculate_tick_amount( action_state_t* state, double dmg_multiplier ) const override
@@ -3657,7 +3657,7 @@ struct trauma_dot_t: public residual_action::residual_periodic_action_t < warrio
 
     state -> result_raw = amount;
     state -> result = RESULT_HIT; // Reset result to hit, as it has already been rolled inside tick().
-    if ( rng().roll( composite_crit_chance() ) )
+    if ( tick_may_crit && rng().roll( composite_crit_chance() ) )
       state -> result = RESULT_CRIT;
 
     if ( state -> result == RESULT_CRIT )
