@@ -52,7 +52,6 @@ actions+=/call_action_list,name=gs_ticking,if=talent.gathering_storm.enabled&buf
 
 actions.bos=frost_strike,if=talent.icy_talons.enabled&buff.icy_talons.remains<gcd&cooldown.breath_of_sindragosa.remains>rune.time_to_4
 actions.bos+=/remorseless_winter,if=talent.gathering_storm.enabled
-actions.bos+=/howling_blast,target_if=!dot.frost_fever.ticking
 actions.bos+=/howling_blast,if=buff.rime.react&rune.time_to_4<(gcd*2)
 actions.bos+=/obliterate,if=rune.time_to_6<gcd&!talent.gathering_storm.enabled
 actions.bos+=/obliterate,if=rune.time_to_4<gcd&(cooldown.breath_of_sindragosa.remains|runic_power<70)
@@ -69,8 +68,7 @@ actions.bos+=/obliterate,if=!buff.rime.react&(!talent.gathering_storm.enabled|co
 actions.bos+=/horn_of_winter,if=cooldown.breath_of_sindragosa.remains>15&runic_power<=70&rune.time_to_3>gcd
 actions.bos+=/frost_strike,if=cooldown.breath_of_sindragosa.remains>rune.time_to_4
 
-actions.bos_ticking=howling_blast,target_if=!dot.frost_fever.ticking
-actions.bos_ticking+=/remorseless_winter,if=(runic_power>=30|buff.hungering_rune_weapon.up)&((buff.rime.react&equipped.132459)|(talent.gathering_storm.enabled&(dot.remorseless_winter.remains<=gcd|!dot.remorseless_winter.ticking)))
+actions.bos_ticking=remorseless_winter,if=(runic_power>=30|buff.hungering_rune_weapon.up)&((buff.rime.react&equipped.132459)|(talent.gathering_storm.enabled&(dot.remorseless_winter.remains<=gcd|!dot.remorseless_winter.ticking)))
 actions.bos_ticking+=/howling_blast,if=((runic_power>=20&set_bonus.tier19_4pc)|runic_power>=30|buff.hungering_rune_weapon.up)&buff.rime.react
 actions.bos_ticking+=/frost_strike,if=set_bonus.tier20_2pc&runic_power>85&rune<=3&buff.pillar_of_frost.up
 actions.bos_ticking+=/obliterate,if=runic_power<=45|rune.time_to_5<gcd|buff.hungering_rune_weapon.remains>=2
@@ -88,7 +86,6 @@ actions.bos_ticking+=/empower_rune_weapon,if=runic_power<20
 actions.generic=obliteration,if=(!talent.frozen_pulse.enabled|(rune<2&runic_power<28))&!talent.gathering_storm.enabled
 actions.generic+=/frost_strike,if=buff.icy_talons.remains<1.5&talent.icy_talons.enabled
 actions.generic+=/frost_strike,if=talent.shattering_strikes.enabled&debuff.razorice.stack=5
-actions.generic+=/howling_blast,target_if=!dot.frost_fever.ticking
 actions.generic+=/remorseless_winter,if=(buff.rime.react&equipped.132459&!(buff.obliteration.up&spell_targets.howling_blast<2))|talent.gathering_storm.enabled
 actions.generic+=/howling_blast,if=buff.rime.react&!(buff.obliteration.up&spell_targets.howling_blast<2)&!(equipped.132459&talent.gathering_storm.enabled)
 actions.generic+=/howling_blast,if=buff.rime.react&!(buff.obliteration.up&spell_targets.howling_blast<2)&equipped.132459&talent.gathering_storm.enabled&(debuff.perseverance_of_the_ebon_martyr.up|cooldown.remorseless_winter.remains>3)
@@ -112,7 +109,6 @@ actions.generic+=/hungering_rune_weapon,if=!buff.hungering_rune_weapon.up
 
 actions.gs_ticking=frost_strike,if=buff.icy_talons.remains<1.5&talent.icy_talons.enabled
 actions.gs_ticking+=/remorseless_winter
-actions.gs_ticking+=/howling_blast,if=!dot.frost_fever.ticking
 actions.gs_ticking+=/howling_blast,if=buff.rime.react&!(buff.obliteration.up&spell_targets.howling_blast<2)
 actions.gs_ticking+=/obliteration,if=(!talent.frozen_pulse.enabled|(rune<2&runic_power<28))
 actions.gs_ticking+=/obliterate,if=rune>3|buff.killing_machine.react|buff.obliteration.up
@@ -126,20 +122,20 @@ actions.gs_ticking+=/frost_strike
 actions.gs_ticking+=/hungering_rune_weapon,if=!buff.hungering_rune_weapon.up
 actions.gs_ticking+=/empower_rune_weapon
 
-head=crown_of_ash,id=137526,bonus_id=1492
-neck=raven_filigree_pendant,id=134499,bonus_id=1492,enchant=mark_of_the_claw
-shoulders=frozen_pendulum_shoulderguards,id=134518,bonus_id=1492
-back=goldscar_pelt,id=133639,bonus_id=1492,enchant=binding_of_strength
-chest=inferno_breastplate,id=134503,bonus_id=1492
-wrists=deepfurrow_bracers,id=137337,bonus_id=1492
-hands=battleborne_sentinel_gauntlets,id=133628,bonus_id=1492
-waist=coralplate_girdle,id=134225,bonus_id=1502
-legs=wracksoul_legplates,id=121280,bonus_id=1502
-feet=saltladen_stompers,id=137334,bonus_id=1492
-finger1=jeweled_signet_of_melandrus,id=134542,bonus_id=1492,enchant=binding_of_critical_strike
-finger2=gnawed_thumb_ring,id=134526,bonus_id=1492,enchant=binding_of_critical_strike
-trinket1=faulty_countermeasure,id=137539,bonus_id=1492
-trinket2=chaos_talisman,id=137459,bonus_id=1492
+head=crown_of_ash,id=137526,bonus_id=1492/1826
+neck=raven_filigree_pendant,id=134499,bonus_id=1492/1826,enchant=mark_of_the_claw
+shoulders=frozen_pendulum_shoulderguards,id=134518,bonus_id=1492/1826
+back=goldscar_pelt,id=133639,bonus_id=1492/1826,enchant=binding_of_strength
+chest=inferno_breastplate,id=134503,bonus_id=1492/1826
+wrists=deepfurrow_bracers,id=137337,bonus_id=1492/1826
+hands=battleborne_sentinel_gauntlets,id=133628,bonus_id=1492/1826
+waist=coralplate_girdle,id=134225,bonus_id=1502/3573
+legs=wracksoul_legplates,id=121280,bonus_id=1502/3573
+feet=saltladen_stompers,id=137334,bonus_id=1492/1826
+finger1=jeweled_signet_of_melandrus,id=134542,bonus_id=1492/1826,enchant=binding_of_critical_strike
+finger2=gnawed_thumb_ring,id=134526,bonus_id=1492/1826,enchant=binding_of_critical_strike
+trinket1=faulty_countermeasure,id=137539,bonus_id=1492/1826
+trinket2=chaos_talisman,id=137459,bonus_id=1492/1826
 main_hand=blades_of_the_fallen_prince,id=128292,gem_id=137308/137399/137340,relic_id=1492:1727/1492:1727/1492:1727,enchant=rune_of_razorice
 off_hand=blades_of_the_fallen_prince,id=128293,enchant=rune_of_the_fallen_crusader
 
