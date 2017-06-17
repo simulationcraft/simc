@@ -255,6 +255,114 @@ void profilesets_t::output( const sim_t& sim, FILE* out ) const
   } );
 }
 
+void profilesets_t::output( const sim_t& sim, io::ofstream& out ) const
+{
+  if ( m_profilesets.size() == 0 )
+  {
+    return;
+  }
+
+  out << "<div class=\"section\">\n";
+  out << "<h2 class=\"toggle\">Profile sets</h2>\n";
+  out << "<div class=\"toggle-content hide\">\n";
+
+  generate_chart( sim, out );
+
+  out << "</div>";
+  out << "</div>";
+}
+
+bool profilesets_t::generate_chart( const sim_t& sim, io::ofstream& out ) const
+{
+  highchart::bar_chart_t profileset( "profileset", sim );
+
+  std::vector<const profile_set_t*> results;
+  range::transform( m_profilesets, std::back_inserter( results ), []( const profileset_entry_t& p ) {
+    return p.get();
+  } );
+
+  // Sort to descending with mean value
+  range::sort( results, []( const profile_set_t* l, const profile_set_t* r ) {
+    return l -> result().median() > r -> result().median();
+  } );
+
+  // Bar color
+  const auto& c = color::class_color( sim.player_no_pet_list.data().front() -> type );
+
+  // Prep bar chart some
+  std::string chart_name = util::scale_metric_type_string( sim.profileset_metric );
+
+  profileset.set( "series.0.name", chart_name );
+  profileset.set( "series.1.type", "boxplot" );
+  profileset.set( "series.1.name", chart_name );
+  profileset.set( "yAxis.gridLineWidth", 0 );
+  profileset.set( "xAxis.offset", 80 );
+  profileset.set_title( "Profile sets" );
+  profileset.set_yaxis_title( "Median " + chart_name );
+  profileset.width_ = 1150;
+  profileset.height_ = 24 * results.size() + 75;
+
+  profileset.set( "plotOptions.boxplot.whiskerLength", "85%" );
+  profileset.set( "plotOptions.boxplot.whiskerWidth", 1.5 );
+  profileset.set( "plotOptions.boxplot.medianWidth", 1 );
+  profileset.set( "plotOptions.boxplot.pointWidth", 18 );
+  profileset.set( "plotOptions.boxplot.tooltip.pointFormat",
+    "Maximum: {point.high}<br/>"
+    "Upper quartile: {point.q3}<br/>"
+    "Mean: {point.mean:,.1f}<br/>"
+    "Median: {point.median}<br/>"
+    "Lower quartile: {point.q1}<br/>"
+    "Minimum: {point.low}<br/>"
+  );
+
+  profileset.set( "plotOptions.bar.dataLabels.crop", false );
+  profileset.set( "plotOptions.bar.dataLabels.overflow", "none" );
+  profileset.set( "plotOptions.bar.dataLabels.inside", true );
+  profileset.set( "plotOptions.bar.dataLabels.enabled", true );
+  profileset.set( "plotOptions.bar.dataLabels.align", "left" );
+  profileset.set( "plotOptions.bar.dataLabels.shadow", false );
+  profileset.set( "plotOptions.bar.dataLabels.x", -80 );
+  profileset.set( "plotOptions.bar.dataLabels.color", c.str() );
+  profileset.set( "plotOptions.bar.dataLabels.verticalAlign", "middle" );
+  profileset.set( "plotOptions.bar.dataLabels.style.fontSize", "10pt" );
+  profileset.set( "plotOptions.bar.dataLabels.style.fontWeight", "none" );
+  profileset.set( "plotOptions.bar.dataLabels.style.textShadow", "none" );
+
+  profileset.set( "xAxis.labels.style.color", c.str() );
+  profileset.set( "xAxis.labels.style.whiteSpace", "nowrap" );
+  profileset.set( "xAxis.labels.style.fontSize", "10pt" );
+  profileset.set( "xAxis.labels.padding", 2 );
+  profileset.set( "xAxis.lineColor", c.str() );
+
+  range::for_each( results, [ &c, &profileset ]( const profile_set_t* set ) {
+    js::sc_js_t entry;
+
+    entry.set( "color", c.str() );
+    entry.set( "name", set -> name() );
+    entry.set( "y", util::round( set -> result().median() ) );
+
+    profileset.add( "series.0.data", entry );
+
+    js::sc_js_t boxplot_entry;
+    boxplot_entry.set( "name", set -> name() );
+    boxplot_entry.set( "low", set -> result().min() );
+    boxplot_entry.set( "q1", set -> result().first_quartile() );
+    boxplot_entry.set( "median", set -> result().median() );
+    boxplot_entry.set( "mean", set -> result().mean() );
+    boxplot_entry.set( "q3", set -> result().third_quartile() );
+    boxplot_entry.set( "high", set -> result().max() );
+
+    boxplot_entry.set( "color", c.dark( .5 ).opacity( .5 ).str() );
+    boxplot_entry.set( "fillColor", c.dark( .75 ).opacity( .5 ).rgb_str() );
+
+    profileset.add( "series.1.data", boxplot_entry );
+  } );
+
+  out << profileset.to_string();
+
+  return true;
+}
+
 void create_options( sim_t* sim )
 {
   sim -> add_option( opt_map_list( "profileset.", sim -> profileset_map ) );

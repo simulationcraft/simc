@@ -9,6 +9,7 @@
 #include <string>
 
 #include "util/generic.hpp"
+#include "util/io.hpp"
 #include "sc_enums.hpp"
 
 struct sim_t;
@@ -131,6 +132,7 @@ class profilesets_t
 
   int max_name_length() const;
 
+  bool generate_chart( const sim_t& sim, io::ofstream& out ) const;
 public:
   profilesets_t()
   { }
@@ -143,6 +145,7 @@ public:
 
   void output( const sim_t& sim, js::JsonOutput& root ) const;
   void output( const sim_t& sim, FILE* out ) const;
+  void output( const sim_t& sim, io::ofstream& out ) const;
 };
 
 struct statistical_data_t
