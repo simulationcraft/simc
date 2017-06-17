@@ -7337,7 +7337,7 @@ std::string shaman_t::default_food() const
                                ( true_level >= 80  ) ? "seafood_magnifique_feast" :
                                "disabled";
 
-  std::string enhance_food = ( true_level >  100 ) ? "nightborne_delicacy_platter" :
+  std::string enhance_food = ( true_level >  100 ) ? "lavish_suramar_feast" :
                              ( true_level >  90  ) ? "buttered_sturgeon" :
                              ( true_level >= 90  ) ? "sea_mist_rice_noodles" :
                              ( true_level >= 80  ) ? "seafood_magnifique_feast" :
