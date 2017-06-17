@@ -1055,12 +1055,11 @@ struct warrior_attack_t: public warrior_action_t < melee_attack_t >
     }
   }
 
-  void opportunity_strikes( action_state_t* s )
+  virtual void opportunity_strikes( action_state_t* s )
   {
-    if ( special && s -> action -> data().id() != p() -> active.opportunity_strikes -> data().id() )
+    if ( special && p() -> cooldown.opportunity_strikes -> up() )
     {
-	  // WW does not reroll for OpS more than once per cast
-      if (s->action->data().id() != p() -> spec.whirlwind->effectN( 2 ).trigger_spell_id() && p() -> cooldown.opportunity_strikes -> up() && rng().roll( ( 1 - ( s -> target -> health_percentage() / 100 ) ) * p() -> talents.opportunity_strikes -> proc_chance() ) )
+      if ( rng().roll( ( 1 - ( s -> target -> health_percentage() / 100 ) ) * p() -> talents.opportunity_strikes -> proc_chance() ) )
       {
         p() -> active.opportunity_strikes -> target = s -> target;
         p() -> active.opportunity_strikes -> execute();
@@ -1184,10 +1183,10 @@ struct melee_t: public warrior_attack_t
   melee_t( const std::string& name, warrior_t* p ):
     warrior_attack_t( name, p, spell_data_t::nil() ),
     mh_lost_melee_contact( true ), oh_lost_melee_contact( true ),
-	  // patch notes said 10% buff so that would be 4.0 -> 4.4
-	  // however in game testing suggest that actual value is 4.286
-	  // with 3.6 speed weapon, we generate 27 rage on hit, not 27.72
-	  // and crits generate 35 not 36
+    // patch notes said 10% buff so that would be 4.0 -> 4.4
+    // however in game testing suggest that actual value is 4.286
+    // with 3.6 speed weapon, we generate 27 rage on hit, not 27.72
+    // and crits generate 35 not 36
     base_rage_generation( 1.75 ), arms_rage_multiplier( 4.286 ), fury_rage_multiplier( 0.80 ),
     devastator( nullptr )
   {
@@ -2102,6 +2101,10 @@ struct opportunity_strikes_t : public warrior_attack_t
   {
     background = true;
     school = p -> talents.opportunity_strikes -> get_school_type();
+  }
+
+  void opportunity_strikes( action_state_t* s ) override
+  {// Cannot re-proc itself.
   }
 };
 
@@ -3944,6 +3947,8 @@ struct fury_whirlwind_parent_t: public warrior_attack_t
   }
 };
 
+// Arms Whirlwind ========================================================
+
 struct arms_whirlwind_mh_t: public warrior_attack_t
 {
   arms_whirlwind_mh_t( warrior_t* p, const spell_data_t* whirlwind ):
@@ -3951,6 +3956,10 @@ struct arms_whirlwind_mh_t: public warrior_attack_t
   {
     aoe = -1;
     weapon_multiplier *= 1.0 + p -> artifact.many_will_fall.percent();
+  }
+
+  void opportunity_strikes( action_state_t* s ) override
+  { //Only the first spin has a chance to proc opportunity strikes.
   }
 
   double action_multiplier() const override
