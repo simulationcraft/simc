@@ -345,7 +345,7 @@ bool profilesets_t::generate_chart( const sim_t& sim, io::ofstream& out ) const
   profileset.set( "series.1.name", chart_name );
   profileset.set( "yAxis.gridLineWidth", 0 );
   profileset.set( "xAxis.offset", 80 );
-  profileset.set_title( "Profile sets" );
+  profileset.set_title( "Profile sets (" + chart_name + ")" );
   profileset.set_yaxis_title( "Median " + chart_name );
   profileset.width_ = 1150;
   profileset.height_ = 24 * ( results.size() + 1 ) + 75;
