@@ -74,8 +74,8 @@ legs=fanged_slayers_legguards,id=147173,bonus_id=1512/3563
 feet=felscape_pathfinders,id=147030,bonus_id=1512/3563
 finger1=yathaes_thumb_ring,id=147021,bonus_id=1512/3563,enchant=binding_of_haste
 finger2=band_of_rescinded_truths,id=147194,bonus_id=1512/3563,enchant=binding_of_haste
-trinket1=vial_of_ceaseless_toxins,id=147011,bonus_id=1512/3563
-trinket2=specter_of_betrayal,id=151190,bonus_id=1522/3563
+trinket1=nightblooming_frond,id=140802,bonus_id=3519
+trinket2=convergence_of_fates,id=140806,bonus_id=3519
 main_hand=the_dreadblades,id=128872,bonus_id=742,gem_id=151189/147100/147114,relic_id=1512:3563/1512:3563/1512:3563
 off_hand=the_dreadblades,id=134552
 save=Rogue_Outlaw_T20M.simc
@@ -102,8 +102,8 @@ legs=fanged_slayers_legguards,id=147173,bonus_id=1512/3563
 feet=felscape_pathfinders,id=147030,bonus_id=1512/3563
 finger1=scaled_band_of_servitude,id=147020,bonus_id=1512/3563,enchant=binding_of_mastery
 finger2=insignia_of_ravenholdt,id=137049,gems=150mastery,bonus_id=3570,enchant=binding_of_mastery
-trinket1=vial_of_ceaseless_toxins,id=147011,bonus_id=1512/3563
-trinket2=specter_of_betrayal,id=151190,bonus_id=1522/3563
+trinket1=nightblooming_frond,id=140802,bonus_id=3519
+trinket2=convergence_of_fates,id=140806,bonus_id=3519
 main_hand=the_dreadblades,id=128872,bonus_id=742,gem_id=151189/147100/147114,relic_id=1512:3563/1512:3563/1512:3563
 off_hand=the_dreadblades,id=134552
 save=Rogue_Outlaw_SnD_T20M.simc
@@ -130,8 +130,8 @@ legs=fanged_slayers_legguards,id=147173,bonus_id=1512/3563
 feet=felscape_pathfinders,id=147030,bonus_id=1512/3563
 finger1=yathaes_thumb_ring,id=147021,bonus_id=1512/3563,enchant=binding_of_versatility
 finger2=band_of_rescinded_truths,id=147194,bonus_id=1512/3563,enchant=binding_of_versatility
-trinket1=engine_of_eradication,id=147015,bonus_id=1512/3563
-trinket2=specter_of_betrayal,id=151190,bonus_id=1522/3563
+trinket1=nightblooming_frond,id=140802,bonus_id=3519
+trinket2=convergence_of_fates,id=140806,bonus_id=3519
 main_hand=fangs_of_the_devourer,id=128476,bonus_id=743,gem_id=147084/147110/147084,relic_id=1512:3563/1512:3563/1512:3563
 off_hand=fangs_of_the_devourer,id=128479,gem_id=0/0/0/0
 save=Rogue_Subtlety_T20M.simc
@@ -158,8 +158,8 @@ legs=fanged_slayers_legguards,id=147173,bonus_id=1512/3563
 feet=felscape_pathfinders,id=147030,bonus_id=1512/3563
 finger1=yathaes_thumb_ring,id=147021,bonus_id=1512/3563,enchant=binding_of_versatility
 finger2=band_of_rescinded_truths,id=147194,bonus_id=1512/3563,enchant=binding_of_versatility
-trinket1=engine_of_eradication,id=147015,bonus_id=1512/3563
-trinket2=specter_of_betrayal,id=151190,bonus_id=1522/3563
+trinket1=nightblooming_frond,id=140802,bonus_id=3519
+trinket2=convergence_of_fates,id=140806,bonus_id=3519
 main_hand=fangs_of_the_devourer,id=128476,bonus_id=743,gem_id=147084/147110/147084,relic_id=1512:3563/1512:3563/1512:3563
 off_hand=fangs_of_the_devourer,id=128479,gem_id=0/0/0/0
 save=Rogue_Subtlety_Dark_T20M.simc
