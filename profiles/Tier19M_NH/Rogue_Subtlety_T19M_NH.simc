@@ -29,15 +29,19 @@ actions.precombat+=/snapshot_stats
 actions.precombat+=/stealth
 actions.precombat+=/potion
 actions.precombat+=/marked_for_death,if=raid_event.adds.in>40
-# Defined variables that doesn't change during the fight
+# Defined variables that doesn't change during the fight.
 actions.precombat+=/variable,name=ssw_refund,value=equipped.shadow_satyrs_walk*(6+ssw_refund_offset)
 actions.precombat+=/variable,name=stealth_threshold,value=(65+talent.vigor.enabled*35+talent.master_of_shadows.enabled*10+variable.ssw_refund)
 actions.precombat+=/variable,name=shd_fractionnal,value=1.725+0.725*talent.enveloping_shadows.enabled
 actions.precombat+=/symbols_of_death
 
 # Executed every time the actor is available.
-actions=call_action_list,name=cds
-# Fully switch to the Stealthed Rotation (by doing so, it forces pooling if nothing is available)
+# This let us to use Shadow Dance right before the 2nd part of DfA lands. Only with Dark Shadow.
+actions=shadow_dance,if=talent.dark_shadow.enabled&!stealthed.all&buff.death_from_above.up&buff.death_from_above.remains<=0.3
+# This is triggered only with DfA talent since we check shadow_dance even while the gcd is ongoing, it's purely for simulation performance.
+actions+=/wait,sec=0.1,if=buff.shadow_dance.up&gcd.remains>0
+actions+=/call_action_list,name=cds
+# Fully switch to the Stealthed Rotation (by doing so, it forces pooling if nothing is available).
 actions+=/run_action_list,name=stealthed,if=stealthed.all
 actions+=/nightblade,if=target.time_to_die>8&remains<gcd.max&combo_points>=4
 actions+=/call_action_list,name=stealth_als,if=(combo_points.deficit>=3&(!talent.dark_shadow.enabled|dot.nightblade.remains>4+talent.subterfuge.enabled|cooldown.shadow_dance.charges_fractional>=1.9))|cooldown.shadow_dance.charges_fractional>=2.9
