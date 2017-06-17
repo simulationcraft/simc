@@ -23,6 +23,11 @@ struct JsonOutput;
 
 namespace profileset
 {
+struct statistical_data_t
+{
+  double min, first_quartile, median, mean, third_quartile, max, std_dev;
+};
+
 class profile_result_t
 {
   double         m_mean;
@@ -86,6 +91,9 @@ public:
 
   profile_result_t& iterations( size_t i )
   { m_iterations = i; return *this; }
+
+  statistical_data_t statistical_data() const
+  { return { m_min, m_1stquartile, m_median, m_mean, m_3rdquartile, m_max, m_stddev }; }
 };
 
 class profile_set_t
@@ -146,11 +154,6 @@ public:
   void output( const sim_t& sim, js::JsonOutput& root ) const;
   void output( const sim_t& sim, FILE* out ) const;
   void output( const sim_t& sim, io::ofstream& out ) const;
-};
-
-struct statistical_data_t
-{
-  double min, first_quartile, median, mean, third_quartile, max, std_dev;
 };
 
 void create_options( sim_t* sim );

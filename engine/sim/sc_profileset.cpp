@@ -272,6 +272,54 @@ void profilesets_t::output( const sim_t& sim, io::ofstream& out ) const
   out << "</div>";
 }
 
+void insert_data( highchart::bar_chart_t&   chart,
+                  const std::string&        name,
+                  const color::rgb&         c,
+                  const statistical_data_t& data,
+                  bool                      baseline )
+{
+  js::sc_js_t entry;
+
+  if ( baseline )
+  {
+    entry.set( "color", "#AA0000" );
+    entry.set( "dataLabels.color", "#AA0000" );
+    entry.set( "dataLabels.style.fontWeight", "bold" );
+  }
+  else
+  {
+    entry.set( "color", c.str() );
+  }
+
+  entry.set( "name", name );
+  entry.set( "y", util::round( data.median ) );
+
+  chart.add( "series.0.data", entry );
+
+  js::sc_js_t boxplot_entry;
+  boxplot_entry.set( "name", name );
+  boxplot_entry.set( "low", data.min );
+  boxplot_entry.set( "q1", data.first_quartile );
+  boxplot_entry.set( "median", data.median );
+  boxplot_entry.set( "mean", data.mean );
+  boxplot_entry.set( "q3", data.third_quartile );
+  boxplot_entry.set( "high", data.max );
+
+  if ( baseline )
+  {
+    color::rgb c( "AA0000" );
+    boxplot_entry.set( "color", c.dark( .5 ).opacity( .5 ).str() );
+    boxplot_entry.set( "fillColor", c.dark( .75 ).opacity( .5 ).rgb_str() );
+  }
+  else
+  {
+    boxplot_entry.set( "color", c.dark( .5 ).opacity( .5 ).str() );
+    boxplot_entry.set( "fillColor", c.dark( .75 ).opacity( .5 ).rgb_str() );
+  }
+
+  chart.add( "series.1.data", boxplot_entry );
+}
+
 bool profilesets_t::generate_chart( const sim_t& sim, io::ofstream& out ) const
 {
   highchart::bar_chart_t profileset( "profileset", sim );
@@ -300,7 +348,7 @@ bool profilesets_t::generate_chart( const sim_t& sim, io::ofstream& out ) const
   profileset.set_title( "Profile sets" );
   profileset.set_yaxis_title( "Median " + chart_name );
   profileset.width_ = 1150;
-  profileset.height_ = 24 * results.size() + 75;
+  profileset.height_ = 24 * ( results.size() + 1 ) + 75;
 
   profileset.set( "plotOptions.boxplot.whiskerLength", "85%" );
   profileset.set( "plotOptions.boxplot.whiskerWidth", 1.5 );
@@ -334,28 +382,33 @@ bool profilesets_t::generate_chart( const sim_t& sim, io::ofstream& out ) const
   profileset.set( "xAxis.labels.padding", 2 );
   profileset.set( "xAxis.lineColor", c.str() );
 
-  range::for_each( results, [ &c, &profileset ]( const profile_set_t* set ) {
-    js::sc_js_t entry;
+  const auto baseline = sim.player_no_pet_list.data().front();
 
-    entry.set( "color", c.str() );
-    entry.set( "name", set -> name() );
-    entry.set( "y", util::round( set -> result().median() ) );
+  // Custom formatter for X axis so we can get baseline colored different
+  std::string functor = "function () {";
+  functor += "  if (this.value === '" + baseline -> name_str + "') {";
+  functor += "    return '<span style=\"color:#AA0000;font-weight:bold;\">' + this.value + '</span>';";
+  functor += "  }";
+  functor += "  else {";
+  functor += "    return this.value;";
+  functor += "  }";
+  functor += "}";
 
-    profileset.add( "series.0.data", entry );
+  profileset.set( "xAxis.labels.formatter", functor );
+  profileset.value( "xAxis.labels.formatter" ).SetRawOutput( true );
 
-    js::sc_js_t boxplot_entry;
-    boxplot_entry.set( "name", set -> name() );
-    boxplot_entry.set( "low", set -> result().min() );
-    boxplot_entry.set( "q1", set -> result().first_quartile() );
-    boxplot_entry.set( "median", set -> result().median() );
-    boxplot_entry.set( "mean", set -> result().mean() );
-    boxplot_entry.set( "q3", set -> result().third_quartile() );
-    boxplot_entry.set( "high", set -> result().max() );
+  // Baseline data, insert into the correct position in the for loop below
+  auto baseline_data = metric_data( baseline );
+  auto inserted = false;
 
-    boxplot_entry.set( "color", c.dark( .5 ).opacity( .5 ).str() );
-    boxplot_entry.set( "fillColor", c.dark( .75 ).opacity( .5 ).rgb_str() );
+  range::for_each( results, [ & ]( const profile_set_t* set ) {
+    if ( ! inserted && set -> result().median() <= baseline_data.median )
+    {
+      insert_data( profileset, sim.player_no_pet_list.data().front() -> name(), c, baseline_data, true );
+      inserted = true;
+    }
 
-    profileset.add( "series.1.data", boxplot_entry );
+    insert_data( profileset, set -> name(), c, set -> result().statistical_data(), false );
   } );
 
   out << profileset.to_string();
