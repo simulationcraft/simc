@@ -346,6 +346,8 @@ bool profilesets_t::generate_chart( const sim_t& sim, io::ofstream& out ) const
   profileset.set( "yAxis.gridLineWidth", 0 );
   profileset.set( "xAxis.offset", 80 );
   profileset.set_title( "Profile sets (" + chart_name + ")" );
+  profileset.set( "subtitle.text", "Baseline in red" );
+  profileset.set( "subtitle.style.color", "#AA0000" );
   profileset.set_yaxis_title( "Median " + chart_name );
   profileset.width_ = 1150;
   profileset.height_ = 24 * ( results.size() + 1 ) + 75;
