@@ -2661,10 +2661,6 @@ struct arcane_blast_t : public arcane_mage_spell_t
     if ( p() -> buffs.presence_of_mind -> up() )
     {
       p() -> buffs.presence_of_mind -> decrement();
-      if ( p() -> buffs.presence_of_mind -> stack() == 0 )
-      {
-        p() -> cooldowns.presence_of_mind -> start();
-      }
     }
 
     p() -> trigger_t19_oh();
@@ -7004,9 +7000,9 @@ void mage_t::create_buffs()
                                   .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
                                   .default_value( find_spell( 246224 ) -> effectN( 1 ).percent() );
   buffs.presence_of_mind      = buff_creator_t( this, "presence_of_mind", find_spell( 205025 ) )
-                                  .activated( true )
                                   .cd( timespan_t::zero() )
-                                  .duration( timespan_t::zero() );
+                                  .stack_change_callback( [ this ] ( buff_t*, int, int cur )
+                                    { if ( cur == 0 ) cooldowns.presence_of_mind -> start(); } );
 
   // Fire
   buffs.combustion             = buff_creator_t( this, "combustion", find_spell( 190319 ) )
