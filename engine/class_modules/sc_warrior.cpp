@@ -299,7 +299,6 @@ public:
     const spell_data_t* shield_block_2;
     const spell_data_t* shield_slam;
     const spell_data_t* shield_wall;
-    const spell_data_t* singleminded_fury;
     const spell_data_t* slam;
     const spell_data_t* tactician;
     const spell_data_t* thunder_clap;
@@ -422,7 +421,6 @@ public:
   {
     // Arms - Strom'kar the Warbreaker
     artifact_power_t corrupted_blood_of_zakajz;
-    artifact_power_t corrupted_rage;
     artifact_power_t crushing_blows;
     artifact_power_t deathblow;
     artifact_power_t exploit_the_weakness;
@@ -621,7 +619,7 @@ public:
   void enrage()
   {
     buff.enrage -> trigger();
-    if ( legendary.ceannar_charger->found() )
+    if ( legendary.ceannar_charger -> found() )
     {
       resource_gain( RESOURCE_RAGE, legendary.ceannar_charger -> effectN( 1 ).trigger() -> effectN( 1 ).resource( RESOURCE_RAGE ), gain.ceannar_rage );
     }
@@ -1022,6 +1020,10 @@ struct warrior_attack_t: public warrior_action_t < melee_attack_t >
     {
       odyns_champion( timespan_t::from_seconds( -1.0 * p() -> artifact.odyns_champion.data().effectN( 1 ).base_value() ) );
     }
+    if ( procs_overpower )
+    {
+      p() -> buff.overpower -> trigger();
+    }
   }
 
   virtual void odyns_champion( timespan_t reduction )
@@ -1072,13 +1074,8 @@ struct warrior_attack_t: public warrior_action_t < melee_attack_t >
   {
     base_t::impact( s );
 
-    if ( result_is_hit( s -> result ) && p() -> specialization() == WARRIOR_ARMS && s -> result_amount > 0 )
+    if ( result_is_hit( s -> result ) && s -> result_amount > 0 )
     {
-      if ( procs_overpower )
-      {
-        p() -> buff.overpower -> trigger();
-      }
-
       if ( p() -> talents.opportunity_strikes -> ok() )
       {
         opportunity_strikes( s );
@@ -1089,23 +1086,6 @@ struct warrior_attack_t: public warrior_action_t < melee_attack_t >
   virtual void tick( dot_t* d ) override
   {
     base_t::tick( d );
-  }
-
-  virtual double calculate_weapon_damage( double attack_power ) const override
-  {
-    double dmg = base_t::calculate_weapon_damage( attack_power );
-
-    // Catch the case where weapon == 0 so we don't crash/retest below.
-    if ( dmg == 0.0 )
-      return 0;
-
-    if ( weapon -> slot == SLOT_OFF_HAND )
-    {
-      if ( p() -> main_hand_weapon.group() == WEAPON_1H &&
-           p() -> off_hand_weapon.group() == WEAPON_1H )
-        dmg *= 1.0 + p() -> spec.singleminded_fury -> effectN( 2 ).percent();
-    }
-    return dmg;
   }
 
   virtual void trigger_bloodbath_dot( player_t* t, double dmg )
@@ -2047,39 +2027,6 @@ struct corrupted_blood_of_zakajz_t : public residual_action::residual_periodic_a
   }
 };
 
-// Corrupted Rage ===========================================================
-
-struct corrupted_rage_t: public warrior_attack_t
-{
-  corrupted_rage_t( warrior_t* p, const std::string& options_str ):
-    warrior_attack_t( "corrupted_rage", p, p -> find_spell( 209577 ) )
-  {
-    parse_options( options_str );
-    weapon = &( player -> main_hand_weapon );
-    aoe = -1;
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    warrior_attack_t::impact( s );
-
-    if ( result_is_hit( s -> result ) )
-    {
-      td( s -> target ) -> debuffs_colossus_smash -> trigger();
-      p() -> buff.shattered_defenses -> trigger();
-    }
-  }
-
-  bool ready() override
-  {
-    if ( ! p() -> artifact.corrupted_rage.rank() )
-    {
-      return false;
-    }
-    return warrior_attack_t::ready();
-  }
-};
-
 // Deep Wounds ==============================================================
 
 struct deep_wounds_t: public warrior_attack_t
@@ -2417,12 +2364,6 @@ struct execute_off_hand_t: public warrior_attack_t
     dual = true;
     may_miss = may_dodge = may_parry = may_block = false;
     weapon = &( p -> off_hand_weapon );
-
-    if ( p -> main_hand_weapon.group() == WEAPON_1H &&
-         p -> off_hand_weapon.group() == WEAPON_1H )
-    {
-      weapon_multiplier *= 1.0 + p -> spec.singleminded_fury -> effectN( 3 ).percent();
-    }
     weapon_multiplier *= 1.0 + p -> spec.execute_2 -> effectN( 1 ).percent();
     base_crit += p -> artifact.deathdealer.percent();
   }
@@ -2458,11 +2399,6 @@ struct execute_t: public warrior_attack_t
 
     oh_attack = new execute_off_hand_t( p, "execute_offhand", p -> find_spell( 163558 ) );
     add_child( oh_attack );
-    if ( p -> main_hand_weapon.group() == WEAPON_1H &&
-         p -> off_hand_weapon.group() == WEAPON_1H )
-    {
-      weapon_multiplier *= 1.0 + p -> spec.singleminded_fury -> effectN( 3 ).percent();
-    }
     weapon_multiplier *= 1.0 + p -> spec.execute_2 -> effectN( 1 ).percent();
     base_crit += p -> artifact.deathdealer.percent();
   }
@@ -3006,6 +2942,7 @@ struct overpower_t: public warrior_attack_t
     parse_options( options_str );
     may_block = may_parry = may_dodge = false;
     weapon = &( p -> main_hand_weapon );
+    procs_overpower = false; //Cannot re-proc itself
   }
 
   double composite_crit_chance() const override
@@ -4571,7 +4508,6 @@ action_t* warrior_t::create_action( const std::string& name,
   if ( name == "cleave"               ) return new cleave_t               ( this, options_str );
   if ( name == "colossus_smash"       ) return new colossus_smash_t       ( this, options_str );
   if ( name == "commanding_shout"     ) return new commanding_shout_t     ( this, options_str );
-  if ( name == "corrupted_rage"       ) return new corrupted_rage_t       ( this, options_str );
   if ( name == "defensive_stance"     ) return new defensive_stance_t     ( this, options_str );
   if ( name == "demoralizing_shout"   ) return new demoralizing_shout     ( this, options_str );
   if ( name == "devastate"            ) return new devastate_t            ( this, options_str );
@@ -4685,7 +4621,6 @@ void warrior_t::init_spells()
   spec.shield_block_2           = find_specialization_spell( 231847 );
   spec.shield_slam              = find_specialization_spell( "Shield Slam" );
   spec.shield_wall              = find_specialization_spell( "Shield Wall" );
-  spec.singleminded_fury        = find_specialization_spell( "Single-Minded Fury" );
   spec.slam                     = find_specialization_spell( "Slam" );
   spec.spell_reflection         = find_specialization_spell( "Spell Reflection" );
   spec.tactician                = find_specialization_spell( "Tactician" );
@@ -4752,7 +4687,6 @@ void warrior_t::init_spells()
   artifact.battle_scars              = find_artifact_spell( "Battle Scars" );
   artifact.bloodcraze                = find_artifact_spell( "Bloodcraze" );
   artifact.corrupted_blood_of_zakajz = find_artifact_spell( "Corrupted Blood of Zakajz" );
-  artifact.corrupted_rage            = find_artifact_spell( "Corrupted Rage" );
   artifact.crushing_blows            = find_artifact_spell( "Crushing Blows" );
   artifact.deathblow                 = find_artifact_spell( "Deathblow" );
   artifact.deathdealer               = find_artifact_spell( "Deathdealer" );
@@ -6087,13 +6021,6 @@ double warrior_t::composite_player_multiplier( school_e school ) const
   }
 
   m *= 1.0 + buff.renewed_fury -> check_value();
-
-  if ( main_hand_weapon.group() == WEAPON_1H &&
-       off_hand_weapon.group() == WEAPON_1H )
-  {
-    m *= 1.0 + spec.singleminded_fury -> effectN( 1 ).percent();
-  }
-
   m *= 1.0 + buff.dragon_roar -> check_stack_value();
   m *= 1.0 + buff.frothing_berserker -> check_stack_value();
   m *= 1.0 + buff.fujiedas_fury -> check_stack_value();
