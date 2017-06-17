@@ -4240,6 +4240,10 @@ struct shadow_dance_t : public rogue_attack_t
     {
       cooldown -> charges += p -> talent.enveloping_shadows -> effectN( 2 ).base_value();
     }
+
+    // Note: Let usage of Shadow Dance while DfA is in flight.
+    // We disable it if we don't have DfA and DSh to improve the simulation speed.
+    use_off_gcd = p -> talent.death_from_above -> ok() && p -> talent.dark_shadow -> ok();
   }
 
   void execute() override
@@ -8037,6 +8041,8 @@ void rogue_t::create_buffs()
                                   .default_value( find_spell( 193538 ) -> effectN( 1 ).percent() )
                                   .chance( talent.alacrity -> ok() );
   buffs.death_from_above        = buff_creator_t( this, "death_from_above", spell.death_from_above )
+                                  // Note: Duration is hardcoded to 1.3s to match the current model and then let it trackable in the APL
+                                  .duration( timespan_t::from_seconds( 1.3 ) )
                                   .quiet( true );
   buffs.subterfuge              = new buffs::subterfuge_t( this );
   // Assassination
