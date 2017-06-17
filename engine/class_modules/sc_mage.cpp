@@ -6984,8 +6984,7 @@ void mage_t::create_buffs()
   buffs.hot_streak             = buff_creator_t( this, "hot_streak",  find_spell( 48108 ) );
   buffs.pyretic_incantation    = buff_creator_t( this, "pyretic_incantation", find_spell( 194329 ) )
                                    .default_value( find_spell( 194329 ) -> effectN( 1 ).percent() );
-  buffs.streaking              = buff_creator_t( this, "streaking", find_spell( 211399 ) )
-                                   .add_invalidate( CACHE_SPELL_HASTE )
+  buffs.streaking              = haste_buff_creator_t( this, "streaking", find_spell( 211399 ) )
                                    .default_value( find_spell( 211399 ) -> effectN( 1 ).percent() );
   buffs.scorched_earth         = buff_creator_t( this, "scorched_earth", find_spell( 227482 ) )
                                    .default_value( find_spell( 227482 ) -> effectN( 1 ).percent() )
