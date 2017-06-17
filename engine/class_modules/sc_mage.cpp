@@ -1268,25 +1268,6 @@ struct touch_of_the_magi_t : public buff_t
 
 
 // Custom buffs ===============================================================
-struct icy_veins_buff_t : public haste_buff_t
-{
-  mage_t* p;
-  icy_veins_buff_t( mage_t* p ) :
-    haste_buff_t( haste_buff_creator_t( p, "icy_veins", p -> find_spell( 12472 ) ) ), p( p )
-
-  {
-    buff_duration += p -> talents.thermal_void -> effectN( 2 ).time_value();
-    set_default_value( data().effectN( 1 ).percent() );
-    set_cooldown( timespan_t::zero() );
-  }
-
-  void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
-  {
-    buff_t::expire_override( expiration_stacks, remaining_duration );
-    p -> buffs.lady_vashjs_grasp -> expire();
-  }
-};
-
 struct incanters_flow_t : public buff_t
 {
   incanters_flow_t( mage_t* p ) :
@@ -7026,7 +7007,13 @@ void mage_t::create_buffs()
   // Instead, as it does in game, it tracks icicle buff stack count based on the number of *casts*
   // of icicle generating spells. icicles are generated on impact, so they are slightly de-synced.
   buffs.icicles                = buff_creator_t( this, "icicles", find_spell( 205473 ) );
-  buffs.icy_veins              = new buffs::icy_veins_buff_t( this );
+  buffs.icy_veins              = haste_buff_creator_t( this, "icy_veins", find_spell( 12472 ) )
+                                   .default_value( find_spell( 12472 ) -> effectN( 1 ).percent() )
+                                   .cd( timespan_t::zero() )
+                                   .stack_change_callback( [ this ] ( buff_t*, int, int cur )
+                                     { if ( cur == 0 ) buffs.lady_vashjs_grasp -> expire(); } );
+  buffs.icy_veins -> buff_duration += talents.thermal_void -> effectN( 2 ).time_value();
+
   buffs.ray_of_frost           = new buffs::ray_of_frost_buff_t( this );
 
   // Talents
