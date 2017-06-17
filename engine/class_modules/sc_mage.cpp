@@ -225,6 +225,7 @@ public:
   // Cached actions
   struct actions_t
   {
+    action_t* arcane_assault;
     action_t* frost_bomb_explosion;
     action_t* legendary_arcane_orb;
     action_t* legendary_meteor;
@@ -1121,48 +1122,6 @@ struct arcane_missiles_t : public buff_t
       chance = proc_chance();
     }
     return buff_t::trigger( stacks, value, chance, duration );
-  }
-};
-
-// Arcane Familiar buff =======================================================
-
-struct arcane_familiar_buff_t : public buff_t
-{
-  action_t* arcane_assault;
-
-  arcane_familiar_buff_t( mage_t* p, action_t* assault ) :
-    buff_t( buff_creator_t( p, "arcane_familiar", p -> find_spell( 210126 ) ) ),
-    arcane_assault( assault )
-  {
-    set_default_value( data().effectN( 1 ).percent() );
-
-    set_period( timespan_t::from_seconds( 3.0 ) );
-    set_tick_behavior( BUFF_TICK_CLIP );
-    set_tick_time_behavior( BUFF_TICK_TIME_HASTED );
-
-    set_tick_callback( [ this ] ( buff_t* /* buff */, int /* total_ticks */, const timespan_t& /* tick_time */ )
-    {
-      assert( arcane_assault );
-      arcane_assault -> set_target( player -> target );
-      arcane_assault -> execute();
-    } );
-  }
-
-  bool trigger( int stacks, double value, double chance, timespan_t duration ) override
-  {
-    bool success = buff_t::trigger( stacks, value, chance, duration );
-    if ( success )
-    {
-      player -> recalculate_resource_max( RESOURCE_MANA );
-    }
-
-    return success;
-  }
-
-  void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
-  {
-    buff_t::expire_override( expiration_stacks, remaining_duration );
-    player -> recalculate_resource_max( RESOURCE_MANA );
   }
 };
 
@@ -6698,6 +6657,11 @@ bool mage_t::create_actions()
     icicle = new icicle_t( this );
   }
 
+  if ( talents.arcane_familiar -> ok() )
+  {
+    action.arcane_assault = new arcane_assault_t( this );
+  }
+
   if ( talents.frost_bomb -> ok() )
   {
     action.frost_bomb_explosion = new frost_bomb_explosion_t( this );
@@ -6985,7 +6949,19 @@ void mage_t::create_buffs()
 
   // Arcane
   buffs.arcane_charge         = buff_creator_t( this, "arcane_charge", spec.arcane_charge );
-  buffs.arcane_familiar       = new buffs::arcane_familiar_buff_t( this, new actions::arcane_assault_t( this ) );
+  buffs.arcane_familiar       = buff_creator_t( this, "arcane_familiar", find_spell( 210126 ) )
+                                  .default_value( find_spell( 210126 ) -> effectN( 1 ).percent() )
+                                  .period( timespan_t::from_seconds( 3.0 ) )
+                                  .tick_behavior( BUFF_TICK_CLIP )
+                                  .tick_time_behavior( BUFF_TICK_TIME_HASTED )
+                                  .tick_callback( [ this ] ( buff_t*, int, const timespan_t& )
+                                    {
+                                      assert( action.arcane_assault );
+                                      action.arcane_assault -> set_target( target );
+                                      action.arcane_assault -> execute();
+                                    } )
+                                  .stack_change_callback( [ this ] ( buff_t*, int, int )
+                                    { recalculate_resource_max( RESOURCE_MANA ); } );
   buffs.arcane_missiles       = new buffs::arcane_missiles_t( this );
   buffs.arcane_power          = buff_creator_t( this, "arcane_power", find_spell( 12042 ) )
                                   .default_value( find_spell( 12042 ) -> effectN( 1 ).percent()
