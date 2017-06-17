@@ -130,7 +130,7 @@ legs=fanged_slayers_legguards,id=147173,bonus_id=1497/3562
 feet=felscape_pathfinders,id=147030,bonus_id=1497/3562
 finger1=yathaes_thumb_ring,id=147021,bonus_id=1497/3562,enchant=binding_of_versatility
 finger2=band_of_rescinded_truths,id=147194,bonus_id=1497/3562,enchant=binding_of_versatility
-trinket1=nightblooming_frond,id=140802,bonus_id=3517
+trinket1=specter_of_betrayal,id=151190,bonus_id=1507/3562
 trinket2=convergence_of_fates,id=140806,bonus_id=3517
 main_hand=fangs_of_the_devourer,id=128476,bonus_id=743,gem_id=147084/147110/147084,relic_id=1497:3562/1497:3562/1497:3562
 off_hand=fangs_of_the_devourer,id=128479,gem_id=0/0/0/0
@@ -158,7 +158,7 @@ legs=fanged_slayers_legguards,id=147173,bonus_id=1497/3562
 feet=felscape_pathfinders,id=147030,bonus_id=1497/3562
 finger1=yathaes_thumb_ring,id=147021,bonus_id=1497/3562,enchant=binding_of_versatility
 finger2=band_of_rescinded_truths,id=147194,bonus_id=1497/3562,enchant=binding_of_versatility
-trinket1=nightblooming_frond,id=140802,bonus_id=3517
+trinket1=specter_of_betrayal,id=151190,bonus_id=1507/3562
 trinket2=convergence_of_fates,id=140806,bonus_id=3517
 main_hand=fangs_of_the_devourer,id=128476,bonus_id=743,gem_id=147084/147110/147084,relic_id=1497:3562/1497:3562/1497:3562
 off_hand=fangs_of_the_devourer,id=128479,gem_id=0/0/0/0
