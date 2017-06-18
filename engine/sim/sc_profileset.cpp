@@ -219,6 +219,7 @@ bool profilesets_t::iterate( sim_t* parent )
 
     if ( ret == false || profile_sim -> is_canceled() )
     {
+      parent -> control = original_opts;
       delete profile_sim;
       return false;
     }
