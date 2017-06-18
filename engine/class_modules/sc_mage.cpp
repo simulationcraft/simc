@@ -2235,7 +2235,7 @@ struct icicle_t : public frost_mage_spell_t
   {
     frost_mage_spell_t::init();
 
-    snapshot_flags = STATE_NO_MULTIPLIER;
+    snapshot_flags &= STATE_NO_MULTIPLIER;
     snapshot_flags |= STATE_TGT_MUL_DA;
   }
 };
@@ -2388,6 +2388,8 @@ struct aegwynns_ascendance_t : public arcane_mage_spell_t
     aoe = -1;
     background = true;
     may_crit = false;
+
+    affected_by.erosion = false;
   }
 
   virtual void init() override
@@ -5829,6 +5831,8 @@ struct touch_of_the_magi_explosion_t : public arcane_mage_spell_t
     background = true;
     may_miss = may_crit = callbacks = false;
     aoe = -1;
+
+    affected_by.erosion = false;
   }
 
   virtual void init() override
