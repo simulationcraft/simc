@@ -97,8 +97,8 @@ hands=fanged_slayers_handguards,id=147171,bonus_id=1512/3563
 waist=waistguard_of_profane_duplicity,id=147347,bonus_id=1522/3563
 legs=fanged_slayers_legguards,id=147173,bonus_id=1512/3563
 feet=felscape_pathfinders,id=147030,bonus_id=1512/3563
-finger1=jeweled_signet_of_melandrus,id=134542,bonus_id=3536,enchant=binding_of_mastery
-finger2=insignia_of_ravenholdt,id=137049,bonus_id=3570,gems=150mastery,enchant=binding_of_mastery
+finger1=jeweled_signet_of_melandrus,id=134542,bonus_id=3536,enchant=binding_of_versatility
+finger2=insignia_of_ravenholdt,id=137049,bonus_id=3570,gems=150versatility,enchant=binding_of_versatility
 trinket1=nightblooming_frond,id=140802,bonus_id=3519
 trinket2=convergence_of_fates,id=140806,bonus_id=3519
 main_hand=the_dreadblades,id=128872,bonus_id=742,gem_id=151189/147100/147114,relic_id=1512:3563/1512:3563/1512:3563
@@ -110,8 +110,8 @@ off_hand=the_dreadblades,id=134552
 # gear_stamina=44883
 # gear_crit_rating=8505
 # gear_haste_rating=6120
-# gear_mastery_rating=9008
-# gear_versatility_rating=3193
+# gear_mastery_rating=8458
+# gear_versatility_rating=3743
 # gear_armor=2696
 # set_bonus=tier20_2pc=1
 # set_bonus=tier20_4pc=1
