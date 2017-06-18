@@ -362,7 +362,7 @@ bool profilesets_t::generate_chart( const sim_t& sim, io::ofstream& out ) const
     profileset.set( "subtitle.style.color", "#AA0000" );
     profileset.set_yaxis_title( "Median " + chart_name );
     profileset.width_ = 1150;
-    profileset.height_ = 24 * std::min( as<size_t>( MAX_CHART_ENTRIES + 1 ), results.size() - base_offset + 1 ) + 75;
+    profileset.height_ = 24 * std::min( as<size_t>( MAX_CHART_ENTRIES + 1 ), results.size() - base_offset + 1 ) + 100;
 
     profileset.add( "colors", c.str() );
     profileset.add( "colors", c.dark( .5 ).opacity( .5 ).str() );
