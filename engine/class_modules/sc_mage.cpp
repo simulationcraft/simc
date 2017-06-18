@@ -5516,7 +5516,7 @@ struct ray_of_frost_t : public frost_mage_spell_t
 
     frost_mage_spell_t::tick( d );
 
-    p() -> buffs.ray_of_frost -> bump();
+    p() -> buffs.ray_of_frost -> bump( 1, p() -> buffs.ray_of_frost -> default_value );
   }
 
   virtual double action_multiplier() const override
