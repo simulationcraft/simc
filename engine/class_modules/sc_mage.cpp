@@ -3587,8 +3587,7 @@ struct evocation_t : public arcane_mage_spell_t
         mana_gained * p() -> artifact.aegwynns_ascendance.percent();
 
       aegwynns_ascendance -> set_target( d -> target );
-      aegwynns_ascendance -> base_dd_max = explosion_amount;
-      aegwynns_ascendance -> base_dd_min = explosion_amount;
+      aegwynns_ascendance -> base_dd_adder = explosion_amount;
       aegwynns_ascendance -> execute();
     }
   }
@@ -4406,7 +4405,7 @@ struct glacial_spike_t : public frost_mage_spell_t
     // Ideally, this would be passed to impact() in action_state_t, but since
     // it's pretty much impossible to execute another Glacial Spike before
     // the first one impacts, this should be fine.
-    base_dd_min = base_dd_max = icicle_damage;
+    base_dd_adder = icicle_damage;
 
     frost_mage_spell_t::execute();
 
@@ -4838,8 +4837,7 @@ struct mark_of_aluneth_explosion_t : public arcane_mage_spell_t
 
   virtual void execute() override
   {
-    base_dd_max = p() -> resources.max[ RESOURCE_MANA ] * mana_to_damage_pct;
-    base_dd_min = p() -> resources.max[ RESOURCE_MANA ] * mana_to_damage_pct;
+    base_dd_adder = p() -> resources.max[ RESOURCE_MANA ] * mana_to_damage_pct;
 
     arcane_mage_spell_t::execute();
 
@@ -5843,8 +5841,7 @@ struct touch_of_the_magi_explosion_t : public arcane_mage_spell_t
 
   virtual void execute() override
   {
-    base_dd_max *= p() -> artifact.touch_of_the_magi.data().effectN( 1 ).percent();
-    base_dd_min *= p() -> artifact.touch_of_the_magi.data().effectN( 1 ).percent();
+    base_dd_adder *= p() -> artifact.touch_of_the_magi.data().effectN( 1 ).percent();
 
     mage_spell_t::execute();
   }
@@ -5977,8 +5974,7 @@ struct unstable_magic_explosion_t : public mage_spell_t
 
   virtual void execute() override
   {
-    base_dd_max *= data().effectN( 4 ).percent();
-    base_dd_min *= data().effectN( 4 ).percent();
+    base_dd_adder *= data().effectN( 4 ).percent();
 
     mage_spell_t::execute();
   }
@@ -6014,8 +6010,7 @@ void mage_spell_t::trigger_unstable_magic( action_state_t* s )
   if ( p() -> rng().roll( um_proc_rate ) )
   {
     p() -> action.unstable_magic_explosion -> set_target( s -> target );
-    p() -> action.unstable_magic_explosion -> base_dd_max = s -> result_amount;
-    p() -> action.unstable_magic_explosion -> base_dd_min = s -> result_amount;
+    p() -> action.unstable_magic_explosion -> base_dd_adder = s -> result_amount;
     p() -> action.unstable_magic_explosion -> execute();
   }
 }
@@ -6200,7 +6195,7 @@ struct icicle_event_t : public event_t
     new_s -> source = state.stats;
     new_s -> target = target;
 
-    mage -> icicle -> base_dd_min = mage -> icicle -> base_dd_max = state.damage;
+    mage -> icicle -> base_dd_adder = state.damage;
 
     // Immediately execute icicles so the correct damage is carried into the
     // travelling icicle object
@@ -6480,8 +6475,7 @@ void mage_t::trigger_touch_of_the_magi( buffs::touch_of_the_magi_t* buff )
 {
   assert( action.touch_of_the_magi_explosion );
   action.touch_of_the_magi_explosion -> set_target( buff -> player );
-  action.touch_of_the_magi_explosion -> base_dd_max = buff -> accumulated_damage;
-  action.touch_of_the_magi_explosion -> base_dd_min = buff -> accumulated_damage;
+  action.touch_of_the_magi_explosion -> base_dd_adder = buff -> accumulated_damage;
   action.touch_of_the_magi_explosion -> execute();
 }
 
@@ -8438,7 +8432,7 @@ void mage_t::trigger_icicle( const action_state_t* trigger_state, bool chain, pl
     new_state -> target = icicle_target;
     new_state -> source = d.stats;
 
-    icicle -> base_dd_min = icicle -> base_dd_max = d.damage;
+    icicle -> base_dd_adder = d.damage;
 
     // Immediately execute icicles so the correct damage is carried into the
     // travelling icicle object
