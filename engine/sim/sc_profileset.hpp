@@ -134,6 +134,8 @@ class profilesets_t
   using profileset_entry_t = std::unique_ptr<profile_set_t>;
   using profileset_vector_t = std::vector<profileset_entry_t>;
 
+  static const size_t MAX_CHART_ENTRIES = 500;
+
   profileset_vector_t m_profilesets;
 
   bool validate( sim_t* sim );

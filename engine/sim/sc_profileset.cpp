@@ -338,93 +338,100 @@ void profilesets_t::generate_sorted_profilesets( std::vector<const profile_set_t
 
 bool profilesets_t::generate_chart( const sim_t& sim, io::ofstream& out ) const
 {
-  highchart::bar_chart_t profileset( "profileset", sim );
+  size_t chart_id = 0;
+
+  // Baseline data, insert into the correct position in the for loop below
+  const auto baseline = sim.player_no_pet_list.data().front();
+  auto baseline_data = metric_data( baseline );
+  auto inserted = false;
+  // Bar color
+  const auto& c = color::class_color( sim.player_no_pet_list.data().front() -> type );
+  std::string chart_name = util::scale_metric_type_string( sim.profileset_metric );
 
   std::vector<const profile_set_t*> results;
   generate_sorted_profilesets( results );
 
-  // Bar color
-  const auto& c = color::class_color( sim.player_no_pet_list.data().front() -> type );
+  while ( chart_id * MAX_CHART_ENTRIES < m_profilesets.size() )
+  {
+    highchart::bar_chart_t profileset( "profileset-" + util::to_string( chart_id ), sim );
 
-  // Prep bar chart some
-  std::string chart_name = util::scale_metric_type_string( sim.profileset_metric );
+    auto base_offset = chart_id * MAX_CHART_ENTRIES;
 
-  profileset.set( "series.0.name", chart_name );
-  profileset.set( "series.1.type", "boxplot" );
-  profileset.set( "series.1.name", chart_name );
-  profileset.set( "yAxis.gridLineWidth", 0 );
-  profileset.set( "xAxis.offset", 80 );
-  profileset.set_title( "Profile sets (" + chart_name + ")" );
-  profileset.set( "subtitle.text", "Baseline in red" );
-  profileset.set( "subtitle.style.color", "#AA0000" );
-  profileset.set_yaxis_title( "Median " + chart_name );
-  profileset.width_ = 1150;
-  profileset.height_ = 24 * ( results.size() + 1 ) + 75;
+    profileset.set( "series.0.name", chart_name );
+    profileset.set( "series.1.type", "boxplot" );
+    profileset.set( "series.1.name", chart_name );
+    profileset.set( "yAxis.gridLineWidth", 0 );
+    profileset.set( "xAxis.offset", 80 );
+    profileset.set_title( "Profile sets (" + chart_name + ")" );
+    profileset.set( "subtitle.text", "Baseline in red" );
+    profileset.set( "subtitle.style.color", "#AA0000" );
+    profileset.set_yaxis_title( "Median " + chart_name );
+    profileset.width_ = 1150;
+    profileset.height_ = 24 * std::min( as<size_t>( MAX_CHART_ENTRIES + 1 ), results.size() - base_offset + 1 ) + 75;
 
-  profileset.add( "colors", c.str() );
-  profileset.add( "colors", c.dark( .5 ).opacity( .5 ).str() );
-  profileset.set( "plotOptions.boxplot.whiskerLength", "85%" );
-  profileset.set( "plotOptions.boxplot.whiskerWidth", 1.5 );
-  profileset.set( "plotOptions.boxplot.medianWidth", 1 );
-  profileset.set( "plotOptions.boxplot.pointWidth", 18 );
-  profileset.set( "plotOptions.boxplot.tooltip.pointFormat",
-    "Maximum: {point.high}<br/>"
-    "Upper quartile: {point.q3}<br/>"
-    "Mean: {point.mean:,.1f}<br/>"
-    "Median: {point.median}<br/>"
-    "Lower quartile: {point.q1}<br/>"
-    "Minimum: {point.low}<br/>"
-  );
+    profileset.add( "colors", c.str() );
+    profileset.add( "colors", c.dark( .5 ).opacity( .5 ).str() );
+    profileset.set( "plotOptions.boxplot.whiskerLength", "85%" );
+    profileset.set( "plotOptions.boxplot.whiskerWidth", 1.5 );
+    profileset.set( "plotOptions.boxplot.medianWidth", 1 );
+    profileset.set( "plotOptions.boxplot.pointWidth", 18 );
+    profileset.set( "plotOptions.boxplot.tooltip.pointFormat",
+      "Maximum: {point.high}<br/>"
+      "Upper quartile: {point.q3}<br/>"
+      "Mean: {point.mean:,.1f}<br/>"
+      "Median: {point.median}<br/>"
+      "Lower quartile: {point.q1}<br/>"
+      "Minimum: {point.low}<br/>"
+    );
 
-  profileset.set( "plotOptions.bar.dataLabels.crop", false );
-  profileset.set( "plotOptions.bar.dataLabels.overflow", "none" );
-  profileset.set( "plotOptions.bar.dataLabels.inside", true );
-  profileset.set( "plotOptions.bar.dataLabels.enabled", true );
-  profileset.set( "plotOptions.bar.dataLabels.align", "left" );
-  profileset.set( "plotOptions.bar.dataLabels.shadow", false );
-  profileset.set( "plotOptions.bar.dataLabels.x", -80 );
-  profileset.set( "plotOptions.bar.dataLabels.color", c.str() );
-  profileset.set( "plotOptions.bar.dataLabels.verticalAlign", "middle" );
-  profileset.set( "plotOptions.bar.dataLabels.style.fontSize", "10pt" );
-  profileset.set( "plotOptions.bar.dataLabels.style.fontWeight", "none" );
-  profileset.set( "plotOptions.bar.dataLabels.style.textShadow", "none" );
+    profileset.set( "plotOptions.bar.dataLabels.crop", false );
+    profileset.set( "plotOptions.bar.dataLabels.overflow", "none" );
+    profileset.set( "plotOptions.bar.dataLabels.inside", true );
+    profileset.set( "plotOptions.bar.dataLabels.enabled", true );
+    profileset.set( "plotOptions.bar.dataLabels.align", "left" );
+    profileset.set( "plotOptions.bar.dataLabels.shadow", false );
+    profileset.set( "plotOptions.bar.dataLabels.x", -80 );
+    profileset.set( "plotOptions.bar.dataLabels.color", c.str() );
+    profileset.set( "plotOptions.bar.dataLabels.verticalAlign", "middle" );
+    profileset.set( "plotOptions.bar.dataLabels.style.fontSize", "10pt" );
+    profileset.set( "plotOptions.bar.dataLabels.style.fontWeight", "none" );
+    profileset.set( "plotOptions.bar.dataLabels.style.textShadow", "none" );
 
-  profileset.set( "xAxis.labels.style.color", c.str() );
-  profileset.set( "xAxis.labels.style.whiteSpace", "nowrap" );
-  profileset.set( "xAxis.labels.style.fontSize", "10pt" );
-  profileset.set( "xAxis.labels.padding", 2 );
-  profileset.set( "xAxis.lineColor", c.str() );
+    profileset.set( "xAxis.labels.style.color", c.str() );
+    profileset.set( "xAxis.labels.style.whiteSpace", "nowrap" );
+    profileset.set( "xAxis.labels.style.fontSize", "10pt" );
+    profileset.set( "xAxis.labels.padding", 2 );
+    profileset.set( "xAxis.lineColor", c.str() );
 
-  const auto baseline = sim.player_no_pet_list.data().front();
+    // Custom formatter for X axis so we can get baseline colored different
+    std::string functor = "function () {";
+    functor += "  if (this.value === '" + baseline -> name_str + "') {";
+    functor += "    return '<span style=\"color:#AA0000;font-weight:bold;\">' + this.value + '</span>';";
+    functor += "  }";
+    functor += "  else {";
+    functor += "    return this.value;";
+    functor += "  }";
+    functor += "}";
 
-  // Custom formatter for X axis so we can get baseline colored different
-  std::string functor = "function () {";
-  functor += "  if (this.value === '" + baseline -> name_str + "') {";
-  functor += "    return '<span style=\"color:#AA0000;font-weight:bold;\">' + this.value + '</span>';";
-  functor += "  }";
-  functor += "  else {";
-  functor += "    return this.value;";
-  functor += "  }";
-  functor += "}";
+    profileset.set( "xAxis.labels.formatter", functor );
+    profileset.value( "xAxis.labels.formatter" ).SetRawOutput( true );
 
-  profileset.set( "xAxis.labels.formatter", functor );
-  profileset.value( "xAxis.labels.formatter" ).SetRawOutput( true );
-
-  // Baseline data, insert into the correct position in the for loop below
-  auto baseline_data = metric_data( baseline );
-  auto inserted = false;
-
-  range::for_each( results, [ & ]( const profile_set_t* set ) {
-    if ( ! inserted && set -> result().median() <= baseline_data.median )
+    for ( size_t i = base_offset, end = std::min( base_offset + MAX_CHART_ENTRIES, results.size() ); i < end; ++i )
     {
-      insert_data( profileset, sim.player_no_pet_list.data().front() -> name(), c, baseline_data, true );
-      inserted = true;
+      const auto set = results[ i ];
+
+      if ( ! inserted && set -> result().median() <= baseline_data.median )
+      {
+        insert_data( profileset, sim.player_no_pet_list.data().front() -> name(), c, baseline_data, true );
+        inserted = true;
+      }
+
+      insert_data( profileset, set -> name(), c, set -> result().statistical_data(), false );
     }
 
-    insert_data( profileset, set -> name(), c, set -> result().statistical_data(), false );
-  } );
-
-  out << profileset.to_string();
+    out << profileset.to_string();
+    ++chart_id;
+  }
 
   return true;
 }
