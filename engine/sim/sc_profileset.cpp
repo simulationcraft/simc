@@ -362,7 +362,7 @@ bool profilesets_t::generate_chart( const sim_t& sim, io::ofstream& out ) const
     profileset.set( "series.1.name", chart_name );
     profileset.set( "yAxis.gridLineWidth", 0 );
     profileset.set( "xAxis.offset", 80 );
-    profileset.set_title( "Profile sets (" + chart_name + ")" );
+    profileset.set_title( "Profile sets (median " + chart_name + ")" );
     profileset.set( "subtitle.text", "Baseline in red" );
     profileset.set( "subtitle.style.color", "#AA0000" );
     profileset.set_yaxis_title( "Median " + chart_name );
@@ -429,8 +429,14 @@ bool profilesets_t::generate_chart( const sim_t& sim, io::ofstream& out ) const
       insert_data( profileset, set -> name(), c, set -> result().statistical_data(), false );
     }
 
+    if ( inserted == false )
+    {
+      insert_data( profileset, sim.player_no_pet_list.data().front() -> name(), c, baseline_data, true );
+    }
+
     out << profileset.to_string();
     ++chart_id;
+    inserted = false;
   }
 
   return true;
