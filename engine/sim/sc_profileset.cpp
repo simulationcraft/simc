@@ -89,13 +89,6 @@ profile_set_t::~profile_set_t()
   delete m_options;
 }
 
-void profile_set_t::done()
-{
-  // Deleting the profileset simulator object will free the sim_control_t object, so nullptr ours to
-  // avoid a double-free.
-  m_options = nullptr;
-}
-
 bool profilesets_t::validate( sim_t* ps_sim )
 {
   if ( ps_sim -> player_no_pet_list.size() > 1 )
@@ -214,8 +207,6 @@ bool profilesets_t::iterate( sim_t* parent )
     {
       report::print_suite( profile_sim );
     }
-
-    set -> done();
 
     if ( ret == false || profile_sim -> is_canceled() )
     {

@@ -108,8 +108,6 @@ public:
 
   ~profile_set_t();
 
-  void done();
-
   const std::string& name() const
   { return m_name; }
 
