@@ -2486,7 +2486,7 @@ bool sim_t::init()
     }
   }
 
-  if ( ! profilesets.parse( this ) )
+  if ( ! parent && ! profilesets.parse( this ) )
   {
     return false;
   }

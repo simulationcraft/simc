@@ -8,6 +8,49 @@
 
 namespace profileset
 {
+void insert_data( highchart::bar_chart_t&   chart,
+                  const std::string&        name,
+                  const color::rgb&         c,
+                  const statistical_data_t& data,
+                  bool                      baseline )
+{
+  js::sc_js_t entry;
+
+  if ( baseline )
+  {
+    entry.set( "color", "#AA0000" );
+    entry.set( "dataLabels.color", "#AA0000" );
+    entry.set( "dataLabels.style.fontWeight", "bold" );
+  }
+
+  entry.set( "name", name );
+  entry.set( "y", util::round( data.median ) );
+
+  chart.add( "series.0.data", entry );
+
+  js::sc_js_t boxplot_entry;
+  boxplot_entry.set( "name", name );
+  boxplot_entry.set( "low", data.min );
+  boxplot_entry.set( "q1", data.first_quartile );
+  boxplot_entry.set( "median", data.median );
+  boxplot_entry.set( "mean", data.mean );
+  boxplot_entry.set( "q3", data.third_quartile );
+  boxplot_entry.set( "high", data.max );
+
+  if ( baseline )
+  {
+    color::rgb c( "AA0000" );
+    boxplot_entry.set( "color", c.dark( .5 ).opacity( .5 ).str() );
+    boxplot_entry.set( "fillColor", c.dark( .75 ).opacity( .5 ).rgb_str() );
+  }
+  else
+  {
+    boxplot_entry.set( "fillColor", c.dark( .75 ).opacity( .5 ).rgb_str() );
+  }
+
+  chart.add( "series.1.data", boxplot_entry );
+}
+
 sim_control_t* profile_set_t::create_sim_options( const sim_control_t*            original,
                                                   const std::vector<std::string>& opts )
 {
@@ -95,6 +138,11 @@ bool profilesets_t::parse( sim_t* sim )
 
   for ( auto it = sim -> profileset_map.begin(); it != sim -> profileset_map.end(); ++it )
   {
+    if ( sim -> canceled )
+    {
+      return false;
+    }
+
     auto control = profile_set_t::create_sim_options( original_control, it -> second );
     if ( control == nullptr )
     {
@@ -134,6 +182,7 @@ bool profilesets_t::parse( sim_t* sim )
 
     m_profilesets.push_back( std::unique_ptr<profile_set_t>(
         new profile_set_t( it -> first, control, has_output_opts ) ) );
+    std::cerr << "Generating profileset " << it -> first << std::endl;
   }
 
   sim -> control = original_control;
@@ -246,12 +295,15 @@ void profilesets_t::output( const sim_t& sim, FILE* out ) const
     return;
   }
 
-  util::fprintf( out, "\n\nProfilesets (%s):\n",
+  util::fprintf( out, "\n\nProfilesets (median %s):\n",
     util::scale_metric_type_string( sim.profileset_metric ) );
 
-  range::for_each( m_profilesets, [ out ]( const profileset_entry_t& profileset ) {
+  std::vector<const profile_set_t*> results;
+  generate_sorted_profilesets( results );
+
+  range::for_each( results, [ out ]( const profile_set_t* profileset ) {
     util::fprintf( out, "    %-10.3f : %s\n",
-      profileset -> result().mean(), profileset -> name().c_str() );
+      profileset -> result().median(), profileset -> name().c_str() );
   } );
 }
 
@@ -272,52 +324,16 @@ void profilesets_t::output( const sim_t& sim, io::ofstream& out ) const
   out << "</div>";
 }
 
-void insert_data( highchart::bar_chart_t&   chart,
-                  const std::string&        name,
-                  const color::rgb&         c,
-                  const statistical_data_t& data,
-                  bool                      baseline )
+void profilesets_t::generate_sorted_profilesets( std::vector<const profile_set_t*>& out ) const
 {
-  js::sc_js_t entry;
+  range::transform( m_profilesets, std::back_inserter( out ), []( const profileset_entry_t& p ) {
+    return p.get();
+  } );
 
-  if ( baseline )
-  {
-    entry.set( "color", "#AA0000" );
-    entry.set( "dataLabels.color", "#AA0000" );
-    entry.set( "dataLabels.style.fontWeight", "bold" );
-  }
-  else
-  {
-    entry.set( "color", c.str() );
-  }
-
-  entry.set( "name", name );
-  entry.set( "y", util::round( data.median ) );
-
-  chart.add( "series.0.data", entry );
-
-  js::sc_js_t boxplot_entry;
-  boxplot_entry.set( "name", name );
-  boxplot_entry.set( "low", data.min );
-  boxplot_entry.set( "q1", data.first_quartile );
-  boxplot_entry.set( "median", data.median );
-  boxplot_entry.set( "mean", data.mean );
-  boxplot_entry.set( "q3", data.third_quartile );
-  boxplot_entry.set( "high", data.max );
-
-  if ( baseline )
-  {
-    color::rgb c( "AA0000" );
-    boxplot_entry.set( "color", c.dark( .5 ).opacity( .5 ).str() );
-    boxplot_entry.set( "fillColor", c.dark( .75 ).opacity( .5 ).rgb_str() );
-  }
-  else
-  {
-    boxplot_entry.set( "color", c.dark( .5 ).opacity( .5 ).str() );
-    boxplot_entry.set( "fillColor", c.dark( .75 ).opacity( .5 ).rgb_str() );
-  }
-
-  chart.add( "series.1.data", boxplot_entry );
+  // Sort to descending with mean value
+  range::sort( out, []( const profile_set_t* l, const profile_set_t* r ) {
+    return l -> result().median() > r -> result().median();
+  } );
 }
 
 bool profilesets_t::generate_chart( const sim_t& sim, io::ofstream& out ) const
@@ -325,14 +341,7 @@ bool profilesets_t::generate_chart( const sim_t& sim, io::ofstream& out ) const
   highchart::bar_chart_t profileset( "profileset", sim );
 
   std::vector<const profile_set_t*> results;
-  range::transform( m_profilesets, std::back_inserter( results ), []( const profileset_entry_t& p ) {
-    return p.get();
-  } );
-
-  // Sort to descending with mean value
-  range::sort( results, []( const profile_set_t* l, const profile_set_t* r ) {
-    return l -> result().median() > r -> result().median();
-  } );
+  generate_sorted_profilesets( results );
 
   // Bar color
   const auto& c = color::class_color( sim.player_no_pet_list.data().front() -> type );
@@ -352,6 +361,8 @@ bool profilesets_t::generate_chart( const sim_t& sim, io::ofstream& out ) const
   profileset.width_ = 1150;
   profileset.height_ = 24 * ( results.size() + 1 ) + 75;
 
+  profileset.add( "colors", c.str() );
+  profileset.add( "colors", c.dark( .5 ).opacity( .5 ).str() );
   profileset.set( "plotOptions.boxplot.whiskerLength", "85%" );
   profileset.set( "plotOptions.boxplot.whiskerWidth", 1.5 );
   profileset.set( "plotOptions.boxplot.medianWidth", 1 );

@@ -141,6 +141,7 @@ class profilesets_t
   int max_name_length() const;
 
   bool generate_chart( const sim_t& sim, io::ofstream& out ) const;
+  void generate_sorted_profilesets( std::vector<const profile_set_t*>& out ) const;
 public:
   profilesets_t()
   { }
