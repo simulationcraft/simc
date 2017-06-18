@@ -61,21 +61,6 @@ sim_control_t* profile_set_t::create_sim_options( const sim_control_t*          
 
   auto new_options = new sim_control_t( *original );
 
-  // Remove profileset options
-  auto it = new_options -> options.begin();
-  while ( it != new_options -> options.end() )
-  {
-    const auto& opt = *it;
-    if ( util::str_in_str_ci( opt.name, "profileset" ) )
-    {
-      it = new_options -> options.erase( it );
-    }
-    else
-    {
-      ++it;
-    }
-  }
-
   try
   {
     new_options -> options.parse_args( opts );
@@ -136,6 +121,24 @@ bool profilesets_t::parse( sim_t* sim )
 
   auto original_control = sim -> control;
 
+  // Generate a copy of the original control, and remove any and all profileset. options from it
+  m_original = std::unique_ptr<sim_control_t>( new sim_control_t( *original_control ) );
+
+  // Remove profileset.foo options. Leave "profileset_metric", it is needed in the child sims
+  auto it = m_original -> options.begin();
+  while ( it != m_original -> options.end() )
+  {
+    const auto& opt = *it;
+    if ( util::str_in_str_ci( opt.name, "profileset." ) )
+    {
+      it = m_original -> options.erase( it );
+    }
+    else
+    {
+      ++it;
+    }
+  }
+
   for ( auto it = sim -> profileset_map.begin(); it != sim -> profileset_map.end(); ++it )
   {
     if ( sim -> canceled )
@@ -143,7 +146,7 @@ bool profilesets_t::parse( sim_t* sim )
       return false;
     }
 
-    auto control = profile_set_t::create_sim_options( original_control, it -> second );
+    auto control = profile_set_t::create_sim_options( m_original.get(), it -> second );
     if ( control == nullptr )
     {
       return false;

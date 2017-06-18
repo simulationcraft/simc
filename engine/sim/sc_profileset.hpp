@@ -136,7 +136,8 @@ class profilesets_t
 
   static const size_t MAX_CHART_ENTRIES = 500;
 
-  profileset_vector_t m_profilesets;
+  profileset_vector_t            m_profilesets;
+  std::unique_ptr<sim_control_t> m_original;
 
   bool validate( sim_t* sim );
 
@@ -145,7 +146,7 @@ class profilesets_t
   bool generate_chart( const sim_t& sim, io::ofstream& out ) const;
   void generate_sorted_profilesets( std::vector<const profile_set_t*>& out ) const;
 public:
-  profilesets_t()
+  profilesets_t() : m_original( nullptr )
   { }
 
   size_t n_profilesets() const
