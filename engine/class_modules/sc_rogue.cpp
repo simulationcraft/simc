@@ -216,6 +216,7 @@ struct rogue_t : public player_t
 
   // Data collection
   luxurious_sample_data_t* dfa_mh, *dfa_oh;
+  luxurious_sample_data_t* dfa_wm_aoe_cancel, *dfa_wm_finisher_cancel;
 
   // Experimental weapon swapping
   weapon_info_t weapon_data[ 2 ];
@@ -672,6 +673,7 @@ struct rogue_t : public player_t
     auto_attack( nullptr ), melee_main_hand( nullptr ), melee_off_hand( nullptr ),
     shadow_blade_main_hand( nullptr ), shadow_blade_off_hand( nullptr ),
     dfa_mh( nullptr ), dfa_oh( nullptr ),
+    dfa_wm_aoe_cancel( nullptr ), dfa_wm_finisher_cancel( nullptr ),
     buffs( buffs_t() ),
     cooldowns( cooldowns_t() ),
     gains( gains_t() ),
@@ -4733,6 +4735,8 @@ struct death_from_above_driver_t : public rogue_attack_t
 struct death_from_above_t : public rogue_attack_t
 {
   death_from_above_driver_t* driver;
+  bool cancel_dfa;
+  bool cancel_finisher;
 
   death_from_above_t( rogue_t* p, const std::string& options_str ) :
     rogue_attack_t( "death_from_above", p, p -> talent.death_from_above, options_str )
@@ -4881,13 +4885,43 @@ struct death_from_above_t : public rogue_attack_t
         player -> off_hand_attack -> execute_event -> reschedule( timespan_t::from_seconds( 0.8 ) );
     }
 */
-    action_state_t* driver_state = driver -> get_state( execute_state );
-    driver_state -> target = target;
-    driver -> schedule_execute( driver_state );
+
+    // WM + DfA bug implementation, see: https://github.com/Ravenholdt-TC/Rogue/issues/25
+    cancel_dfa = false;
+    cancel_finisher = false;
+    if ( p() -> bugs
+         && p() -> talent.weaponmaster -> ok()
+         && rng().roll( p() -> talent.weaponmaster -> proc_chance() ) ) {
+      // Considering we don't have any stats on the bug distribution, we'll assume that
+      // 50% of the time we cancel the DfA, and the other 50% we cancel the finisher.
+      if ( rng().roll( 0.5 ) ) {
+        cancel_dfa = true;
+        p() -> dfa_wm_aoe_cancel -> add( 1 );
+      } else {
+        cancel_finisher = true;
+        p() -> dfa_wm_finisher_cancel -> add( 1 );
+      }
+    }
+
+    // Cancel the finisher hit depending on weaponmaster proc
+    if ( ! cancel_finisher ) {
+      action_state_t* driver_state = driver -> get_state( execute_state );
+      driver_state -> target = target;
+      driver -> schedule_execute( driver_state );
+    }
+      
 
     if ( p() -> buffs.feeding_frenzy -> check() )
     {
       p() -> buffs.feeding_frenzy -> decrement();
+    }
+  }
+
+  void impact( action_state_t* state ) override
+  {
+    // Cancel the DfA hit depending on weaponmaster proc
+    if ( ! cancel_dfa ) {
+      rogue_attack_t::impact( state );
     }
   }
 };
@@ -7899,6 +7933,10 @@ void rogue_t::init_procs()
   {
     dfa_mh = get_sample_data( "dfa_mh" );
     dfa_oh = get_sample_data( "dfa_oh" );
+    if ( talent.weaponmaster -> ok() ) {
+      dfa_wm_aoe_cancel = get_sample_data( "dfa_wm_aoe_cancel" );
+      dfa_wm_finisher_cancel = get_sample_data( "dfa_wm_finisher_cancel" );
+    }
   }
 }
 
@@ -8756,6 +8794,46 @@ public:
       os.format("<td class=\"right\">%.3f</td>", p.dfa_oh -> min() );
       os.format("<td class=\"right\">%.3f</td>", p.dfa_oh -> mean() );
       os.format("<td class=\"right\">%.3f</td>", p.dfa_oh -> max() );
+      os << "</tr>";
+
+      os << "</table>";
+
+      os << "</div>\n";
+
+      os << "<div class=\"clear\"></div>\n";
+    }
+    os << "</div>\n";
+
+    os << "<div class=\"player-section custom_section\">\n";
+    if ( p.talent.death_from_above -> ok() && p.talent.weaponmaster -> ok() )
+    {
+      os << "<h3 class=\"toggle open\">Death from Above Weaponmaster actions loss</h3>\n"
+         << "<div class=\"toggle-content\">\n";
+
+      os << "<p>";
+      os <<
+        "Weaponmaster procs during the 1st part of Death from Above causes"
+        " either the AoE part (DfA action) either the Finisher part (Eviscerate action)"
+        " to be cancelled. Here is a table showing how often it occured during"
+        " the simulation.";
+      os << "</p>";
+      os << "<table class=\"sc\" style=\"float: left;margin-right: 10px;\">\n";
+
+      os << "<tr><th></th><th colspan=\"3\">Actions lost per iteration</th></tr>";
+      os << "<tr><th>Action</th><th>Minimum</th><th>Average</th><th>Maximum</th></tr>";
+
+      os << "<tr>";
+      os << "<td class=\"left\">Death from Above</td>";
+      os.format("<td class=\"right\">%.3f</td>", p.dfa_wm_aoe_cancel -> min() );
+      os.format("<td class=\"right\">%.3f</td>", p.dfa_wm_aoe_cancel -> mean() );
+      os.format("<td class=\"right\">%.3f</td>", p.dfa_wm_aoe_cancel -> max() );
+      os << "</tr>";
+
+      os << "<tr>";
+      os << "<td class=\"left\">Eviscerate</td>";
+      os.format("<td class=\"right\">%.3f</td>", p.dfa_wm_finisher_cancel -> min() );
+      os.format("<td class=\"right\">%.3f</td>", p.dfa_wm_finisher_cancel -> mean() );
+      os.format("<td class=\"right\">%.3f</td>", p.dfa_wm_finisher_cancel -> max() );
       os << "</tr>";
 
       os << "</table>";
