@@ -7564,7 +7564,7 @@ void shaman_t::init_action_list_enhancement()
 
 
   buffs -> add_action( this, "Rockbiter", "if=talent.landslide.enabled&!buff.landslide.up" );
-  buffs -> add_talent( this, "Fury of Air", "if=buff.ascendance.up|(feral_spirit.remains>5)|level<100" );
+  buffs -> add_talent( this, "Fury of Air", "if=!ticking&maelstrom>22" );
   buffs -> add_action( this, "Crash Lightning", "if=artifact.alpha_wolf.rank&prev_gcd.1.feral_spirit" );
   buffs -> add_action( this, "Flametongue", "if=!buff.flametongue.up" );
   buffs -> add_action( this, "Frostbrand", "if=talent.hailstorm.enabled&!buff.frostbrand.up&variable.furyCheck45" );
