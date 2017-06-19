@@ -7385,6 +7385,11 @@ void mage_t::apl_arcane()
                               "if=target.debuff.casting.react" );
   default_list -> add_action( this, "Time Warp", "if=buff.bloodlust.down&(time=0|(buff.arcane_power.up&(buff.potion.up|!action.potion.usable))|target.time_to_die<=buff.bloodlust.duration)" );
   default_list -> add_action( "call_action_list,name=variables" );
+  default_list -> add_action( mage_t::get_special_use_items( "horn_of_valor" ) );
+  default_list -> add_action( mage_t::get_special_use_items( "obelisk_of_the_void" ) );
+  default_list -> add_action( mage_t::get_special_use_items( "mrrgrias_favor" ) );
+  default_list -> add_action( mage_t::get_special_use_items( "pharameres_forbidden_grimoire" ) );
+  default_list -> add_action( mage_t::get_special_use_items( "kiljaedens_burning_wish" ) );
   default_list -> add_action( "call_action_list,name=build,if=buff.arcane_charge.stack<buff.arcane_charge.max_stack&!burn_phase" );
   default_list -> add_action( "call_action_list,name=burn,if=variable.time_until_burn=0|burn_phase" );
   default_list -> add_action( "call_action_list,name=conserve" );
@@ -7424,7 +7429,7 @@ void mage_t::apl_arcane()
   }
 
   burn  -> add_action( "potion,if=buff.arcane_power.up&(buff.berserking.up|buff.blood_fury.up|!(race.troll|race.orc))" );
-  burn  -> add_action( "use_item,name=tarnished_sentinel_medallion,if=equipped.147017&buff.arcane_power.up&(buff.bloodlust.up|!equipped.shard_of_the_exodar)" );
+  burn  -> add_action( "use_items,if=buff.arcane_power.up" );
   burn  -> add_action( this, "Presence of Mind", "if=set_bonus.tier20_2pc|buff.rune_of_power.remains<=buff.presence_of_mind.max_stack*action.arcane_blast.execute_time|buff.arcane_power.remains<=buff.presence_of_mind.max_stack*action.arcane_blast.execute_time" );
   burn  -> add_talent( this, "Arcane Orb" );
   burn  -> add_action( this, "Arcane Barrage", "if=active_enemies>1&equipped.mantle_of_the_first_kirin_tor&buff.arcane_charge.stack=buff.arcane_charge.max_stack" );
