@@ -18,6 +18,7 @@ namespace buffs {
   struct touch_of_the_magi_t;
   struct arcane_missiles_t;
 }
+
 namespace pets {
   namespace water_elemental {
     struct water_elemental_pet_t;
@@ -28,8 +29,8 @@ struct state_switch_t
 {
 private:
   bool state;
-  timespan_t last_enable,
-             last_disable;
+  timespan_t last_enable;
+  timespan_t last_disable;
 
 public:
   state_switch_t()
@@ -145,7 +146,7 @@ struct buff_stack_benefit_t
   {
     for ( std::size_t i = 0; i < buff_stack_benefit.size(); ++i )
     {
-      buff_stack_benefit[ i ] -> update( i == as<unsigned>(buff -> check()) );
+      buff_stack_benefit[ i ] -> update( i == as<unsigned>( buff -> check() ) );
     }
   }
 };
@@ -699,9 +700,9 @@ struct water_elemental_pet_t : public mage_pet_t
     clear_action_priority_lists();
     auto default_list = get_action_priority_list( "default" );
 
-    default_list->add_action( this, find_pet_spell( "Water Jet" ), "Water Jet" );
-    default_list->add_action( this, find_pet_spell( "Waterbolt" ), "Waterbolt" );
-    default_list->add_action( this, find_pet_spell( "Freeze"    ), "Freeze"    );
+    default_list -> add_action( this, find_pet_spell( "Water Jet" ), "Water Jet" );
+    default_list -> add_action( this, find_pet_spell( "Waterbolt" ), "Waterbolt" );
+    default_list -> add_action( this, find_pet_spell( "Freeze"    ), "Freeze"    );
 
     // Default
     use_default_action_list = true;
@@ -2235,7 +2236,7 @@ struct icicle_t : public frost_mage_spell_t
   {
     frost_mage_spell_t::init();
 
-    snapshot_flags = STATE_NO_MULTIPLIER;
+    snapshot_flags &= STATE_NO_MULTIPLIER;
     snapshot_flags |= STATE_TGT_MUL_DA;
   }
 };
@@ -2388,6 +2389,8 @@ struct aegwynns_ascendance_t : public arcane_mage_spell_t
     aoe = -1;
     background = true;
     may_crit = false;
+
+    affected_by.erosion = false;
   }
 
   virtual void init() override
@@ -3587,8 +3590,7 @@ struct evocation_t : public arcane_mage_spell_t
         mana_gained * p() -> artifact.aegwynns_ascendance.percent();
 
       aegwynns_ascendance -> set_target( d -> target );
-      aegwynns_ascendance -> base_dd_max = explosion_amount;
-      aegwynns_ascendance -> base_dd_min = explosion_amount;
+      aegwynns_ascendance -> base_dd_adder = explosion_amount;
       aegwynns_ascendance -> execute();
     }
   }
@@ -4406,7 +4408,7 @@ struct glacial_spike_t : public frost_mage_spell_t
     // Ideally, this would be passed to impact() in action_state_t, but since
     // it's pretty much impossible to execute another Glacial Spike before
     // the first one impacts, this should be fine.
-    base_dd_min = base_dd_max = icicle_damage;
+    base_dd_adder = icicle_damage;
 
     frost_mage_spell_t::execute();
 
@@ -4838,8 +4840,7 @@ struct mark_of_aluneth_explosion_t : public arcane_mage_spell_t
 
   virtual void execute() override
   {
-    base_dd_max = p() -> resources.max[ RESOURCE_MANA ] * mana_to_damage_pct;
-    base_dd_min = p() -> resources.max[ RESOURCE_MANA ] * mana_to_damage_pct;
+    base_dd_adder = p() -> resources.max[ RESOURCE_MANA ] * mana_to_damage_pct;
 
     arcane_mage_spell_t::execute();
 
@@ -5265,7 +5266,7 @@ struct phoenixs_flames_t : public fire_mage_spell_t
     fire_mage_spell_t( "phoenixs_flames", p, p -> artifact.phoenixs_flames ),
     phoenixs_flames_splash( new phoenixs_flames_splash_t( p ) ),
     pyrotex_ignition_cloth( false ),
-    pyrotex_ignition_cloth_reduction( timespan_t::from_seconds( 0 ) )
+    pyrotex_ignition_cloth_reduction( timespan_t::zero() )
   {
     parse_options( options_str );
     // Phoenix's Flames always crits
@@ -5831,6 +5832,8 @@ struct touch_of_the_magi_explosion_t : public arcane_mage_spell_t
     background = true;
     may_miss = may_crit = callbacks = false;
     aoe = -1;
+
+    affected_by.erosion = false;
   }
 
   virtual void init() override
@@ -5841,10 +5844,20 @@ struct touch_of_the_magi_explosion_t : public arcane_mage_spell_t
     snapshot_flags |= STATE_TGT_MUL_DA;
   }
 
+  virtual double composite_target_multiplier( player_t* target ) const override
+  {
+    double m = arcane_mage_spell_t::composite_target_multiplier( target );
+
+    // It seems that TotM explosion only double dips on target based damage reductions
+    // and not target based damage increases.
+    m = std::min( m, 1.0 );
+
+    return m;
+  }
+
   virtual void execute() override
   {
-    base_dd_max *= p() -> artifact.touch_of_the_magi.data().effectN( 1 ).percent();
-    base_dd_min *= p() -> artifact.touch_of_the_magi.data().effectN( 1 ).percent();
+    base_dd_adder *= p() -> artifact.touch_of_the_magi.data().effectN( 1 ).percent();
 
     mage_spell_t::execute();
   }
@@ -5977,8 +5990,7 @@ struct unstable_magic_explosion_t : public mage_spell_t
 
   virtual void execute() override
   {
-    base_dd_max *= data().effectN( 4 ).percent();
-    base_dd_min *= data().effectN( 4 ).percent();
+    base_dd_adder *= data().effectN( 4 ).percent();
 
     mage_spell_t::execute();
   }
@@ -6014,8 +6026,7 @@ void mage_spell_t::trigger_unstable_magic( action_state_t* s )
   if ( p() -> rng().roll( um_proc_rate ) )
   {
     p() -> action.unstable_magic_explosion -> set_target( s -> target );
-    p() -> action.unstable_magic_explosion -> base_dd_max = s -> result_amount;
-    p() -> action.unstable_magic_explosion -> base_dd_min = s -> result_amount;
+    p() -> action.unstable_magic_explosion -> base_dd_adder = s -> result_amount;
     p() -> action.unstable_magic_explosion -> execute();
   }
 }
@@ -6200,7 +6211,7 @@ struct icicle_event_t : public event_t
     new_s -> source = state.stats;
     new_s -> target = target;
 
-    mage -> icicle -> base_dd_min = mage -> icicle -> base_dd_max = state.damage;
+    mage -> icicle -> base_dd_adder = state.damage;
 
     // Immediately execute icicles so the correct damage is carried into the
     // travelling icicle object
@@ -6480,8 +6491,7 @@ void mage_t::trigger_touch_of_the_magi( buffs::touch_of_the_magi_t* buff )
 {
   assert( action.touch_of_the_magi_explosion );
   action.touch_of_the_magi_explosion -> set_target( buff -> player );
-  action.touch_of_the_magi_explosion -> base_dd_max = buff -> accumulated_damage;
-  action.touch_of_the_magi_explosion -> base_dd_min = buff -> accumulated_damage;
+  action.touch_of_the_magi_explosion -> base_dd_adder = buff -> accumulated_damage;
   action.touch_of_the_magi_explosion -> execute();
 }
 
@@ -7638,6 +7648,7 @@ void mage_t::apl_frost()
   aoe -> add_action( this, "Ebonbolt", "if=buff.brain_freeze.react=0" );
   aoe -> add_talent( this, "Glacial Spike" );
   aoe -> add_action( this, "Frostbolt" );
+  aoe -> add_action( this, "Cone of Cold" );
   aoe -> add_action( this, "Ice Lance" );
 
   cooldowns -> add_talent( this, "Rune of Power",
@@ -8438,7 +8449,7 @@ void mage_t::trigger_icicle( const action_state_t* trigger_state, bool chain, pl
     new_state -> target = icicle_target;
     new_state -> source = d.stats;
 
-    icicle -> base_dd_min = icicle -> base_dd_max = d.damage;
+    icicle -> base_dd_adder = d.damage;
 
     // Immediately execute icicles so the correct damage is carried into the
     // travelling icicle object

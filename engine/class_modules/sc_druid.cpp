@@ -40,6 +40,7 @@ namespace { // UNNAMED NAMESPACE
   Statistics?
   Incarnation CD modifier rework
   Check Galactic Guardian proc sources
+  Find missing damage multipliers
 
   Resto =====================================================================
   All the things
@@ -4034,8 +4035,7 @@ struct maul_t : public bear_attack_t
   maul_t( druid_t* player, const std::string& options_str ) :
     bear_attack_t( "maul", player, player -> find_specialization_spell( "Maul" ), options_str )
   {
-    weapon = &( player -> main_hand_weapon );
-    use_off_gcd = true;
+    gore = true;
 
     base_crit += player -> artifact.mauler.percent();
   }
@@ -5258,6 +5258,7 @@ struct full_moon_t : public druid_spell_t
     if (p()->moon_stage == FULL_MOON && radiant_moonlight) {
       p()->moon_stage = FREE_FULL_MOON; //Requires hit
       p()->cooldown.moon_cd->reset(true);
+      p()->cooldown.moon_cd->reset(true); //currently gives 2 stacks in game (might be a bug)
     }
     else {
       p()->moon_stage = NEW_MOON; //Requires hit

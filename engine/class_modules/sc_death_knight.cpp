@@ -7844,17 +7844,17 @@ void death_knight_t::default_apl_unholy()
 
 
   // Standard single target base rotation
-  standard->add_action(this, "Festering Strike", "if=debuff.festering_wound.stack<=3&runic_power.deficit>13");
+  standard->add_action(this, "Festering Strike", "if=debuff.festering_wound.stack<=2&runic_power.deficit>5");
   standard->add_action(this, "Death Coil", "if=!buff.necrosis.up&talent.necrosis.enabled&rune<=3");
-  standard->add_action(this, "Scourge Strike", "if=buff.necrosis.react&debuff.festering_wound.stack>=1&runic_power.deficit>15");
-  standard->add_talent(this, "Clawing Shadows", "if=buff.necrosis.react&debuff.festering_wound.stack>=1&runic_power.deficit>11");
-  standard->add_action(this, "Scourge Strike", "if=buff.unholy_strength.react&debuff.festering_wound.stack>=1&runic_power.deficit>15");
-  standard->add_talent(this, "Clawing Shadows", "if=buff.unholy_strength.react&debuff.festering_wound.stack>=1&runic_power.deficit>11");
-  standard->add_action(this, "Scourge Strike", "if=rune>=2&debuff.festering_wound.stack>=1&runic_power.deficit>15");
-  standard->add_talent(this, "Clawing Shadows", "if=rune>=2&debuff.festering_wound.stack>=1&runic_power.deficit>11");
-  standard->add_action(this, "Death Coil", "if=talent.shadow_infusion.enabled&talent.dark_arbiter.enabled&!buff.dark_transformation.up&cooldown.dark_arbiter.remains>15");
+  standard->add_action(this, "Scourge Strike", "if=buff.necrosis.react&debuff.festering_wound.stack>=1&runic_power.deficit>9");
+  standard->add_talent(this, "Clawing Shadows", "if=buff.necrosis.react&debuff.festering_wound.stack>=1&runic_power.deficit>9");
+  standard->add_action(this, "Scourge Strike", "if=buff.unholy_strength.react&debuff.festering_wound.stack>=1&runic_power.deficit>9");
+  standard->add_talent(this, "Clawing Shadows", "if=buff.unholy_strength.react&debuff.festering_wound.stack>=1&runic_power.deficit>9");
+  standard->add_action(this, "Scourge Strike", "if=rune>=2&debuff.festering_wound.stack>=1&runic_power.deficit>9");
+  standard->add_talent(this, "Clawing Shadows", "if=rune>=2&debuff.festering_wound.stack>=1&runic_power.deficit>9");
+  standard->add_action(this, "Death Coil", "if=talent.shadow_infusion.enabled&talent.dark_arbiter.enabled&!buff.dark_transformation.up&cooldown.dark_arbiter.remains>10");
   standard->add_action(this, "Death Coil", "if=talent.shadow_infusion.enabled&!talent.dark_arbiter.enabled&!buff.dark_transformation.up");
-  standard->add_action(this, "Death Coil", "if=talent.dark_arbiter.enabled&cooldown.dark_arbiter.remains>15");
+  standard->add_action(this, "Death Coil", "if=talent.dark_arbiter.enabled&cooldown.dark_arbiter.remains>10");
   standard->add_action(this, "Death Coil", "if=!talent.shadow_infusion.enabled&!talent.dark_arbiter.enabled");
 
   // Standard single target castigator rotation
@@ -7869,17 +7869,17 @@ void death_knight_t::default_apl_unholy()
   castigator->add_action(this, "Death Coil", "if=!talent.shadow_infusion.enabled&!talent.dark_arbiter.enabled");
 
   // Standard single target instructors rotation
-  instructors->add_action(this, "Festering Strike", "if=debuff.festering_wound.stack<=3&runic_power.deficit>13");
+  instructors->add_action(this, "Festering Strike", "if=debuff.festering_wound.stack<=2&runic_power.deficit>5");
   instructors->add_action(this, "Death Coil", "if=!buff.necrosis.up&talent.necrosis.enabled&rune<=3");
-  instructors->add_action(this, "Scourge Strike", "if=buff.necrosis.react&debuff.festering_wound.stack>=4&runic_power.deficit>29");
-  instructors->add_talent(this, "Clawing Shadows", "if=buff.necrosis.react&debuff.festering_wound.stack>=3&runic_power.deficit>11");
-  instructors->add_action(this, "Scourge Strike", "if=buff.unholy_strength.react&debuff.festering_wound.stack>=4&runic_power.deficit>29");
-  instructors->add_talent(this, "Clawing Shadows", "if=buff.unholy_strength.react&debuff.festering_wound.stack>=3&runic_power.deficit>11");
-  instructors->add_action(this, "Scourge Strike", "if=rune>=2&debuff.festering_wound.stack>=4&runic_power.deficit>29");
-  instructors->add_talent(this, "Clawing Shadows", "if=rune>=2&debuff.festering_wound.stack>=3&runic_power.deficit>11");
-  instructors->add_action(this, "Death Coil", "if=talent.shadow_infusion.enabled&talent.dark_arbiter.enabled&!buff.dark_transformation.up&cooldown.dark_arbiter.remains>15");
+  instructors->add_action(this, "Scourge Strike", "if=buff.necrosis.react&debuff.festering_wound.stack>=3&runic_power.deficit>9");
+  instructors->add_talent(this, "Clawing Shadows", "if=buff.necrosis.react&debuff.festering_wound.stack>=3&runic_power.deficit>9");
+  instructors->add_action(this, "Scourge Strike", "if=buff.unholy_strength.react&debuff.festering_wound.stack>=3&runic_power.deficit>9");
+  instructors->add_talent(this, "Clawing Shadows", "if=buff.unholy_strength.react&debuff.festering_wound.stack>=3&runic_power.deficit>9");
+  instructors->add_action(this, "Scourge Strike", "if=rune>=2&debuff.festering_wound.stack>=3&runic_power.deficit>9");
+  instructors->add_talent(this, "Clawing Shadows", "if=rune>=2&debuff.festering_wound.stack>=3&runic_power.deficit>9");
+  instructors->add_action(this, "Death Coil", "if=talent.shadow_infusion.enabled&talent.dark_arbiter.enabled&!buff.dark_transformation.up&cooldown.dark_arbiter.remains>10");
   instructors->add_action(this, "Death Coil", "if=talent.shadow_infusion.enabled&!talent.dark_arbiter.enabled&!buff.dark_transformation.up");
-  instructors->add_action(this, "Death Coil", "if=talent.dark_arbiter.enabled&cooldown.dark_arbiter.remains>15");
+  instructors->add_action(this, "Death Coil", "if=talent.dark_arbiter.enabled&cooldown.dark_arbiter.remains>10");
   instructors->add_action(this, "Death Coil", "if=!talent.shadow_infusion.enabled&!talent.dark_arbiter.enabled");
 
   // Generic AOE actions to be done
