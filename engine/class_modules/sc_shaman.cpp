@@ -7513,7 +7513,7 @@ void shaman_t::init_action_list_enhancement()
 
   action_priority_list_t* precombat = get_action_priority_list( "precombat" );
   action_priority_list_t* def       = get_action_priority_list( "default"   );
-  action_priority_list_t* cds       = get_action_priority_list( "CDs"       );
+  action_priority_list_t* cds       = get_action_priority_list( "cds"       );
   action_priority_list_t* buffs     = get_action_priority_list( "buffs"     );
   action_priority_list_t* core      = get_action_priority_list( "core"      );
   action_priority_list_t* filler    = get_action_priority_list( "filler"    );
