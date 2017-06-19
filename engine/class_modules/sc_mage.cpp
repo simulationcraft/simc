@@ -1250,8 +1250,6 @@ struct touch_of_the_magi_t : public buff_t
     accumulated_damage = 0.0;
   }
 
-  // It seems Touch of the Magi might accumulate damage without target based
-  // multipliers (like Icicles do). TODO: Confirm this
   double accumulate_damage( action_state_t* state )
   {
     if ( sim -> debug )
@@ -5844,6 +5842,17 @@ struct touch_of_the_magi_explosion_t : public arcane_mage_spell_t
     // disable the snapshot_flags for all multipliers
     snapshot_flags &= STATE_NO_MULTIPLIER;
     snapshot_flags |= STATE_TGT_MUL_DA;
+  }
+
+  virtual double composite_target_multiplier( player_t* target ) const override
+  {
+    double m = arcane_mage_spell_t::composite_target_multiplier( target );
+
+    // It seems that TotM explosion only double dips on target based damage reductions
+    // and not target based damage increases.
+    m = std::min( m, 1.0 );
+
+    return m;
   }
 
   virtual void execute() override
