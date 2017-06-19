@@ -216,6 +216,7 @@ struct rogue_t : public player_t
 
   // Data collection
   luxurious_sample_data_t* dfa_mh, *dfa_oh;
+  luxurious_sample_data_t* dfa_wm_finisher_cancel;
 
   // Experimental weapon swapping
   weapon_info_t weapon_data[ 2 ];
@@ -672,6 +673,7 @@ struct rogue_t : public player_t
     auto_attack( nullptr ), melee_main_hand( nullptr ), melee_off_hand( nullptr ),
     shadow_blade_main_hand( nullptr ), shadow_blade_off_hand( nullptr ),
     dfa_mh( nullptr ), dfa_oh( nullptr ),
+    dfa_wm_finisher_cancel( nullptr ),
     buffs( buffs_t() ),
     cooldowns( cooldowns_t() ),
     gains( gains_t() ),
@@ -4240,6 +4242,10 @@ struct shadow_dance_t : public rogue_attack_t
     {
       cooldown -> charges += p -> talent.enveloping_shadows -> effectN( 2 ).base_value();
     }
+
+    // Note: Let usage of Shadow Dance while DfA is in flight.
+    // We disable it if we don't have DfA and DSh to improve the simulation speed.
+    use_off_gcd = p -> talent.death_from_above -> ok() && p -> talent.dark_shadow -> ok();
   }
 
   void execute() override
@@ -4729,9 +4735,11 @@ struct death_from_above_driver_t : public rogue_attack_t
 struct death_from_above_t : public rogue_attack_t
 {
   death_from_above_driver_t* driver;
+  bool wm_finisher_cancel;
 
   death_from_above_t( rogue_t* p, const std::string& options_str ) :
-    rogue_attack_t( "death_from_above", p, p -> talent.death_from_above, options_str )
+    rogue_attack_t( "death_from_above", p, p -> talent.death_from_above, options_str ),
+    wm_finisher_cancel( false )
   {
     weapon = &( p -> main_hand_weapon );
     weapon_multiplier = 0;
@@ -4877,9 +4885,24 @@ struct death_from_above_t : public rogue_attack_t
         player -> off_hand_attack -> execute_event -> reschedule( timespan_t::from_seconds( 0.8 ) );
     }
 */
-    action_state_t* driver_state = driver -> get_state( execute_state );
-    driver_state -> target = target;
-    driver -> schedule_execute( driver_state );
+
+    // WM + DfA bug implementation, see: https://github.com/Ravenholdt-TC/Rogue/issues/25
+    wm_finisher_cancel = false;
+    if ( p() -> bugs
+         && p() -> talent.weaponmaster -> ok()
+         && rng().roll( 1 - std::pow( 1 - p() -> talent.weaponmaster -> proc_chance(), execute_state -> n_targets ) ) ) {
+      wm_finisher_cancel = true;
+      p() -> dfa_wm_finisher_cancel -> add( 1 );
+      p() -> cooldowns.weaponmaster -> start( p() -> talent.weaponmaster -> internal_cooldown() );
+    }
+
+    // Cancel the finisher hit depending on weaponmaster proc
+    if ( ! wm_finisher_cancel ) {
+      action_state_t* driver_state = driver -> get_state( execute_state );
+      driver_state -> target = target;
+      driver -> schedule_execute( driver_state );
+    }
+      
 
     if ( p() -> buffs.feeding_frenzy -> check() )
     {
@@ -5466,6 +5489,9 @@ void rogue_t::trigger_combat_potency( const action_state_t* state )
     return;
 
   double chance = spec.combat_potency -> effectN( 1 ).percent() + artifact.fortune_strikes.percent();
+  // Looks like CP proc chance is normalized by weapon speed again
+  if ( state -> action != active_main_gauche )
+    chance *= state -> action -> weapon -> swing_time.total_seconds() / 1.4;
   if ( ! rng().roll( chance ) )
     return;
 
@@ -5808,7 +5834,7 @@ void rogue_t::trigger_sinister_circulation( const action_state_t* )
 
   cooldowns.kingsbane -> adjust( - timespan_t::from_seconds( artifact.sinister_circulation.percent() ), false );
   // FIXME Hotfix 03-30-2017: Sinister Circulation got a 0.5s ICD
-  cooldowns.sinister_circulation -> start( timespan_t::from_seconds( 0.5 ) );
+  cooldowns.sinister_circulation -> start( artifact.sinister_circulation.data().internal_cooldown() );
 }
 
 void rogue_t::trigger_surge_of_toxins( const action_state_t* s )
@@ -5831,8 +5857,11 @@ void rogue_t::trigger_surge_of_toxins( const action_state_t* s )
     max_cp = std::min( max_cp, static_cast<int>( COMBO_POINT_MAX ) );
   }
 
-  // 2% per combo point, nowhere to be found in spell data. Agonizing Poison halves it to 1%.
-  get_target_data( s -> target ) -> debuffs.surge_of_toxins -> trigger( 1, max_cp * 0.02 );
+  
+  rogue_td_t* td = get_target_data( s -> target );
+  // Spell data only give us 10%, so we transform it since it's 2% per cp.
+  double sot_mod = td -> debuffs.surge_of_toxins -> data().effectN( 1 ).base_value() * 0.002;
+  td -> debuffs.surge_of_toxins -> trigger( 1, max_cp * sot_mod );
 }
 
 void rogue_t::trigger_poison_knives( const action_state_t* state )
@@ -7028,7 +7057,8 @@ void rogue_t::init_action_list()
   else if ( specialization() == ROGUE_SUBTLETY )
     potion_action += "|buff.shadow_blades.up";
 
-  precombat -> add_talent( this, "Marked for Death", "if=raid_event.adds.in>40" );
+  if ( specialization() != ROGUE_SUBTLETY )
+    precombat -> add_talent( this, "Marked for Death", "if=raid_event.adds.in>40" );
 
   if ( specialization() == ROGUE_ASSASSINATION )
   {
@@ -7073,7 +7103,7 @@ void rogue_t::init_action_list()
     cds -> add_action( this, "Vanish", "if=talent.subterfuge.enabled&equipped.mantle_of_the_master_assassin&(debuff.vendetta.up|target.time_to_die<10)&mantle_duration=0" );
     cds -> add_action( this, "Vanish", "if=talent.subterfuge.enabled&!equipped.mantle_of_the_master_assassin&!stealthed.rogue&dot.garrote.refreshable&((spell_targets.fan_of_knives<=3&combo_points.deficit>=1+spell_targets.fan_of_knives)|(spell_targets.fan_of_knives>=4&combo_points.deficit>=4))" );
     cds -> add_action( this, "Vanish", "if=talent.shadow_focus.enabled&variable.energy_time_to_max_combined>=2&combo_points.deficit>=4" );
-    cds -> add_talent( this, "Exsanguinate", "if=prev_gcd.1.rupture&dot.rupture.remains>4+4*cp_max_spend" );
+    cds -> add_talent( this, "Exsanguinate", "if=prev_gcd.1.rupture&dot.rupture.remains>4+4*cp_max_spend&!stealthed.rogue|!dot.garrote.pmultiplier<=1&!cooldown.vanish.up&buff.subterfuge.up" );
 
     // Finishers
     action_priority_list_t* finish = get_action_priority_list( "finish", "Finishers" );
@@ -7090,8 +7120,9 @@ void rogue_t::init_action_list()
     // Maintain
     action_priority_list_t* maintain = get_action_priority_list( "maintain", "Maintain" );
     maintain -> add_action( this, "Rupture", "if=talent.nightstalker.enabled&stealthed.rogue&(!equipped.mantle_of_the_master_assassin|!set_bonus.tier19_4pc)&(talent.exsanguinate.enabled|target.time_to_die-remains>4)" );
-    maintain -> add_action( this, "Garrote", "cycle_targets=1,if=talent.subterfuge.enabled&stealthed.rogue&combo_points.deficit>=1&refreshable&(!exsanguinated|remains<=tick_time*2)&target.time_to_die-remains>2" );
-    maintain -> add_action( this, "Garrote", "cycle_targets=1,if=talent.subterfuge.enabled&stealthed.rogue&combo_points.deficit>=1&remains<=10&pmultiplier<=1&!exsanguinated&target.time_to_die-remains>2" );
+    maintain -> add_action( this, "Garrote", "cycle_targets=1,if=talent.subterfuge.enabled&stealthed.rogue&combo_points.deficit>=1&set_bonus.tier20_4pc&((dot.garrote.remains<=13&!debuff.toxic_blade.up)|pmultiplier<=1)&!exsanguinated" );
+    maintain -> add_action( this, "Garrote", "cycle_targets=1,if=talent.subterfuge.enabled&stealthed.rogue&combo_points.deficit>=1&!set_bonus.tier20_4pc&refreshable&(!exsanguinated|remains<=tick_time*2)&target.time_to_die-remains>2" );
+    maintain -> add_action( this, "Garrote", "cycle_targets=1,if=talent.subterfuge.enabled&stealthed.rogue&combo_points.deficit>=1&!set_bonus.tier20_4pc&remains<=10&pmultiplier<=1&!exsanguinated&target.time_to_die-remains>2" );
     maintain -> add_action( this, "Rupture", "if=!talent.exsanguinate.enabled&combo_points>=3&!ticking&mantle_duration<=gcd.remains+0.2&target.time_to_die>6" );
     maintain -> add_action( this, "Rupture", "if=talent.exsanguinate.enabled&((combo_points>=cp_max_spend&cooldown.exsanguinate.remains<1)|(!ticking&(time>10|combo_points>=2+artifact.urge_to_kill.enabled)))" );
     maintain -> add_action( this, "Rupture", "cycle_targets=1,if=combo_points>=4&refreshable&(pmultiplier<=1|remains<=tick_time)&(!exsanguinated|remains<=tick_time*2)&target.time_to_die-remains>6" );
@@ -7116,7 +7147,9 @@ void rogue_t::init_action_list()
       // Make DfA have priority over RtB
     def -> add_talent( this, "Death from Above", "if=energy.time_to_max>2&!variable.ss_useable_noreroll" );
       // Pandemic is (6 + 6 * CP) * 0.3, ie (1 + CP) * 1.8
-    def -> add_talent( this, "Slice and Dice", "if=!variable.ss_useable&buff.slice_and_dice.remains<target.time_to_die&buff.slice_and_dice.remains<(1+combo_points)*1.8" );
+    def -> add_talent( this, "Slice and Dice", "if=!variable.ss_useable&buff.slice_and_dice.remains<target.time_to_die&buff.slice_and_dice.remains<(1+combo_points)*1.8&!buff.slice_and_dice.improved&!buff.loaded_dice.up" );
+    def -> add_talent( this, "Slice and Dice", "if=buff.loaded_dice.up&combo_points>=cp_max_spend&(!buff.slice_and_dice.improved|buff.slice_and_dice.remains<4)" );
+    def -> add_talent( this, "Slice and Dice", "if=buff.slice_and_dice.improved&buff.slice_and_dice.remains<=2&combo_points>=2&!buff.loaded_dice.up" );
       // Reroll unless 3+ buffs or true bearing
     def -> add_action( this, "Roll the Bones", "if=!variable.ss_useable&(target.time_to_die>20|buff.roll_the_bones.remains<target.time_to_die)&(buff.roll_the_bones.remains<=3|variable.rtb_reroll)" );
     def -> add_talent( this, "Killing Spree", "if=energy.time_to_max>5|energy<15" );
@@ -7174,16 +7207,19 @@ void rogue_t::init_action_list()
   else if ( specialization() == ROGUE_SUBTLETY )
   {
     // Pre-Combat
-    precombat -> add_action( "variable,name=ssw_refund,value=equipped.shadow_satyrs_walk*(6+ssw_refund_offset)", "Defined variables that doesn't change during the fight" );
+    precombat -> add_action( "variable,name=ssw_refund,value=equipped.shadow_satyrs_walk*(6+ssw_refund_offset)", "Defined variables that doesn't change during the fight." );
     precombat -> add_action( "variable,name=stealth_threshold,value=(65+talent.vigor.enabled*35+talent.master_of_shadows.enabled*10+variable.ssw_refund)" );
-    precombat -> add_action( "variable,name=shd_fractionnal,value=1.725+0.725*talent.enveloping_shadows.enabled" );
+    precombat -> add_action( "variable,name=shd_fractional,value=1.725+0.725*talent.enveloping_shadows.enabled" );
     precombat -> add_action( this, "Symbols of Death" );
 
     // Main Rotation
+    def -> add_action( this, "Shadow Dance", "if=talent.dark_shadow.enabled&!stealthed.all&buff.death_from_above.up&buff.death_from_above.remains<=0.3", "This let us to use Shadow Dance right before the 2nd part of DfA lands. Only with Dark Shadow." );
+    def -> add_action( "wait,sec=0.1,if=buff.shadow_dance.up&gcd.remains>0", "This is triggered only with DfA talent since we check shadow_dance even while the gcd is ongoing, it's purely for simulation performance." );
     def -> add_action( "call_action_list,name=cds" );
-    def -> add_action( "run_action_list,name=stealthed,if=stealthed.all", "Fully switch to the Stealthed Rotation (by doing so, it forces pooling if nothing is available)" );
+    def -> add_action( "run_action_list,name=stealthed,if=stealthed.all", "Fully switch to the Stealthed Rotation (by doing so, it forces pooling if nothing is available)." );
     def -> add_action( this, "Nightblade", "if=target.time_to_die>8&remains<gcd.max&combo_points>=4" );
-    def -> add_action( "call_action_list,name=stealth_als,if=(combo_points.deficit>=3&(!talent.dark_shadow.enabled|dot.nightblade.remains>4+talent.subterfuge.enabled|cooldown.shadow_dance.charges_fractional>=1.9))|cooldown.shadow_dance.charges_fractional>=2.9" );
+    def -> add_action( "call_action_list,name=stealth_als,if=talent.dark_shadow.enabled&combo_points.deficit>=3&(dot.nightblade.remains>4+talent.subterfuge.enabled|cooldown.shadow_dance.charges_fractional>=1.9&(!equipped.denial_of_the_halfgiants|time>10))" );
+    def -> add_action( "call_action_list,name=stealth_als,if=!talent.dark_shadow.enabled&(combo_points.deficit>=3|cooldown.shadow_dance.charges_fractional>=1.9+talent.enveloping_shadows.enabled)" );
     def -> add_action( "call_action_list,name=finish,if=combo_points>=5|(combo_points>=4&combo_points.deficit<=2&spell_targets.shuriken_storm>=3&spell_targets.shuriken_storm<=4)" );
     def -> add_action( "call_action_list,name=build,if=energy.deficit<=variable.stealth_threshold" );
 
@@ -7214,9 +7250,10 @@ void rogue_t::init_action_list()
         cds -> add_action( racial_actions[i] + ",if=stealthed.rogue" );
     }
     cds -> add_action( this, "Symbols of Death", "if=energy.deficit>=40-stealthed.all*30" );
+    cds -> add_talent( this, "Marked for Death", "target_if=min:target.time_to_die,if=target.time_to_die<combo_points.deficit" );
+    cds -> add_talent( this, "Marked for Death", "if=raid_event.adds.in>40&combo_points.deficit>=cp_max_spend" );
     cds -> add_action( this, "Shadow Blades", "if=combo_points.deficit>=2+stealthed.all-equipped.mantle_of_the_master_assassin" );
-    cds -> add_action( this, "Goremaw's Bite", "if=!stealthed.all&cooldown.shadow_dance.charges_fractional<=variable.shd_fractionnal&((combo_points.deficit>=4-(time<10)*2&energy.deficit>50+talent.vigor.enabled*25-(time>=10)*15)|(combo_points.deficit>=1&target.time_to_die<8))" );
-    cds -> add_talent( this, "Marked for Death", "target_if=min:target.time_to_die,if=target.time_to_die<combo_points.deficit|(raid_event.adds.in>40&combo_points.deficit>=cp_max_spend)" );
+    cds -> add_action( this, "Goremaw's Bite", "if=!stealthed.all&cooldown.shadow_dance.charges_fractional<=variable.shd_fractional&((combo_points.deficit>=4-(time<10)*2&energy.deficit>50+talent.vigor.enabled*25-(time>=10)*15)|(combo_points.deficit>=1&target.time_to_die<8))" );
 
     // Finishers
     action_priority_list_t* finish = get_action_priority_list( "finish", "Finishers" );
@@ -7225,11 +7262,11 @@ void rogue_t::init_action_list()
     finish -> add_action( this, "Nightblade", "if=target.time_to_die-remains>8&(mantle_duration=0|remains<=mantle_duration)&((refreshable&(!finality|buff.finality_nightblade.up))|remains<tick_time*2)" );
     finish -> add_action( this, "Nightblade", "cycle_targets=1,if=target.time_to_die-remains>8&mantle_duration=0&((refreshable&(!finality|buff.finality_nightblade.up))|remains<tick_time*2)" );
     finish -> add_talent( this, "Death from Above" );
-    finish -> add_action( this, "Eviscerate" );
+    finish -> add_action( this, "Eviscerate", "if=!talent.death_from_above.enabled|cooldown.death_from_above.remains>=(energy.max-energy-combo_points*6)%energy.regen-(2+(equipped.mantle_of_the_master_assassin&equipped.denial_of_the_halfgiants))" );
 
     // Stealth Action List Starter
     action_priority_list_t* stealth_als = get_action_priority_list( "stealth_als", "Stealth Action List Starter" );
-    stealth_als -> add_action( "call_action_list,name=stealth_cds,if=energy.deficit<=variable.stealth_threshold&(!equipped.shadow_satyrs_walk|cooldown.shadow_dance.charges_fractional>=variable.shd_fractionnal|energy.deficit>=10)" );
+    stealth_als -> add_action( "call_action_list,name=stealth_cds,if=energy.deficit<=variable.stealth_threshold&(!equipped.shadow_satyrs_walk|cooldown.shadow_dance.charges_fractional>=variable.shd_fractional|energy.deficit>=10)" );
     stealth_als -> add_action( "call_action_list,name=stealth_cds,if=mantle_duration>2.3" );
     stealth_als -> add_action( "call_action_list,name=stealth_cds,if=spell_targets.shuriken_storm>=5" );
     stealth_als -> add_action( "call_action_list,name=stealth_cds,if=(cooldown.shadowmeld.up&!cooldown.vanish.up&cooldown.shadow_dance.charges<=1)" );
@@ -7237,8 +7274,8 @@ void rogue_t::init_action_list()
 
     // Stealth Cooldowns
     action_priority_list_t* stealth_cds = get_action_priority_list( "stealth_cds", "Stealth Cooldowns" );
-    stealth_cds -> add_action( this, "Vanish", "if=mantle_duration=0&cooldown.shadow_dance.charges_fractional<variable.shd_fractionnal+(equipped.mantle_of_the_master_assassin&time<30)*0.3" );
-    stealth_cds -> add_action( this, "Shadow Dance", "if=charges_fractional>=variable.shd_fractionnal" );
+    stealth_cds -> add_action( this, "Vanish", "if=mantle_duration=0&cooldown.shadow_dance.charges_fractional<variable.shd_fractional+(equipped.mantle_of_the_master_assassin&time<30)*0.3" );
+    stealth_cds -> add_action( this, "Shadow Dance", "if=charges_fractional>=variable.shd_fractional" );
     stealth_cds -> add_action( "pool_resource,for_next=1,extra_amount=40" );
     stealth_cds -> add_action( "shadowmeld,if=energy>=40&energy.deficit>=10+variable.ssw_refund" );
     stealth_cds -> add_action( this, "Shadow Dance", "if=combo_points.deficit>=2+(talent.subterfuge.enabled|buff.the_first_of_the_dead.up)*2&(cooldown.symbols_of_death.remains>2|!talent.dark_shadow.enabled)" );
@@ -7884,6 +7921,9 @@ void rogue_t::init_procs()
   {
     dfa_mh = get_sample_data( "dfa_mh" );
     dfa_oh = get_sample_data( "dfa_oh" );
+    if ( bugs && talent.weaponmaster -> ok() ) {
+      dfa_wm_finisher_cancel = get_sample_data( "dfa_wm_finisher_cancel" );
+    }
   }
 }
 
@@ -8030,6 +8070,8 @@ void rogue_t::create_buffs()
                                   .default_value( find_spell( 193538 ) -> effectN( 1 ).percent() )
                                   .chance( talent.alacrity -> ok() );
   buffs.death_from_above        = buff_creator_t( this, "death_from_above", spell.death_from_above )
+                                  // Note: Duration is hardcoded to 1.3s to match the current model and then let it trackable in the APL
+                                  .duration( timespan_t::from_seconds( 1.3 ) )
                                   .quiet( true );
   buffs.subterfuge              = new buffs::subterfuge_t( this );
   // Assassination
@@ -8739,6 +8781,39 @@ public:
       os.format("<td class=\"right\">%.3f</td>", p.dfa_oh -> min() );
       os.format("<td class=\"right\">%.3f</td>", p.dfa_oh -> mean() );
       os.format("<td class=\"right\">%.3f</td>", p.dfa_oh -> max() );
+      os << "</tr>";
+
+      os << "</table>";
+
+      os << "</div>\n";
+
+      os << "<div class=\"clear\"></div>\n";
+    }
+    os << "</div>\n";
+
+    os << "<div class=\"player-section custom_section\">\n";
+    if ( p.bugs && p.talent.death_from_above -> ok() && p.talent.weaponmaster -> ok() )
+    {
+      os << "<h3 class=\"toggle open\">Death from Above Weaponmaster actions loss</h3>\n"
+         << "<div class=\"toggle-content\">\n";
+
+      os << "<p>";
+      os <<
+        "Weaponmaster procs during the 1st part of Death from Above causes"
+        " the 2nd part (Eviscerate action) to be cancelled."
+        " Here is a table showing how often it occured during"
+        " the simulation.";
+      os << "</p>";
+      os << "<table class=\"sc\" style=\"float: left;margin-right: 10px;\">\n";
+
+      os << "<tr><th></th><th colspan=\"3\">Actions lost per iteration</th></tr>";
+      os << "<tr><th>Action</th><th>Minimum</th><th>Average</th><th>Maximum</th></tr>";
+
+      os << "<tr>";
+      os << "<td class=\"left\">Eviscerate</td>";
+      os.format("<td class=\"right\">%.3f</td>", p.dfa_wm_finisher_cancel -> min() );
+      os.format("<td class=\"right\">%.3f</td>", p.dfa_wm_finisher_cancel -> mean() );
+      os.format("<td class=\"right\">%.3f</td>", p.dfa_wm_finisher_cancel -> max() );
       os << "</tr>";
 
       os << "</table>";

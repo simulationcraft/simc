@@ -299,7 +299,6 @@ public:
     const spell_data_t* shield_block_2;
     const spell_data_t* shield_slam;
     const spell_data_t* shield_wall;
-    const spell_data_t* singleminded_fury;
     const spell_data_t* slam;
     const spell_data_t* tactician;
     const spell_data_t* thunder_clap;
@@ -422,7 +421,6 @@ public:
   {
     // Arms - Strom'kar the Warbreaker
     artifact_power_t corrupted_blood_of_zakajz;
-    artifact_power_t corrupted_rage;
     artifact_power_t crushing_blows;
     artifact_power_t deathblow;
     artifact_power_t exploit_the_weakness;
@@ -621,7 +619,7 @@ public:
   void enrage()
   {
     buff.enrage -> trigger();
-    if ( legendary.ceannar_charger->found() )
+    if ( legendary.ceannar_charger -> found() )
     {
       resource_gain( RESOURCE_RAGE, legendary.ceannar_charger -> effectN( 1 ).trigger() -> effectN( 1 ).resource( RESOURCE_RAGE ), gain.ceannar_rage );
     }
@@ -1022,6 +1020,10 @@ struct warrior_attack_t: public warrior_action_t < melee_attack_t >
     {
       odyns_champion( timespan_t::from_seconds( -1.0 * p() -> artifact.odyns_champion.data().effectN( 1 ).base_value() ) );
     }
+    if ( procs_overpower )
+    {
+      p() -> buff.overpower -> trigger();
+    }
   }
 
   virtual void odyns_champion( timespan_t reduction )
@@ -1055,11 +1057,11 @@ struct warrior_attack_t: public warrior_action_t < melee_attack_t >
     }
   }
 
-  void opportunity_strikes( action_state_t* s )
+  virtual void opportunity_strikes( action_state_t* s )
   {
-    if ( special && s -> action -> data().id() != p() -> active.opportunity_strikes -> data().id() )
+    if ( special && p() -> cooldown.opportunity_strikes -> up() )
     {
-      if ( rng().roll( ( 1 - ( s -> target -> health_percentage() / 100 ) ) * p() -> talents.opportunity_strikes -> proc_chance() ) && p() -> cooldown.opportunity_strikes -> up() )
+      if ( rng().roll( ( 1 - ( s -> target -> health_percentage() / 100 ) ) * p() -> talents.opportunity_strikes -> proc_chance() ) )
       {
         p() -> active.opportunity_strikes -> target = s -> target;
         p() -> active.opportunity_strikes -> execute();
@@ -1072,13 +1074,8 @@ struct warrior_attack_t: public warrior_action_t < melee_attack_t >
   {
     base_t::impact( s );
 
-    if ( result_is_hit( s -> result ) && p() -> specialization() == WARRIOR_ARMS && s -> result_amount > 0 )
+    if ( result_is_hit( s -> result ) && s -> result_amount > 0 )
     {
-      if ( procs_overpower )
-      {
-        p() -> buff.overpower -> trigger();
-      }
-
       if ( p() -> talents.opportunity_strikes -> ok() )
       {
         opportunity_strikes( s );
@@ -1089,23 +1086,6 @@ struct warrior_attack_t: public warrior_action_t < melee_attack_t >
   virtual void tick( dot_t* d ) override
   {
     base_t::tick( d );
-  }
-
-  virtual double calculate_weapon_damage( double attack_power ) const override
-  {
-    double dmg = base_t::calculate_weapon_damage( attack_power );
-
-    // Catch the case where weapon == 0 so we don't crash/retest below.
-    if ( dmg == 0.0 )
-      return 0;
-
-    if ( weapon -> slot == SLOT_OFF_HAND )
-    {
-      if ( p() -> main_hand_weapon.group() == WEAPON_1H &&
-           p() -> off_hand_weapon.group() == WEAPON_1H )
-        dmg *= 1.0 + p() -> spec.singleminded_fury -> effectN( 2 ).percent();
-    }
-    return dmg;
   }
 
   virtual void trigger_bloodbath_dot( player_t* t, double dmg )
@@ -1183,7 +1163,11 @@ struct melee_t: public warrior_attack_t
   melee_t( const std::string& name, warrior_t* p ):
     warrior_attack_t( name, p, spell_data_t::nil() ),
     mh_lost_melee_contact( true ), oh_lost_melee_contact( true ),
-    base_rage_generation( 1.75 ), arms_rage_multiplier( 4.4 ), fury_rage_multiplier( 0.80 ),
+    // patch notes said 10% buff so that would be 4.0 -> 4.4
+    // however in game testing suggest that actual value is 4.286
+    // with 3.6 speed weapon, we generate 27 rage on hit, not 27.72
+    // and crits generate 35 not 36
+    base_rage_generation( 1.75 ), arms_rage_multiplier( 4.286 ), fury_rage_multiplier( 0.80 ),
     devastator( nullptr )
   {
     school = SCHOOL_PHYSICAL;
@@ -2043,39 +2027,6 @@ struct corrupted_blood_of_zakajz_t : public residual_action::residual_periodic_a
   }
 };
 
-// Corrupted Rage ===========================================================
-
-struct corrupted_rage_t: public warrior_attack_t
-{
-  corrupted_rage_t( warrior_t* p, const std::string& options_str ):
-    warrior_attack_t( "corrupted_rage", p, p -> find_spell( 209577 ) )
-  {
-    parse_options( options_str );
-    weapon = &( player -> main_hand_weapon );
-    aoe = -1;
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    warrior_attack_t::impact( s );
-
-    if ( result_is_hit( s -> result ) )
-    {
-      td( s -> target ) -> debuffs_colossus_smash -> trigger();
-      p() -> buff.shattered_defenses -> trigger();
-    }
-  }
-
-  bool ready() override
-  {
-    if ( ! p() -> artifact.corrupted_rage.rank() )
-    {
-      return false;
-    }
-    return warrior_attack_t::ready();
-  }
-};
-
 // Deep Wounds ==============================================================
 
 struct deep_wounds_t: public warrior_attack_t
@@ -2097,6 +2048,10 @@ struct opportunity_strikes_t : public warrior_attack_t
   {
     background = true;
     school = p -> talents.opportunity_strikes -> get_school_type();
+  }
+
+  void opportunity_strikes( action_state_t* s ) override
+  {// Cannot re-proc itself.
   }
 };
 
@@ -2409,12 +2364,6 @@ struct execute_off_hand_t: public warrior_attack_t
     dual = true;
     may_miss = may_dodge = may_parry = may_block = false;
     weapon = &( p -> off_hand_weapon );
-
-    if ( p -> main_hand_weapon.group() == WEAPON_1H &&
-         p -> off_hand_weapon.group() == WEAPON_1H )
-    {
-      weapon_multiplier *= 1.0 + p -> spec.singleminded_fury -> effectN( 3 ).percent();
-    }
     weapon_multiplier *= 1.0 + p -> spec.execute_2 -> effectN( 1 ).percent();
     base_crit += p -> artifact.deathdealer.percent();
   }
@@ -2450,11 +2399,6 @@ struct execute_t: public warrior_attack_t
 
     oh_attack = new execute_off_hand_t( p, "execute_offhand", p -> find_spell( 163558 ) );
     add_child( oh_attack );
-    if ( p -> main_hand_weapon.group() == WEAPON_1H &&
-         p -> off_hand_weapon.group() == WEAPON_1H )
-    {
-      weapon_multiplier *= 1.0 + p -> spec.singleminded_fury -> effectN( 3 ).percent();
-    }
     weapon_multiplier *= 1.0 + p -> spec.execute_2 -> effectN( 1 ).percent();
     base_crit += p -> artifact.deathdealer.percent();
   }
@@ -2998,6 +2942,7 @@ struct overpower_t: public warrior_attack_t
     parse_options( options_str );
     may_block = may_parry = may_dodge = false;
     weapon = &( p -> main_hand_weapon );
+    procs_overpower = false; //Cannot re-proc itself
   }
 
   double composite_crit_chance() const override
@@ -3631,48 +3576,11 @@ struct slam_t: public warrior_attack_t
 
 struct trauma_dot_t: public residual_action::residual_periodic_action_t < warrior_spell_t >
 {
-  double crit_chance_of_last_ability;
   trauma_dot_t( warrior_t* p ):
-    base_t( "trauma", p, p -> find_spell( 215537 ) ),
-    crit_chance_of_last_ability( 0 )
+    base_t( "trauma", p, p -> find_spell( 215537 ) )
   {
     dual = true;
-    tick_may_crit = true;
-  }
-
-  double calculate_tick_amount( action_state_t* state, double dmg_multiplier ) const override
-  {
-    double amount = 0.0;
-
-    if ( dot_t* d = find_dot( state -> target ) )
-    {
-      residual_action::residual_periodic_state_t* dot_state = debug_cast<residual_action::residual_periodic_state_t*>(d -> state);
-      amount += dot_state -> tick_amount;
-    }
-
-    state -> result_raw = amount;
-    state -> result = RESULT_HIT; // Reset result to hit, as it has already been rolled inside tick().
-    if ( rng().roll( composite_crit_chance() ) )
-      state -> result = RESULT_CRIT;
-
-    if ( state -> result == RESULT_CRIT )
-      amount *= 1.0 + total_crit_bonus( state );
-
-    amount *= dmg_multiplier;
-    state -> result_total = amount;
-
-    return amount;
-  }
-
-  double composite_crit_chance() const override
-  {
-    return crit_chance_of_last_ability;
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    residual_periodic_action_t::impact( s );
-    crit_chance_of_last_ability = p() -> composite_melee_crit_chance();
+    tick_may_crit = false;
   }
 };
 
@@ -3939,6 +3847,8 @@ struct fury_whirlwind_parent_t: public warrior_attack_t
   }
 };
 
+// Arms Whirlwind ========================================================
+
 struct arms_whirlwind_mh_t: public warrior_attack_t
 {
   arms_whirlwind_mh_t( warrior_t* p, const spell_data_t* whirlwind ):
@@ -3946,6 +3856,10 @@ struct arms_whirlwind_mh_t: public warrior_attack_t
   {
     aoe = -1;
     weapon_multiplier *= 1.0 + p -> artifact.many_will_fall.percent();
+  }
+
+  void opportunity_strikes( action_state_t* s ) override
+  { //Only the first spin has a chance to proc opportunity strikes.
   }
 
   double action_multiplier() const override
@@ -4594,7 +4508,6 @@ action_t* warrior_t::create_action( const std::string& name,
   if ( name == "cleave"               ) return new cleave_t               ( this, options_str );
   if ( name == "colossus_smash"       ) return new colossus_smash_t       ( this, options_str );
   if ( name == "commanding_shout"     ) return new commanding_shout_t     ( this, options_str );
-  if ( name == "corrupted_rage"       ) return new corrupted_rage_t       ( this, options_str );
   if ( name == "defensive_stance"     ) return new defensive_stance_t     ( this, options_str );
   if ( name == "demoralizing_shout"   ) return new demoralizing_shout     ( this, options_str );
   if ( name == "devastate"            ) return new devastate_t            ( this, options_str );
@@ -4708,7 +4621,6 @@ void warrior_t::init_spells()
   spec.shield_block_2           = find_specialization_spell( 231847 );
   spec.shield_slam              = find_specialization_spell( "Shield Slam" );
   spec.shield_wall              = find_specialization_spell( "Shield Wall" );
-  spec.singleminded_fury        = find_specialization_spell( "Single-Minded Fury" );
   spec.slam                     = find_specialization_spell( "Slam" );
   spec.spell_reflection         = find_specialization_spell( "Spell Reflection" );
   spec.tactician                = find_specialization_spell( "Tactician" );
@@ -4775,7 +4687,6 @@ void warrior_t::init_spells()
   artifact.battle_scars              = find_artifact_spell( "Battle Scars" );
   artifact.bloodcraze                = find_artifact_spell( "Bloodcraze" );
   artifact.corrupted_blood_of_zakajz = find_artifact_spell( "Corrupted Blood of Zakajz" );
-  artifact.corrupted_rage            = find_artifact_spell( "Corrupted Rage" );
   artifact.crushing_blows            = find_artifact_spell( "Crushing Blows" );
   artifact.deathblow                 = find_artifact_spell( "Deathblow" );
   artifact.deathdealer               = find_artifact_spell( "Deathdealer" );
@@ -5296,9 +5207,6 @@ void warrior_t::apl_arms()
     }
   }
 
-  default_list -> add_action( this, "Battle Cry", "if=gcd.remains<0.25&(prev_gcd.1.colossus_smash|prev_gcd.1.warbreaker)&cooldown.bladestorm.remains=0|target.time_to_die<=5&target.health.pct>20" );
-  default_list -> add_action( this, "Battle Cry", "if=gcd.remains<0.25&((!talent.avatar.enabled|cooldown.avatar.remains>=10)&(buff.shattered_defenses.up|cooldown.warbreaker.remains>7&cooldown.colossus_smash.remains>7|cooldown.colossus_smash.remains&debuff.colossus_smash.remains>gcd))&target.health.pct<=20|target.time_to_die<=5" );
-
   default_list -> add_talent( this, "Avatar", "if=gcd.remains<0.25&(buff.battle_cry.up|cooldown.battle_cry.remains<15)|target.time_to_die<=20" );
   for ( size_t i = 0; i < items.size(); i++ )
   {
@@ -5308,7 +5216,7 @@ void warrior_t::apl_arms()
     }
     else if ( items[i].name_str == "draught_of_souls" )
     {
-      default_list -> add_action( "use_item,name=" + items[i].name_str + ",if=equipped.draught_of_souls&((prev_gcd.1.mortal_strike|cooldown.mortal_strike.remains>=3)&buff.battle_cry.remains>=3&debuff.colossus_smash.up&buff.avatar.remains>=3)" );
+      default_list -> add_action( "use_item,name=" + items[i].name_str + ",if=equipped.draught_of_souls&((prev_gcd.1.mortal_strike|cooldown.mortal_strike.remains>=3)&buff.battle_cry.remains>=3&debuff.colossus_smash.up)" );
 
     }
     else if ( items[i].name_str == "kiljaedens_burning_wish" )
@@ -5322,41 +5230,40 @@ void warrior_t::apl_arms()
     }
   }
 
-  default_list -> add_action( this, "Heroic Leap", "if=(debuff.colossus_smash.down|debuff.colossus_smash.remains<2)&cooldown.colossus_smash.remains&equipped.weight_of_the_earth|!equipped.weight_of_the_earth&debuff.colossus_smash.up" );
-  default_list -> add_talent( this, "Rend", "if=remains<gcd&target.health.pct>=20" );
-  default_list -> add_talent( this, "Focused Rage", "if=buff.battle_cry_deadly_calm.remains>cooldown.focused_rage.remains&(buff.focused_rage.stack<3|cooldown.mortal_strike.remains)" );
-  default_list -> add_action( this, "Colossus Smash", "if=cooldown_react&debuff.colossus_smash.remains<gcd" );
-  default_list -> add_action( this, "Warbreaker", "if=debuff.colossus_smash.remains<gcd|(talent.titanic_might.enabled&buff.shattered_defenses.down)" );
-  default_list -> add_talent( this, "Ravager" );
-  default_list -> add_talent( this, "Overpower", "if=buff.overpower.react" );
+  default_list -> add_action( this, "Battle Cry", "if=target.time_to_die<=6|(!talent.ravager.enabled|prev_gcd.1.ravager)&!gcd.remains&target.debuff.colossus_smash.remains>=5&(!cooldown.bladestorm.remains|!set_bonus.tier20_4pc)&(!talent.rend.enabled|dot.rend.remains>4)");
   default_list -> add_action( "run_action_list,name=cleave,if=spell_targets.whirlwind>=2&talent.sweeping_strikes.enabled" );
   default_list -> add_action( "run_action_list,name=aoe,if=spell_targets.whirlwind>=5&!talent.sweeping_strikes.enabled" );
   default_list -> add_action( "run_action_list,name=execute,target_if=target.health.pct<=20&spell_targets.whirlwind<5" );
   default_list -> add_action( "run_action_list,name=single,if=target.health.pct>20" );
 
-  single_target -> add_action( this, "Colossus Smash", "if=cooldown_react&buff.shattered_defenses.down&(buff.battle_cry.down|buff.battle_cry.up&buff.battle_cry.remains>=gcd|buff.corrupted_blood_of_zakajz.remains>=gcd)" );
-  single_target -> add_action( this, "Bladestorm", "if=buff.battle_cry.up&(set_bonus.tier20_4pc|equipped.the_great_storms_eye)" );
-  single_target -> add_action( this, "Overpower", "if=buff.battle_cry.down&buff.overpower.react" );
-  single_target -> add_talent( this, "Focused Rage", "if=!buff.battle_cry_deadly_calm.up&buff.focused_rage.stack<3&!cooldown.colossus_smash.up&(rage>=130|debuff.colossus_smash.down|talent.anger_management.enabled&cooldown.battle_cry.remains<=8)", "actions.single+=/heroic_charge,if=rage.deficit>=40&(!cooldown.heroic_leap.remains|swing.mh.remains>1.2)&buff.battle_cry.down\n#Remove the # above to run out of melee and charge back in for rage." );
-  single_target -> add_action( this, "Mortal Strike", "if=buff.shattered_defenses.up" );
+  single_target -> add_action( this, "Bladestorm", "if=buff.battle_cry.up&set_bonus.tier20_4pc");
+  single_target -> add_talent( this, "Ravager", "if=cooldown.battle_cry.remains<=gcd&debuff.colossus_smash.remains>6");
+  single_target -> add_action( this, "Colossus Smash", "if=buff.shattered_defenses.down" );
+  single_target -> add_action( this, "Warbreaker", "if=(raid_event.adds.in>90|!raid_event.adds.exists)&((talent.fervor_of_battle.enabled&debuff.colossus_smash.remains<gcd)|!talent.fervor_of_battle.enabled&((buff.stone_heart.up|cooldown.mortal_strike.remains<=gcd.remains)&buff.shattered_defenses.down))" );
+  single_target -> add_talent( this, "Focused Rage", "if=!buff.battle_cry_deadly_calm.up&buff.focused_rage.stack<3&!cooldown.colossus_smash.up&(rage>=130|debuff.colossus_smash.down|talent.anger_management.enabled&cooldown.battle_cry.remains<=8)", "actions.single+=/heroic_charge,if=rage.deficit>=55&(!cooldown.heroic_leap.remains|swing.mh.remains>1.2)&buff.battle_cry.down\n#Remove the # above to run out of melee and charge back in for rage." );
+  single_target -> add_talent( this, "Rend", "if=remains<=0|remains<5&cooldown.battle_cry.remains<2&(cooldown.bladestorm.remains<2|!set_bonus.tier20_4pc)" );
   single_target -> add_action( this, "Execute", "if=buff.stone_heart.react" );
+  single_target -> add_action( this, "Mortal Strike", "if=buff.shattered_defenses.up|buff.executioners_precision.down" );
+  single_target -> add_talent( this, "Overpower", "if=buff.battle_cry.down" );
   single_target -> add_talent( this, "Rend", "if=remains<=duration*0.3" );
-  single_target -> add_action( this, "Cleave", "if=(rage<30&!talent.dauntless.enabled|rage<24&talent.dauntless.enabled)&buff.cleave.down" );
   single_target -> add_action( this, "Whirlwind", "if=spell_targets.whirlwind>1|talent.fervor_of_battle.enabled" );
   single_target -> add_action( this, "Slam", "if=spell_targets.whirlwind=1&!talent.fervor_of_battle.enabled" );
-  single_target -> add_action( this, "Bladestorm", "interrupt=1,if=(raid_event.adds.in>90|!raid_event.adds.exists|spell_targets.bladestorm_mh>desired_targets)&!set_bonus.tier20_4pc" );
+  single_target -> add_talent( this, "Overpower" );
+  single_target -> add_action( this, "Bladestorm", "if=(raid_event.adds.in>90|!raid_event.adds.exists)&!set_bonus.tier20_4pc" );
 
-  execute -> add_action( this, "Mortal Strike", "if=cooldown_react&buff.battle_cry.up&buff.executioners_precision.stack=2|buff.executioners_precision.stack=2" );
   execute -> add_action( this, "Bladestorm", "if=buff.battle_cry.up&(set_bonus.tier20_4pc|equipped.the_great_storms_eye)" );
-  execute -> add_action( this, "Execute", "if=buff.battle_cry_deadly_calm.up", "actions.execute+=/heroic_charge,if=rage.deficit>=40&(!cooldown.heroic_leap.remains|swing.mh.remains>1.2)\n#Remove the # above to run out of melee and charge back in for rage." );
-  execute -> add_action( this, "Bladestorm", "if=buff.battle_cry.up&(set_bonus.tier20_4pc|equipped.the_great_storms_eye)" );
-  execute -> add_talent( this, "Overpower", "if=buff.battle_cry.down&buff.overpower.react" );
-  execute -> add_action( this, "Colossus Smash", "if=cooldown_react&buff.shattered_defenses.down" );
-  execute -> add_action( this, "Execute", "if=buff.shattered_defenses.up&(rage>=40|buff.stone_heart.react)" );
-  execute -> add_action( this, "Mortal Strike", "if=cooldown_react&equipped.archavons_heavy_hand&rage<60|(talent.in_for_the_kill.enabled&buff.shattered_defenses.down)" );
-  execute -> add_talent( this, "Rend", "if=remains<=duration*0.3&target.time_to_die>3" );
-  execute -> add_action( this, "Execute", "if=buff.shattered_defenses.down" );
+  execute -> add_talent( this, "Ravager", "if=cooldown.battle_cry.remains<=gcd&debuff.colossus_smash.remains>6");
+  execute -> add_action( this, "Colossus Smash", "if=buff.shattered_defenses.down&(buff.battle_cry.down|buff.battle_cry.remains>gcd.max)" );
+  execute -> add_action( this, "Warbreaker", "if=(raid_event.adds.in>90|!raid_event.adds.exists)&cooldown.mortal_strike.remains<=gcd.remains&buff.shattered_defenses.down&buff.executioners_precision.stack=2" );
+  execute -> add_talent( this, "Focused Rage", "if=rage.deficit<35", "actions.execute+=/heroic_charge,if=rage.deficit>=55&(!cooldown.heroic_leap.remains|swing.mh.remains>1.2)&buff.battle_cry.down\n#Remove the # above to run out of melee and charge back in for rage." );
+  execute -> add_talent( this, "Rend", "if=remains<5&cooldown.battle_cry.remains<2&(cooldown.bladestorm.remains<2|!set_bonus.tier20_4pc)" );
+  execute -> add_action( this, "Mortal Strike", "if=buff.executioners_precision.stack=2&buff.shattered_defenses.up" );
+  execute -> add_talent( this, "Overpower" , "if=rage<40");
+  execute -> add_action( this, "Execute" );
+  execute -> add_talent( this, "Overpower" );
   execute -> add_action( this, "Bladestorm", "interrupt=1,if=(raid_event.adds.in>90|!raid_event.adds.exists|spell_targets.bladestorm_mh>desired_targets)&!set_bonus.tier20_4pc" );
+  
+
 
   cleave -> add_action( this, "Mortal Strike" );
   cleave -> add_action( this, "Execute", "if=buff.stone_heart.react" );
@@ -6115,13 +6022,6 @@ double warrior_t::composite_player_multiplier( school_e school ) const
   }
 
   m *= 1.0 + buff.renewed_fury -> check_value();
-
-  if ( main_hand_weapon.group() == WEAPON_1H &&
-       off_hand_weapon.group() == WEAPON_1H )
-  {
-    m *= 1.0 + spec.singleminded_fury -> effectN( 1 ).percent();
-  }
-
   m *= 1.0 + buff.dragon_roar -> check_stack_value();
   m *= 1.0 + buff.frothing_berserker -> check_stack_value();
   m *= 1.0 + buff.fujiedas_fury -> check_stack_value();

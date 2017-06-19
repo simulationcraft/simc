@@ -13,10 +13,12 @@ namespace { // UNNAMED NAMESPACE
 
 // Forward declarations
 struct mage_t;
+
 namespace buffs {
   struct touch_of_the_magi_t;
   struct arcane_missiles_t;
 }
+
 namespace pets {
   namespace water_elemental {
     struct water_elemental_pet_t;
@@ -27,8 +29,8 @@ struct state_switch_t
 {
 private:
   bool state;
-  timespan_t last_enable,
-             last_disable;
+  timespan_t last_enable;
+  timespan_t last_disable;
 
 public:
   state_switch_t()
@@ -98,24 +100,24 @@ struct mage_td_t : public actor_target_data_t
 {
   struct dots_t
   {
-    dot_t* blast_furnace,
-         * conflagration_dot,
-         * ignite,
-         * living_bomb,
-         * mark_of_aluneth,
-         * nether_tempest;
+    dot_t* blast_furnace;
+    dot_t* conflagration_dot;
+    dot_t* ignite;
+    dot_t* living_bomb;
+    dot_t* mark_of_aluneth;
+    dot_t* nether_tempest;
   } dots;
 
   struct debuffs_t
   {
-    buff_t* erosion,
-          * slow;
+    buff_t* erosion;
+    buff_t* slow;
     buffs::touch_of_the_magi_t* touch_of_the_magi;
 
-    buff_t* frost_bomb,
-          * water_jet, // Proxy Water Jet to compensate for expression system
-          * winters_chill,
-          * frozen;
+    buff_t* frost_bomb;
+    buff_t* water_jet; // Proxy Water Jet to compensate for expression system
+    buff_t* winters_chill;
+    buff_t* frozen;
   } debuffs;
 
   mage_td_t( player_t* target, mage_t* mage );
@@ -144,7 +146,7 @@ struct buff_stack_benefit_t
   {
     for ( std::size_t i = 0; i < buff_stack_benefit.size(); ++i )
     {
-      buff_stack_benefit[ i ] -> update( i == as<unsigned>(buff -> check()) );
+      buff_stack_benefit[ i ] -> update( i == as<unsigned>( buff -> check() ) );
     }
   }
 };
@@ -217,14 +219,15 @@ public:
   ground_aoe_event_t* active_meteor_burn;
 
   // Miscellaneous
-  double distance_from_rune,
-         global_cinder_count;
+  double distance_from_rune;
+  double global_cinder_count;
   timespan_t firestarter_time;
   int blessing_of_wisdom_count;
 
   // Cached actions
   struct actions_t
   {
+    action_t* arcane_assault;
     action_t* frost_bomb_explosion;
     action_t* legendary_arcane_orb;
     action_t* legendary_meteor;
@@ -240,12 +243,13 @@ public:
 
     struct arcane_charge_benefits_t
     {
-      buff_stack_benefit_t* arcane_barrage,
-                          * arcane_blast,
-                          * arcane_explosion,
-                          * arcane_missiles,
-                          * nether_tempest;
+      buff_stack_benefit_t* arcane_barrage;
+      buff_stack_benefit_t* arcane_blast;
+      buff_stack_benefit_t* arcane_explosion;
+      buff_stack_benefit_t* arcane_missiles;
+      buff_stack_benefit_t* nether_tempest;
     } arcane_charge;
+
     buff_source_benefit_t* arcane_missiles;
 
     buff_source_benefit_t* fingers_of_frost;
@@ -256,63 +260,61 @@ public:
   struct buffs_t
   {
     // Arcane
-    buff_t* arcane_charge,
-          * arcane_familiar,
-          * arcane_power,
-          * chrono_shift,
-          * crackling_energy, // T20 2pc Arcane
-          * presence_of_mind;
-
+    buff_t* arcane_charge;
+    buff_t* arcane_familiar;
     buffs::arcane_missiles_t* arcane_missiles;
-
+    buff_t* arcane_power;
+    buff_t* chrono_shift;
+    buff_t* crackling_energy; // T20 2pc Arcane
+    buff_t* presence_of_mind;
 
     // Fire
-    buff_t* combustion,
-          * contained_infernal_core, // 7.2.5 legendary shoulder, tracking buff
-          * critical_massive,        // T20 4pc Fire
-          * enhanced_pyrotechnics,
-          * erupting_infernal_core,  // 7.2.5 legendary shoulder, primed buff
-          * frenetic_speed,
-          * heating_up,
-          * hot_streak,
-          * ignition,                // T20 2pc Fire
-          * pyretic_incantation,
-          * scorched_earth,
-          * streaking;               // T19 4pc Fire
+    buff_t* combustion;
+    buff_t* contained_infernal_core; // 7.2.5 legendary shoulder, tracking buff
+    buff_t* critical_massive;        // T20 4pc Fire
+    buff_t* enhanced_pyrotechnics;
+    buff_t* erupting_infernal_core;  // 7.2.5 legendary shoulder, primed buff
+    buff_t* frenetic_speed;
+    buff_t* heating_up;
+    buff_t* hot_streak;
+    buff_t* ignition;                // T20 2pc Fire
+    buff_t* pyretic_incantation;
+    buff_t* scorched_earth;
+    buff_t* streaking;               // T19 4pc Fire
 
 
     // Frost
-    buff_t* brain_freeze,
-          * fingers_of_frost,
-          * frozen_mass,                       // T20 2pc Frost
-          * icicles,                           // Buff to track icicles - doesn't always line up with icicle count though!
-          * icy_veins,
-          * rage_of_the_frost_wyrm,            // 7.2.5 legendary head, primed buff
-          * shattered_fragments_of_sindragosa; // 7.2.5 legendary head, tracking buff
+    buff_t* brain_freeze;
+    buff_t* fingers_of_frost;
+    buff_t* frozen_mass;                       // T20 2pc Frost
+    buff_t* icicles;                           // Buff to track icicles - doesn't always line up with icicle count though!
+    buff_t* icy_veins;
+    buff_t* rage_of_the_frost_wyrm;            // 7.2.5 legendary head, primed buff
+    buff_t* shattered_fragments_of_sindragosa; // 7.2.5 legendary head, tracking buff
 
 
     // Talents
-    buff_t* bone_chilling,
-          * ice_floes,
-          * incanters_flow,
-          * ray_of_frost,
-          * rune_of_power;
+    buff_t* bone_chilling;
+    buff_t* ice_floes;
+    buff_t* incanters_flow;
+    buff_t* ray_of_frost;
+    buff_t* rune_of_power;
 
     // Artifact
-    buff_t* chain_reaction,
-          * chilled_to_the_core,
-          * freezing_rain,
-          * time_and_space,
-          * warmth_of_the_phoenix;
+    buff_t* chain_reaction;
+    buff_t* chilled_to_the_core;
+    buff_t* freezing_rain;
+    buff_t* time_and_space;
+    buff_t* warmth_of_the_phoenix;
 
     // Legendary
-    buff_t* cord_of_infinity,
-          * kaelthas_ultimate_ability,
-          * lady_vashjs_grasp,
-          * magtheridons_might,
-          * rhonins_assaulting_armwraps,
-          * shard_time_warp,
-          * zannesu_journey;
+    buff_t* cord_of_infinity;
+    buff_t* kaelthas_ultimate_ability;
+    buff_t* lady_vashjs_grasp;
+    buff_t* magtheridons_might;
+    buff_t* rhonins_assaulting_armwraps;
+    buff_t* shard_time_warp;
+    buff_t* zannesu_journey;
 
     haste_buff_t* sephuzs_secret;
 
@@ -325,25 +327,25 @@ public:
   // Cooldowns
   struct cooldowns_t
   {
-    cooldown_t* combustion,
-              * cone_of_cold,
-              * evocation,
-              * frost_nova,
-              * frozen_orb,
-              * icy_veins,
-              * phoenixs_flames,
-              * presence_of_mind,
-              * ray_of_frost,
-              * time_warp;
+    cooldown_t* combustion;
+    cooldown_t* cone_of_cold;
+    cooldown_t* evocation;
+    cooldown_t* frost_nova;
+    cooldown_t* frozen_orb;
+    cooldown_t* icy_veins;
+    cooldown_t* phoenixs_flames;
+    cooldown_t* presence_of_mind;
+    cooldown_t* ray_of_frost;
+    cooldown_t* time_warp;
   } cooldowns;
 
   // Gains
   struct gains_t
   {
-    gain_t* aluneths_avarice,
-          * greater_blessing_of_wisdom,
-          * evocation,
-          * mystic_kilt_of_the_rune_master;
+    gain_t* aluneths_avarice;
+    gain_t* greater_blessing_of_wisdom;
+    gain_t* evocation;
+    gain_t* mystic_kilt_of_the_rune_master;
   } gains;
 
   // Pets
@@ -357,18 +359,18 @@ public:
   // Procs
   struct procs_t
   {
-    proc_t* heating_up_generated, // Crits without HU/HS
-          * heating_up_removed, // Non-crits with HU >200ms after application
-          * heating_up_ib_converted, // IBs used on HU
-          * hot_streak, // Total HS generated
-          * hot_streak_spell, // HU/HS spell impacts
-          * hot_streak_spell_crit, // HU/HS spell crits
-          * hot_streak_spell_crit_wasted; // HU/HS spell crits with HS
+    proc_t* heating_up_generated;         // Crits without HU/HS
+    proc_t* heating_up_removed;           // Non-crits with HU >200ms after application
+    proc_t* heating_up_ib_converted;      // IBs used on HU
+    proc_t* hot_streak;                   // Total HS generated
+    proc_t* hot_streak_spell;             // HU/HS spell impacts
+    proc_t* hot_streak_spell_crit;        // HU/HS spell crits
+    proc_t* hot_streak_spell_crit_wasted; // HU/HS spell crits with HS
 
-    proc_t* ignite_applied, // Direct ignite applications
-          * ignite_spread, // Spread events
-          * ignite_new_spread, // Spread to new target
-          * ignite_overwrite; // Spread to target with existing ignite
+    proc_t* ignite_applied;    // Direct ignite applications
+    proc_t* ignite_spread;     // Spread events
+    proc_t* ignite_new_spread; // Spread to new target
+    proc_t* ignite_overwrite;  // Spread to target with existing ignite
 
     proc_t* controlled_burn; // Tracking Controlled Burn talent
   } procs;
@@ -377,173 +379,173 @@ public:
   struct specializations_t
   {
     // Arcane
-    const spell_data_t* arcane_barrage_2,
-                      * arcane_charge,
-                      * arcane_mage,
-                      * evocation_2,
-                      * savant;
+    const spell_data_t* arcane_barrage_2;
+    const spell_data_t* arcane_charge;
+    const spell_data_t* arcane_mage;
+    const spell_data_t* evocation_2;
+    const spell_data_t* savant;
 
     // Fire
-    const spell_data_t* critical_mass,
-                      * critical_mass_2,
-                      * fire_blast_2,
-                      * fire_blast_3,
-                      * fire_mage,
-                      * ignite;
+    const spell_data_t* critical_mass;
+    const spell_data_t* critical_mass_2;
+    const spell_data_t* fire_blast_2;
+    const spell_data_t* fire_blast_3;
+    const spell_data_t* fire_mage;
+    const spell_data_t* ignite;
 
     // Frost
-    const spell_data_t* brain_freeze,
-                      * brain_freeze_2,
-                      * blizzard_2,
-                      * fingers_of_frost,
-                      * frost_mage,
-                      * icicles,
-                      * icicles_driver,
-                      * shatter,
-                      * shatter_2;
+    const spell_data_t* brain_freeze;
+    const spell_data_t* brain_freeze_2;
+    const spell_data_t* blizzard_2;
+    const spell_data_t* fingers_of_frost;
+    const spell_data_t* frost_mage;
+    const spell_data_t* icicles;
+    const spell_data_t* icicles_driver;
+    const spell_data_t* shatter;
+    const spell_data_t* shatter_2;
   } spec;
 
   // Talents
   struct talents_list_t
   {
     // Tier 15
-    const spell_data_t* arcane_familiar,
-                      * amplification,
-                      * words_of_power,
-                      * pyromaniac,
-                      * conflagration,
-                      * firestarter,
-                      * ray_of_frost,
-                      * lonely_winter,
-                      * bone_chilling;
+    const spell_data_t* arcane_familiar;
+    const spell_data_t* amplification;
+    const spell_data_t* words_of_power;
+    const spell_data_t* pyromaniac;
+    const spell_data_t* conflagration;
+    const spell_data_t* firestarter;
+    const spell_data_t* ray_of_frost;
+    const spell_data_t* lonely_winter;
+    const spell_data_t* bone_chilling;
 
     // Tier 30
-    const spell_data_t* shimmer,
-                      * slipstream,
-                      * blast_wave,
-                      * ice_floes,
-                      * mana_shield, // NYI
-                      * blazing_soul, // NYI
-                      * glacial_insulation; // NYI
+    const spell_data_t* shimmer;
+    const spell_data_t* slipstream;
+    const spell_data_t* blast_wave;
+    const spell_data_t* ice_floes;
+    const spell_data_t* mana_shield; // NYI
+    const spell_data_t* blazing_soul; // NYI
+    const spell_data_t* glacial_insulation; // NYI
 
     // Tier 45
-    const spell_data_t* mirror_image,
-                      * rune_of_power,
-                      * incanters_flow;
+    const spell_data_t* mirror_image;
+    const spell_data_t* rune_of_power;
+    const spell_data_t* incanters_flow;
 
     // Tier 60
-    const spell_data_t* supernova,
-                      * charged_up,
-                      * resonance,
-                      * alexstraszas_fury,
-                      * flame_on,
-                      * controlled_burn,
-                      * ice_nova,
-                      * frozen_touch,
-                      * splitting_ice;
+    const spell_data_t* supernova;
+    const spell_data_t* charged_up;
+    const spell_data_t* resonance;
+    const spell_data_t* alexstraszas_fury;
+    const spell_data_t* flame_on;
+    const spell_data_t* controlled_burn;
+    const spell_data_t* ice_nova;
+    const spell_data_t* frozen_touch;
+    const spell_data_t* splitting_ice;
 
     // Tier 75
-    const spell_data_t* chrono_shift,
-                      * frenetic_speed,
-                      * frigid_winds, // NYI
-                      * ring_of_frost, // NYI
-                      * ice_ward;
+    const spell_data_t* chrono_shift;
+    const spell_data_t* frenetic_speed;
+    const spell_data_t* frigid_winds; // NYI
+    const spell_data_t* ring_of_frost; // NYI
+    const spell_data_t* ice_ward;
 
     // Tier 90
-    const spell_data_t* nether_tempest,
-                      * living_bomb,
-                      * frost_bomb,
-                      * unstable_magic,
-                      * erosion,
-                      * flame_patch,
-                      * arctic_gale;
+    const spell_data_t* nether_tempest;
+    const spell_data_t* living_bomb;
+    const spell_data_t* frost_bomb;
+    const spell_data_t* unstable_magic;
+    const spell_data_t* erosion;
+    const spell_data_t* flame_patch;
+    const spell_data_t* arctic_gale;
 
     // Tier 100
-    const spell_data_t* overpowered,
-                      * temporal_flux,
-                      * arcane_orb,
-                      * kindling,
-                      * cinderstorm,
-                      * meteor,
-                      * thermal_void,
-                      * glacial_spike,
-                      * comet_storm;
+    const spell_data_t* overpowered;
+    const spell_data_t* temporal_flux;
+    const spell_data_t* arcane_orb;
+    const spell_data_t* kindling;
+    const spell_data_t* cinderstorm;
+    const spell_data_t* meteor;
+    const spell_data_t* thermal_void;
+    const spell_data_t* glacial_spike;
+    const spell_data_t* comet_storm;
   } talents;
 
   // Artifact
   struct artifact_spell_data_t
   {
     // Arcane
-    artifact_power_t aegwynns_intensity,
-                     aluneths_avarice,
-                     time_and_space,
-                     arcane_rebound,
-                     ancient_power,
-                     scorched_earth,
-                     everywhere_at_once, //NYI
-                     arcane_purification,
-                     aegwynns_imperative,
-                     aegwynns_ascendance,
-                     aegwynns_wrath,
-                     crackling_energy,
-                     blasting_rod,
-                     ethereal_sensitivity,
-                     aegwynns_fury,
-                     mana_shield, // NYI
-                     mark_of_aluneth,
-                     might_of_the_guardians,
-                     rule_of_threes,
-                     slooow_down, // NYI
-                     torrential_barrage,
-                     touch_of_the_magi,
-                     intensity_of_the_tirisgarde;
+    artifact_power_t aegwynns_intensity;
+    artifact_power_t aluneths_avarice;
+    artifact_power_t time_and_space;
+    artifact_power_t arcane_rebound;
+    artifact_power_t ancient_power;
+    artifact_power_t scorched_earth;
+    artifact_power_t everywhere_at_once; //NYI
+    artifact_power_t arcane_purification;
+    artifact_power_t aegwynns_imperative;
+    artifact_power_t aegwynns_ascendance;
+    artifact_power_t aegwynns_wrath;
+    artifact_power_t crackling_energy;
+    artifact_power_t blasting_rod;
+    artifact_power_t ethereal_sensitivity;
+    artifact_power_t aegwynns_fury;
+    artifact_power_t mana_shield; // NYI
+    artifact_power_t mark_of_aluneth;
+    artifact_power_t might_of_the_guardians;
+    artifact_power_t rule_of_threes;
+    artifact_power_t slooow_down; // NYI
+    artifact_power_t torrential_barrage;
+    artifact_power_t touch_of_the_magi;
+    artifact_power_t intensity_of_the_tirisgarde;
 
     // Fire
-    artifact_power_t aftershocks,
-                     everburning_consumption,
-                     blue_flame_special,
-                     molten_skin, //NYI
-                     phoenix_reborn,
-                     great_balls_of_fire,
-                     cauterizing_blink, //NYI
-                     fire_at_will,
-                     preignited,
-                     warmth_of_the_phoenix,
-                     strafing_run,
-                     pyroclasmic_paranoia,
-                     reignition_overdrive,
-                     pyretic_incantation,
-                     phoenixs_flames,
-                     burning_gaze,
-                     big_mouth,
-                     blast_furnace,
-                     wings_of_flame,
-                     empowered_spellblade,
-                     instability_of_the_tirisgarde;
+    artifact_power_t aftershocks;
+    artifact_power_t everburning_consumption;
+    artifact_power_t blue_flame_special;
+    artifact_power_t molten_skin; //NYI
+    artifact_power_t phoenix_reborn;
+    artifact_power_t great_balls_of_fire;
+    artifact_power_t cauterizing_blink; //NYI
+    artifact_power_t fire_at_will;
+    artifact_power_t preignited;
+    artifact_power_t warmth_of_the_phoenix;
+    artifact_power_t strafing_run;
+    artifact_power_t pyroclasmic_paranoia;
+    artifact_power_t reignition_overdrive;
+    artifact_power_t pyretic_incantation;
+    artifact_power_t phoenixs_flames;
+    artifact_power_t burning_gaze;
+    artifact_power_t big_mouth;
+    artifact_power_t blast_furnace;
+    artifact_power_t wings_of_flame;
+    artifact_power_t empowered_spellblade;
+    artifact_power_t instability_of_the_tirisgarde;
 
     // Frost
-    artifact_power_t ebonbolt,
-                     jouster, // NYI
-                     let_it_go,
-                     frozen_veins,
-                     the_storm_rages,
-                     black_ice,
-                     shield_of_alodi, //NYI
-                     icy_caress,
-                     ice_nine,
-                     chain_reaction,
-                     clarity_of_thought,
-                     its_cold_outside,
-                     shattering_bolts,
-                     orbital_strike,
-                     icy_hand,
-                     ice_age,
-                     chilled_to_the_core,
-                     spellborne,
-                     obsidian_lance,
-                     freezing_rain,
-                     glacial_eruption,
-                     frigidity_of_the_tirisgarde;
+    artifact_power_t ebonbolt;
+    artifact_power_t jouster; // NYI
+    artifact_power_t let_it_go;
+    artifact_power_t frozen_veins;
+    artifact_power_t the_storm_rages;
+    artifact_power_t black_ice;
+    artifact_power_t shield_of_alodi; //NYI
+    artifact_power_t icy_caress;
+    artifact_power_t ice_nine;
+    artifact_power_t chain_reaction;
+    artifact_power_t clarity_of_thought;
+    artifact_power_t its_cold_outside;
+    artifact_power_t shattering_bolts;
+    artifact_power_t orbital_strike;
+    artifact_power_t icy_hand;
+    artifact_power_t ice_age;
+    artifact_power_t chilled_to_the_core;
+    artifact_power_t spellborne;
+    artifact_power_t obsidian_lance;
+    artifact_power_t freezing_rain;
+    artifact_power_t glacial_eruption;
+    artifact_power_t frigidity_of_the_tirisgarde;
   } artifact;
 
 public:
@@ -552,44 +554,44 @@ public:
   ~mage_t();
 
   // Character Definition
-  virtual           std::string get_special_use_items( const std::string& item = std::string(), bool specials = false );
-  virtual void      init_spells() override;
-  virtual void      init_base_stats() override;
-  virtual void      create_buffs() override;
-  virtual void      create_options() override;
-  virtual void      init_gains() override;
-  virtual void      init_procs() override;
-  virtual void      init_benefits() override;
-  virtual void      init_assessors() override;
-  virtual void      invalidate_cache( cache_e c ) override;
-  virtual void      init_resources( bool force ) override;
-  virtual void      recalculate_resource_max( resource_e rt ) override;
-  virtual void      reset() override;
-  virtual expr_t*   create_expression( action_t*, const std::string& name ) override;
-  virtual action_t* create_action( const std::string& name, const std::string& options ) override;
-  virtual bool      create_actions() override;
-  virtual void      create_pets() override;
-  virtual resource_e primary_resource() const override { return RESOURCE_MANA; }
-  virtual role_e    primary_role() const override { return ROLE_SPELL; }
-  virtual stat_e    convert_hybrid_stat( stat_e s ) const override;
-  virtual stat_e    primary_stat() const override { return STAT_INTELLECT; }
-  virtual double    mana_regen_per_second() const override;
-  virtual double    composite_player_multiplier( school_e school ) const override;
-  virtual double    composite_player_critical_damage_multiplier( const action_state_t* ) const override;
-  virtual double    composite_player_pet_damage_multiplier( const action_state_t* ) const override;
-  virtual double    composite_spell_crit_chance() const override;
-  virtual double    composite_spell_crit_rating() const override;
-  virtual double    composite_spell_haste() const override;
-  virtual double    composite_mastery_rating() const override;
-  virtual double    composite_attribute_multiplier( attribute_e ) const override;
-  virtual double    matching_gear_multiplier( attribute_e attr ) const override;
-  virtual void      update_movement( timespan_t duration ) override;
-  virtual void      stun() override;
-  virtual double    temporary_movement_modifier() const override;
-  virtual double    passive_movement_modifier() const override;
-  virtual void      arise() override;
+  virtual std::string get_special_use_items( const std::string& item = std::string(), bool specials = false );
+  virtual void        init_spells() override;
+  virtual void        init_base_stats() override;
+  virtual void        create_buffs() override;
+  virtual void        create_options() override;
+  virtual void        init_gains() override;
+  virtual void        init_procs() override;
+  virtual void        init_benefits() override;
+  virtual void        init_assessors() override;
+  virtual void        invalidate_cache( cache_e c ) override;
+  virtual void        init_resources( bool force ) override;
+  virtual void        recalculate_resource_max( resource_e rt ) override;
+  virtual void        reset() override;
+  virtual expr_t*     create_expression( action_t*, const std::string& name ) override;
+  virtual action_t*   create_action( const std::string& name, const std::string& options ) override;
+  virtual bool        create_actions() override;
+  virtual void        create_pets() override;
+  virtual resource_e  primary_resource() const override { return RESOURCE_MANA; }
+  virtual role_e      primary_role() const override { return ROLE_SPELL; }
+  virtual stat_e      convert_hybrid_stat( stat_e s ) const override;
+  virtual stat_e      primary_stat() const override { return STAT_INTELLECT; }
+  virtual double      mana_regen_per_second() const override;
+  virtual double      composite_player_multiplier( school_e school ) const override;
+  virtual double      composite_player_critical_damage_multiplier( const action_state_t* ) const override;
+  virtual double      composite_player_pet_damage_multiplier( const action_state_t* ) const override;
+  virtual double      composite_spell_crit_chance() const override;
+  virtual double      composite_spell_crit_rating() const override;
+  virtual double      composite_spell_haste() const override;
+  virtual double      composite_mastery_rating() const override;
+  virtual double      composite_attribute_multiplier( attribute_e ) const override;
+  virtual double      matching_gear_multiplier( attribute_e attr ) const override;
+  virtual void        update_movement( timespan_t duration ) override;
+  virtual void        stun() override;
+  virtual double      temporary_movement_modifier() const override;
+  virtual double      passive_movement_modifier() const override;
+  virtual void        arise() override;
   virtual std::string create_profile( save_e ) override;
-  virtual void      copy_from( player_t* ) override;
+  virtual void        copy_from( player_t* ) override;
 
   target_specific_t<mage_td_t> target_data;
 
@@ -631,8 +633,8 @@ struct mage_pet_t : public pet_t
   mage_pet_t( sim_t* sim, mage_t* owner, std::string pet_name,
               bool guardian = false, bool dynamic = false )
     : pet_t( sim, owner, pet_name, guardian, dynamic )
-  {
-  }
+  { }
+
   const mage_t* o() const
   {
     return static_cast<mage_t*>( owner );
@@ -648,8 +650,7 @@ struct mage_pet_spell_t : public spell_t
 {
   mage_pet_spell_t( const std::string& n, mage_pet_t* p, const spell_data_t* s )
     : spell_t( n, p, s )
-  {
-  }
+  { }
 
   mage_t* o()
   {
@@ -699,9 +700,9 @@ struct water_elemental_pet_t : public mage_pet_t
     clear_action_priority_lists();
     auto default_list = get_action_priority_list( "default" );
 
-    default_list->add_action( this, find_pet_spell( "Water Jet" ), "Water Jet" );
-    default_list->add_action( this, find_pet_spell( "Waterbolt" ), "Waterbolt" );
-    default_list->add_action( this, find_pet_spell( "Freeze"    ), "Freeze"    );
+    default_list -> add_action( this, find_pet_spell( "Water Jet" ), "Water Jet" );
+    default_list -> add_action( this, find_pet_spell( "Waterbolt" ), "Waterbolt" );
+    default_list -> add_action( this, find_pet_spell( "Freeze"    ), "Freeze"    );
 
     // Default
     use_default_action_list = true;
@@ -820,7 +821,8 @@ struct freeze_t : public water_elemental_spell_t
 struct water_jet_t : public water_elemental_spell_t
 {
   // queued water jet spell, auto cast water jet spell
-  bool queued, autocast;
+  bool queued;
+  bool autocast;
 
   water_jet_t( water_elemental_pet_t* p, const std::string& options_str )
     : water_elemental_spell_t( "water_jet", p, p -> find_pet_spell( "Water Jet" ) ),
@@ -1124,48 +1126,6 @@ struct arcane_missiles_t : public buff_t
   }
 };
 
-// Arcane Familiar buff =======================================================
-
-struct arcane_familiar_buff_t : public buff_t
-{
-  action_t* arcane_assault;
-
-  arcane_familiar_buff_t( mage_t* p, action_t* assault ) :
-    buff_t( buff_creator_t( p, "arcane_familiar", p -> find_spell( 210126 ) ) ),
-    arcane_assault( assault )
-  {
-    set_default_value( data().effectN( 1 ).percent() );
-
-    set_period( timespan_t::from_seconds( 3.0 ) );
-    set_tick_behavior( BUFF_TICK_CLIP );
-    set_tick_time_behavior( BUFF_TICK_TIME_HASTED );
-
-    set_tick_callback( [ this ] ( buff_t* /* buff */, int /* total_ticks */, const timespan_t& /* tick_time */ )
-    {
-      assert( arcane_assault );
-      arcane_assault -> set_target( player -> target );
-      arcane_assault -> execute();
-    } );
-  }
-
-  bool trigger( int stacks, double value, double chance, timespan_t duration ) override
-  {
-    bool success = buff_t::trigger( stacks, value, chance, duration );
-    if ( success )
-    {
-      player -> recalculate_resource_max( RESOURCE_MANA );
-    }
-
-    return success;
-  }
-
-  void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
-  {
-    buff_t::expire_override( expiration_stacks, remaining_duration );
-    player -> recalculate_resource_max( RESOURCE_MANA );
-  }
-};
-
 struct erosion_t : public buff_t
 {
   // Erosion debuff =============================================================
@@ -1309,25 +1269,6 @@ struct touch_of_the_magi_t : public buff_t
 
 
 // Custom buffs ===============================================================
-struct icy_veins_buff_t : public haste_buff_t
-{
-  mage_t* p;
-  icy_veins_buff_t( mage_t* p ) :
-    haste_buff_t( haste_buff_creator_t( p, "icy_veins", p -> find_spell( 12472 ) ) ), p( p )
-
-  {
-    buff_duration += p -> talents.thermal_void -> effectN( 2 ).time_value();
-    set_default_value( data().effectN( 1 ).percent() );
-    set_cooldown( timespan_t::zero() );
-  }
-
-  void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
-  {
-    buff_t::expire_override( expiration_stacks, remaining_duration );
-    p -> buffs.lady_vashjs_grasp -> expire();
-  }
-};
-
 struct incanters_flow_t : public buff_t
 {
   incanters_flow_t( mage_t* p ) :
@@ -1461,8 +1402,8 @@ struct mage_spell_t : public spell_t
     bool shatter;
   } affected_by;
 
-  bool consumes_ice_floes,
-       triggers_arcane_missiles;
+  bool consumes_ice_floes;
+  bool triggers_arcane_missiles;
 
   int am_trigger_source_id;
 public:
@@ -1772,9 +1713,9 @@ struct ignite_spell_state_t : public mage_spell_state_t
 
 struct fire_mage_spell_t : public mage_spell_t
 {
-  bool triggers_pyretic_incantation,
-       triggers_hot_streak,
-       triggers_ignite;
+  bool triggers_pyretic_incantation;
+  bool triggers_hot_streak;
+  bool triggers_ignite;
 
   fire_mage_spell_t( const std::string& n, mage_t* p,
                      const spell_data_t* s = spell_data_t::nil() ) :
@@ -2295,7 +2236,7 @@ struct icicle_t : public frost_mage_spell_t
   {
     frost_mage_spell_t::init();
 
-    snapshot_flags = STATE_NO_MULTIPLIER;
+    snapshot_flags &= STATE_NO_MULTIPLIER;
     snapshot_flags |= STATE_TGT_MUL_DA;
   }
 };
@@ -2448,6 +2389,8 @@ struct aegwynns_ascendance_t : public arcane_mage_spell_t
     aoe = -1;
     background = true;
     may_crit = false;
+
+    affected_by.erosion = false;
   }
 
   virtual void init() override
@@ -2661,10 +2604,6 @@ struct arcane_blast_t : public arcane_mage_spell_t
     if ( p() -> buffs.presence_of_mind -> up() )
     {
       p() -> buffs.presence_of_mind -> decrement();
-      if ( p() -> buffs.presence_of_mind -> stack() == 0 )
-      {
-        p() -> cooldowns.presence_of_mind -> start();
-      }
     }
 
     p() -> trigger_t19_oh();
@@ -3651,8 +3590,7 @@ struct evocation_t : public arcane_mage_spell_t
         mana_gained * p() -> artifact.aegwynns_ascendance.percent();
 
       aegwynns_ascendance -> set_target( d -> target );
-      aegwynns_ascendance -> base_dd_max = explosion_amount;
-      aegwynns_ascendance -> base_dd_min = explosion_amount;
+      aegwynns_ascendance -> base_dd_adder = explosion_amount;
       aegwynns_ascendance -> execute();
     }
   }
@@ -4470,7 +4408,7 @@ struct glacial_spike_t : public frost_mage_spell_t
     // Ideally, this would be passed to impact() in action_state_t, but since
     // it's pretty much impossible to execute another Glacial Spike before
     // the first one impacts, this should be fine.
-    base_dd_min = base_dd_max = icicle_damage;
+    base_dd_adder = icicle_damage;
 
     frost_mage_spell_t::execute();
 
@@ -4902,8 +4840,7 @@ struct mark_of_aluneth_explosion_t : public arcane_mage_spell_t
 
   virtual void execute() override
   {
-    base_dd_max = p() -> resources.max[ RESOURCE_MANA ] * mana_to_damage_pct;
-    base_dd_min = p() -> resources.max[ RESOURCE_MANA ] * mana_to_damage_pct;
+    base_dd_adder = p() -> resources.max[ RESOURCE_MANA ] * mana_to_damage_pct;
 
     arcane_mage_spell_t::execute();
 
@@ -5329,7 +5266,7 @@ struct phoenixs_flames_t : public fire_mage_spell_t
     fire_mage_spell_t( "phoenixs_flames", p, p -> artifact.phoenixs_flames ),
     phoenixs_flames_splash( new phoenixs_flames_splash_t( p ) ),
     pyrotex_ignition_cloth( false ),
-    pyrotex_ignition_cloth_reduction( timespan_t::from_seconds( 0 ) )
+    pyrotex_ignition_cloth_reduction( timespan_t::zero() )
   {
     parse_options( options_str );
     // Phoenix's Flames always crits
@@ -5580,7 +5517,7 @@ struct ray_of_frost_t : public frost_mage_spell_t
 
     frost_mage_spell_t::tick( d );
 
-    p() -> buffs.ray_of_frost -> bump();
+    p() -> buffs.ray_of_frost -> bump( 1, p() -> buffs.ray_of_frost -> default_value );
   }
 
   virtual double action_multiplier() const override
@@ -5621,8 +5558,8 @@ struct rune_of_power_t : public mage_spell_t
 struct scorch_t : public fire_mage_spell_t
 {
   bool koralons_burning_touch;
-  double koralons_burning_touch_threshold,
-         koralons_burning_touch_multiplier;
+  double koralons_burning_touch_threshold;
+  double koralons_burning_touch_multiplier;
 
   scorch_t( mage_t* p, const std::string& options_str ) :
     fire_mage_spell_t( "scorch", p,
@@ -5895,6 +5832,8 @@ struct touch_of_the_magi_explosion_t : public arcane_mage_spell_t
     background = true;
     may_miss = may_crit = callbacks = false;
     aoe = -1;
+
+    affected_by.erosion = false;
   }
 
   virtual void init() override
@@ -5905,10 +5844,20 @@ struct touch_of_the_magi_explosion_t : public arcane_mage_spell_t
     snapshot_flags |= STATE_TGT_MUL_DA;
   }
 
+  virtual double composite_target_multiplier( player_t* target ) const override
+  {
+    double m = arcane_mage_spell_t::composite_target_multiplier( target );
+
+    // It seems that TotM explosion only double dips on target based damage reductions
+    // and not target based damage increases.
+    m = std::min( m, 1.0 );
+
+    return m;
+  }
+
   virtual void execute() override
   {
-    base_dd_max *= p() -> artifact.touch_of_the_magi.data().effectN( 1 ).percent();
-    base_dd_min *= p() -> artifact.touch_of_the_magi.data().effectN( 1 ).percent();
+    base_dd_adder *= p() -> artifact.touch_of_the_magi.data().effectN( 1 ).percent();
 
     mage_spell_t::execute();
   }
@@ -6041,8 +5990,7 @@ struct unstable_magic_explosion_t : public mage_spell_t
 
   virtual void execute() override
   {
-    base_dd_max *= data().effectN( 4 ).percent();
-    base_dd_min *= data().effectN( 4 ).percent();
+    base_dd_adder *= data().effectN( 4 ).percent();
 
     mage_spell_t::execute();
   }
@@ -6078,8 +6026,7 @@ void mage_spell_t::trigger_unstable_magic( action_state_t* s )
   if ( p() -> rng().roll( um_proc_rate ) )
   {
     p() -> action.unstable_magic_explosion -> set_target( s -> target );
-    p() -> action.unstable_magic_explosion -> base_dd_max = s -> result_amount;
-    p() -> action.unstable_magic_explosion -> base_dd_min = s -> result_amount;
+    p() -> action.unstable_magic_explosion -> base_dd_adder = s -> result_amount;
     p() -> action.unstable_magic_explosion -> execute();
   }
 }
@@ -6264,7 +6211,7 @@ struct icicle_event_t : public event_t
     new_s -> source = state.stats;
     new_s -> target = target;
 
-    mage -> icicle -> base_dd_min = mage -> icicle -> base_dd_max = state.damage;
+    mage -> icicle -> base_dd_adder = state.damage;
 
     // Immediately execute icicles so the correct damage is carried into the
     // travelling icicle object
@@ -6544,8 +6491,7 @@ void mage_t::trigger_touch_of_the_magi( buffs::touch_of_the_magi_t* buff )
 {
   assert( action.touch_of_the_magi_explosion );
   action.touch_of_the_magi_explosion -> set_target( buff -> player );
-  action.touch_of_the_magi_explosion -> base_dd_max = buff -> accumulated_damage;
-  action.touch_of_the_magi_explosion -> base_dd_min = buff -> accumulated_damage;
+  action.touch_of_the_magi_explosion -> base_dd_adder = buff -> accumulated_damage;
   action.touch_of_the_magi_explosion -> execute();
 }
 
@@ -6700,6 +6646,11 @@ bool mage_t::create_actions()
   if ( spec.icicles -> ok() )
   {
     icicle = new icicle_t( this );
+  }
+
+  if ( talents.arcane_familiar -> ok() )
+  {
+    action.arcane_assault = new arcane_assault_t( this );
   }
 
   if ( talents.frost_bomb -> ok() )
@@ -6989,7 +6940,19 @@ void mage_t::create_buffs()
 
   // Arcane
   buffs.arcane_charge         = buff_creator_t( this, "arcane_charge", spec.arcane_charge );
-  buffs.arcane_familiar       = new buffs::arcane_familiar_buff_t( this, new actions::arcane_assault_t( this ) );
+  buffs.arcane_familiar       = buff_creator_t( this, "arcane_familiar", find_spell( 210126 ) )
+                                  .default_value( find_spell( 210126 ) -> effectN( 1 ).percent() )
+                                  .period( timespan_t::from_seconds( 3.0 ) )
+                                  .tick_behavior( BUFF_TICK_CLIP )
+                                  .tick_time_behavior( BUFF_TICK_TIME_HASTED )
+                                  .tick_callback( [ this ] ( buff_t*, int, const timespan_t& )
+                                    {
+                                      assert( action.arcane_assault );
+                                      action.arcane_assault -> set_target( target );
+                                      action.arcane_assault -> execute();
+                                    } )
+                                  .stack_change_callback( [ this ] ( buff_t*, int, int )
+                                    { recalculate_resource_max( RESOURCE_MANA ); } );
   buffs.arcane_missiles       = new buffs::arcane_missiles_t( this );
   buffs.arcane_power          = buff_creator_t( this, "arcane_power", find_spell( 12042 ) )
                                   .default_value( find_spell( 12042 ) -> effectN( 1 ).percent()
@@ -7004,9 +6967,9 @@ void mage_t::create_buffs()
                                   .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
                                   .default_value( find_spell( 246224 ) -> effectN( 1 ).percent() );
   buffs.presence_of_mind      = buff_creator_t( this, "presence_of_mind", find_spell( 205025 ) )
-                                  .activated( true )
                                   .cd( timespan_t::zero() )
-                                  .duration( timespan_t::zero() );
+                                  .stack_change_callback( [ this ] ( buff_t*, int, int cur )
+                                    { if ( cur == 0 ) cooldowns.presence_of_mind -> start(); } );
 
   // Fire
   buffs.combustion             = buff_creator_t( this, "combustion", find_spell( 190319 ) )
@@ -7031,8 +6994,7 @@ void mage_t::create_buffs()
   buffs.hot_streak             = buff_creator_t( this, "hot_streak",  find_spell( 48108 ) );
   buffs.pyretic_incantation    = buff_creator_t( this, "pyretic_incantation", find_spell( 194329 ) )
                                    .default_value( find_spell( 194329 ) -> effectN( 1 ).percent() );
-  buffs.streaking              = buff_creator_t( this, "streaking", find_spell( 211399 ) )
-                                   .add_invalidate( CACHE_SPELL_HASTE )
+  buffs.streaking              = haste_buff_creator_t( this, "streaking", find_spell( 211399 ) )
                                    .default_value( find_spell( 211399 ) -> effectN( 1 ).percent() );
   buffs.scorched_earth         = buff_creator_t( this, "scorched_earth", find_spell( 227482 ) )
                                    .default_value( find_spell( 227482 ) -> effectN( 1 ).percent() )
@@ -7054,7 +7016,13 @@ void mage_t::create_buffs()
   // Instead, as it does in game, it tracks icicle buff stack count based on the number of *casts*
   // of icicle generating spells. icicles are generated on impact, so they are slightly de-synced.
   buffs.icicles                = buff_creator_t( this, "icicles", find_spell( 205473 ) );
-  buffs.icy_veins              = new buffs::icy_veins_buff_t( this );
+  buffs.icy_veins              = haste_buff_creator_t( this, "icy_veins", find_spell( 12472 ) )
+                                   .default_value( find_spell( 12472 ) -> effectN( 1 ).percent() )
+                                   .cd( timespan_t::zero() )
+                                   .stack_change_callback( [ this ] ( buff_t*, int, int cur )
+                                     { if ( cur == 0 ) buffs.lady_vashjs_grasp -> expire(); } );
+  buffs.icy_veins -> buff_duration += talents.thermal_void -> effectN( 2 ).time_value();
+
   buffs.ray_of_frost           = new buffs::ray_of_frost_buff_t( this );
 
   // Talents
@@ -7208,21 +7176,24 @@ void mage_t::init_assessors()
 
   if ( artifact.touch_of_the_magi.rank() )
   {
-    mage_t* mage = this;
-    assessor_out_damage.add(
-      assessor::TARGET_DAMAGE - 1,
-      [ mage ] ( dmg_e, action_state_t* state ) {
-        buffs::touch_of_the_magi_t* buff = mage -> get_target_data( state -> target )
-                            -> debuffs.touch_of_the_magi;
+    auto assessor_fn = [ this ] ( dmg_e, action_state_t* state ) {
+      buffs::touch_of_the_magi_t* buff =
+        get_target_data( state -> target ) -> debuffs.touch_of_the_magi;
 
-        if ( buff -> check() )
-        {
-          buff -> accumulate_damage( state );
-        }
-
-        return assessor::CONTINUE;
+      if ( buff -> check() )
+      {
+        buff -> accumulate_damage( state );
       }
-    );
+
+      return assessor::CONTINUE;
+    };
+
+    assessor_out_damage.add( assessor::TARGET_DAMAGE - 1, assessor_fn );
+
+    for ( auto pet : pet_list )
+    {
+      pet -> assessor_out_damage.add( assessor::TARGET_DAMAGE - 1, assessor_fn );
+    }
   }
 }
 
@@ -7680,6 +7651,7 @@ void mage_t::apl_frost()
   aoe -> add_action( this, "Ebonbolt", "if=buff.brain_freeze.react=0" );
   aoe -> add_talent( this, "Glacial Spike" );
   aoe -> add_action( this, "Frostbolt" );
+  aoe -> add_action( this, "Cone of Cold" );
   aoe -> add_action( this, "Ice Lance" );
 
   cooldowns -> add_talent( this, "Rune of Power",
@@ -8480,7 +8452,7 @@ void mage_t::trigger_icicle( const action_state_t* trigger_state, bool chain, pl
     new_state -> target = icicle_target;
     new_state -> source = d.stats;
 
-    icicle -> base_dd_min = icicle -> base_dd_max = d.damage;
+    icicle -> base_dd_adder = d.damage;
 
     // Immediately execute icicles so the correct damage is carried into the
     // travelling icicle object
