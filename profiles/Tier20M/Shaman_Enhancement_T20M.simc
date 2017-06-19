@@ -45,28 +45,32 @@ actions+=/variable,name=alphaWolfCheck,value=((pet.frost_wolf.buff.alpha_wolf.re
 actions+=/auto_attack
 actions+=/use_items
 actions+=/call_action_list,name=opener
-actions+=/windstrike,if=(variable.heartEquipped|set_bonus.tier19_2pc)&(!talent.earthen_spike.enabled|(cooldown.earthen_spike.remains>1&cooldown.doom_winds.remains>1)|debuff.earthen_spike.up)
+actions+=/call_action_list,name=asc,if=buff.ascendance.up
 actions+=/call_action_list,name=buffs
-actions+=/call_action_list,name=CDs
+actions+=/call_action_list,name=cds
 actions+=/call_action_list,name=core
 actions+=/call_action_list,name=filler
 
-# Bloodlust casting behavior mirrors the simulator settings for proxy bloodlust. See options 'bloodlust_percent', and 'bloodlust_time'. 
-actions.CDs=bloodlust,if=target.health.pct<25|time>0.500
-actions.CDs+=/berserking,if=buff.ascendance.up|(feral_spirit.remains>5)|level<100
-actions.CDs+=/blood_fury,if=buff.ascendance.up|(feral_spirit.remains>5)|level<100
-actions.CDs+=/potion,if=buff.ascendance.up|!talent.ascendance.enabled&feral_spirit.remains>5|target.time_to_die<=60
-actions.CDs+=/feral_spirit
-actions.CDs+=/doom_winds,if=debuff.earthen_spike.up&talent.earthen_spike.enabled|!talent.earthen_spike.enabled
-actions.CDs+=/ascendance,if=buff.doom_winds.up
+actions.asc=earthen_spike
+actions.asc+=/doom_winds,if=cooldown.windstrike.up
+actions.asc+=/windstrike
 
 actions.buffs=rockbiter,if=talent.landslide.enabled&!buff.landslide.up
-actions.buffs+=/fury_of_air,if=buff.ascendance.up|(feral_spirit.remains>5)|level<100
+actions.buffs+=/fury_of_air,if=!ticking&maelstrom>22
 actions.buffs+=/crash_lightning,if=artifact.alpha_wolf.rank&prev_gcd.1.feral_spirit
 actions.buffs+=/flametongue,if=!buff.flametongue.up
 actions.buffs+=/frostbrand,if=talent.hailstorm.enabled&!buff.frostbrand.up&variable.furyCheck45
 actions.buffs+=/flametongue,if=buff.flametongue.remains<6+gcd&cooldown.doom_winds.remains<gcd*2
 actions.buffs+=/frostbrand,if=talent.hailstorm.enabled&buff.frostbrand.remains<6+gcd&cooldown.doom_winds.remains<gcd*2
+
+# Bloodlust casting behavior mirrors the simulator settings for proxy bloodlust. See options 'bloodlust_percent', and 'bloodlust_time'. 
+actions.cds=bloodlust,if=target.health.pct<25|time>0.500
+actions.cds+=/berserking,if=buff.ascendance.up|(feral_spirit.remains>5)|level<100
+actions.cds+=/blood_fury,if=buff.ascendance.up|(feral_spirit.remains>5)|level<100
+actions.cds+=/potion,if=buff.ascendance.up|!talent.ascendance.enabled&feral_spirit.remains>5|target.time_to_die<=60
+actions.cds+=/feral_spirit
+actions.cds+=/doom_winds,if=cooldown.ascendance.remains>6|talent.boulderfist.enabled|debuff.earthen_spike.up
+actions.cds+=/ascendance,if=(cooldown.strike.remains>0)&buff.ascendance.down
 
 actions.core=earthen_spike,if=variable.furyCheck25
 actions.core+=/crash_lightning,if=!buff.crash_lightning.up&active_enemies>=2
@@ -84,7 +88,6 @@ actions.core+=/crash_lightning,if=active_enemies>=3|variable.LightningCrashNotUp
 
 actions.filler=rockbiter,if=maelstrom<120
 actions.filler+=/flametongue,if=buff.flametongue.remains<4.8
-actions.filler+=/rockbiter,if=maelstrom<=40
 actions.filler+=/crash_lightning,if=(talent.crashing_storm.enabled|active_enemies>=2)&debuff.earthen_spike.up&maelstrom>=40&variable.OCPool60
 actions.filler+=/frostbrand,if=talent.hailstorm.enabled&buff.frostbrand.remains<4.8&maelstrom>40
 actions.filler+=/frostbrand,if=variable.akainuEquipped&!buff.frostbrand.up&maelstrom>=75
@@ -94,7 +97,7 @@ actions.filler+=/rockbiter
 actions.filler+=/crash_lightning,if=(maelstrom>=65|talent.crashing_storm.enabled|active_enemies>=2)&variable.OCPool60&variable.furyCheck45
 actions.filler+=/flametongue
 
-actions.opener=rockbiter,if=maelstrom<15&time<2
+actions.opener=rockbiter,if=maelstrom<15&time<gcd
 
 head=helmet_of_the_skybreaker,id=147178,bonus_id=1512/3563
 neck=string_of_extracted_incisors,id=147013,bonus_id=1512/3563,enchant_id=5439
