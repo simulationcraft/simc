@@ -7648,6 +7648,7 @@ void mage_t::apl_frost()
   aoe -> add_action( this, "Ebonbolt", "if=buff.brain_freeze.react=0" );
   aoe -> add_talent( this, "Glacial Spike" );
   aoe -> add_action( this, "Frostbolt" );
+  aoe -> add_action( this, "Cone of Cold" );
   aoe -> add_action( this, "Ice Lance" );
 
   cooldowns -> add_talent( this, "Rune of Power",
