@@ -7385,6 +7385,7 @@ void mage_t::apl_arcane()
                               "if=target.debuff.casting.react" );
   default_list -> add_action( this, "Time Warp", "if=buff.bloodlust.down&(time=0|(buff.arcane_power.up&(buff.potion.up|!action.potion.usable))|target.time_to_die<=buff.bloodlust.duration)" );
   default_list -> add_action( "call_action_list,name=variables" );
+  default_list -> add_action( "cancel_buff,name=presence_of_mind,if=active_enemies>2&set_bonus.tier20_2pc" );
   default_list -> add_action( mage_t::get_special_use_items( "horn_of_valor" ) );
   default_list -> add_action( mage_t::get_special_use_items( "obelisk_of_the_void" ) );
   default_list -> add_action( mage_t::get_special_use_items( "mrrgrias_favor" ) );
