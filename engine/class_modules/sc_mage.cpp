@@ -18,6 +18,7 @@ namespace buffs {
   struct touch_of_the_magi_t;
   struct arcane_missiles_t;
 }
+
 namespace pets {
   namespace water_elemental {
     struct water_elemental_pet_t;
@@ -28,8 +29,8 @@ struct state_switch_t
 {
 private:
   bool state;
-  timespan_t last_enable,
-             last_disable;
+  timespan_t last_enable;
+  timespan_t last_disable;
 
 public:
   state_switch_t()
@@ -145,7 +146,7 @@ struct buff_stack_benefit_t
   {
     for ( std::size_t i = 0; i < buff_stack_benefit.size(); ++i )
     {
-      buff_stack_benefit[ i ] -> update( i == as<unsigned>(buff -> check()) );
+      buff_stack_benefit[ i ] -> update( i == as<unsigned>( buff -> check() ) );
     }
   }
 };
@@ -699,9 +700,9 @@ struct water_elemental_pet_t : public mage_pet_t
     clear_action_priority_lists();
     auto default_list = get_action_priority_list( "default" );
 
-    default_list->add_action( this, find_pet_spell( "Water Jet" ), "Water Jet" );
-    default_list->add_action( this, find_pet_spell( "Waterbolt" ), "Waterbolt" );
-    default_list->add_action( this, find_pet_spell( "Freeze"    ), "Freeze"    );
+    default_list -> add_action( this, find_pet_spell( "Water Jet" ), "Water Jet" );
+    default_list -> add_action( this, find_pet_spell( "Waterbolt" ), "Waterbolt" );
+    default_list -> add_action( this, find_pet_spell( "Freeze"    ), "Freeze"    );
 
     // Default
     use_default_action_list = true;
@@ -1249,6 +1250,8 @@ struct touch_of_the_magi_t : public buff_t
     accumulated_damage = 0.0;
   }
 
+  // It seems Touch of the Magi might accumulate damage without target based
+  // multipliers (like Icicles do). TODO: Confirm this
   double accumulate_damage( action_state_t* state )
   {
     if ( sim -> debug )
@@ -5265,7 +5268,7 @@ struct phoenixs_flames_t : public fire_mage_spell_t
     fire_mage_spell_t( "phoenixs_flames", p, p -> artifact.phoenixs_flames ),
     phoenixs_flames_splash( new phoenixs_flames_splash_t( p ) ),
     pyrotex_ignition_cloth( false ),
-    pyrotex_ignition_cloth_reduction( timespan_t::from_seconds( 0 ) )
+    pyrotex_ignition_cloth_reduction( timespan_t::zero() )
   {
     parse_options( options_str );
     // Phoenix's Flames always crits
