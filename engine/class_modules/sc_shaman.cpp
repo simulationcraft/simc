@@ -7518,6 +7518,7 @@ void shaman_t::init_action_list_enhancement()
   action_priority_list_t* core      = get_action_priority_list( "core"      );
   action_priority_list_t* filler    = get_action_priority_list( "filler"    );
   action_priority_list_t* opener    = get_action_priority_list( "opener"    );
+  action_priority_list_t* asc       = get_action_priority_list( "asc"       );
 
 
   // Flask
@@ -7552,15 +7553,21 @@ void shaman_t::init_action_list_enhancement()
   // On-use actions
   def -> add_action( "use_items" );
 
+
   def -> add_action( "call_action_list,name=opener" );
-  def -> add_action( this, "Windstrike", "if=(variable.heartEquipped|set_bonus.tier19_2pc)&(!talent.earthen_spike.enabled|(cooldown.earthen_spike.remains>1&cooldown.doom_winds.remains>1)|debuff.earthen_spike.up)" );
+  def -> add_action( "call_action_list,name=asc,if=buff.ascendance.up" );
   def -> add_action( "call_action_list,name=buffs" );
-  def -> add_action( "call_action_list,name=CDs" );
+  def -> add_action( "call_action_list,name=cds" );
   def -> add_action( "call_action_list,name=core" );
   def -> add_action( "call_action_list,name=filler" );
 
 
-  opener -> add_action( this, "Rockbiter", "if=maelstrom<15&time<2" );
+  opener -> add_action( this, "Rockbiter", "if=maelstrom<15&time<gcd" );
+  
+
+  asc -> add_talent( this, "Earthen Spike" );
+  asc -> add_action( this, "Doom Winds", "if=cooldown.windstrike.up" );
+  asc -> add_action( this, "Windstrike");
 
 
   buffs -> add_action( this, "Rockbiter", "if=talent.landslide.enabled&!buff.landslide.up" );
@@ -7578,8 +7585,8 @@ void shaman_t::init_action_list_enhancement()
   cds -> add_action( "blood_fury,if=buff.ascendance.up|(feral_spirit.remains>5)|level<100" );
   cds -> add_action( "potion,if=buff.ascendance.up|!talent.ascendance.enabled&feral_spirit.remains>5|target.time_to_die<=60" );
   cds -> add_action( this, "Feral Spirit" );
-  cds -> add_action( this, "Doom Winds", "if=debuff.earthen_spike.up&talent.earthen_spike.enabled|!talent.earthen_spike.enabled" );
-  cds -> add_talent( this, "Ascendance", "if=buff.doom_winds.up" );
+  cds -> add_action( this, "Doom Winds", "if=cooldown.ascendance.remains>6|talent.boulderfist.enabled|debuff.earthen_spike.up" );
+  cds -> add_talent( this, "Ascendance", "if=(cooldown.strike.remains>0)&buff.ascendance.down" );
 
   
   core -> add_talent( this, "Earthen Spike", "if=variable.furyCheck25" );
@@ -7599,7 +7606,6 @@ void shaman_t::init_action_list_enhancement()
   
   filler -> add_action( this, "Rockbiter", "if=maelstrom<120" );
   filler -> add_action( this, "Flametongue", "if=buff.flametongue.remains<4.8" );
-  filler -> add_action( this, "Rockbiter", "if=maelstrom<=40" );
   filler -> add_action( this, "Crash Lightning", "if=(talent.crashing_storm.enabled|active_enemies>=2)&debuff.earthen_spike.up&maelstrom>=40&variable.OCPool60" );
   filler -> add_action( this, "Frostbrand", "if=talent.hailstorm.enabled&buff.frostbrand.remains<4.8&maelstrom>40" );
   filler -> add_action( this, "Frostbrand", "if=variable.akainuEquipped&!buff.frostbrand.up&maelstrom>=75" );
