@@ -7176,21 +7176,24 @@ void mage_t::init_assessors()
 
   if ( artifact.touch_of_the_magi.rank() )
   {
-    mage_t* mage = this;
-    assessor_out_damage.add(
-      assessor::TARGET_DAMAGE - 1,
-      [ mage ] ( dmg_e, action_state_t* state ) {
-        buffs::touch_of_the_magi_t* buff = mage -> get_target_data( state -> target )
-                            -> debuffs.touch_of_the_magi;
+    auto assessor_fn = [ this ] ( dmg_e, action_state_t* state ) {
+      buffs::touch_of_the_magi_t* buff =
+        get_target_data( state -> target ) -> debuffs.touch_of_the_magi;
 
-        if ( buff -> check() )
-        {
-          buff -> accumulate_damage( state );
-        }
-
-        return assessor::CONTINUE;
+      if ( buff -> check() )
+      {
+        buff -> accumulate_damage( state );
       }
-    );
+
+      return assessor::CONTINUE;
+    };
+
+    assessor_out_damage.add( assessor::TARGET_DAMAGE - 1, assessor_fn );
+
+    for ( auto pet : pet_list )
+    {
+      pet -> assessor_out_damage.add( assessor::TARGET_DAMAGE - 1, assessor_fn );
+    }
   }
 }
 
