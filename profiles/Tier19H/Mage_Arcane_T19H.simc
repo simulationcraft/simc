@@ -33,13 +33,14 @@ actions.precombat+=/arcane_blast
 actions=counterspell,if=target.debuff.casting.react
 actions+=/time_warp,if=buff.bloodlust.down&(time=0|(buff.arcane_power.up&(buff.potion.up|!action.potion.usable))|target.time_to_die<=buff.bloodlust.duration)
 actions+=/call_action_list,name=variables
+actions+=/cancel_buff,name=presence_of_mind,if=active_enemies>2&set_bonus.tier20_2pc
 actions+=/call_action_list,name=build,if=buff.arcane_charge.stack<buff.arcane_charge.max_stack&!burn_phase
 actions+=/call_action_list,name=burn,if=variable.time_until_burn=0|burn_phase
 actions+=/call_action_list,name=conserve
 
 actions.build=arcane_orb
 actions.build+=/charged_up
-actions.build+=/arcane_missiles,if=variable.arcane_missiles_procs=buff.arcane_missiles.max_stack
+actions.build+=/arcane_missiles,if=variable.arcane_missiles_procs=buff.arcane_missiles.max_stack&active_enemies<3
 actions.build+=/arcane_explosion,if=active_enemies>1
 actions.build+=/arcane_blast
 
@@ -56,11 +57,11 @@ actions.burn+=/blood_fury
 actions.burn+=/berserking
 actions.burn+=/arcane_torrent
 actions.burn+=/potion,if=buff.arcane_power.up&(buff.berserking.up|buff.blood_fury.up|!(race.troll|race.orc))
-actions.burn+=/use_item,name=tarnished_sentinel_medallion,if=equipped.147017&buff.arcane_power.up&(buff.bloodlust.up|!equipped.shard_of_the_exodar)
+actions.burn+=/use_items,if=buff.arcane_power.up
 actions.burn+=/presence_of_mind,if=set_bonus.tier20_2pc|buff.rune_of_power.remains<=buff.presence_of_mind.max_stack*action.arcane_blast.execute_time|buff.arcane_power.remains<=buff.presence_of_mind.max_stack*action.arcane_blast.execute_time
 actions.burn+=/arcane_orb
 actions.burn+=/arcane_barrage,if=active_enemies>1&equipped.mantle_of_the_first_kirin_tor&buff.arcane_charge.stack=buff.arcane_charge.max_stack
-actions.burn+=/arcane_missiles,if=variable.arcane_missiles_procs=buff.arcane_missiles.max_stack|dot.spectral_owl.ticking
+actions.burn+=/arcane_missiles,if=variable.arcane_missiles_procs=buff.arcane_missiles.max_stack&active_enemies<3
 actions.burn+=/arcane_blast,if=buff.presence_of_mind.up
 actions.burn+=/supernova
 actions.burn+=/arcane_explosion,if=active_enemies>1
@@ -74,7 +75,7 @@ actions.conserve=mark_of_aluneth,if=recharge_time<=variable.time_until_burn|vari
 actions.conserve+=/mirror_image,if=variable.time_until_burn>recharge_time|variable.time_until_burn>target.time_to_die
 actions.conserve+=/rune_of_power,if=full_recharge_time<=execute_time|(set_bonus.tier20_4pc&cooldown.presence_of_mind.remains<=execute_time&variable.time_until_burn>cooldown.presence_of_mind.recharge_time-variable.average_pom_cdr)|prev_gcd.1.mark_of_aluneth|target.time_to_die<recharge_time
 actions.conserve+=/presence_of_mind,if=set_bonus.tier20_4pc&(variable.time_until_burn>=recharge_time-variable.average_pom_cdr|buff.rune_of_power.up)
-actions.conserve+=/arcane_missiles,if=variable.arcane_missiles_procs=buff.arcane_missiles.max_stack
+actions.conserve+=/arcane_missiles,if=variable.arcane_missiles_procs=buff.arcane_missiles.max_stack&active_enemies<3
 actions.conserve+=/supernova
 actions.conserve+=/nether_tempest,if=refreshable|!ticking
 actions.conserve+=/arcane_explosion,if=active_enemies>1&mana.pct>=90
