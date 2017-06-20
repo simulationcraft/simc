@@ -1,4 +1,4 @@
-SimulationCraft 725-01 for World of Warcraft 7.2.5 Live (wow build 24287, git build ba56295)
+SimulationCraft 725-01 for World of Warcraft 7.2.5 Live (wow build 24287, git build 9d7f936)
 
 Name             : Dual Wield (Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
@@ -3701,7 +3701,7 @@ Description      : Increases damage taken by $m1%.
 Tooltip          : Increases damage taken from the Death Knight by $m1%.
 
 Name             : Festering Wound (id=194310) [Spell Family (15)] 
-Hotfixed         : Proc Chance (100 -> 30), Proc Stacks (0 -> -1), Internal Cooldown (0 -> 1000)
+Hotfixed         : Proc Chance (100 -> 20), Proc Stacks (0 -> -1), Internal Cooldown (0 -> 1000)
 Class            : Death Knight
 School           : Shadow
 Spell Level      : 57
@@ -3709,7 +3709,7 @@ Range            : 50000 yards
 Duration         : 24 seconds
 Internal Cooldown: 1 seconds
 Stacks           : -1 initial, 8 maximum
-Proc Chance      : 30%
+Proc Chance      : 20%
 Proc Flags       : ........ ...x...x ........ .......x 
                  : AOE Heal Taken, Heal Taken
 Attributes       : ....x... ........ ........ ..x.....   ........ ........ ........ ........ 
