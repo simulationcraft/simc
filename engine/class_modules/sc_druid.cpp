@@ -40,6 +40,7 @@ namespace { // UNNAMED NAMESPACE
   Statistics?
   Incarnation CD modifier rework
   Check Galactic Guardian proc sources
+  Find missing damage multipliers
 
   Resto =====================================================================
   All the things
@@ -820,6 +821,10 @@ public:
   virtual void      init_spells() override;
   virtual void      init_scaling() override;
   virtual void      create_buffs() override;
+  std::string       default_flask() const override;
+  std::string       default_potion() const override;
+  std::string       default_food() const override;
+  std::string       default_rune() const override;
   virtual void      invalidate_cache( cache_e ) override;
   virtual void      arise() override;
   virtual void      reset() override;
@@ -3649,7 +3654,7 @@ public:
       player -> spec.swipe_cat : spell_data_t::not_found(), options_str )
   {
     aoe = -1;
-    energize_amount = data().effectN( 1 ).percent();
+    energize_amount = data().effectN(1).base_value();
     energize_resource = RESOURCE_COMBO_POINT;
     energize_type = ENERGIZE_ON_HIT;
 
@@ -4030,8 +4035,7 @@ struct maul_t : public bear_attack_t
   maul_t( druid_t* player, const std::string& options_str ) :
     bear_attack_t( "maul", player, player -> find_specialization_spell( "Maul" ), options_str )
   {
-    weapon = &( player -> main_hand_weapon );
-    use_off_gcd = true;
+    gore = true;
 
     base_crit += player -> artifact.mauler.percent();
   }
@@ -7355,103 +7359,103 @@ void druid_t::create_buffs()
 }
 
 // ALL Spec Pre-Combat Action Priority List =================================
+std::string druid_t::default_flask() const
+{
+   std::string balance_flask =   (true_level > 100) ? "whispered_pact" :
+                                 (true_level >= 90) ? "greater_draenic_intellect_flask" :
+                                 (true_level >= 85) ? "warm_sun" :
+                                 (true_level >= 80) ? "draconic_mind" :
+                                 "disabled";
+
+   std::string feral_flask =     (true_level >  100) ? "seventh_demon" :
+                                 (true_level >= 90) ? "greater_draenic_agility_flask" :
+                                 (true_level >= 85) ? "spring_blossoms" :
+                                 (true_level >= 80) ? "winds" :
+                                 "disabled";
+
+   std::string guardian_flask =  (true_level >  100) ? "seventh_demon" :
+                                 (true_level >= 90) ? "greater_draenic_agility_flask" :
+                                 (true_level >= 85) ? "spring_blossoms" :
+                                 (true_level >= 80) ? "winds" :
+                                 "disabled";
+
+   switch ( specialization() )
+   {
+   case DRUID_FERAL:
+      return feral_flask;
+   case DRUID_BALANCE:
+      return balance_flask;
+   case DRUID_GUARDIAN:
+      return guardian_flask;
+   default:
+      return "disabled";
+   }
+   
+}
+std::string druid_t::default_potion() const
+{
+   std::string balance_pot =  (true_level > 100) ? "deadly_grace" :
+                              (true_level >= 90) ? "draenic_intellect" :
+                              (true_level >= 85) ? "jade_serpent" :
+                              (true_level >= 80) ? "volcanic" :
+                              "disabled";
+
+      std::string feral_pot = (true_level > 100) ? "old_war" : //TODO(feral): Check pp conditional ~1m dps/915 ilvl
+                              (true_level >= 90) ? "draenic_agility" :
+                              (true_level >= 85) ? "virmens_bite" :
+                              (true_level >= 80) ? "tolvir" :
+                              "disabled";
+
+   std::string guardian_pot = (true_level > 100) ? "old_war" :
+                              (true_level >= 90) ? "draenic_agility" :
+                              (true_level >= 85) ? "virmens_bite" :
+                              (true_level >= 80) ? "tolvir" :
+                              "disabled";
+
+
+   switch (specialization())
+   {
+   case DRUID_FERAL:
+      return feral_pot;
+   case DRUID_BALANCE:
+      return balance_pot;
+   case DRUID_GUARDIAN:
+      return guardian_pot;
+   default:
+      return "disabled";
+   }
+}
+
+std::string druid_t::default_food() const
+{
+   return (true_level >  100) ? "lavish_suramar_feast" :
+          (true_level >  90) ?  "pickled_eel" :
+          (true_level >= 90) ?  "sea_mist_rice_noodles" :
+          (true_level >= 80) ?  "seafood_magnifique_feast" :
+          "disabled";
+}
+
+std::string druid_t::default_rune() const
+{
+   return (true_level >= 110) ? "defiled" :
+          (true_level >= 100) ? "hyper" :
+          "disabled";
+}
+
 
 void druid_t::apl_precombat()
 {
   action_priority_list_t* precombat = get_action_priority_list( "precombat" );
 
-  // Flask or Elixir
-  if ( sim -> allow_flasks && true_level >= 80 )
-  {
-    std::string flask, elixir1, elixir2;
+   // Flask
+   precombat->add_action("flask");
+ 
+   // Food
+   precombat->add_action("food");
 
-    if ( primary_role() == ROLE_TANK ) // Guardian
-    {
-      if ( true_level > 100 )
-         flask = "flask_of_the_seventh_demon";
-      else if ( true_level > 90 )
-        flask = "greater_draenic_agility_flask";
-      else if ( true_level > 85 )
-        flask = "winds";
-      else
-        flask = "steelskin";
-    }
-    else if ( primary_role() == ROLE_ATTACK ) // Feral
-    {
-      if ( true_level > 100 )
-        flask = "flask_of_the_seventh_demon";
-      else if ( true_level > 90 )
-        flask = "greater_draenic_agility_flask";
-      else
-        flask = "winds";
-    }
-    else // Balance & Restoration
-    {
-      if ( true_level > 100 )
-        flask = "flask_of_the_whispered_pact";
-      else if ( true_level > 90 )
-        flask = "greater_draenic_intellect_flask";
-      else if ( true_level > 85 )
-        flask = "warm_sun";
-      else
-        flask = "draconic_mind";
-    }
-
-    if ( ! flask.empty() )
-      precombat -> add_action( "flask,type=" + flask );
-    else
-    {
-      if ( ! elixir1.empty() )
-        precombat -> add_action( "elixir,type=" + elixir1 );
-      if ( ! elixir2.empty() )
-        precombat -> add_action( "elixir,type=" + elixir2 );
-    }
-  }
-
-  // Food
-  if ( sim -> allow_food && true_level > 80 )
-  {
-    std::string food;
-
-    if ( true_level > 100 )
-    {
-      switch ( specialization() )
-      {
-        case DRUID_FERAL:
-          food = "lavish_suramar_feast";
-          break;
-        default:
-          food = "lavish_suramar_feast";
-          break;
-      }
-    }
-    else if ( true_level > 90 )
-    {
-      switch ( specialization() )
-      {
-        case DRUID_FERAL:
-          food = "pickled_eel";
-          break;
-        case DRUID_BALANCE:
-        case DRUID_GUARDIAN:
-          food = "sleeper_sushi";
-          break;
-        default:
-          food = "buttered_sturgeon";
-          break;
-      }
-    }
-    else
-      food = "seafood_magnifique_feast";
-
-    if ( ! food.empty() )
-      precombat -> add_action( "food,type=" + food );
-  }
-
-  // Augmentation Rune
-  if ( true_level > 100 )
-    precombat -> add_action( "augmentation,type=defiled" );
-
+   // Rune
+   precombat->add_action("augmentation");
+  
   // Mark of the Wild
   precombat -> add_action( this, "Mark of the Wild", "if=!aura.str_agi_int.up" );
 
@@ -7493,35 +7497,7 @@ void druid_t::apl_precombat()
   precombat -> add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
 
   // Pre-Potion
-  if ( sim -> allow_potions && true_level >= 80 )
-  {
-    std::string potion_action = "potion,name=";
-    if ( specialization() == DRUID_FERAL && primary_role() == ROLE_ATTACK )
-    {
-      if ( true_level > 100 )
-        potion_action += "old_war";
-      else if ( true_level > 90 )
-        potion_action += "draenic_agility";
-      else if ( true_level > 85 )
-        potion_action += "tolvir";
-      else
-        potion_action += "tolvir";
-      precombat -> add_action( potion_action );
-    }
-    else if ( ( specialization() == DRUID_BALANCE || specialization() == DRUID_RESTORATION ) && ( primary_role() == ROLE_SPELL
-              || primary_role() == ROLE_HEAL ) )
-    {
-      if ( true_level > 100 )
-        potion_action += "deadly_grace";
-      else if ( true_level > 90 )
-        potion_action += "draenic_intellect";
-      else if ( true_level > 85 )
-        potion_action += "jade_serpent";
-      else
-        potion_action += "volcanic";
-      precombat -> add_action( potion_action );
-    }
-  }
+  precombat->add_action("potion");
 
   // Spec Specific Optimizations
   if ( specialization() == DRUID_BALANCE )
@@ -10083,31 +10059,7 @@ struct druid_module_t : public module_t
   }
 
   virtual void register_hotfixes() const override 
-  {
-     hotfix::register_effect("Druid", "2017-06-14", "Feral T20 2pc reduced to 1 energy per tick from 2", 373694)
-        .field("base_value")
-        .operation(hotfix::HOTFIX_SET)
-        .modifier(1)
-        .verification_value(2);
-
-     hotfix::register_effect("Druid", "2017-06-14", "Feral T20 4pc reduced to 10% damage increase", 367818)
-        .field("base_value")
-        .operation(hotfix::HOTFIX_SET)
-        .modifier(10)
-        .verification_value(15);
-
-     hotfix::register_effect("Druid", "2017-06-14", "Feral T20 4pc now only increase duration by 4 seconds", 367819)
-        .field("base_value")
-        .operation(hotfix::HOTFIX_SET)
-        .modifier(4000)
-        .verification_value(8000);  
-
-     hotfix::register_effect("Druid", "2017-06-14", "Balance T20 4pc now last for 20 seconds.", 242232)
-        .field("duration")
-        .operation(hotfix::HOTFIX_SET)
-        .modifier(20)
-        .verification_value(15);
-    
+  { 
     /*
     hotfix::register_spell( "Druid", "2016-12-18", "Incorrect spell level for starfall damage component.", 191037 )
       .field( "spell_level" )

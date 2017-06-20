@@ -1,0 +1,1771 @@
+SimulationCraft 725-01 for World of Warcraft 7.2.5 Live (wow build 24287)
+bonus_id={ 1 }, desc={ Heroic }, ilevel_adjust={ 20 }, stats={ 100% Sta [1.5789] }
+bonus_id={ 3 }, suffix={ of Power }, socket={ 2 }, stats={ 100% StrAgiInt [0.5263] }
+bonus_id={ 15 }, quality={ epic }, ilevel_adjust={ 20 }
+bonus_id={ 17 }, stats={ 100% Crit [0.3506] }
+bonus_id={ 18 }, stats={ 100% Haste [0.3506] }
+bonus_id={ 19 }, suffix={ of the Fireflash }, stats={ 50% Crit [0.3506], 50% Haste [0.3506] }
+bonus_id={ 20 }, suffix={ of the Fireflash }, stats={ 60% Crit [0.3997], 40% Haste [0.2664] }
+bonus_id={ 21 }, suffix={ of the Fireflash }, stats={ 55% Crit [0.3761], 45% Haste [0.3076] }
+bonus_id={ 22 }, suffix={ of the Fireflash }, stats={ 59% Crit [0.3951], 41% Haste [0.2745] }
+bonus_id={ 23 }, suffix={ of the Fireflash }, stats={ 58% Crit [0.3905], 42% Haste [0.2827] }
+bonus_id={ 24 }, suffix={ of the Fireflash }, stats={ 57% Crit [0.3858], 43% Haste [0.2909] }
+bonus_id={ 25 }, suffix={ of the Fireflash }, stats={ 56% Crit [0.3810], 44% Haste [0.2992] }
+bonus_id={ 26 }, suffix={ of the Fireflash }, stats={ 54% Crit [0.3711], 46% Haste [0.3161] }
+bonus_id={ 27 }, suffix={ of the Fireflash }, stats={ 53% Crit [0.3661], 47% Haste [0.3246] }
+bonus_id={ 28 }, suffix={ of the Fireflash }, stats={ 52% Crit [0.3610], 48% Haste [0.3332] }
+bonus_id={ 29 }, suffix={ of the Fireflash }, stats={ 51% Crit [0.3559], 49% Haste [0.3418] }
+bonus_id={ 30 }, suffix={ of the Fireflash }, stats={ 49% Crit [0.3418], 51% Haste [0.3559] }
+bonus_id={ 31 }, suffix={ of the Fireflash }, stats={ 48% Crit [0.3332], 52% Haste [0.3610] }
+bonus_id={ 32 }, suffix={ of the Fireflash }, stats={ 47% Crit [0.3246], 53% Haste [0.3661] }
+bonus_id={ 33 }, suffix={ of the Fireflash }, stats={ 46% Crit [0.3161], 54% Haste [0.3711] }
+bonus_id={ 34 }, suffix={ of the Fireflash }, stats={ 45% Crit [0.3076], 55% Haste [0.3761] }
+bonus_id={ 35 }, suffix={ of the Fireflash }, stats={ 44% Crit [0.2992], 56% Haste [0.3810] }
+bonus_id={ 36 }, suffix={ of the Fireflash }, stats={ 43% Crit [0.2909], 57% Haste [0.3858] }
+bonus_id={ 37 }, suffix={ of the Fireflash }, stats={ 42% Crit [0.2827], 58% Haste [0.3905] }
+bonus_id={ 38 }, suffix={ of the Fireflash }, stats={ 41% Crit [0.2745], 59% Haste [0.3951] }
+bonus_id={ 39 }, suffix={ of the Fireflash }, stats={ 40% Crit [0.2664], 60% Haste [0.3997] }
+bonus_id={ 40 }, stats={ 100% Avoidance [0.3000] }
+bonus_id={ 41 }, stats={ 100% Leech [0.3000] }
+bonus_id={ 42 }, stats={ 100% RunSpeed [0.3000] }
+bonus_id={ 43 }, stats={ 100% unknown [0.3000] }
+bonus_id={ 44 }, desc={ Warforged }, ilevel_adjust={ 6 }
+bonus_id={ 45 }, suffix={ of the Peerless }, stats={ 40% Crit [0.2664], 60% Mastery [0.3997] }
+bonus_id={ 46 }, suffix={ of the Peerless }, stats={ 41% Crit [0.2745], 59% Mastery [0.3951] }
+bonus_id={ 47 }, suffix={ of the Peerless }, stats={ 42% Crit [0.2827], 58% Mastery [0.3905] }
+bonus_id={ 48 }, suffix={ of the Peerless }, stats={ 43% Crit [0.2909], 57% Mastery [0.3858] }
+bonus_id={ 49 }, suffix={ of the Peerless }, stats={ 44% Crit [0.2992], 56% Mastery [0.3810] }
+bonus_id={ 50 }, suffix={ of the Peerless }, stats={ 45% Crit [0.3076], 55% Mastery [0.3761] }
+bonus_id={ 51 }, suffix={ of the Peerless }, stats={ 46% Crit [0.3161], 54% Mastery [0.3711] }
+bonus_id={ 52 }, suffix={ of the Peerless }, stats={ 47% Crit [0.3246], 53% Mastery [0.3661] }
+bonus_id={ 53 }, suffix={ of the Peerless }, stats={ 48% Crit [0.3332], 52% Mastery [0.3610] }
+bonus_id={ 54 }, suffix={ of the Peerless }, stats={ 49% Crit [0.3418], 51% Mastery [0.3559] }
+bonus_id={ 55 }, suffix={ of the Peerless }, stats={ 50% Crit [0.3506], 50% Mastery [0.3506] }
+bonus_id={ 56 }, suffix={ of the Peerless }, stats={ 51% Crit [0.3559], 49% Mastery [0.3418] }
+bonus_id={ 57 }, suffix={ of the Peerless }, stats={ 52% Crit [0.3610], 48% Mastery [0.3332] }
+bonus_id={ 58 }, suffix={ of the Peerless }, stats={ 53% Crit [0.3661], 47% Mastery [0.3246] }
+bonus_id={ 59 }, suffix={ of the Peerless }, stats={ 54% Crit [0.3711], 46% Mastery [0.3161] }
+bonus_id={ 60 }, suffix={ of the Peerless }, stats={ 55% Crit [0.3761], 45% Mastery [0.3076] }
+bonus_id={ 61 }, suffix={ of the Peerless }, stats={ 56% Crit [0.3810], 44% Mastery [0.2992] }
+bonus_id={ 62 }, suffix={ of the Peerless }, stats={ 57% Crit [0.3858], 43% Mastery [0.2909] }
+bonus_id={ 63 }, suffix={ of the Peerless }, stats={ 58% Crit [0.3905], 42% Mastery [0.2827] }
+bonus_id={ 64 }, suffix={ of the Peerless }, stats={ 59% Crit [0.3951], 41% Mastery [0.2745] }
+bonus_id={ 65 }, suffix={ of the Peerless }, stats={ 60% Crit [0.3997], 40% Mastery [0.2664] }
+bonus_id={ 66 }, suffix={ of the Peerless }, stats={ 40% Crit [0.2664], 60% Mastery [0.3997] }
+bonus_id={ 67 }, suffix={ of the Peerless }, stats={ 41% Crit [0.2745], 59% Mastery [0.3951] }
+bonus_id={ 68 }, suffix={ of the Peerless }, stats={ 42% Crit [0.2827], 58% Mastery [0.3905] }
+bonus_id={ 69 }, suffix={ of the Peerless }, stats={ 43% Crit [0.2909], 57% Mastery [0.3858] }
+bonus_id={ 70 }, suffix={ of the Peerless }, stats={ 44% Crit [0.2992], 56% Mastery [0.3810] }
+bonus_id={ 71 }, suffix={ of the Peerless }, stats={ 45% Crit [0.3076], 55% Mastery [0.3761] }
+bonus_id={ 72 }, suffix={ of the Peerless }, stats={ 46% Crit [0.3161], 54% Mastery [0.3711] }
+bonus_id={ 73 }, suffix={ of the Peerless }, stats={ 47% Crit [0.3246], 53% Mastery [0.3661] }
+bonus_id={ 74 }, suffix={ of the Peerless }, stats={ 48% Crit [0.3332], 52% Mastery [0.3610] }
+bonus_id={ 75 }, suffix={ of the Peerless }, stats={ 49% Crit [0.3418], 51% Mastery [0.3559] }
+bonus_id={ 76 }, suffix={ of the Peerless }, stats={ 50% Crit [0.3506], 50% Mastery [0.3506] }
+bonus_id={ 77 }, suffix={ of the Peerless }, stats={ 51% Crit [0.3559], 49% Mastery [0.3418] }
+bonus_id={ 78 }, suffix={ of the Peerless }, stats={ 52% Crit [0.3610], 48% Mastery [0.3332] }
+bonus_id={ 79 }, suffix={ of the Peerless }, stats={ 53% Crit [0.3661], 47% Mastery [0.3246] }
+bonus_id={ 80 }, suffix={ of the Peerless }, stats={ 54% Crit [0.3711], 46% Mastery [0.3161] }
+bonus_id={ 81 }, suffix={ of the Peerless }, stats={ 55% Crit [0.3761], 45% Mastery [0.3076] }
+bonus_id={ 82 }, suffix={ of the Peerless }, stats={ 56% Crit [0.3810], 44% Mastery [0.2992] }
+bonus_id={ 83 }, suffix={ of the Peerless }, stats={ 57% Crit [0.3858], 43% Mastery [0.2909] }
+bonus_id={ 84 }, suffix={ of the Peerless }, stats={ 58% Crit [0.3905], 42% Mastery [0.2827] }
+bonus_id={ 85 }, suffix={ of the Peerless }, stats={ 59% Crit [0.3951], 41% Mastery [0.2745] }
+bonus_id={ 86 }, suffix={ of the Peerless }, stats={ 60% Crit [0.3997], 40% Mastery [0.2664] }
+bonus_id={ 87 }, suffix={ of the Quickblade }, stats={ 40% Crit [0.2664], 60% Vers [0.3997] }
+bonus_id={ 88 }, suffix={ of the Quickblade }, stats={ 41% Crit [0.2745], 59% Vers [0.3951] }
+bonus_id={ 89 }, suffix={ of the Quickblade }, stats={ 42% Crit [0.2827], 58% Vers [0.3905] }
+bonus_id={ 90 }, suffix={ of the Quickblade }, stats={ 43% Crit [0.2909], 57% Vers [0.3858] }
+bonus_id={ 91 }, suffix={ of the Quickblade }, stats={ 44% Crit [0.2992], 56% Vers [0.3810] }
+bonus_id={ 92 }, suffix={ of the Quickblade }, stats={ 45% Crit [0.3076], 55% Vers [0.3761] }
+bonus_id={ 93 }, suffix={ of the Quickblade }, stats={ 46% Crit [0.3161], 54% Vers [0.3711] }
+bonus_id={ 94 }, suffix={ of the Quickblade }, stats={ 47% Crit [0.3246], 53% Vers [0.3661] }
+bonus_id={ 95 }, suffix={ of the Quickblade }, stats={ 48% Crit [0.3332], 52% Vers [0.3610] }
+bonus_id={ 96 }, suffix={ of the Quickblade }, stats={ 49% Crit [0.3418], 51% Vers [0.3559] }
+bonus_id={ 97 }, suffix={ of the Quickblade }, stats={ 50% Crit [0.3506], 50% Vers [0.3506] }
+bonus_id={ 98 }, suffix={ of the Quickblade }, stats={ 51% Crit [0.3559], 49% Vers [0.3418] }
+bonus_id={ 99 }, suffix={ of the Quickblade }, stats={ 52% Crit [0.3610], 48% Vers [0.3332] }
+bonus_id={ 100 }, suffix={ of the Quickblade }, stats={ 53% Crit [0.3661], 47% Vers [0.3246] }
+bonus_id={ 101 }, suffix={ of the Quickblade }, stats={ 54% Crit [0.3711], 46% Vers [0.3161] }
+bonus_id={ 102 }, suffix={ of the Quickblade }, stats={ 55% Crit [0.3761], 45% Vers [0.3076] }
+bonus_id={ 103 }, suffix={ of the Quickblade }, stats={ 56% Crit [0.3810], 44% Vers [0.2992] }
+bonus_id={ 104 }, suffix={ of the Quickblade }, stats={ 57% Crit [0.3858], 43% Vers [0.2909] }
+bonus_id={ 105 }, suffix={ of the Quickblade }, stats={ 58% Crit [0.3905], 42% Vers [0.2827] }
+bonus_id={ 106 }, suffix={ of the Quickblade }, stats={ 59% Crit [0.3951], 41% Vers [0.2745] }
+bonus_id={ 107 }, suffix={ of the Quickblade }, stats={ 60% Crit [0.3997], 40% Vers [0.2664] }
+bonus_id={ 108 }, suffix={ of the Feverflare }, stats={ 40% Haste [0.2664], 60% Mastery [0.3997] }
+bonus_id={ 109 }, suffix={ of the Feverflare }, stats={ 41% Haste [0.2745], 59% Mastery [0.3951] }
+bonus_id={ 110 }, suffix={ of the Feverflare }, stats={ 42% Haste [0.2827], 58% Mastery [0.3905] }
+bonus_id={ 111 }, suffix={ of the Feverflare }, stats={ 43% Haste [0.2909], 57% Mastery [0.3858] }
+bonus_id={ 112 }, suffix={ of the Feverflare }, stats={ 44% Haste [0.2992], 56% Mastery [0.3810] }
+bonus_id={ 113 }, suffix={ of the Feverflare }, stats={ 45% Haste [0.3076], 55% Mastery [0.3761] }
+bonus_id={ 114 }, suffix={ of the Feverflare }, stats={ 46% Haste [0.3161], 54% Mastery [0.3711] }
+bonus_id={ 115 }, suffix={ of the Feverflare }, stats={ 47% Haste [0.3246], 53% Mastery [0.3661] }
+bonus_id={ 116 }, suffix={ of the Feverflare }, stats={ 48% Haste [0.3332], 52% Mastery [0.3610] }
+bonus_id={ 117 }, suffix={ of the Feverflare }, stats={ 49% Haste [0.3418], 51% Mastery [0.3559] }
+bonus_id={ 118 }, suffix={ of the Feverflare }, stats={ 50% Haste [0.3506], 50% Mastery [0.3506] }
+bonus_id={ 119 }, suffix={ of the Feverflare }, stats={ 51% Haste [0.3559], 49% Mastery [0.3418] }
+bonus_id={ 120 }, suffix={ of the Feverflare }, stats={ 52% Haste [0.3610], 48% Mastery [0.3332] }
+bonus_id={ 121 }, suffix={ of the Feverflare }, stats={ 53% Haste [0.3661], 47% Mastery [0.3246] }
+bonus_id={ 122 }, suffix={ of the Feverflare }, stats={ 54% Haste [0.3711], 46% Mastery [0.3161] }
+bonus_id={ 123 }, suffix={ of the Feverflare }, stats={ 55% Haste [0.3761], 45% Mastery [0.3076] }
+bonus_id={ 124 }, suffix={ of the Feverflare }, stats={ 56% Haste [0.3810], 44% Mastery [0.2992] }
+bonus_id={ 125 }, suffix={ of the Feverflare }, stats={ 57% Haste [0.3858], 43% Mastery [0.2909] }
+bonus_id={ 126 }, suffix={ of the Feverflare }, stats={ 58% Haste [0.3905], 42% Mastery [0.2827] }
+bonus_id={ 127 }, suffix={ of the Feverflare }, stats={ 59% Haste [0.3951], 41% Mastery [0.2745] }
+bonus_id={ 128 }, suffix={ of the Feverflare }, stats={ 60% Haste [0.3997], 40% Mastery [0.2664] }
+bonus_id={ 129 }, suffix={ of the Fireflash }, stats={ 40% Haste [0.2664], 60% Crit [0.3997] }
+bonus_id={ 130 }, suffix={ of the Fireflash }, stats={ 41% Haste [0.2745], 59% Crit [0.3951] }
+bonus_id={ 131 }, suffix={ of the Fireflash }, stats={ 42% Haste [0.2827], 58% Crit [0.3905] }
+bonus_id={ 132 }, suffix={ of the Fireflash }, stats={ 43% Haste [0.2909], 57% Crit [0.3858] }
+bonus_id={ 133 }, suffix={ of the Fireflash }, stats={ 44% Haste [0.2992], 56% Crit [0.3810] }
+bonus_id={ 134 }, suffix={ of the Fireflash }, stats={ 45% Haste [0.3076], 55% Crit [0.3761] }
+bonus_id={ 135 }, suffix={ of the Fireflash }, stats={ 46% Haste [0.3161], 54% Crit [0.3711] }
+bonus_id={ 136 }, suffix={ of the Fireflash }, stats={ 47% Haste [0.3246], 53% Crit [0.3661] }
+bonus_id={ 137 }, suffix={ of the Fireflash }, stats={ 48% Haste [0.3332], 52% Crit [0.3610] }
+bonus_id={ 138 }, suffix={ of the Fireflash }, stats={ 49% Haste [0.3418], 51% Crit [0.3559] }
+bonus_id={ 139 }, suffix={ of the Fireflash }, stats={ 50% Haste [0.3506], 50% Crit [0.3506] }
+bonus_id={ 140 }, suffix={ of the Fireflash }, stats={ 51% Haste [0.3559], 49% Crit [0.3418] }
+bonus_id={ 141 }, suffix={ of the Fireflash }, stats={ 52% Haste [0.3610], 48% Crit [0.3332] }
+bonus_id={ 142 }, suffix={ of the Fireflash }, stats={ 53% Haste [0.3661], 47% Crit [0.3246] }
+bonus_id={ 143 }, suffix={ of the Fireflash }, stats={ 54% Haste [0.3711], 46% Crit [0.3161] }
+bonus_id={ 144 }, suffix={ of the Fireflash }, stats={ 55% Haste [0.3761], 45% Crit [0.3076] }
+bonus_id={ 145 }, suffix={ of the Fireflash }, stats={ 56% Haste [0.3810], 44% Crit [0.2992] }
+bonus_id={ 146 }, suffix={ of the Fireflash }, stats={ 57% Haste [0.3858], 43% Crit [0.2909] }
+bonus_id={ 147 }, suffix={ of the Fireflash }, stats={ 58% Haste [0.3905], 42% Crit [0.2827] }
+bonus_id={ 148 }, suffix={ of the Fireflash }, stats={ 59% Haste [0.3951], 41% Crit [0.2745] }
+bonus_id={ 149 }, suffix={ of the Fireflash }, stats={ 60% Haste [0.3997], 40% Crit [0.2664] }
+bonus_id={ 150 }, suffix={ of the Aurora }, stats={ 40% Haste [0.2664], 60% Vers [0.3997] }
+bonus_id={ 151 }, suffix={ of the Aurora }, stats={ 41% Haste [0.2745], 59% Vers [0.3951] }
+bonus_id={ 152 }, suffix={ of the Aurora }, stats={ 42% Haste [0.2827], 58% Vers [0.3905] }
+bonus_id={ 153 }, suffix={ of the Aurora }, stats={ 43% Haste [0.2909], 57% Vers [0.3858] }
+bonus_id={ 154 }, suffix={ of the Aurora }, stats={ 44% Haste [0.2992], 56% Vers [0.3810] }
+bonus_id={ 155 }, suffix={ of the Aurora }, stats={ 45% Haste [0.3076], 55% Vers [0.3761] }
+bonus_id={ 156 }, suffix={ of the Aurora }, stats={ 46% Haste [0.3161], 54% Vers [0.3711] }
+bonus_id={ 157 }, suffix={ of the Aurora }, stats={ 47% Haste [0.3246], 53% Vers [0.3661] }
+bonus_id={ 158 }, suffix={ of the Aurora }, stats={ 48% Haste [0.3332], 52% Vers [0.3610] }
+bonus_id={ 159 }, suffix={ of the Aurora }, stats={ 49% Haste [0.3418], 51% Vers [0.3559] }
+bonus_id={ 160 }, suffix={ of the Aurora }, stats={ 50% Haste [0.3506], 50% Vers [0.3506] }
+bonus_id={ 161 }, suffix={ of the Aurora }, stats={ 51% Haste [0.3559], 49% Vers [0.3418] }
+bonus_id={ 162 }, suffix={ of the Aurora }, stats={ 52% Haste [0.3610], 48% Vers [0.3332] }
+bonus_id={ 163 }, suffix={ of the Aurora }, stats={ 53% Haste [0.3661], 47% Vers [0.3246] }
+bonus_id={ 164 }, suffix={ of the Aurora }, stats={ 54% Haste [0.3711], 46% Vers [0.3161] }
+bonus_id={ 165 }, suffix={ of the Aurora }, stats={ 55% Haste [0.3761], 45% Vers [0.3076] }
+bonus_id={ 166 }, suffix={ of the Aurora }, stats={ 56% Haste [0.3810], 44% Vers [0.2992] }
+bonus_id={ 167 }, suffix={ of the Aurora }, stats={ 57% Haste [0.3858], 43% Vers [0.2909] }
+bonus_id={ 168 }, suffix={ of the Aurora }, stats={ 58% Haste [0.3905], 42% Vers [0.2827] }
+bonus_id={ 169 }, suffix={ of the Aurora }, stats={ 59% Haste [0.3951], 41% Vers [0.2745] }
+bonus_id={ 170 }, suffix={ of the Aurora }, stats={ 60% Haste [0.3997], 40% Vers [0.2664] }
+bonus_id={ 171 }, quality={ rare }, ilevel_adjust={ 10 }
+bonus_id={ 175 }, suffix={ of the Feverflare }, stats={ 40% Mastery [0.2664], 60% Haste [0.3997] }
+bonus_id={ 176 }, suffix={ of the Feverflare }, stats={ 41% Mastery [0.2745], 59% Haste [0.3951] }
+bonus_id={ 177 }, suffix={ of the Feverflare }, stats={ 42% Mastery [0.2827], 58% Haste [0.3905] }
+bonus_id={ 178 }, suffix={ of the Feverflare }, stats={ 43% Mastery [0.2909], 57% Haste [0.3858] }
+bonus_id={ 179 }, suffix={ of the Feverflare }, stats={ 44% Mastery [0.2992], 56% Haste [0.3810] }
+bonus_id={ 180 }, suffix={ of the Feverflare }, stats={ 45% Mastery [0.3076], 55% Haste [0.3761] }
+bonus_id={ 181 }, suffix={ of the Feverflare }, stats={ 46% Mastery [0.3161], 54% Haste [0.3711] }
+bonus_id={ 182 }, suffix={ of the Feverflare }, stats={ 47% Mastery [0.3246], 53% Haste [0.3661] }
+bonus_id={ 183 }, suffix={ of the Feverflare }, stats={ 48% Mastery [0.3332], 52% Haste [0.3610] }
+bonus_id={ 184 }, suffix={ of the Feverflare }, stats={ 49% Mastery [0.3418], 51% Haste [0.3559] }
+bonus_id={ 185 }, suffix={ of the Feverflare }, stats={ 50% Mastery [0.3506], 50% Haste [0.3506] }
+bonus_id={ 186 }, suffix={ of the Feverflare }, stats={ 51% Mastery [0.3559], 49% Haste [0.3418] }
+bonus_id={ 187 }, suffix={ of the Feverflare }, stats={ 52% Mastery [0.3610], 48% Haste [0.3332] }
+bonus_id={ 188 }, suffix={ of the Feverflare }, stats={ 53% Mastery [0.3661], 47% Haste [0.3246] }
+bonus_id={ 189 }, suffix={ of the Feverflare }, stats={ 54% Mastery [0.3711], 46% Haste [0.3161] }
+bonus_id={ 190 }, suffix={ of the Feverflare }, stats={ 55% Mastery [0.3761], 45% Haste [0.3076] }
+bonus_id={ 191 }, suffix={ of the Feverflare }, stats={ 56% Mastery [0.3810], 44% Haste [0.2992] }
+bonus_id={ 192 }, suffix={ of the Feverflare }, stats={ 57% Mastery [0.3858], 43% Haste [0.2909] }
+bonus_id={ 193 }, suffix={ of the Feverflare }, stats={ 58% Mastery [0.3905], 42% Haste [0.2827] }
+bonus_id={ 194 }, suffix={ of the Feverflare }, stats={ 59% Mastery [0.3951], 41% Haste [0.2745] }
+bonus_id={ 195 }, suffix={ of the Feverflare }, stats={ 60% Mastery [0.3997], 40% Haste [0.2664] }
+bonus_id={ 196 }, suffix={ of the Harmonious }, stats={ 40% Mastery [0.2664], 60% Vers [0.3997] }
+bonus_id={ 197 }, suffix={ of the Harmonious }, stats={ 41% Mastery [0.2745], 59% Vers [0.3951] }
+bonus_id={ 198 }, suffix={ of the Harmonious }, stats={ 42% Mastery [0.2827], 58% Vers [0.3905] }
+bonus_id={ 199 }, suffix={ of the Harmonious }, stats={ 43% Mastery [0.2909], 57% Vers [0.3858] }
+bonus_id={ 200 }, suffix={ of the Harmonious }, stats={ 44% Mastery [0.2992], 56% Vers [0.3810] }
+bonus_id={ 201 }, suffix={ of the Harmonious }, stats={ 45% Mastery [0.3076], 55% Vers [0.3761] }
+bonus_id={ 202 }, suffix={ of the Harmonious }, stats={ 46% Mastery [0.3161], 54% Vers [0.3711] }
+bonus_id={ 203 }, suffix={ of the Harmonious }, stats={ 47% Mastery [0.3246], 53% Vers [0.3661] }
+bonus_id={ 204 }, suffix={ of the Harmonious }, stats={ 48% Mastery [0.3332], 52% Vers [0.3610] }
+bonus_id={ 205 }, suffix={ of the Harmonious }, stats={ 49% Mastery [0.3418], 51% Vers [0.3559] }
+bonus_id={ 206 }, suffix={ of the Harmonious }, stats={ 50% Mastery [0.3506], 50% Vers [0.3506] }
+bonus_id={ 207 }, suffix={ of the Harmonious }, stats={ 51% Mastery [0.3559], 49% Vers [0.3418] }
+bonus_id={ 208 }, suffix={ of the Harmonious }, stats={ 52% Mastery [0.3610], 48% Vers [0.3332] }
+bonus_id={ 209 }, suffix={ of the Harmonious }, stats={ 53% Mastery [0.3661], 47% Vers [0.3246] }
+bonus_id={ 210 }, suffix={ of the Harmonious }, stats={ 54% Mastery [0.3711], 46% Vers [0.3161] }
+bonus_id={ 211 }, suffix={ of the Harmonious }, stats={ 55% Mastery [0.3761], 45% Vers [0.3076] }
+bonus_id={ 212 }, suffix={ of the Harmonious }, stats={ 56% Mastery [0.3810], 44% Vers [0.2992] }
+bonus_id={ 213 }, suffix={ of the Harmonious }, stats={ 57% Mastery [0.3858], 43% Vers [0.2909] }
+bonus_id={ 214 }, suffix={ of the Harmonious }, stats={ 58% Mastery [0.3905], 42% Vers [0.2827] }
+bonus_id={ 215 }, suffix={ of the Harmonious }, stats={ 59% Mastery [0.3951], 41% Vers [0.2745] }
+bonus_id={ 216 }, suffix={ of the Harmonious }, stats={ 60% Mastery [0.3997], 40% Vers [0.2664] }
+bonus_id={ 217 }, suffix={ of the Aurora }, stats={ 40% Haste [0.2664], 60% Vers [0.3997] }
+bonus_id={ 218 }, suffix={ of the Aurora }, stats={ 41% Haste [0.2745], 59% Vers [0.3951] }
+bonus_id={ 219 }, suffix={ of the Aurora }, stats={ 42% Haste [0.2827], 58% Vers [0.3905] }
+bonus_id={ 220 }, suffix={ of the Aurora }, stats={ 43% Haste [0.2909], 57% Vers [0.3858] }
+bonus_id={ 221 }, suffix={ of the Aurora }, stats={ 44% Haste [0.2992], 56% Vers [0.3810] }
+bonus_id={ 222 }, suffix={ of the Aurora }, stats={ 45% Haste [0.3076], 55% Vers [0.3761] }
+bonus_id={ 223 }, suffix={ of the Aurora }, stats={ 46% Haste [0.3161], 54% Vers [0.3711] }
+bonus_id={ 224 }, suffix={ of the Aurora }, stats={ 47% Haste [0.3246], 53% Vers [0.3661] }
+bonus_id={ 225 }, suffix={ of the Aurora }, stats={ 48% Haste [0.3332], 52% Vers [0.3610] }
+bonus_id={ 226 }, suffix={ of the Aurora }, stats={ 49% Haste [0.3418], 51% Vers [0.3559] }
+bonus_id={ 227 }, suffix={ of the Aurora }, stats={ 50% Haste [0.3506], 50% Vers [0.3506] }
+bonus_id={ 228 }, suffix={ of the Aurora }, stats={ 51% Haste [0.3559], 49% Vers [0.3418] }
+bonus_id={ 229 }, suffix={ of the Aurora }, stats={ 52% Haste [0.3610], 48% Vers [0.3332] }
+bonus_id={ 230 }, suffix={ of the Aurora }, stats={ 53% Haste [0.3661], 47% Vers [0.3246] }
+bonus_id={ 231 }, suffix={ of the Aurora }, stats={ 54% Haste [0.3711], 46% Vers [0.3161] }
+bonus_id={ 232 }, suffix={ of the Aurora }, stats={ 55% Haste [0.3761], 45% Vers [0.3076] }
+bonus_id={ 233 }, suffix={ of the Aurora }, stats={ 56% Haste [0.3810], 44% Vers [0.2992] }
+bonus_id={ 234 }, suffix={ of the Aurora }, stats={ 57% Haste [0.3858], 43% Vers [0.2909] }
+bonus_id={ 235 }, suffix={ of the Aurora }, stats={ 58% Haste [0.3905], 42% Vers [0.2827] }
+bonus_id={ 236 }, suffix={ of the Aurora }, stats={ 59% Haste [0.3951], 41% Vers [0.2745] }
+bonus_id={ 237 }, suffix={ of the Aurora }, stats={ 60% Haste [0.3997], 40% Vers [0.2664] }
+bonus_id={ 238 }, suffix={ of the Quickblade }, stats={ 40% Vers [0.2664], 60% Crit [0.3997] }
+bonus_id={ 239 }, suffix={ of the Quickblade }, stats={ 41% Vers [0.2745], 59% Crit [0.3951] }
+bonus_id={ 240 }, suffix={ of the Quickblade }, stats={ 42% Vers [0.2827], 58% Crit [0.3905] }
+bonus_id={ 241 }, suffix={ of the Quickblade }, stats={ 43% Vers [0.2909], 57% Crit [0.3858] }
+bonus_id={ 242 }, suffix={ of the Quickblade }, stats={ 44% Vers [0.2992], 56% Crit [0.3810] }
+bonus_id={ 243 }, suffix={ of the Quickblade }, stats={ 45% Vers [0.3076], 55% Crit [0.3761] }
+bonus_id={ 244 }, suffix={ of the Quickblade }, stats={ 46% Vers [0.3161], 54% Crit [0.3711] }
+bonus_id={ 245 }, suffix={ of the Quickblade }, stats={ 47% Vers [0.3246], 53% Crit [0.3661] }
+bonus_id={ 246 }, suffix={ of the Quickblade }, stats={ 48% Vers [0.3332], 52% Crit [0.3610] }
+bonus_id={ 247 }, suffix={ of the Quickblade }, stats={ 49% Vers [0.3418], 51% Crit [0.3559] }
+bonus_id={ 248 }, suffix={ of the Quickblade }, stats={ 50% Vers [0.3506], 50% Crit [0.3506] }
+bonus_id={ 249 }, suffix={ of the Quickblade }, stats={ 51% Vers [0.3559], 49% Crit [0.3418] }
+bonus_id={ 250 }, suffix={ of the Quickblade }, stats={ 52% Vers [0.3610], 48% Crit [0.3332] }
+bonus_id={ 251 }, suffix={ of the Quickblade }, stats={ 53% Vers [0.3661], 47% Crit [0.3246] }
+bonus_id={ 252 }, suffix={ of the Quickblade }, stats={ 54% Vers [0.3711], 46% Crit [0.3161] }
+bonus_id={ 253 }, suffix={ of the Quickblade }, stats={ 55% Vers [0.3761], 45% Crit [0.3076] }
+bonus_id={ 254 }, suffix={ of the Quickblade }, stats={ 56% Vers [0.3810], 44% Crit [0.2992] }
+bonus_id={ 255 }, suffix={ of the Quickblade }, stats={ 57% Vers [0.3858], 43% Crit [0.2909] }
+bonus_id={ 256 }, suffix={ of the Quickblade }, stats={ 58% Vers [0.3905], 42% Crit [0.2827] }
+bonus_id={ 257 }, suffix={ of the Quickblade }, stats={ 59% Vers [0.3951], 41% Crit [0.2745] }
+bonus_id={ 258 }, suffix={ of the Quickblade }, stats={ 60% Vers [0.3997], 40% Crit [0.2664] }
+bonus_id={ 259 }, suffix={ of the Aurora }, stats={ 40% Vers [0.2664], 60% Haste [0.3997] }
+bonus_id={ 260 }, suffix={ of the Aurora }, stats={ 41% Vers [0.2745], 59% Haste [0.3951] }
+bonus_id={ 261 }, suffix={ of the Aurora }, stats={ 42% Vers [0.2827], 58% Haste [0.3905] }
+bonus_id={ 262 }, suffix={ of the Aurora }, stats={ 43% BonusArmor [0.2909], 57% Haste [0.3858] }
+bonus_id={ 263 }, suffix={ of the Aurora }, stats={ 44% Vers [0.2992], 56% Haste [0.3810] }
+bonus_id={ 264 }, suffix={ of the Aurora }, stats={ 45% Vers [0.3076], 55% Haste [0.3761] }
+bonus_id={ 265 }, suffix={ of the Aurora }, stats={ 46% Vers [0.3161], 54% Haste [0.3711] }
+bonus_id={ 266 }, suffix={ of the Aurora }, stats={ 47% Vers [0.3246], 53% Haste [0.3661] }
+bonus_id={ 267 }, suffix={ of the Aurora }, stats={ 48% Vers [0.3332], 52% Haste [0.3610] }
+bonus_id={ 268 }, suffix={ of the Aurora }, stats={ 49% Vers [0.3418], 51% Haste [0.3559] }
+bonus_id={ 269 }, suffix={ of the Aurora }, stats={ 50% Vers [0.3506], 50% Haste [0.3506] }
+bonus_id={ 270 }, suffix={ of the Aurora }, stats={ 51% Vers [0.3559], 49% Haste [0.3418] }
+bonus_id={ 271 }, suffix={ of the Aurora }, stats={ 52% Vers [0.3610], 48% Haste [0.3332] }
+bonus_id={ 272 }, suffix={ of the Aurora }, stats={ 53% Vers [0.3661], 47% Haste [0.3246] }
+bonus_id={ 273 }, suffix={ of the Aurora }, stats={ 54% Vers [0.3711], 46% Haste [0.3161] }
+bonus_id={ 274 }, suffix={ of the Aurora }, stats={ 55% Vers [0.3761], 45% Haste [0.3076] }
+bonus_id={ 275 }, suffix={ of the Aurora }, stats={ 56% Vers [0.3810], 44% Haste [0.2992] }
+bonus_id={ 276 }, suffix={ of the Aurora }, stats={ 57% Vers [0.3858], 43% Haste [0.2909] }
+bonus_id={ 277 }, suffix={ of the Aurora }, stats={ 58% Vers [0.3905], 42% Haste [0.2827] }
+bonus_id={ 278 }, suffix={ of the Aurora }, stats={ 59% Vers [0.3951], 41% Haste [0.2745] }
+bonus_id={ 279 }, suffix={ of the Aurora }, stats={ 60% Vers [0.3997], 40% Haste [0.2664] }
+bonus_id={ 280 }, suffix={ of the Harmonious }, stats={ 40% Vers [0.2664], 60% Mastery [0.3997] }
+bonus_id={ 281 }, suffix={ of the Harmonious }, stats={ 41% Vers [0.2745], 59% Mastery [0.3951] }
+bonus_id={ 282 }, suffix={ of the Harmonious }, stats={ 42% Vers [0.2827], 58% Mastery [0.3905] }
+bonus_id={ 283 }, suffix={ of the Harmonious }, stats={ 43% Vers [0.2909], 57% Mastery [0.3858] }
+bonus_id={ 284 }, suffix={ of the Harmonious }, stats={ 44% Vers [0.2992], 56% Mastery [0.3810] }
+bonus_id={ 285 }, suffix={ of the Harmonious }, stats={ 45% Vers [0.3076], 55% Mastery [0.3761] }
+bonus_id={ 286 }, suffix={ of the Harmonious }, stats={ 46% Vers [0.3161], 54% Mastery [0.3711] }
+bonus_id={ 287 }, suffix={ of the Harmonious }, stats={ 47% Vers [0.3246], 53% Mastery [0.3661] }
+bonus_id={ 288 }, suffix={ of the Harmonious }, stats={ 48% Vers [0.3332], 52% Mastery [0.3610] }
+bonus_id={ 289 }, suffix={ of the Harmonious }, stats={ 49% Vers [0.3418], 51% Mastery [0.3559] }
+bonus_id={ 290 }, suffix={ of the Harmonious }, stats={ 50% Vers [0.3506], 50% Mastery [0.3506] }
+bonus_id={ 291 }, suffix={ of the Harmonious }, stats={ 51% Vers [0.3559], 49% Mastery [0.3418] }
+bonus_id={ 292 }, suffix={ of the Harmonious }, stats={ 52% Vers [0.3610], 48% Mastery [0.3332] }
+bonus_id={ 293 }, suffix={ of the Harmonious }, stats={ 53% Vers [0.3661], 47% Mastery [0.3246] }
+bonus_id={ 294 }, suffix={ of the Harmonious }, stats={ 54% Vers [0.3711], 46% Mastery [0.3161] }
+bonus_id={ 295 }, suffix={ of the Harmonious }, stats={ 55% Vers [0.3761], 45% Mastery [0.3076] }
+bonus_id={ 296 }, suffix={ of the Harmonious }, stats={ 56% Vers [0.3810], 44% Mastery [0.2992] }
+bonus_id={ 297 }, suffix={ of the Harmonious }, stats={ 57% Vers [0.3858], 43% Mastery [0.2909] }
+bonus_id={ 298 }, suffix={ of the Harmonious }, stats={ 58% Vers [0.3905], 42% Mastery [0.2827] }
+bonus_id={ 299 }, suffix={ of the Harmonious }, stats={ 59% Vers [0.3951], 41% Mastery [0.2745] }
+bonus_id={ 300 }, suffix={ of the Harmonious }, stats={ 60% Vers [0.3997], 40% Mastery [0.2664] }
+bonus_id={ 301 }, suffix={ of the Quickblade }, stats={ 40% Vers [0.2664], 60% Crit [0.3997] }
+bonus_id={ 302 }, suffix={ of the Quickblade }, stats={ 41% Vers [0.2745], 59% Crit [0.3951] }
+bonus_id={ 303 }, suffix={ of the Quickblade }, stats={ 42% Vers [0.2827], 58% Crit [0.3905] }
+bonus_id={ 304 }, suffix={ of the Quickblade }, stats={ 43% Vers [0.2909], 57% Crit [0.3858] }
+bonus_id={ 305 }, suffix={ of the Quickblade }, stats={ 44% Vers [0.2992], 56% Crit [0.3810] }
+bonus_id={ 306 }, suffix={ of the Quickblade }, stats={ 45% Vers [0.3076], 55% Crit [0.3761] }
+bonus_id={ 307 }, suffix={ of the Quickblade }, stats={ 46% Vers [0.3161], 54% Crit [0.3711] }
+bonus_id={ 308 }, suffix={ of the Quickblade }, stats={ 47% Vers [0.3246], 53% Crit [0.3661] }
+bonus_id={ 309 }, suffix={ of the Quickblade }, stats={ 48% Vers [0.3332], 52% Crit [0.3610] }
+bonus_id={ 310 }, suffix={ of the Quickblade }, stats={ 49% Vers [0.3418], 51% Crit [0.3559] }
+bonus_id={ 311 }, suffix={ of the Quickblade }, stats={ 50% Vers [0.3506], 50% Crit [0.3506] }
+bonus_id={ 312 }, suffix={ of the Quickblade }, stats={ 51% Vers [0.3559], 49% Crit [0.3418] }
+bonus_id={ 313 }, suffix={ of the Quickblade }, stats={ 52% Vers [0.3610], 48% Crit [0.3332] }
+bonus_id={ 314 }, suffix={ of the Quickblade }, stats={ 53% Vers [0.3661], 47% Crit [0.3246] }
+bonus_id={ 315 }, suffix={ of the Quickblade }, stats={ 54% Vers [0.3711], 46% Crit [0.3161] }
+bonus_id={ 316 }, suffix={ of the Quickblade }, stats={ 55% Vers [0.3761], 45% Crit [0.3076] }
+bonus_id={ 317 }, suffix={ of the Quickblade }, stats={ 56% Vers [0.3810], 44% Crit [0.2992] }
+bonus_id={ 318 }, suffix={ of the Quickblade }, stats={ 57% Vers [0.3858], 43% Crit [0.2909] }
+bonus_id={ 319 }, suffix={ of the Quickblade }, stats={ 58% Vers [0.3905], 42% Crit [0.2827] }
+bonus_id={ 320 }, suffix={ of the Quickblade }, stats={ 59% Vers [0.3951], 41% Crit [0.2745] }
+bonus_id={ 321 }, suffix={ of the Quickblade }, stats={ 60% Vers [0.3997], 40% Crit [0.2664] }
+bonus_id={ 322 }, suffix={ of the Harmonious }, stats={ 40% Mastery [0.2664], 60% Vers [0.3997] }
+bonus_id={ 323 }, suffix={ of the Harmonious }, stats={ 41% Mastery [0.2745], 59% Vers [0.3951] }
+bonus_id={ 324 }, suffix={ of the Harmonious }, stats={ 42% Mastery [0.2827], 58% Vers [0.3905] }
+bonus_id={ 325 }, suffix={ of the Harmonious }, stats={ 43% Mastery [0.2909], 57% Vers [0.3858] }
+bonus_id={ 326 }, suffix={ of the Harmonious }, stats={ 44% Mastery [0.2992], 56% Vers [0.3810] }
+bonus_id={ 327 }, suffix={ of the Harmonious }, stats={ 45% Mastery [0.3076], 55% Vers [0.3761] }
+bonus_id={ 328 }, suffix={ of the Harmonious }, stats={ 46% Mastery [0.3161], 54% Vers [0.3711] }
+bonus_id={ 329 }, suffix={ of the Harmonious }, stats={ 47% Mastery [0.3246], 53% Vers [0.3661] }
+bonus_id={ 330 }, suffix={ of the Harmonious }, stats={ 48% Mastery [0.3332], 52% Vers [0.3610] }
+bonus_id={ 331 }, suffix={ of the Harmonious }, stats={ 49% Mastery [0.3418], 51% Vers [0.3559] }
+bonus_id={ 332 }, suffix={ of the Harmonious }, stats={ 50% Mastery [0.3506], 50% Vers [0.3506] }
+bonus_id={ 333 }, suffix={ of the Harmonious }, stats={ 51% Mastery [0.3559], 49% Vers [0.3418] }
+bonus_id={ 334 }, suffix={ of the Harmonious }, stats={ 52% Mastery [0.3610], 48% Vers [0.3332] }
+bonus_id={ 335 }, suffix={ of the Harmonious }, stats={ 53% Mastery [0.3661], 47% Vers [0.3246] }
+bonus_id={ 336 }, suffix={ of the Harmonious }, stats={ 54% Mastery [0.3711], 46% Vers [0.3161] }
+bonus_id={ 337 }, suffix={ of the Harmonious }, stats={ 55% Mastery [0.3761], 45% Vers [0.3076] }
+bonus_id={ 338 }, suffix={ of the Harmonious }, stats={ 56% Mastery [0.3810], 44% Vers [0.2992] }
+bonus_id={ 339 }, suffix={ of the Harmonious }, stats={ 57% Mastery [0.3858], 43% Vers [0.2909] }
+bonus_id={ 340 }, suffix={ of the Harmonious }, stats={ 58% Mastery [0.3905], 42% Vers [0.2827] }
+bonus_id={ 341 }, suffix={ of the Harmonious }, stats={ 59% Mastery [0.3951], 41% Vers [0.2745] }
+bonus_id={ 342 }, suffix={ of the Harmonious }, stats={ 60% Mastery [0.3997], 40% Vers [0.2664] }
+bonus_id={ 343 }, suffix={ of the Quickblade }, stats={ 40% Vers [0.2664], 60% Crit [0.3997] }
+bonus_id={ 344 }, suffix={ of the Quickblade }, stats={ 41% Vers [0.2745], 59% Crit [0.3951] }
+bonus_id={ 345 }, suffix={ of the Quickblade }, stats={ 42% Vers [0.2827], 58% Crit [0.3905] }
+bonus_id={ 346 }, suffix={ of the Quickblade }, stats={ 43% Vers [0.2909], 57% Crit [0.3858] }
+bonus_id={ 347 }, suffix={ of the Quickblade }, stats={ 44% Vers [0.2992], 56% Crit [0.3810] }
+bonus_id={ 348 }, suffix={ of the Quickblade }, stats={ 45% Vers [0.3076], 55% Crit [0.3761] }
+bonus_id={ 349 }, suffix={ of the Quickblade }, stats={ 46% Vers [0.3161], 54% Crit [0.3711] }
+bonus_id={ 350 }, suffix={ of the Quickblade }, stats={ 47% Vers [0.3246], 53% Crit [0.3661] }
+bonus_id={ 351 }, suffix={ of the Quickblade }, stats={ 48% Vers [0.3332], 52% Crit [0.3610] }
+bonus_id={ 352 }, suffix={ of the Quickblade }, stats={ 49% Vers [0.3418], 51% Crit [0.3559] }
+bonus_id={ 353 }, suffix={ of the Quickblade }, stats={ 50% Vers [0.3506], 50% Crit [0.3506] }
+bonus_id={ 354 }, suffix={ of the Quickblade }, stats={ 51% Vers [0.3559], 49% Crit [0.3418] }
+bonus_id={ 355 }, suffix={ of the Quickblade }, stats={ 52% Vers [0.3610], 48% Crit [0.3332] }
+bonus_id={ 356 }, suffix={ of the Quickblade }, stats={ 53% Vers [0.3661], 47% Crit [0.3246] }
+bonus_id={ 357 }, suffix={ of the Quickblade }, stats={ 54% Vers [0.3711], 46% Crit [0.3161] }
+bonus_id={ 358 }, suffix={ of the Quickblade }, stats={ 55% Vers [0.3761], 45% Crit [0.3076] }
+bonus_id={ 359 }, suffix={ of the Quickblade }, stats={ 56% Vers [0.3810], 44% Crit [0.2992] }
+bonus_id={ 360 }, suffix={ of the Quickblade }, stats={ 57% Vers [0.3858], 43% Crit [0.2909] }
+bonus_id={ 361 }, suffix={ of the Quickblade }, stats={ 58% Vers [0.3905], 42% Crit [0.2827] }
+bonus_id={ 362 }, suffix={ of the Quickblade }, stats={ 59% Vers [0.3951], 41% Crit [0.2745] }
+bonus_id={ 363 }, suffix={ of the Quickblade }, stats={ 60% Vers [0.3997], 40% Crit [0.2664] }
+bonus_id={ 364 }, suffix={ of the Aurora }, stats={ 40% Vers [0.2664], 60% Haste [0.3997] }
+bonus_id={ 365 }, suffix={ of the Aurora }, stats={ 41% Vers [0.2745], 59% Haste [0.3951] }
+bonus_id={ 366 }, suffix={ of the Aurora }, stats={ 42% Vers [0.2827], 58% Haste [0.3905] }
+bonus_id={ 367 }, suffix={ of the Aurora }, stats={ 43% Vers [0.2909], 57% Haste [0.3858] }
+bonus_id={ 368 }, suffix={ of the Aurora }, stats={ 44% Vers [0.2992], 56% Haste [0.3810] }
+bonus_id={ 369 }, suffix={ of the Aurora }, stats={ 45% Vers [0.3076], 55% Haste [0.3761] }
+bonus_id={ 370 }, suffix={ of the Aurora }, stats={ 46% Vers [0.3161], 54% Haste [0.3711] }
+bonus_id={ 371 }, suffix={ of the Aurora }, stats={ 47% Vers [0.3246], 53% Haste [0.3661] }
+bonus_id={ 372 }, suffix={ of the Aurora }, stats={ 48% Vers [0.3332], 52% Haste [0.3610] }
+bonus_id={ 373 }, suffix={ of the Aurora }, stats={ 49% Vers [0.3418], 51% Haste [0.3559] }
+bonus_id={ 374 }, suffix={ of the Aurora }, stats={ 50% Vers [0.3506], 50% Haste [0.3506] }
+bonus_id={ 375 }, suffix={ of the Aurora }, stats={ 51% Vers [0.3559], 49% Haste [0.3418] }
+bonus_id={ 376 }, suffix={ of the Aurora }, stats={ 52% Vers [0.3610], 48% Haste [0.3332] }
+bonus_id={ 377 }, suffix={ of the Aurora }, stats={ 53% Vers [0.3661], 47% Haste [0.3246] }
+bonus_id={ 378 }, suffix={ of the Aurora }, stats={ 54% Vers [0.3711], 46% Haste [0.3161] }
+bonus_id={ 379 }, suffix={ of the Aurora }, stats={ 55% Vers [0.3761], 45% Haste [0.3076] }
+bonus_id={ 380 }, suffix={ of the Aurora }, stats={ 56% Vers [0.3810], 44% Haste [0.2992] }
+bonus_id={ 381 }, suffix={ of the Aurora }, stats={ 57% Vers [0.3858], 43% Haste [0.2909] }
+bonus_id={ 382 }, suffix={ of the Aurora }, stats={ 58% Vers [0.3905], 42% Haste [0.2827] }
+bonus_id={ 383 }, suffix={ of the Aurora }, stats={ 59% Vers [0.3951], 41% Haste [0.2745] }
+bonus_id={ 384 }, suffix={ of the Aurora }, stats={ 60% Vers [0.3997], 40% Haste [0.2664] }
+bonus_id={ 385 }, suffix={ of the Harmonious }, stats={ 40% Vers [0.2664], 60% Mastery [0.3997] }
+bonus_id={ 386 }, suffix={ of the Harmonious }, stats={ 41% Vers [0.2745], 59% Mastery [0.3951] }
+bonus_id={ 387 }, suffix={ of the Harmonious }, stats={ 42% Vers [0.2827], 58% Mastery [0.3905] }
+bonus_id={ 388 }, suffix={ of the Harmonious }, stats={ 43% Vers [0.2909], 57% Mastery [0.3858] }
+bonus_id={ 389 }, suffix={ of the Harmonious }, stats={ 44% Vers [0.2992], 56% Mastery [0.3810] }
+bonus_id={ 390 }, suffix={ of the Harmonious }, stats={ 45% Vers [0.3076], 55% Mastery [0.3761] }
+bonus_id={ 391 }, suffix={ of the Harmonious }, stats={ 46% Vers [0.3161], 54% Mastery [0.3711] }
+bonus_id={ 392 }, suffix={ of the Harmonious }, stats={ 47% Vers [0.3246], 53% Mastery [0.3661] }
+bonus_id={ 393 }, suffix={ of the Harmonious }, stats={ 48% Vers [0.3332], 52% Mastery [0.3610] }
+bonus_id={ 394 }, suffix={ of the Harmonious }, stats={ 49% Vers [0.3418], 51% Mastery [0.3559] }
+bonus_id={ 395 }, suffix={ of the Harmonious }, stats={ 50% Vers [0.3506], 50% Mastery [0.3506] }
+bonus_id={ 396 }, suffix={ of the Harmonious }, stats={ 51% Vers [0.3559], 49% Mastery [0.3418] }
+bonus_id={ 397 }, suffix={ of the Harmonious }, stats={ 52% Vers [0.3610], 48% Mastery [0.3332] }
+bonus_id={ 398 }, suffix={ of the Harmonious }, stats={ 53% Vers [0.3661], 47% Mastery [0.3246] }
+bonus_id={ 399 }, suffix={ of the Harmonious }, stats={ 54% Vers [0.3711], 46% Mastery [0.3161] }
+bonus_id={ 400 }, suffix={ of the Harmonious }, stats={ 55% Vers [0.3761], 45% Mastery [0.3076] }
+bonus_id={ 401 }, suffix={ of the Harmonious }, stats={ 56% Vers [0.3810], 44% Mastery [0.2992] }
+bonus_id={ 402 }, suffix={ of the Harmonious }, stats={ 57% Vers [0.3858], 43% Mastery [0.2909] }
+bonus_id={ 403 }, suffix={ of the Harmonious }, stats={ 58% Vers [0.3905], 42% Mastery [0.2827] }
+bonus_id={ 404 }, suffix={ of the Harmonious }, stats={ 59% Vers [0.3951], 41% Mastery [0.2745] }
+bonus_id={ 405 }, suffix={ of the Harmonious }, stats={ 60% Vers [0.3997], 40% Mastery [0.2664] }
+bonus_id={ 406 }, suffix={ of the Aurora }, stats={ 40% Vers [0.2664], 60% Haste [0.3997] }
+bonus_id={ 407 }, suffix={ of the Aurora }, stats={ 41% Vers [0.2745], 59% Haste [0.3951] }
+bonus_id={ 408 }, suffix={ of the Aurora }, stats={ 42% Vers [0.2827], 58% Haste [0.3905] }
+bonus_id={ 409 }, suffix={ of the Aurora }, stats={ 43% Vers [0.2909], 57% Haste [0.3858] }
+bonus_id={ 410 }, suffix={ of the Aurora }, stats={ 44% Vers [0.2992], 56% Haste [0.3810] }
+bonus_id={ 411 }, suffix={ of the Aurora }, stats={ 45% Vers [0.3076], 55% Haste [0.3761] }
+bonus_id={ 412 }, suffix={ of the Aurora }, stats={ 46% Vers [0.3161], 54% Haste [0.3711] }
+bonus_id={ 413 }, suffix={ of the Aurora }, stats={ 47% Vers [0.3246], 53% Haste [0.3661] }
+bonus_id={ 414 }, suffix={ of the Aurora }, stats={ 48% Vers [0.3332], 52% Haste [0.3610] }
+bonus_id={ 415 }, suffix={ of the Aurora }, stats={ 49% Vers [0.3418], 51% Haste [0.3559] }
+bonus_id={ 416 }, suffix={ of the Aurora }, stats={ 50% Vers [0.3506], 50% Haste [0.3506] }
+bonus_id={ 417 }, suffix={ of the Aurora }, stats={ 51% Vers [0.3559], 49% Haste [0.3418] }
+bonus_id={ 418 }, suffix={ of the Aurora }, stats={ 52% Vers [0.3610], 48% Haste [0.3332] }
+bonus_id={ 419 }, suffix={ of the Aurora }, stats={ 53% Vers [0.3661], 47% Haste [0.3246] }
+bonus_id={ 420 }, suffix={ of the Aurora }, stats={ 54% Vers [0.3711], 46% Haste [0.3161] }
+bonus_id={ 421 }, suffix={ of the Aurora }, stats={ 55% Vers [0.3761], 45% Haste [0.3076] }
+bonus_id={ 422 }, suffix={ of the Aurora }, stats={ 56% Vers [0.3810], 44% Haste [0.2992] }
+bonus_id={ 423 }, suffix={ of the Aurora }, stats={ 57% Vers [0.3858], 43% Haste [0.2909] }
+bonus_id={ 424 }, suffix={ of the Aurora }, stats={ 58% Vers [0.3905], 42% Haste [0.2827] }
+bonus_id={ 425 }, suffix={ of the Aurora }, stats={ 59% Vers [0.3951], 41% Haste [0.2745] }
+bonus_id={ 426 }, suffix={ of the Aurora }, stats={ 60% Vers [0.3997], 40% Haste [0.2664] }
+bonus_id={ 427 }, suffix={ of the Harmonious }, stats={ 40% Mastery [0.2664], 60% Vers [0.3997] }
+bonus_id={ 428 }, suffix={ of the Harmonious }, stats={ 41% Mastery [0.2745], 59% Vers [0.3951] }
+bonus_id={ 429 }, suffix={ of the Harmonious }, stats={ 42% Mastery [0.2827], 58% Vers [0.3905] }
+bonus_id={ 430 }, suffix={ of the Harmonious }, stats={ 43% Mastery [0.2909], 57% Vers [0.3858] }
+bonus_id={ 431 }, suffix={ of the Harmonious }, stats={ 44% Mastery [0.2992], 56% Vers [0.3810] }
+bonus_id={ 432 }, suffix={ of the Harmonious }, stats={ 45% Mastery [0.3076], 55% Vers [0.3761] }
+bonus_id={ 433 }, suffix={ of the Harmonious }, stats={ 46% Mastery [0.3161], 54% Vers [0.3711] }
+bonus_id={ 434 }, suffix={ of the Harmonious }, stats={ 47% Mastery [0.3246], 53% Vers [0.3661] }
+bonus_id={ 435 }, suffix={ of the Harmonious }, stats={ 48% Mastery [0.3332], 52% Vers [0.3610] }
+bonus_id={ 436 }, suffix={ of the Harmonious }, stats={ 49% Mastery [0.3418], 51% Vers [0.3559] }
+bonus_id={ 437 }, suffix={ of the Harmonious }, stats={ 50% Mastery [0.3506], 50% Vers [0.3506] }
+bonus_id={ 438 }, suffix={ of the Harmonious }, stats={ 51% Mastery [0.3559], 49% Vers [0.3418] }
+bonus_id={ 439 }, suffix={ of the Harmonious }, stats={ 52% Mastery [0.3610], 48% Vers [0.3332] }
+bonus_id={ 440 }, suffix={ of the Harmonious }, stats={ 53% Mastery [0.3661], 47% Vers [0.3246] }
+bonus_id={ 441 }, suffix={ of the Harmonious }, stats={ 54% Mastery [0.3711], 46% Vers [0.3161] }
+bonus_id={ 442 }, suffix={ of the Harmonious }, stats={ 55% Mastery [0.3761], 45% Vers [0.3076] }
+bonus_id={ 443 }, suffix={ of the Harmonious }, stats={ 56% Mastery [0.3810], 44% Vers [0.2992] }
+bonus_id={ 444 }, suffix={ of the Harmonious }, stats={ 57% Mastery [0.3858], 43% Vers [0.2909] }
+bonus_id={ 445 }, suffix={ of the Harmonious }, stats={ 58% Mastery [0.3905], 42% Vers [0.2827] }
+bonus_id={ 446 }, suffix={ of the Harmonious }, stats={ 59% Mastery [0.3951], 41% Vers [0.2745] }
+bonus_id={ 447 }, suffix={ of the Harmonious }, stats={ 60% Mastery [0.3997], 40% Vers [0.2664] }
+bonus_id={ 448 }, desc={ Warforged }, ilevel_adjust={ 6 }
+bonus_id={ 449 }, desc={ Heroic }, ilevel_adjust={ 13 }
+bonus_id={ 450 }, desc={ Mythic }, ilevel_adjust={ 26 }
+bonus_id={ 451 }, desc={ Raid Finder }, ilevel_adjust={ -12 }
+bonus_id={ 486 }, suffix={ of the Decimator }, stats={ 100% Crit [0.7012] }
+bonus_id={ 487 }, suffix={ of the Impatient }, stats={ 100% Haste [0.7012] }
+bonus_id={ 488 }, suffix={ of the Savant }, stats={ 100% Mastery [0.7012] }
+bonus_id={ 489 }, suffix={ of the Decimator }, stats={ 100% Crit [0.7012] }
+bonus_id={ 490 }, suffix={ of the Adaptable }, stats={ 100% Vers [0.7012] }
+bonus_id={ 491 }, suffix={ of the Adaptable }, stats={ 100% Vers [0.7012] }
+bonus_id={ 492 }, suffix={ of the Adaptable }, stats={ 100% Vers [0.7012] }
+bonus_id={ 497 }, suffix={ of the Merciless }, ilevel_adjust={ 50 }, socket={ 1 }
+bonus_id={ 499 }, desc={ Warforged }, ilevel_adjust={ 6 }
+bonus_id={ 503 }, stats={ 100% Int [0.0053] }
+bonus_id={ 504 }, stats={ 100% Int [0.0106] }
+bonus_id={ 505 }, stats={ 100% Int [0.0159] }
+bonus_id={ 506 }, stats={ 100% Int [-0.0053] }
+bonus_id={ 507 }, stats={ 100% Int [-0.0106] }
+bonus_id={ 508 }, stats={ 100% Int [-0.0159] }
+bonus_id={ 509 }, stats={ 100% Sta [0.0079] }
+bonus_id={ 510 }, stats={ 100% Sta [0.0158] }
+bonus_id={ 511 }, stats={ 100% Sta [0.0237] }
+bonus_id={ 512 }, stats={ 100% Sta [-0.0079] }
+bonus_id={ 513 }, stats={ 100% Sta [-0.0158] }
+bonus_id={ 514 }, stats={ 100% Sta [-0.0237] }
+bonus_id={ 517 }, stats={ 100% Agi [0.5259] }
+bonus_id={ 518 }, ilevel_adjust={ -100 }
+bonus_id={ 519 }, ilevel_adjust={ -80 }
+bonus_id={ 520 }, ilevel_adjust={ -60 }
+bonus_id={ 521 }, ilevel_adjust={ -30 }
+bonus_id={ 522 }, ilevel_adjust={ -15 }
+bonus_id={ 523 }, socket={ 1 }
+bonus_id={ 526 }, desc={ Stage 2 of 6 }, ilevel_adjust={ 15 }
+bonus_id={ 527 }, desc={ Stage 3 of 6 }, ilevel_adjust={ 30 }
+bonus_id={ 545 }, quality={ epic }, ilevel_adjust={ 10 }
+bonus_id={ 546 }, desc={ Warforged }, ilevel_adjust={ 6 }
+bonus_id={ 547 }, desc={ Warforged }, ilevel_adjust={ 6 }
+bonus_id={ 550 }, stats={ 100% Str [0.5259] }
+bonus_id={ 551 }, stats={ 100% Int [0.5259] }
+bonus_id={ 553 }, ilevel_adjust={ 35 }
+bonus_id={ 554 }, ilevel_adjust={ 40 }
+bonus_id={ 555 }, ilevel_adjust={ 70 }
+bonus_id={ 556 }, ilevel_adjust={ 65 }
+bonus_id={ 557 }, ilevel_adjust={ 70 }
+bonus_id={ 558 }, desc={ Stage 2 of 6 }, quality={ epic }, ilevel_adjust={ 15 }
+bonus_id={ 559 }, desc={ Stage 3 of 6 }, quality={ epic }, ilevel_adjust={ 30 }
+bonus_id={ 560 }, desc={ Warforged }, ilevel_adjust={ 6 }
+bonus_id={ 561 }, desc={ Warforged }, ilevel_adjust={ 6 }
+bonus_id={ 562 }, desc={ Warforged }, ilevel_adjust={ 6 }
+bonus_id={ 563 }, socket={ 1 }
+bonus_id={ 564 }, socket={ 1 }
+bonus_id={ 565 }, socket={ 1 }
+bonus_id={ 566 }, desc={ Heroic }, ilevel_adjust={ 15 }
+bonus_id={ 567 }, desc={ Mythic }, ilevel_adjust={ 30 }
+bonus_id={ 571 }, desc={ Warforged }, ilevel_adjust={ 6 }
+bonus_id={ 572 }, socket={ 1 }
+bonus_id={ 573 }, ilevel_adjust={ -60 }
+bonus_id={ 575 }, quality={ epic }, ilevel_adjust={ 20 }
+bonus_id={ 576 }, quality={ epic }, ilevel_adjust={ 30 }
+bonus_id={ 577 }, quality={ rare }, ilevel_adjust={ 20 }
+bonus_id={ 579 }, ilevel_adjust={ 7 }
+bonus_id={ 582 }, ilevel={ 10 @plvl 0 - 463 @plvl 90 }
+bonus_id={ 583 }, ilevel={ 10 @plvl 0 - 605 @plvl 100 }
+bonus_id={ 591 }, ilevel_adjust={ 20 }
+bonus_id={ 592 }, ilevel_adjust={ 30 }
+bonus_id={ 593 }, desc={ Stage 4 of 6 }, ilevel_adjust={ 45 }
+bonus_id={ 594 }, desc={ Stage 4 of 6 }, quality={ epic }, ilevel_adjust={ 45 }
+bonus_id={ 595 }, quality={ rare }, ilevel_adjust={ 15 }
+bonus_id={ 596 }, desc={ Obliterum: 0/10 }, quality={ rare }, ilevel_adjust={ -20 }
+bonus_id={ 597 }, desc={ Obliterum: 0/10 }, quality={ rare }, ilevel_adjust={ -15 }
+bonus_id={ 598 }, desc={ Obliterum: 0/10 }, quality={ rare }, ilevel_adjust={ -10 }
+bonus_id={ 599 }, desc={ Obliterum: 0/10 }, quality={ rare }, ilevel_adjust={ -5 }
+bonus_id={ 602 }, desc={ Timewalker }, ilevel={ 10 @plvl 0 - 600 @plvl 100 }
+bonus_id={ 603 }, stats={ 100% Crit [0.6667] }
+bonus_id={ 604 }, stats={ 100% Haste [0.6667] }
+bonus_id={ 605 }, stats={ 100% Mastery [0.6667] }
+bonus_id={ 606 }, stats={ 100% Crit [0.6667] }
+bonus_id={ 607 }, stats={ 100% Vers [0.6667] }
+bonus_id={ 608 }, socket={ 1 }
+bonus_id={ 609 }, ilevel_adjust={ 40 }
+bonus_id={ 615 }, desc={ Timewarped }, ilevel={ 10 @plvl 1 - 850 @plvl 110 }
+bonus_id={ 617 }, desc={ Stage 5 of 6 }, ilevel_adjust={ 60 }
+bonus_id={ 618 }, desc={ Stage 6 of 6 }, ilevel_adjust={ 75 }
+bonus_id={ 619 }, desc={ Stage 5 of 6 }, quality={ epic }, ilevel_adjust={ 60 }
+bonus_id={ 620 }, desc={ Stage 6 of 6 }, quality={ epic }, ilevel_adjust={ 75 }
+bonus_id={ 622 }, ilevel_adjust={ 3 }
+bonus_id={ 623 }, ilevel_adjust={ 6 }
+bonus_id={ 624 }, ilevel_adjust={ 9 }
+bonus_id={ 625 }, ilevel_adjust={ 12 }
+bonus_id={ 626 }, ilevel_adjust={ 15 }
+bonus_id={ 627 }, ilevel_adjust={ 18 }
+bonus_id={ 628 }, ilevel_adjust={ 21 }
+bonus_id={ 629 }, ilevel_adjust={ 24 }
+bonus_id={ 630 }, ilevel_adjust={ 27 }
+bonus_id={ 631 }, ilevel_adjust={ 30 }
+bonus_id={ 632 }, ilevel_adjust={ 33 }
+bonus_id={ 633 }, ilevel_adjust={ 36 }
+bonus_id={ 634 }, ilevel_adjust={ 39 }
+bonus_id={ 635 }, ilevel_adjust={ 42 }
+bonus_id={ 636 }, ilevel_adjust={ 45 }
+bonus_id={ 637 }, ilevel_adjust={ 48 }
+bonus_id={ 638 }, ilevel_adjust={ 51 }
+bonus_id={ 639 }, ilevel_adjust={ 54 }
+bonus_id={ 640 }, ilevel_adjust={ 57 }
+bonus_id={ 641 }, ilevel_adjust={ 60 }
+bonus_id={ 642 }, desc={ Mythic }, quality={ epic }, ilevel_adjust={ 55 }
+bonus_id={ 644 }, desc={ Warforged }, ilevel_adjust={ 20 }
+bonus_id={ 645 }, desc={ Timewarped Warforged }, ilevel={ 10 @plvl 1 - 845 @plvl 110 }
+bonus_id={ 646 }, desc={ Warforged }, ilevel_adjust={ 6 }
+bonus_id={ 648 }, desc={ Empowered }, quality={ epic }, ilevel_adjust={ 45 }
+bonus_id={ 651 }, desc={ Warforged }, quality={ epic }, ilevel_adjust={ 25 }
+bonus_id={ 656 }, desc={ Warforged }, ilevel={ 10 @plvl 1 - 845 @plvl 110 }
+bonus_id={ 664 }, ilevel={ 664 @plvl 98 - 779 @plvl 110 }
+bonus_id={ 665 }, quality={ epic }, ilevel_adjust={ 15 }
+bonus_id={ 667 }, desc={ Obliterum: 0/10 }, quality={ epic }, ilevel_adjust={ 5 }
+bonus_id={ 668 }, desc={ Obliterum: 0/10 }, quality={ epic }, ilevel_adjust={ 10 }
+bonus_id={ 669 }, desc={ Obliterum: 0/10 }, quality={ epic }, ilevel_adjust={ 15 }
+bonus_id={ 670 }, desc={ Obliterum: 1/10 }, quality={ epic }, ilevel_adjust={ 20 }
+bonus_id={ 671 }, desc={ Obliterum: 2/10 }, quality={ epic }, ilevel_adjust={ 25 }
+bonus_id={ 672 }, desc={ Obliterum: 3/10 }, quality={ epic }, ilevel_adjust={ 30 }
+bonus_id={ 673 }, desc={ Obliterum: 4/10 }, quality={ epic }, ilevel_adjust={ 35 }
+bonus_id={ 674 }, desc={ Obliterum: 5/10 }, quality={ epic }, ilevel_adjust={ 40 }
+bonus_id={ 675 }, desc={ Obliterum: 6/10 }, quality={ epic }, ilevel_adjust={ 45 }
+bonus_id={ 676 }, desc={ Obliterum: 7/10 }, quality={ epic }, ilevel_adjust={ 50 }
+bonus_id={ 677 }, desc={ Obliterum: 8/10 }, quality={ epic }, ilevel_adjust={ 55 }
+bonus_id={ 678 }, desc={ Obliterum: 9/10 }, quality={ epic }, ilevel_adjust={ 60 }
+bonus_id={ 679 }, desc={ Obliterum: 10/10 }, quality={ epic }, ilevel_adjust={ 65 }
+bonus_id={ 680 }, ilevel_adjust={ 54 }
+bonus_id={ 681 }, ilevel_adjust={ 57 }
+bonus_id={ 682 }, ilevel_adjust={ 60 }
+bonus_id={ 692 }, desc={ Timewarped }, ilevel={ 10 @plvl 1 - 815 @plvl 110 }
+bonus_id={ 694 }, ilevel_adjust={ 15 }
+bonus_id={ 695 }, quality={ rare }, ilevel_adjust={ 30 }
+bonus_id={ 696 }, quality={ rare }, ilevel_adjust={ 45 }
+bonus_id={ 697 }, quality={ epic }, ilevel_adjust={ 60 }
+bonus_id={ 698 }, quality={ epic }, ilevel_adjust={ 75 }
+bonus_id={ 699 }, quality={ epic }, ilevel_adjust={ 100 }
+bonus_id={ 700 }, ilevel_adjust={ 5 }
+bonus_id={ 701 }, ilevel_adjust={ 10 }
+bonus_id={ 702 }, ilevel_adjust={ 3 }
+bonus_id={ 703 }, ilevel_adjust={ 6 }
+bonus_id={ 704 }, ilevel_adjust={ 12 }
+bonus_id={ 706 }, ilevel_adjust={ 30 }
+bonus_id={ 707 }, ilevel_adjust={ 15 }
+bonus_id={ 708 }, ilevel_adjust={ 10 }
+bonus_id={ 709 }, ilevel_adjust={ 20 }
+bonus_id={ 710 }, ilevel_adjust={ 70 }
+bonus_id={ 715 }, socket={ 1 }
+bonus_id={ 716 }, socket={ 1 }
+bonus_id={ 717 }, socket={ 1 }
+bonus_id={ 718 }, socket={ 1 }
+bonus_id={ 719 }, socket={ 1 }
+bonus_id={ 720 }, quality={ epic }, ilevel={ 680 @plvl 0 - 795 @plvl 110 }
+bonus_id={ 721 }, socket={ 1 }
+bonus_id={ 722 }, socket={ 1 }
+bonus_id={ 723 }, socket={ 1 }
+bonus_id={ 724 }, socket={ 1 }
+bonus_id={ 725 }, socket={ 1 }
+bonus_id={ 726 }, socket={ 1 }
+bonus_id={ 727 }, socket={ 1 }
+bonus_id={ 728 }, socket={ 1 }
+bonus_id={ 729 }, socket={ 1 }
+bonus_id={ 730 }, socket={ 1 }
+bonus_id={ 731 }, socket={ 1 }
+bonus_id={ 732 }, socket={ 1 }
+bonus_id={ 733 }, socket={ 1 }
+bonus_id={ 734 }, socket={ 1 }
+bonus_id={ 735 }, socket={ 1 }
+bonus_id={ 736 }, socket={ 1 }
+bonus_id={ 737 }, socket={ 1 }
+bonus_id={ 738 }, socket={ 1 }
+bonus_id={ 739 }, socket={ 1 }
+bonus_id={ 740 }, socket={ 1 }
+bonus_id={ 741 }, socket={ 1 }
+bonus_id={ 742 }, socket={ 1 }
+bonus_id={ 743 }, socket={ 1 }
+bonus_id={ 744 }, socket={ 1 }
+bonus_id={ 745 }, socket={ 1 }
+bonus_id={ 746 }, socket={ 1 }
+bonus_id={ 747 }, socket={ 1 }
+bonus_id={ 748 }, socket={ 1 }
+bonus_id={ 749 }, socket={ 1 }
+bonus_id={ 750 }, socket={ 1 }
+bonus_id={ 751 }, socket={ 1 }
+bonus_id={ 752 }, socket={ 1 }
+bonus_id={ 754 }, desc={ Warforged }, ilevel_adjust={ 5 }
+bonus_id={ 755 }, desc={ Warforged }, ilevel_adjust={ 10 }
+bonus_id={ 756 }, desc={ Warforged }, ilevel_adjust={ 15 }
+bonus_id={ 757 }, desc={ Warforged }, ilevel_adjust={ 25 }
+bonus_id={ 758 }, desc={ Warforged }, ilevel_adjust={ 30 }
+bonus_id={ 759 }, desc={ Warforged }, ilevel_adjust={ 35 }
+bonus_id={ 760 }, desc={ Warforged }, ilevel_adjust={ 40 }
+bonus_id={ 761 }, desc={ Warforged }, quality={ epic }, ilevel_adjust={ 10 }
+bonus_id={ 762 }, desc={ Warforged }, quality={ epic }, ilevel_adjust={ 15 }
+bonus_id={ 763 }, desc={ Warforged }, quality={ epic }, ilevel_adjust={ 20 }
+bonus_id={ 764 }, desc={ Warforged }, quality={ epic }, ilevel_adjust={ 30 }
+bonus_id={ 765 }, desc={ Warforged }, quality={ epic }, ilevel_adjust={ 35 }
+bonus_id={ 766 }, desc={ Warforged }, quality={ epic }, ilevel_adjust={ 40 }
+bonus_id={ 767 }, ilevel={ 660 @plvl 98 - 775 @plvl 110 }
+bonus_id={ 768 }, ilevel={ 668 @plvl 98 - 783 @plvl 110 }
+bonus_id={ 769 }, ilevel_adjust={ 25 }
+bonus_id={ 1372 }, ilevel_adjust={ -100 }
+bonus_id={ 1373 }, ilevel_adjust={ -99 }
+bonus_id={ 1374 }, ilevel_adjust={ -98 }
+bonus_id={ 1375 }, ilevel_adjust={ -97 }
+bonus_id={ 1376 }, ilevel_adjust={ -96 }
+bonus_id={ 1377 }, ilevel_adjust={ -95 }
+bonus_id={ 1378 }, ilevel_adjust={ -94 }
+bonus_id={ 1379 }, ilevel_adjust={ -93 }
+bonus_id={ 1380 }, ilevel_adjust={ -92 }
+bonus_id={ 1381 }, ilevel_adjust={ -91 }
+bonus_id={ 1382 }, ilevel_adjust={ -90 }
+bonus_id={ 1383 }, ilevel_adjust={ -89 }
+bonus_id={ 1384 }, ilevel_adjust={ -88 }
+bonus_id={ 1385 }, ilevel_adjust={ -87 }
+bonus_id={ 1386 }, ilevel_adjust={ -86 }
+bonus_id={ 1387 }, ilevel_adjust={ -85 }
+bonus_id={ 1388 }, ilevel_adjust={ -84 }
+bonus_id={ 1389 }, ilevel_adjust={ -83 }
+bonus_id={ 1390 }, ilevel_adjust={ -82 }
+bonus_id={ 1391 }, ilevel_adjust={ -81 }
+bonus_id={ 1392 }, ilevel_adjust={ -80 }
+bonus_id={ 1393 }, ilevel_adjust={ -79 }
+bonus_id={ 1394 }, ilevel_adjust={ -78 }
+bonus_id={ 1395 }, ilevel_adjust={ -77 }
+bonus_id={ 1396 }, ilevel_adjust={ -76 }
+bonus_id={ 1397 }, ilevel_adjust={ -75 }
+bonus_id={ 1398 }, ilevel_adjust={ -74 }
+bonus_id={ 1399 }, ilevel_adjust={ -73 }
+bonus_id={ 1400 }, ilevel_adjust={ -72 }
+bonus_id={ 1401 }, ilevel_adjust={ -71 }
+bonus_id={ 1402 }, ilevel_adjust={ -70 }
+bonus_id={ 1403 }, ilevel_adjust={ -69 }
+bonus_id={ 1404 }, ilevel_adjust={ -68 }
+bonus_id={ 1405 }, ilevel_adjust={ -67 }
+bonus_id={ 1406 }, ilevel_adjust={ -66 }
+bonus_id={ 1407 }, ilevel_adjust={ -65 }
+bonus_id={ 1408 }, ilevel_adjust={ -64 }
+bonus_id={ 1409 }, ilevel_adjust={ -63 }
+bonus_id={ 1410 }, ilevel_adjust={ -62 }
+bonus_id={ 1411 }, ilevel_adjust={ -61 }
+bonus_id={ 1412 }, ilevel_adjust={ -60 }
+bonus_id={ 1413 }, ilevel_adjust={ -59 }
+bonus_id={ 1414 }, ilevel_adjust={ -58 }
+bonus_id={ 1415 }, ilevel_adjust={ -57 }
+bonus_id={ 1416 }, ilevel_adjust={ -56 }
+bonus_id={ 1417 }, ilevel_adjust={ -55 }
+bonus_id={ 1418 }, ilevel_adjust={ -54 }
+bonus_id={ 1419 }, ilevel_adjust={ -53 }
+bonus_id={ 1420 }, ilevel_adjust={ -52 }
+bonus_id={ 1421 }, ilevel_adjust={ -51 }
+bonus_id={ 1422 }, ilevel_adjust={ -50 }
+bonus_id={ 1423 }, ilevel_adjust={ -49 }
+bonus_id={ 1424 }, ilevel_adjust={ -48 }
+bonus_id={ 1425 }, ilevel_adjust={ -47 }
+bonus_id={ 1426 }, ilevel_adjust={ -46 }
+bonus_id={ 1427 }, ilevel_adjust={ -45 }
+bonus_id={ 1428 }, ilevel_adjust={ -44 }
+bonus_id={ 1429 }, ilevel_adjust={ -43 }
+bonus_id={ 1430 }, ilevel_adjust={ -42 }
+bonus_id={ 1431 }, ilevel_adjust={ -41 }
+bonus_id={ 1432 }, ilevel_adjust={ -40 }
+bonus_id={ 1433 }, ilevel_adjust={ -39 }
+bonus_id={ 1434 }, ilevel_adjust={ -38 }
+bonus_id={ 1435 }, ilevel_adjust={ -37 }
+bonus_id={ 1436 }, ilevel_adjust={ -36 }
+bonus_id={ 1437 }, ilevel_adjust={ -35 }
+bonus_id={ 1438 }, ilevel_adjust={ -34 }
+bonus_id={ 1439 }, ilevel_adjust={ -33 }
+bonus_id={ 1440 }, ilevel_adjust={ -32 }
+bonus_id={ 1441 }, ilevel_adjust={ -31 }
+bonus_id={ 1442 }, ilevel_adjust={ -30 }
+bonus_id={ 1443 }, ilevel_adjust={ -29 }
+bonus_id={ 1444 }, ilevel_adjust={ -28 }
+bonus_id={ 1445 }, ilevel_adjust={ -27 }
+bonus_id={ 1446 }, ilevel_adjust={ -26 }
+bonus_id={ 1447 }, ilevel_adjust={ -25 }
+bonus_id={ 1448 }, ilevel_adjust={ -24 }
+bonus_id={ 1449 }, ilevel_adjust={ -23 }
+bonus_id={ 1450 }, ilevel_adjust={ -22 }
+bonus_id={ 1451 }, ilevel_adjust={ -21 }
+bonus_id={ 1452 }, ilevel_adjust={ -20 }
+bonus_id={ 1453 }, ilevel_adjust={ -19 }
+bonus_id={ 1454 }, ilevel_adjust={ -18 }
+bonus_id={ 1455 }, ilevel_adjust={ -17 }
+bonus_id={ 1456 }, ilevel_adjust={ -16 }
+bonus_id={ 1457 }, ilevel_adjust={ -15 }
+bonus_id={ 1458 }, ilevel_adjust={ -14 }
+bonus_id={ 1459 }, ilevel_adjust={ -13 }
+bonus_id={ 1460 }, ilevel_adjust={ -12 }
+bonus_id={ 1461 }, ilevel_adjust={ -11 }
+bonus_id={ 1462 }, ilevel_adjust={ -10 }
+bonus_id={ 1463 }, ilevel_adjust={ -9 }
+bonus_id={ 1464 }, ilevel_adjust={ -8 }
+bonus_id={ 1465 }, ilevel_adjust={ -7 }
+bonus_id={ 1466 }, ilevel_adjust={ -6 }
+bonus_id={ 1467 }, ilevel_adjust={ -5 }
+bonus_id={ 1468 }, ilevel_adjust={ -4 }
+bonus_id={ 1469 }, ilevel_adjust={ -3 }
+bonus_id={ 1470 }, ilevel_adjust={ -2 }
+bonus_id={ 1471 }, ilevel_adjust={ -1 }
+bonus_id={ 1473 }, ilevel_adjust={ 1 }
+bonus_id={ 1474 }, ilevel_adjust={ 2 }
+bonus_id={ 1475 }, ilevel_adjust={ 3 }
+bonus_id={ 1476 }, ilevel_adjust={ 4 }
+bonus_id={ 1477 }, ilevel_adjust={ 5 }
+bonus_id={ 1478 }, ilevel_adjust={ 6 }
+bonus_id={ 1479 }, ilevel_adjust={ 7 }
+bonus_id={ 1480 }, ilevel_adjust={ 8 }
+bonus_id={ 1481 }, ilevel_adjust={ 9 }
+bonus_id={ 1482 }, ilevel_adjust={ 10 }
+bonus_id={ 1483 }, ilevel_adjust={ 11 }
+bonus_id={ 1484 }, ilevel_adjust={ 12 }
+bonus_id={ 1485 }, ilevel_adjust={ 13 }
+bonus_id={ 1486 }, ilevel_adjust={ 14 }
+bonus_id={ 1487 }, ilevel_adjust={ 15 }
+bonus_id={ 1488 }, ilevel_adjust={ 16 }
+bonus_id={ 1489 }, ilevel_adjust={ 17 }
+bonus_id={ 1490 }, ilevel_adjust={ 18 }
+bonus_id={ 1491 }, ilevel_adjust={ 19 }
+bonus_id={ 1492 }, ilevel_adjust={ 20 }
+bonus_id={ 1493 }, ilevel_adjust={ 21 }
+bonus_id={ 1494 }, ilevel_adjust={ 22 }
+bonus_id={ 1495 }, ilevel_adjust={ 23 }
+bonus_id={ 1496 }, ilevel_adjust={ 24 }
+bonus_id={ 1497 }, ilevel_adjust={ 25 }
+bonus_id={ 1498 }, ilevel_adjust={ 26 }
+bonus_id={ 1499 }, ilevel_adjust={ 27 }
+bonus_id={ 1500 }, ilevel_adjust={ 28 }
+bonus_id={ 1501 }, ilevel_adjust={ 29 }
+bonus_id={ 1502 }, ilevel_adjust={ 30 }
+bonus_id={ 1503 }, ilevel_adjust={ 31 }
+bonus_id={ 1504 }, ilevel_adjust={ 32 }
+bonus_id={ 1505 }, ilevel_adjust={ 33 }
+bonus_id={ 1506 }, ilevel_adjust={ 34 }
+bonus_id={ 1507 }, ilevel_adjust={ 35 }
+bonus_id={ 1508 }, ilevel_adjust={ 36 }
+bonus_id={ 1509 }, ilevel_adjust={ 37 }
+bonus_id={ 1510 }, ilevel_adjust={ 38 }
+bonus_id={ 1511 }, ilevel_adjust={ 39 }
+bonus_id={ 1512 }, ilevel_adjust={ 40 }
+bonus_id={ 1513 }, ilevel_adjust={ 41 }
+bonus_id={ 1514 }, ilevel_adjust={ 42 }
+bonus_id={ 1515 }, ilevel_adjust={ 43 }
+bonus_id={ 1516 }, ilevel_adjust={ 44 }
+bonus_id={ 1517 }, ilevel_adjust={ 45 }
+bonus_id={ 1518 }, ilevel_adjust={ 46 }
+bonus_id={ 1519 }, ilevel_adjust={ 47 }
+bonus_id={ 1520 }, ilevel_adjust={ 48 }
+bonus_id={ 1521 }, ilevel_adjust={ 49 }
+bonus_id={ 1522 }, ilevel_adjust={ 50 }
+bonus_id={ 1523 }, ilevel_adjust={ 51 }
+bonus_id={ 1524 }, ilevel_adjust={ 52 }
+bonus_id={ 1525 }, ilevel_adjust={ 53 }
+bonus_id={ 1526 }, ilevel_adjust={ 54 }
+bonus_id={ 1527 }, ilevel_adjust={ 55 }
+bonus_id={ 1528 }, ilevel_adjust={ 56 }
+bonus_id={ 1529 }, ilevel_adjust={ 57 }
+bonus_id={ 1530 }, ilevel_adjust={ 58 }
+bonus_id={ 1531 }, ilevel_adjust={ 59 }
+bonus_id={ 1532 }, ilevel_adjust={ 60 }
+bonus_id={ 1533 }, ilevel_adjust={ 61 }
+bonus_id={ 1534 }, ilevel_adjust={ 62 }
+bonus_id={ 1535 }, ilevel_adjust={ 63 }
+bonus_id={ 1536 }, ilevel_adjust={ 64 }
+bonus_id={ 1537 }, ilevel_adjust={ 65 }
+bonus_id={ 1538 }, ilevel_adjust={ 66 }
+bonus_id={ 1539 }, ilevel_adjust={ 67 }
+bonus_id={ 1540 }, ilevel_adjust={ 68 }
+bonus_id={ 1541 }, ilevel_adjust={ 69 }
+bonus_id={ 1542 }, ilevel_adjust={ 70 }
+bonus_id={ 1543 }, ilevel_adjust={ 71 }
+bonus_id={ 1544 }, ilevel_adjust={ 72 }
+bonus_id={ 1545 }, ilevel_adjust={ 73 }
+bonus_id={ 1546 }, ilevel_adjust={ 74 }
+bonus_id={ 1547 }, ilevel_adjust={ 75 }
+bonus_id={ 1548 }, ilevel_adjust={ 76 }
+bonus_id={ 1549 }, ilevel_adjust={ 77 }
+bonus_id={ 1550 }, ilevel_adjust={ 78 }
+bonus_id={ 1551 }, ilevel_adjust={ 79 }
+bonus_id={ 1552 }, ilevel_adjust={ 80 }
+bonus_id={ 1553 }, ilevel_adjust={ 81 }
+bonus_id={ 1554 }, ilevel_adjust={ 82 }
+bonus_id={ 1555 }, ilevel_adjust={ 83 }
+bonus_id={ 1556 }, ilevel_adjust={ 84 }
+bonus_id={ 1557 }, ilevel_adjust={ 85 }
+bonus_id={ 1558 }, ilevel_adjust={ 86 }
+bonus_id={ 1559 }, ilevel_adjust={ 87 }
+bonus_id={ 1560 }, ilevel_adjust={ 88 }
+bonus_id={ 1561 }, ilevel_adjust={ 89 }
+bonus_id={ 1562 }, ilevel_adjust={ 90 }
+bonus_id={ 1563 }, ilevel_adjust={ 91 }
+bonus_id={ 1564 }, ilevel_adjust={ 92 }
+bonus_id={ 1565 }, ilevel_adjust={ 93 }
+bonus_id={ 1566 }, ilevel_adjust={ 94 }
+bonus_id={ 1567 }, ilevel_adjust={ 95 }
+bonus_id={ 1568 }, ilevel_adjust={ 96 }
+bonus_id={ 1569 }, ilevel_adjust={ 97 }
+bonus_id={ 1570 }, ilevel_adjust={ 98 }
+bonus_id={ 1571 }, ilevel_adjust={ 99 }
+bonus_id={ 1572 }, ilevel_adjust={ 100 }
+bonus_id={ 1573 }, ilevel_adjust={ 101 }
+bonus_id={ 1574 }, ilevel_adjust={ 102 }
+bonus_id={ 1575 }, ilevel_adjust={ 103 }
+bonus_id={ 1576 }, ilevel_adjust={ 104 }
+bonus_id={ 1577 }, ilevel_adjust={ 105 }
+bonus_id={ 1578 }, ilevel_adjust={ 106 }
+bonus_id={ 1579 }, ilevel_adjust={ 107 }
+bonus_id={ 1580 }, ilevel_adjust={ 108 }
+bonus_id={ 1581 }, ilevel_adjust={ 109 }
+bonus_id={ 1582 }, ilevel_adjust={ 110 }
+bonus_id={ 1583 }, ilevel_adjust={ 111 }
+bonus_id={ 1584 }, ilevel_adjust={ 112 }
+bonus_id={ 1585 }, ilevel_adjust={ 113 }
+bonus_id={ 1586 }, ilevel_adjust={ 114 }
+bonus_id={ 1587 }, ilevel_adjust={ 115 }
+bonus_id={ 1588 }, ilevel_adjust={ 116 }
+bonus_id={ 1589 }, ilevel_adjust={ 117 }
+bonus_id={ 1590 }, ilevel_adjust={ 118 }
+bonus_id={ 1591 }, ilevel_adjust={ 119 }
+bonus_id={ 1592 }, ilevel_adjust={ 120 }
+bonus_id={ 1593 }, ilevel_adjust={ 121 }
+bonus_id={ 1594 }, ilevel_adjust={ 122 }
+bonus_id={ 1595 }, ilevel_adjust={ 123 }
+bonus_id={ 1596 }, ilevel_adjust={ 124 }
+bonus_id={ 1597 }, ilevel_adjust={ 125 }
+bonus_id={ 1598 }, ilevel_adjust={ 126 }
+bonus_id={ 1599 }, ilevel_adjust={ 127 }
+bonus_id={ 1600 }, ilevel_adjust={ 128 }
+bonus_id={ 1601 }, ilevel_adjust={ 129 }
+bonus_id={ 1602 }, ilevel_adjust={ 130 }
+bonus_id={ 1603 }, ilevel_adjust={ 131 }
+bonus_id={ 1604 }, ilevel_adjust={ 132 }
+bonus_id={ 1605 }, ilevel_adjust={ 133 }
+bonus_id={ 1606 }, ilevel_adjust={ 134 }
+bonus_id={ 1607 }, ilevel_adjust={ 135 }
+bonus_id={ 1608 }, ilevel_adjust={ 136 }
+bonus_id={ 1609 }, ilevel_adjust={ 137 }
+bonus_id={ 1610 }, ilevel_adjust={ 138 }
+bonus_id={ 1611 }, ilevel_adjust={ 139 }
+bonus_id={ 1612 }, ilevel_adjust={ 140 }
+bonus_id={ 1613 }, ilevel_adjust={ 141 }
+bonus_id={ 1614 }, ilevel_adjust={ 142 }
+bonus_id={ 1615 }, ilevel_adjust={ 143 }
+bonus_id={ 1616 }, ilevel_adjust={ 144 }
+bonus_id={ 1617 }, ilevel_adjust={ 145 }
+bonus_id={ 1618 }, ilevel_adjust={ 146 }
+bonus_id={ 1619 }, ilevel_adjust={ 147 }
+bonus_id={ 1620 }, ilevel_adjust={ 148 }
+bonus_id={ 1621 }, ilevel_adjust={ 149 }
+bonus_id={ 1622 }, ilevel_adjust={ 150 }
+bonus_id={ 1623 }, ilevel_adjust={ 151 }
+bonus_id={ 1624 }, ilevel_adjust={ 152 }
+bonus_id={ 1625 }, ilevel_adjust={ 153 }
+bonus_id={ 1626 }, ilevel_adjust={ 154 }
+bonus_id={ 1627 }, ilevel_adjust={ 155 }
+bonus_id={ 1628 }, ilevel_adjust={ 156 }
+bonus_id={ 1629 }, ilevel_adjust={ 157 }
+bonus_id={ 1630 }, ilevel_adjust={ 158 }
+bonus_id={ 1631 }, ilevel_adjust={ 159 }
+bonus_id={ 1632 }, ilevel_adjust={ 160 }
+bonus_id={ 1633 }, ilevel_adjust={ 161 }
+bonus_id={ 1634 }, ilevel_adjust={ 162 }
+bonus_id={ 1635 }, ilevel_adjust={ 163 }
+bonus_id={ 1636 }, ilevel_adjust={ 164 }
+bonus_id={ 1637 }, ilevel_adjust={ 165 }
+bonus_id={ 1638 }, ilevel_adjust={ 166 }
+bonus_id={ 1639 }, ilevel_adjust={ 167 }
+bonus_id={ 1640 }, ilevel_adjust={ 168 }
+bonus_id={ 1641 }, ilevel_adjust={ 169 }
+bonus_id={ 1642 }, ilevel_adjust={ 170 }
+bonus_id={ 1643 }, ilevel_adjust={ 171 }
+bonus_id={ 1644 }, ilevel_adjust={ 172 }
+bonus_id={ 1645 }, ilevel_adjust={ 173 }
+bonus_id={ 1646 }, ilevel_adjust={ 174 }
+bonus_id={ 1647 }, ilevel_adjust={ 175 }
+bonus_id={ 1648 }, ilevel_adjust={ 176 }
+bonus_id={ 1649 }, ilevel_adjust={ 177 }
+bonus_id={ 1650 }, ilevel_adjust={ 178 }
+bonus_id={ 1651 }, ilevel_adjust={ 179 }
+bonus_id={ 1652 }, ilevel_adjust={ 180 }
+bonus_id={ 1653 }, ilevel_adjust={ 181 }
+bonus_id={ 1654 }, ilevel_adjust={ 182 }
+bonus_id={ 1655 }, ilevel_adjust={ 183 }
+bonus_id={ 1656 }, ilevel_adjust={ 184 }
+bonus_id={ 1657 }, ilevel_adjust={ 185 }
+bonus_id={ 1658 }, ilevel_adjust={ 186 }
+bonus_id={ 1659 }, ilevel_adjust={ 187 }
+bonus_id={ 1660 }, ilevel_adjust={ 188 }
+bonus_id={ 1661 }, ilevel_adjust={ 189 }
+bonus_id={ 1662 }, ilevel_adjust={ 190 }
+bonus_id={ 1663 }, ilevel_adjust={ 191 }
+bonus_id={ 1664 }, ilevel_adjust={ 192 }
+bonus_id={ 1665 }, ilevel_adjust={ 193 }
+bonus_id={ 1666 }, ilevel_adjust={ 194 }
+bonus_id={ 1667 }, ilevel_adjust={ 195 }
+bonus_id={ 1668 }, ilevel_adjust={ 196 }
+bonus_id={ 1669 }, ilevel_adjust={ 197 }
+bonus_id={ 1670 }, ilevel_adjust={ 198 }
+bonus_id={ 1671 }, ilevel_adjust={ 199 }
+bonus_id={ 1672 }, ilevel_adjust={ 200 }
+bonus_id={ 1676 }, suffix={ of the Quickblade }, stats={ 71% Crit [0.5000], 29% Vers [0.2000] }
+bonus_id={ 1677 }, suffix={ of the Quickblade }, stats={ 64% Crit [0.4500], 36% Vers [0.2500] }
+bonus_id={ 1678 }, suffix={ of the Quickblade }, stats={ 57% Crit [0.4000], 43% Vers [0.3000] }
+bonus_id={ 1679 }, suffix={ of the Quickblade }, stats={ 50% Crit [0.3500], 50% Vers [0.3500] }
+bonus_id={ 1680 }, suffix={ of the Quickblade }, stats={ 43% Crit [0.3000], 57% Vers [0.4000] }
+bonus_id={ 1681 }, suffix={ of the Quickblade }, stats={ 36% Crit [0.2500], 64% Vers [0.4500] }
+bonus_id={ 1682 }, suffix={ of the Quickblade }, stats={ 29% Crit [0.2000], 71% Vers [0.5000] }
+bonus_id={ 1683 }, suffix={ of the Peerless }, stats={ 71% Crit [0.5000], 29% Mastery [0.2000] }
+bonus_id={ 1684 }, suffix={ of the Peerless }, stats={ 64% Crit [0.4500], 36% Mastery [0.2500] }
+bonus_id={ 1685 }, suffix={ of the Peerless }, stats={ 57% Crit [0.4000], 43% Mastery [0.3000] }
+bonus_id={ 1686 }, suffix={ of the Peerless }, stats={ 50% Crit [0.3500], 50% Mastery [0.3500] }
+bonus_id={ 1687 }, suffix={ of the Peerless }, stats={ 43% Crit [0.3000], 57% Mastery [0.4000] }
+bonus_id={ 1688 }, suffix={ of the Peerless }, stats={ 36% Crit [0.2500], 64% Mastery [0.4500] }
+bonus_id={ 1689 }, suffix={ of the Peerless }, stats={ 29% Crit [0.2000], 71% Mastery [0.5000] }
+bonus_id={ 1690 }, suffix={ of the Fireflash }, stats={ 71% Crit [0.5000], 29% Haste [0.2000] }
+bonus_id={ 1691 }, suffix={ of the Fireflash }, stats={ 64% Crit [0.4500], 36% Haste [0.2500] }
+bonus_id={ 1692 }, suffix={ of the Fireflash }, stats={ 57% Crit [0.4000], 43% Haste [0.3000] }
+bonus_id={ 1693 }, suffix={ of the Fireflash }, stats={ 50% Crit [0.3500], 50% Haste [0.3500] }
+bonus_id={ 1694 }, suffix={ of the Fireflash }, stats={ 43% Crit [0.3000], 57% Haste [0.4000] }
+bonus_id={ 1695 }, suffix={ of the Fireflash }, stats={ 36% Crit [0.2500], 64% Haste [0.4500] }
+bonus_id={ 1696 }, suffix={ of the Fireflash }, stats={ 29% Crit [0.2000], 71% Haste [0.5000] }
+bonus_id={ 1697 }, suffix={ of the Feverflare }, stats={ 71% Haste [0.5000], 29% Mastery [0.2000] }
+bonus_id={ 1698 }, suffix={ of the Feverflare }, stats={ 64% Haste [0.4500], 36% Mastery [0.2500] }
+bonus_id={ 1699 }, suffix={ of the Feverflare }, stats={ 57% Haste [0.4000], 43% Mastery [0.3000] }
+bonus_id={ 1700 }, suffix={ of the Feverflare }, stats={ 50% Haste [0.3500], 50% Mastery [0.3500] }
+bonus_id={ 1701 }, suffix={ of the Feverflare }, stats={ 43% Haste [0.3000], 57% Mastery [0.4000] }
+bonus_id={ 1702 }, suffix={ of the Feverflare }, stats={ 36% Haste [0.2500], 64% Mastery [0.4500] }
+bonus_id={ 1703 }, suffix={ of the Feverflare }, stats={ 29% Haste [0.2000], 71% Mastery [0.5000] }
+bonus_id={ 1704 }, suffix={ of the Aurora }, stats={ 71% Haste [0.5000], 29% Vers [0.2000] }
+bonus_id={ 1705 }, suffix={ of the Aurora }, stats={ 64% Haste [0.4500], 36% Vers [0.2500] }
+bonus_id={ 1706 }, suffix={ of the Aurora }, stats={ 57% Haste [0.4000], 43% Vers [0.3000] }
+bonus_id={ 1707 }, suffix={ of the Aurora }, stats={ 50% Haste [0.3500], 50% Vers [0.3500] }
+bonus_id={ 1708 }, suffix={ of the Aurora }, stats={ 43% Haste [0.3000], 57% Vers [0.4000] }
+bonus_id={ 1709 }, suffix={ of the Aurora }, stats={ 36% Haste [0.2500], 64% Vers [0.4500] }
+bonus_id={ 1710 }, suffix={ of the Aurora }, stats={ 29% Haste [0.2000], 71% Vers [0.5000] }
+bonus_id={ 1711 }, suffix={ of the Harmonious }, stats={ 71% Mastery [0.5000], 29% Vers [0.2000] }
+bonus_id={ 1712 }, suffix={ of the Harmonious }, stats={ 64% Mastery [0.4500], 36% Vers [0.2500] }
+bonus_id={ 1713 }, suffix={ of the Harmonious }, stats={ 57% Mastery [0.4000], 43% Vers [0.3000] }
+bonus_id={ 1714 }, suffix={ of the Harmonious }, stats={ 50% Mastery [0.3500], 50% Vers [0.3500] }
+bonus_id={ 1715 }, suffix={ of the Harmonious }, stats={ 43% Mastery [0.3000], 57% Vers [0.4000] }
+bonus_id={ 1716 }, suffix={ of the Harmonious }, stats={ 36% Mastery [0.2500], 64% Vers [0.4500] }
+bonus_id={ 1717 }, suffix={ of the Harmonious }, stats={ 29% Mastery [0.2000], 71% Vers [0.5000] }
+bonus_id={ 1718 }, suffix={ of the Decimator }, stats={ 100% Crit [0.7000] }
+bonus_id={ 1719 }, suffix={ of the Adaptable }, stats={ 100% Vers [0.7000] }
+bonus_id={ 1720 }, suffix={ of the Impatient }, stats={ 100% Haste [0.7000] }
+bonus_id={ 1721 }, suffix={ of the Savant }, stats={ 100% Mastery [0.7000] }
+bonus_id={ 1723 }, ilevel={ 10 @plvl 0 - 780 @plvl 110 }
+bonus_id={ 1724 }, quality={ rare }, ilevel={ 10 @plvl 0 - 790 @plvl 110 }
+bonus_id={ 1725 }, quality={ epic }, ilevel={ 10 @plvl 0 - 800 @plvl 110 }
+bonus_id={ 1726 }, base_ilevel={ 845 }, desc={ Heroic }, quality={ epic }
+bonus_id={ 1727 }, base_ilevel={ 865 }, desc={ Mythic }, quality={ epic }
+bonus_id={ 1729 }, ilevel={ 0 @plvl 0 - 0 @plvl 110 }
+bonus_id={ 1730 }, quality={ rare }, ilevel={ 0 @plvl 0 - 0 @plvl 110 }
+bonus_id={ 1731 }, quality={ epic }, ilevel={ 1 @plvl 0 - 20 @plvl 110 }
+bonus_id={ 1732 }, desc={ Trading Post Module }, ilevel={ 664 @plvl 98 - 779 @plvl 110 }
+bonus_id={ 1733 }, quality={ rare }, ilevel={ 670 @plvl 98 - 785 @plvl 110 }
+bonus_id={ 1734 }, quality={ epic }, ilevel={ 680 @plvl 0 - 795 @plvl 110 }
+bonus_id={ 1735 }, quality={ epic }, ilevel={ 680 @plvl 0 - 795 @plvl 110 }
+bonus_id={ 1736 }, quality={ rare }, ilevel={ 674 @plvl 0 - 789 @plvl 110 }
+bonus_id={ 1737 }, quality={ epic }, ilevel={ 684 @plvl 0 - 799 @plvl 110 }
+bonus_id={ 1738 }, quality={ epic }, ilevel={ 684 @plvl 0 - 799 @plvl 110 }
+bonus_id={ 1739 }, quality={ rare }, ilevel={ 678 @plvl 0 - 793 @plvl 110 }
+bonus_id={ 1740 }, quality={ epic }, ilevel={ 688 @plvl 0 - 803 @plvl 110 }
+bonus_id={ 1741 }, quality={ epic }, ilevel={ 688 @plvl 0 - 803 @plvl 110 }
+bonus_id={ 1742 }, suffix={ of the Quickblade }, stats={ 71% Crit [1.2500], 29% Vers [0.5000] }
+bonus_id={ 1743 }, suffix={ of the Quickblade }, stats={ 66% Crit [1.1500], 34% Vers [0.6000] }
+bonus_id={ 1744 }, suffix={ of the Quickblade }, stats={ 60% Crit [1.0500], 40% Vers [0.7000] }
+bonus_id={ 1745 }, suffix={ of the Quickblade }, stats={ 54% Crit [0.9500], 46% Vers [0.8000] }
+bonus_id={ 1746 }, suffix={ of the Quickblade }, stats={ 40% Crit [0.7000], 60% Vers [1.0500] }
+bonus_id={ 1747 }, suffix={ of the Quickblade }, stats={ 34% Crit [0.6000], 66% Vers [1.1500] }
+bonus_id={ 1748 }, suffix={ of the Quickblade }, stats={ 29% Crit [0.5000], 71% Vers [1.2500] }
+bonus_id={ 1749 }, suffix={ of the Peerless }, stats={ 71% Crit [1.2500], 29% Mastery [0.5000] }
+bonus_id={ 1750 }, suffix={ of the Peerless }, stats={ 66% Crit [1.1500], 34% Mastery [0.6000] }
+bonus_id={ 1751 }, suffix={ of the Peerless }, stats={ 60% Crit [1.0500], 40% Mastery [0.7000] }
+bonus_id={ 1752 }, suffix={ of the Peerless }, stats={ 54% Crit [0.9500], 46% Mastery [0.8000] }
+bonus_id={ 1753 }, suffix={ of the Peerless }, stats={ 40% Crit [0.7000], 60% Mastery [1.0500] }
+bonus_id={ 1754 }, suffix={ of the Peerless }, stats={ 34% Crit [0.6000], 66% Mastery [1.1500] }
+bonus_id={ 1755 }, suffix={ of the Peerless }, stats={ 29% Crit [0.5000], 71% Mastery [1.2500] }
+bonus_id={ 1756 }, suffix={ of the Fireflash }, stats={ 71% Crit [1.2500], 29% Haste [0.5000] }
+bonus_id={ 1757 }, suffix={ of the Fireflash }, stats={ 63% Crit [1.1000], 37% Haste [0.6500] }
+bonus_id={ 1758 }, suffix={ of the Fireflash }, stats={ 60% Crit [1.0500], 40% Haste [0.7000] }
+bonus_id={ 1759 }, suffix={ of the Fireflash }, stats={ 54% Crit [0.9500], 46% Haste [0.8000] }
+bonus_id={ 1760 }, suffix={ of the Fireflash }, stats={ 40% Crit [0.7000], 60% Haste [1.0500] }
+bonus_id={ 1761 }, suffix={ of the Fireflash }, stats={ 34% Crit [0.6000], 66% Haste [1.1500] }
+bonus_id={ 1762 }, suffix={ of the Fireflash }, stats={ 29% Crit [0.5000], 71% Haste [1.2500] }
+bonus_id={ 1763 }, suffix={ of the Feverflare }, stats={ 71% Haste [1.2500], 29% Mastery [0.5000] }
+bonus_id={ 1764 }, suffix={ of the Feverflare }, stats={ 66% Haste [1.1500], 34% Mastery [0.6000] }
+bonus_id={ 1765 }, suffix={ of the Feverflare }, stats={ 60% Haste [1.0500], 40% Mastery [0.7000] }
+bonus_id={ 1766 }, suffix={ of the Feverflare }, stats={ 54% Haste [0.9500], 46% Mastery [0.8000] }
+bonus_id={ 1767 }, suffix={ of the Feverflare }, stats={ 40% Haste [0.7000], 60% Mastery [1.0500] }
+bonus_id={ 1768 }, suffix={ of the Feverflare }, stats={ 34% Haste [0.6000], 66% Mastery [1.1500] }
+bonus_id={ 1769 }, suffix={ of the Feverflare }, stats={ 29% Haste [0.5000], 71% Mastery [1.2500] }
+bonus_id={ 1770 }, suffix={ of the Aurora }, stats={ 71% Haste [1.2500], 29% Vers [0.5000] }
+bonus_id={ 1771 }, suffix={ of the Aurora }, stats={ 66% Haste [1.1500], 34% Vers [0.6000] }
+bonus_id={ 1772 }, suffix={ of the Aurora }, stats={ 60% Haste [1.0500], 40% Vers [0.7000] }
+bonus_id={ 1773 }, suffix={ of the Aurora }, stats={ 54% Haste [0.9500], 46% Vers [0.8000] }
+bonus_id={ 1774 }, suffix={ of the Aurora }, stats={ 40% Haste [0.7000], 60% Vers [1.0500] }
+bonus_id={ 1775 }, suffix={ of the Aurora }, stats={ 34% Haste [0.6000], 66% Vers [1.1500] }
+bonus_id={ 1776 }, suffix={ of the Aurora }, stats={ 29% Haste [0.5000], 71% Vers [1.2500] }
+bonus_id={ 1777 }, suffix={ of the Harmonious }, stats={ 71% Mastery [1.2500], 29% Vers [0.5000] }
+bonus_id={ 1778 }, suffix={ of the Harmonious }, stats={ 66% Mastery [1.1500], 34% Vers [0.6000] }
+bonus_id={ 1779 }, suffix={ of the Harmonious }, stats={ 60% Mastery [1.0500], 40% Vers [0.7000] }
+bonus_id={ 1780 }, suffix={ of the Harmonious }, stats={ 54% Mastery [0.9500], 46% Vers [0.8000] }
+bonus_id={ 1781 }, suffix={ of the Harmonious }, stats={ 40% Mastery [0.7000], 60% Vers [1.0500] }
+bonus_id={ 1782 }, suffix={ of the Harmonious }, stats={ 34% Mastery [0.6000], 66% Vers [1.1500] }
+bonus_id={ 1783 }, suffix={ of the Harmonious }, stats={ 29% Mastery [0.5000], 71% Vers [1.2500] }
+bonus_id={ 1784 }, suffix={ of the Decimator }, stats={ 100% Crit [1.7500] }
+bonus_id={ 1785 }, suffix={ of the Adaptable }, stats={ 100% Vers [1.7500] }
+bonus_id={ 1786 }, suffix={ of the Impatient }, stats={ 100% Haste [1.7500] }
+bonus_id={ 1787 }, suffix={ of the Savant }, stats={ 100% Mastery [1.7500] }
+bonus_id={ 1788 }, ilevel={ 10 @plvl 0 - 41 @plvl 110 }
+bonus_id={ 1789 }, quality={ rare }, ilevel={ 10 @plvl 0 - 44 @plvl 110 }
+bonus_id={ 1790 }, quality={ epic }, ilevel={ 10 @plvl 0 - 48 @plvl 110 }
+bonus_id={ 1791 }, ilevel={ 10 @plvl 0 - 62 @plvl 110 }
+bonus_id={ 1792 }, quality={ rare }, ilevel={ 674 @plvl 0 - 789 @plvl 110 }
+bonus_id={ 1793 }, quality={ rare }, ilevel={ 678 @plvl 0 - 793 @plvl 110 }
+bonus_id={ 1794 }, quality={ rare }, ilevel={ 670 @plvl 98 - 785 @plvl 110 }
+bonus_id={ 1795 }, quality={ rare }, ilevel={ 675 @plvl 0 - 790 @plvl 110 }
+bonus_id={ 1796 }, ilevel={ 575 @plvl 0 - 770 @plvl 110 }
+bonus_id={ 1798 }, base_ilevel={ 705 }, desc={ Heroic }
+bonus_id={ 1799 }, base_ilevel={ 720 }, desc={ Mythic }
+bonus_id={ 1800 }, ilevel_adjust={ 210 }
+bonus_id={ 1801 }, base_ilevel={ 690 }
+bonus_id={ 1805 }, base_ilevel={ 865 }, desc={ Heroic }, quality={ epic }
+bonus_id={ 1806 }, base_ilevel={ 880 }, desc={ Mythic }, quality={ epic }
+bonus_id={ 1807 }, base_ilevel={ 850 }, quality={ epic }
+bonus_id={ 1808 }, socket={ 1 }
+bonus_id={ 1809 }
+bonus_id={ 1810 }, quality={ rare }, ilevel_adjust={ 140 }
+bonus_id={ 1812 }, ilevel={ 650 @plvl 98 - 780 @plvl 110 }
+bonus_id={ 1817 }, desc={ Stage 3 of 6 }, ilevel_adjust={ 10 }
+bonus_id={ 1818 }, desc={ Stage 5 of 6 }, ilevel_adjust={ 20 }
+bonus_id={ 1819 }, desc={ Stage 4 of 6 }, ilevel_adjust={ 15 }
+bonus_id={ 1820 }, desc={ Stage 6 of 6 }, ilevel_adjust={ 25 }
+bonus_id={ 1824 }, quality={ rare }
+bonus_id={ 1825 }, quality={ rare }
+bonus_id={ 1826 }, base_ilevel={ 825 }, quality={ rare }
+bonus_id={ 2829 }, ilevel_adjust={ -400 }
+bonus_id={ 2830 }, ilevel_adjust={ -399 }
+bonus_id={ 2831 }, ilevel_adjust={ -398 }
+bonus_id={ 2832 }, ilevel_adjust={ -397 }
+bonus_id={ 2833 }, ilevel_adjust={ -396 }
+bonus_id={ 2834 }, ilevel_adjust={ -395 }
+bonus_id={ 2835 }, ilevel_adjust={ -394 }
+bonus_id={ 2836 }, ilevel_adjust={ -393 }
+bonus_id={ 2837 }, ilevel_adjust={ -392 }
+bonus_id={ 2838 }, ilevel_adjust={ -391 }
+bonus_id={ 2839 }, ilevel_adjust={ -390 }
+bonus_id={ 2840 }, ilevel_adjust={ -389 }
+bonus_id={ 2841 }, ilevel_adjust={ -388 }
+bonus_id={ 2842 }, ilevel_adjust={ -387 }
+bonus_id={ 2843 }, ilevel_adjust={ -386 }
+bonus_id={ 2844 }, ilevel_adjust={ -385 }
+bonus_id={ 2845 }, ilevel_adjust={ -384 }
+bonus_id={ 2846 }, ilevel_adjust={ -383 }
+bonus_id={ 2847 }, ilevel_adjust={ -382 }
+bonus_id={ 2848 }, ilevel_adjust={ -381 }
+bonus_id={ 2849 }, ilevel_adjust={ -380 }
+bonus_id={ 2850 }, ilevel_adjust={ -379 }
+bonus_id={ 2851 }, ilevel_adjust={ -378 }
+bonus_id={ 2852 }, ilevel_adjust={ -377 }
+bonus_id={ 2853 }, ilevel_adjust={ -376 }
+bonus_id={ 2854 }, ilevel_adjust={ -375 }
+bonus_id={ 2855 }, ilevel_adjust={ -374 }
+bonus_id={ 2856 }, ilevel_adjust={ -373 }
+bonus_id={ 2857 }, ilevel_adjust={ -372 }
+bonus_id={ 2858 }, ilevel_adjust={ -371 }
+bonus_id={ 2859 }, ilevel_adjust={ -370 }
+bonus_id={ 2860 }, ilevel_adjust={ -369 }
+bonus_id={ 2861 }, ilevel_adjust={ -368 }
+bonus_id={ 2862 }, ilevel_adjust={ -367 }
+bonus_id={ 2863 }, ilevel_adjust={ -366 }
+bonus_id={ 2864 }, ilevel_adjust={ -365 }
+bonus_id={ 2865 }, ilevel_adjust={ -364 }
+bonus_id={ 2866 }, ilevel_adjust={ -363 }
+bonus_id={ 2867 }, ilevel_adjust={ -362 }
+bonus_id={ 2868 }, ilevel_adjust={ -361 }
+bonus_id={ 2869 }, ilevel_adjust={ -360 }
+bonus_id={ 2870 }, ilevel_adjust={ -359 }
+bonus_id={ 2871 }, ilevel_adjust={ -358 }
+bonus_id={ 2872 }, ilevel_adjust={ -357 }
+bonus_id={ 2873 }, ilevel_adjust={ -356 }
+bonus_id={ 2874 }, ilevel_adjust={ -355 }
+bonus_id={ 2875 }, ilevel_adjust={ -354 }
+bonus_id={ 2876 }, ilevel_adjust={ -353 }
+bonus_id={ 2877 }, ilevel_adjust={ -352 }
+bonus_id={ 2878 }, ilevel_adjust={ -351 }
+bonus_id={ 2879 }, ilevel_adjust={ -350 }
+bonus_id={ 2880 }, ilevel_adjust={ -349 }
+bonus_id={ 2881 }, ilevel_adjust={ -348 }
+bonus_id={ 2882 }, ilevel_adjust={ -347 }
+bonus_id={ 2883 }, ilevel_adjust={ -346 }
+bonus_id={ 2884 }, ilevel_adjust={ -345 }
+bonus_id={ 2885 }, ilevel_adjust={ -344 }
+bonus_id={ 2886 }, ilevel_adjust={ -343 }
+bonus_id={ 2887 }, ilevel_adjust={ -342 }
+bonus_id={ 2888 }, ilevel_adjust={ -341 }
+bonus_id={ 2889 }, ilevel_adjust={ -340 }
+bonus_id={ 2890 }, ilevel_adjust={ -339 }
+bonus_id={ 2891 }, ilevel_adjust={ -338 }
+bonus_id={ 2892 }, ilevel_adjust={ -337 }
+bonus_id={ 2893 }, ilevel_adjust={ -336 }
+bonus_id={ 2894 }, ilevel_adjust={ -335 }
+bonus_id={ 2895 }, ilevel_adjust={ -334 }
+bonus_id={ 2896 }, ilevel_adjust={ -333 }
+bonus_id={ 2897 }, ilevel_adjust={ -332 }
+bonus_id={ 2898 }, ilevel_adjust={ -331 }
+bonus_id={ 2899 }, ilevel_adjust={ -330 }
+bonus_id={ 2900 }, ilevel_adjust={ -329 }
+bonus_id={ 2901 }, ilevel_adjust={ -328 }
+bonus_id={ 2902 }, ilevel_adjust={ -327 }
+bonus_id={ 2903 }, ilevel_adjust={ -326 }
+bonus_id={ 2904 }, ilevel_adjust={ -325 }
+bonus_id={ 2905 }, ilevel_adjust={ -324 }
+bonus_id={ 2906 }, ilevel_adjust={ -323 }
+bonus_id={ 2907 }, ilevel_adjust={ -322 }
+bonus_id={ 2908 }, ilevel_adjust={ -321 }
+bonus_id={ 2909 }, ilevel_adjust={ -320 }
+bonus_id={ 2910 }, ilevel_adjust={ -319 }
+bonus_id={ 2911 }, ilevel_adjust={ -318 }
+bonus_id={ 2912 }, ilevel_adjust={ -317 }
+bonus_id={ 2913 }, ilevel_adjust={ -316 }
+bonus_id={ 2914 }, ilevel_adjust={ -315 }
+bonus_id={ 2915 }, ilevel_adjust={ -314 }
+bonus_id={ 2916 }, ilevel_adjust={ -313 }
+bonus_id={ 2917 }, ilevel_adjust={ -312 }
+bonus_id={ 2918 }, ilevel_adjust={ -311 }
+bonus_id={ 2919 }, ilevel_adjust={ -310 }
+bonus_id={ 2920 }, ilevel_adjust={ -309 }
+bonus_id={ 2921 }, ilevel_adjust={ -308 }
+bonus_id={ 2922 }, ilevel_adjust={ -307 }
+bonus_id={ 2923 }, ilevel_adjust={ -306 }
+bonus_id={ 2924 }, ilevel_adjust={ -305 }
+bonus_id={ 2925 }, ilevel_adjust={ -304 }
+bonus_id={ 2926 }, ilevel_adjust={ -303 }
+bonus_id={ 2927 }, ilevel_adjust={ -302 }
+bonus_id={ 2928 }, ilevel_adjust={ -301 }
+bonus_id={ 2929 }, ilevel_adjust={ -300 }
+bonus_id={ 2930 }, ilevel_adjust={ -299 }
+bonus_id={ 2931 }, ilevel_adjust={ -298 }
+bonus_id={ 2932 }, ilevel_adjust={ -297 }
+bonus_id={ 2933 }, ilevel_adjust={ -296 }
+bonus_id={ 2934 }, ilevel_adjust={ -295 }
+bonus_id={ 2935 }, ilevel_adjust={ -294 }
+bonus_id={ 2936 }, ilevel_adjust={ -293 }
+bonus_id={ 2937 }, ilevel_adjust={ -292 }
+bonus_id={ 2938 }, ilevel_adjust={ -291 }
+bonus_id={ 2939 }, ilevel_adjust={ -290 }
+bonus_id={ 2940 }, ilevel_adjust={ -289 }
+bonus_id={ 2941 }, ilevel_adjust={ -288 }
+bonus_id={ 2942 }, ilevel_adjust={ -287 }
+bonus_id={ 2943 }, ilevel_adjust={ -286 }
+bonus_id={ 2944 }, ilevel_adjust={ -285 }
+bonus_id={ 2945 }, ilevel_adjust={ -284 }
+bonus_id={ 2946 }, ilevel_adjust={ -283 }
+bonus_id={ 2947 }, ilevel_adjust={ -282 }
+bonus_id={ 2948 }, ilevel_adjust={ -281 }
+bonus_id={ 2949 }, ilevel_adjust={ -280 }
+bonus_id={ 2950 }, ilevel_adjust={ -279 }
+bonus_id={ 2951 }, ilevel_adjust={ -278 }
+bonus_id={ 2952 }, ilevel_adjust={ -277 }
+bonus_id={ 2953 }, ilevel_adjust={ -276 }
+bonus_id={ 2954 }, ilevel_adjust={ -275 }
+bonus_id={ 2955 }, ilevel_adjust={ -274 }
+bonus_id={ 2956 }, ilevel_adjust={ -273 }
+bonus_id={ 2957 }, ilevel_adjust={ -272 }
+bonus_id={ 2958 }, ilevel_adjust={ -271 }
+bonus_id={ 2959 }, ilevel_adjust={ -270 }
+bonus_id={ 2960 }, ilevel_adjust={ -269 }
+bonus_id={ 2961 }, ilevel_adjust={ -268 }
+bonus_id={ 2962 }, ilevel_adjust={ -267 }
+bonus_id={ 2963 }, ilevel_adjust={ -266 }
+bonus_id={ 2964 }, ilevel_adjust={ -265 }
+bonus_id={ 2965 }, ilevel_adjust={ -264 }
+bonus_id={ 2966 }, ilevel_adjust={ -263 }
+bonus_id={ 2967 }, ilevel_adjust={ -262 }
+bonus_id={ 2968 }, ilevel_adjust={ -261 }
+bonus_id={ 2969 }, ilevel_adjust={ -260 }
+bonus_id={ 2970 }, ilevel_adjust={ -259 }
+bonus_id={ 2971 }, ilevel_adjust={ -258 }
+bonus_id={ 2972 }, ilevel_adjust={ -257 }
+bonus_id={ 2973 }, ilevel_adjust={ -256 }
+bonus_id={ 2974 }, ilevel_adjust={ -255 }
+bonus_id={ 2975 }, ilevel_adjust={ -254 }
+bonus_id={ 2976 }, ilevel_adjust={ -253 }
+bonus_id={ 2977 }, ilevel_adjust={ -252 }
+bonus_id={ 2978 }, ilevel_adjust={ -251 }
+bonus_id={ 2979 }, ilevel_adjust={ -250 }
+bonus_id={ 2980 }, ilevel_adjust={ -249 }
+bonus_id={ 2981 }, ilevel_adjust={ -248 }
+bonus_id={ 2982 }, ilevel_adjust={ -247 }
+bonus_id={ 2983 }, ilevel_adjust={ -246 }
+bonus_id={ 2984 }, ilevel_adjust={ -245 }
+bonus_id={ 2985 }, ilevel_adjust={ -244 }
+bonus_id={ 2986 }, ilevel_adjust={ -243 }
+bonus_id={ 2987 }, ilevel_adjust={ -242 }
+bonus_id={ 2988 }, ilevel_adjust={ -241 }
+bonus_id={ 2989 }, ilevel_adjust={ -240 }
+bonus_id={ 2990 }, ilevel_adjust={ -239 }
+bonus_id={ 2991 }, ilevel_adjust={ -238 }
+bonus_id={ 2992 }, ilevel_adjust={ -237 }
+bonus_id={ 2993 }, ilevel_adjust={ -236 }
+bonus_id={ 2994 }, ilevel_adjust={ -235 }
+bonus_id={ 2995 }, ilevel_adjust={ -234 }
+bonus_id={ 2996 }, ilevel_adjust={ -233 }
+bonus_id={ 2997 }, ilevel_adjust={ -232 }
+bonus_id={ 2998 }, ilevel_adjust={ -231 }
+bonus_id={ 2999 }, ilevel_adjust={ -230 }
+bonus_id={ 3000 }, ilevel_adjust={ -229 }
+bonus_id={ 3001 }, ilevel_adjust={ -228 }
+bonus_id={ 3002 }, ilevel_adjust={ -227 }
+bonus_id={ 3003 }, ilevel_adjust={ -226 }
+bonus_id={ 3004 }, ilevel_adjust={ -225 }
+bonus_id={ 3005 }, ilevel_adjust={ -224 }
+bonus_id={ 3006 }, ilevel_adjust={ -223 }
+bonus_id={ 3007 }, ilevel_adjust={ -222 }
+bonus_id={ 3008 }, ilevel_adjust={ -221 }
+bonus_id={ 3009 }, ilevel_adjust={ -220 }
+bonus_id={ 3010 }, ilevel_adjust={ -219 }
+bonus_id={ 3011 }, ilevel_adjust={ -218 }
+bonus_id={ 3012 }, ilevel_adjust={ -217 }
+bonus_id={ 3013 }, ilevel_adjust={ -216 }
+bonus_id={ 3014 }, ilevel_adjust={ -215 }
+bonus_id={ 3015 }, ilevel_adjust={ -214 }
+bonus_id={ 3016 }, ilevel_adjust={ -213 }
+bonus_id={ 3017 }, ilevel_adjust={ -212 }
+bonus_id={ 3018 }, ilevel_adjust={ -211 }
+bonus_id={ 3019 }, ilevel_adjust={ -210 }
+bonus_id={ 3020 }, ilevel_adjust={ -209 }
+bonus_id={ 3021 }, ilevel_adjust={ -208 }
+bonus_id={ 3022 }, ilevel_adjust={ -207 }
+bonus_id={ 3023 }, ilevel_adjust={ -206 }
+bonus_id={ 3024 }, ilevel_adjust={ -205 }
+bonus_id={ 3025 }, ilevel_adjust={ -204 }
+bonus_id={ 3026 }, ilevel_adjust={ -203 }
+bonus_id={ 3027 }, ilevel_adjust={ -202 }
+bonus_id={ 3028 }, ilevel_adjust={ -201 }
+bonus_id={ 3029 }, ilevel_adjust={ -200 }
+bonus_id={ 3030 }, ilevel_adjust={ -199 }
+bonus_id={ 3031 }, ilevel_adjust={ -198 }
+bonus_id={ 3032 }, ilevel_adjust={ -197 }
+bonus_id={ 3033 }, ilevel_adjust={ -196 }
+bonus_id={ 3034 }, ilevel_adjust={ -195 }
+bonus_id={ 3035 }, ilevel_adjust={ -194 }
+bonus_id={ 3036 }, ilevel_adjust={ -193 }
+bonus_id={ 3037 }, ilevel_adjust={ -192 }
+bonus_id={ 3038 }, ilevel_adjust={ -191 }
+bonus_id={ 3039 }, ilevel_adjust={ -190 }
+bonus_id={ 3040 }, ilevel_adjust={ -189 }
+bonus_id={ 3041 }, ilevel_adjust={ -188 }
+bonus_id={ 3042 }, ilevel_adjust={ -187 }
+bonus_id={ 3043 }, ilevel_adjust={ -186 }
+bonus_id={ 3044 }, ilevel_adjust={ -185 }
+bonus_id={ 3045 }, ilevel_adjust={ -184 }
+bonus_id={ 3046 }, ilevel_adjust={ -183 }
+bonus_id={ 3047 }, ilevel_adjust={ -182 }
+bonus_id={ 3048 }, ilevel_adjust={ -181 }
+bonus_id={ 3049 }, ilevel_adjust={ -180 }
+bonus_id={ 3050 }, ilevel_adjust={ -179 }
+bonus_id={ 3051 }, ilevel_adjust={ -178 }
+bonus_id={ 3052 }, ilevel_adjust={ -177 }
+bonus_id={ 3053 }, ilevel_adjust={ -176 }
+bonus_id={ 3054 }, ilevel_adjust={ -175 }
+bonus_id={ 3055 }, ilevel_adjust={ -174 }
+bonus_id={ 3056 }, ilevel_adjust={ -173 }
+bonus_id={ 3057 }, ilevel_adjust={ -172 }
+bonus_id={ 3058 }, ilevel_adjust={ -171 }
+bonus_id={ 3059 }, ilevel_adjust={ -170 }
+bonus_id={ 3060 }, ilevel_adjust={ -169 }
+bonus_id={ 3061 }, ilevel_adjust={ -168 }
+bonus_id={ 3062 }, ilevel_adjust={ -167 }
+bonus_id={ 3063 }, ilevel_adjust={ -166 }
+bonus_id={ 3064 }, ilevel_adjust={ -165 }
+bonus_id={ 3065 }, ilevel_adjust={ -164 }
+bonus_id={ 3066 }, ilevel_adjust={ -163 }
+bonus_id={ 3067 }, ilevel_adjust={ -162 }
+bonus_id={ 3068 }, ilevel_adjust={ -161 }
+bonus_id={ 3069 }, ilevel_adjust={ -160 }
+bonus_id={ 3070 }, ilevel_adjust={ -159 }
+bonus_id={ 3071 }, ilevel_adjust={ -158 }
+bonus_id={ 3072 }, ilevel_adjust={ -157 }
+bonus_id={ 3073 }, ilevel_adjust={ -156 }
+bonus_id={ 3074 }, ilevel_adjust={ -155 }
+bonus_id={ 3075 }, ilevel_adjust={ -154 }
+bonus_id={ 3076 }, ilevel_adjust={ -153 }
+bonus_id={ 3077 }, ilevel_adjust={ -152 }
+bonus_id={ 3078 }, ilevel_adjust={ -151 }
+bonus_id={ 3079 }, ilevel_adjust={ -150 }
+bonus_id={ 3080 }, ilevel_adjust={ -149 }
+bonus_id={ 3081 }, ilevel_adjust={ -148 }
+bonus_id={ 3082 }, ilevel_adjust={ -147 }
+bonus_id={ 3083 }, ilevel_adjust={ -146 }
+bonus_id={ 3084 }, ilevel_adjust={ -145 }
+bonus_id={ 3085 }, ilevel_adjust={ -144 }
+bonus_id={ 3086 }, ilevel_adjust={ -143 }
+bonus_id={ 3087 }, ilevel_adjust={ -142 }
+bonus_id={ 3088 }, ilevel_adjust={ -141 }
+bonus_id={ 3089 }, ilevel_adjust={ -140 }
+bonus_id={ 3090 }, ilevel_adjust={ -139 }
+bonus_id={ 3091 }, ilevel_adjust={ -138 }
+bonus_id={ 3092 }, ilevel_adjust={ -137 }
+bonus_id={ 3093 }, ilevel_adjust={ -136 }
+bonus_id={ 3094 }, ilevel_adjust={ -135 }
+bonus_id={ 3095 }, ilevel_adjust={ -134 }
+bonus_id={ 3096 }, ilevel_adjust={ -133 }
+bonus_id={ 3097 }, ilevel_adjust={ -132 }
+bonus_id={ 3098 }, ilevel_adjust={ -131 }
+bonus_id={ 3099 }, ilevel_adjust={ -130 }
+bonus_id={ 3100 }, ilevel_adjust={ -129 }
+bonus_id={ 3101 }, ilevel_adjust={ -128 }
+bonus_id={ 3102 }, ilevel_adjust={ -127 }
+bonus_id={ 3103 }, ilevel_adjust={ -126 }
+bonus_id={ 3104 }, ilevel_adjust={ -125 }
+bonus_id={ 3105 }, ilevel_adjust={ -124 }
+bonus_id={ 3106 }, ilevel_adjust={ -123 }
+bonus_id={ 3107 }, ilevel_adjust={ -122 }
+bonus_id={ 3108 }, ilevel_adjust={ -121 }
+bonus_id={ 3109 }, ilevel_adjust={ -120 }
+bonus_id={ 3110 }, ilevel_adjust={ -119 }
+bonus_id={ 3111 }, ilevel_adjust={ -118 }
+bonus_id={ 3112 }, ilevel_adjust={ -117 }
+bonus_id={ 3113 }, ilevel_adjust={ -116 }
+bonus_id={ 3114 }, ilevel_adjust={ -115 }
+bonus_id={ 3115 }, ilevel_adjust={ -114 }
+bonus_id={ 3116 }, ilevel_adjust={ -113 }
+bonus_id={ 3117 }, ilevel_adjust={ -112 }
+bonus_id={ 3118 }, ilevel_adjust={ -111 }
+bonus_id={ 3119 }, ilevel_adjust={ -110 }
+bonus_id={ 3120 }, ilevel_adjust={ -109 }
+bonus_id={ 3121 }, ilevel_adjust={ -108 }
+bonus_id={ 3122 }, ilevel_adjust={ -107 }
+bonus_id={ 3123 }, ilevel_adjust={ -106 }
+bonus_id={ 3124 }, ilevel_adjust={ -105 }
+bonus_id={ 3125 }, ilevel_adjust={ -104 }
+bonus_id={ 3126 }, ilevel_adjust={ -103 }
+bonus_id={ 3127 }, ilevel_adjust={ -102 }
+bonus_id={ 3128 }, ilevel_adjust={ -101 }
+bonus_id={ 3130 }, ilevel_adjust={ 201 }
+bonus_id={ 3131 }, ilevel_adjust={ 202 }
+bonus_id={ 3132 }, ilevel_adjust={ 203 }
+bonus_id={ 3133 }, ilevel_adjust={ 204 }
+bonus_id={ 3134 }, ilevel_adjust={ 205 }
+bonus_id={ 3135 }, ilevel_adjust={ 206 }
+bonus_id={ 3136 }, ilevel_adjust={ 207 }
+bonus_id={ 3137 }, ilevel_adjust={ 208 }
+bonus_id={ 3138 }, ilevel_adjust={ 209 }
+bonus_id={ 3139 }, ilevel_adjust={ 210 }
+bonus_id={ 3140 }, ilevel_adjust={ 211 }
+bonus_id={ 3141 }, ilevel_adjust={ 212 }
+bonus_id={ 3142 }, ilevel_adjust={ 213 }
+bonus_id={ 3143 }, ilevel_adjust={ 214 }
+bonus_id={ 3144 }, ilevel_adjust={ 215 }
+bonus_id={ 3145 }, ilevel_adjust={ 216 }
+bonus_id={ 3146 }, ilevel_adjust={ 217 }
+bonus_id={ 3147 }, ilevel_adjust={ 218 }
+bonus_id={ 3148 }, ilevel_adjust={ 219 }
+bonus_id={ 3149 }, ilevel_adjust={ 220 }
+bonus_id={ 3150 }, ilevel_adjust={ 221 }
+bonus_id={ 3151 }, ilevel_adjust={ 222 }
+bonus_id={ 3152 }, ilevel_adjust={ 223 }
+bonus_id={ 3153 }, ilevel_adjust={ 224 }
+bonus_id={ 3154 }, ilevel_adjust={ 225 }
+bonus_id={ 3155 }, ilevel_adjust={ 226 }
+bonus_id={ 3156 }, ilevel_adjust={ 227 }
+bonus_id={ 3157 }, ilevel_adjust={ 228 }
+bonus_id={ 3158 }, ilevel_adjust={ 229 }
+bonus_id={ 3159 }, ilevel_adjust={ 230 }
+bonus_id={ 3160 }, ilevel_adjust={ 231 }
+bonus_id={ 3161 }, ilevel_adjust={ 232 }
+bonus_id={ 3162 }, ilevel_adjust={ 233 }
+bonus_id={ 3163 }, ilevel_adjust={ 234 }
+bonus_id={ 3164 }, ilevel_adjust={ 235 }
+bonus_id={ 3165 }, ilevel_adjust={ 236 }
+bonus_id={ 3166 }, ilevel_adjust={ 237 }
+bonus_id={ 3167 }, ilevel_adjust={ 238 }
+bonus_id={ 3168 }, ilevel_adjust={ 239 }
+bonus_id={ 3169 }, ilevel_adjust={ 240 }
+bonus_id={ 3170 }, ilevel_adjust={ 241 }
+bonus_id={ 3171 }, ilevel_adjust={ 242 }
+bonus_id={ 3172 }, ilevel_adjust={ 243 }
+bonus_id={ 3173 }, ilevel_adjust={ 244 }
+bonus_id={ 3174 }, ilevel_adjust={ 245 }
+bonus_id={ 3175 }, ilevel_adjust={ 246 }
+bonus_id={ 3176 }, ilevel_adjust={ 247 }
+bonus_id={ 3177 }, ilevel_adjust={ 248 }
+bonus_id={ 3178 }, ilevel_adjust={ 249 }
+bonus_id={ 3179 }, ilevel_adjust={ 250 }
+bonus_id={ 3180 }, ilevel_adjust={ 251 }
+bonus_id={ 3181 }, ilevel_adjust={ 252 }
+bonus_id={ 3182 }, ilevel_adjust={ 253 }
+bonus_id={ 3183 }, ilevel_adjust={ 254 }
+bonus_id={ 3184 }, ilevel_adjust={ 255 }
+bonus_id={ 3185 }, ilevel_adjust={ 256 }
+bonus_id={ 3186 }, ilevel_adjust={ 257 }
+bonus_id={ 3187 }, ilevel_adjust={ 258 }
+bonus_id={ 3188 }, ilevel_adjust={ 259 }
+bonus_id={ 3189 }, ilevel_adjust={ 260 }
+bonus_id={ 3190 }, ilevel_adjust={ 261 }
+bonus_id={ 3191 }, ilevel_adjust={ 262 }
+bonus_id={ 3192 }, ilevel_adjust={ 263 }
+bonus_id={ 3193 }, ilevel_adjust={ 264 }
+bonus_id={ 3194 }, ilevel_adjust={ 265 }
+bonus_id={ 3195 }, ilevel_adjust={ 266 }
+bonus_id={ 3196 }, ilevel_adjust={ 267 }
+bonus_id={ 3197 }, ilevel_adjust={ 268 }
+bonus_id={ 3198 }, ilevel_adjust={ 269 }
+bonus_id={ 3199 }, ilevel_adjust={ 270 }
+bonus_id={ 3200 }, ilevel_adjust={ 271 }
+bonus_id={ 3201 }, ilevel_adjust={ 272 }
+bonus_id={ 3202 }, ilevel_adjust={ 273 }
+bonus_id={ 3203 }, ilevel_adjust={ 274 }
+bonus_id={ 3204 }, ilevel_adjust={ 275 }
+bonus_id={ 3205 }, ilevel_adjust={ 276 }
+bonus_id={ 3206 }, ilevel_adjust={ 277 }
+bonus_id={ 3207 }, ilevel_adjust={ 278 }
+bonus_id={ 3208 }, ilevel_adjust={ 279 }
+bonus_id={ 3209 }, ilevel_adjust={ 280 }
+bonus_id={ 3210 }, ilevel_adjust={ 281 }
+bonus_id={ 3211 }, ilevel_adjust={ 282 }
+bonus_id={ 3212 }, ilevel_adjust={ 283 }
+bonus_id={ 3213 }, ilevel_adjust={ 284 }
+bonus_id={ 3214 }, ilevel_adjust={ 285 }
+bonus_id={ 3215 }, ilevel_adjust={ 286 }
+bonus_id={ 3216 }, ilevel_adjust={ 287 }
+bonus_id={ 3217 }, ilevel_adjust={ 288 }
+bonus_id={ 3218 }, ilevel_adjust={ 289 }
+bonus_id={ 3219 }, ilevel_adjust={ 290 }
+bonus_id={ 3220 }, ilevel_adjust={ 291 }
+bonus_id={ 3221 }, ilevel_adjust={ 292 }
+bonus_id={ 3222 }, ilevel_adjust={ 293 }
+bonus_id={ 3223 }, ilevel_adjust={ 294 }
+bonus_id={ 3224 }, ilevel_adjust={ 295 }
+bonus_id={ 3225 }, ilevel_adjust={ 296 }
+bonus_id={ 3226 }, ilevel_adjust={ 297 }
+bonus_id={ 3227 }, ilevel_adjust={ 298 }
+bonus_id={ 3228 }, ilevel_adjust={ 299 }
+bonus_id={ 3229 }, ilevel_adjust={ 300 }
+bonus_id={ 3230 }, ilevel_adjust={ 301 }
+bonus_id={ 3231 }, ilevel_adjust={ 302 }
+bonus_id={ 3232 }, ilevel_adjust={ 303 }
+bonus_id={ 3233 }, ilevel_adjust={ 304 }
+bonus_id={ 3234 }, ilevel_adjust={ 305 }
+bonus_id={ 3235 }, ilevel_adjust={ 306 }
+bonus_id={ 3236 }, ilevel_adjust={ 307 }
+bonus_id={ 3237 }, ilevel_adjust={ 308 }
+bonus_id={ 3238 }, ilevel_adjust={ 309 }
+bonus_id={ 3239 }, ilevel_adjust={ 310 }
+bonus_id={ 3240 }, ilevel_adjust={ 311 }
+bonus_id={ 3241 }, ilevel_adjust={ 312 }
+bonus_id={ 3242 }, ilevel_adjust={ 313 }
+bonus_id={ 3243 }, ilevel_adjust={ 314 }
+bonus_id={ 3244 }, ilevel_adjust={ 315 }
+bonus_id={ 3245 }, ilevel_adjust={ 316 }
+bonus_id={ 3246 }, ilevel_adjust={ 317 }
+bonus_id={ 3247 }, ilevel_adjust={ 318 }
+bonus_id={ 3248 }, ilevel_adjust={ 319 }
+bonus_id={ 3249 }, ilevel_adjust={ 320 }
+bonus_id={ 3250 }, ilevel_adjust={ 321 }
+bonus_id={ 3251 }, ilevel_adjust={ 322 }
+bonus_id={ 3252 }, ilevel_adjust={ 323 }
+bonus_id={ 3253 }, ilevel_adjust={ 324 }
+bonus_id={ 3254 }, ilevel_adjust={ 325 }
+bonus_id={ 3255 }, ilevel_adjust={ 326 }
+bonus_id={ 3256 }, ilevel_adjust={ 327 }
+bonus_id={ 3257 }, ilevel_adjust={ 328 }
+bonus_id={ 3258 }, ilevel_adjust={ 329 }
+bonus_id={ 3259 }, ilevel_adjust={ 330 }
+bonus_id={ 3260 }, ilevel_adjust={ 331 }
+bonus_id={ 3261 }, ilevel_adjust={ 332 }
+bonus_id={ 3262 }, ilevel_adjust={ 333 }
+bonus_id={ 3263 }, ilevel_adjust={ 334 }
+bonus_id={ 3264 }, ilevel_adjust={ 335 }
+bonus_id={ 3265 }, ilevel_adjust={ 336 }
+bonus_id={ 3266 }, ilevel_adjust={ 337 }
+bonus_id={ 3267 }, ilevel_adjust={ 338 }
+bonus_id={ 3268 }, ilevel_adjust={ 339 }
+bonus_id={ 3269 }, ilevel_adjust={ 340 }
+bonus_id={ 3270 }, ilevel_adjust={ 341 }
+bonus_id={ 3271 }, ilevel_adjust={ 342 }
+bonus_id={ 3272 }, ilevel_adjust={ 343 }
+bonus_id={ 3273 }, ilevel_adjust={ 344 }
+bonus_id={ 3274 }, ilevel_adjust={ 345 }
+bonus_id={ 3275 }, ilevel_adjust={ 346 }
+bonus_id={ 3276 }, ilevel_adjust={ 347 }
+bonus_id={ 3277 }, ilevel_adjust={ 348 }
+bonus_id={ 3278 }, ilevel_adjust={ 349 }
+bonus_id={ 3279 }, ilevel_adjust={ 350 }
+bonus_id={ 3280 }, ilevel_adjust={ 351 }
+bonus_id={ 3281 }, ilevel_adjust={ 352 }
+bonus_id={ 3282 }, ilevel_adjust={ 353 }
+bonus_id={ 3283 }, ilevel_adjust={ 354 }
+bonus_id={ 3284 }, ilevel_adjust={ 355 }
+bonus_id={ 3285 }, ilevel_adjust={ 356 }
+bonus_id={ 3286 }, ilevel_adjust={ 357 }
+bonus_id={ 3287 }, ilevel_adjust={ 358 }
+bonus_id={ 3288 }, ilevel_adjust={ 359 }
+bonus_id={ 3289 }, ilevel_adjust={ 360 }
+bonus_id={ 3290 }, ilevel_adjust={ 361 }
+bonus_id={ 3291 }, ilevel_adjust={ 362 }
+bonus_id={ 3292 }, ilevel_adjust={ 363 }
+bonus_id={ 3293 }, ilevel_adjust={ 364 }
+bonus_id={ 3294 }, ilevel_adjust={ 365 }
+bonus_id={ 3295 }, ilevel_adjust={ 366 }
+bonus_id={ 3296 }, ilevel_adjust={ 367 }
+bonus_id={ 3297 }, ilevel_adjust={ 368 }
+bonus_id={ 3298 }, ilevel_adjust={ 369 }
+bonus_id={ 3299 }, ilevel_adjust={ 370 }
+bonus_id={ 3300 }, ilevel_adjust={ 371 }
+bonus_id={ 3301 }, ilevel_adjust={ 372 }
+bonus_id={ 3302 }, ilevel_adjust={ 373 }
+bonus_id={ 3303 }, ilevel_adjust={ 374 }
+bonus_id={ 3304 }, ilevel_adjust={ 375 }
+bonus_id={ 3305 }, ilevel_adjust={ 376 }
+bonus_id={ 3306 }, ilevel_adjust={ 377 }
+bonus_id={ 3307 }, ilevel_adjust={ 378 }
+bonus_id={ 3308 }, ilevel_adjust={ 379 }
+bonus_id={ 3309 }, ilevel_adjust={ 380 }
+bonus_id={ 3310 }, ilevel_adjust={ 381 }
+bonus_id={ 3311 }, ilevel_adjust={ 382 }
+bonus_id={ 3312 }, ilevel_adjust={ 383 }
+bonus_id={ 3313 }, ilevel_adjust={ 384 }
+bonus_id={ 3314 }, ilevel_adjust={ 385 }
+bonus_id={ 3315 }, ilevel_adjust={ 386 }
+bonus_id={ 3316 }, ilevel_adjust={ 387 }
+bonus_id={ 3317 }, ilevel_adjust={ 388 }
+bonus_id={ 3318 }, ilevel_adjust={ 389 }
+bonus_id={ 3319 }, ilevel_adjust={ 390 }
+bonus_id={ 3320 }, ilevel_adjust={ 391 }
+bonus_id={ 3321 }, ilevel_adjust={ 392 }
+bonus_id={ 3322 }, ilevel_adjust={ 393 }
+bonus_id={ 3323 }, ilevel_adjust={ 394 }
+bonus_id={ 3324 }, ilevel_adjust={ 395 }
+bonus_id={ 3325 }, ilevel_adjust={ 396 }
+bonus_id={ 3326 }, ilevel_adjust={ 397 }
+bonus_id={ 3327 }, ilevel_adjust={ 398 }
+bonus_id={ 3328 }, ilevel_adjust={ 399 }
+bonus_id={ 3329 }, ilevel_adjust={ 400 }
+bonus_id={ 3330 }, quality={ epic }, ilevel_adjust={ 15 }
+bonus_id={ 3331 }, desc={ Stage 2 of 6 }, ilevel_adjust={ 5 }
+bonus_id={ 3332 }, desc={ Stage 7 of 9 }, ilevel_adjust={ 30 }
+bonus_id={ 3333 }, desc={ Stage 8 of 9 }, ilevel_adjust={ 35 }
+bonus_id={ 3334 }, desc={ Stage 9 of 9 }, ilevel_adjust={ 40 }
+bonus_id={ 3340 }, quality={ epic }, ilevel_adjust={ 10 }
+bonus_id={ 3341 }, ilevel_adjust={ 40 }
+bonus_id={ 3342 }, ilevel={ 660 @plvl 98 - 745 @plvl 110 }
+bonus_id={ 3343 }, suffix={ of the Quickblade }, stats={ 33% Crit [0.2500], 67% Vers [0.5000] }
+bonus_id={ 3344 }, suffix={ of the Quickblade }, stats={ 17% Crit [0.1250], 83% Vers [0.6250] }
+bonus_id={ 3345 }, suffix={ of the Quickblade }, stats={ 0% Crit [0.0000], 100% Vers [0.7500] }
+bonus_id={ 3346 }, suffix={ of the Peerless }, stats={ 33% Crit [0.2500], 67% Mastery [0.5000] }
+bonus_id={ 3347 }, suffix={ of the Peerless }, stats={ 17% Crit [0.1250], 83% Mastery [0.6250] }
+bonus_id={ 3348 }, suffix={ of the Peerless }, stats={ 0% Crit [0.0000], 100% Mastery [0.7500] }
+bonus_id={ 3349 }, suffix={ of the Fireflash }, stats={ 33% Crit [0.2500], 67% Haste [0.5000] }
+bonus_id={ 3350 }, suffix={ of the Fireflash }, stats={ 17% Crit [0.1250], 83% Haste [0.6250] }
+bonus_id={ 3351 }, suffix={ of the Peerless }, stats={ 33% Mastery [0.2500], 67% Crit [0.5000] }
+bonus_id={ 3352 }, suffix={ of the Peerless }, stats={ 17% Mastery [0.1250], 83% Crit [0.6250] }
+bonus_id={ 3353 }, suffix={ of the Fireflash }, stats={ 0% Crit [0.0000], 100% Haste [0.7500] }
+bonus_id={ 3354 }, suffix={ of the Peerless }, stats={ 0% Mastery [0.0000], 100% Crit [0.7500] }
+bonus_id={ 3355 }, suffix={ of the Feverflare }, stats={ 33% Mastery [0.2500], 67% Haste [0.5000] }
+bonus_id={ 3356 }, suffix={ of the Feverflare }, stats={ 17% Mastery [0.1250], 83% Haste [0.6250] }
+bonus_id={ 3357 }, suffix={ of the Feverflare }, stats={ 0% Mastery [0.0000], 100% Haste [0.7500] }
+bonus_id={ 3358 }, suffix={ of the Harmonious }, stats={ 33% Mastery [0.2500], 67% Vers [0.5000] }
+bonus_id={ 3359 }, suffix={ of the Harmonious }, stats={ 17% Mastery [0.1250], 83% Vers [0.6250] }
+bonus_id={ 3360 }, suffix={ of the Harmonious }, stats={ 0% Mastery [0.0000], 100% Vers [0.7500] }
+bonus_id={ 3361 }, suffix={ of the Quickblade }, stats={ 33% Vers [0.2500], 67% Crit [0.5000] }
+bonus_id={ 3362 }, suffix={ of the Quickblade }, stats={ 17% Vers [0.1250], 83% Crit [0.6250] }
+bonus_id={ 3363 }, suffix={ of the Quickblade }, stats={ 0% Vers [0.0000], 100% Crit [0.7500] }
+bonus_id={ 3364 }, suffix={ of the Aurora }, stats={ 33% Vers [0.2500], 67% Haste [0.5000] }
+bonus_id={ 3365 }, suffix={ of the Aurora }, stats={ 17% Vers [0.1250], 83% Haste [0.6250] }
+bonus_id={ 3366 }, suffix={ of the Aurora }, stats={ 0% Vers [0.0000], 100% Haste [0.7500] }
+bonus_id={ 3367 }, suffix={ of the Harmonious }, stats={ 33% Vers [0.2500], 67% Mastery [0.5000] }
+bonus_id={ 3368 }, suffix={ of the Harmonious }, stats={ 17% Vers [0.1250], 83% Mastery [0.6250] }
+bonus_id={ 3369 }, suffix={ of the Harmonious }, stats={ 0% Vers [0.0000], 100% Mastery [0.7500] }
+bonus_id={ 3370 }, suffix={ of the Fireflash }, stats={ 33% Haste [0.2500], 67% Crit [0.5000] }
+bonus_id={ 3371 }, suffix={ of the Fireflash }, stats={ 17% Haste [0.1250], 83% Crit [0.6250] }
+bonus_id={ 3372 }, suffix={ of the Fireflash }, stats={ 0% Haste [0.0000], 100% Crit [0.7500] }
+bonus_id={ 3373 }, suffix={ of the Feverflare }, stats={ 33% Haste [0.2500], 67% Mastery [0.5000] }
+bonus_id={ 3374 }, suffix={ of the Feverflare }, stats={ 17% Haste [0.1250], 83% Mastery [0.6250] }
+bonus_id={ 3375 }, suffix={ of the Feverflare }, stats={ 0% Haste [0.0000], 100% Mastery [0.7500] }
+bonus_id={ 3376 }, suffix={ of the Aurora }, stats={ 33% Haste [0.2500], 67% Vers [0.5000] }
+bonus_id={ 3377 }, suffix={ of the Aurora }, stats={ 17% Haste [0.1250], 83% Vers [0.6250] }
+bonus_id={ 3378 }, suffix={ of the Aurora }, stats={ 0% Haste [0.0000], 100% Vers [0.7500] }
+bonus_id={ 3379 }, base_ilevel={ 835 }, desc={ Raid Finder }, quality={ epic }
+bonus_id={ 3380 }, ilevel={ 10 @plvl 0 - 655 @plvl 110 }
+bonus_id={ 3382 }, ilevel_adjust={ 10 }
+bonus_id={ 3383 }, ilevel_adjust={ 20 }
+bonus_id={ 3384 }, quality={ epic }, ilevel_adjust={ 30 }
+bonus_id={ 3387 }, ilevel={ 10 @plvl 1 - 700 @plvl 100 }
+bonus_id={ 3388 }, desc={ Warforged }, ilevel={ 10 @plvl 1 - 710 @plvl 100 }
+bonus_id={ 3389 }, desc={ Warforged }, ilevel={ 10 @plvl 1 - 720 @plvl 100 }
+bonus_id={ 3390 }, ilevel_adjust={ 60 }
+bonus_id={ 3391 }, ilevel_adjust={ 80 }
+bonus_id={ 3393 }, ilevel_adjust={ 20 }
+bonus_id={ 3394 }, quality={ rare }
+bonus_id={ 3395 }, quality={ rare }
+bonus_id={ 3396 }, quality={ rare }
+bonus_id={ 3397 }, quality={ rare }
+bonus_id={ 3398 }, quality={ epic }, ilevel={ 450 @plvl 0 - 810 @plvl 110 }
+bonus_id={ 3399 }, base_ilevel={ 840 }, desc={ Mythic }, quality={ epic }
+bonus_id={ 3401 }, suffix={ of the Quickblade }, stats={ 46% Crit [0.8000], 54% Vers [0.9500] }
+bonus_id={ 3402 }, suffix={ of the Peerless }, stats={ 46% Crit [0.8000], 54% Mastery [0.9500] }
+bonus_id={ 3403 }, suffix={ of the Fireflash }, stats={ 46% Crit [0.8000], 54% Haste [0.9500] }
+bonus_id={ 3404 }, suffix={ of the Feverflare }, stats={ 46% Haste [0.8000], 54% Mastery [0.9500] }
+bonus_id={ 3405 }, suffix={ of the Aurora }, stats={ 46% Haste [0.8000], 54% Vers [0.9500] }
+bonus_id={ 3406 }, suffix={ of the Harmonious }, stats={ 46% Mastery [0.8000], 54% Vers [0.9500] }
+bonus_id={ 3410 }, base_ilevel={ 870 }, desc={ Mythic 2 }, quality={ epic }
+bonus_id={ 3411 }, base_ilevel={ 870 }, desc={ Mythic 3 }, quality={ epic }
+bonus_id={ 3412 }, base_ilevel={ 875 }, desc={ Mythic 4 }, quality={ epic }
+bonus_id={ 3413 }, base_ilevel={ 875 }, desc={ Mythic 5 }, quality={ epic }
+bonus_id={ 3414 }, base_ilevel={ 880 }, desc={ Mythic 6 }, quality={ epic }
+bonus_id={ 3415 }, base_ilevel={ 880 }, desc={ Mythic 7 }, quality={ epic }
+bonus_id={ 3416 }, base_ilevel={ 885 }, desc={ Mythic 8 }, quality={ epic }
+bonus_id={ 3417 }, base_ilevel={ 885 }, desc={ Mythic 9 }, quality={ epic }
+bonus_id={ 3418 }, base_ilevel={ 890 }, desc={ Mythic 10 }, quality={ epic }
+bonus_id={ 3427 }, base_ilevel={ 805 }, quality={ rare }
+bonus_id={ 3428 }, base_ilevel={ 840 }, quality={ epic }
+bonus_id={ 3432 }, quality={ epic }
+bonus_id={ 3433 }, stats={ 100% Crit [0.3000] }
+bonus_id={ 3434 }, stats={ 100% Haste [0.3000] }
+bonus_id={ 3435 }, stats={ 100% Mastery [0.3000] }
+bonus_id={ 3436 }, stats={ 100% Vers [0.3000] }
+bonus_id={ 3437 }, base_ilevel={ 830 }
+bonus_id={ 3438 }, quality={ epic }, ilevel_adjust={ 80 }
+bonus_id={ 3439 }, desc={ Heroic }, quality={ epic }, ilevel_adjust={ 95 }
+bonus_id={ 3440 }, desc={ Mythic }, quality={ epic }, ilevel_adjust={ 110 }
+bonus_id={ 3443 }, base_ilevel={ 870 }, quality={ epic }
+bonus_id={ 3444 }, base_ilevel={ 885 }, desc={ Heroic }, quality={ epic }
+bonus_id={ 3445 }, base_ilevel={ 900 }, desc={ Mythic }, quality={ epic }
+bonus_id={ 3446 }, base_ilevel={ 855 }, desc={ Raid Finder }, quality={ epic }
+bonus_id={ 3448 }, ilevel={ 10 @plvl 0 - 840 @plvl 110 }
+bonus_id={ 3449 }, base_ilevel={ 850 }, quality={ epic }
+bonus_id={ 3450 }, base_ilevel={ 860 }, quality={ epic }
+bonus_id={ 3451 }, base_ilevel={ 865 }, quality={ epic }
+bonus_id={ 3452 }, base_ilevel={ 855 }, desc={ Mythic }
+bonus_id={ 3453 }, base_ilevel={ 860 }, desc={ Mythic }
+bonus_id={ 3454 }, base_ilevel={ 875 }, desc={ Mythic }
+bonus_id={ 3455 }, ilevel_adjust={ 30 }
+bonus_id={ 3457 }, base_ilevel={ 810 }, quality={ rare }
+bonus_id={ 3460 }, base_ilevel={ 810 }, quality={ rare }
+bonus_id={ 3461 }, base_ilevel={ 815 }, quality={ rare }
+bonus_id={ 3462 }, base_ilevel={ 855 }, quality={ epic }
+bonus_id={ 3463 }, base_ilevel={ 865 }, quality={ epic }
+bonus_id={ 3464 }, base_ilevel={ 875 }, quality={ epic }
+bonus_id={ 3465 }, base_ilevel={ 885 }, quality={ epic }
+bonus_id={ 3466 }, base_ilevel={ 860 }
+bonus_id={ 3467 }, base_ilevel={ 860 }, quality={ epic }
+bonus_id={ 3468 }, base_ilevel={ 875 }, desc={ Heroic }, quality={ epic }
+bonus_id={ 3469 }, base_ilevel={ 890 }, desc={ Mythic }, quality={ epic }
+bonus_id={ 3470 }, base_ilevel={ 845 }, desc={ Raid Finder }, quality={ epic }
+bonus_id={ 3471 }, desc={ Timewalker }, ilevel={ 10 @plvl 0 - 600 @plvl 100 }
+bonus_id={ 3472 }, desc={ Champion Equipment }, ilevel={ 660 @plvl 98 - 745 @plvl 110 }
+bonus_id={ 3473 }, quality={ epic }
+bonus_id={ 3474 }, quality={ epic }
+bonus_id={ 3475 }, socket={ 1 }
+bonus_id={ 3476 }, base_ilevel={ 870 }, quality={ epic }
+bonus_id={ 3477 }, base_ilevel={ 875 }, quality={ epic }
+bonus_id={ 3478 }, base_ilevel={ 880 }, quality={ epic }
+bonus_id={ 3479 }, base_ilevel={ 890 }, quality={ epic }
+bonus_id={ 3480 }, base_ilevel={ 900 }, quality={ epic }
+bonus_id={ 3481 }, base_ilevel={ 880 }, quality={ epic }
+bonus_id={ 3482 }, base_ilevel={ 815 }, quality={ rare }
+bonus_id={ 3483 }, base_ilevel={ 820 }, quality={ rare }
+bonus_id={ 3484 }, base_ilevel={ 825 }, quality={ rare }
+bonus_id={ 3485 }, base_ilevel={ 830 }, quality={ rare }
+bonus_id={ 3486 }, base_ilevel={ 835 }, quality={ epic }
+bonus_id={ 3487 }, base_ilevel={ 820 }, quality={ rare }
+bonus_id={ 3488 }, base_ilevel={ 825 }, quality={ rare }
+bonus_id={ 3489 }, base_ilevel={ 830 }, quality={ rare }
+bonus_id={ 3490 }, base_ilevel={ 835 }, quality={ epic }
+bonus_id={ 3491 }, base_ilevel={ 840 }, quality={ epic }
+bonus_id={ 3492 }, desc={ Warforged }, quality={ epic }, ilevel_adjust={ 10 }
+bonus_id={ 3493 }, ilevel_adjust={ 235 }
+bonus_id={ 3494 }, ilevel_adjust={ 255 }
+bonus_id={ 3495 }, stats={ 100% Mastery [0.7482] }
+bonus_id={ 3496 }, stats={ 100% Mastery [0.7142] }
+bonus_id={ 3497 }, stats={ 100% Mastery [0.8162] }
+bonus_id={ 3498 }, stats={ 100% Mastery [1.0203] }
+bonus_id={ 3499 }, stats={ 100% Mastery [1.3604] }
+bonus_id={ 3500 }, stats={ 100% Mastery [2.7208] }
+bonus_id={ 3502 }, desc={ Timewarped }, quality={ rare }, ilevel={ 10 @plvl 1 - 850 @plvl 110 }
+bonus_id={ 3505 }, base_ilevel={ 850 }, desc={ Raid Finder }, quality={ epic }
+bonus_id={ 3506 }, base_ilevel={ 865 }, quality={ epic }
+bonus_id={ 3507 }, base_ilevel={ 880 }, desc={ Heroic }, quality={ epic }
+bonus_id={ 3508 }, base_ilevel={ 895 }, desc={ Mythic }, quality={ epic }
+bonus_id={ 3509 }, base_ilevel={ 895 }, desc={ Mythic 11 }, quality={ epic }
+bonus_id={ 3510 }, base_ilevel={ 895 }, desc={ Mythic 12 }, quality={ epic }
+bonus_id={ 3513 }, ilevel={ 10 @plvl 1 - 845 @plvl 110 }
+bonus_id={ 3514 }, base_ilevel={ 875 }, quality={ epic }
+bonus_id={ 3515 }, base_ilevel={ 880 }, quality={ epic }
+bonus_id={ 3516 }, base_ilevel={ 890 }, desc={ Heroic }, quality={ epic }
+bonus_id={ 3517 }, base_ilevel={ 895 }, desc={ Heroic }, quality={ epic }
+bonus_id={ 3518 }, base_ilevel={ 905 }, desc={ Mythic }, quality={ epic }
+bonus_id={ 3519 }, base_ilevel={ 910 }, desc={ Mythic }, quality={ epic }
+bonus_id={ 3520 }, base_ilevel={ 860 }, desc={ Raid Finder }, quality={ epic }
+bonus_id={ 3521 }, base_ilevel={ 865 }, desc={ Raid Finder }, quality={ epic }
+bonus_id={ 3522 }, socket={ 1 }
+bonus_id={ 3526 }, quality={ epic }, ilevel_adjust={ 60 }
+bonus_id={ 3530 }, ilevel_adjust={ 30 }
+bonus_id={ 3534 }, base_ilevel={ 900 }, desc={ Mythic 13 }, quality={ epic }
+bonus_id={ 3535 }, base_ilevel={ 905 }, desc={ Mythic 14 }, quality={ epic }
+bonus_id={ 3536 }, base_ilevel={ 910 }, desc={ Mythic 15 }, quality={ epic }
+bonus_id={ 3541 }, ilevel_adjust={ -13 }
+bonus_id={ 3542 }, ilevel_adjust={ -53 }
+bonus_id={ 3543 }, ilevel_adjust={ -28 }
+bonus_id={ 3547 }, add_rank={ power_index=4 }
+bonus_id={ 3548 }, add_rank={ power_index=5 }
+bonus_id={ 3549 }, add_rank={ power_index=6 }
+bonus_id={ 3550 }, add_rank={ power_index=7 }
+bonus_id={ 3551 }, add_rank={ power_index=8 }
+bonus_id={ 3552 }, add_rank={ power_index=9 }
+bonus_id={ 3553 }, add_rank={ power_index=10 }
+bonus_id={ 3554 }, add_rank={ power_index=11 }
+bonus_id={ 3555 }, add_rank={ power_index=12 }
+bonus_id={ 3556 }, add_rank={ power_index=13 }
+bonus_id={ 3557 }, add_rank={ power_index=1 }
+bonus_id={ 3558 }, add_rank={ power_index=2 }
+bonus_id={ 3559 }, add_rank={ power_index=3 }
+bonus_id={ 3561 }, base_ilevel={ 870 }, quality={ epic }
+bonus_id={ 3562 }, base_ilevel={ 885 }, desc={ Heroic }, quality={ epic }
+bonus_id={ 3563 }, base_ilevel={ 900 }, desc={ Mythic }, quality={ epic }
+bonus_id={ 3564 }, base_ilevel={ 855 }, desc={ Raid Finder }, quality={ epic }
+bonus_id={ 3565 }, base_ilevel={ 810 }, quality={ rare }
+bonus_id={ 3566 }, base_ilevel={ 810 }, quality={ rare }
+bonus_id={ 3567 }, base_ilevel={ 810 }, quality={ epic }
+bonus_id={ 3568 }, base_ilevel={ 810 }, quality={ epic }
+bonus_id={ 3569 }, add_rank={ power_index=5 }
+bonus_id={ 3570 }, ilevel_adjust={ 60 }
+bonus_id={ 3571 }, ilevel_adjust={ 30 }
+bonus_id={ 3572 }, base_ilevel={ 860 }
+bonus_id={ 3575 }, base_ilevel={ 855 }, desc={ Mythic }, quality={ epic }
+bonus_id={ 3576 }, base_ilevel={ 855 }, desc={ Heroic }, quality={ rare }
+bonus_id={ 3577 }, base_ilevel={ 855 }, desc={ Mythic 2 }, quality={ epic }
+bonus_id={ 3578 }, ilevel={ 10 @plvl 1 - 805 @plvl 110 }
+bonus_id={ 3585 }, desc={ Warforged }, ilevel={ 10 @plvl 1 - 865 @plvl 110 }
+bonus_id={ 3589 }, desc={ Timewarped }, ilevel={ 10 @plvl 1 - 900 @plvl 110 }
+bonus_id={ 3590 }, desc={ Warforged }, ilevel={ 10 @plvl 1 - 915 @plvl 110 }
+bonus_id={ 3591 }, ilevel={ 10 @plvl 0 - 800 @plvl 110 }
+bonus_id={ 3592 }, ilevel={ 10 @plvl 0 - 800 @plvl 110 }
+bonus_id={ 3596 }, ilevel={ 10 @plvl 1 - 850 @plvl 110 }

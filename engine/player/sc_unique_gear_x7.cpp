@@ -1073,31 +1073,29 @@ void item::tarnished_sentinel_medallion( special_effect_t& effect )
 
   auto proc = new spectral_owl_blast_cb_t( secondary );
 
+  struct spectral_bolt_t : public proc_spell_t
+  {
+    spectral_bolt_t( const special_effect_t& effect ) :
+      proc_spell_t( "spectral_bolt", effect.player, effect.player -> find_spell( 242571 ), effect.item )
+    { }
+  };
+
   // "Bolt" is the "DoT" effect that is consistent upon trinket use.
   struct spectral_owl_bolt_t : proc_spell_t
   {
     // Owl blast callback
     dbc_proc_callback_t* callback;
+    // Owl bolt
+    action_t* bolt;
 
     spectral_owl_bolt_t( const special_effect_t& effect, dbc_proc_callback_t* cb ) :
       proc_spell_t( "spectral_owl", effect.player, effect.driver(), effect.item ),
-      callback( cb )
+      callback( cb ),
+      bolt( create_proc_action<spectral_bolt_t>( "spectral_bolt", effect ) )
     {
-      hasted_ticks   = true;
-      base_td        = player -> find_spell( 242571 ) -> effectN( 1 ).average( effect.item );
-      dot_duration   = data().duration();
-      base_tick_time = data().effectN( 2 ).period();
-
       add_child( callback -> effect.execute_action );
+      add_child( bolt );
     }
-
-    // The last (hasted) partial "tick" always does full damage
-    double last_tick_factor( const dot_t*, const timespan_t&, const timespan_t& ) const override
-    { return 1.0; }
-
-    // Fake Owl does periodic damage, in game does direct damage
-    dmg_e amount_type( const action_state_t*, bool ) const override
-    { return DMG_DIRECT; }
 
     void execute() override
     {
@@ -1108,14 +1106,16 @@ void item::tarnished_sentinel_medallion( special_effect_t& effect )
 
       // Activate the callback
       callback -> activate();
-    }
 
-    void last_tick( dot_t* d ) override
-    {
-      proc_spell_t::last_tick( d );
-
-      // Dot over, deactivate the blast callback
-      callback -> deactivate();
+      // Trigger bolts
+      make_event<ground_aoe_event_t>( *sim, player, ground_aoe_params_t()
+        .target( execute_state -> target )
+        .pulse_time( data().effectN( 2 ).period() )
+        .duration( data().duration() )
+        .action( bolt )
+        .hasted( ground_aoe_params_t::SPELL_SPEED )
+        .expiration_pulse( ground_aoe_params_t::FULL_EXPIRATION_PULSE )
+        .expiration_callback( [ this ]() { callback -> deactivate(); } ) );
     }
 
     void reset() override

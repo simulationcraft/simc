@@ -4358,7 +4358,6 @@ struct death_coil_t : public death_knight_spell_t
 
     attack_power_mod.direct = p -> find_spell( 47632 ) -> effectN( 1 ).ap_coeff();
     base_multiplier *= 1.0 + p -> artifact.deadliest_coil.percent();
-    base_multiplier *= 1.0 + p -> legendary.death_march -> effectN( 2 ).percent();
   }
 
   double cost() const override
@@ -4451,7 +4450,6 @@ struct death_strike_offhand_t : public death_knight_melee_attack_t
     background       = true;
     weapon           = &( p -> off_hand_weapon );
     base_multiplier *= 1.0 + p -> spec.veteran_of_the_third_war -> effectN( 7 ).percent();
-    base_multiplier *= 1.0 + p -> legendary.death_march -> effectN( 2 ).percent();
   }
 };
 
@@ -4569,7 +4567,6 @@ struct death_strike_t : public death_knight_melee_attack_t
     parse_options( options_str );
     may_parry = false;
     base_multiplier *= 1.0 + p -> spec.blood_death_knight -> effectN( 1 ).percent();
-    base_multiplier *= 1.0 + p -> legendary.death_march -> effectN( 2 ).percent();
 
     base_costs[ RESOURCE_RUNIC_POWER ] += p -> sets -> set( DEATH_KNIGHT_BLOOD, T18, B4 ) -> effectN( 1 ).resource( RESOURCE_RUNIC_POWER );
 
@@ -7688,7 +7685,6 @@ void death_knight_t::default_apl_frost()
   generic -> add_talent( this, "Obliteration", "if=(!talent.frozen_pulse.enabled|(rune<2&runic_power<28))&!talent.gathering_storm.enabled" );
   generic -> add_action( this, "Frost Strike", "if=buff.icy_talons.remains<1.5&talent.icy_talons.enabled" );
   generic -> add_action( this, "Frost Strike", "if=talent.shattering_strikes.enabled&debuff.razorice.stack=5" );
-  generic -> add_action( this, "Howling Blast", "target_if=!dot.frost_fever.ticking" );
   generic -> add_action( this, "Remorseless Winter", "if=(buff.rime.react&equipped.132459&!(buff.obliteration.up&spell_targets.howling_blast<2))|talent.gathering_storm.enabled" );
   generic -> add_action( this, "Howling Blast", "if=buff.rime.react&!(buff.obliteration.up&spell_targets.howling_blast<2)&!(equipped.132459&talent.gathering_storm.enabled)" );
   generic -> add_action( this, "Howling Blast", "if=buff.rime.react&!(buff.obliteration.up&spell_targets.howling_blast<2)&equipped.132459&talent.gathering_storm.enabled&(debuff.perseverance_of_the_ebon_martyr.up|cooldown.remorseless_winter.remains>3)" );
@@ -7713,7 +7709,6 @@ void death_knight_t::default_apl_frost()
   // Breath of Sindragosa core rotation
   bos -> add_action( this, "Frost Strike", "if=talent.icy_talons.enabled&buff.icy_talons.remains<gcd&cooldown.breath_of_sindragosa.remains>rune.time_to_4" );
   bos -> add_action( this, "Remorseless Winter", "if=talent.gathering_storm.enabled" );
-  bos -> add_action( this, "Howling Blast", "target_if=!dot.frost_fever.ticking" );
   bos -> add_action( this, "Howling Blast", "if=buff.rime.react&rune.time_to_4<(gcd*2)" );
   bos -> add_action( this, "Obliterate", "if=rune.time_to_6<gcd&!talent.gathering_storm.enabled" );
   bos -> add_action( this, "Obliterate", "if=rune.time_to_4<gcd&(cooldown.breath_of_sindragosa.remains|runic_power<70)" );
@@ -7731,7 +7726,6 @@ void death_knight_t::default_apl_frost()
   bos -> add_action( this, "Frost Strike", "if=cooldown.breath_of_sindragosa.remains>rune.time_to_4" );
 
   // Breath of Sindragosa ticking rotation
-  bos_ticking -> add_action( this, "Howling Blast", "target_if=!dot.frost_fever.ticking" );
   bos_ticking -> add_action( this, "Remorseless Winter", "if=(runic_power>=30|buff.hungering_rune_weapon.up)&((buff.rime.react&equipped.132459)|(talent.gathering_storm.enabled&(dot.remorseless_winter.remains<=gcd|!dot.remorseless_winter.ticking)))" );
   bos_ticking -> add_action( this, "Howling Blast", "if=((runic_power>=20&set_bonus.tier19_4pc)|runic_power>=30|buff.hungering_rune_weapon.up)&buff.rime.react" );
   bos_ticking -> add_action( this, "Frost Strike", "if=set_bonus.tier20_2pc&runic_power>85&rune<=3&buff.pillar_of_frost.up" );
@@ -7750,7 +7744,6 @@ void death_knight_t::default_apl_frost()
   // Gathering Storm ticking rotation
   gs_ticking -> add_action( this, "Frost Strike", "if=buff.icy_talons.remains<1.5&talent.icy_talons.enabled" );
   gs_ticking -> add_action( this, "Remorseless Winter" );
-  gs_ticking -> add_action( this, "Howling Blast", "if=!dot.frost_fever.ticking" );
   gs_ticking -> add_action( this, "Howling Blast", "if=buff.rime.react&!(buff.obliteration.up&spell_targets.howling_blast<2)" );
   gs_ticking -> add_talent( this, "Obliteration", "if=(!talent.frozen_pulse.enabled|(rune<2&runic_power<28))" );
   gs_ticking -> add_action( this, "Obliterate", "if=rune>3|buff.killing_machine.react|buff.obliteration.up" );
@@ -7851,17 +7844,17 @@ void death_knight_t::default_apl_unholy()
 
 
   // Standard single target base rotation
-  standard->add_action(this, "Festering Strike", "if=debuff.festering_wound.stack<=3&runic_power.deficit>13");
+  standard->add_action(this, "Festering Strike", "if=debuff.festering_wound.stack<=2&runic_power.deficit>5");
   standard->add_action(this, "Death Coil", "if=!buff.necrosis.up&talent.necrosis.enabled&rune<=3");
-  standard->add_action(this, "Scourge Strike", "if=buff.necrosis.react&debuff.festering_wound.stack>=1&runic_power.deficit>15");
-  standard->add_talent(this, "Clawing Shadows", "if=buff.necrosis.react&debuff.festering_wound.stack>=1&runic_power.deficit>11");
-  standard->add_action(this, "Scourge Strike", "if=buff.unholy_strength.react&debuff.festering_wound.stack>=1&runic_power.deficit>15");
-  standard->add_talent(this, "Clawing Shadows", "if=buff.unholy_strength.react&debuff.festering_wound.stack>=1&runic_power.deficit>11");
-  standard->add_action(this, "Scourge Strike", "if=rune>=2&debuff.festering_wound.stack>=1&runic_power.deficit>15");
-  standard->add_talent(this, "Clawing Shadows", "if=rune>=2&debuff.festering_wound.stack>=1&runic_power.deficit>11");
-  standard->add_action(this, "Death Coil", "if=talent.shadow_infusion.enabled&talent.dark_arbiter.enabled&!buff.dark_transformation.up&cooldown.dark_arbiter.remains>15");
+  standard->add_action(this, "Scourge Strike", "if=buff.necrosis.react&debuff.festering_wound.stack>=1&runic_power.deficit>9");
+  standard->add_talent(this, "Clawing Shadows", "if=buff.necrosis.react&debuff.festering_wound.stack>=1&runic_power.deficit>9");
+  standard->add_action(this, "Scourge Strike", "if=buff.unholy_strength.react&debuff.festering_wound.stack>=1&runic_power.deficit>9");
+  standard->add_talent(this, "Clawing Shadows", "if=buff.unholy_strength.react&debuff.festering_wound.stack>=1&runic_power.deficit>9");
+  standard->add_action(this, "Scourge Strike", "if=rune>=2&debuff.festering_wound.stack>=1&runic_power.deficit>9");
+  standard->add_talent(this, "Clawing Shadows", "if=rune>=2&debuff.festering_wound.stack>=1&runic_power.deficit>9");
+  standard->add_action(this, "Death Coil", "if=talent.shadow_infusion.enabled&talent.dark_arbiter.enabled&!buff.dark_transformation.up&cooldown.dark_arbiter.remains>10");
   standard->add_action(this, "Death Coil", "if=talent.shadow_infusion.enabled&!talent.dark_arbiter.enabled&!buff.dark_transformation.up");
-  standard->add_action(this, "Death Coil", "if=talent.dark_arbiter.enabled&cooldown.dark_arbiter.remains>15");
+  standard->add_action(this, "Death Coil", "if=talent.dark_arbiter.enabled&cooldown.dark_arbiter.remains>10");
   standard->add_action(this, "Death Coil", "if=!talent.shadow_infusion.enabled&!talent.dark_arbiter.enabled");
 
   // Standard single target castigator rotation
@@ -7876,17 +7869,17 @@ void death_knight_t::default_apl_unholy()
   castigator->add_action(this, "Death Coil", "if=!talent.shadow_infusion.enabled&!talent.dark_arbiter.enabled");
 
   // Standard single target instructors rotation
-  instructors->add_action(this, "Festering Strike", "if=debuff.festering_wound.stack<=3&runic_power.deficit>13");
+  instructors->add_action(this, "Festering Strike", "if=debuff.festering_wound.stack<=2&runic_power.deficit>5");
   instructors->add_action(this, "Death Coil", "if=!buff.necrosis.up&talent.necrosis.enabled&rune<=3");
-  instructors->add_action(this, "Scourge Strike", "if=buff.necrosis.react&debuff.festering_wound.stack>=4&runic_power.deficit>29");
-  instructors->add_talent(this, "Clawing Shadows", "if=buff.necrosis.react&debuff.festering_wound.stack>=3&runic_power.deficit>11");
-  instructors->add_action(this, "Scourge Strike", "if=buff.unholy_strength.react&debuff.festering_wound.stack>=4&runic_power.deficit>29");
-  instructors->add_talent(this, "Clawing Shadows", "if=buff.unholy_strength.react&debuff.festering_wound.stack>=3&runic_power.deficit>11");
-  instructors->add_action(this, "Scourge Strike", "if=rune>=2&debuff.festering_wound.stack>=4&runic_power.deficit>29");
-  instructors->add_talent(this, "Clawing Shadows", "if=rune>=2&debuff.festering_wound.stack>=3&runic_power.deficit>11");
-  instructors->add_action(this, "Death Coil", "if=talent.shadow_infusion.enabled&talent.dark_arbiter.enabled&!buff.dark_transformation.up&cooldown.dark_arbiter.remains>15");
+  instructors->add_action(this, "Scourge Strike", "if=buff.necrosis.react&debuff.festering_wound.stack>=3&runic_power.deficit>9");
+  instructors->add_talent(this, "Clawing Shadows", "if=buff.necrosis.react&debuff.festering_wound.stack>=3&runic_power.deficit>9");
+  instructors->add_action(this, "Scourge Strike", "if=buff.unholy_strength.react&debuff.festering_wound.stack>=3&runic_power.deficit>9");
+  instructors->add_talent(this, "Clawing Shadows", "if=buff.unholy_strength.react&debuff.festering_wound.stack>=3&runic_power.deficit>9");
+  instructors->add_action(this, "Scourge Strike", "if=rune>=2&debuff.festering_wound.stack>=3&runic_power.deficit>9");
+  instructors->add_talent(this, "Clawing Shadows", "if=rune>=2&debuff.festering_wound.stack>=3&runic_power.deficit>9");
+  instructors->add_action(this, "Death Coil", "if=talent.shadow_infusion.enabled&talent.dark_arbiter.enabled&!buff.dark_transformation.up&cooldown.dark_arbiter.remains>10");
   instructors->add_action(this, "Death Coil", "if=talent.shadow_infusion.enabled&!talent.dark_arbiter.enabled&!buff.dark_transformation.up");
-  instructors->add_action(this, "Death Coil", "if=talent.dark_arbiter.enabled&cooldown.dark_arbiter.remains>15");
+  instructors->add_action(this, "Death Coil", "if=talent.dark_arbiter.enabled&cooldown.dark_arbiter.remains>10");
   instructors->add_action(this, "Death Coil", "if=!talent.shadow_infusion.enabled&!talent.dark_arbiter.enabled");
 
   // Generic AOE actions to be done
@@ -9134,9 +9127,18 @@ struct death_march_t : public scoped_actor_callback_t<death_knight_t>
   death_march_t() : super( DEATH_KNIGHT )
   { }
 
-  // Make adjustment time negative here, spell data value is positive
   void manipulate( death_knight_t* p, const special_effect_t& e ) override
   { p -> legendary.death_march = e.driver(); }
+};
+
+template <typename T>
+struct death_march_passive_t : public scoped_action_callback_t<T>
+{
+  death_march_passive_t( const std::string& n ) : scoped_action_callback_t<T>( DEATH_KNIGHT, n )
+  { }
+
+  void manipulate( T* a, const special_effect_t& e ) override
+  { a -> base_multiplier *= 1.0 + e.driver() -> effectN( 2 ).percent(); }
 };
 
 struct sephuzs_secret_t: public unique_gear::scoped_actor_callback_t<death_knight_t>
@@ -9260,6 +9262,9 @@ struct death_knight_module_t : public module_t {
     // 7.1.5
     unique_gear::register_special_effect( 235605, consorts_cold_core_t() );
     unique_gear::register_special_effect( 235556, death_march_t() );
+    unique_gear::register_special_effect( 235556, death_march_passive_t<death_knight_spell_t>( "death_coil" ) );
+    unique_gear::register_special_effect( 235556, death_march_passive_t<death_knight_melee_attack_t>( "death_strike" ) );
+    unique_gear::register_special_effect( 235556, death_march_passive_t<death_knight_melee_attack_t>( "death_strike_offhand" ) );
     unique_gear::register_special_effect( 235558, skullflowers_haemostasis_t(), true );
     unique_gear::register_special_effect( 208051, sephuzs_secret_t() );
     // 7.2.5

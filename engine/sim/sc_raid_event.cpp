@@ -843,6 +843,36 @@ struct damage_taken_debuff_event_t : public raid_event_t
   }
 };
 
+// Damage Done Buff =======================================================
+
+struct damage_done_buff_event_t : public raid_event_t
+{
+  double multiplier;
+
+  damage_done_buff_event_t( sim_t* s, const std::string& options_str ) :
+    raid_event_t( s, "damage_done" ), multiplier( 1.0 )
+  {
+    add_option( opt_float( "multiplier", multiplier ) );
+    parse_options( options_str );
+  }
+
+  virtual void _start() override
+  {
+    for ( auto p : affected_players )
+    {
+      p -> buffs.damage_done -> increment( 1, multiplier );
+    }
+  }
+
+  virtual void _finish() override
+  {
+    for ( auto p : affected_players )
+    {
+      p -> buffs.damage_done -> decrement();
+    }
+  }
+};
+
 // Vulnerable ===============================================================
 
 struct vulnerable_event_t : public raid_event_t
@@ -1183,7 +1213,8 @@ std::unique_ptr<raid_event_t> raid_event_t::create( sim_t* sim,
   if ( name == "vulnerable"   ) return std::unique_ptr<raid_event_t>(new   vulnerable_event_t( sim, options_str ));
   if ( name == "position_switch" ) return std::unique_ptr<raid_event_t>(new  position_event_t( sim, options_str ));
   if ( name == "flying" )       return std::unique_ptr<raid_event_t>(new       flying_event_t( sim, options_str ));
-  if ( name == "damage_taken_debuff" ) return std::unique_ptr<raid_event_t>(new   damage_taken_debuff_event_t( sim, options_str ));
+  if ( name == "damage_taken_debuff" ) return std::unique_ptr<raid_event_t>(new damage_taken_debuff_event_t( sim, options_str ));
+  if ( name == "damage_done_buff"    ) return std::unique_ptr<raid_event_t>(new    damage_done_buff_event_t( sim, options_str ));
 
   return std::unique_ptr<raid_event_t>();
 }

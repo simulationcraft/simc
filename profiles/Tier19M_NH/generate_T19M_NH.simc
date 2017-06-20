@@ -8,6 +8,7 @@
 # * Mythic+ gear is permitted up to the Mythic+ item level cap
 # * No Random Gems (ie. Bonus RNG Gem Slots)
 # * No Tertiary Stats
+# * No Ranked Gear (ie. Warforged/Titanforged)
 # * No Hardcoded Stats (generally if an item gives wrong stats: either bonus_id is wrong, either the item no longer exists in-game)
 # * It is recommended to use enchant name (ex : ",enchant=binding_of_mastery") rather than id/hardcoded stats.
 

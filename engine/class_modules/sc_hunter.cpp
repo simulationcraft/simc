@@ -2188,6 +2188,17 @@ struct flanking_strike_t: public hunter_main_pet_attack_t
     return am;
   }
 
+  double composite_target_crit_chance( player_t* t ) const override
+  {
+    double cc = hunter_main_pet_attack_t::composite_target_crit_chance( t );
+
+    const hunter_td_t* otd = o() -> get_target_data( t );
+    if ( otd -> debuffs.unseen_predators_cloak -> up() )
+      cc += otd -> debuffs.unseen_predators_cloak -> check_value();
+
+    return cc;
+  }
+
   double composite_attack_power() const override
   { return o() -> cache.attack_power() * o() -> composite_attack_power_multiplier(); }
 };
@@ -4125,6 +4136,9 @@ struct carve_base_t: public hunter_melee_attack_t
     hunter_melee_attack_t( n, p, s )
   {
     aoe = -1;
+
+    if ( p -> talents.serpent_sting -> ok() )
+      impact_action = new serpent_sting_t( p );
   }
 
   void execute() override
@@ -4189,9 +4203,6 @@ struct carve_t: public carve_base_t
     carve_base_t( "carve", p, p -> specs.carve )
   {
     parse_options( options_str );
-
-    if ( p -> talents.serpent_sting -> ok() )
-      impact_action = new serpent_sting_t( p );
   }
 
   bool ready() override
@@ -6358,7 +6369,7 @@ void hunter_t::apl_mm()
                                 "value=floor((focus+action.aimed_shot.cast_regen*(variable.vuln_aim_casts-1))%action.aimed_shot.cost),"
                                 "if=variable.vuln_aim_casts>0&variable.vuln_aim_casts>floor((focus+action.aimed_shot.cast_regen*(variable.vuln_aim_casts-1))%action.aimed_shot.cost)" );
 
-  patient_sniper -> add_action( "variable,name=can_gcd,value=variable.vuln_window<action.aimed_shot.cast_time|variable.vuln_window>variable.vuln_aim_casts*action.aimed_shot.execute_time+gcd.max" );
+  patient_sniper -> add_action( "variable,name=can_gcd,value=variable.vuln_window<action.aimed_shot.cast_time|variable.vuln_window>variable.vuln_aim_casts*action.aimed_shot.execute_time+gcd.max+0.1" );
 
   patient_sniper -> add_action( "call_action_list,name=targetdie,if=target.time_to_die<variable.vuln_window&spell_targets.multishot=1" );
 
@@ -6377,7 +6388,7 @@ void hunter_t::apl_mm()
   patient_sniper -> add_action( this, "Arcane Shot", "if=spell_targets.multishot=1&(!set_bonus.tier20_2pc|!buff.trueshot.up|buff.t20_2p_critical_aimed_damage.up)&variable.vuln_aim_casts>0&variable.can_gcd&focus+cast_regen+action.aimed_shot.cast_regen<focus.max&(!variable.pooling_for_piercing|lowest_vuln_within.5>gcd.max)" );
   patient_sniper -> add_action( this, "Aimed Shot", "if=talent.sidewinders.enabled&(debuff.vulnerability.remains>cast_time|(buff.lock_and_load.down&action.windburst.in_flight))&(variable.vuln_window-(execute_time*variable.vuln_aim_casts)<1|focus.deficit<25|buff.trueshot.up)&(spell_targets.multishot=1|focus>100)" );
   patient_sniper -> add_action( this, "Aimed Shot", "if=!talent.sidewinders.enabled&debuff.vulnerability.remains>cast_time&(!variable.pooling_for_piercing|(focus>100&lowest_vuln_within.5>(execute_time+gcd.max)))" );
-  patient_sniper -> add_action( this, "Marked Shot", "if=!talent.sidewinders.enabled&!variable.pooling_for_piercing&!action.windburst.in_flight&(focus>65|buff.trueshot.up|(1%attack_haste)>1.1686)" );
+  patient_sniper -> add_action( this, "Marked Shot", "if=!talent.sidewinders.enabled&!variable.pooling_for_piercing&!action.windburst.in_flight&(focus>65|buff.trueshot.up|(1%attack_haste)>1.171)" );
   patient_sniper -> add_action( this, "Marked Shot", "if=talent.sidewinders.enabled&(variable.vuln_aim_casts<1|buff.trueshot.up|variable.vuln_window<action.aimed_shot.cast_time)" );
   patient_sniper -> add_action( this, "Aimed Shot", "if=spell_targets.multishot=1&focus>110" );
   patient_sniper -> add_talent( this, "Sidewinders", "if=(!debuff.hunters_mark.up|(!buff.marking_targets.up&!buff.trueshot.up))&((buff.marking_targets.up&variable.vuln_aim_casts<1)|buff.trueshot.up|charges_fractional>1.9)" );

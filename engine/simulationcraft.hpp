@@ -3977,6 +3977,7 @@ struct player_t : public actor_t
     buff_t* beacon_of_light;
     buff_t* blood_fury;
     buff_t* body_and_soul;
+    buff_t* damage_done;
     buff_t* darkflight;
     buff_t* devotion_aura;
     buff_t* exhaustion;

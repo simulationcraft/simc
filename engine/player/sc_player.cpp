@@ -2792,6 +2792,13 @@ void player_t::create_buffs()
                            .duration( timespan_t::from_seconds( 20.0 ) )
                            .max_stack( 999 );
   }
+
+  if ( sim -> has_raid_event( "damage_done" ) )
+  {
+    buffs.damage_done = buff_creator_t( this, "damage_done" )
+                          .max_stack( 1 )
+                          .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+  }
 }
 
 // player_t::find_item ======================================================
@@ -3371,6 +3378,12 @@ double player_t::composite_player_multiplier( school_e  school  ) const
   {
     m *= 1.0 + buffs.taste_of_mana -> default_value;
   }
+
+  if ( buffs.damage_done && buffs.damage_done -> check() )
+  {
+    m *= 1.0 + buffs.damage_done -> check_stack_value();
+  }
+
   return m;
 }
 
@@ -3557,9 +3570,19 @@ double player_t::composite_attribute_multiplier( attribute_e attr ) const
       if ( buffs.amplification_2 )
         m *= 1.0 + passive_values.amplification_2;
       break;
-    case ATTR_STAMINA:                                                         // Artifacts get a free +6 purchased
-      m *= 1.0 + artifact.artificial_stamina -> effectN( 2 ).percent() * .01 * ( artifact.n_purchased_points + 6 );
+    case ATTR_STAMINA:
+    {
+      double full_effect = artifact.artificial_stamina -> effectN( 2 ).percent() * 0.01;
+      // After 52nd point, Artificial Stamina is 5 times less effective.
+      double reduced_effect = full_effect / 5.0;
+
+      unsigned full_points = std::min( 52u, artifact.n_purchased_points );
+      unsigned reduced_points = artifact.n_purchased_points - full_points;
+
+                               // Artifacts get a free +6 purchased
+      m *= 1.0 + full_effect * ( full_points + 6 ) + reduced_effect * reduced_points;
       break;
+    }
     default:
       break;
   }

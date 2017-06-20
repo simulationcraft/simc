@@ -60,6 +60,7 @@ actions.aoe+=/ice_lance,if=variable.fof_react>0
 actions.aoe+=/ebonbolt,if=buff.brain_freeze.react=0
 actions.aoe+=/glacial_spike
 actions.aoe+=/frostbolt
+actions.aoe+=/cone_of_cold
 actions.aoe+=/ice_lance
 
 # Rune of Power is used when going into Icy Veins and while Icy Veins are up. Outside of Icy Veins, use Rune of Power when about to cap on charges or the target is about to die.
