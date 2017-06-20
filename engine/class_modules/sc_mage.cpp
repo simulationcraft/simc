@@ -4181,8 +4181,11 @@ struct frost_nova_t : public mage_spell_t
   {
     parse_options( options_str );
 
+    affected_by.arcane_mage = true;
     affected_by.fire_mage = true;
     affected_by.frost_mage = true;
+
+    affected_by.erosion = true;
     affected_by.shatter = true;
 
     cooldown -> charges += p -> talents.ice_ward -> effectN( 1 ).base_value();
