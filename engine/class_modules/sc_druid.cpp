@@ -3491,17 +3491,17 @@ struct rip_t : public cat_attack_t
 
     trigger_tier17_2pc = p -> sets -> has_set_bonus( DRUID_FERAL, T17, B2 );
 
+    if (p->sets->has_set_bonus(DRUID_FERAL, T20, B4))
+    {
+       base_multiplier *= (1.0 + p-> find_spell(242235) -> effectN(1).percent());
+       dot_duration += timespan_t::from_millis( p->find_spell(242235) -> effectN(2).base_value() );
+    }
+
     base_tick_time *= 1.0 + p -> talent.jagged_wounds -> effectN( 1 ).percent();
     dot_duration   *= 1.0 + p -> talent.jagged_wounds -> effectN( 2 ).percent();
     base_multiplier *= 1.0 + p -> artifact.razor_fangs.percent();
     
-    if (p->t20_4pc || p->sets -> has_set_bonus(DRUID_FERAL, T20, B4))
-    {
-      base_multiplier *= (1.0 + p -> find_spell(242235) -> effectN(1).percent() );
-      dot_duration *= (1.0 + (p -> find_spell(242235) -> effectN(2).base_value() / 24000)); // as above
-    }
-
-    if (p->t20_2pc || p->sets -> has_set_bonus(DRUID_FERAL, T20, B2))
+    if ( p->sets -> has_set_bonus(DRUID_FERAL, T20, B2))
     {
        energize_amount = p->find_spell(245591)->effectN(1).base_value();
        energize_resource = RESOURCE_ENERGY;
@@ -7637,6 +7637,8 @@ void druid_t::apl_feral()
                      "(talent.elunes_guidance.enabled&((cooldown.elunes_guidance.remains<gcd&combo_points=0)|(buff.elunes_guidance.up&combo_points>=4))))",
                      "Use Healing Touch at 5 Combo Points, if Predatory Swiftness is about to fall off, at 2 Combo Points before Ashamane's Frenzy, "
                      "before Elune's Guidance is cast or before the Elune's Guidance buff gives you a 5th Combo Point." );
+  def->add_action(this, "Regrowth",
+                    "if=talent.bloodtalons.enabled&buff.predatory_swiftness.up&buff.bloodtalons.down&combo_points=4&dot.rake.remains<4");
   def -> add_action( "call_action_list,name=sbt_opener,if=talent.sabertooth.enabled&time<20" );
   def -> add_action( this, "Regrowth", "if=equipped.ailuro_pouncers&talent.bloodtalons.enabled&(buff.predatory_swiftness.stack>2|(buff.predatory_swiftness.stack>1&dot.rake.remains<3))&buff.bloodtalons.down",
     "Special logic for Ailuro Pouncers legendary." );
