@@ -127,7 +127,7 @@ actions.sbt_opener=regrowth,if=talent.bloodtalons.enabled&combo_points=5&!buff.b
 actions.sbt_opener+=/tigers_fury,if=!dot.rip.ticking&combo_points=5
 
 head=behemoth_headdress,id=151801,bonus_id=1502/3530,ilevel=970
-neck=locket_of_splintered_souls,id=147014,bonus_id=3563,ilevel=930,enchant=mark_of_the_hidden_satyr
+neck=sylvan_maelstrom_amulet,id=130239,bonus_id=1750/689/601/679,gem_id=130247,enchant_id=5439
 shoulders=stormheart_mantle,id=147138,bonus_id=1477/3563,ilevel=930
 back=stormheart_drape,id=147134,bonus_id=1477,ilevel=930,enchant=binding_of_agility
 chest=stormheart_tunic,id=147133,bonus_id=1477,ilevel=930
@@ -144,12 +144,12 @@ main_hand=fangs_of_ashamane,id=128860,bonus_id=723,gem_id=147081/147093/147106/0
 off_hand=fangs_of_ashamane,id=128859,gem_id=0/0/0/0,relic_id=0/0
 
 # Gear Summary
-# gear_ilvl=938.25
-# gear_agility=28133
-# gear_stamina=45466
-# gear_crit_rating=8994
+# gear_ilvl=936.38
+# gear_agility=28333
+# gear_stamina=44875
+# gear_crit_rating=9313
 # gear_haste_rating=1912
-# gear_mastery_rating=11878
+# gear_mastery_rating=10973
 # gear_versatility_rating=4685
 # gear_armor=2690
 # set_bonus=tier20_2pc=1
