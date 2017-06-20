@@ -382,6 +382,7 @@ public:
     const spell_data_t* chain_lightning_2; // 7.1 Chain Lightning additional 2 targets passive
     const spell_data_t* elemental_focus;
     const spell_data_t* elemental_fury;
+    const spell_data_t* elemental_shaman;
     const spell_data_t* flame_shock_2; // 7.1 Flame Shock duration extension passive
     const spell_data_t* lava_burst_2; // 7.1 Lava Burst autocrit with FS passive
     const spell_data_t* lava_surge;
@@ -1050,6 +1051,12 @@ public:
 
       maelstrom_gain = effect.resource( RESOURCE_MAELSTROM );
       ab::energize_type = ENERGIZE_NONE; // disable resource generation from spell data.
+    }
+
+    if ( ab::data().affected_by( player -> spec.elemental_shaman -> effectN( 5 ) ) )
+    {
+      ab::base_multiplier *= 1.0 + player -> spec.elemental_shaman -> effectN( 5 ).percent();
+      ab::base_multiplier *= 1.0 + player -> spec.elemental_shaman -> effectN( 7 ).percent();
     }
 
     if ( ab::data().affected_by( player -> spec.enhancement_shaman -> effectN( 1 ) ) )
@@ -6383,6 +6390,7 @@ void shaman_t::init_spells()
   spec.chain_lightning_2     = find_specialization_spell( 231722 );
   spec.elemental_focus       = find_specialization_spell( "Elemental Focus" );
   spec.elemental_fury        = find_specialization_spell( "Elemental Fury" );
+  spec.elemental_shaman      = find_specialization_spell( "Elemental Shaman" );
   spec.flame_shock_2         = find_specialization_spell( 232643 );
   spec.lava_burst_2          = find_specialization_spell( 231721 );
   spec.lava_surge            = find_specialization_spell( "Lava Surge" );
