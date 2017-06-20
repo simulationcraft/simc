@@ -1056,7 +1056,6 @@ public:
     if ( ab::data().affected_by( player -> spec.elemental_shaman -> effectN( 5 ) ) )
     {
       ab::base_multiplier *= 1.0 + player -> spec.elemental_shaman -> effectN( 5 ).percent();
-      ab::base_multiplier *= 1.0 + player -> spec.elemental_shaman -> effectN( 7 ).percent();
     }
 
     if ( ab::data().affected_by( player -> spec.enhancement_shaman -> effectN( 1 ) ) )
@@ -1857,6 +1856,11 @@ struct pet_action_t : public T_ACTION
 
     this -> special = true;
     this -> may_crit = true;
+
+    if ( this->data().affected_by( p() -> o() -> spec.elemental_shaman -> effectN( 7 ) ) )
+    {
+      this->base_multiplier *= 1.0 + p() -> o() -> spec.elemental_shaman -> effectN( 7 ).percent();
+    }
     //this -> crit_bonus_multiplier *= 1.0 + p() -> o() -> spec.elemental_fury -> effectN( 1 ).percent();
   }
 
