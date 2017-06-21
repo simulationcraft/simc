@@ -4181,8 +4181,11 @@ struct frost_nova_t : public mage_spell_t
   {
     parse_options( options_str );
 
+    affected_by.arcane_mage = true;
     affected_by.fire_mage = true;
     affected_by.frost_mage = true;
+
+    affected_by.erosion = true;
     affected_by.shatter = true;
 
     cooldown -> charges += p -> talents.ice_ward -> effectN( 1 ).base_value();
@@ -8891,6 +8894,12 @@ public:
       .operation( hotfix::HOTFIX_SET )
       .modifier( 20.0 )
       .verification_value( 0.0 );
+
+    hotfix::register_spell( "Mage", "2017-06-21", "Ice Lance is slower than spell data suggests.", 30455 )
+      .field( "prj_speed" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 38.0 )
+      .verification_value( 50.0 );
   }
 
   virtual bool valid() const override { return true; }

@@ -123,29 +123,29 @@ actions.single_target+=/lunar_strike,if=buff.lunar_empowerment.up
 actions.single_target+=/solar_wrath
 
 head=the_emerald_dreamcatcher,id=137062,ilevel=970
-neck=hatecoil_commanders_amulet,id=134492,ilevel=930
+neck=string_of_extracted_incisors,id=147013,ilevel=930
 shoulders=dripping_arcfin_shoulderpads,id=147037,ilevel=930
 back=stormheart_drape,id=147134,ilevel=930
 chest=stormheart_tunic,id=147133,ilevel=930
 wrists=oneths_intuition,id=137092,ilevel=970
 hands=stormheart_gloves,id=147135,ilevel=930
-waist=waistguard_of_profane_duplicity,id=147347,ilevel=930
+waist=waistguard_of_profane_duplicity,id=147347,ilevel=940
 legs=stormheart_legguards,id=147137,ilevel=930
 feet=treads_of_violent_intrusion,id=147424,ilevel=930
-finger1=ring_of_the_scoured_clan,id=140897,ilevel=930
-finger2=loop_of_vitriolic_intent,id=134530,ilevel=930
+finger1=scaled_band_of_servitude,id=147020,ilevel=930
+finger2=seal_of_the_second_duumvirate,id=147195,ilevel=940
 trinket1=tarnished_sentinel_medallion,id=147017,ilevel=930
-trinket2=whispers_in_the_dark,id=140809,ilevel=915
-main_hand=scythe_of_elune,id=128858,bonus_id=722,gem_id=140813/140838/140827/0,relic_ilevel=930/930/940
+trinket2=terror_from_below,id=147016,ilevel=930
+main_hand=scythe_of_elune,id=128858,bonus_id=722,gem_id=147079/147107/147079/0,relic_ilevel=940/930/940
 
 # Gear Summary
-# gear_ilvl=935.93
-# gear_stamina=46363
-# gear_intellect=48017
-# gear_crit_rating=4134
-# gear_haste_rating=9673
-# gear_mastery_rating=13237
-# gear_versatility_rating=485
-# gear_armor=2717
+# gear_ilvl=938.47
+# gear_stamina=47067
+# gear_intellect=46510
+# gear_crit_rating=7175
+# gear_haste_rating=9815
+# gear_mastery_rating=10261
+# gear_versatility_rating=1893
+# gear_armor=2726
 # set_bonus=tier20_2pc=1
 # set_bonus=tier20_4pc=1
