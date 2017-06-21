@@ -2164,8 +2164,7 @@ struct flanking_strike_t: public hunter_main_pet_attack_t
   flanking_strike_t( hunter_main_pet_t* p ):
     hunter_main_pet_attack_t( "flanking_strike", p, p -> find_spell( 204740 ) )
   {
-    attack_power_mod.direct = 2.152; //data hardcoded in tooltip
-    base_multiplier = 1.62; // Hotfixed on 09/23/2016 - not in tooltip as of 11/01/2016
+    attack_power_mod.direct = 4.2; //data hardcoded in tooltip
     background = true;
     hunting_companion_multiplier = 2.0;
 
@@ -6719,6 +6718,9 @@ double hunter_t::composite_player_pet_damage_multiplier( const action_state_t* s
 
   if ( specs.beast_mastery_hunter -> ok() )
     m *= 1.0 + specs.beast_mastery_hunter -> effectN( 3 ).percent();
+
+  if ( specs.survival_hunter -> ok() )
+    m *= 1.0 + specs.survival_hunter -> effectN( 5 ).percent();
 
   if ( buffs.the_mantle_of_command -> check() )
     m *= 1.0 + buffs.the_mantle_of_command -> check_value();
