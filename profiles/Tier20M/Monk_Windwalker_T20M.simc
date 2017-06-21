@@ -101,7 +101,7 @@ back=cloak_of_enveloped_dissonance,id=138367,bonus_id=3519
 chest=xuens_tunic,id=147151,bonus_id=3563/1512
 wrists=drinking_horn_cover,id=137097,bonus_id=3570
 hands=xuens_gauntlets,id=147153,bonus_id=3563/1512
-waist=waistguard_of_profane_duplicity,id=147347,bonus_id=3563/1512
+waist=waistguard_of_profane_duplicity,id=147347,bonus_id=3563/1522
 legs=xuens_legguards,id=147155,bonus_id=3563/1512
 feet=katsuos_eclipse,id=137029,bonus_id=3570
 finger1=yathaes_thumb_ring,id=147021,bonus_id=3563/1512,enchant=binding_of_mastery
@@ -112,14 +112,14 @@ main_hand=fists_of_the_heavens,id=128940,bonus_id=734,gem_id=147113/147101/14711
 off_hand=fists_of_the_heavens,id=133948
 
 # Gear Summary
-# gear_ilvl=935.75
-# gear_agility=30223
-# gear_stamina=44019
+# gear_ilvl=936.38
+# gear_agility=30432
+# gear_stamina=44334
 # gear_crit_rating=7680
-# gear_haste_rating=5139
-# gear_mastery_rating=8749
+# gear_haste_rating=5161
+# gear_mastery_rating=8780
 # gear_versatility_rating=4481
-# gear_armor=2677
+# gear_armor=2686
 # set_bonus=tier19_2pc=1
 # set_bonus=tier20_2pc=1
 # set_bonus=tier20_4pc=1

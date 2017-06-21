@@ -13,7 +13,7 @@ back=cloak_of_enveloped_dissonance,id=138367,bonus_id=3519
 chest=xuens_tunic,id=147151,bonus_id=3562:1497
 wrists=drinking_horn_cover,id=137097,bonus_id=3570
 hands=xuens_gauntlets,id=147153,bonus_id=3562:1497
-waist=waistguard_of_profane_duplicity,id=147347,ilevel=970
+waist=waistguard_of_profane_duplicity,id=147347,bonus_id=3562:1507
 legs=xuens_legguards,id=147155,bonus_id=3562:1497
 feet=katsuos_eclipse,id=137029,bonus_id=3570
 finger1=yathaes_thumb_ring,id=147021,bonus_id=3562:1497,enchant=binding_of_mastery
