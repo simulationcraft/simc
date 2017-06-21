@@ -106,16 +106,16 @@ finger1=yathaes_thumb_ring,id=147021,bonus_id=1497/3562,enchant=binding_of_versa
 finger2=band_of_rescinded_truths,id=147194,bonus_id=1497/3562,enchant=binding_of_versatility
 trinket1=specter_of_betrayal,id=151190,bonus_id=1507/3562
 trinket2=convergence_of_fates,id=140806,bonus_id=3517
-main_hand=fangs_of_the_devourer,id=128476,bonus_id=743,gem_id=147084/147110/147084,relic_id=1497:3562/1497:3562/1497:3562
+main_hand=fangs_of_the_devourer,id=128476,bonus_id=743,gem_id=147084/147111/147084,relic_id=1497:3562/1507:3562/1497:3562
 off_hand=fangs_of_the_devourer,id=128479,gem_id=0/0/0/0
 
 # Gear Summary
-# gear_ilvl=924.50
-# gear_agility=27530
-# gear_stamina=40456
-# gear_crit_rating=6464
+# gear_ilvl=924.88
+# gear_agility=27604
+# gear_stamina=40568
+# gear_crit_rating=6472
 # gear_haste_rating=2697
-# gear_mastery_rating=9415
+# gear_mastery_rating=9425
 # gear_versatility_rating=6106
 # gear_armor=2618
 # set_bonus=tier20_2pc=1
