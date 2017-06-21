@@ -1,4 +1,4 @@
-SimulationCraft 725-01 for World of Warcraft 7.2.5 Live (wow build 24287, git build ba56295)
+SimulationCraft 725-01 for World of Warcraft 7.2.5 Live (wow build 24287, git build 9d7f936)
 
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
 Class            : Discipline Shadow Priest
@@ -1393,7 +1393,8 @@ Attributes       : ........ ........ ..x..... ........   ........ ........ .....
                  : x.....x. .....x.. ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=56703)    : Unknown(179)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 1489 | Radius: 6.5 yards | Target: AOE friendly (31)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 1489 | Radius: 8 yards | Target: AOE friendly (31)
+                   Hotfixed: Chain Multiplier (0 -> 1)
 Description      : Summons a holy barrier to protect all allies at the target location for $d, reducing all damage taken by $81782s2% and preventing damage from delaying spellcasting.
 
 Name             : Shadowcrawl (id=63619) [Spell Family (6)] 
@@ -4874,7 +4875,8 @@ Attributes       : ........ ........ ........ ........   ........ ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=375043)   : Server Side Script (77)
-                   Base Value: 7 | Scaled Value: 7 | Radius: 0 - 60 yards | Target: Custom (18) -> AOE friendly (31)
+                   Base Value: 6 | Scaled Value: 6 | Radius: 0 - 60 yards | Target: Custom (18) -> AOE friendly (31)
+                   Hotfixed: Base Value (7 -> 6), Chain Multiplier (0 -> 1)
 Description      : Extends the duration of all of your active Atonements by $s1 sec.
 
 Name             : Sanctuary (id=246393) [Spell Family (6), Passive, Hidden] 
