@@ -463,7 +463,6 @@ public:
     proc_t* the_master_harvester;
     //aff
     proc_t* fatal_echos;
-    proc_t* t18_2pc_affliction;
     //demo
     proc_t* impending_doom;
     proc_t* improved_dreadstalkers;
@@ -3053,7 +3052,6 @@ struct unstable_affliction_t: public warlock_spell_t
     }
 
     p() -> buffs.shard_instability -> expire();
-    p() -> procs.t18_2pc_affliction -> occur();
 
     if ( p()->buffs.compounding_horror->check() )
     {
@@ -6666,7 +6664,6 @@ void warlock_t::init_procs()
   procs.fatal_echos = get_proc( "fatal_echos" );
   procs.wild_imp = get_proc( "wild_imp" );
   procs.fragment_wild_imp = get_proc( "fragment_wild_imp" );
-  procs.t18_2pc_affliction = get_proc( "t18_2pc_affliction" );
   procs.t18_4pc_destruction = get_proc( "t18_4pc_destruction" );
   procs.t18_prince_malchezaar = get_proc( "t18_prince_malchezaar" );
   procs.t18_vicious_hellhound = get_proc( "t18_vicious_hellhound" );
