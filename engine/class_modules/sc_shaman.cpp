@@ -1856,8 +1856,6 @@ struct pet_action_t : public T_ACTION
 
     this -> special = true;
     this -> may_crit = true;
-
-    this->base_multiplier *= 1.0 + p() -> o() -> spec.elemental_shaman -> effectN( 7 ).percent();
     //this -> crit_bonus_multiplier *= 1.0 + p() -> o() -> spec.elemental_fury -> effectN( 1 ).percent();
   }
 
@@ -8036,6 +8034,10 @@ double shaman_t::composite_player_pet_damage_multiplier( const action_state_t* s
   m *= 1.0 + artifact.stormkeepers_power.percent();
   m *= 1.0 + artifact.power_of_the_earthen_ring.percent();
   m *= 1.0 + artifact.earthshattering_blows.percent();
+  if ( spec.elemental_shaman -> ok() )
+  {
+    m *= 1.0 + spec.elemental_shaman -> effectN( 7 ).percent();
+  }
 
   auto school = s -> action -> get_school();
   if ( ( dbc::is_school( school, SCHOOL_FIRE ) || dbc::is_school( school, SCHOOL_FROST ) ||
