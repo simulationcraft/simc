@@ -6734,7 +6734,7 @@ void mage_t::copy_from( player_t* source )
 
 void mage_t::create_pets()
 {
-  if ( specialization() == MAGE_FROST && find_action( "water_elemental" ) )
+  if ( specialization() == MAGE_FROST && ! talents.lonely_winter -> ok() && find_action( "water_elemental" ) )
   {
     pets.water_elemental = new pets::water_elemental::water_elemental_pet_t( sim, this );
   }
