@@ -11308,6 +11308,7 @@ void player_collected_data_t::merge( const player_collected_data_t& other )
   dtps.merge( other.dtps );
   dpse.merge( other.dpse );
   dmg_taken.merge( other.dmg_taken );
+  timeline_dmg.merge( other.timeline_dmg );
   // HEAL
   heal.merge( other.heal );
   compound_heal.merge( other.compound_heal );
