@@ -5172,9 +5172,6 @@ void priest_t::apl_shadow()
       "25&(cooldown.void_bolt.up|cooldown.void_torrent.up|cooldown.shadow_word_"
       "death.up|buff.shadowy_insight.up)&target.time_to_die<=variable.s2mcheck-"
       "(buff.insanity_drain_stacks.value)" );
-  if ( race == RACE_BLOOD_ELF )
-    vf->add_action( "arcane_torrent,if=buff.insanity_drain_stacks.value>=20"
-                    "&(insanity-(current_insanity_drain*gcd.max)+15)<100" );
   vf->add_action(
     "silence,if=equipped.sephuzs_secret&(target.is_add|target.debuff.casting."
     "react)&cooldown.buff_sephuzs_secret.remains<1&!buff.sephuzs_secret.up"
@@ -5215,7 +5212,6 @@ if ( race == RACE_BLOOD_ELF )
       "enabled&"
       "target.time_to_die>variable.s2mcheck-(buff.insanity_drain_stacks.value)+"
       "60))" );
-  vf->add_action( "void_bolt" );
   vf->add_action(
       "shadow_word_death,if=(active_enemies<=4|(talent.reaper_of_souls.enabled&"
       "active_"
