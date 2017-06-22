@@ -31,7 +31,7 @@ actions.precombat+=/potion
 # Executed every time the actor is available.
 actions=auto_shot
 actions+=/counter_shot,if=target.debuff.casting.react
-actions+=/use_item,name=tarnished_sentinel_medallion
+actions+=/use_items
 actions+=/arcane_torrent,if=focus.deficit>=30
 actions+=/berserking,if=buff.bestial_wrath.remains>7
 actions+=/blood_fury,if=buff.bestial_wrath.remains>7

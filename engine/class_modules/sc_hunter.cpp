@@ -533,7 +533,7 @@ public:
   std::string default_food() const override;
   std::string default_rune() const override;
 
-  void              add_item_actions( action_priority_list_t* list );
+  std::string special_use_item_action( const std::string& item_name, const std::string& condition = std::string() ) const;
 
   target_specific_t<hunter_td_t> target_data;
 
@@ -6206,39 +6206,20 @@ void hunter_t::init_action_list()
   }
 }
 
-
 // Item Actions =======================================================================
 
-void hunter_t::add_item_actions( action_priority_list_t* list )
+std::string hunter_t::special_use_item_action( const std::string& item_name, const std::string& condition ) const
 {
-  for ( const item_t& item : items )
-  {
-    if ( item.has_special_effect( SPECIAL_EFFECT_SOURCE_ITEM, SPECIAL_EFFECT_USE ) )
+  auto item = range::find_if( items, [ &item_name ]( const item_t& item ) {
+    return item.has_special_effect( SPECIAL_EFFECT_SOURCE_ITEM, SPECIAL_EFFECT_USE ) && item.name_str == item_name;
+  });
+  if ( item == items.end() )
+    return std::string();
 
-      if ( specialization() == HUNTER_MARKSMANSHIP )
-      {
-        if ( item.name_str == "tarnished_sentinel_medallion" )
-        {
-          list -> add_action( "use_item,name=" + item.name_str + ",if=((cooldown.trueshot.remains<6|cooldown.trueshot.remains>30)&(target.time_to_die>cooldown+duration))|target.time_to_die<25|buff.bullseye.react=30" );
-        }
-        else if ( item.name_str == "tome_of_unraveling_sanity" )
-        {
-          list -> add_action( "use_item,name=" + item.name_str + ",if=((cooldown.trueshot.remains<13|cooldown.trueshot.remains>30)&(target.time_to_die>cooldown+duration*2))|target.time_to_die<26|buff.bullseye.react=30" );
-        }
-        else if ( item.name_str == "kiljaedens_burning_wish" )
-        {
-          list -> add_action( "use_item,name=" + item.name_str + ",if=cooldown.trueshot.remains>20" );
-        }
-        else
-        {
-          list -> add_action( "use_item,name=" + item.name_str );
-        }
-      }
-      else
-      {
-        list -> add_action( "use_item,name=" + item.name_str );
-      }
-  }
+  std::string action = "use_item,name=" + item -> name_str;
+  if ( !condition.empty() )
+    action += "," + condition;
+  return action;
 }
 
 // Beastmastery Action List =============================================================
@@ -6250,7 +6231,8 @@ void hunter_t::apl_bm()
   default_list -> add_action( "auto_shot" );
   default_list -> add_action( this, "Counter Shot", "if=target.debuff.casting.react" );
 
-  add_item_actions( default_list );
+  // Item Actions
+  default_list -> add_action( "use_items" );
 
   // Racials
   default_list -> add_action( "arcane_torrent,if=focus.deficit>=30" );
@@ -6301,7 +6283,11 @@ void hunter_t::apl_mm()
   default_list -> add_action( "auto_shot" );
   default_list -> add_action( this, "Counter Shot", "if=target.debuff.casting.react" );
 
-  add_item_actions( default_list );
+  // Item Actions
+  default_list -> add_action( special_use_item_action( "tarnished_sentinel_medallion", "if=((cooldown.trueshot.remains<6|cooldown.trueshot.remains>30)&(target.time_to_die>cooldown+duration))|target.time_to_die<25|buff.bullseye.react=30" ) );
+  default_list -> add_action( special_use_item_action( "tome_of_unraveling_sanity", "if=((cooldown.trueshot.remains<13|cooldown.trueshot.remains>30)&(target.time_to_die>cooldown+duration*2))|target.time_to_die<26|buff.bullseye.react=30" ) );
+  default_list -> add_action( special_use_item_action( "kiljaedens_burning_wish", "if=cooldown.trueshot.remains>20" ) );
+  default_list -> add_action( "use_items" );
 
   // Always keep Volley up if talented
   default_list -> add_talent( this, "Volley", "toggle=on" );
@@ -6426,7 +6412,8 @@ void hunter_t::apl_surv()
   default_list -> add_action( "auto_attack" );
   default_list -> add_action( this, "Muzzle", "if=target.debuff.casting.react" );
 
-  add_item_actions( default_list );
+  // Item Actions
+  default_list -> add_action( "use_items" );
 
   //Action Lists
   default_list->add_action("call_action_list,name=mokMaintain,if=talent.way_of_the_moknathal.enabled");
