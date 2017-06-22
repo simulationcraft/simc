@@ -3725,7 +3725,7 @@ struct marked_for_death_t : public rogue_attack_t
   {
     rogue_attack_t::execute();
 
-    if ( precombat ) {
+    if ( precombat && ! p() -> in_combat ) {
       p() -> cooldowns.marked_for_death -> adjust( - timespan_t::from_seconds( 15.0 ), false );
     }
   }
