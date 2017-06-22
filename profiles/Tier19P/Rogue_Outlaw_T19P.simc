@@ -66,7 +66,7 @@ actions.build+=/pistol_shot,if=combo_points.deficit>=1+buff.broadsides.up&buff.o
 actions.build+=/saber_slash,if=variable.ss_useable
 
 # Cooldowns
-actions.cds=potion,if=buff.bloodlust.react|target.time_to_die<=25|buff.adrenaline_rush.up
+actions.cds=potion,if=buff.bloodlust.react|target.time_to_die<=60|buff.adrenaline_rush.up
 actions.cds+=/use_item,name=tirathons_betrayal,if=buff.bloodlust.react|target.time_to_die<=20|combo_points.deficit<=2
 actions.cds+=/blood_fury
 actions.cds+=/berserking
