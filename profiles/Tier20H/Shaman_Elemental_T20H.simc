@@ -152,14 +152,14 @@ feet=starstalker_treads,id=147046,ilevel=925
 finger1=seal_of_the_second_duumvirate,id=147195,ilevel=925,enchant=200haste
 finger2=eye_of_the_twisting_nether,id=137050,ilevel=970,gems=200intellect,enchant=200haste
 trinket1=tarnished_sentinel_medallion,id=147017,ilevel=915
-trinket2=tome_of_unraveling_sanity,id=147019,ilevel=925
+trinket2=whispers_in_the_dark,id=140809,ilevel=895
 main_hand=the_fist_of_raden,id=128935,bonus_id=744,gem_id=147112/147095/147112,relic_ilevel=915/925/915
 off_hand=the_highkeepers_ward,id=128936
 
 # Gear Summary
-# gear_ilvl=926.75
+# gear_ilvl=924.88
 # gear_stamina=41400
-# gear_intellect=42337
+# gear_intellect=41701
 # gear_crit_rating=5228
 # gear_haste_rating=12491
 # gear_mastery_rating=7296

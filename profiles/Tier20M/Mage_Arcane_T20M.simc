@@ -33,13 +33,14 @@ actions.precombat+=/arcane_blast
 actions=counterspell,if=target.debuff.casting.react
 actions+=/time_warp,if=buff.bloodlust.down&(time=0|(buff.arcane_power.up&(buff.potion.up|!action.potion.usable))|target.time_to_die<=buff.bloodlust.duration)
 actions+=/call_action_list,name=variables
+actions+=/cancel_buff,name=presence_of_mind,if=active_enemies>2&set_bonus.tier20_2pc
 actions+=/call_action_list,name=build,if=buff.arcane_charge.stack<buff.arcane_charge.max_stack&!burn_phase
 actions+=/call_action_list,name=burn,if=variable.time_until_burn=0|burn_phase
 actions+=/call_action_list,name=conserve
 
 actions.build=arcane_orb
 actions.build+=/charged_up
-actions.build+=/arcane_missiles,if=variable.arcane_missiles_procs=buff.arcane_missiles.max_stack
+actions.build+=/arcane_missiles,if=variable.arcane_missiles_procs=buff.arcane_missiles.max_stack&active_enemies<3
 actions.build+=/arcane_explosion,if=active_enemies>1
 actions.build+=/arcane_blast
 
@@ -56,11 +57,11 @@ actions.burn+=/blood_fury
 actions.burn+=/berserking
 actions.burn+=/arcane_torrent
 actions.burn+=/potion,if=buff.arcane_power.up&(buff.berserking.up|buff.blood_fury.up|!(race.troll|race.orc))
-actions.burn+=/use_item,name=tarnished_sentinel_medallion,if=equipped.147017&buff.arcane_power.up&(buff.bloodlust.up|!equipped.shard_of_the_exodar)
+actions.burn+=/use_items,if=buff.arcane_power.up
 actions.burn+=/presence_of_mind,if=set_bonus.tier20_2pc|buff.rune_of_power.remains<=buff.presence_of_mind.max_stack*action.arcane_blast.execute_time|buff.arcane_power.remains<=buff.presence_of_mind.max_stack*action.arcane_blast.execute_time
 actions.burn+=/arcane_orb
 actions.burn+=/arcane_barrage,if=active_enemies>1&equipped.mantle_of_the_first_kirin_tor&buff.arcane_charge.stack=buff.arcane_charge.max_stack
-actions.burn+=/arcane_missiles,if=variable.arcane_missiles_procs=buff.arcane_missiles.max_stack|dot.spectral_owl.ticking
+actions.burn+=/arcane_missiles,if=variable.arcane_missiles_procs=buff.arcane_missiles.max_stack&active_enemies<3
 actions.burn+=/arcane_blast,if=buff.presence_of_mind.up
 actions.burn+=/supernova
 actions.burn+=/arcane_explosion,if=active_enemies>1
@@ -74,7 +75,7 @@ actions.conserve=mark_of_aluneth,if=recharge_time<=variable.time_until_burn|vari
 actions.conserve+=/mirror_image,if=variable.time_until_burn>recharge_time|variable.time_until_burn>target.time_to_die
 actions.conserve+=/rune_of_power,if=full_recharge_time<=execute_time|(set_bonus.tier20_4pc&cooldown.presence_of_mind.remains<=execute_time&variable.time_until_burn>cooldown.presence_of_mind.recharge_time-variable.average_pom_cdr)|prev_gcd.1.mark_of_aluneth|target.time_to_die<recharge_time
 actions.conserve+=/presence_of_mind,if=set_bonus.tier20_4pc&(variable.time_until_burn>=recharge_time-variable.average_pom_cdr|buff.rune_of_power.up)
-actions.conserve+=/arcane_missiles,if=variable.arcane_missiles_procs=buff.arcane_missiles.max_stack
+actions.conserve+=/arcane_missiles,if=variable.arcane_missiles_procs=buff.arcane_missiles.max_stack&active_enemies<3
 actions.conserve+=/supernova
 actions.conserve+=/nether_tempest,if=refreshable|!ticking
 actions.conserve+=/arcane_explosion,if=active_enemies>1&mana.pct>=90
@@ -98,16 +99,16 @@ actions.variables+=/call_action_list,name=pom_cdr_tracking_variables,if=set_bonu
 
 head=crown_of_the_arcane_tempest,id=147147,ilevel=930
 neck=string_of_extracted_incisors,id=147013,ilevel=930,enchant=mark_of_the_hidden_satyr
-shoulders=mantle_of_the_first_kirin_tor,id=151808,ilevel=970
+shoulders=,id=138321,ilevel=905
 back=drape_of_the_arcane_tempest,id=147145,ilevel=930,enchant=binding_of_intellect
 chest=robes_of_the_arcane_tempest,id=147149,ilevel=930
-wrists=oathbreakers_cuffs,id=147001,ilevel=930
-hands=gloves_of_the_arcane_tempest,id=147146,ilevel=930
+wrists=oathbreakers_cuffs,id=147001,bonus_id=3561,ilevel=930
+hands=gloves_of_everburning_knowledge,id=138309,ilevel=905
 waist=braided_torture_lash,id=146998,ilevel=930
 legs=leggings_of_the_arcane_tempest,id=147148,ilevel=930
-feet=slippers_of_enduring_vigilance,id=146987,ilevel=930
-finger1=seal_of_the_second_duumvirate,id=147195,ilevel=940,enchant=binding_of_versatility
-finger2=shard_of_the_exodar,id=132410,ilevel=970,gems=200int,enchant=binding_of_versatility
+feet=emberscatter_treads,id=146986,ilevel=930
+finger2=soul_of_the_archmage,id=151642,ilevel=970,enchant=200vers
+finger1=shard_of_the_exodar,id=132410,ilevel=970,gems=150vers,enchant=200vers
 trinket1=tarnished_sentinel_medallion,id=147017,ilevel=930
 trinket2=terror_from_below,id=147016,ilevel=930
 main_hand=aluneth,id=127857,gem_id=147079/147095/147079,relic_ilevel=940/940/940

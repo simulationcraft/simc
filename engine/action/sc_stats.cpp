@@ -460,10 +460,6 @@ void stats_t::merge( const stats_t& other )
   {
     timeline_amount -> merge( *other.timeline_amount );
   }
-  else
-  {
-    player -> collected_data.timeline_dmg.merge( other.player -> collected_data.timeline_dmg );
-  }
 }
 
 bool stats_t::has_direct_amount_results() const
