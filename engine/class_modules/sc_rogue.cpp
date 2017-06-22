@@ -3706,14 +3706,28 @@ struct run_through_t: public rogue_attack_t
 
 struct marked_for_death_t : public rogue_attack_t
 {
+  bool precombat;
+
   marked_for_death_t( rogue_t* p, const std::string& options_str ):
-    rogue_attack_t( "marked_for_death", p, p -> find_talent_spell( "Marked for Death" ), options_str )
+    rogue_attack_t( "marked_for_death", p, p -> find_talent_spell( "Marked for Death" ) ),
+    precombat (false)
   {
+    add_option( opt_bool( "precombat", precombat ) );
+    parse_options( options_str );
+
     may_miss = may_crit = harmful = callbacks = false;
     energize_type = ENERGIZE_ON_CAST;
     energize_amount += p -> talent.deeper_stratagem -> effectN( 6 ).base_value();
-
     cooldown -> duration += timespan_t::from_millis( p -> spec.subtlety_rogue -> effectN( 7 ).base_value() );
+  }
+
+  void execute() override
+  {
+    rogue_attack_t::execute();
+
+    if ( precombat ) {
+      p() -> cooldowns.marked_for_death -> adjust( - timespan_t::from_seconds( 15.0 ), false );
+    }
   }
 
   // Defined after marked_for_death_debuff_t. Sigh.
