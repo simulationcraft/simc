@@ -1296,7 +1296,7 @@ struct sim_progress_t
   int current_iterations;
   int total_iterations;
   double pct() const
-  { return current_iterations / static_cast<double>(total_iterations); }
+  { return std::min( 1.0, current_iterations / static_cast<double>(total_iterations) ); }
 };
 
 // Progress Bar =============================================================
