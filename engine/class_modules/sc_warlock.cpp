@@ -1352,7 +1352,7 @@ struct fel_firebolt_t: public warlock_pet_spell_t
   {
       base_multiplier *= 1.0 + p -> o() -> artifact.infernal_furnace.percent();
       this -> base_crit += p -> o() -> artifact.imperator.percent();
-      jaws_of_shadow_multiplier = p -> o() -> find_spell( 242922 ) -> effectN( 1 ).percent();
+      jaws_of_shadow_multiplier = p -> o() -> find_spell( 238109 ) -> effectN( 1 ).percent();
   }
 
   virtual bool ready() override
