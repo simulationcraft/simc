@@ -981,14 +981,21 @@ struct sim_end_event_t : event_t
  */
 struct sim_safeguard_end_event_t : public sim_end_event_t
 {
+  timespan_t et;
+
   sim_safeguard_end_event_t( sim_t& s, timespan_t end_time ) :
-    sim_end_event_t( s, end_time )
+    sim_end_event_t( s, end_time ), et( end_time )
   { }
-  virtual const char* name() const override
+
+  const char* name() const override
   { return "sim_end_twice_expected_time"; }
-  virtual void execute() override
+
+  void execute() override
   {
-    sim().errorf( "Simulation has been forcefully cancelled at %.2f because twice the expected combat length has been exceeded.", sim().current_time().total_seconds() );
+    sim().errorf( "Simulation has been forcefully cancelled at %.3f (%.3f) because twice the "
+                  "expected combat length has been exceeded.",
+                  sim().current_time().total_seconds(),
+                  et.total_seconds() );
 
     sim_end_event_t::execute();
   }
