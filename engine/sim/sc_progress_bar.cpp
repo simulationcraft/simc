@@ -7,7 +7,7 @@
 
 progress_bar_t::progress_bar_t( sim_t& s ) :
     sim( s ), steps( 20 ), updates( 100 ), interval( 0 ), update_number( 0 ),
-    start_time( 0 ), last_update( 0 ), max_interval_time( 1.0 )
+    start_time( 0 ), last_update( 0 ), max_interval_time( 1.0 ), work_index( 0 ), total_work_( 0 )
 {
 }
 
@@ -237,17 +237,30 @@ void progress_bar_t::output( bool finished )
     s << "Generating ";
   }
 
-  s << sim.sim_progress_base_str;
+  s << base_str;
   // Separate base and phase by a colon for easier parsing
   if ( sim.progressbar_type == 0 )
   {
     s << ":";
   }
-  if ( ! sim.sim_progress_phase_str.empty() )
+
+  if ( ! phase_str.empty() )
   {
     s << delim;
-    s << sim.sim_progress_phase_str;
+    s << phase_str;
   }
+
+  s << delim;
+  s << current_progress();
+  if ( sim.progressbar_type == 0 )
+  {
+    s << "/";
+  }
+  else
+  {
+    s << "\t";
+  }
+  s << compute_total_phases();
   s << delim;
   s << status;
   s << terminator;
@@ -256,3 +269,195 @@ void progress_bar_t::output( bool finished )
   fflush( stdout );
 }
 
+void progress_bar_t::progress()
+{
+  if ( sim.parent )
+  {
+    sim.parent -> progress_bar.progress();
+  }
+  else
+  {
+    work_index++;
+  }
+}
+
+size_t progress_bar_t::compute_total_phases()
+{
+  if ( sim.parent )
+  {
+    return sim.parent -> progress_bar.compute_total_phases();
+  }
+
+  if ( total_work_ > 0 )
+  {
+    return total_work_;
+  }
+
+  size_t n_actors = 1;
+  if ( sim.single_actor_batch )
+  {
+    n_actors = sim.player_no_pet_list.size();
+  }
+
+  size_t reforge_plot_phases = 0;
+  if ( sim.reforge_plot -> num_stat_combos > 0 )
+  {
+    reforge_plot_phases = n_actors * sim.reforge_plot -> num_stat_combos;
+  }
+
+  total_work_ = n_actors /* baseline */ +
+               n_scale_factor_phases() +
+               n_plot_phases() +
+               n_reforge_plot_phases() +
+               sim.profilesets.n_profilesets();
+
+  return total_work_;
+}
+
+void progress_bar_t::set_base( const std::string& base )
+{
+  base_str = base;
+}
+
+void progress_bar_t::set_phase( const std::string& phase )
+{
+  phase_str = phase;
+}
+
+size_t progress_bar_t::current_progress() const
+{
+  if ( sim.parent )
+  {
+    return sim.parent -> progress_bar.current_progress();
+  }
+
+  return work_index;
+}
+
+size_t progress_bar_t::total_work() const
+{
+  if ( sim.parent )
+  {
+    return sim.parent -> progress_bar.total_work();
+  }
+
+  return total_work_;
+}
+
+size_t progress_bar_t::n_stat_scaling_players( const std::string& stat_str ) const
+{
+  auto stat = util::parse_stat_type( stat_str );
+  if ( stat == STAT_NONE )
+  {
+    return 0;
+  }
+
+  // Ensure sim has at least someone who scales with the stat
+  return std::count_if( sim.player_no_pet_list.begin(), sim.player_no_pet_list.end(),
+    [ stat ]( const player_t* p ) {
+      return ! p -> quiet && p -> scaling -> scales_with[ stat ];
+    } );
+}
+
+size_t progress_bar_t::n_plot_phases() const
+{
+  if ( sim.plot -> dps_plot_stat_str.empty() )
+  {
+    return 0;
+  }
+
+  size_t n_phases = 0;
+  auto stat_list = util::string_split( sim.plot -> dps_plot_stat_str, ",:;/|" );
+  range::for_each( stat_list, [ &n_phases, this ]( const std::string& stat_str ) {
+    auto n_players = n_stat_scaling_players( stat_str );
+
+    if ( n_players > 0 )
+    {
+      // Don't use fancy context-sensitive number of phases, but rather just multiply with the
+      // number of actors if single_actor_batch=1. In the future if scale factor calculation is made
+      // context (stat) sensitive, adjust this.
+      /* n_phases += sim.plot -> dps_plot_points * ( sim.single_actor_batch == 1 ? n_players : 1 ); */
+      n_phases += sim.plot -> dps_plot_points *
+                  ( sim.single_actor_batch == 1 ? sim.player_no_pet_list.size() : 1 );
+    }
+  } );
+
+  return n_phases;
+}
+
+size_t progress_bar_t::n_scale_factor_phases() const
+{
+  if ( ! sim.scaling -> calculate_scale_factors )
+  {
+    return 0;
+  }
+
+  size_t n_phases = 0;
+  auto stat_list = util::string_split( sim.scaling -> scale_only_str, ",:;/|" );
+  std::vector<stat_e> scale_only;
+
+  range::for_each( stat_list, [ &scale_only ]( const std::string& stat_str ) {
+    auto stat = util::parse_stat_type( stat_str );
+    if ( stat != STAT_NONE )
+    {
+      scale_only.push_back( stat );
+    }
+  } );
+
+  for ( stat_e stat = STAT_NONE; stat < STAT_MAX; ++stat )
+  {
+    if ( scale_only.size() > 0 && range::find( scale_only, stat ) == scale_only.end() )
+    {
+      continue;
+    }
+
+    auto n_players = std::count_if( sim.player_no_pet_list.begin(), sim.player_no_pet_list.end(),
+      [ stat ]( const player_t* p ) {
+        return ! p -> quiet && p -> scale_player && p -> scaling -> scales_with[ stat ];
+      } );
+
+    if ( n_players > 0 )
+    {
+      // Don't use fancy context-sensitive number of phases, but rather just multiply with the
+      // number of actors if single_actor_batch=1. In the future if scale factor calculation is made
+      // context (stat) sensitive, adjust this.
+      /* n_phases += sim.single_actor_batch == 1 ? n_players : 1; */
+      n_phases += sim.single_actor_batch == 1 ? sim.player_no_pet_list.size() : 1;
+
+      // Center delta doubles the number of scale factor phases
+      if ( sim.scaling -> center_scale_delta )
+      {
+        n_phases += sim.single_actor_batch == 1 ? sim.player_no_pet_list.size() : 1;
+      }
+    }
+  }
+
+  return n_phases;
+}
+
+size_t progress_bar_t::n_reforge_plot_phases() const
+{
+  if ( sim.reforge_plot -> reforge_plot_stat_str.empty() )
+  {
+    return 0;
+  }
+
+  auto stat_list = util::string_split( sim.reforge_plot -> reforge_plot_stat_str, ",:;/|" );
+  std::vector<stat_e> stat_indices;
+  range::for_each( stat_list, [ &stat_indices, this ]( const std::string& stat_str ) {
+    if ( n_stat_scaling_players( stat_str ) > 0 )
+    {
+      stat_indices.push_back( util::parse_stat_type( stat_str ) );
+    }
+  } );
+
+  std::vector<int> cur_stat_mods( stat_indices.size() );
+  std::vector<std::vector<int>> stat_mods;
+
+  sim.reforge_plot -> generate_stat_mods( stat_mods, stat_indices, 0, cur_stat_mods );
+
+  std::cerr << stat_indices.size() << " " << cur_stat_mods.size() << " " << stat_mods.size() << std::endl;
+  return sim.single_actor_batch == 1
+         ? sim.player_no_pet_list.size() * stat_mods.size()
+         : stat_mods.size();
+}

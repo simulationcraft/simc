@@ -2564,37 +2564,6 @@ void sim_t::analyze_iteration_data()
 }
 
 
-// sim_t::set_sim_phase ===================================================
-
-void sim_t::set_sim_base_str( const std::string& str )
-{
-  sim_progress_base_str = str;
-}
-
-void sim_t::update_sim_phase_str()
-{
-  // The two-split base / phase string for progressbar is only used in single actor batch for now.
-  if ( ! single_actor_batch )
-  {
-    return;
-  }
-
-  std::stringstream phase_str;
-
-  if ( progressbar_type == 0 )
-  {
-    phase_str << player_no_pet_list[ current_index ] -> name_str << " ";
-    phase_str << ( current_index + 1 ) << "/" << player_no_pet_list.size();
-  }
-  else
-  {
-    phase_str << player_no_pet_list[ current_index ] -> name_str << '\t';
-    phase_str << ( current_index + 1 ) << '\t' << player_no_pet_list.size();
-  }
-
-  sim_progress_phase_str = phase_str.str();
-}
-
 // sim_t::iterate ===========================================================
 
 bool sim_t::iterate()
@@ -2603,8 +2572,6 @@ bool sim_t::iterate()
     return false;
 
   progress_bar.init();
-
-  update_sim_phase_str();
 
   activate_actors();
 
@@ -2630,7 +2597,9 @@ bool sim_t::iterate()
 
       if ( more_work && current_index != old_active )
       {
-        if ( ! parent || scaling -> scale_stat != STAT_NONE )
+        if ( ! parent ||
+             scaling -> scale_stat != STAT_NONE ||
+             ( parent && parent -> reforge_plot -> current_stat_combo > -1 ) )
         {
           progress_bar.update( true, static_cast<int>( old_active ) );
           progress_bar.output( true );
@@ -3815,8 +3784,10 @@ void sim_t::activate_actors()
 
     // Activate new actor
     player_no_pet_list[ current_index ] -> activate();
-    update_sim_phase_str();
+    progress_bar.set_phase( player_no_pet_list[ current_index ] -> name_str );
   }
+
+  progress_bar.progress();
 
   current_iteration = -1;
 }

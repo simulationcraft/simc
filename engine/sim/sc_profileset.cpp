@@ -178,7 +178,7 @@ bool profilesets_t::parse( sim_t* sim )
 
     m_profilesets.push_back( std::unique_ptr<profile_set_t>(
         new profile_set_t( it -> first, control, has_output_opts ) ) );
-    std::cerr << "Generating profileset " << it -> first << std::endl;
+    std::cerr << "Constructing Profileset: " << it -> first << std::endl;
   }
 
   sim -> control = original_control;
@@ -200,7 +200,8 @@ bool profilesets_t::iterate( sim_t* parent )
     profile_sim -> seed = 0;
     profile_sim -> profileset_enabled = true;
     profile_sim -> report_details = 0;
-    profile_sim -> set_sim_base_str( set -> name() );
+    profile_sim -> progress_bar.set_base( "Profileset" );
+    profile_sim -> progress_bar.set_phase( set -> name() );
 
     auto ret = profile_sim -> execute();
     if ( ret && set -> has_output() )
