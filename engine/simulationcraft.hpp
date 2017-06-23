@@ -1310,6 +1310,8 @@ struct progress_bar_t
   std::string status;
   std::string base_str, phase_str;
   size_t work_index, total_work_;
+  double elapsed_time;
+  size_t time_count;
 
   progress_bar_t( sim_t& s );
   void init();
@@ -1319,8 +1321,12 @@ struct progress_bar_t
   void progress();
   void set_base( const std::string& base );
   void set_phase( const std::string& phase );
+  void add_simulation_time( double t );
   size_t current_progress() const;
   size_t total_work() const;
+  double average_simulation_time() const;
+
+  static std::string format_time( double t );
 private:
   size_t compute_total_phases();
   bool update_simple( const sim_progress_t&, bool finished, int index );

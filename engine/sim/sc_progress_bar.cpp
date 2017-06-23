@@ -5,9 +5,56 @@
 
 #include "simulationcraft.hpp"
 
+std::string progress_bar_t::format_time( double t )
+{
+  std::stringstream s;
+
+  int days = 0, hours = 0, minutes = 0;
+
+  double remainder = t;
+
+  if ( t >= 86400 )
+  {
+    days = t / 86400;
+    remainder -= days * 86400;
+  }
+
+  if ( t >= 3600 )
+  {
+    hours = t / 3600;
+    remainder -= hours * 3600;
+  }
+
+  if ( t >= 60 )
+  {
+    minutes = t / 60;
+    remainder -= minutes * 60;
+  }
+
+  if ( days > 0 )
+  {
+    s << days << "d, ";
+  }
+
+  if ( hours > 0 )
+  {
+    s << hours << "h, ";
+  }
+
+  if ( minutes > 0 )
+  {
+    s << minutes << "m, ";
+  }
+
+  s << util::round( remainder, 0 ) << "s";
+
+  return s.str();
+}
+
 progress_bar_t::progress_bar_t( sim_t& s ) :
     sim( s ), steps( 20 ), updates( 100 ), interval( 0 ), update_number( 0 ),
-    start_time( 0 ), last_update( 0 ), max_interval_time( 1.0 ), work_index( 0 ), total_work_( 0 )
+    start_time( 0 ), last_update( 0 ), max_interval_time( 1.0 ), work_index( 0 ), total_work_( 0 ),
+    elapsed_time( 0 ), time_count( 0 )
 {
 }
 
@@ -35,6 +82,8 @@ void progress_bar_t::init()
 
 void progress_bar_t::restart()
 {
+  add_simulation_time( util::wall_time() - start_time );
+
   start_time = util::wall_time();
   last_update = util::wall_time();
   update_number = 0;
@@ -121,13 +170,29 @@ bool progress_bar_t::update_simple( const sim_progress_t& progress, bool finishe
   }
   else
   {
-    status += "\t0.000";
+    if ( finished && current_time > 0 )
+    {
+      status += '\t';
+      status += util::to_string( util::round( current_time, 3 ) );
+    }
+    else
+    {
+      status += "\t0.000";
+    }
   }
 
-  if ( finished && current_time > 0 )
+  if ( ! finished )
   {
-    status += '\t';
-    status += util::to_string( util::round( current_time, 3 ) );
+    auto average_spent = average_simulation_time();
+    auto phases_left = total_work() - current_progress();
+    auto time_left = std::max( 0.0, average_spent - ( util::wall_time() - start_time ) );
+    auto total_left = phases_left * average_spent + time_left;
+
+    if ( total_left > 0 )
+    {
+      status += "\t";
+      status += format_time( total_left );
+    }
   }
 
   return true;
@@ -211,7 +276,20 @@ bool progress_bar_t::update_normal( const sim_progress_t& progress, bool finishe
     {
       str::format( status, " %dmsec", total_msec );
     }
+  }
+  else
+  {
+    auto average_spent = average_simulation_time();
+    auto phases_left = total_work() - current_progress();
+    auto time_left = std::max( 0.0, average_spent - ( util::wall_time() - start_time ) );
+    auto total_left = phases_left * average_spent + time_left;
 
+    if ( total_left > 0 )
+    {
+      status += " (";
+      status += format_time( total_left );
+      status += ")";
+    }
   }
 
   if ( prev_size > status.size() )
@@ -460,4 +538,30 @@ size_t progress_bar_t::n_reforge_plot_phases() const
   return sim.single_actor_batch == 1
          ? sim.player_no_pet_list.size() * stat_mods.size()
          : stat_mods.size();
+}
+
+void progress_bar_t::add_simulation_time( double t )
+{
+  if ( t <= 0 )
+  {
+    return;
+  }
+
+  if ( sim.parent )
+  {
+    sim.parent -> progress_bar.add_simulation_time( t );
+  }
+
+  elapsed_time += t;
+  time_count++;
+}
+
+double progress_bar_t::average_simulation_time() const
+{
+  if ( sim.parent )
+  {
+    return sim.parent -> progress_bar.average_simulation_time();
+  }
+
+  return time_count > 0 ? elapsed_time / time_count : 0;
 }
