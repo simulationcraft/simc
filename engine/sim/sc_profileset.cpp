@@ -204,9 +204,14 @@ bool profilesets_t::iterate( sim_t* parent )
     profile_sim -> progress_bar.set_phase( set -> name() );
 
     auto ret = profile_sim -> execute();
-    if ( ret && set -> has_output() )
+    if ( ret )
     {
-      report::print_suite( profile_sim );
+      profile_sim -> progress_bar.restart();
+
+      if ( set -> has_output() )
+      {
+        report::print_suite( profile_sim );
+      }
     }
 
     if ( ret == false || profile_sim -> is_canceled() )

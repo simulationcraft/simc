@@ -13,21 +13,21 @@ std::string progress_bar_t::format_time( double t )
 
   double remainder = t;
 
-  if ( t >= 86400 )
+  if ( remainder >= 86400 )
   {
-    days = t / 86400;
+    days = remainder / 86400;
     remainder -= days * 86400;
   }
 
-  if ( t >= 3600 )
+  if ( remainder >= 3600 )
   {
-    hours = t / 3600;
+    hours = remainder / 3600;
     remainder -= hours * 3600;
   }
 
-  if ( t >= 60 )
+  if ( remainder >= 60 )
   {
-    minutes = t / 60;
+    minutes = remainder / 60;
     remainder -= minutes * 60;
   }
 
@@ -349,6 +349,11 @@ void progress_bar_t::output( bool finished )
 
 void progress_bar_t::progress()
 {
+  if ( sim.thread_index > 0 )
+  {
+    return;
+  }
+
   if ( sim.parent )
   {
     sim.parent -> progress_bar.progress();

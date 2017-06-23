@@ -2621,6 +2621,10 @@ bool sim_t::iterate()
   {
     player_no_pet_list[ player_no_pet_list.size() - 1 ] -> deactivate();
   }
+  else
+  {
+    progress_bar.restart();
+  }
 
   reset();
 
