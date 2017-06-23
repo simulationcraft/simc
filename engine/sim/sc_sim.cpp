@@ -3788,7 +3788,10 @@ void sim_t::activate_actors()
 
     // Activate new actor
     player_no_pet_list[ current_index ] -> activate();
-    progress_bar.set_phase( player_no_pet_list[ current_index ] -> name_str );
+    if ( ! profileset_enabled )
+    {
+      progress_bar.set_phase( player_no_pet_list[ current_index ] -> name_str );
+    }
   }
 
   progress_bar.progress();
