@@ -556,9 +556,11 @@ void progress_bar_t::add_simulation_time( double t )
   {
     sim.parent -> progress_bar.add_simulation_time( t );
   }
-
-  elapsed_time += t;
-  time_count++;
+  else
+  {
+    elapsed_time += t;
+    time_count++;
+  }
 }
 
 double progress_bar_t::average_simulation_time() const
