@@ -58,6 +58,7 @@ actions+=/incarnation,if=energy.time_to_max>1&energy>=35
 actions+=/ferocious_bite,cycle_targets=1,if=dot.rip.ticking&dot.rip.remains<3&target.time_to_die>3&(target.health.pct<25|talent.sabertooth.enabled)
 # Use Healing Touch at 5 Combo Points, if Predatory Swiftness is about to fall off, at 2 Combo Points before Ashamane's Frenzy, before Elune's Guidance is cast or before the Elune's Guidance buff gives you a 5th Combo Point.
 actions+=/regrowth,if=talent.bloodtalons.enabled&buff.predatory_swiftness.up&buff.bloodtalons.down&(combo_points>=5|buff.predatory_swiftness.remains<1.5|(talent.bloodtalons.enabled&combo_points=2&cooldown.ashamanes_frenzy.remains<gcd)|(talent.elunes_guidance.enabled&((cooldown.elunes_guidance.remains<gcd&combo_points=0)|(buff.elunes_guidance.up&combo_points>=4))))
+actions+=/regrowth,if=talent.bloodtalons.enabled&buff.predatory_swiftness.up&buff.bloodtalons.down&combo_points=4&dot.rake.remains<4
 actions+=/call_action_list,name=sbt_opener,if=talent.sabertooth.enabled&time<20
 # Special logic for Ailuro Pouncers legendary.
 actions+=/regrowth,if=equipped.ailuro_pouncers&talent.bloodtalons.enabled&(buff.predatory_swiftness.stack>2|(buff.predatory_swiftness.stack>1&dot.rake.remains<3))&buff.bloodtalons.down
@@ -126,7 +127,7 @@ actions.sbt_opener=regrowth,if=talent.bloodtalons.enabled&combo_points=5&!buff.b
 actions.sbt_opener+=/tigers_fury,if=!dot.rip.ticking&combo_points=5
 
 head=behemoth_headdress,id=151801,bonus_id=1502/3530,ilevel=970
-neck=locket_of_splintered_souls,id=147014,bonus_id=3563,ilevel=915,enchant=mark_of_the_hidden_satyr
+neck=sylvan_maelstrom_amulet,id=130239,bonus_id=1750/689/601/679,gem_id=130247,enchant_id=5439
 shoulders=stormheart_mantle,id=147138,bonus_id=1477/3563,ilevel=915
 back=stormheart_drape,id=147134,bonus_id=1477,ilevel=915,enchant=binding_of_agility
 chest=stormheart_tunic,id=147133,bonus_id=1477,ilevel=915
@@ -143,12 +144,12 @@ main_hand=fangs_of_ashamane,id=128860,bonus_id=723,gem_id=147081/147093/147106/0
 off_hand=fangs_of_ashamane,id=128859,gem_id=0/0/0/0,relic_id=0/0
 
 # Gear Summary
-# gear_ilvl=924.81
-# gear_agility=25057
-# gear_stamina=40807
-# gear_crit_rating=8444
+# gear_ilvl=923.88
+# gear_agility=25257
+# gear_stamina=40532
+# gear_crit_rating=8903
 # gear_haste_rating=1878
-# gear_mastery_rating=11174
+# gear_mastery_rating=10435
 # gear_versatility_rating=4359
 # gear_armor=2578
 # set_bonus=tier20_2pc=1

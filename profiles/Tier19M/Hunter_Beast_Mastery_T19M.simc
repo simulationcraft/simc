@@ -31,16 +31,17 @@ actions.precombat+=/potion
 # Executed every time the actor is available.
 actions=auto_shot
 actions+=/counter_shot,if=target.debuff.casting.react
+actions+=/use_items
 actions+=/arcane_torrent,if=focus.deficit>=30
-actions+=/berserking
-actions+=/blood_fury
+actions+=/berserking,if=buff.bestial_wrath.remains>7
+actions+=/blood_fury,if=buff.bestial_wrath.remains>7
 actions+=/volley,toggle=on
-actions+=/potion,if=buff.bestial_wrath.remains|!cooldown.bestial_wrath.remains
-actions+=/a_murder_of_crows
+actions+=/potion,if=buff.bestial_wrath.up&buff.aspect_of_the_wild.up
+actions+=/a_murder_of_crows,if=cooldown.bestial_wrath.remains<3|cooldown.bestial_wrath.remains>30|target.time_to_die<16
 actions+=/stampede,if=buff.bloodlust.up|buff.bestial_wrath.up|cooldown.bestial_wrath.remains<=2|target.time_to_die<=14
 actions+=/dire_beast,if=cooldown.bestial_wrath.remains>3
 actions+=/dire_frenzy,if=(pet.cat.buff.dire_frenzy.remains<=gcd.max*1.2)|(charges_fractional>=1.8)|target.time_to_die<9
-actions+=/aspect_of_the_wild,if=buff.bestial_wrath.up|target.time_to_die<12
+actions+=/aspect_of_the_wild,if=buff.bestial_wrath.remains>7|target.time_to_die<12
 actions+=/barrage,if=spell_targets.barrage>1
 actions+=/bestial_wrath
 actions+=/titans_thunder,if=(talent.dire_frenzy.enabled&(buff.bestial_wrath.up|cooldown.bestial_wrath.remains>35))|cooldown.dire_beast.remains>=3|(buff.bestial_wrath.up&pet.dire_beast.active)

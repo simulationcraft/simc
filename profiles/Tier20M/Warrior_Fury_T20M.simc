@@ -36,6 +36,7 @@ actions+=/use_item,name=umbral_moonglaives,if=equipped.umbral_moonglaives&(coold
 actions+=/battle_cry,if=gcd.remains=0&talent.reckless_abandon.enabled&(equipped.umbral_moonglaives&(prev_off_gcd.umbral_moonglaives|(trinket.cooldown.remains>3&trinket.cooldown.remains<90))|!equipped.umbral_moonglaives)
 actions+=/battle_cry,if=gcd.remains=0&talent.bladestorm.enabled&(raid_event.adds.in>90|!raid_event.adds.exists|spell_targets.bladestorm_mh>desired_targets)
 actions+=/battle_cry,if=gcd.remains=0&buff.dragon_roar.up&(cooldown.bloodthirst.remains=0|buff.enrage.remains>cooldown.bloodthirst.remains)
+actions+=/use_item,name=umbral_moonglaives,if=!equipped.umbral_moonglaives&buff.battle_cry.up&buff.enrage.up
 actions+=/bloodbath,if=buff.dragon_roar.up|!talent.dragon_roar.enabled&buff.battle_cry.up
 actions+=/blood_fury,if=buff.battle_cry.up
 actions+=/berserking,if=buff.battle_cry.up
@@ -99,30 +100,32 @@ actions.three_targets+=/bloodthirst
 actions.three_targets+=/whirlwind
 
 head=ceannar_charger,id=137088,ilevel=970
-neck=locket_of_splintered_souls,id=147014,bonus_id=3561,ilevel=930,enchant=mark_of_the_hidden_satyr
+neck=string_of_extracted_incisors,id=147013,ilevel=930,enchant_id=5439
 shoulders=titanic_onslaught_pauldrons,id=147192,ilevel=930
-back=titanic_onslaught_cloak,id=147188,ilevel=930,enchant=binding_of_strength
+back=titanic_onslaught_cloak,id=147188,ilevel=930,enchant_id=5434
 chest=titanic_onslaught_breastplate,id=147187,ilevel=930
+shirt=wraps_of_the_bloodsoaked_brawler,id=98543
+tabard=tabard_of_the_lightbringer,id=52252
 wrists=vambraces_of_resolute_justice,id=147074,ilevel=930
-hands=duskcrusher_handguards,id=147061,bonus_id=3561,ilevel=930
+hands=titanic_onslaught_handguards,id=147189,ilevel=930
 waist=girdle_of_the_crumbling_sanctum,id=147429,ilevel=930
-legs=titanic_onslaught_greaves,id=147191,ilevel=930
+legs=valarjar_berserkers,id=151824,ilevel=970
 feet=iron_ballast_sabatons,id=147059,ilevel=930
-finger1=scaled_band_of_servitude,id=147020,ilevel=930,enchant=binding_of_haste
-finger2=ayalas_stone_heart,id=137052,ilevel=970,enchant=binding_of_haste
-trinket1=engine_of_eradication,id=147015,bonus_id=3561,ilevel=930
-trinket2=cradle_of_anguish,id=147010,bonus_id=3561,ilevel=930
-main_hand=warswords_of_the_valarjar,id=128908,ilevel=951
-off_hand=warswords_of_the_valarjar,id=134553,ilevel=951
+finger1=ring_of_the_scoured_clan,id=140897,ilevel=930,enchant_id=5428
+finger2=scaled_band_of_servitude,id=147020,ilevel=930,enchant_id=5428
+trinket1=umbral_moonglaives,id=147012,ilevel=930
+trinket2=convergence_of_fates,id=140806,ilevel=905
+main_hand=warswords_of_the_valarjar,id=128908,bonus_id=751,ilevel=951
+off_hand=warswords_of_the_valarjar,id=134553,gem_id=0/0/0/0,relic_id=0/0
 
 # Gear Summary
-# gear_ilvl=937.63
-# gear_strength=28927
-# gear_stamina=51450
-# gear_crit_rating=7085
-# gear_haste_rating=8531
-# gear_mastery_rating=15421
-# gear_versatility_rating=1241
-# gear_armor=4918
+# gear_ilvl=936.06
+# gear_strength=32385
+# gear_stamina=52302
+# gear_crit_rating=3815
+# gear_haste_rating=11631
+# gear_mastery_rating=10790
+# gear_versatility_rating=4055
+# gear_armor=4984
 # set_bonus=tier20_2pc=1
 # set_bonus=tier20_4pc=1

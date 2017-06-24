@@ -4848,6 +4848,11 @@ void priest_t::apl_precombat()
   precombat->add_action( "snapshot_stats",
                          "Snapshot raid buffed stats before combat begins and "
                          "pre-potting is done." );
+  precombat->add_action( 
+    "variable,name=cd_time,op=set,value=(10+(2-2*talent.mindbender.enabled*set_"
+    "bonus.tier20_4pc)*set_bonus.tier19_2pc+(3-3*talent.mindbender.enabled*set_"
+    "bonus.tier20_4pc)*equipped.mangazas_madness+(6+5*talent.mindbender.enabled)"
+    "*set_bonus.tier20_4pc+2*artifact.lash_of_insanity.rank)" );
 
   if ( sim->allow_potions && true_level >= 80 )
   {
@@ -5167,9 +5172,6 @@ void priest_t::apl_shadow()
       "25&(cooldown.void_bolt.up|cooldown.void_torrent.up|cooldown.shadow_word_"
       "death.up|buff.shadowy_insight.up)&target.time_to_die<=variable.s2mcheck-"
       "(buff.insanity_drain_stacks.value)" );
-  if ( race == RACE_BLOOD_ELF )
-    vf->add_action( "arcane_torrent,if=buff.insanity_drain_stacks.value>=20"
-                    "&(insanity-(current_insanity_drain*gcd.max)+15)<100" );
   vf->add_action(
     "silence,if=equipped.sephuzs_secret&(target.is_add|target.debuff.casting."
     "react)&cooldown.buff_sephuzs_secret.remains<1&!buff.sephuzs_secret.up"
@@ -5192,25 +5194,17 @@ if ( race == RACE_BLOOD_ELF )
       "stacks."
       "value)+60))" );
   vf->add_action(
-      "mindbender,if=set_bonus.tier20_4pc&buff.insanity_drain_stacks.value>="
-      "(21-(3*(raid_event.movement.in<15)*((active_enemies-target.adds)=1))+"
-      "2*buff.bloodlust.up+2*talent.fortress_of_the_mind.enabled+2*artifact."
-      "lash_of_insanity.rank)&(!talent"
-      ".surrender_to_madness.enabled|(talent.surrender_to_madness.enabled&"
-      "target.time_to_die>variable.s2mcheck-buff.insanity_drain_stacks.value))" );
-    vf->add_action(
-      "mindbender,if=!set_bonus.tier20_4pc&buff.insanity_drain_stacks.value>=(10+"
-      "2*set_bonus.tier19_2pc+5*buff.bloodlust.up+3*equipped.mangazas_madness+2*"
-      "artifact.lash_of_insanity.rank)"
-      "&(!talent.surrender_to_madness.enabled|(talent.surrender_to_madness.enabled&"
-      "target.time_to_die>variable.s2mcheck-(buff.insanity_drain_stacks.value)+30))" );
+      "mindbender,if=buff.insanity_drain_stacks.value>=(variable.cd_time-(3*set_"
+      "bonus.tier20_4pc*(raid_event.movement.in<15)*((active_enemies-target.adds)=1"
+      "))+(5-3*set_bonus.tier20_4pc)*buff.bloodlust.up+2*talent.fortress_of_the_mind"
+      ".enabled*set_bonus.tier20_4pc)&(!talent.surrender_to_madness.enabled|(talent."
+      "surrender_to_madness.enabled&target.time_to_die>variable.s2mcheck-buff.insanity"
+      "_drain_stacks.value))" );
   vf->add_action(
-      "power_infusion,if=buff.insanity_drain_stacks.value>=(10+2*set_bonus."
-      "tier19_2pc+5*buff.bloodlust.up*(1+1*set_bonus.tier20_4pc)+3*equipped"
-      ".mangazas_madness+6*set_bonus.tier20_4pc+2*artifact.lash_of_insanity.rank)"
-      "&(!talent.surrender_to_madness."
-      "enabled|(talent.surrender_to_madness.enabled&target.time_to_die>variable."
-      "s2mcheck-(buff.insanity_drain_stacks.value)+61))" );
+      "power_infusion,if=buff.insanity_drain_stacks.value>=(variable.cd_time+5*buff."
+      "bloodlust.up*(1+1*set_bonus.tier20_4pc))&(!talent.surrender_to_madness.enabled"
+      "|(talent.surrender_to_madness.enabled&target.time_to_die>variable.s2mcheck-(buff"
+      ".insanity_drain_stacks.value)+61))" );
   vf->add_action(
       "berserking,if=buff.voidform.stack>=10&buff.insanity_drain_stacks.value<="
       "20&"
@@ -5218,7 +5212,6 @@ if ( race == RACE_BLOOD_ELF )
       "enabled&"
       "target.time_to_die>variable.s2mcheck-(buff.insanity_drain_stacks.value)+"
       "60))" );
-  vf->add_action( "void_bolt" );
   vf->add_action(
       "shadow_word_death,if=(active_enemies<=4|(talent.reaper_of_souls.enabled&"
       "active_"

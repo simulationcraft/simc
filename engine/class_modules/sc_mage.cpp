@@ -4181,8 +4181,11 @@ struct frost_nova_t : public mage_spell_t
   {
     parse_options( options_str );
 
+    affected_by.arcane_mage = true;
     affected_by.fire_mage = true;
     affected_by.frost_mage = true;
+
+    affected_by.erosion = true;
     affected_by.shatter = true;
 
     cooldown -> charges += p -> talents.ice_ward -> effectN( 1 ).base_value();
@@ -6731,7 +6734,7 @@ void mage_t::copy_from( player_t* source )
 
 void mage_t::create_pets()
 {
-  if ( specialization() == MAGE_FROST && find_action( "water_elemental" ) )
+  if ( specialization() == MAGE_FROST && ! talents.lonely_winter -> ok() && find_action( "water_elemental" ) )
   {
     pets.water_elemental = new pets::water_elemental::water_elemental_pet_t( sim, this );
   }
@@ -7385,6 +7388,12 @@ void mage_t::apl_arcane()
                               "if=target.debuff.casting.react" );
   default_list -> add_action( this, "Time Warp", "if=buff.bloodlust.down&(time=0|(buff.arcane_power.up&(buff.potion.up|!action.potion.usable))|target.time_to_die<=buff.bloodlust.duration)" );
   default_list -> add_action( "call_action_list,name=variables" );
+  default_list -> add_action( "cancel_buff,name=presence_of_mind,if=active_enemies>2&set_bonus.tier20_2pc" );
+  default_list -> add_action( mage_t::get_special_use_items( "horn_of_valor" ) );
+  default_list -> add_action( mage_t::get_special_use_items( "obelisk_of_the_void" ) );
+  default_list -> add_action( mage_t::get_special_use_items( "mrrgrias_favor" ) );
+  default_list -> add_action( mage_t::get_special_use_items( "pharameres_forbidden_grimoire" ) );
+  default_list -> add_action( mage_t::get_special_use_items( "kiljaedens_burning_wish" ) );
   default_list -> add_action( "call_action_list,name=build,if=buff.arcane_charge.stack<buff.arcane_charge.max_stack&!burn_phase" );
   default_list -> add_action( "call_action_list,name=burn,if=variable.time_until_burn=0|burn_phase" );
   default_list -> add_action( "call_action_list,name=conserve" );
@@ -7404,7 +7413,7 @@ void mage_t::apl_arcane()
 
   build -> add_talent( this, "Arcane Orb" );
   build -> add_talent( this, "Charged Up" );
-  build -> add_action( this, "Arcane Missiles", "if=variable.arcane_missiles_procs=buff.arcane_missiles.max_stack" );
+  build -> add_action( this, "Arcane Missiles", "if=variable.arcane_missiles_procs=buff.arcane_missiles.max_stack&active_enemies<3" );
   build -> add_action( this, "Arcane Explosion", "if=active_enemies>1" );
   build -> add_action( this, "Arcane Blast" );
 
@@ -7424,11 +7433,11 @@ void mage_t::apl_arcane()
   }
 
   burn  -> add_action( "potion,if=buff.arcane_power.up&(buff.berserking.up|buff.blood_fury.up|!(race.troll|race.orc))" );
-  burn  -> add_action( "use_item,name=tarnished_sentinel_medallion,if=equipped.147017&buff.arcane_power.up&(buff.bloodlust.up|!equipped.shard_of_the_exodar)" );
+  burn  -> add_action( "use_items,if=buff.arcane_power.up" );
   burn  -> add_action( this, "Presence of Mind", "if=set_bonus.tier20_2pc|buff.rune_of_power.remains<=buff.presence_of_mind.max_stack*action.arcane_blast.execute_time|buff.arcane_power.remains<=buff.presence_of_mind.max_stack*action.arcane_blast.execute_time" );
   burn  -> add_talent( this, "Arcane Orb" );
   burn  -> add_action( this, "Arcane Barrage", "if=active_enemies>1&equipped.mantle_of_the_first_kirin_tor&buff.arcane_charge.stack=buff.arcane_charge.max_stack" );
-  burn  -> add_action( this, "Arcane Missiles", "if=variable.arcane_missiles_procs=buff.arcane_missiles.max_stack|dot.spectral_owl.ticking" );
+  burn  -> add_action( this, "Arcane Missiles", "if=variable.arcane_missiles_procs=buff.arcane_missiles.max_stack&active_enemies<3" );
   burn  -> add_action( this, "Arcane Blast", "if=buff.presence_of_mind.up" );
   burn  -> add_talent( this, "Supernova" );
   burn  -> add_action( this, "Arcane Explosion", "if=active_enemies>1" );
@@ -7442,7 +7451,7 @@ void mage_t::apl_arcane()
   conserve -> add_talent( this, "Mirror Image", "if=variable.time_until_burn>recharge_time|variable.time_until_burn>target.time_to_die" );
   conserve -> add_talent( this, "Rune of Power", "if=full_recharge_time<=execute_time|(set_bonus.tier20_4pc&cooldown.presence_of_mind.remains<=execute_time&variable.time_until_burn>cooldown.presence_of_mind.recharge_time-variable.average_pom_cdr)|prev_gcd.1.mark_of_aluneth|target.time_to_die<recharge_time" );
   conserve -> add_action( this, "Presence of Mind", "if=set_bonus.tier20_4pc&(variable.time_until_burn>=recharge_time-variable.average_pom_cdr|buff.rune_of_power.up)" );
-  conserve -> add_action( this, "Arcane Missiles", "if=variable.arcane_missiles_procs=buff.arcane_missiles.max_stack" );
+  conserve -> add_action( this, "Arcane Missiles", "if=variable.arcane_missiles_procs=buff.arcane_missiles.max_stack&active_enemies<3" );
   conserve -> add_talent( this, "Supernova" );
   conserve -> add_talent( this, "Nether Tempest", "if=refreshable|!ticking" );
   conserve -> add_action( this, "Arcane Explosion", "if=active_enemies>1&mana.pct>=90" );
@@ -7495,6 +7504,7 @@ void mage_t::apl_fire()
 
   combustion_phase -> add_action( "use_items" );
   combustion_phase -> add_action( mage_t::get_special_use_items( "obelisk_of_the_void" ) );
+  combustion_phase -> add_action( this, "Flamestrike", "if=(talent.flame_patch.enabled&active_enemies>2|active_enemies>4)&buff.hot_streak.up" );
   combustion_phase -> add_action( this, "Pyroblast", "if=buff.kaelthas_ultimate_ability.react&buff.combustion.remains>execute_time" );
   combustion_phase -> add_action( this, "Pyroblast", "if=buff.hot_streak.up" );
   combustion_phase -> add_action( this, "Fire Blast", "if=buff.heating_up.up" );
@@ -7527,6 +7537,7 @@ void mage_t::apl_fire()
 
   standard    -> add_action( this, "Flamestrike", "if=((talent.flame_patch.enabled&active_enemies>1)|active_enemies>3)&buff.hot_streak.up" );
   standard    -> add_action( this, "Pyroblast", "if=buff.hot_streak.up&buff.hot_streak.remains<action.fireball.execute_time" );
+  standard    -> add_action( this, "Pyroblast", "if=buff.hot_streak.up&firestarter.active&!talent.rune_of_power.enabled" );
   standard    -> add_action( this, "Phoenix's Flames", "if=charges_fractional>2.7&active_enemies>2" );
   standard    -> add_action( this, "Pyroblast", "if=buff.hot_streak.up&!prev_gcd.1.pyroblast" );
   standard    -> add_action( this, "Pyroblast", "if=buff.hot_streak.react&target.health.pct<=30&equipped.132454" );
@@ -8883,6 +8894,12 @@ public:
       .operation( hotfix::HOTFIX_SET )
       .modifier( 20.0 )
       .verification_value( 0.0 );
+
+    hotfix::register_spell( "Mage", "2017-06-21", "Ice Lance is slower than spell data suggests.", 30455 )
+      .field( "prj_speed" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 38.0 )
+      .verification_value( 50.0 );
   }
 
   virtual bool valid() const override { return true; }

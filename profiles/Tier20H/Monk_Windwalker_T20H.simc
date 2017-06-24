@@ -93,32 +93,32 @@ actions.st+=/tiger_palm,cycle_targets=1,if=!prev_gcd.1.tiger_palm&(chi.max-chi>=
 actions.st+=/chi_wave
 actions.st+=/chi_burst
 
-head=xuens_helm,id=147154,ilevel=915
+head=xuens_helm,id=147154,bonus_id=3562/1497
 neck=locket_of_splintered_souls,id=147014,ilevel=915,enchant=mark_of_the_hidden_satyr
 shoulders=pauldrons_of_enveloped_dissonance,id=138337,bonus_id=3519
 back=cloak_of_enveloped_dissonance,id=138367,bonus_id=3519
-chest=xuens_tunic,id=147151,ilevel=915
-wrists=drinking_horn_cover,id=137097,ilevel=970
-hands=xuens_gauntlets,id=147153,ilevel=915
-waist=waistguard_of_profane_duplicity,id=147347,ilevel=940
-legs=xuens_legguards,id=147155,ilevel=915
-feet=katsuos_eclipse,id=137029,ilevel=970
-finger1=yathaes_thumb_ring,id=147021,ilevel=915,enchant=binding_of_mastery
-finger2=band_of_rescinded_truths,id=147194,ilevel=915,enchant=binding_of_mastery
-trinket1=specter_of_betrayal,id=151190,ilevel=925
-trinket2=vial_of_ceaseless_toxins,id=147011,ilevel=915
-main_hand=fists_of_the_heavens,id=128940,bonus_id=734,gem_id=147113/147101/147113,relic_ilevel=915/915/915
+chest=xuens_tunic,id=147151,bonus_id=3562/1497
+wrists=drinking_horn_cover,id=137097,bonus_id=3570
+hands=xuens_gauntlets,id=147153,bonus_id=3562/1497
+waist=waistguard_of_profane_duplicity,id=147347,bonus_id=3562/1507
+legs=xuens_legguards,id=147155,bonus_id=3562/1497
+feet=katsuos_eclipse,id=137029,bonus_id=3570
+finger1=yathaes_thumb_ring,id=147021,bonus_id=3562/1497,enchant=binding_of_mastery
+finger2=band_of_rescinded_truths,id=147194,bonus_id=3562/1497,enchant=binding_of_mastery
+trinket1=specter_of_betrayal,id=151190,bonus_id=3562/1507
+trinket2=vial_of_ceaseless_toxins,id=147011,bonus_id=3562/1497
+main_hand=fists_of_the_heavens,id=128940,bonus_id=734,gem_id=147113/147101/147113,relic_id=3562:1497/3562:1497/3562:1497
 off_hand=fists_of_the_heavens,id=133948
 
 # Gear Summary
-# gear_ilvl=926.06
-# gear_agility=27891
-# gear_stamina=40694
+# gear_ilvl=925.13
+# gear_agility=27584
+# gear_stamina=40232
 # gear_crit_rating=7191
-# gear_haste_rating=5023
-# gear_mastery_rating=8347
+# gear_haste_rating=4991
+# gear_mastery_rating=8301
 # gear_versatility_rating=4156
-# gear_armor=2616
+# gear_armor=2604
 # set_bonus=tier19_2pc=1
 # set_bonus=tier20_2pc=1
 # set_bonus=tier20_4pc=1

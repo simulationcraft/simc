@@ -152,14 +152,14 @@ feet=the_deceivers_blood_pact,id=137035,ilevel=970
 finger1=seal_of_the_second_duumvirate,id=147195,ilevel=925,enchant=200haste
 finger2=scaled_band_of_servitude,id=147020,ilevel=915,enchant=200haste
 trinket1=tarnished_sentinel_medallion,id=147017,ilevel=915
-trinket2=tome_of_unraveling_sanity,id=147019,ilevel=925
+trinket2=whispers_in_the_dark,id=140809,ilevel=895
 main_hand=the_fist_of_raden,id=128935,bonus_id=744,gem_id=147112/147095/147112,relic_ilevel=915/925/915
 off_hand=the_highkeepers_ward,id=128936
 
 # Gear Summary
-# gear_ilvl=926.13
+# gear_ilvl=924.25
 # gear_stamina=41596
-# gear_intellect=43206
+# gear_intellect=42570
 # gear_crit_rating=5408
 # gear_haste_rating=11560
 # gear_mastery_rating=7026

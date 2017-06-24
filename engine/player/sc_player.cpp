@@ -3570,9 +3570,19 @@ double player_t::composite_attribute_multiplier( attribute_e attr ) const
       if ( buffs.amplification_2 )
         m *= 1.0 + passive_values.amplification_2;
       break;
-    case ATTR_STAMINA:                                                         // Artifacts get a free +6 purchased
-      m *= 1.0 + artifact.artificial_stamina -> effectN( 2 ).percent() * .01 * ( artifact.n_purchased_points + 6 );
+    case ATTR_STAMINA:
+    {
+      double full_effect = artifact.artificial_stamina -> effectN( 2 ).percent() * 0.01;
+      // After 52nd point, Artificial Stamina is 5 times less effective.
+      double reduced_effect = full_effect / 5.0;
+
+      unsigned full_points = std::min( 52u, artifact.n_purchased_points );
+      unsigned reduced_points = artifact.n_purchased_points - full_points;
+
+                               // Artifacts get a free +6 purchased
+      m *= 1.0 + full_effect * ( full_points + 6 ) + reduced_effect * reduced_points;
       break;
+    }
     default:
       break;
   }
@@ -4366,6 +4376,8 @@ void player_t::reset()
     proc_list[ i ] -> reset();
 
   range::for_each( rppm_list, []( real_ppm_t* rppm ) { rppm -> reset(); } );
+
+  range::for_each( shuffled_rng_list, [](shuffled_rng_t* shuffled_rng) { shuffled_rng->reset(); });
 
   potion_used = 0;
 
@@ -6099,6 +6111,25 @@ real_ppm_t* player_t::get_rppm( const std::string& name, double freq, double mod
   rppm_list.push_back( new_rppm );
 
   return new_rppm;
+}
+
+// player_t::get_shuffled_rng ===============================================
+
+shuffled_rng_t* player_t::get_shuffled_rng(const std::string& name, int success_entries, int total_entries)
+{
+  auto it = range::find_if(shuffled_rng_list, [&name](const shuffled_rng_t* shuffled_rng) {
+    return util::str_compare_ci(shuffled_rng->name(), name);
+  });
+
+  if (it != shuffled_rng_list.end())
+  {
+    return *it;
+  }
+
+  shuffled_rng_t* new_shuffled_rng = new shuffled_rng_t(name, this, success_entries, total_entries);
+  shuffled_rng_list.push_back(new_shuffled_rng);
+
+  return new_shuffled_rng;
 }
 
 // player_t::get_dot ========================================================
@@ -11298,6 +11329,7 @@ void player_collected_data_t::merge( const player_collected_data_t& other )
   dtps.merge( other.dtps );
   dpse.merge( other.dpse );
   dmg_taken.merge( other.dmg_taken );
+  timeline_dmg.merge( other.timeline_dmg );
   // HEAL
   heal.merge( other.heal );
   compound_heal.merge( other.compound_heal );
