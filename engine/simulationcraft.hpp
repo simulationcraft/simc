@@ -8103,11 +8103,10 @@ inline bool shuffled_proc_t::trigger()
   if (success_entries_remaining > 0)
   {
     result = player->rng().roll(get_remaining_success_chance());
-  }
-
-  if (result == true)
-  {
-    success_entries_remaining--;
+    if (result)
+    {
+      success_entries_remaining--;
+    }
   }
 
   total_entries_remaining--;
