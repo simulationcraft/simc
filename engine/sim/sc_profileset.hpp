@@ -121,9 +121,6 @@ public:
 
   bool has_output() const
   { return m_has_output; }
-
-  static sim_control_t* create_sim_options( const sim_control_t*,
-      const std::vector<std::string>& opts );
 };
 
 
@@ -136,6 +133,7 @@ class profilesets_t
 
   profileset_vector_t            m_profilesets;
   std::unique_ptr<sim_control_t> m_original;
+  ssize_t                        m_insert_index;
 
   bool validate( sim_t* sim );
 
@@ -143,8 +141,10 @@ class profilesets_t
 
   bool generate_chart( const sim_t& sim, io::ofstream& out ) const;
   void generate_sorted_profilesets( std::vector<const profile_set_t*>& out ) const;
+
+  sim_control_t* create_sim_options( const sim_control_t*, const std::vector<std::string>& opts );
 public:
-  profilesets_t() : m_original( nullptr )
+  profilesets_t() : m_original( nullptr ), m_insert_index( -1 )
   { }
 
   size_t n_profilesets() const

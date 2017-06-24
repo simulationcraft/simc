@@ -51,7 +51,7 @@ void insert_data( highchart::bar_chart_t&   chart,
   chart.add( "series.1.data", boxplot_entry );
 }
 
-sim_control_t* profile_set_t::create_sim_options( const sim_control_t*            original,
+sim_control_t* profilesets_t::create_sim_options( const sim_control_t*            original,
                                                   const std::vector<std::string>& opts )
 {
   if ( original == nullptr )
@@ -70,27 +70,53 @@ sim_control_t* profile_set_t::create_sim_options( const sim_control_t*          
     return nullptr;
   }
 
-  // New options need to be injected in a suitable spot. Safest for now is probably to inject the
-  // profileset options after the "spec" option, as every player should be defining one in current
-  // World of Warcraft. If we cannot find a spec= option, don't allow profilesets to be used.
-  auto it = range::find_if( original -> options, []( const option_tuple_t& opt ) {
-    return util::str_compare_ci( opt.name, "spec" ) ||
-           util::str_compare_ci( opt.name, "specialization" );
-  } );
-
-  if ( it == original -> options.end() )
+  // Find the insertion index only once, and cache the position to speed up init. 0 denotes "no
+  // enemy found".
+  if ( m_insert_index == -1 )
   {
-    std::cerr << "ERROR! No \"spec\" or \"specialization\" option defined for player" << std::endl;
-    return nullptr;
+    // Find a suitable player-scope variable to start looking for an "enemy" option. "spec" option
+    // must be always defined, so we can start the search below from it.
+    auto it = range::find_if( original -> options, []( const option_tuple_t& opt ) {
+      return util::str_compare_ci( opt.name, "spec" ) ||
+             util::str_compare_ci( opt.name, "specialization" );
+    } );
+
+    if ( it == original -> options.end() )
+    {
+      std::cerr << "ERROR! No \"spec\" or \"specialization\" option defined for player" << std::endl;
+      return nullptr;
+    }
+
+    // Then, find the first enemy= line from the original options. The profileset options need to be
+    // inserted after the original player definition, but before any enemy options are defined.
+    auto enemy_it = std::find_if( it, original -> options.end(), []( const option_tuple_t& opt ) {
+      return util::str_compare_ci( opt.name, "enemy" );
+    } );
+
+    if ( enemy_it == original -> options.end() )
+    {
+      m_insert_index = 0;
+    }
+    else
+    {
+      m_insert_index = std::distance( original -> options.begin(), enemy_it );
+    }
   }
 
-  auto insert_index = std::distance( original -> options.begin(), it ) + 1;
-
   auto options_copy = new sim_control_t( *original );
-  auto insert_iterator = options_copy -> options.begin() + insert_index;
 
-  options_copy -> options.insert( insert_iterator,
-                                  new_options.options.begin(), new_options.options.end() );
+  // No enemy option defined, insert profileset to the end of the original options
+  if ( m_insert_index == 0 )
+  {
+    options_copy -> options.insert( options_copy -> options.end(),
+                                    new_options.options.begin(), new_options.options.end() );
+  }
+  // Enemy option found, insert profileset options just before the enemy option
+  else
+  {
+    options_copy -> options.insert( options_copy -> options.begin() + m_insert_index,
+                                    new_options.options.begin(), new_options.options.end() );
+  }
 
   return options_copy;
 }
@@ -160,7 +186,7 @@ bool profilesets_t::parse( sim_t* sim )
       return false;
     }
 
-    auto control = profile_set_t::create_sim_options( m_original.get(), it -> second );
+    auto control = create_sim_options( m_original.get(), it -> second );
     if ( control == nullptr )
     {
       return false;
