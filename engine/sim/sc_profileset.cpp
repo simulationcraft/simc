@@ -59,19 +59,40 @@ sim_control_t* profile_set_t::create_sim_options( const sim_control_t*          
     return nullptr;
   }
 
-  auto new_options = new sim_control_t( *original );
+  sim_control_t new_options;
 
   try
   {
-    new_options -> options.parse_args( opts );
+    new_options.options.parse_args( opts );
   }
   catch ( const std::exception& e ) {
     std::cerr << "ERROR! Incorrect option format: " << e.what() << std::endl;
-    delete new_options;
     return nullptr;
   }
 
-  return new_options;
+  // New options need to be injected in a suitable spot. Safest for now is probably to inject the
+  // profileset options after the "spec" option, as every player should be defining one in current
+  // World of Warcraft. If we cannot find a spec= option, don't allow profilesets to be used.
+  auto it = range::find_if( original -> options, []( const option_tuple_t& opt ) {
+    return util::str_compare_ci( opt.name, "spec" ) ||
+           util::str_compare_ci( opt.name, "specialization" );
+  } );
+
+  if ( it == original -> options.end() )
+  {
+    std::cerr << "ERROR! No \"spec\" or \"specialization\" option defined for player" << std::endl;
+    return nullptr;
+  }
+
+  auto insert_index = std::distance( original -> options.begin(), it ) + 1;
+
+  auto options_copy = new sim_control_t( *original );
+  auto insert_iterator = options_copy -> options.begin() + insert_index;
+
+  options_copy -> options.insert( insert_iterator,
+                                  new_options.options.begin(), new_options.options.end() );
+
+  return options_copy;
 }
 
 profile_set_t::profile_set_t( const std::string& name, sim_control_t* opts, bool has_output ) :
