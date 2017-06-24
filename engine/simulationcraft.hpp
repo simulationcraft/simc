@@ -104,6 +104,7 @@ struct travel_event_t;
 struct xml_node_t;
 class xml_writer_t;
 struct real_ppm_t;
+struct shuffled_proc_t;
 namespace highchart {
   struct chart_t;
 }
@@ -3031,6 +3032,71 @@ public:
   bool trigger();
 };
 
+// "Deck of Cards" randomizer helper class ====================================
+
+struct shuffled_proc_t
+{
+private:
+  player_t*    player;
+  std::string  name_str;
+  int          success_entries;
+  int          total_entries;
+  int          success_entries_remaining;
+  int          total_entries_remaining;
+
+  shuffled_proc_t() : player(nullptr), success_entries(0), total_entries(0), success_entries_remaining(0), total_entries_remaining(0)
+  { }
+
+public:
+
+  shuffled_proc_t(const std::string& name, player_t* p, int success_entries = 0, int total_entries = 0) :
+    player(p),
+    name_str(name),
+    success_entries(success_entries),
+    total_entries(total_entries),
+    success_entries_remaining(success_entries),
+    total_entries_remaining(total_entries)
+  { }
+
+  const std::string& name() const
+  {
+    return name_str;
+  }
+
+  int get_success_entries() const
+  {
+    return success_entries;
+  }
+
+  int get_success_entries_remaining() const
+  {
+    return success_entries_remaining;
+  }
+
+  int get_total_entries() const
+  {
+    return total_entries;
+  }
+
+  int get_total_entries_remaining() const
+  {
+    return total_entries_remaining;
+  }
+
+  double get_remaining_success_chance() const
+  {
+    return (double)success_entries_remaining / (double)total_entries_remaining;
+  }
+
+  void reset()
+  {
+    success_entries_remaining = success_entries;
+    total_entries_remaining = total_entries;
+  }
+
+  bool trigger();
+};
+
 // Cooldown =================================================================
 
 struct cooldown_t
@@ -3941,6 +4007,7 @@ struct player_t : public actor_t
   auto_dispose< std::vector<uptime_t*> > uptime_list;
   auto_dispose< std::vector<cooldown_t*> > cooldown_list;
   auto_dispose< std::vector<real_ppm_t*> > rppm_list;
+  auto_dispose< std::vector<shuffled_proc_t*> > shuffled_proc_list;
   std::vector<cooldown_t*> dynamic_cooldown_list;
   std::array< std::vector<plot_data_t>, STAT_MAX > dps_plot_data;
   std::vector<std::vector<plot_data_t> > reforge_plot_data;
@@ -4530,6 +4597,7 @@ struct player_t : public actor_t
   cooldown_t* get_cooldown( const std::string& name );
   real_ppm_t* get_rppm    ( const std::string& name, const spell_data_t* data = spell_data_t::nil(), const item_t* item = nullptr );
   real_ppm_t* get_rppm    ( const std::string& name, double freq, double mod = 1.0, rppm_scale_e s = RPPM_NONE );
+  shuffled_proc_t* get_shuffled_proc(const std::string& name, int success_entries = 0, int total_entries = 0);
   dot_t*      get_dot     ( const std::string& name, player_t* source );
   gain_t*     get_gain    ( const std::string& name );
   proc_t*     get_proc    ( const std::string& name );
@@ -8040,6 +8108,40 @@ inline bool real_ppm_t::trigger()
   if ( success )
     last_successful_trigger = player -> sim -> current_time();
   return success;
+}
+
+// Shuffle Proc inlines
+
+inline bool shuffled_proc_t::trigger()
+{
+  if (total_entries <= 0 || success_entries <= 0)
+  {
+    return false;
+  }
+
+  if (total_entries_remaining <= 0)
+  {
+    reset(); // Re-Shuffle the "Deck"
+  }
+
+  bool result = false;
+  if (success_entries_remaining > 0)
+  {
+    result = player->rng().roll(get_remaining_success_chance());
+    if (result)
+    {
+      success_entries_remaining--;
+    }
+  }
+
+  total_entries_remaining--;
+
+  if (total_entries_remaining <= 0)
+  {
+    reset(); // Re-Shuffle the "Deck"
+  }
+
+  return result;
 }
 
 // Instant absorbs
