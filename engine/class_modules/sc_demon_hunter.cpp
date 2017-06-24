@@ -453,6 +453,7 @@ public:
     proc_t* soul_fragment_lesser;
 
     // Havoc
+    proc_t* chaos_theory;
     proc_t* demon_blades_wasted;
     proc_t* demonic_appetite;
     proc_t* demons_bite_in_meta;
@@ -477,6 +478,13 @@ public:
     real_ppm_t* felblade;
     real_ppm_t* fueled_by_pain;
   } rppm;
+
+  // Shuffled proc objects
+  struct suffled_procs_t
+  {
+    // Havoc
+    shuffled_proc_t* chaos_theory;
+  } shuffled_procs;
 
   // Special
   struct
@@ -1937,10 +1945,10 @@ struct fel_barrage_t : public demon_hunter_spell_t
   struct fel_barrage_tick_t : public demon_hunter_spell_t
   {
     fel_barrage_tick_t( demon_hunter_t* p )
-      : demon_hunter_spell_t( "fel_barrage_tick", p, p -> find_spell( 211052 ) )
+      : demon_hunter_spell_t("fel_barrage_tick", p, p -> find_spell(211052))
     {
       background = dual = true;
-      aoe                  = -1;
+      aoe = -1;
       may_proc_fel_barrage = false;  // Can't proc itself, that would be silly!
       school = SCHOOL_CHAOS; // override to chaos, spell data is wrong
     }
@@ -1949,8 +1957,7 @@ struct fel_barrage_t : public demon_hunter_spell_t
   action_t* damage;
 
   fel_barrage_t( demon_hunter_t* p, const std::string& options_str )
-    : demon_hunter_spell_t( "fel_barrage", p, p -> talent.fel_barrage,
-                            options_str )
+    : demon_hunter_spell_t("fel_barrage", p, p -> talent.fel_barrage, options_str)
   {
     channeled = tick_zero = true;
     may_proc_fel_barrage = false;
@@ -1958,11 +1965,10 @@ struct fel_barrage_t : public demon_hunter_spell_t
     base_tick_time = data().effectN( 1 ).period();
     school = SCHOOL_CHAOS; // override to chaos, spell data is wrong
 
-    damage = p -> find_action( "fel_barrage_tick" );
-
-    if ( ! damage )
+    damage = p->find_action("fel_barrage_tick");
+    if (!damage)
     {
-      damage = new fel_barrage_tick_t( p );
+      damage = new fel_barrage_tick_t(p);
     }
 
     damage -> stats = stats;
@@ -1989,10 +1995,10 @@ struct fel_barrage_t : public demon_hunter_spell_t
   {
     demon_hunter_spell_t::tick( d );
 
-    action_state_t* tick_state = damage -> get_state();
-    damage -> target = d -> target;
-    damage -> snapshot_state( tick_state, DMG_DIRECT );
-    damage-> schedule_execute( tick_state );
+    action_state_t* tick_state = damage->get_state();
+    damage->target = d->target;
+    damage->snapshot_state(tick_state, DMG_DIRECT);
+    damage->schedule_execute(tick_state);
   }
 };
 
@@ -3373,8 +3379,10 @@ struct blade_dance_base_t : public demon_hunter_attack_t
     // Chaos Theory Legendary Cloak
     if (p()->legendary.chaos_theory)
     {
-      if (p()->rng().roll(p()->legendary.chaos_theory->effectN(1).percent()))
+      if (p()->shuffled_procs.chaos_theory->trigger())
       {
+        p()->proc.chaos_theory->occur();
+        
         timespan_t proc_duration = timespan_t::from_seconds(p()->legendary.chaos_theory->effectN(2).base_value());
         if (p()->buff.chaos_blades->check())
           p()->buff.chaos_blades->extend_duration(p(), proc_duration);
@@ -3408,8 +3416,8 @@ struct blade_dance_t : public blade_dance_base_t
       p -> blade_dance_attacks.push_back( new blade_dance_attack_t(
                                           p, data().effectN( 7 ).trigger(), "blade_dance4" ) );
 
-      // Jul 12 2016: Only final attack procs Fel Barrage.
-      p -> blade_dance_attacks.back() -> may_proc_fel_barrage = true;
+      // June 23 2017: Only first attack procs Fel Barrage.
+      p -> blade_dance_attacks.front() -> may_proc_fel_barrage = true;
     }
 
     attacks    = p -> blade_dance_attacks;
@@ -3919,8 +3927,8 @@ struct death_sweep_t : public blade_dance_base_t
       p -> death_sweep_attacks.push_back( new blade_dance_attack_t(
                                           p, data().effectN( 7 ).trigger(), "death_sweep4" ) );
 
-      // Jul 12 2016: Only final attack procs Fel Barrage.
-      p -> death_sweep_attacks.back() -> may_proc_fel_barrage = true;
+      // June 23 2017: Only first attack procs Fel Barrage.
+      p -> death_sweep_attacks.front() -> may_proc_fel_barrage = true;
     }
 
     attacks    = p -> death_sweep_attacks;
@@ -6350,10 +6358,11 @@ void demon_hunter_t::init_procs()
   proc.felblade_reset       = get_proc( "felblade_reset" );
 
   // Havoc
-  proc.demon_blades_wasted = get_proc( "demon_blades_wasted" );
-  proc.demonic_appetite    = get_proc( "demonic_appetite" );
-  proc.demons_bite_in_meta = get_proc( "demons_bite_in_meta" );
-  proc.fel_barrage         = get_proc( "fel_barrage" );
+  proc.chaos_theory         = get_proc( "chaos_theory" );
+  proc.demon_blades_wasted  = get_proc( "demon_blades_wasted" );
+  proc.demonic_appetite     = get_proc( "demonic_appetite" );
+  proc.demons_bite_in_meta  = get_proc( "demons_bite_in_meta" );
+  proc.fel_barrage          = get_proc( "fel_barrage" );
 
   // Vengeance
   proc.fueled_by_pain         = get_proc( "fueled_by_pain" );
@@ -7111,11 +7120,11 @@ void demon_hunter_t::create_gains()
   gain.miss_refund              = get_gain( "miss_refund" );
 
   // Havoc
-  gain.demonic_appetite         = get_gain("demonic_appetite");
-  gain.prepared                 = get_gain("prepared");
-  gain.blind_fury               = get_gain("blind_fury");
   gain.anger_of_the_halfgiants  = get_gain("anger_of_the_halfgiants");
+  gain.blind_fury               = get_gain("blind_fury");
+  gain.demonic_appetite         = get_gain("demonic_appetite");
   gain.havoc_t20_4pc            = get_gain("havoc_t20_4pc");
+  gain.prepared                 = get_gain("prepared");
 
   // Vengeance
   gain.damage_taken             = get_gain("damage_taken");
@@ -8109,6 +8118,10 @@ namespace items
     void manipulate(demon_hunter_t* dh, const special_effect_t& e) override
     {
       dh->legendary.chaos_theory = e.driver();
+
+      const int total_entries = 20; // 6/23/2017 -- Reddit AMA Comment
+      const int success_entries = (int)util::round(dh->legendary.chaos_theory->effectN(1).percent() * total_entries);
+      dh->shuffled_procs.chaos_theory = dh->get_shuffled_proc("chaos_theory", success_entries, total_entries);
     }
   };
 

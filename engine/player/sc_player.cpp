@@ -4377,6 +4377,8 @@ void player_t::reset()
 
   range::for_each( rppm_list, []( real_ppm_t* rppm ) { rppm -> reset(); } );
 
+  range::for_each( shuffled_proc_list, [](shuffled_proc_t* shuffled_proc) { shuffled_proc->reset(); });
+
   potion_used = 0;
 
   item_cooldown.reset( false );
@@ -6109,6 +6111,25 @@ real_ppm_t* player_t::get_rppm( const std::string& name, double freq, double mod
   rppm_list.push_back( new_rppm );
 
   return new_rppm;
+}
+
+// player_t::get_shuffle_proc ===============================================
+
+shuffled_proc_t* player_t::get_shuffled_proc(const std::string& name, int success_entries, int total_entries)
+{
+  auto it = range::find_if(shuffled_proc_list, [&name](const shuffled_proc_t* shuffled_proc) {
+    return util::str_compare_ci(shuffled_proc->name(), name);
+  });
+
+  if (it != shuffled_proc_list.end())
+  {
+    return *it;
+  }
+
+  shuffled_proc_t* new_shuffled_proc = new shuffled_proc_t(name, this, success_entries, total_entries);
+  shuffled_proc_list.push_back(new_shuffled_proc);
+
+  return new_shuffled_proc;
 }
 
 // player_t::get_dot ========================================================
