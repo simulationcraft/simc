@@ -4860,7 +4860,7 @@ void priest_t::apl_precombat()
     "variable,name=dot_vt_dpgcd,op=set,value=71*1.2*(1+0.05*artifact.touch_of_darkness.rank)"
     "*(1+0.2+stat.mastery_rating%16000)*0.5" );
   precombat->add_action( 
-    "sear_dpgcd,op=set,value=80*(1+0.05*artifact.void_corruption.rank)" );
+    "variable,name=sear_dpgcd,op=set,value=80*(1+0.05*artifact.void_corruption.rank)" );
   if ( sim->allow_potions && true_level >= 80 )
   {
     if ( true_level > 100 )
