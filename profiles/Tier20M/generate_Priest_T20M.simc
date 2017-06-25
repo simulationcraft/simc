@@ -20,7 +20,7 @@ feet=slippers_of_enduring_vigilance,id=146987,ilevel=930
 finger1=seal_of_the_second_duumvirate,id=147195,ilevel=940,enchant=binding_of_haste
 finger2=sephuzs_secret,id=132452,ilevel=970,enchant=binding_of_haste,gem_id=130220
 trinket1=tarnished_sentinel_medallion,id=147017,ilevel=930
-trinket2=spectral_thurible,id=147018,ilevel=930
+trinket2=terror_from_below,id=147016,ilevel=930
 main_hand=xalatath_blade_of_the_black_empire,id=128827,bonus_id=740,gem_id=147111/147082/147111,relic_ilevel=940/940/940
 off_hand=secrets_of_the_void,id=133958
 
