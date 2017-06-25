@@ -140,7 +140,7 @@ feet=grovetenders_moccasins,id=140861,bonus_id=3517
 finger1=spellblades_gemmed_signet,id=140895,bonus_id=3517,enchant=binding_of_mastery
 finger2=ring_of_exclusive_servitude,id=140906,bonus_id=3517,enchant=binding_of_mastery
 trinket1=nightblooming_frond,id=140802,bonus_id=3517
-trinket2=eye_of_command,id=142167,bonus_id=1507
+trinket2=eye_of_command,id=142167,bonus_id=1507/1727
 main_hand=fangs_of_ashamane,id=128860,bonus_id=723,gem_id=140819/140833/142517/0,relic_id=3517/3517/3517
 off_hand=fangs_of_ashamane,id=128859,gem_id=0/0/0/0,relic_id=0/0
 
