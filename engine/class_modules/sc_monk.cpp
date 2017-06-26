@@ -2253,8 +2253,8 @@ public:
           ab::base_td_multiplier *= 1.0 + player -> spec.windwalker_monk -> effectN( 1 ).percent();
           // HOTFIX 26-JUN-17 Damage of all abilities increased by 2.5%
           // TODO: REMOVE once hotfix is applied
-          ab::base_dd_multiplier *= 1.1578947368421052631578947368421;
-          ab::base_td_multiplier *= 1.1578947368421052631578947368421;
+          ab::base_dd_multiplier *= 1.0252100840336134453781512605042;
+          ab::base_td_multiplier *= 1.0252100840336134453781512605042;
         }
         if ( windwalker_damage_increase_dot )
           ab::base_td_multiplier *= 1.0 + player -> spec.windwalker_monk -> effectN( 2 ).percent();
