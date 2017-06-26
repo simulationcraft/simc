@@ -22,7 +22,7 @@ actions.precombat+=/snapshot_stats
 actions.precombat+=/variable,name=cd_time,op=set,value=(10+(2-2*talent.mindbender.enabled*set_bonus.tier20_4pc)*set_bonus.tier19_2pc+(3-3*talent.mindbender.enabled*set_bonus.tier20_4pc)*equipped.mangazas_madness+(6+5*talent.mindbender.enabled)*set_bonus.tier20_4pc+2*artifact.lash_of_insanity.rank)
 actions.precombat+=/variable,name=dot_swp_dpgcd,op=set,value=38*1.2*(1+0.06*artifact.to_the_pain.rank)*(1+0.2+stat.mastery_rating%16000)*0.75
 actions.precombat+=/variable,name=dot_vt_dpgcd,op=set,value=71*1.2*(1+0.05*artifact.touch_of_darkness.rank)*(1+0.2+stat.mastery_rating%16000)*0.5
-actions.precombat+=/sear_dpgcd,op=set,value=80*(1+0.05*artifact.void_corruption.rank)
+actions.precombat+=/variable,name=sear_dpgcd,op=set,value=80*(1+0.05*artifact.void_corruption.rank)
 actions.precombat+=/potion,name=prolonged_power
 actions.precombat+=/shadowform,if=!buff.shadowform.up
 actions.precombat+=/mind_blast
@@ -127,5 +127,12 @@ off_hand=secrets_of_the_void,id=133958
 
 # Gear Summary
 # gear_ilvl=940.00
+# gear_stamina=46686
+# gear_intellect=46297
+# gear_crit_rating=11565
+# gear_haste_rating=12142
+# gear_mastery_rating=4701
+# gear_versatility_rating=2015
+# gear_armor=2201
 # set_bonus=tier20_2pc=1
 # set_bonus=tier20_4pc=1
