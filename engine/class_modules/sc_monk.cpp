@@ -2248,7 +2248,14 @@ public:
       case MONK_WINDWALKER:
       {
         if ( windwalker_damage_increase )
+        {
           ab::base_dd_multiplier *= 1.0 + player -> spec.windwalker_monk -> effectN( 1 ).percent();
+          ab::base_td_multiplier *= 1.0 + player -> spec.windwalker_monk -> effectN( 1 ).percent();
+          // HOTFIX 26-JUN-17 Damage of all abilities increased by 2.5%
+          // TODO: REMOVE once hotfix is applied
+          ab::base_dd_multiplier *= 1.1578947368421052631578947368421;
+          ab::base_td_multiplier *= 1.1578947368421052631578947368421;
+        }
         if ( windwalker_damage_increase_dot )
           ab::base_td_multiplier *= 1.0 + player -> spec.windwalker_monk -> effectN( 2 ).percent();
         if ( windwalker_damage_increase_two )
@@ -4037,6 +4044,11 @@ struct fists_of_fury_t: public monk_melee_attack_t
 
     if ( p() -> buff.combo_strikes -> up() )
       pm *= 1 + p() -> cache.mastery_value();
+
+    // HOTFIX 26-JUN-17 Fists of Fury damage increased by 12%.
+    // TODO: fix once hotfix is implemented
+    pm *= 1 + 0.12;
+
 
     if ( p() -> buff.transfer_the_power -> up() )
       pm *= 1 + p() -> buff.transfer_the_power -> stack_value();
