@@ -4580,8 +4580,8 @@ struct symbols_of_death_t : public rogue_attack_t
     dot_duration = timespan_t::zero(); // TODO: Check ticking in later builds
 
     // Note: Allow usage of Symbols while DfA is in flight.
-    // We disable it if we don't have DfA and DSh to improve the simulation speed.
-    use_off_gcd = p -> talent.death_from_above -> ok() && p -> talent.dark_shadow -> ok();
+    // We disable it if we don't have DfA to improve the simulation speed.
+    use_off_gcd = p -> talent.death_from_above -> ok();
 
     if ( p -> sets -> has_set_bonus( ROGUE_SUBTLETY, T20, B4 ) )
       cooldown -> duration -= timespan_t::from_seconds( p -> sets -> set( ROGUE_SUBTLETY, T20, B4 ) -> effectN( 3 ).base_value() );
