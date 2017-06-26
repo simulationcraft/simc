@@ -2941,8 +2941,6 @@ struct arcane_missiles_t : public arcane_mage_spell_t
 
 struct arcane_orb_bolt_t : public arcane_mage_spell_t
 {
-  int ao_impact_am_source_id;
-
   arcane_orb_bolt_t( mage_t* p, bool legendary ) :
     arcane_mage_spell_t( legendary ? "legendary_arcane_orb_bolt" : "arcane_orb_bolt",
                          p, p -> find_spell( 153640 ) )
@@ -2953,8 +2951,8 @@ struct arcane_orb_bolt_t : public arcane_mage_spell_t
 
   virtual bool init_finished() override
   {
-    ao_impact_am_source_id = p() -> benefits.arcane_missiles
-                                 -> get_source_id( "Arcane Orb Impact" );
+    am_trigger_source_id = p() -> benefits.arcane_missiles
+                               -> get_source_id( "Arcane Orb Impact" );
 
     return arcane_mage_spell_t::init_finished();
   }
@@ -2966,7 +2964,7 @@ struct arcane_orb_bolt_t : public arcane_mage_spell_t
     if ( result_is_hit( s -> result ) )
     {
       trigger_arcane_charge();
-      trigger_am( ao_impact_am_source_id );
+      trigger_am( am_trigger_source_id );
     }
   }
 };
@@ -2985,6 +2983,8 @@ struct arcane_orb_t : public arcane_mage_spell_t
     may_miss = false;
     may_crit = false;
     triggers_erosion = false;
+    // Needs to be handled manually to account for the legendary shoulders.
+    triggers_arcane_missiles = false;
 
     if ( legendary )
     {
@@ -2995,9 +2995,22 @@ struct arcane_orb_t : public arcane_mage_spell_t
     add_child( orb_bolt );
   }
 
+  virtual bool init_finished() override
+  {
+    if ( data().ok() )
+    {
+      am_trigger_source_id = p() -> benefits.arcane_missiles
+                                 -> get_source_id( data().name_cstr() );
+    }
+
+    return arcane_mage_spell_t::init_finished();
+  }
+
   virtual void execute() override
   {
     arcane_mage_spell_t::execute();
+
+    trigger_am( am_trigger_source_id );
     trigger_arcane_charge();
   }
 
@@ -5161,8 +5174,11 @@ struct nether_tempest_t : public arcane_mage_spell_t
 
   virtual bool init_finished() override
   {
-    am_trigger_source_id = p() -> benefits.arcane_missiles
-                               -> get_source_id( data().name_cstr() );
+    if ( data().ok() )
+    {
+      am_trigger_source_id = p() -> benefits.arcane_missiles
+                                 -> get_source_id( data().name_cstr() );
+    }
 
     return arcane_mage_spell_t::init_finished();
   }
