@@ -3099,12 +3099,6 @@ struct blizzard_shard_t : public frost_mage_spell_t
     chills = true;
   }
 
-  // Override damage type because Blizzard is considered a DOT
-  dmg_e amount_type( const action_state_t* /* state */, bool /* periodic */ ) const override
-  {
-    return DMG_OVER_TIME;
-  }
-
   void impact( action_state_t* s ) override
   {
     frost_mage_spell_t::impact( s );
@@ -4280,12 +4274,6 @@ struct frozen_orb_bolt_t : public frost_mage_spell_t
       fof_proc_chance *= 1.0 + p() -> talents.frozen_touch -> effectN( 1 ).percent();
       trigger_fof( fof_source_id, fof_proc_chance );
     }
-  }
-
-  // Override damage type because Frozen Orb is considered a DOT
-  dmg_e amount_type( const action_state_t* /* state */, bool /* periodic */ ) const override
-  {
-    return DMG_OVER_TIME;
   }
 };
 
