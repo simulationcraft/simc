@@ -4857,7 +4857,7 @@ void priest_t::apl_precombat()
     "variable,name=dot_swp_dpgcd,op=set,value=38*1.2*(1+0.06*artifact.to_the_pain.rank)"
      "*(1+0.2+stat.mastery_rating%16000)*0.75" );
   precombat->add_action( 
-    "variable,name=dot_vt_dpgcd,op=set,value=71*1.2*(1+0.05*artifact.touch_of_darkness.rank)"
+    "variable,name=dot_vt_dpgcd,op=set,value=71*1.2*(1+0.2*talent.sanlayn.enabled)*(1+0.05*artifact.touch_of_darkness.rank)"
     "*(1+0.2+stat.mastery_rating%16000)*0.5" );
   precombat->add_action( 
     "variable,name=sear_dpgcd,op=set,value=80*(1+0.05*artifact.void_corruption.rank)" );
