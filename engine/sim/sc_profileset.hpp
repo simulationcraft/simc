@@ -8,6 +8,8 @@
 #include <vector>
 #include <string>
 #include <thread>
+#include <mutex>
+#include <condition_variable>
 
 #include "util/generic.hpp"
 #include "util/io.hpp"
@@ -143,7 +145,7 @@ class profilesets_t
   state                          m_state;
   profileset_vector_t            m_profilesets;
   std::unique_ptr<sim_control_t> m_original;
-  ssize_t                        m_insert_index;
+  int64_t                        m_insert_index;
   size_t                         m_work_index;
   std::mutex                     m_mutex;
   std::unique_lock<std::mutex>   m_control_lock;
