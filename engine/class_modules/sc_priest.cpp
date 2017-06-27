@@ -395,9 +395,10 @@ public:
   // Options
   struct
   {
-    bool autoUnshift           = true;  // Shift automatically out of stance/form
-    bool priest_fixed_time     = true;
-    bool priest_ignore_healing = false;
+    bool autoUnshift            = true;  // Shift automatically out of stance/form
+    bool priest_fixed_time      = true;
+    bool priest_ignore_healing  = false; // Remove Healing calculation codes
+    bool priest_suppress_sephuz = false; // Sephuz's Secret won't proc if set true
   } options;
 
   priest_t( sim_t* sim, const std::string& name, race_e r );
@@ -4920,7 +4921,13 @@ void priest_t::trigger_call_to_the_void(const dot_t* d)
 
 void priest_t::trigger_sephuzs_secret(const action_state_t * state, spell_mechanic mechanic, double proc_chance)
 {
-  switch (mechanic)
+  // Skip the attempt to trigger sephuz if it is suppressed
+  if (options.priest_suppress_sephuz)
+  {
+    return;
+  }
+
+  switch ( mechanic )
   {
     // Interrupts will always trigger sephuz
   case MECHANIC_INTERRUPT:
@@ -5551,6 +5558,7 @@ void priest_t::create_options()
   add_option( opt_bool( "autounshift", options.autoUnshift ) );
   add_option( opt_bool( "priest_fixed_time", options.priest_fixed_time ) );
   add_option( opt_bool( "priest_ignore_healing", options.priest_ignore_healing ) );
+  add_option( opt_bool( "priest_suppress_sephuz", options.priest_suppress_sephuz ) );
 }
 
 std::string priest_t::create_profile( save_e type )
