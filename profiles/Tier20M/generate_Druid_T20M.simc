@@ -37,20 +37,20 @@ race=troll
 talents=3200233
 artifact=59:0:0:0:0:1034:4:1035:4:1036:4:1037:4:1038:4:1039:4:1040:4:1041:4:1042:4:1043:1:1044:1:1045:1:1046:1:1047:1:1048:1:1049:1:1294:1:1364:1:1501:4:1502:1:1503:1:1504:1:1632:1
 
-head=,id=137062,ilevel=970
-neck=,id=134492,ilevel=930
-shoulders=,id=147037,ilevel=930
-back=,id=147134,ilevel=930
-chest=,id=147133,ilevel=930
-wrists=,id=137092,ilevel=970
-hands=,id=147135,ilevel=930
-waist=,id=147347,ilevel=930
-legs=,id=147137,ilevel=930
-feet=,id=147424,ilevel=930
-finger1=,id=140897,ilevel=930
-finger2=,id=134530,ilevel=930
+head=the_emerald_dreamcatcher,id=137062,ilevel=970
+neck=string_of_extracted_incisors,id=147013,ilevel=930
+shoulders=dripping_arcfin_shoulderpads,id=147037,ilevel=930
+back=stormheart_drape,id=147134,ilevel=930
+chest=stormheart_tunic,id=147133,ilevel=930
+wrists=oneths_intuition,id=137092,ilevel=970
+hands=stormheart_gloves,id=147135,ilevel=930
+waist=waistguard_of_profane_duplicity,id=147347,ilevel=940
+legs=stormheart_legguards,id=147137,ilevel=930
+feet=treads_of_violent_intrusion,id=147424,ilevel=930
+finger1=scaled_band_of_servitude,id=147020,ilevel=930
+finger2=seal_of_the_second_duumvirate,id=147195,ilevel=940
 trinket1=tarnished_sentinel_medallion,id=147017,ilevel=930
-trinket2=whispers_in_the_dark,id=140809,ilevel=915
-main_hand=scythe_of_elune,id=128858,bonus_id=722,gem_id=140813/140838/140827/0,relic_ilevel=930/930/940
+trinket2=terror_from_below,id=147016,ilevel=930
+main_hand=scythe_of_elune,id=128858,bonus_id=722,gem_id=147079/147107/147079/0,relic_ilevel=940/930/940
 
 save=Druid_Balance_T20M.simc

@@ -759,7 +759,7 @@ public:
     predator_rppm_rate( 0.0 ),
     initial_astral_power( 0 ),
     initial_moon_stage( NEW_MOON ),
-    ahhhhh_the_great_outdoors( true ),
+    ahhhhh_the_great_outdoors( false ),
     t20_2pc(false),
     t20_4pc(false),
     active( active_actions_t() ),

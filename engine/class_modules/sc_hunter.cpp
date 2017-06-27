@@ -533,7 +533,7 @@ public:
   std::string default_food() const override;
   std::string default_rune() const override;
 
-  void              add_item_actions( action_priority_list_t* list );
+  std::string special_use_item_action( const std::string& item_name, const std::string& condition = std::string() ) const;
 
   target_specific_t<hunter_td_t> target_data;
 
@@ -4679,14 +4679,9 @@ struct dire_spell_t: public hunter_spell_t
     }
 
     // Adjust BW cd
-    timespan_t t = timespan_t::from_seconds( p() -> specs.dire_beast -> effectN( 1 ).base_value() );
-    // FIXME: spell data still shows the new 4 set as the 2 set, it may be swapped out from under us sometime. For now check for 4 set and use 2 set values.
+    timespan_t t = timespan_t::from_seconds( p() -> specs.bestial_wrath -> effectN( 3 ).base_value() );
     if ( p() -> sets -> has_set_bonus( HUNTER_BEAST_MASTERY, T19, B4 ) )
-    {
-      // t += timespan_t::from_seconds( p() -> sets -> set( HUNTER_BEAST_MASTERY, T19, B2 ) -> effectN( 1 ).base_value() );
-      // Not getting the right number from that for some reason.
-      t += timespan_t::from_seconds( p() -> dbc.effect( 312803 ) -> base_value() );
-    }
+      t += timespan_t::from_seconds( p() -> sets -> set( HUNTER_BEAST_MASTERY, T19, B4 ) -> effectN( 1 ).base_value() );
     p() -> cooldowns.bestial_wrath -> adjust( -t );
 
     if ( p() -> legendary.bm_feet -> ok() )
@@ -6206,39 +6201,20 @@ void hunter_t::init_action_list()
   }
 }
 
-
 // Item Actions =======================================================================
 
-void hunter_t::add_item_actions( action_priority_list_t* list )
+std::string hunter_t::special_use_item_action( const std::string& item_name, const std::string& condition ) const
 {
-  for ( const item_t& item : items )
-  {
-    if ( item.has_special_effect( SPECIAL_EFFECT_SOURCE_ITEM, SPECIAL_EFFECT_USE ) )
+  auto item = range::find_if( items, [ &item_name ]( const item_t& item ) {
+    return item.has_special_effect( SPECIAL_EFFECT_SOURCE_ITEM, SPECIAL_EFFECT_USE ) && item.name_str == item_name;
+  });
+  if ( item == items.end() )
+    return std::string();
 
-      if ( specialization() == HUNTER_MARKSMANSHIP )
-      {
-        if ( item.name_str == "tarnished_sentinel_medallion" )
-        {
-          list -> add_action( "use_item,name=" + item.name_str + ",if=((buff.trueshot.up|cooldown.trueshot.remains<6|cooldown.trueshot.remains>30)&(target.time_to_die>cooldown+duration))|target.time_to_die<25|buff.bullseye.react=30" );
-        }
-        else if ( item.name_str == "tome_of_unraveling_sanity" )
-        {
-          list -> add_action( "use_item,name=" + item.name_str + ",if=((buff.trueshot.up|cooldown.trueshot.remains<13|cooldown.trueshot.remains>30)&(target.time_to_die>cooldown+duration*2))|target.time_to_die<26|buff.bullseye.react=30" );
-        }
-        else if ( item.name_str == "kiljaedens_burning_wish" )
-        {
-          list -> add_action( "use_item,name=" + item.name_str + ",if=buff.trueshot.up|cooldown.trueshot.remains>20" );
-        }
-        else
-        {
-          list -> add_action( "use_item,name=" + item.name_str );
-        }
-      }
-      else
-      {
-        list -> add_action( "use_item,name=" + item.name_str );
-      }
-  }
+  std::string action = "use_item,name=" + item -> name_str;
+  if ( !condition.empty() )
+    action += "," + condition;
+  return action;
 }
 
 // Beastmastery Action List =============================================================
@@ -6250,25 +6226,26 @@ void hunter_t::apl_bm()
   default_list -> add_action( "auto_shot" );
   default_list -> add_action( this, "Counter Shot", "if=target.debuff.casting.react" );
 
-  add_item_actions( default_list );
+  // Item Actions
+  default_list -> add_action( "use_items" );
 
   // Racials
   default_list -> add_action( "arcane_torrent,if=focus.deficit>=30" );
-  default_list -> add_action( "berserking" );
-  default_list -> add_action( "blood_fury" );
+  default_list -> add_action( "berserking,if=buff.bestial_wrath.remains>7" );
+  default_list -> add_action( "blood_fury,if=buff.bestial_wrath.remains>7" );
 
   // Always keep Volley up if talented
   default_list -> add_talent( this, "Volley", "toggle=on" );
 
   // In-combat potion
-  default_list -> add_action( "potion,if=buff.bestial_wrath.remains|!cooldown.bestial_wrath.remains" );
+  default_list -> add_action( "potion,if=buff.bestial_wrath.up&buff.aspect_of_the_wild.up" );
 
   // Generic APL
-  default_list -> add_talent( this, "A Murder of Crows" );
+  default_list -> add_talent( this, "A Murder of Crows", "if=cooldown.bestial_wrath.remains<3|cooldown.bestial_wrath.remains>30|target.time_to_die<16" );
   default_list -> add_talent( this, "Stampede", "if=buff.bloodlust.up|buff.bestial_wrath.up|cooldown.bestial_wrath.remains<=2|target.time_to_die<=14" );
   default_list -> add_action( this, "Dire Beast", "if=cooldown.bestial_wrath.remains>3" );
   default_list -> add_talent( this, "Dire Frenzy", "if=(pet.cat.buff.dire_frenzy.remains<=gcd.max*1.2)|(charges_fractional>=1.8)|target.time_to_die<9" );
-  default_list -> add_action( this, "Aspect of the Wild", "if=buff.bestial_wrath.up|target.time_to_die<12" );
+  default_list -> add_action( this, "Aspect of the Wild", "if=buff.bestial_wrath.remains>7|target.time_to_die<12" );
   default_list -> add_talent( this, "Barrage", "if=spell_targets.barrage>1" );
   default_list -> add_action( this, "Bestial Wrath" );
   default_list -> add_action( this, "Titan's Thunder", "if=(talent.dire_frenzy.enabled&(buff.bestial_wrath.up|cooldown.bestial_wrath.remains>35))|cooldown.dire_beast.remains>=3|(buff.bestial_wrath.up&pet.dire_beast.active)" );
@@ -6301,7 +6278,11 @@ void hunter_t::apl_mm()
   default_list -> add_action( "auto_shot" );
   default_list -> add_action( this, "Counter Shot", "if=target.debuff.casting.react" );
 
-  add_item_actions( default_list );
+  // Item Actions
+  default_list -> add_action( special_use_item_action( "tarnished_sentinel_medallion", "if=((cooldown.trueshot.remains<6|cooldown.trueshot.remains>30)&(target.time_to_die>cooldown+duration))|target.time_to_die<25|buff.bullseye.react=30" ) );
+  default_list -> add_action( special_use_item_action( "tome_of_unraveling_sanity", "if=((cooldown.trueshot.remains<13|cooldown.trueshot.remains>30)&(target.time_to_die>cooldown+duration*2))|target.time_to_die<26|buff.bullseye.react=30" ) );
+  default_list -> add_action( special_use_item_action( "kiljaedens_burning_wish", "if=cooldown.trueshot.remains>20" ) );
+  default_list -> add_action( "use_items" );
 
   // Always keep Volley up if talented
   default_list -> add_talent( this, "Volley", "toggle=on" );
@@ -6384,7 +6365,7 @@ void hunter_t::apl_mm()
   patient_sniper -> add_action( this, "Aimed Shot", "if=debuff.vulnerability.up&buff.lock_and_load.up&(!variable.pooling_for_piercing|lowest_vuln_within.5>gcd.max)" );
   patient_sniper -> add_action( this, "Aimed Shot", "if=spell_targets.multishot>1&debuff.vulnerability.remains>execute_time&(!variable.pooling_for_piercing|(focus>100&lowest_vuln_within.5>(execute_time+gcd.max)))" );
   patient_sniper -> add_action( this, "Multi-Shot", "if=spell_targets>1&variable.can_gcd&focus+cast_regen+action.aimed_shot.cast_regen<focus.max&(!variable.pooling_for_piercing|lowest_vuln_within.5>gcd.max)" );
-  patient_sniper -> add_action( this, "Arcane Shot", "if=spell_targets.multishot=1&(!set_bonus.tier20_2pc|!buff.trueshot.up|buff.t20_2p_critical_aimed_damage.up)&variable.vuln_aim_casts>0&variable.can_gcd&focus+cast_regen+action.aimed_shot.cast_regen<focus.max&(!variable.pooling_for_piercing|lowest_vuln_within.5>gcd.max)" );
+  patient_sniper -> add_action( this, "Arcane Shot", "if=spell_targets.multishot=1&(!set_bonus.tier20_2pc|!action.aimed_shot.in_flight|buff.t20_2p_critical_aimed_damage.remains>action.aimed_shot.execute_time+gcd.max)&variable.vuln_aim_casts>0&variable.can_gcd&focus+cast_regen+action.aimed_shot.cast_regen<focus.max&(!variable.pooling_for_piercing|lowest_vuln_within.5>gcd.max)" );
   patient_sniper -> add_action( this, "Aimed Shot", "if=talent.sidewinders.enabled&(debuff.vulnerability.remains>cast_time|(buff.lock_and_load.down&action.windburst.in_flight))&(variable.vuln_window-(execute_time*variable.vuln_aim_casts)<1|focus.deficit<25|buff.trueshot.up)&(spell_targets.multishot=1|focus>100)" );
   patient_sniper -> add_action( this, "Aimed Shot", "if=!talent.sidewinders.enabled&debuff.vulnerability.remains>cast_time&(!variable.pooling_for_piercing|(focus>100&lowest_vuln_within.5>(execute_time+gcd.max)))" );
   patient_sniper -> add_action( this, "Marked Shot", "if=!talent.sidewinders.enabled&!variable.pooling_for_piercing&!action.windburst.in_flight&(focus>65|buff.trueshot.up|(1%attack_haste)>1.171)" );
@@ -6426,7 +6407,8 @@ void hunter_t::apl_surv()
   default_list -> add_action( "auto_attack" );
   default_list -> add_action( this, "Muzzle", "if=target.debuff.casting.react" );
 
-  add_item_actions( default_list );
+  // Item Actions
+  default_list -> add_action( "use_items" );
 
   //Action Lists
   default_list->add_action("call_action_list,name=mokMaintain,if=talent.way_of_the_moknathal.enabled");
@@ -6977,11 +6959,6 @@ struct hunter_module_t: public module_t
 
   void register_hotfixes() const override
   {
-    hotfix::register_spell( "Hunter", "2017-1-8", "Spelldata claims that Marking Target's rppm was buffed from 5 to 6.5, but testing shows higher.", 185987 )
-      .field( "rppm" )
-      .operation( hotfix::HOTFIX_SET )
-      .modifier( 7.2 )
-      .verification_value( 6.5 );
   }
 
   void combat_begin( sim_t* ) const override {}

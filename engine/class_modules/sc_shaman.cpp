@@ -382,6 +382,7 @@ public:
     const spell_data_t* chain_lightning_2; // 7.1 Chain Lightning additional 2 targets passive
     const spell_data_t* elemental_focus;
     const spell_data_t* elemental_fury;
+    const spell_data_t* elemental_shaman;
     const spell_data_t* flame_shock_2; // 7.1 Flame Shock duration extension passive
     const spell_data_t* lava_burst_2; // 7.1 Lava Burst autocrit with FS passive
     const spell_data_t* lava_surge;
@@ -1050,6 +1051,11 @@ public:
 
       maelstrom_gain = effect.resource( RESOURCE_MAELSTROM );
       ab::energize_type = ENERGIZE_NONE; // disable resource generation from spell data.
+    }
+
+    if ( ab::data().affected_by( player -> spec.elemental_shaman -> effectN( 5 ) ) )
+    {
+      ab::base_multiplier *= 1.0 + player -> spec.elemental_shaman -> effectN( 5 ).percent();
     }
 
     if ( ab::data().affected_by( player -> spec.enhancement_shaman -> effectN( 1 ) ) )
@@ -2475,7 +2481,7 @@ struct fire_elemental_t : public primal_elemental_t
   };
 
   fire_elemental_t( shaman_t* owner, bool guardian ) :
-    primal_elemental_t( owner, ( ! guardian ) ? "primal_fire_elemental" : "greater_fire_elemental", guardian, false )
+    primal_elemental_t( owner, ( guardian ) ? "greater_fire_elemental" : "primal_fire_elemental", guardian, false )
   {
     owner_coeff.sp_from_sp = 1.0;
   }
@@ -6170,7 +6176,7 @@ void shaman_t::create_pets()
     {
       for ( size_t i = 0; i < pet.guardian_fire_elemental.size(); ++i )
       {
-        pet.guardian_fire_elemental[ i ] = new pet::fire_elemental_t( this, false );
+        pet.guardian_fire_elemental[ i ] = new pet::fire_elemental_t( this, true );
       }
     }
 
@@ -6183,7 +6189,7 @@ void shaman_t::create_pets()
     {
       for ( size_t i = 0; i < pet.guardian_storm_elemental.size(); ++i )
       {
-        pet.guardian_storm_elemental[ i ] = new pet::storm_elemental_t( this, false );
+        pet.guardian_storm_elemental[ i ] = new pet::storm_elemental_t( this, true );
       }
     }
   }
@@ -6383,6 +6389,7 @@ void shaman_t::init_spells()
   spec.chain_lightning_2     = find_specialization_spell( 231722 );
   spec.elemental_focus       = find_specialization_spell( "Elemental Focus" );
   spec.elemental_fury        = find_specialization_spell( "Elemental Fury" );
+  spec.elemental_shaman      = find_specialization_spell( "Elemental Shaman" );
   spec.flame_shock_2         = find_specialization_spell( 232643 );
   spec.lava_burst_2          = find_specialization_spell( 231721 );
   spec.lava_surge            = find_specialization_spell( "Lava Surge" );
@@ -8027,6 +8034,10 @@ double shaman_t::composite_player_pet_damage_multiplier( const action_state_t* s
   m *= 1.0 + artifact.stormkeepers_power.percent();
   m *= 1.0 + artifact.power_of_the_earthen_ring.percent();
   m *= 1.0 + artifact.earthshattering_blows.percent();
+  if ( spec.elemental_shaman -> ok() )
+  {
+    m *= 1.0 + spec.elemental_shaman -> effectN( 7 ).percent();
+  }
 
   auto school = s -> action -> get_school();
   if ( ( dbc::is_school( school, SCHOOL_FIRE ) || dbc::is_school( school, SCHOOL_FROST ) ||

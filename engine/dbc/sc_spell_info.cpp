@@ -604,6 +604,7 @@ static const std::unordered_map<unsigned, const std::string> _effect_subtype_str
   { 138, "Modify Melee Haste%"                    },
   { 140, "Modify Ranged Haste%"                   },
   { 142, "Modify Base Resistance"                 },
+  { 166, "Modify Attack Power%"                   },
   { 187, "Modify Attacker Melee Crit Chance"      },
   { 189, "Modify Rating"                          },
   { 192, "Modify Ranged and Melee Haste%"         },

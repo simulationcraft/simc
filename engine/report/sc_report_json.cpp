@@ -1096,6 +1096,29 @@ void scale_factors_to_json( JsonOutput root, const player_t& p )
   }
 }
 
+void scale_factors_all_to_json( JsonOutput root, const player_t& p )
+{
+  if ( p.sim -> report_precision < 0 )
+    p.sim -> report_precision = 2;
+
+  for ( scale_metric_e sm = SCALE_METRIC_DPS; sm < SCALE_METRIC_MAX; sm++ )
+  {
+    auto node = root[ util::scale_metric_type_abbrev( sm ) ];
+
+    const auto& sf = ( p.sim -> scaling -> normalize_scale_factors )
+                    ? p.scaling->scaling_normalized[ sm ]
+                    : p.scaling->scaling[ sm ];
+
+    for ( stat_e i = STAT_NONE; i < STAT_MAX; i++ )
+    {
+      if ( p.scaling->scales_with[ i ] )
+      {
+        node[ util::stat_type_abbrev( i ) ] = sf.get_stat( i );
+      }
+    }
+  }
+}
+
 void to_json( JsonOutput& arr, const player_t& p )
 {
   auto root = arr.add(); // Add a fresh object to the players array and use it as root
@@ -1173,6 +1196,7 @@ void to_json( JsonOutput& arr, const player_t& p )
   if ( p.sim -> scaling -> has_scale_factors() )
   {
     scale_factors_to_json( root[ "scale_factors" ], p );
+    scale_factors_all_to_json( root[ "scale_factors_all" ], p );
   }
 
   collected_data_to_json( root[ "collected_data" ], p );

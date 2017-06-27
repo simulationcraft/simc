@@ -4377,6 +4377,8 @@ void player_t::reset()
 
   range::for_each( rppm_list, []( real_ppm_t* rppm ) { rppm -> reset(); } );
 
+  range::for_each( shuffled_rng_list, [](shuffled_rng_t* shuffled_rng) { shuffled_rng->reset(); });
+
   potion_used = 0;
 
   item_cooldown.reset( false );
@@ -6109,6 +6111,25 @@ real_ppm_t* player_t::get_rppm( const std::string& name, double freq, double mod
   rppm_list.push_back( new_rppm );
 
   return new_rppm;
+}
+
+// player_t::get_shuffled_rng ===============================================
+
+shuffled_rng_t* player_t::get_shuffled_rng(const std::string& name, int success_entries, int total_entries)
+{
+  auto it = range::find_if(shuffled_rng_list, [&name](const shuffled_rng_t* shuffled_rng) {
+    return util::str_compare_ci(shuffled_rng->name(), name);
+  });
+
+  if (it != shuffled_rng_list.end())
+  {
+    return *it;
+  }
+
+  shuffled_rng_t* new_shuffled_rng = new shuffled_rng_t(name, this, success_entries, total_entries);
+  shuffled_rng_list.push_back(new_shuffled_rng);
+
+  return new_shuffled_rng;
 }
 
 // player_t::get_dot ========================================================
@@ -11308,6 +11329,7 @@ void player_collected_data_t::merge( const player_collected_data_t& other )
   dtps.merge( other.dtps );
   dpse.merge( other.dpse );
   dmg_taken.merge( other.dmg_taken );
+  timeline_dmg.merge( other.timeline_dmg );
   // HEAL
   heal.merge( other.heal );
   compound_heal.merge( other.compound_heal );

@@ -5226,25 +5226,25 @@ void warrior_t::apl_arms()
     else if ( items[i].has_special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE ) )
     {
       if ( items[i].slot != SLOT_WAIST )
-        default_list -> add_action( "use_item,name=" + items[i].name_str + ",if=(buff.avatar.up|talent.avatar.enabled)&debuff.colossus_smash.up&buff.battle_cry.up" );
+        default_list -> add_action( "use_item,name=" + items[i].name_str + ",if=(buff.avatar.up|!talent.avatar.enabled)&debuff.colossus_smash.up&buff.battle_cry.up" );
     }
   }
 
-  default_list -> add_action( this, "Battle Cry", "if=target.time_to_die<=6|(!talent.ravager.enabled|prev_gcd.1.ravager)&!gcd.remains&target.debuff.colossus_smash.remains>=5&(!cooldown.bladestorm.remains|!set_bonus.tier20_4pc)&(!talent.rend.enabled|dot.rend.remains>4)");
+  default_list -> add_action( this, "Battle Cry", "if=target.time_to_die<=6|prev_gcd.1.ravager|!talent.ravager.enabled&!gcd.remains&target.debuff.colossus_smash.remains>=5&(!cooldown.bladestorm.remains|!set_bonus.tier20_4pc)&(!talent.rend.enabled|dot.rend.remains>4)");
   default_list -> add_action( "run_action_list,name=cleave,if=spell_targets.whirlwind>=2&talent.sweeping_strikes.enabled" );
   default_list -> add_action( "run_action_list,name=aoe,if=spell_targets.whirlwind>=5&!talent.sweeping_strikes.enabled" );
   default_list -> add_action( "run_action_list,name=execute,target_if=target.health.pct<=20&spell_targets.whirlwind<5" );
   default_list -> add_action( "run_action_list,name=single,if=target.health.pct>20" );
 
   single_target -> add_action( this, "Bladestorm", "if=buff.battle_cry.up&set_bonus.tier20_4pc");
-  single_target -> add_talent( this, "Ravager", "if=cooldown.battle_cry.remains<=gcd&debuff.colossus_smash.remains>6");
   single_target -> add_action( this, "Colossus Smash", "if=buff.shattered_defenses.down" );
   single_target -> add_action( this, "Warbreaker", "if=(raid_event.adds.in>90|!raid_event.adds.exists)&((talent.fervor_of_battle.enabled&debuff.colossus_smash.remains<gcd)|!talent.fervor_of_battle.enabled&((buff.stone_heart.up|cooldown.mortal_strike.remains<=gcd.remains)&buff.shattered_defenses.down))" );
   single_target -> add_talent( this, "Focused Rage", "if=!buff.battle_cry_deadly_calm.up&buff.focused_rage.stack<3&!cooldown.colossus_smash.up&(rage>=130|debuff.colossus_smash.down|talent.anger_management.enabled&cooldown.battle_cry.remains<=8)", "actions.single+=/heroic_charge,if=rage.deficit>=55&(!cooldown.heroic_leap.remains|swing.mh.remains>1.2)&buff.battle_cry.down\n#Remove the # above to run out of melee and charge back in for rage." );
-  single_target -> add_talent( this, "Rend", "if=remains<=0|remains<5&cooldown.battle_cry.remains<2&(cooldown.bladestorm.remains<2|!set_bonus.tier20_4pc)" );
+  single_target -> add_talent( this, "Rend", "if=remains<=gcd.max|remains<5&cooldown.battle_cry.remains<2&(cooldown.bladestorm.remains<2|!set_bonus.tier20_4pc)" );
+  single_target -> add_talent( this, "Ravager", "if=cooldown.battle_cry.remains<=gcd&debuff.colossus_smash.remains>6");
   single_target -> add_action( this, "Execute", "if=buff.stone_heart.react" );
-  single_target -> add_action( this, "Mortal Strike", "if=buff.shattered_defenses.up|buff.executioners_precision.down" );
   single_target -> add_talent( this, "Overpower", "if=buff.battle_cry.down" );
+  single_target -> add_action( this, "Mortal Strike", "if=buff.shattered_defenses.up|buff.executioners_precision.down" );
   single_target -> add_talent( this, "Rend", "if=remains<=duration*0.3" );
   single_target -> add_action( this, "Whirlwind", "if=spell_targets.whirlwind>1|talent.fervor_of_battle.enabled" );
   single_target -> add_action( this, "Slam", "if=spell_targets.whirlwind=1&!talent.fervor_of_battle.enabled" );
@@ -5252,15 +5252,14 @@ void warrior_t::apl_arms()
   single_target -> add_action( this, "Bladestorm", "if=(raid_event.adds.in>90|!raid_event.adds.exists)&!set_bonus.tier20_4pc" );
 
   execute -> add_action( this, "Bladestorm", "if=buff.battle_cry.up&(set_bonus.tier20_4pc|equipped.the_great_storms_eye)" );
-  execute -> add_talent( this, "Ravager", "if=cooldown.battle_cry.remains<=gcd&debuff.colossus_smash.remains>6");
   execute -> add_action( this, "Colossus Smash", "if=buff.shattered_defenses.down&(buff.battle_cry.down|buff.battle_cry.remains>gcd.max)" );
   execute -> add_action( this, "Warbreaker", "if=(raid_event.adds.in>90|!raid_event.adds.exists)&cooldown.mortal_strike.remains<=gcd.remains&buff.shattered_defenses.down&buff.executioners_precision.stack=2" );
   execute -> add_talent( this, "Focused Rage", "if=rage.deficit<35", "actions.execute+=/heroic_charge,if=rage.deficit>=55&(!cooldown.heroic_leap.remains|swing.mh.remains>1.2)&buff.battle_cry.down\n#Remove the # above to run out of melee and charge back in for rage." );
   execute -> add_talent( this, "Rend", "if=remains<5&cooldown.battle_cry.remains<2&(cooldown.bladestorm.remains<2|!set_bonus.tier20_4pc)" );
+  execute -> add_talent( this, "Ravager", "if=cooldown.battle_cry.remains<=gcd&debuff.colossus_smash.remains>6" );
   execute -> add_action( this, "Mortal Strike", "if=buff.executioners_precision.stack=2&buff.shattered_defenses.up" );
-  execute -> add_talent( this, "Overpower" , "if=rage<40");
-  execute -> add_action( this, "Execute" );
-  execute -> add_talent( this, "Overpower" );
+  execute -> add_talent( this, "Overpower" , "if=rage<40" );
+  execute -> add_action( this, "Execute", "if=buff.shattered_defenses.down|rage>=40|talent.dauntless.enabled&rage>=36" );
   execute -> add_action( this, "Bladestorm", "interrupt=1,if=(raid_event.adds.in>90|!raid_event.adds.exists|spell_targets.bladestorm_mh>desired_targets)&!set_bonus.tier20_4pc" );
   
 
