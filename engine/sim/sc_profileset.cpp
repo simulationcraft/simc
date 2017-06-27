@@ -3,6 +3,8 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 
+#include <future>
+
 #include "simulationcraft.hpp"
 #include "sc_profileset.hpp"
 
@@ -151,18 +153,20 @@ bool profilesets_t::parse( sim_t* sim )
 {
   if ( sim -> profileset_map.size() == 0 )
   {
+    set_state( DONE );
     return true;
   }
 
   if ( ! validate( sim ) )
   {
+    set_state( DONE );
     return false;
   }
 
-  auto original_control = sim -> control;
+  set_state( INITIALIZING );
 
   // Generate a copy of the original control, and remove any and all profileset. options from it
-  m_original = std::unique_ptr<sim_control_t>( new sim_control_t( *original_control ) );
+  m_original = std::unique_ptr<sim_control_t>( new sim_control_t( *sim -> control ) );
 
   // Remove profileset.foo options. Leave "profileset_metric", it is needed in the child sims
   auto it = m_original -> options.begin();
@@ -183,12 +187,14 @@ bool profilesets_t::parse( sim_t* sim )
   {
     if ( sim -> canceled )
     {
+      set_state( DONE );
       return false;
     }
 
     auto control = create_sim_options( m_original.get(), it -> second );
     if ( control == nullptr )
     {
+      set_state( DONE );
       return false;
     }
 
@@ -199,17 +205,22 @@ bool profilesets_t::parse( sim_t* sim )
              opt.find( "json2", 0, opt.find( "=" ) ) != std::string::npos;
     } ) != it -> second.end();
 
-    sim -> control = control;
+    //sim -> control = control;
 
     // Test that profileset options are OK, up to the simulation initialization
     try
     {
-      auto test_sim = new sim_t( sim );
+      //auto test_sim = new sim_t( sim );
+      auto test_sim = new sim_t();
+      test_sim -> profileset_enabled = true;
+
+      test_sim -> setup( control );
       auto ret = test_sim -> init();
       if ( ! ret || ! validate( test_sim ) )
       {
-        sim -> control = original_control;
+        //sim -> control = original_control;
         delete test_sim;
+        set_state( DONE );
         return false;
       }
 
@@ -219,26 +230,81 @@ bool profilesets_t::parse( sim_t* sim )
     {
       std::cerr <<  "ERROR! Profileset '" << it -> first << "' Setup failure: "
                 << e.what() << std::endl;
-      sim -> control = original_control;
+      set_state( DONE );
       return false;
     }
 
+    m_mutex.lock();
     m_profilesets.push_back( std::unique_ptr<profile_set_t>(
         new profile_set_t( it -> first, control, has_output_opts ) ) );
-    std::cerr << "Constructing Profileset: " << it -> first << std::endl;
+    m_mutex.unlock();
+    m_control.notify_one();
   }
 
-  sim -> control = original_control;
+  set_state( RUNNING );
 
   return true;
+}
+
+void profilesets_t::initialize( sim_t* sim )
+{
+  m_profilesets.reserve( sim -> profileset_map.size() + 1 );
+
+  m_thread = std::thread([ this, sim ]() {
+    if ( ! parse( sim ) )
+    {
+      sim -> cancel();
+    }
+  } );
+}
+
+void profilesets_t::cancel()
+{
+  if ( ! is_done() && m_thread.joinable() )
+  {
+    m_thread.join();
+  }
+
+  set_state( DONE );
+}
+
+void profilesets_t::set_state( state new_state )
+{
+  m_mutex.lock();
+
+  m_state = new_state;
+
+  m_mutex.unlock();
 }
 
 bool profilesets_t::iterate( sim_t* parent )
 {
   auto original_opts = parent -> control;
 
-  for ( auto& set : m_profilesets )
+  while ( ! is_done() )
   {
+    m_control_lock.lock();
+
+    // Wait until we have at least something to sim
+    while ( is_initializing() && m_profilesets.size() - m_work_index == 0 )
+    {
+      m_control.wait( m_control_lock );
+    }
+
+    // Break out of iteration loop if all work has been done
+    if ( is_running() )
+    {
+      if ( m_work_index == m_profilesets.size() )
+      {
+        m_control_lock.unlock();
+        break;
+      }
+    }
+
+    const auto& set = m_profilesets[ m_work_index++ ];
+
+    m_control_lock.unlock();
+
     parent -> control = set -> options();
 
     auto profile_sim = new sim_t( parent );
@@ -264,6 +330,7 @@ bool profilesets_t::iterate( sim_t* parent )
     if ( ret == false || profile_sim -> is_canceled() )
     {
       parent -> control = original_opts;
+      set_state( DONE );
       delete profile_sim;
       return false;
     }
@@ -286,6 +353,8 @@ bool profilesets_t::iterate( sim_t* parent )
   }
 
   parent -> control = original_opts;
+
+  set_state( DONE );
 
   return true;
 }

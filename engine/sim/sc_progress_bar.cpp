@@ -371,10 +371,10 @@ size_t progress_bar_t::compute_total_phases()
     return sim.parent -> progress_bar.compute_total_phases();
   }
 
-  if ( total_work_ > 0 )
-  {
-    return total_work_;
-  }
+  //if ( total_work_ > 0 )
+  //{
+  //  return total_work_;
+  //}
 
   size_t n_actors = 1;
   if ( sim.single_actor_batch )

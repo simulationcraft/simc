@@ -1554,6 +1554,8 @@ void sim_t::cancel()
   {
     relative -> cancel();
   }
+
+  profilesets.cancel();
 }
 
 // sim_t::interrupt =========================================================
@@ -2493,9 +2495,9 @@ bool sim_t::init()
     }
   }
 
-  if ( ! parent && ! profilesets.parse( this ) )
+  if ( ! profileset_enabled )
   {
-    return false;
+    profilesets.initialize( this );
   }
 
   initialized = true;

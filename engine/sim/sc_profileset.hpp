@@ -7,6 +7,7 @@
 
 #include <vector>
 #include <string>
+#include <thread>
 
 #include "util/generic.hpp"
 #include "util/io.hpp"
@@ -126,14 +127,28 @@ public:
 
 class profilesets_t
 {
+  enum state
+  {
+    STARTED,            // Initial state
+    INITIALIZING,       // Initializing/constructing profile sets
+    RUNNING,            // Finished initializing, running through profilesets
+    DONE                // Finished profileset iterating
+  };
+
   using profileset_entry_t = std::unique_ptr<profile_set_t>;
   using profileset_vector_t = std::vector<profileset_entry_t>;
 
   static const size_t MAX_CHART_ENTRIES = 500;
 
+  state                          m_state;
   profileset_vector_t            m_profilesets;
   std::unique_ptr<sim_control_t> m_original;
   ssize_t                        m_insert_index;
+  size_t                         m_work_index;
+  std::mutex                     m_mutex;
+  std::unique_lock<std::mutex>   m_control_lock;
+  std::condition_variable        m_control;
+  std::thread                    m_thread;
 
   bool validate( sim_t* sim );
 
@@ -142,20 +157,42 @@ class profilesets_t
   bool generate_chart( const sim_t& sim, io::ofstream& out ) const;
   void generate_sorted_profilesets( std::vector<const profile_set_t*>& out ) const;
 
+  void set_state( state new_state );
+
   sim_control_t* create_sim_options( const sim_control_t*, const std::vector<std::string>& opts );
 public:
-  profilesets_t() : m_original( nullptr ), m_insert_index( -1 )
+  profilesets_t() : m_state( STARTED ), m_original( nullptr ), m_insert_index( -1 ),
+    m_work_index( 0 ), m_control_lock( m_mutex, std::defer_lock )
   { }
+
+  ~profilesets_t()
+  {
+    if ( m_thread.joinable() )
+    {
+      m_thread.join();
+    }
+  }
 
   size_t n_profilesets() const
   { return m_profilesets.size(); }
 
   bool parse( sim_t* );
+  void initialize( sim_t* );
+  void cancel();
   bool iterate( sim_t* parent_sim );
 
   void output( const sim_t& sim, js::JsonOutput& root ) const;
   void output( const sim_t& sim, FILE* out ) const;
   void output( const sim_t& sim, io::ofstream& out ) const;
+
+  bool is_initializing() const
+  { return m_state == INITIALIZING; }
+
+  bool is_running() const
+  { return m_state == RUNNING; }
+
+  bool is_done() const
+  { return m_state == DONE; }
 };
 
 void create_options( sim_t* sim );
