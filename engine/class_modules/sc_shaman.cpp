@@ -2481,7 +2481,7 @@ struct fire_elemental_t : public primal_elemental_t
   };
 
   fire_elemental_t( shaman_t* owner, bool guardian ) :
-    primal_elemental_t( owner, ( ! guardian ) ? "primal_fire_elemental" : "greater_fire_elemental", guardian, false )
+    primal_elemental_t( owner, ( guardian ) ? "greater_fire_elemental" : "primal_fire_elemental", guardian, false )
   {
     owner_coeff.sp_from_sp = 1.0;
   }
@@ -6176,7 +6176,7 @@ void shaman_t::create_pets()
     {
       for ( size_t i = 0; i < pet.guardian_fire_elemental.size(); ++i )
       {
-        pet.guardian_fire_elemental[ i ] = new pet::fire_elemental_t( this, false );
+        pet.guardian_fire_elemental[ i ] = new pet::fire_elemental_t( this, true );
       }
     }
 
@@ -6189,7 +6189,7 @@ void shaman_t::create_pets()
     {
       for ( size_t i = 0; i < pet.guardian_storm_elemental.size(); ++i )
       {
-        pet.guardian_storm_elemental[ i ] = new pet::storm_elemental_t( this, false );
+        pet.guardian_storm_elemental[ i ] = new pet::storm_elemental_t( this, true );
       }
     }
   }
