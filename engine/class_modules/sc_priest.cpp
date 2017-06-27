@@ -4858,7 +4858,7 @@ void priest_t::apl_precombat()
     "variable,name=dot_swp_dpgcd,op=set,value=38*1.2*(1+0.06*artifact.to_the_pain.rank)"
      "*(1+0.2+stat.mastery_rating%16000)*0.75" );
   precombat->add_action( 
-    "variable,name=dot_vt_dpgcd,op=set,value=71*1.2*(1+0.05*artifact.touch_of_darkness.rank)"
+    "variable,name=dot_vt_dpgcd,op=set,value=71*1.2*(1+0.2*talent.sanlayn.enabled)*(1+0.05*artifact.touch_of_darkness.rank)"
     "*(1+0.2+stat.mastery_rating%16000)*0.5" );
   precombat->add_action( 
     "variable,name=sear_dpgcd,op=set,value=80*(1+0.05*artifact.void_corruption.rank)" );
@@ -5209,8 +5209,9 @@ if ( race == RACE_BLOOD_ELF )
       "value)+60))" );
   vf->add_action(
       "mindbender,if=buff.insanity_drain_stacks.value>=(variable.cd_time-(3*set_"
-      "bonus.tier20_4pc*(raid_event.movement.in<15)*((active_enemies-target.adds)=1"
-      "))+(5-3*set_bonus.tier20_4pc)*buff.bloodlust.up+2*talent.fortress_of_the_mind"
+      "bonus.tier20_4pc*(raid_event.movement.in<15)*((active_enemies-(raid_event."
+      "adds.count*(raid_event.adds.remains>0)))=1))+(5-3*set_bonus.tier20_4pc)*buff"
+      ".bloodlust.up+2*talent.fortress_of_the_mind"
       ".enabled*set_bonus.tier20_4pc)&(!talent.surrender_to_madness.enabled|(talent."
       "surrender_to_madness.enabled&target.time_to_die>variable.s2mcheck-buff.insanity"
       "_drain_stacks.value))" );

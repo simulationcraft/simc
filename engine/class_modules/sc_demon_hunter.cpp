@@ -8228,6 +8228,30 @@ public:
 
   void register_hotfixes() const override
   {
+
+    hotfix::register_effect("Demon Hunter", "2017-06-26", "Damage of all abilities increased by 2%. (Direct)", 315240)
+      .field("base_value")
+      .operation(hotfix::HOTFIX_ADD)
+      .modifier(2)
+      .verification_value(9);
+
+    hotfix::register_effect("Demon Hunter", "2017-06-26", "Damage of all abilities increased by 2%. (Periodic)", 315241)
+      .field("base_value")
+      .operation(hotfix::HOTFIX_ADD)
+      .modifier(2)
+      .verification_value(9);
+
+    hotfix::register_effect("Demon Hunter", "2017-06-26", "Demon's Bite damage increased by 46%.", 227731)
+      .field("base_value")
+      .operation(hotfix::HOTFIX_MUL)
+      .modifier(1.462)
+      .verification_value(260);
+
+    hotfix::register_effect("Demon Hunter", "2017-06-26", "Effect of Mastery: Demonic Presence (damage only) increased by 7%.", 268563)
+      .field("sp_coefficient")
+      .operation(hotfix::HOTFIX_MUL)
+      .modifier(1.07)
+      .verification_value(1.4);
   }
 
   void combat_begin( sim_t* ) const override
