@@ -37,7 +37,7 @@ actions=auto_attack
 actions+=/muzzle,if=target.debuff.casting.react
 actions+=/use_items
 actions+=/call_action_list,name=mokMaintain,if=talent.way_of_the_moknathal.enabled
-actions+=/call_action_list,name=CDs,if=buff.moknathal_tactics.stack>=2|!talent.way_of_the_moknathal.enabled
+actions+=/call_action_list,name=CDs
 actions+=/call_action_list,name=preBitePhase,if=!buff.mongoose_fury.up
 actions+=/call_action_list,name=aoe,if=active_enemies>=3
 actions+=/call_action_list,name=bitePhase
@@ -48,36 +48,34 @@ actions.CDs=arcane_torrent,if=focus<=30
 actions.CDs+=/berserking,if=buff.aspect_of_the_eagle.up
 actions.CDs+=/blood_fury,if=buff.aspect_of_the_eagle.up
 actions.CDs+=/potion,if=buff.aspect_of_the_eagle.up
-actions.CDs+=/berserking,if=buff.aspect_of_the_eagle.up
-actions.CDs+=/snake_hunter,if=cooldown.mongoose_bite.charges=0&buff.mongoose_fury.remains>3*gcd
-actions.CDs+=/aspect_of_the_eagle,if=(buff.mongoose_fury.remains<=11&buff.mongoose_fury.up)&(cooldown.fury_of_the_eagle.remains>buff.mongoose_fury.remains)
-actions.CDs+=/aspect_of_the_eagle,if=(buff.mongoose_fury.remains<=7&buff.mongoose_fury.up)
+actions.CDs+=/snake_hunter,if=cooldown.mongoose_bite.charges=0&buff.mongoose_fury.remains>3*gcd&buff.aspect_of_the_eagle.down
+actions.CDs+=/aspect_of_the_eagle,if=buff.mongoose_fury.stack>=2&buff.mongoose_fury.remains>3*gcd
 
 actions.aoe=butchery
-actions.aoe+=/caltrops,if=!dot.caltrops.ticking
+actions.aoe+=/caltrops,if=!ticking
 actions.aoe+=/explosive_trap
-actions.aoe+=/carve,if=talent.serpent_sting.enabled&!dot.serpent_sting.ticking
+actions.aoe+=/carve,if=talent.serpent_sting.enabled&dot.serpent_sting.refreshable
 actions.aoe+=/carve,if=active_enemies>5
 
 actions.biteFill=spitting_cobra
-actions.biteFill+=/butchery,if=equipped.frizzos_fingertrap&dot.lacerate.remains<3.6
-actions.biteFill+=/carve,if=equipped.frizzos_fingertrap&dot.lacerate.remains<3.6
-actions.biteFill+=/lacerate,if=dot.lacerate.remains<3.6
-actions.biteFill+=/raptor_strike,if=active_enemies=1&talent.serpent_sting.enabled&!dot.serpent_sting.ticking
+actions.biteFill+=/butchery,if=equipped.frizzos_fingertrap&dot.lacerate.refreshable
+actions.biteFill+=/carve,if=equipped.frizzos_fingertrap&dot.lacerate.refreshable
+actions.biteFill+=/lacerate,if=refreshable
+actions.biteFill+=/raptor_strike,if=active_enemies=1&talent.serpent_sting.enabled&dot.serpent_sting.refreshable
 actions.biteFill+=/steel_trap
 actions.biteFill+=/a_murder_of_crows
 actions.biteFill+=/dragonsfire_grenade
 actions.biteFill+=/explosive_trap
-actions.biteFill+=/caltrops,if=!dot.caltrops.ticking
+actions.biteFill+=/caltrops,if=!ticking
 
-actions.bitePhase=fury_of_the_eagle,if=(!talent.way_of_the_moknathal.enabled|buff.moknathal_tactics.remains>(gcd*(8%3)))&buff.mongoose_fury.stack=6,interrupt_if=(talent.way_of_the_moknathal.enabled&buff.moknathal_tactics.remains<=tick_time)
+actions.bitePhase=fury_of_the_eagle,if=(!talent.way_of_the_moknathal.enabled|buff.moknathal_tactics.remains>(gcd*(8%3)))&buff.mongoose_fury.stack>3&cooldown.mongoose_bite.charges<1&!buff.aspect_of_the_eagle.up,interrupt_if=(talent.way_of_the_moknathal.enabled&buff.moknathal_tactics.remains<=tick_time)|(cooldown.mongoose_bite.charges=3)
 actions.bitePhase+=/lacerate,if=!dot.lacerate.ticking&set_bonus.tier20_4pc&buff.mongoose_fury.duration>cooldown.mongoose_bite.charges*gcd
 actions.bitePhase+=/mongoose_bite,if=charges>=2&cooldown.mongoose_bite.remains<gcd*2
-actions.bitePhase+=/flanking_strike,if=((buff.mongoose_fury.remains>(gcd*(cooldown.mongoose_bite.charges+2)))&cooldown.mongoose_bite.charges<=1)&!buff.aspect_of_the_eagle.up
+actions.bitePhase+=/flanking_strike,if=((buff.mongoose_fury.remains>(gcd*(cooldown.mongoose_bite.charges+2)))&cooldown.mongoose_bite.charges<=1)&(!set_bonus.tier19_4pc|(set_bonus.tier19_4pc&!buff.aspect_of_the_eagle.up))
 actions.bitePhase+=/mongoose_bite,if=buff.mongoose_fury.up
 actions.bitePhase+=/flanking_strike
 
-actions.fillers=carve,if=active_enemies>1&talent.serpent_sting.enabled&!dot.serpent_sting.ticking
+actions.fillers=carve,if=active_enemies>1&talent.serpent_sting.enabled&dot.serpent_sting.refreshable
 actions.fillers+=/throwing_axes
 actions.fillers+=/carve,if=active_enemies>2
 actions.fillers+=/raptor_strike,if=(talent.way_of_the_moknathal.enabled&buff.moknathal_tactics.remains<gcd*4)
@@ -88,16 +86,18 @@ actions.mokMaintain+=/raptor_strike,if=buff.moknathal_tactics.stack<2
 
 actions.preBitePhase=flanking_strike,if=cooldown.mongoose_bite.charges<3
 actions.preBitePhase+=/spitting_cobra
-actions.preBitePhase+=/lacerate,if=!dot.lacerate.ticking
-actions.preBitePhase+=/raptor_strike,if=active_enemies=1&talent.serpent_sting.enabled&!dot.serpent_sting.ticking
+actions.preBitePhase+=/dragonsfire_grenade
+actions.preBitePhase+=/raptor_strike,if=active_enemies=1&talent.serpent_sting.enabled&dot.serpent_sting.refreshable
 actions.preBitePhase+=/steel_trap
 actions.preBitePhase+=/a_murder_of_crows
-actions.preBitePhase+=/dragonsfire_grenade
 actions.preBitePhase+=/explosive_trap
-actions.preBitePhase+=/caltrops,if=!dot.caltrops.ticking
-actions.preBitePhase+=/butchery,if=equipped.frizzos_fingertrap&dot.lacerate.remains<3.6
-actions.preBitePhase+=/carve,if=equipped.frizzos_fingertrap&dot.lacerate.remains<3.6
-actions.preBitePhase+=/lacerate,if=dot.lacerate.remains<3.6
+actions.preBitePhase+=/lacerate,if=refreshable
+actions.preBitePhase+=/butchery,if=equipped.frizzos_fingertrap&dot.lacerate.refreshable
+actions.preBitePhase+=/carve,if=equipped.frizzos_fingertrap&dot.lacerate.refreshable
+actions.preBitePhase+=/mongoose_bite,if=charges=3&cooldown.flanking_strike.remains>=gcd
+actions.preBitePhase+=/caltrops,if=!ticking
+actions.preBitePhase+=/flanking_strike
+actions.preBitePhase+=/lacerate,if=remains<14&set_bonus.tier20_2pc
 
 head=eagletalon_cowl,id=138342,bonus_id=3518
 neck=brooch_of_the_astral_scryer,id=140900,bonus_id=3518,enchant=mark_of_the_hidden_satyr
