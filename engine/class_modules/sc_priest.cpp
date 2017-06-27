@@ -5090,7 +5090,7 @@ void priest_t::apl_shadow()
       "enemies-1))))>1,cycle_targets=1" );
   main->add_action(
       "shadow_word_pain,if=active_enemies>1&!talent.misery.enabled&!ticking&(variable"
-      ".dot_swp_dpgcd*target.time_to_die%(gcd.max*(156+variable.sear_dpgcd*(active_"
+      ".dot_swp_dpgcd*target.time_to_die%(gcd.max*(118+variable.sear_dpgcd*(active_"
       "enemies-1))))>1,cycle_targets=1" );
   main->add_action(
       "shadow_word_void,if=talent.shadow_word_void.enabled&(insanity<=75-10*"
@@ -5271,7 +5271,7 @@ if ( race == RACE_BLOOD_ELF )
       "+variable.sear_dpgcd*(active_enemies-1))))>1,cycle_targets=1" );
   vf->add_action(
       "shadow_word_pain,if=active_enemies>1&!talent.misery.enabled&!ticking&((1+0.02"
-      "*buff.voidform.stack)*variable.dot_swp_dpgcd*target.time_to_die%(gcd.max*(156"
+      "*buff.voidform.stack)*variable.dot_swp_dpgcd*target.time_to_die%(gcd.max*(118"
       "+variable.sear_dpgcd*(active_enemies-1))))>1,cycle_targets=1" );
   vf->add_action(
       "mind_flay,chain=1,interrupt_immediate=1,interrupt_if=ticks>=2&(action."
