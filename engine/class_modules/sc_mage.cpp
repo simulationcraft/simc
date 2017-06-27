@@ -4399,9 +4399,28 @@ struct glacial_spike_t : public frost_mage_spell_t
   {
     if ( cast_state( s ) -> impact_override )
     {
-      double damage = mage_spell_t::calculate_direct_amount( s ) + icicle_damage;
-      s -> result_total = damage;
-      return damage;
+      double base_amount = mage_spell_t::calculate_direct_amount( s );
+      double icicle_amount = icicle_damage;
+
+      // Icicle portion is only affected by target-based damage multipliers.
+      icicle_amount *= s -> target_da_multiplier;
+
+      if ( s -> chain_target > 0 )
+        icicle_amount *= base_aoe_multiplier;
+
+      double amount = base_amount + icicle_amount;
+      s -> result_raw = amount;
+
+      if ( result_is_miss( s -> result ) )
+      {
+        s -> result_total = 0.0;
+        return 0.0;
+      }
+      else
+      {
+        s -> result_total = amount;
+        return amount;
+      }
     }
     else
     {
