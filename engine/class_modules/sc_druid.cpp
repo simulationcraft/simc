@@ -7778,6 +7778,8 @@ void druid_t::apl_balance()
   default_list -> add_action( this, "Celestial Alignment", "if=astral_power>=40" );
   if (items[SLOT_TRINKET_1].name_str == "tarnished_sentinel_medallion" || items[SLOT_TRINKET_2].name_str == "tarnished_sentinel_medallion")
     default_list -> add_action("use_item,name=tarnished_sentinel_medallion,if=cooldown.incarnation.remains>60|cooldown.celestial_alignment.remains>60");
+  if (items[SLOT_TRINKET_1].name_str == "tome_of_unraveling_sanity" || items[SLOT_TRINKET_2].name_str == "tome_of_unraveling_sanity")
+      default_list->add_action("use_item,name=tarnished_sentinel_medallion,if=cooldown.incarnation.remains>30|cooldown.celestial_alignment.remains>30");
   default_list -> add_action( this, "Starfall", "if=buff.oneths_overconfidence.up" );
   default_list -> add_action( this, "Solar Wrath", "if=buff.solar_empowerment.stack=3" );
   default_list -> add_action( this, "Lunar Strike", "if=buff.lunar_empowerment.stack=3" );
