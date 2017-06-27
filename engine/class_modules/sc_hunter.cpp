@@ -4679,14 +4679,9 @@ struct dire_spell_t: public hunter_spell_t
     }
 
     // Adjust BW cd
-    timespan_t t = timespan_t::from_seconds( p() -> specs.dire_beast -> effectN( 1 ).base_value() );
-    // FIXME: spell data still shows the new 4 set as the 2 set, it may be swapped out from under us sometime. For now check for 4 set and use 2 set values.
+    timespan_t t = timespan_t::from_seconds( p() -> specs.bestial_wrath -> effectN( 3 ).base_value() );
     if ( p() -> sets -> has_set_bonus( HUNTER_BEAST_MASTERY, T19, B4 ) )
-    {
-      // t += timespan_t::from_seconds( p() -> sets -> set( HUNTER_BEAST_MASTERY, T19, B2 ) -> effectN( 1 ).base_value() );
-      // Not getting the right number from that for some reason.
-      t += timespan_t::from_seconds( p() -> dbc.effect( 312803 ) -> base_value() );
-    }
+      t += timespan_t::from_seconds( p() -> sets -> set( HUNTER_BEAST_MASTERY, T19, B4 ) -> effectN( 1 ).base_value() );
     p() -> cooldowns.bestial_wrath -> adjust( -t );
 
     if ( p() -> legendary.bm_feet -> ok() )
