@@ -6432,47 +6432,47 @@ void hunter_t::apl_surv()
   CDs -> add_action( this, "Aspect of the Eagle", "if=buff.mongoose_fury.stack>=2&buff.mongoose_fury.remains>3*gcd" );
 
   aoe -> add_talent( this, "Butchery" );
-  aoe -> add_talent( this, "Caltrops", "if=!dot.caltrops.ticking" );
+  aoe -> add_talent( this, "Caltrops", "if=!ticking" );
   aoe -> add_action( this, "Explosive Trap" );
-  aoe -> add_action( this, "Carve", "if=talent.serpent_sting.enabled&!dot.serpent_sting.ticking" );
+  aoe -> add_action( this, "Carve", "if=talent.serpent_sting.enabled&dot.serpent_sting.refreshable" );
   aoe -> add_action( this, "Carve", "if=active_enemies>5" );
 
   preBitePhase -> add_action( this, "Flanking Strike", "if=cooldown.mongoose_bite.charges<3" );
   preBitePhase -> add_talent( this, "Spitting Cobra" );
   preBitePhase -> add_talent( this, "Dragonsfire Grenade" );
-  preBitePhase -> add_action( this, "Raptor Strike", "if=active_enemies=1&talent.serpent_sting.enabled&!dot.serpent_sting.ticking" );
+  preBitePhase -> add_action( this, "Raptor Strike", "if=active_enemies=1&talent.serpent_sting.enabled&dot.serpent_sting.refreshable" );
   preBitePhase -> add_talent( this, "Steel Trap" );
   preBitePhase -> add_talent( this, "A Murder of Crows" );
   preBitePhase -> add_action( this, "Explosive Trap" );
-  preBitePhase -> add_action( this, "Lacerate", "if=!dot.lacerate.ticking|refreshable" );
-  preBitePhase -> add_talent( this, "Butchery", "if=equipped.frizzos_fingertrap&dot.lacerate.remains<3.6" );
-  preBitePhase -> add_action( this, "Carve", "if=equipped.frizzos_fingertrap&dot.lacerate.remains<3.6" );
+  preBitePhase -> add_action( this, "Lacerate", "if=refreshable" );
+  preBitePhase -> add_talent( this, "Butchery", "if=equipped.frizzos_fingertrap&dot.lacerate.refreshable" );
+  preBitePhase -> add_action( this, "Carve", "if=equipped.frizzos_fingertrap&dot.lacerate.refreshable" );
   preBitePhase -> add_action( this, "Mongoose Bite", "if=charges=3&cooldown.flanking_strike.remains>=gcd" );
-  preBitePhase -> add_talent( this, "Caltrops", "if=!dot.caltrops.ticking" );
+  preBitePhase -> add_talent( this, "Caltrops", "if=!ticking" );
   preBitePhase -> add_action( this, "Flanking Strike" );
-  preBitePhase -> add_action( this, "Lacerate", "if=dot.lacerate.remains<14&set_bonus.tier20_2pc" );
+  preBitePhase -> add_action( this, "Lacerate", "if=remains<14&set_bonus.tier20_2pc" );
 
   biteFill -> add_talent( this, "Spitting Cobra" );
   biteFill -> add_talent( this, "Butchery", "if=equipped.frizzos_fingertrap&dot.lacerate.refreshable" );
   biteFill -> add_action( this, "Carve", "if=equipped.frizzos_fingertrap&dot.lacerate.refreshable" );
   biteFill -> add_action( this, "Lacerate", "if=refreshable" );
-  biteFill -> add_action( this, "Raptor Strike", "if=active_enemies=1&talent.serpent_sting.enabled&!dot.serpent_sting.ticking" );
+  biteFill -> add_action( this, "Raptor Strike", "if=active_enemies=1&talent.serpent_sting.enabled&dot.serpent_sting.refreshable" );
   biteFill -> add_talent( this, "Steel Trap" );
   biteFill -> add_talent( this, "A Murder of Crows" );
   biteFill -> add_talent( this, "Dragonsfire Grenade" );
   biteFill -> add_action( this, "Explosive Trap" );
-  biteFill -> add_talent( this, "Caltrops", "if=!dot.caltrops.ticking" );
+  biteFill -> add_talent( this, "Caltrops", "if=!ticking" );
 
   bitePhase -> add_action( this, "Fury of the Eagle", "if=(!talent.way_of_the_moknathal.enabled|buff.moknathal_tactics.remains>(gcd*(8%3)))&buff.mongoose_fury.stack>3&cooldown.mongoose_bite.charges<1&!buff.aspect_of_the_eagle.up"
                                                       ",interrupt_if=(talent.way_of_the_moknathal.enabled&buff.moknathal_tactics.remains<=tick_time)|(cooldown.mongoose_bite.charges=3)" );
   bitePhase -> add_action( this, "Lacerate", "if=!dot.lacerate.ticking&set_bonus.tier20_4pc&buff.mongoose_fury.duration>cooldown.mongoose_bite.charges*gcd" );
   bitePhase -> add_action( this, "Mongoose Bite", "if=charges>=2&cooldown.mongoose_bite.remains<gcd*2" );
-  bitePhase -> add_action( this, "Flanking Strike", "if=((buff.mongoose_fury.remains>(gcd*(cooldown.mongoose_bite.charges+2)))&cooldown.mongoose_bite.charges<=1)&!set_bonus.tier19_4pc" );
-  bitePhase -> add_action( this, "Flanking Strike", "if=((buff.mongoose_fury.remains>(gcd*(cooldown.mongoose_bite.charges+2)))&cooldown.mongoose_bite.charges<=1)&!buff.aspect_of_the_eagle.up&set_bonus.tier19_4pc" );
+  bitePhase -> add_action( this, "Flanking Strike", "if=((buff.mongoose_fury.remains>(gcd*(cooldown.mongoose_bite.charges+2)))&cooldown.mongoose_bite.charges<=1)&"
+                                                        "(!set_bonus.tier19_4pc|(set_bonus.tier19_4pc&!buff.aspect_of_the_eagle.up))" );
   bitePhase -> add_action( this, "Mongoose Bite", "if=buff.mongoose_fury.up" );
   bitePhase -> add_action( this, "Flanking Strike" );
 
-  fillers -> add_action( this, "Carve", "if=active_enemies>1&talent.serpent_sting.enabled&!dot.serpent_sting.ticking" );
+  fillers -> add_action( this, "Carve", "if=active_enemies>1&talent.serpent_sting.enabled&dot.serpent_sting.refreshable" );
   fillers -> add_talent( this, "Throwing Axes" );
   fillers -> add_action( this, "Carve", "if=active_enemies>2" );
   fillers -> add_action( this, "Raptor Strike", "if=(talent.way_of_the_moknathal.enabled&buff.moknathal_tactics.remains<gcd*4)" );
