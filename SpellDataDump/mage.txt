@@ -1,4 +1,4 @@
-SimulationCraft 725-01 for World of Warcraft 7.2.5 Live (wow build 24287, git build 9d7f936)
+SimulationCraft 725-01 for World of Warcraft 7.2.5 Live (wow build 24287, git build 1732361)
 
 Name             : Invisibility (id=66) [Spell Family (3)] 
 Class            : Arcane Fire Frost Mage
@@ -738,7 +738,7 @@ Resource         : 1% Base Mana (0) (id=6406)
 Spell Level      : 10
 Range            : 40 yards
 GCD              : 1.5 seconds
-Velocity         : 50 yards/sec
+Velocity         : 38 yards/sec
 Affecting spells : Shatter (12982 effect#1), Splitting Ice (56377 effect#1), Let It Go (195322 effect#1), Chain Reaction (195418 effect#1), Lonely Winter (205024 effect#1), Magtheridon's Might (214404 effect#1), Norgannon's Foresight (236380 effect#1)
 Triggered by     : Fingers of Frost (44544)
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
@@ -5109,7 +5109,8 @@ Attributes       : ........ ........ .......x x..x....   .....x.. ........ .....
                  : Does not break stealth (37), Not a proc (105)
 Effects          :
 #1 (id=344289)   : School Damage (2): frost
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 11.70000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 17.55000 | Target: Enemy (6)
+                   Hotfixed: SP Coefficient (11.7 -> 17.55), Chain Multiplier (0 -> 1)
 #2 (id=344290)   : Apply Aura (6) | Unknown(455)
                    Base Value: 0 | Scaled Value: 0 | Mechanic: Unknown(58) | Target: Enemy (6)
 Description      : $@spelldesc199786
