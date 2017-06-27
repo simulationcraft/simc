@@ -8938,12 +8938,6 @@ public:
       .operation( hotfix::HOTFIX_SET )
       .modifier( 38.0 )
       .verification_value( 50.0 );
-
-    hotfix::register_effect( "Mage", "2017-06-27", "Glacial Spike base damage has been increased by 50%.", 344289 )
-      .field( "sp_coefficient" )
-      .operation( hotfix::HOTFIX_SET )
-      .modifier( 17.55 )
-      .verification_value( 11.7 );
   }
 
   virtual bool valid() const override { return true; }
