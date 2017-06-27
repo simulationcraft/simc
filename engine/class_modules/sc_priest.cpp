@@ -395,9 +395,10 @@ public:
   // Options
   struct
   {
-    bool autoUnshift           = true;  // Shift automatically out of stance/form
-    bool priest_fixed_time     = true;
-    bool priest_ignore_healing = false;
+    bool autoUnshift            = true;  // Shift automatically out of stance/form
+    bool priest_fixed_time      = true;
+    bool priest_ignore_healing  = false; // Remove Healing calculation codes
+    bool priest_suppress_sephuz = false; // Sephuz's Secret won't proc if set true
   } options;
 
   priest_t( sim_t* sim, const std::string& name, race_e r );
@@ -4853,7 +4854,14 @@ void priest_t::apl_precombat()
     "bonus.tier20_4pc)*set_bonus.tier19_2pc+(3-3*talent.mindbender.enabled*set_"
     "bonus.tier20_4pc)*equipped.mangazas_madness+(6+5*talent.mindbender.enabled)"
     "*set_bonus.tier20_4pc+2*artifact.lash_of_insanity.rank)" );
-
+  precombat->add_action( 
+    "variable,name=dot_swp_dpgcd,op=set,value=38*1.2*(1+0.06*artifact.to_the_pain.rank)"
+     "*(1+0.2+stat.mastery_rating%16000)*0.75" );
+  precombat->add_action( 
+    "variable,name=dot_vt_dpgcd,op=set,value=71*1.2*(1+0.2*talent.sanlayn.enabled)*(1+0.05*artifact.touch_of_darkness.rank)"
+    "*(1+0.2+stat.mastery_rating%16000)*0.5" );
+  precombat->add_action( 
+    "variable,name=sear_dpgcd,op=set,value=80*(1+0.05*artifact.void_corruption.rank)" );
   if ( sim->allow_potions && true_level >= 80 )
   {
     if ( true_level > 100 )
@@ -4913,7 +4921,13 @@ void priest_t::trigger_call_to_the_void(const dot_t* d)
 
 void priest_t::trigger_sephuzs_secret(const action_state_t * state, spell_mechanic mechanic, double proc_chance)
 {
-  switch (mechanic)
+  // Skip the attempt to trigger sephuz if it is suppressed
+  if (options.priest_suppress_sephuz)
+  {
+    return;
+  }
+
+  switch ( mechanic )
   {
     // Interrupts will always trigger sephuz
   case MECHANIC_INTERRUPT:
@@ -5071,13 +5085,13 @@ void priest_t::apl_shadow()
       ">10&(active_enemies<5&(talent.auspicious_spirits.enabled|talent.shadowy_"
       "insight.enabled)),cycle_targets=1" );
   main->add_action(
-      "vampiric_touch,if=active_enemies>1&!talent.misery.enabled&!ticking&(85.2"
-      "*(1+0.2+stat.mastery_rating%16000)*(1+0.2*talent.sanlayn.enabled)*0.5*target."
-      "time_to_die%(gcd.max*(138+80*(active_enemies-1))))>1,cycle_targets=1" );
+      "vampiric_touch,if=active_enemies>1&!talent.misery.enabled&!ticking&(variable"
+      ".dot_vt_dpgcd*target.time_to_die%(gcd.max*(156+variable.sear_dpgcd*(active_"
+      "enemies-1))))>1,cycle_targets=1" );
   main->add_action(
-      "shadow_word_pain,if=active_enemies>1&!talent.misery.enabled&!ticking&(47.12"
-      "*(1+0.2+stat.mastery_rating%16000)*0.75*target.time_to_die%(gcd.max*(138+80*"
-      "(active_enemies-1))))>1,cycle_targets=1" );
+      "shadow_word_pain,if=active_enemies>1&!talent.misery.enabled&!ticking&(variable"
+      ".dot_swp_dpgcd*target.time_to_die%(gcd.max*(156+variable.sear_dpgcd*(active_"
+      "enemies-1))))>1,cycle_targets=1" );
   main->add_action(
       "shadow_word_void,if=talent.shadow_word_void.enabled&(insanity<=75-10*"
       "talent.legacy_of_the_void.enabled)" );
@@ -5195,8 +5209,9 @@ if ( race == RACE_BLOOD_ELF )
       "value)+60))" );
   vf->add_action(
       "mindbender,if=buff.insanity_drain_stacks.value>=(variable.cd_time-(3*set_"
-      "bonus.tier20_4pc*(raid_event.movement.in<15)*((active_enemies-target.adds)=1"
-      "))+(5-3*set_bonus.tier20_4pc)*buff.bloodlust.up+2*talent.fortress_of_the_mind"
+      "bonus.tier20_4pc*(raid_event.movement.in<15)*((active_enemies-(raid_event."
+      "adds.count*(raid_event.adds.remains>0)))=1))+(5-3*set_bonus.tier20_4pc)*buff"
+      ".bloodlust.up+2*talent.fortress_of_the_mind"
       ".enabled*set_bonus.tier20_4pc)&(!talent.surrender_to_madness.enabled|(talent."
       "surrender_to_madness.enabled&target.time_to_die>variable.s2mcheck-buff.insanity"
       "_drain_stacks.value))" );
@@ -5251,14 +5266,13 @@ if ( race == RACE_BLOOD_ELF )
       "sanlayn.enabled|(talent.auspicious_spirits.enabled&artifact.unleash_the_"
       "shadows.rank))" );
   vf->add_action(
-      "vampiric_touch,if=active_enemies>1&!talent.misery.enabled&!ticking&(85.2*"
-      "(1+0.02*buff.voidform.stack)*(1+0.2+stat.mastery_rating%16000)*(1+0.2*talent."
-      "sanlayn.enabled)*0.5*target.time_to_die%(gcd.max*(138+80*(active_enemies-1)"
-      ")))>1,cycle_targets=1" );
+      "vampiric_touch,if=active_enemies>1&!talent.misery.enabled&!ticking&((1+0.02"
+      "*buff.voidform.stack)*variable.dot_vt_dpgcd*target.time_to_die%(gcd.max*(156"
+      "+variable.sear_dpgcd*(active_enemies-1))))>1,cycle_targets=1" );
   vf->add_action(
-      "shadow_word_pain,if=active_enemies>1&!talent.misery.enabled&!ticking&(47.12"
-      "*(1+0.02*buff.voidform.stack)*(1+0.2+stat.mastery_rating%16000)*0.75*target."
-      "time_to_die%(gcd.max*(138+80*(active_enemies-1))))>1,cycle_targets=1" );
+      "shadow_word_pain,if=active_enemies>1&!talent.misery.enabled&!ticking&((1+0.02"
+      "*buff.voidform.stack)*variable.dot_swp_dpgcd*target.time_to_die%(gcd.max*(156"
+      "+variable.sear_dpgcd*(active_enemies-1))))>1,cycle_targets=1" );
   vf->add_action(
       "mind_flay,chain=1,interrupt_immediate=1,interrupt_if=ticks>=2&(action."
       "void_"
@@ -5545,6 +5559,7 @@ void priest_t::create_options()
   add_option( opt_bool( "autounshift", options.autoUnshift ) );
   add_option( opt_bool( "priest_fixed_time", options.priest_fixed_time ) );
   add_option( opt_bool( "priest_ignore_healing", options.priest_ignore_healing ) );
+  add_option( opt_bool( "priest_suppress_sephuz", options.priest_suppress_sephuz ) );
 }
 
 std::string priest_t::create_profile( save_e type )

@@ -480,11 +480,11 @@ public:
   } rppm;
 
   // Shuffled proc objects
-  struct suffled_procs_t
+  struct shuffled_rngs_t
   {
     // Havoc
-    shuffled_proc_t* chaos_theory;
-  } shuffled_procs;
+    shuffled_rng_t* chaos_theory;
+  } shuffled_rngs;
 
   // Special
   struct
@@ -3379,7 +3379,7 @@ struct blade_dance_base_t : public demon_hunter_attack_t
     // Chaos Theory Legendary Cloak
     if (p()->legendary.chaos_theory)
     {
-      if (p()->shuffled_procs.chaos_theory->trigger())
+      if (p()->shuffled_rngs.chaos_theory->trigger())
       {
         p()->proc.chaos_theory->occur();
         
@@ -8121,7 +8121,7 @@ namespace items
 
       const int total_entries = 20; // 6/23/2017 -- Reddit AMA Comment
       const int success_entries = (int)util::round(dh->legendary.chaos_theory->effectN(1).percent() * total_entries);
-      dh->shuffled_procs.chaos_theory = dh->get_shuffled_proc("chaos_theory", success_entries, total_entries);
+      dh->shuffled_rngs.chaos_theory = dh->get_shuffled_rng("chaos_theory", success_entries, total_entries);
     }
   };
 
@@ -8228,6 +8228,30 @@ public:
 
   void register_hotfixes() const override
   {
+
+    hotfix::register_effect("Demon Hunter", "2017-06-26", "Damage of all abilities increased by 2%. (Direct)", 315240)
+      .field("base_value")
+      .operation(hotfix::HOTFIX_ADD)
+      .modifier(2)
+      .verification_value(9);
+
+    hotfix::register_effect("Demon Hunter", "2017-06-26", "Damage of all abilities increased by 2%. (Periodic)", 315241)
+      .field("base_value")
+      .operation(hotfix::HOTFIX_ADD)
+      .modifier(2)
+      .verification_value(9);
+
+    hotfix::register_effect("Demon Hunter", "2017-06-26", "Demon's Bite damage increased by 46%.", 227731)
+      .field("base_value")
+      .operation(hotfix::HOTFIX_MUL)
+      .modifier(1.462)
+      .verification_value(260);
+
+    hotfix::register_effect("Demon Hunter", "2017-06-26", "Effect of Mastery: Demonic Presence (damage only) increased by 7%.", 268563)
+      .field("sp_coefficient")
+      .operation(hotfix::HOTFIX_MUL)
+      .modifier(1.07)
+      .verification_value(1.4);
   }
 
   void combat_begin( sim_t* ) const override
