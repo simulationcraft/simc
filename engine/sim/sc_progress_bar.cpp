@@ -181,7 +181,7 @@ bool progress_bar_t::update_simple( const sim_progress_t& progress, bool finishe
     }
   }
 
-  if ( ! finished )
+  if ( ! finished && total_work() > 0 )
   {
     auto average_spent = average_simulation_time();
     auto phases_left = total_work() - current_progress();
@@ -279,16 +279,19 @@ bool progress_bar_t::update_normal( const sim_progress_t& progress, bool finishe
   }
   else
   {
-    auto average_spent = average_simulation_time();
-    auto phases_left = total_work() - current_progress();
-    auto time_left = std::max( 0.0, average_spent - ( util::wall_time() - start_time ) );
-    auto total_left = phases_left * average_spent + time_left;
-
-    if ( total_left > 0 )
+    if ( total_work() > 0 )
     {
-      status += " (";
-      status += format_time( total_left );
-      status += ")";
+      auto average_spent = average_simulation_time();
+      auto phases_left = total_work() - current_progress();
+      auto time_left = std::max( 0.0, average_spent - ( util::wall_time() - start_time ) );
+      auto total_left = phases_left * average_spent + time_left;
+
+      if ( total_left > 0 )
+      {
+        status += " (";
+        status += format_time( total_left );
+        status += ")";
+      }
     }
   }
 
@@ -371,10 +374,10 @@ size_t progress_bar_t::compute_total_phases()
     return sim.parent -> progress_bar.compute_total_phases();
   }
 
-  //if ( total_work_ > 0 )
-  //{
-  //  return total_work_;
-  //}
+  if ( total_work_ > 0 )
+  {
+    return total_work_;
+  }
 
   size_t n_actors = 1;
   if ( sim.single_actor_batch )
@@ -388,13 +391,20 @@ size_t progress_bar_t::compute_total_phases()
     reforge_plot_phases = n_actors * sim.reforge_plot -> num_stat_combos;
   }
 
-  total_work_ = n_actors /* baseline */ +
-               n_scale_factor_phases() +
-               n_plot_phases() +
-               n_reforge_plot_phases() +
-               sim.profilesets.n_profilesets();
+  auto work = n_actors /* baseline */ +
+              n_scale_factor_phases() +
+              n_plot_phases() +
+              n_reforge_plot_phases() +
+              sim.profilesets.n_profilesets();
 
-  return total_work_;
+  // Once profilesets have all been constructed, cache the total work done since we can determine
+  // the maximum number of phases then
+  if ( sim.profilesets.is_running() )
+  {
+    total_work_ = work;
+  }
+
+  return total_work_ > 0 ? total_work_ : work;
 }
 
 void progress_bar_t::set_base( const std::string& base )
