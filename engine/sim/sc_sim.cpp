@@ -2495,10 +2495,7 @@ bool sim_t::init()
     }
   }
 
-  if ( ! profileset_enabled )
-  {
-    profilesets.initialize( this );
-  }
+  profilesets.initialize( this );
 
   initialized = true;
 

@@ -248,6 +248,11 @@ bool profilesets_t::parse( sim_t* sim )
 
 void profilesets_t::initialize( sim_t* sim )
 {
+  if ( sim -> profileset_enabled || sim -> parent || sim -> thread_index > 0 )
+  {
+    return;
+  }
+
   m_profilesets.reserve( sim -> profileset_map.size() + 1 );
 
   m_thread = std::thread([ this, sim ]() {
