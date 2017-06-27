@@ -7405,7 +7405,7 @@ std::string druid_t::default_flask() const
 }
 std::string druid_t::default_potion() const
 {
-   std::string balance_pot =  (true_level > 100) ? "deadly_grace" :
+   std::string balance_pot =  (true_level > 100) ? "potion_of_prolonged_power" :
                               (true_level >= 90) ? "draenic_intellect" :
                               (true_level >= 85) ? "jade_serpent" :
                               (true_level >= 80) ? "volcanic" :
@@ -7740,7 +7740,7 @@ void druid_t::apl_balance()
   std::vector<std::string> item_actions   = get_item_actions();
   std::string              potion_action  = "potion,name=";
   if ( true_level > 100 )
-    potion_action += "deadly_grace";
+    potion_action += "potion_of_prolonged_power";
   else if ( true_level > 90 )
     potion_action += "draenic_intellect";
   else if ( true_level > 85 )
@@ -7776,6 +7776,8 @@ void druid_t::apl_balance()
   default_list -> add_talent( this, "Astral Communion", "if=astral_power.deficit>=71" );
   default_list -> add_action( "incarnation,if=astral_power>=40" );
   default_list -> add_action( this, "Celestial Alignment", "if=astral_power>=40" );
+  if (items[SLOT_TRINKET_1].name_str == "tarnished_sentinel_medallion" || items[SLOT_TRINKET_2].name_str == "tarnished_sentinel_medallion")
+    default_list -> add_action("use_item,name=tarnished_sentinel_medallion,if=cooldown.incarnation.remains>60|cooldown.celestial_alignment.remains>60");
   default_list -> add_action( this, "Starfall", "if=buff.oneths_overconfidence.up" );
   default_list -> add_action( this, "Solar Wrath", "if=buff.solar_empowerment.stack=3" );
   default_list -> add_action( this, "Lunar Strike", "if=buff.lunar_empowerment.stack=3" );
