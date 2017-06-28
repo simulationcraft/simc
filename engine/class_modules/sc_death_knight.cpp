@@ -3205,6 +3205,7 @@ struct necrobomb_t : public death_knight_spell_t
   }
 
   // 2016-08-22 Necrobomb is not affected by Feast of Souls because reasons.
+  // 2017-06-28 Same for T20 2PC set bonus
   double action_multiplier() const override
   {
     double m = death_knight_spell_t::action_multiplier();
@@ -3213,6 +3214,8 @@ struct necrobomb_t : public death_knight_spell_t
     {
       m /= 1.0 + p() -> artifact.feast_of_souls.percent();
     }
+
+    m /= 1.0 + p() -> buffs.t20_2pc_unholy -> check_value();
 
     return m;
   }
