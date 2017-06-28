@@ -4714,7 +4714,7 @@ void consumable::lavish_suramar_feast( special_effect_t& effect )
   }
 
   // TODO: Is this actually spec specific?
-  if ( effect.player -> role == ROLE_TANK )
+  if ( effect.player -> role == ROLE_TANK && !effect.player->sim->expansion_opts.lavish_feast_as_dps )
   {
     effect.stat = STAT_STAMINA;
     effect.trigger_spell_id = 201641;

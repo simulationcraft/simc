@@ -1653,11 +1653,12 @@ struct sim_t : private sc_thread_t
   {
     // Legion
     int                 infernal_cinders_users;
+    bool                lavish_feast_as_dps;
     int                 engine_of_eradication_orbs;
     std::vector<double> cradle_of_anguish_resets;
 
     expansion_opt_t() :
-      infernal_cinders_users( 1 ), engine_of_eradication_orbs( 4 )
+      infernal_cinders_users( 1 ), engine_of_eradication_orbs( 4 ), lavish_feast_as_dps(true)
     { }
   } expansion_opts;
 
