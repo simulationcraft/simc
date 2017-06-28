@@ -6546,7 +6546,7 @@ void warlock_t::create_buffs()
   buffs.lessons_of_spacetime = buff_creator_t( this, "lessons_of_spacetime", find_spell( 236176 ) )
     .default_value( find_spell( 236176 ) -> effectN( 1 ).percent() )
     .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
-    .refresh_behavior( BUFF_REFRESH_NONE )
+    .refresh_behavior( BUFF_REFRESH_DISABLED )
     .tick_behavior( BUFF_TICK_NONE );
   buffs.sephuzs_secret =
     haste_buff_creator_t( this, "sephuzs_secret", find_spell( 208052 ) )
@@ -6575,7 +6575,7 @@ void warlock_t::create_buffs()
   buffs.compounding_horror = buff_creator_t( this, "compounding_horror", find_spell( 199281 ) );
   buffs.active_uas = buff_creator_t( this, "active_uas" )
     .tick_behavior( BUFF_TICK_NONE )
-    .refresh_behavior( BUFF_REFRESH_NONE )
+    .refresh_behavior( BUFF_REFRESH_DISABLED )
     .max_stack( 20 );
   buffs.demonic_speed = haste_buff_creator_t( this, "demonic_speed", sets -> set( WARLOCK_AFFLICTION, T20, B4 ) -> effectN( 1 ).trigger() )
     .chance( sets -> set( WARLOCK_AFFLICTION, T20, B4 ) -> proc_chance() )
@@ -6607,7 +6607,7 @@ void warlock_t::create_buffs()
     .chance( sets->set( WARLOCK_DESTRUCTION, T19, B2 ) -> proc_chance() );
   buffs.active_havoc = buff_creator_t( this, "active_havoc" )
     .tick_behavior( BUFF_TICK_NONE )
-    .refresh_behavior( BUFF_REFRESH_NONE )
+    .refresh_behavior( BUFF_REFRESH_DISABLED )
     .duration( timespan_t::from_seconds( 10 ) );
 }
 
