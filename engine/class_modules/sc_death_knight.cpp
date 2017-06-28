@@ -3216,14 +3216,6 @@ struct necrobomb_t : public death_knight_spell_t
 
     return m;
   }
-
-  void init() override
-  {
-    death_knight_spell_t::init();
-
-    // TODO: 2016-07-30: Versatility does not affect necrobomb in game, check later
-    snapshot_flags &= ~STATE_VERSATILITY;
-  }
 };
 
 // Pestilence ===============================================================
