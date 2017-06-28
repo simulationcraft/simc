@@ -5740,9 +5740,11 @@ void rogue_t::trigger_shadow_techniques( const action_state_t* state )
   {
     return;
   }
+  if (sim -> debug) sim -> out_debug.printf( "Melee attack landed, so shadow techniques increment from %d to %d", shadow_techniques, shadow_techniques+1);
 
   if ( ++shadow_techniques == 5 || ( shadow_techniques == 4 && rng().roll( 0.5 ) ) )
   {
+    if (sim -> debug) sim -> out_debug.printf( "Shadow techniques proc'd at %d", shadow_techniques);
     double cp = 1;
     if ( rng().roll( artifact.fortunes_bite.percent() ) )
     {
@@ -5755,7 +5757,7 @@ void rogue_t::trigger_shadow_techniques( const action_state_t* state )
     }
 
     trigger_combo_point_gain( cp, gains.shadow_techniques, state -> action );
-
+    if (sim -> debug) sim -> out_debug.printf( "Resetting shadow_techniques counter to zero.");
     shadow_techniques = 0;
   }
 }
@@ -7584,30 +7586,44 @@ expr_t* rogue_t::create_expression( action_t* a, const std::string& name_str )
       timespan_t return_value = timespan_t::from_seconds( 0.0 );
       if ( strtoul( split[ 1 ].c_str(), nullptr, 0 ) > shadow_techniques ) {
         unsigned remaining_aa = 5 - shadow_techniques;
-        timespan_t mh_next_swing = main_hand_attack -> execute_event -> remains();
-        timespan_t oh_next_swing = off_hand_attack -> execute_event -> remains();
+        if (sim -> debug) sim -> out_debug.printf( "Inside the shadowtechniques handler, remaining_aa = %u", remaining_aa);
         timespan_t mh_swing_time = main_hand_attack -> execute_time();
         timespan_t oh_swing_time = off_hand_attack -> execute_time();
+        if (sim -> debug) {
+          sim -> out_debug.printf( "mh_swing_time, oh_swing_time: %.3f, %.3f", mh_swing_time.total_seconds(), oh_swing_time.total_seconds());
+        }
+
+        timespan_t mh_next_swing;
+        if (main_hand_attack -> execute_event == nullptr) {
+          mh_next_swing = mh_swing_time;
+        } else {
+          mh_next_swing = main_hand_attack -> execute_event -> remains();
+        }
+        if (sim -> debug) sim -> out_debug.printf( "Main hand next_swing in: %.3f", mh_next_swing.total_seconds());
+
+        timespan_t oh_next_swing;
+        if (off_hand_attack -> execute_event == nullptr) {
+          oh_next_swing = oh_swing_time;
+        } else {
+          oh_next_swing = off_hand_attack -> execute_event -> remains();
+        }
+        if (sim -> debug) sim -> out_debug.printf( "Off hand next_swing in: %.3f", oh_next_swing.total_seconds());
 
         if ( remaining_aa == 1 ) {
           return_value = std::min( mh_next_swing, oh_next_swing );
         } else if ( remaining_aa == 2 ) {
           return_value = std::max( mh_next_swing, oh_next_swing );
-        } else {
-          timespan_t total_time = std::max( mh_next_swing, oh_next_swing );
-          for ( unsigned i = remaining_aa - 2; i > 0; i -= 2 )
-          {
-            if ( i == 1 ) {
-              total_time += std::min( mh_swing_time, oh_swing_time );
-            } else if ( i >= 2 ) {
-              total_time += std::max( mh_swing_time, oh_swing_time );
-            }
-          }
-          return_value = total_time;
+        } else if ( remaining_aa == 3 ) {
+          return_value = std::max( mh_next_swing, oh_next_swing ) + std::min( mh_swing_time, oh_swing_time );
+        } else if ( remaining_aa == 4 ) {
+          return_value = std::max( mh_next_swing, oh_next_swing ) + std::max( mh_swing_time, oh_swing_time );
+        } else if ( remaining_aa == 5 ) {
+          return_value = std::max( mh_next_swing, oh_next_swing ) + std::max( mh_swing_time, oh_swing_time ) + std::min( mh_swing_time, oh_swing_time );
         }
       } else {
         return_value = timespan_t::from_seconds( 0.0 );
       }
+      if (sim -> debug) sim -> out_debug.printf( "Shadow techniques return value is: %.3f", return_value.total_seconds());
     return return_value;
     } );
   }
