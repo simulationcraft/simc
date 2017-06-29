@@ -7021,6 +7021,17 @@ void druid_t::init_spells()
   // Active Actions =========================================================
 
   caster_melee_attack = new caster_attacks::druid_melee_t( this );
+  if ( !this -> cat_melee_attack )
+  {
+     this -> init_beast_weapon( this -> cat_weapon, 1.0 );
+     this -> cat_melee_attack = new cat_attacks::cat_melee_t( this );
+  }
+
+  if ( !this -> bear_melee_attack )
+  {
+     this -> init_beast_weapon( this->bear_weapon, 2.5 );
+     this -> bear_melee_attack = new bear_attacks::bear_melee_t( this );
+  }
 
   if ( talent.cenarion_ward -> ok() )
     active.cenarion_ward_hot  = new heals::cenarion_ward_hot_t( this );
