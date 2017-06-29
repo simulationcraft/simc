@@ -4875,7 +4875,7 @@ struct death_from_above_t : public rogue_attack_t
 
     p() -> buffs.death_from_above -> trigger();
 
-    timespan_t oor_delay = timespan_t::from_seconds( rng().gauss( 1.3, 0.025 ) );
+    timespan_t oor_delay = timespan_t::from_seconds( rng().gauss( 1.475, 0.025 ) );
 
     adjust_attack( player -> main_hand_attack, oor_delay );
     adjust_attack( player -> off_hand_attack, oor_delay );
@@ -4884,25 +4884,8 @@ struct death_from_above_t : public rogue_attack_t
     // trigger on the first tick. This is no longer the case, but as a bandaid fix,
     // we're going to continue to model it as one, so force the DfA driver to
     // behave like a DoT.
-    driver->base_tick_time = oor_delay;
-    driver->dot_duration = oor_delay;
-
-/*
-    // Apparently DfA is out of range for ~0.8 seconds during the "attack", so
-    // ensure that we have a swing timer of at least 800ms on both hands. Note
-    // that this can sync autoattacks which also happens in game.
-    if ( player -> main_hand_attack && player -> main_hand_attack -> execute_event )
-    {
-      if ( player -> main_hand_attack -> execute_event -> remains() < timespan_t::from_seconds( 0.8 ) )
-        player -> main_hand_attack -> execute_event -> reschedule( timespan_t::from_seconds( 0.8 ) );
-    }
-
-    if ( player -> off_hand_attack && player -> off_hand_attack -> execute_event )
-    {
-      if ( player -> off_hand_attack -> execute_event -> remains() < timespan_t::from_seconds( 0.8 ) )
-        player -> off_hand_attack -> execute_event -> reschedule( timespan_t::from_seconds( 0.8 ) );
-    }
-*/
+    driver -> base_tick_time = oor_delay;
+    driver -> dot_duration = oor_delay;
 
     // WM + DfA bug implementation, see: https://github.com/Ravenholdt-TC/Rogue/issues/25
     wm_finisher_cancel = false;
@@ -8111,8 +8094,8 @@ void rogue_t::create_buffs()
                                   .default_value( find_spell( 193538 ) -> effectN( 1 ).percent() )
                                   .chance( talent.alacrity -> ok() );
   buffs.death_from_above        = buff_creator_t( this, "death_from_above", spell.death_from_above )
-                                  // Note: Duration is hardcoded to 1.3s to match the current model and then let it trackable in the APL
-                                  .duration( timespan_t::from_seconds( 1.3 ) )
+                                  // Note: Duration is hardcoded to 1.475s to match the current model and then let it trackable in the APL
+                                  .duration( timespan_t::from_seconds( 1.475 ) )
                                   .quiet( true );
   buffs.subterfuge              = new buffs::subterfuge_t( this );
   // Assassination
