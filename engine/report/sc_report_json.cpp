@@ -1522,6 +1522,12 @@ void to_json( JsonOutput root, const sim_t& sim )
     to_json( players_arr, *p );
   } );
 
+  if ( sim.profilesets.n_profilesets() > 0 )
+  {
+    auto profileset_root = root[ "profilesets" ];
+    sim.profilesets.output( sim, profileset_root );
+  }
+
   if ( sim.report_details != 0 )
   {
     // Targets
@@ -1763,6 +1769,11 @@ void print_json( sim_t& sim )
     try
     {
       Timer t( "JSON report" );
+      if ( ! sim.profileset_enabled )
+      {
+        t.start();
+      }
+
       print_json_pretty( s, sim );
     }
     catch ( const std::exception& e )
@@ -1786,6 +1797,10 @@ void print_json( sim_t& sim )
     try
     {
       Timer t( "JSON-New report" );
+      if ( ! sim.profileset_enabled )
+      {
+        t.start();
+      }
       print_json2_pretty( s, sim );
     }
     catch ( const std::exception& e )

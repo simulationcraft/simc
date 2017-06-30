@@ -465,7 +465,10 @@ bool parse_specialization( sim_t* sim,
   sim -> active_player -> _spec = dbc::translate_spec_str( sim -> active_player -> type, value );
 
   if ( sim -> active_player -> _spec == SPEC_NONE )
+  {
     sim -> errorf( "\n%s specialization string \"%s\" not valid.\n", sim -> active_player-> name(), value.c_str() );
+    return false;
+  }
 
   return true;
 }

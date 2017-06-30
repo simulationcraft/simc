@@ -109,7 +109,6 @@ namespace highchart {
   struct chart_t;
 }
 
-
 #include "dbc/data_enums.hh"
 #include "dbc/data_definitions.hh"
 #include "util/utf8.h"
@@ -139,6 +138,8 @@ namespace highchart {
 
 // Cache Control ============================================================
 #include "util/cache.hpp"
+
+#include "sim/sc_profileset.hpp"
 
 // Talent Translation =======================================================
 
@@ -1308,15 +1309,35 @@ struct progress_bar_t
   int steps, updates, interval, update_number;
   double start_time, last_update, max_interval_time;
   std::string status;
+  std::string base_str, phase_str;
+  size_t work_index, total_work_;
+  double elapsed_time;
+  size_t time_count;
 
   progress_bar_t( sim_t& s );
   void init();
   bool update( bool finished = false, int index = -1 );
   void output( bool finished = false );
   void restart();
+  void progress();
+  void set_base( const std::string& base );
+  void set_phase( const std::string& phase );
+  void add_simulation_time( double t );
+  size_t current_progress() const;
+  size_t total_work() const;
+  double average_simulation_time() const;
+
+  static std::string format_time( double t );
 private:
+  size_t compute_total_phases();
   bool update_simple( const sim_progress_t&, bool finished, int index );
   bool update_normal( const sim_progress_t&, bool finished, int index );
+
+  size_t n_stat_scaling_players( const std::string& stat ) const;
+  // Compute the number of various option-related phases
+  size_t n_plot_phases() const;
+  size_t n_reforge_plot_phases() const;
+  size_t n_scale_factor_phases() const;
 };
 
 /* Encapsulated Vector
@@ -1854,6 +1875,12 @@ struct sim_t : private sc_thread_t
   bool display_hotfixes, disable_hotfixes;
   bool display_bonus_ids;
 
+  // Profilesets
+  opts::map_list_t profileset_map;
+  profileset::profilesets_t profilesets;
+  scale_metric_e profileset_metric;
+  bool profileset_enabled;
+
   sim_t( sim_t* parent = nullptr, int thread_index = 0 );
   virtual ~sim_t();
 
@@ -1883,8 +1910,6 @@ struct sim_t : private sc_thread_t
   void      merge( sim_t& other_sim );
   void      merge();
   bool      iterate();
-  void      set_sim_base_str( const std::string& base );
-  void      update_sim_phase_str();
   void      partition();
   bool      execute();
   void      analyze_error();

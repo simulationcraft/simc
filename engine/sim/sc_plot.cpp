@@ -172,7 +172,7 @@ void plot_t::analyze_stats()
         //delta_sim->enchant.add_stat( i, j * dps_plot_step );
         delta_sim->scaling->scale_stat = i;
         delta_sim->scaling->scale_value = j * dps_plot_step;
-        delta_sim->set_sim_base_str( util::to_string( j * dps_plot_step ) + " " + util::stat_type_abbrev( i ) );
+        delta_sim->progress_bar.set_base( util::to_string( j * dps_plot_step ) + " " + util::stat_type_abbrev( i ) );
         delta_sim->execute();
         if ( dps_plot_debug )
         {

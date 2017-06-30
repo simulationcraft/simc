@@ -1400,6 +1400,8 @@ void print_html_( report::sc_html_stream& os, sim_t& sim )
     }
   }
 
+  sim.profilesets.output( sim, os );
+
   print_html_sim_summary( os, sim );
 
   if ( sim.report_raw_abilities )
@@ -1508,6 +1510,10 @@ void print_html( sim_t& sim )
     return;
 
   Timer t( "html report" );
+  if ( ! sim.profileset_enabled )
+  {
+    t.start();
+  }
 
   // Setup file stream and open file
   report::sc_html_stream s;
