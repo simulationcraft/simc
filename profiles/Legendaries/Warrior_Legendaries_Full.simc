@@ -58,6 +58,9 @@ waist=rethus_incessant_courage,id=146667,ilevel=$(iLvl),gems=150haste/150haste/1
 copy=Fury_$(Tier)_Najentus_Vertebrae,Fury_$(Tier)_Baseline
 waist=najentus_vertebrae,id=137087,ilevel=$(iLvl)
 
+copy=Fury_$(Tier)_Valarjar_Berserkers,Fury_$(Tier)_Baseline
+legs=valarjar_berserkers,id=151824,ilevel=$(iLvl)
+
 copy=Fury_$(Tier)_Ayalas_Stone_Heart,Fury_$(Tier)_Baseline
 finger2=ayalas_stone_heart,id=137052,ilevel=$(iLvl),gems=150haste,enchant=binding_of_haste
 
@@ -73,6 +76,10 @@ trinket2=kiljaedens_burning_wish,id=144259,ilevel=$(iLvl)
 ### Arms ###
 input=Warrior_Arms_$(Tier).simc
 name=Arms_$(Tier)_Baseline
+
+copy=Arms_$(Tier)_The_Great_Storms_Eye,Arms_$(Tier)_Baseline
+head=the_great_storms_eye,id=137060,ilevel=$(iLvl)
+legs=legplates_of_the_obsidian_aspect,id=138360,ilevel=$(iLvl)
 
 copy=Arms_$(Tier)_Archavons_Heavy_Hand,Arms_$(Tier)_Baseline
 hands=archavons_heavy_hand,id=137060,ilevel=$(iLvl)
