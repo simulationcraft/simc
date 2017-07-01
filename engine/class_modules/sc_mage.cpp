@@ -2449,8 +2449,25 @@ struct arcane_barrage_t : public arcane_mage_spell_t
 
   virtual void execute() override
   {
+    // Mantle of the First Kirin Tor has some really weird interactions. When ABar is cast, the number
+    // of targets is decided first, then the roll for Arcane Orb happens. If it succeeds, Orb is cast
+    // and the mage gains an Arcane Charge. This extra charge counts towards the bonus damage and also
+    // towards Mystic Kilt of the Rune Master. After everything is done, Arcane Charges are reset.
+    //
+    // Hard to tell which part (if any) is a bug.
+    // TODO: Check this.
     int charges = p() -> buffs.arcane_charge -> check();
     aoe = ( charges == 0 ) ? 0 : 1 + charges;
+
+    if ( rng().roll( mantle_of_the_first_kirin_tor_chance * charges ) )
+    {
+      assert( p() -> action.legendary_arcane_orb );
+      p() -> action.legendary_arcane_orb -> set_target( execute_state -> target );
+      p() -> action.legendary_arcane_orb -> execute();
+
+      // Update charges for Mystic Kilt of the Rune Master mana gain.
+      charges = p() -> buffs.arcane_charge -> check();
+    }
 
     p() -> benefits.arcane_charge.arcane_barrage -> update();
 
@@ -2463,13 +2480,6 @@ struct arcane_barrage_t : public arcane_mage_spell_t
     }
 
     arcane_mage_spell_t::execute();
-
-    if ( rng().roll( mantle_of_the_first_kirin_tor_chance * charges ) )
-    {
-      assert( p() -> action.legendary_arcane_orb );
-      p() -> action.legendary_arcane_orb -> set_target( execute_state -> target );
-      p() -> action.legendary_arcane_orb -> execute();
-    }
 
     p() -> buffs.arcane_charge -> expire();
   }
