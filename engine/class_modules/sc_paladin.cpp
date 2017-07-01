@@ -3707,6 +3707,11 @@ struct shield_of_vengeance_proc_t : public paladin_spell_t
     aoe = -1;
   }
 
+  void init() override {
+    paladin_spell_t::init();
+    snapshot_flags = 0;
+  }
+
   proc_types proc_type() const
   {
     return PROC1_MELEE_ABILITY;
