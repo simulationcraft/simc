@@ -2465,7 +2465,7 @@ struct arcane_barrage_t : public arcane_mage_spell_t
     if ( rng().roll( mantle_of_the_first_kirin_tor_chance * charges ) )
     {
       assert( p() -> action.legendary_arcane_orb );
-      p() -> action.legendary_arcane_orb -> set_target( execute_state -> target );
+      p() -> action.legendary_arcane_orb -> set_target( target );
       p() -> action.legendary_arcane_orb -> execute();
 
       // Update charges for Mystic Kilt of the Rune Master mana gain.
