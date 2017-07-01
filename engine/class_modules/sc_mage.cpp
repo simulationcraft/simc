@@ -354,6 +354,9 @@ public:
     pets::water_elemental::water_elemental_pet_t* water_elemental;
 
     std::vector<pet_t*> mirror_images;
+
+    pets_t() : water_elemental( nullptr )
+    {}
   } pets;
 
   // Procs
@@ -6169,7 +6172,7 @@ struct water_jet_t : public action_t
 
     if ( m -> pets.water_elemental && ! action )
     {
-      action = debug_cast<pets::water_elemental::water_jet_t*>( m -> pets.water_elemental -> find_action( "water_jet" ) );
+      action = dynamic_cast<pets::water_elemental::water_jet_t*>( m -> pets.water_elemental -> find_action( "water_jet" ) );
       if ( action )
       {
         action -> autocast = false;
