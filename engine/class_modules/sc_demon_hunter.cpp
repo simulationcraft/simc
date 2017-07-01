@@ -6880,6 +6880,10 @@ void add_havoc_use_items( demon_hunter_t* p, action_priority_list_t* apl )
       {
         line += ",if=(active_enemies>desired_targets)|raid_event.adds.in>75";
       }
+      else if (util::str_compare_ci(p->items[i].name_str, "bloodstained_handkerchief"))
+      {
+        line += ",cycle_targets=1,if=!dot.cruel_garrote.ticking";
+      }
       else
       {
         const timespan_t use_cd = effect -> cooldown();
