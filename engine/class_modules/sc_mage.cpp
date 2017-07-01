@@ -6111,8 +6111,8 @@ struct freeze_t : public action_t
 
     if ( m -> pets.water_elemental && ! action )
     {
-      action         = debug_cast<pets::water_elemental::freeze_t*   >( m -> pets.water_elemental -> find_action( "freeze"    ) );
-      auto water_jet = debug_cast<pets::water_elemental::water_jet_t*>( m -> pets.water_elemental -> find_action( "water_jet" ) );
+      action         = dynamic_cast<pets::water_elemental::freeze_t*   >( m -> pets.water_elemental -> find_action( "freeze"    ) );
+      auto water_jet = dynamic_cast<pets::water_elemental::water_jet_t*>( m -> pets.water_elemental -> find_action( "water_jet" ) );
       if ( action && water_jet )
       {
         water_jet -> autocast = false;
