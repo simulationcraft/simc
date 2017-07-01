@@ -1532,9 +1532,7 @@ public:
       p() -> buffs.ice_floes -> decrement();
     }
 
-    if ( p() -> specialization() == MAGE_ARCANE &&
-         result_is_hit( execute_state -> result ) &&
-         triggers_arcane_missiles )
+    if ( p() -> specialization() == MAGE_ARCANE && hit_any_target && triggers_arcane_missiles )
     {
       trigger_am( am_trigger_source_id );
     }
@@ -2606,7 +2604,7 @@ struct arcane_blast_t : public arcane_mage_spell_t
 
     p() -> buffs.arcane_charge -> up();
 
-    if ( result_is_hit( execute_state -> result ) )
+    if ( hit_any_target )
     {
       trigger_am( am_trigger_source_id,
                   p() -> buffs.arcane_missiles -> proc_chance() * 2.0 );
@@ -2726,7 +2724,7 @@ struct arcane_explosion_t : public arcane_mage_spell_t
 
     p() -> buffs.arcane_charge -> up();
 
-    if ( result_is_hit( execute_state -> result ) )
+    if ( hit_any_target )
     {
       trigger_arcane_charge();
     }
@@ -4059,7 +4057,7 @@ struct frost_bomb_t : public frost_mage_spell_t
   {
     frost_mage_spell_t::execute();
 
-    if ( result_is_hit( execute_state -> result ) )
+    if ( hit_any_target )
     {
       if ( p() -> last_bomb_target != nullptr &&
            p() -> last_bomb_target != execute_state -> target )
@@ -4136,7 +4134,7 @@ struct frostbolt_t : public frost_mage_spell_t
 
     p() -> buffs.icicles -> trigger();
 
-    if ( result_is_hit( execute_state -> result ) )
+    if ( hit_any_target )
     {
       double fof_proc_chance = p() -> spec.fingers_of_frost -> effectN( 1 ).percent();
       fof_proc_chance *= 1.0 + p() -> talents.frozen_touch -> effectN( 1 ).percent();
@@ -4280,7 +4278,7 @@ struct frozen_orb_bolt_t : public frost_mage_spell_t
   virtual void execute() override
   {
     frost_mage_spell_t::execute();
-    if ( result_is_hit( execute_state -> result ) )
+    if ( hit_any_target )
     {
       double fof_proc_chance = p() -> spec.fingers_of_frost -> effectN( 1 ).percent();
       fof_proc_chance += p() -> sets -> set( MAGE_FROST, T19, B4 ) -> effectN( 1 ).percent();
@@ -5233,7 +5231,7 @@ struct nether_tempest_t : public arcane_mage_spell_t
 
     arcane_mage_spell_t::execute();
 
-    if ( result_is_hit( execute_state -> result ) )
+    if ( hit_any_target )
     {
       if ( p() -> last_bomb_target != nullptr &&
            p() -> last_bomb_target != execute_state -> target )
@@ -5744,8 +5742,7 @@ struct supernova_t : public arcane_mage_spell_t
   {
     arcane_mage_spell_t::execute();
 
-    if ( result_is_hit( execute_state -> result ) &&
-         execute_state -> n_targets > 1 )
+    if ( hit_any_target && num_targets_hit > 1 )
     {
       // NOTE: Supernova AOE effect causes secondary trigger chance for AM
       // TODO: Verify this is still the case
