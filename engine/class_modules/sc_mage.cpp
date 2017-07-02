@@ -7503,7 +7503,7 @@ void mage_t::apl_arcane()
   conserve -> add_talent( this, "Supernova" );
   conserve -> add_talent( this, "Nether Tempest", "if=refreshable|!ticking" );
   conserve -> add_action( this, "Arcane Explosion", "if=active_enemies>1&mana.pct>=90" );
-  conserve -> add_action( this, "Arcane Blast", "if=mana.pct>=90|buff.rhonins_assaulting_armwraps.up" );
+  conserve -> add_action( this, "Arcane Blast", "if=mana.pct>=90|buff.rhonins_assaulting_armwraps.up|(buff.rune_of_power.remains>=cast_time&equipped.mystic_kilt_of_the_rune_master&mana.pct>=50)" );
   conserve -> add_action( this, "Arcane Missiles", "if=variable.arcane_missiles_procs" );
   conserve -> add_action( this, "Arcane Barrage" );
   conserve -> add_action( this, "Arcane Blast" );
