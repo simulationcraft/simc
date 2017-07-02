@@ -839,16 +839,7 @@ namespace actions { // namespace actions
 static void break_stealth( rogue_t* p )
 {
   
-  if ( p -> buffs.stealth -> check() &&
-    // As of 03/17/2017, if you have the Shadow Dance buff while stealthed, stealth doesn't break
-    // until the end of shadow dance. It is commonly called "Extended Stealth".
-    // The only way to trigger it since recent hotfix is :
-    // - Do Shadow Dance -> Stealth while out of combat (only possible with Subterfuge)
-    // - Proc Stealth at the end of the Vanish and using Shadow Dance before Vanish expires.
-    // As of 2017-06-01 on 7.2.5 PTR the former has been fixed because stealth is not usable
-    // with Shadow Dance up. Stealth still does not break with Dance up, so Vanish buff
-    // conversion still works.
-    ( ! p -> bugs || ! p -> buffs.shadow_dance -> check() ) )
+  if ( p -> buffs.stealth -> check() )
     p -> buffs.stealth -> expire();
 
   if ( p -> buffs.vanish -> check() )
@@ -2373,9 +2364,7 @@ void rogue_attack_t::execute()
       break_stealth( p() );
     // Check stealthed again after shadowmeld is popped. If we're still
     // stealthed, trigger subterfuge
-    else if ( stealthed() && ! p() -> buffs.subterfuge -> check() &&
-              // Extended Stealth Bug: Subterfuge procs only when Shadow Dance buff expired if we have Stealth Buff
-              ( ! p() -> bugs || ! ( p() -> buffs.stealth -> check() && p() -> buffs.shadow_dance -> check() ) ) )
+    else if ( stealthed() && ! p() -> buffs.subterfuge -> check() )
       p() -> buffs.subterfuge -> trigger();
   }
 
