@@ -79,7 +79,7 @@ actions.conserve+=/arcane_missiles,if=variable.arcane_missiles_procs=buff.arcane
 actions.conserve+=/supernova
 actions.conserve+=/nether_tempest,if=refreshable|!ticking
 actions.conserve+=/arcane_explosion,if=active_enemies>1&mana.pct>=90
-actions.conserve+=/arcane_blast,if=mana.pct>=90|buff.rhonins_assaulting_armwraps.up
+actions.conserve+=/arcane_blast,if=mana.pct>=90|buff.rhonins_assaulting_armwraps.up|buff.rune_of_power.remains>=cast_time&equipped.mystic_kilt_of_the_rune_master
 actions.conserve+=/arcane_missiles,if=variable.arcane_missiles_procs
 actions.conserve+=/arcane_barrage
 actions.conserve+=/arcane_blast
