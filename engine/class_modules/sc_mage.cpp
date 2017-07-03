@@ -1016,7 +1016,7 @@ struct arcane_blast_t : public mirror_image_spell_t
     double tm = mirror_image_spell_t::composite_target_multiplier( target );
 
     // Arcane Blast (88084) should work with Erosion, according to the spell data.
-    // Does not work in game, as of PTR build 24271, 2017-06-06.
+    // Does not work in game, as of build 24461, 2017-07-03.
     if ( ! o() -> bugs )
     {
       mage_td_t* tdata = o() -> get_target_data( target );
@@ -1641,7 +1641,7 @@ struct arcane_mage_spell_t : public mage_spell_t
       // The damage bonus given by mastery seems to be snapshot at the moment
       // Arcane Charge is gained. As long as the stack number remains the same,
       // any future changes to mastery will have no effect.
-      // As of PTR build 24287, 2017-06-08.
+      // As of build 24461, 2017-07-03.
       if ( ac -> check() < ac -> max_stack() )
       {
         ac -> trigger( stacks, savant_damage_bonus() );
@@ -2153,11 +2153,6 @@ struct frost_mage_spell_t : public mage_spell_t
   // Helper methods for Shattered Fragments of Sindragosa.
   void trigger_shattered_fragments( player_t* target )
   {
-    // It seems that casting Flurry while Frostbolt is mid-air does not
-    // trigger the buff if Frostbolt hits before Flurry does (thankfully,
-    // it usually happens the other way around).
-    // Last checked: PTR build 24287, 2017-06-08.
-    // TODO: Check this
     trigger_legendary_effect( p() -> buffs.shattered_fragments_of_sindragosa,
                               p() -> buffs.rage_of_the_frost_wyrm,
                               p() -> action.legendary_comet_storm,
@@ -2675,7 +2670,7 @@ struct time_and_space_t : public arcane_mage_spell_t
     background = true;
 
     // All other background actions trigger Erosion.
-    // As of PTR build 24287, 2017-06-08.
+    // As of build 24461, 2017-07-03.
     if ( p -> bugs )
     {
       triggers_erosion = false;
@@ -3850,7 +3845,7 @@ struct flamestrike_t : public fire_mage_spell_t
       // None of the following Aftershocks get Ignition crit bonus.
       //
       // This should model that behavior correctly. Otherwise we might need custom snapshotting.
-      // Last checked: PTR build 24271, 2017-06-06
+      // Last checked: build 24461, 2017-07-03.
       // TODO: Check if this is still true.
       aftershocks -> ignition = p() -> buffs.ignition -> up();
 
@@ -4227,7 +4222,7 @@ struct ice_time_nova_t : public frost_mage_spell_t
     aoe = -1;
 
     // According to the spell data.
-    // As of PTR build 24287, 2017-06-08.
+    // As of build 24461, 2017-07-03.
     if ( p -> bugs )
     {
       affected_by.frost_mage = false;
@@ -4260,7 +4255,7 @@ struct frozen_orb_bolt_t : public frost_mage_spell_t
     crit_bonus_multiplier *= 1.0 + p -> artifact.orbital_strike.percent();
     chills = true;
 
-    // As of PTR build 24287, 2017-06-08.
+    // As of build 24461, 2017-07-03.
     if ( p -> bugs )
     {
       affected_by.shatter = false;
@@ -4874,7 +4869,7 @@ struct mark_of_aluneth_explosion_t : public arcane_mage_spell_t
     background = true;
     aoe = -1;
 
-    // As of PTR build 24287, 2017-06-08.
+    // As of build 24461, 2017-07-03.
     if ( p -> bugs )
     {
       affected_by.arcane_mage = false;
@@ -5052,7 +5047,7 @@ struct meteor_impact_t: public fire_mage_spell_t
     meteor_burn_pulse_time = meteor_burn -> data().effectN( 1 ).period();
 
     // It seems that the 8th tick happens only very rarely in game.
-    // As of PTR build 24287, 2017-06-08.
+    // As of build 24461, 2017-07-03.
     if ( p -> bugs )
     {
       meteor_burn_duration -= meteor_burn_pulse_time;
@@ -5300,7 +5295,7 @@ struct phoenixs_flames_splash_t : public fire_mage_spell_t
     double am = fire_mage_spell_t::action_multiplier();
 
     // Phoenix's Flames splash deal 25% less damage compared to the
-    // spell data/tooltip values. As of PTR build 24287, 2017-06-08.
+    // spell data/tooltip values. As of build 24461, 2017-07-03.
     am *= std::pow( strafing_run_multiplier, p() -> bugs ? chain_number + 1 : chain_number );
 
     return am;
