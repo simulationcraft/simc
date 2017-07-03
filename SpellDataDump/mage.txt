@@ -1,4 +1,4 @@
-SimulationCraft 725-01 for World of Warcraft 7.2.5 Live (wow build 24287, git build 1732361)
+SimulationCraft 725-01 for World of Warcraft 7.2.5 Live (wow build 24287, git build 004005a)
 
 Name             : Invisibility (id=66) [Spell Family (3)] 
 Class            : Arcane Fire Frost Mage
@@ -2583,11 +2583,11 @@ Effects          :
 #1 (id=179702)   : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
                    Base Value: 9 | Scaled Value: 9 | Target: Self (1)
                    Affected Spells: Frost Nova (122), Fireball (133), Flamestrike (2120), Scorch (2948), Pyroblast (11366), Dragon's Breath (31661), Living Bomb (44461), Fireball (88082), Fire Blast (108853), Meteor (153564), Meteor Burn (155158), Blast Wave (157981), Aftershocks (194432), Phoenix's Flames (194466), Blast Furnace (194522), Cinderstorm (198928), Conflagration Flare Up (205345), Flame Patch (205472), Phoenix Reborn (215775), Living Bomb (217694), Phoenix's Flames (224637), Conflagration (226757), Blazing Barrier (235314)
-                   Hotfixed: Base Value (6 -> 9), Chain Multiplier (0 -> 1)
+                   Hotfixed: Chain Multiplier (0 -> 1)
 #2 (id=191125)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Damage (22)
                    Base Value: 9 | Scaled Value: 9 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Frost Nova (122), Fireball (133), Flamestrike (2120), Scorch (2948), Pyroblast (11366), Dragon's Breath (31661), Living Bomb (44461), Fireball (88082), Fire Blast (108853), Meteor (153564), Meteor Burn (155158), Blast Wave (157981), Aftershocks (194432), Phoenix's Flames (194466), Blast Furnace (194522), Cinderstorm (198928), Conflagration Flare Up (205345), Flame Patch (205472), Phoenix Reborn (215775), Living Bomb (217694), Phoenix's Flames (224637), Conflagration (226757), Blazing Barrier (235314)
-                   Hotfixed: Base Value (6 -> 9), Chain Multiplier (0 -> 1)
+                   Hotfixed: Chain Multiplier (0 -> 1)
 #3 (id=191126)   : Apply Aura (6) | Dummy (4)
                    Base Value: 15 | Scaled Value: 15 | Misc Value: 22 | Target: Self (1)
 #4 (id=191127)   : Apply Aura (6) | Dummy (4)
@@ -2676,11 +2676,11 @@ Effects          :
 #1 (id=179704)   : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
                    Base Value: 3 | Scaled Value: 3 | Target: Self (1)
                    Affected Spells: Frost Nova (122), Arcane Explosion (1449), Arcane Missiles (7268), Arcane Blast (30451), Arcane Barrage (44425), Arcane Blast (88084), Nether Tempest (114923), Nether Tempest (114954), Arcane Orb (153640), Supernova (157980), Arcane Rebound (210817), Mark of Aluneth (211088), Arcane Assault (225119), Time and Space (240689)
-                   Hotfixed: Base Value (0 -> 3), Chain Multiplier (0 -> 1)
+                   Hotfixed: Chain Multiplier (0 -> 1)
 #2 (id=191116)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Damage (22)
                    Base Value: 3 | Scaled Value: 3 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Frost Nova (122), Arcane Explosion (1449), Arcane Missiles (7268), Arcane Blast (30451), Arcane Barrage (44425), Arcane Blast (88084), Nether Tempest (114923), Nether Tempest (114954), Arcane Orb (153640), Supernova (157980), Arcane Rebound (210817), Mark of Aluneth (211088), Arcane Assault (225119), Time and Space (240689)
-                   Hotfixed: Base Value (0 -> 3), Chain Multiplier (0 -> 1)
+                   Hotfixed: Chain Multiplier (0 -> 1)
 #3 (id=191117)   : Apply Aura (6) | Mod Power Regen (110)
                    Base Value: 60 | Scaled Value: 0 | Points Per Level: -2 | Target: Self (1)
 #4 (id=191118)   : Apply Aura (6) | Dummy (4)
@@ -5013,6 +5013,7 @@ Effects          :
                    Base Value: -70 | Scaled Value: -70 | Mechanic: Unknown(88) | Target: Enemy (6)
 #2 (id=343735)   : School Damage (2): frost
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.78191 | Target: Enemy (6)
+                   Hotfixed: Chain Multiplier (0 -> 1)
 Description      : $@spelldesc44614
 Tooltip          : Movement slowed by $s1%.
 
@@ -5089,6 +5090,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=344288)   : School Damage (2): shadowfrost
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 12.87000 | Target: Enemy (6)
+                   Hotfixed: Chain Multiplier (0 -> 1)
 Description      : $@spelldesc214634
 
 Name             : Glacial Spike (id=228600) [Spell Family (3)] 
@@ -5756,7 +5758,7 @@ Attributes       : ........ ........ ........ ........   ........ ..x..... .....
 Effects          :
 #1 (id=367839)   : Apply Aura (6) | Unknown(163)
                    Base Value: 20 | Scaled Value: 20 | Misc Value: 127 | Target: Self (1)
-                   Hotfixed: Base Value (30 -> 20), Chain Multiplier (0 -> 1)
+                   Hotfixed: Chain Multiplier (0 -> 1)
 Description      : $@spelldesc242252
 Tooltip          : Critical strike damage increased by $s1%.
 

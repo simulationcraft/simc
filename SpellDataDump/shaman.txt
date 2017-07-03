@@ -1,4 +1,4 @@
-SimulationCraft 725-01 for World of Warcraft 7.2.5 Live (wow build 24287, git build 1732361)
+SimulationCraft 725-01 for World of Warcraft 7.2.5 Live (wow build 24287, git build 004005a)
 
 Name             : Block (Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
@@ -307,7 +307,6 @@ Effects          :
 Description      : A quick surge of healing energy that restores $s1 of a friendly target's health.
 
 Name             : Earth Shock (id=8042) [Spell Family (11)] 
-Hotfixed         : Affecting Spells
 Class            : Elemental Shaman
 School           : Nature
 Resource         : 10 - 100 Maelstrom (11) (id=10455)
@@ -324,7 +323,7 @@ Attributes       : ........ ........ x.x..... ........   ........ ........ .....
 Effects          :
 #1 (id=3248)     : School Damage (2): nature
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 11.50000 | Target: Enemy (6)
-                   Hotfixed: SP Coefficient (11 -> 11.5), Chain Multiplier (0 -> 1)
+                   Hotfixed: Chain Multiplier (0 -> 1)
 Description      : Instantly shocks the target with concussive force, causing up to $s1 Nature damage based on Maelstrom spent.
 
 Name             : Fire Nova (id=8349) [Scaling Spell (10), Spell Family (11)] 
@@ -593,6 +592,7 @@ Attributes       : ........ ........ ..x..... ........   ........ .x...... .....
 Effects          :
 #1 (id=21915)    : Weapon Damage% (31)
                    Base Value: 750 | Scaled Value: 7.5 | Target: Enemy (6)
+                   Hotfixed: Chain Multiplier (0 -> 1)
 #2 (id=172084)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
 Description      : $@spelldesc17364
@@ -614,6 +614,7 @@ Attributes       : ....x... ........ ..x..... ........   ........ ........ .....
 Effects          :
 #1 (id=21916)    : Weapon Damage% (31)
                    Base Value: 750 | Scaled Value: 7.5 | SP Coefficient: 1.00000 | Target: Enemy (6)
+                   Hotfixed: Chain Multiplier (0 -> 1)
 #2 (id=172085)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
 Description      : $@spelldesc17364
@@ -770,7 +771,6 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
 
 Name             : Lightning Bolt Overload (id=45284) [Spell Family (11)] 
-Hotfixed         : Affecting Spells
 Class            : Shaman
 School           : Nature
 Spell Level      : 1
@@ -788,7 +788,6 @@ Effects          :
 Description      : Casts a bolt of lightning at the target for $s1 Nature damage.
 
 Name             : Chain Lightning Overload (id=45297) [Spell Family (11)] 
-Hotfixed         : Affecting Spells
 Class            : Shaman
 School           : Nature
 Spell Level      : 32 (max 37)
@@ -873,7 +872,6 @@ Effects          :
 Description      : Summons a totem at the target location for $d. The totem pulses every $116943t sec, rooting all enemies within $64695A1 yards for $64695d. Enemies previously rooted by the totem instead suffer $116947s1% movement speed reduction.
 
 Name             : Thunderstorm (id=51490) [Spell Family (11)] 
-Hotfixed         : Affecting Spells
 Class            : Elemental Shaman
 School           : Nature
 Spell Level      : 24
@@ -900,7 +898,6 @@ Description      : Calls down a bolt of lightning, dealing $s1 Nature damage to 
 Tooltip          : Movement speed reduced by $s3%.
 
 Name             : Lava Burst (id=51505) [Spell Family (11)] 
-Hotfixed         : Affecting Spells
 Class            : Elemental Restoration Shaman
 School           : Fire
 Resource         : 6% Base Mana (0) (id=11268) w/ Restoration Shaman (id=137039)
@@ -1376,7 +1373,6 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
 
 Name             : Earthquake (id=61882) [Spell Family (11)] 
-Hotfixed         : Variables
 Class            : Elemental Shaman
 School           : Nature
 Resource         : 50 Maelstrom (11) (id=2792)
@@ -1682,7 +1678,6 @@ Effects          :
 Description      : Increases healing from your spells by up to $77226s1%, based on the current health of your target. Lower health targets are healed for more.
 
 Name             : Lava Burst Overload (id=77451) [Spell Family (11)] 
-Hotfixed         : Affecting Spells
 Class            : Shaman
 School           : Fire
 Spell Level      : 1
@@ -1724,7 +1719,6 @@ Effects          :
 Description      : An efficient wave of healing energy that restores $s1 of a friendly target’s health.
 
 Name             : Earthquake (id=77478) [Spell Family (11)] 
-Hotfixed         : Affecting Spells
 Class            : Shaman
 School           : Physical
 Spell Level      : 50
@@ -2219,7 +2213,6 @@ Description      : Transform into a Water Ascendant for $114051d, causing all he
 Tooltip          : Transformed into a powerful Water ascendant. Healing you deal is duplicated and distributed evenly among all nearby allies.
 
 Name             : Lava Beam (id=114074) [Spell Family (11)] 
-Hotfixed         : Affecting Spells
 Class            : Shaman
 School           : Fire
 Spell Level      : 28
@@ -2279,7 +2272,6 @@ Effects          :
 Description      : A massive gust of air that deals $sw1 Physical damage.
 
 Name             : Lava Beam Overload (id=114738) [Scaling Spell (10), Spell Family (11)] 
-Hotfixed         : Affecting Spells
 Class            : Shaman
 School           : Fire
 Spell Level      : 28
@@ -2387,6 +2379,7 @@ Attributes       : ........ ........ x.x..... ........   ........ .x...... .....
 Effects          :
 #1 (id=129139)   : Weapon Damage% (31)
                    Base Value: 750 | Scaled Value: 7.5 | Target: Enemy (6)
+                   Hotfixed: Chain Multiplier (0 -> 1)
 #2 (id=197633)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
 Description      : $@spelldesc115356
@@ -2409,6 +2402,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ ........ .....
 Effects          :
 #1 (id=129143)   : Weapon Damage% (31)
                    Base Value: 750 | Scaled Value: 7.5 | Target: Enemy (6)
+                   Hotfixed: Chain Multiplier (0 -> 1)
 #2 (id=197634)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
 Description      : $@spelldesc115356
@@ -2462,7 +2456,6 @@ Effects          :
 Description      : Your Earth, Fire, and Storm Elementals are drawn from primal elementals $s1% more powerful than regular elementals, with additional abilities, and you gain direct control over them.
 
 Name             : Elemental Blast (id=117014) [Spell Family (11)] 
-Hotfixed         : Affecting Spells
 Class            : Shaman
 School           : Elemental
 Range            : 40 yards
@@ -2594,7 +2587,6 @@ Description      : Stuns enemies within $A1 yards for $d.
 Tooltip          : Stunned.
 
 Name             : Elemental Blast Overload (id=120588) [Scaling Spell (10), Spell Family (11)] 
-Hotfixed         : Affecting Spells
 Class            : Shaman
 School           : Elemental
 Range            : 40 yards
@@ -2761,7 +2753,7 @@ Effects          :
                    Affected Spells (Label): Orb of Destruction (229700)
 #8 (id=260999)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 300 (Label) | Target: Self (1)
-                   Affected Spells (Label): Insidious Corruption (243941), Spectral Bolt (242571), Spectral Blast (246442), Extracted Sanity (243942)
+                   Affected Spells (Label): Insidious Corruption (243941), Spectral Bolt (242571), Spectral Blast (246442)
 #9 (id=261000)   : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
                    Base Value: 25 | Scaled Value: 25 | Target: Self (1)
                    Affected Spells: Lightning Bolt (403), Chain Lightning (421), Lava Burst (51505), Lightning Bolt (187837), Lightning Bolt (188196), Flame Shock (188389), Chain Lightning (188443), Flame Shock (188838), Lightning Bolt (214815), Lightning Bolt Overload (214816)
@@ -2816,14 +2808,14 @@ Effects          :
 #5 (id=191045)   : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
                    Base Value: 3 | Scaled Value: 3 | Target: Self (1)
                    Affected Spells: Earth Shock (8042), Lightning Bolt Overload (45284), Chain Lightning Overload (45297), Thunderstorm (51490), Lava Burst (51505), Lava Burst Overload (77451), Earthquake (77478), Lava Beam (114074), Lava Beam Overload (114738), Elemental Blast (117014), Elemental Blast Overload (120588), Earthen Rage (170379), Lightning Bolt (188196), Flame Shock (188389), Chain Lightning (188443), Frost Shock (196840), Volcanic Inferno (205533), Icefury (210714), Icefury Overload (219271), Pristine Proto-Scale Girdle (224852), Seismic Lightning (243073)
-                   Hotfixed: Sub Type (4 -> 108), Base Value (0 -> 3), Affects Spells, Chain Multiplier (0 -> 1)
+                   Hotfixed: Chain Multiplier (0 -> 1)
 #6 (id=260987)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Damage (22)
                    Base Value: 3 | Scaled Value: 3 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Earth Shock (8042), Lightning Bolt Overload (45284), Chain Lightning Overload (45297), Thunderstorm (51490), Lava Burst (51505), Lava Burst Overload (77451), Earthquake (77478), Lava Beam (114074), Lava Beam Overload (114738), Elemental Blast (117014), Elemental Blast Overload (120588), Earthen Rage (170379), Lightning Bolt (188196), Flame Shock (188389), Chain Lightning (188443), Frost Shock (196840), Volcanic Inferno (205533), Icefury (210714), Icefury Overload (219271), Pristine Proto-Scale Girdle (224852), Seismic Lightning (243073)
-                   Hotfixed: Sub Type (4 -> 108), Base Value (0 -> 3), Misc Value (0 -> 22), Affects Spells, Chain Multiplier (0 -> 1)
+                   Hotfixed: Chain Multiplier (0 -> 1)
 #7 (id=260988)   : Apply Aura (6) | Modify Pet Damage Done% (429)
                    Base Value: 3 | Scaled Value: 3 | Target: Self (1)
-                   Hotfixed: Sub Type (4 -> 429), Base Value (0 -> 3), Chain Multiplier (0 -> 1)
+                   Hotfixed: Chain Multiplier (0 -> 1)
 #8 (id=260989)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #9 (id=260990)   : Apply Aura (6) | Dummy (4)
@@ -2881,7 +2873,7 @@ Effects          :
                    Affected Spells (Label): Cleansing Matrix (242619), Fruitful Machinations (242623), Guiding Hand (242622), Infusion of Light (242621)
 #11 (id=261012)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 300 (Label) | Target: Self (1)
-                   Affected Spells (Label): Insidious Corruption (243941), Spectral Bolt (242571), Spectral Blast (246442), Extracted Sanity (243942)
+                   Affected Spells (Label): Insidious Corruption (243941), Spectral Bolt (242571), Spectral Blast (246442)
 #12 (id=261013)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #13 (id=261014)   : Apply Aura (6) | Dummy (4)
@@ -3364,7 +3356,6 @@ Effects          :
 Description      : $@spelldesc170374
 
 Name             : Earthen Rage (id=170379) [Spell Family (11)] 
-Hotfixed         : Affecting Spells
 Class            : Shaman
 School           : Nature
 Spell Level      : 1
@@ -3665,7 +3656,6 @@ Description      : Summons an Earthen Spike under an enemy, dealing $s1 Physical
 Tooltip          : Suffering $s2% increased Nature and Physical damage from the Shaman.
 
 Name             : Lightning Bolt (id=188196) [Scaling Spell (10), Spell Family (11)] 
-Hotfixed         : Affecting Spells
 Class            : Elemental Shaman
 School           : Nature
 Spell Level      : 1
@@ -3687,7 +3677,6 @@ Description      : Hurls a bolt of lightning at the target, dealing $s1 Nature d
 |cFFFFFFFFGenerates $214815s1 Maelstrom.|r ][]
 
 Name             : Flame Shock (id=188389) [Scaling Spell (10), Spell Family (11)] 
-Hotfixed         : Affecting Spells
 Class            : Elemental Shaman
 School           : Fire
 Resource         : 0 - 20 Maelstrom (11) (id=10459) w/ Flame Shock (id=232643)
@@ -3714,7 +3703,6 @@ Description      : Sears the target with fire, causing $s1 Fire damage and then 
 Tooltip          : Suffering $w2 Fire damage every $t2 sec.
 
 Name             : Chain Lightning (id=188443) [Spell Family (11)] 
-Hotfixed         : Affecting Spells
 Class            : Elemental Shaman
 School           : Nature
 Spell Level      : 28
@@ -4255,6 +4243,7 @@ Description      : $@spelldesc192222
 Tooltip          : Erupting liquid magma.
 
 Name             : Liquid Magma (id=192231) [Spell Family (11)] 
+Hotfixed         : Affecting Spells
 Class            : Shaman
 School           : Fire
 Range            : 100 yards
@@ -4600,7 +4589,6 @@ Description      : Chills your target, dealing $s1 Frost damage and reducing the
 Tooltip          : Melee attacks reduce target's movement speed by $147732s1% for $147732d.
 
 Name             : Frost Shock (id=196840) [Spell Family (11)] 
-Hotfixed         : Affecting Spells
 Class            : Elemental Shaman
 School           : Frost
 Resource         : 0 - 20 Maelstrom (11) (id=10598)
@@ -4618,7 +4606,7 @@ Attributes       : ........ ........ x.x..... ........   ........ ........ .....
 Effects          :
 #1 (id=288995)   : School Damage (2): frost
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.80000 | Target: Enemy (6)
-                   Hotfixed: SP Coefficient (0.644 -> 0.8), Chain Multiplier (0 -> 1)
+                   Hotfixed: Chain Multiplier (0 -> 1)
 #2 (id=288996)   : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -50 | Scaled Value: -50 | Mechanic: Unknown(88) | Target: Enemy (6)
 #3 (id=313061)   : Dummy (3)
@@ -5998,7 +5986,6 @@ Effects          :
 Description      : Your spells refund $s1% of all Maelstrom spent on them.
 
 Name             : Icefury (id=210714) [Spell Family (11)] 
-Hotfixed         : Affecting Spells
 Class            : Shaman
 School           : Frost
 Spell Level      : 1
@@ -6527,7 +6514,6 @@ Effects          :
 Description      : Gaining Maelstrom.
 
 Name             : Icefury Overload (id=219271) [Spell Family (11)] 
-Hotfixed         : Affecting Spells
 Class            : Shaman
 School           : Frost
 Spell Level      : 1

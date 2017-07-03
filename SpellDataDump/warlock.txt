@@ -1,4 +1,4 @@
-SimulationCraft 725-01 for World of Warcraft 7.2.5 Live (wow build 24287, git build 1732361)
+SimulationCraft 725-01 for World of Warcraft 7.2.5 Live (wow build 24287, git build 004005a)
 
 Name             : Eye of Kilrogg (id=126) [Spell Family (5)] 
 Class            : Warlock
@@ -3093,14 +3093,14 @@ Effects          :
 #1 (id=179727)   : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
                    Base Value: 14 | Scaled Value: 14 | Target: Self (1)
                    Affected Spells: Agony (980), Seed of Corruption (27243), Seed of Corruption (27285), Haunt (48181), Siphon Life (63106), Corruption (146739), Demonic Power (196100), Drain Soul (198590), Soul Flame (199581), Phantom Singularity (205179), Phantom Singularity (205246), Harvester of Souls (218615), Compounding Horror (231489), Unstable Affliction (233490), Unstable Affliction (233496), Unstable Affliction (233497), Unstable Affliction (233498), Unstable Affliction (233499), Rend Soul (242834)
-                   Hotfixed: Base Value (20 -> 14), Chain Multiplier (0 -> 1)
+                   Hotfixed: Chain Multiplier (0 -> 1)
 #2 (id=191031)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Damage (22)
                    Base Value: 14 | Scaled Value: 14 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Agony (980), Seed of Corruption (27243), Seed of Corruption (27285), Haunt (48181), Siphon Life (63106), Corruption (146739), Demonic Power (196100), Drain Soul (198590), Soul Flame (199581), Phantom Singularity (205179), Phantom Singularity (205246), Harvester of Souls (218615), Compounding Horror (231489), Unstable Affliction (233490), Unstable Affliction (233496), Unstable Affliction (233497), Unstable Affliction (233498), Unstable Affliction (233499), Rend Soul (242834)
-                   Hotfixed: Base Value (20 -> 14), Chain Multiplier (0 -> 1)
+                   Hotfixed: Chain Multiplier (0 -> 1)
 #3 (id=191032)   : Apply Aura (6) | Modify Pet Damage Done% (429)
                    Base Value: 14 | Scaled Value: 14 | Target: Self (1)
-                   Hotfixed: Base Value (20 -> 14), Chain Multiplier (0 -> 1)
+                   Hotfixed: Chain Multiplier (0 -> 1)
 #4 (id=191033)   : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
                    Base Value: -33 | Scaled Value: -33 | Target: Self (1)
                    Affected Spells: Demonic Power (196100)
@@ -3179,11 +3179,11 @@ Effects          :
 #1 (id=179730)   : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
                    Base Value: 15 | Scaled Value: 15 | Target: Self (1)
                    Affected Spells: Immolate (348), Doom (603), Firebolt (3110), Shadowburn (17877), Conflagrate (17962), Incinerate (29722), Rain of Fire (42223), Doom Bolt (85692), Chaos Bolt (116858), Cataclysm (152108), Channel Demonfire (196448), Chaos Bolt (213229), Incinerate (244670)
-                   Hotfixed: Base Value (21 -> 15), Chain Multiplier (0 -> 1)
+                   Hotfixed: Chain Multiplier (0 -> 1)
 #2 (id=191023)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Damage (22)
                    Base Value: 15 | Scaled Value: 15 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Immolate (157736), Immolate (193540)
-                   Hotfixed: Base Value (21 -> 15), Chain Multiplier (0 -> 1)
+                   Hotfixed: Chain Multiplier (0 -> 1)
 #3 (id=191024)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 1 (3)
                    Base Value: -5 | Scaled Value: -5 | Misc Value: 3 | Target: Self (1)
                    Affected Spells: Soul Conduit (215941)
@@ -3975,7 +3975,8 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=287836)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 40 | Scaled Value: 40 | Misc Value: 37 | Target: Self (1)
+                   Base Value: 24 | Scaled Value: 24 | Misc Value: 37 | Target: Self (1)
+                   Hotfixed: Base Value (40 -> 24), Chain Multiplier (0 -> 1)
 #2 (id=322166)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Damage (22)
                    Base Value: 25 | Scaled Value: 25 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Corruption (172), Corruption (146739)
@@ -4137,7 +4138,6 @@ Effects          :
 Description      : $@spelldesc157695
 
 Name             : Unstable Affliction (id=196364) [Spell Family (5)] 
-Hotfixed         : Attributes
 Class            : Warlock
 School           : Shadow
 Range            : 50000 yards
@@ -4151,6 +4151,7 @@ Attributes       : ........ ........ x....... ..x.....   ...x...x ........ .....
 Effects          :
 #1 (id=288215)   : School Damage (2): shadow
                    Base Value: 0 | Scaled Value: 0 | Target: Unknown(25)
+                   Hotfixed: Chain Multiplier (0 -> 1)
 #2 (id=288216)   : Apply Aura (6) | Silence (27)
                    Base Value: 0 | Scaled Value: 0 | Mechanic: Unknown(72) | Target: Unknown(25)
 Description      : $@spelldesc30108
@@ -4431,6 +4432,7 @@ Attributes       : ........ ........ x....... ........   ..x..... ......x. .....
 Effects          :
 #1 (id=291909)   : Apply Aura (6) | Periodic Health Leech (53)
                    Base Value: 1 | Scaled Value: 1 | Value Multiplier: 2 | SP Coefficient: 1.20000 | Target: Enemy (6)
+                   Hotfixed: Chain Multiplier (0 -> 1)
 #2 (id=355424)   : Apply Aura (6) | Unknown(271)
                    Base Value: 0 | Scaled Value: 0 | Value Multiplier: 2 | SP Coefficient: 1.20000 | Target: Enemy (6)
                    Affected Spells: Corruption (172), Agony (980), Unstable Affliction (30108), Siphon Life (63106), Corruption (146739), Unstable Affliction (233490), Unstable Affliction (233496), Unstable Affliction (233497), Unstable Affliction (233498), Unstable Affliction (233499)
@@ -5231,6 +5233,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=352664)   : Apply Aura (6) | Periodic Damage (3): shadow every 2 seconds
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.96600 | Target: Enemy (6)
+                   Hotfixed: Chain Multiplier (0 -> 1)
 Description      : $@spelldesc30108
 Tooltip          : Suffering $w1 Shadow damage every $t1 sec.
 
@@ -5252,6 +5255,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=352671)   : Apply Aura (6) | Periodic Damage (3): shadow every 2 seconds
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.96600 | Target: Enemy (6)
+                   Hotfixed: Chain Multiplier (0 -> 1)
 Description      : $@spelldesc30108
 Tooltip          : Suffering $w1 Shadow damage every $t1 sec.
 
@@ -5273,6 +5277,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=352672)   : Apply Aura (6) | Periodic Damage (3): shadow every 2 seconds
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.96600 | Target: Enemy (6)
+                   Hotfixed: Chain Multiplier (0 -> 1)
 Description      : $@spelldesc30108
 Tooltip          : Suffering $w1 Shadow damage every $t1 sec.
 
@@ -5294,6 +5299,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=352673)   : Apply Aura (6) | Periodic Damage (3): shadow every 2 seconds
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.96600 | Target: Enemy (6)
+                   Hotfixed: Chain Multiplier (0 -> 1)
 Description      : $@spelldesc30108
 Tooltip          : Suffering $w1 Shadow damage every $t1 sec.
 
@@ -5315,6 +5321,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=352674)   : Apply Aura (6) | Periodic Damage (3): shadow every 2 seconds
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.96600 | Target: Enemy (6)
+                   Hotfixed: Chain Multiplier (0 -> 1)
 Description      : $@spelldesc30108
 Tooltip          : Suffering $w1 Shadow damage every $t1 sec.
 
