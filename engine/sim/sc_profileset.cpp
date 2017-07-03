@@ -53,6 +53,20 @@ void insert_data( highchart::bar_chart_t&   chart,
   chart.add( "series.1.data", boxplot_entry );
 }
 
+// Figure out if the option is the beginning of a player-scope option
+bool in_player_scope( const option_tuple_t& opt )
+{
+  static const std::vector<std::string> player_scope_opts {
+    "demonhunter", "deathknight", "druid", "hunter", "mage", "monk",
+    "paladin", "priest", "rogue", "shaman", "warrior", "warlock",
+    "armory", "local_json"
+  };
+
+  return range::find_if( player_scope_opts, [ &opt ]( const std::string& name ) {
+    return util::str_compare_ci( opt.name, name );
+  } ) != player_scope_opts.end();
+}
+
 sim_control_t* profilesets_t::create_sim_options( const sim_control_t*            original,
                                                   const std::vector<std::string>& opts )
 {
@@ -79,13 +93,12 @@ sim_control_t* profilesets_t::create_sim_options( const sim_control_t*          
     // Find a suitable player-scope variable to start looking for an "enemy" option. "spec" option
     // must be always defined, so we can start the search below from it.
     auto it = range::find_if( original -> options, []( const option_tuple_t& opt ) {
-      return util::str_compare_ci( opt.name, "spec" ) ||
-             util::str_compare_ci( opt.name, "specialization" );
+      return in_player_scope( opt );
     } );
 
     if ( it == original -> options.end() )
     {
-      std::cerr << "ERROR! No \"spec\" or \"specialization\" option defined for player" << std::endl;
+      std::cerr << "ERROR! No start of player-scope defined for the simulation" << std::endl;
       return nullptr;
     }
 
