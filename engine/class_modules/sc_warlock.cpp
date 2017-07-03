@@ -2450,6 +2450,9 @@ public:
         case WARLOCK_DESTRUCTION:
           sh_proc_chance = p() -> find_spell( 248113 ) -> effectN( 3 ).percent();
           break;
+        default:
+          sh_proc_chance = 0;
+          break;
         }
         
         for ( int i = 0; i < last_resource_cost; i++ )
@@ -8038,7 +8041,7 @@ struct the_master_harvester_t : public scoped_actor_callback_t<warlock_t>
 {
   the_master_harvester_t() : super( WARLOCK ){}
 
-  void manipulate( warlock_t* a, const special_effect_t& e ) override
+  void manipulate( warlock_t* a, const special_effect_t& /* e */ ) override
   {
     a -> legendary.the_master_harvester = true;
   }
@@ -8048,7 +8051,7 @@ struct alythesss_pyrogenics_t : public scoped_actor_callback_t<warlock_t>
 {
   alythesss_pyrogenics_t() : super( WARLOCK ){}
 
-  void manipulate( warlock_t* a, const special_effect_t& e ) override
+  void manipulate( warlock_t* a, const special_effect_t& /* e */ ) override
   {
     a -> legendary.alythesss_pyrogenics = true;
   }

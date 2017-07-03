@@ -964,7 +964,6 @@ public:
 
   void      trigger_t20_2pc_frost( double consumed );
   void      trigger_t20_4pc_frost( double consumed );
-  void      trigger_t20_2pc_unholy( const action_state_t* state );
   void      trigger_t20_4pc_unholy( double consumed );
 
   unsigned  replenish_rune( unsigned n, gain_t* gain = nullptr );
@@ -4403,8 +4402,6 @@ struct death_coil_t : public death_knight_spell_t
     {
       p() -> trigger_festering_wound( state, 1, true ); // TODO: Does this ignore ICD?
     }
-
-    p() -> trigger_t20_2pc_unholy( state );
   }
 };
 
@@ -6806,16 +6803,6 @@ void death_knight_t::trigger_t20_4pc_unholy( double consumed )
     cooldown.army_of_the_dead -> adjust( cd_adjust );
     consumed--;
   }
-}
-
-void death_knight_t::trigger_t20_2pc_unholy( const action_state_t* state )
-{
-  if ( ! sets -> has_set_bonus( DEATH_KNIGHT_UNHOLY, T20, B2 ) )
-  {
-    return;
-  }
-
-  //FIXME - Not implemented
 }
 
 unsigned death_knight_t::replenish_rune( unsigned n, gain_t* gain )

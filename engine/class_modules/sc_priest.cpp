@@ -4436,7 +4436,7 @@ action_t* priest_t::create_action( const std::string& name, const std::string& o
 
 pet_t* priest_t::create_pet( const std::string& pet_name, const std::string& /* pet_type */ )
 {
-  pet_t* p = find_pet( pet_name );
+  //pet_t* p = find_pet( pet_name );
 
   if ( pet_name == "shadowfiend" )
     return new pets::fiend::shadowfiend_pet_t( sim, *this );

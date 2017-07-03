@@ -2050,7 +2050,7 @@ struct opportunity_strikes_t : public warrior_attack_t
     school = p -> talents.opportunity_strikes -> get_school_type();
   }
 
-  void opportunity_strikes( action_state_t* s ) override
+  void opportunity_strikes( action_state_t* /* s */ ) override
   {// Cannot re-proc itself.
   }
 };
@@ -3858,7 +3858,7 @@ struct arms_whirlwind_mh_t: public warrior_attack_t
     weapon_multiplier *= 1.0 + p -> artifact.many_will_fall.percent();
   }
 
-  void opportunity_strikes( action_state_t* s ) override
+  void opportunity_strikes( action_state_t* /* s */ ) override
   { //Only the first spin has a chance to proc opportunity strikes.
   }
 

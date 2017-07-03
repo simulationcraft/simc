@@ -1797,7 +1797,7 @@ struct mutilated_flesh_t : public residual_periodic_action_t<melee_attack_t>
 
   double calculate_tick_amount( action_state_t* state, double dmg_multiplier ) const override
   {
-    rogue_td_t* tdata = rogue -> get_target_data( state -> target );
+    //rogue_td_t* tdata = rogue -> get_target_data( state -> target );
 
     return residual_periodic_action_t::calculate_tick_amount( state, dmg_multiplier );
   }
@@ -7234,6 +7234,7 @@ void rogue_t::init_action_list()
     for ( size_t i = 0; i < items.size(); i++ )
     {
       if ( items[i].has_special_effect( SPECIAL_EFFECT_SOURCE_ITEM, SPECIAL_EFFECT_USE ) )
+      {
         if ( items[i].name_str == "draught_of_souls" )
           cds -> add_action( "use_item,name=" + items[i].name_str + ",if=!stealthed.rogue&energy.deficit>30+talent.vigor.enabled*10" );
         else if ( items[i].name_str == "specter_of_betrayal" ) {
@@ -7246,6 +7247,7 @@ void rogue_t::init_action_list()
         }
         else
           cds -> add_action( "use_item,name=" + items[i].name_str + ",if=(buff.shadow_blades.up&stealthed.rogue)|target.time_to_die<20" );
+      }
     }
     for ( size_t i = 0; i < racial_actions.size(); i++ )
     {

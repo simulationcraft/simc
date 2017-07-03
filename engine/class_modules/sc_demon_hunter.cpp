@@ -1106,7 +1106,7 @@ public:
         ab::cooldown->hasted = true;
 
       // Category Cooldowns
-      if (ab::data().category() == p->spec.havoc->effectN(4).misc_value1())
+      if (as<int>(ab::data().category()) == p->spec.havoc->effectN(4).misc_value1())
         ab::cooldown->hasted = true;
 
       // Class Damage Multiplier
@@ -1122,7 +1122,7 @@ public:
         ab::cooldown->hasted = true;
       
       // Category Cooldowns
-      if(ab::data().category() == p->spec.demonic_wards->effectN(6).misc_value1())
+      if(as<int>(ab::data().category()) == p->spec.demonic_wards->effectN(6).misc_value1())
         ab::cooldown->hasted = true;
 
       // Class Damage Multiplier

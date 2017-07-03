@@ -8380,7 +8380,7 @@ bool player_t::parse_artifact_wowhead( const std::string& artifact_string )
     return false;
   }
 
-  size_t n_relics = 0, n_excess_points = 0, relic_idx = 0;
+  size_t n_relics = 0, relic_idx = 0;
   for ( size_t i = 1; i < 5; ++i )
   {
     if ( ! util::str_compare_ci( splits[ i ], "0" ) )
