@@ -7666,7 +7666,7 @@ void mage_t::apl_frost()
     "not at a risk of overcapping on FoF, use Blizzard before using Ice Lance." );
   single -> add_talent( this, "Frost Bomb", "if=debuff.frost_bomb.remains<action.ice_lance.travel_time&variable.fof_react>0" );
   single -> add_action( this, "Ice Lance", "if=variable.fof_react>0&cooldown.icy_veins.remains>10|variable.fof_react>2" );
-  single -> add_action( this, "Ebonbolt", "if=buff.brain_freeze.react=0" );
+  single -> add_action( this, "Ebonbolt" );
   single -> add_action( this, "Frozen Orb" );
   single -> add_talent( this, "Ice Nova" );
   single -> add_talent( this, "Comet Storm" );
@@ -7702,7 +7702,7 @@ void mage_t::apl_frost()
   aoe -> add_action( this, "Flurry", "if=prev_gcd.1.ebonbolt|(prev_gcd.1.glacial_spike|prev_gcd.1.frostbolt)&buff.brain_freeze.react" );
   aoe -> add_talent( this, "Frost Bomb", "if=debuff.frost_bomb.remains<action.ice_lance.travel_time&variable.fof_react>0" );
   aoe -> add_action( this, "Ice Lance", "if=variable.fof_react>0" );
-  aoe -> add_action( this, "Ebonbolt", "if=buff.brain_freeze.react=0" );
+  aoe -> add_action( this, "Ebonbolt" );
   aoe -> add_talent( this, "Glacial Spike" );
   aoe -> add_action( this, "Frostbolt" );
   aoe -> add_action( this, "Cone of Cold" );
