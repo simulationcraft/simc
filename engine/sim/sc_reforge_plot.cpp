@@ -53,7 +53,7 @@ reforge_plot_t::reforge_plot_t( sim_t* s )
     reforge_plot_iterations( -1 ),
     reforge_plot_target_error( 0 ),
     reforge_plot_debug( 0 ),
-    current_stat_combo( 0 ),
+    current_stat_combo( -1 ),
     num_stat_combos( 0 )
 {
   create_options();
@@ -80,7 +80,7 @@ void reforge_plot_t::generate_stat_mods(
       player_t* p = sim->player_no_pet_list[ i ];
       if ( p->quiet )
         continue;
-      if ( p->current.stats.get_stat( stat_indices[ cur_mod_stat ] ) - sum < 0 )
+      if ( p->initial.stats.get_stat( stat_indices[ cur_mod_stat ] ) - sum < 0 )
         return;
     }
 
@@ -98,7 +98,7 @@ void reforge_plot_t::generate_stat_mods(
       player_t* p = sim->player_no_pet_list[ i ];
       if ( p->quiet )
         continue;
-      if ( p->current.stats.get_stat( stat_indices[ cur_mod_stat ] ) +
+      if ( p->initial.stats.get_stat( stat_indices[ cur_mod_stat ] ) +
                mod_amount <
            0 )
       {
@@ -193,7 +193,7 @@ void reforge_plot_t::analyze_stats()
     }
 
     current_stat_combo = as<int>( i );
-    current_reforge_sim -> set_sim_base_str( s.str() );
+    current_reforge_sim -> progress_bar.set_base( s.str() );
     current_reforge_sim -> execute();
 
     for ( player_t* player : sim->players_by_name )

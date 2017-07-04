@@ -13,6 +13,7 @@ SRC += \
     util$(PATHSEP)generic.hpp \
     util$(PATHSEP)concurrency.hpp \
     util$(PATHSEP)cache.hpp \
+    sim$(PATHSEP)sc_profileset.hpp \
     sim$(PATHSEP)sc_option.hpp \
     sim$(PATHSEP)sc_expressions.hpp \
     report$(PATHSEP)sc_report.hpp \
@@ -40,6 +41,7 @@ SRC += \
     sim$(PATHSEP)sc_reforge_plot.cpp \
     sim$(PATHSEP)sc_raid_event.cpp \
     sim$(PATHSEP)sc_progress_bar.cpp \
+    sim$(PATHSEP)sc_profileset.cpp \
     sim$(PATHSEP)sc_plot.cpp \
     sim$(PATHSEP)sc_option.cpp \
     sim$(PATHSEP)sc_gear_stats.cpp \

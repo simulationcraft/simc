@@ -759,7 +759,7 @@ public:
     predator_rppm_rate( 0.0 ),
     initial_astral_power( 0 ),
     initial_moon_stage( NEW_MOON ),
-    ahhhhh_the_great_outdoors( true ),
+    ahhhhh_the_great_outdoors( false ),
     t20_2pc(false),
     t20_4pc(false),
     active( active_actions_t() ),
@@ -2537,7 +2537,7 @@ public:
        }
     }
 
-    if ( p -> talent.soul_of_the_forest -> ok() && ( data().affected_by( p -> talent.soul_of_the_forest -> effectN(2)) | data().affected_by( p -> talent.soul_of_the_forest -> effectN(3) )))
+    if ( p-> specialization() == DRUID_FERAL &&  p -> talent.soul_of_the_forest -> ok() && ( data().affected_by( p -> talent.soul_of_the_forest -> effectN(2)) | data().affected_by( p -> talent.soul_of_the_forest -> effectN(3) )))
     {
        base_td_multiplier *= 1.0 + p->talent.soul_of_the_forest->effectN(3).percent();
        base_dd_multiplier *= 1.0 + p->talent.soul_of_the_forest->effectN(2).percent();
@@ -7021,6 +7021,17 @@ void druid_t::init_spells()
   // Active Actions =========================================================
 
   caster_melee_attack = new caster_attacks::druid_melee_t( this );
+  if ( !this -> cat_melee_attack )
+  {
+     this -> init_beast_weapon( this -> cat_weapon, 1.0 );
+     this -> cat_melee_attack = new cat_attacks::cat_melee_t( this );
+  }
+
+  if ( !this -> bear_melee_attack )
+  {
+     this -> init_beast_weapon( this->bear_weapon, 2.5 );
+     this -> bear_melee_attack = new bear_attacks::bear_melee_t( this );
+  }
 
   if ( talent.cenarion_ward -> ok() )
     active.cenarion_ward_hot  = new heals::cenarion_ward_hot_t( this );
@@ -7394,7 +7405,7 @@ std::string druid_t::default_flask() const
 }
 std::string druid_t::default_potion() const
 {
-   std::string balance_pot =  (true_level > 100) ? "deadly_grace" :
+   std::string balance_pot =  (true_level > 100) ? "potion_of_prolonged_power" :
                               (true_level >= 90) ? "draenic_intellect" :
                               (true_level >= 85) ? "jade_serpent" :
                               (true_level >= 80) ? "volcanic" :
@@ -7729,7 +7740,7 @@ void druid_t::apl_balance()
   std::vector<std::string> item_actions   = get_item_actions();
   std::string              potion_action  = "potion,name=";
   if ( true_level > 100 )
-    potion_action += "deadly_grace";
+    potion_action += "potion_of_prolonged_power";
   else if ( true_level > 90 )
     potion_action += "draenic_intellect";
   else if ( true_level > 85 )
@@ -7765,6 +7776,10 @@ void druid_t::apl_balance()
   default_list -> add_talent( this, "Astral Communion", "if=astral_power.deficit>=71" );
   default_list -> add_action( "incarnation,if=astral_power>=40" );
   default_list -> add_action( this, "Celestial Alignment", "if=astral_power>=40" );
+  if (items[SLOT_TRINKET_1].name_str == "tarnished_sentinel_medallion" || items[SLOT_TRINKET_2].name_str == "tarnished_sentinel_medallion")
+    default_list -> add_action("use_item,name=tarnished_sentinel_medallion,if=cooldown.incarnation.remains>60|cooldown.celestial_alignment.remains>60");
+  if (items[SLOT_TRINKET_1].name_str == "tome_of_unraveling_sanity" || items[SLOT_TRINKET_2].name_str == "tome_of_unraveling_sanity")
+      default_list->add_action("use_item,name=tarnished_sentinel_medallion,if=cooldown.incarnation.remains>30|cooldown.celestial_alignment.remains>30");
   default_list -> add_action( this, "Starfall", "if=buff.oneths_overconfidence.up" );
   default_list -> add_action( this, "Solar Wrath", "if=buff.solar_empowerment.stack=3" );
   default_list -> add_action( this, "Lunar Strike", "if=buff.lunar_empowerment.stack=3" );

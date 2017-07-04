@@ -1,4 +1,4 @@
-SimulationCraft 725-01 for World of Warcraft 7.2.5 Live (wow build 24287, git build 9d7f936)
+SimulationCraft 725-01 for World of Warcraft 7.2.5 Live (wow build 24287, git build 004005a)
 
 Name             : Backstab (id=53) [Spell Family (8)] 
 Class            : Subtlety Rogue
@@ -1733,7 +1733,7 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=55169)    : Apply Aura (6) | Mod Power Regen (110)
                    Base Value: 20 | Scaled Value: 20 | Misc Value: 3 | Target: Self (1)
-#2 (id=99542)    : Apply Aura (6) | Unknown(166)
+#2 (id=99542)    : Apply Aura (6) | Modify Attack Power% (166)
                    Base Value: 50 | Scaled Value: 50 | Target: Self (1)
 Description      : Increases your Energy regeneration rate by $s1% and your Attack Power by $s2%.
 

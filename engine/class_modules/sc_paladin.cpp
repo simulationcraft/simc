@@ -1723,14 +1723,19 @@ struct shield_of_vengeance_t : public paladin_absorb_t
     use_off_gcd = true;
     trigger_gcd = timespan_t::zero();
 
+
     may_crit = true;
-    // TODO: figure out where this is from
-    // While the tooltip says 10x, in practice the spell has been doing 20x.
     attack_power_mod.direct = 20;
     if ( p -> artifact.deflection.rank() )
     {
       cooldown -> duration += timespan_t::from_millis( p -> artifact.deflection.value() );
     }
+  }
+
+  void init() override
+  {
+    paladin_absorb_t::init();
+    snapshot_flags |= (STATE_CRIT | STATE_VERSATILITY);
   }
 
   virtual void execute() override
@@ -3705,6 +3710,11 @@ struct shield_of_vengeance_proc_t : public paladin_spell_t
     split_aoe_damage = true;
     may_crit = true;
     aoe = -1;
+  }
+
+  void init() override {
+    paladin_spell_t::init();
+    snapshot_flags = 0;
   }
 
   proc_types proc_type() const

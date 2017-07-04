@@ -659,7 +659,8 @@ struct cruel_garrote_t: public proc_spell_t
   cruel_garrote_t( const special_effect_t& effect ):
     proc_spell_t( "cruel_garrote", effect.player, effect.driver() )
   {
-    background = hasted_ticks = tick_may_crit = may_crit = true;
+    background = hasted_ticks = tick_may_crit = may_crit = tick_zero = true;
+    base_td = effect.driver()->effectN(1).average(effect.item);
     base_td *= util::composite_karazhan_empower_multiplier( effect.player );
   }
 };
@@ -4714,7 +4715,7 @@ void consumable::lavish_suramar_feast( special_effect_t& effect )
   }
 
   // TODO: Is this actually spec specific?
-  if ( effect.player -> role == ROLE_TANK )
+  if ( effect.player -> role == ROLE_TANK && !effect.player->sim->expansion_opts.lavish_feast_as_dps )
   {
     effect.stat = STAT_STAMINA;
     effect.trigger_spell_id = 201641;

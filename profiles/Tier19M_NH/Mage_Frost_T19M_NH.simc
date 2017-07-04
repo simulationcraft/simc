@@ -57,7 +57,7 @@ actions.aoe+=/water_jet,if=prev_gcd.1.frostbolt&buff.fingers_of_frost.stack<(2+a
 actions.aoe+=/flurry,if=prev_gcd.1.ebonbolt|(prev_gcd.1.glacial_spike|prev_gcd.1.frostbolt)&buff.brain_freeze.react
 actions.aoe+=/frost_bomb,if=debuff.frost_bomb.remains<action.ice_lance.travel_time&variable.fof_react>0
 actions.aoe+=/ice_lance,if=variable.fof_react>0
-actions.aoe+=/ebonbolt,if=buff.brain_freeze.react=0
+actions.aoe+=/ebonbolt
 actions.aoe+=/glacial_spike
 actions.aoe+=/frostbolt
 actions.aoe+=/cone_of_cold
@@ -90,7 +90,7 @@ actions.single+=/flurry,if=prev_gcd.1.ebonbolt|buff.brain_freeze.react&(!talent.
 actions.single+=/blizzard,if=cast_time=0&active_enemies>1&variable.fof_react<3
 actions.single+=/frost_bomb,if=debuff.frost_bomb.remains<action.ice_lance.travel_time&variable.fof_react>0
 actions.single+=/ice_lance,if=variable.fof_react>0&cooldown.icy_veins.remains>10|variable.fof_react>2
-actions.single+=/ebonbolt,if=buff.brain_freeze.react=0
+actions.single+=/ebonbolt
 actions.single+=/frozen_orb
 actions.single+=/ice_nova
 actions.single+=/comet_storm

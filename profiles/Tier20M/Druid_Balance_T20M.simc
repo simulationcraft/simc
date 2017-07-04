@@ -8,7 +8,7 @@ talents=3200233
 artifact=59:0:0:0:0:1034:4:1035:4:1036:4:1037:4:1038:4:1039:4:1040:4:1041:4:1042:4:1043:1:1044:1:1045:1:1046:1:1047:1:1048:1:1049:1:1294:1:1364:1:1501:4:1502:1:1503:1:1504:1:1632:1
 
 # Default consumables
-potion=deadly_grace
+potion=potion_of_prolonged_power
 flask=whispered_pact
 food=lavish_suramar_feast
 augmentation=defiled
@@ -31,7 +31,7 @@ actions.precombat+=/potion
 actions.precombat+=/new_moon
 
 # Executed every time the actor is available.
-actions=potion,name=deadly_grace,if=buff.celestial_alignment.up|buff.incarnation.up
+actions=potion,name=potion_of_prolonged_power,if=buff.celestial_alignment.up|buff.incarnation.up
 actions+=/blessing_of_elune,if=active_enemies<=2&talent.blessing_of_the_ancients.enabled&buff.blessing_of_elune.down
 actions+=/blessing_of_elune,if=active_enemies>=3&talent.blessing_of_the_ancients.enabled&buff.blessing_of_anshe.down
 actions+=/blood_fury,if=buff.celestial_alignment.up|buff.incarnation.up
@@ -49,6 +49,7 @@ actions+=/sunfire,if=((talent.natures_balance.enabled&remains<3)|(remains<5.4&!t
 actions+=/astral_communion,if=astral_power.deficit>=71
 actions+=/incarnation,if=astral_power>=40
 actions+=/celestial_alignment,if=astral_power>=40
+actions+=/use_item,name=tarnished_sentinel_medallion,if=cooldown.incarnation.remains>60|cooldown.celestial_alignment.remains>60
 actions+=/starfall,if=buff.oneths_overconfidence.up
 actions+=/solar_wrath,if=buff.solar_empowerment.stack=3
 actions+=/lunar_strike,if=buff.lunar_empowerment.stack=3

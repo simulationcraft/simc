@@ -97,7 +97,7 @@ actions.st+=/chi_burst
 head=xuens_helm,id=147154,bonus_id=3562/1497
 neck=locket_of_splintered_souls,id=147014,ilevel=915,enchant=mark_of_the_hidden_satyr
 shoulders=pauldrons_of_enveloped_dissonance,id=138337,bonus_id=3519
-back=cloak_of_enveloped_dissonance,id=138367,bonus_id=3519
+back=cloak_of_enveloped_dissonance,id=138367,bonus_id=3519,enchant=binding_of_agility
 chest=xuens_tunic,id=147151,bonus_id=3562/1497
 wrists=drinking_horn_cover,id=137097,bonus_id=3570
 hands=xuens_gauntlets,id=147153,bonus_id=3562/1497
@@ -113,7 +113,7 @@ off_hand=fists_of_the_heavens,id=133948
 
 # Gear Summary
 # gear_ilvl=925.13
-# gear_agility=27584
+# gear_agility=27784
 # gear_stamina=40232
 # gear_crit_rating=7191
 # gear_haste_rating=4991

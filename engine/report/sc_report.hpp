@@ -40,23 +40,34 @@ struct Timer
 private:
   std::string title;
   std::ostream& out;
-  std::chrono::time_point<std::chrono::high_resolution_clock> start;
+  std::chrono::time_point<std::chrono::high_resolution_clock> start_time;
+  bool started;
 
 public:
   Timer( std::string title, std::ostream& out = std::cout )
     : title( std::move( title ) ),
       out( out ),
-      start( std::chrono::high_resolution_clock::now() )
+      start_time( std::chrono::high_resolution_clock::now() ),
+      started( false )
+  { }
+
+  void start()
   {
+    start_time = std::chrono::high_resolution_clock::now();
+    started = true;
   }
+
   ~Timer()
   {
-    auto end            = std::chrono::high_resolution_clock::now();
-    auto diff           = end - start;
-    using float_seconds = std::chrono::duration<double>;
-    out << title << " took "
-        << std::chrono::duration_cast<float_seconds>( diff ).count()
-        << "seconds." << std::endl;
+    if ( started )
+    {
+      auto end            = std::chrono::high_resolution_clock::now();
+      auto diff           = end - start_time;
+      using float_seconds = std::chrono::duration<double>;
+      out << title << " took "
+          << std::chrono::duration_cast<float_seconds>( diff ).count()
+          << "seconds." << std::endl;
+    }
   }
 };
 namespace color

@@ -465,7 +465,10 @@ bool parse_specialization( sim_t* sim,
   sim -> active_player -> _spec = dbc::translate_spec_str( sim -> active_player -> type, value );
 
   if ( sim -> active_player -> _spec == SPEC_NONE )
+  {
     sim -> errorf( "\n%s specialization string \"%s\" not valid.\n", sim -> active_player-> name(), value.c_str() );
+    return false;
+  }
 
   return true;
 }
@@ -8377,7 +8380,7 @@ bool player_t::parse_artifact_wowhead( const std::string& artifact_string )
     return false;
   }
 
-  size_t n_relics = 0, n_excess_points = 0, relic_idx = 0;
+  size_t n_relics = 0, relic_idx = 0;
   for ( size_t i = 1; i < 5; ++i )
   {
     if ( ! util::str_compare_ci( splits[ i ], "0" ) )

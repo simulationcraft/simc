@@ -4,6 +4,7 @@
 // ==========================================================================
 
 #include "simulationcraft.hpp"
+#include "sim/sc_profileset.hpp"
 #include <locale>
 
 #ifdef SC_SIGACTION
@@ -22,9 +23,11 @@ struct sim_signal_handler_t
   static void report( int signal )
   {
     const char* name = strsignal( signal );
-    fprintf( stderr, "sim_signal_handler: %s! Iteration=%d Seed=%lu TargetHealth=%lu\n",
-       name, global_sim -> current_iteration, global_sim -> seed,
-       (uint64_t) global_sim -> target -> resources.initial[ RESOURCE_HEALTH ] );
+    std::cerr << "sim_signal_handler: " << name
+              << "! Iteration=" << global_sim -> current_iteration
+              << " Seed=" << global_sim -> seed
+              << " TargetHealth=" << global_sim -> target -> resources.initial[ RESOURCE_HEALTH ]
+              << std::endl;
     fflush( stderr );
   }
 
@@ -38,6 +41,10 @@ struct sim_signal_handler_t
         global_sim -> cancel();
       }
       else if ( global_sim -> single_actor_batch )
+      {
+        global_sim -> cancel();
+      }
+      else if ( global_sim -> profileset_map.size() > 0 )
       {
         global_sim -> cancel();
       }
@@ -261,13 +268,21 @@ int sim_t::main( const std::vector<std::string>& args )
     util::printf( "\nSimulating... ( iterations=%d, threads=%d, target_error=%.3f,  max_time=%.0f, vary_combat_length=%0.2f, optimal_raid=%d, fight_style=%s )\n\n",
       iterations, threads, target_error, max_time.total_seconds(), vary_combat_length, optimal_raid, fight_style.c_str() );
 
-    set_sim_base_str( "Baseline" );
+    progress_bar.set_base( "Baseline" );
     if ( execute() )
     {
       scaling      -> analyze();
       plot         -> analyze();
       reforge_plot -> analyze();
-      report::print_suite( this );
+
+      if ( canceled == 0 && ! profilesets.iterate( this ) )
+      {
+        canceled = 1;
+      }
+      else
+      {
+        report::print_suite( this );
+      }
     }
     else
       canceled = 1;
