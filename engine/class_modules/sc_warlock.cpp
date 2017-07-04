@@ -8110,17 +8110,17 @@ struct warlock_module_t: public module_t
     //  .modifier( 1.10 )
     //  .verification_value( 0.52 );
 
-    hotfix::register_effect( "Warlock", "2017-06-26", "Corruption damage reduced by 5%.", 198369 )
-      .field( "sp_coefficient" )
-      .operation( hotfix::HOTFIX_MUL )
-      .modifier( 0.95 )
-      .verification_value( 0.363 );
+    //hotfix::register_effect( "Warlock", "2017-06-26", "Corruption damage reduced by 5%.", 198369 )
+    //  .field( "sp_coefficient" )
+    //  .operation( hotfix::HOTFIX_MUL )
+    //  .modifier( 0.95 )
+    //  .verification_value( 0.363 );
 
-    hotfix::register_effect( "Warlock", "2017-06-26", "Agony damage reduced by 5%.", 374 )
-      .field( "sp_coefficient" )
-      .operation( hotfix::HOTFIX_MUL )
-      .modifier( 0.95 )
-      .verification_value( 0.03970 );
+    //hotfix::register_effect( "Warlock", "2017-06-26", "Agony damage reduced by 5%.", 374 )
+    //  .field( "sp_coefficient" )
+    //  .operation( hotfix::HOTFIX_MUL )
+    //  .modifier( 0.95 )
+    //  .verification_value( 0.03970 );
 
     //hotfix::register_effect( "Warlock", "2016-09-23", "Unstable Affliction damage increased by 15%", 303066 )
     //  .field( "sp_coefficient" )
