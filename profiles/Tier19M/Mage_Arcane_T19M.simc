@@ -47,7 +47,6 @@ actions.build+=/arcane_blast
 actions.burn=variable,name=total_burns,op=add,value=1,if=!burn_phase
 actions.burn+=/start_burn_phase,if=!burn_phase
 actions.burn+=/stop_burn_phase,if=prev_gcd.1.evocation&cooldown.evocation.charges=0&burn_phase_duration>0
-actions.burn+=/arcane_barrage,if=buff.rune_of_power.remains>=travel_time&((cooldown.presence_of_mind.remains<=execute_time&set_bonus.tier20_2pc)|(talent.charged_up.enabled&cooldown.charged_up.remains<=execute_time))&buff.arcane_charge.stack=buff.arcane_charge.max_stack
 actions.burn+=/nether_tempest,if=refreshable|!ticking
 actions.burn+=/mark_of_aluneth
 actions.burn+=/mirror_image
@@ -66,7 +65,6 @@ actions.burn+=/arcane_blast,if=buff.presence_of_mind.up
 actions.burn+=/supernova
 actions.burn+=/arcane_explosion,if=active_enemies>1
 actions.burn+=/arcane_missiles,if=variable.arcane_missiles_procs
-actions.burn+=/arcane_barrage,if=buff.rune_of_power.remains<action.arcane_blast.cast_time&buff.rune_of_power.remains>=travel_time&cooldown.charged_up.remains<=execute_time
 actions.burn+=/arcane_blast
 actions.burn+=/variable,name=average_burn_length,op=set,value=(variable.average_burn_length*variable.total_burns-variable.average_burn_length+burn_phase_duration)%variable.total_burns
 actions.burn+=/evocation,interrupt_if=ticks=2|mana.pct>=85,interrupt_immediate=1

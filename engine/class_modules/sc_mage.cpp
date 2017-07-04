@@ -7463,7 +7463,6 @@ void mage_t::apl_arcane()
   burn  -> add_action( "variable,name=total_burns,op=add,value=1,if=!burn_phase" );
   burn  -> add_action( "start_burn_phase,if=!burn_phase" );
   burn  -> add_action( "stop_burn_phase,if=prev_gcd.1.evocation&cooldown.evocation.charges=0&burn_phase_duration>0" );
-  burn  -> add_action( this, "Arcane Barrage", "if=buff.rune_of_power.remains>=travel_time&((cooldown.presence_of_mind.remains<=execute_time&set_bonus.tier20_2pc)|(talent.charged_up.enabled&cooldown.charged_up.remains<=execute_time))&buff.arcane_charge.stack=buff.arcane_charge.max_stack" );
   burn  -> add_talent( this, "Nether Tempest", "if=refreshable|!ticking" );
   burn  -> add_action( this, "Mark of Aluneth" );
   burn  -> add_talent( this, "Mirror Image" );
@@ -7485,7 +7484,6 @@ void mage_t::apl_arcane()
   burn  -> add_talent( this, "Supernova" );
   burn  -> add_action( this, "Arcane Explosion", "if=active_enemies>1" );
   burn  -> add_action( this, "Arcane Missiles", "if=variable.arcane_missiles_procs" );
-  burn  -> add_action( this, "Arcane Barrage", "if=buff.rune_of_power.remains<action.arcane_blast.cast_time&buff.rune_of_power.remains>=travel_time&cooldown.charged_up.remains<=execute_time" );
   burn  -> add_action( this, "Arcane Blast" );
   burn  -> add_action( "variable,name=average_burn_length,op=set,value=(variable.average_burn_length*variable.total_burns-variable.average_burn_length+burn_phase_duration)%variable.total_burns" );
   burn  -> add_action( this, "Evocation", "interrupt_if=ticks=2|mana.pct>=85,interrupt_immediate=1" );
