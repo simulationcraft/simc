@@ -1217,7 +1217,8 @@ void item::engine_of_eradication( special_effect_t& effect )
     buff = stat_buff_creator_t( effect.player, "demonic_vigor", effect.trigger(), effect.item )
            .add_stat( primary_stat, amount )
            .refresh_behavior( BUFF_REFRESH_EXTEND )
-           .duration( effect.trigger() -> duration() + extra_seconds );
+           .duration( effect.trigger() -> duration() + extra_seconds )
+           .cd( timespan_t::from_seconds( 4.0 ) ); // ICD reportedly resets when the player collects all orbs
   }
 
   effect.custom_buff = buff;
