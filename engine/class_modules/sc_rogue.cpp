@@ -6969,7 +6969,7 @@ std::string rogue_t::default_flask() const
 
 std::string rogue_t::default_potion() const
 {
-  return ( true_level > 100 ) ? ( specialization() == ROGUE_ASSASSINATION ? "old_war" : "prolonged_power" ) :
+  return ( true_level > 100 ) ? "prolonged_power" :
          ( true_level >= 90 ) ? "draenic_agility" :
          ( true_level >= 85 ) ? "virmens_bite" :
          ( true_level >= 80 ) ? "tolvir" :
@@ -7099,6 +7099,7 @@ void rogue_t::init_action_list()
     cds -> add_action( this, "Vanish", "if=talent.subterfuge.enabled&!equipped.mantle_of_the_master_assassin&!stealthed.rogue&dot.garrote.refreshable&((spell_targets.fan_of_knives<=3&combo_points.deficit>=1+spell_targets.fan_of_knives)|(spell_targets.fan_of_knives>=4&combo_points.deficit>=4))" );
     cds -> add_action( this, "Vanish", "if=talent.shadow_focus.enabled&variable.energy_time_to_max_combined>=2&combo_points.deficit>=4" );
     cds -> add_talent( this, "Exsanguinate", "if=prev_gcd.1.rupture&dot.rupture.remains>4+4*cp_max_spend&!stealthed.rogue|!dot.garrote.pmultiplier<=1&!cooldown.vanish.up&buff.subterfuge.up" );
+    cds -> add_talent( this, "Toxic Blade", "if=combo_points.deficit>=1+(mantle_duration>=gcd.remains+0.2)&dot.rupture.remains>8" );
 
     // Finishers
     action_priority_list_t* finish = get_action_priority_list( "finish", "Finishers" );
@@ -7108,9 +7109,8 @@ void rogue_t::init_action_list()
 
     // Kingsbane
     action_priority_list_t* kb = get_action_priority_list( "kb", "Kingsbane" );
-    kb -> add_action( this, "Kingsbane", "if=artifact.sinister_circulation.enabled&!(equipped.duskwalkers_footpads&equipped.convergence_of_fates&artifact.master_assassin.rank>=6)&(time>25|!equipped.mantle_of_the_master_assassin|(debuff.vendetta.up&debuff.surge_of_toxins.up))&(talent.subterfuge.enabled|!stealthed.rogue|(talent.nightstalker.enabled&(!equipped.mantle_of_the_master_assassin|!set_bonus.tier19_4pc)))", "Sinister Circulation makes it worth to cast Kingsbane on CD exceot if you're [stealthed w/ Nighstalker and have Mantle & T19_4PC to Envenom] or before vendetta if you have mantle during the opener." );
-    kb -> add_action( this, "Kingsbane", "if=!talent.exsanguinate.enabled&buff.envenom.up&((debuff.vendetta.up&debuff.surge_of_toxins.up)|cooldown.vendetta.remains<=5.8|cooldown.vendetta.remains>=10)" );
-    kb -> add_action( this, "Kingsbane", "if=talent.exsanguinate.enabled&dot.rupture.exsanguinated" ); 
+    kb -> add_action( this, "Kingsbane", "if=artifact.sinister_circulation.enabled&!(equipped.duskwalkers_footpads&equipped.convergence_of_fates&artifact.master_assassin.rank>=6)&(time>25|!equipped.mantle_of_the_master_assassin|(debuff.vendetta.up&debuff.surge_of_toxins.up))&(talent.subterfuge.enabled|!stealthed.rogue|(talent.nightstalker.enabled&(!equipped.mantle_of_the_master_assassin|!set_bonus.tier19_4pc)))", "Sinister Circulation makes it worth to cast Kingsbane on CD except if you're [stealthed w/ Nighstalker and have Mantle & T19_4PC to Envenom] or before vendetta if you have mantle during the opener." );
+    kb -> add_action( this, "Kingsbane", "if=buff.envenom.up&((debuff.vendetta.up&debuff.surge_of_toxins.up)|cooldown.vendetta.remains<=5.8|cooldown.vendetta.remains>=10)" );
 
     // Maintain
     action_priority_list_t* maintain = get_action_priority_list( "maintain", "Maintain" );
@@ -7124,7 +7124,6 @@ void rogue_t::init_action_list()
     maintain -> add_action( "call_action_list,name=kb,if=combo_points.deficit>=1+(mantle_duration>=gcd.remains+0.2)" );
     maintain -> add_action( "pool_resource,for_next=1" );
     maintain -> add_action( this, "Garrote", "cycle_targets=1,if=(!talent.subterfuge.enabled|!(cooldown.vanish.up&cooldown.vendetta.remains<=4))&combo_points.deficit>=1&refreshable&(pmultiplier<=1|remains<=tick_time)&(!exsanguinated|remains<=tick_time*2)&target.time_to_die-remains>4" );
-    maintain -> add_talent( this, "Toxic Blade", "if=combo_points.deficit>=1+(mantle_duration>=gcd.remains+0.2)&dot.rupture.remains>8" );
   }
   else if ( specialization() == ROGUE_OUTLAW )
   {
