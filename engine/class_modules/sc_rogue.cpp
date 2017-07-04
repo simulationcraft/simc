@@ -7257,13 +7257,13 @@ void rogue_t::init_action_list()
         cds -> add_action( racial_actions[i] + ",if=stealthed.rogue" );
     }
     cds -> add_action( this, "Symbols of Death", "if=!talent.death_from_above.enabled&((time>10&energy.deficit>=40-stealthed.all*30)|(time<10&dot.nightblade.ticking))" );
-    cds -> add_action( this, "Symbols of Death", "if=talent.death_from_above.enabled&cooldown.death_from_above.remains<=3&(dot.nightblade.remains>=cooldown.death_from_above.remains+3|target.time_to_die-dot.nightblade.remains<=6)" );
+    cds -> add_action( this, "Symbols of Death", "if=(talent.death_from_above.enabled&cooldown.death_from_above.remains<=3&(dot.nightblade.remains>=cooldown.death_from_above.remains+3|target.time_to_die-dot.nightblade.remains<=6)&(time>=3|set_bonus.tier20_4pc))|target.time_to_die-remains<=10" );
     cds -> add_talent( this, "Marked for Death", "target_if=min:target.time_to_die,if=target.time_to_die<combo_points.deficit" );
     cds -> add_talent( this, "Marked for Death", "if=raid_event.adds.in>40&!stealthed.all&combo_points.deficit>=cp_max_spend" );
     cds -> add_action( this, "Shadow Blades", "if=(time>10&combo_points.deficit>=2+stealthed.all-equipped.mantle_of_the_master_assassin)|(time<10&(!talent.marked_for_death.enabled|combo_points.deficit>=3|dot.nightblade.ticking))" );
     cds -> add_action( this, "Goremaw's Bite", "if=!stealthed.all&cooldown.shadow_dance.charges_fractional<=variable.shd_fractional&((combo_points.deficit>=4-(time<10)*2&energy.deficit>50+talent.vigor.enabled*25-(time>=10)*15)|(combo_points.deficit>=1&target.time_to_die<8))" );
     cds -> add_action( "pool_resource,for_next=1,extra_amount=40-talent.shadow_focus.enabled*10" );
-    cds -> add_action( this, "Vanish", "if=variable.dsh_dfa&charges_fractional<=variable.shd_fractional&!buff.shadow_dance.up&!buff.stealth.up&mantle_duration=0&(dot.nightblade.remains>=cooldown.death_from_above.remains+3|target.time_to_die-dot.nightblade.remains<=6)&cooldown.death_from_above.remains<=1&combo_points.deficit>=2" );
+    cds -> add_action( this, "Vanish", "if=(variable.dsh_dfa&charges_fractional<=variable.shd_fractional&!buff.shadow_dance.up&!buff.stealth.up&mantle_duration=0&(dot.nightblade.remains>=cooldown.death_from_above.remains+3|target.time_to_die-dot.nightblade.remains<=6)&cooldown.death_from_above.remains<=1&(time<7|combo_points.deficit>=2))|target.time_to_die<=7" );
 
     // Finishers
     action_priority_list_t* finish = get_action_priority_list( "finish", "Finishers" );
