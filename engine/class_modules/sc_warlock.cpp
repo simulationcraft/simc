@@ -463,6 +463,8 @@ public:
     proc_t* the_master_harvester;
     //aff
     proc_t* fatal_echos;
+    proc_t* ua_tick_no_mg;
+    proc_t* ua_tick_mg;
     //demo
     proc_t* impending_doom;
     proc_t* improved_dreadstalkers;
@@ -2886,6 +2888,14 @@ struct unstable_affliction_t: public warlock_spell_t
       if ( p() -> sets->has_set_bonus( WARLOCK_AFFLICTION, T18, B4 ) )
       {
         p() -> buffs.instability -> trigger();
+      }
+
+      if ( p() -> talents.malefic_grasp -> ok() )
+      {
+        if ( td( d->target )->dots_drain_soul->is_ticking() )
+          p() -> procs.ua_tick_mg -> occur();
+        else
+          p() -> procs.ua_tick_no_mg -> occur();
       }
 
       warlock_spell_t::tick( d );
@@ -6698,6 +6708,8 @@ void warlock_t::init_procs()
   procs.wilfreds_darkglare = get_proc( "wilfreds_darkglare" );
   procs.t19_2pc_chaos_bolts = get_proc( "t19_2pc_chaos_bolt" );
   procs.demonology_t20_2pc = get_proc( "demonology_t20_2pc" );
+  procs.ua_tick_no_mg = get_proc( "ua_tick_no_mg" );
+  procs.ua_tick_mg = get_proc( "ua_tick_mg" );
 }
 
 void warlock_t::apl_precombat()
