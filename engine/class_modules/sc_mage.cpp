@@ -3822,7 +3822,11 @@ struct flamestrike_t : public fire_mage_spell_t
   {
     fire_mage_spell_t::execute();
     p() -> buffs.hot_streak -> expire();
-    p() -> buffs.ignition -> expire();
+
+    // Ignition buff is removed shortly after Flamestrike/Pyroblast cast. In a situation
+    // where you're hardcasting FS/PB followed by a Hot Streak FS/FB, both spells actually
+    // benefit. As of build 24461, 2017-07-05.
+    p() -> buffs.ignition -> expire( p() -> bugs ? timespan_t::from_millis( 15 ) : timespan_t::zero() );
     p() -> buffs.critical_massive -> expire();
   }
 
@@ -5438,7 +5442,10 @@ struct pyroblast_t : public fire_mage_spell_t
       p() -> buffs.kaelthas_ultimate_ability -> trigger();
     }
 
-    p() -> buffs.ignition -> expire();
+    // Ignition buff is removed shortly after Flamestrike/Pyroblast cast. In a situation
+    // where you're hardcasting FS/PB followed by a Hot Streak FS/FB, both spells actually
+    // benefit. As of build 24461, 2017-07-05.
+    p() -> buffs.ignition -> expire( p() -> bugs ? timespan_t::from_millis( 15 ) : timespan_t::zero() );
     p() -> buffs.critical_massive -> expire();
 
     //TODO: Does this interact with T19 4pc?
