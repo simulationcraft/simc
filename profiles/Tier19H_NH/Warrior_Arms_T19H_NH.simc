@@ -37,18 +37,19 @@ actions+=/run_action_list,name=aoe,if=spell_targets.whirlwind>=5&!talent.sweepin
 actions+=/run_action_list,name=execute,target_if=target.health.pct<=20&spell_targets.whirlwind<5
 actions+=/run_action_list,name=single,if=target.health.pct>20
 
-actions.aoe=mortal_strike,if=cooldown_react
+actions.aoe=warbreaker,if=(cooldown.bladestorm.up|cooldown.bladestorm.remains<=gcd)&(cooldown.battle_cry.up|cooldown.battle_cry.remains<=gcd)
+actions.aoe+=/bladestorm,if=buff.battle_cry.up&(set_bonus.tier20_4pc|equipped.the_great_storms_eye)
+actions.aoe+=/colossus_smash,if=buff.in_for_the_kill.down&talent.in_for_the_kill.enabled
+actions.aoe+=/colossus_smash,cycle_targets=1,if=debuff.colossus_smash.down&spell_targets.whirlwind<=10
+actions.aoe+=/cleave,if=spell_targets.whirlwind>=5
+actions.aoe+=/whirlwind,if=spell_targets.whirlwind>=5&buff.cleave.up
+actions.aoe+=/whirlwind,if=spell_targets.whirlwind>=7
+actions.aoe+=/colossus_smash,if=buff.shattered_defenses.down
 actions.aoe+=/execute,if=buff.stone_heart.react
-actions.aoe+=/colossus_smash,if=cooldown_react&buff.shattered_defenses.down&buff.precise_strikes.down
-actions.aoe+=/warbreaker,if=buff.shattered_defenses.down
-actions.aoe+=/whirlwind,if=talent.fervor_of_battle.enabled&(debuff.colossus_smash.up|rage.deficit<50)&(!talent.focused_rage.enabled|buff.battle_cry_deadly_calm.up|buff.cleave.up)
-actions.aoe+=/rend,if=remains<=duration*0.3
-actions.aoe+=/bladestorm
+actions.aoe+=/mortal_strike,if=buff.shattered_defenses.up|buff.executioners_precision.down
+actions.aoe+=/rend,cycle_targets=1,if=remains<=duration*0.3&spell_targets.whirlwind<=3
 actions.aoe+=/cleave
-actions.aoe+=/execute,if=rage>90
-actions.aoe+=/whirlwind,if=rage>=40
-actions.aoe+=/shockwave
-actions.aoe+=/storm_bolt
+actions.aoe+=/whirlwind
 
 actions.cleave=mortal_strike
 actions.cleave+=/execute,if=buff.stone_heart.react
