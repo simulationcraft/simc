@@ -207,6 +207,9 @@ struct artifact_power_t
   operator const spell_data_t*() const
   { return spell_; }
 
+  const artifact_power_data_t* power() const
+  { return power_; }
+
   double value( size_t idx = 1 ) const
   {
     if ( ( rank() == 1 && rank_data_ -> value() == 0.0 ) || rank_data_ -> value() == 0.0 )
