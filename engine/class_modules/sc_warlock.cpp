@@ -2016,7 +2016,7 @@ struct infernal_t: public warlock_pet_t
     double m = warlock_pet_t::composite_player_multiplier( school );
 
     if ( o() -> talents.grimoire_of_supremacy -> ok() )
-      m *= 1.0 + o() -> artifact.left_hand_of_darkness.percent();
+      m *= 1.0 + o() -> artifact.left_hand_of_darkness.percent() / 2.0;
     return m;
   }
 
@@ -2086,7 +2086,7 @@ struct doomguard_t: public warlock_pet_t
     double m = warlock_pet_t::composite_player_multiplier( school );
 
     if ( o() -> talents.grimoire_of_supremacy -> ok() )
-      m *= 1.0 + o() -> artifact.left_hand_of_darkness.percent();
+      m *= 1.0 + o() -> artifact.left_hand_of_darkness.percent() / 2.0;
     return m;
   }
 
