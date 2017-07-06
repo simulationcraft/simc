@@ -288,6 +288,11 @@ void profilesets_t::set_state( state new_state )
 
 bool profilesets_t::iterate( sim_t* parent )
 {
+  if ( m_profilesets.size() == 0 )
+  {
+    return true;
+  }
+
   auto original_opts = parent -> control;
 
   while ( ! is_done() )
