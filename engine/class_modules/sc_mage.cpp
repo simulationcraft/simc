@@ -3972,6 +3972,13 @@ struct flurry_t : public frost_mage_spell_t
     add_child( flurry_bolt );
   }
 
+  virtual void init() override
+  {
+    frost_mage_spell_t::init();
+    // Snapshot haste for bolt impact timing.
+    snapshot_flags |= STATE_HASTE;
+  }
+
   virtual timespan_t execute_time() const override
   {
     if ( p() -> buffs.brain_freeze -> check() )
@@ -4001,7 +4008,7 @@ struct flurry_t : public frost_mage_spell_t
     timespan_t pulse_time = timespan_t::from_seconds( 0.4 );
 
     make_event<ground_aoe_event_t>( *sim, p(), ground_aoe_params_t()
-      .pulse_time( pulse_time * player -> cache.spell_speed() )
+      .pulse_time( pulse_time * s -> haste )
       .target( s -> target )
       .n_pulses( data().effectN( 1 ).base_value() )
       .action( flurry_bolt ), true );
