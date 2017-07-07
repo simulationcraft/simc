@@ -1402,6 +1402,11 @@ struct mortal_strike_t20_t : public warrior_attack_t
     return 0;
   }
 
+   double tactician_cost() const override
+  {
+    return 0;
+  }
+
   void execute() override
   {
     warrior_attack_t::execute();
@@ -1580,8 +1585,22 @@ struct bladestorm_t: public warrior_attack_t
     p() -> buff.bladestorm -> trigger();
   }
 
+
+ 
   void tick( dot_t* d ) override
   {
+  
+   if(d->ticks_left())
+   { 
+     p()->buff.tornados_eye->trigger();
+   }
+   else
+   {
+     // only duration is refreshed on last tick
+     p()->buff.tornados_eye->trigger(0);
+   }
+
+
     warrior_attack_t::tick( d );
     bladestorm_mh -> execute();
 
@@ -1598,11 +1617,6 @@ struct bladestorm_t: public warrior_attack_t
         mortal_strike -> target = t;
         mortal_strike -> execute();
       }
-    }
-
-    if ( d -> ticks_left() > 0 )
-    {
-      p() -> buff . tornados_eye -> trigger();
     }
   }
 
@@ -2050,7 +2064,7 @@ struct opportunity_strikes_t : public warrior_attack_t
     school = p -> talents.opportunity_strikes -> get_school_type();
   }
 
-  void opportunity_strikes( action_state_t* s ) override
+  void opportunity_strikes( action_state_t* /* s */ ) override
   {// Cannot re-proc itself.
   }
 };
@@ -3297,7 +3311,8 @@ struct ravager_t: public warrior_attack_t
   {
     parse_options( options_str );
     ignore_false_positive = true;
-    hasted_ticks = callbacks = false;
+	hasted_ticks = true;
+	callbacks = false;
     attack_power_mod.direct = attack_power_mod.tick = 0;
     add_child( ravager );
     if ( p -> sets -> has_set_bonus( WARRIOR_ARMS, T20, B4 ) )
@@ -3322,12 +3337,28 @@ struct ravager_t: public warrior_attack_t
     warrior_attack_t::execute();
   }
 
-  void tick( dot_t*d ) override
+ void tick( dot_t*d ) override
   {
+  // the ticks do scale with haste so I turned hasted_ticks on
+  // however this made it tick more than 7 times
+    if (d->current_tick > 7)
+      return;
+
+  // the helm buff occurs before each tick
+  // it refreshes and adds one stack on the first 6 ticks
+  // only duration is refreshed on last tick, no stack is added
+   if ( d->current_tick <= 6 )
+    {
+      p()->buff.tornados_eye->trigger();
+    }
+   if (d->current_tick == 7)
+   {
+     p()->buff.tornados_eye->trigger(0);
+   }
     warrior_attack_t::tick( d );
     ravager -> execute();
-  int ticksRemain = d->ticks_left();
-  if (mortal_strike && ticksRemain > 2 && ticksRemain % 2 != 0)
+  // the 4pc occurs on the first and 4th tick
+  if (mortal_strike && (d->current_tick == 1 || d->current_tick == 4))
     {
       auto t = select_random_target();
 
@@ -3336,10 +3367,6 @@ struct ravager_t: public warrior_attack_t
         mortal_strike -> target = t;
         mortal_strike -> execute();
       }
-    }
-    if ( d->ticks_left() > 0 )
-    {
-      p()->buff.tornados_eye->trigger();
     }
   }
 };
@@ -3858,7 +3885,7 @@ struct arms_whirlwind_mh_t: public warrior_attack_t
     weapon_multiplier *= 1.0 + p -> artifact.many_will_fall.percent();
   }
 
-  void opportunity_strikes( action_state_t* s ) override
+  void opportunity_strikes( action_state_t* /* s */ ) override
   { //Only the first spin has a chance to proc opportunity strikes.
   }
 
@@ -5230,7 +5257,7 @@ void warrior_t::apl_arms()
     }
   }
 
-  default_list -> add_action( this, "Battle Cry", "if=target.time_to_die<=6|prev_gcd.1.ravager|!talent.ravager.enabled&!gcd.remains&target.debuff.colossus_smash.remains>=5&(!cooldown.bladestorm.remains|!set_bonus.tier20_4pc)&(!talent.rend.enabled|dot.rend.remains>4)");
+  default_list -> add_action( this, "Battle Cry", "if=target.time_to_die<=6|(gcd.remains<=0.5&prev_gcd.1.ravager)|!talent.ravager.enabled&!gcd.remains&target.debuff.colossus_smash.remains>=5&(!cooldown.bladestorm.remains|!set_bonus.tier20_4pc)&(!talent.rend.enabled|dot.rend.remains>4)");
   default_list -> add_action( "run_action_list,name=cleave,if=spell_targets.whirlwind>=2&talent.sweeping_strikes.enabled" );
   default_list -> add_action( "run_action_list,name=aoe,if=spell_targets.whirlwind>=5&!talent.sweeping_strikes.enabled" );
   default_list -> add_action( "run_action_list,name=execute,target_if=target.health.pct<=20&spell_targets.whirlwind<5" );

@@ -396,7 +396,8 @@ class RealPPMModifierGenerator(DataGenerator):
         self._specmap = { 0: 'SPEC_NONE' }
 
     def initialize(self):
-        DataGenerator.initialize(self)
+        if not DataGenerator.initialize(self):
+            return False
 
         for i, data in self._chrspecialization_db.items():
             if data.class_id > 0:
@@ -1793,7 +1794,8 @@ class SpellDataGenerator(DataGenerator):
             self._dbc.append('ItemSparse')
 
     def initialize(self):
-        super().initialize()
+        if not super().initialize():
+            return False
 
         if self._data_store:
             self._data_store.link('SpellEffect',        'id_spell', 'Spell', 'add_effect'   )

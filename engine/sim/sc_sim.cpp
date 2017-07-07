@@ -5,6 +5,7 @@
 
 #include "simulationcraft.hpp"
 #include "report/sc_highchart.hpp"
+#include "sc_profileset.hpp"
 #ifdef SC_WINDOWS
 #include <direct.h>
 #endif
@@ -1430,7 +1431,9 @@ sim_t::sim_t( sim_t* p, int index ) :
   chart_boxplot_percentile( .25 ),
   display_hotfixes( false ),
   disable_hotfixes( false ),
-  display_bonus_ids( false )
+  display_bonus_ids( false ),
+  profileset_metric( SCALE_METRIC_DPS ),
+  profileset_enabled( false )
 {
   item_db_sources.assign( std::begin( default_item_db_sources ),
                           std::end( default_item_db_sources ) );
@@ -1440,6 +1443,8 @@ sim_t::sim_t( sim_t* p, int index ) :
   use_optimal_buffs_and_debuffs( 1 );
 
   create_options();
+
+  profileset::create_options( this );
 
   if ( parent )
   {
@@ -1549,6 +1554,8 @@ void sim_t::cancel()
   {
     relative -> cancel();
   }
+
+  profilesets.cancel();
 }
 
 // sim_t::interrupt =========================================================
@@ -2488,6 +2495,8 @@ bool sim_t::init()
     }
   }
 
+  profilesets.initialize( this );
+
   initialized = true;
 
   return canceled ? false : true;
@@ -2507,7 +2516,8 @@ void sim_t::analyze()
   if ( scaling -> scale_stat == STAT_NONE &&
        scaling -> calculate_scale_factors == 0 &&
        plot -> dps_plot_stat_str.empty() &&
-       reforge_plot -> reforge_plot_stat_str.empty() )
+       reforge_plot -> reforge_plot_stat_str.empty() &&
+       profileset_map.size() == 0 && ! profileset_enabled )
   {
     std::cout << "Analyzing actor data ..." << std::endl;
   }
@@ -2560,37 +2570,6 @@ void sim_t::analyze_iteration_data()
 }
 
 
-// sim_t::set_sim_phase ===================================================
-
-void sim_t::set_sim_base_str( const std::string& str )
-{
-  sim_progress_base_str = str;
-}
-
-void sim_t::update_sim_phase_str()
-{
-  // The two-split base / phase string for progressbar is only used in single actor batch for now.
-  if ( ! single_actor_batch )
-  {
-    return;
-  }
-
-  std::stringstream phase_str;
-
-  if ( progressbar_type == 0 )
-  {
-    phase_str << player_no_pet_list[ current_index ] -> name_str << " ";
-    phase_str << ( current_index + 1 ) << "/" << player_no_pet_list.size();
-  }
-  else
-  {
-    phase_str << player_no_pet_list[ current_index ] -> name_str << '\t';
-    phase_str << ( current_index + 1 ) << '\t' << player_no_pet_list.size();
-  }
-
-  sim_progress_phase_str = phase_str.str();
-}
-
 // sim_t::iterate ===========================================================
 
 bool sim_t::iterate()
@@ -2599,8 +2578,6 @@ bool sim_t::iterate()
     return false;
 
   progress_bar.init();
-
-  update_sim_phase_str();
 
   activate_actors();
 
@@ -2626,7 +2603,9 @@ bool sim_t::iterate()
 
       if ( more_work && current_index != old_active )
       {
-        if ( ! parent || scaling -> scale_stat != STAT_NONE )
+        if ( ! parent ||
+             scaling -> scale_stat != STAT_NONE ||
+             ( parent && parent -> reforge_plot -> current_stat_combo > -1 ) )
         {
           progress_bar.update( true, static_cast<int>( old_active ) );
           progress_bar.output( true );
@@ -2647,6 +2626,10 @@ bool sim_t::iterate()
   if ( single_actor_batch )
   {
     player_no_pet_list[ player_no_pet_list.size() - 1 ] -> deactivate();
+  }
+  else
+  {
+    progress_bar.restart();
   }
 
   reset();
@@ -2689,7 +2672,8 @@ void sim_t::merge( sim_t& other_sim )
   if ( scaling -> scale_stat == STAT_NONE &&
        scaling -> calculate_scale_factors == 0 &&
        plot -> dps_plot_stat_str.empty() &&
-       reforge_plot -> reforge_plot_stat_str.empty() )
+       reforge_plot -> reforge_plot_stat_str.empty() &&
+       profileset_map.size() == 0 && ! profileset_enabled )
   {
     std::cout << "Merging data from thread-" << other_sim.thread_index << " ..." << std::endl;
   }
@@ -2833,7 +2817,7 @@ bool sim_t::execute()
   elapsed_cpu  = util::cpu_time()  - start_cpu_time;
   elapsed_time = util::wall_time() - start_wall_time;
 
-  return true;
+  return success;
 }
 
 /// find player in sim by name
@@ -3276,6 +3260,7 @@ void sim_t::create_options()
 
   // Legion
   add_option( opt_int( "legion.infernal_cinders_users", expansion_opts.infernal_cinders_users, 1, 20 ) );
+  add_option( opt_bool( "legion.feast_as_dps", expansion_opts.lavish_feast_as_dps ) );
   add_option( opt_int( "legion.engine_of_eradication_orbs", expansion_opts.engine_of_eradication_orbs, 0, 4 ) );
   add_option( opt_func( "legion.cradle_of_anguish_resets", []( sim_t* sim, const std::string&, const std::string& value ) {
     auto split = util::string_split( value, ":/," );
@@ -3810,8 +3795,13 @@ void sim_t::activate_actors()
 
     // Activate new actor
     player_no_pet_list[ current_index ] -> activate();
-    update_sim_phase_str();
+    if ( ! profileset_enabled )
+    {
+      progress_bar.set_phase( player_no_pet_list[ current_index ] -> name_str );
+    }
   }
+
+  progress_bar.progress();
 
   current_iteration = -1;
 }

@@ -13,6 +13,7 @@
  HEADERS += engine/util/generic.hpp
  HEADERS += engine/util/concurrency.hpp
  HEADERS += engine/util/cache.hpp
+ HEADERS += engine/sim/sc_profileset.hpp
  HEADERS += engine/sim/sc_option.hpp
  HEADERS += engine/sim/sc_expressions.hpp
  HEADERS += engine/report/sc_report.hpp
@@ -41,6 +42,7 @@
  SOURCES += engine/sim/sc_reforge_plot.cpp
  SOURCES += engine/sim/sc_raid_event.cpp
  SOURCES += engine/sim/sc_progress_bar.cpp
+ SOURCES += engine/sim/sc_profileset.cpp
  SOURCES += engine/sim/sc_plot.cpp
  SOURCES += engine/sim/sc_option.cpp
  SOURCES += engine/sim/sc_gear_stats.cpp

@@ -225,6 +225,9 @@ class DBCParserBase:
         else:
             self.record_parser = self.create_formatted_parser(self.use_inline_strings())
 
+        if self.record_parser == None:
+            return False
+
         return True
 
     # Build a raw parser out of field data
@@ -436,7 +439,7 @@ class DBCParserBase:
         # One parser unpackers don't need to go through a function, can just do
         # the parsing in one go through a lambda function. Multi-parsers require state to be kept.
         if len(unpackers) == 1:
-            return lambda data, ro, rs: unpackers[0][1].unpack_from(data, ro)
+            return lambda data, ro, rs: list(unpackers[0][1].unpack_from(data, ro))
         else:
             return lambda data, ro, rs: _do_parse(unpackers, data, ro, rs)
 
@@ -946,7 +949,7 @@ class WDB6RecordParser:
         idx = 0
         for i in range(0, len(self.fields)):
             value = self.parser.get_field_value(i, data[self.id_index])
-            if idx < len(data) -1:
+            if idx < len(data):
                 if value != None:
                     data[idx] = value
             else:

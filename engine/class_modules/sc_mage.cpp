@@ -354,6 +354,9 @@ public:
     pets::water_elemental::water_elemental_pet_t* water_elemental;
 
     std::vector<pet_t*> mirror_images;
+
+    pets_t() : water_elemental( nullptr )
+    {}
   } pets;
 
   // Procs
@@ -1013,7 +1016,7 @@ struct arcane_blast_t : public mirror_image_spell_t
     double tm = mirror_image_spell_t::composite_target_multiplier( target );
 
     // Arcane Blast (88084) should work with Erosion, according to the spell data.
-    // Does not work in game, as of PTR build 24271, 2017-06-06.
+    // Does not work in game, as of build 24461, 2017-07-03.
     if ( ! o() -> bugs )
     {
       mage_td_t* tdata = o() -> get_target_data( target );
@@ -1529,9 +1532,7 @@ public:
       p() -> buffs.ice_floes -> decrement();
     }
 
-    if ( p() -> specialization() == MAGE_ARCANE &&
-         result_is_hit( execute_state -> result ) &&
-         triggers_arcane_missiles )
+    if ( p() -> specialization() == MAGE_ARCANE && hit_any_target && triggers_arcane_missiles )
     {
       trigger_am( am_trigger_source_id );
     }
@@ -1640,7 +1641,7 @@ struct arcane_mage_spell_t : public mage_spell_t
       // The damage bonus given by mastery seems to be snapshot at the moment
       // Arcane Charge is gained. As long as the stack number remains the same,
       // any future changes to mastery will have no effect.
-      // As of PTR build 24287, 2017-06-08.
+      // As of build 24461, 2017-07-03.
       if ( ac -> check() < ac -> max_stack() )
       {
         ac -> trigger( stacks, savant_damage_bonus() );
@@ -1951,6 +1952,20 @@ struct frost_spell_state_t : public mage_spell_state_t
 
   virtual bool frozen() const override
   {
+    // In game, FoF Ice Lances are implemented using a global flag which determines
+    // whether to treat the targets as frozen or not. On IL execute, FoF is checked
+    // and the flag set accordingly.
+    //
+    // This works fine under normal circumstances. However, once GCD drops below IL's
+    // travel time, it's possible to:
+    //
+    //   a) cast FoF IL, cast non-FoF IL before the first one impacts
+    //   b) cast non-FoF IL, cast FoF IL before the first one impacts
+    //
+    // In the a) case, neither Ice Lance gets the extra damage/Shatter bonus, in the
+    // b) case, both Ice Lances do.
+    // TODO: Should we model this?
+
     return ( action -> data().id() == 30455 && fof ) || mage_spell_state_t::frozen();
   }
 };
@@ -2152,11 +2167,6 @@ struct frost_mage_spell_t : public mage_spell_t
   // Helper methods for Shattered Fragments of Sindragosa.
   void trigger_shattered_fragments( player_t* target )
   {
-    // It seems that casting Flurry while Frostbolt is mid-air does not
-    // trigger the buff if Frostbolt hits before Flurry does (thankfully,
-    // it usually happens the other way around).
-    // Last checked: PTR build 24287, 2017-06-08.
-    // TODO: Check this
     trigger_legendary_effect( p() -> buffs.shattered_fragments_of_sindragosa,
                               p() -> buffs.rage_of_the_frost_wyrm,
                               p() -> action.legendary_comet_storm,
@@ -2449,8 +2459,25 @@ struct arcane_barrage_t : public arcane_mage_spell_t
 
   virtual void execute() override
   {
+    // Mantle of the First Kirin Tor has some really weird interactions. When ABar is cast, the number
+    // of targets is decided first, then the roll for Arcane Orb happens. If it succeeds, Orb is cast
+    // and the mage gains an Arcane Charge. This extra charge counts towards the bonus damage and also
+    // towards Mystic Kilt of the Rune Master. After everything is done, Arcane Charges are reset.
+    //
+    // Hard to tell which part (if any) is a bug.
+    // TODO: Check this.
     int charges = p() -> buffs.arcane_charge -> check();
     aoe = ( charges == 0 ) ? 0 : 1 + charges;
+
+    if ( rng().roll( mantle_of_the_first_kirin_tor_chance * charges ) )
+    {
+      assert( p() -> action.legendary_arcane_orb );
+      p() -> action.legendary_arcane_orb -> set_target( target );
+      p() -> action.legendary_arcane_orb -> execute();
+
+      // Update charges for Mystic Kilt of the Rune Master mana gain.
+      charges = p() -> buffs.arcane_charge -> check();
+    }
 
     p() -> benefits.arcane_charge.arcane_barrage -> update();
 
@@ -2463,13 +2490,6 @@ struct arcane_barrage_t : public arcane_mage_spell_t
     }
 
     arcane_mage_spell_t::execute();
-
-    if ( rng().roll( mantle_of_the_first_kirin_tor_chance * charges ) )
-    {
-      assert( p() -> action.legendary_arcane_orb );
-      p() -> action.legendary_arcane_orb -> set_target( execute_state -> target );
-      p() -> action.legendary_arcane_orb -> execute();
-    }
 
     p() -> buffs.arcane_charge -> expire();
   }
@@ -2593,7 +2613,7 @@ struct arcane_blast_t : public arcane_mage_spell_t
 
     p() -> buffs.arcane_charge -> up();
 
-    if ( result_is_hit( execute_state -> result ) )
+    if ( hit_any_target )
     {
       trigger_am( am_trigger_source_id,
                   p() -> buffs.arcane_missiles -> proc_chance() * 2.0 );
@@ -2664,7 +2684,7 @@ struct time_and_space_t : public arcane_mage_spell_t
     background = true;
 
     // All other background actions trigger Erosion.
-    // As of PTR build 24287, 2017-06-08.
+    // As of build 24461, 2017-07-03.
     if ( p -> bugs )
     {
       triggers_erosion = false;
@@ -2713,7 +2733,7 @@ struct arcane_explosion_t : public arcane_mage_spell_t
 
     p() -> buffs.arcane_charge -> up();
 
-    if ( result_is_hit( execute_state -> result ) )
+    if ( hit_any_target )
     {
       trigger_arcane_charge();
     }
@@ -3816,7 +3836,11 @@ struct flamestrike_t : public fire_mage_spell_t
   {
     fire_mage_spell_t::execute();
     p() -> buffs.hot_streak -> expire();
-    p() -> buffs.ignition -> expire();
+
+    // Ignition buff is removed shortly after Flamestrike/Pyroblast cast. In a situation
+    // where you're hardcasting FS/PB followed by a Hot Streak FS/FB, both spells actually
+    // benefit. As of build 24461, 2017-07-05.
+    p() -> buffs.ignition -> expire( p() -> bugs ? timespan_t::from_millis( 15 ) : timespan_t::zero() );
     p() -> buffs.critical_massive -> expire();
   }
 
@@ -3839,7 +3863,7 @@ struct flamestrike_t : public fire_mage_spell_t
       // None of the following Aftershocks get Ignition crit bonus.
       //
       // This should model that behavior correctly. Otherwise we might need custom snapshotting.
-      // Last checked: PTR build 24271, 2017-06-06
+      // Last checked: build 24461, 2017-07-03.
       // TODO: Check if this is still true.
       aftershocks -> ignition = p() -> buffs.ignition -> up();
 
@@ -4046,7 +4070,7 @@ struct frost_bomb_t : public frost_mage_spell_t
   {
     frost_mage_spell_t::execute();
 
-    if ( result_is_hit( execute_state -> result ) )
+    if ( hit_any_target )
     {
       if ( p() -> last_bomb_target != nullptr &&
            p() -> last_bomb_target != execute_state -> target )
@@ -4123,7 +4147,7 @@ struct frostbolt_t : public frost_mage_spell_t
 
     p() -> buffs.icicles -> trigger();
 
-    if ( result_is_hit( execute_state -> result ) )
+    if ( hit_any_target )
     {
       double fof_proc_chance = p() -> spec.fingers_of_frost -> effectN( 1 ).percent();
       fof_proc_chance *= 1.0 + p() -> talents.frozen_touch -> effectN( 1 ).percent();
@@ -4216,7 +4240,7 @@ struct ice_time_nova_t : public frost_mage_spell_t
     aoe = -1;
 
     // According to the spell data.
-    // As of PTR build 24287, 2017-06-08.
+    // As of build 24461, 2017-07-03.
     if ( p -> bugs )
     {
       affected_by.frost_mage = false;
@@ -4249,7 +4273,7 @@ struct frozen_orb_bolt_t : public frost_mage_spell_t
     crit_bonus_multiplier *= 1.0 + p -> artifact.orbital_strike.percent();
     chills = true;
 
-    // As of PTR build 24287, 2017-06-08.
+    // As of build 24461, 2017-07-03.
     if ( p -> bugs )
     {
       affected_by.shatter = false;
@@ -4267,7 +4291,7 @@ struct frozen_orb_bolt_t : public frost_mage_spell_t
   virtual void execute() override
   {
     frost_mage_spell_t::execute();
-    if ( result_is_hit( execute_state -> result ) )
+    if ( hit_any_target )
     {
       double fof_proc_chance = p() -> spec.fingers_of_frost -> effectN( 1 ).percent();
       fof_proc_chance += p() -> sets -> set( MAGE_FROST, T19, B4 ) -> effectN( 1 ).percent();
@@ -4368,8 +4392,11 @@ struct frozen_orb_t : public frost_mage_spell_t
 
 struct glacial_spike_t : public frost_mage_spell_t
 {
+  double icicle_damage;
+
   glacial_spike_t( mage_t* p, const std::string& options_str ) :
-    frost_mage_spell_t( "glacial_spike", p, p -> talents.glacial_spike )
+    frost_mage_spell_t( "glacial_spike", p, p -> talents.glacial_spike ),
+    icicle_damage( 0.0 )
   {
     parse_options( options_str );
     parse_effect_data( p -> find_spell( 228600 ) -> effectN( 1 ) );
@@ -4392,9 +4419,45 @@ struct glacial_spike_t : public frost_mage_spell_t
     return frost_mage_spell_t::ready();
   }
 
+  virtual double calculate_direct_amount( action_state_t* s ) const override
+  {
+    if ( cast_state( s ) -> impact_override )
+    {
+      double base_amount = mage_spell_t::calculate_direct_amount( s );
+      double icicle_amount = icicle_damage;
+
+      // Icicle portion is only affected by target-based damage multipliers.
+      icicle_amount *= s -> target_da_multiplier;
+
+      if ( s -> chain_target > 0 )
+        icicle_amount *= base_aoe_multiplier;
+
+      double amount = base_amount + icicle_amount;
+      s -> result_raw = amount;
+
+      if ( result_is_miss( s -> result ) )
+      {
+        s -> result_total = 0.0;
+        return 0.0;
+      }
+      else
+      {
+        s -> result_total = amount;
+        return amount;
+      }
+    }
+    else
+    {
+      return s -> result_amount;
+    }
+  }
+
   virtual void execute() override
   {
-    double icicle_damage = 0.0;
+    // Ideally, this would be passed to impact() in action_state_t, but since
+    // it's pretty much impossible to execute another Glacial Spike before
+    // the first one impacts, this should be fine.
+    icicle_damage = 0.0;
     int icicle_count = as<int>( p() -> icicles.size() );
 
     for ( int i = 0; i < icicle_count; i++ )
@@ -4408,11 +4471,6 @@ struct glacial_spike_t : public frost_mage_spell_t
       sim -> out_debug.printf( "Add %u icicles to glacial_spike for %f damage",
                                icicle_count, icicle_damage );
     }
-
-    // Ideally, this would be passed to impact() in action_state_t, but since
-    // it's pretty much impossible to execute another Glacial Spike before
-    // the first one impacts, this should be fine.
-    base_dd_adder = icicle_damage;
 
     frost_mage_spell_t::execute();
 
@@ -4829,7 +4887,7 @@ struct mark_of_aluneth_explosion_t : public arcane_mage_spell_t
     background = true;
     aoe = -1;
 
-    // As of PTR build 24287, 2017-06-08.
+    // As of build 24461, 2017-07-03.
     if ( p -> bugs )
     {
       affected_by.arcane_mage = false;
@@ -5007,7 +5065,7 @@ struct meteor_impact_t: public fire_mage_spell_t
     meteor_burn_pulse_time = meteor_burn -> data().effectN( 1 ).period();
 
     // It seems that the 8th tick happens only very rarely in game.
-    // As of PTR build 24287, 2017-06-08.
+    // As of build 24461, 2017-07-03.
     if ( p -> bugs )
     {
       meteor_burn_duration -= meteor_burn_pulse_time;
@@ -5186,7 +5244,7 @@ struct nether_tempest_t : public arcane_mage_spell_t
 
     arcane_mage_spell_t::execute();
 
-    if ( result_is_hit( execute_state -> result ) )
+    if ( hit_any_target )
     {
       if ( p() -> last_bomb_target != nullptr &&
            p() -> last_bomb_target != execute_state -> target )
@@ -5255,7 +5313,7 @@ struct phoenixs_flames_splash_t : public fire_mage_spell_t
     double am = fire_mage_spell_t::action_multiplier();
 
     // Phoenix's Flames splash deal 25% less damage compared to the
-    // spell data/tooltip values. As of PTR build 24287, 2017-06-08.
+    // spell data/tooltip values. As of build 24461, 2017-07-03.
     am *= std::pow( strafing_run_multiplier, p() -> bugs ? chain_number + 1 : chain_number );
 
     return am;
@@ -5398,7 +5456,10 @@ struct pyroblast_t : public fire_mage_spell_t
       p() -> buffs.kaelthas_ultimate_ability -> trigger();
     }
 
-    p() -> buffs.ignition -> expire();
+    // Ignition buff is removed shortly after Flamestrike/Pyroblast cast. In a situation
+    // where you're hardcasting FS/PB followed by a Hot Streak FS/FB, both spells actually
+    // benefit. As of build 24461, 2017-07-05.
+    p() -> buffs.ignition -> expire( p() -> bugs ? timespan_t::from_millis( 15 ) : timespan_t::zero() );
     p() -> buffs.critical_massive -> expire();
 
     //TODO: Does this interact with T19 4pc?
@@ -5697,8 +5758,7 @@ struct supernova_t : public arcane_mage_spell_t
   {
     arcane_mage_spell_t::execute();
 
-    if ( result_is_hit( execute_state -> result ) &&
-         execute_state -> n_targets > 1 )
+    if ( hit_any_target && num_targets_hit > 1 )
     {
       // NOTE: Supernova AOE effect causes secondary trigger chance for AM
       // TODO: Verify this is still the case
@@ -6064,8 +6124,8 @@ struct freeze_t : public action_t
 
     if ( m -> pets.water_elemental && ! action )
     {
-      action         = debug_cast<pets::water_elemental::freeze_t*   >( m -> pets.water_elemental -> find_action( "freeze"    ) );
-      auto water_jet = debug_cast<pets::water_elemental::water_jet_t*>( m -> pets.water_elemental -> find_action( "water_jet" ) );
+      action         = dynamic_cast<pets::water_elemental::freeze_t*   >( m -> pets.water_elemental -> find_action( "freeze"    ) );
+      auto water_jet = dynamic_cast<pets::water_elemental::water_jet_t*>( m -> pets.water_elemental -> find_action( "water_jet" ) );
       if ( action && water_jet )
       {
         water_jet -> autocast = false;
@@ -6125,7 +6185,7 @@ struct water_jet_t : public action_t
 
     if ( m -> pets.water_elemental && ! action )
     {
-      action = debug_cast<pets::water_elemental::water_jet_t*>( m -> pets.water_elemental -> find_action( "water_jet" ) );
+      action = dynamic_cast<pets::water_elemental::water_jet_t*>( m -> pets.water_elemental -> find_action( "water_jet" ) );
       if ( action )
       {
         action -> autocast = false;
@@ -7424,7 +7484,6 @@ void mage_t::apl_arcane()
   burn  -> add_action( "variable,name=total_burns,op=add,value=1,if=!burn_phase" );
   burn  -> add_action( "start_burn_phase,if=!burn_phase" );
   burn  -> add_action( "stop_burn_phase,if=prev_gcd.1.evocation&cooldown.evocation.charges=0&burn_phase_duration>0" );
-  burn  -> add_action( this, "Arcane Barrage", "if=buff.rune_of_power.remains>=travel_time&((cooldown.presence_of_mind.remains<=execute_time&set_bonus.tier20_2pc)|(talent.charged_up.enabled&cooldown.charged_up.remains<=execute_time))&buff.arcane_charge.stack=buff.arcane_charge.max_stack" );
   burn  -> add_talent( this, "Nether Tempest", "if=refreshable|!ticking" );
   burn  -> add_action( this, "Mark of Aluneth" );
   burn  -> add_talent( this, "Mirror Image" );
@@ -7446,7 +7505,6 @@ void mage_t::apl_arcane()
   burn  -> add_talent( this, "Supernova" );
   burn  -> add_action( this, "Arcane Explosion", "if=active_enemies>1" );
   burn  -> add_action( this, "Arcane Missiles", "if=variable.arcane_missiles_procs" );
-  burn  -> add_action( this, "Arcane Barrage", "if=buff.rune_of_power.remains<action.arcane_blast.cast_time&buff.rune_of_power.remains>=travel_time&cooldown.charged_up.remains<=execute_time" );
   burn  -> add_action( this, "Arcane Blast" );
   burn  -> add_action( "variable,name=average_burn_length,op=set,value=(variable.average_burn_length*variable.total_burns-variable.average_burn_length+burn_phase_duration)%variable.total_burns" );
   burn  -> add_action( this, "Evocation", "interrupt_if=ticks=2|mana.pct>=85,interrupt_immediate=1" );
@@ -7459,7 +7517,7 @@ void mage_t::apl_arcane()
   conserve -> add_talent( this, "Supernova" );
   conserve -> add_talent( this, "Nether Tempest", "if=refreshable|!ticking" );
   conserve -> add_action( this, "Arcane Explosion", "if=active_enemies>1&mana.pct>=90" );
-  conserve -> add_action( this, "Arcane Blast", "if=mana.pct>=90|buff.rhonins_assaulting_armwraps.up" );
+  conserve -> add_action( this, "Arcane Blast", "if=mana.pct>=90|buff.rhonins_assaulting_armwraps.up|(buff.rune_of_power.remains>=cast_time&equipped.mystic_kilt_of_the_rune_master&mana.pct>=50)" );
   conserve -> add_action( this, "Arcane Missiles", "if=variable.arcane_missiles_procs" );
   conserve -> add_action( this, "Arcane Barrage" );
   conserve -> add_action( this, "Arcane Blast" );
@@ -7581,7 +7639,7 @@ void mage_t::apl_frost()
     "Replacement for buff.fingers_of_frost.react. Since some of the FoFs are not random and can be anticipated (Freeze, "
     "Lady Vashj's Grasp), we can bypass the .react check." );
   default_list -> add_action( "variable,name=fof_react,value=buff.fingers_of_frost.stack,if=equipped.lady_vashjs_grasp&buff.icy_veins.up&"
-    "variable.time_until_fof>9|prev_off_gcd.freeze" );
+    "variable.time_until_fof>9|prev_off_gcd.freeze|ground_aoe.frozen_orb.remains>9" );
   default_list -> add_action( this, "Ice Lance", "if=variable.fof_react=0&prev_gcd.1.flurry",
     "Free Ice Lance after Flurry. This action has rather high priority to ensure that we don't cast Rune of Power, Ray of Frost, "
     "etc. after Flurry and break up the combo. If FoF was already active, we do not lose anything by delaying the Ice Lance." );
@@ -7627,7 +7685,7 @@ void mage_t::apl_frost()
     "not at a risk of overcapping on FoF, use Blizzard before using Ice Lance." );
   single -> add_talent( this, "Frost Bomb", "if=debuff.frost_bomb.remains<action.ice_lance.travel_time&variable.fof_react>0" );
   single -> add_action( this, "Ice Lance", "if=variable.fof_react>0&cooldown.icy_veins.remains>10|variable.fof_react>2" );
-  single -> add_action( this, "Ebonbolt", "if=buff.brain_freeze.react=0" );
+  single -> add_action( this, "Ebonbolt" );
   single -> add_action( this, "Frozen Orb" );
   single -> add_talent( this, "Ice Nova" );
   single -> add_talent( this, "Comet Storm" );
@@ -7663,7 +7721,7 @@ void mage_t::apl_frost()
   aoe -> add_action( this, "Flurry", "if=prev_gcd.1.ebonbolt|(prev_gcd.1.glacial_spike|prev_gcd.1.frostbolt)&buff.brain_freeze.react" );
   aoe -> add_talent( this, "Frost Bomb", "if=debuff.frost_bomb.remains<action.ice_lance.travel_time&variable.fof_react>0" );
   aoe -> add_action( this, "Ice Lance", "if=variable.fof_react>0" );
-  aoe -> add_action( this, "Ebonbolt", "if=buff.brain_freeze.react=0" );
+  aoe -> add_action( this, "Ebonbolt" );
   aoe -> add_talent( this, "Glacial Spike" );
   aoe -> add_action( this, "Frostbolt" );
   aoe -> add_action( this, "Cone of Cold" );

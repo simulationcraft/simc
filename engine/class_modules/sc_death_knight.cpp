@@ -964,7 +964,6 @@ public:
 
   void      trigger_t20_2pc_frost( double consumed );
   void      trigger_t20_4pc_frost( double consumed );
-  void      trigger_t20_2pc_unholy( const action_state_t* state );
   void      trigger_t20_4pc_unholy( double consumed );
 
   unsigned  replenish_rune( unsigned n, gain_t* gain = nullptr );
@@ -3205,6 +3204,7 @@ struct necrobomb_t : public death_knight_spell_t
   }
 
   // 2016-08-22 Necrobomb is not affected by Feast of Souls because reasons.
+  // 2017-06-28 Same for T20 2PC set bonus
   double action_multiplier() const override
   {
     double m = death_knight_spell_t::action_multiplier();
@@ -3214,15 +3214,9 @@ struct necrobomb_t : public death_knight_spell_t
       m /= 1.0 + p() -> artifact.feast_of_souls.percent();
     }
 
+    m /= 1.0 + p() -> buffs.t20_2pc_unholy -> check_value();
+
     return m;
-  }
-
-  void init() override
-  {
-    death_knight_spell_t::init();
-
-    // TODO: 2016-07-30: Versatility does not affect necrobomb in game, check later
-    snapshot_flags &= ~STATE_VERSATILITY;
   }
 };
 
@@ -4408,8 +4402,6 @@ struct death_coil_t : public death_knight_spell_t
     {
       p() -> trigger_festering_wound( state, 1, true ); // TODO: Does this ignore ICD?
     }
-
-    p() -> trigger_t20_2pc_unholy( state );
   }
 };
 
@@ -6811,16 +6803,6 @@ void death_knight_t::trigger_t20_4pc_unholy( double consumed )
     cooldown.army_of_the_dead -> adjust( cd_adjust );
     consumed--;
   }
-}
-
-void death_knight_t::trigger_t20_2pc_unholy( const action_state_t* state )
-{
-  if ( ! sets -> has_set_bonus( DEATH_KNIGHT_UNHOLY, T20, B2 ) )
-  {
-    return;
-  }
-
-  //FIXME - Not implemented
 }
 
 unsigned death_knight_t::replenish_rune( unsigned n, gain_t* gain )

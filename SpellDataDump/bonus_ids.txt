@@ -1,4 +1,4 @@
-SimulationCraft 725-01 for World of Warcraft 7.2.5 Live (wow build 24287)
+SimulationCraft 725-01 for World of Warcraft 7.2.5 Live (wow build 24287, git build 004005a)
 bonus_id={ 1 }, desc={ Heroic }, ilevel_adjust={ 20 }, stats={ 100% Sta [1.5789] }
 bonus_id={ 3 }, suffix={ of Power }, socket={ 2 }, stats={ 100% StrAgiInt [0.5263] }
 bonus_id={ 15 }, quality={ epic }, ilevel_adjust={ 20 }
@@ -1757,7 +1757,7 @@ bonus_id={ 3567 }, base_ilevel={ 810 }, quality={ epic }
 bonus_id={ 3568 }, base_ilevel={ 810 }, quality={ epic }
 bonus_id={ 3569 }, add_rank={ power_index=5 }
 bonus_id={ 3570 }, ilevel_adjust={ 60 }
-bonus_id={ 3571 }, ilevel_adjust={ 30 }
+bonus_id={ 3571 }, ilevel_adjust={ 60 }
 bonus_id={ 3572 }, base_ilevel={ 860 }
 bonus_id={ 3575 }, base_ilevel={ 855 }, desc={ Mythic }, quality={ epic }
 bonus_id={ 3576 }, base_ilevel={ 855 }, desc={ Heroic }, quality={ rare }
@@ -1769,3 +1769,6 @@ bonus_id={ 3590 }, desc={ Warforged }, ilevel={ 10 @plvl 1 - 915 @plvl 110 }
 bonus_id={ 3591 }, ilevel={ 10 @plvl 0 - 800 @plvl 110 }
 bonus_id={ 3592 }, ilevel={ 10 @plvl 0 - 800 @plvl 110 }
 bonus_id={ 3596 }, ilevel={ 10 @plvl 1 - 850 @plvl 110 }
+bonus_id={ 3615 }, ilevel={ 556 @plvl 90 - 6 @plvl 0 }
+bonus_id={ 3616 }, ilevel={ 582 @plvl 90 - 6 @plvl 0 }
+bonus_id={ 3617 }, ilevel={ 569 @plvl 90 - 6 @plvl 0 }

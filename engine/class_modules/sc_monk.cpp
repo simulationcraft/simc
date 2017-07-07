@@ -2212,8 +2212,8 @@ public:
     brewmaster_damage_increase_dot( ab::data().affected_by( player -> spec.brewmaster_monk -> effectN( 2 ) ) ),
     brewmaster_damage_increase_dot_two( ab::data().affected_by( player -> spec.brewmaster_monk -> effectN( 5 ) ) ),
     brewmaster_damage_increase_two( ab::data().affected_by( player -> spec.brewmaster_monk -> effectN( 6 ) ) ),
-    windwalker_damage_increase( ab::data().affected_by( player -> spec.windwalker_monk -> effectN( 1 ) ) ),
     brewmaster_damage_increase_dot_three( ab::data().affected_by( player -> spec.brewmaster_monk -> effectN( 5 ) ) ),
+    windwalker_damage_increase( ab::data().affected_by( player -> spec.windwalker_monk -> effectN( 1 ) ) ),
     windwalker_damage_increase_dot( ab::data().affected_by( player -> spec.windwalker_monk -> effectN( 2 ) ) ),
     windwalker_damage_increase_two( ab::data().affected_by( player -> spec.windwalker_monk -> effectN( 6 ) ) )
   {
@@ -2251,10 +2251,6 @@ public:
         {
           ab::base_dd_multiplier *= 1.0 + player -> spec.windwalker_monk -> effectN( 1 ).percent();
           ab::base_td_multiplier *= 1.0 + player -> spec.windwalker_monk -> effectN( 1 ).percent();
-          // HOTFIX 26-JUN-17 Damage of all abilities increased by 2.5%
-          // TODO: REMOVE once hotfix is applied
-          ab::base_dd_multiplier *= 1.0252100840336134453781512605042;
-          ab::base_td_multiplier *= 1.0252100840336134453781512605042;
         }
         if ( windwalker_damage_increase_dot )
           ab::base_td_multiplier *= 1.0 + player -> spec.windwalker_monk -> effectN( 2 ).percent();
@@ -4044,11 +4040,6 @@ struct fists_of_fury_t: public monk_melee_attack_t
 
     if ( p() -> buff.combo_strikes -> up() )
       pm *= 1 + p() -> cache.mastery_value();
-
-    // HOTFIX 26-JUN-17 Fists of Fury damage increased by 12%.
-    // TODO: fix once hotfix is implemented
-    pm *= 1 + 0.12;
-
 
     if ( p() -> buff.transfer_the_power -> up() )
       pm *= 1 + p() -> buff.transfer_the_power -> stack_value();
@@ -5870,7 +5861,7 @@ struct purifying_brew_t: public monk_spell_t
     if ( p() -> artifact.staggering_around.rank() )
       purifying_brew_percent += p() -> artifact.staggering_around.percent();
 
-    double stagger_dmg = p() -> partial_clear_stagger( purifying_brew_percent );
+    //double stagger_dmg = p() -> partial_clear_stagger( purifying_brew_percent );
 
     // Optional addition: Track and report amount of damage cleared
     if ( stagger_pct > p() -> heavy_stagger_threshold )
@@ -10025,7 +10016,7 @@ void monk_t::apl_combat_windwalker()
 
   // Cooldowns
   cd -> add_talent( this, "Invoke Xuen, the White Tiger" );
-  int num_items = (int)items.size();
+  //int num_items = (int)items.size();
 
   // On-use items
   for ( size_t i = 0; i < items.size(); i++ )

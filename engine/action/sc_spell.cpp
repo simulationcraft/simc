@@ -637,6 +637,7 @@ void absorb_t::execute()
 
 void absorb_t::impact( action_state_t* s )
 {
+  s -> result_amount = calculate_crit_damage_bonus( s );
   assess_damage( type == ACTION_HEAL ? HEAL_DIRECT : DMG_DIRECT, s );
 }
 

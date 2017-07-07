@@ -8,7 +8,7 @@ talents=3200233
 artifact=59:137303:137381:137303:0:1035:3:1036:3:1039:3:1040:3:1041:1:1042:5:1044:1:1046:1:1047:1:1049:1:1294:1
 
 # Default consumables
-potion=deadly_grace
+potion=potion_of_prolonged_power
 flask=whispered_pact
 food=lavish_suramar_feast
 augmentation=defiled
@@ -31,7 +31,7 @@ actions.precombat+=/potion
 actions.precombat+=/new_moon
 
 # Executed every time the actor is available.
-actions=potion,name=deadly_grace,if=buff.celestial_alignment.up|buff.incarnation.up
+actions=potion,name=potion_of_prolonged_power,if=buff.celestial_alignment.up|buff.incarnation.up
 actions+=/blessing_of_elune,if=active_enemies<=2&talent.blessing_of_the_ancients.enabled&buff.blessing_of_elune.down
 actions+=/blessing_of_elune,if=active_enemies>=3&talent.blessing_of_the_ancients.enabled&buff.blessing_of_anshe.down
 actions+=/blood_fury,if=buff.celestial_alignment.up|buff.incarnation.up

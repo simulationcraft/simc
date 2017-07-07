@@ -463,6 +463,8 @@ public:
     proc_t* the_master_harvester;
     //aff
     proc_t* fatal_echos;
+    proc_t* ua_tick_no_mg;
+    proc_t* ua_tick_mg;
     //demo
     proc_t* impending_doom;
     proc_t* improved_dreadstalkers;
@@ -2014,7 +2016,7 @@ struct infernal_t: public warlock_pet_t
     double m = warlock_pet_t::composite_player_multiplier( school );
 
     if ( o() -> talents.grimoire_of_supremacy -> ok() )
-      m *= 1.0 + o() -> artifact.left_hand_of_darkness.percent();
+      m *= 1.0 + o() -> artifact.left_hand_of_darkness.percent() / 2.0;
     return m;
   }
 
@@ -2084,7 +2086,7 @@ struct doomguard_t: public warlock_pet_t
     double m = warlock_pet_t::composite_player_multiplier( school );
 
     if ( o() -> talents.grimoire_of_supremacy -> ok() )
-      m *= 1.0 + o() -> artifact.left_hand_of_darkness.percent();
+      m *= 1.0 + o() -> artifact.left_hand_of_darkness.percent() / 2.0;
     return m;
   }
 
@@ -2449,6 +2451,9 @@ public:
           break;
         case WARLOCK_DESTRUCTION:
           sh_proc_chance = p() -> find_spell( 248113 ) -> effectN( 3 ).percent();
+          break;
+        default:
+          sh_proc_chance = 0;
           break;
         }
         
@@ -2883,6 +2888,14 @@ struct unstable_affliction_t: public warlock_spell_t
       if ( p() -> sets->has_set_bonus( WARLOCK_AFFLICTION, T18, B4 ) )
       {
         p() -> buffs.instability -> trigger();
+      }
+
+      if ( p() -> talents.malefic_grasp -> ok() )
+      {
+        if ( td( d->target )->dots_drain_soul->is_ticking() )
+          p() -> procs.ua_tick_mg -> occur();
+        else
+          p() -> procs.ua_tick_no_mg -> occur();
       }
 
       warlock_spell_t::tick( d );
@@ -5347,12 +5360,16 @@ struct soul_harvest_t : public warlock_spell_t
   int immolate_action_id;
   timespan_t base_duration;
   timespan_t total_duration;
+  timespan_t time_per_agony;
+  timespan_t max_duration;
 
   soul_harvest_t( warlock_t* p ) :
     warlock_spell_t( "soul_harvest", p, p -> talents.soul_harvest )
   {
     harmful = may_crit = may_miss = false;
     base_duration = data().duration();
+    time_per_agony = timespan_t::from_seconds( data().effectN( 2 ).base_value() );
+    max_duration = timespan_t::from_seconds( data().effectN( 3 ).base_value() );
   }
 
   virtual void execute() override
@@ -5363,20 +5380,20 @@ struct soul_harvest_t : public warlock_spell_t
 
     if ( p() -> specialization() == WARLOCK_AFFLICTION )
     {
-      total_duration = base_duration + timespan_t::from_seconds( 2.0 ) * p() -> get_active_dots( agony_action_id );
-      p() -> buffs.soul_harvest -> trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, std::min( total_duration, timespan_t::from_seconds( 35 ) ) );
+      total_duration = base_duration + time_per_agony * p() -> get_active_dots( agony_action_id );
+      p() -> buffs.soul_harvest -> trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, std::min( total_duration, max_duration ) );
     }
 
     if ( p() -> specialization() == WARLOCK_DEMONOLOGY )
     {
-      total_duration = base_duration + timespan_t::from_seconds( 2.0 ) * p() -> get_active_dots( doom_action_id );
-      p() -> buffs.soul_harvest -> trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, std::min( total_duration, timespan_t::from_seconds( 35 ) ) );
+      total_duration = base_duration + time_per_agony * p() -> get_active_dots( doom_action_id );
+      p() -> buffs.soul_harvest -> trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, std::min( total_duration, max_duration ) );
     }
 
     if ( p() -> specialization() == WARLOCK_DESTRUCTION )
     {
-      total_duration = base_duration + timespan_t::from_seconds( 2.0 ) * p() -> get_active_dots( immolate_action_id );
-      p() -> buffs.soul_harvest -> trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, std::min( total_duration, timespan_t::from_seconds( 35 ) ) );
+      total_duration = base_duration + time_per_agony * p() -> get_active_dots( immolate_action_id );
+      p() -> buffs.soul_harvest -> trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, std::min( total_duration, max_duration ) );
     }
   }
 
@@ -6546,7 +6563,7 @@ void warlock_t::create_buffs()
   buffs.lessons_of_spacetime = buff_creator_t( this, "lessons_of_spacetime", find_spell( 236176 ) )
     .default_value( find_spell( 236176 ) -> effectN( 1 ).percent() )
     .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
-    .refresh_behavior( BUFF_REFRESH_NONE )
+    .refresh_behavior( BUFF_REFRESH_DURATION )
     .tick_behavior( BUFF_TICK_NONE );
   buffs.sephuzs_secret =
     haste_buff_creator_t( this, "sephuzs_secret", find_spell( 208052 ) )
@@ -6554,7 +6571,7 @@ void warlock_t::create_buffs()
     .cd( find_spell( 226262 ) -> duration() );
   buffs.alythesss_pyrogenics = buff_creator_t( this, "alythesss_pyrogenics", find_spell( 205675 ) )
     .default_value( find_spell( 205675 ) -> effectN( 1 ).percent() )
-    .refresh_behavior( BUFF_REFRESH_DISABLED );
+    .refresh_behavior( BUFF_REFRESH_DURATION );
   buffs.wakeners_loyalty = buff_creator_t( this, "wakeners_loyalty", find_spell( 236200 ) )
     .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
     .default_value( find_spell( 236200 ) -> effectN( 1 ).percent() );
@@ -6575,7 +6592,7 @@ void warlock_t::create_buffs()
   buffs.compounding_horror = buff_creator_t( this, "compounding_horror", find_spell( 199281 ) );
   buffs.active_uas = buff_creator_t( this, "active_uas" )
     .tick_behavior( BUFF_TICK_NONE )
-    .refresh_behavior( BUFF_REFRESH_NONE )
+    .refresh_behavior( BUFF_REFRESH_DURATION )
     .max_stack( 20 );
   buffs.demonic_speed = haste_buff_creator_t( this, "demonic_speed", sets -> set( WARLOCK_AFFLICTION, T20, B4 ) -> effectN( 1 ).trigger() )
     .chance( sets -> set( WARLOCK_AFFLICTION, T20, B4 ) -> proc_chance() )
@@ -6607,7 +6624,7 @@ void warlock_t::create_buffs()
     .chance( sets->set( WARLOCK_DESTRUCTION, T19, B2 ) -> proc_chance() );
   buffs.active_havoc = buff_creator_t( this, "active_havoc" )
     .tick_behavior( BUFF_TICK_NONE )
-    .refresh_behavior( BUFF_REFRESH_NONE )
+    .refresh_behavior( BUFF_REFRESH_DURATION )
     .duration( timespan_t::from_seconds( 10 ) );
 }
 
@@ -6695,6 +6712,8 @@ void warlock_t::init_procs()
   procs.wilfreds_darkglare = get_proc( "wilfreds_darkglare" );
   procs.t19_2pc_chaos_bolts = get_proc( "t19_2pc_chaos_bolt" );
   procs.demonology_t20_2pc = get_proc( "demonology_t20_2pc" );
+  procs.ua_tick_no_mg = get_proc( "ua_tick_no_mg" );
+  procs.ua_tick_mg = get_proc( "ua_tick_mg" );
 }
 
 void warlock_t::apl_precombat()
@@ -6988,7 +7007,7 @@ void warlock_t::apl_destruction()
   action_list_str += "/channel_demonfire,if=dot.immolate.remains>cast_time&(active_enemies=1|buff.active_havoc.remains<action.chaos_bolt.cast_time)";
   add_action( "Rain of Fire", "if=active_enemies>=3");
   add_action( "Rain of Fire", "if=active_enemies>=6&talent.wreak_havoc.enabled");
-  add_action( "Dimensional Rift", "if=target.time_to_die<=32|!equipped.144369|charges>1|((!talent.grimoire_of_service.enabled|recharge_time<cooldown.service_pet.remains)&(!talent.soul_harvest.enabled|recharge_time<cooldown.soul_harvest.remains)&(!talent.grimoire_of_supremacy.enabled|recharge_time<cooldown.summon_doomguard.remains))" );
+  add_action( "Dimensional Rift", "if=target.time_to_die<=32|!equipped.144369|charges>1|(!equipped.144369&(!talent.grimoire_of_service.enabled|recharge_time<cooldown.service_pet.remains)&(!talent.soul_harvest.enabled|recharge_time<cooldown.soul_harvest.remains)&(!talent.grimoire_of_supremacy.enabled|recharge_time<cooldown.summon_doomguard.remains))" );
   action_list_str += "/life_tap,if=talent.empowered_life_tap.enabled&buff.empowered_life_tap.remains<duration*0.3";
   action_list_str += "/cataclysm";
   add_action( "Chaos Bolt", "if=active_enemies<3&target.time_to_die<=10" );
@@ -6997,7 +7016,7 @@ void warlock_t::apl_destruction()
   add_action( "Chaos Bolt", "if=active_enemies<3&(cooldown.havoc.remains>12&cooldown.havoc.remains|active_enemies=1|soul_shard>=5-spell_targets.infernal_awakening*0.5)&(trinket.stacking_proc.mastery.react&trinket.stacking_proc.mastery.remains>cast_time|trinket.stacking_proc.crit.react&trinket.stacking_proc.crit.remains>cast_time|trinket.stacking_proc.versatility.react&trinket.stacking_proc.versatility.remains>cast_time|trinket.stacking_proc.intellect.react&trinket.stacking_proc.intellect.remains>cast_time|trinket.stacking_proc.spell_power.react&trinket.stacking_proc.spell_power.remains>cast_time)" );
   action_list_str += "/shadowburn";
   add_action( "Conflagrate", "if=!talent.roaring_blaze.enabled&buff.backdraft.stack<3" );
-  add_action( "Immolate", "if=(active_enemies<5|!talent.fire_and_brimstone.enabled)&(!talent.cataclysm.enabled|cooldown.cataclysm.remains>=action.immolate.cast_time*active_enemies)&!talent.roaring_blaze.enabled&remains<=duration*0.3" );
+  add_action( "Immolate", "cycle_targets=1,if=(active_enemies<5|!talent.fire_and_brimstone.enabled)&(!talent.cataclysm.enabled|cooldown.cataclysm.remains>=action.immolate.cast_time*active_enemies)&!talent.roaring_blaze.enabled&remains<=duration*0.3" );
   add_action( "Incinerate" );
   add_action( "Life Tap" );
 }
@@ -8038,7 +8057,7 @@ struct the_master_harvester_t : public scoped_actor_callback_t<warlock_t>
 {
   the_master_harvester_t() : super( WARLOCK ){}
 
-  void manipulate( warlock_t* a, const special_effect_t& e ) override
+  void manipulate( warlock_t* a, const special_effect_t& /* e */ ) override
   {
     a -> legendary.the_master_harvester = true;
   }
@@ -8048,7 +8067,7 @@ struct alythesss_pyrogenics_t : public scoped_actor_callback_t<warlock_t>
 {
   alythesss_pyrogenics_t() : super( WARLOCK ){}
 
-  void manipulate( warlock_t* a, const special_effect_t& e ) override
+  void manipulate( warlock_t* a, const special_effect_t& /* e */ ) override
   {
     a -> legendary.alythesss_pyrogenics = true;
   }
@@ -8107,17 +8126,17 @@ struct warlock_module_t: public module_t
     //  .modifier( 1.10 )
     //  .verification_value( 0.52 );
 
-    hotfix::register_effect( "Warlock", "2017-06-26", "Corruption damage reduced by 5%.", 198369 )
-      .field( "sp_coefficient" )
-      .operation( hotfix::HOTFIX_MUL )
-      .modifier( 0.95 )
-      .verification_value( 0.363 );
+    //hotfix::register_effect( "Warlock", "2017-06-26", "Corruption damage reduced by 5%.", 198369 )
+    //  .field( "sp_coefficient" )
+    //  .operation( hotfix::HOTFIX_MUL )
+    //  .modifier( 0.95 )
+    //  .verification_value( 0.363 );
 
-    hotfix::register_effect( "Warlock", "2017-06-26", "Agony damage reduced by 5%.", 374 )
-      .field( "sp_coefficient" )
-      .operation( hotfix::HOTFIX_MUL )
-      .modifier( 0.95 )
-      .verification_value( 0.03970 );
+    //hotfix::register_effect( "Warlock", "2017-06-26", "Agony damage reduced by 5%.", 374 )
+    //  .field( "sp_coefficient" )
+    //  .operation( hotfix::HOTFIX_MUL )
+    //  .modifier( 0.95 )
+    //  .verification_value( 0.03970 );
 
     //hotfix::register_effect( "Warlock", "2016-09-23", "Unstable Affliction damage increased by 15%", 303066 )
     //  .field( "sp_coefficient" )

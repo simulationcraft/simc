@@ -1326,6 +1326,8 @@ void print_text_report( FILE* file, sim_t* sim, bool detail )
     }
   }
 
+  sim -> profilesets.output( *sim, file );
+
   if ( detail )
   {
     print_text_waiting_all( file, sim );
@@ -1367,6 +1369,11 @@ void print_text( sim_t* sim, bool detail )
   try
   {
     Timer t( "text report" );
+    if ( ! sim -> profileset_enabled )
+    {
+      t.start();
+    }
+
     print_text_report( text_out, sim, detail );
   }
   catch ( const std::exception& e )

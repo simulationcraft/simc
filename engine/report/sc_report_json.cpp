@@ -1119,16 +1119,85 @@ void scale_factors_all_to_json( JsonOutput root, const player_t& p )
   }
 }
 
+void artifact_to_json( JsonOutput root, const player_t& p )
+{
+  root.make_array();
+
+  auto artifact_id = p.dbc.artifact_by_spec( p.specialization() );
+  if ( artifact_id == 0 )
+  {
+    return;
+  }
+
+  auto artifact_powers = p.dbc.artifact_powers( artifact_id );
+  for ( size_t idx = 0; idx < artifact_powers.size(); ++idx )
+  {
+    auto total_rank = p.artifact.points[ idx ].first +
+                      p.artifact.points[ idx ].second;
+
+    if ( total_rank == 0 )
+    {
+      continue;
+    }
+
+    auto spell_id = p.dbc.artifact_power_spell_id( p.specialization(), as<unsigned>( idx ), total_rank );
+    auto spell = p.dbc.spell( spell_id );
+    auto data = p.find_artifact_spell( spell -> name_cstr() );
+
+    auto node = root.add();
+
+    node[ "id"             ] = data.power() -> id;
+    node[ "spell_id"       ] = spell_id;
+    node[ "name"           ] = spell -> name_cstr();
+    node[ "total_rank"     ] = total_rank;
+    node[ "purchased_rank" ] = p.artifact.points[ idx ].first;
+    node[ "relic_rank"     ] = p.artifact.points[ idx ].second;
+  }
+}
+
+void talents_to_json( JsonOutput root, const player_t& p )
+{
+  root.make_array();
+
+  for ( auto talent_row = 0; talent_row < MAX_TALENT_ROWS; talent_row++ )
+  {
+    auto talent_col = p.talent_points.choice( talent_row );
+    if ( talent_col == -1 )
+    {
+      continue;
+    }
+
+    auto talent_data = talent_data_t::find( p.type, talent_row, talent_col, p.specialization(), p.dbc.ptr );
+    if ( talent_data == nullptr )
+    {
+      continue;
+    }
+
+    auto entry = root.add();
+    entry[ "tier"     ] = talent_row + 1;
+    entry[ "id"       ] = talent_data -> id();
+    entry[ "spell_id" ] = talent_data -> spell_id();
+    entry[ "name"     ] = talent_data -> name_cstr();
+  }
+}
+
 void to_json( JsonOutput& arr, const player_t& p )
 {
   auto root = arr.add(); // Add a fresh object to the players array and use it as root
 
   root[ "name" ] = p.name();
   root[ "race" ] = util::race_type_string( p.race );
+  root[ "level" ] = p.true_level;
   root[ "role" ] = util::role_type_string( p.role );
   root[ "specialization" ] = util::specialization_string( p.specialization() );
 
-  root[ "level" ] = p.true_level;
+  talents_to_json( root[ "talents" ], p );
+
+  if ( p.artifact.n_points > 0 )
+  {
+    artifact_to_json( root[ "artifact" ], p );
+  }
+
   root[ "party" ] = p.party;
   root[ "ready_type" ] = p.ready_type;
   root[ "bugs" ] = p.bugs;
@@ -1522,6 +1591,12 @@ void to_json( JsonOutput root, const sim_t& sim )
     to_json( players_arr, *p );
   } );
 
+  if ( sim.profilesets.n_profilesets() > 0 )
+  {
+    auto profileset_root = root[ "profilesets" ];
+    sim.profilesets.output( sim, profileset_root );
+  }
+
   if ( sim.report_details != 0 )
   {
     // Targets
@@ -1763,6 +1838,11 @@ void print_json( sim_t& sim )
     try
     {
       Timer t( "JSON report" );
+      if ( ! sim.profileset_enabled )
+      {
+        t.start();
+      }
+
       print_json_pretty( s, sim );
     }
     catch ( const std::exception& e )
@@ -1786,6 +1866,10 @@ void print_json( sim_t& sim )
     try
     {
       Timer t( "JSON-New report" );
+      if ( ! sim.profileset_enabled )
+      {
+        t.start();
+      }
       print_json2_pretty( s, sim );
     }
     catch ( const std::exception& e )

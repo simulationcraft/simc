@@ -1,4 +1,4 @@
-SimulationCraft 725-01 for World of Warcraft 7.2.5 Live (wow build 24287, git build 9d7f936)
+SimulationCraft 725-01 for World of Warcraft 7.2.5 Live (wow build 24287, git build 004005a)
 
 Name             : Block (Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
@@ -248,6 +248,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=10981)    : Direct Heal (10)
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 4.50000 | Target: Friend (21)
+                   Hotfixed: Chain Multiplier (0 -> 1)
 Description      : A quick spell, healing a friendly target for $s1.
 
 Name             : Repentance (id=20066) [Spell Family (10)] 
@@ -433,6 +434,7 @@ Attributes       : ........ ........ x.x..... ........   ........ ........ .....
 Effects          :
 #1 (id=15852)    : Direct Heal (10)
                    Base Value: 1 | Scaled Value: 0 (avg=8.222, dl=0.08) | SP Coefficient: 4.00000 | Target: Friend (21)
+                   Hotfixed: Chain Multiplier (0 -> 1)
 Description      : Blasts the target with Holy energy, causing $25912s1 Holy damage to an enemy, or $25914s1 healing to an ally.
 
 Name             : Consecration (id=26573) [Spell Family (10)] 
@@ -1301,7 +1303,7 @@ Effects          :
 #4 (id=162567)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 1 (3)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: -0.50000 | Misc Value: 3 | Target: Self (1)
                    Affected Spells: Shield of the Righteous (132403)
-#5 (id=217536)   : Apply Aura (6) | Unknown(166)
+#5 (id=217536)   : Apply Aura (6) | Modify Attack Power% (166)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Target: Self (1)
 Description      : Increases damage reduction from Shield of the Righteous by $s4%, and increases your chance to block melee attacks by $s1%.
 
@@ -1414,6 +1416,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=81809)    : Direct Heal (10)
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 4.25000 | Target: Friend (21)
+                   Hotfixed: Chain Multiplier (0 -> 1)
 Description      : An efficient spell, healing a friendly target for $s1.
 
 Name             : Grand Crusader (id=85043) [Spell Family (10), Passive] 
@@ -2202,11 +2205,11 @@ Effects          :
 #1 (id=179711)   : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
                    Affected Spells: Judgment (20271), Consecration (26573), Crusader Strike (35395), Consecration (81297), Blade of Justice (184575), Judgment (197277), Eye for an Eye (205191), Eye for an Eye (205202), Consecration (205228), Wake of Ashes (205273), Judgment (214222), Justicar's Vengeance (215661), Zeal (217020), Divine Storm (224239), Templar's Verdict (224266), Judgment (228288)
-                   Hotfixed: Base Value (16 -> 20), Chain Multiplier (0 -> 1)
+                   Hotfixed: Chain Multiplier (0 -> 1)
 #2 (id=191092)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Damage (22)
                    Base Value: 20 | Scaled Value: 20 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Wake of Ashes (205273), Execution Sentence (213757)
-                   Hotfixed: Base Value (16 -> 20), Chain Multiplier (0 -> 1)
+                   Hotfixed: Chain Multiplier (0 -> 1)
 #3 (id=191093)   : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
                    Base Value: 42 | Scaled Value: 42 | Target: Self (1)
                    Affected Spells: Flash of Light (19750)
@@ -5074,11 +5077,11 @@ Effects          :
 #1 (id=376184)   : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
                    Affected Spells: Blade of Justice (184575), Divine Hammer (198137)
-                   Hotfixed: Base Value (15 -> 20), Chain Multiplier (0 -> 1)
+                   Hotfixed: Chain Multiplier (0 -> 1)
 #2 (id=376185)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Damage (22)
                    Base Value: 20 | Scaled Value: 20 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Blade of Justice (184575), Divine Hammer (198137)
-                   Hotfixed: Base Value (15 -> 20), Chain Multiplier (0 -> 1)
+                   Hotfixed: Chain Multiplier (0 -> 1)
 Description      : $@spelldesc242267
 Tooltip          : Damage of $?s198034[Divine Hammer][Blade of Justice] increased by $s1%.
 

@@ -1,4 +1,4 @@
-SimulationCraft 725-01 for World of Warcraft 7.2.5 Live (wow build 24287, git build 9d7f936)
+SimulationCraft 725-01 for World of Warcraft 7.2.5 Live (wow build 24287, git build 004005a)
 
 Name             : Incapacitating Roar (id=99) [Spell Family (7)] 
 Class            : Guardian Druid
@@ -865,6 +865,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=10065)    : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 7.70000 | Target: Friend (21)
+                   Hotfixed: Chain Multiplier (0 -> 1)
 Description      : Instantly heals a friendly target for $s1.
 
 Name             : Rebirth (id=20484) [Spell Family (7)] 
@@ -1014,7 +1015,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 (avg=0.075) | Bonus Value: 0 (0.179) | Radius: 0 - 5 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
 #3 (id=315748)   : Weapon Damage% (31)
                    Base Value: 0 | Scaled Value: 0 | Points Per Combo Point: 140 | Radius: 0 - 5 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
-                   Hotfixed: Chain Multiplier (0 -> 1), Points per Combo Points (140.3 -> 140)
+                   Hotfixed: Chain Multiplier (0 -> 1)
 Description      : Finishing move that causes Physical damage and stuns the target. Damage and duration increased per combo point:
 
    1 point  : $168877sw3 damage, 1 sec
@@ -4059,7 +4060,7 @@ Attributes       : ......xx x....... ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6), Hidden (7)
 Effects          :
-#1 (id=222957)   : Apply Aura (6) | Unknown(166)
+#1 (id=222957)   : Apply Aura (6) | Modify Attack Power% (166)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Target: Self (1)
 Description      : $@spelldesc155783
 
@@ -4373,7 +4374,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Mechanic: Unknown(95) | Target: Enemy (6)
 #3 (id=239197)   : Weapon Damage% (31)
                    Base Value: 140 | Scaled Value: 1.4 | Target: Enemy (6)
-                   Hotfixed: Base Value (115 -> 140), Chain Multiplier (0 -> 1)
+                   Hotfixed: Chain Multiplier (0 -> 1)
 Tooltip          : Stunned.
 Variables        : $mult=$?p61252[${4}][${2}]
 
@@ -4403,7 +4404,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Mechanic: Unknown(95) | Target: Enemy (6)
 #3 (id=239200)   : Weapon Damage% (31)
                    Base Value: 280 | Scaled Value: 2.8 | Target: Enemy (6)
-                   Hotfixed: Base Value (230 -> 280), Chain Multiplier (0 -> 1)
+                   Hotfixed: Chain Multiplier (0 -> 1)
 Tooltip          : Stunned.
 Variables        : $mult=$?p61252[${4}][${2}]
 
@@ -4433,7 +4434,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Mechanic: Unknown(95) | Target: Enemy (6)
 #3 (id=239203)   : Weapon Damage% (31)
                    Base Value: 420 | Scaled Value: 4.2 | Target: Enemy (6)
-                   Hotfixed: Base Value (345 -> 420), Chain Multiplier (0 -> 1)
+                   Hotfixed: Chain Multiplier (0 -> 1)
 Tooltip          : Stunned.
 Variables        : $mult=$?p61252[${4}][${2}]
 
@@ -4463,7 +4464,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Mechanic: Unknown(95) | Target: Enemy (6)
 #3 (id=239206)   : Weapon Damage% (31)
                    Base Value: 560 | Scaled Value: 5.6 | Target: Enemy (6)
-                   Hotfixed: Base Value (460 -> 560), Chain Multiplier (0 -> 1)
+                   Hotfixed: Chain Multiplier (0 -> 1)
 Tooltip          : Stunned.
 Variables        : $mult=$?p61252[${4}][${2}]
 
@@ -4493,7 +4494,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Mechanic: Unknown(95) | Target: Enemy (6)
 #3 (id=239209)   : Weapon Damage% (31)
                    Base Value: 700 | Scaled Value: 7 | Target: Enemy (6)
-                   Hotfixed: Base Value (575 -> 700), Chain Multiplier (0 -> 1)
+                   Hotfixed: Chain Multiplier (0 -> 1)
 Tooltip          : Stunned.
 Variables        : $mult=$?p61252[${4}][${2}]
 

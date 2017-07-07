@@ -8,7 +8,7 @@ talents=1130111
 artifact=43:0:0:0:0:323:3:324:3:325:3:326:3:327:3:328:3:329:3:330:3:331:3:332:1:333:1:334:1:335:1:337:1:346:1:347:1:1276:1:1384:1
 
 # Default consumables
-potion=old_war
+potion=prolonged_power
 flask=seventh_demon
 food=lavish_suramar_feast
 augmentation=defiled
@@ -63,6 +63,7 @@ actions.cds+=/vanish,if=talent.subterfuge.enabled&equipped.mantle_of_the_master_
 actions.cds+=/vanish,if=talent.subterfuge.enabled&!equipped.mantle_of_the_master_assassin&!stealthed.rogue&dot.garrote.refreshable&((spell_targets.fan_of_knives<=3&combo_points.deficit>=1+spell_targets.fan_of_knives)|(spell_targets.fan_of_knives>=4&combo_points.deficit>=4))
 actions.cds+=/vanish,if=talent.shadow_focus.enabled&variable.energy_time_to_max_combined>=2&combo_points.deficit>=4
 actions.cds+=/exsanguinate,if=prev_gcd.1.rupture&dot.rupture.remains>4+4*cp_max_spend&!stealthed.rogue|!dot.garrote.pmultiplier<=1&!cooldown.vanish.up&buff.subterfuge.up
+actions.cds+=/toxic_blade,if=combo_points.deficit>=1+(mantle_duration>=gcd.remains+0.2)&dot.rupture.remains>8
 
 # Finishers
 actions.finish=death_from_above,if=combo_points>=5
@@ -70,10 +71,9 @@ actions.finish+=/envenom,if=combo_points>=4&(debuff.vendetta.up|mantle_duration>
 actions.finish+=/envenom,if=talent.elaborate_planning.enabled&combo_points>=3+!talent.exsanguinate.enabled&buff.elaborate_planning.remains<gcd.remains+0.2
 
 # Kingsbane
-# Sinister Circulation makes it worth to cast Kingsbane on CD exceot if you're [stealthed w/ Nighstalker and have Mantle & T19_4PC to Envenom] or before vendetta if you have mantle during the opener.
+# Sinister Circulation makes it worth to cast Kingsbane on CD except if you're [stealthed w/ Nighstalker and have Mantle & T19_4PC to Envenom] or before vendetta if you have mantle during the opener.
 actions.kb=kingsbane,if=artifact.sinister_circulation.enabled&!(equipped.duskwalkers_footpads&equipped.convergence_of_fates&artifact.master_assassin.rank>=6)&(time>25|!equipped.mantle_of_the_master_assassin|(debuff.vendetta.up&debuff.surge_of_toxins.up))&(talent.subterfuge.enabled|!stealthed.rogue|(talent.nightstalker.enabled&(!equipped.mantle_of_the_master_assassin|!set_bonus.tier19_4pc)))
-actions.kb+=/kingsbane,if=!talent.exsanguinate.enabled&buff.envenom.up&((debuff.vendetta.up&debuff.surge_of_toxins.up)|cooldown.vendetta.remains<=5.8|cooldown.vendetta.remains>=10)
-actions.kb+=/kingsbane,if=talent.exsanguinate.enabled&dot.rupture.exsanguinated
+actions.kb+=/kingsbane,if=buff.envenom.up&((debuff.vendetta.up&debuff.surge_of_toxins.up)|cooldown.vendetta.remains<=5.8|cooldown.vendetta.remains>=10)
 
 # Maintain
 actions.maintain=rupture,if=talent.nightstalker.enabled&stealthed.rogue&(!equipped.mantle_of_the_master_assassin|!set_bonus.tier19_4pc)&(talent.exsanguinate.enabled|target.time_to_die-remains>4)
@@ -86,7 +86,6 @@ actions.maintain+=/rupture,cycle_targets=1,if=combo_points>=4&refreshable&(pmult
 actions.maintain+=/call_action_list,name=kb,if=combo_points.deficit>=1+(mantle_duration>=gcd.remains+0.2)
 actions.maintain+=/pool_resource,for_next=1
 actions.maintain+=/garrote,cycle_targets=1,if=(!talent.subterfuge.enabled|!(cooldown.vanish.up&cooldown.vendetta.remains<=4))&combo_points.deficit>=1&refreshable&(pmultiplier<=1|remains<=tick_time)&(!exsanguinated|remains<=tick_time*2)&target.time_to_die-remains>4
-actions.maintain+=/toxic_blade,if=combo_points.deficit>=1+(mantle_duration>=gcd.remains+0.2)&dot.rupture.remains>8
 
 head=biornskin_hood,id=134196,bonus_id=1727/1527
 neck=stabilized_energy_pendant,id=134488,bonus_id=1727/1517,enchant=mark_of_the_hidden_satyr

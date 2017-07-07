@@ -1,4 +1,4 @@
-SimulationCraft 725-01 for World of Warcraft 7.2.5 Live (wow build 24287, git build 9d7f936)
+SimulationCraft 725-01 for World of Warcraft 7.2.5 Live (wow build 24287, git build 004005a)
 
 Name             : Dual Wield (Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
@@ -1450,7 +1450,6 @@ Description      : Your next Howling Blast will consume no Runes, generate no Ru
 Tooltip          : Your next Howling Blast will consume no Runes, generate no Runic Power, and deals $s2% additional damage.
 
 Name             : Rime (id=59057) [Spell Family (15), Passive] 
-Hotfixed         : Attributes
 Class            : Frost Death Knight
 School           : Physical
 Spell Level      : 59
@@ -1806,7 +1805,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.50000 | Misc Value: 2 | Target: Self (1)
 #2 (id=90621)    : Apply Aura (6) | Dummy (4)
                    Base Value: 150 | Scaled Value: 150 | Target: Self (1)
-#3 (id=217537)   : Apply Aura (6) | Unknown(166)
+#3 (id=217537)   : Apply Aura (6) | Modify Attack Power% (166)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Target: Self (1)
 Description      : Each time you heal yourself with Death Strike, you gain $s1% of the base amount healed as a Physical damage absorption shield.
 
@@ -3701,7 +3700,7 @@ Description      : Increases damage taken by $m1%.
 Tooltip          : Increases damage taken from the Death Knight by $m1%.
 
 Name             : Festering Wound (id=194310) [Spell Family (15)] 
-Hotfixed         : Proc Chance (100 -> 20), Proc Stacks (0 -> -1), Internal Cooldown (0 -> 1000)
+Hotfixed         : Proc Chance (30 -> 20)
 Class            : Death Knight
 School           : Shadow
 Spell Level      : 57
