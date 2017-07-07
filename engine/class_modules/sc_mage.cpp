@@ -3927,6 +3927,7 @@ struct flurry_bolt_t : public frost_mage_spell_t
   flurry_bolt_t( mage_t* p ) :
     frost_mage_spell_t( "flurry_bolt", p, p -> find_spell( 228354 ) )
   {
+    background = true;
     chills = true;
     if ( p -> talents.lonely_winter -> ok() )
     {
@@ -3968,27 +3969,7 @@ struct flurry_t : public frost_mage_spell_t
     flurry_bolt( new flurry_bolt_t( p ) )
   {
     parse_options( options_str );
-    tick_zero = true;
-    hasted_ticks = true;
     add_child( flurry_bolt );
-
-    // TODO: Remove hardcoded values once it exists in spell data for bolt impact timing.
-    dot_duration = timespan_t::from_seconds( 0.8 );
-    base_tick_time = timespan_t::from_seconds( 0.4 );
-  }
-
-  virtual void init() override
-  {
-    frost_mage_spell_t::init();
-
-    update_flags &= ~STATE_HASTE;
-  }
-
-  virtual timespan_t composite_dot_duration( const action_state_t* s ) const override
-  {
-    timespan_t d = frost_mage_spell_t::composite_dot_duration( s );
-
-    return d * ( tick_time( s ) / base_tick_time );
   }
 
   virtual timespan_t execute_time() const override
@@ -4015,13 +3996,15 @@ struct flurry_t : public frost_mage_spell_t
     frost_mage_spell_t::impact( s );
 
     trigger_shattered_fragments( s -> target );
-  }
 
-  void tick( dot_t* d ) override
-  {
-    frost_mage_spell_t::tick( d );
-    flurry_bolt -> set_target( d -> target );
-    flurry_bolt -> execute();
+    // TODO: Remove hardcoded values once it exists in spell data for bolt impact timing.
+    timespan_t pulse_time = timespan_t::from_seconds( 0.4 );
+
+    make_event<ground_aoe_event_t>( *sim, p(), ground_aoe_params_t()
+      .pulse_time( pulse_time * player -> cache.spell_speed() )
+      .target( s -> target )
+      .n_pulses( data().effectN( 1 ).base_value() )
+      .action( flurry_bolt ), true );
   }
 };
 
