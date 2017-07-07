@@ -235,10 +235,7 @@ struct action_execute_event_t : public player_event_t
     {
       // Action target must follow any potential pre-execute-state target if it differs from the
       // current (default) target of the action.
-      if ( target != action -> target )
-      {
-        action -> target = target;
-      }
+      action -> set_target( target );
       action -> execute();
     }
 
