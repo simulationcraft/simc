@@ -1952,6 +1952,20 @@ struct frost_spell_state_t : public mage_spell_state_t
 
   virtual bool frozen() const override
   {
+    // In game, FoF Ice Lances are implemented using a global flag which determines
+    // whether to treat the targets as frozen or not. On IL execute, FoF is checked
+    // and the flag set accordingly.
+    //
+    // This works fine under normal circumstances. However, once GCD drops below IL's
+    // travel time, it's possible to:
+    //
+    //   a) cast FoF IL, cast non-FoF IL before the first one impacts
+    //   b) cast non-FoF IL, cast FoF IL before the first one impacts
+    //
+    // In the a) case, neither Ice Lance gets the extra damage/Shatter bonus, in the
+    // b) case, both Ice Lances do.
+    // TODO: Should we model this?
+
     return ( action -> data().id() == 30455 && fof ) || mage_spell_state_t::frozen();
   }
 };
