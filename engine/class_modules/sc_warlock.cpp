@@ -2456,7 +2456,7 @@ public:
           sh_proc_chance = 0;
           break;
         }
-
+        
         for ( int i = 0; i < last_resource_cost; i++ )
         {
           if ( p() -> rng().roll( sh_proc_chance ) )
@@ -2757,7 +2757,7 @@ struct agony_t: public warlock_spell_t
   virtual void execute() override
   {
     warlock_spell_t::execute();
-
+    
     td( execute_state -> target ) -> debuffs_agony -> trigger();
   }
 
@@ -4042,7 +4042,7 @@ struct chaos_bolt_t: public warlock_spell_t
     if ( p() -> artifact.cry_havoc.rank() && result_is_hit( s -> result ) && td( s -> target ) -> debuffs_havoc -> check() )
     {
       p() -> active.cry_havoc -> target = s -> target;
-      p() -> active.cry_havoc -> execute();
+      p() -> active.cry_havoc -> execute(); 
     }
     if ( p() -> legendary.magistrike && rng().roll( duplicate_chance ) )
     {
@@ -5360,36 +5360,40 @@ struct soul_harvest_t : public warlock_spell_t
   int immolate_action_id;
   timespan_t base_duration;
   timespan_t total_duration;
+  timespan_t time_per_agony;
+  timespan_t max_duration;
 
   soul_harvest_t( warlock_t* p ) :
     warlock_spell_t( "soul_harvest", p, p -> talents.soul_harvest )
   {
     harmful = may_crit = may_miss = false;
     base_duration = data().duration();
+    time_per_agony = timespan_t::from_seconds( data().effectN( 2 ).base_value() );
+    max_duration = timespan_t::from_seconds( data().effectN( 3 ).base_value() );
   }
 
   virtual void execute() override
   {
     warlock_spell_t::execute();
-
+    
     p() -> buffs.soul_harvest -> expire(); //Potentially bugged check when live
 
     if ( p() -> specialization() == WARLOCK_AFFLICTION )
     {
-      total_duration = base_duration + timespan_t::from_seconds( 4.0 ) * p() -> get_active_dots( agony_action_id );
-      p() -> buffs.soul_harvest -> trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, std::min( total_duration, timespan_t::from_seconds( 36 ) ) );
+      total_duration = base_duration + time_per_agony * p() -> get_active_dots( agony_action_id );
+      p() -> buffs.soul_harvest -> trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, std::min( total_duration, max_duration ) );
     }
 
     if ( p() -> specialization() == WARLOCK_DEMONOLOGY )
     {
-      total_duration = base_duration + timespan_t::from_seconds( 4.0 ) * p() -> get_active_dots( doom_action_id );
-      p() -> buffs.soul_harvest -> trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, std::min( total_duration, timespan_t::from_seconds( 36 ) ) );
+      total_duration = base_duration + time_per_agony * p() -> get_active_dots( doom_action_id );
+      p() -> buffs.soul_harvest -> trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, std::min( total_duration, max_duration ) );
     }
 
     if ( p() -> specialization() == WARLOCK_DESTRUCTION )
     {
-      total_duration = base_duration + timespan_t::from_seconds( 4.0 ) * p() -> get_active_dots( immolate_action_id );
-      p() -> buffs.soul_harvest -> trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, std::min( total_duration, timespan_t::from_seconds( 36 ) ) );
+      total_duration = base_duration + time_per_agony * p() -> get_active_dots( immolate_action_id );
+      p() -> buffs.soul_harvest -> trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, std::min( total_duration, max_duration ) );
     }
   }
 
@@ -6978,7 +6982,7 @@ void warlock_t::apl_destruction()
   action_list_str += "/cataclysm,if=spell_targets.cataclysm>=3";
   add_action( "Immolate", "if=(active_enemies<5|!talent.fire_and_brimstone.enabled)&remains<=tick_time" );
   add_action( "Immolate", "cycle_targets=1,if=(active_enemies<5|!talent.fire_and_brimstone.enabled)&(!talent.cataclysm.enabled|cooldown.cataclysm.remains>=action.immolate.cast_time*active_enemies)&active_enemies>1&remains<=tick_time&(!talent.roaring_blaze.enabled|(!debuff.roaring_blaze.remains&action.conflagrate.charges<2+set_bonus.tier19_4pc))");
-  add_action( "Immolate", "if=talent.roaring_blaze.enabled&remains<=duration&!debuff.roaring_blaze.remains&target.time_to_die>10&(action.conflagrate.charges=2+set_bonus.tier19_4pc|(action.conflagrate.charges>=1+set_bonus.tier19_4pc&action.conflagrate.recharge_time<cast_time+gcd)|target.time_to_die<24)" );
+  add_action( "Immolate", "if=talent.roaring_blaze.enabled&remains<=duration&!debuff.roaring_blaze.remains&target.time_to_die>10&(action.conflagrate.charges=2+set_bonus.tier19_4pc|(action.conflagrate.charges>=1+set_bonus.tier19_4pc&action.conflagrate.recharge_time<cast_time+gcd)|target.time_to_die<24)" ); 
   action_list_str += "/berserking";
   action_list_str += "/blood_fury";
   action_list_str += "/use_items";
@@ -8109,7 +8113,7 @@ struct warlock_module_t: public module_t
 
   virtual void register_hotfixes() const override
   {
-
+    
     //hotfix::register_effect( "Warlock", "2016-09-23", "Drain Life damage increased by 10%", 271 )
     //  .field( "sp_coefficient" )
     //  .operation( hotfix::HOTFIX_MUL )
@@ -8265,7 +8269,7 @@ struct warlock_module_t: public module_t
     //  .operation( hotfix::HOTFIX_MUL )
     //  .modifier( 1.11 )
     //  .verification_value( 0.42 );
-    //
+    //  
 
   }
 
