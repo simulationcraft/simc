@@ -408,6 +408,14 @@ public:
     const spell_data_t* shatter_2;
   } spec;
 
+  // State
+  struct state_t
+  {
+    bool brain_freeze_active;
+    bool fingers_of_frost_active;
+    bool ignition_active;
+  } state;
+
   // Talents
   struct talents_list_t
   {
@@ -1912,31 +1920,22 @@ struct fire_mage_spell_t : public mage_spell_t
 struct frost_spell_state_t : public mage_spell_state_t
 {
   bool impact_override;
-  bool fof;
-  bool execute_snapshot;
 
   frost_spell_state_t( action_t* action, player_t* target ) :
     mage_spell_state_t( action, target ),
-    impact_override( false ),
-    fof( false ),
-    execute_snapshot( false )
+    impact_override( false )
   { }
 
   virtual void initialize() override
   {
     mage_spell_state_t::initialize();
 
-    impact_override     = false;
-    fof                 = false;
-    execute_snapshot    = false;
+    impact_override = false;
   }
 
   virtual std::ostringstream& debug_str( std::ostringstream& s ) override
   {
-    mage_spell_state_t::debug_str( s )
-      << " impact_override="     << impact_override
-      << " fof="                 << fof
-      << " execute_snapshot="    << execute_snapshot;
+    mage_spell_state_t::debug_str( s ) << " impact_override=" << impact_override;
     return s;
   }
 
@@ -1945,9 +1944,7 @@ struct frost_spell_state_t : public mage_spell_state_t
     mage_spell_state_t::copy_state( s );
     auto fss = debug_cast<const frost_spell_state_t*>( s );
 
-    impact_override     = fss -> impact_override;
-    fof                 = fss -> fof;
-    execute_snapshot    = fss -> execute_snapshot;
+    impact_override = fss -> impact_override;
   }
 
   virtual bool frozen() const override
@@ -1964,9 +1961,10 @@ struct frost_spell_state_t : public mage_spell_state_t
     //
     // In the a) case, neither Ice Lance gets the extra damage/Shatter bonus, in the
     // b) case, both Ice Lances do.
-    // TODO: Should we model this?
 
-    return ( action -> data().id() == 30455 && fof ) || mage_spell_state_t::frozen();
+    return mage_spell_state_t::frozen() ||
+        ( action -> data().id() == 30455 &&
+          debug_cast<mage_t*>( action -> player ) -> state.fingers_of_frost_active );
   }
 };
 
@@ -3748,11 +3746,8 @@ struct flame_patch_t : public fire_mage_spell_t
 
 struct aftershocks_t : public fire_mage_spell_t
 {
-  bool ignition;
-
   aftershocks_t( mage_t* p ) :
-    fire_mage_spell_t( "aftershocks", p, p -> find_spell( 194432 ) ),
-    ignition( false )
+    fire_mage_spell_t( "aftershocks", p, p -> find_spell( 194432 ) )
   {
     background = true;
     aoe = -1;
@@ -3780,7 +3775,7 @@ struct aftershocks_t : public fire_mage_spell_t
   {
     double c = fire_mage_spell_t::composite_crit_chance();
 
-    if ( ignition )
+    if ( p() -> state.ignition_active )
     {
       c += 1.0;
     }
@@ -3865,7 +3860,7 @@ struct flamestrike_t : public fire_mage_spell_t
       // This should model that behavior correctly. Otherwise we might need custom snapshotting.
       // Last checked: build 24461, 2017-07-03.
       // TODO: Check if this is still true.
-      aftershocks -> ignition = p() -> buffs.ignition -> up();
+      p() -> state.ignition_active = p() -> buffs.ignition -> up();
 
       make_event<ground_aoe_event_t>( *sim, p(), ground_aoe_params_t()
         .pulse_time( timespan_t::from_seconds( 0.75 ) )
@@ -3929,11 +3924,8 @@ struct flamestrike_t : public fire_mage_spell_t
 
 struct flurry_bolt_t : public frost_mage_spell_t
 {
-  bool brain_freeze_buffed;
-
   flurry_bolt_t( mage_t* p ) :
-    frost_mage_spell_t( "flurry_bolt", p, p -> find_spell( 228354 ) ),
-    brain_freeze_buffed( false )
+    frost_mage_spell_t( "flurry_bolt", p, p -> find_spell( 228354 ) )
   {
     chills = true;
     if ( p -> talents.lonely_winter -> ok() )
@@ -3948,7 +3940,7 @@ struct flurry_bolt_t : public frost_mage_spell_t
   {
     frost_mage_spell_t::impact( s );
 
-    if ( brain_freeze_buffed )
+    if ( p() -> state.brain_freeze_active )
     {
       td( s -> target ) -> debuffs.winters_chill -> trigger();
     }
@@ -3958,7 +3950,7 @@ struct flurry_bolt_t : public frost_mage_spell_t
   {
     double am = frost_mage_spell_t::action_multiplier();
 
-    if ( brain_freeze_buffed )
+    if ( p() -> state.brain_freeze_active )
     {
       am *= 1.0 + p() -> buffs.brain_freeze -> data().effectN( 2 ).percent();
     }
@@ -4014,9 +4006,7 @@ struct flurry_t : public frost_mage_spell_t
     frost_mage_spell_t::execute();
 
     p() -> buffs.zannesu_journey -> trigger();
-
-    flurry_bolt -> brain_freeze_buffed = p() -> buffs.brain_freeze -> up();
-
+    p() -> state.brain_freeze_active = p() -> buffs.brain_freeze -> up();
     p() -> buffs.brain_freeze -> expire();
   }
 
@@ -4536,23 +4526,13 @@ struct ice_lance_t : public frost_mage_spell_t
     calculate_on_impact = true;
   }
 
-  virtual void snapshot_state( action_state_t* s, dmg_e rt ) override
-  {
-    auto fss = cast_state( s );
-    if ( !fss -> execute_snapshot )
-    {
-      fss -> execute_snapshot = true;
-      fss -> fof = p() -> buffs.fingers_of_frost -> up();
-    }
-
-    frost_mage_spell_t::snapshot_state( s, rt );
-  }
-
   virtual void execute() override
   {
     frost_mage_spell_t::execute();
 
+    p() -> state.fingers_of_frost_active = p() -> buffs.fingers_of_frost -> up();
     p() -> buffs.magtheridons_might -> trigger();
+    p() -> buffs.fingers_of_frost -> decrement();
 
     // Begin casting all Icicles at the target, beginning 0.25 seconds after the
     // Ice Lance cast with remaining Icicles launching at intervals of 0.4
@@ -4563,8 +4543,6 @@ struct ice_lance_t : public frost_mage_spell_t
     {
       p() -> trigger_icicle( execute_state, true, target );
     }
-
-    p() -> buffs.fingers_of_frost -> decrement();
   }
 
   virtual void impact( action_state_t* s ) override
@@ -6499,6 +6477,7 @@ mage_t::mage_t( sim_t* sim, const std::string& name, race_e r ) :
   pets( pets_t() ),
   procs( procs_t() ),
   spec( specializations_t() ),
+  state( state_t() ),
   talents( talents_list_t() )
 {
   // Cooldowns
