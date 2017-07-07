@@ -7170,7 +7170,12 @@ void rogue_t::init_action_list()
     for ( size_t i = 0; i < items.size(); i++ )
     {
       if ( items[i].has_special_effect( SPECIAL_EFFECT_SOURCE_ITEM, SPECIAL_EFFECT_USE ) )
-        cds -> add_action( "use_item,name=" + items[i].name_str + ",if=buff.bloodlust.react|target.time_to_die<=20|combo_points.deficit<=2" );
+      {
+        if ( items[i].name_str == "specter_of_betrayal" )
+          cds -> add_action( "use_item,name=" + items[i].name_str + ",if=(mantle_duration>0|buff.curse_of_the_dreadblades.up|(cooldown.vanish.remains>11&cooldown.curse_of_the_dreadblades.remains>11))" );
+        else
+          cds -> add_action( "use_item,name=" + items[i].name_str + ",if=buff.bloodlust.react|target.time_to_die<=20|combo_points.deficit<=2" );
+      }
     }
     for ( size_t i = 0; i < racial_actions.size(); i++ )
     {
