@@ -6244,8 +6244,15 @@ void hunter_t::apl_bm()
   default_list -> add_talent( this, "A Murder of Crows", "if=cooldown.bestial_wrath.remains<3|cooldown.bestial_wrath.remains>30|target.time_to_die<16" );
   default_list -> add_talent( this, "Stampede", "if=buff.bloodlust.up|buff.bestial_wrath.up|cooldown.bestial_wrath.remains<=2|target.time_to_die<=14" );
   default_list -> add_action( this, "Bestial Wrath", "if=!buff.bestial_wrath.up" );
-  default_list -> add_action( this, "Aspect of the Wild", "if=buff.bestial_wrath.remains>7|target.time_to_die<12" );
-  default_list -> add_action( this, "Dire Beast", "if=set_bonus.tier19_2pc|!buff.bestial_wrath.up|full_recharge_time<gcd.max|cooldown.titans_thunder.up|spell_targets>1" );
+
+  default_list -> add_action( this, "Aspect of the Wild", "if=actions+=/aspect_of_the_wild,if=equipped.137101&equipped.140806&talent.one_with_the_pack.enabled",
+                                    "With both AotW cdr sources and OwtP, there's no visible benefit if it's delayed, use it on cd. With only one or neither, pair it with Bestial Wrath. Also use it if the fight will end when the buff does." );
+  default_list -> add_action( this, "Aspect of the Wild", "if=buff.bestial_wrath.remains>7" );
+  default_list -> add_action( this, "Aspect of the Wild", "if=target.time_to_die<12" );
+
+  default_list -> add_action( this, "Dire Beast", "if=set_bonus.tier19_2pc|!buff.bestial_wrath.up|full_recharge_time<gcd.max|cooldown.titans_thunder.up|spell_targets>1",
+                                    "Hold charges of Dire Beast as long as possible to take advantage of T20 2pc unless T19 2pc is on." );
+
   default_list -> add_talent( this, "Dire Frenzy", "if=(pet.cat.buff.dire_frenzy.remains<=gcd.max*1.2)|full_recharge_time<gcd.max|target.time_to_die<9" );
   default_list -> add_talent( this, "Barrage", "if=spell_targets.barrage>1" );
   default_list -> add_action( this, "Titan's Thunder", "if=(talent.dire_frenzy.enabled&(buff.bestial_wrath.up|cooldown.bestial_wrath.remains>35))|buff.bestial_wrath.up" );
