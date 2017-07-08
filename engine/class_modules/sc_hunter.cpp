@@ -6245,7 +6245,7 @@ void hunter_t::apl_bm()
   default_list -> add_talent( this, "Stampede", "if=buff.bloodlust.up|buff.bestial_wrath.up|cooldown.bestial_wrath.remains<=2|target.time_to_die<=14" );
   default_list -> add_action( this, "Bestial Wrath", "if=!buff.bestial_wrath.up" );
 
-  default_list -> add_action( this, "Aspect of the Wild", "if=actions+=/aspect_of_the_wild,if=equipped.137101&equipped.140806&talent.one_with_the_pack.enabled",
+  default_list -> add_action( this, "Aspect of the Wild", "if=equipped.137101&equipped.140806&talent.one_with_the_pack.enabled",
                                     "With both AotW cdr sources and OwtP, there's no visible benefit if it's delayed, use it on cd. With only one or neither, pair it with Bestial Wrath. Also use it if the fight will end when the buff does." );
   default_list -> add_action( this, "Aspect of the Wild", "if=buff.bestial_wrath.remains>7" );
   default_list -> add_action( this, "Aspect of the Wild", "if=target.time_to_die<12" );

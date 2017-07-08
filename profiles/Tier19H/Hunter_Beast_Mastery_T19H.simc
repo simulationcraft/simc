@@ -41,7 +41,7 @@ actions+=/a_murder_of_crows,if=cooldown.bestial_wrath.remains<3|cooldown.bestial
 actions+=/stampede,if=buff.bloodlust.up|buff.bestial_wrath.up|cooldown.bestial_wrath.remains<=2|target.time_to_die<=14
 actions+=/bestial_wrath,if=!buff.bestial_wrath.up
 # With both AotW cdr sources and OwtP, there's no visible benefit if it's delayed, use it on cd. With only one or neither, pair it with Bestial Wrath. Also use it if the fight will end when the buff does.
-actions+=/aspect_of_the_wild,if=actions+=/aspect_of_the_wild,if=equipped.137101&equipped.140806&talent.one_with_the_pack.enabled
+actions+=/aspect_of_the_wild,if=equipped.137101&equipped.140806&talent.one_with_the_pack.enabled
 actions+=/aspect_of_the_wild,if=buff.bestial_wrath.remains>7
 actions+=/aspect_of_the_wild,if=target.time_to_die<12
 # Hold charges of Dire Beast as long as possible to take advantage of T20 2pc unless T19 2pc is on.
