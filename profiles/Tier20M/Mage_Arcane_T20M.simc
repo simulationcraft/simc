@@ -107,7 +107,7 @@ waist=braided_torture_lash,id=146998,ilevel=930
 legs=leggings_of_the_arcane_tempest,id=147148,ilevel=930
 feet=emberscatter_treads,id=146986,ilevel=930
 finger1=shard_of_the_exodar,id=132410,ilevel=970,gems=150vers,enchant=200vers
-finger2=soul_of_the_archmage,id=151642,ilevel=970,enchant=200vers
+finger2=soul_of_the_archmage,id=151642,ilevel=970,gems=200int,enchant=200vers
 trinket1=tarnished_sentinel_medallion,id=147017,ilevel=930
 trinket2=terror_from_below,id=147016,ilevel=930
 main_hand=aluneth,id=127857,gem_id=147079/147095/147079,relic_ilevel=940/940/940
@@ -115,7 +115,7 @@ main_hand=aluneth,id=127857,gem_id=147079/147095/147079,relic_ilevel=940/940/940
 # Gear Summary
 # gear_ilvl=934.00
 # gear_stamina=44478
-# gear_intellect=44256
+# gear_intellect=44456
 # gear_crit_rating=10824
 # gear_haste_rating=8868
 # gear_mastery_rating=6016
