@@ -27,19 +27,20 @@ actions.precombat+=/summon_arcane_familiar
 actions.precombat+=/snapshot_stats
 actions.precombat+=/mirror_image
 actions.precombat+=/potion
-actions.precombat+=/arcane_blast
+actions.precombat+=/mark_of_aluneth,if=set_bonus.tier20_2pc|talent.charged_up.enabled
+actions.precombat+=/arcane_blast,if=!(set_bonus.tier20_2pc|talent.charged_up.enabled)
 
 # Executed every time the actor is available.
 actions=counterspell,if=target.debuff.casting.react
 actions+=/time_warp,if=buff.bloodlust.down&(time=0|(buff.arcane_power.up&(buff.potion.up|!action.potion.usable))|target.time_to_die<=buff.bloodlust.duration)
 actions+=/call_action_list,name=variables
-actions+=/cancel_buff,name=presence_of_mind,if=active_enemies>2&set_bonus.tier20_2pc
-actions+=/call_action_list,name=build,if=buff.arcane_charge.stack<buff.arcane_charge.max_stack&!burn_phase
+actions+=/cancel_buff,name=presence_of_mind,if=active_enemies>1&set_bonus.tier20_2pc
+actions+=/call_action_list,name=build,if=buff.arcane_charge.stack<buff.arcane_charge.max_stack&!burn_phase&time>0
 actions+=/call_action_list,name=burn,if=variable.time_until_burn=0|burn_phase
 actions+=/call_action_list,name=conserve
 
 actions.build=arcane_orb
-actions.build+=/charged_up
+actions.build+=/charged_up,if=equipped.mystic_kilt_of_the_rune_master|(variable.arcane_missiles_procs=buff.arcane_missiles.max_stack&active_enemies<3)
 actions.build+=/arcane_missiles,if=variable.arcane_missiles_procs=buff.arcane_missiles.max_stack&active_enemies<3
 actions.build+=/arcane_explosion,if=active_enemies>1
 actions.build+=/arcane_blast
@@ -50,14 +51,14 @@ actions.burn+=/stop_burn_phase,if=prev_gcd.1.evocation&cooldown.evocation.charge
 actions.burn+=/nether_tempest,if=refreshable|!ticking
 actions.burn+=/mark_of_aluneth
 actions.burn+=/mirror_image
-actions.burn+=/rune_of_power
+actions.burn+=/rune_of_power,if=mana.pct>30|(buff.arcane_power.up|cooldown.arcane_power.up)
 actions.burn+=/arcane_power
 actions.burn+=/blood_fury
 actions.burn+=/berserking
 actions.burn+=/arcane_torrent
 actions.burn+=/potion,if=buff.arcane_power.up&(buff.berserking.up|buff.blood_fury.up|!(race.troll|race.orc))
-actions.burn+=/use_items,if=buff.arcane_power.up
-actions.burn+=/presence_of_mind,if=set_bonus.tier20_2pc|buff.rune_of_power.remains<=buff.presence_of_mind.max_stack*action.arcane_blast.execute_time|buff.arcane_power.remains<=buff.presence_of_mind.max_stack*action.arcane_blast.execute_time
+actions.burn+=/use_items,if=buff.arcane_power.up|target.time_to_die<cooldown.arcane_power.remains
+actions.burn+=/presence_of_mind,if=((mana.pct>30|buff.arcane_power.up)&set_bonus.tier20_2pc)|buff.rune_of_power.remains<=buff.presence_of_mind.max_stack*action.arcane_blast.execute_time|buff.arcane_power.remains<=buff.presence_of_mind.max_stack*action.arcane_blast.execute_time
 actions.burn+=/arcane_orb
 actions.burn+=/arcane_barrage,if=active_enemies>1&equipped.mantle_of_the_first_kirin_tor&buff.arcane_charge.stack=buff.arcane_charge.max_stack
 actions.burn+=/arcane_missiles,if=variable.arcane_missiles_procs=buff.arcane_missiles.max_stack&active_enemies<3
@@ -69,31 +70,31 @@ actions.burn+=/arcane_blast
 actions.burn+=/variable,name=average_burn_length,op=set,value=(variable.average_burn_length*variable.total_burns-variable.average_burn_length+burn_phase_duration)%variable.total_burns
 actions.burn+=/evocation,interrupt_if=ticks=2|mana.pct>=85,interrupt_immediate=1
 
-actions.conserve=mark_of_aluneth,if=recharge_time<=variable.time_until_burn|variable.time_until_burn>=20|variable.time_until_burn>target.time_to_die
-actions.conserve+=/mirror_image,if=variable.time_until_burn>recharge_time|variable.time_until_burn>target.time_to_die
-actions.conserve+=/rune_of_power,if=full_recharge_time<=execute_time|(set_bonus.tier20_4pc&cooldown.presence_of_mind.remains<=execute_time&variable.time_until_burn>cooldown.presence_of_mind.recharge_time-variable.average_pom_cdr)|prev_gcd.1.mark_of_aluneth|target.time_to_die<recharge_time
-actions.conserve+=/presence_of_mind,if=set_bonus.tier20_4pc&(variable.time_until_burn>=recharge_time-variable.average_pom_cdr|buff.rune_of_power.up)
+actions.conserve=mirror_image,if=variable.time_until_burn>recharge_time|variable.time_until_burn>target.time_to_die
+actions.conserve+=/mark_of_aluneth
+actions.conserve+=/rune_of_power,if=full_recharge_time<=execute_time|(prev_gcd.1.mark_of_aluneth&!set_bonus.tier20_4pc)
+actions.conserve+=/swap_action_list,name=miniburn_init,if=set_bonus.tier20_4pc&cooldown.presence_of_mind.up&cooldown.arcane_power.remains>20&(action.rune_of_power.usable|!talent.rune_of_power.enabled)
 actions.conserve+=/arcane_missiles,if=variable.arcane_missiles_procs=buff.arcane_missiles.max_stack&active_enemies<3
 actions.conserve+=/supernova
 actions.conserve+=/nether_tempest,if=refreshable|!ticking
-actions.conserve+=/arcane_explosion,if=active_enemies>1&mana.pct>=90
-actions.conserve+=/arcane_blast,if=mana.pct>=90|buff.rhonins_assaulting_armwraps.up|(buff.rune_of_power.remains>=cast_time&equipped.mystic_kilt_of_the_rune_master&mana.pct>=50)
+actions.conserve+=/arcane_explosion,if=active_enemies>1&(mana.pct>=70-(10*equipped.mystic_kilt_of_the_rune_master))
+actions.conserve+=/arcane_blast,if=mana.pct>=90|buff.rhonins_assaulting_armwraps.up|(buff.rune_of_power.remains>=cast_time&equipped.mystic_kilt_of_the_rune_master)
 actions.conserve+=/arcane_missiles,if=variable.arcane_missiles_procs
 actions.conserve+=/arcane_barrage
+actions.conserve+=/arcane_explosion,if=active_enemies>1
 actions.conserve+=/arcane_blast
 
-actions.pom_cdr_tracking_variables=variable,name=total_poms,op=add,value=1,if=prev_off_gcd.presence_of_mind
-actions.pom_cdr_tracking_variables+=/variable,name=pom_cdr,op=add,value=4,if=prev_gcd.1.arcane_missiles&cooldown.presence_of_mind.remains
-actions.pom_cdr_tracking_variables+=/variable,name=average_pom_cdr,op=set,value=(variable.average_pom_cdr*variable.total_poms-variable.average_pom_cdr+variable.pom_cdr)%variable.total_poms,if=prev_off_gcd.presence_of_mind
-actions.pom_cdr_tracking_variables+=/variable,name=pom_cdr,op=reset,if=prev_off_gcd.presence_of_mind
+actions.miniburn_init=rune_of_power
+actions.miniburn_init+=/arcane_barrage
+actions.miniburn_init+=/presence_of_mind
+actions.miniburn_init+=/swap_action_list,name=default
 
 actions.variables=variable,name=arcane_missiles_procs,op=set,value=buff.arcane_missiles.react
 actions.variables+=/variable,name=time_until_burn,op=set,value=cooldown.arcane_power.remains
 actions.variables+=/variable,name=time_until_burn,op=max,value=cooldown.evocation.remains-variable.average_burn_length
-actions.variables+=/variable,name=time_until_burn,op=max,value=cooldown.presence_of_mind.remains-variable.average_pom_cdr,if=set_bonus.tier20_2pc
+actions.variables+=/variable,name=time_until_burn,op=max,value=cooldown.presence_of_mind.remains,if=set_bonus.tier20_2pc
 actions.variables+=/variable,name=time_until_burn,op=max,value=action.rune_of_power.usable_in,if=talent.rune_of_power.enabled
 actions.variables+=/variable,name=time_until_burn,op=reset,if=target.time_to_die<variable.average_burn_length
-actions.variables+=/call_action_list,name=pom_cdr_tracking_variables,if=set_bonus.tier20_4pc
 
 head=crown_of_the_arcane_tempest,id=147147,ilevel=930
 neck=string_of_extracted_incisors,id=147013,ilevel=930,enchant=mark_of_the_hidden_satyr
