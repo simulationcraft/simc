@@ -4203,6 +4203,9 @@ struct death_and_decay_t : public death_knight_spell_t
     base_tick_time *= 1.0 / ( 1.0 + p -> talent.rapid_decomposition -> effectN( 3 ).percent() );
 
     cooldown -> duration *= 1.0 + p -> spec.blood_death_knight -> effectN( 3 ).percent();
+
+    // TODO: Wrong damage spell, so needs to apply manually
+    base_multiplier *= 1.0 + p -> spec.unholy_death_knight -> effectN( 1 ).percent();
   }
 
   // Need to override dot duration to get full ticks
@@ -4296,6 +4299,9 @@ struct defile_t : public death_knight_spell_t
     hasted_ticks = false;
     ignore_false_positive = true;
     ground_aoe = true;
+
+    // TODO: Wrong damage spell, so needs to apply manually
+    base_multiplier *= 1.0 + p -> spec.unholy_death_knight -> effectN( 1 ).percent();
   }
 
   // Defile very likely counts as direct damage, as it procs certain trinkets that are flagged for
@@ -4352,6 +4358,8 @@ struct death_coil_t : public death_knight_spell_t
 
     attack_power_mod.direct = p -> find_spell( 47632 ) -> effectN( 1 ).ap_coeff();
     base_multiplier *= 1.0 + p -> artifact.deadliest_coil.percent();
+    // TODO: Wrong damage spell so generic application does not work
+    base_multiplier *= 1.0 + p -> spec.unholy_death_knight -> effectN( 1 ).percent();
   }
 
   double cost() const override
@@ -8528,6 +8536,8 @@ double death_knight_t::composite_player_pet_damage_multiplier( const action_stat
   m *= 1.0 + artifact.soulbiter.percent();
   m *= 1.0 + artifact.fleshsearer.percent();
   m *= 1.0 + artifact.cunning_of_the_ebon_blade.percent();
+
+  m *= 1.0 + spec.unholy_death_knight -> effectN( 3 ).percent();
 
   return m;
 }
