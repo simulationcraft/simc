@@ -1817,8 +1817,12 @@ struct dt_pet_t : public base_ghoul_pet_t
   // Unholy T18 4pc buff
   buff_t* crazed_monstrosity;
 
+  // Unholy Vigor gain object
+  gain_t* unholy_vigor;
+
   dt_pet_t( death_knight_t* owner, const std::string& name ) :
-    base_ghoul_pet_t( owner, name, false ), crazed_monstrosity( nullptr )
+    base_ghoul_pet_t( owner, name, false ), crazed_monstrosity( nullptr ),
+    unholy_vigor( get_gain( "Unholy Vigor" ) )
   { }
 
   attack_t* create_auto_attack() override
@@ -4408,7 +4412,9 @@ struct death_coil_t : public death_knight_spell_t
 
     p() -> buffs.necrosis -> trigger();
     p() -> pets.ghoul_pet -> resource_gain( RESOURCE_ENERGY,
-      unholy_vigor -> effectN( 1 ).resource( RESOURCE_ENERGY ), nullptr, this );
+                                            unholy_vigor -> effectN( 1 ).resource( RESOURCE_ENERGY ),
+                                            p() -> pets.ghoul_pet -> unholy_vigor,
+                                            this );
 
     p() -> trigger_death_march( execute_state );
   }
