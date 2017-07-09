@@ -849,6 +849,7 @@ public:
     _runes( this )
   {
     range::fill( pets.army_ghoul, nullptr );
+    range::fill( pets.apocalypse_ghoul, nullptr );
 
     cooldown.antimagic_shell = get_cooldown( "antimagic_shell" );
     cooldown.army_of_the_dead = get_cooldown( "army_of_the_dead" );
@@ -4141,7 +4142,7 @@ struct dark_transformation_t : public death_knight_spell_t
 
   bool ready() override
   {
-    if ( p() -> pets.ghoul_pet -> is_sleeping() )
+    if ( ! p() -> pets.ghoul_pet || p() -> pets.ghoul_pet -> is_sleeping() )
     {
       return false;
     }
@@ -4414,10 +4415,13 @@ struct death_coil_t : public death_knight_spell_t
     }
 
     p() -> buffs.necrosis -> trigger();
-    p() -> pets.ghoul_pet -> resource_gain( RESOURCE_ENERGY,
-                                            unholy_vigor -> effectN( 1 ).resource( RESOURCE_ENERGY ),
-                                            p() -> pets.ghoul_pet -> unholy_vigor,
-                                            this );
+    if ( p() -> pets.ghoul_pet )
+    {
+      p() -> pets.ghoul_pet -> resource_gain( RESOURCE_ENERGY,
+                                              unholy_vigor -> effectN( 1 ).resource( RESOURCE_ENERGY ),
+                                              p() -> pets.ghoul_pet -> unholy_vigor,
+                                              this );
+    }
 
     p() -> trigger_death_march( execute_state );
   }
