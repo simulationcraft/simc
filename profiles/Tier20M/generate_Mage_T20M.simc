@@ -75,7 +75,7 @@ hands=gloves_of_everburning_knowledge,id=138309,ilevel=905
 waist=braided_torture_lash,id=146998,ilevel=930
 legs=leggings_of_the_arcane_tempest,id=147148,ilevel=930
 feet=emberscatter_treads,id=146986,ilevel=930
-finger2=soul_of_the_archmage,id=151642,ilevel=970,enchant=200vers
+finger2=soul_of_the_archmage,id=151642,ilevel=970,gems=200int,enchant=200vers
 finger1=shard_of_the_exodar,id=132410,ilevel=970,gems=150vers,enchant=200vers
 trinket1=tarnished_sentinel_medallion,id=147017,ilevel=930
 trinket2=terror_from_below,id=147016,ilevel=930
