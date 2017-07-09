@@ -7342,7 +7342,8 @@ void mage_t::apl_precombat()
   switch ( specialization() )
   {
     case MAGE_ARCANE:
-      precombat -> add_action( this, "Arcane Blast" );
+      precombat -> add_action( this, "Mark of Aluneth", "if=set_bonus.tier20_2pc|talent.charged_up.enabled" );
+      precombat -> add_action( this, "Arcane Blast", "if=!(set_bonus.tier20_2pc|talent.charged_up.enabled)" );
       break;
     case MAGE_FIRE:
       precombat -> add_action( this, "Pyroblast" );
@@ -7409,42 +7410,31 @@ void mage_t::apl_arcane()
   action_priority_list_t* variables           = get_action_priority_list( "variables"        );
   action_priority_list_t* build               = get_action_priority_list( "build"            );
   action_priority_list_t* conserve            = get_action_priority_list( "conserve"         );
+  action_priority_list_t* miniburn_init       = get_action_priority_list( "miniburn_init"    );
   action_priority_list_t* burn                = get_action_priority_list( "burn"             );
 
-  action_priority_list_t* pom_cdr_variables   = get_action_priority_list( "pom_cdr_tracking_variables"        );
-
-
-
-
-  default_list -> add_action( this, "Counterspell",
-                              "if=target.debuff.casting.react" );
+  default_list -> add_action( this, "Counterspell", "if=target.debuff.casting.react" );
   default_list -> add_action( this, "Time Warp", "if=buff.bloodlust.down&(time=0|(buff.arcane_power.up&(buff.potion.up|!action.potion.usable))|target.time_to_die<=buff.bloodlust.duration)" );
   default_list -> add_action( "call_action_list,name=variables" );
-  default_list -> add_action( "cancel_buff,name=presence_of_mind,if=active_enemies>2&set_bonus.tier20_2pc" );
+  default_list -> add_action( "cancel_buff,name=presence_of_mind,if=active_enemies>1&set_bonus.tier20_2pc" );
   default_list -> add_action( mage_t::get_special_use_items( "horn_of_valor" ) );
   default_list -> add_action( mage_t::get_special_use_items( "obelisk_of_the_void" ) );
   default_list -> add_action( mage_t::get_special_use_items( "mrrgrias_favor" ) );
   default_list -> add_action( mage_t::get_special_use_items( "pharameres_forbidden_grimoire" ) );
   default_list -> add_action( mage_t::get_special_use_items( "kiljaedens_burning_wish" ) );
-  default_list -> add_action( "call_action_list,name=build,if=buff.arcane_charge.stack<buff.arcane_charge.max_stack&!burn_phase" );
+  default_list -> add_action( "call_action_list,name=build,if=buff.arcane_charge.stack<buff.arcane_charge.max_stack&!burn_phase&time>0" );
   default_list -> add_action( "call_action_list,name=burn,if=variable.time_until_burn=0|burn_phase" );
   default_list -> add_action( "call_action_list,name=conserve" );
 
   variables    -> add_action( "variable,name=arcane_missiles_procs,op=set,value=buff.arcane_missiles.react" );
   variables    -> add_action( "variable,name=time_until_burn,op=set,value=cooldown.arcane_power.remains" );
   variables    -> add_action( "variable,name=time_until_burn,op=max,value=cooldown.evocation.remains-variable.average_burn_length" );
-  variables    -> add_action( "variable,name=time_until_burn,op=max,value=cooldown.presence_of_mind.remains-variable.average_pom_cdr,if=set_bonus.tier20_2pc" );
+  variables    -> add_action( "variable,name=time_until_burn,op=max,value=cooldown.presence_of_mind.remains,if=set_bonus.tier20_2pc" );
   variables    -> add_action( "variable,name=time_until_burn,op=max,value=action.rune_of_power.usable_in,if=talent.rune_of_power.enabled" );
   variables    -> add_action( "variable,name=time_until_burn,op=reset,if=target.time_to_die<variable.average_burn_length" );
-  variables    -> add_action( "call_action_list,name=pom_cdr_tracking_variables,if=set_bonus.tier20_4pc" );
-
-  pom_cdr_variables -> add_action( "variable,name=total_poms,op=add,value=1,if=prev_off_gcd.presence_of_mind" );
-  pom_cdr_variables -> add_action( "variable,name=pom_cdr,op=add,value=4,if=prev_gcd.1.arcane_missiles&cooldown.presence_of_mind.remains" );
-  pom_cdr_variables -> add_action( "variable,name=average_pom_cdr,op=set,value=(variable.average_pom_cdr*variable.total_poms-variable.average_pom_cdr+variable.pom_cdr)%variable.total_poms,if=prev_off_gcd.presence_of_mind" );
-  pom_cdr_variables -> add_action( "variable,name=pom_cdr,op=reset,if=prev_off_gcd.presence_of_mind" );
 
   build -> add_talent( this, "Arcane Orb" );
-  build -> add_talent( this, "Charged Up" );
+  build -> add_talent( this, "Charged Up", "if=equipped.mystic_kilt_of_the_rune_master|(variable.arcane_missiles_procs=buff.arcane_missiles.max_stack&active_enemies<3)" );
   build -> add_action( this, "Arcane Missiles", "if=variable.arcane_missiles_procs=buff.arcane_missiles.max_stack&active_enemies<3" );
   build -> add_action( this, "Arcane Explosion", "if=active_enemies>1" );
   build -> add_action( this, "Arcane Blast" );
@@ -7455,7 +7445,8 @@ void mage_t::apl_arcane()
   burn  -> add_talent( this, "Nether Tempest", "if=refreshable|!ticking" );
   burn  -> add_action( this, "Mark of Aluneth" );
   burn  -> add_talent( this, "Mirror Image" );
-  burn  -> add_talent( this, "Rune of Power" );
+  burn  -> add_talent( this, "Arcane Barrage", "if=set_bonus.tier20_2pc&cooldown.presence_of_mind.up&buff.arcane_charge.stack=buff.arcane_charge.max_stack" );
+  burn  -> add_talent( this, "Rune of Power", "if=mana.pct>30|(buff.arcane_power.up|cooldown.arcane_power.up)" );
   burn  -> add_action( this, "Arcane Power" );
 
   for( size_t i = 0; i < racial_actions.size(); i++ )
@@ -7464,8 +7455,8 @@ void mage_t::apl_arcane()
   }
 
   burn  -> add_action( "potion,if=buff.arcane_power.up&(buff.berserking.up|buff.blood_fury.up|!(race.troll|race.orc))" );
-  burn  -> add_action( "use_items,if=buff.arcane_power.up" );
-  burn  -> add_action( this, "Presence of Mind", "if=set_bonus.tier20_2pc|buff.rune_of_power.remains<=buff.presence_of_mind.max_stack*action.arcane_blast.execute_time|buff.arcane_power.remains<=buff.presence_of_mind.max_stack*action.arcane_blast.execute_time" );
+  burn  -> add_action( "use_items,if=buff.arcane_power.up|target.time_to_die<cooldown.arcane_power.remains" );
+  burn  -> add_action( this, "Presence of Mind", "if=((mana.pct>30|buff.arcane_power.up)&set_bonus.tier20_2pc)|buff.rune_of_power.remains<=buff.presence_of_mind.max_stack*action.arcane_blast.execute_time|buff.arcane_power.remains<=buff.presence_of_mind.max_stack*action.arcane_blast.execute_time" );
   burn  -> add_talent( this, "Arcane Orb" );
   burn  -> add_action( this, "Arcane Barrage", "if=active_enemies>1&equipped.mantle_of_the_first_kirin_tor&buff.arcane_charge.stack=buff.arcane_charge.max_stack" );
   burn  -> add_action( this, "Arcane Missiles", "if=variable.arcane_missiles_procs=buff.arcane_missiles.max_stack&active_enemies<3" );
@@ -7477,19 +7468,24 @@ void mage_t::apl_arcane()
   burn  -> add_action( "variable,name=average_burn_length,op=set,value=(variable.average_burn_length*variable.total_burns-variable.average_burn_length+burn_phase_duration)%variable.total_burns" );
   burn  -> add_action( this, "Evocation", "interrupt_if=ticks=2|mana.pct>=85,interrupt_immediate=1" );
 
-  conserve -> add_action( this, "Mark of Aluneth", "if=recharge_time<=variable.time_until_burn|variable.time_until_burn>=20|variable.time_until_burn>target.time_to_die" );
   conserve -> add_talent( this, "Mirror Image", "if=variable.time_until_burn>recharge_time|variable.time_until_burn>target.time_to_die" );
-  conserve -> add_talent( this, "Rune of Power", "if=full_recharge_time<=execute_time|(set_bonus.tier20_4pc&cooldown.presence_of_mind.remains<=execute_time&variable.time_until_burn>cooldown.presence_of_mind.recharge_time-variable.average_pom_cdr)|prev_gcd.1.mark_of_aluneth|target.time_to_die<recharge_time" );
-  conserve -> add_action( this, "Presence of Mind", "if=set_bonus.tier20_4pc&(variable.time_until_burn>=recharge_time-variable.average_pom_cdr|buff.rune_of_power.up)" );
+  conserve -> add_action( this, "Mark of Aluneth" );
+  conserve -> add_talent( this, "Rune of Power", "if=full_recharge_time<=execute_time|(prev_gcd.1.mark_of_aluneth&!set_bonus.tier20_4pc)" );
+  conserve -> add_action( "swap_action_list,name=miniburn_init,if=set_bonus.tier20_4pc&cooldown.presence_of_mind.up&cooldown.arcane_power.remains>20&(action.rune_of_power.usable|!talent.rune_of_power.enabled)" );
   conserve -> add_action( this, "Arcane Missiles", "if=variable.arcane_missiles_procs=buff.arcane_missiles.max_stack&active_enemies<3" );
   conserve -> add_talent( this, "Supernova" );
   conserve -> add_talent( this, "Nether Tempest", "if=refreshable|!ticking" );
-  conserve -> add_action( this, "Arcane Explosion", "if=active_enemies>1&mana.pct>=90" );
-  conserve -> add_action( this, "Arcane Blast", "if=mana.pct>=90|buff.rhonins_assaulting_armwraps.up|(buff.rune_of_power.remains>=cast_time&equipped.mystic_kilt_of_the_rune_master&mana.pct>=50)" );
+  conserve -> add_action( this, "Arcane Explosion", "if=active_enemies>1&(mana.pct>=70-(10*equipped.mystic_kilt_of_the_rune_master))" );
+  conserve -> add_action( this, "Arcane Blast", "if=mana.pct>=90|buff.rhonins_assaulting_armwraps.up|(buff.rune_of_power.remains>=cast_time&equipped.mystic_kilt_of_the_rune_master)" );
   conserve -> add_action( this, "Arcane Missiles", "if=variable.arcane_missiles_procs" );
   conserve -> add_action( this, "Arcane Barrage" );
+  conserve -> add_action( this, "Arcane Explosion", "if=active_enemies>1" );
   conserve -> add_action( this, "Arcane Blast" );
 
+  miniburn_init -> add_talent( this, "Rune of Power" );
+  miniburn_init -> add_action( this, "Arcane Barrage" );
+  miniburn_init -> add_action( this, "Presence of Mind" );
+  miniburn_init -> add_action( "swap_action_list,name=default" );
 }
 
 // Fire Mage Action List ===================================================================================================
