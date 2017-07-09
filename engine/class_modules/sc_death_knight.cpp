@@ -565,6 +565,7 @@ public:
     const spell_data_t* plate_specialization;
     const spell_data_t* death_knight;
     const spell_data_t* unholy_death_knight;
+    const spell_data_t* frost_death_knight;
 
     // Blood
     const spell_data_t* blood_death_knight;
@@ -2648,6 +2649,16 @@ struct death_knight_action_t : public Base
     if ( this -> data().affected_by( p -> spec.unholy_death_knight -> effectN( 2 ) ) )
     {
       this -> base_td_multiplier *= 1.0 + p -> spec.unholy_death_knight -> effectN( 2 ).percent();
+    }
+
+    if ( this -> data().affected_by( p -> spec.frost_death_knight -> effectN( 1 ) ) )
+    {
+      this -> base_dd_multiplier *= 1.0 + p -> spec.frost_death_knight -> effectN( 1 ).percent();
+    }
+
+    if ( this -> data().affected_by( p -> spec.frost_death_knight -> effectN( 2 ) ) )
+    {
+      this -> base_td_multiplier *= 1.0 + p -> spec.frost_death_knight -> effectN( 2 ).percent();
     }
   }
 
@@ -7305,6 +7316,7 @@ void death_knight_t::init_spells()
   spec.runic_empowerment          = find_specialization_spell( "Runic Empowerment" );
   spec.rime                       = find_specialization_spell( "Rime" );
   spec.killing_machine            = find_specialization_spell( "Killing Machine" );
+  spec.frost_death_knight         = find_specialization_spell( "Frost Death Knight" );
 
   // Unholy
   spec.festering_wound            = find_specialization_spell( "Festering Wound" );
