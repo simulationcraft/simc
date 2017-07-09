@@ -30,14 +30,14 @@ actions.precombat+=/snapshot_stats
 actions.precombat+=/variable,name=ssw_refund,value=equipped.shadow_satyrs_walk*(6+ssw_refund_offset)
 actions.precombat+=/variable,name=stealth_threshold,value=(65+talent.vigor.enabled*35+talent.master_of_shadows.enabled*10+variable.ssw_refund)
 actions.precombat+=/variable,name=shd_fractional,value=1.725+0.725*talent.enveloping_shadows.enabled
-actions.precombat+=/variable,name=dsh_dfa,value=talent.death_from_above.enabled&talent.dark_shadow.enabled
 actions.precombat+=/stealth
 actions.precombat+=/marked_for_death,precombat=1
 actions.precombat+=/potion
 
 # Executed every time the actor is available.
+actions=variable,name=dsh_dfa,value=talent.death_from_above.enabled&talent.dark_shadow.enabled&spell_targets.death_from_above<4
 # This let us to use Shadow Dance right before the 2nd part of DfA lands. Only with Dark Shadow.
-actions=shadow_dance,if=talent.dark_shadow.enabled&!stealthed.all&buff.death_from_above.up&buff.death_from_above.remains<=0.15
+actions+=/shadow_dance,if=talent.dark_shadow.enabled&!stealthed.all&buff.death_from_above.up&buff.death_from_above.remains<=0.15
 # This is triggered only with DfA talent since we check shadow_dance even while the gcd is ongoing, it's purely for simulation performance.
 actions+=/wait,sec=0.1,if=buff.shadow_dance.up&gcd.remains>0
 actions+=/call_action_list,name=cds
@@ -73,7 +73,7 @@ actions.cds+=/vanish,if=(variable.dsh_dfa&cooldown.shadow_dance.charges_fraction
 # Finishers
 actions.finish=nightblade,if=(!talent.dark_shadow.enabled|!buff.shadow_dance.up)&target.time_to_die-remains>6&(mantle_duration=0|remains<=mantle_duration)&((refreshable&(!finality|buff.finality_nightblade.up))|remains<tick_time*2)
 actions.finish+=/nightblade,cycle_targets=1,if=(!talent.death_from_above.enabled|set_bonus.tier19_2pc)&(!talent.dark_shadow.enabled|!buff.shadow_dance.up)&target.time_to_die-remains>12&mantle_duration=0&((refreshable&(!finality|buff.finality_nightblade.up))|remains<tick_time*2)
-actions.finish+=/death_from_above,if=!talent.dark_shadow.enabled|(!buff.shadow_dance.up&(buff.symbols_of_death.up|cooldown.symbols_of_death.remains>=10+set_bonus.tier20_4pc*5))
+actions.finish+=/death_from_above,if=!talent.dark_shadow.enabled|spell_targets>=4&buff.shadow_dance.up|spell_targets<4&!buff.shadow_dance.up&(buff.symbols_of_death.up|cooldown.symbols_of_death.remains>=10+set_bonus.tier20_4pc*5)
 actions.finish+=/eviscerate
 
 # Stealth Action List Starter
