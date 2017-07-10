@@ -7592,18 +7592,10 @@ void mage_t::apl_frost()
   action_priority_list_t* aoe          = get_action_priority_list( "aoe"               );
   action_priority_list_t* cooldowns    = get_action_priority_list( "cooldowns"         );
   action_priority_list_t* movement     = get_action_priority_list( "movement"          );
+  action_priority_list_t* variables    = get_action_priority_list( "variables"         );
 
+  default_list -> add_action( "call_action_list,name=variables" );
   default_list -> add_action( this, "Counterspell", "if=target.debuff.casting.react" );
-  default_list -> add_action( "variable,name=iv_start,value=time,if=prev_off_gcd.icy_veins",
-    "Variable which tracks when Icy Veins were used. For use in time_until_fof variable." );
-  default_list -> add_action( "variable,name=time_until_fof,value=10-(time-variable.iv_start-floor((time-variable.iv_start)%10)*10)",
-    "This variable tracks the remaining time until FoF proc from Lady Vashj's Grasp. Note that it doesn't check whether the actor "
-    "actually has the legendary or that Icy Veins are currently active." );
-  default_list -> add_action( "variable,name=fof_react,value=buff.fingers_of_frost.react",
-    "Replacement for buff.fingers_of_frost.react. Since some of the FoFs are not random and can be anticipated (Freeze, "
-    "Lady Vashj's Grasp), we can bypass the .react check." );
-  default_list -> add_action( "variable,name=fof_react,value=buff.fingers_of_frost.stack,if=equipped.lady_vashjs_grasp&buff.icy_veins.up&"
-    "variable.time_until_fof>9|prev_off_gcd.freeze|ground_aoe.frozen_orb.remains>9" );
   default_list -> add_action( this, "Ice Lance", "if=variable.fof_react=0&prev_gcd.1.flurry",
     "Free Ice Lance after Flurry. This action has rather high priority to ensure that we don't cast Rune of Power, Ray of Frost, "
     "etc. after Flurry and break up the combo. If FoF was already active, we do not lose anything by delaying the Ice Lance." );
@@ -7708,6 +7700,17 @@ void mage_t::apl_frost()
 
   movement -> add_action( this, "Blink", "if=movement.distance>10" );
   movement -> add_talent( this, "Ice Floes", "if=buff.ice_floes.down&movement.distance>0&variable.fof_react=0" );
+
+  variables -> add_action( "variable,name=iv_start,value=time,if=prev_off_gcd.icy_veins",
+    "Variable which tracks when Icy Veins were used. For use in time_until_fof variable." );
+  variables -> add_action( "variable,name=time_until_fof,value=10-(time-variable.iv_start-floor((time-variable.iv_start)%10)*10)",
+    "This variable tracks the remaining time until FoF proc from Lady Vashj's Grasp. Note that it doesn't check whether the actor "
+    "actually has the legendary or that Icy Veins are currently active." );
+  variables -> add_action( "variable,name=fof_react,value=buff.fingers_of_frost.react",
+    "Replacement for buff.fingers_of_frost.react. Since some of the FoFs are not random and can be anticipated (Freeze, "
+    "Lady Vashj's Grasp), we can bypass the .react check." );
+  variables -> add_action( "variable,name=fof_react,value=buff.fingers_of_frost.stack,if=equipped.lady_vashjs_grasp&buff.icy_veins.up&"
+    "variable.time_until_fof>9|prev_off_gcd.freeze|ground_aoe.frozen_orb.remains>9" );
 }
 
 // Default Action List ========================================================
