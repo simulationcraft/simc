@@ -243,7 +243,6 @@ SC_OptionsTab::SC_OptionsTab( SC_MainWindow* parent ) :
   connect( choice.fight_variance,     SIGNAL( currentIndexChanged( int ) ), this, SLOT( _optionsChanged() ) );
   connect( choice.iterations,         SIGNAL( currentIndexChanged( int ) ), this, SLOT( _optionsChanged() ) );
   connect( choice.num_target,         SIGNAL( currentIndexChanged( int ) ), this, SLOT( _optionsChanged() ) );
-  connect( choice.player_skill,       SIGNAL( currentIndexChanged( int ) ), this, SLOT( _optionsChanged() ) );
   connect( choice.plots_points,       SIGNAL( currentIndexChanged( int ) ), this, SLOT( _optionsChanged() ) );
   connect( choice.plots_step,         SIGNAL( currentIndexChanged( int ) ), this, SLOT( _optionsChanged() ) );
   connect( choice.plots_target_error, SIGNAL( currentIndexChanged( int ) ), this, SLOT( _optionsChanged() ) );
@@ -307,7 +306,6 @@ void SC_OptionsTab::createGlobalsTab()
   globalsLayout_left -> addRow( tr(   "Vary Length %" ),  choice.fight_variance = addValidatorToComboBox( 0, 100, createChoice( 6, "0", "10", "20", "30", "40", "50" ) ) );
   globalsLayout_left -> addRow( tr(   "Fight Style" ),     choice.fight_style = createChoice( 8, "Patchwerk", "HecticAddCleave", "HelterSkelter", "Ultraxion", "LightMovement", "HeavyMovement", "Beastlord", "CastingPatchwerk" ) );
   globalsLayout_left -> addRow( tr( "Challenge Mode" ), choice.challenge_mode = createChoice( 2, "Disabled", "Enabled" ) );
-  globalsLayout_left -> addRow( tr(  "Player Skill" ),    choice.player_skill = createChoice( 4, "Elite", "Good", "Average", "Ouch! Fire is hot!" ) );
   globalsLayout_left -> addRow( tr( "Default Role" ),     choice.default_role = createChoice( 4, "Auto", "DPS", "Heal", "Tank" ) );
   globalsLayout_left -> addRow( tr( "GUI Localization" ),     choice.gui_localization = createChoice( 5, "auto", "en", "de", "zh", "it" ) );
 
@@ -662,7 +660,6 @@ void SC_OptionsTab::decodeOptions()
   load_setting( settings, "fight_style", choice.fight_style );
   load_setting( settings, "target_race", choice.target_race );
   load_setting( settings, "num_target", choice.num_target );
-  load_setting( settings, "player_skill", choice.player_skill );
   load_setting( settings, "threads", choice.threads, QString::number( QThread::idealThreadCount() ) );
   load_setting( settings, "process_priority", choice.process_priority, "Low" );
   load_setting( settings, "auto_save", choice.auto_save, "No" );
@@ -752,7 +749,6 @@ void SC_OptionsTab::encodeOptions()
   settings.setValue( "fight_style", choice.fight_style -> currentText() );
   settings.setValue( "target_race", choice.target_race -> currentText() );
   settings.setValue( "num_target", choice.num_target -> currentText() );
-  settings.setValue( "player_skill", choice.player_skill -> currentText() );
   settings.setValue( "threads", choice.threads -> currentText() );
   settings.setValue( "process_priority", choice.process_priority -> currentText() );
   settings.setValue( "auto_save", choice.auto_save -> currentText() );
@@ -856,8 +852,6 @@ void SC_OptionsTab::createToolTips()
   choice.pvp_crit -> setToolTip( tr( "In PVP, critical strikes deal 150% damage instead of 200%.\n"
                                      "Enabling this option will set target level to max player level." ) );
 
-  choice.player_skill -> setToolTip( tr( "Elite:       No mistakes.  No cheating either." ) + "\n" +
-                                     tr( "Fire-is-Hot: Frequent DoT-clipping and skipping high-priority abilities." ) );
 
   choice.threads -> setToolTip( tr( "Match the number of CPUs for optimal performance.\n"
                                     "Most modern desktops have at least two CPU cores." ) );
@@ -1027,11 +1021,6 @@ QString SC_OptionsTab::get_globalSettings()
     }
   }
   // end target spawning
-
-  options += "default_skill=";
-  const char *skill[] = { "1.0", "0.95", "0.85", "0.75" };
-  options += skill[ choice.player_skill->currentIndex() ];
-  options += "\n";
 
   options += "optimal_raid=0\n";
 
