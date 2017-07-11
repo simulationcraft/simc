@@ -6814,17 +6814,7 @@ void demon_hunter_t::apl_precombat()
 
   pre->add_action("flask");
   pre->add_action("augmentation");
-
-  // Food
-  if (specialization() == DEMON_HUNTER_HAVOC)
-  {
-    pre->add_action("food,if=!equipped.majordomos_dinner_bell");
-    pre->add_action("food,type=nightborne_delicacy_platter,if=equipped.majordomos_dinner_bell");
-  }
-  else
-  {
-    pre->add_action("food");
-  }
+  pre->add_action("food");
 
   // Snapshot Stats
   pre->add_action("snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done.");
@@ -6867,11 +6857,6 @@ void add_havoc_use_items( demon_hunter_t* p, action_priority_list_t* apl )
       {
         line += ",if=!talent.chaos_blades.enabled|buff.chaos_blades.up|target.time_to_die<cooldown.chaos_blades.remains";
       }
-      else if (util::str_compare_ci(p->items[i].name_str, "majordomos_dinner_bell") 
-            || util::str_compare_ci(p->items[i].name_str, "skardyns_grace"))
-      {
-        line += ",if=!talent.chaos_blades.enabled|buff.chaos_blades.up";
-      }
       else if (util::str_compare_ci(p->items[i].name_str, "draught_of_souls"))
       {
         line += ",if=!buff.metamorphosis.up&(!talent.first_blood.enabled|!cooldown.blade_dance.ready)&(!talent.nemesis.enabled|cooldown.nemesis.remains>30|target.time_to_die<cooldown.nemesis.remains+3)";
@@ -6879,6 +6864,10 @@ void add_havoc_use_items( demon_hunter_t* p, action_priority_list_t* apl )
       else if (util::str_compare_ci(p->items[i].name_str, "kiljaedens_burning_wish"))
       {
         line += ",if=(active_enemies>desired_targets)|raid_event.adds.in>75";
+      }
+      else if (util::str_compare_ci(p->items[i].name_str, "umbral_moonglaives"))
+      {
+        line += ",if=(active_enemies>desired_targets)|(raid_event.adds.in>90&(buff.chaos_blades.up|target.time_to_die<cooldown.chaos_blades.remains))";
       }
       else if (util::str_compare_ci(p->items[i].name_str, "bloodstained_handkerchief"))
       {
