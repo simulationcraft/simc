@@ -1888,6 +1888,18 @@ struct ghoul_pet_t : public dt_pet_t
     claw_t( ghoul_pet_t* player, const std::string& options_str ) :
       super( player, "claw", player -> find_spell( 91776 ), options_str, false )
     { triggers_infected_claws = true; }
+
+    double action_multiplier() const override
+    {
+      double m = super::action_multiplier();
+
+      if ( p() -> o() -> mastery.dreadblade -> ok() )
+      {
+        m *= 1.0 + p() -> o() -> cache.mastery_value();
+      }
+
+      return m;
+    }
   };
 
   struct gnaw_t : public dt_melee_ability_t<ghoul_pet_t>
@@ -1991,6 +2003,18 @@ struct sludge_belcher_pet_t : public dt_pet_t
     cleaver_t( sludge_belcher_pet_t* player, const std::string& options_str ) :
       super( player, "cleaver", player -> find_spell( 212335 ), options_str, false )
     { triggers_infected_claws = true; }
+
+    double action_multiplier() const override
+    {
+      double m = super::action_multiplier();
+
+      if ( p() -> o() -> mastery.dreadblade -> ok() )
+      {
+        m *= 1.0 + p() -> o() -> cache.mastery_value();
+      }
+
+      return m;
+    }
   };
 
   struct smash_t : public dt_melee_ability_t<sludge_belcher_pet_t>
