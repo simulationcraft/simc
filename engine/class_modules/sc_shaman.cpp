@@ -1992,15 +1992,13 @@ struct base_wolf_t : public shaman_pet_t
   {
     shaman_pet_t::create_buffs();
 
-    if ( o() -> artifact.alpha_wolf.rank() )
-    {
-      alpha_wolf_buff = buff_creator_t( this, "alpha_wolf", o() -> find_spell( 198486 ) )
-                        .tick_behavior( BUFF_TICK_REFRESH )
-                        .tick_callback( [ this ]( buff_t*, int, timespan_t ) {
-                          alpha_wolf -> target = o() -> target;
-                          alpha_wolf -> schedule_execute();
-                        } );
-    }
+    alpha_wolf_buff = buff_creator_t( this, "alpha_wolf", o() -> find_spell( 198486 ) )
+                      .tick_behavior( BUFF_TICK_REFRESH )
+                      .tick_callback( [ this ]( buff_t*, int, timespan_t ) {
+                        alpha_wolf -> target = o() -> target;
+                        alpha_wolf -> schedule_execute();
+                      } )
+                      .chance( o() -> artifact.alpha_wolf.rank() );
   }
 
   void trigger_alpha_wolf() const
