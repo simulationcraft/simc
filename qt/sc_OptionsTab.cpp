@@ -466,7 +466,8 @@ void SC_OptionsTab::createScalingTab()
 
   // Box containing buttons for each stat to scale
   QGroupBox* scalingButtonsGroupBox = new QGroupBox( this );
-  scalingButtonsGroupBox -> setSizePolicy( QSizePolicy( QSizePolicy::Minimum, QSizePolicy::Expanding ) );
+  scalingButtonsGroupBox->setSizePolicy( QSizePolicy( QSizePolicy::Fixed, QSizePolicy::Fixed) );
+  scalingButtonsGroupBox->setMinimumHeight( 275 );
   scalingButtonsGroupBox -> setTitle( tr( "Stats to scale" ) );
   scalingLayout -> addWidget( scalingButtonsGroupBox );
 
