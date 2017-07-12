@@ -181,7 +181,7 @@ void SC_MainWindow::loadHistory()
   else
     showMaximized();
 
-  QString cache_file = TmpDir + "/simc_cache.dat";
+  QString cache_file = QDir::toNativeSeparators( TmpDir + "/simc_cache.dat" );
   std::string cache_file_str = cache_file.toStdString();
   http::cache_load( cache_file_str.c_str() );
 
@@ -219,7 +219,7 @@ void SC_MainWindow::saveHistory()
   settings.setValue( "maximized", bool( windowState() & Qt::WindowMaximized ) );
   settings.endGroup();
 
-  QString cache_file = TmpDir + "/simc_cache.dat";
+  QString cache_file = QDir::toNativeSeparators( TmpDir + "/simc_cache.dat" );
   std::string cache_file_str = cache_file.toStdString();
   http::cache_save( cache_file_str.c_str() );
 
@@ -299,8 +299,8 @@ SC_MainWindow::SC_MainWindow( QWidget *parent )
   assert( !s.isEmpty() );
   ResultsDestDir = s.first();
 
-  logFileText = AppDataDir + "/" + "log.txt";
-  resultsFileText = AppDataDir + "/" + "results.html";
+  logFileText = QDir::toNativeSeparators( AppDataDir + "/log.txt" );
+  resultsFileText = QDir::toNativeSeparators( AppDataDir + "/results.html" );
 
   mainTab = new SC_MainTab( this );
 
@@ -855,7 +855,7 @@ void SC_MainWindow::startSim()
     file.close();
   }
 
-  QString reportFileBase = optionsTab -> getReportlDestination();
+  QString reportFileBase = QDir::toNativeSeparators( optionsTab -> getReportlDestination() );
   sim -> output_file_str = (reportFileBase + ".txt").toStdString();
   sim -> html_file_str = (reportFileBase + ".html").toStdString();
 
