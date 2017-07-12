@@ -435,7 +435,7 @@ void SC_OptionsTab::createScalingTab()
   enableScalingButtonGroupBox -> setSizePolicy( QSizePolicy( QSizePolicy::Minimum, QSizePolicy::Fixed ) );
   scalingLayout -> addWidget( enableScalingButtonGroupBox );
 
-  QFormLayout* enableScalingButtonGroupBoxLayout = new QFormLayout( this );
+  QFormLayout* enableScalingButtonGroupBoxLayout = new QFormLayout();
   
   QLabel* enableScalingButtonLabel = new QLabel( tr( "This button enables/disables scale factor calculations, allowing you to toggle scaling while keeping a particular set of stats selected." ) );
   enableScalingButtonGroupBoxLayout -> addWidget( enableScalingButtonLabel );
@@ -452,7 +452,7 @@ void SC_OptionsTab::createScalingTab()
   scalingOptionsGroupBox -> setTitle( tr( "Scaling Options" ) );
   scalingLayout -> addWidget( scalingOptionsGroupBox );
 
-  QFormLayout* scalingOptionsGroupBoxLayout = new QFormLayout( this );
+  QFormLayout* scalingOptionsGroupBoxLayout = new QFormLayout();
   scalingOptionsGroupBoxLayout -> setFieldGrowthPolicy( QFormLayout::FieldsStayAtSizeHint );
 
   // Create Combo Boxes
@@ -471,7 +471,7 @@ void SC_OptionsTab::createScalingTab()
   scalingButtonsGroupBox -> setTitle( tr( "Stats to scale" ) );
   scalingLayout -> addWidget( scalingButtonsGroupBox );
 
-  QVBoxLayout* scalingButtonsLayout = new QVBoxLayout( this );
+  QVBoxLayout* scalingButtonsLayout = new QVBoxLayout();
 
   QLabel* scalingButtonToggleAllLabel = new QLabel( tr( "This button toggles scaling for all stats except Latency.\nNote that additional simulations will only be run for RELEVANT stats.\nIn other words, Agility and Intellect would be skipped for a Warrior even if they are checked." ) );
   scalingButtonsLayout -> addWidget( scalingButtonToggleAllLabel );
@@ -487,15 +487,15 @@ void SC_OptionsTab::createScalingTab()
 
   QButtonGroup* primaryStats = new QButtonGroup( this );
   primaryStats->setExclusive( false );
-  QVBoxLayout* primaryStatsLayout = new QVBoxLayout( this );
+  QVBoxLayout* primaryStatsLayout = new QVBoxLayout();
   QButtonGroup* secondaryStats = new QButtonGroup( this );
   secondaryStats->setExclusive( false );
-  QVBoxLayout* secondaryStatsLayout = new QVBoxLayout( this );
+  QVBoxLayout* secondaryStatsLayout = new QVBoxLayout();
   QButtonGroup* miscStats = new QButtonGroup( this );
   miscStats->setExclusive( false );
-  QVBoxLayout* miscStatsLayout = new QVBoxLayout( this );
+  QVBoxLayout* miscStatsLayout = new QVBoxLayout();
 
-  QHBoxLayout* statChoiceLayout = new QHBoxLayout( this );
+  QHBoxLayout* statChoiceLayout = new QHBoxLayout();
 
   scalingButtonsLayout -> addLayout( statChoiceLayout );
 
