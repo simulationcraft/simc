@@ -5331,6 +5331,15 @@ struct siphon_life_t : public warlock_spell_t
     return m;
   }
 
+  double composite_crit_chance() const override
+  {
+    double cc = warlock_spell_t::composite_crit_chance();
+
+    cc += p() -> artifact.winnowing.percent() * ( p() -> buffs.deadwind_harvester -> check() ? 2.0 : 1.0 );
+
+    return cc;
+  }
+
   virtual double composite_target_multiplier( player_t* target ) const override
   {
     double m = warlock_spell_t::composite_target_multiplier( target );
