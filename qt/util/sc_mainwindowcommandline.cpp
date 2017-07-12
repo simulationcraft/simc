@@ -39,18 +39,6 @@ int SC_MainWindowCommandLine::getImportingProgress()
   return getProgressBarProgressForState( PROGRESSBAR_IMPORTING );
 }
 
-void SC_MainWindowCommandLine::setBattleNetLoadProgress( int value,
-                                                         QString format,
-                                                         QString toolTip )
-{
-  updateProgress( PROGRESSBAR_BATTLE_NET, value, format, toolTip );
-}
-
-int SC_MainWindowCommandLine::getBattleNetProgress()
-{
-  return getProgressBarProgressForState( PROGRESSBAR_BATTLE_NET );
-}
-
 void SC_MainWindowCommandLine::setHelpViewProgress( int value, QString format,
                                                     QString toolTip )
 {
@@ -382,9 +370,6 @@ void SC_MainWindowCommandLine::initCommandLineBuffers()
     // log has its own buffer (for save file name)
     setText( state, CMDLINE_TAB_LOG, TEXTEDIT_CMDLINE,
              &commandLineBuffer_TAB_LOG );
-    // battlenet has its own buffer (for url)
-    setText( state, CMDLINE_TAB_BATTLE_NET, TEXTEDIT_CMDLINE,
-             &commandLineBuffer_TAB_BATTLE_NET );
     // help has its own buffer (for url)
     setText( state, CMDLINE_TAB_HELP, TEXTEDIT_CMDLINE,
              &commandLineBuffer_TAB_HELP );
