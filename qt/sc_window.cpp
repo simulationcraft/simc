@@ -1190,6 +1190,7 @@ void SC_MainWindow::simulateFinished( sim_t* sim )
     }
 
     // XML
+    /*
     SC_TextEdit* resultsXmlView = new SC_TextEdit( resultsEntry );
     resultsEntry -> addTab( resultsXmlView, "xml" );
 
@@ -1203,6 +1204,7 @@ void SC_MainWindow::simulateFinished( sim_t* sim )
     {
       resultsXmlView -> setPlainText( tr( "Error opening %1. %2" ).arg( sim -> xml_file_str.c_str(), xml_file.errorString() ) );
     }
+    */
 
     // Plot Data
     SC_TextEdit* resultsPlotView = new SC_TextEdit( resultsEntry );
