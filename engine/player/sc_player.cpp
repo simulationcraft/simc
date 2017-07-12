@@ -10582,8 +10582,12 @@ void player_t::analyze( sim_t& s )
   // When single_actor_batch=1 is used in conjunction with target_error, each actor has run varying
   // number of iterations to finish. The total number of iterations ran for each actor (when
   // single_actor_batch=1) is stored in the actor-collected data structure.
+  //
+  // Note, gain_t objects do not currently skip the first iteration for data collection. Thus, to
+  // have information consistent in the reports, we use actor total iterations + the number of
+  // threads as the divisor for resource-related data.
   int iterations = collected_data.total_iterations > 0
-                   ? collected_data.total_iterations
+                   ? collected_data.total_iterations + sim -> threads
                    : sim -> iterations;
 
   range::for_each( gain_list, [ iterations ]( gain_t* g ) { g -> analyze( iterations ); } );
@@ -11320,6 +11324,8 @@ void player_collected_data_t::merge( const player_collected_data_t& other )
   {
     return;
   }
+
+  total_iterations += other.total_iterations;
 
   fight_length.merge( other.fight_length );
   waiting_time.merge( other.waiting_time );
