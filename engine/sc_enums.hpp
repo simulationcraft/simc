@@ -745,6 +745,7 @@ enum set_bonus_type_e
   T18,
   T19,
   T20,
+  T21,
 
   SET_BONUS_MAX
 };
