@@ -783,7 +783,6 @@ void SC_MainWindow::startSim()
   }
   optionsTab -> encodeOptions();
   importTab -> automationTab -> encodeSettings();
-  QString tab_name = simulateTab -> tabText(simulateTab -> currentIndex());
 
   // Clear log text on success so users don't get confused if there is
   // an error from previous attempts
@@ -794,9 +793,11 @@ void SC_MainWindow::startSim()
   simProgress = 0;
   sim = initSim();
 
-  QString options = simulationQueue.dequeue();
+  auto value = simulationQueue.dequeue();
 
-  QByteArray utf8_profile = options.toUtf8();
+  QString tab_name = std::get<0>( value );
+  QByteArray utf8_profile = std::get<1>( value ).toUtf8();
+
   QFile file( AppDataDir + QDir::separator() + "simc_gui.simc" );
   if ( file.open( QIODevice::WriteOnly | QIODevice::Text ) )
   {

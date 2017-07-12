@@ -279,17 +279,20 @@ public:
 
     appendRow( item );
   }
-  QString dequeue()
+  std::tuple<QString, QString> dequeue()
   {
     QModelIndex indx = index( 0, 0 );
-    QString retval;
+    std::tuple<QString, QString> retval;
+
     if ( indx.isValid() )
     {
-      retval = indx.data( Qt::UserRole + 1 ).toString();
+      retval = std::make_tuple( indx.data( Qt::DisplayRole ).toString(),
+                                indx.data( Qt::UserRole + 1 ).toString() );
       removeRow( 0 );
     }
     return retval;
   }
+
   bool isEmpty() const
   {
     return rowCount() <= 0;
