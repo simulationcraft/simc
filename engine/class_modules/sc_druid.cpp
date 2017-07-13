@@ -1305,8 +1305,17 @@ struct incarnation_cat_buff_t : public berserk_buff_base_t
   incarnation_cat_buff_t( druid_t& p ) :
     berserk_buff_base_t( p, "incarnation_king_of_the_jungle", p.talent.incarnation_cat )
   {
-    default_value        = data().effectN( 2 ).percent(); // cost modifier
-    increased_max_energy = data().effectN( 3 ).resource( RESOURCE_ENERGY );
+     if (sim->dbc.ptr)
+     {
+        default_value        = data().effectN( 1 ).percent(); // cost modifier
+        increased_max_energy = data().effectN( 2 ).resource(RESOURCE_ENERGY);
+     }
+     else
+     {
+        default_value = data().effectN(2).percent(); // cost modifier
+        increased_max_energy = data().effectN(3).resource(RESOURCE_ENERGY);
+
+     }
   }
 };
 
