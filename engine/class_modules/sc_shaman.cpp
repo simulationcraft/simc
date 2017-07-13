@@ -302,6 +302,7 @@ public:
     buff_t* t18_4pc_enhancement;
     buff_t* t20_2pc_enhancement;
     buff_t* t20_4pc_enhancement;
+    buff_t* t21_2pc_elemental;
 
     // Legendary buffs
     buff_t* echoes_of_the_great_sundering;
@@ -4526,6 +4527,8 @@ struct lava_burst_t : public shaman_spell_t
     p() -> cooldown.storm_elemental -> adjust( p() -> artifact.elementalist.time_value() );
 
     p() -> buff.power_of_the_maelstrom -> trigger( p() -> buff.power_of_the_maelstrom -> max_stack() );
+
+    p() -> buff.t21_2pc_elemental -> trigger( 1 );
   }
 
   timespan_t execute_time() const override
@@ -5204,6 +5207,33 @@ struct elemental_mastery_t : public shaman_spell_t
 
 // Earth Shock Spell ========================================================
 
+// T21 4pc bonus
+struct earth_shock_overload_t : public elemental_overload_spell_t
+{
+  double base_coefficient;
+  double ms_count;
+
+  // FIXME spell id 252143 is the overload. currently using ES to have some values!
+  earth_shock_overload_t( shaman_t* p, double ms_spent, double t21_2 ) :
+    elemental_overload_spell_t( p, "earth_shock_overload",  p -> find_specialization_spell( "Earth Shock" ) ),
+    base_coefficient( data().effectN( 1 ).sp_coeff() / base_cost() ), ms_count( ms_spent )
+  { 
+    /*trigger_gcd = timespan_t::zero();*/
+    base_costs[ RESOURCE_MAELSTROM ] = 0.0;
+    secondary_costs[ RESOURCE_MAELSTROM ] = 0.0;
+    base_multiplier *= 1.0 + p -> artifact.earthen_attunement.percent();
+    base_multiplier *= 1.0 + t21_2;
+    /*base_execute_time = timespan_t::zero();
+    background = true;
+    callbacks = false;*/
+  }
+
+  double spell_direct_power_coefficient( const action_state_t* ) const override
+  { 
+    return base_coefficient * ms_count;
+  }
+};
+
 struct earth_shock_t : public shaman_spell_t
 {
   double base_coefficient;
@@ -5216,7 +5246,15 @@ struct earth_shock_t : public shaman_spell_t
     tdbp_proc_chance( 0 )
   {
     base_multiplier *= 1.0 + player -> artifact.earthen_attunement.percent();
+    base_multiplier *= 1.0 + p() -> buff.t21_2pc_elemental -> stack_value();
     secondary_costs[ RESOURCE_MAELSTROM ] += player -> artifact.swelling_maelstrom.data().effectN( 1 ).base_value();
+
+    if ( player -> sets -> has_set_bonus( SHAMAN_ELEMENTAL, T21, B4 ) &&
+         rng().roll( player -> sets -> set( SHAMAN_ELEMENTAL, T21, B4 ) -> effectN( 1 ).percent() )  )
+    {
+      overload = new earth_shock_overload_t( player, cost(), p() -> buff.t21_2pc_elemental -> stack_value() );
+      add_child( overload );
+    }
   }
 
   double spell_direct_power_coefficient( const action_state_t* ) const override
@@ -5242,6 +5280,8 @@ struct earth_shock_t : public shaman_spell_t
     {
       p() -> resource_gain( RESOURCE_MAELSTROM, last_resource_cost, p() -> gain.the_deceivers_blood_pact, this );
     }
+
+    p() -> buff.t21_2pc_elemental -> expire();
   }
 };
 
@@ -7209,6 +7249,9 @@ void shaman_t::create_buffs()
   buff.t20_4pc_enhancement = buff_creator_t( this, "crashing_lightning", sets -> set( SHAMAN_ENHANCEMENT, T20, B4 ) -> effectN( 1 ).trigger() )
     .trigger_spell( sets -> set( SHAMAN_ENHANCEMENT, T20, B4 ) )
     .default_value( sets -> set(SHAMAN_ENHANCEMENT, T20, B4 ) -> effectN( 1 ).trigger() -> effectN( 1 ).percent() );
+  buff.t21_2pc_elemental = buff_creator_t( this, "earthen_strength", sets -> set( SHAMAN_ELEMENTAL, T21, B2 ) -> effectN( 1 ).trigger() )
+    .trigger_spell( sets -> set( SHAMAN_ELEMENTAL, T21, B2 ) )
+    .default_value( sets -> set( SHAMAN_ELEMENTAL, T21, B2 ) -> effectN( 1 ).trigger() -> effectN( 1 ).percent() );
 }
 
 // shaman_t::init_gains =====================================================
