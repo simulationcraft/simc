@@ -2504,6 +2504,23 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
     {
       background = true;
     }
+
+    bool verify_actor_spec() const override
+    {
+      std::vector<specialization_e> spec_list;
+      auto _s = p() -> o() -> specialization();
+
+      if ( data().id() && p() -> o() -> dbc.ability_specialization( data().id(), spec_list ) &&
+           range::find( spec_list, _s ) == spec_list.end() )
+      {
+        sim -> errorf( "Player %s attempting to execute action %s without the required spec.\n",
+            player -> name(), name() );
+
+        return false;
+      }
+
+      return true;
+    }
   };
 
   struct drw_attack_t : public pet_melee_attack_t<dancing_rune_weapon_pet_t>
@@ -2513,6 +2530,23 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
     {
       background = true;
       normalize_weapon_speed = false; // DRW weapon-based abilities use non-normalized speed
+    }
+
+    bool verify_actor_spec() const override
+    {
+      std::vector<specialization_e> spec_list;
+      auto _s = p() -> o() -> specialization();
+
+      if ( data().id() && p() -> o() -> dbc.ability_specialization( data().id(), spec_list ) &&
+           range::find( spec_list, _s ) == spec_list.end() )
+      {
+        sim -> errorf( "Player %s attempting to execute action %s without the required spec.\n",
+            player -> name(), name() );
+
+        return false;
+      }
+
+      return true;
     }
   };
 
