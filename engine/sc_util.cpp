@@ -2459,7 +2459,39 @@ std::string util::create_wowhead_artifact_url( const player_t& p )
 
 std::string util::create_blizzard_talent_url( const player_t& p )
 {
-  std::string url = "https://worldofwarcraft.com/en-us/game/talent-calculator#";
+  std::string region = p.region_str;
+
+  if ( region.empty() )
+  {
+    region = p.sim  -> default_region_str;
+  }
+
+  if ( region.empty() )
+  {
+    region = "us";
+  }
+
+  std::string url = "https://worldofwarcraft.com/";
+
+  if ( util::str_compare_ci( region, "us" ) )
+  {
+    url += "en-us";
+  }
+  else if ( util::str_compare_ci( region, "eu" ) )
+  {
+    url += "en-gb";
+  }
+  else if ( util::str_compare_ci( region, "kr" ) )
+  {
+    url += "ko-kr";
+  }
+  else if ( util::str_compare_ci( region, "cn" ) )
+  {
+    url = "https://www.wowchina.com/zh-cn";
+  }
+
+  url += "/game/talent-calculator#";
+
   switch ( p.type )
   {
     case DEATH_KNIGHT:

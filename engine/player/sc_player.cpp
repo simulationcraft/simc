@@ -275,6 +275,13 @@ bool parse_talent_url( sim_t* sim,
         sim -> talent_format = TALENT_FORMAT_ARMORY;
       return p -> parse_talents_armory( url.substr( cut_pt ) );
     }
+    else if ( url.find( "worldofwarcraft.com" ) != url.npos ||
+              url.find( "www.wowchina.com" ) != url.npos )
+    {
+      if ( sim -> talent_format == TALENT_FORMAT_UNCHANGED )
+        sim -> talent_format = TALENT_FORMAT_ARMORY;
+      return p -> parse_talents_armory2( url );
+    }
     else if ( url.find( ".wowhead.com" ) != url.npos )
     {
       if ( sim -> talent_format == TALENT_FORMAT_UNCHANGED )
@@ -8007,6 +8014,83 @@ bool player_t::parse_talents_armory( const std::string& talent_string )
   return true;
 }
 
+namespace {
+std::string armory2_class_name( const std::string& tokenized_class, const std::string& tokenized_spec )
+{
+  auto class_str = tokenized_class;
+  auto spec_str = tokenized_spec;
+
+  util::replace_all( class_str, "-", " " );
+  util::replace_all( spec_str, "-", " " );
+  return util::inverse_tokenize( spec_str ) + " " + util::inverse_tokenize( class_str );
+}
+}
+
+bool player_t::parse_talents_armory2( const std::string& talents_url )
+{
+  auto split = util::string_split( talents_url, "#/=" );
+  if ( split.size() < 5 )
+  {
+    sim -> errorf( "Player %s has malformed talent url '%s'", name(), talents_url.c_str() );
+    return false;
+  }
+
+  // Sanity check that second to last split is "talents"
+  if ( ! util::str_compare_ci( split[ split.size() - 2 ], "talents" ) )
+  {
+    sim -> errorf( "Player %s has malformed talent url '%s'", name(), talents_url.c_str() );
+    return false;
+  }
+
+  const size_t OFFSET_CLASS   = split.size() - 4;
+  const size_t OFFSET_SPEC    = split.size() - 3;
+  const size_t OFFSET_TALENTS = split.size() - 1;
+
+  auto spec_name_str = armory2_class_name( split[ OFFSET_CLASS ], split[ OFFSET_SPEC ] );
+
+  auto player_type = util::parse_player_type( split[ OFFSET_CLASS ] );
+  auto spec_type   = util::parse_specialization_type( spec_name_str );
+
+  if ( player_type == PLAYER_NONE || type != player_type )
+  {
+    sim -> errorf( "Player %s has malformed talent url '%s': expected class '%s', got '%s'",
+        name(), talents_url.c_str(), util::player_type_string( type ),
+        split[ OFFSET_CLASS ].c_str() );
+    return false;
+  }
+
+  if ( spec_type == SPEC_NONE || specialization() != spec_type )
+  {
+    sim -> errorf( "Player %s has malformed talent url '%s': expected specialization '%s', got '%s'",
+        name(), talents_url.c_str(), dbc::specialization_string( specialization() ).c_str(),
+        split[ OFFSET_SPEC ].c_str() );
+    return false;
+  }
+
+  talent_points.clear();
+
+  auto idx_max = std::min( as<int>( split[ OFFSET_TALENTS ].size() ), MAX_TALENT_ROWS );
+
+  for ( auto talent_idx = 0; talent_idx < idx_max; ++talent_idx )
+  {
+    auto c = split[ OFFSET_TALENTS ][ talent_idx ];
+    if ( c < '0' || c > ( '0' + MAX_TALENT_COLS ) )
+    {
+      sim -> errorf( "Player %s has illegal character '%c' in talent encoding.\n", name(), c );
+      return false;
+    }
+
+    if ( c > '0' )
+    {
+      talent_points.select_row_col( talent_idx, c - '1' );
+    }
+  }
+
+  create_talents_armory();
+
+  return true;
+}
+
 // player_t::create_talents_wowhead =========================================
 
 void player_t::create_talents_wowhead()
@@ -8128,90 +8212,7 @@ void player_t::create_talents_armory()
 {
   if ( is_enemy() ) return;
 
-  talents_str.clear();
-  std::string result = "http://";
-
-  std::string region = region_str;
-  if ( region.empty() && ! origin_str.empty() )
-  {
-    std::string server, name;
-    if ( util::parse_origin( region, server, name, origin_str ) )
-    {
-      region_str = region;
-      server_str = server;
-    }
-  }
-  if ( region.empty() )
-    region = sim  -> default_region_str;
-  if ( region.empty() )
-    region = "us";
-  result += region;
-
-  result += ".battle.net/wow/en/tool/talent-calculator#";
-
-  {
-    char c;
-    switch ( type )
-    {
-      case DEATH_KNIGHT : c = 'd'; break;
-      case DEMON_HUNTER : c = 'g'; break;
-      case DRUID        : c = 'U'; break;
-      case HUNTER       : c = 'Y'; break;
-      case MAGE         : c = 'e'; break;
-      case MONK         : c = 'f'; break;
-      case PALADIN      : c = 'b'; break;
-      case PRIEST       : c = 'X'; break;
-      case ROGUE        : c = 'c'; break;
-      case SHAMAN       : c = 'W'; break;
-      case WARLOCK      : c = 'V'; break;
-      case WARRIOR      : c = 'Z'; break;
-      default:
-        return;
-    }
-    result += c;
-  }
-
-  if ( _spec != SPEC_NONE )
-  {
-    uint32_t cid, sid;
-
-    if ( ! dbc.spec_idx( _spec, cid, sid ) )
-    {
-      assert( false );
-      return;
-    }
-
-    switch ( sid )
-    {
-      case 0: result += 'a'; break;
-      case 1: result += 'Z'; break;
-      case 2: result += 'b'; break;
-      case 3: result += 'Y'; break;
-      default:
-        assert( false );
-        return;
-    }
-  }
-
-  result += '!';
-
-  for ( int j = 0; j < MAX_TALENT_ROWS; j++ )
-  {
-    bool found = false;
-    for ( int i = 0; i < MAX_TALENT_COLS; i++ )
-    {
-      if ( talent_points.has_row_col( j, i ) )
-      {
-        result += util::to_string( i );
-        found = true;
-        break;
-      }
-    }
-    if ( ! found )
-      result += '.';
-  }
-
-  talents_str = result;
+  talents_str = util::create_blizzard_talent_url( *this );
 }
 
 void player_t::create_talents_numbers()

@@ -4506,7 +4506,10 @@ struct player_t : public actor_t
   bool is_moving() const { return buffs.movement && buffs.movement -> check(); }
 
   bool parse_talents_numbers( const std::string& talent_string );
+  // Old-style armory format for xx.battle.net / xx.battlenet.com
   bool parse_talents_armory( const std::string& talent_string );
+  // New armory format used in worldofwarcraft.com / www.wowchina.com
+  bool parse_talents_armory2( const std::string& talent_string );
   bool parse_talents_wowhead( const std::string& talent_string );
 
   bool parse_artifact_wowdb( const std::string& artifact_string );
