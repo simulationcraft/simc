@@ -4528,7 +4528,7 @@ struct lava_burst_t : public shaman_spell_t
 
     p() -> buff.power_of_the_maelstrom -> trigger( p() -> buff.power_of_the_maelstrom -> max_stack() );
 
-    p() -> buff.t21_2pc_elemental -> trigger( 1 );
+    p() -> buff.t21_2pc_elemental -> trigger();
   }
 
   timespan_t execute_time() const override
@@ -5211,54 +5211,76 @@ struct elemental_mastery_t : public shaman_spell_t
 struct earth_shock_overload_t : public elemental_overload_spell_t
 {
   double base_coefficient;
-  double ms_count;
+  double ms_spent;
 
   // FIXME spell id 252143 is the overload. currently using ES to have some values!
-  earth_shock_overload_t( shaman_t* p, double ms_spent, double t21_2 ) :
+  earth_shock_overload_t( shaman_t* p ) :
     elemental_overload_spell_t( p, "earth_shock_overload",  p -> find_specialization_spell( "Earth Shock" ) ),
-    base_coefficient( data().effectN( 1 ).sp_coeff() / base_cost() ), ms_count( ms_spent )
-  { 
+    base_coefficient( data().effectN( 1 ).sp_coeff() / base_cost() )
+  {
     /*trigger_gcd = timespan_t::zero();*/
     base_costs[ RESOURCE_MAELSTROM ] = 0.0;
     secondary_costs[ RESOURCE_MAELSTROM ] = 0.0;
     base_multiplier *= 1.0 + p -> artifact.earthen_attunement.percent();
-    base_multiplier *= 1.0 + t21_2;
-    /*base_execute_time = timespan_t::zero();
-    background = true;
-    callbacks = false;*/
+    secondary_costs[ RESOURCE_MAELSTROM ] += p -> artifact.swelling_maelstrom.data().effectN( 1 ).base_value();
+  }
+
+  void trigger( player_t* target, double resource_spent )
+  {
+    ms_spent = resource_spent;
+    set_target( target );
+    execute();
+  }
+
+  double action_multiplier() const override
+  {
+    auto m = elemental_overload_spell_t::action_multiplier();
+
+    m *= 1.0 + p() -> buff.t21_2pc_elemental -> stack_value();
+
+    return m;
   }
 
   double spell_direct_power_coefficient( const action_state_t* ) const override
-  { 
-    return base_coefficient * ms_count;
-  }
+  { return base_coefficient * ms_spent; }
 };
 
 struct earth_shock_t : public shaman_spell_t
 {
+  // Hides base class overload
+  earth_shock_overload_t* overload;
+
   double base_coefficient;
   double eotgs_base_chance; // 7.0 legendary Echoes of the Great Sundering proc chance
   double tdbp_proc_chance; // 7.0 legendary The Deceiver's Blood Pact proc chance
 
   earth_shock_t( shaman_t* player, const std::string& options_str ) :
     shaman_spell_t( "earth_shock", player, player -> find_specialization_spell( "Earth Shock" ), options_str ),
+    overload( nullptr ),
     base_coefficient( data().effectN( 1 ).sp_coeff() / base_cost() ), eotgs_base_chance( 0 ),
     tdbp_proc_chance( 0 )
   {
     base_multiplier *= 1.0 + player -> artifact.earthen_attunement.percent();
-    base_multiplier *= 1.0 + p() -> buff.t21_2pc_elemental -> stack_value();
     secondary_costs[ RESOURCE_MAELSTROM ] += player -> artifact.swelling_maelstrom.data().effectN( 1 ).base_value();
 
-    if ( player -> sets -> has_set_bonus( SHAMAN_ELEMENTAL, T21, B4 ) &&
-         rng().roll( player -> sets -> set( SHAMAN_ELEMENTAL, T21, B4 ) -> effectN( 1 ).percent() )  )
+    if ( player -> sets -> has_set_bonus( SHAMAN_ELEMENTAL, T21, B4 ) )
     {
-      overload = new earth_shock_overload_t( player, cost(), p() -> buff.t21_2pc_elemental -> stack_value() );
+      overload = new earth_shock_overload_t( player );
       add_child( overload );
     }
   }
 
   double spell_direct_power_coefficient( const action_state_t* ) const override
   { return base_coefficient * cost(); }
+
+  double action_multiplier() const override
+  {
+    auto m = shaman_spell_t::action_multiplier();
+
+    m *= 1.0 + p() -> buff.t21_2pc_elemental -> stack_value();
+
+    return m;
+  }
 
   void execute() override
   {
@@ -5279,6 +5301,11 @@ struct earth_shock_t : public shaman_spell_t
     if ( rng().roll( tdbp_proc_chance ) )
     {
       p() -> resource_gain( RESOURCE_MAELSTROM, last_resource_cost, p() -> gain.the_deceivers_blood_pact, this );
+    }
+
+    if ( rng().roll( player -> sets -> set( SHAMAN_ELEMENTAL, T21, B4 ) -> effectN( 1 ).percent() ) )
+    {
+      overload -> trigger( execute_state -> target, last_resource_cost );
     }
 
     p() -> buff.t21_2pc_elemental -> expire();
