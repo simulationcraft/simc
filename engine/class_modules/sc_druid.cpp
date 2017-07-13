@@ -7122,7 +7122,7 @@ void druid_t::create_buffs()
                                .chance( specialization() == DRUID_RESTORATION ? find_spell( 113043 ) -> proc_chance()
                                         : find_spell( 16864 ) -> proc_chance() )
                                .cd( timespan_t::zero() )
-                               .max_stack( 1 + sim->dbc.ptr ? 0 :talent.moment_of_clarity->effectN(1).base_value())
+                               .max_stack( 1 + (sim -> dbc.ptr ? 0 : talent.moment_of_clarity->effectN(1).base_value() ))
                                .default_value( specialization() != DRUID_RESTORATION
                                                ? talent.moment_of_clarity -> effectN( 4 ).percent()
                                                : 0.0 );
