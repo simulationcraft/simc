@@ -5210,26 +5210,26 @@ struct elemental_mastery_t : public shaman_spell_t
 // T21 4pc bonus
 struct earth_shock_overload_t : public elemental_overload_spell_t
 {
+  action_t* parent;
   double base_coefficient;
-  double ms_spent;
 
-  // FIXME spell id 252143 is the overload. currently using ES to have some values!
-  earth_shock_overload_t( shaman_t* p ) :
-    elemental_overload_spell_t( p, "earth_shock_overload",  p -> find_specialization_spell( "Earth Shock" ) ),
-    base_coefficient( data().effectN( 1 ).sp_coeff() / base_cost() )
+  earth_shock_overload_t( shaman_t* p, action_t* pa, double bc ) :
+    elemental_overload_spell_t( p, "earth_shock_overload", p -> find_spell( 252143 ) ),
+    parent( pa ), base_coefficient( bc )
   {
-    /*trigger_gcd = timespan_t::zero();*/
-    base_costs[ RESOURCE_MAELSTROM ] = 0.0;
-    secondary_costs[ RESOURCE_MAELSTROM ] = 0.0;
+    // TODO: Currently not flagged to benefit, but safe assumption
     base_multiplier *= 1.0 + p -> artifact.earthen_attunement.percent();
-    secondary_costs[ RESOURCE_MAELSTROM ] += p -> artifact.swelling_maelstrom.data().effectN( 1 ).base_value();
+
+    // TODO: Currently not flagged to benefit, but safe assumption
+    crit_bonus_multiplier *= 1.0 + p -> spec.elemental_fury -> effectN( 1 ).percent()
+                                 + p -> artifact.elemental_destabilization.percent();
   }
 
-  void trigger( player_t* target, double resource_spent )
+  void init() override
   {
-    ms_spent = resource_spent;
-    set_target( target );
-    execute();
+    elemental_overload_spell_t::init();
+
+    snapshot_flags |= STATE_SP | STATE_MUL_DA | STATE_VERSATILITY | STATE_MUL_PERSISTENT | STATE_TARGET;
   }
 
   double action_multiplier() const override
@@ -5241,22 +5241,19 @@ struct earth_shock_overload_t : public elemental_overload_spell_t
     return m;
   }
 
+  // TODO: Benefits from the increased SP coefficient based on Swelling Maelstrom?
   double spell_direct_power_coefficient( const action_state_t* ) const override
-  { return base_coefficient * ms_spent; }
+  { return parent -> last_resource_cost * base_coefficient; }
 };
 
 struct earth_shock_t : public shaman_spell_t
 {
-  // Hides base class overload
-  earth_shock_overload_t* overload;
-
   double base_coefficient;
   double eotgs_base_chance; // 7.0 legendary Echoes of the Great Sundering proc chance
   double tdbp_proc_chance; // 7.0 legendary The Deceiver's Blood Pact proc chance
 
   earth_shock_t( shaman_t* player, const std::string& options_str ) :
     shaman_spell_t( "earth_shock", player, player -> find_specialization_spell( "Earth Shock" ), options_str ),
-    overload( nullptr ),
     base_coefficient( data().effectN( 1 ).sp_coeff() / base_cost() ), eotgs_base_chance( 0 ),
     tdbp_proc_chance( 0 )
   {
@@ -5265,9 +5262,19 @@ struct earth_shock_t : public shaman_spell_t
 
     if ( player -> sets -> has_set_bonus( SHAMAN_ELEMENTAL, T21, B4 ) )
     {
-      overload = new earth_shock_overload_t( player );
+      overload = new earth_shock_overload_t( player, this, base_coefficient );
       add_child( overload );
     }
+  }
+
+  double overload_chance( const action_state_t* ) const override
+  {
+    if ( player -> sets -> has_set_bonus( SHAMAN_ELEMENTAL, T21, B4 ) )
+    {
+      return player -> sets -> set( SHAMAN_ELEMENTAL, T21, B4 ) -> effectN( 1 ).percent();
+    }
+
+    return 0;
   }
 
   double spell_direct_power_coefficient( const action_state_t* ) const override
@@ -5301,11 +5308,6 @@ struct earth_shock_t : public shaman_spell_t
     if ( rng().roll( tdbp_proc_chance ) )
     {
       p() -> resource_gain( RESOURCE_MAELSTROM, last_resource_cost, p() -> gain.the_deceivers_blood_pact, this );
-    }
-
-    if ( rng().roll( player -> sets -> set( SHAMAN_ELEMENTAL, T21, B4 ) -> effectN( 1 ).percent() ) )
-    {
-      overload -> trigger( execute_state -> target, last_resource_cost );
     }
 
     p() -> buff.t21_2pc_elemental -> expire();

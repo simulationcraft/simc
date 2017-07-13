@@ -1410,6 +1410,7 @@ class SpellDataGenerator(DataGenerator):
           ( 198506, 0 ),                                # Wolves of Doom, summon spell
           ( 197568, 0 ),                                # Lightning Rod damage spell
           ( 207998, 0 ), ( 207999, 0 ),                 # 7.0 legendary ring Eye of the Twisting Nether
+          ( 252143, 0 ),                                # Earth Shock Overload (Elemental T21 2PC)
         ),
 
         # Mage:
