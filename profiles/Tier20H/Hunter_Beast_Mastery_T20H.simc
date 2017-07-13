@@ -39,17 +39,22 @@ actions+=/volley,toggle=on
 actions+=/potion,if=buff.bestial_wrath.up&buff.aspect_of_the_wild.up
 actions+=/a_murder_of_crows,if=cooldown.bestial_wrath.remains<3|cooldown.bestial_wrath.remains>30|target.time_to_die<16
 actions+=/stampede,if=buff.bloodlust.up|buff.bestial_wrath.up|cooldown.bestial_wrath.remains<=2|target.time_to_die<=14
-actions+=/dire_beast,if=cooldown.bestial_wrath.remains>3
-actions+=/dire_frenzy,if=(pet.cat.buff.dire_frenzy.remains<=gcd.max*1.2)|(charges_fractional>=1.8)|target.time_to_die<9
-actions+=/aspect_of_the_wild,if=buff.bestial_wrath.remains>7|target.time_to_die<12
+actions+=/bestial_wrath,if=!buff.bestial_wrath.up
+# With both AotW cdr sources and OwtP, there's no visible benefit if it's delayed, use it on cd. With only one or neither, pair it with Bestial Wrath. Also use it if the fight will end when the buff does.
+actions+=/aspect_of_the_wild,if=equipped.137101&equipped.140806&talent.one_with_the_pack.enabled
+actions+=/aspect_of_the_wild,if=buff.bestial_wrath.remains>7
+actions+=/aspect_of_the_wild,if=target.time_to_die<12
+# Hold charges of Dire Beast as long as possible to take advantage of T20 2pc unless T19 2pc is on.
+actions+=/dire_beast,if=set_bonus.tier19_2pc|!buff.bestial_wrath.up|full_recharge_time<gcd.max|cooldown.titans_thunder.up|spell_targets>1
+actions+=/dire_frenzy,if=(pet.cat.buff.dire_frenzy.remains<=gcd.max*1.2)|full_recharge_time<gcd.max|target.time_to_die<9
 actions+=/barrage,if=spell_targets.barrage>1
-actions+=/bestial_wrath
-actions+=/titans_thunder,if=(talent.dire_frenzy.enabled&(buff.bestial_wrath.up|cooldown.bestial_wrath.remains>35))|cooldown.dire_beast.remains>=3|(buff.bestial_wrath.up&pet.dire_beast.active)
+actions+=/titans_thunder,if=(talent.dire_frenzy.enabled&(buff.bestial_wrath.up|cooldown.bestial_wrath.remains>35))|buff.bestial_wrath.up
 actions+=/multishot,if=spell_targets>4&(pet.cat.buff.beast_cleave.remains<gcd.max|pet.cat.buff.beast_cleave.down)
 actions+=/kill_command
-actions+=/multishot,if=spell_targets>1&(pet.cat.buff.beast_cleave.remains<gcd.max*2|pet.cat.buff.beast_cleave.down)
+actions+=/multishot,if=spell_targets>1&(pet.cat.buff.beast_cleave.remains<gcd.max|pet.cat.buff.beast_cleave.down)
 actions+=/chimaera_shot,if=focus<90
-actions+=/cobra_shot,if=(cooldown.kill_command.remains>focus.time_to_max&cooldown.bestial_wrath.remains>focus.time_to_max)|(buff.bestial_wrath.up&focus.regen*cooldown.kill_command.remains>action.kill_command.cost)|target.time_to_die<cooldown.kill_command.remains|(equipped.parsels_tongue&buff.parsels_tongue.remains<=gcd.max*2)
+actions+=/cobra_shot,if=(cooldown.kill_command.remains>focus.time_to_max&cooldown.bestial_wrath.remains>focus.time_to_max)|(buff.bestial_wrath.up&(spell_targets.multishot=1|focus.regen*cooldown.kill_command.remains>action.kill_command.cost))|target.time_to_die<cooldown.kill_command.remains|(equipped.parsels_tongue&buff.parsels_tongue.remains<=gcd.max*2)
+actions+=/dire_beast,if=buff.bestial_wrath.up
 
 head=wildstalker_helmet,id=147142,bonus_id=1497/3562
 neck=locket_of_splintered_souls,id=147014,bonus_id=1497/3562,enchant=mark_of_the_hidden_satyr
