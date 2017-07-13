@@ -1054,9 +1054,22 @@ public:
       ab::energize_type = ENERGIZE_NONE; // disable resource generation from spell data.
     }
 
-    if ( ab::data().affected_by( player -> spec.elemental_shaman -> effectN( 5 ) ) )
+    if ( ab::data().affected_by( player -> spec.elemental_shaman -> effectN( 5 ) ) && ! player -> dbc.ptr )
     {
-      ab::base_multiplier *= 1.0 + player -> spec.elemental_shaman -> effectN( 5 ).percent();
+      ab::base_dd_multiplier *= 1.0 + player -> spec.elemental_shaman -> effectN( 5 ).percent();
+    }
+    if ( ab::data().affected_by( player -> spec.elemental_shaman -> effectN( 6 ) ) && ! player -> dbc.ptr )
+    {
+      ab::base_td_multiplier *= 1.0 + player -> spec.elemental_shaman -> effectN( 6 ).percent();
+    }
+    // changed hotfix order on ptr... FIXME double check when 7.3 draws near
+    if ( ab::data().affected_by( player -> spec.elemental_shaman -> effectN( 1 ) ) && player -> dbc.ptr )
+    {
+      ab::base_dd_multiplier *= 1.0 + player -> spec.elemental_shaman -> effectN( 1 ).percent();
+    }
+    if ( ab::data().affected_by( player -> spec.elemental_shaman -> effectN( 2 ) ) && player -> dbc.ptr )
+    {
+      ab::base_td_multiplier *= 1.0 + player -> spec.elemental_shaman -> effectN( 2 ).percent();
     }
 
     if ( ab::data().affected_by( player -> spec.enhancement_shaman -> effectN( 1 ) ) )
@@ -5238,6 +5251,12 @@ struct earth_shock_overload_t : public elemental_overload_spell_t
 
     m *= 1.0 + p() -> buff.t21_2pc_elemental -> stack_value();
 
+    // TODO: Currently not in hotfix data but save to assume it'll be added
+    if ( player -> dbc.ptr )
+    {
+      m *= 1.0 + p() -> spec.elemental_shaman -> effectN( 1 ).percent();
+    }
+
     return m;
   }
 
@@ -8104,9 +8123,14 @@ double shaman_t::composite_player_pet_damage_multiplier( const action_state_t* s
   m *= 1.0 + artifact.stormkeepers_power.percent();
   m *= 1.0 + artifact.power_of_the_earthen_ring.percent();
   m *= 1.0 + artifact.earthshattering_blows.percent();
-  if ( spec.elemental_shaman -> ok() )
+  if ( spec.elemental_shaman -> ok() && ! player_t::dbc.ptr )
   {
     m *= 1.0 + spec.elemental_shaman -> effectN( 7 ).percent();
+  }
+  // effect order of hotfix changed on ptr, double check in the futur
+  if ( spec.elemental_shaman -> ok() && player_t::dbc.ptr )
+  {
+    m *= 1.0 + spec.elemental_shaman -> effectN( 3 ).percent();
   }
 
   auto school = s -> action -> get_school();
