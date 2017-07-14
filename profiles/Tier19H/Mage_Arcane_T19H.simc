@@ -83,7 +83,6 @@ actions.burn+=/arcane_barrage,if=active_enemies>1&equipped.mantle_of_the_first_k
 actions.burn+=/arcane_missiles,if=variable.arcane_missiles_procs=buff.arcane_missiles.max_stack&active_enemies<3
 # Get PoM back on cooldown as soon as possible.
 actions.burn+=/arcane_blast,if=buff.presence_of_mind.up
-actions.burn+=/supernova
 actions.burn+=/arcane_explosion,if=active_enemies>1
 actions.burn+=/arcane_missiles,if=variable.arcane_missiles_procs
 actions.burn+=/arcane_blast
