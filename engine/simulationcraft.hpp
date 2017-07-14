@@ -4616,7 +4616,7 @@ struct player_t : public actor_t
   uptime_t*   get_uptime  ( const std::string& name );
   luxurious_sample_data_t* get_sample_data( const std::string& name );
   double      get_player_distance( const player_t& ) const;
-  double      get_ground_aoe_distance( action_state_t& ) const;
+  double      get_ground_aoe_distance( const action_state_t& ) const;
   double      get_position_distance( double m = 0, double v = 0 ) const;
   double avg_item_level() const;
   action_priority_list_t* get_action_priority_list( const std::string& name, const std::string& comment = std::string() );
