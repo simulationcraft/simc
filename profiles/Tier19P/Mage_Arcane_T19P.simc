@@ -78,7 +78,7 @@ actions.burn+=/use_items,if=buff.arcane_power.up|target.time_to_die<cooldown.arc
 actions.burn+=/presence_of_mind,if=((mana.pct>30|buff.arcane_power.up)&set_bonus.tier20_2pc)|buff.rune_of_power.remains<=buff.presence_of_mind.max_stack*action.arcane_blast.execute_time|buff.arcane_power.remains<=buff.presence_of_mind.max_stack*action.arcane_blast.execute_time
 actions.burn+=/arcane_orb
 # Arcane Barrage has a good chance of launching an Arcane Orb at max Arcane Charge stacks.
-actions.burn+=/arcane_barrage,if=active_enemies>1&equipped.mantle_of_the_first_kirin_tor&buff.arcane_charge.stack=buff.arcane_charge.max_stack
+actions.burn+=/arcane_barrage,if=active_enemies>4&equipped.mantle_of_the_first_kirin_tor&buff.arcane_charge.stack=buff.arcane_charge.max_stack
 # Arcane Missiles are good, but not when there's multiple targets up.
 actions.burn+=/arcane_missiles,if=variable.arcane_missiles_procs=buff.arcane_missiles.max_stack&active_enemies<3
 # Get PoM back on cooldown as soon as possible.
