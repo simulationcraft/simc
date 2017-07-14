@@ -454,7 +454,7 @@ public:
     cooldowns.aspect_of_the_wild  = get_cooldown( "aspect_of_the_wild" );
     cooldowns.a_murder_of_crows   = get_cooldown( "a_murder_of_crows" );
 
-    summon_pet_str = "";
+    summon_pet_str = "cat";
 
     base_gcd = timespan_t::from_seconds( 1.5 );
 
@@ -6222,9 +6222,6 @@ void hunter_t::init_action_list()
       apl_default(); // DEFAULT
       break;
     }
-
-    if ( summon_pet_str.empty() )
-      summon_pet_str = "cat";
 
     // Default
     use_default_action_list = true;
