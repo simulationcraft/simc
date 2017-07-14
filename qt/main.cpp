@@ -59,14 +59,15 @@ int main( int argc, char *argv[] )
   unique_gear::sort_special_effects();
 
   hotfix::apply();
-  QApplication a( argc, argv );
 
-  QApplication::setStyle( QStyleFactory::create( "Fusion" ) );
 #if (QT_VERSION >= QT_VERSION_CHECK(5, 6, 0))
   QCoreApplication::setAttribute( Qt::AA_EnableHighDpiScaling );
   qputenv( "QT_AUTO_SCREEN_SCALE_FACTOR", "1" );
 #endif
 
+  QApplication a( argc, argv );
+
+  QApplication::setStyle( QStyleFactory::create( "Fusion" ) );
   QCoreApplication::setApplicationName( "SimulationCraft" );
   QCoreApplication::setApplicationVersion( SC_VERSION );
   QCoreApplication::setOrganizationDomain( "org.simulationcraft" );

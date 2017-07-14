@@ -40,9 +40,7 @@ public:
     CMDLINE_TAB_PAPERDOLL,
 #endif
     CMDLINE_TAB_IMPORT_NEW,
-    CMDLINE_TAB_BATTLE_NET,
     CMDLINE_TAB_BIS,
-    CMDLINE_TAB_HISTORY,
     CMDLINE_TAB_RECENT,
     CMDLINE_TAB_AUTOMATION,
     CMDLINE_TAB_ADDON,
@@ -87,7 +85,6 @@ protected:
     PROGRESSBAR_IDLE,
     PROGRESSBAR_SIMULATING,
     PROGRESSBAR_IMPORTING,
-    PROGRESSBAR_BATTLE_NET,
     PROGRESSBAR_HELP,
     PROGRESSBAR_STATE_COUNT
   };
@@ -111,7 +108,6 @@ protected:
 
   // CommandLine buffers
   QString commandLineBuffer_DEFAULT; // different buffers for different tabs
-  QString commandLineBuffer_TAB_BATTLE_NET;
   QString commandLineBuffer_TAB_RESULTS;
   QString commandLineBuffer_TAB_HELP;
   QString commandLineBuffer_TAB_LOG;
@@ -129,8 +125,6 @@ public:
   int getSimulatingProgress();
   void setImportingProgress( int value, QString format, QString toolTip );
   int getImportingProgress();
-  void setBattleNetLoadProgress( int value, QString format, QString toolTip );
-  int getBattleNetProgress();
   void setHelpViewProgress( int value, QString format, QString toolTip );
   int getHelpViewProgress();
   QString commandLineText();

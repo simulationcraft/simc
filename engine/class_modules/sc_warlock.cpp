@@ -3001,7 +3001,6 @@ struct unstable_affliction_t: public warlock_spell_t
     spell_power_mod.direct = ptr_spell -> effectN( 1 ).sp_coeff();
     dot_duration = timespan_t::zero(); // DoT managed by ignite action.
     affected_by_contagion = false;
-    base_costs[RESOURCE_SOUL_SHARD] *= 0.1;
   }
 
   double cost() const override
@@ -3561,7 +3560,6 @@ struct hand_of_guldan_t: public warlock_spell_t
     doom -> dual = true;
     doom -> base_costs[RESOURCE_MANA] = 0;
     base_multiplier *= 1.0 + p -> artifact.dirty_hands.percent();
-    base_costs[RESOURCE_SOUL_SHARD] *= 0.1;
   }
 
   virtual timespan_t travel_time() const override
@@ -3985,7 +3983,6 @@ struct chaos_bolt_t: public warlock_spell_t
     base_multiplier *= 1.0 + ( p -> sets->set( WARLOCK_DESTRUCTION, T18, B2 ) -> effectN( 2 ).percent() );
     base_multiplier *= 1.0 + ( p -> sets->set( WARLOCK_DESTRUCTION, T17, B4 ) -> effectN( 1 ).percent() );
     base_multiplier *= 1.0 + ( p -> talents.reverse_entropy -> effectN( 2 ).percent() );
-    base_costs[RESOURCE_SOUL_SHARD] *= 0.1;
 
     backdraft_cast_time = 1.0 + p -> buffs.backdraft -> data().effectN( 1 ).percent();
     backdraft_gcd = 1.0 + p -> buffs.backdraft -> data().effectN( 2 ).percent();
@@ -4321,7 +4318,6 @@ struct seed_of_corruption_t: public warlock_spell_t
     threshold_mod = 3.0;
     base_tick_time = dot_duration;
     hasted_ticks = false;
-    base_costs[RESOURCE_SOUL_SHARD] *= 0.1;
 
     sow_the_seeds_targets = p -> talents.sow_the_seeds -> effectN( 1 ).base_value();
 
@@ -4393,7 +4389,6 @@ struct rain_of_fire_t : public warlock_spell_t
     may_miss = may_crit = false;
     base_tick_time = data().duration() / 8.0; // ticks 8 times (missing from spell data)
     base_execute_time = timespan_t::zero(); // HOTFIX
-    base_costs[RESOURCE_SOUL_SHARD] *= 0.1;
 
     if ( !p -> active.rain_of_fire )
     {
@@ -4630,7 +4625,6 @@ struct summon_doomguard_t: public warlock_spell_t
     warlock_spell_t( "summon_doomguard", p, p -> find_spell( 18540 ) )
   {
     harmful = may_crit = false;
-    base_costs[RESOURCE_SOUL_SHARD] *= 0.1;
 
     cooldown = p -> cooldowns.doomguard;
     if ( !p -> talents.grimoire_of_supremacy -> ok() )
@@ -4705,7 +4699,6 @@ struct summon_infernal_t : public warlock_spell_t
     infernal_awakening( nullptr )
   {
     harmful = may_crit = false;
-    base_costs[RESOURCE_SOUL_SHARD] *= 0.1;
 
     cooldown = p -> cooldowns.infernal;
     if ( !p -> talents.grimoire_of_supremacy -> ok() )
@@ -4782,7 +4775,6 @@ struct summon_darkglare_t : public warlock_spell_t
     warlock_spell_t( "summon_darkglare", p, p -> talents.summon_darkglare )
   {
     harmful = may_crit = may_miss = false;
-    base_costs[RESOURCE_SOUL_SHARD] *= 0.1;
 
     darkglare_duration = data().duration() + timespan_t::from_millis( 1 );
   }
@@ -4822,7 +4814,6 @@ struct call_dreadstalkers_t : public warlock_spell_t
     dreadstalker_duration = p -> find_spell( 193332 ) -> duration() + ( p -> sets->has_set_bonus( WARLOCK_DEMONOLOGY, T19, B4 ) ? p -> sets->set( WARLOCK_DEMONOLOGY, T19, B4 ) -> effectN( 1 ).time_value() : timespan_t::zero() );
     dreadstalker_count = data().effectN( 1 ).base_value();
     improved_dreadstalkers = p -> talents.improved_dreadstalkers -> effectN( 1 ).base_value();
-    base_costs[RESOURCE_SOUL_SHARD] *= 0.1;
   }
 
   double cost() const override
@@ -5340,6 +5331,15 @@ struct siphon_life_t : public warlock_spell_t
     return m;
   }
 
+  double composite_crit_chance() const override
+  {
+    double cc = warlock_spell_t::composite_crit_chance();
+
+    cc += p() -> artifact.winnowing.percent() * ( p() -> buffs.deadwind_harvester -> check() ? 2.0 : 1.0 );
+
+    return cc;
+  }
+
   virtual double composite_target_multiplier( player_t* target ) const override
   {
     double m = warlock_spell_t::composite_target_multiplier( target );
@@ -5543,8 +5543,6 @@ struct grimoire_of_service_t: public summon_pet_t
   grimoire_of_service_t( warlock_t* p, const std::string& pet_name ):
     summon_pet_t( "service_" + pet_name, p, p -> talents.grimoire_of_service -> ok() ? p -> find_class_spell( "Grimoire: " + pet_name ) : spell_data_t::not_found() )
   {
-    base_costs[RESOURCE_SOUL_SHARD] *= 0.1;
-
     cooldown = p -> get_cooldown( "grimoire_of_service" );
     cooldown -> duration = data().cooldown();
     summoning_duration = data().duration() + timespan_t::from_millis( 1 );

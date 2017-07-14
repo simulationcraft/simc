@@ -30,7 +30,7 @@ actions+=/berserking,if=buff.battle_cry.up|target.time_to_die<=11
 actions+=/arcane_torrent,if=buff.battle_cry_deadly_calm.down&rage.deficit>40&cooldown.battle_cry.remains
 actions+=/avatar,if=gcd.remains<0.25&(buff.battle_cry.up|cooldown.battle_cry.remains<15)|target.time_to_die<=20
 actions+=/use_item,name=gift_of_radiance,if=(buff.avatar.up|!talent.avatar.enabled)&debuff.colossus_smash.up&buff.battle_cry.up
-actions+=/battle_cry,if=target.time_to_die<=6|prev_gcd.1.ravager|!talent.ravager.enabled&!gcd.remains&target.debuff.colossus_smash.remains>=5&(!cooldown.bladestorm.remains|!set_bonus.tier20_4pc)&(!talent.rend.enabled|dot.rend.remains>4)
+actions+=/battle_cry,if=target.time_to_die<=6|(gcd.remains<=0.5&prev_gcd.1.ravager)|!talent.ravager.enabled&!gcd.remains&target.debuff.colossus_smash.remains>=5&(!cooldown.bladestorm.remains|!set_bonus.tier20_4pc)&(!talent.rend.enabled|dot.rend.remains>4)
 actions+=/run_action_list,name=cleave,if=spell_targets.whirlwind>=2&talent.sweeping_strikes.enabled
 actions+=/run_action_list,name=aoe,if=spell_targets.whirlwind>=5&!talent.sweeping_strikes.enabled
 actions+=/run_action_list,name=execute,target_if=target.health.pct<=20&spell_targets.whirlwind<5

@@ -1641,7 +1641,7 @@ bool item_t::decode_gems()
       parsed.gem_color[ i ] = enchant::initialize_gem( *this, i );
 
     // Socket bonus
-    if ( socket_color_match() )
+    if ( socket_color_match() && parsed.socket_bonus_stats.size() == 0 )
     {
       const item_enchantment_data_t& socket_bonus = player -> dbc.item_enchantment( parsed.data.id_socket_bonus );
       if ( ! enchant::initialize_item_enchant( *this, parsed.socket_bonus_stats, SPECIAL_EFFECT_SOURCE_SOCKET_BONUS, socket_bonus ) )

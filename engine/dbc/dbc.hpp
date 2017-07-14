@@ -31,7 +31,7 @@ struct item_t;
 
 const unsigned NUM_SPELL_FLAGS = 12;
 const unsigned NUM_CLASS_FAMILY_FLAGS = 4;
-#define SC_USE_PTR 0
+#define SC_USE_PTR 1
 
 struct stat_data_t
 {
@@ -521,6 +521,7 @@ public:
       case POWER_BURNING_EMBER:
       case POWER_ASTRAL_POWER:
       case POWER_PAIN:
+      case POWER_SOUL_SHARDS:
         return 10.0;
       case POWER_DEMONIC_FURY:
         return percentage ? 0.1 : 1.0;  // X% of 1000 ("base" demonic fury) is X divided by 0.1
@@ -665,6 +666,7 @@ public:
       case RESOURCE_RAGE:
       case RESOURCE_ASTRAL_POWER:
       case RESOURCE_PAIN:
+      case RESOURCE_SOUL_SHARD:
         return base_value() * ( 1 / 10.0 );
       case RESOURCE_INSANITY:
       case RESOURCE_MANA:

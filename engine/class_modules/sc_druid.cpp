@@ -1305,8 +1305,17 @@ struct incarnation_cat_buff_t : public berserk_buff_base_t
   incarnation_cat_buff_t( druid_t& p ) :
     berserk_buff_base_t( p, "incarnation_king_of_the_jungle", p.talent.incarnation_cat )
   {
-    default_value        = data().effectN( 2 ).percent(); // cost modifier
-    increased_max_energy = data().effectN( 3 ).resource( RESOURCE_ENERGY );
+     if (sim->dbc.ptr)
+     {
+        default_value        = data().effectN( 1 ).percent(); // cost modifier
+        increased_max_energy = data().effectN( 2 ).resource(RESOURCE_ENERGY);
+     }
+     else
+     {
+        default_value = data().effectN(2).percent(); // cost modifier
+        increased_max_energy = data().effectN(3).resource(RESOURCE_ENERGY);
+
+     }
   }
 };
 
@@ -1777,6 +1786,9 @@ public:
 
     if ( ab::p() -> sets -> has_set_bonus( DRUID_FERAL, T18, B2 ) )
       chance *= 1.0 + ab::p() -> sets -> set( DRUID_FERAL, T18, B2 ) -> effectN( 1 ).percent();
+
+    if ( ab::p() -> dbc.ptr && ab::p() -> talent.moment_of_clarity -> ok() )
+      chance *= 1.0 + ab::p() -> talent.moment_of_clarity -> effectN( 2 ).percent();
 
     int active = ab::p() -> buff.clearcasting -> check();
 
@@ -3559,7 +3571,7 @@ struct savage_roar_t : public cat_attack_t
     if ( combo_points == -1 )
       combo_points = ( int ) p() -> resources.current[ RESOURCE_COMBO_POINT ];
 
-    timespan_t d = data().duration() + timespan_t::from_seconds( 4.0 ) * combo_points;
+    timespan_t d = data().duration() + data().duration() * combo_points;
 
     // Maximum duration is 130% of the raw duration of the new Savage Roar.
     if ( p() -> buff.savage_roar -> check() )
@@ -7119,7 +7131,7 @@ void druid_t::create_buffs()
                                .chance( specialization() == DRUID_RESTORATION ? find_spell( 113043 ) -> proc_chance()
                                         : find_spell( 16864 ) -> proc_chance() )
                                .cd( timespan_t::zero() )
-                               .max_stack( 1 + talent.moment_of_clarity -> effectN( 1 ).base_value() )
+                               .max_stack( 1 + (sim -> dbc.ptr ? 0 : talent.moment_of_clarity->effectN(1).base_value() ))
                                .default_value( specialization() != DRUID_RESTORATION
                                                ? talent.moment_of_clarity -> effectN( 4 ).percent()
                                                : 0.0 );

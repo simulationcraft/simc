@@ -164,11 +164,11 @@ spell_mapping_reference_t<spell_data_t, unsigned> spell_categories_index(
 
 int dbc::build_level( bool ptr )
 {
-  return maybe_ptr( ptr ) ? 24461 : 24461;
+  return maybe_ptr( ptr ) ? 24539 : 24461;
 }
 
 const char* dbc::wow_version( bool ptr )
-{ return maybe_ptr( ptr ) ? "7.2.5" : "7.2.5"; }
+{ return maybe_ptr( ptr ) ? "7.3.0" : "7.2.5"; }
 
 const char* dbc::wow_ptr_status( bool ptr )
 #if SC_BETA

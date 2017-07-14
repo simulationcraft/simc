@@ -201,6 +201,7 @@ public:
     buff_t* blind_fury;
     buff_t* rage_of_the_illidari;
     movement_buff_t* vengeful_retreat_move;
+    haste_buff_t* havoc_t21_4pc;
 
     // Vengeance
     buff_t* blade_turning;
@@ -1836,7 +1837,8 @@ struct eye_beam_t : public demon_hunter_spell_t
 
       base_crit += p->spec.havoc->effectN(3).percent();
 
-      base_multiplier *= 1.0 + p -> artifact.chaos_vision.percent();
+      base_multiplier *= 1.0 + p->artifact.chaos_vision.percent();
+      base_multiplier *= 1.0 + p->sets->set(DEMON_HUNTER_HAVOC, T21, B2)->effectN(1).percent();
     }
 
     dmg_e amount_type( const action_state_t*, bool ) const override
@@ -1874,8 +1876,7 @@ struct eye_beam_t : public demon_hunter_spell_t
     channeled   = true;
     beam -> stats = stats;
 
-    school = SCHOOL_CHAOS;  // Jun 27 2016: Spell data states Chromatic damage,
-    // just override it.
+    school = SCHOOL_CHAOS;  // Jun 27 2016: Spell data states Chromatic damage, just override it.
 
     base_costs[RESOURCE_FURY] += p->artifact.wide_eyes.value();
 
@@ -1901,6 +1902,16 @@ struct eye_beam_t : public demon_hunter_spell_t
     beam -> schedule_execute();
   }
 
+  void last_tick(dot_t* d) override
+  {
+    demon_hunter_spell_t::last_tick(d);
+
+    if (p()->sets->set(DEMON_HUNTER_HAVOC, T21, B4)->ok())
+    {
+      p()->buff.havoc_t21_4pc->trigger();
+    }
+  }
+
   void execute() override
   {
     bool extend_meta = false;
@@ -1908,7 +1919,7 @@ struct eye_beam_t : public demon_hunter_spell_t
     if (p()->talent.demonic->ok())
     {
       timespan_t demonic_time = timespan_t::from_seconds(DEMONIC_EXTEND_DURATION);
-      if (p()->buff.metamorphosis->up())
+      if (p()->buff.metamorphosis->check())
       {
         p()->buff.metamorphosis->extend_duration(p(), demonic_time);
       }
@@ -2657,7 +2668,7 @@ struct metamorphosis_t : public demon_hunter_spell_t
       }
 
       // Buff is gained at the start of the leap.
-      if (p()->buff.metamorphosis->up())
+      if (p()->buff.metamorphosis->check())
       {
         p()->buff.metamorphosis->extend_duration(p(), p()->buff.metamorphosis->buff_duration);
       }
@@ -5801,6 +5812,10 @@ void demon_hunter_t::create_buffs()
     .chance( 1.0 )
     .duration( spec.vengeful_retreat -> duration() ) );
 
+  buff.havoc_t21_4pc =
+    haste_buff_creator_t(this, "havoc_t21_4pc", find_spell(252165))
+    .default_value(find_spell(252165)->effectN(1).percent());
+
   // Vengeance
   buff.blade_turning =
     buff_creator_t(this, "blade_turning", talent.blade_turning->effectN(1).trigger())
@@ -6814,17 +6829,7 @@ void demon_hunter_t::apl_precombat()
 
   pre->add_action("flask");
   pre->add_action("augmentation");
-
-  // Food
-  if (specialization() == DEMON_HUNTER_HAVOC)
-  {
-    pre->add_action("food,if=!equipped.majordomos_dinner_bell");
-    pre->add_action("food,type=nightborne_delicacy_platter,if=equipped.majordomos_dinner_bell");
-  }
-  else
-  {
-    pre->add_action("food");
-  }
+  pre->add_action("food");
 
   // Snapshot Stats
   pre->add_action("snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done.");
@@ -6867,11 +6872,6 @@ void add_havoc_use_items( demon_hunter_t* p, action_priority_list_t* apl )
       {
         line += ",if=!talent.chaos_blades.enabled|buff.chaos_blades.up|target.time_to_die<cooldown.chaos_blades.remains";
       }
-      else if (util::str_compare_ci(p->items[i].name_str, "majordomos_dinner_bell") 
-            || util::str_compare_ci(p->items[i].name_str, "skardyns_grace"))
-      {
-        line += ",if=!talent.chaos_blades.enabled|buff.chaos_blades.up";
-      }
       else if (util::str_compare_ci(p->items[i].name_str, "draught_of_souls"))
       {
         line += ",if=!buff.metamorphosis.up&(!talent.first_blood.enabled|!cooldown.blade_dance.ready)&(!talent.nemesis.enabled|cooldown.nemesis.remains>30|target.time_to_die<cooldown.nemesis.remains+3)";
@@ -6879,6 +6879,10 @@ void add_havoc_use_items( demon_hunter_t* p, action_priority_list_t* apl )
       else if (util::str_compare_ci(p->items[i].name_str, "kiljaedens_burning_wish"))
       {
         line += ",if=(active_enemies>desired_targets)|raid_event.adds.in>75";
+      }
+      else if (util::str_compare_ci(p->items[i].name_str, "umbral_moonglaives"))
+      {
+        line += ",if=(active_enemies>desired_targets)|(raid_event.adds.in>90&(buff.chaos_blades.up|target.time_to_die<cooldown.chaos_blades.remains))";
       }
       else if (util::str_compare_ci(p->items[i].name_str, "bloodstained_handkerchief"))
       {
@@ -6994,7 +6998,7 @@ void demon_hunter_t::apl_havoc()
     "(spell_targets>=3|raid_event.adds.in>recharge_time+cooldown)");
   normal->add_talent(this, "Felblade", "if=fury.deficit>=30+buff.prepared.up*8");
   normal->add_action(this, "Eye Beam", "if=spell_targets.eye_beam_tick>desired_targets|(spell_targets.eye_beam_tick>=3&raid_event.adds.in>cooldown)"
-    "|(talent.blind_fury.enabled&fury.deficit>=35)");
+    "|(talent.blind_fury.enabled&fury.deficit>=35)|set_bonus.tier21_2pc");
   normal->add_action(this, spec.annihilation, "annihilation", "if=(talent.demon_blades.enabled|"
     "!talent.momentum.enabled|buff.momentum.up|fury.deficit<30+buff.prepared.up*8|"
     "buff.metamorphosis.remains<5)&!variable.pooling_for_blade_dance");
@@ -7235,7 +7239,8 @@ double demon_hunter_t::composite_melee_haste() const
 
   if ( specialization() == DEMON_HUNTER_HAVOC )
   {
-    mh /= 1.0 + buff.metamorphosis -> check_value();
+    mh /= 1.0 + buff.metamorphosis->check_value();
+    mh /= 1.0 + buff.havoc_t21_4pc->check_value();
   }
 
   if (legendary.sephuzs_secret)
@@ -7259,7 +7264,8 @@ double demon_hunter_t::composite_spell_haste() const
 
   if ( specialization() == DEMON_HUNTER_HAVOC )
   {
-    sh /= 1.0 + buff.metamorphosis -> check_value();
+    sh /= 1.0 + buff.metamorphosis->check_value();
+    sh /= 1.0 + buff.havoc_t21_4pc->check_value();
   }
 
   if (legendary.sephuzs_secret)

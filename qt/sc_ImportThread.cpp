@@ -18,61 +18,6 @@
 // Import
 // ==========================================================================
 
-void SC_ImportThread::importBattleNet()
-{
-  QString region, server, character;
-  QUrl qurl = url;
-
-  {
-    QStringList parts = qurl.host().split( '.' );
-
-    if ( parts.size() )
-    {
-      if ( parts[ parts.size() - 1 ].length() == 2 )
-        region = parts[ parts.size() - 1 ];
-      else
-      {
-        for ( QStringList::size_type i = 0; i < parts.size(); ++i )
-        {
-          if ( parts[ i ].length() == 2 )
-          {
-            region = parts[ i ];
-            break;
-          }
-        }
-      }
-    }
-  }
-
-  {
-    QStringList parts = qurl.path().split( '/' );
-    for ( QStringList::size_type i = 0, n = parts.size(); i + 2 < n; ++i )
-    {
-      if ( parts[ i ] == "character" )
-      {
-        server = parts[ i + 1 ];
-        character = parts[ i + 2 ];
-        break;
-      }
-    }
-  }
-
-  if ( region.isEmpty() || server.isEmpty() || character.isEmpty() )
-  {
-    sim -> errorf( "Unable to determine Server and Character information!\n" );
-  }
-  else
-  {
-    // Windows 7 64bit somehow cannot handle straight toStdString() conversion, so
-    // do it in a silly way as a workaround for now.
-    std::string talents = active_spec.toStdString(),
-                cpp_r   = region.toUtf8().constData(),
-                cpp_s   = server.toUtf8().constData(),
-                cpp_c   = character.toUtf8().constData();
-    player = bcp_api::download_player( sim, cpp_r, cpp_s, cpp_c, talents );
-  }
-}
-
 void SC_ImportThread::start( sim_t* s, const QString& reg, const QString& rea, const QString& cha, const QString& spe )
 {
   mainWindow -> soloChar -> start( 50 );
@@ -110,7 +55,6 @@ void SC_ImportThread::run()
     sim -> parse_option( "apikey", api.toUtf8().constData() );
   switch ( tab )
   {
-    case TAB_BATTLE_NET: importBattleNet(); break;
     case TAB_IMPORT_NEW: importWidget(); break;
     default: assert( 0 ); break;
   }

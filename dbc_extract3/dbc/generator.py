@@ -1410,6 +1410,7 @@ class SpellDataGenerator(DataGenerator):
           ( 198506, 0 ),                                # Wolves of Doom, summon spell
           ( 197568, 0 ),                                # Lightning Rod damage spell
           ( 207998, 0 ), ( 207999, 0 ),                 # 7.0 legendary ring Eye of the Twisting Nether
+          ( 252143, 0 ),                                # Earth Shock Overload (Elemental T21 2PC)
         ),
 
         # Mage:
@@ -3557,6 +3558,11 @@ class SetBonusListGenerator(DataGenerator):
             'name'   : 'tier20',
             'bonuses': [ 1301, 1302, 1303, 1304, 1305, 1306, 1307, 1308, 1309, 1310, 1311, 1312 ],
             'tier'   : 20
+        },
+        {
+            'name'   : 'tier21',
+            'bonuses': [ 1319, 1320, 1321, 1322, 1323, 1324, 1325, 1326, 1327, 1328, 1329, 1330 ],
+            'tier'   : 21
         }
     ]
 

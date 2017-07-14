@@ -302,6 +302,7 @@ public:
     buff_t* t18_4pc_enhancement;
     buff_t* t20_2pc_enhancement;
     buff_t* t20_4pc_enhancement;
+    buff_t* t21_2pc_elemental;
 
     // Legendary buffs
     buff_t* echoes_of_the_great_sundering;
@@ -1053,9 +1054,22 @@ public:
       ab::energize_type = ENERGIZE_NONE; // disable resource generation from spell data.
     }
 
-    if ( ab::data().affected_by( player -> spec.elemental_shaman -> effectN( 5 ) ) )
+    if ( ab::data().affected_by( player -> spec.elemental_shaman -> effectN( 5 ) ) && ! player -> dbc.ptr )
     {
-      ab::base_multiplier *= 1.0 + player -> spec.elemental_shaman -> effectN( 5 ).percent();
+      ab::base_dd_multiplier *= 1.0 + player -> spec.elemental_shaman -> effectN( 5 ).percent();
+    }
+    if ( ab::data().affected_by( player -> spec.elemental_shaman -> effectN( 6 ) ) && ! player -> dbc.ptr )
+    {
+      ab::base_td_multiplier *= 1.0 + player -> spec.elemental_shaman -> effectN( 6 ).percent();
+    }
+    // changed hotfix order on ptr... FIXME double check when 7.3 draws near
+    if ( ab::data().affected_by( player -> spec.elemental_shaman -> effectN( 1 ) ) && player -> dbc.ptr )
+    {
+      ab::base_dd_multiplier *= 1.0 + player -> spec.elemental_shaman -> effectN( 1 ).percent();
+    }
+    if ( ab::data().affected_by( player -> spec.elemental_shaman -> effectN( 2 ) ) && player -> dbc.ptr )
+    {
+      ab::base_td_multiplier *= 1.0 + player -> spec.elemental_shaman -> effectN( 2 ).percent();
     }
 
     if ( ab::data().affected_by( player -> spec.enhancement_shaman -> effectN( 1 ) ) )
@@ -1992,15 +2006,13 @@ struct base_wolf_t : public shaman_pet_t
   {
     shaman_pet_t::create_buffs();
 
-    if ( o() -> artifact.alpha_wolf.rank() )
-    {
-      alpha_wolf_buff = buff_creator_t( this, "alpha_wolf", o() -> find_spell( 198486 ) )
-                        .tick_behavior( BUFF_TICK_REFRESH )
-                        .tick_callback( [ this ]( buff_t*, int, timespan_t ) {
-                          alpha_wolf -> target = o() -> target;
-                          alpha_wolf -> schedule_execute();
-                        } );
-    }
+    alpha_wolf_buff = buff_creator_t( this, "alpha_wolf", o() -> find_spell( 198486 ) )
+                      .tick_behavior( BUFF_TICK_REFRESH )
+                      .tick_callback( [ this ]( buff_t*, int, timespan_t ) {
+                        alpha_wolf -> target = o() -> target;
+                        alpha_wolf -> schedule_execute();
+                      } )
+                      .chance( o() -> artifact.alpha_wolf.rank() );
   }
 
   void trigger_alpha_wolf() const
@@ -4528,6 +4540,8 @@ struct lava_burst_t : public shaman_spell_t
     p() -> cooldown.storm_elemental -> adjust( p() -> artifact.elementalist.time_value() );
 
     p() -> buff.power_of_the_maelstrom -> trigger( p() -> buff.power_of_the_maelstrom -> max_stack() );
+
+    p() -> buff.t21_2pc_elemental -> trigger();
   }
 
   timespan_t execute_time() const override
@@ -5206,6 +5220,51 @@ struct elemental_mastery_t : public shaman_spell_t
 
 // Earth Shock Spell ========================================================
 
+// T21 4pc bonus
+struct earth_shock_overload_t : public elemental_overload_spell_t
+{
+  action_t* parent;
+  double base_coefficient;
+
+  earth_shock_overload_t( shaman_t* p, action_t* pa, double bc ) :
+    elemental_overload_spell_t( p, "earth_shock_overload", p -> find_spell( 252143 ) ),
+    parent( pa ), base_coefficient( bc )
+  {
+    // TODO: Currently not flagged to benefit, but safe assumption
+    base_multiplier *= 1.0 + p -> artifact.earthen_attunement.percent();
+
+    // TODO: Currently not flagged to benefit, but safe assumption
+    crit_bonus_multiplier *= 1.0 + p -> spec.elemental_fury -> effectN( 1 ).percent()
+                                 + p -> artifact.elemental_destabilization.percent();
+  }
+
+  void init() override
+  {
+    elemental_overload_spell_t::init();
+
+    snapshot_flags |= STATE_SP | STATE_MUL_DA | STATE_VERSATILITY | STATE_MUL_PERSISTENT | STATE_TARGET;
+  }
+
+  double action_multiplier() const override
+  {
+    auto m = elemental_overload_spell_t::action_multiplier();
+
+    m *= 1.0 + p() -> buff.t21_2pc_elemental -> stack_value();
+
+    // TODO: Currently not in hotfix data but save to assume it'll be added
+    if ( player -> dbc.ptr )
+    {
+      m *= 1.0 + p() -> spec.elemental_shaman -> effectN( 1 ).percent();
+    }
+
+    return m;
+  }
+
+  // TODO: Benefits from the increased SP coefficient based on Swelling Maelstrom?
+  double spell_direct_power_coefficient( const action_state_t* ) const override
+  { return parent -> last_resource_cost * base_coefficient; }
+};
+
 struct earth_shock_t : public shaman_spell_t
 {
   double base_coefficient;
@@ -5219,10 +5278,35 @@ struct earth_shock_t : public shaman_spell_t
   {
     base_multiplier *= 1.0 + player -> artifact.earthen_attunement.percent();
     secondary_costs[ RESOURCE_MAELSTROM ] += player -> artifact.swelling_maelstrom.data().effectN( 1 ).base_value();
+
+    if ( player -> sets -> has_set_bonus( SHAMAN_ELEMENTAL, T21, B4 ) )
+    {
+      overload = new earth_shock_overload_t( player, this, base_coefficient );
+      add_child( overload );
+    }
+  }
+
+  double overload_chance( const action_state_t* ) const override
+  {
+    if ( player -> sets -> has_set_bonus( SHAMAN_ELEMENTAL, T21, B4 ) )
+    {
+      return player -> sets -> set( SHAMAN_ELEMENTAL, T21, B4 ) -> effectN( 1 ).percent();
+    }
+
+    return 0;
   }
 
   double spell_direct_power_coefficient( const action_state_t* ) const override
   { return base_coefficient * cost(); }
+
+  double action_multiplier() const override
+  {
+    auto m = shaman_spell_t::action_multiplier();
+
+    m *= 1.0 + p() -> buff.t21_2pc_elemental -> stack_value();
+
+    return m;
+  }
 
   void execute() override
   {
@@ -5244,6 +5328,8 @@ struct earth_shock_t : public shaman_spell_t
     {
       p() -> resource_gain( RESOURCE_MAELSTROM, last_resource_cost, p() -> gain.the_deceivers_blood_pact, this );
     }
+
+    p() -> buff.t21_2pc_elemental -> expire();
   }
 };
 
@@ -7211,6 +7297,9 @@ void shaman_t::create_buffs()
   buff.t20_4pc_enhancement = buff_creator_t( this, "crashing_lightning", sets -> set( SHAMAN_ENHANCEMENT, T20, B4 ) -> effectN( 1 ).trigger() )
     .trigger_spell( sets -> set( SHAMAN_ENHANCEMENT, T20, B4 ) )
     .default_value( sets -> set(SHAMAN_ENHANCEMENT, T20, B4 ) -> effectN( 1 ).trigger() -> effectN( 1 ).percent() );
+  buff.t21_2pc_elemental = buff_creator_t( this, "earthen_strength", sets -> set( SHAMAN_ELEMENTAL, T21, B2 ) -> effectN( 1 ).trigger() )
+    .trigger_spell( sets -> set( SHAMAN_ELEMENTAL, T21, B2 ) )
+    .default_value( sets -> set( SHAMAN_ELEMENTAL, T21, B2 ) -> effectN( 1 ).trigger() -> effectN( 1 ).percent() );
 }
 
 // shaman_t::init_gains =====================================================
@@ -8034,9 +8123,14 @@ double shaman_t::composite_player_pet_damage_multiplier( const action_state_t* s
   m *= 1.0 + artifact.stormkeepers_power.percent();
   m *= 1.0 + artifact.power_of_the_earthen_ring.percent();
   m *= 1.0 + artifact.earthshattering_blows.percent();
-  if ( spec.elemental_shaman -> ok() )
+  if ( spec.elemental_shaman -> ok() && ! player_t::dbc.ptr )
   {
     m *= 1.0 + spec.elemental_shaman -> effectN( 7 ).percent();
+  }
+  // effect order of hotfix changed on ptr, double check in the futur
+  if ( spec.elemental_shaman -> ok() && player_t::dbc.ptr )
+  {
+    m *= 1.0 + spec.elemental_shaman -> effectN( 3 ).percent();
   }
 
   auto school = s -> action -> get_school();

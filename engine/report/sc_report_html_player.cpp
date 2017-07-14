@@ -1616,6 +1616,7 @@ void print_html_player_scale_factor_table(
                p.scaling->scaling_lag_error[ sm ] );
   os << "</tr>\n";
 
+  /*
   os.format(
       "<tr class=\"left\">\n"
       "<th>Gear Ranking</th>\n"
@@ -1648,6 +1649,7 @@ void print_html_player_scale_factor_table(
   os << "</ul>\n";
   os << "</td>\n";
   os << "</tr>\n";
+  */
 
   // Text Ranking
   os.format(

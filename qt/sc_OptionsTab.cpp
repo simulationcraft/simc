@@ -243,7 +243,6 @@ SC_OptionsTab::SC_OptionsTab( SC_MainWindow* parent ) :
   connect( choice.fight_variance,     SIGNAL( currentIndexChanged( int ) ), this, SLOT( _optionsChanged() ) );
   connect( choice.iterations,         SIGNAL( currentIndexChanged( int ) ), this, SLOT( _optionsChanged() ) );
   connect( choice.num_target,         SIGNAL( currentIndexChanged( int ) ), this, SLOT( _optionsChanged() ) );
-  connect( choice.player_skill,       SIGNAL( currentIndexChanged( int ) ), this, SLOT( _optionsChanged() ) );
   connect( choice.plots_points,       SIGNAL( currentIndexChanged( int ) ), this, SLOT( _optionsChanged() ) );
   connect( choice.plots_step,         SIGNAL( currentIndexChanged( int ) ), this, SLOT( _optionsChanged() ) );
   connect( choice.plots_target_error, SIGNAL( currentIndexChanged( int ) ), this, SLOT( _optionsChanged() ) );
@@ -307,7 +306,6 @@ void SC_OptionsTab::createGlobalsTab()
   globalsLayout_left -> addRow( tr(   "Vary Length %" ),  choice.fight_variance = addValidatorToComboBox( 0, 100, createChoice( 6, "0", "10", "20", "30", "40", "50" ) ) );
   globalsLayout_left -> addRow( tr(   "Fight Style" ),     choice.fight_style = createChoice( 8, "Patchwerk", "HecticAddCleave", "HelterSkelter", "Ultraxion", "LightMovement", "HeavyMovement", "Beastlord", "CastingPatchwerk" ) );
   globalsLayout_left -> addRow( tr( "Challenge Mode" ), choice.challenge_mode = createChoice( 2, "Disabled", "Enabled" ) );
-  globalsLayout_left -> addRow( tr(  "Player Skill" ),    choice.player_skill = createChoice( 4, "Elite", "Good", "Average", "Ouch! Fire is hot!" ) );
   globalsLayout_left -> addRow( tr( "Default Role" ),     choice.default_role = createChoice( 4, "Auto", "DPS", "Heal", "Tank" ) );
   globalsLayout_left -> addRow( tr( "GUI Localization" ),     choice.gui_localization = createChoice( 5, "auto", "en", "de", "zh", "it" ) );
 
@@ -429,10 +427,10 @@ void SC_OptionsTab::createBuffsDebuffsTab()
 void SC_OptionsTab::createScalingTab()
 {
   // layout for entire tab
-  QVBoxLayout* scalingLayout = new QVBoxLayout();
+  QVBoxLayout* scalingLayout = new QVBoxLayout( this );
 
   // Box containing enable button
-  QGroupBox* enableScalingButtonGroupBox = new QGroupBox();
+  QGroupBox* enableScalingButtonGroupBox = new QGroupBox( this );
   enableScalingButtonGroupBox -> setTitle( tr( "Enable Scaling" ) );
   enableScalingButtonGroupBox -> setSizePolicy( QSizePolicy( QSizePolicy::Minimum, QSizePolicy::Fixed ) );
   scalingLayout -> addWidget( enableScalingButtonGroupBox );
@@ -449,7 +447,7 @@ void SC_OptionsTab::createScalingTab()
   enableScalingButtonGroupBox -> setLayout( enableScalingButtonGroupBoxLayout );
   
   // Box containing additional options
-  QGroupBox* scalingOptionsGroupBox = new QGroupBox();
+  QGroupBox* scalingOptionsGroupBox = new QGroupBox( this );
   scalingOptionsGroupBox -> setSizePolicy( QSizePolicy( QSizePolicy::Minimum, QSizePolicy::Fixed ) );
   scalingOptionsGroupBox -> setTitle( tr( "Scaling Options" ) );
   scalingLayout -> addWidget( scalingOptionsGroupBox );
@@ -467,8 +465,9 @@ void SC_OptionsTab::createScalingTab()
   scalingOptionsGroupBox -> setLayout( scalingOptionsGroupBoxLayout );
 
   // Box containing buttons for each stat to scale
-  QGroupBox* scalingButtonsGroupBox = new QGroupBox();
-  scalingButtonsGroupBox -> setSizePolicy( QSizePolicy( QSizePolicy::Minimum, QSizePolicy::Expanding ) );
+  QGroupBox* scalingButtonsGroupBox = new QGroupBox( this );
+  scalingButtonsGroupBox->setSizePolicy( QSizePolicy( QSizePolicy::Fixed, QSizePolicy::Fixed) );
+  scalingButtonsGroupBox->setMinimumHeight( 275 );
   scalingButtonsGroupBox -> setTitle( tr( "Stats to scale" ) );
   scalingLayout -> addWidget( scalingButtonsGroupBox );
 
@@ -486,25 +485,37 @@ void SC_OptionsTab::createScalingTab()
   QLabel* plotHelpertext = new QLabel( tr( "Calculate scale factors for:" ) );
   scalingButtonsLayout -> addWidget( plotHelpertext );
 
-  appendCheckBox( tr( "Strength"                   ), "str",        tr( "Calculate scale factors for Strength"                       ), scalingButtonsLayout, scalingButtonGroup );
-  appendCheckBox( tr( "Agility"                    ), "agi",        tr( "Calculate scale factors for Agility"                        ), scalingButtonsLayout, scalingButtonGroup );
-  appendCheckBox( tr( "Stamina"                    ), "sta",        tr( "Calculate scale factors for Stamina"                        ), scalingButtonsLayout, scalingButtonGroup );
-  appendCheckBox( tr( "Intellect"                  ), "int",        tr( "Calculate scale factors for Intellect"                      ), scalingButtonsLayout, scalingButtonGroup );
-  appendCheckBox( tr( "Spirit"                     ), "spi",        tr( "Calculate scale factors for Spirit"                         ), scalingButtonsLayout, scalingButtonGroup );
-  appendCheckBox( tr( "Spell Power"                ), "sp",         tr( "Calculate scale factors for Spell Power"                    ), scalingButtonsLayout, scalingButtonGroup );
-  appendCheckBox( tr( "Attack Power"               ), "ap",         tr( "Calculate scale factors for Attack Power"                   ), scalingButtonsLayout, scalingButtonGroup );
-  appendCheckBox( tr( "Crit Rating"                ), "crit",       tr( "Calculate scale factors for Crit Rating"                    ), scalingButtonsLayout, scalingButtonGroup );
-  appendCheckBox( tr( "Haste Rating"               ), "haste",      tr( "Calculate scale factors for Haste Rating"                   ), scalingButtonsLayout, scalingButtonGroup );
-  appendCheckBox( tr( "Mastery Rating"             ), "mastery",    tr( "Calculate scale factors for Mastery Rating"                 ), scalingButtonsLayout, scalingButtonGroup );
-  appendCheckBox( tr( "Versatility Rating"         ), "vers",       tr( "Calculate scale factors for Versatility Rating"             ), scalingButtonsLayout, scalingButtonGroup );
-  appendCheckBox( tr( "Weapon DPS"                 ), "wdps",       tr( "Calculate scale factors for Weapon DPS"                     ), scalingButtonsLayout, scalingButtonGroup );
-  appendCheckBox( tr( "Off-hand Weapon DPS"        ), "wohdps",     tr( "Calculate scale factors for Off-hand Weapon DPS"            ), scalingButtonsLayout, scalingButtonGroup );
-  appendCheckBox( tr( "Armor"                      ), "armor",      tr( "Calculate scale factors for Armor"                          ), scalingButtonsLayout, scalingButtonGroup );
-  appendCheckBox( tr( "Bonus Armor"                ), "bonusarmor", tr( "Calculate scale factors for Bonus Armor"                    ), scalingButtonsLayout, scalingButtonGroup );
-  //appendCheckBox( tr( "Avoidance (tertiary)"       ), "avoidance",  tr( "Calculate scale factors for Avoidance (tertiary stat)"      ), scalingButtonsLayout, scalingButtonGroup );
-  appendCheckBox( tr( "Leech (tertiary)"           ), "leech",      tr( "Calculate scale factors for Leech (tertiary stat)"          ), scalingButtonsLayout, scalingButtonGroup );
-  appendCheckBox( tr( "Movement Speed (tertiary)"  ), "runspeed",   tr( "Calculate scale factors for Movement Speed (tertiary stat)" ), scalingButtonsLayout, scalingButtonGroup );
-  appendCheckBox( tr( "Latency"                    ), "latency",    tr( "Calculate scale factors for Latency"                        ), scalingButtonsLayout, scalingButtonGroup );
+  QVBoxLayout* primaryStatsLayout = new QVBoxLayout();
+  QVBoxLayout* secondaryStatsLayout = new QVBoxLayout();
+  QVBoxLayout* miscStatsLayout = new QVBoxLayout();
+
+  QHBoxLayout* statChoiceLayout = new QHBoxLayout();
+
+  scalingButtonsLayout -> addLayout( statChoiceLayout );
+
+  statChoiceLayout->addLayout( primaryStatsLayout );
+  statChoiceLayout->addLayout( secondaryStatsLayout );
+  statChoiceLayout->addLayout( miscStatsLayout );
+
+  appendCheckBox( tr( "Strength"                   ), "str",        tr( "Calculate scale factors for Strength"                       ), primaryStatsLayout, scalingButtonGroup );
+  appendCheckBox( tr( "Agility"                    ), "agi",        tr( "Calculate scale factors for Agility"                        ), primaryStatsLayout, scalingButtonGroup );
+  appendCheckBox( tr( "Stamina"                    ), "sta",        tr( "Calculate scale factors for Stamina"                        ), primaryStatsLayout, scalingButtonGroup );
+  appendCheckBox( tr( "Intellect"                  ), "int",        tr( "Calculate scale factors for Intellect"                      ), primaryStatsLayout, scalingButtonGroup );
+  appendCheckBox( tr( "Spell Power"                ), "sp",         tr( "Calculate scale factors for Spell Power"                    ), primaryStatsLayout, scalingButtonGroup );
+  appendCheckBox( tr( "Attack Power"               ), "ap",         tr( "Calculate scale factors for Attack Power"                   ), primaryStatsLayout, scalingButtonGroup );
+
+  appendCheckBox( tr( "Crit Rating"                ), "crit",       tr( "Calculate scale factors for Crit Rating"                    ), secondaryStatsLayout, scalingButtonGroup );
+  appendCheckBox( tr( "Haste Rating"               ), "haste",      tr( "Calculate scale factors for Haste Rating"                   ), secondaryStatsLayout, scalingButtonGroup );
+  appendCheckBox( tr( "Mastery Rating"             ), "mastery",    tr( "Calculate scale factors for Mastery Rating"                 ), secondaryStatsLayout, scalingButtonGroup );
+  appendCheckBox( tr( "Versatility Rating"         ), "vers",       tr( "Calculate scale factors for Versatility Rating"             ), secondaryStatsLayout, scalingButtonGroup );
+  appendCheckBox( tr( "Weapon DPS"                 ), "wdps",       tr( "Calculate scale factors for Weapon DPS"                     ), miscStatsLayout, scalingButtonGroup );
+  appendCheckBox( tr( "Off-hand Weapon DPS"        ), "wohdps",     tr( "Calculate scale factors for Off-hand Weapon DPS"            ), miscStatsLayout, scalingButtonGroup );
+  appendCheckBox( tr( "Armor"                      ), "armor",      tr( "Calculate scale factors for Armor"                          ), miscStatsLayout, scalingButtonGroup );
+  appendCheckBox( tr( "Bonus Armor"                ), "bonusarmor", tr( "Calculate scale factors for Bonus Armor"                    ), miscStatsLayout, scalingButtonGroup );
+  //appendCheckBox( tr( "Avoidance (tertiary)"       ), "avoidance",  tr( "Calculate scale factors for Avoidance (tertiary stat)"      ), miscStatsLayout, scalingButtonGroup );
+  appendCheckBox( tr( "Leech (tertiary)"           ), "leech",      tr( "Calculate scale factors for Leech (tertiary stat)"          ), miscStatsLayout, scalingButtonGroup );
+  appendCheckBox( tr( "Movement Speed (tertiary)"  ), "runspeed",   tr( "Calculate scale factors for Movement Speed (tertiary stat)" ), miscStatsLayout, scalingButtonGroup );
+  appendCheckBox( tr( "Latency"                    ), "latency",    tr( "Calculate scale factors for Latency"                        ), miscStatsLayout, scalingButtonGroup );
 
   // spacer to eat up rest of space (makes scalingButtonsGroupBoxLayout look less silly)
   QSpacerItem* spacer1 = new QSpacerItem( 20, 20, QSizePolicy::Expanding, QSizePolicy::Expanding );
@@ -662,7 +673,6 @@ void SC_OptionsTab::decodeOptions()
   load_setting( settings, "fight_style", choice.fight_style );
   load_setting( settings, "target_race", choice.target_race );
   load_setting( settings, "num_target", choice.num_target );
-  load_setting( settings, "player_skill", choice.player_skill );
   load_setting( settings, "threads", choice.threads, QString::number( QThread::idealThreadCount() ) );
   load_setting( settings, "process_priority", choice.process_priority, "Low" );
   load_setting( settings, "auto_save", choice.auto_save, "No" );
@@ -752,7 +762,6 @@ void SC_OptionsTab::encodeOptions()
   settings.setValue( "fight_style", choice.fight_style -> currentText() );
   settings.setValue( "target_race", choice.target_race -> currentText() );
   settings.setValue( "num_target", choice.num_target -> currentText() );
-  settings.setValue( "player_skill", choice.player_skill -> currentText() );
   settings.setValue( "threads", choice.threads -> currentText() );
   settings.setValue( "process_priority", choice.process_priority -> currentText() );
   settings.setValue( "auto_save", choice.auto_save -> currentText() );
@@ -856,8 +865,6 @@ void SC_OptionsTab::createToolTips()
   choice.pvp_crit -> setToolTip( tr( "In PVP, critical strikes deal 150% damage instead of 200%.\n"
                                      "Enabling this option will set target level to max player level." ) );
 
-  choice.player_skill -> setToolTip( tr( "Elite:       No mistakes.  No cheating either." ) + "\n" +
-                                     tr( "Fire-is-Hot: Frequent DoT-clipping and skipping high-priority abilities." ) );
 
   choice.threads -> setToolTip( tr( "Match the number of CPUs for optimal performance.\n"
                                     "Most modern desktops have at least two CPU cores." ) );
@@ -1027,11 +1034,6 @@ QString SC_OptionsTab::get_globalSettings()
     }
   }
   // end target spawning
-
-  options += "default_skill=";
-  const char *skill[] = { "1.0", "0.95", "0.85", "0.75" };
-  options += skill[ choice.player_skill->currentIndex() ];
-  options += "\n";
 
   options += "optimal_raid=0\n";
 

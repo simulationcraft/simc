@@ -2459,55 +2459,64 @@ std::string util::create_wowhead_artifact_url( const player_t& p )
 
 std::string util::create_blizzard_talent_url( const player_t& p )
 {
-  std::string url = "http://us.battle.net/wow/en/tool/talent-calculator#";
-  switch ( p.specialization() )
+  std::string region = p.region_str;
+
+  if ( region.empty() )
   {
-   case DEATH_KNIGHT_BLOOD:   url += "daa"; break;
-   case DEATH_KNIGHT_FROST:   url += "dZa"; break;
-   case DEATH_KNIGHT_UNHOLY:  url += "dba"; break;
-   case DEMON_HUNTER_HAVOC:   url += "gaa"; break;
-   case DEMON_HUNTER_VENGEANCE: url += "gZa"; break;
-   case DRUID_BALANCE:        url += "Uaa"; break;
-   case DRUID_FERAL:          url += "UZa"; break;
-   case DRUID_GUARDIAN:       url += "Uba"; break;
-   case DRUID_RESTORATION:    url += "UYa"; break;
-   case HUNTER_BEAST_MASTERY: url += "Yaa"; break;
-   case HUNTER_MARKSMANSHIP:  url += "YZa"; break;
-   case HUNTER_SURVIVAL:      url += "Yba"; break;
-   case MAGE_ARCANE:          url += "eaa"; break;
-   case MAGE_FIRE:            url += "eZa"; break;
-   case MAGE_FROST:           url += "eba"; break;
-   case MONK_BREWMASTER:      url += "faa"; break;
-   case MONK_MISTWEAVER:      url += "fZa"; break;
-   case MONK_WINDWALKER:      url += "fba"; break;
-   case PALADIN_HOLY:         url += "baa"; break;
-   case PALADIN_PROTECTION:   url += "bZa"; break;
-   case PALADIN_RETRIBUTION:  url += "bba"; break;
-   case PRIEST_DISCIPLINE:    url += "Xaa"; break;
-   case PRIEST_HOLY:          url += "XZa"; break;
-   case PRIEST_SHADOW:        url += "Xba"; break;
-   case ROGUE_ASSASSINATION:  url += "caa"; break;
-   case ROGUE_OUTLAW:         url += "cZa"; break;
-   case ROGUE_SUBTLETY:       url += "cba"; break;
-   case SHAMAN_ELEMENTAL:     url += "Waa"; break;
-   case SHAMAN_ENHANCEMENT:   url += "WZa"; break;
-   case SHAMAN_RESTORATION:   url += "Wba"; break;
-   case WARLOCK_AFFLICTION:   url += "Vaa"; break;
-   case WARLOCK_DEMONOLOGY:   url += "VZa"; break;
-   case WARLOCK_DESTRUCTION:  url += "Vba"; break;
-   case WARRIOR_ARMS:         url += "Zaa"; break;
-   case WARRIOR_FURY:         url += "ZZa"; break;
-   case WARRIOR_PROTECTION:   url += "Zba"; break;
-   default: return "";
+    region = p.sim  -> default_region_str;
   }
-  url += "!";
+
+  if ( region.empty() )
+  {
+    region = "us";
+  }
+
+  std::string url = "https://worldofwarcraft.com/";
+
+  if ( util::str_compare_ci( region, "us" ) )
+  {
+    url += "en-us";
+  }
+  else if ( util::str_compare_ci( region, "eu" ) )
+  {
+    url += "en-gb";
+  }
+  else if ( util::str_compare_ci( region, "kr" ) )
+  {
+    url += "ko-kr";
+  }
+  else if ( util::str_compare_ci( region, "cn" ) )
+  {
+    url = "https://www.wowchina.com/zh-cn";
+  }
+
+  url += "/game/talent-calculator#";
+
+  switch ( p.type )
+  {
+    case DEATH_KNIGHT:
+      url += "death-knight";
+      break;
+    case DEMON_HUNTER:
+      url += "demon-hunter";
+      break;
+    default:
+      url += player_type_string( p.type );
+      break;
+  }
+
+  url += "/";
+  url += dbc::specialization_string( p.specialization() );
+  url += "/talents=";
+
   for ( int i = 0; i < MAX_TALENT_ROWS; i++ )
   {
     if ( p.talent_points.choice( i ) >= 0 )
-      url += util::to_string( p.talent_points.choice( i ) );
+      url += util::to_string( p.talent_points.choice( i ) + 1 );
     else
-      url += ".";  
+      url += "0";
   }
+
   return url;
 }
 
