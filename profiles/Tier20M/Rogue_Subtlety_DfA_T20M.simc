@@ -1,8 +1,7 @@
 rogue="Rogue_Subtlety_DfA_T20M"
 spec=subtlety
 level=110
-race=night_elf
-timeofday=day
+race=dwarf
 role=attack
 position=back
 talents=1110013
