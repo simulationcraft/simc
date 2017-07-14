@@ -4974,35 +4974,6 @@ struct mark_of_aluneth_t : public arcane_mage_spell_t
 // - Meteor (id=177345) contains the time between cast and impact
 // None of these specify the 1 second falling duration given by Celestalon, so
 // we're forced to hardcode it.
-
-// We need to keep the current tick event stored somewhere so that we can cancel it
-// (because Meteorn Burns do not overlap).
-struct tracking_ground_aoe_event_t : public ground_aoe_event_t
-{
-  mage_t* mage;
-
-  tracking_ground_aoe_event_t( mage_t* mage, const ground_aoe_params_t* param, action_state_t* ps, bool first_tick = false ):
-    ground_aoe_event_t( mage, param, ps, first_tick ), mage( mage )
-  { }
-
-  tracking_ground_aoe_event_t( mage_t* mage, const ground_aoe_params_t& param, bool first_tick = false ) :
-    ground_aoe_event_t( mage, param, first_tick ), mage( mage )
-  { }
-
-  void schedule_event() override
-  {
-    assert( ! mage -> active_meteor_burn );
-    mage -> active_meteor_burn = make_event<tracking_ground_aoe_event_t>( sim(), mage, params, pulse_state );
-  }
-
-  void execute() override
-  {
-    assert( mage -> active_meteor_burn );
-    mage -> active_meteor_burn = nullptr;
-    ground_aoe_event_t::execute();
-  }
-};
-
 struct meteor_burn_t : public fire_mage_spell_t
 {
   meteor_burn_t( mage_t* p, int targets, bool legendary ) :
@@ -5068,11 +5039,27 @@ struct meteor_impact_t: public fire_mage_spell_t
 
     event_t::cancel( p() -> active_meteor_burn );
 
-    p() -> active_meteor_burn = make_event<tracking_ground_aoe_event_t>( *sim, p(), ground_aoe_params_t()
+    p() -> active_meteor_burn = make_event<ground_aoe_event_t>( *sim, p(), ground_aoe_params_t()
       .pulse_time( meteor_burn_pulse_time )
       .target( s -> target )
       .duration( meteor_burn_duration )
-      .action( meteor_burn ) );
+      .action( meteor_burn )
+      .state_callback( [ this ] ( ground_aoe_params_t::state_type type, ground_aoe_event_t* event )
+      {
+        switch ( type )
+        {
+          case ground_aoe_params_t::EVENT_CREATED:
+            assert( ! p() -> active_meteor_burn );
+            p() -> active_meteor_burn = event;
+            break;
+          case ground_aoe_params_t::EVENT_DESTRUCTED:
+            assert( p() -> active_meteor_burn );
+            p() -> active_meteor_burn = nullptr;
+            break;
+          default:
+            break;
+        }
+      } ) );
   }
 };
 
