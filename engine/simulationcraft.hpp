@@ -8247,8 +8247,10 @@ struct ground_aoe_params_t
 
   enum state_type
   {
-    EVENT_CREATED = 0,
-    EVENT_DESTRUCTED
+    EVENT_STARTED = 0,  // Ground aoe event started
+    EVENT_CREATED,      // A new ground_aoe_event_t object created
+    EVENT_DESTRUCTED,   // A ground_aoe_Event_t object destructed
+    EVENT_STOPPED       // Ground aoe event stopped
   };
 
   using param_cb_t = std::function<void(void)>;
@@ -8410,7 +8412,12 @@ public:
   // Make a copy of the parameters, and use that object until this event expires
   ground_aoe_event_t( player_t* p, const ground_aoe_params_t& param, bool immediate_pulse = false ) :
     ground_aoe_event_t( p, new ground_aoe_params_t( param ), nullptr, immediate_pulse )
-  { }
+  {
+    if ( params -> state_callback() )
+    {
+      params -> state_callback()( ground_aoe_params_t::EVENT_STARTED, this );
+    }
+  }
 
   // Cleans up memory for any on-going ground aoe events when the iteration ends, or when the ground
   // aoe finishes during iteration.
@@ -8560,6 +8567,12 @@ public:
     else
     {
       handle_expiration();
+
+      // This event is about to be destroyed, notify callback of the event if needed
+      if ( params -> state_callback() )
+      {
+        params -> state_callback()( ground_aoe_params_t::EVENT_STOPPED, this );
+      }
     }
   }
 
