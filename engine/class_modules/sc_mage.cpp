@@ -223,6 +223,7 @@ public:
   double global_cinder_count;
   timespan_t firestarter_time;
   int blessing_of_wisdom_count;
+  bool allow_shimmer_lance;
 
   // Cached actions
   struct actions_t
@@ -321,6 +322,7 @@ public:
     // Miscellaneous Buffs
     buff_t* greater_blessing_of_widsom;
     buff_t* t19_oh_buff;
+    buff_t* shimmer;
 
   } buffs;
 
@@ -3090,7 +3092,7 @@ struct blink_t : public mage_spell_t
 
     harmful = false;
     ignore_false_positive = true;
-    base_teleport_distance = 20;
+    base_teleport_distance = data().effectN( 1 ).radius_max();
 
     movement_directionality = MOVEMENT_OMNI;
 
@@ -4534,6 +4536,19 @@ struct ice_lance_t : public frost_mage_spell_t
     }
   }
 
+  virtual timespan_t travel_time() const override
+  {
+    timespan_t t = frost_mage_spell_t::travel_time();
+
+    if ( p() -> allow_shimmer_lance && p() -> buffs.shimmer -> check() )
+    {
+      double shimmer_distance = p() -> talents.shimmer -> effectN( 1 ).radius_max();
+      t = std::max( t - timespan_t::from_seconds( shimmer_distance / travel_speed ), timespan_t::zero() );
+    }
+
+    return t;
+  }
+
   virtual void impact( action_state_t* s ) override
   {
     frost_mage_spell_t::impact( s );
@@ -5664,9 +5679,16 @@ struct shimmer_t : public mage_spell_t
 
     harmful = false;
     ignore_false_positive = true;
-    base_teleport_distance = 20;
+    base_teleport_distance = data().effectN( 1 ).radius_max();
 
     movement_directionality = MOVEMENT_OMNI;
+  }
+
+  virtual void execute() override
+  {
+    mage_spell_t::execute();
+
+    p() -> buffs.shimmer -> trigger();
   }
 };
 
@@ -6457,6 +6479,7 @@ mage_t::mage_t( sim_t* sim, const std::string& name, race_e r ) :
   distance_from_rune( 0.0 ),
   global_cinder_count( 0.0 ),
   firestarter_time( timespan_t::zero() ),
+  allow_shimmer_lance( false ),
   blessing_of_wisdom_count( 0 ),
   action( actions_t() ),
   benefits( benefits_t() ),
@@ -6729,6 +6752,7 @@ void mage_t::create_options()
   add_option( opt_float( "global_cinder_count", global_cinder_count ) );
   add_option( opt_timespan( "firestarter_time", firestarter_time ) );
   add_option( opt_int( "blessing_of_wisdom_count", blessing_of_wisdom_count ) );
+  add_option( opt_bool( "allow_shimmer_lance", allow_shimmer_lance ) );
   player_t::create_options();
 }
 
@@ -6760,6 +6784,7 @@ void mage_t::copy_from( player_t* source )
   global_cinder_count       = p -> global_cinder_count;
   firestarter_time          = p -> firestarter_time;
   blessing_of_wisdom_count  = p -> blessing_of_wisdom_count;
+  allow_shimmer_lance       = p -> allow_shimmer_lance;
 }
 
 // mage_t::create_pets ========================================================
@@ -7095,6 +7120,7 @@ void mage_t::create_buffs()
     -> set_tick_behavior( BUFF_TICK_CLIP );
   buffs.t19_oh_buff = stat_buff_creator_t( this, "ancient_knowledge", find_spell( 221648 ) )
                         .trigger_spell( sets -> set( specialization(), T19OH, B8 ) );
+  buffs.shimmer     = buff_creator_t( this, "shimmer", find_spell( 212653 ) );
 }
 
 // mage_t::init_gains =======================================================
