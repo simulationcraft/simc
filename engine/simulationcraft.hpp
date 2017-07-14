@@ -105,6 +105,7 @@ struct xml_node_t;
 class xml_writer_t;
 struct real_ppm_t;
 struct shuffled_rng_t;
+struct ground_aoe_event_t;
 namespace highchart {
   struct chart_t;
 }
@@ -8244,7 +8245,14 @@ struct ground_aoe_params_t
     PARTIAL_EXPIRATION_PULSE
   };
 
+  enum state_type
+  {
+    EVENT_CREATED = 0,
+    EVENT_DESTRUCTED
+  };
+
   using param_cb_t = std::function<void(void)>;
+  using state_cb_t = std::function<void(state_type, ground_aoe_event_t*)>;
 
   player_t* target_;
   double x_, y_;
@@ -8254,6 +8262,7 @@ struct ground_aoe_params_t
   expiration_pulse_type expiration_pulse_;
   unsigned n_pulses_;
   param_cb_t expiration_cb_;
+  state_cb_t state_cb_;
 
   ground_aoe_params_t() :
     target_( nullptr ), x_( -1 ), y_( -1 ), hasted_( NOTHING ), action_( nullptr ),
@@ -8273,6 +8282,7 @@ struct ground_aoe_params_t
   expiration_pulse_type expiration_pulse() const { return expiration_pulse_; }
   unsigned n_pulses() const { return n_pulses_; }
   const param_cb_t& expiration_callback() const { return expiration_cb_; }
+  const state_cb_t& state_callback() const { return state_cb_; }
 
   ground_aoe_params_t& target( player_t* p )
   {
@@ -8332,6 +8342,9 @@ struct ground_aoe_params_t
 
   ground_aoe_params_t& expiration_callback( const param_cb_t& cb )
   { expiration_cb_ = cb; return *this; }
+
+  ground_aoe_params_t& state_callback( const state_cb_t& cb )
+  { state_cb_ = cb; return *this; }
 };
 
 // Delayed expiration callback for groud_aoe_event_t
@@ -8386,6 +8399,11 @@ protected:
       pulse_state = params -> action() -> get_state();
       action_t* spell_ = params -> action();
       spell_ -> snapshot_state( pulse_state, spell_ -> amount_type( pulse_state ) );
+    }
+
+    if ( params -> state_callback() )
+    {
+      params -> state_callback()( ground_aoe_params_t::EVENT_CREATED, this );
     }
   }
 public:
@@ -8523,6 +8541,12 @@ public:
     }
 
     spell_ -> schedule_execute( spell_ -> get_state( pulse_state ) );
+
+    // This event is about to be destroyed, notify callback of the event if needed
+    if ( params -> state_callback() )
+    {
+      params -> state_callback()( ground_aoe_params_t::EVENT_DESTRUCTED, this );
+    }
 
     // Schedule next tick, if it can fit into the duration
     if ( may_pulse() )
