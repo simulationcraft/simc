@@ -198,8 +198,8 @@ public:
     cooldown_t* avenging_wrath;          // Righteous Protector (prot)
     cooldown_t* light_of_the_protector;  // Righteous Protector (prot) / Saruin
     cooldown_t* hand_of_the_protector;   // Righteous Protector (prot) / Saruin
-  cooldown_t* judgment;         // Grand Crusader + Crusader's Judgment
-  cooldown_t* guardian_of_ancient_kings; // legen chest
+    cooldown_t* judgment;         // Grand Crusader + Crusader's Judgment
+    cooldown_t* guardian_of_ancient_kings; // legen chest
 
     // whoo fist of justice
     cooldown_t* hammer_of_justice;
@@ -217,7 +217,7 @@ public:
     const spell_data_t* divine_bulwark;
     const spell_data_t* grand_crusader;
     const spell_data_t* guarded_by_the_light;
-    const spell_data_t* hand_of_light;
+    const spell_data_t* divine_judgment;
     const spell_data_t* holy_insight;
     const spell_data_t* infusion_of_light;
     const spell_data_t* lightbringer;
@@ -540,7 +540,7 @@ public:
 
   virtual double current_health() const override;
 
-  double  get_divine_judgment() const;
+  double  get_divine_judgment( bool is_judgment = false ) const;
   void    trigger_grand_crusader();
   void    trigger_holy_shield( action_state_t* s );
   void    trigger_painful_truths( action_state_t* s );
@@ -3792,8 +3792,7 @@ struct judgment_aoe_t : public paladin_melee_attack_t
   double action_multiplier() const override
   {
     double am = paladin_melee_attack_t::action_multiplier();
-    // todo: refer to actual spelldata instead of magic constant
-    am *= 1.0 + 2 * p() -> get_divine_judgment();
+    am *= 1.0 + p() -> get_divine_judgment( true );
     return am;
   }
 
@@ -3906,7 +3905,7 @@ struct judgment_t : public paladin_melee_attack_t
   {
     double am = paladin_melee_attack_t::action_multiplier();
     // todo: refer to actual spelldata instead of magic constant
-    am *= 1.0 + 2 * p() -> get_divine_judgment();
+    am *= 1.0 + p() -> get_divine_judgment( true );
     return am;
   }
 };
@@ -5543,7 +5542,7 @@ void paladin_t::init_spells()
 
   // Masteries
   passives.divine_bulwark         = find_mastery_spell( PALADIN_PROTECTION );
-  passives.hand_of_light          = find_mastery_spell( PALADIN_RETRIBUTION );
+  passives.divine_judgment        = find_mastery_spell( PALADIN_RETRIBUTION );
   passives.lightbringer           = find_mastery_spell( PALADIN_HOLY );
 
   // Specializations
@@ -6526,12 +6525,16 @@ void paladin_t::activate()
 
 // paladin_t::get_divine_judgment =============================================
 
-double paladin_t::get_divine_judgment() const
+double paladin_t::get_divine_judgment(bool is_judgment) const
 {
   if ( specialization() != PALADIN_RETRIBUTION ) return 0.0;
 
   double handoflight;
   handoflight = cache.mastery_value(); // HoL modifier is in effect #1
+  if ( is_judgment ) {
+    handoflight *= passives.divine_judgment -> effectN( 3 ).sp_coeff();
+    handoflight /= passives.divine_judgment -> effectN( 1 ).sp_coeff();
+  }
 
   return handoflight;
 }
