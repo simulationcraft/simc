@@ -7414,7 +7414,7 @@ void mage_t::apl_arcane()
   action_priority_list_t* burn                = get_action_priority_list( "burn"             );
 
   default_list -> add_action( this, "Counterspell", "if=target.debuff.casting.react", "Interrupt the boss when possible." );
-  default_list -> add_action(this, "Time Warp", "if=buff.bloodlust.down&(time=0|(buff.arcane_power.up&(buff.potion.up|!action.potion.usable))|target.time_to_die<=buff.bloodlust.duration)", "3 different lust usages to support Shard: on pull; during Arcane Power (with potion, preferably); end of fight.");
+  default_list -> add_action( this, "Time Warp", "if=buff.bloodlust.down&(time=0|(buff.arcane_power.up&(buff.potion.up|!action.potion.usable))|target.time_to_die<=buff.bloodlust.duration)", "3 different lust usages to support Shard: on pull; during Arcane Power (with potion, preferably); end of fight." );
   default_list -> add_action( "call_action_list,name=variables", "Set variables used throughout the APL." );
   default_list -> add_action( "cancel_buff,name=presence_of_mind,if=active_enemies>1&set_bonus.tier20_2pc", "AoE scenarios will delay our Presence of Mind cooldown because we'll be using Arcane Explosion instead of Arcane Blast, so we cancel the aura immediately." );
   default_list -> add_action( mage_t::get_special_use_items( "horn_of_valor" ) );
