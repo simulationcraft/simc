@@ -5518,13 +5518,13 @@ void rogue_t::trigger_poison_bomb( const action_state_t* state )
   {
     make_event<ground_aoe_event_t>( *sim, this, ground_aoe_params_t()
                                     .target( state -> target )
-                  .x( state -> target -> x_position)
-                  .y( state -> target -> y_position)
+                                    .x( state -> target -> x_position)
+                                    .y( state -> target -> y_position)
                                     //FIXME Hotfix 09-24: Hardcoded to 500ms, not found in spell data, still the case as of 04/08/2017.
                                     .pulse_time( timespan_t::from_seconds( 0.5 ) )
                                     .duration( spell.bag_of_tricks_driver -> duration() )
                                     .start_time( sim -> current_time() )
-                                    .action( poison_bomb ), true );
+                                    .action( poison_bomb ));
   }
 }
 
