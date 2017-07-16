@@ -167,6 +167,7 @@ public:
     buff_t* the_mantle_of_command;
     buff_t* celerity_of_the_windrunners;
     buff_t* parsels_tongue;
+    buff_t* sentinel_marking;
 
     haste_buff_t* sephuzs_secret;
   } buffs;
@@ -212,6 +213,7 @@ public:
     proc_t* zevrims_hunger;
     proc_t* marking_targets;
     proc_t* wasted_marking_targets;
+    proc_t* wasted_sentinel_marks;
     proc_t* animal_instincts_mongoose;
     proc_t* animal_instincts_aspect;
     proc_t* animal_instincts_harpoon;
@@ -4501,13 +4503,19 @@ struct sentinel_t : public hunter_spell_t
       ground_aoe = background = dual = tick_zero = true;
       harmful = false;
       callbacks = false;
-      radius = p->find_spell(206817)->effectN(1).radius();
+      radius = p->talents.sentinel->effectN(1).radius();
     }
 
     void impact(action_state_t* s) override
     {
-      p()->buffs.hunters_mark_exists->trigger();
-      td(s->target)->debuffs.hunters_mark->trigger();
+      buff_t* hunters_mark = td( s -> target ) -> debuffs.hunters_mark;
+      if ( hunters_mark -> check() )
+        p() -> procs.wasted_sentinel_marks -> occur();
+      else
+      {
+        p() -> buffs.hunters_mark_exists -> trigger();
+        hunters_mark -> trigger();
+      }
     }
   };
 
@@ -4526,6 +4534,8 @@ struct sentinel_t : public hunter_spell_t
   {
     hunter_spell_t::execute();
 
+    p() -> buffs.sentinel_marking -> trigger();
+
     make_event<ground_aoe_event_t>(*sim, p(), ground_aoe_params_t()
       .target(execute_state->target)
       .x(execute_state->target->x_position)
@@ -4535,6 +4545,20 @@ struct sentinel_t : public hunter_spell_t
       .start_time(sim->current_time())
       .action(sentinel_mark)
       .hasted(ground_aoe_params_t::NOTHING), true);
+  }
+
+  bool marks_next_gcd() {
+    return p() -> buffs.sentinel_marking -> check() && ( p() -> buffs.sentinel_marking -> remains() % p() -> buffs.sentinel_marking -> tick_time() < gcd() );
+  }
+
+  expr_t* create_expression( const std::string& name ) override
+  {
+    if ( util::str_compare_ci( name, "marks_next_gcd" ) )
+    {
+      return make_mem_fn_expr( name, *this, &sentinel_t::marks_next_gcd );
+    }
+
+    return hunter_spell_t::create_expression( name );
   }
 };
 
@@ -5998,6 +6022,12 @@ void hunter_t::create_buffs()
     buff_creator_t( this, "t20_4p_bestial_rage", find_spell( 246116 ) )
       .default_value( find_spell( 246116 ) -> effectN( 1 ).percent() );
 
+  buffs.sentinel_marking =
+    buff_creator_t( this, "sentinel_marking" )
+      .duration( talents.sentinel -> duration() )
+      .period( timespan_t::from_seconds( talents.sentinel -> effectN( 2 ).base_value() ) )
+      .quiet( true );
+
   buffs.sephuzs_secret =
     haste_buff_creator_t( this, "sephuzs_secret", find_spell( 208052 ) )
       .default_value( find_spell( 208052 ) -> effectN( 2 ).percent() )
@@ -6078,6 +6108,7 @@ void hunter_t::init_procs()
   procs.zevrims_hunger               = get_proc( "zevrims_hunger" );
   procs.marking_targets              = get_proc( "marking_targets" );
   procs.wasted_marking_targets       = get_proc( "wasted_marking_targets" );
+  procs.wasted_sentinel_marks        = get_proc( "wasted_sentinel_marks" );
   procs.animal_instincts_mongoose    = get_proc( "animal_instincts_mongoose" );
   procs.animal_instincts_aspect      = get_proc( "animal_instincts_aspect" );
   procs.animal_instincts_harpoon     = get_proc( "animal_instincts_harpoon" );
@@ -6245,10 +6276,8 @@ void hunter_t::apl_bm()
   default_list -> add_talent( this, "Stampede", "if=buff.bloodlust.up|buff.bestial_wrath.up|cooldown.bestial_wrath.remains<=2|target.time_to_die<=14" );
   default_list -> add_action( this, "Bestial Wrath", "if=!buff.bestial_wrath.up" );
 
-  default_list -> add_action( this, "Aspect of the Wild", "if=equipped.137101&equipped.140806&talent.one_with_the_pack.enabled",
+  default_list -> add_action( this, "Aspect of the Wild", "if=(equipped.137101&equipped.140806&talent.one_with_the_pack.enabled)|buff.bestial_wrath.remains>7|target.time_to_die<12",
                                     "With both AotW cdr sources and OwtP, there's no visible benefit if it's delayed, use it on cd. With only one or neither, pair it with Bestial Wrath. Also use it if the fight will end when the buff does." );
-  default_list -> add_action( this, "Aspect of the Wild", "if=buff.bestial_wrath.remains>7" );
-  default_list -> add_action( this, "Aspect of the Wild", "if=target.time_to_die<12" );
 
   default_list -> add_action( this, "Dire Beast", "if=set_bonus.tier19_2pc|!buff.bestial_wrath.up|full_recharge_time<gcd.max|cooldown.titans_thunder.up|spell_targets>1",
                                     "Hold charges of Dire Beast as long as possible to take advantage of T20 2pc unless T19 2pc is on." );
@@ -6296,14 +6325,12 @@ void hunter_t::apl_mm()
   default_list -> add_talent( this, "Volley", "toggle=on" );
 
   default_list -> add_action( "variable,name=pooling_for_piercing,value=talent.piercing_shot.enabled&cooldown.piercing_shot.remains<5&lowest_vuln_within.5>0&lowest_vuln_within.5>cooldown.piercing_shot.remains&(buff.trueshot.down|spell_targets=1)", 
-                              "Start being conservative with focus if expecting a Piercing Shot at the end of the current window.");
+                              "Start being conservative with focus if expecting a Piercing Shot at the end of the current Vulnerable debuff. "
+                              "The expression lowest_vuln_within.<range> is used to check the lowest Vulnerable debuff duration on all enemies within the specified range from the target.");
 
-  default_list -> add_action( "variable,name=waiting_for_sentinel,"
-                              "value=talent.sentinel.enabled&(buff.marking_targets.up|buff.trueshot.up)&!cooldown.sentinel.up&"
-                                    "((cooldown.sentinel.remains>54&cooldown.sentinel.remains<(54+gcd.max))|"
-                                     "(cooldown.sentinel.remains>48&cooldown.sentinel.remains<(48+gcd.max))|"
-                                     "(cooldown.sentinel.remains>42&cooldown.sentinel.remains<(42+gcd.max)))", 
-                              "Make sure a Marking Targets proc isn't wasted if the Hunter's Mark debuff will be overwritten by an active Sentinel before we can use Marked Shot." );
+  default_list -> add_action( "variable,name=waiting_for_sentinel,value=talent.sentinel.enabled&(buff.marking_targets.up|buff.trueshot.up)&action.sentinel.marks_next_gcd",
+                              "Prevent wasting a Marking Targets proc if the Hunter's Mark debuff could be overwritten by an active Sentinel before we can use Marked Shot. "
+                              "The expression action.sentinel.marks_next_gcd is used to determine if an active Sentinel will mark the targets in its area within the next gcd.");
 
   // Choose APL
   default_list -> add_action( "call_action_list,name=cooldowns" );
@@ -6348,10 +6375,10 @@ void hunter_t::apl_mm()
   patient_sniper -> add_action( "variable,name=vuln_window,op=setif,"
                                 "value=cooldown.sidewinders.full_recharge_time,"
                                 "value_else=debuff.vulnerability.remains,"
-                                "condition=talent.sidewinders.enabled&cooldown.sidewinders.full_recharge_time<variable.vuln_window", 
+                                "condition=talent.sidewinders.enabled&cooldown.sidewinders.full_recharge_time<variable.vuln_window",
                                 "Sidewinders charges could cap sooner than the Vulnerable debuff ends, so clip the current window to the recharge time if it will." );
 
-  patient_sniper -> add_action( "variable,name=vuln_aim_casts,op=set,value=floor(variable.vuln_window%action.aimed_shot.execute_time)", 
+  patient_sniper -> add_action( "variable,name=vuln_aim_casts,op=set,value=floor(variable.vuln_window%action.aimed_shot.execute_time)",
                                 "Determine the number of Aimed Shot casts that are possible according to available focus and remaining Vulnerable duration." );
 
   patient_sniper -> add_action( "variable,name=vuln_aim_casts,op=set,"
@@ -6364,9 +6391,7 @@ void hunter_t::apl_mm()
 
   patient_sniper -> add_talent( this, "Piercing Shot", "if=cooldown.piercing_shot.up&spell_targets=1&lowest_vuln_within.5>0&lowest_vuln_within.5<1" );
   patient_sniper -> add_talent( this, "Piercing Shot", "if=cooldown.piercing_shot.up&spell_targets>1&lowest_vuln_within.5>0&((!buff.trueshot.up&focus>80&(lowest_vuln_within.5<1|debuff.hunters_mark.up))|(buff.trueshot.up&focus>105&lowest_vuln_within.5<6))" );
-  patient_sniper -> add_action( this, "Aimed Shot", "if=spell_targets>1&debuff.vulnerability.remains>cast_time&buff.sentinels_sight.stack>=spell_targets.multishot*5" );
-  patient_sniper -> add_action( this, "Aimed Shot", "if=spell_targets>1&debuff.vulnerability.remains>cast_time&buff.lock_and_load.up" );
-  patient_sniper -> add_action( this, "Aimed Shot", "if=spell_targets>1&debuff.vulnerability.remains>cast_time&talent.trick_shot.enabled&set_bonus.tier20_2pc&!buff.t20_2p_critical_aimed_damage.up&action.aimed_shot.in_flight" );
+  patient_sniper -> add_action( this, "Aimed Shot", "if=spell_targets>1&debuff.vulnerability.remains>cast_time&(buff.sentinels_sight.stack>=spell_targets.multishot*5|buff.lock_and_load.up|(talent.trick_shot.enabled&set_bonus.tier20_2pc&!buff.t20_2p_critical_aimed_damage.up&action.aimed_shot.in_flight))" );
   patient_sniper -> add_action( this, "Marked Shot", "if=spell_targets>1" );
   patient_sniper -> add_action( this, "Multi-Shot", "if=spell_targets>1&(buff.marking_targets.up|buff.trueshot.up)" );
   patient_sniper -> add_action( this, "Windburst", "if=variable.vuln_aim_casts<1&!variable.pooling_for_piercing" );
