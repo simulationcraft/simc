@@ -1,6 +1,6 @@
 #define PTR_TALENT_SIZE (617)
 
-// 617 talents, wow build 24287
+// 617 talents, wow build 24539
 static struct talent_data_t __ptr_talent_data[] = {
 //{ Name                                ,    Id, Flgs,  Class, Spc, Col, Row, SpellID, ReplcID, S1 },
   { "Second Wind"                       , 15757, 0x00, 0x0001,   0,   0,   3,   29838,       0,  0 },
@@ -158,7 +158,7 @@ static struct talent_data_t __ptr_talent_data[] = {
   { "Fury of Elune"                     , 21648, 0x00, 0x0400, 102,   0,   6,  202770,       0,  0 },
   { "Bloodtalons"                       , 21649, 0x00, 0x0400, 103,   1,   6,  155672,       0,  0 },
   { "Stonebark"                         , 21651, 0x00, 0x0400, 105,   1,   6,  197061,       0,  0 },
-  { "Brutal Slash"                      , 21653, 0x00, 0x0400, 103,   2,   6,  202028,  213764,  0 },
+  { "Elune's Guidance"                  , 21653, 0x00, 0x0400, 103,   2,   6,  202060,       0,  0 },
   { "Nature's Balance"                  , 21655, 0x00, 0x0400, 102,   2,   6,  202430,       0,  0 },
   { "Ravager"                           , 21667, 0x00, 0x0001,  71,   2,   6,  152277,  227847,  0 },
   { "Beacon of Faith"                   , 21668, 0x00, 0x0002,  65,   0,   6,  156910,       0,  0 },
@@ -166,7 +166,7 @@ static struct talent_data_t __ptr_talent_data[] = {
   { "High Tide"                         , 21675, 0x00, 0x0040, 264,   2,   6,  157154,       0,  0 },
   { "Improved Dreadstalkers"            , 21694, 0x00, 0x0100, 266,   1,   1,  196272,       0,  0 },
   { "Eradication"                       , 21695, 0x00, 0x0100, 267,   1,   1,  196412,       0,  0 },
-  { "Savage Roar"                       , 21702, 0x00, 0x0400, 103,   2,   4,   52610,       0,  0 },
+  { "Jagged Wounds"                     , 21702, 0x00, 0x0400, 103,   2,   4,  202032,       0,  0 },
   { "Cultivation"                       , 21704, 0x00, 0x0400, 105,   2,   4,  200390,       0,  0 },
   { "Incarnation: King of the Jungle"   , 21705, 0x00, 0x0400, 103,   1,   4,  102543,  106951,  0 },
   { "Incarnation: Guardian of Ursoc"    , 21706, 0x00, 0x0400, 104,   1,   4,  102558,       0,  0 },
@@ -175,7 +175,7 @@ static struct talent_data_t __ptr_talent_data[] = {
   { "Soul of the Forest"                , 21708, 0x00, 0x0400, 103,   0,   4,  158476,       0,  0 },
   { "Soul of the Forest"                , 21709, 0x00, 0x0400, 104,   0,   4,  158477,       0,  0 },
   { "Soul of the Forest"                , 21710, 0x00, 0x0400, 105,   0,   4,  158478,       0,  0 },
-  { "Jagged Wounds"                     , 21711, 0x00, 0x0400, 103,   1,   5,  202032,       0,  0 },
+  { "Brutal Slash"                      , 21711, 0x00, 0x0400, 103,   1,   5,  202028,  213764,  0 },
   { "Guardian of Elune"                 , 21712, 0x00, 0x0400, 104,   1,   5,  155578,       0,  0 },
   { "Inner Peace"                       , 21713, 0x00, 0x0400, 105,   1,   5,  197073,       0,  0 },
   { "Sabertooth"                        , 21714, 0x00, 0x0400, 103,   0,   5,  202031,       0,  0 },
@@ -434,7 +434,7 @@ static struct talent_data_t __ptr_talent_data[] = {
   { "Lunar Inspiration"                 , 22365, 0x00, 0x0400, 103,   2,   0,  155580,       0,  0 },
   { "Balance Affinity"                  , 22366, 0x00, 0x0400, 105,   0,   2,  197632,       0,  0 },
   { "Feral Affinity"                    , 22367, 0x00, 0x0400, 105,   1,   2,  197490,       0,  0 },
-  { "Elune's Guidance"                  , 22370, 0x00, 0x0400, 103,   2,   5,  202060,       0,  0 },
+  { "Savage Roar"                       , 22370, 0x00, 0x0400, 103,   2,   5,   52610,       0,  0 },
   { "Sweeping Strikes"                  , 22371, 0x00, 0x0001,  71,   2,   0,  202161,       0,  0 },
   { "Storm Bolt"                        , 22372, 0x00, 0x0001,  72,   1,   1,  107570,       0,  0 },
   { "Shockwave"                         , 22373, 0x00, 0x0001,  71,   0,   1,   46968,       0,  0 },

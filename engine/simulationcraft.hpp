@@ -6,7 +6,7 @@
 #define SIMULATIONCRAFT_H
 
 #define SC_MAJOR_VERSION "725"
-#define SC_MINOR_VERSION "01"
+#define SC_MINOR_VERSION "02"
 #define SC_VERSION ( SC_MAJOR_VERSION "-" SC_MINOR_VERSION )
 #define SC_BETA 0
 #if SC_BETA
@@ -105,6 +105,7 @@ struct xml_node_t;
 class xml_writer_t;
 struct real_ppm_t;
 struct shuffled_rng_t;
+struct ground_aoe_event_t;
 namespace highchart {
   struct chart_t;
 }
@@ -206,6 +207,9 @@ struct artifact_power_t
 
   operator const spell_data_t*() const
   { return spell_; }
+
+  const artifact_power_data_t* power() const
+  { return power_; }
 
   double value( size_t idx = 1 ) const
   {
@@ -2933,6 +2937,7 @@ struct set_bonus_t
       case T18:
       case T19:
       case T20:
+      case T21:
         break;
       default:
         assert( 0 && "Attempt to access role-based set bonus through specialization." );
@@ -4502,7 +4507,10 @@ struct player_t : public actor_t
   bool is_moving() const { return buffs.movement && buffs.movement -> check(); }
 
   bool parse_talents_numbers( const std::string& talent_string );
+  // Old-style armory format for xx.battle.net / xx.battlenet.com
   bool parse_talents_armory( const std::string& talent_string );
+  // New armory format used in worldofwarcraft.com / www.wowchina.com
+  bool parse_talents_armory2( const std::string& talent_string );
   bool parse_talents_wowhead( const std::string& talent_string );
 
   bool parse_artifact_wowdb( const std::string& artifact_string );
@@ -4608,7 +4616,7 @@ struct player_t : public actor_t
   uptime_t*   get_uptime  ( const std::string& name );
   luxurious_sample_data_t* get_sample_data( const std::string& name );
   double      get_player_distance( const player_t& ) const;
-  double      get_ground_aoe_distance( action_state_t& ) const;
+  double      get_ground_aoe_distance( const action_state_t& ) const;
   double      get_position_distance( double m = 0, double v = 0 ) const;
   double avg_item_level() const;
   action_priority_list_t* get_action_priority_list( const std::string& name, const std::string& comment = std::string() );
@@ -8237,7 +8245,16 @@ struct ground_aoe_params_t
     PARTIAL_EXPIRATION_PULSE
   };
 
+  enum state_type
+  {
+    EVENT_STARTED = 0,  // Ground aoe event started
+    EVENT_CREATED,      // A new ground_aoe_event_t object created
+    EVENT_DESTRUCTED,   // A ground_aoe_Event_t object destructed
+    EVENT_STOPPED       // Ground aoe event stopped
+  };
+
   using param_cb_t = std::function<void(void)>;
+  using state_cb_t = std::function<void(state_type, ground_aoe_event_t*)>;
 
   player_t* target_;
   double x_, y_;
@@ -8247,6 +8264,7 @@ struct ground_aoe_params_t
   expiration_pulse_type expiration_pulse_;
   unsigned n_pulses_;
   param_cb_t expiration_cb_;
+  state_cb_t state_cb_;
 
   ground_aoe_params_t() :
     target_( nullptr ), x_( -1 ), y_( -1 ), hasted_( NOTHING ), action_( nullptr ),
@@ -8266,6 +8284,7 @@ struct ground_aoe_params_t
   expiration_pulse_type expiration_pulse() const { return expiration_pulse_; }
   unsigned n_pulses() const { return n_pulses_; }
   const param_cb_t& expiration_callback() const { return expiration_cb_; }
+  const state_cb_t& state_callback() const { return state_cb_; }
 
   ground_aoe_params_t& target( player_t* p )
   {
@@ -8325,6 +8344,9 @@ struct ground_aoe_params_t
 
   ground_aoe_params_t& expiration_callback( const param_cb_t& cb )
   { expiration_cb_ = cb; return *this; }
+
+  ground_aoe_params_t& state_callback( const state_cb_t& cb )
+  { state_cb_ = cb; return *this; }
 };
 
 // Delayed expiration callback for groud_aoe_event_t
@@ -8380,12 +8402,22 @@ protected:
       action_t* spell_ = params -> action();
       spell_ -> snapshot_state( pulse_state, spell_ -> amount_type( pulse_state ) );
     }
+
+    if ( params -> state_callback() )
+    {
+      params -> state_callback()( ground_aoe_params_t::EVENT_CREATED, this );
+    }
   }
 public:
   // Make a copy of the parameters, and use that object until this event expires
   ground_aoe_event_t( player_t* p, const ground_aoe_params_t& param, bool immediate_pulse = false ) :
     ground_aoe_event_t( p, new ground_aoe_params_t( param ), nullptr, immediate_pulse )
-  { }
+  {
+    if ( params -> state_callback() )
+    {
+      params -> state_callback()( ground_aoe_params_t::EVENT_STARTED, this );
+    }
+  }
 
   // Cleans up memory for any on-going ground aoe events when the iteration ends, or when the ground
   // aoe finishes during iteration.
@@ -8517,6 +8549,12 @@ public:
 
     spell_ -> schedule_execute( spell_ -> get_state( pulse_state ) );
 
+    // This event is about to be destroyed, notify callback of the event if needed
+    if ( params -> state_callback() )
+    {
+      params -> state_callback()( ground_aoe_params_t::EVENT_DESTRUCTED, this );
+    }
+
     // Schedule next tick, if it can fit into the duration
     if ( may_pulse() )
     {
@@ -8529,6 +8567,12 @@ public:
     else
     {
       handle_expiration();
+
+      // This event is about to be destroyed, notify callback of the event if needed
+      if ( params -> state_callback() )
+      {
+        params -> state_callback()( ground_aoe_params_t::EVENT_STOPPED, this );
+      }
     }
   }
 

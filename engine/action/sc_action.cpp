@@ -235,10 +235,7 @@ struct action_execute_event_t : public player_event_t
     {
       // Action target must follow any potential pre-execute-state target if it differs from the
       // current (default) target of the action.
-      if ( target != action -> target )
-      {
-        action -> target = target;
-      }
+      action -> set_target( target );
       action -> execute();
     }
 
@@ -2161,7 +2158,7 @@ void action_t::init()
   {
     if ( harmful )
     {
-      if ( this -> travel_speed > 0 || this -> base_execute_time > timespan_t::zero() )
+      if ( this -> travel_time() > timespan_t::zero() || this -> base_execute_time > timespan_t::zero() )
       {
         player -> precombat_action_list.push_back( this );
       }
@@ -2804,7 +2801,7 @@ expr_t* action_t::create_expression( const std::string& name_str )
         {}
         virtual double evaluate() override
         {
-          if ( action.player -> last_foreground_action )
+          if ( prev && action.player -> last_foreground_action )
             return action.player -> last_foreground_action -> internal_id == prev -> internal_id;
           return false;
         }
@@ -2975,9 +2972,7 @@ expr_t* action_t::create_expression( const std::string& name_str )
       {}
       virtual double evaluate() override
       {
-        if ( ! previously_used )
-          return false;
-        if ( as<int>(action.player -> prev_gcd_actions.size()) >= gcd )
+        if ( previously_used && as<int>(action.player -> prev_gcd_actions.size()) >= gcd )
           return ( *( action.player -> prev_gcd_actions.end() - gcd ) ) -> internal_id == previously_used -> internal_id;
         return false;
       }

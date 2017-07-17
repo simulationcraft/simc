@@ -5,7 +5,7 @@ race=night_elf
 timeofday=day
 role=attack
 position=back
-talents=3310023
+talents=3310022
 artifact=44:0:0:0:0:1052:1:1053:1:1054:1:1055:1:1056:1:1057:1:1058:1:1059:4:1060:4:1061:4:1062:4:1063:4:1064:4:1065:4:1066:4:1067:4:1348:1:1385:1:1581:4:1582:1:1583:1:1584:1:1652:1
 
 # Default consumables
@@ -67,7 +67,7 @@ actions.build+=/saber_slash,if=variable.ss_useable
 
 # Cooldowns
 actions.cds=potion,if=buff.bloodlust.react|target.time_to_die<=60|buff.adrenaline_rush.up
-actions.cds+=/use_item,name=specter_of_betrayal,if=buff.bloodlust.react|target.time_to_die<=20|combo_points.deficit<=2
+actions.cds+=/use_item,name=specter_of_betrayal,if=(mantle_duration>0|buff.curse_of_the_dreadblades.up|(cooldown.vanish.remains>11&cooldown.curse_of_the_dreadblades.remains>11))
 actions.cds+=/blood_fury
 actions.cds+=/berserking
 actions.cds+=/arcane_torrent,if=energy.deficit>40

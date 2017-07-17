@@ -565,6 +565,7 @@ public:
     const spell_data_t* plate_specialization;
     const spell_data_t* death_knight;
     const spell_data_t* unholy_death_knight;
+    const spell_data_t* frost_death_knight;
 
     // Blood
     const spell_data_t* blood_death_knight;
@@ -799,6 +800,7 @@ public:
     const spell_data_t* perseverance_of_the_ebon_martyr;
     const spell_data_t* sephuzs_secret;
     const spell_data_t* death_march;
+    const spell_data_t* lanathiels_lament;
     double toravons;
 
     // Unholy
@@ -812,6 +814,7 @@ public:
       perseverance_of_the_ebon_martyr( spell_data_t::not_found() ),
       sephuzs_secret( nullptr ),
       death_march( spell_data_t::not_found() ),
+      lanathiels_lament( spell_data_t::not_found() ),
       toravons( 0 ), the_instructors_fourth_lesson( 0 ), draugr_girdle_everlasting_king( 0 ),
       uvanimor_the_unbeautiful( 0 )
     { }
@@ -848,6 +851,7 @@ public:
     _runes( this )
   {
     range::fill( pets.army_ghoul, nullptr );
+    range::fill( pets.apocalypse_ghoul, nullptr );
 
     cooldown.antimagic_shell = get_cooldown( "antimagic_shell" );
     cooldown.army_of_the_dead = get_cooldown( "army_of_the_dead" );
@@ -915,6 +919,7 @@ public:
   double    composite_melee_expertise( const weapon_t* ) const override;
   double    composite_player_multiplier( school_e school ) const override;
   double    composite_player_target_multiplier( player_t* target, school_e school ) const override;
+  double    composite_player_heal_multiplier( const action_state_t* ) const override;
   double    composite_player_pet_damage_multiplier( const action_state_t* /* state */ ) const override;
   double    composite_player_critical_damage_multiplier( const action_state_t* ) const override;
   double    composite_crit_avoidance() const override;
@@ -1816,8 +1821,12 @@ struct dt_pet_t : public base_ghoul_pet_t
   // Unholy T18 4pc buff
   buff_t* crazed_monstrosity;
 
+  // Unholy Vigor gain object
+  gain_t* unholy_vigor;
+
   dt_pet_t( death_knight_t* owner, const std::string& name ) :
-    base_ghoul_pet_t( owner, name, false ), crazed_monstrosity( nullptr )
+    base_ghoul_pet_t( owner, name, false ), crazed_monstrosity( nullptr ),
+    unholy_vigor( get_gain( "Unholy Vigor" ) )
   { }
 
   attack_t* create_auto_attack() override
@@ -1882,6 +1891,18 @@ struct ghoul_pet_t : public dt_pet_t
     claw_t( ghoul_pet_t* player, const std::string& options_str ) :
       super( player, "claw", player -> find_spell( 91776 ), options_str, false )
     { triggers_infected_claws = true; }
+
+    double action_multiplier() const override
+    {
+      double m = super::action_multiplier();
+
+      if ( p() -> o() -> mastery.dreadblade -> ok() )
+      {
+        m *= 1.0 + p() -> o() -> cache.mastery_value();
+      }
+
+      return m;
+    }
   };
 
   struct gnaw_t : public dt_melee_ability_t<ghoul_pet_t>
@@ -1985,6 +2006,18 @@ struct sludge_belcher_pet_t : public dt_pet_t
     cleaver_t( sludge_belcher_pet_t* player, const std::string& options_str ) :
       super( player, "cleaver", player -> find_spell( 212335 ), options_str, false )
     { triggers_infected_claws = true; }
+
+    double action_multiplier() const override
+    {
+      double m = super::action_multiplier();
+
+      if ( p() -> o() -> mastery.dreadblade -> ok() )
+      {
+        m *= 1.0 + p() -> o() -> cache.mastery_value();
+      }
+
+      return m;
+    }
   };
 
   struct smash_t : public dt_melee_ability_t<sludge_belcher_pet_t>
@@ -2474,6 +2507,23 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
     {
       background = true;
     }
+
+    bool verify_actor_spec() const override
+    {
+      std::vector<specialization_e> spec_list;
+      auto _s = p() -> o() -> specialization();
+
+      if ( data().id() && p() -> o() -> dbc.ability_specialization( data().id(), spec_list ) &&
+           range::find( spec_list, _s ) == spec_list.end() )
+      {
+        sim -> errorf( "Player %s attempting to execute action %s without the required spec.\n",
+            player -> name(), name() );
+
+        return false;
+      }
+
+      return true;
+    }
   };
 
   struct drw_attack_t : public pet_melee_attack_t<dancing_rune_weapon_pet_t>
@@ -2483,6 +2533,23 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
     {
       background = true;
       normalize_weapon_speed = false; // DRW weapon-based abilities use non-normalized speed
+    }
+
+    bool verify_actor_spec() const override
+    {
+      std::vector<specialization_e> spec_list;
+      auto _s = p() -> o() -> specialization();
+
+      if ( data().id() && p() -> o() -> dbc.ability_specialization( data().id(), spec_list ) &&
+           range::find( spec_list, _s ) == spec_list.end() )
+      {
+        sim -> errorf( "Player %s attempting to execute action %s without the required spec.\n",
+            player -> name(), name() );
+
+        return false;
+      }
+
+      return true;
     }
   };
 
@@ -2648,6 +2715,16 @@ struct death_knight_action_t : public Base
     if ( this -> data().affected_by( p -> spec.unholy_death_knight -> effectN( 2 ) ) )
     {
       this -> base_td_multiplier *= 1.0 + p -> spec.unholy_death_knight -> effectN( 2 ).percent();
+    }
+
+    if ( this -> data().affected_by( p -> spec.frost_death_knight -> effectN( 1 ) ) )
+    {
+      this -> base_dd_multiplier *= 1.0 + p -> spec.frost_death_knight -> effectN( 1 ).percent();
+    }
+
+    if ( this -> data().affected_by( p -> spec.frost_death_knight -> effectN( 2 ) ) )
+    {
+      this -> base_td_multiplier *= 1.0 + p -> spec.frost_death_knight -> effectN( 2 ).percent();
     }
   }
 
@@ -3205,6 +3282,7 @@ struct necrobomb_t : public death_knight_spell_t
 
   // 2016-08-22 Necrobomb is not affected by Feast of Souls because reasons.
   // 2017-06-28 Same for T20 2PC set bonus
+  // 2017-07-09 Necrobomb is actually done by a pet, so the 5% pet damage hotfix will apply to it
   double action_multiplier() const override
   {
     double m = death_knight_spell_t::action_multiplier();
@@ -3215,6 +3293,8 @@ struct necrobomb_t : public death_knight_spell_t
     }
 
     m /= 1.0 + p() -> buffs.t20_2pc_unholy -> check_value();
+
+    m *= 1.0 + p() -> spec.unholy_death_knight -> effectN( 3 ).percent();
 
     return m;
   }
@@ -4123,7 +4203,7 @@ struct dark_transformation_t : public death_knight_spell_t
 
   bool ready() override
   {
-    if ( p() -> pets.ghoul_pet -> is_sleeping() )
+    if ( ! p() -> pets.ghoul_pet || p() -> pets.ghoul_pet -> is_sleeping() )
     {
       return false;
     }
@@ -4203,6 +4283,9 @@ struct death_and_decay_t : public death_knight_spell_t
     base_tick_time *= 1.0 / ( 1.0 + p -> talent.rapid_decomposition -> effectN( 3 ).percent() );
 
     cooldown -> duration *= 1.0 + p -> spec.blood_death_knight -> effectN( 3 ).percent();
+
+    // TODO: Wrong damage spell, so needs to apply manually
+    base_multiplier *= 1.0 + p -> spec.unholy_death_knight -> effectN( 1 ).percent();
   }
 
   // Need to override dot duration to get full ticks
@@ -4229,6 +4312,14 @@ struct death_and_decay_t : public death_knight_spell_t
 
     p() -> buffs.crimson_scourge -> decrement();
     p() -> buffs.death_and_decay_tick -> trigger();
+
+    // Lanathiel's lament will increase the player's damage/healing multipliers while DnD/Defaile is
+    // up. Only heal multiplier must be invalidated here, as the damage multiplier is simc is
+    // treated as a target-based multiplier, and computed every time.
+    if ( p() -> legendary.lanathiels_lament -> ok() )
+    {
+      player -> invalidate_cache( CACHE_PLAYER_HEAL_MULTIPLIER );
+    }
   }
 
   void impact( action_state_t* s ) override
@@ -4240,6 +4331,19 @@ struct death_and_decay_t : public death_knight_spell_t
     else
     {
       death_knight_spell_t::impact( s );
+    }
+  }
+
+  void last_tick( dot_t* d ) override
+  {
+    death_knight_spell_t::last_tick( d );
+
+    // Lanathiel's lament will increase the player's damage/healing multipliers while DnD/Defaile is
+    // up. Only heal multiplier must be invalidated here, as the damage multiplier is simc is
+    // treated as a target-based multiplier, and computed every time.
+    if ( p() -> legendary.lanathiels_lament -> ok() )
+    {
+      player -> invalidate_cache( CACHE_PLAYER_HEAL_MULTIPLIER );
     }
   }
 
@@ -4296,6 +4400,9 @@ struct defile_t : public death_knight_spell_t
     hasted_ticks = false;
     ignore_false_positive = true;
     ground_aoe = true;
+
+    // TODO: Wrong damage spell, so needs to apply manually
+    base_multiplier *= 1.0 + p -> spec.unholy_death_knight -> effectN( 1 ).percent();
   }
 
   // Defile very likely counts as direct damage, as it procs certain trinkets that are flagged for
@@ -4317,6 +4424,19 @@ struct defile_t : public death_knight_spell_t
     return m;
   }
 
+  void execute() override
+  {
+    death_knight_spell_t::execute();
+
+    // Lanathiel's lament will increase the player's damage/healing multipliers while DnD/Defaile is
+    // up. Only heal multiplier must be invalidated here, as the damage multiplier is simc is
+    // treated as a target-based multiplier, and computed every time.
+    if ( p() -> legendary.lanathiels_lament -> ok() )
+    {
+      player -> invalidate_cache( CACHE_PLAYER_HEAL_MULTIPLIER );
+    }
+  }
+
   void impact( action_state_t* s ) override
   {
     if ( s -> target -> debuffs.flying && s -> target -> debuffs.flying -> check() )
@@ -4335,6 +4455,19 @@ struct defile_t : public death_knight_spell_t
 
     p() -> buffs.defile -> trigger();
   }
+
+  void last_tick( dot_t* d ) override
+  {
+    death_knight_spell_t::last_tick( d );
+
+    // Lanathiel's lament will increase the player's damage/healing multipliers while DnD/Defaile is
+    // up. Only heal multiplier must be invalidated here, as the damage multiplier is simc is
+    // treated as a target-based multiplier, and computed every time.
+    if ( p() -> legendary.lanathiels_lament -> ok() )
+    {
+      player -> invalidate_cache( CACHE_PLAYER_HEAL_MULTIPLIER );
+    }
+  }
 };
 
 // Death Coil ===============================================================
@@ -4352,6 +4485,8 @@ struct death_coil_t : public death_knight_spell_t
 
     attack_power_mod.direct = p -> find_spell( 47632 ) -> effectN( 1 ).ap_coeff();
     base_multiplier *= 1.0 + p -> artifact.deadliest_coil.percent();
+    // TODO: Wrong damage spell so generic application does not work
+    base_multiplier *= 1.0 + p -> spec.unholy_death_knight -> effectN( 1 ).percent();
   }
 
   double cost() const override
@@ -4388,8 +4523,13 @@ struct death_coil_t : public death_knight_spell_t
     }
 
     p() -> buffs.necrosis -> trigger();
-    p() -> pets.ghoul_pet -> resource_gain( RESOURCE_ENERGY,
-      unholy_vigor -> effectN( 1 ).resource( RESOURCE_ENERGY ), nullptr, this );
+    if ( p() -> pets.ghoul_pet )
+    {
+      p() -> pets.ghoul_pet -> resource_gain( RESOURCE_ENERGY,
+                                              unholy_vigor -> effectN( 1 ).resource( RESOURCE_ENERGY ),
+                                              p() -> pets.ghoul_pet -> unholy_vigor,
+                                              this );
+    }
 
     p() -> trigger_death_march( execute_state );
   }
@@ -7297,6 +7437,7 @@ void death_knight_t::init_spells()
   spec.runic_empowerment          = find_specialization_spell( "Runic Empowerment" );
   spec.rime                       = find_specialization_spell( "Rime" );
   spec.killing_machine            = find_specialization_spell( "Killing Machine" );
+  spec.frost_death_knight         = find_specialization_spell( "Frost Death Knight" );
 
   // Unholy
   spec.festering_wound            = find_specialization_spell( "Festering Wound" );
@@ -8529,6 +8670,8 @@ double death_knight_t::composite_player_pet_damage_multiplier( const action_stat
   m *= 1.0 + artifact.fleshsearer.percent();
   m *= 1.0 + artifact.cunning_of_the_ebon_blade.percent();
 
+  m *= 1.0 + spec.unholy_death_knight -> effectN( 3 ).percent();
+
   return m;
 }
 
@@ -8543,6 +8686,27 @@ double death_knight_t::composite_player_target_multiplier( player_t* target, sch
   {
     double debuff = td -> debuff.razorice -> data().effectN( 1 ).percent();
     m *= 1.0 + td -> debuff.razorice -> check() * debuff;
+  }
+
+  if ( legendary.lanathiels_lament -> ok() && td -> in_aoe_radius() )
+  {
+    m *= 1.0 + legendary.lanathiels_lament -> effectN( 1 ).percent();
+  }
+
+  return m;
+}
+
+// death_knight_t::composite_player_heal_multiplier ==============================
+
+double death_knight_t::composite_player_heal_multiplier( const action_state_t* state ) const
+{
+  auto m = player_t::composite_player_heal_multiplier( state );
+
+  death_knight_td_t* td = get_target_data( state -> target );
+
+  if ( legendary.lanathiels_lament -> ok() && td -> in_aoe_radius() )
+  {
+    m *= 1.0 + legendary.lanathiels_lament -> effectN( 2 ).percent();
   }
 
   return m;
@@ -9213,6 +9377,15 @@ struct cold_heart_buff_t: public class_buff_cb_t<buff_t>
   { return super::creator( e ).spell( e.player -> find_spell( 235599 ) ); }
 };
 
+struct lanathels_lament_t : public scoped_actor_callback_t<death_knight_t>
+{
+  lanathels_lament_t() : super( DEATH_KNIGHT )
+  { }
+
+  void manipulate( death_knight_t* p, const special_effect_t& ) override
+  { p -> legendary.lanathiels_lament = p -> find_spell( 212975 ); }
+};
+
 struct death_knight_module_t : public module_t {
   death_knight_module_t() : module_t( DEATH_KNIGHT ) {}
 
@@ -9241,6 +9414,7 @@ struct death_knight_module_t : public module_t {
     unique_gear::register_special_effect( 208782, koltiras_newfound_will_t() );
     unique_gear::register_special_effect( 212216, seal_of_necrofantasia_t() );
     unique_gear::register_special_effect( 216059, perseverance_of_the_ebon_martyr_t() );
+    unique_gear::register_special_effect( 212974, lanathels_lament_t() );
     // 7.1.5
     unique_gear::register_special_effect( 235605, consorts_cold_core_t() );
     unique_gear::register_special_effect( 235556, death_march_t() );

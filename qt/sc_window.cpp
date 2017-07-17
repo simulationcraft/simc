@@ -181,24 +181,10 @@ void SC_MainWindow::loadHistory()
   else
     showMaximized();
 
-  QString cache_file = TmpDir + "/simc_cache.dat";
+  QString cache_file = QDir::toNativeSeparators( TmpDir + "/simc_cache.dat" );
   std::string cache_file_str = cache_file.toStdString();
   http::cache_load( cache_file_str.c_str() );
 
-  QVariant history = settings.value( "user_data/historyList" );
-  if ( history.isValid() )
-  {
-    QList<QVariant> a = history.toList();
-    for ( int i = 0; i < a.size(); ++i )
-    {
-      const QVariant& entry = a.at( i );
-      if ( entry.isValid() )
-      {
-        QString s = entry.toString();
-        historyList -> addItem( new QListWidgetItem( s ) );
-      }
-    }
-  }
   optionsTab -> decodeOptions();
   importTab -> automationTab -> decodeSettings();
   spellQueryTab -> decodeSettings();
@@ -219,7 +205,7 @@ void SC_MainWindow::saveHistory()
   settings.setValue( "maximized", bool( windowState() & Qt::WindowMaximized ) );
   settings.endGroup();
 
-  QString cache_file = TmpDir + "/simc_cache.dat";
+  QString cache_file = QDir::toNativeSeparators( TmpDir + "/simc_cache.dat" );
   std::string cache_file_str = cache_file.toStdString();
   http::cache_save( cache_file_str.c_str() );
 
@@ -237,12 +223,6 @@ void SC_MainWindow::saveHistory()
   }
   settings.setValue( "simulateHistory", simulateHist );
   // end simulate tab history
-
-  QList<QVariant> history;
-  int count = historyList -> count();
-  for ( int i = 0; i < count; i++ )
-    history.append( QVariant( historyList -> item( i ) -> text() ) );
-  settings.setValue( "historyList", history );
 
   settings.endGroup();
 
@@ -299,8 +279,8 @@ SC_MainWindow::SC_MainWindow( QWidget *parent )
   assert( !s.isEmpty() );
   ResultsDestDir = s.first();
 
-  logFileText = AppDataDir + "/" + "log.txt";
-  resultsFileText = AppDataDir + "/" + "results.html";
+  logFileText = QDir::toNativeSeparators( AppDataDir + "/log.txt" );
+  resultsFileText = QDir::toNativeSeparators( AppDataDir + "/results.html" );
 
   mainTab = new SC_MainTab( this );
 
@@ -394,7 +374,6 @@ void SC_MainWindow::createOptionsTab()
   optionsTab = new SC_OptionsTab( this );
   mainTab -> addTab( optionsTab, tr( "Options" ) );
 
-  connect( optionsTab, SIGNAL( armory_region_changed( const QString& ) ), this, SLOT( armoryRegionChanged( const QString& ) ) );
   connect( optionsTab, SIGNAL( armory_region_changed( const QString& ) ),
            newBattleNetView -> widget(), SLOT( armoryRegionChangedIn( const QString& ) ) );
 
@@ -410,19 +389,9 @@ void SC_MainWindow::createImportTab()
   newBattleNetView = new BattleNetImportWindow( this, true );
   importTab -> addTab( newBattleNetView, tr( "Import" ) );
 
-  battleNetView = new SC_WebView( this, importTab );
-  battleNetView -> setUrl( QUrl( "http://us.battle.net/wow/en" ) );
-  battleNetView -> enableMouseNavigation();
-  battleNetView -> disableKeyboardNavigation();
-  importTab -> addTab( battleNetView, tr( "Battle.Net" ) );
-
   SC_SampleProfilesTab* bisTab = new SC_SampleProfilesTab( this );
   connect( bisTab -> tree, SIGNAL( itemDoubleClicked( QTreeWidgetItem*, int ) ), this, SLOT( bisDoubleClicked( QTreeWidgetItem*, int ) ) );
   importTab -> addTab( bisTab, tr( "Sample Profiles" ) );
-
-  historyList = new QListWidget();
-  historyList -> setSortingEnabled( true );
-  importTab -> addTab( historyList, tr( "History" ) );
 
   recentlyClosedTabImport = new SC_RecentlyClosedTabWidget( this, QBoxLayout::LeftToRight );
   recentlyClosedTabModel = recentlyClosedTabImport -> getModel();
@@ -430,7 +399,6 @@ void SC_MainWindow::createImportTab()
 
   importTab -> addTab( importTab -> automationTab, tr( "Automation" ) );
   importTab -> addTab( importTab -> addonTab, tr("Simc Addon") );
-  connect( historyList, SIGNAL( itemDoubleClicked( QListWidgetItem* ) ), this, SLOT( historyDoubleClicked( QListWidgetItem* ) ) );
   connect( importTab, SIGNAL( currentChanged( int ) ), this, SLOT( importTabChanged( int ) ) );
   connect( recentlyClosedTabImport, SIGNAL( restoreTab( QWidget*, const QString&, const QString&, const QIcon& ) ),
            this, SLOT( simulateTabRestored( QWidget*, const QString&, const QString&, const QIcon& ) ) );
@@ -531,12 +499,7 @@ void SC_MainWindow::updateWebView( SC_WebView* wv )
   visibleWebView = wv;
   if ( cmdLine != 0 ) // can be called before widget is setup
   {
-    if ( visibleWebView == battleNetView )
-    {
-      cmdLine -> setBattleNetLoadProgress( visibleWebView -> progress, "%p%", "" );
-      cmdLine -> setCommandLineText( TAB_BATTLE_NET, visibleWebView -> url_to_show );
-    }
-    else if ( visibleWebView == helpView )
+    if ( visibleWebView == helpView )
     {
       cmdLine -> setHelpViewProgress( visibleWebView -> progress, "%p%", "" );
       cmdLine -> setCommandLineText( TAB_HELP, visibleWebView -> url_to_show );
@@ -783,20 +746,6 @@ void SC_MainWindow::importFinished()
       label.replace( QString( ".api" ), QString( "" ) );
       label.replace( QString( "https"), QString( "http" ) );
     }
-    bool found = false;
-    for ( int i = 0; i < historyList -> count() && !found; i++ )
-    {
-      if ( historyList -> item( i ) -> text() == label )
-        found = true;
-    }
-
-    if ( !found )
-    {
-      QListWidgetItem* item = new QListWidgetItem( label );
-      historyList -> addItem( item );
-      historyList -> sortItems();
-    }
-
     deleteSim( import_sim ); import_sim = 0;
   }
   else
@@ -834,7 +783,6 @@ void SC_MainWindow::startSim()
   }
   optionsTab -> encodeOptions();
   importTab -> automationTab -> encodeSettings();
-  QString tab_name = simulateTab -> tabText(simulateTab -> currentIndex());
 
   // Clear log text on success so users don't get confused if there is
   // an error from previous attempts
@@ -845,9 +793,11 @@ void SC_MainWindow::startSim()
   simProgress = 0;
   sim = initSim();
 
-  QString options = simulationQueue.dequeue();
+  auto value = simulationQueue.dequeue();
 
-  QByteArray utf8_profile = options.toUtf8();
+  QString tab_name = std::get<0>( value );
+  QByteArray utf8_profile = std::get<1>( value ).toUtf8();
+
   QFile file( AppDataDir + QDir::separator() + "simc_gui.simc" );
   if ( file.open( QIODevice::WriteOnly | QIODevice::Text ) )
   {
@@ -855,7 +805,7 @@ void SC_MainWindow::startSim()
     file.close();
   }
 
-  QString reportFileBase = optionsTab -> getReportlDestination();
+  QString reportFileBase = QDir::toNativeSeparators( optionsTab -> getReportlDestination() );
   sim -> output_file_str = (reportFileBase + ".txt").toStdString();
   sim -> html_file_str = (reportFileBase + ".html").toStdString();
 
@@ -1190,6 +1140,7 @@ void SC_MainWindow::simulateFinished( sim_t* sim )
     }
 
     // XML
+    /*
     SC_TextEdit* resultsXmlView = new SC_TextEdit( resultsEntry );
     resultsEntry -> addTab( resultsXmlView, "xml" );
 
@@ -1203,6 +1154,7 @@ void SC_MainWindow::simulateFinished( sim_t* sim )
     {
       resultsXmlView -> setPlainText( tr( "Error opening %1. %2" ).arg( sim -> xml_file_str.c_str(), xml_file.errorString() ) );
     }
+    */
 
     // Plot Data
     SC_TextEdit* resultsPlotView = new SC_TextEdit( resultsEntry );
@@ -1273,7 +1225,6 @@ void SC_MainWindow::saveResults()
 void SC_MainWindow::closeEvent( QCloseEvent* e )
 {
   saveHistory();
-  battleNetView -> stop();
   QCoreApplication::quit();
   e -> accept();
 }
@@ -1295,24 +1246,7 @@ void SC_MainWindow::cmdLineTextEdited( const QString& s )
 
 void SC_MainWindow::cmdLineReturnPressed()
 {
-  if ( mainTab -> currentTab() == TAB_IMPORT )
-  {
-    if ( cmdLine -> commandLineText().count( "battle.net" ) ||
-      cmdLine -> commandLineText().count( "battlenet.com" ) )
-    {
-      battleNetView -> setUrl( QUrl::fromUserInput( cmdLine -> commandLineText() ) );
-      cmdLine -> setCommandLineText( TAB_BATTLE_NET, cmdLine -> commandLineText() );
-      importTab -> setCurrentTab( TAB_BATTLE_NET );
-    }
-    else
-    {
-      if ( !sim ) cmdLine -> mainButtonClicked();
-    }
-  }
-  else
-  {
-    if ( !sim ) cmdLine -> mainButtonClicked();
-  }
+  if ( !sim ) cmdLine -> mainButtonClicked();
 }
 
 void SC_MainWindow::mainButtonClicked( bool /* checked */ )
@@ -1327,7 +1261,6 @@ void SC_MainWindow::mainButtonClicked( bool /* checked */ )
   case TAB_IMPORT:
     switch ( importTab -> currentTab() )
     {
-    case TAB_BATTLE_NET: startImport( TAB_BATTLE_NET, cmdLine -> commandLineText() ); break;
     case TAB_RECENT:     recentlyClosedTabImport -> restoreCurrentlySelected(); break;
     default: break;
     }
@@ -1367,12 +1300,6 @@ void SC_MainWindow::importButtonClicked()
 {
   switch ( importTab -> currentTab() )
   {
-  case TAB_BATTLE_NET:
-  {
-    soloChar -> start( 50 );
-    startImport( TAB_BATTLE_NET, cmdLine -> commandLineText( TAB_BATTLE_NET ) );
-    break;
-  }
   case TAB_RECENT:     recentlyClosedTabImport -> restoreCurrentlySelected(); break;
   case TAB_AUTOMATION:
   {
@@ -1494,7 +1421,6 @@ void SC_MainWindow::importTabChanged( int index )
 {
   if ( index == TAB_BIS ||
        index == TAB_CUSTOM ||
-       index == TAB_HISTORY ||
        index == TAB_AUTOMATION ||
        index == TAB_RECENT ||
        index == TAB_ADDON ||
@@ -1543,18 +1469,6 @@ void SC_MainWindow::resultsTabCloseRequest( int index )
   }
 }
 
-void SC_MainWindow::historyDoubleClicked( QListWidgetItem* item )
-{
-  QString text = item -> text();
-  QString url = text.section( ' ', 1, 1, QString::SectionSkipEmpty );
-
-  if ( url.count( "battle.net" ) || url.count( "battlenet.com" ) )
-  {
-    battleNetView -> setUrl( url );
-    importTab -> setCurrentIndex( TAB_BATTLE_NET );
-  }
-}
-
 void SC_MainWindow::bisDoubleClicked( QTreeWidgetItem* item, int /* col */ )
 {
   QString profile = item -> text( 1 );
@@ -1575,8 +1489,6 @@ void SC_MainWindow::bisDoubleClicked( QTreeWidgetItem* item, int /* col */ )
 
 void SC_MainWindow::armoryRegionChanged( const QString& region )
 {
-  battleNetView -> stop();
-  battleNetView -> setUrl( "http://" + region + ".battle.net/wow/en" );
 }
 
 void SC_MainWindow::simulateTabRestored( QWidget*, const QString&, const QString&, const QIcon& )

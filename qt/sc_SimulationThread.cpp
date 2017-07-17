@@ -63,13 +63,24 @@ void SC_SimulateThread::run()
       sim -> reforge_plot -> analyze();
       report::print_suite( sim );
     }
+    else
+    {
+      error_category = tr( "Simulation runtime error" );
+      range::for_each( sim->error_list, [ this ]( const std::string& str ) {
+        if ( !error_str.isEmpty() )
+        {
+          error_str += "\n";
+        }
+
+        error_str += QString::fromStdString( str );
+      } );
+    }
   }
   catch ( const std::exception& e )
   {
     success = false;
     error_category = tr("Simulation runtime error");
     error_str = e.what();
-    return;
   }
 }
 

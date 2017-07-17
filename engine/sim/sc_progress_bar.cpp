@@ -549,7 +549,6 @@ size_t progress_bar_t::n_reforge_plot_phases() const
 
   sim.reforge_plot -> generate_stat_mods( stat_mods, stat_indices, 0, cur_stat_mods );
 
-  std::cerr << stat_indices.size() << " " << cur_stat_mods.size() << " " << stat_mods.size() << std::endl;
   return sim.single_actor_batch == 1
          ? sim.player_no_pet_list.size() * stat_mods.size()
          : stat_mods.size();

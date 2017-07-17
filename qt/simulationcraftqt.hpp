@@ -65,9 +65,7 @@ enum main_tabs_e
 enum import_tabs_e
 {
   TAB_IMPORT_NEW = 0,
-  TAB_BATTLE_NET,
   TAB_BIS,
-  TAB_HISTORY,
   TAB_RECENT,
   TAB_AUTOMATION,
   TAB_ADDON,
@@ -281,17 +279,20 @@ public:
 
     appendRow( item );
   }
-  QString dequeue()
+  std::tuple<QString, QString> dequeue()
   {
     QModelIndex indx = index( 0, 0 );
-    QString retval;
+    std::tuple<QString, QString> retval;
+
     if ( indx.isValid() )
     {
-      retval = indx.data( Qt::UserRole + 1 ).toString();
+      retval = std::make_tuple( indx.data( Qt::DisplayRole ).toString(),
+                                indx.data( Qt::UserRole + 1 ).toString() );
       removeRow( 0 );
     }
     return retval;
   }
+
   bool isEmpty() const
   {
     return rowCount() <= 0;
@@ -706,10 +707,8 @@ public:
 #endif
 
   BattleNetImportWindow* newBattleNetView;
-  SC_WebView* battleNetView;
   SC_WebView* helpView;
   SC_WebView* visibleWebView;
-  QListWidget* historyList;
   SC_TextEdit* overridesText;
   SC_TextEdit* logText;
   QPushButton* backButton;
@@ -830,7 +829,6 @@ private slots:
   void importTabChanged( int index );
   void resultsTabChanged( int index );
   void resultsTabCloseRequest( int index );
-  void historyDoubleClicked( QListWidgetItem* item );
   void bisDoubleClicked( QTreeWidgetItem* item, int col );
   void armoryRegionChanged( const QString& region );
   void simulateTabRestored( QWidget* tab, const QString& title, const QString& tooltip, const QIcon& icon );
@@ -1258,7 +1256,6 @@ public:
   player_t* player;
   QString region, realm, character, spec; // New import uses these
 
-  void importBattleNet();
   void importWidget();
 
   void start( sim_t* s, int t, const QString& u, const QString& sources, const QString& spec, const QString& role, const QString& apikey )
