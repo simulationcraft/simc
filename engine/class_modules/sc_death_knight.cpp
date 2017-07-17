@@ -3855,15 +3855,6 @@ struct blood_boil_t : public death_knight_spell_t
     p() -> buffs.skullflowers_haemostasis -> trigger();
   }
 
-  void impact( action_state_t* state ) override
-  {
-    death_knight_spell_t::impact( state );
-
-    if ( ! p() -> talent.soulgorge -> ok() && result_is_hit( state -> result ) )
-    {
-      p() -> apply_diseases( state, DISEASE_BLOOD_PLAGUE );
-    }
-  }
 };
 
 // Blood Mirror =============================================================
@@ -7422,7 +7413,7 @@ void death_knight_t::init_spells()
 
   // Tier 2
   talent.rapid_decomposition   = find_talent_spell( "Rapid Decomposition" );
-  talent.soulgorge             = find_talent_spell( "Heart of ice" );
+  talent.heart_of_ice          = find_talent_spell( "Heart of ice" );
   talent.spectral_deflection   = find_talent_spell( "Spectral Deflection" );
 
   // Tier 3
@@ -8835,13 +8826,6 @@ inline double death_knight_t::runes_per_second() const
     rps *= 2.0;
   }
 
-  if ( buffs.soulgorge -> check() )
-  {
-    // Note, don't use stack_value() here, since the correct (fractional) value is triggered in the
-    // buff when soulgorge consumes blood plagues.
-    rps *= 1.0 + buffs.soulgorge -> check_value();
-  }
-
   return rps;
 }
 
@@ -8852,13 +8836,6 @@ inline double death_knight_t::rune_regen_coefficient() const
   if ( buffs.runic_corruption -> check() )
   {
     coeff *= .5;
-  }
-
-  if ( buffs.soulgorge -> check() )
-  {
-    // Note, don't use stack_value() here, since the correct (fractional) value is triggered in the
-    // buff when soulgorge consumes blood plagues.
-    coeff *= 1.0 / ( 1.0 + buffs.soulgorge -> check_value() );
   }
 
   return coeff;
