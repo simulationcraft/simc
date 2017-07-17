@@ -1898,10 +1898,9 @@ struct mind_sear_tick_t final : public priest_spell_t
 
   mind_sear_tick_t( priest_t& p )
     : priest_spell_t( "mind_sear_tick", p, p.find_spell( 234702 ) ),
-      source_target( nullptr ),
-      insanity_gain( 1 )  // Missing from spell data
+      source_target( nullptr ) 
   {
-    may_crit                    = false;
+    may_crit                    = true;
     background                  = true;
     proc                        = false;
     callbacks                   = true;
@@ -1913,6 +1912,7 @@ struct mind_sear_tick_t final : public priest_spell_t
     trigger_gcd                 = timespan_t::zero();
     school                      = SCHOOL_SHADOW;
     spell_power_mod.direct      = p.find_spell( 237388 )->effectN( 1 ).sp_coeff();
+    insanity_gain               = p.find_spell( 208232 )->effectN( 1 ).percent();
   }
 
   size_t available_targets( std::vector<player_t*>& tl ) const override
@@ -2880,10 +2880,7 @@ struct summon_shadowfiend_t final : public summon_pet_t
     cooldown->duration += priest.sets->set( PRIEST_SHADOW, T18, B2 )->effectN( 1 ).time_value();
     if ( priest.artifact.fiending_dark.rank() )
     {
-      summoning_duration += timespan_t::from_millis(4500 *
-      // Actual in-game effect doesn't match the spell data
-      // priest.artifact.fiending_dark.data().effectN( 1 ).base_value() *
-                                                     priest.artifact.fiending_dark.rank() );
+      summoning_duration += priest.artifact.fiending_dark.time_value( 1 );
     }
   }
 };
@@ -2901,10 +2898,7 @@ struct summon_mindbender_t final : public summon_pet_t
     cooldown->duration += priest.sets->set( PRIEST_SHADOW, T18, B2 )->effectN( 2 ).time_value();
     if ( priest.artifact.fiending_dark.rank() )
     {
-      summoning_duration += timespan_t::from_millis( 1500 *
-      // Actual in-game effect doesn't match the spell data
-      // priest.artifact.fiending_dark.data().effectN( 2 ).base_value() *
-                                                     priest.artifact.fiending_dark.rank() );
+      summoning_duration += priest.artifact.fiending_dark.time_value( 2 );
     }
   }
 };
