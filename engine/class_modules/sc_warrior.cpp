@@ -5017,8 +5017,7 @@ void warrior_t::datacollection_end()
 void warrior_t::default_apl_dps_precombat( const std::string& food_name, const std::string& potion_name )
 {
   action_priority_list_t* precombat = get_action_priority_list( "precombat" );
-  std::string flask_name = ( true_level > 100 && specialization() != WARRIOR_PROTECTION ) ? "countless_armies" :
-    ( true_level > 100 && specialization() == WARRIOR_PROTECTION ) ? "ten_thousand_scars" :
+  std::string flask_name = ( true_level > 100 ) ? "countless_armies" :
     ( true_level >= 90 ) ? "greater_draenic_strength_flask" :
     ( true_level >= 85 ) ? "winters_bite" :
     ( true_level >= 80 ) ? "titanic_strength" :
@@ -5324,12 +5323,12 @@ void warrior_t::apl_prot()
 {
   std::vector<std::string> racial_actions = get_racial_actions();
 
-  std::string food_name = ( true_level > 100 ) ? "azshari_salad" :
+  std::string food_name = ( true_level > 100 ) ? "lavish_suramar_feast" :
     ( true_level >  90 ) ? "buttered_sturgeon" :
     ( true_level >= 85 ) ? "sea_mist_rice_noodles" :
     ( true_level >= 80 ) ? "seafood_magnifique_feast" :
     "";
-  std::string potion_name = ( true_level > 100 ) ? "unbending_potion" :
+  std::string potion_name = ( true_level > 100 ) ? "old_war" :
     ( true_level >= 90 ) ? "draenic_strength" :
     ( true_level >= 85 ) ? "mogu_power" :
     ( true_level >= 80 ) ? "golemblood_potion" :
@@ -5346,7 +5345,12 @@ void warrior_t::apl_prot()
   size_t num_items = items.size();
   for ( size_t i = 0; i < num_items; i++ )
   {
-    if ( items[i].has_special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE ) )
+    if ( items[i].name_str == "archimondes_hatred_reborn" )
+    {
+      default_list -> add_action( this, "Last Stand", "if=cooldown.archimondes_hatred_reborn.remains=0" );
+      default_list -> add_action( "use_item,name=" + items[i].name_str + ",if=buff.last_stand.up");
+    }
+    else if ( items[i].has_special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE ) )
     {
       if ( items[i].slot != SLOT_WAIST )
         default_list -> add_action( "use_item,name=" + items[i].name_str );
@@ -5358,28 +5362,20 @@ void warrior_t::apl_prot()
 
   default_list -> add_action( "call_action_list,name=prot" );
 
-  // defensive cooldowns
-  prot -> add_action( this, "Spell Reflection", "if=incoming_damage_2500ms>health.max*0.20" );
-  prot -> add_action( this, "Stoneform", "if=incoming_damage_2500ms>health.max*0.15" );
-  prot -> add_action( this, "Demoralizing Shout", "if=incoming_damage_2500ms>health.max*0.20&!talent.booming_voice.enabled" );
-  prot -> add_action( this, "Last Stand", "if=incoming_damage_2500ms>health.max*0.40" );
-  prot -> add_action( this, "Shield Wall", "if=incoming_damage_2500ms>health.max*0.40&!cooldown.last_stand.remains=0" );
-
   if ( sim -> allow_potions && true_level >= 80 )
   {
-    prot -> add_action( "potion,name=" + potion_name + ",if=(incoming_damage_2500ms>health.max*0.15&!buff.potion.up)|target.time_to_die<=25" );
+    prot -> add_action( "potion,name=" + potion_name + ",if=target.time_to_die<25" );
   }
 
   prot -> add_action( this, "Battle Cry", "if=cooldown.shield_slam.remains=0" );
-  prot -> add_action( this, "Avatar", "if=talent.avatar.enabled&buff.battle_cry.up" );
-  prot -> add_action( this, "Demoralizing Shout", "if=talent.booming_voice.enabled&buff.battle_cry.up" );
-  prot -> add_action( this, "Ravager", "if=talent.ravager.enabled&buff.battle_cry.up" );
-  prot -> add_action( this, "Neltharion's Fury", "if=!buff.shield_block.up&cooldown.shield_block.remains>3&((cooldown.shield_slam.remains>3&talent.heavy_repercussions.enabled)|(!talent.heavy_repercussions.enabled))" );
-  prot -> add_action( this, "Shield Block", "if=!buff.neltharions_fury.up&((cooldown.shield_slam.remains=0&talent.heavy_repercussions.enabled)|action.shield_block.charges=2|!talent.heavy_repercussions.enabled)" );
-  prot -> add_action( this, "Ignore Pain", "if=(rage>=60&!talent.vengeance.enabled)|(buff.vengeance_ignore_pain.up&rage>=39)|(talent.vengeance.enabled&!buff.vengeance_ignore_pain.up&!buff.vengeance_revenge.up&rage<30&!buff.revenge.react)" );
-  prot -> add_action( this, "Shield Slam", "if=(!(cooldown.shield_block.remains<=gcd.max*2&!buff.shield_block.up)&talent.heavy_repercussions.enabled)|!talent.heavy_repercussions.enabled" );
+  prot -> add_action( this, "Avatar" );
+  prot -> add_action( this, "Demoralizing Shout" );
+  prot -> add_action( this, "Ravager", "if=talent.ravager.enabled" );
+  prot -> add_action( this, "Shield Block", "if=cooldown.shield_slam.remains=0" );
+  prot -> add_action( this, "Ignore Pain", "if=(!talent.vengeance.enabled&buff.renewed_fury.remains<1.5)|(!talent.vengeance.enabled&rage.deficit>=40)|(buff.vengeance_ignore_pain.up)|(talent.vengeance.enabled&!buff.vengeance_ignore_pain.up&!buff.vengeance_revenge.up&rage<30&!buff.revenge.react)" );
+  prot -> add_action( this, "Shield Slam" );
+  prot -> add_action( this, "Revenge", "if=(!talent.vengeance.enabled)|(talent.vengeance.enabled&buff.revenge.react&!buff.vengeance_ignore_pain.up)|(buff.vengeance_revenge.up)|(talent.vengeance.enabled&!buff.vengeance_ignore_pain.up&!buff.vengeance_revenge.up&rage>=30)" );
   prot -> add_action( this, "Thunder Clap" );
-  prot -> add_action( this, "Revenge", "if=(talent.vengeance.enabled&buff.revenge.react&!buff.vengeance_ignore_pain.up)|(buff.vengeance_revenge.up&rage>=59)|(talent.vengeance.enabled&!buff.vengeance_ignore_pain.up&!buff.vengeance_revenge.up&rage>=69)|(!talent.vengeance.enabled&buff.revenge.react)" );
   prot -> add_action( this, "Devastate" );
 }
 
