@@ -399,6 +399,8 @@ public:
     bool priest_fixed_time      = true;
     bool priest_ignore_healing  = false; // Remove Healing calculation codes
     bool priest_suppress_sephuz = false; // Sephuz's Secret won't proc if set true
+    double priest_t21_2p_bonus  = 0.2;   // Test variables
+    double priest_t21_4p_bonus  = 0.1;    
   } options;
 
   priest_t( sim_t* sim, const std::string& name, race_e r );
@@ -426,6 +428,7 @@ public:
   role_e primary_role() const override;
   stat_e convert_hybrid_stat( stat_e s ) const override;
   void assess_damage( school_e school, dmg_e dtype, action_state_t* s ) override;
+  double composite_spell_crit_chance() const override;
   double composite_melee_haste() const override;
   double composite_melee_speed() const override;
   double composite_spell_haste() const override;
@@ -1827,6 +1830,20 @@ public:
     return d;
   }
 
+  double composite_crit_damage_bonus_multiplier() const override
+  {
+    double c = priest_spell_t::composite_crit_damage_bonus_multiplier();
+
+    if (priest.sets->has_set_bonus(PRIEST_SHADOW, T21, B4))
+    {
+      c *= 1.0
+        // + sets->set(PRIEST_SHADOW, T21, B2)->effectN(1).percent();
+           + priest.options.priest_t21_2p_bonus;
+    }
+
+    return c;
+  }
+
   void impact( action_state_t* s ) override
   {
     priest_spell_t::impact( s );
@@ -2034,6 +2051,20 @@ struct mind_flay_t final : public priest_spell_t
       am *= 1.0 + priest.buffs.void_ray->check() * priest.buffs.void_ray->data().effectN( 1 ).percent();
 
     return am;
+  }
+
+  double composite_crit_damage_bonus_multiplier() const override
+  {
+    double c = priest_spell_t::composite_crit_damage_bonus_multiplier();
+
+    if  (priest.sets->has_set_bonus(PRIEST_SHADOW, T21, B4) )
+    {
+      c *= 1.0 
+        // + sets->set(PRIEST_SHADOW, T21, B2)->effectN(1).percent();
+           + priest.options.priest_t21_2p_bonus;
+    }
+
+    return c;
   }
 
   /// Legendary the_twins_painful_touch
@@ -4149,6 +4180,22 @@ void priest_t::assess_damage( school_e school, dmg_e dtype, action_state_t* s )
   player_t::assess_damage( school, dtype, s );
 }
 
+double priest_t::composite_spell_crit_chance() const
+{
+  double c = player_t::composite_spell_crit_chance();
+
+  if(    sets->has_set_bonus( PRIEST_SHADOW, T21, B4 ) 
+      && buffs.voidform->check() )
+  {
+    c *= 1.0 + (  buffs.voidform->check() ) 
+//              * sets->set(PRIEST_SHADOW, T21, B4)->effectN(1).percent();
+                * options.priest_t21_4p_bonus;
+  }
+
+  return c;
+
+}
+
 double priest_t::composite_spell_haste() const
 {
   double h = player_t::composite_spell_haste();
@@ -5560,6 +5607,8 @@ void priest_t::create_options()
   add_option( opt_bool( "priest_fixed_time", options.priest_fixed_time ) );
   add_option( opt_bool( "priest_ignore_healing", options.priest_ignore_healing ) );
   add_option( opt_bool( "priest_suppress_sephuz", options.priest_suppress_sephuz ) );
+  add_option( opt_float( "priest_t21_2p_bonus", options.priest_t21_2p_bonus ) );
+  add_option( opt_float( "priest_t21_4p_bonus", options.priest_t21_4p_bonus ) );
 }
 
 std::string priest_t::create_profile( save_e type )
