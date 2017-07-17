@@ -7761,8 +7761,8 @@ void death_knight_t::default_apl_frost()
   action_priority_list_t* def         = get_action_priority_list( "default" );
   action_priority_list_t* cds         = get_action_priority_list( "cds" );
   action_priority_list_t* cold_heart  = get_action_priority_list( "cold_heart" );
-  action_priority_list_t* machinegun  = get_action_priority_list( "generic" );
-  action_priority_list_t* bos_generic = get_action_priority_list( "bos" );
+  action_priority_list_t* machinegun  = get_action_priority_list( "machinegun" );
+  action_priority_list_t* bos_generic = get_action_priority_list( "bos_generic" );
   action_priority_list_t* bos_ticking = get_action_priority_list( "bos_ticking" );
   
 
