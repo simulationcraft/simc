@@ -582,7 +582,6 @@ public:
     // Unholy
     const spell_data_t* festering_wound;
     const spell_data_t* runic_corruption;
-    const spell_data_t* deaths_advance;
     const spell_data_t* outbreak;
     const spell_data_t* sudden_doom;
   } spec;
@@ -7230,9 +7229,6 @@ double death_knight_t::composite_melee_haste() const
 {
   double haste = player_t::composite_melee_haste();
 
-  //haste *= 1.0 / ( 1.0 + buffs.unholy_presence -> value() );
-
-
   haste *= 1.0 / ( 1.0 + buffs.sephuzs_secret -> check_value() );
 
   haste *= 1.0 / ( 1.0 + spec.veteran_of_the_third_war -> effectN( 6 ).percent() );
@@ -8353,9 +8349,7 @@ void death_knight_t::do_damage( action_state_t* state )
 
 void death_knight_t::target_mitigation( school_e school, dmg_e type, action_state_t* state )
 {
-  //if ( buffs.blood_presence -> check() )
-  //  state -> result_amount *= 1.0 + buffs.blood_presence -> data().effectN( 6 ).percent();
-
+  
   if ( buffs.rune_tap -> up() )
     state -> result_amount *= 1.0 + buffs.rune_tap -> data().effectN( 1 ).percent();
 
@@ -8680,19 +8674,11 @@ double death_knight_t::passive_movement_modifier() const
 {
   double ms = player_t::passive_movement_modifier();
 
-  if ( spec.deaths_advance -> ok() )
-    ms += spec.deaths_advance -> effectN( 1 ).percent();
-
   if ( legendary.sephuzs_secret )
   {
     ms += legendary.sephuzs_secret -> effectN( 2 ).percent();
   }
 
-  /*
-  if ( buffs.unholy_presence -> up() )
-    ms += buffs.unholy_presence -> data().effectN( 2 ).percent();
-
-  */
   return ms;
 }
 
