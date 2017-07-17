@@ -508,6 +508,7 @@ public:
   } spells;
 
   int initial_soul_shards;
+  bool allow_sephuz;
   double reap_souls_modifier;
   std::string default_pet;
 
@@ -676,16 +677,16 @@ namespace pets {
     bool is_demonbolt_enabled = true;
     bool is_lord_of_flames = false;
 
-    void warlock_pet_t::trigger_sephuzs_secret( warlock_pet_t* p, const action_state_t* state, spell_mechanic mechanic )
+    void warlock_pet_t::trigger_sephuzs_secret( const action_state_t* state, spell_mechanic mechanic )
     {
-      if ( !p -> o() -> legendary.sephuzs_secret )
+      if ( !o() -> legendary.sephuzs_secret )
         return;
 
       // trigger by default on interrupts and on adds/lower level stuff
-      if ( type == MECHANIC_INTERRUPT || state -> target -> is_add() ||
-        ( state -> target -> level() < p -> sim -> max_player_level + 3 ) )
+      if ( o() -> allow_sephuz || type == MECHANIC_INTERRUPT || state -> target -> is_add() ||
+        ( state -> target -> level() < o() -> sim -> max_player_level + 3 ) )
       {
-        p -> o() -> buffs.sephuzs_secret -> trigger();
+        o() -> buffs.sephuzs_secret -> trigger();
       }
     }
 
@@ -1123,7 +1124,7 @@ struct axe_toss_t : public warlock_pet_spell_t
   {
     warlock_pet_spell_t::execute();
 
-    p() -> trigger_sephuzs_secret( p(), execute_state, MECHANIC_STUN );
+    p() -> trigger_sephuzs_secret( execute_state, MECHANIC_STUN );
   }
 };
 
@@ -1326,7 +1327,7 @@ struct shadow_lock_t : public warlock_pet_spell_t
   {
     warlock_pet_spell_t::execute();
 
-    p() -> trigger_sephuzs_secret( p(), execute_state, MECHANIC_INTERRUPT );
+    p() -> trigger_sephuzs_secret( execute_state, MECHANIC_INTERRUPT );
   }
 };
 
@@ -1351,7 +1352,7 @@ struct meteor_strike_t: public warlock_pet_spell_t
       p() -> o() -> buffs.lord_of_flames -> trigger();
     }
 
-    p() -> trigger_sephuzs_secret( p(), execute_state, MECHANIC_STUN );
+    p() -> trigger_sephuzs_secret( execute_state, MECHANIC_STUN );
   }
 };
 
@@ -7113,6 +7114,7 @@ void warlock_t::create_options()
 
   add_option( opt_int( "soul_shards", initial_soul_shards ) );
   add_option( opt_string( "default_pet", default_pet ) );
+  add_option( opt_bool( "allow_sephuz", allow_sephuz ) );
 }
 
 std::string warlock_t::create_profile( save_e stype )
@@ -7123,6 +7125,7 @@ std::string warlock_t::create_profile( save_e stype )
   {
     if ( initial_soul_shards != 3 )    profile_str += "soul_shards=" + util::to_string( initial_soul_shards ) + "\n";
     if ( ! default_pet.empty() )       profile_str += "default_pet=" + default_pet + "\n";
+    if ( allow_sephuz != 0 )           profile_str += "allow_sephuz=" + util::to_string( allow_sephuz ) + "\n";
   }
 
   return profile_str;
@@ -7135,6 +7138,7 @@ void warlock_t::copy_from( player_t* source )
   warlock_t* p = debug_cast<warlock_t*>( source );
 
   initial_soul_shards = p -> initial_soul_shards;
+  allow_sephuz = p -> allow_sephuz;
   default_pet = p -> default_pet;
 }
 
