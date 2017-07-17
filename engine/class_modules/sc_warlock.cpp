@@ -676,6 +676,19 @@ namespace pets {
     bool is_demonbolt_enabled = true;
     bool is_lord_of_flames = false;
 
+    void warlock_pet_t::trigger_sephuzs_secret( warlock_pet_t* p, const action_state_t* state, spell_mechanic mechanic )
+    {
+      if ( !p -> o() -> legendary.sephuzs_secret )
+        return;
+
+      // trigger by default on interrupts and on adds/lower level stuff
+      if ( type == MECHANIC_INTERRUPT || state -> target -> is_add() ||
+        ( state -> target -> level() < p -> sim -> max_player_level + 3 ) )
+      {
+        p -> o() -> buffs.sephuzs_secret -> trigger();
+      }
+    }
+
     struct travel_t: public action_t
     {
       travel_t( player_t* player ): action_t( ACTION_OTHER, "travel", player ) {}
@@ -1110,10 +1123,7 @@ struct axe_toss_t : public warlock_pet_spell_t
   {
     warlock_pet_spell_t::execute();
 
-    if ( p() -> o() -> legendary.sephuzs_secret )
-    {
-      p() -> o() -> buffs.sephuzs_secret -> trigger();
-    }
+    p() -> trigger_sephuzs_secret( p(), execute_state, MECHANIC_STUN );
   }
 };
 
@@ -1316,10 +1326,7 @@ struct shadow_lock_t : public warlock_pet_spell_t
   {
     warlock_pet_spell_t::execute();
 
-    if ( p() -> o() -> legendary.sephuzs_secret  )
-    {
-      p() -> o() -> buffs.sephuzs_secret -> trigger();
-    }
+    p() -> trigger_sephuzs_secret( p(), execute_state, MECHANIC_INTERRUPT );
   }
 };
 
@@ -1343,6 +1350,8 @@ struct meteor_strike_t: public warlock_pet_spell_t
       p() -> o() -> trigger_lof_infernal();
       p() -> o() -> buffs.lord_of_flames -> trigger();
     }
+
+    p() -> trigger_sephuzs_secret( p(), execute_state, MECHANIC_STUN );
   }
 };
 
