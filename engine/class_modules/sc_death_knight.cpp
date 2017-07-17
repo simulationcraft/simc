@@ -800,7 +800,7 @@ public:
     const spell_data_t* perseverance_of_the_ebon_martyr;
     const spell_data_t* sephuzs_secret;
     const spell_data_t* death_march;
-    const spell_data_t* lanathiels_lament;
+    const spell_data_t* lanathels_lament;
     double toravons;
 
     // Unholy
@@ -814,7 +814,7 @@ public:
       perseverance_of_the_ebon_martyr( spell_data_t::not_found() ),
       sephuzs_secret( nullptr ),
       death_march( spell_data_t::not_found() ),
-      lanathiels_lament( spell_data_t::not_found() ),
+      lanathels_lament( spell_data_t::not_found() ),
       toravons( 0 ), the_instructors_fourth_lesson( 0 ), draugr_girdle_everlasting_king( 0 ),
       uvanimor_the_unbeautiful( 0 )
     { }
@@ -4313,10 +4313,10 @@ struct death_and_decay_t : public death_knight_spell_t
     p() -> buffs.crimson_scourge -> decrement();
     p() -> buffs.death_and_decay_tick -> trigger();
 
-    // Lanathiel's lament will increase the player's damage/healing multipliers while DnD/Defaile is
+    // Lanathel's lament will increase the player's damage/healing multipliers while DnD/Defaile is
     // up. Only heal multiplier must be invalidated here, as the damage multiplier is simc is
     // treated as a target-based multiplier, and computed every time.
-    if ( p() -> legendary.lanathiels_lament -> ok() )
+    if ( p() -> legendary.lanathels_lament -> ok() )
     {
       player -> invalidate_cache( CACHE_PLAYER_HEAL_MULTIPLIER );
     }
@@ -4338,10 +4338,10 @@ struct death_and_decay_t : public death_knight_spell_t
   {
     death_knight_spell_t::last_tick( d );
 
-    // Lanathiel's lament will increase the player's damage/healing multipliers while DnD/Defaile is
+    // Lanathel's lament will increase the player's damage/healing multipliers while DnD/Defaile is
     // up. Only heal multiplier must be invalidated here, as the damage multiplier is simc is
     // treated as a target-based multiplier, and computed every time.
-    if ( p() -> legendary.lanathiels_lament -> ok() )
+    if ( p() -> legendary.lanathels_lament -> ok() )
     {
       player -> invalidate_cache( CACHE_PLAYER_HEAL_MULTIPLIER );
     }
@@ -4428,10 +4428,10 @@ struct defile_t : public death_knight_spell_t
   {
     death_knight_spell_t::execute();
 
-    // Lanathiel's lament will increase the player's damage/healing multipliers while DnD/Defaile is
+    // Lanathel's lament will increase the player's damage/healing multipliers while DnD/Defaile is
     // up. Only heal multiplier must be invalidated here, as the damage multiplier is simc is
     // treated as a target-based multiplier, and computed every time.
-    if ( p() -> legendary.lanathiels_lament -> ok() )
+    if ( p() -> legendary.lanathels_lament -> ok() )
     {
       player -> invalidate_cache( CACHE_PLAYER_HEAL_MULTIPLIER );
     }
@@ -4460,10 +4460,10 @@ struct defile_t : public death_knight_spell_t
   {
     death_knight_spell_t::last_tick( d );
 
-    // Lanathiel's lament will increase the player's damage/healing multipliers while DnD/Defaile is
+    // Lanathel's lament will increase the player's damage/healing multipliers while DnD/Defaile is
     // up. Only heal multiplier must be invalidated here, as the damage multiplier is simc is
     // treated as a target-based multiplier, and computed every time.
-    if ( p() -> legendary.lanathiels_lament -> ok() )
+    if ( p() -> legendary.lanathels_lament -> ok() )
     {
       player -> invalidate_cache( CACHE_PLAYER_HEAL_MULTIPLIER );
     }
@@ -8688,9 +8688,9 @@ double death_knight_t::composite_player_target_multiplier( player_t* target, sch
     m *= 1.0 + td -> debuff.razorice -> check() * debuff;
   }
 
-  if ( legendary.lanathiels_lament -> ok() && td -> in_aoe_radius() )
+  if ( legendary.lanathels_lament -> ok() && td -> in_aoe_radius() )
   {
-    m *= 1.0 + legendary.lanathiels_lament -> effectN( 1 ).percent();
+    m *= 1.0 + legendary.lanathels_lament -> effectN( 1 ).percent();
   }
 
   return m;
@@ -8704,9 +8704,9 @@ double death_knight_t::composite_player_heal_multiplier( const action_state_t* s
 
   death_knight_td_t* td = get_target_data( state -> target );
 
-  if ( legendary.lanathiels_lament -> ok() && td -> in_aoe_radius() )
+  if ( legendary.lanathels_lament -> ok() && td -> in_aoe_radius() )
   {
-    m *= 1.0 + legendary.lanathiels_lament -> effectN( 2 ).percent();
+    m *= 1.0 + legendary.lanathels_lament -> effectN( 2 ).percent();
   }
 
   return m;
@@ -9383,7 +9383,7 @@ struct lanathels_lament_t : public scoped_actor_callback_t<death_knight_t>
   { }
 
   void manipulate( death_knight_t* p, const special_effect_t& ) override
-  { p -> legendary.lanathiels_lament = p -> find_spell( 212975 ); }
+  { p -> legendary.lanathels_lament = p -> find_spell( 212975 ); }
 };
 
 struct death_knight_module_t : public module_t {
