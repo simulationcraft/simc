@@ -474,7 +474,6 @@ public:
     buff_t* necrosis;
     stat_buff_t* defile;
     haste_buff_t* soul_reaper;
-    buff_t* soulgorge;
     buff_t* antimagic_barrier;
     absorb_buff_t* tombstone;
 
@@ -542,7 +541,7 @@ public:
     gain_t* power_refund;
     gain_t* rune;
     gain_t* runic_attenuation;
-    gain_t* rc;
+    gain_t* rc; // Runic Corruption
     gain_t* runic_empowerment;
     gain_t* empower_rune_weapon;
     gain_t* blood_tap;
@@ -663,7 +662,7 @@ public:
 
     // Tier 2
     const spell_data_t* rapid_decomposition;
-    const spell_data_t* soulgorge;
+    const spell_data_t* heart_of_ice; // Not Yet Implemented
     const spell_data_t* spectral_deflection; // Not Yet Implemented
 
     // Tier 3
@@ -753,12 +752,16 @@ public:
     artifact_power_t dance_of_darkness;
     artifact_power_t mouth_of_hell;
     artifact_power_t the_hungering_maw;
+    // 7.2
+    artifact_power_t fortitude_of_the_ebon_blade;
+    artifact_power_t carrion_fest;
+    artifact_power_t vampiric_aura;
+    artifact_power_t souldrinker;
   } artifact;
 
   // Spells
   struct spells_t {
     const spell_data_t* antimagic_shell;
-    const spell_data_t* blood_rites;
     const spell_data_t* ossuary;
   } spell;
 
@@ -3370,19 +3373,6 @@ struct frozen_soul_t : public death_knight_spell_t
     m *= 1.0 + per_target_multiplier * p() -> rw_damage_targets.size();
 
     return m;
-  }
-};
-
-// Tier 20 Unholy 2 piece set bonus aoe explosion
-
-struct explosive_army_t : public death_knight_spell_t
-{
-  explosive_army_t( death_knight_t* p ) :
-    death_knight_spell_t( "explosive_army", p, p -> find_spell( 242224 ) )
-  {
-    background = true;
-    callbacks = false;
-    aoe = -1;
   }
 };
 
@@ -6025,69 +6015,6 @@ struct soul_reaper_t : public death_knight_melee_attack_t
   }
 };
 
-// Soulgorge ================================================================
-
-struct soulgorge_t : public death_knight_spell_t
-{
-  soulgorge_t( death_knight_t* p, const std::string& options_str ) :
-    death_knight_spell_t( "soulgorge", p, p -> talent.soulgorge )
-  {
-    parse_options( options_str );
-    aoe = -1;
-  }
-
-  size_t available_targets( std::vector< player_t* >& tl ) const override
-  {
-    death_knight_spell_t::available_targets( tl );
-
-    auto it = tl.begin();
-    while ( it != tl.end() )
-    {
-      if ( ! td( *it ) -> dot.blood_plague -> is_ticking() )
-      {
-        it = tl.erase( it );
-      }
-      else
-      {
-        it++;
-      }
-    }
-
-    return tl.size();
-  }
-
-  void execute() override
-  {
-    death_knight_spell_t::execute();
-
-    double rune_regen_value = 0;
-    for ( auto t : target_list() )
-    {
-      auto td_ = td( t );
-      double expended = 1.0 - td_ -> dot.blood_plague -> remains() / td_ -> dot.blood_plague -> duration();
-
-      if ( sim -> debug )
-      {
-        sim -> out_debug.printf( "%s soulgorges %s blood_plague: remains=%.3f duration=%.3f expended=%.f gain=%.f%%",
-          player -> name(), t -> name(), td_ -> dot.blood_plague -> remains().total_seconds(),
-          td_ -> dot.blood_plague -> duration().total_seconds(),
-          expended,
-          100.0 * data().effectN( 2 ).percent() * expended );
-      }
-
-      td_ -> dot.blood_plague -> cancel();
-
-      rune_regen_value += data().effectN( 2 ).percent() * expended;
-    }
-
-    if ( rune_regen_value > 0 )
-    {
-      p() -> buffs.soulgorge -> expire();
-      p() -> buffs.soulgorge -> trigger( static_cast<int>( rune_regen_value * 100 ), rune_regen_value );
-    }
-  }
-};
-
 // Summon Gargoyle ==========================================================
 
 struct summon_gargoyle_t : public death_knight_spell_t
@@ -6427,22 +6354,6 @@ struct rune_tap_t : public death_knight_spell_t
     death_knight_spell_t::execute();
 
     p() -> buffs.rune_tap -> trigger();
-  }
-};
-
-// Death Pact
-
-// TODO-WOD: Healing absorb kludge
-
-struct death_pact_t : public death_knight_heal_t
-{
-  death_pact_t( death_knight_t* p, const std::string& options_str ) :
-    death_knight_heal_t( "death_pact", p, p -> find_talent_spell( "Death Pact" ) )
-  {
-    may_crit = false;
-    base_pct_heal = data().effectN( 1 ).percent();
-
-    parse_options( options_str );
   }
 };
 
@@ -7173,13 +7084,12 @@ action_t* death_knight_t::create_action( const std::string& name, const std::str
   // General Actions
   if ( name == "antimagic_shell"          ) return new antimagic_shell_t          ( this, options_str );
   if ( name == "auto_attack"              ) return new auto_attack_t              ( this, options_str );
-  if ( name == "blood_boil"               ) return new blood_boil_t               ( this, options_str );
   if ( name == "chains_of_ice"            ) return new chains_of_ice_t            ( this, options_str );
+  if ( name == "death_strike"             ) return new death_strike_t             ( this, options_str );
   if ( name == "icebound_fortitude"       ) return new icebound_fortitude_t       ( this, options_str );
-  if ( name == "soul_reaper"              ) return new soul_reaper_t              ( this, options_str );
 
   // Blood Actions
-  if ( name == "blood_tap"                ) return new blood_tap_t                ( this, options_str );
+  if ( name == "blood_boil"               ) return new blood_boil_t               ( this, options_str );
   if ( name == "dancing_rune_weapon"      ) return new dancing_rune_weapon_t      ( this, options_str );
   if ( name == "dark_command"             ) return new dark_command_t             ( this, options_str );
   if ( name == "deaths_caress"            ) return new deaths_caress_t            ( this, options_str );
@@ -7188,6 +7098,16 @@ action_t* death_knight_t::create_action( const std::string& name, const std::str
   if ( name == "vampiric_blood"           ) return new vampiric_blood_t           ( this, options_str );
   if ( name == "consumption"              ) return new consumption_t              ( this, options_str );
   if ( name == "death_and_decay_tick"     ) return new death_and_decay_tick_t     ( this, options_str );
+  
+  // Talents
+  if ( name == "blood_mirror"             ) return new blood_mirror_t             ( this, options_str );
+  if ( name == "blooddrinker"             ) return new blooddrinker_t             ( this, options_str );
+  if ( name == "blood_tap"                ) return new blood_tap_t                ( this, options_str );
+  if ( name == "bloodworms"               ) return new bloodworms_t               ( this, options_str );
+  if ( name == "bonestorm"                ) return new bonestorm_t                ( this, options_str );
+  if ( name == "mark_of_blood"            ) return new mark_of_blood_t            ( this, options_str );
+  if ( name == "rune_tap"                 ) return new rune_tap_t                 ( this, options_str );
+  if ( name == "tombstone"                ) return new tombstone_t                ( this, options_str );
 
   // Frost Actions
   if ( name == "empower_rune_weapon"      ) return new empower_rune_weapon_t      ( this, options_str );
@@ -7197,11 +7117,15 @@ action_t* death_knight_t::create_action( const std::string& name, const std::str
   if ( name == "obliterate"               ) return new obliterate_t               ( this, options_str );
   if ( name == "pillar_of_frost"          ) return new pillar_of_frost_t          ( this, options_str );
   if ( name == "remorseless_winter"       ) return new remorseless_winter_t       ( this, options_str );
-  if ( name == "horn_of_winter"           ) return new horn_of_winter_t           ( this, options_str );
+  if ( name == "sindragosas_fury"         ) return new sindragosas_fury_t         ( this, options_str );
+  
+  // Talents
+  if ( name == "breath_of_sindragosa"     ) return new breath_of_sindragosa_t     ( this, options_str );
   if ( name == "frostscythe"              ) return new frostscythe_t              ( this, options_str );
+  if ( name == "glacial_advance"          ) return new glacial_advance_t          ( this, options_str );
+  if ( name == "horn_of_winter"           ) return new horn_of_winter_t           ( this, options_str );
   if ( name == "hungering_rune_weapon"    ) return new hungering_rune_weapon_t    ( this, options_str );
   if ( name == "obliteration"             ) return new obliteration_t             ( this, options_str );
-  if ( name == "glacial_advance"          ) return new glacial_advance_t          ( this, options_str );
 
   // Unholy Actions
   if ( name == "apocalypse"               ) return new apocalypse_t               ( this, options_str );
@@ -7209,7 +7133,6 @@ action_t* death_knight_t::create_action( const std::string& name, const std::str
   if ( name == "dark_transformation"      ) return new dark_transformation_t      ( this, options_str );
   if ( name == "death_and_decay"          ) return new death_and_decay_t          ( this, options_str );
   if ( name == "death_coil"               ) return new death_coil_t               ( this, options_str );
-  if ( name == "death_strike"             ) return new death_strike_t             ( this, options_str );
   if ( name == "festering_strike"         ) return new festering_strike_t         ( this, options_str );
   if ( name == "outbreak"                 ) return new outbreak_t                 ( this, options_str );
   if ( name == "raise_dead"               ) return new raise_dead_t               ( this, options_str );
@@ -7218,23 +7141,12 @@ action_t* death_knight_t::create_action( const std::string& name, const std::str
 
   // Talents
   if ( name == "blighted_rune_weapon"     ) return new blighted_rune_weapon_t     ( this, options_str );
-  if ( name == "blood_mirror"             ) return new blood_mirror_t             ( this, options_str );
-  if ( name == "blooddrinker"             ) return new blooddrinker_t             ( this, options_str );
-  if ( name == "bloodworms"               ) return new bloodworms_t               ( this, options_str );
-  if ( name == "bonestorm"                ) return new bonestorm_t                ( this, options_str );
-  if ( name == "breath_of_sindragosa"     ) return new breath_of_sindragosa_t     ( this, options_str );
   if ( name == "clawing_shadows"          ) return new clawing_shadows_t          ( this, options_str );
   if ( name == "dark_arbiter"             ) return new dark_arbiter_t             ( this, options_str );
-  if ( name == "death_pact"               ) return new death_pact_t               ( this, options_str );
   if ( name == "defile"                   ) return new defile_t                   ( this, options_str );
   if ( name == "epidemic"                 ) return new epidemic_t                 ( this, options_str );
-  if ( name == "mark_of_blood"            ) return new mark_of_blood_t            ( this, options_str );
-  if ( name == "rune_tap"                 ) return new rune_tap_t                 ( this, options_str );
-  if ( name == "soulgorge"                ) return new soulgorge_t                ( this, options_str );
-  if ( name == "tombstone"                ) return new tombstone_t                ( this, options_str );
+  if ( name == "soul_reaper"              ) return new soul_reaper_t              ( this, options_str );
 
-  // Artifact
-  if ( name == "sindragosas_fury"         ) return new sindragosas_fury_t         ( this, options_str );
 
   return player_t::create_action( name, options_str );
 }
@@ -7441,7 +7353,6 @@ void death_knight_t::init_spells()
 
   // Unholy
   spec.festering_wound            = find_specialization_spell( "Festering Wound" );
-  spec.deaths_advance             = find_specialization_spell( "Death's Advance" );
   spec.outbreak                   = find_specialization_spell( "Outbreak" );
   spec.runic_corruption           = find_specialization_spell( "Runic Corruption" );
   spec.sudden_doom                = find_specialization_spell( "Sudden Doom" );
@@ -7452,6 +7363,7 @@ void death_knight_t::init_spells()
   mastery.dreadblade              = find_mastery_spell( DEATH_KNIGHT_UNHOLY );
 
   // Frost Talents
+  // Will change in 7.3
   // Tier 1
   talent.shattering_strikes    = find_talent_spell( "Shattering Strikes" );
   talent.icy_talons            = find_talent_spell( "Icy Talons" );
@@ -7510,7 +7422,7 @@ void death_knight_t::init_spells()
 
   // Tier 2
   talent.rapid_decomposition   = find_talent_spell( "Rapid Decomposition" );
-  talent.soulgorge             = find_talent_spell( "Soulgorge" );
+  talent.soulgorge             = find_talent_spell( "Heart of ice" );
   talent.spectral_deflection   = find_talent_spell( "Spectral Deflection" );
 
   // Tier 3
@@ -7598,9 +7510,13 @@ void death_knight_t::init_spells()
   artifact.dance_of_darkness   = find_artifact_spell( "Dance of Darkness" );
   artifact.mouth_of_hell       = find_artifact_spell( "Mouth of Hell" );
   artifact.the_hungering_maw   = find_artifact_spell( "The Hungering Maw" );
+  // 7.2
+  artifact.fortitude_of_the_ebon_blade = find_artifact_spell("Fortitude of the Ebon Blade" );
+  artifact.carrion_feast       = find_artifact_spell( "Carrion Feast" );
+  artifact.vampiric_aura       = find_artifact_spell( "Vampiric Aura" );
+  artifact.souldrinker         = find_artifact_spell( "Souldrinker" );
   // Generic spells
   spell.antimagic_shell        = find_class_spell( "Anti-Magic Shell" );
-  spell.blood_rites            = find_spell( 163948 );
   spell.ossuary                = find_spell( 219788 );
 
   // Active Spells
@@ -8212,8 +8128,6 @@ void death_knight_t::create_buffs()
     .chance( sets -> has_set_bonus( DEATH_KNIGHT_UNHOLY, T18, B4 ) )
     .add_invalidate( CACHE_ATTACK_SPEED )
     .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
-  buffs.soulgorge = buff_creator_t( this, "soulgorge", find_spell( 213003 ) )
-    .affects_regen( true );
   buffs.antimagic_barrier = new antimagic_barrier_buff_t( this );
   buffs.tombstone = absorb_buff_creator_t( this, "tombstone", talent.tombstone )
     .cd( timespan_t::zero() ); // Handled by the action
