@@ -3357,6 +3357,23 @@ struct kingsbane_strike_t : public rogue_attack_t
     base_multiplier *= 1.0 + p -> talent.master_poisoner -> effectN( 1 ).percent();
   }
 
+  bool procs_poison() const override
+  {
+    // As of 7.2.5 2017-07-17, Kingsbane hits do not proc poisons, but do increase the debuff stacks.
+    return false;
+  }
+
+  void impact( action_state_t* state ) override
+  {
+    rogue_attack_t::impact( state );
+
+    // As of 7.2.5 2017-07-17, Kingsbane hits do not proc poisons, but do increase the debuff stacks.
+    if ( td( state -> target ) -> dots.kingsbane -> is_ticking() )
+    {
+      td( state -> target ) -> debuffs.kingsbane -> trigger();
+    }
+  }
+
   double action_multiplier() const override
   {
     double m = rogue_attack_t::action_multiplier();
