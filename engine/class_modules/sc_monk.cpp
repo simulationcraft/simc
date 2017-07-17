@@ -4836,6 +4836,14 @@ struct touch_of_karma_dot_t: public residual_action::residual_periodic_action_t 
     may_miss = may_crit = false;
     dual = true;
   }
+
+  // Need to disable multipliers in init() so that it doesn't double-dip on anything  
+  virtual void init() override
+  {
+    monk_melee_attack_t::init();
+    // disable the snapshot_flags for all multipliers
+    snapshot_flags &= STATE_NO_MULTIPLIER;
+  }
 };
 
 struct touch_of_karma_t: public monk_melee_attack_t
