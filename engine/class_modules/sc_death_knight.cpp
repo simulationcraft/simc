@@ -3853,6 +3853,16 @@ struct blood_boil_t : public death_knight_spell_t
 
     p() -> buffs.skullflowers_haemostasis -> trigger();
   }
+  
+  void impact( action_state_t* state ) override		
+  {		
+    death_knight_spell_t::impact( state );		
+ 		
+    if ( result_is_hit( state -> result ) )		
+    {		
+      p() -> apply_diseases( state, DISEASE_BLOOD_PLAGUE );		
+    }		
+  }
 
 };
 
