@@ -4189,7 +4189,7 @@ double priest_t::composite_spell_crit_chance() const
   {
     c *= 1.0 + (  buffs.voidform->check() ) 
 //              * sets->set(PRIEST_SHADOW, T21, B4)->effectN(1).percent();
-                * options.priest_t21_4p_bonus;
+                * options.priest_t21_4p_bonus / 100.0 ;
   }
 
   return c;
