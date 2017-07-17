@@ -1900,7 +1900,7 @@ struct mind_sear_tick_t final : public priest_spell_t
     : priest_spell_t( "mind_sear_tick", p, p.find_spell( 234702 ) ),
       source_target( nullptr ) 
   {
-    may_crit                    = false;
+    may_crit                    = true;
     background                  = true;
     proc                        = false;
     callbacks                   = true;
