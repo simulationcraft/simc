@@ -6461,8 +6461,7 @@ void hunter_t::apl_surv()
   default_list->add_action("call_action_list,name=fillers");
 
   //Mok Maintenance Call List
-  mokMaintain -> add_action(this, "Raptor Strike", "if=buff.moknathal_tactics.remains<gcd");
-  mokMaintain -> add_action(this, "Raptor Strike", "if=buff.moknathal_tactics.stack<2");
+  mokMaintain -> add_action( this, "Raptor Strike", "if=(buff.moknathal_tactics.remains<gcd)|(buff.moknathal_tactics.stack<2)" );
 
   //CDs Call List
   CDs -> add_action( "arcane_torrent,if=focus<=30" );
@@ -6475,8 +6474,7 @@ void hunter_t::apl_surv()
   aoe -> add_talent( this, "Butchery" );
   aoe -> add_talent( this, "Caltrops", "if=!ticking" );
   aoe -> add_action( this, "Explosive Trap" );
-  aoe -> add_action( this, "Carve", "if=talent.serpent_sting.enabled&dot.serpent_sting.refreshable" );
-  aoe -> add_action( this, "Carve", "if=active_enemies>5" );
+  aoe -> add_action( this, "Carve", "if=(talent.serpent_sting.enabled&dot.serpent_sting.refreshable)|(active_enemies>5)" );
 
   preBitePhase -> add_action( this, "Flanking Strike", "if=cooldown.mongoose_bite.charges<3" );
   preBitePhase -> add_talent( this, "Spitting Cobra" );
@@ -6516,8 +6514,7 @@ void hunter_t::apl_surv()
   fillers -> add_action( this, "Carve", "if=active_enemies>1&talent.serpent_sting.enabled&dot.serpent_sting.refreshable" );
   fillers -> add_talent( this, "Throwing Axes" );
   fillers -> add_action( this, "Carve", "if=active_enemies>2" );
-  fillers -> add_action( this, "Raptor Strike", "if=(talent.way_of_the_moknathal.enabled&buff.moknathal_tactics.remains<gcd*4)" );
-  fillers -> add_action( this, "Raptor Strike", "if=focus>((25-focus.regen*gcd)+55)" );
+  fillers -> add_action( this, "Raptor Strike", "if=(talent.way_of_the_moknathal.enabled&buff.moknathal_tactics.remains<gcd*4)|(focus>((25-focus.regen*gcd)+55))" );
 }
 
 
