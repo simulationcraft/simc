@@ -1280,7 +1280,7 @@ struct melee_t: public warrior_attack_t
     {
       rage_gain *= arms_rage_multiplier;
       if ( s -> result == RESULT_CRIT )
-        rage_gain *= 1.3; 
+        rage_gain *= 1.3;
     }
     else
     {
@@ -5287,7 +5287,7 @@ void warrior_t::apl_arms()
   execute -> add_talent( this, "Overpower" , "if=rage<40" );
   execute -> add_action( this, "Execute", "if=buff.shattered_defenses.down|rage>=40|talent.dauntless.enabled&rage>=36" );
   execute -> add_action( this, "Bladestorm", "interrupt=1,if=(raid_event.adds.in>90|!raid_event.adds.exists|spell_targets.bladestorm_mh>desired_targets)&!set_bonus.tier20_4pc" );
-  
+
 
 
   cleave -> add_action( this, "Mortal Strike" );
@@ -5303,18 +5303,19 @@ void warrior_t::apl_arms()
   cleave -> add_talent( this, "Shockwave" );
   cleave -> add_talent( this, "Storm Bolt" );
 
-  aoe -> add_action( this, "Mortal Strike", "if=cooldown_react" );
+  aoe -> add_action( this, "Warbreaker", "if=(cooldown.bladestorm.up|cooldown.bladestorm.remains<=gcd)&(cooldown.battle_cry.up|cooldown.battle_cry.remains<=gcd)");
+  aoe -> add_action( this, "Bladestorm", "if=buff.battle_cry.up&(set_bonus.tier20_4pc|equipped.the_great_storms_eye)" );
+  aoe -> add_action( this, "Colossus Smash", "if=buff.in_for_the_kill.down&talent.in_for_the_kill.enabled" );
+  aoe -> add_action( this, "Colossus Smash", "cycle_targets=1,if=debuff.colossus_smash.down&spell_targets.whirlwind<=10" );
+  aoe -> add_action( this, "Cleave", "if=spell_targets.whirlwind>=5");
+  aoe -> add_action( this, "Whirlwind", "if=spell_targets.whirlwind>=5&buff.cleave.up" );
+  aoe -> add_action( this, "Whirlwind", "if=spell_targets.whirlwind>=7" );
+  aoe -> add_action( this, "Colossus Smash", "if=buff.shattered_defenses.down" );
   aoe -> add_action( this, "Execute", "if=buff.stone_heart.react" );
-  aoe -> add_action( this, "Colossus Smash", "if=cooldown_react&buff.shattered_defenses.down&buff.precise_strikes.down" );
-  aoe -> add_action( this, "Warbreaker", "if=buff.shattered_defenses.down" );
-  aoe -> add_action( this, "Whirlwind", "if=talent.fervor_of_battle.enabled&(debuff.colossus_smash.up|rage.deficit<50)&(!talent.focused_rage.enabled|buff.battle_cry_deadly_calm.up|buff.cleave.up)" );
-  aoe -> add_talent( this, "Rend", "if=remains<=duration*0.3" );
-  aoe -> add_action( this, "Bladestorm" );
+  aoe -> add_action( this, "Mortal Strike", "if=buff.shattered_defenses.up|buff.executioners_precision.down" );
+  aoe -> add_talent( this, "Rend", "cycle_targets=1,if=remains<=duration*0.3&spell_targets.whirlwind<=3" );
   aoe -> add_action( this, "Cleave" );
-  aoe -> add_action( this, "Execute", "if=rage>90" );
-  aoe -> add_action( this, "Whirlwind", "if=rage>=40" );
-  aoe -> add_talent( this, "Shockwave" );
-  aoe -> add_talent( this, "Storm Bolt" );
+  aoe -> add_action( this, "Whirlwind" );
 }
 
 // Protection Warrior Action Priority List ========================================
