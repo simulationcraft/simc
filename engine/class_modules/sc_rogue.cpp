@@ -7077,12 +7077,21 @@ void rogue_t::init_action_list()
     // Cooldowns
     action_priority_list_t* cds = get_action_priority_list( "cds", "Cooldowns" );
     cds -> add_action( potion_action );
-    cds -> add_action( "use_item,name=draught_of_souls,if=energy.deficit>=35+variable.energy_regen_combined*2&(!equipped.mantle_of_the_master_assassin|cooldown.vanish.remains>8)" );
-    cds -> add_action( "use_item,name=draught_of_souls,if=mantle_duration>0&mantle_duration<3.5&dot.kingsbane.ticking" );
     for ( size_t i = 0; i < items.size(); i++ )
     {
-      if ( items[i].has_special_effect( SPECIAL_EFFECT_SOURCE_ITEM, SPECIAL_EFFECT_USE ) && items[i].name_str != "draught_of_souls" )
-        cds -> add_action( "use_item,name=" + items[i].name_str + ",if=buff.bloodlust.react|target.time_to_die<=20|debuff.vendetta.up" );
+      if ( items[i].has_special_effect( SPECIAL_EFFECT_SOURCE_ITEM, SPECIAL_EFFECT_USE ) )
+      {
+        if ( items[i].name_str == "draught_of_souls" )
+        {
+          cds -> add_action( "use_item,name=" + items[i].name_str + ",if=energy.deficit>=35+variable.energy_regen_combined*2&(!equipped.mantle_of_the_master_assassin|cooldown.vanish.remains>8)" );
+          cds -> add_action( "use_item,name=" + items[i].name_str + ",if=mantle_duration>0&mantle_duration<3.5&dot.kingsbane.ticking" );
+        }
+        // TODO: A bit before Vanish with Mantle, whenever up w/o.
+        else if ( items[i].name_str == "umbral_moonglaives" )
+          cds -> add_action( "use_item,name=" + items[i].name_str );
+        else
+          cds -> add_action( "use_item,name=" + items[i].name_str );
+      }
     }
     for ( size_t i = 0; i < racial_actions.size(); i++ )
     {
@@ -7241,11 +7250,13 @@ void rogue_t::init_action_list()
       {
         if ( items[i].name_str == "draught_of_souls" )
           cds -> add_action( "use_item,name=" + items[i].name_str + ",if=!stealthed.rogue&energy.deficit>30+talent.vigor.enabled*10" );
-        else if ( items[i].name_str == "specter_of_betrayal" ) {
+        else if ( items[i].name_str == "specter_of_betrayal" )
+        {
           cds -> add_action( "use_item,name=" + items[i].name_str + ",if=talent.dark_shadow.enabled&buff.shadow_dance.up&(!set_bonus.tier20_4pc|buff.symbols_of_death.up|(!talent.death_from_above.enabled&((mantle_duration>=3|!equipped.mantle_of_the_master_assassin)|cooldown.vanish.remains>=43)))" );
           cds -> add_action( "use_item,name=" + items[i].name_str + ",if=!talent.dark_shadow.enabled&!buff.stealth.up&!buff.vanish.up&(mantle_duration>=3|!equipped.mantle_of_the_master_assassin)" );
         }
-        else if ( items[i].name_str == "umbral_moonglaives" ) {
+        else if ( items[i].name_str == "umbral_moonglaives" )
+        {
           cds -> add_action( "use_item,name=" + items[i].name_str + ",if=talent.dark_shadow.enabled&!buff.stealth.up&!buff.vanish.up&buff.shadow_dance.up&(buff.symbols_of_death.up|(!talent.death_from_above.enabled&(mantle_duration>=3|!equipped.mantle_of_the_master_assassin)))" );
           cds -> add_action( "use_item,name=" + items[i].name_str + ",if=!talent.dark_shadow.enabled&!buff.stealth.up&!buff.vanish.up&(mantle_duration>=3|!equipped.mantle_of_the_master_assassin)" );
         }
