@@ -7724,12 +7724,12 @@ void death_knight_t::default_apl_frost()
   machinegun -> add_action( this, "Frost Strike", "if=buff.icy_talons.remains<1.5&talent.icy_talons.enabled" );
   machinegun -> add_action( this, "Frost Strike", "if=talent.shattering_strikes.enabled&debuff.razorice.stack=5" );
   machinegun -> add_action( this, "Remorseless Winter", "if=((buff.rime.react&equipped.perseverance_of_the_ebon_martyr)|talent.gathering_storm.enabled)&!(buff.obliteration.up&spell_targets.howling_blast<2)" );
-  machinegun -> add_action( this, "Howling Blast", "if=buff.rime.react&!(buff.obliteration.up&spell_targets.howling_blast<2)&!(equipped.perseverance_of_the_ebon_martyr&talent.gathering_storm.enabled" );
+  machinegun -> add_action( this, "Howling Blast", "if=buff.rime.react&!(buff.obliteration.up&spell_targets.howling_blast<2)&!(equipped.perseverance_of_the_ebon_martyr&talent.gathering_storm.enabled)" );
   machinegun -> add_action( this, "Howling Blast", "if=buff.rime.react&!(buff.obliteration.up&spell_targets.howling_blast<2)&equipped.perseverance_of_the_ebon_martyr&talent.gathering_storm.enabled&(debuff.perseverance_of_the_ebon_martyr.up|cooldown.remorseless_winter.remains>3)" );
   machinegun -> add_action( this, "Obliterate", "if=!buff.obliteration.up&(equipped.koltiras_newfound_will&talent.frozen_pulse.enabled&(set_bonus.tier19_2pc=1|set_bonus.tier19_4pc=1))|rune.time_to_5<gcd" );
   machinegun -> add_talent( this, "Obliteration", "if=(!talent.frozen_pulse.enabled|(rune<2&runic_power<28))&talent.gathering_storm.enabled&buff.remorseless_winter.up" );
   machinegun -> add_action( this, "Sindragosa's Fury", "if=(equipped.consorts_cold_core|buff.pillar_of_frost.up)&buff.unholy_strength.up&debuff.razorice.stack=5&!buff.obliteration.up" );
-  machinegun -> add_action( this, "Frost Strike", "if=(!buff.obliteration.up&runic_power.deficit<=10)|(buff.obliteration.up&!buff.killing_machine.react" );
+  machinegun -> add_action( this, "Frost Strike", "if=(!buff.obliteration.up&runic_power.deficit<=10)|(buff.obliteration.up&!buff.killing_machine.react)" );
   machinegun -> add_action( this, "Remorseless Winter", "if=spell_targets.remorseless_winter>=2&!(talent.frostscythe.enabled&buff.killing_machine.react&spell_targets.frostscythe>=2)" );
   machinegun -> add_talent( this, "Frostscythe", "if=buff.killing_machine.up&(!equipped.koltiras_newfound_will|spell_targets.frostscythe>=2)" );
   machinegun -> add_talent( this, "Glacial Advance", "if=spell_targets.glacial_advance>=2" );
