@@ -1789,6 +1789,9 @@ public:
       base_multiplier *= 1.0 + player.artifact.mind_shattering.percent();
     }
 
+    if( priest.sets->has_set_bonus(PRIEST_SHADOW, T21, B2) )
+      crit_bonus_multiplier *= 1.0 + ( 2.0 * priest.options.priest_t21_2p_bonus );
+
   }
 
   void init() override
@@ -1828,20 +1831,6 @@ public:
     }
 
     return d;
-  }
-
-  double composite_crit_damage_bonus_multiplier() const override
-  {
-    double c = priest_spell_t::composite_crit_damage_bonus_multiplier();
-
-    if (priest.sets->has_set_bonus(PRIEST_SHADOW, T21, B4))
-    {
-      c *= 1.0
-        // + sets->set(PRIEST_SHADOW, T21, B2)->effectN(1).percent();
-           + ( 2.0 * priest.options.priest_t21_2p_bonus );
-    }
-
-    return c;
   }
 
   void impact( action_state_t* s ) override
@@ -2041,6 +2030,9 @@ struct mind_flay_t final : public priest_spell_t
     }
 
     spell_power_mod.tick *= 1.0 + p.talents.fortress_of_the_mind->effectN( 3 ).percent();
+
+    if( priest.sets->has_set_bonus(PRIEST_SHADOW, T21, B2) )
+      crit_bonus_multiplier *= 1.0 + ( 2.0 * priest.options.priest_t21_2p_bonus );
   }
 
   double action_multiplier() const override
@@ -2051,20 +2043,6 @@ struct mind_flay_t final : public priest_spell_t
       am *= 1.0 + priest.buffs.void_ray->check() * priest.buffs.void_ray->data().effectN( 1 ).percent();
 
     return am;
-  }
-
-  double composite_crit_damage_bonus_multiplier() const override
-  {
-    double c = priest_spell_t::composite_crit_damage_bonus_multiplier();
-
-    if  (priest.sets->has_set_bonus(PRIEST_SHADOW, T21, B4) )
-    {
-      c *= 1.0 
-        // + sets->set(PRIEST_SHADOW, T21, B2)->effectN(1).percent();
-           + ( 2.0 * priest.options.priest_t21_2p_bonus );
-    }
-
-    return c;
   }
 
   /// Legendary the_twins_painful_touch
