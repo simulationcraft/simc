@@ -91,6 +91,7 @@ public:
     action_t*           serpent_sting;
     action_t*           piercing_shots;
     action_t*           surge_of_the_stormgod;
+    ground_aoe_event_t* sentinel;
   } active;
 
   struct pets_t
@@ -167,7 +168,6 @@ public:
     buff_t* the_mantle_of_command;
     buff_t* celerity_of_the_windrunners;
     buff_t* parsels_tongue;
-    buff_t* sentinel_marking;
 
     haste_buff_t* sephuzs_secret;
   } buffs;
@@ -4534,8 +4534,6 @@ struct sentinel_t : public hunter_spell_t
   {
     hunter_spell_t::execute();
 
-    p() -> buffs.sentinel_marking -> trigger();
-
     make_event<ground_aoe_event_t>(*sim, p(), ground_aoe_params_t()
       .target(execute_state->target)
       .x(execute_state->target->x_position)
@@ -4544,11 +4542,26 @@ struct sentinel_t : public hunter_spell_t
       .duration(data().duration())
       .start_time(sim->current_time())
       .action(sentinel_mark)
+      .state_callback( [ this ] ( ground_aoe_params_t::state_type type, ground_aoe_event_t* event ) {
+         switch ( type )
+         {
+         case ground_aoe_params_t::EVENT_CREATED:
+           assert( !p() -> active.sentinel );
+           p() -> active.sentinel = event;
+           break;
+         case ground_aoe_params_t::EVENT_DESTRUCTED:
+           assert( p() -> active.sentinel );
+           p() -> active.sentinel = nullptr;
+           break;
+         default:
+           break;
+         }
+      } )
       .hasted(ground_aoe_params_t::NOTHING), true);
   }
 
-  bool marks_next_gcd() {
-    return p() -> buffs.sentinel_marking -> check() && ( p() -> buffs.sentinel_marking -> remains() % p() -> buffs.sentinel_marking -> tick_time() < gcd() );
+  bool marks_next_gcd() const {
+    return p() -> active.sentinel && ( p() -> active.sentinel -> remains() < gcd() );
   }
 
   expr_t* create_expression( const std::string& name ) override
@@ -6022,12 +6035,6 @@ void hunter_t::create_buffs()
     buff_creator_t( this, "t20_4p_bestial_rage", find_spell( 246116 ) )
       .default_value( find_spell( 246116 ) -> effectN( 1 ).percent() );
 
-  buffs.sentinel_marking =
-    buff_creator_t( this, "sentinel_marking" )
-      .duration( talents.sentinel -> duration() )
-      .period( timespan_t::from_seconds( talents.sentinel -> effectN( 2 ).base_value() ) )
-      .quiet( true );
-
   buffs.sephuzs_secret =
     haste_buff_creator_t( this, "sephuzs_secret", find_spell( 208052 ) )
       .default_value( find_spell( 208052 ) -> effectN( 2 ).percent() )
@@ -6530,7 +6537,8 @@ void hunter_t::reset()
   player_t::reset();
 
   // Active
-  active.pet            = nullptr;
+  active.pet = nullptr;
+  active.sentinel = nullptr;
 }
 
 // hunter_t::arise ==========================================================
