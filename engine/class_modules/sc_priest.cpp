@@ -1838,7 +1838,7 @@ public:
     {
       c *= 1.0
         // + sets->set(PRIEST_SHADOW, T21, B2)->effectN(1).percent();
-           + priest.options.priest_t21_2p_bonus;
+           + ( 2.0 * priest.options.priest_t21_2p_bonus );
     }
 
     return c;
@@ -2061,7 +2061,7 @@ struct mind_flay_t final : public priest_spell_t
     {
       c *= 1.0 
         // + sets->set(PRIEST_SHADOW, T21, B2)->effectN(1).percent();
-           + priest.options.priest_t21_2p_bonus;
+           + ( 2.0 * priest.options.priest_t21_2p_bonus );
     }
 
     return c;
