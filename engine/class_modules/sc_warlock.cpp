@@ -677,13 +677,13 @@ namespace pets {
     bool is_demonbolt_enabled = true;
     bool is_lord_of_flames = false;
 
-    void warlock_pet_t::trigger_sephuzs_secret( const action_state_t* state, spell_mechanic mechanic )
+    void trigger_sephuzs_secret( const action_state_t* state, spell_mechanic mechanic )
     {
       if ( !o() -> legendary.sephuzs_secret )
         return;
 
       // trigger by default on interrupts and on adds/lower level stuff
-      if ( o() -> allow_sephuz || type == MECHANIC_INTERRUPT || state -> target -> is_add() ||
+      if ( o() -> allow_sephuz || mechanic == MECHANIC_INTERRUPT || state -> target -> is_add() ||
         ( state -> target -> level() < o() -> sim -> max_player_level + 3 ) )
       {
         o() -> buffs.sephuzs_secret -> trigger();
