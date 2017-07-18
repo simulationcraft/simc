@@ -5806,7 +5806,7 @@ struct remorseless_winter_t : public death_knight_spell_t
 
 struct scourge_strike_base_t : public death_knight_melee_attack_t
 {
-  std::array<double, 4> instructors_chance;
+  std::array<double, 3> instructors_chance;
 
   scourge_strike_base_t( const std::string& name, death_knight_t* p, const spell_data_t* spell ) :
     death_knight_melee_attack_t( name, p, spell )
@@ -5815,8 +5815,14 @@ struct scourge_strike_base_t : public death_knight_melee_attack_t
 
     //instructors_chance = { { 0.20, 0.40, 0.20, 0.10, 0.05, 0.05 } };
     //
-    // TODO: Changed in 7.1.5, new probability distribution unknown/untested
-    instructors_chance = { { .3, .4, .2, .1 } };
+    // Updated 2017-07-18 based on empirical testing
+    instructors_chance = { { .635, .1825, .1825 } };
+    if ( p -> legendary.the_instructors_fourth_lesson > 0 &&
+         instructors_chance.size() != p -> legendary.the_instructors_fourth_lesson + 1 )
+    {
+      sim -> errorf( "Player %s Instructor's Fourth Lesson probability distribution mismatch",
+        p -> name() );
+    }
   }
 
   int n_targets() const override
@@ -5865,8 +5871,6 @@ struct scourge_strike_base_t : public death_knight_melee_attack_t
 
       if ( p() -> legendary.the_instructors_fourth_lesson )
       {
-        assert( instructors_chance.size() == p() -> legendary.the_instructors_fourth_lesson + 1 );
-
         double roll = rng().real();
         double sum = 0;
 
@@ -5876,7 +5880,7 @@ struct scourge_strike_base_t : public death_knight_melee_attack_t
 
           if ( roll <= sum )
           {
-            n_burst += ( int ) i;
+            n_burst += as<int>( i );
             break;
           }
         }
