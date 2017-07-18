@@ -399,8 +399,10 @@ public:
     bool priest_fixed_time      = true;
     bool priest_ignore_healing  = false; // Remove Healing calculation codes
     bool priest_suppress_sephuz = false; // Sephuz's Secret won't proc if set true
+    bool priest_test_coef       = false; // Enables the control of coefficients where possible
     double priest_t21_2p_bonus  = 0.2;   // Test variables
     double priest_t21_4p_bonus  = 0.1;    
+    double priest_mass_hysteria = 2.0;
   } options;
 
   priest_t( sim_t* sim, const std::string& name, race_e r );
@@ -1790,7 +1792,9 @@ public:
     }
 
     if( priest.sets->has_set_bonus(PRIEST_SHADOW, T21, B2) )
-      crit_bonus_multiplier *= 1.0 + ( 2.0 * priest.options.priest_t21_2p_bonus );
+       crit_bonus_multiplier *= 1.0 + ( 2.0 * ( ! priest.options.priest_test_coef
+                                              ? priest.sets->set(PRIEST_SHADOW, T21, B2)->effectN(1).percent()
+                                              : priest.options.priest_t21_2p_bonus ) );
 
   }
 
@@ -2032,7 +2036,9 @@ struct mind_flay_t final : public priest_spell_t
     spell_power_mod.tick *= 1.0 + p.talents.fortress_of_the_mind->effectN( 3 ).percent();
 
     if( priest.sets->has_set_bonus(PRIEST_SHADOW, T21, B2) )
-      crit_bonus_multiplier *= 1.0 + ( 2.0 * priest.options.priest_t21_2p_bonus );
+      crit_bonus_multiplier *= 1.0 + ( 2.0 * ( ! priest.options.priest_test_coef
+                                               ? priest.sets->set(PRIEST_SHADOW, T21, B2)->effectN(1).percent()
+                                               : priest.options.priest_t21_2p_bonus ) );
   }
 
   double action_multiplier() const override
@@ -2697,7 +2703,10 @@ struct shadow_word_pain_t final : public priest_spell_t
 
     if ( priest.artifact.mass_hysteria.rank() )
     {
-      m *= 1.0 + ( priest.artifact.mass_hysteria.percent() * priest.buffs.voidform->stack() );
+      m *= 1.0 + ( priest.buffs.voidform->stack() 
+                 * ( ! priest.options.priest_test_coef 
+                     ? priest.artifact.mass_hysteria.percent() 
+                     : priest.options.priest_mass_hysteria / 100.0 ) );
     }
 
     return m;
@@ -3061,7 +3070,10 @@ struct vampiric_touch_t final : public priest_spell_t
 
     if ( priest.artifact.mass_hysteria.rank() )
     {
-      m *= 1.0 + ( priest.artifact.mass_hysteria.percent() * priest.buffs.voidform->stack() );
+      m *= 1.0 + ( priest.buffs.voidform->stack() 
+            * ( ! priest.options.priest_test_coef 
+                ? priest.artifact.mass_hysteria.percent() 
+                : priest.options.priest_mass_hysteria / 100.0 ) );
     }
 
     return m;
@@ -4160,8 +4172,9 @@ double priest_t::composite_spell_crit_chance() const
       && buffs.voidform->check() )
   {
     c *= 1.0 + (  buffs.voidform->check() ) 
-//              * sets->set(PRIEST_SHADOW, T21, B4)->effectN(1).percent();
-                * options.priest_t21_4p_bonus / 100.0 ;
+                     * ( ! options.priest_test_coef
+                         ? sets->set(PRIEST_SHADOW, T21, B4)->effectN(1).percent()
+                         : options.priest_t21_2p_bonus );
   }
 
   return c;
@@ -5579,8 +5592,10 @@ void priest_t::create_options()
   add_option( opt_bool( "priest_fixed_time", options.priest_fixed_time ) );
   add_option( opt_bool( "priest_ignore_healing", options.priest_ignore_healing ) );
   add_option( opt_bool( "priest_suppress_sephuz", options.priest_suppress_sephuz ) );
+  add_option( opt_bool( "priest_test_coef", options.priest_test_coef ) );
   add_option( opt_float( "priest_t21_2p_bonus", options.priest_t21_2p_bonus ) );
   add_option( opt_float( "priest_t21_4p_bonus", options.priest_t21_4p_bonus ) );
+  add_option( opt_float( "priest_mass_hysteria", options.priest_mass_hysteria ) );
 }
 
 std::string priest_t::create_profile( save_e type )
