@@ -1,4 +1,4 @@
-SimulationCraft 720-03 for World of Warcraft 7.2.5 PTR (wow build 23927)
+SimulationCraft 725-02 for World of Warcraft 7.3.0 PTR (wow build 24539)
 
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
 Class            : Discipline Shadow Priest
@@ -110,7 +110,7 @@ Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Affecting spells : Holy Priest (137031 effect#4), Lucidity (137323 effect#1), Muze's Unwavering Will (210632 effect#1), Invoke the Light (216122 effect#1)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ....x... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -373,7 +373,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=3283)     : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.75000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 3.10000 | Target: Enemy (6)
 #2 (id=139174)   : Energize Power (30)
                    Base Value: 1500 | Scaled Value: 1500 | Misc Value: insanity | Target: Self (1)
 Description      : Blasts the target's mind for $s1 Shadow damage.$?a185916[
@@ -504,7 +504,7 @@ Effects          :
 #1 (id=7216)     : Apply Aura (6) | Periodic Dummy (226): every 1 seconds
                    Base Value: 40 | Scaled Value: 40 | SP Coefficient: 1.00000 | Target: Self (1)
 Description      : Fills you with the embrace of Shadow energy for $d, causing you to heal a nearby ally for $15286s1% of any single-target Shadow spell damage you deal.
-Tooltip          : $15286s1% of any single-target Shadow spell damage you deal heals you and your allies.
+Tooltip          : $15286s1% of any single-target Shadow spell damage you deal heals a nearby ally.
 
 Name             : Mind Flay (id=15407) [Spell Family (6)] 
 Replaces         : Smite (id=585)
@@ -525,7 +525,7 @@ Attributes       : ........ ........ x....... ........   ..x..... ......x. .....
                  : Channeled (34)
 Effects          :
 #1 (id=7301)     : Apply Aura (6) | Periodic Damage (3): shadow every 0.75 seconds
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.55000 | Target: Enemy (6)
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.65000 | Target: Enemy (6)
 #2 (id=7302)     : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -50 | Scaled Value: -50 | Mechanic: Unknown(88) | Target: Enemy (6)
 #3 (id=303457)   : Apply Aura (6) | Periodic Energize Power (24): every 0.75 seconds
@@ -2091,6 +2091,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Unknown(57)
 #4 (id=283243)   : Apply Aura (6) | Unknown(129)
                    Base Value: 0 | Scaled Value: 0 | Target: Unknown(57)
+#5 (id=465034)   : Apply Aura (6) | Unknown(235)
+                   Base Value: 0 | Scaled Value: 0 | Target: Unknown(57)
 Description      : $@spelldesc1706
 Tooltip          : Levitating.
 
@@ -2523,7 +2525,7 @@ Effects          :
                    Base Value: -36 | Scaled Value: -36 | Target: Self (1)
 #4 (id=191082)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 247 (Label) | Target: Self (1)
-                   Affected Spells (Label): Infernal Contract (225140), Living Carapace (225033), Sands of Time (225124), Vampiric Aura (225130), Wailing Souls (242609), Unending Hunger (242536)
+                   Affected Spells (Label): Infernal Contract (225140), Living Carapace (225033), Sands of Time (225124), Vampiric Aura (225130), Wailing Souls (242609), Unending Hunger (242536), Chilling Nova (251940), Bulwark of Flame (251946), Hammer-Forged (251952)
 #5 (id=191083)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 248 (Label) | Target: Self (1)
                    Affected Spells (Label): Fel-Crazed Rage (225777), Colossal Slam (232044), Dread Torrent (246464), Ceaseless Toxin (242497), Umbral Glaive Storm (242556), Shattering Umbral Glaives (242557), Infernal Cinders (242218)
@@ -2636,7 +2638,7 @@ Effects          :
                    Affected Spells (Label): Taint of the Sea (215672), Recursive Strikes (225736), Insidious Corruption (243941)
 #8 (id=260959)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Generic Modifier (0)
                    Base Value: -65 | Scaled Value: -65 | Misc Value 2: 230 (Label) | Target: Self (1)
-                   Affected Spells (Label): Nightfall (213786), Fel Meteor (214052), Orb of Destruction (229700), Solar Collapse (229737), Nether Meteor (225764), Kil'jaeden's Burning Wish (235999), Crystalline Shockwave (225716), Arcane Swipe (225721), Colossal Slam (232044), Dread Torrent (246464), Piercing Anguish (246751), Umbral Glaive Storm (242556), Shattering Umbral Glaives (242557)
+                   Affected Spells (Label): Nightfall (213786), Fel Meteor (214052), Orb of Destruction (229700), Solar Collapse (229737), Nether Meteor (225764), Kil'jaeden's Burning Wish (235999), Crystalline Shockwave (225716), Arcane Swipe (225721), Colossal Slam (232044), Dread Torrent (246464), Piercing Anguish (246751), Umbral Glaive Storm (242556), Shattering Umbral Glaives (242557), Void Tendril (250834)
 #9 (id=260960)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -65 | Scaled Value: -65 | Misc Value: 3 | Misc Value 2: 232 (Label) | Target: Self (1)
                    Affected Spells (Label): Dark Blast (215444), Mechanical Bomb Squirrel (216085), Tormenting Cyclone (221845), Volatile Ichor (222187), Poisoned Dreams (222705), Flame Wreath (230257), Volatile Energy (230236), Carrion Swarm (225131), Terror From Below (242524), Spear of Anguish (242605), Shadow Wave (215089)
@@ -2794,7 +2796,7 @@ Spell Level      : 1
 Range            : 100 yards
 Affecting spells : Shadow Priest (137033 effect#1), Auspicious Spirits (155271 effect#1), 
 Attributes       : ........ ........ ........ x..x....   .....x.x ..x..... ........ ........ 
-                 : ........ ......x. ...x.... ........   ........ ........ ........ ......x. 
+                 : ........ ......x. ...x.... ........   ........ ........ ......x. ......x. 
                  : ........ ........ ........ ........   ...x.... ........ .xx..... ........ 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : .....x.. ........ ........ ........   ........ ...x.... ........ ........ 
@@ -3308,6 +3310,8 @@ Effects          :
                    Affected Spells: Void Eruption (228260), Void Eruption (228360)
 #13 (id=352180)   : Apply Aura (6) | Unknown(332)
                    Base Value: 194249 | Scaled Value: 194249 | Misc Value: 232698 | Target: Self (1)
+#14 (id=469640)   : Apply Aura (6) | Unknown(235)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : $@spelldesc228264
 Tooltip          : Cooldown on Mind Blast reduced by ${$w6/1000} sec.
 Shadow damage dealt increased by $w1%.
@@ -4203,7 +4207,7 @@ School           : Shadow
 Spell Level      : 20
 Range            : 40 yards
 GCD              : 1.5 seconds
-Velocity         : 20 yards/sec
+Velocity         : 40 yards/sec
 Cooldown         : 4.5 seconds
 Category         : 1660
 Category Cooldown: 4.5 seconds
@@ -4216,7 +4220,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=303382)   : School Damage (2): shadow
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 2.00000 | Target: Enemy (6)
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 2.20000 | Target: Enemy (6)
 #2 (id=303383)   : Trigger Missiles (32)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 234746 | Target: Enemy (6)
 #3 (id=308158)   : Energize Power (30)
@@ -4433,8 +4437,8 @@ Tooltip          : Taking $s2% increased damage from the Priest.
 Name             : Spirit of Redemption (Honor Talent) (id=215769) [Spell Family (6)] 
 Class            : Priest
 School           : Holy
-Duration         : 10 seconds
-Cooldown         : 300 seconds
+Duration         : 7 seconds
+Cooldown         : 180 seconds
 Proc Chance      : 100%
 Proc Flags       : ........ ..x...x. .....x.. ........ 
                  : AOE Heal, Heal, Trap Triggered
@@ -4863,7 +4867,7 @@ Attributes       : ........ ........ ........ ........   ........ ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=375043)   : Server Side Script (77)
-                   Base Value: 7 | Scaled Value: 7 | Radius: 0 - 60 yards | Target: Custom (18) -> AOE friendly (31)
+                   Base Value: 6 | Scaled Value: 6 | Radius: 0 - 60 yards | Target: Custom (18) -> AOE friendly (31)
 Description      : Extends the duration of all of your active Atonements by $s1 sec.
 
 Name             : Sanctuary (id=246393) [Spell Family (6), Passive, Hidden] 

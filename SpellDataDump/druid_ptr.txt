@@ -1,4 +1,4 @@
-SimulationCraft 720-03 for World of Warcraft 7.2.5 PTR (wow build 23927)
+SimulationCraft 725-02 for World of Warcraft 7.3.0 PTR (wow build 24539)
 
 Name             : Incapacitating Roar (id=99) [Spell Family (7)] 
 Class            : Guardian Druid
@@ -176,7 +176,7 @@ GCD              : 1 seconds
 Duration         : 24 seconds
 Stance Mask      : 0x00000001
 Mechanic         : Bleed
-Affecting spells : Mastery: Razor Claws (77493 effect#1), Incarnation: King of the Jungle (102543 effect#2), Berserk (106951 effect#1), Feral Druid (137011 effect#1), Restoration Druid (137012 effect#8), Soul of the Forest (158476 effect#3), Bloodletting (165699 effect#1), Thrash (192090 effect#2), Feral Affinity (197490 effect#6), Astral Influence (197524 effect#1), Jagged Wounds (202032 effect#1), Feral Affinity (202155 effect#6), Feral Affinity (202157 effect#6), Razor Fangs (210570 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ashamane's Frenzy (210723 effect#4), Item - Druid T20 Feral 4P Bonus (242235 effect#1), 
+Affecting spells : Mastery: Razor Claws (77493 effect#1), Incarnation: King of the Jungle (102543 effect#1), Berserk (106951 effect#1), Feral Druid (137011 effect#1), Restoration Druid (137012 effect#8), Soul of the Forest (158476 effect#3), Bloodletting (165699 effect#1), Thrash (192090 effect#2), Feral Affinity (197490 effect#6), Astral Influence (197524 effect#1), Jagged Wounds (202032 effect#1), Feral Affinity (202155 effect#6), Feral Affinity (202157 effect#6), Razor Fangs (210570 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ashamane's Frenzy (210723 effect#4), Item - Druid T20 Feral 4P Bonus (242235 effect#1), 
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ....x... ........   ........ ........ ........ ........ 
@@ -233,7 +233,7 @@ Range            : 5 yards
 GCD              : 1 seconds
 Stance Mask      : 0x00000001
 Mechanic         : Bleed
-Affecting spells : Mastery: Razor Claws (77493 effect#1), Incarnation: King of the Jungle (102543 effect#2), Prowl (102547 effect#5), Berserk (106951 effect#1), Feral Druid (137011 effect#1), Restoration Druid (137012 effect#8), Bloodletting (165699 effect#1), Thrash (192090 effect#2), Feral Affinity (197490 effect#5), Astral Influence (197524 effect#1), Jagged Wounds (202032 effect#1), Feral Affinity (202155 effect#5), Feral Affinity (202157 effect#5), Tear the Flesh (210593 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ashamane's Frenzy (210723 effect#4)
+Affecting spells : Mastery: Razor Claws (77493 effect#1), Incarnation: King of the Jungle (102543 effect#1), Prowl (102547 effect#5), Berserk (106951 effect#1), Feral Druid (137011 effect#1), Restoration Druid (137012 effect#8), Bloodletting (165699 effect#1), Thrash (192090 effect#2), Feral Affinity (197490 effect#5), Astral Influence (197524 effect#1), Jagged Wounds (202032 effect#1), Feral Affinity (202155 effect#5), Feral Affinity (202157 effect#5), Tear the Flesh (210593 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ashamane's Frenzy (210723 effect#4)
 Attributes       : ....x... ........ ..x..... ........   ........ ........ ........ ..xx.... 
                  : ........ ........ ....x... ........   ........ ........ ........ ........ 
                  : ........ ........ ....x... ........   ........ ........ ........ ........ 
@@ -394,12 +394,12 @@ Class            : Balance Feral Guardian Restoration Druid
 School           : Physical
 Spell Level      : 16
 Duration         : Aura (infinite)
-Cooldown         : 10 seconds
+Cooldown         : 6 seconds
 Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
 Proc Flags       : ...x.x.x .x...x.. .x.x.... ........ 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Hostile Spell Taken, Hostile Spell Taken, Periodic Taken
-Affecting spells : Incarnation: King of the Jungle (102543 effect#1)
+Affecting spells : Jungle Stalker (252071 effect#1)
 Attributes       : ....x... ........ ..x.x... .x.xx...   ....x... ..x..... ........ ........ 
                  : ........ ........ .....x.. ........   ........ ........ ........ ..x..... 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
@@ -450,7 +450,7 @@ Spell Level      : 10
 Range            : 5 yards
 GCD              : 1 seconds
 Stance Mask      : 0x00000001
-Affecting spells : Incarnation: King of the Jungle (102543 effect#2), Berserk (106951 effect#1), Clearcasting (135700 effect#1), Feral Druid (137011 effect#1), Restoration Druid (137012 effect#8), Bloodtalons (145152 effect#1), Thrash (192090 effect#2), Feral Affinity (197490 effect#5), Astral Influence (197524 effect#1), Feral Affinity (202155 effect#5), Feral Affinity (202157 effect#5), Feral Power (210571 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ashamane's Frenzy (210723 effect#4), Shredder Fangs (214736 effect#1)
+Affecting spells : Incarnation: King of the Jungle (102543 effect#1), Berserk (106951 effect#1), Clearcasting (135700 effect#1), Feral Druid (137011 effect#1), Restoration Druid (137012 effect#8), Bloodtalons (145152 effect#1), Thrash (192090 effect#2), Feral Affinity (197490 effect#5), Astral Influence (197524 effect#1), Feral Affinity (202155 effect#5), Feral Affinity (202157 effect#5), Feral Power (210571 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ashamane's Frenzy (210723 effect#4), Shredder Fangs (214736 effect#1)
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ..xx.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -507,10 +507,10 @@ Attributes       : ......xx x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=124697)   : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
                    Base Value: 15 | Scaled Value: 15 | Target: Self (1)
-                   Affected Spells: Rejuvenation (774), Healing Touch (5185), Regrowth (8936), Swiftmend (18562), Lifebloom (33763), Lifebloom (33778), Wild Growth (48438), Efflorescence (81269), Efflorescence (145205), Tranquility (157982), Gjallar's Horn (228136)
+                   Affected Spells: Rejuvenation (774), Healing Touch (5185), Regrowth (8936), Swiftmend (18562), Lifebloom (33763), Lifebloom (33778), Wild Growth (48438), Efflorescence (81269), Efflorescence (145205), Tranquility (157982)
 #2 (id=124698)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Damage (22)
                    Base Value: 15 | Scaled Value: 15 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Rejuvenation (774), Healing Touch (5185), Regrowth (8936), Swiftmend (18562), Lifebloom (33763), Lifebloom (33778), Wild Growth (48438), Efflorescence (81269), Efflorescence (145205), Tranquility (157982), Gjallar's Horn (228136)
+                   Affected Spells: Rejuvenation (774), Healing Touch (5185), Regrowth (8936), Swiftmend (18562), Lifebloom (33763), Lifebloom (33778), Wild Growth (48438), Efflorescence (81269), Efflorescence (145205), Tranquility (157982)
 #3 (id=1947)     : Apply Aura (6) | Modify Armor% (101)
                    Base Value: 120 | Scaled Value: 120 | Misc Value: 1 | Target: Self (1)
                    Affected Spells: Rejuvenation (774), Regrowth (8936), Lifebloom (33763), Lifebloom (33778), Wild Growth (48438)
@@ -741,7 +741,7 @@ Effects          :
 #1 (id=8561)     : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost (14)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 14 | Target: Self (1)
                    Affected Spells: Regrowth (8936)
-#2 (id=356840)   : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
+#2 (id=356840)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
                    Affected Spells: Regrowth (8936)
 #3 (id=356843)   : Apply Aura (6) | Dummy (4)
@@ -826,7 +826,7 @@ Effects          :
                    Base Value: 80 | Scaled Value: 80 | Target: Self (1)
 #3 (id=8660)     : Apply Aura (6) | Dummy (4)
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
-Description      : Your finishing moves have a $s3% chance per combo point to make your next Regrowth, Entangling Roots, or Rebirth instant, free, and castable in all forms.
+Description      : Your finishing moves have a $s3% chance per combo point to make your next Regrowth or Entangling Roots instant, free, and castable in all forms.
 
 Name             : Bear Form (id=17057) 
 Class            : Druid
@@ -877,8 +877,8 @@ GCD              : 1.5 seconds
 Cooldown         : 600 seconds
 Category         : 26
 Category Cooldown: 600 seconds
-Affecting spells : Cat Form (3025 effect#4), Bear Form (5487 effect#10), Cheaper Druid Shapeshifting (38314 effect#1), Predatory Swiftness (69369 effect#1), Lucidity (137247 effect#1), Book of Rebirth (176021 effect#1), Astral Influence (197524 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), 
-Attributes       : ........ ........ x....... ........   ........ ........ .x...... ........ 
+Affecting spells : Cat Form (3025 effect#4), Bear Form (5487 effect#10), Cheaper Druid Shapeshifting (38314 effect#1), Lucidity (137247 effect#1), Book of Rebirth (176021 effect#1), Astral Influence (197524 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), 
+Attributes       : ........ ........ ........ ........   ........ ........ .x...... ........ 
                  : x....... ........ ........ ........   ....x... ........ ........ ........ 
                  : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ .x......   ........ ........ ........ ........ 
@@ -887,7 +887,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .x...
 Effects          :
 #2 (id=101567)   : Dummy (3)
                    Base Value: 60 | Scaled Value: 60
-Description      : Returns the spirit to the body, restoring a dead target to life with $s2% health and $s1% mana. Castable in combat.
+Description      : Returns the spirit to the body, restoring a dead target to life with $s2% health and $s1% mana. Castable in combat. Usable in all shapeshift forms.
 
 Name             : Feline Grace (id=20719) [Passive, Hidden] 
 Class            : Druid
@@ -965,7 +965,7 @@ Spell Level      : 10
 Range            : 5 yards
 GCD              : 1 seconds
 Stance Mask      : 0x00000001
-Affecting spells : Incarnation: King of the Jungle (102543 effect#2), Berserk (106951 effect#1), Feral Druid (137011 effect#1), Restoration Druid (137012 effect#8), Bloodtalons (145152 effect#1), Soul of the Forest (158476 effect#2), Thrash (192090 effect#2), Feral Affinity (197490 effect#4), Astral Influence (197524 effect#1), Sabertooth (202031 effect#1), Feral Affinity (202155 effect#4), Feral Affinity (202157 effect#4), Powerful Bite (210575 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ashamane's Frenzy (210723 effect#4)
+Affecting spells : Incarnation: King of the Jungle (102543 effect#1), Berserk (106951 effect#1), Feral Druid (137011 effect#1), Restoration Druid (137012 effect#8), Bloodtalons (145152 effect#1), Soul of the Forest (158476 effect#2), Thrash (192090 effect#2), Feral Affinity (197490 effect#4), Astral Influence (197524 effect#1), Sabertooth (202031 effect#1), Feral Affinity (202155 effect#4), Feral Affinity (202157 effect#4), Powerful Bite (210575 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ashamane's Frenzy (210723 effect#4)
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ..xx.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -999,7 +999,7 @@ Cooldown         : 10 seconds
 Category         : 33
 Category Cooldown: 10 seconds
 Stance Mask      : 0x00000001
-Affecting spells : Maim Damage (61252 effect#1), Incarnation: King of the Jungle (102543 effect#2), Berserk (106951 effect#1), Feral Druid (137011 effect#1), Bloodtalons (145152 effect#1), Soul of the Forest (158476 effect#2), Thrash (192090 effect#2), Astral Influence (197524 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ashamane's Frenzy (210723 effect#4), Fiery Red Maimers (212875 effect#2), Fiery Red Maimers (236757 effect#2), 
+Affecting spells : Maim Damage (61252 effect#1), Incarnation: King of the Jungle (102543 effect#1), Berserk (106951 effect#1), Feral Druid (137011 effect#1), Bloodtalons (145152 effect#1), Soul of the Forest (158476 effect#2), Thrash (192090 effect#2), Astral Influence (197524 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ashamane's Frenzy (210723 effect#4), Fiery Red Maimers (212875 effect#2), Fiery Red Maimers (236757 effect#2), 
 Attributes       : ....x... ........ ..x..... ........   ........ ........ ..x..... ...x.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ .......x ........   ........ ........ ........ ........ 
@@ -1013,7 +1013,7 @@ Effects          :
 #2 (id=12793)    : Weapon Damage (58)
                    Base Value: 0 | Scaled Value: 0 (avg=0.075) | Bonus Value: 0 (0.179) | Radius: 0 - 5 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
 #3 (id=315748)   : Weapon Damage% (31)
-                   Base Value: 0 | Scaled Value: 0 | Points Per Combo Point: 140.3 | Radius: 0 - 5 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 | Points Per Combo Point: 140 | Radius: 0 - 5 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
 Description      : Finishing move that causes Physical damage and stuns the target. Damage and duration increased per combo point:
 
    1 point  : $168877sw3 damage, 1 sec
@@ -1177,7 +1177,7 @@ Class            : Druid
 School           : Nature
 Spell Level      : 64
 Range            : 40 yards
-Affecting spells : Incarnation: Tree of Life (5420 effect#1), Blessing of Lower City (37878 effect#1), Incarnation: Tree of Life (81098 effect#1), Ironbark (102342 effect#3), Restoration Druid (137012 effect#1), Lucidity (137247 effect#1), Blooms of G'Hanir (186393 effect#1), Thrash (192090 effect#2), Astral Influence (197524 effect#1), The Dark Titan's Advice (207271 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), 
+Affecting spells : Incarnation: Tree of Life (5420 effect#1), Blessing of Lower City (37878 effect#1), Incarnation: Tree of Life (81098 effect#1), Restoration Druid (137012 effect#1), Lucidity (137247 effect#1), Blooms of G'Hanir (186393 effect#1), Thrash (192090 effect#2), Astral Influence (197524 effect#1), The Dark Titan's Advice (207271 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), 
 Attributes       : ........ ........ ........ x..x....   .....x.. ..x..... ........ ........ 
                  : ........ ......x. ........ ....x...   ........ ........ x....... ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -1214,9 +1214,7 @@ Duration         : Aura (infinite)
 Cooldown         : 180 seconds
 Category         : 1333
 Category Cooldown: 180 seconds
-Proc Chance      : 100%
-Proc Flags       : .....x.. .x.x.x.x .x...... ........ 
-                 : Yellow Melee Taken, Yellow Ranged Taken, AOE Heal Taken, AOE Hostile Spell Taken, Heal Taken, Hostile Spell Taken
+Proc Chance      : 101%
 Affecting spells : Metamorphosis Rune (23724 effect#1), Cheaper Druid Shapeshifting (38314 effect#1), Incarnation (117679 effect#1), Druid (137009 effect#4), Wildcat Celerity (184877 effect#1)
 Attributes       : ....x... ........ x.x..... ........   ........ ..x..... x....... ........ 
                  : .x...... ........ ........ ........   ........ ........ ........ ........ 
@@ -1509,8 +1507,8 @@ Resource         : 1 - 5 Combo Points (4) (id=11447)
 Spell Level      : 1
 Range            : 100 yards
 GCD              : 1 seconds
-Duration         : 4 seconds
-Affecting spells : Incarnation: King of the Jungle (102543 effect#2), Berserk (106951 effect#1), 
+Duration         : 6 seconds
+Affecting spells : Incarnation: King of the Jungle (102543 effect#1), Berserk (106951 effect#1), 
 Attributes       : ....x... ........ ..x..... .....x..   .....x.. ..x..... ......x. ...x.... 
                  : x.x..... ........ ........ ........   ........ ........ ..x..... ......x. 
                  : ....x... ........ ........ ........   ........ ........ ........ ........ 
@@ -1522,16 +1520,16 @@ Effects          :
 #1 (id=45151)    : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=45152)    : Apply Aura (6) | Dummy (4)
-                   Base Value: 25 | Scaled Value: 25 | Target: Self (1)
+                   Base Value: 15 | Scaled Value: 15 | Target: Self (1)
 #3 (id=159999)   : Apply Aura (6) | Periodic Dummy (226): every 2 seconds
-                   Base Value: 25 | Scaled Value: 25 | Target: Self (1)
+                   Base Value: 15 | Scaled Value: 15 | Target: Self (1)
 Description      : Finishing move that grants $62071s1% increased damage to your Cat Form attacks for their full duration. Lasts longer per combo point:
 
-   1 point  : 8 seconds
-   2 points: 12 seconds
-   3 points: 16 seconds
-   4 points: 20 seconds
-   5 points: 24 seconds
+   1 point  : 12 seconds
+   2 points: 18 seconds
+   3 points: 24 seconds
+   4 points: 30 seconds
+   5 points: 36 seconds
 Tooltip          : Damage done increased by $w2%.
 
 Name             : The Orca (id=54872) 
@@ -1713,7 +1711,7 @@ Attributes       : ....x..x x....... ..x..... .....x..   .....x.. ..x..... .....
                  : Hidden (7), Does not break stealth (37)
 Effects          :
 #1 (id=56034)    : Apply Aura (6) | Modify Damage Done% (79)
-                   Base Value: 25 | Scaled Value: 25 | Misc Value: 0x7f | Target: Self (1)
+                   Base Value: 15 | Scaled Value: 15 | Misc Value: 0x7f | Target: Self (1)
 Description      : $@spelldesc52610
 Tooltip          : Damage done increased by $w1%.
 
@@ -1790,15 +1788,15 @@ Attributes       : ........ ........ ..x..... .x......   ........ ..x..... .x...
 Effects          :
 #1 (id=63124)    : Apply Aura (6) | Add Percent Modifier (108): Spell Cast Time (10)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 10 | Target: Self (1)
-                   Affected Spells: Entangling Roots (339), Regrowth (8936), Rebirth (20484)
+                   Affected Spells: Entangling Roots (339), Regrowth (8936)
 #2 (id=100285)   : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost (14)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 14 | Target: Self (1)
-                   Affected Spells: Entangling Roots (339), Regrowth (8936), Rebirth (20484)
+                   Affected Spells: Entangling Roots (339), Regrowth (8936)
 #3 (id=167620)   : Apply Aura (6) | Unknown(275)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 10 | Target: Self (1)
-                   Affected Spells: Entangling Roots (339), Regrowth (8936), Rebirth (20484)
+                   Affected Spells: Entangling Roots (339), Regrowth (8936)
 Description      : $@spelldesc16974
-Tooltip          : Your next Entangling Roots, Regrowth, or Rebirth will be instant, free, and castable in all forms.
+Tooltip          : Your next Regrowth or Entangling Roots is instant, free, and castable in all forms.
 
 Name             : Mastery: Starlight (id=77492) [Spell Family (7), Passive] 
 Class            : Balance Druid
@@ -1868,7 +1866,7 @@ GCD              : 1.5 seconds
 Cooldown         : 6 seconds
 Stance Mask      : 0x00000010
 Mechanic         : Bleed
-Affecting spells : Bear Form (5487 effect#7), Incarnation: King of the Jungle (102543 effect#2), Incarnation: Guardian of Ursoc (102558 effect#1), Guardian Overrides Passive (106734 effect#6), Berserk (106951 effect#1), Druid (137009 effect#3), Guardian Druid (137010 effect#1), Restoration Druid (137012 effect#8), Bloodtalons (145152 effect#1), Bloodletting (165699 effect#1), Thrash (192090 effect#2), Astral Influence (197524 effect#1), Jagged Claws (200409 effect#1), Luffa Wrappings (208681 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ashamane's Frenzy (210723 effect#4), Thrashing Claws (238048 effect#1)
+Affecting spells : Bear Form (5487 effect#7), Incarnation: King of the Jungle (102543 effect#1), Incarnation: Guardian of Ursoc (102558 effect#1), Guardian Overrides Passive (106734 effect#6), Berserk (106951 effect#1), Druid (137009 effect#3), Guardian Druid (137010 effect#1), Restoration Druid (137012 effect#8), Bloodtalons (145152 effect#1), Bloodletting (165699 effect#1), Thrash (192090 effect#2), Astral Influence (197524 effect#1), Jagged Claws (200409 effect#1), Luffa Wrappings (208681 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ashamane's Frenzy (210723 effect#4), Thrashing Claws (238048 effect#1)
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ .......x ........ ........ 
@@ -2240,7 +2238,7 @@ Spell Level      : 64
 Range            : 100 yards
 Duration         : 4 seconds
 Mechanic         : Unknown(227)
-Affecting spells : Cat Form (3025 effect#4), Incarnation: King of the Jungle (102543 effect#2), Berserk (106951 effect#1), Druid (137009 effect#4), Astral Influence (197524 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), 
+Affecting spells : Cat Form (3025 effect#4), Incarnation: King of the Jungle (102543 effect#1), Berserk (106951 effect#1), Druid (137009 effect#4), Astral Influence (197524 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), 
 Attributes       : ....x... ........ ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -2330,7 +2328,7 @@ Effects          :
                    Base Value: 12 | Scaled Value: 12 | Target: Friend (21)
 #3 (id=219284)   : Apply Aura (6) | Unknown(283)
                    Base Value: 0 | Scaled Value: 0 | Target: Friend (21)
-                   Affected Spells: Rejuvenation (774), Regrowth (8936), Lifebloom (33763), Lifebloom (33778), Wild Growth (48438), Efflorescence (81269), Cenarion Ward (102351), Cenarion Ward (102352), Tranquility (157982), Gjallar's Horn (228136)
+                   Affected Spells: Rejuvenation (774), Regrowth (8936), Lifebloom (33763), Wild Growth (48438), Efflorescence (81269), Cenarion Ward (102351), Cenarion Ward (102352), Tranquility (157982), Cultivation (200389), Spring Blossoms (207386)
 Description      : The target's skin becomes as tough as Ironwood, reducing all damage taken by $m1% for $d$?a197061[ and increases healing from your heal over time effects by $197061s2%][].
 Tooltip          : All damage taken is reduced by $w1%$?a197061[ and healing over time from the caster increased by $w3%][].
 
@@ -2447,16 +2445,15 @@ Attributes       : ....x... ........ ..x..... ........   .....x.. ..x..... x....
                  : ........ .....x.. ........ ........   ........ ........ ........ ........ 
                  : Does not break stealth (37)
 Effects          :
-#1 (id=111355)   : Apply Aura (6) | Unknown(332)
-                   Base Value: 102547 | Scaled Value: 102547 | Target: Self (1)
-                   Affected Spells: Prowl (5215), Prowl (102547)
-#2 (id=310506)   : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost (14)
-                   Base Value: -60 | Scaled Value: -60 | SP Coefficient: 1.00000 | Misc Value: 14 | Target: Self (1)
+#1 (id=111355)   : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost (14)
+                   Base Value: -50 | Scaled Value: -50 | SP Coefficient: 1.00000 | Misc Value: 14 | Target: Self (1)
                    Affected Spells: Rip (1079), Rake (1822), Shred (5221), Ferocious Bite (22568), Maim (22570), Savage Roar (52610), Thrash (77758), Skull Bash (93985), Swipe (106785), Thrash (106830), Skull Bash (106839), Ysera's Gift (145108), Ysera's Gift (145109), Ysera's Gift (145110), Moonfire (155625), Rake (155722), Maim (168877), Maim (168878), Maim (168879), Maim (168880), Maim (168881), Brutal Slash (202028), Ashamane's Rip (210705)
-#3 (id=310507)   : Apply Aura (6) | Unknown(418)
+#2 (id=310506)   : Apply Aura (6) | Unknown(418)
                    Base Value: 50 | Scaled Value: 50 | SP Coefficient: 1.00000 | Misc Value: 3 | Target: Self (1)
                    Affected Spells: Rake (1822), Shred (5221), Maim (22570), Savage Roar (52610), Thrash (77758), Skull Bash (93985), Swipe (106785), Thrash (106830), Skull Bash (106839), Ysera's Gift (145108), Ysera's Gift (145109), Ysera's Gift (145110), Rake (155722), Maim (168877), Maim (168878), Maim (168879), Maim (168880), Maim (168881), Fury of Elune (202770), Touch of the Moon (203018), Fury of Elune (211545)
-Description      : An improved Cat Form that allows the use of Prowl while in combat, causes Shred and Rake to deal damage as if stealth were active, reduces the cost of all Cat Form abilities by $s2%, and increases maximum Energy by $s3.
+#3 (id=471804)   : Trigger Spell (64): Jungle Stalker
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 252071 | Target: Self (1)
+Description      : An improved Cat Form that allows the use of Prowl once while in combat, causes Shred and Rake to deal damage as if stealth were active, reduces the cost of all Cat Form abilities by $s1%, and increases maximum Energy by $s2.
 
 Lasts $d. You may shapeshift in and out of this improved Cat Form for its duration.
 Tooltip          : Incarnation: King of the Jungle activated.
@@ -2466,12 +2463,12 @@ Class            : Druid
 School           : Physical
 Spell Level      : 1
 Duration         : Aura (infinite)
-Cooldown         : 10 seconds
+Cooldown         : 6 seconds
 Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
 Proc Flags       : ...x.x.x .x...x.. .x.x.... ........ 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Hostile Spell Taken, Hostile Spell Taken, Periodic Taken
-Affecting spells : Incarnation: King of the Jungle (102543 effect#1)
+Affecting spells : Jungle Stalker (252071 effect#1)
 Attributes       : ....x... ........ ..x.x... .x.x....   ....x... ..x..... ........ ........ 
                  : ........ ........ .....x.. ........   ........ ........ ........ ..x..... 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -2491,6 +2488,8 @@ Effects          :
 #5 (id=230020)   : Apply Aura (6) | Add Flat Modifier (107): Spell Range (5)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 5 | Target: Self (1)
                    Affected Spells: Rake (1822), Rake (155722)
+#6 (id=471783)   : Unknown(203)
+                   Base Value: 252071 | Scaled Value: 252071 | Target: Self (1)
 Description      : Allows the Druid to vanish from sight, entering an improved stealth mode.  Lasts until cancelled.
 Tooltip          : Stealthed.
 
@@ -2662,7 +2661,7 @@ Spell Level      : 32
 Range            : 8 yards
 GCD              : 1 seconds
 Stance Mask      : 0x00000001
-Affecting spells : Incarnation: King of the Jungle (102543 effect#2), Berserk (106951 effect#1), Clearcasting (135700 effect#1), Feral Druid (137011 effect#1), Restoration Druid (137012 effect#8), Bloodtalons (145152 effect#1), Feral Affinity (197490 effect#3), Astral Influence (197524 effect#1), Feral Affinity (202155 effect#3), Feral Affinity (202157 effect#3), Sharpened Claws (210637 effect#1), Scent of Blood (210664 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ashamane's Frenzy (210723 effect#4)
+Affecting spells : Incarnation: King of the Jungle (102543 effect#1), Berserk (106951 effect#1), Clearcasting (135700 effect#1), Feral Druid (137011 effect#1), Restoration Druid (137012 effect#8), Bloodtalons (145152 effect#1), Feral Affinity (197490 effect#3), Astral Influence (197524 effect#1), Feral Affinity (202155 effect#3), Feral Affinity (202157 effect#3), Sharpened Claws (210637 effect#1), Scent of Blood (210664 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ashamane's Frenzy (210723 effect#4)
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .......x ........ ........ 
@@ -2690,7 +2689,7 @@ GCD              : 1 seconds
 Duration         : 15 seconds
 Stance Mask      : 0x00000001
 Mechanic         : Bleed
-Affecting spells : Mastery: Razor Claws (77493 effect#1), Incarnation: King of the Jungle (102543 effect#2), Incarnation: Guardian of Ursoc (102558 effect#1), Berserk (106951 effect#1), Clearcasting (135700 effect#1), Guardian Druid (137010 effect#1), Feral Druid (137011 effect#1), Restoration Druid (137012 effect#8), Bloodletting (165699 effect#1), Astral Influence (197524 effect#1), Jagged Claws (200409 effect#1), Jagged Wounds (202032 effect#1), Luffa Wrappings (208681 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ashamane's Frenzy (210723 effect#4), Thrashing Claws (238048 effect#1), 
+Affecting spells : Mastery: Razor Claws (77493 effect#1), Incarnation: King of the Jungle (102543 effect#1), Incarnation: Guardian of Ursoc (102558 effect#1), Berserk (106951 effect#1), Clearcasting (135700 effect#1), Guardian Druid (137010 effect#1), Feral Druid (137011 effect#1), Restoration Druid (137012 effect#8), Bloodletting (165699 effect#1), Astral Influence (197524 effect#1), Jagged Claws (200409 effect#1), Jagged Wounds (202032 effect#1), Luffa Wrappings (208681 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ashamane's Frenzy (210723 effect#4), Thrashing Claws (238048 effect#1), 
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ .......x ........ ........ 
@@ -2732,7 +2731,7 @@ Cooldown         : 15 seconds
 Category         : 1260
 Category Cooldown: 15 seconds
 Stance Mask      : 0x00000011
-Affecting spells : Cat Form (3025 effect#4), Incarnation: King of the Jungle (102543 effect#2), Berserk (106951 effect#1), Druid (137009 effect#4), Astral Influence (197524 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), 
+Affecting spells : Cat Form (3025 effect#4), Incarnation: King of the Jungle (102543 effect#1), Berserk (106951 effect#1), Druid (137009 effect#4), Astral Influence (197524 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), 
 Attributes       : ....x... ........ ..x..... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ..x..... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ .x...... 
@@ -2993,7 +2992,7 @@ Attributes       : ........ ........ ........ x..x.x.x   .....x.. ........ .....
 Effects          :
 #1 (id=133652)   : Apply Aura (6) | Unknown(383)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 11 | Target: Self (1)
-                   Affected Spells: Incarnation: Tree of Life (33891), Incarnation: King of the Jungle (102543), Incarnation: Guardian of Ursoc (102558), Incarnation: Chosen of Elune (102560)
+                   Affected Spells: Incarnation: Tree of Life (33891), Incarnation: King of the Jungle (102543), Incarnation: Guardian of Ursoc (102558), Incarnation: Chosen of Elune (102560), Jungle Stalker (252071)
 Description      : Activates a superior shapeshifting form appropriate to your specialization for $d.  You may freely shapeshift in and out of this form for its duration.
 Tooltip          : Incarnation: Tree of Life activated.
 
@@ -3284,7 +3283,7 @@ Effects          :
                    Affected Spells: Maul (6807), Frenzied Regeneration (22842), Mangle (33917), Thrash (77758), Thrash (192090), Enraged Mangle (202085), Swipe (213771), Enraged Maul (236716)
 #4 (id=191164)   : Apply Aura (6) | Hasted Global Cooldown (417)
                    Base Value: 100 | Scaled Value: 100 | SP Coefficient: 1.00000 | Misc Value: 11 | Target: Self (1)
-                   Affected Spells: Incapacitating Roar (99), Cat Form (768), Travel Form (783), Mighty Bash (5211), Bear Form (5487), Maul (6807), Moonkin Form (24858), Incarnation: Tree of Life (33891), Mangle (33917), Thrash (77758), Pulverize (80313), Skull Bash (93985), Cenarion Ward (102351), Cenarion Ward (102352), Incarnation: King of the Jungle (102543), Incarnation: Guardian of Ursoc (102558), Incarnation: Chosen of Elune (102560), Skull Bash (106839), Pulverize (158792), Flight Form (165962), Thrash (192090), Moonkin Form (197625), Enraged Mangle (202085), Stag Form (210053), Swipe (213771), Enraged Maul (236716), Intimidating Roar (236748)
+                   Affected Spells: Incapacitating Roar (99), Cat Form (768), Travel Form (783), Mighty Bash (5211), Bear Form (5487), Maul (6807), Moonkin Form (24858), Incarnation: Tree of Life (33891), Mangle (33917), Thrash (77758), Pulverize (80313), Skull Bash (93985), Cenarion Ward (102351), Cenarion Ward (102352), Incarnation: King of the Jungle (102543), Incarnation: Guardian of Ursoc (102558), Incarnation: Chosen of Elune (102560), Skull Bash (106839), Pulverize (158792), Flight Form (165962), Thrash (192090), Moonkin Form (197625), Enraged Mangle (202085), Stag Form (210053), Swipe (213771), Enraged Maul (236716), Intimidating Roar (236748), Jungle Stalker (252071)
 #5 (id=191165)   : Apply Aura (6) | Unknown(379)
                    Base Value: 220 | Scaled Value: 220 | Target: Self (1)
 #6 (id=320062)   : Apply Aura (6) | Dummy (4)
@@ -3369,10 +3368,10 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=179694)   : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+                   Base Value: 33 | Scaled Value: 33 | Target: Self (1)
                    Affected Spells: Rip (1079), Rake (1822), Shred (5221), Ferocious Bite (22568), Maim (22570), Swipe (106785), Thrash (106830), Moonfire (155625), Rake (155722), Moonfire (164812), Brutal Slash (202028), Shadow Thrash (210687), Ashamane's Rip (210705), Ashamane's Frenzy (210723)
 #2 (id=191154)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Damage (22)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 33 | Scaled Value: 33 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Rip (1079), Rake (1822), Shred (5221), Ferocious Bite (22568), Maim (22570), Swipe (106785), Thrash (106830), Moonfire (155625), Rake (155722), Moonfire (164812), Brutal Slash (202028), Shadow Thrash (210687), Ashamane's Rip (210705), Ashamane's Frenzy (210723)
 #3 (id=191155)   : Apply Aura (6) | Add Flat Modifier (107): Spell Cooldown (11)
                    Base Value: 90000 | Scaled Value: 90000 | Misc Value: 11 | Target: Self (1)
@@ -3393,7 +3392,7 @@ Effects          :
                    Affected Spells: Luffa Wrappings (208681)
 #9 (id=260770)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 247 (Label) | Target: Self (1)
-                   Affected Spells (Label): Infernal Contract (225140), Living Carapace (225033), Sands of Time (225124), Vampiric Aura (225130), Wailing Souls (242609), Unending Hunger (242536)
+                   Affected Spells (Label): Infernal Contract (225140), Living Carapace (225033), Sands of Time (225124), Vampiric Aura (225130), Wailing Souls (242609), Unending Hunger (242536), Chilling Nova (251940), Bulwark of Flame (251946), Hammer-Forged (251952)
 #10 (id=260771)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 249 (Label) | Target: Self (1)
                    Affected Spells (Label): Orb of Destruction (229700)
@@ -3445,7 +3444,7 @@ Effects          :
 #10 (id=260751)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 247 (Label) | Target: Self (1)
                    Affected Spells: Gore (93622)
-                   Affected Spells (Label): Infernal Contract (225140), Living Carapace (225033), Sands of Time (225124), Vampiric Aura (225130), Wailing Souls (242609), Unending Hunger (242536)
+                   Affected Spells (Label): Infernal Contract (225140), Living Carapace (225033), Sands of Time (225124), Vampiric Aura (225130), Wailing Souls (242609), Unending Hunger (242536), Chilling Nova (251940), Bulwark of Flame (251946), Hammer-Forged (251952)
 #11 (id=260752)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 248 (Label) | Target: Self (1)
                    Affected Spells (Label): Fel-Crazed Rage (225777), Colossal Slam (232044), Dread Torrent (246464), Ceaseless Toxin (242497), Umbral Glaive Storm (242556), Shattering Umbral Glaives (242557), Infernal Cinders (242218)
@@ -3496,7 +3495,7 @@ Effects          :
                    Affected Spells: Regrowth (8936)
 #8 (id=260779)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 247 (Label) | Target: Self (1)
-                   Affected Spells (Label): Infernal Contract (225140), Living Carapace (225033), Sands of Time (225124), Vampiric Aura (225130), Wailing Souls (242609), Unending Hunger (242536)
+                   Affected Spells (Label): Infernal Contract (225140), Living Carapace (225033), Sands of Time (225124), Vampiric Aura (225130), Wailing Souls (242609), Unending Hunger (242536), Chilling Nova (251940), Bulwark of Flame (251946), Hammer-Forged (251952)
 #9 (id=260780)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 248 (Label) | Target: Self (1)
                    Affected Spells (Label): Fel-Crazed Rage (225777), Colossal Slam (232044), Dread Torrent (246464), Ceaseless Toxin (242497), Umbral Glaive Storm (242556), Shattering Umbral Glaives (242557), Infernal Cinders (242218)
@@ -3619,7 +3618,7 @@ Class            : Restoration Druid
 School           : Nature
 Spell Level      : 34
 Range            : 100 yards
-Affecting spells : Bear Form (5487 effect#8), Incarnation: King of the Jungle (102543 effect#2), Berserk (106951 effect#1), Astral Influence (197524 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), 
+Affecting spells : Bear Form (5487 effect#8), Incarnation: King of the Jungle (102543 effect#1), Berserk (106951 effect#1), Astral Influence (197524 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), 
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3636,7 +3635,7 @@ Name             : Ysera's Gift (id=145109) [Spell Family (7)]
 Class            : Druid
 School           : Nature
 Spell Level      : 1
-Affecting spells : Bear Form (5487 effect#8), Incarnation: King of the Jungle (102543 effect#2), Berserk (106951 effect#1), Astral Influence (197524 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), 
+Affecting spells : Bear Form (5487 effect#8), Incarnation: King of the Jungle (102543 effect#1), Berserk (106951 effect#1), Astral Influence (197524 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), 
 Attributes       : ........ ........ ........ x..x....   .....x.. ..x..... ........ ........ 
                  : ........ ......x. ........ ....xx..   ........ ........ x....... ......x. 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -3654,7 +3653,7 @@ Class            : Druid
 School           : Nature
 Spell Level      : 1
 Range            : 30 yards
-Affecting spells : Bear Form (5487 effect#8), Incarnation: King of the Jungle (102543 effect#2), Berserk (106951 effect#1), Astral Influence (197524 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), 
+Affecting spells : Bear Form (5487 effect#8), Incarnation: King of the Jungle (102543 effect#1), Berserk (106951 effect#1), Astral Influence (197524 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), 
 Attributes       : ........ ........ ........ x..x....   .....x.. ..x..... ...x.... ........ 
                  : ........ ......x. ........ ....xx..   ........ ........ x....... ......x. 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -3684,8 +3683,8 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=195368)   : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
-                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
-                   Affected Spells: Shred (5221), Maul (6807), Ferocious Bite (22568), Maim (22570), Mangle (33917), Thrash (77758), Swipe (106785), Maim (168877), Maim (168878), Maim (168879), Maim (168880), Maim (168881), Enraged Mangle (202085), Swipe (213771), Enraged Maul (236716)
+                   Base Value: 25 | Scaled Value: 25 | Target: Self (1)
+                   Affected Spells: Shred (5221), Maul (6807), Ferocious Bite (22568), Maim (22570), Mangle (33917), Thrash (77758), Swipe (106785), Maim (168877), Maim (168878), Maim (168879), Maim (168880), Maim (168881), Brutal Slash (202028), Enraged Mangle (202085), Swipe (213771), Enraged Maul (236716)
 Description      : $@spelldesc155672
 Tooltip          : Your next two melee abilities deal $s1% increased damage for their full duration.
 
@@ -3800,7 +3799,7 @@ Range            : 40 yards
 GCD              : 1 seconds
 Duration         : 14 seconds
 Stance Mask      : 0x00000001
-Affecting spells : Incarnation: King of the Jungle (102543 effect#2), Berserk (106951 effect#1), Feral Druid (137011 effect#1), Astral Influence (197524 effect#1), Twin Moonfire (200818 effect#2), Ekowraith, Creator of Worlds (210667 effect#1), Ashamane's Frenzy (210723 effect#4)
+Affecting spells : Incarnation: King of the Jungle (102543 effect#1), Berserk (106951 effect#1), Feral Druid (137011 effect#1), Astral Influence (197524 effect#1), Twin Moonfire (200818 effect#2), Ekowraith, Creator of Worlds (210667 effect#1), Ashamane's Frenzy (210723 effect#4)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ..x..... 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .....x.. ........ ........ 
@@ -3876,7 +3875,7 @@ Range            : 100 yards
 Duration         : 15 seconds
 Stance Mask      : 0x00000001
 Mechanic         : Bleed
-Affecting spells : Mastery: Razor Claws (77493 effect#1), Incarnation: King of the Jungle (102543 effect#2), Prowl (102547 effect#5), Berserk (106951 effect#1), Feral Druid (137011 effect#1), Restoration Druid (137012 effect#8), Bloodletting (165699 effect#1), Thrash (192090 effect#2), Feral Affinity (197490 effect#5), Astral Influence (197524 effect#1), Jagged Wounds (202032 effect#1), Feral Affinity (202155 effect#5), Feral Affinity (202157 effect#5), Tear the Flesh (210593 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ashamane's Frenzy (210723 effect#4)
+Affecting spells : Mastery: Razor Claws (77493 effect#1), Incarnation: King of the Jungle (102543 effect#1), Prowl (102547 effect#5), Berserk (106951 effect#1), Feral Druid (137011 effect#1), Restoration Druid (137012 effect#8), Bloodletting (165699 effect#1), Thrash (192090 effect#2), Feral Affinity (197490 effect#5), Astral Influence (197524 effect#1), Jagged Wounds (202032 effect#1), Feral Affinity (202155 effect#5), Feral Affinity (202157 effect#5), Tear the Flesh (210593 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ashamane's Frenzy (210723 effect#4)
 Triggered by     : Rake (1822)
 Attributes       : ....x... ........ ..x..x.. ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ........ ..x..... ......x. 
@@ -4058,7 +4057,7 @@ Attributes       : ......xx x....... ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6), Hidden (7)
 Effects          :
-#1 (id=222957)   : Apply Aura (6) | Unknown(166)
+#1 (id=222957)   : Apply Aura (6) | Modify Attack Power% (166)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Target: Self (1)
 Description      : $@spelldesc155783
 
@@ -4357,7 +4356,7 @@ Cooldown         : 10 seconds
 Category         : 33
 Category Cooldown: 10 seconds
 Stance Mask      : 0x00000001
-Affecting spells : Maim Damage (61252 effect#1), Incarnation: King of the Jungle (102543 effect#2), Berserk (106951 effect#1), Bloodtalons (145152 effect#1), Soul of the Forest (158476 effect#2), Thrash (192090 effect#2), Astral Influence (197524 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ashamane's Frenzy (210723 effect#4), Fiery Red Maimers (212875 effect#2), Fiery Red Maimers (236757 effect#2), 
+Affecting spells : Maim Damage (61252 effect#1), Incarnation: King of the Jungle (102543 effect#1), Berserk (106951 effect#1), Bloodtalons (145152 effect#1), Soul of the Forest (158476 effect#2), Thrash (192090 effect#2), Astral Influence (197524 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ashamane's Frenzy (210723 effect#4), Fiery Red Maimers (212875 effect#2), Fiery Red Maimers (236757 effect#2), 
 Attributes       : ....x... ........ ..x..... ........   ........ ........ ..x..... ...x.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ .......x ........   ........ ........ ........ ........ 
@@ -4371,7 +4370,7 @@ Effects          :
 #2 (id=239196)   : Apply Aura (6) | Stun (12)
                    Base Value: 0 | Scaled Value: 0 | Mechanic: Unknown(95) | Target: Enemy (6)
 #3 (id=239197)   : Weapon Damage% (31)
-                   Base Value: 115 | Scaled Value: 1.15 | Target: Enemy (6)
+                   Base Value: 140 | Scaled Value: 1.4 | Target: Enemy (6)
 Tooltip          : Stunned.
 Variables        : $mult=$?p61252[${4}][${2}]
 
@@ -4386,7 +4385,7 @@ Cooldown         : 10 seconds
 Category         : 33
 Category Cooldown: 10 seconds
 Stance Mask      : 0x00000001
-Affecting spells : Maim Damage (61252 effect#1), Incarnation: King of the Jungle (102543 effect#2), Berserk (106951 effect#1), Bloodtalons (145152 effect#1), Soul of the Forest (158476 effect#2), Thrash (192090 effect#2), Astral Influence (197524 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ashamane's Frenzy (210723 effect#4), Fiery Red Maimers (212875 effect#2), Fiery Red Maimers (236757 effect#2), 
+Affecting spells : Maim Damage (61252 effect#1), Incarnation: King of the Jungle (102543 effect#1), Berserk (106951 effect#1), Bloodtalons (145152 effect#1), Soul of the Forest (158476 effect#2), Thrash (192090 effect#2), Astral Influence (197524 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ashamane's Frenzy (210723 effect#4), Fiery Red Maimers (212875 effect#2), Fiery Red Maimers (236757 effect#2), 
 Attributes       : ....x... ........ ..x..... ........   ........ ........ ..x..... ...x.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ .......x ........   ........ ........ ........ ........ 
@@ -4400,7 +4399,7 @@ Effects          :
 #2 (id=239199)   : Apply Aura (6) | Stun (12)
                    Base Value: 0 | Scaled Value: 0 | Mechanic: Unknown(95) | Target: Enemy (6)
 #3 (id=239200)   : Weapon Damage% (31)
-                   Base Value: 230 | Scaled Value: 2.3 | Target: Enemy (6)
+                   Base Value: 280 | Scaled Value: 2.8 | Target: Enemy (6)
 Tooltip          : Stunned.
 Variables        : $mult=$?p61252[${4}][${2}]
 
@@ -4415,7 +4414,7 @@ Cooldown         : 10 seconds
 Category         : 33
 Category Cooldown: 10 seconds
 Stance Mask      : 0x00000001
-Affecting spells : Maim Damage (61252 effect#1), Incarnation: King of the Jungle (102543 effect#2), Berserk (106951 effect#1), Bloodtalons (145152 effect#1), Soul of the Forest (158476 effect#2), Thrash (192090 effect#2), Astral Influence (197524 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ashamane's Frenzy (210723 effect#4), Fiery Red Maimers (212875 effect#2), Fiery Red Maimers (236757 effect#2), 
+Affecting spells : Maim Damage (61252 effect#1), Incarnation: King of the Jungle (102543 effect#1), Berserk (106951 effect#1), Bloodtalons (145152 effect#1), Soul of the Forest (158476 effect#2), Thrash (192090 effect#2), Astral Influence (197524 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ashamane's Frenzy (210723 effect#4), Fiery Red Maimers (212875 effect#2), Fiery Red Maimers (236757 effect#2), 
 Attributes       : ....x... ........ ..x..... ........   ........ ........ ..x..... ...x.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ .......x ........   ........ ........ ........ ........ 
@@ -4429,7 +4428,7 @@ Effects          :
 #2 (id=239202)   : Apply Aura (6) | Stun (12)
                    Base Value: 0 | Scaled Value: 0 | Mechanic: Unknown(95) | Target: Enemy (6)
 #3 (id=239203)   : Weapon Damage% (31)
-                   Base Value: 345 | Scaled Value: 3.45 | Target: Enemy (6)
+                   Base Value: 420 | Scaled Value: 4.2 | Target: Enemy (6)
 Tooltip          : Stunned.
 Variables        : $mult=$?p61252[${4}][${2}]
 
@@ -4444,7 +4443,7 @@ Cooldown         : 10 seconds
 Category         : 33
 Category Cooldown: 10 seconds
 Stance Mask      : 0x00000001
-Affecting spells : Maim Damage (61252 effect#1), Incarnation: King of the Jungle (102543 effect#2), Berserk (106951 effect#1), Bloodtalons (145152 effect#1), Soul of the Forest (158476 effect#2), Thrash (192090 effect#2), Astral Influence (197524 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ashamane's Frenzy (210723 effect#4), Fiery Red Maimers (212875 effect#2), Fiery Red Maimers (236757 effect#2), 
+Affecting spells : Maim Damage (61252 effect#1), Incarnation: King of the Jungle (102543 effect#1), Berserk (106951 effect#1), Bloodtalons (145152 effect#1), Soul of the Forest (158476 effect#2), Thrash (192090 effect#2), Astral Influence (197524 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ashamane's Frenzy (210723 effect#4), Fiery Red Maimers (212875 effect#2), Fiery Red Maimers (236757 effect#2), 
 Attributes       : ....x... ........ ..x..... ........   ........ ........ ..x..... ...x.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ .......x ........   ........ ........ ........ ........ 
@@ -4458,7 +4457,7 @@ Effects          :
 #2 (id=239205)   : Apply Aura (6) | Stun (12)
                    Base Value: 0 | Scaled Value: 0 | Mechanic: Unknown(95) | Target: Enemy (6)
 #3 (id=239206)   : Weapon Damage% (31)
-                   Base Value: 460 | Scaled Value: 4.6 | Target: Enemy (6)
+                   Base Value: 560 | Scaled Value: 5.6 | Target: Enemy (6)
 Tooltip          : Stunned.
 Variables        : $mult=$?p61252[${4}][${2}]
 
@@ -4473,7 +4472,7 @@ Cooldown         : 10 seconds
 Category         : 33
 Category Cooldown: 10 seconds
 Stance Mask      : 0x00000001
-Affecting spells : Maim Damage (61252 effect#1), Incarnation: King of the Jungle (102543 effect#2), Berserk (106951 effect#1), Bloodtalons (145152 effect#1), Soul of the Forest (158476 effect#2), Thrash (192090 effect#2), Astral Influence (197524 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ashamane's Frenzy (210723 effect#4), Fiery Red Maimers (212875 effect#2), Fiery Red Maimers (236757 effect#2), 
+Affecting spells : Maim Damage (61252 effect#1), Incarnation: King of the Jungle (102543 effect#1), Berserk (106951 effect#1), Bloodtalons (145152 effect#1), Soul of the Forest (158476 effect#2), Thrash (192090 effect#2), Astral Influence (197524 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ashamane's Frenzy (210723 effect#4), Fiery Red Maimers (212875 effect#2), Fiery Red Maimers (236757 effect#2), 
 Attributes       : ....x... ........ ..x..... ........   ........ ........ ..x..... ...x.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ .......x ........   ........ ........ ........ ........ 
@@ -4487,7 +4486,7 @@ Effects          :
 #2 (id=239208)   : Apply Aura (6) | Stun (12)
                    Base Value: 0 | Scaled Value: 0 | Mechanic: Unknown(95) | Target: Enemy (6)
 #3 (id=239209)   : Weapon Damage% (31)
-                   Base Value: 575 | Scaled Value: 5.75 | Target: Enemy (6)
+                   Base Value: 700 | Scaled Value: 7 | Target: Enemy (6)
 Tooltip          : Stunned.
 Variables        : $mult=$?p61252[${4}][${2}]
 
@@ -4669,7 +4668,7 @@ Stance Mask      : 0x40000000
 Affecting spells : Mastery: Starlight (77492 effect#1), Soul of the Forest (114107 effect#2), Lucidity (137247 effect#1), Thrash (192090 effect#2), Astral Influence (197524 effect#1), Stellar Drift (202354 effect#1), Oneth's Overconfidence (209407 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Light of the Evening Star (238047 effect#1)
 Attributes       : ........ ........ x....... .......x   ........ ..x..... ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
-                 : ......x. ........ ........ ........   ........ .....x.. ........ ......x. 
+                 : ......x. ........ ........ ........   ........ .....x.. ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4731,7 +4730,7 @@ Effects          :
 #3 (id=321077)   : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost (14)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 14 | Target: Self (1)
                    Affected Spells: Frenzied Regeneration (22842)
-Description      : Increases armor by $s1% for $d. Multiple uses of this ability may overlap.
+Description      : Increases armor by $s1% for $d.$?a231070[ Multiple uses of this ability may overlap.][]
 Tooltip          : Armor increased by $s1%.
 
 Name             : Thrash (id=192090) [Spell Family (7)] 
@@ -5286,7 +5285,7 @@ Class            : Druid
 School           : Nature
 Range            : 100 yards
 Duration         : 6 seconds
-Affecting spells : Restoration Druid (137012 effect#1), Grovewalker (186320 effect#1), Thrash (192090 effect#2), 
+Affecting spells : Ironbark (102342 effect#3), Restoration Druid (137012 effect#1), Grovewalker (186320 effect#1), Thrash (192090 effect#2), 
 Attributes       : ........ ........ ..x..... x..x....   ........ ..x..... ........ ........ 
                  : ........ x....... ........ ........   .......x ........ ........ ........ 
                  : .......x .......x ....x... ........   ........ .....x.. ........ ........ 
@@ -5404,7 +5403,7 @@ GCD              : 1 seconds
 Charges          : 3 (12 seconds cooldown)
 Category         : 1581: Druid (137009 effect#1)
 Stance Mask      : 0x00000001
-Affecting spells : Incarnation: King of the Jungle (102543 effect#2), Feral Druid (137011 effect#1), Thrash (192090 effect#2), Astral Influence (197524 effect#1), Sharpened Claws (210637 effect#1), Scent of Blood (210664 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ashamane's Frenzy (210723 effect#4)
+Affecting spells : Incarnation: King of the Jungle (102543 effect#1), Feral Druid (137011 effect#1), Bloodtalons (145152 effect#1), Thrash (192090 effect#2), Astral Influence (197524 effect#1), Sharpened Claws (210637 effect#1), Scent of Blood (210664 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ashamane's Frenzy (210723 effect#4)
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .......x ........ ........ 
@@ -5435,7 +5434,7 @@ Attributes       : ....x.x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=297731)   : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
-                   Base Value: 15 | Scaled Value: 15 | Target: Self (1)
+                   Base Value: 20 | Scaled Value: 20 | Target: Self (1)
                    Affected Spells: Ferocious Bite (22568)
 Description      : Ferocious Bite deals $s1% increased damage and always refreshes the duration of Rip.
 
@@ -5451,10 +5450,10 @@ Attributes       : ....x.x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=297732)   : Apply Aura (6) | Add Percent Modifier (108): Unknown 2 (19)
-                   Base Value: -33 | Scaled Value: -33 | SP Coefficient: 1.00000 | Misc Value: 19 | Target: Self (1)
+                   Base Value: -20 | Scaled Value: -20 | SP Coefficient: 1.00000 | Misc Value: 19 | Target: Self (1)
                    Affected Spells: Rip (1079), Rake (1822), Thrash (106830), Rake (155722), Shadow Thrash (210687), Ashamane's Rip (210705)
 #2 (id=297777)   : Apply Aura (6) | Add Percent Modifier (108): Spell Duration (1)
-                   Base Value: -33 | Scaled Value: -33 | SP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
+                   Base Value: -20 | Scaled Value: -20 | SP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
                    Affected Spells: Rip (1079), Rake (1822), Thrash (106830), Rake (155722), Shadow Thrash (210687), Ashamane's Rip (210705)
 Description      : Your Rip, Rake, and Thrash abilities deal the same damage as normal, but in $s1% less time.
 
@@ -5462,8 +5461,8 @@ Name             : Elune's Guidance (id=202060) [Spell Family (8)]
 Class            : Druid
 School           : Physical
 Spell Level      : 1
-Duration         : 8 seconds
-Cooldown         : 45 seconds
+Duration         : 5 seconds
+Cooldown         : 30 seconds
 Attributes       : ....x... ........ ..x..... .....x..   .....x.. ..x..... ........ ..x..... 
                  : ........ ........ ........ ....x...   ........ ........ x...x... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5730,7 +5729,7 @@ Affecting spells : Balance Druid (137013 effect#1), Lucidity (137247 effect#1), 
 Attributes       : ........ ........ ........ ...x....   .......x ..x..... ........ ........ 
                  : ..x..... ........ ......x. ........   x....... .x...... ......x. .x....x. 
                  : ....x... .......x ........ ........   ........ ........ ........ ..x..... 
-                 : ..x..... ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ....x... ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Not a proc (105), Requires line of sight (186)
@@ -5840,7 +5839,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : Aura (infinite)
 Cooldown         : 90 seconds
-Affecting spells : Incarnation: King of the Jungle (102543 effect#3), Berserk (106951 effect#2), Astral Influence (197524 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), 
+Affecting spells : Incarnation: King of the Jungle (102543 effect#2), Berserk (106951 effect#2), Astral Influence (197524 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), 
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .x...x.. ........ ........ 
@@ -6191,7 +6190,7 @@ Class            : Druid
 School           : Nature
 Range            : 100 yards
 Duration         : 6 seconds
-Affecting spells : Restoration Druid (137012 effect#1), Grovewalker (186320 effect#1), Thrash (192090 effect#2), 
+Affecting spells : Ironbark (102342 effect#3), Restoration Druid (137012 effect#1), Grovewalker (186320 effect#1), Thrash (192090 effect#2), 
 Attributes       : ........ ........ ..x..... x..x....   ........ ........ ........ ........ 
                  : ........ x....... ........ ........   ........ ........ ........ ......x. 
                  : .......x .......x ........ ........   ........ ........ ........ ........ 
@@ -6446,7 +6445,7 @@ School           : Shadow
 Spell Level      : 22
 Range            : 100 yards
 Duration         : 24 seconds
-Affecting spells : Mastery: Razor Claws (77493 effect#1), Incarnation: King of the Jungle (102543 effect#2), Berserk (106951 effect#1), Feral Druid (137011 effect#1), Restoration Druid (137012 effect#8), Soul of the Forest (158476 effect#3), Bloodletting (165699 effect#1), Thrash (192090 effect#2), Feral Affinity (197490 effect#6), Astral Influence (197524 effect#1), Jagged Wounds (202032 effect#1), Feral Affinity (202155 effect#6), Feral Affinity (202157 effect#6), Razor Fangs (210570 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ashamane's Frenzy (210723 effect#4), Item - Druid T20 Feral 4P Bonus (242235 effect#1), 
+Affecting spells : Mastery: Razor Claws (77493 effect#1), Incarnation: King of the Jungle (102543 effect#1), Berserk (106951 effect#1), Feral Druid (137011 effect#1), Restoration Druid (137012 effect#8), Soul of the Forest (158476 effect#3), Bloodletting (165699 effect#1), Thrash (192090 effect#2), Feral Affinity (197490 effect#6), Astral Influence (197524 effect#1), Jagged Wounds (202032 effect#1), Feral Affinity (202155 effect#6), Feral Affinity (202157 effect#6), Razor Fangs (210570 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ashamane's Frenzy (210723 effect#4), Item - Druid T20 Feral 4P Bonus (242235 effect#1), 
 Attributes       : ....x... ........ ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ....x... ........   ........ ........ ........ ........ 
@@ -6574,7 +6573,7 @@ Name             : Fury of Elune (id=211545) [Spell Family (7)]
 Class            : Druid
 School           : Astral
 Range            : 100 yards
-Affecting spells : Incarnation: King of the Jungle (102543 effect#3), Berserk (106951 effect#2), Balance Druid (137013 effect#1), Lucidity (137247 effect#1), Astral Influence (197524 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), 
+Affecting spells : Incarnation: King of the Jungle (102543 effect#2), Berserk (106951 effect#2), Balance Druid (137013 effect#1), Lucidity (137247 effect#1), Astral Influence (197524 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), 
 Attributes       : ........ ........ x....... x..x....   .....x.. ........ ........ ........ 
                  : ........ ......x. ...x.... ......x.   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ...x.... ........ .xx..... ........ 
@@ -7142,19 +7141,19 @@ Effects          :
 #1 (id=356850)   : Apply Aura (6) | Add Flat Modifier (107): Unknown(37)
                    Base Value: 2 | Scaled Value: 2 | Misc Value: 37 | Target: Self (1)
                    Affected Spells: Omen of Clarity (16864), Clearcasting (16870), Clearcasting (135700)
-#2 (id=356851)   : Apply Aura (6) | Add Flat Modifier (107): Unknown(31)
-                   Base Value: 2 | Scaled Value: 2 | Misc Value: 31 | Target: Self (1)
+#2 (id=356851)   : Apply Aura (6) | Add Percent Modifier (108): Spell Proc Frequency (26)
+                   Base Value: 100 | Scaled Value: 100 | Misc Value: 26 | Target: Self (1)
                    Affected Spells: Omen of Clarity (16864), Clearcasting (16870), Clearcasting (135700)
 #3 (id=356852)   : Apply Aura (6) | Increase Energy (35)
                    Base Value: 30 | Scaled Value: 30 | Misc Value: 3 | Target: Self (1)
                    Affected Spells: Omen of Clarity (16864), Clearcasting (16870), Clearcasting (135700)
 #4 (id=356853)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 3 (23)
-                   Base Value: 15 | Scaled Value: 15 | Misc Value: 23 | Target: Self (1)
+                   Base Value: 25 | Scaled Value: 25 | Misc Value: 23 | Target: Self (1)
                    Affected Spells: Omen of Clarity (16864), Clearcasting (16870), Clearcasting (135700)
 #5 (id=356854)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 4 (32)
-                   Base Value: 15 | Scaled Value: 15 | Misc Value: 32 | Target: Self (1)
+                   Base Value: 25 | Scaled Value: 25 | Misc Value: 32 | Target: Self (1)
                    Affected Spells: Omen of Clarity (16864), Clearcasting (16870), Clearcasting (135700)
-Description      : Omen of Clarity now affects the next ${$m1+1} Shreds, Thrashes, or Swipes and increases their damage by $s4%.
+Description      : Omen of Clarity now triggers twice as often and increases the damage of your next Shred, Thrash, or Swipe by $s4%.
 
 Your maximum Energy is increased by $s3.
 
@@ -7225,5 +7224,27 @@ Effects          :
 #1 (id=465060)   : Summon (28)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 103822 | Misc Value 2: 0xc19 | Radius: 0 - 5 yards | Target: Unknown(87) -> Unknown(91)
 Description      : Summons a stand of $s2 Treants for $d which immediately taunt and attack enemies in the targeted area.
+
+Name             : Jungle Stalker (Talent, Shapeshift) (id=252071) [Spell Family (7)] 
+Class            : Druid
+School           : Physical
+Spell Level      : 1
+Duration         : 30 seconds
+Proc Chance      : 101%
+Affecting spells : Metamorphosis Rune (23724 effect#1), Cheaper Druid Shapeshifting (38314 effect#1), Incarnation (117679 effect#1), Druid (137009 effect#4), Lucidity (137247 effect#1), Wildcat Celerity (184877 effect#1)
+Triggered by     : Incarnation: King of the Jungle (102543)
+Attributes       : ....x... ........ ..x..... ........   .....x.. ..x..... x....... ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ .....x.. ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ......x. ........ 
+                 : ........ .....x.. ........ ........   ........ ........ ........ ........ 
+                 : Does not break stealth (37)
+Effects          :
+#1 (id=471782)   : Apply Aura (6) | Unknown(332)
+                   Base Value: 102547 | Scaled Value: 102547 | Target: Self (1)
+                   Affected Spells: Prowl (5215), Prowl (102547)
+Description      : $@spelldesc102543
+Tooltip          : Allows the use of Prowl even while in combat.
 
 

@@ -1,4 +1,4 @@
-SimulationCraft 720-03 for World of Warcraft 7.2.5 PTR (wow build 23927)
+SimulationCraft 725-02 for World of Warcraft 7.3.0 PTR (wow build 24539)
 
 Name             : Eye of Kilrogg (id=126) [Spell Family (5)] 
 Class            : Warlock
@@ -121,7 +121,7 @@ Description      : Sends a shadowy bolt at the enemy, causing $s1 Shadow damage.
 Name             : Summon Imp (Summon) (id=688) [Spell Family (5)] 
 Class            : Warlock
 School           : Shadow
-Resource         : 10 Soul Shard (7) (id=76)
+Resource         : 1 Soul Shard (7) (id=76)
 Spell Level      : 5
 Cast Time        : 2.5 seconds
 GCD              : 1.5 seconds
@@ -141,7 +141,7 @@ Description      : Summons an Imp under your command that casts ranged Firebolts
 Name             : Summon Felhunter (Summon) (id=691) [Spell Family (5)] 
 Class            : Warlock
 School           : Shadow
-Resource         : 10 Soul Shard (7) (id=78)
+Resource         : 1 Soul Shard (7) (id=78)
 Spell Level      : 36
 Cast Time        : 2.5 seconds
 GCD              : 1.5 seconds
@@ -162,7 +162,7 @@ Description      : Summons a Felhunter under your command, able to disrupt the s
 Name             : Summon Voidwalker (Summon) (id=697) [Spell Family (5)] 
 Class            : Warlock
 School           : Shadow
-Resource         : 10 Soul Shard (7) (id=81)
+Resource         : 1 Soul Shard (7) (id=81)
 Spell Level      : 20
 Cast Time        : 2.5 seconds
 GCD              : 1.5 seconds
@@ -230,7 +230,7 @@ Tooltip          : Invulnerable, but unable to act.
 Name             : Summon Succubus (Summon) (id=712) [Spell Family (5)] 
 Class            : Warlock
 School           : Shadow
-Resource         : 10 Soul Shard (7) (id=88)
+Resource         : 1 Soul Shard (7) (id=88)
 Spell Level      : 28
 Cast Time        : 2.5 seconds
 GCD              : 1.5 seconds
@@ -287,7 +287,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=374)      : Apply Aura (6) | Periodic Damage (3): shadow every 2 seconds
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.03970 | Target: Enemy (6)
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.03770 | Target: Enemy (6)
 #2 (id=198244)   : Apply Aura (6) | Periodic Dummy (226): every 2 seconds
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
 Description      : Inflicts increasing agony on the target, causing up to ${$o1*$u} Shadow damage over $d. Damage starts low and increases over the duration. Refreshing Agony maintains its current damage level.
@@ -322,7 +322,7 @@ Tooltip          : Enslaved.
 Name             : Summon Infernal (Guardian) (id=1122) [Spell Family (5)] 
 Class            : Warlock
 School           : Shadow
-Resource         : 10 Soul Shard (7) (id=118)
+Resource         : 1 Soul Shard (7) (id=118)
 Spell Level      : 58
 Range            : 30 yards
 GCD              : 1.5 seconds
@@ -475,7 +475,7 @@ Tooltip          : Disoriented.
 Name             : Rain of Fire (id=5740) [Spell Family (5)] 
 Class            : Destruction Warlock
 School           : Fire
-Resource         : 30 Soul Shard (7) (id=247)
+Resource         : 3 Soul Shard (7) (id=247)
 Spell Level      : 26
 Range            : 35 yards
 GCD              : 1.5 seconds
@@ -714,6 +714,8 @@ Effects          :
                    Base Value: 100 | Scaled Value: 100 | Target: Self (1)
 #2 (id=99024)    : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
+#3 (id=470410)   : Apply Aura (6) | Unknown(260)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 81
 Description      : Makes the $?s108499[Shivarra][Succubus] invisible for $7870d.  Not usable in combat. Any action will break the effect.
 
 |cFFFFFFFFAuto-Cast:|r
@@ -854,7 +856,7 @@ Reduces the cast time of your next two Incinerates or Chaos Bolts by $117828s1% 
 Name             : Summon Doomguard (Guardian) (id=18540) [Spell Family (5)] 
 Class            : Warlock
 School           : Shadow
-Resource         : 10 Soul Shard (7) (id=778)
+Resource         : 1 Soul Shard (7) (id=778)
 Spell Level      : 50
 Range            : 40 yards
 GCD              : 1.5 seconds
@@ -1059,7 +1061,7 @@ Tooltip          : Stunned.
 Name             : Seed of Corruption (id=27243) [Spell Family (5)] 
 Class            : Affliction Warlock
 School           : Shadow
-Resource         : 10 Soul Shard (7) (id=1066)
+Resource         : 1 Soul Shard (7) (id=1066)
 Spell Level      : 38
 Range            : 40 yards
 Cast Time        : 2.5 seconds
@@ -1177,7 +1179,7 @@ Description      : Draws fire toward the enemy, dealing $s2 Fire damage.
 Name             : Unstable Affliction (id=30108) [Spell Family (5)] 
 Class            : Affliction Warlock
 School           : Shadow
-Resource         : 10 Soul Shard (7) (id=1187)
+Resource         : 1 Soul Shard (7) (id=1187)
 Spell Level      : 14
 Range            : 40 yards
 Cast Time        : 1.5 seconds
@@ -1206,7 +1208,7 @@ Tooltip          : Suffering $w1 Shadow damage every $t1 sec.
 Name             : Summon Felguard (Summon) (id=30146) [Spell Family (5)] 
 Class            : Demonology Warlock
 School           : Shadow
-Resource         : 10 Soul Shard (7) (id=1188)
+Resource         : 1 Soul Shard (7) (id=1188)
 Spell Level      : 40
 Cast Time        : 2.5 seconds
 GCD              : 1.5 seconds
@@ -2101,7 +2103,7 @@ Description      : Corrupts all of your Warlock fire spells, infusing them with 
 Name             : Call Dreadstalkers (id=104316) [Spell Family (5)] 
 Class            : Demonology Warlock
 School           : Shadow
-Resource         : 20 Soul Shard (7) (id=10440)
+Resource         : 2 Soul Shard (7) (id=10440)
 Spell Level      : 14
 Range            : 40 yards
 Cast Time        : 2 seconds
@@ -2187,7 +2189,7 @@ Immune to interrupt and silence effects.
 Name             : Hand of Gul'dan (id=105174) [Spell Family (5)] 
 Class            : Demonology Shaman, Warlock
 School           : Shadowflame
-Resource         : 10 - 40 Soul Shard (7) (id=4987)
+Resource         : 1 - 4 Soul Shard (7) (id=4987)
 Spell Level      : 10
 Range            : 40 yards
 Cast Time        : 1.5 seconds
@@ -2451,7 +2453,7 @@ Description      : Creates a demonic gateway between two locations. Activating t
 Name             : Grimoire: Imp (Summon) (id=111859) [Spell Family (5)] 
 Class            : Warlock
 School           : Shadow
-Resource         : 10 Soul Shard (7) (id=10426)
+Resource         : 1 Soul Shard (7) (id=10426)
 Spell Level      : 1
 Range            : 40 yards
 GCD              : 1.5 seconds
@@ -2477,7 +2479,7 @@ Imps cast ranged Firebolts and cleanse a hostile magic effect from their master.
 Name             : Grimoire: Voidwalker (Summon) (id=111895) 
 Class            : Warlock
 School           : Shadow
-Resource         : 10 Soul Shard (7) (id=10424)
+Resource         : 1 Soul Shard (7) (id=10424)
 Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 27 seconds
@@ -2502,7 +2504,7 @@ Voidwalkers will taunt their target when summoned.
 Name             : Grimoire: Succubus (Summon) (id=111896) 
 Class            : Warlock
 School           : Shadow
-Resource         : 10 Soul Shard (7) (id=10425)
+Resource         : 1 Soul Shard (7) (id=10425)
 Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 27 seconds
@@ -2527,7 +2529,7 @@ Succubi will seduce their target if it is Humanoid.
 Name             : Grimoire: Felhunter (Summon) (id=111897) 
 Class            : Warlock
 School           : Shadow
-Resource         : 10 Soul Shard (7) (id=10427)
+Resource         : 1 Soul Shard (7) (id=10427)
 Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 27 seconds
@@ -2552,7 +2554,7 @@ Felhunters will Spell Lock their target when summoned.
 Name             : Grimoire: Felguard (Summon) (id=111898) [Spell Family (5)] 
 Class            : Warlock
 School           : Shadow
-Resource         : 10 Soul Shard (7) (id=10428)
+Resource         : 1 Soul Shard (7) (id=10428)
 Spell Level      : 1
 Range            : 40 yards
 GCD              : 1.5 seconds
@@ -2813,7 +2815,7 @@ Description      : $@spelldesc115831
 Name             : Chaos Bolt (id=116858) [Spell Family (5)] 
 Class            : Destruction Warlock
 School           : Chromatic
-Resource         : 20 Soul Shard (7) (id=6087)
+Resource         : 2 Soul Shard (7) (id=6087)
 Spell Level      : 12
 Range            : 40 yards
 Cast Time        : 3 seconds
@@ -3046,7 +3048,7 @@ Effects          :
                    Base Value: -30 | Scaled Value: -30 | Misc Value: 26 | Target: Self (1)
 #4 (id=191036)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 247 (Label) | Target: Self (1)
-                   Affected Spells (Label): Infernal Contract (225140), Living Carapace (225033), Sands of Time (225124), Vampiric Aura (225130), Wailing Souls (242609), Unending Hunger (242536)
+                   Affected Spells (Label): Infernal Contract (225140), Living Carapace (225033), Sands of Time (225124), Vampiric Aura (225130), Wailing Souls (242609), Unending Hunger (242536), Chilling Nova (251940), Bulwark of Flame (251946), Hammer-Forged (251952)
 #5 (id=191037)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 248 (Label) | Target: Self (1)
                    Affected Spells (Label): Fel-Crazed Rage (225777), Colossal Slam (232044), Dread Torrent (246464), Ceaseless Toxin (242497), Umbral Glaive Storm (242556), Shattering Umbral Glaives (242557), Infernal Cinders (242218)
@@ -3090,13 +3092,13 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=179727)   : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
-                   Base Value: 20 | Scaled Value: 20 | Target: Self (1)
+                   Base Value: 14 | Scaled Value: 14 | Target: Self (1)
                    Affected Spells: Agony (980), Seed of Corruption (27243), Seed of Corruption (27285), Haunt (48181), Siphon Life (63106), Corruption (146739), Demonic Power (196100), Drain Soul (198590), Soul Flame (199581), Phantom Singularity (205179), Phantom Singularity (205246), Harvester of Souls (218615), Compounding Horror (231489), Unstable Affliction (233490), Unstable Affliction (233496), Unstable Affliction (233497), Unstable Affliction (233498), Unstable Affliction (233499), Rend Soul (242834)
 #2 (id=191031)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Damage (22)
-                   Base Value: 20 | Scaled Value: 20 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 14 | Scaled Value: 14 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Agony (980), Seed of Corruption (27243), Seed of Corruption (27285), Haunt (48181), Siphon Life (63106), Corruption (146739), Demonic Power (196100), Drain Soul (198590), Soul Flame (199581), Phantom Singularity (205179), Phantom Singularity (205246), Harvester of Souls (218615), Compounding Horror (231489), Unstable Affliction (233490), Unstable Affliction (233496), Unstable Affliction (233497), Unstable Affliction (233498), Unstable Affliction (233499), Rend Soul (242834)
 #3 (id=191032)   : Apply Aura (6) | Modify Pet Damage Done% (429)
-                   Base Value: 20 | Scaled Value: 20 | Target: Self (1)
+                   Base Value: 14 | Scaled Value: 14 | Target: Self (1)
 #4 (id=191033)   : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
                    Base Value: -33 | Scaled Value: -33 | Target: Self (1)
                    Affected Spells: Demonic Power (196100)
@@ -3173,10 +3175,10 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=179730)   : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
-                   Base Value: 21 | Scaled Value: 21 | Target: Self (1)
+                   Base Value: 15 | Scaled Value: 15 | Target: Self (1)
                    Affected Spells: Immolate (348), Doom (603), Firebolt (3110), Shadowburn (17877), Conflagrate (17962), Incinerate (29722), Rain of Fire (42223), Doom Bolt (85692), Chaos Bolt (116858), Cataclysm (152108), Channel Demonfire (196448), Chaos Bolt (213229), Incinerate (244670)
 #2 (id=191023)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Damage (22)
-                   Base Value: 21 | Scaled Value: 21 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 15 | Scaled Value: 15 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Immolate (157736), Immolate (193540)
 #3 (id=191024)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 1 (3)
                    Base Value: -5 | Scaled Value: -5 | Misc Value: 3 | Target: Self (1)
@@ -3231,7 +3233,7 @@ Attributes       : ........ ........ ........ ..x.....   ........ ........ .....
                  : Not a proc (105)
 Effects          :
 #1 (id=198369)   : Apply Aura (6) | Periodic Damage (3): shadow every 2 seconds
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.36300 | Target: Unknown(25)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.34500 | Target: Unknown(25)
 Description      : $@spelldesc172
 Tooltip          : Suffering $w1 Shadow damage every $t1 sec.
 
@@ -3968,7 +3970,7 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=287836)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 40 | Scaled Value: 40 | Misc Value: 37 | Target: Self (1)
+                   Base Value: 24 | Scaled Value: 24 | Misc Value: 37 | Target: Self (1)
 #2 (id=322166)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Damage (22)
                    Base Value: 25 | Scaled Value: 25 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Corruption (172), Corruption (146739)
@@ -4134,7 +4136,7 @@ Class            : Warlock
 School           : Shadow
 Range            : 50000 yards
 Duration         : 4 seconds
-Attributes       : ........ ........ x....... ..x.....   ........ ........ ........ ........ 
+Attributes       : ........ ........ x....... ..x.....   ...x...x ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ .....x..   ........ ........ ........ ........ 
@@ -4578,7 +4580,7 @@ Tooltip          : Dealing damage to all nearby targets every $t1 sec and healin
 Name             : Summon Darkglare (id=205180) [Spell Family (5)] 
 Class            : Warlock
 School           : Shadow
-Resource         : 10 Soul Shard (7) (id=10949)
+Resource         : 1 Soul Shard (7) (id=10949)
 GCD              : 1.5 seconds
 Duration         : 12 seconds
 Cooldown         : 24 seconds
