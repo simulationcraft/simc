@@ -1583,7 +1583,10 @@ public:
       action -> set_target( target );
       action -> execute();
 
-      primed_buff -> expire();
+      // It looks like the debuff expiration is slightly delayed in game, allowing two spells
+      // impacting at the same time to trigger multiple Meteors or Comet Storms.
+      // As of build 24461, 2017-07-18.
+      primed_buff -> expire( p() -> bugs ? timespan_t::from_millis( 30 ) : timespan_t::zero() );
     }
   }
 };
