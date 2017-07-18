@@ -291,6 +291,7 @@ public:
     buff_t* icy_veins;
     buff_t* rage_of_the_frost_wyrm;            // 7.2.5 legendary head, primed buff
     buff_t* shattered_fragments_of_sindragosa; // 7.2.5 legendary head, tracking buff
+    buff_t* t21_frost_4pc; // T21 Frost 4pc buff
 
 
     // Talents
@@ -3999,6 +4000,11 @@ struct flurry_t : public frost_mage_spell_t
 
     p() -> buffs.zannesu_journey -> trigger();
     p() -> state.brain_freeze_active = p() -> buffs.brain_freeze -> up();
+
+    if ( p() -> buffs.brain_freeze -> up() && p() -> sets -> set( MAGE_FROST, T21, B4 ) )
+    {
+      p() -> buffs.t21_frost_4pc -> trigger();
+    }
     p() -> buffs.brain_freeze -> expire();
   }
 
@@ -4183,7 +4189,21 @@ struct frostbolt_t : public frost_mage_spell_t
 
       trigger_unstable_magic( s );
       trigger_shattered_fragments( s -> target );
+
+      p() -> buffs.t21_frost_4pc -> expire();
     }
+  }
+
+  virtual double action_multiplier() const override
+  {
+    double am = frost_mage_spell_t::action_multiplier();
+
+    if ( p() -> buffs.t21_frost_4pc -> up() )
+    {
+      am *= 1.0 + p() -> buffs.t21_frost_4pc -> data().effectN( 1 ).percent();
+    }
+
+    return am;
   }
 };
 
@@ -5552,7 +5572,7 @@ struct ray_of_frost_t : public frost_mage_spell_t
 };
 
 
-// Rune of Power ==============================================================
+// Rune of Power Spell ==============================================================
 
 struct rune_of_power_t : public mage_spell_t
 {
@@ -7054,6 +7074,9 @@ void mage_t::create_buffs()
   buffs.icy_veins -> buff_duration += talents.thermal_void -> effectN( 2 ).time_value();
 
   buffs.ray_of_frost           = new buffs::ray_of_frost_buff_t( this );
+
+  buffs.t21_frost_4pc          = buff_creator_t( this, "T21_Frost_Buff", find_spell( 251860 ) );
+
 
   // Talents
   buffs.ice_floes              = buff_creator_t( this, "ice_floes", talents.ice_floes );
