@@ -7028,6 +7028,7 @@ void mage_t::create_buffs()
                                    .add_invalidate( CACHE_CRIT_CHANCE )
                                    .default_value( find_spell( 190319 ) -> effectN( 1 ).percent() );
   buffs.combustion -> buff_duration += artifact.preignited.time_value();
+  buffs.combustion -> buff_duration += sets -> set( MAGE_FIRE, T21, B2 ) -> effectN( 1 ).time_value();
 
   buffs.critical_massive       = buff_creator_t( this, "critical_massive", find_spell( 242251 ) )
                                    .default_value( find_spell( 242251 ) -> effectN( 1 ).percent() );
