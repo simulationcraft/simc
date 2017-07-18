@@ -5006,7 +5006,7 @@ struct meteor_impact_t: public fire_mage_spell_t
   timespan_t meteor_burn_pulse_time;
 
   meteor_impact_t( mage_t* p, meteor_burn_t* meteor_burn, int targets, bool legendary ):
-    fire_mage_spell_t( legendary ? "legendary_meteor_imapct" : "meteor_impact",
+    fire_mage_spell_t( legendary ? "legendary_meteor_impact" : "meteor_impact",
                        p, p -> find_spell( 153564 ) ),
     meteor_burn( meteor_burn ),
     meteor_burn_duration( p -> find_spell( 175396 ) -> duration() )
