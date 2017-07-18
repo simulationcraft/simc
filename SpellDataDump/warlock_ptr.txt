@@ -1158,7 +1158,7 @@ GCD              : 1.5 seconds
 Velocity         : 25 yards/sec
 Stacks           : 5 maximum
 Proc Chance      : 101%
-Affecting spells : Backdraft (117828 effect#1), Destruction Warlock (137046 effect#1), Flamelicked (185229 effect#1), Master of Disaster (196211 effect#1), Fire and the Flames (196222 effect#1), Odr, Shawl of the Ymirjar (212173 effect#1)
+Affecting spells : Backdraft (117828 effect#1), Destruction Warlock (137046 effect#1), Flamelicked (185229 effect#1), Master of Disaster (196211 effect#1), Fire and the Flames (196222 effect#1), Odr, Shawl of the Ymirjar (212173 effect#1), Chaotic Flames (253092 effect#1)
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ .x...... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3054,7 +3054,7 @@ Effects          :
                    Affected Spells (Label): Fel-Crazed Rage (225777), Colossal Slam (232044), Dread Torrent (246464), Ceaseless Toxin (242497), Umbral Glaive Storm (242556), Shattering Umbral Glaives (242557), Infernal Cinders (242218)
 #6 (id=260719)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 298 (Label) | Target: Self (1)
-                   Affected Spells (Label): Cleansing Matrix (242619), Fruitful Machinations (242623), Guiding Hand (242622), Infusion of Light (242621)
+                   Affected Spells (Label): Cleansing Matrix (242619), Fruitful Machinations (242623), Guiding Hand (242622), Infusion of Light (242621), Fel Shield (253277), Tarratus Keystone (253282), Refreshing Agony (253284)
 #7 (id=260720)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #8 (id=260721)   : Apply Aura (6) | Dummy (4)
@@ -4414,7 +4414,7 @@ Spell Level      : 13
 Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 6 seconds
-Affecting spells : Affliction Warlock (137043 effect#1), Drained to a Husk (199120 effect#1), Perdition (199158 effect#1), Long Dark Night of the Soul (199214 effect#1), Wrath of Consumption (199646 effect#1), Malefic Grasp (235155 effect#1), Winnowing (238072 effect#1)
+Affecting spells : Affliction Warlock (137043 effect#1), Drained to a Husk (199120 effect#1), Perdition (199158 effect#1), Long Dark Night of the Soul (199214 effect#1), Wrath of Consumption (199646 effect#1), Malefic Grasp (235155 effect#1), Winnowing (238072 effect#1), Soul Rush (252938 effect#1)
 Attributes       : ........ ........ x....... ........   ..x..... ......x. ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .....x.. ........ ...x.... 
@@ -5453,7 +5453,7 @@ Class            : Warlock
 School           : Fire
 Spell Level      : 14
 Range            : 100 yards
-Affecting spells : Backdraft (117828 effect#1), Destruction Warlock (137046 effect#1), Flamelicked (185229 effect#1), Master of Disaster (196211 effect#1), Fire and the Flames (196222 effect#1), Odr, Shawl of the Ymirjar (212173 effect#1)
+Affecting spells : Backdraft (117828 effect#1), Destruction Warlock (137046 effect#1), Flamelicked (185229 effect#1), Master of Disaster (196211 effect#1), Fire and the Flames (196222 effect#1), Odr, Shawl of the Ymirjar (212173 effect#1), Chaotic Flames (253092 effect#1)
 Attributes       : ........ x....... ........ ........   ........ ........ ........ ........ 
                  : ........ x....... ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 

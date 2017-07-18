@@ -631,7 +631,7 @@ Resource         : -20 Runic Power (6) (id=10640)
 Spell Level      : 55
 Range            : 5 yards
 GCD              : 1.5 seconds
-Affecting spells : Killing Machine (51124 effect#1), Death Knight (137005 effect#2), Nothing but the Boots (189144 effect#1), Obliteration (207256 effect#1)
+Affecting spells : Killing Machine (51124 effect#1), Death Knight (137005 effect#2), Nothing but the Boots (189144 effect#1), Obliteration (207256 effect#1), Koltira's Newfound Will (208782 effect#2), Item - Death Knight T21 Frost 2P Bonus - Howling Blast/Obliterate Damage (251873 effect#2)
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ....x... ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ .......x ........   ........ ........ ........ ........ 
@@ -708,7 +708,7 @@ Resource         : -10 Runic Power (6) (id=10641)
 Spell Level      : 55
 Range            : 30 yards
 GCD              : 1.5 seconds
-Affecting spells : Rime (59052 effect#1), Frost Death Knight (137006 effect#1), Biting Cold (166057 effect#1), Blast Radius (189086 effect#1), Northrend Winds (204088 effect#1), Freezing Fog (207060 effect#1), 
+Affecting spells : Rime (59052 effect#1), Frost Death Knight (137006 effect#1), Biting Cold (166057 effect#1), Blast Radius (189086 effect#1), Northrend Winds (204088 effect#1), Freezing Fog (207060 effect#1), Item - Death Knight T21 Frost 2P Bonus - Howling Blast/Obliterate Damage (251873 effect#1)
 Attributes       : ........ ........ ..x..... ........   ...x...x .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1335,7 +1335,7 @@ Class            : Death Knight
 School           : Physical
 Spell Level      : 1
 GCD              : 1.5 seconds
-Cooldown         : 30 seconds
+Cooldown         : 45 seconds
 Affecting spells : Death Knight (137005 effect#2)
 Attributes       : ....x... ........ ..x..... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1693,7 +1693,7 @@ Name             : Obliterate Off-Hand (id=66198) [Scaling Spell (1), Spell Fami
 Class            : Death Knight
 School           : Physical
 Range            : 100 yards
-Affecting spells : Killing Machine (51124 effect#1), Frost Death Knight (137006 effect#1), Ambidexterity (189092 effect#1), Nothing but the Boots (189144 effect#1), Obliteration (207256 effect#1)
+Affecting spells : Killing Machine (51124 effect#1), Frost Death Knight (137006 effect#1), Ambidexterity (189092 effect#1), Nothing but the Boots (189144 effect#1), Obliteration (207256 effect#1), Koltira's Newfound Will (208782 effect#2), Item - Death Knight T21 Frost 2P Bonus - Howling Blast/Obliterate Damage (251873 effect#2)
 Triggered by     : Obliterate (49020)
 Attributes       : ....x... ........ ..x..x.. ........   ........ ........ ........ ...x.... 
                  : ........ ....x... ........ ........   ........ ........ ..x..... x.....x. 
@@ -2637,10 +2637,10 @@ Effects          :
                    Affected Spells (Label): Orb of Destruction (229700)
 #7 (id=260629)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 298 (Label) | Target: Self (1)
-                   Affected Spells (Label): Cleansing Matrix (242619), Fruitful Machinations (242623), Guiding Hand (242622), Infusion of Light (242621)
+                   Affected Spells (Label): Cleansing Matrix (242619), Fruitful Machinations (242623), Guiding Hand (242622), Infusion of Light (242621), Fel Shield (253277), Tarratus Keystone (253282), Refreshing Agony (253284)
 #8 (id=260630)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 300 (Label) | Target: Self (1)
-                   Affected Spells (Label): Insidious Corruption (243941), Spectral Bolt (242571), Spectral Blast (246442)
+                   Affected Spells (Label): Insidious Corruption (243941), Spectral Bolt (242571), Spectral Blast (246442), Apocalypse Missile (253243), Legion Bombardment (253248), Essence Swap (253258)
 #9 (id=260631)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #10 (id=260632)   : Apply Aura (6) | Dummy (4)
@@ -2672,10 +2672,10 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=179689)   : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
-                   Base Value: 3 | Scaled Value: 3 | Target: Self (1)
+                   Base Value: 25 | Scaled Value: 25 | Target: Self (1)
                    Affected Spells: Howling Blast (49184), Death Strike (49998), Razorice (50401), Frost Fever (55095), Death Strike Off-Hand (66188), Frost Strike Off-Hand (66196), Obliterate Off-Hand (66198), Breath of Sindragosa (155166), Frost Breath (190780), Frozen Pulse (195750), Glacial Advance (195975), Remorseless Winter (196771), Frozen Soul (204959), Crystalline Swords (205164), Crystalline Swords (205165), Avalanche (207150), Frostscythe (207230), Obliterate (222024), Frost Strike (222026), Hypothermia (228322), Crystalline Swords (243122)
 #2 (id=191174)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Damage (22)
-                   Base Value: 3 | Scaled Value: 3 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 25 | Scaled Value: 25 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Howling Blast (49184), Death Strike (49998), Razorice (50401), Frost Fever (55095), Death Strike Off-Hand (66188), Frost Strike Off-Hand (66196), Obliterate Off-Hand (66198), Breath of Sindragosa (155166), Frost Breath (190780), Frozen Pulse (195750), Glacial Advance (195975), Remorseless Winter (196771), Frozen Soul (204959), Crystalline Swords (205164), Crystalline Swords (205165), Avalanche (207150), Frostscythe (207230), Obliterate (222024), Frost Strike (222026), Hypothermia (228322), Crystalline Swords (243122)
 #3 (id=191175)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 247 (Label) | Target: Self (1)
@@ -2729,10 +2729,10 @@ Effects          :
                    Affected Spells (Label): Infernal Contract (225140), Living Carapace (225033), Sands of Time (225124), Vampiric Aura (225130), Wailing Souls (242609), Unending Hunger (242536), Chilling Nova (251940), Bulwark of Flame (251946), Hammer-Forged (251952)
 #5 (id=191173)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Generic Modifier (0)
                    Base Value: -30 | Scaled Value: -30 | Misc Value 2: 281 (Label) | Target: Self (1)
-                   Affected Spells (Label): Fel-Crazed Rage (225777), Orb of Destruction (229700), Ceaseless Toxin (242497), Spear of Anguish (242605), Unending Hunger (242536), Dread Torrent (246464), Insidious Corruption (243941), Piercing Anguish (246751)
+                   Affected Spells (Label): Fel-Crazed Rage (225777), Orb of Destruction (229700), Ceaseless Toxin (242497), Spear of Anguish (242605), Unending Hunger (242536), Dread Torrent (246464), Insidious Corruption (243941), Piercing Anguish (246751), Essence Swap (253258), Shadow Blades (253263), Shadow Blades (253265)
 #6 (id=260787)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Periodic Damage (22)
                    Base Value: -30 | Scaled Value: -30 | Misc Value: 22 | Misc Value 2: 281 (Label) | Target: Self (1)
-                   Affected Spells (Label): Fel-Crazed Rage (225777), Orb of Destruction (229700), Ceaseless Toxin (242497), Spear of Anguish (242605), Unending Hunger (242536), Dread Torrent (246464), Insidious Corruption (243941), Piercing Anguish (246751)
+                   Affected Spells (Label): Fel-Crazed Rage (225777), Orb of Destruction (229700), Ceaseless Toxin (242497), Spear of Anguish (242605), Unending Hunger (242536), Dread Torrent (246464), Insidious Corruption (243941), Piercing Anguish (246751), Essence Swap (253258), Shadow Blades (253263), Shadow Blades (253265)
 #7 (id=260788)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #8 (id=260789)   : Apply Aura (6) | Dummy (4)
@@ -3139,7 +3139,7 @@ Effects          :
 #1 (id=215544)   : Dummy (3)
                    Base Value: 10 | Scaled Value: 10 | Radius: 12 yards | Target: Cone Front (104)
 #2 (id=215545)   : School Damage (2): shadowfrost
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 2.87500 | Radius: 12 yards | Target: Cone Front (104)
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 3.16000 | Radius: 12 yards | Target: Cone Front (104)
 Description      : $@spelldesc152279
 
 Name             : Defile (id=156000) [Spell Family (15)] 
@@ -3842,7 +3842,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=286062)   : Apply Aura (6) | Modify Ranged and Melee Attack Speed% (342)
-                   Base Value: 10 | Scaled Value: 10 | Target: Self (1)
+                   Base Value: 15 | Scaled Value: 15 | Target: Self (1)
 Description      : $@spelldesc194878
 Tooltip          : Attack speed increased $s1%.
 
@@ -4126,7 +4126,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=287339)   : School Damage (2): frost
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.66000 | Radius: 0 - 8 yards | Target: Custom (18) -> AOE enemy (instant) (16)
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.40000 | Radius: 0 - 8 yards | Target: Custom (18) -> AOE enemy (instant) (16)
 Description      : $@spelldesc194909
 
 Name             : Festering Wound (id=195757) [Spell Family (15)] 
@@ -4822,7 +4822,7 @@ Attributes       : ....x.x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=306238)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 40 | Scaled Value: 40 | Misc Value: 15 | Target: Self (1)
+                   Base Value: 60 | Scaled Value: 60 | Misc Value: 15 | Target: Self (1)
 Description      : If there are 5 stacks of Razorice on the target, Frost Strike will consume them and deal $s1% additional damage.
 
 Name             : Freezing Fog (id=207060) [Spell Family (15), Passive] 
@@ -4838,10 +4838,10 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=306241)   : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
-                   Base Value: 30 | Scaled Value: 30 | Target: Self (1)
+                   Base Value: 20 | Scaled Value: 20 | Target: Self (1)
                    Affected Spells: Howling Blast (49184), Frost Fever (55095)
 #2 (id=330159)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Damage (22)
-                   Base Value: 30 | Scaled Value: 30 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 15 | Scaled Value: 15 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Howling Blast (49184), Frost Fever (55095)
 Description      : Howling Blast and Frost Fever deal $s1% increased damage.
 
@@ -4858,7 +4858,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=306243)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 65 | Scaled Value: 65 | Target: Self (1)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
 Description      : Consuming the Killing Machine effect has a $s1% chance to cause you to gain $207062s1 Rune.
 
 Name             : Murderous Efficiency (id=207062) [Scaling Spell (1)] 
@@ -4922,7 +4922,7 @@ Class            : Death Knight
 School           : Physical
 Spell Level      : 1
 Velocity         : 4 yards/sec
-Duration         : 15 seconds
+Duration         : 12 seconds
 Cooldown         : 1 seconds
 Charges          : 1 (180 seconds cooldown)
 Category         : 1614
@@ -4935,10 +4935,13 @@ Attributes       : ........ ........ ..x..... ........   ........ ..x..... .....
 Effects          :
 #1 (id=306338)   : Apply Aura (6) | Periodic Energize Power (24): every 1.5 seconds
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 5 | Target: Self (1)
-#2 (id=306339)   : Apply Aura (6) | Periodic Energize Power (24): every 1 seconds
+#2 (id=306339)   : Apply Aura (6) | Periodic Energize Power (24): every 1.5 seconds
                    Base Value: 50 | Scaled Value: 50 | Misc Value: 6 | Target: Self (1)
-Description      : Empower your rune weapon, gaining $s1 $LRune:Runes; and ${$m2/10} Runic Power instantly and every $t1 sec for $d.
-Tooltip          : Gaining $s1 $LRune:Runes; and ${$m2/10} Runic Power and every $t1 sec.
+#3 (id=473502)   : Apply Aura (6) | Modify All Haste% (193)
+                   Base Value: 20 | Scaled Value: 20 | Target: Self (1)
+Description      : Empower your rune weapon, gaining $s1 $LRune:Runes; and ${$m2/10} Runic Power instantly and every $t1 sec, and granting $s3% haste, for $d.
+Tooltip          : Gaining $s1 $LRune:Runes; and ${$m2/10} Runic Power and every $t1 sec.
+Haste increased by $s3%.
 
 Name             : Avalanche (id=207142) [Spell Family (15), Passive] 
 Class            : Death Knight
@@ -5115,7 +5118,7 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=306445)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 30 | Scaled Value: 30 | Target: Self (1)
+                   Base Value: 75 | Scaled Value: 75 | Target: Self (1)
 Description      : When you deal damage with auto attacks, gain an absorb shield equal to $s1% of the damage dealt.
 
 Name             : Frostscythe (id=207230) [Spell Family (15)] 
@@ -5125,7 +5128,7 @@ Resource         : 1 Rune (5) (id=11012)
 Spell Level      : 1
 Range            : 8 yards
 GCD              : 1.5 seconds
-Affecting spells : Killing Machine (51124 effect#1), Death Knight (137005 effect#1), Frost Death Knight (137006 effect#1), Nothing but the Boots (189144 effect#1)
+Affecting spells : Killing Machine (51124 effect#1), Death Knight (137005 effect#1), Frost Death Knight (137006 effect#1), Nothing but the Boots (189144 effect#1), Item - Death Knight T21 Frost 2P Bonus - Howling Blast/Obliterate Damage (251873 effect#3)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5148,11 +5151,11 @@ Class            : Death Knight
 School           : Physical
 Spell Level      : 82
 Velocity         : 4 yards/sec
-Duration         : 8 seconds
+Duration         : 10 seconds
 Cooldown         : 90 seconds
 Proc Chance      : 100%
-Proc Flags       : ....x... ........ ........ ........ 
-                 : Yellow Melee
+Proc Flags       : ....x... ........ x....... ........ 
+                 : Yellow Melee, Hostile Spell
 Attributes       : ........ ........ ..x..... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ .....x..   ........ ........ ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5166,8 +5169,8 @@ Effects          :
                    Affected Spells: Obliterate (49020), Obliterate Off-Hand (66198), Obliterate (222024)
 #2 (id=308173)   : Apply Aura (6) | Proc Trigger Spell (42): Killing Machine
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 51124 | Target: Self (1)
-Description      : For the next $d, every Frost Strike hit triggers Killing Machine, and Obliterate costs $s1 less Rune.
-Tooltip          : Obliterate cost reduced. Triggering Killing Machine from Frost Strike hits.
+Description      : For the next $d, Frost Strike and Howling Blast grant Killing Machine, and Obliterate costs $s1 less Rune.
+Tooltip          : Obliterate cost reduced. Frost Strike and Howling Blast grant Killing Machine.
 
 Name             : Arrow Spray (id=207260) [Spell Family (15)] 
 Class            : Death Knight
@@ -5753,7 +5756,7 @@ Spell Level      : 60
 GCD              : 1.5 seconds
 Duration         : 3 seconds
 Cooldown         : 45 seconds
-Affecting spells : Death Knight (137005 effect#2), Lingering Apparition (212763 effect#1), White Walker (212765 effect#2), March of the Damned (219779 effect#1)
+Affecting spells : Death Knight (137005 effect#2), Lingering Apparition (212763 effect#1), March of the Damned (219779 effect#1)
 Attributes       : ....x... ........ x......x ........   ..x...x. ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ...x.... ........ ........ ........ 
@@ -5857,45 +5860,6 @@ Effects          :
 #4 (id=315567)   : Dummy (3)
                    Base Value: 15 | Scaled Value: 15
 Description      : You move $s3% faster during Wraith Walk, and its cooldown is reduced by $s4 sec.
-
-Name             : White Walker (id=212764) [Spell Family (15)] 
-Class            : Death Knight
-School           : Frost
-Duration         : 3 seconds
-Attributes       : ........ ........ ........ x..x....   .....x.. ........ ........ ........ 
-                 : ........ ......x. ...x.... ......x.   .......x ........ ........ ........ 
-                 : ........ ........ ........ ........   ...x.... ........ .xx..... ........ 
-                 : ........ ....x... .....x.. ........   ........ ........ ........ ........ 
-                 : .....x.. ........ ........ ........   ........ ...x.... ........ ........ 
-                 : ........ ........ ......x. ........   .x...... ........ ........ ..x..... 
-                 : Does not break stealth (37)
-Effects          :
-#1 (id=315568)   : Apply Aura (6) | Decrease Movement Speed% (33)
-                   Base Value: -70 | Scaled Value: -70 | Radius: 0 - 8 yards | Mechanic: Unknown(88) | Target: At Caster (22) -> AOE enemy (15)
-Description      : $@spelldesc212765
-Tooltip          : Movement speed reduced by $s1%.
-
-Name             : White Walker (id=212765) [Spell Family (15), Passive] 
-Class            : Death Knight
-School           : Frost
-Stacks           : 1 maximum
-Proc Chance      : 101%
-Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ .......x ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Passive (6)
-Effects          :
-#1 (id=315569)   : Apply Aura (6) | Dummy (4)
-                   Base Value: -70 | Scaled Value: -70 | Mechanic: Unknown(88) | Target: Self (1)
-#2 (id=319592)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 3 (23)
-                   Base Value: -30 | Scaled Value: -30 | Misc Value: 23 | Target: Self (1)
-                   Affected Spells: Wraith Walk (212552)
-#3 (id=319593)   : Dummy (3)
-                   Base Value: 20 | Scaled Value: 20
-Description      : You take $s2% reduced damage while Wraith Walk is active. When you enter or leave Wraith Walk, all nearby enemies are slowed by $212764s1% for $212764d.
 
 Name             : Soulgorge (id=213003) [Spell Family (15)] 
 Class            : Death Knight
@@ -6211,7 +6175,7 @@ Name             : Obliterate (id=222024) [Scaling Spell (1), Spell Family (15)]
 Class            : Death Knight
 School           : Physical
 Range            : 100 yards
-Affecting spells : Killing Machine (51124 effect#1), Frost Death Knight (137006 effect#1), Nothing but the Boots (189144 effect#1), Obliteration (207256 effect#1)
+Affecting spells : Killing Machine (51124 effect#1), Frost Death Knight (137006 effect#1), Nothing but the Boots (189144 effect#1), Obliteration (207256 effect#1), Koltira's Newfound Will (208782 effect#2), Item - Death Knight T21 Frost 2P Bonus - Howling Blast/Obliterate Damage (251873 effect#2)
 Triggered by     : Obliterate (49020)
 Attributes       : ....x... ........ ..x..x.. ........   ........ ........ ........ ...x.... 
                  : ........ ....x... ........ ........   ........ ..x..... ..x..... ......x. 
@@ -6283,5 +6247,78 @@ Effects          :
 #2 (id=375296)   : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
 Description      : Death Strike extends the duration of Icebound Fortitude by $@switch<$s2>[${$s1/10}][${$s1/10}.1] sec.
+
+Name             : White Walker (id=253584) [Spell Family (15), Passive] 
+Class            : Death Knight
+School           : Frost
+Stacks           : 1 maximum
+Proc Chance      : 101%
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ .......x ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6)
+Effects          :
+#1 (id=474069)   : Apply Aura (6) | Unknown(395)
+                   Base Value: 15 | Scaled Value: 15 | Misc Value: 11655 | Mechanic: Unknown(88) | Target: Self (1)
+Description      : Wraith Walk cools down $253586s1% more quickly anytime no enemy is within $s1 yards.
+
+Name             : White Walker (id=253586) [Spell Family (15)] 
+Class            : Death Knight
+School           : Frost
+Duration         : Aura (infinite)
+Stacks           : 1 maximum
+Proc Chance      : 101%
+Attributes       : ........ ........ ........ .......x   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ..x..... ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Cannot cancel aura (31)
+Effects          :
+#1 (id=474073)   : Apply Aura (6) | Unknown(143)
+                   Base Value: 150 | Scaled Value: 150 | Misc Value: 329 | Target: Self (1)
+Description      : $@spelldesc253584
+Tooltip          : Wraith Walk is cooling down $w1% faster.
+
+Name             : Inexorable Assault (id=253593) [Spell Family (15), Passive] 
+Class            : Death Knight
+School           : Physical
+Spell Level      : 1
+Proc Chance      : 101%
+Proc Flags       : ..x.x... ........ ........ ....x... 
+                 : White Melee, Yellow Melee
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ .......x ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6)
+Effects          :
+#1 (id=474096)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 2000 | Scaled Value: 2000 | Misc Value: 12 | Target: Self (1)
+Description      : For every ${$s1/1000} seconds spent in combat without melee attacking, you gain a stack of Inexorable Assault.  Each stack causes your next autoattack to deal $253597s1 additional Frost damage.
+
+Name             : Inexorable Assault (id=253597) [Spell Family (15)] 
+Class            : Death Knight
+School           : Frost
+Spell Level      : 1
+Range            : 5 yards
+Stacks           : 10 maximum
+Proc Chance      : 101%
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=474101)   : School Damage (2): frost
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 3.00000 | Target: Enemy (6)
+Description      : $@spelldesc253593
 
 

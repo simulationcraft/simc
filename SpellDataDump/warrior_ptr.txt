@@ -222,7 +222,7 @@ Range            : 5 yards
 GCD              : 1.5 seconds
 Stacks           : 2 maximum
 Proc Chance      : 101%
-Affecting spells : Battle Cry (1719 effect#4), Warrior (137047 effect#2), Arms Warrior (137049 effect#2), Item - Warrior T18 Arms 4P Bonus (185804 effect#1), Dauntless (202297 effect#1), Crushing Blows (209472 effect#1)
+Affecting spells : Battle Cry (1719 effect#4), Warrior (137047 effect#2), Arms Warrior (137049 effect#2), Item - Warrior T18 Arms 4P Bonus (185804 effect#1), Dauntless (202297 effect#1), Crushing Blows (209472 effect#1), Weighted Blade (253383 effect#1), 
 Attributes       : ....x... ........ x.x..... ..x.....   ........ .x...... ........ ...x.... 
                  : ........ ........ .x...... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -243,7 +243,7 @@ Resource         : 30 Rage (1) (id=135)
 Spell Level      : 40 (max 80)
 GCD              : 1.5 seconds
 Category         : 891
-Affecting spells : Demoralizing Shout (1160 effect#3), Battle Cry (1719 effect#4), Warrior (137047 effect#2), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Cleave (188923 effect#1), Dauntless (202297 effect#1), Wrecking Ball (215570 effect#1), Many Will Fall (216274 effect#1)
+Affecting spells : Demoralizing Shout (1160 effect#3), Battle Cry (1719 effect#4), Warrior (137047 effect#2), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Cleave (188923 effect#1), Dauntless (202297 effect#1), Wrecking Ball (215570 effect#1), Many Will Fall (216274 effect#1), Weighted Blade (253383 effect#1), 
 Attributes       : ....x... ........ x.x..... ........   ....x... .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ .......x ........ ........ 
@@ -1093,7 +1093,7 @@ Name             : Whirlwind Off-Hand (id=44949) [Spell Family (4)]
 Class            : Warrior
 School           : Physical
 Spell Level      : 1 (max 80)
-Affecting spells : Demoralizing Shout (1160 effect#3), Battle Cry (1719 effect#4), Warrior (137047 effect#2), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Cleave (188923 effect#1), Dauntless (202297 effect#1), Wrecking Ball (215570 effect#1), Many Will Fall (216274 effect#1)
+Affecting spells : Demoralizing Shout (1160 effect#3), Battle Cry (1719 effect#4), Warrior (137047 effect#2), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Cleave (188923 effect#1), Dauntless (202297 effect#1), Wrecking Ball (215570 effect#1), Many Will Fall (216274 effect#1), Weighted Blade (253383 effect#1), 
 Triggered by     : Whirlwind (190411)
 Attributes       : ....x... ........ x.x..... ........   ....x... .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ .x...... ........ x....... 
@@ -2453,7 +2453,7 @@ Class            : Warrior
 School           : Physical
 Spell Level      : 20
 Duration         : 6 seconds
-Affecting spells : Shield Mastery (184927 effect#1), Shatter the Bones (188639 effect#1), Heavy Repercussions (203177 effect#2)
+Affecting spells : Shield Mastery (184927 effect#1), Shatter the Bones (188639 effect#1), Heavy Repercussions (203177 effect#2), Wall of Iron (253428 effect#1)
 Attributes       : ....x... ........ x.x..... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   .x...... ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2506,10 +2506,10 @@ Effects          :
                    Affected Spells (Label): Orb of Destruction (229700)
 #7 (id=260730)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 298 (Label) | Target: Self (1)
-                   Affected Spells (Label): Cleansing Matrix (242619), Fruitful Machinations (242623), Guiding Hand (242622), Infusion of Light (242621)
+                   Affected Spells (Label): Cleansing Matrix (242619), Fruitful Machinations (242623), Guiding Hand (242622), Infusion of Light (242621), Fel Shield (253277), Tarratus Keystone (253282), Refreshing Agony (253284)
 #8 (id=260731)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 300 (Label) | Target: Self (1)
-                   Affected Spells (Label): Insidious Corruption (243941), Spectral Bolt (242571), Spectral Blast (246442)
+                   Affected Spells (Label): Insidious Corruption (243941), Spectral Bolt (242571), Spectral Blast (246442), Apocalypse Missile (253243), Legion Bombardment (253248), Essence Swap (253258)
 #9 (id=260732)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #10 (id=260733)   : Apply Aura (6) | Dummy (4)
@@ -3115,7 +3115,7 @@ Spell Level      : 12
 Range            : 5 yards
 GCD              : 2 seconds
 Cooldown         : 1.5 seconds
-Affecting spells : Meat Cleaver (85739 effect#1), Warrior (137047 effect#2), Fury Warrior (137050 effect#1), Unstoppable (200853 effect#1), Reckless Abandon (202751 effect#3), Carnage (202922 effect#1), Massacre (206316 effect#1)
+Affecting spells : Meat Cleaver (85739 effect#1), Warrior (137047 effect#2), Fury Warrior (137050 effect#1), Unstoppable (200853 effect#1), Reckless Abandon (202751 effect#3), Carnage (202922 effect#1), Massacre (206316 effect#1), Outrage (253385 effect#1)
 Attributes       : ........ ........ ..x..... ........   ........ .xx..... ........ ........ 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3145,7 +3145,7 @@ School           : Physical
 Spell Level      : 1
 Range            : 8 yards
 Proc Chance      : 101%
-Affecting spells : Meat Cleaver (85739 effect#1), Warrior (137047 effect#2), Fury Warrior (137050 effect#1), Unstoppable (200853 effect#1), Carnage (202922 effect#1), Massacre (206316 effect#1)
+Affecting spells : Meat Cleaver (85739 effect#1), Warrior (137047 effect#2), Fury Warrior (137050 effect#1), Unstoppable (200853 effect#1), Carnage (202922 effect#1), Massacre (206316 effect#1), Outrage (253385 effect#1)
 Triggered by     : Rampage (184367)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ....x... ........ ........   ........ ........ ........ x....... 
@@ -3166,7 +3166,7 @@ School           : Physical
 Spell Level      : 1
 Range            : 8 yards
 Proc Chance      : 101%
-Affecting spells : Meat Cleaver (85739 effect#1), Warrior (137047 effect#2), Fury Warrior (137050 effect#1), Unstoppable (200853 effect#1), Carnage (202922 effect#1), Massacre (206316 effect#1)
+Affecting spells : Meat Cleaver (85739 effect#1), Warrior (137047 effect#2), Fury Warrior (137050 effect#1), Unstoppable (200853 effect#1), Carnage (202922 effect#1), Massacre (206316 effect#1), Outrage (253385 effect#1)
 Triggered by     : Rampage (184367)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ........ 
                  : ........ ....x... ........ ........   ........ .xx..... ........ ........ 
@@ -3245,7 +3245,7 @@ School           : Physical
 Spell Level      : 40 (max 80)
 GCD              : 1.5 seconds
 Category         : 891
-Affecting spells : Demoralizing Shout (1160 effect#3), Battle Cry (1719 effect#4), Warrior (137047 effect#2), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Cleave (188923 effect#1), Dauntless (202297 effect#1), Wrecking Ball (215570 effect#1), Many Will Fall (216274 effect#1)
+Affecting spells : Demoralizing Shout (1160 effect#3), Battle Cry (1719 effect#4), Warrior (137047 effect#2), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Cleave (188923 effect#1), Dauntless (202297 effect#1), Wrecking Ball (215570 effect#1), Many Will Fall (216274 effect#1), Weighted Blade (253383 effect#1), 
 Attributes       : ....x... ........ x.x..... ........   ....x... .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ .......x ........ ........ 
@@ -3454,7 +3454,7 @@ Name             : Whirlwind (id=199658) [Spell Family (4)]
 Class            : Warrior
 School           : Physical
 Spell Level      : 1 (max 80)
-Affecting spells : Demoralizing Shout (1160 effect#3), Battle Cry (1719 effect#4), Warrior (137047 effect#2), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Cleave (188923 effect#1), Dauntless (202297 effect#1), Wrecking Ball (215570 effect#1), Many Will Fall (216274 effect#1)
+Affecting spells : Demoralizing Shout (1160 effect#3), Battle Cry (1719 effect#4), Warrior (137047 effect#2), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Cleave (188923 effect#1), Dauntless (202297 effect#1), Wrecking Ball (215570 effect#1), Many Will Fall (216274 effect#1), Weighted Blade (253383 effect#1), 
 Triggered by     : Whirlwind (1680)
 Attributes       : ....x... ........ x.x..... ........   ....x... .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ .xx..... ........ ........ 
@@ -3474,7 +3474,7 @@ Name             : Whirlwind (id=199667) [Spell Family (4)]
 Class            : Warrior
 School           : Physical
 Spell Level      : 1 (max 80)
-Affecting spells : Demoralizing Shout (1160 effect#3), Battle Cry (1719 effect#4), Warrior (137047 effect#2), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Cleave (188923 effect#1), Dauntless (202297 effect#1), Wrecking Ball (215570 effect#1), Many Will Fall (216274 effect#1)
+Affecting spells : Demoralizing Shout (1160 effect#3), Battle Cry (1719 effect#4), Warrior (137047 effect#2), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Cleave (188923 effect#1), Dauntless (202297 effect#1), Wrecking Ball (215570 effect#1), Many Will Fall (216274 effect#1), Weighted Blade (253383 effect#1), 
 Triggered by     : Whirlwind (190411)
 Attributes       : ....x... ........ x.x..... ........   ....x... .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ .xx..... ........ ........ 
@@ -3494,7 +3494,7 @@ Name             : Whirlwind (id=199850) [Spell Family (4)]
 Class            : Warrior
 School           : Physical
 Spell Level      : 1 (max 80)
-Affecting spells : Demoralizing Shout (1160 effect#3), Battle Cry (1719 effect#4), Warrior (137047 effect#2), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Cleave (188923 effect#1), Dauntless (202297 effect#1), Wrecking Ball (215570 effect#1), Many Will Fall (216274 effect#1)
+Affecting spells : Demoralizing Shout (1160 effect#3), Battle Cry (1719 effect#4), Warrior (137047 effect#2), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Cleave (188923 effect#1), Dauntless (202297 effect#1), Wrecking Ball (215570 effect#1), Many Will Fall (216274 effect#1), Weighted Blade (253383 effect#1), 
 Triggered by     : Whirlwind (1680)
 Attributes       : ....x... ........ x.x..... ........   ....x... .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
@@ -3555,7 +3555,7 @@ School           : Physical
 Spell Level      : 1
 Range            : 8 yards
 Proc Chance      : 101%
-Affecting spells : Meat Cleaver (85739 effect#1), Warrior (137047 effect#2), Fury Warrior (137050 effect#1), Unstoppable (200853 effect#1), Carnage (202922 effect#1), Massacre (206316 effect#1)
+Affecting spells : Meat Cleaver (85739 effect#1), Warrior (137047 effect#2), Fury Warrior (137050 effect#1), Unstoppable (200853 effect#1), Carnage (202922 effect#1), Massacre (206316 effect#1), Outrage (253385 effect#1)
 Triggered by     : Rampage (184367)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ........ 
                  : ........ ....x... ........ ........   ........ .xx..... ........ ........ 
@@ -3577,7 +3577,7 @@ School           : Physical
 Spell Level      : 1
 Range            : 8 yards
 Proc Chance      : 101%
-Affecting spells : Meat Cleaver (85739 effect#1), Warrior (137047 effect#2), Fury Warrior (137050 effect#1), Unstoppable (200853 effect#1), Carnage (202922 effect#1), Massacre (206316 effect#1)
+Affecting spells : Meat Cleaver (85739 effect#1), Warrior (137047 effect#2), Fury Warrior (137050 effect#1), Unstoppable (200853 effect#1), Carnage (202922 effect#1), Massacre (206316 effect#1), Outrage (253385 effect#1)
 Triggered by     : Rampage (184367)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ....x... ........ ........   ........ ........ ........ x....... 
@@ -4866,7 +4866,7 @@ School           : Physical
 Spell Level      : 1
 Range            : 8 yards
 Proc Chance      : 101%
-Affecting spells : Meat Cleaver (85739 effect#1), Warrior (137047 effect#2), Fury Warrior (137050 effect#1), Unstoppable (200853 effect#1), Carnage (202922 effect#1), Massacre (206316 effect#1)
+Affecting spells : Meat Cleaver (85739 effect#1), Warrior (137047 effect#2), Fury Warrior (137050 effect#1), Unstoppable (200853 effect#1), Carnage (202922 effect#1), Massacre (206316 effect#1), Outrage (253385 effect#1)
 Triggered by     : Rampage (184367)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ........ 
                  : ........ ....x... ........ ........   ........ .xx..... ........ ........ 

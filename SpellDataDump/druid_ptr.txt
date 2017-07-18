@@ -332,7 +332,7 @@ Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Velocity         : 20 yards/sec
 Stance Mask      : 0x40000000
-Affecting spells : Incarnation: Chosen of Elune (102560 effect#2), Restoration Druid (137012 effect#8), Lucidity (137247 effect#1), Solar Empowerment (164545 effect#1), Lunar Empowerment (164547 effect#3), Item - Druid T17 Balance 2P Bonus (165433 effect#1), Celestial Fury (180719 effect#2), Thrash (192090 effect#2), Celestial Alignment (194223 effect#3), Astral Influence (197524 effect#1), Astral Power (197911 effect#2), Solar Stabbing (202426 effect#1), Blessing of Elune (202737 effect#1), Promise of Elune, the Moon Goddess (208283 effect#2), Ekowraith, Creator of Worlds (210667 effect#1), Solar Empowerment (211089 effect#1), Skywrath (214514 effect#1)
+Affecting spells : Incarnation: Chosen of Elune (102560 effect#2), Restoration Druid (137012 effect#8), Lucidity (137247 effect#1), Solar Empowerment (164545 effect#1), Lunar Empowerment (164547 effect#3), Item - Druid T17 Balance 2P Bonus (165433 effect#1), Celestial Fury (180719 effect#2), Thrash (192090 effect#2), Celestial Alignment (194223 effect#3), Astral Influence (197524 effect#1), Astral Power (197911 effect#2), Solar Stabbing (202426 effect#1), Blessing of Elune (202737 effect#1), Promise of Elune, the Moon Goddess (208283 effect#2), Ekowraith, Creator of Worlds (210667 effect#1), Solar Empowerment (211089 effect#1), Skywrath (214514 effect#1), Item - Druid  T21 Balance 2P Bonus - Solar Wrath and Lunar Strike Damage (251803 effect#1)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -648,7 +648,7 @@ Spell Level      : 3
 Range            : 40 yards
 GCD              : 1.5 seconds
 Stance Mask      : 0x40000012
-Affecting spells : Guardian Druid (137010 effect#1), Balance Druid (137013 effect#3), Lucidity (137247 effect#1), Lunar Inspiration (155627 effect#1), Persistence (186396 effect#1), Thrash (192090 effect#2), Astral Influence (197524 effect#1), Feral Overrides Passive (197692 effect#1), Astral Power (197911 effect#3), Twin Moonfire (200818 effect#2), Twilight Glow (202386 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ashamane's Frenzy (210723 effect#4), Galactic Guardian (213708 effect#1), Wax and Wane (239952 effect#1)
+Affecting spells : Guardian Druid (137010 effect#1), Balance Druid (137013 effect#3), Lucidity (137247 effect#1), Lunar Inspiration (155627 effect#1), Persistence (186396 effect#1), Thrash (192090 effect#2), Astral Influence (197524 effect#1), Feral Overrides Passive (197692 effect#1), Astral Power (197911 effect#3), Twin Moonfire (200818 effect#2), Twilight Glow (202386 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ashamane's Frenzy (210723 effect#4), Galactic Guardian (213708 effect#1), Wax and Wane (239952 effect#1), Solar Solstice (252767 effect#1), 
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .....x.. ........ ........ 
@@ -718,7 +718,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=8554)     : Apply Aura (6) | Proc Trigger Spell (42): Clearcasting
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Trigger Spell: 135700 | Target: Self (1)
-Description      : Your auto attacks have a chance to cause a Clearcasting state, making your next Shred, Thrash, or Swipe cost no Energy.
+Description      : Your auto attacks have a chance to cause a Clearcasting state, making your next Shred, Thrash, or $?s202028[Brutal Slash][Swipe] cost no Energy.
 
 Name             : Clearcasting (id=16870) [Spell Family (7)] 
 Class            : Druid
@@ -965,7 +965,7 @@ Spell Level      : 10
 Range            : 5 yards
 GCD              : 1 seconds
 Stance Mask      : 0x00000001
-Affecting spells : Incarnation: King of the Jungle (102543 effect#1), Berserk (106951 effect#1), Feral Druid (137011 effect#1), Restoration Druid (137012 effect#8), Bloodtalons (145152 effect#1), Soul of the Forest (158476 effect#2), Thrash (192090 effect#2), Feral Affinity (197490 effect#4), Astral Influence (197524 effect#1), Sabertooth (202031 effect#1), Feral Affinity (202155 effect#4), Feral Affinity (202157 effect#4), Powerful Bite (210575 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ashamane's Frenzy (210723 effect#4)
+Affecting spells : Incarnation: King of the Jungle (102543 effect#1), Berserk (106951 effect#1), Feral Druid (137011 effect#1), Restoration Druid (137012 effect#8), Bloodtalons (145152 effect#1), Soul of the Forest (158476 effect#2), Thrash (192090 effect#2), Feral Affinity (197490 effect#4), Astral Influence (197524 effect#1), Sabertooth (202031 effect#1), Feral Affinity (202155 effect#4), Feral Affinity (202157 effect#4), Powerful Bite (210575 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ashamane's Frenzy (210723 effect#4), Apex Predator (252752 effect#1), 
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ..xx.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2190,7 +2190,7 @@ Spell Level      : 16
 Range            : 40 yards
 GCD              : 1.5 seconds
 Stance Mask      : 0x40000002
-Affecting spells : Restoration Druid (137012 effect#8), Balance Druid (137013 effect#3), Lucidity (137247 effect#1), Persistence (186396 effect#1), Thrash (192090 effect#2), Astral Influence (197524 effect#1), Astral Power (197911 effect#3), Sunfire Burns (202466 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Sunblind (213682 effect#1), Wax and Wane (239952 effect#1)
+Affecting spells : Restoration Druid (137012 effect#8), Balance Druid (137013 effect#3), Lucidity (137247 effect#1), Persistence (186396 effect#1), Thrash (192090 effect#2), Astral Influence (197524 effect#1), Astral Power (197911 effect#3), Sunfire Burns (202466 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Sunblind (213682 effect#1), Wax and Wane (239952 effect#1), Solar Solstice (252767 effect#1), 
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .....x.. ........ ........ 
@@ -2656,7 +2656,7 @@ Effects          :
 Name             : Swipe (id=106785) [Spell Family (7)] 
 Class            : Druid
 School           : Physical
-Resource         : 45 Energy (3) (id=9341)
+Resource         : 40 Energy (3) (id=9341)
 Spell Level      : 32
 Range            : 8 yards
 GCD              : 1 seconds
@@ -2682,14 +2682,14 @@ Description      : Swipe nearby enemies, inflicting $sw3 Physical damage.$?a2312
 Name             : Thrash (Feral, Guardian) (id=106830) [Spell Family (7)] 
 Class            : Druid
 School           : Physical
-Resource         : 50 Energy (3) (id=5069)
+Resource         : 45 Energy (3) (id=5069)
 Spell Level      : 12
 Range            : 8 yards
 GCD              : 1 seconds
 Duration         : 15 seconds
 Stance Mask      : 0x00000001
 Mechanic         : Bleed
-Affecting spells : Mastery: Razor Claws (77493 effect#1), Incarnation: King of the Jungle (102543 effect#1), Incarnation: Guardian of Ursoc (102558 effect#1), Berserk (106951 effect#1), Clearcasting (135700 effect#1), Guardian Druid (137010 effect#1), Feral Druid (137011 effect#1), Restoration Druid (137012 effect#8), Bloodletting (165699 effect#1), Astral Influence (197524 effect#1), Jagged Claws (200409 effect#1), Jagged Wounds (202032 effect#1), Luffa Wrappings (208681 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ashamane's Frenzy (210723 effect#4), Thrashing Claws (238048 effect#1), 
+Affecting spells : Mastery: Razor Claws (77493 effect#1), Incarnation: King of the Jungle (102543 effect#1), Incarnation: Guardian of Ursoc (102558 effect#1), Berserk (106951 effect#1), Clearcasting (135700 effect#1), Guardian Druid (137010 effect#1), Feral Druid (137011 effect#1), Restoration Druid (137012 effect#8), Bloodletting (165699 effect#1), Astral Influence (197524 effect#1), Jagged Claws (200409 effect#1), Jagged Wounds (202032 effect#1), Luffa Wrappings (208681 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ashamane's Frenzy (210723 effect#4), Item - Druid T19 Feral 2P Bonus (211140 effect#1), Thrashing Claws (238048 effect#1), 
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ .......x ........ ........ 
@@ -2701,7 +2701,9 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.00000 | AP Coefficient: 0.50020 | Radius: 0 - 8 yards | Mechanic: Bleed | Target: At Caster (22) -> AOE enemy (15)
 #2 (id=117263)   : Apply Aura (6) | Periodic Damage (3): physical every 3 seconds
                    Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.35624 | Radius: 0 - 8 yards | Mechanic: Bleed | Target: At Caster (22) -> AOE enemy (15)
-Description      : Strikes all nearby enemies, dealing $m1 Bleed damage and an additional $o2 Bleed damage over $d.
+Description      : Strikes all nearby enemies, dealing $m1 Bleed damage and an additional $o2 Bleed damage over $d.
+
+|cFFFFFFFFAwards $211141s1 combo $lpoint:points;.|r
 Tooltip          : Bleeding for $w2 damage every $t2 sec.
 
 Name             : Thrash (id=106832) [Spell Family (7)] 
@@ -3248,18 +3250,18 @@ Attributes       : ........ ........ ..x..... ........   ........ ..x..... .....
 Effects          :
 #1 (id=177253)   : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost (14)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 14 | Target: Self (1)
-                   Affected Spells: Shred (5221), Swipe (106785), Thrash (106830), Shadow Thrash (210687)
+                   Affected Spells: Shred (5221), Swipe (106785), Thrash (106830), Brutal Slash (202028), Shadow Thrash (210687)
 #2 (id=356844)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
                    Affected Spells: Shred (5221), Swipe (106785), Thrash (106830), Shadow Thrash (210687)
 #3 (id=356845)   : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-                   Affected Spells: Shred (5221), Swipe (106785), Thrash (106830), Shadow Thrash (210687)
+                   Affected Spells: Shred (5221), Swipe (106785), Thrash (106830), Brutal Slash (202028), Shadow Thrash (210687)
 #4 (id=356848)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Damage (22)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Thrash (106830), Shadow Thrash (210687)
 Description      : $@spelldesc16864
-Tooltip          : Your next Shred, Thrash, or Swipe costs no Energy.
+Tooltip          : Your next Shred, Thrash, or $?s202028[Brutal Slash][Swipe] costs no Energy$?s236068[ and deals $s3% increased damage][].
 
 Name             : Druid (id=137009) [Spell Family (7), Passive, Hidden] 
 Class            : Druid
@@ -3347,10 +3349,10 @@ Effects          :
                    Affected Spells (Label): Rethu's Incessant Courage (242597)
 #15 (id=260766)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 298 (Label) | Target: Self (1)
-                   Affected Spells (Label): Cleansing Matrix (242619), Fruitful Machinations (242623), Guiding Hand (242622), Infusion of Light (242621)
+                   Affected Spells (Label): Cleansing Matrix (242619), Fruitful Machinations (242623), Guiding Hand (242622), Infusion of Light (242621), Fel Shield (253277), Tarratus Keystone (253282), Refreshing Agony (253284)
 #16 (id=351087)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 300 (Label) | Target: Self (1)
-                   Affected Spells (Label): Insidious Corruption (243941), Spectral Bolt (242571), Spectral Blast (246442)
+                   Affected Spells (Label): Insidious Corruption (243941), Spectral Bolt (242571), Spectral Blast (246442), Apocalypse Missile (253243), Legion Bombardment (253248), Essence Swap (253258)
 #17 (id=351088)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #18 (id=368361)   : Apply Aura (6) | Dummy (4)
@@ -3368,10 +3370,10 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=179694)   : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
-                   Base Value: 33 | Scaled Value: 33 | Target: Self (1)
+                   Base Value: 40 | Scaled Value: 40 | Target: Self (1)
                    Affected Spells: Rip (1079), Rake (1822), Shred (5221), Ferocious Bite (22568), Maim (22570), Swipe (106785), Thrash (106830), Moonfire (155625), Rake (155722), Moonfire (164812), Brutal Slash (202028), Shadow Thrash (210687), Ashamane's Rip (210705), Ashamane's Frenzy (210723)
 #2 (id=191154)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Damage (22)
-                   Base Value: 33 | Scaled Value: 33 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 40 | Scaled Value: 40 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Rip (1079), Rake (1822), Shred (5221), Ferocious Bite (22568), Maim (22570), Swipe (106785), Thrash (106830), Moonfire (155625), Rake (155722), Moonfire (164812), Brutal Slash (202028), Shadow Thrash (210687), Ashamane's Rip (210705), Ashamane's Frenzy (210723)
 #3 (id=191155)   : Apply Aura (6) | Add Flat Modifier (107): Spell Cooldown (11)
                    Base Value: 90000 | Scaled Value: 90000 | Misc Value: 11 | Target: Self (1)
@@ -3398,10 +3400,10 @@ Effects          :
                    Affected Spells (Label): Orb of Destruction (229700)
 #11 (id=260772)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 298 (Label) | Target: Self (1)
-                   Affected Spells (Label): Cleansing Matrix (242619), Fruitful Machinations (242623), Guiding Hand (242622), Infusion of Light (242621)
+                   Affected Spells (Label): Cleansing Matrix (242619), Fruitful Machinations (242623), Guiding Hand (242622), Infusion of Light (242621), Fel Shield (253277), Tarratus Keystone (253282), Refreshing Agony (253284)
 #12 (id=260773)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 300 (Label) | Target: Self (1)
-                   Affected Spells (Label): Insidious Corruption (243941), Spectral Bolt (242571), Spectral Blast (246442)
+                   Affected Spells (Label): Insidious Corruption (243941), Spectral Bolt (242571), Spectral Blast (246442), Apocalypse Missile (253243), Legion Bombardment (253248), Essence Swap (253258)
 #13 (id=260774)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #14 (id=260775)   : Apply Aura (6) | Dummy (4)
@@ -3453,7 +3455,7 @@ Effects          :
                    Affected Spells (Label): Orb of Destruction (229700)
 #13 (id=260754)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 300 (Label) | Target: Self (1)
-                   Affected Spells (Label): Insidious Corruption (243941), Spectral Bolt (242571), Spectral Blast (246442)
+                   Affected Spells (Label): Insidious Corruption (243941), Spectral Bolt (242571), Spectral Blast (246442), Apocalypse Missile (253243), Legion Bombardment (253248), Essence Swap (253258)
 #14 (id=260755)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #15 (id=260756)   : Apply Aura (6) | Dummy (4)
@@ -3501,7 +3503,7 @@ Effects          :
                    Affected Spells (Label): Fel-Crazed Rage (225777), Colossal Slam (232044), Dread Torrent (246464), Ceaseless Toxin (242497), Umbral Glaive Storm (242556), Shattering Umbral Glaives (242557), Infernal Cinders (242218)
 #10 (id=260781)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 298 (Label) | Target: Self (1)
-                   Affected Spells (Label): Cleansing Matrix (242619), Fruitful Machinations (242623), Guiding Hand (242622), Infusion of Light (242621)
+                   Affected Spells (Label): Cleansing Matrix (242619), Fruitful Machinations (242623), Guiding Hand (242622), Infusion of Light (242621), Fel Shield (253277), Tarratus Keystone (253282), Refreshing Agony (253284)
 #11 (id=260782)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #12 (id=260783)   : Apply Aura (6) | Dummy (4)
@@ -3618,7 +3620,7 @@ Class            : Restoration Druid
 School           : Nature
 Spell Level      : 34
 Range            : 100 yards
-Affecting spells : Bear Form (5487 effect#8), Incarnation: King of the Jungle (102543 effect#1), Berserk (106951 effect#1), Astral Influence (197524 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), 
+Affecting spells : Bear Form (5487 effect#8), Incarnation: King of the Jungle (102543 effect#1), Berserk (106951 effect#1), Astral Influence (197524 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Awakened (253434 effect#1)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3635,7 +3637,7 @@ Name             : Ysera's Gift (id=145109) [Spell Family (7)]
 Class            : Druid
 School           : Nature
 Spell Level      : 1
-Affecting spells : Bear Form (5487 effect#8), Incarnation: King of the Jungle (102543 effect#1), Berserk (106951 effect#1), Astral Influence (197524 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), 
+Affecting spells : Bear Form (5487 effect#8), Incarnation: King of the Jungle (102543 effect#1), Berserk (106951 effect#1), Astral Influence (197524 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Awakened (253434 effect#1)
 Attributes       : ........ ........ ........ x..x....   .....x.. ..x..... ........ ........ 
                  : ........ ......x. ........ ....xx..   ........ ........ x....... ......x. 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -3653,7 +3655,7 @@ Class            : Druid
 School           : Nature
 Spell Level      : 1
 Range            : 30 yards
-Affecting spells : Bear Form (5487 effect#8), Incarnation: King of the Jungle (102543 effect#1), Berserk (106951 effect#1), Astral Influence (197524 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), 
+Affecting spells : Bear Form (5487 effect#8), Incarnation: King of the Jungle (102543 effect#1), Berserk (106951 effect#1), Astral Influence (197524 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Awakened (253434 effect#1)
 Attributes       : ........ ........ ........ x..x....   .....x.. ..x..... ...x.... ........ 
                  : ........ ......x. ........ ....xx..   ........ ........ x....... ......x. 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -3683,7 +3685,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=195368)   : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
-                   Base Value: 25 | Scaled Value: 25 | Target: Self (1)
+                   Base Value: 20 | Scaled Value: 20 | Target: Self (1)
                    Affected Spells: Shred (5221), Maul (6807), Ferocious Bite (22568), Maim (22570), Mangle (33917), Thrash (77758), Swipe (106785), Maim (168877), Maim (168878), Maim (168879), Maim (168880), Maim (168881), Brutal Slash (202028), Enraged Mangle (202085), Swipe (213771), Enraged Maul (236716)
 Description      : $@spelldesc155672
 Tooltip          : Your next two melee abilities deal $s1% increased damage for their full duration.
@@ -4257,7 +4259,7 @@ Spell Level      : 3
 Range            : 100 yards
 Duration         : 16 seconds
 Stance Mask      : 0x40000013
-Affecting spells : Guardian Druid (137010 effect#1), Feral Druid (137011 effect#1), Restoration Druid (137012 effect#8), Balance Druid (137013 effect#1), Lucidity (137247 effect#1), Lunar Inspiration (155627 effect#1), Persistence (186396 effect#1), Thrash (192090 effect#2), Astral Influence (197524 effect#1), Feral Overrides Passive (197692 effect#1), Twin Moonfire (200818 effect#2), Twilight Glow (202386 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ashamane's Frenzy (210723 effect#4), Scintillating Moonlight (238049 effect#1), Wax and Wane (239952 effect#1)
+Affecting spells : Guardian Druid (137010 effect#1), Feral Druid (137011 effect#1), Restoration Druid (137012 effect#8), Balance Druid (137013 effect#1), Lucidity (137247 effect#1), Lunar Inspiration (155627 effect#1), Persistence (186396 effect#1), Thrash (192090 effect#2), Astral Influence (197524 effect#1), Feral Overrides Passive (197692 effect#1), Twin Moonfire (200818 effect#2), Twilight Glow (202386 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ashamane's Frenzy (210723 effect#4), Scintillating Moonlight (238049 effect#1), Wax and Wane (239952 effect#1), Solar Solstice (252767 effect#1), 
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ .x...... ..x..... ......x. 
                  : ........ ........ ........ ........   ........ .....x.. ........ ........ 
@@ -4282,7 +4284,7 @@ Spell Level      : 16
 Range            : 100 yards
 Duration         : 12 seconds
 Stance Mask      : 0x40000002
-Affecting spells : Restoration Druid (137012 effect#8), Balance Druid (137013 effect#1), Lucidity (137247 effect#1), Persistence (186396 effect#1), Thrash (192090 effect#2), Astral Influence (197524 effect#1), Astral Power (197911 effect#3), Sunfire Burns (202466 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Sunblind (213682 effect#1), Wax and Wane (239952 effect#1)
+Affecting spells : Restoration Druid (137012 effect#8), Balance Druid (137013 effect#1), Lucidity (137247 effect#1), Persistence (186396 effect#1), Thrash (192090 effect#2), Astral Influence (197524 effect#1), Astral Power (197911 effect#3), Sunfire Burns (202466 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Sunblind (213682 effect#1), Wax and Wane (239952 effect#1), Solar Solstice (252767 effect#1), 
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ .x...... ..x..... ......x. 
                  : ........ ........ ........ ........   ........ .....x.. ........ ........ 
@@ -4639,7 +4641,7 @@ Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Velocity         : 20 yards/sec
 Stance Mask      : 0x40000000
-Affecting spells : Incarnation: Chosen of Elune (102560 effect#2), Restoration Druid (137012 effect#8), Balance Druid (137013 effect#1), Lucidity (137247 effect#1), Solar Empowerment (164545 effect#1), Lunar Empowerment (164547 effect#3), Item - Druid T17 Balance 2P Bonus (165433 effect#1), Celestial Fury (180719 effect#2), Thrash (192090 effect#2), Celestial Alignment (194223 effect#3), Astral Influence (197524 effect#1), Astral Power (197911 effect#2), Solar Stabbing (202426 effect#1), Blessing of Elune (202737 effect#1), Promise of Elune, the Moon Goddess (208283 effect#2), Ekowraith, Creator of Worlds (210667 effect#1), Solar Empowerment (211089 effect#1), Skywrath (214514 effect#1)
+Affecting spells : Incarnation: Chosen of Elune (102560 effect#2), Restoration Druid (137012 effect#8), Balance Druid (137013 effect#1), Lucidity (137247 effect#1), Solar Empowerment (164545 effect#1), Lunar Empowerment (164547 effect#3), Item - Druid T17 Balance 2P Bonus (165433 effect#1), Celestial Fury (180719 effect#2), Thrash (192090 effect#2), Celestial Alignment (194223 effect#3), Astral Influence (197524 effect#1), Astral Power (197911 effect#2), Solar Stabbing (202426 effect#1), Blessing of Elune (202737 effect#1), Promise of Elune, the Moon Goddess (208283 effect#2), Ekowraith, Creator of Worlds (210667 effect#1), Solar Empowerment (211089 effect#1), Skywrath (214514 effect#1), Item - Druid  T21 Balance 2P Bonus - Solar Wrath and Lunar Strike Damage (251803 effect#1)
 Triggered by     : Solar Empowerment (164545)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
@@ -4793,7 +4795,7 @@ Range            : 40 yards
 Cast Time        : 2.5 seconds
 GCD              : 1.5 seconds
 Stance Mask      : 0x40000002
-Affecting spells : Incarnation: Chosen of Elune (102560 effect#2), Restoration Druid (137012 effect#8), Balance Druid (137013 effect#1), Lucidity (137247 effect#1), Lunar Empowerment (164547 effect#1), Item - Druid T17 Balance 2P Bonus (165433 effect#2), Celestial Fury (180719 effect#1), Thrash (192090 effect#2), Celestial Alignment (194223 effect#3), Astral Influence (197524 effect#1), Dark Side of the Moon (202384 effect#1), Warrior of Elune (202425 effect#1), Blessing of Elune (202737 effect#1), Promise of Elune, the Moon Goddess (208283 effect#2), Ekowraith, Creator of Worlds (210667 effect#1), Skywrath (214514 effect#1)
+Affecting spells : Incarnation: Chosen of Elune (102560 effect#2), Restoration Druid (137012 effect#8), Balance Druid (137013 effect#1), Lucidity (137247 effect#1), Lunar Empowerment (164547 effect#1), Item - Druid T17 Balance 2P Bonus (165433 effect#2), Celestial Fury (180719 effect#1), Thrash (192090 effect#2), Celestial Alignment (194223 effect#3), Astral Influence (197524 effect#1), Dark Side of the Moon (202384 effect#1), Warrior of Elune (202425 effect#1), Blessing of Elune (202737 effect#1), Promise of Elune, the Moon Goddess (208283 effect#2), Ekowraith, Creator of Worlds (210667 effect#1), Skywrath (214514 effect#1), Item - Druid  T21 Balance 2P Bonus - Solar Wrath and Lunar Strike Damage (251803 effect#2)
 Triggered by     : Lunar Empowerment (164547)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
@@ -5107,7 +5109,7 @@ Spell Level      : 1
 Range            : 40 yards
 Cast Time        : 2.5 seconds
 GCD              : 1.5 seconds
-Affecting spells : Incarnation: Chosen of Elune (102560 effect#2), Restoration Druid (137012 effect#8), Lucidity (137247 effect#1), Lunar Empowerment (164547 effect#1), Item - Druid T17 Balance 2P Bonus (165433 effect#2), Celestial Fury (180719 effect#1), Thrash (192090 effect#2), Celestial Alignment (194223 effect#3), Astral Influence (197524 effect#1), Dark Side of the Moon (202384 effect#1), Warrior of Elune (202425 effect#1), Blessing of Elune (202737 effect#1), Promise of Elune, the Moon Goddess (208283 effect#2), Ekowraith, Creator of Worlds (210667 effect#1), Skywrath (214514 effect#1)
+Affecting spells : Incarnation: Chosen of Elune (102560 effect#2), Restoration Druid (137012 effect#8), Lucidity (137247 effect#1), Lunar Empowerment (164547 effect#1), Item - Druid T17 Balance 2P Bonus (165433 effect#2), Celestial Fury (180719 effect#1), Thrash (192090 effect#2), Celestial Alignment (194223 effect#3), Astral Influence (197524 effect#1), Dark Side of the Moon (202384 effect#1), Warrior of Elune (202425 effect#1), Blessing of Elune (202737 effect#1), Promise of Elune, the Moon Goddess (208283 effect#2), Ekowraith, Creator of Worlds (210667 effect#1), Skywrath (214514 effect#1), Item - Druid  T21 Balance 2P Bonus - Solar Wrath and Lunar Strike Damage (251803 effect#2)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5130,7 +5132,7 @@ Range            : 40 yards
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Velocity         : 20 yards/sec
-Affecting spells : Incarnation: Chosen of Elune (102560 effect#2), Restoration Druid (137012 effect#8), Lucidity (137247 effect#1), Solar Empowerment (164545 effect#1), Lunar Empowerment (164547 effect#3), Item - Druid T17 Balance 2P Bonus (165433 effect#1), Celestial Fury (180719 effect#2), Thrash (192090 effect#2), Celestial Alignment (194223 effect#3), Astral Influence (197524 effect#1), Astral Power (197911 effect#2), Solar Stabbing (202426 effect#1), Blessing of Elune (202737 effect#1), Promise of Elune, the Moon Goddess (208283 effect#2), Ekowraith, Creator of Worlds (210667 effect#1), Solar Empowerment (211089 effect#1), Skywrath (214514 effect#1)
+Affecting spells : Incarnation: Chosen of Elune (102560 effect#2), Restoration Druid (137012 effect#8), Lucidity (137247 effect#1), Solar Empowerment (164545 effect#1), Lunar Empowerment (164547 effect#3), Item - Druid T17 Balance 2P Bonus (165433 effect#1), Celestial Fury (180719 effect#2), Thrash (192090 effect#2), Celestial Alignment (194223 effect#3), Astral Influence (197524 effect#1), Astral Power (197911 effect#2), Solar Stabbing (202426 effect#1), Blessing of Elune (202737 effect#1), Promise of Elune, the Moon Goddess (208283 effect#2), Ekowraith, Creator of Worlds (210667 effect#1), Solar Empowerment (211089 effect#1), Skywrath (214514 effect#1), Item - Druid  T21 Balance 2P Bonus - Solar Wrath and Lunar Strike Damage (251803 effect#1)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5149,7 +5151,7 @@ Resource         : 12% Base Mana (0) (id=10709)
 Spell Level      : 1
 Range            : 40 yards
 GCD              : 1.5 seconds
-Affecting spells : Restoration Druid (137012 effect#8), Balance Druid (137013 effect#3), Lucidity (137247 effect#1), Persistence (186396 effect#1), Thrash (192090 effect#2), Astral Influence (197524 effect#1), Astral Power (197911 effect#3), Sunfire Burns (202466 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Sunblind (213682 effect#1), Wax and Wane (239952 effect#1)
+Affecting spells : Restoration Druid (137012 effect#8), Balance Druid (137013 effect#3), Lucidity (137247 effect#1), Persistence (186396 effect#1), Thrash (192090 effect#2), Astral Influence (197524 effect#1), Astral Power (197911 effect#3), Sunfire Burns (202466 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Sunblind (213682 effect#1), Wax and Wane (239952 effect#1), Solar Solstice (252767 effect#1), 
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .....x.. ........ ........ 
@@ -5403,7 +5405,7 @@ GCD              : 1 seconds
 Charges          : 3 (12 seconds cooldown)
 Category         : 1581: Druid (137009 effect#1)
 Stance Mask      : 0x00000001
-Affecting spells : Incarnation: King of the Jungle (102543 effect#1), Feral Druid (137011 effect#1), Bloodtalons (145152 effect#1), Thrash (192090 effect#2), Astral Influence (197524 effect#1), Sharpened Claws (210637 effect#1), Scent of Blood (210664 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ashamane's Frenzy (210723 effect#4)
+Affecting spells : Incarnation: King of the Jungle (102543 effect#1), Clearcasting (135700 effect#1), Feral Druid (137011 effect#1), Bloodtalons (145152 effect#1), Thrash (192090 effect#2), Astral Influence (197524 effect#1), Sharpened Claws (210637 effect#1), Scent of Blood (210664 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ashamane's Frenzy (210723 effect#4)
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .......x ........ ........ 
@@ -6548,11 +6550,33 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6), Hidden (7)
 Effects          :
-#1 (id=312759)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 14 | Target: Self (1)
-#2 (id=361461)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 14 | Target: Self (1)
-Description      : Thrash now generates $s1 $Lcombo point:combo points; if it hits at least $s2 $Ltarget:targets;.
+#1 (id=312759)   : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
+                   Base Value: 15 | Scaled Value: 15 | Target: Self (1)
+                   Affected Spells: Thrash (106830), Shadow Thrash (210687)
+#2 (id=472586)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Damage (22)
+                   Base Value: 15 | Scaled Value: 15 | Misc Value: 22 | Target: Self (1)
+                   Affected Spells: Thrash (106830), Shadow Thrash (210687)
+Description      : Thrash deals $s1% increased damage.
+
+Name             : Thrash (id=211141) 
+Class            : Druid
+School           : Physical
+Spell Level      : 12
+Range            : 100 yards
+Stacks           : 3 maximum
+Proc Chance      : 101%
+Stance Mask      : 0x00000001
+Attributes       : ....x... x....... ........ x.......   ........ ........ ........ ........ 
+                 : ..x..... x....... ........ ........   ........ ........ xx...... ......x. 
+                 : .......x ........ ...x.... ........   ...x.... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ .......x 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Disable player procs (112), Disable target procs (113)
+Effects          :
+#1 (id=312760)   : Energize Power (30)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: combo_points | Target: Self (1)
+Description      : $@spelldesc106830
 
 Name             : Item - Druid T19 Feral 4P Bonus (id=211142) [Spell Family (7), Passive, Hidden] 
 Class            : Druid
@@ -7139,21 +7163,21 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=356850)   : Apply Aura (6) | Add Flat Modifier (107): Unknown(37)
-                   Base Value: 2 | Scaled Value: 2 | Misc Value: 37 | Target: Self (1)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 37 | Target: Self (1)
                    Affected Spells: Omen of Clarity (16864), Clearcasting (16870), Clearcasting (135700)
-#2 (id=356851)   : Apply Aura (6) | Add Percent Modifier (108): Spell Proc Frequency (26)
+#2 (id=356851)   : Apply Aura (6) | Dummy (4)
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 26 | Target: Self (1)
                    Affected Spells: Omen of Clarity (16864), Clearcasting (16870), Clearcasting (135700)
 #3 (id=356852)   : Apply Aura (6) | Increase Energy (35)
                    Base Value: 30 | Scaled Value: 30 | Misc Value: 3 | Target: Self (1)
                    Affected Spells: Omen of Clarity (16864), Clearcasting (16870), Clearcasting (135700)
 #4 (id=356853)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 3 (23)
-                   Base Value: 25 | Scaled Value: 25 | Misc Value: 23 | Target: Self (1)
+                   Base Value: 20 | Scaled Value: 20 | Misc Value: 23 | Target: Self (1)
                    Affected Spells: Omen of Clarity (16864), Clearcasting (16870), Clearcasting (135700)
 #5 (id=356854)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 4 (32)
                    Base Value: 25 | Scaled Value: 25 | Misc Value: 32 | Target: Self (1)
                    Affected Spells: Omen of Clarity (16864), Clearcasting (16870), Clearcasting (135700)
-Description      : Omen of Clarity now triggers twice as often and increases the damage of your next Shred, Thrash, or Swipe by $s4%.
+Description      : Omen of Clarity now triggers $s2% more often, stacks up to ${$s135700u+$s1} times and increases the damage of your next Shred, Thrash, or $?s202028[Brutal Slash][Swipe] by $s4%.
 
 Your maximum Energy is increased by $s3.
 
