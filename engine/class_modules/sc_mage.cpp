@@ -294,7 +294,7 @@ public:
     buff_t* icy_veins;
     buff_t* rage_of_the_frost_wyrm;            // 7.2.5 legendary head, primed buff
     buff_t* shattered_fragments_of_sindragosa; // 7.2.5 legendary head, tracking buff
-    buff_t* t21_frost_4pc;                     // T21 Frost 4pc buff
+    buff_t* t21_frost_4pc;                     // T21 4pc Frost
 
 
     // Talents
@@ -2502,10 +2502,7 @@ struct arcane_barrage_t : public arcane_mage_spell_t
 
     if ( p() -> sets -> has_set_bonus( MAGE_ARCANE, T21, B2 ) )
     {
-      for ( int i = 1; i <= charges; i++ )
-      {
-        p() -> buffs.expanding_mind -> trigger();
-      }
+      p() -> buffs.expanding_mind -> trigger( charges );
     }
 
     p() -> buffs.arcane_charge -> expire();
