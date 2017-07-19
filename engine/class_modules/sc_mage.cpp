@@ -294,7 +294,7 @@ public:
     buff_t* icy_veins;
     buff_t* rage_of_the_frost_wyrm;            // 7.2.5 legendary head, primed buff
     buff_t* shattered_fragments_of_sindragosa; // 7.2.5 legendary head, tracking buff
-    buff_t* t21_frost_4pc;                     // T21 4pc Frost
+    buff_t* arctic_blast;                      // T21 4pc Frost
 
 
     // Talents
@@ -4026,7 +4026,7 @@ struct flurry_t : public frost_mage_spell_t
 
     if ( brain_freeze_up && p() -> sets -> has_set_bonus( MAGE_FROST, T21, B4 ) )
     {
-      p() -> buffs.t21_frost_4pc -> trigger();
+      p() -> buffs.arctic_blast -> trigger();
     }
 
     p() -> buffs.brain_freeze -> expire();
@@ -4214,7 +4214,7 @@ struct frostbolt_t : public frost_mage_spell_t
       trigger_unstable_magic( s );
       trigger_shattered_fragments( s -> target );
 
-      p() -> buffs.t21_frost_4pc -> expire();
+      p() -> buffs.arctic_blast -> expire();
     }
   }
 
@@ -4222,9 +4222,9 @@ struct frostbolt_t : public frost_mage_spell_t
   {
     double am = frost_mage_spell_t::action_multiplier();
 
-    if ( p() -> buffs.t21_frost_4pc -> check() )
+    if ( p() -> buffs.arctic_blast -> check() )
     {
-      am *= 1.0 + p() -> buffs.t21_frost_4pc -> check_value();
+      am *= 1.0 + p() -> buffs.arctic_blast -> check_value();
     }
 
     return am;
@@ -7094,6 +7094,8 @@ void mage_t::create_buffs()
                                    .add_invalidate( CACHE_RUN_SPEED );
 
   // Frost
+  buffs.arctic_blast           = buff_creator_t( this, "arctic_blast", find_spell( 253257 ) )
+                                   .default_value( find_spell( 253257 ) -> effectN( 1 ).percent() );
   buffs.brain_freeze           = buff_creator_t( this, "brain_freeze", find_spell( 190446 ) );
   buffs.bone_chilling          = buff_creator_t( this, "bone_chilling", find_spell( 205766 ) )
                                    .default_value( talents.bone_chilling -> effectN( 1 ).percent() / 10 )
@@ -7117,12 +7119,6 @@ void mage_t::create_buffs()
   buffs.icy_veins -> buff_duration += talents.thermal_void -> effectN( 2 ).time_value();
 
   buffs.ray_of_frost           = new buffs::ray_of_frost_buff_t( this );
-
-  // TODO: Find spell data for this.
-  buffs.t21_frost_4pc          = buff_creator_t( this, "T21_Frost_Buff" )
-                                   .duration( timespan_t::from_seconds( 15.0 ) )
-                                   .default_value( sets -> set( MAGE_FROST, T21, B4 ) -> effectN( 1 ).percent() );
-
 
   // Talents
   buffs.ice_floes              = buff_creator_t( this, "ice_floes", talents.ice_floes );
