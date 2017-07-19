@@ -600,27 +600,30 @@ public:
     // Tier 1
     const spell_data_t* shattering_strikes;
     const spell_data_t* icy_talons;
-    const spell_data_t* murderous_efficiency;
+    const spell_data_t* murderous_efficiency;  // Switches place with Frozen Pulse in 7.3
 
     // Tier 2
     const spell_data_t* freezing_fog;
-    const spell_data_t* frozen_pulse;
+    const spell_data_t* frozen_pulse;  // Switches place with Runic Attenuation in 7.3
     const spell_data_t* horn_of_winter;
 
     // Tier 3
     const spell_data_t* icecap;
-    const spell_data_t* hungering_rune_weapon;
+    const spell_data_t* hungering_rune_weapon;  // Switches place with Glacial Advance in 7.3
     const spell_data_t* avalanche;
+    
+    // Tier 4 
+    const spell_data_t* inexorable_assault; // Not yet implemented, new to 7.3 PTR
 
     // Tier 6
     const spell_data_t* frostscythe;
-    const spell_data_t* runic_attenuation;
+    const spell_data_t* runic_attenuation; // Switches place with Murderous Efficiency in 7.3
     const spell_data_t* gathering_storm;
 
     // Tier 7
     const spell_data_t* obliteration;
     const spell_data_t* breath_of_sindragosa;
-    const spell_data_t* glacial_advance;
+    const spell_data_t* glacial_advance;  // Switches place with Hungering Rune Weapon in 7.3
 
     // Unholy
 
@@ -5270,6 +5273,19 @@ struct howling_blast_t : public death_knight_spell_t
   {
     death_knight_spell_t::execute();
 
+    // 7.3 PTR : Howling Blast now triggers Killing Machine during Obliteration
+    // Need to actually add a conditional for PTR-only
+    
+    // Copied from Obliteration code in Frost Strike
+    // Note note, killing machine is a RPPM thing, but we need to trigger it unconditionally when
+    // obliterate is up, so just bypas "trigger" and directly execute the buff, while making sure
+    // correct bookkeeping information is kept. Ugly but will work for now.
+    if ( p() -> buffs.obliteration -> up() )
+    {
+      //p() -> buffs.killing_machine -> trigger_attempts++;
+      p() -> buffs.killing_machine -> execute();
+    }
+
     p() -> buffs.rime -> decrement();
   }
 
@@ -7150,6 +7166,7 @@ action_t* death_knight_t::create_action( const std::string& name, const std::str
   if ( name == "glacial_advance"          ) return new glacial_advance_t          ( this, options_str );
   if ( name == "horn_of_winter"           ) return new horn_of_winter_t           ( this, options_str );
   if ( name == "hungering_rune_weapon"    ) return new hungering_rune_weapon_t    ( this, options_str );
+//if ( name == "inexorable assault"       ) return new_inexorable_assault_t       ( this, options_str );
   if ( name == "obliteration"             ) return new obliteration_t             ( this, options_str );
 
   // Unholy Actions
@@ -7389,25 +7406,25 @@ void death_knight_t::init_spells()
   // Tier 1
   talent.shattering_strikes    = find_talent_spell( "Shattering Strikes" );
   talent.icy_talons            = find_talent_spell( "Icy Talons" );
-  talent.murderous_efficiency  = find_talent_spell( "Murderous Efficiency" );
+  talent.murderous_efficiency  = find_talent_spell( "Murderous Efficiency" ); // Becomes Runic Attenuation in 7.3 PTR
   // Tier 2
   talent.freezing_fog          = find_talent_spell( "Freezing Fog" );
-  talent.frozen_pulse          = find_talent_spell( "Frozen Pulse" );
+  talent.frozen_pulse          = find_talent_spell( "Frozen Pulse" ); // Becomes Murderous Efficiency in 7.3 PTR
   talent.horn_of_winter        = find_talent_spell( "Horn of Winter" );
   // Tier 3
   talent.icecap                = find_talent_spell( "Icecap" );
-  talent.hungering_rune_weapon = find_talent_spell( "Hungering Rune Weapon" );
+  talent.hungering_rune_weapon = find_talent_spell( "Hungering Rune Weapon" ); // Becomes Glacial Advance in 7.3 PTR
   talent.avalanche             = find_talent_spell( "Avalanche" );
   // Tier 4
-  talent.inexorable_assault    = find_talent_spell( "Inexorable Assault" );
+//talent.inexorable_assault    = find_talent_spell( "Inexorable Assault" );
   // Tier 6
   talent.frostscythe           = find_talent_spell( "Frostscythe" );
-  talent.runic_attenuation     = find_talent_spell( "Runic Attenuation" );
+  talent.runic_attenuation     = find_talent_spell( "Runic Attenuation" ); // Becomes Frozen Pulse in 7.3 PTR
   talent.gathering_storm       = find_talent_spell( "Gathering Storm" );
   // Tier 7
   talent.obliteration          = find_talent_spell( "Obliteration" );
   talent.breath_of_sindragosa  = find_talent_spell( "Breath of Sindragosa" );
-  talent.glacial_advance       = find_talent_spell( "Glacial Advance" );
+  talent.glacial_advance       = find_talent_spell( "Glacial Advance" ); // Becomes Hungering Rune Weapon in 7.3 PTR
 
   // Unholy Talents
   // Tier 1
@@ -7520,7 +7537,7 @@ void death_knight_t::init_spells()
   artifact.sanguinary_affinity = find_artifact_spell( "Sanguinary Affinity" );
   artifact.vampiric_fangs      = find_artifact_spell( "Vampiric Fangs" );
   artifact.rattling_bones      = find_artifact_spell( "Rattling Bones" );
-  artifact.bonebreaker        = find_artifact_spell( "Bonebreaker" );
+  artifact.bonebreaker         = find_artifact_spell( "Bonebreaker" );
   artifact.allconsuming_rot    = find_artifact_spell( "All-Consuming Rot" );
   artifact.unending_thirst     = find_artifact_spell( "Unending Thirst" );
   artifact.blood_feast         = find_artifact_spell( "Blood Feast" );
