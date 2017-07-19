@@ -41,9 +41,10 @@ actions+=/a_murder_of_crows,if=cooldown.bestial_wrath.remains<3|cooldown.bestial
 actions+=/stampede,if=buff.bloodlust.up|buff.bestial_wrath.up|cooldown.bestial_wrath.remains<=2|target.time_to_die<=14
 actions+=/bestial_wrath,if=!buff.bestial_wrath.up
 # With both AotW cdr sources and OwtP, there's no visible benefit if it's delayed, use it on cd. With only one or neither, pair it with Bestial Wrath. Also use it if the fight will end when the buff does.
-actions+=/aspect_of_the_wild,if=(equipped.137101&equipped.140806&talent.one_with_the_pack.enabled)|buff.bestial_wrath.remains>7|target.time_to_die<12
+actions+=/aspect_of_the_wild,if=(equipped.call_of_the_wild&equipped.convergence_of_fates&talent.one_with_the_pack.enabled)|buff.bestial_wrath.remains>7|target.time_to_die<12
+actions+=/kill_command,if=equipped.qapla_eredun_war_order
 # Hold charges of Dire Beast as long as possible to take advantage of T20 2pc unless T19 2pc is on.
-actions+=/dire_beast,if=set_bonus.tier19_2pc|!buff.bestial_wrath.up|full_recharge_time<gcd.max|cooldown.titans_thunder.up|spell_targets>1
+actions+=/dire_beast,if=((!equipped.qapla_eredun_war_order|cooldown.kill_command.remains>=3)&(set_bonus.tier19_2pc|!buff.bestial_wrath.up))|full_recharge_time<gcd.max|cooldown.titans_thunder.up|spell_targets>1
 actions+=/dire_frenzy,if=(pet.cat.buff.dire_frenzy.remains<=gcd.max*1.2)|full_recharge_time<gcd.max|target.time_to_die<9
 actions+=/barrage,if=spell_targets.barrage>1
 actions+=/titans_thunder,if=(talent.dire_frenzy.enabled&(buff.bestial_wrath.up|cooldown.bestial_wrath.remains>35))|buff.bestial_wrath.up
