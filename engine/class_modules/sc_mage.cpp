@@ -7956,10 +7956,7 @@ double mage_t::composite_player_multiplier( school_e school ) const
     m *= 1.0 + buffs.arcane_power -> check_value();
   }
 
-  if ( buffs.expanding_mind -> check() )
-  {
-    m *= 1.0 + buffs.expanding_mind -> check_value();
-  }
+  m *= 1.0 + buffs.expanding_mind -> check_stack_value();
 
   if ( dbc::is_school( school, SCHOOL_ARCANE ) )
   {
