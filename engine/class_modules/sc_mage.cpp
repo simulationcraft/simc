@@ -268,6 +268,7 @@ public:
     buff_t* crackling_energy; // T20 2pc Arcane
     buff_t* presence_of_mind;
     buff_t* expanding_mind;   // T21 2pc Arcane
+    buff_t* quick_thinker;    // T21 4pc Arcane
 
     // Fire
     buff_t* combustion;
@@ -1665,6 +1666,12 @@ struct arcane_mage_spell_t : public mage_spell_t
     else
     {
       ac -> trigger( stacks );
+    }
+
+    if ( p() -> sets -> has_set_bonus( MAGE_ARCANE, T21, B4 ) &&
+       rng().roll( p() -> sets -> set( MAGE_ARCANE, T21, B4 ) -> proc_chance() * stacks ) )
+    {
+      p() -> buffs.quick_thinker -> trigger();
     }
   }
 
@@ -7043,6 +7050,9 @@ void mage_t::create_buffs()
                                   .stack_change_callback( [ this ] ( buff_t*, int, int cur )
                                     { if ( cur == 0 ) cooldowns.presence_of_mind -> start(); } );
 
+  buffs.quick_thinker         = haste_buff_creator_t( this, "quick_thinker", find_spell( 253299 ) )
+                                   .default_value( find_spell( 253299 ) -> effectN( 1 ).percent() );
+
   // Fire
   buffs.combustion             = buff_creator_t( this, "combustion", find_spell( 190319 ) )
                                    .cd( timespan_t::zero() )
@@ -8048,6 +8058,11 @@ double mage_t::composite_spell_haste() const
   if ( buffs.icy_veins -> check() )
   {
     h /= 1.0 + buffs.icy_veins -> check_value();
+  }
+
+  if( sets -> has_set_bonus( MAGE_ARCANE, T21, B4 ) && buffs.quick_thinker -> check() )
+  {
+    h /= 1.0 + buffs.quick_thinker -> check_value();
   }
 
   if ( buffs.sephuzs_secret -> default_chance != 0 )
