@@ -613,7 +613,8 @@ public:
     const spell_data_t* avalanche;
     
     // Tier 4 
-    const spell_data_t* inexorable_assault; // Not yet implemented, new to 7.3 PTR
+    if ( maybe_ptr( p -> dbc.ptr ) ) 
+      const spell_data_t* inexorable_assault; // Not yet implemented, new to 7.3 PTR
 
     // Tier 6
     const spell_data_t* frostscythe;
@@ -4962,11 +4963,12 @@ struct frostscythe_t : public death_knight_melee_attack_t
     aoe = -1;
 
     // T21 2P bonus : damage increase to Howling Blast, Frostscythe and Obliterate
-    if (p->sets->has_set_bonus(DEATH_KNIGHT_FROST, T21, B2))
-    {
-       base_multiplier *= (1.0 + p-> find_spell(251873) -> effectN(3).percent());
+    if ( maybe_ptr( p -> dbc.ptr ) ) {
+      if (p->sets->has_set_bonus(DEATH_KNIGHT_FROST, T21, B2))
+      {
+         base_multiplier *= (1.0 + p-> find_spell(251873) -> effectN(3).percent());
+      }
     }
-
     crit_bonus_multiplier *= 1.0 + p -> spec.death_knight -> effectN( 5 ).percent();
   }
 
@@ -5208,9 +5210,11 @@ struct howling_blast_t : public death_knight_spell_t
     base_multiplier    *= 1.0 + p -> artifact.blast_radius.percent();
     
     // T21 2P bonus : damage increase to Howling Blast, Frostscythe and Obliterate
-    if (p->sets->has_set_bonus(DEATH_KNIGHT_FROST, T21, B2))
-    {
-       base_multiplier *= (1.0 + p-> find_spell(251873) -> effectN(1).percent());
+    if ( maybe_ptr( p -> dbc.ptr ) )  {
+      if (p->sets->has_set_bonus(DEATH_KNIGHT_FROST, T21, B2))
+      {
+         base_multiplier *= (1.0 + p-> find_spell(251873) -> effectN(1).percent());
+      }
     }
   }
 
@@ -5274,17 +5278,10 @@ struct howling_blast_t : public death_knight_spell_t
     death_knight_spell_t::execute();
 
     // 7.3 PTR : Howling Blast now triggers Killing Machine during Obliteration
-    // Need to actually add a conditional for PTR-only
-    
-    // Copied from Obliteration code in Frost Strike
-    // Note note, killing machine is a RPPM thing, but we need to trigger it unconditionally when
-    // obliterate is up, so just bypas "trigger" and directly execute the buff, while making sure
-    // correct bookkeeping information is kept. Ugly but will work for now.
     if ( maybe_ptr( p -> dbc.ptr ) ) 
     {
       if ( p() -> buffs.obliteration -> up())
       {
-        //p() -> buffs.killing_machine -> trigger_attempts++;
         p() -> buffs.killing_machine -> execute();
       }
     }
@@ -5546,11 +5543,12 @@ struct obliterate_strike_t : public death_knight_melee_attack_t
     weapon = w;
     
     // T21 2P bonus : damage increase to Howling Blast, Frostscythe and Obliterate
-    if (p->sets->has_set_bonus(DEATH_KNIGHT_FROST, T21, B2))
-    {
-       base_multiplier *= (1.0 + p-> find_spell(251873) -> effectN(2).percent());
+    if ( maybe_ptr( p -> dbc.ptr ) ) {
+      if (p->sets->has_set_bonus(DEATH_KNIGHT_FROST, T21, B2))
+      {
+         base_multiplier *= (1.0 + p-> find_spell(251873) -> effectN(2).percent());
+      }
     }
-    
     // 7.3 : Koltira's newfound will also increase Obliterate damage by 10%
     if ( maybe_ptr( p -> dbc.ptr ) ) 
     {
