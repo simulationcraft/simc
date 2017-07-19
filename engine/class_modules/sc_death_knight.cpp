@@ -4958,6 +4958,12 @@ struct frostscythe_t : public death_knight_melee_attack_t
     weapon = &( player -> main_hand_weapon );
     aoe = -1;
 
+    // T21 2P bonus : damage increase to Howling Blast, Frostscythe and Obliterate
+    if (p->sets->has_set_bonus(DEATH_KNIGHT_FROST, T21, B2))
+    {
+       base_multiplier *= (1.0 + p-> find_spell(251873) -> effectN(3).percent());
+    }
+
     crit_bonus_multiplier *= 1.0 + p -> spec.death_knight -> effectN( 5 ).percent();
   }
 
@@ -5197,6 +5203,12 @@ struct howling_blast_t : public death_knight_spell_t
     base_aoe_multiplier = data().effectN( 1 ).percent();
     base_multiplier    *= 1.0 + p -> talent.freezing_fog -> effectN( 1 ).percent();
     base_multiplier    *= 1.0 + p -> artifact.blast_radius.percent();
+    
+    // T21 2P bonus : damage increase to Howling Blast, Frostscythe and Obliterate
+    if (p->sets->has_set_bonus(DEATH_KNIGHT_FROST, T21, B2))
+    {
+       base_multiplier *= (1.0 + p-> find_spell(251873) -> effectN(1).percent());
+    }
   }
 
   double runic_power_generation_multiplier( const action_state_t* state ) const override
@@ -5211,7 +5223,8 @@ struct howling_blast_t : public death_knight_spell_t
 
     return m;
   }
-
+  
+  // T19 4P bonus : RP gain when using Rime proc
   gain_t* energize_gain( const action_state_t* /* state */ ) const override
   {
     if ( p() -> buffs.rime -> check() && p() -> sets -> has_set_bonus( DEATH_KNIGHT_FROST, T19, B4 ) )
@@ -5512,6 +5525,12 @@ struct obliterate_strike_t : public death_knight_melee_attack_t
     background = special = true;
     may_miss = false;
     weapon = w;
+    
+    // T21 2P bonus : damage increase to Howling Blast, Frostscythe and Obliterate
+    if (p->sets->has_set_bonus(DEATH_KNIGHT_FROST, T21, B2))
+    {
+       base_multiplier *= (1.0 + p-> find_spell(251873) -> effectN(2).percent());
+    }
   }
 
   double composite_crit_chance() const override
