@@ -35,7 +35,7 @@ Range            : 40 yards
 Cast Time        : 2 seconds
 GCD              : 1.5 seconds
 Velocity         : 35 yards/sec
-Affecting spells : Icy Veins (12472 effect#2), Shatter (12982 effect#1), Frosty Zap (24392 effect#1), Improved Counterspell (24429 effect#1), Ice Floes (108839 effect#1), Ice Shard (166869 effect#1), Icy Caress (195315 effect#1), Ice Form (198144 effect#1), Lonely Winter (205024 effect#1), Shattering Bolts (214629 effect#1), Norgannon's Foresight (236380 effect#1)
+Affecting spells : Icy Veins (12472 effect#2), Shatter (12982 effect#1), Frosty Zap (24392 effect#1), Improved Counterspell (24429 effect#1), Ice Floes (108839 effect#1), Ice Shard (166869 effect#1), Icy Caress (195315 effect#1), Ice Form (198144 effect#1), Lonely Winter (205024 effect#1), Shattering Bolts (214629 effect#1), Norgannon's Foresight (236380 effect#1), Arctic Blast (253257 effect#1)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   .......x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5036,7 +5036,7 @@ Class            : Mage
 School           : Frost
 Spell Level      : 1
 Range            : 100 yards
-Affecting spells : Icy Veins (12472 effect#2), Shatter (12982 effect#1), Frosty Zap (24392 effect#1), Improved Counterspell (24429 effect#1), Ice Floes (108839 effect#1), Frost Mage (137020 effect#1), Ice Shard (166869 effect#1), Icy Caress (195315 effect#1), Ice Form (198144 effect#1), Lonely Winter (205024 effect#1), Shattering Bolts (214629 effect#1), Norgannon's Foresight (236380 effect#1)
+Affecting spells : Icy Veins (12472 effect#2), Shatter (12982 effect#1), Frosty Zap (24392 effect#1), Improved Counterspell (24429 effect#1), Ice Floes (108839 effect#1), Frost Mage (137020 effect#1), Ice Shard (166869 effect#1), Icy Caress (195315 effect#1), Ice Form (198144 effect#1), Lonely Winter (205024 effect#1), Shattering Bolts (214629 effect#1), Norgannon's Foresight (236380 effect#1), Arctic Blast (253257 effect#1)
 Triggered by     : Frostbolt (116)
 Attributes       : ........ ........ x......x x..x....   .....x.. ........ ........ ........ 
                  : ..x..... ......x. ...x.... ........   ........ .x...... ........ ......x. 
@@ -5864,5 +5864,41 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
 Description      : $@spelldesc248100
 Tooltip          : Your next Frostbolt or Flurry cast will also release a Comet Storm on the target.
+
+Name             : Item - Mage T21 Frost 4P Bonus - Brain Freeze Buffs Frostbolt (id=251860) [Spell Family (3), Passive, Hidden] 
+Class            : Mage
+School           : Physical
+Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ x....... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ x....... ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6), Hidden (7)
+Effects          :
+#1 (id=471469)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 75 | Scaled Value: 75 | Target: Self (1)
+Description      : When you consume Brain Freeze, the damage of your next Frostbolt is increased by $s1%.
+
+Name             : Arctic Blast (id=253257) [Spell Family (3)] 
+Class            : Mage
+School           : Physical
+Duration         : 15 seconds
+Stacks           : 1 initial, 1 maximum
+Proc Chance      : 101%
+Proc Flags       : ........ ....x... x....... ........ 
+                 : AOE Hostile Spell, Hostile Spell
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ x....... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ x....... ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=473551)   : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
+                   Base Value: 75 | Scaled Value: 75 | Target: Self (1)
+                   Affected Spells: Frostbolt (116), Frostbolt (228597)
+Description      : $@spelldesc251860
+Tooltip          : Damage of your next Frostbolt increased by $s1%.
 
 
