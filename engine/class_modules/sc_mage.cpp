@@ -267,6 +267,7 @@ public:
     buff_t* chrono_shift;
     buff_t* crackling_energy; // T20 2pc Arcane
     buff_t* presence_of_mind;
+    buff_t* expanding_mind;   // T21 2pc Arcane
 
     // Fire
     buff_t* combustion;
@@ -2495,6 +2496,14 @@ struct arcane_barrage_t : public arcane_mage_spell_t
 
     arcane_mage_spell_t::execute();
 
+
+    if ( p() -> sets -> has_set_bonus( MAGE_ARCANE, T21, B2 ) ) 
+    {
+      for ( int i = 1; i <= charges; i++ )
+      {
+        p() -> buffs.expanding_mind -> trigger();
+      }
+    }
     p() -> buffs.arcane_charge -> expire();
   }
 
@@ -7022,6 +7031,13 @@ void mage_t::create_buffs()
   buffs.crackling_energy      = buff_creator_t( this, "crackling_energy", find_spell( 246224 ) )
                                   .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
                                   .default_value( find_spell( 246224 ) -> effectN( 1 ).percent() );
+
+  // Assume 10 max stack for now - double check when on PTR for testing.
+  buffs.expanding_mind        = buff_creator_t( this, "expanding_mind", find_spell( 253262 ) )
+                                  .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
+                                  .stack_behavior( BUFF_STACK_ASYNCHRONOUS )
+                                  .max_stack( 10 )
+                                  .default_value( sets -> set( MAGE_ARCANE, T21, B2 ) -> effectN( 1 ).percent() );
   buffs.presence_of_mind      = buff_creator_t( this, "presence_of_mind", find_spell( 205025 ) )
                                   .cd( timespan_t::zero() )
                                   .stack_change_callback( [ this ] ( buff_t*, int, int cur )
@@ -7918,6 +7934,11 @@ double mage_t::composite_player_multiplier( school_e school ) const
   if ( buffs.arcane_power -> check() && !dbc::is_school( school, SCHOOL_PHYSICAL ) )
   {
     m *= 1.0 + buffs.arcane_power -> check_value();
+  }
+
+  if ( buffs.expanding_mind -> check() && !dbc::is_school( school, SCHOOL_PHYSICAL ) )
+  {
+    m *= 1.0 + buffs.expanding_mind -> check_value();
   }
 
   if ( dbc::is_school( school, SCHOOL_ARCANE ) )
