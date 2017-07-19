@@ -5531,6 +5531,13 @@ struct obliterate_strike_t : public death_knight_melee_attack_t
     {
        base_multiplier *= (1.0 + p-> find_spell(251873) -> effectN(2).percent());
     }
+    
+    // 7.3 : Koltira's newfound will also increase Obliterate damage by 10%
+    // Needs a less hacky conditional
+    if ( find_item( 132366 ) )
+    {
+      base_multiplier *= (1.0 + p-> find_spell(208782) -> effectN(2).percent());
+    }
   }
 
   double composite_crit_chance() const override
@@ -7391,6 +7398,8 @@ void death_knight_t::init_spells()
   talent.icecap                = find_talent_spell( "Icecap" );
   talent.hungering_rune_weapon = find_talent_spell( "Hungering Rune Weapon" );
   talent.avalanche             = find_talent_spell( "Avalanche" );
+  // Tier 4
+  talent.inexorable_assault    = find_talent_spell( "Inexorable Assault" );
   // Tier 6
   talent.frostscythe           = find_talent_spell( "Frostscythe" );
   talent.runic_attenuation     = find_talent_spell( "Runic Attenuation" );
