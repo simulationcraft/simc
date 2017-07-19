@@ -283,8 +283,10 @@ public:
     gain_t* energy_refund;
     gain_t* energizing_elixir_chi;
     gain_t* energizing_elixir_energy;
-    gain_t* keg_smash;
+    gain_t* fortuitous_spheres;
     gain_t* gift_of_the_ox;
+    gain_t* healing_elixir;
+    gain_t* keg_smash;
     gain_t* mana_tea;
     gain_t* renewing_mist;
     gain_t* serenity;
@@ -294,9 +296,8 @@ public:
     gain_t* effuse;
     gain_t* spirit_of_the_crane;
     gain_t* tier17_2pc_healer;
+    gain_t* tier21_4pc_dps;
     gain_t* tiger_palm;
-    gain_t* healing_elixir;
-    gain_t* fortuitous_spheres;
   } gain;
 
   struct procs_t
@@ -3546,6 +3547,8 @@ struct blackout_kick_t: public monk_melee_attack_t
           am *= 1.0 + sef_mult;
         }
 
+        if ( p() -> sets -> has_set_bonus( MONK_WINDWALKER, T21, B2 ) && p() -> buff.bok_proc -> up() )
+          am *= 1 + p() -> sets -> set( MONK_WINDWALKER, T21, B2) -> effectN( 1 ).percent();
         break;
       }
       default: break;
@@ -3561,6 +3564,9 @@ struct blackout_kick_t: public monk_melee_attack_t
     {
       p() -> buff.bok_proc -> expire();
       p() -> gain.bok_proc -> add( RESOURCE_CHI, base_costs[RESOURCE_CHI] );
+
+      if ( p() -> sets -> has_set_bonus( MONK_WINDWALKER, T21, B4 ) && rng().roll( p() -> sets -> set( MONK_WINDWALKER, T21, B4 ) -> effectN( 1 ).percent() ) )
+        p() -> resource_gain( RESOURCE_CHI, p() -> sets -> set( MONK_WINDWALKER, T21, B4 ) -> effectN( 2 ).base_value(), p() -> gain.tier21_4pc_dps, this );
     }
 
     // Windwalker Tier 18 (WoD 6.2) trinket effect is in use, adjust Rising Sun Kick proc chance based on spell data
@@ -5577,7 +5583,12 @@ struct breath_of_fire_t: public monk_spell_t
 
      // if player level >= 78
    if ( p() -> mastery.elusive_brawler )
+   {
      p() -> buff.elusive_brawler -> trigger();
+
+     if ( p() -> sets -> has_set_bonus( MONK_BREWMASTER, T21, B2 ) && rng().roll( p() -> sets -> set( MONK_BREWMASTER, T21, B2 ) -> effectN( 1 ).percent() ) )
+       p() -> buff.elusive_brawler -> trigger();
+   }
  }
 };
 
@@ -9431,6 +9442,9 @@ void monk_t::assess_damage(school_e school,
 
       if ( legendary.anvil_hardened_wristwraps )
         cooldown.brewmaster_active_mitigation -> adjust( -1 * timespan_t::from_seconds( legendary.anvil_hardened_wristwraps -> effectN( 1 ).base_value() / 10 ) );
+
+      if ( sets -> has_set_bonus( MONK_BREWMASTER, T21, B4 ) && rng().roll( sets -> set( MONK_BREWMASTER, T21, B4 ) -> proc_chance() ) )
+       cooldown.breath_of_fire -> reset( true, true );
     }
     if ( s -> result == RESULT_MISS )
     {

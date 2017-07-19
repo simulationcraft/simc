@@ -216,7 +216,6 @@ public:
 
   // Ground AoE tracking
   std::map<std::string, timespan_t> ground_aoe_expiration;
-  ground_aoe_event_t* active_meteor_burn;
 
   // Miscellaneous
   double distance_from_rune;
@@ -1584,7 +1583,10 @@ public:
       action -> set_target( target );
       action -> execute();
 
-      primed_buff -> expire();
+      // It looks like the debuff expiration is slightly delayed in game, allowing two spells
+      // impacting at the same time to trigger multiple Meteors or Comet Storms.
+      // As of build 24461, 2017-07-18.
+      primed_buff -> expire( p() -> bugs ? timespan_t::from_millis( 30 ) : timespan_t::zero() );
     }
   }
 };
@@ -5004,7 +5006,7 @@ struct meteor_impact_t: public fire_mage_spell_t
   timespan_t meteor_burn_pulse_time;
 
   meteor_impact_t( mage_t* p, meteor_burn_t* meteor_burn, int targets, bool legendary ):
-    fire_mage_spell_t( legendary ? "legendary_meteor_imapct" : "meteor_impact",
+    fire_mage_spell_t( legendary ? "legendary_meteor_impact" : "meteor_impact",
                        p, p -> find_spell( 153564 ) ),
     meteor_burn( meteor_burn ),
     meteor_burn_duration( p -> find_spell( 175396 ) -> duration() )
@@ -5037,29 +5039,11 @@ struct meteor_impact_t: public fire_mage_spell_t
     p() -> ground_aoe_expiration[ meteor_burn -> name_str ]
       = sim -> current_time() + meteor_burn_duration;
 
-    event_t::cancel( p() -> active_meteor_burn );
-
-    p() -> active_meteor_burn = make_event<ground_aoe_event_t>( *sim, p(), ground_aoe_params_t()
+    make_event<ground_aoe_event_t>( *sim, p(), ground_aoe_params_t()
       .pulse_time( meteor_burn_pulse_time )
       .target( s -> target )
       .duration( meteor_burn_duration )
-      .action( meteor_burn )
-      .state_callback( [ this ] ( ground_aoe_params_t::state_type type, ground_aoe_event_t* event )
-      {
-        switch ( type )
-        {
-          case ground_aoe_params_t::EVENT_CREATED:
-            assert( ! p() -> active_meteor_burn );
-            p() -> active_meteor_burn = event;
-            break;
-          case ground_aoe_params_t::EVENT_DESTRUCTED:
-            assert( p() -> active_meteor_burn );
-            p() -> active_meteor_burn = nullptr;
-            break;
-          default:
-            break;
-        }
-      } ) );
+      .action( meteor_burn ) );
   }
 };
 
@@ -6462,7 +6446,6 @@ mage_t::mage_t( sim_t* sim, const std::string& name, race_e r ) :
   ignite( nullptr ),
   ignite_spread_event( nullptr ),
   last_bomb_target( nullptr ),
-  active_meteor_burn( nullptr ),
   distance_from_rune( 0.0 ),
   global_cinder_count( 0.0 ),
   firestarter_time( timespan_t::zero() ),
@@ -8069,7 +8052,6 @@ void mage_t::reset()
 
   last_bomb_target = nullptr;
   ground_aoe_expiration.clear();
-  active_meteor_burn = nullptr;
   burn_phase.reset();
 }
 
