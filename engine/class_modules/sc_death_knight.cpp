@@ -5280,10 +5280,13 @@ struct howling_blast_t : public death_knight_spell_t
     // Note note, killing machine is a RPPM thing, but we need to trigger it unconditionally when
     // obliterate is up, so just bypas "trigger" and directly execute the buff, while making sure
     // correct bookkeeping information is kept. Ugly but will work for now.
-    if ( p() -> buffs.obliteration -> up() )
+    if ( maybe_ptr( p -> dbc.ptr ) ) 
     {
-      //p() -> buffs.killing_machine -> trigger_attempts++;
-      p() -> buffs.killing_machine -> execute();
+      if ( p() -> buffs.obliteration -> up())
+      {
+        //p() -> buffs.killing_machine -> trigger_attempts++;
+        p() -> buffs.killing_machine -> execute();
+      }
     }
 
     p() -> buffs.rime -> decrement();
@@ -5549,10 +5552,9 @@ struct obliterate_strike_t : public death_knight_melee_attack_t
     }
     
     // 7.3 : Koltira's newfound will also increase Obliterate damage by 10%
-    // Needs a less hacky conditional
-    if ( find_item( 132366 ) )
+    if ( maybe_ptr( p -> dbc.ptr ) ) 
     {
-      base_multiplier *= (1.0 + p-> find_spell(208782) -> effectN(2).percent());
+      base_multiplier *= 1.0 + p -> legendary.koltiras_newfound_will -> effectN( 2 ).percent();
     }
   }
 
@@ -7166,7 +7168,6 @@ action_t* death_knight_t::create_action( const std::string& name, const std::str
   if ( name == "glacial_advance"          ) return new glacial_advance_t          ( this, options_str );
   if ( name == "horn_of_winter"           ) return new horn_of_winter_t           ( this, options_str );
   if ( name == "hungering_rune_weapon"    ) return new hungering_rune_weapon_t    ( this, options_str );
-//if ( name == "inexorable assault"       ) return new_inexorable_assault_t       ( this, options_str );
   if ( name == "obliteration"             ) return new obliteration_t             ( this, options_str );
 
   // Unholy Actions
@@ -7189,6 +7190,9 @@ action_t* death_knight_t::create_action( const std::string& name, const std::str
   if ( name == "epidemic"                 ) return new epidemic_t                 ( this, options_str );
   if ( name == "soul_reaper"              ) return new soul_reaper_t              ( this, options_str );
 
+  // Frost talent 
+  if ( maybe_ptr( p -> dbc.ptr ) )
+      if ( name == "inexorable assault"       ) return new_inexorable_assault_t       ( this, options_str );
 
   return player_t::create_action( name, options_str );
 }
@@ -7415,8 +7419,7 @@ void death_knight_t::init_spells()
   talent.icecap                = find_talent_spell( "Icecap" );
   talent.hungering_rune_weapon = find_talent_spell( "Hungering Rune Weapon" ); // Becomes Glacial Advance in 7.3 PTR
   talent.avalanche             = find_talent_spell( "Avalanche" );
-  // Tier 4
-//talent.inexorable_assault    = find_talent_spell( "Inexorable Assault" );
+  
   // Tier 6
   talent.frostscythe           = find_talent_spell( "Frostscythe" );
   talent.runic_attenuation     = find_talent_spell( "Runic Attenuation" ); // Becomes Frozen Pulse in 7.3 PTR
@@ -7426,6 +7429,10 @@ void death_knight_t::init_spells()
   talent.breath_of_sindragosa  = find_talent_spell( "Breath of Sindragosa" );
   talent.glacial_advance       = find_talent_spell( "Glacial Advance" ); // Becomes Hungering Rune Weapon in 7.3 PTR
 
+  // New talent in 7.3  
+  if ( maybe_ptr( p -> dbc.ptr ) ) 
+    talent.inexorable_assault    = find_talent_spell( "Inexorable Assault" );
+  
   // Unholy Talents
   // Tier 1
   talent.all_will_serve        = find_talent_spell( "All Will Serve" );
