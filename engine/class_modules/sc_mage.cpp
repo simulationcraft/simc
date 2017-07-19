@@ -8998,7 +8998,7 @@ public:
     hotfix::register_spell( "Mage", "2017-06-21", "Ice Lance is slower than spell data suggests.", 30455 )
       .field( "prj_speed" )
       .operation( hotfix::HOTFIX_SET )
-      .modifier( 38.0 )
+      .modifier( 47.0 )
       .verification_value( 50.0 );
   }
 
