@@ -694,7 +694,16 @@ public:
     const timespan_t sf_time = std::min( cast_time, p() -> buffs.steady_focus -> remains() );
     const double regen = p() -> focus_regen_per_second();
     const double sf_mult = p() -> buffs.steady_focus -> check_value();
-    return ( regen * cast_time.total_seconds() ) + ( regen * sf_mult * sf_time.total_seconds() );
+    size_t targets_hit = 1;
+    if ( this -> energize_type_() == ENERGIZE_PER_HIT && ab::is_aoe() )
+    {
+      size_t tl_size = this -> target_list().size();
+      int num_targets = this -> n_targets();
+      targets_hit = ( num_targets < 0 ) ? tl_size : std::min( tl_size, as<size_t>( num_targets ) );
+    }
+    return ( regen * cast_time.total_seconds() ) +
+           ( regen * sf_mult * sf_time.total_seconds() ) +
+           ( targets_hit * this -> composite_energize_amount( nullptr ) );
   }
 
 // action list expressions
@@ -2855,14 +2864,6 @@ struct multi_shot_t: public hunter_ranged_attack_t
 
     return hunter_ranged_attack_t::ready();
   }
-
-  double cast_regen() const override
-  {
-    double base = hunter_ranged_attack_t::cast_regen();
-    double energize = target_list().size() * energize_amount;
-
-    return base + energize;
-  }
 };
 
 //==============================
@@ -3409,11 +3410,6 @@ struct arcane_shot_t: public hunter_ranged_attack_t
 
     return hunter_ranged_attack_t::ready();
   }
-
-  double cast_regen() const override
-  {
-    return hunter_ranged_attack_t::cast_regen() + energize_amount;
-  }
 };
 
 // Marked Shot Attack =================================================================
@@ -3703,11 +3699,6 @@ struct sidewinders_t: hunter_ranged_attack_t
 
     if ( p() -> legendary.mm_waist -> ok() )
       p() -> buffs.sentinels_sight -> trigger();
-  }
-
-  double cast_regen() const override
-  {
-    return hunter_ranged_attack_t::cast_regen() + energize_amount;
   }
 };
 
