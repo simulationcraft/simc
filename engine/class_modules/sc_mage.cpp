@@ -294,7 +294,7 @@ public:
     buff_t* icy_veins;
     buff_t* rage_of_the_frost_wyrm;            // 7.2.5 legendary head, primed buff
     buff_t* shattered_fragments_of_sindragosa; // 7.2.5 legendary head, tracking buff
-    buff_t* t21_frost_4pc; // T21 Frost 4pc buff
+    buff_t* t21_frost_4pc;                     // T21 Frost 4pc buff
 
 
     // Talents
@@ -1669,12 +1669,6 @@ struct arcane_mage_spell_t : public mage_spell_t
     {
       ac -> trigger( stacks );
     }
-
-    if ( p() -> sets -> has_set_bonus( MAGE_ARCANE, T21, B4 ) &&
-       rng().roll( p() -> sets -> set( MAGE_ARCANE, T21, B4 ) -> proc_chance() * stacks ) )
-    {
-      p() -> buffs.quick_thinker -> trigger();
-    }
   }
 
   double arcane_charge_damage_bonus( bool amplification = false ) const
@@ -2506,13 +2500,14 @@ struct arcane_barrage_t : public arcane_mage_spell_t
     arcane_mage_spell_t::execute();
 
 
-    if ( p() -> sets -> has_set_bonus( MAGE_ARCANE, T21, B2 ) ) 
+    if ( p() -> sets -> has_set_bonus( MAGE_ARCANE, T21, B2 ) )
     {
       for ( int i = 1; i <= charges; i++ )
       {
         p() -> buffs.expanding_mind -> trigger();
       }
     }
+
     p() -> buffs.arcane_charge -> expire();
   }
 
@@ -4027,14 +4022,16 @@ struct flurry_t : public frost_mage_spell_t
   {
     frost_mage_spell_t::execute();
 
+    bool brain_freeze_up = p() -> buffs.brain_freeze -> up();
     p() -> buffs.zannesu_journey -> trigger();
-    p() -> state.brain_freeze_active = p() -> buffs.brain_freeze -> up();
+    p() -> state.brain_freeze_active = brain_freeze_up;
     p() -> state.flurry_bolt_count = 0;
 
-    if ( p() -> buffs.brain_freeze -> up() && p() -> sets -> has_set_bonus( MAGE_FROST, T21, B4 ) )
+    if ( brain_freeze_up && p() -> sets -> has_set_bonus( MAGE_FROST, T21, B4 ) )
     {
       p() -> buffs.t21_frost_4pc -> trigger();
     }
+
     p() -> buffs.brain_freeze -> expire();
   }
 
@@ -4228,9 +4225,9 @@ struct frostbolt_t : public frost_mage_spell_t
   {
     double am = frost_mage_spell_t::action_multiplier();
 
-    if ( p() -> buffs.t21_frost_4pc -> up() )
+    if ( p() -> buffs.t21_frost_4pc -> check() )
     {
-      am *= 1.0 + p() -> buffs.t21_frost_4pc -> data().effectN( 1 ).percent();
+      am *= 1.0 + p() -> buffs.t21_frost_4pc -> check_value();
     }
 
     return am;
@@ -7019,7 +7016,14 @@ void mage_t::create_buffs()
   // buff_t( player, name, spellname, chance=-1, cd=-1, quiet=false, reverse=false, activated=true )
 
   // Arcane
-  buffs.arcane_charge         = buff_creator_t( this, "arcane_charge", spec.arcane_charge );
+  buffs.arcane_charge         = buff_creator_t( this, "arcane_charge", spec.arcane_charge )
+                                  .stack_change_callback( [ this ] ( buff_t*, int before, int after )
+                                    {
+                                      int stacks = after - before;
+                                      if ( sets -> has_set_bonus( MAGE_ARCANE, T21, B4 )
+                                        && rng().roll( sets -> set( MAGE_ARCANE, T21, B4 ) -> proc_chance() * stacks ) )
+                                      { buffs.quick_thinker -> trigger(); }
+                                    } );
   buffs.arcane_familiar       = buff_creator_t( this, "arcane_familiar", find_spell( 210126 ) )
                                   .default_value( find_spell( 210126 ) -> effectN( 1 ).percent() )
                                   .period( timespan_t::from_seconds( 3.0 ) )
@@ -7047,7 +7051,7 @@ void mage_t::create_buffs()
                                   .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
                                   .default_value( find_spell( 246224 ) -> effectN( 1 ).percent() );
 
-  // Assume 10 max stack for now - double check when on PTR for testing.
+  // TODO: Assume 10 max stack for now - double check when on PTR for testing.
   buffs.expanding_mind        = buff_creator_t( this, "expanding_mind", find_spell( 253262 ) )
                                   .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
                                   .stack_behavior( BUFF_STACK_ASYNCHRONOUS )
@@ -7057,9 +7061,8 @@ void mage_t::create_buffs()
                                   .cd( timespan_t::zero() )
                                   .stack_change_callback( [ this ] ( buff_t*, int, int cur )
                                     { if ( cur == 0 ) cooldowns.presence_of_mind -> start(); } );
-
   buffs.quick_thinker         = haste_buff_creator_t( this, "quick_thinker", find_spell( 253299 ) )
-                                   .default_value( find_spell( 253299 ) -> effectN( 1 ).percent() );
+                                  .default_value( find_spell( 253299 ) -> effectN( 1 ).percent() );
 
   // Fire
   buffs.combustion             = buff_creator_t( this, "combustion", find_spell( 190319 ) )
@@ -7081,10 +7084,8 @@ void mage_t::create_buffs()
                                    .add_invalidate( CACHE_RUN_SPEED );
   buffs.ignition               = buff_creator_t( this, "ignition", find_spell( 246261 ) )
                                    .trigger_spell( sets -> set( MAGE_FIRE, T20, B2 ) );
-
   buffs.inferno                = buff_creator_t( this, "inferno", find_spell( 253220 ) )
                                     .default_value( find_spell( 253220 ) -> effectN( 1 ).percent() );
-
   buffs.heating_up             = buff_creator_t( this, "heating_up",  find_spell( 48107 ) );
   buffs.hot_streak             = buff_creator_t( this, "hot_streak",  find_spell( 48108 ) );
   buffs.pyretic_incantation    = buff_creator_t( this, "pyretic_incantation", find_spell( 194329 ) )
@@ -7120,7 +7121,10 @@ void mage_t::create_buffs()
 
   buffs.ray_of_frost           = new buffs::ray_of_frost_buff_t( this );
 
-  buffs.t21_frost_4pc          = buff_creator_t( this, "T21_Frost_Buff", find_spell( 251860 ) );
+  // TODO: Find spell data for this.
+  buffs.t21_frost_4pc          = buff_creator_t( this, "T21_Frost_Buff" )
+                                   .duration( timespan_t::from_seconds( 15.0 ) )
+                                   .default_value( sets -> set( MAGE_FROST, T21, B4 ) -> effectN( 1 ).percent() );
 
 
   // Talents
@@ -7892,10 +7896,11 @@ double mage_t::composite_player_critical_damage_multiplier( const action_state_t
     m *= 1.0 + buffs.pyretic_incantation -> check_stack_value();
   }
 
-  if ( sets -> has_set_bonus( MAGE_FIRE, T21, B4 ) && buffs.inferno -> up() )
+  if ( buffs.inferno -> check() )
   {
     m *= 1.0 + buffs.inferno -> check_value();
   }
+
   if ( buffs.frozen_mass -> check() )
   {
     m *= 1.0 + buffs.frozen_mass -> check_value();
@@ -7954,7 +7959,7 @@ double mage_t::composite_player_multiplier( school_e school ) const
     m *= 1.0 + buffs.arcane_power -> check_value();
   }
 
-  if ( buffs.expanding_mind -> check() && !dbc::is_school( school, SCHOOL_PHYSICAL ) )
+  if ( buffs.expanding_mind -> check() )
   {
     m *= 1.0 + buffs.expanding_mind -> check_value();
   }
@@ -8068,7 +8073,7 @@ double mage_t::composite_spell_haste() const
     h /= 1.0 + buffs.icy_veins -> check_value();
   }
 
-  if( sets -> has_set_bonus( MAGE_ARCANE, T21, B4 ) && buffs.quick_thinker -> check() )
+  if ( buffs.quick_thinker -> check() )
   {
     h /= 1.0 + buffs.quick_thinker -> check_value();
   }
