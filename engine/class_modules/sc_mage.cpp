@@ -281,6 +281,7 @@ public:
     buff_t* pyretic_incantation;
     buff_t* scorched_earth;
     buff_t* streaking;               // T19 4pc Fire
+    buff_t* inferno;                 // T21 4pc Fire
 
 
     // Frost
@@ -3369,6 +3370,11 @@ struct combustion_t : public fire_mage_spell_t
     fire_mage_spell_t::execute();
 
     p() -> buffs.combustion -> trigger();
+
+    if ( p() -> sets -> has_set_bonus( MAGE_FIRE, T21, B4) )
+    {
+      p() -> buffs.inferno -> trigger();
+    }
   }
 };
 
@@ -4001,7 +4007,7 @@ struct flurry_t : public frost_mage_spell_t
     p() -> buffs.zannesu_journey -> trigger();
     p() -> state.brain_freeze_active = p() -> buffs.brain_freeze -> up();
 
-    if ( p() -> buffs.brain_freeze -> up() && p() -> sets -> set( MAGE_FROST, T21, B4 ) )
+    if ( p() -> buffs.brain_freeze -> up() && p() -> sets -> has_set_bonus( MAGE_FROST, T21, B4 ) )
     {
       p() -> buffs.t21_frost_4pc -> trigger();
     }
@@ -7041,6 +7047,10 @@ void mage_t::create_buffs()
                                    .add_invalidate( CACHE_RUN_SPEED );
   buffs.ignition               = buff_creator_t( this, "ignition", find_spell( 246261 ) )
                                    .trigger_spell( sets -> set( MAGE_FIRE, T20, B2 ) );
+
+  buffs.inferno                = buff_creator_t( this, "inferno", find_spell( 253220 ) )
+                                    .default_value( find_spell( 253220 ) -> effectN( 1 ).percent() );
+
   buffs.heating_up             = buff_creator_t( this, "heating_up",  find_spell( 48107 ) );
   buffs.hot_streak             = buff_creator_t( this, "hot_streak",  find_spell( 48108 ) );
   buffs.pyretic_incantation    = buff_creator_t( this, "pyretic_incantation", find_spell( 194329 ) )
@@ -7848,6 +7858,10 @@ double mage_t::composite_player_critical_damage_multiplier( const action_state_t
     m *= 1.0 + buffs.pyretic_incantation -> check_stack_value();
   }
 
+  if ( sets -> has_set_bonus( MAGE_FIRE, T21, B4 ) && buffs.inferno -> up() )
+  {
+    m *= 1.0 + buffs.inferno -> check_value();
+  }
   if ( buffs.frozen_mass -> check() )
   {
     m *= 1.0 + buffs.frozen_mass -> check_value();
