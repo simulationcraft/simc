@@ -419,6 +419,8 @@ public:
     bool brain_freeze_active;
     bool fingers_of_frost_active;
     bool ignition_active;
+
+    int flurry_bolt_count;
   } state;
 
   // Talents
@@ -3968,6 +3970,8 @@ struct flurry_bolt_t : public frost_mage_spell_t
   {
     frost_mage_spell_t::impact( s );
 
+    p() -> state.flurry_bolt_count++;
+
     if ( p() -> state.brain_freeze_active )
     {
       td( s -> target ) -> debuffs.winters_chill -> trigger();
@@ -3982,6 +3986,9 @@ struct flurry_bolt_t : public frost_mage_spell_t
     {
       am *= 1.0 + p() -> buffs.brain_freeze -> data().effectN( 2 ).percent();
     }
+
+    am *= 1.0 + p() -> state.flurry_bolt_count
+              * p() -> sets -> set( MAGE_FROST, T21, B2 ) -> effectN( 1 ).percent();
 
     return am;
   }
@@ -4022,6 +4029,7 @@ struct flurry_t : public frost_mage_spell_t
 
     p() -> buffs.zannesu_journey -> trigger();
     p() -> state.brain_freeze_active = p() -> buffs.brain_freeze -> up();
+    p() -> state.flurry_bolt_count = 0;
 
     if ( p() -> buffs.brain_freeze -> up() && p() -> sets -> has_set_bonus( MAGE_FROST, T21, B4 ) )
     {
