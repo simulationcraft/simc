@@ -7304,7 +7304,7 @@ double death_knight_t::composite_melee_haste() const
   }
   
   // PTR 7.3 : Hungering Rune Weapon now also increase haste by 20%
-  if ( maybe_ptr( p -> dbc.ptr ) )
+  if ( maybe_ptr( p() -> dbc.ptr ) )
   {
     if (buffs.hungering_rune_weapon -> up() )
       haste *= 1.0 / ( 1.0 + buff.hungering_rune_weapon -> effectN( 3 ).percent() );    
@@ -7334,7 +7334,7 @@ double death_knight_t::composite_spell_haste() const
   }
 
   // PTR 7.3 : Hungering Rune Weapon now also increase haste by 20%
-  if ( maybe_ptr( p -> dbc.ptr ) )
+  if ( maybe_ptr( p() -> dbc.ptr ) )
   {
     if (buffs.hungering_rune_weapon -> up() )
       haste *= 1.0 / ( 1.0 + buff.hungering_rune_weapon -> effectN( 3 ).percent() );    
