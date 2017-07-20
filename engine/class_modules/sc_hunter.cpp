@@ -2915,6 +2915,11 @@ struct chimaera_shot_t: public hunter_ranged_attack_t
     else
       nature -> execute();
   }
+
+  double cast_regen() const override
+  {
+    return frost -> cast_regen();
+  }
 };
 
 // Cobra Shot Attack =================================================================
