@@ -4869,10 +4869,16 @@ struct kill_command_t: public hunter_spell_t
     hunter_spell_t::execute();
 
     if ( p() -> active.pet )
+    {
+      p() -> active.pet -> active.kill_command -> set_target( execute_state -> target );
       p() -> active.pet -> active.kill_command -> execute();
+    }
 
     if ( p() -> artifacts.master_of_beasts.rank() )
+    {
+      p() -> pets.hati -> active.kill_command -> set_target( execute_state -> target );
       p() -> pets.hati -> active.kill_command -> execute();
+    }
 
     if ( p() -> sets -> has_set_bonus( HUNTER_BEAST_MASTERY, T20, B2 ) )
       trigger_t20_2pc_bm( p() );
