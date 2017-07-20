@@ -613,8 +613,7 @@ public:
     const spell_data_t* avalanche;
     
     // Tier 4 
-    if ( maybe_ptr( p -> dbc.ptr ) ) 
-      const spell_data_t* inexorable_assault; // Not yet implemented, new to 7.3 PTR
+    const spell_data_t* inexorable_assault; // Not yet implemented, new to 7.3 PTR
 
     // Tier 6
     const spell_data_t* frostscythe;
@@ -5278,7 +5277,7 @@ struct howling_blast_t : public death_knight_spell_t
     death_knight_spell_t::execute();
 
     // 7.3 PTR : Howling Blast now triggers Killing Machine during Obliteration
-    if ( maybe_ptr( p -> dbc.ptr ) ) 
+    if ( maybe_ptr( p() -> dbc.ptr ) ) 
     {
       if ( p() -> buffs.obliteration -> up())
       {
@@ -7418,6 +7417,9 @@ void death_knight_t::init_spells()
   talent.hungering_rune_weapon = find_talent_spell( "Hungering Rune Weapon" ); // Becomes Glacial Advance in 7.3 PTR
   talent.avalanche             = find_talent_spell( "Avalanche" );
   
+  // Tier 4 : New talent in 7.3  
+  //talent.inexorable_assault  = find_talent_spell( "Inexorable Assault" );
+    
   // Tier 6
   talent.frostscythe           = find_talent_spell( "Frostscythe" );
   talent.runic_attenuation     = find_talent_spell( "Runic Attenuation" ); // Becomes Frozen Pulse in 7.3 PTR
@@ -7427,10 +7429,6 @@ void death_knight_t::init_spells()
   talent.breath_of_sindragosa  = find_talent_spell( "Breath of Sindragosa" );
   talent.glacial_advance       = find_talent_spell( "Glacial Advance" ); // Becomes Hungering Rune Weapon in 7.3 PTR
 
-  // New talent in 7.3  
-  if ( maybe_ptr( p -> dbc.ptr ) ) 
-    talent.inexorable_assault    = find_talent_spell( "Inexorable Assault" );
-  
   // Unholy Talents
   // Tier 1
   talent.all_will_serve        = find_talent_spell( "All Will Serve" );
