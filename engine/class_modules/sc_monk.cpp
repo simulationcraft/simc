@@ -10135,7 +10135,7 @@ void monk_t::apl_combat_windwalker()
   serenity_opener -> add_action( this, "Rising Sun Kick", "cycle_targets=1,if=active_enemies<3&buff.serenity.up" );
   serenity_opener -> add_action( this, "Strike of the Windlord", "if=buff.serenity.up" );
   serenity_opener -> add_action( this, "Blackout Kick", "cycle_targets=1,if=(!prev_gcd.1.blackout_kick)&(prev_gcd.1.strike_of_the_windlord)" );
-  serenity_opener -> add_action( this, "Fists of Fury", "f=cooldown.rising_sun_kick.remains>1|buff.serenity.down,interrupt=1" );
+  serenity_opener -> add_action( this, "Fists of Fury", "if=cooldown.rising_sun_kick.remains>1|buff.serenity.down,interrupt=1" );
 
   // Single Target
   st -> add_action( "call_action_list,name=cd" );
