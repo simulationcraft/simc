@@ -91,6 +91,7 @@ public:
     action_t*           serpent_sting;
     action_t*           piercing_shots;
     action_t*           surge_of_the_stormgod;
+    ground_aoe_event_t* sentinel;
   } active;
 
   struct pets_t
@@ -167,7 +168,6 @@ public:
     buff_t* the_mantle_of_command;
     buff_t* celerity_of_the_windrunners;
     buff_t* parsels_tongue;
-    buff_t* sentinel_marking;
 
     haste_buff_t* sephuzs_secret;
   } buffs;
@@ -454,7 +454,7 @@ public:
     cooldowns.aspect_of_the_wild  = get_cooldown( "aspect_of_the_wild" );
     cooldowns.a_murder_of_crows   = get_cooldown( "a_murder_of_crows" );
 
-    summon_pet_str = "";
+    summon_pet_str = "cat";
 
     base_gcd = timespan_t::from_seconds( 1.5 );
 
@@ -694,7 +694,16 @@ public:
     const timespan_t sf_time = std::min( cast_time, p() -> buffs.steady_focus -> remains() );
     const double regen = p() -> focus_regen_per_second();
     const double sf_mult = p() -> buffs.steady_focus -> check_value();
-    return ( regen * cast_time.total_seconds() ) + ( regen * sf_mult * sf_time.total_seconds() );
+    size_t targets_hit = 1;
+    if ( this -> energize_type_() == ENERGIZE_PER_HIT && ab::is_aoe() )
+    {
+      size_t tl_size = this -> target_list().size();
+      int num_targets = this -> n_targets();
+      targets_hit = ( num_targets < 0 ) ? tl_size : std::min( tl_size, as<size_t>( num_targets ) );
+    }
+    return ( regen * cast_time.total_seconds() ) +
+           ( regen * sf_mult * sf_time.total_seconds() ) +
+           ( targets_hit * this -> composite_energize_amount( nullptr ) );
   }
 
 // action list expressions
@@ -2855,14 +2864,6 @@ struct multi_shot_t: public hunter_ranged_attack_t
 
     return hunter_ranged_attack_t::ready();
   }
-
-  double cast_regen() const override
-  {
-    double base = hunter_ranged_attack_t::cast_regen();
-    double energize = target_list().size() * energize_amount;
-
-    return base + energize;
-  }
 };
 
 //==============================
@@ -2902,7 +2903,6 @@ struct chimaera_shot_t: public hunter_ranged_attack_t
     nature = new chimaera_shot_impact_t( player, "chimaera_shot_nature", player -> find_spell( 171457 ) );
     add_child( nature );
     school = SCHOOL_FROSTSTRIKE; // Just so the report shows a mixture of the two colors.
-    starved_proc = player -> get_proc( "starved: chimaera_shot" );
   }
 
   void execute() override
@@ -2913,6 +2913,11 @@ struct chimaera_shot_t: public hunter_ranged_attack_t
       frost -> execute();
     else
       nature -> execute();
+  }
+
+  double cast_regen() const override
+  {
+    return frost -> cast_regen();
   }
 };
 
@@ -3409,11 +3414,6 @@ struct arcane_shot_t: public hunter_ranged_attack_t
 
     return hunter_ranged_attack_t::ready();
   }
-
-  double cast_regen() const override
-  {
-    return hunter_ranged_attack_t::cast_regen() + energize_amount;
-  }
 };
 
 // Marked Shot Attack =================================================================
@@ -3703,11 +3703,6 @@ struct sidewinders_t: hunter_ranged_attack_t
 
     if ( p() -> legendary.mm_waist -> ok() )
       p() -> buffs.sentinels_sight -> trigger();
-  }
-
-  double cast_regen() const override
-  {
-    return hunter_ranged_attack_t::cast_regen() + energize_amount;
   }
 };
 
@@ -4534,8 +4529,6 @@ struct sentinel_t : public hunter_spell_t
   {
     hunter_spell_t::execute();
 
-    p() -> buffs.sentinel_marking -> trigger();
-
     make_event<ground_aoe_event_t>(*sim, p(), ground_aoe_params_t()
       .target(execute_state->target)
       .x(execute_state->target->x_position)
@@ -4544,11 +4537,26 @@ struct sentinel_t : public hunter_spell_t
       .duration(data().duration())
       .start_time(sim->current_time())
       .action(sentinel_mark)
+      .state_callback( [ this ] ( ground_aoe_params_t::state_type type, ground_aoe_event_t* event ) {
+         switch ( type )
+         {
+         case ground_aoe_params_t::EVENT_CREATED:
+           assert( !p() -> active.sentinel );
+           p() -> active.sentinel = event;
+           break;
+         case ground_aoe_params_t::EVENT_DESTRUCTED:
+           assert( p() -> active.sentinel );
+           p() -> active.sentinel = nullptr;
+           break;
+         default:
+           break;
+         }
+      } )
       .hasted(ground_aoe_params_t::NOTHING), true);
   }
 
-  bool marks_next_gcd() {
-    return p() -> buffs.sentinel_marking -> check() && ( p() -> buffs.sentinel_marking -> remains() % p() -> buffs.sentinel_marking -> tick_time() < gcd() );
+  bool marks_next_gcd() const {
+    return p() -> active.sentinel && ( p() -> active.sentinel -> remains() < gcd() );
   }
 
   expr_t* create_expression( const std::string& name ) override
@@ -6022,12 +6030,6 @@ void hunter_t::create_buffs()
     buff_creator_t( this, "t20_4p_bestial_rage", find_spell( 246116 ) )
       .default_value( find_spell( 246116 ) -> effectN( 1 ).percent() );
 
-  buffs.sentinel_marking =
-    buff_creator_t( this, "sentinel_marking" )
-      .duration( talents.sentinel -> duration() )
-      .period( timespan_t::from_seconds( talents.sentinel -> effectN( 2 ).base_value() ) )
-      .quiet( true );
-
   buffs.sephuzs_secret =
     haste_buff_creator_t( this, "sephuzs_secret", find_spell( 208052 ) )
       .default_value( find_spell( 208052 ) -> effectN( 2 ).percent() )
@@ -6223,9 +6225,6 @@ void hunter_t::init_action_list()
       break;
     }
 
-    if ( summon_pet_str.empty() )
-      summon_pet_str = "cat";
-
     // Default
     use_default_action_list = true;
     player_t::init_action_list();
@@ -6276,13 +6275,14 @@ void hunter_t::apl_bm()
   default_list -> add_talent( this, "Stampede", "if=buff.bloodlust.up|buff.bestial_wrath.up|cooldown.bestial_wrath.remains<=2|target.time_to_die<=14" );
   default_list -> add_action( this, "Bestial Wrath", "if=!buff.bestial_wrath.up" );
 
-  default_list -> add_action( this, "Aspect of the Wild", "if=(equipped.137101&equipped.140806&talent.one_with_the_pack.enabled)|buff.bestial_wrath.remains>7|target.time_to_die<12",
+  default_list -> add_action( this, "Aspect of the Wild", "if=(equipped.call_of_the_wild&equipped.convergence_of_fates&talent.one_with_the_pack.enabled)|buff.bestial_wrath.remains>7|target.time_to_die<12",
                                     "With both AotW cdr sources and OwtP, there's no visible benefit if it's delayed, use it on cd. With only one or neither, pair it with Bestial Wrath. Also use it if the fight will end when the buff does." );
-
-  default_list -> add_action( this, "Dire Beast", "if=set_bonus.tier19_2pc|!buff.bestial_wrath.up|full_recharge_time<gcd.max|cooldown.titans_thunder.up|spell_targets>1",
+  default_list -> add_action( this, "Kill Command", "if=equipped.qapla_eredun_war_order" );
+  
+  default_list -> add_action( this, "Dire Beast", "if=((!equipped.qapla_eredun_war_order|cooldown.kill_command.remains>=3)&(set_bonus.tier19_2pc|!buff.bestial_wrath.up))|full_recharge_time<gcd.max|cooldown.titans_thunder.up|spell_targets>1",
                                     "Hold charges of Dire Beast as long as possible to take advantage of T20 2pc unless T19 2pc is on." );
-
   default_list -> add_talent( this, "Dire Frenzy", "if=(pet.cat.buff.dire_frenzy.remains<=gcd.max*1.2)|full_recharge_time<gcd.max|target.time_to_die<9" );
+  
   default_list -> add_talent( this, "Barrage", "if=spell_targets.barrage>1" );
   default_list -> add_action( this, "Titan's Thunder", "if=(talent.dire_frenzy.enabled&(buff.bestial_wrath.up|cooldown.bestial_wrath.remains>35))|buff.bestial_wrath.up" );
   default_list -> add_action( this, "Multi-Shot", "if=spell_targets>4&(pet.cat.buff.beast_cleave.remains<gcd.max|pet.cat.buff.beast_cleave.down)" );
@@ -6328,10 +6328,6 @@ void hunter_t::apl_mm()
                               "Start being conservative with focus if expecting a Piercing Shot at the end of the current Vulnerable debuff. "
                               "The expression lowest_vuln_within.<range> is used to check the lowest Vulnerable debuff duration on all enemies within the specified range from the target.");
 
-  default_list -> add_action( "variable,name=waiting_for_sentinel,value=talent.sentinel.enabled&(buff.marking_targets.up|buff.trueshot.up)&action.sentinel.marks_next_gcd",
-                              "Prevent wasting a Marking Targets proc if the Hunter's Mark debuff could be overwritten by an active Sentinel before we can use Marked Shot. "
-                              "The expression action.sentinel.marks_next_gcd is used to determine if an active Sentinel will mark the targets in its area within the next gcd.");
-
   // Choose APL
   default_list -> add_action( "call_action_list,name=cooldowns" );
   default_list -> add_action( "call_action_list,name=patient_sniper,if=talent.patient_sniper.enabled" );
@@ -6351,6 +6347,10 @@ void hunter_t::apl_mm()
   cooldowns -> add_action( this, "Trueshot", "if=variable.trueshot_cooldown=0|buff.bloodlust.up|(variable.trueshot_cooldown>0&target.time_to_die>(variable.trueshot_cooldown+duration))|buff.bullseye.react>25|target.time_to_die<16" );
 
   // Generic APL
+  non_patient_sniper -> add_action( "variable,name=waiting_for_sentinel,value=talent.sentinel.enabled&(buff.marking_targets.up|buff.trueshot.up)&action.sentinel.marks_next_gcd",
+                                    "Prevent wasting a Marking Targets proc if the Hunter's Mark debuff could be overwritten by an active Sentinel before we can use Marked Shot. "
+                                    "The expression action.sentinel.marks_next_gcd is used to determine if an active Sentinel will mark the targets in its area within the next gcd.");
+
   non_patient_sniper -> add_talent( this, "Explosive Shot" );
   non_patient_sniper -> add_talent( this, "Piercing Shot", "if=lowest_vuln_within.5>0&focus>100" );
   non_patient_sniper -> add_action( this, "Aimed Shot", "if=spell_targets>1&debuff.vulnerability.remains>cast_time&(talent.trick_shot.enabled|buff.lock_and_load.up)&buff.sentinels_sight.stack=20" );
@@ -6456,8 +6456,7 @@ void hunter_t::apl_surv()
   default_list->add_action("call_action_list,name=fillers");
 
   //Mok Maintenance Call List
-  mokMaintain -> add_action(this, "Raptor Strike", "if=buff.moknathal_tactics.remains<gcd");
-  mokMaintain -> add_action(this, "Raptor Strike", "if=buff.moknathal_tactics.stack<2");
+  mokMaintain -> add_action( this, "Raptor Strike", "if=(buff.moknathal_tactics.remains<gcd)|(buff.moknathal_tactics.stack<2)" );
 
   //CDs Call List
   CDs -> add_action( "arcane_torrent,if=focus<=30" );
@@ -6470,8 +6469,7 @@ void hunter_t::apl_surv()
   aoe -> add_talent( this, "Butchery" );
   aoe -> add_talent( this, "Caltrops", "if=!ticking" );
   aoe -> add_action( this, "Explosive Trap" );
-  aoe -> add_action( this, "Carve", "if=talent.serpent_sting.enabled&dot.serpent_sting.refreshable" );
-  aoe -> add_action( this, "Carve", "if=active_enemies>5" );
+  aoe -> add_action( this, "Carve", "if=(talent.serpent_sting.enabled&dot.serpent_sting.refreshable)|(active_enemies>5)" );
 
   preBitePhase -> add_action( this, "Flanking Strike", "if=cooldown.mongoose_bite.charges<3" );
   preBitePhase -> add_talent( this, "Spitting Cobra" );
@@ -6511,8 +6509,7 @@ void hunter_t::apl_surv()
   fillers -> add_action( this, "Carve", "if=active_enemies>1&talent.serpent_sting.enabled&dot.serpent_sting.refreshable" );
   fillers -> add_talent( this, "Throwing Axes" );
   fillers -> add_action( this, "Carve", "if=active_enemies>2" );
-  fillers -> add_action( this, "Raptor Strike", "if=(talent.way_of_the_moknathal.enabled&buff.moknathal_tactics.remains<gcd*4)" );
-  fillers -> add_action( this, "Raptor Strike", "if=focus>((25-focus.regen*gcd)+55)" );
+  fillers -> add_action( this, "Raptor Strike", "if=(talent.way_of_the_moknathal.enabled&buff.moknathal_tactics.remains<gcd*4)|(focus>((25-focus.regen*gcd)+55))" );
 }
 
 
@@ -6532,7 +6529,8 @@ void hunter_t::reset()
   player_t::reset();
 
   // Active
-  active.pet            = nullptr;
+  active.pet = nullptr;
+  active.sentinel = nullptr;
 }
 
 // hunter_t::arise ==========================================================

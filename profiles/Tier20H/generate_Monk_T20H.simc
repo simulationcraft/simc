@@ -8,8 +8,8 @@ artifact=50:0:0:0:0:800:4:801:4:820:4:821:4:822:4:824:4:825:4:826:1:827:1:828:1:
 
 head=xuens_helm,id=147154,bonus_id=3562:1497
 neck=locket_of_splintered_souls,id=147014,ilevel=915,enchant=mark_of_the_hidden_satyr
-shoulders=pauldrons_of_enveloped_dissonance,id=138337,bonus_id=3519
-back=cloak_of_enveloped_dissonance,id=138367,bonus_id=3519,enchant=binding_of_agility
+shoulders=pauldrons_of_enveloped_dissonance,id=138337,bonus_id=3518:1502
+back=cloak_of_enveloped_dissonance,id=138367,bonus_id=3518:1502,enchant=binding_of_agility
 chest=xuens_tunic,id=147151,bonus_id=3562:1497
 wrists=drinking_horn_cover,id=137097,bonus_id=3570
 hands=xuens_gauntlets,id=147153,bonus_id=3562:1497
