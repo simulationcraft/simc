@@ -4176,6 +4176,10 @@ class ArtifactDataGenerator(DataGenerator):
     def filter(self):
         ids = {}
 
+        # Kludge-y 7.3 Netherlight Crucible, part 0
+        if self._options.build >= 24608:
+            ids[0] = {}
+
         for id, data in self._artifact_db.items():
             if data.id_spec == 0:
                 continue
@@ -4186,6 +4190,10 @@ class ArtifactDataGenerator(DataGenerator):
             artifact_id = data.id_artifact
 
             if artifact_id not in ids:
+                continue
+
+            # Kludge-y 7.3 Netherelight Crucible, part 1
+            if artifact_id == 0 and id < 1739:
                 continue
 
             ids[artifact_id][id] = { 'data': data, 'ranks': [] }
@@ -4199,6 +4207,13 @@ class ArtifactDataGenerator(DataGenerator):
             if power.id_artifact not in ids:
                 continue
 
+            if self._spell_db[data.id_spell].id != data.id_spell:
+                continue
+
+            # Kludge-y 7.3 Netherlight Crucible, part 2
+            if power.id_artifact == 0 and power_id < 1739:
+                continue
+
             ids[power.id_artifact][power_id]['ranks'].append(data)
 
         return ids
@@ -4209,13 +4224,19 @@ class ArtifactDataGenerator(DataGenerator):
             self._options.suffix and ('_%s' % self._options.suffix) or '',
         )
 
-        self._out.write('#define %s_SIZE (%d)\n\n' % (data_str.upper(), len(ids.keys()) + 1))
+        n_artifacts = len(ids.keys()) + (0 in ids and 0 or 1)
+
+        self._out.write('#define %s_SIZE (%d)\n\n' % (data_str.upper(), len(ids.keys())))
 
         self._out.write('// Artifact base data, wow build %d\n' % ( self._options.build ))
 
         self._out.write('static struct artifact_t __%s_data[%s_SIZE] = {\n' % (data_str, data_str.upper()))
 
         artifact_keys = sorted(ids.keys())
+        # Kludge-y 7.3 Netherlight Crucible, part 3: Remove extra artifact id 0 from keys
+        if artifact_keys[0] == 0:
+            del artifact_keys[0]
+
         powers = []
         for key in artifact_keys + [0]:
             data = self._artifact_db[key]
@@ -4247,6 +4268,7 @@ class ArtifactDataGenerator(DataGenerator):
                 fields += spell.field('name')
                 self._out.write('  { %s }, // %s (id=%u, n_ranks=%u)\n' % (', '.join(fields), spell.name, power['ranks'][0].id_spell, len(power['ranks'])))
             else:
+                spell = self._spell_db[0]
                 fields += spell.field('id')
                 fields += self._spell_db[0].field('name')
                 self._out.write('  { %s },\n' % (', '.join(fields)))
