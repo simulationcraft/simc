@@ -7188,9 +7188,9 @@ action_t* death_knight_t::create_action( const std::string& name, const std::str
   if ( name == "epidemic"                 ) return new epidemic_t                 ( this, options_str );
   if ( name == "soul_reaper"              ) return new soul_reaper_t              ( this, options_str );
 
-  // Frost talent 
-  if ( maybe_ptr( p -> dbc.ptr ) )
-      if ( name == "inexorable assault"       ) return new_inexorable_assault_t       ( this, options_str );
+  // New 7.3 Frost talent, Not Yet Implemented
+  // if ( maybe_ptr( p -> dbc.ptr ) )
+      // if ( name == "inexorable assault"       ) return new_inexorable_assault_t       ( this, options_str );
 
   return player_t::create_action( name, options_str );
 }
