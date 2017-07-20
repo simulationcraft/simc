@@ -2903,7 +2903,6 @@ struct chimaera_shot_t: public hunter_ranged_attack_t
     nature = new chimaera_shot_impact_t( player, "chimaera_shot_nature", player -> find_spell( 171457 ) );
     add_child( nature );
     school = SCHOOL_FROSTSTRIKE; // Just so the report shows a mixture of the two colors.
-    starved_proc = player -> get_proc( "starved: chimaera_shot" );
   }
 
   void execute() override
