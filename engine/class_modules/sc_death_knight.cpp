@@ -7307,7 +7307,7 @@ double death_knight_t::composite_melee_haste() const
   if ( dbc.ptr )
   {
     if (buffs.hungering_rune_weapon -> up() )
-      haste *= 1.0 / ( 1.0 + buff.hungering_rune_weapon -> effectN( 3 ).percent() );    
+      haste *= 1.0 / ( 1.0 + buffs.hungering_rune_weapon -> effectN( 3 ).percent() );    
   }
     
   return haste;
@@ -7337,7 +7337,7 @@ double death_knight_t::composite_spell_haste() const
   if ( dbc.ptr )
   {
     if (buffs.hungering_rune_weapon -> up() )
-      haste *= 1.0 / ( 1.0 + buff.hungering_rune_weapon -> effectN( 3 ).percent() );    
+      haste *= 1.0 / ( 1.0 + buffs.hungering_rune_weapon -> effectN( 3 ).percent() );    
   }
   
   return haste;
