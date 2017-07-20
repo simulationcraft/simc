@@ -6670,8 +6670,12 @@ struct hungering_rune_weapon_buff_t : public buff_t
     } ) ),
     // NOTE: Apparently Hungering Rune Weapon is bugged(?) in game, and is actually ticking every
     // second for runes, instead of every 1.5 seconds.
-    rune_divisor( p -> talent.hungering_rune_weapon -> effectN( p -> bugs ? 2 : 1 ).period() / buff_period ),
-    rp_divisor( p -> talent.hungering_rune_weapon -> effectN( 2 ).period() / buff_period )
+    // Fix planned in 7.3 (may also be hotfixed earlier)
+    if ( !maybe_ptr( p -> dbc.ptr ) )
+    {
+      rune_divisor( p -> talent.hungering_rune_weapon -> effectN( p -> bugs ? 2 : 1 ).period() / buff_period ),
+      rp_divisor( p -> talent.hungering_rune_weapon -> effectN( 2 ).period() / buff_period )
+    }
   { }
 };
 
@@ -7302,7 +7306,14 @@ double death_knight_t::composite_melee_haste() const
   {
     haste *= 1.0 / ( 1.0 + legendary.sephuzs_secret -> effectN( 3 ).percent() );
   }
-
+  
+  // PTR 7.3 : Hungering Rune Weapon now also increase haste by 20%
+  if ( maybe_ptr( p -> dbc.ptr ) )
+  {
+    if (buffs.hungering_rune_weapon -> up() )
+      haste *= 1.0 / ( 1.0 + buff.hungering_rune_weapon -> effectN( 3 ).percent() );    
+  }
+    
   return haste;
 }
 
@@ -7326,6 +7337,13 @@ double death_knight_t::composite_spell_haste() const
     haste *= 1.0 / ( 1.0 + legendary.sephuzs_secret -> effectN( 3 ).percent() );
   }
 
+  // PTR 7.3 : Hungering Rune Weapon now also increase haste by 20%
+  if ( maybe_ptr( p -> dbc.ptr ) )
+  {
+    if (buffs.hungering_rune_weapon -> up() )
+      haste *= 1.0 / ( 1.0 + buff.hungering_rune_weapon -> effectN( 3 ).percent() );    
+  }
+  
   return haste;
 }
 
