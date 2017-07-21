@@ -4319,6 +4319,16 @@ struct frozen_orb_t : public frost_mage_spell_t
     return frost_mage_spell_t::init_finished();
   }
 
+  virtual timespan_t travel_time() const override
+  {
+    timespan_t t = frost_mage_spell_t::travel_time();
+
+    // Frozen Orb activates after about 0.5 s, even in melee range.
+    t = std::max( t, timespan_t::from_seconds( 0.5 ) );
+
+    return t;
+  }
+
   virtual void execute() override
   {
     frost_mage_spell_t::execute();
@@ -4341,7 +4351,7 @@ struct frozen_orb_t : public frost_mage_spell_t
     double x = t -> x_position;
     double y = t -> y_position;
 
-    timespan_t ground_aoe_duration = timespan_t::from_seconds( 10.0 );
+    timespan_t ground_aoe_duration = timespan_t::from_seconds( 9.5 );
     p() -> ground_aoe_expiration[ name_str ]
       = sim -> current_time() + ground_aoe_duration;
 
@@ -4366,7 +4376,7 @@ struct frozen_orb_t : public frost_mage_spell_t
 
             ice_time_nova -> schedule_execute( state );
           }
-        } ) );
+        } ), true );
     }
   }
 };
