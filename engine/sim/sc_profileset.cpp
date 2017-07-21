@@ -592,8 +592,8 @@ void create_options( sim_t* sim )
 
 statistical_data_t collect( const extended_sample_data_t& c )
 {
-  return { c.min(), c.percentile( 0.25 ), c.mean(),
-           c.percentile( 0.5 ), c.percentile( 0.75 ), c.max(), c.std_dev };
+  return { c.min(), c.percentile( 0.25 ), c.percentile( 0.5 ), c.mean(),
+           c.percentile( 0.75 ), c.max(), c.std_dev };
 }
 
 statistical_data_t metric_data( const player_t* player )
