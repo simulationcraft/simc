@@ -7715,7 +7715,7 @@ void mage_t::apl_frost()
     "Replacement for buff.fingers_of_frost.react. Since some of the FoFs are not random and can be anticipated (Freeze, "
     "Lady Vashj's Grasp), we can bypass the .react check." );
   variables -> add_action( "variable,name=fof_react,value=buff.fingers_of_frost.stack,if=equipped.lady_vashjs_grasp&buff.icy_veins.up&"
-    "variable.time_until_fof>9|prev_off_gcd.freeze|ground_aoe.frozen_orb.remains>9" );
+    "variable.time_until_fof>9|prev_off_gcd.freeze|ground_aoe.frozen_orb.remains>8.5" );
 }
 
 // Default Action List ========================================================
