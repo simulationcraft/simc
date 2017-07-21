@@ -3566,7 +3566,7 @@ struct blackout_kick_t: public monk_melee_attack_t
       p() -> gain.bok_proc -> add( RESOURCE_CHI, base_costs[RESOURCE_CHI] );
 
       if ( p() -> sets -> has_set_bonus( MONK_WINDWALKER, T21, B4 ) && rng().roll( p() -> sets -> set( MONK_WINDWALKER, T21, B4 ) -> effectN( 1 ).percent() ) )
-        p() -> resource_gain( RESOURCE_CHI, p() -> sets -> set( MONK_WINDWALKER, T21, B4 ) -> effectN( 2 ).base_value(), p() -> gain.tier21_4pc_dps, this );
+        p() -> resource_gain( RESOURCE_CHI, p() -> sets -> set( MONK_WINDWALKER, T21, B4 ) -> effectN(2).base_value(), p() -> gain.tier21_4pc_dps, this );
     }
 
     // Windwalker Tier 18 (WoD 6.2) trinket effect is in use, adjust Rising Sun Kick proc chance based on spell data
@@ -8626,6 +8626,7 @@ void monk_t::init_gains()
   gain.rushing_jade_wind        = get_gain( "rushing_jade_wind" );
   gain.effuse                   = get_gain( "effuse" );
   gain.tier17_2pc_healer        = get_gain( "tier17_2pc_healer" );
+  gain.tier21_4pc_dps           = get_gain( "tier21_4pc_dps" );
   gain.tiger_palm               = get_gain( "tiger_palm" );
   gain.gift_of_the_ox           = get_gain( "gift_of_the_ox" );
 }
