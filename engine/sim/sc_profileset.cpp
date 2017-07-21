@@ -288,7 +288,7 @@ void profilesets_t::set_state( state new_state )
 
 bool profilesets_t::iterate( sim_t* parent )
 {
-  if ( m_profilesets.size() == 0 )
+  if ( parent -> profileset_map.size() == 0 )
   {
     return true;
   }
