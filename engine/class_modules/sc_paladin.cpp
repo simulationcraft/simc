@@ -6761,7 +6761,29 @@ struct paladin_module_t : public module_t
 
   virtual void register_hotfixes() const override
   {
+    hotfix::register_effect( "Paladin", "2017-07-21", "Blade of Justice damage increased by 10%", 267536 )
+        .field( "base_value" )
+        .operation( hotfix::HOTFIX_MUL )
+        .modifier( 1.1 )
+        .verification_value( 540 );
 
+    hotfix::register_effect( "Paladin", "2017-07-21", "Blade of Justice (and presumably Divine Hammer) damage increased by 10%", 291193 )
+        .field( "base_value" )
+        .operation( hotfix::HOTFIX_MUL )
+        .modifier( 1.1 )
+        .verification_value( 68 );
+
+    hotfix::register_effect( "Paladin", "2017-07-21", "Crusader Strike damage increased by 10%", 25580 )
+        .field( "base_value" )
+        .operation( hotfix::HOTFIX_MUL )
+        .modifier( 1.1 )
+        .verification_value( 210 );
+
+    hotfix::register_effect( "Paladin", "2017-07-21", "Crusader Strike (and presumably Zeal) damage increased by 10%", 322915 )
+        .field( "base_value" )
+        .operation( hotfix::HOTFIX_MUL )
+        .modifier( 1.1 )
+        .verification_value( 320 );
   }
 
   virtual void combat_begin( sim_t* ) const override {}
