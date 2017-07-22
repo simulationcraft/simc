@@ -1764,9 +1764,18 @@ struct insignia_of_ravenholdt_attack_t : public rogue_attack_t
       // It seems that Insignia ignores only Vendetta modifier
       // See: https://github.com/simulationcraft/simc/issues/3435
       rogue_td_t* tdata = td( target );
-      if ( tdata -> debuffs.vendetta -> check() )
+      if ( tdata -> debuffs.vendetta -> up() )
       {
-        m *= 1 - tdata -> debuffs.vendetta -> value();
+        m /= 1.0 + tdata -> debuffs.vendetta -> value();
+      }
+    }
+    else if ( p() ->specialization() == ROGUE_SUBTLETY )
+    {
+      // Insignia ignores Nightblade debuff modifier
+      rogue_td_t* tdata = td( target );
+      if ( tdata -> dots.nightblade -> is_ticking() )
+      {
+        m /= 1.0 + tdata -> dots.nightblade -> current_action -> data().effectN( 6 ).percent();
       }
     }
 
