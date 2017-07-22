@@ -334,3 +334,13 @@ double pet_t::composite_spell_power( school_e school ) const
     sp += owner -> cache.spell_power( school ) * owner -> composite_spell_power_multiplier() * owner_coeff.sp_from_sp;
   return sp;
 }
+
+double pet_t::composite_player_critical_damage_multiplier( const action_state_t* s ) const
+{
+  double m = player_t::composite_player_critical_damage_multiplier( s );
+
+  m *= 1.0 + owner -> racials.brawn -> effectN( 1 ).percent();
+  m *= 1.0 + owner -> racials.might_of_the_mountain -> effectN( 1 ).percent();
+
+  return m;
+}
