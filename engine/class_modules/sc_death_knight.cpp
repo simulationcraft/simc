@@ -6668,9 +6668,7 @@ struct hungering_rune_weapon_buff_t : public buff_t
                             p -> gains.hungering_rune_weapon );
       }
     } ) ),
-    // NOTE: Apparently Hungering Rune Weapon is bugged(?) in game, and is actually ticking every
-    // second for runes, instead of every 1.5 seconds.
-    rune_divisor( p -> talent.hungering_rune_weapon -> effectN( p -> bugs ? 2 : 1 ).period() / buff_period ),
+    rune_divisor( p -> talent.hungering_rune_weapon -> effectN( 1 ).period() / buff_period ),
     rp_divisor( p -> talent.hungering_rune_weapon -> effectN( 2 ).period() / buff_period )
   { }
 };
