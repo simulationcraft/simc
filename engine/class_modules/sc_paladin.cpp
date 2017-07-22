@@ -3205,6 +3205,11 @@ struct crusader_strike_t : public holy_power_generator_t
     base_multiplier *= 1.0 + p -> artifact.blade_of_light.percent();
     base_crit       += p -> artifact.sharpened_edge.percent();
 
+    if ( p -> specialization() == PALADIN_RETRIBUTION )
+    {
+      base_multiplier *= 1.1; // 7/21 hotfix; TODO(mserrano): delete this
+    }
+
     if ( p -> talents.fires_of_justice -> ok() )
     {
       cooldown -> duration += timespan_t::from_millis( p -> talents.fires_of_justice -> effectN( 2 ).base_value() );
@@ -6772,12 +6777,6 @@ struct paladin_module_t : public module_t
         .operation( hotfix::HOTFIX_MUL )
         .modifier( 1.1 )
         .verification_value( 68 );
-
-    hotfix::register_effect( "Paladin", "2017-07-21", "Crusader Strike damage increased by 10%", 25580 )
-        .field( "base_value" )
-        .operation( hotfix::HOTFIX_MUL )
-        .modifier( 1.1 )
-        .verification_value( 210 );
 
     hotfix::register_effect( "Paladin", "2017-07-21", "Crusader Strike (and presumably Zeal) damage increased by 10%", 322915 )
         .field( "base_value" )
