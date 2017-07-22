@@ -9077,6 +9077,17 @@ struct rogue_module_t : public module_t
 
   void register_hotfixes() const override
   {
+    hotfix::register_effect( "Rogue", "2017-07-21", "Mantle of the Master Assassin duration reduced to 5 seconds (was 6 seconds).", 355177 )
+    .field( "base_value" )
+    .operation( hotfix::HOTFIX_SET )
+    .modifier( 5 )
+    .verification_value( 6 );
+
+    hotfix::register_effect( "Rogue", "2017-07-21", "Denial of the Half-Giants cooldown reduction reduced to 0.2 seconds per combo point spent (was 0.3 seconds).", 309167 )
+    .field( "base_value" )
+    .operation( hotfix::HOTFIX_SET )
+    .modifier( 2 )
+    .verification_value( 3 );
   }
 
   virtual void init( player_t* ) const override {}
