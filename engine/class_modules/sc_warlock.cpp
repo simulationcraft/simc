@@ -3723,10 +3723,20 @@ struct immolate_t: public warlock_spell_t
   {
     warlock_spell_t::tick( d );
 
-    if ( d -> state -> result == RESULT_CRIT && rng().roll( 0.5 ) )
-      p() -> resource_gain( RESOURCE_SOUL_SHARD, 0.1, p() -> gains.immolate_crits );
+    if ( p() -> bugs ) // Live as of 07-23-2017
+    {
+      if ( d -> state -> result == RESULT_CRIT )
+        p() -> resource_gain( RESOURCE_SOUL_SHARD, 0.2, p() -> gains.immolate_crits );
+      else if ( rng().roll( 0.5 ) )
+        p() -> resource_gain( RESOURCE_SOUL_SHARD, 0.1, p() -> gains.immolate );
+    }
+    else
+    {
+      if ( d -> state -> result == RESULT_CRIT && rng().roll( 0.5 ) )
+        p() -> resource_gain( RESOURCE_SOUL_SHARD, 0.1, p() -> gains.immolate_crits );
 
-    p() -> resource_gain( RESOURCE_SOUL_SHARD, 0.1, p() -> gains.immolate );
+      p() -> resource_gain( RESOURCE_SOUL_SHARD, 0.1, p() -> gains.immolate );
+    }
   }
 };
 
