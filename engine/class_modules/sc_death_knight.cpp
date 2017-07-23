@@ -600,27 +600,30 @@ public:
     // Tier 1
     const spell_data_t* shattering_strikes;
     const spell_data_t* icy_talons;
-    const spell_data_t* murderous_efficiency;
+    const spell_data_t* murderous_efficiency;  // Switches place with Frozen Pulse in 7.3
 
     // Tier 2
     const spell_data_t* freezing_fog;
-    const spell_data_t* frozen_pulse;
+    const spell_data_t* frozen_pulse;  // Switches place with Runic Attenuation in 7.3
     const spell_data_t* horn_of_winter;
 
     // Tier 3
     const spell_data_t* icecap;
-    const spell_data_t* hungering_rune_weapon;
+    const spell_data_t* hungering_rune_weapon;  // Switches place with Glacial Advance in 7.3
     const spell_data_t* avalanche;
+    
+    // Tier 4 
+    const spell_data_t* inexorable_assault; // Not yet implemented, new to 7.3 PTR
 
     // Tier 6
     const spell_data_t* frostscythe;
-    const spell_data_t* runic_attenuation;
+    const spell_data_t* runic_attenuation; // Switches place with Murderous Efficiency in 7.3
     const spell_data_t* gathering_storm;
 
     // Tier 7
     const spell_data_t* obliteration;
     const spell_data_t* breath_of_sindragosa;
-    const spell_data_t* glacial_advance;
+    const spell_data_t* glacial_advance;  // Switches place with Hungering Rune Weapon in 7.3
 
     // Unholy
 
@@ -4958,6 +4961,13 @@ struct frostscythe_t : public death_knight_melee_attack_t
     weapon = &( player -> main_hand_weapon );
     aoe = -1;
 
+    // T21 2P bonus : damage increase to Howling Blast, Frostscythe and Obliterate
+    if ( maybe_ptr( p -> dbc.ptr ) ) {
+      if (p->sets->has_set_bonus(DEATH_KNIGHT_FROST, T21, B2))
+      {
+         base_multiplier *= (1.0 + p-> find_spell(251873) -> effectN(3).percent());
+      }
+    }
     crit_bonus_multiplier *= 1.0 + p -> spec.death_knight -> effectN( 5 ).percent();
   }
 
@@ -5197,6 +5207,14 @@ struct howling_blast_t : public death_knight_spell_t
     base_aoe_multiplier = data().effectN( 1 ).percent();
     base_multiplier    *= 1.0 + p -> talent.freezing_fog -> effectN( 1 ).percent();
     base_multiplier    *= 1.0 + p -> artifact.blast_radius.percent();
+    
+    // T21 2P bonus : damage increase to Howling Blast, Frostscythe and Obliterate
+    if ( maybe_ptr( p -> dbc.ptr ) )  {
+      if (p->sets->has_set_bonus(DEATH_KNIGHT_FROST, T21, B2))
+      {
+         base_multiplier *= (1.0 + p-> find_spell(251873) -> effectN(1).percent());
+      }
+    }
   }
 
   double runic_power_generation_multiplier( const action_state_t* state ) const override
@@ -5211,7 +5229,8 @@ struct howling_blast_t : public death_knight_spell_t
 
     return m;
   }
-
+  
+  // T19 4P bonus : RP gain when using Rime proc
   gain_t* energize_gain( const action_state_t* /* state */ ) const override
   {
     if ( p() -> buffs.rime -> check() && p() -> sets -> has_set_bonus( DEATH_KNIGHT_FROST, T19, B4 ) )
@@ -5256,6 +5275,15 @@ struct howling_blast_t : public death_knight_spell_t
   void execute() override
   {
     death_knight_spell_t::execute();
+
+    // 7.3 PTR : Howling Blast now triggers Killing Machine during Obliteration
+    if ( maybe_ptr( p() -> dbc.ptr ) ) 
+    {
+      if ( p() -> buffs.obliteration -> up())
+      {
+        p() -> buffs.killing_machine -> execute();
+      }
+    }
 
     p() -> buffs.rime -> decrement();
   }
@@ -5512,6 +5540,19 @@ struct obliterate_strike_t : public death_knight_melee_attack_t
     background = special = true;
     may_miss = false;
     weapon = w;
+    
+    // T21 2P bonus : damage increase to Howling Blast, Frostscythe and Obliterate
+    if ( maybe_ptr( p -> dbc.ptr ) ) {
+      if (p->sets->has_set_bonus(DEATH_KNIGHT_FROST, T21, B2))
+      {
+         base_multiplier *= (1.0 + p-> find_spell(251873) -> effectN(2).percent());
+      }
+    }
+    // 7.3 : Koltira's newfound will also increase Obliterate damage by 10%
+    if ( maybe_ptr( p -> dbc.ptr ) ) 
+    {
+      base_multiplier *= 1.0 + p -> legendary.koltiras_newfound_will -> effectN( 2 ).percent();
+    }
   }
 
   double composite_crit_chance() const override
@@ -6627,9 +6668,7 @@ struct hungering_rune_weapon_buff_t : public buff_t
                             p -> gains.hungering_rune_weapon );
       }
     } ) ),
-    // NOTE: Apparently Hungering Rune Weapon is bugged(?) in game, and is actually ticking every
-    // second for runes, instead of every 1.5 seconds.
-    rune_divisor( p -> talent.hungering_rune_weapon -> effectN( p -> bugs ? 2 : 1 ).period() / buff_period ),
+    rune_divisor( p -> talent.hungering_rune_weapon -> effectN( 1 ).period() / buff_period ),
     rp_divisor( p -> talent.hungering_rune_weapon -> effectN( 2 ).period() / buff_period )
   { }
 };
@@ -7146,6 +7185,9 @@ action_t* death_knight_t::create_action( const std::string& name, const std::str
   if ( name == "epidemic"                 ) return new epidemic_t                 ( this, options_str );
   if ( name == "soul_reaper"              ) return new soul_reaper_t              ( this, options_str );
 
+  // New 7.3 Frost talent, Not Yet Implemented
+  // if ( maybe_ptr( p -> dbc.ptr ) )
+      // if ( name == "inexorable assault"       ) return new_inexorable_assault_t       ( this, options_str );
 
   return player_t::create_action( name, options_str );
 }
@@ -7258,7 +7300,14 @@ double death_knight_t::composite_melee_haste() const
   {
     haste *= 1.0 / ( 1.0 + legendary.sephuzs_secret -> effectN( 3 ).percent() );
   }
-
+  
+  // PTR 7.3 : Hungering Rune Weapon now also increase haste by 20%
+  if ( dbc.ptr )
+  {
+    if (buffs.hungering_rune_weapon -> up() )
+      haste *= 1.0 / ( 1.0 + talent.hungering_rune_weapon -> effectN( 3 ).percent() );    
+  }
+    
   return haste;
 }
 
@@ -7282,6 +7331,13 @@ double death_knight_t::composite_spell_haste() const
     haste *= 1.0 / ( 1.0 + legendary.sephuzs_secret -> effectN( 3 ).percent() );
   }
 
+  // PTR 7.3 : Hungering Rune Weapon now also increase haste by 20%
+  if ( dbc.ptr )
+  {
+    if (buffs.hungering_rune_weapon -> up() )
+      haste *= 1.0 / ( 1.0 + talent.hungering_rune_weapon -> effectN( 3 ).percent() );    
+  }
+  
   return haste;
 }
 
@@ -7363,23 +7419,27 @@ void death_knight_t::init_spells()
   // Tier 1
   talent.shattering_strikes    = find_talent_spell( "Shattering Strikes" );
   talent.icy_talons            = find_talent_spell( "Icy Talons" );
-  talent.murderous_efficiency  = find_talent_spell( "Murderous Efficiency" );
+  talent.murderous_efficiency  = find_talent_spell( "Murderous Efficiency" ); // Becomes Runic Attenuation in 7.3 PTR
   // Tier 2
   talent.freezing_fog          = find_talent_spell( "Freezing Fog" );
-  talent.frozen_pulse          = find_talent_spell( "Frozen Pulse" );
+  talent.frozen_pulse          = find_talent_spell( "Frozen Pulse" ); // Becomes Murderous Efficiency in 7.3 PTR
   talent.horn_of_winter        = find_talent_spell( "Horn of Winter" );
   // Tier 3
   talent.icecap                = find_talent_spell( "Icecap" );
-  talent.hungering_rune_weapon = find_talent_spell( "Hungering Rune Weapon" );
+  talent.hungering_rune_weapon = find_talent_spell( "Hungering Rune Weapon" ); // Becomes Glacial Advance in 7.3 PTR
   talent.avalanche             = find_talent_spell( "Avalanche" );
+  
+  // Tier 4 : New talent in 7.3  
+  //talent.inexorable_assault  = find_talent_spell( "Inexorable Assault" );
+    
   // Tier 6
   talent.frostscythe           = find_talent_spell( "Frostscythe" );
-  talent.runic_attenuation     = find_talent_spell( "Runic Attenuation" );
+  talent.runic_attenuation     = find_talent_spell( "Runic Attenuation" ); // Becomes Frozen Pulse in 7.3 PTR
   talent.gathering_storm       = find_talent_spell( "Gathering Storm" );
   // Tier 7
   talent.obliteration          = find_talent_spell( "Obliteration" );
   talent.breath_of_sindragosa  = find_talent_spell( "Breath of Sindragosa" );
-  talent.glacial_advance       = find_talent_spell( "Glacial Advance" );
+  talent.glacial_advance       = find_talent_spell( "Glacial Advance" ); // Becomes Hungering Rune Weapon in 7.3 PTR
 
   // Unholy Talents
   // Tier 1
@@ -7492,7 +7552,7 @@ void death_knight_t::init_spells()
   artifact.sanguinary_affinity = find_artifact_spell( "Sanguinary Affinity" );
   artifact.vampiric_fangs      = find_artifact_spell( "Vampiric Fangs" );
   artifact.rattling_bones      = find_artifact_spell( "Rattling Bones" );
-  artifact.bonebreaker        = find_artifact_spell( "Bonebreaker" );
+  artifact.bonebreaker         = find_artifact_spell( "Bonebreaker" );
   artifact.allconsuming_rot    = find_artifact_spell( "All-Consuming Rot" );
   artifact.unending_thirst     = find_artifact_spell( "Unending Thirst" );
   artifact.blood_feast         = find_artifact_spell( "Blood Feast" );
