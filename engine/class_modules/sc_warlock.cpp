@@ -4236,7 +4236,6 @@ struct thalkiels_consumption_t : public warlock_spell_t
   thalkiels_consumption_t( warlock_t* p ) :
     warlock_spell_t( "thalkiels_consumption", p, p -> artifact.thalkiels_consumption )
   {
-
   }
 
   void execute() override
@@ -5847,6 +5846,7 @@ warlock_t::warlock_t( sim_t* sim, const std::string& name, race_e r ):
     procs( procs_t() ),
     spells( spells_t() ),
     initial_soul_shards( 3 ),
+    allow_sephuz( false ),
     default_pet( "" ),
     shard_react( timespan_t::zero() ),
     affliction_trinket( nullptr ),
