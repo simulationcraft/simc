@@ -503,6 +503,7 @@ public:
     action_t* pestilence; // Armies of the Damned
     action_t* t20_2pc_unholy;
     action_t* cold_heart;
+    action_t* dragged_to_helheim;
   } active_spells;
 
   // Gains
@@ -871,7 +872,7 @@ public:
       }
       return false;
     } );
-    
+
     regen_type = REGEN_DYNAMIC;
   }
 
@@ -955,6 +956,7 @@ public:
   void      trigger_t20_2pc_frost( double consumed );
   void      trigger_t20_4pc_frost( double consumed );
   void      trigger_t20_4pc_unholy( double consumed );
+  void      trigger_portal_to_the_underworld( player_t* target );
 
   // Actor is standing in their own Death and Decay or Defile
   bool      in_death_and_decay() const;
@@ -2150,36 +2152,13 @@ struct army_pet_t : public base_ghoul_pet_t
     }
   };
 
-  struct dragged_to_helheim_t : public pet_spell_t<army_pet_t>
-  {
-    dragged_to_helheim_t( army_pet_t* player ) :
-      super( player, "dragged_to_helheim", player -> find_spell( 218321 ) )
-    {
-      background = true;
-      aoe = -1;
-    }
-
-    // Uses owner's attack power .. probably. The damage in game is not very self-explanatory.
-    // Technically this is wrong, but we have no action-specific composite attack power multiplier,
-    // so just multiply it in here. The ghoul itself will never have an attack power multiplier so
-    // there's no possibility of breakage.
-    double composite_attack_power() const override
-    { return p() -> o() -> cache.attack_power() * p() -> o() -> composite_attack_power_multiplier(); }
-  };
-
-  dragged_to_helheim_t* despawn_explosion;
-
   army_pet_t( death_knight_t* owner, const std::string& name ) :
-    base_ghoul_pet_t( owner, name, true ), despawn_explosion( nullptr )
+    base_ghoul_pet_t( owner, name, true )
   { }
 
   void dismiss( bool expired ) override
   {
-    if ( expired && despawn_explosion )
-    {
-      despawn_explosion -> execute();
-    }
-
+    o() -> trigger_portal_to_the_underworld( target );
     pet_t::dismiss( expired );
   }
 
@@ -2199,16 +2178,6 @@ struct army_pet_t : public base_ghoul_pet_t
 
     action_priority_list_t* def = get_action_priority_list( "default" );
     def -> add_action( "Claw" );
-  }
-
-  bool create_actions() override
-  {
-    if ( o() -> artifact.portal_to_the_underworld.rank() )
-    {
-      despawn_explosion = new dragged_to_helheim_t( this );
-    }
-
-    return base_ghoul_pet_t::create_actions();
   }
 
   action_t* create_action( const std::string& name, const std::string& options_str ) override
@@ -3294,6 +3263,30 @@ struct necrobomb_t : public death_knight_spell_t
     m /= 1.0 + p() -> buffs.t20_2pc_unholy -> check_value();
 
     m *= 1.0 + p() -> spec.unholy_death_knight -> effectN( 3 ).percent();
+
+    return m;
+  }
+};
+
+
+// Dragged to Helheim =======================================================
+
+struct dragged_to_helheim_t : public death_knight_spell_t
+{
+  dragged_to_helheim_t( death_knight_t* p ) :
+    death_knight_spell_t( "dragged_to_helheim", p, p -> find_spell( 218321 ) )
+  {
+    aoe        = -1;
+    background = true;
+    callbacks  = false;
+  }
+
+  double composite_target_multiplier( player_t* target ) const
+  {
+    double m = death_knight_spell_t::composite_target_multiplier( target );
+
+    // Dragged to Helheim does not benefit from the Death debuff of AotD ghouls
+    m /= 1.0 + td( target ) -> debuff.death -> check_stack_value();
 
     return m;
   }
@@ -6845,6 +6838,17 @@ void death_knight_t::trigger_t20_4pc_frost( double consumed )
   }
 }
 
+void death_knight_t::trigger_portal_to_the_underworld( player_t* target )
+{
+  if ( ! artifact.portal_to_the_underworld.rank() )
+  {
+    return;
+  }
+
+  active_spells.dragged_to_helheim -> set_target( target );
+  active_spells.dragged_to_helheim -> execute();
+}
+
 void death_knight_t::trigger_t20_4pc_unholy( double consumed )
 {
   if ( ! sets -> has_set_bonus( DEATH_KNIGHT_UNHOLY, T20, B4 ) )
@@ -7089,6 +7093,11 @@ bool death_knight_t::create_actions()
   {
     active_spells.thronebreaker = new crystalline_swords_t( "crystalline_swords_thronebreaker",
         this, find_spell( 243122 ) );
+  }
+
+  if ( artifact.portal_to_the_underworld.rank() )
+  {
+    active_spells.dragged_to_helheim = new dragged_to_helheim_t( this );
   }
 
   return player_t::create_actions();
