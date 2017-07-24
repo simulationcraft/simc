@@ -3266,6 +3266,16 @@ struct necrobomb_t : public death_knight_spell_t
 
     return m;
   }
+
+  double composite_target_multiplier( player_t* target ) const override
+  {
+    double m = death_knight_spell_t::composite_target_multiplier( target );
+
+    // Necrobomb does not benefit from the Death debuff of AotD ghouls
+    m /= 1.0 + td( target ) -> debuff.death -> check_stack_value();
+
+    return m;
+  }
 };
 
 
@@ -3281,7 +3291,7 @@ struct dragged_to_helheim_t : public death_knight_spell_t
     callbacks  = false;
   }
 
-  double composite_target_multiplier( player_t* target ) const
+  double composite_target_multiplier( player_t* target ) const override
   {
     double m = death_knight_spell_t::composite_target_multiplier( target );
 
