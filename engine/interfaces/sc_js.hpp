@@ -253,6 +253,7 @@ public:
     v_.AddMember( rapidjson::StringRef( "max" ), v.max(), d_.GetAllocator() );
     if ( ! v.simple )
     {
+      v_.AddMember( rapidjson::StringRef( "median" ), v.percentile( 0.5 ), d_.GetAllocator() );
       v_.AddMember( rapidjson::StringRef( "variance" ), v.variance, d_.GetAllocator() );
       v_.AddMember( rapidjson::StringRef( "std_dev" ), v.std_dev, d_.GetAllocator() );
       v_.AddMember( rapidjson::StringRef( "mean_variance" ), v.mean_variance, d_.GetAllocator() );

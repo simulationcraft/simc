@@ -106,7 +106,7 @@ actions.variables=variable,name=iv_start,value=time,if=prev_off_gcd.icy_veins
 actions.variables+=/variable,name=time_until_fof,value=10-(time-variable.iv_start-floor((time-variable.iv_start)%10)*10)
 # Replacement for buff.fingers_of_frost.react. Since some of the FoFs are not random and can be anticipated (Freeze, Lady Vashj's Grasp), we can bypass the .react check.
 actions.variables+=/variable,name=fof_react,value=buff.fingers_of_frost.react
-actions.variables+=/variable,name=fof_react,value=buff.fingers_of_frost.stack,if=equipped.lady_vashjs_grasp&buff.icy_veins.up&variable.time_until_fof>9|prev_off_gcd.freeze|ground_aoe.frozen_orb.remains>9
+actions.variables+=/variable,name=fof_react,value=buff.fingers_of_frost.stack,if=equipped.lady_vashjs_grasp&buff.icy_veins.up&variable.time_until_fof>9|prev_off_gcd.freeze|ground_aoe.frozen_orb.remains>8.5
 
 head=nighthold_custodians_hood,id=140851,bonus_id=3445
 neck=radiant_string_of_scorpid_eyes,id=140898,bonus_id=3445,enchant=mark_of_the_hidden_satyr,enchant_id=5439

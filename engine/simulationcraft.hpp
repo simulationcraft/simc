@@ -5061,6 +5061,8 @@ public:
 
   virtual double composite_spell_power( school_e school ) const override;
 
+  virtual double composite_player_critical_damage_multiplier( const action_state_t* s ) const override;
+
   // Assuming diminishing returns are transfered to the pet as well
   virtual double composite_dodge() const override
   { return owner -> cache.dodge(); }
@@ -8468,6 +8470,9 @@ public:
 
     return tick;
   }
+
+  timespan_t remaining_time() const
+  { return _time_left( params, player() ); }
 
   bool may_pulse() const
   {

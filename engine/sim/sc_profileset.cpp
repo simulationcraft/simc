@@ -288,7 +288,7 @@ void profilesets_t::set_state( state new_state )
 
 bool profilesets_t::iterate( sim_t* parent )
 {
-  if ( m_profilesets.size() == 0 )
+  if ( parent -> profileset_map.size() == 0 )
   {
     return true;
   }
@@ -592,8 +592,8 @@ void create_options( sim_t* sim )
 
 statistical_data_t collect( const extended_sample_data_t& c )
 {
-  return { c.min(), c.percentile( 0.25 ), c.mean(),
-           c.percentile( 0.5 ), c.percentile( 0.75 ), c.max(), c.std_dev };
+  return { c.min(), c.percentile( 0.25 ), c.percentile( 0.5 ), c.mean(),
+           c.percentile( 0.75 ), c.max(), c.std_dev };
 }
 
 statistical_data_t metric_data( const player_t* player )

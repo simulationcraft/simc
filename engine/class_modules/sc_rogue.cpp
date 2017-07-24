@@ -1751,6 +1751,14 @@ struct insignia_of_ravenholdt_attack_t : public rogue_attack_t
     aoe = -1;
   }
 
+  void init() override
+  {
+    rogue_attack_t::init();
+
+    // We do not want Versatility applied to Insignia dmg again
+    snapshot_flags &= ~STATE_VERSATILITY;
+  }
+
   double composite_da_multiplier( const action_state_t* ) const override
   {
     double m = p() -> spell.insignia_of_ravenholdt -> effectN( 1 ).percent();
@@ -1764,9 +1772,18 @@ struct insignia_of_ravenholdt_attack_t : public rogue_attack_t
       // It seems that Insignia ignores only Vendetta modifier
       // See: https://github.com/simulationcraft/simc/issues/3435
       rogue_td_t* tdata = td( target );
-      if ( tdata -> debuffs.vendetta -> check() )
+      if ( tdata -> debuffs.vendetta -> up() )
       {
-        m *= 1 - tdata -> debuffs.vendetta -> value();
+        m /= 1.0 + tdata -> debuffs.vendetta -> value();
+      }
+    }
+    else if ( p() ->specialization() == ROGUE_SUBTLETY )
+    {
+      // Insignia ignores Nightblade debuff modifier
+      rogue_td_t* tdata = td( target );
+      if ( tdata -> dots.nightblade -> is_ticking() )
+      {
+        m /= 1.0 + tdata -> dots.nightblade -> current_action -> data().effectN( 6 ).percent();
       }
     }
 
@@ -6137,7 +6154,7 @@ void rogue_t::trigger_insignia_of_ravenholdt( action_state_t* state )
   }
   insignia_of_ravenholdt_ -> base_dd_min = amount;
   insignia_of_ravenholdt_ -> base_dd_max = amount;
-  insignia_of_ravenholdt_ -> target = state -> target;
+  insignia_of_ravenholdt_ -> set_target( state -> target );
   insignia_of_ravenholdt_ -> execute();
 }
 
@@ -7118,7 +7135,7 @@ void rogue_t::init_action_list()
         cds -> add_action( racial_actions[i] + ",if=debuff.vendetta.up" );
     }
     cds -> add_talent( this, "Marked for Death", "target_if=min:target.time_to_die,if=target.time_to_die<combo_points.deficit*1.5|(raid_event.adds.in>40&combo_points.deficit>=cp_max_spend)" );
-    cds -> add_action( this, "Vendetta", "if=!artifact.urge_to_kill.enabled|energy.deficit>=60+variable.energy_regen_combined" );
+    cds -> add_action( this, "Vendetta", "if=!artifact.urge_to_kill.enabled|energy.deficit>=60-variable.energy_regen_combined" );
     cds -> add_talent( this, "Exsanguinate", "if=prev_gcd.1.rupture&dot.rupture.remains>4+4*cp_max_spend&!stealthed.rogue|dot.garrote.pmultiplier>1&!cooldown.vanish.up&buff.subterfuge.up" );
     cds -> add_action( this, "Vanish", "if=talent.nightstalker.enabled&combo_points>=cp_max_spend&!talent.exsanguinate.enabled&mantle_duration=0&((equipped.mantle_of_the_master_assassin&set_bonus.tier19_4pc)|((!equipped.mantle_of_the_master_assassin|!set_bonus.tier19_4pc)&(dot.rupture.refreshable|debuff.vendetta.up)))", "Nightstalker w/o Exsanguinate: Vanish Envenom if Mantle & T19_4PC, else Vanish Rupture" );
     cds -> add_action( this, "Vanish", "if=talent.nightstalker.enabled&combo_points>=cp_max_spend&talent.exsanguinate.enabled&cooldown.exsanguinate.remains<1&(dot.rupture.ticking|time>10)" );
@@ -9077,6 +9094,17 @@ struct rogue_module_t : public module_t
 
   void register_hotfixes() const override
   {
+    hotfix::register_effect( "Rogue", "2017-07-21", "Mantle of the Master Assassin duration reduced to 5 seconds (was 6 seconds).", 355177 )
+    .field( "base_value" )
+    .operation( hotfix::HOTFIX_SET )
+    .modifier( 5 )
+    .verification_value( 6 );
+
+    hotfix::register_effect( "Rogue", "2017-07-21", "Denial of the Half-Giants cooldown reduction reduced to 0.2 seconds per combo point spent (was 0.3 seconds).", 309167 )
+    .field( "base_value" )
+    .operation( hotfix::HOTFIX_SET )
+    .modifier( 2 )
+    .verification_value( 3 );
   }
 
   virtual void init( player_t* ) const override {}

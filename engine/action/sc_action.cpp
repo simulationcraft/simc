@@ -1912,7 +1912,7 @@ bool action_t::ready()
     return false;
   }
 
-  if ( target_if_mode != TARGET_IF_NONE )
+  if ( target_if_mode != TARGET_IF_NONE && sim -> target_list.size() > 1 )
   {
     player_t* potential_target = select_target_if_target();
     if ( potential_target )
@@ -1934,7 +1934,7 @@ bool action_t::ready()
       return false;
   }
 
-  if ( option.cycle_targets )
+  if ( option.cycle_targets && sim -> target_list.size() > 1 )
   {
     player_t* saved_target = target;
     option.cycle_targets = false;
