@@ -3445,11 +3445,11 @@ double player_t::composite_player_critical_damage_multiplier( const action_state
 {
   double m = 1.0;
 
-  m += racials.brawn -> effectN( 1 ).percent();
-  m += racials.might_of_the_mountain -> effectN( 1 ).percent();
+  m *= 1.0 + racials.brawn -> effectN( 1 ).percent();
+  m *= 1.0 + racials.might_of_the_mountain -> effectN( 1 ).percent();
   if ( buffs.incensed )
   {
-    m += buffs.incensed -> check_value();
+    m *= 1.0 + buffs.incensed -> check_value();
   }
 
   return m;
@@ -8024,6 +8024,22 @@ std::string armory2_class_name( const std::string& tokenized_class, const std::s
   util::replace_all( spec_str, "-", " " );
   return util::inverse_tokenize( spec_str ) + " " + util::inverse_tokenize( class_str );
 }
+
+player_e armory2_parse_player_type( const std::string& class_name )
+{
+  if ( util::str_compare_ci( class_name, "death-knight" ) )
+  {
+    return DEATH_KNIGHT;
+  }
+  else if ( util::str_compare_ci( class_name, "demon-hunter" ) )
+  {
+    return DEMON_HUNTER;
+  }
+  else
+  {
+    return util::parse_player_type( class_name );
+  }
+}
 }
 
 bool player_t::parse_talents_armory2( const std::string& talents_url )
@@ -8047,8 +8063,7 @@ bool player_t::parse_talents_armory2( const std::string& talents_url )
   const size_t OFFSET_TALENTS = split.size() - 1;
 
   auto spec_name_str = armory2_class_name( split[ OFFSET_CLASS ], split[ OFFSET_SPEC ] );
-
-  auto player_type = util::parse_player_type( split[ OFFSET_CLASS ] );
+  auto player_type = armory2_parse_player_type( split[ OFFSET_CLASS ] );
   auto spec_type   = util::parse_specialization_type( spec_name_str );
 
   if ( player_type == PLAYER_NONE || type != player_type )

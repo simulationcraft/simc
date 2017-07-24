@@ -508,6 +508,7 @@ public:
   } spells;
 
   int initial_soul_shards;
+  bool allow_sephuz;
   double reap_souls_modifier;
   std::string default_pet;
 
@@ -675,6 +676,19 @@ namespace pets {
     bool is_grimoire_of_service = false;
     bool is_demonbolt_enabled = true;
     bool is_lord_of_flames = false;
+
+    void trigger_sephuzs_secret( const action_state_t* state, spell_mechanic mechanic )
+    {
+      if ( !o() -> legendary.sephuzs_secret )
+        return;
+
+      // trigger by default on interrupts and on adds/lower level stuff
+      if ( o() -> allow_sephuz || mechanic == MECHANIC_INTERRUPT || state -> target -> is_add() ||
+        ( state -> target -> level() < o() -> sim -> max_player_level + 3 ) )
+      {
+        o() -> buffs.sephuzs_secret -> trigger();
+      }
+    }
 
     struct travel_t: public action_t
     {
@@ -1110,10 +1124,7 @@ struct axe_toss_t : public warlock_pet_spell_t
   {
     warlock_pet_spell_t::execute();
 
-    if ( p() -> o() -> legendary.sephuzs_secret )
-    {
-      p() -> o() -> buffs.sephuzs_secret -> trigger();
-    }
+    p() -> trigger_sephuzs_secret( execute_state, MECHANIC_STUN );
   }
 };
 
@@ -1316,10 +1327,7 @@ struct shadow_lock_t : public warlock_pet_spell_t
   {
     warlock_pet_spell_t::execute();
 
-    if ( p() -> o() -> legendary.sephuzs_secret  )
-    {
-      p() -> o() -> buffs.sephuzs_secret -> trigger();
-    }
+    p() -> trigger_sephuzs_secret( execute_state, MECHANIC_INTERRUPT );
   }
 };
 
@@ -1343,6 +1351,8 @@ struct meteor_strike_t: public warlock_pet_spell_t
       p() -> o() -> trigger_lof_infernal();
       p() -> o() -> buffs.lord_of_flames -> trigger();
     }
+
+    p() -> trigger_sephuzs_secret( execute_state, MECHANIC_STUN );
   }
 };
 
@@ -3713,10 +3723,20 @@ struct immolate_t: public warlock_spell_t
   {
     warlock_spell_t::tick( d );
 
-    if ( d -> state -> result == RESULT_CRIT && rng().roll( 0.5 ) )
-      p() -> resource_gain( RESOURCE_SOUL_SHARD, 0.1, p() -> gains.immolate_crits );
+    if ( p() -> bugs ) // Live as of 07-23-2017
+    {
+      if ( d -> state -> result == RESULT_CRIT )
+        p() -> resource_gain( RESOURCE_SOUL_SHARD, 0.2, p() -> gains.immolate_crits );
+      else if ( rng().roll( 0.5 ) )
+        p() -> resource_gain( RESOURCE_SOUL_SHARD, 0.1, p() -> gains.immolate );
+    }
+    else
+    {
+      if ( d -> state -> result == RESULT_CRIT && rng().roll( 0.5 ) )
+        p() -> resource_gain( RESOURCE_SOUL_SHARD, 0.1, p() -> gains.immolate_crits );
 
-    p() -> resource_gain( RESOURCE_SOUL_SHARD, 0.1, p() -> gains.immolate );
+      p() -> resource_gain( RESOURCE_SOUL_SHARD, 0.1, p() -> gains.immolate );
+    }
   }
 };
 
@@ -4226,39 +4246,39 @@ struct thalkiels_consumption_t : public warlock_spell_t
   thalkiels_consumption_t( warlock_t* p ) :
     warlock_spell_t( "thalkiels_consumption", p, p -> artifact.thalkiels_consumption )
   {
+  }
 
+  void init() override
+  {
+    warlock_spell_t::init();
+
+    snapshot_flags |= STATE_MUL_DA | STATE_TGT_MUL_DA | STATE_MUL_PERSISTENT | STATE_VERSATILITY;
   }
 
   void execute() override
   {
-    warlock_spell_t::execute();
-
-    double ta_mult = p() -> composite_player_target_multiplier( p() -> target, get_school() );
-    double p_mult = p() -> composite_player_multiplier( school );
     double damage = 0;
 
-    for ( auto& pet : p() -> pet_list )
+    for ( auto& pet : p()->pet_list )
     {
       pets::warlock_pet_t *lock_pet = static_cast< pets::warlock_pet_t* > ( pet );
       if ( lock_pet != NULL )
       {
-        if ( !lock_pet -> is_sleeping() )
+        if ( !lock_pet->is_sleeping() )
         {
           damage += ( double ) ( lock_pet->resources.max[RESOURCE_HEALTH] ) * 0.06; //spelldata
         }
       }
     }
-    if( p() -> legendary.wakeners_loyalty_enabled )
+    if ( p()->legendary.wakeners_loyalty_enabled )
     {
-      damage *= 1.0 + p() -> buffs.wakeners_loyalty -> stack_value();
+      damage *= 1.0 + p()->buffs.wakeners_loyalty->stack_value();
     }
 
-    damage *= ta_mult;
-    damage *= p_mult;
+    this->base_dd_min = damage;
+    this->base_dd_max = damage;
 
-    this -> base_dd_min = damage;
-    this -> base_dd_max = damage;
-    //do other stuff
+    warlock_spell_t::execute();
 
     p() -> buffs.wakeners_loyalty -> expire();
   }
@@ -5837,6 +5857,7 @@ warlock_t::warlock_t( sim_t* sim, const std::string& name, race_e r ):
     procs( procs_t() ),
     spells( spells_t() ),
     initial_soul_shards( 3 ),
+    allow_sephuz( false ),
     default_pet( "" ),
     shard_react( timespan_t::zero() ),
     affliction_trinket( nullptr ),
@@ -7104,6 +7125,7 @@ void warlock_t::create_options()
 
   add_option( opt_int( "soul_shards", initial_soul_shards ) );
   add_option( opt_string( "default_pet", default_pet ) );
+  add_option( opt_bool( "allow_sephuz", allow_sephuz ) );
 }
 
 std::string warlock_t::create_profile( save_e stype )
@@ -7114,6 +7136,7 @@ std::string warlock_t::create_profile( save_e stype )
   {
     if ( initial_soul_shards != 3 )    profile_str += "soul_shards=" + util::to_string( initial_soul_shards ) + "\n";
     if ( ! default_pet.empty() )       profile_str += "default_pet=" + default_pet + "\n";
+    if ( allow_sephuz != 0 )           profile_str += "allow_sephuz=" + util::to_string( allow_sephuz ) + "\n";
   }
 
   return profile_str;
@@ -7126,6 +7149,7 @@ void warlock_t::copy_from( player_t* source )
   warlock_t* p = debug_cast<warlock_t*>( source );
 
   initial_soul_shards = p -> initial_soul_shards;
+  allow_sephuz = p -> allow_sephuz;
   default_pet = p -> default_pet;
 }
 

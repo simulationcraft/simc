@@ -216,13 +216,13 @@ public:
 
   // Ground AoE tracking
   std::map<std::string, timespan_t> ground_aoe_expiration;
-  ground_aoe_event_t* active_meteor_burn;
 
   // Miscellaneous
   double distance_from_rune;
   double global_cinder_count;
   timespan_t firestarter_time;
   int blessing_of_wisdom_count;
+  bool allow_shimmer_lance;
 
   // Cached actions
   struct actions_t
@@ -321,6 +321,7 @@ public:
     // Miscellaneous Buffs
     buff_t* greater_blessing_of_widsom;
     buff_t* t19_oh_buff;
+    buff_t* shimmer;
 
   } buffs;
 
@@ -1582,7 +1583,10 @@ public:
       action -> set_target( target );
       action -> execute();
 
-      primed_buff -> expire();
+      // It looks like the debuff expiration is slightly delayed in game, allowing two spells
+      // impacting at the same time to trigger multiple Meteors or Comet Storms.
+      // As of build 24461, 2017-07-18.
+      primed_buff -> expire( p() -> bugs ? timespan_t::from_millis( 30 ) : timespan_t::zero() );
     }
   }
 };
@@ -1913,76 +1917,48 @@ struct fire_mage_spell_t : public mage_spell_t
 // ============================================================================
 // Frost Mage Spell
 // ============================================================================
+
+// Some Frost spells snapshot on impact (rather than execute). This is handled via
+// the calculate_on_impact flag.
 //
-
-// Custom Frost Mage spell state to help with Impact damage calc and
-// Fingers of Frost snapshots.
-struct frost_spell_state_t : public mage_spell_state_t
-{
-  bool impact_override;
-
-  frost_spell_state_t( action_t* action, player_t* target ) :
-    mage_spell_state_t( action, target ),
-    impact_override( false )
-  { }
-
-  virtual void initialize() override
-  {
-    mage_spell_state_t::initialize();
-
-    impact_override = false;
-  }
-
-  virtual std::ostringstream& debug_str( std::ostringstream& s ) override
-  {
-    mage_spell_state_t::debug_str( s ) << " impact_override=" << impact_override;
-    return s;
-  }
-
-  virtual void copy_state( const action_state_t* s ) override
-  {
-    mage_spell_state_t::copy_state( s );
-    auto fss = debug_cast<const frost_spell_state_t*>( s );
-
-    impact_override = fss -> impact_override;
-  }
-
-  virtual bool frozen() const override
-  {
-    // In game, FoF Ice Lances are implemented using a global flag which determines
-    // whether to treat the targets as frozen or not. On IL execute, FoF is checked
-    // and the flag set accordingly.
-    //
-    // This works fine under normal circumstances. However, once GCD drops below IL's
-    // travel time, it's possible to:
-    //
-    //   a) cast FoF IL, cast non-FoF IL before the first one impacts
-    //   b) cast non-FoF IL, cast FoF IL before the first one impacts
-    //
-    // In the a) case, neither Ice Lance gets the extra damage/Shatter bonus, in the
-    // b) case, both Ice Lances do.
-
-    return mage_spell_state_t::frozen() ||
-        ( action -> data().id() == 30455 &&
-          debug_cast<mage_t*>( action -> player ) -> state.fingers_of_frost_active );
-  }
-};
-
+// When set to true:
+//   * All snapshot flags are moved from snapshot_flags to impact_flags.
+//   * calculate_result and calculate_direct_amount don't do any calculations.
+//   * On spell impact:
+//     - State is snapshot via frost_mage_spell_t::impact_state.
+//     - Result is calculated via frost_mage_spell_t::calculate_impact_result.
+//     - Amount is calculated via frost_mage_spell_t::calculate_impact_direct_amount.
+//
+// The previous functions are virtual and can be overridden when needed.
 struct frost_mage_spell_t : public mage_spell_t
 {
   bool chills;
   bool calculate_on_impact;
+
   int fof_source_id;
+
+  unsigned impact_flags;
 
   frost_mage_spell_t( const std::string& n, mage_t* p,
                       const spell_data_t* s = spell_data_t::nil() )
     : mage_spell_t( n, p, s ),
       chills( false ),
       calculate_on_impact( false ),
-      fof_source_id( -1 )
+      fof_source_id( -1 ),
+      impact_flags( 0u )
   {
     affected_by.frost_mage = true;
     affected_by.shatter = true;
+  }
+
+  virtual void init() override
+  {
+    mage_spell_t::init();
+
+    if ( calculate_on_impact )
+    {
+      std::swap( snapshot_flags, impact_flags );
+    }
   }
 
   struct brain_freeze_delay_event_t : public event_t
@@ -2051,21 +2027,6 @@ struct frost_mage_spell_t : public mage_spell_t
     }
   }
 
-  virtual action_state_t* new_state() override
-  {
-    return new frost_spell_state_t( this, target );
-  }
-
-  static const frost_spell_state_t* cast_state( const action_state_t* st )
-  {
-    return debug_cast<const frost_spell_state_t*>( st );
-  }
-
-  static frost_spell_state_t* cast_state( action_state_t* st )
-  {
-    return debug_cast<frost_spell_state_t*>( st );
-  }
-
   void trigger_icicle_gain( action_state_t* state, stats_t* stats )
   {
     if ( ! p() -> spec.icicles -> ok() )
@@ -2116,42 +2077,50 @@ struct frost_mage_spell_t : public mage_spell_t
     }
   }
 
-  double calculate_direct_amount( action_state_t* s ) const override
+  virtual void impact_state( action_state_t* s, dmg_e rt )
+  { snapshot_internal( s, impact_flags, rt ); }
+
+  virtual double calculate_direct_amount( action_state_t* s ) const override
   {
-    if ( !calculate_on_impact || cast_state( s ) -> impact_override )
+    if ( ! calculate_on_impact )
     {
       return mage_spell_t::calculate_direct_amount( s );
     }
     else
     {
-      return s -> result_amount;
+      // Don't do any extra work, this result won't be used.
+      return 0.0;
     }
   }
 
+  virtual double calculate_impact_direct_amount( action_state_t* s ) const
+  { return mage_spell_t::calculate_direct_amount( s ); }
+
   virtual result_e calculate_result( action_state_t* s ) const override
   {
-    if ( !calculate_on_impact || cast_state( s ) -> impact_override )
+    if ( ! calculate_on_impact )
     {
       return mage_spell_t::calculate_result( s );
     }
     else
     {
-      return s -> result;
+      // Don't do any extra work, this result won't be used.
+      return RESULT_NONE;
     }
   }
+
+  virtual result_e calculate_impact_result( action_state_t* s ) const
+  { return mage_spell_t::calculate_result( s ); }
 
   virtual void impact( action_state_t* s ) override
   {
     if ( calculate_on_impact )
     {
-      // Swap our flag to allow damage calculation again
-      cast_state( s ) -> impact_override = true;
-
       // Re-call functions here, before the impact call to do the damage calculations as we impact.
-      snapshot_state( s, amount_type( s ) );
+      impact_state( s, amount_type( s ) );
 
-      s -> result = calculate_result( s );
-      s -> result_amount = calculate_direct_amount( s );
+      s -> result = calculate_impact_result( s );
+      s -> result_amount = calculate_impact_direct_amount( s );
     }
 
     mage_spell_t::impact( s );
@@ -3090,7 +3059,7 @@ struct blink_t : public mage_spell_t
 
     harmful = false;
     ignore_false_positive = true;
-    base_teleport_distance = 20;
+    base_teleport_distance = data().effectN( 1 ).radius_max();
 
     movement_directionality = MOVEMENT_OMNI;
 
@@ -3152,6 +3121,7 @@ struct blizzard_t : public frost_mage_spell_t
     cooldown -> hasted = true;
     dot_duration = timespan_t::zero(); // This is just a driver for the ground effect.
     may_miss = false;
+    may_crit = false;
   }
 
   double false_positive_pct() const override
@@ -3392,6 +3362,7 @@ struct comet_storm_t : public frost_mage_spell_t
   {
     parse_options( options_str );
     may_miss = false;
+    may_crit = false;
     add_child( projectile );
 
     if ( legendary )
@@ -3969,6 +3940,8 @@ struct flurry_t : public frost_mage_spell_t
     flurry_bolt( new flurry_bolt_t( p ) )
   {
     parse_options( options_str );
+    may_miss = false;
+    may_crit = false;
     add_child( flurry_bolt );
   }
 
@@ -4039,6 +4012,7 @@ struct frost_bomb_t : public frost_mage_spell_t
     parse_options( options_str );
     // Frost Bomb no longer has ticking damage.
     dot_duration = timespan_t::zero();
+    may_crit = false;
 
     if ( p -> action.frost_bomb_explosion )
     {
@@ -4199,6 +4173,8 @@ struct frost_nova_t : public mage_spell_t
     affected_by.erosion = true;
     affected_by.shatter = true;
 
+    aoe = -1;
+
     cooldown -> charges += p -> talents.ice_ward -> effectN( 1 ).base_value();
   }
 
@@ -4315,6 +4291,16 @@ struct frozen_orb_t : public frost_mage_spell_t
     return frost_mage_spell_t::init_finished();
   }
 
+  virtual timespan_t travel_time() const override
+  {
+    timespan_t t = frost_mage_spell_t::travel_time();
+
+    // Frozen Orb activates after about 0.5 s, even in melee range.
+    t = std::max( t, timespan_t::from_seconds( 0.5 ) );
+
+    return t;
+  }
+
   virtual void execute() override
   {
     frost_mage_spell_t::execute();
@@ -4337,7 +4323,7 @@ struct frozen_orb_t : public frost_mage_spell_t
     double x = t -> x_position;
     double y = t -> y_position;
 
-    timespan_t ground_aoe_duration = timespan_t::from_seconds( 10.0 );
+    timespan_t ground_aoe_duration = timespan_t::from_seconds( 9.5 );
     p() -> ground_aoe_expiration[ name_str ]
       = sim -> current_time() + ground_aoe_duration;
 
@@ -4362,7 +4348,7 @@ struct frozen_orb_t : public frost_mage_spell_t
 
             ice_time_nova -> schedule_execute( state );
           }
-        } ) );
+        } ), true );
     }
   }
 };
@@ -4398,36 +4384,29 @@ struct glacial_spike_t : public frost_mage_spell_t
     return frost_mage_spell_t::ready();
   }
 
-  virtual double calculate_direct_amount( action_state_t* s ) const override
+  virtual double calculate_impact_direct_amount( action_state_t* s ) const override
   {
-    if ( cast_state( s ) -> impact_override )
+    double base_amount = frost_mage_spell_t::calculate_impact_direct_amount( s );
+    double icicle_amount = icicle_damage;
+
+    // Icicle portion is only affected by target-based damage multipliers.
+    icicle_amount *= s -> target_da_multiplier;
+
+    if ( s -> chain_target > 0 )
+      icicle_amount *= base_aoe_multiplier;
+
+    double amount = base_amount + icicle_amount;
+    s -> result_raw = amount;
+
+    if ( result_is_miss( s -> result ) )
     {
-      double base_amount = mage_spell_t::calculate_direct_amount( s );
-      double icicle_amount = icicle_damage;
-
-      // Icicle portion is only affected by target-based damage multipliers.
-      icicle_amount *= s -> target_da_multiplier;
-
-      if ( s -> chain_target > 0 )
-        icicle_amount *= base_aoe_multiplier;
-
-      double amount = base_amount + icicle_amount;
-      s -> result_raw = amount;
-
-      if ( result_is_miss( s -> result ) )
-      {
-        s -> result_total = 0.0;
-        return 0.0;
-      }
-      else
-      {
-        s -> result_total = amount;
-        return amount;
-      }
+      s -> result_total = 0.0;
+      return 0.0;
     }
     else
     {
-      return s -> result_amount;
+      s -> result_total = amount;
+      return amount;
     }
   }
 
@@ -4489,6 +4468,65 @@ struct ice_floes_t : public mage_spell_t
 
 // Ice Lance Spell ==========================================================
 
+struct ice_lance_state_t : public mage_spell_state_t
+{
+  bool fingers_of_frost;
+
+  ice_lance_state_t( action_t* action, player_t* target ) :
+    mage_spell_state_t( action, target ),
+    fingers_of_frost( false )
+  { }
+
+  virtual void initialize() override
+  {
+    mage_spell_state_t::initialize();
+    fingers_of_frost = false;
+  }
+
+  virtual std::ostringstream& debug_str( std::ostringstream& s ) override
+  {
+    mage_spell_state_t::debug_str( s ) << " fingers_of_frost=" << fingers_of_frost;
+    return s;
+  }
+
+  virtual void copy_state( const action_state_t* s ) override
+  {
+    mage_spell_state_t::copy_state( s );
+    auto fss = debug_cast<const ice_lance_state_t*>( s );
+
+    fingers_of_frost = fss -> fingers_of_frost;
+  }
+
+  virtual bool frozen() const override
+  {
+    if ( mage_spell_state_t::frozen() )
+      return true;
+
+    mage_t* m = debug_cast<mage_t*>( action -> player );
+
+    // In game, FoF Ice Lances are implemented using a global flag which determines
+    // whether to treat the targets as frozen or not. On IL execute, FoF is checked
+    // and the flag set accordingly.
+    //
+    // This works fine under normal circumstances. However, once GCD drops below IL's
+    // travel time, it's possible to:
+    //
+    //   a) cast FoF IL, cast non-FoF IL before the first one impacts
+    //   b) cast non-FoF IL, cast FoF IL before the first one impacts
+    //
+    // In the a) case, neither Ice Lance gets the extra damage/Shatter bonus, in the
+    // b) case, both Ice Lances do.
+    if ( m -> bugs )
+    {
+      return m -> state.fingers_of_frost_active;
+    }
+    else
+    {
+      return fingers_of_frost;
+    }
+  }
+};
+
 struct ice_lance_t : public frost_mage_spell_t
 {
   ice_lance_t( mage_t* p, const std::string& options_str ) :
@@ -4515,6 +4553,9 @@ struct ice_lance_t : public frost_mage_spell_t
     calculate_on_impact = true;
   }
 
+  virtual action_state_t* new_state() override
+  { return new ice_lance_state_t( this, target ); }
+
   virtual void execute() override
   {
     frost_mage_spell_t::execute();
@@ -4534,28 +4575,48 @@ struct ice_lance_t : public frost_mage_spell_t
     }
   }
 
+  virtual void snapshot_state( action_state_t* s, dmg_e rt ) override
+  {
+    frost_mage_spell_t::snapshot_state( s, rt );
+    debug_cast<ice_lance_state_t*>( s ) -> fingers_of_frost = p() -> buffs.fingers_of_frost -> check() != 0;
+  }
+
+  virtual timespan_t travel_time() const override
+  {
+    timespan_t t = frost_mage_spell_t::travel_time();
+
+    if ( p() -> allow_shimmer_lance && p() -> buffs.shimmer -> check() )
+    {
+      double shimmer_distance = p() -> talents.shimmer -> effectN( 1 ).radius_max();
+      t = std::max( t - timespan_t::from_seconds( shimmer_distance / travel_speed ), timespan_t::zero() );
+    }
+
+    return t;
+  }
+
   virtual void impact( action_state_t* s ) override
   {
     frost_mage_spell_t::impact( s );
 
-    auto fss = cast_state( s );
-    if ( p() -> talents.thermal_void -> ok() &&
-         p() -> buffs.icy_veins -> check() &&
-         fss -> frozen() &&
-         s -> chain_target == 0 )
+    if ( result_is_hit( s -> result )
+      && debug_cast<mage_spell_state_t*>( s ) -> frozen() )
     {
-      timespan_t tv_extension = p() -> talents.thermal_void
-                                    -> effectN( 1 ).time_value() * 1000;
+      if ( s -> chain_target == 0 )
+      {
+        timespan_t tv_extension = p() -> talents.thermal_void
+                                      -> effectN( 1 ).time_value() * 1000;
 
-      p() -> buffs.icy_veins -> extend_duration( p(), tv_extension );
+        p() -> buffs.icy_veins -> extend_duration( p(), tv_extension );
+      }
+
+      if ( td( s -> target ) -> debuffs.frost_bomb -> check() )
+      {
+        assert( p() -> action.frost_bomb_explosion );
+        p() -> action.frost_bomb_explosion -> set_target( s -> target );
+        p() -> action.frost_bomb_explosion -> execute();
+      }
     }
-    if ( result_is_hit( s -> result ) && fss -> frozen() &&
-         td( s -> target ) -> debuffs.frost_bomb -> check() )
-    {
-      assert( p() -> action.frost_bomb_explosion );
-      p() -> action.frost_bomb_explosion -> set_target( s -> target );
-      p() -> action.frost_bomb_explosion -> execute();
-    }
+
   }
 
   virtual double action_multiplier() const override
@@ -4572,10 +4633,10 @@ struct ice_lance_t : public frost_mage_spell_t
   {
     double m = frost_mage_spell_t::composite_da_multiplier( s );
 
-    if ( cast_state( s ) -> frozen() )
+    if ( debug_cast<const mage_spell_state_t*>( s ) -> frozen() )
     {
       m *= 3.0;
-      m *= 1 + p() -> artifact.obsidian_lance.percent();
+      m *= 1.0 + p() -> artifact.obsidian_lance.percent();
     }
 
     return m;
@@ -4959,35 +5020,6 @@ struct mark_of_aluneth_t : public arcane_mage_spell_t
 // - Meteor (id=177345) contains the time between cast and impact
 // None of these specify the 1 second falling duration given by Celestalon, so
 // we're forced to hardcode it.
-
-// We need to keep the current tick event stored somewhere so that we can cancel it
-// (because Meteorn Burns do not overlap).
-struct tracking_ground_aoe_event_t : public ground_aoe_event_t
-{
-  mage_t* mage;
-
-  tracking_ground_aoe_event_t( mage_t* mage, const ground_aoe_params_t* param, action_state_t* ps, bool first_tick = false ):
-    ground_aoe_event_t( mage, param, ps, first_tick ), mage( mage )
-  { }
-
-  tracking_ground_aoe_event_t( mage_t* mage, const ground_aoe_params_t& param, bool first_tick = false ) :
-    ground_aoe_event_t( mage, param, first_tick ), mage( mage )
-  { }
-
-  void schedule_event() override
-  {
-    assert( ! mage -> active_meteor_burn );
-    mage -> active_meteor_burn = make_event<tracking_ground_aoe_event_t>( sim(), mage, params, pulse_state );
-  }
-
-  void execute() override
-  {
-    assert( mage -> active_meteor_burn );
-    mage -> active_meteor_burn = nullptr;
-    ground_aoe_event_t::execute();
-  }
-};
-
 struct meteor_burn_t : public fire_mage_spell_t
 {
   meteor_burn_t( mage_t* p, int targets, bool legendary ) :
@@ -5018,7 +5050,7 @@ struct meteor_impact_t: public fire_mage_spell_t
   timespan_t meteor_burn_pulse_time;
 
   meteor_impact_t( mage_t* p, meteor_burn_t* meteor_burn, int targets, bool legendary ):
-    fire_mage_spell_t( legendary ? "legendary_meteor_imapct" : "meteor_impact",
+    fire_mage_spell_t( legendary ? "legendary_meteor_impact" : "meteor_impact",
                        p, p -> find_spell( 153564 ) ),
     meteor_burn( meteor_burn ),
     meteor_burn_duration( p -> find_spell( 175396 ) -> duration() )
@@ -5051,9 +5083,7 @@ struct meteor_impact_t: public fire_mage_spell_t
     p() -> ground_aoe_expiration[ meteor_burn -> name_str ]
       = sim -> current_time() + meteor_burn_duration;
 
-    event_t::cancel( p() -> active_meteor_burn );
-
-    p() -> active_meteor_burn = make_event<tracking_ground_aoe_event_t>( *sim, p(), ground_aoe_params_t()
+    make_event<ground_aoe_event_t>( *sim, p(), ground_aoe_params_t()
       .pulse_time( meteor_burn_pulse_time )
       .target( s -> target )
       .duration( meteor_burn_duration )
@@ -5664,9 +5694,16 @@ struct shimmer_t : public mage_spell_t
 
     harmful = false;
     ignore_false_positive = true;
-    base_teleport_distance = 20;
+    base_teleport_distance = data().effectN( 1 ).radius_max();
 
     movement_directionality = MOVEMENT_OMNI;
+  }
+
+  virtual void execute() override
+  {
+    mage_spell_t::execute();
+
+    p() -> buffs.shimmer -> trigger();
   }
 };
 
@@ -6453,10 +6490,10 @@ mage_t::mage_t( sim_t* sim, const std::string& name, race_e r ) :
   ignite( nullptr ),
   ignite_spread_event( nullptr ),
   last_bomb_target( nullptr ),
-  active_meteor_burn( nullptr ),
   distance_from_rune( 0.0 ),
   global_cinder_count( 0.0 ),
   firestarter_time( timespan_t::zero() ),
+  allow_shimmer_lance( false ),
   blessing_of_wisdom_count( 0 ),
   action( actions_t() ),
   benefits( benefits_t() ),
@@ -6729,6 +6766,7 @@ void mage_t::create_options()
   add_option( opt_float( "global_cinder_count", global_cinder_count ) );
   add_option( opt_timespan( "firestarter_time", firestarter_time ) );
   add_option( opt_int( "blessing_of_wisdom_count", blessing_of_wisdom_count ) );
+  add_option( opt_bool( "allow_shimmer_lance", allow_shimmer_lance ) );
   player_t::create_options();
 }
 
@@ -6760,6 +6798,7 @@ void mage_t::copy_from( player_t* source )
   global_cinder_count       = p -> global_cinder_count;
   firestarter_time          = p -> firestarter_time;
   blessing_of_wisdom_count  = p -> blessing_of_wisdom_count;
+  allow_shimmer_lance       = p -> allow_shimmer_lance;
 }
 
 // mage_t::create_pets ========================================================
@@ -7095,6 +7134,7 @@ void mage_t::create_buffs()
     -> set_tick_behavior( BUFF_TICK_CLIP );
   buffs.t19_oh_buff = stat_buff_creator_t( this, "ancient_knowledge", find_spell( 221648 ) )
                         .trigger_spell( sets -> set( specialization(), T19OH, B8 ) );
+  buffs.shimmer     = buff_creator_t( this, "shimmer", find_spell( 212653 ) );
 }
 
 // mage_t::init_gains =======================================================
@@ -7413,40 +7453,40 @@ void mage_t::apl_arcane()
   action_priority_list_t* miniburn_init       = get_action_priority_list( "miniburn_init"    );
   action_priority_list_t* burn                = get_action_priority_list( "burn"             );
 
-  default_list -> add_action( this, "Counterspell", "if=target.debuff.casting.react" );
-  default_list -> add_action( this, "Time Warp", "if=buff.bloodlust.down&(time=0|(buff.arcane_power.up&(buff.potion.up|!action.potion.usable))|target.time_to_die<=buff.bloodlust.duration)" );
-  default_list -> add_action( "call_action_list,name=variables" );
-  default_list -> add_action( "cancel_buff,name=presence_of_mind,if=active_enemies>1&set_bonus.tier20_2pc" );
+  default_list -> add_action( this, "Counterspell", "if=target.debuff.casting.react", "Interrupt the boss when possible." );
+  default_list -> add_action( this, "Time Warp", "if=buff.bloodlust.down&(time=0|(buff.arcane_power.up&(buff.potion.up|!action.potion.usable))|target.time_to_die<=buff.bloodlust.duration)", "3 different lust usages to support Shard: on pull; during Arcane Power (with potion, preferably); end of fight." );
+  default_list -> add_action( "call_action_list,name=variables", "Set variables used throughout the APL." );
+  default_list -> add_action( "cancel_buff,name=presence_of_mind,if=active_enemies>1&set_bonus.tier20_2pc", "AoE scenarios will delay our Presence of Mind cooldown because we'll be using Arcane Explosion instead of Arcane Blast, so we cancel the aura immediately." );
   default_list -> add_action( mage_t::get_special_use_items( "horn_of_valor" ) );
   default_list -> add_action( mage_t::get_special_use_items( "obelisk_of_the_void" ) );
   default_list -> add_action( mage_t::get_special_use_items( "mrrgrias_favor" ) );
   default_list -> add_action( mage_t::get_special_use_items( "pharameres_forbidden_grimoire" ) );
   default_list -> add_action( mage_t::get_special_use_items( "kiljaedens_burning_wish" ) );
-  default_list -> add_action( "call_action_list,name=build,if=buff.arcane_charge.stack<buff.arcane_charge.max_stack&!burn_phase&time>0" );
-  default_list -> add_action( "call_action_list,name=burn,if=variable.time_until_burn=0|burn_phase" );
-  default_list -> add_action( "call_action_list,name=conserve" );
+  default_list -> add_action( "call_action_list,name=build,if=buff.arcane_charge.stack<buff.arcane_charge.max_stack&!burn_phase&time>0", "Build Arcane Charges before doing anything else. Burn phase has some specific actions for building Arcane Charges, so we avoid entering this list if currently burning." );
+  default_list -> add_action( "call_action_list,name=burn,if=variable.time_until_burn=0|burn_phase", "Enter burn actions if we're ready to burn, or already burning." );
+  default_list -> add_action( "call_action_list,name=conserve", "Fallback to conserve rotation." );
 
-  variables    -> add_action( "variable,name=arcane_missiles_procs,op=set,value=buff.arcane_missiles.react" );
-  variables    -> add_action( "variable,name=time_until_burn,op=set,value=cooldown.arcane_power.remains" );
-  variables    -> add_action( "variable,name=time_until_burn,op=max,value=cooldown.evocation.remains-variable.average_burn_length" );
-  variables    -> add_action( "variable,name=time_until_burn,op=max,value=cooldown.presence_of_mind.remains,if=set_bonus.tier20_2pc" );
-  variables    -> add_action( "variable,name=time_until_burn,op=max,value=action.rune_of_power.usable_in,if=talent.rune_of_power.enabled" );
-  variables    -> add_action( "variable,name=time_until_burn,op=reset,if=target.time_to_die<variable.average_burn_length" );
+  variables    -> add_action( "variable,name=arcane_missiles_procs,op=set,value=buff.arcane_missiles.react", "Track the number of Arcane Missiles procs that we have." );
+  variables    -> add_action( "variable,name=time_until_burn,op=set,value=cooldown.arcane_power.remains", "Burn condition #1: Arcane Power has to be available." );
+  variables    -> add_action( "variable,name=time_until_burn,op=max,value=cooldown.evocation.remains-variable.average_burn_length", "Burn condition #2: Evocation should be up by the time we finish burning. We use the custom variable average_burn_length to help estimate when Evocation will be available." );
+  variables    -> add_action( "variable,name=time_until_burn,op=max,value=cooldown.presence_of_mind.remains,if=set_bonus.tier20_2pc", "Burn condition #3: 2pt20 grants a damage boost with Presence of Mind usage, so we definitely want to stack that with AP." );
+  variables    -> add_action( "variable,name=time_until_burn,op=max,value=action.rune_of_power.usable_in,if=talent.rune_of_power.enabled", "Burn condition #4: We need an RoP charge if we've actually taken the talent. Check usable_in to see when we'll be able to cast, and ignore the line if we didn't take the talent." );
+  variables    -> add_action( "variable,name=time_until_burn,op=reset,if=target.time_to_die<variable.average_burn_length", "Boss is gonna die soon. All the above conditions don't really matter. We're just gonna burn our mana until combat ends." );
 
   build -> add_talent( this, "Arcane Orb" );
-  build -> add_talent( this, "Charged Up", "if=equipped.mystic_kilt_of_the_rune_master|(variable.arcane_missiles_procs=buff.arcane_missiles.max_stack&active_enemies<3)" );
-  build -> add_action( this, "Arcane Missiles", "if=variable.arcane_missiles_procs=buff.arcane_missiles.max_stack&active_enemies<3" );
+  build -> add_talent( this, "Charged Up", "if=equipped.mystic_kilt_of_the_rune_master|(variable.arcane_missiles_procs=buff.arcane_missiles.max_stack&active_enemies<3)", "Use Charged Up on cooldown if we have the Kilt equipped for extra mana regen. Otherwise, use it if we cap out on Arcane Missiles to avoid munching a proc or having to cast Arcane Missiles at low Arcane Charges." );
+  build -> add_action( this, "Arcane Missiles", "if=variable.arcane_missiles_procs=buff.arcane_missiles.max_stack&active_enemies<3", "If we cap out on Arcane Missiles, avoid munching another proc." );
   build -> add_action( this, "Arcane Explosion", "if=active_enemies>1" );
   build -> add_action( this, "Arcane Blast" );
 
-  burn  -> add_action( "variable,name=total_burns,op=add,value=1,if=!burn_phase" );
-  burn  -> add_action( "start_burn_phase,if=!burn_phase" );
-  burn  -> add_action( "stop_burn_phase,if=prev_gcd.1.evocation&cooldown.evocation.charges=0&burn_phase_duration>0" );
-  burn  -> add_talent( this, "Nether Tempest", "if=refreshable|!ticking" );
+  burn  -> add_action( "variable,name=total_burns,op=add,value=1,if=!burn_phase", "Increment our burn phase counter. Whenever we enter the `burn` actions without being in a burn phase, it means that we are about to start one." );
+  burn  -> add_action( "start_burn_phase,if=!burn_phase", "The burn_phase variable is a flag indicating whether or not we are in a burn phase. It is set to 1 (True) with start_burn_phase, and 0 (False) with stop_burn_phase." );
+  burn  -> add_action( "stop_burn_phase,if=prev_gcd.1.evocation&cooldown.evocation.charges=0&burn_phase_duration>0", "Evocation is the end of our burn phase, but we check avaiable charges in case of Gravity Spiral. The final burn_phase_duration check is to prevent an infinite loop in SimC." );
+  burn  -> add_talent( this, "Nether Tempest", "if=refreshable|!ticking", "Use during pandemic refresh window or if the dot is missing." );
   burn  -> add_action( this, "Mark of Aluneth" );
   burn  -> add_talent( this, "Mirror Image" );
-  burn  -> add_talent( this, "Arcane Barrage", "if=set_bonus.tier20_2pc&cooldown.presence_of_mind.up&buff.arcane_charge.stack=buff.arcane_charge.max_stack" );
-  burn  -> add_talent( this, "Rune of Power", "if=mana.pct>30|(buff.arcane_power.up|cooldown.arcane_power.up)" );
+  burn  -> add_talent( this, "Arcane Barrage", "if=set_bonus.tier20_2pc&cooldown.presence_of_mind.up&buff.arcane_charge.stack=buff.arcane_charge.max_stack", "Dump Arcane Charges before using PoM since we'll get them back immediately." );
+  burn  -> add_talent( this, "Rune of Power", "if=mana.pct>30|(buff.arcane_power.up|cooldown.arcane_power.up)", "Prevents using RoP at super low mana." );
   burn  -> add_action( this, "Arcane Power" );
 
   for( size_t i = 0; i < racial_actions.size(); i++ )
@@ -7454,36 +7494,35 @@ void mage_t::apl_arcane()
     burn -> add_action( racial_actions[i] );
   }
 
-  burn  -> add_action( "potion,if=buff.arcane_power.up&(buff.berserking.up|buff.blood_fury.up|!(race.troll|race.orc))" );
-  burn  -> add_action( "use_items,if=buff.arcane_power.up|target.time_to_die<cooldown.arcane_power.remains" );
-  burn  -> add_action( this, "Presence of Mind", "if=((mana.pct>30|buff.arcane_power.up)&set_bonus.tier20_2pc)|buff.rune_of_power.remains<=buff.presence_of_mind.max_stack*action.arcane_blast.execute_time|buff.arcane_power.remains<=buff.presence_of_mind.max_stack*action.arcane_blast.execute_time" );
+  burn  -> add_action( "potion,if=buff.arcane_power.up&(buff.berserking.up|buff.blood_fury.up|!(race.troll|race.orc))", "For Troll/Orc, it's best to sync potion with their racial buffs." );
+  burn  -> add_action( "use_items,if=buff.arcane_power.up|target.time_to_die<cooldown.arcane_power.remains", "Pops any on-use items, e.g., Tarnished Sentinel Medallion." );
+  burn  -> add_action( this, "Presence of Mind", "if=((mana.pct>30|buff.arcane_power.up)&set_bonus.tier20_2pc)|buff.rune_of_power.remains<=buff.presence_of_mind.max_stack*action.arcane_blast.execute_time|buff.arcane_power.remains<=buff.presence_of_mind.max_stack*action.arcane_blast.execute_time", "With T20, use PoM at start of RoP/AP for damage buff. Without T20, use PoM at end of RoP/AP to cram in two final Arcane Blasts. Includes a mana condition to prevent using PoM at super low mana." );
   burn  -> add_talent( this, "Arcane Orb" );
-  burn  -> add_action( this, "Arcane Barrage", "if=active_enemies>1&equipped.mantle_of_the_first_kirin_tor&buff.arcane_charge.stack=buff.arcane_charge.max_stack" );
-  burn  -> add_action( this, "Arcane Missiles", "if=variable.arcane_missiles_procs=buff.arcane_missiles.max_stack&active_enemies<3" );
-  burn  -> add_action( this, "Arcane Blast", "if=buff.presence_of_mind.up" );
-  burn  -> add_talent( this, "Supernova" );
+  burn  -> add_action( this, "Arcane Barrage", "if=active_enemies>4&equipped.mantle_of_the_first_kirin_tor&buff.arcane_charge.stack=buff.arcane_charge.max_stack", "Arcane Barrage has a good chance of launching an Arcane Orb at max Arcane Charge stacks." );
+  burn  -> add_action( this, "Arcane Missiles", "if=variable.arcane_missiles_procs=buff.arcane_missiles.max_stack&active_enemies<3", "Arcane Missiles are good, but not when there's multiple targets up." );
+  burn  -> add_action( this, "Arcane Blast", "if=buff.presence_of_mind.up", "Get PoM back on cooldown as soon as possible." );
   burn  -> add_action( this, "Arcane Explosion", "if=active_enemies>1" );
   burn  -> add_action( this, "Arcane Missiles", "if=variable.arcane_missiles_procs" );
   burn  -> add_action( this, "Arcane Blast" );
-  burn  -> add_action( "variable,name=average_burn_length,op=set,value=(variable.average_burn_length*variable.total_burns-variable.average_burn_length+burn_phase_duration)%variable.total_burns" );
-  burn  -> add_action( this, "Evocation", "interrupt_if=ticks=2|mana.pct>=85,interrupt_immediate=1" );
+  burn  -> add_action( "variable,name=average_burn_length,op=set,value=(variable.average_burn_length*variable.total_burns-variable.average_burn_length+burn_phase_duration)%variable.total_burns", "Now that we're done burning, we can update the average_burn_length with the length of this burn." );
+  burn  -> add_action( this, "Evocation", "interrupt_if=ticks=2|mana.pct>=85,interrupt_immediate=1", "That last tick of Evocation is a waste; it's better for us to get back to casting." );
 
   conserve -> add_talent( this, "Mirror Image", "if=variable.time_until_burn>recharge_time|variable.time_until_burn>target.time_to_die" );
   conserve -> add_action( this, "Mark of Aluneth" );
-  conserve -> add_talent( this, "Rune of Power", "if=full_recharge_time<=execute_time|(prev_gcd.1.mark_of_aluneth&!set_bonus.tier20_4pc)" );
-  conserve -> add_action( "swap_action_list,name=miniburn_init,if=set_bonus.tier20_4pc&cooldown.presence_of_mind.up&cooldown.arcane_power.remains>20&(action.rune_of_power.usable|!talent.rune_of_power.enabled)" );
-  conserve -> add_action( this, "Arcane Missiles", "if=variable.arcane_missiles_procs=buff.arcane_missiles.max_stack&active_enemies<3" );
+  conserve -> add_talent( this, "Rune of Power", "if=full_recharge_time<=execute_time|(prev_gcd.1.mark_of_aluneth&!set_bonus.tier20_4pc)", "Use if we're about to cap on stacks, or we just used MoA with no T20 4pc." );
+  conserve -> add_action( "swap_action_list,name=miniburn_init,if=set_bonus.tier20_4pc&cooldown.presence_of_mind.up&cooldown.arcane_power.remains>20&(action.rune_of_power.usable|!talent.rune_of_power.enabled)", "Switch to a miniburn action list temporarily, just to get actions executed in the right order." );
+  conserve -> add_action( this, "Arcane Missiles", "if=variable.arcane_missiles_procs=buff.arcane_missiles.max_stack&active_enemies<3", "Arcane Missiles are good, but not when there's multiple targets up." );
   conserve -> add_talent( this, "Supernova" );
-  conserve -> add_talent( this, "Nether Tempest", "if=refreshable|!ticking" );
-  conserve -> add_action( this, "Arcane Explosion", "if=active_enemies>1&(mana.pct>=70-(10*equipped.mystic_kilt_of_the_rune_master))" );
-  conserve -> add_action( this, "Arcane Blast", "if=mana.pct>=90|buff.rhonins_assaulting_armwraps.up|(buff.rune_of_power.remains>=cast_time&equipped.mystic_kilt_of_the_rune_master)" );
+  conserve -> add_talent( this, "Nether Tempest", "if=refreshable|!ticking", "Use during pandemic refresh window or if the dot is missing." );
+  conserve -> add_action( this, "Arcane Explosion", "if=active_enemies>1&(mana.pct>=70-(10*equipped.mystic_kilt_of_the_rune_master))", "AoE until about 70% mana. We can go a little further with kilt, down to 60% mana." );
+  conserve -> add_action( this, "Arcane Blast", "if=mana.pct>=90|buff.rhonins_assaulting_armwraps.up|(buff.rune_of_power.remains>=cast_time&equipped.mystic_kilt_of_the_rune_master)", "Use Arcane Blast if we have the mana for it or a proc from legendary wrists. With the Kilt we can cast freely." );
   conserve -> add_action( this, "Arcane Missiles", "if=variable.arcane_missiles_procs" );
   conserve -> add_action( this, "Arcane Barrage" );
-  conserve -> add_action( this, "Arcane Explosion", "if=active_enemies>1" );
+  conserve -> add_action( this, "Arcane Explosion", "if=active_enemies>1", "The following two lines are here in case Arcane Barrage is on cooldown." );
   conserve -> add_action( this, "Arcane Blast" );
 
   miniburn_init -> add_talent( this, "Rune of Power" );
-  miniburn_init -> add_action( this, "Arcane Barrage" );
+  miniburn_init -> add_action( this, "Arcane Barrage", "", "Dump Arcane Charge stacks. We don't have to check for T20 here; we already did that to enter this list." );
   miniburn_init -> add_action( this, "Presence of Mind" );
   miniburn_init -> add_action( "swap_action_list,name=default" );
 }
@@ -7542,7 +7581,7 @@ void mage_t::apl_fire()
   combustion_phase -> add_action( this, "Scorch", "if=target.health.pct<=30&equipped.132454");
 
   rop_phase        -> add_talent( this, "Rune of Power" );
-  rop_phase        -> add_action( this, "Flamestrike", "if=((talent.flame_patch.enabled&active_enemies>1)|(active_enemies>3))&buff.hot_streak.up" );
+  rop_phase        -> add_action( this, "Flamestrike", "if=((talent.flame_patch.enabled&active_enemies>1)|active_enemies>3)&buff.hot_streak.up" );
   rop_phase        -> add_action( this, "Pyroblast", "if=buff.hot_streak.up" );
   rop_phase        -> add_action( "call_action_list,name=active_talents" );
   rop_phase        -> add_action( this, "Pyroblast", "if=buff.kaelthas_ultimate_ability.react&execute_time<buff.kaelthas_ultimate_ability.remains" );
@@ -7574,7 +7613,7 @@ void mage_t::apl_fire()
   standard    -> add_action( this, "Phoenix's Flames", "if=(buff.combustion.up|buff.rune_of_power.up|buff.incanters_flow.stack>3|talent.mirror_image.enabled)&artifact.phoenix_reborn.enabled&(4-charges_fractional)*13<cooldown.combustion.remains+5|target.time_to_die.remains<10" );
   standard    -> add_action( this, "Phoenix's Flames", "if=(buff.combustion.up|buff.rune_of_power.up)&(4-charges_fractional)*30<cooldown.combustion.remains+5" );
   standard    -> add_action( this, "Phoenix's Flames", "if=charges_fractional>2.5&cooldown.combustion.remains>23" );
-  standard    -> add_action( this, "Flamestrike", "if=(talent.flame_patch.enabled&active_enemies>1)|active_enemies>5" );
+  standard    -> add_action( this, "Flamestrike", "if=(talent.flame_patch.enabled&active_enemies>3)|active_enemies>5" );
   standard    -> add_action( this, "Scorch", "if=target.health.pct<=30&equipped.132454" );
   standard    -> add_action( this, "Fireball" );
 
@@ -7710,7 +7749,7 @@ void mage_t::apl_frost()
     "Replacement for buff.fingers_of_frost.react. Since some of the FoFs are not random and can be anticipated (Freeze, "
     "Lady Vashj's Grasp), we can bypass the .react check." );
   variables -> add_action( "variable,name=fof_react,value=buff.fingers_of_frost.stack,if=equipped.lady_vashjs_grasp&buff.icy_veins.up&"
-    "variable.time_until_fof>9|prev_off_gcd.freeze|ground_aoe.frozen_orb.remains>9" );
+    "variable.time_until_fof>9|prev_off_gcd.freeze|ground_aoe.frozen_orb.remains>8.5" );
 }
 
 // Default Action List ========================================================
@@ -8057,7 +8096,6 @@ void mage_t::reset()
 
   last_bomb_target = nullptr;
   ground_aoe_expiration.clear();
-  active_meteor_burn = nullptr;
   burn_phase.reset();
 }
 

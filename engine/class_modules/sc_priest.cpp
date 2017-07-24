@@ -399,6 +399,10 @@ public:
     bool priest_fixed_time      = true;
     bool priest_ignore_healing  = false; // Remove Healing calculation codes
     bool priest_suppress_sephuz = false; // Sephuz's Secret won't proc if set true
+    bool priest_test_coef       = false; // Enables the control of coefficients where possible
+    double priest_t21_2p_bonus  = 0.2;   // Test variables
+    double priest_t21_4p_bonus  = 0.1;    
+    double priest_mass_hysteria = 2.0;
   } options;
 
   priest_t( sim_t* sim, const std::string& name, race_e r );
@@ -426,6 +430,7 @@ public:
   role_e primary_role() const override;
   stat_e convert_hybrid_stat( stat_e s ) const override;
   void assess_damage( school_e school, dmg_e dtype, action_state_t* s ) override;
+  double composite_spell_crit_chance() const override;
   double composite_melee_haste() const override;
   double composite_melee_speed() const override;
   double composite_spell_haste() const override;
@@ -1786,6 +1791,11 @@ public:
       base_multiplier *= 1.0 + player.artifact.mind_shattering.percent();
     }
 
+    if( priest.sets->has_set_bonus(PRIEST_SHADOW, T21, B2) )
+       crit_bonus_multiplier *= 1.0 + ( 2.0 * ( ! priest.options.priest_test_coef
+                                              ? priest.sets->set(PRIEST_SHADOW, T21, B2)->effectN(1).percent()
+                                              : priest.options.priest_t21_2p_bonus ) );
+
   }
 
   void init() override
@@ -1892,10 +1902,9 @@ struct mind_sear_tick_t final : public priest_spell_t
 
   mind_sear_tick_t( priest_t& p )
     : priest_spell_t( "mind_sear_tick", p, p.find_spell( 234702 ) ),
-      source_target( nullptr ),
-      insanity_gain( 1 )  // Missing from spell data
+      source_target( nullptr ) 
   {
-    may_crit                    = false;
+    may_crit                    = true;
     background                  = true;
     proc                        = false;
     callbacks                   = true;
@@ -1907,6 +1916,7 @@ struct mind_sear_tick_t final : public priest_spell_t
     trigger_gcd                 = timespan_t::zero();
     school                      = SCHOOL_SHADOW;
     spell_power_mod.direct      = p.find_spell( 237388 )->effectN( 1 ).sp_coeff();
+    insanity_gain               = p.find_spell( 208232 )->effectN( 1 ).percent();
   }
 
   size_t available_targets( std::vector<player_t*>& tl ) const override
@@ -2024,6 +2034,11 @@ struct mind_flay_t final : public priest_spell_t
     }
 
     spell_power_mod.tick *= 1.0 + p.talents.fortress_of_the_mind->effectN( 3 ).percent();
+
+    if( priest.sets->has_set_bonus(PRIEST_SHADOW, T21, B2) )
+      crit_bonus_multiplier *= 1.0 + ( 2.0 * ( ! priest.options.priest_test_coef
+                                               ? priest.sets->set(PRIEST_SHADOW, T21, B2)->effectN(1).percent()
+                                               : priest.options.priest_t21_2p_bonus ) );
   }
 
   double action_multiplier() const override
@@ -2688,7 +2703,10 @@ struct shadow_word_pain_t final : public priest_spell_t
 
     if ( priest.artifact.mass_hysteria.rank() )
     {
-      m *= 1.0 + ( priest.artifact.mass_hysteria.percent() * priest.buffs.voidform->stack() );
+      m *= 1.0 + ( priest.buffs.voidform->stack() 
+                 * ( ! priest.options.priest_test_coef 
+                     ? priest.artifact.mass_hysteria.percent() 
+                     : priest.options.priest_mass_hysteria / 100.0 ) );
     }
 
     return m;
@@ -2871,10 +2889,7 @@ struct summon_shadowfiend_t final : public summon_pet_t
     cooldown->duration += priest.sets->set( PRIEST_SHADOW, T18, B2 )->effectN( 1 ).time_value();
     if ( priest.artifact.fiending_dark.rank() )
     {
-      summoning_duration += timespan_t::from_millis(4500 *
-      // Actual in-game effect doesn't match the spell data
-      // priest.artifact.fiending_dark.data().effectN( 1 ).base_value() *
-                                                     priest.artifact.fiending_dark.rank() );
+      summoning_duration += priest.artifact.fiending_dark.time_value( 1 );      
     }
   }
 };
@@ -2892,10 +2907,7 @@ struct summon_mindbender_t final : public summon_pet_t
     cooldown->duration += priest.sets->set( PRIEST_SHADOW, T18, B2 )->effectN( 2 ).time_value();
     if ( priest.artifact.fiending_dark.rank() )
     {
-      summoning_duration += timespan_t::from_millis( 1500 *
-      // Actual in-game effect doesn't match the spell data
-      // priest.artifact.fiending_dark.data().effectN( 2 ).base_value() *
-                                                     priest.artifact.fiending_dark.rank() );
+      summoning_duration += ( priest.artifact.fiending_dark.time_value( 2 ) / 3.0 );
     }
   }
 };
@@ -3058,7 +3070,10 @@ struct vampiric_touch_t final : public priest_spell_t
 
     if ( priest.artifact.mass_hysteria.rank() )
     {
-      m *= 1.0 + ( priest.artifact.mass_hysteria.percent() * priest.buffs.voidform->stack() );
+      m *= 1.0 + ( priest.buffs.voidform->stack() 
+            * ( ! priest.options.priest_test_coef 
+                ? priest.artifact.mass_hysteria.percent() 
+                : priest.options.priest_mass_hysteria / 100.0 ) );
     }
 
     return m;
@@ -4147,6 +4162,23 @@ void priest_t::assess_damage( school_e school, dmg_e dtype, action_state_t* s )
   }
 
   player_t::assess_damage( school, dtype, s );
+}
+
+double priest_t::composite_spell_crit_chance() const
+{
+  double c = player_t::composite_spell_crit_chance();
+
+  if(    sets->has_set_bonus( PRIEST_SHADOW, T21, B4 ) 
+      && buffs.voidform->check() )
+  {
+    c *= 1.0 + (  buffs.voidform->check() ) 
+                     * ( ! options.priest_test_coef
+                         ? sets->set(PRIEST_SHADOW, T21, B4)->effectN(1).percent()
+                         : options.priest_t21_2p_bonus );
+  }
+
+  return c;
+
 }
 
 double priest_t::composite_spell_haste() const
@@ -5560,6 +5592,10 @@ void priest_t::create_options()
   add_option( opt_bool( "priest_fixed_time", options.priest_fixed_time ) );
   add_option( opt_bool( "priest_ignore_healing", options.priest_ignore_healing ) );
   add_option( opt_bool( "priest_suppress_sephuz", options.priest_suppress_sephuz ) );
+  add_option( opt_bool( "priest_test_coef", options.priest_test_coef ) );
+  add_option( opt_float( "priest_t21_2p_bonus", options.priest_t21_2p_bonus ) );
+  add_option( opt_float( "priest_t21_4p_bonus", options.priest_t21_4p_bonus ) );
+  add_option( opt_float( "priest_mass_hysteria", options.priest_mass_hysteria ) );
 }
 
 std::string priest_t::create_profile( save_e type )

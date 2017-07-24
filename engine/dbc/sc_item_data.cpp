@@ -1613,7 +1613,7 @@ std::string dbc::bonus_ids_str( dbc_t& dbc)
     if ( e -> type != ITEM_BONUS_ILEVEL && e -> type != ITEM_BONUS_MOD &&
          e -> type != ITEM_BONUS_SOCKET && e -> type != ITEM_BONUS_SCALING &&
          e -> type != ITEM_BONUS_SCALING_2 && e -> type != ITEM_BONUS_SET_ILEVEL &&
-         e -> type != ITEM_BONUS_ADD_RANK )
+         e -> type != ITEM_BONUS_ADD_RANK && e -> type != ITEM_BONUS_QUALITY )
     {
       e++;
       continue;

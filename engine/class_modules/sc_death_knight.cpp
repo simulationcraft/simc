@@ -474,7 +474,6 @@ public:
     buff_t* necrosis;
     stat_buff_t* defile;
     haste_buff_t* soul_reaper;
-    buff_t* soulgorge;
     buff_t* antimagic_barrier;
     absorb_buff_t* tombstone;
 
@@ -542,7 +541,7 @@ public:
     gain_t* power_refund;
     gain_t* rune;
     gain_t* runic_attenuation;
-    gain_t* rc;
+    gain_t* rc; // Runic Corruption
     gain_t* runic_empowerment;
     gain_t* empower_rune_weapon;
     gain_t* blood_tap;
@@ -583,7 +582,6 @@ public:
     // Unholy
     const spell_data_t* festering_wound;
     const spell_data_t* runic_corruption;
-    const spell_data_t* deaths_advance;
     const spell_data_t* outbreak;
     const spell_data_t* sudden_doom;
   } spec;
@@ -602,27 +600,30 @@ public:
     // Tier 1
     const spell_data_t* shattering_strikes;
     const spell_data_t* icy_talons;
-    const spell_data_t* murderous_efficiency;
+    const spell_data_t* murderous_efficiency;  // Switches place with Frozen Pulse in 7.3
 
     // Tier 2
     const spell_data_t* freezing_fog;
-    const spell_data_t* frozen_pulse;
+    const spell_data_t* frozen_pulse;  // Switches place with Runic Attenuation in 7.3
     const spell_data_t* horn_of_winter;
 
     // Tier 3
     const spell_data_t* icecap;
-    const spell_data_t* hungering_rune_weapon;
+    const spell_data_t* hungering_rune_weapon;  // Switches place with Glacial Advance in 7.3
     const spell_data_t* avalanche;
+    
+    // Tier 4 
+    const spell_data_t* inexorable_assault; // Not yet implemented, new to 7.3 PTR
 
     // Tier 6
     const spell_data_t* frostscythe;
-    const spell_data_t* runic_attenuation;
+    const spell_data_t* runic_attenuation; // Switches place with Murderous Efficiency in 7.3
     const spell_data_t* gathering_storm;
 
     // Tier 7
     const spell_data_t* obliteration;
     const spell_data_t* breath_of_sindragosa;
-    const spell_data_t* glacial_advance;
+    const spell_data_t* glacial_advance;  // Switches place with Hungering Rune Weapon in 7.3
 
     // Unholy
 
@@ -663,7 +664,7 @@ public:
 
     // Tier 2
     const spell_data_t* rapid_decomposition;
-    const spell_data_t* soulgorge;
+    const spell_data_t* heart_of_ice; // Not Yet Implemented
     const spell_data_t* spectral_deflection; // Not Yet Implemented
 
     // Tier 3
@@ -753,12 +754,16 @@ public:
     artifact_power_t dance_of_darkness;
     artifact_power_t mouth_of_hell;
     artifact_power_t the_hungering_maw;
+    // 7.2
+    artifact_power_t fortitude_of_the_ebon_blade;
+    artifact_power_t carrion_feast;
+    artifact_power_t vampiric_aura;
+    artifact_power_t souldrinker;
   } artifact;
 
   // Spells
   struct spells_t {
     const spell_data_t* antimagic_shell;
-    const spell_data_t* blood_rites;
     const spell_data_t* ossuary;
   } spell;
 
@@ -800,6 +805,7 @@ public:
     const spell_data_t* perseverance_of_the_ebon_martyr;
     const spell_data_t* sephuzs_secret;
     const spell_data_t* death_march;
+    const spell_data_t* lanathels_lament;
     double toravons;
 
     // Unholy
@@ -813,6 +819,7 @@ public:
       perseverance_of_the_ebon_martyr( spell_data_t::not_found() ),
       sephuzs_secret( nullptr ),
       death_march( spell_data_t::not_found() ),
+      lanathels_lament( spell_data_t::not_found() ),
       toravons( 0 ), the_instructors_fourth_lesson( 0 ), draugr_girdle_everlasting_king( 0 ),
       uvanimor_the_unbeautiful( 0 )
     { }
@@ -917,6 +924,7 @@ public:
   double    composite_melee_expertise( const weapon_t* ) const override;
   double    composite_player_multiplier( school_e school ) const override;
   double    composite_player_target_multiplier( player_t* target, school_e school ) const override;
+  double    composite_player_heal_multiplier( const action_state_t* ) const override;
   double    composite_player_pet_damage_multiplier( const action_state_t* /* state */ ) const override;
   double    composite_player_critical_damage_multiplier( const action_state_t* ) const override;
   double    composite_crit_avoidance() const override;
@@ -3370,19 +3378,6 @@ struct frozen_soul_t : public death_knight_spell_t
   }
 };
 
-// Tier 20 Unholy 2 piece set bonus aoe explosion
-
-struct explosive_army_t : public death_knight_spell_t
-{
-  explosive_army_t( death_knight_t* p ) :
-    death_knight_spell_t( "explosive_army", p, p -> find_spell( 242224 ) )
-  {
-    background = true;
-    callbacks = false;
-    aoe = -1;
-  }
-};
-
 // Cold Heart damage spell
 struct cold_heart_damage_t : public death_knight_spell_t
 {
@@ -3861,16 +3856,17 @@ struct blood_boil_t : public death_knight_spell_t
 
     p() -> buffs.skullflowers_haemostasis -> trigger();
   }
-
-  void impact( action_state_t* state ) override
-  {
-    death_knight_spell_t::impact( state );
-
-    if ( ! p() -> talent.soulgorge -> ok() && result_is_hit( state -> result ) )
-    {
-      p() -> apply_diseases( state, DISEASE_BLOOD_PLAGUE );
-    }
+  
+  void impact( action_state_t* state ) override		
+  {		
+    death_knight_spell_t::impact( state );		
+ 		
+    if ( result_is_hit( state -> result ) )		
+    {		
+      p() -> apply_diseases( state, DISEASE_BLOOD_PLAGUE );		
+    }		
   }
+
 };
 
 // Blood Mirror =============================================================
@@ -4309,6 +4305,14 @@ struct death_and_decay_t : public death_knight_spell_t
 
     p() -> buffs.crimson_scourge -> decrement();
     p() -> buffs.death_and_decay_tick -> trigger();
+
+    // Lanathel's lament will increase the player's damage/healing multipliers while DnD/Defaile is
+    // up. Only heal multiplier must be invalidated here, as the damage multiplier is simc is
+    // treated as a target-based multiplier, and computed every time.
+    if ( p() -> legendary.lanathels_lament -> ok() )
+    {
+      player -> invalidate_cache( CACHE_PLAYER_HEAL_MULTIPLIER );
+    }
   }
 
   void impact( action_state_t* s ) override
@@ -4320,6 +4324,19 @@ struct death_and_decay_t : public death_knight_spell_t
     else
     {
       death_knight_spell_t::impact( s );
+    }
+  }
+
+  void last_tick( dot_t* d ) override
+  {
+    death_knight_spell_t::last_tick( d );
+
+    // Lanathel's lament will increase the player's damage/healing multipliers while DnD/Defaile is
+    // up. Only heal multiplier must be invalidated here, as the damage multiplier is simc is
+    // treated as a target-based multiplier, and computed every time.
+    if ( p() -> legendary.lanathels_lament -> ok() )
+    {
+      player -> invalidate_cache( CACHE_PLAYER_HEAL_MULTIPLIER );
     }
   }
 
@@ -4400,6 +4417,19 @@ struct defile_t : public death_knight_spell_t
     return m;
   }
 
+  void execute() override
+  {
+    death_knight_spell_t::execute();
+
+    // Lanathel's lament will increase the player's damage/healing multipliers while DnD/Defaile is
+    // up. Only heal multiplier must be invalidated here, as the damage multiplier is simc is
+    // treated as a target-based multiplier, and computed every time.
+    if ( p() -> legendary.lanathels_lament -> ok() )
+    {
+      player -> invalidate_cache( CACHE_PLAYER_HEAL_MULTIPLIER );
+    }
+  }
+
   void impact( action_state_t* s ) override
   {
     if ( s -> target -> debuffs.flying && s -> target -> debuffs.flying -> check() )
@@ -4417,6 +4447,19 @@ struct defile_t : public death_knight_spell_t
     death_knight_spell_t::tick( dot );
 
     p() -> buffs.defile -> trigger();
+  }
+
+  void last_tick( dot_t* d ) override
+  {
+    death_knight_spell_t::last_tick( d );
+
+    // Lanathel's lament will increase the player's damage/healing multipliers while DnD/Defaile is
+    // up. Only heal multiplier must be invalidated here, as the damage multiplier is simc is
+    // treated as a target-based multiplier, and computed every time.
+    if ( p() -> legendary.lanathels_lament -> ok() )
+    {
+      player -> invalidate_cache( CACHE_PLAYER_HEAL_MULTIPLIER );
+    }
   }
 };
 
@@ -4863,7 +4906,7 @@ struct festering_strike_t : public death_knight_melee_attack_t
 
   void impact( action_state_t* s ) override
   {
-    static const std::array<unsigned, 4> fw_proc_stacks = { { 2, 3, 3, 4 } };
+    static const std::array<unsigned, 3> fw_proc_stacks = { { 2, 3, 4 } };
 
     death_knight_melee_attack_t::impact( s );
 
@@ -4918,6 +4961,13 @@ struct frostscythe_t : public death_knight_melee_attack_t
     weapon = &( player -> main_hand_weapon );
     aoe = -1;
 
+    // T21 2P bonus : damage increase to Howling Blast, Frostscythe and Obliterate
+    if ( maybe_ptr( p -> dbc.ptr ) ) {
+      if (p->sets->has_set_bonus(DEATH_KNIGHT_FROST, T21, B2))
+      {
+         base_multiplier *= (1.0 + p-> find_spell(251873) -> effectN(3).percent());
+      }
+    }
     crit_bonus_multiplier *= 1.0 + p -> spec.death_knight -> effectN( 5 ).percent();
   }
 
@@ -5157,6 +5207,14 @@ struct howling_blast_t : public death_knight_spell_t
     base_aoe_multiplier = data().effectN( 1 ).percent();
     base_multiplier    *= 1.0 + p -> talent.freezing_fog -> effectN( 1 ).percent();
     base_multiplier    *= 1.0 + p -> artifact.blast_radius.percent();
+    
+    // T21 2P bonus : damage increase to Howling Blast, Frostscythe and Obliterate
+    if ( maybe_ptr( p -> dbc.ptr ) )  {
+      if (p->sets->has_set_bonus(DEATH_KNIGHT_FROST, T21, B2))
+      {
+         base_multiplier *= (1.0 + p-> find_spell(251873) -> effectN(1).percent());
+      }
+    }
   }
 
   double runic_power_generation_multiplier( const action_state_t* state ) const override
@@ -5171,7 +5229,8 @@ struct howling_blast_t : public death_knight_spell_t
 
     return m;
   }
-
+  
+  // T19 4P bonus : RP gain when using Rime proc
   gain_t* energize_gain( const action_state_t* /* state */ ) const override
   {
     if ( p() -> buffs.rime -> check() && p() -> sets -> has_set_bonus( DEATH_KNIGHT_FROST, T19, B4 ) )
@@ -5216,6 +5275,15 @@ struct howling_blast_t : public death_knight_spell_t
   void execute() override
   {
     death_knight_spell_t::execute();
+
+    // 7.3 PTR : Howling Blast now triggers Killing Machine during Obliteration
+    if ( maybe_ptr( p() -> dbc.ptr ) ) 
+    {
+      if ( p() -> buffs.obliteration -> up())
+      {
+        p() -> buffs.killing_machine -> execute();
+      }
+    }
 
     p() -> buffs.rime -> decrement();
   }
@@ -5472,6 +5540,19 @@ struct obliterate_strike_t : public death_knight_melee_attack_t
     background = special = true;
     may_miss = false;
     weapon = w;
+    
+    // T21 2P bonus : damage increase to Howling Blast, Frostscythe and Obliterate
+    if ( maybe_ptr( p -> dbc.ptr ) ) {
+      if (p->sets->has_set_bonus(DEATH_KNIGHT_FROST, T21, B2))
+      {
+         base_multiplier *= (1.0 + p-> find_spell(251873) -> effectN(2).percent());
+      }
+    }
+    // 7.3 : Koltira's newfound will also increase Obliterate damage by 10%
+    if ( maybe_ptr( p -> dbc.ptr ) ) 
+    {
+      base_multiplier *= 1.0 + p -> legendary.koltiras_newfound_will -> effectN( 2 ).percent();
+    }
   }
 
   double composite_crit_chance() const override
@@ -5756,7 +5837,7 @@ struct remorseless_winter_t : public death_knight_spell_t
 
 struct scourge_strike_base_t : public death_knight_melee_attack_t
 {
-  std::array<double, 4> instructors_chance;
+  std::array<double, 3> instructors_chance;
 
   scourge_strike_base_t( const std::string& name, death_knight_t* p, const spell_data_t* spell ) :
     death_knight_melee_attack_t( name, p, spell )
@@ -5765,8 +5846,14 @@ struct scourge_strike_base_t : public death_knight_melee_attack_t
 
     //instructors_chance = { { 0.20, 0.40, 0.20, 0.10, 0.05, 0.05 } };
     //
-    // TODO: Changed in 7.1.5, new probability distribution unknown/untested
-    instructors_chance = { { .3, .4, .2, .1 } };
+    // Updated 2017-07-18 based on empirical testing
+    instructors_chance = { { .635, .1825, .1825 } };
+    if ( p -> legendary.the_instructors_fourth_lesson > 0 &&
+         instructors_chance.size() != p -> legendary.the_instructors_fourth_lesson + 1 )
+    {
+      sim -> errorf( "Player %s Instructor's Fourth Lesson probability distribution mismatch",
+        p -> name() );
+    }
   }
 
   int n_targets() const override
@@ -5815,8 +5902,6 @@ struct scourge_strike_base_t : public death_knight_melee_attack_t
 
       if ( p() -> legendary.the_instructors_fourth_lesson )
       {
-        assert( instructors_chance.size() == p() -> legendary.the_instructors_fourth_lesson + 1 );
-
         double roll = rng().real();
         double sum = 0;
 
@@ -5826,7 +5911,7 @@ struct scourge_strike_base_t : public death_knight_melee_attack_t
 
           if ( roll <= sum )
           {
-            n_burst += ( int ) i;
+            n_burst += as<int>( i );
             break;
           }
         }
@@ -5971,69 +6056,6 @@ struct soul_reaper_t : public death_knight_melee_attack_t
     if ( result_is_hit( execute_state -> result ) )
     {
       td( execute_state -> target ) -> debuff.soul_reaper -> trigger();
-    }
-  }
-};
-
-// Soulgorge ================================================================
-
-struct soulgorge_t : public death_knight_spell_t
-{
-  soulgorge_t( death_knight_t* p, const std::string& options_str ) :
-    death_knight_spell_t( "soulgorge", p, p -> talent.soulgorge )
-  {
-    parse_options( options_str );
-    aoe = -1;
-  }
-
-  size_t available_targets( std::vector< player_t* >& tl ) const override
-  {
-    death_knight_spell_t::available_targets( tl );
-
-    auto it = tl.begin();
-    while ( it != tl.end() )
-    {
-      if ( ! td( *it ) -> dot.blood_plague -> is_ticking() )
-      {
-        it = tl.erase( it );
-      }
-      else
-      {
-        it++;
-      }
-    }
-
-    return tl.size();
-  }
-
-  void execute() override
-  {
-    death_knight_spell_t::execute();
-
-    double rune_regen_value = 0;
-    for ( auto t : target_list() )
-    {
-      auto td_ = td( t );
-      double expended = 1.0 - td_ -> dot.blood_plague -> remains() / td_ -> dot.blood_plague -> duration();
-
-      if ( sim -> debug )
-      {
-        sim -> out_debug.printf( "%s soulgorges %s blood_plague: remains=%.3f duration=%.3f expended=%.f gain=%.f%%",
-          player -> name(), t -> name(), td_ -> dot.blood_plague -> remains().total_seconds(),
-          td_ -> dot.blood_plague -> duration().total_seconds(),
-          expended,
-          100.0 * data().effectN( 2 ).percent() * expended );
-      }
-
-      td_ -> dot.blood_plague -> cancel();
-
-      rune_regen_value += data().effectN( 2 ).percent() * expended;
-    }
-
-    if ( rune_regen_value > 0 )
-    {
-      p() -> buffs.soulgorge -> expire();
-      p() -> buffs.soulgorge -> trigger( static_cast<int>( rune_regen_value * 100 ), rune_regen_value );
     }
   }
 };
@@ -6380,22 +6402,6 @@ struct rune_tap_t : public death_knight_spell_t
   }
 };
 
-// Death Pact
-
-// TODO-WOD: Healing absorb kludge
-
-struct death_pact_t : public death_knight_heal_t
-{
-  death_pact_t( death_knight_t* p, const std::string& options_str ) :
-    death_knight_heal_t( "death_pact", p, p -> find_talent_spell( "Death Pact" ) )
-  {
-    may_crit = false;
-    base_pct_heal = data().effectN( 1 ).percent();
-
-    parse_options( options_str );
-  }
-};
-
 // Expressions
 
 struct disease_expr_t : public expr_t
@@ -6662,9 +6668,7 @@ struct hungering_rune_weapon_buff_t : public buff_t
                             p -> gains.hungering_rune_weapon );
       }
     } ) ),
-    // NOTE: Apparently Hungering Rune Weapon is bugged(?) in game, and is actually ticking every
-    // second for runes, instead of every 1.5 seconds.
-    rune_divisor( p -> talent.hungering_rune_weapon -> effectN( p -> bugs ? 2 : 1 ).period() / buff_period ),
+    rune_divisor( p -> talent.hungering_rune_weapon -> effectN( 1 ).period() / buff_period ),
     rp_divisor( p -> talent.hungering_rune_weapon -> effectN( 2 ).period() / buff_period )
   { }
 };
@@ -7108,11 +7112,6 @@ bool death_knight_t::create_actions()
         this, find_spell( 243122 ) );
   }
 
-  if ( sets -> has_set_bonus( DEATH_KNIGHT_UNHOLY, T20, B2 ) )
-  {
-    active_spells.t20_2pc_unholy = new explosive_army_t( this );
-  }
-
   return player_t::create_actions();
 }
 
@@ -7123,13 +7122,12 @@ action_t* death_knight_t::create_action( const std::string& name, const std::str
   // General Actions
   if ( name == "antimagic_shell"          ) return new antimagic_shell_t          ( this, options_str );
   if ( name == "auto_attack"              ) return new auto_attack_t              ( this, options_str );
-  if ( name == "blood_boil"               ) return new blood_boil_t               ( this, options_str );
   if ( name == "chains_of_ice"            ) return new chains_of_ice_t            ( this, options_str );
+  if ( name == "death_strike"             ) return new death_strike_t             ( this, options_str );
   if ( name == "icebound_fortitude"       ) return new icebound_fortitude_t       ( this, options_str );
-  if ( name == "soul_reaper"              ) return new soul_reaper_t              ( this, options_str );
 
   // Blood Actions
-  if ( name == "blood_tap"                ) return new blood_tap_t                ( this, options_str );
+  if ( name == "blood_boil"               ) return new blood_boil_t               ( this, options_str );
   if ( name == "dancing_rune_weapon"      ) return new dancing_rune_weapon_t      ( this, options_str );
   if ( name == "dark_command"             ) return new dark_command_t             ( this, options_str );
   if ( name == "deaths_caress"            ) return new deaths_caress_t            ( this, options_str );
@@ -7138,6 +7136,16 @@ action_t* death_knight_t::create_action( const std::string& name, const std::str
   if ( name == "vampiric_blood"           ) return new vampiric_blood_t           ( this, options_str );
   if ( name == "consumption"              ) return new consumption_t              ( this, options_str );
   if ( name == "death_and_decay_tick"     ) return new death_and_decay_tick_t     ( this, options_str );
+  
+  // Talents
+  if ( name == "blood_mirror"             ) return new blood_mirror_t             ( this, options_str );
+  if ( name == "blooddrinker"             ) return new blooddrinker_t             ( this, options_str );
+  if ( name == "blood_tap"                ) return new blood_tap_t                ( this, options_str );
+  if ( name == "bloodworms"               ) return new bloodworms_t               ( this, options_str );
+  if ( name == "bonestorm"                ) return new bonestorm_t                ( this, options_str );
+  if ( name == "mark_of_blood"            ) return new mark_of_blood_t            ( this, options_str );
+  if ( name == "rune_tap"                 ) return new rune_tap_t                 ( this, options_str );
+  if ( name == "tombstone"                ) return new tombstone_t                ( this, options_str );
 
   // Frost Actions
   if ( name == "empower_rune_weapon"      ) return new empower_rune_weapon_t      ( this, options_str );
@@ -7147,11 +7155,15 @@ action_t* death_knight_t::create_action( const std::string& name, const std::str
   if ( name == "obliterate"               ) return new obliterate_t               ( this, options_str );
   if ( name == "pillar_of_frost"          ) return new pillar_of_frost_t          ( this, options_str );
   if ( name == "remorseless_winter"       ) return new remorseless_winter_t       ( this, options_str );
-  if ( name == "horn_of_winter"           ) return new horn_of_winter_t           ( this, options_str );
+  if ( name == "sindragosas_fury"         ) return new sindragosas_fury_t         ( this, options_str );
+  
+  // Talents
+  if ( name == "breath_of_sindragosa"     ) return new breath_of_sindragosa_t     ( this, options_str );
   if ( name == "frostscythe"              ) return new frostscythe_t              ( this, options_str );
+  if ( name == "glacial_advance"          ) return new glacial_advance_t          ( this, options_str );
+  if ( name == "horn_of_winter"           ) return new horn_of_winter_t           ( this, options_str );
   if ( name == "hungering_rune_weapon"    ) return new hungering_rune_weapon_t    ( this, options_str );
   if ( name == "obliteration"             ) return new obliteration_t             ( this, options_str );
-  if ( name == "glacial_advance"          ) return new glacial_advance_t          ( this, options_str );
 
   // Unholy Actions
   if ( name == "apocalypse"               ) return new apocalypse_t               ( this, options_str );
@@ -7159,7 +7171,6 @@ action_t* death_knight_t::create_action( const std::string& name, const std::str
   if ( name == "dark_transformation"      ) return new dark_transformation_t      ( this, options_str );
   if ( name == "death_and_decay"          ) return new death_and_decay_t          ( this, options_str );
   if ( name == "death_coil"               ) return new death_coil_t               ( this, options_str );
-  if ( name == "death_strike"             ) return new death_strike_t             ( this, options_str );
   if ( name == "festering_strike"         ) return new festering_strike_t         ( this, options_str );
   if ( name == "outbreak"                 ) return new outbreak_t                 ( this, options_str );
   if ( name == "raise_dead"               ) return new raise_dead_t               ( this, options_str );
@@ -7168,23 +7179,15 @@ action_t* death_knight_t::create_action( const std::string& name, const std::str
 
   // Talents
   if ( name == "blighted_rune_weapon"     ) return new blighted_rune_weapon_t     ( this, options_str );
-  if ( name == "blood_mirror"             ) return new blood_mirror_t             ( this, options_str );
-  if ( name == "blooddrinker"             ) return new blooddrinker_t             ( this, options_str );
-  if ( name == "bloodworms"               ) return new bloodworms_t               ( this, options_str );
-  if ( name == "bonestorm"                ) return new bonestorm_t                ( this, options_str );
-  if ( name == "breath_of_sindragosa"     ) return new breath_of_sindragosa_t     ( this, options_str );
   if ( name == "clawing_shadows"          ) return new clawing_shadows_t          ( this, options_str );
   if ( name == "dark_arbiter"             ) return new dark_arbiter_t             ( this, options_str );
-  if ( name == "death_pact"               ) return new death_pact_t               ( this, options_str );
   if ( name == "defile"                   ) return new defile_t                   ( this, options_str );
   if ( name == "epidemic"                 ) return new epidemic_t                 ( this, options_str );
-  if ( name == "mark_of_blood"            ) return new mark_of_blood_t            ( this, options_str );
-  if ( name == "rune_tap"                 ) return new rune_tap_t                 ( this, options_str );
-  if ( name == "soulgorge"                ) return new soulgorge_t                ( this, options_str );
-  if ( name == "tombstone"                ) return new tombstone_t                ( this, options_str );
+  if ( name == "soul_reaper"              ) return new soul_reaper_t              ( this, options_str );
 
-  // Artifact
-  if ( name == "sindragosas_fury"         ) return new sindragosas_fury_t         ( this, options_str );
+  // New 7.3 Frost talent, Not Yet Implemented
+  // if ( maybe_ptr( p -> dbc.ptr ) )
+      // if ( name == "inexorable assault"       ) return new_inexorable_assault_t       ( this, options_str );
 
   return player_t::create_action( name, options_str );
 }
@@ -7277,9 +7280,6 @@ double death_knight_t::composite_melee_haste() const
 {
   double haste = player_t::composite_melee_haste();
 
-  //haste *= 1.0 / ( 1.0 + buffs.unholy_presence -> value() );
-
-
   haste *= 1.0 / ( 1.0 + buffs.sephuzs_secret -> check_value() );
 
   haste *= 1.0 / ( 1.0 + spec.veteran_of_the_third_war -> effectN( 6 ).percent() );
@@ -7300,7 +7300,14 @@ double death_knight_t::composite_melee_haste() const
   {
     haste *= 1.0 / ( 1.0 + legendary.sephuzs_secret -> effectN( 3 ).percent() );
   }
-
+  
+  // PTR 7.3 : Hungering Rune Weapon now also increase haste by 20%
+  if ( dbc.ptr )
+  {
+    if (buffs.hungering_rune_weapon -> up() )
+      haste *= 1.0 / ( 1.0 + talent.hungering_rune_weapon -> effectN( 3 ).percent() );    
+  }
+    
   return haste;
 }
 
@@ -7324,6 +7331,13 @@ double death_knight_t::composite_spell_haste() const
     haste *= 1.0 / ( 1.0 + legendary.sephuzs_secret -> effectN( 3 ).percent() );
   }
 
+  // PTR 7.3 : Hungering Rune Weapon now also increase haste by 20%
+  if ( dbc.ptr )
+  {
+    if (buffs.hungering_rune_weapon -> up() )
+      haste *= 1.0 / ( 1.0 + talent.hungering_rune_weapon -> effectN( 3 ).percent() );    
+  }
+  
   return haste;
 }
 
@@ -7391,7 +7405,6 @@ void death_knight_t::init_spells()
 
   // Unholy
   spec.festering_wound            = find_specialization_spell( "Festering Wound" );
-  spec.deaths_advance             = find_specialization_spell( "Death's Advance" );
   spec.outbreak                   = find_specialization_spell( "Outbreak" );
   spec.runic_corruption           = find_specialization_spell( "Runic Corruption" );
   spec.sudden_doom                = find_specialization_spell( "Sudden Doom" );
@@ -7402,26 +7415,31 @@ void death_knight_t::init_spells()
   mastery.dreadblade              = find_mastery_spell( DEATH_KNIGHT_UNHOLY );
 
   // Frost Talents
+  // Will change in 7.3
   // Tier 1
   talent.shattering_strikes    = find_talent_spell( "Shattering Strikes" );
   talent.icy_talons            = find_talent_spell( "Icy Talons" );
-  talent.murderous_efficiency  = find_talent_spell( "Murderous Efficiency" );
+  talent.murderous_efficiency  = find_talent_spell( "Murderous Efficiency" ); // Becomes Runic Attenuation in 7.3 PTR
   // Tier 2
   talent.freezing_fog          = find_talent_spell( "Freezing Fog" );
-  talent.frozen_pulse          = find_talent_spell( "Frozen Pulse" );
+  talent.frozen_pulse          = find_talent_spell( "Frozen Pulse" ); // Becomes Murderous Efficiency in 7.3 PTR
   talent.horn_of_winter        = find_talent_spell( "Horn of Winter" );
   // Tier 3
   talent.icecap                = find_talent_spell( "Icecap" );
-  talent.hungering_rune_weapon = find_talent_spell( "Hungering Rune Weapon" );
+  talent.hungering_rune_weapon = find_talent_spell( "Hungering Rune Weapon" ); // Becomes Glacial Advance in 7.3 PTR
   talent.avalanche             = find_talent_spell( "Avalanche" );
+  
+  // Tier 4 : New talent in 7.3  
+  //talent.inexorable_assault  = find_talent_spell( "Inexorable Assault" );
+    
   // Tier 6
   talent.frostscythe           = find_talent_spell( "Frostscythe" );
-  talent.runic_attenuation     = find_talent_spell( "Runic Attenuation" );
+  talent.runic_attenuation     = find_talent_spell( "Runic Attenuation" ); // Becomes Frozen Pulse in 7.3 PTR
   talent.gathering_storm       = find_talent_spell( "Gathering Storm" );
   // Tier 7
   talent.obliteration          = find_talent_spell( "Obliteration" );
   talent.breath_of_sindragosa  = find_talent_spell( "Breath of Sindragosa" );
-  talent.glacial_advance       = find_talent_spell( "Glacial Advance" );
+  talent.glacial_advance       = find_talent_spell( "Glacial Advance" ); // Becomes Hungering Rune Weapon in 7.3 PTR
 
   // Unholy Talents
   // Tier 1
@@ -7460,7 +7478,7 @@ void death_knight_t::init_spells()
 
   // Tier 2
   talent.rapid_decomposition   = find_talent_spell( "Rapid Decomposition" );
-  talent.soulgorge             = find_talent_spell( "Soulgorge" );
+  talent.heart_of_ice          = find_talent_spell( "Heart of ice" );
   talent.spectral_deflection   = find_talent_spell( "Spectral Deflection" );
 
   // Tier 3
@@ -7534,7 +7552,7 @@ void death_knight_t::init_spells()
   artifact.sanguinary_affinity = find_artifact_spell( "Sanguinary Affinity" );
   artifact.vampiric_fangs      = find_artifact_spell( "Vampiric Fangs" );
   artifact.rattling_bones      = find_artifact_spell( "Rattling Bones" );
-  artifact.bonebreaker        = find_artifact_spell( "Bonebreaker" );
+  artifact.bonebreaker         = find_artifact_spell( "Bonebreaker" );
   artifact.allconsuming_rot    = find_artifact_spell( "All-Consuming Rot" );
   artifact.unending_thirst     = find_artifact_spell( "Unending Thirst" );
   artifact.blood_feast         = find_artifact_spell( "Blood Feast" );
@@ -7548,9 +7566,13 @@ void death_knight_t::init_spells()
   artifact.dance_of_darkness   = find_artifact_spell( "Dance of Darkness" );
   artifact.mouth_of_hell       = find_artifact_spell( "Mouth of Hell" );
   artifact.the_hungering_maw   = find_artifact_spell( "The Hungering Maw" );
+  // 7.2
+  artifact.fortitude_of_the_ebon_blade = find_artifact_spell("Fortitude of the Ebon Blade" );
+  artifact.carrion_feast       = find_artifact_spell( "Carrion Feast" );
+  artifact.vampiric_aura       = find_artifact_spell( "Vampiric Aura" );
+  artifact.souldrinker         = find_artifact_spell( "Souldrinker" );
   // Generic spells
   spell.antimagic_shell        = find_class_spell( "Anti-Magic Shell" );
-  spell.blood_rites            = find_spell( 163948 );
   spell.ossuary                = find_spell( 219788 );
 
   // Active Spells
@@ -7709,10 +7731,12 @@ std::string death_knight_t::default_rune() const
 void death_knight_t::default_apl_frost()
 {
   action_priority_list_t* def         = get_action_priority_list( "default" );
-  action_priority_list_t* generic     = get_action_priority_list( "generic" );
-  action_priority_list_t* bos         = get_action_priority_list( "bos" );
+  action_priority_list_t* cds         = get_action_priority_list( "cds" );
+  action_priority_list_t* cold_heart  = get_action_priority_list( "cold_heart" );
+  action_priority_list_t* machinegun  = get_action_priority_list( "machinegun" );
+  action_priority_list_t* bos_generic = get_action_priority_list( "bos_generic" );
   action_priority_list_t* bos_ticking = get_action_priority_list( "bos_ticking" );
-  action_priority_list_t* gs_ticking  = get_action_priority_list( "gs_ticking" );
+  
 
   // Setup precombat APL for DPS spec
   default_apl_dps_precombat();
@@ -7721,114 +7745,103 @@ void death_knight_t::default_apl_frost()
   
   // Interrupt
   def -> add_action( this, "Mind Freeze" );
+  
+  // Choose APL
+  def -> add_action( "call_action_list,name=cds" );
+  def -> add_action( "call_action_list,name=cold_heart,if=equipped.cold_heart&buff.cold_heart.stack>=10" );
+  def -> add_action( "call_action_list,name=machinegun,if=!talent.breath_of_sindragosa.enabled" );
+  def -> add_action( "call_action_list,name=bos_generic,if=talent.breath_of_sindragosa.enabled&!dot.breath_of_sindragosa.ticking" );
+  def -> add_action( "call_action_list,name=bos_ticking,if=talent.breath_of_sindragosa.enabled&dot.breath_of_sindragosa.ticking" );
 
   // Racials
-  def -> add_action( "arcane_torrent,if=runic_power.deficit>20&!talent.breath_of_sindragosa.enabled" );
-  def -> add_action( "arcane_torrent,if=talent.breath_of_sindragosa.enabled&dot.breath_of_sindragosa.ticking&runic_power<30&rune<2" );
-  def -> add_action( "blood_fury,if=buff.pillar_of_frost.up" );
-  def -> add_action( "berserking,if=buff.pillar_of_frost.up" );
+  cds -> add_action( "arcane_torrent,if=runic_power.deficit>20&!talent.breath_of_sindragosa.enabled" );
+  cds -> add_action( "arcane_torrent,if=talent.breath_of_sindragosa.enabled&dot.breath_of_sindragosa.ticking&runic_power<30&rune<2" );
+  cds -> add_action( "blood_fury,if=buff.pillar_of_frost.up" );
+  cds -> add_action( "berserking,if=buff.pillar_of_frost.up" );
 
   // On-use itemos
-  def -> add_action( "use_items" );
-  def -> add_action( "use_item,name=ring_of_collapsing_futures,"
+  cds -> add_action( "use_items" );
+  cds -> add_action( "use_item,name=ring_of_collapsing_futures,"
                      "if=(buff.temptation.stack=0&target.time_to_die>60)|target.time_to_die<60" );
-  def -> add_action( "use_item,name=horn_of_valor,"
+  cds -> add_action( "use_item,name=horn_of_valor,"
                      "if=buff.pillar_of_frost.up&(!talent.breath_of_sindragosa.enabled|!cooldown.breath_of_sindragosa.remains)" );
-  def -> add_action( "use_item,name=draught_of_souls,"
+  cds -> add_action( "use_item,name=draught_of_souls,"
                      "if=rune.time_to_5<3&(!dot.breath_of_sindragosa.ticking|runic_power>60)" );
 
   // In-combat potion
-  def -> add_action( "potion,if=buff.pillar_of_frost.up&(!talent.breath_of_sindragosa.enabled|!cooldown.breath_of_sindragosa.remains)" );
+  cds -> add_action( "potion,if=buff.pillar_of_frost.up&(!talent.breath_of_sindragosa.enabled|!cooldown.breath_of_sindragosa.remains)" );
 
   // Cooldowns
-  def -> add_action( this, "Pillar of Frost", "if=!talent.breath_of_sindragosa.enabled" );
-  def -> add_action( this, "Pillar of Frost", "if=talent.breath_of_sindragosa.enabled&cooldown.breath_of_sindragosa.remains>40" );
-  def -> add_action( this, "Pillar of Frost", "if=talent.breath_of_sindragosa.enabled&!cooldown.breath_of_sindragosa.remains&runic_power>=50&equipped.140806&cooldown.hungering_rune_weapon.remains<10" );
-  def -> add_action( this, "Pillar of Frost", "if=talent.breath_of_sindragosa.enabled&!cooldown.breath_of_sindragosa.remains&runic_power>=50&!equipped.140806&(cooldown.hungering_rune_weapon.remains<15|target.time_to_die>135)" );
-  def -> add_talent( this, "Breath of Sindragosa", "if=buff.pillar_of_frost.up" );
-  def -> add_action( this, "Chains of Ice", "if=buff.cold_heart.stack=20|(buff.pillar_of_frost.remains<gcd&buff.pillar_of_frost.up&(buff.cold_heart.stack>=11|(buff.cold_heart.stack>=10&set_bonus.tier20_4pc)))" );
+  cds -> add_action( this, "Pillar of Frost", "if=!talent.breath_of_sindragosa.enabled" );
+  cds -> add_action( this, "Pillar of Frost", "if=talent.breath_of_sindragosa.enabled&cooldown.breath_of_sindragosa.remains>40" );
+  cds -> add_action( this, "Pillar of Frost", "if=talent.breath_of_sindragosa.enabled&!cooldown.breath_of_sindragosa.remains&runic_power>=50&equipped.convergence_of_fates&cooldown.hungering_rune_weapon.remains<10" );
+  cds -> add_action( this, "Pillar of Frost", "if=talent.breath_of_sindragosa.enabled&!cooldown.breath_of_sindragosa.remains&runic_power>=50&!equipped.convergence_of_fates&(cooldown.hungering_rune_weapon.remains<15|target.time_to_die>135)" );
+  cds -> add_talent( this, "Breath of Sindragosa", "if=buff.pillar_of_frost.up" );
+
+  // Using Cold Heart
+  cold_heart -> add_action( this, "Chains of Ice", "if=buff.cold_heart.stack=20&buff.unholy_strength.up&cooldown.pillar_of_frost.remains>6" );
+  cold_heart -> add_action( this, "Chains of Ice", "if=buff.pillar_of_frost.up&buff.pillar_of_frost.remains<gcd&(buff.cold_heart.stack>=11|(buff.cold_heart.stack>=10&set_bonus.tier20_4pc))" );
+  cold_heart -> add_action( this, "Chains of Ice", "if=buff.unholy_strength.up&buff.unholy_strength.remains<gcd&buff.cold_heart.stack>16&cooldown.pillar_of_frost.remains>6" );
   
-  // Choose APL
-  def -> add_action( "call_action_list,name=generic,if=!talent.breath_of_sindragosa.enabled&!(talent.gathering_storm.enabled&buff.remorseless_winter.remains)" );
-  def -> add_action( "call_action_list,name=bos,if=talent.breath_of_sindragosa.enabled&!dot.breath_of_sindragosa.ticking" );
-  def -> add_action( "call_action_list,name=bos_ticking,if=talent.breath_of_sindragosa.enabled&dot.breath_of_sindragosa.ticking" );
-  def -> add_action( "call_action_list,name=gs_ticking,if=talent.gathering_storm.enabled&buff.remorseless_winter.remains&!talent.breath_of_sindragosa.enabled" );
+  // Machinegun rotation
+  machinegun -> add_talent( this, "Obliteration", "if=(!talent.frozen_pulse.enabled|(rune<2&runic_power<28))&!talent.gathering_storm.enabled" );
+  machinegun -> add_action( this, "Frost Strike", "if=buff.icy_talons.remains<1.5&talent.icy_talons.enabled" );
+  machinegun -> add_action( this, "Frost Strike", "if=talent.shattering_strikes.enabled&debuff.razorice.stack=5" );
+  machinegun -> add_action( this, "Remorseless Winter", "if=((buff.rime.react&equipped.perseverance_of_the_ebon_martyr)|talent.gathering_storm.enabled)&!(buff.obliteration.up&spell_targets.howling_blast<2)" );
+  machinegun -> add_action( this, "Howling Blast", "if=buff.rime.react&!(buff.obliteration.up&spell_targets.howling_blast<2)&!(equipped.perseverance_of_the_ebon_martyr&talent.gathering_storm.enabled)" );
+  machinegun -> add_action( this, "Howling Blast", "if=buff.rime.react&!(buff.obliteration.up&spell_targets.howling_blast<2)&equipped.perseverance_of_the_ebon_martyr&talent.gathering_storm.enabled&(debuff.perseverance_of_the_ebon_martyr.up|cooldown.remorseless_winter.remains>3)" );
+  machinegun -> add_action( this, "Obliterate", "if=!buff.obliteration.up&(equipped.koltiras_newfound_will&talent.frozen_pulse.enabled&(set_bonus.tier19_2pc=1|set_bonus.tier19_4pc=1))|rune.time_to_5<gcd" );
+  machinegun -> add_talent( this, "Obliteration", "if=(!talent.frozen_pulse.enabled|(rune<2&runic_power<28))&talent.gathering_storm.enabled&buff.remorseless_winter.up" );
+  machinegun -> add_action( this, "Sindragosa's Fury", "if=(equipped.consorts_cold_core|buff.pillar_of_frost.up)&buff.unholy_strength.up&debuff.razorice.stack=5&!buff.obliteration.up" );
+  machinegun -> add_action( this, "Frost Strike", "if=(!buff.obliteration.up&runic_power.deficit<=10)|(buff.obliteration.up&!buff.killing_machine.react)" );
+  machinegun -> add_action( this, "Remorseless Winter", "if=spell_targets.remorseless_winter>=2&!(talent.frostscythe.enabled&buff.killing_machine.react&spell_targets.frostscythe>=2)" );
+  machinegun -> add_talent( this, "Frostscythe", "if=buff.killing_machine.up&(!equipped.koltiras_newfound_will|spell_targets.frostscythe>=2)" );
+  machinegun -> add_talent( this, "Glacial Advance", "if=spell_targets.glacial_advance>=2" );
+  machinegun -> add_talent( this, "Frostscythe", "if=spell_targets.frostscythe>=3" );
+  machinegun -> add_action( this, "Obliterate", "if=buff.killing_machine.react" );
+  machinegun -> add_action( this, "Frost Strike", "if=talent.gathering_storm.enabled&talent.murderous_efficiency.enabled&(set_bonus.tier19_2pc=1|set_bonus.tier19_4pc=1)" );
+  machinegun -> add_action( this, "Frost Strike", "if=(talent.horn_of_winter.enabled|talent.hungering_rune_weapon.enabled)&(set_bonus.tier19_2pc=1|set_bonus.tier19_4pc=1)" );
+  machinegun -> add_talent( this, "Hungering Rune Weapon", "if=!buff.hungering_rune_weapon.up&rune.time_to_3>gcd*2&runic_power<25" );
+  machinegun -> add_action( this, "Obliterate" );
+  machinegun -> add_talent( this, "Glacial Advance" );
+  machinegun -> add_talent( this, "Horn of Winter", "if=!buff.hungering_rune_weapon.up" );
+  machinegun -> add_action( this, "Frost Strike" );
+  machinegun -> add_action( this, "Empower Rune Weapon" );
 
-  // Generic rotation
-  generic -> add_talent( this, "Obliteration", "if=(!talent.frozen_pulse.enabled|(rune<2&runic_power<28))&!talent.gathering_storm.enabled" );
-  generic -> add_action( this, "Frost Strike", "if=buff.icy_talons.remains<1.5&talent.icy_talons.enabled" );
-  generic -> add_action( this, "Frost Strike", "if=talent.shattering_strikes.enabled&debuff.razorice.stack=5" );
-  generic -> add_action( this, "Remorseless Winter", "if=(buff.rime.react&equipped.132459&!(buff.obliteration.up&spell_targets.howling_blast<2))|talent.gathering_storm.enabled" );
-  generic -> add_action( this, "Howling Blast", "if=buff.rime.react&!(buff.obliteration.up&spell_targets.howling_blast<2)&!(equipped.132459&talent.gathering_storm.enabled)" );
-  generic -> add_action( this, "Howling Blast", "if=buff.rime.react&!(buff.obliteration.up&spell_targets.howling_blast<2)&equipped.132459&talent.gathering_storm.enabled&(debuff.perseverance_of_the_ebon_martyr.up|cooldown.remorseless_winter.remains>3)" );
-  generic -> add_action( this, "Obliterate", "if=!buff.obliteration.up&(equipped.132366&talent.frozen_pulse.enabled&(set_bonus.tier19_2pc=1|set_bonus.tier19_4pc=1))|rune.time_to_5<gcd" );
-  generic -> add_action( this, "Sindragosa's Fury", "if=(equipped.144293|buff.pillar_of_frost.up)&buff.unholy_strength.up&debuff.razorice.stack=5&!buff.obliteration.up" );
-  generic -> add_action( this, "Frost Strike", "if=runic_power.deficit<=10" );
-  generic -> add_action( this, "Frost Strike", "if=buff.obliteration.up&!buff.killing_machine.react" );
-  generic -> add_action( this, "Remorseless Winter", "if=spell_targets.remorseless_winter>=2&!(talent.frostscythe.enabled&buff.killing_machine.react&spell_targets.frostscythe>=2)" );
-  generic -> add_talent( this, "Frostscythe", "if=buff.killing_machine.up&(!equipped.132366|spell_targets.frostscythe>=2)" );
-  generic -> add_talent( this, "Glacial Advance", "if=spell_targets.glacial_advance>=2" );
-  generic -> add_talent( this, "Frostscythe", "if=spell_targets.frostscythe>=3" );
-  generic -> add_action( this, "Obliterate", "if=buff.killing_machine.react" );
-  generic -> add_action( this, "Frost Strike", "if=talent.gathering_storm.enabled&talent.murderous_efficiency.enabled&(set_bonus.tier19_2pc=1|set_bonus.tier19_4pc=1)" );
-  generic -> add_action( this, "Frost Strike", "if=(talent.horn_of_winter.enabled|talent.hungering_rune_weapon.enabled)&(set_bonus.tier19_2pc=1|set_bonus.tier19_4pc=1)" );
-  generic -> add_action( this, "Obliterate" );
-  generic -> add_talent( this, "Glacial Advance" );
-  generic -> add_talent( this, "Horn of Winter", "if=!buff.hungering_rune_weapon.up" );
-  generic -> add_action( this, "Frost Strike" );
-  generic -> add_action( this, "Empower Rune Weapon" );
-  generic -> add_talent( this, "Hungering Rune Weapon", "if=!buff.hungering_rune_weapon.up" );
-
-  // Breath of Sindragosa core rotation
-  bos -> add_action( this, "Frost Strike", "if=talent.icy_talons.enabled&buff.icy_talons.remains<gcd&cooldown.breath_of_sindragosa.remains>rune.time_to_4" );
-  bos -> add_action( this, "Remorseless Winter", "if=talent.gathering_storm.enabled" );
-  bos -> add_action( this, "Howling Blast", "if=buff.rime.react&rune.time_to_4<(gcd*2)" );
-  bos -> add_action( this, "Obliterate", "if=rune.time_to_6<gcd&!talent.gathering_storm.enabled" );
-  bos -> add_action( this, "Obliterate", "if=rune.time_to_4<gcd&(cooldown.breath_of_sindragosa.remains|runic_power<70)" );
-  bos -> add_action( this, "Frost Strike", "if=runic_power>=95&set_bonus.tier19_4pc&cooldown.breath_of_sindragosa.remains" );
-  bos -> add_action( this, "Remorseless Winter", "if=buff.rime.react&equipped.132459" );
-  bos -> add_action( this, "Howling Blast", "if=buff.rime.react&(dot.remorseless_winter.ticking|cooldown.remorseless_winter.remains>gcd|(!equipped.132459&!talent.gathering_storm.enabled))" );
-  bos -> add_action( this, "Obliterate", "if=!buff.rime.react&!(talent.gathering_storm.enabled&!(cooldown.remorseless_winter.remains>(gcd*2)|rune>4))&rune>3" );
-  bos -> add_action( this, "Sindragosa's Fury", "if=(equipped.144293|buff.pillar_of_frost.up)&buff.unholy_strength.up&debuff.razorice.stack=5&!buff.obliteration.up");
-  bos -> add_talent( this, "Frostscythe", "if=buff.killing_machine.up&(!equipped.132366|spell_targets.frostscythe>=2)" );
-  bos -> add_action( this, "Frost Strike", "if=runic_power>=70" );
-  bos -> add_action( this, "Remorseless Winter", "if=spell_targets.remorseless_winter>=2");
-  bos -> add_action( this, "Frost Strike", "if=(cooldown.remorseless_winter.remains<(gcd*2)|buff.gathering_storm.stack=10)&cooldown.breath_of_sindragosa.remains>rune.time_to_4&talent.gathering_storm.enabled" );
-  bos -> add_action( this, "Obliterate", "if=!buff.rime.react&(!talent.gathering_storm.enabled|cooldown.remorseless_winter.remains>(gcd))" );
-  bos -> add_talent( this, "Horn of Winter", "if=cooldown.breath_of_sindragosa.remains>15&runic_power<=70&rune.time_to_3>gcd" );
-  bos -> add_action( this, "Frost Strike", "if=cooldown.breath_of_sindragosa.remains>rune.time_to_4" );
-
-  // Breath of Sindragosa ticking rotation
-  bos_ticking -> add_action( this, "Remorseless Winter", "if=(runic_power>=30|buff.hungering_rune_weapon.up)&((buff.rime.react&equipped.132459)|(talent.gathering_storm.enabled&(dot.remorseless_winter.remains<=gcd|!dot.remorseless_winter.ticking)))" );
+  // Breath of Sindragosa downtime rotation
+  bos_generic -> add_action( this, "Frost Strike", "if=talent.icy_talons.enabled&buff.icy_talons.remains<gcd&cooldown.breath_of_sindragosa.remains>rune.time_to_4" );
+  bos_generic -> add_action( this, "Remorseless Winter", "if=talent.gathering_storm.enabled" );
+  bos_generic -> add_action( this, "Howling Blast", "if=buff.rime.react&rune.time_to_4<(gcd*2)" );
+  bos_generic -> add_action( this, "Obliterate", "if=rune.time_to_6<gcd&!talent.gathering_storm.enabled" );
+  bos_generic -> add_action( this, "Obliterate", "if=rune.time_to_4<gcd&(cooldown.breath_of_sindragosa.remains|runic_power<70)" );
+  bos_generic -> add_action( this, "Frost Strike", "if=runic_power>=95&set_bonus.tier19_4pc&cooldown.breath_of_sindragosa.remains" );
+  bos_generic -> add_action( this, "Remorseless Winter", "if=buff.rime.react&equipped.perseverance_of_the_ebon_martyr" );
+  bos_generic -> add_action( this, "Howling Blast", "if=buff.rime.react&(buff.remorseless_winter.up|cooldown.remorseless_winter.remains>gcd|(!equipped.perseverance_of_the_ebon_martyr&!talent.gathering_storm.enabled))" );
+  bos_generic -> add_action( this, "Obliterate", "if=!buff.rime.react&!(talent.gathering_storm.enabled&!(cooldown.remorseless_winter.remains>(gcd*2)|rune>4))&rune>3" );
+  bos_generic -> add_action( this, "Sindragosa's Fury", "if=(equipped.consorts_cold_core|buff.pillar_of_frost.up)&buff.unholy_strength.up&debuff.razorice.stack=5&!buff.obliteration.up" );
+  bos_generic -> add_talent( this, "Frostscythe", "if=buff.killing_machine.up&(!equipped.koltiras_newfound_will|spell_targets.frostscythe>=2)" );
+  bos_generic -> add_action( this, "Frost Strike", "if=runic_power>=70" );
+  bos_generic -> add_action( this, "Remorseless Winter", "if=spell_targets.remorseless_winter>=2" );
+  bos_generic -> add_action( this, "Frost Strike", "if=(cooldown.remorseless_winter.remains<(gcd*2)|buff.gathering_storm.stack=10)&cooldown.breath_of_sindragosa.remains>rune.time_to_4&talent.gathering_storm.enabled" );
+  bos_generic -> add_action( this, "Obliterate", "if=!buff.rime.react&(!talent.gathering_storm.enabled|cooldown.remorseless_winter.remains>(gcd))" );
+  bos_generic -> add_talent( this, "Horn of Winter", "if=cooldown.breath_of_sindragosa.remains>15&runic_power<=70&rune.time_to_3>gcd" );
+  bos_generic -> add_action( this, "Frost Strike", "if=cooldown.breath_of_sindragosa.remains>rune.time_to_4" );
+  
+  // Breath of Sindragosa uptime rotation
+  bos_ticking -> add_action( this, "Remorseless Winter", "if=(runic_power>=30|buff.hungering_rune_weapon.up)&((buff.rime.react&equipped.perseverance_of_the_ebon_martyr)|(talent.gathering_storm.enabled&(buff.remorseless_winter.remains<=gcd|!buff.remorseless_winter.remains)))" );
   bos_ticking -> add_action( this, "Howling Blast", "if=((runic_power>=20&set_bonus.tier19_4pc)|runic_power>=30|buff.hungering_rune_weapon.up)&buff.rime.react" );
   bos_ticking -> add_action( this, "Frost Strike", "if=set_bonus.tier20_2pc&runic_power>85&rune<=3&buff.pillar_of_frost.up" );
   bos_ticking -> add_action( this, "Obliterate", "if=runic_power<=45|rune.time_to_5<gcd|buff.hungering_rune_weapon.remains>=2" );
-  bos_ticking -> add_talent( this, "Hungering Rune Weapon", "if=runic_power<70&!buff.hungering_rune_weapon.up&rune<2&cooldown.breath_of_sindragosa.remains>35&equipped.140806" );
+  bos_ticking -> add_talent( this, "Hungering Rune Weapon", "if=runic_power<70&!buff.hungering_rune_weapon.up&rune<2&cooldown.breath_of_sindragosa.remains>35&equipped.convergence_of_fates" );
   bos_ticking -> add_talent( this, "Hungering Rune Weapon", "if=runic_power<50&!buff.hungering_rune_weapon.up&rune.time_to_2>=3&cooldown.breath_of_sindragosa.remains>30" );
   bos_ticking -> add_talent( this, "Hungering Rune Weapon", "if=runic_power<35&!buff.hungering_rune_weapon.up&rune.time_to_2>=2&cooldown.breath_of_sindragosa.remains>30" );
   bos_ticking -> add_talent( this, "Hungering Rune Weapon", "if=runic_power<20&!buff.hungering_rune_weapon.up&rune.time_to_2>=1&cooldown.breath_of_sindragosa.remains>30" );
-  bos_ticking -> add_action( this, "Sindragosa's Fury", "if=(equipped.144293|buff.pillar_of_frost.up)&buff.unholy_strength.up&debuff.razorice.stack=5&!buff.obliteration.up" );
-  bos_ticking -> add_talent( this, "Frostscythe", "if=buff.killing_machine.up&(!equipped.132366|talent.gathering_storm.enabled|spell_targets.frostscythe>=2)" );
+  bos_ticking -> add_action( this, "Sindragosa's Fury", "if=(equipped.consorts_cold_core|buff.pillar_of_frost.up)&buff.unholy_strength.up&debuff.razorice.stack=5&!buff.obliteration.up" );
+  bos_ticking -> add_talent( this, "Frostscythe", "if=buff.killing_machine.up&(!equipped.koltiras_newfound_will|talent.gathering_storm.enabled|spell_targets.frostscythe>=2)" );
   bos_ticking -> add_action( this, "Remorseless Winter", "if=spell_targets.remorseless_winter>=2" );
   bos_ticking -> add_action( this, "Obliterate", "if=runic_power<=75|rune>3" );
   bos_ticking -> add_talent( this, "Horn of Winter", "if=runic_power<70&!buff.hungering_rune_weapon.up&rune.time_to_3>gcd" );
   bos_ticking -> add_action( this, "Empower Rune Weapon", "if=runic_power<20" );
-
-  // Gathering Storm ticking rotation
-  gs_ticking -> add_action( this, "Frost Strike", "if=buff.icy_talons.remains<1.5&talent.icy_talons.enabled" );
-  gs_ticking -> add_action( this, "Remorseless Winter" );
-  gs_ticking -> add_action( this, "Howling Blast", "if=buff.rime.react&!(buff.obliteration.up&spell_targets.howling_blast<2)" );
-  gs_ticking -> add_talent( this, "Obliteration", "if=(!talent.frozen_pulse.enabled|(rune<2&runic_power<28))" );
-  gs_ticking -> add_action( this, "Obliterate", "if=rune>3|buff.killing_machine.react|buff.obliteration.up" );
-  gs_ticking -> add_action( this, "Sindragosa's Fury", "if=(equipped.144293|buff.pillar_of_frost.up)&buff.unholy_strength.up&debuff.razorice.stack=5&!buff.obliteration.up" );
-  gs_ticking -> add_talent( this, "Frostscythe", "if=buff.killing_machine.up&(!equipped.132366|talent.gathering_storm.enabled|spell_targets.frostscythe>=2)" );
-  gs_ticking -> add_action( this, "Frost Strike", "if=runic_power>80|(buff.obliteration.up&!buff.killing_machine.react)" );
-  gs_ticking -> add_action( this, "Obliterate" );
-  gs_ticking -> add_talent( this, "Horn of Winter", "if=runic_power<70&!buff.hungering_rune_weapon.up" );
-  gs_ticking -> add_talent( this, "Glacial Advance" );
-  gs_ticking -> add_action( this, "Frost Strike" );
-  gs_ticking -> add_talent( this, "Hungering Rune Weapon", "if=!buff.hungering_rune_weapon.up" );
-  gs_ticking -> add_action( this, "Empower Rune Weapon" );
 }
 
 void death_knight_t::default_apl_unholy()
@@ -8171,8 +8184,6 @@ void death_knight_t::create_buffs()
     .chance( sets -> has_set_bonus( DEATH_KNIGHT_UNHOLY, T18, B4 ) )
     .add_invalidate( CACHE_ATTACK_SPEED )
     .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
-  buffs.soulgorge = buff_creator_t( this, "soulgorge", find_spell( 213003 ) )
-    .affects_regen( true );
   buffs.antimagic_barrier = new antimagic_barrier_buff_t( this );
   buffs.tombstone = absorb_buff_creator_t( this, "tombstone", talent.tombstone )
     .cd( timespan_t::zero() ); // Handled by the action
@@ -8407,9 +8418,7 @@ void death_knight_t::do_damage( action_state_t* state )
 
 void death_knight_t::target_mitigation( school_e school, dmg_e type, action_state_t* state )
 {
-  //if ( buffs.blood_presence -> check() )
-  //  state -> result_amount *= 1.0 + buffs.blood_presence -> data().effectN( 6 ).percent();
-
+  
   if ( buffs.rune_tap -> up() )
     state -> result_amount *= 1.0 + buffs.rune_tap -> data().effectN( 1 ).percent();
 
@@ -8638,6 +8647,27 @@ double death_knight_t::composite_player_target_multiplier( player_t* target, sch
     m *= 1.0 + td -> debuff.razorice -> check() * debuff;
   }
 
+  if ( legendary.lanathels_lament -> ok() && td -> in_aoe_radius() )
+  {
+    m *= 1.0 + legendary.lanathels_lament -> effectN( 1 ).percent();
+  }
+
+  return m;
+}
+
+// death_knight_t::composite_player_heal_multiplier ==============================
+
+double death_knight_t::composite_player_heal_multiplier( const action_state_t* state ) const
+{
+  auto m = player_t::composite_player_heal_multiplier( state );
+
+  death_knight_td_t* td = get_target_data( state -> target );
+
+  if ( legendary.lanathels_lament -> ok() && td -> in_aoe_radius() )
+  {
+    m *= 1.0 + legendary.lanathels_lament -> effectN( 2 ).percent();
+  }
+
   return m;
 }
 
@@ -8713,19 +8743,11 @@ double death_knight_t::passive_movement_modifier() const
 {
   double ms = player_t::passive_movement_modifier();
 
-  if ( spec.deaths_advance -> ok() )
-    ms += spec.deaths_advance -> effectN( 1 ).percent();
-
   if ( legendary.sephuzs_secret )
   {
     ms += legendary.sephuzs_secret -> effectN( 2 ).percent();
   }
 
-  /*
-  if ( buffs.unholy_presence -> up() )
-    ms += buffs.unholy_presence -> data().effectN( 2 ).percent();
-
-  */
   return ms;
 }
 
@@ -8859,13 +8881,6 @@ inline double death_knight_t::runes_per_second() const
     rps *= 2.0;
   }
 
-  if ( buffs.soulgorge -> check() )
-  {
-    // Note, don't use stack_value() here, since the correct (fractional) value is triggered in the
-    // buff when soulgorge consumes blood plagues.
-    rps *= 1.0 + buffs.soulgorge -> check_value();
-  }
-
   return rps;
 }
 
@@ -8876,13 +8891,6 @@ inline double death_knight_t::rune_regen_coefficient() const
   if ( buffs.runic_corruption -> check() )
   {
     coeff *= .5;
-  }
-
-  if ( buffs.soulgorge -> check() )
-  {
-    // Note, don't use stack_value() here, since the correct (fractional) value is triggered in the
-    // buff when soulgorge consumes blood plagues.
-    coeff *= 1.0 / ( 1.0 + buffs.soulgorge -> check_value() );
   }
 
   return coeff;
@@ -9306,6 +9314,15 @@ struct cold_heart_buff_t: public class_buff_cb_t<buff_t>
   { return super::creator( e ).spell( e.player -> find_spell( 235599 ) ); }
 };
 
+struct lanathels_lament_t : public scoped_actor_callback_t<death_knight_t>
+{
+  lanathels_lament_t() : super( DEATH_KNIGHT )
+  { }
+
+  void manipulate( death_knight_t* p, const special_effect_t& ) override
+  { p -> legendary.lanathels_lament = p -> find_spell( 212975 ); }
+};
+
 struct death_knight_module_t : public module_t {
   death_knight_module_t() : module_t( DEATH_KNIGHT ) {}
 
@@ -9334,6 +9351,7 @@ struct death_knight_module_t : public module_t {
     unique_gear::register_special_effect( 208782, koltiras_newfound_will_t() );
     unique_gear::register_special_effect( 212216, seal_of_necrofantasia_t() );
     unique_gear::register_special_effect( 216059, perseverance_of_the_ebon_martyr_t() );
+    unique_gear::register_special_effect( 212974, lanathels_lament_t() );
     // 7.1.5
     unique_gear::register_special_effect( 235605, consorts_cold_core_t() );
     unique_gear::register_special_effect( 235556, death_march_t() );

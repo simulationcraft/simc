@@ -66,7 +66,7 @@ actions.combustion_phase+=/dragons_breath,if=buff.hot_streak.down&action.fire_bl
 actions.combustion_phase+=/scorch,if=target.health.pct<=30&equipped.132454
 
 actions.rop_phase=rune_of_power
-actions.rop_phase+=/flamestrike,if=((talent.flame_patch.enabled&active_enemies>1)|(active_enemies>3))&buff.hot_streak.up
+actions.rop_phase+=/flamestrike,if=((talent.flame_patch.enabled&active_enemies>1)|active_enemies>3)&buff.hot_streak.up
 actions.rop_phase+=/pyroblast,if=buff.hot_streak.up
 actions.rop_phase+=/call_action_list,name=active_talents
 actions.rop_phase+=/pyroblast,if=buff.kaelthas_ultimate_ability.react&execute_time<buff.kaelthas_ultimate_ability.remains
@@ -92,7 +92,7 @@ actions.standard_rotation+=/fire_blast,if=talent.kindling.enabled&buff.heating_u
 actions.standard_rotation+=/phoenixs_flames,if=(buff.combustion.up|buff.rune_of_power.up|buff.incanters_flow.stack>3|talent.mirror_image.enabled)&artifact.phoenix_reborn.enabled&(4-charges_fractional)*13<cooldown.combustion.remains+5|target.time_to_die.remains<10
 actions.standard_rotation+=/phoenixs_flames,if=(buff.combustion.up|buff.rune_of_power.up)&(4-charges_fractional)*30<cooldown.combustion.remains+5
 actions.standard_rotation+=/phoenixs_flames,if=charges_fractional>2.5&cooldown.combustion.remains>23
-actions.standard_rotation+=/flamestrike,if=(talent.flame_patch.enabled&active_enemies>1)|active_enemies>5
+actions.standard_rotation+=/flamestrike,if=(talent.flame_patch.enabled&active_enemies>3)|active_enemies>5
 actions.standard_rotation+=/scorch,if=target.health.pct<=30&equipped.132454
 actions.standard_rotation+=/fireball
 

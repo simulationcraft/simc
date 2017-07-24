@@ -1793,7 +1793,7 @@ public:
     int active = ab::p() -> buff.clearcasting -> check();
 
     if ( ab::p() -> buff.clearcasting -> trigger(
-           ab::p() -> buff.clearcasting -> max_stack(),
+           ab::p()->dbc.ptr ? 1 : ab::p()->buff.clearcasting->max_stack(),
            buff_t::DEFAULT_VALUE(),
            chance,
            ab::p() -> buff.clearcasting -> buff_duration ) ) {
@@ -7131,7 +7131,7 @@ void druid_t::create_buffs()
                                .chance( specialization() == DRUID_RESTORATION ? find_spell( 113043 ) -> proc_chance()
                                         : find_spell( 16864 ) -> proc_chance() )
                                .cd( timespan_t::zero() )
-                               .max_stack( 1 + (sim -> dbc.ptr ? 0 : talent.moment_of_clarity->effectN(1).base_value() ))
+                               .max_stack( 1 + talent.moment_of_clarity->effectN(1).base_value() )
                                .default_value( specialization() != DRUID_RESTORATION
                                                ? talent.moment_of_clarity -> effectN( 4 ).percent()
                                                : 0.0 );
@@ -7777,7 +7777,7 @@ void druid_t::apl_balance()
   for ( size_t i = 0; i < item_actions.size(); i++ )
     default_list -> add_action( item_actions[i] );
 
-  default_list -> add_action( "call_action_list,name=fury_of_elune,if=talent.fury_of_elune.enabled&cooldown.fury_of_elue.remains<target.time_to_die" );
+  default_list -> add_action( "call_action_list,name=fury_of_elune,if=talent.fury_of_elune.enabled&cooldown.fury_of_elune.remains<target.time_to_die" );
   default_list -> add_action( "call_action_list,name=ed,if=equipped.the_emerald_dreamcatcher&active_enemies<=1" );
   default_list -> add_action( this, "New Moon", "if=((charges=2&recharge_time<5)|charges=3)&astral_power.deficit>14" );
   default_list -> add_action( this, "Half Moon", "if=((charges=2&recharge_time<5)|charges=3|(target.time_to_die<15&charges=2))&astral_power.deficit>24");

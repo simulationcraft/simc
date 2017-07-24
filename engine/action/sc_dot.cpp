@@ -936,16 +936,28 @@ bool dot_t::channel_interrupt()
  */
 void dot_t::tick()
 {
-  if ( current_action->channeled && current_action->interrupt_auto_attack )
-  {  // Channeled dots that interrupt auto attacks will also be interrupted by
-     // the target running out of range.
-    // This should capture most dot driver spells that require a target in
-    // range, such as mind sear, while avoiding abilities like bladestorm that
-    // do not.
-    if ( !current_action->execute_targeting( current_action ) )
+  if ( current_action->channeled )
+  {
+    // If the ability has an interrupt or chain-based option enabled, we need to dynamically regen
+    // resources for the actor before the chain/interrupt processing is done.
+    if ( current_action->player->regen_type == REGEN_DYNAMIC &&
+         ( current_action->option.chain || current_action->option.interrupt ||
+           current_action->interrupt_if_expr || current_action->early_chain_if_expr ) )
     {
-      current_action->reset();
-      return;
+      current_action->player->do_dynamic_regen();
+    }
+
+    if ( current_action->interrupt_auto_attack )
+    {  // Channeled dots that interrupt auto attacks will also be interrupted by
+      // the target running out of range.
+      // This should capture most dot driver spells that require a target in
+      // range, such as mind sear, while avoiding abilities like bladestorm that
+      // do not.
+      if ( !current_action->execute_targeting( current_action ) )
+      {
+        current_action->reset();
+        return;
+      }
     }
   }
   if ( sim.debug )
