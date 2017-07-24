@@ -4275,16 +4275,6 @@ struct defile_damage_t : public death_and_decay_damage_base_t
     death_and_decay_damage_base_t( parent, "defile_damage", parent -> player -> find_spell( 156000 ) )
   { }
 
-  double action_multiplier() const override
-  {
-    double m = death_and_decay_damage_base_t::action_multiplier();
-
-    m *= std::pow( 1.0 + p() -> talent.defile -> effectN( 2 ).percent() / 100.0,
-                   std::max( p() -> buffs.defile -> stack() - 1, 0 ) );
-
-    return m;
-  }
-
   void execute() override
   {
     death_and_decay_damage_base_t::execute();
