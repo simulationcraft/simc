@@ -4173,6 +4173,8 @@ struct frost_nova_t : public mage_spell_t
     affected_by.erosion = true;
     affected_by.shatter = true;
 
+    aoe = -1;
+
     cooldown -> charges += p -> talents.ice_ward -> effectN( 1 ).base_value();
   }
 
