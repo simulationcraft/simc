@@ -3946,6 +3946,10 @@ struct flurry_bolt_t : public frost_mage_spell_t
       am *= 1.0 + p() -> buffs.brain_freeze -> data().effectN( 2 ).percent();
     }
 
+    // TODO: Check what happens when the Flurry bolts arrive out of order.
+    // 0.4 sec between bolts at 50 yd/s means we need to move at least 20 yds to do this,
+    // Shimmer + running might be enough, possibly with Whispers bad buff to increase
+    // the spacing.
     am *= 1.0 + p() -> state.flurry_bolt_count
               * p() -> sets -> set( MAGE_FROST, T21, B2 ) -> effectN( 1 ).percent();
 
