@@ -55,8 +55,8 @@ actions+=/call_action_list,name=generic
 
 actions.aoe=death_and_decay,if=spell_targets.death_and_decay>=2
 actions.aoe+=/epidemic,if=spell_targets.epidemic>4
-actions.aoe+=/scourge_strike,if=spell_targets.scourge_strike>=2&(dot.death_and_decay.ticking|dot.defile.ticking)
-actions.aoe+=/clawing_shadows,if=spell_targets.clawing_shadows>=2&(dot.death_and_decay.ticking|dot.defile.ticking)
+actions.aoe+=/scourge_strike,if=spell_targets.scourge_strike>=2&(death_and_decay.ticking|defile.ticking)
+actions.aoe+=/clawing_shadows,if=spell_targets.clawing_shadows>=2&(death_and_decay.ticking|defile.ticking)
 actions.aoe+=/epidemic,if=spell_targets.epidemic>2
 
 actions.castigator=festering_strike,if=debuff.festering_wound.stack<=4&runic_power.deficit>23

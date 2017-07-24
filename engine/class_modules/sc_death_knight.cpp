@@ -371,8 +371,6 @@ struct death_knight_td_t : public actor_target_data_t {
   {
     dot_t* blood_plague;
     dot_t* breath_of_sindragosa;
-    dot_t* death_and_decay;
-    dot_t* defile;
     dot_t* frost_fever;
     dot_t* outbreak;
     dot_t* soul_reaper;
@@ -391,29 +389,6 @@ struct death_knight_td_t : public actor_target_data_t {
     buff_t* perseverance_of_the_ebon_martyr;
   } debuff;
 
-  // Check if DnD or Defile are up for ScS/CS AOE
-  bool in_aoe_radius() const
-  {
-    if ( ! source -> sim -> distance_targeting_enabled )
-    {
-      return dot.defile -> is_ticking() || dot.death_and_decay -> is_ticking();
-    }
-    else
-    {
-      if ( dot.defile -> is_ticking() )
-      {
-        return source -> get_ground_aoe_distance( *dot.defile -> state ) <=
-               dot.defile -> current_action -> radius + target -> combat_reach;
-      }
-      else if ( dot.death_and_decay -> is_ticking() )
-      {
-        return source -> get_ground_aoe_distance( *dot.death_and_decay -> state ) <=
-               dot.death_and_decay -> current_action -> radius + target -> combat_reach;
-      }
-      return false;
-    }
-  }
-
   death_knight_td_t( player_t* target, death_knight_t* death_knight );
 };
 
@@ -424,6 +399,8 @@ public:
   double fallen_crusader, fallen_crusader_rppm;
   double aotd_proc_chance;
   double antimagic_shell_absorbed;
+  std::vector<ground_aoe_event_t*> dnds;
+  bool deprecated_dnd_expression;
 
   // Counters
   int pestilent_pustules;
@@ -444,6 +421,7 @@ public:
     buff_t* crimson_scourge;
     buff_t* dancing_rune_weapon;
     buff_t* dark_transformation;
+    buff_t* death_and_decay;
     buff_t* gathering_storm;
     buff_t* icebound_fortitude;
     buff_t* killing_machine;
@@ -478,8 +456,6 @@ public:
     absorb_buff_t* tombstone;
 
     buff_t* frozen_pulse;
-
-    buff_t* death_and_decay_tick;
 
     stat_buff_t* t19oh_8pc;
     buff_t* skullflowers_haemostasis;
@@ -539,6 +515,7 @@ public:
     gain_t* hungering_rune_weapon;
     gain_t* murderous_efficiency;
     gain_t* power_refund;
+    gain_t* rapid_decomposition;
     gain_t* rune;
     gain_t* runic_attenuation;
     gain_t* rc; // Runic Corruption
@@ -837,6 +814,7 @@ public:
     // 2017-01-10: Armies of the Damned (Artifact trait) ghouls' chance to apply their additional effects increased to 30% (was 25%).
     aotd_proc_chance( 0.3 ),
     antimagic_shell_absorbed( 0.0 ),
+    deprecated_dnd_expression( false ),
     pestilent_pustules( 0 ),
     crystalline_swords( 0 ),
     t20_2pc_frost( 0 ),
@@ -909,6 +887,7 @@ public:
   void      init_procs() override;
   void      init_resources( bool force ) override;
   void      init_absorb_priority() override;
+  bool      init_finished() override;
   double    composite_armor_multiplier() const override;
   double    composite_melee_attack_power() const override;
   double    composite_attack_power_multiplier() const override;
@@ -924,7 +903,8 @@ public:
   double    composite_melee_expertise( const weapon_t* ) const override;
   double    composite_player_multiplier( school_e school ) const override;
   double    composite_player_target_multiplier( player_t* target, school_e school ) const override;
-  double    composite_player_heal_multiplier( const action_state_t* ) const override;
+  double    composite_player_dh_multiplier( school_e school ) const override;
+  double    composite_player_th_multiplier( school_e school ) const override;
   double    composite_player_pet_damage_multiplier( const action_state_t* /* state */ ) const override;
   double    composite_player_critical_damage_multiplier( const action_state_t* ) const override;
   double    composite_crit_avoidance() const override;
@@ -976,6 +956,10 @@ public:
   void      trigger_t20_4pc_frost( double consumed );
   void      trigger_t20_4pc_unholy( double consumed );
 
+  // Actor is standing in their own Death and Decay or Defile
+  bool      in_death_and_decay() const;
+  expr_t*   create_death_and_decay_expression( const std::string& expr_str );
+
   unsigned  replenish_rune( unsigned n, gain_t* gain = nullptr );
 
   target_specific_t<death_knight_td_t> target_data;
@@ -1013,8 +997,6 @@ inline death_knight_td_t::death_knight_td_t( player_t* target, death_knight_t* d
 {
   dot.blood_plague       = target -> get_dot( "blood_plague",       death_knight );
   dot.breath_of_sindragosa = target -> get_dot( "breath_of_sindragosa", death_knight );
-  dot.death_and_decay    = target -> get_dot( "death_and_decay",    death_knight );
-  dot.defile             = target -> get_dot( "defile",             death_knight );
   dot.frost_fever        = target -> get_dot( "frost_fever",        death_knight );
   dot.outbreak           = target -> get_dot( "outbreak",           death_knight );
   dot.soul_reaper        = target -> get_dot( "soul_reaper_dot",    death_knight );
@@ -2739,14 +2721,9 @@ struct death_knight_action_t : public Base
   death_knight_td_t* td( player_t* t ) const
   { return p() -> get_target_data( t ); }
 
-  virtual double runic_power_generation_multiplier( const action_state_t* s ) const
+  virtual double runic_power_generation_multiplier( const action_state_t* /* s */ ) const
   {
     double m = 1.0;
-
-    if ( p() -> talent.rapid_decomposition -> ok() && td( s -> target ) -> in_aoe_radius() )
-    {
-      m *= 1.0 + p() -> talent.rapid_decomposition -> effectN( 4 ).percent();
-    }
 
     m *= 1.0 + p() -> artifact.runic_tattoos.data().effectN( 1 ).percent();
 
@@ -2859,6 +2836,16 @@ struct death_knight_action_t : public Base
     return base_gcd;
   }
 
+  expr_t* create_expression( const std::string& name_str ) override
+  {
+    auto dnd_expr = p() -> create_death_and_decay_expression( name_str );
+    if ( dnd_expr )
+    {
+      return dnd_expr;
+    }
+
+    return action_base_t::create_expression( name_str );
+  }
 };
 
 // ==========================================================================
@@ -3483,8 +3470,7 @@ struct melee_t : public death_knight_melee_attack_t
       }
 
       // TODO: Why doesn't Crimson Scourge proc while DnD is pulsing?
-      if ( td( s -> target ) -> dot.blood_plague -> is_ticking() &&
-           ! td( s -> target ) -> dot.death_and_decay -> is_ticking() )
+      if ( td( s -> target ) -> dot.blood_plague -> is_ticking() && p() -> dnds.size() == 0 )
       {
         if ( p() -> buffs.crimson_scourge -> trigger() )
         {
@@ -4235,58 +4221,95 @@ struct dark_transformation_t : public death_knight_spell_t
   }
 };
 
-struct death_and_decay_tick_t final : public death_knight_spell_t
+// Death and Decay and Defile ==============================================
+
+struct death_and_decay_damage_base_t : public death_knight_spell_t
 {
-  death_and_decay_tick_t( death_knight_t* p, const std::string& options_str ) :
-    death_knight_spell_t( "death_and_decay", p, p -> find_specialization_spell( "Death and Decay" ) )
+  action_t* parent;
+
+  death_and_decay_damage_base_t( death_knight_spell_t* parent_,
+                                 const std::string& name, const spell_data_t* spell ) :
+    death_knight_spell_t( name, parent_ -> p(), spell ),
+    parent( parent_ )
   {
-    parse_options( options_str );
-    base_tick_time = timespan_t::from_seconds( 1.0 );
-    hasted_ticks   = false;
+    aoe              = -1;
+    ground_aoe       = true;
+    background       = true;
+    dual             = true;
+    // Combine results to parent
+    stats            = parent -> stats;
+
+    if ( data().affected_by( p() -> artifact.allconsuming_rot.data().effectN( 1 ) ) )
+    {
+      base_multiplier *= 1.0 + p() -> artifact.allconsuming_rot.percent();
+    }
   }
 
-  void tick( dot_t* d ) override
+  void impact( action_state_t* s ) override
   {
-    death_knight_spell_t::tick( d );
-    if (d->state->result_amount > 0 && p() -> talent.rapid_decomposition -> ok())
+    if ( s -> target -> debuffs.flying && s -> target -> debuffs.flying -> check() )
     {
-      energize_amount += ( p() -> talent.rapid_decomposition -> effectN( 1 ).resource( RESOURCE_RUNIC_POWER ) );
+      if ( sim -> debug )
+      {
+        sim -> out_debug.printf( "Ground effect %s can not hit flying target %s",
+          name(), s -> target -> name() );
+      }
+    }
+    else
+    {
+      death_knight_spell_t::impact( s );
     }
   }
 };
 
-// Death and Decay ==========================================================
-
-struct death_and_decay_t : public death_knight_spell_t
+struct death_and_decay_damage_t : public death_and_decay_damage_base_t
 {
-  death_and_decay_t( death_knight_t* p, const std::string& options_str ) :
-    death_knight_spell_t( "death_and_decay", p, p -> find_specialization_spell( "Death and Decay" ) )
+  death_and_decay_damage_t( death_knight_spell_t* parent ) :
+    death_and_decay_damage_base_t( parent, "death_and_decay_damage", parent -> player -> find_spell( 52212 ) )
+  { }
+};
+
+struct defile_damage_t : public death_and_decay_damage_base_t
+{
+  defile_damage_t( death_knight_spell_t* parent ) :
+    death_and_decay_damage_base_t( parent, "defile_damage", parent -> player -> find_spell( 156000 ) )
+  { }
+
+  double action_multiplier() const override
   {
-    parse_options( options_str );
+    double m = death_and_decay_damage_base_t::action_multiplier();
 
-    aoe                   = -1;
-    attack_power_mod.tick = p -> find_spell( 52212 ) -> effectN( 1 ).ap_coeff();
-    base_tick_time        = timespan_t::from_seconds( 1.0 );
-    dot_duration          = data().duration(); // 11 with tick_zero
-    hasted_ticks          = false;
-    tick_may_crit = tick_zero = ignore_false_positive = ground_aoe = true;
+    m *= std::pow( 1.0 + p() -> talent.defile -> effectN( 2 ).percent() / 100.0,
+                   std::max( p() -> buffs.defile -> stack() - 1, 0 ) );
 
-    base_multiplier    *= 1.0 + p -> artifact.allconsuming_rot.percent();
-
-    base_tick_time *= 1.0 / ( 1.0 + p -> talent.rapid_decomposition -> effectN( 3 ).percent() );
-
-    cooldown -> duration *= 1.0 + p -> spec.blood_death_knight -> effectN( 3 ).percent();
-
-    // TODO: Wrong damage spell, so needs to apply manually
-    base_multiplier *= 1.0 + p -> spec.unholy_death_knight -> effectN( 1 ).percent();
+    return m;
   }
 
-  // Need to override dot duration to get full ticks
-  timespan_t composite_dot_duration( const action_state_t* ) const override
+  void execute() override
   {
-    auto n_ticks = static_cast<unsigned>( dot_duration / base_tick_time );
+    death_and_decay_damage_base_t::execute();
 
-    return base_tick_time * n_ticks;
+    if ( hit_any_target )
+    {
+      p() -> buffs.defile -> trigger();
+    }
+  }
+};
+
+struct death_and_decay_base_t : public death_knight_spell_t
+{
+  action_t* damage;
+
+  death_and_decay_base_t( death_knight_t* p, const std::string& name, const spell_data_t* spell ) :
+    death_knight_spell_t( name, p, spell ), damage( nullptr )
+  {
+    base_tick_time        = timespan_t::zero();
+    dot_duration          = timespan_t::zero();
+    ignore_false_positive = true;
+    may_crit              = false;
+    // Note, radius and ground_aoe flag needs to be set in base so spell_targets expression works
+    ground_aoe            = true;
+    radius                = data().effectN( 1 ).radius_max();
   }
 
   double cost() const override
@@ -4304,48 +4327,80 @@ struct death_and_decay_t : public death_knight_spell_t
     death_knight_spell_t::execute();
 
     p() -> buffs.crimson_scourge -> decrement();
-    p() -> buffs.death_and_decay_tick -> trigger();
 
-    // Lanathel's lament will increase the player's damage/healing multipliers while DnD/Defaile is
-    // up. Only heal multiplier must be invalidated here, as the damage multiplier is simc is
-    // treated as a target-based multiplier, and computed every time.
-    if ( p() -> legendary.lanathels_lament -> ok() )
-    {
-      player -> invalidate_cache( CACHE_PLAYER_HEAL_MULTIPLIER );
-    }
+    make_event<ground_aoe_event_t>( *sim, player, ground_aoe_params_t()
+      .target( execute_state -> target )
+      .duration( data().duration() )
+      .pulse_time( compute_tick_time() )
+      .action( damage )
+      // Keep track of on-going dnd events
+      .state_callback( [ this ]( ground_aoe_params_t::state_type type, ground_aoe_event_t* event ) {
+        switch ( type )
+        {
+          case ground_aoe_params_t::EVENT_CREATED:
+            p() -> dnds.push_back( event );
+            break;
+          case ground_aoe_params_t::EVENT_DESTRUCTED:
+          {
+            auto it = range::find( p() -> dnds, event );
+            assert( it != p() -> dnds.end() && "DnD event not found in vector" );
+            if ( it != p() -> dnds.end() )
+            {
+              p() -> dnds.erase( it );
+            }
+            break;
+          }
+          default:
+            break;
+        }
+      } ), true /* Immediate pulse */ );
   }
 
-  void impact( action_state_t* s ) override
+private:
+  timespan_t compute_tick_time() const
   {
-    if ( s -> target -> debuffs.flying && s -> target -> debuffs.flying -> check() )
-    {
-      if ( sim -> debug ) sim -> out_debug.printf( "Ground effect %s can not hit flying target %s", name(), s -> target -> name() );
-    }
-    else
-    {
-      death_knight_spell_t::impact( s );
-    }
+    auto base = data().effectN( 3 ).period();
+    base *= 1.0 / ( 1.0 + p() -> talent.rapid_decomposition -> effectN( 3 ).percent() );
+    return base;
+  }
+};
+
+struct death_and_decay_t : public death_and_decay_base_t
+{
+  death_and_decay_t( death_knight_t* p, const std::string& options_str ) :
+    death_and_decay_base_t( p, "death_and_decay", p -> find_specialization_spell( "Death and Decay" ) )
+  {
+    damage = new death_and_decay_damage_t( this );
+
+    parse_options( options_str );
   }
 
-  void last_tick( dot_t* d ) override
+  void execute() override
   {
-    death_knight_spell_t::last_tick( d );
+    death_and_decay_base_t::execute();
 
-    // Lanathel's lament will increase the player's damage/healing multipliers while DnD/Defaile is
-    // up. Only heal multiplier must be invalidated here, as the damage multiplier is simc is
-    // treated as a target-based multiplier, and computed every time.
-    if ( p() -> legendary.lanathels_lament -> ok() )
-    {
-      player -> invalidate_cache( CACHE_PLAYER_HEAL_MULTIPLIER );
-    }
+    p() -> buffs.death_and_decay -> trigger();
   }
 
   bool ready() override
   {
     if ( p() -> talent.defile -> ok() )
+    {
       return false;
+    }
 
-    return death_knight_spell_t::ready();
+    return death_and_decay_base_t::ready();
+  }
+};
+
+struct defile_t : public death_and_decay_base_t
+{
+  defile_t( death_knight_t* p, const std::string& options_str ) :
+    death_and_decay_base_t( p, "defile", p -> talent.defile )
+  {
+    damage = new death_and_decay_damage_t( this );
+
+    parse_options( options_str );
   }
 };
 
@@ -4370,95 +4425,6 @@ struct deaths_caress_t : public death_knight_spell_t
     {
       p() -> pets.dancing_rune_weapon -> ability.deaths_caress -> set_target( execute_state -> target );
       p() -> pets.dancing_rune_weapon -> ability.deaths_caress -> execute();
-    }
-  }
-};
-
-// Defile ==================================================================
-
-struct defile_t : public death_knight_spell_t
-{
-  defile_t( death_knight_t* p, const std::string& options_str ) :
-    death_knight_spell_t( "defile", p, p -> talent.defile )
-  {
-    parse_options( options_str );
-
-    aoe = -1;
-    base_dd_min = base_dd_max = 0;
-    school = p -> find_spell( 156000 ) -> get_school_type();
-    attack_power_mod.tick = p -> find_spell( 156000 ) -> effectN( 1 ).ap_coeff();
-    radius =  data().effectN( 1 ).radius();
-    dot_duration = data().duration();
-    tick_may_crit = tick_zero = true;
-    hasted_ticks = false;
-    ignore_false_positive = true;
-    ground_aoe = true;
-
-    // TODO: Wrong damage spell, so needs to apply manually
-    base_multiplier *= 1.0 + p -> spec.unholy_death_knight -> effectN( 1 ).percent();
-  }
-
-  // Defile very likely counts as direct damage, as it procs certain trinkets that are flagged for
-  // "aoe harmful spell", but not "periodic".
-  dmg_e amount_type( const action_state_t*, bool ) const override
-  { return DMG_DIRECT; }
-
-  double composite_ta_multiplier( const action_state_t* state ) const override
-  {
-    double m = death_knight_spell_t::composite_ta_multiplier( state );
-
-    dot_t* dot = find_dot( state -> target );
-
-    if ( dot )
-    {
-      m *= std::pow( 1.0 + data().effectN( 2 ).percent() / 100, std::max( dot -> current_tick - 1, 0 ) );
-    }
-
-    return m;
-  }
-
-  void execute() override
-  {
-    death_knight_spell_t::execute();
-
-    // Lanathel's lament will increase the player's damage/healing multipliers while DnD/Defaile is
-    // up. Only heal multiplier must be invalidated here, as the damage multiplier is simc is
-    // treated as a target-based multiplier, and computed every time.
-    if ( p() -> legendary.lanathels_lament -> ok() )
-    {
-      player -> invalidate_cache( CACHE_PLAYER_HEAL_MULTIPLIER );
-    }
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    if ( s -> target -> debuffs.flying && s -> target -> debuffs.flying -> check() )
-    {
-      if ( sim -> debug ) sim -> out_debug.printf( "Ground effect %s can not hit flying target %s", name(), s -> target -> name() );
-    }
-    else
-    {
-      death_knight_spell_t::impact( s );
-    }
-  }
-
-  void tick( dot_t* dot ) override
-  {
-    death_knight_spell_t::tick( dot );
-
-    p() -> buffs.defile -> trigger();
-  }
-
-  void last_tick( dot_t* d ) override
-  {
-    death_knight_spell_t::last_tick( d );
-
-    // Lanathel's lament will increase the player's damage/healing multipliers while DnD/Defaile is
-    // up. Only heal multiplier must be invalidated here, as the damage multiplier is simc is
-    // treated as a target-based multiplier, and computed every time.
-    if ( p() -> legendary.lanathels_lament -> ok() )
-    {
-      player -> invalidate_cache( CACHE_PLAYER_HEAL_MULTIPLIER );
     }
   }
 };
@@ -5143,7 +5109,7 @@ struct heart_strike_t : public death_knight_melee_attack_t
   }
 
   int n_targets() const override
-  { return td( target ) -> in_aoe_radius() ? 5 : 2; }
+  { return p() -> in_death_and_decay() ? 5 : 2; }
 
   void execute() override
   {
@@ -5857,7 +5823,7 @@ struct scourge_strike_base_t : public death_knight_melee_attack_t
   }
 
   int n_targets() const override
-  { return td( target ) -> in_aoe_radius() ? -1 : 0; }
+  { return p() -> in_death_and_decay() ? -1 : 0; }
 
   double action_multiplier() const override
   {
@@ -6899,6 +6865,22 @@ void death_knight_t::trigger_t20_4pc_unholy( double consumed )
   }
 }
 
+bool death_knight_t::in_death_and_decay() const
+{
+  if ( ! sim -> distance_targeting_enabled )
+  {
+    return dnds.size() > 0;
+  }
+  else
+  {
+    auto it = range::find_if( dnds, [ this ]( const ground_aoe_event_t* event ) {
+      return get_ground_aoe_distance( *event -> pulse_state ) <= event -> pulse_state -> action -> radius;
+    } );
+
+    return it != dnds.end();
+  }
+}
+
 unsigned death_knight_t::replenish_rune( unsigned n, gain_t* gain )
 {
   unsigned replenished = 0;
@@ -7135,7 +7117,6 @@ action_t* death_knight_t::create_action( const std::string& name, const std::str
   if ( name == "marrowrend"               ) return new marrowrend_t               ( this, options_str );
   if ( name == "vampiric_blood"           ) return new vampiric_blood_t           ( this, options_str );
   if ( name == "consumption"              ) return new consumption_t              ( this, options_str );
-  if ( name == "death_and_decay_tick"     ) return new death_and_decay_tick_t     ( this, options_str );
   
   // Talents
   if ( name == "blood_mirror"             ) return new blood_mirror_t             ( this, options_str );
@@ -7194,8 +7175,48 @@ action_t* death_knight_t::create_action( const std::string& name, const std::str
 
 // death_knight_t::create_expression ========================================
 
-expr_t* death_knight_t::create_expression( action_t* a, const std::string& name_str ) {
-  std::vector<std::string> splits = util::string_split( name_str, "." );
+expr_t* death_knight_t::create_death_and_decay_expression( const std::string& expr_str )
+{
+  auto expr = util::string_split( expr_str, "." );
+  if ( expr.size() < 2 || ( expr.size() == 3 && ! util::str_compare_ci( expr[ 0 ], "dot" ) ) )
+  {
+    return nullptr;
+  }
+
+  auto spell_offset = expr.size() == 3u ? 1u : 0u;
+
+  if ( ! util::str_compare_ci( expr[ spell_offset ], "death_and_decay" ) &&
+       ! util::str_compare_ci( expr[ spell_offset ], "defile" ) )
+  {
+    return nullptr;
+  }
+
+  // "dot.death_and_decay|defile.X fallback warning"
+  if ( expr.size() == 3 )
+  {
+    deprecated_dnd_expression = true;
+  }
+
+  if ( util::str_compare_ci( expr[ spell_offset + 1u ], "ticking" ) ||
+       util::str_compare_ci( expr[ spell_offset + 1u ], "up" ) )
+  {
+    return make_fn_expr( "dnd_ticking", [ this ]() { return dnds.size() > 0 ? 1 : 0; } );
+  }
+  else if ( util::str_compare_ci( expr[ spell_offset + 1u ], "remains" ) )
+  {
+    return make_fn_expr( "dnd_remains", [ this ]() {
+      return dnds.size() > 0
+             ? dnds.back() -> remaining_time().total_seconds()
+             : 0;
+    } );
+  }
+
+  return nullptr;
+}
+
+expr_t* death_knight_t::create_expression( action_t* a, const std::string& name_str )
+{
+  auto splits = util::string_split( name_str, "." );
 
   if ( util::str_compare_ci( splits[ 0 ], "rune" ) && splits.size() > 1 )
   {
@@ -7213,6 +7234,12 @@ expr_t* death_knight_t::create_expression( action_t* a, const std::string& name_
         return _runes.time_to_regen( static_cast<unsigned>( n ) );
       } );
     }
+  }
+
+  auto dnd_expr = create_death_and_decay_expression( name_str );
+  if ( dnd_expr )
+  {
+    return dnd_expr;
   }
 
   return player_t::create_expression( a, name_str );
@@ -7971,8 +7998,8 @@ void death_knight_t::default_apl_unholy()
   // Generic AOE actions to be done
   aoe->add_action(this, "Death and Decay", "if=spell_targets.death_and_decay>=2");
   aoe->add_talent(this, "Epidemic", "if=spell_targets.epidemic>4");
-  aoe->add_action(this, "Scourge Strike", "if=spell_targets.scourge_strike>=2&(dot.death_and_decay.ticking|dot.defile.ticking)");
-  aoe->add_talent(this, "Clawing Shadows", "if=spell_targets.clawing_shadows>=2&(dot.death_and_decay.ticking|dot.defile.ticking)");
+  aoe->add_action(this, "Scourge Strike", "if=spell_targets.scourge_strike>=2&(death_and_decay.ticking|defile.ticking)");
+  aoe->add_talent(this, "Clawing Shadows", "if=spell_targets.clawing_shadows>=2&(death_and_decay.ticking|defile.ticking)");
   aoe->add_talent(this, "Epidemic", "if=spell_targets.epidemic>2");
 
   // Valkyr APL uses many a runic power
@@ -8096,6 +8123,19 @@ void death_knight_t::create_buffs()
     .duration( find_specialization_spell( "Dark Transformation" ) -> duration() + artifact.eternal_agony.time_value() )
     .cd( timespan_t::zero() ); // Handled by the action
 
+  buffs.death_and_decay     = buff_creator_t( this, "death_and_decay", find_spell( 188290 ) )
+                              .period( talent.rapid_decomposition -> ok()
+                                       ? timespan_t::from_seconds( 1.0 )
+                                       : timespan_t::zero() )
+                              .tick_callback( [ this ]( buff_t*, int, timespan_t ) {
+                                if ( in_death_and_decay() )
+                                {
+                                  resource_gain( RESOURCE_RUNIC_POWER,
+                                                 talent.rapid_decomposition -> effectN( 1 ).resource( RESOURCE_RUNIC_POWER ),
+                                                 gains.rapid_decomposition,
+                                                 nullptr );
+                                }
+                              } );
   buffs.gathering_storm     = buff_creator_t( this, "gathering_storm", find_spell( 211805 ) )
                               .trigger_spell( talent.gathering_storm )
                               .default_value( find_spell( 211805 ) -> effectN( 1 ).percent() );
@@ -8168,6 +8208,7 @@ void death_knight_t::create_buffs()
     .trigger_spell( talent.necrosis );
 
   buffs.defile = stat_buff_creator_t( this, "defile", find_spell( 218100 ) )
+    .cd( timespan_t::zero() )
     .trigger_spell( talent.defile );
 
   buffs.soul_reaper = haste_buff_creator_t( this, "soul_reaper_haste", talent.soul_reaper -> effectN( 2 ).trigger() )
@@ -8207,8 +8248,6 @@ void death_knight_t::create_buffs()
   buffs.t20_4pc_frost = buff_creator_t( this, "t20_4pc_frost" )
     .default_value( 0.01 )
     .chance( sets -> has_set_bonus( DEATH_KNIGHT_FROST, T20, B4 ) );
-    
-  buffs.death_and_decay_tick = buff_creator_t( this, "death_and_decay_tick", find_spell( 43265 ) );
 }
 
 // death_knight_t::init_gains ===============================================
@@ -8229,6 +8268,7 @@ void death_knight_t::init_gains()
   gains.runic_empowerment                = get_gain( "Runic Empowerment"          );
   gains.empower_rune_weapon              = get_gain( "Empower Rune Weapon"        );
   gains.blood_tap                        = get_gain( "blood_tap"                  );
+  gains.rapid_decomposition              = get_gain( "Rapid Decompostion"         );
   gains.rc                               = get_gain( "runic_corruption_all"       );
   gains.runic_attenuation                = get_gain( "Runic Attenuation"          );
   // gains.blood_tap_blood                  = get_gain( "blood_tap_blood"            );
@@ -8324,6 +8364,22 @@ void death_knight_t::init_absorb_priority()
   }
 }
 
+// death_knight_t::init_finished ============================================
+
+bool death_knight_t::init_finished()
+{
+  auto ret = player_t::init_finished();
+
+  if ( deprecated_dnd_expression )
+  {
+    sim -> errorf( "Player %s, Death and Decay and Defile expressions of the form "
+                   "'dot.death_and_decay.X' have been deprecated. Use 'death_and_decay.ticking' "
+                   "or death_and_decay.remains' instead.", name() );
+  }
+
+  return ret;
+}
+
 // death_knight_t::reset ====================================================
 
 void death_knight_t::reset()
@@ -8336,6 +8392,7 @@ void death_knight_t::reset()
   crystalline_swords = 0;
   _runes.reset();
   rw_damage_targets.clear();
+  dnds.clear();
   t20_2pc_frost = 0;
   t20_4pc_frost = 0;
 }
@@ -8427,13 +8484,6 @@ void death_knight_t::target_mitigation( school_e school, dmg_e type, action_stat
 
   if ( buffs.army_of_the_dead -> check() )
     state -> result_amount *= 1.0 - buffs.army_of_the_dead -> value();
-
-  if ( talent.defile -> ok() )
-  {
-    death_knight_td_t* tdata = get_target_data( state -> action -> player );
-    if ( tdata -> dot.defile -> is_ticking() )
-      state -> result_amount *= 1.0 - talent.defile -> effectN( 4 ).percent();
-  }
 
   player_t::target_mitigation( school, type, state );
 }
@@ -8647,7 +8697,10 @@ double death_knight_t::composite_player_target_multiplier( player_t* target, sch
     m *= 1.0 + td -> debuff.razorice -> check() * debuff;
   }
 
-  if ( legendary.lanathels_lament -> ok() && td -> in_aoe_radius() )
+  // Note, done here so the multiplier won't cache. Otherwise things would get hairy in real
+  // distance-based calculations where the actor moves out of their own DnD/Defile. Tiny performance
+  // hit.
+  if ( legendary.lanathels_lament -> ok() && in_death_and_decay() )
   {
     m *= 1.0 + legendary.lanathels_lament -> effectN( 1 ).percent();
   }
@@ -8655,15 +8708,31 @@ double death_knight_t::composite_player_target_multiplier( player_t* target, sch
   return m;
 }
 
-// death_knight_t::composite_player_heal_multiplier ==============================
+// death_knight_t::composite_player_dh/th_multiplier =============================
 
-double death_knight_t::composite_player_heal_multiplier( const action_state_t* state ) const
+double death_knight_t::composite_player_dh_multiplier( school_e school ) const
 {
-  auto m = player_t::composite_player_heal_multiplier( state );
+  auto m = player_t::composite_player_dh_multiplier( school );
 
-  death_knight_td_t* td = get_target_data( state -> target );
+  // Note, done here so the multiplier won't cache. Otherwise things would get hairy in real
+  // distance-based calculations where the actor moves out of their own DnD/Defile. Tiny performance
+  // hit.
+  if ( legendary.lanathels_lament -> ok() && in_death_and_decay() )
+  {
+    m *= 1.0 + legendary.lanathels_lament -> effectN( 2 ).percent();
+  }
 
-  if ( legendary.lanathels_lament -> ok() && td -> in_aoe_radius() )
+  return m;
+}
+
+double death_knight_t::composite_player_th_multiplier( school_e school ) const
+{
+  auto m = player_t::composite_player_th_multiplier( school );
+
+  // Note, done here so the multiplier won't cache. Otherwise things would get hairy in real
+  // distance-based calculations where the actor moves out of their own DnD/Defile. Tiny performance
+  // hit.
+  if ( legendary.lanathels_lament -> ok() && in_death_and_decay() )
   {
     m *= 1.0 + legendary.lanathels_lament -> effectN( 2 ).percent();
   }
