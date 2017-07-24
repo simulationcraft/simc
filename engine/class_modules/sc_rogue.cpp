@@ -1751,6 +1751,14 @@ struct insignia_of_ravenholdt_attack_t : public rogue_attack_t
     aoe = -1;
   }
 
+  void init() override
+  {
+    rogue_attack_t::init();
+
+    // We do not want Versatility applied to Insignia dmg again
+    snapshot_flags &= ~STATE_VERSATILITY;
+  }
+
   double composite_da_multiplier( const action_state_t* ) const override
   {
     double m = p() -> spell.insignia_of_ravenholdt -> effectN( 1 ).percent();
@@ -6146,7 +6154,7 @@ void rogue_t::trigger_insignia_of_ravenholdt( action_state_t* state )
   }
   insignia_of_ravenholdt_ -> base_dd_min = amount;
   insignia_of_ravenholdt_ -> base_dd_max = amount;
-  insignia_of_ravenholdt_ -> target = state -> target;
+  insignia_of_ravenholdt_ -> set_target( state -> target );
   insignia_of_ravenholdt_ -> execute();
 }
 
