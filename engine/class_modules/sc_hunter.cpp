@@ -1708,7 +1708,7 @@ struct sneaky_snake_t: public hunter_secondary_pet_t
 
       if ( rng().roll( proc_chance ) )
       {
-        target = s -> target;
+        set_target( s -> target );
         execute();
       }
     }
@@ -1943,7 +1943,7 @@ struct kill_command_t: public hunter_pet_action_t < hunter_pet_t, attack_t >
     {
       jaws_of_thunder -> base_dd_min = s -> result_amount * jaws_of_thunder_mult;
       jaws_of_thunder -> base_dd_max = jaws_of_thunder -> base_dd_min;
-      jaws_of_thunder -> target = s -> target;
+      jaws_of_thunder -> set_target( s -> target );
       jaws_of_thunder -> execute();
     }
   }
@@ -1999,14 +1999,8 @@ struct beast_cleave_attack_t: public hunter_pet_action_t < hunter_pet_t, attack_
   {
     base_t::available_targets( tl );
 
-    for ( size_t i = 0; i < tl.size(); i++ )
-    {
-      if ( tl[i] == target ) // Cannot hit the original target.
-      {
-        tl.erase( tl.begin() + i );
-        break;
-      }
-    }
+    // Cannot hit the original target.
+    tl.erase( std::remove( tl.begin(), tl.end(), target ), tl.end() );
 
     return tl.size();
   }
@@ -2025,22 +2019,21 @@ static void trigger_beast_cleave( action_state_t* s )
   if ( !p -> buffs.beast_cleave -> check() )
     return;
 
-  if ( p -> active.beast_cleave -> target != s -> target )
-    p -> active.beast_cleave -> target_cache.is_valid = false;
+  const auto execute = []( action_t* action, player_t* target, double value ) {
+    action -> set_target( target );
+    action -> base_dd_min = value;
+    action -> base_dd_max = value;
+    action -> execute();
+  };
 
-  p -> active.beast_cleave -> target = s -> target;
-  double cleave = s -> result_total * p -> buffs.beast_cleave -> check_value();
+  const double cleave = s -> result_total * p -> buffs.beast_cleave -> check_value();
 
-  p -> active.beast_cleave -> base_dd_min = cleave;
-  p -> active.beast_cleave -> base_dd_max = cleave;
-  p -> active.beast_cleave -> execute();
+  execute( p -> active.beast_cleave, s -> target, cleave );
 
   if ( p -> o() -> pets.hati && p -> o() -> artifacts.master_of_beasts.rank() )
   {
-    cleave *= 0.75; //Hotfix in game for Hati, no spelldata for it though. 2016-09-05
-    p -> o() -> pets.hati -> active.beast_cleave -> base_dd_min = cleave;
-    p -> o() -> pets.hati -> active.beast_cleave -> base_dd_max = cleave;
-    p -> o() -> pets.hati -> active.beast_cleave -> execute();
+    // Hotfix in game for Hati, no spelldata for it though. 2016-09-05
+    execute( p -> o() -> pets.hati -> active.beast_cleave, s -> target, cleave * .75 );
   }
 }
 
@@ -2610,7 +2603,7 @@ struct auto_shot_t: public hunter_action_t < ranged_attack_t >
     {
       if (p()->resources.current[RESOURCE_FOCUS] > volley_tick_cost)
       {
-        volley_tick->target = execute_state->target;
+        volley_tick->set_target( execute_state->target );
         volley_tick->execute();
       }
       else
@@ -3189,14 +3182,12 @@ struct trick_shot_t: public aimed_shot_base_t
   {
     aimed_shot_base_t::available_targets( tl );
 
-    for ( auto t = tl.begin(); t != tl.end(); )
-    {
-      // Does not hit original target, and only deals damage to targets with Vulnerable
-      if ( *t != target && td( *t ) -> debuffs.vulnerable -> up() )
-        ++t;
-      else
-        t = tl.erase( t );
-    }
+    // Does not hit original target, and only deals damage to targets with Vulnerable
+    tl.erase( std::remove_if( tl.begin(), tl.end(), [ this ]( player_t* t ) {
+                return t == target || ! td( t ) -> debuffs.vulnerable -> check();
+              } ),
+              tl.end() );
+
     return tl.size();
   }
 };
@@ -3285,7 +3276,7 @@ struct aimed_shot_t: public aimed_shot_base_t
 
     if ( trick_shot )
     {
-      trick_shot -> target = execute_state -> target;
+      trick_shot -> set_target( execute_state -> target );
       trick_shot -> target_cache.is_valid = false;
       trick_shot -> execute();
     }
@@ -3762,7 +3753,7 @@ struct windburst_t: hunter_ranged_attack_t
 
     if ( cyclonic_burst )
     {
-      cyclonic_burst -> target = execute_state -> target;
+      cyclonic_burst -> set_target( execute_state -> target );
       cyclonic_burst -> execute();
     }
 
@@ -3872,7 +3863,7 @@ struct melee_t: public hunter_melee_attack_t
 
       if ( p() -> active.pet && p() -> artifacts.talon_bond.rank() )
       {
-        p() -> active.pet -> active.talon_slash -> target = s -> target;
+        p() -> active.pet -> active.talon_slash -> set_target( s -> target );
         for ( int i = 0; i < p() -> artifacts.talon_bond.data().effectN( 1 ).base_value(); i++ )
           p() -> active.pet -> active.talon_slash -> execute();
       }
@@ -4059,7 +4050,7 @@ struct flanking_strike_t: hunter_melee_attack_t
 
     if ( result_is_hit( s -> result ) && echo_of_ohnara && rng().roll( p() -> artifacts.echoes_of_ohnara.data().proc_chance() ) )
     {
-      echo_of_ohnara -> target = execute_state -> target;
+      echo_of_ohnara -> set_target( execute_state -> target );
       echo_of_ohnara -> execute();
     }
   }
@@ -4367,7 +4358,7 @@ struct harpoon_t: public hunter_melee_attack_t
 
     if ( on_the_trail )
     {
-      on_the_trail -> target = execute_state -> target;
+      on_the_trail -> set_target( execute_state -> target );
       on_the_trail -> execute();
     }
 
@@ -4480,7 +4471,7 @@ struct moc_t : public hunter_spell_t
   {
     hunter_spell_t::tick( d );
 
-    peck -> target = d -> target;
+    peck -> set_target( d -> target );
     peck -> execute();
   }
 };
@@ -5405,7 +5396,7 @@ struct dragonsfire_grenade_t: public hunter_spell_t
 
     if ( conflag && conflag -> target_list().size() > 1 )
     {
-      conflag -> target = d -> target;
+      conflag -> set_target( d -> target );
       conflag -> original_target = d -> target;
       conflag -> execute();
     }
