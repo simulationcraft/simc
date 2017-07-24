@@ -8471,6 +8471,9 @@ public:
     return tick;
   }
 
+  timespan_t remaining_time() const
+  { return _time_left( params, player() ); }
+
   bool may_pulse() const
   {
     if ( params -> n_pulses() > 0 )
