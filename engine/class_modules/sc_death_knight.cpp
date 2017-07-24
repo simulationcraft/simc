@@ -2338,9 +2338,16 @@ struct valkyr_pet_t : public death_knight_pet_t
       executed = false;
     }
 
-    // Seems to be spending roughly a second doing absolutely nothing after summoning
+    // Seems to have a bimodal distribution on how long an idle time there is after summoning, based
+    // on quite a bit of data. In any case, the mean delay is quite significant (on average over 2.5
+    // seconds).
     timespan_t execute_time() const override
-    { return timespan_t::from_seconds( rng().gauss( 1.0, 0.1 ) ); }
+    {
+      auto dist = static_cast<int>( rng().range( 0, 2 ) );
+      auto base = dist == 0 ? 2.25 : 3.25;
+
+      return timespan_t::from_seconds( rng().gauss( base, 0.25 ) );
+    }
 
     bool ready() override
     { return ! executed; }
