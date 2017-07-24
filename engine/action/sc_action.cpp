@@ -1943,7 +1943,11 @@ bool action_t::ready()
     // Note, need to take a copy of the original target list here, instead of a reference. Otherwise
     // if spell_targets (or any expression that uses the target list) modifies it, the loop below
     // may break, since the number of elements on the vector is not the same as it originally was
-    std::vector< player_t* > ctl = target_list();
+
+    // Since this is a hot function, declare this vector static as an optimization to persist the
+    // copied vector instance between calls, since constructing it from scratch is expensive.
+    static std::vector< player_t* > ctl;
+    ctl = target_list();
     size_t num_targets = ctl.size();
 
     if ( ( option.max_cycle_targets > 0 ) && ( ( size_t ) option.max_cycle_targets < num_targets ) )
