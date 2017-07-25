@@ -1912,7 +1912,7 @@ bool action_t::ready()
     return false;
   }
 
-  if ( target_if_mode != TARGET_IF_NONE && sim -> target_list.size() > 1 )
+  if ( target_if_mode != TARGET_IF_NONE )
   {
     player_t* potential_target = select_target_if_target();
     if ( potential_target )
