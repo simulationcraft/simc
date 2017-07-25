@@ -37,6 +37,11 @@ namespace { // UNNAMED NAMESPACE
 static std::vector<player_t*> __check_distance_targeting( const action_t* action, std::vector< player_t* >& tl )
 {
   sim_t* sim = action -> sim;
+  if ( ! sim -> distance_targeting_enabled )
+  {
+    return tl;
+  }
+
   player_t* target = action -> target;
   player_t* player = action -> player;
   double radius = action -> radius;
