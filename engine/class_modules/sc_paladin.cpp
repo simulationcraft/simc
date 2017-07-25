@@ -3242,11 +3242,6 @@ struct crusader_strike_t : public holy_power_generator_t
     base_multiplier *= 1.0 + p -> artifact.blade_of_light.percent();
     base_crit       += p -> artifact.sharpened_edge.percent();
 
-    if ( p -> specialization() == PALADIN_RETRIBUTION )
-    {
-      base_multiplier *= 1.1; // 7/21 hotfix; TODO(mserrano): delete this
-    }
-
     if ( p -> talents.fires_of_justice -> ok() )
     {
       cooldown -> duration += timespan_t::from_millis( p -> talents.fires_of_justice -> effectN( 2 ).base_value() );
