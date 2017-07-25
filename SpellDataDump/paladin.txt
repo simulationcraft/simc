@@ -3029,7 +3029,7 @@ Effects          :
 #1 (id=267535)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
 #2 (id=267536)   : Weapon Damage% (31)
-                   Base Value: 654 | Scaled Value: 6.54 | Target: Enemy (6)
+                   Base Value: 595 | Scaled Value: 5.95 | Target: Enemy (6)
                    Hotfixed: Base Value (540 -> 595), Chain Multiplier (0 -> 1)
 #3 (id=267537)   : Energize Power (30)
                    Base Value: 2 | Scaled Value: 2 | Misc Value: holy_power | Target: Self (1)
@@ -3350,7 +3350,7 @@ Attributes       : ........ ........ x.x..... x..x....   .....x.. ........ .....
                  : Does not break stealth (37), Not a proc (105)
 Effects          :
 #1 (id=291193)   : Weapon Damage% (31)
-                   Base Value: 74 | Scaled Value: 0.74 | Radius: 0 - 8 yards | Target: Custom (18) -> AOE enemy (instant) (16)
+                   Base Value: 68 | Scaled Value: 0.68 | Radius: 0 - 8 yards | Target: Custom (18) -> AOE enemy (instant) (16)
 #2 (id=291194)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 8 yards | Target: Custom (18) -> AOE enemy (instant) (16)
 Description      : $@spelldesc198034
@@ -4470,7 +4470,7 @@ Effects          :
 #1 (id=322914)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | Chain Multiplier: 0.6 | Chain Targets: 1 | Target: Enemy (6)
 #2 (id=322915)   : Weapon Damage% (31)
-                   Base Value: 387 | Scaled Value: 3.87 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
+                   Base Value: 352 | Scaled Value: 3.52 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
                    Hotfixed: Base Value (320 -> 352), Chain Multiplier (0 -> 1)
 #3 (id=322916)   : Energize Power (30)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: holy_power | Target: Self (1)
