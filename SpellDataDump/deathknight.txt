@@ -2672,11 +2672,13 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=179689)   : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
-                   Base Value: 3 | Scaled Value: 3 | Target: Self (1)
+                   Base Value: 8 | Scaled Value: 8 | Target: Self (1)
                    Affected Spells: Howling Blast (49184), Death Strike (49998), Razorice (50401), Frost Fever (55095), Death Strike Off-Hand (66188), Frost Strike Off-Hand (66196), Obliterate Off-Hand (66198), Breath of Sindragosa (155166), Frost Breath (190780), Frozen Pulse (195750), Glacial Advance (195975), Remorseless Winter (196771), Frozen Soul (204959), Crystalline Swords (205164), Crystalline Swords (205165), Avalanche (207150), Frostscythe (207230), Obliterate (222024), Frost Strike (222026), Hypothermia (228322), Crystalline Swords (243122)
+                   Hotfixed: Base Value (3 -> 8), Chain Multiplier (0 -> 1)
 #2 (id=191174)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Damage (22)
-                   Base Value: 3 | Scaled Value: 3 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 8 | Scaled Value: 8 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Howling Blast (49184), Death Strike (49998), Razorice (50401), Frost Fever (55095), Death Strike Off-Hand (66188), Frost Strike Off-Hand (66196), Obliterate Off-Hand (66198), Breath of Sindragosa (155166), Frost Breath (190780), Frozen Pulse (195750), Glacial Advance (195975), Remorseless Winter (196771), Frozen Soul (204959), Crystalline Swords (205164), Crystalline Swords (205165), Avalanche (207150), Frostscythe (207230), Obliterate (222024), Frost Strike (222026), Hypothermia (228322), Crystalline Swords (243122)
+                   Hotfixed: Base Value (3 -> 8), Chain Multiplier (0 -> 1)
 #3 (id=191175)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 247 (Label) | Target: Self (1)
                    Affected Spells (Label): Infernal Contract (225140), Living Carapace (225033), Sands of Time (225124), Vampiric Aura (225130), Wailing Souls (242609), Unending Hunger (242536)
@@ -4936,8 +4938,9 @@ Attributes       : ........ ........ ..x..... ........   ........ ..x..... .....
 Effects          :
 #1 (id=306338)   : Apply Aura (6) | Periodic Energize Power (24): every 1.5 seconds
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 5 | Target: Self (1)
-#2 (id=306339)   : Apply Aura (6) | Periodic Energize Power (24): every 1 seconds
+#2 (id=306339)   : Apply Aura (6) | Periodic Energize Power (24): every 1.5 seconds
                    Base Value: 50 | Scaled Value: 50 | Misc Value: 6 | Target: Self (1)
+                   Hotfixed: Period (1000 -> 1500), Chain Multiplier (0 -> 1)
 Description      : Empower your rune weapon, gaining $s1 $LRune:Runes; and ${$m2/10} Runic Power instantly and every $t1 sec for $d.
 Tooltip          : Gaining $s1 $LRune:Runes; and ${$m2/10} Runic Power and every $t1 sec.
 

@@ -741,9 +741,10 @@ Effects          :
 #1 (id=8561)     : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost (14)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 14 | Target: Self (1)
                    Affected Spells: Regrowth (8936)
-#2 (id=356840)   : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
+#2 (id=356840)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
                    Affected Spells: Regrowth (8936)
+                   Hotfixed: Sub Type (108 -> 4), Chain Multiplier (0 -> 1)
 #3 (id=356843)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
                    Affected Spells: Regrowth (8936)
@@ -1179,7 +1180,7 @@ Class            : Druid
 School           : Nature
 Spell Level      : 64
 Range            : 40 yards
-Affecting spells : Incarnation: Tree of Life (5420 effect#1), Blessing of Lower City (37878 effect#1), Incarnation: Tree of Life (81098 effect#1), Ironbark (102342 effect#3), Restoration Druid (137012 effect#1), Lucidity (137247 effect#1), Blooms of G'Hanir (186393 effect#1), Thrash (192090 effect#2), Astral Influence (197524 effect#1), The Dark Titan's Advice (207271 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), 
+Affecting spells : Incarnation: Tree of Life (5420 effect#1), Blessing of Lower City (37878 effect#1), Incarnation: Tree of Life (81098 effect#1), Restoration Druid (137012 effect#1), Lucidity (137247 effect#1), Blooms of G'Hanir (186393 effect#1), Thrash (192090 effect#2), Astral Influence (197524 effect#1), The Dark Titan's Advice (207271 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), 
 Attributes       : ........ ........ ........ x..x....   .....x.. ..x..... ........ ........ 
                  : ........ ......x. ........ ....x...   ........ ........ x....... ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -2332,7 +2333,8 @@ Effects          :
                    Base Value: 12 | Scaled Value: 12 | Target: Friend (21)
 #3 (id=219284)   : Apply Aura (6) | Unknown(283)
                    Base Value: 0 | Scaled Value: 0 | Target: Friend (21)
-                   Affected Spells: Rejuvenation (774), Regrowth (8936), Lifebloom (33763), Lifebloom (33778), Wild Growth (48438), Efflorescence (81269), Cenarion Ward (102351), Cenarion Ward (102352), Tranquility (157982), Gjallar's Horn (228136)
+                   Affected Spells: Rejuvenation (774), Regrowth (8936), Lifebloom (33763), Wild Growth (48438), Efflorescence (81269), Cenarion Ward (102351), Cenarion Ward (102352), Tranquility (157982), Cultivation (200389), Spring Blossoms (207386), Gjallar's Horn (228136)
+                   Hotfixed: Affects Spells, Chain Multiplier (0 -> 1)
 Description      : The target's skin becomes as tough as Ironwood, reducing all damage taken by $m1% for $d$?a197061[ and increases healing from your heal over time effects by $197061s2%][].
 Tooltip          : All damage taken is reduced by $w1%$?a197061[ and healing over time from the caster increased by $w3%][].
 
@@ -5293,7 +5295,7 @@ Class            : Druid
 School           : Nature
 Range            : 100 yards
 Duration         : 6 seconds
-Affecting spells : Restoration Druid (137012 effect#1), Grovewalker (186320 effect#1), Thrash (192090 effect#2), 
+Affecting spells : Ironbark (102342 effect#3), Restoration Druid (137012 effect#1), Grovewalker (186320 effect#1), Thrash (192090 effect#2), 
 Attributes       : ........ ........ ..x..... x..x....   ........ ..x..... ........ ........ 
                  : ........ x....... ........ ........   .......x ........ ........ ........ 
                  : .......x .......x ....x... ........   ........ .....x.. ........ ........ 
@@ -6198,7 +6200,7 @@ Class            : Druid
 School           : Nature
 Range            : 100 yards
 Duration         : 6 seconds
-Affecting spells : Restoration Druid (137012 effect#1), Grovewalker (186320 effect#1), Thrash (192090 effect#2), 
+Affecting spells : Ironbark (102342 effect#3), Restoration Druid (137012 effect#1), Grovewalker (186320 effect#1), Thrash (192090 effect#2), 
 Attributes       : ........ ........ ..x..... x..x....   ........ ........ ........ ........ 
                  : ........ x....... ........ ........   ........ ........ ........ ......x. 
                  : .......x .......x ........ ........   ........ ........ ........ ........ 

@@ -30,10 +30,13 @@ DBFilesClient\ArtifactAppearanceSet.db2
 DBFilesClient\ArtifactCategory.db2
 DBFilesClient\ArtifactPower.db2
 DBFilesClient\ArtifactPowerLink.db2
+DBFilesClient\ArtifactPowerPicker.db2
 DBFilesClient\ArtifactPowerRank.db2
 DBFilesClient\ArtifactQuestXP.db2
+DBFilesClient\ArtifactTier.db2
 DBFilesClient\ArtifactUnlock.db2
 DBFilesClient\AuctionHouse.db2
+DBFilesClient\BackgroundColor.db2
 DBFilesClient\BankBagSlotPrices.db2
 DBFilesClient\BannedAddOns.db2
 DBFilesClient\BarberShopStyle.db2
@@ -79,8 +82,10 @@ DBFilesClient\CharacterFaceBoneSet.db2
 DBFilesClient\CharacterFacialHairStyles.db2
 DBFilesClient\CharacterLoadout.db2
 DBFilesClient\CharacterLoadoutItem.db2
+DBFilesClient\Chat.db2
 DBFilesClient\ChatChannels.db2
 DBFilesClient\ChatProfanity.db2
+DBFilesClient\ChestProperties.db2
 DBFilesClient\ChrClassRaceSex.db2
 DBFilesClient\ChrClassTitle.db2
 DBFilesClient\ChrClassUIDisplay.db2
@@ -94,8 +99,11 @@ DBFilesClient\ChrUpgradeBucketSpell.db2
 DBFilesClient\ChrUpgradeTier.db2
 DBFilesClient\CinematicCamera.db2
 DBFilesClient\CinematicSequences.db2
+DBFilesClient\ClickbufferColor.db2
 DBFilesClient\CloakDampening.db2
 DBFilesClient\CombatCondition.db2
+DBFilesClient\CommentatorStartLocation.db2
+DBFilesClient\CommentatorTrackedCooldown.db2
 DBFilesClient\ComponentModelFileData.db2
 DBFilesClient\ComponentTextureFileData.db2
 DBFilesClient\Contribution.db2
@@ -126,12 +134,14 @@ DBFilesClient\DeathThudLookups.db2
 DBFilesClient\DecalProperties.db2
 DBFilesClient\DeclinedWord.db2
 DBFilesClient\DeclinedWordCases.db2
+DBFilesClient\DestructibleHitpoint.db2
 DBFilesClient\DestructibleModelData.db2
 DBFilesClient\DeviceBlacklist.db2
 DBFilesClient\DeviceDefaultSettings.db2
 DBFilesClient\Difficulty.db2
 DBFilesClient\DissolveEffect.db2
 DBFilesClient\DriverBlacklist.db2
+DBFilesClient\DumpSoundKits.db2
 DBFilesClient\DungeonEncounter.db2
 DBFilesClient\DungeonMap.db2
 DBFilesClient\DungeonMapChunk.db2
@@ -156,7 +166,9 @@ DBFilesClient\GMSurveyAnswers.db2
 DBFilesClient\GMSurveyCurrentSurvey.db2
 DBFilesClient\GMSurveyQuestions.db2
 DBFilesClient\GMSurveySurveys.db2
+DBFilesClient\GameEvents.db2
 DBFilesClient\GameObjectArtKit.db2
+DBFilesClient\GameObjectDiffAnim.db2
 DBFilesClient\GameObjectDiffAnimMap.db2
 DBFilesClient\GameObjectDisplayInfo.db2
 DBFilesClient\GameObjectDisplayInfoXSoundKit.db2
@@ -233,6 +245,7 @@ DBFilesClient\ImportPriceQuality.db2
 DBFilesClient\ImportPriceShield.db2
 DBFilesClient\ImportPriceWeapon.db2
 DBFilesClient\InvasionClientData.db2
+DBFilesClient\Item-sparse.db2
 DBFilesClient\Item.db2
 DBFilesClient\ItemAppearance.db2
 DBFilesClient\ItemAppearanceXUiCamera.db2
@@ -260,6 +273,8 @@ DBFilesClient\ItemEffect.db2
 DBFilesClient\ItemExtendedCost.db2
 DBFilesClient\ItemGroupSounds.db2
 DBFilesClient\ItemLevelSelector.db2
+DBFilesClient\ItemLevelSelectorQuality.db2
+DBFilesClient\ItemLevelSelectorQualitySet.db2
 DBFilesClient\ItemLimitCategory.db2
 DBFilesClient\ItemLimitCategoryCondition.db2
 DBFilesClient\ItemModifiedAppearance.db2
@@ -282,7 +297,6 @@ DBFilesClient\ItemUpgrade.db2
 DBFilesClient\ItemVisualEffects.db2
 DBFilesClient\ItemVisuals.db2
 DBFilesClient\ItemXBonusTree.db2
-DBFilesClient\Item-sparse.db2
 DBFilesClient\JournalEncounter.db2
 DBFilesClient\JournalEncounterCreature.db2
 DBFilesClient\JournalEncounterItem.db2
@@ -326,12 +340,14 @@ DBFilesClient\ManifestInterfaceItemIcon.db2
 DBFilesClient\ManifestInterfaceTOCData.db2
 DBFilesClient\ManifestMP3.db2
 DBFilesClient\Map.db2
+DBFilesClient\MapCelestialBody.db2
 DBFilesClient\MapChallengeMode.db2
 DBFilesClient\MapDifficulty.db2
 DBFilesClient\MapDifficultyXCondition.db2
 DBFilesClient\MarketingPromotionsXLocale.db2
 DBFilesClient\Material.db2
 DBFilesClient\MinorTalent.db2
+DBFilesClient\MissileTargeting.db2
 DBFilesClient\ModelAnimCloakDampening.db2
 DBFilesClient\ModelFileData.db2
 DBFilesClient\ModelRibbonQuality.db2
@@ -340,6 +356,7 @@ DBFilesClient\Mount.db2
 DBFilesClient\MountCapability.db2
 DBFilesClient\MountTypeXCapability.db2
 DBFilesClient\MountXDisplay.db2
+DBFilesClient\Movement.db2
 DBFilesClient\Movie.db2
 DBFilesClient\MovieFileData.db2
 DBFilesClient\MovieVariation.db2
@@ -356,6 +373,7 @@ DBFilesClient\ObjectEffectPackage.db2
 DBFilesClient\ObjectEffectPackageElem.db2
 DBFilesClient\OutlineEffect.db2
 DBFilesClient\OverrideSpellData.db2
+DBFilesClient\PageText.db2
 DBFilesClient\PageTextMaterial.db2
 DBFilesClient\PaperDollItemFrame.db2
 DBFilesClient\ParagonReputation.db2
@@ -374,6 +392,7 @@ DBFilesClient\PositionerStateEntry.db2
 DBFilesClient\PowerDisplay.db2
 DBFilesClient\PowerType.db2
 DBFilesClient\PrestigeLevelInfo.db2
+DBFilesClient\PrivateColor.db2
 DBFilesClient\PvpBracketTypes.db2
 DBFilesClient\PvpDifficulty.db2
 DBFilesClient\PvpItem.db2
@@ -384,6 +403,7 @@ DBFilesClient\PvpTalent.db2
 DBFilesClient\PvpTalentUnlock.db2
 DBFilesClient\QuestFactionReward.db2
 DBFilesClient\QuestFeedbackEffect.db2
+DBFilesClient\QuestGiver.db2
 DBFilesClient\QuestInfo.db2
 DBFilesClient\QuestLine.db2
 DBFilesClient\QuestLineXQuest.db2
@@ -399,6 +419,7 @@ DBFilesClient\QuestXGroupActivity.db2
 DBFilesClient\QuestXP.db2
 DBFilesClient\RacialMounts.db2
 DBFilesClient\RandPropPoints.db2
+DBFilesClient\RelicTalent.db2
 DBFilesClient\ResearchBranch.db2
 DBFilesClient\ResearchField.db2
 DBFilesClient\ResearchProject.db2
@@ -431,6 +452,7 @@ DBFilesClient\SkillRaceClassInfo.db2
 DBFilesClient\SoundAmbience.db2
 DBFilesClient\SoundAmbienceFlavor.db2
 DBFilesClient\SoundBus.db2
+DBFilesClient\SoundBusOverride.db2
 DBFilesClient\SoundEmitterPillPoints.db2
 DBFilesClient\SoundEmitters.db2
 DBFilesClient\SoundFilter.db2
@@ -440,6 +462,7 @@ DBFilesClient\SoundKitAdvanced.db2
 DBFilesClient\SoundKitChild.db2
 DBFilesClient\SoundKitEntry.db2
 DBFilesClient\SoundKitFallback.db2
+DBFilesClient\SoundKitName.db2
 DBFilesClient\SoundOverride.db2
 DBFilesClient\SoundProviderPreferences.db2
 DBFilesClient\SourceInfo.db2
@@ -501,6 +524,7 @@ DBFilesClient\SpellVisual.db2
 DBFilesClient\SpellVisualAnim.db2
 DBFilesClient\SpellVisualColorEffect.db2
 DBFilesClient\SpellVisualEffectName.db2
+DBFilesClient\SpellVisualEvent.db2
 DBFilesClient\SpellVisualKit.db2
 DBFilesClient\SpellVisualKitAreaModel.db2
 DBFilesClient\SpellVisualKitEffect.db2
@@ -534,7 +558,10 @@ DBFilesClient\TransmogSetItem.db2
 DBFilesClient\TransportAnimation.db2
 DBFilesClient\TransportPhysics.db2
 DBFilesClient\TransportRotation.db2
+DBFilesClient\Treasure.db2
 DBFilesClient\Trophy.db2
+DBFilesClient\TrophyInstance.db2
+DBFilesClient\TrophyType.db2
 DBFilesClient\UiCamFbackTransmogChrRace.db2
 DBFilesClient\UiCamFbackTransmogWeapon.db2
 DBFilesClient\UiCamera.db2
@@ -551,12 +578,15 @@ DBFilesClient\UnitBlood.db2
 DBFilesClient\UnitBloodLevels.db2
 DBFilesClient\UnitCondition.db2
 DBFilesClient\UnitPowerBar.db2
+DBFilesClient\UnitTest.db2
 DBFilesClient\Vehicle.db2
 DBFilesClient\VehicleSeat.db2
 DBFilesClient\VehicleUIIndSeat.db2
 DBFilesClient\VehicleUIIndicator.db2
 DBFilesClient\VideoHardware.db2
 DBFilesClient\Vignette.db2
+DBFilesClient\VirtualAttachment.db2
+DBFilesClient\VirtualAttachmentCustomization.db2
 DBFilesClient\VocalUISounds.db2
 DBFilesClient\WMOAreaTable.db2
 DBFilesClient\WbAccessControlList.db2
@@ -577,6 +607,7 @@ DBFilesClient\WorldMapArea.db2
 DBFilesClient\WorldMapContinent.db2
 DBFilesClient\WorldMapOverlay.db2
 DBFilesClient\WorldMapTransforms.db2
+DBFilesClient\WorldState.db2
 DBFilesClient\WorldStateExpression.db2
 DBFilesClient\WorldStateUI.db2
 DBFilesClient\WorldStateZoneSounds.db2
