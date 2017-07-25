@@ -7,7 +7,7 @@ Resource         : 35 Energy (3) (id=13)
 Spell Level      : 10
 Range            : 5 yards
 GCD              : 1 seconds
-Affecting spells : Shadow Blades (121471 effect#4), Subtlety Rogue (137035 effect#1), Sleight of Hand (145211 effect#1), Nightblade (195452 effect#6), The Quiet Knife (197231 effect#1), Weak Point (238068 effect#1), The First of the Dead (248210 effect#2), Sense Vitals (252719 effect#1)
+Affecting spells : Shadow Blades (121471 effect#4), Subtlety Rogue (137035 effect#1), Sleight of Hand (145211 effect#1), Nightblade (195452 effect#6), The Quiet Knife (197231 effect#1), Weak Point (238068 effect#1), The First of the Dead (248210 effect#2), Item - Rogue T21 Subtlety 2P Bonus - Combo Points Spent Buffs Backstab (251785 effect#1)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ..xx.... 
                  : ........ ........ ....x... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -207,7 +207,7 @@ Resource         : 40 Energy (3) (id=140)
 Spell Level      : 1 (max 20)
 Range            : 5 yards
 GCD              : 1 seconds
-Affecting spells : Vendetta (79140 effect#1), Shadow Blades (121471 effect#3), Assassination Rogue (137037 effect#1), Cold Blood (182304 effect#1), Adrenaline Rush (186286 effect#3)
+Affecting spells : Vendetta (79140 effect#1), Shadow Blades (121471 effect#3), Assassination Rogue (137037 effect#1), Adrenaline Rush (186286 effect#3)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ..xx.... 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -509,7 +509,7 @@ Resource         : 1 - 5 Combo Points (4) (id=10581)
 Spell Level      : 10
 Range            : 5 yards
 GCD              : 1 seconds
-Affecting spells : Adrenaline Rush (13750 effect#3), Outlaw Rogue (137036 effect#1), Death from Above (163786 effect#1), Deceit (166878 effect#1), Eviscerating Blade (184917 effect#2), Deeper Stratagem (193531 effect#1), Acrobatic Strikes (196924 effect#1), Fate's Thirst (202514 effect#1), Fatebringer (202524 effect#1), Lesser Adrenaline Rush (246558 effect#3), Sharpened Sabers (252285 effect#1)
+Affecting spells : Adrenaline Rush (13750 effect#3), Outlaw Rogue (137036 effect#1), Death from Above (163786 effect#1), Deceit (166878 effect#1), Cold Blood (182304 effect#1), Eviscerating Blade (184917 effect#2), Deeper Stratagem (193531 effect#1), Acrobatic Strikes (196924 effect#1), Fate's Thirst (202514 effect#1), Fatebringer (202524 effect#1), Lesser Adrenaline Rush (246558 effect#3), Sharpened Sabers (252285 effect#1)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ .xx..... ........ ........ 
                  : ...x.... ........ ........ ........   ........ ........ ........ ........ 
@@ -535,7 +535,7 @@ School           : Nature
 Spell Level      : 10
 Range            : 100 yards
 Duration         : 12 seconds
-Affecting spells : Improved Poisons (14117 effect#1), Venomous Totem (23726 effect#2), Mastery: Potent Poisons (76803 effect#1), Vendetta (79140 effect#1), Assassination Rogue (137037 effect#1), Master Alchemist (192318 effect#1), Surge of Toxins (192425 effect#1), Master Poisoner (196864 effect#1), Toxic Blade (245389 effect#1)
+Affecting spells : Improved Poisons (14117 effect#1), Venomous Totem (23726 effect#2), Mastery: Potent Poisons (76803 effect#1), Vendetta (79140 effect#1), Assassination Rogue (137037 effect#1), Master Alchemist (192318 effect#1), Surge of Toxins (192425 effect#1), Master Poisoner (196864 effect#1), Toxic Blade (245389 effect#1), Virulent Poisons (252277 effect#1)
 Triggered by     : Deadly Poison (2823)
 Attributes       : ........ ........ .....x.. ........   ...x.x.x ........ .x...... ........ 
                  : ..x..... ........ ........ x.......   .......x ........ ........ ......x. 
@@ -559,7 +559,7 @@ Duration         : 3600 seconds
 Proc Chance      : 30%
 Proc Flags       : ..x.x... x....... ........ ........ 
                  : White Melee, Yellow Melee, Yellow Ranged
-Affecting spells : Improved Poisons (14117 effect#1), Venomous Totem (23726 effect#2), Envenom (32645 effect#2), Mastery: Potent Poisons (76803 effect#1), Master Alchemist (192318 effect#1), Surge of Toxins (192425 effect#1), Master Poisoner (196864 effect#1), Toxic Blade (245389 effect#1)
+Affecting spells : Improved Poisons (14117 effect#1), Venomous Totem (23726 effect#2), Envenom (32645 effect#2), Mastery: Potent Poisons (76803 effect#1), Master Alchemist (192318 effect#1), Surge of Toxins (192425 effect#1), Master Poisoner (196864 effect#1), Toxic Blade (245389 effect#1), Virulent Poisons (252277 effect#1)
 Attributes       : ....x... ........ ........ ........   .....x.. ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ...xx... ........ 
                  : ........ ........ .....x.. ........   ........ ........ ........ ........ 
@@ -673,7 +673,7 @@ Spell Level      : 14
 Range            : 100 yards
 GCD              : 1 seconds
 Duration         : 6 seconds
-Affecting spells : Adrenaline Rush (13750 effect#3), Rogue Tier 6 Trinket (40460 effect#1), Energetic Recovery (79152 effect#1), Adrenaline Rush (186286 effect#3), Deeper Stratagem (193531 effect#1), Fatebringer (202524 effect#1), Lesser Adrenaline Rush (246558 effect#3), Item - Rogue T21 Outlaw 4P Bonus - Run Through Grants Random RtB Buff (251783 effect#1)
+Affecting spells : Adrenaline Rush (13750 effect#3), Rogue Tier 6 Trinket (40460 effect#1), Energetic Recovery (79152 effect#1), Adrenaline Rush (186286 effect#3), Deeper Stratagem (193531 effect#1), Fatebringer (202524 effect#1), Lesser Adrenaline Rush (246558 effect#3)
 Attributes       : ....x... ........ x.x..... .....x..   .....x.. ..x..... ......x. ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -771,9 +771,12 @@ Spell Level      : 14
 Range            : 10 yards
 GCD              : 1 seconds
 Duration         : 60 seconds
+Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
 Stance Mask      : 0x20000000
 Mechanic         : Unknown(255)
+Proc Flags       : ...x.x.x .x...x.. .x.x.... ........ 
+                 : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Hostile Spell Taken, Hostile Spell Taken, Periodic Taken
 Affecting spells : Dirty Tricks (108216 effect#1), Prey on the Weak (131511 effect#1), Shadow Dance (185313 effect#2)
 Attributes       : ....x... ........ x.x.xx.. ........   .....x.. x.x..... ..x..... .x.x.... 
                  : ........ ........ ........ ........   x....... ........ xx...... ........ 
@@ -827,7 +830,7 @@ Duration         : 3600 seconds
 Proc Chance      : 30%
 Proc Flags       : ..x.x... x....... ........ ........ 
                  : White Melee, Yellow Melee, Yellow Ranged
-Affecting spells : Improved Poisons (14117 effect#1), Envenom (32645 effect#2), Mastery: Potent Poisons (76803 effect#1), Master Alchemist (192318 effect#1), Surge of Toxins (192425 effect#1), Master Poisoner (196864 effect#1), Toxic Blade (245389 effect#1)
+Affecting spells : Improved Poisons (14117 effect#1), Envenom (32645 effect#2), Mastery: Potent Poisons (76803 effect#1), Master Alchemist (192318 effect#1), Surge of Toxins (192425 effect#1), Master Poisoner (196864 effect#1), Toxic Blade (245389 effect#1), Virulent Poisons (252277 effect#1)
 Attributes       : ....x... ........ ........ ........   .....x.. ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ...xx... ........ 
                  : ........ ........ .....x.. ........   ........ ........ ........ ........ 
@@ -847,7 +850,7 @@ School           : Nature
 Spell Level      : 54
 Range            : 100 yards
 Duration         : 12 seconds
-Affecting spells : Improved Poisons (14117 effect#1), Mastery: Potent Poisons (76803 effect#1), Vendetta (79140 effect#1), Assassination Rogue (137037 effect#1), Master Alchemist (192318 effect#1), Surge of Toxins (192425 effect#1), Master Poisoner (196864 effect#1), Toxic Blade (245389 effect#1)
+Affecting spells : Improved Poisons (14117 effect#1), Mastery: Potent Poisons (76803 effect#1), Vendetta (79140 effect#1), Assassination Rogue (137037 effect#1), Master Alchemist (192318 effect#1), Surge of Toxins (192425 effect#1), Master Poisoner (196864 effect#1), Toxic Blade (245389 effect#1), Virulent Poisons (252277 effect#1)
 Triggered by     : Wound Poison (8679)
 Attributes       : ........ ........ .....x.. ........   ...x...x ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ........ ......x. 
@@ -1435,21 +1438,6 @@ Effects          :
 Description      : Step through the shadows to appear behind your target and gain $s2% increased movement speed for $d.
 Tooltip          : Movement speed increased by $s2%.
 
-Name             : Deathblow X11 Goggles (id=41317) 
-Class            : Rogue, Monk, Druid, Demon Hunter
-School           : Physical
-Cast Time        : 15 seconds
-Attributes       : .....x.. x....... x....... ........   ........ ..x..... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Tradeskill ability (5)
-Effects          :
-#1 (id=32742)    : Create Item (24)
-                   Base Value: 1 | Scaled Value: 1 | Target: Self (1)
-
 Name             : Cheated Death (id=45181) 
 Class            : Rogue
 School           : Holy
@@ -1485,21 +1473,6 @@ Effects          :
                    Base Value: -85 | Scaled Value: -85 | Misc Value: 127 | Target: Self (1)
 Description      : $@spelldesc31230
 Tooltip          : All damage taken reduced by $s1%.
-
-Name             : Quad Deathblow X44 Goggles (id=46116) 
-Class            : Rogue, Monk, Druid, Demon Hunter
-School           : Physical
-Cast Time        : 15 seconds
-Attributes       : .....x.. x....... x....... ........   ........ ..x..... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Tradeskill ability (5)
-Effects          :
-#1 (id=38209)    : Create Item (24)
-                   Base Value: 1 | Scaled Value: 1 | Target: Self (1)
 
 Name             : Cut to the Chase (id=51667) [Spell Family (8), Passive, Hidden] 
 Class            : Assassination Rogue
@@ -1572,21 +1545,6 @@ Effects          :
 Description      : Sprays knives at all targets within $A1 yards, dealing $s1 Physical damage and applying your active poisons at their normal rate.
 
 |cFFFFFFFFAwards $s2 combo $lpoint:points;.|r
-
-Name             : Weakness Spectralizers (id=56481) 
-Class            : Rogue, Monk, Druid, Demon Hunter
-School           : Physical
-Cast Time        : 15 seconds
-Attributes       : .....x.. ........ x....... ........   ........ ..x..... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Tradeskill ability (5)
-Effects          :
-#1 (id=49563)    : Create Item (24)
-                   Base Value: 1 | Scaled Value: 1 | Target: Self (1)
 
 Name             : Detection (id=56814) [Spell Family (8)] 
 Class            : Rogue
@@ -1733,21 +1691,6 @@ Effects          :
 #2 (id=99542)    : Apply Aura (6) | Modify Attack Power% (166)
                    Base Value: 50 | Scaled Value: 50 | Target: Self (1)
 Description      : Increases your Energy regeneration rate by $s1% and your Attack Power by $s2%.
-
-Name             : Mechanized Snow Goggles (id=61481) 
-Class            : Rogue, Monk, Druid, Demon Hunter
-School           : Physical
-Cast Time        : 2 seconds
-Attributes       : .....x.. ........ x....... ........   ........ ..x..... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Tradeskill ability (5)
-Effects          :
-#1 (id=55365)    : Create Item (24)
-                   Base Value: 1 | Scaled Value: 1 | Target: Self (1)
 
 Name             : Glyph of Disguise (id=63268) [Spell Family (8), Passive, Hidden] 
 Class            : Rogue
@@ -2006,22 +1949,6 @@ Effects          :
                    Affected Spells: Slice and Dice (5171)
 Description      : While your Slice and Dice ability is active, you regain $s1 Energy every $5171t2 sec.
 
-Name             : Agile Bio-Optic Killshades (id=81722) 
-Class            : Rogue, Monk, Druid, Demon Hunter
-School           : Physical
-Cast Time        : 5 seconds
-Mechanic         : Unknown(245)
-Attributes       : .....x.. ........ x....... ........   ........ ..x..... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Tradeskill ability (5)
-Effects          :
-#1 (id=81208)    : Create Item (24)
-                   Base Value: 1 | Scaled Value: 1 | Target: Self (1)
-
 Name             : Parry (Passive) (id=82245) [Spell Family (8), Passive] 
 Class            : Rogue
 School           : Physical
@@ -2258,7 +2185,7 @@ Class            : Rogue
 School           : Nature
 Spell Level      : 10
 Range            : 100 yards
-Affecting spells : Improved Poisons (14117 effect#1), Venomous Totem (23726 effect#2), Mastery: Potent Poisons (76803 effect#1), Master Alchemist (192318 effect#1), Surge of Toxins (192425 effect#1), Master Poisoner (196864 effect#1), Toxic Blade (245389 effect#1)
+Affecting spells : Improved Poisons (14117 effect#1), Venomous Totem (23726 effect#2), Mastery: Potent Poisons (76803 effect#1), Master Alchemist (192318 effect#1), Surge of Toxins (192425 effect#1), Master Poisoner (196864 effect#1), Toxic Blade (245389 effect#1), Virulent Poisons (252277 effect#1)
 Attributes       : ........ ........ .....x.. ........   ...x...x ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2462,22 +2389,6 @@ Effects          :
 #1 (id=150593)   : Weapon Damage% (31)
                    Base Value: 100 | Scaled Value: 1 | Target: Enemy (6)
 Description      : Strike with dark energy, dealing Shadow damage equal to $s1% weapon damage.
-
-Name             : Agile Retinal Armor (id=127118) 
-Class            : Rogue, Monk, Druid, Demon Hunter
-School           : Physical
-Cast Time        : 5 seconds
-Mechanic         : Unknown(245)
-Attributes       : .....x.. ........ x....... ........   ........ ..x..... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Tradeskill ability (5)
-Effects          :
-#1 (id=161558)   : Create Item (24)
-                   Base Value: 1 | Scaled Value: 1 | Target: Self (1)
 
 Name             : Prey on the Weak (id=131511) [Spell Family (8), Passive] 
 Class            : Rogue
@@ -2997,7 +2908,7 @@ Resource         : 35 Energy (3) (id=9758)
 Spell Level      : 40
 Range            : 5 yards
 GCD              : 1 seconds
-Affecting spells : Shadow Blades (121471 effect#4), Subtlety Rogue (137035 effect#1), Sleight of Hand (145211 effect#1), Nightblade (195452 effect#6), The Quiet Knife (197231 effect#1), Weak Point (238068 effect#1), The First of the Dead (248210 effect#2), Sense Vitals (252719 effect#1)
+Affecting spells : Shadow Blades (121471 effect#4), Subtlety Rogue (137035 effect#1), Sleight of Hand (145211 effect#1), Nightblade (195452 effect#6), The Quiet Knife (197231 effect#1), Weak Point (238068 effect#1), The First of the Dead (248210 effect#2), Item - Rogue T21 Subtlety 2P Bonus - Combo Points Spent Buffs Backstab (251785 effect#1)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ..xx.... 
                  : ........ ........ ....x... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3386,7 +3297,7 @@ Spell Level      : 10
 Range            : 5 yards
 GCD              : 1 seconds
 Duration         : 0.5 seconds
-Affecting spells : Adrenaline Rush (13750 effect#3), Outlaw Rogue (137036 effect#1), Broadsides (193356 effect#3), Acrobatic Strikes (196924 effect#1), Swordmaster (200733 effect#1), Cursed Edges (202463 effect#1), Swordplay (211669 effect#1), Sabermetrics (238067 effect#1), Lesser Adrenaline Rush (246558 effect#3)
+Affecting spells : Adrenaline Rush (13750 effect#3), Outlaw Rogue (137036 effect#1), Cold Blood (182304 effect#1), Broadsides (193356 effect#3), Acrobatic Strikes (196924 effect#1), Swordmaster (200733 effect#1), Cursed Edges (202463 effect#1), Swordplay (211669 effect#1), Sabermetrics (238067 effect#1), Lesser Adrenaline Rush (246558 effect#3)
 Attributes       : ....x... ........ x.x..... .......x   ........ .x...... ........ ..xx.... 
                  : ........ ........ ........ ........   ........ .xx..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ...x.... 
@@ -3643,7 +3554,7 @@ Effects          :
 Description      : Your finishing moves have a $s2% chance per combo point to grant $193538s1% Haste for $193538d, stacking up to $193538u times.
 
 Name             : Iron Stomach (id=193546) [Spell Family (8), Passive] 
-Class            : Rogue, Warlock
+Class            : Rogue
 School           : Physical
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3801,7 +3712,7 @@ Resource         : 1 - 5 Combo Points (4) (id=10595)
 Spell Level      : 3
 Range            : 5 yards
 GCD              : 1 seconds
-Affecting spells : Rogue Tier 6 Trinket (40460 effect#1), Mastery: Executioner (76808 effect#1), Subtlety Rogue (137035 effect#1), Death from Above (163786 effect#1), Cold Blood (182304 effect#1), Eviscerating Blade (184917 effect#3), Adrenaline Rush (186286 effect#3), Deeper Stratagem (193531 effect#1), Nightblade (195452 effect#6), Acrobatic Strikes (196924 effect#1), Gutripper (197234 effect#1), Finality: Eviscerate (197496 effect#1), Eviscerate (231716 effect#1), Feeding Frenzy (242705 effect#1), Shuriken Combo (245640 effect#1)
+Affecting spells : Rogue Tier 6 Trinket (40460 effect#1), Mastery: Executioner (76808 effect#1), Subtlety Rogue (137035 effect#1), Death from Above (163786 effect#1), Eviscerating Blade (184917 effect#3), Adrenaline Rush (186286 effect#3), Deeper Stratagem (193531 effect#1), Nightblade (195452 effect#6), Acrobatic Strikes (196924 effect#1), Gutripper (197234 effect#1), Finality: Eviscerate (197496 effect#1), Eviscerate (231716 effect#1), Feeding Frenzy (242705 effect#1), Shuriken Combo (245640 effect#1)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ .xx..... ........ ........ 
                  : ...x.... ........ ........ ........   ........ ........ ........ ........ 
@@ -4059,7 +3970,7 @@ Resource         : 1 - 5 Combo Points (4) (id=10684)
 Spell Level      : 3
 Range            : 5 yards
 GCD              : 1 seconds
-Affecting spells : Rogue Tier 6 Trinket (40460 effect#1), Mastery: Executioner (76808 effect#1), Subtlety Rogue (137035 effect#1), Death from Above (163786 effect#1), Cold Blood (182304 effect#1), Eviscerating Blade (184917 effect#3), Adrenaline Rush (186286 effect#3), Deeper Stratagem (193531 effect#1), Nightblade (195452 effect#6), Acrobatic Strikes (196924 effect#1), Gutripper (197234 effect#1), Finality: Eviscerate (197496 effect#1), Eviscerate (231716 effect#1), Feeding Frenzy (242705 effect#1), Shuriken Combo (245640 effect#1)
+Affecting spells : Rogue Tier 6 Trinket (40460 effect#1), Mastery: Executioner (76808 effect#1), Subtlety Rogue (137035 effect#1), Death from Above (163786 effect#1), Eviscerating Blade (184917 effect#3), Adrenaline Rush (186286 effect#3), Deeper Stratagem (193531 effect#1), Nightblade (195452 effect#6), Acrobatic Strikes (196924 effect#1), Gutripper (197234 effect#1), Finality: Eviscerate (197496 effect#1), Eviscerate (231716 effect#1), Feeding Frenzy (242705 effect#1), Shuriken Combo (245640 effect#1)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ .xx..... ........ ........ 
                  : ...x.... ........ ........ ........   ........ ........ ........ ........ 
@@ -4355,7 +4266,7 @@ Spell Level      : 20
 Range            : 20 yards
 GCD              : 1 seconds
 Cooldown         : 20 seconds
-Affecting spells : Adrenaline Rush (13750 effect#3), Outlaw Rogue (137036 effect#1), Deeper Stratagem (193531 effect#1), Fatebringer (202524 effect#1), Black Powder (216230 effect#1), Between the Eyes (235484 effect#1), Lesser Adrenaline Rush (246558 effect#3)
+Affecting spells : Adrenaline Rush (13750 effect#3), Outlaw Rogue (137036 effect#1), Cold Blood (182304 effect#1), Deeper Stratagem (193531 effect#1), Fatebringer (202524 effect#1), Black Powder (216230 effect#1), Between the Eyes (235484 effect#1), Lesser Adrenaline Rush (246558 effect#3)
 Attributes       : ....x... ........ x.....x. ........   ........ .x...... ........ ...x.... 
                  : ........ ........ .x...... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ....x...   ........ ........ ........ ...x.... 
@@ -4506,7 +4417,7 @@ Range            : 100 yards
 Duration         : 12 seconds
 Stacks           : 5 maximum
 Proc Chance      : 101%
-Affecting spells : Improved Poisons (14117 effect#1), Venomous Totem (23726 effect#2), Mastery: Potent Poisons (76803 effect#1), Assassination Rogue (137037 effect#5), Master Alchemist (192318 effect#1), Poison Knives (192376 effect#2), Surge of Toxins (192425 effect#1), Master Poisoner (196864 effect#1), Toxic Blade (245389 effect#1)
+Affecting spells : Improved Poisons (14117 effect#1), Venomous Totem (23726 effect#2), Mastery: Potent Poisons (76803 effect#1), Assassination Rogue (137037 effect#5), Master Alchemist (192318 effect#1), Poison Knives (192376 effect#2), Surge of Toxins (192425 effect#1), Master Poisoner (196864 effect#1), Toxic Blade (245389 effect#1), Virulent Poisons (252277 effect#1)
 Triggered by     : Agonizing Poison (200802)
 Attributes       : ........ ........ .....x.. ........   ...x.x.x ........ .x...... ........ 
                  : ..x..... ........ ........ x.......   .......x ........ ........ ......x. 

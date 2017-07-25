@@ -955,36 +955,6 @@ If Vampiric Touch is dispelled, the dispeller flees in Horror for $87204d.
 |cFFFFFFFFGenerates ${$m3/100} Insanity.|r
 Tooltip          : Suffering $w2 Shadow damage every $t2 sec.
 
-Name             : Destruction Holo-gogs (id=41320) 
-Class            : Priest, Mage, Warlock
-School           : Physical
-Cast Time        : 15 seconds
-Attributes       : .....x.. x....... x....... ........   ........ ..x..... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Tradeskill ability (5)
-Effects          :
-#1 (id=32745)    : Create Item (24)
-                   Base Value: 1 | Scaled Value: 1 | Target: Self (1)
-
-Name             : Powerheal 4000 Lens (id=41321) 
-Class            : Priest
-School           : Physical
-Cast Time        : 15 seconds
-Attributes       : .....x.. x....... x....... ........   ........ ..x..... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Tradeskill ability (5)
-Effects          :
-#1 (id=32746)    : Create Item (24)
-                   Base Value: 1 | Scaled Value: 1 | Target: Self (1)
-
 Name             : Prayer of Mending (id=41635) [Spell Family (6)] 
 Class            : Priest
 School           : Holy
@@ -1049,36 +1019,6 @@ Effects          :
 #1 (id=37197)    : Apply Aura (6) | Proc Trigger Spell (42): Focused Will
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Misc Value: 7 | Trigger Spell: 45242 | Target: Self (1)
 Description      : Melee attacks against you cause you to gain Focused Will, reducing damage you take by $45242s1% for $45242d, stacking up to $45242u times.
-
-Name             : Powerheal 9000 Lens (id=46108) 
-Class            : Priest
-School           : Physical
-Cast Time        : 15 seconds
-Attributes       : .....x.. x....... x....... ........   ........ ..x..... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Tradeskill ability (5)
-Effects          :
-#1 (id=38201)    : Create Item (24)
-                   Base Value: 1 | Scaled Value: 1 | Target: Self (1)
-
-Name             : Annihilator Holo-Gogs (id=46111) 
-Class            : Priest, Mage, Warlock
-School           : Physical
-Cast Time        : 15 seconds
-Attributes       : .....x.. x....... x....... ........   ........ ..x..... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Tradeskill ability (5)
-Effects          :
-#1 (id=38204)    : Create Item (24)
-                   Base Value: 1 | Scaled Value: 1 | Target: Self (1)
 
 Name             : Rapture (id=47536) [Spell Family (6)] 
 Class            : Discipline Priest
@@ -1223,7 +1163,7 @@ Duration         : 2 seconds
 Affecting spells : Item - Priest T17 Discipline 2P Bonus (165614 effect#1), Reparation (186478 effect#1), Castigation (193134 effect#1), Atonement (194384 effect#2), Confession (197708 effect#1), Power Word: Shield (211558 effect#1), Radiant Focus (252848 effect#2), 
 Attributes       : ........ x....... x....... .....x..   ..x...xx ..x...x. ........ ..x.x... 
                  : ........ x....... ........ ........   ........ ........ ........ ........ 
-                 : ........ .......x ........ ...x....   ........ .x...x.. ........ ........ 
+                 : ........ .......x ........ ...x....   ........ .....x.. ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ .x...... x.......   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1233,6 +1173,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Friend (21)
 #2 (id=40004)    : Apply Aura (6) | Periodic Trigger Spell (23): Penance every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 47750 | Target: Self (1)
+#3 (id=474698)   : Trigger Spell (64): Penance
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 100 | Trigger Spell: 47750 | Target: Friend (21)
 
 Name             : Penance (id=47758) [Spell Family (6)] 
 Class            : Priest
@@ -1243,7 +1185,7 @@ Duration         : 2 seconds
 Affecting spells : Item - Priest T17 Discipline 2P Bonus (165614 effect#1), Castigation (193134 effect#1)
 Attributes       : ........ x....... x....... .....x..   ..x....x ..x...x. ........ ..x.x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ .......x ........ ...x....   ........ .x...x.. ........ ........ 
+                 : ........ .......x ........ ...x....   ........ .....x.. ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ .x...... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1253,6 +1195,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
 #2 (id=40006)    : Apply Aura (6) | Periodic Trigger Spell (23): Penance every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 47666 | Target: Self (1)
+#3 (id=474696)   : Trigger Spell (64): Penance
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 100 | Trigger Spell: 47666 | Target: Enemy (6)
 
 Name             : Guardian Spirit (id=47788) [Spell Family (6)] 
 Class            : Holy Priest
@@ -1281,36 +1225,6 @@ Description      : Calls upon a guardian spirit to watch over the friendly targe
 
 Massive damage amounts will kill the target despite this effect.
 Tooltip          : Increased healing received by $w1%$?$w1<100[ and will prevent 1 killing blow][].
-
-Name             : Mechanized Snow Goggles (id=56465) 
-Class            : Priest, Mage, Warlock
-School           : Physical
-Cast Time        : 2 seconds
-Attributes       : .....x.. ........ x....... ........   ........ ..x..... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Tradeskill ability (5)
-Effects          :
-#1 (id=49547)    : Create Item (24)
-                   Base Value: 1 | Scaled Value: 1 | Target: Self (1)
-
-Name             : Visage Liquification Goggles (id=56484) 
-Class            : Priest, Mage, Warlock
-School           : Physical
-Cast Time        : 15 seconds
-Attributes       : .....x.. ........ x....... ........   ........ ..x..... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Tradeskill ability (5)
-Effects          :
-#1 (id=49565)    : Create Item (24)
-                   Base Value: 1 | Scaled Value: 1 | Target: Self (1)
 
 Name             : Glyph of Shackle Undead (id=57986) [Spell Family (6), Passive, Hidden] 
 Class            : Priest
@@ -1387,7 +1301,7 @@ Attributes       : ........ ........ ..x..... ........   ........ ........ .....
                  : x.....x. .....x.. ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=56703)    : Unknown(179)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 1489 | Radius: 6.5 yards | Target: AOE friendly (31)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 1489 | Radius: 8 yards | Target: AOE friendly (31)
 Description      : Summons a holy barrier to protect all allies at the target location for $d, reducing all damage taken by $81782s2% and preventing damage from delaying spellcasting.
 
 Name             : Shadowcrawl (id=63619) [Spell Family (6)] 
@@ -1770,22 +1684,6 @@ Effects          :
 #1 (id=68229)    : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : When your Shadow Word: Pain damage over time critically strikes, you also create a shadowy version of yourself that floats towards the target and deals $148859s1 Shadow damage.
-
-Name             : Lightweight Bio-Optic Killshades (id=81725) 
-Class            : Priest, Mage, Warlock
-School           : Physical
-Cast Time        : 5 seconds
-Mechanic         : Unknown(245)
-Attributes       : .....x.. ........ x....... ........   ........ ..x..... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Tradeskill ability (5)
-Effects          :
-#1 (id=81210)    : Create Item (24)
-                   Base Value: 1 | Scaled Value: 1 | Target: Self (1)
 
 Name             : Atonement (id=81749) [Spell Family (6), Passive] 
 Class            : Discipline Priest
@@ -2430,22 +2328,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1052
 Description      : $@spelldesc126745
 
-Name             : Lightweight Retinal Armor (id=127117) 
-Class            : Priest, Mage, Warlock
-School           : Physical
-Cast Time        : 1.5 seconds
-Mechanic         : Unknown(245)
-Attributes       : .....x.. ........ x....... ........   ........ ..x..... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Tradeskill ability (5)
-Effects          :
-#1 (id=161557)   : Create Item (24)
-                   Base Value: 1 | Scaled Value: 1 | Target: Self (1)
-
 Name             : Power Word: Solace (Talent) (id=129250) [Spell Family (6)] 
 Class            : Priest
 School           : Holy
@@ -2527,8 +2409,9 @@ Effects          :
 #5 (id=191083)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 248 (Label) | Target: Self (1)
                    Affected Spells (Label): Fel-Crazed Rage (225777), Colossal Slam (232044), Dread Torrent (246464), Ceaseless Toxin (242497), Umbral Glaive Storm (242556), Shattering Umbral Glaives (242557), Infernal Cinders (242218)
-#6 (id=260687)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+#6 (id=260687)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Periodic Damage (22)
+                   Base Value: -50 | Scaled Value: -50 | Misc Value: 22 | Misc Value 2: 248 (Label) | Target: Self (1)
+                   Affected Spells (Label): Fel-Crazed Rage (225777), Colossal Slam (232044), Dread Torrent (246464), Ceaseless Toxin (242497), Umbral Glaive Storm (242556), Shattering Umbral Glaives (242557), Infernal Cinders (242218)
 #7 (id=260688)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #8 (id=260689)   : Apply Aura (6) | Dummy (4)
@@ -2552,6 +2435,8 @@ Effects          :
 #17 (id=320014)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #18 (id=327307)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+#19 (id=474898)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 
 Name             : Holy Priest (id=137031) [Spell Family (6), Passive, Hidden] 

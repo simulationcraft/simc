@@ -446,6 +446,7 @@ Effects          :
 #2 (id=363876)   : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
                    Affected Spells: Revenge (6572)
+Description      : $@spelldesc6572
 Tooltip          : Your next Revenge is free.
 
 Name             : Execute (id=5308) [Spell Family (4)] 
@@ -477,7 +478,7 @@ GCD              : 1.5 seconds
 Duration         : 10 seconds
 Cooldown         : 6 seconds
 Proc Chance      : 101%
-Affecting spells : Demoralizing Shout (1160 effect#3), Warrior (137047 effect#1), Protection Warrior (137048 effect#7), Thunder Crash (188644 effect#1), Might of the Vrykul (188783 effect#1), Crackling Thunder (203201 effect#1), Kakushan's Stormscale Gauntlets (207844 effect#1), 
+Affecting spells : Demoralizing Shout (1160 effect#3), Warrior (137047 effect#1), Protection Warrior (137048 effect#8), Thunder Crash (188644 effect#1), Might of the Vrykul (188783 effect#1), Crackling Thunder (203201 effect#1), Kakushan's Stormscale Gauntlets (207844 effect#1), 
 Attributes       : ....x... ........ x.x..x.. ........   ...x...x .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -551,7 +552,7 @@ Spell Level      : 22
 Range            : 5 yards
 GCD              : 1.5 seconds
 Cooldown         : 3 seconds
-Affecting spells : Demoralizing Shout (1160 effect#3), Revenge! (5302 effect#1), Warrior (137047 effect#1), Protection Warrior (137048 effect#7), Vengeance: Revenge (202573 effect#1), Rage of the Fallen (216272 effect#1)
+Affecting spells : Demoralizing Shout (1160 effect#3), Revenge! (5302 effect#1), Warrior (137047 effect#1), Protection Warrior (137048 effect#8), Vengeance: Revenge (202573 effect#1), Rage of the Fallen (216272 effect#1)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -597,7 +598,7 @@ Spell Level      : 1
 Range            : 50000 yards
 Proc Chance      : 101%
 Mechanic         : Unknown(95)
-Affecting spells : Protection Warrior (137048 effect#7)
+Affecting spells : Protection Warrior (137048 effect#8)
 Attributes       : ....x... ........ x.x..x.. ........   ...x...x .x...... ........ ........ 
                  : ..x..... ........ ........ ......x.   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
@@ -764,7 +765,7 @@ Range            : 5 yards
 GCD              : 1.5 seconds
 Stacks           : 3 maximum
 Proc Chance      : 101%
-Affecting spells : Demoralizing Shout (1160 effect#3), Warrior (137047 effect#2), Protection Warrior (137048 effect#7), Strength of the Earth Aspect (188647 effect#1)
+Affecting spells : Demoralizing Shout (1160 effect#3), Warrior (137047 effect#2), Protection Warrior (137048 effect#8), Strength of the Earth Aspect (188647 effect#1)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -884,7 +885,7 @@ Spell Level      : 10
 Range            : 5 yards
 GCD              : 1.5 seconds
 Cooldown         : 9 seconds
-Affecting spells : Demoralizing Shout (1160 effect#3), Shield Block (132404 effect#2), Warrior (137047 effect#1), Protection Warrior (137048 effect#7), Vicious Strike (165642 effect#1), Might of the Vrykul (188783 effect#2), Kakushan's Stormscale Gauntlets (207844 effect#1), The Walls Fell (215057 effect#2)
+Affecting spells : Demoralizing Shout (1160 effect#3), Shield Block (132404 effect#2), Warrior (137047 effect#1), Protection Warrior (137048 effect#8), Vicious Strike (165642 effect#1), Might of the Vrykul (188783 effect#2), Kakushan's Stormscale Gauntlets (207844 effect#1), The Walls Fell (215057 effect#2)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ..xx.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1059,36 +1060,6 @@ Only usable within $32216d after you kill an enemy that yields experience or hon
 Variables        : $rush=$?s58382[${$118779m1*1.5}][${$118779m1}]
 $impending=$?s58382[${$118340m1*1.0}][${$118340m1}]
 
-Name             : Furious Gizmatic Goggles (id=40274) 
-Class            : Warrior, Paladin, Death Knight
-School           : Physical
-Cast Time        : 15 seconds
-Attributes       : .....x.. x....... x....... ........   ........ ..x..... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Tradeskill ability (5)
-Effects          :
-#1 (id=31390)    : Create Item (24)
-                   Base Value: 1 | Scaled Value: 1 | Target: Self (1)
-
-Name             : Tankatronic Goggles (id=41312) 
-Class            : Warrior, Paladin, Death Knight
-School           : Physical
-Cast Time        : 15 seconds
-Attributes       : .....x.. x....... x....... ........   ........ ..x..... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Tradeskill ability (5)
-Effects          :
-#1 (id=32735)    : Create Item (24)
-                   Base Value: 1 | Scaled Value: 1 | Target: Self (1)
-
 Name             : Whirlwind Off-Hand (id=44949) [Spell Family (4)] 
 Class            : Warrior
 School           : Physical
@@ -1108,36 +1079,6 @@ Effects          :
 #2 (id=36872)    : Weapon Damage% (31)
                    Base Value: 45 | Scaled Value: 0.45 | Radius: 0 - 8 yards | Target: Custom (18) -> AOE enemy (instant) (16)
 Description      : $@spelldesc190411
-
-Name             : Mayhem Projection Goggles (id=46114) 
-Class            : Warrior, Paladin, Death Knight
-School           : Physical
-Cast Time        : 15 seconds
-Attributes       : .....x.. x....... x....... ........   ........ ..x..... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Tradeskill ability (5)
-Effects          :
-#1 (id=38207)    : Create Item (24)
-                   Base Value: 1 | Scaled Value: 1 | Target: Self (1)
-
-Name             : Hard Khorium Goggles (id=46115) 
-Class            : Warrior, Paladin, Death Knight
-School           : Physical
-Cast Time        : 15 seconds
-Attributes       : .....x.. x....... x....... ........   ........ ..x..... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Tradeskill ability (5)
-Effects          :
-#1 (id=38208)    : Create Item (24)
-                   Base Value: 1 | Scaled Value: 1 | Target: Self (1)
 
 Name             : Titan's Grip (id=46917) [Spell Family (4), Passive] 
 Class            : Fury Warrior
@@ -1255,36 +1196,6 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.62400 | Radius: 8 yards | Target: AOE enemy (instant) (16)
 Description      : $@spelldesc6544
 
-Name             : Armored Titanium Goggles (id=56480) 
-Class            : Warrior, Paladin, Death Knight
-School           : Physical
-Cast Time        : 15 seconds
-Attributes       : .....x.. ........ x....... ........   ........ ..x..... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Tradeskill ability (5)
-Effects          :
-#1 (id=49562)    : Create Item (24)
-                   Base Value: 1 | Scaled Value: 1 | Target: Self (1)
-
-Name             : Charged Titanium Specs (id=56483) 
-Class            : Warrior, Paladin, Death Knight
-School           : Physical
-Cast Time        : 15 seconds
-Attributes       : .....x.. ........ x....... ........   ........ ..x..... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Tradeskill ability (5)
-Effects          :
-#1 (id=49564)    : Create Item (24)
-                   Base Value: 1 | Scaled Value: 1 | Target: Self (1)
-
 Name             : Heroic Throw (id=57755) [Spell Family (4)] 
 Class            : Warrior
 School           : Physical
@@ -1293,7 +1204,7 @@ Range            : 8 - 30 yards
 GCD              : 1.5 seconds
 Velocity         : 40 yards/sec
 Cooldown         : 6 seconds
-Affecting spells : Defensive Stance (71 effect#4), Demoralizing Shout (1160 effect#3), Warrior (137047 effect#2), Protection Warrior (137048 effect#7), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1)
+Affecting spells : Defensive Stance (71 effect#4), Demoralizing Shout (1160 effect#3), Warrior (137047 effect#2), Protection Warrior (137048 effect#8), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1)
 Attributes       : ....x... ........ x.x..x.. ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1392,21 +1303,6 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5 | Target: Self (1)
 Description      : $@spelldesc7384
 Tooltip          : Overpower activated!
-
-Name             : Mechanized Snow Goggles (id=61483) 
-Class            : Warrior, Paladin, Death Knight
-School           : Physical
-Cast Time        : 2 seconds
-Attributes       : .....x.. ........ x....... ........   ........ ..x..... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Tradeskill ability (5)
-Effects          :
-#1 (id=55367)    : Create Item (24)
-                   Base Value: 1 | Scaled Value: 1 | Target: Self (1)
 
 Name             : Thunder Strike (id=68163) 
 Class            : Warrior
@@ -1590,22 +1486,6 @@ Effects          :
 Description      : Increases your chance to block by $s2% and your chance to critically block by $s1%.
 
 Also increases your attack power by $s5%.
-
-Name             : Reinforced Bio-Optic Killshades (id=81714) 
-Class            : Warrior, Paladin, Death Knight
-School           : Physical
-Cast Time        : 5 seconds
-Mechanic         : Unknown(245)
-Attributes       : .....x.. ........ x....... ........   ........ ..x..... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Tradeskill ability (5)
-Effects          :
-#1 (id=81203)    : Create Item (24)
-                   Base Value: 1 | Scaled Value: 1 | Target: Self (1)
 
 Name             : Bastion of Defense (id=84608) [Spell Family (4), Passive, Hidden] 
 Class            : Protection Warrior
@@ -2043,7 +1923,7 @@ Spell Level      : 1
 Range            : 100 yards
 Duration         : 15 seconds
 Mechanic         : Bleed
-Affecting spells : Demoralizing Shout (1160 effect#3), Battle Cry (1719 effect#4), Warrior (137047 effect#2), Protection Warrior (137048 effect#8), Arms Warrior (137049 effect#2), Dauntless (202297 effect#1)
+Affecting spells : Demoralizing Shout (1160 effect#3), Battle Cry (1719 effect#4), Warrior (137047 effect#2), Protection Warrior (137048 effect#9), Arms Warrior (137049 effect#2), Dauntless (202297 effect#1)
 Triggered by     : Deep Wounds (115768)
 Attributes       : ....x... ........ ..x..x.. ........   ........ ........ ........ ........ 
                  : ..x....x ........ ........ ........   ........ ..x..... ..x..... ..x...x. 
@@ -2186,7 +2066,7 @@ Name             : Bloodthirst Heal (id=117313) [Spell Family (4)]
 Class            : Warrior
 School           : Physical
 Spell Level      : 1
-Affecting spells : Enraged Regeneration (184364 effect#2), Furious Charge (202225 effect#1), Bloody Rage (242952 effect#1), Bloody Rage (242953 effect#1)
+Affecting spells : Enraged Regeneration (184364 effect#2), Furious Charge (202225 effect#1)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ .....x..   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2352,11 +2232,12 @@ Effects          :
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 127 | Target: Self (1)
 Tooltip          : Demoralized enemies deal $1160s1% less damage to you.
 
-Name             : Charge (id=126664) 
+Name             : Charge (id=126664) [Spell Family (4)] 
 Class            : Warrior
 School           : Physical
 Spell Level      : 10
 Range            : 50000 yards
+Affecting spells : Fury Warrior (137050 effect#1)
 Attributes       : ....x... ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ..x..... ........ 
                  : ........ ........ ....x... ........   ........ ........ ........ ........ 
@@ -2369,22 +2250,6 @@ Effects          :
 #2 (id=362434)   : School Damage (2): physical
                    Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.70000 | Target: Enemy (6)
 Description      : $@spelldesc100
-
-Name             : Reinforced Retinal Armor (id=127123) 
-Class            : Warrior, Paladin, Death Knight
-School           : Physical
-Cast Time        : 1.5 seconds
-Mechanic         : Unknown(245)
-Attributes       : .....x.. ........ x....... ........   ........ ..x..... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Tradeskill ability (5)
-Effects          :
-#1 (id=161563)   : Create Item (24)
-                   Base Value: 1 | Scaled Value: 1 | Target: Self (1)
 
 Name             : Protection (id=131086) [Spell Family (4), Passive, Hidden] 
 Class            : Protection Warrior
@@ -2559,20 +2424,21 @@ Effects          :
 #5 (id=191019)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 248 (Label) | Target: Self (1)
                    Affected Spells (Label): Fel-Crazed Rage (225777), Colossal Slam (232044), Dread Torrent (246464), Ceaseless Toxin (242497), Umbral Glaive Storm (242556), Shattering Umbral Glaives (242557), Infernal Cinders (242218)
-#6 (id=261027)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
+#6 (id=261027)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Periodic Damage (22)
+                   Base Value: -50 | Scaled Value: -50 | Misc Value: 22 | Misc Value 2: 248 (Label) | Target: Self (1)
+                   Affected Spells (Label): Fel-Crazed Rage (225777), Colossal Slam (232044), Dread Torrent (246464), Ceaseless Toxin (242497), Umbral Glaive Storm (242556), Shattering Umbral Glaives (242557), Infernal Cinders (242218)
+#7 (id=261028)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -40 | Scaled Value: -40 | Misc Value: 3 | Misc Value 2: 276 (Label) | Target: Self (1)
                    Affected Spells (Label): Xavaric's Magnum Opus (207472)
-#7 (id=261028)   : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
+#8 (id=261029)   : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
                    Base Value: -5 | Scaled Value: -5 | Target: Self (1)
                    Affected Spells: Thunder Clap (6343), Revenge (6572), Warbringer (7922), Devastate (20243), Shield Slam (23922), Victory Rush (34428), Heroic Throw (57755), Ravager (152277), Ravager (156287), Impending Victory (202168), Ravager (227744), Ravager (228920), Devastator (236282), Warbringer (237744)
-#8 (id=261029)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Damage (22)
+#9 (id=261030)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Damage (22)
                    Base Value: -5 | Scaled Value: -5 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Deep Wounds (115767)
-#9 (id=261030)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
+#10 (id=261031)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 289 (Label) | Target: Self (1)
                    Affected Spells (Label): Rethu's Incessant Courage (242597)
-#10 (id=261031)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #11 (id=261032)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #12 (id=261033)   : Apply Aura (6) | Dummy (4)
@@ -2586,6 +2452,8 @@ Effects          :
 #16 (id=362031)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #17 (id=368363)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+#18 (id=474888)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 
 Name             : Arms Warrior (id=137049) [Spell Family (4), Passive, Hidden] 
@@ -2658,7 +2526,7 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=179734)   : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
                    Base Value: 10 | Scaled Value: 10 | Target: Self (1)
-                   Affected Spells: Whirlwind (1680), Execute (5308), Heroic Leap (6544), Bloodthirst (23881), Whirlwind Off-Hand (44949), Bladestorm (46924), Shockwave (46968), Bladestorm (50622), Heroic Leap (52174), Heroic Throw (57755), Raging Blow (85288), Raging Blow (85384), Bladestorm Off-Hand (95738), Raging Blow (96103), Furious Slash (100130), Storm Bolt (107570), Dragon Roar (118000), Shockwave (132168), Storm Bolt (132169), Execute (163201), Execute Off-Hand (163558), Bladestorm (168969), Rampage (184367), Rampage (184707), Rampage (184709), Whirlwind (190411), Whirlwind (199658), Whirlwind (199667), Whirlwind (199850), Rampage (201363), Rampage (201364), Odyn's Fury (205545), Odyn's Fury (205546), Odyn's Fury (205547), Rampage (218617), Bladestorm (222634), Bladestorm (227847)
+                   Affected Spells: Whirlwind (1680), Execute (5308), Heroic Leap (6544), Bloodthirst (23881), Whirlwind Off-Hand (44949), Bladestorm (46924), Shockwave (46968), Bladestorm (50622), Heroic Leap (52174), Heroic Throw (57755), Raging Blow (85288), Raging Blow (85384), Bladestorm Off-Hand (95738), Raging Blow (96103), Furious Slash (100130), Storm Bolt (107570), Dragon Roar (118000), Charge (126664), Shockwave (132168), Storm Bolt (132169), Execute (163201), Execute Off-Hand (163558), Bladestorm (168969), Rampage (184367), Rampage (184707), Rampage (184709), Whirlwind (190411), Whirlwind (199658), Whirlwind (199667), Whirlwind (199850), Rampage (201363), Rampage (201364), Odyn's Fury (205545), Odyn's Fury (205546), Odyn's Fury (205547), Rampage (218617), Bladestorm (222634), Bladestorm (227847), Helya's Scorn (243223), Odyn's Glory (243228)
 #2 (id=191010)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Damage (22)
                    Base Value: 10 | Scaled Value: 10 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Odyn's Fury (205545), Odyn's Fury (205546), Odyn's Fury (205547)
@@ -3326,7 +3194,7 @@ Replaces         : Charge (id=100)
 Class            : Protection Warrior
 School           : Physical
 Spell Level      : 28
-Range            : 25 yards
+Range            : 8 - 25 yards
 Cooldown         : 1.5 seconds
 Charges          : 1 (20 seconds cooldown)
 Category         : 1386
@@ -5141,6 +5009,8 @@ Effects          :
 #3 (id=342671)   : Apply Aura (6) | Unknown(263)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
                    Affected Spells: Defensive Stance (71), Taunt (355), Shield Wall (871), Demoralizing Shout (1160), Shield Block (2565), Last Stand (12975), Berserker Rage (18499), Commanding Shout (97462), Commanding Shout (97463), Die by the Sword (118038), Demoralizing Shout (125565), Enraged Regeneration (184364), Defensive Stance (197690)
+#4 (id=474569)   : Apply Aura (6) | Mechanic Immunity (77)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : Become an unstoppable storm of destructive force, striking all targets within $50622A1 yards $?s23881[with both weapons for ${7*($50622sw2+$95738sw2)} Physical damage][for ${7*$168969sw2} Physical damage] over $d.
 
 You are immune to movement impairing and loss of control effects, but can use defensive abilities and can avoid attacks.
@@ -5340,7 +5210,7 @@ Spell Level      : 10
 Range            : 5 yards
 Stacks           : 3 maximum
 Proc Chance      : 101%
-Affecting spells : Demoralizing Shout (1160 effect#3), Warrior (137047 effect#2), Protection Warrior (137048 effect#7), Strength of the Earth Aspect (188647 effect#1)
+Affecting spells : Demoralizing Shout (1160 effect#3), Warrior (137047 effect#2), Protection Warrior (137048 effect#8), Strength of the Earth Aspect (188647 effect#1)
 Triggered by     : Devastator (236279)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5365,7 +5235,7 @@ Range            : 50000 yards
 Duration         : 2.5 seconds
 Proc Chance      : 101%
 Mechanic         : Unknown(95)
-Affecting spells : Protection Warrior (137048 effect#7)
+Affecting spells : Protection Warrior (137048 effect#8)
 Attributes       : ....x... ........ x.x..x.. ........   ...x...x .x...... ........ ........ 
                  : ..x..... ........ ........ ......x.   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
@@ -5414,7 +5284,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=368917)   : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
-                   Affected Spells: Bloodthirst (23881), Bloodthirst Heal (117313)
+                   Affected Spells: Bloodthirst (23881)
 Description      : $@spelldesc242301
 Tooltip          : Damage and healing done by your next Bloodthirst increased by $s1%.
 
@@ -5435,7 +5305,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=368919)   : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
                    Base Value: 50 | Scaled Value: 50 | Target: Self (1)
-                   Affected Spells: Bloodthirst (23881), Bloodthirst Heal (117313)
+                   Affected Spells: Bloodthirst (23881)
 Description      : $@spelldesc242301
 Tooltip          : Damage and healing done by your next Bloodthirst increased by $s1%.
 
