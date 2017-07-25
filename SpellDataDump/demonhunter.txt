@@ -1746,7 +1746,8 @@ Effects          :
 #1 (id=300687)   : Apply Aura (6) | Modify Parry% (47)
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
 #2 (id=300915)   : Apply Aura (6) | Unknown(87)
-                   Base Value: -10 | Scaled Value: -10 | Misc Value: 0x1 | Target: Self (1)
+                   Base Value: -12 | Scaled Value: -12 | Misc Value: 0x1 | Target: Self (1)
+                   Hotfixed: Base Value (-10 -> -12), Chain Multiplier (0 -> 1)
 #3 (id=341634)   : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x1 | Target: Self (1)
 Description      : $@spelldesc203720
@@ -3514,7 +3515,8 @@ Attributes       : ....x... ........ ........ ........   ........ .x...... .....
                  : Not a proc (105)
 Effects          :
 #1 (id=338878)   : Weapon Damage% (31)
-                   Base Value: 475 | Scaled Value: 4.75 | Target: Enemy (6)
+                   Base Value: 451 | Scaled Value: 4.51 | Target: Enemy (6)
+                   Hotfixed: Base Value (475 -> 451), Chain Multiplier (0 -> 1)
 #2 (id=338879)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
 Description      : $@spelldesc209795
@@ -3535,7 +3537,8 @@ Attributes       : ....x... ........ ........ ........   ........ .x...... .....
                  : Not a proc (105)
 Effects          :
 #1 (id=338881)   : Weapon Damage% (31)
-                   Base Value: 945 | Scaled Value: 9.45 | Target: Enemy (6)
+                   Base Value: 897 | Scaled Value: 8.97 | Target: Enemy (6)
+                   Hotfixed: Base Value (945 -> 897), Chain Multiplier (0 -> 1)
 #2 (id=338882)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
 Description      : $@spelldesc209795
@@ -3918,8 +3921,8 @@ Attributes       : ........ ........ ........ x..x....   ........ ........ .....
                  : Not a proc (105), Requires line of sight (186)
 Effects          :
 #1 (id=377040)   : School Damage (2): fire
-                   Base Value: 0 | Scaled Value: 0 (avg=0, dl=0.1) | AP Coefficient: 2.00000 | Radius: 0 - 8 yards | Target: Custom (18) -> AOE enemy (instant) (16)
-                   Hotfixed: Chain Multiplier (0 -> 1)
+                   Base Value: 0 | Scaled Value: 0 (avg=0, dl=0.1) | AP Coefficient: 1.80000 | Radius: 0 - 8 yards | Target: Custom (18) -> AOE enemy (instant) (16)
+                   Hotfixed: AP Coefficient (2 -> 1.8), Chain Multiplier (0 -> 1)
 Description      : $@spelldesc247454
 
 Name             : Frailty (id=247456) [Spell Family (107)] 
