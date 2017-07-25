@@ -7089,6 +7089,28 @@ void mage_t::create_buffs()
   // Buff to track icicles. This does not, however, track the true amount of icicles present.
   // Instead, as it does in game, it tracks icicle buff stack count based on the number of *casts*
   // of icicle generating spells. icicles are generated on impact, so they are slightly de-synced.
+  //
+  // A note about in-game implementation. At first, it might seem that each stack has an independent
+  // expiration timer, but the timing is a bit off and it just doesn't happen in the cases where
+  // Icicle buff is incremented but the actual Icicle never created.
+  //
+  // Instead, the buff is incremented when:
+  //   * Frostbolt executes
+  //   * Ice Nine creates another Icicle
+  //   * One of the Icicles overflows
+  //
+  // It is unclear if the buff is incremented twice or three times when Ice Nine procs and two Icicles
+  // overflow (combat log doesn't track refreshes for Icicles buff).
+  //
+  // The buff is decremented when:
+  //   * One of the Icicles is removed
+  //     - Launched after Ice Lance
+  //     - Launched on overflow
+  //     - Removed as a part of Glacial Spike execute
+  //     - Expired after 60 sec
+  //
+  // This explains why some Icicle stacks remain if Glacial Spike executes with 5 Icicle stacks but less
+  // than 5 actual Icicles.
   buffs.icicles                = buff_creator_t( this, "icicles", find_spell( 205473 ) );
   buffs.icy_veins              = haste_buff_creator_t( this, "icy_veins", find_spell( 12472 ) )
                                    .default_value( find_spell( 12472 ) -> effectN( 1 ).percent() )
