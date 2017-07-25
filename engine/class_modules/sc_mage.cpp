@@ -3946,11 +3946,16 @@ struct flurry_bolt_t : public frost_mage_spell_t
       am *= 1.0 + p() -> buffs.brain_freeze -> data().effectN( 2 ).percent();
     }
 
-    // TODO: Check what happens when the Flurry bolts arrive out of order.
-    // 0.4 sec between bolts at 50 yd/s means we need to move at least 20 yds to do this,
-    // Shimmer + running might be enough, possibly with Whispers bad buff to increase
-    // the spacing.
-    am *= 1.0 + p() -> state.flurry_bolt_count
+    // In-game testing shows that 6 successive Flurry bolt impacts (with no cast
+    // in between to reset the counter) results in the following bonus from T20 2pc:
+    //
+    //   1st   2nd   3rd   4th   5th   6th
+    //   +0%  +25%  +50%  +25%  +25%  +25%
+    int adjusted_bolt_count = p() -> state.flurry_bolt_count;
+    if ( adjusted_bolt_count > 2 )
+      adjusted_bolt_count = 1;
+
+    am *= 1.0 + adjusted_bolt_count
               * p() -> sets -> set( MAGE_FROST, T21, B2 ) -> effectN( 1 ).percent();
 
     return am;
