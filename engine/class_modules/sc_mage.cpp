@@ -4308,7 +4308,6 @@ struct frozen_orb_bolt_t : public frost_mage_spell_t
 struct frozen_orb_t : public frost_mage_spell_t
 {
   bool ice_time;
-  timespan_t freezing_rain_base_duration;
 
   ice_time_nova_t* ice_time_nova;
   frozen_orb_bolt_t* frozen_orb_bolt;
@@ -4325,10 +4324,6 @@ struct frozen_orb_t : public frost_mage_spell_t
     add_child( ice_time_nova );
     may_miss       = false;
     may_crit       = false;
-    if ( p -> artifact.freezing_rain.rank() )
-    {
-      freezing_rain_base_duration = p -> buffs.freezing_rain -> data().duration();
-    }
   }
 
   virtual bool init_finished() override
@@ -4359,8 +4354,7 @@ struct frozen_orb_t : public frost_mage_spell_t
     }
     if ( p() -> artifact.freezing_rain.rank() )
     {
-      timespan_t freezing_rain_duration = freezing_rain_base_duration * p() -> cache.spell_speed();
-      p() -> buffs.freezing_rain -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, freezing_rain_duration  );
+      p() -> buffs.freezing_rain -> trigger();
     }
   }
 
