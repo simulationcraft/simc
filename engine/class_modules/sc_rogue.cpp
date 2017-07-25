@@ -7321,8 +7321,8 @@ void rogue_t::init_action_list()
     // Finishers
     action_priority_list_t* finish = get_action_priority_list( "finish", "Finishers" );
       // It is not worth to override a normal nightblade for a finality one outside of pandemic threshold, it is worth to wait the end of the finality to refresh it unless you already got the finality buff.
-    finish -> add_action( this, "Nightblade", "if=(!talent.dark_shadow.enabled|!buff.shadow_dance.up)&target.time_to_die-remains>6&(mantle_duration=0|remains<=mantle_duration)&((refreshable&(!finality|buff.finality_nightblade.up))|remains<tick_time*2)" );
-    finish -> add_action( this, "Nightblade", "cycle_targets=1,if=(!talent.death_from_above.enabled|set_bonus.tier19_2pc)&(!talent.dark_shadow.enabled|!buff.shadow_dance.up)&target.time_to_die-remains>12&mantle_duration=0&((refreshable&(!finality|buff.finality_nightblade.up))|remains<tick_time*2)" );
+    finish -> add_action( this, "Nightblade", "if=(!talent.dark_shadow.enabled|!buff.shadow_dance.up)&target.time_to_die-remains>6&(mantle_duration=0|remains<=mantle_duration)&((refreshable&(!finality|buff.finality_nightblade.up|variable.dsh_dfa))|remains<tick_time*2)&(spell_targets.shuriken_storm<4&!variable.dsh_dfa|!buff.symbols_of_death.up)" );
+    finish -> add_action( this, "Nightblade", "cycle_targets=1,if=(!talent.death_from_above.enabled|set_bonus.tier19_2pc)&(!talent.dark_shadow.enabled|!buff.shadow_dance.up)&target.time_to_die-remains>12&mantle_duration=0&((refreshable&(!finality|buff.finality_nightblade.up|variable.dsh_dfa))|remains<tick_time*2)&(spell_targets.shuriken_storm<4&!variable.dsh_dfa|!buff.symbols_of_death.up)" );
     finish -> add_talent( this, "Death from Above", "if=!talent.dark_shadow.enabled|spell_targets>=4&buff.shadow_dance.up|spell_targets<4&!buff.shadow_dance.up&(buff.symbols_of_death.up|cooldown.symbols_of_death.remains>=10+set_bonus.tier20_4pc*5)" );
     finish -> add_action( this, "Eviscerate" );
 
@@ -7346,7 +7346,7 @@ void rogue_t::init_action_list()
     action_priority_list_t* stealthed = get_action_priority_list( "stealthed", "Stealthed Rotation" );
     stealthed -> add_action( this, "Shadowstrike", "if=buff.stealth.up", "If stealth is up, we really want to use Shadowstrike to benefits from the passive bonus, even if we are at max cp (from the precombat MfD)." );
     stealthed -> add_action( "call_action_list,name=finish,if=combo_points>=5&(spell_targets.shuriken_storm>=3+equipped.shadow_satyrs_walk|(mantle_duration<=1.3&mantle_duration-gcd.remains>=0.3))" );
-    stealthed -> add_action( this, "Shuriken Storm", "if=buff.shadowmeld.down&((combo_points.deficit>=3&spell_targets.shuriken_storm>=3+equipped.shadow_satyrs_walk)|(combo_points.deficit>=1&buff.the_dreadlords_deceit.stack>=29))" );
+    stealthed -> add_action( this, "Shuriken Storm", "if=buff.shadowmeld.down&((combo_points.deficit>=2+equipped.insignia_of_ravenholdt&spell_targets.shuriken_storm>=3+equipped.shadow_satyrs_walk)|(combo_points.deficit>=1&buff.the_dreadlords_deceit.stack>=29))" );
     stealthed -> add_action( "call_action_list,name=finish,if=combo_points>=5&combo_points.deficit<3+buff.shadow_blades.up-equipped.mantle_of_the_master_assassin" );
     stealthed -> add_action( this, "Shadowstrike" );
   }
