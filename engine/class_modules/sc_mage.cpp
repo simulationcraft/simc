@@ -4269,12 +4269,6 @@ struct frozen_orb_bolt_t : public frost_mage_spell_t
     }
     crit_bonus_multiplier *= 1.0 + p -> artifact.orbital_strike.percent();
     chills = true;
-
-    // As of build 24461, 2017-07-03.
-    if ( p -> bugs )
-    {
-      affected_by.shatter = false;
-    }
   }
 
   virtual bool init_finished() override
