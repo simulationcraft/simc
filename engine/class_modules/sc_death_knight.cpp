@@ -2158,7 +2158,7 @@ struct army_pet_t : public base_ghoul_pet_t
 
   void dismiss( bool expired ) override
   {
-    o() -> trigger_portal_to_the_underworld( target );
+    o() -> trigger_portal_to_the_underworld( o() -> target );
     pet_t::dismiss( expired );
   }
 
