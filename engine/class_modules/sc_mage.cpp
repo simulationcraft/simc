@@ -4242,13 +4242,6 @@ struct ice_time_nova_t : public frost_mage_spell_t
   {
     background = true;
     aoe = -1;
-
-    // According to the spell data.
-    // As of build 24461, 2017-07-03.
-    if ( p -> bugs )
-    {
-      affected_by.frost_mage = false;
-    }
   }
 
   virtual void impact( action_state_t* s ) override
