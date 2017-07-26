@@ -1795,6 +1795,9 @@ class SpellDataGenerator(DataGenerator):
         else:
             self._dbc.append('ItemSparse')
 
+        if self._options.build >= 24651:
+            self._dbc.append('RelicTalent')
+
     def initialize(self):
         if not super().initialize():
             return False
@@ -2547,7 +2550,7 @@ class SpellDataGenerator(DataGenerator):
             power_rank = spell.get_link('artifact_power')
             power = self._artifactpower_db[power_rank.id_power]
             artifact = self._artifact_db[power.id_artifact]
-            if power_rank.index == 0 and artifact.id_spec != 0:
+            if power.id != 0:
                 fields += spell.get_link('artifact_power').field('id_power')
             else:
                 fields += self._artifactpowerrank_db[0].field('id_power')
