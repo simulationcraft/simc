@@ -1335,7 +1335,7 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
     auto powers = dbc.artifact_power_ranks( spell -> power_id() );
     auto power_data = dbc.artifact_power( spell -> power_id() );
     s << "Artifact Power   : Id: " << spell -> power_id();
-    if ( power_data )
+    if ( power_data && power_data -> power_index != 0 )
     {
       s << ", Index: " << power_data -> power_index;
     }
