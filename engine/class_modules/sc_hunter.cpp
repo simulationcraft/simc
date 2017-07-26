@@ -4895,31 +4895,18 @@ struct kill_command_t: public hunter_spell_t
   // this is somewhat unfortunate but we can't get at the
   // pets dot in any other way
   template <typename F>
-  struct aotb_expr_t : public expr_t
+  expr_t* make_aotb_expr( const std::string& name, F&& fn ) const
   {
-    F f;
-    const action_t* action;
     target_specific_t<dot_t> specific_dot;
-
-    aotb_expr_t( const std::string& name, const action_t* a, F&& f_ )
-      : expr_t( name ), f( f_ ), action( a ), specific_dot( false ) {}
-
-    double evaluate() override
-    {
-      auto pet = static_cast<hunter_t*>( action -> player ) -> active.pet;
+    return make_fn_expr( name, [ this, specific_dot, fn ] () {
+      player_t* pet = p() -> active.pet;
       assert( pet );
-      pet -> get_target_data( action -> target );
-      dot_t*& dot = specific_dot[ action->target ];
+      pet -> get_target_data( target );
+      dot_t*& dot = specific_dot[ target ];
       if ( !dot )
-        dot = action -> target -> get_dot( "bestial_ferocity", pet );
-      return coerce( f( dot ) );
-    }
-  };
-
-  template <typename F>
-  expr_t* make_aotb_expr( const std::string& n, F&& f ) const
-  {
-    return new aotb_expr_t<F>( n, this, std::forward<F>( f ) );
+        dot = target -> get_dot( "bestial_ferocity", pet );
+      return fn( dot );
+    } );
   }
 
   expr_t* create_expression(const std::string& expression_str) override
@@ -4927,18 +4914,6 @@ struct kill_command_t: public hunter_spell_t
     auto splits = util::string_split( expression_str, "." );
     if ( splits.size() == 2 && splits[ 0 ] == "bestial_ferocity" )
     {
-      //auto make_aotb_expr = [ this ]( const std::string& name, auto fn )
-      //{
-      //  target_specific_t<dot_t> specific_dot;
-      //  return make_fn_expr( name, [ this, specific_dot, fn ] () {
-      //    auto pet = p() -> active.pet;
-      //    pet -> get_target_data( target );
-      //    dot_t*& dot = specific_dot[ target ];
-      //    if ( !dot )
-      //      dot = target -> get_dot( "bestial_ferocity", pet );
-      //    return fn( dot );
-      //  });
-      //};
       if ( splits[ 1 ] == "ticking" )
         return make_aotb_expr( "aotb_ticking", []( dot_t* dot ) { return dot -> is_ticking(); } );
     }
