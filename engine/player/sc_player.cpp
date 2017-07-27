@@ -8377,8 +8377,11 @@ bool player_t::parse_artifact_wowdb( const std::string& artifact_string )
 bool player_t::parse_artifact_wowhead( const std::string& artifact_string )
 {
   auto splits = util::string_split( artifact_string, ":" );
-  if ( splits.size() < 5 )
+  if ( splits.size() < 5 || ( splits.size() - 5 ) % 2 != 0 )
   {
+    sim -> errorf( "%s invalid artifact format, "
+                   "expected: artifact_id:relic1id:relic2id:relic3id:relic4id[:power_id:rank...]",
+      name() );
     return false;
   }
 
@@ -8408,10 +8411,23 @@ bool player_t::parse_artifact_wowhead( const std::string& artifact_string )
   }
 
   auto artifact_powers = dbc.artifact_powers( artifact_id );
-  for ( size_t i = 5; i < splits.size(); i += 2 )
+  for ( size_t i = 5; i < splits.size() - 1; i += 2 )
   {
     unsigned power_id = util::to_unsigned( splits[ i ] );
     unsigned rank = util::to_unsigned( splits[ i + 1 ] );
+    if ( power_id == 0 )
+    {
+      sim -> errorf( "%s invalid artifact power '%s', expected a number > 0",
+        name(), splits[ i ].c_str() );
+      return false;
+    }
+
+    if ( rank == 0 )
+    {
+      sim -> errorf( "%s invalid artifact rank '%s' for power '%u', expected a number > 0",
+        name(), splits[ i + 1 ].c_str(), power_id );
+      return false;
+    }
 
     auto pos = range::find_if( artifact_powers,
                                [ &power_id ]( const artifact_power_data_t* power_data ) {
