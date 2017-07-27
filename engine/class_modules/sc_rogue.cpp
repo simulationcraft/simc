@@ -6163,6 +6163,23 @@ void rogue_t::trigger_insignia_of_ravenholdt( action_state_t* state )
   {
     amount /= 1.0 + state -> action -> total_crit_bonus( state );
   }
+
+  if ( state -> action -> get_school() == SCHOOL_PHYSICAL )
+  {
+    // As of 2017-07-27, Insignia of Ravenholdt does 104.38% in boss fight logs and on the Raid dummy.
+    // This only applies to physical trigger attacks and seems to scale with enemy armor mitigation.
+    // However, I am unable to find out any relation or formula behind it.
+    // Observations compared to ideal 15% by enemy level:
+    // - Boss logs, Boss adds, Raid dummy: 104.38%
+    // - Dungeon dummy: 103.32%
+    // - Level 112 (Dungeon Boss): 69.95%
+    // - Level 111: 69.23%
+    // - Level 110: 68.52%
+    // I will assume we have a raid boss fight and apply those 4.38%, for now.
+    // Contact me if you are able to find out more. ~Mystler
+    amount *= 1.0438;
+  }
+
   insignia_of_ravenholdt_ -> base_dd_min = amount;
   insignia_of_ravenholdt_ -> base_dd_max = amount;
   insignia_of_ravenholdt_ -> set_target( state -> target );
