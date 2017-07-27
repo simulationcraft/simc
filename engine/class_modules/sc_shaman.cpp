@@ -8179,6 +8179,8 @@ double shaman_t::composite_player_pet_damage_multiplier( const action_state_t* s
     m *= 1.0 + spec.elemental_shaman -> effectN( 3 ).percent();
   }
 
+  m *= 1.0 + spec.enhancement_shaman -> effectN( 3 ).percent();
+
   auto school = s -> action -> get_school();
   if ( ( dbc::is_school( school, SCHOOL_FIRE ) || dbc::is_school( school, SCHOOL_FROST ) ||
          dbc::is_school( school, SCHOOL_NATURE ) ) &&
