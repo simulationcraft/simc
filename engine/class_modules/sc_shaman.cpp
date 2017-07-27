@@ -3144,9 +3144,13 @@ struct storm_tempests_zap_t : public melee_attack_t
     melee_attack_t( "storm_tempests", p, p -> find_spell( 214452 ) )
   {
     weapon = &( p -> main_hand_weapon );
-    // TODO: Can this crit?
     background = may_crit = true;
     callbacks = false;
+
+    // Weird ability, scales with spell power in addition to weapon (attack) power
+    spell_power_mod.direct = weapon_multiplier * data().effectN( 1 ).sp_coeff();
+    // Aand also benefits from the Enhancement spec passive damage multiplier for some reason
+    base_multiplier *= 1.0 + p -> spec.enhancement_shaman -> effectN( 1 ).percent();
   }
 
   size_t available_targets( std::vector< player_t* >& tl ) const override
@@ -3162,7 +3166,6 @@ struct storm_tempests_zap_t : public melee_attack_t
     return tl.size();
   }
 
-  // TODO: Does this actually zap the enemy itself, if it's the only one available?
   // TODO: Distance targeting, no clue on range.
   void execute() override
   {
