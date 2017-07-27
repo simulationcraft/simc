@@ -2386,7 +2386,11 @@ public:
     if ( use_havoc() )
     {
       if ( ! target_cache.is_valid )
+      {
         available_targets( target_cache.list );
+        check_distance_targeting( target_cache.list );
+        target_cache.is_valid = true;
+      }
 
       havoc_targets.clear();
       if ( range::find( target_cache.list, target ) != target_cache.list.end() )
