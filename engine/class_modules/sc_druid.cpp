@@ -7777,7 +7777,7 @@ void druid_t::apl_balance()
   for ( size_t i = 0; i < item_actions.size(); i++ )
     default_list -> add_action( item_actions[i] );
 
-  default_list -> add_action( "call_action_list,name=fury_of_elune,if=talent.fury_of_elune.enabled&cooldown.fury_of_elue.remains<target.time_to_die" );
+  default_list -> add_action( "call_action_list,name=fury_of_elune,if=talent.fury_of_elune.enabled&cooldown.fury_of_elune.remains<target.time_to_die" );
   default_list -> add_action( "call_action_list,name=ed,if=equipped.the_emerald_dreamcatcher&active_enemies<=1" );
   default_list -> add_action( this, "New Moon", "if=((charges=2&recharge_time<5)|charges=3)&astral_power.deficit>14" );
   default_list -> add_action( this, "Half Moon", "if=((charges=2&recharge_time<5)|charges=3|(target.time_to_die<15&charges=2))&astral_power.deficit>24");

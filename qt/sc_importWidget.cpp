@@ -165,7 +165,7 @@ void BattleNetImportWidget::selectRegion( const QString& region )
 
 bool BattleNetImportWidget::validateInput() const
 {
-    if ( character().size() < 3 )
+    if ( character().size() < 2 )
     {
         return false;
     }

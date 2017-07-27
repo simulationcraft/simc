@@ -842,7 +842,14 @@ static void break_stealth( rogue_t* p )
   if ( p -> buffs.stealth -> check() )
     p -> buffs.stealth -> expire();
 
-  if ( p -> buffs.vanish -> check() )
+  // This bug allows us to use two abilities with vanish.
+  // For more details, see: https://github.com/Ravenholdt-TC/Rogue/issues/4
+  // This implementation is a simple hack to not consume the buff when vanish has just been cast.
+  // Note: To ensure Vanish->DfA does not lead to vanish lasting until the finisher, there is a
+  // stealth break call in death_from_above_driver_t::tick as well.
+  bool vanishBug = p -> buffs.vanish -> buff_duration - p -> buffs.vanish -> remains() <= timespan_t::from_seconds( 0.1 );
+
+  if ( p -> buffs.vanish -> check() && ( ! p -> bugs || ! vanishBug ) )
     p -> buffs.vanish -> expire();
 }
 
@@ -1751,6 +1758,14 @@ struct insignia_of_ravenholdt_attack_t : public rogue_attack_t
     aoe = -1;
   }
 
+  void init() override
+  {
+    rogue_attack_t::init();
+
+    // We do not want Versatility applied to Insignia dmg again
+    snapshot_flags &= ~STATE_VERSATILITY;
+  }
+
   double composite_da_multiplier( const action_state_t* ) const override
   {
     double m = p() -> spell.insignia_of_ravenholdt -> effectN( 1 ).percent();
@@ -1764,9 +1779,18 @@ struct insignia_of_ravenholdt_attack_t : public rogue_attack_t
       // It seems that Insignia ignores only Vendetta modifier
       // See: https://github.com/simulationcraft/simc/issues/3435
       rogue_td_t* tdata = td( target );
-      if ( tdata -> debuffs.vendetta -> check() )
+      if ( tdata -> debuffs.vendetta -> up() )
       {
-        m *= 1 - tdata -> debuffs.vendetta -> value();
+        m /= 1.0 + tdata -> debuffs.vendetta -> value();
+      }
+    }
+    else if ( p() ->specialization() == ROGUE_SUBTLETY )
+    {
+      // Insignia ignores Nightblade debuff modifier
+      rogue_td_t* tdata = td( target );
+      if ( tdata -> dots.nightblade -> is_ticking() )
+      {
+        m /= 1.0 + tdata -> dots.nightblade -> current_action -> data().effectN( 6 ).percent();
       }
     }
 
@@ -2360,12 +2384,12 @@ void rogue_attack_t::execute()
   {
     player -> buffs.shadowmeld -> expire();
 
-    if ( ! p() -> talent.subterfuge -> ok() )
-      break_stealth( p() );
     // Check stealthed again after shadowmeld is popped. If we're still
     // stealthed, trigger subterfuge
-    else if ( stealthed() && ! p() -> buffs.subterfuge -> check() )
+    if ( stealthed() && p() -> talent.subterfuge -> ok() && ! p() -> buffs.subterfuge -> check() )
       p() -> buffs.subterfuge -> trigger();
+    else
+      break_stealth( p() );
   }
 
   p() -> trigger_deepening_shadows( execute_state );
@@ -4746,6 +4770,10 @@ struct death_from_above_driver_t : public rogue_attack_t
   {
     rogue_attack_t::tick( d );
 
+    // This is to make sure vanish (due to the vanish bug) is not up.
+    // See break_stealth() for more info.
+    actions::break_stealth( p() );
+
     action_state_t* ability_state = ability -> get_state();
     ability -> snapshot_state( ability_state, DMG_DIRECT );
     ability_state -> target = d -> target;
@@ -6135,9 +6163,26 @@ void rogue_t::trigger_insignia_of_ravenholdt( action_state_t* state )
   {
     amount /= 1.0 + state -> action -> total_crit_bonus( state );
   }
+
+  if ( state -> action -> get_school() == SCHOOL_PHYSICAL )
+  {
+    // As of 2017-07-27, Insignia of Ravenholdt does 104.38% in boss fight logs and on the Raid dummy.
+    // This only applies to physical trigger attacks and seems to scale with enemy armor mitigation.
+    // However, I am unable to find out any relation or formula behind it.
+    // Observations compared to ideal 15% by enemy level:
+    // - Boss logs, Boss adds, Raid dummy: 104.38%
+    // - Dungeon dummy: 103.32%
+    // - Level 112 (Dungeon Boss): 69.95%
+    // - Level 111: 69.23%
+    // - Level 110: 68.52%
+    // I will assume we have a raid boss fight and apply those 4.38%, for now.
+    // Contact me if you are able to find out more. ~Mystler
+    amount *= 1.0438;
+  }
+
   insignia_of_ravenholdt_ -> base_dd_min = amount;
   insignia_of_ravenholdt_ -> base_dd_max = amount;
-  insignia_of_ravenholdt_ -> target = state -> target;
+  insignia_of_ravenholdt_ -> set_target( state -> target );
   insignia_of_ravenholdt_ -> execute();
 }
 
@@ -7118,7 +7163,7 @@ void rogue_t::init_action_list()
         cds -> add_action( racial_actions[i] + ",if=debuff.vendetta.up" );
     }
     cds -> add_talent( this, "Marked for Death", "target_if=min:target.time_to_die,if=target.time_to_die<combo_points.deficit*1.5|(raid_event.adds.in>40&combo_points.deficit>=cp_max_spend)" );
-    cds -> add_action( this, "Vendetta", "if=!artifact.urge_to_kill.enabled|energy.deficit>=60+variable.energy_regen_combined" );
+    cds -> add_action( this, "Vendetta", "if=!artifact.urge_to_kill.enabled|energy.deficit>=60-variable.energy_regen_combined" );
     cds -> add_talent( this, "Exsanguinate", "if=prev_gcd.1.rupture&dot.rupture.remains>4+4*cp_max_spend&!stealthed.rogue|dot.garrote.pmultiplier>1&!cooldown.vanish.up&buff.subterfuge.up" );
     cds -> add_action( this, "Vanish", "if=talent.nightstalker.enabled&combo_points>=cp_max_spend&!talent.exsanguinate.enabled&mantle_duration=0&((equipped.mantle_of_the_master_assassin&set_bonus.tier19_4pc)|((!equipped.mantle_of_the_master_assassin|!set_bonus.tier19_4pc)&(dot.rupture.refreshable|debuff.vendetta.up)))", "Nightstalker w/o Exsanguinate: Vanish Envenom if Mantle & T19_4PC, else Vanish Rupture" );
     cds -> add_action( this, "Vanish", "if=talent.nightstalker.enabled&combo_points>=cp_max_spend&talent.exsanguinate.enabled&cooldown.exsanguinate.remains<1&(dot.rupture.ticking|time>10)" );
@@ -7304,8 +7349,9 @@ void rogue_t::init_action_list()
     // Finishers
     action_priority_list_t* finish = get_action_priority_list( "finish", "Finishers" );
       // It is not worth to override a normal nightblade for a finality one outside of pandemic threshold, it is worth to wait the end of the finality to refresh it unless you already got the finality buff.
-    finish -> add_action( this, "Nightblade", "if=(!talent.dark_shadow.enabled|!buff.shadow_dance.up)&target.time_to_die-remains>6&(mantle_duration=0|remains<=mantle_duration)&((refreshable&(!finality|buff.finality_nightblade.up))|remains<tick_time*2)" );
-    finish -> add_action( this, "Nightblade", "cycle_targets=1,if=(!talent.death_from_above.enabled|set_bonus.tier19_2pc)&(!talent.dark_shadow.enabled|!buff.shadow_dance.up)&target.time_to_die-remains>12&mantle_duration=0&((refreshable&(!finality|buff.finality_nightblade.up))|remains<tick_time*2)" );
+    finish -> add_action( this, "Nightblade", "if=(!talent.dark_shadow.enabled|!buff.shadow_dance.up)&target.time_to_die-remains>6&(mantle_duration=0|remains<=mantle_duration)&((refreshable&(!finality|buff.finality_nightblade.up|variable.dsh_dfa))|remains<tick_time*2)&(spell_targets.shuriken_storm<4&!variable.dsh_dfa|!buff.symbols_of_death.up)" );
+    finish -> add_action( this, "Nightblade", "cycle_targets=1,if=(!talent.death_from_above.enabled|set_bonus.tier19_2pc)&(!talent.dark_shadow.enabled|!buff.shadow_dance.up)&target.time_to_die-remains>12&mantle_duration=0&((refreshable&(!finality|buff.finality_nightblade.up|variable.dsh_dfa))|remains<tick_time*2)&(spell_targets.shuriken_storm<4&!variable.dsh_dfa|!buff.symbols_of_death.up)" );
+    finish -> add_action( this, "Nightblade", "if=remains<cooldown.symbols_of_death.remains+10&cooldown.symbols_of_death.remains<=3" );
     finish -> add_talent( this, "Death from Above", "if=!talent.dark_shadow.enabled|spell_targets>=4&buff.shadow_dance.up|spell_targets<4&!buff.shadow_dance.up&(buff.symbols_of_death.up|cooldown.symbols_of_death.remains>=10+set_bonus.tier20_4pc*5)" );
     finish -> add_action( this, "Eviscerate" );
 
@@ -7329,7 +7375,7 @@ void rogue_t::init_action_list()
     action_priority_list_t* stealthed = get_action_priority_list( "stealthed", "Stealthed Rotation" );
     stealthed -> add_action( this, "Shadowstrike", "if=buff.stealth.up", "If stealth is up, we really want to use Shadowstrike to benefits from the passive bonus, even if we are at max cp (from the precombat MfD)." );
     stealthed -> add_action( "call_action_list,name=finish,if=combo_points>=5&(spell_targets.shuriken_storm>=3+equipped.shadow_satyrs_walk|(mantle_duration<=1.3&mantle_duration-gcd.remains>=0.3))" );
-    stealthed -> add_action( this, "Shuriken Storm", "if=buff.shadowmeld.down&((combo_points.deficit>=3&spell_targets.shuriken_storm>=3+equipped.shadow_satyrs_walk)|(combo_points.deficit>=1&buff.the_dreadlords_deceit.stack>=29))" );
+    stealthed -> add_action( this, "Shuriken Storm", "if=buff.shadowmeld.down&((combo_points.deficit>=2+equipped.insignia_of_ravenholdt&spell_targets.shuriken_storm>=3+equipped.shadow_satyrs_walk)|(combo_points.deficit>=1&buff.the_dreadlords_deceit.stack>=29))" );
     stealthed -> add_action( "call_action_list,name=finish,if=combo_points>=5&combo_points.deficit<3+buff.shadow_blades.up-equipped.mantle_of_the_master_assassin" );
     stealthed -> add_action( this, "Shadowstrike" );
   }

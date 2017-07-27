@@ -54,8 +54,7 @@ actions.CDs+=/aspect_of_the_eagle,if=buff.mongoose_fury.stack>=2&buff.mongoose_f
 actions.aoe=butchery
 actions.aoe+=/caltrops,if=!ticking
 actions.aoe+=/explosive_trap
-actions.aoe+=/carve,if=talent.serpent_sting.enabled&dot.serpent_sting.refreshable
-actions.aoe+=/carve,if=active_enemies>5
+actions.aoe+=/carve,if=(talent.serpent_sting.enabled&dot.serpent_sting.refreshable)|(active_enemies>5)
 
 actions.biteFill=spitting_cobra
 actions.biteFill+=/butchery,if=equipped.frizzos_fingertrap&dot.lacerate.refreshable
@@ -78,11 +77,9 @@ actions.bitePhase+=/flanking_strike
 actions.fillers=carve,if=active_enemies>1&talent.serpent_sting.enabled&dot.serpent_sting.refreshable
 actions.fillers+=/throwing_axes
 actions.fillers+=/carve,if=active_enemies>2
-actions.fillers+=/raptor_strike,if=(talent.way_of_the_moknathal.enabled&buff.moknathal_tactics.remains<gcd*4)
-actions.fillers+=/raptor_strike,if=focus>((25-focus.regen*gcd)+55)
+actions.fillers+=/raptor_strike,if=(talent.way_of_the_moknathal.enabled&buff.moknathal_tactics.remains<gcd*4)|(focus>((25-focus.regen*gcd)+55))
 
-actions.mokMaintain=raptor_strike,if=buff.moknathal_tactics.remains<gcd
-actions.mokMaintain+=/raptor_strike,if=buff.moknathal_tactics.stack<2
+actions.mokMaintain=raptor_strike,if=(buff.moknathal_tactics.remains<gcd)|(buff.moknathal_tactics.stack<2)
 
 actions.preBitePhase=flanking_strike,if=cooldown.mongoose_bite.charges<3
 actions.preBitePhase+=/spitting_cobra

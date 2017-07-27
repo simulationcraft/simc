@@ -37,6 +37,11 @@ namespace { // UNNAMED NAMESPACE
 static std::vector<player_t*> __check_distance_targeting( const action_t* action, std::vector< player_t* >& tl )
 {
   sim_t* sim = action -> sim;
+  if ( ! sim -> distance_targeting_enabled )
+  {
+    return tl;
+  }
+
   player_t* target = action -> target;
   player_t* player = action -> player;
   double radius = action -> radius;
@@ -5138,6 +5143,10 @@ struct earthquake_damage_t : public shaman_spell_t
     ground_aoe = background = true;
     school = SCHOOL_PHYSICAL;
     spell_power_mod.direct = 0.775; // Hardcoded into tooltip because it's cool
+    // FIXME This is added for the EQ changes on PTR.
+    if ( player -> dbc.ptr ) {
+      spell_power_mod.direct = 1.0;
+    }
     base_multiplier *= 1.0 + p() -> artifact.the_ground_trembles.percent();
     affected_by_elemental_focus = true; // Needed to explicitly flag, since spell data lacks info
   }

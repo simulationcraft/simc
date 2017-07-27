@@ -2386,7 +2386,11 @@ public:
     if ( use_havoc() )
     {
       if ( ! target_cache.is_valid )
+      {
         available_targets( target_cache.list );
+        check_distance_targeting( target_cache.list );
+        target_cache.is_valid = true;
+      }
 
       havoc_targets.clear();
       if ( range::find( target_cache.list, target ) != target_cache.list.end() )
@@ -3723,10 +3727,20 @@ struct immolate_t: public warlock_spell_t
   {
     warlock_spell_t::tick( d );
 
-    if ( d -> state -> result == RESULT_CRIT && rng().roll( 0.5 ) )
-      p() -> resource_gain( RESOURCE_SOUL_SHARD, 0.1, p() -> gains.immolate_crits );
+    if ( p() -> bugs ) // Live as of 07-23-2017
+    {
+      if ( d -> state -> result == RESULT_CRIT )
+        p() -> resource_gain( RESOURCE_SOUL_SHARD, 0.2, p() -> gains.immolate_crits );
+      else if ( rng().roll( 0.5 ) )
+        p() -> resource_gain( RESOURCE_SOUL_SHARD, 0.1, p() -> gains.immolate );
+    }
+    else
+    {
+      if ( d -> state -> result == RESULT_CRIT && rng().roll( 0.5 ) )
+        p() -> resource_gain( RESOURCE_SOUL_SHARD, 0.1, p() -> gains.immolate_crits );
 
-    p() -> resource_gain( RESOURCE_SOUL_SHARD, 0.1, p() -> gains.immolate );
+      p() -> resource_gain( RESOURCE_SOUL_SHARD, 0.1, p() -> gains.immolate );
+    }
   }
 };
 
@@ -4060,7 +4074,7 @@ struct chaos_bolt_t: public warlock_spell_t
       duplicate ->target_cache.is_valid = true;
       if ( duplicate -> target_cache.list.size() > 0 )
       {
-        size_t target_to_strike = static_cast<size_t>( rng().range( 0.0, duplicate -> target_cache.list.size() - 1 ) );
+        size_t target_to_strike = static_cast<size_t>( rng().range( 0.0, duplicate -> target_cache.list.size() ) );
         duplicate -> target = duplicate -> target_cache.list[target_to_strike];
         duplicate -> execute();
       }
@@ -4236,39 +4250,39 @@ struct thalkiels_consumption_t : public warlock_spell_t
   thalkiels_consumption_t( warlock_t* p ) :
     warlock_spell_t( "thalkiels_consumption", p, p -> artifact.thalkiels_consumption )
   {
+  }
 
+  void init() override
+  {
+    warlock_spell_t::init();
+
+    snapshot_flags |= STATE_MUL_DA | STATE_TGT_MUL_DA | STATE_MUL_PERSISTENT | STATE_VERSATILITY;
   }
 
   void execute() override
   {
-    warlock_spell_t::execute();
-
-    double ta_mult = p() -> composite_player_target_multiplier( p() -> target, get_school() );
-    double p_mult = p() -> composite_player_multiplier( school );
     double damage = 0;
 
-    for ( auto& pet : p() -> pet_list )
+    for ( auto& pet : p()->pet_list )
     {
       pets::warlock_pet_t *lock_pet = static_cast< pets::warlock_pet_t* > ( pet );
       if ( lock_pet != NULL )
       {
-        if ( !lock_pet -> is_sleeping() )
+        if ( !lock_pet->is_sleeping() )
         {
           damage += ( double ) ( lock_pet->resources.max[RESOURCE_HEALTH] ) * 0.06; //spelldata
         }
       }
     }
-    if( p() -> legendary.wakeners_loyalty_enabled )
+    if ( p()->legendary.wakeners_loyalty_enabled )
     {
-      damage *= 1.0 + p() -> buffs.wakeners_loyalty -> stack_value();
+      damage *= 1.0 + p()->buffs.wakeners_loyalty->stack_value();
     }
 
-    damage *= ta_mult;
-    damage *= p_mult;
+    this->base_dd_min = damage;
+    this->base_dd_max = damage;
 
-    this -> base_dd_min = damage;
-    this -> base_dd_max = damage;
-    //do other stuff
+    warlock_spell_t::execute();
 
     p() -> buffs.wakeners_loyalty -> expire();
   }
@@ -5847,6 +5861,7 @@ warlock_t::warlock_t( sim_t* sim, const std::string& name, race_e r ):
     procs( procs_t() ),
     spells( spells_t() ),
     initial_soul_shards( 3 ),
+    allow_sephuz( false ),
     default_pet( "" ),
     shard_react( timespan_t::zero() ),
     affliction_trinket( nullptr ),

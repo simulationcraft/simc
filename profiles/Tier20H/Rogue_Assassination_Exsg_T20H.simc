@@ -53,7 +53,7 @@ actions.cds+=/blood_fury,if=debuff.vendetta.up
 actions.cds+=/berserking,if=debuff.vendetta.up
 actions.cds+=/arcane_torrent,if=dot.kingsbane.ticking&!buff.envenom.up&energy.deficit>=15+variable.energy_regen_combined*gcd.remains*1.1
 actions.cds+=/marked_for_death,target_if=min:target.time_to_die,if=target.time_to_die<combo_points.deficit*1.5|(raid_event.adds.in>40&combo_points.deficit>=cp_max_spend)
-actions.cds+=/vendetta,if=!artifact.urge_to_kill.enabled|energy.deficit>=60+variable.energy_regen_combined
+actions.cds+=/vendetta,if=!artifact.urge_to_kill.enabled|energy.deficit>=60-variable.energy_regen_combined
 actions.cds+=/exsanguinate,if=prev_gcd.1.rupture&dot.rupture.remains>4+4*cp_max_spend&!stealthed.rogue|dot.garrote.pmultiplier>1&!cooldown.vanish.up&buff.subterfuge.up
 # Nightstalker w/o Exsanguinate: Vanish Envenom if Mantle & T19_4PC, else Vanish Rupture
 actions.cds+=/vanish,if=talent.nightstalker.enabled&combo_points>=cp_max_spend&!talent.exsanguinate.enabled&mantle_duration=0&((equipped.mantle_of_the_master_assassin&set_bonus.tier19_4pc)|((!equipped.mantle_of_the_master_assassin|!set_bonus.tier19_4pc)&(dot.rupture.refreshable|debuff.vendetta.up)))
@@ -88,28 +88,28 @@ actions.maintain+=/garrote,cycle_targets=1,if=(!talent.subterfuge.enabled|!(cool
 head=fanged_slayers_helm,id=147172,bonus_id=1497/3562
 neck=locket_of_splintered_souls,id=147014,bonus_id=1497/3562,enchant=mark_of_the_hidden_satyr
 shoulders=mantle_of_the_master_assassin,id=144236,bonus_id=3570
-back=shroud_of_the_drowned_adherent,id=146985,bonus_id=1497/3562,enchant=binding_of_agility
+back=fanged_slayers_shroud,id=147170,bonus_id=1497/3562,enchant=binding_of_agility
 chest=fanged_slayers_chestguard,id=147169,bonus_id=1497/3562
-wrists=zoldyck_family_training_shackles,id=137098,bonus_id=3570
+wrists=sinewstitched_wristguards,id=147041,bonus_id=1497/3562
 hands=fanged_slayers_handguards,id=147171,bonus_id=1497/3562
 waist=waistguard_of_profane_duplicity,id=147347,bonus_id=1507/3562
-legs=fanged_slayers_legguards,id=147173,bonus_id=1497/3562
-feet=felscape_pathfinders,id=147030,bonus_id=1497/3562
+legs=bonespur_studded_legwraps,id=147035,bonus_id=1497/3562
+feet=duskwalkers_footpads,id=137030,bonus_id=3570
 finger1=yathaes_thumb_ring,id=147021,bonus_id=1497/3562,enchant=binding_of_critical_strike
 finger2=band_of_rescinded_truths,id=147194,bonus_id=1497/3562,enchant=binding_of_critical_strike
 trinket1=engine_of_eradication,id=147015,bonus_id=1497/3562
 trinket2=specter_of_betrayal,id=151190,bonus_id=1507/3562
-main_hand=the_kingslayers,id=128870,bonus_id=741,gem_id=147110/147102/151189,relic_id=1497:3562/1497:3562/1497:3562
+main_hand=the_kingslayers,id=128870,bonus_id=741,gem_id=147110/137543/151189,relic_id=1497:3562/3536:1562/1497:3562
 off_hand=the_kingslayers,id=128869
 
 # Gear Summary
-# gear_ilvl=925.75
-# gear_agility=25562
-# gear_stamina=40456
-# gear_crit_rating=6519
-# gear_haste_rating=3042
-# gear_mastery_rating=10663
-# gear_versatility_rating=5706
-# gear_armor=2618
+# gear_ilvl=925.63
+# gear_agility=25851
+# gear_stamina=40892
+# gear_crit_rating=7665
+# gear_haste_rating=3450
+# gear_mastery_rating=8863
+# gear_versatility_rating=6021
+# gear_armor=2638
 # set_bonus=tier20_2pc=1
 # set_bonus=tier20_4pc=1

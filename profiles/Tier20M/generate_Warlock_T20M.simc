@@ -3,7 +3,7 @@ level=110
 race=human
 role=spell
 position=back
-talents=3101012
+talents=3103013
 artifact=39:0:0:0:0:915:4:916:4:917:4:918:4:919:4:920:4:921:4:922:4:923:4:924:1:925:1:926:1:927:1:928:1:929:1:999:1:1353:1:1390:1:1601:4:1602:1:1603:1:1604:1:1711:1
 spec=affliction
 
@@ -48,7 +48,7 @@ feet=,id=146987,ilevel=930
 finger1=,id=147020,enchant_id=5428,ilevel=930
 finger2=,id=147195,enchant_id=5428,ilevel=940
 trinket1=,id=147002,ilevel=930
-trinket2=tome_of_unraveling_sanity,id=147019,ilevel=940
+trinket2=,id=140809,ilevel=910
 main_hand=,id=137246,relic_id=0/0,gem_id=0/0/0/0,ilevel=939
 off_hand=,id=128943,bonus_id=748,gem_id=147087/147091/147110,ilevel=954
 default_pet=felguard

@@ -13,15 +13,10 @@
     - BoK/BoW
     - Check mana/mana regen for ret, sword of light has been significantly changed to no longer have the mana regen stuff, or the bonus to healing, reduction in mana costs, etc.
   TODO (prot):
-    - If J's sotr effect changes, fix up hardcode multiplier.
-    - Breastplate of the Golden Val'kyr (leg)
-    - Chain of Thrayn (leg)
-    - Tyelca, Ferren Marcus' Stature (leg)
     - Aggramar's Stride (leg)
     - Uther's Guard (leg)
     - Aegisjalmur, the Armguards of Awe (leg)
     - Tyr's Hand of Faith (leg)
-    - Heathcliff's Immortality (leg)
     - Ilterendi, Crown Jewel of Silvermoon (leg - Holy?)
     - Aegis of Light: Convert from self-buff to totem/pet with area buff? (low priority)
 
@@ -104,6 +99,7 @@ public:
   const special_effect_t* saruans_resolve;
   const special_effect_t* gift_of_the_golden_valkyr;
   const special_effect_t* heathcliffs_immortality;
+  const special_effect_t* pillars_of_inmost_light;
   const spell_data_t* sephuz;
 
   struct active_actions_t
@@ -200,6 +196,7 @@ public:
     cooldown_t* hand_of_the_protector;   // Righteous Protector (prot) / Saruin
     cooldown_t* judgment;         // Grand Crusader + Crusader's Judgment
     cooldown_t* guardian_of_ancient_kings; // legen chest
+	cooldown_t* eye_of_tyr; // legen shoulders
 
     // whoo fist of justice
     cooldown_t* hammer_of_justice;
@@ -257,6 +254,7 @@ public:
     const spell_data_t* divine_purpose_ret;
     const spell_data_t* liadrins_fury_unleashed;
     const spell_data_t* justice_gaze;
+	const spell_data_t* pillars_of_inmost_light;
     const spell_data_t* chain_of_thrayn;
     const spell_data_t* ashes_to_dust;
     const spell_data_t* ferren_marcuss_strength;
@@ -385,8 +383,8 @@ public:
     artifact_power_t light_of_the_titans;
     artifact_power_t tyrs_enforcer;
     artifact_power_t unrelenting_light;
-  artifact_power_t holy_aegis;
-  artifact_power_t bulwark_of_the_silver_hand;
+	artifact_power_t holy_aegis;
+	artifact_power_t bulwark_of_the_silver_hand;
 
   } artifact;
 
@@ -428,6 +426,7 @@ public:
     scarlet_inquisitors_expurgation = nullptr;
     justice_gaze = nullptr;
     ferren_marcuss_strength = nullptr;
+	pillars_of_inmost_light = nullptr;
     saruans_resolve = nullptr;
     gift_of_the_golden_valkyr = nullptr;
     heathcliffs_immortality = nullptr;
@@ -453,6 +452,7 @@ public:
     cooldowns.blade_of_justice        = get_cooldown( "blade_of_justice" );
     cooldowns.blade_of_wrath          = get_cooldown( "blade_of_wrath" );
     cooldowns.divine_hammer           = get_cooldown( "divine_hammer" );
+	cooldowns.eye_of_tyr			  = get_cooldown( "eye_of_tyr");
 
     talent_points.register_validity_fn([this](const spell_data_t* spell)
     {
@@ -2773,13 +2773,50 @@ struct seraphim_t : public paladin_spell_t
 struct eye_of_tyr_t : public paladin_spell_t
 {
   eye_of_tyr_t( paladin_t* p, const std::string& options_str )
-    : paladin_spell_t( "eye_of_tyr", p, p -> artifact.eye_of_tyr )
+	  : paladin_spell_t("eye_of_tyr", p, p->find_spell(209202))
   {
     parse_options( options_str );
 
     aoe = -1;
     may_crit = true;
+
   }
+
+  void init() override
+  {
+	  paladin_spell_t::init();
+
+	  if (p()->pillars_of_inmost_light){
+		  base_multiplier *= 1.0 + p()->spells.pillars_of_inmost_light->effectN(1).percent();
+	  }
+
+  }
+
+  bool ready() override
+  {
+	  if (!player->artifact_enabled())
+	  {
+		  return false;
+	  }
+
+	  if (p()->artifact.eye_of_tyr.rank() == 0)
+	  {
+		  return false;
+	  }
+
+	  return paladin_spell_t::ready();
+  }
+
+  virtual void execute() override
+  {
+	  paladin_spell_t::execute();
+
+	  if (p()->pillars_of_inmost_light)
+	  {
+		  p()->cooldowns.eye_of_tyr->ready += (p()->cooldowns.eye_of_tyr->duration * (p()->spells.pillars_of_inmost_light->effectN(2).percent()));
+	  }
+  }
+
 
   virtual void impact( action_state_t* s ) override
   {
@@ -5531,6 +5568,7 @@ void paladin_t::init_spells()
   spells.divine_purpose_ret            = find_spell( 223817 );
   spells.liadrins_fury_unleashed       = find_spell( 208408 );
   spells.justice_gaze                  = find_spell( 211557 );
+  spells.pillars_of_inmost_light	   = find_spell( 248102 );
   spells.chain_of_thrayn               = find_spell( 206338 );
   spells.ashes_to_dust                 = find_spell( 236106 );
   spells.ferren_marcuss_strength  = find_spell( 207614 );
@@ -6682,6 +6720,12 @@ static void ferren_marcuss_strength(special_effect_t& effect)
   do_trinket_init(s, PALADIN_PROTECTION, s->ferren_marcuss_strength, effect);
 }
 
+static void pillars_of_inmost_light(special_effect_t& effect)
+{
+	paladin_t* s = debug_cast<paladin_t*>(effect.player);
+	do_trinket_init(s, PALADIN_PROTECTION, s->pillars_of_inmost_light, effect);
+}
+
 static void saruans_resolve(special_effect_t& effect)
 {
   paladin_t* s = debug_cast<paladin_t*>(effect.player);
@@ -6748,6 +6792,7 @@ struct paladin_module_t : public module_t
     unique_gear::register_special_effect( 207599, heathcliffs_immortality);
     unique_gear::register_special_effect( 236106, ashes_to_dust );
     unique_gear::register_special_effect( 211557, justice_gaze );
+	unique_gear::register_special_effect( 248102, pillars_of_inmost_light);
     unique_gear::register_special_effect( 208051, sephuzs_secret_enabler_t() );
     unique_gear::register_special_effect( 248103, scarlet_inquisitors_expurgation );
   }
@@ -6761,7 +6806,6 @@ struct paladin_module_t : public module_t
 
   virtual void register_hotfixes() const override
   {
-
   }
 
   virtual void combat_begin( sim_t* ) const override {}

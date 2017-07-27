@@ -23,7 +23,7 @@ Resource         : 20% Base Mana (0) (id=10997)
 Spell Level      : 63
 Range            : 30 yards
 GCD              : 1.5 seconds
-Affecting spells : Restoration Shaman (137039 effect#11), Lucidity (137326 effect#1)
+Affecting spells : Restoration Shaman (137039 effect#12), Lucidity (137326 effect#1)
 Attributes       : ........ ........ x....... ........   .......x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -43,7 +43,7 @@ Spell Level      : 1
 Range            : 40 yards
 Cast Time        : 2 seconds
 GCD              : 1.5 seconds
-Affecting spells : Elemental Focus (16246 effect#1), Elemental Fury (60188 effect#1), Spiritwalker's Grace (79206 effect#1), Shaman (137038 effect#2), Restoration Shaman (137039 effect#9), Lucidity (137326 effect#1), Stormkeeper (205495 effect#1), Overcharge (210727 effect#3), Item - Shaman T19 Elemental 2P Bonus (211951 effect#1), Surge of Power (215414 effect#1)
+Affecting spells : Elemental Focus (16246 effect#1), Elemental Fury (60188 effect#1), Spiritwalker's Grace (79206 effect#1), Shaman (137038 effect#2), Restoration Shaman (137039 effect#10), Lucidity (137326 effect#1), Stormkeeper (205495 effect#1), Overcharge (210727 effect#3), Item - Shaman T19 Elemental 2P Bonus (211951 effect#1), Surge of Power (215414 effect#1)
 Triggered by     : Refreshing Currents (207356)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -65,7 +65,7 @@ Range            : 40 yards
 Cast Time        : 2 seconds
 GCD              : 1.5 seconds
 Category         : 85
-Affecting spells : Elemental Focus (16246 effect#1), Elemental Fury (60188 effect#1), Spiritwalker's Grace (79206 effect#1), Ascendance (114050 effect#2), Restoration Shaman (137039 effect#9), Lucidity (137326 effect#1), Electric Discharge (191577 effect#1), Stormkeeper (205495 effect#1), Al'Akir's Acrimony (208699 effect#1), Chain Lightning (231722 effect#1)
+Affecting spells : Elemental Focus (16246 effect#1), Elemental Fury (60188 effect#1), Spiritwalker's Grace (79206 effect#1), Ascendance (114050 effect#2), Restoration Shaman (137039 effect#10), Lucidity (137326 effect#1), Electric Discharge (191577 effect#1), Stormkeeper (205495 effect#1), Al'Akir's Acrimony (208699 effect#1), Chain Lightning (231722 effect#1)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -322,7 +322,7 @@ Attributes       : ........ ........ x.x..... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=3248)     : School Damage (2): nature
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 11.50000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 13.00000 | Target: Enemy (6)
 Description      : Instantly shocks the target with concussive force, causing up to $s1 Nature damage based on Maelstrom spent.
 
 Name             : Fire Nova (id=8349) [Scaling Spell (10), Spell Family (11)] 
@@ -722,51 +722,6 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | Radius: 0 - 15 yards | Target: At Caster (22) -> AOE enemy (15)
 Description      : Taunts all enemies within $A1 yards.
 
-Name             : Surestrike Goggles v2.0 (id=41314) 
-Class            : Hunter, Shaman
-School           : Physical
-Cast Time        : 15 seconds
-Attributes       : .....x.. x....... x....... ........   ........ ..x..... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Tradeskill ability (5)
-Effects          :
-#1 (id=32739)    : Create Item (24)
-                   Base Value: 1 | Scaled Value: 1 | Target: Self (1)
-
-Name             : Gadgetstorm Goggles (id=41315) 
-Class            : Shaman
-School           : Physical
-Cast Time        : 15 seconds
-Attributes       : .....x.. x....... x....... ........   ........ ..x..... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Tradeskill ability (5)
-Effects          :
-#1 (id=32740)    : Create Item (24)
-                   Base Value: 1 | Scaled Value: 1 | Target: Self (1)
-
-Name             : Living Replicator Specs (id=41316) 
-Class            : Shaman
-School           : Physical
-Cast Time        : 15 seconds
-Attributes       : .....x.. x....... x....... ........   ........ ..x..... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Tradeskill ability (5)
-Effects          :
-#1 (id=32741)    : Create Item (24)
-                   Base Value: 1 | Scaled Value: 1 | Target: Self (1)
-
 Name             : Lightning Bolt Overload (id=45284) [Spell Family (11)] 
 Class            : Shaman
 School           : Nature
@@ -798,53 +753,8 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=37247)    : School Damage (2): nature
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.60000 | Chain Multiplier: 0 | Chain Targets: 3 | Target: Enemy (6)
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.40000 | Chain Multiplier: 0 | Chain Targets: 3 | Target: Enemy (6)
 Description      : Hurls a lightning bolt at the enemy, dealing $s1 Nature damage and then jumping to additional nearby enemies.  Affects $x1 total targets.
-
-Name             : Primal-Attuned Goggles (id=46110) 
-Class            : Shaman
-School           : Physical
-Cast Time        : 15 seconds
-Attributes       : .....x.. x....... x....... ........   ........ ..x..... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Tradeskill ability (5)
-Effects          :
-#1 (id=38203)    : Create Item (24)
-                   Base Value: 1 | Scaled Value: 1 | Target: Self (1)
-
-Name             : Lightning Etched Specs (id=46112) 
-Class            : Shaman
-School           : Physical
-Cast Time        : 15 seconds
-Attributes       : .....x.. x....... x....... ........   ........ ..x..... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Tradeskill ability (5)
-Effects          :
-#1 (id=38205)    : Create Item (24)
-                   Base Value: 1 | Scaled Value: 1 | Target: Self (1)
-
-Name             : Surestrike Goggles v3.0 (id=46113) 
-Class            : Hunter, Shaman
-School           : Physical
-Cast Time        : 15 seconds
-Attributes       : .....x.. x....... x....... ........   ........ ..x..... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Tradeskill ability (5)
-Effects          :
-#1 (id=38206)    : Create Item (24)
-                   Base Value: 1 | Scaled Value: 1 | Target: Self (1)
 
 Name             : Earthgrab Totem (id=51485) [Spell Family (11)] 
 Class            : Shaman
@@ -1056,36 +966,6 @@ Effects          :
 Description      : $@spelldesc51564
 Tooltip          : Cast time of next Healing Wave reduced by $w1%.
 Critical effect chance of next Healing Surge increased by $w2%.
-
-Name             : Electroflux Sight Enhancers (id=56487) 
-Class            : Shaman
-School           : Physical
-Cast Time        : 15 seconds
-Attributes       : .....x.. ........ x....... ........   ........ ..x..... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Tradeskill ability (5)
-Effects          :
-#1 (id=49568)    : Create Item (24)
-                   Base Value: 1 | Scaled Value: 1 | Target: Self (1)
-
-Name             : Truesight Ice Blinders (id=56574) 
-Class            : Hunter, Shaman
-School           : Physical
-Cast Time        : 15 seconds
-Attributes       : .....x.. ........ x....... ........   ........ ..x..... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Tradeskill ability (5)
-Effects          :
-#1 (id=49667)    : Create Item (24)
-                   Base Value: 1 | Scaled Value: 1 | Target: Self (1)
 
 Name             : Exhaustion (id=57723) 
 Class            : Shaman
@@ -1351,21 +1231,6 @@ Effects          :
 Description      : Restorative waters wash over a friendly target, healing them for $s1 and an additional $o2 over $d.
 Tooltip          : Heals $w2 every $t2 seconds.
 
-Name             : Mechanized Snow Goggles (id=61482) 
-Class            : Hunter, Shaman
-School           : Physical
-Cast Time        : 2 seconds
-Attributes       : .....x.. ........ x....... ........   ........ ..x..... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Tradeskill ability (5)
-Effects          :
-#1 (id=55366)    : Create Item (24)
-                   Base Value: 1 | Scaled Value: 1 | Target: Self (1)
-
 Name             : Earthquake (id=61882) [Spell Family (11)] 
 Class            : Elemental Shaman
 School           : Nature
@@ -1390,7 +1255,7 @@ Effects          :
 #3 (id=263791)   : Unknown(179)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 3691 | Radius: 0 - 8 yards | Target: Unknown(87) -> AOE enemy (instant) (16)
 Description      : Causes the earth within $a1 yards of the target location to tremble and break, dealing $<damage> Physical damage over $d and sometimes knocking down enemies.
-Variables        : $damage=${$SPN*0.775*6}
+Variables        : $damage=${$SPN*1.0*6}
 
 Name             : Glyph of Deluge (Restoration) (id=63279) [Spell Family (11), Passive, Hidden] 
 Class            : Shaman
@@ -1795,38 +1660,6 @@ Effects          :
 Description      : Calls upon the guidance of the spirits for $d, permitting movement while casting Shaman spells. Castable while casting.$?a192088[ Increases movement speed by $192088s2%.][]
 Tooltip          : Able to move while casting all Shaman spells.
 
-Name             : Deadly Bio-Optic Killshades (id=81716) 
-Class            : Hunter, Shaman
-School           : Physical
-Cast Time        : 5 seconds
-Mechanic         : Unknown(245)
-Attributes       : .....x.. ........ x....... ........   ........ ..x..... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Tradeskill ability (5)
-Effects          :
-#1 (id=81205)    : Create Item (24)
-                   Base Value: 1 | Scaled Value: 1 | Target: Self (1)
-
-Name             : Energized Bio-Optic Killshades (id=81720) 
-Class            : Shaman
-School           : Physical
-Cast Time        : 5 seconds
-Mechanic         : Unknown(245)
-Attributes       : .....x.. ........ x....... ........   ........ ..x..... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Tradeskill ability (5)
-Effects          :
-#1 (id=81207)    : Create Item (24)
-                   Base Value: 1 | Scaled Value: 1 | Target: Self (1)
-
 Name             : Hand of Gul'dan (id=86040) [Spell Family (5)] 
 Class            : Shaman, Warlock
 School           : Shadowflame
@@ -2218,11 +2051,11 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ .......x   ........ ........ ........ ........ 
 Effects          :
 #1 (id=127188)   : School Damage (2): fire
-                   Base Value: -1 | Scaled Value: 0 - 2 | Value Range: 3 | SP Coefficient: 1.98000 | Chain Multiplier: 1.1 | Chain Targets: 3 | Target: Enemy (6)
+                   Base Value: -1 | Scaled Value: 0 - 2 | Value Range: 3 | SP Coefficient: 1.73000 | Chain Multiplier: 1.1 | Chain Targets: 3 | Target: Enemy (6)
 #2 (id=188522)   : Dummy (3)
                    Base Value: 10 | Scaled Value: 10
 #3 (id=325441)   : Dummy (3)
-                   Base Value: 6 | Scaled Value: 6
+                   Base Value: 4 | Scaled Value: 4
 Description      : Unleashes a blast of superheated flame at the enemy, dealing $s1 Fire damage and then jumping to additional nearby enemies. Damage is increased by $s2% after each jump. Affects $x1 total targets.  
 
 |cFFFFFFFFGenerates $s3 Maelstrom per target hit.|r 
@@ -2274,7 +2107,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=128188)   : School Damage (2): fire
-                   Base Value: 190 | Scaled Value: 0 (avg=0.816, dl=0.133) | Points Per Level: 1.9 | Value Range: 27 | SP Coefficient: 1.98000 | Chain Multiplier: 1.1 | Chain Targets: 3 | Target: Enemy (6)
+                   Base Value: 190 | Scaled Value: 0 (avg=0.816, dl=0.133) | Points Per Level: 1.9 | Value Range: 27 | SP Coefficient: 1.73000 | Chain Multiplier: 1.1 | Chain Targets: 3 | Target: Enemy (6)
 Description      : Unleash a blast of superheated flame at the enemy, dealing $s1 Fire damage and then jumping to additional nearby enemies. Affects up to $x1 total targets.
 
 Name             : Ancestral Guidance (id=114911) 
@@ -2551,7 +2384,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=135038)   : Apply Aura (6) | Modify Rating (189)
-                   Base Value: 5 | Scaled Value: 2400.347 (avg=1.4128) | Misc Value: 1792 | Target: Self (1)
+                   Base Value: 5 | Scaled Value: 2000.289 (avg=1.177333) | Misc Value: 1792 | Target: Self (1)
 Description      : $@spelldesc117014
 Tooltip          : Critical Strike increased by $s1.
 
@@ -2606,38 +2439,6 @@ Effects          :
 #1 (id=156442)   : Apply Aura (6) | Modify Block% (51)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : Gives a chance to block enemy melee attacks.
-
-Name             : Deadly Retinal Armor (id=127120) 
-Class            : Hunter, Shaman
-School           : Physical
-Cast Time        : 1.5 seconds
-Mechanic         : Unknown(245)
-Attributes       : .....x.. ........ x....... ........   ........ ..x..... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Tradeskill ability (5)
-Effects          :
-#1 (id=161560)   : Create Item (24)
-                   Base Value: 1 | Scaled Value: 1 | Target: Self (1)
-
-Name             : Energized Retinal Armor (id=127121) 
-Class            : Shaman
-School           : Physical
-Cast Time        : 1.5 seconds
-Mechanic         : Unknown(245)
-Attributes       : .....x.. ........ x....... ........   ........ ..x..... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Tradeskill ability (5)
-Effects          :
-#1 (id=161561)   : Create Item (24)
-                   Base Value: 1 | Scaled Value: 1 | Target: Self (1)
 
 Name             : Shaman (id=137038) [Spell Family (11), Passive, Hidden] 
 Class            : Shaman
@@ -2715,23 +2516,24 @@ Effects          :
 #6 (id=260997)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 248 (Label) | Target: Self (1)
                    Affected Spells (Label): Fel-Crazed Rage (225777), Colossal Slam (232044), Dread Torrent (246464), Ceaseless Toxin (242497), Umbral Glaive Storm (242556), Shattering Umbral Glaives (242557), Infernal Cinders (242218)
-#7 (id=260998)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
+#7 (id=260998)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Periodic Damage (22)
+                   Base Value: -50 | Scaled Value: -50 | Misc Value: 22 | Misc Value 2: 248 (Label) | Target: Self (1)
+                   Affected Spells (Label): Fel-Crazed Rage (225777), Colossal Slam (232044), Dread Torrent (246464), Ceaseless Toxin (242497), Umbral Glaive Storm (242556), Shattering Umbral Glaives (242557), Infernal Cinders (242218)
+#8 (id=260999)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 249 (Label) | Target: Self (1)
                    Affected Spells (Label): Orb of Destruction (229700)
-#8 (id=260999)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
+#9 (id=261000)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 300 (Label) | Target: Self (1)
                    Affected Spells (Label): Insidious Corruption (243941), Spectral Bolt (242571), Spectral Blast (246442), Apocalypse Missile (253243), Legion Bombardment (253248), Essence Swap (253258)
-#9 (id=261000)   : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
+#10 (id=261001)   : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
                    Base Value: 25 | Scaled Value: 25 | Target: Self (1)
                    Affected Spells: Lightning Bolt (403), Chain Lightning (421), Lava Burst (51505), Lightning Bolt (187837), Lightning Bolt (188196), Flame Shock (188389), Chain Lightning (188443), Flame Shock (188838), Lightning Bolt (214815), Lightning Bolt Overload (214816)
-#10 (id=261001)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Damage (22)
+#11 (id=261002)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Damage (22)
                    Base Value: 25 | Scaled Value: 25 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Lightning Bolt (403), Chain Lightning (421), Lava Burst (51505), Lightning Bolt (187837), Lightning Bolt (188196), Flame Shock (188389), Chain Lightning (188443), Flame Shock (188838), Lightning Bolt (214815), Lightning Bolt Overload (214816)
-#11 (id=261002)   : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost (14)
+#12 (id=261003)   : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost (14)
                    Base Value: -20 | Scaled Value: -20 | Misc Value: 14 | Target: Self (1)
                    Affected Spells: Purge (370)
-#12 (id=261003)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #13 (id=261004)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #14 (id=261005)   : Apply Aura (6) | Dummy (4)
@@ -2748,6 +2550,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #20 (id=341752)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+#21 (id=474899)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : Restoration Shaman core passive
 
 Name             : Elemental Shaman (id=137040) [Spell Family (11), Passive, Hidden] 
@@ -2762,13 +2566,13 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=179724)   : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
-                   Base Value: 3 | Scaled Value: 3 | Target: Self (1)
+                   Base Value: 6 | Scaled Value: 6 | Target: Self (1)
                    Affected Spells: Earth Shock (8042), Lightning Bolt Overload (45284), Chain Lightning Overload (45297), Thunderstorm (51490), Lava Burst (51505), Lava Burst Overload (77451), Earthquake (77478), Lava Beam (114074), Lava Beam Overload (114738), Elemental Blast (117014), Elemental Blast Overload (120588), Earthen Rage (170379), Lightning Bolt (188196), Flame Shock (188389), Chain Lightning (188443), Frost Shock (196840), Volcanic Inferno (205533), Icefury (210714), Icefury Overload (219271), Pristine Proto-Scale Girdle (224852), Seismic Lightning (243073)
 #2 (id=191042)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Damage (22)
-                   Base Value: 3 | Scaled Value: 3 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 6 | Scaled Value: 6 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Earth Shock (8042), Lightning Bolt Overload (45284), Chain Lightning Overload (45297), Thunderstorm (51490), Lava Burst (51505), Lava Burst Overload (77451), Earthquake (77478), Lava Beam (114074), Lava Beam Overload (114738), Elemental Blast (117014), Elemental Blast Overload (120588), Earthen Rage (170379), Lightning Bolt (188196), Flame Shock (188389), Chain Lightning (188443), Frost Shock (196840), Volcanic Inferno (205533), Icefury (210714), Icefury Overload (219271), Pristine Proto-Scale Girdle (224852), Seismic Lightning (243073)
 #3 (id=191043)   : Apply Aura (6) | Modify Pet Damage Done% (429)
-                   Base Value: 3 | Scaled Value: 3 | Target: Self (1)
+                   Base Value: 6 | Scaled Value: 6 | Target: Self (1)
 #4 (id=191044)   : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost (14)
                    Base Value: 10 | Scaled Value: 10 | Misc Value: 14 | Target: Self (1)
                    Affected Spells: Healing Surge (8004), Healing Surge (188070)
@@ -2778,11 +2582,12 @@ Effects          :
 #6 (id=260987)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 248 (Label) | Target: Self (1)
                    Affected Spells (Label): Fel-Crazed Rage (225777), Colossal Slam (232044), Dread Torrent (246464), Ceaseless Toxin (242497), Umbral Glaive Storm (242556), Shattering Umbral Glaives (242557), Infernal Cinders (242218)
-#7 (id=260988)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
+#7 (id=260988)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Periodic Damage (22)
+                   Base Value: -50 | Scaled Value: -50 | Misc Value: 22 | Misc Value 2: 248 (Label) | Target: Self (1)
+                   Affected Spells (Label): Fel-Crazed Rage (225777), Colossal Slam (232044), Dread Torrent (246464), Ceaseless Toxin (242497), Umbral Glaive Storm (242556), Shattering Umbral Glaives (242557), Infernal Cinders (242218)
+#8 (id=260989)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 298 (Label) | Target: Self (1)
                    Affected Spells (Label): Cleansing Matrix (242619), Fruitful Machinations (242623), Guiding Hand (242622), Infusion of Light (242621), Fel Shield (253277), Tarratus Keystone (253282), Refreshing Agony (253284)
-#8 (id=260989)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #9 (id=260990)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #10 (id=260991)   : Apply Aura (6) | Dummy (4)
@@ -2796,6 +2601,8 @@ Effects          :
 #14 (id=260995)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #15 (id=312820)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+#16 (id=474901)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : Elemental Shaman baseline passive
 
@@ -3277,9 +3084,9 @@ Attributes       : ......x. x....... ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=238582)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.25000 | Misc Value: 18 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.87500 | Misc Value: 18 | Target: Self (1)
 #2 (id=238583)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 75 | Scaled Value: 75 | Target: Self (1)
+                   Base Value: 85 | Scaled Value: 85 | Target: Self (1)
 #3 (id=307793)   : Apply Aura (6) | Dummy (4)
                    Base Value: 75 | Scaled Value: 75 | Target: Self (1)
 Description      : Your Lightning Bolt,$?s117014[ Elemental Blast,][]$?s210714[ Icefury,][] Chain Lightning, and Lava Burst casts have a $s1% chance to trigger a second cast on the same target for $s2% of normal damage and $s3% of normal Maelstrom generation.
@@ -3386,7 +3193,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=246371)   : Apply Aura (6) | Modify Rating (189)
-                   Base Value: 5 | Scaled Value: 2400.347 (avg=1.4128) | Misc Value: 917504 | Target: Self (1)
+                   Base Value: 5 | Scaled Value: 2000.289 (avg=1.177333) | Misc Value: 917504 | Target: Self (1)
 Description      : $@spelldesc117014
 Tooltip          : Haste increased by $s1.
 
@@ -3403,7 +3210,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=246377)   : Apply Aura (6) | Modify Rating (189)
-                   Base Value: 5 | Scaled Value: 2400.347 (avg=1.4128) | Misc Value: 33554432 | Target: Self (1)
+                   Base Value: 5 | Scaled Value: 2000.289 (avg=1.177333) | Misc Value: 33554432 | Target: Self (1)
 Description      : $@spelldesc117014
 Tooltip          : Mastery increased by $s1.
 
@@ -3482,7 +3289,7 @@ Resource         : 0 - 40 Maelstrom (11) (id=11199) w/ Overcharge (id=210727)
 Spell Level      : 1
 Range            : 40 yards
 GCD              : 1.5 seconds
-Affecting spells : Elemental Focus (16246 effect#1), Elemental Fury (60188 effect#1), Spiritwalker's Grace (79206 effect#1), Shaman (137038 effect#2), Restoration Shaman (137039 effect#9), Enhancement Shaman (137041 effect#1), Lucidity (137326 effect#1), Stormkeeper (205495 effect#1), Overcharge (210727 effect#3), Item - Shaman T19 Elemental 2P Bonus (211951 effect#1), Surge of Power (215414 effect#1)
+Affecting spells : Elemental Focus (16246 effect#1), Elemental Fury (60188 effect#1), Spiritwalker's Grace (79206 effect#1), Shaman (137038 effect#2), Restoration Shaman (137039 effect#10), Enhancement Shaman (137041 effect#1), Lucidity (137326 effect#1), Stormkeeper (205495 effect#1), Overcharge (210727 effect#3), Item - Shaman T19 Elemental 2P Bonus (211951 effect#1), Surge of Power (215414 effect#1)
 Attributes       : ........ ........ x....... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3626,7 +3433,7 @@ Spell Level      : 1
 Range            : 40 yards
 Cast Time        : 2 seconds
 GCD              : 1.5 seconds
-Affecting spells : Elemental Focus (16246 effect#1), Elemental Fury (60188 effect#1), Spiritwalker's Grace (79206 effect#1), Shaman (137038 effect#2), Restoration Shaman (137039 effect#9), Elemental Shaman (137040 effect#1), Lucidity (137326 effect#1), Stormkeeper (205495 effect#1), Overcharge (210727 effect#3), Item - Shaman T19 Elemental 2P Bonus (211951 effect#1), Surge of Power (215414 effect#1)
+Affecting spells : Elemental Focus (16246 effect#1), Elemental Fury (60188 effect#1), Spiritwalker's Grace (79206 effect#1), Shaman (137038 effect#2), Restoration Shaman (137039 effect#10), Elemental Shaman (137040 effect#1), Lucidity (137326 effect#1), Stormkeeper (205495 effect#1), Overcharge (210727 effect#3), Item - Shaman T19 Elemental 2P Bonus (211951 effect#1), Surge of Power (215414 effect#1)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3649,7 +3456,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 15 seconds
 Cooldown         : 6 seconds
-Affecting spells : Shaman Shock Range Bonus (32973 effect#1), Elemental Fury (60188 effect#1), Restoration Shaman (137039 effect#9), Elemental Shaman (137040 effect#1), Lucidity (137326 effect#1), Elemental Bellows (184919 effect#1), Maelstrom (187828 effect#2), Firestorm (191740 effect#1), Ember Totem (210658 effect#1), Focused Elements (246594 effect#1), 
+Affecting spells : Shaman Shock Range Bonus (32973 effect#1), Elemental Fury (60188 effect#1), Restoration Shaman (137039 effect#10), Elemental Shaman (137040 effect#1), Lucidity (137326 effect#1), Elemental Bellows (184919 effect#1), Maelstrom (187828 effect#2), Firestorm (191740 effect#1), Ember Totem (210658 effect#1), Focused Elements (246594 effect#1), 
 Attributes       : ........ ........ x.x..... ..x.....   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ....x... ........   ........ .....x.. ........ ........ 
@@ -3674,7 +3481,7 @@ Range            : 40 yards
 Cast Time        : 2 seconds
 GCD              : 1.5 seconds
 Category         : 85
-Affecting spells : Elemental Focus (16246 effect#1), Elemental Fury (60188 effect#1), Spiritwalker's Grace (79206 effect#1), Ascendance (114050 effect#2), Restoration Shaman (137039 effect#9), Elemental Shaman (137040 effect#1), Lucidity (137326 effect#1), Electric Discharge (191577 effect#1), Stormkeeper (205495 effect#1), Al'Akir's Acrimony (208699 effect#1), Chain Lightning (231722 effect#1)
+Affecting spells : Elemental Focus (16246 effect#1), Elemental Fury (60188 effect#1), Spiritwalker's Grace (79206 effect#1), Ascendance (114050 effect#2), Restoration Shaman (137039 effect#10), Elemental Shaman (137040 effect#1), Lucidity (137326 effect#1), Electric Discharge (191577 effect#1), Stormkeeper (205495 effect#1), Al'Akir's Acrimony (208699 effect#1), Chain Lightning (231722 effect#1)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3683,9 +3490,9 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ .......x   ........ ........ ........ ........ 
 Effects          :
 #1 (id=275203)   : School Damage (2): nature
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.60000 | Chain Multiplier: 0 | Chain Targets: 3 | Target: Enemy (6)
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.40000 | Chain Multiplier: 0 | Chain Targets: 3 | Target: Enemy (6)
 #2 (id=325428)   : Dummy (3)
-                   Base Value: 6 | Scaled Value: 6
+                   Base Value: 4 | Scaled Value: 4
 Description      : Hurls a lightning bolt at the enemy, dealing $s1 Nature damage and then jumping to additional nearby enemies. Affects $x1 total targets. 
 
 |cFFFFFFFFGenerates $s2 Maelstrom per target hit.|r 
@@ -3742,7 +3549,7 @@ Duration         : 21 seconds
 Cooldown         : 6 seconds
 Category         : 19
 Category Cooldown: 6 seconds
-Affecting spells : Shaman Shock Range Bonus (32973 effect#1), Elemental Fury (60188 effect#1), Restoration Shaman (137039 effect#9), Lucidity (137326 effect#1), Elemental Bellows (184919 effect#1), Maelstrom (187828 effect#2), Firestorm (191740 effect#1), Ember Totem (210658 effect#1), Focused Elements (246594 effect#1), 
+Affecting spells : Shaman Shock Range Bonus (32973 effect#1), Elemental Fury (60188 effect#1), Restoration Shaman (137039 effect#10), Lucidity (137326 effect#1), Elemental Bellows (184919 effect#1), Maelstrom (187828 effect#2), Firestorm (191740 effect#1), Ember Totem (210658 effect#1), Focused Elements (246594 effect#1), 
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .....x.. ........ ........ 
@@ -4084,7 +3891,7 @@ Effects          :
                    Base Value: 6 | Scaled Value: 6 | Target: Self (1)
 #2 (id=281778)   : Apply Aura (6) | Modify Ranged and Melee Attack Speed% (342)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-Description      : Increases haste by $s1%.
+Description      : Increases Haste by $s1%.
 
 Name             : Graceful Spirit (id=192088) [Spell Family (11), Passive] 
 Class            : Shaman
@@ -5801,7 +5608,7 @@ Increases the chance for Lightning Bolt and Chain Lightning to trigger Elemental
 Increases Flame Shock damage over time by $210658s1%.
 
 |cFFFFFFFFTailwind Totem|r
-Increases your haste by $210659s1%.
+Increases your Haste by $210659s1%.
 
 Name             : Storm Totem (id=210651) [Spell Family (11)] 
 Class            : Shaman
@@ -6308,7 +6115,7 @@ School           : Nature
 Spell Level      : 1
 Range            : 30 yards
 Cast Time        : 2 seconds
-Affecting spells : Elemental Focus (16246 effect#1), Elemental Fury (60188 effect#1), Spiritwalker's Grace (79206 effect#1), Shaman (137038 effect#2), Restoration Shaman (137039 effect#9), Lucidity (137326 effect#1), Stormkeeper (205495 effect#1), Overcharge (210727 effect#3), Item - Shaman T19 Elemental 2P Bonus (211951 effect#1), Surge of Power (215414 effect#1)
+Affecting spells : Elemental Focus (16246 effect#1), Elemental Fury (60188 effect#1), Spiritwalker's Grace (79206 effect#1), Shaman (137038 effect#2), Restoration Shaman (137039 effect#10), Lucidity (137326 effect#1), Stormkeeper (205495 effect#1), Overcharge (210727 effect#3), Item - Shaman T19 Elemental 2P Bonus (211951 effect#1), Surge of Power (215414 effect#1)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6326,7 +6133,7 @@ School           : Nature
 Spell Level      : 1
 Range            : 30 yards
 Cast Time        : 2 seconds
-Affecting spells : Elemental Focus (16246 effect#1), Elemental Fury (60188 effect#1), Spiritwalker's Grace (79206 effect#1), Shaman (137038 effect#2), Restoration Shaman (137039 effect#9), Lucidity (137326 effect#1), Stormkeeper (205495 effect#1), Overcharge (210727 effect#3), Item - Shaman T19 Elemental 2P Bonus (211951 effect#1), Surge of Power (215414 effect#1)
+Affecting spells : Elemental Focus (16246 effect#1), Elemental Fury (60188 effect#1), Spiritwalker's Grace (79206 effect#1), Shaman (137038 effect#2), Restoration Shaman (137039 effect#10), Lucidity (137326 effect#1), Stormkeeper (205495 effect#1), Overcharge (210727 effect#3), Item - Shaman T19 Elemental 2P Bonus (211951 effect#1), Surge of Power (215414 effect#1)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 

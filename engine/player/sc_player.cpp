@@ -3445,11 +3445,11 @@ double player_t::composite_player_critical_damage_multiplier( const action_state
 {
   double m = 1.0;
 
-  m += racials.brawn -> effectN( 1 ).percent();
-  m += racials.might_of_the_mountain -> effectN( 1 ).percent();
+  m *= 1.0 + racials.brawn -> effectN( 1 ).percent();
+  m *= 1.0 + racials.might_of_the_mountain -> effectN( 1 ).percent();
   if ( buffs.incensed )
   {
-    m += buffs.incensed -> check_value();
+    m *= 1.0 + buffs.incensed -> check_value();
   }
 
   return m;

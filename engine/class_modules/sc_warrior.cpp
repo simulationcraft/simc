@@ -6738,9 +6738,12 @@ struct ayalas_stone_heart_t: public unique_gear::class_buff_cb_t<warrior_t>
   }
 
   buff_creator_t creator( const special_effect_t& e ) const override
-  {
+  { 
     return super::creator( e )
-      .rppm_scale( RPPM_HASTE )
+      // spell data no longer says "Haste Multiplier"
+      // not sure if it still scales with haste or not
+	  .rppm_scale( RPPM_HASTE )
+	  .rppm_freq( e.player->specialization() == WARRIOR_ARMS ? 1.08 : e.rppm() )
       .spell( e.driver() -> effectN( 1 ).trigger() )
       .trigger_spell( e.driver() );
   }
