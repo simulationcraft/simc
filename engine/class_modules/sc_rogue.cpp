@@ -1003,7 +1003,8 @@ struct rogue_attack_t : public melee_attack_t
                                cooldown -> duration > timespan_t::zero();
     affected_by.shadow_blades = data().affected_by( p() -> spec.shadow_blades -> effectN( 2 ) ) ||
                                 data().affected_by( p() -> spec.shadow_blades -> effectN( 3 ) ) ||
-                                data().affected_by( p() -> spec.shadow_blades -> effectN( 4 ) );
+                                data().affected_by( p() -> spec.shadow_blades -> effectN( 4 ) ) ||
+                                data().affected_by( p() -> spec.shadow_blades -> effectN( 5 ) );
 
     affected_by.ruthlessness = base_costs[ RESOURCE_COMBO_POINT ] > 0;
     affected_by.relentless_strikes = base_costs[ RESOURCE_COMBO_POINT ] > 0;
@@ -2368,7 +2369,7 @@ void rogue_attack_t::execute()
 
   p() -> trigger_ruthlessness_cp( execute_state );
 
-  if ( energize_type_() == ENERGIZE_ON_HIT && energize_resource == RESOURCE_COMBO_POINT &&
+  if ( energize_type != ENERGIZE_NONE && energize_resource == RESOURCE_COMBO_POINT &&
     affected_by.shadow_blades && p() -> buffs.shadow_blades -> up() )
   {
     p() -> trigger_combo_point_gain( 1, p() -> gains.shadow_blades, this );
@@ -3229,6 +3230,13 @@ struct goremaws_bite_t:  public rogue_attack_t
     energize_type     = ENERGIZE_ON_HIT;
     energize_resource = RESOURCE_COMBO_POINT;
     energize_amount   = data().effectN( 4 ).trigger() -> effectN( 1 ).resource( RESOURCE_COMBO_POINT );
+  }
+
+  void init() override
+  {
+    rogue_attack_t::init();
+
+    affected_by.shadow_blades = data().effectN( 4 ).trigger() -> affected_by( p() -> spec.shadow_blades -> effectN( 5 ) );
   }
 
   void execute() override
@@ -4467,6 +4475,15 @@ struct shuriken_storm_t: public rogue_attack_t
     energize_type = ENERGIZE_PER_HIT;
     energize_resource = RESOURCE_COMBO_POINT;
     energize_amount = 1;
+  }
+
+  void init() override
+  {
+    rogue_attack_t::init();
+
+    // As of 2017-07-28, Shuriken Storm also grants an additional CP with Shadow Blades, but it was
+    // removed from spell data during 7.2.5 PTR for some reason. We have to hardcode it here.
+    affected_by.shadow_blades = true;
   }
 
   bool procs_insignia_of_ravenholdt() const override
