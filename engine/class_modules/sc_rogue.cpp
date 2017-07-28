@@ -377,6 +377,7 @@ struct rogue_t : public player_t
     gain_t* shadow_blades;
     gain_t* enveloping_shadows;
     gain_t* t19_4pc_subtlety;
+    gain_t* t21_4pc_subtlety;
   } gains;
 
   // Spec passives
@@ -2632,6 +2633,8 @@ struct backstab_t : public rogue_attack_t
     requires_weapon = WEAPON_DAGGER;
 
     base_multiplier *= 1.0 + p -> artifact.the_quiet_knife.percent();
+    if ( p -> sets -> has_set_bonus( ROGUE_SUBTLETY, T21, B2 ) )
+      base_multiplier *= 1.0 + p -> sets -> set( ROGUE_SUBTLETY, T21, B2 ) -> effectN( 1 ).percent();
 
     crit_bonus_multiplier *= 1.0 + p -> artifact.weak_point.percent();
   }
@@ -2925,6 +2928,15 @@ struct eviscerate_t : public rogue_attack_t
     if ( p() -> buffs.focused_shurikens -> up() )
     {
       p() -> buffs.focused_shurikens -> expire();
+    }
+
+    if ( p() -> sets -> has_set_bonus( ROGUE_SUBTLETY, T21, B4 ) )
+    {
+      if ( rng().roll( p() -> sets -> set( ROGUE_SUBTLETY, T21, B4 ) -> proc_chance() ) )
+      {
+        int cp = cast_state( execute_state ) -> cp * p() -> sets -> set( ROGUE_SUBTLETY, T21, B4 ) -> effectN( 1 ).percent();
+        p() -> trigger_combo_point_gain( cp , p() -> gains.t21_4pc_subtlety, this );
+      }
     }
   }
 };
@@ -3965,6 +3977,15 @@ struct nightblade_t : public rogue_attack_t
     if ( p() -> buffs.feeding_frenzy -> check() )
     {
       p() -> buffs.feeding_frenzy -> decrement();
+    }
+
+    if ( p() -> sets -> has_set_bonus( ROGUE_SUBTLETY, T21, B4 ) )
+    {
+      if ( rng().roll( p() -> sets -> set( ROGUE_SUBTLETY, T21, B4 ) -> proc_chance() ) )
+      {
+        int cp = cast_state( execute_state ) -> cp * p() -> sets -> set( ROGUE_SUBTLETY, T21, B4 ) -> effectN( 1 ).percent();
+        p() -> trigger_combo_point_gain( cp , p() -> gains.t21_4pc_subtlety, this );
+      }
     }
   }
 
@@ -8020,6 +8041,7 @@ void rogue_t::init_gains()
   gains.the_first_of_the_dead    = get_gain( "The First of the Dead"    );
   gains.symbols_of_death         = get_gain( "Symbols of Death"         );
   gains.t20_4pc_outlaw           = get_gain( "Lesser Adrenaline Rush"   );
+  gains.t21_4pc_subtlety         = get_gain( "Tier 21 4PC Set Bonus"    );
 }
 
 // rogue_t::init_procs ======================================================
