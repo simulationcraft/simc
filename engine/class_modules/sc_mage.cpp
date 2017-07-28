@@ -2467,7 +2467,8 @@ struct arcane_barrage_t : public arcane_mage_spell_t
 
     if ( p() -> sets -> has_set_bonus( MAGE_ARCANE, T21, B2 ) )
     {
-      p() -> buffs.expanding_mind -> trigger( charges );
+      p() -> buffs.expanding_mind
+          -> trigger( 1, charges * p() -> sets -> set ( MAGE_ARCANE, T21, B2 ) -> effectN( 1 ).percent() );
     }
 
     p() -> buffs.arcane_charge -> expire();
@@ -7082,12 +7083,8 @@ void mage_t::create_buffs()
                                   .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
                                   .default_value( find_spell( 246224 ) -> effectN( 1 ).percent() );
 
-  // TODO: Assume 10 max stack for now - double check when on PTR for testing.
   buffs.expanding_mind        = buff_creator_t( this, "expanding_mind", find_spell( 253262 ) )
-                                  .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
-                                  .stack_behavior( BUFF_STACK_ASYNCHRONOUS )
-                                  .max_stack( 10 )
-                                  .default_value( sets -> set( MAGE_ARCANE, T21, B2 ) -> effectN( 1 ).percent() );
+                                  .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   buffs.presence_of_mind      = buff_creator_t( this, "presence_of_mind", find_spell( 205025 ) )
                                   .cd( timespan_t::zero() )
                                   .stack_change_callback( [ this ] ( buff_t*, int, int cur )
@@ -8008,7 +8005,10 @@ double mage_t::composite_player_multiplier( school_e school ) const
     m *= 1.0 + buffs.arcane_power -> check_value();
   }
 
-  m *= 1.0 + buffs.expanding_mind -> check_stack_value();
+  if ( buffs.expanding_mind -> check() )
+  {
+    m *= 1.0 + buffs.expanding_mind -> check_value();
+  }
 
   if ( dbc::is_school( school, SCHOOL_ARCANE ) )
   {
