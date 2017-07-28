@@ -4201,10 +4201,7 @@ struct frostbolt_t : public frost_mage_spell_t
   {
     double am = frost_mage_spell_t::action_multiplier();
 
-    if ( p() -> buffs.arctic_blast -> check() )
-    {
-      am *= 1.0 + p() -> buffs.arctic_blast -> check_value();
-    }
+    am *= 1.0 + p() -> buffs.arctic_blast -> check_value();
 
     return am;
   }
@@ -7931,11 +7928,7 @@ double mage_t::composite_player_critical_damage_multiplier( const action_state_t
     m *= 1.0 + buffs.pyretic_incantation -> check_stack_value();
   }
 
-  if ( buffs.inferno -> check() )
-  {
-    m *= 1.0 + buffs.inferno -> check_value();
-  }
-
+  m *= 1.0 + buffs.inferno -> check_value();
   m *= 1.0 + buffs.frozen_mass -> check_value();
 
   return m;
@@ -7985,11 +7978,6 @@ double mage_t::composite_player_multiplier( school_e school ) const
     m *= 1.0 + buffs.arcane_power -> check_value();
   }
 
-  if ( buffs.expanding_mind -> check() )
-  {
-    m *= 1.0 + buffs.expanding_mind -> check_value();
-  }
-
   if ( dbc::is_school( school, SCHOOL_ARCANE ) )
   {
     m *= 1.0 + artifact.might_of_the_guardians.percent();
@@ -8033,6 +8021,7 @@ double mage_t::composite_player_multiplier( school_e school ) const
   }
 
   m *= 1.0 + buffs.crackling_energy -> check_value();
+  m *= 1.0 + buffs.expanding_mind -> check_value();
 
   return m;
 }
@@ -8090,12 +8079,8 @@ double mage_t::composite_spell_haste() const
 
   h /= 1.0 + buffs.icy_veins -> check_value();
   h /= 1.0 + buffs.streaking -> check_value();
+  h /= 1.0 + buffs.quick_thinker -> check_value();
   h /= 1.0 + buffs.sephuzs_secret -> check_value();
-
-  if ( buffs.quick_thinker -> check() )
-  {
-    h /= 1.0 + buffs.quick_thinker -> check_value();
-  }
 
   if ( buffs.sephuzs_secret -> default_chance != 0 )
   {
