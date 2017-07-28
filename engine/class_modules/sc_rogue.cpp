@@ -128,6 +128,7 @@ struct rogue_td_t : public actor_target_data_t
     buff_t* kingsbane;
     buff_t* blood_of_the_assassinated;
     buff_t* toxic_blade;
+    buff_t* t21_2pc_assassination;
   } debuffs;
 
   rogue_td_t( player_t* target, rogue_t* source );
@@ -367,6 +368,7 @@ struct rogue_t : public player_t
     gain_t* the_first_of_the_dead;
     gain_t* symbols_of_death;
     gain_t* t20_4pc_outlaw;
+    gain_t* t21_4pc_assassination;
 
     // CP Gains
     gain_t* seal_fate;
@@ -377,6 +379,7 @@ struct rogue_t : public player_t
     gain_t* shadow_blades;
     gain_t* enveloping_shadows;
     gain_t* t19_4pc_subtlety;
+    gain_t* t21_4pc_subtlety;
   } gains;
 
   // Spec passives
@@ -800,6 +803,7 @@ struct rogue_t : public player_t
   void trigger_insignia_of_ravenholdt( action_state_t* );
   void trigger_shadow_nova( const action_state_t* );
   void trigger_sephuzs_secret( const action_state_t* state, spell_mechanic mechanic, double proc_chance = -1.0 );
+  void trigger_t21_4pc_assassination( const action_state_t* state );
 
   // On-death trigger for Venomous Wounds energy replenish
   void trigger_venomous_wounds_death( player_t* );
@@ -912,6 +916,7 @@ struct rogue_attack_t : public melee_attack_t
     bool alacrity;
     bool adrenaline_rush_gcd;
     bool lesser_adrenaline_rush_gcd;
+    bool t21_2pc_assassination;
   } affected_by;
 
   rogue_attack_t( const std::string& token, rogue_t* p,
@@ -1003,7 +1008,8 @@ struct rogue_attack_t : public melee_attack_t
                                cooldown -> duration > timespan_t::zero();
     affected_by.shadow_blades = data().affected_by( p() -> spec.shadow_blades -> effectN( 2 ) ) ||
                                 data().affected_by( p() -> spec.shadow_blades -> effectN( 3 ) ) ||
-                                data().affected_by( p() -> spec.shadow_blades -> effectN( 4 ) );
+                                data().affected_by( p() -> spec.shadow_blades -> effectN( 4 ) ) ||
+                                data().affected_by( p() -> spec.shadow_blades -> effectN( 5 ) );
 
     affected_by.ruthlessness = base_costs[ RESOURCE_COMBO_POINT ] > 0;
     affected_by.relentless_strikes = base_costs[ RESOURCE_COMBO_POINT ] > 0;
@@ -1015,6 +1021,7 @@ struct rogue_attack_t : public melee_attack_t
     affected_by.alacrity = base_costs[ RESOURCE_COMBO_POINT ] > 0;
     affected_by.adrenaline_rush_gcd = data().affected_by( p() -> buffs.adrenaline_rush -> data().effectN( 3 ) );
     affected_by.lesser_adrenaline_rush_gcd = data().affected_by( p() -> buffs.t20_4pc_outlaw -> data().effectN( 3 ) );
+    affected_by.t21_2pc_assassination = data().affected_by( p() -> sets -> set( ROGUE_ASSASSINATION, T21, B2 ) -> effectN( 1 ).trigger() -> effectN( 1 ) );
   }
 
   bool init_finished() override
@@ -1924,6 +1931,18 @@ struct rogue_poison_t : public rogue_attack_t
     return m;
   }
 
+  double composite_crit_chance() const override
+  {
+    double c = rogue_attack_t::composite_crit_chance();
+
+    const rogue_td_t* tdata = td( target );
+    if ( affected_by.t21_2pc_assassination && tdata -> debuffs.t21_2pc_assassination -> up() )
+    {
+      c += tdata -> debuffs.t21_2pc_assassination -> value();
+    }
+
+    return c;
+  }
 };
 
 // Deadly Poison ============================================================
@@ -1973,6 +1992,13 @@ struct deadly_poison_t : public rogue_poison_t
       }
 
       rogue_poison_t::impact( state );
+    }
+
+    void tick( dot_t* d ) override
+    {
+      rogue_poison_t::tick( d );
+
+      p() -> trigger_t21_4pc_assassination( d -> state );
     }
 
     void last_tick( dot_t* d ) override
@@ -2086,6 +2112,8 @@ struct wound_poison_t : public rogue_poison_t
         {
           td( state -> target ) -> debuffs.kingsbane -> trigger();
         }
+
+        p() -> trigger_t21_4pc_assassination( state );
       }
     }
   };
@@ -2368,7 +2396,7 @@ void rogue_attack_t::execute()
 
   p() -> trigger_ruthlessness_cp( execute_state );
 
-  if ( energize_type_() == ENERGIZE_ON_HIT && energize_resource == RESOURCE_COMBO_POINT &&
+  if ( energize_type != ENERGIZE_NONE && energize_resource == RESOURCE_COMBO_POINT &&
     affected_by.shadow_blades && p() -> buffs.shadow_blades -> up() )
   {
     p() -> trigger_combo_point_gain( 1, p() -> gains.shadow_blades, this );
@@ -2631,6 +2659,8 @@ struct backstab_t : public rogue_attack_t
     requires_weapon = WEAPON_DAGGER;
 
     base_multiplier *= 1.0 + p -> artifact.the_quiet_knife.percent();
+    if ( p -> sets -> has_set_bonus( ROGUE_SUBTLETY, T21, B2 ) )
+      base_multiplier *= 1.0 + p -> sets -> set( ROGUE_SUBTLETY, T21, B2 ) -> effectN( 1 ).percent();
 
     crit_bonus_multiplier *= 1.0 + p -> artifact.weak_point.percent();
   }
@@ -2862,6 +2892,11 @@ struct envenom_t : public rogue_attack_t
     }
 
     p() -> trigger_poison_bomb( execute_state );
+
+    if ( p() -> sets -> has_set_bonus( ROGUE_ASSASSINATION, T21, B2 ) )
+    {
+      td( execute_state -> target ) -> debuffs.t21_2pc_assassination -> trigger();
+    }
   }
 };
 
@@ -2924,6 +2959,15 @@ struct eviscerate_t : public rogue_attack_t
     if ( p() -> buffs.focused_shurikens -> up() )
     {
       p() -> buffs.focused_shurikens -> expire();
+    }
+
+    if ( p() -> sets -> has_set_bonus( ROGUE_SUBTLETY, T21, B4 ) )
+    {
+      if ( rng().roll( p() -> sets -> set( ROGUE_SUBTLETY, T21, B4 ) -> proc_chance() ) )
+      {
+        int cp = cast_state( execute_state ) -> cp * p() -> sets -> set( ROGUE_SUBTLETY, T21, B4 ) -> effectN( 1 ).percent();
+        p() -> trigger_combo_point_gain( cp , p() -> gains.t21_4pc_subtlety, this );
+      }
     }
   }
 };
@@ -3229,6 +3273,13 @@ struct goremaws_bite_t:  public rogue_attack_t
     energize_type     = ENERGIZE_ON_HIT;
     energize_resource = RESOURCE_COMBO_POINT;
     energize_amount   = data().effectN( 4 ).trigger() -> effectN( 1 ).resource( RESOURCE_COMBO_POINT );
+  }
+
+  void init() override
+  {
+    rogue_attack_t::init();
+
+    affected_by.shadow_blades = data().effectN( 4 ).trigger() -> affected_by( p() -> spec.shadow_blades -> effectN( 5 ) );
   }
 
   void execute() override
@@ -3958,6 +4009,15 @@ struct nightblade_t : public rogue_attack_t
     {
       p() -> buffs.feeding_frenzy -> decrement();
     }
+
+    if ( p() -> sets -> has_set_bonus( ROGUE_SUBTLETY, T21, B4 ) )
+    {
+      if ( rng().roll( p() -> sets -> set( ROGUE_SUBTLETY, T21, B4 ) -> proc_chance() ) )
+      {
+        int cp = cast_state( execute_state ) -> cp * p() -> sets -> set( ROGUE_SUBTLETY, T21, B4 ) -> effectN( 1 ).percent();
+        p() -> trigger_combo_point_gain( cp , p() -> gains.t21_4pc_subtlety, this );
+      }
+    }
   }
 
   timespan_t composite_dot_duration( const action_state_t* s ) const override
@@ -4469,6 +4529,15 @@ struct shuriken_storm_t: public rogue_attack_t
     energize_amount = 1;
   }
 
+  void init() override
+  {
+    rogue_attack_t::init();
+
+    // As of 2017-07-28, Shuriken Storm also grants an additional CP with Shadow Blades, but it was
+    // removed from spell data during 7.2.5 PTR for some reason. We have to hardcode it here.
+    affected_by.shadow_blades = true;
+  }
+
   bool procs_insignia_of_ravenholdt() const override
   { return false; }
 
@@ -4622,10 +4691,6 @@ struct symbols_of_death_t : public rogue_attack_t
     rogue_attack_t::execute();
 
     p() -> buffs.symbols_of_death -> trigger();
-
-    p() -> resource_gain( RESOURCE_ENERGY,
-                          data().effectN( 2 ).resource( RESOURCE_ENERGY ),
-                          p() -> gains.symbols_of_death, this );
 
     if ( p() -> legendary.the_first_of_the_dead )
     {
@@ -6239,6 +6304,17 @@ void rogue_t::trigger_sephuzs_secret( const action_state_t* state,
   }
 }
 
+void rogue_t::trigger_t21_4pc_assassination( const action_state_t* state )
+{
+  if ( state -> result != RESULT_CRIT || ! sets -> has_set_bonus( ROGUE_ASSASSINATION, T21, B4 ) )
+    return;
+
+  if ( rng().roll( sets -> set( ROGUE_ASSASSINATION, T21, B4 ) -> proc_chance() ) )
+  {
+    resource_gain( RESOURCE_ENERGY, sets -> set( ROGUE_ASSASSINATION, T21, B4 ) -> effectN( 1 ).base_value(), gains.t21_4pc_assassination, state -> action );
+  }
+}
+
 namespace buffs {
 // ==========================================================================
 // Buffs
@@ -6802,6 +6878,8 @@ rogue_td_t::rogue_td_t( player_t* target, rogue_t* source ) :
     .default_value( vd -> effectN( 1 ).percent() );
   debuffs.toxic_blade = buff_creator_t( *this, "toxic_blade", source -> talent.toxic_blade -> effectN( 4 ).trigger() )
     .default_value( source -> talent.toxic_blade -> effectN( 4 ).trigger() -> effectN( 1 ).percent() );
+  debuffs.t21_2pc_assassination = buff_creator_t( *this, "virulent_poisons", source -> sets -> set( ROGUE_ASSASSINATION, T21, B2 ) -> effectN( 1 ).trigger() )
+    .default_value( source -> sets -> set( ROGUE_ASSASSINATION, T21, B2 ) -> effectN( 1 ).trigger() -> effectN( 1 ).percent() );
 
   debuffs.ghostly_strike = buff_creator_t( *this, "ghostly_strike", source -> talent.ghostly_strike )
     .default_value( source -> talent.ghostly_strike -> effectN( 5 ).percent() );
@@ -7344,7 +7422,7 @@ void rogue_t::init_action_list()
     cds -> add_action( this, "Shadow Blades", "if=(time>10&combo_points.deficit>=2+stealthed.all-equipped.mantle_of_the_master_assassin)|(time<10&(!talent.marked_for_death.enabled|combo_points.deficit>=3|dot.nightblade.ticking))" );
     cds -> add_action( this, "Goremaw's Bite", "if=!stealthed.all&cooldown.shadow_dance.charges_fractional<=variable.shd_fractional&((combo_points.deficit>=4-(time<10)*2&energy.deficit>50+talent.vigor.enabled*25-(time>=10)*15)|(combo_points.deficit>=1&target.time_to_die<8))" );
     cds -> add_action( "pool_resource,for_next=1,extra_amount=55-talent.shadow_focus.enabled*10" );
-    cds -> add_action( this, "Vanish", "if=energy>=55-talent.shadow_focus.enabled*10&variable.dsh_dfa&(!equipped.mantle_of_the_master_assassin|buff.symbols_of_death.up)&cooldown.shadow_dance.charges_fractional<=variable.shd_fractional&!buff.shadow_dance.up&!buff.stealth.up&mantle_duration=0&(dot.nightblade.remains>=cooldown.death_from_above.remains+6|target.time_to_die-dot.nightblade.remains<=6)&cooldown.death_from_above.remains<=1&(time<10|combo_points>=3)|target.time_to_die<=7" );
+    cds -> add_action( this, "Vanish", "if=energy>=55-talent.shadow_focus.enabled*10&variable.dsh_dfa&(!equipped.mantle_of_the_master_assassin|buff.symbols_of_death.up)&cooldown.shadow_dance.charges_fractional<=variable.shd_fractional&!buff.shadow_dance.up&!buff.stealth.up&mantle_duration=0&(dot.nightblade.remains>=cooldown.death_from_above.remains+6|target.time_to_die-dot.nightblade.remains<=6)&cooldown.death_from_above.remains<=1|target.time_to_die<=7" );
 
     // Finishers
     action_priority_list_t* finish = get_action_priority_list( "finish", "Finishers" );
@@ -7352,7 +7430,7 @@ void rogue_t::init_action_list()
     finish -> add_action( this, "Nightblade", "if=(!talent.dark_shadow.enabled|!buff.shadow_dance.up)&target.time_to_die-remains>6&(mantle_duration=0|remains<=mantle_duration)&((refreshable&(!finality|buff.finality_nightblade.up|variable.dsh_dfa))|remains<tick_time*2)&(spell_targets.shuriken_storm<4&!variable.dsh_dfa|!buff.symbols_of_death.up)" );
     finish -> add_action( this, "Nightblade", "cycle_targets=1,if=(!talent.death_from_above.enabled|set_bonus.tier19_2pc)&(!talent.dark_shadow.enabled|!buff.shadow_dance.up)&target.time_to_die-remains>12&mantle_duration=0&((refreshable&(!finality|buff.finality_nightblade.up|variable.dsh_dfa))|remains<tick_time*2)&(spell_targets.shuriken_storm<4&!variable.dsh_dfa|!buff.symbols_of_death.up)" );
     finish -> add_action( this, "Nightblade", "if=remains<cooldown.symbols_of_death.remains+10&cooldown.symbols_of_death.remains<=3" );
-    finish -> add_talent( this, "Death from Above", "if=!talent.dark_shadow.enabled|spell_targets>=4&buff.shadow_dance.up|spell_targets<4&!buff.shadow_dance.up&(buff.symbols_of_death.up|cooldown.symbols_of_death.remains>=10+set_bonus.tier20_4pc*5)" );
+    finish -> add_talent( this, "Death from Above", "if=!talent.dark_shadow.enabled|spell_targets>=4&buff.shadow_dance.up|spell_targets<4&!buff.shadow_dance.up&(buff.symbols_of_death.up|cooldown.symbols_of_death.remains>=10+set_bonus.tier20_4pc*5)&!cooldown.vanish.up" );
     finish -> add_action( this, "Eviscerate" );
 
     // Stealth Action List Starter
@@ -7374,9 +7452,9 @@ void rogue_t::init_action_list()
     // Stealthed Rotation
     action_priority_list_t* stealthed = get_action_priority_list( "stealthed", "Stealthed Rotation" );
     stealthed -> add_action( this, "Shadowstrike", "if=buff.stealth.up", "If stealth is up, we really want to use Shadowstrike to benefits from the passive bonus, even if we are at max cp (from the precombat MfD)." );
-    stealthed -> add_action( "call_action_list,name=finish,if=combo_points>=5&(spell_targets.shuriken_storm>=3+equipped.shadow_satyrs_walk|(mantle_duration<=1.3&mantle_duration-gcd.remains>=0.3))" );
+    stealthed -> add_action( "call_action_list,name=finish,if=combo_points>=5+(talent.deeper_stratagem.enabled&buff.vanish.up)&(spell_targets.shuriken_storm>=3+equipped.shadow_satyrs_walk|(mantle_duration<=1.3&mantle_duration-gcd.remains>=0.3))" );
     stealthed -> add_action( this, "Shuriken Storm", "if=buff.shadowmeld.down&((combo_points.deficit>=2+equipped.insignia_of_ravenholdt&spell_targets.shuriken_storm>=3+equipped.shadow_satyrs_walk)|(combo_points.deficit>=1&buff.the_dreadlords_deceit.stack>=29))" );
-    stealthed -> add_action( "call_action_list,name=finish,if=combo_points>=5&combo_points.deficit<3+buff.shadow_blades.up-equipped.mantle_of_the_master_assassin" );
+    stealthed -> add_action( "call_action_list,name=finish,if=combo_points>=5+(talent.deeper_stratagem.enabled&buff.vanish.up)&combo_points.deficit<3+buff.shadow_blades.up-equipped.mantle_of_the_master_assassin" );
     stealthed -> add_action( this, "Shadowstrike" );
   }
 
@@ -8003,6 +8081,8 @@ void rogue_t::init_gains()
   gains.the_first_of_the_dead    = get_gain( "The First of the Dead"    );
   gains.symbols_of_death         = get_gain( "Symbols of Death"         );
   gains.t20_4pc_outlaw           = get_gain( "Lesser Adrenaline Rush"   );
+  gains.t21_4pc_subtlety         = get_gain( "Tier 21 4PC Set Bonus"    );
+  gains.t21_4pc_assassination    = get_gain( "Tier 21 4PC Set Bonus"    );
 }
 
 // rogue_t::init_procs ======================================================

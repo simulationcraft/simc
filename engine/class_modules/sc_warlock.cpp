@@ -5690,11 +5690,14 @@ struct channel_demonfire_t: public warlock_spell_t
 
   void tick( dot_t* d ) override
   {
-    std::vector<player_t*> targets = target_list();
+    // Need to invalidate the target cache to figure out immolated targets.
+    target_cache.is_valid = false;
+
+    const auto& targets = target_list();
 
     if ( targets.size() > 0 )
     {
-      channel_demonfire -> target = targets[ rng().range( 0, targets.size() - 1 ) ];
+      channel_demonfire -> set_target( targets[ rng().range( 0, targets.size() ) ] );
       channel_demonfire -> execute();
     }
 
