@@ -5690,6 +5690,9 @@ struct channel_demonfire_t: public warlock_spell_t
 
   void tick( dot_t* d ) override
   {
+    // Need to invalidate the target cache to figure out immolated targets.
+    target_cache.is_valid = false;
+
     const auto& targets = target_list();
 
     if ( targets.size() > 0 )
