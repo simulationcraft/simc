@@ -2607,6 +2607,7 @@ struct arcane_blast_t : public arcane_mage_spell_t
     }
 
     p() -> trigger_t19_oh();
+    p() -> buffs.quick_thinker -> trigger();
   }
 
   virtual double action_multiplier() const override
@@ -2717,6 +2718,8 @@ struct arcane_explosion_t : public arcane_mage_spell_t
     {
       trigger_arcane_charge();
     }
+
+    p() -> buffs.quick_thinker -> trigger();
 
     if ( p() -> artifact.time_and_space.rank() )
     {
@@ -2909,6 +2912,8 @@ struct arcane_missiles_t : public arcane_mage_spell_t
       p() -> cooldowns.presence_of_mind
           -> adjust( -100 * p() -> sets -> set( MAGE_ARCANE, T20, B4 ) -> effectN( 1 ).time_value() );
     }
+
+    p() -> buffs.quick_thinker -> trigger();
 
     p() -> buffs.arcane_missiles -> decrement();
   }
@@ -7048,14 +7053,7 @@ void mage_t::create_buffs()
   // buff_t( player, name, spellname, chance=-1, cd=-1, quiet=false, reverse=false, activated=true )
 
   // Arcane
-  buffs.arcane_charge         = buff_creator_t( this, "arcane_charge", spec.arcane_charge )
-                                  .stack_change_callback( [ this ] ( buff_t*, int before, int after )
-                                    {
-                                      int stacks = after - before;
-                                      if ( sets -> has_set_bonus( MAGE_ARCANE, T21, B4 )
-                                        && rng().roll( sets -> set( MAGE_ARCANE, T21, B4 ) -> proc_chance() * stacks ) )
-                                      { buffs.quick_thinker -> trigger(); }
-                                    } );
+  buffs.arcane_charge         = buff_creator_t( this, "arcane_charge", spec.arcane_charge );
   buffs.arcane_familiar       = buff_creator_t( this, "arcane_familiar", find_spell( 210126 ) )
                                   .default_value( find_spell( 210126 ) -> effectN( 1 ).percent() )
                                   .period( timespan_t::from_seconds( 3.0 ) )
@@ -7090,7 +7088,8 @@ void mage_t::create_buffs()
                                   .stack_change_callback( [ this ] ( buff_t*, int, int cur )
                                     { if ( cur == 0 ) cooldowns.presence_of_mind -> start(); } );
   buffs.quick_thinker         = haste_buff_creator_t( this, "quick_thinker", find_spell( 253299 ) )
-                                  .default_value( find_spell( 253299 ) -> effectN( 1 ).percent() );
+                                  .default_value( find_spell( 253299 ) -> effectN( 1 ).percent() )
+                                  .chance( sets -> set( MAGE_ARCANE, T21, B4 ) -> proc_chance() );
 
   // Fire
   buffs.combustion             = buff_creator_t( this, "combustion", find_spell( 190319 ) )
