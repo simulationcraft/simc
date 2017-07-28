@@ -3144,9 +3144,13 @@ struct storm_tempests_zap_t : public melee_attack_t
     melee_attack_t( "storm_tempests", p, p -> find_spell( 214452 ) )
   {
     weapon = &( p -> main_hand_weapon );
-    // TODO: Can this crit?
     background = may_crit = true;
     callbacks = false;
+
+    // Weird ability, scales with spell power in addition to weapon (attack) power
+    spell_power_mod.direct = weapon_multiplier * data().effectN( 1 ).sp_coeff();
+    // Aand also benefits from the Enhancement spec passive damage multiplier for some reason
+    base_multiplier *= 1.0 + p -> spec.enhancement_shaman -> effectN( 1 ).percent();
   }
 
   size_t available_targets( std::vector< player_t* >& tl ) const override
@@ -3162,7 +3166,6 @@ struct storm_tempests_zap_t : public melee_attack_t
     return tl.size();
   }
 
-  // TODO: Does this actually zap the enemy itself, if it's the only one available?
   // TODO: Distance targeting, no clue on range.
   void execute() override
   {
@@ -5143,6 +5146,10 @@ struct earthquake_damage_t : public shaman_spell_t
     ground_aoe = background = true;
     school = SCHOOL_PHYSICAL;
     spell_power_mod.direct = 0.775; // Hardcoded into tooltip because it's cool
+    // FIXME This is added for the EQ changes on PTR.
+    if ( player -> dbc.ptr ) {
+      spell_power_mod.direct = 1.0;
+    }
     base_multiplier *= 1.0 + p() -> artifact.the_ground_trembles.percent();
     affected_by_elemental_focus = true; // Needed to explicitly flag, since spell data lacks info
   }
@@ -8171,6 +8178,8 @@ double shaman_t::composite_player_pet_damage_multiplier( const action_state_t* s
   {
     m *= 1.0 + spec.elemental_shaman -> effectN( 3 ).percent();
   }
+
+  m *= 1.0 + spec.enhancement_shaman -> effectN( 3 ).percent();
 
   auto school = s -> action -> get_school();
   if ( ( dbc::is_school( school, SCHOOL_FIRE ) || dbc::is_school( school, SCHOOL_FROST ) ||

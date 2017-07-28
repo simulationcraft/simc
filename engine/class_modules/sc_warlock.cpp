@@ -2386,7 +2386,11 @@ public:
     if ( use_havoc() )
     {
       if ( ! target_cache.is_valid )
+      {
         available_targets( target_cache.list );
+        check_distance_targeting( target_cache.list );
+        target_cache.is_valid = true;
+      }
 
       havoc_targets.clear();
       if ( range::find( target_cache.list, target ) != target_cache.list.end() )
@@ -4070,7 +4074,7 @@ struct chaos_bolt_t: public warlock_spell_t
       duplicate ->target_cache.is_valid = true;
       if ( duplicate -> target_cache.list.size() > 0 )
       {
-        size_t target_to_strike = static_cast<size_t>( rng().range( 0.0, duplicate -> target_cache.list.size() - 1 ) );
+        size_t target_to_strike = static_cast<size_t>( rng().range( 0.0, duplicate -> target_cache.list.size() ) );
         duplicate -> target = duplicate -> target_cache.list[target_to_strike];
         duplicate -> execute();
       }
