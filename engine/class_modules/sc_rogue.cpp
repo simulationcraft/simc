@@ -4661,10 +4661,6 @@ struct symbols_of_death_t : public rogue_attack_t
 
     p() -> buffs.symbols_of_death -> trigger();
 
-    p() -> resource_gain( RESOURCE_ENERGY,
-                          data().effectN( 2 ).resource( RESOURCE_ENERGY ),
-                          p() -> gains.symbols_of_death, this );
-
     if ( p() -> legendary.the_first_of_the_dead )
     {
       p() -> buffs.the_first_of_the_dead -> trigger();
