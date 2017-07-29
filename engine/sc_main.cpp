@@ -61,7 +61,7 @@ struct sim_signal_handler_t
     {
       report( signal );
     }
-    exit( 1 );
+    exit( signal );
   }
 
   sim_signal_handler_t( sim_t* sim )
