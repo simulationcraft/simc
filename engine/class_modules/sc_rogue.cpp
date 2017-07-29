@@ -297,6 +297,8 @@ struct rogue_t : public player_t
     // T20 Raid
     buff_t* t20_2pc_outlaw;
     haste_buff_t* t20_4pc_outlaw;
+    // T21 Raid
+    buff_t* t21_2pc_outlaw;
 
 
 
@@ -626,6 +628,7 @@ struct rogue_t : public player_t
     proc_t* roll_the_bones_4;
     proc_t* roll_the_bones_5;
     proc_t* roll_the_bones_6;
+    proc_t* t21_4pc_outlaw;
 
     // Subtlety
     proc_t* deepening_shadows;
@@ -804,6 +807,7 @@ struct rogue_t : public player_t
   void trigger_shadow_nova( const action_state_t* );
   void trigger_sephuzs_secret( const action_state_t* state, spell_mechanic mechanic, double proc_chance = -1.0 );
   void trigger_t21_4pc_assassination( const action_state_t* state );
+  void trigger_t21_4pc_outlaw( const action_state_t* state );
 
   // On-death trigger for Venomous Wounds energy replenish
   void trigger_venomous_wounds_death( player_t* );
@@ -3748,6 +3752,11 @@ struct run_through_t: public rogue_attack_t
       m *= 1.0 + movement_speed * ttt_multiplier;
     }
 
+    if ( p() -> buffs.t21_2pc_outlaw -> up() )
+    {
+      m *= 1.0 + p() -> buffs.t21_2pc_outlaw -> stack_value();
+    }
+
     return m;
   }
 
@@ -3779,6 +3788,13 @@ struct run_through_t: public rogue_attack_t
     }
 
     p() -> buffs.t19_4pc_outlaw -> trigger();
+
+    if ( p() -> buffs.t21_2pc_outlaw -> check() )
+    {
+      p() -> buffs.t21_2pc_outlaw -> expire();
+    }
+
+    p() -> trigger_t21_4pc_outlaw( execute_state );
   }
 };
 
@@ -4194,6 +4210,11 @@ struct saber_slash_t : public rogue_attack_t
       spell -> saberslash_proc_event = nullptr;
 
       rogue -> buffs.blunderbuss -> trigger();
+
+      if ( rogue -> sets -> has_set_bonus( ROGUE_OUTLAW, T21, B2 ) )
+      {
+        rogue -> buffs.t21_2pc_outlaw -> trigger();
+      }
     }
   };
 
@@ -4624,6 +4645,15 @@ struct slice_and_dice_t : public rogue_attack_t
     }
 
     p() -> buffs.slice_and_dice -> trigger( 1, snd_mod, -1.0, snd_duration );
+
+    // As of 2017-07-27 on 7.3 PTR, Refreshing SnD cancels RtB buffs from the T21 4pc bonus.
+    // I suppose this is a bug/oversight.
+    p() -> buffs.jolly_roger -> expire();
+    p() -> buffs.grand_melee -> expire();
+    p() -> buffs.shark_infested_waters -> expire();
+    p() -> buffs.true_bearing -> expire();
+    p() -> buffs.broadsides -> expire();
+    p() -> buffs.buried_treasure -> expire();
   }
 
   expr_t* create_expression( const std::string& name_str ) override
@@ -6722,8 +6752,33 @@ struct roll_the_bones_t : public buff_t
     return as<unsigned>( rolled.size() );
   }
 
+  void trigger_inactive_buff( timespan_t duration )
+  {
+    std::vector<buff_t*> inactive_buffs;
+    for ( buff_t* buff : buffs )
+    {
+      if ( ! buff -> check() )
+        inactive_buffs.push_back( buff );
+    }
+    if ( inactive_buffs.empty() )
+      return;
+    unsigned add_idx = rng().range( 0, inactive_buffs.size() );
+    inactive_buffs[ add_idx ] -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, duration );
+  }
+
   void execute( int stacks, double value, timespan_t duration ) override
   {
+    // For the T21 4pc bonus, let's collect our buffs with different duration, first.
+    std::vector<timespan_t> t21_4pc_buff_remains;
+    for ( buff_t* buff : buffs )
+    {
+      if ( buff -> check() && buff -> remains() != remains() )
+      {
+        t21_4pc_buff_remains.push_back( buff -> remains() );
+        break;
+      }
+    }
+
     buff_t::execute( stacks, value, duration );
 
     expire_secondary_buffs();
@@ -6754,12 +6809,23 @@ struct roll_the_bones_t : public buff_t
 
     if ( rogue -> buffs.loaded_dice -> check() )
         rogue -> buffs.loaded_dice -> expire();
+
+    // For the T21 4pc bonus, trigger random inactive buffs with the remaining times.
+    for ( timespan_t duration : t21_4pc_buff_remains )
+    {
+      trigger_inactive_buff( duration );
+    }
   }
 
   void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
   {
     buff_t::expire_override( expiration_stacks, remaining_duration );
-    expire_secondary_buffs();
+
+    // Remove all secondary buffs, but only if expiry was explicitly triggered.
+    // This prevents removal of T21 4pc buffs if regular RtB buffs drop.
+    // Also drop all buffs, if SnD is selected.
+    if ( remaining_duration > timespan_t::zero() )
+      expire_secondary_buffs();
   }
 };
 
@@ -6831,6 +6897,19 @@ inline void actions::marked_for_death_t::impact( action_state_t* state )
   rogue_attack_t::impact( state );
 
   td( state -> target ) -> debuffs.marked_for_death -> trigger();
+}
+
+// Trigger function that requires buffs to be defined
+void rogue_t::trigger_t21_4pc_outlaw( const action_state_t* state )
+{
+  if ( ! state -> action -> result_is_hit( state -> result ) || ! sets -> has_set_bonus( ROGUE_OUTLAW, T21, B4 ) )
+    return;
+
+  if ( rng().roll( sets -> set( ROGUE_OUTLAW, T21, B4 ) -> effectN( 2 ).percent() ) )
+  {
+    debug_cast<buffs::roll_the_bones_t*>( buffs.roll_the_bones ) -> trigger_inactive_buff( timespan_t::from_seconds( sets -> set( ROGUE_OUTLAW, T21, B4 ) -> effectN( 3 ).base_value() ) );
+    procs.t21_4pc_outlaw -> occur();
+  }
 }
 
 // ==========================================================================
@@ -8100,6 +8179,7 @@ void rogue_t::init_procs()
   procs.roll_the_bones_4         = get_proc( "Roll the Bones: 4 buffs" );
   procs.roll_the_bones_5         = get_proc( "Roll the Bones: 5 buffs" );
   procs.roll_the_bones_6         = get_proc( "Roll the Bones: 6 buffs" );
+  procs.t21_4pc_outlaw           = get_proc( "Tier 21 4PC Set Bonus"   );
 
   procs.deepening_shadows        = get_proc( "Deepening Shadows"       );
 
@@ -8347,6 +8427,9 @@ void rogue_t::create_buffs()
                                              .default_value( find_spell( 246558 ) -> effectN( 2 ).percent() )
                                              .affects_regen( true )
                                              .add_invalidate( CACHE_ATTACK_SPEED );
+  // T21 Raid
+  buffs.t21_2pc_outlaw                     = buff_creator_t( this, "sharpened_sabers", find_spell( 252285 ) )
+                                             .default_value( find_spell( 252285 ) -> effectN( 1 ).percent() );
 
 
   // Artifact
