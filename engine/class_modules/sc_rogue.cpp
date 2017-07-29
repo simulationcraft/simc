@@ -5977,7 +5977,6 @@ struct roll_the_bones_t : public buff_t
       if ( buff -> check() && buff -> remains() != remains() )
       {
         t21_4pc_buff_remains.push_back( buff -> remains() );
-        break;
       }
     }
 
