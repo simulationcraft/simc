@@ -6804,9 +6804,8 @@ void warlock_t::apl_precombat()
   if ( specialization() == WARLOCK_DEMONOLOGY )
   {
     precombat_list += "/demonic_empowerment";
-    precombat_list += "/call_dreadstalkers,if=!equipped.132369";
-    precombat_list += "/demonbolt,if=equipped.132369";
-    precombat_list += "/shadow_bolt,if=equipped.132369";
+    precombat_list += "/demonbolt";
+    precombat_list += "/shadow_bolt";
   }
 }
 

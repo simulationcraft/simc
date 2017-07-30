@@ -24,9 +24,8 @@ actions.precombat+=/augmentation,type=defiled
 actions.precombat+=/snapshot_stats
 actions.precombat+=/potion,name=prolonged_power
 actions.precombat+=/demonic_empowerment
-actions.precombat+=/call_dreadstalkers,if=!equipped.132369
-actions.precombat+=/demonbolt,if=equipped.132369
-actions.precombat+=/shadow_bolt,if=equipped.132369
+actions.precombat+=/demonbolt
+actions.precombat+=/shadow_bolt
 
 # Executed every time the actor is available.
 actions=implosion,if=wild_imp_remaining_duration<=action.shadow_bolt.execute_time&(buff.demonic_synergy.remains|talent.soul_conduit.enabled|(!talent.soul_conduit.enabled&spell_targets.implosion>1)|wild_imp_count<=4)

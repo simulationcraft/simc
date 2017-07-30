@@ -1419,7 +1419,9 @@ struct mortal_strike_t20_t : public warrior_attack_t
       }
       p() -> buff.focused_rage -> expire();
     }
-    p() -> buff.shattered_defenses -> expire();
+	// SD takes ~0.5 seconds to expire, this can be abused when using ravager with the 4PC
+	// to buff your self casted MS/Execute plus the one from the 4pc with a single SD
+    p() -> buff.shattered_defenses -> expire(timespan_t::from_millis(500));
     p() -> buff.precise_strikes -> expire();
     p() -> buff.executioners_precision -> expire();
   }
@@ -1490,7 +1492,7 @@ struct mortal_strike_t : public warrior_attack_t
       }
       p() -> buff.focused_rage -> expire();
     }
-    p() -> buff.shattered_defenses -> expire();
+    p() -> buff.shattered_defenses -> expire(timespan_t::from_millis(500));
     p() -> buff.precise_strikes -> expire();
     p() -> buff.executioners_precision -> expire();
   }
@@ -2330,7 +2332,7 @@ struct execute_arms_t: public warrior_attack_t
                                       execute_state -> target,
                                       execute_sweeping_strike );
     }
-    p() -> buff.shattered_defenses -> expire();
+    p() -> buff.shattered_defenses -> expire(timespan_t::from_millis(500));
     p() -> buff.precise_strikes -> expire();
     p() -> buff.ayalas_stone_heart -> expire();
     p() -> buff.executioners_precision -> trigger();
@@ -5273,7 +5275,7 @@ void warrior_t::apl_arms()
   single_target -> add_action( this, "Mortal Strike", "if=buff.shattered_defenses.up|buff.executioners_precision.down" );
   single_target -> add_talent( this, "Rend", "if=remains<=duration*0.3" );
   single_target -> add_action( this, "Whirlwind", "if=spell_targets.whirlwind>1|talent.fervor_of_battle.enabled" );
-  single_target -> add_action( this, "Slam", "if=spell_targets.whirlwind=1&!talent.fervor_of_battle.enabled" );
+  single_target -> add_action( this, "Slam", "if=spell_targets.whirlwind=1&!talent.fervor_of_battle.enabled&(rage>=52|!talent.rend.enabled|!talent.ravager.enabled)" );
   single_target -> add_talent( this, "Overpower" );
   single_target -> add_action( this, "Bladestorm", "if=(raid_event.adds.in>90|!raid_event.adds.exists)&!set_bonus.tier20_4pc" );
 
@@ -6741,9 +6743,8 @@ struct ayalas_stone_heart_t: public unique_gear::class_buff_cb_t<warrior_t>
   { 
     return super::creator( e )
       // spell data no longer says "Haste Multiplier"
-      // not sure if it still scales with haste or not
+      // however in game testing suggests it is still scaled by haste
 	  .rppm_scale( RPPM_HASTE )
-	  .rppm_freq( e.player->specialization() == WARRIOR_ARMS ? 1.08 : e.rppm() )
       .spell( e.driver() -> effectN( 1 ).trigger() )
       .trigger_spell( e.driver() );
   }

@@ -7461,7 +7461,7 @@ std::string mage_t::default_potion() const
 {
   std::string lvl110_potion =
     ( specialization() == MAGE_ARCANE ) ? "deadly_grace" :
-    ( specialization() == MAGE_FIRE )   ? "deadly_grace" :
+    ( specialization() == MAGE_FIRE )   ? "prolonged_power" :
                                           "prolonged_power";
 
   return ( true_level >= 100 ) ? lvl110_potion :

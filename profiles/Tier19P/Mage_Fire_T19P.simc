@@ -8,7 +8,7 @@ talents=1022021
 artifact=54:133022:137420:133022:0:748:1:749:6:751:3:754:3:755:3:756:3:759:1:762:1:763:1:1340:1
 
 # Default consumables
-potion=deadly_grace
+potion=prolonged_power
 flask=whispered_pact
 food=lemon_herb_filet
 augmentation=defiled
