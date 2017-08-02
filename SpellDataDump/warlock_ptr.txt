@@ -537,7 +537,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .x...
 Effects          :
 #1 (id=2130)     : Server Side Script (77)
                    Base Value: 20 | Scaled Value: 20 | SP Coefficient: 1.00000 | Target: Self (1)
-Description      : Creates a Healthstone that can be consumed to restore $?s56224[$6262o2 health over $6262d.][$6262m1 health.]
+Description      : Creates a Healthstone that can be consumed to restore $6262s1% health.
 
 Name             : Soulstone (id=6203) 
 Class            : Warlock
@@ -554,9 +554,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=2131)     : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Unknown(25)
-Description      : When cast on live targets, the soul of the target is stored and they will be able to resurrect upon death.$?a231811[ 
-
-If cast on a dead target, they are instantly resurrected. ][]Targets resurrect with $3026s1% health and $3026q1% mana.
+Description      : $@spelldesc20707
 
 Name             : Healthstone (id=6262) [Scaling Spell (-2), Spell Family (5)] 
 Class            : Warlock
@@ -592,7 +590,7 @@ Mechanic         : Unknown(81)
 Attributes       : ........ ........ x....... ......x.   ..x..... ..x...x. ........ .x...... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ .......x ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Channeled (34)
@@ -2340,9 +2338,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .x...
 Effects          :
 #1 (id=124148)   : Summon (28)
                    Base Value: 0 | Scaled Value: 110 | Points Per Level: 1 | SP Coefficient: 1.00000 | Misc Value: 89 | Misc Value 2: 0x2c7 | Target: Unknown(87)
-Description      : Summons a meteor from the Twisting Nether, causing $22703s1 Fire damage and stunning all enemy targets in the area for $20310d.  An Infernal rises from the crater, under the command of the caster for $111685d.
-
-The Infernal deals strong area of effect damage, and will be drawn to attack targets near the impact point.
+Description      : $@spelldesc1122
 
 Name             : Demonic Gateway (id=111771) [Spell Family (5)] 
 Class            : Warlock
@@ -3086,7 +3082,7 @@ Effects          :
                    Affected Spells: Immolate (348), Doom (603), Firebolt (3110), Shadowburn (17877), Conflagrate (17962), Incinerate (29722), Rain of Fire (42223), Doom Bolt (85692), Chaos Bolt (116858), Cataclysm (152108), Channel Demonfire (196448), Chaos Bolt (213229), Incinerate (244670)
 #2 (id=191023)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Damage (22)
                    Base Value: 15 | Scaled Value: 15 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Immolate (157736), Immolate (193540)
+                   Affected Spells: Immolate (157736)
 #3 (id=191024)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 1 (3)
                    Base Value: -5 | Scaled Value: -5 | Misc Value: 3 | Target: Self (1)
                    Affected Spells: Soul Conduit (215941)
@@ -3728,24 +3724,6 @@ Description      : Causes your demons to crackle with demonic energy, dealing ${
 |cFFFFFFFFDemonwrath damage has a $s3% chance to generate 1 Soul Shard.|r
 Tooltip          : Radiating Shadow damage to nearby enemies.
 
-Name             : Immolate (id=193540) [Spell Family (5)] 
-Class            : Warlock
-School           : Fire
-Spell Level      : 12
-Range            : 100 yards
-Affecting spells : Destruction Warlock (137046 effect#2), Item - Warlock T17 Destruction 2P Bonus (165455 effect#1), Flamelicked (185229 effect#1), Residual Flames (196227 effect#1), Burning Hunger (196432 effect#1), Roaring Blaze (205690 effect#1), Odr, Shawl of the Ymirjar (212173 effect#1)
-Triggered by     : Immolate (193541)
-Attributes       : ........ x....... ........ ........   ........ ........ ........ ........ 
-                 : ........ x....... ........ ........   ........ ........ ........ ......x. 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=283938)   : Energize Power (30)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: soul_shard | Target: Self (1)
-Description      : $@spelldesc348
-
 Name             : Immolate (id=193541) [Spell Family (5), Passive, Hidden] 
 Class            : Destruction Warlock
 School           : Physical
@@ -3761,7 +3739,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=283939)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 193540 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : $@spelldesc348
 
 Name             : Soul Harvest (id=196098) [Spell Family (5)] 
@@ -4187,7 +4165,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Charges          : 3 (45 seconds cooldown)
 Category         : 1630
-Artifact Power   : Id: 803, Index: 0, Max Rank: 1
+Artifact Power   : Id: 803, Max Rank: 1
 Triggered by     : Push Active Ability to Bar (225886)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4632,7 +4610,7 @@ Attributes       : .......x ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=303923)   : Apply Aura (6) | Unknown(271)
                    Base Value: 25 | Scaled Value: 25 | Target: Enemy (6)
-                   Affected Spells: Immolate (157736), Immolate (193540)
+                   Affected Spells: Immolate (157736)
 Description      : $@spelldesc205184
 Tooltip          : Damage taken from the Warlock's Immolate increased by $s1%.
 
@@ -4643,7 +4621,7 @@ Range            : 40 yards
 Cast Time        : 2 seconds
 GCD              : 1.5 seconds
 Cooldown         : 45 seconds
-Artifact Power   : Id: 1170, Index: 0, Max Rank: 1
+Artifact Power   : Id: 1170, Max Rank: 1
 Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ..x..... ........ ......x. .....x..   ........ ........ .x...... ........ 
                  : ........ x....... ........ ........   ........ ........ ........ ........ 
@@ -4723,9 +4701,6 @@ Class            : Warlock
 School           : Physical
 Range            : 60 yards
 Duration         : 5 seconds
-Proc Chance      : 25%
-Proc Flags       : ....x... ........ ........ ........ 
-                 : Yellow Melee
 Attributes       : ........ ........ ........ .......x   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4812,7 +4787,7 @@ Class            : Warlock
 School           : Shadow
 Velocity         : 20 yards/sec
 Cooldown         : 5 seconds
-Artifact Power   : Id: 999, Index: 0, Max Rank: 1
+Artifact Power   : Id: 999, Max Rank: 1
 Triggered by     : Tormented Souls (216695), Push Active Ability to Bar (225888)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5102,7 +5077,7 @@ Name             : Unstable Affliction (id=233490) [Spell Family (5)]
 Class            : Warlock
 School           : Shadow
 Spell Level      : 14
-Range            : 40 yards
+Range            : 100 yards
 Duration         : 8 seconds
 Stacks           : 1 maximum
 Proc Chance      : 101%
@@ -5123,7 +5098,7 @@ Name             : Unstable Affliction (id=233496) [Spell Family (5)]
 Class            : Warlock
 School           : Shadow
 Spell Level      : 14
-Range            : 40 yards
+Range            : 100 yards
 Duration         : 8 seconds
 Stacks           : 1 maximum
 Proc Chance      : 101%
@@ -5144,7 +5119,7 @@ Name             : Unstable Affliction (id=233497) [Spell Family (5)]
 Class            : Warlock
 School           : Shadow
 Spell Level      : 14
-Range            : 40 yards
+Range            : 100 yards
 Duration         : 8 seconds
 Stacks           : 1 maximum
 Proc Chance      : 101%
@@ -5165,7 +5140,7 @@ Name             : Unstable Affliction (id=233498) [Spell Family (5)]
 Class            : Warlock
 School           : Shadow
 Spell Level      : 14
-Range            : 40 yards
+Range            : 100 yards
 Duration         : 8 seconds
 Stacks           : 1 maximum
 Proc Chance      : 101%
@@ -5186,7 +5161,7 @@ Name             : Unstable Affliction (id=233499) [Spell Family (5)]
 Class            : Warlock
 School           : Shadow
 Spell Level      : 14
-Range            : 40 yards
+Range            : 100 yards
 Duration         : 8 seconds
 Stacks           : 1 maximum
 Proc Chance      : 101%
