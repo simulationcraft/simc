@@ -3608,6 +3608,15 @@ struct slam_t: public warrior_attack_t
     return am;
   }
 
+  double composite_crit_chance() const override
+  {
+    double cc = warrior_attack_t::composite_crit_chance();
+
+    cc += p() -> buff.weighted_blade -> stack_value();
+
+    return cc;
+  }
+
   bool ready() override
   {
     if ( p() -> main_hand_weapon.type == WEAPON_NONE )
@@ -3930,6 +3939,15 @@ struct arms_whirlwind_mh_t: public warrior_attack_t
     }
   }
 
+  double composite_crit_chance() const override
+  {
+    double cc = warrior_attack_t::composite_crit_chance();
+
+    cc += p() -> buff.weighted_blade -> stack_value();
+
+    return cc;
+  }
+
   double composite_target_multiplier( player_t* t ) const override
   {
     double am = warrior_attack_t::composite_target_multiplier( t );
@@ -3981,6 +3999,15 @@ struct first_arms_whirlwind_mh_t: public warrior_attack_t
 	am *= 1.0 + p() -> buff.weighted_blade -> stack_value();
 
     return am;
+  }
+
+  double composite_crit_chance() const override
+  {
+    double cc = warrior_attack_t::composite_crit_chance();
+
+    cc += p() -> buff.weighted_blade -> stack_value();
+
+    return cc;
   }
 
   double composite_target_multiplier( player_t* t ) const override
