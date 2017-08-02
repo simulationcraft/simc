@@ -1339,7 +1339,10 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
     {
       s << ", Index: " << power_data -> power_index;
     }
-    s << ", Max Rank: " << ( powers.back() -> index() + 1 );
+    if ( powers.size() > 0 )
+    {
+      s << ", Max Rank: " << ( powers.back() -> index() + 1 );
+    }
     if ( powers.size() > 1 )
     {
       std::vector<std::string> artifact_hotfixes;
