@@ -347,6 +347,7 @@ public:
     buff_t* warrior_of_elune;
     buff_t* balance_tier18_4pc; // T18 4P Balance
     buff_t* wax_and_wane;
+    buff_t* solar_solstice; //T21 4P Balance
     haste_buff_t* astral_acceleration;
 
     // Feral
@@ -2164,6 +2165,16 @@ struct moonfire_t : public druid_spell_t
         // HOTFIX
         base_multiplier *= 1.1;
       }
+    }
+
+    double action_multiplier() const override
+    {
+        double am = druid_spell_t::action_multiplier();
+
+        if (p()->buff.solar_solstice->check())
+            am *= 1.0 + p()->find_spell(252767)->effectN(1).percent();
+
+        return am;
     }
 
     dot_t* get_dot( player_t* t ) override
@@ -5557,6 +5568,9 @@ struct lunar_strike_t : public druid_spell_t
     if ( p() -> buff.lunar_empowerment -> check() )
       am *= 1.0 + composite_lunar_empowerment();
 
+    if (p()->sets->has_set_bonus(DRUID_BALANCE, T21, B2))
+      am *= 1.0 + p()->sets->set(DRUID_BALANCE, T21, B2)->effectN(2).percent();
+
     return am;
   }
 
@@ -5740,6 +5754,16 @@ struct sunfire_t : public druid_spell_t
       stellar_empowerment = true;
       base_multiplier *= 1.0 + p -> artifact.sunfire_burns.percent();
       radius += p -> artifact.sunblind.value();
+    }
+
+    double action_multiplier() const override
+    {
+        double am = druid_spell_t::action_multiplier();
+
+        if (p()->buff.solar_solstice->check())
+            am *= 1.0 + p()->find_spell(252767)->effectN(1).percent();
+
+        return am;
     }
 
     dot_t* get_dot( player_t* t ) override
@@ -5953,6 +5977,9 @@ struct solar_wrath_t : public druid_spell_t
 
     if ( p() -> buff.solar_empowerment -> check() )
       am *= 1.0 + composite_solar_empowerment();
+
+    if (p()->sets->has_set_bonus(DRUID_BALANCE, T21, B2))
+      am *= 1.0 + p()->sets->set(DRUID_BALANCE, T21, B2)->effectN(1).percent();
 
     return am;
   }
@@ -6185,6 +6212,10 @@ struct starfall_t : public druid_spell_t
     {
       p()->buff.astral_acceleration->trigger();
     }
+    if (p()->sets->has_set_bonus(DRUID_BALANCE, T21, B4) && trigger_gcd > timespan_t::zero())
+    {
+        p()->buff.solar_solstice->trigger();
+    }
     druid_spell_t::execute();
 
     make_event<ground_aoe_event_t>( *sim, p(), ground_aoe_params_t()
@@ -6312,6 +6343,9 @@ struct starsurge_t : public druid_spell_t
 
     if ( p() -> sets -> has_set_bonus( DRUID_BALANCE, T20, B4 ))
        p() -> buff.astral_acceleration -> trigger();
+
+    if (p()->sets->has_set_bonus(DRUID_BALANCE, T21, B4))
+        p()->buff.solar_solstice->trigger();
     
     if ( hit_any_target )
     {
@@ -7248,6 +7282,8 @@ void druid_t::create_buffs()
                                  .max_stack(5)
                                  .refresh_behavior(BUFF_REFRESH_DISABLED);
                                 //.duration( timespan_t::from_seconds( 20.0 ) );
+  buff.solar_solstice = buff_creator_t(this, "solar_solstice", find_spell(252767))
+      .default_value(find_spell(252767)->effectN(1).percent());
 
   // Feral
 
@@ -7774,8 +7810,6 @@ void druid_t::apl_balance()
 
   for ( size_t i = 0; i < racial_actions.size(); i++ )
     default_list -> add_action( racial_actions[i] + ",if=buff.celestial_alignment.up|buff.incarnation.up" );
-  for ( size_t i = 0; i < item_actions.size(); i++ )
-    default_list -> add_action( item_actions[i] );
 
   default_list -> add_action( "call_action_list,name=fury_of_elune,if=talent.fury_of_elune.enabled&cooldown.fury_of_elune.remains<target.time_to_die" );
   default_list -> add_action( "call_action_list,name=ed,if=equipped.the_emerald_dreamcatcher&active_enemies<=1" );
@@ -7792,14 +7826,20 @@ void druid_t::apl_balance()
     default_list -> add_action("use_item,name=tarnished_sentinel_medallion,if=cooldown.incarnation.remains>60|cooldown.celestial_alignment.remains>60");
   if (items[SLOT_TRINKET_1].name_str == "tome_of_unraveling_sanity" || items[SLOT_TRINKET_2].name_str == "tome_of_unraveling_sanity")
       default_list->add_action("use_item,name=tarnished_sentinel_medallion,if=cooldown.incarnation.remains>30|cooldown.celestial_alignment.remains>30");
-  default_list -> add_action( this, "Starfall", "if=buff.oneths_overconfidence.up" );
+  if (items[SLOT_TRINKET_1].name_str == "charm_of_the_rising_tide" || items[SLOT_TRINKET_2].name_str == "charm_of_the_rising_tide")
+      default_list->add_action("use_item,name=charm_of_the_rising_tide,if=cooldown.incarnation.remains>30|cooldown.celestial_alignment.remains>60");
+  if (items[SLOT_TRINKET_1].name_str == "horn_of_valor" || items[SLOT_TRINKET_2].name_str == "horn_of_valor")
+      default_list->add_action("use_item,name=horn_of_valor,if=cooldown.incarnation.remains>30|cooldown.celestial_alignment.remains>60");
+  if (items[SLOT_TRINKET_1].name_str == "pharameres_forbidden_grimoire" || items[SLOT_TRINKET_2].name_str == "pharameres_forbidden_grimoire")
+      default_list->add_action("use_item,name=pharameres_forbidden_grimoire");
+  default_list -> add_action( this, "Starfall", "if=buff.oneths_overconfidence.up&(!buff.solar_solstice.up|astral_power.deficit>44|buff.celestial_alignment.up|buff.incarnation.up)" );
   default_list -> add_action( this, "Solar Wrath", "if=buff.solar_empowerment.stack=3" );
   default_list -> add_action( this, "Lunar Strike", "if=buff.lunar_empowerment.stack=3" );
   default_list -> add_action( this, "Starsurge", "if=buff.oneths_intuition.up");
   default_list -> add_action( "call_action_list,name=AoE,if=(active_enemies>=2&talent.stellar_drift.enabled)|active_enemies>=3" );
   default_list -> add_action( "call_action_list,name=single_target" );
   
-  ST -> add_action( this, "Starsurge", "if=astral_power.deficit<44|(buff.celestial_alignment.up|buff.incarnation.up|buff.astral_acceleration.up)|(gcd.max*(astral_power%40))>target.time_to_die");
+  ST -> add_action( this, "Starsurge", "if=astral_power.deficit<44|(buff.celestial_alignment.up|buff.incarnation.up|buff.astral_acceleration.remains>5|(set_bonus.tier21_4pc&!buff.solar_solstice.up))|(gcd.max*(astral_power%40))>target.time_to_die");
   ST -> add_action( this, "New Moon", "if=astral_power.deficit>14&!(buff.celestial_alignment.up|buff.incarnation.up)");
   ST -> add_action( this, "Half Moon", "if=astral_power.deficit>24&!(buff.celestial_alignment.up|buff.incarnation.up)");
   ST -> add_action( this, "Full Moon", "if=astral_power.deficit>44");
