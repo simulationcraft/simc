@@ -611,11 +611,11 @@ public:
     if ( ab::data().affected_by( p() -> specs.beast_mastery_hunter -> effectN( 2 ) ) )
       ab::base_td_multiplier *= 1.0 + p() -> specs.beast_mastery_hunter -> effectN( 2 ).percent();
 
-    if ( ab::data().affected_by( p() -> specs.marksmanship_hunter -> effectN( 3 ) ) )
-      ab::base_dd_multiplier *= 1.0 + p() -> specs.marksmanship_hunter -> effectN( 3 ).percent();
+    if ( ab::data().affected_by( p() -> specs.marksmanship_hunter -> effectN( maybe_ptr( p() -> dbc.ptr ) ? 4 : 3 ) ) )
+      ab::base_dd_multiplier *= 1.0 + p() -> specs.marksmanship_hunter -> effectN( maybe_ptr( p() -> dbc.ptr ) ? 4 : 3 ).percent();
 
-    if ( ab::data().affected_by( p() -> specs.marksmanship_hunter -> effectN( 4 ) ) )
-      ab::base_td_multiplier *= 1.0 + p() -> specs.marksmanship_hunter -> effectN( 4 ).percent();
+    if ( ab::data().affected_by( p() -> specs.marksmanship_hunter -> effectN( maybe_ptr( p() -> dbc.ptr ) ? 5 : 4 ) ) )
+      ab::base_td_multiplier *= 1.0 + p() -> specs.marksmanship_hunter -> effectN( maybe_ptr( p() -> dbc.ptr ) ? 5 : 4 ).percent();
 
     if ( ab::data().affected_by( p() -> specs.survival_hunter -> effectN( 1 ) ) )
       ab::base_dd_multiplier *= 1.0 + p() -> specs.survival_hunter -> effectN( 1 ).percent();
@@ -1708,7 +1708,7 @@ struct sneaky_snake_t: public hunter_secondary_pet_t
 
       if ( rng().roll( proc_chance ) )
       {
-        target = s -> target;
+        set_target( s -> target );
         execute();
       }
     }
@@ -1943,7 +1943,7 @@ struct kill_command_t: public hunter_pet_action_t < hunter_pet_t, attack_t >
     {
       jaws_of_thunder -> base_dd_min = s -> result_amount * jaws_of_thunder_mult;
       jaws_of_thunder -> base_dd_max = jaws_of_thunder -> base_dd_min;
-      jaws_of_thunder -> target = s -> target;
+      jaws_of_thunder -> set_target( s -> target );
       jaws_of_thunder -> execute();
     }
   }
@@ -1999,14 +1999,8 @@ struct beast_cleave_attack_t: public hunter_pet_action_t < hunter_pet_t, attack_
   {
     base_t::available_targets( tl );
 
-    for ( size_t i = 0; i < tl.size(); i++ )
-    {
-      if ( tl[i] == target ) // Cannot hit the original target.
-      {
-        tl.erase( tl.begin() + i );
-        break;
-      }
-    }
+    // Cannot hit the original target.
+    tl.erase( std::remove( tl.begin(), tl.end(), target ), tl.end() );
 
     return tl.size();
   }
@@ -2025,22 +2019,21 @@ static void trigger_beast_cleave( action_state_t* s )
   if ( !p -> buffs.beast_cleave -> check() )
     return;
 
-  if ( p -> active.beast_cleave -> target != s -> target )
-    p -> active.beast_cleave -> target_cache.is_valid = false;
+  const auto execute = []( action_t* action, player_t* target, double value ) {
+    action -> set_target( target );
+    action -> base_dd_min = value;
+    action -> base_dd_max = value;
+    action -> execute();
+  };
 
-  p -> active.beast_cleave -> target = s -> target;
-  double cleave = s -> result_total * p -> buffs.beast_cleave -> check_value();
+  const double cleave = s -> result_total * p -> buffs.beast_cleave -> check_value();
 
-  p -> active.beast_cleave -> base_dd_min = cleave;
-  p -> active.beast_cleave -> base_dd_max = cleave;
-  p -> active.beast_cleave -> execute();
+  execute( p -> active.beast_cleave, s -> target, cleave );
 
   if ( p -> o() -> pets.hati && p -> o() -> artifacts.master_of_beasts.rank() )
   {
-    cleave *= 0.75; //Hotfix in game for Hati, no spelldata for it though. 2016-09-05
-    p -> o() -> pets.hati -> active.beast_cleave -> base_dd_min = cleave;
-    p -> o() -> pets.hati -> active.beast_cleave -> base_dd_max = cleave;
-    p -> o() -> pets.hati -> active.beast_cleave -> execute();
+    // Hotfix in game for Hati, no spelldata for it though. 2016-09-05
+    execute( p -> o() -> pets.hati -> active.beast_cleave, s -> target, cleave * .75 );
   }
 }
 
@@ -2610,7 +2603,7 @@ struct auto_shot_t: public hunter_action_t < ranged_attack_t >
     {
       if (p()->resources.current[RESOURCE_FOCUS] > volley_tick_cost)
       {
-        volley_tick->target = execute_state->target;
+        volley_tick->set_target( execute_state->target );
         volley_tick->execute();
       }
       else
@@ -3189,14 +3182,12 @@ struct trick_shot_t: public aimed_shot_base_t
   {
     aimed_shot_base_t::available_targets( tl );
 
-    for ( auto t = tl.begin(); t != tl.end(); )
-    {
-      // Does not hit original target, and only deals damage to targets with Vulnerable
-      if ( *t != target && td( *t ) -> debuffs.vulnerable -> up() )
-        ++t;
-      else
-        t = tl.erase( t );
-    }
+    // Does not hit original target, and only deals damage to targets with Vulnerable
+    tl.erase( std::remove_if( tl.begin(), tl.end(), [ this ]( player_t* t ) {
+                return t == target || ! td( t ) -> debuffs.vulnerable -> check();
+              } ),
+              tl.end() );
+
     return tl.size();
   }
 };
@@ -3285,7 +3276,7 @@ struct aimed_shot_t: public aimed_shot_base_t
 
     if ( trick_shot )
     {
-      trick_shot -> target = execute_state -> target;
+      trick_shot -> set_target( execute_state -> target );
       trick_shot -> target_cache.is_valid = false;
       trick_shot -> execute();
     }
@@ -3762,7 +3753,7 @@ struct windburst_t: hunter_ranged_attack_t
 
     if ( cyclonic_burst )
     {
-      cyclonic_burst -> target = execute_state -> target;
+      cyclonic_burst -> set_target( execute_state -> target );
       cyclonic_burst -> execute();
     }
 
@@ -3872,7 +3863,7 @@ struct melee_t: public hunter_melee_attack_t
 
       if ( p() -> active.pet && p() -> artifacts.talon_bond.rank() )
       {
-        p() -> active.pet -> active.talon_slash -> target = s -> target;
+        p() -> active.pet -> active.talon_slash -> set_target( s -> target );
         for ( int i = 0; i < p() -> artifacts.talon_bond.data().effectN( 1 ).base_value(); i++ )
           p() -> active.pet -> active.talon_slash -> execute();
       }
@@ -4059,7 +4050,7 @@ struct flanking_strike_t: hunter_melee_attack_t
 
     if ( result_is_hit( s -> result ) && echo_of_ohnara && rng().roll( p() -> artifacts.echoes_of_ohnara.data().proc_chance() ) )
     {
-      echo_of_ohnara -> target = execute_state -> target;
+      echo_of_ohnara -> set_target( execute_state -> target );
       echo_of_ohnara -> execute();
     }
   }
@@ -4367,7 +4358,7 @@ struct harpoon_t: public hunter_melee_attack_t
 
     if ( on_the_trail )
     {
-      on_the_trail -> target = execute_state -> target;
+      on_the_trail -> set_target( execute_state -> target );
       on_the_trail -> execute();
     }
 
@@ -4480,7 +4471,7 @@ struct moc_t : public hunter_spell_t
   {
     hunter_spell_t::tick( d );
 
-    peck -> target = d -> target;
+    peck -> set_target( d -> target );
     peck -> execute();
   }
 };
@@ -4869,10 +4860,16 @@ struct kill_command_t: public hunter_spell_t
     hunter_spell_t::execute();
 
     if ( p() -> active.pet )
+    {
+      p() -> active.pet -> active.kill_command -> set_target( execute_state -> target );
       p() -> active.pet -> active.kill_command -> execute();
+    }
 
     if ( p() -> artifacts.master_of_beasts.rank() )
+    {
+      p() -> pets.hati -> active.kill_command -> set_target( execute_state -> target );
       p() -> pets.hati -> active.kill_command -> execute();
+    }
 
     if ( p() -> sets -> has_set_bonus( HUNTER_BEAST_MASTERY, T20, B2 ) )
       trigger_t20_2pc_bm( p() );
@@ -4884,6 +4881,35 @@ struct kill_command_t: public hunter_spell_t
       return hunter_spell_t::ready();
 
     return false;
+  }
+
+  // this is somewhat unfortunate but we can't get at the
+  // pets dot in any other way
+  template <typename F>
+  expr_t* make_aotb_expr( const std::string& name, F&& fn ) const
+  {
+    target_specific_t<dot_t> specific_dot;
+    return make_fn_expr( name, [ this, specific_dot, fn ] () {
+      player_t* pet = p() -> active.pet;
+      assert( pet );
+      pet -> get_target_data( target );
+      dot_t*& dot = specific_dot[ target ];
+      if ( !dot )
+        dot = target -> get_dot( "bestial_ferocity", pet );
+      return fn( dot );
+    } );
+  }
+
+  expr_t* create_expression(const std::string& expression_str) override
+  {
+    auto splits = util::string_split( expression_str, "." );
+    if ( splits.size() == 2 && splits[ 0 ] == "bestial_ferocity" )
+    {
+      if ( splits[ 1 ] == "ticking" )
+        return make_aotb_expr( "aotb_ticking", []( dot_t* dot ) { return dot -> is_ticking(); } );
+    }
+
+    return hunter_spell_t::create_expression( expression_str );
   }
 };
 
@@ -5370,7 +5396,7 @@ struct dragonsfire_grenade_t: public hunter_spell_t
 
     if ( conflag && conflag -> target_list().size() > 1 )
     {
-      conflag -> target = d -> target;
+      conflag -> set_target( d -> target );
       conflag -> original_target = d -> target;
       conflag -> execute();
     }
@@ -6279,8 +6305,8 @@ void hunter_t::apl_bm()
                                     "With both AotW cdr sources and OwtP, there's no visible benefit if it's delayed, use it on cd. With only one or neither, pair it with Bestial Wrath. Also use it if the fight will end when the buff does." );
   default_list -> add_action( this, "Kill Command", "if=equipped.qapla_eredun_war_order" );
   
-  default_list -> add_action( this, "Dire Beast", "if=((!equipped.qapla_eredun_war_order|cooldown.kill_command.remains>=3)&(set_bonus.tier19_2pc|!buff.bestial_wrath.up))|full_recharge_time<gcd.max|cooldown.titans_thunder.up|spell_targets>1",
-                                    "Hold charges of Dire Beast as long as possible to take advantage of T20 2pc unless T19 2pc is on." );
+  default_list -> add_action( this, "Dire Beast", "if=((!equipped.qapla_eredun_war_order|cooldown.kill_command.remains>=1)&(set_bonus.tier19_2pc|!buff.bestial_wrath.up))|full_recharge_time<gcd.max|cooldown.titans_thunder.up|spell_targets>1",
+                                    "Hold charges of Dire Beast as long as possible to take advantage of T20 2pc unless T19 2pc is on. With Qa'pla, also try not to waste Kill Command cdr if it is just about to come off cooldown." );
   default_list -> add_talent( this, "Dire Frenzy", "if=(pet.cat.buff.dire_frenzy.remains<=gcd.max*1.2)|full_recharge_time<gcd.max|target.time_to_die<9" );
   
   default_list -> add_talent( this, "Barrage", "if=spell_targets.barrage>1" );
@@ -6390,8 +6416,13 @@ void hunter_t::apl_mm()
   patient_sniper -> add_action( "call_action_list,name=targetdie,if=target.time_to_die<variable.vuln_window&spell_targets.multishot=1" );
 
   patient_sniper -> add_talent( this, "Piercing Shot", "if=cooldown.piercing_shot.up&spell_targets=1&lowest_vuln_within.5>0&lowest_vuln_within.5<1" );
-  patient_sniper -> add_talent( this, "Piercing Shot", "if=cooldown.piercing_shot.up&spell_targets>1&lowest_vuln_within.5>0&((!buff.trueshot.up&focus>80&(lowest_vuln_within.5<1|debuff.hunters_mark.up))|(buff.trueshot.up&focus>105&lowest_vuln_within.5<6))" );
-  patient_sniper -> add_action( this, "Aimed Shot", "if=spell_targets>1&debuff.vulnerability.remains>cast_time&(buff.sentinels_sight.stack>=spell_targets.multishot*5|buff.lock_and_load.up|(talent.trick_shot.enabled&set_bonus.tier20_2pc&!buff.t20_2p_critical_aimed_damage.up&action.aimed_shot.in_flight))" );
+  patient_sniper -> add_talent( this, "Piercing Shot", "if=cooldown.piercing_shot.up&spell_targets>1&lowest_vuln_within.5>0&((!buff.trueshot.up&focus>80&(lowest_vuln_within.5<1|debuff.hunters_mark.up))|(buff.trueshot.up&focus>105&lowest_vuln_within.5<6))",
+                                      "For multitarget, the possible Marked Shots that might be lost while waiting for Patient Sniper to stack are not worth losing, so fire Piercing as soon as Marked Shot is ready before resetting the window. Basically happens immediately under Trushot." );
+  
+  patient_sniper -> add_action( this, "Aimed Shot", "if=spell_targets>1&talent.trick_shot.enabled&debuff.vulnerability.remains>cast_time&(buff.sentinels_sight.stack>=spell_targets.multishot*5|buff.sentinels_sight.stack+(spell_targets.multishot%2)>20|buff.lock_and_load.up|(set_bonus.tier20_2pc&!buff.t20_2p_critical_aimed_damage.up&action.aimed_shot.in_flight))",
+                                      "For multitarget, Aimed Shot is generally only worth using with Trickshot, and depends on if Lock and Load is triggered or Warbelt is equipped and about half of your next multishot's "
+                                      "additional Sentinel's Sight stacks would be wasted. Once either of those condition are met, the next Aimed is forced immediately afterwards to trigger the Tier 20 2pc." );
+
   patient_sniper -> add_action( this, "Marked Shot", "if=spell_targets>1" );
   patient_sniper -> add_action( this, "Multi-Shot", "if=spell_targets>1&(buff.marking_targets.up|buff.trueshot.up)" );
   patient_sniper -> add_action( this, "Windburst", "if=variable.vuln_aim_casts<1&!variable.pooling_for_piercing" );
@@ -6401,9 +6432,12 @@ void hunter_t::apl_mm()
   patient_sniper -> add_action( this, "Aimed Shot", "if=debuff.vulnerability.up&buff.lock_and_load.up&(!variable.pooling_for_piercing|lowest_vuln_within.5>gcd.max)" );
   patient_sniper -> add_action( this, "Aimed Shot", "if=spell_targets.multishot>1&debuff.vulnerability.remains>execute_time&(!variable.pooling_for_piercing|(focus>100&lowest_vuln_within.5>(execute_time+gcd.max)))" );
   patient_sniper -> add_action( this, "Multi-Shot", "if=spell_targets>1&variable.can_gcd&focus+cast_regen+action.aimed_shot.cast_regen<focus.max&(!variable.pooling_for_piercing|lowest_vuln_within.5>gcd.max)" );
-  patient_sniper -> add_action( this, "Arcane Shot", "if=spell_targets.multishot=1&(!set_bonus.tier20_2pc|!action.aimed_shot.in_flight|buff.t20_2p_critical_aimed_damage.remains>action.aimed_shot.execute_time+gcd.max)&variable.vuln_aim_casts>0&variable.can_gcd&focus+cast_regen+action.aimed_shot.cast_regen<focus.max&(!variable.pooling_for_piercing|lowest_vuln_within.5>gcd.max)" );
+
+  patient_sniper -> add_action( this, "Arcane Shot", "if=spell_targets.multishot=1&(!set_bonus.tier20_2pc|!action.aimed_shot.in_flight|buff.t20_2p_critical_aimed_damage.remains>action.aimed_shot.execute_time+gcd)&variable.vuln_aim_casts>0&variable.can_gcd&focus+cast_regen+action.aimed_shot.cast_regen<focus.max&(!variable.pooling_for_piercing|lowest_vuln_within.5>gcd)",
+                                                     "Attempts to use Arcane early in Vulnerable windows if it will not break an Aimed pair while Critical Aimed is down, lose possible Aimed casts in the window, cap focus, or miss the opportunity to use Piercing." );
+  
   patient_sniper -> add_action( this, "Aimed Shot", "if=talent.sidewinders.enabled&(debuff.vulnerability.remains>cast_time|(buff.lock_and_load.down&action.windburst.in_flight))&(variable.vuln_window-(execute_time*variable.vuln_aim_casts)<1|focus.deficit<25|buff.trueshot.up)&(spell_targets.multishot=1|focus>100)" );
-  patient_sniper -> add_action( this, "Aimed Shot", "if=!talent.sidewinders.enabled&debuff.vulnerability.remains>cast_time&(!variable.pooling_for_piercing|(focus>100&lowest_vuln_within.5>(execute_time+gcd.max)))" );
+  patient_sniper -> add_action( this, "Aimed Shot", "if=!talent.sidewinders.enabled&debuff.vulnerability.remains>cast_time&(!variable.pooling_for_piercing|lowest_vuln_within.5>execute_time+gcd.max)" );
   patient_sniper -> add_action( this, "Marked Shot", "if=!talent.sidewinders.enabled&!variable.pooling_for_piercing&!action.windburst.in_flight&(focus>65|buff.trueshot.up|(1%attack_haste)>1.171)" );
   patient_sniper -> add_action( this, "Marked Shot", "if=talent.sidewinders.enabled&(variable.vuln_aim_casts<1|buff.trueshot.up|variable.vuln_window<action.aimed_shot.cast_time)" );
   patient_sniper -> add_action( this, "Aimed Shot", "if=focus+cast_regen>focus.max&!buff.sentinels_sight.up" );

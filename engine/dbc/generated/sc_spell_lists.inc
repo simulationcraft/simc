@@ -4051,7 +4051,7 @@ static struct rppm_modifier_t __rppmmodifier_data[] = {
   { 202840,    4,  1,  1.0000 },
   { 203557,    4,  1,  1.0000 },
   { 207320,    4,  1,  1.0000 },
-  { 207767,    4,  1,  1.0000 },
+  { 207767,   71,  4, -0.4000 },
   { 208213,    4,  1,  1.0000 },
   { 208653,    0,  4,  0.0000 },
   { 209579,    4,  1,  1.0000 },
@@ -4417,7 +4417,7 @@ static struct rppm_modifier_t __rppmmodifier_data[] = {
   { 244381,    4,  1,  1.0000 },
   {      0,    0,  0,  0.0000 },
 };
-#define ARTIFACT_SIZE (41)
+#define ARTIFACT_SIZE (40)
 
 // Artifact base data, wow build 24461
 static struct artifact_t __artifact_data[ARTIFACT_SIZE] = {
@@ -4461,7 +4461,6 @@ static struct artifact_t __artifact_data[ARTIFACT_SIZE] = {
   { 80,  70 },
   { 81,  65 },
   { 82,  66 },
-  {  0,   0 },
 };
 #define ARTIFACT_POWER_SIZE (895)
 
@@ -5343,7 +5342,7 @@ static struct artifact_power_data_t __artifact_power_data[ARTIFACT_POWER_SIZE] =
   { 1499,  60,   1,  0,   1, 238118, "Flaming Soul"                       }, // Flaming Soul (id=238118, n_ranks=1)
   { 1500,  60,   5,  0,  50, 239042, "Concordance of the Legionfall"      }, // Concordance of the Legionfall (id=239042, n_ranks=50)
   { 1631,  60,   2,  0,   1, 241091, "Illidari Durability"                }, // Illidari Durability (id=241091, n_ranks=1)
-  { 1089,  74,   0,  0,   0, 241091, 0                                    },
+  { 1089,  74,   0,  0,   0,      0, 0                                    },
   { 1237,  80,   1,  3,   1, 193108, "Blades of Light"                    }, // Blades of Light (id=193108, n_ranks=1)
   { 1238,  80,   0,  0,   1, 193058, "Healing Storm"                      }, // Healing Storm (id=193058, n_ranks=1)
   { 1239,  80,   0,  0,   1, 182234, "Unbreakable Will"                   }, // Unbreakable Will (id=182234, n_ranks=1)
@@ -5361,7 +5360,7 @@ static struct artifact_power_data_t __artifact_power_data[ARTIFACT_POWER_SIZE] =
   { 1251,  80,   0,  4,   3, 186941, "Highlord's Judgment"                }, // Highlord's Judgment (id=186941, n_ranks=6)
   { 1252,  80,   1,  0,   1, 205273, "Wake of Ashes"                      }, // Wake of Ashes (id=205273, n_ranks=1)
   { 1253,  80,   2,  0,   1, 179546, "Ashes to Ashes"                     }, // Ashes to Ashes (id=179546, n_ranks=1)
-  {    0,   0,   0,  0,   0, 179546, 0                                    },
+  {    0,   0,   0,  0,   0,      0, 0                                    },
 };
 #define ARTIFACT_POWER_RANK_SIZE (5907)
 

@@ -568,17 +568,13 @@ Attributes       : ........ .....x.. ........ ........   ........ ........ .....
                  : ........ ........ ........ .....x..   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Cannot crit (93)
 Effects          :
-#1 (id=2157)     : Direct Heal (10)
-                   Base Value: 15 | Scaled Value: 352941.6 (avg=0.294118) | Target: Self (1)
-#2 (id=127600)   : Apply Aura (6) | Periodic Heal (8): every 1 seconds
-                   Base Value: 30 | Scaled Value: 70587.6 (avg=0.058823) | Target: Self (1)
-Description      : Instantly restores $s1 health.
-Tooltip          : $w2 health restored every $t2 sec.
-Variables        : $healthstone=$?s193546[${$s1*1.3}][$s1]
+#1 (id=2157)     : Direct Heal% (136)
+                   Base Value: 25 | Scaled Value: 25 | Target: Self (1)
+Description      : Instantly restores $s1% health.
 
 Name             : Seduction (Special Ability) (id=6358) [Spell Family (57)] 
 Class            : Warlock
@@ -1388,21 +1384,6 @@ Effects          :
 Description      : Increases your spell power by $s2.  Lasts $d.
 Tooltip          : Spell power increased by $s2.
 
-Name             : Destruction Holo-gogs (id=41320) 
-Class            : Priest, Mage, Warlock
-School           : Physical
-Cast Time        : 15 seconds
-Attributes       : .....x.. x....... x....... ........   ........ ..x..... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Tradeskill ability (5)
-Effects          :
-#1 (id=32745)    : Create Item (24)
-                   Base Value: 1 | Scaled Value: 1 | Target: Self (1)
-
 Name             : Rain of Fire (id=42223) [Spell Family (5)] 
 Class            : Warlock
 School           : Fire
@@ -1420,21 +1401,6 @@ Effects          :
 #1 (id=33883)    : School Damage (2): fire
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.80000 | Target: Enemy (6)
 Description      : $@spelldesc5740
-
-Name             : Annihilator Holo-Gogs (id=46111) 
-Class            : Priest, Mage, Warlock
-School           : Physical
-Cast Time        : 15 seconds
-Attributes       : .....x.. x....... x....... ........   ........ ..x..... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Tradeskill ability (5)
-Effects          :
-#1 (id=38204)    : Create Item (24)
-                   Base Value: 1 | Scaled Value: 1 | Target: Self (1)
 
 Name             : Demonic Circle (Summon) (id=48018) [Spell Family (5)] 
 Class            : Warlock
@@ -1538,36 +1504,6 @@ Effects          :
 #1 (id=49325)    : Unknown(74)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 278
 Description      : $@spelldesc56246
-
-Name             : Mechanized Snow Goggles (id=56465) 
-Class            : Priest, Mage, Warlock
-School           : Physical
-Cast Time        : 2 seconds
-Attributes       : .....x.. ........ x....... ........   ........ ..x..... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Tradeskill ability (5)
-Effects          :
-#1 (id=49547)    : Create Item (24)
-                   Base Value: 1 | Scaled Value: 1 | Target: Self (1)
-
-Name             : Visage Liquification Goggles (id=56484) 
-Class            : Priest, Mage, Warlock
-School           : Physical
-Cast Time        : 15 seconds
-Attributes       : .....x.. ........ x....... ........   ........ ..x..... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Tradeskill ability (5)
-Effects          :
-#1 (id=49565)    : Create Item (24)
-                   Base Value: 1 | Scaled Value: 1 | Target: Self (1)
 
 Name             : Glyph of Soulwell (id=58094) [Spell Family (5), Passive, Hidden] 
 Class            : Warlock
@@ -1814,22 +1750,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
 Description      : Marks a target with Havoc for $d, causing your single target spells to also strike the Havoc victim. Limit 1.
 Tooltip          : Spells cast by the Warlock also hit this target.
-
-Name             : Lightweight Bio-Optic Killshades (id=81725) 
-Class            : Priest, Mage, Warlock
-School           : Physical
-Cast Time        : 5 seconds
-Mechanic         : Unknown(245)
-Attributes       : .....x.. ........ x....... ........   ........ ..x..... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Tradeskill ability (5)
-Effects          :
-#1 (id=81210)    : Create Item (24)
-                   Base Value: 1 | Scaled Value: 1 | Target: Self (1)
 
 Name             : Doom Bolt (id=85692) [Spell Family (5)] 
 Class            : Warlock
@@ -2988,22 +2908,6 @@ Effects          :
 Description      : Burns the Master's wounds, dealing a small amount of damage, then restoring $o2% health over $d.
 Tooltip          : Healing $s2% health every $t2 sec.
 
-Name             : Lightweight Retinal Armor (id=127117) 
-Class            : Priest, Mage, Warlock
-School           : Physical
-Cast Time        : 1.5 seconds
-Mechanic         : Unknown(245)
-Attributes       : .....x.. ........ x....... ........   ........ ..x..... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Tradeskill ability (5)
-Effects          :
-#1 (id=161557)   : Create Item (24)
-                   Base Value: 1 | Scaled Value: 1 | Target: Self (1)
-
 Name             : Threatening Presence (Special Ability) (id=134477) [Spell Family (57)] 
 Class            : Warlock
 School           : Physical
@@ -3052,11 +2956,12 @@ Effects          :
 #5 (id=191037)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 248 (Label) | Target: Self (1)
                    Affected Spells (Label): Fel-Crazed Rage (225777), Colossal Slam (232044), Dread Torrent (246464), Ceaseless Toxin (242497), Umbral Glaive Storm (242556), Shattering Umbral Glaives (242557), Infernal Cinders (242218)
-#6 (id=260719)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
+#6 (id=260719)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Periodic Damage (22)
+                   Base Value: -50 | Scaled Value: -50 | Misc Value: 22 | Misc Value 2: 248 (Label) | Target: Self (1)
+                   Affected Spells (Label): Fel-Crazed Rage (225777), Colossal Slam (232044), Dread Torrent (246464), Ceaseless Toxin (242497), Umbral Glaive Storm (242556), Shattering Umbral Glaives (242557), Infernal Cinders (242218)
+#7 (id=260720)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 298 (Label) | Target: Self (1)
                    Affected Spells (Label): Cleansing Matrix (242619), Fruitful Machinations (242623), Guiding Hand (242622), Infusion of Light (242621), Fel Shield (253277), Tarratus Keystone (253282), Refreshing Agony (253284)
-#7 (id=260720)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #8 (id=260721)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #9 (id=260722)   : Apply Aura (6) | Dummy (4)
@@ -3078,6 +2983,8 @@ Effects          :
 #17 (id=320056)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #18 (id=326779)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+#19 (id=474902)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 
 Name             : Affliction Warlock (id=137043) [Spell Family (5), Passive, Hidden] 
@@ -3770,7 +3677,7 @@ Effects          :
                    Base Value: 50 | Scaled Value: 50 | Misc Value: 3 | Radius: 100 yards | Target: Unknown(120)
 #8 (id=331898)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-Description      : Empowers your active demons with dark energies, increasing their haste by $s2% and health by $s3% for $d.
+Description      : Empowers your active demons with dark energies, increasing their haste by $s2%$?s77219[,][ and] health by $s3%$?s77219[, and damage by $s4%][] for $d.
 Tooltip          : Haste increased by $w2%.
 Health increased by $w3%.$?$w4>0[
 Damage dealt increased by $w4%.][]
@@ -3856,22 +3763,6 @@ Effects          :
 #1 (id=283939)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 193540 | Target: Self (1)
 Description      : $@spelldesc348
-
-Name             : Iron Stomach (id=193546) [Spell Family (8), Passive] 
-Class            : Rogue, Warlock
-School           : Physical
-Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ .......x ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Passive (6)
-Effects          :
-#1 (id=283945)   : Apply Aura (6) | Add Percent Modifier (108): Spell Tick Time (8)
-                   Base Value: 30 | Scaled Value: 30 | Misc Value: 8 | Target: Self (1)
-                   Affected Spells: Crimson Vial (185311), Crimson Vial (212198)
-Description      : Increases the healing you receive from Crimson Vial, healing potions, and healthstones by $s1%.
 
 Name             : Soul Harvest (id=196098) [Spell Family (5)] 
 Class            : Warlock
@@ -4622,7 +4513,7 @@ Effects          :
 Description      : Lobs a ball of Shadowflame at the target, dealing $s1 Shadowflame damage immediately, and another $o2 Shadowflame damage over $d, stacking up to $u times.
 
 |cFFFFFFFFGenerates ${$m3/10} Soul Shard.|r
-Tooltip          : Suffering $w2 Shadowflame damage every $t2.
+Tooltip          : Suffering $w2 Shadowflame damage every $t2 sec.
 
 Name             : Roaring Blaze (id=205184) [Spell Family (5), Passive] 
 Class            : Warlock
@@ -5509,7 +5400,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=376201)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 7 | Target: Self (1)
-Description      : Soul Shards are generated by some of your spells and consumed to cast your most powerful spells and summon demon to serve you.
+Description      : Soul Shards are generated by some of your spells and consumed to cast your most powerful spells and summon demons to serve you.
 
 While out of combat you regenerate up to 3 Soul Shards.
 

@@ -623,7 +623,7 @@ void print_text_iteration_data( FILE* file, sim_t* sim )
   }
 
   size_t n_spacer =
-      ( sim->num_enemies - 1 ) * 10 + ( sim->num_enemies - 2 ) * 2 + 2;
+      ( sim->target_list.size() - 1 ) * 10 + ( sim->target_list.size() - 2 ) * 2 + 2;
   std::string spacer_str_1( n_spacer, '-' ), spacer_str_2( n_spacer, ' ' );
 
   util::fprintf( file, "\nIteration data:\n" );
@@ -694,19 +694,19 @@ void print_text_iteration_data( FILE* file, sim_t* sim )
   else
   {
     util::fprintf( file,
-                   ".-----------------------------------------------%s.\n",
+                   ".--------------------------------------------------------%s.\n",
                    spacer_str_1.c_str() );
     util::fprintf( file,
-                   "| Iteration Data                                %s|\n",
+                   "| Iteration Data                                         %s|\n",
                    spacer_str_2.c_str() );
     util::fprintf( file,
-                   "+-----------+----------------------+------------%s+\n",
+                   "+--------+-----------+----------------------+------------%s+\n",
                    spacer_str_1.c_str() );
     util::fprintf( file,
-                   "|    Metric |                 Seed |  %sHealth(s) |\n",
+                   "|  Iter# |    Metric |                 Seed |  %sHealth(s) |\n",
                    spacer_str_2.c_str() );
     util::fprintf( file,
-                   "+-----------+----------------------+------------%s+\n",
+                   "+--------+-----------+----------------------+------------%s+\n",
                    spacer_str_1.c_str() );
 
     for ( size_t i = 0; i < sim->iteration_data.size(); i++ )
@@ -725,12 +725,13 @@ void print_text_iteration_data( FILE* file, sim_t* sim )
         }
       }
 
-      util::fprintf( file, "| %9.1f | %20llu | %s |\n",
+      util::fprintf( file, "| %6llu | %9.1f | %20llu | %s |\n",
+                     sim->iteration_data[ i ].iteration,
                      sim->iteration_data[ i ].metric,
                      sim->iteration_data[ i ].seed, health_s.str().c_str() );
     }
     util::fprintf( file,
-                   "'-----------+----------------------+------------%s'\n",
+                   "'--------+-----------+----------------------+------------%s'\n",
                    spacer_str_1.c_str() );
   }
 }

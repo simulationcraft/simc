@@ -1,0 +1,153 @@
+deathknight="Death_Knight_Unholy_T20H_generic"
+spec=unholy
+level=110
+race=blood_elf
+role=attack
+position=back
+talents=3210031
+artifact=16:0:0:0:0:149:1:150:1:151:1:152:1:153:1:154:1:156:4:157:4:158:4:262:4:263:1:264:4:265:4:266:4:267:4:1119:4:1333:1:1361:1:1489:4:1490:1:1491:1:1492:1:1629:1
+
+# Default consumables
+potion=prolonged_power
+flask=countless_armies
+food=nightborne_delicacy_platter
+augmentation=defiled
+
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
+
+# Executed before combat begins. Accepts non-harmful actions only.
+actions.precombat=flask
+actions.precombat+=/food
+actions.precombat+=/augmentation
+# Snapshot raid buffed stats before combat begins and pre-potting is done.
+actions.precombat+=/snapshot_stats
+actions.precombat+=/potion
+actions.precombat+=/raise_dead
+actions.precombat+=/army_of_the_dead
+
+# Executed every time the actor is available.
+actions=auto_attack
+actions+=/mind_freeze
+actions+=/arcane_torrent,if=runic_power.deficit>20
+actions+=/blood_fury
+actions+=/berserking
+actions+=/use_items
+actions+=/use_item,name=ring_of_collapsing_futures,if=(buff.temptation.stack=0&target.time_to_die>60)|target.time_to_die<60
+actions+=/potion,if=buff.unholy_strength.react
+actions+=/outbreak,target_if=!dot.virulent_plague.ticking
+actions+=/army_of_the_dead
+actions+=/dark_transformation,if=equipped.137075&cooldown.dark_arbiter.remains>165
+actions+=/dark_transformation,if=equipped.137075&!talent.shadow_infusion.enabled&cooldown.dark_arbiter.remains>55
+actions+=/dark_transformation,if=equipped.137075&talent.shadow_infusion.enabled&cooldown.dark_arbiter.remains>35
+actions+=/dark_transformation,if=equipped.137075&target.time_to_die<cooldown.dark_arbiter.remains-8
+actions+=/dark_transformation,if=equipped.137075&cooldown.summon_gargoyle.remains>160
+actions+=/dark_transformation,if=equipped.137075&!talent.shadow_infusion.enabled&cooldown.summon_gargoyle.remains>55
+actions+=/dark_transformation,if=equipped.137075&talent.shadow_infusion.enabled&cooldown.summon_gargoyle.remains>35
+actions+=/dark_transformation,if=equipped.137075&target.time_to_die<cooldown.summon_gargoyle.remains-8
+actions+=/dark_transformation,if=!equipped.137075&rune<=3
+actions+=/blighted_rune_weapon,if=rune<=3
+actions+=/run_action_list,name=valkyr,if=talent.dark_arbiter.enabled&pet.valkyr_battlemaiden.active
+actions+=/call_action_list,name=generic
+
+actions.aoe=death_and_decay,if=spell_targets.death_and_decay>=2
+actions.aoe+=/epidemic,if=spell_targets.epidemic>4
+actions.aoe+=/scourge_strike,if=spell_targets.scourge_strike>=2&(death_and_decay.ticking|defile.ticking)
+actions.aoe+=/clawing_shadows,if=spell_targets.clawing_shadows>=2&(death_and_decay.ticking|defile.ticking)
+actions.aoe+=/epidemic,if=spell_targets.epidemic>2
+
+actions.castigator=festering_strike,if=debuff.festering_wound.stack<=4&runic_power.deficit>23
+actions.castigator+=/death_coil,if=!buff.necrosis.up&talent.necrosis.enabled&rune<=3
+actions.castigator+=/scourge_strike,if=buff.necrosis.react&debuff.festering_wound.stack>=3&runic_power.deficit>23
+actions.castigator+=/scourge_strike,if=buff.unholy_strength.react&debuff.festering_wound.stack>=3&runic_power.deficit>23
+actions.castigator+=/scourge_strike,if=rune>=2&debuff.festering_wound.stack>=3&runic_power.deficit>23
+actions.castigator+=/death_coil,if=talent.shadow_infusion.enabled&talent.dark_arbiter.enabled&!buff.dark_transformation.up&cooldown.dark_arbiter.remains>15
+actions.castigator+=/death_coil,if=talent.shadow_infusion.enabled&!talent.dark_arbiter.enabled&!buff.dark_transformation.up
+actions.castigator+=/death_coil,if=talent.dark_arbiter.enabled&cooldown.dark_arbiter.remains>15
+actions.castigator+=/death_coil,if=!talent.shadow_infusion.enabled&!talent.dark_arbiter.enabled
+
+actions.generic=dark_arbiter,if=!equipped.137075&runic_power.deficit<30
+actions.generic+=/dark_arbiter,if=equipped.137075&runic_power.deficit<30&cooldown.dark_transformation.remains<2
+actions.generic+=/summon_gargoyle,if=!equipped.137075,if=rune<=3
+actions.generic+=/chains_of_ice,if=buff.unholy_strength.up&buff.cold_heart.stack>19
+actions.generic+=/summon_gargoyle,if=equipped.137075&cooldown.dark_transformation.remains<10&rune<=3
+actions.generic+=/soul_reaper,if=debuff.festering_wound.stack>=6&cooldown.apocalypse.remains<4
+actions.generic+=/apocalypse,if=debuff.festering_wound.stack>=6
+actions.generic+=/death_coil,if=runic_power.deficit<10
+actions.generic+=/death_coil,if=!talent.dark_arbiter.enabled&buff.sudden_doom.up&!buff.necrosis.up&rune<=3
+actions.generic+=/death_coil,if=talent.dark_arbiter.enabled&buff.sudden_doom.up&cooldown.dark_arbiter.remains>5&rune<=3
+actions.generic+=/festering_strike,if=debuff.festering_wound.stack<6&cooldown.apocalypse.remains<=6
+actions.generic+=/soul_reaper,if=debuff.festering_wound.stack>=3
+actions.generic+=/festering_strike,if=debuff.soul_reaper.up&!debuff.festering_wound.up
+actions.generic+=/scourge_strike,if=debuff.soul_reaper.up&debuff.festering_wound.stack>=1
+actions.generic+=/clawing_shadows,if=debuff.soul_reaper.up&debuff.festering_wound.stack>=1
+actions.generic+=/defile
+actions.generic+=/call_action_list,name=aoe,if=active_enemies>=2
+actions.generic+=/call_action_list,name=instructors,if=equipped.132448
+actions.generic+=/call_action_list,name=standard,if=!talent.castigator.enabled&!equipped.132448
+actions.generic+=/call_action_list,name=castigator,if=talent.castigator.enabled&!equipped.132448
+
+actions.instructors=festering_strike,if=debuff.festering_wound.stack<=2&runic_power.deficit>5
+actions.instructors+=/death_coil,if=!buff.necrosis.up&talent.necrosis.enabled&rune<=3
+actions.instructors+=/scourge_strike,if=buff.necrosis.react&debuff.festering_wound.stack>=3&runic_power.deficit>9
+actions.instructors+=/clawing_shadows,if=buff.necrosis.react&debuff.festering_wound.stack>=3&runic_power.deficit>9
+actions.instructors+=/scourge_strike,if=buff.unholy_strength.react&debuff.festering_wound.stack>=3&runic_power.deficit>9
+actions.instructors+=/clawing_shadows,if=buff.unholy_strength.react&debuff.festering_wound.stack>=3&runic_power.deficit>9
+actions.instructors+=/scourge_strike,if=rune>=2&debuff.festering_wound.stack>=3&runic_power.deficit>9
+actions.instructors+=/clawing_shadows,if=rune>=2&debuff.festering_wound.stack>=3&runic_power.deficit>9
+actions.instructors+=/death_coil,if=talent.shadow_infusion.enabled&talent.dark_arbiter.enabled&!buff.dark_transformation.up&cooldown.dark_arbiter.remains>10
+actions.instructors+=/death_coil,if=talent.shadow_infusion.enabled&!talent.dark_arbiter.enabled&!buff.dark_transformation.up
+actions.instructors+=/death_coil,if=talent.dark_arbiter.enabled&cooldown.dark_arbiter.remains>10
+actions.instructors+=/death_coil,if=!talent.shadow_infusion.enabled&!talent.dark_arbiter.enabled
+
+actions.standard=festering_strike,if=debuff.festering_wound.stack<=2&runic_power.deficit>5
+actions.standard+=/death_coil,if=!buff.necrosis.up&talent.necrosis.enabled&rune<=3
+actions.standard+=/scourge_strike,if=buff.necrosis.react&debuff.festering_wound.stack>=1&runic_power.deficit>9
+actions.standard+=/clawing_shadows,if=buff.necrosis.react&debuff.festering_wound.stack>=1&runic_power.deficit>9
+actions.standard+=/scourge_strike,if=buff.unholy_strength.react&debuff.festering_wound.stack>=1&runic_power.deficit>9
+actions.standard+=/clawing_shadows,if=buff.unholy_strength.react&debuff.festering_wound.stack>=1&runic_power.deficit>9
+actions.standard+=/scourge_strike,if=rune>=2&debuff.festering_wound.stack>=1&runic_power.deficit>9
+actions.standard+=/clawing_shadows,if=rune>=2&debuff.festering_wound.stack>=1&runic_power.deficit>9
+actions.standard+=/death_coil,if=talent.shadow_infusion.enabled&talent.dark_arbiter.enabled&!buff.dark_transformation.up&cooldown.dark_arbiter.remains>10
+actions.standard+=/death_coil,if=talent.shadow_infusion.enabled&!talent.dark_arbiter.enabled&!buff.dark_transformation.up
+actions.standard+=/death_coil,if=talent.dark_arbiter.enabled&cooldown.dark_arbiter.remains>10
+actions.standard+=/death_coil,if=!talent.shadow_infusion.enabled&!talent.dark_arbiter.enabled
+
+actions.valkyr=death_coil
+actions.valkyr+=/apocalypse,if=debuff.festering_wound.stack=8
+actions.valkyr+=/festering_strike,if=debuff.festering_wound.stack<8&cooldown.apocalypse.remains<5
+actions.valkyr+=/call_action_list,name=aoe,if=active_enemies>=2
+actions.valkyr+=/festering_strike,if=debuff.festering_wound.stack<=3
+actions.valkyr+=/scourge_strike,if=debuff.festering_wound.up
+actions.valkyr+=/clawing_shadows,if=debuff.festering_wound.up
+
+head=gravewarden_visage,id=147124,bonus_id=1497/3562
+neck=locket_of_splintered_souls,id=147014,bonus_id=1497/3562,enchant=mark_of_the_trained_soldier
+shoulders=gravewarden_pauldrons,id=147126,bonus_id=1497/3562
+back=gravewarden_cloak,id=147122,bonus_id=1497/3562,enchant=binding_of_strength
+chest=wavehammered_breastplate,id=147067,bonus_id=1497/3562
+wrists=bonemealcrusted_armplates,id=147073,bonus_id=1497/3562
+hands=gravewarden_handguards,id=147123,bonus_id=1497/3562
+waist=shiversleet_waistguard,id=147071,bonus_id=1507/3562
+legs=greaves_of_impure_midnight,id=147066,bonus_id=1507/3562
+feet=iron_ballast_sabatons,id=147059,bonus_id=1497/3562
+finger1=band_of_rescinded_truths,id=147194,bonus_id=1497/3562,enchant=binding_of_mastery
+finger2=scaled_band_of_servitude,id=147020,bonus_id=1497/3562,enchant=binding_of_mastery
+trinket1=specter_of_betrayal,id=151190,bonus_id=1507/3562
+trinket2=cradle_of_anguish,id=147010,bonus_id=1497/3562
+main_hand=apocalypse,id=128403,gem_id=147091/147111/151189,relic_id=1507:3562/1507:3562/1507:3562,enchant=rune_of_the_fallen_crusader
+
+# Gear Summary
+# gear_ilvl=919.00
+# gear_strength=24314
+# gear_stamina=38583
+# gear_crit_rating=6191
+# gear_haste_rating=5906
+# gear_mastery_rating=10095
+# gear_versatility_rating=4219
+# gear_armor=4721
+# set_bonus=tier20_2pc=1
+# set_bonus=tier20_4pc=1

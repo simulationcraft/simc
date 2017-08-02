@@ -4,7 +4,7 @@ level=110
 race=blood_elf
 role=attack
 position=back
-talents=3310013
+talents=3210011
 artifact=16:0:0:0:0:149:1:150:1:151:1:152:1:153:1:154:1:156:4:157:4:158:4:262:4:263:1:264:4:265:4:266:4:267:4:1119:4:1333:1:1361:1:1489:4:1490:1:1491:1:1492:1:1629:1
 
 # Default consumables
@@ -55,8 +55,8 @@ actions+=/call_action_list,name=generic
 
 actions.aoe=death_and_decay,if=spell_targets.death_and_decay>=2
 actions.aoe+=/epidemic,if=spell_targets.epidemic>4
-actions.aoe+=/scourge_strike,if=spell_targets.scourge_strike>=2&(dot.death_and_decay.ticking|dot.defile.ticking)
-actions.aoe+=/clawing_shadows,if=spell_targets.clawing_shadows>=2&(dot.death_and_decay.ticking|dot.defile.ticking)
+actions.aoe+=/scourge_strike,if=spell_targets.scourge_strike>=2&(death_and_decay.ticking|defile.ticking)
+actions.aoe+=/clawing_shadows,if=spell_targets.clawing_shadows>=2&(death_and_decay.ticking|defile.ticking)
 actions.aoe+=/epidemic,if=spell_targets.epidemic>2
 
 actions.castigator=festering_strike,if=debuff.festering_wound.stack<=4&runic_power.deficit>23

@@ -89,7 +89,7 @@ actions.single+=/overpower,if=buff.battle_cry.down
 actions.single+=/mortal_strike,if=buff.shattered_defenses.up|buff.executioners_precision.down
 actions.single+=/rend,if=remains<=duration*0.3
 actions.single+=/whirlwind,if=spell_targets.whirlwind>1|talent.fervor_of_battle.enabled
-actions.single+=/slam,if=spell_targets.whirlwind=1&!talent.fervor_of_battle.enabled
+actions.single+=/slam,if=spell_targets.whirlwind=1&!talent.fervor_of_battle.enabled&(rage>=52|!talent.rend.enabled|!talent.ravager.enabled)
 actions.single+=/overpower
 actions.single+=/bladestorm,if=(raid_event.adds.in>90|!raid_event.adds.exists)&!set_bonus.tier20_4pc
 

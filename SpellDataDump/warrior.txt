@@ -2212,7 +2212,7 @@ Name             : Bloodthirst Heal (id=117313) [Spell Family (4)]
 Class            : Warrior
 School           : Physical
 Spell Level      : 1
-Affecting spells : Enraged Regeneration (184364 effect#2), Furious Charge (202225 effect#1), Bloody Rage (242952 effect#1), Bloody Rage (242953 effect#1)
+Affecting spells : Enraged Regeneration (184364 effect#2), Furious Charge (202225 effect#1)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ .....x..   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5451,7 +5451,8 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=368917)   : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
-                   Affected Spells: Bloodthirst (23881), Bloodthirst Heal (117313)
+                   Affected Spells: Bloodthirst (23881)
+                   Hotfixed: Affects Spells, Chain Multiplier (0 -> 1)
 Description      : $@spelldesc242301
 Tooltip          : Damage and healing done by your next Bloodthirst increased by $s1%.
 
@@ -5472,7 +5473,8 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=368919)   : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
                    Base Value: 50 | Scaled Value: 50 | Target: Self (1)
-                   Affected Spells: Bloodthirst (23881), Bloodthirst Heal (117313)
+                   Affected Spells: Bloodthirst (23881)
+                   Hotfixed: Affects Spells, Chain Multiplier (0 -> 1)
 Description      : $@spelldesc242301
 Tooltip          : Damage and healing done by your next Bloodthirst increased by $s1%.
 

@@ -3746,7 +3746,7 @@ struct rushing_jade_wind_t : public monk_melee_attack_t
     cooldown -> duration = p -> talent.rushing_jade_wind -> cooldown();
     cooldown -> hasted = true;
 
-    dot_duration *= 1 + p -> spec.brewmaster_monk -> effectN( 11 ).percent();
+    dot_duration *= 1 + p -> spec.brewmaster_monk -> effectN( maybe_ptr( p -> dbc.ptr ) ? 12 : 11 ).percent();
     dot_behavior = DOT_REFRESH; // Spell uses Pandemic Mechanics.
 
     tick_action = new tick_action_t( "rushing_jade_wind_tick", p, p -> talent.rushing_jade_wind -> effectN( 1 ).trigger() );
