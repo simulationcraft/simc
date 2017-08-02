@@ -101,6 +101,7 @@ public:
     action_t* trauma;
     action_t* scales_of_earth;
     action_t* charge;
+	action_t* slaughter; // Fury T21 2PC
   } active;
 
   // Buffs
@@ -171,8 +172,9 @@ public:
     buff_t* xavarics_magnum_opus;
     haste_buff_t* sephuzs_secret;
     haste_buff_t* in_for_the_kill;
-	buff_t* war_veteran;
-	buff_t* weighted_blade;
+	buff_t* war_veteran; // Arms T21 2PC
+	buff_t* weighted_blade; // Arms T21 4PC
+	buff_t* outrage; // Fury T21 4PC
   } buff;
 
   // Cooldowns
@@ -3143,6 +3145,18 @@ struct rampage_attack_t: public warrior_attack_t
       first_attack_missed = false;
   }
 
+  double action_multiplier() const override
+  {
+    double am = warrior_attack_t::action_multiplier();
+
+    if ( p() -> buff.outrage -> check() )
+    {
+      am *= 1.0 + p() -> buff.outrage -> data().effectN( 1 ).percent();
+    }
+
+    return am;
+  }
+
   void impact( action_state_t* s ) override
   {
     if ( !first_attack_missed )
@@ -3153,6 +3167,16 @@ struct rampage_attack_t: public warrior_attack_t
       {
         p() -> resource_gain( RESOURCE_RAGE, rage_from_valarjar_berserking, p() -> gain.valarjar_berserking  );
       }
+
+	if ( result_is_hit( s -> result ) && p() -> sets -> has_set_bonus( WARRIOR_FURY, T21, B2 ) )
+    {
+      double amount = s -> result_amount * p() -> sets -> set( WARRIOR_FURY, T21, B2 ) -> effectN( 1 ).percent();
+
+      residual_action::trigger( p() -> active . slaughter,
+							    s -> target, 
+					            amount );
+    }
+	  
     }
   }
 
@@ -3222,6 +3246,7 @@ struct rampage_event_t: public event_t
       warrior -> buff.odyns_champion -> trigger(); // Procs after last attack.
       warrior -> rampage_driver = nullptr;
       warrior -> buff.meat_cleaver -> expire();
+	  warrior -> buff.outrage -> expire();
     }
   }
 };
@@ -3633,6 +3658,17 @@ struct trauma_dot_t: public residual_action::residual_periodic_action_t < warrio
 {
   trauma_dot_t( warrior_t* p ):
     base_t( "trauma", p, p -> find_spell( 215537 ) )
+  {
+    dual = true;
+    tick_may_crit = false;
+  }
+};
+
+// Slaughter (T21 Fury Set Bonus) Dot
+struct slaughter_dot_t : public residual_action::residual_periodic_action_t< warrior_spell_t >
+{
+  slaughter_dot_t( warrior_t* p ) :
+   base_t( "T21 2PC", p, p -> find_spell( 253384 ) )
   {
     dual = true;
     tick_may_crit = false;
@@ -4322,6 +4358,7 @@ struct battle_cry_t: public warrior_spell_t
     p() -> buff.battle_cry -> trigger( 1, bonus_crit );
     p() -> buff.battle_cry_deadly_calm -> trigger();
     p() -> buff.corrupted_blood_of_zakajz -> trigger();
+	p() -> buff.outrage -> trigger();
   }
 };
 
@@ -4845,6 +4882,7 @@ void warrior_t::init_spells()
   active.trauma                    = nullptr;
   active.opportunity_strikes       = nullptr;
   active.charge                    = nullptr;
+  active.slaughter				   = nullptr;
 
   if ( talents.bloodbath -> ok() ) active.bloodbath_dot = new bloodbath_dot_t( this );
   if ( spec.deep_wounds -> ok() ) active.deep_wounds = new deep_wounds_t( this );
@@ -4852,6 +4890,7 @@ void warrior_t::init_spells()
   if ( talents.trauma -> ok() ) active.trauma = new trauma_dot_t( this );
   if ( artifact.scales_of_earth.rank() ) active.scales_of_earth = new scales_of_earth_t( this );
   if ( artifact.corrupted_blood_of_zakajz.rank() ) active.corrupted_blood_of_zakajz = new corrupted_blood_of_zakajz_t( this );
+  if ( sets -> has_set_bonus( WARRIOR_FURY, T21, B2 ) ) active.slaughter = new slaughter_dot_t( this );
   if ( spec.rampage -> ok() )
   {
     rampage_attack_t* first = new rampage_attack_t( this, spec.rampage -> effectN( 3 ).trigger(), "rampage1" );
@@ -5816,6 +5855,10 @@ void warrior_t::create_buffs()
   buff.weighted_blade = buff_creator_t ( this, "weighted_blade", sets -> set( WARRIOR_ARMS, T21, B4) -> effectN( 1 ).trigger() )
     .default_value( sets -> set( WARRIOR_ARMS, T21, B4) -> effectN( 1 ).trigger() -> effectN( 1 ).percent() )
     .chance( sets -> has_set_bonus( WARRIOR_ARMS, T21, B4) );
+
+  buff.outrage = buff_creator_t ( this, "outrage", sets -> set( WARRIOR_FURY, T21, B4) -> effectN( 1 ).trigger() )
+    .default_value( sets -> set( WARRIOR_FURY, T21, B4) -> effectN( 1 ).trigger() -> effectN( 1 ).percent() )
+    .chance( sets -> has_set_bonus( WARRIOR_FURY, T21, B4) );
 }
 
 // warrior_t::init_scaling ==================================================
