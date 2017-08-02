@@ -171,6 +171,8 @@ public:
     buff_t* xavarics_magnum_opus;
     haste_buff_t* sephuzs_secret;
     haste_buff_t* in_for_the_kill;
+	buff_t* war_veteran;
+	buff_t* weighted_blade;
   } buff;
 
   // Cooldowns
@@ -1495,6 +1497,7 @@ struct mortal_strike_t : public warrior_attack_t
     p() -> buff.shattered_defenses -> expire(timespan_t::from_millis(500));
     p() -> buff.precise_strikes -> expire();
     p() -> buff.executioners_precision -> expire();
+	p() -> buff.weighted_blade -> trigger( 1 );
   }
 
   void impact( action_state_t* s ) override
@@ -2000,6 +2003,8 @@ struct colossus_smash_t: public warrior_attack_t
       p() -> buff.shattered_defenses -> trigger();
       p() -> buff.precise_strikes -> trigger();
       p() -> buff.in_for_the_kill -> trigger();
+	  p() -> buff.war_veteran -> trigger();
+
       if ( p() -> talents.ravager -> ok() )
         p() -> cooldown.ravager -> adjust( t20_2p_reduction );
       else
@@ -3061,6 +3066,7 @@ struct warbreaker_t: public warrior_attack_t
 
     p() -> buff.shattered_defenses -> trigger();
     p() -> buff.precise_strikes -> trigger();
+	p() -> buff.in_for_the_kill -> trigger();
   }
 
   void impact( action_state_t* s ) override
@@ -3589,6 +3595,17 @@ struct slam_t: public warrior_attack_t
     warrior_attack_t::execute();
     if ( rng().roll( t18_2pc_chance ) )
       p() -> cooldown.mortal_strike -> reset( true );
+
+	p() -> buff.weighted_blade -> expire();
+  }
+
+   double action_multiplier() const override
+  {
+    double am = warrior_attack_t::action_multiplier();
+
+    am *= 1.0 + p() -> buff.weighted_blade -> stack_value();
+
+    return am;
   }
 
   bool ready() override
@@ -3896,6 +3913,7 @@ struct arms_whirlwind_mh_t: public warrior_attack_t
     double am = warrior_attack_t::action_multiplier();
 
     am *= 1.0 + p() -> buff.cleave -> check_value();
+	am *= 1.0 + p() -> buff.weighted_blade -> stack_value();
 
     return am;
   }
@@ -3960,6 +3978,7 @@ struct first_arms_whirlwind_mh_t: public warrior_attack_t
     double am = warrior_attack_t::action_multiplier();
 
     am *= 1.0 + p() -> buff.cleave -> check_value();
+	am *= 1.0 + p() -> buff.weighted_blade -> stack_value();
 
     return am;
   }
@@ -4036,6 +4055,7 @@ struct arms_whirlwind_parent_t: public warrior_attack_t
     warrior_attack_t::last_tick( d );
 
     p() -> buff.cleave -> expire();
+	p() -> buff.weighted_blade -> expire();
   }
 
   bool ready() override
@@ -5761,6 +5781,14 @@ void warrior_t::create_buffs()
 
   buff.in_for_the_kill = haste_buff_creator_t( this, "in_for_the_kill", talents.in_for_the_kill -> effectN( 1 ).trigger() )
     .default_value( talents.in_for_the_kill -> effectN( 1 ).trigger() -> effectN( 1 ).percent() );
+
+  buff.war_veteran = buff_creator_t( this, "war_veteran", sets -> set( WARRIOR_ARMS, T21, B2) -> effectN( 1 ).trigger() )
+    .default_value( sets -> set( WARRIOR_ARMS, T21, B2) -> effectN( 1 ).trigger() -> effectN( 1 ).percent() )
+	.chance( sets -> has_set_bonus( WARRIOR_ARMS, T21, B2) );
+
+  buff.weighted_blade = buff_creator_t ( this, "weighted_blade", sets -> set( WARRIOR_ARMS, T21, B4) -> effectN( 1 ).trigger() )
+    .default_value( sets -> set( WARRIOR_ARMS, T21, B4) -> effectN( 1 ).trigger() -> effectN( 1 ).percent() )
+    .chance( sets -> has_set_bonus( WARRIOR_ARMS, T21, B4) );
 }
 
 // warrior_t::init_scaling ==================================================
@@ -6321,6 +6349,12 @@ double warrior_t::composite_player_critical_damage_multiplier( const action_stat
   {
     cdm *= 1.0 + artifact.unrivaled_strength.percent();
   }
+
+  if ( buff.war_veteran -> check() )
+  { 
+    cdm *= 1.0 + buff.war_veteran->value();
+  }
+
   return cdm;
 }
 
