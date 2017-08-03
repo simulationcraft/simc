@@ -10001,8 +10001,8 @@ void monk_t::apl_combat_brewmaster()
       st -> add_action( racial_actions[i] + ",if=energy<31" );
   }
   st -> add_action( this, "Tiger Palm", "if=buff.blackout_combo.up" );
-  st -> add_action( this, "Keg Smash" );
   st -> add_action( this, "Blackout Strike", "if=cooldown.keg_smash.remains>0" );
+  st -> add_action( this, "Keg Smash" );
   st -> add_action( this, "Breath of Fire", "if=buff.bloodlust.down&buff.blackout_combo.down|(buff.bloodlust.up&buff.blackout_combo.down&dot.breath_of_fire_dot.remains<=0)");
   st -> add_talent( this, "Rushing Jade Wind" );
   st -> add_action( this, "Tiger Palm", "if=!talent.blackout_combo.enabled&cooldown.keg_smash.remains>=gcd&(energy+(energy.regen*(cooldown.keg_smash.remains)))>=55" );
