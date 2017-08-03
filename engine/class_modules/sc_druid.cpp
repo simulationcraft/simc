@@ -274,8 +274,8 @@ public:
   double initial_astral_power;
   int    initial_moon_stage;
   bool ahhhhh_the_great_outdoors;
-  bool t20_2pc;
-  bool t20_4pc;
+  bool t21_2pc;
+  bool t21_4pc;
 
   struct active_actions_t
   {
@@ -761,8 +761,8 @@ public:
     initial_astral_power( 0 ),
     initial_moon_stage( NEW_MOON ),
     ahhhhh_the_great_outdoors( false ),
-    t20_2pc(false),
-    t20_4pc(false),
+    t21_2pc(false),
+    t21_4pc(false),
     active( active_actions_t() ),
     pet_fey_moonwing(),
     force_of_nature(),
@@ -3046,7 +3046,7 @@ struct ashamanes_rip_t : public cat_attack_t
       
     base_tick_time *= 1.0 + p -> talent.jagged_wounds -> effectN( 1 ).percent();
     base_multiplier *= 1.0 + p -> artifact.razor_fangs.percent();
-    if (p->t20_4pc || p->sets->has_set_bonus(DRUID_FERAL, T20, B4) )
+    if ( p->sets->has_set_bonus(DRUID_FERAL, T20, B4) )
        base_multiplier *= (1.0 + p->find_spell(242235)->effectN(1).percent());
 
 
@@ -8769,8 +8769,8 @@ void druid_t::create_options()
   player_t::create_options();
 
   add_option( opt_float ( "predator_rppm", predator_rppm_rate ) );
-  add_option( opt_bool  ( "feral_t20_2pc", t20_2pc) );
-  add_option( opt_bool  ( "feral_t20_4pc", t20_4pc) );
+  add_option( opt_bool  ( "feral_t21_2pc", t21_2pc) );
+  add_option( opt_bool  ( "feral_t21_4pc", t21_4pc) );
   add_option( opt_float ( "initial_astral_power", initial_astral_power ) );
   add_option( opt_int   ( "initial_moon_stage", initial_moon_stage ) );
   add_option( opt_bool  ( "outside", ahhhhh_the_great_outdoors ) );
@@ -9310,8 +9310,8 @@ void druid_t::copy_from( player_t* source )
   predator_rppm_rate = p -> predator_rppm_rate;
   initial_astral_power = p -> initial_astral_power;
   initial_moon_stage = p -> initial_moon_stage;
-  t20_2pc = p -> t20_2pc;
-  t20_4pc = p -> t20_4pc;
+  t21_2pc = p -> t21_2pc;
+  t21_4pc = p -> t21_4pc;
   ahhhhh_the_great_outdoors = p -> ahhhhh_the_great_outdoors;
 }
 void druid_t::output_json_report(js::JsonOutput& /*root*/) const
