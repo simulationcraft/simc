@@ -4395,7 +4395,7 @@ struct defile_t : public death_and_decay_base_t
   defile_t( death_knight_t* p, const std::string& options_str ) :
     death_and_decay_base_t( p, "defile", p -> talent.defile )
   {
-    damage = new death_and_decay_damage_t( this );
+    damage = new defile_damage_t( this );
 
     parse_options( options_str );
   }
