@@ -7938,16 +7938,13 @@ void death_knight_t::default_apl_unholy()
   // Default generic target APL
 
   generic->add_talent(this, "Dark Arbiter", "if=!equipped.137075&runic_power.deficit<30");
+  generic->add_action(this, "Apocalypse", "if=equipped.137075&debuff.festering_wound.stack>=6&talent.dark_arbiter.enabled");
   generic->add_talent(this, "Dark Arbiter", "if=equipped.137075&runic_power.deficit<30&cooldown.dark_transformation.remains<2");
   generic->add_action(this, "Summon Gargoyle", "if=!equipped.137075,if=rune<=3");
   generic->add_action(this, "Chains of Ice", "if=buff.unholy_strength.up&buff.cold_heart.stack>19");
   generic->add_action(this, "Summon Gargoyle", "if=equipped.137075&cooldown.dark_transformation.remains<10&rune<=3");
-
-  // Apocalypso
   generic->add_talent(this, "Soul Reaper", "if=debuff.festering_wound.stack>=6&cooldown.apocalypse.remains<4");
   generic->add_action(this, "Apocalypse", "if=debuff.festering_wound.stack>=6");
-
-  // Death coilage
   generic->add_action(this, "Death Coil", "if=runic_power.deficit<10");
   generic->add_action(this, "Death Coil", "if=!talent.dark_arbiter.enabled&buff.sudden_doom.up&!buff.necrosis.up&rune<=3");
   generic->add_action(this, "Death Coil", "if=talent.dark_arbiter.enabled&buff.sudden_doom.up&cooldown.dark_arbiter.remains>5&rune<=3");
@@ -7955,7 +7952,7 @@ void death_knight_t::default_apl_unholy()
   // FW stacking
   generic->add_action(this, "Festering Strike", "if=debuff.festering_wound.stack<6&cooldown.apocalypse.remains<=6");
 
-  // Soul reapering
+  // Soul reaper
   generic->add_talent(this, "Soul Reaper", "if=debuff.festering_wound.stack>=3");
   generic->add_action(this, "Festering Strike", "if=debuff.soul_reaper.up&!debuff.festering_wound.up");
   generic->add_action(this, "Scourge Strike", "if=debuff.soul_reaper.up&debuff.festering_wound.stack>=1");
@@ -8015,20 +8012,13 @@ void death_knight_t::default_apl_unholy()
   aoe->add_talent(this, "Clawing Shadows", "if=spell_targets.clawing_shadows>=2&(death_and_decay.ticking|defile.ticking)");
   aoe->add_talent(this, "Epidemic", "if=spell_targets.epidemic>2");
 
-  // Valkyr APL uses many a runic power
+  // Valkyr APL
   valkyr->add_action(this, "Death Coil");
-
-  // Apocalypso
-  valkyr->add_action(this, "Apocalypse", "if=debuff.festering_wound.stack=8");
-
-  // FW stacking
-  valkyr->add_action(this, "Festering Strike", "if=debuff.festering_wound.stack<8&cooldown.apocalypse.remains<5");
-
-  // Misc AOE things
+  valkyr->add_action(this, "Apocalypse", "if=debuff.festering_wound.stack>=6");
+  valkyr->add_action(this, "Festering Strike", "if=debuff.festering_wound.stack<8&cooldown.apocalypse.remains<3");
   valkyr->add_action("call_action_list,name=aoe,if=active_enemies>=2");
-
   // Single target base rotation when Valkyr is around
-  valkyr->add_action(this, "Festering Strike", "if=debuff.festering_wound.stack<=3");
+  valkyr->add_action(this, "Festering Strike", "if=debuff.festering_wound.stack<=4");
   valkyr->add_action(this, "Scourge Strike", "if=debuff.festering_wound.up");
   valkyr->add_talent(this, "Clawing Shadows", "if=debuff.festering_wound.up");
 }
