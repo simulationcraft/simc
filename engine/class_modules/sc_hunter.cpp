@@ -162,6 +162,8 @@ public:
     buff_t* t20_2p_critical_aimed_damage;
     buff_t* pre_t20_2p_critical_aimed_damage;
     buff_t* t20_4p_bestial_rage;
+    buff_t* t21_2p_exposed_flank;
+    buff_t* t21_4p_in_for_the_kill;
     buff_t* sentinels_sight;
     buff_t* butchers_bone_apron;
     buff_t* gyroscopic_stabilization;
@@ -220,6 +222,7 @@ public:
     proc_t* animal_instincts_flanking;
     proc_t* animal_instincts;
     proc_t* cobra_commander;
+    proc_t* t21_4p_mm;
   } procs;
 
   real_ppm_t* ppm_hunters_mark;
@@ -1928,6 +1931,9 @@ struct kill_command_t: public hunter_pet_action_t < hunter_pet_t, attack_t >
 
     base_multiplier *= 1.0 + o() -> artifacts.pack_leader.percent();
 
+    if ( o() -> sets -> has_set_bonus( HUNTER_BEAST_MASTERY, T21, B2 ) )
+      base_multiplier *= 1.0 + o() -> sets -> set( HUNTER_BEAST_MASTERY, T21, B2 ) -> effectN( 1 ).percent();
+
     if ( o() -> artifacts.jaws_of_thunder.rank() )
     {
       jaws_of_thunder = new jaws_of_thunder_t( p );
@@ -2767,6 +2773,12 @@ struct multi_shot_t: public hunter_ranged_attack_t
       energize_resource = RESOURCE_FOCUS;
       energize_amount = p -> find_spell( 213363 ) -> effectN( 1 ).resource( RESOURCE_FOCUS );
     }
+
+    if ( p -> sets -> has_set_bonus( HUNTER_MARKSMANSHIP, T21, B2 ) )
+    {
+      base_multiplier *= 1.0 + p -> sets -> set( HUNTER_MARKSMANSHIP, T21, B2 ) -> effectN( 1 ).percent();
+      energize_amount += p -> sets -> set( HUNTER_MARKSMANSHIP, T21, B2 ) -> effectN( 2 ).base_value();
+    }
   }
 
   void try_steady_focus() override
@@ -3344,6 +3356,12 @@ struct arcane_shot_t: public hunter_ranged_attack_t
     energize_type = ENERGIZE_ON_HIT;
     energize_resource = RESOURCE_FOCUS;
     energize_amount = p -> find_spell( 187675 ) -> effectN( 1 ).base_value();
+
+    if ( p -> sets -> has_set_bonus( HUNTER_MARKSMANSHIP, T21, B2 ) )
+    {
+      base_multiplier *= 1.0 + p -> sets -> set( HUNTER_MARKSMANSHIP, T21, B2 ) -> effectN( 1 ).percent();
+      energize_amount *= 1.0 + p -> sets -> set( HUNTER_MARKSMANSHIP, T21, B2 ) -> effectN( 3 ).percent();
+    }
   }
 
   void try_steady_focus() override
@@ -3515,12 +3533,18 @@ struct marked_shot_t: public hunter_spell_t
   {
     if ( td( s -> target ) -> debuffs.hunters_mark -> up() )
     {
-      impact -> target = s -> target;
+      impact -> set_target( s -> target );
       impact -> execute();
+      if ( p() -> sets -> has_set_bonus( HUNTER_MARKSMANSHIP, T21, B4 ) &&
+           rng().roll( p() -> sets -> set( HUNTER_MARKSMANSHIP, T21, B4 ) -> effectN( 1 ).percent() ) )
+      {
+        impact -> execute();
+        p() -> procs.t21_4p_mm -> occur();
+      }
 
       if ( call_of_the_hunter_procced )
       {
-        call_of_the_hunter -> target = s -> target;
+        call_of_the_hunter -> set_target( s -> target );
         call_of_the_hunter -> execute();
         call_of_the_hunter -> execute();
       }
@@ -3659,6 +3683,12 @@ struct sidewinders_t: hunter_ranged_attack_t
 
     if ( p -> artifacts.critical_focus.rank() )
       energize_amount += p -> find_spell( 191328 ) -> effectN( 2 ).base_value();
+
+    if ( p -> sets -> has_set_bonus( HUNTER_MARKSMANSHIP, T21, B2 ) )
+    {
+      base_multiplier *= 1.0 + p -> sets -> set( HUNTER_MARKSMANSHIP, T21, B2 ) -> effectN( 1 ).percent();
+      energize_amount *= 1.0 + p -> sets -> set( HUNTER_MARKSMANSHIP, T21, B2 ) -> effectN( 4 ).percent();
+    }
   }
 
   void execute() override
@@ -3937,6 +3967,9 @@ struct mongoose_bite_t: hunter_melee_attack_t
 
     if ( p() -> legendary.sv_chest -> ok() )
       p() -> buffs.butchers_bone_apron -> trigger();
+
+    if ( p() -> sets -> has_set_bonus( HUNTER_SURVIVAL, T21, B4 ) )
+      p() -> buffs.t21_4p_in_for_the_kill -> trigger();
   }
 
   double action_multiplier() const override
@@ -4041,6 +4074,12 @@ struct flanking_strike_t: hunter_melee_attack_t
         p() -> animal_instincts_cds[roll].first -> adjust( animal_instincts );
         p() -> animal_instincts_cds[roll].second -> occur();
       }
+    }
+
+    if ( p() -> sets -> has_set_bonus( HUNTER_SURVIVAL, T21, B2 ) &&
+         rng().roll( p() -> sets -> set( HUNTER_SURVIVAL, T21, B2 ) -> proc_chance() ) )
+    {
+      p() -> buffs.t21_2p_exposed_flank -> trigger();
     }
   }
 
@@ -4319,6 +4358,40 @@ struct raptor_strike_t: public hunter_melee_attack_t
 
     if ( p() -> talents.way_of_the_moknathal -> ok() )
       p() -> buffs.moknathal_tactics -> trigger();
+
+    p() -> buffs.t21_2p_exposed_flank -> expire();
+    p() -> buffs.t21_4p_in_for_the_kill -> expire();
+  }
+
+  double action_multiplier() const override
+  {
+    double am = hunter_melee_attack_t::action_multiplier();
+
+    if ( p() -> buffs.t21_4p_in_for_the_kill -> up() )
+      am *= 1.0 + p() -> buffs.t21_4p_in_for_the_kill -> check_stack_value();
+
+    return am;
+  }
+
+  double composite_crit_chance() const override
+  {
+    double cc = hunter_melee_attack_t::composite_crit_chance();
+
+    if ( p() -> buffs.t21_2p_exposed_flank -> up() )
+      cc += p() -> buffs.t21_2p_exposed_flank -> check_value();
+
+    return cc;
+  }
+
+  double composite_crit_damage_bonus_multiplier() const override
+  {
+    double cdm = hunter_melee_attack_t::composite_crit_damage_bonus_multiplier();
+
+    // TODO: check if it's a "bonus" or an "extra bonus"
+    if ( p() -> buffs.t21_2p_exposed_flank -> check() )
+      cdm *= 1.0 + p() -> buffs.t21_2p_exposed_flank -> data().effectN( 2 ).percent();
+
+    return cdm;
   }
 };
 
@@ -4873,6 +4946,12 @@ struct kill_command_t: public hunter_spell_t
 
     if ( p() -> sets -> has_set_bonus( HUNTER_BEAST_MASTERY, T20, B2 ) )
       trigger_t20_2pc_bm( p() );
+
+    if ( p() -> sets -> has_set_bonus( HUNTER_BEAST_MASTERY, T21, B4 ) )
+    {
+      auto reduction = p() -> sets -> set( HUNTER_BEAST_MASTERY, T21, B4 ) -> effectN( 1 ).time_value();
+      p() -> cooldowns.aspect_of_the_wild -> adjust( - reduction );
+    }
   }
 
   bool ready() override
@@ -6056,6 +6135,14 @@ void hunter_t::create_buffs()
     buff_creator_t( this, "t20_4p_bestial_rage", find_spell( 246116 ) )
       .default_value( find_spell( 246116 ) -> effectN( 1 ).percent() );
 
+  buffs.t21_2p_exposed_flank =
+    buff_creator_t( this, "t21_2p_exposed_flank", find_spell( 252094 ) )
+      .default_value( find_spell( 252094 ) -> effectN( 1 ).percent() );
+
+  buffs.t21_4p_in_for_the_kill =
+    buff_creator_t( this, "t21_4p_in_for_the_kill", find_spell( 252095 ) )
+      .default_value( find_spell( 252095 ) -> effectN( 1 ).percent() );
+
   buffs.sephuzs_secret =
     haste_buff_creator_t( this, "sephuzs_secret", find_spell( 208052 ) )
       .default_value( find_spell( 208052 ) -> effectN( 2 ).percent() )
@@ -6143,6 +6230,7 @@ void hunter_t::init_procs()
   procs.animal_instincts_flanking    = get_proc( "animal_instincts_flanking" );
   procs.animal_instincts             = get_proc( "animal_instincts" );
   procs.cobra_commander              = get_proc( "cobra_commander" );
+  procs.t21_4p_mm                    = get_proc( "t21_4p_mm" );
 }
 
 // hunter_t::init_rng =======================================================

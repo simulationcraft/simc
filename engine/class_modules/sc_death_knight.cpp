@@ -2247,10 +2247,7 @@ struct gargoyle_pet_t : public death_knight_pet_t
   {
     death_knight_pet_t::init_base_stats();
 
-    // As per Blizzard
-    owner_coeff.ap_from_ap = 0.46625;
-    // 2017-01-10: Gargoyle damage increased by 50%.
-    owner_coeff.ap_from_ap *= 1.5;
+    owner_coeff.ap_from_ap = 1;
   }
 
   void init_action_list() override
@@ -4398,7 +4395,7 @@ struct defile_t : public death_and_decay_base_t
   defile_t( death_knight_t* p, const std::string& options_str ) :
     death_and_decay_base_t( p, "defile", p -> talent.defile )
   {
-    damage = new death_and_decay_damage_t( this );
+    damage = new defile_damage_t( this );
 
     parse_options( options_str );
   }

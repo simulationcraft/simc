@@ -1062,20 +1062,20 @@ public:
       ab::energize_type = ENERGIZE_NONE; // disable resource generation from spell data.
     }
 
-    if ( ab::data().affected_by( player -> spec.elemental_shaman -> effectN( 5 ) ) && ! player -> dbc.ptr )
+    if ( ab::data().affected_by( player -> spec.elemental_shaman -> effectN( 5 ) ) && !maybe_ptr( player -> dbc.ptr ) )
     {
       ab::base_dd_multiplier *= 1.0 + player -> spec.elemental_shaman -> effectN( 5 ).percent();
     }
-    if ( ab::data().affected_by( player -> spec.elemental_shaman -> effectN( 6 ) ) && ! player -> dbc.ptr )
+    if ( ab::data().affected_by( player -> spec.elemental_shaman -> effectN( 6 ) ) && !maybe_ptr( player -> dbc.ptr ) )
     {
       ab::base_td_multiplier *= 1.0 + player -> spec.elemental_shaman -> effectN( 6 ).percent();
     }
     // changed hotfix order on ptr... FIXME double check when 7.3 draws near
-    if ( ab::data().affected_by( player -> spec.elemental_shaman -> effectN( 1 ) ) && player -> dbc.ptr )
+    if ( ab::data().affected_by( player -> spec.elemental_shaman -> effectN( 1 ) ) && maybe_ptr( player -> dbc.ptr ) )
     {
       ab::base_dd_multiplier *= 1.0 + player -> spec.elemental_shaman -> effectN( 1 ).percent();
     }
-    if ( ab::data().affected_by( player -> spec.elemental_shaman -> effectN( 2 ) ) && player -> dbc.ptr )
+    if ( ab::data().affected_by( player -> spec.elemental_shaman -> effectN( 2 ) ) && maybe_ptr( player -> dbc.ptr ) )
     {
       ab::base_td_multiplier *= 1.0 + player -> spec.elemental_shaman -> effectN( 2 ).percent();
     }
@@ -4857,7 +4857,10 @@ struct icefury_t : public shaman_spell_t
   {
     shaman_spell_t::execute();
 
-    p() -> buff.icefury -> trigger( data().initial_stacks() );
+    p() -> buff.icefury -> trigger( data().initial_stacks(), ( p() -> talent.icefury -> effectN( 3 ).percent() ) + ( p() -> buff.t21_2pc_elemental -> stack_value() ) );
+    
+    p()->buff.t21_2pc_elemental->expire();
+
   }
 };
 
@@ -5147,7 +5150,7 @@ struct earthquake_damage_t : public shaman_spell_t
     school = SCHOOL_PHYSICAL;
     spell_power_mod.direct = 0.775; // Hardcoded into tooltip because it's cool
     // FIXME This is added for the EQ changes on PTR.
-    if ( player -> dbc.ptr ) {
+    if ( maybe_ptr( player -> dbc.ptr ) ) {
       spell_power_mod.direct = 1.0;
     }
     base_multiplier *= 1.0 + p() -> artifact.the_ground_trembles.percent();
@@ -5165,6 +5168,8 @@ struct earthquake_damage_t : public shaman_spell_t
     {
       m *= 1.0 + p() -> buff.echoes_of_the_great_sundering -> data().effectN( 2 ).percent();
     }
+
+    m *= 1.0 + p() -> buff.t21_2pc_elemental -> stack_value();
 
     return m;
   }
@@ -5224,6 +5229,8 @@ struct earthquake_t : public shaman_spell_t
     p() -> buff.echoes_of_the_great_sundering -> decrement();
 
     p() -> buff.elemental_focus -> decrement();
+
+    p() -> buff.t21_2pc_elemental -> expire();
 
   }
 };
@@ -5287,7 +5294,7 @@ struct earth_shock_overload_t : public elemental_overload_spell_t
     m *= 1.0 + p() -> buff.t21_2pc_elemental -> stack_value();
 
     // TODO: Currently not in hotfix data but save to assume it'll be added
-    if ( player -> dbc.ptr )
+    if ( maybe_ptr( player -> dbc.ptr ) )
     {
       m *= 1.0 + p() -> spec.elemental_shaman -> effectN( 1 ).percent();
     }
@@ -7297,7 +7304,8 @@ void shaman_t::create_buffs()
   buff.storm_totem = buff_creator_t( this, "storm_totem", find_spell( 210651 ) )
                      .duration( talent.totem_mastery -> effectN( 2 ).trigger() -> duration() )
                      .cd( timespan_t::zero() ) // Handled by the action
-                     .default_value( find_spell( 210651 ) -> effectN( 2 ).percent() );
+                     // FIXME: 7.3 ptr got rid of the 2 effectN, now we need to use 1
+                     .default_value( find_spell( 210651 ) -> effectN(  maybe_ptr( player_t::dbc.ptr ) ? 1 : 2 ).percent() );
   buff.ember_totem = buff_creator_t( this, "ember_totem", find_spell( 210658 ) )
                      .duration( talent.totem_mastery -> effectN( 3 ).trigger() -> duration() )
                      .default_value( 1.0 + find_spell( 210658 ) -> effectN( 1 ).percent() );
@@ -8169,12 +8177,12 @@ double shaman_t::composite_player_pet_damage_multiplier( const action_state_t* s
   m *= 1.0 + artifact.stormkeepers_power.percent();
   m *= 1.0 + artifact.power_of_the_earthen_ring.percent();
   m *= 1.0 + artifact.earthshattering_blows.percent();
-  if ( spec.elemental_shaman -> ok() && ! player_t::dbc.ptr )
+  if ( spec.elemental_shaman -> ok() && ! maybe_ptr( player_t::dbc.ptr ) )
   {
     m *= 1.0 + spec.elemental_shaman -> effectN( 7 ).percent();
   }
   // effect order of hotfix changed on ptr, double check in the futur
-  if ( spec.elemental_shaman -> ok() && player_t::dbc.ptr )
+  if ( spec.elemental_shaman -> ok() && maybe_ptr( player_t::dbc.ptr ) )
   {
     m *= 1.0 + spec.elemental_shaman -> effectN( 3 ).percent();
   }
