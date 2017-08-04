@@ -60,7 +60,6 @@ actions.combustion_phase+=/pyroblast,if=buff.hot_streak.up
 actions.combustion_phase+=/fire_blast,if=buff.heating_up.up
 actions.combustion_phase+=/phoenixs_flames
 actions.combustion_phase+=/scorch,if=buff.combustion.remains>cast_time&target.health.pct<=30&equipped.132454
-actions.combustion_phase+=/fireball,if=buff.combustion.remains>cast_time
 actions.combustion_phase+=/scorch,if=buff.combustion.remains>cast_time
 actions.combustion_phase+=/dragons_breath,if=buff.hot_streak.down&action.fire_blast.charges<1&action.phoenixs_flames.charges<1
 actions.combustion_phase+=/scorch,if=target.health.pct<=30&equipped.132454
