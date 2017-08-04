@@ -2809,7 +2809,8 @@ struct am_state_t : public mage_spell_state_t
 
 struct arcane_missiles_t : public arcane_mage_spell_t
 {
-  double rule_of_threes_ticks, rule_of_threes_ratio;
+  double rule_of_threes_ticks;
+  double rule_of_threes_ratio;
 
   arcane_missiles_t( mage_t* p, const std::string& options_str ) :
     arcane_mage_spell_t( "arcane_missiles", p,
@@ -2821,6 +2822,7 @@ struct arcane_missiles_t : public arcane_mage_spell_t
     triggers_erosion = false;
     dot_duration      = data().duration();
     base_tick_time    = data().effectN( 2 ).period();
+    tick_zero         = true;
     channeled         = true;
     hasted_ticks      = false;
     dynamic_tick_action = true;
@@ -2829,6 +2831,7 @@ struct arcane_missiles_t : public arcane_mage_spell_t
     base_multiplier *= 1.0 + p -> artifact.aegwynns_fury.percent();
     base_crit += p -> artifact.aegwynns_intensity.percent();
 
+    // Not including the first, instant tick.
     rule_of_threes_ticks = dot_duration / base_tick_time +
       p -> artifact.rule_of_threes.data().effectN( 2 ).base_value();
     rule_of_threes_ratio = ( dot_duration / base_tick_time ) / rule_of_threes_ticks;
