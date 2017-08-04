@@ -473,8 +473,8 @@ public:
     cooldown_t* antimagic_shell;
     cooldown_t* army_of_the_dead;
     cooldown_t* avalanche;
-    cooldown_t* bone_shield_icd;
     cooldown_t* blighted_rune_weapon;
+    cooldown_t* bone_shield_icd;
     cooldown_t* dark_transformation;
     cooldown_t* death_and_decay;
     cooldown_t* defile;
@@ -841,9 +841,9 @@ public:
     cooldown.antimagic_shell = get_cooldown( "antimagic_shell" );
     cooldown.army_of_the_dead = get_cooldown( "army_of_the_dead" );
     cooldown.avalanche       = get_cooldown( "avalanche" );
+    cooldown.blighted_rune_weapon = get_cooldown( "blighted_rune_weapon" ); 
     cooldown.bone_shield_icd = get_cooldown( "bone_shield_icd" );
     cooldown.bone_shield_icd -> duration = timespan_t::from_seconds( 2.0 );
-    cooldown.blighted_rune_weapon = get_cooldown( "blighted_rune_weapon" ); 
     cooldown.dark_transformation = get_cooldown( "dark_transformation" );
     cooldown.death_and_decay = get_cooldown( "death_and_decay" );
     cooldown.defile          = get_cooldown( "defile" );
