@@ -3635,7 +3635,7 @@ struct army_of_the_dead_t : public death_knight_spell_t
       }
 
       p() -> buffs.t20_2pc_unholy -> extend_duration( p(), timespan_t::from_seconds( -5 ) );
-      p() -> cooldowns.army_of_the_dead -> adjust( - timespan_t::from_seconds( 5.0 ), false );
+      p() -> cooldown.army_of_the_dead -> adjust( - timespan_t::from_seconds( 5.0 ), false );
 
       // Simulate rune regen for 5 seconds for the consumed runes. Ugly but works
       // Note that this presumes no other rune-using abilities are used
@@ -3825,7 +3825,7 @@ struct blighted_rune_weapon_t : public death_knight_spell_t
     {
       p() -> buffs.blighted_rune_weapon -> trigger( data().initial_stacks() );
       p() -> buffs.blighted_rune_weapon -> extend_duration( p(), timespan_t::from_seconds( -15 ) );
-      p() -> cooldowns.blighted_rune_weapon -> adjust( - timespan_t::from_seconds( 15.0 ), false );
+      p() -> cooldown.blighted_rune_weapon -> adjust( - timespan_t::from_seconds( 15.0 ), false );
     }
     else 
       p() -> buffs.blighted_rune_weapon -> trigger( data().initial_stacks() );
