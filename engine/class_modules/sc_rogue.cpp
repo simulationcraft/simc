@@ -6734,6 +6734,11 @@ void rogue_t::trigger_relentless_strikes( const action_state_t* state )
     return;
   }
 
+  if ( attack -> secondary_trigger == TRIGGER_WEAPONMASTER )
+  {
+    return;
+  }
+
   double grant_energy = 0;
 
   grant_energy += rogue_attack_t::cast_state( state ) -> cp * spell.relentless_strikes_energize -> effectN( 1 ).resource( RESOURCE_ENERGY );
