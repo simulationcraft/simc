@@ -3740,6 +3740,11 @@ struct run_through_t: public rogue_attack_t
     base_multiplier *= 1.0 + p -> artifact.fates_thirst.percent();
   }
 
+  bool procs_main_gauche() const override
+  {
+    return false;
+  }
+
   double action_multiplier() const override
   {
     double m = rogue_attack_t::action_multiplier();
