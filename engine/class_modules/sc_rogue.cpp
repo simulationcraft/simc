@@ -3469,7 +3469,8 @@ struct kingsbane_strike_t : public rogue_attack_t
   {
     double m = rogue_attack_t::composite_target_multiplier( target );
 
-    m *= 1.0 + td( target ) -> debuffs.surge_of_toxins -> stack_value();
+    //As of 2017-08-07, while SoT does buff the DoT effect, it does not buff the strikes.
+    //m *= 1.0 + td( target ) -> debuffs.surge_of_toxins -> stack_value();
 
     if ( p() -> legendary.zoldyck_family_training_shackles )
     {
