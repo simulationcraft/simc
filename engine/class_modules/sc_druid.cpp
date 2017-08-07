@@ -97,6 +97,7 @@ struct druid_td_t : public actor_target_data_t
     dot_t* ashamanes_frenzy;
     dot_t* fury_of_elune;
     dot_t* gushing_wound;
+    //dot_t* bloody_gash;
     dot_t* lifebloom;
     dot_t* moonfire;
     dot_t* rake;
@@ -281,6 +282,7 @@ public:
   {
     stalwart_guardian_t*            stalwart_guardian;
     action_t* gushing_wound;
+    action_t* bloody_gash;
     heals::cenarion_ward_hot_t*     cenarion_ward_hot;
     attack_t* ashamanes_rip;
     action_t* brambles;
@@ -517,6 +519,7 @@ public:
     const spell_data_t* cat_form_speed;
     const spell_data_t* feline_swiftness; // Feral Affinity
     const spell_data_t* gushing_wound; // tier17_4pc
+    const spell_data_t* bloody_gash; //tier21_2pc
     const spell_data_t* predatory_swiftness;
     const spell_data_t* primal_fury;
     const spell_data_t* rip;
@@ -1589,6 +1592,30 @@ public:
       p() -> active.gushing_wound, // ignite spell
       t, // target
       p() -> spec.gushing_wound -> effectN( 1 ).percent() * dmg );
+  }
+
+  void trigger_bloody_gash(player_t* t, double dmg)
+  {
+     //druid_t* d = (druid_t*)t;
+
+     // All ok, trigger the damage
+     /*spell->target = target;
+     spell->base_dd_min = spell->base_dd_max = state->result_amount * multiplier;
+     spell->execute();*/
+     if ( p() -> sets -> has_set_bonus( DRUID_FERAL, T21, B2 ) && p() -> rng().roll( p() -> find_spell(251789) -> proc_chance() ) )
+     {
+        p()->active.bloody_gash->target = t;
+        p()->active.bloody_gash->base_dd_min = dmg;
+        p()->active.bloody_gash->execute();
+
+
+
+        if (p()->sim->debug || p()->sim->log)
+        {
+           p()->sim->out_log.printf("Bloody Gash triggered from %s", ab::name());
+        }
+
+     }
   }
 
   bool trigger_gore()
@@ -3083,6 +3110,13 @@ struct ashamanes_rip_t : public cat_attack_t
      return td( s -> target ) -> dots.rip -> remains(); 
   }
 
+  void tick(dot_t* d) override
+  {
+     base_t::tick(d);
+
+     trigger_bloody_gash(d->target, d->state->result_total);
+  }
+
   virtual void execute() override
   {
     assert( td( target ) -> dots.rip -> is_ticking() );
@@ -3549,12 +3583,42 @@ struct rip_t : public cat_attack_t
       td( s -> target ) -> debuff.open_wounds -> trigger();
   }
 
+  void tick( dot_t* d ) override
+  {
+     base_t::tick( d );
+
+     trigger_bloody_gash(d->target, d->state->result_total);
+  }
+
   void last_tick( dot_t* d ) override
   {
     cat_attack_t::last_tick( d );
 
     td( d -> target ) -> debuff.open_wounds -> expire();
   }
+};
+
+// Bloody Gash ==============================================================
+struct bloody_gash_t : public cat_attack_t
+{
+   bloody_gash_t(druid_t* p) :
+      cat_attack_t("bloody_gash", p, p -> find_spell(251789) )
+   {
+      background = dual = proc = may_crit = true;
+      may_miss = may_dodge = may_parry = false;
+      may_block = true;
+      direct_bleed = true;
+      
+   }
+
+   void execute() override
+   {
+      cat_attack_t::execute();
+
+      //TODO(feral): Check if TWC procs from this
+      trigger_wildshapers_clutch(cat_attack_t::get_state()); 
+
+   }
 };
 
 // Savage Roar ==============================================================
@@ -6839,6 +6903,7 @@ void druid_t::init_spells()
   spec.feral_overrides            = specialization() == DRUID_FERAL ? find_spell( 197692 ) : spell_data_t::not_found();
   spec.feral_overrides2           = specialization() == DRUID_FERAL ? find_spell( 106733 ) : spell_data_t::not_found();
   spec.gushing_wound              = sets -> has_set_bonus( DRUID_FERAL, T17, B4 ) ? find_spell( 165432 ) : spell_data_t::not_found();
+  spec.bloody_gash                = sets -> has_set_bonus( DRUID_FERAL, T21, B2 ) ? find_spell( 252750 ) : spell_data_t::not_found();
   spec.nurturing_instinct         = find_specialization_spell( "Nurturing Instinct" );
   spec.predatory_swiftness        = find_specialization_spell( "Predatory Swiftness" );
   spec.primal_fury                = find_spell( 16953 );
@@ -7079,6 +7144,8 @@ void druid_t::init_spells()
     active.yseras_gift        = new heals::yseras_gift_t( this );
   if ( sets -> has_set_bonus( DRUID_FERAL, T17, B4 ) )
     active.gushing_wound      = new cat_attacks::gushing_wound_t( this );
+  if ( sets -> has_set_bonus( DRUID_FERAL, T21, B2 ) )
+     active.bloody_gash       = new cat_attacks::bloody_gash_t( this );
   if ( talent.brambles -> ok() )
   {
     active.brambles           = new spells::brambles_t( this );
