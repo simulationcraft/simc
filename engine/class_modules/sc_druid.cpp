@@ -6208,11 +6208,11 @@ struct starfall_t : public druid_spell_t
 
   virtual void execute() override
   {
-    if (p()->sets->has_set_bonus(DRUID_BALANCE, T20, B4) && trigger_gcd > timespan_t::zero())
+    if (p()->sets->has_set_bonus(DRUID_BALANCE, T20, B4))
     {
       p()->buff.astral_acceleration->trigger();
     }
-    if (p()->sets->has_set_bonus(DRUID_BALANCE, T21, B4) && trigger_gcd > timespan_t::zero())
+    if (p()->sets->has_set_bonus(DRUID_BALANCE, T21, B4))
     {
         p()->buff.solar_solstice->trigger();
     }
@@ -7830,8 +7830,6 @@ void druid_t::apl_balance()
       default_list->add_action("use_item,name=charm_of_the_rising_tide,if=cooldown.incarnation.remains>30|cooldown.celestial_alignment.remains>60");
   if (items[SLOT_TRINKET_1].name_str == "horn_of_valor" || items[SLOT_TRINKET_2].name_str == "horn_of_valor")
       default_list->add_action("use_item,name=horn_of_valor,if=cooldown.incarnation.remains>30|cooldown.celestial_alignment.remains>60");
-  if (items[SLOT_TRINKET_1].name_str == "pharameres_forbidden_grimoire" || items[SLOT_TRINKET_2].name_str == "pharameres_forbidden_grimoire")
-      default_list->add_action("use_item,name=pharameres_forbidden_grimoire");
   default_list->add_action( "use_items" );
   default_list -> add_action( this, "Starfall", "if=buff.oneths_overconfidence.up&(!buff.solar_solstice.up|astral_power.deficit>44|buff.celestial_alignment.up|buff.incarnation.up)" );
   default_list -> add_action( this, "Solar Wrath", "if=buff.solar_empowerment.stack=3" );
@@ -7858,6 +7856,7 @@ void druid_t::apl_balance()
   AoE -> add_action( this, "Lunar Strike", "if=buff.warrior_of_elune.up");
   AoE -> add_action( this, "Solar Wrath", "if=buff.solar_empowerment.up");
   AoE -> add_action( this, "Lunar Strike", "if=buff.lunar_empowerment.up");
+  AoE -> add_action(this, "Moonfire", "if=equipped.lady_and_the_child&active_enemies=2&spell_haste>0.4");
   AoE -> add_action( this, "Lunar Strike", "if=active_enemies>=4|spell_haste<0.45");
   AoE -> add_action( this, "Solar Wrath");
 
