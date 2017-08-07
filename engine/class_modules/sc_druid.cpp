@@ -2159,12 +2159,6 @@ struct moonfire_t : public druid_spell_t
       }
 
       base_multiplier *= 1.0 + p -> artifact.twilight_glow.percent();
-
-      if ( !( p->specialization() == DRUID_FERAL ) )
-      {
-        // HOTFIX
-        base_multiplier *= 1.1;
-      }
     }
 
     double action_multiplier() const override
@@ -7856,7 +7850,7 @@ void druid_t::apl_balance()
   AoE -> add_action( this, "Lunar Strike", "if=buff.warrior_of_elune.up");
   AoE -> add_action( this, "Solar Wrath", "if=buff.solar_empowerment.up");
   AoE -> add_action( this, "Lunar Strike", "if=buff.lunar_empowerment.up");
-  AoE -> add_action(this, "Moonfire", "if=equipped.lady_and_the_child&active_enemies=2&spell_haste>0.4");
+  AoE -> add_action(this, "Moonfire", "if=equipped.lady_and_the_child&active_enemies=2&spell_haste>0.4&!(buff.celestial_alignment.up|buff.incarnation.up)");
   AoE -> add_action( this, "Lunar Strike", "if=active_enemies>=4|spell_haste<0.45");
   AoE -> add_action( this, "Solar Wrath");
 
