@@ -2700,7 +2700,7 @@ struct flametongue_weapon_spell_t : public shaman_spell_t
     if ( player -> specialization() == SHAMAN_ENHANCEMENT )
     {
       snapshot_flags          = STATE_AP;
-      attack_power_mod.direct = w -> swing_time.total_seconds() / 2.6 * 0.125;
+      attack_power_mod.direct = w -> swing_time.total_seconds() / 2.6 * 0.2;
     }
   }
 
