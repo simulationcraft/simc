@@ -358,7 +358,7 @@ Class            : Mage
 School           : Arcane
 Spell Level      : 14
 Range            : 60 yards
-Velocity         : 45 yards/sec
+Velocity         : 50 yards/sec
 Affecting spells : Arcane Charge (36032 effect#2), Arcane Mage (137021 effect#1), Arcane Focus (171375 effect#1), Aegwynn's Fury (187287 effect#1), Erosion (210134 effect#1), Norgannon's Foresight (236380 effect#1), Aegwynn's Intensity (238054 effect#1)
 Triggered by     : Arcane Missiles (5143)
 Attributes       : ........ ........ x....... ........   ..x..... ........ ........ ........ 
@@ -2228,11 +2228,11 @@ Attributes       : ........ ........ ........ .......x   ........ ........ .....
                  : Cannot cancel aura (31)
 Effects          :
 #1 (id=131312)   : Unknown(179)
-                   Base Value: 2 | Scaled Value: 2 | Misc Value: 304 | Target: Custom (18)
+                   Base Value: 2 | Scaled Value: 2 | Misc Value: 304 | Target: Unknown(62)
 #2 (id=170598)   : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0 | Radius: 8 yards | Target: Custom (18)
+                   Base Value: 0 | Scaled Value: 0 | Radius: 8 yards | Target: Unknown(62)
 #3 (id=177659)   : Summon (28)
-                   Base Value: 2 | Scaled Value: 2 | Misc Value: 60199 | Misc Value 2: 0xc89 | Target: Custom (18)
+                   Base Value: 2 | Scaled Value: 2 | Misc Value: 60199 | Misc Value 2: 0xc89 | Target: Unknown(62)
 Description      : Places a Rune of Power on the ground for $116011d which increases your spell damage by $116014s1% while you stand within 8 yds. Max 2 charges.
 
 Name             : Rune of Power (id=116014) [Spell Family (3)] 

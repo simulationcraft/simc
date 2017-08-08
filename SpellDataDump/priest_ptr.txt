@@ -187,7 +187,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=243)      : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.50000 | Radius: 0 - 40 yards | Target: Unknown(63) -> AOE friendly (31)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.50000 | Radius: 0 - 40 yards | Target: Unknown(132) -> AOE friendly (31)
 #2 (id=105332)   : Trigger Spell (64): Prayer of Healing
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 98367 | Target: Unknown(25)
 #3 (id=288930)   : Dummy (3)
@@ -1038,6 +1038,10 @@ Effects          :
 #1 (id=39747)    : Apply Aura (6) | Add Percent Modifier (108): Spell Cooldown (11)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 11 | Target: Self (1)
                    Affected Spells: Power Word: Shield (17)
+#2 (id=476560)   : Apply Aura (6) | Modify Attack Power (104)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+#3 (id=476561)   : Apply Aura (6) | Unknown(235)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : For the next $d, Power Word: Shield has no cooldown.
 Tooltip          : Your Power Word: Shield has no cooldown.
 
@@ -1220,7 +1224,7 @@ Effects          :
 #2 (id=40043)    : Dummy (3)
                    Base Value: 40 | Scaled Value: 40
 #3 (id=188025)   : Apply Aura (6) | Absorb Damage (69)
-                   Base Value: 50000000 | Scaled Value: 5e+07 | Misc Value: 127 | Target: Friend (21)
+                   Base Value: 50000008 | Scaled Value: 5.000001e+07 | Misc Value: 127 | Target: Friend (21)
 Description      : Calls upon a guardian spirit to watch over the friendly target for $d, increasing healing received by $s1%$?s159599[][ and preventing the target from dying by sacrificing itself.  This sacrifice terminates the effect and heals the target for $s2% of maximum health]. Castable while stunned.
 
 Massive damage amounts will kill the target despite this effect.
@@ -2174,7 +2178,7 @@ School           : Holy
 Range            : 100 yards
 Affecting spells : Atonement (194384 effect#2), Light of T'uure (208065 effect#1), Power Word: Shield (211558 effect#1)
 Attributes       : ........ ........ ........ x..x....   .....x.. .....x.. ........ ........ 
-                 : ........ ......x. ...x.... ........   ........ .x...... ........ ........ 
+                 : ..x..... ......x. ...x.... ........   ........ .x...... ........ ......x. 
                  : x......x .......x ........ ........   ...x.... .......x .xx..... ........ 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : .....x.. ........ ........ ........   ........ ...x.... ....x... ........ 
@@ -3605,6 +3609,10 @@ Effects          :
 #2 (id=334777)   : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost (14)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 14 | Target: Self (1)
                    Affected Spells: Holy Word: Serenity (2050), Holy Word: Sanctify (34861), Holy Word: Chastise (88625), Holy Word: Chastise (200196), Holy Word: Chastise (200200)
+#3 (id=476562)   : Apply Aura (6) | Modify Attack Power (104)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+#4 (id=476563)   : Apply Aura (6) | Unknown(235)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : Enter a pure Holy form for $d, increasing the effects of Serendipity by $s1% and reducing the cost of your Holy Words by $s2%.
 Tooltip          : Effects of Serendipity increased by $s1% and cost of Holy Words reduced by $s2%.
 
@@ -3691,9 +3699,6 @@ Name             : Grace (Passive) (id=200309) [Spell Family (6), Passive]
 Class            : Priest
 School           : Physical
 Spell Level      : 1
-Proc Chance      : 100%
-Proc Flags       : ........ ......x. ........ ........ 
-                 : Heal
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -3711,9 +3716,6 @@ Name             : The Penitent (id=200347) [Spell Family (6), Passive]
 Class            : Discipline Priest
 School           : Physical
 Spell Level      : 1
-Proc Chance      : 100%
-Proc Flags       : ........ ......x. ........ ........ 
-                 : Heal
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 

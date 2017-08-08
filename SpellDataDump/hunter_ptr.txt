@@ -266,7 +266,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
 #2 (id=1072)     : Apply Aura (6) | Unknown(308)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 7 | Target: Enemy (6)
-                   Affected Spells: Multi-Shot (2643), Freezing Trap (3355), Concussive Shot (5116), Ice Trap (13809), Explosive Trap (13812), Explosive Trap (13813), Wyvern Sting (19386), Aimed Shot (19434), Intimidation (19577), Kill Command (34026), Scatter Shot (37506), Chimaera Shot (53209), Bullheaded (63896), Serpent Sting (118253), Barrage (120360), Barrage (120361), A Murder of Crows (131900), Iron Horde Trip Mine (155918), Steel Trap (162488), Steel Trap (162496), Chimaera Shot (171454), Chimaera Shot (171457), Arcane Shot (185358), Aspect of the Turtle (186265), Bursting Shot (186387), Freezing Trap (187650), Freezing Trap (187651), Tar Trap (187698), Tar Trap (187699), Mongoose Bite (190928), Aimed Shot (191043), Explosive Trap (191433), Cobra Shot (193455), Volley (194392), Black Arrow (194599), Stomp (199530), Throwing Axes (200163), Stampede (201594), Stomp (201754), Flanking Strike (202800), Chimaera Shot (204304), Flanking Strike (204740), Explosive Shot (212431), Explosive Shot (212680), Scatter Shot (213691), Sidewinders (214579), Sidewinders (214581), Dire Frenzy (217200), Dire Frenzy (217207)
+                   Affected Spells: Multi-Shot (2643), Freezing Trap (3355), Concussive Shot (5116), Ice Trap (13809), Explosive Trap (13812), Explosive Trap (13813), Wyvern Sting (19386), Aimed Shot (19434), Intimidation (19577), Kill Command (34026), Scatter Shot (37506), Chimaera Shot (53209), Bullheaded (63896), Serpent Sting (118253), Barrage (120360), Barrage (120361), A Murder of Crows (131900), Iron Horde Trip Mine (155918), Steel Trap (162488), Steel Trap (162496), Chimaera Shot (171454), Chimaera Shot (171457), Arcane Shot (185358), Aspect of the Turtle (186265), Bursting Shot (186387), Freezing Trap (187650), Freezing Trap (187651), Tar Trap (187698), Tar Trap (187699), Mongoose Bite (190928), Aimed Shot (191043), Explosive Trap (191433), Cobra Shot (193455), Volley (194392), Black Arrow (194599), Stomp (199530), Throwing Axes (200163), Stampede (201594), Flanking Strike (202800), Chimaera Shot (204304), Flanking Strike (204740), Explosive Shot (212431), Explosive Shot (212680), Scatter Shot (213691), Sidewinders (214579), Sidewinders (214581), Dire Frenzy (217200), Dire Frenzy (217207)
 Description      : $@spelldesc187650
 Tooltip          : Incapacitated.
 
@@ -2371,7 +2371,7 @@ Effects          :
 #1 (id=139839)   : Apply Aura (6) | Periodic Trigger Spell (23): Barrage every 0.2 seconds
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 120361 | Target: Self (1)
 Description      : Rapidly fires a spray of shots for $120360d, dealing an average of $<damageSec> Physical damage to all enemies in front of you. Usable while moving.
-Variables        : $damageSec=${$120361sw2*8}
+Variables        : $damageSec=${$120361sw2*10}
 
 Name             : Barrage (id=120361) [Spell Family (9)] 
 Class            : Hunter
@@ -2785,10 +2785,10 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=179698)   : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
                    Base Value: 10 | Scaled Value: 10 | Target: Self (1)
-                   Affected Spells: Multi-Shot (2643), Kill Command (34026), Chimaera Shot (53209), Barrage (120360), Barrage (120361), A Murder of Crows (131900), Chimaera Shot (171454), Chimaera Shot (171457), Cobra Shot (193455), Volley (194392), Stomp (199530), Stampede (201594), Stomp (201754)
+                   Affected Spells: Multi-Shot (2643), Kill Command (34026), Chimaera Shot (53209), Barrage (120360), Barrage (120361), A Murder of Crows (131900), Chimaera Shot (171454), Chimaera Shot (171457), Cobra Shot (193455), Volley (194392), Stomp (199530), Stampede (201594)
 #2 (id=191138)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Damage (22)
                    Base Value: 10 | Scaled Value: 10 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Multi-Shot (2643), Kill Command (34026), Chimaera Shot (53209), Barrage (120360), Barrage (120361), A Murder of Crows (131900), Chimaera Shot (171454), Chimaera Shot (171457), Cobra Shot (193455), Volley (194392), Stomp (199530), Stampede (201594), Stomp (201754)
+                   Affected Spells: Multi-Shot (2643), Kill Command (34026), Chimaera Shot (53209), Barrage (120360), Barrage (120361), A Murder of Crows (131900), Chimaera Shot (171454), Chimaera Shot (171457), Cobra Shot (193455), Volley (194392), Stomp (199530), Stampede (201594)
 #3 (id=191139)   : Apply Aura (6) | Modify Pet Damage Done% (429)
                    Base Value: 10 | Scaled Value: 10 | Target: Self (1)
                    Affected Spells: Bestial Wrath (19574), Bestial Wrath (186254)
@@ -5096,9 +5096,6 @@ Description      : While Bestial Wrath is active, Cobra Shot resets the cooldown
 Name             : Expert Trapper (id=199543) [Spell Family (9), Passive] 
 Class            : Hunter
 School           : Physical
-Proc Chance      : 100%
-Proc Flags       : ...x.x.x .x...x.. .x.x.... ........ 
-                 : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Hostile Spell Taken, Hostile Spell Taken, Periodic Taken
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
                  : ........ .......x ...x.... ........   ........ ........ ........ ........ 
@@ -5478,7 +5475,6 @@ Description      : $@spelldesc201430
 Name             : Stomp (id=201754) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
-Affecting spells : Freezing Trap (3355 effect#2), Beast Mastery Hunter (137015 effect#1), Guide: Sharpshooting (178549 effect#2)
 Attributes       : ....x... ........ ..x..... ........   ...x...x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5549,10 +5545,7 @@ Range            : 8 yards
 GCD              : 1.5 seconds
 Duration         : 4 seconds
 Cooldown         : 45 seconds
-Proc Chance      : 100%
 Artifact Power   : Id: 1068, Max Rank: 1
-Proc Flags       : ........ ........ x....... ........ 
-                 : Hostile Spell
 Affecting spells : Hunter (137014 effect#3), Guide: Sharpshooting (178549 effect#2), Mastery: Sniper Training (193468 effect#1), Unseen Predator's Cloak (248212 effect#1)
 Attributes       : ........ ........ ........ ........   ..x...x. .xx..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 

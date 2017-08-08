@@ -3059,6 +3059,9 @@ Effects          :
 #3 (id=356845)   : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
                    Affected Spells: Shred (5221), Swipe (106785), Thrash (106830), Brutal Slash (202028), Shadow Thrash (210687)
+#4 (id=476583)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Damage (22)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 22 | Target: Self (1)
+                   Affected Spells: Thrash (106830), Shadow Thrash (210687)
 Description      : $@spelldesc16864
 Tooltip          : Your next Shred, Thrash, or $?s202028[Brutal Slash][Swipe] costs no Energy$?s236068[ and deals $s3% increased damage][].
 
@@ -6975,6 +6978,9 @@ Effects          :
                    Affected Spells: Omen of Clarity (16864), Clearcasting (16870), Clearcasting (135700)
 #4 (id=356853)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 3 (23)
                    Base Value: 20 | Scaled Value: 20 | Misc Value: 23 | Target: Self (1)
+                   Affected Spells: Omen of Clarity (16864), Clearcasting (16870), Clearcasting (135700)
+#5 (id=476584)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 4 (32)
+                   Base Value: 20 | Scaled Value: 20 | Misc Value: 32 | Target: Self (1)
                    Affected Spells: Omen of Clarity (16864), Clearcasting (16870), Clearcasting (135700)
 Description      : Omen of Clarity now triggers $s2% more often, stacks up to ${$s135700u+$s1} times and increases the damage of your next Shred, Thrash, or $?s202028[Brutal Slash][Swipe] by $s4%.
 

@@ -80,7 +80,7 @@ Spell Level      : 26
 Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 20 seconds
-Affecting spells : Destruction Warlock (137046 effect#1), Grimoire of Supremacy (152107 effect#6), Impending Doom (196270 effect#1), The Doom of Azeroth (211106 effect#1), Impish Incineration (215273 effect#2)
+Affecting spells : Grimoire of Supremacy (152107 effect#6), Impending Doom (196270 effect#1), The Doom of Azeroth (211106 effect#1), Impish Incineration (215273 effect#2)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ....x... ........   ........ .....x.. ........ ........ 
@@ -389,7 +389,7 @@ Range            : 40 yards
 Cast Time        : 1.75 seconds
 GCD              : 0.5 seconds
 Velocity         : 16 yards/sec
-Affecting spells : Increased Imp Firebolt Damage (22855 effect#1), Destruction Warlock (137046 effect#1), Impish Incineration (215273 effect#1)
+Affecting spells : Increased Imp Firebolt Damage (22855 effect#1), Impish Incineration (215273 effect#1)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1757,7 +1757,7 @@ Spell Level      : 1
 Range            : 30 yards
 Cast Time        : 3 seconds
 Velocity         : 20 yards/sec
-Affecting spells : Destruction Warlock (137046 effect#1), Grimoire of Supremacy (152107 effect#6), Impish Incineration (215273 effect#2)
+Affecting spells : Grimoire of Supremacy (152107 effect#6), Impish Incineration (215273 effect#2)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3079,15 +3079,16 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=179730)   : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
                    Base Value: 15 | Scaled Value: 15 | Target: Self (1)
-                   Affected Spells: Immolate (348), Doom (603), Firebolt (3110), Shadowburn (17877), Conflagrate (17962), Incinerate (29722), Rain of Fire (42223), Doom Bolt (85692), Chaos Bolt (116858), Cataclysm (152108), Channel Demonfire (196448), Chaos Bolt (213229), Incinerate (244670)
+                   Affected Spells: Immolate (348), Shadowburn (17877), Conflagrate (17962), Incinerate (29722), Rain of Fire (42223), Chaos Bolt (116858), Cataclysm (152108), Immolate (157736), Demonic Power (196100), Channel Demonfire (196448), Chaos Bolt (213229), Drain Life (234153)
 #2 (id=191023)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Damage (22)
                    Base Value: 15 | Scaled Value: 15 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Immolate (157736)
-#3 (id=191024)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 1 (3)
+                   Affected Spells: Immolate (348), Shadowburn (17877), Conflagrate (17962), Incinerate (29722), Rain of Fire (42223), Chaos Bolt (116858), Cataclysm (152108), Immolate (157736), Demonic Power (196100), Channel Demonfire (196448), Chaos Bolt (213229), Drain Life (234153)
+#3 (id=191024)   : Apply Aura (6) | Modify Pet Damage Done% (429)
+                   Base Value: 15 | Scaled Value: 15 | Target: Self (1)
+                   Affected Spells: Immolate (348), Shadowburn (17877), Conflagrate (17962), Incinerate (29722), Rain of Fire (42223), Chaos Bolt (116858), Cataclysm (152108), Immolate (157736), Demonic Power (196100), Channel Demonfire (196448), Chaos Bolt (213229), Drain Life (234153)
+#4 (id=191025)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 1 (3)
                    Base Value: -5 | Scaled Value: -5 | Misc Value: 3 | Target: Self (1)
                    Affected Spells: Soul Conduit (215941)
-#4 (id=191025)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #5 (id=191026)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #6 (id=261057)   : Apply Aura (6) | Dummy (4)
@@ -3101,6 +3102,8 @@ Effects          :
 #10 (id=261061)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #11 (id=261062)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+#12 (id=476297)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 
 Name             : Player Damage Reduction Level 90 (id=142689) [Passive, Hidden] 
@@ -3216,7 +3219,7 @@ School           : Fire
 Spell Level      : 12
 Range            : 100 yards
 Duration         : 18 seconds
-Affecting spells : Destruction Warlock (137046 effect#2), Item - Warlock T17 Destruction 2P Bonus (165455 effect#1), Flamelicked (185229 effect#1), Residual Flames (196227 effect#1), Burning Hunger (196432 effect#1), Roaring Blaze (205690 effect#1), Odr, Shawl of the Ymirjar (212173 effect#1)
+Affecting spells : Destruction Warlock (137046 effect#1), Item - Warlock T17 Destruction 2P Bonus (165455 effect#1), Flamelicked (185229 effect#1), Residual Flames (196227 effect#1), Burning Hunger (196432 effect#1), Roaring Blaze (205690 effect#1), Odr, Shawl of the Ymirjar (212173 effect#1)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ....x... ........   ........ .....x.. ........ ........ 
@@ -3795,7 +3798,7 @@ Class            : Warlock
 School           : Shadow
 Spell Level      : 1
 Range            : 50000 yards
-Affecting spells : Affliction Warlock (137043 effect#1), Impish Incineration (215273 effect#3)
+Affecting spells : Affliction Warlock (137043 effect#1), Destruction Warlock (137046 effect#1), Impish Incineration (215273 effect#3)
 Triggered by     : Demonic Power (196099)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -4224,9 +4227,6 @@ Class            : Warlock
 School           : Physical
 Range            : 60 yards
 Duration         : 16 seconds
-Proc Chance      : 25%
-Proc Flags       : ....x... ........ ........ ........ 
-                 : Yellow Melee
 Attributes       : ........ ........ ........ .......x   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4753,7 +4753,7 @@ School           : Shadow
 Proc Chance      : 100%
 Proc Flags       : ........ ..x.x.x. x.x..x.. ........ 
                  : AOE Heal, AOE Hostile Spell, Heal, Hostile Spell, Periodic, Trap Triggered
-Affecting spells : Destruction Warlock (137046 effect#3)
+Affecting spells : Destruction Warlock (137046 effect#4)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -5186,7 +5186,7 @@ Spell Level      : 13
 Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 6 seconds
-Affecting spells : Flamelicked (185229 effect#1), Drained to a Husk (199120 effect#1), Perdition (199158 effect#1), Long Dark Night of the Soul (199214 effect#1), Wrath of Consumption (199646 effect#1), Odr, Shawl of the Ymirjar (212173 effect#1), Devourer of Life (215165 effect#1), Winnowing (238072 effect#1)
+Affecting spells : Destruction Warlock (137046 effect#1), Flamelicked (185229 effect#1), Drained to a Husk (199120 effect#1), Perdition (199158 effect#1), Long Dark Night of the Soul (199214 effect#1), Wrath of Consumption (199646 effect#1), Odr, Shawl of the Ymirjar (212173 effect#1), Devourer of Life (215165 effect#1), Winnowing (238072 effect#1)
 Attributes       : ........ ........ x....... ........   ..x..... ......x. ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .....x.. ........ ...x.... 
@@ -5319,7 +5319,7 @@ Class            : Warlock
 School           : Fire
 Spell Level      : 14
 Range            : 100 yards
-Affecting spells : Backdraft (117828 effect#1), Destruction Warlock (137046 effect#1), Flamelicked (185229 effect#1), Master of Disaster (196211 effect#1), Fire and the Flames (196222 effect#1), Odr, Shawl of the Ymirjar (212173 effect#1), Chaotic Flames (253092 effect#1)
+Affecting spells : Backdraft (117828 effect#1), Flamelicked (185229 effect#1), Master of Disaster (196211 effect#1), Fire and the Flames (196222 effect#1), Odr, Shawl of the Ymirjar (212173 effect#1), Chaotic Flames (253092 effect#1)
 Attributes       : ........ x....... ........ ........   ........ ........ ........ ........ 
                  : ........ x....... ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
