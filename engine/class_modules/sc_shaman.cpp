@@ -2183,7 +2183,10 @@ struct doom_wolf_base_t : public base_wolf_t
 
   doom_wolf_base_t( shaman_t* owner, const std::string& name ) :
     base_wolf_t( owner, name ), special_ability_cd( nullptr )
-  { }
+  {
+    // Make Wolves dynamic so we get accurate reporting for special abilities
+    dynamic = true;
+  }
 
   void arise() override
   {
