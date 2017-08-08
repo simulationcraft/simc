@@ -1871,6 +1871,10 @@ struct shaman_pet_t : public pet_t
 
   virtual attack_t* create_auto_attack()
   { return nullptr; }
+
+  // Apparently shaman pets by default do not inherit attack speed buffs from owner
+  double composite_melee_speed() const override
+  { return o() -> cache.attack_haste(); }
 };
 
 // ==========================================================================
