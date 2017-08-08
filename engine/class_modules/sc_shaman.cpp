@@ -146,6 +146,7 @@ struct shaman_td_t : public actor_target_data_t
     buff_t* lightning_rod;
     buff_t* storm_tempests; // 7.0 Legendary
     buff_t* lashing_flames;
+    buff_t* t21_4pc_enhancement;
   } debuff;
 
   struct heals
@@ -1005,6 +1006,8 @@ shaman_td_t::shaman_td_t( player_t* target, shaman_t* p ) :
   debuff.lashing_flames = buff_creator_t( *this, "lashing_flames" )
     .spell( p -> artifact.lashing_flames.data().effectN( 1 ).trigger() )
     .default_value( p -> artifact.lashing_flames.data().effectN( 1 ).trigger() -> effectN( 1 ).percent() );
+  debuff.t21_4pc_enhancement = buff_creator_t( *this, "exposed_elements", p -> find_spell( 252151 ) )
+    .default_value( p -> find_spell( 252151 ) -> effectN( 1 ).percent() );
 }
 
 // ==========================================================================
@@ -1355,9 +1358,9 @@ public:
   bool may_proc_stormbringer;
   bool may_proc_lightning_shield;
   bool may_proc_hot_hand;
-  bool may_proc_t21_4p;
+  bool may_proc_t21_2p;
 
-  proc_t* proc_wf, *proc_ft, *proc_fb, *proc_mw, *proc_sb, *proc_ls, *proc_hh, *proc_t21_4p;
+  proc_t* proc_wf, *proc_ft, *proc_fb, *proc_mw, *proc_sb, *proc_ls, *proc_hh, *proc_t21_2p;
 
   shaman_attack_t( const std::string& token, shaman_t* p, const spell_data_t* s ) :
     base_t( token, p, s ),
@@ -1369,7 +1372,7 @@ public:
     may_proc_lightning_shield( false ),
     may_proc_hot_hand( p -> talent.hot_hand -> ok() ),
     proc_wf( nullptr ), proc_ft( nullptr ), proc_fb( nullptr ), proc_mw( nullptr ),
-    proc_sb( nullptr ), proc_ls( nullptr ), proc_hh( nullptr ), proc_t21_4p( nullptr )
+    proc_sb( nullptr ), proc_ls( nullptr ), proc_hh( nullptr ), proc_t21_2p( nullptr )
   {
     special = true;
     may_glance = false;
@@ -1406,7 +1409,7 @@ public:
 
     may_proc_lightning_shield = p() -> talent.lightning_shield -> ok() && weapon && weapon_multiplier > 0;
 
-    may_proc_t21_4p = p() -> sets -> has_set_bonus(SHAMAN_ENHANCEMENT, T21, B4 );
+    may_proc_t21_2p = p() -> sets -> has_set_bonus(SHAMAN_ENHANCEMENT, T21, B2 );
   }
 
   bool init_finished() override
@@ -1446,9 +1449,9 @@ public:
       proc_wf = player -> get_proc( std::string( "Windfury: " ) + full_name() );
     }
 
-    if ( may_proc_t21_4p )
+    if ( may_proc_t21_2p )
     {
-      proc_t21_4p = player -> get_proc( std::string( "Rockbiter: " ) + full_name() );
+      proc_t21_2p = player -> get_proc( std::string( "Force of the Mountain: " ) + full_name() );
     }
 
     return base_t::init_finished();
@@ -3568,12 +3571,12 @@ struct stormstrike_base_t : public shaman_attack_t
     p() -> trigger_t19_oh_8pc( execute_state );
 
     //Currently assuming based on tooltip description that chance is on cast, not hit.
-    if ( p() -> sets -> has_set_bonus( SHAMAN_ENHANCEMENT, T21, B4 ) )
+    if ( p() -> sets -> has_set_bonus( SHAMAN_ENHANCEMENT, T21, B2 ) )
     {
-      if ( rng().roll( p() -> sets -> set(SHAMAN_ENHANCEMENT, T21, B4) -> proc_chance() ) )
+      if ( rng().roll( p() -> sets -> set(SHAMAN_ENHANCEMENT, T21, B2) -> proc_chance() ) )
       {
-        p() -> cooldown.rockbiter -> reset( false );
-        proc_t21_4p -> occur();
+        p() -> buff.t21_2pc_enhancement -> trigger();
+        proc_t21_2p -> occur();
       }
     }
 
@@ -3729,6 +3732,7 @@ struct rockbiter_t : public shaman_spell_t
     base_multiplier *= 1.0 + player -> artifact.weapons_of_the_elements.percent();
 
     base_multiplier *= 1.0 + player -> talent.boulderfist -> effectN( 2 ).percent();
+
     // TODO: SpellCategory + SpellEffect based detection
     cooldown -> hasted = true;
   }
@@ -3738,6 +3742,19 @@ struct rockbiter_t : public shaman_spell_t
     double m = shaman_spell_t::recharge_multiplier();
 
     m *= 1.0 + p() -> talent.boulderfist -> effectN( 1 ).percent();
+
+    return m;
+  }
+
+  double action_multiplier() const override
+  {
+    double m = shaman_spell_t::action_multiplier();
+
+    if ( p() -> buff.t21_2pc_enhancement -> up() )
+    {
+      //spell data currently iffy - hardcode for now
+      m *= 1.0 + p() -> buff.t21_2pc_enhancement -> check_value();
+    }
 
     return m;
   }
@@ -3752,10 +3769,17 @@ struct rockbiter_t : public shaman_spell_t
   {
     p() -> buff.landslide -> trigger();
 
-    p() -> buff.t21_2pc_enhancement -> trigger();
-    
     shaman_spell_t::execute();
+  }
 
+  void impact(action_state_t* s) override
+  {
+    shaman_spell_t::impact(s);
+    
+    if ( p() -> sets -> has_set_bonus(SHAMAN_ENHANCEMENT, T21, B4 ) )
+    {
+      td( target ) -> debuff.t21_4pc_enhancement -> trigger();
+    }
   }
 };
 
@@ -7343,7 +7367,7 @@ void shaman_t::create_buffs()
   buff.t21_2pc_elemental = buff_creator_t( this, "earthen_strength", sets -> set( SHAMAN_ELEMENTAL, T21, B2 ) -> effectN( 1 ).trigger() )
     .trigger_spell( sets -> set( SHAMAN_ELEMENTAL, T21, B2 ) )
     .default_value( sets -> set( SHAMAN_ELEMENTAL, T21, B2 ) -> effectN( 1 ).trigger() -> effectN( 1 ).percent() );
-  buff.t21_2pc_enhancement = buff_creator_t( this, "exposed_elements", sets -> set( SHAMAN_ENHANCEMENT, T21, B2 ) -> effectN( 1 ).trigger() )
+  buff.t21_2pc_enhancement = buff_creator_t( this, "ss_buffs_rockbiter", sets -> set( SHAMAN_ENHANCEMENT, T21, B2 ) -> effectN( 1 ).trigger() )
     .trigger_spell( sets -> set( SHAMAN_ENHANCEMENT, T21, B2) ) 
     .default_value( sets -> set( SHAMAN_ENHANCEMENT, T21, B2 ) -> effectN( 1 ).trigger() -> effectN( 1 ).percent() );
 }
@@ -8140,14 +8164,6 @@ double shaman_t::composite_player_multiplier( school_e school ) const
   m *= 1.0 + buff.eotn_shock -> stack_value();
   m *= 1.0 + buff.eotn_chill -> stack_value();
 
-  if ( buff.t21_2pc_enhancement -> up() && 
-    ( dbc::is_school( school, SCHOOL_FIRE   ) ||
-      dbc::is_school( school, SCHOOL_NATURE ) ) )
-  {
-    //m *= 1.0 + buff.t21_2pc_enhancement -> data().effectN( 1 ).percent();
-    m *= 1.1; //spell data is incomplete
-  }
-
   return m;
 }
 
@@ -8163,6 +8179,16 @@ double shaman_t::composite_player_target_multiplier( player_t* target, school_e 
     ( dbc::is_school( school, SCHOOL_PHYSICAL ) || dbc::is_school( school, SCHOOL_NATURE ) ) )
   {
     m *= td -> debuff.earthen_spike -> check_value();
+  }
+
+  if (td -> debuff.t21_4pc_enhancement -> up() &&
+      ( dbc::is_school(school, SCHOOL_FIRE) ||
+        dbc::is_school(school, SCHOOL_NATURE) ||
+        dbc::is_school(school, SCHOOL_FROST) )
+    )
+  {
+    //m *= 1.1; //testing
+    m *= 1.0 + ( td -> debuff.t21_4pc_enhancement -> check_value() );
   }
 
   return m;
