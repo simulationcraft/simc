@@ -4597,6 +4597,11 @@ struct shuriken_storm_t: public rogue_attack_t
     {
       p() -> trigger_shadow_nova( execute_state );
     }
+
+    if ( p() -> spec.shuriken_combo -> ok() && execute_state -> n_targets > 1 )
+    {
+      p() -> buffs.focused_shurikens -> trigger(execute_state -> n_targets - 1);
+    }
   }
 
   void impact( action_state_t* state ) override
@@ -4604,13 +4609,7 @@ struct shuriken_storm_t: public rogue_attack_t
     rogue_attack_t::impact( state );
 
     p() -> trigger_second_shuriken( state );
-
-    if ( p() -> spec.shuriken_combo -> ok() )
-    {
-      p() -> buffs.focused_shurikens -> trigger();
-    }
   }
-
 };
 
 // Shuriken Toss ============================================================
