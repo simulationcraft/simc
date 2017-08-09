@@ -3594,11 +3594,9 @@ struct overwhelming_darkness_t final : public priest_buff_t<stat_buff_t>
   overwhelming_darkness_t(priest_t& p)
     : base_t(p, stat_buff_creator_t( &p, "overwhelming_darkness", p.find_spell( 252909 ) )
                      .max_stack( 100 )
-                     .duration(timespan_t::from_seconds(50))
-                     .chance( p.sets->has_set_bonus(PRIEST_SHADOW, T21, B4))
-                     .period( timespan_t::from_seconds(1))
-                     .tick_behavior( BUFF_TICK_REFRESH)
-                     .tick_time_behavior( BUFF_TICK_TIME_UNHASTED )
+                     .chance( p.sets->has_set_bonus( PRIEST_SHADOW, T21, B4 ) )                     
+                     .period( timespan_t::from_seconds( 1 ) )
+                     .refresh_behavior( BUFF_REFRESH_DURATION )
                      .add_invalidate( CACHE_CRIT_CHANCE ) )
   {
   };
