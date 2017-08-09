@@ -427,6 +427,7 @@ public:
   role_e primary_role() const override;
   stat_e convert_hybrid_stat( stat_e s ) const override;
   void assess_damage( school_e school, dmg_e dtype, action_state_t* s ) override;
+  double composite_spell_crit_chance() const override;
   double composite_melee_haste() const override;
   double composite_melee_speed() const override;
   double composite_spell_haste() const override;
@@ -4180,6 +4181,20 @@ void priest_t::assess_damage( school_e school, dmg_e dtype, action_state_t* s )
   }
 
   player_t::assess_damage( school, dtype, s );
+}
+
+double priest_t::composite_spell_crit_chance() const
+{
+  double c = player_t::composite_spell_crit_chance();
+
+  if ( sets->has_set_bonus( PRIEST_SHADOW, T21, B4 ) 
+      && buffs.overwhelming_darkness->check() ) 
+  {
+    c +=   buffs.overwhelming_darkness->check()
+         * buffs.overwhelming_darkness->data().effectN(1).percent();
+  }
+
+  return c;
 }
 
 double priest_t::composite_spell_haste() const
