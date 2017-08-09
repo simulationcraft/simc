@@ -4262,7 +4262,11 @@ struct chained_base_t : public shaman_spell_t
   void execute() override
   {
     // Roll for static overload buff before execute
-    p() -> buff.static_overload -> trigger();
+    // redesign in 7.3 PTR to only trigger on Stormkeeper
+    if ( ! maybe_ptr( player -> dbc.ptr ) ) {
+      p() -> buff.static_overload -> trigger();
+    }
+    
 
     shaman_spell_t::execute();
 
@@ -4333,6 +4337,16 @@ struct lava_beam_t : public chained_base_t
     }
   }
 
+  timespan_t execute_time() const override
+  {
+    if (p()->buff.stormkeeper->up())
+    {
+      return timespan_t::zero();
+    }
+
+    return shaman_spell_t::execute_time();
+  }
+
   bool ready() override
   {
     if ( ! p() -> buff.ascendance -> check() )
@@ -4340,6 +4354,7 @@ struct lava_beam_t : public chained_base_t
 
     return shaman_spell_t::ready();
   }
+
 };
 
 // Lava Burst Spell =========================================================
@@ -5601,6 +5616,10 @@ struct stormkeeper_t : public shaman_spell_t
     {
       p() -> pet.guardian_greater_lightning_elemental -> summon(
           p() -> spell.fury_of_the_storms_driver -> duration() );
+    }
+    // Trigger Static Overload 7.3 redesign
+    if ( maybe_ptr( player -> dbc.ptr ) ) {
+      p() -> buff.static_overload -> trigger();
     }
   }
 };
@@ -7321,7 +7340,7 @@ void shaman_t::create_buffs()
   buff.stormkeeper = buff_creator_t( this, "stormkeeper", artifact.stormkeeper )
     .cd( timespan_t::zero() ); // Handled by the action
   buff.static_overload = buff_creator_t( this, "static_overload", find_spell( 191634 ) )
-    .chance( artifact.static_overload.data().effectN( 1 ).percent() );
+    .chance(  maybe_ptr( player_t::dbc.ptr ) ? 1.0 : artifact.static_overload.data().effectN( 1 ).percent() );
   buff.power_of_the_maelstrom = buff_creator_t( this, "power_of_the_maelstrom", artifact.power_of_the_maelstrom.data().effectN( 1 ).trigger() )
     .trigger_spell( artifact.power_of_the_maelstrom );
 
