@@ -298,7 +298,7 @@
   "RelicTalent": [
     { "data_type": "h", "field": "id_power" },
     { "data_type": "b", "field": "power_index" },
-    { "data_type": "b", "field": "unk_2" },
+    { "data_type": "b", "field": "row" },
     { "data_type": "b", "field": "unk_3" },
     { "data_type": "b", "field": "unk_4" }
   ],

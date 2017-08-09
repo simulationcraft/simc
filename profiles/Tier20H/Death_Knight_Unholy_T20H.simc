@@ -70,6 +70,7 @@ actions.castigator+=/death_coil,if=talent.dark_arbiter.enabled&cooldown.dark_arb
 actions.castigator+=/death_coil,if=!talent.shadow_infusion.enabled&!talent.dark_arbiter.enabled
 
 actions.generic=dark_arbiter,if=!equipped.137075&runic_power.deficit<30
+actions.generic+=/apocalypse,if=equipped.137075&debuff.festering_wound.stack>=6&talent.dark_arbiter.enabled
 actions.generic+=/dark_arbiter,if=equipped.137075&runic_power.deficit<30&cooldown.dark_transformation.remains<2
 actions.generic+=/summon_gargoyle,if=!equipped.137075,if=rune<=3
 actions.generic+=/chains_of_ice,if=buff.unholy_strength.up&buff.cold_heart.stack>19
@@ -117,10 +118,10 @@ actions.standard+=/death_coil,if=talent.dark_arbiter.enabled&cooldown.dark_arbit
 actions.standard+=/death_coil,if=!talent.shadow_infusion.enabled&!talent.dark_arbiter.enabled
 
 actions.valkyr=death_coil
-actions.valkyr+=/apocalypse,if=debuff.festering_wound.stack=8
-actions.valkyr+=/festering_strike,if=debuff.festering_wound.stack<8&cooldown.apocalypse.remains<5
+actions.valkyr+=/apocalypse,if=debuff.festering_wound.stack>=6
+actions.valkyr+=/festering_strike,if=debuff.festering_wound.stack<6&cooldown.apocalypse.remains<3
 actions.valkyr+=/call_action_list,name=aoe,if=active_enemies>=2
-actions.valkyr+=/festering_strike,if=debuff.festering_wound.stack<=3
+actions.valkyr+=/festering_strike,if=debuff.festering_wound.stack<=4
 actions.valkyr+=/scourge_strike,if=debuff.festering_wound.up
 actions.valkyr+=/clawing_shadows,if=debuff.festering_wound.up
 

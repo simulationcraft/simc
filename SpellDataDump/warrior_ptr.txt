@@ -519,6 +519,8 @@ Attributes       : ....x... x....... x.x..... ........   ........ ........ .....
 Effects          :
 #1 (id=2307)     : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Radius: 3 - 8 yards | Target: Unknown(87)
+#2 (id=475719)   : Unknown(254)
+                   Base Value: 5 | Scaled Value: 5 | Misc Value: 17 | Target: Unknown(87)
 Description      : Leap through the air toward a target location, slamming down with destructive force to deal $52174s1 Physical damage to all enemies within $52174a1 yards$?s23922[, and resetting the remaining cooldown on Taunt][].
 Variables        : $base=${1+0.5*$AP}
 $damage=$?a2457[${1+0.5*$AP*1.1}][${$<base>}]
@@ -3074,7 +3076,7 @@ Description      : You have a ${$m2/100}.2% chance per Rage spent to reset the r
 Name             : Reflective Plating (id=188672) [Spell Family (4), Passive] 
 Class            : Warrior
 School           : Physical
-Artifact Power   : Id: 104, Index: 0, Max Rank: 1
+Artifact Power   : Id: 104, Max Rank: 1
 Attributes       : ......x. ........ ........ .......x   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4050,7 +4052,7 @@ School           : Physical
 GCD              : 1.5 seconds
 Duration         : 3 seconds
 Cooldown         : 45 seconds
-Artifact Power   : Id: 91, Index: 0, Max Rank: 1
+Artifact Power   : Id: 91, Max Rank: 1
 Attributes       : ........ ........ ........ ........   ......x. ........ ........ .....x.. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4116,7 +4118,7 @@ Spell Level      : 28 (max 80)
 GCD              : 1.5 seconds
 Cooldown         : 45 seconds
 Category         : 891
-Artifact Power   : Id: 984, Index: 0, Max Rank: 1
+Artifact Power   : Id: 984, Max Rank: 1
 Affecting spells : Warrior (137047 effect#2), Fury Warrior (137050 effect#1), 
 Attributes       : ....x... ........ x.x..... ........   ....x... .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
@@ -4389,10 +4391,7 @@ Name             : Void Cleave (id=209573) [Spell Family (4), Passive, Hidden]
 Class            : Warrior
 School           : Physical
 Range            : 100 yards
-Proc Chance      : 101%
 Artifact Power   : Id: 1138, Index: 2, Max Rank: 1
-Proc Flags       : ........ ..x...x. ........ ........ 
-                 : AOE Heal, Heal
 Attributes       : ......xx ........ ........ .......x   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4411,7 +4410,7 @@ School           : Shadow
 Range            : 100 yards
 GCD              : 1.5 seconds
 Cooldown         : 60 seconds
-Artifact Power   : Id: 1136, Index: 0, Max Rank: 1
+Artifact Power   : Id: 1136, Max Rank: 1
 Affecting spells : Warrior (137047 effect#2)
 Attributes       : ........ ........ ........ ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -4655,9 +4654,6 @@ Name             : Wrecking Ball (id=215570) [Spell Family (4)]
 Class            : Warrior
 School           : Physical
 Duration         : 10 seconds
-Proc Chance      : 100%
-Proc Flags       : ....x... ........ ........ ........ 
-                 : Yellow Melee
 Triggered by     : Wrecking Ball (215569)
 Attributes       : ........ ........ ........ .....x..   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 

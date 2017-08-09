@@ -48,7 +48,8 @@ actions+=/sunfire,if=((talent.natures_balance.enabled&remains<3)|(remains<5.4&!t
 actions+=/astral_communion,if=astral_power.deficit>=71
 actions+=/incarnation,if=astral_power>=40
 actions+=/celestial_alignment,if=astral_power>=40
-actions+=/starfall,if=buff.oneths_overconfidence.up
+actions+=/use_items
+actions+=/starfall,if=buff.oneths_overconfidence.up&(!buff.solar_solstice.up|astral_power.deficit>44|buff.celestial_alignment.up|buff.incarnation.up)
 actions+=/solar_wrath,if=buff.solar_empowerment.stack=3
 actions+=/lunar_strike,if=buff.lunar_empowerment.stack=3
 actions+=/starsurge,if=buff.oneths_intuition.up
@@ -111,7 +112,7 @@ actions.fury_of_elune+=/solar_wrath,if=buff.solar_empowerment.up
 actions.fury_of_elune+=/lunar_strike,if=buff.lunar_empowerment.stack=3|(buff.lunar_empowerment.remains<5&buff.lunar_empowerment.up)|active_enemies>=2
 actions.fury_of_elune+=/solar_wrath
 
-actions.single_target=starsurge,if=astral_power.deficit<44|(buff.celestial_alignment.up|buff.incarnation.up|buff.astral_acceleration.up)|(gcd.max*(astral_power%40))>target.time_to_die
+actions.single_target=starsurge,if=astral_power.deficit<44|(buff.celestial_alignment.up|buff.incarnation.up|buff.astral_acceleration.remains>5|(set_bonus.tier21_4pc&!buff.solar_solstice.up))|(gcd.max*(astral_power%40))>target.time_to_die
 actions.single_target+=/new_moon,if=astral_power.deficit>14&!(buff.celestial_alignment.up|buff.incarnation.up)
 actions.single_target+=/half_moon,if=astral_power.deficit>24&!(buff.celestial_alignment.up|buff.incarnation.up)
 actions.single_target+=/full_moon,if=astral_power.deficit>44

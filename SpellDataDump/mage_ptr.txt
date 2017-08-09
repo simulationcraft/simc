@@ -358,7 +358,7 @@ Class            : Mage
 School           : Arcane
 Spell Level      : 14
 Range            : 60 yards
-Velocity         : 45 yards/sec
+Velocity         : 50 yards/sec
 Affecting spells : Arcane Charge (36032 effect#2), Arcane Mage (137021 effect#1), Arcane Focus (171375 effect#1), Aegwynn's Fury (187287 effect#1), Erosion (210134 effect#1), Norgannon's Foresight (236380 effect#1), Aegwynn's Intensity (238054 effect#1)
 Triggered by     : Arcane Missiles (5143)
 Attributes       : ........ ........ x....... ........   ..x..... ........ ........ ........ 
@@ -381,7 +381,7 @@ Spell Level      : 12
 Range            : 40 yards
 Cast Time        : 4.5 seconds
 GCD              : 1.5 seconds
-Velocity         : 35 yards/sec
+Velocity         : 55 yards/sec
 Proc Chance      : 101%
 Affecting spells : Icy Veins (12472 effect#2), Hot Streak! (48108 effect#1), Ice Floes (108839 effect#1), Mage (137018 effect#2), Fire Mage (137019 effect#1), Pyromaniac (166868 effect#1), Pyroclasmic Paranoia (194239 effect#1), Ice Form (198144 effect#2), Norgannon's Foresight (236380 effect#1), Critical Massive (242251 effect#1), Ignition (246261 effect#1)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
@@ -2228,11 +2228,11 @@ Attributes       : ........ ........ ........ .......x   ........ ........ .....
                  : Cannot cancel aura (31)
 Effects          :
 #1 (id=131312)   : Unknown(179)
-                   Base Value: 2 | Scaled Value: 2 | Misc Value: 304 | Target: Custom (18)
+                   Base Value: 2 | Scaled Value: 2 | Misc Value: 304 | Target: Unknown(62)
 #2 (id=170598)   : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0 | Radius: 8 yards | Target: Custom (18)
+                   Base Value: 0 | Scaled Value: 0 | Radius: 8 yards | Target: Unknown(62)
 #3 (id=177659)   : Summon (28)
-                   Base Value: 2 | Scaled Value: 2 | Misc Value: 60199 | Misc Value 2: 0xc89 | Target: Custom (18)
+                   Base Value: 2 | Scaled Value: 2 | Misc Value: 60199 | Misc Value 2: 0xc89 | Target: Unknown(62)
 Description      : Places a Rune of Power on the ground for $116011d which increases your spell damage by $116014s1% while you stand within 8 yds. Max 2 charges.
 
 Name             : Rune of Power (id=116014) [Spell Family (3)] 
@@ -2813,7 +2813,7 @@ Attributes       : ........ ........ ........ ........   ........ ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=212821)   : Dummy (3)
@@ -2905,7 +2905,7 @@ School           : Arcane
 Range            : 100 yards
 Affecting spells : Arcane Mage (137021 effect#1), Erosion (210134 effect#1), Norgannon's Foresight (236380 effect#1)
 Attributes       : ........ ........ ........ x..x....   ...x.x.x ........ ........ ........ 
-                 : ........ ......x. ...x.... ........   ........ .x...... ........ .......x 
+                 : ..x..... ......x. ...x.... ........   ........ .x...... ........ .......x 
                  : .......x .......x ........ ........   ...x.... .......x .xx..... ........ 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : .....x.. ........ ........ ........   ........ ...x.... ....x... ........ 
@@ -3744,7 +3744,7 @@ Velocity         : 50 yards/sec
 Charges          : 3 (45 seconds cooldown)
 Category         : 1633
 Proc Chance      : 101%
-Artifact Power   : Id: 748, Index: 0, Max Rank: 1
+Artifact Power   : Id: 748, Max Rank: 1
 Affecting spells : Fire Mage (137019 effect#1), Norgannon's Foresight (236380 effect#1), Strafing Run (238127 effect#1)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4729,7 +4729,7 @@ Cast Time        : 3 seconds
 GCD              : 1.5 seconds
 Velocity         : 30 yards/sec
 Cooldown         : 45 seconds
-Artifact Power   : Id: 783, Index: 0, Max Rank: 1
+Artifact Power   : Id: 783, Max Rank: 1
 Affecting spells : Shatter (12982 effect#1), Ice Floes (108839 effect#1), Norgannon's Foresight (236380 effect#1)
 Triggered by     : Push Active Ability to Bar (225872)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4852,7 +4852,7 @@ Duration         : 6 seconds
 Cooldown         : 60 seconds
 Stacks           : 4 maximum
 Proc Chance      : 101%
-Artifact Power   : Id: 290, Index: 0, Max Rank: 1
+Artifact Power   : Id: 290, Max Rank: 1
 Affecting spells : Ice Floes (108839 effect#1), Norgannon's Foresight (236380 effect#1)
 Triggered by     : Push Active Ability to Bar (225874)
 Attributes       : ........ ........ ..x..... ........   ........ ........ ........ ........ 
@@ -5206,9 +5206,6 @@ Description      : Critical Mass increases your Critical Strike stat from all so
 Name             : Temporal Flux (id=234302) [Spell Family (3), Passive] 
 Class            : Mage
 School           : Arcane
-Proc Chance      : 100%
-Proc Flags       : ........ ......x. x....... ........ 
-                 : Heal, Hostile Spell
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -5243,9 +5240,6 @@ Name             : Frigid Winds (id=235224) [Spell Family (3), Passive]
 Class            : Mage
 School           : Frost
 Spell Level      : 1
-Proc Chance      : 100%
-Proc Flags       : ........ ........ ........ .....x.. 
-                 
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -5263,9 +5257,6 @@ Name             : Glacial Insulation (id=235297) [Spell Family (3), Passive]
 Class            : Mage
 School           : Frost
 Spell Level      : 1
-Proc Chance      : 100%
-Proc Flags       : ........ ........ ........ .....x.. 
-                 
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -5354,9 +5345,6 @@ Spell Level      : 26
 GCD              : 1.5 seconds
 Duration         : 60 seconds
 Cooldown         : 25 seconds
-Proc Chance      : 100%
-Proc Flags       : ...x.x.. ........ ........ ........ 
-                 : White Melee Taken, Yellow Melee Taken
 Affecting spells : Force Barrier (210716 effect#1), Mana Shield (235463 effect#2), Norgannon's Foresight (236380 effect#1)
 Attributes       : ........ ........ x.x..... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5380,9 +5368,6 @@ Name             : Mana Shield (id=235463) [Spell Family (3), Passive]
 Class            : Mage
 School           : Arcane
 Spell Level      : 1
-Proc Chance      : 100%
-Proc Flags       : ........ ........ ..x..... ........ 
-                 : Periodic
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -5461,9 +5446,6 @@ Class            : Mage
 School           : Fire
 Spell Level      : 1
 Duration         : 3 seconds
-Proc Chance      : 100%
-Proc Flags       : ........ ........ ..x..... ........ 
-                 : Periodic
 Triggered by     : Frenetic Speed (236058)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5482,9 +5464,6 @@ Class            : Mage
 School           : Arcane
 Spell Level      : 1
 Duration         : 5 seconds
-Proc Chance      : 100%
-Proc Flags       : ........ ........ ..x..... ........ 
-                 : Periodic
 Triggered by     : Chrono Shift (235711)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5503,9 +5482,6 @@ Class            : Mage
 School           : Arcane
 Spell Level      : 1
 Duration         : 5 seconds
-Proc Chance      : 100%
-Proc Flags       : ........ ........ ..x..... ........ 
-                 : Periodic
 Triggered by     : Chrono Shift (235711)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5523,9 +5499,6 @@ Name             : Slipstream (id=236457) [Spell Family (3), Passive]
 Class            : Mage
 School           : Arcane
 Spell Level      : 1
-Proc Chance      : 100%
-Proc Flags       : ........ ........ ..x..... ........ 
-                 : Periodic
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -5581,7 +5554,7 @@ Name             : Time and Space (id=238126) [Spell Family (3), Passive]
 Class            : Mage
 School           : Physical
 Proc Chance      : 100%
-Artifact Power   : Id: 1531, Index: 0, Max Rank: 1
+Artifact Power   : Id: 1531, Max Rank: 1
 Proc Flags       : ........ ........ x....... ........ 
                  : Hostile Spell
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 

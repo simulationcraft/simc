@@ -1994,7 +1994,9 @@ public:
     main_hand_weapon.max_dmg = dbc.spell_scaling( o() -> type, level() );
     main_hand_weapon.damage = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
     main_hand_weapon.swing_time = timespan_t::from_seconds( 1.0 );
-    owner_coeff.ap_from_ap =  4.5;
+    owner_coeff.ap_from_ap = 4.5;
+    if ( maybe_ptr( dbc.ptr ) )
+      owner_coeff.ap_from_ap *= 1 + o() -> spec.windwalker_monk -> effectN( 1 ).percent();
   }
 
   monk_t* o()
@@ -2196,8 +2198,11 @@ struct monk_action_t: public Base
   bool brewmaster_damage_increase_two;
   bool brewmaster_damage_increase_dot_three;
   bool windwalker_damage_increase;
-  bool windwalker_damage_increase_dot;
   bool windwalker_damage_increase_two;
+  bool windwalker_damage_increase_dot;
+  bool windwalker_damage_increase_dot_two;
+  bool windwalker_damage_increase_dot_three;
+  bool windwalker_damage_increase_dot_four;
 private:
   std::array < resource_e, MONK_MISTWEAVER + 1 > _resource_by_stance;
   typedef Base ab; // action base, eg. spell_t
@@ -2216,6 +2221,9 @@ public:
     brewmaster_damage_increase_dot_three( ab::data().affected_by( player -> spec.brewmaster_monk -> effectN( 5 ) ) ),
     windwalker_damage_increase( ab::data().affected_by( player -> spec.windwalker_monk -> effectN( 1 ) ) ),
     windwalker_damage_increase_dot( ab::data().affected_by( player -> spec.windwalker_monk -> effectN( 2 ) ) ),
+    windwalker_damage_increase_dot_two( maybe_ptr( player -> dbc.ptr ) ? ab::data().affected_by( player -> spec.windwalker_monk -> effectN( 3 ) ) : false ),
+    windwalker_damage_increase_dot_three( maybe_ptr( player -> dbc.ptr ) ? ab::data().affected_by( player -> spec.windwalker_monk -> effectN( 7 ) ) : false ),
+    windwalker_damage_increase_dot_four( maybe_ptr( player -> dbc.ptr ) ? ab::data().affected_by( player -> spec.windwalker_monk -> effectN( 8 ) ) : false ),
     windwalker_damage_increase_two( ab::data().affected_by( player -> spec.windwalker_monk -> effectN( 6 ) ) )
   {
     ab::may_crit = true;
@@ -2251,12 +2259,20 @@ public:
         if ( windwalker_damage_increase )
         {
           ab::base_dd_multiplier *= 1.0 + player -> spec.windwalker_monk -> effectN( 1 ).percent();
-          ab::base_td_multiplier *= 1.0 + player -> spec.windwalker_monk -> effectN( 1 ).percent();
+          if ( !maybe_ptr( player -> dbc.ptr ) )
+            ab::base_td_multiplier *= 1.0 + player -> spec.windwalker_monk -> effectN( 1 ).percent();
         }
-        if ( windwalker_damage_increase_dot )
-          ab::base_td_multiplier *= 1.0 + player -> spec.windwalker_monk -> effectN( 2 ).percent();
         if ( windwalker_damage_increase_two )
           ab::base_dd_multiplier *= 1.0 + player -> spec.windwalker_monk -> effectN( 6 ).percent();
+
+        if ( windwalker_damage_increase_dot )
+          ab::base_td_multiplier *= 1.0 + player -> spec.windwalker_monk -> effectN( 2 ).percent();
+        if ( windwalker_damage_increase_dot_two )
+          ab::base_td_multiplier *= 1.0 + player -> spec.windwalker_monk -> effectN( 3 ).percent();
+        if ( windwalker_damage_increase_dot_three )
+          ab::base_td_multiplier *= 1.0 + player -> spec.windwalker_monk -> effectN( 7 ).percent();
+        if ( windwalker_damage_increase_dot_four )
+          ab::base_td_multiplier *= 1.0 + player -> spec.windwalker_monk -> effectN( 8 ).percent();
 
         if ( ab::data().affected_by( player -> spec.stance_of_the_fierce_tiger -> effectN( 5 ) ) )
           ab::trigger_gcd += player -> spec.stance_of_the_fierce_tiger -> effectN( 5 ).time_value(); // Saved as -500 milliseconds
@@ -2265,8 +2281,8 @@ public:
         // Hasted Cooldown
         ab::cooldown -> hasted = ab::data().affected_by( player -> passives.aura_monk -> effectN( 1 ) );
         // Cooldown reduction
-        if ( ab::data().affected_by( player -> spec.windwalker_monk -> effectN( 3 ) ) )
-          ab::cooldown -> duration *= 1 + player -> spec.windwalker_monk -> effectN( 3 ).percent(); // saved as -100
+        if ( ab::data().affected_by( player -> spec.windwalker_monk -> effectN( maybe_ptr( player -> dbc.ptr ) ? 4 : 3 ) ) )
+          ab::cooldown -> duration *= 1 + player -> spec.windwalker_monk -> effectN( maybe_ptr( player -> dbc.ptr ) ? 4 : 3 ).percent(); // saved as -100
         break;
       }
       default: break;
@@ -2900,7 +2916,7 @@ struct tiger_palm_t: public monk_melee_attack_t
       base_costs[RESOURCE_ENERGY] *= 1 + p -> spec.stagger -> effectN( 15 ).percent(); // -50% for Brewmasters
 
     if ( p -> specialization() == MONK_WINDWALKER )
-      energize_amount = p -> spec.windwalker_monk -> effectN( 4 ).base_value();
+      energize_amount = p -> spec.windwalker_monk -> effectN( maybe_ptr( p -> dbc.ptr ) ? 5 : 4 ).base_value();
     else
       energize_type = ENERGIZE_NONE;
 
@@ -9977,21 +9993,21 @@ void monk_t::apl_combat_brewmaster()
     if ( racial_actions[i] != "arcane_torrent" )
       st -> add_action( racial_actions[i] );
   }
+  st -> add_action( this, "Exploding Keg" );
   st -> add_talent( this, "Invoke Niuzao, the Black Ox", "if=target.time_to_die>45" );
   st -> add_action( this, "Ironskin Brew", "if=buff.blackout_combo.down&cooldown.brews.charges>=1" );
-  st -> add_talent( this, "Black Ox Brew", "if=energy<31&cooldown.brews.charges<1" );
+  st -> add_talent( this, "Black Ox Brew", "if=(energy+(energy.regen*(cooldown.keg_smash.remains)))<40&buff.blackout_combo.down&cooldown.keg_smash.up" );
   for ( size_t i = 0; i < racial_actions.size(); i++ )
   {
     if ( racial_actions[i] == "arcane_torrent" )
       st -> add_action( racial_actions[i] + ",if=energy<31" );
   }
-  st -> add_action( this, "Exploding Keg" );
-  st -> add_action( this, "Breath of Fire", "if=buff.blackout_combo.down&energy<50&buff.bloodlust.down");
   st -> add_action( this, "Tiger Palm", "if=buff.blackout_combo.up" );
+  st -> add_action( this, "Blackout Strike", "if=cooldown.keg_smash.remains>0" );
   st -> add_action( this, "Keg Smash" );
-  st -> add_action( this, "Blackout Strike" );
-  st -> add_action( this, "Tiger Palm", "if=!talent.blackout_combo.enabled&cooldown.keg_smash.remains>=gcd&(energy+(energy.regen*(cooldown.keg_smash.remains)))>=55" );
+  st -> add_action( this, "Breath of Fire", "if=buff.bloodlust.down&buff.blackout_combo.down|(buff.bloodlust.up&buff.blackout_combo.down&dot.breath_of_fire_dot.remains<=0)");
   st -> add_talent( this, "Rushing Jade Wind" );
+  st -> add_action( this, "Tiger Palm", "if=!talent.blackout_combo.enabled&cooldown.keg_smash.remains>=gcd&(energy+(energy.regen*(cooldown.keg_smash.remains)))>=55" );
 
 
 /*  aoe -> add_action( this, "Purifying Brew", "if=stagger.heavy" );

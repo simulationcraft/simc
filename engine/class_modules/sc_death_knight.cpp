@@ -473,6 +473,7 @@ public:
     cooldown_t* antimagic_shell;
     cooldown_t* army_of_the_dead;
     cooldown_t* avalanche;
+    cooldown_t* blighted_rune_weapon;
     cooldown_t* bone_shield_icd;
     cooldown_t* dark_transformation;
     cooldown_t* death_and_decay;
@@ -840,6 +841,7 @@ public:
     cooldown.antimagic_shell = get_cooldown( "antimagic_shell" );
     cooldown.army_of_the_dead = get_cooldown( "army_of_the_dead" );
     cooldown.avalanche       = get_cooldown( "avalanche" );
+    cooldown.blighted_rune_weapon = get_cooldown( "blighted_rune_weapon" ); 
     cooldown.bone_shield_icd = get_cooldown( "bone_shield_icd" );
     cooldown.bone_shield_icd -> duration = timespan_t::from_seconds( 2.0 );
     cooldown.dark_transformation = get_cooldown( "dark_transformation" );
@@ -2247,10 +2249,7 @@ struct gargoyle_pet_t : public death_knight_pet_t
   {
     death_knight_pet_t::init_base_stats();
 
-    // As per Blizzard
-    owner_coeff.ap_from_ap = 0.46625;
-    // 2017-01-10: Gargoyle damage increased by 50%.
-    owner_coeff.ap_from_ap *= 1.5;
+    owner_coeff.ap_from_ap = 1;
   }
 
   void init_action_list() override
@@ -3638,6 +3637,7 @@ struct army_of_the_dead_t : public death_knight_spell_t
       }
 
       p() -> buffs.t20_2pc_unholy -> extend_duration( p(), timespan_t::from_seconds( -5 ) );
+      p() -> cooldown.army_of_the_dead -> adjust( - timespan_t::from_seconds( 5.0 ), false );
 
       // Simulate rune regen for 5 seconds for the consumed runes. Ugly but works
       // Note that this presumes no other rune-using abilities are used
@@ -3822,7 +3822,15 @@ struct blighted_rune_weapon_t : public death_knight_spell_t
   {
     death_knight_spell_t::execute();
 
-    p() -> buffs.blighted_rune_weapon -> trigger( data().initial_stacks() );
+    // Casting Blighted Rune Weapon prepull lets you use it more often into the fight, especially with the 30s buff duration
+    if ( ! p() -> in_combat )
+    {
+      p() -> buffs.blighted_rune_weapon -> trigger( data().initial_stacks() );
+      p() -> buffs.blighted_rune_weapon -> extend_duration( p(), timespan_t::from_seconds( -15 ) );
+      p() -> cooldown.blighted_rune_weapon -> adjust( - timespan_t::from_seconds( 15.0 ), false );
+    }
+    else 
+      p() -> buffs.blighted_rune_weapon -> trigger( data().initial_stacks() );
   }
 };
 
@@ -4398,7 +4406,7 @@ struct defile_t : public death_and_decay_base_t
   defile_t( death_knight_t* p, const std::string& options_str ) :
     death_and_decay_base_t( p, "defile", p -> talent.defile )
   {
-    damage = new death_and_decay_damage_t( this );
+    damage = new defile_damage_t( this );
 
     parse_options( options_str );
   }
@@ -7939,26 +7947,18 @@ void death_knight_t::default_apl_unholy()
   def->add_action("call_action_list,name=generic");
   
   // Default generic target APL
-
   generic->add_talent(this, "Dark Arbiter", "if=!equipped.137075&runic_power.deficit<30");
+  generic->add_action(this, "Apocalypse", "if=equipped.137075&debuff.festering_wound.stack>=6&talent.dark_arbiter.enabled");
   generic->add_talent(this, "Dark Arbiter", "if=equipped.137075&runic_power.deficit<30&cooldown.dark_transformation.remains<2");
   generic->add_action(this, "Summon Gargoyle", "if=!equipped.137075,if=rune<=3");
   generic->add_action(this, "Chains of Ice", "if=buff.unholy_strength.up&buff.cold_heart.stack>19");
   generic->add_action(this, "Summon Gargoyle", "if=equipped.137075&cooldown.dark_transformation.remains<10&rune<=3");
-
-  // Apocalypso
   generic->add_talent(this, "Soul Reaper", "if=debuff.festering_wound.stack>=6&cooldown.apocalypse.remains<4");
   generic->add_action(this, "Apocalypse", "if=debuff.festering_wound.stack>=6");
-
-  // Death coilage
   generic->add_action(this, "Death Coil", "if=runic_power.deficit<10");
   generic->add_action(this, "Death Coil", "if=!talent.dark_arbiter.enabled&buff.sudden_doom.up&!buff.necrosis.up&rune<=3");
   generic->add_action(this, "Death Coil", "if=talent.dark_arbiter.enabled&buff.sudden_doom.up&cooldown.dark_arbiter.remains>5&rune<=3");
-
-  // FW stacking
   generic->add_action(this, "Festering Strike", "if=debuff.festering_wound.stack<6&cooldown.apocalypse.remains<=6");
-
-  // Soul reapering
   generic->add_talent(this, "Soul Reaper", "if=debuff.festering_wound.stack>=3");
   generic->add_action(this, "Festering Strike", "if=debuff.soul_reaper.up&!debuff.festering_wound.up");
   generic->add_action(this, "Scourge Strike", "if=debuff.soul_reaper.up&debuff.festering_wound.stack>=1");
@@ -8018,20 +8018,13 @@ void death_knight_t::default_apl_unholy()
   aoe->add_talent(this, "Clawing Shadows", "if=spell_targets.clawing_shadows>=2&(death_and_decay.ticking|defile.ticking)");
   aoe->add_talent(this, "Epidemic", "if=spell_targets.epidemic>2");
 
-  // Valkyr APL uses many a runic power
+  // Valkyr APL
   valkyr->add_action(this, "Death Coil");
-
-  // Apocalypso
-  valkyr->add_action(this, "Apocalypse", "if=debuff.festering_wound.stack=8");
-
-  // FW stacking
-  valkyr->add_action(this, "Festering Strike", "if=debuff.festering_wound.stack<8&cooldown.apocalypse.remains<5");
-
-  // Misc AOE things
+  valkyr->add_action(this, "Apocalypse", "if=debuff.festering_wound.stack>=6");
+  valkyr->add_action(this, "Festering Strike", "if=debuff.festering_wound.stack<6&cooldown.apocalypse.remains<3");
   valkyr->add_action("call_action_list,name=aoe,if=active_enemies>=2");
-
   // Single target base rotation when Valkyr is around
-  valkyr->add_action(this, "Festering Strike", "if=debuff.festering_wound.stack<=3");
+  valkyr->add_action(this, "Festering Strike", "if=debuff.festering_wound.stack<=4");
   valkyr->add_action(this, "Scourge Strike", "if=debuff.festering_wound.up");
   valkyr->add_talent(this, "Clawing Shadows", "if=debuff.festering_wound.up");
 }

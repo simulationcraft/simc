@@ -101,6 +101,7 @@ public:
     action_t* trauma;
     action_t* scales_of_earth;
     action_t* charge;
+	action_t* slaughter; // Fury T21 2PC
   } active;
 
   // Buffs
@@ -171,6 +172,9 @@ public:
     buff_t* xavarics_magnum_opus;
     haste_buff_t* sephuzs_secret;
     haste_buff_t* in_for_the_kill;
+	buff_t* war_veteran; // Arms T21 2PC
+	buff_t* weighted_blade; // Arms T21 4PC
+	buff_t* outrage; // Fury T21 4PC
   } buff;
 
   // Cooldowns
@@ -1419,7 +1423,9 @@ struct mortal_strike_t20_t : public warrior_attack_t
       }
       p() -> buff.focused_rage -> expire();
     }
-    p() -> buff.shattered_defenses -> expire();
+	// SD takes ~0.5 seconds to expire, this can be abused when using ravager with the 4PC
+	// to buff your self casted MS/Execute plus the one from the 4pc with a single SD
+    p() -> buff.shattered_defenses -> expire(timespan_t::from_millis(500));
     p() -> buff.precise_strikes -> expire();
     p() -> buff.executioners_precision -> expire();
   }
@@ -1490,9 +1496,10 @@ struct mortal_strike_t : public warrior_attack_t
       }
       p() -> buff.focused_rage -> expire();
     }
-    p() -> buff.shattered_defenses -> expire();
+    p() -> buff.shattered_defenses -> expire(timespan_t::from_millis(500));
     p() -> buff.precise_strikes -> expire();
     p() -> buff.executioners_precision -> expire();
+	p() -> buff.weighted_blade -> trigger( 1 );
   }
 
   void impact( action_state_t* s ) override
@@ -1998,6 +2005,8 @@ struct colossus_smash_t: public warrior_attack_t
       p() -> buff.shattered_defenses -> trigger();
       p() -> buff.precise_strikes -> trigger();
       p() -> buff.in_for_the_kill -> trigger();
+	  p() -> buff.war_veteran -> trigger();
+
       if ( p() -> talents.ravager -> ok() )
         p() -> cooldown.ravager -> adjust( t20_2p_reduction );
       else
@@ -2330,7 +2339,7 @@ struct execute_arms_t: public warrior_attack_t
                                       execute_state -> target,
                                       execute_sweeping_strike );
     }
-    p() -> buff.shattered_defenses -> expire();
+    p() -> buff.shattered_defenses -> expire(timespan_t::from_millis(500));
     p() -> buff.precise_strikes -> expire();
     p() -> buff.ayalas_stone_heart -> expire();
     p() -> buff.executioners_precision -> trigger();
@@ -3059,6 +3068,7 @@ struct warbreaker_t: public warrior_attack_t
 
     p() -> buff.shattered_defenses -> trigger();
     p() -> buff.precise_strikes -> trigger();
+	p() -> buff.in_for_the_kill -> trigger();
   }
 
   void impact( action_state_t* s ) override
@@ -3135,6 +3145,18 @@ struct rampage_attack_t: public warrior_attack_t
       first_attack_missed = false;
   }
 
+  double action_multiplier() const override
+  {
+    double am = warrior_attack_t::action_multiplier();
+
+    if ( p() -> buff.outrage -> check() )
+    {
+      am *= 1.0 + p() -> buff.outrage -> data().effectN( 1 ).percent();
+    }
+
+    return am;
+  }
+
   void impact( action_state_t* s ) override
   {
     if ( !first_attack_missed )
@@ -3145,6 +3167,16 @@ struct rampage_attack_t: public warrior_attack_t
       {
         p() -> resource_gain( RESOURCE_RAGE, rage_from_valarjar_berserking, p() -> gain.valarjar_berserking  );
       }
+
+	if ( result_is_hit( s -> result ) && p() -> sets -> has_set_bonus( WARRIOR_FURY, T21, B2 ) )
+    {
+      double amount = s -> result_amount * p() -> sets -> set( WARRIOR_FURY, T21, B2 ) -> effectN( 1 ).percent();
+
+      residual_action::trigger( p() -> active . slaughter,
+							    s -> target, 
+					            amount );
+    }
+	  
     }
   }
 
@@ -3214,6 +3246,7 @@ struct rampage_event_t: public event_t
       warrior -> buff.odyns_champion -> trigger(); // Procs after last attack.
       warrior -> rampage_driver = nullptr;
       warrior -> buff.meat_cleaver -> expire();
+	  warrior -> buff.outrage -> expire();
     }
   }
 };
@@ -3587,6 +3620,26 @@ struct slam_t: public warrior_attack_t
     warrior_attack_t::execute();
     if ( rng().roll( t18_2pc_chance ) )
       p() -> cooldown.mortal_strike -> reset( true );
+
+	p() -> buff.weighted_blade -> expire();
+  }
+
+   double action_multiplier() const override
+  {
+    double am = warrior_attack_t::action_multiplier();
+
+    am *= 1.0 + p() -> buff.weighted_blade -> stack_value();
+
+    return am;
+  }
+
+  double composite_crit_chance() const override
+  {
+    double cc = warrior_attack_t::composite_crit_chance();
+
+    cc += p() -> buff.weighted_blade -> stack_value();
+
+    return cc;
   }
 
   bool ready() override
@@ -3605,6 +3658,17 @@ struct trauma_dot_t: public residual_action::residual_periodic_action_t < warrio
 {
   trauma_dot_t( warrior_t* p ):
     base_t( "trauma", p, p -> find_spell( 215537 ) )
+  {
+    dual = true;
+    tick_may_crit = false;
+  }
+};
+
+// Slaughter (T21 Fury Set Bonus) Dot
+struct slaughter_dot_t : public residual_action::residual_periodic_action_t< warrior_spell_t >
+{
+  slaughter_dot_t( warrior_t* p ) :
+   base_t( "T21 2PC", p, p -> find_spell( 253384 ) )
   {
     dual = true;
     tick_may_crit = false;
@@ -3894,6 +3958,7 @@ struct arms_whirlwind_mh_t: public warrior_attack_t
     double am = warrior_attack_t::action_multiplier();
 
     am *= 1.0 + p() -> buff.cleave -> check_value();
+	am *= 1.0 + p() -> buff.weighted_blade -> stack_value();
 
     return am;
   }
@@ -3908,6 +3973,15 @@ struct arms_whirlwind_mh_t: public warrior_attack_t
         s -> target, // target
         p() -> talents.trauma -> effectN( 1 ).percent() * s -> result_amount );
     }
+  }
+
+  double composite_crit_chance() const override
+  {
+    double cc = warrior_attack_t::composite_crit_chance();
+
+    cc += p() -> buff.weighted_blade -> stack_value();
+
+    return cc;
   }
 
   double composite_target_multiplier( player_t* t ) const override
@@ -3958,8 +4032,18 @@ struct first_arms_whirlwind_mh_t: public warrior_attack_t
     double am = warrior_attack_t::action_multiplier();
 
     am *= 1.0 + p() -> buff.cleave -> check_value();
+	am *= 1.0 + p() -> buff.weighted_blade -> stack_value();
 
     return am;
+  }
+
+  double composite_crit_chance() const override
+  {
+    double cc = warrior_attack_t::composite_crit_chance();
+
+    cc += p() -> buff.weighted_blade -> stack_value();
+
+    return cc;
   }
 
   double composite_target_multiplier( player_t* t ) const override
@@ -4034,6 +4118,7 @@ struct arms_whirlwind_parent_t: public warrior_attack_t
     warrior_attack_t::last_tick( d );
 
     p() -> buff.cleave -> expire();
+	p() -> buff.weighted_blade -> expire();
   }
 
   bool ready() override
@@ -4273,6 +4358,7 @@ struct battle_cry_t: public warrior_spell_t
     p() -> buff.battle_cry -> trigger( 1, bonus_crit );
     p() -> buff.battle_cry_deadly_calm -> trigger();
     p() -> buff.corrupted_blood_of_zakajz -> trigger();
+	p() -> buff.outrage -> trigger();
   }
 };
 
@@ -4796,6 +4882,7 @@ void warrior_t::init_spells()
   active.trauma                    = nullptr;
   active.opportunity_strikes       = nullptr;
   active.charge                    = nullptr;
+  active.slaughter				   = nullptr;
 
   if ( talents.bloodbath -> ok() ) active.bloodbath_dot = new bloodbath_dot_t( this );
   if ( spec.deep_wounds -> ok() ) active.deep_wounds = new deep_wounds_t( this );
@@ -4803,6 +4890,7 @@ void warrior_t::init_spells()
   if ( talents.trauma -> ok() ) active.trauma = new trauma_dot_t( this );
   if ( artifact.scales_of_earth.rank() ) active.scales_of_earth = new scales_of_earth_t( this );
   if ( artifact.corrupted_blood_of_zakajz.rank() ) active.corrupted_blood_of_zakajz = new corrupted_blood_of_zakajz_t( this );
+  if ( sets -> has_set_bonus( WARRIOR_FURY, T21, B2 ) ) active.slaughter = new slaughter_dot_t( this );
   if ( spec.rampage -> ok() )
   {
     rampage_attack_t* first = new rampage_attack_t( this, spec.rampage -> effectN( 3 ).trigger(), "rampage1" );
@@ -5273,7 +5361,7 @@ void warrior_t::apl_arms()
   single_target -> add_action( this, "Mortal Strike", "if=buff.shattered_defenses.up|buff.executioners_precision.down" );
   single_target -> add_talent( this, "Rend", "if=remains<=duration*0.3" );
   single_target -> add_action( this, "Whirlwind", "if=spell_targets.whirlwind>1|talent.fervor_of_battle.enabled" );
-  single_target -> add_action( this, "Slam", "if=spell_targets.whirlwind=1&!talent.fervor_of_battle.enabled" );
+  single_target -> add_action( this, "Slam", "if=spell_targets.whirlwind=1&!talent.fervor_of_battle.enabled&(rage>=52|!talent.rend.enabled|!talent.ravager.enabled)" );
   single_target -> add_talent( this, "Overpower" );
   single_target -> add_action( this, "Bladestorm", "if=(raid_event.adds.in>90|!raid_event.adds.exists)&!set_bonus.tier20_4pc" );
 
@@ -5759,6 +5847,18 @@ void warrior_t::create_buffs()
 
   buff.in_for_the_kill = haste_buff_creator_t( this, "in_for_the_kill", talents.in_for_the_kill -> effectN( 1 ).trigger() )
     .default_value( talents.in_for_the_kill -> effectN( 1 ).trigger() -> effectN( 1 ).percent() );
+
+  buff.war_veteran = buff_creator_t( this, "war_veteran", sets -> set( WARRIOR_ARMS, T21, B2) -> effectN( 1 ).trigger() )
+    .default_value( sets -> set( WARRIOR_ARMS, T21, B2) -> effectN( 1 ).trigger() -> effectN( 1 ).percent() )
+	.chance( sets -> has_set_bonus( WARRIOR_ARMS, T21, B2) );
+
+  buff.weighted_blade = buff_creator_t ( this, "weighted_blade", sets -> set( WARRIOR_ARMS, T21, B4) -> effectN( 1 ).trigger() )
+    .default_value( sets -> set( WARRIOR_ARMS, T21, B4) -> effectN( 1 ).trigger() -> effectN( 1 ).percent() )
+    .chance( sets -> has_set_bonus( WARRIOR_ARMS, T21, B4) );
+
+  buff.outrage = buff_creator_t ( this, "outrage", sets -> set( WARRIOR_FURY, T21, B4) -> effectN( 1 ).trigger() )
+    .default_value( sets -> set( WARRIOR_FURY, T21, B4) -> effectN( 1 ).trigger() -> effectN( 1 ).percent() )
+    .chance( sets -> has_set_bonus( WARRIOR_FURY, T21, B4) );
 }
 
 // warrior_t::init_scaling ==================================================
@@ -6319,6 +6419,12 @@ double warrior_t::composite_player_critical_damage_multiplier( const action_stat
   {
     cdm *= 1.0 + artifact.unrivaled_strength.percent();
   }
+
+  if ( buff.war_veteran -> check() )
+  { 
+    cdm *= 1.0 + buff.war_veteran->value();
+  }
+
   return cdm;
 }
 
@@ -6741,9 +6847,8 @@ struct ayalas_stone_heart_t: public unique_gear::class_buff_cb_t<warrior_t>
   { 
     return super::creator( e )
       // spell data no longer says "Haste Multiplier"
-      // not sure if it still scales with haste or not
+      // however in game testing suggests it is still scaled by haste
 	  .rppm_scale( RPPM_HASTE )
-	  .rppm_freq( e.player->specialization() == WARRIOR_ARMS ? 1.08 : e.rppm() )
       .spell( e.driver() -> effectN( 1 ).trigger() )
       .trigger_spell( e.driver() );
   }
