@@ -651,6 +651,7 @@ public:
   void trigger_hot_hand( const action_state_t* state );
   void trigger_eye_of_twisting_nether( const action_state_t* state );
   void trigger_sephuzs_secret( const action_state_t* state, spell_mechanic mechanic, double proc_chance = -1.0 );
+  void trigger_smoldering_heart( double cost );
 
   // Character Definition
   void      init_spells() override;
@@ -1210,38 +1211,16 @@ public:
   {
     ab::consume_resource();
 
-    if ( p() -> legendary.smoldering_heart -> ok() )
-    {
-      auto sh_base_proc_chance = 0.0;
+    p() -> trigger_smoldering_heart( ab::last_resource_cost );
+  }
 
-      switch ( p() -> specialization() )
-      {
-        case SHAMAN_ELEMENTAL:
-          sh_base_proc_chance = p() -> legendary.smoldering_heart -> effectN( 2 ).percent();
-          break;
-        case SHAMAN_ENHANCEMENT:
-          sh_base_proc_chance = p() -> legendary.smoldering_heart -> effectN( 3 ).percent();
-          break;
-        default:
-          break;
-      }
+  bool consume_cost_per_tick( const dot_t& dot ) override
+  {
+    auto ret = ab::consume_cost_per_tick( dot );
 
-      sh_base_proc_chance /= 100.0;
+    p() -> trigger_smoldering_heart( ab::last_resource_cost );
 
-      if ( ab::rng().roll( sh_base_proc_chance * ab::last_resource_cost ) )
-      {
-        auto duration = p() -> legendary.smoldering_heart -> effectN( 1 ).time_value();
-        // Smoldering Heart spell ID: 248029
-        if ( p() -> buff.ascendance -> up() )
-        {
-          p() -> buff.ascendance -> extend_duration( p(), duration );
-        }
-        else
-        {
-          p() -> buff.ascendance -> trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, duration );
-        }
-      }
-    }
+    return ret;
   }
 
   expr_t* create_expression( const std::string& name ) override
@@ -4042,33 +4021,6 @@ struct fury_of_air_aoe_t : public shaman_attack_t
     shaman_attack_t::init();
 
     may_proc_windfury = may_proc_flametongue = may_proc_stormbringer = may_proc_frostbrand = false;
-  }
-
-  //Fury of Air isn't hitting the consume resource override in action since the Fury of Air driver is only executed once
-  //and the ticks aren't "executed" - doing a seperate check here on each damage tick.
-  void execute() override
-  {
-    shaman_attack_t::execute();
-
-    if ( p() -> legendary.smoldering_heart -> ok() )
-    {
-      auto sh_base_proc_chance = p() -> legendary.smoldering_heart -> effectN( 3 ).percent();
-
-      sh_base_proc_chance /= 100.0;
-
-      if ( rng().roll( sh_base_proc_chance *  this -> cost() ) )
-      {
-        auto duration = p() -> legendary.smoldering_heart -> effectN( 1 ).time_value();
-        if ( p() -> buff.ascendance -> up() )
-        {
-          p() -> buff.ascendance -> extend_duration( p(), duration );
-        }
-        else
-        {
-          p() -> buff.ascendance -> trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, duration );
-        }
-      }
-    }
   }
 };
 
@@ -7112,6 +7064,49 @@ void shaman_t::trigger_sephuzs_secret( const action_state_t* state,
   }
 
   buff.sephuzs_secret -> trigger( 1, buff_t::DEFAULT_VALUE(), override_proc_chance );
+}
+
+void shaman_t::trigger_smoldering_heart( double cost )
+{
+  if ( ! legendary.smoldering_heart -> ok() )
+  {
+    return;
+  }
+
+  if ( cost <= 0 )
+  {
+    return;
+  }
+
+  auto sh_base_proc_chance = 0.0;
+
+  switch ( specialization() )
+  {
+    case SHAMAN_ELEMENTAL:
+      sh_base_proc_chance = legendary.smoldering_heart -> effectN( 2 ).percent();
+      break;
+    case SHAMAN_ENHANCEMENT:
+      sh_base_proc_chance = legendary.smoldering_heart -> effectN( 3 ).percent();
+      break;
+    default:
+      break;
+  }
+
+  sh_base_proc_chance /= 100.0;
+
+  if ( rng().roll( sh_base_proc_chance * cost ) )
+  {
+    auto duration = legendary.smoldering_heart -> effectN( 1 ).time_value();
+    // Smoldering Heart spell ID: 248029
+    if ( buff.ascendance -> up() )
+    {
+      buff.ascendance -> extend_duration( this, duration );
+    }
+    else
+    {
+      buff.ascendance -> trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, duration );
+    }
+  }
 }
 
 void shaman_t::trigger_windfury_weapon( const action_state_t* state )
