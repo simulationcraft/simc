@@ -4043,6 +4043,33 @@ struct fury_of_air_aoe_t : public shaman_attack_t
 
     may_proc_windfury = may_proc_flametongue = may_proc_stormbringer = may_proc_frostbrand = false;
   }
+
+  //Fury of Air isn't hitting the consume resource override in action since the Fury of Air driver is only executed once
+  //and the ticks aren't "executed" - doing a seperate check here on each damage tick.
+  void execute() override
+  {
+    shaman_attack_t::execute();
+
+    if ( p() -> legendary.smoldering_heart -> ok() )
+    {
+      auto sh_base_proc_chance = p() -> legendary.smoldering_heart -> effectN( 3 ).percent();
+
+      sh_base_proc_chance /= 100.0;
+
+      if ( rng().roll( sh_base_proc_chance *  this -> cost() ) )
+      {
+        auto duration = p() -> legendary.smoldering_heart -> effectN( 1 ).time_value();
+        if ( p() -> buff.ascendance -> up() )
+        {
+          p() -> buff.ascendance -> extend_duration( p(), duration );
+        }
+        else
+        {
+          p() -> buff.ascendance -> trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, duration );
+        }
+      }
+    }
+  }
 };
 
 struct fury_of_air_t : public shaman_spell_t
