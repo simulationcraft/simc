@@ -760,7 +760,11 @@ struct ascendance_buff_t : public buff_t
   action_t* lava_burst;
 
   ascendance_buff_t( shaman_t* p ) :
-    buff_t( buff_creator_t( p, "ascendance", p -> talent.ascendance )
+    buff_t( buff_creator_t( p, "ascendance" )
+            .spell( p -> specialization() == SHAMAN_ENHANCEMENT
+                    ? p -> find_spell( 114051 )
+                    : p -> find_spell( 114050 ) ) // No resto for now
+            .trigger_spell( p -> talent.ascendance )
             .tick_callback( [ p ]( buff_t* b, int, const timespan_t& ) {
                double g = b -> data().effectN( 4 ).base_value();
                p -> resource_gain( RESOURCE_MAELSTROM, g, p -> gain.ascendance );
