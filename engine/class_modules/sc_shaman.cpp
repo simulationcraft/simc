@@ -7792,7 +7792,7 @@ void shaman_t::init_action_list_enhancement()
   
 
   asc -> add_talent( this, "Earthen Spike" );
-  asc -> add_action( this, "Doom Winds", "if=cooldown.windstrike.up" );
+  asc -> add_action( this, "Doom Winds", "if=cooldown.strike.up" );
   asc -> add_action( this, "Windstrike");
 
 
