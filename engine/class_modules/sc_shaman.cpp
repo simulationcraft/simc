@@ -1218,7 +1218,10 @@ public:
   {
     auto ret = ab::consume_cost_per_tick( dot );
 
-    p() -> trigger_smoldering_heart( ab::last_resource_cost );
+    if ( ab::consume_per_tick_ )
+    {
+      p() -> trigger_smoldering_heart( ab::last_resource_cost );
+    }
 
     return ret;
   }
