@@ -3596,6 +3596,7 @@ struct overwhelming_darkness_t final : public priest_buff_t<stat_buff_t>
                      .max_stack( 100 )
                      .chance( p.sets->has_set_bonus( PRIEST_SHADOW, T21, B4 ) )                     
                      .period( timespan_t::from_seconds( 1 ) )
+                     .duration( timespan_t::zero() )
                      .refresh_behavior( BUFF_REFRESH_DURATION )
                      .add_invalidate( CACHE_CRIT_CHANCE ) )
   {
