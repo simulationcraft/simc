@@ -3308,7 +3308,7 @@ struct pestilence_t : public death_knight_spell_t
   pestilence_t( death_knight_t* p ) :
     death_knight_spell_t( "pestilence", p, p -> find_spell( 191729 ) )
   {
-    hasted_ticks = may_crit = tick_may_crit =false;
+    hasted_ticks = false;
     background = true;
     dot_max_stack = data().max_stacks();
   }
@@ -3881,7 +3881,7 @@ struct blood_mirror_damage_t : public death_knight_spell_t
     death_knight_spell_t( "blood_mirror_damage", p, p -> find_spell( 221847 ) )
   {
     background = true;
-    may_miss = may_crit = false;
+    may_miss = false;
     callbacks = false;
   }
 
@@ -3901,7 +3901,7 @@ struct blood_mirror_t : public death_knight_spell_t
     damage( new blood_mirror_damage_t( p ) )
   {
     parse_options( options_str );
-    may_crit = may_miss = false;
+    may_miss = may_crit = false;
 
     add_child( damage );
   }
