@@ -651,6 +651,7 @@ public:
   void trigger_hot_hand( const action_state_t* state );
   void trigger_eye_of_twisting_nether( const action_state_t* state );
   void trigger_sephuzs_secret( const action_state_t* state, spell_mechanic mechanic, double proc_chance = -1.0 );
+  void trigger_smoldering_heart( double cost );
 
   // Character Definition
   void      init_spells() override;
@@ -1210,38 +1211,19 @@ public:
   {
     ab::consume_resource();
 
-    if ( p() -> legendary.smoldering_heart -> ok() )
+    p() -> trigger_smoldering_heart( ab::last_resource_cost );
+  }
+
+  bool consume_cost_per_tick( const dot_t& dot ) override
+  {
+    auto ret = ab::consume_cost_per_tick( dot );
+
+    if ( ab::consume_per_tick_ )
     {
-      auto sh_base_proc_chance = 0.0;
-
-      switch ( p() -> specialization() )
-      {
-        case SHAMAN_ELEMENTAL:
-          sh_base_proc_chance = p() -> legendary.smoldering_heart -> effectN( 2 ).percent();
-          break;
-        case SHAMAN_ENHANCEMENT:
-          sh_base_proc_chance = p() -> legendary.smoldering_heart -> effectN( 3 ).percent();
-          break;
-        default:
-          break;
-      }
-
-      sh_base_proc_chance /= 100.0;
-
-      if ( ab::rng().roll( sh_base_proc_chance * ab::last_resource_cost ) )
-      {
-        auto duration = p() -> legendary.smoldering_heart -> effectN( 1 ).time_value();
-        // Smoldering Heart spell ID: 248029
-        if ( p() -> buff.ascendance -> up() )
-        {
-          p() -> buff.ascendance -> extend_duration( p(), duration );
-        }
-        else
-        {
-          p() -> buff.ascendance -> trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, duration );
-        }
-      }
+      p() -> trigger_smoldering_heart( ab::last_resource_cost );
     }
+
+    return ret;
   }
 
   expr_t* create_expression( const std::string& name ) override
@@ -3825,6 +3807,8 @@ struct frostbrand_t : public shaman_spell_t
     shaman_spell_t( "frostbrand", player, player -> find_specialization_spell( "Frostbrand" ), options_str )
   {
     base_multiplier *= 1.0 + player -> artifact.weapons_of_the_elements.percent();
+    dot_duration = timespan_t::zero();
+    base_tick_time = timespan_t::zero();
 
     if ( player -> hailstorm )
       add_child( player -> hailstorm );
@@ -6215,6 +6199,7 @@ struct flametongue_buff_t : public buff_t
 
   flametongue_buff_t( shaman_t* p ) :
     buff_t( buff_creator_t( p, "flametongue", p -> find_specialization_spell( "Flametongue" ) -> effectN( 3 ).trigger() )
+      .period( timespan_t::zero() )
       .refresh_behavior( BUFF_REFRESH_PANDEMIC ) ),
     p( p )
   { }
@@ -7087,6 +7072,54 @@ void shaman_t::trigger_sephuzs_secret( const action_state_t* state,
   buff.sephuzs_secret -> trigger( 1, buff_t::DEFAULT_VALUE(), override_proc_chance );
 }
 
+void shaman_t::trigger_smoldering_heart( double cost )
+{
+  if ( ! legendary.smoldering_heart -> ok() )
+  {
+    return;
+  }
+
+  if ( cost <= 0 )
+  {
+    return;
+  }
+
+  auto sh_base_proc_chance = 0.0;
+
+  switch ( specialization() )
+  {
+    case SHAMAN_ELEMENTAL:
+      sh_base_proc_chance = legendary.smoldering_heart -> effectN( 2 ).percent();
+      break;
+    case SHAMAN_ENHANCEMENT:
+      sh_base_proc_chance = legendary.smoldering_heart -> effectN( 3 ).percent();
+      break;
+    default:
+      break;
+  }
+
+  sh_base_proc_chance /= 100.0;
+
+  if ( rng().roll( sh_base_proc_chance * cost ) )
+  {
+    auto duration = legendary.smoldering_heart -> effectN( 1 ).time_value();
+    // Smoldering Heart spell ID: 248029
+    if ( buff.ascendance -> up() )
+    {
+      buff.ascendance -> extend_duration( this, duration );
+    }
+    else
+    {
+      buff.ascendance -> trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, duration );
+
+      if ( specialization() == SHAMAN_ENHANCEMENT )
+      {
+        cooldown.strike -> reset( true );
+      }
+    }
+  }
+}
+
 void shaman_t::trigger_windfury_weapon( const action_state_t* state )
 {
   assert( debug_cast< shaman_attack_t* >( state -> action ) != nullptr && "Windfury Weapon called on invalid action type" );
@@ -7301,6 +7334,7 @@ void shaman_t::create_buffs()
 
   buff.flametongue = new flametongue_buff_t( this );
   buff.frostbrand = buff_creator_t( this, "frostbrand", spec.frostbrand )
+    .period( timespan_t::zero() )
     .refresh_behavior( BUFF_REFRESH_PANDEMIC );
   buff.stormbringer = buff_creator_t( this, "stormbringer", find_spell( 201846 ) )
                    .activated( false ) // TODO: Need a delay on this
@@ -7758,7 +7792,7 @@ void shaman_t::init_action_list_enhancement()
   
 
   asc -> add_talent( this, "Earthen Spike" );
-  asc -> add_action( this, "Doom Winds", "if=cooldown.windstrike.up" );
+  asc -> add_action( this, "Doom Winds", "if=cooldown.strike.up" );
   asc -> add_action( this, "Windstrike");
 
 

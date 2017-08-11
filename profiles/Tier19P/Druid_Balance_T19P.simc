@@ -64,6 +64,7 @@ actions.AoE+=/warrior_of_elune
 actions.AoE+=/lunar_strike,if=buff.warrior_of_elune.up
 actions.AoE+=/solar_wrath,if=buff.solar_empowerment.up
 actions.AoE+=/lunar_strike,if=buff.lunar_empowerment.up
+actions.AoE+=/moonfire,if=equipped.lady_and_the_child&active_enemies=2&spell_haste>0.4&!(buff.celestial_alignment.up|buff.incarnation.up)
 actions.AoE+=/lunar_strike,if=active_enemies>=4|spell_haste<0.45
 actions.AoE+=/solar_wrath
 
