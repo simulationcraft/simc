@@ -7105,11 +7105,11 @@ void shaman_t::trigger_smoldering_heart( double cost )
     else
     {
       buff.ascendance -> trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, duration );
-    }
 
-    if ( specialization() == SHAMAN_ENHANCEMENT )
-    {
-      cooldown.strike -> reset( true );
+      if ( specialization() == SHAMAN_ENHANCEMENT )
+      {
+        cooldown.strike -> reset( true );
+      }
     }
   }
 }
