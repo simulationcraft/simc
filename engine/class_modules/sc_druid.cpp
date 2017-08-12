@@ -3068,7 +3068,12 @@ struct ashamanes_rip_t : public cat_attack_t
     background = true;
     may_miss = may_block = may_dodge = may_parry = false;
     // Copies benefit from rip, so need to flag this as snapshotting so its damage doesn't get modified dynamically.
-    snapshots_tf = snapshots_sr = true;
+    snapshots_tf = true;
+    if ( maybe_ptr( p-> dbc.ptr ) )
+       snapshots_sr = false;
+    else
+       snapshots_sr = true;
+    
     // "dot_behavior" will have no effect, see ashamanes_rip_t::impact()
       
     base_tick_time *= 1.0 + p -> talent.jagged_wounds -> effectN( 1 ).percent();
@@ -3326,7 +3331,14 @@ struct lunar_inspiration_t : public cat_attack_t
     cat_attack_t( "lunar_inspiration", player, player -> find_spell( 155625 ), options_str )
   {
     may_dodge = may_parry = may_block = may_glance = false;
-    snapshots_sr = snapshots_tf = false; // June 6 2016
+    //snapshots_sr = false; // June 6 2016
+
+    if (maybe_ptr(p()->dbc.ptr))
+       snapshots_sr = false;
+    else
+       snapshots_sr = true;
+
+    snapshots_tf = true;
     hasted_ticks = true;
     energize_type = ENERGIZE_ON_HIT;
   }
@@ -3470,6 +3482,11 @@ struct rake_t : public cat_attack_t
       background = dual = true;
       may_miss = may_parry = may_dodge = may_crit = false;
 
+      if (maybe_ptr(p->dbc.ptr))
+         snapshots_sr = false;
+      else
+         snapshots_sr = true;
+
       base_tick_time *= 1.0 + p -> talent.jagged_wounds -> effectN( 1 ).percent();
       dot_duration   *= 1.0 + p -> talent.jagged_wounds -> effectN( 2 ).percent();
       
@@ -3493,6 +3510,10 @@ struct rake_t : public cat_attack_t
     cat_attack_t( "rake", p, p -> find_affinity_spell( "Rake" ) )
   {
     parse_options( options_str );
+    if (maybe_ptr(p->dbc.ptr))
+       snapshots_sr = false;
+    else
+       snapshots_sr = true;
 
     bleed = p -> find_action( "rake_bleed" );
 
@@ -3539,6 +3560,10 @@ struct rip_t : public cat_attack_t
   {
     special      = true;
     may_crit     = false;
+    if (maybe_ptr(p->dbc.ptr))
+       snapshots_sr = false;
+    else
+       snapshots_sr = true;
 
     trigger_tier17_2pc = p -> sets -> has_set_bonus( DRUID_FERAL, T17, B2 );
 
@@ -3851,7 +3876,11 @@ struct thrash_cat_t : public cat_attack_t
       background = true;
       // Enable snapshotted damage bonuses so we can pass those on to the tick action (DoT-like behavior).
       // TF and SR should be on by default, but just make sure since we are hard overriding.
-      snapshots_tf = snapshots_sr = moment_of_clarity = true;
+      snapshots_tf = moment_of_clarity = true;
+      if (maybe_ptr(p->dbc.ptr))
+         snapshots_sr = false;
+      else
+         snapshots_sr = true;
 
       base_tick_time *= 1.0 + p -> talent.jagged_wounds -> effectN( 1 ).percent();
       // dot_duration doesn't matter but set it anyway to be safe.
@@ -3887,6 +3916,10 @@ struct thrash_cat_t : public cat_attack_t
   {
     aoe = -1;
     spell_power_mod.direct = 0;
+    if (maybe_ptr(p->dbc.ptr))
+       snapshots_sr = false;
+    else
+       snapshots_sr = true;
 
     trigger_tier17_2pc = p -> sets -> has_set_bonus( DRUID_FERAL, T17, B2 );
 
