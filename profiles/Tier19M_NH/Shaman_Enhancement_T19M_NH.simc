@@ -102,15 +102,15 @@ actions.opener=rockbiter,if=maelstrom<15&time<gcd
 head=helm_of_shackled_elements,id=138343,bonus_id=3519
 neck=cursed_beartooth_necklace,id=139239,bonus_id=3519,enchant=mark_of_the_hidden_satyr
 shoulders=netherbranded_shoulderpads,id=140917,bonus_id=3519
-back=cloak_of_shackled_elements,id=138372,bonus_id=3519
+back=cloak_of_shackled_elements,id=138372,bonus_id=3519,enchant=binding_of_agility
 chest=raiment_of_shackled_elements,id=138346,bonus_id=3519
 wrists=biteresistant_wristclamps,id=142423,bonus_id=3519
 hands=sterilizers_insulated_gauntlets,id=140869,bonus_id=3519
 waist=emblazoned_duskwatch_belt,id=140868,bonus_id=3519
 legs=leggings_of_shackled_elements,id=138345,bonus_id=3519
 feet=black_venom_sabatons,id=139219,bonus_id=3519
-finger1=ring_of_the_scoured_clan,id=140897,bonus_id=3519,enchant=binding_of_mastery
-finger2=mindrend_band,id=138220,bonus_id=3519,enchant=binding_of_mastery
+finger1=ring_of_the_scoured_clan,id=140897,bonus_id=3519,enchant=binding_of_haste
+finger2=mindrend_band,id=138220,bonus_id=3519,enchant=binding_of_haste
 trinket1=nightblooming_frond,id=140802,bonus_id=3519
 trinket2=convergence_of_fates,id=140806,bonus_id=3519
 main_hand=doomhammer,id=128819,bonus_id=741,gem_id=139266/142511/139264,relic_id=1532:1806/1527:3469/1532:1806
@@ -118,11 +118,11 @@ off_hand=fury_of_the_stonemother,id=128873
 
 # Gear Summary
 # gear_ilvl=912.88
-# gear_agility=24028
+# gear_agility=24228
 # gear_stamina=35283
 # gear_crit_rating=2603
-# gear_haste_rating=8195
-# gear_mastery_rating=12062
+# gear_haste_rating=8595
+# gear_mastery_rating=11662
 # gear_versatility_rating=710
 # gear_armor=3030
 # set_bonus=tier19_2pc=1
