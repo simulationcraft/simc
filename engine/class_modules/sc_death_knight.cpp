@@ -2276,6 +2276,9 @@ struct gargoyle_pet_t : public death_knight_pet_t
 
 struct valkyr_pet_t : public death_knight_pet_t
 {
+
+  timespan_t confusion_time;
+
   struct general_confusion_t : public action_t
   {
     bool executed;
@@ -2306,16 +2309,8 @@ struct valkyr_pet_t : public death_knight_pet_t
       executed = false;
     }
 
-    // Seems to have a bimodal distribution on how long an idle time there is after summoning, based
-    // on quite a bit of data. In any case, the mean delay is quite significant (on average over 2.5
-    // seconds).
     timespan_t execute_time() const override
-    {
-      auto dist = static_cast<int>( rng().range( 0, 2 ) );
-      auto base = dist == 0 ? 2.25 : 3.25;
-
-      return timespan_t::from_seconds( rng().gauss( base, 0.25 ) );
-    }
+    { return confusion_time; }
 
     bool ready() override
     { return ! executed; }
@@ -2396,6 +2391,12 @@ struct valkyr_pet_t : public death_knight_pet_t
       shadow_empowerment -> current_value += increase;
     }
   }
+  
+  void set_confusion ( timespan_t t )
+  {
+    confusion_time = t;
+  }
+  
 };
 
 // ==========================================================================
@@ -4150,7 +4151,25 @@ struct dark_arbiter_t : public death_knight_spell_t
   {
     death_knight_spell_t::execute();
 
-    p() -> pets.dark_arbiter -> summon( data().duration() );
+    // Seems to have a bimodal distribution on how long an idle time there is after summoning, based
+    // on quite a bit of data. In any case, the mean delay is quite significant (on average over 2.5
+    // seconds).
+    
+    // On 7.3 PTR the duration is set to 20s after the start of the first cast to make up to the confusion time
+    // On Live it's 20s after the pet summon
+
+    auto dist = static_cast<int>( rng().range( 0, 2 ) );
+    auto base = dist == 0 ? 2.25 : 3.25;
+
+    timespan_t confusion_time = timespan_t::from_seconds( rng().gauss( base, 0.25 ) );
+    timespan_t duration_increase = timespan_t::from_seconds( 0 );
+    
+    if ( maybe_ptr ( p -> dbc.ptr ) )
+      duration_increase = confusion_time;
+
+    p() -> pets.dark_arbiter -> summon( data().duration() + duration_increase );
+    p() -> pets.dark_arbiter -> set_confusion( confusion_time );
+    
   }
 };
 
