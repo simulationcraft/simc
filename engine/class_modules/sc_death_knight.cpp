@@ -7399,8 +7399,6 @@ double death_knight_t::composite_melee_haste() const
 
   haste *= 1.0 / ( 1.0 + buffs.sephuzs_secret -> check_value() );
 
-  haste *= 1.0 / ( 1.0 + spec.veteran_of_the_third_war -> effectN( 6 ).percent() );
-
   haste *= 1.0 / ( 1.0 + buffs.soul_reaper -> stack_value() );
 
   if ( buffs.bone_shield -> up() )
@@ -7434,7 +7432,7 @@ double death_knight_t::composite_spell_haste() const
 {
   double haste = player_t::composite_spell_haste();
 
-  haste *= 1.0 / ( 1.0 + spec.veteran_of_the_third_war -> effectN( 6 ).percent() );
+  haste *= 1.0 / ( 1.0 + buffs.sephuzs_secret -> check_value() );
 
   haste *= 1.0 / ( 1.0 + buffs.soul_reaper -> stack_value() );
 
