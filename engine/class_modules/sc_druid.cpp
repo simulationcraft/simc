@@ -7805,6 +7805,7 @@ void druid_t::apl_balance()
   for ( size_t i = 0; i < racial_actions.size(); i++ )
     default_list -> add_action( racial_actions[i] + ",if=buff.celestial_alignment.up|buff.incarnation.up" );
 
+  default_list->add_action("use_items");
   default_list -> add_action( "call_action_list,name=fury_of_elune,if=talent.fury_of_elune.enabled&cooldown.fury_of_elune.remains<target.time_to_die" );
   default_list -> add_action( "call_action_list,name=ed,if=equipped.the_emerald_dreamcatcher&active_enemies<=1" );
   default_list -> add_action( this, "New Moon", "if=((charges=2&recharge_time<5)|charges=3)&astral_power.deficit>14" );
@@ -7824,7 +7825,6 @@ void druid_t::apl_balance()
       default_list->add_action("use_item,name=charm_of_the_rising_tide,if=cooldown.incarnation.remains>30|cooldown.celestial_alignment.remains>60");
   if (items[SLOT_TRINKET_1].name_str == "horn_of_valor" || items[SLOT_TRINKET_2].name_str == "horn_of_valor")
       default_list->add_action("use_item,name=horn_of_valor,if=cooldown.incarnation.remains>30|cooldown.celestial_alignment.remains>60");
-  default_list->add_action( "use_items" );
   default_list -> add_action( this, "Starfall", "if=buff.oneths_overconfidence.up&(!buff.solar_solstice.up|astral_power.deficit>44|buff.celestial_alignment.up|buff.incarnation.up)" );
   default_list -> add_action( this, "Solar Wrath", "if=buff.solar_empowerment.stack=3" );
   default_list -> add_action( this, "Lunar Strike", "if=buff.lunar_empowerment.stack=3" );
