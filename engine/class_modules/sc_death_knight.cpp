@@ -5014,10 +5014,12 @@ struct frostscythe_t : public death_knight_melee_attack_t
     aoe = -1;
 
     // T21 2P bonus : damage increase to Howling Blast, Frostscythe and Obliterate
-    if ( p -> sets -> has_set_bonus( DEATH_KNIGHT_FROST, T21, B2 ) )
-    {
-       base_multiplier *= ( 1.0 + p-> find_spell( 251873 ) -> effectN( 3 ).percent() );
-    }
+    if ( maybe_ptr( p -> dbc.ptr ) ) 
+      if ( p -> sets -> has_set_bonus( DEATH_KNIGHT_FROST, T21, B2 ) )
+      {
+        base_multiplier *= ( 1.0 + p-> find_spell( 251873 ) -> effectN( 3 ).percent() );
+      }
+    
     crit_bonus_multiplier *= 1.0 + p -> spec.death_knight -> effectN( 5 ).percent();
   }
 
@@ -5259,10 +5261,11 @@ struct howling_blast_t : public death_knight_spell_t
     base_multiplier    *= 1.0 + p -> artifact.blast_radius.percent();
     
     // T21 2P bonus : damage increase to Howling Blast, Frostscythe and Obliterate
-    if ( p->sets->has_set_bonus( DEATH_KNIGHT_FROST, T21, B2 ))
-    {
-       base_multiplier *= ( 1.0 + p-> find_spell( 251873 ) -> effectN( 1 ).percent() );
-    }
+    if ( maybe_ptr( p -> dbc.ptr ) )
+      if ( p->sets->has_set_bonus( DEATH_KNIGHT_FROST, T21, B2 ))
+      {
+        base_multiplier *= ( 1.0 + p-> find_spell( 251873 ) -> effectN( 1 ).percent() );
+      }
   }
 
   double runic_power_generation_multiplier( const action_state_t* state ) const override
@@ -5590,10 +5593,11 @@ struct obliterate_strike_t : public death_knight_melee_attack_t
     weapon = w;
     
     // T21 2P bonus : damage increase to Howling Blast, Frostscythe and Obliterate
-    if ( p -> sets -> has_set_bonus( DEATH_KNIGHT_FROST , T21, B2 ) )
-    {
-       base_multiplier *= ( 1.0 + p-> find_spell( 251873 ) -> effectN( 2 ).percent() );
-    }
+    if ( maybe_ptr( p -> dbc.ptr ) ) 
+      if ( p -> sets -> has_set_bonus( DEATH_KNIGHT_FROST , T21, B2 ) )
+      {
+        base_multiplier *= ( 1.0 + p-> find_spell( 251873 ) -> effectN( 2 ).percent() );
+      }
 
     // 7.3 : Koltira's newfound will also increase Obliterate damage by 10%
     if ( maybe_ptr( p -> dbc.ptr ) ) 
@@ -8417,9 +8421,11 @@ double death_knight_t::bone_shield_handler( const action_state_t* state ) const
   buffs.bone_shield -> decrement( n_stacks );
   cooldown.bone_shield_icd -> start();
 
-  if ( n_stacks > 0 && sets -> has_set_bonus( DEATH_KNIGHT_BLOOD, T21, B2 ) )
-    p() -> cooldown.dancing_rune_weapon -> adjust( - timespan_t::from_millis(  find_spell( 251876 ) -> effectN( 1 ) ), false );
-
+  if ( maybe_ptr ( p() -> dbc.ptr ) )
+    if ( n_stacks > 0 && sets -> has_set_bonus( DEATH_KNIGHT_BLOOD, T21, B2 ) )
+    {
+      p() -> cooldown.dancing_rune_weapon -> adjust( - timespan_t::from_millis(  find_spell( 251876 ) -> effectN( 1 ) ), false );
+    }
   
   return absorbed;
 }
