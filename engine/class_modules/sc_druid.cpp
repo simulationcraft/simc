@@ -3121,7 +3121,10 @@ struct ashamanes_rip_t : public cat_attack_t
      base_t::tick(d);
 
      trigger_bloody_gash(d->target, d->state->result_total);
-     p() -> buff.apex_predator -> trigger();
+     if ( p() -> sets -> has_set_bonus( DRUID_FERAL, T21, B4) )
+     {
+        p() -> buff.apex_predator -> trigger();
+     }
   }
 
   virtual void execute() override
@@ -3307,6 +3310,10 @@ struct ferocious_bite_t : public cat_attack_t
            5 * p() -> talent.soul_of_the_forest -> effectN(1).resource( RESOURCE_ENERGY ),
            p() -> gain.soul_of_the_forest);
      }
+
+     p() -> buff.apex_predator -> expire();
+
+
   }
 
   void consume_resource() override
@@ -3644,7 +3651,10 @@ struct rip_t : public cat_attack_t
      base_t::tick( d );
 
      trigger_bloody_gash(d->target, d->state->result_total);
-     p() -> buff.apex_predator -> trigger();
+     if ( p() -> sets ->has_set_bonus(DRUID_FERAL, T21, B4) )
+     {
+        p() -> buff.apex_predator -> trigger();
+     }
   }
 
   void last_tick( dot_t* d ) override
@@ -3674,7 +3684,10 @@ struct bloody_gash_t : public cat_attack_t
 
       //TODO(feral): Check if TWC procs from this
       trigger_wildshapers_clutch(cat_attack_t::get_state());
-      p() -> buff.apex_predator -> trigger();
+      if ( p() -> sets -> has_set_bonus( DRUID_FERAL, T21, B4 ))
+      {
+         p() -> buff.apex_predator -> trigger();
+      }
    }
 };
 
@@ -7420,7 +7433,7 @@ void druid_t::create_buffs()
                                   resource_gain( RESOURCE_ENERGY, b -> check_value(), gain.ashamanes_energy ); } );
 
   buff.apex_predator        = buff_creator_t(this, "apex_predator", find_spell(252752))
-                               .chance( ( parent -> sets -> has_set_bonus( DRUID_FERAL, T21, B4) ? find_spell( 251790 ) -> proc_chance() : 0 ) );
+                               .chance( /*( parent -> sets -> has_set_bonus( DRUID_FERAL, T21, B4) ?*/ find_spell( 251790 ) -> proc_chance() /*: 0 )*/ );
 
   buff.berserk               = new berserk_buff_t( *this );
 
