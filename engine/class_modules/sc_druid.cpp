@@ -354,6 +354,7 @@ public:
 
     // Feral
     buff_t* ashamanes_energy;
+    buff_t* apex_predator;
     buff_t* berserk;
     buff_t* bloodtalons;
     buff_t* elunes_guidance;
@@ -3120,6 +3121,7 @@ struct ashamanes_rip_t : public cat_attack_t
      base_t::tick(d);
 
      trigger_bloody_gash(d->target, d->state->result_total);
+     p() -> buff.apex_predator -> trigger();
   }
 
   virtual void execute() override
@@ -3230,9 +3232,9 @@ struct ferocious_bite_t : public cat_attack_t
     max_excess_energy = 1 * data().effectN( 2 ).base_value();
 
     crit_bonus_multiplier *= 1.0 + p -> artifact.powerful_bite.percent();
-    if (p->talent.sabertooth->ok())
+    if ( p -> talent.sabertooth -> ok() )
     {
-       base_multiplier *= 1.0 + p->talent.sabertooth->effectN(1).percent();
+       base_multiplier *= 1.0 + p -> talent.sabertooth -> effectN(1).percent();
     }
   } 
 
@@ -3245,6 +3247,11 @@ struct ferocious_bite_t : public cat_attack_t
 
     if ( p() -> buff.clearcasting -> check() )
       req /= 2.0;
+
+    if ( p() -> buff.apex_predator -> check() )
+    {
+       req *= ( 1 - p() -> buff.apex_predator -> data().effectN(1).percent() );
+    }
 
     return req;
   }
@@ -3284,8 +3291,32 @@ struct ferocious_bite_t : public cat_attack_t
     }
   }
 
+  void ApexPredatorResource()
+  {
+     if ( p() -> buff.tigers_fury -> check() )
+     {
+        p() -> buff.tigers_fury -> extend_duration( p(), timespan_t::from_seconds( p() -> legendary.behemoth_headdress * 5 ));
+     }
+
+     if ( p() -> spec.predatory_swiftness -> ok() )
+        p() -> buff.predatory_swiftness -> trigger( 1, 1, 5 * 0.20 );
+
+     if ( p() -> talent.soul_of_the_forest -> ok() && p() -> specialization() == DRUID_FERAL )
+     {
+        p() -> resource_gain( RESOURCE_ENERGY,
+           5 * p() -> talent.soul_of_the_forest -> effectN(1).resource( RESOURCE_ENERGY ),
+           p() -> gain.soul_of_the_forest);
+     }
+  }
+
   void consume_resource() override
   {
+     if ( p() -> buff.apex_predator -> check() )
+     {
+        ApexPredatorResource();
+        return;
+     }
+
     /* Extra energy consumption happens first. In-game it happens before the
        skill even casts but let's not do that because its dumb. */
     if ( hit_any_target )
@@ -3613,6 +3644,7 @@ struct rip_t : public cat_attack_t
      base_t::tick( d );
 
      trigger_bloody_gash(d->target, d->state->result_total);
+     p() -> buff.apex_predator -> trigger();
   }
 
   void last_tick( dot_t* d ) override
@@ -3641,8 +3673,8 @@ struct bloody_gash_t : public cat_attack_t
       cat_attack_t::execute();
 
       //TODO(feral): Check if TWC procs from this
-      trigger_wildshapers_clutch(cat_attack_t::get_state()); 
-
+      trigger_wildshapers_clutch(cat_attack_t::get_state());
+      p() -> buff.apex_predator -> trigger();
    }
 };
 
@@ -7386,6 +7418,9 @@ void druid_t::create_buffs()
                                .default_value( artifact.ashamanes_energy.value() )
                                .tick_callback( [ this ]( buff_t* b , int, const timespan_t& ) {
                                   resource_gain( RESOURCE_ENERGY, b -> check_value(), gain.ashamanes_energy ); } );
+
+  buff.apex_predator        = buff_creator_t(this, "apex_predator", find_spell(252752))
+                               .chance( ( parent -> sets -> has_set_bonus( DRUID_FERAL, T21, B4) ? find_spell( 251790 ) -> proc_chance() : 0 ) );
 
   buff.berserk               = new berserk_buff_t( *this );
 
