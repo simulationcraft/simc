@@ -7,7 +7,7 @@
 // Unholy
 // - Does Festering Wound (generation|consumption) require a positive hit result?
 // - Skelebro has an aoe spell (Arrow Spray), but the AI using it is very inconsistent
-// - T21 bonuses : 4P isn't even implemented on PTR (as of 2017-8-12)
+// - T21 bonuses : 4P isn't implemented on PTR yet (as of 2017-8-12)
 // Blood
 // - Fix APL
 // - Support legendaries
@@ -20,6 +20,7 @@
 //   It is implemented on PTR, but triggered really weirdly and doesn't match tooltip
 // Frost
 // - T21 4P Damage proc : Freezing Death, spellID : 253590, set bonus ID : 251875
+//   really low damage atm (2017-8-12), could only be placeholder
 
 #include "simulationcraft.hpp"
 
