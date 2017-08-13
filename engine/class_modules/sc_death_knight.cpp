@@ -6,12 +6,20 @@
 // TODO:
 // Unholy
 // - Does Festering Wound (generation|consumption) require a positive hit result?
-// - Festering Strike Festering Wound generation probability distribution
 // - Skelebro has an aoe spell (Arrow Spray), but the AI using it is very inconsistent
-// - Portal to the Underworld damage is messed up (by ~3%).
-// - Armies of the Damned is not implemented
+// - T21 bonuses : 4P isn't even implemented on PTR (as of 2017-8-12)
 // Blood
-//
+// - Fix APL
+// - Support legendaries
+// - Overall damage per spell are really low compared to live, could be some damage modifiers missing (~ 20% missing)
+// - Consumption damage is really low (even compared to the 20% missing) and doesn't seem to generate healing
+// - Refactor Blooddrinker so it's able to critically tick on damage
+// - Probably a bunch of other things as well
+// - Add T20 bonuses
+// - T21 buff you gain after DRW's expiration, SpellID is : 253381 for the buff, 251877 for the set bonus
+//   It is implemented on PTR, but triggered really weirdly and doesn't match tooltip
+// Frost
+// - T21 4P Damage proc : Freezing Death, spellID : 253590, set bonus ID : 251875
 
 #include "simulationcraft.hpp"
 
@@ -375,6 +383,7 @@ struct death_knight_td_t : public actor_target_data_t {
     dot_t* outbreak;
     dot_t* soul_reaper;
     dot_t* virulent_plague;
+    dot_t* coils_of_devastation;
   } dot;
 
   struct
@@ -1005,6 +1014,7 @@ inline death_knight_td_t::death_knight_td_t( player_t* target, death_knight_t* d
   dot.outbreak           = target -> get_dot( "outbreak",           death_knight );
   dot.soul_reaper        = target -> get_dot( "soul_reaper_dot",    death_knight );
   dot.virulent_plague    = target -> get_dot( "virulent_plague",    death_knight );
+  dot.coils_of_devastation = target -> get_dot( "coils_of_devastation", death_knight );
 
   debuff.razorice        = make_buff( *this, "razorice", death_knight -> find_spell( 51714 ) )
                            -> set_period( timespan_t::zero() );
@@ -4458,10 +4468,38 @@ struct deaths_caress_t : public death_knight_spell_t
 
 // Death Coil ===============================================================
 
+struct coils_of_devastation_tick_t : public death_knight_spell_t
+{
+  action_t* parent;
+
+  coils_of_devastation_tick_t( death_knight_t* p, action_t* parent ):
+    death_knight_spell_t( "coils_of_devastation_tick", p, p -> find_spell( 253367 ) ),
+    parent( parent )
+  {
+    background = true;
+    may_miss = may_crit = false;
+  }
+}
+  
 // TODO: Conveert to mimic blizzard spells
 struct death_coil_t : public death_knight_spell_t
 {
   const spell_data_t* unholy_vigor;
+
+  // T21 Unholy 2P
+  struct coils_of_devastation_t : public death_knight_spell_t
+  {
+    coils_of_devastation_t( death_knight_t* p ):
+    death_knight_spell_t( "coils_of_devastation", p, p -> find_spell( 251871 ) )
+    {
+      background = true;
+      may_miss = may_crit = tick_may_crit = hasted_ticks = false;
+      
+      tick_action = new coils_of_devastation_tick_t( p, this );
+    }
+  };
+  
+  coils_of_devastation_t coils_of_devastation;
 
   death_coil_t( death_knight_t* p, const std::string& options_str ) :
     death_knight_spell_t( "death_coil", p, p -> find_specialization_spell( "Death Coil" ) ),
@@ -4471,8 +4509,18 @@ struct death_coil_t : public death_knight_spell_t
 
     attack_power_mod.direct = p -> find_spell( 47632 ) -> effectN( 1 ).ap_coeff();
     base_multiplier *= 1.0 + p -> artifact.deadliest_coil.percent();
+    
     // TODO: Wrong damage spell so generic application does not work
     base_multiplier *= 1.0 + p -> spec.unholy_death_knight -> effectN( 1 ).percent();
+    
+    if ( maybe_ptr ( p() -> dbc.ptr ) )
+    {
+      if ( p() -> sets -> has_set_bonus( DEATH_KNIGHT_UNHOLY, T21, B2 ) )
+      {
+        coils_of_devastation = new coils_of_devastation_t( p );
+        add_child ( coils_of_devastation );
+      }
+    }
   }
 
   double cost() const override
@@ -4527,6 +4575,16 @@ struct death_coil_t : public death_knight_spell_t
     if ( rng().roll( player -> sets -> set( DEATH_KNIGHT_UNHOLY, T19, B4 ) -> effectN( 1 ).percent() ) )
     {
       p() -> trigger_festering_wound( state, 1, true ); // TODO: Does this ignore ICD?
+    }
+    
+    if ( maybe_ptr ( p() -> dbc.ptr ) )
+    {
+      if ( p() -> sets -> has_set_bonus( DEATH_KNIGHT_UNHOLY, T21, B2 ) && result_is_hit( s -> result ) )
+      {
+        death_knight_spell_t::trigger(
+          coils_of_devastation, s -> target,
+          s -> result_amount * p() ->  p -> find_spell( 251871 ) -> effectN( 1 ).percent() );
+      }
     }
   }
 };
@@ -4955,11 +5013,9 @@ struct frostscythe_t : public death_knight_melee_attack_t
     aoe = -1;
 
     // T21 2P bonus : damage increase to Howling Blast, Frostscythe and Obliterate
-    if ( maybe_ptr( p -> dbc.ptr ) ) {
-      if (p->sets->has_set_bonus(DEATH_KNIGHT_FROST, T21, B2))
-      {
-         base_multiplier *= (1.0 + p-> find_spell(251873) -> effectN(3).percent());
-      }
+    if ( p -> sets -> has_set_bonus( DEATH_KNIGHT_FROST, T21, B2 ) )
+    {
+       base_multiplier *= ( 1.0 + p-> find_spell( 251873 ) -> effectN( 3 ).percent() );
     }
     crit_bonus_multiplier *= 1.0 + p -> spec.death_knight -> effectN( 5 ).percent();
   }
@@ -5202,11 +5258,9 @@ struct howling_blast_t : public death_knight_spell_t
     base_multiplier    *= 1.0 + p -> artifact.blast_radius.percent();
     
     // T21 2P bonus : damage increase to Howling Blast, Frostscythe and Obliterate
-    if ( maybe_ptr( p -> dbc.ptr ) )  {
-      if (p->sets->has_set_bonus(DEATH_KNIGHT_FROST, T21, B2))
-      {
-         base_multiplier *= (1.0 + p-> find_spell(251873) -> effectN(1).percent());
-      }
+    if ( p->sets->has_set_bonus( DEATH_KNIGHT_FROST, T21, B2 ))
+    {
+       base_multiplier *= ( 1.0 + p-> find_spell( 251873 ) -> effectN( 1 ).percent() );
     }
   }
 
@@ -5535,12 +5589,11 @@ struct obliterate_strike_t : public death_knight_melee_attack_t
     weapon = w;
     
     // T21 2P bonus : damage increase to Howling Blast, Frostscythe and Obliterate
-    if ( maybe_ptr( p -> dbc.ptr ) ) {
-      if (p->sets->has_set_bonus(DEATH_KNIGHT_FROST, T21, B2))
-      {
-         base_multiplier *= (1.0 + p-> find_spell(251873) -> effectN(2).percent());
-      }
+    if ( p -> sets -> has_set_bonus( DEATH_KNIGHT_FROST , T21, B2 ) )
+    {
+       base_multiplier *= ( 1.0 + p-> find_spell( 251873 ) -> effectN( 2 ).percent() );
     }
+
     // 7.3 : Koltira's newfound will also increase Obliterate damage by 10%
     if ( maybe_ptr( p -> dbc.ptr ) ) 
     {
@@ -5926,12 +5979,6 @@ struct clawing_shadows_t : public scourge_strike_base_t
     scourge_strike_base_t( "clawing_shadows", p, p -> talent.clawing_shadows )
   {
     parse_options( options_str );
-
-    // HOTFIX 2016-08-23: Clawing Shadows damage has been changed to 130% weapon damage (was 150% Attack Power).
-    /*
-    weapon_multiplier = 1.3;
-    normalize_weapon_speed = true;
-    */
   }
 };
 
@@ -8371,6 +8418,10 @@ double death_knight_t::bone_shield_handler( const action_state_t* state ) const
   buffs.bone_shield -> decrement( n_stacks );
   cooldown.bone_shield_icd -> start();
 
+  if ( n_stacks > 0 && sets -> has_set_bonus( DEATH_KNIGHT_BLOOD, T21, B2 ) )
+    p() -> cooldown.dancing_rune_weapon -> adjust( - timespan_t::from_millis(  find_spell( 251876 ) -> effectN( 1 ) ), false );
+
+  
   return absorbed;
 }
 
