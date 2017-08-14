@@ -7,7 +7,8 @@
 // Unholy
 // - Does Festering Wound (generation|consumption) require a positive hit result?
 // - Skelebro has an aoe spell (Arrow Spray), but the AI using it is very inconsistent
-// - T21 bonuses : 4P isn't implemented on PTR yet (as of 2017-8-12)
+// - T21 bonuses : 2P has a bloodlet-like mechanic, except that the damage of the dot is updated to the new value instead of added
+//   4P isn't implemented on PTR yet (as of 2017-8-12)
 // Blood
 // - Fix APL
 // - Support legendaries
@@ -384,7 +385,6 @@ struct death_knight_td_t : public actor_target_data_t {
     dot_t* outbreak;
     dot_t* soul_reaper;
     dot_t* virulent_plague;
-    dot_t* coils_of_devastation;
   } dot;
 
   struct
@@ -1017,7 +1017,6 @@ inline death_knight_td_t::death_knight_td_t( player_t* target, death_knight_t* d
   dot.outbreak           = target -> get_dot( "outbreak",           death_knight );
   dot.soul_reaper        = target -> get_dot( "soul_reaper_dot",    death_knight );
   dot.virulent_plague    = target -> get_dot( "virulent_plague",    death_knight );
-  dot.coils_of_devastation = target -> get_dot( "coils_of_devastation", death_knight );
 
   debuff.razorice        = make_buff( *this, "razorice", death_knight -> find_spell( 51714 ) )
                            -> set_period( timespan_t::zero() );
@@ -4472,39 +4471,11 @@ struct deaths_caress_t : public death_knight_spell_t
 
 // Death Coil ===============================================================
 
-struct coils_of_devastation_tick_t : public death_knight_spell_t
-{
-  action_t* parent;
-
-  coils_of_devastation_tick_t( death_knight_t* p, action_t* parent ):
-    death_knight_spell_t( "coils_of_devastation_tick", p, p -> find_spell( 253367 ) ),
-    parent( parent )
-  {
-    background = true;
-    may_miss = may_crit = false;
-  }
-}
-  
 // TODO: Conveert to mimic blizzard spells
 struct death_coil_t : public death_knight_spell_t
 {
   const spell_data_t* unholy_vigor;
-
-  // T21 Unholy 2P
-  struct coils_of_devastation_t : public death_knight_spell_t
-  {
-    coils_of_devastation_t( death_knight_t* p ):
-    death_knight_spell_t( "coils_of_devastation", p, p -> find_spell( 251871 ) )
-    {
-      background = true;
-      may_miss = may_crit = tick_may_crit = hasted_ticks = false;
-      
-      tick_action = new coils_of_devastation_tick_t( p, this );
-    }
-  };
   
-  coils_of_devastation_t coils_of_devastation;
-
   death_coil_t( death_knight_t* p, const std::string& options_str ) :
     death_knight_spell_t( "death_coil", p, p -> find_specialization_spell( "Death Coil" ) ),
     unholy_vigor( p -> find_spell( 196263 ) )
@@ -4517,14 +4488,6 @@ struct death_coil_t : public death_knight_spell_t
     // TODO: Wrong damage spell so generic application does not work
     base_multiplier *= 1.0 + p -> spec.unholy_death_knight -> effectN( 1 ).percent();
     
-    if ( maybe_ptr ( p() -> dbc.ptr ) )
-    {
-      if ( p() -> sets -> has_set_bonus( DEATH_KNIGHT_UNHOLY, T21, B2 ) )
-      {
-        coils_of_devastation = new coils_of_devastation_t( p );
-        add_child ( coils_of_devastation );
-      }
-    }
   }
 
   double cost() const override
@@ -4581,15 +4544,6 @@ struct death_coil_t : public death_knight_spell_t
       p() -> trigger_festering_wound( state, 1, true ); // TODO: Does this ignore ICD?
     }
     
-    if ( maybe_ptr ( p() -> dbc.ptr ) )
-    {
-      if ( p() -> sets -> has_set_bonus( DEATH_KNIGHT_UNHOLY, T21, B2 ) && result_is_hit( s -> result ) )
-      {
-        death_knight_spell_t::trigger(
-          coils_of_devastation, s -> target,
-          s -> result_amount * p() ->  p -> find_spell( 251871 ) -> effectN( 1 ).percent() );
-      }
-    }
   }
 };
 
