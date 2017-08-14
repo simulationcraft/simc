@@ -12,6 +12,16 @@ struct proc_map_t
   const char* proc;
 };
 
+std::vector<std::string> _school_map = {
+  "Physical",
+  "Holy",
+  "Fire",
+  "Nature",
+  "Frost",
+  "Shadow",
+  "Arcane",
+};
+
 std::vector<std::string> _hotfix_effect_map = {
   "Id",
   "", // Hotfix field
@@ -914,6 +924,40 @@ std::ostringstream& spell_info::effect_to_str( const dbc_t& dbc,
   }
 
   s << std::endl;
+
+  if ( e -> type() == E_APPLY_AURA && e -> subtype() == A_MOD_DAMAGE_PERCENT_DONE &&
+       e -> misc_value1() != 0 )
+  {
+    s << "                   Affected School(s): ";
+    if ( e -> misc_value1() == 0x7f )
+    {
+      s << "All";
+    }
+    else
+    {
+      std::vector<std::string> schools;
+      for ( size_t i = 0; i < _school_map.size(); ++i )
+      {
+        if ( e -> misc_value1() & ( 1 << i ) )
+        {
+          schools.push_back( _school_map[ i ] );
+        }
+      }
+
+      for ( size_t i = 0; i < schools.size(); ++i )
+      {
+        s << schools[ i ];
+
+        if ( i < schools.size() - 1 )
+        {
+          s << ", ";
+        }
+      }
+    }
+
+    s << std::endl;
+  }
+
 
   std::vector< const spell_data_t* > affected_spells = dbc.effect_affects_spells( spell -> class_family(), e );
   if ( affected_spells.size() > 0 )
