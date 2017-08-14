@@ -2287,19 +2287,20 @@ struct gargoyle_pet_t : public death_knight_pet_t
 
 struct valkyr_pet_t : public death_knight_pet_t
 {
-
   timespan_t confusion_time;
 
   struct general_confusion_t : public action_t
   {
     bool executed;
+    timespan_t confusion_time;
 
-    general_confusion_t( player_t* player ) : action_t( ACTION_OTHER, "general_confusion", player ),
+    general_confusion_t( player_t* player, timespan_t t ) : action_t( ACTION_OTHER, "general_confusion", player ),
       executed( false )
     {
       may_miss = false;
       dual = quiet = true;
       trigger_gcd = timespan_t::zero();
+      confusion_time = t;
     }
 
     result_e calculate_result( action_state_t* /* s */ ) const override
@@ -2375,7 +2376,7 @@ struct valkyr_pet_t : public death_knight_pet_t
   action_t* create_action( const std::string& name, const std::string& options_str ) override
   {
     if ( name == "valkyr_strike"     ) return new     valkyr_strike_t( this, options_str );
-    if ( name == "general_confusion" ) return new general_confusion_t( this );
+    if ( name == "general_confusion" ) return new general_confusion_t( this, confusion_time);
 
     return death_knight_pet_t::create_action( name, options_str );
   }
@@ -4175,7 +4176,7 @@ struct dark_arbiter_t : public death_knight_spell_t
     timespan_t confusion_time = timespan_t::from_seconds( rng().gauss( base, 0.25 ) );
     timespan_t duration_increase = timespan_t::from_seconds( 0 );
     
-    if ( maybe_ptr ( p -> dbc.ptr ) )
+    if ( maybe_ptr ( p() -> dbc.ptr ) )
       duration_increase = confusion_time;
 
     p() -> pets.dark_arbiter -> summon( data().duration() + duration_increase );
