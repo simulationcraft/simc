@@ -7948,6 +7948,8 @@ void death_knight_t::default_apl_unholy()
 
   // On-use items
   def->add_action("use_items");
+  def->add_action("use_item,name=feloiled_infernal_machine,"
+                  "if=pet.valkyr_battlemaiden.active");
   def->add_action("use_item,name=ring_of_collapsing_futures,"
                   "if=(buff.temptation.stack=0&target.time_to_die>60)|target.time_to_die<60");
 
