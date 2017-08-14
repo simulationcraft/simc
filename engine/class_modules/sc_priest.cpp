@@ -4910,6 +4910,14 @@ void priest_t::apl_precombat()
     "*(1+0.2+stat.mastery_rating%16000)*0.5" );
   precombat->add_action( 
     "variable,name=sear_dpgcd,op=set,value=80*(1+0.05*artifact.void_corruption.rank)" );
+  precombat->add_action(
+    "variable,name=s2msetup_time,op=set,value=(0.8*(83+(20+20*talent.fortress_of_the_mind"
+    ".enabled)*set_bonus.tier20_4pc-(5*talent.sanlayn.enabled)+(30+42*(desired_targets>1)+"
+    "10*talent.lingering_insanity.enabled)*set_bonus.tier21_4pc*talent.auspicious_spirits."
+    "enabled+((33-13*set_bonus.tier20_4pc)*talent.reaper_of_souls.enabled)+set_bonus.tier19_2pc"
+    "*4+8*equipped.mangazas_madness+(raw_haste_pct*10*(1+0.7*set_bonus.tier20_4pc))*(2+(0.8*set_"
+    "bonus.tier19_2pc)+(1*talent.reaper_of_souls.enabled)+(2*artifact.mass_hysteria.rank)-(1*talent"
+    ".sanlayn.enabled)))),if=talent.surrender_to_madness.enabled" );
   if ( sim->allow_potions && true_level >= 80 )
   {
     if ( true_level > 100 )
@@ -5088,13 +5096,8 @@ void priest_t::apl_shadow()
       "variable,op=set,name=actors_fight_time_mod,value=((450-(time+target."
       "time_to_die))%5),if=time+target.time_to_die<=450" );
   check->add_action(
-      "variable,op=set,name=s2mcheck,value=(0.8*(83+(20+20*talent.fortress_of_"
-      "the_mind.enabled)*set_bonus.tier20_4pc-(5*talent.sanlayn.enabled)+((33-13"
-      "*set_bonus.tier20_4pc)*talent.reaper_of_souls.enabled)+set_bonus"
-      ".tier19_2pc*4+8*equipped.mangazas_madness+(raw_haste_pct*10*(1+0.7*set_"
-      "bonus.tier20_4pc))*(2+(0.8*set_bonus.tier19_2pc)+(1*talent.reaper_of_souls"
-      ".enabled)+(2*artifact.mass_hysteria.rank)-(1*talent.sanlayn.enabled))))-("
-      "variable.actors_fight_time_mod*nonexecute_actors_pct)" );
+      "variable,op=set,name=s2mcheck,value=variable.s2msetup_time-(variable."
+      "actors_fight_time_mod*nonexecute_actors_pct)" );
   check->add_action( "variable,op=min,name=s2mcheck,value=180" );
 
   // Main APL

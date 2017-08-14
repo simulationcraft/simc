@@ -4,7 +4,7 @@ level=110
 race=troll
 role=attack
 position=back
-talents=3002112
+talents=3002113
 artifact=41:0:0:0:0:899:1:900:1:901:1:902:1:903:1:904:1:905:4:906:4:907:4:908:4:909:4:910:4:911:4:912:4:913:4:930:1:1351:1:1388:1:1593:4:1594:1:1595:1:1596:1:1687:1
 
 # Default consumables
@@ -99,30 +99,31 @@ actions.filler+=/flametongue
 
 actions.opener=rockbiter,if=maelstrom<15&time<gcd
 
-head=helm_of_shackled_elements,id=138343,bonus_id=3518
-neck=cursed_beartooth_necklace,id=139239,bonus_id=1527/1806,enchant=mark_of_the_hidden_satyr
-shoulders=netherbranded_shoulderpads,id=140917,bonus_id=1502/3517
-back=cloak_of_shackled_elements,id=138372,bonus_id=3518
-chest=raiment_of_shackled_elements,id=138346,bonus_id=3518
-wrists=biteresistant_wristclamps,id=142423,bonus_id=1522/3469
-hands=sterilizers_insulated_gauntlets,id=140869,bonus_id=1502/3445
-waist=emblazoned_duskwatch_belt,id=140868,bonus_id=3518
-legs=leggings_of_shackled_elements,id=138345,bonus_id=3518
-feet=black_venom_sabatons,id=139219,bonus_id=1527/1807
-finger1=ring_of_the_scoured_clan,id=140897,bonus_id=1502/3517,enchant=binding_of_mastery
-finger2=mindrend_band,id=138220,bonus_id=1527/1806,enchant=binding_of_mastery
-trinket1=convergence_of_fates,id=140806,bonus_id=3518
+head=helm_of_shackled_elements,id=138343,bonus_id=3519
+neck=cursed_beartooth_necklace,id=139239,bonus_id=3519,enchant=mark_of_the_hidden_satyr
+shoulders=netherbranded_shoulderpads,id=140917,bonus_id=3519
+back=cloak_of_shackled_elements,id=138372,bonus_id=3519,enchant=binding_of_agility
+chest=raiment_of_shackled_elements,id=138346,bonus_id=3519
+wrists=biteresistant_wristclamps,id=142423,bonus_id=3519
+hands=sterilizers_insulated_gauntlets,id=140869,bonus_id=3519
+waist=emblazoned_duskwatch_belt,id=140868,bonus_id=3519
+legs=leggings_of_shackled_elements,id=138345,bonus_id=3519
+feet=black_venom_sabatons,id=139219,bonus_id=3519
+finger1=ring_of_the_scoured_clan,id=140897,bonus_id=3519,enchant=binding_of_haste
+finger2=mindrend_band,id=138220,bonus_id=3519,enchant=binding_of_haste
+trinket1=nightblooming_frond,id=140802,bonus_id=3519
+trinket2=convergence_of_fates,id=140806,bonus_id=3519
 main_hand=doomhammer,id=128819,bonus_id=741,gem_id=139266/142511/139264,relic_id=1532:1806/1527:3469/1532:1806
 off_hand=fury_of_the_stonemother,id=128873
 
 # Gear Summary
-# gear_ilvl=908.73
-# gear_agility=20887
-# gear_stamina=33846
-# gear_crit_rating=2570
-# gear_haste_rating=8003
-# gear_mastery_rating=11789
-# gear_versatility_rating=697
-# gear_armor=2982
+# gear_ilvl=912.88
+# gear_agility=24228
+# gear_stamina=35283
+# gear_crit_rating=2603
+# gear_haste_rating=8595
+# gear_mastery_rating=11662
+# gear_versatility_rating=710
+# gear_armor=3030
 # set_bonus=tier19_2pc=1
 # set_bonus=tier19_4pc=1
