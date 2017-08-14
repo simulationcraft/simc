@@ -485,6 +485,7 @@ public:
     cooldown_t* avalanche;
     cooldown_t* blighted_rune_weapon;
     cooldown_t* bone_shield_icd;
+    cooldown_t* dancing_rune_weapon;
     cooldown_t* dark_transformation;
     cooldown_t* death_and_decay;
     cooldown_t* defile;
@@ -854,6 +855,7 @@ public:
     cooldown.blighted_rune_weapon = get_cooldown( "blighted_rune_weapon" ); 
     cooldown.bone_shield_icd = get_cooldown( "bone_shield_icd" );
     cooldown.bone_shield_icd -> duration = timespan_t::from_seconds( 2.0 );
+    cooldown.dancing_rune_weapon = get_cooldown( "dancing_rune_weapon" );
     cooldown.dark_transformation = get_cooldown( "dark_transformation" );
     cooldown.death_and_decay = get_cooldown( "death_and_decay" );
     cooldown.defile          = get_cooldown( "defile" );
@@ -8422,10 +8424,10 @@ double death_knight_t::bone_shield_handler( const action_state_t* state ) const
   buffs.bone_shield -> decrement( n_stacks );
   cooldown.bone_shield_icd -> start();
 
-  if ( maybe_ptr ( p() -> dbc.ptr ) )
+  if ( dbc.ptr )
     if ( n_stacks > 0 && sets -> has_set_bonus( DEATH_KNIGHT_BLOOD, T21, B2 ) )
     {
-      p() -> cooldown.dancing_rune_weapon -> adjust( - timespan_t::from_millis(  find_spell( 251876 ) -> effectN( 1 ) ), false );
+      cooldown.dancing_rune_weapon -> adjust( timespan_t::from_millis( find_spell( 251876 ) -> effectN( 1 ).base_value() ), false );
     }
   
   return absorbed;
