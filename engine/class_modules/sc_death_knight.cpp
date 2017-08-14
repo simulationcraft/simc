@@ -2295,13 +2295,13 @@ struct valkyr_pet_t : public death_knight_pet_t
     bool executed;
     timespan_t confusion_time;
 
-    general_confusion_t( player_t* player, timespan_t t ) : action_t( ACTION_OTHER, "general_confusion", player ),
-      executed( false )
+    general_confusion_t( player_t* player, timespan_t confusion ) : action_t( ACTION_OTHER, "general_confusion", player ),
+      executed( false ),
+      confusion_time( confusion )
     {
       may_miss = false;
       dual = quiet = true;
       trigger_gcd = timespan_t::zero();
-      confusion_time = t;
     }
 
     result_e calculate_result( action_state_t* /* s */ ) const override
