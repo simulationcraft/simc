@@ -200,6 +200,7 @@ Effects          :
                    Base Value: -20 | Scaled Value: -20 | Trigger Spell: 125565 | Target: Self (1)
 #2 (id=159300)   : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: -20 | Scaled Value: -20 | Misc Value: 0x7f | Radius: 0 - 10 yards | Target: At Caster (22) -> AOE enemy (15)
+                   Affected School(s): All
 #3 (id=292881)   : Apply Aura (6) | Unknown(271)
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 10 yards | Target: At Caster (22) -> AOE enemy (15)
                    Affected Spells: Cleave (845), Whirlwind (1680), Thunder Clap (6343), Heroic Leap (6544), Revenge (6572), Overpower (7384), Devastate (20243), Shield Slam (23922), Whirlwind Off-Hand (44949), Bladestorm (46924), Shockwave (46968), Bladestorm (50622), Heroic Leap (52174), Heroic Throw (57755), Bladestorm Off-Hand (95738), Deep Wounds (115767), Shockwave (132168), Bladestorm (168969), Whirlwind (190411), Whirlwind (199658), Whirlwind (199667), Whirlwind (199850), Focused Rage (207982), Bladestorm (222634), Bladestorm (227847), Devastator (236282)
@@ -1459,6 +1460,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=68045)    : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.40000 | Misc Value: 0x7f | Target: Self (1)
+                   Affected School(s): All
 #2 (id=88047)    : Apply Aura (6) | Dummy (4)
                    Base Value: 140 | Scaled Value: 140 | Target: Self (1)
 Description      : Increases damage done while Enraged by $s1%.
@@ -1859,6 +1861,7 @@ Attributes       : ....x... ........ ..x..... ...x....   ........ ..x....x x....
 Effects          :
 #1 (id=118390)   : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 20 | Scaled Value: 20 | Misc Value: 0x7f | Target: Self (1)
+                   Affected School(s): All
 #2 (id=118391)   : Server Side Script (77)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #3 (id=118664)   : Apply Aura (6) | Scale% (61)
@@ -2101,6 +2104,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.62000 | Radius: 0 - 8 yards | Target: At Caster (22) -> AOE enemy (15)
 #2 (id=297932)   : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 16 | Scaled Value: 16 | Misc Value: 0x7f | Target: Self (1)
+                   Affected School(s): All
 Description      : Roar explosively, dealing $m1 damage to all enemies within $A1 yards and increasing all damage you deal by $s2% for $d. Dragon Roar ignores all armor and always critically strikes.
 Tooltip          : Damage done increased by $s2%.
 
@@ -2482,6 +2486,7 @@ Effects          :
                    Affected Spells: Rend (772), Deep Wounds (115767), Ravager (152277), Ravager (156287), Ravager (227744), Ravager (228920)
 #4 (id=191015)   : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 10 | Scaled Value: 10 | Misc Value: 0x7f | Target: Self (1)
+                   Affected School(s): All
 #5 (id=191016)   : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
                    Base Value: 50 | Scaled Value: 50 | Target: Self (1)
                    Affected Spells: Bladestorm (46924), Bladestorm (50622), Bladestorm Off-Hand (95738), Bladestorm (168969), Bladestorm (222634), Bladestorm (227847)
@@ -3186,6 +3191,7 @@ Effects          :
                    Base Value: -20 | Scaled Value: -20 | Misc Value: 0x7f | Target: Self (1)
 #2 (id=290497)   : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: -10 | Scaled Value: -10 | Misc Value: 0x7f | Target: Self (1)
+                   Affected School(s): All
 #3 (id=315075)   : Apply Aura (6) | Unknown(332)
                    Base Value: 212520 | Scaled Value: 212520 | Misc Value: 197690 | Target: Self (1)
 Description      : A defensive combat state that reduces all damage you take by $s1%, and all damage you deal by $s2%. Lasts $d.
@@ -3665,6 +3671,7 @@ Attributes       : ........ ........ ..x..... ........   ........ ........ .....
 Effects          :
 #1 (id=298158)   : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 10 | Scaled Value: 10 | Misc Value: 0x7f | Target: Self (1)
+                   Affected School(s): All
 Description      : $@spelldesc202288
 Tooltip          : Damage done increased by $s1%.
 
@@ -4697,6 +4704,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=320538)   : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 15 | Scaled Value: 15 | Misc Value: 0x7f | Target: Self (1)
+                   Affected School(s): All
 #2 (id=320539)   : Apply Aura (6) | Increase Speed% (31)
                    Base Value: 30 | Scaled Value: 30 | Target: Self (1)
 Description      : $@spelldesc215571

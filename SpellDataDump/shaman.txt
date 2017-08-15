@@ -1648,6 +1648,7 @@ Attributes       : ......x. x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=68076)    : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.00000 | Misc Value: 0x299c | Target: Self (1)
+                   Affected School(s): Fire, Nature, Frost
 #2 (id=92143)    : Apply Aura (6) | Dummy (4)
                    Base Value: 250 | Scaled Value: 250 | Target: Self (1)
 #3 (id=297947)   : Apply Aura (6) | Add Flat Modifier (107): Spell Proc Chance (18)
@@ -3067,6 +3068,7 @@ Effects          :
                    Base Value: 2000 | Scaled Value: 2000 | Target: Self (1)
 #2 (id=218486)   : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 70 | Scaled Value: 70 | Misc Value: 0x7f | Target: Self (1)
+                   Affected School(s): All
 Description      : Increases all damage done by your pet by $s2%.
 
 Name             : Cloudburst Totem (id=157153) [Spell Family (11)] 
@@ -3169,6 +3171,7 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | Value Multiplier: 1 | SP Coefficient: 1.20000 | Target: Enemy (6)
 #2 (id=219410)   : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 300 | Scaled Value: 300 | Misc Value: 0x7f | Target: Self (1)
+                   Affected School(s): All
 Description      : Call down a lightning strike on an enemy, dealing $s1 Nature damage, and leaving the Storm Elemental charged with energy for $d.
 
 While charged, the Storm Elemental's damage is increased by $s2%.
@@ -3946,7 +3949,7 @@ Effects          :
 Name             : Static Overload (id=191602) [Spell Family (11), Passive] 
 Class            : Shaman
 School           : Physical
-Artifact Power   : Id: 292, Index: 0, Max Rank: 1
+Artifact Power   : Id: 292, Max Rank: 1
 Attributes       : ......x. ........ ........ .......x   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5533,7 +5536,7 @@ School           : Physical
 Range            : 100 yards
 Duration         : 6 seconds
 Cooldown         : 60 seconds
-Artifact Power   : Id: 899, Index: 0, Max Rank: 1
+Artifact Power   : Id: 899, Max Rank: 1
 Attributes       : ........ ........ ........ .......x   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5564,7 +5567,7 @@ Duration         : 15 seconds
 Cooldown         : 60 seconds
 Stacks           : 3 initial, 3 maximum
 Proc Chance      : 100%
-Artifact Power   : Id: 291, Index: 0, Max Rank: 1
+Artifact Power   : Id: 291, Max Rank: 1
 Proc Flags       : ........ ........ x....... ........ 
                  : Hostile Spell
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5696,7 +5699,7 @@ Cast Time        : 2 seconds
 GCD              : 1.5 seconds
 Duration         : 6 seconds
 Cooldown         : 45 seconds
-Artifact Power   : Id: 1102, Index: 0, Max Rank: 1
+Artifact Power   : Id: 1102, Max Rank: 1
 Affecting spells : Mastery: Deep Healing (77226 effect#1), Spiritwalker's Grace (79206 effect#1)
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5771,6 +5774,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=307694)   : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 15 | Scaled Value: 15 | Misc Value: 0x200007f | Target: Self (1)
+                   Affected School(s): Physical, Holy, Fire, Nature, Frost, Shadow, Arcane
 Description      : $@spelldesc207994
 Tooltip          : All damage done increased by ${$s1/10}.1%.
 
@@ -5787,6 +5791,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=307698)   : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 15 | Scaled Value: 15 | Misc Value: 0x200007f | Target: Self (1)
+                   Affected School(s): Physical, Holy, Fire, Nature, Frost, Shadow, Arcane
 Description      : $@spelldesc207994
 Tooltip          : All damage done increased by ${$s1/10}.1%.
 
@@ -5803,6 +5808,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=307699)   : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 15 | Scaled Value: 15 | Misc Value: 0x200007f | Target: Self (1)
+                   Affected School(s): Physical, Holy, Fire, Nature, Frost, Shadow, Arcane
 Description      : $@spelldesc207994
 Tooltip          : All damage done increased by ${$s1/10}.1%.
 
@@ -6592,6 +6598,7 @@ Attributes       : ........ ........ ........ .......x   ........ ........ .....
 Effects          :
 #1 (id=335392)   : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 50 | Scaled Value: 50 | Misc Value: 0x7f | Target: Self (1)
+                   Affected School(s): All
 Description      : The Doom Wolf surges with electric energy, increasing all damage dealt by $s1%.
 Tooltip          : Damage dealt  increased by $s1%.
 

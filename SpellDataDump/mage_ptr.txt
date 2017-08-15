@@ -441,6 +441,7 @@ Attributes       : ........ ........ x.x..... ........   ........ ..x..... .....
 Effects          :
 #1 (id=5130)     : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 30 | Scaled Value: 30 | Misc Value: 0x7e | Target: Self (1)
+                   Affected School(s): Holy, Fire, Nature, Frost, Shadow, Arcane
 #2 (id=5131)     : Apply Aura (6) | Modify Power Cost% (72)
                    Base Value: -30 | Scaled Value: -30 | Misc Value: 127 | Misc Value 2: 0x1 | Target: Self (1)
 #3 (id=5132)     : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
@@ -2250,6 +2251,7 @@ Attributes       : ........ ........ ........ x..x...x   .....x.. ..x..... .....
 Effects          :
 #1 (id=130584)   : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 40 | Scaled Value: 40 | Misc Value: 0x7f | Target: Self (1)
+                   Affected School(s): All
 #2 (id=150697)   : Apply Aura (6) | Periodic Heal% (20): every 1.5 seconds
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #3 (id=150698)   : Apply Aura (6) | Modify Pet Damage Done% (429)
@@ -2275,6 +2277,7 @@ Attributes       : ........ x....... ........ .......x   ........ ........ .....
 Effects          :
 #1 (id=131165)   : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 4 | Scaled Value: 4 | Misc Value: 0x7f | Target: Self (1)
+                   Affected School(s): All
 #2 (id=168860)   : Apply Aura (6) | Modify Pet Damage Done% (429)
                    Base Value: 4 | Scaled Value: 4 | Target: Self (1)
 Description      : $@spelldesc1463
@@ -4383,6 +4386,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=304047)   : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 0x10 | Target: Self (1)
+                   Affected School(s): Frost
 Description      : $@spelldesc205027
 Tooltip          : Frost damage dealt increased by $w1%
 

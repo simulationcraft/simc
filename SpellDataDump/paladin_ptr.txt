@@ -76,6 +76,7 @@ Attributes       : ........ ........ x.x..... ........   ........ ..x....x .....
 Effects          :
 #1 (id=254)      : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f | Target: Self (1)
+                   Affected School(s): All
 #2 (id=255)      : Apply Aura (6) | School Immunity (39)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 127 | Target: Self (1)
 #3 (id=256)      : Apply Aura (6) | School Immunity (39)
@@ -535,6 +536,7 @@ Effects          :
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
 #3 (id=213906)   : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f | Target: Self (1)
+                   Affected School(s): All
 #4 (id=223521)   : Apply Aura (6) | Scale% (61)
                    Base Value: 15 | Scaled Value: 15 | Target: Self (1)
 #5 (id=224222)   : Apply Aura (6) | Add Percent Modifier (108): Spell Cooldown (11)
@@ -585,6 +587,7 @@ Attributes       : ........ ........ x.x..... ........   ........ ..x..... .....
 Effects          :
 #1 (id=21556)    : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 35 | Scaled Value: 35 | SP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Self (1)
+                   Affected School(s): All
 #2 (id=21557)    : Apply Aura (6) | Modify Healing% Done (136)
                    Base Value: 35 | Scaled Value: 35 | Misc Value: 127 | Target: Self (1)
 Description      : Increases all damage done by $s1% and all healing done by $s2% for $d. 
@@ -1998,6 +2001,7 @@ Effects          :
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 126 | Misc Value 2: 0x1 | Target: Self (1)
 #6 (id=260907)   : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 5 | Scaled Value: 5 | Misc Value: 0x7f | Target: Self (1)
+                   Affected School(s): All
 #7 (id=260908)   : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
                    Base Value: 44 | Scaled Value: 44 | Target: Self (1)
                    Affected Spells: Judgment (20271), Judgment (197277), Judgment (214222), Judgment (228288)
@@ -2686,6 +2690,7 @@ Attributes       : ........ ........ ........ ........   ........ ..x..... .....
 Effects          :
 #1 (id=265678)   : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 20 | Scaled Value: 20 | Misc Value: 0x7f | Target: Self (1)
+                   Affected School(s): All
 #2 (id=344380)   : Apply Aura (6) | Unknown(87)
                    Base Value: -30 | Scaled Value: -30 | Misc Value: 0x7f | Target: Self (1)
 Description      : $@spelldesc183435
@@ -3487,6 +3492,7 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 6015 | Target: Self (1)
 #5 (id=341679)   : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f | Target: Self (1)
+                   Affected School(s): All
 Description      : Each enemy within $s1 yards reduces the damage that you take and increases the damage that you deal by $s2%. This effect has diminishing returns.
 
 Name             : Retribution Aura (id=203797) [Spell Family (10), Passive] 
@@ -4747,6 +4753,7 @@ Attributes       : ........ ........ x.x..... ........   ........ ..x..... .....
 Effects          :
 #1 (id=349842)   : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 30 | Scaled Value: 30 | Misc Value: 0x7f | Target: Self (1)
+                   Affected School(s): All
 #2 (id=349843)   : Apply Aura (6) | Modify Healing% Done (136)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #3 (id=474662)   : Apply Aura (6) | Modify All Haste% (193)

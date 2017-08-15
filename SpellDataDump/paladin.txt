@@ -76,6 +76,7 @@ Attributes       : ........ ........ x.x..... ........   ........ ..x....x .....
 Effects          :
 #1 (id=254)      : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f | Target: Self (1)
+                   Affected School(s): All
 #2 (id=255)      : Apply Aura (6) | School Immunity (39)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 127 | Target: Self (1)
 #3 (id=256)      : Apply Aura (6) | School Immunity (39)
@@ -541,6 +542,7 @@ Effects          :
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
 #3 (id=213906)   : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f | Target: Self (1)
+                   Affected School(s): All
 #4 (id=223521)   : Apply Aura (6) | Scale% (61)
                    Base Value: 15 | Scaled Value: 15 | Target: Self (1)
 #5 (id=224222)   : Apply Aura (6) | Add Percent Modifier (108): Spell Cooldown (11)
@@ -591,6 +593,7 @@ Attributes       : ........ ........ x.x..... ........   ........ ..x..... .....
 Effects          :
 #1 (id=21556)    : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 35 | Scaled Value: 35 | SP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Self (1)
+                   Affected School(s): All
 #2 (id=21557)    : Apply Aura (6) | Modify Healing% Done (136)
                    Base Value: 35 | Scaled Value: 35 | Misc Value: 127 | Target: Self (1)
 #3 (id=21558)    : Apply Aura (6) | Unknown(262)
@@ -2222,6 +2225,7 @@ Effects          :
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 126 | Misc Value 2: 0x1 | Target: Self (1)
 #6 (id=260907)   : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 5 | Scaled Value: 5 | Misc Value: 0x7f | Target: Self (1)
+                   Affected School(s): All
 #7 (id=260908)   : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
                    Base Value: 13 | Scaled Value: 13 | Target: Self (1)
                    Affected Spells: Judgment (20271), Crusader Strike (35395), Judgment (197277), Judgment (214222), Judgment (228288)
@@ -2905,6 +2909,7 @@ Attributes       : ........ ........ ........ ........   ........ ..x..... .....
 Effects          :
 #1 (id=265678)   : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 20 | Scaled Value: 20 | Misc Value: 0x7f | Target: Self (1)
+                   Affected School(s): All
 #2 (id=344380)   : Apply Aura (6) | Unknown(87)
                    Base Value: -30 | Scaled Value: -30 | Misc Value: 0x7f | Target: Self (1)
 Description      : $@spelldesc183435
@@ -3433,7 +3438,7 @@ Cast Time        : 2 seconds
 GCD              : 1.5 seconds
 Duration         : 10 seconds
 Cooldown         : 90 seconds
-Artifact Power   : Id: 965, Index: 0, Max Rank: 1
+Artifact Power   : Id: 965, Max Rank: 1
 Attributes       : ........ ........ ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ .....x.. ........ ........ 
@@ -3714,6 +3719,7 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 6015 | Target: Self (1)
 #5 (id=341679)   : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f | Target: Self (1)
+                   Affected School(s): All
 Description      : Each enemy within $s1 yards reduces the damage that you take and increases the damage that you deal by $s2%. This effect has diminishing returns.
 
 Name             : Retribution Aura (id=203797) [Spell Family (10), Passive] 
@@ -4054,7 +4060,7 @@ School           : Holyfire
 GCD              : 1.5 seconds
 Duration         : 6 seconds
 Cooldown         : 30 seconds
-Artifact Power   : Id: 40, Index: 0, Max Rank: 1
+Artifact Power   : Id: 40, Max Rank: 1
 Affecting spells : Retribution Paladin (137027 effect#1), Ashes to Dust (236106 effect#1)
 Triggered by     : Push Active Ability to Bar (225875)
 Attributes       : ........ ........ ..x..... ........   ........ ........ ........ ........ 
@@ -4105,7 +4111,7 @@ School           : Holy
 GCD              : 1.5 seconds
 Duration         : 9 seconds
 Cooldown         : 60 seconds
-Artifact Power   : Id: 1120, Index: 0, Max Rank: 1
+Artifact Power   : Id: 1120, Max Rank: 1
 Affecting spells : Protection Paladin (137028 effect#9), Pillars of Inmost Ligiht (248102 effect#1), 
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4949,6 +4955,7 @@ Attributes       : ........ ........ x.x..... ........   ........ ..x..... .....
 Effects          :
 #1 (id=349842)   : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 30 | Scaled Value: 30 | Misc Value: 0x7f | Target: Self (1)
+                   Affected School(s): All
 #2 (id=349843)   : Apply Aura (6) | Modify All Haste% (193)
                    Base Value: 30 | Scaled Value: 30 | Target: Self (1)
 Description      : Increases your damage and haste by ${$s1/10}.1% for $d.
@@ -5000,7 +5007,7 @@ Description      : Your Holy Power spending abilities increase the damage of you
 Name             : Blessing of the Ashbringer (id=238098) [Spell Family (10), Passive] 
 Class            : Paladin
 School           : Physical
-Artifact Power   : Id: 1562, Index: 0, Max Rank: 1
+Artifact Power   : Id: 1562, Max Rank: 1
 Attributes       : ......x. ........ ........ .......x   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 

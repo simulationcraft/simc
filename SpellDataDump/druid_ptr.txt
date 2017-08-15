@@ -437,6 +437,7 @@ Attributes       : ....x... ........ ..x..... ........   .....x.. ..x..... .....
 Effects          :
 #1 (id=1854)     : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 15 | Scaled Value: 15 | Misc Value: 0x7f | Target: Self (1)
+                   Affected School(s): All
 #2 (id=117350)   : Energize Power (30)
                    Base Value: 20 | Scaled Value: 20 | Misc Value: energy | Target: Self (1)
 Description      : Instantly restores $s2 Energy, and increases the damage of all your attacks by $s1% for their full duration. Lasts $d.
@@ -1116,6 +1117,7 @@ Effects          :
                    Affected Spells: Wild Charge (102401)
 #8 (id=290490)   : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 10 | Scaled Value: 10 | Misc Value: 0x48 | Target: Self (1)
+                   Affected School(s): Nature, Arcane
 #9 (id=353641)   : Apply Aura (6) | Modify Attacker Melee Crit Chance (187)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : Shapeshift into $?s114301[Astral Form][Moonkin Form], increasing your Arcane and Nature damage by $s8% and your armor by $m3%, and granting protection from Polymorph effects.$?a231042[
@@ -1578,6 +1580,7 @@ Attributes       : ....x..x x....... ..x..... .....x..   .....x.. ..x..... .....
 Effects          :
 #1 (id=56034)    : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 15 | Scaled Value: 15 | Misc Value: 0x7f | Target: Self (1)
+                   Affected School(s): All
 Description      : $@spelldesc52610
 Tooltip          : Damage done increased by $w1%.
 
@@ -2383,6 +2386,7 @@ Attributes       : ....x... ........ ..x..... ........   ........ ..x..... x....
 Effects          :
 #1 (id=111387)   : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 35 | Scaled Value: 35 | Misc Value: 0x7e | Target: Self (1)
+                   Affected School(s): Holy, Fire, Nature, Frost, Shadow, Arcane
 #2 (id=310508)   : Apply Aura (6) | Add Percent Modifier (108): Spell Effect 2 (12)
                    Base Value: 50 | Scaled Value: 50 | Misc Value: 12 | Target: Self (1)
                    Affected Spells: Solar Wrath (5176), Solar Wrath (190984), Lunar Strike (194153), Lunar Strike (197628), Solar Wrath (197629)
@@ -4642,6 +4646,7 @@ Attributes       : ........ ........ ........ ........   ........ ..x..... .....
 Effects          :
 #1 (id=285082)   : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 30 | Scaled Value: 30 | Misc Value: 0x7e | Target: Self (1)
+                   Affected School(s): Holy, Fire, Nature, Frost, Shadow, Arcane
 #2 (id=285083)   : Apply Aura (6) | Dummy (4)
                    Base Value: 30 | Scaled Value: 30 | Misc Value: 22 | Target: Self (1)
 #3 (id=285088)   : Apply Aura (6) | Add Percent Modifier (108): Spell Effect 2 (12)
@@ -5172,6 +5177,7 @@ Effects          :
                    Base Value: 25 | Scaled Value: 25 | Target: Self (1)
 #5 (id=297123)   : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 25 | Scaled Value: 25 | Misc Value: 0x7f | Target: Self (1)
+                   Affected School(s): All
 Description      : Unleashes the rage of Ursoc for $d, preventing $s4% of all damage you take and reflecting $219432s1 Nature damage back at your attackers.
 Tooltip          : Prevents $s4% of all damage you take and reflects $219432s1 Nature damage back at your attackers.
 
@@ -6191,6 +6197,7 @@ Attributes       : ........ ........ ........ .......x   ........ ........ .....
 Effects          :
 #1 (id=312047)   : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 5 | Scaled Value: 5 | Misc Value: 0x7f | Target: Self (1)
+                   Affected School(s): All
 Description      : $@spelldesc210631
 Tooltip          : Damage dealt increased by $w1%.
 

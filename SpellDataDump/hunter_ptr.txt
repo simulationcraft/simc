@@ -583,6 +583,7 @@ Attributes       : ........ ........ x....... .....x..   ........ ..x....x .....
 Effects          :
 #1 (id=10779)    : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 25 | Scaled Value: 25 | Misc Value: 0x7f | Target: Self (1)
+                   Affected School(s): All
 #2 (id=10780)    : Trigger Spell (64): Bestial Wrath
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 186254
 #3 (id=342782)   : Dummy (3)
@@ -788,6 +789,7 @@ Effects          :
                    Base Value: 2000 | Scaled Value: 2000 | Target: Self (1)
 #2 (id=141362)   : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 60 | Scaled Value: 60 | Misc Value: 0x7f | Target: Self (1)
+                   Affected School(s): All
 Description      : Increases all damage done by your pet by $s2%.
 
 Name             : Command (Racial Passive) (id=21563) [Spell Family (9), Passive] 
@@ -873,6 +875,7 @@ Effects          :
                    Base Value: -50 | Scaled Value: -50 | Target: Self (1)
 #3 (id=14688)    : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 20 | Scaled Value: 20 | SP Coefficient: 1.00000 | Misc Value: 0x41 | Target: Self (1)
+                   Affected School(s): Physical, Arcane
 Description      : Puts your pet in stealth mode, but slows its movement speed by $s2%. The first attack from stealth receives a $s3% bonus to damage.  Lasts until cancelled.
 Tooltip          : Stealthed.
 Movement speed slowed by $s2%.
@@ -1265,6 +1268,7 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=46172)    : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 20 | Scaled Value: 20 | Misc Value: 0x7f | Target: Self (1)
+                   Affected School(s): All
 #2 (id=46173)    : Apply Aura (6) | Unknown(197)
                    Base Value: -60 | Scaled Value: -60 | Target: Self (1)
 Description      : When at less than 35% health, your pet does $s1% more damage and has a $s2% reduced chance to be critically hit.
@@ -1886,6 +1890,7 @@ Effects          :
                    Base Value: -50 | Scaled Value: -50 | Target: Self (1)
 #3 (id=93478)    : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 20 | Scaled Value: 20 | SP Coefficient: 1.00000 | Misc Value: 0x41 | Target: Self (1)
+                   Affected School(s): Physical, Arcane
 Description      : Puts your pet in stealth mode, but slows its movement speed by $s2%. The first attack from stealth receives a $s3% bonus to damage.  Lasts until cancelled.
 Tooltip          : Stealthed.
 Movement speed slowed by $s2%.
@@ -3005,6 +3010,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=215686)   : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 18 | Scaled Value: 18 | Misc Value: 0x7f | Target: Self (1)
+                   Affected School(s): All
 Description      : Increases your damage by $s1%, but you can no longer use Call Pet.
 
 Name             : Combat Experience (id=156843) [Spell Family (9), Passive] 
@@ -3023,6 +3029,7 @@ Effects          :
                    Base Value: 2000 | Scaled Value: 2000 | Target: Self (1)
 #2 (id=218486)   : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 70 | Scaled Value: 70 | Misc Value: 0x7f | Target: Self (1)
+                   Affected School(s): All
 Description      : Increases all damage done by your pet by $s2%.
 
 Name             : Critical Strikes (Passive) (id=157443) [Passive] 
@@ -3577,6 +3584,7 @@ Effects          :
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 127 | Target: Self (1)
 #2 (id=257005)   : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 0x7f | Target: Self (1)
+                   Affected School(s): All
 
 Name             : Arcane Shot (id=185358) [Scaling Spell (4), Spell Family (9)] 
 Class            : Marksmanship Hunter
@@ -3767,6 +3775,7 @@ Attributes       : ........ ........ x....... .....x..   ........ ..x....x .....
 Effects          :
 #1 (id=271164)   : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 25 | Scaled Value: 25 | SP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Active Pet (5)
+                   Affected School(s): All
 #2 (id=271165)   : Apply Aura (6) | Scale% (61)
                    Base Value: 50 | Scaled Value: 50 | SP Coefficient: 1.00000 | Target: Active Pet (5)
 #3 (id=271166)   : Apply Aura (6) | Absorb Damage (69)
