@@ -6377,7 +6377,10 @@ struct stellar_flare_t : public druid_spell_t
 {
   stellar_flare_t( druid_t* player, const std::string& options_str ) :
     druid_spell_t( "stellar_flare", player, player -> talent.stellar_flare, options_str )
-  {}
+  {
+      stellar_empowerment = true;
+  }
+  
 };
 
 // Survival Instincts =======================================================
