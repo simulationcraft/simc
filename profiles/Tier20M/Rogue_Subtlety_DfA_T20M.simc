@@ -36,7 +36,7 @@ actions.precombat+=/potion
 # Executed every time the actor is available.
 actions=variable,name=dsh_dfa,value=talent.death_from_above.enabled&talent.dark_shadow.enabled&spell_targets.death_from_above<4
 # This let us to use Shadow Dance right before the 2nd part of DfA lands. Only with Dark Shadow.
-actions+=/shadow_dance,if=talent.dark_shadow.enabled&!stealthed.all&buff.death_from_above.up&buff.death_from_above.remains<=0.15
+actions+=/shadow_dance,if=talent.dark_shadow.enabled&(!stealthed.all|buff.subterfuge.up)&buff.death_from_above.up&buff.death_from_above.remains<=0.15
 # This is triggered only with DfA talent since we check shadow_dance even while the gcd is ongoing, it's purely for simulation performance.
 actions+=/wait,sec=0.1,if=buff.shadow_dance.up&gcd.remains>0
 actions+=/call_action_list,name=cds
@@ -45,13 +45,14 @@ actions+=/run_action_list,name=stealthed,if=stealthed.all
 actions+=/nightblade,if=target.time_to_die>6&remains<gcd.max&combo_points>=4-(time<10)*2
 actions+=/call_action_list,name=stealth_als,if=talent.dark_shadow.enabled&combo_points.deficit>=2+buff.shadow_blades.up&(dot.nightblade.remains>4+talent.subterfuge.enabled|cooldown.shadow_dance.charges_fractional>=1.9&(!equipped.denial_of_the_halfgiants|time>10))
 actions+=/call_action_list,name=stealth_als,if=!talent.dark_shadow.enabled&(combo_points.deficit>=2+buff.shadow_blades.up|cooldown.shadow_dance.charges_fractional>=1.9+talent.enveloping_shadows.enabled)
-actions+=/call_action_list,name=finish,if=combo_points>=5+(talent.deeper_stratagem.enabled&!buff.shadow_blades.up&(mantle_duration=0|set_bonus.tier20_4pc))|(combo_points>=4&combo_points.deficit<=2&spell_targets.shuriken_storm>=3&spell_targets.shuriken_storm<=4)|(target.time_to_die<=1&combo_points>=3)
+actions+=/call_action_list,name=finish,if=combo_points>=5+(talent.deeper_stratagem.enabled&!buff.shadow_blades.up&(mantle_duration=0|set_bonus.tier20_4pc)&(!buff.the_first_of_the_dead.up|variable.dsh_dfa))|(combo_points>=4&combo_points.deficit<=2&spell_targets.shuriken_storm>=3&spell_targets.shuriken_storm<=4)|(target.time_to_die<=1&combo_points>=3)
+actions+=/call_action_list,name=finish,if=variable.dsh_dfa&cooldown.symbols_of_death.remains<=1&combo_points>=2&equipped.the_first_of_the_dead&spell_targets.shuriken_storm<2
 actions+=/wait,sec=time_to_sht.4,if=combo_points=5&time_to_sht.4<=1&energy.deficit>=30
 actions+=/wait,sec=time_to_sht.5,if=combo_points=5&time_to_sht.5<=1&energy.deficit>=30
 actions+=/call_action_list,name=build,if=energy.deficit<=variable.stealth_threshold
 
 # Builders
-actions.build=shuriken_storm,if=spell_targets.shuriken_storm>=2
+actions.build=shuriken_storm,if=spell_targets.shuriken_storm>=2+buff.the_first_of_the_dead.up
 actions.build+=/gloomblade
 actions.build+=/backstab
 
@@ -74,14 +75,14 @@ actions.cds+=/vanish,if=energy>=55-talent.shadow_focus.enabled*10&variable.dsh_d
 # Finishers
 actions.finish=nightblade,if=(!talent.dark_shadow.enabled|!buff.shadow_dance.up)&target.time_to_die-remains>6&(mantle_duration=0|remains<=mantle_duration)&((refreshable&(!finality|buff.finality_nightblade.up|variable.dsh_dfa))|remains<tick_time*2)&(spell_targets.shuriken_storm<4&!variable.dsh_dfa|!buff.symbols_of_death.up)
 actions.finish+=/nightblade,cycle_targets=1,if=(!talent.death_from_above.enabled|set_bonus.tier19_2pc)&(!talent.dark_shadow.enabled|!buff.shadow_dance.up)&target.time_to_die-remains>12&mantle_duration=0&((refreshable&(!finality|buff.finality_nightblade.up|variable.dsh_dfa))|remains<tick_time*2)&(spell_targets.shuriken_storm<4&!variable.dsh_dfa|!buff.symbols_of_death.up)
-actions.finish+=/nightblade,if=remains<cooldown.symbols_of_death.remains+10&cooldown.symbols_of_death.remains<=3
-actions.finish+=/death_from_above,if=!talent.dark_shadow.enabled|(!cooldown.vanish.up&(!buff.shadow_dance.up|spell_targets>=4)&(buff.symbols_of_death.up|cooldown.symbols_of_death.remains>=10+set_bonus.tier20_4pc*5)&buff.the_first_of_the_dead.remains<1)
+actions.finish+=/nightblade,if=remains<cooldown.symbols_of_death.remains+10&cooldown.symbols_of_death.remains<=5+(combo_points=6)
+actions.finish+=/death_from_above,if=!talent.dark_shadow.enabled|!cooldown.vanish.up&(!buff.shadow_dance.up|spell_targets>=4)&(buff.symbols_of_death.up|cooldown.symbols_of_death.remains>=10+set_bonus.tier20_4pc*5)&buff.the_first_of_the_dead.remains<1&(buff.finality_eviscerate.up|spell_targets.shuriken_storm<4)
 actions.finish+=/eviscerate
 
 # Stealth Action List Starter
 actions.stealth_als=call_action_list,name=stealth_cds,if=energy.deficit<=variable.stealth_threshold-25*(!cooldown.goremaws_bite.up&!buff.feeding_frenzy.up)&(!equipped.shadow_satyrs_walk|cooldown.shadow_dance.charges_fractional>=variable.shd_fractional|energy.deficit>=10)
 actions.stealth_als+=/call_action_list,name=stealth_cds,if=mantle_duration>2.3
-actions.stealth_als+=/call_action_list,name=stealth_cds,if=spell_targets.shuriken_storm>=5
+actions.stealth_als+=/call_action_list,name=stealth_cds,if=spell_targets.shuriken_storm>=4
 actions.stealth_als+=/call_action_list,name=stealth_cds,if=(cooldown.shadowmeld.up&!cooldown.vanish.up&cooldown.shadow_dance.charges<=1)
 actions.stealth_als+=/call_action_list,name=stealth_cds,if=target.time_to_die<12*cooldown.shadow_dance.charges_fractional*(1+equipped.shadow_satyrs_walk*0.5)
 
@@ -90,7 +91,7 @@ actions.stealth_cds=vanish,if=!variable.dsh_dfa&mantle_duration=0&cooldown.shado
 actions.stealth_cds+=/shadow_dance,if=charges_fractional>=variable.shd_fractional|target.time_to_die<cooldown.symbols_of_death.remains
 actions.stealth_cds+=/pool_resource,for_next=1,extra_amount=40
 actions.stealth_cds+=/shadowmeld,if=energy>=40&energy.deficit>=10+variable.ssw_refund
-actions.stealth_cds+=/shadow_dance,if=!variable.dsh_dfa&combo_points.deficit>=2+(talent.subterfuge.enabled|buff.the_first_of_the_dead.up)*2&(buff.symbols_of_death.remains>=1.2+gcd.remains|cooldown.symbols_of_death.remains>=12+(talent.dark_shadow.enabled&set_bonus.tier20_4pc)*3-(!talent.dark_shadow.enabled&set_bonus.tier20_4pc)*4|mantle_duration>0)
+actions.stealth_cds+=/shadow_dance,if=!variable.dsh_dfa&combo_points.deficit>=2+talent.subterfuge.enabled*2&(buff.symbols_of_death.remains>=1.2+gcd.remains|cooldown.symbols_of_death.remains>=12+(talent.dark_shadow.enabled&set_bonus.tier20_4pc)*3-(!talent.dark_shadow.enabled&set_bonus.tier20_4pc)*4|mantle_duration>0)&(spell_targets.shuriken_storm>=4|!buff.the_first_of_the_dead.up)
 
 # Stealthed Rotation
 # If stealth is up, we really want to use Shadowstrike to benefits from the passive bonus, even if we are at max cp (from the precombat MfD).
@@ -103,28 +104,28 @@ actions.stealthed+=/shadowstrike
 head=fanged_slayers_helm,id=147172,bonus_id=1512/3563
 neck=locket_of_splintered_souls,id=147014,bonus_id=1512/3563,enchant=mark_of_the_hidden_satyr
 shoulders=mantle_of_the_master_assassin,id=144236,bonus_id=3570
-back=shroud_of_the_drowned_adherent,id=146985,bonus_id=1512/3563,enchant=binding_of_agility
+back=fanged_slayers_shroud,id=147170,bonus_id=3563/1512,enchant=binding_of_agility
 chest=fanged_slayers_chestguard,id=147169,bonus_id=1512/3563
-wrists=denial_of_the_halfgiants,id=137100,bonus_id=3570
-hands=fanged_slayers_handguards,id=147171,bonus_id=1512/3563
+wrists=sinewstitched_wristguards,id=147041,bonus_id=3563/1512
+hands=the_first_of_the_dead,id=151818,bonus_id=3570
 waist=waistguard_of_profane_duplicity,id=147347,bonus_id=1522/3563
 legs=fanged_slayers_legguards,id=147173,bonus_id=1512/3563
 feet=felscape_pathfinders,id=147030,bonus_id=1512/3563
 finger1=yathaes_thumb_ring,id=147021,bonus_id=1512/3563,enchant=binding_of_versatility
 finger2=band_of_rescinded_truths,id=147194,bonus_id=1512/3563,enchant=binding_of_versatility
 trinket1=specter_of_betrayal,id=151190,bonus_id=1522/3563
-trinket2=convergence_of_fates,id=140806,bonus_id=3519
+trinket2=engine_of_eradication,id=147015,bonus_id=3563/1512
 main_hand=fangs_of_the_devourer,id=128476,bonus_id=743,gem_id=147084/147111/147084,relic_id=1512:3563/1522:3563/1512:3563
 off_hand=fangs_of_the_devourer,id=128479,gem_id=0/0/0/0
 
 # Gear Summary
-# gear_ilvl=938.00
-# gear_agility=30894
-# gear_stamina=45423
-# gear_crit_rating=6965
-# gear_haste_rating=2825
-# gear_mastery_rating=9961
-# gear_versatility_rating=6547
-# gear_armor=2723
+# gear_ilvl=939.25
+# gear_agility=28873
+# gear_stamina=45788
+# gear_crit_rating=7461
+# gear_haste_rating=3255
+# gear_mastery_rating=11348
+# gear_versatility_rating=5610
+# gear_armor=2734
 # set_bonus=tier20_2pc=1
 # set_bonus=tier20_4pc=1

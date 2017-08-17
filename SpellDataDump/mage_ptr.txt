@@ -149,7 +149,7 @@ Spell Level      : 10
 Range            : 40 yards
 Cast Time        : 2.25 seconds
 GCD              : 1.5 seconds
-Velocity         : 40 yards/sec
+Velocity         : 45 yards/sec
 Proc Chance      : 101%
 Affecting spells : Icy Veins (12472 effect#2), Ice Floes (108839 effect#1), Mage (137018 effect#2), Fire Mage (137019 effect#1), Enhanced Pyrotechnics (157644 effect#1), Ignition (165979 effect#1), Firestarter (171170 effect#1), Fire at Will (194224 effect#1), Great Balls of Fire (194313 effect#1), Ice Form (198144 effect#2), Norgannon's Foresight (236380 effect#1)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
@@ -381,7 +381,7 @@ Spell Level      : 12
 Range            : 40 yards
 Cast Time        : 4.5 seconds
 GCD              : 1.5 seconds
-Velocity         : 55 yards/sec
+Velocity         : 35 yards/sec
 Proc Chance      : 101%
 Affecting spells : Icy Veins (12472 effect#2), Hot Streak! (48108 effect#1), Ice Floes (108839 effect#1), Mage (137018 effect#2), Fire Mage (137019 effect#1), Pyromaniac (166868 effect#1), Pyroclasmic Paranoia (194239 effect#1), Ice Form (198144 effect#2), Norgannon's Foresight (236380 effect#1), Critical Massive (242251 effect#1), Ignition (246261 effect#1)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
@@ -441,6 +441,7 @@ Attributes       : ........ ........ x.x..... ........   ........ ..x..... .....
 Effects          :
 #1 (id=5130)     : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 30 | Scaled Value: 30 | Misc Value: 0x7e | Target: Self (1)
+                   Affected School(s): Holy, Fire, Nature, Frost, Shadow, Arcane
 #2 (id=5131)     : Apply Aura (6) | Modify Power Cost% (72)
                    Base Value: -30 | Scaled Value: -30 | Misc Value: 127 | Misc Value 2: 0x1 | Target: Self (1)
 #3 (id=5132)     : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
@@ -2250,6 +2251,7 @@ Attributes       : ........ ........ ........ x..x...x   .....x.. ..x..... .....
 Effects          :
 #1 (id=130584)   : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 40 | Scaled Value: 40 | Misc Value: 0x7f | Target: Self (1)
+                   Affected School(s): All
 #2 (id=150697)   : Apply Aura (6) | Periodic Heal% (20): every 1.5 seconds
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #3 (id=150698)   : Apply Aura (6) | Modify Pet Damage Done% (429)
@@ -2275,6 +2277,7 @@ Attributes       : ........ x....... ........ .......x   ........ ........ .....
 Effects          :
 #1 (id=131165)   : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 4 | Scaled Value: 4 | Misc Value: 0x7f | Target: Self (1)
+                   Affected School(s): All
 #2 (id=168860)   : Apply Aura (6) | Modify Pet Damage Done% (429)
                    Base Value: 4 | Scaled Value: 4 | Target: Self (1)
 Description      : $@spelldesc1463
@@ -2450,7 +2453,7 @@ Effects          :
                    Affected Spells (Category): Fire Blast (108853)
 #3 (id=188984)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 247 (Label) | Target: Self (1)
-                   Affected Spells (Label): Infernal Contract (225140), Living Carapace (225033), Sands of Time (225124), Vampiric Aura (225130), Wailing Souls (242609), Unending Hunger (242536), Chilling Nova (251940), Bulwark of Flame (251946), Hammer-Forged (251952)
+                   Affected Spells (Label): Infernal Contract (225140), Living Carapace (225033), Sands of Time (225124), Vampiric Aura (225130), Wailing Souls (242609), Unending Hunger (242536), Chilling Nova (251940), Bulwark of Flame (251946), Hammer-Forged (251952), Pool of Pure Void (250766)
 #4 (id=188985)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 248 (Label) | Target: Self (1)
                    Affected Spells (Label): Fel-Crazed Rage (225777), Colossal Slam (232044), Dread Torrent (246464), Ceaseless Toxin (242497), Umbral Glaive Storm (242556), Shattering Umbral Glaives (242557), Infernal Cinders (242218)
@@ -2459,9 +2462,10 @@ Effects          :
                    Affected Spells (Label): Fel-Crazed Rage (225777), Colossal Slam (232044), Dread Torrent (246464), Ceaseless Toxin (242497), Umbral Glaive Storm (242556), Shattering Umbral Glaives (242557), Infernal Cinders (242218)
 #6 (id=257393)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 298 (Label) | Target: Self (1)
-                   Affected Spells (Label): Cleansing Matrix (242619), Fruitful Machinations (242623), Guiding Hand (242622), Infusion of Light (242621), Fel Shield (253277), Tarratus Keystone (253282), Refreshing Agony (253284)
-#7 (id=260648)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+                   Affected Spells (Label): Cleansing Matrix (242619), Fruitful Machinations (242623), Guiding Hand (242622), Infusion of Light (242621), Fel Shield (253277), Tarratus Keystone (253282), Refreshing Agony (253284), L'ura's Word (250781)
+#7 (id=260648)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
+                   Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 333 (Label) | Target: Self (1)
+                   Affected Spells (Label): Void Slash (251034)
 #8 (id=260649)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #9 (id=260650)   : Apply Aura (6) | Dummy (4)
@@ -2483,6 +2487,8 @@ Effects          :
 #17 (id=320055)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #18 (id=474892)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+#19 (id=477120)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 
 Name             : Fire Mage (id=137019) [Spell Family (3), Passive, Hidden] 
@@ -3926,6 +3932,8 @@ Attributes       : .......x ........ ........ ....x...   ..xxx..x ........ .x...
 Effects          :
 #1 (id=295605)   : Unknown(162)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+#2 (id=477483)   : Trigger Spell (64): Vindicaar Matrix Crystal
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 255529
 Description      : Switch to your Primary Talent Specialization.
 Tooltip          : Switch to your Primary Talent Specialization.
 
@@ -4383,6 +4391,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=304047)   : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 0x10 | Target: Self (1)
+                   Affected School(s): Frost
 Description      : $@spelldesc205027
 Tooltip          : Frost damage dealt increased by $w1%
 
@@ -5753,6 +5762,23 @@ Effects          :
 Description      : $@spelldesc248100
 Tooltip          : Your next Frostbolt or Flurry cast will also release a Comet Storm on the target.
 
+Name             : Vindicaar Matrix Crystal (id=251463) 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Worgen, Pandaren, Pandaren (Alliance)
+School           : Physical
+GCD              : 1.5 seconds
+Triggered by     : Vindicaar Matrix Crystal (255529)
+Attributes       : ........ ........ ........ ........   ...x...x ..x..... ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=470901)   : Dummy (3)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+Description      : Unlock powers at the Vindicaar's Matrix Core to use while on Argus. 
+
 Name             : Item - Mage T21 Frost 4P Bonus - Brain Freeze Buffs Frostbolt (id=251860) [Spell Family (3), Passive, Hidden] 
 Class            : Mage
 School           : Physical
@@ -5788,5 +5814,24 @@ Effects          :
                    Affected Spells: Frostbolt (116), Frostbolt (228597)
 Description      : $@spelldesc251860
 Tooltip          : Damage of your next Frostbolt increased by $s1%.
+
+Name             : Vindicaar Matrix Crystal (id=255529) [Hidden] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Worgen, Pandaren, Pandaren (Alliance)
+School           : Physical
+Triggered by     : Activating Specialization (200749)
+Attributes       : .......x x....... .......x x..x.x..   ...x.x.x ..x..... ........ ........ 
+                 : x.x..... ......x. ...x..x. ....x...   ........ .x...... xx..x... ....x... 
+                 : .......x ........ .......x ........   ...x.... ........ .xx..... ........ 
+                 : ........ .x..x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ....x... ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Hidden (7), Does not break stealth (37), Not a proc (105), Disable player procs (112), Disable target procs (113), Disable weapon procs (151)
+Effects          :
+#1 (id=477479)   : Unknown(81)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 251463 | Target: Self (1)
+#2 (id=477480)   : Unknown(170)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+Description      : Unlock powers at the Vindicaar's Matrix Core to use while on Argus. 
 
 

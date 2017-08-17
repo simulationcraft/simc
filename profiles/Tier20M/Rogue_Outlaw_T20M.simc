@@ -33,8 +33,8 @@ actions.precombat+=/roll_the_bones,if=!talent.slice_and_dice.enabled
 actions.precombat+=/curse_of_the_dreadblades,if=combo_points.deficit>=4
 
 # Executed every time the actor is available.
-# Fish for '2 Buffs' when Loaded Dice is up. With SnD, consider that we never have to reroll.
-actions=variable,name=rtb_reroll,value=!talent.slice_and_dice.enabled&rtb_buffs<2&buff.loaded_dice.up
+# Fish for '2 Buffs' when Loaded Dice is up. Also try to get TB with Loaded Dice and 2 other buffs up. With SnD, consider that we never have to reroll.
+actions=variable,name=rtb_reroll,value=!talent.slice_and_dice.enabled&buff.loaded_dice.up&(rtb_buffs<2|rtb_buffs=2&!buff.true_bearing.up)
 # Condition to use Saber Slash when not rerolling RtB or when using SnD
 actions+=/variable,name=ss_useable_noreroll,value=(combo_points<5+talent.deeper_stratagem.enabled-(buff.broadsides.up|buff.jolly_roger.up)-(talent.alacrity.enabled&buff.alacrity.stack<=4))
 # Condition to use Saber Slash, when you have RtB or not
@@ -99,20 +99,20 @@ waist=waistguard_of_profane_duplicity,id=147347,bonus_id=1522/3563
 legs=fanged_slayers_legguards,id=147173,bonus_id=1512/3563
 feet=felscape_pathfinders,id=147030,bonus_id=1512/3563
 finger1=yathaes_thumb_ring,id=147021,bonus_id=1512/3563,enchant=binding_of_haste
-finger2=band_of_rescinded_truths,id=147194,bonus_id=1512/3563,enchant=binding_of_haste
+finger2=seal_of_the_second_duumvirate,id=147195,bonus_id=3563/1522,enchant=binding_of_haste
 trinket1=specter_of_betrayal,id=151190,bonus_id=1522/3563
 trinket2=convergence_of_fates,id=140806,bonus_id=3519
 main_hand=the_dreadblades,id=128872,bonus_id=742,gem_id=151189/147100/147114,relic_id=1512:3563/1512:3563/1512:3563
 off_hand=the_dreadblades,id=134552
 
 # Gear Summary
-# gear_ilvl=937.63
+# gear_ilvl=938.25
 # gear_agility=30810
-# gear_stamina=45295
-# gear_crit_rating=5691
-# gear_haste_rating=6530
-# gear_mastery_rating=6933
-# gear_versatility_rating=7125
+# gear_stamina=45531
+# gear_crit_rating=7400
+# gear_haste_rating=8560
+# gear_mastery_rating=5626
+# gear_versatility_rating=4913
 # gear_armor=2723
 # set_bonus=tier20_2pc=1
 # set_bonus=tier20_4pc=1

@@ -4,7 +4,7 @@
 #ifndef ptr_MAX_CLASS
 #define ptr_MAX_CLASS (13)
 #endif
-// Class based active abilities, wow build 24781
+// Class based active abilities, wow build 24845
 static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLASS_ABILITY_SIZE] = {
   {
     {
@@ -1169,7 +1169,7 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
 };
 #define PTR_TREE_SPECIALIZATION_SIZE (36)
 
-// Talent tree specialization abilities, wow build 24781
+// Talent tree specialization abilities, wow build 24845
 static unsigned __ptr_tree_specialization_data[][MAX_SPECS_PER_CLASS][PTR_TREE_SPECIALIZATION_SIZE] = {
   // Specialization abilities for Hunter pets
   {
@@ -2121,6 +2121,7 @@ static unsigned __ptr_tree_specialization_data[][MAX_SPECS_PER_CLASS][PTR_TREE_S
       231049, // Starfall (Rank 2)
       231050, // Sunfire (Rank 2)
       159456, // Travel Form (Rank 2)
+      228545, // Cat Form (Shapeshift)
            0,
     },
     // Specialization abilities for Feral
@@ -2191,6 +2192,7 @@ static unsigned __ptr_tree_specialization_data[][MAX_SPECS_PER_CLASS][PTR_TREE_S
       231065, // Lightning Reflexes
       231070, // Ironfur (Rank 2)
       159456, // Travel Form (Rank 2)
+      228545, // Cat Form (Shapeshift)
            0,
     },
     // Specialization abilities for Restoration
@@ -2276,7 +2278,7 @@ static unsigned __ptr_tree_specialization_data[][MAX_SPECS_PER_CLASS][PTR_TREE_S
 };
 #define PTR_CLASS_MASTERY_ABILITY_SIZE (1)
 
-// Class mastery abilities, wow build 24781
+// Class mastery abilities, wow build 24845
 static unsigned __ptr_class_mastery_ability_data[MAX_CLASS][MAX_SPECS_PER_CLASS][PTR_CLASS_MASTERY_ABILITY_SIZE] = {
   {
     {
@@ -2515,7 +2517,7 @@ static unsigned __ptr_class_mastery_ability_data[MAX_CLASS][MAX_SPECS_PER_CLASS]
 #define ptr_MAX_RACE (28)
 #endif
 
-// Racial abilities, wow build 24781
+// Racial abilities, wow build 24845
 static unsigned __ptr_race_ability_data[ptr_MAX_RACE][ptr_MAX_CLASS][PTR_RACE_ABILITY_SIZE] = {
   {
     {     0, },
@@ -3253,7 +3255,7 @@ static unsigned __ptr_race_ability_data[ptr_MAX_RACE][ptr_MAX_CLASS][PTR_RACE_AB
 };
 #define PTR_SET_BONUS_DATA_SIZE (688)
 
-// Set bonus data, wow build 24781
+// Set bonus data, wow build 24845
 static item_set_bonus_t __ptr_set_bonus_data[PTR_SET_BONUS_DATA_SIZE] = {
   // Set bonus name                              ,      OptName, EnumID, SetID, Tier, Bns, Cls, Spec,  Spell, Items
   { "Gladiator's Battlegear"                     ,        "pvp",      0,  1230,    0,   2,   1,   71, 165636, { 127055, 127081, 127092, 127103, 127114,  0 } },
@@ -3972,9 +3974,9 @@ static item_set_bonus_t __ptr_set_bonus_data[PTR_SET_BONUS_DATA_SIZE] = {
   { "Felreaper Vestments"                        ,     "tier21",     14,  1329,   21,   4,  12,  577, 251769, { 152118, 152119, 152120, 152121, 152122, 152123,  0 } },
   { "Felreaper Vestments"                        ,     "tier21",     14,  1329,   21,   4,  12,  581, 251774, { 152118, 152119, 152120, 152121, 152122, 152123,  0 } },
 };
-#define PTR_RPPMMOD_SIZE (691)
+#define PTR_RPPMMOD_SIZE (697)
 
-// 691 RPPM Modifiers, wow build level 24781
+// 697 RPPM Modifiers, wow build level 24845
 static struct rppm_modifier_t __ptr_rppmmodifier_data[] = {
   {  17495,    4,  1,  1.0000 },
   {  27656,    4,  1,  1.0000 },
@@ -4528,8 +4530,14 @@ static struct rppm_modifier_t __ptr_rppmmodifier_data[] = {
   { 250768,  262,  4, -0.5000 },
   { 250768,  263,  4, -0.5000 },
   { 250768,    4,  1,  1.0000 },
+  { 250846, 2607,  3, -0.5000 },
+  { 250846,  103,  4, -0.5000 },
+  { 250846,  104,  4, -0.5000 },
+  { 250846,  105,  4, -0.5000 },
+  { 250846,  257,  4, -0.5000 },
+  { 250846,  263,  4, -0.5000 },
+  { 250846,  264,  4, -0.5000 },
   { 250846,    4,  1,  1.0000 },
-  { 250846,  252,  4, -0.3200 },
   { 251875,    4,  1,  1.0000 },
   { 251925,  476,  3, -0.5000 },
   { 251925,  251,  4, -0.5000 },
@@ -4671,7 +4679,7 @@ static struct rppm_modifier_t __ptr_rppmmodifier_data[] = {
 };
 #define PTR_ARTIFACT_SIZE (41)
 
-// Artifact base data, wow build 24781
+// Artifact base data, wow build 24845
 static struct artifact_t __ptr_artifact_data[PTR_ARTIFACT_SIZE] = {
   {  2,  70 },
   {  3, 577 },
@@ -4718,7 +4726,7 @@ static struct artifact_t __ptr_artifact_data[PTR_ARTIFACT_SIZE] = {
 
 #define PTR_ARTIFACT_POWER_SIZE (908)
 
-// Artifact power data, wow build 24781
+// Artifact power data, wow build 24845
 static struct artifact_power_data_t __ptr_artifact_power_data[PTR_ARTIFACT_POWER_SIZE] = {
   { 1739,   0,  64,  0,   3, 250879, "Netherlight Fortification"          }, // Netherlight Fortification (id=250879, n_ranks=3)
   { 1770,   0,  64,  0,   3, 252088, "Light Speed"                        }, // Light Speed (id=252088, n_ranks=3)
@@ -5631,7 +5639,7 @@ static struct artifact_power_data_t __ptr_artifact_power_data[PTR_ARTIFACT_POWER
 };
 #define PTR_ARTIFACT_POWER_RANK_SIZE (5946)
 
-// Artifact power rank data, wow build 24781
+// Artifact power rank data, wow build 24845
 static struct artifact_power_rank_t __ptr_artifact_power_rank_data[PTR_ARTIFACT_POWER_RANK_SIZE] = {
   { 2316,    40,  0, 205273,      0.000, 0x00000000, 0 },
   { 2317,    41,  0, 186941,      8.000, 0x00000000, 0 },
@@ -11582,7 +11590,7 @@ static struct artifact_power_rank_t __ptr_artifact_power_rank_data[PTR_ARTIFACT_
 };
 #define PTR_PTR_ARTIFACT_POWER_RANK_HOTFIX_SIZE (0)
 
-// 0 ptr_artifact_power_rank hotfix entries, wow build level 24781
+// 0 ptr_artifact_power_rank hotfix entries, wow build level 24845
 static hotfix::client_hotfix_entry_t __ptr_ptr_artifact_power_rank_hotfix_data[] = {
   {      0,  0, 0, 0 },
 };
