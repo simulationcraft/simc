@@ -5152,7 +5152,14 @@ void priest_t::apl_shadow()
   main->add_action( "shadow_word_pain" );
 
   // Surrender to Madness APL
+  s2m->add_action(
+      "silence,if=equipped.sephuzs_secret&(target.is_add|target.debuff.casting."
+      "react)&cooldown.buff_sephuzs_secret.remains<1&!buff.sephuzs_secret.up"
+      ",cycle_targets=1");
   s2m->add_action( "void_bolt,if=buff.insanity_drain_stacks.value<6&set_bonus.tier19_4pc" );
+  s2m->add_action(
+      "mind_bomb,if=equipped.sephuzs_secret&target.is_add&cooldown.buff_sephuzs_"
+      "secret.remains<1&!buff.sephuzs_secret.up,cycle_targets=1");
   s2m->add_action( "shadow_crash,if=talent.shadow_crash.enabled" );
   s2m->add_action( 
       "mindbender,if=cooldown.shadow_word_death.charges=0&buff.voidform.stack>(45"
