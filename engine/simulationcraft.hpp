@@ -2237,6 +2237,36 @@ inline Event* make_event( sim_t& sim, Args&&... args )
   return r;
 }
 
+inline event_t* make_event( sim_t& s, const timespan_t& t, const std::function<void(void)>& f )
+{
+  class fn_event_t : public event_t
+  {
+    std::function<void(void)> fn;
+
+    public:
+      fn_event_t( sim_t& s, const timespan_t& t, const std::function<void(void)>& f ) :
+        event_t( s, t ), fn( f )
+      { }
+
+      const char* name() const override
+      { return "function_event"; }
+
+      void execute() override
+      { fn(); }
+  };
+
+  return make_event<fn_event_t>( s, s, t, f );
+}
+
+inline event_t* make_event( sim_t* s, const timespan_t& t, const std::function<void(void)>& f )
+{ return make_event( *s, t, f ); }
+
+inline event_t* make_event( sim_t* s, const std::function<void(void)>& f )
+{ return make_event( *s, timespan_t::zero(), f ); }
+
+inline event_t* make_event( sim_t& s, const std::function<void(void)>& f )
+{ return make_event( s, timespan_t::zero(), f ); }
+
 // Gear Rating Conversions ==================================================
 
 enum rating_e
