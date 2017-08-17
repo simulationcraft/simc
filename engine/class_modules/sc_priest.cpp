@@ -3674,13 +3674,15 @@ struct voidform_t final : public priest_buff_t<haste_buff_t>
 
     if ( priest.buffs.surrender_to_madness->check() )
     {
-      if ( sim->log )
-      {
-        sim->out_log.printf( "%s %s: Surrender to Madness kills you. You die. Horribly.", priest.name(), name() );
-      }
-      priest.demise();
-      priest.arise();
-      priest.buffs.surrender_to_madness_death->trigger();
+      make_event( sim, [ this ]() {
+        if ( sim->log )
+        {
+          sim->out_log.printf( "%s %s: Surrender to Madness kills you. You die. Horribly.", priest.name(), name() );
+        }
+        priest.demise();
+        priest.arise();
+        priest.buffs.surrender_to_madness_death->trigger();
+      } );
     }
 
     base_t::expire_override( expiration_stacks, remaining_duration );
