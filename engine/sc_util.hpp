@@ -225,7 +225,6 @@ inline std::string from_string( const std::string& v )
 // https://graphics.stanford.edu/~seander/bithacks.html#RoundUpPowerOf2
 inline unsigned next_power_of_two( unsigned v )
 {
-  std::cerr << v << std::endl;
   v--;
   v |= v >> 1;
   v |= v >> 2;
