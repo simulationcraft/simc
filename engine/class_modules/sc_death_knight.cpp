@@ -1587,6 +1587,7 @@ struct auto_attack_t : public melee_attack_t
 
   bool ready() override
   {
+    if ( target -> is_sleeping() ) return false;
     if ( player -> is_moving() ) return false;
     return ( player -> main_hand_attack -> execute_event == nullptr );
   }
@@ -3532,6 +3533,11 @@ struct auto_attack_t : public death_knight_melee_attack_t
 
   virtual bool ready() override
   {
+    if ( target -> is_sleeping() )
+    {
+      return false;
+    }
+
     if ( player -> is_moving() )
       return false;
     return( player -> main_hand_attack -> execute_event == nullptr ); // not swinging

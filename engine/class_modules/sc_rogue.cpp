@@ -2578,6 +2578,11 @@ struct auto_melee_attack_t : public action_t
 
   virtual bool ready() override
   {
+    if ( target -> is_sleeping() )
+    {
+      return false;
+    }
+
     if ( player -> is_moving() )
       return false;
 
