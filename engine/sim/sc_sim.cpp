@@ -3260,8 +3260,9 @@ void sim_t::create_options()
 
   // Legion
   add_option( opt_int( "legion.infernal_cinders_users", expansion_opts.infernal_cinders_users, 1, 20 ) );
-  add_option( opt_bool( "legion.feast_as_dps", expansion_opts.lavish_feast_as_dps ) );
   add_option( opt_int( "legion.engine_of_eradication_orbs", expansion_opts.engine_of_eradication_orbs, 0, 4 ) );
+  add_option( opt_bool( "legion.feast_as_dps", expansion_opts.lavish_feast_as_dps ) );
+  add_option( opt_bool( "legion.specter_of_betrayal_overlap", expansion_opts.specter_of_betrayal_overlap ) );
   add_option( opt_func( "legion.cradle_of_anguish_resets", []( sim_t* sim, const std::string&, const std::string& value ) {
     auto split = util::string_split( value, ":/," );
     range::for_each( split, [ sim ]( const std::string& str ) {
