@@ -168,7 +168,7 @@ public:
 
   std::vector<cooldown_t*> sigil_cooldowns;  // For Defiler's Lost Vambraces legendary
 
-  double spirit_bomb;  // Spirit Bomb healing accumulator
+  double spirit_bomb_accumulator;  // Spirit Bomb healing accumulator
   event_t* spirit_bomb_driver;
 
   // Override for target's hitbox size, relevant for Fel Rush and Vengeful
@@ -1113,6 +1113,9 @@ public:
       // Class Damage Multiplier
       if (ab::data().affected_by(p->spec.havoc->effectN(6)))
         ab::base_dd_multiplier *= 1 + p->spec.havoc->effectN(6).percent();
+
+      if (ab::data().affected_by(p->spec.havoc->effectN(7)))
+        ab::base_td_multiplier *= 1 + p->spec.havoc->effectN(7).percent();
     }
     else // DEMON_HUNTER_VENGEANCE
     {
@@ -1129,6 +1132,9 @@ public:
       // Class Damage Multiplier
       if (ab::data().affected_by(p->spec.vengeance->effectN(1)))
         ab::base_dd_multiplier *= 1 + p->spec.vengeance->effectN(1).percent();
+
+      if (ab::data().affected_by(p->spec.vengeance->effectN(2)))
+        ab::base_td_multiplier *= 1 + p->spec.vengeance->effectN(2).percent();
     }
   }
 
@@ -1357,7 +1363,7 @@ public:
     }
     
     const double multiplier = target_data->debuffs.frailty->stack_value();
-    p()->spirit_bomb += s->result_amount * multiplier;
+    p()->spirit_bomb_accumulator += s->result_amount * multiplier;
   }
 
   void trigger_felblade(action_state_t* s)
@@ -2936,28 +2942,30 @@ struct spirit_bomb_t : public demon_hunter_spell_t
     spirit_bomb_damage_t( demon_hunter_t* p )
       : demon_hunter_spell_t( "spirit_bomb_dmg", p, p -> find_spell(247455) )
     {
-      background = true;
-      aoe        = -1;
+      background = dual = true;
+      aoe = -1;
     }
 
     void impact(action_state_t* s) override
     {
-      demon_hunter_spell_t::impact(s);
-
+      // Spirit Bomb benefits from its own Frailty debuff
       if (result_is_hit(s->result))
       {
         td(s->target)->debuffs.frailty->trigger();
       }
+
+      demon_hunter_spell_t::impact(s);
     }
   };
 
   spirit_bomb_damage_t* damage;
 
   spirit_bomb_t( demon_hunter_t* p, const std::string& options_str )
-    : demon_hunter_spell_t( "spirit_bomb", p, p -> talent.spirit_bomb,
-                            options_str ),
+    : demon_hunter_spell_t( "spirit_bomb", p, p -> talent.spirit_bomb, options_str ),
     damage( new spirit_bomb_damage_t( p ) )
   {
+    may_miss = may_crit = proc = callbacks = may_dodge = may_parry = may_block = false;
+
     damage->stats = stats;
 
     if (!p->active.spirit_bomb_heal)
@@ -2984,6 +2992,7 @@ struct spirit_bomb_t : public demon_hunter_spell_t
     damage->snapshot_state(damage_state, DMG_DIRECT);
     damage_state->da_multiplier *= fragments_consumed;
     damage->schedule_execute(damage_state);
+    damage->execute_event->reschedule(timespan_t::from_seconds(1.0));
   }
 
   bool ready() override
@@ -4308,7 +4317,7 @@ struct fury_of_the_illidari_t : public demon_hunter_attack_t
       : demon_hunter_attack_t( "fury_of_the_illidari_tick", p, s )
     {
       background = dual = ground_aoe = true;
-      aoe                  = -1;
+      aoe = -1;
       may_proc_fel_barrage = true;  // Jul 12 2016
     }
 
@@ -4333,12 +4342,11 @@ struct fury_of_the_illidari_t : public demon_hunter_attack_t
   action_t* oh;
   rage_of_the_illidari_t* rage;
 
-  fury_of_the_illidari_t( demon_hunter_t* p, const std::string& options_str )
-    : demon_hunter_attack_t( "fury_of_the_illidari", p,
-                             p -> artifact.fury_of_the_illidari, options_str ),
-      mh( new fury_of_the_illidari_tick_t( p, p -> find_spell( 201628 ) ) ),
-      oh( new fury_of_the_illidari_tick_t( p, p -> find_spell( 201789 ) ) ),
-      rage( nullptr )
+  fury_of_the_illidari_t(demon_hunter_t* p, const std::string& options_str)
+    : demon_hunter_attack_t("fury_of_the_illidari", p, p -> artifact.fury_of_the_illidari, options_str),
+    mh(new fury_of_the_illidari_tick_t(p, p -> find_spell(201628))),
+    oh(new fury_of_the_illidari_tick_t(p, p -> find_spell(201789))),
+    rage(nullptr)
   {
     may_miss = may_crit = may_parry = may_block = may_dodge = false;
     dot_duration   = data().duration();
@@ -4349,13 +4357,13 @@ struct fury_of_the_illidari_t : public demon_hunter_attack_t
     range = 5.0;
 
     // Silly reporting things
-    school = mh -> school;
-    mh -> stats = oh -> stats = stats;
+    school = mh->school;
+    mh->stats = oh->stats = stats;
 
-    if ( p -> artifact.rage_of_the_illidari.rank() )
+    if (p->artifact.rage_of_the_illidari.rank())
     {
-      rage = new rage_of_the_illidari_t( p );
-      add_child( rage );
+      rage = new rage_of_the_illidari_t(p);
+      add_child(rage);
     }
   }
 
@@ -5262,15 +5270,15 @@ struct spirit_bomb_event_t : public event_t
 
   void execute() override
   {
-    assert( dh -> spirit_bomb >= 0.0 );
+    assert( dh ->spirit_bomb_accumulator >= 0.0 );
 
-    if ( dh -> spirit_bomb > 0 )
+    if ( dh -> spirit_bomb_accumulator > 0 )
     {
       action_t* a    = dh -> active.spirit_bomb_heal;
-      a -> base_dd_min = a -> base_dd_max = dh -> spirit_bomb;
+      a -> base_dd_min = a -> base_dd_max = dh -> spirit_bomb_accumulator;
       a -> schedule_execute();
 
-      dh -> spirit_bomb = 0.0;
+      dh -> spirit_bomb_accumulator = 0.0;
     }
 
     dh -> spirit_bomb_driver = make_event<spirit_bomb_event_t>( sim(), dh );
@@ -5507,7 +5515,7 @@ demon_hunter_t::demon_hunter_t(sim_t* sim, const std::string& name, race_e r)
   next_fragment_spawn(0),
   soul_fragments(),
   sigil_cooldowns(0),
-  spirit_bomb(0.0),
+  spirit_bomb_accumulator(0.0),
   spirit_bomb_driver(nullptr),
   target_reach(-1.0),
   exit_melee_event(nullptr),
@@ -6987,12 +6995,12 @@ void demon_hunter_t::apl_havoc()
   normal->add_action(this, "Throw Glaive", "if=talent.bloodlet.enabled&(!talent.momentum.enabled|buff.momentum.up)&charges=2");
   normal->add_talent(this, "Felblade", "if=fury<15&(cooldown.death_sweep.remains<2*gcd|cooldown.blade_dance.remains<2*gcd)");
   normal->add_action(this, spec.death_sweep, "death_sweep", "if=variable.blade_dance");
-  normal->add_action(this, "Fel Rush", "if=charges=2&!talent.momentum.enabled&!talent.fel_mastery.enabled");
+  normal->add_action(this, "Fel Rush", "if=charges=2&!talent.momentum.enabled&!talent.fel_mastery.enabled&!buff.metamorphosis.up");
   normal->add_talent(this, "Fel Eruption");
   normal->add_action(this, artifact.fury_of_the_illidari, "fury_of_the_illidari",
     "if=(active_enemies>desired_targets)|(raid_event.adds.in>55&(!talent.momentum.enabled|buff.momentum.up)&"
     "(!talent.chaos_blades.enabled|buff.chaos_blades.up|cooldown.chaos_blades.remains>30|target.time_to_die<cooldown.chaos_blades.remains))");
-  normal->add_action(this, "Blade Dance", "if=variable.blade_dance&!cooldown.metamorphosis.ready");
+  normal->add_action(this, "Blade Dance", "if=variable.blade_dance");
   normal->add_action(this, "Throw Glaive", "if=talent.bloodlet.enabled&spell_targets>=2&"
     "(!talent.master_of_the_glaive.enabled|!talent.momentum.enabled|buff.momentum.up)&"
     "(spell_targets>=3|raid_event.adds.in>recharge_time+cooldown)");
@@ -7660,14 +7668,14 @@ void demon_hunter_t::reset()
 {
   base_t::reset();
 
-  blade_dance_driver    = nullptr;
-  soul_fragment_pick_up = nullptr;
-  spirit_bomb_driver    = nullptr;
-  exit_melee_event      = nullptr;
-  next_fragment_spawn   = 0;
-  shear_counter         = 0;
-  metamorphosis_health  = 0;
-  spirit_bomb           = 0.0;
+  blade_dance_driver      = nullptr;
+  soul_fragment_pick_up   = nullptr;
+  spirit_bomb_driver      = nullptr;
+  exit_melee_event        = nullptr;
+  next_fragment_spawn     = 0;
+  shear_counter           = 0;
+  metamorphosis_health    = 0;
+  spirit_bomb_accumulator = 0.0;
   sigil_of_flame_activates = timespan_t::zero();
 
   for ( size_t i = 0; i < soul_fragments.size(); i++ )
@@ -7779,27 +7787,33 @@ void demon_hunter_t::adjust_movement()
 
 unsigned demon_hunter_t::consume_soul_fragments( soul_fragment_e type, bool heal )
 {
-  unsigned a = get_active_soul_fragments( type );
-
-  if ( a == 0 )
-    return 0;
-
   unsigned consumed = 0;
+  std::vector<soul_fragment_t*> candidates;
+  std::vector<soul_fragment_t*>::iterator it;
 
-  if ( sim -> debug )
-  {
-    sim -> out_debug.printf( "%s consumes %u %ss. active=%u total=%u", name(), a,
-                           get_soul_fragment_str( type ), 0,
-                           get_total_soul_fragments( type ) - a );
+  // Look through the list of active soul fragments to populate the vector of fragments to remove.
+  // We need to use a new list as to not change the underlying vector as we are iterating over it
+  // since the consume() method calls erase() on the fragment being consumed
+  for (it = soul_fragments.begin(); it != soul_fragments.end(); ++it)
+  { 
+    if ((*it)->is_type(type) && (*it)->active())
+    {
+      candidates.push_back((*it));
+    }
   }
 
-  for ( size_t i = 0; i < soul_fragments.size(); i++ )
+  // Iterate over the candidate soul fragment list and actually consume them
+  for (it = candidates.begin(); it != candidates.end(); ++it)
   {
-    if ( soul_fragments[ i ] -> is_type( type ) && soul_fragments[ i ] -> active() )
-    {
-      soul_fragments[ i ] -> consume( heal );
-      consumed++;
-    }
+    (*it)->consume(heal);
+    consumed++;
+  }
+
+  if (sim->debug)
+  {
+    sim->out_debug.printf("%s consumes %u %ss. remaining=%u", name(), consumed,
+      get_soul_fragment_str(type), 0,
+      get_total_soul_fragments(type));
   }
 
   return consumed;
