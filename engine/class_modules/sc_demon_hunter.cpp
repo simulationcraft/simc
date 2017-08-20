@@ -624,11 +624,10 @@ public:
   double calculate_expected_max_health() const;
   unsigned consume_soul_fragments( soul_fragment_e = SOUL_FRAGMENT_ALL,
                                    bool heal = true );
-  unsigned get_active_soul_fragments(
-    soul_fragment_e = SOUL_FRAGMENT_ALL ) const;
-  unsigned get_total_soul_fragments(
-    soul_fragment_e = SOUL_FRAGMENT_ALL ) const;
-  void spawn_soul_fragment( soul_fragment_e, unsigned = 1 , bool = false);
+  unsigned get_active_soul_fragments( soul_fragment_e = SOUL_FRAGMENT_ALL ) const;
+  unsigned get_total_soul_fragments( soul_fragment_e = SOUL_FRAGMENT_ALL ) const;
+  void activate_soul_fragment( soul_fragment_t* );
+  void spawn_soul_fragment( soul_fragment_e, unsigned = 1 );
   void invalidate_damage_calcs();
   double get_target_reach() const
   {
@@ -731,8 +730,8 @@ struct delayed_execute_event_t : public event_t
   {
     if ( !target -> is_sleeping() )
     {
-      action -> target = target;
-      action -> schedule_execute();
+      action->set_target(target);
+      action->schedule_execute();
     }
   }
 };
@@ -794,17 +793,18 @@ struct soul_fragment_t
 
     void execute() override
     {
-      frag -> activate   = nullptr;
-      frag -> expiration = make_event<fragment_expiration_t>( sim(), frag );
-
-      if ( sim().debug )
+      if (sim().debug)
       {
         sim().out_debug.printf(
-          "%s %s becomes active. active=%u total=%u", frag -> dh -> name(),
-          get_soul_fragment_str( frag -> type ),
-          frag -> dh -> get_active_soul_fragments( frag -> type ),
-          frag -> dh -> get_total_soul_fragments( frag -> type ) );
+          "%s %s becomes active. active=%u total=%u", frag->dh->name(),
+          get_soul_fragment_str(frag->type),
+          frag->dh->get_active_soul_fragments(frag->type) + 1,
+          frag->dh->get_total_soul_fragments(frag->type));
       }
+
+      frag->activate = nullptr;
+      frag->expiration = make_event<fragment_expiration_t>(sim(), frag);
+      frag->dh->activate_soul_fragment(frag);
     }
   };
 
@@ -1440,7 +1440,7 @@ struct demon_hunter_heal_t : public demon_hunter_action_t<heal_t>
     : base_t( n, p, s, o )
   {
     harmful = false;
-    target  = p;
+    set_target(p);
   }
 };
 
@@ -2013,7 +2013,7 @@ struct fel_barrage_t : public demon_hunter_spell_t
     demon_hunter_spell_t::tick( d );
 
     action_state_t* tick_state = damage->get_state();
-    damage->target = d->target;
+    damage->set_target(d->target);
     damage->snapshot_state(tick_state, DMG_DIRECT);
     damage->schedule_execute(tick_state);
   }
@@ -2121,8 +2121,8 @@ struct fel_eruption_t : public demon_hunter_spell_t
 
     if ( hit_any_target )
     {
-      damage -> target = execute_state -> target;
-      damage -> schedule_execute();
+      damage->set_target(execute_state->target);
+      damage->schedule_execute();
     }
   }
 
@@ -2268,11 +2268,10 @@ struct fiery_brand_t : public demon_hunter_spell_t
       }
 
       // Pick a random target.
-      player_t* target =
-        candidates[static_cast<int>(p()->rng().range(0, (double)candidates.size()))];
+      player_t* target = candidates[static_cast<int>(p()->rng().range(0, (double)candidates.size()))];
 
       // Execute a dot on that target.
-      this -> target = target;
+      this->set_target(target);
       schedule_execute();
     }
   };
@@ -2477,8 +2476,8 @@ struct infernal_strike_t : public demon_hunter_spell_t
   {
     demon_hunter_spell_t::impact( s );
 
-    damage -> target = s -> target;
-    damage -> schedule_execute();
+    damage->set_target(s->target);
+    damage->schedule_execute();
   }
 
   dot_t* get_dot( player_t* t ) override
@@ -2988,7 +2987,7 @@ struct spirit_bomb_t : public demon_hunter_spell_t
     const int fragments_consumed = p()->consume_soul_fragments();
 
     action_state_t* damage_state = damage->get_state();
-    damage->target = execute_state->target;
+    damage->set_target(execute_state->target);
     damage->snapshot_state(damage_state, DMG_DIRECT);
     damage_state->da_multiplier *= fragments_consumed;
     damage->schedule_execute(damage_state);
@@ -3044,8 +3043,8 @@ struct demon_hunter_attack_t : public demon_hunter_action_t<melee_attack_t>
     if (!rng().roll(percent))
       return;
 
-    p() -> active.demon_blades -> target = s -> target;
-    p() -> active.demon_blades -> schedule_execute();
+    p()->active.demon_blades->set_target(s->target);
+    p()->active.demon_blades->schedule_execute();
   }
 };
 
@@ -3622,8 +3621,7 @@ struct chaos_strike_base_t : public demon_hunter_attack_t
     {
       if ( !target -> is_sleeping() )
       {
-        chaos_strike_state_t* s =
-          debug_cast<chaos_strike_state_t*>( action -> get_state() );
+        chaos_strike_state_t* s = debug_cast<chaos_strike_state_t*>( action -> get_state() );
         s -> target = target;
         action -> snapshot_state( s, DMG_DIRECT );
         s -> is_critical = state -> is_critical;
@@ -3748,8 +3746,8 @@ struct chaos_strike_base_t : public demon_hunter_attack_t
       if ( p() -> rppm.inner_demons -> trigger() )
       {
         assert( p() -> active.inner_demons );
-        p() -> active.inner_demons -> target = target;
-        p() -> active.inner_demons -> schedule_execute();
+        p()->active.inner_demons->set_target(target);
+        p()->active.inner_demons->schedule_execute();
       }
     }
   }
@@ -4111,8 +4109,8 @@ struct felblade_t : public demon_hunter_attack_t
 
     if ( hit_any_target )
     {
-      damage -> target = execute_state -> target;
-      damage -> schedule_execute();
+      damage->set_target(execute_state->target);
+      damage->schedule_execute();
     }
 
     // Cancel all other movement
@@ -4265,9 +4263,10 @@ struct fracture_t : public demon_hunter_attack_t
 
     if ( result_is_hit( s -> result ) )
     {
-      mh -> target = oh -> target = s -> target;
-      mh -> schedule_execute();
-      oh -> schedule_execute();
+      mh->set_target(s->target);
+      oh->set_target(s->target);
+      mh->schedule_execute();
+      oh->schedule_execute();
 
       p() -> spawn_soul_fragment( SOUL_FRAGMENT_LESSER, 2 );
     }
@@ -4528,7 +4527,7 @@ struct soul_carver_t : public demon_hunter_attack_t
     if (!result_is_hit(s->result))
       return;
 
-    oh->target = s->target;
+    oh->set_target(s->target);
     oh->schedule_execute();
 
     p()->spawn_soul_fragment(SOUL_FRAGMENT_LESSER, data().effectN(4).base_value());
@@ -4616,14 +4615,14 @@ struct soul_cleave_t : public demon_hunter_attack_t
 
     // Heal
     action_state_t* heal_state = heal->get_state();
-    heal->target = player;
+    heal->set_target(player);
     heal->snapshot_state(heal_state, HEAL_DIRECT);
     heal_state->da_multiplier *= pain_multiplier;
     heal->schedule_execute(heal_state);
 
     // Damage
     action_state_t* damage_state = damage->get_state();
-    damage->target = execute_state->target;
+    damage->set_target(execute_state->target);
     damage->snapshot_state(damage_state, DMG_DIRECT);
     damage_state->da_multiplier *= pain_multiplier;
     damage->schedule_execute(damage_state);
@@ -4636,7 +4635,7 @@ struct soul_cleave_t : public demon_hunter_attack_t
     if(erupting_souls)
     {
       action_state_t* erupting_souls_state = erupting_souls->get_state();
-      erupting_souls->target = execute_state->target;
+      erupting_souls->set_target(execute_state->target);
       erupting_souls->snapshot_state(damage_state, DMG_DIRECT);
       erupting_souls_state->da_multiplier *= fragments_consumed;
       erupting_souls->schedule_execute();
@@ -4722,9 +4721,8 @@ struct throw_glaive_t : public demon_hunter_attack_t
 
     if ( p() -> talent.bloodlet -> ok() && result_is_hit( s -> result ) )
     {
-      residual_action::trigger(
-        bloodlet, s -> target,
-        s -> result_amount * p() -> talent.bloodlet -> effectN( 1 ).percent() );
+      residual_action::trigger(bloodlet, s->target,
+        s->result_amount * p()->talent.bloodlet->effectN(1).percent());
     }
   }
 };
@@ -7859,46 +7857,59 @@ unsigned demon_hunter_t::get_total_soul_fragments( soul_fragment_e type ) const
   }
 }
 
-// demon_hunter_t::spawn_soul_fragment ======================================
+// demon_hunter_t::activate_soul_fragment ===================================
 
-void demon_hunter_t::spawn_soul_fragment( soul_fragment_e type, unsigned n, bool ignores_max )
+void demon_hunter_t::activate_soul_fragment(soul_fragment_t* frag)
 {
-  proc_t* soul_proc = type == SOUL_FRAGMENT_GREATER ? proc.soul_fragment : proc.soul_fragment_lesser;
-
-  for ( unsigned i = 0; i < n; i++ )
+  if (frag->type == SOUL_FRAGMENT_LESSER)
   {
-    if ( get_total_soul_fragments( type ) == MAX_SOUL_FRAGMENTS && !ignores_max)
+    const int active_fragments = get_active_soul_fragments(frag->type);
+    if(active_fragments > MAX_SOUL_FRAGMENTS)
     {
-      // Find and delete the oldest fragment of this type.
+      // Find and delete the oldest active fragment of this type.
       std::vector<soul_fragment_t*>::iterator it;
-      for ( it = soul_fragments.begin(); it != soul_fragments.end(); it++ )
+      for (it = soul_fragments.begin(); it != soul_fragments.end(); it++)
       {
-        soul_fragment_t& frag = **it;
-
-        if ( frag.is_type( type ) )
+        if ((*it)->is_type(SOUL_FRAGMENT_LESSER) && (*it)->active())
         {
-          if(specialization() == DEMON_HUNTER_HAVOC)
+          if (specialization() == DEMON_HUNTER_HAVOC)
           {
-            frag.remove();
+            (*it)->remove();
           }
           else // DEMON_HUNTER_VENGEANCE
           {
             // 7.2.5 -- When Soul Fragments are created that exceed the cap of 5 active fragments, 
             // the oldest fragment is now automatically consumed if it is within 60 yards of the Demon Hunter.
             // If it is more than 60 yds from the Demon Hunter, it despawns.
-            frag.consume(true);
+            (*it)->consume(true);
+
+            if (sim->debug)
+            {
+              sim->out_debug.printf("%s consumes overflow fragment %ss. remaining=%u", name(),
+                get_soul_fragment_str(SOUL_FRAGMENT_LESSER), get_total_soul_fragments(SOUL_FRAGMENT_LESSER));
+            }
           }
-          proc.soul_fragment_overflow -> occur();
+
+          proc.soul_fragment_overflow->occur();
           event_t::cancel(soul_fragment_pick_up);
           break;
         }
       }
-
-      assert( get_total_soul_fragments( type ) < MAX_SOUL_FRAGMENTS );
     }
 
-    soul_fragments.push_back( new soul_fragment_t( this, type ) );
-    soul_proc -> occur();
+    assert(get_active_soul_fragments(SOUL_FRAGMENT_LESSER) <= MAX_SOUL_FRAGMENTS);
+  }
+}
+
+// demon_hunter_t::spawn_soul_fragment ======================================
+
+void demon_hunter_t::spawn_soul_fragment( soul_fragment_e type, unsigned n )
+{
+  proc_t* soul_proc = type == SOUL_FRAGMENT_GREATER ? proc.soul_fragment : proc.soul_fragment_lesser;
+  for (unsigned i = 0; i < n; i++)
+  {
+    soul_fragments.push_back(new soul_fragment_t(this, type));
+    soul_proc->occur();
   }
 
   if ( sim -> debug )
