@@ -5676,13 +5676,21 @@ struct outbreak_spreader_t : public death_knight_spell_t
 struct outbreak_driver_t : public death_knight_spell_t
 {
   outbreak_spreader_t* spread;
+  const spell_data_t* outbreak_base;
 
   outbreak_driver_t( death_knight_t* p ) :
     death_knight_spell_t( "outbreak_driver", p, p -> dbc.spell( 196782 ) ),
-    spread( new outbreak_spreader_t( p ) )
+    spread( new outbreak_spreader_t( p ) ),
+    outbreak_base( p -> find_specialization_spell( "Outbreak" ) )
   {
     quiet = background = tick_zero = dual = true;
     callbacks = hasted_ticks = false;
+  }
+
+  bool verify_actor_level() const override
+  {
+    return outbreak_base -> id() && outbreak_base -> is_level( player -> true_level ) &&
+           outbreak_base -> level() <= MAX_LEVEL;
   }
 
   void tick( dot_t* dot ) override
@@ -5926,14 +5934,23 @@ struct scourge_strike_t : public scourge_strike_base_t
 {
   struct scourge_strike_shadow_t : public death_knight_melee_attack_t
   {
+    const spell_data_t* scourge_base;
+
     scourge_strike_shadow_t( death_knight_t* p ) :
-      death_knight_melee_attack_t( "scourge_strike_shadow", p, p -> find_spell( 70890 ) )
+      death_knight_melee_attack_t( "scourge_strike_shadow", p, p -> dbc.spell( 70890 ) ),
+      scourge_base( p -> find_specialization_spell( "Scourge Strike" ) )
     {
       may_miss = may_parry = may_dodge = false;
       proc = background = true;
       weapon = &( player -> main_hand_weapon );
       dual = true;
       school = SCHOOL_SHADOW;
+    }
+
+    bool verify_actor_level() const override
+    {
+      return scourge_base -> id() && scourge_base -> is_level( player -> true_level ) &&
+             scourge_base -> level() <= MAX_LEVEL;
     }
 
     double action_multiplier() const override
