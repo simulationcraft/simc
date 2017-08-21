@@ -2382,7 +2382,8 @@ bool player_t::init_actions()
   bool have_off_gcd_actions = false;
   for ( auto action: action_list )
   {
-    if ( action -> trigger_gcd == timespan_t::zero() && ! action -> background &&
+    if ( action -> action_list &&
+         action -> trigger_gcd == timespan_t::zero() && ! action -> background &&
          action -> use_off_gcd )
     {
       action -> action_list -> off_gcd_actions.push_back( action );

@@ -6567,6 +6567,8 @@ double paladin_t::get_divine_judgment(bool is_judgment) const
 {
   if ( specialization() != PALADIN_RETRIBUTION ) return 0.0;
 
+  if ( ! passives.divine_judgment -> ok() ) return 0.0;
+
   double handoflight;
   handoflight = cache.mastery_value(); // HoL modifier is in effect #1
   if ( is_judgment ) {

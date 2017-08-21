@@ -1962,6 +1962,7 @@ struct auto_attack_t : public melee_attack_t
 
   bool ready() override
   {
+    if ( target -> is_sleeping() ) return false;
     if ( player -> is_moving() ) return false;
     return ( player -> main_hand_attack -> execute_event == nullptr );
   }
@@ -3348,15 +3349,16 @@ struct auto_attack_t : public shaman_attack_t
     trigger_gcd = timespan_t::zero();
   }
 
-  virtual void execute() override
+  void execute() override
   {
     p() -> main_hand_attack -> schedule_execute();
     if ( p() -> off_hand_attack )
       p() -> off_hand_attack -> schedule_execute();
   }
 
-  virtual bool ready() override
+  bool ready() override
   {
+    if ( target -> is_sleeping() ) return false;
     if ( p() -> is_moving() ) return false;
     return ( p() -> main_hand_attack -> execute_event == nullptr ); // not swinging
   }

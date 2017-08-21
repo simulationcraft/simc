@@ -2418,6 +2418,11 @@ void item::readiness( special_effect_t& effect )
     cdr = std::min( 0.90, cdr ); // The amount of CDR doesn't go above 90%, even at level 100.
   }
 
+  if ( p -> buffs.cooldown_reduction == nullptr )
+  {
+    p -> buffs.cooldown_reduction = buff_creator_t( p, "readiness", effect.driver(), effect.item );
+  }
+
   p -> buffs.cooldown_reduction -> s_data = cdr_spell;
   p -> buffs.cooldown_reduction -> default_value = cdr;
   p -> buffs.cooldown_reduction -> default_chance = 1;
@@ -2436,9 +2441,11 @@ void item::readiness( special_effect_t& effect )
       if ( cd -> cooldowns[ i ] == 0 )
         break;
 
-      // TODO: This should move to somewhere else.
-      //cooldown_t* ability_cd = p -> get_cooldown( cd -> cooldowns[ i ] );
-      //ability_cd -> set_recharge_multiplier( cdr );
+      auto action = p -> find_action( cd -> cooldowns[ i ] );
+      if ( action != nullptr )
+      {
+        action -> base_recharge_multiplier *= cdr;
+      }
     }
 
     break;
