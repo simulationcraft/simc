@@ -8196,7 +8196,7 @@ void death_knight_t::create_buffs()
                               .add_invalidate(legendary.toravons ? CACHE_PLAYER_DAMAGE_MULTIPLIER : CACHE_NONE);
   buffs.rime                = buff_creator_t( this, "rime", spec.rime -> effectN( 1 ).trigger() )
                               .trigger_spell( spec.rime )
-                              .chance( spec.rime -> proc_chance() + sets -> set( DEATH_KNIGHT_FROST, T19, B2 ) -> effectN( 1 ).percent() );
+                              .chance( spec.rime -> effectN( 2 ).percent() + sets -> set( DEATH_KNIGHT_FROST, T19, B2 ) -> effectN( 1 ).percent() );
   buffs.riposte             = stat_buff_creator_t( this, "riposte", spec.riposte -> effectN( 1 ).trigger() )
                               .cd( spec.riposte -> internal_cooldown() )
                               .chance( spec.riposte -> proc_chance() )
