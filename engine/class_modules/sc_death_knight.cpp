@@ -9468,13 +9468,13 @@ struct death_knight_module_t : public module_t {
 
   void register_hotfixes() const override
   {
+    /*
     hotfix::register_effect( "Death Knight", "2017-01-10", "Portal to the Underworld damage increased by 33%.", 325047 )
       .field( "ap_coefficient" )
       .operation( hotfix::HOTFIX_MUL )
       .modifier( 4/3.0 )
       .verification_value( 1.2 );
 
-    /*
     hotfix::register_effect( "Death Knight", "2016-08-23", "Clawing Shadows damage has been changed to 130% weapon damage (was 150% Attack Power).", 324719 )
       .field( "ap_coefficient" )
       .operation( hotfix::HOTFIX_SET )
