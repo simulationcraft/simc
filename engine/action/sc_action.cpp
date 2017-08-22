@@ -2276,9 +2276,8 @@ void action_t::reset()
     if( if_expr )
     {
       if_expr = if_expr -> optimize();
-      if ( sim -> optimize_expressions && if_expr -> always_false() )
+      if ( sim -> optimize_expressions && action_list && if_expr -> always_false() )
       {
-        assert( action_list );
         std::vector<action_t*>::iterator i = std::find( action_list -> foreground_action_list.begin(),
                                                         action_list -> foreground_action_list.end(),
                                                         this );
