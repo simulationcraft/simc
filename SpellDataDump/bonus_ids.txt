@@ -1,5 +1,6 @@
-SimulationCraft 725-01 for World of Warcraft 7.2.5 Live (wow build 24287, git build 004005a)
+SimulationCraft 725-02 for World of Warcraft 7.2.5 Live (wow build 24461, git build 3a6919f)
 bonus_id={ 1 }, desc={ Heroic }, ilevel_adjust={ 20 }, stats={ 100% Sta [1.5789] }
+bonus_id={ 2 }, desc={ Crafting Material }, quality={ epic }
 bonus_id={ 3 }, suffix={ of Power }, socket={ 2 }, stats={ 100% StrAgiInt [0.5263] }
 bonus_id={ 15 }, quality={ epic }, ilevel_adjust={ 20 }
 bonus_id={ 17 }, stats={ 100% Crit [0.3506] }
@@ -542,8 +543,10 @@ bonus_id={ 646 }, desc={ Warforged }, ilevel_adjust={ 6 }
 bonus_id={ 648 }, desc={ Empowered }, quality={ epic }, ilevel_adjust={ 45 }
 bonus_id={ 651 }, desc={ Warforged }, quality={ epic }, ilevel_adjust={ 25 }
 bonus_id={ 656 }, desc={ Warforged }, ilevel={ 10 @plvl 1 - 845 @plvl 110 }
+bonus_id={ 657 }, quality={ epic }
 bonus_id={ 664 }, ilevel={ 664 @plvl 98 - 779 @plvl 110 }
 bonus_id={ 665 }, quality={ epic }, ilevel_adjust={ 15 }
+bonus_id={ 666 }, desc={ Obliterum: 0/10 }, quality={ epic }
 bonus_id={ 667 }, desc={ Obliterum: 0/10 }, quality={ epic }, ilevel_adjust={ 5 }
 bonus_id={ 668 }, desc={ Obliterum: 0/10 }, quality={ epic }, ilevel_adjust={ 10 }
 bonus_id={ 669 }, desc={ Obliterum: 0/10 }, quality={ epic }, ilevel_adjust={ 15 }
@@ -931,6 +934,8 @@ bonus_id={ 1669 }, ilevel_adjust={ 197 }
 bonus_id={ 1670 }, ilevel_adjust={ 198 }
 bonus_id={ 1671 }, ilevel_adjust={ 199 }
 bonus_id={ 1672 }, ilevel_adjust={ 200 }
+bonus_id={ 1674 }, quality={ epic }
+bonus_id={ 1675 }, quality={ rare }
 bonus_id={ 1676 }, suffix={ of the Quickblade }, stats={ 71% Crit [0.5000], 29% Vers [0.2000] }
 bonus_id={ 1677 }, suffix={ of the Quickblade }, stats={ 64% Crit [0.4500], 36% Vers [0.2500] }
 bonus_id={ 1678 }, suffix={ of the Quickblade }, stats={ 57% Crit [0.4000], 43% Vers [0.3000] }
@@ -1061,10 +1066,13 @@ bonus_id={ 1808 }, socket={ 1 }
 bonus_id={ 1809 }
 bonus_id={ 1810 }, quality={ rare }, ilevel_adjust={ 140 }
 bonus_id={ 1812 }, ilevel={ 650 @plvl 98 - 780 @plvl 110 }
+bonus_id={ 1813 }, quality={ epic }
 bonus_id={ 1817 }, desc={ Stage 3 of 6 }, ilevel_adjust={ 10 }
 bonus_id={ 1818 }, desc={ Stage 5 of 6 }, ilevel_adjust={ 20 }
 bonus_id={ 1819 }, desc={ Stage 4 of 6 }, ilevel_adjust={ 15 }
 bonus_id={ 1820 }, desc={ Stage 6 of 6 }, ilevel_adjust={ 25 }
+bonus_id={ 1822 }, desc={ Warforged }, quality={ epic }
+bonus_id={ 1823 }, quality={ rare }
 bonus_id={ 1824 }, quality={ rare }
 bonus_id={ 1825 }, quality={ rare }
 bonus_id={ 1826 }, base_ilevel={ 825 }, quality={ rare }
@@ -1573,6 +1581,10 @@ bonus_id={ 3331 }, desc={ Stage 2 of 6 }, ilevel_adjust={ 5 }
 bonus_id={ 3332 }, desc={ Stage 7 of 9 }, ilevel_adjust={ 30 }
 bonus_id={ 3333 }, desc={ Stage 8 of 9 }, ilevel_adjust={ 35 }
 bonus_id={ 3334 }, desc={ Stage 9 of 9 }, ilevel_adjust={ 40 }
+bonus_id={ 3336 }, desc={ Warforged }, quality={ epic }
+bonus_id={ 3337 }, desc={ Titanforged }, quality={ epic }
+bonus_id={ 3338 }, desc={ Titanforged }, quality={ rare }
+bonus_id={ 3339 }, desc={ Warforged }, quality={ rare }
 bonus_id={ 3340 }, quality={ epic }, ilevel_adjust={ 10 }
 bonus_id={ 3341 }, ilevel_adjust={ 40 }
 bonus_id={ 3342 }, ilevel={ 660 @plvl 98 - 745 @plvl 110 }
@@ -1655,6 +1667,8 @@ bonus_id={ 3437 }, base_ilevel={ 830 }
 bonus_id={ 3438 }, quality={ epic }, ilevel_adjust={ 80 }
 bonus_id={ 3439 }, desc={ Heroic }, quality={ epic }, ilevel_adjust={ 95 }
 bonus_id={ 3440 }, desc={ Mythic }, quality={ epic }, ilevel_adjust={ 110 }
+bonus_id={ 3441 }, desc={ Warforged }, quality={ epic }
+bonus_id={ 3442 }, desc={ Titanforged }, quality={ epic }
 bonus_id={ 3443 }, base_ilevel={ 870 }, quality={ epic }
 bonus_id={ 3444 }, base_ilevel={ 885 }, desc={ Heroic }, quality={ epic }
 bonus_id={ 3445 }, base_ilevel={ 900 }, desc={ Mythic }, quality={ epic }
@@ -1710,6 +1724,7 @@ bonus_id={ 3498 }, stats={ 100% Mastery [1.0203] }
 bonus_id={ 3499 }, stats={ 100% Mastery [1.3604] }
 bonus_id={ 3500 }, stats={ 100% Mastery [2.7208] }
 bonus_id={ 3502 }, desc={ Timewarped }, quality={ rare }, ilevel={ 10 @plvl 1 - 850 @plvl 110 }
+bonus_id={ 3503 }, desc={ Timewarped }, quality={ rare }
 bonus_id={ 3505 }, base_ilevel={ 850 }, desc={ Raid Finder }, quality={ epic }
 bonus_id={ 3506 }, base_ilevel={ 865 }, quality={ epic }
 bonus_id={ 3507 }, base_ilevel={ 880 }, desc={ Heroic }, quality={ epic }
@@ -1727,7 +1742,10 @@ bonus_id={ 3520 }, base_ilevel={ 860 }, desc={ Raid Finder }, quality={ epic }
 bonus_id={ 3521 }, base_ilevel={ 865 }, desc={ Raid Finder }, quality={ epic }
 bonus_id={ 3522 }, socket={ 1 }
 bonus_id={ 3526 }, quality={ epic }, ilevel_adjust={ 60 }
+bonus_id={ 3527 }, quality={ rare }
+bonus_id={ 3528 }, quality={ epic }
 bonus_id={ 3530 }, ilevel_adjust={ 30 }
+bonus_id={ 3531 }, quality={ legendary }
 bonus_id={ 3534 }, base_ilevel={ 900 }, desc={ Mythic 13 }, quality={ epic }
 bonus_id={ 3535 }, base_ilevel={ 905 }, desc={ Mythic 14 }, quality={ epic }
 bonus_id={ 3536 }, base_ilevel={ 910 }, desc={ Mythic 15 }, quality={ epic }
