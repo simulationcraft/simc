@@ -4766,6 +4766,16 @@ struct touch_of_death_t: public monk_spell_t
     return monk_spell_t::ready();
   }
 
+  void init() override
+  {
+    monk_spell_t::init();
+
+    snapshot_flags = update_flags = 0;
+
+    if ( maybe_ptr( p() -> dbc.ptr ) )
+      snapshot_flags |= STATE_VERSATILITY;
+  }
+
   double target_armor( player_t* ) const override { return 0; }
 
   double calculate_tick_amount( action_state_t*, double /*dot_multiplier*/ ) const override
@@ -4864,7 +4874,13 @@ struct touch_of_karma_dot_t: public residual_action::residual_periodic_action_t 
   {
     monk_melee_attack_t::init();
     // disable the snapshot_flags for all multipliers
-    snapshot_flags &= STATE_NO_MULTIPLIER;
+    snapshot_flags = update_flags = 0;
+
+    if ( maybe_ptr( p() -> dbc.ptr ) )
+    {
+      snapshot_flags |= STATE_VERSATILITY;
+      update_flags |= STATE_VERSATILITY;
+    }
   }
 };
 
@@ -4905,6 +4921,14 @@ struct touch_of_karma_t: public monk_melee_attack_t
 
     trigger_gcd = timespan_t::zero();
     may_crit = may_miss = may_dodge = may_parry = false;
+  }
+
+  // Need to disable multipliers in init() so that it doesn't double-dip on anything  
+  virtual void init() override
+  {
+    monk_melee_attack_t::init();
+    // disable the snapshot_flags for all multipliers
+    snapshot_flags = update_flags = 0;
   }
 
   void execute() override
