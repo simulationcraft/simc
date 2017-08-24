@@ -611,6 +611,7 @@ public:
     const spell_data_t* crosswinds_trigger;
     const spell_data_t* cyclone_strikes;
     const spell_data_t* dizzying_kicks;
+    const spell_data_t* fists_of_fury_tick;
     const spell_data_t* gale_burst;
     const spell_data_t* hit_combo;
     const spell_data_t* mark_of_the_crane;
@@ -4016,7 +4017,7 @@ struct crosswinds_t : public monk_melee_attack_t
 struct fists_of_fury_tick_t: public monk_melee_attack_t
 {
   fists_of_fury_tick_t( monk_t* p, const std::string& name ):
-    monk_melee_attack_t( name, p, p -> spec.fists_of_fury )
+    monk_melee_attack_t( name, p, p -> passives.fists_of_fury_tick )
   {
     background = true;
     aoe = -1;
@@ -4050,7 +4051,9 @@ struct fists_of_fury_t: public monk_melee_attack_t
     may_crit = may_miss = may_block = may_dodge = may_parry = callbacks = false;
 
     attack_power_mod.direct = 0.0;
+    attack_power_mod.tick = 0.0;
     spell_power_mod.direct = 0.0;
+    spell_power_mod.tick = 0.0;
 
     tick_action = new fists_of_fury_tick_t( p, "fists_of_fury_tick" );
 
@@ -8306,6 +8309,7 @@ void monk_t::init_spells()
   passives.crosswinds_trigger               = find_spell( 195651 );
   passives.cyclone_strikes                  = find_spell( 220358 );
   passives.dizzying_kicks                   = find_spell( 196723 );
+  passives.fists_of_fury_tick               = find_spell( 117418 );
   passives.gale_burst                       = find_spell( 195403 );
   passives.hit_combo                        = find_spell( 196741 );
   passives.mark_of_the_crane                = find_spell( 228287 );
