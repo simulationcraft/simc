@@ -3726,6 +3726,10 @@ void unique_gear::initialize_special_effect_2( special_effect_t* effect )
   }
 }
 
+void unique_gear::initialize_artifact_powers( player_t* player )
+{
+}
+
 // ==========================================================================
 // unique_gear::init
 // ==========================================================================

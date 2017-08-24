@@ -2794,7 +2794,7 @@ struct eye_of_tyr_t : public paladin_spell_t
 
   bool ready() override
   {
-	  if (!player->artifact_enabled())
+	  if (!player->artifact->enabled())
 	  {
 		  return false;
 	  }
@@ -2856,7 +2856,7 @@ struct wake_of_ashes_t : public paladin_spell_t
 
   bool ready() override
   {
-    if ( ! player -> artifact_enabled() )
+    if ( ! player -> artifact->enabled() )
     {
       return false;
     }

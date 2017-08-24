@@ -146,6 +146,11 @@ namespace item
   */
 }
 
+namespace artifact_power
+{
+  void torment_the_weak( special_effect_t& );
+}
+
 namespace util
 {
 // Return the Karazhan Chest empowerment multiplier (as 1.0 + multiplier) for trinkets, or 1.0 if

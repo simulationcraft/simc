@@ -910,7 +910,7 @@ std::string item_t::encoded_item() const
   // With artifact, we need to output gems (relics). This probably would need a more thorough
   // checking but artifact doubtful will ever support normal gems, so there's not going to ever be a
   // "gems" option for them.
-  else if ( player -> artifact.slot == slot &&
+  else if ( player -> artifact -> slot() == slot &&
             range::find_if( parsed.gem_id, []( int id ) { return id != 0; } ) != parsed.gem_id.end() )
   {
     s << ",gem_id=";

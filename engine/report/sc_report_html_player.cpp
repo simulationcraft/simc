@@ -3463,53 +3463,10 @@ void print_html_player_results_spec_gear( report::sc_html_stream& os,
       os << "</tr>\n";
     }
 
-    if ( p.artifact.n_points > 0 )
+    // Artifact
+    if ( p.artifact )
     {
-      os.format(
-          "<tr class=\"left\">\n<th>Artifact</th>\n<td><ul "
-          "class=\"float\">\n" );
-      os << "<li><a href=\"" << util::create_wowhead_artifact_url( p )
-         << "\" target=\"_blank\">Calculator (Wowhead.com)</a></li>";
-      os << "<li>Purchased points: " << +p.artifact.n_purchased_points
-         << ", total " << +p.artifact.n_points << "</li>";
-      os << "</ul></td></tr>";
-      os.format( "<tr class=\"left\">\n<th></th><td><ul class=\"float\">\n" );
-      auto artifact_id     = p.dbc.artifact_by_spec( p.specialization() );
-      auto artifact_powers = p.dbc.artifact_powers( artifact_id );
-      for ( size_t idx = 0; idx < artifact_powers.size(); ++idx )
-      {
-        unsigned total_rank =
-            p.artifact.points[ idx ].first + p.artifact.points[ idx ].second;
-        if ( total_rank == 0 )
-        {
-          continue;
-        }
-
-        unsigned spell_id = p.dbc.artifact_power_spell_id(
-            p.specialization(), (unsigned)idx, total_rank );
-        const spell_data_t* spell = p.dbc.spell( spell_id );
-        auto data = p.find_artifact_spell( spell -> name_cstr() );
-
-        std::string rank_str;
-        if ( p.artifact.points[ idx ].second > 0 )
-        {
-          rank_str = util::to_string( +p.artifact.points[ idx ].first ) +
-                     " + " +
-                     util::to_string( +p.artifact.points[ idx ].second );
-        }
-        else
-        {
-          rank_str = util::to_string( +p.artifact.points[ idx ].first );
-        }
-        os << "<li>" << ( spell ? report::spell_data_decorator_t( &p, data ).decorate()
-                                : artifact_powers[ idx ]->name );
-        if ( artifact_powers[ idx ]->max_rank > 1 )
-        {
-          os << " (Rank " << rank_str << ")";
-        }
-        os << "</li>";
-      }
-      os << "</ul></td></tr>";
+      p.artifact -> generate_report( os );
     }
 
     // Professions
