@@ -3656,24 +3656,24 @@ struct army_of_the_dead_t : public death_knight_spell_t
       // TODO: DBC
       for ( int i = 0; i < 8; i++ )
       {
-        p() -> pets.army_ghoul[ i ] -> summon( timespan_t::from_seconds( 35 ) );
+        p() -> pets.army_ghoul[ i ] -> summon( timespan_t::from_seconds( 34 ) );
         p() -> buffs.t20_2pc_unholy -> trigger();
       }
 
-      p() -> buffs.t20_2pc_unholy -> extend_duration( p(), timespan_t::from_seconds( -5 ) );
-      p() -> cooldown.army_of_the_dead -> adjust( - timespan_t::from_seconds( 5.0 ), false );
+      p() -> buffs.t20_2pc_unholy -> extend_duration( p(), timespan_t::from_seconds( -6 ) );
+      p() -> cooldown.army_of_the_dead -> adjust( - timespan_t::from_seconds( 6.0 ), false );
 
       // Simulate rune regen for 5 seconds for the consumed runes. Ugly but works
       // Note that this presumes no other rune-using abilities are used
       // precombat
       //for ( size_t i = 0; i < MAX_RUNES; ++i )
-      //  p() -> _runes.slot[ i ].regen_rune( timespan_t::from_seconds( 5.0 ) );
+      //  p() -> _runes.slot[ i ].regen_rune( timespan_t::from_seconds( 6.0 ) );
 
       //simulate RP decay for that 5 seconds
-      p() -> resource_loss( RESOURCE_RUNIC_POWER, p() -> runic_power_decay_rate * 5, nullptr, nullptr );
+      p() -> resource_loss( RESOURCE_RUNIC_POWER, p() -> runic_power_decay_rate * 6, nullptr, nullptr );
 
       // Simulate rune regeneration for 5 seconds
-      p() -> _runes.regenerate_immediate( timespan_t::from_seconds( 5 ) );
+      p() -> _runes.regenerate_immediate( timespan_t::from_seconds( 6 ) );
     }
     else
     {
@@ -3850,8 +3850,8 @@ struct blighted_rune_weapon_t : public death_knight_spell_t
     if ( ! p() -> in_combat )
     {
       p() -> buffs.blighted_rune_weapon -> trigger( data().initial_stacks() );
-      p() -> buffs.blighted_rune_weapon -> extend_duration( p(), timespan_t::from_seconds( -15 ) );
-      p() -> cooldown.blighted_rune_weapon -> adjust( - timespan_t::from_seconds( 15.0 ), false );
+      p() -> buffs.blighted_rune_weapon -> extend_duration( p(), timespan_t::from_seconds( -20 ) );
+      p() -> cooldown.blighted_rune_weapon -> adjust( - timespan_t::from_seconds( 20.0 ), false );
     }
     else 
       p() -> buffs.blighted_rune_weapon -> trigger( data().initial_stacks() );
@@ -7964,6 +7964,7 @@ void death_knight_t::default_apl_unholy()
 
   precombat->add_action(this, "Raise Dead");
   precombat->add_action(this, "Army of the Dead");
+  precombat->add_talent(this, "Blighted Rune Weapon");
 
   def->add_action("auto_attack");
   def->add_action(this, "Mind Freeze");
@@ -7984,7 +7985,7 @@ void death_knight_t::default_apl_unholy()
   def->add_action("potion,if=buff.unholy_strength.react");
 
   // Generic things that should be always done
-  def->add_action(this, "Outbreak", "target_if=!dot.virulent_plague.ticking");
+  def->add_action(this, "Outbreak", "target_if=(dot.virulent_plague.tick_time_remains+tick_time<=dot.virulent_plague.remains)&dot.virulent_plague.remains<=gcd");
   def->add_action(this, "Army of the Dead" );
   def->add_action(this, "Dark Transformation", "if=equipped.137075&cooldown.dark_arbiter.remains>165");
   def->add_action(this, "Dark Transformation", "if=equipped.137075&!talent.shadow_infusion.enabled&cooldown.dark_arbiter.remains>55");
