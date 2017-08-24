@@ -2270,7 +2270,11 @@ public:
         if ( windwalker_damage_increase_dot_two )
           ab::base_td_multiplier *= 1.0 + player -> spec.windwalker_monk -> effectN( 3 ).percent();
         if ( windwalker_damage_increase_dot_three )
+        {
           ab::base_td_multiplier *= 1.0 + player -> spec.windwalker_monk -> effectN( 7 ).percent();
+          // chi wave is technically a direct damage, so need to apply this modifier to dd as well
+          ab::base_dd_multiplier *= 1.0 + player -> spec.windwalker_monk -> effectN( 7 ).percent();
+        }
         if ( windwalker_damage_increase_dot_four )
           ab::base_td_multiplier *= 1.0 + player -> spec.windwalker_monk -> effectN( 8 ).percent();
 
@@ -6989,7 +6993,6 @@ struct chi_wave_heal_tick_t: public monk_heal_t
     monk_heal_t( name, p, p.passives.chi_wave_heal )
   {
     background = direct_tick = true;
-    attack_power_mod.direct = 0.867; // Hard code 07/12/16
     target = player;
   }
 
@@ -7019,7 +7022,6 @@ struct chi_wave_dmg_tick_t: public monk_spell_t
     monk_spell_t( name, player, player -> passives.chi_wave_damage )
   {
     background = direct_tick = true;
-    attack_power_mod.direct = 0.867; // Hard code 07/12/16
   }
 
   double composite_persistent_multiplier( const action_state_t* action_state ) const override
