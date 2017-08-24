@@ -4235,12 +4235,6 @@ struct whirling_dragon_punch_t: public monk_melee_attack_t
       pm *= 1.0 + sef_mult;
     }
 
-    /*if ( maybe_ptr( p() -> dbc.ptr ) )
-      pm *= 1 + p() -> spec.windwalker_monk -> effectN( 2 ).percent();
-    else
-      pm *= 1 + p() -> spec.windwalker_monk -> effectN( 1 ).percent();
-      */
-
     return pm;
   }
 
