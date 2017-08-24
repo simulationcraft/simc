@@ -566,6 +566,7 @@ public:
     const spell_data_t* chi_wave_damage;
     const spell_data_t* chi_wave_heal;
     const spell_data_t* healing_elixir;
+    const spell_data_t* spinning_crane_kick_tick;
     // Brewmaster
     const spell_data_t* breath_of_fire_dot;
     const spell_data_t* celestial_fortune;
@@ -2221,11 +2222,11 @@ public:
     brewmaster_damage_increase_two( ab::data().affected_by( player -> spec.brewmaster_monk -> effectN( 6 ) ) ),
     brewmaster_damage_increase_dot_three( ab::data().affected_by( player -> spec.brewmaster_monk -> effectN( 5 ) ) ),
     windwalker_damage_increase( ab::data().affected_by( player -> spec.windwalker_monk -> effectN( 1 ) ) ),
+    windwalker_damage_increase_two( ab::data().affected_by( player -> spec.windwalker_monk -> effectN( 6 ) ) ),
     windwalker_damage_increase_dot( ab::data().affected_by( player -> spec.windwalker_monk -> effectN( 2 ) ) ),
     windwalker_damage_increase_dot_two( maybe_ptr( player -> dbc.ptr ) ? ab::data().affected_by( player -> spec.windwalker_monk -> effectN( 3 ) ) : false ),
     windwalker_damage_increase_dot_three( maybe_ptr( player -> dbc.ptr ) ? ab::data().affected_by( player -> spec.windwalker_monk -> effectN( 7 ) ) : false ),
-    windwalker_damage_increase_dot_four( maybe_ptr( player -> dbc.ptr ) ? ab::data().affected_by( player -> spec.windwalker_monk -> effectN( 8 ) ) : false ),
-    windwalker_damage_increase_two( ab::data().affected_by( player -> spec.windwalker_monk -> effectN( 6 ) ) )
+    windwalker_damage_increase_dot_four( maybe_ptr( player -> dbc.ptr ) ? ab::data().affected_by( player -> spec.windwalker_monk -> effectN( 8 ) ) : false )
   {
     ab::may_crit = true;
     range::fill( _resource_by_stance, RESOURCE_MAX );
@@ -3858,7 +3859,7 @@ struct spinning_crane_kick_t: public monk_melee_attack_t
     spell_power_mod.direct = 0.0;
     dot_behavior = DOT_REFRESH; // Spell uses Pandemic Mechanics.
 
-    tick_action = new tick_action_t( "spinning_crane_kick_tick", p, p -> spec.spinning_crane_kick -> effectN( 1 ).trigger() );
+    tick_action = new tick_action_t( "spinning_crane_kick_tick", p, p -> passives.spinning_crane_kick_tick );
   }
 
   // N full ticks, but never additional ones.
@@ -8262,7 +8263,8 @@ void monk_t::init_spells()
   passives.chi_torpedo                      = find_spell( 119085 );
   passives.chi_wave_damage                  = find_spell( 132467 );
   passives.chi_wave_heal                    = find_spell( 132463 );
-  passives.healing_elixir                  = find_spell( 122281 ); // talent.healing_elixir -> effectN( 1 ).trigger() -> effectN( 1 ).trigger()
+  passives.healing_elixir                   = find_spell( 122281 ); // talent.healing_elixir -> effectN( 1 ).trigger() -> effectN( 1 ).trigger()
+  passives.spinning_crane_kick_tick         = find_spell( 107270 );
 
   // Brewmaster
   passives.breath_of_fire_dot               = find_spell( 123725 );
