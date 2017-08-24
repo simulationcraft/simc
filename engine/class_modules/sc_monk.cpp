@@ -566,6 +566,7 @@ public:
     const spell_data_t* chi_wave_damage;
     const spell_data_t* chi_wave_heal;
     const spell_data_t* healing_elixir;
+    const spell_data_t* rushing_jade_wind_tick;
     const spell_data_t* spinning_crane_kick_tick;
     // Brewmaster
     const spell_data_t* breath_of_fire_dot;
@@ -622,7 +623,7 @@ public:
     const spell_data_t* thunderfist_damage;
     const spell_data_t* touch_of_karma_buff;
     const spell_data_t* touch_of_karma_tick;
-    const spell_data_t* whirling_dragon_punch;
+    const spell_data_t* whirling_dragon_punch_tick;
     const spell_data_t* tier17_4pc_melee;
     const spell_data_t* tier18_2pc_melee;
     const spell_data_t* tier19_4pc_melee;
@@ -1464,7 +1465,7 @@ struct storm_earth_and_fire_pet_t : public pet_t
   struct sef_fists_of_fury_tick_t: public sef_tick_action_t
   {
     sef_fists_of_fury_tick_t( storm_earth_and_fire_pet_t* p ):
-      sef_tick_action_t( "fists_of_fury_tick", p, p -> o() -> spec.fists_of_fury -> effectN( 3 ).trigger())
+      sef_tick_action_t( "fists_of_fury_tick", p, p -> o() -> passives.fists_of_fury_tick )
     { }
   };
 
@@ -1543,7 +1544,7 @@ struct storm_earth_and_fire_pet_t : public pet_t
       weapon_power_mod = 0;
 
       tick_action = new sef_tick_action_t( "spinning_crane_kick_tick", player, 
-          player -> o() -> spec.spinning_crane_kick -> effectN( 1 ).trigger() );
+          player -> o() -> passives.spinning_crane_kick_tick );
     }
   };
 
@@ -1576,7 +1577,7 @@ struct storm_earth_and_fire_pet_t : public pet_t
   struct sef_whirling_dragon_punch_tick_t : public sef_tick_action_t
   {
     sef_whirling_dragon_punch_tick_t( storm_earth_and_fire_pet_t* p ):
-      sef_tick_action_t( "whirling_dragon_punch_tick", p, p -> o() -> passives.whirling_dragon_punch )
+      sef_tick_action_t( "whirling_dragon_punch_tick", p, p -> o() -> passives.whirling_dragon_punch_tick )
     {
       aoe = -1;
     }
@@ -3793,6 +3794,25 @@ struct rushing_jade_wind_t : public monk_melee_attack_t
 
     if ( p() -> buff.combo_strikes -> up() )
       pm *= 1 + p() -> cache.mastery_value();
+    
+    if ( maybe_ptr( p() -> dbc.ptr ) )
+    {
+      pm *= 1 + p() -> spec.windwalker_monk -> effectN( 2 ).percent();
+
+      // Remove if statement once Blizz fixes the spell effect to point to the correct affected spell id
+      if ( p() -> passives.rushing_jade_wind_tick -> affected_by( p() -> spec.windwalker_monk-> effectN( 7 ) ) )
+        pm *= 1 + p() -> spec.windwalker_monk -> effectN( 7 ).percent();
+    }
+    else
+    {
+      // Effect is pointing to the wrong spell id
+      if ( p() -> passives.rushing_jade_wind_tick -> affected_by( p() -> spec.windwalker_monk-> effectN( 1 ) ) )
+        pm *= 1 + p() -> spec.windwalker_monk -> effectN( 1 ).percent();
+    }
+
+    pm *= 1 + p() -> spec.brewmaster_monk -> effectN( 1 ).percent();
+
+    pm *= 1 + p() -> spec.brewmaster_monk -> effectN( 5 ).percent();
 
     return pm;
   }
@@ -3808,10 +3828,6 @@ struct rushing_jade_wind_t : public monk_melee_attack_t
         sef_mult += p() -> artifact.spiritual_focus.data().effectN( 1 ).percent();
       am *= 1.0 + sef_mult;
     }
-
-    am *= 1 + p() -> spec.brewmaster_monk -> effectN( 1 ).percent();
-
-    am *= 1 + p() -> spec.brewmaster_monk -> effectN( 5 ).percent();
 
     return am;
   }
@@ -3892,6 +3908,11 @@ struct spinning_crane_kick_t: public monk_melee_attack_t
       pm *= 1 + p() -> cache.mastery_value();
 
     pm *= 1 + ( mark_of_the_crane_counter() * p() -> passives.cyclone_strikes -> effectN( 1 ).percent() );
+
+    if ( maybe_ptr( p() -> dbc.ptr ) )
+      pm *= 1 + p() -> spec.windwalker_monk -> effectN( 2 ).percent();
+    else
+      pm *= 1 + p() -> spec.windwalker_monk -> effectN( 1 ).percent();
 
     return pm;
   }
@@ -4085,6 +4106,8 @@ struct fists_of_fury_t: public monk_melee_attack_t
       pm *= 1.0 + sef_mult;
     }
 
+    pm *= 1 + p() -> spec.windwalker_monk -> effectN( 1 ).percent();
+
     return pm;
   }
 
@@ -4185,7 +4208,7 @@ struct whirling_dragon_punch_t: public monk_melee_attack_t
 
     spell_power_mod.direct = 0.0;
 
-    tick_action = new whirling_dragon_punch_tick_t( "whirling_dragon_punch_tick", p, p -> passives.whirling_dragon_punch );
+    tick_action = new whirling_dragon_punch_tick_t( "whirling_dragon_punch_tick", p, p -> passives.whirling_dragon_punch_tick );
   }
 
   virtual bool ready() override
@@ -4211,6 +4234,11 @@ struct whirling_dragon_punch_t: public monk_melee_attack_t
         sef_mult += p() -> artifact.spiritual_focus.data().effectN( 1 ).percent();
       pm *= 1.0 + sef_mult;
     }
+
+    if ( maybe_ptr( p() -> dbc.ptr ) )
+      pm *= 1 + p() -> spec.windwalker_monk -> effectN( 2 ).percent();
+    else
+      pm *= 1 + p() -> spec.windwalker_monk -> effectN( 1 ).percent();
 
     return pm;
   }
@@ -8265,6 +8293,7 @@ void monk_t::init_spells()
   passives.chi_wave_heal                    = find_spell( 132463 );
   passives.healing_elixir                   = find_spell( 122281 ); // talent.healing_elixir -> effectN( 1 ).trigger() -> effectN( 1 ).trigger()
   passives.spinning_crane_kick_tick         = find_spell( 107270 );
+  passives.rushing_jade_wind_tick           = find_spell( 148187 );
 
   // Brewmaster
   passives.breath_of_fire_dot               = find_spell( 123725 );
@@ -8321,7 +8350,7 @@ void monk_t::init_spells()
   passives.thunderfist_damage               = find_spell( 242390 );
   passives.touch_of_karma_buff              = find_spell( 125174 );
   passives.touch_of_karma_tick              = find_spell( 124280 );
-  passives.whirling_dragon_punch            = find_spell( 158221 );
+  passives.whirling_dragon_punch_tick       = find_spell( 158221 );
   passives.tier17_4pc_melee                 = find_spell( 166603 );
   passives.tier18_2pc_melee                 = find_spell( 216172 );
   passives.tier19_4pc_melee                 = find_spell( 211432 );
