@@ -3303,6 +3303,10 @@ struct dragged_to_helheim_t : public death_knight_spell_t
     aoe        = -1;
     background = true;
     callbacks  = false;
+
+    // Re-initialize AP coefficient as 7.3 spell data has two damage effects on the spell, with the
+    // second one seemingly doing no damage.
+    attack_power_mod.direct = data().effectN( 1 ).ap_coeff();
   }
 
   double composite_target_multiplier( player_t* target ) const override
