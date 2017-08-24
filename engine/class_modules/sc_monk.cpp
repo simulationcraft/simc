@@ -4771,9 +4771,6 @@ struct touch_of_death_t: public monk_spell_t
     monk_spell_t::init();
 
     snapshot_flags = update_flags = 0;
-
-    if ( maybe_ptr( p() -> dbc.ptr ) )
-      snapshot_flags |= STATE_VERSATILITY;
   }
 
   double target_armor( player_t* ) const override { return 0; }
@@ -4783,12 +4780,15 @@ struct touch_of_death_t: public monk_spell_t
     double amount = p() -> resources.max[RESOURCE_HEALTH];
 
     amount *= p() -> spec.touch_of_death -> effectN( 2 ).percent(); // 50% HP
- 
-    if ( p() -> buff.combo_strikes -> up() )
-      amount *= 1 + p() -> cache.mastery_value();
 
+    if ( maybe_ptr( p() -> dbc.ptr ) )
+      amount *= 1 + p() -> cache.damage_versatility();
+ 
     if ( p() -> legendary.hidden_masters_forbidden_touch )
       amount *= 1 + p() -> legendary.hidden_masters_forbidden_touch -> effectN( 2 ).percent();
+
+    if ( p() -> buff.combo_strikes -> up() )
+      amount *= 1 + p() -> cache.mastery_value();
 
     return amount;
   }
@@ -4877,10 +4877,7 @@ struct touch_of_karma_dot_t: public residual_action::residual_periodic_action_t 
     snapshot_flags = update_flags = 0;
 
     if ( maybe_ptr( p() -> dbc.ptr ) )
-    {
       snapshot_flags |= STATE_VERSATILITY;
-      update_flags |= STATE_VERSATILITY;
-    }
   }
 };
 
