@@ -739,7 +739,7 @@ namespace buffs {
       // TODO(mserrano): fix this when Blizzard turns the spelldata back to sane
       //  values
       damage_modifier = data().effectN( 1 ).percent() / 10.0;
-      haste_bonus = data().effectN( 2 ).percent() / 10.0;
+      haste_bonus = data().effectN( player -> dbc.ptr ? 3 : 2 ).percent() / 10.0;
       healing_modifier = 0;
 
       paladin_t* paladin = static_cast<paladin_t*>( player );
@@ -6566,6 +6566,8 @@ void paladin_t::activate()
 double paladin_t::get_divine_judgment(bool is_judgment) const
 {
   if ( specialization() != PALADIN_RETRIBUTION ) return 0.0;
+
+  if ( ! passives.divine_judgment -> ok() ) return 0.0;
 
   double handoflight;
   handoflight = cache.mastery_value(); // HoL modifier is in effect #1

@@ -1,4 +1,4 @@
-SimulationCraft 725-02 for World of Warcraft 7.3.0 PTR (wow build 24539)
+SimulationCraft 725-02 for World of Warcraft 7.3.0 PTR (wow build 24539, git build 3a6919f)
 
 Name             : Dual Wield (Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
@@ -114,6 +114,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #3 (id=270147)   : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f | Target: Self (1)
+                   Affected School(s): All
 #4 (id=271791)   : Apply Aura (6) | Unknown(443)
                    Base Value: 30 | Scaled Value: 30 | Target: Self (1)
 #5 (id=296790)   : Apply Aura (6) | Unknown(332)
@@ -205,6 +206,7 @@ Attributes       : ........ ........ ..x..... x..x....   .....x.. ..x..... .....
 Effects          :
 #1 (id=229227)   : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 20 | Scaled Value: 20 | Misc Value: 0x7f | Target: Self (1)
+                   Affected School(s): All
 Description      : $@spelldesc163063
 Tooltip          : Dealing $s1% increased damage.
 
@@ -608,11 +610,13 @@ Affecting spells : Infernal Force (207375 effect#1), Abyssal Strike (207550 effe
 Attributes       : ....x... x....... ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ x....... ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=276571)   : Unknown(254)
+#1 (id=276571)   : Dummy (3)
+                   Base Value: 0 | Scaled Value: 0 | Radius: 3 - 8 yards | Target: Unknown(87)
+#2 (id=476592)   : Unknown(254)
                    Base Value: 5 | Scaled Value: 5 | Misc Value: 2 | Target: Unknown(87)
 Description      : Leap through the air toward a targeted location, dealing $189112s1 Fire damage to all enemies within $189112a1 yards.
 
@@ -659,7 +663,7 @@ Affecting spells : Metamorphosis (162264 effect#7), Unleashed Demons (201460 eff
 Attributes       : ....x... x....... ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ x....... ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
@@ -1049,6 +1053,8 @@ Attributes       : .......x ........ ........ ....x...   ..xxx..x ........ .x...
 Effects          :
 #1 (id=295605)   : Unknown(162)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+#2 (id=477483)   : Trigger Spell (64): Vindicaar Matrix Crystal
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 255529
 Description      : Switch to your Primary Talent Specialization.
 Tooltip          : Switch to your Primary Talent Specialization.
 
@@ -1678,6 +1684,7 @@ Effects          :
                    Base Value: -12 | Scaled Value: -12 | Misc Value: 0x1 | Target: Self (1)
 #3 (id=341634)   : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x1 | Target: Self (1)
+                   Affected School(s): Physical
 Description      : $@spelldesc203720
 Tooltip          : Parry chance increased by $w1%.
 
@@ -2359,6 +2366,7 @@ Attributes       : ........ ........ ..x..... x..x....   .....x.. ..x..... .....
 Effects          :
 #1 (id=308030)   : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 20 | Scaled Value: 20 | Misc Value: 0x7f | Target: Self (1)
+                   Affected School(s): All
 Description      : Consuming a Soul Fragment that came from a Demon causes you to deal $s1% increased damage for $d.
 Tooltip          : Dealing $s1% increased damage.
 
@@ -2391,6 +2399,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=308737)   : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 20 | Scaled Value: 20 | Misc Value: 0x7f | Target: Self (1)
+                   Affected School(s): All
 Description      : Increases all damage done by $s1%.
 Tooltip          : Damage done increased by $s1%.
 
@@ -2412,6 +2421,7 @@ Effects          :
                    Base Value: 94 | Scaled Value: 95 - 105 | Value Range: 11 | Target: Enemy (6)
 #2 (id=309700)   : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: -40 | Scaled Value: -40 | Misc Value: 0x7f | Target: Enemy (6)
+                   Affected School(s): All
 #3 (id=309701)   : Trigger Spell (64): Fiery Brand
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 209247 | Target: Enemy (6)
 Description      : Brands a target with a burning demonic symbol, instantly dealing $s1 Fire damage and reducing the damage they do by $s2% for $d.
@@ -2858,10 +2868,10 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=315220)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 249 (Label) | Target: Self (1)
-                   Affected Spells (Label): Orb of Destruction (229700)
+                   Affected Spells (Label): Orb of Destruction (229700), Void Tendril (250834)
 #2 (id=315221)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 298 (Label) | Target: Self (1)
-                   Affected Spells (Label): Cleansing Matrix (242619), Fruitful Machinations (242623), Guiding Hand (242622), Infusion of Light (242621), Fel Shield (253277), Tarratus Keystone (253282), Refreshing Agony (253284)
+                   Affected Spells (Label): Cleansing Matrix (242619), Fruitful Machinations (242623), Guiding Hand (242622), Infusion of Light (242621), Fel Shield (253277), Tarratus Keystone (253282), Refreshing Agony (253284), L'ura's Word (250781)
 #3 (id=315222)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 300 (Label) | Target: Self (1)
                    Affected Spells (Label): Insidious Corruption (243941), Spectral Bolt (242571), Spectral Blast (246442), Apocalypse Missile (253243), Legion Bombardment (253248), Essence Swap (253258)
@@ -2915,7 +2925,7 @@ Effects          :
                    Affected Spells (Category): Throw Glaive (185123)
 #5 (id=315239)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 247 (Label) | Target: Self (1)
-                   Affected Spells (Label): Infernal Contract (225140), Living Carapace (225033), Sands of Time (225124), Vampiric Aura (225130), Wailing Souls (242609), Unending Hunger (242536), Chilling Nova (251940), Bulwark of Flame (251946), Hammer-Forged (251952)
+                   Affected Spells (Label): Infernal Contract (225140), Living Carapace (225033), Sands of Time (225124), Vampiric Aura (225130), Wailing Souls (242609), Unending Hunger (242536), Chilling Nova (251940), Bulwark of Flame (251946), Hammer-Forged (251952), Pool of Pure Void (250766)
 #6 (id=315240)   : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
                    Base Value: 11 | Scaled Value: 11 | Target: Self (1)
                    Affected Spells: Demon's Bite (162243), Chaos Nova (179057), Throw Glaive (185123), Fel Rush (192611), Eye Beam (198030), Vengeful Retreat (198813), Chaos Strike (199547), Blade Dance (199552), Metamorphosis (200166), Blade Dance (200685), Annihilation (201428), Fury of the Illidari (201628), Fury of the Illidari (201789), Inner Demons (202388), Anguish (202446), Demon Blades (203796), Death Sweep (210153), Death Sweep (210155), Fel Barrage (211052), Felblade (213243), Chaos Strike (222031), Fel Eruption (225102), Annihilation (227518)
@@ -3871,11 +3881,48 @@ Effects          :
                    Base Value: 150 | Scaled Value: 150 | Misc Value: 211796 | Trigger Spell: 211797 | Target: Self (1)
 #2 (id=464520)   : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 30 | Scaled Value: 30 | Misc Value: 0x7f | Target: Self (1)
+                   Affected School(s): All
 Description      : Increases all damage done by $s2% for $d.
 
 While active, your auto attack deals $s1% increased damage, and causes Chaos damage.
 Tooltip          : Damage done increased by $w2%.
 
 Auto attack damage increased by $s1%, and deal Chaos damage.
+
+Name             : Vindicaar Matrix Crystal (id=251463) 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Worgen, Pandaren, Pandaren (Alliance)
+School           : Physical
+GCD              : 1.5 seconds
+Triggered by     : Vindicaar Matrix Crystal (255529)
+Attributes       : ........ ........ ........ ........   ...x...x ..x..... ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=470901)   : Dummy (3)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+Description      : Unlock powers at the Vindicaar's Matrix Core to use while on Argus. 
+
+Name             : Vindicaar Matrix Crystal (id=255529) [Hidden] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Worgen, Pandaren, Pandaren (Alliance)
+School           : Physical
+Triggered by     : Activating Specialization (200749)
+Attributes       : .......x x....... .......x x..x.x..   ...x.x.x ..x..... ........ ........ 
+                 : x.x..... ......x. ...x..x. ....x...   ........ .x...... xx..x... ....x... 
+                 : .......x ........ .......x ........   ...x.... ........ .xx..... ........ 
+                 : ........ .x..x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ....x... ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Hidden (7), Does not break stealth (37), Not a proc (105), Disable player procs (112), Disable target procs (113), Disable weapon procs (151)
+Effects          :
+#1 (id=477479)   : Unknown(81)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 251463 | Target: Self (1)
+#2 (id=477480)   : Unknown(170)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+Description      : Unlock powers at the Vindicaar's Matrix Core to use while on Argus. 
 
 

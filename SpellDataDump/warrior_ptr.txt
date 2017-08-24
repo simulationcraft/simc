@@ -1,4 +1,4 @@
-SimulationCraft 725-02 for World of Warcraft 7.3.0 PTR (wow build 24539)
+SimulationCraft 725-02 for World of Warcraft 7.3.0 PTR (wow build 24539, git build 3a6919f)
 
 Name             : Defensive Stance (id=71) [Spell Family (4), Passive, Hidden] 
 Class            : Protection Warrior
@@ -200,6 +200,7 @@ Effects          :
                    Base Value: -20 | Scaled Value: -20 | Trigger Spell: 125565 | Target: Self (1)
 #2 (id=159300)   : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: -20 | Scaled Value: -20 | Misc Value: 0x7f | Radius: 0 - 10 yards | Target: At Caster (22) -> AOE enemy (15)
+                   Affected School(s): All
 #3 (id=292881)   : Apply Aura (6) | Unknown(271)
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 10 yards | Target: At Caster (22) -> AOE enemy (15)
                    Affected Spells: Cleave (845), Whirlwind (1680), Thunder Clap (6343), Heroic Leap (6544), Revenge (6572), Overpower (7384), Devastate (20243), Shield Slam (23922), Whirlwind Off-Hand (44949), Bladestorm (46924), Shockwave (46968), Bladestorm (50622), Heroic Leap (52174), Heroic Throw (57755), Bladestorm Off-Hand (95738), Deep Wounds (115767), Shockwave (132168), Bladestorm (168969), Whirlwind (190411), Whirlwind (199658), Whirlwind (199667), Whirlwind (199850), Focused Rage (207982), Bladestorm (222634), Bladestorm (227847), Devastator (236282)
@@ -467,7 +468,7 @@ Effects          :
 #1 (id=1900)     : Normalized Weapon Damage (121)
                    Base Value: 1 | Scaled Value: 1 | Chain Multiplier: 0 | Chain Targets: 1 | Target: Enemy (6)
 #2 (id=229536)   : Weapon Damage% (31)
-                   Base Value: 333 | Scaled Value: 3.33 | Chain Multiplier: 0 | Chain Targets: 1 | Target: Enemy (6)
+                   Base Value: 400 | Scaled Value: 4 | Chain Multiplier: 0 | Chain Targets: 1 | Target: Enemy (6)
 Description      : Attempt to finish off a wounded foe, causing ${$sw2+$163558sw2} Physical damage. Only usable on enemies that have less than 20% health.
 
 Name             : Thunder Clap (id=6343) [Spell Family (4)] 
@@ -513,7 +514,7 @@ Affecting spells : Demoralizing Shout (1160 effect#3), Arms Warrior (137049 effe
 Attributes       : ....x... x....... x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ x....... ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
@@ -1459,6 +1460,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=68045)    : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.40000 | Misc Value: 0x7f | Target: Self (1)
+                   Affected School(s): All
 #2 (id=88047)    : Apply Aura (6) | Dummy (4)
                    Base Value: 140 | Scaled Value: 140 | Target: Self (1)
 Description      : Increases damage done while Enraged by $s1%.
@@ -1859,6 +1861,7 @@ Attributes       : ....x... ........ ..x..... ...x....   ........ ..x....x x....
 Effects          :
 #1 (id=118390)   : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 20 | Scaled Value: 20 | Misc Value: 0x7f | Target: Self (1)
+                   Affected School(s): All
 #2 (id=118391)   : Server Side Script (77)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #3 (id=118664)   : Apply Aura (6) | Scale% (61)
@@ -2101,6 +2104,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.62000 | Radius: 0 - 8 yards | Target: At Caster (22) -> AOE enemy (15)
 #2 (id=297932)   : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 16 | Scaled Value: 16 | Misc Value: 0x7f | Target: Self (1)
+                   Affected School(s): All
 Description      : Roar explosively, dealing $m1 damage to all enemies within $A1 yards and increasing all damage you deal by $s2% for $d. Dragon Roar ignores all armor and always critically strikes.
 Tooltip          : Damage done increased by $s2%.
 
@@ -2370,10 +2374,10 @@ Effects          :
                    Affected Spells (Category): Mortal Strike (12294), Bloodthirst (23881)
 #6 (id=260729)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 249 (Label) | Target: Self (1)
-                   Affected Spells (Label): Orb of Destruction (229700)
+                   Affected Spells (Label): Orb of Destruction (229700), Void Tendril (250834)
 #7 (id=260730)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 298 (Label) | Target: Self (1)
-                   Affected Spells (Label): Cleansing Matrix (242619), Fruitful Machinations (242623), Guiding Hand (242622), Infusion of Light (242621), Fel Shield (253277), Tarratus Keystone (253282), Refreshing Agony (253284)
+                   Affected Spells (Label): Cleansing Matrix (242619), Fruitful Machinations (242623), Guiding Hand (242622), Infusion of Light (242621), Fel Shield (253277), Tarratus Keystone (253282), Refreshing Agony (253284), L'ura's Word (250781)
 #8 (id=260731)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 300 (Label) | Target: Self (1)
                    Affected Spells (Label): Insidious Corruption (243941), Spectral Bolt (242571), Spectral Blast (246442), Apocalypse Missile (253243), Legion Bombardment (253248), Essence Swap (253258)
@@ -2441,8 +2445,9 @@ Effects          :
 #10 (id=261031)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 289 (Label) | Target: Self (1)
                    Affected Spells (Label): Rethu's Incessant Courage (242597)
-#11 (id=261032)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+#11 (id=261032)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
+                   Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 333 (Label) | Target: Self (1)
+                   Affected Spells (Label): Void Slash (251034)
 #12 (id=261033)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #13 (id=261034)   : Apply Aura (6) | Dummy (4)
@@ -2456,6 +2461,8 @@ Effects          :
 #17 (id=368363)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #18 (id=474888)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+#19 (id=477129)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 
 Name             : Arms Warrior (id=137049) [Spell Family (4), Passive, Hidden] 
@@ -2482,12 +2489,13 @@ Effects          :
                    Affected Spells: Rend (772), Deep Wounds (115767), Ravager (152277), Ravager (156287), Ravager (227744), Ravager (228920)
 #4 (id=191015)   : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 10 | Scaled Value: 10 | Misc Value: 0x7f | Target: Self (1)
+                   Affected School(s): All
 #5 (id=191016)   : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
                    Base Value: 50 | Scaled Value: 50 | Target: Self (1)
                    Affected Spells: Bladestorm (46924), Bladestorm (50622), Bladestorm Off-Hand (95738), Bladestorm (168969), Bladestorm (222634), Bladestorm (227847)
 #6 (id=261047)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 247 (Label) | Target: Self (1)
-                   Affected Spells (Label): Infernal Contract (225140), Living Carapace (225033), Sands of Time (225124), Vampiric Aura (225130), Wailing Souls (242609), Unending Hunger (242536), Chilling Nova (251940), Bulwark of Flame (251946), Hammer-Forged (251952)
+                   Affected Spells (Label): Infernal Contract (225140), Living Carapace (225033), Sands of Time (225124), Vampiric Aura (225130), Wailing Souls (242609), Unending Hunger (242536), Chilling Nova (251940), Bulwark of Flame (251946), Hammer-Forged (251952), Pool of Pure Void (250766)
 #7 (id=261048)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -40 | Scaled Value: -40 | Misc Value: 3 | Misc Value 2: 301 (Label) | Target: Self (1)
                    Affected Spells (Label): Infernal Cinders (242218), Dread Torrent (246464), Umbral Glaive Storm (242556), Shattering Umbral Glaives (242557), Ceaseless Toxin (242497)
@@ -2536,7 +2544,7 @@ Effects          :
                    Base Value: -20 | Scaled Value: -20 | Target: Self (1)
 #4 (id=191012)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 247 (Label) | Target: Self (1)
-                   Affected Spells (Label): Infernal Contract (225140), Living Carapace (225033), Sands of Time (225124), Vampiric Aura (225130), Wailing Souls (242609), Unending Hunger (242536), Chilling Nova (251940), Bulwark of Flame (251946), Hammer-Forged (251952)
+                   Affected Spells (Label): Infernal Contract (225140), Living Carapace (225033), Sands of Time (225124), Vampiric Aura (225130), Wailing Souls (242609), Unending Hunger (242536), Chilling Nova (251940), Bulwark of Flame (251946), Hammer-Forged (251952), Pool of Pure Void (250766)
 #5 (id=191013)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -40 | Scaled Value: -40 | Misc Value: 3 | Misc Value 2: 301 (Label) | Target: Self (1)
                    Affected Spells (Label): Infernal Cinders (242218), Dread Torrent (246464), Umbral Glaive Storm (242556), Shattering Umbral Glaives (242557), Ceaseless Toxin (242497)
@@ -2866,7 +2874,7 @@ Effects          :
 #1 (id=230085)   : Normalized Weapon Damage (121)
                    Base Value: 1 | Scaled Value: 1 | Chain Multiplier: 0 | Chain Targets: 1 | Target: Enemy (6)
 #2 (id=230086)   : Weapon Damage% (31)
-                   Base Value: 333 | Scaled Value: 3.33 | Chain Multiplier: 0 | Chain Targets: 1 | Target: Enemy (6)
+                   Base Value: 400 | Scaled Value: 4 | Chain Multiplier: 0 | Chain Targets: 1 | Target: Enemy (6)
 Description      : $@spelldesc5308
 
 Name             : Colossus Smash (id=167105) [Spell Family (4)] 
@@ -3186,6 +3194,7 @@ Effects          :
                    Base Value: -20 | Scaled Value: -20 | Misc Value: 0x7f | Target: Self (1)
 #2 (id=290497)   : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: -10 | Scaled Value: -10 | Misc Value: 0x7f | Target: Self (1)
+                   Affected School(s): All
 #3 (id=315075)   : Apply Aura (6) | Unknown(332)
                    Base Value: 212520 | Scaled Value: 212520 | Misc Value: 197690 | Target: Self (1)
 Description      : A defensive combat state that reduces all damage you take by $s1%, and all damage you deal by $s2%. Lasts $d.
@@ -3416,6 +3425,8 @@ Attributes       : .......x ........ ........ ....x...   ..xxx..x ........ .x...
 Effects          :
 #1 (id=295605)   : Unknown(162)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+#2 (id=477483)   : Trigger Spell (64): Vindicaar Matrix Crystal
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 255529
 Description      : Switch to your Primary Talent Specialization.
 Tooltip          : Switch to your Primary Talent Specialization.
 
@@ -3665,6 +3676,7 @@ Attributes       : ........ ........ ..x..... ........   ........ ........ .....
 Effects          :
 #1 (id=298158)   : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 10 | Scaled Value: 10 | Misc Value: 0x7f | Target: Self (1)
+                   Affected School(s): All
 Description      : $@spelldesc202288
 Tooltip          : Damage done increased by $s1%.
 
@@ -4697,6 +4709,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=320538)   : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 15 | Scaled Value: 15 | Misc Value: 0x7f | Target: Self (1)
+                   Affected School(s): All
 #2 (id=320539)   : Apply Aura (6) | Increase Speed% (31)
                    Base Value: 30 | Scaled Value: 30 | Target: Self (1)
 Description      : $@spelldesc215571
@@ -5357,5 +5370,41 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | Target: Self (1)
 Description      : $@spelldesc248621
 Tooltip          : Haste increased by $s1%.
+
+Name             : Vindicaar Matrix Crystal (id=251463) 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Worgen, Pandaren, Pandaren (Alliance)
+School           : Physical
+GCD              : 1.5 seconds
+Triggered by     : Vindicaar Matrix Crystal (255529)
+Attributes       : ........ ........ ........ ........   ...x...x ..x..... ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=470901)   : Dummy (3)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+Description      : Unlock powers at the Vindicaar's Matrix Core to use while on Argus. 
+
+Name             : Vindicaar Matrix Crystal (id=255529) [Hidden] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Worgen, Pandaren, Pandaren (Alliance)
+School           : Physical
+Triggered by     : Activating Specialization (200749)
+Attributes       : .......x x....... .......x x..x.x..   ...x.x.x ..x..... ........ ........ 
+                 : x.x..... ......x. ...x..x. ....x...   ........ .x...... xx..x... ....x... 
+                 : .......x ........ .......x ........   ...x.... ........ .xx..... ........ 
+                 : ........ .x..x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ....x... ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Hidden (7), Does not break stealth (37), Not a proc (105), Disable player procs (112), Disable target procs (113), Disable weapon procs (151)
+Effects          :
+#1 (id=477479)   : Unknown(81)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 251463 | Target: Self (1)
+#2 (id=477480)   : Unknown(170)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+Description      : Unlock powers at the Vindicaar's Matrix Core to use while on Argus. 
 
 

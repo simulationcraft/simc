@@ -544,6 +544,7 @@ Attributes       : ....x.x. ........ ..x..... x..x.x.x   ........ ..x..... .x...
 Effects          :
 #1 (id=40417)    : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f | Target: Self (1)
+                   Affected School(s): All
 #2 (id=40418)    : Apply Aura (6) | Modify Attacker Melee Crit Chance (187)
                    Base Value: -6 | Scaled Value: -6 | Target: Self (1)
 #3 (id=40419)    : Apply Aura (6) | Modify Base Resistance (142)
@@ -963,6 +964,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1887 | Target: Self (1)
 #3 (id=337680)   : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x10 | Target: Self (1)
+                   Affected School(s): Frost
 Description      : The power of Frost increases your Strength by $s1%, and grants immunity to external movement effects such as knockbacks. Lasts $d.
 Tooltip          : Strength increased by $w1%.
 
@@ -1644,6 +1646,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=57741)    : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 200 | Scaled Value: 200 | Misc Value: 0x7f | Target: Active Pet (5)
+                   Affected School(s): All
 #3 (id=191768)   : Apply Aura (6) | Scale% (61)
                    Base Value: 0 | Scaled Value: 0 | Target: Active Pet (5)
 Description      : Transform your $?s207313[abomination]?s58640[geist][ghoul] into a powerful undead monstrosity for $d. The $?s207313[abomination]?s58640[geist][ghoul]'s abilities are empowered and take on new functions while the transformation is active.
@@ -1825,6 +1828,7 @@ Attributes       : ......x. x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=68126)    : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.50000 | Misc Value: 0x10 | Target: Self (1)
+                   Affected School(s): Frost
 #2 (id=90622)    : Apply Aura (6) | Dummy (4)
                    Base Value: 150 | Scaled Value: 150 | Target: Self (1)
 Description      : Increases all Frost damage done by $s1%.
@@ -1843,6 +1847,7 @@ Attributes       : ......x. x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=68129)    : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.25000 | Misc Value: 0x20 | Target: Self (1)
+                   Affected School(s): Shadow
 #2 (id=90623)    : Apply Aura (6) | Dummy (4)
                    Base Value: 225 | Scaled Value: 225 | Target: Self (1)
 Description      : Increases all Shadow damage done by $s1%.
@@ -2428,6 +2433,7 @@ Attributes       : ........ ........ x....... ......x.   x....... ..x..... .x...
 Effects          :
 #2 (id=124130)   : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f | Target: Enemy (6)
+                   Affected School(s): All
 Description      : Dominates the target undead creature up to level $s1, forcing it to do your bidding for $d.
 Tooltip          : Controlled.
 
@@ -3178,6 +3184,7 @@ Effects          :
                    Base Value: 2000 | Scaled Value: 2000 | Target: Self (1)
 #2 (id=218486)   : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 70 | Scaled Value: 70 | Misc Value: 0x7f | Target: Self (1)
+                   Affected School(s): All
 Description      : Increases all damage done by your pet by $s2%.
 
 Name             : Riposte (id=161797) [Spell Family (15), Passive] 
@@ -3470,6 +3477,7 @@ Attributes       : ........ x....... .......x x..x....   .....x.. ........ .....
 Effects          :
 #2 (id=274206)   : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 20 | Scaled Value: 20 | Misc Value: 0x7f | Target: Self (1)
+                   Affected School(s): All
 #3 (id=274207)   : Apply Aura (6) | Modify Melee Attack Speed% (319)
                    Base Value: 30 | Scaled Value: 30 | Target: Self (1)
 Tooltip          : Damage increased by $m2%, and attack speed increased by $m3%.
@@ -3490,6 +3498,7 @@ Effects          :
                    Base Value: 15 | Scaled Value: 15 | Target: Self (1)
 #2 (id=274209)   : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 10 | Scaled Value: 10 | Misc Value: 0x7f | Target: Self (1)
+                   Affected School(s): All
 #3 (id=277944)   : None (0)
                    Base Value: 15 | Scaled Value: 15
 Description      : $@spelldesc187865
@@ -4494,7 +4503,7 @@ Spell Level      : 56
 Range            : 5 yards
 GCD              : 1.5 seconds
 Cooldown         : 45 seconds
-Artifact Power   : Id: 289, Index: 0, Max Rank: 1
+Artifact Power   : Id: 289, Max Rank: 1
 Affecting spells : Death Knight (137005 effect#2), Blood Death Knight (137008 effect#1), 
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
@@ -5607,6 +5616,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=314050)   : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 0x7f | Radius: 0 - 80 yards | Target: At Caster (22) -> AOE friendly (30)
+                   Affected School(s): All
 Description      : Spending Runic Power increases the Val'kyr Battlemaiden's damage by $s1% per Runic Power spent.
 Tooltip          : Damage dealt increased by $w1%.
 
@@ -6082,7 +6092,7 @@ GCD              : 1.5 seconds
 Cooldown         : 90 seconds
 Internal Cooldown: 1 seconds
 Proc Chance      : 100%
-Artifact Power   : Id: 149, Index: 0, Max Rank: 1
+Artifact Power   : Id: 149, Max Rank: 1
 Proc Flags       : ....x... ..x..... ........ ........ 
                  : Yellow Melee, AOE Heal
 Affecting spells : Death Knight (137005 effect#2), Unholy Death Knight (137007 effect#1), 

@@ -1678,12 +1678,14 @@ struct sim_t : private sc_thread_t
   {
     // Legion
     int                 infernal_cinders_users;
-    bool                lavish_feast_as_dps;
     int                 engine_of_eradication_orbs;
+    bool                lavish_feast_as_dps;
+    bool                specter_of_betrayal_overlap;
     std::vector<double> cradle_of_anguish_resets;
 
     expansion_opt_t() :
-      infernal_cinders_users( 1 ), lavish_feast_as_dps( true ), engine_of_eradication_orbs( 4 )
+      infernal_cinders_users( 1 ), engine_of_eradication_orbs( 4 ),
+      lavish_feast_as_dps( true ), specter_of_betrayal_overlap( true )
     { }
   } expansion_opts;
 
@@ -2236,6 +2238,36 @@ inline Event* make_event( sim_t& sim, Args&&... args )
   assert( r -> id != 0 && "Event not added to event manager!" );
   return r;
 }
+
+inline event_t* make_event( sim_t& s, const timespan_t& t, const std::function<void(void)>& f )
+{
+  class fn_event_t : public event_t
+  {
+    std::function<void(void)> fn;
+
+    public:
+      fn_event_t( sim_t& s, const timespan_t& t, const std::function<void(void)>& f ) :
+        event_t( s, t ), fn( f )
+      { }
+
+      const char* name() const override
+      { return "function_event"; }
+
+      void execute() override
+      { fn(); }
+  };
+
+  return make_event<fn_event_t>( s, s, t, f );
+}
+
+inline event_t* make_event( sim_t* s, const timespan_t& t, const std::function<void(void)>& f )
+{ return make_event( *s, t, f ); }
+
+inline event_t* make_event( sim_t* s, const std::function<void(void)>& f )
+{ return make_event( *s, timespan_t::zero(), f ); }
+
+inline event_t* make_event( sim_t& s, const std::function<void(void)>& f )
+{ return make_event( s, timespan_t::zero(), f ); }
 
 // Gear Rating Conversions ==================================================
 

@@ -1,4 +1,4 @@
-SimulationCraft 725-02 for World of Warcraft 7.3.0 PTR (wow build 24539)
+SimulationCraft 725-02 for World of Warcraft 7.3.0 PTR (wow build 24539, git build 3a6919f)
 
 Name             : Backstab (id=53) [Spell Family (8)] 
 Class            : Subtlety Rogue
@@ -345,7 +345,7 @@ Duration         : 4 seconds
 Proc Chance      : 101%
 Stance Mask      : 0x20000000
 Mechanic         : Unknown(95)
-Affecting spells : Dirty Tricks (108216 effect#1), Shadow Blades (121471 effect#3), Prey on the Weak (131511 effect#2), Shadow Dance (185313 effect#2), Broadsides (193356 effect#3)
+Affecting spells : Dirty Tricks (108216 effect#1), Shadow Blades (121471 effect#3), Prey on the Weak (131511 effect#2), Shadow Dance (185313 effect#2), Broadsides (193356 effect#3), Acrobatic Strikes (196924 effect#1)
 Attributes       : ....x... ........ x.x..x.. ........   ........ ........ ..x..... ..xx.... 
                  : ........ ........ ....x... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -924,6 +924,7 @@ Effects          :
                    Affected Spells: Run Through (2098), Slice and Dice (5171), Pistol Shot (185763), Saber Slash (193315), Roll the Bones (193316), Ghostly Strike (196937), Between the Eyes (199804), Blunderbuss (202895)
 #4 (id=338405)   : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f | Target: Self (1)
+                   Affected School(s): All
 Description      : Increases your Energy regeneration rate by $s1% and your attack speed by $s2% for $d.
 Tooltip          : Energy regeneration increased by $s1%.
 Attack speed increased by $s2%.
@@ -1308,6 +1309,7 @@ Attributes       : ........ ........ ........ ...x....   ........ ..x..... .....
 Effects          :
 #1 (id=21282)    : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 10 | Scaled Value: 10 | Misc Value: 0x7f | Target: Self (1)
+                   Affected School(s): All
 Description      : $@spelldesc31223
 Tooltip          : Damage dealt increased by $w1%.
 
@@ -1670,6 +1672,7 @@ Effects          :
                    Base Value: 15 | Scaled Value: 15 | Misc Value: 127 | Target: Self (1)
 #2 (id=330680)   : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f | Target: Self (1)
+                   Affected School(s): All
 Description      : The current party or raid member becomes the target of your Tricks of the Trade$?s221622[, increasing you and the target's damage by $221622m1%][]. The threat caused by your next attack and all actions taken for $57933d afterwards will be transferred to the target.
 Tooltip          : All threat transferred from the Rogue to the target.
 $?s221622[Damage increased by $221622m1%.][]
@@ -1981,6 +1984,7 @@ Effects          :
                    Base Value: 20 | Scaled Value: 20 | SP Coefficient: 1.00000 | Misc Value: 3 | Target: Self (1)
 #2 (id=85448)    : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 17 | Scaled Value: 17 | Misc Value: 0x7f | Target: Self (1)
+                   Affected School(s): All
 Description      : Your maximum Energy is increased by $s1 and your damage is increased by $s2%.
 
 Name             : Leather Specialization (Passive) (id=86092) [Passive, Hidden] 
@@ -2426,13 +2430,13 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=179718)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 247 (Label) | Target: Self (1)
-                   Affected Spells (Label): Infernal Contract (225140), Living Carapace (225033), Sands of Time (225124), Vampiric Aura (225130), Wailing Souls (242609), Unending Hunger (242536), Chilling Nova (251940), Bulwark of Flame (251946), Hammer-Forged (251952)
+                   Affected Spells (Label): Infernal Contract (225140), Living Carapace (225033), Sands of Time (225124), Vampiric Aura (225130), Wailing Souls (242609), Unending Hunger (242536), Chilling Nova (251940), Bulwark of Flame (251946), Hammer-Forged (251952), Pool of Pure Void (250766)
 #2 (id=191064)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 249 (Label) | Target: Self (1)
-                   Affected Spells (Label): Orb of Destruction (229700)
+                   Affected Spells (Label): Orb of Destruction (229700), Void Tendril (250834)
 #3 (id=191065)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 298 (Label) | Target: Self (1)
-                   Affected Spells (Label): Cleansing Matrix (242619), Fruitful Machinations (242623), Guiding Hand (242622), Infusion of Light (242621), Fel Shield (253277), Tarratus Keystone (253282), Refreshing Agony (253284)
+                   Affected Spells (Label): Cleansing Matrix (242619), Fruitful Machinations (242623), Guiding Hand (242622), Infusion of Light (242621), Fel Shield (253277), Tarratus Keystone (253282), Refreshing Agony (253284), L'ura's Word (250781)
 #4 (id=191066)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 300 (Label) | Target: Self (1)
                    Affected Spells (Label): Insidious Corruption (243941), Spectral Bolt (242571), Spectral Blast (246442), Apocalypse Missile (253243), Legion Bombardment (253248), Essence Swap (253258)
@@ -2522,10 +2526,10 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=179720)   : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
-                   Base Value: 4 | Scaled Value: 4 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
                    Affected Spells: Run Through (2098), Ambush (8676), Killing Spree (57841), Killing Spree Off-Hand (57842), Main Gauche (86392), Death from Above (152150), Pistol Shot (185763), Cannonball Barrage (185779), Saber Slash (193315), Ghostly Strike (196937), Riposte (199753), Between the Eyes (199804), Greed (202822), Greed (202823), Blunderbuss (202895)
 #2 (id=191056)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Damage (22)
-                   Base Value: 4 | Scaled Value: 4 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Run Through (2098), Ambush (8676), Killing Spree (57841), Killing Spree Off-Hand (57842), Main Gauche (86392), Death from Above (152150), Pistol Shot (185763), Cannonball Barrage (185779), Saber Slash (193315), Ghostly Strike (196937), Riposte (199753), Between the Eyes (199804), Greed (202822), Greed (202823), Blunderbuss (202895)
 #3 (id=191057)   : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
                    Base Value: 30 | Scaled Value: 30 | Target: Self (1)
@@ -2569,10 +2573,10 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=179721)   : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
-                   Base Value: 28 | Scaled Value: 28 | Target: Self (1)
+                   Base Value: 22 | Scaled Value: 22 | Target: Self (1)
                    Affected Spells: Garrote (703), Mutilate (1329), Sinister Strike (1752), Rupture (1943), Deadly Poison (2818), Mutilate (5374), Wound Poison (8680), Hemorrhage (16511), Mutilate Off-Hand (27576), Envenom (32645), Fan of Knives (51723), Death from Above (152150), Internal Bleeding (154953), Poisoned Knife (185565), From the Shadows (192434), Poison Bomb (192660), Kingsbane (192759), Kingsbane (192760), Kingsbane (222062), Toxic Blade (245388), Toxic Blade (245389)
 #2 (id=191052)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Damage (22)
-                   Base Value: 28 | Scaled Value: 28 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 22 | Scaled Value: 22 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Garrote (703), Mutilate (1329), Sinister Strike (1752), Rupture (1943), Deadly Poison (2818), Mutilate (5374), Wound Poison (8680), Hemorrhage (16511), Mutilate Off-Hand (27576), Envenom (32645), Fan of Knives (51723), Death from Above (152150), Internal Bleeding (154953), Poisoned Knife (185565), From the Shadows (192434), Poison Bomb (192660), Kingsbane (192759), Kingsbane (192760), Kingsbane (222062), Toxic Blade (245388), Toxic Blade (245389)
 #3 (id=191053)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 1 (3)
                    Base Value: 15 | Scaled Value: 15 | Misc Value: 3 | Target: Self (1)
@@ -2975,6 +2979,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #4 (id=373905)   : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f | Target: Self (1)
+                   Affected School(s): All
 Description      : Allows use of all Stealth abilities and grants all the combat benefits of Stealth for $d. Effect not broken from taking damage or attacking. $?s14062[Movement speed while active is increased by $1784s3% and damage dealt is increased by $1784s4%. ]?s108209[Abilities cost $112942s1% less while active. ][]$?s31223[Attacks from Shadow Dance and for $31223s1 sec after deal $31665s1% more damage.  ][]
 
 Name             : Deepening Shadows (id=185314) [Spell Family (8), Passive] 
@@ -3609,6 +3614,7 @@ Attributes       : ....x... ........ ..x..... ........   ........ ..x..... .....
 Effects          :
 #1 (id=284088)   : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 12 | Scaled Value: 12 | Misc Value: 0x7f | Target: Self (1)
+                   Affected School(s): All
 Description      : Increases damage done by $s1% for $d.
 Tooltip          : Increases damage done by $s1%.
 
@@ -3827,7 +3833,7 @@ Attributes       : ....x.x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=289148)   : Apply Aura (6) | Add Flat Modifier (107): Spell Range (5)
                    Base Value: 3 | Scaled Value: 3 | SP Coefficient: 1.00000 | Misc Value: 5 | Target: Self (1)
-                   Affected Spells: Kidney Shot (408), Kick (1766), Gouge (1776), Run Through (2098), Ambush (8676), Blade Flurry (22482), Saber Slash (193315), Eviscerate (196819), Ghostly Strike (196937), Finality: Eviscerate (197393)
+                   Affected Spells: Kidney Shot (408), Kick (1766), Gouge (1776), Cheap Shot (1833), Run Through (2098), Ambush (8676), Blade Flurry (22482), Saber Slash (193315), Eviscerate (196819), Ghostly Strike (196937), Finality: Eviscerate (197393), Dismantle (207777)
 #2 (id=289149)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 4 (32)
                    Base Value: 50 | Scaled Value: 50 | SP Coefficient: 1.00000 | Misc Value: 32 | Target: Self (1)
                    Affected Spells: Stealth (1784), Vanish (11327)
@@ -4033,7 +4039,7 @@ Name             : Finality: Eviscerate (id=197496) [Spell Family (8)]
 Class            : Rogue
 School           : Physical
 Duration         : 30 seconds
-Attributes       : ........ x....... ........ ........   ........ ........ ........ ........ 
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4049,7 +4055,7 @@ Name             : Finality: Nightblade (id=197498)
 Class            : Rogue
 School           : Physical
 Duration         : 30 seconds
-Attributes       : ........ x....... ........ ........   ........ ........ ........ ........ 
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4128,13 +4134,13 @@ Class            : Rogue
 School           : Physical
 Range            : 100 yards
 Triggered by     : Rupture (1943)
-Attributes       : .......x ........ ........ ........   ........ ........ ........ ........ 
+Attributes       : .......x x....... .......x x....x..   ........ ..x..... ........ ........ 
+                 : x.x..... ........ ......x. ....x...   ........ .x...... xx...... ....x... 
+                 : .......x ........ .......x ........   ...x.... ........ .xx..... ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ....x... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Hidden (7)
+                 : Hidden (7), Not a proc (105), Disable player procs (112), Disable target procs (113), Disable weapon procs (151)
 Effects          :
 #1 (id=293832)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
@@ -4181,6 +4187,7 @@ Effects          :
                    Base Value: 55 | Scaled Value: 111 | Points Per Level: 1 | Misc Value: 1 | Target: Enemy (6)
 #2 (id=327745)   : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f | Target: Enemy (6)
+                   Affected School(s): All
 Description      : Bribes a non-player humanoid target up to level $s1 with fool's gold, convincing it to fight for you for $d.
 Tooltip          : Bribed.
 
@@ -4325,6 +4332,8 @@ Attributes       : .......x ........ ........ ....x...   ..xxx..x ........ .x...
 Effects          :
 #1 (id=295605)   : Unknown(162)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+#2 (id=477483)   : Trigger Spell (64): Vindicaar Matrix Crystal
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 255529
 Description      : Switch to your Primary Talent Specialization.
 Tooltip          : Switch to your Primary Talent Specialization.
 
@@ -4477,6 +4486,7 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | Trigger Spell: 202668 | Target: Self (1)
 #2 (id=364290)   : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f | Target: Self (1)
+                   Affected School(s): All
 Description      : Invoke the Curse of the Dreadblades, causing each Saber Slash, $?s196937[Ghostly Strike, ][]Ambush, or Pistol Shot to fill your combo points. However, |cFFFFCC99The Dreadblades|r will consume $202669s1% of your current health when you use a finishing move for the next $d. $?a238103[Increases damage done by $238103s1%.][]
 Tooltip          : Saber Slash, $?s196937[Ghostly Strike, ][]Ambush, and Pistol Shot will refill all of your combo points when used. $?a238103[Increases damage done by $238103s1%.][]
 
@@ -4618,7 +4628,7 @@ GCD              : 1 seconds
 Duration         : 6 seconds
 Cooldown         : 45 seconds
 Mechanic         : Unknown(22)
-Affecting spells : Dirty Tricks (108216 effect#1), Prey on the Weak (131511 effect#3)
+Affecting spells : Dirty Tricks (108216 effect#1), Prey on the Weak (131511 effect#3), Acrobatic Strikes (196924 effect#1)
 Attributes       : ....x... ........ ........ ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4803,6 +4813,7 @@ Attributes       : ....x... ........ x.x..... ........   .....x.. ..x..... .....
 Effects          :
 #1 (id=314702)   : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 15 | Scaled Value: 15 | Misc Value: 0x7f | Target: Self (1)
+                   Affected School(s): All
 #2 (id=466105)   : Energize Power (30)
                    Base Value: 40 | Scaled Value: 40 | Misc Value: energy | Target: Self (1)
 #3 (id=466120)   : Apply Aura (6) | Periodic Energize Power (24): every 1 seconds
@@ -4852,13 +4863,13 @@ Class            : Rogue
 School           : Shadow
 Range            : 100 yards
 Triggered by     : Nightblade (195452)
-Attributes       : .......x ........ ........ ........   ........ ........ ........ ........ 
+Attributes       : .......x x....... .......x x....x..   ........ ..x..... ........ ........ 
+                 : x.x..... ........ ......x. ....x...   ........ .x...... xx...... ....x... 
+                 : .......x ........ .......x ........   ...x.... ........ .xx..... ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ....x... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Hidden (7)
+                 : Hidden (7), Not a proc (105), Disable player procs (112), Disable target procs (113), Disable weapon procs (151)
 Effects          :
 #1 (id=331331)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
@@ -5208,5 +5219,41 @@ Effects          :
 Description      : Increases your Energy regeneration rate by $s1% and your attack speed by $s2% for $d.
 Tooltip          : Energy regeneration increased by $s1%.
 Attack speed increased by $s2%.
+
+Name             : Vindicaar Matrix Crystal (id=251463) 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Worgen, Pandaren, Pandaren (Alliance)
+School           : Physical
+GCD              : 1.5 seconds
+Triggered by     : Vindicaar Matrix Crystal (255529)
+Attributes       : ........ ........ ........ ........   ...x...x ..x..... ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=470901)   : Dummy (3)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+Description      : Unlock powers at the Vindicaar's Matrix Core to use while on Argus. 
+
+Name             : Vindicaar Matrix Crystal (id=255529) [Hidden] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Worgen, Pandaren, Pandaren (Alliance)
+School           : Physical
+Triggered by     : Activating Specialization (200749)
+Attributes       : .......x x....... .......x x..x.x..   ...x.x.x ..x..... ........ ........ 
+                 : x.x..... ......x. ...x..x. ....x...   ........ .x...... xx..x... ....x... 
+                 : .......x ........ .......x ........   ...x.... ........ .xx..... ........ 
+                 : ........ .x..x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ....x... ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Hidden (7), Does not break stealth (37), Not a proc (105), Disable player procs (112), Disable target procs (113), Disable weapon procs (151)
+Effects          :
+#1 (id=477479)   : Unknown(81)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 251463 | Target: Self (1)
+#2 (id=477480)   : Unknown(170)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+Description      : Unlock powers at the Vindicaar's Matrix Core to use while on Argus. 
 
 

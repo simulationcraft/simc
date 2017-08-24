@@ -30,7 +30,7 @@ level=110
 race=pandaren
 role=attack
 position=back
-talents=2210131
+talents=2110131
 artifact=43:0:0:0:0:323:4:324:4:325:4:326:4:327:4:328:4:329:4:330:4:331:4:332:1:333:1:334:1:335:1:337:1:346:1:347:1:1276:1:1384:1:1577:4:1578:1:1579:1:1580:1:1651:1
 spec=assassination
 
@@ -73,7 +73,7 @@ waist=waistguard_of_profane_duplicity,id=147347,bonus_id=1522/3563
 legs=fanged_slayers_legguards,id=147173,bonus_id=1512/3563
 feet=felscape_pathfinders,id=147030,bonus_id=1512/3563
 finger1=yathaes_thumb_ring,id=147021,bonus_id=1512/3563,enchant=binding_of_haste
-finger2=band_of_rescinded_truths,id=147194,bonus_id=1512/3563,enchant=binding_of_haste
+finger2=seal_of_the_second_duumvirate,id=147195,bonus_id=3563/1522,enchant=binding_of_haste
 trinket1=specter_of_betrayal,id=151190,bonus_id=1522/3563
 trinket2=convergence_of_fates,id=140806,bonus_id=3519
 main_hand=the_dreadblades,id=128872,bonus_id=742,gem_id=151189/147100/147114,relic_id=1512:3563/1512:3563/1512:3563
@@ -147,17 +147,17 @@ spec=subtlety
 head=fanged_slayers_helm,id=147172,bonus_id=1512/3563
 neck=locket_of_splintered_souls,id=147014,bonus_id=1512/3563,enchant=mark_of_the_hidden_satyr
 shoulder=mantle_of_the_master_assassin,id=144236,bonus_id=3570
-back=shroud_of_the_drowned_adherent,id=146985,bonus_id=1512/3563,enchant=binding_of_agility
+back=fanged_slayers_shroud,id=147170,bonus_id=3563/1512,enchant=binding_of_agility
 chest=fanged_slayers_chestguard,id=147169,bonus_id=1512/3563
-wrists=denial_of_the_halfgiants,id=137100,bonus_id=3570
-hands=fanged_slayers_handguards,id=147171,bonus_id=1512/3563
+wrists=sinewstitched_wristguards,id=147041,bonus_id=3563/1512
+hands=the_first_of_the_dead,id=151818,bonus_id=3570
 waist=waistguard_of_profane_duplicity,id=147347,bonus_id=1522/3563
 legs=fanged_slayers_legguards,id=147173,bonus_id=1512/3563
 feet=felscape_pathfinders,id=147030,bonus_id=1512/3563
 finger1=yathaes_thumb_ring,id=147021,bonus_id=1512/3563,enchant=binding_of_versatility
 finger2=band_of_rescinded_truths,id=147194,bonus_id=1512/3563,enchant=binding_of_versatility
 trinket1=specter_of_betrayal,id=151190,bonus_id=1522/3563
-trinket2=convergence_of_fates,id=140806,bonus_id=3519
+trinket2=engine_of_eradication,id=147015,bonus_id=3563/1512
 main_hand=fangs_of_the_devourer,id=128476,bonus_id=743,gem_id=147084/147111/147084,relic_id=1512:3563/1522:3563/1512:3563
 off_hand=fangs_of_the_devourer,id=128479,gem_id=0/0/0/0
 save=Rogue_Subtlety_DfA_T20M.simc

@@ -317,6 +317,7 @@ Attributes       : ........ ........ x....... ......x.   x....... ..x..... .x...
 Effects          :
 #2 (id=327741)   : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f | Target: Enemy (6)
+                   Affected School(s): All
 Description      : Enslaves the target demon up to level $s1, forcing it to do your bidding for $d.
 Tooltip          : Enslaved.
 
@@ -3572,6 +3573,7 @@ Attributes       : ........ ........ ........ ........   ........ ..x..... .....
 Effects          :
 #1 (id=244314)   : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 25 | Scaled Value: 25 | Misc Value: 0x7f | Target: Friend (21)
+                   Affected School(s): All
 Description      : $@spelldesc171975
 Tooltip          : All damage done increased by $s1%.
 
@@ -3767,6 +3769,7 @@ Effects          :
                    Base Value: 20 | Scaled Value: 20 | Radius: 100 yards | Target: Unknown(120)
 #4 (id=285121)   : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f | Radius: 100 yards | Target: Unknown(120)
+                   Affected School(s): All
 #5 (id=285122)   : Apply Aura (6) | Periodic Dummy (226): every 1 seconds
                    Base Value: 3 | Scaled Value: 3 | Radius: 100 yards | Target: Unknown(120)
 #6 (id=319044)   : Apply Aura (6) | Scale% (61)
@@ -3893,6 +3896,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=287829)   : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 20 | Scaled Value: 20 | Misc Value: 0x7f | Target: Self (1)
+                   Affected School(s): All
 #2 (id=341300)   : Dummy (3)
                    Base Value: 4 | Scaled Value: 4 | Target: Self (1)
 #3 (id=341301)   : Dummy (3)
@@ -4303,7 +4307,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Charges          : 3 (45 seconds cooldown)
 Category         : 1630
-Artifact Power   : Id: 803, Index: 0, Max Rank: 1
+Artifact Power   : Id: 803, Max Rank: 1
 Triggered by     : Push Active Ability to Bar (225886)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4760,7 +4764,7 @@ Range            : 40 yards
 Cast Time        : 2 seconds
 GCD              : 1.5 seconds
 Cooldown         : 45 seconds
-Artifact Power   : Id: 1170, Index: 0, Max Rank: 1
+Artifact Power   : Id: 1170, Max Rank: 1
 Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ..x..... ........ ......x. .....x..   ........ ........ .x...... ........ 
                  : ........ x....... ........ ........   ........ ........ ........ ........ 
@@ -4921,6 +4925,7 @@ Attributes       : ........ x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=321564)   : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 0x7f | Target: Self (1)
+                   Affected School(s): All
 Description      : $@spelldesc108501
 Tooltip          : Summoned by a Grimoire of Service.  Damage increased by $s1%.
 
@@ -4929,7 +4934,7 @@ Class            : Warlock
 School           : Shadow
 Velocity         : 20 yards/sec
 Cooldown         : 5 seconds
-Artifact Power   : Id: 999, Index: 0, Max Rank: 1
+Artifact Power   : Id: 999, Max Rank: 1
 Triggered by     : Tormented Souls (216695), Push Active Ability to Bar (225888)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4958,6 +4963,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=322433)   : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 10 | Scaled Value: 10 | Misc Value: 0x7f | Target: Self (1)
+                   Affected School(s): All
 #2 (id=331182)   : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
                    Base Value: 100 | Scaled Value: 100 | Target: Self (1)
                    Affected Spells: Inimitable Agony (199111), Hideous Corruption (199112), Drained to a Husk (199120), Inherently Unstable (199152), Seeds of Doom (199153), Perdition (199158), Shadowy Incantations (199163), Shadows of the Flesh (199212), Long Dark Night of the Soul (199214), Sweet Souls (199220), Fatal Echoes (199257), Compounding Horror (199282), Soul Flame (199471), Wrath of Consumption (199472), Soul Flame (199581), Wrath of Consumption (199646), Harvester of Souls (201424), Souls of the Damned (216463), Souls of the Damned (216721), Souls of the Damned (216722), Souls of the Damned (216724), Harvester of Souls (218615), Crystalline Shadows (221862), Winnowing (238072), Sinister Seeds (238108)
@@ -5397,6 +5403,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=355428)   : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 10 | Scaled Value: 10 | Misc Value: 0x7f | Target: Self (1)
+                   Affected School(s): All
 #2 (id=355429)   : Apply Aura (6) | Periodic Dummy (226): every 5 seconds
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : Damage increased by $s1%.

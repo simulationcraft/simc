@@ -1994,7 +1994,9 @@ public:
     main_hand_weapon.max_dmg = dbc.spell_scaling( o() -> type, level() );
     main_hand_weapon.damage = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
     main_hand_weapon.swing_time = timespan_t::from_seconds( 1.0 );
-    owner_coeff.ap_from_ap = ( maybe_ptr( dbc.ptr) ? 4.725 : 4.5 );
+    owner_coeff.ap_from_ap = 4.5;
+    if ( maybe_ptr( dbc.ptr ) )
+      owner_coeff.ap_from_ap *= 1 + o() -> spec.windwalker_monk -> effectN( 1 ).percent();
   }
 
   monk_t* o()
@@ -4764,6 +4766,13 @@ struct touch_of_death_t: public monk_spell_t
     return monk_spell_t::ready();
   }
 
+  void init() override
+  {
+    monk_spell_t::init();
+
+    snapshot_flags = update_flags = 0;
+  }
+
   double target_armor( player_t* ) const override { return 0; }
 
   double calculate_tick_amount( action_state_t*, double /*dot_multiplier*/ ) const override
@@ -4771,12 +4780,15 @@ struct touch_of_death_t: public monk_spell_t
     double amount = p() -> resources.max[RESOURCE_HEALTH];
 
     amount *= p() -> spec.touch_of_death -> effectN( 2 ).percent(); // 50% HP
- 
-    if ( p() -> buff.combo_strikes -> up() )
-      amount *= 1 + p() -> cache.mastery_value();
 
+    if ( maybe_ptr( p() -> dbc.ptr ) )
+      amount *= 1 + p() -> cache.damage_versatility();
+ 
     if ( p() -> legendary.hidden_masters_forbidden_touch )
       amount *= 1 + p() -> legendary.hidden_masters_forbidden_touch -> effectN( 2 ).percent();
+
+    if ( p() -> buff.combo_strikes -> up() )
+      amount *= 1 + p() -> cache.mastery_value();
 
     return amount;
   }
@@ -4862,7 +4874,10 @@ struct touch_of_karma_dot_t: public residual_action::residual_periodic_action_t 
   {
     monk_melee_attack_t::init();
     // disable the snapshot_flags for all multipliers
-    snapshot_flags &= STATE_NO_MULTIPLIER;
+    snapshot_flags = update_flags = 0;
+
+    if ( maybe_ptr( p() -> dbc.ptr ) )
+      snapshot_flags |= STATE_VERSATILITY;
   }
 };
 
@@ -4903,6 +4918,14 @@ struct touch_of_karma_t: public monk_melee_attack_t
 
     trigger_gcd = timespan_t::zero();
     may_crit = may_miss = may_dodge = may_parry = false;
+  }
+
+  // Need to disable multipliers in init() so that it doesn't double-dip on anything  
+  virtual void init() override
+  {
+    monk_melee_attack_t::init();
+    // disable the snapshot_flags for all multipliers
+    snapshot_flags = update_flags = 0;
   }
 
   void execute() override

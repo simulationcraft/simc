@@ -222,6 +222,20 @@ inline std::string from_string( const std::string& v )
   return v;
 }
 
+// https://graphics.stanford.edu/~seander/bithacks.html#RoundUpPowerOf2
+inline unsigned next_power_of_two( unsigned v )
+{
+  v--;
+  v |= v >> 1;
+  v |= v >> 2;
+  v |= v >> 4;
+  v |= v >> 8;
+  v |= v >> 16;
+  v++;
+
+  return v;
+}
+
 } // namespace util
 
 
@@ -260,3 +274,4 @@ T util::ability_rank( int player_level,
 template <typename T>
 std::string util::to_string( const T& t )
 { std::stringstream s; s << t; return s.str(); }
+

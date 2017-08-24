@@ -1,4 +1,4 @@
-SimulationCraft 725-02 for World of Warcraft 7.3.0 PTR (wow build 24539)
+SimulationCraft 725-02 for World of Warcraft 7.3.0 PTR (wow build 24539, git build 3a6919f)
 
 Name             : Block (Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
@@ -76,6 +76,7 @@ Attributes       : ........ ........ x.x..... ........   ........ ..x....x .....
 Effects          :
 #1 (id=254)      : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f | Target: Self (1)
+                   Affected School(s): All
 #2 (id=255)      : Apply Aura (6) | School Immunity (39)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 127 | Target: Self (1)
 #3 (id=256)      : Apply Aura (6) | School Immunity (39)
@@ -221,7 +222,7 @@ Effects          :
 #1 (id=2515)     : Apply Aura (6) | Unknown(81)
                    Base Value: 30 | Scaled Value: 30 | Value Multiplier: 1 | Misc Value: 127 | Target: Unknown(57)
 #2 (id=2516)     : Apply Aura (6) | Absorb Damage (69)
-                   Base Value: 100 | Scaled Value: 100 | Misc Value: 127 | Target: Self (1)
+                   Base Value: 50000000 | Scaled Value: 5e+07 | Misc Value: 127 | Target: Self (1)
 #3 (id=348781)   : Dummy (3)
                    Base Value: 20 | Scaled Value: 20
 Description      : Places a Blessing on a party or raid member, transferring $s1% of damage taken to you for $d, or until transferred damage would cause you to fall below $s3% health.
@@ -535,6 +536,7 @@ Effects          :
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
 #3 (id=213906)   : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f | Target: Self (1)
+                   Affected School(s): All
 #4 (id=223521)   : Apply Aura (6) | Scale% (61)
                    Base Value: 15 | Scaled Value: 15 | Target: Self (1)
 #5 (id=224222)   : Apply Aura (6) | Add Percent Modifier (108): Spell Cooldown (11)
@@ -585,6 +587,7 @@ Attributes       : ........ ........ x.x..... ........   ........ ..x..... .....
 Effects          :
 #1 (id=21556)    : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 35 | Scaled Value: 35 | SP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Self (1)
+                   Affected School(s): All
 #2 (id=21557)    : Apply Aura (6) | Modify Healing% Done (136)
                    Base Value: 35 | Scaled Value: 35 | Misc Value: 127 | Target: Self (1)
 Description      : Increases all damage done by $s1% and all healing done by $s2% for $d. 
@@ -1182,7 +1185,7 @@ Class            : Paladin
 School           : Holy
 Spell Level      : 6
 Range            : 50000 yards
-Affecting spells : Paladin (137026 effect#2), Retribution Paladin (137027 effect#9), Protection Paladin (137028 effect#4), Lucidity (137288 effect#1), Consecration in Flame (209218 effect#1)
+Affecting spells : Paladin (137026 effect#2), Retribution Paladin (137027 effect#1), Protection Paladin (137028 effect#4), Lucidity (137288 effect#1), Consecration in Flame (209218 effect#1)
 Attributes       : ........ ........ ........ x..x....   ...x.x.x ........ ........ ........ 
                  : ..x..... ......x. ...x.... ....x.x.   x....... ........ ........ .x....x. 
                  : x......x ........ ........ ........   ...x.... ..x..... .xx..... ..x..... 
@@ -1955,7 +1958,7 @@ Effects          :
                    Affected Spells (Category): Light of the Protector (184092)
 #13 (id=260677)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 249 (Label) | Target: Self (1)
-                   Affected Spells (Label): Orb of Destruction (229700)
+                   Affected Spells (Label): Orb of Destruction (229700), Void Tendril (250834)
 #14 (id=260678)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 300 (Label) | Target: Self (1)
                    Affected Spells (Label): Insidious Corruption (243941), Spectral Bolt (242571), Spectral Blast (246442), Apocalypse Missile (253243), Legion Bombardment (253248), Essence Swap (253258)
@@ -1984,10 +1987,10 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=179711)   : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-                   Affected Spells: Judgment (20271), Crusader Strike (35395), Blade of Justice (184575), Judgment (197277), Divine Hammer (198137), Eye for an Eye (205191), Eye for an Eye (205202), Wake of Ashes (205273), Execution Sentence (213757), Justicar's Vengeance (215661), Zeal (217020), Divine Storm (224239), Templar's Verdict (224266), Judgment (228288)
+                   Affected Spells: Judgment (20271), Crusader Strike (35395), Consecration (81297), Blade of Justice (184575), Judgment (197277), Divine Hammer (198137), Eye for an Eye (205191), Eye for an Eye (205202), Wake of Ashes (205273), Execution Sentence (213757), Justicar's Vengeance (215661), Zeal (217020), Divine Storm (224239), Templar's Verdict (224266), Judgment (228288)
 #2 (id=191092)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Damage (22)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Judgment (20271), Crusader Strike (35395), Blade of Justice (184575), Judgment (197277), Divine Hammer (198137), Eye for an Eye (205191), Eye for an Eye (205202), Wake of Ashes (205273), Execution Sentence (213757), Justicar's Vengeance (215661), Zeal (217020), Divine Storm (224239), Templar's Verdict (224266), Judgment (228288)
+                   Affected Spells: Judgment (20271), Crusader Strike (35395), Consecration (81297), Blade of Justice (184575), Judgment (197277), Divine Hammer (198137), Eye for an Eye (205191), Eye for an Eye (205202), Wake of Ashes (205273), Execution Sentence (213757), Justicar's Vengeance (215661), Zeal (217020), Divine Storm (224239), Templar's Verdict (224266), Judgment (228288)
 #3 (id=191093)   : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
                    Base Value: 42 | Scaled Value: 42 | Target: Self (1)
                    Affected Spells: Flash of Light (19750)
@@ -1998,6 +2001,7 @@ Effects          :
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 126 | Misc Value 2: 0x1 | Target: Self (1)
 #6 (id=260907)   : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 5 | Scaled Value: 5 | Misc Value: 0x7f | Target: Self (1)
+                   Affected School(s): All
 #7 (id=260908)   : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
                    Base Value: 44 | Scaled Value: 44 | Target: Self (1)
                    Affected Spells: Judgment (20271), Judgment (197277), Judgment (214222), Judgment (228288)
@@ -2005,14 +2009,14 @@ Effects          :
                    Base Value: 13 | Scaled Value: 13 | Target: Self (1)
                    Affected Spells: Crusader Strike (35395)
 #9 (id=260910)   : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
-                   Base Value: 100 | Scaled Value: 100 | Target: Self (1)
+                   Base Value: 114 | Scaled Value: 114 | Target: Self (1)
                    Affected Spells: Consecration (26573), Consecration (81297), Consecration (205228)
 #10 (id=260911)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 247 (Label) | Target: Self (1)
-                   Affected Spells (Label): Infernal Contract (225140), Living Carapace (225033), Sands of Time (225124), Vampiric Aura (225130), Wailing Souls (242609), Unending Hunger (242536), Chilling Nova (251940), Bulwark of Flame (251946), Hammer-Forged (251952)
+                   Affected Spells (Label): Infernal Contract (225140), Living Carapace (225033), Sands of Time (225124), Vampiric Aura (225130), Wailing Souls (242609), Unending Hunger (242536), Chilling Nova (251940), Bulwark of Flame (251946), Hammer-Forged (251952), Pool of Pure Void (250766)
 #11 (id=260912)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 298 (Label) | Target: Self (1)
-                   Affected Spells (Label): Cleansing Matrix (242619), Fruitful Machinations (242623), Guiding Hand (242622), Infusion of Light (242621), Fel Shield (253277), Tarratus Keystone (253282), Refreshing Agony (253284)
+                   Affected Spells (Label): Cleansing Matrix (242619), Fruitful Machinations (242623), Guiding Hand (242622), Infusion of Light (242621), Fel Shield (253277), Tarratus Keystone (253282), Refreshing Agony (253284), L'ura's Word (250781)
 #12 (id=260913)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #13 (id=260914)   : Apply Aura (6) | Dummy (4)
@@ -2067,12 +2071,13 @@ Effects          :
                    Affected Spells (Label): Rethu's Incessant Courage (242597)
 #9 (id=260920)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 298 (Label) | Target: Self (1)
-                   Affected Spells (Label): Cleansing Matrix (242619), Fruitful Machinations (242623), Guiding Hand (242622), Infusion of Light (242621), Fel Shield (253277), Tarratus Keystone (253282), Refreshing Agony (253284)
+                   Affected Spells (Label): Cleansing Matrix (242619), Fruitful Machinations (242623), Guiding Hand (242622), Infusion of Light (242621), Fel Shield (253277), Tarratus Keystone (253282), Refreshing Agony (253284), L'ura's Word (250781)
 #10 (id=260921)   : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
                    Base Value: 12 | Scaled Value: 12 | Target: Self (1)
                    Affected Spells: Judgment (20271), Consecration (26573), Avenger's Shield (31935), Hammer of the Righteous (53595), Shield of the Righteous (53600), Consecration (81297), Hammer of the Righteous (88263), Judgment (197277), Blessed Hammer (204301), Consecration (205228), Eye of Tyr (209202), Judgment (214222), Judgment (228288)
-#11 (id=260922)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+#11 (id=260922)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
+                   Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 333 (Label) | Target: Self (1)
+                   Affected Spells (Label): Void Slash (251034)
 #12 (id=260923)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #13 (id=260924)   : Apply Aura (6) | Dummy (4)
@@ -2084,6 +2089,8 @@ Effects          :
 #16 (id=327171)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #17 (id=327173)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+#18 (id=477123)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 
 Name             : Holy Paladin (id=137029) [Spell Family (10), Passive, Hidden] 
@@ -2114,15 +2121,16 @@ Effects          :
                    Affected Spells: Judgment (20271), Judgment (197277), Judgment (214222), Judgment (228288)
 #7 (id=260928)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 247 (Label) | Target: Self (1)
-                   Affected Spells (Label): Infernal Contract (225140), Living Carapace (225033), Sands of Time (225124), Vampiric Aura (225130), Wailing Souls (242609), Unending Hunger (242536), Chilling Nova (251940), Bulwark of Flame (251946), Hammer-Forged (251952)
+                   Affected Spells (Label): Infernal Contract (225140), Living Carapace (225033), Sands of Time (225124), Vampiric Aura (225130), Wailing Souls (242609), Unending Hunger (242536), Chilling Nova (251940), Bulwark of Flame (251946), Hammer-Forged (251952), Pool of Pure Void (250766)
 #8 (id=260929)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 248 (Label) | Target: Self (1)
                    Affected Spells (Label): Fel-Crazed Rage (225777), Colossal Slam (232044), Dread Torrent (246464), Ceaseless Toxin (242497), Umbral Glaive Storm (242556), Shattering Umbral Glaives (242557), Infernal Cinders (242218)
 #9 (id=260930)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Periodic Damage (22)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 22 | Misc Value 2: 248 (Label) | Target: Self (1)
                    Affected Spells (Label): Fel-Crazed Rage (225777), Colossal Slam (232044), Dread Torrent (246464), Ceaseless Toxin (242497), Umbral Glaive Storm (242556), Shattering Umbral Glaives (242557), Infernal Cinders (242218)
-#10 (id=260931)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+#10 (id=260931)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
+                   Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 333 (Label) | Target: Self (1)
+                   Affected Spells (Label): Void Slash (251034)
 #11 (id=260932)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #12 (id=260933)   : Apply Aura (6) | Dummy (4)
@@ -2146,6 +2154,8 @@ Effects          :
 #21 (id=341751)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #22 (id=474896)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+#23 (id=477124)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : Holy Paladin core passive
 
@@ -2686,6 +2696,7 @@ Attributes       : ........ ........ ........ ........   ........ ..x..... .....
 Effects          :
 #1 (id=265678)   : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 20 | Scaled Value: 20 | Misc Value: 0x7f | Target: Self (1)
+                   Affected School(s): All
 #2 (id=344380)   : Apply Aura (6) | Unknown(87)
                    Base Value: -30 | Scaled Value: -30 | Misc Value: 0x7f | Target: Self (1)
 Description      : $@spelldesc183435
@@ -3011,9 +3022,6 @@ Tooltip          : Taking $w1% increased damage from the Paladin's Holy Power co
 Name             : Beacon of the Lightbringer (id=197446) [Spell Family (10), Passive] 
 Class            : Paladin
 School           : Holy
-Proc Chance      : 100%
-Proc Flags       : ........ ...x...x ...x.... .......x 
-                 : AOE Heal Taken, Heal Taken, Periodic Taken
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -3129,7 +3137,7 @@ Attributes       : ........ ........ x.x..... x..x....   .....x.. ........ .....
                  : Does not break stealth (37), Not a proc (105)
 Effects          :
 #1 (id=291193)   : Weapon Damage% (31)
-                   Base Value: 68 | Scaled Value: 0.68 | Radius: 0 - 8 yards | Target: Custom (18) -> AOE enemy (instant) (16)
+                   Base Value: 73 | Scaled Value: 0.73 | Radius: 0 - 8 yards | Target: Custom (18) -> AOE enemy (instant) (16)
 #2 (id=291194)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 8 yards | Target: Custom (18) -> AOE enemy (instant) (16)
 Description      : $@spelldesc198034
@@ -3308,6 +3316,8 @@ Attributes       : .......x ........ ........ ....x...   ..xxx..x ........ .x...
 Effects          :
 #1 (id=295605)   : Unknown(162)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+#2 (id=477483)   : Trigger Spell (64): Vindicaar Matrix Crystal
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 255529
 Description      : Switch to your Primary Talent Specialization.
 Tooltip          : Switch to your Primary Talent Specialization.
 
@@ -3490,6 +3500,7 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 6015 | Target: Self (1)
 #5 (id=341679)   : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f | Target: Self (1)
+                   Affected School(s): All
 Description      : Each enemy within $s1 yards reduces the damage that you take and increases the damage that you deal by $s2%. This effect has diminishing returns.
 
 Name             : Retribution Aura (id=203797) [Spell Family (10), Passive] 
@@ -4750,6 +4761,7 @@ Attributes       : ........ ........ x.x..... ........   ........ ..x..... .....
 Effects          :
 #1 (id=349842)   : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 30 | Scaled Value: 30 | Misc Value: 0x7f | Target: Self (1)
+                   Affected School(s): All
 #2 (id=349843)   : Apply Aura (6) | Modify Healing% Done (136)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #3 (id=474662)   : Apply Aura (6) | Modify All Haste% (193)
@@ -4894,5 +4906,41 @@ Effects          :
                    Affected Spells: Blade of Justice (184575), Divine Hammer (198137)
 Description      : $@spelldesc242267
 Tooltip          : Damage of $?s198034[Divine Hammer][Blade of Justice] increased by $s1%.
+
+Name             : Vindicaar Matrix Crystal (id=251463) 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Worgen, Pandaren, Pandaren (Alliance)
+School           : Physical
+GCD              : 1.5 seconds
+Triggered by     : Vindicaar Matrix Crystal (255529)
+Attributes       : ........ ........ ........ ........   ...x...x ..x..... ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=470901)   : Dummy (3)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+Description      : Unlock powers at the Vindicaar's Matrix Core to use while on Argus. 
+
+Name             : Vindicaar Matrix Crystal (id=255529) [Hidden] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Worgen, Pandaren, Pandaren (Alliance)
+School           : Physical
+Triggered by     : Activating Specialization (200749)
+Attributes       : .......x x....... .......x x..x.x..   ...x.x.x ..x..... ........ ........ 
+                 : x.x..... ......x. ...x..x. ....x...   ........ .x...... xx..x... ....x... 
+                 : .......x ........ .......x ........   ...x.... ........ .xx..... ........ 
+                 : ........ .x..x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ....x... ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Hidden (7), Does not break stealth (37), Not a proc (105), Disable player procs (112), Disable target procs (113), Disable weapon procs (151)
+Effects          :
+#1 (id=477479)   : Unknown(81)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 251463 | Target: Self (1)
+#2 (id=477480)   : Unknown(170)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+Description      : Unlock powers at the Vindicaar's Matrix Core to use while on Argus. 
 
 

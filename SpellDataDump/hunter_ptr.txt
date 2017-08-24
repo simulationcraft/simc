@@ -1,4 +1,4 @@
-SimulationCraft 725-02 for World of Warcraft 7.3.0 PTR (wow build 24539)
+SimulationCraft 725-02 for World of Warcraft 7.3.0 PTR (wow build 24539, git build 3a6919f)
 
 Name             : Mend Pet (id=136) [Scaling Spell (4), Spell Family (9)] 
 Class            : Hunter
@@ -266,7 +266,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
 #2 (id=1072)     : Apply Aura (6) | Unknown(308)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 7 | Target: Enemy (6)
-                   Affected Spells: Multi-Shot (2643), Freezing Trap (3355), Concussive Shot (5116), Ice Trap (13809), Explosive Trap (13812), Explosive Trap (13813), Wyvern Sting (19386), Aimed Shot (19434), Intimidation (19577), Kill Command (34026), Scatter Shot (37506), Chimaera Shot (53209), Bullheaded (63896), Serpent Sting (118253), Barrage (120360), Barrage (120361), A Murder of Crows (131900), Iron Horde Trip Mine (155918), Steel Trap (162488), Steel Trap (162496), Chimaera Shot (171454), Chimaera Shot (171457), Arcane Shot (185358), Aspect of the Turtle (186265), Bursting Shot (186387), Freezing Trap (187650), Freezing Trap (187651), Tar Trap (187698), Tar Trap (187699), Mongoose Bite (190928), Aimed Shot (191043), Explosive Trap (191433), Cobra Shot (193455), Volley (194392), Black Arrow (194599), Stomp (199530), Throwing Axes (200163), Stampede (201594), Stomp (201754), Flanking Strike (202800), Chimaera Shot (204304), Flanking Strike (204740), Explosive Shot (212431), Explosive Shot (212680), Scatter Shot (213691), Sidewinders (214579), Sidewinders (214581), Dire Frenzy (217200), Dire Frenzy (217207)
+                   Affected Spells: Multi-Shot (2643), Freezing Trap (3355), Concussive Shot (5116), Ice Trap (13809), Explosive Trap (13812), Explosive Trap (13813), Wyvern Sting (19386), Aimed Shot (19434), Intimidation (19577), Kill Command (34026), Scatter Shot (37506), Chimaera Shot (53209), Bullheaded (63896), Serpent Sting (118253), Barrage (120360), Barrage (120361), A Murder of Crows (131900), Iron Horde Trip Mine (155918), Steel Trap (162488), Steel Trap (162496), Chimaera Shot (171454), Chimaera Shot (171457), Arcane Shot (185358), Aspect of the Turtle (186265), Bursting Shot (186387), Freezing Trap (187650), Freezing Trap (187651), Tar Trap (187698), Tar Trap (187699), Mongoose Bite (190928), Aimed Shot (191043), Explosive Trap (191433), Cobra Shot (193455), Volley (194392), Black Arrow (194599), Stomp (199530), Throwing Axes (200163), Stampede (201594), Flanking Strike (202800), Chimaera Shot (204304), Flanking Strike (204740), Explosive Shot (212431), Explosive Shot (212680), Scatter Shot (213691), Sidewinders (214579), Sidewinders (214581), Dire Frenzy (217200), Dire Frenzy (217207)
 Description      : $@spelldesc187650
 Tooltip          : Incapacitated.
 
@@ -583,6 +583,7 @@ Attributes       : ........ ........ x....... .....x..   ........ ..x....x .....
 Effects          :
 #1 (id=10779)    : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 25 | Scaled Value: 25 | Misc Value: 0x7f | Target: Self (1)
+                   Affected School(s): All
 #2 (id=10780)    : Trigger Spell (64): Bestial Wrath
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 186254
 #3 (id=342782)   : Dummy (3)
@@ -788,6 +789,7 @@ Effects          :
                    Base Value: 2000 | Scaled Value: 2000 | Target: Self (1)
 #2 (id=141362)   : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 60 | Scaled Value: 60 | Misc Value: 0x7f | Target: Self (1)
+                   Affected School(s): All
 Description      : Increases all damage done by your pet by $s2%.
 
 Name             : Command (Racial Passive) (id=21563) [Spell Family (9), Passive] 
@@ -873,6 +875,7 @@ Effects          :
                    Base Value: -50 | Scaled Value: -50 | Target: Self (1)
 #3 (id=14688)    : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 20 | Scaled Value: 20 | SP Coefficient: 1.00000 | Misc Value: 0x41 | Target: Self (1)
+                   Affected School(s): Physical, Arcane
 Description      : Puts your pet in stealth mode, but slows its movement speed by $s2%. The first attack from stealth receives a $s3% bonus to damage.  Lasts until cancelled.
 Tooltip          : Stealthed.
 Movement speed slowed by $s2%.
@@ -1265,6 +1268,7 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=46172)    : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 20 | Scaled Value: 20 | Misc Value: 0x7f | Target: Self (1)
+                   Affected School(s): All
 #2 (id=46173)    : Apply Aura (6) | Unknown(197)
                    Base Value: -60 | Scaled Value: -60 | Target: Self (1)
 Description      : When at less than 35% health, your pet does $s1% more damage and has a $s2% reduced chance to be critically hit.
@@ -1886,6 +1890,7 @@ Effects          :
                    Base Value: -50 | Scaled Value: -50 | Target: Self (1)
 #3 (id=93478)    : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 20 | Scaled Value: 20 | SP Coefficient: 1.00000 | Misc Value: 0x41 | Target: Self (1)
+                   Affected School(s): Physical, Arcane
 Description      : Puts your pet in stealth mode, but slows its movement speed by $s2%. The first attack from stealth receives a $s3% bonus to damage.  Lasts until cancelled.
 Tooltip          : Stealthed.
 Movement speed slowed by $s2%.
@@ -2371,7 +2376,7 @@ Effects          :
 #1 (id=139839)   : Apply Aura (6) | Periodic Trigger Spell (23): Barrage every 0.2 seconds
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 120361 | Target: Self (1)
 Description      : Rapidly fires a spray of shots for $120360d, dealing an average of $<damageSec> Physical damage to all enemies in front of you. Usable while moving.
-Variables        : $damageSec=${$120361sw2*8}
+Variables        : $damageSec=${$120361sw2*10}
 
 Name             : Barrage (id=120361) [Spell Family (9)] 
 Class            : Hunter
@@ -2744,13 +2749,13 @@ Effects          :
                    Affected Spells (Category): Dire Frenzy (217200)
 #10 (id=260641)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 247 (Label) | Target: Self (1)
-                   Affected Spells (Label): Infernal Contract (225140), Living Carapace (225033), Sands of Time (225124), Vampiric Aura (225130), Wailing Souls (242609), Unending Hunger (242536), Chilling Nova (251940), Bulwark of Flame (251946), Hammer-Forged (251952)
+                   Affected Spells (Label): Infernal Contract (225140), Living Carapace (225033), Sands of Time (225124), Vampiric Aura (225130), Wailing Souls (242609), Unending Hunger (242536), Chilling Nova (251940), Bulwark of Flame (251946), Hammer-Forged (251952), Pool of Pure Void (250766)
 #11 (id=260642)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 249 (Label) | Target: Self (1)
-                   Affected Spells (Label): Orb of Destruction (229700)
+                   Affected Spells (Label): Orb of Destruction (229700), Void Tendril (250834)
 #12 (id=260643)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 298 (Label) | Target: Self (1)
-                   Affected Spells (Label): Cleansing Matrix (242619), Fruitful Machinations (242623), Guiding Hand (242622), Infusion of Light (242621), Fel Shield (253277), Tarratus Keystone (253282), Refreshing Agony (253284)
+                   Affected Spells (Label): Cleansing Matrix (242619), Fruitful Machinations (242623), Guiding Hand (242622), Infusion of Light (242621), Fel Shield (253277), Tarratus Keystone (253282), Refreshing Agony (253284), L'ura's Word (250781)
 #13 (id=260644)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #14 (id=260645)   : Apply Aura (6) | Dummy (4)
@@ -2784,13 +2789,13 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=179698)   : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
-                   Base Value: 10 | Scaled Value: 10 | Target: Self (1)
-                   Affected Spells: Multi-Shot (2643), Kill Command (34026), Chimaera Shot (53209), Barrage (120360), Barrage (120361), A Murder of Crows (131900), Chimaera Shot (171454), Chimaera Shot (171457), Cobra Shot (193455), Volley (194392), Stomp (199530), Stampede (201594), Stomp (201754)
+                   Base Value: 6 | Scaled Value: 6 | Target: Self (1)
+                   Affected Spells: Multi-Shot (2643), Kill Command (34026), Chimaera Shot (53209), Barrage (120360), Barrage (120361), A Murder of Crows (131900), Chimaera Shot (171454), Chimaera Shot (171457), Cobra Shot (193455), Volley (194392), Stomp (199530), Stampede (201594)
 #2 (id=191138)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Damage (22)
-                   Base Value: 10 | Scaled Value: 10 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Multi-Shot (2643), Kill Command (34026), Chimaera Shot (53209), Barrage (120360), Barrage (120361), A Murder of Crows (131900), Chimaera Shot (171454), Chimaera Shot (171457), Cobra Shot (193455), Volley (194392), Stomp (199530), Stampede (201594), Stomp (201754)
+                   Base Value: 6 | Scaled Value: 6 | Misc Value: 22 | Target: Self (1)
+                   Affected Spells: Multi-Shot (2643), Kill Command (34026), Chimaera Shot (53209), Barrage (120360), Barrage (120361), A Murder of Crows (131900), Chimaera Shot (171454), Chimaera Shot (171457), Cobra Shot (193455), Volley (194392), Stomp (199530), Stampede (201594)
 #3 (id=191139)   : Apply Aura (6) | Modify Pet Damage Done% (429)
-                   Base Value: 10 | Scaled Value: 10 | Target: Self (1)
+                   Base Value: 6 | Scaled Value: 6 | Target: Self (1)
                    Affected Spells: Bestial Wrath (19574), Bestial Wrath (186254)
 #4 (id=191140)   : Apply Aura (6) | Add Flat Modifier (107): Generic Modifier (0)
                    Base Value: -45 | Scaled Value: -45 | Target: Self (1)
@@ -2878,13 +2883,13 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=179700)   : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
-                   Base Value: 10 | Scaled Value: 10 | Target: Self (1)
+                   Base Value: 7 | Scaled Value: 7 | Target: Self (1)
                    Affected Spells: Explosive Trap (13812), Serpent Sting (118253), A Murder of Crows (131900), Steel Trap (162487), Lacerate (185855), Raptor Strike (186270), Carve (187708), Mongoose Bite (190928), Hatchet Toss (193265), Caltrops (194279), Dragonsfire Grenade (194858), Throwing Axes (200167), Steel Trap Expert (201199), Flanking Strike (202800), Fury of the Eagle (203413), Talon Strike (203525), On the Trail (204081), Butchery (212436), Echo of Ohn'ara (242798)
 #2 (id=191130)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Damage (22)
-                   Base Value: 10 | Scaled Value: 10 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 7 | Scaled Value: 7 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Explosive Trap (13812), Serpent Sting (118253), A Murder of Crows (131900), Steel Trap (162487), Lacerate (185855), Raptor Strike (186270), Carve (187708), Mongoose Bite (190928), Hatchet Toss (193265), Caltrops (194279), Dragonsfire Grenade (194858), Throwing Axes (200167), Steel Trap Expert (201199), Flanking Strike (202800), Fury of the Eagle (203413), Talon Strike (203525), On the Trail (204081), Butchery (212436), Echo of Ohn'ara (242798)
 #3 (id=191131)   : Apply Aura (6) | Modify Pet Damage Done% (429)
-                   Base Value: 10 | Scaled Value: 10 | Target: Self (1)
+                   Base Value: 7 | Scaled Value: 7 | Target: Self (1)
 #4 (id=191132)   : Apply Aura (6) | Unknown(153)
                    Base Value: 3 | Scaled Value: 3 | Target: Self (1)
 #5 (id=191133)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
@@ -3005,6 +3010,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=215686)   : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 18 | Scaled Value: 18 | Misc Value: 0x7f | Target: Self (1)
+                   Affected School(s): All
 Description      : Increases your damage by $s1%, but you can no longer use Call Pet.
 
 Name             : Combat Experience (id=156843) [Spell Family (9), Passive] 
@@ -3023,6 +3029,7 @@ Effects          :
                    Base Value: 2000 | Scaled Value: 2000 | Target: Self (1)
 #2 (id=218486)   : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 70 | Scaled Value: 70 | Misc Value: 0x7f | Target: Self (1)
+                   Affected School(s): All
 Description      : Increases all damage done by your pet by $s2%.
 
 Name             : Critical Strikes (Passive) (id=157443) [Passive] 
@@ -3577,6 +3584,7 @@ Effects          :
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 127 | Target: Self (1)
 #2 (id=257005)   : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 0x7f | Target: Self (1)
+                   Affected School(s): All
 
 Name             : Arcane Shot (id=185358) [Scaling Spell (4), Spell Family (9)] 
 Class            : Marksmanship Hunter
@@ -3767,6 +3775,7 @@ Attributes       : ........ ........ x....... .....x..   ........ ..x....x .....
 Effects          :
 #1 (id=271164)   : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 25 | Scaled Value: 25 | SP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Active Pet (5)
+                   Affected School(s): All
 #2 (id=271165)   : Apply Aura (6) | Scale% (61)
                    Base Value: 50 | Scaled Value: 50 | SP Coefficient: 1.00000 | Target: Active Pet (5)
 #3 (id=271166)   : Apply Aura (6) | Absorb Damage (69)
@@ -5096,9 +5105,6 @@ Description      : While Bestial Wrath is active, Cobra Shot resets the cooldown
 Name             : Expert Trapper (id=199543) [Spell Family (9), Passive] 
 Class            : Hunter
 School           : Physical
-Proc Chance      : 100%
-Proc Flags       : ...x.x.x .x...x.. .x.x.... ........ 
-                 : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Hostile Spell Taken, Hostile Spell Taken, Periodic Taken
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
                  : ........ .......x ...x.... ........   ........ ........ ........ ........ 
@@ -5286,6 +5292,8 @@ Attributes       : .......x ........ ........ ....x...   ..xxx..x ........ .x...
 Effects          :
 #1 (id=295605)   : Unknown(162)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+#2 (id=477483)   : Trigger Spell (64): Vindicaar Matrix Crystal
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 255529
 Description      : Switch to your Primary Talent Specialization.
 Tooltip          : Switch to your Primary Talent Specialization.
 
@@ -5478,7 +5486,6 @@ Description      : $@spelldesc201430
 Name             : Stomp (id=201754) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
-Affecting spells : Freezing Trap (3355 effect#2), Beast Mastery Hunter (137015 effect#1), Guide: Sharpshooting (178549 effect#2)
 Attributes       : ....x... ........ ..x..... ........   ...x...x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5549,10 +5556,7 @@ Range            : 8 yards
 GCD              : 1.5 seconds
 Duration         : 4 seconds
 Cooldown         : 45 seconds
-Proc Chance      : 100%
 Artifact Power   : Id: 1068, Max Rank: 1
-Proc Flags       : ........ ........ x....... ........ 
-                 : Hostile Spell
 Affecting spells : Hunter (137014 effect#3), Guide: Sharpshooting (178549 effect#2), Mastery: Sniper Training (193468 effect#1), Unseen Predator's Cloak (248212 effect#1)
 Attributes       : ........ ........ ........ ........   ..x...x. .xx..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6585,5 +6589,41 @@ Effects          :
                    Base Value: 6 | Scaled Value: 6 | Misc Value: 2 | Target: Self (1)
 Description      : $@spelldesc217200
 Tooltip          : Generating ${$w1*$d/$t1} Focus over $d.
+
+Name             : Vindicaar Matrix Crystal (id=251463) 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Worgen, Pandaren, Pandaren (Alliance)
+School           : Physical
+GCD              : 1.5 seconds
+Triggered by     : Vindicaar Matrix Crystal (255529)
+Attributes       : ........ ........ ........ ........   ...x...x ..x..... ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=470901)   : Dummy (3)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+Description      : Unlock powers at the Vindicaar's Matrix Core to use while on Argus. 
+
+Name             : Vindicaar Matrix Crystal (id=255529) [Hidden] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Worgen, Pandaren, Pandaren (Alliance)
+School           : Physical
+Triggered by     : Activating Specialization (200749)
+Attributes       : .......x x....... .......x x..x.x..   ...x.x.x ..x..... ........ ........ 
+                 : x.x..... ......x. ...x..x. ....x...   ........ .x...... xx..x... ....x... 
+                 : .......x ........ .......x ........   ...x.... ........ .xx..... ........ 
+                 : ........ .x..x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ....x... ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Hidden (7), Does not break stealth (37), Not a proc (105), Disable player procs (112), Disable target procs (113), Disable weapon procs (151)
+Effects          :
+#1 (id=477479)   : Unknown(81)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 251463 | Target: Self (1)
+#2 (id=477480)   : Unknown(170)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+Description      : Unlock powers at the Vindicaar's Matrix Core to use while on Argus. 
 
 

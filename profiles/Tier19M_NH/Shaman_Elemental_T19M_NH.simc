@@ -139,31 +139,31 @@ actions.single_lr+=/flame_shock,moving=1,target_if=refreshable
 actions.single_lr+=/earth_shock,moving=1
 actions.single_lr+=/flame_shock,moving=1,if=movement.distance>6
 
-head=architects_coif_of_despair,id=140870,bonus_id=3518
-neck=belerons_choker_of_misery,id=140899,bonus_id=3518,enchant=mark_of_the_hidden_satyr
-shoulders=pauldrons_of_warped_memory,id=140872,bonus_id=3518
-back=cloak_of_shackled_elements,id=138372,bonus_id=3518,enchant=binding_of_intellect
-chest=raiment_of_shackled_elements,id=138346,bonus_id=3518
-wrists=thistleproof_thorngrabbers,id=140874,bonus_id=3518
-hands=gauntlets_of_shackled_elements,id=138341,bonus_id=3518
-waist=emblazoned_duskwatch_belt,id=140868,bonus_id=3518
-legs=leggings_of_shackled_elements,id=138345,bonus_id=3518
-feet=sabatons_of_burning_steps,id=140867,bonus_id=3518
-finger1=ring_of_exclusive_servitude,id=140906,bonus_id=3518,enchant=200crit
-finger2=spellblades_gemmed_signet,id=140895,bonus_id=3518,enchant=200crit
-trinket1=whispers_in_the_dark,id=140809,bonus_id=3518
-trinket2=erratic_metronome,id=140792,bonus_id=3518
-main_hand=the_fist_of_raden,id=128935,bonus_id=744,gem_id=140842/140833/140842,relic_id=3518/3518/3518
+head=architects_coif_of_despair,id=140870,bonus_id=3519
+neck=belerons_choker_of_misery,id=140899,bonus_id=3519,enchant=mark_of_the_hidden_satyr
+shoulders=pauldrons_of_warped_memory,id=140872,bonus_id=3519
+back=cloak_of_shackled_elements,id=138372,bonus_id=3519,enchant=binding_of_intellect
+chest=raiment_of_shackled_elements,id=138346,bonus_id=3519
+wrists=thistleproof_thorngrabbers,id=140874,bonus_id=3519
+hands=gauntlets_of_shackled_elements,id=138341,bonus_id=3519
+waist=emblazoned_duskwatch_belt,id=140868,bonus_id=3519
+legs=leggings_of_shackled_elements,id=138345,bonus_id=3519
+feet=sabatons_of_burning_steps,id=140867,bonus_id=3519
+finger1=ring_of_exclusive_servitude,id=140906,bonus_id=3519,enchant=200crit
+finger2=spellblades_gemmed_signet,id=140895,bonus_id=3519,enchant=200crit
+trinket1=whispers_in_the_dark,id=140809,bonus_id=3519
+trinket2=erratic_metronome,id=140792,bonus_id=3519
+main_hand=the_fist_of_raden,id=128935,bonus_id=744,gem_id=140842/140833/140842,relic_id=3519/3519/3519
 off_hand=the_highkeepers_ward,id=128936
 
 # Gear Summary
-# gear_ilvl=907.75
-# gear_stamina=34201
-# gear_intellect=38706
-# gear_crit_rating=10443
-# gear_haste_rating=1091
-# gear_mastery_rating=7840
-# gear_versatility_rating=3893
-# gear_armor=2982
+# gear_ilvl=912.88
+# gear_stamina=35877
+# gear_intellect=40721
+# gear_crit_rating=10697
+# gear_haste_rating=1112
+# gear_mastery_rating=8020
+# gear_versatility_rating=3990
+# gear_armor=3030
 # set_bonus=tier19_2pc=1
 # set_bonus=tier19_4pc=1

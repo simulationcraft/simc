@@ -1292,29 +1292,41 @@ struct dread_torrent_driver_t : public spell_t
     base_tick_time = dot_duration = timespan_t::zero();
   }
 
+  void pulse(const dread_reflection_t& reflection)
+  {
+    // Set target will invalidate the target list for us (if it changed), needed if the trinket is
+    // used with proper distance targeting, since then the x, y coordinates of the Dread
+    // Reflections become important.
+    blast->set_target(driver->target);
+
+    auto state = blast->get_state();
+    state->target = driver->target;
+
+    blast->snapshot_state(state, blast->amount_type(state));
+
+    state->original_x = reflection.x;
+    state->original_y = reflection.y;
+
+    // Bypass schedule_execute and manually do "pre execute state", so our aoe works correctly
+    blast->pre_execute_state = state;
+    blast->execute();
+  }
+
   void execute() override
   {
     spell_t::execute();
 
+    // If specter_of_betrayal_overlap is set to false, only pulse the most recent reflection
+    if (!sim->expansion_opts.specter_of_betrayal_overlap && !driver->reflections.empty())
+    {
+      pulse(driver->reflections.back());
+      return;
+    }
+
     // Pulse all reflections that are up
-    range::for_each( driver -> reflections, [ this ]( const dread_reflection_t& reflection ) {
-      // Set target will invalidate the target list for us (if it changed), needed if the trinket is
-      // used with proper distance targeting, since then the x, y coordinates of the Dread
-      // Reflections become important.
-      blast -> set_target( driver -> target );
-
-      auto state = blast -> get_state();
-      state -> target = driver -> target;
-
-      blast -> snapshot_state( state, blast -> amount_type( state ) );
-
-      state -> original_x = reflection.x;
-      state -> original_y = reflection.y;
-
-      // Bypass schedule_execute and manually do "pre execute state", so our aoe works correctly
-      blast -> pre_execute_state = state;
-      blast -> execute();
-    } );
+    range::for_each(driver->reflections, [this](const dread_reflection_t& reflection) {
+      pulse(reflection);
+    });
   }
 };
 
@@ -1322,8 +1334,9 @@ specter_of_betrayal_driver_t::specter_of_betrayal_driver_t( const special_effect
   spell_t( "specter_of_betrayal_driver", effect.player, effect.driver() ),
   torrent_driver( create_proc_action<dread_torrent_driver_t>( "dread_torrent_driver", effect, this ) )
 {
-  quiet = background = true;
+  background = true;
   callbacks = false;
+  add_child(debug_cast<dread_torrent_driver_t*>(torrent_driver)->blast);
 }
 
 void specter_of_betrayal_driver_t::add_reflection()
