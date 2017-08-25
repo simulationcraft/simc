@@ -3281,7 +3281,7 @@ struct void_eruption_t final : public priest_spell_t
       int mss_vf_stacks = priest.active_items.mother_shahrazs_seduction->driver()->effectN( 1 ).base_value();
 
       priest.buffs.voidform->bump( mss_vf_stacks - 1 );  // You start with 3 Stacks of Voidform 2017/01/17
-      if ( priest.buffs.overwhelming_darkness->up() )
+      if ( priest.buffs.overwhelming_darkness->check() )
       {
         priest.buffs.overwhelming_darkness->bump( mss_vf_stacks - 1 );
       }
@@ -3643,7 +3643,7 @@ struct voidform_t final : public priest_buff_t<haste_buff_t>
     if ( priest.sets->has_set_bonus( PRIEST_SHADOW, T21, B4 ) )
     {
       priest.buffs.overwhelming_darkness->expire();
-      priest.buffs.overwhelming_darkness->trigger( 0 );
+      priest.buffs.overwhelming_darkness->trigger();
     }
 
     return r;
@@ -4198,7 +4198,7 @@ double priest_t::composite_spell_crit_chance() const
     c +=   ( buffs.overwhelming_darkness->check() - 1 )
          * buffs.overwhelming_darkness->data().effectN(1).percent();
   }
-  
+
   return c;
 }
 
