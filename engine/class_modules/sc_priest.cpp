@@ -3281,6 +3281,10 @@ struct void_eruption_t final : public priest_spell_t
       int mss_vf_stacks = priest.active_items.mother_shahrazs_seduction->driver()->effectN( 1 ).base_value();
 
       priest.buffs.voidform->bump( mss_vf_stacks - 1 );  // You start with 3 Stacks of Voidform 2017/01/17
+      if ( priest.buffs.overwhelming_darkness->check() )
+      {
+        priest.buffs.overwhelming_darkness->bump( mss_vf_stacks - 1 );
+      }
     }
   }
   // TODO: Healing part of HotV
@@ -4191,7 +4195,7 @@ double priest_t::composite_spell_crit_chance() const
   if ( sets->has_set_bonus( PRIEST_SHADOW, T21, B4 ) 
       && buffs.overwhelming_darkness->check() ) 
   {
-    c +=   buffs.overwhelming_darkness->check()
+    c +=   ( buffs.overwhelming_darkness->check() - 1 )
          * buffs.overwhelming_darkness->data().effectN(1).percent();
   }
 
@@ -5152,7 +5156,14 @@ void priest_t::apl_shadow()
   main->add_action( "shadow_word_pain" );
 
   // Surrender to Madness APL
+  s2m->add_action(
+      "silence,if=equipped.sephuzs_secret&(target.is_add|target.debuff.casting."
+      "react)&cooldown.buff_sephuzs_secret.remains<1&!buff.sephuzs_secret.up"
+      ",cycle_targets=1");
   s2m->add_action( "void_bolt,if=buff.insanity_drain_stacks.value<6&set_bonus.tier19_4pc" );
+  s2m->add_action(
+      "mind_bomb,if=equipped.sephuzs_secret&target.is_add&cooldown.buff_sephuzs_"
+      "secret.remains<1&!buff.sephuzs_secret.up,cycle_targets=1");
   s2m->add_action( "shadow_crash,if=talent.shadow_crash.enabled" );
   s2m->add_action( 
       "mindbender,if=cooldown.shadow_word_death.charges=0&buff.voidform.stack>(45"
