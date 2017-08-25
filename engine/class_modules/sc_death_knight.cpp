@@ -6,12 +6,22 @@
 // TODO:
 // Unholy
 // - Does Festering Wound (generation|consumption) require a positive hit result?
-// - Festering Strike Festering Wound generation probability distribution
 // - Skelebro has an aoe spell (Arrow Spray), but the AI using it is very inconsistent
-// - Portal to the Underworld damage is messed up (by ~3%).
-// - Armies of the Damned is not implemented
+// - T21 bonuses : 2P has a bloodlet-like mechanic, except that the damage of the dot is updated to the new value instead of added
+//   4P isn't implemented on PTR yet (as of 2017-8-12)
 // Blood
-//
+// - Fix APL
+// - Support legendaries
+// - Overall damage per spell are really low compared to live, could be some damage modifiers missing (~ 20% missing)
+// - Consumption damage is really low (even compared to the 20% missing) and doesn't seem to generate healing
+// - Refactor Blooddrinker so it's able to critically tick on damage
+// - Probably a bunch of other things as well
+// - Add T20 bonuses
+// - T21 buff you gain after DRW's expiration, SpellID is : 253381 for the buff, 251877 for the set bonus
+//   It is implemented on PTR, but triggered really weirdly and doesn't match tooltip
+// Frost
+// - T21 4P Damage proc : Freezing Death, spellID : 253590, set bonus ID : 251875
+//   really low damage atm (2017-8-12), could only be placeholder
 
 #include "simulationcraft.hpp"
 
@@ -475,6 +485,7 @@ public:
     cooldown_t* avalanche;
     cooldown_t* blighted_rune_weapon;
     cooldown_t* bone_shield_icd;
+    cooldown_t* dancing_rune_weapon;
     cooldown_t* dark_transformation;
     cooldown_t* death_and_decay;
     cooldown_t* defile;
@@ -844,6 +855,7 @@ public:
     cooldown.blighted_rune_weapon = get_cooldown( "blighted_rune_weapon" ); 
     cooldown.bone_shield_icd = get_cooldown( "bone_shield_icd" );
     cooldown.bone_shield_icd -> duration = timespan_t::from_seconds( 2.0 );
+    cooldown.dancing_rune_weapon = get_cooldown( "dancing_rune_weapon" );
     cooldown.dark_transformation = get_cooldown( "dark_transformation" );
     cooldown.death_and_decay = get_cooldown( "death_and_decay" );
     cooldown.defile          = get_cooldown( "defile" );
@@ -2277,12 +2289,16 @@ struct gargoyle_pet_t : public death_knight_pet_t
 
 struct valkyr_pet_t : public death_knight_pet_t
 {
+  timespan_t confusion_time;
+
   struct general_confusion_t : public action_t
   {
     bool executed;
+    timespan_t confusion_time;
 
-    general_confusion_t( player_t* player ) : action_t( ACTION_OTHER, "general_confusion", player ),
-      executed( false )
+    general_confusion_t( player_t* player, timespan_t confusion ) : action_t( ACTION_OTHER, "general_confusion", player ),
+      executed( false ),
+      confusion_time( confusion )
     {
       may_miss = false;
       dual = quiet = true;
@@ -2307,16 +2323,8 @@ struct valkyr_pet_t : public death_knight_pet_t
       executed = false;
     }
 
-    // Seems to have a bimodal distribution on how long an idle time there is after summoning, based
-    // on quite a bit of data. In any case, the mean delay is quite significant (on average over 2.5
-    // seconds).
     timespan_t execute_time() const override
-    {
-      auto dist = static_cast<int>( rng().range( 0, 2 ) );
-      auto base = dist == 0 ? 2.25 : 3.25;
-
-      return timespan_t::from_seconds( rng().gauss( base, 0.25 ) );
-    }
+    { return confusion_time; }
 
     bool ready() override
     { return ! executed; }
@@ -2370,7 +2378,7 @@ struct valkyr_pet_t : public death_knight_pet_t
   action_t* create_action( const std::string& name, const std::string& options_str ) override
   {
     if ( name == "valkyr_strike"     ) return new     valkyr_strike_t( this, options_str );
-    if ( name == "general_confusion" ) return new general_confusion_t( this );
+    if ( name == "general_confusion" ) return new general_confusion_t( this, confusion_time);
 
     return death_knight_pet_t::create_action( name, options_str );
   }
@@ -2397,6 +2405,12 @@ struct valkyr_pet_t : public death_knight_pet_t
       shadow_empowerment -> current_value += increase;
     }
   }
+  
+  void set_confusion ( timespan_t t )
+  {
+    confusion_time = t;
+  }
+  
 };
 
 // ==========================================================================
@@ -3289,6 +3303,10 @@ struct dragged_to_helheim_t : public death_knight_spell_t
     aoe        = -1;
     background = true;
     callbacks  = false;
+
+    // Re-initialize AP coefficient as 7.3 spell data has two damage effects on the spell, with the
+    // second one seemingly doing no damage.
+    attack_power_mod.direct = data().effectN( 1 ).ap_coeff();
   }
 
   double composite_target_multiplier( player_t* target ) const override
@@ -4156,7 +4174,25 @@ struct dark_arbiter_t : public death_knight_spell_t
   {
     death_knight_spell_t::execute();
 
-    p() -> pets.dark_arbiter -> summon( data().duration() );
+    // Seems to have a bimodal distribution on how long an idle time there is after summoning, based
+    // on quite a bit of data. In any case, the mean delay is quite significant (on average over 2.5
+    // seconds).
+    
+    // On 7.3 PTR the duration is set to 20s after the start of the first cast to make up to the confusion time
+    // On Live it's 20s after the pet summon
+
+    auto dist = static_cast<int>( rng().range( 0, 2 ) );
+    auto base = dist == 0 ? 2.25 : 3.25;
+
+    timespan_t confusion_time = timespan_t::from_seconds( rng().gauss( base, 0.25 ) );
+    timespan_t duration_increase = timespan_t::from_seconds( 0 );
+    
+    if ( maybe_ptr ( p() -> dbc.ptr ) )
+      duration_increase = confusion_time;
+
+    p() -> pets.dark_arbiter -> summon( data().duration() + duration_increase );
+    p() -> pets.dark_arbiter -> set_confusion( confusion_time );
+    
   }
 };
 
@@ -4449,7 +4485,7 @@ struct deaths_caress_t : public death_knight_spell_t
 struct death_coil_t : public death_knight_spell_t
 {
   const spell_data_t* unholy_vigor;
-
+  
   death_coil_t( death_knight_t* p, const std::string& options_str ) :
     death_knight_spell_t( "death_coil", p, p -> find_specialization_spell( "Death Coil" ) ),
     unholy_vigor( p -> find_spell( 196263 ) )
@@ -4458,8 +4494,10 @@ struct death_coil_t : public death_knight_spell_t
 
     attack_power_mod.direct = p -> find_spell( 47632 ) -> effectN( 1 ).ap_coeff();
     base_multiplier *= 1.0 + p -> artifact.deadliest_coil.percent();
+    
     // TODO: Wrong damage spell so generic application does not work
     base_multiplier *= 1.0 + p -> spec.unholy_death_knight -> effectN( 1 ).percent();
+    
   }
 
   double cost() const override
@@ -4515,6 +4553,7 @@ struct death_coil_t : public death_knight_spell_t
     {
       p() -> trigger_festering_wound( state, 1, true ); // TODO: Does this ignore ICD?
     }
+    
   }
 };
 
@@ -4942,12 +4981,12 @@ struct frostscythe_t : public death_knight_melee_attack_t
     aoe = -1;
 
     // T21 2P bonus : damage increase to Howling Blast, Frostscythe and Obliterate
-    if ( maybe_ptr( p -> dbc.ptr ) ) {
-      if (p->sets->has_set_bonus(DEATH_KNIGHT_FROST, T21, B2))
+    if ( maybe_ptr( p -> dbc.ptr ) ) 
+      if ( p -> sets -> has_set_bonus( DEATH_KNIGHT_FROST, T21, B2 ) )
       {
-         base_multiplier *= (1.0 + p-> find_spell(251873) -> effectN(3).percent());
+        base_multiplier *= ( 1.0 + p-> find_spell( 251873 ) -> effectN( 3 ).percent() );
       }
-    }
+    
     crit_bonus_multiplier *= 1.0 + p -> spec.death_knight -> effectN( 5 ).percent();
   }
 
@@ -5189,12 +5228,11 @@ struct howling_blast_t : public death_knight_spell_t
     base_multiplier    *= 1.0 + p -> artifact.blast_radius.percent();
     
     // T21 2P bonus : damage increase to Howling Blast, Frostscythe and Obliterate
-    if ( maybe_ptr( p -> dbc.ptr ) )  {
-      if (p->sets->has_set_bonus(DEATH_KNIGHT_FROST, T21, B2))
+    if ( maybe_ptr( p -> dbc.ptr ) )
+      if ( p->sets->has_set_bonus( DEATH_KNIGHT_FROST, T21, B2 ))
       {
-         base_multiplier *= (1.0 + p-> find_spell(251873) -> effectN(1).percent());
+        base_multiplier *= ( 1.0 + p-> find_spell( 251873 ) -> effectN( 1 ).percent() );
       }
-    }
   }
 
   double runic_power_generation_multiplier( const action_state_t* state ) const override
@@ -5522,12 +5560,12 @@ struct obliterate_strike_t : public death_knight_melee_attack_t
     weapon = w;
     
     // T21 2P bonus : damage increase to Howling Blast, Frostscythe and Obliterate
-    if ( maybe_ptr( p -> dbc.ptr ) ) {
-      if (p->sets->has_set_bonus(DEATH_KNIGHT_FROST, T21, B2))
+    if ( maybe_ptr( p -> dbc.ptr ) ) 
+      if ( p -> sets -> has_set_bonus( DEATH_KNIGHT_FROST , T21, B2 ) )
       {
-         base_multiplier *= (1.0 + p-> find_spell(251873) -> effectN(2).percent());
+        base_multiplier *= ( 1.0 + p-> find_spell( 251873 ) -> effectN( 2 ).percent() );
       }
-    }
+
     // 7.3 : Koltira's newfound will also increase Obliterate damage by 10%
     if ( maybe_ptr( p -> dbc.ptr ) ) 
     {
@@ -5921,12 +5959,6 @@ struct clawing_shadows_t : public scourge_strike_base_t
     scourge_strike_base_t( "clawing_shadows", p, p -> talent.clawing_shadows )
   {
     parse_options( options_str );
-
-    // HOTFIX 2016-08-23: Clawing Shadows damage has been changed to 130% weapon damage (was 150% Attack Power).
-    /*
-    weapon_multiplier = 1.3;
-    normalize_weapon_speed = true;
-    */
   }
 };
 
@@ -7356,8 +7388,6 @@ double death_knight_t::composite_melee_haste() const
 
   haste *= 1.0 / ( 1.0 + buffs.sephuzs_secret -> check_value() );
 
-  haste *= 1.0 / ( 1.0 + spec.veteran_of_the_third_war -> effectN( 6 ).percent() );
-
   haste *= 1.0 / ( 1.0 + buffs.soul_reaper -> stack_value() );
 
   if ( buffs.bone_shield -> up() )
@@ -7391,7 +7421,7 @@ double death_knight_t::composite_spell_haste() const
 {
   double haste = player_t::composite_spell_haste();
 
-  haste *= 1.0 / ( 1.0 + spec.veteran_of_the_third_war -> effectN( 6 ).percent() );
+  haste *= 1.0 / ( 1.0 + buffs.sephuzs_secret -> check_value() );
 
   haste *= 1.0 / ( 1.0 + buffs.soul_reaper -> stack_value() );
 
@@ -7945,6 +7975,8 @@ void death_knight_t::default_apl_unholy()
 
   // On-use items
   def->add_action("use_items");
+  def->add_action("use_item,name=feloiled_infernal_machine,"
+                  "if=pet.valkyr_battlemaiden.active");
   def->add_action("use_item,name=ring_of_collapsing_futures,"
                   "if=(buff.temptation.stack=0&target.time_to_die>60)|target.time_to_die<60");
 
@@ -8191,7 +8223,7 @@ void death_knight_t::create_buffs()
                               .add_invalidate(legendary.toravons ? CACHE_PLAYER_DAMAGE_MULTIPLIER : CACHE_NONE);
   buffs.rime                = buff_creator_t( this, "rime", spec.rime -> effectN( 1 ).trigger() )
                               .trigger_spell( spec.rime )
-                              .chance( spec.rime -> proc_chance() + sets -> set( DEATH_KNIGHT_FROST, T19, B2 ) -> effectN( 1 ).percent() );
+                              .chance( spec.rime -> effectN( 2 ).percent() + sets -> set( DEATH_KNIGHT_FROST, T19, B2 ) -> effectN( 1 ).percent() );
   buffs.riposte             = stat_buff_creator_t( this, "riposte", spec.riposte -> effectN( 1 ).trigger() )
                               .cd( spec.riposte -> internal_cooldown() )
                               .chance( spec.riposte -> proc_chance() )
@@ -8375,6 +8407,12 @@ double death_knight_t::bone_shield_handler( const action_state_t* state ) const
   buffs.bone_shield -> decrement( n_stacks );
   cooldown.bone_shield_icd -> start();
 
+  if ( dbc.ptr )
+    if ( n_stacks > 0 && sets -> has_set_bonus( DEATH_KNIGHT_BLOOD, T21, B2 ) )
+    {
+      cooldown.dancing_rune_weapon -> adjust( timespan_t::from_millis( find_spell( 251876 ) -> effectN( 1 ).base_value() ), false );
+    }
+  
   return absorbed;
 }
 
@@ -9468,13 +9506,13 @@ struct death_knight_module_t : public module_t {
 
   void register_hotfixes() const override
   {
+    /*
     hotfix::register_effect( "Death Knight", "2017-01-10", "Portal to the Underworld damage increased by 33%.", 325047 )
       .field( "ap_coefficient" )
       .operation( hotfix::HOTFIX_MUL )
       .modifier( 4/3.0 )
       .verification_value( 1.2 );
 
-    /*
     hotfix::register_effect( "Death Knight", "2016-08-23", "Clawing Shadows damage has been changed to 130% weapon damage (was 150% Attack Power).", 324719 )
       .field( "ap_coefficient" )
       .operation( hotfix::HOTFIX_SET )

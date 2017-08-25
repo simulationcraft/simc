@@ -5045,7 +5045,7 @@ struct doom_winds_t : public shaman_spell_t
 
   bool ready() override
   {
-    if ( ! player -> artifact_enabled() )
+    if ( ! player -> artifact -> enabled() )
     {
       return false;
     }

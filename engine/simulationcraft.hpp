@@ -142,6 +142,8 @@ namespace highchart {
 
 #include "sim/sc_profileset.hpp"
 
+#include "player/artifact_data.hpp"
+
 // Talent Translation =======================================================
 
 const int MAX_TALENT_ROWS = 7;
@@ -3789,7 +3791,7 @@ struct player_t : public actor_t
   bool        initialized;
   bool        potion_used;
 
-  std::string talents_str, id_str, target_str, artifact_str;
+  std::string talents_str, id_str, target_str;
   std::string region_str, server_str, origin_str;
   std::string race_str, professions_str, position_str;
   enum timeofday_e { NIGHT_TIME, DAY_TIME, } timeofday; // Specify InGame time of day to determine Night Elf racial
@@ -3835,35 +3837,7 @@ struct player_t : public actor_t
   std::array<int, PROFESSION_MAX> profession;
 
   // Artifact
-  struct artifact_data_t
-  {
-    std::array<std::pair<uint8_t, uint8_t>, MAX_ARTIFACT_POWER> points;
-    std::array<unsigned, MAX_ARTIFACT_RELIC> relics;
-    unsigned n_points, n_purchased_points;
-    int artifact_; // Hardcoded option to forcibly enable/disable artifact
-    slot_e slot; // Artifact slot, SLOT_NONE if not available
-    const spell_data_t* artificial_stamina;
-    const spell_data_t* artificial_damage;
-
-    artifact_data_t() :
-      n_points( 0 ), n_purchased_points( 0 ), artifact_( -1 ), slot( SLOT_INVALID ),
-      artificial_stamina( spell_data_t::not_found() ),
-      artificial_damage( spell_data_t::not_found() )
-    {
-      range::fill( points, { 0, 0 } );
-      range::fill( relics, 0 );
-    }
-
-    void add_bonus_rank( size_t index, uint8_t n_ranks = 1 )
-    {
-      assert( index < points.size() );
-
-      points[ index ].second += n_ranks;
-      n_points += n_ranks;
-    }
-  } artifact;
-
-  bool artifact_enabled() const;
+  std::unique_ptr<artifact::player_artifact_data_t> artifact;
 
   virtual ~player_t();
 
@@ -4255,7 +4229,7 @@ struct player_t : public actor_t
 
   virtual void init();
   virtual void override_talent( std::string& override_str );
-  virtual void override_artifact( const std::vector<const artifact_power_data_t*>& powers, const std::string& override_str );
+  virtual void override_artifact( const std::string& override_str );
   virtual void init_meta_gem();
   virtual void init_resources( bool force = false );
   virtual std::string init_use_item_actions( const std::string& append = std::string() );
@@ -4545,7 +4519,6 @@ struct player_t : public actor_t
   bool parse_talents_armory2( const std::string& talent_string );
   bool parse_talents_wowhead( const std::string& talent_string );
 
-  bool parse_artifact_wowdb( const std::string& artifact_string );
   bool parse_artifact_wowhead( const std::string& artifact_string );
 
   void create_talents_numbers();
@@ -7530,6 +7503,9 @@ bool initialize_special_effect( special_effect_t& effect, unsigned spell_id );
 void initialize_special_effect_fallbacks( player_t* actor );
 // Second-phase special effect initializer
 void initialize_special_effect_2( special_effect_t* effect );
+
+// Initialize generic Artifact traits
+void initialize_artifact_powers( player_t* );
 
 const item_data_t* find_consumable( const dbc_t& dbc, const std::string& name, item_subclass_consumable type );
 const item_data_t* find_item_by_spell( const dbc_t& dbc, unsigned spell_id );

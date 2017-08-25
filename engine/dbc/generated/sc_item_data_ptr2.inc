@@ -1,6 +1,6 @@
 #define PTR_RAND_PROP_POINTS_SIZE (1300)
 
-// Random property points for item levels 1-1300, wow build 24845
+// Random property points for item levels 1-1300, wow build 24887
 static struct random_prop_data_t __ptr_rand_prop_points_data[] = {
   {    1, {     0,     0,     0,     0,     0 }, {     0,     0,     0,     0,     0 }, {     0,     0,     0,     0,     0 } },
   {    2, {     0,     0,     0,     0,     0 }, {     0,     0,     0,     0,     0 }, {     0,     0,     0,     0,     0 } },
@@ -1306,7 +1306,7 @@ static struct random_prop_data_t __ptr_rand_prop_points_data[] = {
 };
 #define PTR_RAND_SUFFIX_SIZE (450)
 
-// Random new-style item suffixes, wow build 24845
+// Random new-style item suffixes, wow build 24887
 static struct random_suffix_data_t __ptr_rand_suffix_data[] = {
   {   5, "of the Monkey"          , {  2802,  2803,     0,     0,     0 }, {  6666, 10000,     0,     0,     0 } },
   {   6, "of the Eagle"           , {  2804,  2803,     0,     0,     0 }, {  6666, 10000,     0,     0,     0 } },
@@ -1762,7 +1762,7 @@ static struct random_suffix_data_t __ptr_rand_suffix_data[] = {
 };
 #define PTR_SPELL_ITEM_ENCH_SIZE (4173)
 
-// Item enchantment data, wow build 24845
+// Item enchantment data, wow build 24887
 static struct item_enchantment_data_t __ptr_spell_item_ench_data[] = {
   {   13,  33,      0, -1,   5,   1,   0,   0, {   2,   0,   0 }, {    3,    0,    0 }, {      0,      0,      0 }, {  1.0000,  0.0000,  0.0000 },      0, "Sharpened (+$k1 Damage)"           },
   {   14,  33,      0, -1,  15,  15,   0,   0, {   2,   0,   0 }, {    4,    0,    0 }, {      0,      0,      0 }, {  0.3637,  0.0000,  0.0000 },      0, "Sharpened (+$k1 Damage)"           },
@@ -5939,7 +5939,7 @@ static struct item_enchantment_data_t __ptr_spell_item_ench_data[] = {
   { 5931,   0,      0,  0,   1, 100,   0,   0, {   3,   0,   0 }, {    0,    0,    0 }, { 254707,      0,      0 }, {  0.0000,  0.0000,  0.0000 }, 254706, "Lightbearer"                       },
   {    0,   0,      0,  0,   0,   0,   0,   0, {   0,   0,   0 }, {    0,    0,    0 }, {      0,      0,      0 }, {  0.0000,  0.0000,  0.0000 },      0, 0                                   },
 };
-// Item armor values data from ItemArmorQuality.dbc, ilevels 1-1300, wow build 24845
+// Item armor values data from ItemArmorQuality.dbc, ilevels 1-1300, wow build 24887
 static struct item_scale_data_t __ptr_itemarmorquality_data[] = {
   {    1, {  0.900,  0.950,  1.000,  1.000,  1.000,  1.000,  1.000 } },
   {    2, {  0.900,  0.950,  1.000,  1.000,  1.000,  1.000,  1.000 } },
@@ -7244,7 +7244,7 @@ static struct item_scale_data_t __ptr_itemarmorquality_data[] = {
   { 0, { 0, 0, 0, 0, 0, 0, 0 } }
 };
 
-// Item armor values data from ItemArmorShield.dbc, ilevels 1-1300, wow build 24845
+// Item armor values data from ItemArmorShield.dbc, ilevels 1-1300, wow build 24887
 static struct item_scale_data_t __ptr_itemarmorshield_data[] = {
   {    1, {   22.000,   23.000,   24.000,   31.000,   38.000,   38.000,   38.000 } },
   {    2, {   24.000,   25.000,   26.000,   33.000,   41.000,   41.000,   41.000 } },
@@ -8249,7 +8249,7 @@ static struct item_scale_data_t __ptr_itemarmorshield_data[] = {
   { 0, { 0, 0, 0, 0, 0, 0, 0 } }
 };
 
-// Item armor values data from ItemArmorTotal.dbc, ilevels 1-1300, wow build 24845
+// Item armor values data from ItemArmorTotal.dbc, ilevels 1-1300, wow build 24887
 static struct item_armor_type_data_t __ptr_itemarmortotal_data[] = {
   {    1, {    19.625,    31.400,    44.857,   78.5000 } },
   {    2, {    20.875,    33.400,    47.714,   83.5000 } },
@@ -9581,7 +9581,7 @@ static struct item_armor_type_data_t __ptr_armor_slot_data[] = {
   { 0, { 0, 0, 0, 0 } }
 };
 
-// Item damage data from ItemDamageOneHand.dbc, ilevels 1-1300, wow build 24845
+// Item damage data from ItemDamageOneHand.dbc, ilevels 1-1300, wow build 24887
 static struct item_scale_data_t __ptr_itemdamageonehand_data[] = {
   {    1, {     0.347,     0.520,     0.629,     1.050,     1.874,     1.874,     1.874 } },
   {    2, {     0.502,     0.755,     0.886,     1.377,     2.240,     2.240,     2.240 } },
@@ -10586,7 +10586,7 @@ static struct item_scale_data_t __ptr_itemdamageonehand_data[] = {
   { 0, { 0, 0, 0, 0, 0, 0, 0 } }
 };
 
-// Item damage data from ItemDamageOneHandCaster.dbc, ilevels 1-1300, wow build 24845
+// Item damage data from ItemDamageOneHandCaster.dbc, ilevels 1-1300, wow build 24887
 static struct item_scale_data_t __ptr_itemdamageonehandcaster_data[] = {
   {    1, {     0.173,     0.260,     0.315,     0.525,     0.937,     0.937,     0.937 } },
   {    2, {     0.251,     0.377,     0.443,     0.689,     1.120,     1.120,     1.120 } },
@@ -11591,7 +11591,7 @@ static struct item_scale_data_t __ptr_itemdamageonehandcaster_data[] = {
   { 0, { 0, 0, 0, 0, 0, 0, 0 } }
 };
 
-// Item damage data from ItemDamageTwoHand.dbc, ilevels 1-1300, wow build 24845
+// Item damage data from ItemDamageTwoHand.dbc, ilevels 1-1300, wow build 24887
 static struct item_scale_data_t __ptr_itemdamagetwohand_data[] = {
   {    1, {     0.446,     0.669,     0.810,     1.352,     2.412,     2.412,     2.412 } },
   {    2, {     0.646,     0.971,     1.140,     1.773,     2.883,     2.883,     2.883 } },
@@ -12596,7 +12596,7 @@ static struct item_scale_data_t __ptr_itemdamagetwohand_data[] = {
   { 0, { 0, 0, 0, 0, 0, 0, 0 } }
 };
 
-// Item damage data from ItemDamageTwoHandCaster.dbc, ilevels 1-1300, wow build 24845
+// Item damage data from ItemDamageTwoHandCaster.dbc, ilevels 1-1300, wow build 24887
 static struct item_scale_data_t __ptr_itemdamagetwohandcaster_data[] = {
   {    1, {     0.223,     0.335,     0.405,     0.676,     1.206,     1.206,     1.206 } },
   {    2, {     0.323,     0.486,     0.570,     0.886,     1.442,     1.442,     1.442 } },
@@ -13601,7 +13601,7 @@ static struct item_scale_data_t __ptr_itemdamagetwohandcaster_data[] = {
   { 0, { 0, 0, 0, 0, 0, 0, 0 } }
 };
 
-// Gem properties, wow build 24845
+// Gem properties, wow build 24887
 static struct gem_property_data_t __ptr_gem_property_data[] = {
   {    2,  2686, 0x00000002,    0 },
   {    3,  2687, 0x00000008,    0 },
@@ -15647,7 +15647,7 @@ static struct gem_property_data_t __ptr_gem_property_data[] = {
   {    0,     0, 0x00000000,    0 },
 };
 
-// Item upgrade rules, wow build level 24845
+// Item upgrade rules, wow build level 24887
 static struct item_upgrade_rule_t __ptr_item_upgrade_rule_data[] = {
   {    94,  445,  86741 },
   {    95,  445,  86743 },
@@ -24913,7 +24913,7 @@ static struct item_upgrade_rule_t __ptr_item_upgrade_rule_data[] = {
   {     0,    0,      0 },
 };
 
-// Upgrade rule data, wow build level 24845
+// Upgrade rule data, wow build level 24887
 static struct item_upgrade_t __ptr_upgrade_rule_data[] = {
   {   1,   1,    0,  8 },
   { 373,  89,    0,  4 },
@@ -24972,9 +24972,9 @@ static struct item_upgrade_t __ptr_upgrade_rule_data[] = {
   {   0,   0,    0,  0 },
 };
 
-#define PTR_ITEM_BONUS_TREE_SIZE (552)
+#define PTR_ITEM_BONUS_TREE_SIZE (549)
 
-// Item bonus trees, wow build 24845
+// Item bonus trees, wow build 24887
 static struct item_bonus_tree_entry_t __ptr_item_bonus_tree_data[PTR_ITEM_BONUS_TREE_SIZE] = {
   {    1,    1,  5,    0,    1 },
   {  107,   61,  5,    0,  449 },
@@ -25520,9 +25520,6 @@ static struct item_bonus_tree_entry_t __ptr_item_bonus_tree_data[PTR_ITEM_BONUS_
   { 2653,  675, 21,    0,    0 },
   { 2654,  618, 43,    0, 3573 },
   { 2655,  619, 43,    0, 3573 },
-  { 2656,  664, 43,    0, 3573 },
-  { 2657,  663, 43,    0, 3573 },
-  { 2659,  665, 43,    0, 3573 },
   { 2662,  675, 43,    0,    0 },
   { 2663,  620, 43,    0, 3573 },
   { 2664,  632, 42,    0,    0 },
@@ -25530,9 +25527,9 @@ static struct item_bonus_tree_entry_t __ptr_item_bonus_tree_data[PTR_ITEM_BONUS_
   {    0,    0,  0,    0,    0 },
 };
 
-#define PTR_ITEM_BONUS_SIZE (3782)
+#define PTR_ITEM_BONUS_SIZE (3783)
 
-// Item bonuses, wow build 24845
+// Item bonuses, wow build 24887
 static struct item_bonus_entry_t __ptr_item_bonus_data[PTR_ITEM_BONUS_SIZE] = {
   {    1,    1,  1,     20,      0,  0 },
   {    2,    1,  2,      7,  15789,  1 },
@@ -29315,12 +29312,13 @@ static struct item_bonus_entry_t __ptr_item_bonus_data[PTR_ITEM_BONUS_SIZE] = {
   { 5735, 3629,  4,  13339,      7,  0 },
   { 5736, 3630,  1,     90,      0,  0 },
   { 5737, 3630,  9,     13,      0,  1 },
+  { 5738, 3573, 10,    125,      0,  1 },
   {    0,    0,  0,      0,      0,  0 },
 };
 
 #define PTR_ITEM_BONUS_MAP_SIZE (25400)
 
-// Item bonus map, wow build 24845
+// Item bonus map, wow build 24887
 static struct item_bonus_node_entry_t __ptr_item_bonus_map_data[PTR_ITEM_BONUS_MAP_SIZE] = {
   {     1, 109188,  393 },
   {   125, 109550,  438 },
@@ -54726,7 +54724,7 @@ static struct item_bonus_node_entry_t __ptr_item_bonus_map_data[PTR_ITEM_BONUS_M
 
 #define PTR_SCALING_STAT_DISTRIBUTION_SIZE (314)
 
-// Scaling stat distributions, wow build 24845
+// Scaling stat distributions, wow build 24887
 static struct scaling_stat_distribution_t __ptr_scaling_stat_distribution_data[PTR_SCALING_STAT_DISTRIBUTION_SIZE] = {
   {    1,   0,  80,   956 },
   {    2,   0,  80,   956 },
@@ -55044,9 +55042,9 @@ static struct scaling_stat_distribution_t __ptr_scaling_stat_distribution_data[P
   {    0,   0,   0,     0 },
 };
 
-#define PTR_CURVE_POINT_SIZE (10910)
+#define PTR_CURVE_POINT_SIZE (10908)
 
-// Curve points data, wow build 24845
+// Curve points data, wow build 24887
 static struct curve_point_t __ptr_curve_point_data[PTR_CURVE_POINT_SIZE] = {
   {    8,  0,    0.00000,    1.00000 },
   {    9,  0,    0.00000,    1.00000 },
@@ -62408,26 +62406,20 @@ static struct curve_point_t __ptr_curve_point_data[PTR_CURVE_POINT_SIZE] = {
   { 2652,  0,    0.00000,    0.01000 },
   { 2652,  1,   40.00000,    1.00000 },
   { 2654,  0,    0.00000,    0.00000 },
-  { 2654,  1,   10.00000,   -1.00000 },
+  { 2654,  1,    5.00000,   -1.00000 },
   { 2655,  0,    0.00000, -100.00000 },
   { 2655,  1,    1.00000,    0.00000 },
   { 2656,  0,    0.00000, -100.00000 },
   { 2656,  1,    1.00000,    0.00000 },
   { 2657,  0,    0.00000,    0.00000 },
-  { 2657,  1,    5.12727,   -0.11765 },
-  { 2657,  2,   10.74545,   -0.37433 },
-  { 2657,  3,   13.25455,   -0.68984 },
-  { 2657,  4,   15.00000,   -1.00000 },
+  { 2657,  1,   10.00000,   -1.00000 },
   { 2658,  0,    0.00000,    0.00000 },
   { 2658,  1,    2.76364,   -0.23529 },
   { 2658,  2,    5.23636,   -0.47059 },
   { 2658,  3,    8.03636,   -0.75936 },
   { 2658,  4,   10.00000,   -1.00000 },
   { 2659,  0,    0.00000,    0.00000 },
-  { 2659,  1,   19.27273,   -0.10695 },
-  { 2659,  2,   33.63636,   -0.24599 },
-  { 2659,  3,   43.45454,   -0.52941 },
-  { 2659,  4,   50.00000,   -1.00000 },
+  { 2659,  1,   20.00000,   -1.00000 },
   { 2660,  0,    0.00000,    1.00000 },
   { 2660,  1,    0.17091,    0.96257 },
   { 2660,  2,    0.35273,    0.72193 },
@@ -63934,7 +63926,7 @@ static struct curve_point_t __ptr_curve_point_data[PTR_CURVE_POINT_SIZE] = {
   { 3136,  0,    0.00000,    0.00000 },
   { 3136,  1,    1.00000,    1.00000 },
   { 3138,  0,    0.00000,    0.00000 },
-  { 3138,  1,    0.03636,    1.00000 },
+  { 3138,  1,    0.02545,    1.00000 },
   { 3138,  2,    1.00000,    1.00000 },
   { 3139,  0,    0.00000,    0.08021 },
   { 3139,  1,    0.10000,    0.21390 },
@@ -65957,12 +65949,16 @@ static struct curve_point_t __ptr_curve_point_data[PTR_CURVE_POINT_SIZE] = {
   { 4857,  2,    0.40046,    0.00000 },
   { 4857,  3,    0.75231,    0.00000 },
   { 4857,  4,    1.00000,  -80.00000 },
+  { 4922,  0,    0.00000,   -2.00000 },
+  { 4922,  1,    2.50000,    0.00000 },
+  { 4925,  0,    0.00000,    0.01000 },
+  { 4925,  1,   40.00000,    1.00000 },
   {    0,  0,    0.00000,    0.00000 },
 };
 
 #define PTR_ITEM_NAME_DESCRIPTION_SIZE (239)
 
-// Item name descriptions, wow build 24845
+// Item name descriptions, wow build 24887
 static struct item_name_description_t __ptr_item_name_description_data[PTR_ITEM_NAME_DESCRIPTION_SIZE] = {
   {     2, "Now with extra description"   },
   {    20, "Season 10"                    },
@@ -66207,7 +66203,7 @@ static struct item_name_description_t __ptr_item_name_description_data[PTR_ITEM_
 
 #define PTR_ITEM_CHILD_EQUIPMENT_SIZE (23)
 
-// Item child equipment, wow build 24845
+// Item child equipment, wow build 24887
 static struct item_child_equipment_t __ptr_item_child_equipment_data[PTR_ITEM_CHILD_EQUIPMENT_SIZE] = {
   {  2, 127417,   1728 },
   {  3, 127829, 127830 },

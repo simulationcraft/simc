@@ -739,7 +739,7 @@ namespace buffs {
       // TODO(mserrano): fix this when Blizzard turns the spelldata back to sane
       //  values
       damage_modifier = data().effectN( 1 ).percent() / 10.0;
-      haste_bonus = data().effectN( 2 ).percent() / 10.0;
+      haste_bonus = data().effectN( player -> dbc.ptr ? 3 : 2 ).percent() / 10.0;
       healing_modifier = 0;
 
       paladin_t* paladin = static_cast<paladin_t*>( player );
@@ -2794,7 +2794,7 @@ struct eye_of_tyr_t : public paladin_spell_t
 
   bool ready() override
   {
-	  if (!player->artifact_enabled())
+	  if (!player->artifact->enabled())
 	  {
 		  return false;
 	  }
@@ -2856,7 +2856,7 @@ struct wake_of_ashes_t : public paladin_spell_t
 
   bool ready() override
   {
-    if ( ! player -> artifact_enabled() )
+    if ( ! player -> artifact->enabled() )
     {
       return false;
     }

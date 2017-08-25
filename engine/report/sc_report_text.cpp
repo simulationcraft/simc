@@ -1199,8 +1199,8 @@ void print_text_player( FILE* file, player_t* p )
     util::fprintf( file, "  Origin: %s\n", p->origin_str.c_str() );
   if ( !p->talents_str.empty() )
     util::fprintf( file, "  Talents: %s\n", p->talents_str.c_str() );
-  if ( !p->artifact_str.empty() )
-    util::fprintf( file, "  Artifact: %s\n", p->artifact_str.c_str() );
+  if ( p->artifact && !p->artifact->option_string().empty() )
+    util::fprintf( file, "  Artifact: %s\n", p->artifact->option_string().c_str() );
   print_text_core_stats( file, p );
   print_text_generic_stats( file, p );
   print_text_spell_stats( file, p );
