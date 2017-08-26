@@ -17,7 +17,7 @@
 // Double check all up()/check() usage.
 //
 // Affliction -
-// Soul Flame + Wrath of Consumption on-death effects.
+// Soul Flame on-death effect
 // Peridition needs special crit damage override thing NYI.
 //
 // Better reporting for pet buffs.
@@ -397,6 +397,7 @@ public:
     buff_t* compounding_horror;
     buff_t* active_uas;
     buff_t* demonic_speed; // t20 4pc
+    buff_t* wrath_of_consumption;
 
     //demonology buffs
     buff_t* tier18_2pc_demonology;
@@ -2300,6 +2301,7 @@ public:
   bool affected_by_deaths_embrace;
   bool affliction_direct_increase;
   bool affliction_dot_increase;
+  bool affliction_woc_dot_increase;
   bool destruction_direct_increase;
   bool destruction_dot_increase;
   bool destro_mastery;
@@ -2367,6 +2369,7 @@ public:
 
     affliction_direct_increase = data().affected_by( p() -> spec.affliction -> effectN( 1 ) );
     affliction_dot_increase = data().affected_by( p() -> spec.affliction -> effectN( 2 ) );
+    affliction_woc_dot_increase = data().affected_by( p() -> find_spell( 199646 ) -> effectN( 1 ) );
     if ( affliction_direct_increase )
       base_dd_multiplier *= 1.0 + p() -> spec.affliction -> effectN( 1 ).percent();
     if ( affliction_dot_increase )
@@ -2614,6 +2617,14 @@ public:
         chaotic_energies_rng = rng().range( 0, destro_mastery_value );
 
       pm *= 1.0 + chaotic_energies_rng + ( destro_mastery_value );
+    }
+
+    if ( affliction_woc_dot_increase )
+    {
+      double woc_mul = p() -> buffs.wrath_of_consumption -> stack() * p() -> artifact.wrath_of_consumption.percent();
+      if ( p() -> buffs.deadwind_harvester -> check() )
+        woc_mul *= 2;
+      pm *= 1.0 + woc_mul;
     }
 
     return pm;
@@ -5845,6 +5856,22 @@ void warlock_td_t::target_demise()
     }
     warlock.cooldowns.haunt -> reset( true );
   }
+  if ( warlock.specialization() == WARLOCK_AFFLICTION && warlock.artifact.wrath_of_consumption.rank() )
+  {
+    if ( warlock.sim -> log )
+    {
+      warlock.sim -> out_debug.printf( "Player %s demised. Warlock %s gains a stack of Wrath of Consumption.", target -> name(), warlock.name() );
+    }
+    warlock.buffs.wrath_of_consumption -> trigger();
+  }
+  if ( warlock.specialization() == WARLOCK_AFFLICTION && warlock.artifact.reap_souls.rank() )
+  {
+    if ( warlock.sim -> log )
+    {
+      warlock.sim -> out_debug.printf( "Player %s demised. Warlock %s gains a stack of Tormented Souls.", target -> name(), warlock.name() );
+    }
+    warlock.buffs.tormented_souls -> trigger();
+  }
 }
 
 warlock_t::warlock_t( sim_t* sim, const std::string& name, race_e r ):
@@ -6623,6 +6650,10 @@ void warlock_t::create_buffs()
   buffs.demonic_speed = haste_buff_creator_t( this, "demonic_speed", sets -> set( WARLOCK_AFFLICTION, T20, B4 ) -> effectN( 1 ).trigger() )
     .chance( sets -> set( WARLOCK_AFFLICTION, T20, B4 ) -> proc_chance() )
     .default_value( sets -> set( WARLOCK_AFFLICTION, T20, B4 ) -> effectN( 1 ).trigger() -> effectN( 1 ).percent() );
+  buffs.wrath_of_consumption = buff_creator_t( this, "wrath_of_consumption", find_spell( 199646 ) )
+    .refresh_behavior( BUFF_REFRESH_DURATION )
+    .max_stack( 5 );
+
 
   //demonology buffs
   buffs.demonic_synergy = buff_creator_t( this, "demonic_synergy", find_spell( 171982 ) )
