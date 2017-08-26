@@ -438,6 +438,7 @@ public:
     gain_t* miss_refund;
     gain_t* seed_of_corruption;
     gain_t* drain_soul;
+    gain_t* unstable_affliction_refund;
     gain_t* power_trip;
     gain_t* shadow_bolt;
     gain_t* doom;
@@ -5848,6 +5849,23 @@ void warlock_td_t::target_demise()
     }
     warlock.resource_gain( RESOURCE_SOUL_SHARD, 1, warlock.gains.drain_soul );
   }
+  if ( warlock.specialization() == WARLOCK_AFFLICTION )
+  {
+    for ( int i = 0; i < MAX_UAS; ++i )
+    {
+      if ( dots_unstable_affliction[i] -> is_ticking() )
+      {
+        if ( warlock.sim -> log )
+        {
+          warlock.sim -> out_debug.printf( "Player %s demised. Warlock %s gains a shard from unstable affliction.", target -> name(), warlock.name() );
+        }
+        warlock.resource_gain( RESOURCE_SOUL_SHARD, 1, warlock.gains.unstable_affliction_refund );
+
+        // you can only get one soul shard per death from UA refunds
+        break;
+      }
+    }
+  }
   if ( warlock.specialization() == WARLOCK_AFFLICTION && debuffs_haunt -> check() )
   {
     if ( warlock.sim -> log )
@@ -6711,6 +6729,7 @@ void warlock_t::init_gains()
   gains.miss_refund                 = get_gain( "miss_refund" );
   gains.seed_of_corruption          = get_gain( "seed_of_corruption" );
   gains.drain_soul                  = get_gain( "drain_soul" );
+  gains.unstable_affliction_refund  = get_gain( "unstable_affliction_refund" );
   gains.shadow_bolt                 = get_gain( "shadow_bolt" );
   gains.soul_conduit                = get_gain( "soul_conduit" );
   gains.reverse_entropy             = get_gain( "reverse_entropy" );
