@@ -8377,13 +8377,6 @@ bool player_t::parse_artifact_wowhead( const std::string& artifact_string )
       return false;
     }
 
-    if ( ! artifact -> valid_power( power_id ) )
-    {
-      sim -> errorf( "Player %s invalid power id '%u' for specialization '%s'",
-        name(), power_id, util::specialization_string( specialization() ) );
-      return false;
-    }
-
     artifact -> add_power( power_id, rank );
   }
 

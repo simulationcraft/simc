@@ -129,12 +129,6 @@ bool player_artifact_data_t::add_power( unsigned power_id, unsigned rank )
     return false;
   }
 
-  if ( ! valid_power( power_id ) )
-  {
-    debug( this, "Player %s invalid power, id=%u", player() -> name(), power_id );
-    return false;
-  }
-
   m_points[ power_id ] = { as<uint8_t>( rank ), 0U };
   m_total_points += rank;
   m_purchased_points += rank;
@@ -214,12 +208,6 @@ void player_artifact_data_t::add_relic( unsigned item_id,
     return;
   }
 
-  if ( ! valid_power( power_id ) )
-  {
-    debug( this, "Player %s invalid power, id=%u", player() -> name(), power_id );
-    return;
-  }
-
   auto it = m_points.find( power_id );
   if ( it == m_points.end() )
   {
@@ -244,12 +232,6 @@ void player_artifact_data_t::move_purchased_rank( unsigned power_id, unsigned ra
   if ( power_id == 0 || rank == 0 || rank > MAX_TRAIT_RANK )
   {
     debug( this, "Player %s invalid power to move, id=%u rank=%u", player() -> name(), power_id, rank );
-    return;
-  }
-
-  if ( ! valid_power( power_id ) )
-  {
-    debug( this, "Player %s invalid power to move, id=%u", player() -> name(), power_id );
     return;
   }
 
