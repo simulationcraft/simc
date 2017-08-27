@@ -161,8 +161,8 @@ namespace artifact_power
   // Light
   void shocklight( special_effect_t& );
   void light_speed( special_effect_t& );
-  // void secure_in_the_light( special_effect_t& );
-  // void infusion_of_light( special_effect_t& );
+  void secure_in_the_light( special_effect_t& );
+  void infusion_of_light( special_effect_t& );
   // void lights_embrace( special_effect_t& );
   // void refractive_shell( special_effect_t& );
 }
@@ -5248,6 +5248,7 @@ struct netherlight_base_t : public proc_spell_t
     // TODO: Check all, but this seems likely
     // Does apply: Torment the Weak, Infusion of Light, Secure in the Light
     snapshot_flags &= ~( STATE_MUL_DA | STATE_MUL_TA | STATE_MUL_PERSISTENT | STATE_VERSATILITY );
+    update_flags   &= ~( STATE_MUL_DA | STATE_MUL_TA | STATE_MUL_PERSISTENT | STATE_VERSATILITY );
 
     if ( data().max_stacks() > 0 )
     {
@@ -5311,14 +5312,10 @@ void artifact_power::shadowbind( special_effect_t& effect )
 {
   auto power = effect.player -> find_artifact_spell( effect.driver() -> name_cstr() );
 
-  effect.trigger_spell_id = 252879;
-
-  effect.execute_action = create_proc_action<proc_spell_t>( "shadowbind", effect );
+  effect.execute_action = create_proc_action<netherlight_base_t>( "shadowbind", effect, effect.player -> find_spell( 252879 ) );
   effect.execute_action -> dot_max_stack = effect.execute_action -> data().max_stacks();
   effect.execute_action -> base_dd_min = util::composite_insignia_value( power.value(), effect.player );
   effect.execute_action -> base_dd_max = effect.execute_action -> base_dd_min;
-
-  effect.trigger_spell_id = 0;
 
   new dbc_proc_callback_t( effect.player, effect );
 }
@@ -5330,15 +5327,11 @@ void artifact_power::chaotic_darkness( special_effect_t& effect )
 {
   auto power = effect.player -> find_artifact_spell( effect.driver() -> name_cstr() );
 
-  effect.trigger_spell_id = 252896;
-
-  effect.execute_action = create_proc_action<proc_spell_t>( "chaotic_darkness", effect );
+  effect.execute_action = create_proc_action<netherlight_base_t>( "chaotic_darkness", effect, effect.player -> find_spell( 252896 ) );
   effect.execute_action -> dot_max_stack = effect.execute_action -> data().max_stacks();
   // TODO: What is the damage exactly? A massive range, or some other system
   effect.execute_action -> base_dd_min = util::composite_insignia_value( power.value(), effect.player );
   effect.execute_action -> base_dd_max = effect.execute_action -> base_dd_min * 5; // Hardcoded into the tooltip
-
-  effect.trigger_spell_id = 0;
 
   new dbc_proc_callback_t( effect.player, effect );
 }
@@ -5452,6 +5445,34 @@ void artifact_power::light_speed( special_effect_t& effect )
 
   effect.player -> passive.add_stat( STAT_HASTE_RATING, value );
   effect.player -> passive.add_stat( STAT_SPEED_RATING, value );
+}
+
+// Secure in the Light ==================================================
+
+void artifact_power::secure_in_the_light( special_effect_t& effect )
+{
+  auto power = effect.player -> find_artifact_spell( effect.driver() -> name_cstr() );
+
+  effect.execute_action = create_proc_action<netherlight_base_t>( "secure_in_the_light", effect, effect.player -> find_spell( 253073 ) );
+  effect.execute_action -> dot_max_stack = effect.execute_action -> data().max_stacks();
+  effect.execute_action -> base_dd_min = util::composite_insignia_value( power.value(), effect.player );
+  effect.execute_action -> base_dd_max = effect.execute_action -> base_dd_min;
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
+// Infusion of Light ====================================================
+
+void artifact_power::infusion_of_light( special_effect_t& effect )
+{
+  auto power = effect.player -> find_artifact_spell( effect.driver() -> name_cstr() );
+
+  effect.execute_action = create_proc_action<netherlight_base_t>( "infusion_of_light", effect, effect.player -> find_spell( 253098 ) );
+  effect.execute_action -> dot_max_stack = effect.execute_action -> data().max_stacks();
+  effect.execute_action -> base_dd_min = util::composite_insignia_value( power.value(), effect.player );
+  effect.execute_action -> base_dd_max = effect.execute_action -> base_dd_min;
+
+  new dbc_proc_callback_t( effect.player, effect );
 }
 
 void unique_gear::register_special_effects_x7()
@@ -5596,6 +5617,8 @@ void unique_gear::register_special_effects_x7()
   register_special_effect( 252191, artifact_power::murderous_intent );
   register_special_effect( 252799, artifact_power::shocklight );
   register_special_effect( 252088, artifact_power::light_speed );
+  register_special_effect( 253070, artifact_power::secure_in_the_light );
+  register_special_effect( 253093, artifact_power::infusion_of_light );
 }
 
 void unique_gear::register_hotfixes_x7()
