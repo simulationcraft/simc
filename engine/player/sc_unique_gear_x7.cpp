@@ -149,12 +149,22 @@ namespace item
 namespace artifact_power
 {
   void netherlight_fortification( special_effect_t& );
+
+  // Shadow
   void torment_the_weak( special_effect_t& );
   void shadowbind( special_effect_t& );
   void chaotic_darkness( special_effect_t& );
   void dark_sorrows( special_effect_t& );
   void master_of_shadows( special_effect_t& );
   void murderous_intent( special_effect_t& );
+
+  // Light
+  void shocklight( special_effect_t& );
+  void light_speed( special_effect_t& );
+  // void secure_in_the_light( special_effect_t& );
+  // void infusion_of_light( special_effect_t& );
+  // void lights_embrace( special_effect_t& );
+  // void refractive_shell( special_effect_t& );
 }
 
 namespace util
@@ -5416,6 +5426,34 @@ void artifact_power::murderous_intent( special_effect_t& effect )
   concordance -> stats.push_back( stat_buff_t::buff_stat_t( STAT_VERSATILITY_RATING, value ) );
 }
 
+// Shocklight ===========================================================
+
+void artifact_power::shocklight( special_effect_t& effect )
+{
+  auto power = effect.player -> find_artifact_spell( effect.driver() -> name_cstr() );
+
+  double value = util::composite_insignia_value( power.value(), effect.player );
+
+  auto concordance = debug_cast<stat_buff_t*>( buff_t::find( effect.player, "concordance_of_the_legionfall" ) );
+  if ( concordance == nullptr )
+  {
+    return;
+  }
+
+  concordance -> stats.push_back( stat_buff_t::buff_stat_t( STAT_CRIT_RATING, value ) );
+}
+
+// Light Speed ==========================================================
+
+void artifact_power::light_speed( special_effect_t& effect )
+{
+  auto power = effect.player -> find_artifact_spell( effect.driver() -> name_cstr() );
+  double value = util::composite_insignia_value( power.value(), effect.player );
+
+  effect.player -> passive.add_stat( STAT_HASTE_RATING, value );
+  effect.player -> passive.add_stat( STAT_SPEED_RATING, value );
+}
+
 void unique_gear::register_special_effects_x7()
 {
   /* Legion 7.0 Dungeon */
@@ -5556,6 +5594,8 @@ void unique_gear::register_special_effects_x7()
   register_special_effect( 252922, artifact_power::dark_sorrows );
   register_special_effect( 252091, artifact_power::master_of_shadows );
   register_special_effect( 252191, artifact_power::murderous_intent );
+  register_special_effect( 252799, artifact_power::shocklight );
+  register_special_effect( 252088, artifact_power::light_speed );
 }
 
 void unique_gear::register_hotfixes_x7()
