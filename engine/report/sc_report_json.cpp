@@ -1119,42 +1119,6 @@ void scale_factors_all_to_json( JsonOutput root, const player_t& p )
   }
 }
 
-void artifact_to_json( JsonOutput root, const player_t& p )
-{
-  root.make_array();
-
-  auto artifact_id = p.dbc.artifact_by_spec( p.specialization() );
-  if ( artifact_id == 0 )
-  {
-    return;
-  }
-
-  auto artifact_powers = p.dbc.artifact_powers( artifact_id );
-  for ( size_t idx = 0; idx < artifact_powers.size(); ++idx )
-  {
-    auto total_rank = p.artifact.points[ idx ].first +
-                      p.artifact.points[ idx ].second;
-
-    if ( total_rank == 0 )
-    {
-      continue;
-    }
-
-    auto spell_id = p.dbc.artifact_power_spell_id( p.specialization(), as<unsigned>( idx ), total_rank );
-    auto spell = p.dbc.spell( spell_id );
-    auto data = p.find_artifact_spell( spell -> name_cstr() );
-
-    auto node = root.add();
-
-    node[ "id"             ] = data.power() -> id;
-    node[ "spell_id"       ] = spell_id;
-    node[ "name"           ] = spell -> name_cstr();
-    node[ "total_rank"     ] = total_rank;
-    node[ "purchased_rank" ] = p.artifact.points[ idx ].first;
-    node[ "relic_rank"     ] = p.artifact.points[ idx ].second;
-  }
-}
-
 void talents_to_json( JsonOutput root, const player_t& p )
 {
   root.make_array();
@@ -1193,9 +1157,9 @@ void to_json( JsonOutput& arr, const player_t& p )
 
   talents_to_json( root[ "talents" ], p );
 
-  if ( p.artifact.n_points > 0 )
+  if ( p.artifact && p.artifact -> purchased_points() > 0 )
   {
-    artifact_to_json( root[ "artifact" ], p );
+    p.artifact -> generate_report( root[ "artifact" ] );
   }
 
   root[ "party" ] = p.party;

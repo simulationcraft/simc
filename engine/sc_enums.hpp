@@ -24,7 +24,7 @@ enum retarget_event_e
 enum
 {
 
-  MAX_ARTIFACT_POWER = 25, /// Maximum number of artifact perks per weapon. Looks like max is 17 on weapons but setting higher just in case -- 2016/04/04 - Twintop. Increase to 25 to encompass new traits.
+  MAX_ARTIFACT_POWER = 29, /// Maximum number of artifact perks per weapon. Looks like max is 17 on weapons but setting higher just in case -- 2016/04/04 - Twintop. Increase to 25 to encompass new traits.
 
   MAX_ARTIFACT_RELIC = 4,
   RELIC_ILEVEL_BONUS_CURVE = 1718, /// Seemingly hard coded CurvePoint identifier for the data that returns the item level increase of a relic, based on the relic's own item level
@@ -446,6 +446,7 @@ enum special_effect_source_e
   SPECIAL_EFFECT_SOURCE_ADDON,
   SPECIAL_EFFECT_SOURCE_GEM,
   SPECIAL_EFFECT_SOURCE_SOCKET_BONUS,
+  SPECIAL_EFFECT_SOURCE_ARTIFACT,
   SPECIAL_EFFECT_SOURCE_FALLBACK
 };
 

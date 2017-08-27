@@ -223,26 +223,7 @@ bool parse_artifact( item_t& item, const rapidjson::Value& artifact )
     auto trait_id = trait[ "id" ].GetUint();
     auto rank = trait[ "rank" ].GetUint();
 
-    auto it = range::find_if( powers, [ trait_id ]( const artifact_power_data_t* p ) {
-      return p -> id == trait_id;
-    } );
-
-    if ( it == powers.end() )
-    {
-      continue;
-    }
-
-    // Internal trait index (we order by id), might differ from blizzard's ordering
-    auto trait_index = std::distance( powers.begin(), it );
-    item.player -> artifact.points[ trait_index ].first = rank;
-    // The initial trait may also be included, if it is the only trait available. In that case, we
-    // should not increase the number of points purchased, so that we wont inflate the artificial
-    // damage/stamina passives.
-    if ( ( *it ) -> power_type != ARTIFACT_TRAIT_INITIAL )
-    {
-      item.player -> artifact.n_points += rank;
-      item.player -> artifact.n_purchased_points += rank;
-    }
+    item.player -> artifact -> add_power( trait_id, rank );
   }
 
   auto initial_trait_it = range::find_if( powers, []( const artifact_power_data_t* p ) {
@@ -253,10 +234,9 @@ bool parse_artifact( item_t& item, const rapidjson::Value& artifact )
   // purchased other traits) the initial trait for the artifact, for some unknown reason.  Thus, we
   // need to forcibly enable the initial trait in cases where the player has purchased any (other)
   // artifact traits.
-  if ( initial_trait_it != powers.end() && item.player -> artifact.n_purchased_points > 0 )
+  if ( initial_trait_it != powers.end() )
   {
-    auto trait_index = std::distance( powers.begin(), initial_trait_it );
-    item.player -> artifact.points[ trait_index ].first = 1; // Data has max rank at 0
+    item.player -> artifact -> add_power( ( *initial_trait_it ) -> id, 1 );
   }
 
   // If no relics inserted, bail out early
@@ -286,28 +266,12 @@ bool parse_artifact( item_t& item, const rapidjson::Value& artifact )
     // Blizzard includes both purchased and relic ranks in the same data, so we need to separate
     // the data so our artifact data is correct.
     auto relic_id = relic[ "itemId" ].GetUint();
-
     auto relic_trait_data = item.player -> dbc.artifact_relic_rank_index( artifact_id, relic_id );
-    if ( relic_trait_data.first > 0 )
+
+    if ( relic_trait_data.first > 0 && relic_trait_data.second > 0 )
     {
-      auto relic_power_idx = range::find_if( powers, [ &relic_trait_data ]( const artifact_power_data_t* p ) {
-        return p -> id == relic_trait_data.first;
-      } );
-
-      if ( relic_power_idx != powers.end() )
-      {
-        auto trait_index = std::distance( powers.begin(), relic_power_idx );
-
-        // So, Blizzard apparently decided that if your relic increases a trait you have not
-        // chosen, they don't bother adding it to the artifact trait data, so add a bounds check
-        // here so we don't go overeboard
-        if ( item.player -> artifact.points[ trait_index ].first >= relic_trait_data.second )
-        {
-          item.player -> artifact.points[ trait_index ].first -= relic_trait_data.second;
-          item.player -> artifact.n_purchased_points -= relic_trait_data.second;
-          item.player -> artifact.n_points -= relic_trait_data.second;
-        }
-      }
+      item.player -> artifact -> move_purchased_rank( relic_trait_data.first,
+                                                      relic_trait_data.second );
     }
   }
 

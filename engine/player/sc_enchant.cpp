@@ -507,11 +507,6 @@ item_socket_color enchant::initialize_relic( item_t&                    item,
   } );
 
   auto powers = item.player -> dbc.artifact_powers( item.parsed.data.id_artifact );
-  // If the artifact= option already specified relics, we presume that the added ranks are
-  // already in the artifact powers provided by artifact= option.
-  bool has_relics = std::count( item.player -> artifact.relics.begin(),
-                                item.player -> artifact.relics.end(), 0 ) !=
-                    as<int>( item.player -> artifact.relics.size() );
 
   for ( size_t i = 0, end = sizeof_array( data.ench_type ); i < end; ++i )
   {
@@ -538,7 +533,9 @@ item_socket_color enchant::initialize_relic( item_t&                    item,
       }
       case ITEM_ENCHANTMENT_RELIC_RANK:
       {
-        if ( has_relics || data.ench_amount[ i ] <= 0 )
+        // If the artifact= option already specified relics, we presume that the added ranks are
+        // already in the artifact powers provided by artifact= option.
+        if ( item.player -> artifact -> has_relic_options() || data.ench_amount[ i ] <= 0 )
         {
           break;
         }
@@ -559,11 +556,8 @@ item_socket_color enchant::initialize_relic( item_t&                    item,
             item.player -> name(), relic.name(), data.ench_amount[ i ], ( *power_it ) -> name );
         }
 
-        // Our internal artifact power data is organized in ascending power id order (per artifact),
-        // so we need to map the blizzard's indexing system to our own (seemingly arbitrary indexing
-        // based on development cycle).
-        auto internal_power_index = std::distance( powers.begin(), power_it );
-        item.player -> artifact.add_bonus_rank( internal_power_index, data.ench_amount[ i ] );
+        item.player -> artifact -> add_relic( relic_id,
+                                              ( *power_it ) -> id, data.ench_amount[ i ] );
         break;
       }
       default:

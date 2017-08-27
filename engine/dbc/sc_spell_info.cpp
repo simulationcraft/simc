@@ -1387,6 +1387,7 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
     {
       s << ", Max Rank: " << ( powers.back() -> index() + 1 );
     }
+    s << ", Type: " << power_data -> power_type;
     if ( powers.size() > 1 )
     {
       std::vector<std::string> artifact_hotfixes;
