@@ -2226,7 +2226,11 @@ bool sim_t::init_actor( player_t* p )
     return false;
   }
 
-  p -> init_artifact();
+  if ( ! p -> init_artifact() )
+  {
+    return false;
+  }
+
   p -> init_spells();
   p -> init_base_stats();
   p -> create_buffs();

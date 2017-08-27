@@ -40,15 +40,17 @@ struct point_data_t
 {
   uint8_t purchased;
   uint8_t bonus;
+  uint8_t crucible;
   int16_t overridden; // Indicate overridden status
 
-  point_data_t() : purchased( 0 ), bonus( 0 ), overridden( -1 )
+  point_data_t() : purchased( 0 ), bonus( 0 ), crucible( 0 ), overridden( -1 )
   { }
 
-  point_data_t( uint8_t p, uint8_t b ) : purchased( p ), bonus( b ), overridden( -1 )
+  point_data_t( uint8_t p, uint8_t b ) : purchased( p ), bonus( b ), crucible( 0 ), overridden( -1 )
   { }
 
-  point_data_t( uint8_t p, uint8_t b, int16_t o ) : purchased( p ), bonus( b ), overridden( o )
+  point_data_t( uint8_t p, uint8_t b, int16_t o ) : purchased( p ), bonus( b ),
+    crucible( 0 ), overridden( o )
   { }
 };
 
@@ -68,27 +70,36 @@ class player_artifact_data_t
   bool                  m_has_relic_opts;
   // User input for artifact= option
   std::string           m_artifact_str;
+  // User input for artifact_crucible= option
+  std::string           m_crucible_str;
   // Cached values for purchased points and points
   unsigned              m_total_points;
   unsigned              m_purchased_points;
+  unsigned              m_crucible_points;
   // Primary artifact slot (i.e., main hand, off hand, or invalid [no artifact])
   slot_e                m_slot;
   // Artificial Stamina and Damage auras
   const spell_data_t*   m_artificial_stamina;
   const spell_data_t*   m_artificial_damage;
 
+  // Standard format parsing functions for artifact data from 'artifact', and 'crucible' user
+  // options
+  bool parse();
+  bool parse_crucible();
+
 public:
   player_artifact_data_t( player_t* player );
 
-  // Reset object to empty state
-  void     reset();
-  // Initialize artifact base state
-  void     initialize();
+  // Initialize artifact state, including parsing of the 'artifact' and 'crucible' options
+  bool     initialize();
   // Is artifact enabled at all?
   bool     enabled() const;
 
   sim_t* sim() const;
   player_t* player() const;
+
+  // Return point data or an empty point information if not found
+  const point_data_t& point_data( unsigned power_id ) const;
 
   // Has user-input artifact= option relic identifiers (i.e., non-zero relicNid above)
   bool     has_relic_options() const
@@ -172,7 +183,39 @@ public:
     return it != m_points.end()
            ? t == ALLOW_OVERRIDE && it -> second.overridden >= 0
              ? it -> second.overridden
-             : ( it -> second.purchased + it -> second.bonus )
+             : ( it -> second.purchased + it -> second.bonus + it -> second.crucible )
+           : 0u;
+  }
+
+  unsigned bonus_rank( unsigned power_id, override_type t = ALLOW_OVERRIDE ) const
+  {
+    if ( ! enabled() )
+    {
+      return 0;
+    }
+
+    auto it = m_points.find( power_id );
+
+    return it != m_points.end()
+           ? t == ALLOW_OVERRIDE && it -> second.overridden >= 0
+             ? 0
+             : it -> second.bonus
+           : 0u;
+  }
+
+  unsigned crucible_rank( unsigned power_id, override_type t = ALLOW_OVERRIDE ) const
+  {
+    if ( ! enabled() )
+    {
+      return 0;
+    }
+
+    auto it = m_points.find( power_id );
+
+    return it != m_points.end()
+           ? t == ALLOW_OVERRIDE && it -> second.overridden >= 0
+             ? 0u
+             : it -> second.crucible
            : 0u;
   }
 
@@ -194,10 +237,13 @@ public:
 
   // Set the user-input artifact= option string
   void     set_artifact_str( const std::string& value );
+  // Set the user-input artifact_crucible= option string
+  void     set_crucible_str( const std::string&  value );
 
   // Add purchased artifact power
   bool     add_power( unsigned power_id, unsigned rank );
   void     add_relic( unsigned item_id, unsigned power_id, unsigned rank );
+  bool     add_crucible_power( unsigned power_id, unsigned rank );
   // Override an artifact power, used for artifact_override= option
   void     override_power( const std::string& name_str, unsigned rank );
 
@@ -207,15 +253,23 @@ public:
   // Valid power identifier for the player
   bool     valid_power( unsigned power_id ) const;
 
+  // Valid Netherlight Crucible power for the player
+  bool     valid_crucible_power( unsigned power_id ) const;
+
   // Helper(s) to spit out artifact power information for the actor's artifact
   std::vector<const artifact_power_data_t*> powers() const;
   const artifact_power_data_t* power( unsigned power_id ) const;
 
   // Encode artifact information to a textual format
   std::string encode() const;
+  // Encode crucible artifact information to textual format
+  std::string encode_crucible() const;
 
   // Generate (or output existing) artifact= option string
-  std::string option_string() const;
+  std::string artifact_option_string() const;
+
+  // Generate (or output existing) artifact_crucible= option string
+  std::string crucible_option_string() const;
 
   // Generate JSON report output for the artifact data
   js::JsonOutput&& generate_report( js::JsonOutput&& root ) const;

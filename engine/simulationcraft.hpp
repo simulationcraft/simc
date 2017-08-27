@@ -4246,7 +4246,7 @@ struct player_t : public actor_t
   void init_character_properties();
   virtual void init_race();
   virtual void init_talents();
-  virtual void init_artifact();
+  virtual bool init_artifact();
   virtual void replace_spells();
   virtual void init_position();
   virtual void init_professions();
@@ -4518,8 +4518,6 @@ struct player_t : public actor_t
   // New armory format used in worldofwarcraft.com / www.wowchina.com
   bool parse_talents_armory2( const std::string& talent_string );
   bool parse_talents_wowhead( const std::string& talent_string );
-
-  bool parse_artifact_wowhead( const std::string& artifact_string );
 
   void create_talents_numbers();
   void create_talents_armory();

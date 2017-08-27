@@ -577,8 +577,6 @@ bool report::check_artifact_points( const player_t& p, sim_t& sim )
     return true;
   }
 
-  auto artifact_str = p.artifact -> option_string();
-  auto splits           = util::string_split( artifact_str, ":" );
   unsigned max_allowed  = 0;
   std::string tier_name = "";
 
