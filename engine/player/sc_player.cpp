@@ -8503,6 +8503,66 @@ const spell_data_t* player_t::find_specialization_spell( unsigned spell_id, spec
 
 // player_t::find_artifact_spell ==========================================
 
+artifact_power_t player_t::find_artifact_spell( unsigned power_id ) const
+{
+  if ( ! artifact || ! artifact -> enabled() )
+  {
+    return artifact_power_t();
+  }
+
+  // Find the artifact for the player
+  unsigned artifact_id = dbc.artifact_by_spec( specialization() );
+  if ( artifact_id == 0 )
+  {
+    return artifact_power_t();
+  }
+
+  auto total_ranks = artifact -> power_rank( power_id );
+
+  // User input did not select this power
+  if ( total_ranks == 0 )
+  {
+    return artifact_power_t();
+  }
+
+  const artifact_power_data_t* power_data = dbc.artifact_power( power_id );
+
+  // No power found
+  if ( ! power_data )
+  {
+    return artifact_power_t();
+  }
+
+  // Single rank powers can only be set to 0 or 1
+  if ( power_data -> max_rank == 1 && total_ranks > 1 )
+  {
+    return artifact_power_t();
+  }
+
+  // 1 rank powers use the zeroth (only) entry, multi-rank spells have 0 -> max rank entries
+  std::vector<const artifact_power_rank_t*> ranks = dbc.artifact_power_ranks( power_data -> id );
+  auto rank_index = total_ranks - 1;
+
+  // Rank data missing for the power
+  if ( rank_index + 1 > ranks.size() )
+  {
+    if ( sim -> debug )
+    {
+      sim -> out_debug.printf( "%s too high rank (%u/%u) given for artifact power %s",
+          this -> name(), rank_index + 1, ranks.size(),
+          power_data -> name ? power_data -> name : "Unknown" );
+    }
+
+    return artifact_power_t();
+  }
+
+  // Finally, all checks satisfied, return a real spell
+  return artifact_power_t( total_ranks,
+      find_spell( ranks[ rank_index ] -> id_spell() ),
+      power_data,
+      ranks[ rank_index ] );
+}
+
 artifact_power_t player_t::find_artifact_spell( const std::string& name, bool tokenized ) const
 {
   if ( ! artifact || ! artifact -> enabled() )

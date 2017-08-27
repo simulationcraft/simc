@@ -148,7 +148,13 @@ namespace item
 
 namespace artifact_power
 {
+  void netherlight_fortification( special_effect_t& );
   void torment_the_weak( special_effect_t& );
+  void shadowbind( special_effect_t& );
+  void chaotic_darkness( special_effect_t& );
+  void dark_sorrows( special_effect_t& );
+  void master_of_shadows( special_effect_t& );
+  void murderous_intent( special_effect_t& );
 }
 
 namespace util
@@ -170,6 +176,26 @@ double composite_karazhan_empower_multiplier( const player_t* player )
   }
 
   return 1.0;
+}
+
+// 7.3 Insignia rings. We get to go on faith here that the function is called on the correct spells
+// (which is the case here), since the class flags that control the aura effects point to
+// server-side effects which have no direct relation to the actual damage spells, it seems.
+double composite_insignia_value( double base, const player_t* player )
+{
+  auto it = range::find_if( player -> items, []( const item_t& item ) {
+    return item.parsed.data.id == 152626;
+  } );
+
+  if ( it != player -> items.end() )
+  {
+    const auto insignia_spell = player -> find_spell( 251977 );
+    return base * ( 1.0 + insignia_spell -> effectN( 1 ).percent() );
+  }
+  else
+  {
+    return base;
+  }
 }
 }
 
@@ -5196,6 +5222,200 @@ void item::eyasus_mulligan( special_effect_t& effect )
   effect.execute_action = new eyasus_driver_t( effect );
 }
 
+// Netherlight Base Spell ===================================================
+
+struct netherlight_base_t : public proc_spell_t
+{
+  netherlight_base_t( const special_effect_t& e, const spell_data_t* s ) :
+    proc_spell_t( s -> name_cstr(), e.player, s )
+  { }
+
+  void init() override
+  {
+    proc_spell_t::init();
+
+    // No player-based multipliers work on this
+    // TODO: Check all, but this seems likely
+    // Does apply: Torment the Weak, Infusion of Light, Secure in the Light
+    snapshot_flags &= ~( STATE_MUL_DA | STATE_MUL_TA | STATE_MUL_PERSISTENT | STATE_VERSATILITY );
+
+    if ( data().max_stacks() > 0 )
+    {
+      dot_max_stack = data().max_stacks();
+    }
+
+    // Dot's probably can't crit
+    // TODO: Check all
+    // Does apply: Torment the Weak
+    tick_may_crit = false;
+  }
+
+  // TODO: Check if applies to everything
+  // Does apply: Torment the Weak
+  timespan_t calculate_dot_refresh_duration( const dot_t* dot,
+                                             timespan_t   triggered_duration ) const override
+  {
+    return triggered_duration +
+           ( dot -> tick_event
+             ? dot -> tick_event -> remains()
+             : timespan_t::zero() );
+  }
+};
+
+// Netherlight Fortification ================================================
+
+void artifact_power::netherlight_fortification( special_effect_t& effect )
+{
+  if ( ! effect.player -> artifact || ! effect.player -> artifact -> enabled() )
+  {
+    return;
+  }
+
+  auto power = effect.player -> find_artifact_spell( effect.driver() -> name_cstr() );
+  if ( power.rank() == 0 )
+  {
+    return;
+  }
+
+  effect.player -> items[ effect.player -> artifact -> slot() ].parsed.data.level += power.value();
+}
+
+// Torment the Weak =========================================================
+
+void artifact_power::torment_the_weak( special_effect_t& effect )
+{
+  auto power = effect.player -> find_artifact_spell( effect.driver() -> name_cstr() );
+
+  effect.execute_action = create_proc_action<netherlight_base_t>( "torment_the_weak",
+                                                                  effect,
+                                                                  effect.player -> find_spell( 252907 ) );
+
+  effect.execute_action -> base_td = util::composite_insignia_value( power.value(), effect.player );
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
+// Shadowbind ===============================================================
+
+void artifact_power::shadowbind( special_effect_t& effect )
+{
+  auto power = effect.player -> find_artifact_spell( effect.driver() -> name_cstr() );
+
+  effect.trigger_spell_id = 252879;
+
+  effect.execute_action = create_proc_action<proc_spell_t>( "shadowbind", effect );
+  effect.execute_action -> dot_max_stack = effect.execute_action -> data().max_stacks();
+  effect.execute_action -> base_dd_min = util::composite_insignia_value( power.value(), effect.player );
+  effect.execute_action -> base_dd_max = effect.execute_action -> base_dd_min;
+
+  effect.trigger_spell_id = 0;
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
+// Chaotic Darkness =========================================================
+
+// TODO: The base damage is done in steps of 600(?)
+void artifact_power::chaotic_darkness( special_effect_t& effect )
+{
+  auto power = effect.player -> find_artifact_spell( effect.driver() -> name_cstr() );
+
+  effect.trigger_spell_id = 252896;
+
+  effect.execute_action = create_proc_action<proc_spell_t>( "chaotic_darkness", effect );
+  effect.execute_action -> dot_max_stack = effect.execute_action -> data().max_stacks();
+  // TODO: What is the damage exactly? A massive range, or some other system
+  effect.execute_action -> base_dd_min = util::composite_insignia_value( power.value(), effect.player );
+  effect.execute_action -> base_dd_max = effect.execute_action -> base_dd_min * 5; // Hardcoded into the tooltip
+
+  effect.trigger_spell_id = 0;
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
+// Dark Sorrows =========================================================
+
+void artifact_power::dark_sorrows( special_effect_t& effect )
+{
+  // TODO: What happens if Dark Sorrows refreshes on target?
+  struct dark_sorrows_driver_t : public spell_t
+  {
+    action_t* damage;
+
+    dark_sorrows_driver_t( const special_effect_t& effect, const artifact_power_t& power ) :
+      spell_t( effect.driver() -> name_cstr(), effect.player, effect.player -> find_spell( 252921 ) )
+    {
+      may_crit = tick_may_crit = callbacks = hasted_ticks = false;
+      background = quiet = dual = true;
+
+      dot_duration = data().duration();
+      base_tick_time = data().duration();
+
+      auto d = player -> find_action( "sorrow" );
+      if ( d == nullptr )
+      {
+        d = player -> create_proc_action( "sorrow", effect );
+      }
+
+      if ( d == nullptr )
+      {
+        d = new netherlight_base_t( effect, effect.player -> find_spell( 253022 ) );
+        d -> base_dd_min = d -> base_dd_max = util::composite_insignia_value( power.value(), player );
+      }
+
+      damage = d;
+    }
+
+    void tick( dot_t* d ) override
+    {
+      spell_t::tick( d );
+
+      damage -> set_target( d -> target );
+      damage -> execute();
+    }
+  };
+
+  auto power = effect.player -> find_artifact_spell( effect.driver() -> name_cstr() );
+
+  auto dot = effect.player -> find_action( "dark_sorrows" );
+  if ( dot == nullptr )
+  {
+    dot = new dark_sorrows_driver_t( effect, power );
+  }
+
+  effect.execute_action = dot;
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
+// Master of Shadows ====================================================
+
+void artifact_power::master_of_shadows( special_effect_t& effect )
+{
+  auto power = effect.player -> find_artifact_spell( effect.driver() -> name_cstr() );
+  double value = util::composite_insignia_value( power.value(), effect.player );
+
+  effect.player -> passive.add_stat( STAT_MASTERY_RATING, value );
+  effect.player -> passive.add_stat( STAT_AVOIDANCE_RATING, value );
+}
+
+// Murderous Intent =====================================================
+
+void artifact_power::murderous_intent( special_effect_t& effect )
+{
+  auto power = effect.player -> find_artifact_spell( effect.driver() -> name_cstr() );
+
+  double value = util::composite_insignia_value( power.value(), effect.player );
+
+  auto concordance = debug_cast<stat_buff_t*>( buff_t::find( effect.player, "concordance_of_the_legionfall" ) );
+  if ( concordance == nullptr )
+  {
+    return;
+  }
+
+  concordance -> stats.push_back( stat_buff_t::buff_stat_t( STAT_VERSATILITY_RATING, value ) );
+}
+
 void unique_gear::register_special_effects_x7()
 {
   /* Legion 7.0 Dungeon */
@@ -5327,6 +5547,15 @@ void unique_gear::register_special_effects_x7()
   register_special_effect( 225601, consumable::pepper_breath );
   register_special_effect( 201336, consumable::pepper_breath );
   register_special_effect( 185736, consumable::lemon_herb_filet );
+
+  /* Artifact powers */
+  register_special_effect( 250879, artifact_power::netherlight_fortification );
+  register_special_effect( 252906, artifact_power::torment_the_weak );
+  register_special_effect( 252875, artifact_power::shadowbind );
+  register_special_effect( 252888, artifact_power::chaotic_darkness );
+  register_special_effect( 252922, artifact_power::dark_sorrows );
+  register_special_effect( 252091, artifact_power::master_of_shadows );
+  register_special_effect( 252191, artifact_power::murderous_intent );
 }
 
 void unique_gear::register_hotfixes_x7()
