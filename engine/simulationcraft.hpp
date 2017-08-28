@@ -2579,6 +2579,10 @@ struct special_effect_t
 
   special_effect_t( const item_t* item );
 
+  // Uses a custom initialization callback or object
+  bool is_custom() const
+  { return custom_init || custom_init_object.size() > 0; }
+
   // Forcefully disable creation of an (autodetected) buff or action. This is necessary in scenarios
   // where the autodetection decides to create an invalid action or buff due to the spell data.
   void disable_action()
@@ -4246,7 +4250,7 @@ struct player_t : public actor_t
   void init_character_properties();
   virtual void init_race();
   virtual void init_talents();
-  virtual void init_artifact();
+  virtual bool init_artifact();
   virtual void replace_spells();
   virtual void init_position();
   virtual void init_professions();
@@ -4519,8 +4523,6 @@ struct player_t : public actor_t
   bool parse_talents_armory2( const std::string& talent_string );
   bool parse_talents_wowhead( const std::string& talent_string );
 
-  bool parse_artifact_wowhead( const std::string& artifact_string );
-
   void create_talents_numbers();
   void create_talents_armory();
   void create_talents_wowhead();
@@ -4536,6 +4538,7 @@ struct player_t : public actor_t
   const spell_data_t* find_spell( unsigned int id ) const;
 
   artifact_power_t find_artifact_spell( const std::string& name, bool tokenized = false ) const;
+  artifact_power_t find_artifact_spell( unsigned power_id ) const;
 
   virtual expr_t* create_expression( action_t*, const std::string& name );
   expr_t* create_resource_expression( const std::string& name );

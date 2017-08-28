@@ -1934,7 +1934,7 @@ bool action_t::ready()
       return false;
   }
 
-  if ( option.cycle_targets && sim -> target_list.size() > 1 )
+  if ( option.cycle_targets && sim -> target_non_sleeping_list.size() > 1 )
   {
     player_t* saved_target = target;
     option.cycle_targets = false;

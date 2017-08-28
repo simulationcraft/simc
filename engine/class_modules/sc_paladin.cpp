@@ -727,10 +727,10 @@ namespace buffs {
     }
   };
 
-  struct crusade_buff_t : public buff_t
+  struct crusade_buff_t : public haste_buff_t
   {
     crusade_buff_t( player_t* p ):
-      buff_t( buff_creator_t( p, "crusade", p -> find_spell( 231895 ) )
+      haste_buff_t( haste_buff_creator_t( p, "crusade", p -> find_spell( 231895 ) )
         .refresh_behavior( BUFF_REFRESH_DISABLED ) ),
       damage_modifier( 0.0 ),
       healing_modifier( 0.0 ),
@@ -1582,14 +1582,13 @@ struct consecration_tick_t: public paladin_spell_t {
     ground_aoe = true;
     if ( p -> specialization() == PALADIN_RETRIBUTION )
     {
-      base_multiplier *= 1.0 + p -> passives.retribution_paladin -> effectN( 8 ).percent();
+      base_multiplier *= 1.0 + p -> passives.retribution_paladin -> effectN( p -> dbc.ptr ? 9 : 8 ).percent();
     }
 
-  if (p->specialization() == PALADIN_PROTECTION)
-  {
-    base_multiplier *= 1.0 + p->passives.protection_paladin->effectN(4).percent();
-  }
-
+    if (p->specialization() == PALADIN_PROTECTION)
+    {
+      base_multiplier *= 1.0 + p->passives.protection_paladin->effectN(4).percent();
+    }
   }
 };
 
@@ -3250,6 +3249,14 @@ struct crusader_strike_t : public holy_power_generator_t
     if ( crusader_strike_2 )
     {
       cooldown -> charges += crusader_strike_2 -> effectN( 1 ).base_value();
+    }
+
+    if ( p -> specialization() == PALADIN_RETRIBUTION )
+    {
+      if ( p -> dbc.ptr )
+      {
+        base_multiplier *= 1.0 + p -> passives.retribution_paladin -> effectN( 8 ).percent();
+      }
     }
 
     background = ( p -> talents.zeal -> ok() );
@@ -5940,12 +5947,19 @@ double paladin_t::composite_player_multiplier( school_e school ) const
 
   if ( buffs.crusade -> check() )
   {
-    double aw_multiplier = buffs.crusade -> get_damage_mod();
-    m *= 1.0 + aw_multiplier;
+    double aw_multiplier = 1.0 + buffs.crusade -> get_damage_mod();
     if ( chain_of_thrayn )
     {
-      m *= 1.0 + spells.chain_of_thrayn -> effectN( 4 ).percent();
+      if ( dbc.ptr )
+      {
+        aw_multiplier += spells.chain_of_thrayn -> effectN( 4 ).percent();
+      }
+      else
+      {
+        aw_multiplier *= 1.0 + spells.chain_of_thrayn -> effectN( 4 ).percent();
+      }
     }
+    m *= aw_multiplier;
   }
 
   m *= 1.0 + buffs.wings_of_liberty -> current_stack * buffs.wings_of_liberty -> current_value;
