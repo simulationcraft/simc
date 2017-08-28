@@ -107,6 +107,48 @@ bool player_artifact_data_t::enabled() const
   }
 }
 
+void player_artifact_data_t::reset_artifact()
+{
+  for ( auto& point_data : m_points )
+  {
+    if ( point_data.second.overridden == -1 )
+    {
+      m_total_points -= point_data.second.purchased;
+      m_purchased_points -= point_data.second.purchased;
+
+      if ( m_has_relic_opts )
+      {
+        m_total_points -= point_data.second.bonus;
+      }
+    }
+
+    point_data.second.purchased = 0;
+    if ( m_has_relic_opts )
+    {
+      point_data.second.bonus = 0;
+    }
+  }
+
+  m_has_relic_opts = false;
+  assert( m_purchased_points == 0 );
+}
+
+void player_artifact_data_t::reset_crucible()
+{
+  for ( auto& point_data : m_points )
+  {
+    if ( point_data.second.overridden == -1 )
+    {
+      m_total_points -= point_data.second.crucible;
+      m_crucible_points -= point_data.second.crucible;
+    }
+
+    point_data.second.crucible = 0;
+  }
+
+  assert( m_crucible_points == 0 );
+}
+
 sim_t* player_artifact_data_t::sim() const
 { return m_player -> sim; }
 
@@ -116,12 +158,14 @@ player_t* player_artifact_data_t::player() const
 void player_artifact_data_t::set_artifact_str( const std::string& value )
 {
   debug( this, "Player %s setting artifact input to '%s'", player() -> name(), value.c_str() );
+  reset_artifact();
   m_artifact_str = value;
 }
 
 void player_artifact_data_t::set_crucible_str( const std::string& value )
 {
   debug( this, "Player %s setting artifact crucible input to '%s'", player() -> name(), value.c_str() );
+  reset_crucible();
   m_crucible_str = value;
 }
 
@@ -537,14 +581,19 @@ report::sc_html_stream& player_artifact_data_t::generate_report( report::sc_html
       return;
     }
 
+    auto purchased_rank = purchased_power_rank( power -> id );
+    auto relic_rank = bonus_rank( power -> id );
+    auto crucible_rank_ = crucible_rank( power -> id );
+
+    if ( purchased_rank + relic_rank + crucible_rank_ == 0 )
+    {
+      return;
+    }
+
     auto spell = player() -> dbc.spell( power -> power_spell_id );
 
     root << "<li>" << ( spell ? report::spell_data_decorator_t( player(), spell ).decorate()
                               : power -> name );
-
-    auto purchased_rank = purchased_power_rank( power -> id );
-    auto relic_rank = bonus_rank( power -> id );
-    auto crucible_rank_ = crucible_rank( power -> id );
 
     if ( power -> max_rank > 1 && purchased_rank + relic_rank + crucible_rank_ > 0 )
     {

@@ -87,6 +87,8 @@ class player_artifact_data_t
   bool parse();
   bool parse_crucible();
 
+  void reset_artifact();
+  void reset_crucible();
 public:
   player_artifact_data_t( player_t* player );
 
