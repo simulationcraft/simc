@@ -4,7 +4,7 @@
 #ifndef ptr_MAX_CLASS
 #define ptr_MAX_CLASS (13)
 #endif
-// Class based active abilities, wow build 24608
+// Class based active abilities, wow build 24904
 static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLASS_ABILITY_SIZE] = {
   {
     {
@@ -929,13 +929,14 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
       115176, // Zen Meditation
            0,
     },
-    // Mistweaver tree, 13 abilities
+    // Mistweaver tree, 14 abilities
     {
       228649, // Blackout Kick
       115450, // Detox
       116694, // Effuse
       124682, // Enveloping Mist
       191837, // Essence Font
+      243435, // Fortifying Brew
       116849, // Life Cocoon
       212051, // Reawaken
       115151, // Renewing Mist
@@ -1168,7 +1169,7 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
 };
 #define PTR_TREE_SPECIALIZATION_SIZE (36)
 
-// Talent tree specialization abilities, wow build 24608
+// Talent tree specialization abilities, wow build 24904
 static unsigned __ptr_tree_specialization_data[][MAX_SPECS_PER_CLASS][PTR_TREE_SPECIALIZATION_SIZE] = {
   // Specialization abilities for Hunter pets
   {
@@ -2056,6 +2057,7 @@ static unsigned __ptr_tree_specialization_data[][MAX_SPECS_PER_CLASS][PTR_TREE_S
       231606, // Renewing Mist (Rank 2)
       231633, // Essence Font (Rank 2)
       231876, // Thunder Focus Tea (Rank 2)
+      243435, // Fortifying Brew
            0,
     },
     // Specialization abilities for Windwalker
@@ -2119,6 +2121,7 @@ static unsigned __ptr_tree_specialization_data[][MAX_SPECS_PER_CLASS][PTR_TREE_S
       231049, // Starfall (Rank 2)
       231050, // Sunfire (Rank 2)
       159456, // Travel Form (Rank 2)
+      228545, // Cat Form (Shapeshift)
            0,
     },
     // Specialization abilities for Feral
@@ -2189,6 +2192,7 @@ static unsigned __ptr_tree_specialization_data[][MAX_SPECS_PER_CLASS][PTR_TREE_S
       231065, // Lightning Reflexes
       231070, // Ironfur (Rank 2)
       159456, // Travel Form (Rank 2)
+      228545, // Cat Form (Shapeshift)
            0,
     },
     // Specialization abilities for Restoration
@@ -2274,7 +2278,7 @@ static unsigned __ptr_tree_specialization_data[][MAX_SPECS_PER_CLASS][PTR_TREE_S
 };
 #define PTR_CLASS_MASTERY_ABILITY_SIZE (1)
 
-// Class mastery abilities, wow build 24608
+// Class mastery abilities, wow build 24904
 static unsigned __ptr_class_mastery_ability_data[MAX_CLASS][MAX_SPECS_PER_CLASS][PTR_CLASS_MASTERY_ABILITY_SIZE] = {
   {
     {
@@ -2513,7 +2517,7 @@ static unsigned __ptr_class_mastery_ability_data[MAX_CLASS][MAX_SPECS_PER_CLASS]
 #define ptr_MAX_RACE (28)
 #endif
 
-// Racial abilities, wow build 24608
+// Racial abilities, wow build 24904
 static unsigned __ptr_race_ability_data[ptr_MAX_RACE][ptr_MAX_CLASS][PTR_RACE_ABILITY_SIZE] = {
   {
     {     0, },
@@ -3251,7 +3255,7 @@ static unsigned __ptr_race_ability_data[ptr_MAX_RACE][ptr_MAX_CLASS][PTR_RACE_AB
 };
 #define PTR_SET_BONUS_DATA_SIZE (688)
 
-// Set bonus data, wow build 24608
+// Set bonus data, wow build 24904
 static item_set_bonus_t __ptr_set_bonus_data[PTR_SET_BONUS_DATA_SIZE] = {
   // Set bonus name                              ,      OptName, EnumID, SetID, Tier, Bns, Cls, Spec,  Spell, Items
   { "Gladiator's Battlegear"                     ,        "pvp",      0,  1230,    0,   2,   1,   71, 165636, { 127055, 127081, 127092, 127103, 127114,  0 } },
@@ -3894,85 +3898,85 @@ static item_set_bonus_t __ptr_set_bonus_data[PTR_SET_BONUS_DATA_SIZE] = {
   { "Demonbane Armor"                            ,     "tier20",     13,  1302,   20,   2,  12,  581, 242228, { 147127, 147128, 147129, 147130, 147131, 147132,  0 } },
   { "Demonbane Armor"                            ,     "tier20",     13,  1302,   20,   4,  12,  577, 242226, { 147127, 147128, 147129, 147130, 147131, 147132,  0 } },
   { "Demonbane Armor"                            ,     "tier20",     13,  1302,   20,   4,  12,  581, 242229, { 147127, 147128, 147129, 147130, 147131, 147132,  0 } },
-  { "7.3 Raid Set Tier 21 - Warrior"             ,     "tier21",     14,  1319,   21,   2,   1,   71, 251878, { 152178, 152179, 152180, 152181, 152182, 152183,  0 } },
-  { "7.3 Raid Set Tier 21 - Warrior"             ,     "tier21",     14,  1319,   21,   2,   1,   72, 251880, { 152178, 152179, 152180, 152181, 152182, 152183,  0 } },
-  { "7.3 Raid Set Tier 21 - Warrior"             ,     "tier21",     14,  1319,   21,   2,   1,   73, 251882, { 152178, 152179, 152180, 152181, 152182, 152183,  0 } },
-  { "7.3 Raid Set Tier 21 - Warrior"             ,     "tier21",     14,  1319,   21,   4,   1,   71, 251879, { 152178, 152179, 152180, 152181, 152182, 152183,  0 } },
-  { "7.3 Raid Set Tier 21 - Warrior"             ,     "tier21",     14,  1319,   21,   4,   1,   72, 251881, { 152178, 152179, 152180, 152181, 152182, 152183,  0 } },
-  { "7.3 Raid Set Tier 21 - Warrior"             ,     "tier21",     14,  1319,   21,   4,   1,   73, 251883, { 152178, 152179, 152180, 152181, 152182, 152183,  0 } },
-  { "7.3 Raid Set Tier 21 - Paladin"             ,     "tier21",     14,  1324,   21,   2,   2,   65, 251863, { 152148, 152149, 152150, 152151, 152152, 152153,  0 } },
-  { "7.3 Raid Set Tier 21 - Paladin"             ,     "tier21",     14,  1324,   21,   2,   2,   66, 251869, { 152148, 152149, 152150, 152151, 152152, 152153,  0 } },
-  { "7.3 Raid Set Tier 21 - Paladin"             ,     "tier21",     14,  1324,   21,   2,   2,   70, 251867, { 152148, 152149, 152150, 152151, 152152, 152153,  0 } },
+  { "Juggernaut Battlegear"                      ,     "tier21",     14,  1319,   21,   2,   1,   71, 251878, { 152178, 152179, 152180, 152181, 152182, 152183,  0 } },
+  { "Juggernaut Battlegear"                      ,     "tier21",     14,  1319,   21,   2,   1,   72, 251880, { 152178, 152179, 152180, 152181, 152182, 152183,  0 } },
+  { "Juggernaut Battlegear"                      ,     "tier21",     14,  1319,   21,   2,   1,   73, 251882, { 152178, 152179, 152180, 152181, 152182, 152183,  0 } },
+  { "Juggernaut Battlegear"                      ,     "tier21",     14,  1319,   21,   4,   1,   71, 251879, { 152178, 152179, 152180, 152181, 152182, 152183,  0 } },
+  { "Juggernaut Battlegear"                      ,     "tier21",     14,  1319,   21,   4,   1,   72, 251881, { 152178, 152179, 152180, 152181, 152182, 152183,  0 } },
+  { "Juggernaut Battlegear"                      ,     "tier21",     14,  1319,   21,   4,   1,   73, 251883, { 152178, 152179, 152180, 152181, 152182, 152183,  0 } },
+  { "Light's Vanguard Battleplate"               ,     "tier21",     14,  1324,   21,   2,   2,   65, 251863, { 152148, 152149, 152150, 152151, 152152, 152153,  0 } },
+  { "Light's Vanguard Battleplate"               ,     "tier21",     14,  1324,   21,   2,   2,   66, 251869, { 152148, 152149, 152150, 152151, 152152, 152153,  0 } },
+  { "Light's Vanguard Battleplate"               ,     "tier21",     14,  1324,   21,   2,   2,   70, 251867, { 152148, 152149, 152150, 152151, 152152, 152153,  0 } },
   // Set bonus name                              ,      OptName, EnumID, SetID, Tier, Bns, Cls, Spec,  Spell, Items
-  { "7.3 Raid Set Tier 21 - Paladin"             ,     "tier21",     14,  1324,   21,   4,   2,   65, 251865, { 152148, 152149, 152150, 152151, 152152, 152153,  0 } },
-  { "7.3 Raid Set Tier 21 - Paladin"             ,     "tier21",     14,  1324,   21,   4,   2,   66, 251870, { 152148, 152149, 152150, 152151, 152152, 152153,  0 } },
-  { "7.3 Raid Set Tier 21 - Paladin"             ,     "tier21",     14,  1324,   21,   4,   2,   70, 251868, { 152148, 152149, 152150, 152151, 152152, 152153,  0 } },
-  { "7.3 Raid Set Tier 21 - Hunter"              ,     "tier21",     14,  1327,   21,   2,   3,  253, 251755, { 152130, 152131, 152132, 152133, 152134, 152135,  0 } },
-  { "7.3 Raid Set Tier 21 - Hunter"              ,     "tier21",     14,  1327,   21,   2,   3,  254, 251753, { 152130, 152131, 152132, 152133, 152134, 152135,  0 } },
-  { "7.3 Raid Set Tier 21 - Hunter"              ,     "tier21",     14,  1327,   21,   2,   3,  255, 251751, { 152130, 152131, 152132, 152133, 152134, 152135,  0 } },
-  { "7.3 Raid Set Tier 21 - Hunter"              ,     "tier21",     14,  1327,   21,   4,   3,  253, 251756, { 152130, 152131, 152132, 152133, 152134, 152135,  0 } },
-  { "7.3 Raid Set Tier 21 - Hunter"              ,     "tier21",     14,  1327,   21,   4,   3,  254, 251754, { 152130, 152131, 152132, 152133, 152134, 152135,  0 } },
-  { "7.3 Raid Set Tier 21 - Hunter"              ,     "tier21",     14,  1327,   21,   4,   3,  255, 251752, { 152130, 152131, 152132, 152133, 152134, 152135,  0 } },
-  { "7.3 Raid Set Tier 21 - Rogue"               ,     "tier21",     14,  1322,   21,   2,   4,  259, 251776, { 152160, 152161, 152162, 152163, 152164, 152165,  0 } },
-  { "7.3 Raid Set Tier 21 - Rogue"               ,     "tier21",     14,  1322,   21,   2,   4,  260, 251778, { 152160, 152161, 152162, 152163, 152164, 152165,  0 } },
-  { "7.3 Raid Set Tier 21 - Rogue"               ,     "tier21",     14,  1322,   21,   2,   4,  261, 251785, { 152160, 152161, 152162, 152163, 152164, 152165,  0 } },
-  { "7.3 Raid Set Tier 21 - Rogue"               ,     "tier21",     14,  1322,   21,   4,   4,  259, 251777, { 152160, 152161, 152162, 152163, 152164, 152165,  0 } },
-  { "7.3 Raid Set Tier 21 - Rogue"               ,     "tier21",     14,  1322,   21,   4,   4,  260, 251783, { 152160, 152161, 152162, 152163, 152164, 152165,  0 } },
-  { "7.3 Raid Set Tier 21 - Rogue"               ,     "tier21",     14,  1322,   21,   4,   4,  261, 251788, { 152160, 152161, 152162, 152163, 152164, 152165,  0 } },
-  { "7.3 Raid Set Tier 21 - Priest"              ,     "tier21",     14,  1323,   21,   2,   5,  256, 251843, { 152154, 152155, 152156, 152157, 152158, 152159,  0 } },
-  { "7.3 Raid Set Tier 21 - Priest"              ,     "tier21",     14,  1323,   21,   2,   5,  257, 251831, { 152154, 152155, 152156, 152157, 152158, 152159,  0 } },
-  { "7.3 Raid Set Tier 21 - Priest"              ,     "tier21",     14,  1323,   21,   2,   5,  258, 251845, { 152154, 152155, 152156, 152157, 152158, 152159,  0 } },
-  { "7.3 Raid Set Tier 21 - Priest"              ,     "tier21",     14,  1323,   21,   4,   5,  256, 251844, { 152154, 152155, 152156, 152157, 152158, 152159,  0 } },
-  { "7.3 Raid Set Tier 21 - Priest"              ,     "tier21",     14,  1323,   21,   4,   5,  257, 251842, { 152154, 152155, 152156, 152157, 152158, 152159,  0 } },
-  { "7.3 Raid Set Tier 21 - Priest"              ,     "tier21",     14,  1323,   21,   4,   5,  258, 251846, { 152154, 152155, 152156, 152157, 152158, 152159,  0 } },
-  { "7.3 Raid Set Tier 21 - Death Knight"        ,     "tier21",     14,  1330,   21,   2,   6,  250, 251876, { 152112, 152113, 152114, 152115, 152116, 152117,  0 } },
-  { "7.3 Raid Set Tier 21 - Death Knight"        ,     "tier21",     14,  1330,   21,   2,   6,  251, 251873, { 152112, 152113, 152114, 152115, 152116, 152117,  0 } },
-  { "7.3 Raid Set Tier 21 - Death Knight"        ,     "tier21",     14,  1330,   21,   2,   6,  252, 251871, { 152112, 152113, 152114, 152115, 152116, 152117,  0 } },
-  { "7.3 Raid Set Tier 21 - Death Knight"        ,     "tier21",     14,  1330,   21,   4,   6,  250, 251877, { 152112, 152113, 152114, 152115, 152116, 152117,  0 } },
+  { "Light's Vanguard Battleplate"               ,     "tier21",     14,  1324,   21,   4,   2,   65, 251865, { 152148, 152149, 152150, 152151, 152152, 152153,  0 } },
+  { "Light's Vanguard Battleplate"               ,     "tier21",     14,  1324,   21,   4,   2,   66, 251870, { 152148, 152149, 152150, 152151, 152152, 152153,  0 } },
+  { "Light's Vanguard Battleplate"               ,     "tier21",     14,  1324,   21,   4,   2,   70, 251868, { 152148, 152149, 152150, 152151, 152152, 152153,  0 } },
+  { "Serpentstalker Guise"                       ,     "tier21",     14,  1327,   21,   2,   3,  253, 251755, { 152130, 152131, 152132, 152133, 152134, 152135,  0 } },
+  { "Serpentstalker Guise"                       ,     "tier21",     14,  1327,   21,   2,   3,  254, 251754, { 152130, 152131, 152132, 152133, 152134, 152135,  0 } },
+  { "Serpentstalker Guise"                       ,     "tier21",     14,  1327,   21,   2,   3,  255, 251751, { 152130, 152131, 152132, 152133, 152134, 152135,  0 } },
+  { "Serpentstalker Guise"                       ,     "tier21",     14,  1327,   21,   4,   3,  253, 251756, { 152130, 152131, 152132, 152133, 152134, 152135,  0 } },
+  { "Serpentstalker Guise"                       ,     "tier21",     14,  1327,   21,   4,   3,  254, 251753, { 152130, 152131, 152132, 152133, 152134, 152135,  0 } },
+  { "Serpentstalker Guise"                       ,     "tier21",     14,  1327,   21,   4,   3,  255, 251752, { 152130, 152131, 152132, 152133, 152134, 152135,  0 } },
+  { "Regalia of the Dashing Scoundrel"           ,     "tier21",     14,  1322,   21,   2,   4,  259, 251776, { 152160, 152161, 152162, 152163, 152164, 152165,  0 } },
+  { "Regalia of the Dashing Scoundrel"           ,     "tier21",     14,  1322,   21,   2,   4,  260, 251778, { 152160, 152161, 152162, 152163, 152164, 152165,  0 } },
+  { "Regalia of the Dashing Scoundrel"           ,     "tier21",     14,  1322,   21,   2,   4,  261, 251785, { 152160, 152161, 152162, 152163, 152164, 152165,  0 } },
+  { "Regalia of the Dashing Scoundrel"           ,     "tier21",     14,  1322,   21,   4,   4,  259, 251777, { 152160, 152161, 152162, 152163, 152164, 152165,  0 } },
+  { "Regalia of the Dashing Scoundrel"           ,     "tier21",     14,  1322,   21,   4,   4,  260, 251783, { 152160, 152161, 152162, 152163, 152164, 152165,  0 } },
+  { "Regalia of the Dashing Scoundrel"           ,     "tier21",     14,  1322,   21,   4,   4,  261, 251788, { 152160, 152161, 152162, 152163, 152164, 152165,  0 } },
+  { "Gilded Seraph's Raiment"                    ,     "tier21",     14,  1323,   21,   2,   5,  256, 251843, { 152154, 152155, 152156, 152157, 152158, 152159,  0 } },
+  { "Gilded Seraph's Raiment"                    ,     "tier21",     14,  1323,   21,   2,   5,  257, 251831, { 152154, 152155, 152156, 152157, 152158, 152159,  0 } },
+  { "Gilded Seraph's Raiment"                    ,     "tier21",     14,  1323,   21,   2,   5,  258, 251845, { 152154, 152155, 152156, 152157, 152158, 152159,  0 } },
+  { "Gilded Seraph's Raiment"                    ,     "tier21",     14,  1323,   21,   4,   5,  256, 251844, { 152154, 152155, 152156, 152157, 152158, 152159,  0 } },
+  { "Gilded Seraph's Raiment"                    ,     "tier21",     14,  1323,   21,   4,   5,  257, 251842, { 152154, 152155, 152156, 152157, 152158, 152159,  0 } },
+  { "Gilded Seraph's Raiment"                    ,     "tier21",     14,  1323,   21,   4,   5,  258, 251846, { 152154, 152155, 152156, 152157, 152158, 152159,  0 } },
+  { "Dreadwake Armor"                            ,     "tier21",     14,  1330,   21,   2,   6,  250, 251876, { 152112, 152113, 152114, 152115, 152116, 152117,  0 } },
+  { "Dreadwake Armor"                            ,     "tier21",     14,  1330,   21,   2,   6,  251, 251873, { 152112, 152113, 152114, 152115, 152116, 152117,  0 } },
+  { "Dreadwake Armor"                            ,     "tier21",     14,  1330,   21,   2,   6,  252, 251871, { 152112, 152113, 152114, 152115, 152116, 152117,  0 } },
+  { "Dreadwake Armor"                            ,     "tier21",     14,  1330,   21,   4,   6,  250, 251877, { 152112, 152113, 152114, 152115, 152116, 152117,  0 } },
   // Set bonus name                              ,      OptName, EnumID, SetID, Tier, Bns, Cls, Spec,  Spell, Items
-  { "7.3 Raid Set Tier 21 - Death Knight"        ,     "tier21",     14,  1330,   21,   4,   6,  251, 251875, { 152112, 152113, 152114, 152115, 152116, 152117,  0 } },
-  { "7.3 Raid Set Tier 21 - Death Knight"        ,     "tier21",     14,  1330,   21,   4,   6,  252, 251872, { 152112, 152113, 152114, 152115, 152116, 152117,  0 } },
-  { "7.3 Raid Set Tier 21 - Shaman"              ,     "tier21",     14,  1321,   21,   2,   7,  262, 251757, { 152166, 152167, 152168, 152169, 152170, 152171,  0 } },
-  { "7.3 Raid Set Tier 21 - Shaman"              ,     "tier21",     14,  1321,   21,   2,   7,  263, 251761, { 152166, 152167, 152168, 152169, 152170, 152171,  0 } },
-  { "7.3 Raid Set Tier 21 - Shaman"              ,     "tier21",     14,  1321,   21,   2,   7,  264, 251764, { 152166, 152167, 152168, 152169, 152170, 152171,  0 } },
-  { "7.3 Raid Set Tier 21 - Shaman"              ,     "tier21",     14,  1321,   21,   4,   7,  262, 251758, { 152166, 152167, 152168, 152169, 152170, 152171,  0 } },
-  { "7.3 Raid Set Tier 21 - Shaman"              ,     "tier21",     14,  1321,   21,   4,   7,  263, 251762, { 152166, 152167, 152168, 152169, 152170, 152171,  0 } },
-  { "7.3 Raid Set Tier 21 - Shaman"              ,     "tier21",     14,  1321,   21,   4,   7,  264, 251765, { 152166, 152167, 152168, 152169, 152170, 152171,  0 } },
-  { "7.3 Raid Set Tier 21 - Mage"                ,     "tier21",     14,  1326,   21,   2,   8,   62, 251861, { 152136, 152137, 152138, 152139, 152140, 152141,  0 } },
-  { "7.3 Raid Set Tier 21 - Mage"                ,     "tier21",     14,  1326,   21,   2,   8,   63, 251857, { 152136, 152137, 152138, 152139, 152140, 152141,  0 } },
-  { "7.3 Raid Set Tier 21 - Mage"                ,     "tier21",     14,  1326,   21,   2,   8,   64, 251859, { 152136, 152137, 152138, 152139, 152140, 152141,  0 } },
-  { "7.3 Raid Set Tier 21 - Mage"                ,     "tier21",     14,  1326,   21,   4,   8,   62, 251862, { 152136, 152137, 152138, 152139, 152140, 152141,  0 } },
-  { "7.3 Raid Set Tier 21 - Mage"                ,     "tier21",     14,  1326,   21,   4,   8,   63, 251858, { 152136, 152137, 152138, 152139, 152140, 152141,  0 } },
-  { "7.3 Raid Set Tier 21 - Mage"                ,     "tier21",     14,  1326,   21,   4,   8,   64, 251860, { 152136, 152137, 152138, 152139, 152140, 152141,  0 } },
-  { "7.3 Raid Set Tier 21 - Warlock"             ,     "tier21",     14,  1320,   21,   2,   9,  266, 251851, { 152172, 152173, 152174, 152175, 152176, 152177,  0 } },
-  { "7.3 Raid Set Tier 21 - Warlock"             ,     "tier21",     14,  1320,   21,   2,   9,  267, 251854, { 152172, 152173, 152174, 152175, 152176, 152177,  0 } },
-  { "7.3 Raid Set Tier 21 - Warlock"             ,     "tier21",     14,  1320,   21,   2,   9,  265, 251847, { 152172, 152173, 152174, 152175, 152176, 152177,  0 } },
-  { "7.3 Raid Set Tier 21 - Warlock"             ,     "tier21",     14,  1320,   21,   4,   9,  265, 251849, { 152172, 152173, 152174, 152175, 152176, 152177,  0 } },
-  { "7.3 Raid Set Tier 21 - Warlock"             ,     "tier21",     14,  1320,   21,   4,   9,  266, 251852, { 152172, 152173, 152174, 152175, 152176, 152177,  0 } },
-  { "7.3 Raid Set Tier 21 - Warlock"             ,     "tier21",     14,  1320,   21,   4,   9,  267, 251855, { 152172, 152173, 152174, 152175, 152176, 152177,  0 } },
-  { "7.3 Raid Set Tier 21 - Monk"                ,     "tier21",     14,  1325,   21,   2,  10,  268, 251829, { 152142, 152143, 152144, 152145, 152146, 152147,  0 } },
-  { "7.3 Raid Set Tier 21 - Monk"                ,     "tier21",     14,  1325,   21,   2,  10,  270, 251825, { 152142, 152143, 152144, 152145, 152146, 152147,  0 } },
-  { "7.3 Raid Set Tier 21 - Monk"                ,     "tier21",     14,  1325,   21,   2,  10,  269, 251821, { 152142, 152143, 152144, 152145, 152146, 152147,  0 } },
-  { "7.3 Raid Set Tier 21 - Monk"                ,     "tier21",     14,  1325,   21,   4,  10,  268, 251830, { 152142, 152143, 152144, 152145, 152146, 152147,  0 } },
-  { "7.3 Raid Set Tier 21 - Monk"                ,     "tier21",     14,  1325,   21,   4,  10,  270, 251826, { 152142, 152143, 152144, 152145, 152146, 152147,  0 } },
+  { "Dreadwake Armor"                            ,     "tier21",     14,  1330,   21,   4,   6,  251, 251875, { 152112, 152113, 152114, 152115, 152116, 152117,  0 } },
+  { "Dreadwake Armor"                            ,     "tier21",     14,  1330,   21,   4,   6,  252, 251872, { 152112, 152113, 152114, 152115, 152116, 152117,  0 } },
+  { "Garb of Venerated Spirits"                  ,     "tier21",     14,  1321,   21,   2,   7,  262, 251757, { 152166, 152167, 152168, 152169, 152170, 152171,  0 } },
+  { "Garb of Venerated Spirits"                  ,     "tier21",     14,  1321,   21,   2,   7,  263, 251762, { 152166, 152167, 152168, 152169, 152170, 152171,  0 } },
+  { "Garb of Venerated Spirits"                  ,     "tier21",     14,  1321,   21,   2,   7,  264, 251764, { 152166, 152167, 152168, 152169, 152170, 152171,  0 } },
+  { "Garb of Venerated Spirits"                  ,     "tier21",     14,  1321,   21,   4,   7,  262, 251758, { 152166, 152167, 152168, 152169, 152170, 152171,  0 } },
+  { "Garb of Venerated Spirits"                  ,     "tier21",     14,  1321,   21,   4,   7,  263, 251761, { 152166, 152167, 152168, 152169, 152170, 152171,  0 } },
+  { "Garb of Venerated Spirits"                  ,     "tier21",     14,  1321,   21,   4,   7,  264, 251765, { 152166, 152167, 152168, 152169, 152170, 152171,  0 } },
+  { "Runebound Regalia"                          ,     "tier21",     14,  1326,   21,   2,   8,   62, 251861, { 152136, 152137, 152138, 152139, 152140, 152141,  0 } },
+  { "Runebound Regalia"                          ,     "tier21",     14,  1326,   21,   2,   8,   63, 251857, { 152136, 152137, 152138, 152139, 152140, 152141,  0 } },
+  { "Runebound Regalia"                          ,     "tier21",     14,  1326,   21,   2,   8,   64, 251859, { 152136, 152137, 152138, 152139, 152140, 152141,  0 } },
+  { "Runebound Regalia"                          ,     "tier21",     14,  1326,   21,   4,   8,   62, 251862, { 152136, 152137, 152138, 152139, 152140, 152141,  0 } },
+  { "Runebound Regalia"                          ,     "tier21",     14,  1326,   21,   4,   8,   63, 251858, { 152136, 152137, 152138, 152139, 152140, 152141,  0 } },
+  { "Runebound Regalia"                          ,     "tier21",     14,  1326,   21,   4,   8,   64, 251860, { 152136, 152137, 152138, 152139, 152140, 152141,  0 } },
+  { "Grim Inquisitor's Regalia"                  ,     "tier21",     14,  1320,   21,   2,   9,  266, 251851, { 152172, 152173, 152174, 152175, 152176, 152177,  0 } },
+  { "Grim Inquisitor's Regalia"                  ,     "tier21",     14,  1320,   21,   2,   9,  267, 251854, { 152172, 152173, 152174, 152175, 152176, 152177,  0 } },
+  { "Grim Inquisitor's Regalia"                  ,     "tier21",     14,  1320,   21,   2,   9,  265, 251847, { 152172, 152173, 152174, 152175, 152176, 152177,  0 } },
+  { "Grim Inquisitor's Regalia"                  ,     "tier21",     14,  1320,   21,   4,   9,  265, 251849, { 152172, 152173, 152174, 152175, 152176, 152177,  0 } },
+  { "Grim Inquisitor's Regalia"                  ,     "tier21",     14,  1320,   21,   4,   9,  266, 251852, { 152172, 152173, 152174, 152175, 152176, 152177,  0 } },
+  { "Grim Inquisitor's Regalia"                  ,     "tier21",     14,  1320,   21,   4,   9,  267, 251855, { 152172, 152173, 152174, 152175, 152176, 152177,  0 } },
+  { "Chi'Ji's Battlegear"                        ,     "tier21",     14,  1325,   21,   2,  10,  268, 251829, { 152142, 152143, 152144, 152145, 152146, 152147,  0 } },
+  { "Chi'Ji's Battlegear"                        ,     "tier21",     14,  1325,   21,   2,  10,  270, 251825, { 152142, 152143, 152144, 152145, 152146, 152147,  0 } },
+  { "Chi'Ji's Battlegear"                        ,     "tier21",     14,  1325,   21,   2,  10,  269, 251821, { 152142, 152143, 152144, 152145, 152146, 152147,  0 } },
+  { "Chi'Ji's Battlegear"                        ,     "tier21",     14,  1325,   21,   4,  10,  268, 251830, { 152142, 152143, 152144, 152145, 152146, 152147,  0 } },
+  { "Chi'Ji's Battlegear"                        ,     "tier21",     14,  1325,   21,   4,  10,  270, 251826, { 152142, 152143, 152144, 152145, 152146, 152147,  0 } },
   // Set bonus name                              ,      OptName, EnumID, SetID, Tier, Bns, Cls, Spec,  Spell, Items
-  { "7.3 Raid Set Tier 21 - Monk"                ,     "tier21",     14,  1325,   21,   4,  10,  269, 251823, { 152142, 152143, 152144, 152145, 152146, 152147,  0 } },
-  { "7.3 Raid Set Tier 21 - Druid"               ,     "tier21",     14,  1328,   21,   2,  11,  102, 251803, { 152124, 152125, 152126, 152127, 152128, 152129,  0 } },
-  { "7.3 Raid Set Tier 21 - Druid"               ,     "tier21",     14,  1328,   21,   2,  11,  103, 251789, { 152124, 152125, 152126, 152127, 152128, 152129,  0 } },
-  { "7.3 Raid Set Tier 21 - Druid"               ,     "tier21",     14,  1328,   21,   2,  11,  104, 251791, { 152124, 152125, 152126, 152127, 152128, 152129,  0 } },
-  { "7.3 Raid Set Tier 21 - Druid"               ,     "tier21",     14,  1328,   21,   2,  11,  105, 251813, { 152124, 152125, 152126, 152127, 152128, 152129,  0 } },
-  { "7.3 Raid Set Tier 21 - Druid"               ,     "tier21",     14,  1328,   21,   4,  11,  102, 251809, { 152124, 152125, 152126, 152127, 152128, 152129,  0 } },
-  { "7.3 Raid Set Tier 21 - Druid"               ,     "tier21",     14,  1328,   21,   4,  11,  103, 251790, { 152124, 152125, 152126, 152127, 152128, 152129,  0 } },
-  { "7.3 Raid Set Tier 21 - Druid"               ,     "tier21",     14,  1328,   21,   4,  11,  104, 251792, { 152124, 152125, 152126, 152127, 152128, 152129,  0 } },
-  { "7.3 Raid Set Tier 21 - Druid"               ,     "tier21",     14,  1328,   21,   4,  11,  105, 251814, { 152124, 152125, 152126, 152127, 152128, 152129,  0 } },
-  { "7.3 Raid Set Tier 21 - Demon Hunter"        ,     "tier21",     14,  1329,   21,   2,  12,  577, 251767, { 152118, 152119, 152120, 152121, 152122, 152123,  0 } },
-  { "7.3 Raid Set Tier 21 - Demon Hunter"        ,     "tier21",     14,  1329,   21,   2,  12,  581, 251770, { 152118, 152119, 152120, 152121, 152122, 152123,  0 } },
-  { "7.3 Raid Set Tier 21 - Demon Hunter"        ,     "tier21",     14,  1329,   21,   4,  12,  577, 251769, { 152118, 152119, 152120, 152121, 152122, 152123,  0 } },
-  { "7.3 Raid Set Tier 21 - Demon Hunter"        ,     "tier21",     14,  1329,   21,   4,  12,  581, 251774, { 152118, 152119, 152120, 152121, 152122, 152123,  0 } },
+  { "Chi'Ji's Battlegear"                        ,     "tier21",     14,  1325,   21,   4,  10,  269, 251823, { 152142, 152143, 152144, 152145, 152146, 152147,  0 } },
+  { "Bearmantle Battlegear"                      ,     "tier21",     14,  1328,   21,   2,  11,  102, 251803, { 152124, 152125, 152126, 152127, 152128, 152129,  0 } },
+  { "Bearmantle Battlegear"                      ,     "tier21",     14,  1328,   21,   2,  11,  103, 251789, { 152124, 152125, 152126, 152127, 152128, 152129,  0 } },
+  { "Bearmantle Battlegear"                      ,     "tier21",     14,  1328,   21,   2,  11,  104, 251791, { 152124, 152125, 152126, 152127, 152128, 152129,  0 } },
+  { "Bearmantle Battlegear"                      ,     "tier21",     14,  1328,   21,   2,  11,  105, 251813, { 152124, 152125, 152126, 152127, 152128, 152129,  0 } },
+  { "Bearmantle Battlegear"                      ,     "tier21",     14,  1328,   21,   4,  11,  102, 251809, { 152124, 152125, 152126, 152127, 152128, 152129,  0 } },
+  { "Bearmantle Battlegear"                      ,     "tier21",     14,  1328,   21,   4,  11,  103, 251790, { 152124, 152125, 152126, 152127, 152128, 152129,  0 } },
+  { "Bearmantle Battlegear"                      ,     "tier21",     14,  1328,   21,   4,  11,  104, 251792, { 152124, 152125, 152126, 152127, 152128, 152129,  0 } },
+  { "Bearmantle Battlegear"                      ,     "tier21",     14,  1328,   21,   4,  11,  105, 251814, { 152124, 152125, 152126, 152127, 152128, 152129,  0 } },
+  { "Felreaper Vestments"                        ,     "tier21",     14,  1329,   21,   2,  12,  577, 251767, { 152118, 152119, 152120, 152121, 152122, 152123,  0 } },
+  { "Felreaper Vestments"                        ,     "tier21",     14,  1329,   21,   2,  12,  581, 251770, { 152118, 152119, 152120, 152121, 152122, 152123,  0 } },
+  { "Felreaper Vestments"                        ,     "tier21",     14,  1329,   21,   4,  12,  577, 251769, { 152118, 152119, 152120, 152121, 152122, 152123,  0 } },
+  { "Felreaper Vestments"                        ,     "tier21",     14,  1329,   21,   4,  12,  581, 251774, { 152118, 152119, 152120, 152121, 152122, 152123,  0 } },
 };
-#define PTR_RPPMMOD_SIZE (693)
+#define PTR_RPPMMOD_SIZE (697)
 
-// 693 RPPM Modifiers, wow build level 24608
+// 697 RPPM Modifiers, wow build level 24904
 static struct rppm_modifier_t __ptr_rppmmodifier_data[] = {
   {  17495,    4,  1,  1.0000 },
   {  27656,    4,  1,  1.0000 },
@@ -4102,7 +4106,6 @@ static struct rppm_modifier_t __ptr_rppmmodifier_data[] = {
   { 188027,    4,  1,  1.0000 },
   { 188028,    4,  1,  1.0000 },
   { 188534,    4,  1,  1.0000 },
-  { 188783,    4,  1,  1.0000 },
   { 190889,    4,  1,  1.0000 },
   { 190890,    4,  1,  1.0000 },
   { 191048,    4,  1,  1.0000 },
@@ -4118,10 +4121,8 @@ static struct rppm_modifier_t __ptr_rppmmodifier_data[] = {
   { 199806,    4,  1,  1.0000 },
   { 201336,    4,  1,  1.0000 },
   { 201407,    4,  1,  1.0000 },
-  { 201466,    4,  1,  1.0000 },
   { 201471,    4,  1,  1.0000 },
   { 201900,    4,  1,  1.0000 },
-  { 202387,    4,  1,  1.0000 },
   { 202762,    4,  1,  1.0000 },
   { 202840,    4,  1,  1.0000 },
   { 203557,    4,  1,  1.0000 },
@@ -4529,8 +4530,14 @@ static struct rppm_modifier_t __ptr_rppmmodifier_data[] = {
   { 250768,  262,  4, -0.5000 },
   { 250768,  263,  4, -0.5000 },
   { 250768,    4,  1,  1.0000 },
+  { 250846, 2607,  3, -0.5000 },
+  { 250846,  103,  4, -0.5000 },
+  { 250846,  104,  4, -0.5000 },
+  { 250846,  105,  4, -0.5000 },
+  { 250846,  257,  4, -0.5000 },
+  { 250846,  263,  4, -0.5000 },
+  { 250846,  264,  4, -0.5000 },
   { 250846,    4,  1,  1.0000 },
-  { 250846,  252,  4, -0.3200 },
   { 251875,    4,  1,  1.0000 },
   { 251925,  476,  3, -0.5000 },
   { 251925,  251,  4, -0.5000 },
@@ -4667,11 +4674,12 @@ static struct rppm_modifier_t __ptr_rppmmodifier_data[] = {
   { 253326,  264,  4, -0.5000 },
   { 253326,   73,  4, -0.5000 },
   { 253326,    4,  1,  1.0000 },
+  { 253793,    4,  1,  1.0000 },
   {      0,    0,  0,  0.0000 },
 };
 #define PTR_ARTIFACT_SIZE (41)
 
-// Artifact base data, wow build 24608
+// Artifact base data, wow build 24904
 static struct artifact_t __ptr_artifact_data[PTR_ARTIFACT_SIZE] = {
   {  2,  70 },
   {  3, 577 },
@@ -4715,37 +4723,24 @@ static struct artifact_t __ptr_artifact_data[PTR_ARTIFACT_SIZE] = {
   { 82,  66 },
   {  0,   0 },
 };
-#define PTR_ARTIFACT_POWER_SIZE (922)
 
-// Artifact power data, wow build 24608
+#define PTR_ARTIFACT_POWER_SIZE (908)
+
+// Artifact power data, wow build 24904
 static struct artifact_power_data_t __ptr_artifact_power_data[PTR_ARTIFACT_POWER_SIZE] = {
-  { 1739,   0,   0,  0,   3, 250879, "Netherlight Fortification"          }, // Netherlight Fortification (id=250879, n_ranks=3)
-  { 1742,   0,   0,  0,   3, 247841, "Test Power 2"                       }, // Test Power 2 (id=247841, n_ranks=1)
-  { 1755,   0,   0,  0,   3,      0, 0                                    },
-  { 1756,   0,   0,  0,   3, 250293, "Test Power 4"                       }, // Test Power 4 (id=250293, n_ranks=3)
-  { 1757,   0,   0,  0,   3, 250294, "Test Power 5"                       }, // Test Power 5 (id=250294, n_ranks=3)
-  { 1758,   0,   0,  0,   3, 250295, "Test Power 6"                       }, // Test Power 6 (id=250295, n_ranks=3)
-  { 1759,   0,   0,  0,   3, 250296, "Test Power 7"                       }, // Test Power 7 (id=250296, n_ranks=3)
-  { 1760,   0,   0,  0,   3, 250298, "Test Power 8"                       }, // Test Power 8 (id=250298, n_ranks=3)
-  { 1761,   0,   0,  0,   3, 250311, "Shadow Test Power 1"                }, // Shadow Test Power 1 (id=250311, n_ranks=3)
-  { 1762,   0,   0,  0,   3, 250312, "Shadow Test Power 2"                }, // Shadow Test Power 2 (id=250312, n_ranks=3)
-  { 1763,   0,   0,  0,   3, 250313, "Shadow Test Power 3"                }, // Shadow Test Power 3 (id=250313, n_ranks=3)
-  { 1764,   0,   0,  0,   3, 250314, "Shadow Test Power 4"                }, // Shadow Test Power 4 (id=250314, n_ranks=3)
-  { 1765,   0,   0,  0,   3, 250315, "Shadow Test Power 5"                }, // Shadow Test Power 5 (id=250315, n_ranks=3)
-  { 1766,   0,   0,  0,   3, 250316, "Shadow Test Power 6"                }, // Shadow Test Power 6 (id=250316, n_ranks=3)
-  { 1767,   0,   0,  0,   3, 250317, "Shadow Test Power 7"                }, // Shadow Test Power 7 (id=250317, n_ranks=3)
-  { 1770,   0,   0,  0,   3, 252088, "Light Speed"                        }, // Light Speed (id=252088, n_ranks=3)
-  { 1771,   0,   0,  0,   3, 252091, "Master of Shadows"                  }, // Master of Shadows (id=252091, n_ranks=3)
-  { 1774,   0,   0,  0,   3, 252191, "Murderous Intent"                   }, // Murderous Intent (id=252191, n_ranks=3)
-  { 1775,   0,   0,  0,   3, 252207, "Refractive Shell"                   }, // Refractive Shell (id=252207, n_ranks=3)
-  { 1777,   0,   0,  0,   3, 252799, "Shocklight"                         }, // Shocklight (id=252799, n_ranks=3)
-  { 1778,   0,   0,  0,   3, 252875, "Shadowbind"                         }, // Shadowbind (id=252875, n_ranks=3)
-  { 1779,   0,   0,  0,   3, 252888, "Chaotic Darkness"                   }, // Chaotic Darkness (id=252888, n_ranks=3)
-  { 1780,   0,   0,  0,   3, 252906, "Torment the Weak"                   }, // Torment the Weak (id=252906, n_ranks=3)
-  { 1781,   0,   0,  0,   3, 252922, "Dark Sorrows"                       }, // Dark Sorrows (id=252922, n_ranks=3)
-  { 1782,   0,   0,  0,   3, 253070, "Secure in the Light"                }, // Secure in the Light (id=253070, n_ranks=3)
-  { 1783,   0,   0,  0,   3, 253093, "Infusion of Light"                  }, // Infusion of Light (id=253093, n_ranks=3)
-  { 1784,   0,   0,  0,   3, 253111, "Light's Embrace"                    }, // Light's Embrace (id=253111, n_ranks=3)
+  { 1739,   0,  64,  0,   3, 250879, "Netherlight Fortification"          }, // Netherlight Fortification (id=250879, n_ranks=3)
+  { 1770,   0,  64,  0,   3, 252088, "Light Speed"                        }, // Light Speed (id=252088, n_ranks=3)
+  { 1771,   0,  64,  0,   3, 252091, "Master of Shadows"                  }, // Master of Shadows (id=252091, n_ranks=3)
+  { 1774,   0,  64,  0,   3, 252191, "Murderous Intent"                   }, // Murderous Intent (id=252191, n_ranks=3)
+  { 1775,   0,  64,  0,   3, 252207, "Refractive Shell"                   }, // Refractive Shell (id=252207, n_ranks=3)
+  { 1777,   0,  64,  0,   3, 252799, "Shocklight"                         }, // Shocklight (id=252799, n_ranks=3)
+  { 1778,   0,  64,  0,   3, 252875, "Shadowbind"                         }, // Shadowbind (id=252875, n_ranks=3)
+  { 1779,   0,  64,  0,   3, 252888, "Chaotic Darkness"                   }, // Chaotic Darkness (id=252888, n_ranks=3)
+  { 1780,   0,  64,  0,   3, 252906, "Torment the Weak"                   }, // Torment the Weak (id=252906, n_ranks=3)
+  { 1781,   0,  64,  0,   3, 252922, "Dark Sorrows"                       }, // Dark Sorrows (id=252922, n_ranks=3)
+  { 1782,   0,  64,  0,   3, 253070, "Secure in the Light"                }, // Secure in the Light (id=253070, n_ranks=3)
+  { 1783,   0,  64,  0,   3, 253093, "Infusion of Light"                  }, // Infusion of Light (id=253093, n_ranks=3)
+  { 1784,   0,  64,  0,   3, 253111, "Light's Embrace"                    }, // Light's Embrace (id=253111, n_ranks=3)
   {   40,   2,  18,  0,   0, 205273, "Wake of Ashes"                      }, // Wake of Ashes (id=205273, n_ranks=1)
   {   41,   2,  32,  4,   3, 186941, "Highlord's Judgment"                }, // Highlord's Judgment (id=186941, n_ranks=8)
   {   42,   2,  32,  5,   3, 184759, "Sharpened Edge"                     }, // Sharpened Edge (id=184759, n_ranks=8)
@@ -5642,9 +5637,9 @@ static struct artifact_power_data_t __ptr_artifact_power_data[PTR_ARTIFACT_POWER
   { 1253,  80,   2,  0,   1, 179546, "Ashes to Ashes"                     }, // Ashes to Ashes (id=179546, n_ranks=1)
   {    0,   0,   0,  0,   0,      0, 0                                    },
 };
-#define PTR_ARTIFACT_POWER_RANK_SIZE (5983)
+#define PTR_ARTIFACT_POWER_RANK_SIZE (5946)
 
-// Artifact power rank data, wow build 24608
+// Artifact power rank data, wow build 24904
 static struct artifact_power_rank_t __ptr_artifact_power_rank_data[PTR_ARTIFACT_POWER_RANK_SIZE] = {
   { 2316,    40,  0, 205273,      0.000, 0x00000000, 0 },
   { 2317,    41,  0, 186941,      8.000, 0x00000000, 0 },
@@ -5663,14 +5658,14 @@ static struct artifact_power_rank_t __ptr_artifact_power_rank_data[PTR_ARTIFACT_
   { 3208,    42,  5, 184759,     36.000, 0x00000000, 0 },
   { 7058,    42,  6, 184759,     42.000, 0x00000000, 0 },
   { 7059,    42,  7, 184759,     48.000, 0x00000000, 0 },
-  { 2323,    43,  0, 184843,      5.000, 0x00000000, 0 },
-  { 3209,    43,  1, 184843,     10.000, 0x00000000, 0 },
-  { 3210,    43,  2, 184843,     15.000, 0x00000000, 0 },
-  { 3211,    43,  3, 184843,     20.000, 0x00000000, 0 },
-  { 3212,    43,  4, 184843,     25.000, 0x00000000, 0 },
-  { 3213,    43,  5, 184843,     30.000, 0x00000000, 0 },
-  { 7060,    43,  6, 184843,     35.000, 0x00000000, 0 },
-  { 7061,    43,  7, 184843,     40.000, 0x00000000, 0 },
+  { 2323,    43,  0, 184843,      4.000, 0x00000000, 0 },
+  { 3209,    43,  1, 184843,      8.000, 0x00000000, 0 },
+  { 3210,    43,  2, 184843,     12.000, 0x00000000, 0 },
+  { 3211,    43,  3, 184843,     16.000, 0x00000000, 0 },
+  { 3212,    43,  4, 184843,     20.000, 0x00000000, 0 },
+  { 3213,    43,  5, 184843,     24.000, 0x00000000, 0 },
+  { 7060,    43,  6, 184843,     28.000, 0x00000000, 0 },
+  { 7061,    43,  7, 184843,     32.000, 0x00000000, 0 },
   { 2326,    44,  0, 186934,     15.000, 0x00000000, 0 },
   { 3214,    44,  1, 186934,     30.000, 0x00000000, 0 },
   { 3215,    44,  2, 186934,     45.000, 0x00000000, 0 },
@@ -5712,14 +5707,14 @@ static struct artifact_power_rank_t __ptr_artifact_power_rank_data[PTR_ARTIFACT_
   { 3238,    52,  5, 186944,    -60.000, 0x00000000, 0 },
   { 7070,    52,  6, 186944,    -70.000, 0x00000000, 0 },
   { 7071,    52,  7, 186944,    -80.000, 0x00000000, 0 },
-  { 2342,    53,  0, 186945,   2500.000, 0x00000000, 0 },
-  { 3239,    53,  1, 186945,   5000.000, 0x00000000, 0 },
-  { 3240,    53,  2, 186945,   7500.000, 0x00000000, 0 },
-  { 3241,    53,  3, 186945,  10000.000, 0x00000000, 0 },
-  { 3242,    53,  4, 186945,  12500.000, 0x00000000, 0 },
-  { 3243,    53,  5, 186945,  15000.000, 0x00000000, 0 },
-  { 7072,    53,  6, 186945,  17500.000, 0x00000000, 0 },
-  { 7073,    53,  7, 186945,  20000.000, 0x00000000, 0 },
+  { 2342,    53,  0, 186945,   2000.000, 0x00000000, 0 },
+  { 3239,    53,  1, 186945,   4000.000, 0x00000000, 0 },
+  { 3240,    53,  2, 186945,   6000.000, 0x00000000, 0 },
+  { 3241,    53,  3, 186945,   8000.000, 0x00000000, 0 },
+  { 3242,    53,  4, 186945,  10000.000, 0x00000000, 0 },
+  { 3243,    53,  5, 186945,  12000.000, 0x00000000, 0 },
+  { 7072,    53,  6, 186945,  14000.000, 0x00000000, 0 },
+  { 7073,    53,  7, 186945,  16000.000, 0x00000000, 0 },
   { 2345,    54,  0, 186788,      0.000, 0x00000000, 0 },
   { 2380,    72,  0, 187304,      3.000, 0x00000000, 0 },
   { 3514,    72,  1, 187304,      6.000, 0x00000000, 0 },
@@ -8267,14 +8262,14 @@ static struct artifact_power_rank_t __ptr_artifact_power_rank_data[PTR_ARTIFACT_
   { 5188,  1165,  5, 210590,     90.000, 0x00000000, 0 },
   { 6843,  1165,  6, 210590,    105.000, 0x00000000, 0 },
   { 6844,  1165,  7, 210590,    120.000, 0x00000000, 0 },
-  { 5189,  1166,  0, 210593,      7.000, 0x00000000, 0 },
-  { 5190,  1166,  1, 210593,     14.000, 0x00000000, 0 },
-  { 5191,  1166,  2, 210593,     21.000, 0x00000000, 0 },
-  { 5192,  1166,  3, 210593,     28.000, 0x00000000, 0 },
-  { 5193,  1166,  4, 210593,     35.000, 0x00000000, 0 },
-  { 5194,  1166,  5, 210593,     42.000, 0x00000000, 0 },
-  { 6845,  1166,  6, 210593,     49.000, 0x00000000, 0 },
-  { 6846,  1166,  7, 210593,     56.000, 0x00000000, 0 },
+  { 5189,  1166,  0, 210593,      6.000, 0x00000000, 0 },
+  { 5190,  1166,  1, 210593,     12.000, 0x00000000, 0 },
+  { 5191,  1166,  2, 210593,     18.000, 0x00000000, 0 },
+  { 5192,  1166,  3, 210593,     24.000, 0x00000000, 0 },
+  { 5193,  1166,  4, 210593,     30.000, 0x00000000, 0 },
+  { 5194,  1166,  5, 210593,     36.000, 0x00000000, 0 },
+  { 6845,  1166,  6, 210593,     42.000, 0x00000000, 0 },
+  { 6846,  1166,  7, 210593,     48.000, 0x00000000, 0 },
   { 5195,  1167,  0, 210631,      5.000, 0x00000000, 0 },
   { 5196,  1167,  1, 210631,     10.000, 0x00000000, 0 },
   { 5197,  1167,  2, 210631,     15.000, 0x00000000, 0 },
@@ -11555,67 +11550,30 @@ static struct artifact_power_rank_t __ptr_artifact_power_rank_data[PTR_ARTIFACT_
   { 9527,  1739,  0, 250879,      5.000, 0x00000000, 0 },
   { 9530,  1739,  1, 250879,     10.000, 0x00000000, 0 },
   { 9531,  1739,  2, 250879,     15.000, 0x00000000, 0 },
-  { 9532,  1742,  0, 247841,   2000.000, 0x00000000, 0 },
-  { 9548,  1756,  0, 250293,   3000.000, 0x00000000, 0 },
-  { 9549,  1756,  1, 250293,   6000.000, 0x00000000, 0 },
-  { 9550,  1756,  2, 250293,   9000.000, 0x00000000, 0 },
-  { 9551,  1757,  0, 250294,   3000.000, 0x00000000, 0 },
-  { 9552,  1757,  1, 250294,   6000.000, 0x00000000, 0 },
-  { 9553,  1757,  2, 250294,   9000.000, 0x00000000, 0 },
-  { 9554,  1758,  0, 250295,   3000.000, 0x00000000, 0 },
-  { 9555,  1758,  1, 250295,   6000.000, 0x00000000, 0 },
-  { 9556,  1758,  2, 250295,   9000.000, 0x00000000, 0 },
-  { 9557,  1759,  0, 250296,   3000.000, 0x00000000, 0 },
-  { 9558,  1759,  1, 250296,   6000.000, 0x00000000, 0 },
-  { 9559,  1759,  2, 250296,   9000.000, 0x00000000, 0 },
-  { 9560,  1760,  0, 250298,   3000.000, 0x00000000, 0 },
-  { 9561,  1760,  1, 250298,   6000.000, 0x00000000, 0 },
-  { 9562,  1760,  2, 250298,   9000.000, 0x00000000, 0 },
-  { 9563,  1761,  0, 250311,   3000.000, 0x00000000, 0 },
-  { 9564,  1761,  1, 250311,   6000.000, 0x00000000, 0 },
-  { 9565,  1761,  2, 250311,   9000.000, 0x00000000, 0 },
-  { 9566,  1762,  0, 250312,   3000.000, 0x00000000, 0 },
-  { 9567,  1762,  1, 250312,   6000.000, 0x00000000, 0 },
-  { 9568,  1762,  2, 250312,   9000.000, 0x00000000, 0 },
-  { 9569,  1763,  0, 250313,   3000.000, 0x00000000, 0 },
-  { 9570,  1763,  1, 250313,   6000.000, 0x00000000, 0 },
-  { 9571,  1763,  2, 250313,   9000.000, 0x00000000, 0 },
-  { 9572,  1764,  0, 250314,   3000.000, 0x00000000, 0 },
-  { 9573,  1764,  1, 250314,   6000.000, 0x00000000, 0 },
-  { 9574,  1764,  2, 250314,   9000.000, 0x00000000, 0 },
-  { 9575,  1765,  0, 250315,   3000.000, 0x00000000, 0 },
-  { 9576,  1765,  1, 250315,   6000.000, 0x00000000, 0 },
-  { 9577,  1765,  2, 250315,   9000.000, 0x00000000, 0 },
-  { 9578,  1766,  0, 250316,   3000.000, 0x00000000, 0 },
-  { 9579,  1766,  1, 250316,   6000.000, 0x00000000, 0 },
-  { 9580,  1766,  2, 250316,   9000.000, 0x00000000, 0 },
-  { 9581,  1767,  0, 250317,   3000.000, 0x00000000, 0 },
-  { 9582,  1767,  1, 250317,   6000.000, 0x00000000, 0 },
-  { 9583,  1767,  2, 250317,   9000.000, 0x00000000, 0 },
   { 9590,  1770,  0, 252088,    650.000, 0x00000000, 0 },
   { 9591,  1770,  1, 252088,   1300.000, 0x00000000, 0 },
   { 9592,  1770,  2, 252088,   1950.000, 0x00000000, 0 },
   { 9593,  1771,  0, 252091,    650.000, 0x00000000, 0 },
   { 9594,  1771,  1, 252091,   1300.000, 0x00000000, 0 },
   { 9595,  1771,  2, 252091,   1950.000, 0x00000000, 0 },
-  { 9602,  1774,  0, 252191,   2500.000, 0x00000000, 0 },
-  { 9603,  1774,  1, 252191,   5000.000, 0x00000000, 0 },
-  { 9604,  1774,  2, 252191,   7500.000, 0x00000000, 0 },
+  { 9602,  1774,  0, 252191,   1750.000, 0x00000000, 0 },
+  { 9603,  1774,  1, 252191,   3500.000, 0x00000000, 0 },
+  { 9604,  1774,  2, 252191,   5250.000, 0x00000000, 0 },
   { 9605,  1775,  0, 252207, 200000.000, 0x00000000, 0 },
   { 9606,  1775,  1, 252207, 400000.000, 0x00000000, 0 },
   { 9607,  1775,  2, 252207, 600000.000, 0x00000000, 0 },
-  { 9611,  1777,  0, 252799,   2500.000, 0x00000000, 0 },
-  { 9612,  1777,  1, 252799,   5000.000, 0x00000000, 0 },
-  { 9613,  1777,  2, 252799,   7500.000, 0x00000000, 0 },
+  { 9611,  1777,  0, 252799,   1750.000, 0x00000000, 0 },
+  { 9612,  1777,  1, 252799,   3500.000, 0x00000000, 0 },
+  { 9613,  1777,  2, 252799,   5250.000, 0x00000000, 0 },
   { 9614,  1778,  0, 252875, 166000.000, 0x00000000, 0 },
   { 9615,  1778,  1, 252875, 332000.000, 0x00000000, 0 },
   { 9616,  1778,  2, 252875, 498000.000, 0x00000000, 0 },
   { 9617,  1779,  0, 252888,  60000.000, 0x00000000, 0 },
   { 9618,  1779,  1, 252888, 120000.000, 0x00000000, 0 },
   { 9619,  1779,  2, 252888, 180000.000, 0x00000000, 0 },
-  { 9620,  1780,  0, 252906,  99000.000, 0x00000000, 0 },
-  { 9621,  1780,  1, 252906, 198000.000, 0x00000000, 0 },
-  { 9622,  1780,  2, 252906, 297000.000, 0x00000000, 0 },
+  { 9620,  1780,  0, 252906,  19800.000, 0x00000000, 0 },
+  { 9621,  1780,  1, 252906,  39600.000, 0x00000000, 0 },
+  { 9622,  1780,  2, 252906,  59400.000, 0x00000000, 0 },
   { 9623,  1781,  0, 252922, 133100.000, 0x00000000, 0 },
   { 9624,  1781,  1, 252922, 266200.000, 0x00000000, 0 },
   { 9625,  1781,  2, 252922, 399300.000, 0x00000000, 0 },
@@ -11625,14 +11583,14 @@ static struct artifact_power_rank_t __ptr_artifact_power_rank_data[PTR_ARTIFACT_
   { 9629,  1783,  0, 253093, 116000.000, 0x00000000, 0 },
   { 9630,  1783,  1, 253093, 232000.000, 0x00000000, 0 },
   { 9631,  1783,  2, 253093, 348000.000, 0x00000000, 0 },
-  { 9632,  1784,  0, 253111,  29000.000, 0x00000000, 0 },
-  { 9633,  1784,  1, 253111,  58000.000, 0x00000000, 0 },
-  { 9634,  1784,  2, 253111,  87000.000, 0x00000000, 0 },
+  { 9632,  1784,  0, 253111,  36000.000, 0x00000000, 0 },
+  { 9633,  1784,  1, 253111,  72000.000, 0x00000000, 0 },
+  { 9634,  1784,  2, 253111, 108000.000, 0x00000000, 0 },
   {    0,     0,  0,      0,      0.000, 0x00000000, 0 },
 };
 #define PTR_PTR_ARTIFACT_POWER_RANK_HOTFIX_SIZE (0)
 
-// 0 ptr_artifact_power_rank hotfix entries, wow build level 24608
+// 0 ptr_artifact_power_rank hotfix entries, wow build level 24904
 static hotfix::client_hotfix_entry_t __ptr_ptr_artifact_power_rank_hotfix_data[] = {
   {      0,  0, 0, 0 },
 };

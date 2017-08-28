@@ -1,6 +1,6 @@
 #define PTR_TALENT_SIZE (617)
 
-// 617 talents, wow build 24608
+// 617 talents, wow build 24904
 static struct talent_data_t __ptr_talent_data[] = {
 //{ Name                                ,    Id, Flgs,  Class, Spc, Col, Row, SpellID, ReplcID, S1 },
   { "Second Wind"                       , 15757, 0x00, 0x0001,   0,   0,   3,   29838,       0,  0 },
@@ -245,7 +245,7 @@ static struct talent_data_t __ptr_talent_data[] = {
   { "Pestilent Pustules"                , 22028, 0x00, 0x0020, 252,   1,   1,  194917,       0,  0 },
   { "Blighted Rune Weapon"              , 22029, 0x00, 0x0020, 252,   2,   1,  194918,       0,  0 },
   { "Dark Arbiter"                      , 22030, 0x00, 0x0020, 252,   0,   6,  207349,   49206,  0 },
-  { "White Walker"                      , 22031, 0x00, 0x0020, 251,   2,   4,  253584,       0,  0 },
+  { "Inexorable Assault"                , 22031, 0x00, 0x0020, 251,   2,   4,  253593,       0,  0 },
   { "Shadowflame"                       , 22036, 0x00, 0x0100, 266,   1,   0,  205181,       0,  0 },
   { "Shadowy Inspiration"               , 22038, 0x00, 0x0100, 266,   0,   0,  196269,       0,  0 },
   { "Backdraft"                         , 22039, 0x00, 0x0100, 267,   0,   0,  196406,       0,  0 },
@@ -578,7 +578,7 @@ static struct talent_data_t __ptr_talent_data[] = {
   { "Asphyxiate"                        , 22524, 0x00, 0x0020, 252,   1,   3,  108194,       0,  0 },
   { "Winter is Coming"                  , 22525, 0x00, 0x0020, 251,   2,   3,  207170,       0,  0 },
   { "Debilitating Infestation"          , 22526, 0x00, 0x0020, 252,   2,   3,  207316,       0,  0 },
-  { "Inexorable Assault"                , 22527, 0x00, 0x0020, 251,   0,   4,  253593,       0,  0 },
+  { "Volatile Shielding"                , 22527, 0x00, 0x0020, 251,   0,   4,  207188,       0,  0 },
   { "Spell Eater"                       , 22528, 0x00, 0x0020, 252,   0,   4,  207321,       0,  0 },
   { "Permafrost"                        , 22529, 0x00, 0x0020, 251,   1,   4,  207200,       0,  0 },
   { "Corpse Shield"                     , 22530, 0x00, 0x0020, 252,   1,   4,  207319,       0,  0 },

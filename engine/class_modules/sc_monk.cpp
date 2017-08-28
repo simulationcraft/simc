@@ -566,6 +566,8 @@ public:
     const spell_data_t* chi_wave_damage;
     const spell_data_t* chi_wave_heal;
     const spell_data_t* healing_elixir;
+    const spell_data_t* rushing_jade_wind_tick;
+    const spell_data_t* spinning_crane_kick_tick;
     // Brewmaster
     const spell_data_t* breath_of_fire_dot;
     const spell_data_t* celestial_fortune;
@@ -611,6 +613,7 @@ public:
     const spell_data_t* crosswinds_trigger;
     const spell_data_t* cyclone_strikes;
     const spell_data_t* dizzying_kicks;
+    const spell_data_t* fists_of_fury_tick;
     const spell_data_t* gale_burst;
     const spell_data_t* hit_combo;
     const spell_data_t* mark_of_the_crane;
@@ -620,7 +623,7 @@ public:
     const spell_data_t* thunderfist_damage;
     const spell_data_t* touch_of_karma_buff;
     const spell_data_t* touch_of_karma_tick;
-    const spell_data_t* whirling_dragon_punch;
+    const spell_data_t* whirling_dragon_punch_tick;
     const spell_data_t* tier17_4pc_melee;
     const spell_data_t* tier18_2pc_melee;
     const spell_data_t* tier19_4pc_melee;
@@ -1462,7 +1465,7 @@ struct storm_earth_and_fire_pet_t : public pet_t
   struct sef_fists_of_fury_tick_t: public sef_tick_action_t
   {
     sef_fists_of_fury_tick_t( storm_earth_and_fire_pet_t* p ):
-      sef_tick_action_t( "fists_of_fury_tick", p, p -> o() -> spec.fists_of_fury -> effectN( 3 ).trigger())
+      sef_tick_action_t( "fists_of_fury_tick", p, p -> o() -> passives.fists_of_fury_tick )
     { }
   };
 
@@ -1541,7 +1544,7 @@ struct storm_earth_and_fire_pet_t : public pet_t
       weapon_power_mod = 0;
 
       tick_action = new sef_tick_action_t( "spinning_crane_kick_tick", player, 
-          player -> o() -> spec.spinning_crane_kick -> effectN( 1 ).trigger() );
+          player -> o() -> passives.spinning_crane_kick_tick );
     }
   };
 
@@ -1574,7 +1577,7 @@ struct storm_earth_and_fire_pet_t : public pet_t
   struct sef_whirling_dragon_punch_tick_t : public sef_tick_action_t
   {
     sef_whirling_dragon_punch_tick_t( storm_earth_and_fire_pet_t* p ):
-      sef_tick_action_t( "whirling_dragon_punch_tick", p, p -> o() -> passives.whirling_dragon_punch )
+      sef_tick_action_t( "whirling_dragon_punch_tick", p, p -> o() -> passives.whirling_dragon_punch_tick )
     {
       aoe = -1;
     }
@@ -1994,7 +1997,9 @@ public:
     main_hand_weapon.max_dmg = dbc.spell_scaling( o() -> type, level() );
     main_hand_weapon.damage = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
     main_hand_weapon.swing_time = timespan_t::from_seconds( 1.0 );
-    owner_coeff.ap_from_ap =  4.5;
+    owner_coeff.ap_from_ap = 4.5;
+    if ( maybe_ptr( dbc.ptr ) )
+      owner_coeff.ap_from_ap *= 1 + o() -> spec.windwalker_monk -> effectN( 1 ).percent();
   }
 
   monk_t* o()
@@ -2196,8 +2201,11 @@ struct monk_action_t: public Base
   bool brewmaster_damage_increase_two;
   bool brewmaster_damage_increase_dot_three;
   bool windwalker_damage_increase;
-  bool windwalker_damage_increase_dot;
   bool windwalker_damage_increase_two;
+  bool windwalker_damage_increase_dot;
+  bool windwalker_damage_increase_dot_two;
+  bool windwalker_damage_increase_dot_three;
+  bool windwalker_damage_increase_dot_four;
 private:
   std::array < resource_e, MONK_MISTWEAVER + 1 > _resource_by_stance;
   typedef Base ab; // action base, eg. spell_t
@@ -2215,8 +2223,11 @@ public:
     brewmaster_damage_increase_two( ab::data().affected_by( player -> spec.brewmaster_monk -> effectN( 6 ) ) ),
     brewmaster_damage_increase_dot_three( ab::data().affected_by( player -> spec.brewmaster_monk -> effectN( 5 ) ) ),
     windwalker_damage_increase( ab::data().affected_by( player -> spec.windwalker_monk -> effectN( 1 ) ) ),
+    windwalker_damage_increase_two( ab::data().affected_by( player -> spec.windwalker_monk -> effectN( 6 ) ) ),
     windwalker_damage_increase_dot( ab::data().affected_by( player -> spec.windwalker_monk -> effectN( 2 ) ) ),
-    windwalker_damage_increase_two( ab::data().affected_by( player -> spec.windwalker_monk -> effectN( 6 ) ) )
+    windwalker_damage_increase_dot_two( maybe_ptr( player -> dbc.ptr ) ? ab::data().affected_by( player -> spec.windwalker_monk -> effectN( 3 ) ) : false ),
+    windwalker_damage_increase_dot_three( maybe_ptr( player -> dbc.ptr ) ? ab::data().affected_by( player -> spec.windwalker_monk -> effectN( 7 ) ) : false ),
+    windwalker_damage_increase_dot_four( maybe_ptr( player -> dbc.ptr ) ? ab::data().affected_by( player -> spec.windwalker_monk -> effectN( 8 ) ) : false )
   {
     ab::may_crit = true;
     range::fill( _resource_by_stance, RESOURCE_MAX );
@@ -2251,12 +2262,24 @@ public:
         if ( windwalker_damage_increase )
         {
           ab::base_dd_multiplier *= 1.0 + player -> spec.windwalker_monk -> effectN( 1 ).percent();
-          ab::base_td_multiplier *= 1.0 + player -> spec.windwalker_monk -> effectN( 1 ).percent();
+          if ( !maybe_ptr( player -> dbc.ptr ) )
+            ab::base_td_multiplier *= 1.0 + player -> spec.windwalker_monk -> effectN( 1 ).percent();
         }
-        if ( windwalker_damage_increase_dot )
-          ab::base_td_multiplier *= 1.0 + player -> spec.windwalker_monk -> effectN( 2 ).percent();
         if ( windwalker_damage_increase_two )
           ab::base_dd_multiplier *= 1.0 + player -> spec.windwalker_monk -> effectN( 6 ).percent();
+
+        if ( windwalker_damage_increase_dot )
+          ab::base_td_multiplier *= 1.0 + player -> spec.windwalker_monk -> effectN( 2 ).percent();
+        if ( windwalker_damage_increase_dot_two )
+          ab::base_td_multiplier *= 1.0 + player -> spec.windwalker_monk -> effectN( 3 ).percent();
+        if ( windwalker_damage_increase_dot_three )
+        {
+          ab::base_td_multiplier *= 1.0 + player -> spec.windwalker_monk -> effectN( 7 ).percent();
+          // chi wave is technically a direct damage, so need to apply this modifier to dd as well
+          ab::base_dd_multiplier *= 1.0 + player -> spec.windwalker_monk -> effectN( 7 ).percent();
+        }
+        if ( windwalker_damage_increase_dot_four )
+          ab::base_td_multiplier *= 1.0 + player -> spec.windwalker_monk -> effectN( 8 ).percent();
 
         if ( ab::data().affected_by( player -> spec.stance_of_the_fierce_tiger -> effectN( 5 ) ) )
           ab::trigger_gcd += player -> spec.stance_of_the_fierce_tiger -> effectN( 5 ).time_value(); // Saved as -500 milliseconds
@@ -2265,8 +2288,8 @@ public:
         // Hasted Cooldown
         ab::cooldown -> hasted = ab::data().affected_by( player -> passives.aura_monk -> effectN( 1 ) );
         // Cooldown reduction
-        if ( ab::data().affected_by( player -> spec.windwalker_monk -> effectN( 3 ) ) )
-          ab::cooldown -> duration *= 1 + player -> spec.windwalker_monk -> effectN( 3 ).percent(); // saved as -100
+        if ( ab::data().affected_by( player -> spec.windwalker_monk -> effectN( maybe_ptr( player -> dbc.ptr ) ? 4 : 3 ) ) )
+          ab::cooldown -> duration *= 1 + player -> spec.windwalker_monk -> effectN( maybe_ptr( player -> dbc.ptr ) ? 4 : 3 ).percent(); // saved as -100
         break;
       }
       default: break;
@@ -2900,7 +2923,7 @@ struct tiger_palm_t: public monk_melee_attack_t
       base_costs[RESOURCE_ENERGY] *= 1 + p -> spec.stagger -> effectN( 15 ).percent(); // -50% for Brewmasters
 
     if ( p -> specialization() == MONK_WINDWALKER )
-      energize_amount = p -> spec.windwalker_monk -> effectN( 4 ).base_value();
+      energize_amount = p -> spec.windwalker_monk -> effectN( maybe_ptr( p -> dbc.ptr ) ? 5 : 4 ).base_value();
     else
       energize_type = ENERGIZE_NONE;
 
@@ -3746,7 +3769,7 @@ struct rushing_jade_wind_t : public monk_melee_attack_t
     cooldown -> duration = p -> talent.rushing_jade_wind -> cooldown();
     cooldown -> hasted = true;
 
-    dot_duration *= 1 + p -> spec.brewmaster_monk -> effectN( 11 ).percent();
+    dot_duration *= 1 + p -> spec.brewmaster_monk -> effectN( maybe_ptr( p -> dbc.ptr ) ? 12 : 11 ).percent();
     dot_behavior = DOT_REFRESH; // Spell uses Pandemic Mechanics.
 
     tick_action = new tick_action_t( "rushing_jade_wind_tick", p, p -> talent.rushing_jade_wind -> effectN( 1 ).trigger() );
@@ -3771,6 +3794,25 @@ struct rushing_jade_wind_t : public monk_melee_attack_t
 
     if ( p() -> buff.combo_strikes -> up() )
       pm *= 1 + p() -> cache.mastery_value();
+    
+    if ( maybe_ptr( p() -> dbc.ptr ) )
+    {
+      pm *= 1 + p() -> spec.windwalker_monk -> effectN( 2 ).percent();
+
+      // Remove if statement once Blizz fixes the spell effect to point to the correct affected spell id
+      if ( p() -> passives.rushing_jade_wind_tick -> affected_by( p() -> spec.windwalker_monk-> effectN( 7 ) ) )
+        pm *= 1 + p() -> spec.windwalker_monk -> effectN( 7 ).percent();
+    }
+    else
+    {
+      // Effect is pointing to the wrong spell id
+      if ( p() -> passives.rushing_jade_wind_tick -> affected_by( p() -> spec.windwalker_monk-> effectN( 1 ) ) )
+        pm *= 1 + p() -> spec.windwalker_monk -> effectN( 1 ).percent();
+    }
+
+    pm *= 1 + p() -> spec.brewmaster_monk -> effectN( 1 ).percent();
+
+    pm *= 1 + p() -> spec.brewmaster_monk -> effectN( 5 ).percent();
 
     return pm;
   }
@@ -3786,10 +3828,6 @@ struct rushing_jade_wind_t : public monk_melee_attack_t
         sef_mult += p() -> artifact.spiritual_focus.data().effectN( 1 ).percent();
       am *= 1.0 + sef_mult;
     }
-
-    am *= 1 + p() -> spec.brewmaster_monk -> effectN( 1 ).percent();
-
-    am *= 1 + p() -> spec.brewmaster_monk -> effectN( 5 ).percent();
 
     return am;
   }
@@ -3837,7 +3875,7 @@ struct spinning_crane_kick_t: public monk_melee_attack_t
     spell_power_mod.direct = 0.0;
     dot_behavior = DOT_REFRESH; // Spell uses Pandemic Mechanics.
 
-    tick_action = new tick_action_t( "spinning_crane_kick_tick", p, p -> spec.spinning_crane_kick -> effectN( 1 ).trigger() );
+    tick_action = new tick_action_t( "spinning_crane_kick_tick", p, p -> passives.spinning_crane_kick_tick );
   }
 
   // N full ticks, but never additional ones.
@@ -3870,6 +3908,11 @@ struct spinning_crane_kick_t: public monk_melee_attack_t
       pm *= 1 + p() -> cache.mastery_value();
 
     pm *= 1 + ( mark_of_the_crane_counter() * p() -> passives.cyclone_strikes -> effectN( 1 ).percent() );
+
+    if ( maybe_ptr( p() -> dbc.ptr ) )
+      pm *= 1 + p() -> spec.windwalker_monk -> effectN( 2 ).percent();
+    else
+      pm *= 1 + p() -> spec.windwalker_monk -> effectN( 1 ).percent();
 
     return pm;
   }
@@ -3996,7 +4039,7 @@ struct crosswinds_t : public monk_melee_attack_t
 struct fists_of_fury_tick_t: public monk_melee_attack_t
 {
   fists_of_fury_tick_t( monk_t* p, const std::string& name ):
-    monk_melee_attack_t( name, p, p -> spec.fists_of_fury )
+    monk_melee_attack_t( name, p, p -> passives.fists_of_fury_tick )
   {
     background = true;
     aoe = -1;
@@ -4030,7 +4073,9 @@ struct fists_of_fury_t: public monk_melee_attack_t
     may_crit = may_miss = may_block = may_dodge = may_parry = callbacks = false;
 
     attack_power_mod.direct = 0.0;
+    attack_power_mod.tick = 0.0;
     spell_power_mod.direct = 0.0;
+    spell_power_mod.tick = 0.0;
 
     tick_action = new fists_of_fury_tick_t( p, "fists_of_fury_tick" );
 
@@ -4060,6 +4105,8 @@ struct fists_of_fury_t: public monk_melee_attack_t
         sef_mult += p() -> artifact.spiritual_focus.data().effectN( 1 ).percent();
       pm *= 1.0 + sef_mult;
     }
+
+    pm *= 1 + p() -> spec.windwalker_monk -> effectN( 1 ).percent();
 
     return pm;
   }
@@ -4161,7 +4208,7 @@ struct whirling_dragon_punch_t: public monk_melee_attack_t
 
     spell_power_mod.direct = 0.0;
 
-    tick_action = new whirling_dragon_punch_tick_t( "whirling_dragon_punch_tick", p, p -> passives.whirling_dragon_punch );
+    tick_action = new whirling_dragon_punch_tick_t( "whirling_dragon_punch_tick", p, p -> passives.whirling_dragon_punch_tick );
   }
 
   virtual bool ready() override
@@ -4750,6 +4797,13 @@ struct touch_of_death_t: public monk_spell_t
     return monk_spell_t::ready();
   }
 
+  void init() override
+  {
+    monk_spell_t::init();
+
+    snapshot_flags = update_flags = 0;
+  }
+
   double target_armor( player_t* ) const override { return 0; }
 
   double calculate_tick_amount( action_state_t*, double /*dot_multiplier*/ ) const override
@@ -4757,12 +4811,15 @@ struct touch_of_death_t: public monk_spell_t
     double amount = p() -> resources.max[RESOURCE_HEALTH];
 
     amount *= p() -> spec.touch_of_death -> effectN( 2 ).percent(); // 50% HP
- 
-    if ( p() -> buff.combo_strikes -> up() )
-      amount *= 1 + p() -> cache.mastery_value();
 
+    if ( maybe_ptr( p() -> dbc.ptr ) )
+      amount *= 1 + p() -> cache.damage_versatility();
+ 
     if ( p() -> legendary.hidden_masters_forbidden_touch )
       amount *= 1 + p() -> legendary.hidden_masters_forbidden_touch -> effectN( 2 ).percent();
+
+    if ( p() -> buff.combo_strikes -> up() )
+      amount *= 1 + p() -> cache.mastery_value();
 
     return amount;
   }
@@ -4848,7 +4905,10 @@ struct touch_of_karma_dot_t: public residual_action::residual_periodic_action_t 
   {
     monk_melee_attack_t::init();
     // disable the snapshot_flags for all multipliers
-    snapshot_flags &= STATE_NO_MULTIPLIER;
+    snapshot_flags = update_flags = 0;
+
+    if ( maybe_ptr( p() -> dbc.ptr ) )
+      snapshot_flags |= STATE_VERSATILITY;
   }
 };
 
@@ -4889,6 +4949,14 @@ struct touch_of_karma_t: public monk_melee_attack_t
 
     trigger_gcd = timespan_t::zero();
     may_crit = may_miss = may_dodge = may_parry = false;
+  }
+
+  // Need to disable multipliers in init() so that it doesn't double-dip on anything  
+  virtual void init() override
+  {
+    monk_melee_attack_t::init();
+    // disable the snapshot_flags for all multipliers
+    snapshot_flags = update_flags = 0;
   }
 
   void execute() override
@@ -6952,7 +7020,6 @@ struct chi_wave_heal_tick_t: public monk_heal_t
     monk_heal_t( name, p, p.passives.chi_wave_heal )
   {
     background = direct_tick = true;
-    attack_power_mod.direct = 0.867; // Hard code 07/12/16
     target = player;
   }
 
@@ -6982,7 +7049,6 @@ struct chi_wave_dmg_tick_t: public monk_spell_t
     monk_spell_t( name, player, player -> passives.chi_wave_damage )
   {
     background = direct_tick = true;
-    attack_power_mod.direct = 0.867; // Hard code 07/12/16
   }
 
   double composite_persistent_multiplier( const action_state_t* action_state ) const override
@@ -8220,7 +8286,9 @@ void monk_t::init_spells()
   passives.chi_torpedo                      = find_spell( 119085 );
   passives.chi_wave_damage                  = find_spell( 132467 );
   passives.chi_wave_heal                    = find_spell( 132463 );
-  passives.healing_elixir                  = find_spell( 122281 ); // talent.healing_elixir -> effectN( 1 ).trigger() -> effectN( 1 ).trigger()
+  passives.healing_elixir                   = find_spell( 122281 ); // talent.healing_elixir -> effectN( 1 ).trigger() -> effectN( 1 ).trigger()
+  passives.spinning_crane_kick_tick         = find_spell( 107270 );
+  passives.rushing_jade_wind_tick           = find_spell( 148187 );
 
   // Brewmaster
   passives.breath_of_fire_dot               = find_spell( 123725 );
@@ -8267,6 +8335,7 @@ void monk_t::init_spells()
   passives.crosswinds_trigger               = find_spell( 195651 );
   passives.cyclone_strikes                  = find_spell( 220358 );
   passives.dizzying_kicks                   = find_spell( 196723 );
+  passives.fists_of_fury_tick               = find_spell( 117418 );
   passives.gale_burst                       = find_spell( 195403 );
   passives.hit_combo                        = find_spell( 196741 );
   passives.mark_of_the_crane                = find_spell( 228287 );
@@ -8276,7 +8345,7 @@ void monk_t::init_spells()
   passives.thunderfist_damage               = find_spell( 242390 );
   passives.touch_of_karma_buff              = find_spell( 125174 );
   passives.touch_of_karma_tick              = find_spell( 124280 );
-  passives.whirling_dragon_punch            = find_spell( 158221 );
+  passives.whirling_dragon_punch_tick       = find_spell( 158221 );
   passives.tier17_4pc_melee                 = find_spell( 166603 );
   passives.tier18_2pc_melee                 = find_spell( 216172 );
   passives.tier19_4pc_melee                 = find_spell( 211432 );
@@ -9977,21 +10046,21 @@ void monk_t::apl_combat_brewmaster()
     if ( racial_actions[i] != "arcane_torrent" )
       st -> add_action( racial_actions[i] );
   }
+  st -> add_action( this, "Exploding Keg" );
   st -> add_talent( this, "Invoke Niuzao, the Black Ox", "if=target.time_to_die>45" );
   st -> add_action( this, "Ironskin Brew", "if=buff.blackout_combo.down&cooldown.brews.charges>=1" );
-  st -> add_talent( this, "Black Ox Brew", "if=energy<31&cooldown.brews.charges<1" );
+  st -> add_talent( this, "Black Ox Brew", "if=(energy+(energy.regen*(cooldown.keg_smash.remains)))<40&buff.blackout_combo.down&cooldown.keg_smash.up" );
   for ( size_t i = 0; i < racial_actions.size(); i++ )
   {
     if ( racial_actions[i] == "arcane_torrent" )
       st -> add_action( racial_actions[i] + ",if=energy<31" );
   }
-  st -> add_action( this, "Exploding Keg" );
-  st -> add_action( this, "Breath of Fire", "if=buff.blackout_combo.down&energy<50&buff.bloodlust.down");
   st -> add_action( this, "Tiger Palm", "if=buff.blackout_combo.up" );
+  st -> add_action( this, "Blackout Strike", "if=cooldown.keg_smash.remains>0" );
   st -> add_action( this, "Keg Smash" );
-  st -> add_action( this, "Blackout Strike" );
-  st -> add_action( this, "Tiger Palm", "if=!talent.blackout_combo.enabled&cooldown.keg_smash.remains>=gcd&(energy+(energy.regen*(cooldown.keg_smash.remains)))>=55" );
+  st -> add_action( this, "Breath of Fire", "if=buff.bloodlust.down&buff.blackout_combo.down|(buff.bloodlust.up&buff.blackout_combo.down&dot.breath_of_fire_dot.remains<=0)");
   st -> add_talent( this, "Rushing Jade Wind" );
+  st -> add_action( this, "Tiger Palm", "if=!talent.blackout_combo.enabled&cooldown.keg_smash.remains>=gcd&(energy+(energy.regen*(cooldown.keg_smash.remains)))>=55" );
 
 
 /*  aoe -> add_action( this, "Purifying Brew", "if=stagger.heavy" );

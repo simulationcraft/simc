@@ -727,10 +727,10 @@ namespace buffs {
     }
   };
 
-  struct crusade_buff_t : public buff_t
+  struct crusade_buff_t : public haste_buff_t
   {
     crusade_buff_t( player_t* p ):
-      buff_t( buff_creator_t( p, "crusade", p -> find_spell( 231895 ) )
+      haste_buff_t( haste_buff_creator_t( p, "crusade", p -> find_spell( 231895 ) )
         .refresh_behavior( BUFF_REFRESH_DISABLED ) ),
       damage_modifier( 0.0 ),
       healing_modifier( 0.0 ),
@@ -739,7 +739,7 @@ namespace buffs {
       // TODO(mserrano): fix this when Blizzard turns the spelldata back to sane
       //  values
       damage_modifier = data().effectN( 1 ).percent() / 10.0;
-      haste_bonus = data().effectN( 2 ).percent() / 10.0;
+      haste_bonus = data().effectN( player -> dbc.ptr ? 3 : 2 ).percent() / 10.0;
       healing_modifier = 0;
 
       paladin_t* paladin = static_cast<paladin_t*>( player );
@@ -1582,14 +1582,13 @@ struct consecration_tick_t: public paladin_spell_t {
     ground_aoe = true;
     if ( p -> specialization() == PALADIN_RETRIBUTION )
     {
-      base_multiplier *= 1.0 + p -> passives.retribution_paladin -> effectN( 8 ).percent();
+      base_multiplier *= 1.0 + p -> passives.retribution_paladin -> effectN( p -> dbc.ptr ? 9 : 8 ).percent();
     }
 
-  if (p->specialization() == PALADIN_PROTECTION)
-  {
-    base_multiplier *= 1.0 + p->passives.protection_paladin->effectN(4).percent();
-  }
-
+    if (p->specialization() == PALADIN_PROTECTION)
+    {
+      base_multiplier *= 1.0 + p->passives.protection_paladin->effectN(4).percent();
+    }
   }
 };
 
@@ -2794,7 +2793,7 @@ struct eye_of_tyr_t : public paladin_spell_t
 
   bool ready() override
   {
-	  if (!player->artifact_enabled())
+	  if (!player->artifact->enabled())
 	  {
 		  return false;
 	  }
@@ -2856,7 +2855,7 @@ struct wake_of_ashes_t : public paladin_spell_t
 
   bool ready() override
   {
-    if ( ! player -> artifact_enabled() )
+    if ( ! player -> artifact->enabled() )
     {
       return false;
     }
@@ -3242,11 +3241,6 @@ struct crusader_strike_t : public holy_power_generator_t
     base_multiplier *= 1.0 + p -> artifact.blade_of_light.percent();
     base_crit       += p -> artifact.sharpened_edge.percent();
 
-    if ( p -> specialization() == PALADIN_RETRIBUTION )
-    {
-      base_multiplier *= 1.1; // 7/21 hotfix; TODO(mserrano): delete this
-    }
-
     if ( p -> talents.fires_of_justice -> ok() )
     {
       cooldown -> duration += timespan_t::from_millis( p -> talents.fires_of_justice -> effectN( 2 ).base_value() );
@@ -3255,6 +3249,14 @@ struct crusader_strike_t : public holy_power_generator_t
     if ( crusader_strike_2 )
     {
       cooldown -> charges += crusader_strike_2 -> effectN( 1 ).base_value();
+    }
+
+    if ( p -> specialization() == PALADIN_RETRIBUTION )
+    {
+      if ( p -> dbc.ptr )
+      {
+        base_multiplier *= 1.0 + p -> passives.retribution_paladin -> effectN( 8 ).percent();
+      }
     }
 
     background = ( p -> talents.zeal -> ok() );
@@ -5945,12 +5947,19 @@ double paladin_t::composite_player_multiplier( school_e school ) const
 
   if ( buffs.crusade -> check() )
   {
-    double aw_multiplier = buffs.crusade -> get_damage_mod();
-    m *= 1.0 + aw_multiplier;
+    double aw_multiplier = 1.0 + buffs.crusade -> get_damage_mod();
     if ( chain_of_thrayn )
     {
-      m *= 1.0 + spells.chain_of_thrayn -> effectN( 4 ).percent();
+      if ( dbc.ptr )
+      {
+        aw_multiplier += spells.chain_of_thrayn -> effectN( 4 ).percent();
+      }
+      else
+      {
+        aw_multiplier *= 1.0 + spells.chain_of_thrayn -> effectN( 4 ).percent();
+      }
     }
+    m *= aw_multiplier;
   }
 
   m *= 1.0 + buffs.wings_of_liberty -> current_stack * buffs.wings_of_liberty -> current_value;
@@ -6572,6 +6581,8 @@ double paladin_t::get_divine_judgment(bool is_judgment) const
 {
   if ( specialization() != PALADIN_RETRIBUTION ) return 0.0;
 
+  if ( ! passives.divine_judgment -> ok() ) return 0.0;
+
   double handoflight;
   handoflight = cache.mastery_value(); // HoL modifier is in effect #1
   if ( is_judgment ) {
@@ -6811,23 +6822,6 @@ struct paladin_module_t : public module_t
 
   virtual void register_hotfixes() const override
   {
-    hotfix::register_effect( "Paladin", "2017-07-21", "Blade of Justice damage increased by 10%", 267536 )
-        .field( "base_value" )
-        .operation( hotfix::HOTFIX_MUL )
-        .modifier( 1.1 )
-        .verification_value( 540 );
-
-    hotfix::register_effect( "Paladin", "2017-07-21", "Blade of Justice (and presumably Divine Hammer) damage increased by 10%", 291193 )
-        .field( "base_value" )
-        .operation( hotfix::HOTFIX_MUL )
-        .modifier( 1.1 )
-        .verification_value( 68 );
-
-    hotfix::register_effect( "Paladin", "2017-07-21", "Crusader Strike (and presumably Zeal) damage increased by 10%", 322915 )
-        .field( "base_value" )
-        .operation( hotfix::HOTFIX_MUL )
-        .modifier( 1.1 )
-        .verification_value( 320 );
   }
 
   virtual void combat_begin( sim_t* ) const override {}

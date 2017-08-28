@@ -8,7 +8,7 @@ talents=1022021
 artifact=54:133022:137420:133022:0:748:1:749:6:751:3:754:3:755:3:756:3:759:1:762:1:763:1:1340:1
 
 # Default consumables
-potion=deadly_grace
+potion=prolonged_power
 flask=whispered_pact
 food=lemon_herb_filet
 augmentation=defiled
@@ -59,8 +59,6 @@ actions.combustion_phase+=/pyroblast,if=buff.kaelthas_ultimate_ability.react&buf
 actions.combustion_phase+=/pyroblast,if=buff.hot_streak.up
 actions.combustion_phase+=/fire_blast,if=buff.heating_up.up
 actions.combustion_phase+=/phoenixs_flames
-actions.combustion_phase+=/scorch,if=buff.combustion.remains>cast_time&target.health.pct<=30&equipped.132454
-actions.combustion_phase+=/fireball,if=buff.combustion.remains>cast_time
 actions.combustion_phase+=/scorch,if=buff.combustion.remains>cast_time
 actions.combustion_phase+=/dragons_breath,if=buff.hot_streak.down&action.fire_blast.charges<1&action.phoenixs_flames.charges<1
 actions.combustion_phase+=/scorch,if=target.health.pct<=30&equipped.132454

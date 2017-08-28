@@ -20,6 +20,7 @@ To change the list of source files, update the QT_ files and run synchronize.py
 		<ClInclude Include="..\engine\sim\sc_option.hpp" />
 		<ClInclude Include="..\engine\sim\sc_expressions.hpp" />
 		<ClInclude Include="..\engine\report\sc_report.hpp" />
+		<ClInclude Include="..\engine\player\artifact_data.hpp" />
 		<ClInclude Include="..\engine\dbc\specialization.hpp" />
 		<ClInclude Include="..\engine\dbc\dbc.hpp" />
 		<ClInclude Include="..\engine\simulationcraft.hpp" />
@@ -146,6 +147,9 @@ To change the list of source files, update the QT_ files and run synchronize.py
 		</ClCompile>
 		<ClCompile Include="..\engine\player\sc_consumable.cpp">
 			
+		</ClCompile>
+		<ClCompile Include="..\engine\player\artifact_data.cpp">
+			<PrecompiledHeader>NotUsing</PrecompiledHeader>
 		</ClCompile>
 		<ClCompile Include="..\engine\interfaces\sc_wowhead.cpp">
 			

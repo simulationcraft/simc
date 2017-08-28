@@ -17,7 +17,7 @@
 // Double check all up()/check() usage.
 //
 // Affliction -
-// Soul Flame + Wrath of Consumption on-death effects.
+// Soul Flame on-death effect
 // Peridition needs special crit damage override thing NYI.
 //
 // Better reporting for pet buffs.
@@ -397,6 +397,7 @@ public:
     buff_t* compounding_horror;
     buff_t* active_uas;
     buff_t* demonic_speed; // t20 4pc
+    buff_t* wrath_of_consumption;
 
     //demonology buffs
     buff_t* tier18_2pc_demonology;
@@ -437,6 +438,7 @@ public:
     gain_t* miss_refund;
     gain_t* seed_of_corruption;
     gain_t* drain_soul;
+    gain_t* unstable_affliction_refund;
     gain_t* power_trip;
     gain_t* shadow_bolt;
     gain_t* doom;
@@ -546,6 +548,7 @@ public:
   virtual stat_e    convert_hybrid_stat( stat_e s ) const override;
   virtual double    matching_gear_multiplier( attribute_e attr ) const override;
   virtual double    composite_player_multiplier( school_e school ) const override;
+  virtual double    composite_player_target_multiplier( player_t* target, school_e school ) const override;
   virtual double    composite_rating_multiplier( rating_e rating ) const override;
   virtual void      invalidate_cache( cache_e ) override;
   virtual double    composite_spell_crit_chance() const override;
@@ -2280,7 +2283,6 @@ private:
 
     can_havoc = false;
     affected_by_destruction_t20_4pc = false;
-    affected_by_contagion = true;
     affected_by_deaths_embrace = false;
     destro_mastery = true;
     can_feretory = true;
@@ -2294,12 +2296,12 @@ public:
   mutable std::vector< player_t* > havoc_targets;
   bool can_havoc;
   bool affected_by_destruction_t20_4pc;
-  bool affected_by_contagion;
   bool affected_by_flamelicked;
   bool affected_by_odr_shawl_of_the_ymirjar;
   bool affected_by_deaths_embrace;
   bool affliction_direct_increase;
   bool affliction_dot_increase;
+  bool affliction_woc_dot_increase;
   bool destruction_direct_increase;
   bool destruction_dot_increase;
   bool destro_mastery;
@@ -2367,6 +2369,7 @@ public:
 
     affliction_direct_increase = data().affected_by( p() -> spec.affliction -> effectN( 1 ) );
     affliction_dot_increase = data().affected_by( p() -> spec.affliction -> effectN( 2 ) );
+    affliction_woc_dot_increase = data().affected_by( p() -> find_spell( 199646 ) -> effectN( 1 ) );
     if ( affliction_direct_increase )
       base_dd_multiplier *= 1.0 + p() -> spec.affliction -> effectN( 1 ).percent();
     if ( affliction_dot_increase )
@@ -2386,7 +2389,11 @@ public:
     if ( use_havoc() )
     {
       if ( ! target_cache.is_valid )
+      {
         available_targets( target_cache.list );
+        check_distance_targeting( target_cache.list );
+        target_cache.is_valid = true;
+      }
 
       havoc_targets.clear();
       if ( range::find( target_cache.list, target ) != target_cache.list.end() )
@@ -2570,21 +2577,6 @@ public:
     if ( target == p() -> havoc_target && affected_by_odr_shawl_of_the_ymirjar && p() -> legendary.odr_shawl_of_the_ymirjar )
       m*= 1.0 + p() -> find_spell( 212173 ) -> effectN( 1 ).percent();
 
-    if ( td -> debuffs_haunt -> check() )
-      m *= 1.0 + p() -> find_spell( 48181 ) -> effectN( 2 ).percent();
-
-    if ( p() -> talents.contagion -> ok() && affected_by_contagion )
-    {
-      for ( int i = 0; i < MAX_UAS; i++ )
-      {
-        if ( td -> dots_unstable_affliction[i] -> is_ticking() )
-        {
-          m *= 1.0 + p() -> talents.contagion -> effectN( 1 ).percent();
-          break;
-        }
-      }
-    }
-
     double deaths_embrace_health = p() -> talents.deaths_embrace -> effectN( 2 ).base_value();
 
     if ( p() -> talents.deaths_embrace -> ok() && target -> health_percentage() <= deaths_embrace_health && affected_by_deaths_embrace )
@@ -2610,6 +2602,14 @@ public:
         chaotic_energies_rng = rng().range( 0, destro_mastery_value );
 
       pm *= 1.0 + chaotic_energies_rng + ( destro_mastery_value );
+    }
+
+    if ( affliction_woc_dot_increase )
+    {
+      double woc_mul = p() -> buffs.wrath_of_consumption -> stack() * p() -> artifact.wrath_of_consumption.percent();
+      if ( p() -> buffs.deadwind_harvester -> check() )
+        woc_mul *= 2;
+      pm *= 1.0 + woc_mul;
     }
 
     return pm;
@@ -2837,7 +2837,6 @@ struct unstable_affliction_t: public warlock_spell_t
       background = true;
       dual = true;
       tick_may_crit = hasted_ticks = true;
-      affected_by_contagion = false;
       affected_by_deaths_embrace = true;
 
       if ( p -> sets->has_set_bonus( WARLOCK_AFFLICTION, T19, B2 ) )
@@ -2967,8 +2966,8 @@ struct unstable_affliction_t: public warlock_spell_t
       if ( p() -> mastery_spells.potent_afflictions -> ok() )
         m *= 1.0 + p() -> cache.mastery_value();
 
-      if ( p() -> talents.contagion -> ok() )
-        m *= 1.0 + p() -> talents.contagion -> effectN( 1 ).percent();
+      //if ( p() -> talents.contagion -> ok() )
+      //  m *= 1.0 + p() -> talents.contagion -> effectN( 1 ).percent();
 
       return m;
     }
@@ -3010,7 +3009,6 @@ struct unstable_affliction_t: public warlock_spell_t
     const spell_data_t* ptr_spell = p -> find_spell( 233490 );
     spell_power_mod.direct = ptr_spell -> effectN( 1 ).sp_coeff();
     dot_duration = timespan_t::zero(); // DoT managed by ignite action.
-    affected_by_contagion = false;
   }
 
   double cost() const override
@@ -4070,7 +4068,7 @@ struct chaos_bolt_t: public warlock_spell_t
       duplicate ->target_cache.is_valid = true;
       if ( duplicate -> target_cache.list.size() > 0 )
       {
-        size_t target_to_strike = static_cast<size_t>( rng().range( 0.0, duplicate -> target_cache.list.size() - 1 ) );
+        size_t target_to_strike = static_cast<size_t>( rng().range( 0.0, duplicate -> target_cache.list.size() ) );
         duplicate -> target = duplicate -> target_cache.list[target_to_strike];
         duplicate -> execute();
       }
@@ -5686,11 +5684,14 @@ struct channel_demonfire_t: public warlock_spell_t
 
   void tick( dot_t* d ) override
   {
-    std::vector<player_t*> targets = target_list();
+    // Need to invalidate the target cache to figure out immolated targets.
+    target_cache.is_valid = false;
+
+    const auto& targets = target_list();
 
     if ( targets.size() > 0 )
     {
-      channel_demonfire -> target = targets[ rng().range( 0, targets.size() - 1 ) ];
+      channel_demonfire -> set_target( targets[ rng().range( 0, targets.size() ) ] );
       channel_demonfire -> execute();
     }
 
@@ -5830,6 +5831,23 @@ void warlock_td_t::target_demise()
     }
     warlock.resource_gain( RESOURCE_SOUL_SHARD, 1, warlock.gains.drain_soul );
   }
+  if ( warlock.specialization() == WARLOCK_AFFLICTION )
+  {
+    for ( int i = 0; i < MAX_UAS; ++i )
+    {
+      if ( dots_unstable_affliction[i] -> is_ticking() )
+      {
+        if ( warlock.sim -> log )
+        {
+          warlock.sim -> out_debug.printf( "Player %s demised. Warlock %s gains a shard from unstable affliction.", target -> name(), warlock.name() );
+        }
+        warlock.resource_gain( RESOURCE_SOUL_SHARD, 1, warlock.gains.unstable_affliction_refund );
+
+        // you can only get one soul shard per death from UA refunds
+        break;
+      }
+    }
+  }
   if ( warlock.specialization() == WARLOCK_AFFLICTION && debuffs_haunt -> check() )
   {
     if ( warlock.sim -> log )
@@ -5837,6 +5855,22 @@ void warlock_td_t::target_demise()
       warlock.sim -> out_debug.printf( "Player %s demised. Warlock %s reset haunt's cooldown.", target -> name(), warlock.name() );
     }
     warlock.cooldowns.haunt -> reset( true );
+  }
+  if ( warlock.specialization() == WARLOCK_AFFLICTION && warlock.artifact.wrath_of_consumption.rank() )
+  {
+    if ( warlock.sim -> log )
+    {
+      warlock.sim -> out_debug.printf( "Player %s demised. Warlock %s gains a stack of Wrath of Consumption.", target -> name(), warlock.name() );
+    }
+    warlock.buffs.wrath_of_consumption -> trigger();
+  }
+  if ( warlock.specialization() == WARLOCK_AFFLICTION && warlock.artifact.reap_souls.rank() )
+  {
+    if ( warlock.sim -> log )
+    {
+      warlock.sim -> out_debug.printf( "Player %s demised. Warlock %s gains a stack of Tormented Souls.", target -> name(), warlock.name() );
+    }
+    warlock.buffs.tormented_souls -> trigger();
   }
 }
 
@@ -5896,6 +5930,30 @@ warlock_t::warlock_t( sim_t* sim, const std::string& name, race_e r ):
       return false;
     } );
   }
+
+double warlock_t::composite_player_target_multiplier( player_t* target, school_e school ) const
+{
+  double m = player_t::composite_player_target_multiplier( target, school );
+
+  warlock_td_t* td = get_target_data( target );
+
+  if ( td -> debuffs_haunt -> check() )
+    m *= 1.0 + find_spell( 48181 ) -> effectN( 2 ).percent();
+
+  if ( talents.contagion -> ok() )
+  {
+    for ( int i = 0; i < MAX_UAS; i++ )
+    {
+      if ( td -> dots_unstable_affliction[i] -> is_ticking() )
+      {
+        m *= 1.0 + talents.contagion -> effectN( 1 ).percent();
+        break;
+      }
+    }
+  }
+
+  return m;
+}
 
 
 double warlock_t::composite_player_multiplier( school_e school ) const
@@ -6616,6 +6674,10 @@ void warlock_t::create_buffs()
   buffs.demonic_speed = haste_buff_creator_t( this, "demonic_speed", sets -> set( WARLOCK_AFFLICTION, T20, B4 ) -> effectN( 1 ).trigger() )
     .chance( sets -> set( WARLOCK_AFFLICTION, T20, B4 ) -> proc_chance() )
     .default_value( sets -> set( WARLOCK_AFFLICTION, T20, B4 ) -> effectN( 1 ).trigger() -> effectN( 1 ).percent() );
+  buffs.wrath_of_consumption = buff_creator_t( this, "wrath_of_consumption", find_spell( 199646 ) )
+    .refresh_behavior( BUFF_REFRESH_DURATION )
+    .max_stack( 5 );
+
 
   //demonology buffs
   buffs.demonic_synergy = buff_creator_t( this, "demonic_synergy", find_spell( 171982 ) )
@@ -6673,6 +6735,7 @@ void warlock_t::init_gains()
   gains.miss_refund                 = get_gain( "miss_refund" );
   gains.seed_of_corruption          = get_gain( "seed_of_corruption" );
   gains.drain_soul                  = get_gain( "drain_soul" );
+  gains.unstable_affliction_refund  = get_gain( "unstable_affliction_refund" );
   gains.shadow_bolt                 = get_gain( "shadow_bolt" );
   gains.soul_conduit                = get_gain( "soul_conduit" );
   gains.reverse_entropy             = get_gain( "reverse_entropy" );
@@ -6797,9 +6860,8 @@ void warlock_t::apl_precombat()
   if ( specialization() == WARLOCK_DEMONOLOGY )
   {
     precombat_list += "/demonic_empowerment";
-    precombat_list += "/call_dreadstalkers,if=!equipped.132369";
-    precombat_list += "/demonbolt,if=equipped.132369";
-    precombat_list += "/shadow_bolt,if=equipped.132369";
+    precombat_list += "/demonbolt";
+    precombat_list += "/shadow_bolt";
   }
 }
 

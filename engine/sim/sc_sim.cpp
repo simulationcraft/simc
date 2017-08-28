@@ -2220,13 +2220,19 @@ bool sim_t::init_actor( player_t* p )
   p -> init_target();
   p -> init_character_properties();
 
+  // Artifact must be initialized before items, since in 7.3 crucible traits may increase the item
+  // level of the artifact (i.e., the increase must be included when items stats are calculated):w
+  if ( ! p -> init_artifact() )
+  {
+    return false;
+  }
+
   // Initialize each actor's items, construct gear information & stats
   if ( ! p -> init_items() )
   {
     return false;
   }
 
-  p -> init_artifact();
   p -> init_spells();
   p -> init_base_stats();
   p -> create_buffs();
@@ -3260,8 +3266,9 @@ void sim_t::create_options()
 
   // Legion
   add_option( opt_int( "legion.infernal_cinders_users", expansion_opts.infernal_cinders_users, 1, 20 ) );
-  add_option( opt_bool( "legion.feast_as_dps", expansion_opts.lavish_feast_as_dps ) );
   add_option( opt_int( "legion.engine_of_eradication_orbs", expansion_opts.engine_of_eradication_orbs, 0, 4 ) );
+  add_option( opt_bool( "legion.feast_as_dps", expansion_opts.lavish_feast_as_dps ) );
+  add_option( opt_bool( "legion.specter_of_betrayal_overlap", expansion_opts.specter_of_betrayal_overlap ) );
   add_option( opt_func( "legion.cradle_of_anguish_resets", []( sim_t* sim, const std::string&, const std::string& value ) {
     auto split = util::string_split( value, ":/," );
     range::for_each( split, [ sim ]( const std::string& str ) {

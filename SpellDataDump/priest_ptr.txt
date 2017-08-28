@@ -1,4 +1,4 @@
-SimulationCraft 725-02 for World of Warcraft 7.3.0 PTR (wow build 24539)
+SimulationCraft 725-02 for World of Warcraft 7.3.0 PTR (wow build 24539, git build 3a6919f)
 
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
 Class            : Discipline Shadow Priest
@@ -108,7 +108,7 @@ Spell Level      : 1
 Range            : 40 yards
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
-Affecting spells : Holy Priest (137031 effect#4), Lucidity (137323 effect#1), Muze's Unwavering Will (210632 effect#1), Invoke the Light (216122 effect#1), Radiant Focus (252848 effect#1)
+Affecting spells : Holy Priest (137031 effect#4), Lucidity (137323 effect#1), Muze's Unwavering Will (210632 effect#1), Invoke the Light (216122 effect#1)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ....x... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -187,7 +187,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=243)      : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.50000 | Radius: 0 - 40 yards | Target: Unknown(63) -> AOE friendly (31)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.50000 | Radius: 0 - 40 yards | Target: Unknown(132) -> AOE friendly (31)
 #2 (id=105332)   : Trigger Spell (64): Prayer of Healing
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 98367 | Target: Unknown(25)
 #3 (id=288930)   : Dummy (3)
@@ -217,6 +217,7 @@ Attributes       : ........ ........ x.x.x... ........   ..x..... .....x.. .x...
 Effects          :
 #2 (id=248)      : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f | Target: Enemy (6)
+                   Affected School(s): All
 Description      : Controls a mind up to 1 level above yours for $d. Does not work versus Demonic, Mechanical, or Undead beings. Shares diminishing returns with other disorienting effects.
 Tooltip          : Under the command of the Priest.
 
@@ -446,7 +447,7 @@ Attributes       : ........ ........ x.x..... ........   ........ ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=4249)     : Apply Aura (6) | Modify All Haste% (193)
@@ -455,8 +456,8 @@ Effects          :
                    Base Value: -25 | Scaled Value: -25 | Misc Value: 126 | Misc Value 2: 0x1 | Target: Self (1)
 #3 (id=294138)   : Apply Aura (6) | Unknown(329)
                    Base Value: 25 | Scaled Value: 25 | Misc Value: 13 | Target: Self (1)
-Description      : Infuses you with power for $d, increasing haste by $s1%$?s185916[ and increasing Insanity generation by $s3%][ and reducing the mana cost of all spells by $s2%].
-Tooltip          : Haste increased by $s1% and mana cost of spells reduced by $s2%.
+Description      : Infuses you with power for $d, increasing haste by $s1%$?s137033[ and increasing Insanity generation by $s3%][ and reducing the mana cost of all spells by $s2%].
+Tooltip          : Haste increased by $w1%$?s137033[ and Insanity generation increased by $w3%][ and mana cost of all spells reduced by $w2%].
 
 Name             : Holy Fire (id=14914) [Spell Family (6)] 
 Class            : Holy Priest
@@ -955,36 +956,6 @@ If Vampiric Touch is dispelled, the dispeller flees in Horror for $87204d.
 |cFFFFFFFFGenerates ${$m3/100} Insanity.|r
 Tooltip          : Suffering $w2 Shadow damage every $t2 sec.
 
-Name             : Destruction Holo-gogs (id=41320) 
-Class            : Priest, Mage, Warlock
-School           : Physical
-Cast Time        : 15 seconds
-Attributes       : .....x.. x....... x....... ........   ........ ..x..... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Tradeskill ability (5)
-Effects          :
-#1 (id=32745)    : Create Item (24)
-                   Base Value: 1 | Scaled Value: 1 | Target: Self (1)
-
-Name             : Powerheal 4000 Lens (id=41321) 
-Class            : Priest
-School           : Physical
-Cast Time        : 15 seconds
-Attributes       : .....x.. x....... x....... ........   ........ ..x..... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Tradeskill ability (5)
-Effects          :
-#1 (id=32746)    : Create Item (24)
-                   Base Value: 1 | Scaled Value: 1 | Target: Self (1)
-
 Name             : Prayer of Mending (id=41635) [Spell Family (6)] 
 Class            : Priest
 School           : Holy
@@ -1028,6 +999,7 @@ Effects          :
                    Base Value: -15 | Scaled Value: -15 | Misc Value: 0x7f | Target: Self (1)
 #2 (id=219082)   : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f | Target: Self (1)
+                   Affected School(s): All
 Description      : $@spelldesc45243
 Tooltip          : All damage taken reduced by $w1%.
 
@@ -1050,36 +1022,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Misc Value: 7 | Trigger Spell: 45242 | Target: Self (1)
 Description      : Melee attacks against you cause you to gain Focused Will, reducing damage you take by $45242s1% for $45242d, stacking up to $45242u times.
 
-Name             : Powerheal 9000 Lens (id=46108) 
-Class            : Priest
-School           : Physical
-Cast Time        : 15 seconds
-Attributes       : .....x.. x....... x....... ........   ........ ..x..... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Tradeskill ability (5)
-Effects          :
-#1 (id=38201)    : Create Item (24)
-                   Base Value: 1 | Scaled Value: 1 | Target: Self (1)
-
-Name             : Annihilator Holo-Gogs (id=46111) 
-Class            : Priest, Mage, Warlock
-School           : Physical
-Cast Time        : 15 seconds
-Attributes       : .....x.. x....... x....... ........   ........ ..x..... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Tradeskill ability (5)
-Effects          :
-#1 (id=38204)    : Create Item (24)
-                   Base Value: 1 | Scaled Value: 1 | Target: Self (1)
-
 Name             : Rapture (id=47536) [Spell Family (6)] 
 Class            : Discipline Priest
 School           : Holy
@@ -1098,6 +1040,10 @@ Effects          :
 #1 (id=39747)    : Apply Aura (6) | Add Percent Modifier (108): Spell Cooldown (11)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 11 | Target: Self (1)
                    Affected Spells: Power Word: Shield (17)
+#2 (id=476560)   : Apply Aura (6) | Modify Attack Power (104)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+#3 (id=476561)   : Apply Aura (6) | Unknown(235)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : For the next $d, Power Word: Shield has no cooldown.
 Tooltip          : Your Power Word: Shield has no cooldown.
 
@@ -1163,7 +1109,7 @@ School           : Holy
 Spell Level      : 60
 Range            : 40 yards
 Velocity         : 40 yards/sec
-Affecting spells : Reparation (186478 effect#1), Confession (197708 effect#1), Radiant Focus (252848 effect#2), 
+Affecting spells : Reparation (186478 effect#1), Confession (197708 effect#1), Radiant Focus (252848 effect#1), 
 Triggered by     : Penance (47758)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ .x...... ........ ........ 
@@ -1183,7 +1129,7 @@ School           : Holy
 Spell Level      : 60
 Range            : 40 yards
 Velocity         : 40 yards/sec
-Affecting spells : Reparation (186478 effect#1), Atonement (194384 effect#2), Confession (197708 effect#1), Power Word: Shield (211558 effect#1), Radiant Focus (252848 effect#2), 
+Affecting spells : Reparation (186478 effect#1), Atonement (194384 effect#2), Confession (197708 effect#1), Power Word: Shield (211558 effect#1), Radiant Focus (252848 effect#1), 
 Triggered by     : Penance (47757)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ..x..... ........ ......x. ........   ........ .x...... ........ ........ 
@@ -1220,10 +1166,10 @@ School           : Holy
 Spell Level      : 1
 Range            : 40 yards
 Duration         : 2 seconds
-Affecting spells : Item - Priest T17 Discipline 2P Bonus (165614 effect#1), Reparation (186478 effect#1), Castigation (193134 effect#1), Atonement (194384 effect#2), Confession (197708 effect#1), Power Word: Shield (211558 effect#1), Radiant Focus (252848 effect#2), 
+Affecting spells : Item - Priest T17 Discipline 2P Bonus (165614 effect#1), Reparation (186478 effect#1), Castigation (193134 effect#1), Atonement (194384 effect#2), Confession (197708 effect#1), Power Word: Shield (211558 effect#1), Radiant Focus (252848 effect#1), 
 Attributes       : ........ x....... x....... .....x..   ..x...xx ..x...x. ........ ..x.x... 
                  : ........ x....... ........ ........   ........ ........ ........ ........ 
-                 : ........ .......x ........ ...x....   ........ .x...x.. ........ ........ 
+                 : ........ .......x ........ ...x....   ........ .....x.. ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ .x...... x.......   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1233,6 +1179,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Friend (21)
 #2 (id=40004)    : Apply Aura (6) | Periodic Trigger Spell (23): Penance every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 47750 | Target: Self (1)
+#3 (id=474698)   : Trigger Spell (64): Penance
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 100 | Trigger Spell: 47750 | Target: Friend (21)
 
 Name             : Penance (id=47758) [Spell Family (6)] 
 Class            : Priest
@@ -1243,7 +1191,7 @@ Duration         : 2 seconds
 Affecting spells : Item - Priest T17 Discipline 2P Bonus (165614 effect#1), Castigation (193134 effect#1)
 Attributes       : ........ x....... x....... .....x..   ..x....x ..x...x. ........ ..x.x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ .......x ........ ...x....   ........ .x...x.. ........ ........ 
+                 : ........ .......x ........ ...x....   ........ .....x.. ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ .x...... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1253,6 +1201,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
 #2 (id=40006)    : Apply Aura (6) | Periodic Trigger Spell (23): Penance every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 47666 | Target: Self (1)
+#3 (id=474696)   : Trigger Spell (64): Penance
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 100 | Trigger Spell: 47666 | Target: Enemy (6)
 
 Name             : Guardian Spirit (id=47788) [Spell Family (6)] 
 Class            : Holy Priest
@@ -1276,41 +1226,11 @@ Effects          :
 #2 (id=40043)    : Dummy (3)
                    Base Value: 40 | Scaled Value: 40
 #3 (id=188025)   : Apply Aura (6) | Absorb Damage (69)
-                   Base Value: 50000000 | Scaled Value: 5e+07 | Misc Value: 127 | Target: Friend (21)
+                   Base Value: 50000008 | Scaled Value: 5.000001e+07 | Misc Value: 127 | Target: Friend (21)
 Description      : Calls upon a guardian spirit to watch over the friendly target for $d, increasing healing received by $s1%$?s159599[][ and preventing the target from dying by sacrificing itself.  This sacrifice terminates the effect and heals the target for $s2% of maximum health]. Castable while stunned.
 
 Massive damage amounts will kill the target despite this effect.
 Tooltip          : Increased healing received by $w1%$?$w1<100[ and will prevent 1 killing blow][].
-
-Name             : Mechanized Snow Goggles (id=56465) 
-Class            : Priest, Mage, Warlock
-School           : Physical
-Cast Time        : 2 seconds
-Attributes       : .....x.. ........ x....... ........   ........ ..x..... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Tradeskill ability (5)
-Effects          :
-#1 (id=49547)    : Create Item (24)
-                   Base Value: 1 | Scaled Value: 1 | Target: Self (1)
-
-Name             : Visage Liquification Goggles (id=56484) 
-Class            : Priest, Mage, Warlock
-School           : Physical
-Cast Time        : 15 seconds
-Attributes       : .....x.. ........ x....... ........   ........ ..x..... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Tradeskill ability (5)
-Effects          :
-#1 (id=49565)    : Create Item (24)
-                   Base Value: 1 | Scaled Value: 1 | Target: Self (1)
 
 Name             : Glyph of Shackle Undead (id=57986) [Spell Family (6), Passive, Hidden] 
 Class            : Priest
@@ -1387,7 +1307,7 @@ Attributes       : ........ ........ ..x..... ........   ........ ........ .....
                  : x.....x. .....x.. ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=56703)    : Unknown(179)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 1489 | Radius: 6.5 yards | Target: AOE friendly (31)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 1489 | Radius: 8 yards | Target: AOE friendly (31)
 Description      : Summons a holy barrier to protect all allies at the target location for $d, reducing all damage taken by $81782s2% and preventing damage from delaying spellcasting.
 
 Name             : Shadowcrawl (id=63619) [Spell Family (6)] 
@@ -1409,6 +1329,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 35779 | Target: Enemy (6)
 #2 (id=57791)    : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 15 | Scaled Value: 15 | Misc Value: 0x7f | Target: Self (1)
+                   Affected School(s): All
 Description      : Crawls through the shadows to the target enemy, and increases damage done by $s2% for $d.
 Tooltip          : Damage increased by $s2%.
 
@@ -1771,22 +1692,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : When your Shadow Word: Pain damage over time critically strikes, you also create a shadowy version of yourself that floats towards the target and deals $148859s1 Shadow damage.
 
-Name             : Lightweight Bio-Optic Killshades (id=81725) 
-Class            : Priest, Mage, Warlock
-School           : Physical
-Cast Time        : 5 seconds
-Mechanic         : Unknown(245)
-Attributes       : .....x.. ........ x....... ........   ........ ..x..... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Tradeskill ability (5)
-Effects          :
-#1 (id=81210)    : Create Item (24)
-                   Base Value: 1 | Scaled Value: 1 | Target: Self (1)
-
 Name             : Atonement (id=81749) [Spell Family (6), Passive] 
 Class            : Discipline Priest
 School           : Physical
@@ -2060,7 +1965,7 @@ School           : Holy
 Range            : 100 yards
 Affecting spells : Atonement (194384 effect#2), Light of T'uure (208065 effect#1), Power Word: Shield (211558 effect#1)
 Attributes       : ........ ........ ........ x..x....   .....x.. ........ ........ ........ 
-                 : ..x..... ......x. ...x.... ........   ........ .x...... ........ ........ 
+                 : ........ ......x. ...x.... ........   ........ .x...... ........ ......x. 
                  : x......x .......x ........ ........   ...x.... ........ .xx..... ........ 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : .....x.. ........ ........ ........   ........ ...x.... ....x... ........ 
@@ -2276,7 +2181,7 @@ School           : Holy
 Range            : 100 yards
 Affecting spells : Atonement (194384 effect#2), Light of T'uure (208065 effect#1), Power Word: Shield (211558 effect#1)
 Attributes       : ........ ........ ........ x..x....   .....x.. .....x.. ........ ........ 
-                 : ........ ......x. ...x.... ........   ........ .x...... ........ ........ 
+                 : ..x..... ......x. ...x.... ........   ........ .x...... ........ ......x. 
                  : x......x .......x ........ ........   ...x.... .......x .xx..... ........ 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : .....x.. ........ ........ ........   ........ ...x.... ....x... ........ 
@@ -2345,6 +2250,7 @@ Effects          :
                    Base Value: 20 | Scaled Value: 20 | Misc Value: 127 | Target: Self (1)
 #2 (id=155429)   : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 20 | Scaled Value: 20 | Misc Value: 0x7f | Target: Self (1)
+                   Affected School(s): All
 Description      : Increases damage done by $s2% and healing done by $s1% for $d.
 Tooltip          : Increases damage and healing by $s1%.
 
@@ -2430,22 +2336,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1052
 Description      : $@spelldesc126745
 
-Name             : Lightweight Retinal Armor (id=127117) 
-Class            : Priest, Mage, Warlock
-School           : Physical
-Cast Time        : 1.5 seconds
-Mechanic         : Unknown(245)
-Attributes       : .....x.. ........ x....... ........   ........ ..x..... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Tradeskill ability (5)
-Effects          :
-#1 (id=161557)   : Create Item (24)
-                   Base Value: 1 | Scaled Value: 1 | Target: Self (1)
-
 Name             : Power Word: Solace (Talent) (id=129250) [Spell Family (6)] 
 Class            : Priest
 School           : Holy
@@ -2523,14 +2413,16 @@ Effects          :
                    Base Value: -36 | Scaled Value: -36 | Target: Self (1)
 #4 (id=191082)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 247 (Label) | Target: Self (1)
-                   Affected Spells (Label): Infernal Contract (225140), Living Carapace (225033), Sands of Time (225124), Vampiric Aura (225130), Wailing Souls (242609), Unending Hunger (242536), Chilling Nova (251940), Bulwark of Flame (251946), Hammer-Forged (251952)
+                   Affected Spells (Label): Infernal Contract (225140), Living Carapace (225033), Sands of Time (225124), Vampiric Aura (225130), Wailing Souls (242609), Unending Hunger (242536), Chilling Nova (251940), Bulwark of Flame (251946), Hammer-Forged (251952), Pool of Pure Void (250766)
 #5 (id=191083)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 248 (Label) | Target: Self (1)
                    Affected Spells (Label): Fel-Crazed Rage (225777), Colossal Slam (232044), Dread Torrent (246464), Ceaseless Toxin (242497), Umbral Glaive Storm (242556), Shattering Umbral Glaives (242557), Infernal Cinders (242218)
-#6 (id=260687)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-#7 (id=260688)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+#6 (id=260687)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Periodic Damage (22)
+                   Base Value: -50 | Scaled Value: -50 | Misc Value: 22 | Misc Value 2: 248 (Label) | Target: Self (1)
+                   Affected Spells (Label): Fel-Crazed Rage (225777), Colossal Slam (232044), Dread Torrent (246464), Ceaseless Toxin (242497), Umbral Glaive Storm (242556), Shattering Umbral Glaives (242557), Infernal Cinders (242218)
+#7 (id=260688)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
+                   Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 333 (Label) | Target: Self (1)
+                   Affected Spells (Label): Void Slash (251034)
 #8 (id=260689)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #9 (id=260690)   : Apply Aura (6) | Dummy (4)
@@ -2553,6 +2445,10 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #18 (id=327307)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+#19 (id=474898)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+#20 (id=477125)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 
 Name             : Holy Priest (id=137031) [Spell Family (6), Passive, Hidden] 
 Class            : Holy Priest
@@ -2569,7 +2465,7 @@ Effects          :
                    Base Value: 25 | Scaled Value: 25 | Target: Self (1)
 #2 (id=191076)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 249 (Label) | Target: Self (1)
-                   Affected Spells (Label): Orb of Destruction (229700)
+                   Affected Spells (Label): Orb of Destruction (229700), Void Tendril (250834)
 #3 (id=191077)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 300 (Label) | Target: Self (1)
                    Affected Spells (Label): Insidious Corruption (243941), Spectral Bolt (242571), Spectral Blast (246442), Apocalypse Missile (253243), Legion Bombardment (253248), Essence Swap (253258)
@@ -2627,19 +2523,19 @@ Effects          :
                    Affected Spells: Shadow Word: Pain (589)
 #5 (id=191075)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Generic Modifier (0)
                    Base Value: -55 | Scaled Value: -55 | Misc Value 2: 229 (Label) | Target: Self (1)
-                   Affected Spells (Label): Nightmare Essence (214350), Withering Consumption (215884), Plague Swarm (221812), Devilsaur Shock Leash (224078), Deadly Grace (188091), Rancid Maw (215405), Thunder Ritual (230224), Pepper Breath (201573), Pepper Breath (225623), Pepper Breath (225624), Recursive Strikes (225739), Fel-Crazed Rage (225777), Cruel Garrote (230011), Fel Barbs (238523), Infernal Cinders (242218), Ceaseless Toxin (242497), Unending Hunger (242536), Spectral Bolt (242571), Fevered Touch (242650), Fel Lash (188505), Wind Bolt (227870), Spectral Blast (246442), Fel Shield (253278)
+                   Affected Spells (Label): Nightmare Essence (214350), Withering Consumption (215884), Plague Swarm (221812), Devilsaur Shock Leash (224078), Deadly Grace (188091), Rancid Maw (215405), Thunder Ritual (230224), Pepper Breath (201573), Pepper Breath (225623), Pepper Breath (225624), Recursive Strikes (225739), Fel-Crazed Rage (225777), Cruel Garrote (230011), Fel Barbs (238523), Infernal Cinders (242218), Ceaseless Toxin (242497), Unending Hunger (242536), Spectral Bolt (242571), Fevered Touch (242650), Fel Lash (188505), Wind Bolt (227870), Spectral Blast (246442), Fel Shield (253278), Void Slash (251034), Torment the Weak (252907)
 #6 (id=260957)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Periodic Damage (22)
                    Base Value: -55 | Scaled Value: -55 | Misc Value: 22 | Misc Value 2: 229 (Label) | Target: Self (1)
-                   Affected Spells (Label): Nightmare Essence (214350), Withering Consumption (215884), Plague Swarm (221812), Devilsaur Shock Leash (224078), Deadly Grace (188091), Rancid Maw (215405), Thunder Ritual (230224), Pepper Breath (201573), Pepper Breath (225623), Pepper Breath (225624), Recursive Strikes (225739), Fel-Crazed Rage (225777), Cruel Garrote (230011), Fel Barbs (238523), Infernal Cinders (242218), Ceaseless Toxin (242497), Unending Hunger (242536), Spectral Bolt (242571), Fevered Touch (242650), Fel Lash (188505), Wind Bolt (227870), Spectral Blast (246442), Fel Shield (253278)
+                   Affected Spells (Label): Nightmare Essence (214350), Withering Consumption (215884), Plague Swarm (221812), Devilsaur Shock Leash (224078), Deadly Grace (188091), Rancid Maw (215405), Thunder Ritual (230224), Pepper Breath (201573), Pepper Breath (225623), Pepper Breath (225624), Recursive Strikes (225739), Fel-Crazed Rage (225777), Cruel Garrote (230011), Fel Barbs (238523), Infernal Cinders (242218), Ceaseless Toxin (242497), Unending Hunger (242536), Spectral Bolt (242571), Fevered Touch (242650), Fel Lash (188505), Wind Bolt (227870), Spectral Blast (246442), Fel Shield (253278), Void Slash (251034), Torment the Weak (252907)
 #7 (id=260958)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -55 | Scaled Value: -55 | Misc Value: 3 | Misc Value 2: 231 (Label) | Target: Self (1)
                    Affected Spells (Label): Taint of the Sea (215672), Recursive Strikes (225736), Insidious Corruption (243941), Essence Swap (253258)
 #8 (id=260959)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Generic Modifier (0)
                    Base Value: -65 | Scaled Value: -65 | Misc Value 2: 230 (Label) | Target: Self (1)
-                   Affected Spells (Label): Nightfall (213786), Fel Meteor (214052), Orb of Destruction (229700), Solar Collapse (229737), Nether Meteor (225764), Kil'jaeden's Burning Wish (235999), Crystalline Shockwave (225716), Arcane Swipe (225721), Colossal Slam (232044), Dread Torrent (246464), Piercing Anguish (246751), Umbral Glaive Storm (242556), Shattering Umbral Glaives (242557), Void Tendril (250834), Apocalypse Missile (253243), Legion Bombardment (253248), Shadow Blades (253265), Taeschalach Technique (253329)
+                   Affected Spells (Label): Nightfall (213786), Fel Meteor (214052), Orb of Destruction (229700), Solar Collapse (229737), Nether Meteor (225764), Kil'jaeden's Burning Wish (235999), Crystalline Shockwave (225716), Arcane Swipe (225721), Colossal Slam (232044), Dread Torrent (246464), Piercing Anguish (246751), Umbral Glaive Storm (242556), Shattering Umbral Glaives (242557), Void Tendril (250834), Apocalypse Missile (253243), Legion Bombardment (253248), Shadow Blades (253265), Taeshalach Technique (253329), Sorrow (253022)
 #9 (id=260960)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -65 | Scaled Value: -65 | Misc Value: 3 | Misc Value 2: 232 (Label) | Target: Self (1)
-                   Affected Spells (Label): Dark Blast (215444), Mechanical Bomb Squirrel (216085), Tormenting Cyclone (221845), Volatile Ichor (222187), Poisoned Dreams (222705), Flame Wreath (230257), Volatile Energy (230236), Carrion Swarm (225131), Terror From Below (242524), Spear of Anguish (242605), Shadow Wave (215089), Shadow Blades (253263)
+                   Affected Spells (Label): Dark Blast (215444), Mechanical Bomb Squirrel (216085), Tormenting Cyclone (221845), Volatile Ichor (222187), Poisoned Dreams (222705), Flame Wreath (230257), Volatile Energy (230236), Carrion Swarm (225131), Terror From Below (242524), Spear of Anguish (242605), Shadow Wave (215089), Shadow Blades (253263), Pool of Pure Void (250766)
 #10 (id=260961)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 2 (12)
                    Base Value: -65 | Scaled Value: -65 | Misc Value: 12 | Misc Value 2: 243 (Label) | Target: Self (1)
                    Affected Spells (Label): Flame Gale (230213)
@@ -2698,7 +2594,7 @@ Effects          :
                    Affected Spells: Shadow Mend (186263), Shadow Mend (187464)
 #8 (id=260939)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 298 (Label) | Target: Self (1)
-                   Affected Spells (Label): Cleansing Matrix (242619), Fruitful Machinations (242623), Guiding Hand (242622), Infusion of Light (242621), Fel Shield (253277), Tarratus Keystone (253282), Refreshing Agony (253284)
+                   Affected Spells (Label): Cleansing Matrix (242619), Fruitful Machinations (242623), Guiding Hand (242622), Infusion of Light (242621), Fel Shield (253277), Tarratus Keystone (253282), Refreshing Agony (253284), L'ura's Word (250781)
 #9 (id=260940)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #10 (id=260941)   : Apply Aura (6) | Dummy (4)
@@ -2974,9 +2870,6 @@ Spell Level      : 28
 Range            : 40 yards
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
-Proc Chance      : 100%
-Proc Flags       : ...x.x.x .x.x.x.x .x.x.... .......x 
-                 : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Heal Taken, AOE Hostile Spell Taken, Heal Taken, Hostile Spell Taken, Periodic Taken
 Affecting spells : Shadow Priest (137033 effect#5), Lucidity (137323 effect#1), Thoughts of Insanity (193647 effect#1), Voidform (194249 effect#4), Atonement (194384 effect#2), Power Word: Shield (211558 effect#1), Darkest Shadows (216212 effect#1)
 Attributes       : ........ ........ x....... .......x   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
@@ -3282,6 +3175,7 @@ Attributes       : ........ ........ ..x..... x..x.x.x   .....x.. ..x..... .....
 Effects          :
 #1 (id=285130)   : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 20 | Scaled Value: 20 | Misc Value: 0x20 | Target: Self (1)
+                   Affected School(s): Shadow
 #2 (id=285131)   : Apply Aura (6) | Modify Power Regeneration (85)
                    Base Value: -3000 | Scaled Value: -3000 | Misc Value: 13 | Target: Self (1)
 #3 (id=285132)   : Apply Aura (6) | Modify All Haste% (193)
@@ -3393,7 +3287,7 @@ School           : Physical
 Range            : 100 yards
 Internal Cooldown: 15 seconds
 Proc Chance      : 20%
-Artifact Power   : Id: 834, Index: 0, Max Rank: 1
+Artifact Power   : Id: 834, Max Rank: 1
 Proc Flags       : ........ ..x.x.x. x....x.. ........ 
                  : AOE Heal, AOE Hostile Spell, Heal, Hostile Spell, Trap Triggered
 Attributes       : ......x. ........ ........ .......x   ........ ........ ........ ....x... 
@@ -3723,8 +3617,12 @@ Effects          :
 #2 (id=334777)   : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost (14)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 14 | Target: Self (1)
                    Affected Spells: Holy Word: Serenity (2050), Holy Word: Sanctify (34861), Holy Word: Chastise (88625), Holy Word: Chastise (200196), Holy Word: Chastise (200200)
+#3 (id=476562)   : Apply Aura (6) | Modify Attack Power (104)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+#4 (id=476563)   : Apply Aura (6) | Unknown(235)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : Enter a pure Holy form for $d, increasing the effects of Serendipity by $s1% and reducing the cost of your Holy Words by $s2%.
-Tooltip          : Effects of Serendipity increased by $s1%.
+Tooltip          : Effects of Serendipity increased by $s1% and cost of Holy Words reduced by $s2%.
 
 Name             : Holy Word: Chastise (id=200196) [Spell Family (6)] 
 Class            : Priest
@@ -3809,9 +3707,6 @@ Name             : Grace (Passive) (id=200309) [Spell Family (6), Passive]
 Class            : Priest
 School           : Physical
 Spell Level      : 1
-Proc Chance      : 100%
-Proc Flags       : ........ ......x. ........ ........ 
-                 : Heal
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -3829,9 +3724,6 @@ Name             : The Penitent (id=200347) [Spell Family (6), Passive]
 Class            : Discipline Priest
 School           : Physical
 Spell Level      : 1
-Proc Chance      : 100%
-Proc Flags       : ........ ......x. ........ ........ 
-                 : Heal
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -3860,6 +3752,8 @@ Attributes       : .......x ........ ........ ....x...   ..xxx..x ........ .x...
 Effects          :
 #1 (id=295605)   : Unknown(162)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+#2 (id=477483)   : Trigger Spell (64): Vindicaar Matrix Crystal
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 255529
 Description      : Switch to your Primary Talent Specialization.
 Tooltip          : Switch to your Primary Talent Specialization.
 
@@ -4002,7 +3896,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 4 seconds
 Cooldown         : 60 seconds
-Artifact Power   : Id: 764, Index: 0, Max Rank: 1
+Artifact Power   : Id: 764, Max Rank: 1
 Affecting spells : Shadow Priest (137033 effect#2), Mental Fatigue (185104 effect#1), Voidform (194249 effect#4)
 Attributes       : ........ ........ ........ ..x.....   ..x..... ......x. ........ .....x.. 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -4072,6 +3966,7 @@ Attributes       : ........ ........ x.x..... ........   ........ ........ .x...
 Effects          :
 #2 (id=327739)   : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f | Target: Enemy (6)
+                   Affected School(s): All
 #3 (id=344258)   : Dummy (3)
                    Base Value: 2 | Scaled Value: 2
 Description      : Controls a mind up to 1 level above yours for $d while still controlling your own mind. Does not work versus Demonic, Mechanical, or Undead beings$?a205477[][ or players]. This spell shares diminishing returns with other disorienting effects.
@@ -4250,7 +4145,7 @@ Cast Time        : 2.5 seconds
 GCD              : 1.5 seconds
 Velocity         : 24 yards/sec
 Cooldown         : 90 seconds
-Artifact Power   : Id: 883, Index: 0, Max Rank: 1
+Artifact Power   : Id: 883, Max Rank: 1
 Triggered by     : Push Active Ability to Bar (225879)
 Attributes       : ........ ........ ..x..... .......x   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4437,9 +4332,6 @@ Class            : Priest
 School           : Holy
 Duration         : 7 seconds
 Cooldown         : 180 seconds
-Proc Chance      : 100%
-Proc Flags       : ........ ..x...x. .....x.. ........ 
-                 : AOE Heal, Heal, Trap Triggered
 Affecting spells : Afterlife (196707 effect#1)
 Attributes       : ........ ........ x....... ........   ........ ..x..... ........ ........ 
                  : xx...... ........ ........ ........   ........ ........ ....x... ........ 
@@ -4758,6 +4650,7 @@ Attributes       : ........ ........ ........ x.......   ........ ........ .....
 Effects          :
 #1 (id=351199)   : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 10 | Scaled Value: 10 | Misc Value: 0x20 | Target: Self (1)
+                   Affected School(s): Shadow
 #2 (id=351200)   : Apply Aura (6) | Unknown(87)
                    Base Value: -10 | Scaled Value: -10 | Misc Value: 0x1 | Target: Self (1)
 #3 (id=351464)   : Apply Aura (6) | Shapeshift (36)
@@ -4884,5 +4777,41 @@ Effects          :
                    Base Value: 50 | Scaled Value: 50 | Misc Value: 3 | Target: Self (1)
                    Affected Spells: Smite (231682)
 Description      : Smite's absorption effect is increased by $s1%.
+
+Name             : Vindicaar Matrix Crystal (id=251463) 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Worgen, Pandaren, Pandaren (Alliance)
+School           : Physical
+GCD              : 1.5 seconds
+Triggered by     : Vindicaar Matrix Crystal (255529)
+Attributes       : ........ ........ ........ ........   ...x...x ..x..... ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=470901)   : Dummy (3)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+Description      : Unlock powers at the Vindicaar's Matrix Core to use while on Argus. 
+
+Name             : Vindicaar Matrix Crystal (id=255529) [Hidden] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Worgen, Pandaren, Pandaren (Alliance)
+School           : Physical
+Triggered by     : Activating Specialization (200749)
+Attributes       : .......x x....... .......x x..x.x..   ...x.x.x ..x..... ........ ........ 
+                 : x.x..... ......x. ...x..x. ....x...   ........ .x...... xx..x... ....x... 
+                 : .......x ........ .......x ........   ...x.... ........ .xx..... ........ 
+                 : ........ .x..x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ....x... ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Hidden (7), Does not break stealth (37), Not a proc (105), Disable player procs (112), Disable target procs (113), Disable weapon procs (151)
+Effects          :
+#1 (id=477479)   : Unknown(81)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 251463 | Target: Self (1)
+#2 (id=477480)   : Unknown(170)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+Description      : Unlock powers at the Vindicaar's Matrix Core to use while on Argus. 
 
 

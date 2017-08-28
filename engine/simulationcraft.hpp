@@ -142,6 +142,8 @@ namespace highchart {
 
 #include "sim/sc_profileset.hpp"
 
+#include "player/artifact_data.hpp"
+
 // Talent Translation =======================================================
 
 const int MAX_TALENT_ROWS = 7;
@@ -1678,12 +1680,14 @@ struct sim_t : private sc_thread_t
   {
     // Legion
     int                 infernal_cinders_users;
-    bool                lavish_feast_as_dps;
     int                 engine_of_eradication_orbs;
+    bool                lavish_feast_as_dps;
+    bool                specter_of_betrayal_overlap;
     std::vector<double> cradle_of_anguish_resets;
 
     expansion_opt_t() :
-      infernal_cinders_users( 1 ), lavish_feast_as_dps( true ), engine_of_eradication_orbs( 4 )
+      infernal_cinders_users( 1 ), engine_of_eradication_orbs( 4 ),
+      lavish_feast_as_dps( true ), specter_of_betrayal_overlap( true )
     { }
   } expansion_opts;
 
@@ -2237,6 +2241,36 @@ inline Event* make_event( sim_t& sim, Args&&... args )
   return r;
 }
 
+inline event_t* make_event( sim_t& s, const timespan_t& t, const std::function<void(void)>& f )
+{
+  class fn_event_t : public event_t
+  {
+    std::function<void(void)> fn;
+
+    public:
+      fn_event_t( sim_t& s, const timespan_t& t, const std::function<void(void)>& f ) :
+        event_t( s, t ), fn( f )
+      { }
+
+      const char* name() const override
+      { return "function_event"; }
+
+      void execute() override
+      { fn(); }
+  };
+
+  return make_event<fn_event_t>( s, s, t, f );
+}
+
+inline event_t* make_event( sim_t* s, const timespan_t& t, const std::function<void(void)>& f )
+{ return make_event( *s, t, f ); }
+
+inline event_t* make_event( sim_t* s, const std::function<void(void)>& f )
+{ return make_event( *s, timespan_t::zero(), f ); }
+
+inline event_t* make_event( sim_t& s, const std::function<void(void)>& f )
+{ return make_event( s, timespan_t::zero(), f ); }
+
 // Gear Rating Conversions ==================================================
 
 enum rating_e
@@ -2544,6 +2578,10 @@ struct special_effect_t
   { reset(); }
 
   special_effect_t( const item_t* item );
+
+  // Uses a custom initialization callback or object
+  bool is_custom() const
+  { return custom_init || custom_init_object.size() > 0; }
 
   // Forcefully disable creation of an (autodetected) buff or action. This is necessary in scenarios
   // where the autodetection decides to create an invalid action or buff due to the spell data.
@@ -3757,7 +3795,7 @@ struct player_t : public actor_t
   bool        initialized;
   bool        potion_used;
 
-  std::string talents_str, id_str, target_str, artifact_str;
+  std::string talents_str, id_str, target_str;
   std::string region_str, server_str, origin_str;
   std::string race_str, professions_str, position_str;
   enum timeofday_e { NIGHT_TIME, DAY_TIME, } timeofday; // Specify InGame time of day to determine Night Elf racial
@@ -3803,35 +3841,7 @@ struct player_t : public actor_t
   std::array<int, PROFESSION_MAX> profession;
 
   // Artifact
-  struct artifact_data_t
-  {
-    std::array<std::pair<uint8_t, uint8_t>, MAX_ARTIFACT_POWER> points;
-    std::array<unsigned, MAX_ARTIFACT_RELIC> relics;
-    unsigned n_points, n_purchased_points;
-    int artifact_; // Hardcoded option to forcibly enable/disable artifact
-    slot_e slot; // Artifact slot, SLOT_NONE if not available
-    const spell_data_t* artificial_stamina;
-    const spell_data_t* artificial_damage;
-
-    artifact_data_t() :
-      n_points( 0 ), n_purchased_points( 0 ), artifact_( -1 ), slot( SLOT_INVALID ),
-      artificial_stamina( spell_data_t::not_found() ),
-      artificial_damage( spell_data_t::not_found() )
-    {
-      range::fill( points, { 0, 0 } );
-      range::fill( relics, 0 );
-    }
-
-    void add_bonus_rank( size_t index, uint8_t n_ranks = 1 )
-    {
-      assert( index < points.size() );
-
-      points[ index ].second += n_ranks;
-      n_points += n_ranks;
-    }
-  } artifact;
-
-  bool artifact_enabled() const;
+  std::unique_ptr<artifact::player_artifact_data_t> artifact;
 
   virtual ~player_t();
 
@@ -4223,7 +4233,7 @@ struct player_t : public actor_t
 
   virtual void init();
   virtual void override_talent( std::string& override_str );
-  virtual void override_artifact( const std::vector<const artifact_power_data_t*>& powers, const std::string& override_str );
+  virtual void override_artifact( const std::string& override_str );
   virtual void init_meta_gem();
   virtual void init_resources( bool force = false );
   virtual std::string init_use_item_actions( const std::string& append = std::string() );
@@ -4240,7 +4250,7 @@ struct player_t : public actor_t
   void init_character_properties();
   virtual void init_race();
   virtual void init_talents();
-  virtual void init_artifact();
+  virtual bool init_artifact();
   virtual void replace_spells();
   virtual void init_position();
   virtual void init_professions();
@@ -4513,9 +4523,6 @@ struct player_t : public actor_t
   bool parse_talents_armory2( const std::string& talent_string );
   bool parse_talents_wowhead( const std::string& talent_string );
 
-  bool parse_artifact_wowdb( const std::string& artifact_string );
-  bool parse_artifact_wowhead( const std::string& artifact_string );
-
   void create_talents_numbers();
   void create_talents_armory();
   void create_talents_wowhead();
@@ -4531,6 +4538,7 @@ struct player_t : public actor_t
   const spell_data_t* find_spell( unsigned int id ) const;
 
   artifact_power_t find_artifact_spell( const std::string& name, bool tokenized = false ) const;
+  artifact_power_t find_artifact_spell( unsigned power_id ) const;
 
   virtual expr_t* create_expression( action_t*, const std::string& name );
   expr_t* create_resource_expression( const std::string& name );
@@ -7498,6 +7506,9 @@ bool initialize_special_effect( special_effect_t& effect, unsigned spell_id );
 void initialize_special_effect_fallbacks( player_t* actor );
 // Second-phase special effect initializer
 void initialize_special_effect_2( special_effect_t* effect );
+
+// Initialize generic Artifact traits
+void initialize_artifact_powers( player_t* );
 
 const item_data_t* find_consumable( const dbc_t& dbc, const std::string& name, item_subclass_consumable type );
 const item_data_t* find_item_by_spell( const dbc_t& dbc, unsigned spell_id );

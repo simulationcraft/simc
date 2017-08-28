@@ -102,6 +102,7 @@ public:
     propagate_const<stat_buff_t*> power_overwhelming;  // T19OH
     propagate_const<buff_t*> void_vb;                  // T19 Shadow 4pc
     propagate_const<buff_t*> empty_mind;               // T20 Shadow 2pc
+    propagate_const<buff_t*> overwhelming_darkness;    // T21 Shadow 4pc
 
     // Legion Legendaries
     haste_buff_t* sephuzs_secret;
@@ -399,10 +400,6 @@ public:
     bool priest_fixed_time      = true;
     bool priest_ignore_healing  = false; // Remove Healing calculation codes
     bool priest_suppress_sephuz = false; // Sephuz's Secret won't proc if set true
-    bool priest_test_coef       = false; // Enables the control of coefficients where possible
-    double priest_t21_2p_bonus  = 0.2;   // Test variables
-    double priest_t21_4p_bonus  = 0.1;    
-    double priest_mass_hysteria = 2.0;
   } options;
 
   priest_t( sim_t* sim, const std::string& name, race_e r );
@@ -1792,9 +1789,7 @@ public:
     }
 
     if( priest.sets->has_set_bonus(PRIEST_SHADOW, T21, B2) )
-       crit_bonus_multiplier *= 1.0 + ( 2.0 * ( ! priest.options.priest_test_coef
-                                              ? priest.sets->set(PRIEST_SHADOW, T21, B2)->effectN(1).percent()
-                                              : priest.options.priest_t21_2p_bonus ) );
+       crit_bonus_multiplier *= 1.0 + ( priest.sets->set( PRIEST_SHADOW, T21, B2 )->effectN( 1 ).percent() );
 
   }
 
@@ -2036,9 +2031,7 @@ struct mind_flay_t final : public priest_spell_t
     spell_power_mod.tick *= 1.0 + p.talents.fortress_of_the_mind->effectN( 3 ).percent();
 
     if( priest.sets->has_set_bonus(PRIEST_SHADOW, T21, B2) )
-      crit_bonus_multiplier *= 1.0 + ( 2.0 * ( ! priest.options.priest_test_coef
-                                               ? priest.sets->set(PRIEST_SHADOW, T21, B2)->effectN(1).percent()
-                                               : priest.options.priest_t21_2p_bonus ) );
+      crit_bonus_multiplier *= 1.0 + ( priest.sets->set(PRIEST_SHADOW, T21, B2)->effectN( 1 ).percent() );
   }
 
   double action_multiplier() const override
@@ -2703,10 +2696,8 @@ struct shadow_word_pain_t final : public priest_spell_t
 
     if ( priest.artifact.mass_hysteria.rank() )
     {
-      m *= 1.0 + ( priest.buffs.voidform->stack() 
-                 * ( ! priest.options.priest_test_coef 
-                     ? priest.artifact.mass_hysteria.percent() 
-                     : priest.options.priest_mass_hysteria / 100.0 ) );
+      m *= 1.0 + (   priest.buffs.voidform->stack() 
+                 * ( priest.artifact.mass_hysteria.percent() ) );
     }
 
     return m;
@@ -3070,10 +3061,8 @@ struct vampiric_touch_t final : public priest_spell_t
 
     if ( priest.artifact.mass_hysteria.rank() )
     {
-      m *= 1.0 + ( priest.buffs.voidform->stack() 
-            * ( ! priest.options.priest_test_coef 
-                ? priest.artifact.mass_hysteria.percent() 
-                : priest.options.priest_mass_hysteria / 100.0 ) );
+      m *= 1.0 + (     priest.buffs.voidform->stack() 
+                   * ( priest.artifact.mass_hysteria.percent() ) );
     }
 
     return m;
@@ -3292,6 +3281,10 @@ struct void_eruption_t final : public priest_spell_t
       int mss_vf_stacks = priest.active_items.mother_shahrazs_seduction->driver()->effectN( 1 ).base_value();
 
       priest.buffs.voidform->bump( mss_vf_stacks - 1 );  // You start with 3 Stacks of Voidform 2017/01/17
+      if ( priest.buffs.overwhelming_darkness->check() )
+      {
+        priest.buffs.overwhelming_darkness->bump( mss_vf_stacks - 1 );
+      }
     }
   }
   // TODO: Healing part of HotV
@@ -3600,6 +3593,29 @@ struct insanity_drain_stacks_t final : public priest_buff_t<buff_t>
   }
 };
 
+struct overwhelming_darkness_t final : public priest_buff_t<stat_buff_t>
+{
+  overwhelming_darkness_t(priest_t& p)
+    : base_t(p, stat_buff_creator_t( &p, "overwhelming_darkness", p.find_spell( 252909 ) )
+                     .max_stack( 100 )
+                     .chance( p.sets->has_set_bonus( PRIEST_SHADOW, T21, B4 ) )                     
+                     .period( timespan_t::from_seconds( 1 ) )
+                     .duration( timespan_t::zero() )
+                     .refresh_behavior( BUFF_REFRESH_DURATION )
+                     .add_invalidate( CACHE_CRIT_CHANCE ) )
+  {
+  };
+
+  bool freeze_stacks() override
+  {    
+    if (priest.buffs.dispersion->check() || !priest.buffs.voidform->check() ) 
+      return true;
+
+    return base_t::freeze_stacks();
+  }
+
+};
+
 struct voidform_t final : public priest_buff_t<haste_buff_t>
 {
   voidform_t( priest_t& p )
@@ -3617,11 +3633,17 @@ struct voidform_t final : public priest_buff_t<haste_buff_t>
     priest.buffs.insanity_drain_stacks->trigger();
     priest.buffs.the_twins_painful_touch->trigger();
     priest.buffs.iridis_empowerment->trigger();
-    priest.buffs.shadowform->expire();
+    priest.buffs.shadowform->expire();    
     priest.insanity.begin_tracking();
     if ( priest.artifact.sphere_of_insanity.rank() )
     {
       priest.buffs.sphere_of_insanity->trigger();
+    }
+
+    if ( priest.sets->has_set_bonus( PRIEST_SHADOW, T21, B4 ) )
+    {
+      priest.buffs.overwhelming_darkness->expire();
+      priest.buffs.overwhelming_darkness->trigger();
     }
 
     return r;
@@ -3656,13 +3678,15 @@ struct voidform_t final : public priest_buff_t<haste_buff_t>
 
     if ( priest.buffs.surrender_to_madness->check() )
     {
-      if ( sim->log )
-      {
-        sim->out_log.printf( "%s %s: Surrender to Madness kills you. You die. Horribly.", priest.name(), name() );
-      }
-      priest.demise();
-      priest.arise();
-      priest.buffs.surrender_to_madness_death->trigger();
+      make_event( sim, [ this ]() {
+        if ( sim->log )
+        {
+          sim->out_log.printf( "%s %s: Surrender to Madness kills you. You die. Horribly.", priest.name(), name() );
+        }
+        priest.demise();
+        priest.arise();
+        priest.buffs.surrender_to_madness_death->trigger();
+      } );
     }
 
     base_t::expire_override( expiration_stacks, remaining_duration );
@@ -4168,17 +4192,14 @@ double priest_t::composite_spell_crit_chance() const
 {
   double c = player_t::composite_spell_crit_chance();
 
-  if(    sets->has_set_bonus( PRIEST_SHADOW, T21, B4 ) 
-      && buffs.voidform->check() )
+  if ( sets->has_set_bonus( PRIEST_SHADOW, T21, B4 ) 
+      && buffs.overwhelming_darkness->check() ) 
   {
-    c *= 1.0 + (  buffs.voidform->check() ) 
-                     * ( ! options.priest_test_coef
-                         ? sets->set(PRIEST_SHADOW, T21, B4)->effectN(1).percent()
-                         : options.priest_t21_2p_bonus );
+    c +=   ( buffs.overwhelming_darkness->check() - 1 )
+         * buffs.overwhelming_darkness->data().effectN(1).percent();
   }
 
   return c;
-
 }
 
 double priest_t::composite_spell_haste() const
@@ -4773,7 +4794,8 @@ void priest_t::create_buffs()
   buffs.empty_mind = buff_creator_t( this, "empty_mind", find_spell( 247226 ) )
                           .chance( sets->has_set_bonus( PRIEST_SHADOW, T20, B2 ) )
                           .max_stack( 10 );   // TODO Update from spelldata
-                            
+
+  buffs.overwhelming_darkness = new buffs::overwhelming_darkness_t(*this);
 
   // Legendaries
 
@@ -4894,6 +4916,14 @@ void priest_t::apl_precombat()
     "*(1+0.2+stat.mastery_rating%16000)*0.5" );
   precombat->add_action( 
     "variable,name=sear_dpgcd,op=set,value=80*(1+0.05*artifact.void_corruption.rank)" );
+  precombat->add_action(
+    "variable,name=s2msetup_time,op=set,value=(0.8*(83+(20+20*talent.fortress_of_the_mind"
+    ".enabled)*set_bonus.tier20_4pc-(5*talent.sanlayn.enabled)+(30+42*(desired_targets>1)+"
+    "10*talent.lingering_insanity.enabled)*set_bonus.tier21_4pc*talent.auspicious_spirits."
+    "enabled+((33-13*set_bonus.tier20_4pc)*talent.reaper_of_souls.enabled)+set_bonus.tier19_2pc"
+    "*4+8*equipped.mangazas_madness+(raw_haste_pct*10*(1+0.7*set_bonus.tier20_4pc))*(2+(0.8*set_"
+    "bonus.tier19_2pc)+(1*talent.reaper_of_souls.enabled)+(2*artifact.mass_hysteria.rank)-(1*talent"
+    ".sanlayn.enabled)))),if=talent.surrender_to_madness.enabled" );
   if ( sim->allow_potions && true_level >= 80 )
   {
     if ( true_level > 100 )
@@ -5072,13 +5102,8 @@ void priest_t::apl_shadow()
       "variable,op=set,name=actors_fight_time_mod,value=((450-(time+target."
       "time_to_die))%5),if=time+target.time_to_die<=450" );
   check->add_action(
-      "variable,op=set,name=s2mcheck,value=(0.8*(83+(20+20*talent.fortress_of_"
-      "the_mind.enabled)*set_bonus.tier20_4pc-(5*talent.sanlayn.enabled)+((33-13"
-      "*set_bonus.tier20_4pc)*talent.reaper_of_souls.enabled)+set_bonus"
-      ".tier19_2pc*4+8*equipped.mangazas_madness+(raw_haste_pct*10*(1+0.7*set_"
-      "bonus.tier20_4pc))*(2+(0.8*set_bonus.tier19_2pc)+(1*talent.reaper_of_souls"
-      ".enabled)+(2*artifact.mass_hysteria.rank)-(1*talent.sanlayn.enabled))))-("
-      "variable.actors_fight_time_mod*nonexecute_actors_pct)" );
+      "variable,op=set,name=s2mcheck,value=variable.s2msetup_time-(variable."
+      "actors_fight_time_mod*nonexecute_actors_pct)" );
   check->add_action( "variable,op=min,name=s2mcheck,value=180" );
 
   // Main APL
@@ -5131,7 +5156,14 @@ void priest_t::apl_shadow()
   main->add_action( "shadow_word_pain" );
 
   // Surrender to Madness APL
+  s2m->add_action(
+      "silence,if=equipped.sephuzs_secret&(target.is_add|target.debuff.casting."
+      "react)&cooldown.buff_sephuzs_secret.remains<1&!buff.sephuzs_secret.up"
+      ",cycle_targets=1");
   s2m->add_action( "void_bolt,if=buff.insanity_drain_stacks.value<6&set_bonus.tier19_4pc" );
+  s2m->add_action(
+      "mind_bomb,if=equipped.sephuzs_secret&target.is_add&cooldown.buff_sephuzs_"
+      "secret.remains<1&!buff.sephuzs_secret.up,cycle_targets=1");
   s2m->add_action( "shadow_crash,if=talent.shadow_crash.enabled" );
   s2m->add_action( 
       "mindbender,if=cooldown.shadow_word_death.charges=0&buff.voidform.stack>(45"
@@ -5591,11 +5623,7 @@ void priest_t::create_options()
   add_option( opt_bool( "autounshift", options.autoUnshift ) );
   add_option( opt_bool( "priest_fixed_time", options.priest_fixed_time ) );
   add_option( opt_bool( "priest_ignore_healing", options.priest_ignore_healing ) );
-  add_option( opt_bool( "priest_suppress_sephuz", options.priest_suppress_sephuz ) );
-  add_option( opt_bool( "priest_test_coef", options.priest_test_coef ) );
-  add_option( opt_float( "priest_t21_2p_bonus", options.priest_t21_2p_bonus ) );
-  add_option( opt_float( "priest_t21_4p_bonus", options.priest_t21_4p_bonus ) );
-  add_option( opt_float( "priest_mass_hysteria", options.priest_mass_hysteria ) );
+  add_option( opt_bool( "priest_suppress_sephuz", options.priest_suppress_sephuz ) );  
 }
 
 std::string priest_t::create_profile( save_e type )

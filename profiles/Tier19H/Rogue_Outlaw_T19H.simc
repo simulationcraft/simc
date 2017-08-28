@@ -33,12 +33,14 @@ actions.precombat+=/roll_the_bones,if=!talent.slice_and_dice.enabled
 actions.precombat+=/curse_of_the_dreadblades,if=combo_points.deficit>=4
 
 # Executed every time the actor is available.
-# Fish for '2 Buffs' when Loaded Dice is up. With SnD, consider that we never have to reroll.
-actions=variable,name=rtb_reroll,value=!talent.slice_and_dice.enabled&rtb_buffs<2&buff.loaded_dice.up
+# Fish for '2 Buffs' when Loaded Dice is up. Also try to get TB with Loaded Dice and 2 other buffs up. With SnD, consider that we never have to reroll.
+actions=variable,name=rtb_reroll,value=!talent.slice_and_dice.enabled&buff.loaded_dice.up&(rtb_buffs<2|rtb_buffs=2&!buff.true_bearing.up)
 # Condition to use Saber Slash when not rerolling RtB or when using SnD
 actions+=/variable,name=ss_useable_noreroll,value=(combo_points<5+talent.deeper_stratagem.enabled-(buff.broadsides.up|buff.jolly_roger.up)-(talent.alacrity.enabled&buff.alacrity.stack<=4))
 # Condition to use Saber Slash, when you have RtB or not
 actions+=/variable,name=ss_useable,value=(talent.anticipation.enabled&combo_points<5)|(!talent.anticipation.enabled&((variable.rtb_reroll&combo_points<4+talent.deeper_stratagem.enabled)|(!variable.rtb_reroll&variable.ss_useable_noreroll)))
+# Reproduce the ingame macro to cancel autoattacks for the vanish bug.
+actions+=/cancel_autoattack,if=bugs&buff.vanish.up
 # Normal rotation
 actions+=/call_action_list,name=bf
 actions+=/call_action_list,name=cds

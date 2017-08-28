@@ -496,7 +496,7 @@ unsigned item_t::item_level() const
   if ( parsed.item_level > 0 )
     ilvl = parsed.item_level;
   else
-    ilvl = parsed.data.level + upgrade_item_level();
+    ilvl = parsed.data.level + upgrade_item_level() + player -> artifact -> ilevel_increase();
 
   if ( sim -> scale_to_itemlevel > 0 && sim -> scale_itemlevel_down_only )
     return std::min( (unsigned) sim -> scale_to_itemlevel, ilvl );
@@ -910,7 +910,7 @@ std::string item_t::encoded_item() const
   // With artifact, we need to output gems (relics). This probably would need a more thorough
   // checking but artifact doubtful will ever support normal gems, so there's not going to ever be a
   // "gems" option for them.
-  else if ( player -> artifact.slot == slot &&
+  else if ( player -> artifact -> slot() == slot &&
             range::find_if( parsed.gem_id, []( int id ) { return id != 0; } ) != parsed.gem_id.end() )
   {
     s << ",gem_id=";

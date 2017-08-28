@@ -61,13 +61,13 @@ struct sim_signal_handler_t
     {
       report( signal );
     }
-    exit( 1 );
+    exit( signal );
   }
 
-  sim_signal_handler_t( sim_t* sim )
+  sim_signal_handler_t()
   {
     assert ( ! global_sim );
-    global_sim = sim;
+
     struct sigaction sa;
     sigemptyset( &sa.sa_mask );
     sa.sa_flags = 0;
@@ -82,13 +82,18 @@ struct sim_signal_handler_t
   ~sim_signal_handler_t()
   { global_sim = nullptr; }
 };
-sim_t* sim_signal_handler_t::global_sim = nullptr;
 #else
 struct sim_signal_handler_t
 {
-  sim_signal_handler_t( sim_t* ) {}
+  static sim_t* global_sim;
+
+  sim_signal_handler_t() {}
 };
 #endif
+
+sim_t* sim_signal_handler_t::global_sim = nullptr;
+
+static sim_signal_handler_t handler;
 
 // need_to_save_profiles ====================================================
 
@@ -180,8 +185,6 @@ struct special_effect_initializer_t
 
 int sim_t::main( const std::vector<std::string>& args )
 {
-  sim_signal_handler_t handler( this );
-
   cache_initializer_t cache_init( get_cache_directory() + "/simc_cache.dat" );
   dbc_initializer_t dbc_init;
   module_t::init();
@@ -306,5 +309,7 @@ int main( int argc, char** argv )
 #endif
 
   sim_t sim;
+  handler.global_sim = &sim;
+
   return sim.main( io::utf8_args( argc, argv ) );
 }

@@ -17,6 +17,7 @@ SRC += \
     sim$(PATHSEP)sc_option.hpp \
     sim$(PATHSEP)sc_expressions.hpp \
     report$(PATHSEP)sc_report.hpp \
+    player$(PATHSEP)artifact_data.hpp \
     dbc$(PATHSEP)specialization.hpp \
     dbc$(PATHSEP)dbc.hpp \
     simulationcraft.hpp \
@@ -68,6 +69,7 @@ SRC += \
     player$(PATHSEP)sc_item.cpp \
     player$(PATHSEP)sc_enchant.cpp \
     player$(PATHSEP)sc_consumable.cpp \
+    player$(PATHSEP)artifact_data.cpp \
     interfaces$(PATHSEP)sc_wowhead.cpp \
     interfaces$(PATHSEP)sc_js.cpp \
     interfaces$(PATHSEP)sc_http.cpp \

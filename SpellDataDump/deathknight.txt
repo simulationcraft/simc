@@ -544,6 +544,7 @@ Attributes       : ....x.x. ........ ..x..... x..x.x.x   ........ ..x..... .x...
 Effects          :
 #1 (id=40417)    : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f | Target: Self (1)
+                   Affected School(s): All
 #2 (id=40418)    : Apply Aura (6) | Modify Attacker Melee Crit Chance (187)
                    Base Value: -6 | Scaled Value: -6 | Target: Self (1)
 #3 (id=40419)    : Apply Aura (6) | Modify Base Resistance (142)
@@ -963,6 +964,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1887 | Target: Self (1)
 #3 (id=337680)   : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x10 | Target: Self (1)
+                   Affected School(s): Frost
 Description      : The power of Frost increases your Strength by $s1%, and grants immunity to external movement effects such as knockbacks. Lasts $d.
 Tooltip          : Strength increased by $w1%.
 
@@ -1644,6 +1646,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=57741)    : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 200 | Scaled Value: 200 | Misc Value: 0x7f | Target: Active Pet (5)
+                   Affected School(s): All
 #3 (id=191768)   : Apply Aura (6) | Scale% (61)
                    Base Value: 0 | Scaled Value: 0 | Target: Active Pet (5)
 Description      : Transform your $?s207313[abomination]?s58640[geist][ghoul] into a powerful undead monstrosity for $d. The $?s207313[abomination]?s58640[geist][ghoul]'s abilities are empowered and take on new functions while the transformation is active.
@@ -1825,6 +1828,7 @@ Attributes       : ......x. x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=68126)    : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.50000 | Misc Value: 0x10 | Target: Self (1)
+                   Affected School(s): Frost
 #2 (id=90622)    : Apply Aura (6) | Dummy (4)
                    Base Value: 150 | Scaled Value: 150 | Target: Self (1)
 Description      : Increases all Frost damage done by $s1%.
@@ -1843,6 +1847,7 @@ Attributes       : ......x. x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=68129)    : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.25000 | Misc Value: 0x20 | Target: Self (1)
+                   Affected School(s): Shadow
 #2 (id=90623)    : Apply Aura (6) | Dummy (4)
                    Base Value: 225 | Scaled Value: 225 | Target: Self (1)
 Description      : Increases all Shadow damage done by $s1%.
@@ -2428,6 +2433,7 @@ Attributes       : ........ ........ x....... ......x.   x....... ..x..... .x...
 Effects          :
 #2 (id=124130)   : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f | Target: Enemy (6)
+                   Affected School(s): All
 Description      : Dominates the target undead creature up to level $s1, forcing it to do your bidding for $d.
 Tooltip          : Controlled.
 
@@ -2672,11 +2678,13 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=179689)   : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
-                   Base Value: 3 | Scaled Value: 3 | Target: Self (1)
+                   Base Value: 8 | Scaled Value: 8 | Target: Self (1)
                    Affected Spells: Howling Blast (49184), Death Strike (49998), Razorice (50401), Frost Fever (55095), Death Strike Off-Hand (66188), Frost Strike Off-Hand (66196), Obliterate Off-Hand (66198), Breath of Sindragosa (155166), Frost Breath (190780), Frozen Pulse (195750), Glacial Advance (195975), Remorseless Winter (196771), Frozen Soul (204959), Crystalline Swords (205164), Crystalline Swords (205165), Avalanche (207150), Frostscythe (207230), Obliterate (222024), Frost Strike (222026), Hypothermia (228322), Crystalline Swords (243122)
+                   Hotfixed: Base Value (3 -> 8), Chain Multiplier (0 -> 1)
 #2 (id=191174)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Damage (22)
-                   Base Value: 3 | Scaled Value: 3 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 8 | Scaled Value: 8 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Howling Blast (49184), Death Strike (49998), Razorice (50401), Frost Fever (55095), Death Strike Off-Hand (66188), Frost Strike Off-Hand (66196), Obliterate Off-Hand (66198), Breath of Sindragosa (155166), Frost Breath (190780), Frozen Pulse (195750), Glacial Advance (195975), Remorseless Winter (196771), Frozen Soul (204959), Crystalline Swords (205164), Crystalline Swords (205165), Avalanche (207150), Frostscythe (207230), Obliterate (222024), Frost Strike (222026), Hypothermia (228322), Crystalline Swords (243122)
+                   Hotfixed: Base Value (3 -> 8), Chain Multiplier (0 -> 1)
 #3 (id=191175)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 247 (Label) | Target: Self (1)
                    Affected Spells (Label): Infernal Contract (225140), Living Carapace (225033), Sands of Time (225124), Vampiric Aura (225130), Wailing Souls (242609), Unending Hunger (242536)
@@ -3176,6 +3184,7 @@ Effects          :
                    Base Value: 2000 | Scaled Value: 2000 | Target: Self (1)
 #2 (id=218486)   : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 70 | Scaled Value: 70 | Misc Value: 0x7f | Target: Self (1)
+                   Affected School(s): All
 Description      : Increases all damage done by your pet by $s2%.
 
 Name             : Riposte (id=161797) [Spell Family (15), Passive] 
@@ -3468,6 +3477,7 @@ Attributes       : ........ x....... .......x x..x....   .....x.. ........ .....
 Effects          :
 #2 (id=274206)   : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 20 | Scaled Value: 20 | Misc Value: 0x7f | Target: Self (1)
+                   Affected School(s): All
 #3 (id=274207)   : Apply Aura (6) | Modify Melee Attack Speed% (319)
                    Base Value: 30 | Scaled Value: 30 | Target: Self (1)
 Tooltip          : Damage increased by $m2%, and attack speed increased by $m3%.
@@ -3488,6 +3498,7 @@ Effects          :
                    Base Value: 15 | Scaled Value: 15 | Target: Self (1)
 #2 (id=274209)   : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 10 | Scaled Value: 10 | Misc Value: 0x7f | Target: Self (1)
+                   Affected School(s): All
 #3 (id=277944)   : None (0)
                    Base Value: 15 | Scaled Value: 15
 Description      : $@spelldesc187865
@@ -4492,7 +4503,7 @@ Spell Level      : 56
 Range            : 5 yards
 GCD              : 1.5 seconds
 Cooldown         : 45 seconds
-Artifact Power   : Id: 289, Index: 0, Max Rank: 1
+Artifact Power   : Id: 289, Max Rank: 1
 Affecting spells : Death Knight (137005 effect#2), Blood Death Knight (137008 effect#1), 
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
@@ -4936,8 +4947,9 @@ Attributes       : ........ ........ ..x..... ........   ........ ..x..... .....
 Effects          :
 #1 (id=306338)   : Apply Aura (6) | Periodic Energize Power (24): every 1.5 seconds
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 5 | Target: Self (1)
-#2 (id=306339)   : Apply Aura (6) | Periodic Energize Power (24): every 1 seconds
+#2 (id=306339)   : Apply Aura (6) | Periodic Energize Power (24): every 1.5 seconds
                    Base Value: 50 | Scaled Value: 50 | Misc Value: 6 | Target: Self (1)
+                   Hotfixed: Period (1000 -> 1500), Chain Multiplier (0 -> 1)
 Description      : Empower your rune weapon, gaining $s1 $LRune:Runes; and ${$m2/10} Runic Power instantly and every $t1 sec for $d.
 Tooltip          : Gaining $s1 $LRune:Runes; and ${$m2/10} Runic Power and every $t1 sec.
 
@@ -5604,6 +5616,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=314050)   : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 0x7f | Radius: 0 - 80 yards | Target: At Caster (22) -> AOE friendly (30)
+                   Affected School(s): All
 Description      : Spending Runic Power increases the Val'kyr Battlemaiden's damage by $s1% per Runic Power spent.
 Tooltip          : Damage dealt increased by $w1%.
 
@@ -6079,7 +6092,7 @@ GCD              : 1.5 seconds
 Cooldown         : 90 seconds
 Internal Cooldown: 1 seconds
 Proc Chance      : 100%
-Artifact Power   : Id: 149, Index: 0, Max Rank: 1
+Artifact Power   : Id: 149, Max Rank: 1
 Proc Flags       : ....x... ..x..... ........ ........ 
                  : Yellow Melee, AOE Heal
 Affecting spells : Death Knight (137005 effect#2), Unholy Death Knight (137007 effect#1), 

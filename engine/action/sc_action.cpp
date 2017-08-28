@@ -1912,7 +1912,7 @@ bool action_t::ready()
     return false;
   }
 
-  if ( target_if_mode != TARGET_IF_NONE && sim -> target_list.size() > 1 )
+  if ( target_if_mode != TARGET_IF_NONE )
   {
     player_t* potential_target = select_target_if_target();
     if ( potential_target )
@@ -1934,7 +1934,7 @@ bool action_t::ready()
       return false;
   }
 
-  if ( option.cycle_targets && sim -> target_list.size() > 1 )
+  if ( option.cycle_targets && sim -> target_non_sleeping_list.size() > 1 )
   {
     player_t* saved_target = target;
     option.cycle_targets = false;
@@ -2276,9 +2276,8 @@ void action_t::reset()
     if( if_expr )
     {
       if_expr = if_expr -> optimize();
-      if ( sim -> optimize_expressions && if_expr -> always_false() )
+      if ( sim -> optimize_expressions && action_list && if_expr -> always_false() )
       {
-        assert( action_list );
         std::vector<action_t*>::iterator i = std::find( action_list -> foreground_action_list.begin(),
                                                         action_list -> foreground_action_list.end(),
                                                         this );

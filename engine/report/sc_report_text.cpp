@@ -623,7 +623,7 @@ void print_text_iteration_data( FILE* file, sim_t* sim )
   }
 
   size_t n_spacer =
-      ( sim->num_enemies - 1 ) * 10 + ( sim->num_enemies - 2 ) * 2 + 2;
+      ( sim->target_list.size() - 1 ) * 10 + ( sim->target_list.size() - 2 ) * 2 + 2;
   std::string spacer_str_1( n_spacer, '-' ), spacer_str_2( n_spacer, ' ' );
 
   util::fprintf( file, "\nIteration data:\n" );
@@ -694,19 +694,19 @@ void print_text_iteration_data( FILE* file, sim_t* sim )
   else
   {
     util::fprintf( file,
-                   ".-----------------------------------------------%s.\n",
+                   ".--------------------------------------------------------%s.\n",
                    spacer_str_1.c_str() );
     util::fprintf( file,
-                   "| Iteration Data                                %s|\n",
+                   "| Iteration Data                                         %s|\n",
                    spacer_str_2.c_str() );
     util::fprintf( file,
-                   "+-----------+----------------------+------------%s+\n",
+                   "+--------+-----------+----------------------+------------%s+\n",
                    spacer_str_1.c_str() );
     util::fprintf( file,
-                   "|    Metric |                 Seed |  %sHealth(s) |\n",
+                   "|  Iter# |    Metric |                 Seed |  %sHealth(s) |\n",
                    spacer_str_2.c_str() );
     util::fprintf( file,
-                   "+-----------+----------------------+------------%s+\n",
+                   "+--------+-----------+----------------------+------------%s+\n",
                    spacer_str_1.c_str() );
 
     for ( size_t i = 0; i < sim->iteration_data.size(); i++ )
@@ -725,12 +725,13 @@ void print_text_iteration_data( FILE* file, sim_t* sim )
         }
       }
 
-      util::fprintf( file, "| %9.1f | %20llu | %s |\n",
+      util::fprintf( file, "| %6llu | %9.1f | %20llu | %s |\n",
+                     sim->iteration_data[ i ].iteration,
                      sim->iteration_data[ i ].metric,
                      sim->iteration_data[ i ].seed, health_s.str().c_str() );
     }
     util::fprintf( file,
-                   "'-----------+----------------------+------------%s'\n",
+                   "'--------+-----------+----------------------+------------%s'\n",
                    spacer_str_1.c_str() );
   }
 }
@@ -1198,8 +1199,10 @@ void print_text_player( FILE* file, player_t* p )
     util::fprintf( file, "  Origin: %s\n", p->origin_str.c_str() );
   if ( !p->talents_str.empty() )
     util::fprintf( file, "  Talents: %s\n", p->talents_str.c_str() );
-  if ( !p->artifact_str.empty() )
-    util::fprintf( file, "  Artifact: %s\n", p->artifact_str.c_str() );
+  if ( p->artifact && !p->artifact->artifact_option_string().empty() )
+    util::fprintf( file, "  Artifact: %s\n", p->artifact->crucible_option_string().c_str() );
+  if ( p->artifact && !p->artifact->crucible_option_string().empty() )
+    util::fprintf( file, "  Crucible: %s\n", p->artifact->crucible_option_string().c_str() );
   print_text_core_stats( file, p );
   print_text_generic_stats( file, p );
   print_text_spell_stats( file, p );

@@ -924,6 +924,7 @@ Effects          :
                    Affected Spells: Run Through (2098), Slice and Dice (5171), Pistol Shot (185763), Saber Slash (193315), Roll the Bones (193316), Ghostly Strike (196937), Between the Eyes (199804), Blunderbuss (202895)
 #4 (id=338405)   : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f | Target: Self (1)
+                   Affected School(s): All
 Description      : Increases your Energy regeneration rate by $s1% and your attack speed by $s2% for $d.
 Tooltip          : Energy regeneration increased by $s1%.
 Attack speed increased by $s2%.
@@ -1308,6 +1309,7 @@ Attributes       : ........ ........ ........ ...x....   ........ ..x..... .....
 Effects          :
 #1 (id=21282)    : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 10 | Scaled Value: 10 | Misc Value: 0x7f | Target: Self (1)
+                   Affected School(s): All
 Description      : $@spelldesc31223
 Tooltip          : Damage dealt increased by $w1%.
 
@@ -1715,6 +1717,7 @@ Effects          :
                    Base Value: 15 | Scaled Value: 15 | Misc Value: 127 | Target: Self (1)
 #2 (id=330680)   : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f | Target: Self (1)
+                   Affected School(s): All
 Description      : The current party or raid member becomes the target of your Tricks of the Trade$?s221622[, increasing you and the target's damage by $221622m1%][]. The threat caused by your next attack and all actions taken for $57933d afterwards will be transferred to the target.
 Tooltip          : All threat transferred from the Rogue to the target.
 $?s221622[Damage increased by $221622m1%.][]
@@ -2057,6 +2060,7 @@ Effects          :
                    Base Value: 20 | Scaled Value: 20 | SP Coefficient: 1.00000 | Misc Value: 3 | Target: Self (1)
 #2 (id=85448)    : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 17 | Scaled Value: 17 | Misc Value: 0x7f | Target: Self (1)
+                   Affected School(s): All
 Description      : Your maximum Energy is increased by $s1 and your damage is increased by $s2%.
 
 Name             : Leather Specialization (Passive) (id=86092) [Passive, Hidden] 
@@ -3063,6 +3067,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #4 (id=373905)   : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f | Target: Self (1)
+                   Affected School(s): All
 Description      : Allows use of all Stealth abilities and grants all the combat benefits of Stealth for $d. Effect not broken from taking damage or attacking. $?s14062[Movement speed while active is increased by $1784s3% and damage dealt is increased by $1784s4%. ]?s108209[Abilities cost $112942s1% less while active. ][]$?s31223[Attacks from Shadow Dance and for $31223s1 sec after deal $31665s1% more damage.  ][]
 
 Name             : Deepening Shadows (id=185314) [Spell Family (8), Passive] 
@@ -3309,7 +3314,7 @@ GCD              : 1 seconds
 Duration         : 14 seconds
 Cooldown         : 45 seconds
 Proc Chance      : 101%
-Artifact Power   : Id: 346, Index: 0, Max Rank: 1
+Artifact Power   : Id: 346, Max Rank: 1
 Proc Flags       : ....x... ....x... x....... ........ 
                  : Yellow Melee, AOE Hostile Spell, Hostile Spell
 Affecting spells : Mastery: Potent Poisons (76803 effect#1), Vendetta (79140 effect#1), Assassination Rogue (137037 effect#1), Kingsbane (192853 effect#1), Master Poisoner (196864 effect#1), Dreadblade's Vigor (238103 effect#1), Toxic Blade (245389 effect#1)
@@ -3698,6 +3703,7 @@ Attributes       : ....x... ........ ..x..... ........   ........ ..x..... .....
 Effects          :
 #1 (id=284088)   : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 12 | Scaled Value: 12 | Misc Value: 0x7f | Target: Self (1)
+                   Affected School(s): All
 Description      : Increases damage done by $s1% for $d.
 Tooltip          : Increases damage done by $s1%.
 
@@ -4270,6 +4276,7 @@ Effects          :
                    Base Value: 55 | Scaled Value: 111 | Points Per Level: 1 | Misc Value: 1 | Target: Enemy (6)
 #2 (id=327745)   : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f | Target: Enemy (6)
+                   Affected School(s): All
 Description      : Bribes a non-player humanoid target up to level $s1 with fool's gold, convincing it to fight for you for $d.
 Tooltip          : Bribed.
 
@@ -4548,7 +4555,7 @@ School           : Shadow
 Duration         : 12 seconds
 Cooldown         : 90 seconds
 Proc Chance      : 101%
-Artifact Power   : Id: 1052, Index: 0, Max Rank: 1
+Artifact Power   : Id: 1052, Max Rank: 1
 Proc Flags       : ....x... ..x..... ........ ........ 
                  : Yellow Melee, AOE Heal
 Affecting spells : Mastery: Potent Poisons (76803 effect#1), Kingsbane (192853 effect#1), Master Poisoner (196864 effect#1), Dreadblade's Vigor (238103 effect#1), Toxic Blade (245389 effect#1)
@@ -4565,6 +4572,7 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | Trigger Spell: 202668 | Target: Self (1)
 #2 (id=364290)   : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f | Target: Self (1)
+                   Affected School(s): All
 Description      : Invoke the Curse of the Dreadblades, causing each Saber Slash, $?s196937[Ghostly Strike, ][]Ambush, or Pistol Shot to fill your combo points. However, |cFFFFCC99The Dreadblades|r will consume $202669s1% of your current health when you use a finishing move for the next $d. $?a238103[Increases damage done by $238103s1%.][]
 Tooltip          : Saber Slash, $?s196937[Ghostly Strike, ][]Ambush, and Pistol Shot will refill all of your combo points when used. $?a238103[Increases damage done by $238103s1%.][]
 
@@ -4732,7 +4740,7 @@ School           : Physical
 Range            : 8 yards
 GCD              : 1 seconds
 Cooldown         : 60 seconds
-Artifact Power   : Id: 851, Index: 0, Max Rank: 1
+Artifact Power   : Id: 851, Max Rank: 1
 Affecting spells : Nightblade (195452 effect#6)
 Triggered by     : Push Active Ability to Bar (225880)
 Attributes       : ........ ........ ........ ........   ........ .x...... ........ ........ 
@@ -4891,6 +4899,7 @@ Attributes       : ....x... ........ x.x..... ........   .....x.. ..x..... .....
 Effects          :
 #1 (id=314702)   : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 15 | Scaled Value: 15 | Misc Value: 0x7f | Target: Self (1)
+                   Affected School(s): All
 #2 (id=466105)   : Energize Power (30)
                    Base Value: 40 | Scaled Value: 40 | Misc Value: energy | Target: Self (1)
 #3 (id=466120)   : Apply Aura (6) | Periodic Energize Power (24): every 1 seconds
@@ -5078,7 +5087,7 @@ Description      : Critical strikes with Between the Eyes deal four times normal
 Name             : Dreadblade's Vigor (id=238103) [Spell Family (8), Passive] 
 Class            : Rogue
 School           : Physical
-Artifact Power   : Id: 1582, Index: 0, Max Rank: 1
+Artifact Power   : Id: 1582, Max Rank: 1
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 

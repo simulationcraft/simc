@@ -3734,10 +3734,7 @@ struct aftershocks_t : public fire_mage_spell_t
     double am = fire_mage_spell_t::action_multiplier();
 
     // Not snapshot on Flamestrike execute, it seems.
-    if ( p() -> buffs.critical_massive -> up() )
-    {
-      am *= 1.0 + p() -> buffs.critical_massive -> check_value();
-    }
+    am *= 1.0 + p() -> buffs.critical_massive -> value();
 
     return am;
   }
@@ -3870,10 +3867,7 @@ struct flamestrike_t : public fire_mage_spell_t
   {
     double am = fire_mage_spell_t::action_multiplier();
 
-    if ( p() -> buffs.critical_massive -> up() )
-    {
-      am *= 1.0 + p() -> buffs.critical_massive -> check_value();
-    }
+    am *= 1.0 + p() -> buffs.critical_massive -> value();
 
     return am;
   }
@@ -5414,10 +5408,7 @@ struct pyroblast_t : public fire_mage_spell_t
       am *= 1.0 + p() -> buffs.kaelthas_ultimate_ability -> data().effectN( 1 ).percent();
     }
 
-    if ( p() -> buffs.critical_massive -> up() )
-    {
-      am *= 1.0 + p() -> buffs.critical_massive -> check_value();
-    }
+    am *= 1.0 + p() -> buffs.critical_massive -> value();
 
     return am;
   }
@@ -7089,6 +7080,28 @@ void mage_t::create_buffs()
   // Buff to track icicles. This does not, however, track the true amount of icicles present.
   // Instead, as it does in game, it tracks icicle buff stack count based on the number of *casts*
   // of icicle generating spells. icicles are generated on impact, so they are slightly de-synced.
+  //
+  // A note about in-game implementation. At first, it might seem that each stack has an independent
+  // expiration timer, but the timing is a bit off and it just doesn't happen in the cases where
+  // Icicle buff is incremented but the actual Icicle never created.
+  //
+  // Instead, the buff is incremented when:
+  //   * Frostbolt executes
+  //   * Ice Nine creates another Icicle
+  //   * One of the Icicles overflows
+  //
+  // It is unclear if the buff is incremented twice or three times when Ice Nine procs and two Icicles
+  // overflow (combat log doesn't track refreshes for Icicles buff).
+  //
+  // The buff is decremented when:
+  //   * One of the Icicles is removed
+  //     - Launched after Ice Lance
+  //     - Launched on overflow
+  //     - Removed as a part of Glacial Spike execute
+  //     - Expired after 60 sec
+  //
+  // This explains why some Icicle stacks remain if Glacial Spike executes with 5 Icicle stacks but less
+  // than 5 actual Icicles.
   buffs.icicles                = buff_creator_t( this, "icicles", find_spell( 205473 ) );
   buffs.icy_veins              = haste_buff_creator_t( this, "icy_veins", find_spell( 12472 ) )
                                    .default_value( find_spell( 12472 ) -> effectN( 1 ).percent() )
@@ -7400,7 +7413,7 @@ std::string mage_t::default_potion() const
 {
   std::string lvl110_potion =
     ( specialization() == MAGE_ARCANE ) ? "deadly_grace" :
-    ( specialization() == MAGE_FIRE )   ? "deadly_grace" :
+    ( specialization() == MAGE_FIRE )   ? "prolonged_power" :
                                           "prolonged_power";
 
   return ( true_level >= 100 ) ? lvl110_potion :
@@ -7574,8 +7587,6 @@ void mage_t::apl_fire()
   combustion_phase -> add_action( this, "Pyroblast", "if=buff.hot_streak.up" );
   combustion_phase -> add_action( this, "Fire Blast", "if=buff.heating_up.up" );
   combustion_phase -> add_action( this, "Phoenix's Flames" );
-  combustion_phase -> add_action( this, "Scorch", "if=buff.combustion.remains>cast_time&target.health.pct<=30&equipped.132454" );
-  combustion_phase -> add_action( this, "Fireball", "if=buff.combustion.remains>cast_time" );
   combustion_phase -> add_action( this, "Scorch", "if=buff.combustion.remains>cast_time" );
   combustion_phase -> add_action( this, "Dragon's Breath", "if=buff.hot_streak.down&action.fire_blast.charges<1&action.phoenixs_flames.charges<1" );
   combustion_phase -> add_action( this, "Scorch", "if=target.health.pct<=30&equipped.132454");
@@ -7840,8 +7851,7 @@ void mage_t::recalculate_resource_max( resource_e rt )
 
   if ( talents.arcane_familiar -> ok() && buffs.arcane_familiar -> check() )
   {
-    resources.max[ rt ] *= 1.0 +
-      buffs.arcane_familiar -> check_value();
+    resources.max[ rt ] *= 1.0 + buffs.arcane_familiar -> check_value();
     resources.current[ rt ] = resources.max[ rt ] * mana_percent;
     if ( sim -> debug )
     {
@@ -7863,15 +7873,12 @@ double mage_t::composite_player_critical_damage_multiplier( const action_state_t
     m *= 1.0 + artifact.burning_gaze.percent();
   }
 
-  if ( !dbc::is_school( s -> action -> get_school(), SCHOOL_PHYSICAL ) )
+  if ( ! dbc::is_school( s -> action -> get_school(), SCHOOL_PHYSICAL ) )
   {
     m *= 1.0 + buffs.pyretic_incantation -> check_stack_value();
   }
 
-  if ( buffs.frozen_mass -> check() )
-  {
-    m *= 1.0 + buffs.frozen_mass -> check_value();
-  }
+  m *= 1.0 + buffs.frozen_mass -> check_value();
 
   return m;
 }
@@ -7882,10 +7889,7 @@ double mage_t::composite_player_pet_damage_multiplier( const action_state_t* s )
 {
   double m = player_t::composite_player_pet_damage_multiplier( s );
 
-  if ( buffs.rune_of_power -> check() )
-  {
-    m *= 1.0 + buffs.rune_of_power -> check_value();
-  }
+  m *= 1.0 + buffs.rune_of_power -> check_value();
 
   if ( talents.incanters_flow -> ok() )
   {
@@ -7910,10 +7914,7 @@ double mage_t::composite_player_multiplier( school_e school ) const
 {
   double m = player_t::composite_player_multiplier( school );
 
-  if ( buffs.rune_of_power -> check() )
-  {
-    m *= 1.0 + buffs.rune_of_power -> check_value();
-  }
+  m *= 1.0 + buffs.rune_of_power -> check_value();
 
   if ( talents.incanters_flow -> ok() )
   {
@@ -7921,7 +7922,7 @@ double mage_t::composite_player_multiplier( school_e school ) const
   }
 
   // TODO: Check if AP interacts with multischool damage that includes physical.
-  if ( buffs.arcane_power -> check() && !dbc::is_school( school, SCHOOL_PHYSICAL ) )
+  if ( ! dbc::is_school( school, SCHOOL_PHYSICAL ) )
   {
     m *= 1.0 + buffs.arcane_power -> check_value();
   }
@@ -7963,15 +7964,12 @@ double mage_t::composite_player_multiplier( school_e school ) const
   m *= 1.0 + artifact.frigidity_of_the_tirisgarde.data().effectN( 1 ).percent();
 
 
-  if ( buffs.chilled_to_the_core -> check() && dbc::is_school( school, SCHOOL_FROST ) )
+  if ( dbc::is_school( school, SCHOOL_FROST ) )
   {
     m *= 1.0 + buffs.chilled_to_the_core -> check_value();
   }
 
-  if ( buffs.crackling_energy -> check() )
-  {
-    m *= 1.0 + buffs.crackling_energy -> check_value();
-  }
+  m *= 1.0 + buffs.crackling_energy -> check_value();
 
   return m;
 }
@@ -8009,10 +8007,7 @@ double mage_t::composite_spell_crit_chance() const
 {
   double c = player_t::composite_spell_crit_chance();
 
-  if ( buffs.combustion -> check() )
-  {
-    c += buffs.combustion -> check_value();
-  }
+  c += buffs.combustion -> check_value();
 
   if ( spec.critical_mass -> ok() )
   {
@@ -8030,24 +8025,13 @@ double mage_t::composite_spell_haste() const
 {
   double h = player_t::composite_spell_haste();
 
-  if ( buffs.icy_veins -> check() )
-  {
-    h /= 1.0 + buffs.icy_veins -> check_value();
-  }
+  h /= 1.0 + buffs.icy_veins -> check_value();
+  h /= 1.0 + buffs.streaking -> check_value();
+  h /= 1.0 + buffs.sephuzs_secret -> check_value();
 
   if ( buffs.sephuzs_secret -> default_chance != 0 )
   {
     h /= 1.0 + buffs.sephuzs_secret -> data().driver() -> effectN( 3 ).percent();
-  }
-
-  if ( buffs.sephuzs_secret -> check() )
-  {
-    h /= 1.0 + buffs.sephuzs_secret -> stack_value();
-  }
-
-  if ( buffs.streaking -> check() )
-  {
-    h /= 1.0 + buffs.streaking -> check_value();
   }
 
   return h;
@@ -8151,20 +8135,9 @@ double mage_t::passive_movement_modifier() const
     pmm += buffs.sephuzs_secret -> data().driver() -> effectN( 2 ).percent();
   }
 
-  if ( buffs.chrono_shift -> check() )
-  {
-    pmm += buffs.chrono_shift -> check_value();
-  }
-
-  if ( buffs.frenetic_speed -> check() )
-  {
-    pmm += buffs.frenetic_speed -> check_value();
-  }
-
-  if ( buffs.scorched_earth -> check() )
-  {
-    pmm += buffs.scorched_earth -> check_stack_value();
-  }
+  pmm += buffs.chrono_shift -> check_value();
+  pmm += buffs.frenetic_speed -> check_value();
+  pmm += buffs.scorched_earth -> check_stack_value();
 
   return pmm;
 }

@@ -2411,48 +2411,12 @@ std::string util::google_image_chart_encode( const std::string& str )
 // create_wowhead_artifact_url ==============================================
 std::string util::create_wowhead_artifact_url( const player_t& p )
 {
-  std::string base_url = "http://legion.wowhead.com/artifact-calc#";
-
-  unsigned artifact_id = p.dbc.artifact_by_spec( p.specialization() );
-  std::string artifact_str = util::to_string( artifact_id ) + ":";
-  std::array<unsigned, MAX_ARTIFACT_RELIC> relics;
-  if ( range::find_if( p.artifact.relics, []( unsigned r ) { return r > 0; } ) != p.artifact.relics.end() )
+  if ( ! p.artifact || ! p.artifact -> enabled() )
   {
-    relics = p.artifact.relics;
-  }
-  else
-  {
-    auto artifact_it = range::find_if( p.items, []( const item_t& i ) { return i.parsed.data.id_artifact > 0; } );
-    if ( artifact_it != p.items.end() )
-    {
-      range::copy( ( *artifact_it ).parsed.gem_id, relics.begin() );
-    }
+    return std::string();
   }
 
-  range::for_each( relics, [ &artifact_str ]( unsigned relic_id ) {
-    artifact_str += util::to_string( relic_id ) + ":";
-  } );
-
-  std::vector<const artifact_power_data_t*> artifact_powers = p.dbc.artifact_powers( artifact_id );
-  for ( size_t i = 0; i < artifact_powers.size(); ++i )
-  {
-    auto total_ranks = p.artifact.points[ i ].first + p.artifact.points[ i ].second;
-    if ( total_ranks == 0 )
-    {
-      continue;
-    }
-
-    artifact_str += util::to_string( artifact_powers[ i ] -> id );
-    artifact_str += ":";
-    artifact_str += util::to_string( +total_ranks );
-
-    if ( i < artifact_powers.size() - 1 )
-    {
-      artifact_str += ":";
-    }
-  }
-
-  return base_url + artifact_str;
+  return "http://legion.wowhead.com/artifact-calc#" + p.artifact -> encode();
 }
 
 // create_blizzard_talent_url ===============================================

@@ -572,7 +572,11 @@ bool report::check_gear_ilevel( player_t& p, sim_t& sim )
 
 bool report::check_artifact_points( const player_t& p, sim_t& sim )
 {
-  auto splits           = util::string_split( p.artifact_str, ":" );
+  if ( p.is_enemy() || p.is_pet() )
+  {
+    return true;
+  }
+
   unsigned max_allowed  = 0;
   std::string tier_name = "";
 
@@ -619,21 +623,21 @@ bool report::check_artifact_points( const player_t& p, sim_t& sim )
   // Relics must be added on top of the limit!
   max_allowed += 3;
 
-  if ( p.artifact.n_points > max_allowed )
+  if ( p.artifact -> points() > max_allowed )
   {
     sim.errorf(
         "Player %s has %s artifact points, maximum allowed (including relics) "
         "for %s is %s.\n",
-        p.name(), util::to_string( p.artifact.n_points ).c_str(),
+        p.name(), util::to_string( p.artifact -> points() ).c_str(),
         tier_name.c_str(), util::to_string( max_allowed ).c_str() );
     return false;
   }
-  else if ( p.artifact.n_points < max_allowed && p.level() == 110 )
+  else if ( p.artifact -> points() < max_allowed && p.level() == 110 )
   {
     sim.errorf(
         "Player %s has %s artifact points, maximum allowed (including relics) "
         "for %s is %s. Add more!\n",
-        p.name(), util::to_string( p.artifact.n_points ).c_str(),
+        p.name(), util::to_string( p.artifact -> points() ).c_str(),
         tier_name.c_str(), util::to_string( max_allowed ).c_str() );
     return true;
   }

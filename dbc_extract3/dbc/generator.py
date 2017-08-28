@@ -1231,7 +1231,9 @@ class SpellDataGenerator(DataGenerator):
          # 7.1.5 Entwined Elemental Foci buffs
          225729, 225730,
          # 7.2.0 Dreadstone of Endless Shadows stat buffs
-         238499, 238500, 238501
+         238499, 238500, 238501,
+         # 7.3.0 Netherlight stuff
+         252879, 252896, 253098, 253073,
         ),
 
         # Warrior:
@@ -1794,6 +1796,9 @@ class SpellDataGenerator(DataGenerator):
             self._dbc.append('Item-sparse')
         else:
             self._dbc.append('ItemSparse')
+
+        if self._options.build >= 24651:
+            self._dbc.append('RelicTalent')
 
     def initialize(self):
         if not super().initialize():
@@ -2547,7 +2552,7 @@ class SpellDataGenerator(DataGenerator):
             power_rank = spell.get_link('artifact_power')
             power = self._artifactpower_db[power_rank.id_power]
             artifact = self._artifact_db[power.id_artifact]
-            if power_rank.index == 0 and artifact.id_spec != 0:
+            if power.id != 0:
                 fields += spell.get_link('artifact_power').field('id_power')
             else:
                 fields += self._artifactpowerrank_db[0].field('id_power')
@@ -4171,14 +4176,13 @@ class ArtifactDataGenerator(DataGenerator):
     def __init__(self, options, data_store = None):
         self._dbc = [ 'Artifact', 'ArtifactPower', 'ArtifactPowerRank', 'Spell' ]
 
+        if options.build >= 24651:
+            self._dbc.append('RelicTalent')
+
         super().__init__(options, data_store)
 
     def filter(self):
         ids = {}
-
-        # Kludge-y 7.3 Netherlight Crucible, part 0
-        if self._options.build >= 24608:
-            ids[0] = {}
 
         for id, data in self._artifact_db.items():
             if data.id_spec == 0:
@@ -4192,11 +4196,16 @@ class ArtifactDataGenerator(DataGenerator):
             if artifact_id not in ids:
                 continue
 
-            # Kludge-y 7.3 Netherelight Crucible, part 1
-            if artifact_id == 0 and id < 1739:
-                continue
-
             ids[artifact_id][id] = { 'data': data, 'ranks': [] }
+
+        if self._options.build >= 24641:
+            ids[0] = { }
+            for id, data in self._relictalent_db.items():
+                if data.id_power == 0:
+                    continue
+
+                power_data = self._artifactpower_db[data.id_power]
+                ids[0][data.id_power] = { 'data': power_data, 'ranks': [] }
 
         for id, data in self._artifactpowerrank_db.items():
             power_id = data.id_power
@@ -4207,11 +4216,10 @@ class ArtifactDataGenerator(DataGenerator):
             if power.id_artifact not in ids:
                 continue
 
-            if self._spell_db[data.id_spell].id != data.id_spell:
+            if power_id not in ids[power.id_artifact]:
                 continue
 
-            # Kludge-y 7.3 Netherlight Crucible, part 2
-            if power.id_artifact == 0 and power_id < 1739:
+            if self._spell_db[data.id_spell].id != data.id_spell:
                 continue
 
             ids[power.id_artifact][power_id]['ranks'].append(data)
@@ -4224,18 +4232,15 @@ class ArtifactDataGenerator(DataGenerator):
             self._options.suffix and ('_%s' % self._options.suffix) or '',
         )
 
-        n_artifacts = len(ids.keys()) + (0 in ids and 0 or 1)
+        artifact_keys = sorted(ids.keys())
+        if artifact_keys[0] == 0:
+            del artifact_keys[0]
 
-        self._out.write('#define %s_SIZE (%d)\n\n' % (data_str.upper(), len(ids.keys())))
+        self._out.write('#define %s_SIZE (%d)\n\n' % (data_str.upper(), len(artifact_keys) + 1))
 
         self._out.write('// Artifact base data, wow build %d\n' % ( self._options.build ))
 
         self._out.write('static struct artifact_t __%s_data[%s_SIZE] = {\n' % (data_str, data_str.upper()))
-
-        artifact_keys = sorted(ids.keys())
-        # Kludge-y 7.3 Netherlight Crucible, part 3: Remove extra artifact id 0 from keys
-        if artifact_keys[0] == 0:
-            del artifact_keys[0]
 
         powers = []
         for key in artifact_keys + [0]:
@@ -4246,7 +4251,7 @@ class ArtifactDataGenerator(DataGenerator):
                 for _, power_data in ids[key].items():
                     powers.append(power_data)
 
-        self._out.write('};\n')
+        self._out.write('};\n\n')
 
         data_str = "%sartifact_power%s" % (
             self._options.prefix and ('%s_' % self._options.prefix) or '',

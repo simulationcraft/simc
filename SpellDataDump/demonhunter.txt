@@ -206,6 +206,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #3 (id=270147)   : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f | Target: Self (1)
+                   Affected School(s): All
 #4 (id=271791)   : Apply Aura (6) | Unknown(443)
                    Base Value: 30 | Scaled Value: 30 | Target: Self (1)
 #5 (id=296790)   : Apply Aura (6) | Unknown(332)
@@ -297,6 +298,7 @@ Attributes       : ........ ........ ..x..... x..x....   .....x.. ..x..... .....
 Effects          :
 #1 (id=229227)   : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 20 | Scaled Value: 20 | Misc Value: 0x7f | Target: Self (1)
+                   Affected School(s): All
 Description      : $@spelldesc163063
 Tooltip          : Dealing $s1% increased damage.
 
@@ -1189,7 +1191,7 @@ GCD              : 1.5 seconds
 Velocity         : 3 yards/sec
 Duration         : 3 seconds
 Cooldown         : 60 seconds
-Artifact Power   : Id: 1010, Index: 0, Max Rank: 1
+Artifact Power   : Id: 1010, Max Rank: 1
 Affecting spells : Metamorphosis (162264 effect#7), Havoc Demon Hunter (212612 effect#1), Vengeance Demon Hunter (212613 effect#3)
 Triggered by     : Push Active Ability to Bar (225863)
 Attributes       : ........ ........ ........ .......x   ........ ........ ........ ........ 
@@ -1746,9 +1748,11 @@ Effects          :
 #1 (id=300687)   : Apply Aura (6) | Modify Parry% (47)
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
 #2 (id=300915)   : Apply Aura (6) | Unknown(87)
-                   Base Value: -10 | Scaled Value: -10 | Misc Value: 0x1 | Target: Self (1)
+                   Base Value: -12 | Scaled Value: -12 | Misc Value: 0x1 | Target: Self (1)
+                   Hotfixed: Base Value (-10 -> -12), Chain Multiplier (0 -> 1)
 #3 (id=341634)   : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x1 | Target: Self (1)
+                   Affected School(s): Physical
 Description      : $@spelldesc203720
 Tooltip          : Parry chance increased by $w1%.
 
@@ -2171,7 +2175,7 @@ Range            : 5 yards
 GCD              : 1.5 seconds
 Duration         : 3 seconds
 Cooldown         : 40 seconds
-Artifact Power   : Id: 1096, Index: 0, Max Rank: 1
+Artifact Power   : Id: 1096, Max Rank: 1
 Affecting spells : Metamorphosis (162264 effect#7), Havoc Demon Hunter (212612 effect#1), Vengeance Demon Hunter (212613 effect#1), 
 Triggered by     : Push Active Ability to Bar (225864)
 Attributes       : ........ ........ ..x..... .......x   ........ .x...... ........ ........ 
@@ -2439,6 +2443,7 @@ Attributes       : ........ ........ ..x..... x..x....   .....x.. ..x..... .....
 Effects          :
 #1 (id=308030)   : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 20 | Scaled Value: 20 | Misc Value: 0x7f | Target: Self (1)
+                   Affected School(s): All
 Description      : Consuming a Soul Fragment that came from a Demon causes you to deal $s1% increased damage for $d.
 Tooltip          : Dealing $s1% increased damage.
 
@@ -2471,6 +2476,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=308737)   : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 20 | Scaled Value: 20 | Misc Value: 0x7f | Target: Self (1)
+                   Affected School(s): All
 Description      : Increases all damage done by $s1%.
 Tooltip          : Damage done increased by $s1%.
 
@@ -2492,6 +2498,7 @@ Effects          :
                    Base Value: 94 | Scaled Value: 95 - 105 | Value Range: 11 | Target: Enemy (6)
 #2 (id=309700)   : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: -40 | Scaled Value: -40 | Misc Value: 0x7f | Target: Enemy (6)
+                   Affected School(s): All
 #3 (id=309701)   : Trigger Spell (64): Fiery Brand
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 209247 | Target: Enemy (6)
 Description      : Brands a target with a burning demonic symbol, instantly dealing $s1 Fire damage and reducing the damage they do by $s2% for $d.
@@ -3514,7 +3521,8 @@ Attributes       : ....x... ........ ........ ........   ........ .x...... .....
                  : Not a proc (105)
 Effects          :
 #1 (id=338878)   : Weapon Damage% (31)
-                   Base Value: 475 | Scaled Value: 4.75 | Target: Enemy (6)
+                   Base Value: 451 | Scaled Value: 4.51 | Target: Enemy (6)
+                   Hotfixed: Base Value (475 -> 451), Chain Multiplier (0 -> 1)
 #2 (id=338879)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
 Description      : $@spelldesc209795
@@ -3535,7 +3543,8 @@ Attributes       : ....x... ........ ........ ........   ........ .x...... .....
                  : Not a proc (105)
 Effects          :
 #1 (id=338881)   : Weapon Damage% (31)
-                   Base Value: 945 | Scaled Value: 9.45 | Target: Enemy (6)
+                   Base Value: 897 | Scaled Value: 8.97 | Target: Enemy (6)
+                   Hotfixed: Base Value (945 -> 897), Chain Multiplier (0 -> 1)
 #2 (id=338882)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
 Description      : $@spelldesc209795
@@ -3918,8 +3927,8 @@ Attributes       : ........ ........ ........ x..x....   ........ ........ .....
                  : Not a proc (105), Requires line of sight (186)
 Effects          :
 #1 (id=377040)   : School Damage (2): fire
-                   Base Value: 0 | Scaled Value: 0 (avg=0, dl=0.1) | AP Coefficient: 2.00000 | Radius: 0 - 8 yards | Target: Custom (18) -> AOE enemy (instant) (16)
-                   Hotfixed: Chain Multiplier (0 -> 1)
+                   Base Value: 0 | Scaled Value: 0 (avg=0, dl=0.1) | AP Coefficient: 1.80000 | Radius: 0 - 8 yards | Target: Custom (18) -> AOE enemy (instant) (16)
+                   Hotfixed: AP Coefficient (2 -> 1.8), Chain Multiplier (0 -> 1)
 Description      : $@spelldesc247454
 
 Name             : Frailty (id=247456) [Spell Family (107)] 
@@ -3961,6 +3970,7 @@ Effects          :
                    Base Value: 150 | Scaled Value: 150 | Misc Value: 211796 | Trigger Spell: 211797 | Target: Self (1)
 #2 (id=464520)   : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 30 | Scaled Value: 30 | Misc Value: 0x7f | Target: Self (1)
+                   Affected School(s): All
                    Hotfixed: Chain Multiplier (0 -> 1)
 Description      : Increases all damage done by $s2% for $d.
 
