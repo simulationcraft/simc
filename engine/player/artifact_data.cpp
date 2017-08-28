@@ -29,9 +29,11 @@ artifact_data_ptr_t player_artifact_data_t::create( player_t* player )
   return obj;
 }
 
-artifact_data_ptr_t player_artifact_data_t::create( const artifact_data_ptr_t& other )
+artifact_data_ptr_t player_artifact_data_t::create( player_t* player, const artifact_data_ptr_t& other )
 {
   artifact_data_ptr_t obj { new player_artifact_data_t( *other.get() ) };
+
+  obj -> m_player = player;
 
   return obj;
 }
@@ -79,19 +81,6 @@ bool player_artifact_data_t::initialize()
                          ? player() -> find_spell( ( *stamina_it ) -> power_spell_id )
                          : spell_data_t::not_found();
 
-  // Set the primary artifact slot for this player. It will be the item that has an artifact
-  // identifier on it and it does not have a parent slot as per client data. The parent slot
-  // initialization is performed in player_t::init_items.
-  range::for_each( player() -> items, [ this ]( const item_t& i ) {
-    if ( i.parsed.data.id_artifact > 0 && i.parent_slot == SLOT_INVALID )
-    {
-      assert( m_slot == SLOT_INVALID );
-      debug( this, "Player %s setting artifact slot to '%s'", player() -> name(),
-        util::slot_type_string( i.slot ) );
-      m_slot = i.slot;
-    }
-  } );
-
   return parse() && parse_crucible();
 }
 
@@ -107,6 +96,48 @@ bool player_artifact_data_t::enabled() const
   }
 }
 
+void player_artifact_data_t::reset_artifact()
+{
+  for ( auto& point_data : m_points )
+  {
+    if ( point_data.second.overridden == -1 )
+    {
+      m_total_points -= point_data.second.purchased;
+      m_purchased_points -= point_data.second.purchased;
+
+      if ( m_has_relic_opts )
+      {
+        m_total_points -= point_data.second.bonus;
+      }
+    }
+
+    point_data.second.purchased = 0;
+    if ( m_has_relic_opts )
+    {
+      point_data.second.bonus = 0;
+    }
+  }
+
+  m_has_relic_opts = false;
+  assert( m_purchased_points == 0 );
+}
+
+void player_artifact_data_t::reset_crucible()
+{
+  for ( auto& point_data : m_points )
+  {
+    if ( point_data.second.overridden == -1 )
+    {
+      m_total_points -= point_data.second.crucible;
+      m_crucible_points -= point_data.second.crucible;
+    }
+
+    point_data.second.crucible = 0;
+  }
+
+  assert( m_crucible_points == 0 );
+}
+
 sim_t* player_artifact_data_t::sim() const
 { return m_player -> sim; }
 
@@ -116,13 +147,37 @@ player_t* player_artifact_data_t::player() const
 void player_artifact_data_t::set_artifact_str( const std::string& value )
 {
   debug( this, "Player %s setting artifact input to '%s'", player() -> name(), value.c_str() );
+  reset_artifact();
   m_artifact_str = value;
 }
 
 void player_artifact_data_t::set_crucible_str( const std::string& value )
 {
   debug( this, "Player %s setting artifact crucible input to '%s'", player() -> name(), value.c_str() );
+  reset_crucible();
   m_crucible_str = value;
+}
+
+void player_artifact_data_t::set_artifact_slot( slot_e slot )
+{
+  debug( this, "Player %s setting artifact slot to '%s'", player() -> name(),
+      util::slot_type_string( slot ) );
+  m_slot = slot;
+}
+
+int player_artifact_data_t::ilevel_increase() const
+{
+  return player() -> find_artifact_spell( CRUCIBLE_ILEVEL_POWER_ID ).value();
+}
+
+slot_e player_artifact_data_t::slot() const
+{
+  if ( sim() -> disable_artifacts != 0 )
+  {
+    return SLOT_INVALID;
+  }
+
+  return m_slot;
 }
 
 bool player_artifact_data_t::add_power( unsigned power_id, unsigned rank )
@@ -523,7 +578,7 @@ report::sc_html_stream& player_artifact_data_t::generate_report( report::sc_html
        << util::create_wowhead_artifact_url( *player() )
        << "\" target=\"_blank\">Calculator (Wowhead.com)</a></li>";
 
-  root << "<li>Purchased points: " << purchased_points() << ", total " << points() << "</li>";
+  root << "<li>Purchased points: " << purchased_points() << ", crucible " << crucible_points() << ", total " << points() << "</li>";
   root << "</ul></td></tr>";
 
   root << "<tr class=\"left\">\n<th></th><td><ul class=\"float\">\n";
@@ -537,34 +592,37 @@ report::sc_html_stream& player_artifact_data_t::generate_report( report::sc_html
       return;
     }
 
-    auto spell = player() -> dbc.spell( power -> power_spell_id );
-
-    root << "<li>" << ( spell ? report::spell_data_decorator_t( player(), spell ).decorate()
-                              : power -> name );
+    if ( power -> power_type == ARTIFACT_TRAIT_RELIC )
+    {
+      return;
+    }
 
     auto purchased_rank = purchased_power_rank( power -> id );
     auto relic_rank = bonus_rank( power -> id );
     auto crucible_rank_ = crucible_rank( power -> id );
 
+    if ( purchased_rank + relic_rank + crucible_rank_ == 0 )
+    {
+      return;
+    }
+
+    auto spell = player() -> dbc.spell( power -> power_spell_id );
+
+    root << "<li>" << ( spell ? report::spell_data_decorator_t( player(), spell ).decorate()
+                              : power -> name );
+
     if ( power -> max_rank > 1 && purchased_rank + relic_rank + crucible_rank_ > 0 )
     {
       std::stringstream rank_ss;
-      if ( power -> power_type != ARTIFACT_TRAIT_RELIC )
+      rank_ss << purchased_rank;
+      if ( relic_rank > 0 || ( relic_rank == 0 && crucible_rank_ > 0 ) )
       {
-        rank_ss << purchased_rank;
-        if ( relic_rank > 0 || ( relic_rank == 0 && crucible_rank_ > 0 ) )
-        {
-          rank_ss << " + " << relic_rank;
-        }
-
-        if ( crucible_rank_ > 0 )
-        {
-          rank_ss << " + " << crucible_rank_;
-        }
+        rank_ss << " + " << relic_rank;
       }
-      else
+
+      if ( crucible_rank_ > 0 )
       {
-        rank_ss << crucible_rank_;
+        rank_ss << " + " << crucible_rank_;
       }
 
       root << " (Rank " << rank_ss.str() << ")";
@@ -589,16 +647,45 @@ report::sc_html_stream& player_artifact_data_t::generate_report( report::sc_html
 
   root << "</tr>";
 
+  if ( crucible_points() > 0 )
+  {
+    root << "<tr class=\"left\">\n<th></th><td><ul class=\"float\">\n";
+
+    range::for_each( order, [ &root, this ]( const artifact_power_data_t* power ) {
+      // No point found
+      auto it = m_points.find( power -> id );
+      if ( it == m_points.end() )
+      {
+        return;
+      }
+
+      auto crucible_rank_ = crucible_rank( power -> id );
+      if ( crucible_rank_ == 0 )
+      {
+        return;
+      }
+
+      auto spell = player() -> dbc.spell( power -> power_spell_id );
+
+      root << "<li>" << ( spell ? report::spell_data_decorator_t( player(), spell ).decorate()
+                                : power -> name );
+
+      if ( crucible_rank_ > 0 )
+      {
+        root << " (Rank " << crucible_rank_ << ")";
+      }
+
+      root << "</li>";
+    } );
+
+    root << "</tr>";
+  }
+
   return root;
 }
 
 bool player_artifact_data_t::parse()
 {
-  if ( ! enabled() )
-  {
-    return true;
-  }
-
   if ( m_artifact_str.empty() )
   {
     return true;
@@ -706,11 +793,6 @@ bool player_artifact_data_t::parse()
 
 bool player_artifact_data_t::parse_crucible()
 {
-  if ( ! enabled() )
-  {
-    return true;
-  }
-
   if ( m_crucible_str.empty() )
   {
     return true;

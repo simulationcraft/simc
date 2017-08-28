@@ -2863,10 +2863,10 @@ public:
   }
 
   void trigger_wildshapers_clutch( action_state_t* s )
-  {
+  {    
     if ( p() -> legendary.the_wildshapers_clutch == 0.0 )
       return;
-    if ( ! dbc::is_school( school, SCHOOL_PHYSICAL ) ) // bleeds only
+    if ( ! dbc::is_school( school, SCHOOL_PHYSICAL ) && s->action->id != 210705) // bleeds only TODO(feral): Refactor this.
       return;
     if ( s -> result != RESULT_CRIT )
       return;
@@ -3119,6 +3119,8 @@ struct ashamanes_rip_t : public cat_attack_t
   void tick(dot_t* d) override
   {
      base_t::tick(d);
+
+     trigger_wildshapers_clutch(d->state);
 
      trigger_bloody_gash(d->target, d->state->result_total);
      if ( p() -> sets -> has_set_bonus( DRUID_FERAL, T21, B4) )
@@ -3649,6 +3651,8 @@ struct rip_t : public cat_attack_t
   void tick( dot_t* d ) override
   {
      base_t::tick( d );
+
+     trigger_wildshapers_clutch(d->state);
 
      trigger_bloody_gash(d->target, d->state->result_total);
      if ( p() -> sets ->has_set_bonus(DRUID_FERAL, T21, B4) )
