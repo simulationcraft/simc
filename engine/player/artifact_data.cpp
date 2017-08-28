@@ -29,9 +29,11 @@ artifact_data_ptr_t player_artifact_data_t::create( player_t* player )
   return obj;
 }
 
-artifact_data_ptr_t player_artifact_data_t::create( const artifact_data_ptr_t& other )
+artifact_data_ptr_t player_artifact_data_t::create( player_t* player, const artifact_data_ptr_t& other )
 {
   artifact_data_ptr_t obj { new player_artifact_data_t( *other.get() ) };
+
+  obj -> m_player = player;
 
   return obj;
 }
@@ -78,19 +80,6 @@ bool player_artifact_data_t::initialize()
   m_artificial_stamina = stamina_it != p.end()
                          ? player() -> find_spell( ( *stamina_it ) -> power_spell_id )
                          : spell_data_t::not_found();
-
-  // Set the primary artifact slot for this player. It will be the item that has an artifact
-  // identifier on it and it does not have a parent slot as per client data. The parent slot
-  // initialization is performed in player_t::init_items.
-  range::for_each( player() -> items, [ this ]( const item_t& i ) {
-    if ( i.parsed.data.id_artifact > 0 && i.parent_slot == SLOT_INVALID )
-    {
-      assert( m_slot == SLOT_INVALID );
-      debug( this, "Player %s setting artifact slot to '%s'", player() -> name(),
-        util::slot_type_string( i.slot ) );
-      m_slot = i.slot;
-    }
-  } );
 
   return parse() && parse_crucible();
 }
@@ -167,6 +156,28 @@ void player_artifact_data_t::set_crucible_str( const std::string& value )
   debug( this, "Player %s setting artifact crucible input to '%s'", player() -> name(), value.c_str() );
   reset_crucible();
   m_crucible_str = value;
+}
+
+void player_artifact_data_t::set_artifact_slot( slot_e slot )
+{
+  debug( this, "Player %s setting artifact slot to '%s'", player() -> name(),
+      util::slot_type_string( slot ) );
+  m_slot = slot;
+}
+
+int player_artifact_data_t::ilevel_increase() const
+{
+  return player() -> find_artifact_spell( CRUCIBLE_ILEVEL_POWER_ID ).value();
+}
+
+slot_e player_artifact_data_t::slot() const
+{
+  if ( sim() -> disable_artifacts != 0 )
+  {
+    return SLOT_INVALID;
+  }
+
+  return m_slot;
 }
 
 bool player_artifact_data_t::add_power( unsigned power_id, unsigned rank )
@@ -643,11 +654,6 @@ report::sc_html_stream& player_artifact_data_t::generate_report( report::sc_html
 
 bool player_artifact_data_t::parse()
 {
-  if ( ! enabled() )
-  {
-    return true;
-  }
-
   if ( m_artifact_str.empty() )
   {
     return true;
@@ -755,11 +761,6 @@ bool player_artifact_data_t::parse()
 
 bool player_artifact_data_t::parse_crucible()
 {
-  if ( ! enabled() )
-  {
-    return true;
-  }
-
   if ( m_crucible_str.empty() )
   {
     return true;

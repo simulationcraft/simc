@@ -35,6 +35,8 @@ static const unsigned BASE_TRAIT_INCREASE = 6U;
 static const unsigned ARTIFICIAL_STAMINA_CUTOFF_TRAIT = 52U;
 // Max trait rank
 static const uint8_t MAX_TRAIT_RANK = std::numeric_limits<uint8_t>::max();
+// Ilevel crucible power id
+static const unsigned CRUCIBLE_ILEVEL_POWER_ID = 1739U;
 
 struct point_data_t
 {
@@ -103,19 +105,16 @@ public:
   // Return point data or an empty point information if not found
   const point_data_t& point_data( unsigned power_id ) const;
 
+  // Crucible ilevel increase. Needs to be done separately as item initialization occurs early on,
+  // and the ilevel increase must be present at that point to correctly compute stats.
+  int ilevel_increase() const;
+
   // Has user-input artifact= option relic identifiers (i.e., non-zero relicNid above)
   bool     has_relic_options() const
   { return m_has_relic_opts; }
 
-  slot_e   slot() const
-  {
-    if ( ! enabled() )
-    {
-      return SLOT_INVALID;
-    }
-
-    return m_slot;
-  }
+  // Primary artifact slot, or SLOT_INVALID if artifacts disabled / no artifact equipped
+  slot_e   slot() const;
 
   // Note, first purchased talent does not count towards total points
   unsigned points() const
@@ -241,6 +240,8 @@ public:
   void     set_artifact_str( const std::string& value );
   // Set the user-input artifact_crucible= option string
   void     set_crucible_str( const std::string&  value );
+  // Set the primary artifact slot (called by item init)
+  void     set_artifact_slot( slot_e slot );
 
   // Add purchased artifact power
   bool     add_power( unsigned power_id, unsigned rank );
@@ -280,7 +281,7 @@ public:
 
   // Creation helpers
   static artifact_data_ptr_t create( player_t* );
-  static artifact_data_ptr_t create( const artifact_data_ptr_t& );
+  static artifact_data_ptr_t create( player_t*, const artifact_data_ptr_t& );
 };
 
 } // Namespace artifact ends

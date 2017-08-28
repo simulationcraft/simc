@@ -148,8 +148,6 @@ namespace item
 
 namespace artifact_power
 {
-  void netherlight_fortification( special_effect_t& );
-
   // Shadow
   void torment_the_weak( special_effect_t& );
   void shadowbind( special_effect_t& );
@@ -5273,24 +5271,6 @@ struct netherlight_base_t : public proc_spell_t
   }
 };
 
-// Netherlight Fortification ================================================
-
-void artifact_power::netherlight_fortification( special_effect_t& effect )
-{
-  if ( ! effect.player -> artifact || ! effect.player -> artifact -> enabled() )
-  {
-    return;
-  }
-
-  auto power = effect.player -> find_artifact_spell( effect.driver() -> name_cstr() );
-  if ( power.rank() == 0 )
-  {
-    return;
-  }
-
-  effect.player -> items[ effect.player -> artifact -> slot() ].parsed.data.level += power.value();
-}
-
 // Torment the Weak =========================================================
 
 void artifact_power::torment_the_weak( special_effect_t& effect )
@@ -5608,7 +5588,6 @@ void unique_gear::register_special_effects_x7()
   register_special_effect( 185736, consumable::lemon_herb_filet );
 
   /* Artifact powers */
-  register_special_effect( 250879, artifact_power::netherlight_fortification );
   register_special_effect( 252906, artifact_power::torment_the_weak );
   register_special_effect( 252875, artifact_power::shadowbind );
   register_special_effect( 252888, artifact_power::chaotic_darkness );
