@@ -578,7 +578,7 @@ report::sc_html_stream& player_artifact_data_t::generate_report( report::sc_html
        << util::create_wowhead_artifact_url( *player() )
        << "\" target=\"_blank\">Calculator (Wowhead.com)</a></li>";
 
-  root << "<li>Purchased points: " << purchased_points() << ", total " << points() << "</li>";
+  root << "<li>Purchased points: " << purchased_points() << ", crucible " << crucible_points() << ", total " << points() << "</li>";
   root << "</ul></td></tr>";
 
   root << "<tr class=\"left\">\n<th></th><td><ul class=\"float\">\n";
@@ -588,6 +588,11 @@ report::sc_html_stream& player_artifact_data_t::generate_report( report::sc_html
     // No point found
     auto it = m_points.find( power -> id );
     if ( it == m_points.end() )
+    {
+      return;
+    }
+
+    if ( power -> power_type == ARTIFACT_TRAIT_RELIC )
     {
       return;
     }
@@ -609,22 +614,15 @@ report::sc_html_stream& player_artifact_data_t::generate_report( report::sc_html
     if ( power -> max_rank > 1 && purchased_rank + relic_rank + crucible_rank_ > 0 )
     {
       std::stringstream rank_ss;
-      if ( power -> power_type != ARTIFACT_TRAIT_RELIC )
+      rank_ss << purchased_rank;
+      if ( relic_rank > 0 || ( relic_rank == 0 && crucible_rank_ > 0 ) )
       {
-        rank_ss << purchased_rank;
-        if ( relic_rank > 0 || ( relic_rank == 0 && crucible_rank_ > 0 ) )
-        {
-          rank_ss << " + " << relic_rank;
-        }
-
-        if ( crucible_rank_ > 0 )
-        {
-          rank_ss << " + " << crucible_rank_;
-        }
+        rank_ss << " + " << relic_rank;
       }
-      else
+
+      if ( crucible_rank_ > 0 )
       {
-        rank_ss << crucible_rank_;
+        rank_ss << " + " << crucible_rank_;
       }
 
       root << " (Rank " << rank_ss.str() << ")";
@@ -648,6 +646,40 @@ report::sc_html_stream& player_artifact_data_t::generate_report( report::sc_html
   root << "</ul></td>";
 
   root << "</tr>";
+
+  if ( crucible_points() > 0 )
+  {
+    root << "<tr class=\"left\">\n<th></th><td><ul class=\"float\">\n";
+
+    range::for_each( order, [ &root, this ]( const artifact_power_data_t* power ) {
+      // No point found
+      auto it = m_points.find( power -> id );
+      if ( it == m_points.end() )
+      {
+        return;
+      }
+
+      auto crucible_rank_ = crucible_rank( power -> id );
+      if ( crucible_rank_ == 0 )
+      {
+        return;
+      }
+
+      auto spell = player() -> dbc.spell( power -> power_spell_id );
+
+      root << "<li>" << ( spell ? report::spell_data_decorator_t( player(), spell ).decorate()
+                                : power -> name );
+
+      if ( crucible_rank_ > 0 )
+      {
+        root << " (Rank " << crucible_rank_ << ")";
+      }
+
+      root << "</li>";
+    } );
+
+    root << "</tr>";
+  }
 
   return root;
 }

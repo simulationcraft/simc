@@ -138,6 +138,17 @@ public:
     return m_purchased_points > 0 ? m_purchased_points - 1 : m_purchased_points;
   }
 
+  // Note, first purchased talent does not count towards total points
+  unsigned crucible_points() const
+  {
+    if ( ! enabled() )
+    {
+      return 0;
+    }
+
+    return m_crucible_points;
+  }
+
   // The damage multiplier for the Artificial Damage trait
   double   artificial_damage_multiplier() const
   {
