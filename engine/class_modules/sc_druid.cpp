@@ -2866,7 +2866,7 @@ public:
   {    
     if ( p() -> legendary.the_wildshapers_clutch == 0.0 )
       return;
-    if ( ! dbc::is_school( school, SCHOOL_PHYSICAL ) && strcmp(s->action->name(), "ashamanes_rip" ) != 0 ) // bleeds only
+    if ( ! dbc::is_school( school, SCHOOL_PHYSICAL ) && s->action->id != 210705) // bleeds only TODO(feral): Refactor this.
       return;
     if ( s -> result != RESULT_CRIT )
       return;
