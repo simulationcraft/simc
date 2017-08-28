@@ -5330,6 +5330,7 @@ void artifact_power::dark_sorrows( special_effect_t& effect )
     {
       may_crit = tick_may_crit = callbacks = hasted_ticks = false;
       background = quiet = dual = true;
+      dot_behavior = DOT_CLIP;
 
       dot_duration = data().duration();
       base_tick_time = data().duration();
@@ -5349,9 +5350,9 @@ void artifact_power::dark_sorrows( special_effect_t& effect )
       damage = d;
     }
 
-    void tick( dot_t* d ) override
+    void last_tick( dot_t* d ) override
     {
-      spell_t::tick( d );
+      spell_t::last_tick( d );
 
       damage -> set_target( d -> target );
       damage -> execute();
