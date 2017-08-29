@@ -5823,6 +5823,10 @@ warlock( p )
 
 void warlock_td_t::target_demise()
 {
+  if ( !( target -> is_enemy() ) )
+  {
+    return;
+  }
   if ( warlock.specialization() == WARLOCK_AFFLICTION && dots_drain_soul -> is_ticking() )
   {
     if ( warlock.sim -> log )
