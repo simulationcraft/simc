@@ -267,6 +267,8 @@ public:
     buff_t* chrono_shift;
     buff_t* crackling_energy; // T20 2pc Arcane
     buff_t* presence_of_mind;
+    buff_t* expanding_mind;   // T21 2pc Arcane
+    buff_t* quick_thinker;    // T21 4pc Arcane
 
     // Fire
     buff_t* combustion;
@@ -281,6 +283,7 @@ public:
     buff_t* pyretic_incantation;
     buff_t* scorched_earth;
     buff_t* streaking;               // T19 4pc Fire
+    buff_t* inferno;                 // T21 4pc Fire
 
 
     // Frost
@@ -291,6 +294,7 @@ public:
     buff_t* icy_veins;
     buff_t* rage_of_the_frost_wyrm;            // 7.2.5 legendary head, primed buff
     buff_t* shattered_fragments_of_sindragosa; // 7.2.5 legendary head, tracking buff
+    buff_t* arctic_blast;                      // T21 4pc Frost
 
 
     // Talents
@@ -415,6 +419,8 @@ public:
     bool brain_freeze_active;
     bool fingers_of_frost_active;
     bool ignition_active;
+
+    int flurry_bolt_count;
   } state;
 
   // Talents
@@ -2458,6 +2464,13 @@ struct arcane_barrage_t : public arcane_mage_spell_t
 
     arcane_mage_spell_t::execute();
 
+
+    if ( p() -> sets -> has_set_bonus( MAGE_ARCANE, T21, B2 ) )
+    {
+      p() -> buffs.expanding_mind
+          -> trigger( 1, charges * p() -> sets -> set ( MAGE_ARCANE, T21, B2 ) -> effectN( 1 ).percent() );
+    }
+
     p() -> buffs.arcane_charge -> expire();
   }
 
@@ -2594,6 +2607,7 @@ struct arcane_blast_t : public arcane_mage_spell_t
     }
 
     p() -> trigger_t19_oh();
+    p() -> buffs.quick_thinker -> trigger();
   }
 
   virtual double action_multiplier() const override
@@ -2705,6 +2719,8 @@ struct arcane_explosion_t : public arcane_mage_spell_t
       trigger_arcane_charge();
     }
 
+    p() -> buffs.quick_thinker -> trigger();
+
     if ( p() -> artifact.time_and_space.rank() )
     {
       if ( p() -> buffs.time_and_space -> check() )
@@ -2793,7 +2809,8 @@ struct am_state_t : public mage_spell_state_t
 
 struct arcane_missiles_t : public arcane_mage_spell_t
 {
-  double rule_of_threes_ticks, rule_of_threes_ratio;
+  double rule_of_threes_ticks;
+  double rule_of_threes_ratio;
 
   arcane_missiles_t( mage_t* p, const std::string& options_str ) :
     arcane_mage_spell_t( "arcane_missiles", p,
@@ -2805,6 +2822,7 @@ struct arcane_missiles_t : public arcane_mage_spell_t
     triggers_erosion = false;
     dot_duration      = data().duration();
     base_tick_time    = data().effectN( 2 ).period();
+    tick_zero         = true;
     channeled         = true;
     hasted_ticks      = false;
     dynamic_tick_action = true;
@@ -2813,6 +2831,7 @@ struct arcane_missiles_t : public arcane_mage_spell_t
     base_multiplier *= 1.0 + p -> artifact.aegwynns_fury.percent();
     base_crit += p -> artifact.aegwynns_intensity.percent();
 
+    // Not including the first, instant tick.
     rule_of_threes_ticks = dot_duration / base_tick_time +
       p -> artifact.rule_of_threes.data().effectN( 2 ).base_value();
     rule_of_threes_ratio = ( dot_duration / base_tick_time ) / rule_of_threes_ticks;
@@ -2896,6 +2915,8 @@ struct arcane_missiles_t : public arcane_mage_spell_t
       p() -> cooldowns.presence_of_mind
           -> adjust( -100 * p() -> sets -> set( MAGE_ARCANE, T20, B4 ) -> effectN( 1 ).time_value() );
     }
+
+    p() -> buffs.quick_thinker -> trigger();
 
     p() -> buffs.arcane_missiles -> decrement();
   }
@@ -3334,6 +3355,11 @@ struct combustion_t : public fire_mage_spell_t
     fire_mage_spell_t::execute();
 
     p() -> buffs.combustion -> trigger();
+
+    if ( p() -> sets -> has_set_bonus( MAGE_FIRE, T21, B4) )
+    {
+      p() -> buffs.inferno -> trigger();
+    }
   }
 };
 
@@ -3906,6 +3932,8 @@ struct flurry_bolt_t : public frost_mage_spell_t
   {
     frost_mage_spell_t::impact( s );
 
+    p() -> state.flurry_bolt_count++;
+
     if ( p() -> state.brain_freeze_active )
     {
       td( s -> target ) -> debuffs.winters_chill -> trigger();
@@ -3920,6 +3948,18 @@ struct flurry_bolt_t : public frost_mage_spell_t
     {
       am *= 1.0 + p() -> buffs.brain_freeze -> data().effectN( 2 ).percent();
     }
+
+    // In-game testing shows that 6 successive Flurry bolt impacts (with no cast
+    // in between to reset the counter) results in the following bonus from T20 2pc:
+    //
+    //   1st   2nd   3rd   4th   5th   6th
+    //   +0%  +25%  +50%  +25%  +25%  +25%
+    int adjusted_bolt_count = p() -> state.flurry_bolt_count;
+    if ( adjusted_bolt_count > 2 )
+      adjusted_bolt_count = 1;
+
+    am *= 1.0 + adjusted_bolt_count
+              * p() -> sets -> set( MAGE_FROST, T21, B2 ) -> effectN( 1 ).percent();
 
     return am;
   }
@@ -3960,8 +4000,16 @@ struct flurry_t : public frost_mage_spell_t
   {
     frost_mage_spell_t::execute();
 
+    bool brain_freeze_up = p() -> buffs.brain_freeze -> up();
     p() -> buffs.zannesu_journey -> trigger();
-    p() -> state.brain_freeze_active = p() -> buffs.brain_freeze -> up();
+    p() -> state.brain_freeze_active = brain_freeze_up;
+    p() -> state.flurry_bolt_count = 0;
+
+    if ( brain_freeze_up && p() -> sets -> has_set_bonus( MAGE_FROST, T21, B4 ) )
+    {
+      p() -> buffs.arctic_blast -> trigger();
+    }
+
     p() -> buffs.brain_freeze -> expire();
   }
 
@@ -4147,7 +4195,18 @@ struct frostbolt_t : public frost_mage_spell_t
 
       trigger_unstable_magic( s );
       trigger_shattered_fragments( s -> target );
+
+      p() -> buffs.arctic_blast -> expire();
     }
+  }
+
+  virtual double action_multiplier() const override
+  {
+    double am = frost_mage_spell_t::action_multiplier();
+
+    am *= 1.0 + p() -> buffs.arctic_blast -> check_value();
+
+    return am;
   }
 };
 
@@ -4188,13 +4247,6 @@ struct ice_time_nova_t : public frost_mage_spell_t
   {
     background = true;
     aoe = -1;
-
-    // According to the spell data.
-    // As of build 24461, 2017-07-03.
-    if ( p -> bugs )
-    {
-      affected_by.frost_mage = false;
-    }
   }
 
   virtual void impact( action_state_t* s ) override
@@ -4222,12 +4274,6 @@ struct frozen_orb_bolt_t : public frost_mage_spell_t
     }
     crit_bonus_multiplier *= 1.0 + p -> artifact.orbital_strike.percent();
     chills = true;
-
-    // As of build 24461, 2017-07-03.
-    if ( p -> bugs )
-    {
-      affected_by.shatter = false;
-    }
   }
 
   virtual bool init_finished() override
@@ -4254,7 +4300,6 @@ struct frozen_orb_bolt_t : public frost_mage_spell_t
 struct frozen_orb_t : public frost_mage_spell_t
 {
   bool ice_time;
-  timespan_t freezing_rain_base_duration;
 
   ice_time_nova_t* ice_time_nova;
   frozen_orb_bolt_t* frozen_orb_bolt;
@@ -4271,10 +4316,6 @@ struct frozen_orb_t : public frost_mage_spell_t
     add_child( ice_time_nova );
     may_miss       = false;
     may_crit       = false;
-    if ( p -> artifact.freezing_rain.rank() )
-    {
-      freezing_rain_base_duration = p -> buffs.freezing_rain -> data().duration();
-    }
   }
 
   virtual bool init_finished() override
@@ -4305,8 +4346,7 @@ struct frozen_orb_t : public frost_mage_spell_t
     }
     if ( p() -> artifact.freezing_rain.rank() )
     {
-      timespan_t freezing_rain_duration = freezing_rain_base_duration * p() -> cache.spell_speed();
-      p() -> buffs.freezing_rain -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, freezing_rain_duration  );
+      p() -> buffs.freezing_rain -> trigger();
     }
   }
 
@@ -5587,7 +5627,7 @@ struct ray_of_frost_t : public frost_mage_spell_t
 };
 
 
-// Rune of Power ==============================================================
+// Rune of Power Spell ==============================================================
 
 struct rune_of_power_t : public mage_spell_t
 {
@@ -7031,10 +7071,16 @@ void mage_t::create_buffs()
   buffs.crackling_energy      = buff_creator_t( this, "crackling_energy", find_spell( 246224 ) )
                                   .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
                                   .default_value( find_spell( 246224 ) -> effectN( 1 ).percent() );
+
+  buffs.expanding_mind        = buff_creator_t( this, "expanding_mind", find_spell( 253262 ) )
+                                  .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   buffs.presence_of_mind      = buff_creator_t( this, "presence_of_mind", find_spell( 205025 ) )
                                   .cd( timespan_t::zero() )
                                   .stack_change_callback( [ this ] ( buff_t*, int, int cur )
                                     { if ( cur == 0 ) cooldowns.presence_of_mind -> start(); } );
+  buffs.quick_thinker         = haste_buff_creator_t( this, "quick_thinker", find_spell( 253299 ) )
+                                  .default_value( find_spell( 253299 ) -> effectN( 1 ).percent() )
+                                  .chance( sets -> set( MAGE_ARCANE, T21, B4 ) -> proc_chance() );
 
   // Fire
   buffs.combustion             = buff_creator_t( this, "combustion", find_spell( 190319 ) )
@@ -7043,6 +7089,7 @@ void mage_t::create_buffs()
                                    .add_invalidate( CACHE_CRIT_CHANCE )
                                    .default_value( find_spell( 190319 ) -> effectN( 1 ).percent() );
   buffs.combustion -> buff_duration += artifact.preignited.time_value();
+  buffs.combustion -> buff_duration += sets -> set( MAGE_FIRE, T21, B2 ) -> effectN( 1 ).time_value();
 
   buffs.critical_massive       = buff_creator_t( this, "critical_massive", find_spell( 242251 ) )
                                    .default_value( find_spell( 242251 ) -> effectN( 1 ).percent() );
@@ -7055,6 +7102,8 @@ void mage_t::create_buffs()
                                    .add_invalidate( CACHE_RUN_SPEED );
   buffs.ignition               = buff_creator_t( this, "ignition", find_spell( 246261 ) )
                                    .trigger_spell( sets -> set( MAGE_FIRE, T20, B2 ) );
+  buffs.inferno                = buff_creator_t( this, "inferno", find_spell( 253220 ) )
+                                    .default_value( find_spell( 253220 ) -> effectN( 1 ).percent() );
   buffs.heating_up             = buff_creator_t( this, "heating_up",  find_spell( 48107 ) );
   buffs.hot_streak             = buff_creator_t( this, "hot_streak",  find_spell( 48108 ) );
   buffs.pyretic_incantation    = buff_creator_t( this, "pyretic_incantation", find_spell( 194329 ) )
@@ -7066,6 +7115,8 @@ void mage_t::create_buffs()
                                    .add_invalidate( CACHE_RUN_SPEED );
 
   // Frost
+  buffs.arctic_blast           = buff_creator_t( this, "arctic_blast", find_spell( 253257 ) )
+                                   .default_value( find_spell( 253257 ) -> effectN( 1 ).percent() );
   buffs.brain_freeze           = buff_creator_t( this, "brain_freeze", find_spell( 190446 ) );
   buffs.bone_chilling          = buff_creator_t( this, "bone_chilling", find_spell( 205766 ) )
                                    .default_value( talents.bone_chilling -> effectN( 1 ).percent() / 10 )
@@ -7878,6 +7929,7 @@ double mage_t::composite_player_critical_damage_multiplier( const action_state_t
     m *= 1.0 + buffs.pyretic_incantation -> check_stack_value();
   }
 
+  m *= 1.0 + buffs.inferno -> check_value();
   m *= 1.0 + buffs.frozen_mass -> check_value();
 
   return m;
@@ -7970,6 +8022,7 @@ double mage_t::composite_player_multiplier( school_e school ) const
   }
 
   m *= 1.0 + buffs.crackling_energy -> check_value();
+  m *= 1.0 + buffs.expanding_mind -> check_value();
 
   return m;
 }
@@ -8027,6 +8080,7 @@ double mage_t::composite_spell_haste() const
 
   h /= 1.0 + buffs.icy_veins -> check_value();
   h /= 1.0 + buffs.streaking -> check_value();
+  h /= 1.0 + buffs.quick_thinker -> check_value();
   h /= 1.0 + buffs.sephuzs_secret -> check_value();
 
   if ( buffs.sephuzs_secret -> default_chance != 0 )
@@ -8938,7 +8992,7 @@ public:
     hotfix::register_spell( "Mage", "2017-06-21", "Ice Lance is slower than spell data suggests.", 30455 )
       .field( "prj_speed" )
       .operation( hotfix::HOTFIX_SET )
-      .modifier( 38.0 )
+      .modifier( 47.0 )
       .verification_value( 50.0 );
   }
 
