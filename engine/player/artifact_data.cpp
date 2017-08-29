@@ -42,7 +42,8 @@ player_artifact_data_t::player_artifact_data_t( player_t* player ) :
   m_player( player ), m_has_relic_opts( false ), m_total_points( 0 ),
   m_purchased_points( 0 ), m_crucible_points( 0 ), m_slot( SLOT_INVALID ),
   m_artificial_stamina( spell_data_t::not_found() ),
-  m_artificial_damage( spell_data_t::not_found() )
+  m_artificial_damage( spell_data_t::not_found() ),
+  m_relic_data( MAX_ARTIFACT_RELIC )
 { }
 
 const point_data_t& player_artifact_data_t::point_data( unsigned power_id ) const
@@ -100,25 +101,16 @@ void player_artifact_data_t::reset_artifact()
 {
   for ( auto& point_data : m_points )
   {
-    if ( point_data.second.overridden == -1 )
-    {
-      m_total_points -= point_data.second.purchased;
-      m_purchased_points -= point_data.second.purchased;
-
-      if ( m_has_relic_opts )
-      {
-        m_total_points -= point_data.second.bonus;
-      }
-    }
-
     point_data.second.purchased = 0;
-    if ( m_has_relic_opts )
-    {
-      point_data.second.bonus = 0;
-    }
+    point_data.second.bonus = 0;
+    point_data.second.overridden = NO_OVERRIDE;
   }
 
+  m_relic_data = std::vector<relic_data_t>( MAX_ARTIFACT_RELIC );
   m_has_relic_opts = false;
+  m_total_points = m_crucible_points;
+  m_purchased_points = 0;
+
   assert( m_purchased_points == 0 );
 }
 
@@ -126,14 +118,12 @@ void player_artifact_data_t::reset_crucible()
 {
   for ( auto& point_data : m_points )
   {
-    if ( point_data.second.overridden == -1 )
-    {
-      m_total_points -= point_data.second.crucible;
-      m_crucible_points -= point_data.second.crucible;
-    }
-
     point_data.second.crucible = 0;
+    point_data.second.overridden = NO_OVERRIDE;
   }
+
+  m_total_points -= m_crucible_points;
+  m_crucible_points = 0;
 
   assert( m_crucible_points == 0 );
 }
@@ -255,7 +245,7 @@ bool player_artifact_data_t::add_crucible_power( unsigned power_id, unsigned ran
 
 void player_artifact_data_t::override_power( const std::string& name_str, unsigned rank )
 {
-  if ( rank > MAX_TRAIT_RANK || name_str.empty() || ! enabled() )
+  if ( rank > MAX_TRAIT_RANK || name_str.empty() || sim() -> disable_artifacts != 0 )
   {
     return;
   }
@@ -283,7 +273,7 @@ void player_artifact_data_t::override_power( const std::string& name_str, unsign
 
   // Remove old ranks
   const auto& pd = point_data( ( *it ) -> id );
-  if ( pd.overridden > 0 )
+  if ( pd.overridden != NO_OVERRIDE )
   {
     m_total_points -= pd.overridden;
     m_purchased_points -= pd.overridden;
@@ -310,41 +300,94 @@ void player_artifact_data_t::override_power( const std::string& name_str, unsign
   }
 }
 
-void player_artifact_data_t::add_relic( unsigned item_id,
+void player_artifact_data_t::remove_relic( unsigned index )
+{
+  if ( index >= MAX_ARTIFACT_RELIC )
+  {
+    return;
+  }
+
+  auto relic_power_id = m_relic_data[ index ].power_id;
+  auto ranks = m_relic_data[ index ].rank;
+
+  if ( relic_power_id == 0 )
+  {
+    return;
+  }
+
+  if ( ranks == 0 )
+  {
+    return;
+  }
+
+  auto it = m_points.find( relic_power_id );
+
+  if ( it != m_points.end() )
+  {
+    it -> second.bonus -= ranks;
+    m_total_points -= ranks;
+
+    debug( this, "Player %s removing old relic data index=%u, power_id=%u, rank=%u",
+        player() -> name(), index, relic_power_id, ranks );
+  }
+}
+
+void player_artifact_data_t::add_relic( unsigned index,
+                                        unsigned item_id,
                                         unsigned power_id,
                                         unsigned rank )
 {
-  if ( item_id == 0 || power_id == 0 || rank == 0 || rank > MAX_TRAIT_RANK )
+  if ( item_id == 0 || power_id == 0 || rank == 0 || rank > MAX_TRAIT_RANK || index >= MAX_ARTIFACT_RELIC )
   {
-    debug( this, "Player %s invalid relic id=%u, power=%u, rank=%u",
-      player() -> name(), item_id, power_id, rank );
+    debug( this, "Player %s invalid index=%u, relic id=%u, power=%u, rank=%u",
+      player() -> name(), index, item_id, power_id, rank );
     return;
   }
+
+  // Don't update relics if artifact= option has specified relic ids
+  if ( m_has_relic_opts )
+  {
+    return;
+  }
+
+  // Out with the old (if defined)
+  remove_relic( index );
 
   auto it = m_points.find( power_id );
   if ( it == m_points.end() )
   {
     m_points[ power_id ] = { 0U, as<uint8_t>( rank ) };
+    m_total_points += rank;
   }
-  else if ( m_points[ power_id ].bonus + rank <= MAX_TRAIT_RANK )
+  else if ( it -> second.bonus + rank <= MAX_TRAIT_RANK )
   {
-    m_points[ power_id ].bonus += rank;
+    it -> second.bonus += rank;
+    m_total_points += rank;
   }
 
-  m_total_points += rank;
+  m_relic_data[ index ] = { power_id, as<uint8_t>( rank ) };
 
   if ( sim() -> debug )
   {
-    debug( this, "Player %s added artifact relic trait '%s' (id=%u, item_id=%u), rank=%u",
-      player() -> name(), power( power_id ) -> name, power_id, item_id, rank );
+    debug( this, "Player %s added artifact relic trait '%s' (index=%u, id=%u, item_id=%u), rank=%u",
+      player() -> name(), power( power_id ) -> name, index, power_id, item_id, rank );
   }
 }
 
-void player_artifact_data_t::move_purchased_rank( unsigned power_id, unsigned rank )
+void player_artifact_data_t::move_purchased_rank( unsigned index,
+                                                  unsigned power_id,
+                                                  unsigned rank )
 {
-  if ( power_id == 0 || rank == 0 || rank > MAX_TRAIT_RANK )
+  if ( power_id == 0 || rank == 0 || rank > MAX_TRAIT_RANK || index >= MAX_ARTIFACT_RELIC )
   {
-    debug( this, "Player %s invalid power to move, id=%u rank=%u", player() -> name(), power_id, rank );
+    debug( this, "Player %s invalid power to move, index=%u, id=%u rank=%u",
+        player() -> name(), index, power_id, rank );
+    return;
+  }
+
+  // Don't update relics if artifact= option has specified relic ids
+  if ( m_has_relic_opts )
+  {
     return;
   }
 
@@ -355,21 +398,23 @@ void player_artifact_data_t::move_purchased_rank( unsigned power_id, unsigned ra
     return;
   }
 
+  // Remove old relic data
+  remove_relic( index );
+
   // Ensure we don't underflow
   auto max_removed = std::min( it -> second.purchased, as<uint8_t>( rank ) );
 
   it -> second.purchased -= max_removed;
   it -> second.bonus += max_removed;
+
   m_purchased_points -= max_removed;
 
-  // Moving around purchased ranks indicates there are relics in the artifact trait data
-  // automatically
-  m_has_relic_opts = true;
+  m_relic_data[ index ] = { power_id, as<uint8_t>( rank ) };
 
   if ( sim() -> debug )
   {
-    debug( this, "Player %s moved rank for artifact trait '%s' (id=%u), rank=%u",
-      player() -> name(), power( power_id ) -> name, power_id, rank );
+    debug( this, "Player %s moved rank for artifact trait '%s' (id=%u), index=%u, rank=%u",
+      player() -> name(), power( power_id ) -> name, power_id, index, rank );
   }
 }
 
@@ -769,24 +814,33 @@ bool player_artifact_data_t::parse()
     add_power( power_id, rank );
   }
 
+  bool has_relic_opts = false;
   // Adjust artifact points based on relic traits
-  range::for_each( relics, [ & ]( unsigned item_id ) {
+  for ( size_t i = 0; i < relics.size(); ++i )
+  {
+    auto item_id = relics[ i ];
+
     if ( item_id == 0 )
     {
-      return;
+      continue;
     }
 
     auto relic_data = player() -> dbc.artifact_relic_rank_index( artifact_id, item_id );
     if ( relic_data.first == 0 || relic_data.second == 0 )
     {
-      return;
+      debug( this, "Player %s relic data for relic %u invalid, power_id=%u, rank=%u",
+        player() -> name(), item_id, relic_data.first, relic_data.second );
+      continue;
     }
 
-    add_relic( item_id, relic_data.first, relic_data.second );
+    has_relic_opts = true;
+
     // Wowhead includes the relic ranks in the rank information, so move the bonus points from
     // purchased ranks to the bonus ranks.
-    move_purchased_rank( relic_data.first, relic_data.second );
-  } );
+    move_purchased_rank( i, relic_data.first, relic_data.second );
+  }
+
+  m_has_relic_opts = has_relic_opts;
 
   return true;
 }

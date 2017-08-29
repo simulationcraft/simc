@@ -10057,7 +10057,8 @@ void player_t::copy_from( player_t* source )
   professions_str = source -> professions_str;
   source -> recreate_talent_str( TALENT_FORMAT_UNCHANGED );
   parse_talent_url( sim, "talents", source -> talents_str );
-  artifact = artifact::player_artifact_data_t::create( this, source -> artifact );
+  artifact -> set_artifact_str( source -> artifact -> encode() );
+  artifact -> set_crucible_str( source -> artifact -> encode_crucible() );
   talent_overrides_str = source -> talent_overrides_str;
   artifact_overrides_str = source -> artifact_overrides_str;
   action_list_str = source -> action_list_str;
