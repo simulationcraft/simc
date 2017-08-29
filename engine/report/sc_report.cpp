@@ -659,6 +659,20 @@ bool report::check_artifact_points( const player_t& p, sim_t& sim )
         tier_name.c_str(), util::to_string( max_crucible ).c_str() );
   }
 
+  for ( auto power : p.artifact -> powers() )
+  {
+    unsigned extra_ranks = p.artifact -> bonus_rank( power -> id )
+                         + p.artifact -> crucible_rank( power -> id );
+
+    if ( extra_ranks > 3 )
+    {
+      sim.errorf(
+          "Player %s has more than 3 extra points in trait %s.\n",
+          p.name(), power -> name );
+      return false;
+    }
+  }
+
   return true;
 }
 
