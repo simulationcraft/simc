@@ -37,6 +37,7 @@ actions+=/arcane_torrent,if=runic_power.deficit>20
 actions+=/blood_fury
 actions+=/berserking
 actions+=/use_items
+actions+=/use_item,name=feloiled_infernal_machine,if=pet.valkyr_battlemaiden.active
 actions+=/use_item,name=ring_of_collapsing_futures,if=(buff.temptation.stack=0&target.time_to_die>60)|target.time_to_die<60
 actions+=/potion,if=buff.unholy_strength.react
 actions+=/outbreak,target_if=(dot.virulent_plague.tick_time_remains+tick_time<=dot.virulent_plague.remains)&dot.virulent_plague.remains<=gcd
@@ -82,9 +83,9 @@ actions.generic+=/festering_strike,if=debuff.festering_wound.stack<=2&(debuff.fe
 actions.generic+=/death_coil,if=!buff.necrosis.up&talent.necrosis.enabled&rune.time_to_4>gcd
 actions.generic+=/scourge_strike,if=(buff.necrosis.react|buff.unholy_strength.react|rune>=2)&debuff.festering_wound.stack>=1&(debuff.festering_wound.stack>=3|!(talent.castigator.enabled|equipped.132448))&runic_power.deficit>9&(runic_power.deficit>23|!talent.castigator.enabled)
 actions.generic+=/clawing_shadows,if=(buff.necrosis.react|buff.unholy_strength.react|rune>=2)&debuff.festering_wound.stack>=1&(debuff.festering_wound.stack>=3|!equipped.132448)&runic_power.deficit>9
-actions.generic+=/death_coil,if=talent.shadow_infusion.enabled&talent.dark_arbiter.enabled&!buff.dark_transformation.up&cooldown.dark_arbiter.remains>15
+actions.generic+=/death_coil,if=talent.shadow_infusion.enabled&talent.dark_arbiter.enabled&!buff.dark_transformation.up&cooldown.dark_arbiter.remains>10
 actions.generic+=/death_coil,if=talent.shadow_infusion.enabled&!talent.dark_arbiter.enabled&!buff.dark_transformation.up
-actions.generic+=/death_coil,if=talent.dark_arbiter.enabled&cooldown.dark_arbiter.remains>15
+actions.generic+=/death_coil,if=talent.dark_arbiter.enabled&cooldown.dark_arbiter.remains>10
 actions.generic+=/death_coil,if=!talent.shadow_infusion.enabled&!talent.dark_arbiter.enabled
 
 actions.valkyr=death_coil
