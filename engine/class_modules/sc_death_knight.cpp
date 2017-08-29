@@ -448,6 +448,7 @@ public:
     buff_t* remorseless_winter;
     buff_t* frozen_soul;
     buff_t* hungering_rune_weapon;
+		buff_t* hungering_rune_weapon_haste;
     buff_t* t20_2pc_unholy;
     buff_t* t20_4pc_frost;
 
@@ -5352,6 +5353,7 @@ struct hungering_rune_weapon_t : public death_knight_spell_t
         data().effectN( 2 ).resource( RESOURCE_RUNIC_POWER ),
         p() -> gains.hungering_rune_weapon );
     p() -> buffs.hungering_rune_weapon -> trigger();
+		p() -> buffs.hungering_rune_weapon_haste -> trigger();
   }
 };
 
@@ -7408,8 +7410,8 @@ double death_knight_t::composite_melee_haste() const
   // PTR 7.3 : Hungering Rune Weapon now also increase haste by 20%
   if ( dbc.ptr )
   {
-    if ( buffs.hungering_rune_weapon -> up() )
-      haste *= 1.0 / ( 1.0 + buffs.hungering_rune_weapon -> check_value() );    
+    if ( buffs.hungering_rune_weapon_haste -> up() )
+      haste *= 1.0 / ( 1.0 + buffs.hungering_rune_weapon_haste -> check_value() );    
   }
     
   return haste;
@@ -7438,8 +7440,8 @@ double death_knight_t::composite_spell_haste() const
   // PTR 7.3 : Hungering Rune Weapon now also increase haste by 20%, replace with actual spell data once patch hits live
   if ( dbc.ptr )
   {
-    if ( buffs.hungering_rune_weapon -> up() )
-      haste *= 1.0 / ( 1.0 + buffs.hungering_rune_weapon -> check_value() );     
+    if ( buffs.hungering_rune_weapon_haste -> up() )
+      haste *= 1.0 / ( 1.0 + buffs.hungering_rune_weapon_haste -> check_value() );     
   }
   
   return haste;
@@ -8266,7 +8268,8 @@ void death_knight_t::create_buffs()
   // Must be created after Gathering Storms buff (above) to get correct linkage
   buffs.remorseless_winter = new remorseless_winter_buff_t( this );
 
- buffs.hungering_rune_weapon = haste_buff_creator_t( this, "hungering rune weapon", talent.hungering_rune_weapon )
+	buffs.hungering_rune_weapon = new hungering_rune_weapon_buff_t( this );
+  buffs.hungering_rune_weapon_haste = haste_buff_creator_t( this, "haste", talent.hungering_rune_weapon )
 	  .default_value( dbc.ptr ? talent.hungering_rune_weapon -> effectN( 3 ).percent() : 0 )
 	  .trigger_spell( talent.hungering_rune_weapon );
   
