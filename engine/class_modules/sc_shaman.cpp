@@ -1070,20 +1070,12 @@ public:
       ab::energize_type = ENERGIZE_NONE; // disable resource generation from spell data.
     }
 
-    if ( ab::data().affected_by( player -> spec.elemental_shaman -> effectN( 5 ) ) && !maybe_ptr( player -> dbc.ptr ) )
-    {
-      ab::base_dd_multiplier *= 1.0 + player -> spec.elemental_shaman -> effectN( 5 ).percent();
-    }
-    if ( ab::data().affected_by( player -> spec.elemental_shaman -> effectN( 6 ) ) && !maybe_ptr( player -> dbc.ptr ) )
-    {
-      ab::base_td_multiplier *= 1.0 + player -> spec.elemental_shaman -> effectN( 6 ).percent();
-    }
     // changed hotfix order on ptr... FIXME double check when 7.3 draws near
-    if ( ab::data().affected_by( player -> spec.elemental_shaman -> effectN( 1 ) ) && maybe_ptr( player -> dbc.ptr ) )
+    if ( ab::data().affected_by( player -> spec.elemental_shaman -> effectN( 1 ) ) )
     {
       ab::base_dd_multiplier *= 1.0 + player -> spec.elemental_shaman -> effectN( 1 ).percent();
     }
-    if ( ab::data().affected_by( player -> spec.elemental_shaman -> effectN( 2 ) ) && maybe_ptr( player -> dbc.ptr ) )
+    if ( ab::data().affected_by( player -> spec.elemental_shaman -> effectN( 2 ) ) )
     {
       ab::base_td_multiplier *= 1.0 + player -> spec.elemental_shaman -> effectN( 2 ).percent();
     }
@@ -4251,13 +4243,6 @@ struct chained_base_t : public shaman_spell_t
 
   void execute() override
   {
-    // Roll for static overload buff before execute
-    // redesign in 7.3 PTR to only trigger on Stormkeeper
-    if ( ! maybe_ptr( player -> dbc.ptr ) ) {
-      p() -> buff.static_overload -> trigger();
-    }
-    
-
     shaman_spell_t::execute();
 
     p() -> buff.stormkeeper -> decrement();
@@ -5184,11 +5169,7 @@ struct earthquake_damage_t : public shaman_spell_t
     aoe = -1;
     ground_aoe = background = true;
     school = SCHOOL_PHYSICAL;
-    spell_power_mod.direct = 0.775; // Hardcoded into tooltip because it's cool
-    // FIXME This is added for the EQ changes on PTR.
-    if ( maybe_ptr( player -> dbc.ptr ) ) {
-      spell_power_mod.direct = 0.92;
-    }
+    spell_power_mod.direct = 0.92;
     base_multiplier *= 1.0 + p() -> artifact.the_ground_trembles.percent();
     affected_by_elemental_focus = true; // Needed to explicitly flag, since spell data lacks info
   }
@@ -5330,10 +5311,7 @@ struct earth_shock_overload_t : public elemental_overload_spell_t
     m *= 1.0 + p() -> buff.t21_2pc_elemental -> stack_value();
 
     // TODO: Currently not in hotfix data but save to assume it'll be added
-    if ( maybe_ptr( player -> dbc.ptr ) )
-    {
-      m *= 1.0 + p() -> spec.elemental_shaman -> effectN( 1 ).percent();
-    }
+    m *= 1.0 + p() -> spec.elemental_shaman -> effectN( 1 ).percent();
 
     return m;
   }
@@ -5608,9 +5586,7 @@ struct stormkeeper_t : public shaman_spell_t
           p() -> spell.fury_of_the_storms_driver -> duration() );
     }
     // Trigger Static Overload 7.3 redesign
-    if ( maybe_ptr( player -> dbc.ptr ) ) {
-      p() -> buff.static_overload -> trigger();
-    }
+    p() -> buff.static_overload -> trigger();
   }
 };
 
@@ -7386,7 +7362,7 @@ void shaman_t::create_buffs()
   buff.stormkeeper = buff_creator_t( this, "stormkeeper", artifact.stormkeeper )
     .cd( timespan_t::zero() ); // Handled by the action
   buff.static_overload = buff_creator_t( this, "static_overload", find_spell( 191634 ) )
-    .chance(  maybe_ptr( player_t::dbc.ptr ) ? 1.0 : artifact.static_overload.data().effectN( 1 ).percent() );
+    .trigger_spell( &( artifact.static_overload.data() ) );
   buff.power_of_the_maelstrom = buff_creator_t( this, "power_of_the_maelstrom", artifact.power_of_the_maelstrom.data().effectN( 1 ).trigger() )
     .trigger_spell( artifact.power_of_the_maelstrom );
 
@@ -7401,7 +7377,7 @@ void shaman_t::create_buffs()
                      .duration( talent.totem_mastery -> effectN( 2 ).trigger() -> duration() )
                      .cd( timespan_t::zero() ) // Handled by the action
                      // FIXME: 7.3 ptr got rid of the 2 effectN, now we need to use 1
-                     .default_value( find_spell( 210651 ) -> effectN(  maybe_ptr( player_t::dbc.ptr ) ? 1 : 2 ).percent() );
+                     .default_value( find_spell( 210651 ) -> effectN( 1 ).percent() );
   buff.ember_totem = buff_creator_t( this, "ember_totem", find_spell( 210658 ) )
                      .duration( talent.totem_mastery -> effectN( 3 ).trigger() -> duration() )
                      .default_value( 1.0 + find_spell( 210658 ) -> effectN( 1 ).percent() );
@@ -8275,16 +8251,7 @@ double shaman_t::composite_player_pet_damage_multiplier( const action_state_t* s
   m *= 1.0 + artifact.stormkeepers_power.percent();
   m *= 1.0 + artifact.power_of_the_earthen_ring.percent();
   m *= 1.0 + artifact.earthshattering_blows.percent();
-  if ( spec.elemental_shaman -> ok() && ! maybe_ptr( player_t::dbc.ptr ) )
-  {
-    m *= 1.0 + spec.elemental_shaman -> effectN( 7 ).percent();
-  }
-  // effect order of hotfix changed on ptr, double check in the futur
-  if ( spec.elemental_shaman -> ok() && maybe_ptr( player_t::dbc.ptr ) )
-  {
-    m *= 1.0 + spec.elemental_shaman -> effectN( 3 ).percent();
-  }
-
+  m *= 1.0 + spec.elemental_shaman -> effectN( 3 ).percent();
   m *= 1.0 + spec.enhancement_shaman -> effectN( 3 ).percent();
 
   auto school = s -> action -> get_school();

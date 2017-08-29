@@ -4188,8 +4188,7 @@ struct dark_arbiter_t : public death_knight_spell_t
     timespan_t confusion_time = timespan_t::from_seconds( rng().gauss( base, 0.25 ) );
     timespan_t duration_increase = timespan_t::from_seconds( 0 );
     
-    if ( maybe_ptr ( p() -> dbc.ptr ) )
-      duration_increase = confusion_time;
+    duration_increase = confusion_time;
 
     p() -> pets.dark_arbiter -> summon( data().duration() + duration_increase );
     p() -> pets.dark_arbiter -> set_confusion( confusion_time );
@@ -4982,11 +4981,10 @@ struct frostscythe_t : public death_knight_melee_attack_t
     aoe = -1;
 
     // T21 2P bonus : damage increase to Howling Blast, Frostscythe and Obliterate
-    if ( maybe_ptr( p -> dbc.ptr ) ) 
-      if ( p -> sets -> has_set_bonus( DEATH_KNIGHT_FROST, T21, B2 ) )
-      {
-        base_multiplier *= ( 1.0 + p-> find_spell( 251873 ) -> effectN( 3 ).percent() );
-      }
+    if ( p -> sets -> has_set_bonus( DEATH_KNIGHT_FROST, T21, B2 ) )
+    {
+      base_multiplier *= ( 1.0 + p-> find_spell( 251873 ) -> effectN( 3 ).percent() );
+    }
     
     crit_bonus_multiplier *= 1.0 + p -> spec.death_knight -> effectN( 5 ).percent();
   }
@@ -5229,11 +5227,10 @@ struct howling_blast_t : public death_knight_spell_t
     base_multiplier    *= 1.0 + p -> artifact.blast_radius.percent();
     
     // T21 2P bonus : damage increase to Howling Blast, Frostscythe and Obliterate
-    if ( maybe_ptr( p -> dbc.ptr ) )
-      if ( p->sets->has_set_bonus( DEATH_KNIGHT_FROST, T21, B2 ))
-      {
-        base_multiplier *= ( 1.0 + p-> find_spell( 251873 ) -> effectN( 1 ).percent() );
-      }
+    if ( p->sets->has_set_bonus( DEATH_KNIGHT_FROST, T21, B2 ))
+    {
+      base_multiplier *= ( 1.0 + p-> find_spell( 251873 ) -> effectN( 1 ).percent() );
+    }
   }
 
   double runic_power_generation_multiplier( const action_state_t* state ) const override
@@ -5296,12 +5293,9 @@ struct howling_blast_t : public death_knight_spell_t
     death_knight_spell_t::execute();
 
     // 7.3 PTR : Howling Blast now triggers Killing Machine during Obliteration
-    if ( maybe_ptr( p() -> dbc.ptr ) ) 
+    if ( p() -> buffs.obliteration -> up())
     {
-      if ( p() -> buffs.obliteration -> up())
-      {
-        p() -> buffs.killing_machine -> execute();
-      }
+      p() -> buffs.killing_machine -> execute();
     }
 
     p() -> buffs.rime -> decrement();
@@ -5562,17 +5556,13 @@ struct obliterate_strike_t : public death_knight_melee_attack_t
     weapon = w;
     
     // T21 2P bonus : damage increase to Howling Blast, Frostscythe and Obliterate
-    if ( maybe_ptr( p -> dbc.ptr ) ) 
-      if ( p -> sets -> has_set_bonus( DEATH_KNIGHT_FROST , T21, B2 ) )
-      {
-        base_multiplier *= ( 1.0 + p-> find_spell( 251873 ) -> effectN( 2 ).percent() );
-      }
+    if ( p -> sets -> has_set_bonus( DEATH_KNIGHT_FROST , T21, B2 ) )
+    {
+      base_multiplier *= ( 1.0 + p-> find_spell( 251873 ) -> effectN( 2 ).percent() );
+    }
 
     // 7.3 : Koltira's newfound will also increase Obliterate damage by 10%
-    if ( maybe_ptr( p -> dbc.ptr ) ) 
-    {
-      base_multiplier *= 1.0 + p -> legendary.koltiras_newfound_will -> effectN( 2 ).percent();
-    }
+    base_multiplier *= 1.0 + p -> legendary.koltiras_newfound_will -> effectN( 2 ).percent();
   }
 
   double composite_crit_chance() const override
@@ -7408,11 +7398,8 @@ double death_knight_t::composite_melee_haste() const
   }
   
   // PTR 7.3 : Hungering Rune Weapon now also increase haste by 20%
-  if ( dbc.ptr )
-  {
-    if ( buffs.hungering_rune_weapon_haste -> up() )
-      haste *= 1.0 / ( 1.0 + buffs.hungering_rune_weapon_haste -> check_value() );    
-  }
+  if ( buffs.hungering_rune_weapon_haste -> up() )
+    haste *= 1.0 / ( 1.0 + buffs.hungering_rune_weapon_haste -> check_value() );    
     
   return haste;
 }
@@ -7438,12 +7425,9 @@ double death_knight_t::composite_spell_haste() const
   }
 
   // PTR 7.3 : Hungering Rune Weapon now also increase haste by 20%, replace with actual spell data once patch hits live
-  if ( dbc.ptr )
-  {
-    if ( buffs.hungering_rune_weapon_haste -> up() )
-      haste *= 1.0 / ( 1.0 + buffs.hungering_rune_weapon_haste -> check_value() );     
-  }
-  
+  if ( buffs.hungering_rune_weapon_haste -> up() )
+    haste *= 1.0 / ( 1.0 + buffs.hungering_rune_weapon_haste -> check_value() );     
+
   return haste;
 }
 
@@ -8268,10 +8252,10 @@ void death_knight_t::create_buffs()
   // Must be created after Gathering Storms buff (above) to get correct linkage
   buffs.remorseless_winter = new remorseless_winter_buff_t( this );
 
-	buffs.hungering_rune_weapon = new hungering_rune_weapon_buff_t( this );
+  buffs.hungering_rune_weapon = new hungering_rune_weapon_buff_t( this );
   buffs.hungering_rune_weapon_haste = haste_buff_creator_t( this, "haste", talent.hungering_rune_weapon )
-	  .default_value( dbc.ptr ? talent.hungering_rune_weapon -> effectN( 3 ).percent() : 0 )
-	  .trigger_spell( talent.hungering_rune_weapon );
+    .default_value( talent.hungering_rune_weapon -> effectN( 3 ).percent() )
+    .trigger_spell( talent.hungering_rune_weapon );
   
   buffs.t20_2pc_unholy = buff_creator_t( this, "master_of_ghouls" )
     .spell( find_spell( 246995 ) )
@@ -8377,12 +8361,11 @@ double death_knight_t::bone_shield_handler( const action_state_t* state ) const
   buffs.bone_shield -> decrement( n_stacks );
   cooldown.bone_shield_icd -> start();
 
-  if ( dbc.ptr )
-    if ( n_stacks > 0 && sets -> has_set_bonus( DEATH_KNIGHT_BLOOD, T21, B2 ) )
-    {
-      cooldown.dancing_rune_weapon -> adjust( timespan_t::from_millis( find_spell( 251876 ) -> effectN( 1 ).base_value() ), false );
-    }
-  
+  if ( n_stacks > 0 && sets -> has_set_bonus( DEATH_KNIGHT_BLOOD, T21, B2 ) )
+  {
+    cooldown.dancing_rune_weapon -> adjust( timespan_t::from_millis( find_spell( 251876 ) -> effectN( 1 ).base_value() ), false );
+  }
+
   return absorbed;
 }
 
