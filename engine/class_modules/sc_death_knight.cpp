@@ -7839,6 +7839,7 @@ void death_knight_t::default_apl_frost()
   def -> add_action( "run_action_list,name=obliteration,if=buff.obliteration.up" );
 	def -> add_action( "call_action_list,name=standard" );
 
+	// Breath of Sindragosa pooling rotation : starts 15s before the cd becomes available
 	bos_pooling -> add_action( this, "Remorseless Winter", "if=talent.gathering_storm.enabled" );
 	bos_pooling -> add_action( this, "Howling Blast", "if=buff.rime.react&rune.time_to_4<(gcd*2)if=talent.gathering_storm.enabled" );
 	bos_pooling -> add_action( this, "Obliterate", "if=rune.time_to_6<gcd&!talent.gathering_storm.enabled" );
@@ -7891,17 +7892,19 @@ void death_knight_t::default_apl_frost()
   // In-combat potion
   cds -> add_action( "potion,if=buff.pillar_of_frost.up&(dot.breath_of_sindragosa.ticking|buff.obliteration.up|talent.hungering_rune_weapon.enabled)" );
 
-  // Cooldowns
+  // Pillar of Frost
   cds -> add_action( this, "Pillar of Frost", "if=talent.obliteration.enabled&(cooldown.obliteration.remains>20|cooldown.obliteration.remains<10|!talent.icecap.enabled)" );
   cds -> add_action( this, "Pillar of Frost", "if=talent.breath_of_sindragosa.enabled&cooldown.breath_of_sindragosa.ready&runic_power>50" );
   cds -> add_action( this, "Pillar of Frost", "if=talent.breath_of_sindragosa.enabled&cooldown.breath_of_sindragosa.remains>40" );
   cds -> add_action( this, "Pillar of Frost", "if=talent.hungering_rune_weapon.enabled" );
-  cds -> add_talent( this, "Breath of Sindragosa", "if=buff.pillar_of_frost.up" );
+  
+	// Tier 100 cooldowns + Cold Heart
+	cds -> add_talent( this, "Breath of Sindragosa", "if=buff.pillar_of_frost.up" );
 	cds -> add_action( "call_action_list,name=cold_heart,if=equipped.cold_heart&((buff.cold_heart.stack>=10&!buff.obliteration.up)|target.time_to_die<=gcd)" );
   cds -> add_talent( this, "Obliteration", "if=rune>=1&runic_power>=20&(!talent.frozen_pulse.enabled|rune<2|buff.pillar_of_frost.remains<=12)&(!talent.gathering_storm.enabled|!cooldown.remorseless_winter.ready)&(buff.pillar_of_frost.up|!talent.icecap.enabled)" );
   cds -> add_talent( this, "Hungering Rune Weapon", "if=!buff.hungering_rune_weapon.up&rune.time_to_2>gcd&runic_power<40" );
 
-  // Using Cold Heart
+  // Cold Heart conditionals
   cold_heart -> add_action( this, "Chains of Ice", "if=buff.cold_heart.stack=20&buff.unholy_strength.up&cooldown.pillar_of_frost.remains>6" );
   cold_heart -> add_action( this, "Chains of Ice", "if=buff.pillar_of_frost.up&buff.pillar_of_frost.remains<gcd&(buff.cold_heart.stack>=11|(buff.cold_heart.stack>=10&set_bonus.tier20_4pc))" );
   cold_heart -> add_action( this, "Chains of Ice", "if=buff.unholy_strength.up&buff.unholy_strength.remains<gcd&buff.cold_heart.stack>16&cooldown.pillar_of_frost.remains>6" );
@@ -7938,7 +7941,6 @@ void death_knight_t::default_apl_frost()
   standard -> add_talent( this, "Horn of Winter", "if=!buff.hungering_rune_weapon.up&(rune.time_to_2>gcd|!talent.frozen_pulse.enabled)" );
   standard -> add_action( this, "Frost Strike", "if=!(runic_power<50&talent.obliteration.enabled&cooldown.obliteration.remains<=gcd)" );
   standard -> add_action( this, "Empower Rune Weapon", "if=!talent.breath_of_sindragosa.enabled|target.time_to_die<cooldown.breath_of_sindragosa.remains" );
-  
 }
 
 void death_knight_t::default_apl_unholy()
