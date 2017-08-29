@@ -548,6 +548,7 @@ public:
   virtual stat_e    convert_hybrid_stat( stat_e s ) const override;
   virtual double    matching_gear_multiplier( attribute_e attr ) const override;
   virtual double    composite_player_multiplier( school_e school ) const override;
+  virtual double    composite_player_target_multiplier( player_t* target, school_e school ) const override;
   virtual double    composite_rating_multiplier( rating_e rating ) const override;
   virtual void      invalidate_cache( cache_e ) override;
   virtual double    composite_spell_crit_chance() const override;
@@ -2282,7 +2283,6 @@ private:
 
     can_havoc = false;
     affected_by_destruction_t20_4pc = false;
-    affected_by_contagion = true;
     affected_by_deaths_embrace = false;
     destro_mastery = true;
     can_feretory = true;
@@ -2296,7 +2296,6 @@ public:
   mutable std::vector< player_t* > havoc_targets;
   bool can_havoc;
   bool affected_by_destruction_t20_4pc;
-  bool affected_by_contagion;
   bool affected_by_flamelicked;
   bool affected_by_odr_shawl_of_the_ymirjar;
   bool affected_by_deaths_embrace;
@@ -2578,21 +2577,6 @@ public:
     if ( target == p() -> havoc_target && affected_by_odr_shawl_of_the_ymirjar && p() -> legendary.odr_shawl_of_the_ymirjar )
       m*= 1.0 + p() -> find_spell( 212173 ) -> effectN( 1 ).percent();
 
-    if ( td -> debuffs_haunt -> check() )
-      m *= 1.0 + p() -> find_spell( 48181 ) -> effectN( 2 ).percent();
-
-    if ( p() -> talents.contagion -> ok() && affected_by_contagion )
-    {
-      for ( int i = 0; i < MAX_UAS; i++ )
-      {
-        if ( td -> dots_unstable_affliction[i] -> is_ticking() )
-        {
-          m *= 1.0 + p() -> talents.contagion -> effectN( 1 ).percent();
-          break;
-        }
-      }
-    }
-
     double deaths_embrace_health = p() -> talents.deaths_embrace -> effectN( 2 ).base_value();
 
     if ( p() -> talents.deaths_embrace -> ok() && target -> health_percentage() <= deaths_embrace_health && affected_by_deaths_embrace )
@@ -2853,7 +2837,6 @@ struct unstable_affliction_t: public warlock_spell_t
       background = true;
       dual = true;
       tick_may_crit = hasted_ticks = true;
-      affected_by_contagion = false;
       affected_by_deaths_embrace = true;
 
       if ( p -> sets->has_set_bonus( WARLOCK_AFFLICTION, T19, B2 ) )
@@ -2983,8 +2966,8 @@ struct unstable_affliction_t: public warlock_spell_t
       if ( p() -> mastery_spells.potent_afflictions -> ok() )
         m *= 1.0 + p() -> cache.mastery_value();
 
-      if ( p() -> talents.contagion -> ok() )
-        m *= 1.0 + p() -> talents.contagion -> effectN( 1 ).percent();
+      //if ( p() -> talents.contagion -> ok() )
+      //  m *= 1.0 + p() -> talents.contagion -> effectN( 1 ).percent();
 
       return m;
     }
@@ -3026,7 +3009,6 @@ struct unstable_affliction_t: public warlock_spell_t
     const spell_data_t* ptr_spell = p -> find_spell( 233490 );
     spell_power_mod.direct = ptr_spell -> effectN( 1 ).sp_coeff();
     dot_duration = timespan_t::zero(); // DoT managed by ignite action.
-    affected_by_contagion = false;
   }
 
   double cost() const override
@@ -5841,6 +5823,10 @@ warlock( p )
 
 void warlock_td_t::target_demise()
 {
+  if ( !( target -> is_enemy() ) )
+  {
+    return;
+  }
   if ( warlock.specialization() == WARLOCK_AFFLICTION && dots_drain_soul -> is_ticking() )
   {
     if ( warlock.sim -> log )
@@ -5948,6 +5934,30 @@ warlock_t::warlock_t( sim_t* sim, const std::string& name, race_e r ):
       return false;
     } );
   }
+
+double warlock_t::composite_player_target_multiplier( player_t* target, school_e school ) const
+{
+  double m = player_t::composite_player_target_multiplier( target, school );
+
+  warlock_td_t* td = get_target_data( target );
+
+  if ( td -> debuffs_haunt -> check() )
+    m *= 1.0 + find_spell( 48181 ) -> effectN( 2 ).percent();
+
+  if ( talents.contagion -> ok() )
+  {
+    for ( int i = 0; i < MAX_UAS; i++ )
+    {
+      if ( td -> dots_unstable_affliction[i] -> is_ticking() )
+      {
+        m *= 1.0 + talents.contagion -> effectN( 1 ).percent();
+        break;
+      }
+    }
+  }
+
+  return m;
+}
 
 
 double warlock_t::composite_player_multiplier( school_e school ) const

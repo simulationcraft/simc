@@ -5,13 +5,15 @@ race=night_elf
 timeofday=day
 role=attack
 position=back
-talents=2331322
+talents=2331232
 artifact=58:0:0:0:0:1153:1:1154:1:1155:1:1156:1:1157:1:1158:1:1159:1:1160:4:1161:4:1162:4:1163:4:1164:4:1165:4:1166:4:1167:4:1168:4:1327:1:1365:1:1505:4:1506:1:1507:1:1508:1:1633:1
+#artifact=58:0:0:0:0:1153:1:1154:1:1155:1:1156:1:1157:1:1158:1:1159:1:1160:4:1161:4:1162:4:1163:4:1164:4:1165:4:1166:4:1167:4:1168:4:1327:1:1365:1:1505:4:1506:1:1507:1:1508:24:1633:1
+#crucible=1739:3:1780:3:1161:1:1166:2
 
 head=behemoth_headdress,id=151801,bonus_id=1502/3530,ilevel=970
 #head=shadowscarred_headcover,id=147034,bonus_id=3563,ilevel=930
-#neck=locket_of_splintered_souls,id=147014,bonus_id=3563,ilevel=930,enchant=mark_of_the_hidden_satyr
-neck=,id=130239,enchant_id=5439,bonus_id=1750/689/601/679,gem_id=130247
+neck=locket_of_splintered_souls,id=147014,bonus_id=3563,ilevel=930,enchant=mark_of_the_hidden_satyr
+#neck=,id=130239,enchant_id=5439,bonus_id=1750/689/601/679,gem_id=130247
 shoulders=stormheart_mantle,id=147138,bonus_id=1477/3563,ilevel=930
 back=stormheart_drape,id=147134,bonus_id=1477,ilevel=930,enchant=binding_of_agility
 chest=stormheart_tunic,id=147133,bonus_id=1477,ilevel=930

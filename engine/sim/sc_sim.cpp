@@ -2220,13 +2220,15 @@ bool sim_t::init_actor( player_t* p )
   p -> init_target();
   p -> init_character_properties();
 
-  // Initialize each actor's items, construct gear information & stats
-  if ( ! p -> init_items() )
+  // Artifact must be initialized before items, since in 7.3 crucible traits may increase the item
+  // level of the artifact (i.e., the increase must be included when items stats are calculated):w
+  if ( ! p -> init_artifact() )
   {
     return false;
   }
 
-  if ( ! p -> init_artifact() )
+  // Initialize each actor's items, construct gear information & stats
+  if ( ! p -> init_items() )
   {
     return false;
   }
