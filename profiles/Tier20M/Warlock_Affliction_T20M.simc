@@ -5,7 +5,8 @@ race=human
 role=spell
 position=back
 talents=3103013
-artifact=39:0:0:0:0:915:4:916:4:917:4:918:4:919:4:920:4:921:4:922:4:923:4:924:1:925:1:926:1:927:1:928:1:929:1:999:1:1353:1:1390:1:1601:4:1602:1:1603:1:1604:1:1711:1
+artifact=39:0:0:0:0:915:4:916:4:917:4:918:4:919:4:920:4:921:4:922:4:923:4:924:1:925:1:926:1:927:1:928:1:929:1:999:1:1353:1:1390:1:1601:4:1602:1:1603:1:1604:24:1711:1
+crucible=1739:3:1771:1:1770:2:921:3
 
 # This default action priority list is automatically created based on your character.
 # It is a attempt to provide you with a action list that is both simple and practicable,
@@ -157,10 +158,10 @@ finger1=scaled_band_of_servitude,id=147020,ilevel=930,enchant_id=5428
 finger2=seal_of_the_second_duumvirate,id=147195,ilevel=940,enchant_id=5428
 trinket1=tarnished_sentinel_medallion,id=147017,ilevel=930
 trinket2=tome_of_unraveling_sanity,id=147019,ilevel=940
-main_hand=ulthalesh_the_deadwind_harvester,id=128942,ilevel=954,gem_id=147110/147082/147110
+main_hand=ulthalesh_the_deadwind_harvester,id=128942,gem_id=147110/147082/147110,relic_id=1512/1522/1512
 
 # Gear Summary
-# gear_ilvl=938.93
+# gear_ilvl=939.93
 # gear_stamina=47279
 # gear_intellect=49291
 # gear_crit_rating=6877

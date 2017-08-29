@@ -5,7 +5,8 @@ race=troll
 role=spell
 position=back
 talents=1202023
-artifact=37:0:0:0:0:1170:1:1171:4:1172:4:1173:4:1174:4:1175:4:1176:4:1177:4:1178:4:1179:4:1180:1:1181:1:1182:1:1183:1:1184:1:1185:1:1354:1:1391:1:1605:4:1606:1:1607:1:1608:1:1712:1
+artifact=37:0:0:0:0:1170:1:1171:4:1172:4:1173:4:1174:4:1175:4:1176:4:1177:4:1178:4:1179:4:1180:1:1181:1:1182:1:1183:1:1184:1:1185:1:1354:1:1391:1:1605:4:1606:1:1607:1:1608:24:1712:1
+crucible=1739:3:1770:3:1605:3
 
 # This default action priority list is automatically created based on your character.
 # It is a attempt to provide you with a action list that is both simple and practicable,
@@ -84,10 +85,10 @@ finger2=seal_of_the_second_duumvirate,id=147195,ilevel=940,enchant_id=5428
 trinket1=charm_of_the_rising_tide,id=147002,ilevel=930
 trinket2=whispers_in_the_dark,id=140809,ilevel=910
 main_hand=spine_of_thalkiel,id=137246,ilevel=939,gem_id=0/0/0/0,relic_id=0/0
-off_hand=skull_of_the_manari,id=128943,bonus_id=748,ilevel=954,gem_id=147087/147091/147110
+off_hand=skull_of_the_manari,id=128943,bonus_id=748,gem_id=147087/147091/147110,relic_id=1512/1522/1512
 
 # Gear Summary
-# gear_ilvl=937.38
+# gear_ilvl=939.25
 # gear_stamina=46916
 # gear_intellect=31468
 # gear_spell_power=20554
