@@ -22,6 +22,7 @@
 // Frost
 // - T21 4P Damage proc : Freezing Death, spellID : 253590, set bonus ID : 251875
 //   really low damage atm (2017-8-12), could only be placeholder
+// - Implement Inexorable Assault ? maybe ? somehow ?
 
 #include "simulationcraft.hpp"
 
@@ -448,7 +449,7 @@ public:
     buff_t* remorseless_winter;
     buff_t* frozen_soul;
     buff_t* hungering_rune_weapon;
-		haste_buff_t* hungering_rune_weapon_haste;
+    haste_buff_t* hungering_rune_weapon_haste;
     buff_t* t20_2pc_unholy;
     buff_t* t20_4pc_frost;
 
@@ -605,6 +606,7 @@ public:
     
     // Tier 4 
     const spell_data_t* inexorable_assault; // Not yet implemented, new to 7.3 PTR
+    const spell_data_t* volatile_shielding;
 
     // Tier 6
     const spell_data_t* frostscythe;
@@ -6324,6 +6326,10 @@ struct antimagic_shell_t : public death_knight_spell_t
                                   p() -> resources.max[ RESOURCE_HEALTH ] * data().effectN( 2 ).percent() );
 
       double generated = absorbed / p() -> resources.max[ RESOURCE_HEALTH ];
+      
+      // Volatile shielding increases AMS' RP generation
+      if ( p() -> talent.volatile_shielding -> ok() )
+        generated *= 1.0 + p() -> talent.volatile_shielding -> effectN( 2 ).percent();
 
       // AMS generates 2 runic power per percentage max health absorbed.
       p() -> resource_gain( RESOURCE_RUNIC_POWER, util::round( generated * 100.0 * 2.0 ), p() -> gains.antimagic_shell, this );
@@ -7376,7 +7382,7 @@ double death_knight_t::composite_melee_haste() const
 
   haste *= 1.0 / ( 1.0 + buffs.soul_reaper -> stack_value() );
 	
-	haste *= 1.0 / ( 1.0 + buffs.hungering_rune_weapon_haste -> check_value() );    
+  haste *= 1.0 / ( 1.0 + buffs.hungering_rune_weapon_haste -> check_value() );    
 
   if ( buffs.bone_shield -> up() )
   {
@@ -7406,7 +7412,7 @@ double death_knight_t::composite_spell_haste() const
 
   haste *= 1.0 / ( 1.0 + buffs.soul_reaper -> stack_value() );
 	
-	haste *= 1.0 / ( 1.0 + buffs.hungering_rune_weapon_haste -> check_value() );
+  haste *= 1.0 / ( 1.0 + buffs.hungering_rune_weapon_haste -> check_value() );
 
   if ( buffs.bone_shield -> up() )
   {
@@ -7418,7 +7424,7 @@ double death_knight_t::composite_spell_haste() const
     haste *= 1.0 / ( 1.0 + legendary.sephuzs_secret -> effectN( 3 ).percent() );
   }
 
-	return haste;
+  return haste;
 }
 
 // death_knight_t::init_rng =================================================
@@ -7502,7 +7508,7 @@ void death_knight_t::init_spells()
   talent.runic_attenuation     = find_talent_spell( "Runic Attenuation" );
   // Tier 2
   talent.freezing_fog          = find_talent_spell( "Freezing Fog" );
-	talent.murderous_efficiency  = find_talent_spell( "Murderous Efficiency" );
+  talent.murderous_efficiency  = find_talent_spell( "Murderous Efficiency" );
   talent.horn_of_winter        = find_talent_spell( "Horn of Winter" );
   // Tier 3
   talent.icecap                = find_talent_spell( "Icecap" );
@@ -7510,12 +7516,14 @@ void death_knight_t::init_spells()
   talent.avalanche             = find_talent_spell( "Avalanche" );
   
   // Tier 4 : New talent in 7.3  
-  //talent.inexorable_assault  = find_talent_spell( "Inexorable Assault" );
+  talent.inexorable_assault    = find_talent_spell( "Inexorable Assault" );
+  talent.volatile_shield       = find_talent_spell( "Volatile Shielding" );
     
   // Tier 6
   talent.frostscythe           = find_talent_spell( "Frostscythe" );
-	talent.frozen_pulse          = find_talent_spell( "Frozen Pulse" );
+  talent.frozen_pulse          = find_talent_spell( "Frozen Pulse" );
   talent.gathering_storm       = find_talent_spell( "Gathering Storm" );
+  
   // Tier 7
   talent.obliteration          = find_talent_spell( "Obliteration" );
   talent.breath_of_sindragosa  = find_talent_spell( "Breath of Sindragosa" );
@@ -8448,6 +8456,9 @@ void death_knight_t::assess_damage_imminent( school_e school, dmg_e, action_stat
 
       double max_hp_absorb = resources.max[RESOURCE_HEALTH] * 0.4;
 
+      if ( talent.volatile_shielding -> ok() )
+        max_hp_absorb *= 1.0 + talent.volatile_shielding -> effectN( 1 ).percent();
+            
       if ( antimagic_shell_absorbed > max_hp_absorb )
       {
         absorbed = antimagic_shell_absorbed - max_hp_absorb;
