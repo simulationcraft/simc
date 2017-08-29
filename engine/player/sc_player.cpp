@@ -1266,6 +1266,14 @@ bool player_t::init_items()
   // Once item data is initialized, initialize the parent - child relationships of each item
   range::for_each( items, [ this ]( item_t& i ) {
     i.parent_slot = parent_item_slot( i );
+
+    // Set the primary artifact slot for this player, if the item is (after data download)
+    // determined to be the primary artifact slot.
+    if ( i.parsed.data.id_artifact > 0 && i.parent_slot == SLOT_INVALID )
+    {
+      assert( artifact -> slot() == SLOT_INVALID );
+      artifact -> set_artifact_slot( i.slot );
+    }
   } );
 
   // Slot initialization order vector. Needed to ensure parents of children get initialized first
@@ -1329,17 +1337,6 @@ bool player_t::init_items()
   // these initialize the weapons, but don't have a return value (yet?)
   init_weapon( main_hand_weapon );
   init_weapon( off_hand_weapon );
-
-  // Set the primary artifact slot for this player. It will be the item that has an artifact
-  // identifier on it and it does not have a parent slot as per client data. The parent slot
-  // initialization is performed in player_t::init_items.
-  range::for_each( items, [ this ]( const item_t& i ) {
-    if ( i.parsed.data.id_artifact > 0 && i.parent_slot == SLOT_INVALID )
-    {
-      assert( artifact -> slot() == SLOT_INVALID );
-      artifact -> set_artifact_slot( i.slot );
-    }
-  } );
 
   return true;
 }
@@ -10060,7 +10057,8 @@ void player_t::copy_from( player_t* source )
   professions_str = source -> professions_str;
   source -> recreate_talent_str( TALENT_FORMAT_UNCHANGED );
   parse_talent_url( sim, "talents", source -> talents_str );
-  artifact = artifact::player_artifact_data_t::create( this, source -> artifact );
+  artifact -> set_artifact_str( source -> artifact -> encode() );
+  artifact -> set_crucible_str( source -> artifact -> encode_crucible() );
   talent_overrides_str = source -> talent_overrides_str;
   artifact_overrides_str = source -> artifact_overrides_str;
   action_list_str = source -> action_list_str;

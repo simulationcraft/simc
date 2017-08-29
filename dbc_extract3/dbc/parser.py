@@ -37,7 +37,7 @@ def _do_parse(unpackers, data, record_offset, record_size):
     return full_data
 
 class DBCacheParser:
-    __expanded_parsers__ = [ 'SpellEffect' ]
+    __expanded_parsers__ = [ 'SpellEffect', 'Spell' ]
 
     def is_magic(self): return self.magic == b'XFTH'
 
@@ -313,6 +313,7 @@ class DBCParserBase:
     # field structure is going to be coherent automatically.
     def create_expanded_parser(self, inline_strings):
         field_idx = 0
+        field_data_idx = 0
         format_str = '<'
         unpackers = []
 
@@ -336,7 +337,7 @@ class DBCParserBase:
                         if len(format_str) > 1:
                             unpackers.append((False, struct.Struct(format_str)))
                             format_str = '<'
-                        unpackers.append((False, StringUnpacker(field_size)))
+                        unpackers.append((False, StringUnpacker(4)))
                 # Normal (unsigned) byte/short/int/float field, apply to Struct
                 # parser as an unsigned or signed integer (4bytes), or directly
                 # as float.
@@ -349,6 +350,7 @@ class DBCParserBase:
                         format_str += field_format.data_type
 
                 field_idx += 1
+            field_data_idx += 1
 
         if len(format_str) > 1:
             unpackers.append((False, struct.Struct(format_str)))

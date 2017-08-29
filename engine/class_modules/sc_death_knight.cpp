@@ -22,6 +22,7 @@
 // Frost
 // - T21 4P Damage proc : Freezing Death, spellID : 253590, set bonus ID : 251875
 //   really low damage atm (2017-8-12), could only be placeholder
+// - Implement Inexorable Assault ? maybe ? somehow ?
 
 #include "simulationcraft.hpp"
 
@@ -448,7 +449,7 @@ public:
     buff_t* remorseless_winter;
     buff_t* frozen_soul;
     buff_t* hungering_rune_weapon;
-		haste_buff_t* hungering_rune_weapon_haste;
+    haste_buff_t* hungering_rune_weapon_haste;
     buff_t* t20_2pc_unholy;
     buff_t* t20_4pc_frost;
 
@@ -605,6 +606,7 @@ public:
     
     // Tier 4 
     const spell_data_t* inexorable_assault; // Not yet implemented, new to 7.3 PTR
+    const spell_data_t* volatile_shielding;
 
     // Tier 6
     const spell_data_t* frostscythe;
@@ -4185,7 +4187,7 @@ struct dark_arbiter_t : public death_knight_spell_t
     auto base = dist == 0 ? 2.25 : 3.25;
 
     timespan_t confusion_time = timespan_t::from_seconds( rng().gauss( base, 0.25 ) );
-    
+  
     p() -> pets.dark_arbiter -> summon( data().duration() + confusion_time );
     p() -> pets.dark_arbiter -> set_confusion( confusion_time );
     
@@ -4977,11 +4979,10 @@ struct frostscythe_t : public death_knight_melee_attack_t
     aoe = -1;
 
     // T21 2P bonus : damage increase to Howling Blast, Frostscythe and Obliterate
-    if ( maybe_ptr( p -> dbc.ptr ) ) 
-      if ( p -> sets -> has_set_bonus( DEATH_KNIGHT_FROST, T21, B2 ) )
-      {
-        base_multiplier *= ( 1.0 + p-> find_spell( 251873 ) -> effectN( 3 ).percent() );
-      }
+    if ( p -> sets -> has_set_bonus( DEATH_KNIGHT_FROST, T21, B2 ) )
+    {
+      base_multiplier *= ( 1.0 + p-> find_spell( 251873 ) -> effectN( 3 ).percent() );
+    }
     
     crit_bonus_multiplier *= 1.0 + p -> spec.death_knight -> effectN( 5 ).percent();
   }
@@ -5224,11 +5225,10 @@ struct howling_blast_t : public death_knight_spell_t
     base_multiplier    *= 1.0 + p -> artifact.blast_radius.percent();
     
     // T21 2P bonus : damage increase to Howling Blast, Frostscythe and Obliterate
-    if ( maybe_ptr( p -> dbc.ptr ) )
-      if ( p->sets->has_set_bonus( DEATH_KNIGHT_FROST, T21, B2 ))
-      {
-        base_multiplier *= ( 1.0 + p-> find_spell( 251873 ) -> effectN( 1 ).percent() );
-      }
+    if ( p->sets->has_set_bonus( DEATH_KNIGHT_FROST, T21, B2 ))
+    {
+      base_multiplier *= ( 1.0 + p-> find_spell( 251873 ) -> effectN( 1 ).percent() );
+    }
   }
 
   double runic_power_generation_multiplier( const action_state_t* state ) const override
@@ -5553,14 +5553,12 @@ struct obliterate_strike_t : public death_knight_melee_attack_t
     weapon = w;
     
     // T21 2P bonus : damage increase to Howling Blast, Frostscythe and Obliterate
-    if ( maybe_ptr( p -> dbc.ptr ) ) 
-      if ( p -> sets -> has_set_bonus( DEATH_KNIGHT_FROST , T21, B2 ) )
-      {
-        base_multiplier *= ( 1.0 + p-> find_spell( 251873 ) -> effectN( 2 ).percent() );
-      }
+    if ( p -> sets -> has_set_bonus( DEATH_KNIGHT_FROST , T21, B2 ) )
+    {
+      base_multiplier *= ( 1.0 + p-> find_spell( 251873 ) -> effectN( 2 ).percent() );
+    }
 
     base_multiplier *= 1.0 + p -> legendary.koltiras_newfound_will -> effectN( 2 ).percent();
-    
   }
 
   double composite_crit_chance() const override
@@ -6328,6 +6326,10 @@ struct antimagic_shell_t : public death_knight_spell_t
                                   p() -> resources.max[ RESOURCE_HEALTH ] * data().effectN( 2 ).percent() );
 
       double generated = absorbed / p() -> resources.max[ RESOURCE_HEALTH ];
+      
+      // Volatile shielding increases AMS' RP generation
+      if ( p() -> talent.volatile_shielding -> ok() )
+        generated *= 1.0 + p() -> talent.volatile_shielding -> effectN( 2 ).percent();
 
       // AMS generates 2 runic power per percentage max health absorbed.
       p() -> resource_gain( RESOURCE_RUNIC_POWER, util::round( generated * 100.0 * 2.0 ), p() -> gains.antimagic_shell, this );
@@ -7380,7 +7382,7 @@ double death_knight_t::composite_melee_haste() const
 
   haste *= 1.0 / ( 1.0 + buffs.soul_reaper -> stack_value() );
 	
-	haste *= 1.0 / ( 1.0 + buffs.hungering_rune_weapon_haste -> check_value() );    
+  haste *= 1.0 / ( 1.0 + buffs.hungering_rune_weapon_haste -> check_value() );    
 
   if ( buffs.bone_shield -> up() )
   {
@@ -7410,7 +7412,7 @@ double death_knight_t::composite_spell_haste() const
 
   haste *= 1.0 / ( 1.0 + buffs.soul_reaper -> stack_value() );
 	
-	haste *= 1.0 / ( 1.0 + buffs.hungering_rune_weapon_haste -> check_value() );
+  haste *= 1.0 / ( 1.0 + buffs.hungering_rune_weapon_haste -> check_value() );
 
   if ( buffs.bone_shield -> up() )
   {
@@ -7422,7 +7424,7 @@ double death_knight_t::composite_spell_haste() const
     haste *= 1.0 / ( 1.0 + legendary.sephuzs_secret -> effectN( 3 ).percent() );
   }
 
-	return haste;
+  return haste;
 }
 
 // death_knight_t::init_rng =================================================
@@ -7506,7 +7508,7 @@ void death_knight_t::init_spells()
   talent.runic_attenuation     = find_talent_spell( "Runic Attenuation" );
   // Tier 2
   talent.freezing_fog          = find_talent_spell( "Freezing Fog" );
-	talent.murderous_efficiency  = find_talent_spell( "Murderous Efficiency" );
+  talent.murderous_efficiency  = find_talent_spell( "Murderous Efficiency" );
   talent.horn_of_winter        = find_talent_spell( "Horn of Winter" );
   // Tier 3
   talent.icecap                = find_talent_spell( "Icecap" );
@@ -7514,12 +7516,14 @@ void death_knight_t::init_spells()
   talent.avalanche             = find_talent_spell( "Avalanche" );
   
   // Tier 4 : New talent in 7.3  
-  //talent.inexorable_assault  = find_talent_spell( "Inexorable Assault" );
+  talent.inexorable_assault    = find_talent_spell( "Inexorable Assault" );
+  talent.volatile_shielding    = find_talent_spell( "Volatile Shielding" );
     
   // Tier 6
   talent.frostscythe           = find_talent_spell( "Frostscythe" );
-	talent.frozen_pulse          = find_talent_spell( "Frozen Pulse" );
+  talent.frozen_pulse          = find_talent_spell( "Frozen Pulse" );
   talent.gathering_storm       = find_talent_spell( "Gathering Storm" );
+  
   // Tier 7
   talent.obliteration          = find_talent_spell( "Obliteration" );
   talent.breath_of_sindragosa  = find_talent_spell( "Breath of Sindragosa" );
@@ -8370,12 +8374,11 @@ double death_knight_t::bone_shield_handler( const action_state_t* state ) const
   buffs.bone_shield -> decrement( n_stacks );
   cooldown.bone_shield_icd -> start();
 
-  if ( dbc.ptr )
-    if ( n_stacks > 0 && sets -> has_set_bonus( DEATH_KNIGHT_BLOOD, T21, B2 ) )
-    {
-      cooldown.dancing_rune_weapon -> adjust( timespan_t::from_millis( find_spell( 251876 ) -> effectN( 1 ).base_value() ), false );
-    }
-  
+  if ( n_stacks > 0 && sets -> has_set_bonus( DEATH_KNIGHT_BLOOD, T21, B2 ) )
+  {
+    cooldown.dancing_rune_weapon -> adjust( timespan_t::from_millis( find_spell( 251876 ) -> effectN( 1 ).base_value() ), false );
+  }
+
   return absorbed;
 }
 
@@ -8453,6 +8456,9 @@ void death_knight_t::assess_damage_imminent( school_e school, dmg_e, action_stat
 
       double max_hp_absorb = resources.max[RESOURCE_HEALTH] * 0.4;
 
+      if ( talent.volatile_shielding -> ok() )
+        max_hp_absorb *= 1.0 + talent.volatile_shielding -> effectN( 1 ).percent();
+            
       if ( antimagic_shell_absorbed > max_hp_absorb )
       {
         absorbed = antimagic_shell_absorbed - max_hp_absorb;

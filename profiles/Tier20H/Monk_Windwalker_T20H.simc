@@ -6,7 +6,7 @@ role=dps
 position=back
 talents=3010033
 artifact=50:0:0:0:0:800:4:801:4:820:4:821:4:822:4:824:4:825:4:826:1:827:1:828:1:829:4:830:1:831:1:832:1:833:1:1094:4:1341:1:1376:1:1549:4:1550:1:1551:1:1552:15:1644:1
-crucible=1739:3:1774:1:1777:2
+crucible=1739:3:1771:1:1774:1:1777:1
 
 # Default consumables
 potion=prolonged_power
@@ -125,12 +125,12 @@ main_hand=fists_of_the_heavens,id=128940,bonus_id=734,gem_id=147113/147101/14711
 off_hand=fists_of_the_heavens,id=133948
 
 # Gear Summary
-# gear_ilvl=938.56
-# gear_agility=27641
-# gear_stamina=40018
-# gear_crit_rating=7179
+# gear_ilvl=926.38
+# gear_agility=28033
+# gear_stamina=40606
+# gear_crit_rating=7225
 # gear_haste_rating=4985
-# gear_mastery_rating=8286
+# gear_mastery_rating=8332
 # gear_versatility_rating=4148
 # gear_armor=2596
 # set_bonus=tier19_2pc=1

@@ -1,4 +1,4 @@
-SimulationCraft 725-02 for World of Warcraft 7.2.5 Live (wow build 24461, git build 3a6919f)
+SimulationCraft 725-02 for World of Warcraft 7.3.0 Live (wow build 24920)
 bonus_id={ 1 }, desc={ Heroic }, ilevel_adjust={ 20 }, stats={ 100% Sta [1.5789] }
 bonus_id={ 2 }, desc={ Crafting Material }, quality={ epic }
 bonus_id={ 3 }, suffix={ of Power }, socket={ 2 }, stats={ 100% StrAgiInt [0.5263] }
@@ -538,11 +538,11 @@ bonus_id={ 640 }, ilevel_adjust={ 57 }
 bonus_id={ 641 }, ilevel_adjust={ 60 }
 bonus_id={ 642 }, desc={ Mythic }, quality={ epic }, ilevel_adjust={ 55 }
 bonus_id={ 644 }, desc={ Warforged }, ilevel_adjust={ 20 }
-bonus_id={ 645 }, desc={ Timewarped Warforged }, ilevel={ 10 @plvl 1 - 845 @plvl 110 }
+bonus_id={ 645 }, desc={ Timewarped Warforged }, ilevel={ 10 @plvl 1 - 895 @plvl 110 }
 bonus_id={ 646 }, desc={ Warforged }, ilevel_adjust={ 6 }
 bonus_id={ 648 }, desc={ Empowered }, quality={ epic }, ilevel_adjust={ 45 }
 bonus_id={ 651 }, desc={ Warforged }, quality={ epic }, ilevel_adjust={ 25 }
-bonus_id={ 656 }, desc={ Warforged }, ilevel={ 10 @plvl 1 - 845 @plvl 110 }
+bonus_id={ 656 }, desc={ Warforged }, ilevel={ 10 @plvl 1 - 895 @plvl 110 }
 bonus_id={ 657 }, quality={ epic }
 bonus_id={ 664 }, ilevel={ 664 @plvl 98 - 779 @plvl 110 }
 bonus_id={ 665 }, quality={ epic }, ilevel_adjust={ 15 }
@@ -985,7 +985,7 @@ bonus_id={ 1721 }, suffix={ of the Savant }, stats={ 100% Mastery [0.7000] }
 bonus_id={ 1723 }, ilevel={ 10 @plvl 0 - 780 @plvl 110 }
 bonus_id={ 1724 }, quality={ rare }, ilevel={ 10 @plvl 0 - 790 @plvl 110 }
 bonus_id={ 1725 }, quality={ epic }, ilevel={ 10 @plvl 0 - 800 @plvl 110 }
-bonus_id={ 1726 }, base_ilevel={ 845 }, desc={ Heroic }, quality={ epic }
+bonus_id={ 1726 }, base_ilevel={ 845 }, desc={ Heroic }
 bonus_id={ 1727 }, base_ilevel={ 865 }, desc={ Mythic }, quality={ epic }
 bonus_id={ 1729 }, ilevel={ 0 @plvl 0 - 0 @plvl 110 }
 bonus_id={ 1730 }, quality={ rare }, ilevel={ 0 @plvl 0 - 0 @plvl 110 }
@@ -1731,7 +1731,7 @@ bonus_id={ 3507 }, base_ilevel={ 880 }, desc={ Heroic }, quality={ epic }
 bonus_id={ 3508 }, base_ilevel={ 895 }, desc={ Mythic }, quality={ epic }
 bonus_id={ 3509 }, base_ilevel={ 895 }, desc={ Mythic 11 }, quality={ epic }
 bonus_id={ 3510 }, base_ilevel={ 895 }, desc={ Mythic 12 }, quality={ epic }
-bonus_id={ 3513 }, ilevel={ 10 @plvl 1 - 845 @plvl 110 }
+bonus_id={ 3513 }, ilevel={ 10 @plvl 1 - 895 @plvl 110 }
 bonus_id={ 3514 }, base_ilevel={ 875 }, quality={ epic }
 bonus_id={ 3515 }, base_ilevel={ 880 }, quality={ epic }
 bonus_id={ 3516 }, base_ilevel={ 890 }, desc={ Heroic }, quality={ epic }
@@ -1773,7 +1773,7 @@ bonus_id={ 3565 }, base_ilevel={ 810 }, quality={ rare }
 bonus_id={ 3566 }, base_ilevel={ 810 }, quality={ rare }
 bonus_id={ 3567 }, base_ilevel={ 810 }, quality={ epic }
 bonus_id={ 3568 }, base_ilevel={ 810 }, quality={ epic }
-bonus_id={ 3569 }, add_rank={ power_index=5 }
+bonus_id={ 3569 }, ilevel_adjust={ 3 }
 bonus_id={ 3570 }, ilevel_adjust={ 60 }
 bonus_id={ 3571 }, ilevel_adjust={ 60 }
 bonus_id={ 3572 }, base_ilevel={ 860 }
@@ -1781,12 +1781,50 @@ bonus_id={ 3575 }, base_ilevel={ 855 }, desc={ Mythic }, quality={ epic }
 bonus_id={ 3576 }, base_ilevel={ 855 }, desc={ Heroic }, quality={ rare }
 bonus_id={ 3577 }, base_ilevel={ 855 }, desc={ Mythic 2 }, quality={ epic }
 bonus_id={ 3578 }, ilevel={ 10 @plvl 1 - 805 @plvl 110 }
-bonus_id={ 3585 }, desc={ Warforged }, ilevel={ 10 @plvl 1 - 865 @plvl 110 }
-bonus_id={ 3589 }, desc={ Timewarped }, ilevel={ 10 @plvl 1 - 900 @plvl 110 }
+bonus_id={ 3579 }, base_ilevel={ 810 }, quality={ epic }
+bonus_id={ 3580 }, base_ilevel={ 810 }, quality={ rare }
+bonus_id={ 3581 }, base_ilevel={ 810 }, quality={ epic }
+bonus_id={ 3582 }, base_ilevel={ 810 }, quality={ rare }
+bonus_id={ 3583 }, base_ilevel={ 810 }, quality={ epic }
+bonus_id={ 3584 }, base_ilevel={ 810 }, quality={ rare }
+bonus_id={ 3585 }, desc={ Warforged }, ilevel={ 10 @plvl 1 - 895 @plvl 110 }
+bonus_id={ 3586 }, ilevel_adjust={ 45 }
+bonus_id={ 3587 }, ilevel_adjust={ 6 }
+bonus_id={ 3588 }, ilevel_adjust={ 9 }
+bonus_id={ 3589 }, desc={ Timewarped }, ilevel={ 10 @plvl 1 - 915 @plvl 110 }
 bonus_id={ 3590 }, desc={ Warforged }, ilevel={ 10 @plvl 1 - 915 @plvl 110 }
 bonus_id={ 3591 }, ilevel={ 10 @plvl 0 - 800 @plvl 110 }
 bonus_id={ 3592 }, ilevel={ 10 @plvl 0 - 800 @plvl 110 }
+bonus_id={ 3593 }, ilevel_adjust={ 5 }
+bonus_id={ 3594 }, ilevel_adjust={ 10 }
+bonus_id={ 3595 }, ilevel_adjust={ 15 }
 bonus_id={ 3596 }, ilevel={ 10 @plvl 1 - 850 @plvl 110 }
-bonus_id={ 3615 }, ilevel={ 556 @plvl 90 - 6 @plvl 0 }
-bonus_id={ 3616 }, ilevel={ 582 @plvl 90 - 6 @plvl 0 }
-bonus_id={ 3617 }, ilevel={ 569 @plvl 90 - 6 @plvl 0 }
+bonus_id={ 3599 }, desc={ Primal Obliterum: 1/10 }, ilevel_adjust={ 5 }
+bonus_id={ 3600 }, desc={ Primal Obliterum: 2/10 }, ilevel_adjust={ 10 }
+bonus_id={ 3601 }, desc={ Primal Obliterum: 3/10 }, ilevel_adjust={ 15 }
+bonus_id={ 3602 }, desc={ Primal Obliterum: 4/10 }, ilevel_adjust={ 20 }
+bonus_id={ 3603 }, desc={ Primal Obliterum: 5/10 }, ilevel_adjust={ 25 }
+bonus_id={ 3604 }, desc={ Primal Obliterum: 6/10 }, ilevel_adjust={ 30 }
+bonus_id={ 3605 }, desc={ Primal Obliterum: 7/10 }, ilevel_adjust={ 35 }
+bonus_id={ 3606 }, desc={ Primal Obliterum: 8/10 }, ilevel_adjust={ 40 }
+bonus_id={ 3607 }, desc={ Primal Obliterum: 9/10 }, ilevel_adjust={ 45 }
+bonus_id={ 3608 }, desc={ Primal Obliterum: 10/10 }, ilevel_adjust={ 50 }
+bonus_id={ 3610 }, base_ilevel={ 870 }, quality={ epic }
+bonus_id={ 3611 }, base_ilevel={ 885 }, desc={ Heroic }, quality={ epic }
+bonus_id={ 3612 }, base_ilevel={ 900 }, desc={ Mythic }, quality={ epic }
+bonus_id={ 3613 }, base_ilevel={ 855 }, desc={ Raid Finder }, quality={ epic }
+bonus_id={ 3614 }, base_ilevel={ 860 }
+bonus_id={ 3615 }, ilevel={ 556 @plvl 90 - 800 @plvl 110 }
+bonus_id={ 3616 }, ilevel={ 582 @plvl 90 - 800 @plvl 110 }
+bonus_id={ 3617 }, ilevel={ 569 @plvl 90 - 800 @plvl 110 }
+bonus_id={ 3618 }, suffix={ Shatug }, stats={ 60% Sta [0.9999], 40% Vers [0.6666] }
+bonus_id={ 3619 }, suffix={ F'harg }, stats={ 57% StrAgi [0.6666], 43% BonusArmor [0.5106] }
+bonus_id={ 3621 }, ilevel={ 10 @plvl 1 - 915 @plvl 110 }
+bonus_id={ 3622 }, desc={ Warforged }, ilevel={ 10 @plvl 1 - 925 @plvl 110 }
+bonus_id={ 3623 }, desc={ Timewarped }, ilevel={ 10 @plvl 1 - 880 @plvl 110 }
+bonus_id={ 3624 }, desc={ Timewarped Warforged }, ilevel={ 10 @plvl 1 - 895 @plvl 110 }
+bonus_id={ 3625 }, desc={ Timewarped }, ilevel={ 10 @plvl 1 - 930 @plvl 110 }
+bonus_id={ 3626 }, desc={ Warforged }, ilevel={ 10 @plvl 1 - 945 @plvl 110 }
+bonus_id={ 3627 }, desc={ Timewarped }, ilevel={ 10 @plvl 1 - 880 @plvl 110 }
+bonus_id={ 3628 }, ilevel={ 10 @plvl 1 - 880 @plvl 110 }
+bonus_id={ 3630 }, ilevel_adjust={ 90 }

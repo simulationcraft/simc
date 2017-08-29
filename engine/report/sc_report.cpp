@@ -577,69 +577,100 @@ bool report::check_artifact_points( const player_t& p, sim_t& sim )
     return true;
   }
 
-  unsigned max_allowed  = 0;
+  unsigned max_purchased = 0;
+  unsigned max_crucible  = 0;
+
   std::string tier_name = "";
 
   if ( p.report_information.save_str.find( "T19P" ) != std::string::npos )
   {
-    max_allowed = 19;
-    tier_name   = "T19P";
+    max_purchased = 19;
+    tier_name     = "T19P";
   }
   else if ( p.report_information.save_str.find( "T19H_NH" ) != std::string::npos )
   {
-    max_allowed = 42;
-    tier_name   = "T19H_NH";
+    max_purchased = 42;
+    tier_name     = "T19H_NH";
   }
   else if ( p.report_information.save_str.find( "T19M_NH" ) != std::string::npos )
   {
-    max_allowed = 52;
-    tier_name   = "T19M_NH";
+    max_purchased = 52;
+    tier_name     = "T19M_NH";
   }
   else if ( p.report_information.save_str.find( "T19H" ) != std::string::npos )
   {
-    max_allowed = 35;
-    tier_name   = "T19H";
+    max_purchased = 35;
+    tier_name     = "T19H";
   }
   else if ( p.report_information.save_str.find( "T19M" ) != std::string::npos )
   {
-    max_allowed = 36;
-    tier_name   = "T19M";
+    max_purchased = 36;
+    tier_name     = "T19M";
   }
   else if ( p.report_information.save_str.find( "T20H" ) != std::string::npos )
   {
-    max_allowed = 52;
-    tier_name   = "T20H";
+    max_purchased = 66;
+    tier_name     = "T20H";
+    max_crucible  = 6;
   }
   else if ( p.report_information.save_str.find( "T20M" ) != std::string::npos )
   {
-    max_allowed = 52;
-    tier_name   = "T20M";
+    max_purchased = 75;
+    tier_name     = "T20M";
+    max_crucible  = 9;
   }
   else
   {
     return true;
   }
 
-  // Relics must be added on top of the limit!
-  max_allowed += 3;
+  unsigned purchased_points = p.artifact -> purchased_points();
+  unsigned crucible_points  = p.artifact -> crucible_points();
 
-  if ( p.artifact -> points() > max_allowed )
+  if ( purchased_points > max_purchased )
   {
     sim.errorf(
-        "Player %s has %s artifact points, maximum allowed (including relics) "
-        "for %s is %s.\n",
-        p.name(), util::to_string( p.artifact -> points() ).c_str(),
-        tier_name.c_str(), util::to_string( max_allowed ).c_str() );
+        "Player %s has %s artifact points, maximum allowed for %s is %s.\n",
+        p.name(), util::to_string( purchased_points ).c_str(),
+        tier_name.c_str(), util::to_string( max_purchased ).c_str() );
     return false;
   }
-  else if ( p.artifact -> points() < max_allowed && p.level() == 110 )
+  else if ( purchased_points < max_purchased && p.level() == 110 )
   {
     sim.errorf(
-        "Player %s has %s artifact points, maximum allowed (including relics) "
-        "for %s is %s. Add more!\n",
-        p.name(), util::to_string( p.artifact -> points() ).c_str(),
-        tier_name.c_str(), util::to_string( max_allowed ).c_str() );
-    return true;
+        "Player %s has %s artifact points, maximum allowed for %s is %s. Add more!\n",
+        p.name(), util::to_string( purchased_points ).c_str(),
+        tier_name.c_str(), util::to_string( max_purchased ).c_str() );
+  }
+
+  if ( crucible_points > max_crucible )
+  {
+    sim.errorf(
+        "Player %s has %s crucible points, maximum allowed for %s is %s.\n",
+        p.name(), util::to_string( crucible_points ).c_str(),
+        tier_name.c_str(), util::to_string( max_crucible ).c_str() );
+    return false;
+  }
+  else if ( crucible_points < max_crucible )
+  {
+    sim.errorf(
+        "Player %s has %s crucible points, maximum allowed for %s is %s. Add more!\n",
+        p.name(), util::to_string( crucible_points ).c_str(),
+        tier_name.c_str(), util::to_string( max_crucible ).c_str() );
+  }
+
+  for ( auto power : p.artifact -> powers() )
+  {
+    unsigned extra_ranks = p.artifact -> bonus_rank( power -> id )
+                         + p.artifact -> crucible_rank( power -> id );
+
+    if ( extra_ranks > 3 )
+    {
+      sim.errorf(
+          "Player %s has more than 3 extra points in trait %s.\n",
+          p.name(), power -> name );
+      return false;
+    }
   }
 
   return true;

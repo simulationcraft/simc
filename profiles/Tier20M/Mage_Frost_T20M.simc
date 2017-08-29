@@ -5,7 +5,8 @@ race=dwarf
 role=spell
 position=back
 talents=2032021
-artifact=53:0:0:0:0:783:1:784:4:785:4:786:4:787:4:788:4:789:4:790:4:791:4:792:4:793:1:794:1:795:1:796:1:797:1:798:1:1296:1:1373:1:1537:4:1538:1:1539:1:1540:1:1641:1
+artifact=53:0:0:0:0:783:1:784:4:785:4:786:4:787:4:788:4:789:4:790:4:791:4:792:4:793:1:794:1:795:1:796:1:797:1:798:1:1296:1:1373:1:1537:4:1538:1:1539:1:1540:24:1641:1
+crucible=1739:3:1770:1:1774:2:786:2:789:1
 
 # Default consumables
 potion=prolonged_power
@@ -125,12 +126,12 @@ trinket2=terror_from_below,id=147016,ilevel=930
 main_hand=ebonchill,id=128862,gem_id=147095/147079/147095,relic_ilevel=940/940/940
 
 # Gear Summary
-# gear_ilvl=934.67
-# gear_stamina=44490
-# gear_intellect=45035
+# gear_ilvl=935.67
+# gear_stamina=45345
+# gear_intellect=48712
 # gear_crit_rating=10305
-# gear_haste_rating=11698
-# gear_mastery_rating=3518
+# gear_haste_rating=11757
+# gear_mastery_rating=3577
 # gear_versatility_rating=4383
 # gear_armor=2138
 # set_bonus=tier19_2pc=1
