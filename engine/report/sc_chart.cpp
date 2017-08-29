@@ -1112,7 +1112,7 @@ bool chart::generate_raid_aps( highchart::bar_chart_t& bc, const sim_t& s,
 
   if ( s.chart_show_relative_difference && has_diff )
   {
-    n_chars += 5;
+    n_chars += 6;
   }
 
   if ( precision > 0 )
@@ -1228,7 +1228,7 @@ bool chart::generate_raid_aps( highchart::bar_chart_t& bc, const sim_t& s,
     formatter += "  fmt += Highcharts.numberFormat(this.point.y, " +
                  util::to_string( precision ) + ") + ";
     formatter +=
-        "         ' (' + Highcharts.numberFormat(this.point.reldiff, 1) + "
+        "         ' (' + Highcharts.numberFormat(this.point.reldiff, 2) + "
         "'%)';";
     formatter += "}";
     formatter += "fmt += '</span>';";

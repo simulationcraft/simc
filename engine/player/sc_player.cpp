@@ -555,38 +555,16 @@ bool parse_set_bonus( sim_t* sim, const std::string&, const std::string& value )
   return true;
 }
 
+bool parse_artifact_crucible( sim_t* sim, const std::string&, const std::string& value )
+{
+  sim -> active_player -> artifact -> set_crucible_str( value );
+  return true;
+}
+
 bool parse_artifact( sim_t* sim, const std::string&, const std::string& value )
 {
-  sim -> active_player -> artifact -> reset();
-
-  if ( value.size() == 0 )
-  {
-    return false;
-  }
-
-  bool ret = false;
-
-  if ( sim -> disable_artifacts )
-  {
-    ret = true;
-  }
-  else if ( util::str_in_str_ci( value, ".wowdb.com/artifact-calculator#" ) )
-  {
-    sim -> errorf( "Player %s wowdb artifact calculator parsing is no longer supported",
-      sim -> active_player -> name() );
-    ret = true;
-  }
-  else if ( util::str_in_str_ci( value, ":" ) )
-  {
-    ret = sim -> active_player -> parse_artifact_wowhead( value );
-  }
-
-  if ( ret )
-  {
-    sim -> active_player -> artifact -> set_artifact_str( value );
-  }
-
-  return ret;
+  sim -> active_player -> artifact -> set_artifact_str( value );
+  return true;
 }
 
 } // UNNAMED NAMESPACE ======================================================
@@ -1352,6 +1330,17 @@ bool player_t::init_items()
   init_weapon( main_hand_weapon );
   init_weapon( off_hand_weapon );
 
+  // Set the primary artifact slot for this player. It will be the item that has an artifact
+  // identifier on it and it does not have a parent slot as per client data. The parent slot
+  // initialization is performed in player_t::init_items.
+  range::for_each( items, [ this ]( const item_t& i ) {
+    if ( i.parsed.data.id_artifact > 0 && i.parent_slot == SLOT_INVALID )
+    {
+      assert( artifact -> slot() == SLOT_INVALID );
+      artifact -> set_artifact_slot( i.slot );
+    }
+  } );
+
   return true;
 }
 
@@ -1913,24 +1902,27 @@ void player_t::init_talents()
 
 // player_t::init_artifact ==================================================
 
-void player_t::init_artifact()
+bool player_t::init_artifact()
 {
   if ( ! artifact )
   {
-    return;
+    return true;
   }
 
   unsigned artifact_id = dbc.artifact_by_spec( specialization() );
 
   if ( artifact_id == 0 )
   {
-    return;
+    return false;
   }
 
   if ( sim -> debug )
     sim -> out_debug.printf( "Initializing artifact for player (%s)", name() );
 
-  artifact -> initialize();
+  if ( ! artifact -> initialize() )
+  {
+    return false;
+  }
 
   if ( ! artifact_overrides_str.empty() )
   {
@@ -1940,6 +1932,8 @@ void player_t::init_artifact()
       override_artifact( split );
     }
   }
+
+  return true;
 }
 
 // player_t::init_spells ====================================================
@@ -8319,96 +8313,6 @@ bool player_t::parse_talents_wowhead( const std::string& talent_string )
   return true;
 }
 
-// player_t::parse_artifact_wowhead =========================================
-
-bool player_t::parse_artifact_wowhead( const std::string& artifact_string )
-{
-  if ( ! artifact )
-  {
-    return true;
-  }
-
-  auto splits = util::string_split( artifact_string, ":" );
-
-  if ( splits.size() < 5 || ( splits.size() - 5 ) % 2 != 0 )
-  {
-    sim -> errorf( "Player %s invalid artifact format, "
-                   "expected: artifact_id:relic1id:relic2id:relic3id:relic4id[:power_id:rank...]",
-      name() );
-    return false;
-  }
-
-  auto artifact_id = util::to_unsigned( splits[ 0 ] );
-  if ( artifact_id == 0 )
-  {
-    return false;
-  }
-
-  auto spec_artifact_id = dbc.artifact_by_spec( specialization() );
-  if ( specialization() != SPEC_NONE && spec_artifact_id != artifact_id )
-  {
-    sim -> errorf( "Player %s invalid artifact identifier '%u', expected '%u'",
-      name(), artifact_id, spec_artifact_id );
-    return false;
-  }
-
-  std::vector<unsigned> relics( MAX_ARTIFACT_RELIC );
-  for ( size_t i = 1; i < 5; ++i )
-  {
-    relics[ i - 1 ] = util::to_unsigned( splits[ i ] );
-  }
-
-  auto artifact_powers = artifact -> powers();
-  for ( size_t i = 5; i < splits.size() - 1; i += 2 )
-  {
-    auto power_id = util::to_unsigned( splits[ i ] );
-    auto rank = util::to_unsigned( splits[ i + 1 ] );
-    if ( power_id == 0 )
-    {
-      sim -> errorf( "Player %s invalid artifact power '%s', expected a number > 0",
-        name(), splits[ i ].c_str() );
-      return false;
-    }
-
-    if ( rank == 0 || rank > artifact::MAX_TRAIT_RANK )
-    {
-      sim -> errorf( "Player %s invalid artifact rank '%s' for power '%u', expected a number > 0 && <= 255",
-        name(), splits[ i + 1 ].c_str(), power_id );
-      return false;
-    }
-
-    if ( ! artifact -> valid_power( power_id ) )
-    {
-      sim -> errorf( "Player %s invalid power id '%u' for specialization '%s'",
-        name(), power_id, util::specialization_string( specialization() ) );
-      return false;
-    }
-
-    artifact -> add_power( power_id, rank );
-  }
-
-  // Adjust artifact points based on relic traits
-  range::for_each( relics, [ & ]( unsigned item_id ) {
-    if ( item_id == 0 )
-    {
-      return;
-    }
-
-    auto relic_data = dbc.artifact_relic_rank_index( artifact_id, item_id );
-    if ( relic_data.first == 0 || relic_data.second == 0 )
-    {
-      return;
-    }
-
-    artifact -> add_relic( item_id, relic_data.first, relic_data.second );
-    // Wowhead includes the relic ranks in the rank information, so move the bonus points from
-    // purchased ranks to the bonus ranks.
-    artifact -> move_purchased_rank( relic_data.first, relic_data.second );
-  } );
-
-  return true;
-}
-
 bool parse_min_gcd( sim_t* sim,
     const std::string& name,
     const std::string& value )
@@ -8609,6 +8513,66 @@ const spell_data_t* player_t::find_specialization_spell( unsigned spell_id, spec
 }
 
 // player_t::find_artifact_spell ==========================================
+
+artifact_power_t player_t::find_artifact_spell( unsigned power_id ) const
+{
+  if ( ! artifact || ! artifact -> enabled() )
+  {
+    return artifact_power_t();
+  }
+
+  // Find the artifact for the player
+  unsigned artifact_id = dbc.artifact_by_spec( specialization() );
+  if ( artifact_id == 0 )
+  {
+    return artifact_power_t();
+  }
+
+  auto total_ranks = artifact -> power_rank( power_id );
+
+  // User input did not select this power
+  if ( total_ranks == 0 )
+  {
+    return artifact_power_t();
+  }
+
+  const artifact_power_data_t* power_data = dbc.artifact_power( power_id );
+
+  // No power found
+  if ( ! power_data )
+  {
+    return artifact_power_t();
+  }
+
+  // Single rank powers can only be set to 0 or 1
+  if ( power_data -> max_rank == 1 && total_ranks > 1 )
+  {
+    return artifact_power_t();
+  }
+
+  // 1 rank powers use the zeroth (only) entry, multi-rank spells have 0 -> max rank entries
+  std::vector<const artifact_power_rank_t*> ranks = dbc.artifact_power_ranks( power_data -> id );
+  auto rank_index = total_ranks - 1;
+
+  // Rank data missing for the power
+  if ( rank_index + 1 > ranks.size() )
+  {
+    if ( sim -> debug )
+    {
+      sim -> out_debug.printf( "%s too high rank (%u/%u) given for artifact power %s",
+          this -> name(), rank_index + 1, ranks.size(),
+          power_data -> name ? power_data -> name : "Unknown" );
+    }
+
+    return artifact_power_t();
+  }
+
+  // Finally, all checks satisfied, return a real spell
+  return artifact_power_t( total_ranks,
+      find_spell( ranks[ rank_index ] -> id_spell() ),
+      power_data,
+      ranks[ rank_index ] );
+}
 
 artifact_power_t player_t::find_artifact_spell( const std::string& name, bool tokenized ) const
 {
@@ -9881,15 +9845,21 @@ std::string player_t::create_profile( save_e stype )
       }
     }
 
-    std::string artifact_str;
+    std::string artifact_str, crucible_str;
     if ( artifact )
     {
-      artifact_str = artifact -> option_string();
+      artifact_str = artifact -> artifact_option_string();
+      crucible_str = artifact -> crucible_option_string();
     }
 
     if ( ! artifact_str.empty() )
     {
       profile_str += artifact_str + term;
+    }
+
+    if ( ! crucible_str.empty() )
+    {
+      profile_str += crucible_str + term;
     }
   }
 
@@ -10090,7 +10060,7 @@ void player_t::copy_from( player_t* source )
   professions_str = source -> professions_str;
   source -> recreate_talent_str( TALENT_FORMAT_UNCHANGED );
   parse_talent_url( sim, "talents", source -> talents_str );
-  artifact = artifact::player_artifact_data_t::create( source -> artifact );
+  artifact = artifact::player_artifact_data_t::create( this, source -> artifact );
   talent_overrides_str = source -> talent_overrides_str;
   artifact_overrides_str = source -> artifact_overrides_str;
   action_list_str = source -> action_list_str;
@@ -10135,6 +10105,7 @@ void player_t::create_options()
     add_option( opt_func( "talents", parse_talent_url ) );
     add_option( opt_func( "talent_override", parse_talent_override ) );
     add_option( opt_func( "artifact", parse_artifact ) );
+    add_option( opt_func( "crucible", parse_artifact_crucible ) );
     add_option( opt_func( "artifact_override", parse_artifact_override ) );
     add_option( opt_string( "race", race_str ) );
     add_option( opt_func( "timeofday", parse_timeofday ) );

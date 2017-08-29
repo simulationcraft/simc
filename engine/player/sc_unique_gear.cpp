@@ -3728,6 +3728,30 @@ void unique_gear::initialize_special_effect_2( special_effect_t* effect )
 
 void unique_gear::initialize_artifact_powers( player_t* player )
 {
+  if ( ! player -> artifact || ! player -> artifact -> enabled() )
+  {
+    return;
+  }
+
+  auto powers = player -> artifact -> powers();
+  range::for_each( powers, [ player ]( const artifact_power_data_t* power ) {
+    auto power_data = player -> find_artifact_spell( power -> id );
+    if ( power_data.rank() == 0 )
+    {
+      return;
+    }
+
+    special_effect_t effect( player );
+    effect.source = SPECIAL_EFFECT_SOURCE_ARTIFACT;
+    auto ret = unique_gear::initialize_special_effect( effect, power_data.data().id() );
+    // Init failure or could not find a custom callback to initialize the artifact trait with
+    if ( ! ret || ! effect.is_custom() )
+    {
+      return;
+    }
+
+    player -> special_effects.push_back( new special_effect_t( effect ) );
+  } );
 }
 
 // ==========================================================================

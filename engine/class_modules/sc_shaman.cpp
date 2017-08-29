@@ -6000,6 +6000,12 @@ struct liquid_magma_globule_t : public spell_t
     aoe = -1;
     background = may_crit = true;
     callbacks = false;
+
+    if ( p -> o() -> spec.elemental_fury -> ok() )
+    {
+      crit_bonus_multiplier *= 1.0 + p -> o() -> spec.elemental_fury -> effectN( 1 ).percent() +
+                                     p -> o() -> artifact.elemental_destabilization.percent();
+    }
   }
 };
 

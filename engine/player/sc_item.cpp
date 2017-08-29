@@ -496,7 +496,7 @@ unsigned item_t::item_level() const
   if ( parsed.item_level > 0 )
     ilvl = parsed.item_level;
   else
-    ilvl = parsed.data.level + upgrade_item_level();
+    ilvl = parsed.data.level + upgrade_item_level() + player -> artifact -> ilevel_increase();
 
   if ( sim -> scale_to_itemlevel > 0 && sim -> scale_itemlevel_down_only )
     return std::min( (unsigned) sim -> scale_to_itemlevel, ilvl );
