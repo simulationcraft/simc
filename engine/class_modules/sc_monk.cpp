@@ -1998,8 +1998,7 @@ public:
     main_hand_weapon.damage = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
     main_hand_weapon.swing_time = timespan_t::from_seconds( 1.0 );
     owner_coeff.ap_from_ap = 4.5;
-    if ( maybe_ptr( dbc.ptr ) )
-      owner_coeff.ap_from_ap *= 1 + o() -> spec.windwalker_monk -> effectN( 1 ).percent();
+    owner_coeff.ap_from_ap *= 1 + o() -> spec.windwalker_monk -> effectN( 1 ).percent();
   }
 
   monk_t* o()
@@ -2225,9 +2224,9 @@ public:
     windwalker_damage_increase( ab::data().affected_by( player -> spec.windwalker_monk -> effectN( 1 ) ) ),
     windwalker_damage_increase_two( ab::data().affected_by( player -> spec.windwalker_monk -> effectN( 6 ) ) ),
     windwalker_damage_increase_dot( ab::data().affected_by( player -> spec.windwalker_monk -> effectN( 2 ) ) ),
-    windwalker_damage_increase_dot_two( maybe_ptr( player -> dbc.ptr ) ? ab::data().affected_by( player -> spec.windwalker_monk -> effectN( 3 ) ) : false ),
-    windwalker_damage_increase_dot_three( maybe_ptr( player -> dbc.ptr ) ? ab::data().affected_by( player -> spec.windwalker_monk -> effectN( 7 ) ) : false ),
-    windwalker_damage_increase_dot_four( maybe_ptr( player -> dbc.ptr ) ? ab::data().affected_by( player -> spec.windwalker_monk -> effectN( 8 ) ) : false )
+    windwalker_damage_increase_dot_two( ab::data().affected_by( player -> spec.windwalker_monk -> effectN( 3 ) ) ),
+    windwalker_damage_increase_dot_three( ab::data().affected_by( player -> spec.windwalker_monk -> effectN( 7 ) ) ),
+    windwalker_damage_increase_dot_four( ab::data().affected_by( player -> spec.windwalker_monk -> effectN( 8 ) ) )
   {
     ab::may_crit = true;
     range::fill( _resource_by_stance, RESOURCE_MAX );
@@ -2262,8 +2261,6 @@ public:
         if ( windwalker_damage_increase )
         {
           ab::base_dd_multiplier *= 1.0 + player -> spec.windwalker_monk -> effectN( 1 ).percent();
-          if ( !maybe_ptr( player -> dbc.ptr ) )
-            ab::base_td_multiplier *= 1.0 + player -> spec.windwalker_monk -> effectN( 1 ).percent();
         }
         if ( windwalker_damage_increase_two )
           ab::base_dd_multiplier *= 1.0 + player -> spec.windwalker_monk -> effectN( 6 ).percent();
@@ -2288,8 +2285,8 @@ public:
         // Hasted Cooldown
         ab::cooldown -> hasted = ab::data().affected_by( player -> passives.aura_monk -> effectN( 1 ) );
         // Cooldown reduction
-        if ( ab::data().affected_by( player -> spec.windwalker_monk -> effectN( maybe_ptr( player -> dbc.ptr ) ? 4 : 3 ) ) )
-          ab::cooldown -> duration *= 1 + player -> spec.windwalker_monk -> effectN( maybe_ptr( player -> dbc.ptr ) ? 4 : 3 ).percent(); // saved as -100
+        if ( ab::data().affected_by( player -> spec.windwalker_monk -> effectN( 4 ) ) )
+          ab::cooldown -> duration *= 1 + player -> spec.windwalker_monk -> effectN( 4 ).percent(); // saved as -100
         break;
       }
       default: break;
@@ -2923,7 +2920,7 @@ struct tiger_palm_t: public monk_melee_attack_t
       base_costs[RESOURCE_ENERGY] *= 1 + p -> spec.stagger -> effectN( 15 ).percent(); // -50% for Brewmasters
 
     if ( p -> specialization() == MONK_WINDWALKER )
-      energize_amount = p -> spec.windwalker_monk -> effectN( maybe_ptr( p -> dbc.ptr ) ? 5 : 4 ).base_value();
+      energize_amount = p -> spec.windwalker_monk -> effectN( 5 ).base_value();
     else
       energize_type = ENERGIZE_NONE;
 
@@ -3769,7 +3766,7 @@ struct rushing_jade_wind_t : public monk_melee_attack_t
     cooldown -> duration = p -> talent.rushing_jade_wind -> cooldown();
     cooldown -> hasted = true;
 
-    dot_duration *= 1 + p -> spec.brewmaster_monk -> effectN( maybe_ptr( p -> dbc.ptr ) ? 12 : 11 ).percent();
+    dot_duration *= 1 + p -> spec.brewmaster_monk -> effectN( 12 ).percent();
     dot_behavior = DOT_REFRESH; // Spell uses Pandemic Mechanics.
 
     tick_action = new tick_action_t( "rushing_jade_wind_tick", p, p -> talent.rushing_jade_wind -> effectN( 1 ).trigger() );
@@ -3794,21 +3791,13 @@ struct rushing_jade_wind_t : public monk_melee_attack_t
 
     if ( p() -> buff.combo_strikes -> up() )
       pm *= 1 + p() -> cache.mastery_value();
-    
-    if ( maybe_ptr( p() -> dbc.ptr ) )
-    {
-      pm *= 1 + p() -> spec.windwalker_monk -> effectN( 2 ).percent();
 
-      // Remove if statement once Blizz fixes the spell effect to point to the correct affected spell id
-      if ( p() -> passives.rushing_jade_wind_tick -> affected_by( p() -> spec.windwalker_monk-> effectN( 7 ) ) )
-        pm *= 1 + p() -> spec.windwalker_monk -> effectN( 7 ).percent();
-    }
-    else
-    {
-      // Effect is pointing to the wrong spell id
-      if ( p() -> passives.rushing_jade_wind_tick -> affected_by( p() -> spec.windwalker_monk-> effectN( 1 ) ) )
-        pm *= 1 + p() -> spec.windwalker_monk -> effectN( 1 ).percent();
-    }
+    pm *= 1 + p() -> spec.windwalker_monk -> effectN( 2 ).percent();
+
+    // Remove if statement once Blizz fixes the spell effect to point to the correct affected spell id
+    if ( p() -> passives.rushing_jade_wind_tick -> affected_by( p() -> spec.windwalker_monk-> effectN( 7 ) ) )
+      pm *= 1 + p() -> spec.windwalker_monk -> effectN( 7 ).percent();
+
 
     pm *= 1 + p() -> spec.brewmaster_monk -> effectN( 1 ).percent();
 
@@ -3909,10 +3898,7 @@ struct spinning_crane_kick_t: public monk_melee_attack_t
 
     pm *= 1 + ( mark_of_the_crane_counter() * p() -> passives.cyclone_strikes -> effectN( 1 ).percent() );
 
-    if ( maybe_ptr( p() -> dbc.ptr ) )
-      pm *= 1 + p() -> spec.windwalker_monk -> effectN( 2 ).percent();
-    else
-      pm *= 1 + p() -> spec.windwalker_monk -> effectN( 1 ).percent();
+    pm *= 1 + p() -> spec.windwalker_monk -> effectN( 2 ).percent();
 
     return pm;
   }
@@ -4812,8 +4798,7 @@ struct touch_of_death_t: public monk_spell_t
 
     amount *= p() -> spec.touch_of_death -> effectN( 2 ).percent(); // 50% HP
 
-    if ( maybe_ptr( p() -> dbc.ptr ) )
-      amount *= 1 + p() -> cache.damage_versatility();
+    amount *= 1 + p() -> cache.damage_versatility();
  
     if ( p() -> legendary.hidden_masters_forbidden_touch )
       amount *= 1 + p() -> legendary.hidden_masters_forbidden_touch -> effectN( 2 ).percent();
@@ -4906,9 +4891,7 @@ struct touch_of_karma_dot_t: public residual_action::residual_periodic_action_t 
     monk_melee_attack_t::init();
     // disable the snapshot_flags for all multipliers
     snapshot_flags = update_flags = 0;
-
-    if ( maybe_ptr( p() -> dbc.ptr ) )
-      snapshot_flags |= STATE_VERSATILITY;
+    snapshot_flags |= STATE_VERSATILITY;
   }
 };
 

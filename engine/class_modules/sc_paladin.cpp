@@ -739,7 +739,7 @@ namespace buffs {
       // TODO(mserrano): fix this when Blizzard turns the spelldata back to sane
       //  values
       damage_modifier = data().effectN( 1 ).percent() / 10.0;
-      haste_bonus = data().effectN( player -> dbc.ptr ? 3 : 2 ).percent() / 10.0;
+      haste_bonus = data().effectN( 3 ).percent() / 10.0;
       healing_modifier = 0;
 
       paladin_t* paladin = static_cast<paladin_t*>( player );
@@ -1582,7 +1582,7 @@ struct consecration_tick_t: public paladin_spell_t {
     ground_aoe = true;
     if ( p -> specialization() == PALADIN_RETRIBUTION )
     {
-      base_multiplier *= 1.0 + p -> passives.retribution_paladin -> effectN( p -> dbc.ptr ? 9 : 8 ).percent();
+      base_multiplier *= 1.0 + p -> passives.retribution_paladin -> effectN( 9 ).percent();
     }
 
     if (p->specialization() == PALADIN_PROTECTION)
@@ -3253,10 +3253,7 @@ struct crusader_strike_t : public holy_power_generator_t
 
     if ( p -> specialization() == PALADIN_RETRIBUTION )
     {
-      if ( p -> dbc.ptr )
-      {
-        base_multiplier *= 1.0 + p -> passives.retribution_paladin -> effectN( 8 ).percent();
-      }
+      base_multiplier *= 1.0 + p -> passives.retribution_paladin -> effectN( 8 ).percent();
     }
 
     background = ( p -> talents.zeal -> ok() );
@@ -5950,14 +5947,7 @@ double paladin_t::composite_player_multiplier( school_e school ) const
     double aw_multiplier = 1.0 + buffs.crusade -> get_damage_mod();
     if ( chain_of_thrayn )
     {
-      if ( dbc.ptr )
-      {
-        aw_multiplier += spells.chain_of_thrayn -> effectN( 4 ).percent();
-      }
-      else
-      {
-        aw_multiplier *= 1.0 + spells.chain_of_thrayn -> effectN( 4 ).percent();
-      }
+      aw_multiplier += spells.chain_of_thrayn -> effectN( 4 ).percent();
     }
     m *= aw_multiplier;
   }

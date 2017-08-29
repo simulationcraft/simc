@@ -614,11 +614,11 @@ public:
     if ( ab::data().affected_by( p() -> specs.beast_mastery_hunter -> effectN( 2 ) ) )
       ab::base_td_multiplier *= 1.0 + p() -> specs.beast_mastery_hunter -> effectN( 2 ).percent();
 
-    if ( ab::data().affected_by( p() -> specs.marksmanship_hunter -> effectN( maybe_ptr( p() -> dbc.ptr ) ? 4 : 3 ) ) )
-      ab::base_dd_multiplier *= 1.0 + p() -> specs.marksmanship_hunter -> effectN( maybe_ptr( p() -> dbc.ptr ) ? 4 : 3 ).percent();
+    if ( ab::data().affected_by( p() -> specs.marksmanship_hunter -> effectN( 4 ) ) )
+      ab::base_dd_multiplier *= 1.0 + p() -> specs.marksmanship_hunter -> effectN( 4 ).percent();
 
-    if ( ab::data().affected_by( p() -> specs.marksmanship_hunter -> effectN( maybe_ptr( p() -> dbc.ptr ) ? 5 : 4 ) ) )
-      ab::base_td_multiplier *= 1.0 + p() -> specs.marksmanship_hunter -> effectN( maybe_ptr( p() -> dbc.ptr ) ? 5 : 4 ).percent();
+    if ( ab::data().affected_by( p() -> specs.marksmanship_hunter -> effectN( 5 ) ) )
+      ab::base_td_multiplier *= 1.0 + p() -> specs.marksmanship_hunter -> effectN( 5 ).percent();
 
     if ( ab::data().affected_by( p() -> specs.survival_hunter -> effectN( 1 ) ) )
       ab::base_dd_multiplier *= 1.0 + p() -> specs.survival_hunter -> effectN( 1 ).percent();
