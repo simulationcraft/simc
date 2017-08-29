@@ -5,7 +5,8 @@ race=troll
 role=spell
 position=back
 talents=1203012
-artifact=38:0:0:0:0:803:1:804:4:805:4:806:4:807:4:808:4:809:4:810:4:811:4:812:4:813:1:814:1:815:1:816:1:817:1:818:1:1355:1:1392:1:1609:4:1610:1:1611:1:1612:1:1713:1
+artifact=38:0:0:0:0:803:1:804:4:805:4:806:4:807:4:808:4:809:4:810:4:811:4:812:4:813:1:814:1:815:1:816:1:817:1:818:1:1355:1:1392:1:1609:4:1610:1:1611:1:1612:24:1713:1
+crucible=1739:3:1770:3:805:3
 
 # This default action priority list is automatically created based on your character.
 # It is a attempt to provide you with a action list that is both simple and practicable,
@@ -86,10 +87,10 @@ finger1=yathaes_thumb_ring,id=147021,ilevel=930,enchant_id=5428
 finger2=seal_of_the_second_duumvirate,id=147195,ilevel=940,enchant_id=5428
 trinket1=tarnished_sentinel_medallion,id=147017,ilevel=930
 trinket2=tome_of_unraveling_sanity,id=147019,ilevel=940
-main_hand=scepter_of_sargeras,id=128941,ilevel=957,gem_id=147087/147090/147087
+main_hand=scepter_of_sargeras,id=128941,gem_id=147087/147090/147087,relic_id=1522/1512/1522
 
 # Gear Summary
-# gear_ilvl=938.47
+# gear_ilvl=939.47
 # gear_stamina=46630
 # gear_intellect=49413
 # gear_crit_rating=7369
