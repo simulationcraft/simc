@@ -448,7 +448,7 @@ public:
     buff_t* remorseless_winter;
     buff_t* frozen_soul;
     buff_t* hungering_rune_weapon;
-		buff_t* hungering_rune_weapon_haste;
+		haste_buff_t* hungering_rune_weapon_haste;
     buff_t* t20_2pc_unholy;
     buff_t* t20_4pc_frost;
 
@@ -591,16 +591,16 @@ public:
     // Tier 1
     const spell_data_t* shattering_strikes;
     const spell_data_t* icy_talons;
-    const spell_data_t* murderous_efficiency;  // Switches place with Frozen Pulse in 7.3
+    const spell_data_t* runic_attenuation;
 
     // Tier 2
     const spell_data_t* freezing_fog;
-    const spell_data_t* frozen_pulse;  // Switches place with Runic Attenuation in 7.3
+    const spell_data_t* murderous_efficiency;
     const spell_data_t* horn_of_winter;
 
     // Tier 3
     const spell_data_t* icecap;
-    const spell_data_t* hungering_rune_weapon;  // Switches place with Glacial Advance in 7.3
+    const spell_data_t* glacial_advance;
     const spell_data_t* avalanche;
     
     // Tier 4 
@@ -608,13 +608,13 @@ public:
 
     // Tier 6
     const spell_data_t* frostscythe;
-    const spell_data_t* runic_attenuation; // Switches place with Murderous Efficiency in 7.3
+    const spell_data_t* frozen_pulse;
     const spell_data_t* gathering_storm;
 
     // Tier 7
     const spell_data_t* obliteration;
     const spell_data_t* breath_of_sindragosa;
-    const spell_data_t* glacial_advance;  // Switches place with Hungering Rune Weapon in 7.3
+    const spell_data_t* hungering_rune_weapon;
 
     // Unholy
 
@@ -4179,19 +4179,14 @@ struct dark_arbiter_t : public death_knight_spell_t
     // on quite a bit of data. In any case, the mean delay is quite significant (on average over 2.5
     // seconds).
     
-    // On 7.3 PTR the duration is set to 20s after the start of the first cast to make up to the confusion time
-    // On Live it's 20s after the pet summon
+    // The duration is set to 20s after the start of the first cast to make up to the confusion time
 
     auto dist = static_cast<int>( rng().range( 0, 2 ) );
     auto base = dist == 0 ? 2.25 : 3.25;
 
     timespan_t confusion_time = timespan_t::from_seconds( rng().gauss( base, 0.25 ) );
-    timespan_t duration_increase = timespan_t::from_seconds( 0 );
     
-    if ( maybe_ptr ( p() -> dbc.ptr ) )
-      duration_increase = confusion_time;
-
-    p() -> pets.dark_arbiter -> summon( data().duration() + duration_increase );
+    p() -> pets.dark_arbiter -> summon( data().duration() + confusion_time );
     p() -> pets.dark_arbiter -> set_confusion( confusion_time );
     
   }
@@ -5295,15 +5290,11 @@ struct howling_blast_t : public death_knight_spell_t
   {
     death_knight_spell_t::execute();
 
-    // 7.3 PTR : Howling Blast now triggers Killing Machine during Obliteration
-    if ( maybe_ptr( p() -> dbc.ptr ) ) 
+    if ( p() -> buffs.obliteration -> up() )
     {
-      if ( p() -> buffs.obliteration -> up())
-      {
-        p() -> buffs.killing_machine -> execute();
-      }
+      p() -> buffs.killing_machine -> execute();
     }
-
+    
     p() -> buffs.rime -> decrement();
   }
 
@@ -5568,11 +5559,8 @@ struct obliterate_strike_t : public death_knight_melee_attack_t
         base_multiplier *= ( 1.0 + p-> find_spell( 251873 ) -> effectN( 2 ).percent() );
       }
 
-    // 7.3 : Koltira's newfound will also increase Obliterate damage by 10%
-    if ( maybe_ptr( p -> dbc.ptr ) ) 
-    {
-      base_multiplier *= 1.0 + p -> legendary.koltiras_newfound_will -> effectN( 2 ).percent();
-    }
+    base_multiplier *= 1.0 + p -> legendary.koltiras_newfound_will -> effectN( 2 ).percent();
+    
   }
 
   double composite_crit_chance() const override
@@ -7391,6 +7379,8 @@ double death_knight_t::composite_melee_haste() const
   haste *= 1.0 / ( 1.0 + buffs.sephuzs_secret -> check_value() );
 
   haste *= 1.0 / ( 1.0 + buffs.soul_reaper -> stack_value() );
+	
+	haste *= 1.0 / ( 1.0 + buffs.hungering_rune_weapon_haste -> check_value() );    
 
   if ( buffs.bone_shield -> up() )
   {
@@ -7407,13 +7397,6 @@ double death_knight_t::composite_melee_haste() const
     haste *= 1.0 / ( 1.0 + legendary.sephuzs_secret -> effectN( 3 ).percent() );
   }
   
-  // PTR 7.3 : Hungering Rune Weapon now also increase haste by 20%
-  if ( dbc.ptr )
-  {
-    if ( buffs.hungering_rune_weapon_haste -> up() )
-      haste *= 1.0 / ( 1.0 + buffs.hungering_rune_weapon_haste -> check_value() );    
-  }
-    
   return haste;
 }
 
@@ -7426,6 +7409,8 @@ double death_knight_t::composite_spell_haste() const
   haste *= 1.0 / ( 1.0 + buffs.sephuzs_secret -> check_value() );
 
   haste *= 1.0 / ( 1.0 + buffs.soul_reaper -> stack_value() );
+	
+	haste *= 1.0 / ( 1.0 + buffs.hungering_rune_weapon_haste -> check_value() );
 
   if ( buffs.bone_shield -> up() )
   {
@@ -7437,14 +7422,7 @@ double death_knight_t::composite_spell_haste() const
     haste *= 1.0 / ( 1.0 + legendary.sephuzs_secret -> effectN( 3 ).percent() );
   }
 
-  // PTR 7.3 : Hungering Rune Weapon now also increase haste by 20%, replace with actual spell data once patch hits live
-  if ( dbc.ptr )
-  {
-    if ( buffs.hungering_rune_weapon_haste -> up() )
-      haste *= 1.0 / ( 1.0 + buffs.hungering_rune_weapon_haste -> check_value() );     
-  }
-  
-  return haste;
+	return haste;
 }
 
 // death_knight_t::init_rng =================================================
@@ -7525,14 +7503,14 @@ void death_knight_t::init_spells()
   // Tier 1
   talent.shattering_strikes    = find_talent_spell( "Shattering Strikes" );
   talent.icy_talons            = find_talent_spell( "Icy Talons" );
-  talent.murderous_efficiency  = find_talent_spell( "Murderous Efficiency" ); // Becomes Runic Attenuation in 7.3 PTR
+  talent.runic_attenuation     = find_talent_spell( "Runic Attenuation" );
   // Tier 2
   talent.freezing_fog          = find_talent_spell( "Freezing Fog" );
-  talent.frozen_pulse          = find_talent_spell( "Frozen Pulse" ); // Becomes Murderous Efficiency in 7.3 PTR
+	talent.murderous_efficiency  = find_talent_spell( "Murderous Efficiency" );
   talent.horn_of_winter        = find_talent_spell( "Horn of Winter" );
   // Tier 3
   talent.icecap                = find_talent_spell( "Icecap" );
-  talent.hungering_rune_weapon = find_talent_spell( "Hungering Rune Weapon" ); // Becomes Glacial Advance in 7.3 PTR
+  talent.glacial_advance       = find_talent_spell( "Glacial Advance" ); 
   talent.avalanche             = find_talent_spell( "Avalanche" );
   
   // Tier 4 : New talent in 7.3  
@@ -7540,12 +7518,13 @@ void death_knight_t::init_spells()
     
   // Tier 6
   talent.frostscythe           = find_talent_spell( "Frostscythe" );
-  talent.runic_attenuation     = find_talent_spell( "Runic Attenuation" ); // Becomes Frozen Pulse in 7.3 PTR
+	talent.frozen_pulse          = find_talent_spell( "Frozen Pulse" );
   talent.gathering_storm       = find_talent_spell( "Gathering Storm" );
   // Tier 7
   talent.obliteration          = find_talent_spell( "Obliteration" );
   talent.breath_of_sindragosa  = find_talent_spell( "Breath of Sindragosa" );
-  talent.glacial_advance       = find_talent_spell( "Glacial Advance" ); // Becomes Hungering Rune Weapon in 7.3 PTR
+  talent.hungering_rune_weapon = find_talent_spell( "Hungering Rune Weapon" );
+	
 
   // Unholy Talents
   // Tier 1
@@ -8270,7 +8249,7 @@ void death_knight_t::create_buffs()
 
 	buffs.hungering_rune_weapon = new hungering_rune_weapon_buff_t( this );
   buffs.hungering_rune_weapon_haste = haste_buff_creator_t( this, "haste", talent.hungering_rune_weapon )
-	  .default_value( dbc.ptr ? talent.hungering_rune_weapon -> effectN( 3 ).percent() : 0 )
+	  .default_value( talent.hungering_rune_weapon -> effectN( 3 ).percent() )
 	  .trigger_spell( talent.hungering_rune_weapon );
   
   buffs.t20_2pc_unholy = buff_creator_t( this, "master_of_ghouls" )
