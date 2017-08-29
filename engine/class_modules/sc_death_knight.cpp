@@ -7408,8 +7408,8 @@ double death_knight_t::composite_melee_haste() const
   // PTR 7.3 : Hungering Rune Weapon now also increase haste by 20%
   if ( dbc.ptr )
   {
-    if (buffs.hungering_rune_weapon -> up() )
-      haste *= 1.0 / ( 1.0 + talent.hungering_rune_weapon -> effectN( 3 ).percent() );    
+    if ( buffs.hungering_rune_weapon -> up() )
+      haste *= 1.0 / ( 1.0 + buffs.hungering_rune_weapon -> check_value() );    
   }
     
   return haste;
@@ -7435,11 +7435,11 @@ double death_knight_t::composite_spell_haste() const
     haste *= 1.0 / ( 1.0 + legendary.sephuzs_secret -> effectN( 3 ).percent() );
   }
 
-  // PTR 7.3 : Hungering Rune Weapon now also increase haste by 20%
+  // PTR 7.3 : Hungering Rune Weapon now also increase haste by 20%, replace with actual spell data once patch hits live
   if ( dbc.ptr )
   {
-    if (buffs.hungering_rune_weapon -> up() )
-      haste *= 1.0 / ( 1.0 + talent.hungering_rune_weapon -> effectN( 3 ).percent() );    
+    if ( buffs.hungering_rune_weapon -> up() )
+      haste *= 1.0 / ( 1.0 + buffs.hungering_rune_weapon -> check_value() );     
   }
   
   return haste;
@@ -8222,7 +8222,7 @@ void death_knight_t::create_buffs()
     .add_invalidate( CACHE_ATTACK_SPEED )
     .trigger_spell( talent.unholy_frenzy )
     .default_value( 1.0 / ( 1.0 + find_spell( 207290 ) -> effectN( 1 ).percent() ) )
-    // Unholy Frenzy duration is hard capped at 10 seconds
+    // Unholy Frenzy duration is hard capped at 25 seconds
     .refresh_duration_callback( []( const buff_t* b, const timespan_t& duration ) {
       timespan_t total_duration = b -> remains() + duration;
       if ( total_duration > timespan_t::from_seconds( 25 ) )
@@ -8266,7 +8266,10 @@ void death_knight_t::create_buffs()
   // Must be created after Gathering Storms buff (above) to get correct linkage
   buffs.remorseless_winter = new remorseless_winter_buff_t( this );
 
-  buffs.hungering_rune_weapon = new hungering_rune_weapon_buff_t( this );
+ buffs.hungering_rune_weapon = haste_buff_creator_t( this, "hungering rune weapon", talent.hungering_rune_weapon )
+	  .default_value( dbc.ptr ? talent.hungering_rune_weapon -> effectN( 3 ).percent() : 0 )
+	  .trigger_spell( talent.hungering_rune_weapon );
+  
   buffs.t20_2pc_unholy = buff_creator_t( this, "master_of_ghouls" )
     .spell( find_spell( 246995 ) )
     .trigger_spell( sets -> set( DEATH_KNIGHT_UNHOLY, T20, B2 ) )
