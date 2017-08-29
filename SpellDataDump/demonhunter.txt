@@ -1,4 +1,4 @@
-SimulationCraft 725-02 for World of Warcraft 7.2.5 Live (wow build 24461)
+SimulationCraft 725-02 for World of Warcraft 7.3.0 Live (wow build 24920)
 
 Name             : Dual Wield (Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
@@ -51,98 +51,6 @@ Effects          :
 Description      : Interrupts casting for $d.
 Tooltip          : Interrupted.
 
-Name             : Deathblow X11 Goggles (id=41317) 
-Class            : Rogue, Monk, Druid, Demon Hunter
-School           : Physical
-Cast Time        : 15 seconds
-Attributes       : .....x.. x....... x....... ........   ........ ..x..... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Tradeskill ability (5)
-Effects          :
-#1 (id=32742)    : Create Item (24)
-                   Base Value: 1 | Scaled Value: 1 | Target: Self (1)
-
-Name             : Quad Deathblow X44 Goggles (id=46116) 
-Class            : Rogue, Monk, Druid, Demon Hunter
-School           : Physical
-Cast Time        : 15 seconds
-Attributes       : .....x.. x....... x....... ........   ........ ..x..... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Tradeskill ability (5)
-Effects          :
-#1 (id=38209)    : Create Item (24)
-                   Base Value: 1 | Scaled Value: 1 | Target: Self (1)
-
-Name             : Weakness Spectralizers (id=56481) 
-Class            : Rogue, Monk, Druid, Demon Hunter
-School           : Physical
-Cast Time        : 15 seconds
-Attributes       : .....x.. ........ x....... ........   ........ ..x..... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Tradeskill ability (5)
-Effects          :
-#1 (id=49563)    : Create Item (24)
-                   Base Value: 1 | Scaled Value: 1 | Target: Self (1)
-
-Name             : Mechanized Snow Goggles (id=61481) 
-Class            : Rogue, Monk, Druid, Demon Hunter
-School           : Physical
-Cast Time        : 2 seconds
-Attributes       : .....x.. ........ x....... ........   ........ ..x..... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Tradeskill ability (5)
-Effects          :
-#1 (id=55365)    : Create Item (24)
-                   Base Value: 1 | Scaled Value: 1 | Target: Self (1)
-
-Name             : Agile Bio-Optic Killshades (id=81722) 
-Class            : Rogue, Monk, Druid, Demon Hunter
-School           : Physical
-Cast Time        : 5 seconds
-Mechanic         : Unknown(245)
-Attributes       : .....x.. ........ x....... ........   ........ ..x..... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Tradeskill ability (5)
-Effects          :
-#1 (id=81208)    : Create Item (24)
-                   Base Value: 1 | Scaled Value: 1 | Target: Self (1)
-
-Name             : Agile Retinal Armor (id=127118) 
-Class            : Rogue, Monk, Druid, Demon Hunter
-School           : Physical
-Cast Time        : 5 seconds
-Mechanic         : Unknown(245)
-Attributes       : .....x.. ........ x....... ........   ........ ..x..... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Tradeskill ability (5)
-Effects          :
-#1 (id=161558)   : Create Item (24)
-                   Base Value: 1 | Scaled Value: 1 | Target: Self (1)
-
 Name             : Glide (id=131347) [Spell Family (107)] 
 Class            : Demon Hunter
 School           : Physical
@@ -180,7 +88,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
 #2 (id=227731)   : Weapon Damage% (31)
                    Base Value: 380 | Scaled Value: 3.8 | Target: Enemy (6)
-                   Hotfixed: Base Value (260 -> 380), Chain Multiplier (0 -> 1)
 #3 (id=287985)   : Energize Power (30)
                    Base Value: 19 | Scaled Value: 20 - 30 | Value Range: 11 | Misc Value: fury | Target: Self (1)
 Description      : Quickly attack for $sw2 Physical damage.
@@ -194,6 +101,7 @@ Duration         : 30 seconds
 Proc Flags       : ..x.x... x...x... x....... ........ 
                  : White Melee, Yellow Melee, Yellow Ranged, AOE Hostile Spell, Hostile Spell
 Affecting spells : Unleashed Demons (201460 effect#1), Soul Rending (204909 effect#1)
+Triggered by     : Metamorphosis (191427)
 Attributes       : ........ ........ ........ .......x   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -311,7 +219,7 @@ Duration         : 6 seconds
 Cooldown         : 15 seconds
 Category         : 1676
 Category Cooldown: 15 seconds
-Affecting spells : Metamorphosis (162264 effect#7), Aura of Pain (207347 effect#1), Agonizing Flames (207548 effect#1), Havoc Demon Hunter (212612 effect#1), Vengeance Demon Hunter (212613 effect#1), Blade Turning (247253 effect#3)
+Affecting spells : Metamorphosis (162264 effect#7), Aura of Pain (207347 effect#1), Agonizing Flames (207548 effect#1), Havoc Demon Hunter (212612 effect#1), Vengeance Demon Hunter (212613 effect#3), Blade Turning (247253 effect#3)
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -475,7 +383,7 @@ GCD              : 1.5 seconds
 Velocity         : 50 yards/sec
 Charges          : 1 (10 seconds cooldown)
 Category         : 1612: Havoc Demon Hunter (212612 effect#4)
-Affecting spells : Metamorphosis (162264 effect#7), Sharpened Glaives (201457 effect#1), Mo'arg Bionic Stabilizers (208826 effect#1), Havoc Demon Hunter (212612 effect#1), Vengeance Demon Hunter (212613 effect#1), 
+Affecting spells : Metamorphosis (162264 effect#7), Sharpened Glaives (201457 effect#1), Mo'arg Bionic Stabilizers (208826 effect#1), Havoc Demon Hunter (212612 effect#1), Vengeance Demon Hunter (212613 effect#3), 
 Attributes       : ....x... ........ ..x..x.. ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ..x..... ........   ........ .......x ........ ........ 
@@ -504,7 +412,6 @@ Effects          :
 #1 (id=268563)   : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.50000 | Target: Self (1)
                    Affected Spells: Chaos Strike (162794), Chaos Nova (179057), Fel Rush (192611), Eye Beam (198030), Chaos Strike (199547), Metamorphosis (200166), Annihilation (201427), Annihilation (201428), Fury of the Illidari (201628), Fury of the Illidari (201789), Inner Demons (202388), Anguish (202446), Fel Barrage (211052), Chaos Blades (211796), Chaos Blades (211797), Fel Eruption (211881), Chaos Strike (222031), Fel Eruption (225102), Annihilation (227518), Metamorphosis (247121)
-                   Hotfixed: SP Coefficient (1.4 -> 1.5), Chain Multiplier (0 -> 1)
 #2 (id=294810)   : Apply Aura (6) | Unknown(129)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Target: Self (1)
 Description      : Increases your Chaos damage by $s1% and your movement speed by $s2%.
@@ -699,7 +606,7 @@ Cooldown         : 0.8 seconds
 Charges          : 2 (20 seconds cooldown)
 Category         : 1553
 Category Cooldown: 0.8 seconds
-Affecting spells : Infernal Force (207375 effect#1), Abyssal Strike (207550 effect#1), Vengeance Demon Hunter (212613 effect#1)
+Affecting spells : Infernal Force (207375 effect#1), Abyssal Strike (207550 effect#1), 
 Attributes       : ....x... x....... ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -708,14 +615,16 @@ Attributes       : ....x... x....... ..x..... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=276571)   : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0 | Radius: 3 - 4 yards | Target: Unknown(87)
+                   Base Value: 0 | Scaled Value: 0 | Radius: 3 - 8 yards | Target: Unknown(87)
+#2 (id=476592)   : Unknown(254)
+                   Base Value: 5 | Scaled Value: 5 | Misc Value: 2 | Target: Unknown(87)
 Description      : Leap through the air toward a targeted location, dealing $189112s1 Fire damage to all enemies within $189112a1 yards.
 
 Name             : Infernal Strike (id=189112) [Spell Family (107)] 
 Class            : Demon Hunter
 School           : Fire
 Range            : 50000 yards
-Affecting spells : Infernal Force (207375 effect#1), Abyssal Strike (207550 effect#1), Vengeance Demon Hunter (212613 effect#1)
+Affecting spells : Infernal Force (207375 effect#1), Abyssal Strike (207550 effect#1), Vengeance Demon Hunter (212613 effect#1), 
 Attributes       : ....x... ........ ..x..x.. ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .x...... ..x..... ......x. 
                  : ........ .......x ........ ........   ........ ........ ........ ..x...x. 
@@ -760,6 +669,12 @@ Attributes       : ....x... x....... ..x..... ........   ........ ........ .....
 Effects          :
 #1 (id=280801)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Radius: 5 yards | Target: Unknown(87)
+#2 (id=475699)   : Trigger Spell (64): Metamorphosis
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 162264 | Target: Self (1)
+#3 (id=475700)   : Unknown(254)
+                   Base Value: 5 | Scaled Value: 5 | Misc Value: 9 | Target: Unknown(87)
+#4 (id=475701)   : Trigger Spell (64): Metamorphosis
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 201453 | Target: Self (1)
 Description      : Leap into the air and land with explosive force, dealing $200166s2 Chaos damage to enemies within 8 yds, and stunning them for $200166d. Players are Dazed for $247121d instead.
 
 Upon landing, you are transformed into a hellish demon for $162264d, greatly empowering your Chaos Strike and Blade Dance abilities, gaining $162264s4% Leech, and $162264s7% Haste.
@@ -768,7 +683,7 @@ Name             : Fel Rush (id=192611) [Spell Family (107)]
 Class            : Demon Hunter
 School           : Chaos
 Range            : 50000 yards
-Affecting spells : Mastery: Demonic Presence (185164 effect#1), Fel Mastery (192939 effect#2), Havoc Demon Hunter (212612 effect#6)
+Affecting spells : Mastery: Demonic Presence (185164 effect#1), Fel Mastery (192939 effect#2), Havoc Demon Hunter (212612 effect#6), 
 Attributes       : ....x... ........ ........ ........   ........ .x...... ........ ........ 
                  : ..x..... ........ ........ ........   ........ .x...... ........ ......x. 
                  : .......x ........ ........ ........   ........ ........ ........ ..x..... 
@@ -941,7 +856,7 @@ Duration         : 2 seconds
 Cooldown         : 45 seconds
 Category         : 1582
 Category Cooldown: 45 seconds
-Affecting spells : Chaos Vision (201456 effect#1), Blind Fury (203550 effect#1), Soul Flame of Insight (226334 effect#2), Wide Eyes (238045 effect#1)
+Affecting spells : Chaos Vision (201456 effect#1), Blind Fury (203550 effect#1), Soul Flame of Insight (226334 effect#2), Wide Eyes (238045 effect#1), Item - Demon Hunter T21 Havoc 2P Bonus - Eye Beam Damage (251767 effect#1)
 Attributes       : ........ ........ ........ ........   ..x...x. .x...... ........ ....xx.. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .x...... ........ ...x.... 
@@ -965,7 +880,7 @@ Name             : Eye Beam (id=198030) [Spell Family (107)]
 Class            : Demon Hunter
 School           : Chromatic
 Range            : 50000 yards
-Affecting spells : Mastery: Demonic Presence (185164 effect#1), Chaos Vision (201456 effect#1), Blind Fury (203550 effect#1), Havoc Demon Hunter (212612 effect#3), Soul Flame of Insight (226334 effect#1), Wide Eyes (238045 effect#1)
+Affecting spells : Mastery: Demonic Presence (185164 effect#1), Chaos Vision (201456 effect#1), Blind Fury (203550 effect#1), Havoc Demon Hunter (212612 effect#3), Soul Flame of Insight (226334 effect#1), Wide Eyes (238045 effect#1), Item - Demon Hunter T21 Havoc 2P Bonus - Eye Beam Damage (251767 effect#1)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .x...... ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
@@ -1027,7 +942,7 @@ Name             : Vengeful Retreat (id=198813) [Spell Family (107)]
 Class            : Demon Hunter
 School           : Physical
 Duration         : 3 seconds
-Affecting spells : Prepared (203551 effect#2)
+Affecting spells : Prepared (203551 effect#2), Havoc Demon Hunter (212612 effect#6), 
 Triggered by     : Vengeful Retreat (198793)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1087,7 +1002,7 @@ Name             : Metamorphosis (id=200166) [Spell Family (107)]
 Class            : Demon Hunter
 School           : Chromatic
 Duration         : 3 seconds
-Affecting spells : Mastery: Demonic Presence (185164 effect#1), Havoc Demon Hunter (212612 effect#6)
+Affecting spells : Mastery: Demonic Presence (185164 effect#1), Havoc Demon Hunter (212612 effect#6), 
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1138,6 +1053,8 @@ Attributes       : .......x ........ ........ ....x...   ..xxx..x ........ .x...
 Effects          :
 #1 (id=295605)   : Unknown(162)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+#2 (id=477483)   : Trigger Spell (64): Vindicaar Matrix Crystal
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 255529
 Description      : Switch to your Primary Talent Specialization.
 Tooltip          : Switch to your Primary Talent Specialization.
 
@@ -1183,6 +1100,24 @@ Effects          :
                    Base Value: 630 | Scaled Value: 6.3 | Chain Multiplier: 0.5 | Chain Targets: 1 | Target: Enemy (6)
 Description      : $@spelldesc201427
 
+Name             : Metamorphosis (id=201453) [Spell Family (107), Hidden] 
+Class            : Demon Hunter
+School           : Physical
+Duration         : 1 seconds
+Triggered by     : Metamorphosis (191427)
+Attributes       : .......x x....... ........ .....x..   ........ ..x..... ........ ........ 
+                 : ..x..... ........ ......x. ....x...   ........ .x...... xx...... ....x... 
+                 : .......x ........ .......x ........   ........ ........ .xx..... ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ....x... ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Hidden (7), Not a proc (105), Disable player procs (112), Disable target procs (113), Disable weapon procs (151)
+Effects          :
+#1 (id=296804)   : Apply Aura (6) | School Immunity (39)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 127 | Target: Self (1)
+#2 (id=298926)   : Apply Aura (6) | Unknown(263)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+
 Name             : Fury of the Illidari (Artifact) (id=201467) [Spell Family (107)] 
 Class            : Demon Hunter
 School           : Physical
@@ -1191,7 +1126,7 @@ GCD              : 1.5 seconds
 Velocity         : 3 yards/sec
 Duration         : 3 seconds
 Cooldown         : 60 seconds
-Artifact Power   : Id: 1010, Max Rank: 1
+Artifact Power   : Id: 1010, Max Rank: 1, Type: 18
 Affecting spells : Metamorphosis (162264 effect#7), Havoc Demon Hunter (212612 effect#1), Vengeance Demon Hunter (212613 effect#3)
 Triggered by     : Push Active Ability to Bar (225863)
 Attributes       : ........ ........ ........ .......x   ........ ........ ........ ........ 
@@ -1210,7 +1145,7 @@ Name             : Rage of the Illidari (id=201472) [Spell Family (107), Passive
 Class            : Demon Hunter
 School           : Physical
 Proc Chance      : 101%
-Artifact Power   : Id: 1015, Index: 2, Max Rank: 1
+Artifact Power   : Id: 1015, Index: 2, Max Rank: 1, Type: 1
 Proc Flags       : ....x... ....x... x....... ........ 
                  : Yellow Melee, AOE Hostile Spell, Hostile Spell
 Attributes       : ......x. ........ ........ .......x   ........ ........ ........ ....x... 
@@ -1229,7 +1164,7 @@ Name             : Anguish of the Deceiver (id=201473) [Spell Family (107), Pass
 Class            : Demon Hunter
 School           : Chaos
 Proc Chance      : 101%
-Artifact Power   : Id: 1016, Index: 3, Max Rank: 1
+Artifact Power   : Id: 1016, Index: 3, Max Rank: 1, Type: 1
 Proc Flags       : ........ ........ x....... ........ 
                  : Hostile Spell
 Attributes       : ......x. ........ ........ .......x   ........ ........ ........ ....x... 
@@ -1248,7 +1183,7 @@ Name             : Fury of the Illidari (id=201628) [Spell Family (107)]
 Class            : Demon Hunter
 School           : Chaos
 Range            : 100 yards
-Affecting spells : Mastery: Demonic Presence (185164 effect#1), Havoc Demon Hunter (212612 effect#6)
+Affecting spells : Mastery: Demonic Presence (185164 effect#1), Havoc Demon Hunter (212612 effect#6), 
 Attributes       : ........ ........ ........ .......x   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : x......x ........ ........ ........   ...x.... ........ .xx..... ..x..... 
@@ -1267,7 +1202,7 @@ Name             : Fury of the Illidari (id=201789) [Spell Family (107)]
 Class            : Demon Hunter
 School           : Chaos
 Range            : 100 yards
-Affecting spells : Mastery: Demonic Presence (185164 effect#1), Havoc Demon Hunter (212612 effect#6)
+Affecting spells : Mastery: Demonic Presence (185164 effect#1), Havoc Demon Hunter (212612 effect#6), 
 Attributes       : ........ ........ ........ .......x   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ x....... 
                  : x......x ........ ........ ........   ...x.... ........ .xx..... ..x..... 
@@ -1361,7 +1296,7 @@ School           : Chaos
 Range            : 100 yards
 Stacks           : 30 maximum
 Proc Chance      : 101%
-Affecting spells : Mastery: Demonic Presence (185164 effect#1)
+Affecting spells : Mastery: Demonic Presence (185164 effect#1), Havoc Demon Hunter (212612 effect#6), 
 Attributes       : ........ ........ ........ ..x....x   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ..x....x ........ ........ 
@@ -1726,10 +1661,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
 #2 (id=300652)   : Weapon Damage% (31)
                    Base Value: 50 | Scaled Value: 0.5 | Target: Enemy (6)
-                   Hotfixed: Chain Multiplier (0 -> 1)
 #3 (id=300653)   : Energize Power (30)
                    Base Value: 11 | Scaled Value: 12 - 20 | Value Range: 9 | Misc Value: fury | Target: Self (1)
-                   Hotfixed: Chain Multiplier (0 -> 1)
 Description      : Inflicts $sw1 Shadow damage and generates $m3 to $M3 Fury.
 
 Name             : Demon Spikes (id=203819) [Spell Family (107)] 
@@ -1737,7 +1670,7 @@ Class            : Demon Hunter
 School           : Physical
 Spell Level      : 100
 Duration         : 6 seconds
-Affecting spells : Mastery: Fel Blood (203747 effect#3), Razor Spikes (209400 effect#1)
+Affecting spells : Mastery: Fel Blood (203747 effect#3), Razor Spikes (209400 effect#1), Item - Demon Hunter T21 Vengeance 2P Bonus - Demon Spike Parry Chance (251770 effect#1)
 Attributes       : ....x... ........ x.x..... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1749,7 +1682,6 @@ Effects          :
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
 #2 (id=300915)   : Apply Aura (6) | Unknown(87)
                    Base Value: -12 | Scaled Value: -12 | Misc Value: 0x1 | Target: Self (1)
-                   Hotfixed: Base Value (-10 -> -12), Chain Multiplier (0 -> 1)
 #3 (id=341634)   : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x1 | Target: Self (1)
                    Affected School(s): Physical
@@ -1856,7 +1788,7 @@ Class            : Demon Hunter
 School           : Physical
 Range            : 100 yards
 Duration         : 6 seconds
-Affecting spells : Concentrated Sigils (207666 effect#5), Vengeance Demon Hunter (212613 effect#1)
+Affecting spells : Concentrated Sigils (207666 effect#5)
 Attributes       : ........ ........ ........ x..x....   .....x.. ........ ........ ........ 
                  : ..x..... ......x. ........ ........   ........ ........ ........ ......x. 
                  : .......x ........ ........ ........   ...x.... ........ .xx..... ..x..... 
@@ -1924,7 +1856,7 @@ School           : Fire
 Range            : 100 yards
 Duration         : 6 seconds
 Proc Chance      : 101%
-Affecting spells : Concentrated Sigils (207666 effect#5), Vengeance Demon Hunter (212613 effect#1)
+Affecting spells : Concentrated Sigils (207666 effect#5), Vengeance Demon Hunter (212613 effect#1), 
 Attributes       : ........ ........ ........ x..x....   .....x.. ........ ........ ........ 
                  : ..x..... ......x. ........ ........   ........ ........ ........ ......x. 
                  : .......x ........ ........ ........   ...x.... ........ .xx..... ..x..... 
@@ -1947,7 +1879,7 @@ Class            : Demon Hunter
 School           : Physical
 Range            : 100 yards
 Duration         : 6 seconds
-Affecting spells : Concentrated Sigils (207666 effect#5), Vengeance Demon Hunter (212613 effect#1)
+Affecting spells : Concentrated Sigils (207666 effect#5)
 Attributes       : ........ ........ ........ x..x....   .....x.. ........ ........ ........ 
                  : ..x..... ......x. ........ ........   ........ ........ ........ ......x. 
                  : .......x ........ ........ ........   ...x.... ........ .xx..... ..x..... 
@@ -2146,7 +2078,6 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=305378)   : Apply Aura (6) | Unknown(270)
                    Base Value: 25 | Scaled Value: 25 | Misc Value: 127 | Target: Enemy (6)
-                   Hotfixed: Chain Multiplier (0 -> 1)
 Description      : Increases damage you inflict against the target by $s1% for $d. 
 
 When the target is slain, you will inflict $s1% additional damage against all creature types matching the original target (Humanoid, Dragonkin, etc.) for the remaining duration.
@@ -2175,7 +2106,7 @@ Range            : 5 yards
 GCD              : 1.5 seconds
 Duration         : 3 seconds
 Cooldown         : 40 seconds
-Artifact Power   : Id: 1096, Max Rank: 1
+Artifact Power   : Id: 1096, Max Rank: 1, Type: 18
 Affecting spells : Metamorphosis (162264 effect#7), Havoc Demon Hunter (212612 effect#1), Vengeance Demon Hunter (212613 effect#1), 
 Triggered by     : Push Active Ability to Bar (225864)
 Attributes       : ........ ........ ..x..... .......x   ........ .x...... ........ ........ 
@@ -2200,10 +2131,6 @@ Tooltip          : Suffering $s1 Fire damage every $t sec.
 Name             : Agonizing Flames (id=207548) [Spell Family (107), Passive] 
 Class            : Demon Hunter
 School           : Physical
-Internal Cooldown: 0.8 seconds
-Proc Chance      : 100%
-Proc Flags       : ........ ....x... x....... ........ 
-                 : AOE Hostile Spell, Hostile Spell
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -2223,10 +2150,6 @@ Description      : Immolation Aura increases your movement speed by $s2%, and de
 Name             : Abyssal Strike (id=207550) [Spell Family (107), Passive] 
 Class            : Demon Hunter
 School           : Physical
-Internal Cooldown: 1 seconds
-Proc Chance      : 100%
-Proc Flags       : ....x... ........ ........ ........ 
-                 : Yellow Melee
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -2302,7 +2225,7 @@ Proc Chance      : 100%
 Mechanic         : Unknown(42)
 Proc Flags       : ...x.x.x .x...x.. .x.x.... .......x 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Hostile Spell Taken, Hostile Spell Taken, Periodic Taken
-Affecting spells : Concentrated Sigils (207666 effect#5), Vengeance Demon Hunter (212613 effect#1)
+Affecting spells : Concentrated Sigils (207666 effect#5)
 Attributes       : ........ ........ ........ x..x....   ...x.x.x ........ ........ ........ 
                  : ..x..... ......x. ........ ........   ........ ........ ........ ......x. 
                  : .......x ........ ........ ........   ...x.... ........ .xx..... ..x..... 
@@ -2392,7 +2315,7 @@ Duration         : 8 seconds
 Proc Chance      : 100%
 Proc Flags       : .....x.. .....x.. .x.x.... ........ 
                  : Yellow Melee Taken, AOE Hostile Spell Taken, Hostile Spell Taken, Periodic Taken
-Affecting spells : Vengeance Demon Hunter (212613 effect#1), Demonic Flames (212894 effect#1), Spirit of the Darkness Flame (235543 effect#1)
+Affecting spells : Demonic Flames (212894 effect#1), Spirit of the Darkness Flame (235543 effect#1)
 Attributes       : ....x... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2777,7 +2700,7 @@ Class            : Demon Hunter
 School           : Chromatic
 Range            : 100 yards
 Velocity         : 24 yards/sec
-Affecting spells : Mastery: Demonic Presence (185164 effect#1), Havoc Demon Hunter (212612 effect#6)
+Affecting spells : Mastery: Demonic Presence (185164 effect#1), Havoc Demon Hunter (212612 effect#6), 
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2787,7 +2710,6 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=312614)   : School Damage (2): chromatic
                    Base Value: 0 | Scaled Value: 0 (avg=0, dl=0.1) | AP Coefficient: 3.00000 | Radius: 4 - 8 yards | Target: Unknown(86) -> AOE enemy (instant) (16)
-                   Hotfixed: Chain Multiplier (0 -> 1)
 Description      : $@spelldesc211053
 
 Name             : Fel Barrage (id=211053) [Spell Family (107)] 
@@ -2797,7 +2719,6 @@ Range            : 30 yards
 GCD              : 1.5 seconds
 Duration         : 2 seconds
 Cooldown         : 60 seconds
-Affecting spells : Havoc Demon Hunter (212612 effect#6)
 Attributes       : ........ ........ ........ ........   ..x..... ........ ........ ........ 
                  : x....... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .x...... ........ ........ 
@@ -2907,7 +2828,7 @@ Name             : Fel Devastation (id=212105) [Spell Family (107)]
 Class            : Demon Hunter
 School           : Fire
 Range            : 50000 yards
-Affecting spells : Vengeance Demon Hunter (212613 effect#1)
+Affecting spells : Vengeance Demon Hunter (212613 effect#1), 
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
@@ -2947,13 +2868,13 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=315220)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 249 (Label) | Target: Self (1)
-                   Affected Spells (Label): Orb of Destruction (229700)
+                   Affected Spells (Label): Orb of Destruction (229700), Void Tendril (250834)
 #2 (id=315221)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 298 (Label) | Target: Self (1)
-                   Affected Spells (Label): Cleansing Matrix (242619), Fruitful Machinations (242623), Guiding Hand (242622), Infusion of Light (242621)
+                   Affected Spells (Label): Cleansing Matrix (242619), Fruitful Machinations (242623), Guiding Hand (242622), Infusion of Light (242621), Fel Shield (253277), Tarratus Keystone (253282), Refreshing Agony (253284), L'ura's Word (250781)
 #3 (id=315222)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 300 (Label) | Target: Self (1)
-                   Affected Spells (Label): Insidious Corruption (243941), Spectral Bolt (242571), Spectral Blast (246442)
+                   Affected Spells (Label): Insidious Corruption (243941), Spectral Bolt (242571), Spectral Blast (246442), Apocalypse Missile (253243), Legion Bombardment (253248), Essence Swap (253258)
 #4 (id=315223)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #5 (id=315224)   : Apply Aura (6) | Dummy (4)
@@ -3004,14 +2925,13 @@ Effects          :
                    Affected Spells (Category): Throw Glaive (185123)
 #5 (id=315239)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 247 (Label) | Target: Self (1)
-                   Affected Spells (Label): Infernal Contract (225140), Living Carapace (225033), Sands of Time (225124), Vampiric Aura (225130), Wailing Souls (242609), Unending Hunger (242536)
+                   Affected Spells (Label): Infernal Contract (225140), Living Carapace (225033), Sands of Time (225124), Vampiric Aura (225130), Wailing Souls (242609), Unending Hunger (242536), Chilling Nova (251940), Bulwark of Flame (251946), Hammer-Forged (251952), Pool of Pure Void (250766)
 #6 (id=315240)   : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
                    Base Value: 11 | Scaled Value: 11 | Target: Self (1)
-                   Affected Spells: Demon's Bite (162243), Chaos Nova (179057), Throw Glaive (185123), Blade Dance (188499), Fel Rush (192611), Eye Beam (198030), Chaos Strike (199547), Blade Dance (199552), Metamorphosis (200166), Blade Dance (200685), Annihilation (201428), Fury of the Illidari (201467), Fury of the Illidari (201628), Fury of the Illidari (201789), Demon Blades (203796), Throw Glaive (204157), Death Sweep (210152), Death Sweep (210153), Death Sweep (210155), Fel Barrage (211052), Fel Barrage (211053), Felblade (213241), Felblade (213243), Chaos Strike (222031), Fel Eruption (225102), Annihilation (227518), Felblade (232893), Metamorphosis (247121)
-                   Hotfixed: Base Value (9 -> 11), Chain Multiplier (0 -> 1)
+                   Affected Spells: Demon's Bite (162243), Chaos Nova (179057), Throw Glaive (185123), Fel Rush (192611), Eye Beam (198030), Vengeful Retreat (198813), Chaos Strike (199547), Blade Dance (199552), Metamorphosis (200166), Blade Dance (200685), Annihilation (201428), Fury of the Illidari (201628), Fury of the Illidari (201789), Inner Demons (202388), Anguish (202446), Demon Blades (203796), Death Sweep (210153), Death Sweep (210155), Fel Barrage (211052), Felblade (213243), Chaos Strike (222031), Fel Eruption (225102), Annihilation (227518)
 #7 (id=315241)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Damage (22)
                    Base Value: 11 | Scaled Value: 11 | Misc Value: 22 | Target: Self (1)
-                   Hotfixed: Base Value (9 -> 11), Chain Multiplier (0 -> 1)
+                   Affected Spells: Demon's Bite (162243), Chaos Nova (179057), Throw Glaive (185123), Fel Rush (192611), Eye Beam (198030), Vengeful Retreat (198813), Chaos Strike (199547), Blade Dance (199552), Metamorphosis (200166), Blade Dance (200685), Annihilation (201428), Fury of the Illidari (201628), Fury of the Illidari (201789), Inner Demons (202388), Anguish (202446), Demon Blades (203796), Death Sweep (210153), Death Sweep (210155), Fel Barrage (211052), Felblade (213243), Chaos Strike (222031), Fel Eruption (225102), Annihilation (227518)
 #8 (id=315242)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #9 (id=315243)   : Apply Aura (6) | Dummy (4)
@@ -3044,12 +2964,10 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=315250)   : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
                    Base Value: -5 | Scaled Value: -5 | Target: Self (1)
-                   Affected Spells: Immolation Aura (178740), Immolation Aura (178741), Throw Glaive (185123), Immolation Aura (187727), Infernal Strike (189110), Infernal Strike (189112), Shear (203782), Fiery Brand (204021), Throw Glaive (204157), Sigil of Silence (204490), Sigil of Flame (204598), Sigil of Chains (204843), Soul Carver (207407), Sigil of Misery (207685), Fiery Brand (207744), Fiery Brand (207771), Fel Devastation (212105), Felblade (213241), Felblade (213243), Soul Carver (214743), Fel Eruption (225102), Fracture (225919), Fracture (225921), Soul Cleave (228478), Felblade (232893), Sever (235964), Spirit Bomb (247455)
-                   Hotfixed: Affects Spells, Chain Multiplier (0 -> 1)
+                   Affected Spells: Immolation Aura (178741), Immolation Aura (187727), Infernal Strike (189112), Shear (203782), Fiery Brand (204021), Throw Glaive (204157), Sigil of Flame (204598), Soul Carver (207407), Fiery Brand (207771), Fel Devastation (212105), Felblade (213243), Soul Carver (214743), Fel Eruption (225102), Soul Cleave (228478), Sever (235964), Erupting Souls (243160)
 #2 (id=315251)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Damage (22)
                    Base Value: -5 | Scaled Value: -5 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Fiery Brand (204021), Soul Carver (207407), Fiery Brand (207744), Fiery Brand (207771), Soul Carver (214743)
-                   Hotfixed: Affects Spells, Chain Multiplier (0 -> 1)
+                   Affected Spells: Immolation Aura (178741), Immolation Aura (187727), Infernal Strike (189112), Shear (203782), Fiery Brand (204021), Throw Glaive (204157), Sigil of Flame (204598), Soul Carver (207407), Fiery Brand (207771), Fel Devastation (212105), Felblade (213243), Soul Carver (214743), Fel Eruption (225102), Soul Cleave (228478), Sever (235964), Erupting Souls (243160)
 #3 (id=315252)   : Apply Aura (6) | Hasted Global Cooldown (417)
                    Base Value: 100 | Scaled Value: 100 | SP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Demon's Bite (162243), Chaos Strike (162794), Immolation Aura (178740), Chaos Nova (179057), Throw Glaive (185123), Blade Dance (188499), Metamorphosis (191427), Annihilation (201427), Fury of the Illidari (201467), Sigil of Silence (202137), Sigil of Chains (202138), Shear (203782), Demon Blades (203796), Throw Glaive (204157), Sigil of Flame (204596), Soul Carver (207407), Sigil of Misery (207684), Fracture (209795), Death Sweep (210152), Fel Eruption (211881), Felblade (213241), Soul Carver (214743), Soul Cleave (228477), Felblade (232893), Sever (235964), Spirit Bomb (247454)
@@ -3120,7 +3038,7 @@ Name             : Fiery Demise (id=212817) [Spell Family (107), Passive]
 Class            : Demon Hunter
 School           : Physical
 Proc Chance      : 101%
-Artifact Power   : Id: 1231, Index: 9, Max Rank: 8, Values: [ 10, 20, 30, 40, 50, 60, 70, 80 ]
+Artifact Power   : Id: 1231, Index: 9, Max Rank: 8, Type: 32, Values: [ 10, 20, 30, 40, 50, 60, 70, 80 ]
 Proc Flags       : ....x... ....x... x....... ........ 
                  : Yellow Melee, AOE Hostile Spell, Hostile Spell
 Attributes       : ......x. ........ ........ .......x   ........ ........ ........ ....x... 
@@ -3173,7 +3091,7 @@ School           : Physical
 Range            : 15 yards
 GCD              : 1.5 seconds
 Cooldown         : 15 seconds
-Affecting spells : Metamorphosis (162264 effect#7), Item - Demon Hunter T19 Havoc 2P Bonus (211054 effect#3), Havoc Demon Hunter (212612 effect#1), Vengeance Demon Hunter (212613 effect#1), Blade Turning (247253 effect#3)
+Affecting spells : Metamorphosis (162264 effect#7), Item - Demon Hunter T19 Havoc 2P Bonus (211054 effect#3), Havoc Demon Hunter (212612 effect#1), Vengeance Demon Hunter (212613 effect#3), Blade Turning (247253 effect#3)
 Attributes       : ....x... ........ ..x..... .....x..   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ .x...... 
@@ -3506,11 +3424,9 @@ Effects          :
 Description      : $@spelldesc211881
 
 Name             : Fracture (id=225919) [Spell Family (107)] 
-Hotfixed         : Affecting Spells
 Class            : Demon Hunter
 School           : Physical
 Range            : 20 yards
-Affecting spells : Vengeance Demon Hunter (212613 effect#1)
 Triggered by     : Fracture (209795)
 Attributes       : ....x... ........ ........ ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ .xx..... ..x..... ........ 
@@ -3522,17 +3438,14 @@ Attributes       : ....x... ........ ........ ........   ........ .x...... .....
 Effects          :
 #1 (id=338878)   : Weapon Damage% (31)
                    Base Value: 451 | Scaled Value: 4.51 | Target: Enemy (6)
-                   Hotfixed: Base Value (475 -> 451), Chain Multiplier (0 -> 1)
 #2 (id=338879)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
 Description      : $@spelldesc209795
 
 Name             : Fracture (id=225921) [Spell Family (107)] 
-Hotfixed         : Affecting Spells
 Class            : Demon Hunter
 School           : Physical
 Range            : 20 yards
-Affecting spells : Vengeance Demon Hunter (212613 effect#1)
 Triggered by     : Fracture (209795)
 Attributes       : ....x... ........ ........ ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ .x...... ..x..... x....... 
@@ -3544,7 +3457,6 @@ Attributes       : ....x... ........ ........ ........   ........ .x...... .....
 Effects          :
 #1 (id=338881)   : Weapon Damage% (31)
                    Base Value: 897 | Scaled Value: 8.97 | Target: Enemy (6)
-                   Hotfixed: Base Value (945 -> 897), Chain Multiplier (0 -> 1)
 #2 (id=338882)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
 Description      : $@spelldesc209795
@@ -3734,7 +3646,7 @@ School           : Physical
 Range            : 15 yards
 GCD              : 1.5 seconds
 Cooldown         : 15 seconds
-Affecting spells : Metamorphosis (162264 effect#7), Item - Demon Hunter T19 Havoc 2P Bonus (211054 effect#3), Havoc Demon Hunter (212612 effect#1), Vengeance Demon Hunter (212613 effect#1), Blade Turning (247253 effect#3)
+Affecting spells : Metamorphosis (162264 effect#7), Item - Demon Hunter T19 Havoc 2P Bonus (211054 effect#3), Havoc Demon Hunter (212612 effect#1), Vengeance Demon Hunter (212613 effect#3), Blade Turning (247253 effect#3)
 Attributes       : ....x... ........ ..x..... .....x..   ........ .x...... ........ ........ 
                  : ........ ........ ........ ....x...   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ .x...... 
@@ -3833,7 +3745,7 @@ Class            : Demon Hunter
 School           : Chromatic
 Range            : 40 yards
 Duration         : 3 seconds
-Affecting spells : Mastery: Demonic Presence (185164 effect#1), Havoc Demon Hunter (212612 effect#6)
+Affecting spells : Mastery: Demonic Presence (185164 effect#1)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3917,7 +3829,7 @@ Name             : Spirit Bomb (id=247455) [Spell Family (107)]
 Class            : Demon Hunter
 School           : Fire
 Range            : 100 yards
-Affecting spells : Metamorphosis (162264 effect#5), Vengeance Demon Hunter (212613 effect#1)
+Affecting spells : Metamorphosis (162264 effect#5)
 Attributes       : ........ ........ ........ x..x....   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ .x...... ........ ......x. 
                  : .......x ........ ........ ........   ...x.... ........ ..x..... ..x..... 
@@ -3928,7 +3840,6 @@ Attributes       : ........ ........ ........ x..x....   ........ ........ .....
 Effects          :
 #1 (id=377040)   : School Damage (2): fire
                    Base Value: 0 | Scaled Value: 0 (avg=0, dl=0.1) | AP Coefficient: 1.80000 | Radius: 0 - 8 yards | Target: Custom (18) -> AOE enemy (instant) (16)
-                   Hotfixed: AP Coefficient (2 -> 1.8), Chain Multiplier (0 -> 1)
 Description      : $@spelldesc247454
 
 Name             : Frailty (id=247456) [Spell Family (107)] 
@@ -3971,12 +3882,47 @@ Effects          :
 #2 (id=464520)   : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 30 | Scaled Value: 30 | Misc Value: 0x7f | Target: Self (1)
                    Affected School(s): All
-                   Hotfixed: Chain Multiplier (0 -> 1)
 Description      : Increases all damage done by $s2% for $d.
 
 While active, your auto attack deals $s1% increased damage, and causes Chaos damage.
 Tooltip          : Damage done increased by $w2%.
 
 Auto attack damage increased by $s1%, and deal Chaos damage.
+
+Name             : Vindicaar Matrix Crystal (id=251463) 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Worgen, Pandaren, Pandaren (Alliance)
+School           : Physical
+GCD              : 1.5 seconds
+Triggered by     : Vindicaar Matrix Crystal (255529)
+Attributes       : ........ ........ ........ ........   ...x...x ..x..... ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=470901)   : Dummy (3)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+Description      : Unlock powers at the Vindicaar's Matrix Core to use while on Argus. 
+
+Name             : Vindicaar Matrix Crystal (id=255529) [Hidden] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Worgen, Pandaren, Pandaren (Alliance)
+School           : Physical
+Triggered by     : Activating Specialization (200749)
+Attributes       : .......x x....... .......x x..x.x..   ...x.x.x ..x..... ........ ........ 
+                 : x.x..... ......x. ...x..x. ....x...   ........ .x...... xx..x... ....x... 
+                 : .......x ........ .......x ........   ...x.... ........ .xx..... ........ 
+                 : ........ .x..x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ....x... ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Hidden (7), Does not break stealth (37), Not a proc (105), Disable player procs (112), Disable target procs (113), Disable weapon procs (151)
+Effects          :
+#1 (id=477479)   : Unknown(81)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 251463 | Target: Self (1)
+#2 (id=477480)   : Unknown(170)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+Description      : Unlock powers at the Vindicaar's Matrix Core to use while on Argus. 
 
 
