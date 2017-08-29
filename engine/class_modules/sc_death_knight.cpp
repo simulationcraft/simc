@@ -7517,7 +7517,7 @@ void death_knight_t::init_spells()
   
   // Tier 4 : New talent in 7.3  
   talent.inexorable_assault    = find_talent_spell( "Inexorable Assault" );
-  talent.volatile_shield       = find_talent_spell( "Volatile Shielding" );
+  talent.volatile_shielding    = find_talent_spell( "Volatile Shielding" );
     
   // Tier 6
   talent.frostscythe           = find_talent_spell( "Frostscythe" );
