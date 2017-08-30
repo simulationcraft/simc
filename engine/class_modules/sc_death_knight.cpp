@@ -7845,7 +7845,7 @@ void death_knight_t::default_apl_frost()
 
   // "Breath of Sindragosa pooling rotation : starts 15s before the cd becomes available"
   bos_pooling -> add_action( this, "Remorseless Winter", "if=talent.gathering_storm.enabled", "Breath of Sindragosa pooling rotation : starts 15s before the cd becomes available" );
-  bos_pooling -> add_action( this, "Howling Blast", "if=buff.rime.react&rune.time_to_4<(gcd*2" );
+  bos_pooling -> add_action( this, "Howling Blast", "if=buff.rime.react&rune.time_to_4<(gcd*2)" );
   bos_pooling -> add_action( this, "Obliterate", "if=rune.time_to_6<gcd&!talent.gathering_storm.enabled" );
   bos_pooling -> add_action( this, "Obliterate", "if=rune.time_to_4<gcd&(cooldown.breath_of_sindragosa.remains|runic_power<70)" );
   bos_pooling -> add_action( this, "Frost Strike", "if=runic_power>=95&set_bonus.tier19_4pc&cooldown.breath_of_sindragosa.remains&(!talent.shattering_strikes.enabled|debuff.razorice.stack<5|cooldown.breath_of_sindragosa.remains>6)" );
