@@ -264,7 +264,9 @@ void player_artifact_data_t::override_power( const std::string& name_str, unsign
     return;
   }
 
-  if ( rank > ( *it ) -> max_rank )
+  auto ranks = player() -> dbc.artifact_power_ranks( ( *it ) -> id );
+
+  if ( rank > ranks.size() )
   {
     error( this, "Player %s too high rank '%u' for '%s', expected %u max",
       player() -> name(), rank, ( *it ) -> name, ( *it ) -> max_rank );
