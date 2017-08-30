@@ -5,7 +5,8 @@ race=blood_elf
 role=attack
 position=back
 talents=3210031
-artifact=16:0:0:0:0:149:1:150:1:151:1:152:1:153:1:154:1:156:4:157:4:158:4:262:4:263:1:264:4:265:4:266:4:267:4:1119:4:1333:1:1361:1:1489:4:1490:1:1491:1:1492:1:1629:1
+artifact=16:0:0:0:0:149:1:150:1:151:1:152:1:153:1:154:1:156:4:157:4:158:4:262:4:263:1:264:4:265:4:266:4:267:4:1119:4:1333:1:1361:1:1489:4:1490:1:1491:1:1492:15:1629:1
+crucible=1739:3:1771:3
 
 # Default consumables
 potion=prolonged_power
@@ -113,12 +114,12 @@ trinket2=cradle_of_anguish,id=147010,bonus_id=1497/3562
 main_hand=apocalypse,id=128403,gem_id=147091/147111/151189,relic_id=1507:3562/1507:3562/1507:3562,enchant=rune_of_the_fallen_crusader
 
 # Gear Summary
-# gear_ilvl=919.00
-# gear_strength=24314
-# gear_stamina=38583
-# gear_crit_rating=6191
+# gear_ilvl=920.00
+# gear_strength=24809
+# gear_stamina=39326
+# gear_crit_rating=6249
 # gear_haste_rating=5906
-# gear_mastery_rating=10095
+# gear_mastery_rating=10150
 # gear_versatility_rating=4219
 # gear_armor=4721
 # set_bonus=tier20_2pc=1
