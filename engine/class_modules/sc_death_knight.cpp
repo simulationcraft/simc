@@ -7864,7 +7864,7 @@ void death_knight_t::default_apl_frost()
 
   // Breath of Sindragosa uptime rotation
   bos_ticking -> add_action( this, "Frost Strike", "if=talent.shattering_strikes.enabled&runic_power<40&rune.time_to_2>2&cooldown.empower_rune_weapon.remains&debuff.razorice.stack=5&(cooldown.horn_of_winter.remains|!talent.horn_of_winter.enabled)", "Breath of Sindragosa uptime rotation" );
-  bos_ticking -> add_action( this, "Remorseless Winter", ",if=(runic_power>=30|buff.hungering_rune_weapon.up)&((buff.rime.react&equipped.perseverance_of_the_ebon_martyr)|(talent.gathering_storm.enabled&(buff.remorseless_winter.remains<=gcd|!buff.remorseless_winter.remains)))" );
+  bos_ticking -> add_action( this, "Remorseless Winter", "if=(runic_power>=30|buff.hungering_rune_weapon.up)&((buff.rime.react&equipped.perseverance_of_the_ebon_martyr)|(talent.gathering_storm.enabled&(buff.remorseless_winter.remains<=gcd|!buff.remorseless_winter.remains)))" );
   bos_ticking -> add_action( this, "Howling Blast", "if=((runic_power>=20&set_bonus.tier19_4pc)|runic_power>=30|buff.hungering_rune_weapon.up)&buff.rime.react" );
   bos_ticking -> add_action( this, "Frost Strike", "if=set_bonus.tier20_2pc&runic_power>85&rune<=3&buff.pillar_of_frost.up&!talent.shattering_strikes.enabled" );
   bos_ticking -> add_action( this, "Obliterate", "if=runic_power<=45|rune.time_to_5<gcd|buff.hungering_rune_weapon.remains>=2" );
