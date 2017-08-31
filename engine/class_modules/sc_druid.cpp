@@ -7758,7 +7758,7 @@ void druid_t::apl_feral()
    def->add_action("shred");
 
    cooldowns->add_action("dash,if=!buff.cat_form.up");
-   cooldowns->add_action("rake,if=buff.prowl.up|buff.shadowmeld.up");
+   //cooldowns->add_action("rake,if=buff.prowl.up|buff.shadowmeld.up");
    cooldowns->add_action("berserk,if=energy>=30&(cooldown.tigers_fury.remains>5|buff.tigers_fury.up)");
    cooldowns->add_action("tigers_fury,if=energy.deficit>=60");
    cooldowns->add_action("elunes_guidance,if=combo_points=0&energy>=50");
@@ -7772,7 +7772,7 @@ void druid_t::apl_feral()
    st->add_action("auto_attack");
    st->add_action("rake,if=buff.prowl.up|buff.shadowmeld.up");
    st->add_action("call_action_list,name=cooldowns");
-   st->add_action("regrowth,if=combo_points=5&talent.bloodtalons.enabled&buff.bloodtalons.down");
+   st->add_action("regrowth,if=combo_points=5&talent.bloodtalons.enabled&buff.bloodtalons.down&(!buff.incarnation.up|dot.rip.remains<8|dot.rake.remains<5)");
    st->add_action("run_action_list,name=st_finishers,if=combo_points>4");
    st->add_action("run_action_list,name=st_generators");
 
