@@ -6860,7 +6860,7 @@ double hunter_t::composite_player_pet_damage_multiplier( const action_state_t* s
     m *= 1.0 + specs.beast_mastery_hunter -> effectN( 3 ).percent();
 
   if ( specs.survival_hunter -> ok() )
-    m *= 1.0 + specs.survival_hunter -> effectN( 5 ).percent();
+    m *= 1.0 + specs.survival_hunter -> effectN( 3 ).percent();
 
   if ( buffs.the_mantle_of_command -> check() )
     m *= 1.0 + buffs.the_mantle_of_command -> check_value();
