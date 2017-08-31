@@ -5,7 +5,8 @@ race=tauren
 role=spell
 position=back
 talents=3111231
-artifact=40:0:0:0:0:291:1:292:1:293:1:294:1:295:1:296:1:297:1:298:4:299:4:300:4:301:4:302:4:303:4:304:4:305:4:306:4:1350:1:1387:1:1589:4:1590:1:1591:1:1592:1:1683:1
+artifact=40:0:0:0:0:291:1:292:1:293:1:294:1:295:1:296:1:297:1:298:4:299:4:300:4:301:4:302:4:303:4:304:4:305:4:306:4:1350:1:1387:1:1589:4:1590:1:1591:1:1592:24:1683:1
+crucible=1739:3:1771:3:300:2:1589:1
 
 # Default consumables
 potion=prolonged_power
@@ -157,12 +158,12 @@ main_hand=the_fist_of_raden,id=128935,bonus_id=744,gem_id=147112/147095/147112,r
 off_hand=the_highkeepers_ward,id=128936
 
 # Gear Summary
-# gear_ilvl=938.00
-# gear_stamina=46429
-# gear_intellect=50986
-# gear_crit_rating=5718
+# gear_ilvl=939.88
+# gear_stamina=47230
+# gear_intellect=54460
+# gear_crit_rating=5777
 # gear_haste_rating=12312
-# gear_mastery_rating=6135
+# gear_mastery_rating=6191
 # gear_versatility_rating=2624
 # gear_armor=3319
 # set_bonus=tier20_2pc=1
