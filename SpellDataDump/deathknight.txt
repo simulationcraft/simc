@@ -1,4 +1,4 @@
-SimulationCraft 725-02 for World of Warcraft 7.3.0 Live (wow build 24920)
+SimulationCraft 730-01 for World of Warcraft 7.3.0 Live (wow build 24931, git build 1fa582dcd)
 
 Name             : Dual Wield (Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
