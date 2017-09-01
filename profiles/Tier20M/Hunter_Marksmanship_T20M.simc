@@ -5,7 +5,8 @@ race=troll
 role=attack
 position=ranged_back
 talents=1303013
-artifact=55:0:0:0:0:307:1:308:1:309:1:310:1:311:1:312:4:313:4:314:4:315:4:316:4:317:4:318:4:319:4:320:4:321:1:322:1:1337:1:1369:1:1521:4:1522:1:1523:1:1524:1:1637:1
+artifact=55:0:0:0:0:307:1:308:1:309:1:310:1:311:1:312:4:313:4:314:4:315:4:316:4:317:4:318:4:319:4:320:4:321:1:322:1:1337:1:1369:1:1521:4:1522:1:1523:1:1524:24:1637:1
+crucible=1739:3:1771:3:1521:1:319:2
 
 # Default consumables
 potion=prolonged_power
@@ -127,12 +128,12 @@ trinket2=convergence_of_fates,id=140806,bonus_id=3518
 main_hand=thasdorah_legacy_of_the_windrunners,id=128826,gem_id=147112/147082/147105,relic_id=1512:3563/1522:3563/1512:3563
 
 # Gear Summary
-# gear_ilvl=936.60
-# gear_agility=27583
-# gear_stamina=46427
-# gear_crit_rating=9290
+# gear_ilvl=937.60
+# gear_agility=28121
+# gear_stamina=47234
+# gear_crit_rating=9349
 # gear_haste_rating=6445
-# gear_mastery_rating=11412
+# gear_mastery_rating=11469
 # gear_versatility_rating=515
 # gear_armor=3285
 # set_bonus=tier20_2pc=1
