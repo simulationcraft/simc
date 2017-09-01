@@ -117,6 +117,7 @@ namespace item
 
   // 7.3.0 Dungeon
   void reality_breacher( special_effect_t& );
+  void void_stalkers_contract( special_effect_t& );
 
   // Adding this here to check it off the list.
   // The sim builds it automatically.
@@ -2531,6 +2532,63 @@ void item::reality_breacher( special_effect_t& effect )
   new dbc_proc_callback_t( effect.player, effect );
 }
 
+// Void Stalker's Contract ==================================================
+
+void item::void_stalkers_contract( special_effect_t& effect )
+{
+  // TODO: Ignores armor?
+  struct void_stalkers_driver_t : public spell_t
+  {
+    action_t* damage;
+
+    void_stalkers_driver_t( const special_effect_t& e ) :
+      spell_t( "void_stalkers_contract_driver", e.player, e.driver() ),
+      damage( create_proc_action<proc_spell_t>( "void_slash", e ) )
+    {
+      quiet = background = true;
+      callbacks = false;
+
+      // Override normal proc spell cooldown for the damage spell
+      damage -> cooldown = player -> get_cooldown( "void_slash" );
+
+      // Damage does AoE at the targeted enemy, defaults to unlimited targets,
+      // "legion.void_stalkers_contract_targets" option controls the number of targets
+      damage -> aoe = player -> sim -> expansion_opts.void_stalkers_contract_targets;
+    }
+
+    void execute() override
+    {
+      spell_t::execute();
+
+      // TODO: Is the actual delay ~535ms?
+      auto delay = timespan_t::from_millis( data().effectN( 3 ).misc_value1() );
+
+      // Trigger two things
+      make_event<ground_aoe_event_t>( *sim, player, ground_aoe_params_t()
+        .target( execute_state -> target )
+        .x( execute_state -> target -> x_position )
+        .y( execute_state -> target -> y_position )
+        .duration( delay )
+        .pulse_time( delay )
+        .start_time( sim -> current_time() )
+        .action( damage )
+        .n_pulses( 1 ) );
+
+      make_event<ground_aoe_event_t>( *sim, player, ground_aoe_params_t()
+        .target( execute_state -> target )
+        .x( execute_state -> target -> x_position )
+        .y( execute_state -> target -> y_position )
+        .duration( delay )
+        .pulse_time( delay )
+        .start_time( sim -> current_time() )
+        .action( damage )
+        .n_pulses( 1 ) );
+    }
+  };
+
+  effect.trigger_spell_id = 251034;
+  effect.execute_action = new void_stalkers_driver_t( effect );
+}
 
 // Tirathon's Betrayal ======================================================
 
@@ -5585,6 +5643,7 @@ void unique_gear::register_special_effects_x7()
 
   /* Legion 7.3.0 Dungeon */
   register_special_effect( 250846, item::reality_breacher               );
+  register_special_effect( 250966, item::void_stalkers_contract         );
 
 
   /* Legion 7.0 Misc */
