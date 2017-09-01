@@ -115,7 +115,8 @@ namespace item
   // 7.2.0 Dungeon
   void dreadstone_of_endless_shadows( special_effect_t& );
 
-
+  // 7.3.0 Dungeon
+  void reality_breacher( special_effect_t& );
 
   // Adding this here to check it off the list.
   // The sim builds it automatically.
@@ -2487,6 +2488,49 @@ void item::dreadstone_of_endless_shadows( special_effect_t& effect )
 
   new dreadstone_proc_cb_t( effect, { crit, mastery, haste } );
 }
+
+// Reality Breacher =========================================================
+
+void item::reality_breacher( special_effect_t& effect )
+{
+  struct reality_breach_driver_t : public spell_t
+  {
+    action_t* damage;
+
+    reality_breach_driver_t( const special_effect_t& effect ) :
+      spell_t( "reality_breacher_driver", effect.player, effect.driver() -> effectN( 1 ).trigger() ),
+      damage( create_proc_action<proc_spell_t>( "void_tendril", effect ) )
+    {
+      quiet = background = true;
+      callbacks = false;
+    }
+
+    void execute() override
+    {
+      spell_t::execute();
+
+      // TODO: Is the actual delay 500ms?
+      auto delay = timespan_t::from_millis( data().effectN( 1 ).misc_value1() );
+
+      make_event<ground_aoe_event_t>( *sim, player, ground_aoe_params_t()
+        .target( execute_state -> target )
+        .x( execute_state -> target -> x_position )
+        .y( execute_state -> target -> y_position )
+        .duration( delay )
+        .pulse_time( delay )
+        .start_time( sim -> current_time() )
+        .action( damage )
+        .n_pulses( 1 ) );
+    }
+  };
+
+  effect.trigger_spell_id = 250834;
+
+  effect.execute_action = new reality_breach_driver_t( effect );
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
 
 // Tirathon's Betrayal ======================================================
 
@@ -5539,6 +5583,8 @@ void unique_gear::register_special_effects_x7()
   /* Legion 7.2.0 Dungeon */
   register_special_effect( 238498, item::dreadstone_of_endless_shadows );
 
+  /* Legion 7.3.0 Dungeon */
+  register_special_effect( 250846, item::reality_breacher               );
 
 
   /* Legion 7.0 Misc */
