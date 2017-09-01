@@ -4388,14 +4388,13 @@ void player_t::trigger_ready()
   if ( executing ) return;
   if ( queueing ) return;
   if ( channeling ) return;
-
+  if ( started_waiting < timespan_t::zero() ) return;
   if ( current.sleeping ) return;
 
   if ( buffs.stunned -> check() ) return;
 
   if ( sim -> debug ) sim -> out_debug.printf( "%s is triggering ready, interval=%f", name(), ( sim -> current_time() - started_waiting ).total_seconds() );
 
-  assert( started_waiting >= timespan_t::zero() );
   iteration_waiting_time += sim -> current_time() - started_waiting;
   started_waiting = timespan_t::min();
 
