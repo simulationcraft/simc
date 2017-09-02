@@ -120,7 +120,7 @@ waist=braided_torture_lash,id=146998,ilevel=930
 legs=leggings_of_everburning_knowledge,id=138315,ilevel=905
 feet=acolytes_abandoned_footwraps,id=147422,ilevel=930
 finger1=seal_of_the_second_duumvirate,id=147195,ilevel=940,enchant=binding_of_critical_strike
-finger2=shard_of_the_exodar,id=132410,ilevel=970,gems=200int,enchant=binding_of_critical_strike
+finger2=shard_of_the_exodar,id=132410,ilevel=970,gems=200versatility,enchant=binding_of_critical_strike
 trinket1=tarnished_sentinel_medallion,id=147017,ilevel=930
 trinket2=terror_from_below,id=147016,ilevel=930
 main_hand=ebonchill,id=128862,gem_id=147095/147079/147095,relic_ilevel=940/940/940
@@ -128,11 +128,11 @@ main_hand=ebonchill,id=128862,gem_id=147095/147079/147095,relic_ilevel=940/940/9
 # Gear Summary
 # gear_ilvl=935.67
 # gear_stamina=45345
-# gear_intellect=48712
+# gear_intellect=48512
 # gear_crit_rating=10305
 # gear_haste_rating=11757
 # gear_mastery_rating=3577
-# gear_versatility_rating=4383
+# gear_versatility_rating=4583
 # gear_armor=2138
 # set_bonus=tier19_2pc=1
 # set_bonus=tier20_2pc=1

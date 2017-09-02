@@ -7,6 +7,7 @@ position=back
 talents=3022023
 artifact=54:0:0:0:0:748:1:749:4:750:4:751:4:752:4:753:4:754:4:755:4:756:4:757:4:758:1:759:1:760:1:761:1:762:1:763:1:1340:1:1372:1:1533:4:1534:1:1535:1:1536:24:1640:1
 crucible=1739:3:1770:3:1533:2:751:1
+
 # Default consumables
 potion=prolonged_power
 flask=whispered_pact
@@ -112,12 +113,12 @@ main_hand=felomelorn,id=128820,gem_id=147089/147079/147089,relic_ilevel=930/940/
 off_hand=heart_of_the_phoenix,id=133959
 
 # Gear Summary
-# gear_ilvl=938.63
-# gear_stamina=46064
-# gear_intellect=45485
-# gear_crit_rating=6444
-# gear_haste_rating=8527
-# gear_mastery_rating=7483
+# gear_ilvl=940.50
+# gear_stamina=46865
+# gear_intellect=48959
+# gear_crit_rating=6464
+# gear_haste_rating=8597
+# gear_mastery_rating=7508
 # gear_versatility_rating=6928
 # gear_armor=2217
 # set_bonus=tier20_2pc=1
