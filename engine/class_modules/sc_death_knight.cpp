@@ -7846,7 +7846,7 @@ void death_knight_t::default_apl_frost()
   // Choose APL
   def -> add_action( "call_action_list,name=cds" );
   def -> add_action( "run_action_list,name=bos_pooling,if=talent.breath_of_sindragosa.enabled&cooldown.breath_of_sindragosa.remains<15" );
-  def -> add_action( "run_action_list,name=bos_ticking,if=talent.breath_of_sindragosa.enabled&dot.breath_of_sindragosa.ticking" );
+  def -> add_action( "run_action_list,name=bos_ticking,if=dot.breath_of_sindragosa.ticking" );
   def -> add_action( "run_action_list,name=obliteration,if=buff.obliteration.up" );
   def -> add_action( "call_action_list,name=standard" );
 
@@ -7878,7 +7878,7 @@ void death_knight_t::default_apl_frost()
   bos_ticking -> add_action( this, "Sindragosa's Fury", "if=(equipped.consorts_cold_core|buff.pillar_of_frost.up)&buff.unholy_strength.up&debuff.razorice.stack=5" );
   bos_ticking -> add_talent( this, "Horn of Winter", "if=runic_power<70&rune.time_to_3>gcd" );
   bos_ticking -> add_talent( this, "Frostscythe", "if=buff.killing_machine.up&(!equipped.koltiras_newfound_will|talent.gathering_storm.enabled|spell_targets.frostscythe>=2)" );
-  bos_ticking -> add_talent( this, "Glacial Advance", "if=spell_targets.remorseless_winter>=2" );
+  bos_ticking -> add_talent( this, "Glacial Advance", "if=spell_targets.glacial_advance>=2" );
   bos_ticking -> add_action( this, "Remorseless Winter", "if=spell_targets.remorseless_winter>=2" );
   bos_ticking -> add_action( this, "Obliterate", "if=runic_power<=75|rune>3" );
   bos_ticking -> add_action( this, "Empower Rune Weapon", "if=runic_power<30&rune.time_to_2>gcd" );
@@ -7923,13 +7923,12 @@ void death_knight_t::default_apl_frost()
 
   // Obliteration rotation
   obliteration -> add_action( this, "Remorseless Winter", "if=talent.gathering_storm.enabled", "Obliteration rotation" );
-  obliteration -> add_action( this, "Howling Blast", "if=buff.rime.up&!buff.killing_machine.up&spell_targets.howling_blast>1" );
-  obliteration -> add_action( this, "Howling Blast", "if=!buff.rime.up&!buff.killing_machine.up&spell_targets.howling_blast>2&rune>3&talent.freezing_fog.enabled&talent.gathering_storm.enabled" );
-  obliteration -> add_action( this, "Frost Strike", "if=!buff.killing_machine.up&(!buff.rime.up|rune.time_to_1>=gcd|runic_power>=80)" );
   obliteration -> add_talent( this, "Frostscythe", "if=buff.killing_machine.up&spell_targets.frostscythe>1" );
-  obliteration -> add_action( this, "Howling Blast", "if=buff.rime.up&!buff.killing_machine.up" );
-  obliteration -> add_action( this, "Obliterate", "if=buff.killing_machine.up" );
-  obliteration -> add_action( this, "Frost Strike", "if=!buff.killing_machine.up&rune.time_to_1>=gcd" );
+  obliteration -> add_action( this, "Obliterate", "if=buff.killing_machine.up|(spell_targets.howling_blast>=3&!buff.rime.up)" );
+  obliteration -> add_action( this, "Howling Blast", "if=buff.rime.up&spell_targets.howling_blast>1" );
+  obliteration -> add_action( this, "Howling Blast", "if=!buff.rime.up&spell_targets.howling_blast>2&rune>3&talent.freezing_fog.enabled&talent.gathering_storm.enabled" );
+  obliteration -> add_action( this, "Frost Strike", "if=!buff.rime.up|rune.time_to_1>=gcd|runic_power>=80" );
+  obliteration -> add_action( this, "Howling Blast", "if=buff.rime.up" );
   obliteration -> add_action( this, "Obliterate" );
   
   // Standard rotation
@@ -7943,11 +7942,12 @@ void death_knight_t::default_apl_frost()
   standard -> add_action( this, "Sindragosa's Fury", "if=(equipped.consorts_cold_core|buff.pillar_of_frost.up)&buff.unholy_strength.up&debuff.razorice.stack=5" );
   standard -> add_action( this, "Frost Strike", "if=runic_power>=90&!buff.hungering_rune_weapon.up" );
   standard -> add_talent( this, "Frostscythe", "if=buff.killing_machine.up&(!equipped.koltiras_newfound_will|spell_targets.frostscythe>=2)" );
+  standard -> add_action( this, "Obliterate", "if=buff.killing_machine.react" );
+  standard -> add_action( this, "Frost Strike", "if=runic_power>=80" );
   standard -> add_action( this, "Remorseless Winter", "if=spell_targets.remorseless_winter>=2" );
   standard -> add_talent( this, "Glacial Advance", "if=spell_targets.glacial_advance>=2" );
   standard -> add_talent( this, "Frostscythe", "if=spell_targets.frostscythe>=3" );
-  standard -> add_action( this, "Obliterate", "if=buff.killing_machine.react" );
-  standard -> add_action( this, "Frost Strike", "if=runic_power>=80" );
+
   standard -> add_action( this, "Obliterate" );
   standard -> add_talent( this, "Horn of Winter", "if=!buff.hungering_rune_weapon.up&(rune.time_to_2>gcd|!talent.frozen_pulse.enabled)" );
   standard -> add_action( this, "Frost Strike", "if=!(runic_power<50&talent.obliteration.enabled&cooldown.obliteration.remains<=gcd)" );
