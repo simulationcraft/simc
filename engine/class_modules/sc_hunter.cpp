@@ -4967,7 +4967,7 @@ struct kill_command_t: public hunter_spell_t
   template <typename F>
   expr_t* make_aotb_expr( const std::string& name, F&& fn ) const
   {
-    target_specific_t<dot_t> specific_dot;
+    target_specific_t<dot_t> specific_dot(false);
     return make_fn_expr( name, [ this, specific_dot, fn ] () {
       player_t* pet = p() -> active.pet;
       assert( pet );
