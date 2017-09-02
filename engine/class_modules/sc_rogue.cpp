@@ -850,14 +850,7 @@ static void break_stealth( rogue_t* p )
   if ( p -> buffs.stealth -> check() )
     p -> buffs.stealth -> expire();
 
-  // This bug allows us to use two abilities with vanish.
-  // For more details, see: https://github.com/Ravenholdt-TC/Rogue/issues/4
-  // This implementation is a simple hack to not consume the buff when vanish has just been cast.
-  // Note: To ensure Vanish->DfA does not lead to vanish lasting until the finisher, there is a
-  // stealth break call in death_from_above_driver_t::tick as well.
-  bool vanishBug = p -> buffs.vanish -> buff_duration - p -> buffs.vanish -> remains() <= timespan_t::from_seconds( 0.1 );
-
-  if ( p -> buffs.vanish -> check() && ( ! p -> bugs || ! vanishBug ) )
+  if ( p -> buffs.vanish -> check() )
     p -> buffs.vanish -> expire();
 }
 
@@ -4874,10 +4867,6 @@ struct death_from_above_driver_t : public rogue_attack_t
   void tick( dot_t* d ) override
   {
     rogue_attack_t::tick( d );
-
-    // This is to make sure vanish (due to the vanish bug) is not up.
-    // See break_stealth() for more info.
-    actions::break_stealth( p() );
 
     action_state_t* ability_state = ability -> get_state();
     ability -> snapshot_state( ability_state, DMG_DIRECT );
