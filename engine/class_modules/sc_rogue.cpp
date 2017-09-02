@@ -5011,6 +5011,10 @@ struct death_from_above_t : public rogue_attack_t
     driver -> base_tick_time = oor_delay;
     driver -> dot_duration = oor_delay;
 
+    action_state_t* driver_state = driver -> get_state( execute_state );
+    driver_state -> target = target;
+    driver -> schedule_execute( driver_state );
+
     if ( p() -> buffs.feeding_frenzy -> check() )
     {
       p() -> buffs.feeding_frenzy -> decrement();
