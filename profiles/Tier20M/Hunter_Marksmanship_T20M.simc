@@ -112,7 +112,7 @@ actions.targetdie+=/arcane_shot
 actions.targetdie+=/sidewinders
 
 head=wildstalker_helmet,id=147142,bonus_id=1512/3563
-neck=locket_of_splintered_souls,id=147014,bonus_id=1512/3563,enchant=mark_of_the_hidden_satyr
+neck=locket_of_splintered_souls,id=147014,bonus_id=1512/3563,enchant=mark_of_the_claw
 shoulders=wildstalker_spaulders,id=147144,bonus_id=1512/3563
 back=wildstalker_cape,id=147140,bonus_id=1512/3563,enchant=binding_of_agility
 chest=wildstalker_chestguard,id=147139,bonus_id=1512/3563

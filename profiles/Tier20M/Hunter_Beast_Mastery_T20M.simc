@@ -57,7 +57,7 @@ actions+=/cobra_shot,if=(cooldown.kill_command.remains>focus.time_to_max&cooldow
 actions+=/dire_beast,if=buff.bestial_wrath.up
 
 head=wildstalker_helmet,id=147142,bonus_id=1512/3563
-neck=locket_of_splintered_souls,id=147014,bonus_id=1512/3563,enchant=mark_of_the_hidden_satyr
+neck=locket_of_splintered_souls,id=147014,bonus_id=1512/3563,enchant=mark_of_the_trained_soldier
 shoulders=wildstalker_spaulders,id=147144,bonus_id=1512/3563
 back=wildstalker_cape,id=147140,bonus_id=1512/3563,enchant=binding_of_agility
 chest=parsels_tongue,id=151805,bonus_id=3570

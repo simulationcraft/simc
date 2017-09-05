@@ -9,7 +9,7 @@ crucible=1739:3:1771:3:875:1:870:2
 spec=beast_mastery
 
 head=wildstalker_helmet,id=147142,bonus_id=1512/3563
-neck=locket_of_splintered_souls,id=147014,bonus_id=1512/3563,enchant=mark_of_the_hidden_satyr
+neck=locket_of_splintered_souls,id=147014,bonus_id=1512/3563,enchant=mark_of_the_trained_soldier
 shoulders=wildstalker_spaulders,id=147144,bonus_id=1512/3563
 back=wildstalker_cape,id=147140,bonus_id=1512/3563,enchant=binding_of_agility
 chest=parsels_tongue,id=151805,bonus_id=3570
@@ -38,7 +38,7 @@ crucible=1739:3:1771:3:1521:1:319:2
 spec=marksmanship
 
 head=wildstalker_helmet,id=147142,bonus_id=1512/3563
-neck=locket_of_splintered_souls,id=147014,bonus_id=1512/3563,enchant=mark_of_the_hidden_satyr
+neck=locket_of_splintered_souls,id=147014,bonus_id=1512/3563,enchant=mark_of_the_claw
 shoulders=wildstalker_spaulders,id=147144,bonus_id=1512/3563
 back=wildstalker_cape,id=147140,bonus_id=1512/3563,enchant=binding_of_agility
 chest=wildstalker_chestguard,id=147139,bonus_id=1512/3563
@@ -70,7 +70,7 @@ crucible=1739:3:1774:3:1070:2:1525:1
 spec=survival
 
 head=wildstalker_helmet,id=147142,bonus_id=1512/3563
-neck=string_of_extracted_incisors,id=147013,bonus_id=1512/3563,enchant=mark_of_the_hidden_satyr
+neck=string_of_extracted_incisors,id=147013,bonus_id=1512/3563,enchant=mark_of_the_claw
 shoulders=wildstalker_spaulders,id=147144,bonus_id=1512/3563
 back=wildstalker_cape,id=147140,bonus_id=1512/3563,enchant=binding_of_agility
 chest=hauberk_of_frozen_mist,id=147043,bonus_id=1512/3563
