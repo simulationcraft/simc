@@ -1051,7 +1051,7 @@ struct firebolt_t: public warlock_pet_spell_t
   {
     double m = warlock_pet_spell_t::action_multiplier();
 
-    m *= 1.0 + p() -> o() -> spec.destruction -> effectN( 1 ).percent();
+    m *= 1.0 + p() -> o() -> spec.destruction -> effectN( 3 ).percent();
 
     return m;
   }
@@ -1302,7 +1302,7 @@ struct doom_bolt_t: public warlock_pet_spell_t
     double m = warlock_pet_spell_t::action_multiplier();
 
     if ( p() -> o() -> specialization() == WARLOCK_DESTRUCTION )
-      m *= 1.0 + p() -> o() -> spec.destruction -> effectN( 1 ).percent();
+      m *= 1.0 + p() -> o() -> spec.destruction -> effectN( 3 ).percent();
 
     return m;
   }
@@ -2487,7 +2487,7 @@ public:
 
       if ( p()->talents.soul_conduit->ok() )
       {
-        double soul_conduit_rng = p()->talents.soul_conduit->effectN( 1 ).percent() + p()->spec.destruction->effectN( 3 ).percent();
+        double soul_conduit_rng = p()->talents.soul_conduit->effectN( 1 ).percent() + p()->spec.destruction->effectN( 4 ).percent();
 
         for ( int i = 0; i < last_resource_cost; i++ )
         {
