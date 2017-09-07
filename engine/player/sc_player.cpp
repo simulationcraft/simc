@@ -7168,20 +7168,35 @@ struct use_item_t : public action_t
     }
   }
 
+  void erase_action( action_priority_list_t* apl )
+  {
+    if ( apl == nullptr )
+    {
+      return;
+    }
+
+    auto it = range::find( apl -> foreground_action_list, this );
+
+    if ( it != apl -> foreground_action_list.end() )
+    {
+      apl -> foreground_action_list.erase( it );
+    }
+  }
+
+
   void init() override
   {
     action_t::init();
 
-    auto apl = player -> find_action_priority_list( action_list -> name_str );
+    action_priority_list_t* apl = nullptr;
+    if ( action_list )
+    {
+      apl = player -> find_action_priority_list( action_list -> name_str );
+    }
+
     if ( ! item )
     {
-      auto it = range::find( apl -> foreground_action_list, this );
-
-      if ( it != apl -> foreground_action_list.end() )
-      {
-        apl -> foreground_action_list.erase( it );
-      }
-
+      erase_action( apl );
       return;
     }
 
@@ -7254,11 +7269,7 @@ struct use_item_t : public action_t
       }
       background = true;
 
-      auto it = range::find( apl -> foreground_action_list, this );
-      if ( it != apl -> foreground_action_list.end() )
-      {
-        apl -> foreground_action_list.erase( it );
-      }
+      erase_action( apl );
     }
   }
 
