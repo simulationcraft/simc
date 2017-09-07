@@ -7172,6 +7172,14 @@ struct use_item_t : public action_t
   {
     action_t::init();
 
+    auto apl = player -> find_action_priority_list( action_list -> name_str );
+    auto it = range::find( apl -> foreground_action_list, this );
+
+    if ( it != apl -> foreground_action_list.end() )
+    {
+      apl -> foreground_action_list.erase( it );
+    }
+
     if ( ! item )
       return;
 
@@ -7243,10 +7251,16 @@ struct use_item_t : public action_t
         sim -> errorf( "Player %s has 'use_item' action with no custom buff or action setup.\n", player -> name() );
       }
       background = true;
+
+      auto it = range::find( apl -> foreground_action_list, this );
+      if ( it != apl -> foreground_action_list.end() )
+      {
+        apl -> foreground_action_list.erase( it );
+      }
     }
   }
 
-  virtual void execute() override
+  void execute() override
   {
     bool triggered = buff == 0;
     if ( buff )
@@ -7283,7 +7297,7 @@ struct use_item_t : public action_t
     }
   }
 
-  virtual bool ready() override
+  bool ready() override
   {
     if ( ! item ) return false;
 
