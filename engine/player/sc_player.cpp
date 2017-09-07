@@ -7173,15 +7173,17 @@ struct use_item_t : public action_t
     action_t::init();
 
     auto apl = player -> find_action_priority_list( action_list -> name_str );
-    auto it = range::find( apl -> foreground_action_list, this );
-
-    if ( it != apl -> foreground_action_list.end() )
-    {
-      apl -> foreground_action_list.erase( it );
-    }
-
     if ( ! item )
+    {
+      auto it = range::find( apl -> foreground_action_list, this );
+
+      if ( it != apl -> foreground_action_list.end() )
+      {
+        apl -> foreground_action_list.erase( it );
+      }
+
       return;
+    }
 
     // Parse Special Effect
     const special_effect_t* e = item -> special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE );
