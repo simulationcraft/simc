@@ -7168,12 +7168,37 @@ struct use_item_t : public action_t
     }
   }
 
+  void erase_action( action_priority_list_t* apl )
+  {
+    if ( apl == nullptr )
+    {
+      return;
+    }
+
+    auto it = range::find( apl -> foreground_action_list, this );
+
+    if ( it != apl -> foreground_action_list.end() )
+    {
+      apl -> foreground_action_list.erase( it );
+    }
+  }
+
+
   void init() override
   {
     action_t::init();
 
+    action_priority_list_t* apl = nullptr;
+    if ( action_list )
+    {
+      apl = player -> find_action_priority_list( action_list -> name_str );
+    }
+
     if ( ! item )
+    {
+      erase_action( apl );
       return;
+    }
 
     // Parse Special Effect
     const special_effect_t* e = item -> special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE );
@@ -7243,10 +7268,12 @@ struct use_item_t : public action_t
         sim -> errorf( "Player %s has 'use_item' action with no custom buff or action setup.\n", player -> name() );
       }
       background = true;
+
+      erase_action( apl );
     }
   }
 
-  virtual void execute() override
+  void execute() override
   {
     bool triggered = buff == 0;
     if ( buff )
@@ -7283,7 +7310,7 @@ struct use_item_t : public action_t
     }
   }
 
-  virtual bool ready() override
+  bool ready() override
   {
     if ( ! item ) return false;
 
