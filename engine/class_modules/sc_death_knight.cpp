@@ -2420,7 +2420,7 @@ struct valkyr_pet_t : public death_knight_pet_t
     auto dist = static_cast<int>( rng().range( 0, 2 ) );
     auto base = dist == 0 ? 2.25 : 3.25;
 
-    timespan_t confusion_time = timespan_t::from_seconds( rng().gauss( base, 0.25 ) );
+    confusion_time = timespan_t::from_seconds( rng().gauss( base, 0.25 ) );
     
     // Although there's no GCD on valkyr strike and no queue lag on the casts,
     // DA doesn't cast the right amount of val'kyr strikes when hitting exactly a haste breakpoint
