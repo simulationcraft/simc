@@ -2297,9 +2297,9 @@ struct valkyr_pet_t : public death_knight_pet_t
   struct general_confusion_t : public action_t
   {
     bool executed;
-    timespan_t confusion_time;
+    timespan_t& confusion_time;
 
-    general_confusion_t( player_t* player, timespan_t confusion ) : action_t( ACTION_OTHER, "general_confusion", player ),
+    general_confusion_t( player_t* player, timespan_t& confusion ) : action_t( ACTION_OTHER, "general_confusion", player ),
       executed( false ),
       confusion_time( confusion )
     {
@@ -2381,7 +2381,7 @@ struct valkyr_pet_t : public death_knight_pet_t
   action_t* create_action( const std::string& name, const std::string& options_str ) override
   {
     if ( name == "valkyr_strike"     ) return new     valkyr_strike_t( this, options_str );
-    if ( name == "general_confusion" ) return new general_confusion_t( this, confusion_time);
+    if ( name == "general_confusion" ) return new general_confusion_t( this, confusion_time );
 
     return death_knight_pet_t::create_action( name, options_str );
   }
@@ -2409,9 +2409,23 @@ struct valkyr_pet_t : public death_knight_pet_t
     }
   }
   
-  void set_confusion ( timespan_t t )
+  void summon ( timespan_t t ) override
   {
-    confusion_time = t;
+    // Seems to have a bimodal distribution on how long an idle time there is after summoning, based
+    // on quite a bit of data. In any case, the mean delay is quite significant (on average over 2.5
+    // seconds).
+    
+    // The duration is set to 20s after the start of the first cast to make up to the confusion time
+
+    auto dist = static_cast<int>( rng().range( 0, 2 ) );
+    auto base = dist == 0 ? 2.25 : 3.25;
+
+    timespan_t confusion_time = timespan_t::from_seconds( rng().gauss( base, 0.25 ) );
+    
+    // Although there's no GCD on valkyr strike and no queue lag on the casts,
+    // DA doesn't cast the right amount of val'kyr strikes when hitting exactly a haste breakpoint
+    // Adding 1ms to the duration is enough to make the expiration event occur later than the final cast
+    pet_t::summon(t + confusion_time + timespan_t::from_millis( 1 ) );
   }
   
 };
@@ -4177,20 +4191,7 @@ struct dark_arbiter_t : public death_knight_spell_t
   {
     death_knight_spell_t::execute();
 
-    // Seems to have a bimodal distribution on how long an idle time there is after summoning, based
-    // on quite a bit of data. In any case, the mean delay is quite significant (on average over 2.5
-    // seconds).
-    
-    // The duration is set to 20s after the start of the first cast to make up to the confusion time
-
-    auto dist = static_cast<int>( rng().range( 0, 2 ) );
-    auto base = dist == 0 ? 2.25 : 3.25;
-
-    timespan_t confusion_time = timespan_t::from_seconds( rng().gauss( base, 0.25 ) );
-  
-    p() -> pets.dark_arbiter -> summon( data().duration() + confusion_time );
-    p() -> pets.dark_arbiter -> set_confusion( confusion_time );
-    
+    p() -> pets.dark_arbiter -> summon( data().duration() );    
   }
 };
 
