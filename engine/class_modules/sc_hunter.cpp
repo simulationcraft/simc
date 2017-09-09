@@ -614,11 +614,11 @@ public:
     if ( ab::data().affected_by( p() -> specs.beast_mastery_hunter -> effectN( 2 ) ) )
       ab::base_td_multiplier *= 1.0 + p() -> specs.beast_mastery_hunter -> effectN( 2 ).percent();
 
-    if ( ab::data().affected_by( p() -> specs.marksmanship_hunter -> effectN( maybe_ptr( p() -> dbc.ptr ) ? 4 : 3 ) ) )
-      ab::base_dd_multiplier *= 1.0 + p() -> specs.marksmanship_hunter -> effectN( maybe_ptr( p() -> dbc.ptr ) ? 4 : 3 ).percent();
+    if ( ab::data().affected_by( p() -> specs.marksmanship_hunter -> effectN( 4 ) ) )
+      ab::base_dd_multiplier *= 1.0 + p() -> specs.marksmanship_hunter -> effectN( 4 ).percent();
 
-    if ( ab::data().affected_by( p() -> specs.marksmanship_hunter -> effectN( maybe_ptr( p() -> dbc.ptr ) ? 5 : 4 ) ) )
-      ab::base_td_multiplier *= 1.0 + p() -> specs.marksmanship_hunter -> effectN( maybe_ptr( p() -> dbc.ptr ) ? 5 : 4 ).percent();
+    if ( ab::data().affected_by( p() -> specs.marksmanship_hunter -> effectN( 5 ) ) )
+      ab::base_td_multiplier *= 1.0 + p() -> specs.marksmanship_hunter -> effectN( 5 ).percent();
 
     if ( ab::data().affected_by( p() -> specs.survival_hunter -> effectN( 1 ) ) )
       ab::base_dd_multiplier *= 1.0 + p() -> specs.survival_hunter -> effectN( 1 ).percent();
@@ -4967,7 +4967,7 @@ struct kill_command_t: public hunter_spell_t
   template <typename F>
   expr_t* make_aotb_expr( const std::string& name, F&& fn ) const
   {
-    target_specific_t<dot_t> specific_dot;
+    target_specific_t<dot_t> specific_dot(false);
     return make_fn_expr( name, [ this, specific_dot, fn ] () {
       player_t* pet = p() -> active.pet;
       assert( pet );
@@ -4984,8 +4984,8 @@ struct kill_command_t: public hunter_spell_t
     auto splits = util::string_split( expression_str, "." );
     if ( splits.size() == 2 && splits[ 0 ] == "bestial_ferocity" )
     {
-      if ( splits[ 1 ] == "ticking" )
-        return make_aotb_expr( "aotb_ticking", []( dot_t* dot ) { return dot -> is_ticking(); } );
+      if ( splits[ 1 ] == "remains" )
+        return make_aotb_expr( "aotb_remains", []( dot_t* dot ) { return dot -> remains(); } );
     }
 
     return hunter_spell_t::create_expression( expression_str );
@@ -6391,7 +6391,7 @@ void hunter_t::apl_bm()
 
   default_list -> add_action( this, "Aspect of the Wild", "if=(equipped.call_of_the_wild&equipped.convergence_of_fates&talent.one_with_the_pack.enabled)|buff.bestial_wrath.remains>7|target.time_to_die<12",
                                     "With both AotW cdr sources and OwtP, there's no visible benefit if it's delayed, use it on cd. With only one or neither, pair it with Bestial Wrath. Also use it if the fight will end when the buff does." );
-  default_list -> add_action( this, "Kill Command", "if=equipped.qapla_eredun_war_order" );
+  default_list -> add_action( this, "Kill Command", "target_if=min:bestial_ferocity.remains,if=equipped.qapla_eredun_war_order" );
   
   default_list -> add_action( this, "Dire Beast", "if=((!equipped.qapla_eredun_war_order|cooldown.kill_command.remains>=1)&(set_bonus.tier19_2pc|!buff.bestial_wrath.up))|full_recharge_time<gcd.max|cooldown.titans_thunder.up|spell_targets>1",
                                     "Hold charges of Dire Beast as long as possible to take advantage of T20 2pc unless T19 2pc is on. With Qa'pla, also try not to waste Kill Command cdr if it is just about to come off cooldown." );
@@ -6860,7 +6860,7 @@ double hunter_t::composite_player_pet_damage_multiplier( const action_state_t* s
     m *= 1.0 + specs.beast_mastery_hunter -> effectN( 3 ).percent();
 
   if ( specs.survival_hunter -> ok() )
-    m *= 1.0 + specs.survival_hunter -> effectN( 5 ).percent();
+    m *= 1.0 + specs.survival_hunter -> effectN( 3 ).percent();
 
   if ( buffs.the_mantle_of_command -> check() )
     m *= 1.0 + buffs.the_mantle_of_command -> check_value();

@@ -4,7 +4,8 @@ race=dwarf
 role=spell
 position=back
 talents=2032021
-artifact=53:0:0:0:0:783:1:784:4:785:4:786:4:787:4:788:4:789:4:790:4:791:4:792:4:793:1:794:1:795:1:796:1:797:1:798:1:1296:1:1373:1:1537:4:1538:1:1539:1:1540:1:1641:1
+artifact=53:0:0:0:0:783:1:784:4:785:4:786:4:787:4:788:4:789:4:790:4:791:4:792:4:793:1:794:1:795:1:796:1:797:1:798:1:1296:1:1373:1:1537:4:1538:1:1539:1:1540:24:1641:1
+crucible=1739:3:1770:1:1774:2:786:2:789:1
 spec=frost
 
 head=crown_of_the_arcane_tempest,id=147147,ilevel=930
@@ -18,7 +19,7 @@ waist=braided_torture_lash,id=146998,ilevel=930
 legs=leggings_of_everburning_knowledge,id=138315,ilevel=905
 feet=acolytes_abandoned_footwraps,id=147422,ilevel=930
 finger1=seal_of_the_second_duumvirate,id=147195,ilevel=940,enchant=binding_of_critical_strike
-finger2=shard_of_the_exodar,id=132410,ilevel=970,gems=200int,enchant=binding_of_critical_strike
+finger2=shard_of_the_exodar,id=132410,ilevel=970,gems=200versatility,enchant=binding_of_critical_strike
 trinket1=tarnished_sentinel_medallion,id=147017,ilevel=930
 trinket2=terror_from_below,id=147016,ilevel=930
 main_hand=ebonchill,id=128862,gem_id=147095/147079/147095,relic_ilevel=940/940/940
@@ -32,7 +33,9 @@ race=troll
 role=spell
 position=back
 talents=3022023
-artifact=54:0:0:0:0:748:1:749:4:750:4:751:4:752:4:753:4:754:4:755:4:756:4:757:4:758:1:759:1:760:1:761:1:762:1:763:1:1340:1:1372:1:1533:4:1534:1:1535:1:1536:1:1640:1
+artifact=54:0:0:0:0:748:1:749:4:750:4:751:4:752:4:753:4:754:4:755:4:756:4:757:4:758:1:759:1:760:1:761:1:762:1:763:1:1340:1:1372:1:1533:4:1534:1:1535:1:1536:24:1640:1
+crucible=1739:3:1770:3:1533:2:751:1
+
 spec=fire
 firestarter_time=20
 
@@ -62,7 +65,9 @@ race=troll
 role=spell
 position=back
 talents=2023031
-artifact=4:0:0:0:0:72:4:73:1:74:4:75:4:77:4:78:1:79:4:80:1:81:4:82:4:83:4:84:4:86:1:87:1:290:1:1169:1:1339:1:1371:1:1529:4:1530:1:1531:1:1532:1:1639:1
+artifact=4:0:0:0:0:72:4:73:1:74:4:75:4:77:4:78:1:79:4:80:1:81:4:82:4:83:4:84:4:86:1:87:1:290:1:1169:1:1339:1:1371:1:1529:4:1530:1:1531:1:1532:24:1639:1
+crucible=1739:3:1774:3:82:3
+
 spec=arcane
 
 head=crown_of_the_arcane_tempest,id=147147,ilevel=930

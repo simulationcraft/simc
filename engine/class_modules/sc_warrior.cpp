@@ -1992,6 +1992,8 @@ struct colossus_smash_t: public warrior_attack_t
 
       t20_2p_reduction *= -1.0;
     }
+
+	cooldown -> duration += p -> talents.titanic_might -> effectN( 2 ).time_value();
   }
 
   void execute() override

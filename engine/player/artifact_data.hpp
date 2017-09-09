@@ -37,6 +37,8 @@ static const unsigned ARTIFICIAL_STAMINA_CUTOFF_TRAIT = 52U;
 static const uint8_t MAX_TRAIT_RANK = std::numeric_limits<uint8_t>::max();
 // Ilevel crucible power id
 static const unsigned CRUCIBLE_ILEVEL_POWER_ID = 1739U;
+// Default override value
+static const int16_t NO_OVERRIDE = -1;
 
 struct point_data_t
 {
@@ -45,15 +47,22 @@ struct point_data_t
   uint8_t crucible;
   int16_t overridden; // Indicate overridden status
 
-  point_data_t() : purchased( 0 ), bonus( 0 ), crucible( 0 ), overridden( -1 )
+  point_data_t() : purchased( 0 ), bonus( 0 ), crucible( 0 ), overridden( NO_OVERRIDE )
   { }
 
-  point_data_t( uint8_t p, uint8_t b ) : purchased( p ), bonus( b ), crucible( 0 ), overridden( -1 )
+  point_data_t( uint8_t p, uint8_t b ) : purchased( p ), bonus( b ), crucible( 0 ),
+    overridden( NO_OVERRIDE )
   { }
 
   point_data_t( uint8_t p, uint8_t b, int16_t o ) : purchased( p ), bonus( b ),
     crucible( 0 ), overridden( o )
   { }
+};
+
+struct relic_data_t
+{
+  unsigned power_id;
+  uint8_t  rank;
 };
 
 using artifact_point_map_t = std::unordered_map<unsigned, point_data_t>;
@@ -83,6 +92,8 @@ class player_artifact_data_t
   // Artificial Stamina and Damage auras
   const spell_data_t*   m_artificial_stamina;
   const spell_data_t*   m_artificial_damage;
+  // Relic information
+  std::vector<relic_data_t> m_relic_data;
 
   // Standard format parsing functions for artifact data from 'artifact', and 'crucible' user
   // options
@@ -256,13 +267,14 @@ public:
 
   // Add purchased artifact power
   bool     add_power( unsigned power_id, unsigned rank );
-  void     add_relic( unsigned item_id, unsigned power_id, unsigned rank );
+  void     add_relic( unsigned index, unsigned item_id, unsigned power_id, unsigned rank );
+  void     remove_relic( unsigned index );
   bool     add_crucible_power( unsigned power_id, unsigned rank );
   // Override an artifact power, used for artifact_override= option
   void     override_power( const std::string& name_str, unsigned rank );
 
   // (Re)move purchased rank from a power, required for wowhead artifact strings to be correct
-  void     move_purchased_rank( unsigned power_id, unsigned rank );
+  void     move_purchased_rank( unsigned index, unsigned power_id, unsigned rank );
 
   // Valid power identifier for the player
   bool     valid_power( unsigned power_id ) const;

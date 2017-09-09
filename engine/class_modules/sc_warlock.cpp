@@ -578,7 +578,10 @@ public:
     return td;
   }
 
-
+  std::string       default_potion() const override;
+  std::string       default_flask() const override;
+  std::string       default_food() const override;
+  std::string       default_rune() const override;
 
 private:
   void apl_precombat();
@@ -587,6 +590,7 @@ private:
   void apl_demonology();
   void apl_destruction();
   void apl_global_filler();
+
 };
 
 static void do_trinket_init(  warlock_t*               player,
@@ -1051,7 +1055,7 @@ struct firebolt_t: public warlock_pet_spell_t
   {
     double m = warlock_pet_spell_t::action_multiplier();
 
-    m *= 1.0 + p() -> o() -> spec.destruction -> effectN( 1 ).percent();
+    m *= 1.0 + p() -> o() -> spec.destruction -> effectN( 3 ).percent();
 
     return m;
   }
@@ -1302,7 +1306,7 @@ struct doom_bolt_t: public warlock_pet_spell_t
     double m = warlock_pet_spell_t::action_multiplier();
 
     if ( p() -> o() -> specialization() == WARLOCK_DESTRUCTION )
-      m *= 1.0 + p() -> o() -> spec.destruction -> effectN( 1 ).percent();
+      m *= 1.0 + p() -> o() -> spec.destruction -> effectN( 3 ).percent();
 
     return m;
   }
@@ -2487,7 +2491,7 @@ public:
 
       if ( p()->talents.soul_conduit->ok() )
       {
-        double soul_conduit_rng = p()->talents.soul_conduit->effectN( 1 ).percent() + p()->spec.destruction->effectN( 3 ).percent();
+        double soul_conduit_rng = p()->talents.soul_conduit->effectN( 1 ).percent() + p()->spec.destruction->effectN( 4 ).percent();
 
         for ( int i = 0; i < last_resource_cost; i++ )
         {
@@ -6804,69 +6808,83 @@ void warlock_t::init_procs()
 
 void warlock_t::apl_precombat()
 {
-  std::string& precombat_list =
-    get_action_priority_list( "precombat" )->action_list_str;
+  action_priority_list_t* precombat = get_action_priority_list( "precombat" );
 
-  if ( sim -> allow_flasks )
-  {
-    // Flask
-    if ( true_level == 110 )
-      precombat_list = "flask,type=whispered_pact";
-    else if ( true_level >= 100 )
-      precombat_list = "flask,type=greater_draenic_intellect_flask";
-  }
+  precombat->add_action( "flask" );
+  precombat->add_action( "food" );
+  precombat->add_action( "augmentation" );
 
-  if ( sim -> allow_food )
-  {
-    // Food
-    if ( true_level == 110 && specialization() == WARLOCK_AFFLICTION )
-      precombat_list += "/food,type=nightborne_delicacy_platter";
-    else if ( true_level == 110 )
-      precombat_list += "/food,type=azshari_salad";
-    else if ( true_level >= 100 && specialization() == WARLOCK_DESTRUCTION )
-      precombat_list += "/food,type=frosty_stew";
-    else if ( true_level >= 100 && specialization() == WARLOCK_DEMONOLOGY)
-      precombat_list += "/food,type=frosty_stew";
-    else if ( true_level >= 100 && specialization() == WARLOCK_AFFLICTION )
-      precombat_list += "/food,type=felmouth_frenzy";
-  }
+  precombat->add_action( "summon_pet,if=!talent.grimoire_of_supremacy.enabled&(!talent.grimoire_of_sacrifice.enabled|buff.demonic_power.down)" );
+  precombat->add_action( "summon_infernal,if=talent.grimoire_of_supremacy.enabled&artifact.lord_of_flames.rank>0" );
+  precombat->add_action( "summon_infernal,if=talent.grimoire_of_supremacy.enabled&active_enemies>1" );
+  precombat->add_action( "summon_doomguard,if=talent.grimoire_of_supremacy.enabled&active_enemies=1&artifact.lord_of_flames.rank=0" );
 
-  precombat_list += "/summon_pet,if=!talent.grimoire_of_supremacy.enabled&(!talent.grimoire_of_sacrifice.enabled|buff.demonic_power.down)";
-  precombat_list += "/summon_infernal,if=talent.grimoire_of_supremacy.enabled&artifact.lord_of_flames.rank>0";
-  precombat_list += "/summon_infernal,if=talent.grimoire_of_supremacy.enabled&active_enemies>1";
-  precombat_list += "/summon_doomguard,if=talent.grimoire_of_supremacy.enabled&active_enemies=1&artifact.lord_of_flames.rank=0";
-
-  if ( true_level > 100 )
-    precombat_list += "/augmentation,type=defiled";
-
-  precombat_list += "/snapshot_stats";
+  precombat->add_action( "snapshot_stats" );
 
   if ( specialization() != WARLOCK_DEMONOLOGY )
-    precombat_list += "/grimoire_of_sacrifice,if=talent.grimoire_of_sacrifice.enabled";
+    precombat->add_action( "grimoire_of_sacrifice,if=talent.grimoire_of_sacrifice.enabled" );
 
-  if ( specialization() != WARLOCK_DEMONOLOGY )
-    precombat_list += "/life_tap,if=talent.empowered_life_tap.enabled&!buff.empowered_life_tap.remains";
+  if (specialization() != WARLOCK_DEMONOLOGY)
+    precombat->add_action( "life_tap,if=talent.empowered_life_tap.enabled&!buff.empowered_life_tap.remains" );
 
   if ( sim -> allow_potions )
   {
-    // Pre-potion
-    if ( true_level == 110 )
-    {
-      precombat_list += "/potion,name=prolonged_power";
-    }
-    else if ( true_level >= 100 )
-      precombat_list += "/potion,name=draenic_intellect";
+    precombat->add_action( "potion" );
   }
 
-  if ( specialization() == WARLOCK_DESTRUCTION )
-    precombat_list += "/chaos_bolt";
+  if (specialization() == WARLOCK_DESTRUCTION)
+    precombat->add_action( "chaos_bolt" );
 
   if ( specialization() == WARLOCK_DEMONOLOGY )
   {
-    precombat_list += "/demonic_empowerment";
-    precombat_list += "/demonbolt";
-    precombat_list += "/shadow_bolt";
+    precombat->add_action( "demonic_empowerment" );
+    precombat->add_action( "demonbolt" );
+    precombat->add_action( "shadow_bolt" );
   }
+}
+
+std::string warlock_t::default_potion() const
+{
+  std::string lvl110_potion = "prolonged_power";
+
+  return ( true_level >= 100 ) ? lvl110_potion :
+         ( true_level >=  90 ) ? "draenic_intellect" :
+         ( true_level >=  85 ) ? "jade_serpent" :
+         ( true_level >=  80 ) ? "volcanic" :
+                                 "disabled";
+}
+
+std::string warlock_t::default_flask() const
+{
+  return ( true_level >= 100 ) ? "whispered_pact" :
+         ( true_level >=  90 ) ? "greater_draenic_intellect_flask" :
+         ( true_level >=  85 ) ? "warm_sun" :
+         ( true_level >=  80 ) ? "draconic_mind" :
+                                 "disabled";
+}
+
+std::string warlock_t::default_food() const
+{
+  std::string lvl100_food =
+    (specialization() == WARLOCK_DESTRUCTION) ?   "frosty_stew" :
+    (specialization() == WARLOCK_DEMONOLOGY) ?    "frosty_stew" :
+    (specialization() == WARLOCK_AFFLICTION) ?    "felmouth_frenzy" : 
+                                                  "felmouth_frenzy";
+
+  std::string lvl110_food =
+    (specialization() == WARLOCK_AFFLICTION) ?    "nightborne_delicacy_platter" : 
+                                                  "azshari_salad";
+
+  return ( true_level > 100 ) ? lvl110_food :
+         ( true_level >  90 ) ? lvl100_food :
+                                "disabled";
+}
+
+std::string warlock_t::default_rune() const
+{
+  return ( true_level >= 110 ) ? "defiled" :
+         ( true_level >= 100 ) ? "focus" :
+                                 "disabled";
 }
 
 void warlock_t::apl_global_filler()
@@ -6881,18 +6899,20 @@ void warlock_t::apl_default()
 void warlock_t::apl_affliction()
 {
   action_priority_list_t* default_list = get_action_priority_list( "default" );
-  action_priority_list_t* haunt = get_action_priority_list( "haunt" );
-  action_priority_list_t* writhe = get_action_priority_list( "writhe" );
+
   action_priority_list_t* mg = get_action_priority_list( "mg" );
+  action_priority_list_t* writhe = get_action_priority_list( "writhe" );
+  action_priority_list_t* haunt = get_action_priority_list( "haunt" );
 
-  default_list->add_action( "call_action_list,name=haunt,if=talent.haunt.enabled" );
-  default_list->add_action( "call_action_list,name=writhe,if=talent.writhe_in_agony.enabled" );
   default_list->add_action( "call_action_list,name=mg,if=talent.malefic_grasp.enabled" );
+  default_list->add_action( "call_action_list,name=writhe,if=talent.writhe_in_agony.enabled" );
+  default_list->add_action( "call_action_list,name=haunt,if=talent.haunt.enabled" );
 
-  haunt->add_action( "reap_souls,if=!buff.deadwind_harvester.remains&time>5&(buff.tormented_souls.react>=5|target.time_to_die<=buff.tormented_souls.react*(5+1.5*equipped.144364)+(buff.tormented_souls.react*(5+1.5*equipped.144364)%12*(5+1.5*equipped.144364)))" );
+  haunt->add_action( "reap_souls,if=!buff.deadwind_harvester.remains&time>5&(buff.tormented_souls.react>=5|target.time_to_die<=buff.tormented_souls.react*(5+1.5*equipped.144364)+(buff.deadwind_harvester.remains*(5+1.5*equipped.144364)%12*(5+1.5*equipped.144364)))" );
   haunt->add_action( "reap_souls,if=debuff.haunt.remains&!buff.deadwind_harvester.remains" );
   haunt->add_action( "reap_souls,if=active_enemies>1&!buff.deadwind_harvester.remains&time>5&soul_shard>0&((talent.sow_the_seeds.enabled&spell_targets.seed_of_corruption>=3)|spell_targets.seed_of_corruption>=5)" );
   haunt->add_action( "agony,cycle_targets=1,if=remains<=tick_time+gcd" );
+  haunt->add_action( "drain_soul,cycle_targets=1,if=target.time_to_die<=gcd*2&soul_shard<5" );
   haunt->add_action( "service_pet,if=dot.corruption.remains&dot.agony.remains" );
   haunt->add_action( "summon_doomguard,if=!talent.grimoire_of_supremacy.enabled&spell_targets.summon_infernal<=2&(target.time_to_die>180|target.health.pct<=20|target.time_to_die<30)" );
   haunt->add_action( "summon_infernal,if=!talent.grimoire_of_supremacy.enabled&spell_targets.summon_infernal>2" );
@@ -6905,8 +6925,8 @@ void warlock_t::apl_affliction()
   {
     haunt->add_action( item_action );
   }
-  haunt->add_action( "potion,name=prolonged_power,if=!talent.soul_harvest.enabled&(trinket.proc.any.react|trinket.stack_proc.any.react|target.time_to_die<=70|buff.active_uas.stack>2)" );
-  haunt->add_action( "potion,name=prolonged_power,if=talent.soul_harvest.enabled&buff.soul_harvest.remains&(trinket.proc.any.react|trinket.stack_proc.any.react|target.time_to_die<=70|!cooldown.haunt.remains|buff.active_uas.stack>2)" );
+  haunt->add_action( "potion,if=!talent.soul_harvest.enabled&(trinket.proc.any.react|trinket.stack_proc.any.react|target.time_to_die<=70|buff.active_uas.stack>2)" );
+  haunt->add_action( "potion,if=talent.soul_harvest.enabled&buff.soul_harvest.remains&(trinket.proc.any.react|trinket.stack_proc.any.react|target.time_to_die<=70|!cooldown.haunt.remains|buff.active_uas.stack>2)" );
   haunt->add_action( "siphon_life,cycle_targets=1,if=remains<=tick_time+gcd" );
   haunt->add_action( "corruption,cycle_targets=1,if=remains<=tick_time+gcd&(spell_targets.seed_of_corruption<3&talent.sow_the_seeds.enabled|spell_targets.seed_of_corruption<5)" );
   haunt->add_action( "reap_souls,if=(buff.deadwind_harvester.remains+buff.tormented_souls.react*(5+equipped.144364))>=(12*(5+1.5*equipped.144364))" );
@@ -6927,14 +6947,22 @@ void warlock_t::apl_affliction()
   haunt->add_action( "unstable_affliction,if=(!talent.sow_the_seeds.enabled|spell_targets.seed_of_corruption<3)&spell_targets.seed_of_corruption<5&debuff.haunt.remains>=action.unstable_affliction_1.tick_time*2" );
   haunt->add_action( "reap_souls,if=!buff.deadwind_harvester.remains&(buff.active_uas.stack>1|(prev_gcd.1.unstable_affliction&buff.tormented_souls.react>1))" );
   haunt->add_action( "life_tap,if=mana.pct<=10" );
+  haunt->add_action( "life_tap,if=prev_gcd.1.life_tap&buff.active_uas.stack=0&mana.pct<50" );
   haunt->add_action( "drain_soul,chain=1,interrupt=1" );
-  haunt->add_action( "life_tap" );
+  haunt->add_action( "life_tap,moving=1,if=mana.pct<80" );
+  haunt->add_action( "agony,moving=1,cycle_targets=1,if=remains<=duration-(3*tick_time)" );
+  haunt->add_action( "siphon_life,moving=1,cycle_targets=1,if=remains<=duration-(3*tick_time)" );
+  haunt->add_action( "corruption,moving=1,cycle_targets=1,if=remains<=duration-(3*tick_time)" );
+  haunt->add_action( "life_tap,moving=0" );
 
-  writhe->add_action( "reap_souls,if=!buff.deadwind_harvester.remains&time>5&(buff.tormented_souls.react>=5|target.time_to_die<=buff.tormented_souls.react*(5+1.5*equipped.144364)+(buff.tormented_souls.react*(5+1.5*equipped.144364)%12*(5+1.5*equipped.144364)))" );
-  writhe->add_action( "reap_souls,if=!buff.deadwind_harvester.remains&time>5&(buff.soul_harvest.remains>(5+equipped.144364)&buff.active_uas.stack>1|buff.concordance_of_the_legionfall.react|trinket.proc.intellect.react|trinket.stacking_proc.intellect.react|trinket.proc.mastery.react|trinket.stacking_proc.mastery.react|trinket.proc.crit.react|trinket.stacking_proc.crit.react|trinket.proc.versatility.react|trinket.stacking_proc.versatility.react|trinket.proc.spell_power.react|trinket.stacking_proc.spell_power.react)" );
-  writhe->add_action( "reap_souls,if=active_enemies>1&!buff.deadwind_harvester.remains&time>5&soul_shard>0&((talent.sow_the_seeds.enabled&spell_targets.seed_of_corruption>=3)|spell_targets.seed_of_corruption>=5)" );
-  writhe->add_action( "agony,cycle_targets=1,if=remains<=tick_time+gcd" );
-  writhe->add_action( "unstable_affliction,if=(!talent.sow_the_seeds.enabled|spell_targets.seed_of_corruption<3)&spell_targets.seed_of_corruption<5&soul_shard=5" );
+  writhe->add_action( "reap_souls,if=!buff.deadwind_harvester.remains&time>5&(buff.tormented_souls.react>=5|target.time_to_die<=buff.tormented_souls.react*(5+1.5*equipped.144364)+(buff.deadwind_harvester.remains*(5+1.5*equipped.144364)%12*(5+1.5*equipped.144364)))" );
+  writhe->add_action( "reap_souls,if=!buff.deadwind_harvester.remains&time>5&(buff.soul_harvest.remains>=(5+1.5*equipped.144364)&buff.active_uas.stack>1|buff.concordance_of_the_legionfall.react|trinket.proc.intellect.react|trinket.stacking_proc.intellect.react|trinket.proc.mastery.react|trinket.stacking_proc.mastery.react|trinket.proc.crit.react|trinket.stacking_proc.crit.react|trinket.proc.versatility.react|trinket.stacking_proc.versatility.react|trinket.proc.spell_power.react|trinket.stacking_proc.spell_power.react)" );
+  writhe->add_action( "agony,if=remains<=tick_time+gcd" );
+  writhe->add_action( "agony,cycle_targets=1,max_cycle_targets=5,target_if=sim.target!=target&talent.soul_harvest.enabled&cooldown.soul_harvest.remains<cast_time*6&remains<=duration*0.3&target.time_to_die>=remains&time_to_die>tick_time*3" );
+  writhe->add_action( "agony,cycle_targets=1,max_cycle_targets=3,target_if=sim.target!=target&remains<=tick_time+gcd&time_to_die>tick_time*3" );
+  writhe->add_action( "unstable_affliction,if=soul_shard=5|(time_to_die<=((duration+cast_time)*soul_shard))" );
+  writhe->add_action( "drain_soul,cycle_targets=1,if=target.time_to_die<=gcd*2&soul_shard<5" );
+  writhe->add_action( "life_tap,if=talent.empowered_life_tap.enabled&buff.empowered_life_tap.remains<=gcd" );
   writhe->add_action( "service_pet,if=dot.corruption.remains&dot.agony.remains" );
   writhe->add_action( "summon_doomguard,if=!talent.grimoire_of_supremacy.enabled&spell_targets.summon_infernal<=2&(target.time_to_die>180|target.health.pct<=20|target.time_to_die<30)" );
   writhe->add_action( "summon_infernal,if=!talent.grimoire_of_supremacy.enabled&spell_targets.summon_infernal>2" );
@@ -6942,36 +6970,46 @@ void warlock_t::apl_affliction()
   writhe->add_action( "summon_infernal,if=talent.grimoire_of_supremacy.enabled&spell_targets.summon_infernal>1&equipped.132379&!cooldown.sindorei_spite_icd.remains" );
   writhe->add_action( "berserking,if=prev_gcd.1.unstable_affliction|buff.soul_harvest.remains>=10" );
   writhe->add_action( "blood_fury" );
-  writhe->add_action( "soul_harvest,if=buff.soul_harvest.remains<=8&buff.active_uas.stack>=2" );
+  writhe->add_action( "soul_harvest,if=sim.target=target&buff.soul_harvest.remains<=8&(buff.active_uas.stack>=2|active_enemies>3)&(!talent.deaths_embrace.enabled|time_to_die>120|time_to_die<30)" );
   for ( const std::string& item_action : get_item_actions() )
   {
     writhe->add_action( item_action );
   }
-  writhe->add_action( "potion,name=prolonged_power,if=!talent.soul_harvest.enabled&(trinket.proc.any.react|trinket.stack_proc.any.react|target.time_to_die<=70|buff.active_uas.stack>2)" );
-  writhe->add_action( "potion,name=prolonged_power,if=talent.soul_harvest.enabled&buff.soul_harvest.remains&(trinket.proc.any.react|trinket.stack_proc.any.react|target.time_to_die<=70|buff.active_uas.stack>2)" );
-  writhe->add_action( "siphon_life,cycle_targets=1,if=remains<=tick_time+gcd" );
-  writhe->add_action( "corruption,cycle_targets=1,if=remains<=tick_time+gcd&(spell_targets.seed_of_corruption<3&talent.sow_the_seeds.enabled|spell_targets.seed_of_corruption<5)" );
+  writhe->add_action( "potion,if=target.time_to_die<=70" );
+  writhe->add_action( "potion,if=(!talent.soul_harvest.enabled|buff.soul_harvest.remains>12)&(trinket.proc.any.react|trinket.stack_proc.any.react|buff.active_uas.stack>=2)" );
+  writhe->add_action( "siphon_life,cycle_targets=1,if=remains<=tick_time+gcd&time_to_die>tick_time*2" );
+  writhe->add_action( "corruption,cycle_targets=1,if=remains<=tick_time+gcd&((spell_targets.seed_of_corruption<3&talent.sow_the_seeds.enabled)|spell_targets.seed_of_corruption<5)&time_to_die>tick_time*2" );
+  writhe->add_action( "life_tap,if=mana.pct<40&(buff.active_uas.stack<1|!buff.deadwind_harvester.remains)" );
   writhe->add_action( "reap_souls,if=(buff.deadwind_harvester.remains+buff.tormented_souls.react*(5+equipped.144364))>=(12*(5+1.5*equipped.144364))" );
-  writhe->add_action( "life_tap,if=talent.empowered_life_tap.enabled&buff.empowered_life_tap.remains<=gcd" );
   writhe->add_action( "phantom_singularity" );
-  writhe->add_action( "agony,cycle_targets=1,if=remains<=duration*0.3&target.time_to_die>=remains" );
-  writhe->add_action( "life_tap,if=talent.empowered_life_tap.enabled&buff.empowered_life_tap.remains<duration*0.3|talent.malefic_grasp.enabled&target.time_to_die>15&mana.pct<10" );
-  writhe->add_action( "siphon_life,cycle_targets=1,if=remains<=duration*0.3&target.time_to_die>=remains" );
-  writhe->add_action( "seed_of_corruption,if=talent.sow_the_seeds.enabled&spell_targets.seed_of_corruption>=3|spell_targets.seed_of_corruption>=5|spell_targets.seed_of_corruption>=3&dot.corruption.remains<=cast_time+travel_time" );
-  writhe->add_action( "corruption,cycle_targets=1,if=remains<=duration*0.3&target.time_to_die>=remains" );
-  writhe->add_action( "unstable_affliction,if=(!talent.sow_the_seeds.enabled|spell_targets.seed_of_corruption<3)&spell_targets.seed_of_corruption<5&(soul_shard>=4|buff.soul_harvest.remains)" );
-  writhe->add_action( "unstable_affliction,cycle_targets=1,if=active_enemies>1&(equipped.132381|equipped.132457)&(!talent.sow_the_seeds.enabled|spell_targets.seed_of_corruption<3)&spell_targets.seed_of_corruption<5&talent.contagion.enabled&dot.unstable_affliction_1.remains<cast_time&dot.unstable_affliction_2.remains<cast_time&dot.unstable_affliction_3.remains<cast_time&dot.unstable_affliction_4.remains<cast_time&dot.unstable_affliction_5.remains<cast_time" );
-  writhe->add_action( "unstable_affliction,if=(active_enemies>1|equipped.132457)&(!talent.sow_the_seeds.enabled|spell_targets.seed_of_corruption<3)&spell_targets.seed_of_corruption<5&talent.contagion.enabled&dot.unstable_affliction_1.remains<cast_time&dot.unstable_affliction_2.remains<cast_time&dot.unstable_affliction_3.remains<cast_time&dot.unstable_affliction_4.remains<cast_time&dot.unstable_affliction_5.remains<cast_time" );
-  writhe->add_action( "unstable_affliction,if=(active_enemies=1|(!equipped.132381&!equipped.132457))&(!talent.sow_the_seeds.enabled|spell_targets.seed_of_corruption<3)&spell_targets.seed_of_corruption<5&(buff.deadwind_harvester.remains|target.time_to_die<=20|buff.concordance_of_the_legionfall.react|trinket.proc.intellect.react|trinket.stacking_proc.intellect.react|trinket.proc.mastery.react|trinket.stacking_proc.mastery.react|trinket.proc.crit.react|trinket.stacking_proc.crit.react|trinket.proc.versatility.react|trinket.stacking_proc.versatility.react)" );
+  writhe->add_action( "seed_of_corruption,if=((talent.sow_the_seeds.enabled&spell_targets.seed_of_corruption>=3)|spell_targets.seed_of_corruption>=5)&dot.corruption.remains<=cast_time+travel_time" );
+  writhe->add_action( "unstable_affliction,if=talent.contagion.enabled&dot.unstable_affliction_1.remains<cast_time&dot.unstable_affliction_2.remains<cast_time&dot.unstable_affliction_3.remains<cast_time&dot.unstable_affliction_4.remains<cast_time&dot.unstable_affliction_5.remains<cast_time" );
+  writhe->add_action( "unstable_affliction,cycle_targets=1,target_if=buff.deadwind_harvester.remains>=duration+cast_time&dot.unstable_affliction_1.remains<cast_time&dot.unstable_affliction_2.remains<cast_time&dot.unstable_affliction_3.remains<cast_time&dot.unstable_affliction_4.remains<cast_time&dot.unstable_affliction_5.remains<cast_time" );
+  writhe->add_action( "unstable_affliction,if=buff.deadwind_harvester.remains>tick_time*2&(!talent.contagion.enabled|soul_shard>1|buff.soul_harvest.remains)&(dot.unstable_affliction_1.ticking+dot.unstable_affliction_2.ticking+dot.unstable_affliction_3.ticking+dot.unstable_affliction_4.ticking+dot.unstable_affliction_5.ticking<5)" );
   writhe->add_action( "reap_souls,if=!buff.deadwind_harvester.remains&buff.active_uas.stack>1" );
   writhe->add_action( "reap_souls,if=!buff.deadwind_harvester.remains&prev_gcd.1.unstable_affliction&buff.tormented_souls.react>1" );
+  writhe->add_action( "life_tap,if=talent.empowered_life_tap.enabled&buff.empowered_life_tap.remains<duration*0.3&(!buff.deadwind_harvester.remains|buff.active_uas.stack<1)" );
+  writhe->add_action( "agony,if=refreshable&time_to_die>=remains" );
+  writhe->add_action( "siphon_life,if=refreshable&time_to_die>=remains" );
+  writhe->add_action( "corruption,if=refreshable&time_to_die>=remains" );
+  writhe->add_action( "agony,cycle_targets=1,target_if=sim.target!=target&time_to_die>tick_time*3&!buff.deadwind_harvester.remains&refreshable&time_to_die>tick_time*3" );
+  writhe->add_action( "siphon_life,cycle_targets=1,target_if=sim.target!=target&time_to_die>tick_time*3&!buff.deadwind_harvester.remains&refreshable&time_to_die>tick_time*3" );
+  writhe->add_action( "corruption,cycle_targets=1,target_if=sim.target!=target&time_to_die>tick_time*3&!buff.deadwind_harvester.remains&refreshable&time_to_die>tick_time*3" );
   writhe->add_action( "life_tap,if=mana.pct<=10" );
+  writhe->add_action( "life_tap,if=prev_gcd.1.life_tap&buff.active_uas.stack=0&mana.pct<50" );
   writhe->add_action( "drain_soul,chain=1,interrupt=1" );
-  writhe->add_action( "life_tap" );
+  writhe->add_action( "life_tap,moving=1,if=mana.pct<80" );
+  writhe->add_action( "agony,moving=1,cycle_targets=1,if=remains<=duration-(3*tick_time)" );
+  writhe->add_action( "siphon_life,moving=1,cycle_targets=1,if=remains<=duration-(3*tick_time)" );
+  writhe->add_action( "corruption,moving=1,cycle_targets=1,if=remains<=duration-(3*tick_time)" );
+  writhe->add_action( "life_tap,moving=0" );
 
-  mg->add_action( "reap_souls,if=!buff.deadwind_harvester.remains&time>5&(buff.tormented_souls.react>=5|target.time_to_die<=buff.tormented_souls.react*(5+1.5*equipped.144364)+(buff.tormented_souls.react*(5+1.5*equipped.144364)%12*(5+1.5*equipped.144364)))" );
-  mg->add_action( "reap_souls,if=active_enemies>1&!buff.deadwind_harvester.remains&time>5&soul_shard>0&((talent.sow_the_seeds.enabled&spell_targets.seed_of_corruption>=3)|spell_targets.seed_of_corruption>=5)" );
-  mg->add_action( "agony,cycle_targets=1,if=remains<=tick_time+gcd" );
+  mg->add_action( "reap_souls,if=!buff.deadwind_harvester.remains&time>5&((buff.tormented_souls.react>=4+active_enemies|buff.tormented_souls.react>=9)|target.time_to_die<=buff.tormented_souls.react*(5+1.5*equipped.144364)+(buff.deadwind_harvester.remains*(5+1.5*equipped.144364)%12*(5+1.5*equipped.144364)))" );
+  mg->add_action( "agony,cycle_targets=1,max_cycle_targets=5,target_if=sim.target!=target&talent.soul_harvest.enabled&cooldown.soul_harvest.remains<cast_time*6&remains<=duration*0.3&target.time_to_die>=remains&time_to_die>tick_time*3" );
+  mg->add_action( "agony,cycle_targets=1,max_cycle_targets=4,if=remains<=(tick_time+gcd)" );
+  mg->add_action( "unstable_affliction,if=target=sim.target&soul_shard=5" );
+  mg->add_action( "drain_soul,cycle_targets=1,if=target.time_to_die<gcd*2&soul_shard<5" );
+  mg->add_action( "life_tap,if=talent.empowered_life_tap.enabled&buff.empowered_life_tap.remains<=gcd" );
   mg->add_action( "service_pet,if=dot.corruption.remains&dot.agony.remains" );
   mg->add_action( "summon_doomguard,if=!talent.grimoire_of_supremacy.enabled&spell_targets.summon_infernal<=2&(target.time_to_die>180|target.health.pct<=20|target.time_to_die<30)" );
   mg->add_action( "summon_infernal,if=!talent.grimoire_of_supremacy.enabled&spell_targets.summon_infernal>2" );
@@ -6979,33 +7017,33 @@ void warlock_t::apl_affliction()
   mg->add_action( "summon_infernal,if=talent.grimoire_of_supremacy.enabled&spell_targets.summon_infernal>1&equipped.132379&!cooldown.sindorei_spite_icd.remains" );
   mg->add_action( "berserking,if=prev_gcd.1.unstable_affliction|buff.soul_harvest.remains>=10" );
   mg->add_action( "blood_fury" );
-  mg->add_action( "soul_harvest,if=buff.soul_harvest.remains<=8&buff.active_uas.stack>=2" );
+  mg->add_action( "siphon_life,cycle_targets=1,if=remains<=(tick_time+gcd)&target.time_to_die>tick_time*3" );
+  mg->add_action( "corruption,cycle_targets=1,if=(!talent.sow_the_seeds.enabled|spell_targets.seed_of_corruption<3)&spell_targets.seed_of_corruption<5&remains<=(tick_time+gcd)&target.time_to_die>tick_time*3" );
+  mg->add_action( "phantom_singularity" );
+  mg->add_action( "soul_harvest,if=buff.active_uas.stack>1&buff.soul_harvest.remains<=8&sim.target=target&(!talent.deaths_embrace.enabled|target.time_to_die>=136|target.time_to_die<=40)" );
   for ( const std::string& item_action : get_item_actions() )
   {
     mg->add_action( item_action );
   }
-  mg->add_action( "potion,name=prolonged_power,if=!talent.soul_harvest.enabled&(trinket.proc.any.react|trinket.stack_proc.any.react|target.time_to_die<=70|buff.active_uas.stack>2)" );
-  mg->add_action( "potion,name=prolonged_power,if=talent.soul_harvest.enabled&buff.soul_harvest.remains&(trinket.proc.any.react|trinket.stack_proc.any.react|target.time_to_die<=70|buff.active_uas.stack>2)" );
-  mg->add_action( "siphon_life,if=remains<=tick_time+gcd" );
-  mg->add_action( "siphon_life,cycle_targets=1,if=active_enemies>1&remains<=tick_time+gcd&buff.active_uas.stack=0" );
-  mg->add_action( "corruption,if=remains<=tick_time+gcd&((spell_targets.seed_of_corruption<3&talent.sow_the_seeds.enabled)|spell_targets.seed_of_corruption<5)" );
-  mg->add_action( "corruption,cycle_targets=1,if=active_enemies>1&remains<=tick_time+gcd&(spell_targets.seed_of_corruption<3&talent.sow_the_seeds.enabled|spell_targets.seed_of_corruption<5)&(buff.active_uas.stack=0|equipped.132457)" );
-  mg->add_action( "life_tap,if=talent.empowered_life_tap.enabled&buff.empowered_life_tap.remains<=gcd" );
-  mg->add_action( "reap_souls,if=(buff.deadwind_harvester.remains+buff.tormented_souls.react*(5+equipped.144364))>=(12*(5+1.5*equipped.144364))&buff.active_uas.stack<1" );
-  mg->add_action( "phantom_singularity" );
-  mg->add_action( "agony,cycle_targets=1,if=remains<=duration*0.3&target.time_to_die>=remains&buff.active_uas.stack=0" );
+  mg->add_action( "potion,if=target.time_to_die<=70" );
+  mg->add_action( "potion,if=(!talent.soul_harvest.enabled|buff.soul_harvest.remains>12)&buff.active_uas.stack>=2" );
+  mg->add_action( "agony,cycle_targets=1,if=remains<=(duration*0.3)&target.time_to_die>=remains&(buff.active_uas.stack=0|prev_gcd.1.agony)" );
+  mg->add_action( "siphon_life,cycle_targets=1,if=remains<=(duration*0.3)&target.time_to_die>=remains&(buff.active_uas.stack=0|prev_gcd.1.siphon_life)" );
+  mg->add_action( "corruption,cycle_targets=1,if=(!talent.sow_the_seeds.enabled|spell_targets.seed_of_corruption<3)&spell_targets.seed_of_corruption<5&remains<=(duration*0.3)&target.time_to_die>=remains&(buff.active_uas.stack=0|prev_gcd.1.corruption)" );
   mg->add_action( "life_tap,if=talent.empowered_life_tap.enabled&buff.empowered_life_tap.remains<duration*0.3|talent.malefic_grasp.enabled&target.time_to_die>15&mana.pct<10" );
-  mg->add_action( "siphon_life,cycle_targets=1,if=remains<=duration*0.3&target.time_to_die>=remains&buff.active_uas.stack=0" );
-  mg->add_action( "seed_of_corruption,if=talent.sow_the_seeds.enabled&spell_targets.seed_of_corruption>=3|spell_targets.seed_of_corruption>=5|spell_targets.seed_of_corruption>=3&dot.corruption.remains<=cast_time+travel_time" );
-  mg->add_action( "corruption,cycle_targets=1,if=remains<=duration*0.3&target.time_to_die>=remains&buff.active_uas.stack=0" );
-  mg->add_action( "unstable_affliction,if=(!talent.sow_the_seeds.enabled|spell_targets.seed_of_corruption<3)&spell_targets.seed_of_corruption<5&(target.time_to_die<30|prev_gcd.1.unstable_affliction&soul_shard>=4&(equipped.132457|buff.active_uas.stack<2))" );
-  mg->add_action( "unstable_affliction,if=(!talent.sow_the_seeds.enabled|spell_targets.seed_of_corruption<3)&spell_targets.seed_of_corruption<5&(soul_shard>=4|(equipped.132457&soul_shard=5))" );
-  mg->add_action( "unstable_affliction,if=!equipped.132457&!prev_gcd.3.unstable_affliction&dot.agony.remains>cast_time*2+6.5&(dot.corruption.remains>cast_time+6.5|talent.absolute_corruption.enabled)&(!talent.siphon_life.enabled|dot.siphon_life.remains>cast_time+6.5)" );
-  mg->add_action( "unstable_affliction,if=(!talent.sow_the_seeds.enabled|spell_targets.seed_of_corruption<3)&spell_targets.seed_of_corruption<5&equipped.132457&(buff.active_uas.stack=0|!prev_gcd.3.unstable_affliction&prev_gcd.1.unstable_affliction)&dot.agony.remains>cast_time+6.5" );
-  mg->add_action( "reap_souls,if=!buff.deadwind_harvester.remains&(buff.active_uas.stack>1|(prev_gcd.1.unstable_affliction&buff.tormented_souls.react>1))" );
+  mg->add_action( "seed_of_corruption,if=(talent.sow_the_seeds.enabled&spell_targets.seed_of_corruption>=3)|spell_targets.seed_of_corruption>=5|spell_targets.seed_of_corruption>=3&dot.corruption.remains<=cast_time+travel_time" );
+  mg->add_action( "unstable_affliction,if=target=sim.target&target.time_to_die<30" );
+  mg->add_action( "unstable_affliction,if=target=sim.target&active_enemies>1&soul_shard>=4" );
+  mg->add_action( "unstable_affliction,if=target=sim.target&(buff.active_uas.stack=0|(!prev_gcd.3.unstable_affliction&prev_gcd.1.unstable_affliction))&dot.agony.remains>cast_time+(6.5*spell_haste)" );
+  mg->add_action( "reap_souls,if=buff.deadwind_harvester.remains<dot.unstable_affliction_1.remains|buff.deadwind_harvester.remains<dot.unstable_affliction_2.remains|buff.deadwind_harvester.remains<dot.unstable_affliction_3.remains|buff.deadwind_harvester.remains<dot.unstable_affliction_4.remains|buff.deadwind_harvester.remains<dot.unstable_affliction_5.remains&buff.active_uas.stack>1" );
   mg->add_action( "life_tap,if=mana.pct<=10" );
+  mg->add_action( "life_tap,if=prev_gcd.1.life_tap&buff.active_uas.stack=0&mana.pct<50" );
   mg->add_action( "drain_soul,chain=1,interrupt=1" );
-  mg->add_action( "life_tap" );
+  mg->add_action( "life_tap,moving=1,if=mana.pct<80" );
+  mg->add_action( "agony,moving=1,cycle_targets=1,if=remains<duration-(3*tick_time)" );
+  mg->add_action( "siphon_life,moving=1,cycle_targets=1,if=remains<duration-(3*tick_time)" );
+  mg->add_action( "corruption,moving=1,cycle_targets=1,if=remains<duration-(3*tick_time)" );
+  mg->add_action( "life_tap,moving=0" );
 }
 
 void warlock_t::apl_demonology()

@@ -1,4 +1,4 @@
-SimulationCraft 725-02 for World of Warcraft 7.2.5 Live (wow build 24461)
+SimulationCraft 730-01 for World of Warcraft 7.3.0 Live (wow build 24931, git build 1fa582dcd)
 
 Name             : Dual Wield (Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
@@ -233,141 +233,6 @@ Effects          :
 #1 (id=24989)    : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 2 | Target: Self (1)
 
-Name             : Deathblow X11 Goggles (id=41317) 
-Class            : Rogue, Monk, Druid, Demon Hunter
-School           : Physical
-Cast Time        : 15 seconds
-Attributes       : .....x.. x....... x....... ........   ........ ..x..... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Tradeskill ability (5)
-Effects          :
-#1 (id=32742)    : Create Item (24)
-                   Base Value: 1 | Scaled Value: 1 | Target: Self (1)
-
-Name             : Wonderheal XT40 Shades (id=41318) 
-Class            : Monk, Druid
-School           : Physical
-Cast Time        : 15 seconds
-Attributes       : .....x.. x....... x....... ........   ........ ..x..... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Tradeskill ability (5)
-Effects          :
-#1 (id=32743)    : Create Item (24)
-                   Base Value: 1 | Scaled Value: 1 | Target: Self (1)
-
-Name             : Magnified Moon Specs (id=41319) 
-Class            : Monk, Druid
-School           : Physical
-Cast Time        : 15 seconds
-Attributes       : .....x.. x....... x....... ........   ........ ..x..... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Tradeskill ability (5)
-Effects          :
-#1 (id=32744)    : Create Item (24)
-                   Base Value: 1 | Scaled Value: 1 | Target: Self (1)
-
-Name             : Wonderheal XT68 Shades (id=46106) 
-Class            : Monk, Druid
-School           : Physical
-Cast Time        : 15 seconds
-Attributes       : .....x.. x....... x....... ........   ........ ..x..... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Tradeskill ability (5)
-Effects          :
-#1 (id=38199)    : Create Item (24)
-                   Base Value: 1 | Scaled Value: 1 | Target: Self (1)
-
-Name             : Hyper-Magnified Moon Specs (id=46109) 
-Class            : Monk, Druid
-School           : Physical
-Cast Time        : 15 seconds
-Attributes       : .....x.. x....... x....... ........   ........ ..x..... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Tradeskill ability (5)
-Effects          :
-#1 (id=38202)    : Create Item (24)
-                   Base Value: 1 | Scaled Value: 1 | Target: Self (1)
-
-Name             : Quad Deathblow X44 Goggles (id=46116) 
-Class            : Rogue, Monk, Druid, Demon Hunter
-School           : Physical
-Cast Time        : 15 seconds
-Attributes       : .....x.. x....... x....... ........   ........ ..x..... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Tradeskill ability (5)
-Effects          :
-#1 (id=38209)    : Create Item (24)
-                   Base Value: 1 | Scaled Value: 1 | Target: Self (1)
-
-Name             : Weakness Spectralizers (id=56481) 
-Class            : Rogue, Monk, Druid, Demon Hunter
-School           : Physical
-Cast Time        : 15 seconds
-Attributes       : .....x.. ........ x....... ........   ........ ..x..... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Tradeskill ability (5)
-Effects          :
-#1 (id=49563)    : Create Item (24)
-                   Base Value: 1 | Scaled Value: 1 | Target: Self (1)
-
-Name             : Greensight Gogs (id=56486) 
-Class            : Monk, Druid
-School           : Physical
-Cast Time        : 15 seconds
-Attributes       : .....x.. ........ x....... ........   ........ ..x..... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Tradeskill ability (5)
-Effects          :
-#1 (id=49567)    : Create Item (24)
-                   Base Value: 1 | Scaled Value: 1 | Target: Self (1)
-
-Name             : Mechanized Snow Goggles (id=61481) 
-Class            : Rogue, Monk, Druid, Demon Hunter
-School           : Physical
-Cast Time        : 2 seconds
-Attributes       : .....x.. ........ x....... ........   ........ ..x..... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Tradeskill ability (5)
-Effects          :
-#1 (id=55365)    : Create Item (24)
-                   Base Value: 1 | Scaled Value: 1 | Target: Self (1)
-
 Name             : Avoidance (Passive) (id=65220) [Passive] 
 Class            : Shaman, Mage, Monk
 School           : Physical
@@ -387,38 +252,6 @@ Effects          :
 #3 (id=372340)   : Apply Aura (6) | Modify Attacker Melee Crit Chance (187)
                    Base Value: -6 | Scaled Value: -6 | Target: Self (1)
 Description      : Reduces the damage your pet takes from creature area of effect attacks by an additional $s1%.
-
-Name             : Agile Bio-Optic Killshades (id=81722) 
-Class            : Rogue, Monk, Druid, Demon Hunter
-School           : Physical
-Cast Time        : 5 seconds
-Mechanic         : Unknown(245)
-Attributes       : .....x.. ........ x....... ........   ........ ..x..... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Tradeskill ability (5)
-Effects          :
-#1 (id=81208)    : Create Item (24)
-                   Base Value: 1 | Scaled Value: 1 | Target: Self (1)
-
-Name             : Camouflage Bio-Optic Killshades (id=81724) 
-Class            : Monk, Druid
-School           : Physical
-Cast Time        : 5 seconds
-Mechanic         : Unknown(245)
-Attributes       : .....x.. ........ x....... ........   ........ ..x..... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Tradeskill ability (5)
-Effects          :
-#1 (id=81209)    : Create Item (24)
-                   Base Value: 1 | Scaled Value: 1 | Target: Self (1)
 
 Name             : Kindred Spirits (id=88680) [Spell Family (9), Passive, Hidden] 
 Class            : Monk
@@ -443,7 +276,7 @@ Resource         : 50 Energy (3) (id=10716) w/ Windwalker Monk (id=137025)
 Spell Level      : 1
 Range            : 5 yards
 GCD              : 1.5 seconds
-Affecting spells : Stance of the Fierce Tiger (103985 effect#5), Stagger (115069 effect#11), Brewmaster Monk (137023 effect#1), Mistweaver Monk (137024 effect#6), Windwalker Monk (137025 effect#1), Storm, Earth, and Fire (137639 effect#1), Heightened Senses (165692 effect#1), Item - Monk T19 Brewmaster 4P Bonus (211417 effect#1), Tiger Claws (218607 effect#1), Blackout Combo (228563 effect#1)
+Affecting spells : Stance of the Fierce Tiger (103985 effect#5), Stagger (115069 effect#11), Brewmaster Monk (137023 effect#1), Mistweaver Monk (137024 effect#6), Windwalker Monk (137025 effect#1), Storm, Earth, and Fire (137639 effect#1), Heightened Senses (165692 effect#1), Extend Life (185158 effect#2), Item - Monk T19 Brewmaster 4P Bonus (211417 effect#1), Tiger Claws (218607 effect#1), Blackout Combo (228563 effect#1)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ .x...... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -452,7 +285,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ....x... ........ ........ ........ 
 Effects          :
 #1 (id=108857)   : School Damage (2): physical
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 1.05000 | Target: Enemy (6)
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 1.28100 | Target: Enemy (6)
 #2 (id=134420)   : Energize Power (30)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: chi | Target: Self (1)
 #3 (id=281299)   : Dummy (3)
@@ -488,7 +321,7 @@ Cooldown         : 3 seconds
 Category         : 1561
 Category Cooldown: 3 seconds
 Proc Chance      : 101%
-Affecting spells : Stance of the Fierce Tiger (103985 effect#5), Stagger (115069 effect#11), Blackout Kick! (116768 effect#1), Brewmaster Monk (137023 effect#1), Mistweaver Monk (137024 effect#6), Windwalker Monk (137025 effect#1), Storm, Earth, and Fire (137639 effect#1), Serenity (152173 effect#1), Dark Skies (195265 effect#1), Obsidian Fists (213051 effect#1), Draught of Darkness (238057 effect#1)
+Affecting spells : Stance of the Fierce Tiger (103985 effect#5), Stagger (115069 effect#11), Blackout Kick! (116768 effect#1), Brewmaster Monk (137023 effect#1), Mistweaver Monk (137024 effect#6), Windwalker Monk (137025 effect#1), Storm, Earth, and Fire (137639 effect#1), Serenity (152173 effect#1), Extend Life (185158 effect#2), Dark Skies (195265 effect#1), Obsidian Fists (213051 effect#1), Draught of Darkness (238057 effect#1)
 Attributes       : ........ ........ ..x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -497,7 +330,7 @@ Attributes       : ........ ........ ..x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ....x... ........ ........ ........ 
 Effects          :
 #1 (id=108867)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 3.85000 | Chain Multiplier: 0 | Chain Targets: 1 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 4.69700 | Chain Multiplier: 0 | Chain Targets: 1 | Target: Enemy (6)
 Description      : Kick with a blast of Chi energy, dealing $s1 Physical damage.
 Variables        : $stnc=$?a103985[${1.05*(1+$@versadmg)}][${1.0*(1+$@versadmg)}]
 $dwm=$?a108561|a115697[${1}][${0.857143}]
@@ -644,7 +477,7 @@ Description      : Increases all damage dealt by $s3%.
 Name             : Spinning Crane Kick (id=107270) [Spell Family (53)] 
 Class            : Monk
 School           : Physical
-Affecting spells : Mistweaver Monk (137024 effect#14), Windwalker Monk (137025 effect#1), Storm, Earth, and Fire (137639 effect#1), Power of a Thousand Cranes (195269 effect#1), Cyclone Strikes (220358 effect#1), 
+Affecting spells : Mistweaver Monk (137024 effect#14), Windwalker Monk (137025 effect#1), Storm, Earth, and Fire (137639 effect#1), Extend Life (185158 effect#2), Power of a Thousand Cranes (195269 effect#1), Cyclone Strikes (220358 effect#1), 
 Triggered by     : Spinning Crane Kick (101546)
 Attributes       : ....x... ........ ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .x...... ........ ........ 
@@ -655,7 +488,7 @@ Attributes       : ....x... ........ ..x..... ........   ........ ........ .....
                  : Not a proc (105)
 Effects          :
 #1 (id=117946)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Caster (22) -> AOE enemy (15)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.22000 | Radius: 0 - 8 yards | Target: At Caster (22) -> AOE enemy (15)
 Description      : $@spelldesc101546
 Tooltip          : Attacking all nearby enemies for Physical damage every $101546t1 sec.
 
@@ -671,7 +504,7 @@ Range            : 5 yards
 GCD              : 1.5 seconds
 Charges          : 1 (10 seconds cooldown)
 Category         : 1518: Monk (137022 effect#2)
-Affecting spells : Stance of the Fierce Tiger (103985 effect#5), Stagger (115069 effect#11), Monk (137022 effect#1), Mistweaver Monk (137024 effect#6), Windwalker Monk (137025 effect#1), Storm, Earth, and Fire (137639 effect#1), Serenity (152173 effect#1), Rising Winds (195263 effect#1), Pressure Point (247255 effect#1)
+Affecting spells : Stance of the Fierce Tiger (103985 effect#5), Stagger (115069 effect#11), Monk (137022 effect#1), Mistweaver Monk (137024 effect#6), Windwalker Monk (137025 effect#6), Storm, Earth, and Fire (137639 effect#1), Serenity (152173 effect#1), Rising Winds (195263 effect#1), Pressure Point (247255 effect#1)
 Attributes       : ....x... ........ ........ ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -757,8 +590,7 @@ Effects          :
 #4 (id=219526)   : Apply Aura (6) | Modify Parry% (47)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #5 (id=303680)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 4.70000
-                   Hotfixed: AP Coefficient (4.2 -> 4.7), Chain Multiplier (0 -> 1)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 5.73400
 Description      : Pummels all targets in front of you, dealing ${5*$s5} damage over $113656d. Can be channeled while moving.
 Tooltip          : $w3 damage every $t3 sec. $?s125671[Parrying all attacks.][]
 Variables        : $stnc=$?a103985[${1.05*(1+$@versadmg)}][${1.0*(1+$@versadmg)}]
@@ -834,7 +666,6 @@ Attributes       : ....x.x. ........ x.x..... x..x.x.x   ........ ..x..... .x...
 Effects          :
 #1 (id=128720)   : Apply Aura (6) | Dummy (4)
                    Base Value: 40 | Scaled Value: 40 | Misc Value: 23 | Misc Value 2: 0x2 | Target: Self (1)
-                   Hotfixed: Chain Multiplier (0 -> 1)
 #2 (id=128724)   : Apply Aura (6) | Unknown(312)
                    Base Value: 25 | Scaled Value: 25 | Misc Value: 116 | Target: Self (1)
 #3 (id=134152)   : Apply Aura (6) | Absorb Damage (69)
@@ -1489,7 +1320,7 @@ Tooltip          : Your next spell cast is empowered:
 
 - Effuse's healing is increased by $s2%.
 - Enveloping Mist is instant.
-- Essence Font may be cast while moving.$?a231876[
+- Essence Font channels $197218s3% faster.$?a231876[
 - Renewing Mist does not trigger its cooldown.
 - Vivify costs no mana.][]
 
@@ -1564,6 +1395,7 @@ Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
 Proc Flags       : ....x... ....x... ........ ........ 
                  : Yellow Melee, AOE Hostile Spell
+Affecting spells : Item - Monk T21 Windwalker 2P Bonus - Free Blackout Kick Damage Increase (251821 effect#1)
 Triggered by     : The Wind Blows (248101)
 Attributes       : ........ ........ ..x..... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1652,7 +1484,7 @@ Spell Level      : 1
 GCD              : 1.5 seconds
 Duration         : 6 seconds
 Cooldown         : 6 seconds
-Affecting spells : Stance of the Fierce Tiger (103985 effect#5), Stagger (115069 effect#11), Monk (137022 effect#1), Brewmaster Monk (137023 effect#1), Mistweaver Monk (137024 effect#6), Windwalker Monk (137025 effect#1), Lucidity (137331 effect#1), Storm, Earth, and Fire (137639 effect#1), Serenity (152173 effect#1), 
+Affecting spells : Stance of the Fierce Tiger (103985 effect#5), Stagger (115069 effect#11), Monk (137022 effect#1), Brewmaster Monk (137023 effect#1), Mistweaver Monk (137024 effect#6), Windwalker Monk (137025 effect#7), Lucidity (137331 effect#1), Storm, Earth, and Fire (137639 effect#1), Serenity (152173 effect#1), 
 Attributes       : ....x... ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .x...... ........ ........ 
@@ -1706,7 +1538,7 @@ Class            : Monk
 School           : Physical
 Spell Level      : 1
 Range            : 8 yards
-Affecting spells : Windwalker Monk (137025 effect#1), Storm, Earth, and Fire (137639 effect#1), Fists of the Wind (195291 effect#1)
+Affecting spells : Windwalker Monk (137025 effect#1), Storm, Earth, and Fire (137639 effect#1), Extend Life (185158 effect#2), Fists of the Wind (195291 effect#1)
 Triggered by     : Fists of Fury (113656)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ......x.   ........ .x...... ........ ........ 
@@ -1782,7 +1614,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 4 seconds
 Proc Chance      : 100%
-Affecting spells : Stance of the Fierce Tiger (103985 effect#5), Stagger (115069 effect#11), Brewmaster Monk (137023 effect#2), Mistweaver Monk (137024 effect#15), Windwalker Monk (137025 effect#2), Lucidity (137331 effect#1), Storm, Earth, and Fire (137639 effect#1), The Emperor's Capacitor (235054 effect#1), 
+Affecting spells : Stance of the Fierce Tiger (103985 effect#5), Stagger (115069 effect#11), Brewmaster Monk (137023 effect#2), Mistweaver Monk (137024 effect#15), Windwalker Monk (137025 effect#1), Lucidity (137331 effect#1), Storm, Earth, and Fire (137639 effect#1), Extend Life (185158 effect#2), The Emperor's Capacitor (235054 effect#1), 
 Attributes       : ........ ........ ........ ........   ..x..... ......x. ........ ...x.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .....x.. ........ ...x.... 
@@ -1792,7 +1624,7 @@ Attributes       : ........ ........ ........ ........   ..x..... ......x. .....
                  : Channeled (34)
 Effects          :
 #1 (id=134063)   : Apply Aura (6) | Periodic Damage (3): nature every 1 seconds
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.35000 | Target: Enemy (6)
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.42700 | Target: Enemy (6)
 #2 (id=225417)   : Apply Aura (6) | Dummy (4)
                    Base Value: 200 | Scaled Value: 200 | Target: Enemy (6)
 Description      : Channel Jade lightning, causing $o1 Nature damage over $117952d to the target$?a154436[, generating 1 Chi each time it deals damage,][] and sometimes knocking back melee attackers.
@@ -2146,7 +1978,7 @@ Attributes       : ........ ........ .......x x..x....   .....x.. ........ .....
 Effects          :
 #1 (id=150148)   : Energize Power (30)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: chi | Target: Friend (21)
-Description      : $@spelldesc121286
+Description      : $@spelldesc121817
 
 Name             : Power Strikes (id=121817) [Spell Family (53), Passive] 
 Class            : Monk
@@ -2291,6 +2123,7 @@ Class            : Monk
 School           : Physical
 Spell Level      : 1
 Duration         : 4 seconds
+Affecting spells : Windwalker Monk (137025 effect#1), Extend Life (185158 effect#2)
 Attributes       : ........ ........ x....... ........   ...x...x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -2368,7 +2201,7 @@ GCD              : 1.5 seconds
 Velocity         : 30 yards/sec
 Duration         : 1 seconds
 Cooldown         : 30 seconds
-Affecting spells : Stance of the Fierce Tiger (103985 effect#5), Stagger (115069 effect#11), Brewmaster Monk (137023 effect#1), Windwalker Monk (137025 effect#1), Storm, Earth, and Fire (137639 effect#1), Extend Life (185158 effect#2)
+Affecting spells : Stance of the Fierce Tiger (103985 effect#5), Stagger (115069 effect#11), Brewmaster Monk (137023 effect#1), Storm, Earth, and Fire (137639 effect#1), Extend Life (185158 effect#2)
 Attributes       : ........ ........ ........ ........   ...x...x ........ ........ ........ 
                  : ........ ........ .x...... ........   ........ ........ ..x..... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2887,13 +2720,9 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #2 (id=161284)   : Trigger Spell (64)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1000 | Target: Self (1)
-                   Hotfixed: Trigger Spell (126896 -> 0), Chain Multiplier (0 -> 1)
-Description      : $?a200617[Your spirit travels to the Temple of Five Dawns, leaving your body behind.
+Description      : Your spirit travels to your home temple, leaving your body behind. 
 
-Use Zen Pilgrimage again to return back to near your departure point.]
-[Your spirit travels to the Peak of Serenity in Pandaria, leaving your body behind. 
-
-Use Zen Pilgrimage again to return back to near your departure point.]
+Use Zen Pilgrimage again to return back to near your departure point.
 
 Name             : Zen Pilgrimage/Death Gate/Moonglade Storage Aura I (id=126893) [Scaling Spell (6), Spell Family (53), Hidden] 
 Class            : Monk
@@ -2937,38 +2766,6 @@ Leaving the Wandering Isle will cancel Zen Pilgrimage: Return.]
 [Returns your spirit back to its body, returning you near to where you once were.
 
 Leaving Peak of Serenity will cancel Zen Pilgrimage: Return.]
-
-Name             : Agile Retinal Armor (id=127118) 
-Class            : Rogue, Monk, Druid, Demon Hunter
-School           : Physical
-Cast Time        : 5 seconds
-Mechanic         : Unknown(245)
-Attributes       : .....x.. ........ x....... ........   ........ ..x..... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Tradeskill ability (5)
-Effects          :
-#1 (id=161558)   : Create Item (24)
-                   Base Value: 1 | Scaled Value: 1 | Target: Self (1)
-
-Name             : Camouflage Retinal Armor (id=127119) 
-Class            : Monk, Druid
-School           : Physical
-Cast Time        : 1.5 seconds
-Mechanic         : Unknown(245)
-Attributes       : .....x.. ........ x....... ........   ........ ..x..... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Tradeskill ability (5)
-Effects          :
-#1 (id=161559)   : Create Item (24)
-                   Base Value: 1 | Scaled Value: 1 | Target: Self (1)
 
 Name             : Combat Conditioning (id=128595) [Scaling Spell (6), Spell Family (53), Passive, Hidden] 
 Class            : Windwalker Monk
@@ -3055,7 +2852,7 @@ Class            : Monk
 School           : Nature
 Spell Level      : 1
 Range            : 100 yards
-Affecting spells : Stance of the Fierce Tiger (103985 effect#5), Stagger (115069 effect#11), Enveloping Mist (124682 effect#2), Brewmaster Monk (137023 effect#1), Mistweaver Monk (137024 effect#1), Windwalker Monk (137025 effect#1), Storm, Earth, and Fire (137639 effect#1), Extend Life (185158 effect#2)
+Affecting spells : Stance of the Fierce Tiger (103985 effect#5), Stagger (115069 effect#11), Enveloping Mist (124682 effect#2), Brewmaster Monk (137023 effect#1), Mistweaver Monk (137024 effect#1), Storm, Earth, and Fire (137639 effect#1), Extend Life (185158 effect#2)
 Attributes       : ........ ........ ........ x..x....   ...x.x.x ........ ........ ........ 
                  : ........ ......x. ...x.... ........   ........ .x...... ........ ......x. 
                  : .......x .......x ........ ........   ...x.... .......x .xx..... ........ 
@@ -3091,7 +2888,7 @@ Class            : Monk
 School           : Nature
 Spell Level      : 1
 Range            : 50000 yards
-Affecting spells : Brewmaster Monk (137023 effect#1), Windwalker Monk (137025 effect#1), Storm, Earth, and Fire (137639 effect#1), 
+Affecting spells : Brewmaster Monk (137023 effect#1), Windwalker Monk (137025 effect#7), Storm, Earth, and Fire (137639 effect#1), 
 Attributes       : ........ ...x.... x......x ...x....   .....x.x ..x..... ........ ....x... 
                  : ........ ........ ...x.... ........   ........ ........ ....x... ..x...x. 
                  : ........ ........ ...xx... ........   .....x.. ........ ...x.... ..x..... 
@@ -3113,7 +2910,7 @@ Spell Level      : 1
 Range            : 50000 yards
 Velocity         : 20 yards/sec
 Duration         : 0.1 seconds
-Affecting spells : Brewmaster Monk (137023 effect#1), Windwalker Monk (137025 effect#1), Storm, Earth, and Fire (137639 effect#1), 
+Affecting spells : Brewmaster Monk (137023 effect#1), Windwalker Monk (137025 effect#1), Storm, Earth, and Fire (137639 effect#1), Extend Life (185158 effect#2)
 Attributes       : ........ ........ ..x....x x..x....   .....x.x ........ ........ ....x... 
                  : ..x..... ......x. ...x.... ......x.   ........ .x...... ........ ......x. 
                  : .......x .......x ...x.... ........   ...x.... ........ .xxx.... ........ 
@@ -3167,10 +2964,10 @@ Effects          :
                    Affected Spells (Category): Rising Sun Kick (107428)
 #3 (id=191113)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 249 (Label) | Target: Self (1)
-                   Affected Spells (Label): Orb of Destruction (229700)
+                   Affected Spells (Label): Orb of Destruction (229700), Void Tendril (250834)
 #4 (id=191114)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 300 (Label) | Target: Self (1)
-                   Affected Spells (Label): Insidious Corruption (243941), Spectral Bolt (242571), Spectral Blast (246442)
+                   Affected Spells (Label): Insidious Corruption (243941), Spectral Bolt (242571), Spectral Blast (246442), Apocalypse Missile (253243), Legion Bombardment (253248), Essence Swap (253258)
 #5 (id=191115)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #6 (id=260660)   : Apply Aura (6) | Dummy (4)
@@ -3235,26 +3032,32 @@ Effects          :
 #8 (id=260839)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 248 (Label) | Target: Self (1)
                    Affected Spells (Label): Fel-Crazed Rage (225777), Colossal Slam (232044), Dread Torrent (246464), Ceaseless Toxin (242497), Umbral Glaive Storm (242556), Shattering Umbral Glaives (242557), Infernal Cinders (242218)
-#9 (id=260840)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
+#9 (id=260840)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Periodic Damage (22)
+                   Base Value: -50 | Scaled Value: -50 | Misc Value: 22 | Misc Value 2: 248 (Label) | Target: Self (1)
+                   Affected Spells (Label): Fel-Crazed Rage (225777), Colossal Slam (232044), Dread Torrent (246464), Ceaseless Toxin (242497), Umbral Glaive Storm (242556), Shattering Umbral Glaives (242557), Infernal Cinders (242218)
+#10 (id=260841)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -40 | Scaled Value: -40 | Misc Value: 3 | Misc Value 2: 276 (Label) | Target: Self (1)
                    Affected Spells (Label): Xavaric's Magnum Opus (207472)
-#10 (id=260841)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
+#11 (id=260842)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 289 (Label) | Target: Self (1)
                    Affected Spells (Label): Rethu's Incessant Courage (242597)
-#11 (id=260842)   : Apply Aura (6) | Add Percent Modifier (108): Spell Duration (1)
+#12 (id=260843)   : Apply Aura (6) | Add Percent Modifier (108): Spell Duration (1)
                    Base Value: 50 | Scaled Value: 50 | Misc Value: 1 | Target: Self (1)
                    Affected Spells: Rushing Jade Wind (116847), Refreshing Jade Wind (196725)
-#12 (id=260843)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
+#13 (id=260844)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 298 (Label) | Target: Self (1)
                    Affected Spells: Rushing Jade Wind (116847), Refreshing Jade Wind (196725)
-                   Affected Spells (Label): Cleansing Matrix (242619), Fruitful Machinations (242623), Guiding Hand (242622), Infusion of Light (242621)
-#13 (id=260844)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-#14 (id=260845)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+                   Affected Spells (Label): Cleansing Matrix (242619), Fruitful Machinations (242623), Guiding Hand (242622), Infusion of Light (242621), Fel Shield (253277), Tarratus Keystone (253282), Refreshing Agony (253284), L'ura's Word (250781)
+#14 (id=260845)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
+                   Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 333 (Label) | Target: Self (1)
+                   Affected Spells (Label): Void Slash (251034)
 #15 (id=260846)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #16 (id=362030)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+#17 (id=474893)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+#18 (id=477121)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 
 Name             : Mistweaver Monk (id=137024) [Spell Family (53), Passive, Hidden] 
@@ -3284,11 +3087,9 @@ Effects          :
 #6 (id=260827)   : Apply Aura (6) | Hasted Global Cooldown (417)
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 917504 | Target: Self (1)
                    Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (101546), Transcendence (101643), Rising Sun Kick (107428), Paralysis (115078), Touch of Death (115080), Disable (116095), Rushing Jade Wind (116847), Leg Sweep (119381), Transcendence: Transfer (119996), Rising Sun Kick (185099), Refreshing Jade Wind (196725), Blackout Strike (205523), Blackout Kick (228649)
-                   Hotfixed: Chain Multiplier (0 -> 1)
 #7 (id=260828)   : Apply Aura (6) | Hasted Cooldown Duration (416)
                    Base Value: 100 | Scaled Value: 100 | Target: Self (1)
                    Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (101546), Blackout Strike (205523), Blackout Kick (228649)
-                   Hotfixed: Chain Multiplier (0 -> 1)
 #8 (id=260829)   : Apply Aura (6) | Unknown(379)
                    Base Value: -20 | Scaled Value: -20 | Target: Self (1)
 #9 (id=260830)   : Apply Aura (6) | Unknown(179)
@@ -3306,20 +3107,26 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0
                    Affected Spells: Tiger Palm (100780)
 #14 (id=260835)   : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
-                   Base Value: -32 | Scaled Value: -32
+                   Base Value: -44 | Scaled Value: -44
                    Affected Spells: Spinning Crane Kick (107270)
 #15 (id=260836)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Damage (22)
                    Base Value: 400 | Scaled Value: 400 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Crackling Jade Lightning (117952)
 #16 (id=290682)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 247 (Label) | Target: Self (1)
-                   Affected Spells (Label): Infernal Contract (225140), Living Carapace (225033), Sands of Time (225124), Vampiric Aura (225130), Wailing Souls (242609), Unending Hunger (242536)
+                   Affected Spells (Label): Infernal Contract (225140), Living Carapace (225033), Sands of Time (225124), Vampiric Aura (225130), Wailing Souls (242609), Unending Hunger (242536), Chilling Nova (251940), Bulwark of Flame (251946), Hammer-Forged (251952), Pool of Pure Void (250766)
 #17 (id=290683)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 248 (Label) | Target: Self (1)
                    Affected Spells (Label): Fel-Crazed Rage (225777), Colossal Slam (232044), Dread Torrent (246464), Ceaseless Toxin (242497), Umbral Glaive Storm (242556), Shattering Umbral Glaives (242557), Infernal Cinders (242218)
-#18 (id=290684)   : Apply Aura (6) | Dummy (4)
+#18 (id=290684)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Periodic Damage (22)
+                   Base Value: -50 | Scaled Value: -50 | Misc Value: 22 | Misc Value 2: 248 (Label) | Target: Self (1)
+                   Affected Spells (Label): Fel-Crazed Rage (225777), Colossal Slam (232044), Dread Torrent (246464), Ceaseless Toxin (242497), Umbral Glaive Storm (242556), Shattering Umbral Glaives (242557), Infernal Cinders (242218)
+#19 (id=290685)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
+                   Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 333 (Label) | Target: Self (1)
+                   Affected Spells (Label): Void Slash (251034)
+#20 (id=474894)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-#19 (id=290685)   : Apply Aura (6) | Dummy (4)
+#21 (id=477122)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : Mistweaver Monk core passive
 
@@ -3336,35 +3143,35 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=179709)   : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
-                   Base Value: 22 | Scaled Value: 22 | Target: Self (1)
-                   Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (107270), Rising Sun Kick (107428), Rushing Jade Wind (116847), Fists of Fury (117418), Chi Burst (123986), Chi Burst (130654), Chi Wave (132466), Chi Wave (132467), Chi Burst (148135), Rushing Jade Wind (148187), Whirling Dragon Punch (152175), Whirling Dragon Punch (158221), Rising Sun Kick (185099), Song of Chi-Ji (198898), Strike of the Windlord (205320), Strike of the Windlord (205414), Blackout Strike (205523), Strike of the Windlord (222029), Blackout Kick (228649)
-                   Hotfixed: Base Value (19 -> 22), Chain Multiplier (0 -> 1)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+                   Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (107270), Fists of Fury (117418), Crackling Jade Lightning (117952), Flying Serpent Kick (123586), Chi Wave (132467), Chi Burst (148135), Rushing Jade Wind (148187), Whirling Dragon Punch (158221), Rising Sun Kick (185099), Crosswinds (196061), Eye of the Tiger (196608), Chi Orbit (196748), Strike of the Windlord (205414), Strike of the Windlord (222029), Thunderfist (242390)
 #2 (id=191100)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Damage (22)
-                   Base Value: 22 | Scaled Value: 22 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 22 | Target: Self (1)
+                   Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (107270), Fists of Fury (117418), Crackling Jade Lightning (117952), Flying Serpent Kick (123586), Chi Wave (132467), Chi Burst (148135), Rushing Jade Wind (148187), Whirling Dragon Punch (158221), Rising Sun Kick (185099), Crosswinds (196061), Eye of the Tiger (196608), Chi Orbit (196748), Strike of the Windlord (205414), Strike of the Windlord (222029), Thunderfist (242390)
+#3 (id=191101)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
                    Affected Spells: Crackling Jade Lightning (117952), Eye of the Tiger (196608)
-                   Hotfixed: Base Value (19 -> 22), Chain Multiplier (0 -> 1)
-#3 (id=191101)   : Apply Aura (6) | Add Percent Modifier (108): Spell Cooldown (11)
+#4 (id=191102)   : Apply Aura (6) | Add Percent Modifier (108): Spell Cooldown (11)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 11 | Target: Self (1)
                    Affected Spells: Blackout Kick (100784), Blackout Strike (205523), Blackout Kick (228649)
-#4 (id=191102)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)
+#5 (id=191103)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)
                    Base Value: 2 | Scaled Value: 2 | Misc Value: 12 | Target: Self (1)
                    Affected Spells: Tiger Palm (100780)
-#5 (id=191103)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
-                   Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 247 (Label) | Target: Self (1)
-                   Affected Spells (Label): Infernal Contract (225140), Living Carapace (225033), Sands of Time (225124), Vampiric Aura (225130), Wailing Souls (242609), Unending Hunger (242536)
 #6 (id=260817)   : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
                    Base Value: 26 | Scaled Value: 26 | Target: Self (1)
                    Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Rising Sun Kick (107428), Rising Sun Kick (185099), Blackout Strike (205523), Blackout Kick (228649)
-                   Hotfixed: Chain Multiplier (0 -> 1)
-#7 (id=260818)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
+#7 (id=260818)   : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
+                   Base Value: 22 | Scaled Value: 22 | Target: Self (1)
+                   Affected Spells: Rushing Jade Wind (116847), Chi Wave (132466), Chi Wave (132467), Refreshing Jade Wind (196725)
+#8 (id=260819)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Damage (22)
+                   Base Value: 22 | Scaled Value: 22 | Misc Value: 22 | Target: Self (1)
+                   Affected Spells: Eye of the Tiger (196608)
+#9 (id=260820)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
+                   Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 247 (Label) | Target: Self (1)
+                   Affected Spells (Label): Infernal Contract (225140), Living Carapace (225033), Sands of Time (225124), Vampiric Aura (225130), Wailing Souls (242609), Unending Hunger (242536), Chilling Nova (251940), Bulwark of Flame (251946), Hammer-Forged (251952), Pool of Pure Void (250766)
+#10 (id=260821)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 298 (Label) | Target: Self (1)
-                   Affected Spells (Label): Cleansing Matrix (242619), Fruitful Machinations (242623), Guiding Hand (242622), Infusion of Light (242621)
-#8 (id=260819)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-#9 (id=260820)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-#10 (id=260821)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+                   Affected Spells (Label): Cleansing Matrix (242619), Fruitful Machinations (242623), Guiding Hand (242622), Infusion of Light (242621), Fel Shield (253277), Tarratus Keystone (253282), Refreshing Agony (253284), L'ura's Word (250781)
 #11 (id=260822)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #12 (id=260823)   : Apply Aura (6) | Dummy (4)
@@ -3372,6 +3179,10 @@ Effects          :
 #13 (id=260824)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #14 (id=349729)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+#15 (id=475436)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+#16 (id=475437)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 
 Name             : Combo Breaker (id=137384) [Scaling Spell (6), Spell Family (53), Passive, Hidden] 
@@ -3465,13 +3276,13 @@ Attributes       : ........ ........ ........ x..x....   ...x.x.x ........ .....
                  : Does not break stealth (37), Not a proc (105)
 Effects          :
 #1 (id=201313)   : School Damage (2): nature
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 4.12500 | Target: Unknown(25)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 5.03250 | Target: Unknown(25)
 Description      : $@spelldesc123986
 
 Name             : Rushing Jade Wind (id=148187) [Spell Family (53)] 
 Class            : Monk
 School           : Physical
-Affecting spells : Stance of the Fierce Tiger (103985 effect#5), Stagger (115069 effect#11), Brewmaster Monk (137023 effect#1), Windwalker Monk (137025 effect#1), Lucidity (137331 effect#1), Storm, Earth, and Fire (137639 effect#1), Serenity (152173 effect#1), 
+Affecting spells : Stance of the Fierce Tiger (103985 effect#5), Stagger (115069 effect#11), Brewmaster Monk (137023 effect#1), Windwalker Monk (137025 effect#1), Lucidity (137331 effect#1), Storm, Earth, and Fire (137639 effect#1), Serenity (152173 effect#1), Extend Life (185158 effect#2)
 Triggered by     : Rushing Jade Wind (116847)
 Attributes       : ....x... ........ ..x..... ...x....   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ .x...... ........ ........ 
@@ -3522,7 +3333,7 @@ School           : Physical
 GCD              : 1 seconds
 Duration         : 1 seconds
 Cooldown         : 24 seconds
-Affecting spells : Monk (137022 effect#1), Windwalker Monk (137025 effect#1), Storm, Earth, and Fire (137639 effect#1), 
+Affecting spells : Monk (137022 effect#1), Storm, Earth, and Fire (137639 effect#1), 
 Attributes       : ........ ........ ........ .......x   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .x...... ........ ........ 
@@ -3617,7 +3428,7 @@ Description      : Increases your chance to critically strike by $s1%.
 Name             : Whirling Dragon Punch (id=158221) [Spell Family (53)] 
 Class            : Monk
 School           : Physical
-Affecting spells : Monk (137022 effect#1), Windwalker Monk (137025 effect#1), Storm, Earth, and Fire (137639 effect#1), 
+Affecting spells : Monk (137022 effect#1), Windwalker Monk (137025 effect#1), Storm, Earth, and Fire (137639 effect#1), Extend Life (185158 effect#2)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .x...... ........ ........ 
@@ -3626,7 +3437,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=220760)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 4.15000 | Radius: 0 - 8 yards | Target: Custom (18) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 5.06300 | Radius: 0 - 8 yards | Target: Custom (18) -> AOE enemy (instant) (16)
 Description      : $@spelldesc152175
 
 Name             : Refreshing Jade Wind (id=162530) [Spell Family (53)] 
@@ -3839,7 +3650,7 @@ Class            : Monk
 School           : Physical
 Spell Level      : 56
 Range            : 5 yards
-Affecting spells : Stance of the Fierce Tiger (103985 effect#5), Stagger (115069 effect#11), Monk (137022 effect#1), Mistweaver Monk (137024 effect#6), Windwalker Monk (137025 effect#1), Storm, Earth, and Fire (137639 effect#1), Serenity (152173 effect#1), Rising Winds (195263 effect#1), Pressure Point (247255 effect#1)
+Affecting spells : Stance of the Fierce Tiger (103985 effect#5), Stagger (115069 effect#11), Monk (137022 effect#1), Mistweaver Monk (137024 effect#6), Windwalker Monk (137025 effect#1), Storm, Earth, and Fire (137639 effect#1), Serenity (152173 effect#1), Extend Life (185158 effect#2), Rising Winds (195263 effect#1), Pressure Point (247255 effect#1)
 Triggered by     : Rising Sun Kick (107428)
 Attributes       : ....x... ........ ........ ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3849,7 +3660,7 @@ Attributes       : ....x... ........ ........ ........   ........ .x...... .....
                  : ........ ........ ........ ........   ....x... ........ ........ ........ 
 Effects          :
 #1 (id=268390)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 9.10000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 11.10200 | Target: Enemy (6)
 Description      : $@spelldesc107428
 
 Name             : Hunting Companion (id=191335) [Spell Family (9)] 
@@ -4002,7 +3813,7 @@ Class            : Monk
 School           : Physical
 Range            : 100 yards
 Proc Chance      : 101%
-Artifact Power   : Id: 832, Index: 2, Max Rank: 1
+Artifact Power   : Id: 832, Index: 2, Max Rank: 1, Type: 1
 Proc Flags       : ....x... ....x... x....... ........ 
                  : Yellow Melee, AOE Hostile Spell, Hostile Spell
 Attributes       : ......x. ........ ........ .......x   ........ ........ ........ ....x... 
@@ -4051,10 +3862,11 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 99625 | Misc Value 2: 0xe67 | Radius: 15 yards | Target: Unknown(73)
 Description      : $@spelldesc195650
 
-Name             : Crosswinds (id=196061) 
+Name             : Crosswinds (id=196061) [Spell Family (53)] 
 Class            : Monk
 School           : Physical
 Range            : 60 yards
+Affecting spells : Windwalker Monk (137025 effect#1), Extend Life (185158 effect#2)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4089,7 +3901,7 @@ Class            : Monk
 School           : Nature
 Range            : 100 yards
 Duration         : 8 seconds
-Affecting spells : Brewmaster Monk (137023 effect#2), Windwalker Monk (137025 effect#2)
+Affecting spells : Brewmaster Monk (137023 effect#2), Windwalker Monk (137025 effect#1), Extend Life (185158 effect#2)
 Triggered by     : Eye of the Tiger (196607)
 Attributes       : ....x... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4145,7 +3957,7 @@ Spell Level      : 1
 GCD              : 1.5 seconds
 Duration         : 9 seconds
 Cooldown         : 9 seconds
-Affecting spells : Monk (137022 effect#1), Brewmaster Monk (137023 effect#11), Mistweaver Monk (137024 effect#6)
+Affecting spells : Monk (137022 effect#1), Brewmaster Monk (137023 effect#12), Mistweaver Monk (137024 effect#6), Windwalker Monk (137025 effect#7)
 Attributes       : ....x... ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .x...... ........ ........ 
@@ -4376,6 +4188,7 @@ Name             : Chi Orbit (id=196748) [Spell Family (53)]
 Class            : Monk
 School           : Nature
 Range            : 100 yards
+Affecting spells : Windwalker Monk (137025 effect#1), Extend Life (185158 effect#2)
 Attributes       : ....x... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4452,11 +4265,9 @@ Effects          :
 #1 (id=290809)   : Apply Aura (6) | Add Flat Modifier (107): Unknown(37)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 37 | Target: Self (1)
                    Affected Spells: Thunder Focus Tea (116680), Thunder Focus Tea (197218)
-                   Hotfixed: Affects Spells, Chain Multiplier (0 -> 1)
 #2 (id=290810)   : Apply Aura (6) | Add Flat Modifier (107): Unknown(31)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 31 | Target: Self (1)
                    Affected Spells: Thunder Focus Tea (116680), Thunder Focus Tea (197218)
-                   Hotfixed: Affects Spells, Chain Multiplier (0 -> 1)
 Description      : Thunder Focus Tea now empowers your next ${$m1+1} spells.
 
 Name             : Mist Wrap (id=197900) [Spell Family (53), Passive] 
@@ -4572,7 +4383,7 @@ Attributes       : ....x... ........ ..x..... ........   ........ ........ .....
                  : ........ .x...... ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=292176)   : Unknown(254)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 8 | Target: Unknown(132)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 8 | Radius: 0 - 1.75 yards | Target: Unknown(132) -> Unknown(86)
 #2 (id=316503)   : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.35000 | Target: Friend (21)
 Description      : Chi-Ji dashes to three allies, healing them for $s2.
@@ -4586,7 +4397,7 @@ Cast Time        : 1.8 seconds
 GCD              : 1.5 seconds
 Duration         : 5 seconds
 Cooldown         : 15 seconds
-Affecting spells : Stance of the Fierce Tiger (103985 effect#5), Stagger (115069 effect#11), Brewmaster Monk (137023 effect#1), Windwalker Monk (137025 effect#1), Storm, Earth, and Fire (137639 effect#1), Extend Life (185158 effect#2)
+Affecting spells : Stance of the Fierce Tiger (103985 effect#5), Stagger (115069 effect#11), Brewmaster Monk (137023 effect#1), Storm, Earth, and Fire (137639 effect#1), Extend Life (185158 effect#2)
 Attributes       : ........ ........ ........ ........   ...x...x ........ ........ ........ 
                  : ........ ........ .x...... ........   ........ ........ ..x..... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4654,6 +4465,8 @@ Attributes       : .......x ........ ........ ....x...   ..xxx..x ........ .x...
 Effects          :
 #1 (id=295605)   : Unknown(162)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+#2 (id=477483)   : Trigger Spell (64): Vindicaar Matrix Crystal
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 255529
 Description      : Switch to your Primary Talent Specialization.
 Tooltip          : Switch to your Primary Talent Specialization.
 
@@ -4685,11 +4498,8 @@ Range            : 9 yards
 GCD              : 1 seconds
 Duration         : 6 seconds
 Cooldown         : 40 seconds
-Proc Chance      : 101%
-Artifact Power   : Id: 831, Max Rank: 1
-Proc Flags       : ....x... ....x... x....... ........ 
-                 : Yellow Melee, AOE Hostile Spell, Hostile Spell
-Affecting spells : Windwalker Monk (137025 effect#1), Storm, Earth, and Fire (137639 effect#1), Serenity (152173 effect#1), The Wind Blows (248101 effect#1), 
+Artifact Power   : Id: 831, Max Rank: 1, Type: 18
+Affecting spells : Storm, Earth, and Fire (137639 effect#1), Serenity (152173 effect#1), The Wind Blows (248101 effect#1), 
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4714,7 +4524,7 @@ School           : Nature
 Range            : 40 yards
 Cast Time        : 2 seconds
 GCD              : 1.5 seconds
-Artifact Power   : Id: 931, Max Rank: 1
+Artifact Power   : Id: 931, Max Rank: 1, Type: 18
 Affecting spells : Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effect#1), 
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4731,10 +4541,7 @@ Name             : Strike of the Windlord (id=205414) [Spell Family (53)]
 Class            : Monk
 School           : Physical
 Range            : 12 yards
-Proc Chance      : 101%
-Proc Flags       : ....x... ....x... x....... ........ 
-                 : Yellow Melee, AOE Hostile Spell, Hostile Spell
-Affecting spells : Windwalker Monk (137025 effect#1), Storm, Earth, and Fire (137639 effect#1), Serenity (152173 effect#1), The Wind Blows (248101 effect#1), 
+Affecting spells : Windwalker Monk (137025 effect#1), Storm, Earth, and Fire (137639 effect#1), Serenity (152173 effect#1), Extend Life (185158 effect#2), The Wind Blows (248101 effect#1), 
 Triggered by     : Strike of the Windlord (205320)
 Attributes       : ........ ........ ........ ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ x....... 
@@ -4744,7 +4551,7 @@ Attributes       : ........ ........ ........ ........   ........ .x...... .....
                  : ........ x....... ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=303325)   : Weapon Damage% (31)
-                   Base Value: 2250 | Scaled Value: 22.5 | Radius: 12 yards | Target: Unknown(129)
+                   Base Value: 2745 | Scaled Value: 27.45 | Radius: 12 yards | Target: Unknown(129)
 #2 (id=303326)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | Radius: 12 yards | Target: Unknown(129)
 Description      : $@spelldesc205320
@@ -4758,7 +4565,7 @@ Range            : 5 yards
 GCD              : 1.5 seconds
 Cooldown         : 3 seconds
 Proc Chance      : 101%
-Affecting spells : Stance of the Fierce Tiger (103985 effect#5), Stagger (115069 effect#11), Blackout Kick! (116768 effect#1), Brewmaster Monk (137023 effect#1), Mistweaver Monk (137024 effect#6), Windwalker Monk (137025 effect#1), Storm, Earth, and Fire (137639 effect#1), Serenity (152173 effect#1), Dark Skies (195265 effect#1), Obsidian Fists (213051 effect#1), Draught of Darkness (238057 effect#1)
+Affecting spells : Stance of the Fierce Tiger (103985 effect#5), Stagger (115069 effect#11), Blackout Kick! (116768 effect#1), Brewmaster Monk (137023 effect#1), Mistweaver Monk (137024 effect#6), Windwalker Monk (137025 effect#4), Storm, Earth, and Fire (137639 effect#1), Serenity (152173 effect#1), Dark Skies (195265 effect#1), Obsidian Fists (213051 effect#1), Draught of Darkness (238057 effect#1)
 Attributes       : ........ ........ ..x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4783,7 +4590,7 @@ $high=${$<stnc>*($<dwm>*(($MWB)/($MWS)+$<offm>*$<offhigh>)+$AP/3.5+1)}
 Name             : Soothing Mist (Honor Talent) (id=209525) [Spell Family (53)] 
 Class            : Monk
 School           : Nature
-Resource         : 0% Base Mana (0) and 0.225% Base Mana (0) per tick (id=11091)
+Resource         : 0% Base Mana (0) and 0.3% Base Mana (0) per tick (id=11091)
 Spell Level      : 10
 Range            : 40 yards
 GCD              : 0.5 seconds
@@ -4799,8 +4606,7 @@ Attributes       : ........ ........ x....... ........   ..x...x. ........ .....
                  : Channeled (34), Channeled (38)
 Effects          :
 #1 (id=310090)   : Apply Aura (6) | Periodic Heal (8): every 0.5 seconds
-                   Base Value: 1 | Scaled Value: 1 | Value Multiplier: 1 | SP Coefficient: 0.72000 | Chain Multiplier: 100 | Chain Targets: 1 | Target: Friend (21)
-                   Hotfixed: SP Coefficient (0.9 -> 0.72)
+                   Base Value: 1 | Scaled Value: 1 | Value Multiplier: 1 | SP Coefficient: 0.90000 | Chain Multiplier: 100 | Chain Targets: 1 | Target: Friend (21)
 #2 (id=352117)   : Apply Aura (6) | Unknown(330)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
                    Affected Spells: Effuse (116694), Enveloping Mist (124682)
@@ -4813,9 +4619,6 @@ Name             : Spirit of the Crane (id=210802) [Spell Family (53), Passive]
 Class            : Monk
 School           : Physical
 Spell Level      : 1
-Proc Chance      : 100%
-Proc Flags       : ....x... ........ ........ ........ 
-                 : Yellow Melee
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -4848,9 +4651,6 @@ Name             : Rising Thunder (id=210804) [Spell Family (53), Passive]
 Class            : Monk
 School           : Physical
 Spell Level      : 1
-Proc Chance      : 100%
-Proc Flags       : ....x... ........ ........ ........ 
-                 : Yellow Melee
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -4958,7 +4758,7 @@ Tooltip          : You may cast Touch of Death again before the cooldown is trig
 Name             : Face Palm (id=213116) [Spell Family (53), Passive] 
 Class            : Monk
 School           : Physical
-Artifact Power   : Id: 1286, Index: 12, Max Rank: 8, Values: [ 10, 20, 30, 40, 50, 60, 70, 80 ]
+Artifact Power   : Id: 1286, Index: 12, Max Rank: 8, Type: 32, Values: [ 10, 20, 30, 40, 50, 60, 70, 80 ]
 Attributes       : ......x. ........ ........ .......x   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4979,7 +4779,7 @@ GCD              : 1 seconds
 Velocity         : 15 yards/sec
 Duration         : 3 seconds
 Cooldown         : 75 seconds
-Artifact Power   : Id: 1277, Max Rank: 1
+Artifact Power   : Id: 1277, Max Rank: 1, Type: 18
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4991,10 +4791,8 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | AP Coefficient: 9.00000 | Radius: 8 yards | Target: AOE enemy (instant) (16)
 #2 (id=318334)   : Apply Aura (6) | Unknown(344)
                    Base Value: -100 | Scaled Value: -100 | Radius: 8 yards | Target: AOE enemy (instant) (16)
-                   Hotfixed: Sub Type (54 -> 344), Chain Multiplier (0 -> 1)
 #3 (id=472356)   : Apply Aura (6) | Modify Hit% (54)
                    Base Value: -100 | Scaled Value: -100 | Radius: 8 yards | Target: AOE enemy (instant) (16)
-                   Hotfixed: NEW EFFECT
 Description      : Hurls a flaming keg at the target location, dealing $s1 Fire damage to nearby enemies and causing them to miss their melee attacks for the next $d.
 Tooltip          : Misses melee attacks.
 
@@ -5127,10 +4925,7 @@ Name             : Strike of the Windlord (id=222029) [Spell Family (53)]
 Class            : Monk
 School           : Physical
 Range            : 12 yards
-Proc Chance      : 101%
-Proc Flags       : ....x... ....x... x....... ........ 
-                 : Yellow Melee, AOE Hostile Spell, Hostile Spell
-Affecting spells : Windwalker Monk (137025 effect#1), Storm, Earth, and Fire (137639 effect#1), Serenity (152173 effect#1), The Wind Blows (248101 effect#1), 
+Affecting spells : Windwalker Monk (137025 effect#1), Storm, Earth, and Fire (137639 effect#1), Serenity (152173 effect#1), Extend Life (185158 effect#2), The Wind Blows (248101 effect#1), 
 Triggered by     : Strike of the Windlord (205320)
 Attributes       : ........ ........ ........ ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5140,7 +4935,7 @@ Attributes       : ........ ........ ........ ........   ........ .x...... .....
                  : ........ x....... ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=331355)   : Weapon Damage% (31)
-                   Base Value: 2250 | Scaled Value: 22.5 | Radius: 12 yards | Target: Unknown(129)
+                   Base Value: 2745 | Scaled Value: 27.45 | Radius: 12 yards | Target: Unknown(129)
 #2 (id=331356)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | Radius: 12 yards | Target: Unknown(129)
 Description      : $@spelldesc205320
@@ -5231,7 +5026,7 @@ Class            : Monk
 School           : Physical
 Spell Level      : 3
 Range            : 5 yards
-Affecting spells : Stance of the Fierce Tiger (103985 effect#5), Stagger (115069 effect#11), Blackout Kick! (116768 effect#1), Brewmaster Monk (137023 effect#1), Mistweaver Monk (137024 effect#6), Windwalker Monk (137025 effect#1), Storm, Earth, and Fire (137639 effect#1), Serenity (152173 effect#1), Dark Skies (195265 effect#1), Obsidian Fists (213051 effect#1), Draught of Darkness (238057 effect#1)
+Affecting spells : Stance of the Fierce Tiger (103985 effect#5), Stagger (115069 effect#11), Blackout Kick! (116768 effect#1), Brewmaster Monk (137023 effect#1), Mistweaver Monk (137024 effect#6), Windwalker Monk (137025 effect#4), Storm, Earth, and Fire (137639 effect#1), Serenity (152173 effect#1), Dark Skies (195265 effect#1), Obsidian Fists (213051 effect#1), Draught of Darkness (238057 effect#1)
 Attributes       : ........ ........ ..x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5377,7 +5172,7 @@ Description      : Stagger is $s1% more effective against magical attacks.
 Name             : Master of Combinations (id=238095) [Spell Family (53), Passive] 
 Class            : Monk
 School           : Physical
-Artifact Power   : Id: 1550, Max Rank: 1
+Artifact Power   : Id: 1550, Max Rank: 1, Type: 0
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5396,7 +5191,7 @@ Name             : Thunderfist (id=238131) [Spell Family (53), Passive]
 Class            : Monk
 School           : Physical
 Proc Chance      : 100%
-Artifact Power   : Id: 1551, Max Rank: 1
+Artifact Power   : Id: 1551, Max Rank: 1, Type: 1
 Proc Flags       : ....x... ........ ........ ........ 
                  : Yellow Melee
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -5449,10 +5244,11 @@ Effects          :
 Description      : $@spelldesc238131
 Tooltip          : Melee attacks deal an additional $242390s1 Nature damage.
 
-Name             : Thunderfist (id=242390) 
+Name             : Thunderfist (id=242390) [Spell Family (53)] 
 Class            : Monk
 School           : Nature
 Range            : 8 yards
+Affecting spells : Windwalker Monk (137025 effect#1), Extend Life (185158 effect#2)
 Triggered by     : Thunderfist (242387)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5503,5 +5299,41 @@ Effects          :
 #1 (id=372570)   : Apply Aura (6) | Modify Base Resistance (142)
                    Base Value: 25 | Scaled Value: 25 | Misc Value: 1 | Target: Self (1)
 Description      : Your Armor is increased by $s1%.
+
+Name             : Vindicaar Matrix Crystal (id=251463) 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Worgen, Pandaren, Pandaren (Alliance)
+School           : Physical
+GCD              : 1.5 seconds
+Triggered by     : Vindicaar Matrix Crystal (255529)
+Attributes       : ........ ........ ........ ........   ...x...x ..x..... ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=470901)   : Dummy (3)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+Description      : Unlock powers at the Vindicaar's Matrix Core to use while on Argus. 
+
+Name             : Vindicaar Matrix Crystal (id=255529) [Hidden] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Worgen, Pandaren, Pandaren (Alliance)
+School           : Physical
+Triggered by     : Activating Specialization (200749)
+Attributes       : .......x x....... .......x x..x.x..   ...x.x.x ..x..... ........ ........ 
+                 : x.x..... ......x. ...x..x. ....x...   ........ .x...... xx..x... ....x... 
+                 : .......x ........ .......x ........   ...x.... ........ .xx..... ........ 
+                 : ........ .x..x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ....x... ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Hidden (7), Does not break stealth (37), Not a proc (105), Disable player procs (112), Disable target procs (113), Disable weapon procs (151)
+Effects          :
+#1 (id=477479)   : Unknown(81)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 251463 | Target: Self (1)
+#2 (id=477480)   : Unknown(170)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+Description      : Unlock powers at the Vindicaar's Matrix Core to use while on Argus. 
 
 

@@ -217,7 +217,6 @@ struct rogue_t : public player_t
 
   // Data collection
   luxurious_sample_data_t* dfa_mh, *dfa_oh;
-  luxurious_sample_data_t* dfa_wm_finisher_cancel;
 
   // Experimental weapon swapping
   weapon_info_t weapon_data[ 2 ];
@@ -679,7 +678,6 @@ struct rogue_t : public player_t
     auto_attack( nullptr ), melee_main_hand( nullptr ), melee_off_hand( nullptr ),
     shadow_blade_main_hand( nullptr ), shadow_blade_off_hand( nullptr ),
     dfa_mh( nullptr ), dfa_oh( nullptr ),
-    dfa_wm_finisher_cancel( nullptr ),
     buffs( buffs_t() ),
     cooldowns( cooldowns_t() ),
     gains( gains_t() ),
@@ -850,14 +848,7 @@ static void break_stealth( rogue_t* p )
   if ( p -> buffs.stealth -> check() )
     p -> buffs.stealth -> expire();
 
-  // This bug allows us to use two abilities with vanish.
-  // For more details, see: https://github.com/Ravenholdt-TC/Rogue/issues/4
-  // This implementation is a simple hack to not consume the buff when vanish has just been cast.
-  // Note: To ensure Vanish->DfA does not lead to vanish lasting until the finisher, there is a
-  // stealth break call in death_from_above_driver_t::tick as well.
-  bool vanishBug = p -> buffs.vanish -> buff_duration - p -> buffs.vanish -> remains() <= timespan_t::from_seconds( 0.1 );
-
-  if ( p -> buffs.vanish -> check() && ( ! p -> bugs || ! vanishBug ) )
+  if ( p -> buffs.vanish -> check() )
     p -> buffs.vanish -> expire();
 }
 
@@ -4875,10 +4866,6 @@ struct death_from_above_driver_t : public rogue_attack_t
   {
     rogue_attack_t::tick( d );
 
-    // This is to make sure vanish (due to the vanish bug) is not up.
-    // See break_stealth() for more info.
-    actions::break_stealth( p() );
-
     action_state_t* ability_state = ability -> get_state();
     ability -> snapshot_state( ability_state, DMG_DIRECT );
     ability_state -> target = d -> target;
@@ -4892,11 +4879,9 @@ struct death_from_above_driver_t : public rogue_attack_t
 struct death_from_above_t : public rogue_attack_t
 {
   death_from_above_driver_t* driver;
-  bool wm_finisher_cancel;
 
   death_from_above_t( rogue_t* p, const std::string& options_str ) :
-    rogue_attack_t( "death_from_above", p, p -> talent.death_from_above, options_str ),
-    wm_finisher_cancel( false )
+    rogue_attack_t( "death_from_above", p, p -> talent.death_from_above, options_str )
   {
     weapon = &( p -> main_hand_weapon );
     weapon_multiplier = 0;
@@ -5026,23 +5011,9 @@ struct death_from_above_t : public rogue_attack_t
     driver -> base_tick_time = oor_delay;
     driver -> dot_duration = oor_delay;
 
-    // WM + DfA bug implementation, see: https://github.com/Ravenholdt-TC/Rogue/issues/25
-    wm_finisher_cancel = false;
-    if ( p() -> bugs
-         && p() -> talent.weaponmaster -> ok()
-         && rng().roll( 1 - std::pow( 1 - p() -> talent.weaponmaster -> proc_chance(), execute_state -> n_targets ) ) ) {
-      wm_finisher_cancel = true;
-      p() -> dfa_wm_finisher_cancel -> add( 1 );
-      p() -> cooldowns.weaponmaster -> start( p() -> talent.weaponmaster -> internal_cooldown() );
-    }
-
-    // Cancel the finisher hit depending on weaponmaster proc
-    if ( ! wm_finisher_cancel ) {
-      action_state_t* driver_state = driver -> get_state( execute_state );
-      driver_state -> target = target;
-      driver -> schedule_execute( driver_state );
-    }
-      
+    action_state_t* driver_state = driver -> get_state( execute_state );
+    driver_state -> target = target;
+    driver -> schedule_execute( driver_state );
 
     if ( p() -> buffs.feeding_frenzy -> check() )
     {
@@ -5159,9 +5130,6 @@ struct cancel_autoattack_t : public action_t
     parse_options( options_str );
 
     trigger_gcd = timespan_t::zero();
-
-    // Allow canceling auto attacks at any time
-    use_off_gcd = true;
   }
 
   result_e calculate_result( action_state_t* ) const override
@@ -7294,7 +7262,6 @@ void rogue_t::init_action_list()
   {
     def -> add_action( "variable,name=energy_regen_combined,value=energy.regen+poisoned_bleeds*(7+talent.venom_rush.enabled*3)%2" );
     def -> add_action( "variable,name=energy_time_to_max_combined,value=energy.deficit%variable.energy_regen_combined" );
-    def -> add_action( "cancel_autoattack,if=bugs&buff.vanish.up", "Reproduce the ingame macro to cancel autoattacks for the vanish bug." );
     def -> add_action( "call_action_list,name=cds" );
     def -> add_action( "call_action_list,name=maintain" );
     def -> add_action( "call_action_list,name=finish,if=(!talent.exsanguinate.enabled|cooldown.exsanguinate.remains>2)&(!dot.rupture.refreshable|(dot.rupture.exsanguinated&dot.rupture.remains>=3.5)|target.time_to_die-dot.rupture.remains<=6)&active_dot.rupture>=spell_targets.rupture", "The 'active_dot.rupture>=spell_targets.rupture' means that we don't want to envenom as long as we can multi-rupture (i.e. units that don't have rupture yet)." );
@@ -7382,7 +7349,6 @@ void rogue_t::init_action_list()
     def -> add_action( "variable,name=rtb_reroll,value=!talent.slice_and_dice.enabled&buff.loaded_dice.up&(rtb_buffs<2|rtb_buffs=2&!buff.true_bearing.up)", "Fish for '2 Buffs' when Loaded Dice is up. Also try to get TB with Loaded Dice and 2 other buffs up. With SnD, consider that we never have to reroll." );
     def -> add_action( "variable,name=ss_useable_noreroll,value=(combo_points<5+talent.deeper_stratagem.enabled-(buff.broadsides.up|buff.jolly_roger.up)-(talent.alacrity.enabled&buff.alacrity.stack<=4))", "Condition to use Saber Slash when not rerolling RtB or when using SnD" );
     def -> add_action( "variable,name=ss_useable,value=(talent.anticipation.enabled&combo_points<5)|(!talent.anticipation.enabled&((variable.rtb_reroll&combo_points<4+talent.deeper_stratagem.enabled)|(!variable.rtb_reroll&variable.ss_useable_noreroll)))", "Condition to use Saber Slash, when you have RtB or not" );
-    def -> add_action( "cancel_autoattack,if=bugs&buff.vanish.up", "Reproduce the ingame macro to cancel autoattacks for the vanish bug." );
     def -> add_action( "call_action_list,name=bf", "Normal rotation" );
     def -> add_action( "call_action_list,name=cds" );
     def -> add_action( "call_action_list,name=stealth,if=stealthed.rogue|cooldown.vanish.up|cooldown.shadowmeld.up", "Conditions are here to avoid worthless check if nothing is available" );
@@ -7463,7 +7429,6 @@ void rogue_t::init_action_list()
 
     // Main Rotation
     def -> add_action( "variable,name=dsh_dfa,value=talent.death_from_above.enabled&talent.dark_shadow.enabled&spell_targets.death_from_above<4" );
-    def -> add_action( "cancel_autoattack,if=bugs&buff.vanish.up&!buff.death_from_above.up", "Reproduce the ingame macro to cancel autoattacks for the vanish bug." );
     def -> add_action( this, "Shadow Dance", "if=talent.dark_shadow.enabled&(!stealthed.all|buff.subterfuge.up)&buff.death_from_above.up&buff.death_from_above.remains<=0.15", "This let us to use Shadow Dance right before the 2nd part of DfA lands. Only with Dark Shadow." );
     def -> add_action( "wait,sec=0.1,if=buff.shadow_dance.up&gcd.remains>0", "This is triggered only with DfA talent since we check shadow_dance even while the gcd is ongoing, it's purely for simulation performance." );
     def -> add_action( "call_action_list,name=cds" );
@@ -8211,9 +8176,6 @@ void rogue_t::init_procs()
   {
     dfa_mh = get_sample_data( "dfa_mh" );
     dfa_oh = get_sample_data( "dfa_oh" );
-    if ( bugs && talent.weaponmaster -> ok() ) {
-      dfa_wm_finisher_cancel = get_sample_data( "dfa_wm_finisher_cancel" );
-    }
   }
 }
 
@@ -9085,36 +9047,6 @@ public:
     os << "</div>\n";
 
     os << "<div class=\"player-section custom_section\">\n";
-    if ( p.bugs && p.talent.death_from_above -> ok() && p.talent.weaponmaster -> ok() )
-    {
-      os << "<h3 class=\"toggle open\">Death from Above Weaponmaster actions loss</h3>\n"
-         << "<div class=\"toggle-content\">\n";
-
-      os << "<p>";
-      os <<
-        "Weaponmaster procs during the 1st part of Death from Above causes"
-        " the 2nd part (Eviscerate action) to be cancelled."
-        " Here is a table showing how often it occured during"
-        " the simulation.";
-      os << "</p>";
-      os << "<table class=\"sc\" style=\"float: left;margin-right: 10px;\">\n";
-
-      os << "<tr><th></th><th colspan=\"3\">Actions lost per iteration</th></tr>";
-      os << "<tr><th>Action</th><th>Minimum</th><th>Average</th><th>Maximum</th></tr>";
-
-      os << "<tr>";
-      os << "<td class=\"left\">Eviscerate</td>";
-      os.format("<td class=\"right\">%.3f</td>", p.dfa_wm_finisher_cancel -> min() );
-      os.format("<td class=\"right\">%.3f</td>", p.dfa_wm_finisher_cancel -> mean() );
-      os.format("<td class=\"right\">%.3f</td>", p.dfa_wm_finisher_cancel -> max() );
-      os << "</tr>";
-
-      os << "</table>";
-
-      os << "</div>\n";
-
-      os << "<div class=\"clear\"></div>\n";
-    }
     os << "</div>\n";
   }
 private:

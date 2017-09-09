@@ -5,7 +5,8 @@ race=troll
 role=attack
 position=back
 talents=3303031
-artifact=34:0:0:0:0:1068:1:1070:4:1071:4:1072:4:1073:4:1074:4:1075:4:1076:4:1077:4:1078:4:1079:1:1080:1:1081:1:1082:1:1083:1:1084:1:1338:1:1370:1:1525:4:1526:1:1527:1:1528:1:1638:1
+artifact=34:0:0:0:0:1068:1:1070:4:1071:4:1072:4:1073:4:1074:4:1075:4:1076:4:1077:4:1078:4:1079:1:1080:1:1081:1:1082:1:1083:1:1084:1:1338:1:1370:1:1525:4:1526:1:1527:1:1528:24:1638:1
+crucible=1739:3:1774:3:1070:2:1525:1
 
 # Default consumables
 potion=prolonged_power
@@ -97,7 +98,7 @@ actions.preBitePhase+=/flanking_strike
 actions.preBitePhase+=/lacerate,if=remains<14&set_bonus.tier20_2pc
 
 head=wildstalker_helmet,id=147142,bonus_id=1512/3563
-neck=string_of_extracted_incisors,id=147013,bonus_id=1512/3563,enchant=mark_of_the_hidden_satyr
+neck=string_of_extracted_incisors,id=147013,bonus_id=1512/3563,enchant=mark_of_the_claw
 shoulders=wildstalker_spaulders,id=147144,bonus_id=1512/3563
 back=wildstalker_cape,id=147140,bonus_id=1512/3563,enchant=binding_of_agility
 chest=hauberk_of_frozen_mist,id=147043,bonus_id=1512/3563
@@ -113,12 +114,12 @@ trinket2=cradle_of_anguish,id=147010,bonus_id=1512/3563
 main_hand=talonclaw,id=128808,bonus_id=728,gem_id=147112/147102/147082,relic_id=1512:3563/1512:3563/1522:3563
 
 # Gear Summary
-# gear_ilvl=939.60
-# gear_agility=28581
-# gear_stamina=46377
-# gear_crit_rating=10942
+# gear_ilvl=940.60
+# gear_agility=29119
+# gear_stamina=47184
+# gear_crit_rating=11001
 # gear_haste_rating=11306
-# gear_mastery_rating=3646
+# gear_mastery_rating=3703
 # gear_versatility_rating=3025
 # gear_armor=3279
 # set_bonus=tier20_2pc=1

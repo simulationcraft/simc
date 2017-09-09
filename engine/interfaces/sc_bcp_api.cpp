@@ -270,7 +270,8 @@ bool parse_artifact( item_t& item, const rapidjson::Value& artifact )
 
     if ( relic_trait_data.first > 0 && relic_trait_data.second > 0 )
     {
-      item.player -> artifact -> move_purchased_rank( relic_trait_data.first,
+      item.player -> artifact -> move_purchased_rank( relic_idx,
+                                                      relic_trait_data.first,
                                                       relic_trait_data.second );
     }
   }

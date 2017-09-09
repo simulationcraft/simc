@@ -5486,7 +5486,7 @@ demon_hunter_td_t::demon_hunter_td_t( player_t* target, demon_hunter_t& p )
     debuffs.frailty = make_buff(target, "frailty", p.find_spell(247456))
       ->set_default_value(p.find_spell(247456)->effectN(1).percent());
     debuffs.fiery_demise = make_buff(target, "fiery_demise", p.find_spell(212818))
-      ->set_default_value(p.find_spell(212818)->effectN(1).percent());
+      ->set_default_value(p.artifact.fiery_demise.percent());
   }
 }
 
@@ -7171,7 +7171,7 @@ double demon_hunter_t::composite_armor_multiplier() const
   }
 
   am *= 1.0 + artifact.illidari_durability.data().effectN(2).percent();
-  am *= 1.0 + artifact.soulgorger.data().effectN(1).percent();
+  am *= 1.0 + artifact.soulgorger.percent();
 
   return am;
 }

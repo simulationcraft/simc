@@ -556,7 +556,7 @@ item_socket_color enchant::initialize_relic( item_t&                    item,
             item.player -> name(), relic.name(), data.ench_amount[ i ], ( *power_it ) -> name );
         }
 
-        item.player -> artifact -> add_relic( relic_id,
+        item.player -> artifact -> add_relic( relic_idx, relic_id,
                                               ( *power_it ) -> id, data.ench_amount[ i ] );
         break;
       }
