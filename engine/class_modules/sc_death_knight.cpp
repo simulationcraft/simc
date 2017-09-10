@@ -4805,6 +4805,10 @@ struct empower_rune_weapon_t : public death_knight_spell_t
   {
     death_knight_spell_t::execute();
 
+    p() -> resource_gain( RESOURCE_RUNIC_POWER,
+      p() -> find_specialization_spell( "Empower Rune Weapon" ) -> effectN( 3 ).resource( RESOURCE_RUNIC_POWER ) * 10 ,
+      p() -> gains.empower_rune_weapon );
+
     double filled = 0, overflow = 0;
     for ( auto& rune: p() -> _runes.slot )
     {
