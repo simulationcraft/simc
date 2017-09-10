@@ -3128,6 +3128,8 @@ struct rising_sun_kick_proc_t : public monk_melee_attack_t
       am *= 1.0 + sef_mult;
     }
 
+    am *= 1 + p() -> spec.windwalker_monk -> effectN( 1 ).percent();
+
     return am;
   }
 
@@ -3303,6 +3305,8 @@ struct rising_sun_kick_t: public monk_melee_attack_t
         sef_mult += p() -> artifact.spiritual_focus.data().effectN( 1 ).percent();
       am *= 1.0 + sef_mult;
     }
+
+    am *= 1 + p() -> spec.windwalker_monk -> effectN( 1 ).percent();
 
     return am;
   }
@@ -3986,6 +3990,15 @@ struct crosswinds_t : public monk_melee_attack_t
     tick_action = new crosswinds_tick_t( p );
   }
 
+  double composite_persistent_multiplier( const action_state_t* action_state ) const override
+  {
+    double pm = monk_melee_attack_t::composite_persistent_multiplier( action_state );
+
+    pm *= 1 + p() -> spec.windwalker_monk -> effectN( 2 ).percent();
+
+    return pm;
+  }
+
   player_t* select_random_target() const
   {
     if ( sim -> distance_targeting_enabled )
@@ -4221,6 +4234,8 @@ struct whirling_dragon_punch_t: public monk_melee_attack_t
       pm *= 1.0 + sef_mult;
     }
 
+    pm *= 1 + p() -> spec.windwalker_monk -> effectN( 2 ).percent();
+
     return pm;
   }
 
@@ -4339,6 +4354,8 @@ struct strike_of_the_windlord_t: public monk_melee_attack_t
         sef_mult += p() -> artifact.spiritual_focus.data().effectN( 1 ).percent();
       pm *= 1.0 + sef_mult;
     }
+
+    pm *= 1 + p() -> spec.windwalker_monk -> effectN( 1 ).percent();
 
     return pm;
   }
@@ -5487,6 +5504,16 @@ struct chi_orbit_t: public monk_spell_t
     attack_power_mod.direct = p -> passives.chi_orbit -> effectN( 1 ).ap_coeff();
     aoe = -1;
     school = p -> passives.chi_orbit -> get_school_type();
+  }
+
+
+  virtual double action_multiplier() const override
+  {
+    double am = monk_spell_t::action_multiplier();
+
+    am *= 1 + p() -> spec.windwalker_monk -> effectN( 1 ).percent();
+
+    return am;
   }
 
   bool ready() override
