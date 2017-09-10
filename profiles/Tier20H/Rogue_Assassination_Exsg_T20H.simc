@@ -5,7 +5,8 @@ race=pandaren
 role=attack
 position=back
 talents=2110131
-artifact=43:0:0:0:0:323:4:324:4:325:4:326:4:327:4:328:4:329:4:330:4:331:4:332:1:333:1:334:1:335:1:337:1:346:1:347:1:1276:1:1384:1:1577:4:1578:1:1579:1:1580:1:1651:1
+artifact=43:0:0:0:0:323:4:324:4:325:4:326:4:327:4:328:4:329:4:330:4:331:4:332:1:333:1:334:1:335:1:337:1:346:1:347:1:1276:1:1384:1:1577:4:1578:1:1579:1:1580:15:1651:1
+crucible=1739:3:1777:3
 
 # Default consumables
 potion=prolonged_power
@@ -105,12 +106,12 @@ main_hand=the_kingslayers,id=128870,bonus_id=741,gem_id=147110/137543/151189,rel
 off_hand=the_kingslayers,id=128869
 
 # Gear Summary
-# gear_ilvl=925.63
-# gear_agility=25851
-# gear_stamina=40892
-# gear_crit_rating=7665
+# gear_ilvl=927.50
+# gear_agility=26239
+# gear_stamina=41472
+# gear_crit_rating=7713
 # gear_haste_rating=3450
-# gear_mastery_rating=8863
+# gear_mastery_rating=8907
 # gear_versatility_rating=6021
 # gear_armor=2638
 # set_bonus=tier20_2pc=1
