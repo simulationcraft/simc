@@ -5562,10 +5562,10 @@ struct obliterate_strike_t : public death_knight_melee_attack_t
   double action_multiplier() const override
   {
     double m = death_knight_melee_attack_t::action_multiplier();
-
-	  m *= 1.0 + p() -> legendary.koltiras_newfound_will -> effectN( 2 ).percent();
-
-	  return m;
+    
+    m *= 1.0 + p() -> legendary.koltiras_newfound_will -> effectN( 2 ).percent();
+    
+    return m;
   }
 
   double composite_crit_chance() const override
