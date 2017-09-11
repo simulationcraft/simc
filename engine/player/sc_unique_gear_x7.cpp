@@ -5342,9 +5342,10 @@ struct netherlight_base_t : public proc_spell_t
 
   void init() override
   {
-    proc_spell_t::init();
-
     hasted_ticks = true;
+
+    proc_spell_t::init();
+       
 
     if ( data().max_stacks() > 0 )
     {
