@@ -5558,7 +5558,7 @@ struct obliterate_strike_t : public death_knight_melee_attack_t
       base_multiplier *= ( 1.0 + p-> find_spell( 251873 ) -> effectN( 2 ).percent() );
     }
   }
-  
+
   double action_multiplier() const override
   {
     double m = death_knight_melee_attack_t::action_multiplier();
