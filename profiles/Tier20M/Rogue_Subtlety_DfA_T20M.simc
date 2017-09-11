@@ -5,7 +5,8 @@ race=dwarf
 role=attack
 position=back
 talents=1110013
-artifact=17:0:0:0:0:851:1:852:4:853:4:854:4:855:4:856:4:857:4:858:4:859:4:860:4:861:1:862:1:863:1:864:1:865:1:866:1:1349:1:1386:1:1585:4:1586:1:1587:1:1588:1:1653:1
+artifact=17:0:0:0:0:851:1:852:4:853:4:854:4:855:4:856:4:857:4:858:4:859:4:860:4:861:1:862:1:863:1:864:1:865:1:866:1:1349:1:1386:1:1585:4:1586:1:1587:1:1588:24:1653:1
+crucible=1739:3:1771:3:858:3
 
 # Default consumables
 potion=prolonged_power
@@ -35,8 +36,6 @@ actions.precombat+=/potion
 
 # Executed every time the actor is available.
 actions=variable,name=dsh_dfa,value=talent.death_from_above.enabled&talent.dark_shadow.enabled&spell_targets.death_from_above<4
-# Reproduce the ingame macro to cancel autoattacks for the vanish bug.
-actions+=/cancel_autoattack,if=bugs&buff.vanish.up&!buff.death_from_above.up
 # This let us to use Shadow Dance right before the 2nd part of DfA lands. Only with Dark Shadow.
 actions+=/shadow_dance,if=talent.dark_shadow.enabled&(!stealthed.all|buff.subterfuge.up)&buff.death_from_above.up&buff.death_from_above.remains<=0.15
 # This is triggered only with DfA talent since we check shadow_dance even while the gcd is ongoing, it's purely for simulation performance.
@@ -122,12 +121,12 @@ main_hand=fangs_of_the_devourer,id=128476,bonus_id=743,gem_id=147084/147111/1470
 off_hand=fangs_of_the_devourer,id=128479,gem_id=0/0/0/0
 
 # Gear Summary
-# gear_ilvl=939.25
-# gear_agility=28873
-# gear_stamina=45788
-# gear_crit_rating=7461
+# gear_ilvl=941.13
+# gear_agility=29335
+# gear_stamina=46480
+# gear_crit_rating=7513
 # gear_haste_rating=3255
-# gear_mastery_rating=11348
+# gear_mastery_rating=11396
 # gear_versatility_rating=5610
 # gear_armor=2734
 # set_bonus=tier20_2pc=1

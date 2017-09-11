@@ -4388,14 +4388,13 @@ void player_t::trigger_ready()
   if ( executing ) return;
   if ( queueing ) return;
   if ( channeling ) return;
-
+  if ( started_waiting < timespan_t::zero() ) return;
   if ( current.sleeping ) return;
 
   if ( buffs.stunned -> check() ) return;
 
   if ( sim -> debug ) sim -> out_debug.printf( "%s is triggering ready, interval=%f", name(), ( sim -> current_time() - started_waiting ).total_seconds() );
 
-  assert( started_waiting >= timespan_t::zero() );
   iteration_waiting_time += sim -> current_time() - started_waiting;
   started_waiting = timespan_t::min();
 
@@ -7169,12 +7168,37 @@ struct use_item_t : public action_t
     }
   }
 
+  void erase_action( action_priority_list_t* apl )
+  {
+    if ( apl == nullptr )
+    {
+      return;
+    }
+
+    auto it = range::find( apl -> foreground_action_list, this );
+
+    if ( it != apl -> foreground_action_list.end() )
+    {
+      apl -> foreground_action_list.erase( it );
+    }
+  }
+
+
   void init() override
   {
     action_t::init();
 
+    action_priority_list_t* apl = nullptr;
+    if ( action_list )
+    {
+      apl = player -> find_action_priority_list( action_list -> name_str );
+    }
+
     if ( ! item )
+    {
+      erase_action( apl );
       return;
+    }
 
     // Parse Special Effect
     const special_effect_t* e = item -> special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE );
@@ -7244,10 +7268,12 @@ struct use_item_t : public action_t
         sim -> errorf( "Player %s has 'use_item' action with no custom buff or action setup.\n", player -> name() );
       }
       background = true;
+
+      erase_action( apl );
     }
   }
 
-  virtual void execute() override
+  void execute() override
   {
     bool triggered = buff == 0;
     if ( buff )
@@ -7284,7 +7310,7 @@ struct use_item_t : public action_t
     }
   }
 
-  virtual bool ready() override
+  bool ready() override
   {
     if ( ! item ) return false;
 

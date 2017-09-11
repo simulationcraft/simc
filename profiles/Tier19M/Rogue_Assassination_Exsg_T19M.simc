@@ -33,8 +33,6 @@ actions.precombat+=/marked_for_death,if=raid_event.adds.in>40
 # Executed every time the actor is available.
 actions=variable,name=energy_regen_combined,value=energy.regen+poisoned_bleeds*(7+talent.venom_rush.enabled*3)%2
 actions+=/variable,name=energy_time_to_max_combined,value=energy.deficit%variable.energy_regen_combined
-# Reproduce the ingame macro to cancel autoattacks for the vanish bug.
-actions+=/cancel_autoattack,if=bugs&buff.vanish.up
 actions+=/call_action_list,name=cds
 actions+=/call_action_list,name=maintain
 # The 'active_dot.rupture>=spell_targets.rupture' means that we don't want to envenom as long as we can multi-rupture (i.e. units that don't have rupture yet).

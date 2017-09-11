@@ -1,4 +1,4 @@
-SimulationCraft 725-02 for World of Warcraft 7.3.0 Live (wow build 24920)
+SimulationCraft 730-01 for World of Warcraft 7.3.0 Live (wow build 24931, git build 1fa582dcd)
 
 Name             : Block (Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
@@ -1270,10 +1270,10 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=57399)    : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-                   Hotfixed: Sub Type (403 -> 4), Misc Value (1064 -> 0), Misc Value 2 (126371 -> 0), Chain Multiplier (0 -> 1)
+                   Hotfixed: Chain Multiplier (0 -> 1)
 #2 (id=256832)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-                   Hotfixed: Sub Type (403 -> 4), Misc Value (177972 -> 0), Misc Value 2 (126371 -> 0), Chain Multiplier (0 -> 1)
+                   Hotfixed: Chain Multiplier (0 -> 1)
 Description      : Your Chain Heal now has a watery appearance.
 
 Name             : Deluge (id=63925) 

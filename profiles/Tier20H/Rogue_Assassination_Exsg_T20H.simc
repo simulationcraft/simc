@@ -5,7 +5,8 @@ race=pandaren
 role=attack
 position=back
 talents=2110131
-artifact=43:0:0:0:0:323:4:324:4:325:4:326:4:327:4:328:4:329:4:330:4:331:4:332:1:333:1:334:1:335:1:337:1:346:1:347:1:1276:1:1384:1:1577:4:1578:1:1579:1:1580:1:1651:1
+artifact=43:0:0:0:0:323:4:324:4:325:4:326:4:327:4:328:4:329:4:330:4:331:4:332:1:333:1:334:1:335:1:337:1:346:1:347:1:1276:1:1384:1:1577:4:1578:1:1579:1:1580:15:1651:1
+crucible=1739:3:1777:3
 
 # Default consumables
 potion=prolonged_power
@@ -33,8 +34,6 @@ actions.precombat+=/marked_for_death,if=raid_event.adds.in>40
 # Executed every time the actor is available.
 actions=variable,name=energy_regen_combined,value=energy.regen+poisoned_bleeds*(7+talent.venom_rush.enabled*3)%2
 actions+=/variable,name=energy_time_to_max_combined,value=energy.deficit%variable.energy_regen_combined
-# Reproduce the ingame macro to cancel autoattacks for the vanish bug.
-actions+=/cancel_autoattack,if=bugs&buff.vanish.up
 actions+=/call_action_list,name=cds
 actions+=/call_action_list,name=maintain
 # The 'active_dot.rupture>=spell_targets.rupture' means that we don't want to envenom as long as we can multi-rupture (i.e. units that don't have rupture yet).
@@ -103,16 +102,16 @@ finger1=yathaes_thumb_ring,id=147021,bonus_id=1497/3562,enchant=binding_of_criti
 finger2=band_of_rescinded_truths,id=147194,bonus_id=1497/3562,enchant=binding_of_critical_strike
 trinket1=engine_of_eradication,id=147015,bonus_id=1497/3562
 trinket2=specter_of_betrayal,id=151190,bonus_id=1507/3562
-main_hand=the_kingslayers,id=128870,bonus_id=741,gem_id=147110/137543/151189,relic_id=1497:3562/3536:1562/1497:3562
+main_hand=the_kingslayers,id=128870,bonus_id=741,gem_id=147110/137543/151189,relic_id=1497:3562/3418:1567/1497:3562
 off_hand=the_kingslayers,id=128869
 
 # Gear Summary
-# gear_ilvl=925.63
-# gear_agility=25851
-# gear_stamina=40892
-# gear_crit_rating=7665
+# gear_ilvl=927.63
+# gear_agility=26267
+# gear_stamina=41514
+# gear_crit_rating=7715
 # gear_haste_rating=3450
-# gear_mastery_rating=8863
+# gear_mastery_rating=8911
 # gear_versatility_rating=6021
 # gear_armor=2638
 # set_bonus=tier20_2pc=1

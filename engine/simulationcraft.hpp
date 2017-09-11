@@ -5,7 +5,7 @@
 #ifndef SIMULATIONCRAFT_H
 #define SIMULATIONCRAFT_H
 
-#define SC_MAJOR_VERSION "725"
+#define SC_MAJOR_VERSION "730"
 #define SC_MINOR_VERSION "02"
 #define SC_VERSION ( SC_MAJOR_VERSION "-" SC_MINOR_VERSION )
 #define SC_BETA 0
@@ -1681,12 +1681,14 @@ struct sim_t : private sc_thread_t
     // Legion
     int                 infernal_cinders_users;
     int                 engine_of_eradication_orbs;
+    int                 void_stalkers_contract_targets;
     bool                lavish_feast_as_dps;
     bool                specter_of_betrayal_overlap;
     std::vector<double> cradle_of_anguish_resets;
 
     expansion_opt_t() :
       infernal_cinders_users( 1 ), engine_of_eradication_orbs( 4 ),
+      void_stalkers_contract_targets( -1 ),
       lavish_feast_as_dps( true ), specter_of_betrayal_overlap( true )
     { }
   } expansion_opts;

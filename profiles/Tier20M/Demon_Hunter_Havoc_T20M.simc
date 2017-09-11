@@ -7,7 +7,8 @@ position=back
 talents=2220311
 talent_override=fel_barrage,if=(active_enemies>1|raid_event.adds.exists)&!talent.demonic.enabled
 talent_override=momentum,if=active_enemies>1|raid_event.adds.exists
-artifact=3:0:0:0:0:1000:4:1001:4:1002:4:1003:4:1004:4:1005:4:1006:4:1007:4:1008:4:1010:1:1011:1:1012:1:1013:1:1014:1:1015:1:1016:1:1330:1:1362:1:1493:4:1494:1:1495:1:1496:1:1630:1
+artifact=3:0:0:0:0:1000:4:1001:4:1002:4:1003:4:1004:4:1005:4:1006:4:1007:4:1008:4:1010:1:1011:1:1012:1:1013:1:1014:1:1015:1:1016:1:1330:1:1362:1:1493:4:1494:1:1495:1:1496:24:1630:1
+crucible=1739:3:1777:3:1001:1:1006:1:1004:1
 
 # Default consumables
 potion=old_war
@@ -112,8 +113,8 @@ actions.normal+=/throw_glaive,if=!talent.bloodlet.enabled
 
 head=shadowscarred_headcover,id=147034,bonus_id=1522/3563
 neck=locket_of_splintered_souls,id=147014,bonus_id=1512/3563,enchant=mark_of_the_claw
-shoulders=demonbane_shoulderpads,id=147132,bonus_id=1512/3563
-back=chaos_theory,id=151798,bonus_id=3570,enchant=binding_of_agility
+shoulders=delusions_of_grandeur,id=144279,bonus_id=3570
+back=demonbane_shroud,id=147128,bonus_id=1512/3563,enchant=binding_of_agility
 chest=demonbane_harness,id=147127,bonus_id=1512/3563
 wrists=bracers_of_rippling_darkness,id=147042,bonus_id=1512/3563
 hands=demonbane_gauntlets,id=147129,bonus_id=1512/3563
@@ -128,13 +129,13 @@ main_hand=twinblades_of_the_deceiver,id=127829,bonus_id=719,gem_id=147086/147111
 off_hand=twinblades_of_the_deceiver,id=127830,gem_id=0/0/0/0,relic_id=0/0
 
 # Gear Summary
-# gear_ilvl=939.88
-# gear_agility=27730
-# gear_stamina=45400
-# gear_crit_rating=13660
-# gear_haste_rating=8098
-# gear_mastery_rating=5216
-# gear_versatility_rating=1773
-# gear_armor=2680
+# gear_ilvl=941.75
+# gear_agility=28435
+# gear_stamina=46457
+# gear_crit_rating=13527
+# gear_haste_rating=8127
+# gear_mastery_rating=5112
+# gear_versatility_rating=2137
+# gear_armor=2699
 # set_bonus=tier20_2pc=1
 # set_bonus=tier20_4pc=1
