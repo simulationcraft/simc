@@ -102,16 +102,16 @@ finger1=yathaes_thumb_ring,id=147021,bonus_id=1512/3563,enchant=binding_of_criti
 finger2=band_of_rescinded_truths,id=147194,bonus_id=1512/3563,enchant=binding_of_critical_strike
 trinket1=engine_of_eradication,id=147015,bonus_id=1512/3563
 trinket2=specter_of_betrayal,id=151190,bonus_id=1522/3563
-main_hand=the_kingslayers,id=128870,bonus_id=741,gem_id=147110/137543/151189,relic_id=1512:3563/3536:1562/1512:3563
+main_hand=the_kingslayers,id=128870,bonus_id=741,gem_id=147110/137543/151189,relic_id=1512:3563/3418:1567/1512:3563
 off_hand=the_kingslayers,id=128869
 
 # Gear Summary
-# gear_ilvl=940.00
-# gear_agility=29051
-# gear_stamina=46052
-# gear_crit_rating=8256
+# gear_ilvl=940.13
+# gear_agility=29079
+# gear_stamina=46096
+# gear_crit_rating=8260
 # gear_haste_rating=3568
-# gear_mastery_rating=9408
+# gear_mastery_rating=9412
 # gear_versatility_rating=6480
 # gear_armor=2738
 # set_bonus=tier20_2pc=1

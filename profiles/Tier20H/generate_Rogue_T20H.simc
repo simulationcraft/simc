@@ -50,7 +50,7 @@ finger1=yathaes_thumb_ring,id=147021,bonus_id=1497/3562,enchant=binding_of_criti
 finger2=band_of_rescinded_truths,id=147194,bonus_id=1497/3562,enchant=binding_of_critical_strike
 trinket1=engine_of_eradication,id=147015,bonus_id=1497/3562
 trinket2=specter_of_betrayal,id=151190,bonus_id=1507/3562
-main_hand=the_kingslayers,id=128870,bonus_id=741,gem_id=147110/137543/151189,relic_id=1497:3562/3536:1562/1497:3562
+main_hand=the_kingslayers,id=128870,bonus_id=741,gem_id=147110/137543/151189,relic_id=1497:3562/3418:1567/1497:3562
 off_hand=the_kingslayers,id=128869
 save=Rogue_Assassination_Exsg_T20H.simc
 
@@ -104,7 +104,7 @@ hands=fanged_slayers_handguards,id=147171,bonus_id=1497/3562
 waist=waistguard_of_profane_duplicity,id=147347,bonus_id=1507/3562
 legs=fanged_slayers_legguards,id=147173,bonus_id=1497/3562
 feet=felscape_pathfinders,id=147030,bonus_id=1497/3562
-finger1=jeweled_signet_of_melandrus,id=134542,bonus_id=3536,enchant=binding_of_versatility
+finger1=jeweled_signet_of_melandrus,id=134542,bonus_id=3418/1567,enchant=binding_of_versatility
 finger2=insignia_of_ravenholdt,id=137049,gems=150versatility,bonus_id=3570,enchant=binding_of_versatility
 trinket1=nightblooming_frond,id=140802,bonus_id=3517
 trinket2=convergence_of_fates,id=140806,bonus_id=3517
