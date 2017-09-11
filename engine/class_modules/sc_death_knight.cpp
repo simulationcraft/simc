@@ -2411,21 +2411,23 @@ struct valkyr_pet_t : public death_knight_pet_t
   
   void summon ( timespan_t t ) override
   {
+    // Dark Arbiter has a random confusion time on spawn before starting casts.
     // Seems to have a bimodal distribution on how long an idle time there is after summoning, based
     // on quite a bit of data. In any case, the mean delay is quite significant (on average over 2.5
     // seconds).
     
-    // The duration is set to 20s after the start of the first cast to make up to the confusion time
+    // In 7.3, the duration has been set to start ticking after she starts her first cast to make up for the confusion time
 
     auto dist = static_cast<int>( rng().range( 0, 2 ) );
     auto base = dist == 0 ? 2.25 : 3.25;
 
     confusion_time = timespan_t::from_seconds( rng().gauss( base, 0.25 ) );
     
-    // Although there's no GCD on valkyr strike and no queue lag on the casts,
-    // DA doesn't cast the right amount of val'kyr strikes when hitting exactly a haste breakpoint
-    // Adding 1ms to the duration is enough to make the expiration event occur later than the final cast
-    pet_t::summon(t + confusion_time + timespan_t::from_millis( 1 ) );
+    // 7.3 : Examining logs showed that Dark Arbiter actually lasts one more second than it should.
+    // Spreadsheet with data gathered from logs showing that the last cast can happen up until 21s after the start of DA's initial cast.
+    // https://docs.google.com/spreadsheets/d/1ibSslYC3mHxpKAK_BvU7T6DbyY4KiVShH_Nvw8N0-Qo/edit?usp=sharing
+    
+    pet_t::summon(t + confusion_time + timespan_t::from_seconds( 1.0 ) );
   }
   
 };
@@ -4802,6 +4804,10 @@ struct empower_rune_weapon_t : public death_knight_spell_t
   void execute() override
   {
     death_knight_spell_t::execute();
+
+    p() -> resource_gain( RESOURCE_RUNIC_POWER,
+      p() -> find_specialization_spell( "Empower Rune Weapon" ) -> effectN( 3 ).resource( RESOURCE_RUNIC_POWER ) * 10 ,
+      p() -> gains.empower_rune_weapon );
 
     double filled = 0, overflow = 0;
     for ( auto& rune: p() -> _runes.slot )

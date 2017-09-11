@@ -4,7 +4,8 @@ race=pandaren
 role=attack
 position=back
 talents=1210111
-artifact=43:0:0:0:0:323:4:324:4:325:4:326:4:327:4:328:4:329:4:330:4:331:4:332:1:333:1:334:1:335:1:337:1:346:1:347:1:1276:1:1384:1:1577:4:1578:1:1579:1:1580:1:1651:1
+artifact=43:0:0:0:0:323:4:324:4:325:4:326:4:327:4:328:4:329:4:330:4:331:4:332:1:333:1:334:1:335:1:337:1:346:1:347:1:1276:1:1384:1:1577:4:1578:1:1579:1:1580:24:1651:1
+crucible=1739:3:1771:3:330:2:325:1
 spec=assassination
 
 head=fanged_slayers_helm,id=147172,bonus_id=1512/3563
@@ -31,7 +32,8 @@ race=pandaren
 role=attack
 position=back
 talents=2110131
-artifact=43:0:0:0:0:323:4:324:4:325:4:326:4:327:4:328:4:329:4:330:4:331:4:332:1:333:1:334:1:335:1:337:1:346:1:347:1:1276:1:1384:1:1577:4:1578:1:1579:1:1580:1:1651:1
+artifact=43:0:0:0:0:323:4:324:4:325:4:326:4:327:4:328:4:329:4:330:4:331:4:332:1:333:1:334:1:335:1:337:1:346:1:347:1:1276:1:1384:1:1577:4:1578:1:1579:1:1580:24:1651:1
+crucible=1739:3:1777:3:328:3
 spec=assassination
 
 head=fanged_slayers_helm,id=147172,bonus_id=1512/3563
@@ -48,7 +50,7 @@ finger1=yathaes_thumb_ring,id=147021,bonus_id=1512/3563,enchant=binding_of_criti
 finger2=band_of_rescinded_truths,id=147194,bonus_id=1512/3563,enchant=binding_of_critical_strike
 trinket1=engine_of_eradication,id=147015,bonus_id=1512/3563
 trinket2=specter_of_betrayal,id=151190,bonus_id=1522/3563
-main_hand=the_kingslayers,id=128870,bonus_id=741,gem_id=147110/137543/151189,relic_id=1512:3563/3536:1562/1512:3563
+main_hand=the_kingslayers,id=128870,bonus_id=741,gem_id=147110/137543/151189,relic_id=1512:3563/3418:1567/1512:3563
 off_hand=the_kingslayers,id=128869
 save=Rogue_Assassination_Exsg_T20M.simc
 
@@ -59,7 +61,8 @@ timeofday=day
 role=attack
 position=back
 talents=3310022
-artifact=44:0:0:0:0:1052:1:1053:1:1054:1:1055:1:1056:1:1057:1:1058:1:1059:4:1060:4:1061:4:1062:4:1063:4:1064:4:1065:4:1066:4:1067:4:1348:1:1385:1:1581:4:1582:1:1583:1:1584:1:1652:1
+artifact=44:0:0:0:0:1052:1:1053:1:1054:1:1055:1:1056:1:1057:1:1058:1:1059:4:1060:4:1061:4:1062:4:1063:4:1064:4:1065:4:1066:4:1067:4:1348:1:1385:1:1581:4:1582:1:1583:1:1584:24:1652:1
+crucible=1739:3:1770:3:1064:3
 spec=outlaw
 
 head=fanged_slayers_helm,id=147172,bonus_id=1512/3563
@@ -87,7 +90,8 @@ timeofday=day
 role=attack
 position=back
 talents=1310021
-artifact=44:0:0:0:0:1052:1:1053:1:1054:1:1055:1:1056:1:1057:1:1058:1:1059:4:1060:4:1061:4:1062:4:1063:4:1064:4:1065:4:1066:4:1067:4:1348:1:1385:1:1581:4:1582:1:1583:1:1584:1:1652:1
+artifact=44:0:0:0:0:1052:1:1053:1:1054:1:1055:1:1056:1:1057:1:1058:1:1059:4:1060:4:1061:4:1062:4:1063:4:1064:4:1065:4:1066:4:1067:4:1348:1:1385:1:1581:4:1582:1:1583:1:1584:24:1652:1
+crucible=1739:3:1774:3:1065:2:1062:1
 spec=outlaw
 
 head=fanged_slayers_helm,id=147172,bonus_id=1512/3563
@@ -100,7 +104,7 @@ hands=fanged_slayers_handguards,id=147171,bonus_id=1512/3563
 waist=waistguard_of_profane_duplicity,id=147347,bonus_id=1522/3563
 legs=fanged_slayers_legguards,id=147173,bonus_id=1512/3563
 feet=felscape_pathfinders,id=147030,bonus_id=1512/3563
-finger1=jeweled_signet_of_melandrus,id=134542,bonus_id=3536,enchant=binding_of_versatility
+finger1=jeweled_signet_of_melandrus,id=134542,bonus_id=3418/1567,enchant=binding_of_versatility
 finger2=insignia_of_ravenholdt,id=137049,gems=150versatility,bonus_id=3570,enchant=binding_of_versatility
 trinket1=nightblooming_frond,id=140802,bonus_id=3519
 trinket2=convergence_of_fates,id=140806,bonus_id=3519
@@ -114,7 +118,8 @@ race=dwarf
 role=attack
 position=back
 talents=2310012
-artifact=17:0:0:0:0:851:1:852:4:853:4:854:4:855:4:856:4:857:4:858:4:859:4:860:4:861:1:862:1:863:1:864:1:865:1:866:1:1349:1:1386:1:1585:4:1586:1:1587:1:1588:1:1653:1
+artifact=17:0:0:0:0:851:1:852:4:853:4:854:4:855:4:856:4:857:4:858:4:859:4:860:4:861:1:862:1:863:1:864:1:865:1:866:1:1349:1:1386:1:1585:4:1586:1:1587:1:1588:24:1653:1
+crucible=1739:3:1771:3:857:3
 spec=subtlety
 
 head=fanged_slayers_helm,id=147172,bonus_id=1512/3563
@@ -141,7 +146,8 @@ race=dwarf
 role=attack
 position=back
 talents=1110013
-artifact=17:0:0:0:0:851:1:852:4:853:4:854:4:855:4:856:4:857:4:858:4:859:4:860:4:861:1:862:1:863:1:864:1:865:1:866:1:1349:1:1386:1:1585:4:1586:1:1587:1:1588:1:1653:1
+artifact=17:0:0:0:0:851:1:852:4:853:4:854:4:855:4:856:4:857:4:858:4:859:4:860:4:861:1:862:1:863:1:864:1:865:1:866:1:1349:1:1386:1:1585:4:1586:1:1587:1:1588:24:1653:1
+crucible=1739:3:1771:3:858:3
 spec=subtlety
 
 head=fanged_slayers_helm,id=147172,bonus_id=1512/3563

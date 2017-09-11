@@ -5,7 +5,8 @@ race=dwarf
 role=attack
 position=back
 talents=2310012
-artifact=17:0:0:0:0:851:1:852:4:853:4:854:4:855:4:856:4:857:4:858:4:859:4:860:4:861:1:862:1:863:1:864:1:865:1:866:1:1349:1:1386:1:1585:4:1586:1:1587:1:1588:1:1653:1
+artifact=17:0:0:0:0:851:1:852:4:853:4:854:4:855:4:856:4:857:4:858:4:859:4:860:4:861:1:862:1:863:1:864:1:865:1:866:1:1349:1:1386:1:1585:4:1586:1:1587:1:1588:15:1653:1
+crucible=1739:3:1771:3
 
 # Default consumables
 potion=prolonged_power
@@ -120,12 +121,12 @@ main_hand=fangs_of_the_devourer,id=128476,bonus_id=743,gem_id=147084/147111/1470
 off_hand=fangs_of_the_devourer,id=128479,gem_id=0/0/0/0
 
 # Gear Summary
-# gear_ilvl=924.88
-# gear_agility=27604
-# gear_stamina=40568
-# gear_crit_rating=6472
+# gear_ilvl=926.75
+# gear_agility=28006
+# gear_stamina=41172
+# gear_crit_rating=6520
 # gear_haste_rating=2697
-# gear_mastery_rating=9425
+# gear_mastery_rating=9471
 # gear_versatility_rating=6106
 # gear_armor=2618
 # set_bonus=tier20_2pc=1

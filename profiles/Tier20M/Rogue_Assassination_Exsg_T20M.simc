@@ -5,7 +5,8 @@ race=pandaren
 role=attack
 position=back
 talents=2110131
-artifact=43:0:0:0:0:323:4:324:4:325:4:326:4:327:4:328:4:329:4:330:4:331:4:332:1:333:1:334:1:335:1:337:1:346:1:347:1:1276:1:1384:1:1577:4:1578:1:1579:1:1580:1:1651:1
+artifact=43:0:0:0:0:323:4:324:4:325:4:326:4:327:4:328:4:329:4:330:4:331:4:332:1:333:1:334:1:335:1:337:1:346:1:347:1:1276:1:1384:1:1577:4:1578:1:1579:1:1580:24:1651:1
+crucible=1739:3:1777:3:328:3
 
 # Default consumables
 potion=prolonged_power
@@ -101,16 +102,16 @@ finger1=yathaes_thumb_ring,id=147021,bonus_id=1512/3563,enchant=binding_of_criti
 finger2=band_of_rescinded_truths,id=147194,bonus_id=1512/3563,enchant=binding_of_critical_strike
 trinket1=engine_of_eradication,id=147015,bonus_id=1512/3563
 trinket2=specter_of_betrayal,id=151190,bonus_id=1522/3563
-main_hand=the_kingslayers,id=128870,bonus_id=741,gem_id=147110/137543/151189,relic_id=1512:3563/3536:1562/1512:3563
+main_hand=the_kingslayers,id=128870,bonus_id=741,gem_id=147110/137543/151189,relic_id=1512:3563/3418:1567/1512:3563
 off_hand=the_kingslayers,id=128869
 
 # Gear Summary
-# gear_ilvl=938.13
-# gear_agility=28627
-# gear_stamina=45416
-# gear_crit_rating=8208
+# gear_ilvl=940.13
+# gear_agility=29079
+# gear_stamina=46096
+# gear_crit_rating=8260
 # gear_haste_rating=3568
-# gear_mastery_rating=9362
+# gear_mastery_rating=9412
 # gear_versatility_rating=6480
 # gear_armor=2738
 # set_bonus=tier20_2pc=1

@@ -6,7 +6,8 @@ timeofday=day
 role=attack
 position=back
 talents=3310022
-artifact=44:0:0:0:0:1052:1:1053:1:1054:1:1055:1:1056:1:1057:1:1058:1:1059:4:1060:4:1061:4:1062:4:1063:4:1064:4:1065:4:1066:4:1067:4:1348:1:1385:1:1581:4:1582:1:1583:1:1584:1:1652:1
+artifact=44:0:0:0:0:1052:1:1053:1:1054:1:1055:1:1056:1:1057:1:1058:1:1059:4:1060:4:1061:4:1062:4:1063:4:1064:4:1065:4:1066:4:1067:4:1348:1:1385:1:1581:4:1582:1:1583:1:1584:24:1652:1
+crucible=1739:3:1770:3:1064:3
 
 # Default consumables
 potion=prolonged_power
@@ -106,12 +107,12 @@ main_hand=the_dreadblades,id=128872,bonus_id=742,gem_id=151189/147100/147114,rel
 off_hand=the_dreadblades,id=134552
 
 # Gear Summary
-# gear_ilvl=938.25
-# gear_agility=30810
-# gear_stamina=45531
-# gear_crit_rating=7400
+# gear_ilvl=940.13
+# gear_agility=31258
+# gear_stamina=46203
+# gear_crit_rating=7450
 # gear_haste_rating=8560
-# gear_mastery_rating=5626
+# gear_mastery_rating=5674
 # gear_versatility_rating=4913
 # gear_armor=2723
 # set_bonus=tier20_2pc=1
