@@ -1,6 +1,6 @@
 #define RAND_PROP_POINTS_SIZE (1300)
 
-// Random property points for item levels 1-1300, wow build 24931
+// Random property points for item levels 1-1300, wow build 24974
 static struct random_prop_data_t __rand_prop_points_data[] = {
   {    1, {     0,     0,     0,     0,     0 }, {     0,     0,     0,     0,     0 }, {     0,     0,     0,     0,     0 } },
   {    2, {     0,     0,     0,     0,     0 }, {     0,     0,     0,     0,     0 }, {     0,     0,     0,     0,     0 } },
@@ -1306,7 +1306,7 @@ static struct random_prop_data_t __rand_prop_points_data[] = {
 };
 #define RAND_SUFFIX_SIZE (450)
 
-// Random new-style item suffixes, wow build 24931
+// Random new-style item suffixes, wow build 24974
 static struct random_suffix_data_t __rand_suffix_data[] = {
   {   5, "of the Monkey"          , {  2802,  2803,     0,     0,     0 }, {  6666, 10000,     0,     0,     0 } },
   {   6, "of the Eagle"           , {  2804,  2803,     0,     0,     0 }, {  6666, 10000,     0,     0,     0 } },
@@ -1762,7 +1762,7 @@ static struct random_suffix_data_t __rand_suffix_data[] = {
 };
 #define SPELL_ITEM_ENCH_SIZE (4173)
 
-// Item enchantment data, wow build 24931
+// Item enchantment data, wow build 24974
 static struct item_enchantment_data_t __spell_item_ench_data[] = {
   {   13,  33,      0, -1,   5,   1,   0,   0, {   2,   0,   0 }, {    3,    0,    0 }, {      0,      0,      0 }, {  1.0000,  0.0000,  0.0000 },      0, "Sharpened (+$k1 Damage)"           },
   {   14,  33,      0, -1,  15,  15,   0,   0, {   2,   0,   0 }, {    4,    0,    0 }, {      0,      0,      0 }, {  0.3637,  0.0000,  0.0000 },      0, "Sharpened (+$k1 Damage)"           },
@@ -5497,10 +5497,10 @@ static struct item_enchantment_data_t __spell_item_ench_data[] = {
   { 5437,   0,      0,  0,   1, 110,   0,   0, {   3,   0,   0 }, {    0,    0,    0 }, { 190888,      0,      0 }, {  0.0000,  0.0000,  0.0000 }, 190892, "Mark of the Claw"                  },
   { 5438,   0,      0,  0,   1, 110,   0,   0, {   3,   0,   0 }, {    0,    0,    0 }, { 190889,      0,      0 }, {  0.0000,  0.0000,  0.0000 }, 190893, "Mark of the Distant Army"          },
   { 5439,   0,      0,  0,   1, 110,   0,   0, {   3,   0,   0 }, {    0,    0,    0 }, { 190890,      0,      0 }, {  0.0000,  0.0000,  0.0000 }, 190894, "Mark of the Hidden Satyr"          },
-  { 5440,   0,      0,  0,   1, 100,   0,   0, {   3,   0,   0 }, {    0,    0,    0 }, { 190949,      0,      0 }, {  0.0000,  0.0000,  0.0000 }, 190954, "Scavenging"                        },
-  { 5441,   0,      0,  0,   1, 100,   0,   0, {   3,   0,   0 }, {    0,    0,    0 }, { 190950,      0,      0 }, {  0.0000,  0.0000,  0.0000 }, 190955, "Gemfinding"                        },
-  { 5442,   0,      0,  0,   1, 100,   0,   0, {   3,   0,   0 }, {    0,    0,    0 }, { 190951,      0,      0 }, {  0.0000,  0.0000,  0.0000 }, 190956, "Harvester"                         },
-  { 5443,   0,      0,  0,   1, 100,   0,   0, {   3,   0,   0 }, {    0,    0,    0 }, { 190952,      0,      0 }, {  0.0000,  0.0000,  0.0000 }, 190957, "Butchery"                          },
+  { 5440,   1,      0,  0,   1, 100,   0,   0, {   3,   0,   0 }, {    0,    0,    0 }, { 190949,      0,      0 }, {  0.0000,  0.0000,  0.0000 }, 190954, "Scavenging"                        },
+  { 5441,   1,      0,  0,   1, 100,   0,   0, {   3,   0,   0 }, {    0,    0,    0 }, { 190950,      0,      0 }, {  0.0000,  0.0000,  0.0000 }, 190955, "Gemfinding"                        },
+  { 5442,   1,      0,  0,   1, 100,   0,   0, {   3,   0,   0 }, {    0,    0,    0 }, { 190951,      0,      0 }, {  0.0000,  0.0000,  0.0000 }, 190956, "Harvester"                         },
+  { 5443,   1,      0,  0,   1, 100,   0,   0, {   3,   0,   0 }, {    0,    0,    0 }, { 190952,      0,      0 }, {  0.0000,  0.0000,  0.0000 }, 190957, "Butchery"                          },
   { 5444,   0,      0,  0,   1, 100,   0,   0, {   3,   0,   0 }, {    0,    0,    0 }, { 190970,      0,      0 }, {  0.0000,  0.0000,  0.0000 }, 190988, "Legion Herbalism"                  },
   { 5445,   0,      0,  0,   1, 100,   0,   0, {   3,   0,   0 }, {    0,    0,    0 }, { 190971,      0,      0 }, {  0.0000,  0.0000,  0.0000 }, 190989, "Legion Mining"                     },
   { 5446,   0,      0,  0,   1, 100,   0,   0, {   3,   0,   0 }, {    0,    0,    0 }, { 190973,      0,      0 }, {  0.0000,  0.0000,  0.0000 }, 190990, "Legion Skinning"                   },
@@ -5890,9 +5890,9 @@ static struct item_enchantment_data_t __spell_item_ench_data[] = {
   { 5875, 256,      0,  0,   1,   0,   0,   0, {   0,   0,   0 }, {    0,    0,    0 }, {      0, 104428,      0 }, {  0.0000,  0.0000,  0.0000 },      0, "Windfury"                          },
   { 5876, 256,      0,  0,   1,   0,   0,   0, {   0,   0,   0 }, {    0,    0,    0 }, {      0, 104428,      0 }, {  0.0000,  0.0000,  0.0000 },      0, "Nightmare"                         },
   { 5877, 256,      0,  0,   1,   0,   0,   0, {   0,   0,   0 }, {    0,    0,    0 }, {      0, 104428,      0 }, {  0.0000,  0.0000,  0.0000 },      0, "Chronos"                           },
-  { 5881,   0,      0,  0,   1, 100,   0,   0, {   3,   0,   0 }, {    0,    0,    0 }, { 222854,      0,      0 }, {  0.0000,  0.0000,  0.0000 }, 222851, "Salvager"                          },
-  { 5882,   0,      0,  0,   1, 100,   0,   0, {   3,   0,   0 }, {    0,    0,    0 }, { 222855,      0,      0 }, {  0.0000,  0.0000,  0.0000 }, 222852, "Manaseeker"                        },
-  { 5883,   0,      0,  0,   1, 100,   0,   0, {   3,   0,   0 }, {    0,    0,    0 }, { 222856,      0,      0 }, {  0.0000,  0.0000,  0.0000 }, 222853, "Bloodhunter"                       },
+  { 5881,   1,      0,  0,   1, 100,   0,   0, {   3,   0,   0 }, {    0,    0,    0 }, { 222854,      0,      0 }, {  0.0000,  0.0000,  0.0000 }, 222851, "Salvager"                          },
+  { 5882,   1,      0,  0,   1, 100,   0,   0, {   3,   0,   0 }, {    0,    0,    0 }, { 222855,      0,      0 }, {  0.0000,  0.0000,  0.0000 }, 222852, "Manaseeker"                        },
+  { 5883,   1,      0,  0,   1, 100,   0,   0, {   3,   0,   0 }, {    0,    0,    0 }, { 222856,      0,      0 }, {  0.0000,  0.0000,  0.0000 }, 222853, "Bloodhunter"                       },
   { 5884,   0,      0,  0,   1,  60,   0,   0, {   0,   0,   0 }, {    0,    0,    0 }, {      0,      0,      0 }, {  0.0000,  0.0000,  0.0000 }, 223937, "Songs of the Horde"                },
   { 5885,   0,      0,  0,   1,  60,   0,   0, {   0,   0,   0 }, {    0,    0,    0 }, {      0,      0,      0 }, {  0.0000,  0.0000,  0.0000 }, 223938, "Songs of the Alliance"             },
   { 5888,   1,      0,  0,   1, 100,   0,   0, {   3,   0,   0 }, {    0,    0,    0 }, { 228138,      0,      0 }, {  0.0000,  0.0000,  0.0000 }, 228139, "Netherdrift"                       },
@@ -5905,8 +5905,8 @@ static struct item_enchantment_data_t __spell_item_ench_data[] = {
   { 5896,  32,      0, -1,   1, 110,   0,   0, {   5,   0,   0 }, {    0,    0,    0 }, {     40,      0,      0 }, {  0.1177,  0.0000,  0.0000 }, 235696, "+$k1 Versatility"                  },
   { 5897,  32,      0, -1,   1, 110,   0,   0, {   5,   0,   0 }, {    0,    0,    0 }, {     36,      0,      0 }, {  0.1177,  0.0000,  0.0000 }, 235697, "+$k1 Haste"                        },
   { 5898,  32,      0, -1,   1, 110,   0,   0, {   5,   0,   0 }, {    0,    0,    0 }, {     32,      0,      0 }, {  0.1177,  0.0000,  0.0000 }, 235698, "+$k1 Critical Strike"              },
-  { 5899,   0,      0,  0,   1, 100,   0,   0, {   3,   0,   0 }, {    0,    0,    0 }, { 237293,      0,      0 }, {  0.0000,  0.0000,  0.0000 }, 235731, "Boon of the Builder"               },
-  { 5900,   0,      0,  0,   1, 100,   0,   0, {   3,   0,   0 }, {    0,    0,    0 }, { 235795,      0,      0 }, {  0.0000,  0.0000,  0.0000 }, 235794, "Zookeeper"                         },
+  { 5899,   1,      0,  0,   1, 100,   0,   0, {   3,   0,   0 }, {    0,    0,    0 }, { 237293,      0,      0 }, {  0.0000,  0.0000,  0.0000 }, 235731, "Boon of the Builder"               },
+  { 5900,   1,      0,  0,   1, 100,   0,   0, {   3,   0,   0 }, {    0,    0,    0 }, { 235795,      0,      0 }, {  0.0000,  0.0000,  0.0000 }, 235794, "Zookeeper"                         },
   { 5901,   0, 144447,  0,   1,  60,   0,   0, {  12,   9,   0 }, {    0,    3,    0 }, {      0,      5,      0 }, {  0.0000,  0.0000,  0.0000 },      0, "Relic Enhancement"                 },
   { 5902,   0, 144446,  0,   1,  60,   0,   0, {  12,   9,   0 }, {    0,    3,    0 }, {      0,      4,      0 }, {  0.0000,  0.0000,  0.0000 },      0, "Relic Enhancement"                 },
   { 5903,   0, 144448,  0,   1,  60,   0,   0, {  12,   9,   0 }, {    0,    3,    0 }, {      0,      6,      0 }, {  0.0000,  0.0000,  0.0000 },      0, "Relic Enhancement"                 },
@@ -5934,12 +5934,12 @@ static struct item_enchantment_data_t __spell_item_ench_data[] = {
   { 5926, 224, 151583, -5,   1, 110,   0,   0, {   5,   0,   0 }, {    0,    0,    0 }, {     36,      0,      0 }, {  0.6667,  0.6250,  0.0000 },      0, "+$k1 Haste"                        },
   { 5927, 224, 151584, -5,   1, 110,   0,   0, {   5,   0,   0 }, {    0,    0,    0 }, {     49,      0,      0 }, {  0.6667,  0.0000,  0.0000 },      0, "+$k1 Mastery"                      },
   { 5928, 224, 151585, -5,   1, 110,   0,   0, {   5,   0,   0 }, {    0,    0,    0 }, {     40,      0,      0 }, {  0.6667,  0.0000,  0.0000 },      0, "+$k1 Versatility"                  },
-  { 5929,   0,      0,  0,   1, 100,   0,   0, {   3,   0,   0 }, {    0,    0,    0 }, { 254591,      0,      0 }, {  0.0000,  0.0000,  0.0000 }, 254584, "Steadfast"                         },
+  { 5929,   1,      0,  0,   1, 100,   0,   0, {   3,   0,   0 }, {    0,    0,    0 }, { 254591,      0,      0 }, {  0.0000,  0.0000,  0.0000 }, 254584, "Steadfast"                         },
   { 5930,   0,      0,  0,   1,   0,   0,   0, {   3,   0,   0 }, {    0,    0,    0 }, { 254605,      0,      0 }, {  0.0000,  0.0000,  0.0000 }, 254607, "+$254605s1 Fishing"                },
-  { 5931,   0,      0,  0,   1, 100,   0,   0, {   3,   0,   0 }, {    0,    0,    0 }, { 254707,      0,      0 }, {  0.0000,  0.0000,  0.0000 }, 254706, "Lightbearer"                       },
+  { 5931,   1,      0,  0,   1, 100,   0,   0, {   3,   0,   0 }, {    0,    0,    0 }, { 254707,      0,      0 }, {  0.0000,  0.0000,  0.0000 }, 254706, "Lightbearer"                       },
   {    0,   0,      0,  0,   0,   0,   0,   0, {   0,   0,   0 }, {    0,    0,    0 }, {      0,      0,      0 }, {  0.0000,  0.0000,  0.0000 },      0, 0                                   },
 };
-// Item armor values data from ItemArmorQuality.dbc, ilevels 1-1300, wow build 24931
+// Item armor values data from ItemArmorQuality.dbc, ilevels 1-1300, wow build 24974
 static struct item_scale_data_t __itemarmorquality_data[] = {
   {    1, {  0.900,  0.950,  1.000,  1.000,  1.000,  1.000,  1.000 } },
   {    2, {  0.900,  0.950,  1.000,  1.000,  1.000,  1.000,  1.000 } },
@@ -7244,7 +7244,7 @@ static struct item_scale_data_t __itemarmorquality_data[] = {
   { 0, { 0, 0, 0, 0, 0, 0, 0 } }
 };
 
-// Item armor values data from ItemArmorShield.dbc, ilevels 1-1300, wow build 24931
+// Item armor values data from ItemArmorShield.dbc, ilevels 1-1300, wow build 24974
 static struct item_scale_data_t __itemarmorshield_data[] = {
   {    1, {   22.000,   23.000,   24.000,   31.000,   38.000,   38.000,   38.000 } },
   {    2, {   24.000,   25.000,   26.000,   33.000,   41.000,   41.000,   41.000 } },
@@ -8249,7 +8249,7 @@ static struct item_scale_data_t __itemarmorshield_data[] = {
   { 0, { 0, 0, 0, 0, 0, 0, 0 } }
 };
 
-// Item armor values data from ItemArmorTotal.dbc, ilevels 1-1300, wow build 24931
+// Item armor values data from ItemArmorTotal.dbc, ilevels 1-1300, wow build 24974
 static struct item_armor_type_data_t __itemarmortotal_data[] = {
   {    1, {    19.625,    31.400,    44.857,   78.5000 } },
   {    2, {    20.875,    33.400,    47.714,   83.5000 } },
@@ -9581,7 +9581,7 @@ static struct item_armor_type_data_t __armor_slot_data[] = {
   { 0, { 0, 0, 0, 0 } }
 };
 
-// Item damage data from ItemDamageOneHand.dbc, ilevels 1-1300, wow build 24931
+// Item damage data from ItemDamageOneHand.dbc, ilevels 1-1300, wow build 24974
 static struct item_scale_data_t __itemdamageonehand_data[] = {
   {    1, {     0.347,     0.520,     0.629,     1.050,     1.874,     1.874,     1.874 } },
   {    2, {     0.502,     0.755,     0.886,     1.377,     2.240,     2.240,     2.240 } },
@@ -10586,7 +10586,7 @@ static struct item_scale_data_t __itemdamageonehand_data[] = {
   { 0, { 0, 0, 0, 0, 0, 0, 0 } }
 };
 
-// Item damage data from ItemDamageOneHandCaster.dbc, ilevels 1-1300, wow build 24931
+// Item damage data from ItemDamageOneHandCaster.dbc, ilevels 1-1300, wow build 24974
 static struct item_scale_data_t __itemdamageonehandcaster_data[] = {
   {    1, {     0.173,     0.260,     0.315,     0.525,     0.937,     0.937,     0.937 } },
   {    2, {     0.251,     0.377,     0.443,     0.689,     1.120,     1.120,     1.120 } },
@@ -11591,7 +11591,7 @@ static struct item_scale_data_t __itemdamageonehandcaster_data[] = {
   { 0, { 0, 0, 0, 0, 0, 0, 0 } }
 };
 
-// Item damage data from ItemDamageTwoHand.dbc, ilevels 1-1300, wow build 24931
+// Item damage data from ItemDamageTwoHand.dbc, ilevels 1-1300, wow build 24974
 static struct item_scale_data_t __itemdamagetwohand_data[] = {
   {    1, {     0.446,     0.669,     0.810,     1.352,     2.412,     2.412,     2.412 } },
   {    2, {     0.646,     0.971,     1.140,     1.773,     2.883,     2.883,     2.883 } },
@@ -12596,7 +12596,7 @@ static struct item_scale_data_t __itemdamagetwohand_data[] = {
   { 0, { 0, 0, 0, 0, 0, 0, 0 } }
 };
 
-// Item damage data from ItemDamageTwoHandCaster.dbc, ilevels 1-1300, wow build 24931
+// Item damage data from ItemDamageTwoHandCaster.dbc, ilevels 1-1300, wow build 24974
 static struct item_scale_data_t __itemdamagetwohandcaster_data[] = {
   {    1, {     0.223,     0.335,     0.405,     0.676,     1.206,     1.206,     1.206 } },
   {    2, {     0.323,     0.486,     0.570,     0.886,     1.442,     1.442,     1.442 } },
@@ -13601,7 +13601,7 @@ static struct item_scale_data_t __itemdamagetwohandcaster_data[] = {
   { 0, { 0, 0, 0, 0, 0, 0, 0 } }
 };
 
-// Gem properties, wow build 24931
+// Gem properties, wow build 24974
 static struct gem_property_data_t __gem_property_data[] = {
   {    2,  2686, 0x00000002,    0 },
   {    3,  2687, 0x00000008,    0 },
@@ -15647,7 +15647,7 @@ static struct gem_property_data_t __gem_property_data[] = {
   {    0,     0, 0x00000000,    0 },
 };
 
-// Item upgrade rules, wow build level 24931
+// Item upgrade rules, wow build level 24974
 static struct item_upgrade_rule_t __item_upgrade_rule_data[] = {
   {    94,  445,  86741 },
   {    95,  445,  86743 },
@@ -24913,7 +24913,7 @@ static struct item_upgrade_rule_t __item_upgrade_rule_data[] = {
   {     0,    0,      0 },
 };
 
-// Upgrade rule data, wow build level 24931
+// Upgrade rule data, wow build level 24974
 static struct item_upgrade_t __upgrade_rule_data[] = {
   {   1,   1,    0,  8 },
   { 373,  89,    0,  4 },
@@ -24974,7 +24974,7 @@ static struct item_upgrade_t __upgrade_rule_data[] = {
 
 #define ITEM_BONUS_TREE_SIZE (555)
 
-// Item bonus trees, wow build 24931
+// Item bonus trees, wow build 24974
 static struct item_bonus_tree_entry_t __item_bonus_tree_data[ITEM_BONUS_TREE_SIZE] = {
   {    1,    1,  5,    0,    1 },
   {  107,   61,  5,    0,  449 },
@@ -25535,7 +25535,7 @@ static struct item_bonus_tree_entry_t __item_bonus_tree_data[ITEM_BONUS_TREE_SIZ
 
 #define ITEM_BONUS_SIZE (3783)
 
-// Item bonuses, wow build 24931
+// Item bonuses, wow build 24974
 static struct item_bonus_entry_t __item_bonus_data[ITEM_BONUS_SIZE] = {
   {    1,    1,  1,     20,      0,  0 },
   {    2,    1,  2,      7,  15789,  1 },
@@ -29324,7 +29324,7 @@ static struct item_bonus_entry_t __item_bonus_data[ITEM_BONUS_SIZE] = {
 
 #define ITEM_BONUS_MAP_SIZE (25400)
 
-// Item bonus map, wow build 24931
+// Item bonus map, wow build 24974
 static struct item_bonus_node_entry_t __item_bonus_map_data[ITEM_BONUS_MAP_SIZE] = {
   {     1, 109188,  393 },
   {   125, 109550,  438 },
@@ -54730,7 +54730,7 @@ static struct item_bonus_node_entry_t __item_bonus_map_data[ITEM_BONUS_MAP_SIZE]
 
 #define SCALING_STAT_DISTRIBUTION_SIZE (314)
 
-// Scaling stat distributions, wow build 24931
+// Scaling stat distributions, wow build 24974
 static struct scaling_stat_distribution_t __scaling_stat_distribution_data[SCALING_STAT_DISTRIBUTION_SIZE] = {
   {    1,   0,  80,   956 },
   {    2,   0,  80,   956 },
@@ -55050,7 +55050,7 @@ static struct scaling_stat_distribution_t __scaling_stat_distribution_data[SCALI
 
 #define CURVE_POINT_SIZE (10921)
 
-// Curve points data, wow build 24931
+// Curve points data, wow build 24974
 static struct curve_point_t __curve_point_data[CURVE_POINT_SIZE] = {
   {    8,  0,    0.00000,    1.00000 },
   {    9,  0,    0.00000,    1.00000 },
@@ -59660,29 +59660,29 @@ static struct curve_point_t __curve_point_data[CURVE_POINT_SIZE] = {
   { 1913,  0,    0.00000,    2.00000 },
   { 1913,  1,    2.00000,    2.00000 },
   { 1913,  2,    3.00000,    2.00000 },
-  { 1913,  3,    4.00000,    2.00000 },
-  { 1913,  4,    5.00000,    2.00000 },
-  { 1913,  5,    6.00000,    2.00000 },
-  { 1913,  6,    7.00000,    2.00000 },
-  { 1913,  7,    8.00000,    3.00000 },
-  { 1913,  8,    9.00000,    3.00000 },
-  { 1913,  9,   10.00000,    4.00000 },
-  { 1913, 10,   11.00000,    5.00000 },
-  { 1913, 11,   12.00000,    6.00000 },
-  { 1913, 12,   13.00000,    7.00000 },
-  { 1913, 13,   14.00000,    8.00000 },
-  { 1913, 14,   15.00000,    9.00000 },
-  { 1913, 15,   16.00000,    9.00000 },
-  { 1913, 16,   17.00000,    9.00000 },
-  { 1913, 17,   18.00000,   10.00000 },
-  { 1913, 18,   19.00000,   11.00000 },
-  { 1913, 19,   20.00000,   12.00000 },
-  { 1913, 20,   21.00000,   13.00000 },
-  { 1913, 21,   22.00000,   14.00000 },
-  { 1913, 22,   23.00000,   15.00000 },
-  { 1913, 23,   24.00000,   16.00000 },
-  { 1913, 24,   25.00000,   17.00000 },
-  { 1913, 25,   50.00000,   42.00000 },
+  { 1913,  3,    4.00000,    3.00000 },
+  { 1913,  4,    5.00000,    4.00000 },
+  { 1913,  5,    6.00000,    5.00000 },
+  { 1913,  6,    7.00000,    6.00000 },
+  { 1913,  7,    8.00000,    7.00000 },
+  { 1913,  8,    9.00000,    8.00000 },
+  { 1913,  9,   10.00000,    9.00000 },
+  { 1913, 10,   11.00000,   10.00000 },
+  { 1913, 11,   12.00000,   11.00000 },
+  { 1913, 12,   13.00000,   12.00000 },
+  { 1913, 13,   14.00000,   13.00000 },
+  { 1913, 14,   15.00000,   14.00000 },
+  { 1913, 15,   16.00000,   15.00000 },
+  { 1913, 16,   17.00000,   16.00000 },
+  { 1913, 17,   18.00000,   17.00000 },
+  { 1913, 18,   19.00000,   18.00000 },
+  { 1913, 19,   20.00000,   19.00000 },
+  { 1913, 20,   21.00000,   20.00000 },
+  { 1913, 21,   22.00000,   21.00000 },
+  { 1913, 22,   23.00000,   22.00000 },
+  { 1913, 23,   24.00000,   23.00000 },
+  { 1913, 24,   25.00000,   24.00000 },
+  { 1913, 25,   50.00000,   49.00000 },
   { 1914,  0,    0.00000,    0.00000 },
   { 1914,  1,    1.00000,    1.00000 },
   { 1915,  0,    0.00000,    0.00000 },
@@ -65977,7 +65977,7 @@ static struct curve_point_t __curve_point_data[CURVE_POINT_SIZE] = {
 
 #define ITEM_NAME_DESCRIPTION_SIZE (239)
 
-// Item name descriptions, wow build 24931
+// Item name descriptions, wow build 24974
 static struct item_name_description_t __item_name_description_data[ITEM_NAME_DESCRIPTION_SIZE] = {
   {     2, "Now with extra description"   },
   {    20, "Season 10"                    },
@@ -66222,7 +66222,7 @@ static struct item_name_description_t __item_name_description_data[ITEM_NAME_DES
 
 #define ITEM_CHILD_EQUIPMENT_SIZE (23)
 
-// Item child equipment, wow build 24931
+// Item child equipment, wow build 24974
 static struct item_child_equipment_t __item_child_equipment_data[ITEM_CHILD_EQUIPMENT_SIZE] = {
   {  2, 127417,   1728 },
   {  3, 127829, 127830 },

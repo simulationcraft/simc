@@ -5342,27 +5342,17 @@ struct netherlight_base_t : public proc_spell_t
 
   void init() override
   {
-    proc_spell_t::init();
+    hasted_ticks = true;
 
-    // No player-based multipliers work on this
-    // TODO: Check all, but this seems likely
-    // Does apply: Torment the Weak, Infusion of Light, Secure in the Light
-    snapshot_flags &= ~( STATE_MUL_DA | STATE_MUL_TA | STATE_MUL_PERSISTENT | STATE_VERSATILITY );
-    update_flags   &= ~( STATE_MUL_DA | STATE_MUL_TA | STATE_MUL_PERSISTENT | STATE_VERSATILITY );
+    proc_spell_t::init();
+       
 
     if ( data().max_stacks() > 0 )
     {
       dot_max_stack = data().max_stacks();
     }
-
-    // Dot's probably can't crit
-    // TODO: Check all
-    // Does apply: Torment the Weak
-    tick_may_crit = false;
   }
 
-  // TODO: Check if applies to everything
-  // Does apply: Torment the Weak
   timespan_t calculate_dot_refresh_duration( const dot_t* dot,
                                              timespan_t   triggered_duration ) const override
   {
