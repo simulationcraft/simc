@@ -9242,41 +9242,6 @@ struct rogue_module_t : public module_t
 
   void register_hotfixes() const override
   {
-    hotfix::register_effect( "Rogue", "2017-09-10", "Assassination damage increased by 5%. (Aura Effect 1)", 179721 )
-      .field( "base_value" )
-      .operation( hotfix::HOTFIX_SET )
-      .modifier( 28 )
-      .verification_value( 22 );
-
-    hotfix::register_effect( "Rogue", "2017-09-12", "Assassination damage increased by 5%. (Aura Effect 2)", 191052 )
-      .field( "base_value" )
-      .operation( hotfix::HOTFIX_SET )
-      .modifier( 28 )
-      .verification_value( 22 );
-
-    hotfix::register_effect( "Rogue", "2017-09-12", "Outlaw damage increased by 6%. (Aura Effect 1)", 179720 )
-      .field( "base_value" )
-      .operation( hotfix::HOTFIX_SET )
-      .modifier( 6 )
-      .verification_value( 0 );
-
-    hotfix::register_effect( "Rogue", "2017-09-12", "Outlaw damage increased by 6%. (Aura Effect 2)", 191056 )
-      .field( "base_value" )
-      .operation( hotfix::HOTFIX_SET )
-      .modifier( 6 )
-      .verification_value( 0 );
-
-    hotfix::register_effect( "Rogue", "2017-09-12", "Subtlety damage increased by 1.5%. (Aura Effect 1)", 179719 )
-      .field( "base_value" )
-      .operation( hotfix::HOTFIX_SET )
-      .modifier( 27 )
-      .verification_value( 25 );
-
-    hotfix::register_effect( "Rogue", "2017-09-12", "Subtlety damage increased by 1.5%. (Aura Effect 2)", 191060 )
-      .field( "base_value" )
-      .operation( hotfix::HOTFIX_SET )
-      .modifier( 27 )
-      .verification_value( 25 );
   }
 
   virtual void init( player_t* ) const override {}
