@@ -6,7 +6,7 @@ role=spell
 position=back
 talents=1211231
 artifact=47:0:0:0:0:764:1:765:1:766:1:767:4:768:1:769:1:770:1:771:4:772:4:773:4:774:4:775:4:776:4:777:4:778:4:779:1:1347:1:1381:1:1573:4:1574:1:1575:1:1576:24:1650:1
-crucible=1739:3:1770:3:1573:2:776:1
+crucible=1739:3:1780:3:1573:2:776:1
 
 # This default action priority list is automatically created based on your character.
 # It is a attempt to provide you with a action list that is both simple and practicable,
