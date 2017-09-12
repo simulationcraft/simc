@@ -197,6 +197,8 @@ std::array<std::string, SCALE_METRIC_MAX> gear_weights::pawn(
     bool first    = true;
     std::string s = "( Pawn: v1: \"";
     s += p.name();
+    s += "-";
+    s += util::spec_string_no_class(p);
     s += "\": ";
     s += "Class=";
     std::string name = util::player_type_string( p.type );
