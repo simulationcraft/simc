@@ -1100,22 +1100,23 @@ public:
 
     if (p->specialization() == DEMON_HUNTER_HAVOC)
     {
-      hasted_gcd = ab::data().affected_by(p->spec.havoc->effectN(1));
-      
-      // Normal Cooldowns
-      if (ab::data().affected_by(p->spec.havoc->effectN(2)))
-        ab::cooldown->hasted = true;
-
-      // Category Cooldowns
-      if (as<int>(ab::data().category()) == p->spec.havoc->effectN(4).misc_value1())
-        ab::cooldown->hasted = true;
-
       // Class Damage Multiplier
-      if (ab::data().affected_by(p->spec.havoc->effectN(6)))
-        ab::base_dd_multiplier *= 1 + p->spec.havoc->effectN(6).percent();
+      if (ab::data().affected_by(p->spec.havoc->effectN(1)))
+        ab::base_dd_multiplier *= 1 + p->spec.havoc->effectN(1).percent();
 
-      if (ab::data().affected_by(p->spec.havoc->effectN(7)))
-        ab::base_td_multiplier *= 1 + p->spec.havoc->effectN(7).percent();
+      if (ab::data().affected_by(p->spec.havoc->effectN(2)))
+        ab::base_td_multiplier *= 1 + p->spec.havoc->effectN(2).percent();
+
+      // Hasted GCD
+      hasted_gcd = ab::data().affected_by(p->spec.havoc->effectN(3));
+      
+      // Hasted Cooldowns
+      if (ab::data().affected_by(p->spec.havoc->effectN(4)))
+        ab::cooldown->hasted = true;
+
+      // Hasted Category Cooldowns
+      if (as<int>(ab::data().category()) == p->spec.havoc->effectN(6).misc_value1())
+        ab::cooldown->hasted = true;
     }
     else // DEMON_HUNTER_VENGEANCE
     {
