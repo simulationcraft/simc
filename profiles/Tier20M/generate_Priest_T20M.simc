@@ -6,7 +6,7 @@ position=back
 talents=1211231
 spec=shadow
 artifact=47:0:0:0:0:764:1:765:1:766:1:767:4:768:1:769:1:770:1:771:4:772:4:773:4:774:4:775:4:776:4:777:4:778:4:779:1:1347:1:1381:1:1573:4:1574:1:1575:1:1576:24:1650:1
-crucible=1739:3:1770:3:1573:2:776:1
+crucible=1739:3:1780:3:1573:2:776:1
 
 head=hood_of_blind_absolution,id=147165,ilevel=930
 neck=string_of_extracted_incisors,id=147013,ilevel=930,enchant=mark_of_the_claw
