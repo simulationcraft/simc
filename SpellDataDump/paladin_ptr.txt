@@ -1,4 +1,4 @@
-SimulationCraft 725-02 for World of Warcraft 7.3.0 PTR (wow build 24539, git build 3a6919f)
+SimulationCraft 730-02 for World of Warcraft 7.3.0 Live (wow build 24931)
 
 Name             : Block (Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
@@ -2531,7 +2531,7 @@ Class            : Paladin
 Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Worgen, Pandaren, Pandaren (Alliance)
 School           : Physical
 Range            : 100 yards
-Artifact Power   : Id: 353, Index: 3, Max Rank: 1
+Artifact Power   : Id: 353, Index: 3, Max Rank: 1, Type: 1
 Attributes       : ......x. ........ ........ .......x   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3196,7 +3196,7 @@ School           : Physical
 Range            : 100 yards
 Proc Chance      : 101%
 Real PPM         : 1
-Artifact Power   : Id: 963, Index: 2, Max Rank: 1
+Artifact Power   : Id: 963, Index: 2, Max Rank: 1, Type: 1
 Proc Flags       : ........ ......x. ........ ........ 
                  : Heal
 Attributes       : ......x. ........ ........ .......x   ........ ........ ........ ....x... 
@@ -3220,7 +3220,7 @@ Cast Time        : 2 seconds
 GCD              : 1.5 seconds
 Duration         : 10 seconds
 Cooldown         : 90 seconds
-Artifact Power   : Id: 965, Max Rank: 1
+Artifact Power   : Id: 965, Max Rank: 1, Type: 18
 Attributes       : ........ ........ ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ .....x.. ........ ........ 
@@ -3842,7 +3842,7 @@ School           : Holyfire
 GCD              : 1.5 seconds
 Duration         : 6 seconds
 Cooldown         : 30 seconds
-Artifact Power   : Id: 40, Max Rank: 1
+Artifact Power   : Id: 40, Max Rank: 1, Type: 18
 Affecting spells : Retribution Paladin (137027 effect#1), Ashes to Dust (236106 effect#1)
 Triggered by     : Push Active Ability to Bar (225875)
 Attributes       : ........ ........ ..x..... ........   ........ ........ ........ ........ 
@@ -3921,7 +3921,7 @@ School           : Holy
 GCD              : 1.5 seconds
 Duration         : 9 seconds
 Cooldown         : 60 seconds
-Artifact Power   : Id: 1120, Max Rank: 1
+Artifact Power   : Id: 1120, Max Rank: 1, Type: 18
 Affecting spells : Protection Paladin (137028 effect#10), Pillars of Inmost Ligiht (248102 effect#1), 
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4799,7 +4799,7 @@ Class            : Paladin
 School           : Physical
 Internal Cooldown: 0.1 seconds
 Proc Chance      : 100%
-Artifact Power   : Id: 1561, Index: 13, Max Rank: 8, Values: [ 8, 16, 24, 32, 40, 48, 56, 64 ]
+Artifact Power   : Id: 1561, Index: 13, Max Rank: 8, Type: 32, Values: [ 8, 16, 24, 32, 40, 48, 56, 64 ]
 Proc Flags       : ....x... ..x.x.x. x.x..... ........ 
                  : Yellow Melee, AOE Heal, AOE Hostile Spell, Heal, Hostile Spell, Periodic
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -4817,7 +4817,7 @@ Description      : Your Holy Power spending abilities increase the damage of you
 Name             : Blessing of the Ashbringer (id=238098) [Spell Family (10), Passive] 
 Class            : Paladin
 School           : Physical
-Artifact Power   : Id: 1562, Max Rank: 1
+Artifact Power   : Id: 1562, Max Rank: 1, Type: 0
 Attributes       : ......x. ........ ........ .......x   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 

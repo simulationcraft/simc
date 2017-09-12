@@ -1,4 +1,4 @@
-SimulationCraft 725-02 for World of Warcraft 7.3.0 PTR (wow build 24539, git build 3a6919f)
+SimulationCraft 730-02 for World of Warcraft 7.3.0 Live (wow build 24931)
 
 Name             : Mend Pet (id=136) [Scaling Spell (4), Spell Family (9)] 
 Class            : Hunter
@@ -4175,7 +4175,7 @@ Tooltip          : Fel Boar summoned.
 Name             : Marked for Death (id=190529) [Spell Family (9), Passive] 
 Class            : Hunter
 School           : Physical
-Artifact Power   : Id: 319, Index: 9, Max Rank: 8, Values: [ 2, 4, 6, 8, 10, 12, 14, 16 ]
+Artifact Power   : Id: 319, Index: 9, Max Rank: 8, Type: 32, Values: [ 2, 4, 6, 8, 10, 12, 14, 16 ]
 Attributes       : ......x. ........ ........ .......x   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4304,7 +4304,7 @@ Class            : Hunter
 School           : Physical
 Proc Chance      : 101%
 Real PPM         : 1 (Haste multiplier)
-Artifact Power   : Id: 311, Index: 1, Max Rank: 1
+Artifact Power   : Id: 311, Index: 1, Max Rank: 1, Type: 1
 Proc Flags       : ........ x....... ........ ........ 
                  : Yellow Ranged
 Attributes       : ......x. ........ ........ .......x   ........ ........ ........ ....x... 
@@ -5556,7 +5556,7 @@ Range            : 8 yards
 GCD              : 1.5 seconds
 Duration         : 4 seconds
 Cooldown         : 45 seconds
-Artifact Power   : Id: 1068, Max Rank: 1
+Artifact Power   : Id: 1068, Max Rank: 1, Type: 18
 Affecting spells : Hunter (137014 effect#3), Guide: Sharpshooting (178549 effect#2), Mastery: Sniper Training (193468 effect#1), Unseen Predator's Cloak (248212 effect#1)
 Attributes       : ........ ........ ........ ........   ..x...x. .xx..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5579,7 +5579,7 @@ Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Velocity         : 50 yards/sec
 Cooldown         : 20 seconds
-Artifact Power   : Id: 307, Max Rank: 1
+Artifact Power   : Id: 307, Max Rank: 1, Type: 18
 Affecting spells : Hunter (137014 effect#3), Marksmanship Hunter (137016 effect#4), Mastery: Sniper Training (193468 effect#1), Trueshot (211327 effect#1)
 Attributes       : .x..x... ........ x....... ........   ........ ........ ........ ...x.... 
                  : ........ ........ .x..x... ........   ........ ........ ........ ........ 
@@ -5813,7 +5813,7 @@ School           : Physical
 Range            : 100 yards
 Duration         : 8 seconds
 Cooldown         : 60 seconds
-Artifact Power   : Id: 879, Index: 2, Max Rank: 1
+Artifact Power   : Id: 879, Index: 2, Max Rank: 1, Type: 1
 Attributes       : ........ ........ ..x..... .......x   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
