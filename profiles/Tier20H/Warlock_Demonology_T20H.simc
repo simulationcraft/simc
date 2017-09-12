@@ -7,6 +7,12 @@ position=back
 talents=1202023
 artifact=37:0:0:0:0:1170:1:1171:4:1172:4:1173:4:1174:4:1175:4:1176:4:1177:4:1178:4:1179:4:1180:1:1181:1:1182:1:1183:1:1184:1:1185:1:1354:1:1391:1:1605:4:1606:1:1607:1:1608:1:1712:1
 
+# Default consumables
+potion=prolonged_power
+flask=whispered_pact
+food=azshari_salad
+augmentation=defiled
+
 # This default action priority list is automatically created based on your character.
 # It is a attempt to provide you with a action list that is both simple and practicable,
 # while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
@@ -14,15 +20,15 @@ artifact=37:0:0:0:0:1170:1:1171:4:1172:4:1173:4:1174:4:1175:4:1176:4:1177:4:1178
 # SimulationCraft is always looking for updates and improvements to the default action lists.
 
 # Executed before combat begins. Accepts non-harmful actions only.
-actions.precombat=flask,type=whispered_pact
-actions.precombat+=/food,type=azshari_salad
+actions.precombat=flask
+actions.precombat+=/food
+actions.precombat+=/augmentation
 actions.precombat+=/summon_pet,if=!talent.grimoire_of_supremacy.enabled&(!talent.grimoire_of_sacrifice.enabled|buff.demonic_power.down)
 actions.precombat+=/summon_infernal,if=talent.grimoire_of_supremacy.enabled&artifact.lord_of_flames.rank>0
 actions.precombat+=/summon_infernal,if=talent.grimoire_of_supremacy.enabled&active_enemies>1
 actions.precombat+=/summon_doomguard,if=talent.grimoire_of_supremacy.enabled&active_enemies=1&artifact.lord_of_flames.rank=0
-actions.precombat+=/augmentation,type=defiled
 actions.precombat+=/snapshot_stats
-actions.precombat+=/potion,name=prolonged_power
+actions.precombat+=/potion
 actions.precombat+=/demonic_empowerment
 actions.precombat+=/demonbolt
 actions.precombat+=/shadow_bolt
