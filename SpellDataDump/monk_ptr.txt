@@ -1,4 +1,4 @@
-SimulationCraft 725-02 for World of Warcraft 7.3.0 PTR (wow build 24539, git build 3a6919f)
+SimulationCraft 730-02 for World of Warcraft 7.3.0 Live (wow build 24931)
 
 Name             : Dual Wield (Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
@@ -3813,7 +3813,7 @@ Class            : Monk
 School           : Physical
 Range            : 100 yards
 Proc Chance      : 101%
-Artifact Power   : Id: 832, Index: 2, Max Rank: 1
+Artifact Power   : Id: 832, Index: 2, Max Rank: 1, Type: 1
 Proc Flags       : ....x... ....x... x....... ........ 
                  : Yellow Melee, AOE Hostile Spell, Hostile Spell
 Attributes       : ......x. ........ ........ .......x   ........ ........ ........ ....x... 
@@ -4498,7 +4498,7 @@ Range            : 9 yards
 GCD              : 1 seconds
 Duration         : 6 seconds
 Cooldown         : 40 seconds
-Artifact Power   : Id: 831, Max Rank: 1
+Artifact Power   : Id: 831, Max Rank: 1, Type: 18
 Affecting spells : Storm, Earth, and Fire (137639 effect#1), Serenity (152173 effect#1), The Wind Blows (248101 effect#1), 
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4524,7 +4524,7 @@ School           : Nature
 Range            : 40 yards
 Cast Time        : 2 seconds
 GCD              : 1.5 seconds
-Artifact Power   : Id: 931, Max Rank: 1
+Artifact Power   : Id: 931, Max Rank: 1, Type: 18
 Affecting spells : Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effect#1), 
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4758,7 +4758,7 @@ Tooltip          : You may cast Touch of Death again before the cooldown is trig
 Name             : Face Palm (id=213116) [Spell Family (53), Passive] 
 Class            : Monk
 School           : Physical
-Artifact Power   : Id: 1286, Index: 12, Max Rank: 8, Values: [ 10, 20, 30, 40, 50, 60, 70, 80 ]
+Artifact Power   : Id: 1286, Index: 12, Max Rank: 8, Type: 32, Values: [ 10, 20, 30, 40, 50, 60, 70, 80 ]
 Attributes       : ......x. ........ ........ .......x   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4779,7 +4779,7 @@ GCD              : 1 seconds
 Velocity         : 15 yards/sec
 Duration         : 3 seconds
 Cooldown         : 75 seconds
-Artifact Power   : Id: 1277, Max Rank: 1
+Artifact Power   : Id: 1277, Max Rank: 1, Type: 18
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5172,7 +5172,7 @@ Description      : Stagger is $s1% more effective against magical attacks.
 Name             : Master of Combinations (id=238095) [Spell Family (53), Passive] 
 Class            : Monk
 School           : Physical
-Artifact Power   : Id: 1550, Max Rank: 1
+Artifact Power   : Id: 1550, Max Rank: 1, Type: 0
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5191,7 +5191,7 @@ Name             : Thunderfist (id=238131) [Spell Family (53), Passive]
 Class            : Monk
 School           : Physical
 Proc Chance      : 100%
-Artifact Power   : Id: 1551, Max Rank: 1
+Artifact Power   : Id: 1551, Max Rank: 1, Type: 1
 Proc Flags       : ....x... ........ ........ ........ 
                  : Yellow Melee
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 

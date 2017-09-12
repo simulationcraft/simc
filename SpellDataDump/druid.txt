@@ -1,4 +1,4 @@
-SimulationCraft 730-01 for World of Warcraft 7.3.0 Live (wow build 24931, git build 1fa582dcd)
+SimulationCraft 730-02 for World of Warcraft 7.3.0 Live (wow build 24931)
 
 Name             : Incapacitating Roar (id=99) [Spell Family (7)] 
 Class            : Guardian Druid
@@ -3182,11 +3182,13 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=179694)   : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
-                   Base Value: 40 | Scaled Value: 40 | Target: Self (1)
+                   Base Value: 43 | Scaled Value: 43 | Target: Self (1)
                    Affected Spells: Rip (1079), Rake (1822), Shred (5221), Ferocious Bite (22568), Maim (22570), Swipe (106785), Thrash (106830), Moonfire (155625), Rake (155722), Moonfire (164812), Maim (168877), Maim (168878), Maim (168879), Maim (168880), Maim (168881), Brutal Slash (202028), Shadow Thrash (210687), Ashamane's Rip (210705), Ashamane's Frenzy (210723)
+                   Hotfixed: Base Value (40 -> 43), Chain Multiplier (0 -> 1)
 #2 (id=191154)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Damage (22)
-                   Base Value: 40 | Scaled Value: 40 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 43 | Scaled Value: 43 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Rip (1079), Rake (1822), Shred (5221), Ferocious Bite (22568), Maim (22570), Swipe (106785), Thrash (106830), Moonfire (155625), Rake (155722), Moonfire (164812), Maim (168877), Maim (168878), Maim (168879), Maim (168880), Maim (168881), Brutal Slash (202028), Shadow Thrash (210687), Ashamane's Rip (210705), Ashamane's Frenzy (210723)
+                   Hotfixed: Base Value (40 -> 43), Chain Multiplier (0 -> 1)
 #3 (id=191155)   : Apply Aura (6) | Add Flat Modifier (107): Spell Cooldown (11)
                    Base Value: 90000 | Scaled Value: 90000 | Misc Value: 11 | Target: Self (1)
                    Affected Spells: Moonkin Form (24858), Incarnation: Chosen of Elune (102560), Moonkin Form (197625)
@@ -5247,6 +5249,7 @@ Effects          :
                    Base Value: 3 | Scaled Value: 3 | Radius: 0 - 8 yards | Target: At Caster (22) -> AOE enemy (15)
 #3 (id=297728)   : Weapon Damage% (31)
                    Base Value: 2470 | Scaled Value: 24.7 | Radius: 0 - 8 yards | Target: At Caster (22) -> AOE enemy (15)
+                   Hotfixed: Chain Multiplier (0 -> 1)
 Description      : Strikes all nearby enemies with a massive slash, inflicting $sw3 Physical damage.
 
 |cFFFFFFFFAwards $s1 combo $lpoint:points;.|r
@@ -5282,9 +5285,11 @@ Effects          :
 #1 (id=297732)   : Apply Aura (6) | Add Percent Modifier (108): Unknown 2 (19)
                    Base Value: -20 | Scaled Value: -20 | SP Coefficient: 1.00000 | Misc Value: 19 | Target: Self (1)
                    Affected Spells: Rip (1079), Rake (1822), Thrash (106830), Rake (155722), Shadow Thrash (210687), Ashamane's Rip (210705)
+                   Hotfixed: Chain Multiplier (0 -> 1)
 #2 (id=297777)   : Apply Aura (6) | Add Percent Modifier (108): Spell Duration (1)
                    Base Value: -20 | Scaled Value: -20 | SP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
                    Affected Spells: Rip (1079), Rake (1822), Thrash (106830), Rake (155722), Shadow Thrash (210687), Ashamane's Rip (210705)
+                   Hotfixed: Chain Multiplier (0 -> 1)
 Description      : Your Rip, Rake, and Thrash abilities deal the same damage as normal, but in $s1% less time.
 
 Name             : Elune's Guidance (id=202060) [Spell Family (8)] 
@@ -6209,6 +6214,7 @@ Effects          :
 #1 (id=312047)   : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 5 | Scaled Value: 5 | Misc Value: 0x7f | Target: Self (1)
                    Affected School(s): All
+                   Hotfixed: Chain Multiplier (0 -> 1)
 Description      : $@spelldesc210631
 Tooltip          : Damage dealt increased by $w1%.
 

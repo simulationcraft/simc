@@ -1,4 +1,4 @@
-SimulationCraft 725-02 for World of Warcraft 7.3.0 PTR (wow build 24539, git build 3a6919f)
+SimulationCraft 730-02 for World of Warcraft 7.3.0 Live (wow build 24931)
 
 Name             : Defensive Stance (id=71) [Spell Family (4), Passive, Hidden] 
 Class            : Protection Warrior
@@ -3084,7 +3084,7 @@ Description      : You have a ${$m2/100}.2% chance per Rage spent to reset the r
 Name             : Reflective Plating (id=188672) [Spell Family (4), Passive] 
 Class            : Warrior
 School           : Physical
-Artifact Power   : Id: 104, Max Rank: 1
+Artifact Power   : Id: 104, Max Rank: 1, Type: 0
 Attributes       : ......x. ........ ........ .......x   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4064,7 +4064,7 @@ School           : Physical
 GCD              : 1.5 seconds
 Duration         : 3 seconds
 Cooldown         : 45 seconds
-Artifact Power   : Id: 91, Max Rank: 1
+Artifact Power   : Id: 91, Max Rank: 1, Type: 18
 Attributes       : ........ ........ ........ ........   ......x. ........ ........ .....x.. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4130,7 +4130,7 @@ Spell Level      : 28 (max 80)
 GCD              : 1.5 seconds
 Cooldown         : 45 seconds
 Category         : 891
-Artifact Power   : Id: 984, Max Rank: 1
+Artifact Power   : Id: 984, Max Rank: 1, Type: 18
 Affecting spells : Warrior (137047 effect#2), Fury Warrior (137050 effect#1), 
 Attributes       : ....x... ........ x.x..... ........   ....x... .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
@@ -4403,7 +4403,7 @@ Name             : Void Cleave (id=209573) [Spell Family (4), Passive, Hidden]
 Class            : Warrior
 School           : Physical
 Range            : 100 yards
-Artifact Power   : Id: 1138, Index: 2, Max Rank: 1
+Artifact Power   : Id: 1138, Index: 2, Max Rank: 1, Type: 1
 Attributes       : ......xx ........ ........ .......x   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4422,7 +4422,7 @@ School           : Shadow
 Range            : 100 yards
 GCD              : 1.5 seconds
 Cooldown         : 60 seconds
-Artifact Power   : Id: 1136, Max Rank: 1
+Artifact Power   : Id: 1136, Max Rank: 1, Type: 18
 Affecting spells : Warrior (137047 effect#2)
 Attributes       : ........ ........ ........ ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -5018,8 +5018,6 @@ Effects          :
 #3 (id=342671)   : Apply Aura (6) | Unknown(263)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
                    Affected Spells: Defensive Stance (71), Taunt (355), Shield Wall (871), Demoralizing Shout (1160), Shield Block (2565), Last Stand (12975), Berserker Rage (18499), Commanding Shout (97462), Commanding Shout (97463), Die by the Sword (118038), Demoralizing Shout (125565), Enraged Regeneration (184364), Defensive Stance (197690)
-#4 (id=474569)   : Apply Aura (6) | Mechanic Immunity (77)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : Become an unstoppable storm of destructive force, striking all targets within $50622A1 yards $?s23881[with both weapons for ${7*($50622sw2+$95738sw2)} Physical damage][for ${7*$168969sw2} Physical damage] over $d.
 
 You are immune to movement impairing and loss of control effects, but can use defensive abilities and can avoid attacks.
