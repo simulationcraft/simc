@@ -208,7 +208,7 @@ bool player_artifact_data_t::add_power( unsigned power_id, unsigned rank )
   return true;
 }
 
-bool player_artifact_data_t::add_crucible_power( unsigned power_id, unsigned rank )
+bool player_artifact_data_t::add_crucible_power( unsigned power_id, unsigned rank, power_op op )
 {
   if ( power_id == 0 || rank == 0 || rank > MAX_TRAIT_RANK )
   {
@@ -223,13 +223,20 @@ bool player_artifact_data_t::add_crucible_power( unsigned power_id, unsigned ran
   }
 
   const auto& pd = point_data( power_id );
-  if ( pd.crucible > 0 )
+  if ( op == OP_SET && pd.crucible > 0 )
   {
     debug( this, "Player %s re-adding crucible power %u", player() -> name(), power_id );
     return false;
   }
 
-  m_points[ power_id ].crucible = as<uint8_t>( rank );
+  if ( op == OP_SET )
+  {
+    m_points[ power_id ].crucible = as<uint8_t>( rank );
+  }
+  else
+  {
+    m_points[ power_id ].crucible += as<uint8_t>( rank );
+  }
 
   m_total_points += rank;
   m_crucible_points += rank;
@@ -847,13 +854,9 @@ bool player_artifact_data_t::parse()
   return true;
 }
 
-bool player_artifact_data_t::parse_crucible()
+// Old-style crucible= option (contains only trait id:rank tuples)
+bool player_artifact_data_t::parse_crucible1()
 {
-  if ( m_crucible_str.empty() )
-  {
-    return true;
-  }
-
   auto splits = util::string_split( m_crucible_str, ":" );
 
   if ( splits.size() % 2 != 0 )
@@ -863,7 +866,6 @@ bool player_artifact_data_t::parse_crucible()
     return false;
   }
 
-  auto artifact_powers = powers();
   for ( size_t i = 0; i < splits.size() - 1; i += 2 )
   {
     auto power_id = util::to_unsigned( splits[ i ] );
@@ -888,9 +890,56 @@ bool player_artifact_data_t::parse_crucible()
       return false;
     }
 
-    add_crucible_power( power_id, rank );
+    add_crucible_power( power_id, rank, OP_SET );
   }
 
   return true;
+}
+
+// New-style crucible= option (relic1trait1:relic1trait2:relic1trait3/relic2trait1.../relic3trait1)
+bool player_artifact_data_t::parse_crucible2()
+{
+  auto relic_split = util::string_split( m_crucible_str, "/" );
+
+  for ( const auto& relic_str : relic_split )
+  {
+    auto power_split = util::string_split( relic_str, ":" );
+    for ( const auto& power_str : power_split )
+    {
+      auto power_id = util::to_unsigned( power_str );
+      if ( power_id == 0 )
+      {
+        continue;
+      }
+
+      if ( ! valid_crucible_power( power_id ) )
+      {
+        error( this, "Player %s invalid crucible power id '%u'", player() -> name(), power_id );
+        return false;
+      }
+
+      add_crucible_power( power_id, 1, OP_ADD );
+    }
+  }
+
+  return true;
+}
+
+
+bool player_artifact_data_t::parse_crucible()
+{
+  if ( m_crucible_str.empty() )
+  {
+    return true;
+  }
+
+  if ( m_crucible_str.find( '/' ) == std::string::npos )
+  {
+    return parse_crucible1();
+  }
+  else
+  {
+    return parse_crucible2();
+  }
 }
 } // Namespace artifact ends
