@@ -5,7 +5,7 @@ role=attack
 talents=3010033
 spec=windwalker
 artifact=50:0:0:0:0:800:4:801:4:820:4:821:4:822:4:824:4:825:4:826:1:827:1:828:1:829:4:830:1:831:1:832:1:833:1:1094:4:1341:1:1376:1:1549:4:1550:1:1551:1:1552:15:1644:1
-crucible=1739:3:1780:3
+crucible=1739:1780/1739:1780/1739:1780
 
 head=xuens_helm,id=147154,bonus_id=3562:1497
 neck=locket_of_splintered_souls,id=147014,ilevel=915,enchant=mark_of_the_hidden_satyr
