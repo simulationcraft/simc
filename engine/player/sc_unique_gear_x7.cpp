@@ -5345,7 +5345,8 @@ struct netherlight_base_t : public proc_spell_t
     hasted_ticks = true;
 
     proc_spell_t::init();
-       
+
+    update_flags = STATE_TGT_CRIT | STATE_TGT_MUL_DA | STATE_TGT_MUL_TA | STATE_HASTE;
 
     if ( data().max_stacks() > 0 )
     {
