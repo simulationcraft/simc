@@ -7954,9 +7954,10 @@ void death_knight_t::default_apl_frost()
   standard -> add_action( this, "Remorseless Winter", "if=spell_targets.remorseless_winter>=2" );
   standard -> add_talent( this, "Glacial Advance", "if=spell_targets.glacial_advance>=2" );
   standard -> add_talent( this, "Frostscythe", "if=spell_targets.frostscythe>=3" );
-  standard -> add_action( this, "Obliterate" );
+  standard -> add_action( this, "Obliterate", "if=!talent.gathering_storm.enabled|cooldown.remorseless_winter.remains>(gcd*2)" );
   standard -> add_talent( this, "Horn of Winter", "if=!buff.hungering_rune_weapon.up&(rune.time_to_2>gcd|!talent.frozen_pulse.enabled)" );
   standard -> add_action( this, "Frost Strike", "if=!(runic_power<50&talent.obliteration.enabled&cooldown.obliteration.remains<=gcd)" );
+  standard -> add_action( this, "Obliterate", "if=!talent.gathering_storm.enabled|talent.icy_talons.enabled" );
   standard -> add_action( this, "Empower Rune Weapon", "if=!talent.breath_of_sindragosa.enabled|target.time_to_die<cooldown.breath_of_sindragosa.remains" );
 }
 
