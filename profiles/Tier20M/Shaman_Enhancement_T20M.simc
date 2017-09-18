@@ -5,7 +5,8 @@ race=troll
 role=attack
 position=back
 talents=3132123
-artifact=41:0:0:0:0:899:1:900:1:901:1:902:1:903:1:904:1:905:4:906:4:907:4:908:4:909:4:910:4:911:4:912:4:913:4:930:1:1351:1:1388:1:1593:4:1594:1:1595:1:1596:1:1687:1
+artifact=41:0:0:0:0:899:1:900:1:901:1:902:1:903:1:904:1:905:4:906:4:907:4:908:4:909:4:910:4:911:4:912:4:913:4:930:1:1351:1:1388:1:1593:4:1594:1:1595:1:1596:24:1687:1
+crucible=1739:3:1780:3:908:2:910:1
 
 # Default consumables
 potion=prolonged_power
@@ -117,12 +118,12 @@ main_hand=doomhammer,id=128819,bonus_id=745,gem_id=147088/147100/147115,relic_id
 off_hand=fury_of_the_stonemother,id=128873,gem_id=0/0/0/0,relic_id=0/0
 
 # Gear Summary
-# gear_ilvl=938.88
-# gear_agility=28018
-# gear_stamina=45295
-# gear_crit_rating=3439
+# gear_ilvl=940.75
+# gear_agility=28466
+# gear_stamina=45967
+# gear_crit_rating=3489
 # gear_haste_rating=13565
-# gear_mastery_rating=8916
+# gear_mastery_rating=8964
 # gear_versatility_rating=2624
 # gear_armor=3282
 # set_bonus=tier20_2pc=1
