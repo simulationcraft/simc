@@ -1,4 +1,4 @@
-SimulationCraft 725-02 for World of Warcraft 7.3.0 PTR (wow build 24539, git build 3a6919f)
+SimulationCraft 730-02 for World of Warcraft 7.3.0 Live (wow build 24931)
 
 Name             : Invisibility (id=66) [Spell Family (3)] 
 Class            : Arcane Fire Frost Mage
@@ -740,7 +740,7 @@ Resource         : 1% Base Mana (0) (id=6406)
 Spell Level      : 10
 Range            : 40 yards
 GCD              : 1.5 seconds
-Velocity         : 38 yards/sec
+Velocity         : 47 yards/sec
 Affecting spells : Shatter (12982 effect#1), Splitting Ice (56377 effect#1), Let It Go (195322 effect#1), Chain Reaction (195418 effect#1), Lonely Winter (205024 effect#1), Magtheridon's Might (214404 effect#1), Norgannon's Foresight (236380 effect#1)
 Triggered by     : Fingers of Frost (44544)
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
@@ -3688,7 +3688,7 @@ Description      : Shoots at an enemy, inflicting Physical damage.
 Name             : Molten Skin (id=194315) [Spell Family (3), Passive] 
 Class            : Mage
 School           : Physical
-Artifact Power   : Id: 757, Index: 12, Max Rank: 8, Values: [ -5, -10, -15, -20, -25, -30, -35, -40 ]
+Artifact Power   : Id: 757, Index: 12, Max Rank: 8, Type: 32, Values: [ -5, -10, -15, -20, -25, -30, -35, -40 ]
 Attributes       : ......x. ........ ........ .......x   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3706,7 +3706,7 @@ Name             : Aftershocks (id=194431) [Spell Family (3), Passive]
 Class            : Mage
 School           : Physical
 Proc Chance      : 100%
-Artifact Power   : Id: 761, Index: 1, Max Rank: 1
+Artifact Power   : Id: 761, Index: 1, Max Rank: 1, Type: 1
 Proc Flags       : ........ ....x... x.x..... ........ 
                  : AOE Hostile Spell, Hostile Spell, Periodic
 Attributes       : ......x. ........ ........ .......x   ........ ........ ........ ....x... 
@@ -3750,7 +3750,7 @@ Velocity         : 50 yards/sec
 Charges          : 3 (45 seconds cooldown)
 Category         : 1633
 Proc Chance      : 101%
-Artifact Power   : Id: 748, Max Rank: 1
+Artifact Power   : Id: 748, Max Rank: 1, Type: 18
 Affecting spells : Fire Mage (137019 effect#1), Norgannon's Foresight (236380 effect#1), Strafing Run (238127 effect#1)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4498,7 +4498,7 @@ Class            : Mage
 School           : Physical
 Internal Cooldown: 6 seconds
 Proc Chance      : 10%
-Artifact Power   : Id: 86, Index: 2, Max Rank: 1
+Artifact Power   : Id: 86, Index: 2, Max Rank: 1, Type: 1
 Proc Flags       : ........ ........ x....... ........ 
                  : Hostile Spell
 Attributes       : ......x. ........ ........ .......x   ........ ........ ........ ....x... 
@@ -4738,7 +4738,7 @@ Cast Time        : 3 seconds
 GCD              : 1.5 seconds
 Velocity         : 30 yards/sec
 Cooldown         : 45 seconds
-Artifact Power   : Id: 783, Max Rank: 1
+Artifact Power   : Id: 783, Max Rank: 1, Type: 18
 Affecting spells : Shatter (12982 effect#1), Ice Floes (108839 effect#1), Norgannon's Foresight (236380 effect#1)
 Triggered by     : Push Active Ability to Bar (225872)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4861,7 +4861,7 @@ Duration         : 6 seconds
 Cooldown         : 60 seconds
 Stacks           : 4 maximum
 Proc Chance      : 101%
-Artifact Power   : Id: 290, Max Rank: 1
+Artifact Power   : Id: 290, Max Rank: 1, Type: 18
 Affecting spells : Ice Floes (108839 effect#1), Norgannon's Foresight (236380 effect#1)
 Triggered by     : Push Active Ability to Bar (225874)
 Attributes       : ........ ........ ..x..... ........   ........ ........ ........ ........ 
@@ -5563,7 +5563,7 @@ Name             : Time and Space (id=238126) [Spell Family (3), Passive]
 Class            : Mage
 School           : Physical
 Proc Chance      : 100%
-Artifact Power   : Id: 1531, Max Rank: 1
+Artifact Power   : Id: 1531, Max Rank: 1, Type: 1
 Proc Flags       : ........ ........ x....... ........ 
                  : Hostile Spell
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 

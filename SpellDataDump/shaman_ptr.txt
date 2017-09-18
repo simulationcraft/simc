@@ -1,4 +1,4 @@
-SimulationCraft 725-02 for World of Warcraft 7.3.0 PTR (wow build 24539, git build 3a6919f)
+SimulationCraft 730-02 for World of Warcraft 7.3.0 Live (wow build 24931)
 
 Name             : Block (Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
@@ -1268,10 +1268,12 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6), Hidden (7)
 Effects          :
-#1 (id=57399)    : Apply Aura (6) | Unknown(403)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 1064 | Misc Value 2: 0x1eda3 | Target: Self (1)
-#2 (id=256832)   : Apply Aura (6) | Unknown(403)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 177972 | Misc Value 2: 0x1eda3 | Target: Self (1)
+#1 (id=57399)    : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+                   Hotfixed: Chain Multiplier (0 -> 1)
+#2 (id=256832)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+                   Hotfixed: Chain Multiplier (0 -> 1)
 Description      : Your Chain Heal now has a watery appearance.
 
 Name             : Deluge (id=63925) 
@@ -3725,7 +3727,7 @@ Name             : Static Overload (id=191602) [Spell Family (11), Passive]
 Class            : Shaman
 School           : Physical
 Proc Chance      : 100%
-Artifact Power   : Id: 292, Max Rank: 1
+Artifact Power   : Id: 292, Max Rank: 1, Type: 0
 Proc Flags       : ........ ......x. ........ ........ 
                  : Heal
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -4716,7 +4718,7 @@ Name             : Gathering Storms (id=198299) [Spell Family (11), Passive]
 Class            : Shaman
 School           : Physical
 Range            : 100 yards
-Artifact Power   : Id: 912, Index: 8, Max Rank: 8, Values: [ 2, 4, 6, 8, 10, 12, 14, 16 ]
+Artifact Power   : Id: 912, Index: 8, Max Rank: 8, Type: 32, Values: [ 2, 4, 6, 8, 10, 12, 14, 16 ]
 Attributes       : ......x. ........ ........ .......x   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4863,7 +4865,7 @@ Class            : Shaman
 School           : Physical
 Range            : 100 yards
 Proc Chance      : 20%
-Artifact Power   : Id: 900, Index: 1, Max Rank: 1
+Artifact Power   : Id: 900, Index: 1, Max Rank: 1, Type: 1
 Proc Flags       : ....x... ....x... x....... ........ 
                  : Yellow Melee, AOE Hostile Spell, Hostile Spell
 Attributes       : ......x. ........ ........ .......x   ........ ........ ........ ....x... 
@@ -5309,7 +5311,7 @@ School           : Physical
 Range            : 100 yards
 Duration         : 6 seconds
 Cooldown         : 60 seconds
-Artifact Power   : Id: 899, Max Rank: 1
+Artifact Power   : Id: 899, Max Rank: 1, Type: 18
 Attributes       : ........ ........ ........ .......x   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5340,7 +5342,7 @@ Duration         : 15 seconds
 Cooldown         : 60 seconds
 Stacks           : 3 initial, 3 maximum
 Proc Chance      : 100%
-Artifact Power   : Id: 291, Max Rank: 1
+Artifact Power   : Id: 291, Max Rank: 1, Type: 18
 Proc Flags       : ........ ........ x....... ........ 
                  : Hostile Spell
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5469,7 +5471,7 @@ Cast Time        : 2 seconds
 GCD              : 1.5 seconds
 Duration         : 6 seconds
 Cooldown         : 45 seconds
-Artifact Power   : Id: 1102, Max Rank: 1
+Artifact Power   : Id: 1102, Max Rank: 1, Type: 18
 Affecting spells : Mastery: Deep Healing (77226 effect#1), Spiritwalker's Grace (79206 effect#1)
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 

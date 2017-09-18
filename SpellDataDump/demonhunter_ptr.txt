@@ -1,4 +1,4 @@
-SimulationCraft 725-02 for World of Warcraft 7.3.0 PTR (wow build 24539, git build 3a6919f)
+SimulationCraft 730-02 for World of Warcraft 7.3.0 Live (wow build 24931)
 
 Name             : Dual Wield (Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
@@ -1126,7 +1126,7 @@ GCD              : 1.5 seconds
 Velocity         : 3 yards/sec
 Duration         : 3 seconds
 Cooldown         : 60 seconds
-Artifact Power   : Id: 1010, Max Rank: 1
+Artifact Power   : Id: 1010, Max Rank: 1, Type: 18
 Affecting spells : Metamorphosis (162264 effect#7), Havoc Demon Hunter (212612 effect#1), Vengeance Demon Hunter (212613 effect#3)
 Triggered by     : Push Active Ability to Bar (225863)
 Attributes       : ........ ........ ........ .......x   ........ ........ ........ ........ 
@@ -1145,7 +1145,7 @@ Name             : Rage of the Illidari (id=201472) [Spell Family (107), Passive
 Class            : Demon Hunter
 School           : Physical
 Proc Chance      : 101%
-Artifact Power   : Id: 1015, Index: 2, Max Rank: 1
+Artifact Power   : Id: 1015, Index: 2, Max Rank: 1, Type: 1
 Proc Flags       : ....x... ....x... x....... ........ 
                  : Yellow Melee, AOE Hostile Spell, Hostile Spell
 Attributes       : ......x. ........ ........ .......x   ........ ........ ........ ....x... 
@@ -1164,7 +1164,7 @@ Name             : Anguish of the Deceiver (id=201473) [Spell Family (107), Pass
 Class            : Demon Hunter
 School           : Chaos
 Proc Chance      : 101%
-Artifact Power   : Id: 1016, Index: 3, Max Rank: 1
+Artifact Power   : Id: 1016, Index: 3, Max Rank: 1, Type: 1
 Proc Flags       : ........ ........ x....... ........ 
                  : Hostile Spell
 Attributes       : ......x. ........ ........ .......x   ........ ........ ........ ....x... 
@@ -2106,7 +2106,7 @@ Range            : 5 yards
 GCD              : 1.5 seconds
 Duration         : 3 seconds
 Cooldown         : 40 seconds
-Artifact Power   : Id: 1096, Max Rank: 1
+Artifact Power   : Id: 1096, Max Rank: 1, Type: 18
 Affecting spells : Metamorphosis (162264 effect#7), Havoc Demon Hunter (212612 effect#1), Vengeance Demon Hunter (212613 effect#1), 
 Triggered by     : Push Active Ability to Bar (225864)
 Attributes       : ........ ........ ..x..... .......x   ........ .x...... ........ ........ 
@@ -3038,7 +3038,7 @@ Name             : Fiery Demise (id=212817) [Spell Family (107), Passive]
 Class            : Demon Hunter
 School           : Physical
 Proc Chance      : 101%
-Artifact Power   : Id: 1231, Index: 9, Max Rank: 8, Values: [ 10, 20, 30, 40, 50, 60, 70, 80 ]
+Artifact Power   : Id: 1231, Index: 9, Max Rank: 8, Type: 32, Values: [ 10, 20, 30, 40, 50, 60, 70, 80 ]
 Proc Flags       : ....x... ....x... x....... ........ 
                  : Yellow Melee, AOE Hostile Spell, Hostile Spell
 Attributes       : ......x. ........ ........ .......x   ........ ........ ........ ....x... 
