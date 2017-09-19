@@ -2576,6 +2576,8 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
       {
         p() -> ability.blood_plague -> set_target( s -> target );
         p() -> ability.blood_plague -> execute();
+        
+        p() -> buffs.skullflowers_haemostasis -> trigger()
       }
     }
   };
@@ -3888,7 +3890,7 @@ struct blood_boil_t : public death_knight_spell_t
 
     aoe = -1;
     cooldown -> hasted = true;
-    base_multiplier *= 1.0 + p -> spec.blood_death_knight -> effectN( 5 ).percent();
+    base_multiplier *= 1.0 + p -> spec.blood_death_knight -> effectN( 6 ).percent();
   }
 
   void execute() override
@@ -3900,8 +3902,6 @@ struct blood_boil_t : public death_knight_spell_t
       p() -> pets.dancing_rune_weapon -> ability.blood_boil -> set_target( execute_state -> target );
       p() -> pets.dancing_rune_weapon -> ability.blood_boil -> execute();
     }
-
-    p() -> buffs.skullflowers_haemostasis -> trigger();
   }
   
   void impact( action_state_t* state ) override		
@@ -3910,6 +3910,8 @@ struct blood_boil_t : public death_knight_spell_t
  		
     if ( result_is_hit( state -> result ) )		
     {		
+      p() -> buffs.skullflowers_haemostasis -> trigger();
+
       p() -> apply_diseases( state, DISEASE_BLOOD_PLAGUE );		
     }		
   }
@@ -7670,7 +7672,7 @@ void death_knight_t::init_spells()
   artifact.mouth_of_hell       = find_artifact_spell( "Mouth of Hell" );
   artifact.the_hungering_maw   = find_artifact_spell( "The Hungering Maw" );
   // 7.2
-  artifact.fortitude_of_the_ebon_blade = find_artifact_spell("Fortitude of the Ebon Blade" );
+  artifact.fortitude_of_the_ebon_blade = find_artifact_spell( "Fortitude of the Ebon Blade" );
   artifact.carrion_feast       = find_artifact_spell( "Carrion Feast" );
   artifact.vampiric_aura       = find_artifact_spell( "Vampiric Aura" );
   artifact.souldrinker         = find_artifact_spell( "Souldrinker" );
@@ -8584,6 +8586,7 @@ double death_knight_t::composite_attribute_multiplier( attribute_e attr ) const
 
     m *= 1.0 + artifact.ferocity_of_the_ebon_blade.data().effectN( 2 ).percent();
     m *= 1.0 + artifact.cunning_of_the_ebon_blade.data().effectN( 2 ).percent();
+    m *= 1.0 + artifact.fortitude_of_the_ebon_blade.data().effectN( 3 ).percent();
   }
 
   return m;
@@ -8698,11 +8701,14 @@ double death_knight_t::composite_player_multiplier( school_e school ) const
     m *= 1.0 + artifact.cold_as_ice.percent();
   }
 
+  // Artifact bonuses
   m *= 1.0 + artifact.soulbiter.percent();
   m *= 1.0 + artifact.fleshsearer.percent();
+  
   m *= 1.0 + artifact.ferocity_of_the_ebon_blade.percent();
   m *= 1.0 + artifact.cunning_of_the_ebon_blade.percent();
-
+  m *= 1.0 + artifact.fortitude_of_the_ebon_blade.percent();
+  
   if ( dbc::is_school( school, SCHOOL_PHYSICAL ) )
   {
     m *= 1.0 + artifact.sanguinary_affinity.percent();
