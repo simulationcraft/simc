@@ -8560,6 +8560,8 @@ double death_knight_t::composite_armor_multiplier() const
 
   a *= 1.0 + artifact.the_hungering_maw.percent();
 
+  a *= 1.0 + artifact.fortitude_of_the_ebon_blade.data().effectN( 2 );
+
   return a;
 }
 
