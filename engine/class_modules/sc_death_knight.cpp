@@ -2576,9 +2576,10 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
       {
         p() -> ability.blood_plague -> set_target( s -> target );
         p() -> ability.blood_plague -> execute();
-        
-        p() -> buffs.skullflowers_haemostasis -> trigger()
-      }
+
+		p() -> o() -> buffs.skullflowers_haemostasis -> trigger();
+
+  	  }
     }
   };
 
@@ -8560,7 +8561,7 @@ double death_knight_t::composite_armor_multiplier() const
 
   a *= 1.0 + artifact.the_hungering_maw.percent();
 
-  a *= 1.0 + artifact.fortitude_of_the_ebon_blade.data().effectN( 2 );
+  a *= 1.0 + artifact.fortitude_of_the_ebon_blade.data().effectN( 2 ).percent();
 
   return a;
 }
