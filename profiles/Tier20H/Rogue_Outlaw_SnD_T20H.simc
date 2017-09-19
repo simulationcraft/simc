@@ -100,14 +100,14 @@ legs=fanged_slayers_legguards,id=147173,bonus_id=1497/3562
 feet=felscape_pathfinders,id=147030,bonus_id=1497/3562
 finger1=jeweled_signet_of_melandrus,id=134542,bonus_id=3418/1567,enchant=binding_of_versatility
 finger2=insignia_of_ravenholdt,id=137049,bonus_id=3570,gems=150versatility,enchant=binding_of_versatility
-trinket1=nightblooming_frond,id=140802,bonus_id=3517
-trinket2=convergence_of_fates,id=140806,bonus_id=3517
+trinket1=nightblooming_frond,id=140802,bonus_id=3516/1487
+trinket2=convergence_of_fates,id=140806,bonus_id=3516/1487
 main_hand=the_dreadblades,id=128872,bonus_id=742,gem_id=151189/147100/147114,relic_id=1497:3562/1497:3562/1497:3562
 off_hand=the_dreadblades,id=134552
 
 # Gear Summary
-# gear_ilvl=924.50
-# gear_agility=26347
+# gear_ilvl=923.88
+# gear_agility=26169
 # gear_stamina=41044
 # gear_crit_rating=8314
 # gear_haste_rating=6044

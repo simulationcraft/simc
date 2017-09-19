@@ -116,13 +116,13 @@ feet=felscape_pathfinders,id=147030,bonus_id=1512/3563
 finger1=yathaes_thumb_ring,id=147021,bonus_id=1512/3563,enchant=binding_of_versatility
 finger2=band_of_rescinded_truths,id=147194,bonus_id=1512/3563,enchant=binding_of_versatility
 trinket1=specter_of_betrayal,id=151190,bonus_id=1522/3563
-trinket2=convergence_of_fates,id=140806,bonus_id=3519
+trinket2=convergence_of_fates,id=140806,bonus_id=3518/1502
 main_hand=fangs_of_the_devourer,id=128476,bonus_id=743,gem_id=147084/147111/147084,relic_id=1512:3563/1522:3563/1512:3563
 off_hand=fangs_of_the_devourer,id=128479,gem_id=0/0/0/0
 
 # Gear Summary
-# gear_ilvl=939.88
-# gear_agility=31356
+# gear_ilvl=939.56
+# gear_agility=31254
 # gear_stamina=46115
 # gear_crit_rating=7017
 # gear_haste_rating=2825
