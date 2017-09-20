@@ -13,7 +13,6 @@
 // - Fix APL
 // - Support legendaries
 // - Overall damage may still be lower than live, may need to investigate further
-// - Consumption damage is really low and doesn't seem to generate healing
 // - Refactor Blooddrinker so it's able to critically tick on damage
 // - Probably a bunch of other things as well
 // - Add T20 bonuses
