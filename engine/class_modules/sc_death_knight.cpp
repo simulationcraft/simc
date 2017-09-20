@@ -2578,7 +2578,7 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
         p() -> ability.blood_plague -> set_target( s -> target );
         p() -> ability.blood_plague -> execute();
 
-		    p() -> o() -> buffs.skullflowers_haemostasis -> trigger();
+        p() -> o() -> buffs.skullflowers_haemostasis -> trigger();
   	  }
     }
   };
@@ -3912,10 +3912,10 @@ struct blood_boil_t : public death_knight_spell_t
 
     if ( p() -> buffs.dancing_rune_weapon -> check() )
     {
-      for ( unsigned int i = 0; i < p() -> artifact.mouth_of_hell.rank() ? 2 : 1 ; i++ )
+      for ( unsigned int i = 0 ; i < 1 + p() -> artifact.mouth_of_hell.rank() ; i++ )
       {
-        p() -> pets.dancing_rune_weapon[i] -> ability.blood_boil -> set_target( execute_state -> target );
-        p() -> pets.dancing_rune_weapon[i] -> ability.blood_boil -> execute();
+        p() -> pets.dancing_rune_weapon[ i ] -> ability.blood_boil -> set_target( execute_state -> target );
+        p() -> pets.dancing_rune_weapon[ i ] -> ability.blood_boil -> execute();
       }
     }
   }
@@ -4495,10 +4495,10 @@ struct deaths_caress_t : public death_knight_spell_t
 
     if ( p() -> buffs.dancing_rune_weapon -> check() )
     {
-      for (unsigned int i = 0; i < p() -> artifact.mouth_of_hell.rank() ? 2 : 1 ; i++ )
+      for ( unsigned int i = 0 ; i < 1 + p() -> artifact.mouth_of_hell.rank() ; i++ )
       {
-        p() -> pets.dancing_rune_weapon[i] -> ability.deaths_caress -> set_target( execute_state -> target );
-        p() -> pets.dancing_rune_weapon[i] -> ability.deaths_caress -> execute();
+        p() -> pets.dancing_rune_weapon[ i ] -> ability.deaths_caress -> set_target( execute_state -> target );
+        p() -> pets.dancing_rune_weapon[ i ] -> ability.deaths_caress -> execute();
       }
     }
   }
@@ -4773,10 +4773,10 @@ struct death_strike_t : public death_knight_melee_attack_t
 
     if ( p() -> buffs.dancing_rune_weapon -> check() )
     {
-      for ( unsigned int i = 0; i < p() -> artifact.mouth_of_hell.rank() ? 2 : 1 ; i++ )
+      for ( unsigned int i = 0 ; i < 1 + p() -> artifact.mouth_of_hell.rank() ; i++ )
       { 
-        p() -> pets.dancing_rune_weapon[i] -> ability.death_strike -> set_target( execute_state -> target );
-        p() -> pets.dancing_rune_weapon[i] -> ability.death_strike -> execute();
+        p() -> pets.dancing_rune_weapon[ i ] -> ability.death_strike -> set_target( execute_state -> target );
+        p() -> pets.dancing_rune_weapon[ i ] -> ability.death_strike -> execute();
       }
     }
 
@@ -5201,10 +5201,10 @@ struct heart_strike_t : public death_knight_melee_attack_t
 
     if ( p() -> buffs.dancing_rune_weapon -> check() )
     {
-      for ( unsigned int i = 0 ; i < p() -> artifact.mouth_of_hell.rank() ? 2 : 1 ; i++ )
+      for ( unsigned int i = 0 ; i < 1 + p() -> artifact.mouth_of_hell.rank() ; i++ )
       {  
-        p() -> pets.dancing_rune_weapon[i] -> ability.heart_strike -> set_target( execute_state -> target );
-        p() -> pets.dancing_rune_weapon[i] -> ability.heart_strike -> execute();
+        p() -> pets.dancing_rune_weapon[ i ] -> ability.heart_strike -> set_target( execute_state -> target );
+        p() -> pets.dancing_rune_weapon[ i ] -> ability.heart_strike -> execute();
       }
     }
   }
@@ -5227,10 +5227,10 @@ struct consumption_t : public death_knight_melee_attack_t
 
     if ( p() -> buffs.dancing_rune_weapon -> check() )
     {
-      for ( int i = 0 ; i < p() -> artifact.mouth_of_hell.rank() ? 2 : 1 ; i++ )
+      for ( unsigned int i = 0 ; i < 1 + p() -> artifact.mouth_of_hell.rank() ; i++ )
       {  
-        p() -> pets.dancing_rune_weapon[i] -> ability.consumption -> set_target( execute_state -> target );
-        p() -> pets.dancing_rune_weapon[i] -> ability.consumption -> execute();
+        p() -> pets.dancing_rune_weapon[ i ] -> ability.consumption -> set_target( execute_state -> target );
+        p() -> pets.dancing_rune_weapon[ i ] -> ability.consumption -> execute();
       }
     }
   }
@@ -5490,10 +5490,10 @@ struct marrowrend_t : public death_knight_melee_attack_t
 
     if ( p() -> buffs.dancing_rune_weapon -> check() )
     {
-      for ( unsigned int i = 0 ; i < p() -> artifact.mouth_of_hell.rank() ? 2 : 1 ; i++ )
+      for ( unsigned int i = 0 ; i < 1 + p() -> artifact.mouth_of_hell.rank() ; i++ )
       {  
-        p() -> pets.dancing_rune_weapon[i] -> ability.marrowrend -> set_target( execute_state -> target );
-        p() -> pets.dancing_rune_weapon[i] -> ability.marrowrend -> execute();
+        p() -> pets.dancing_rune_weapon[ i ] -> ability.marrowrend -> set_target( execute_state -> target );
+        p() -> pets.dancing_rune_weapon[ i ] -> ability.marrowrend -> execute();
       }
 
       if ( p() -> artifact.mouth_of_hell.rank() )
