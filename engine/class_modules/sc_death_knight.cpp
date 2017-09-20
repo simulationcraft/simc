@@ -19,6 +19,8 @@
 // - Add T20 bonuses
 // - T21 buff you gain after DRW's expiration, SpellID is : 253381 for the buff, 251877 for the set bonus
 //   It is implemented on PTR, but triggered really weirdly and doesn't match tooltip
+// - Make Rapid Decomposition tick 10 times per DnD cast (current is 9)
+// - Make DnD tick 13 times with Rapid Decomp (current is 12)
 // Frost
 // - T21 4P Damage proc : Freezing Death, spellID : 253590, set bonus ID : 251875
 //   really low damage atm (2017-8-12), could only be placeholder
@@ -2579,7 +2581,7 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
         p() -> ability.blood_plague -> execute();
 
         p() -> o() -> buffs.skullflowers_haemostasis -> trigger();
-  	  }
+      }
     }
   };
 
@@ -2645,7 +2647,7 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
     drw_spell_t*  blood_plague;
     drw_spell_t*  blood_boil;
     drw_spell_t*  deaths_caress;
-        
+
     drw_attack_t* death_strike;
     drw_attack_t* heart_strike;
     drw_attack_t* marrowrend;
