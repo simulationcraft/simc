@@ -12,13 +12,14 @@
 // Blood
 // - Fix APL
 // - Support legendaries
-// - Overall damage per spell are really low compared to live, could be some damage modifiers missing (~ 20% missing)
-// - Consumption damage is really low (even compared to the 20% missing) and doesn't seem to generate healing
+// - Overall damage may still be lower than live, may need to investigate further
 // - Refactor Blooddrinker so it's able to critically tick on damage
 // - Probably a bunch of other things as well
 // - Add T20 bonuses
 // - T21 buff you gain after DRW's expiration, SpellID is : 253381 for the buff, 251877 for the set bonus
 //   It is implemented on PTR, but triggered really weirdly and doesn't match tooltip
+// - Make Rapid Decomposition tick 10 times per DnD cast (current is 9)
+// - Make DnD tick 13 times with Rapid Decomp (current is 12)
 // Frost
 // - T21 4P Damage proc : Freezing Death, spellID : 253590, set bonus ID : 251875
 //   really low damage atm (2017-8-12), could only be placeholder
@@ -771,7 +772,7 @@ public:
   {
     std::array< pets::death_knight_pet_t*, 8 > army_ghoul;
     std::array< pets::death_knight_pet_t*, 8 > apocalypse_ghoul;
-    pets::dancing_rune_weapon_pet_t* dancing_rune_weapon;
+    std::array< pets::dancing_rune_weapon_pet_t*, 2 > dancing_rune_weapon;
     pets::dt_pet_t* ghoul_pet; // Covers both Ghoul and Sludge Belcher
     pets::death_knight_pet_t* gargoyle;
     pets::valkyr_pet_t* dark_arbiter;
@@ -851,6 +852,7 @@ public:
   {
     range::fill( pets.army_ghoul, nullptr );
     range::fill( pets.apocalypse_ghoul, nullptr );
+    range::fill( pets.dancing_rune_weapon, nullptr );
 
     cooldown.antimagic_shell = get_cooldown( "antimagic_shell" );
     cooldown.army_of_the_dead = get_cooldown( "army_of_the_dead" );
@@ -2576,6 +2578,8 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
       {
         p() -> ability.blood_plague -> set_target( s -> target );
         p() -> ability.blood_plague -> execute();
+
+        p() -> o() -> buffs.skullflowers_haemostasis -> trigger();
       }
     }
   };
@@ -2627,6 +2631,16 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
     }
   };
 
+  struct consumption_t : public drw_attack_t
+  {
+    consumption_t( dancing_rune_weapon_pet_t* p ) :
+      drw_attack_t( p, "consumption", p -> o() -> artifact.consumption )
+    {
+      weapon = &( p -> main_hand_weapon );
+      aoe = -1;
+    }
+  };
+
   struct abilities_t
   {
     drw_spell_t*  blood_plague;
@@ -2636,6 +2650,7 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
     drw_attack_t* death_strike;
     drw_attack_t* heart_strike;
     drw_attack_t* marrowrend;
+    drw_attack_t* consumption;
   } ability;
 
   dancing_rune_weapon_pet_t( death_knight_t* owner ) :
@@ -2664,6 +2679,7 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
     ability.death_strike  = new death_strike_t ( this );
     ability.heart_strike  = new heart_strike_t ( this );
     ability.marrowrend    = new marrowrend_t   ( this );
+    ability.consumption   = new consumption_t  ( this );
 
     type = PLAYER_GUARDIAN; _spec = SPEC_NONE;
   }
@@ -2703,24 +2719,35 @@ struct death_knight_action_t : public Base
       this -> base_costs[ RESOURCE_RUNIC_POWER ] = 0;
     }
 
-    if ( this -> data().affected_by( p -> spec.unholy_death_knight -> effectN( 1 ) ) )
+    // Added specialization checks because of shared abilities like death and decay or death strike
+    if ( this -> data().affected_by( p -> spec.unholy_death_knight -> effectN( 1 ) ) && p -> specialization() == DEATH_KNIGHT_UNHOLY )
     {
       this -> base_dd_multiplier *= 1.0 + p -> spec.unholy_death_knight -> effectN( 1 ).percent();
     }
 
-    if ( this -> data().affected_by( p -> spec.unholy_death_knight -> effectN( 2 ) ) )
+    if ( this -> data().affected_by( p -> spec.unholy_death_knight -> effectN( 2 ) ) && p -> specialization() == DEATH_KNIGHT_UNHOLY )
     {
       this -> base_td_multiplier *= 1.0 + p -> spec.unholy_death_knight -> effectN( 2 ).percent();
     }
 
-    if ( this -> data().affected_by( p -> spec.frost_death_knight -> effectN( 1 ) ) )
+    if ( this -> data().affected_by( p -> spec.frost_death_knight -> effectN( 1 ) ) && p -> specialization() == DEATH_KNIGHT_FROST )
     {
       this -> base_dd_multiplier *= 1.0 + p -> spec.frost_death_knight -> effectN( 1 ).percent();
     }
 
-    if ( this -> data().affected_by( p -> spec.frost_death_knight -> effectN( 2 ) ) )
+    if ( this -> data().affected_by( p -> spec.frost_death_knight -> effectN( 2 ) ) && p -> specialization() == DEATH_KNIGHT_FROST )
     {
       this -> base_td_multiplier *= 1.0 + p -> spec.frost_death_knight -> effectN( 2 ).percent();
+    }
+
+    if ( this -> data().affected_by( p -> spec.blood_death_knight -> effectN( 1 ) ) && p -> specialization() == DEATH_KNIGHT_BLOOD )
+    {
+      this -> base_dd_multiplier *= 1.0 + p -> spec.blood_death_knight -> effectN( 1 ).percent();
+    }
+
+    if ( this -> data().affected_by( p -> spec.blood_death_knight -> effectN( 2 ) ) && p -> specialization() == DEATH_KNIGHT_BLOOD )
+    {
+      this -> base_td_multiplier *= 1.0 + p -> spec.blood_death_knight -> effectN( 2 ).percent();
     }
   }
 
@@ -3888,7 +3915,7 @@ struct blood_boil_t : public death_knight_spell_t
 
     aoe = -1;
     cooldown -> hasted = true;
-    base_multiplier *= 1.0 + p -> spec.blood_death_knight -> effectN( 5 ).percent();
+    base_multiplier *= 1.0 + p -> spec.blood_death_knight -> effectN( 6 ).percent();
   }
 
   void execute() override
@@ -3897,11 +3924,12 @@ struct blood_boil_t : public death_knight_spell_t
 
     if ( p() -> buffs.dancing_rune_weapon -> check() )
     {
-      p() -> pets.dancing_rune_weapon -> ability.blood_boil -> set_target( execute_state -> target );
-      p() -> pets.dancing_rune_weapon -> ability.blood_boil -> execute();
+      for ( unsigned int i = 0 ; i < 1 + p() -> artifact.mouth_of_hell.rank() ; i++ )
+      {
+        p() -> pets.dancing_rune_weapon[ i ] -> ability.blood_boil -> set_target( execute_state -> target );
+        p() -> pets.dancing_rune_weapon[ i ] -> ability.blood_boil -> execute();
+      }
     }
-
-    p() -> buffs.skullflowers_haemostasis -> trigger();
   }
   
   void impact( action_state_t* state ) override		
@@ -3910,6 +3938,8 @@ struct blood_boil_t : public death_knight_spell_t
  		
     if ( result_is_hit( state -> result ) )		
     {		
+      p() -> buffs.skullflowers_haemostasis -> trigger();
+
       p() -> apply_diseases( state, DISEASE_BLOOD_PLAGUE );		
     }		
   }
@@ -4174,7 +4204,10 @@ struct dancing_rune_weapon_t : public death_knight_spell_t
     death_knight_spell_t::execute();
 
     p() -> buffs.dancing_rune_weapon -> trigger();
-    p() -> pets.dancing_rune_weapon -> summon( data().duration() );
+    p() -> pets.dancing_rune_weapon[0] -> summon( data().duration() );
+    if ( p() -> artifact.mouth_of_hell.rank() )
+     p() -> pets.dancing_rune_weapon[1] -> summon( data().duration() );
+
   }
 };
 
@@ -4474,8 +4507,11 @@ struct deaths_caress_t : public death_knight_spell_t
 
     if ( p() -> buffs.dancing_rune_weapon -> check() )
     {
-      p() -> pets.dancing_rune_weapon -> ability.deaths_caress -> set_target( execute_state -> target );
-      p() -> pets.dancing_rune_weapon -> ability.deaths_caress -> execute();
+      for ( unsigned int i = 0 ; i < 1 + p() -> artifact.mouth_of_hell.rank() ; i++ )
+      {
+        p() -> pets.dancing_rune_weapon[ i ] -> ability.deaths_caress -> set_target( execute_state -> target );
+        p() -> pets.dancing_rune_weapon[ i ] -> ability.deaths_caress -> execute();
+      }
     }
   }
 };
@@ -4749,8 +4785,11 @@ struct death_strike_t : public death_knight_melee_attack_t
 
     if ( p() -> buffs.dancing_rune_weapon -> check() )
     {
-      p() -> pets.dancing_rune_weapon -> ability.death_strike -> set_target( execute_state -> target );
-      p() -> pets.dancing_rune_weapon -> ability.death_strike -> execute();
+      for ( unsigned int i = 0 ; i < 1 + p() -> artifact.mouth_of_hell.rank() ; i++ )
+      { 
+        p() -> pets.dancing_rune_weapon[ i ] -> ability.death_strike -> set_target( execute_state -> target );
+        p() -> pets.dancing_rune_weapon[ i ] -> ability.death_strike -> execute();
+      }
     }
 
     if ( result_is_hit( execute_state -> result ) )
@@ -5174,22 +5213,39 @@ struct heart_strike_t : public death_knight_melee_attack_t
 
     if ( p() -> buffs.dancing_rune_weapon -> check() )
     {
-      p() -> pets.dancing_rune_weapon -> ability.heart_strike -> set_target( execute_state -> target );
-      p() -> pets.dancing_rune_weapon -> ability.heart_strike -> execute();
+      for ( unsigned int i = 0 ; i < 1 + p() -> artifact.mouth_of_hell.rank() ; i++ )
+      {  
+        p() -> pets.dancing_rune_weapon[ i ] -> ability.heart_strike -> set_target( execute_state -> target );
+        p() -> pets.dancing_rune_weapon[ i ] -> ability.heart_strike -> execute();
+      }
     }
   }
 };
 
 // Consumption
 
-struct consumption_t : public death_knight_spell_t
+struct consumption_t : public death_knight_melee_attack_t
 {
   consumption_t( death_knight_t* p, const std::string& options_str )
-    : death_knight_spell_t( "consumption", p, p -> artifact.consumption )
+    : death_knight_melee_attack_t( "consumption", p, p -> artifact.consumption )
     {
       parse_options( options_str );
       aoe = -1;
     }
+
+  void execute() override
+  {
+    death_knight_melee_attack_t::execute();
+
+    if ( p() -> buffs.dancing_rune_weapon -> check() )
+    {
+      for ( unsigned int i = 0 ; i < 1 + p() -> artifact.mouth_of_hell.rank() ; i++ )
+      {  
+        p() -> pets.dancing_rune_weapon[ i ] -> ability.consumption -> set_target( execute_state -> target );
+        p() -> pets.dancing_rune_weapon[ i ] -> ability.consumption -> execute();
+      }
+    }
+  }
 };
 
 // Horn of Winter ===========================================================
@@ -5439,22 +5495,24 @@ struct marrowrend_t : public death_knight_melee_attack_t
     int base = data().effectN( 3 ).base_value();
     int amount = base;
 
+    if ( rng().roll( p() -> artifact.rattling_bones.percent() ) && p() -> artifact.rattling_bones.rank() )
+    {
+      amount += 1;
+    }
+
     if ( p() -> buffs.dancing_rune_weapon -> check() )
     {
-      p() -> pets.dancing_rune_weapon -> ability.marrowrend -> set_target( execute_state -> target );
-      p() -> pets.dancing_rune_weapon -> ability.marrowrend -> execute();
-
-      // gain an extra charge for each DRW
-      if ( rng().roll( p() -> artifact.rattling_bones.percent() ) &&  p() -> artifact.rattling_bones.rank())
-      {
-        amount += 2;
+      for ( unsigned int i = 0 ; i < 1 + p() -> artifact.mouth_of_hell.rank() ; i++ )
+      {  
+        p() -> pets.dancing_rune_weapon[ i ] -> ability.marrowrend -> set_target( execute_state -> target );
+        p() -> pets.dancing_rune_weapon[ i ] -> ability.marrowrend -> execute();
       }
 
       if ( p() -> artifact.mouth_of_hell.rank() )
       {
-        // while DRW is up your marrowrend gens an extra charge
-        // (((base gain + 1 extra from MoH) * 2 for each DRW) + 1 for your actiul weapon)
-        amount += (((base + 1) * 2) + 1);
+        // while DRW is up your marrowrend generates an extra charge and you have a total of 3 weapons casting Marrowrend
+        // It basically makes DRW'd Marrowrend always generate the maximum of charges
+        amount = 10;
       }
       else
       {
@@ -5462,10 +5520,7 @@ struct marrowrend_t : public death_knight_melee_attack_t
       }
     }
 
-    if ( rng().roll( p() -> artifact.rattling_bones.percent() ) &&  p() -> artifact.rattling_bones.rank())
-    {
-      amount += 1;
-    }
+    
     p() -> buffs.bone_shield -> trigger( amount );
 
     if ( execute_state -> result_amount > 0 && unholy_coil )
@@ -7382,7 +7437,10 @@ void death_knight_t::create_pets()
 
   if ( find_action( "dancing_rune_weapon" ) && specialization() == DEATH_KNIGHT_BLOOD )
   {
-    pets.dancing_rune_weapon = new pets::dancing_rune_weapon_pet_t( this );
+    // Base weapon
+    pets.dancing_rune_weapon[ 0 ] = new pets::dancing_rune_weapon_pet_t( this );
+    // Mouth of Hell weapon
+    pets.dancing_rune_weapon[ 1 ] = new pets::dancing_rune_weapon_pet_t( this );
   }
 }
 
@@ -7670,7 +7728,7 @@ void death_knight_t::init_spells()
   artifact.mouth_of_hell       = find_artifact_spell( "Mouth of Hell" );
   artifact.the_hungering_maw   = find_artifact_spell( "The Hungering Maw" );
   // 7.2
-  artifact.fortitude_of_the_ebon_blade = find_artifact_spell("Fortitude of the Ebon Blade" );
+  artifact.fortitude_of_the_ebon_blade = find_artifact_spell( "Fortitude of the Ebon Blade" );
   artifact.carrion_feast       = find_artifact_spell( "Carrion Feast" );
   artifact.vampiric_aura       = find_artifact_spell( "Vampiric Aura" );
   artifact.souldrinker         = find_artifact_spell( "Souldrinker" );
@@ -8558,6 +8616,8 @@ double death_knight_t::composite_armor_multiplier() const
 
   a *= 1.0 + artifact.the_hungering_maw.percent();
 
+  a *= 1.0 + artifact.fortitude_of_the_ebon_blade.data().effectN( 2 ).percent();
+
   return a;
 }
 
@@ -8584,6 +8644,7 @@ double death_knight_t::composite_attribute_multiplier( attribute_e attr ) const
 
     m *= 1.0 + artifact.ferocity_of_the_ebon_blade.data().effectN( 2 ).percent();
     m *= 1.0 + artifact.cunning_of_the_ebon_blade.data().effectN( 2 ).percent();
+    m *= 1.0 + artifact.fortitude_of_the_ebon_blade.data().effectN( 3 ).percent();
   }
 
   return m;
@@ -8698,11 +8759,14 @@ double death_knight_t::composite_player_multiplier( school_e school ) const
     m *= 1.0 + artifact.cold_as_ice.percent();
   }
 
+  // Artifact bonuses
   m *= 1.0 + artifact.soulbiter.percent();
   m *= 1.0 + artifact.fleshsearer.percent();
+  
   m *= 1.0 + artifact.ferocity_of_the_ebon_blade.percent();
   m *= 1.0 + artifact.cunning_of_the_ebon_blade.percent();
-
+  m *= 1.0 + artifact.fortitude_of_the_ebon_blade.percent();
+  
   if ( dbc::is_school( school, SCHOOL_PHYSICAL ) )
   {
     m *= 1.0 + artifact.sanguinary_affinity.percent();
@@ -9371,7 +9435,9 @@ struct skullflowers_haemostasis_t : public class_buff_cb_t<buff_t>
            .spell( e.trigger() )
            .default_value( e.trigger() -> effectN( 1 ).percent() )
            // Grab 1 second ICD from the driver
-           .cd( e.driver() -> internal_cooldown() );
+           // ICD isn't observed in game anymore and counters the application through DRW weapons
+           // .cd( e.driver() -> internal_cooldown() )
+		;
   }
 };
 
