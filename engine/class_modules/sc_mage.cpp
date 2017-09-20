@@ -4651,6 +4651,11 @@ struct ice_lance_t : public frost_mage_spell_t
       }
     }
 
+    if ( s -> chain_target == 2 && p() -> sets -> has_set_bonus( MAGE_FIRE, T20, B4 ) 
+                                && p() -> talents.splitting_ice -> ok() )
+    {
+      p() -> buffs.arctic_blast -> expire();
+    }
   }
 
   virtual double action_multiplier() const override
@@ -4659,7 +4664,7 @@ struct ice_lance_t : public frost_mage_spell_t
 
     am *= 1.0 + p() -> buffs.chain_reaction -> check_stack_value();
     am *= 1.0 + p() -> buffs.magtheridons_might -> check_stack_value();
-
+    am *= 1.0 + p() -> buffs.arctic_blast -> check_value();
     return am;
   }
 
