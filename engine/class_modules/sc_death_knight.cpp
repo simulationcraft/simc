@@ -771,7 +771,7 @@ public:
   {
     std::array< pets::death_knight_pet_t*, 8 > army_ghoul;
     std::array< pets::death_knight_pet_t*, 8 > apocalypse_ghoul;
-    pets::dancing_rune_weapon_pet_t* dancing_rune_weapon;
+    std::array< pets::dancing_rune_weapon_pet_t*, 2 > dancing_rune_weapon;
     pets::dt_pet_t* ghoul_pet; // Covers both Ghoul and Sludge Belcher
     pets::death_knight_pet_t* gargoyle;
     pets::valkyr_pet_t* dark_arbiter;
@@ -851,6 +851,7 @@ public:
   {
     range::fill( pets.army_ghoul, nullptr );
     range::fill( pets.apocalypse_ghoul, nullptr );
+    range::fill( pets.dancing_rune_weapon, nullptr );
 
     cooldown.antimagic_shell = get_cooldown( "antimagic_shell" );
     cooldown.army_of_the_dead = get_cooldown( "army_of_the_dead" );
@@ -2577,8 +2578,7 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
         p() -> ability.blood_plague -> set_target( s -> target );
         p() -> ability.blood_plague -> execute();
 
-		p() -> o() -> buffs.skullflowers_haemostasis -> trigger();
-
+		    p() -> o() -> buffs.skullflowers_haemostasis -> trigger();
   	  }
     }
   };
@@ -2630,15 +2630,26 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
     }
   };
 
+  struct consumption_t : public drw_attack_t
+  {
+    consumption_t( dancing_rune_weapon_pet_t* p ) :
+      drw_attack_t( p, "consumption", p -> o() -> artifact.consumption )
+    {
+      weapon = &( p -> main_hand_weapon );
+      aoe = -1;
+    }
+  };
+
   struct abilities_t
   {
     drw_spell_t*  blood_plague;
     drw_spell_t*  blood_boil;
     drw_spell_t*  deaths_caress;
-
+        
     drw_attack_t* death_strike;
     drw_attack_t* heart_strike;
     drw_attack_t* marrowrend;
+    drw_attack_t* consumption;
   } ability;
 
   dancing_rune_weapon_pet_t( death_knight_t* owner ) :
@@ -2667,6 +2678,7 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
     ability.death_strike  = new death_strike_t ( this );
     ability.heart_strike  = new heart_strike_t ( this );
     ability.marrowrend    = new marrowrend_t   ( this );
+    ability.consumption   = new consumption_t  ( this );
 
     type = PLAYER_GUARDIAN; _spec = SPEC_NONE;
   }
@@ -3900,8 +3912,11 @@ struct blood_boil_t : public death_knight_spell_t
 
     if ( p() -> buffs.dancing_rune_weapon -> check() )
     {
-      p() -> pets.dancing_rune_weapon -> ability.blood_boil -> set_target( execute_state -> target );
-      p() -> pets.dancing_rune_weapon -> ability.blood_boil -> execute();
+      for ( unsigned int i = 0; i < p() -> artifact.mouth_of_hell.rank() ? 2 : 1 ; i++ )
+      {
+        p() -> pets.dancing_rune_weapon[i] -> ability.blood_boil -> set_target( execute_state -> target );
+        p() -> pets.dancing_rune_weapon[i] -> ability.blood_boil -> execute();
+      }
     }
   }
   
@@ -4177,7 +4192,10 @@ struct dancing_rune_weapon_t : public death_knight_spell_t
     death_knight_spell_t::execute();
 
     p() -> buffs.dancing_rune_weapon -> trigger();
-    p() -> pets.dancing_rune_weapon -> summon( data().duration() );
+    p() -> pets.dancing_rune_weapon[0] -> summon( data().duration() );
+    if ( p() -> artifact.mouth_of_hell.rank() )
+     p() -> pets.dancing_rune_weapon[1] -> summon( data().duration() );
+
   }
 };
 
@@ -4477,8 +4495,11 @@ struct deaths_caress_t : public death_knight_spell_t
 
     if ( p() -> buffs.dancing_rune_weapon -> check() )
     {
-      p() -> pets.dancing_rune_weapon -> ability.deaths_caress -> set_target( execute_state -> target );
-      p() -> pets.dancing_rune_weapon -> ability.deaths_caress -> execute();
+      for (unsigned int i = 0; i < p() -> artifact.mouth_of_hell.rank() ? 2 : 1 ; i++ )
+      {
+        p() -> pets.dancing_rune_weapon[i] -> ability.deaths_caress -> set_target( execute_state -> target );
+        p() -> pets.dancing_rune_weapon[i] -> ability.deaths_caress -> execute();
+      }
     }
   }
 };
@@ -4752,8 +4773,11 @@ struct death_strike_t : public death_knight_melee_attack_t
 
     if ( p() -> buffs.dancing_rune_weapon -> check() )
     {
-      p() -> pets.dancing_rune_weapon -> ability.death_strike -> set_target( execute_state -> target );
-      p() -> pets.dancing_rune_weapon -> ability.death_strike -> execute();
+      for ( unsigned int i = 0; i < p() -> artifact.mouth_of_hell.rank() ? 2 : 1 ; i++ )
+      { 
+        p() -> pets.dancing_rune_weapon[i] -> ability.death_strike -> set_target( execute_state -> target );
+        p() -> pets.dancing_rune_weapon[i] -> ability.death_strike -> execute();
+      }
     }
 
     if ( result_is_hit( execute_state -> result ) )
@@ -5177,22 +5201,39 @@ struct heart_strike_t : public death_knight_melee_attack_t
 
     if ( p() -> buffs.dancing_rune_weapon -> check() )
     {
-      p() -> pets.dancing_rune_weapon -> ability.heart_strike -> set_target( execute_state -> target );
-      p() -> pets.dancing_rune_weapon -> ability.heart_strike -> execute();
+      for ( unsigned int i = 0 ; i < p() -> artifact.mouth_of_hell.rank() ? 2 : 1 ; i++ )
+      {  
+        p() -> pets.dancing_rune_weapon[i] -> ability.heart_strike -> set_target( execute_state -> target );
+        p() -> pets.dancing_rune_weapon[i] -> ability.heart_strike -> execute();
+      }
     }
   }
 };
 
 // Consumption
 
-struct consumption_t : public death_knight_spell_t
+struct consumption_t : public death_knight_melee_attack_t
 {
   consumption_t( death_knight_t* p, const std::string& options_str )
-    : death_knight_spell_t( "consumption", p, p -> artifact.consumption )
+    : death_knight_melee_attack_t( "consumption", p, p -> artifact.consumption )
     {
       parse_options( options_str );
       aoe = -1;
     }
+
+  void execute() override
+  {
+    death_knight_melee_attack_t::execute();
+
+    if ( p() -> buffs.dancing_rune_weapon -> check() )
+    {
+      for ( int i = 0 ; i < p() -> artifact.mouth_of_hell.rank() ? 2 : 1 ; i++ )
+      {  
+        p() -> pets.dancing_rune_weapon[i] -> ability.consumption -> set_target( execute_state -> target );
+        p() -> pets.dancing_rune_weapon[i] -> ability.consumption -> execute();
+      }
+    }
+  }
 };
 
 // Horn of Winter ===========================================================
@@ -5442,22 +5483,24 @@ struct marrowrend_t : public death_knight_melee_attack_t
     int base = data().effectN( 3 ).base_value();
     int amount = base;
 
+    if ( rng().roll( p() -> artifact.rattling_bones.percent() ) && p() -> artifact.rattling_bones.rank() )
+    {
+      amount += 1;
+    }
+
     if ( p() -> buffs.dancing_rune_weapon -> check() )
     {
-      p() -> pets.dancing_rune_weapon -> ability.marrowrend -> set_target( execute_state -> target );
-      p() -> pets.dancing_rune_weapon -> ability.marrowrend -> execute();
-
-      // gain an extra charge for each DRW
-      if ( rng().roll( p() -> artifact.rattling_bones.percent() ) &&  p() -> artifact.rattling_bones.rank())
-      {
-        amount += 2;
+      for ( unsigned int i = 0 ; i < p() -> artifact.mouth_of_hell.rank() ? 2 : 1 ; i++ )
+      {  
+        p() -> pets.dancing_rune_weapon[i] -> ability.marrowrend -> set_target( execute_state -> target );
+        p() -> pets.dancing_rune_weapon[i] -> ability.marrowrend -> execute();
       }
 
       if ( p() -> artifact.mouth_of_hell.rank() )
       {
-        // while DRW is up your marrowrend gens an extra charge
-        // (((base gain + 1 extra from MoH) * 2 for each DRW) + 1 for your actiul weapon)
-        amount += (((base + 1) * 2) + 1);
+        // while DRW is up your marrowrend generates an extra charge and you have a total of 3 weapons casting Marrowrend
+        // It basically makes DRW'd Marrowrend always generate the maximum of charges
+		    amount = 10;
       }
       else
       {
@@ -5465,10 +5508,7 @@ struct marrowrend_t : public death_knight_melee_attack_t
       }
     }
 
-    if ( rng().roll( p() -> artifact.rattling_bones.percent() ) &&  p() -> artifact.rattling_bones.rank())
-    {
-      amount += 1;
-    }
+    
     p() -> buffs.bone_shield -> trigger( amount );
 
     if ( execute_state -> result_amount > 0 && unholy_coil )
@@ -7385,7 +7425,10 @@ void death_knight_t::create_pets()
 
   if ( find_action( "dancing_rune_weapon" ) && specialization() == DEATH_KNIGHT_BLOOD )
   {
-    pets.dancing_rune_weapon = new pets::dancing_rune_weapon_pet_t( this );
+    // Base weapon
+    pets.dancing_rune_weapon[ 0 ] = new pets::dancing_rune_weapon_pet_t( this );
+    // Mouth of Hell weapon
+    pets.dancing_rune_weapon[ 1 ] = new pets::dancing_rune_weapon_pet_t( this );
   }
 }
 
@@ -9380,7 +9423,9 @@ struct skullflowers_haemostasis_t : public class_buff_cb_t<buff_t>
            .spell( e.trigger() )
            .default_value( e.trigger() -> effectN( 1 ).percent() )
            // Grab 1 second ICD from the driver
-           .cd( e.driver() -> internal_cooldown() );
+           // ICD isn't observed in game anymore and counters the application through DRW weapons
+           // .cd( e.driver() -> internal_cooldown() )
+		;
   }
 };
 
