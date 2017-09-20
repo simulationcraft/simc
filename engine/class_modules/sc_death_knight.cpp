@@ -12,8 +12,8 @@
 // Blood
 // - Fix APL
 // - Support legendaries
-// - Overall damage per spell are really low compared to live, could be some damage modifiers missing (~ 20% missing)
-// - Consumption damage is really low (even compared to the 20% missing) and doesn't seem to generate healing
+// - Overall damage may still be lower than live, may need to investigate further
+// - Consumption damage is really low and doesn't seem to generate healing
 // - Refactor Blooddrinker so it's able to critically tick on damage
 // - Probably a bunch of other things as well
 // - Add T20 bonuses
