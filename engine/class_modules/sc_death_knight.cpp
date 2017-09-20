@@ -2720,24 +2720,35 @@ struct death_knight_action_t : public Base
       this -> base_costs[ RESOURCE_RUNIC_POWER ] = 0;
     }
 
-    if ( this -> data().affected_by( p -> spec.unholy_death_knight -> effectN( 1 ) ) )
+    // Added specialization checks because of shared abilities like death and decay or death strike
+    if ( this -> data().affected_by( p -> spec.unholy_death_knight -> effectN( 1 ) ) && p -> specialization() == DEATH_KNIGHT_UNHOLY )
     {
       this -> base_dd_multiplier *= 1.0 + p -> spec.unholy_death_knight -> effectN( 1 ).percent();
     }
 
-    if ( this -> data().affected_by( p -> spec.unholy_death_knight -> effectN( 2 ) ) )
+    if ( this -> data().affected_by( p -> spec.unholy_death_knight -> effectN( 2 ) ) && p -> specialization() == DEATH_KNIGHT_UNHOLY )
     {
       this -> base_td_multiplier *= 1.0 + p -> spec.unholy_death_knight -> effectN( 2 ).percent();
     }
 
-    if ( this -> data().affected_by( p -> spec.frost_death_knight -> effectN( 1 ) ) )
+    if ( this -> data().affected_by( p -> spec.frost_death_knight -> effectN( 1 ) ) && p -> specialization() == DEATH_KNIGHT_FROST )
     {
       this -> base_dd_multiplier *= 1.0 + p -> spec.frost_death_knight -> effectN( 1 ).percent();
     }
 
-    if ( this -> data().affected_by( p -> spec.frost_death_knight -> effectN( 2 ) ) )
+    if ( this -> data().affected_by( p -> spec.frost_death_knight -> effectN( 2 ) ) && p -> specialization() == DEATH_KNIGHT_FROST )
     {
       this -> base_td_multiplier *= 1.0 + p -> spec.frost_death_knight -> effectN( 2 ).percent();
+    }
+
+    if ( this -> data().affected_by( p -> spec.blood_death_knight -> effectN( 1 ) ) && p -> specialization() == DEATH_KNIGHT_BLOOD )
+    {
+      this -> base_dd_multiplier *= 1.0 + p -> spec.blood_death_knight -> effectN( 1 ).percent();
+    }
+
+    if ( this -> data().affected_by( p -> spec.blood_death_knight -> effectN( 2 ) ) && p -> specialization() == DEATH_KNIGHT_BLOOD )
+    {
+      this -> base_td_multiplier *= 1.0 + p -> spec.blood_death_knight -> effectN( 2 ).percent();
     }
   }
 
@@ -5502,7 +5513,7 @@ struct marrowrend_t : public death_knight_melee_attack_t
       {
         // while DRW is up your marrowrend generates an extra charge and you have a total of 3 weapons casting Marrowrend
         // It basically makes DRW'd Marrowrend always generate the maximum of charges
-		    amount = 10;
+        amount = 10;
       }
       else
       {
