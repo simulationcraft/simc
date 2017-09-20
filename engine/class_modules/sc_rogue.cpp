@@ -7304,7 +7304,7 @@ void rogue_t::init_action_list()
         cds -> add_action( racial_actions[i] + ",if=debuff.vendetta.up" );
     }
     cds -> add_talent( this, "Marked for Death", "target_if=min:target.time_to_die,if=target.time_to_die<combo_points.deficit*1.5|(raid_event.adds.in>40&combo_points.deficit>=cp_max_spend)" );
-    cds -> add_action( this, "Vendetta", "if=!artifact.urge_to_kill.enabled|energy.deficit>=60-variable.energy_regen_combined" );
+    cds -> add_action( this, "Vendetta" );
     cds -> add_talent( this, "Exsanguinate", "if=!set_bonus.tier20_4pc&(prev_gcd.1.rupture&dot.rupture.remains>4+4*cp_max_spend&!stealthed.rogue|dot.garrote.pmultiplier>1&!cooldown.vanish.up&buff.subterfuge.up)" );
     cds -> add_talent( this, "Exsanguinate", "if=set_bonus.tier20_4pc&dot.garrote.remains>20&dot.rupture.remains>4+4*cp_max_spend" );
     cds -> add_action( this, "Vanish", "if=talent.nightstalker.enabled&combo_points>=cp_max_spend&!talent.exsanguinate.enabled&mantle_duration=0&((equipped.mantle_of_the_master_assassin&set_bonus.tier19_4pc)|((!equipped.mantle_of_the_master_assassin|!set_bonus.tier19_4pc)&(dot.rupture.refreshable|debuff.vendetta.up)))", "Nightstalker w/o Exsanguinate: Vanish Envenom if Mantle & T19_4PC, else Vanish Rupture" );
@@ -7312,7 +7312,7 @@ void rogue_t::init_action_list()
     cds -> add_action( this, "Vanish", "if=talent.subterfuge.enabled&equipped.mantle_of_the_master_assassin&(debuff.vendetta.up|target.time_to_die<10)&mantle_duration=0" );
     cds -> add_action( this, "Vanish", "if=talent.subterfuge.enabled&!equipped.mantle_of_the_master_assassin&!stealthed.rogue&dot.garrote.refreshable&((spell_targets.fan_of_knives<=3&combo_points.deficit>=1+spell_targets.fan_of_knives)|(spell_targets.fan_of_knives>=4&combo_points.deficit>=4))" );
     cds -> add_action( this, "Vanish", "if=talent.shadow_focus.enabled&variable.energy_time_to_max_combined>=2&combo_points.deficit>=4" );
-    cds -> add_talent( this, "Toxic Blade", "if=combo_points.deficit>=1+(mantle_duration>=gcd.remains+0.2)&dot.rupture.remains>8" );
+    cds -> add_talent( this, "Toxic Blade", "if=combo_points.deficit>=1+(mantle_duration>=gcd.remains+0.2)&dot.rupture.remains>8&cooldown.vendetta.remains>10" );
 
     // Finishers
     action_priority_list_t* finish = get_action_priority_list( "finish", "Finishers" );
@@ -7790,51 +7790,70 @@ expr_t* rogue_t::create_expression( action_t* a, const std::string& name_str )
     }
   }
   // time_to_sht.(1|2|3|4|5)
-  // x: time until we will do the xth attack since last ShT proc.
+  // x: returns time until we will do the xth attack since last ShT proc.
   if ( split.size() == 2 && util::str_compare_ci( split[ 0 ], "time_to_sht" ) )
   {
     return make_fn_expr( split[ 0 ], [ this, split ]() {
       timespan_t return_value = timespan_t::from_seconds( 0.0 );
-      if ( strtoul( split[ 1 ].c_str(), nullptr, 0 ) > shadow_techniques ) {
-        unsigned remaining_aa = 5 - shadow_techniques;
-        if (sim -> debug) sim -> out_debug.printf( "Inside the shadowtechniques handler, remaining_aa = %u", remaining_aa);
-        timespan_t mh_swing_time = main_hand_attack -> execute_time();
-        timespan_t oh_swing_time = off_hand_attack -> execute_time();
-        if (sim -> debug) {
-          sim -> out_debug.printf( "mh_swing_time, oh_swing_time: %.3f, %.3f", mh_swing_time.total_seconds(), oh_swing_time.total_seconds());
-        }
+      unsigned attack_x = strtoul( split[ 1 ].c_str(), nullptr, 0 );
+      if ( main_hand_attack && attack_x > shadow_techniques && attack_x <= 5 ) {
+        unsigned remaining_aa = attack_x - shadow_techniques;
+        if (sim -> debug) sim -> out_debug.printf( "Inside the shadowtechniques handler, attack_x = %u, remaining_aa = %u", attack_x, remaining_aa );
 
-        timespan_t mh_next_swing;
-        if (main_hand_attack -> execute_event == nullptr) {
+        timespan_t mh_swing_time = main_hand_attack -> execute_time();
+        if (sim -> debug) {
+          sim -> out_debug.printf( "mh_swing_time, %.3f", mh_swing_time.total_seconds() );
+        }
+        timespan_t mh_next_swing = timespan_t::from_seconds( 0.0 );
+        if ( main_hand_attack -> execute_event == nullptr ) {
           mh_next_swing = mh_swing_time;
         } else {
           mh_next_swing = main_hand_attack -> execute_event -> remains();
         }
-        if (sim -> debug) sim -> out_debug.printf( "Main hand next_swing in: %.3f", mh_next_swing.total_seconds());
+        if (sim -> debug) sim -> out_debug.printf( "Main hand next_swing in: %.3f", mh_next_swing.total_seconds() );
 
-        timespan_t oh_next_swing;
-        if (off_hand_attack -> execute_event == nullptr) {
-          oh_next_swing = oh_swing_time;
-        } else {
-          oh_next_swing = off_hand_attack -> execute_event -> remains();
+        timespan_t oh_swing_time = timespan_t::from_seconds( 0.0 );
+        timespan_t oh_next_swing = timespan_t::from_seconds( 0.0 );
+        if ( off_hand_attack )
+        {
+          oh_swing_time = off_hand_attack -> execute_time();
+          if (sim -> debug) {
+            sim -> out_debug.printf( "oh_swing_time:%.3f", oh_swing_time.total_seconds() );
+          }
+          if ( off_hand_attack -> execute_event == nullptr ) {
+            oh_next_swing = oh_swing_time;
+          } else {
+            oh_next_swing = off_hand_attack -> execute_event -> remains();
+          }
+          if (sim -> debug) sim -> out_debug.printf( "Off hand next_swing in: %.3f", oh_next_swing.total_seconds() );
         }
-        if (sim -> debug) sim -> out_debug.printf( "Off hand next_swing in: %.3f", oh_next_swing.total_seconds());
+        else
+        {
+          if (sim -> debug) sim -> out_debug.printf( "Off hand attack not found, using only main hand timers" );
+        }
 
-        if ( remaining_aa == 1 ) {
-          return_value = std::min( mh_next_swing, oh_next_swing );
-        } else if ( remaining_aa == 2 ) {
-          return_value = std::max( mh_next_swing, oh_next_swing );
-        } else if ( remaining_aa == 3 ) {
-          return_value = std::max( mh_next_swing, oh_next_swing ) + std::min( mh_swing_time, oh_swing_time );
-        } else if ( remaining_aa == 4 ) {
-          return_value = std::max( mh_next_swing, oh_next_swing ) + std::max( mh_swing_time, oh_swing_time );
-        } else if ( remaining_aa == 5 ) {
-          return_value = std::max( mh_next_swing, oh_next_swing ) + std::max( mh_swing_time, oh_swing_time ) + std::min( mh_swing_time, oh_swing_time );
+        // Store upcoming attack timers and sort
+        std::vector<timespan_t> attacks;
+        attacks.reserve( 2 * remaining_aa );
+        for ( size_t i = 0; i < remaining_aa; i++ )
+        {
+          attacks.push_back( mh_next_swing + i * mh_swing_time );
+          if ( off_hand_attack )
+            attacks.push_back( oh_next_swing + i * oh_swing_time );
         }
+        std::sort( attacks.begin(), attacks.end() );
+        return_value = attacks.at( remaining_aa - 1 );
+      } else if ( main_hand_attack == nullptr ) {
+        return_value = timespan_t::from_seconds( 0.0 );
+        if (sim -> debug) sim -> out_debug.printf( "Main hand attack is required but was not found" );
+      } else if ( attack_x > 5 ) {
+        return_value = timespan_t::from_seconds( 0.0 );
+        if (sim -> debug) sim -> out_debug.printf( "Invalid value %u for attack_x (must be 5 or less)", attack_x );
       } else {
         return_value = timespan_t::from_seconds( 0.0 );
+        if (sim -> debug) sim -> out_debug.printf( "attack_x value %u is not greater than shadow techniques count %u, returning %.3f", attack_x, shadow_techniques, return_value.total_seconds() );
       }
-      if (sim -> debug) sim -> out_debug.printf( "Shadow techniques return value is: %.3f", return_value.total_seconds());
+      if (sim -> debug) sim -> out_debug.printf( "Shadow techniques return value is: %.3f", return_value.total_seconds() );
     return return_value;
     } );
   }
@@ -9242,41 +9261,6 @@ struct rogue_module_t : public module_t
 
   void register_hotfixes() const override
   {
-    hotfix::register_effect( "Rogue", "2017-09-10", "Assassination damage increased by 5%. (Aura Effect 1)", 179721 )
-      .field( "base_value" )
-      .operation( hotfix::HOTFIX_SET )
-      .modifier( 28 )
-      .verification_value( 22 );
-
-    hotfix::register_effect( "Rogue", "2017-09-12", "Assassination damage increased by 5%. (Aura Effect 2)", 191052 )
-      .field( "base_value" )
-      .operation( hotfix::HOTFIX_SET )
-      .modifier( 28 )
-      .verification_value( 22 );
-
-    hotfix::register_effect( "Rogue", "2017-09-12", "Outlaw damage increased by 6%. (Aura Effect 1)", 179720 )
-      .field( "base_value" )
-      .operation( hotfix::HOTFIX_SET )
-      .modifier( 6 )
-      .verification_value( 0 );
-
-    hotfix::register_effect( "Rogue", "2017-09-12", "Outlaw damage increased by 6%. (Aura Effect 2)", 191056 )
-      .field( "base_value" )
-      .operation( hotfix::HOTFIX_SET )
-      .modifier( 6 )
-      .verification_value( 0 );
-
-    hotfix::register_effect( "Rogue", "2017-09-12", "Subtlety damage increased by 1.5%. (Aura Effect 1)", 179719 )
-      .field( "base_value" )
-      .operation( hotfix::HOTFIX_SET )
-      .modifier( 27 )
-      .verification_value( 25 );
-
-    hotfix::register_effect( "Rogue", "2017-09-12", "Subtlety damage increased by 1.5%. (Aura Effect 2)", 191060 )
-      .field( "base_value" )
-      .operation( hotfix::HOTFIX_SET )
-      .modifier( 27 )
-      .verification_value( 25 );
   }
 
   virtual void init( player_t* ) const override {}

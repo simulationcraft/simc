@@ -6,7 +6,7 @@ role=attack
 position=back
 talents=3210031
 artifact=12:0:0:0:0:108:4:109:4:110:4:111:4:113:4:114:4:115:4:117:4:119:1:120:1:122:1:123:1:124:1:1090:4:1091:1:1092:1:1332:1:1360:1:1485:4:1486:1:1487:1:1488:15:1628:1
-crucible=1739:3:1770:3
+crucible=1739:3:1780:3
 
 # Default consumables
 potion=prolonged_power
@@ -122,9 +122,10 @@ actions.standard+=/frost_strike,if=runic_power.deficit<20
 actions.standard+=/remorseless_winter,if=spell_targets.remorseless_winter>=2
 actions.standard+=/glacial_advance,if=spell_targets.glacial_advance>=2
 actions.standard+=/frostscythe,if=spell_targets.frostscythe>=3
-actions.standard+=/obliterate
+actions.standard+=/obliterate,if=!talent.gathering_storm.enabled|cooldown.remorseless_winter.remains>(gcd*2)
 actions.standard+=/horn_of_winter,if=!buff.hungering_rune_weapon.up&(rune.time_to_2>gcd|!talent.frozen_pulse.enabled)
 actions.standard+=/frost_strike,if=!(runic_power<50&talent.obliteration.enabled&cooldown.obliteration.remains<=gcd)
+actions.standard+=/obliterate,if=!talent.gathering_storm.enabled|talent.icy_talons.enabled
 actions.standard+=/empower_rune_weapon,if=!talent.breath_of_sindragosa.enabled|target.time_to_die<cooldown.breath_of_sindragosa.remains
 
 head=gravewarden_visage,id=147124,bonus_id=1497/3562

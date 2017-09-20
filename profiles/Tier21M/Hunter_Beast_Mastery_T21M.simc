@@ -1,4 +1,4 @@
-hunter="Hunter_Beast_Mastery_T20M"
+hunter="Hunter_Beast_Mastery_T21M"
 spec=beast_mastery
 level=110
 race=orc
@@ -6,7 +6,7 @@ role=attack
 position=ranged_back
 talents=2202012
 artifact=56:0:0:0:0:868:4:869:4:870:4:871:4:872:4:873:4:874:4:875:4:876:1:877:1:878:1:879:1:880:1:881:1:882:1:1095:4:1336:1:1368:1:1517:4:1518:1:1519:1:1520:24:1636:1
-crucible=1739:3:1780:3:875:1:870:2
+crucible=1739:3:1780:3:875:2:870:1
 
 # Default consumables
 potion=prolonged_power
@@ -56,31 +56,32 @@ actions+=/chimaera_shot,if=focus<90
 actions+=/cobra_shot,if=(cooldown.kill_command.remains>focus.time_to_max&cooldown.bestial_wrath.remains>focus.time_to_max)|(buff.bestial_wrath.up&(spell_targets.multishot=1|focus.regen*cooldown.kill_command.remains>action.kill_command.cost))|target.time_to_die<cooldown.kill_command.remains|(equipped.parsels_tongue&buff.parsels_tongue.remains<=gcd.max*2)
 actions+=/dire_beast,if=buff.bestial_wrath.up
 
-head=wildstalker_helmet,id=147142,bonus_id=1512/3563
-neck=locket_of_splintered_souls,id=147014,bonus_id=1512/3563,enchant=mark_of_the_trained_soldier
-shoulders=wildstalker_spaulders,id=147144,bonus_id=1512/3563
-back=wildstalker_cape,id=147140,bonus_id=1512/3563,enchant=binding_of_agility
-chest=parsels_tongue,id=151805,bonus_id=3570
-wrists=painsinged_armguards,id=147057,bonus_id=1512/3563
-hands=vicegrip_of_the_unrepentant,id=147048,bonus_id=1522/3563
-waist=roar_of_the_seven_lions,id=137080,bonus_id=3570
-legs=wildstalker_leggings,id=147143,bonus_id=1512/3563
-feet=starstalker_treads,id=147046,bonus_id=1522/3563
-finger1=scaled_band_of_servitude,id=147020,bonus_id=1512/3563,enchant=binding_of_mastery
-finger2=seal_of_the_second_duumvirate,id=147195,bonus_id=1522/3563,enchant=binding_of_mastery
+head=wildstalker_helmet,id=147142,bonus_id=3524,ilevel=930
+neck=chain_of_the_unmaker,id=152283,bonus_id=3612/1502,enchant_id=5890
+shoulders=wildstalker_spaulders,id=147144,bonus_id=3524,ilevel=930
+back=wildstalker_cape,id=147140,bonus_id=3524,ilevel=930,enchant_id=5435
+chest=serpentstalker_tunic,id=152130,bonus_id=3612/1502
+wrists=scalding_shatterguards,id=152280,bonus_id=3612/1502
+hands=serpentstalker_grips,id=152132,bonus_id=3612/1502
+waist=roar_of_the_seven_lions,id=137080,bonus_id=3571,ilevel=1000
+legs=wildstalker_leggings,id=147143,bonus_id=3524,ilevel=930
+feet=greatboots_of_the_searing_tempest,id=152684,bonus_id=3612/1502
+finger1=seal_of_the_portalmaster,id=152063,bonus_id=3612/1502,enchant_id=5429
+finger2=the_apex_predators_claw,id=137382,bonus_id=3571,ilevel=1000,gem_id=130222,enchant_id=5429
 trinket1=tarnished_sentinel_medallion,id=147017,bonus_id=1512/3563
-trinket2=engine_of_eradication,id=147015,bonus_id=1512/3563
-main_hand=titanstrike,id=128861,gem_id=147113/147076/147102,relic_id=1512:3563/1512:3563/1512:3563
+trinket2=electrostatic_lasso,id=151967,bonus_id=3612/1502
+main_hand=titanstrike,id=128861,bonus_id=726,gem_id=152059/152026/152293,relic_id=//,relic_ilevel=960/960/960
 
 # Gear Summary
-# gear_ilvl=939.73
-# gear_agility=27351
-# gear_stamina=48231
-# gear_crit_rating=7866
-# gear_haste_rating=9000
-# gear_mastery_rating=12294
+# gear_ilvl=958.00
+# gear_agility=34093
+# gear_stamina=56793
+# gear_crit_rating=8702
+# gear_haste_rating=8937
+# gear_mastery_rating=14320
 # gear_versatility_rating=1162
-# gear_armor=3358
+# gear_armor=3442
 # set_bonus=tier20_2pc=1
 # set_bonus=tier20_4pc=1
+# set_bonus=tier21_2pc=1
 summon_pet=cat

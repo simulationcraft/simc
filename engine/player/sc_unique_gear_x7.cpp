@@ -5345,7 +5345,8 @@ struct netherlight_base_t : public proc_spell_t
     hasted_ticks = true;
 
     proc_spell_t::init();
-       
+
+    update_flags = STATE_TGT_CRIT | STATE_TGT_MUL_DA | STATE_TGT_MUL_TA | STATE_HASTE;
 
     if ( data().max_stacks() > 0 )
     {
@@ -5356,10 +5357,17 @@ struct netherlight_base_t : public proc_spell_t
   timespan_t calculate_dot_refresh_duration( const dot_t* dot,
                                              timespan_t   triggered_duration ) const override
   {
-    return triggered_duration +
-           ( dot -> tick_event
-             ? dot -> tick_event -> remains()
-             : timespan_t::zero() );
+    if ( dot -> tick_event )
+    {
+      timespan_t tick_time = dot -> current_action -> tick_time( dot -> state );
+      int tick_count = std::round( triggered_duration.total_seconds() / tick_time.total_seconds() );
+
+      return tick_count * tick_time + dot -> tick_event -> remains();
+    }
+    else
+    {
+      return triggered_duration;
+    }
   }
 };
 

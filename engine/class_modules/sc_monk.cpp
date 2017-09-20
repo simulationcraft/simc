@@ -10111,8 +10111,8 @@ void monk_t::apl_combat_windwalker()
   }
 
   def -> add_action( this, "Touch of Death", "if=target.time_to_die<=9" );
-  def -> add_action( "call_action_list,name=serenity_opener,if=((talent.serenity.enabled&cooldown.serenity.remains<=0)|buff.serenity.up)&buff.bloodlust.up&active_enemies<2&set_bonus.tier20_4pc&set_bonus.tier19_2pc&equipped.drinking_horn_cover&(equipped.katsuos_eclipse|race.blood_elf|talent.power_strikes.enabled)" );
-  def -> add_action( "call_action_list,name=serenity,if=(talent.serenity.enabled&cooldown.serenity.remains<=0)|(buff.serenity.up&time>20)" );
+  def -> add_action( "call_action_list,name=serenity_opener,if=((talent.serenity.enabled&cooldown.serenity.remains<=0)|buff.serenity.up)&active_enemies<2&set_bonus.tier20_4pc&set_bonus.tier19_2pc&equipped.drinking_horn_cover&time<20" );
+  def -> add_action( "call_action_list,name=serenity,if=(((talent.serenity.enabled&cooldown.serenity.remains<=0)|buff.serenity.up)&(!set_bonus.tier20_4pc&!set_bonus.tier19_2pc&!equipped.drinking_horn_cover))|(((talent.serenity.enabled&cooldown.serenity.remains<=0)|buff.serenity.up)&time>20)" );
   def -> add_action( "call_action_list,name=sef,if=!talent.serenity.enabled&(buff.storm_earth_and_fire.up|cooldown.storm_earth_and_fire.charges=2)" );
   def -> add_action( "call_action_list,name=sef,if=!talent.serenity.enabled&equipped.drinking_horn_cover&(cooldown.strike_of_the_windlord.remains<=18&cooldown.fists_of_fury.remains<=12&chi>=3&cooldown.rising_sun_kick.remains<=1|target.time_to_die<=25|cooldown.touch_of_death.remains>112)&cooldown.storm_earth_and_fire.charges=1" );
   def -> add_action( "call_action_list,name=sef,if=!talent.serenity.enabled&!equipped.drinking_horn_cover&(cooldown.strike_of_the_windlord.remains<=14&cooldown.fists_of_fury.remains<=6&chi>=3&cooldown.rising_sun_kick.remains<=1|target.time_to_die<=15|cooldown.touch_of_death.remains>112)&cooldown.storm_earth_and_fire.charges=1" );
@@ -10216,6 +10216,8 @@ void monk_t::apl_combat_windwalker()
   serenity_opener -> add_action( this, "Strike of the Windlord", "if=buff.serenity.up" );
   serenity_opener -> add_action( this, "Blackout Kick", "cycle_targets=1,if=(!prev_gcd.1.blackout_kick)&(prev_gcd.1.strike_of_the_windlord)" );
   serenity_opener -> add_action( this, "Fists of Fury", "if=cooldown.rising_sun_kick.remains>1|buff.serenity.down,interrupt=1" );
+  serenity_opener -> add_action( this, "Blackout Kick", "cycle_targets=1,if=buff.serenity.down&chi<=2&cooldown.serenity.remains<=0&prev_gcd.1.tiger_palm" );
+  serenity_opener -> add_action( this, "Tiger Palm", "cycle_targets=1,if=chi=1");
 
   // Single Target
   st -> add_action( "call_action_list,name=cd" );

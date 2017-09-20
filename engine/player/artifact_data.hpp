@@ -73,6 +73,10 @@ class player_artifact_data_t
   // Policy on using artifact_override option information on not for various methods. Defaults to
   // allowed on all methods.
   enum override_type { ALLOW_OVERRIDE = 0, DISALLOW_OVERRIDE };
+  // Policy how to manipulate cruciple powers. Crucible option supports two different input formats,
+  // one of which directly sets the crucible rank, and another that individually adds trait ranks
+  // based on relic information.
+  enum power_op { OP_SET = 0, OP_ADD };
 
   player_t*             m_player;
   // Artifact point data storage, <power_id, <purchased_rank, relic_rank>>
@@ -98,6 +102,8 @@ class player_artifact_data_t
   // Standard format parsing functions for artifact data from 'artifact', and 'crucible' user
   // options
   bool parse();
+  bool parse_crucible1();
+  bool parse_crucible2();
   bool parse_crucible();
 
   void reset_artifact();
@@ -269,7 +275,7 @@ public:
   bool     add_power( unsigned power_id, unsigned rank );
   void     add_relic( unsigned index, unsigned item_id, unsigned power_id, unsigned rank );
   void     remove_relic( unsigned index );
-  bool     add_crucible_power( unsigned power_id, unsigned rank );
+  bool     add_crucible_power( unsigned power_id, unsigned rank, power_op = OP_SET );
   // Override an artifact power, used for artifact_override= option
   void     override_power( const std::string& name_str, unsigned rank );
 

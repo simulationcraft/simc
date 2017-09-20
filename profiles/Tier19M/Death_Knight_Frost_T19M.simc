@@ -121,9 +121,10 @@ actions.standard+=/frost_strike,if=runic_power.deficit<20
 actions.standard+=/remorseless_winter,if=spell_targets.remorseless_winter>=2
 actions.standard+=/glacial_advance,if=spell_targets.glacial_advance>=2
 actions.standard+=/frostscythe,if=spell_targets.frostscythe>=3
-actions.standard+=/obliterate
+actions.standard+=/obliterate,if=!talent.gathering_storm.enabled|cooldown.remorseless_winter.remains>(gcd*2)
 actions.standard+=/horn_of_winter,if=!buff.hungering_rune_weapon.up&(rune.time_to_2>gcd|!talent.frozen_pulse.enabled)
 actions.standard+=/frost_strike,if=!(runic_power<50&talent.obliteration.enabled&cooldown.obliteration.remains<=gcd)
+actions.standard+=/obliterate,if=!talent.gathering_storm.enabled|talent.icy_talons.enabled
 actions.standard+=/empower_rune_weapon,if=!talent.breath_of_sindragosa.enabled|target.time_to_die<cooldown.breath_of_sindragosa.remains
 
 head=venomfanged_barbute,id=139229,bonus_id=1806

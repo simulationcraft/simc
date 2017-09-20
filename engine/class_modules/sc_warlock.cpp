@@ -4399,7 +4399,8 @@ struct rain_of_fire_t : public warlock_spell_t
       callbacks = false;
       radius = p -> find_spell( 5740 ) -> effectN( 1 ).radius();
 
-      base_multiplier *= 1.0 + ( p -> talents.reverse_entropy -> effectN( 2 ).percent() );
+      base_multiplier *= 1.0 + p -> talents.reverse_entropy -> effectN( 2 ).percent();
+      base_multiplier *= 1.0 + p -> artifact.fire_from_the_sky.percent();
     }
   };
 
