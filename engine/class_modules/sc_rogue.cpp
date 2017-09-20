@@ -7312,7 +7312,7 @@ void rogue_t::init_action_list()
     cds -> add_action( this, "Vanish", "if=talent.subterfuge.enabled&equipped.mantle_of_the_master_assassin&(debuff.vendetta.up|target.time_to_die<10)&mantle_duration=0" );
     cds -> add_action( this, "Vanish", "if=talent.subterfuge.enabled&!equipped.mantle_of_the_master_assassin&!stealthed.rogue&dot.garrote.refreshable&((spell_targets.fan_of_knives<=3&combo_points.deficit>=1+spell_targets.fan_of_knives)|(spell_targets.fan_of_knives>=4&combo_points.deficit>=4))" );
     cds -> add_action( this, "Vanish", "if=talent.shadow_focus.enabled&variable.energy_time_to_max_combined>=2&combo_points.deficit>=4" );
-    cds -> add_talent( this, "Toxic Blade", "if=combo_points.deficit>=1+(mantle_duration>=gcd.remains+0.2)&dot.rupture.remains>8" );
+    cds -> add_talent( this, "Toxic Blade", "if=combo_points.deficit>=1+(mantle_duration>=gcd.remains+0.2)&dot.rupture.remains>8&cooldown.vendetta.remains>10" );
 
     // Finishers
     action_priority_list_t* finish = get_action_priority_list( "finish", "Finishers" );

@@ -102,13 +102,13 @@ feet=felscape_pathfinders,id=147030,bonus_id=1497/3562
 finger1=yathaes_thumb_ring,id=147021,bonus_id=1497/3562,enchant=binding_of_haste
 finger2=seal_of_the_second_duumvirate,id=147195,bonus_id=1507/3562,enchant=binding_of_haste
 trinket1=specter_of_betrayal,id=151190,bonus_id=1507/3562
-trinket2=convergence_of_fates,id=140806,bonus_id=3517
+trinket2=convergence_of_fates,id=140806,bonus_id=3516/1487
 main_hand=the_dreadblades,id=128872,bonus_id=742,gem_id=151189/147100/147114,relic_id=1497:3562/1497:3562/1497:3562
 off_hand=the_dreadblades,id=134552
 
 # Gear Summary
-# gear_ilvl=927.00
-# gear_agility=27922
+# gear_ilvl=926.69
+# gear_agility=27833
 # gear_stamina=41249
 # gear_crit_rating=6947
 # gear_haste_rating=8036
