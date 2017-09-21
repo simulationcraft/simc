@@ -4654,8 +4654,9 @@ struct ice_lance_t : public frost_mage_spell_t
       }
     }
 
-    if ( s -> chain_target == ( 0 + p() -> talents.splitting_ice -> ok() )
-         && p() -> sets -> has_set_bonus( MAGE_FROST, T21, B4 ) )
+    // TODO: Set bonus is currently bugged on PTR; probably intended to
+    // expire on any Ice Lance impact.
+    if ( p() -> sets -> has_set_bonus( MAGE_FROST, T21, B4 ) )
     {
       p() -> buffs.arctic_blast -> expire();
     }
@@ -4668,6 +4669,7 @@ struct ice_lance_t : public frost_mage_spell_t
     am *= 1.0 + p() -> buffs.chain_reaction -> check_stack_value();
     am *= 1.0 + p() -> buffs.magtheridons_might -> check_stack_value();
     am *= 1.0 + p() -> buffs.arctic_blast -> check_value();
+
     return am;
   }
 
