@@ -3020,6 +3020,9 @@ struct arcane_orb_t : public arcane_mage_spell_t
 
     trigger_am( am_trigger_source_id );
     trigger_arcane_charge();
+
+    p() -> buffs.quick_thinker -> trigger();
+
   }
 
   virtual timespan_t travel_time() const override
@@ -4651,8 +4654,8 @@ struct ice_lance_t : public frost_mage_spell_t
       }
     }
 
-    if ( s -> chain_target == 1 && p() -> sets -> has_set_bonus( MAGE_FROST, T21, B4 ) 
-                                && p() -> talents.splitting_ice -> ok() )
+    if ( s -> chain_target == ( 0 + p() -> talents.splitting_ice -> ok() )
+         && p() -> sets -> has_set_bonus( MAGE_FROST, T21, B4 ) )
     {
       p() -> buffs.arctic_blast -> expire();
     }
