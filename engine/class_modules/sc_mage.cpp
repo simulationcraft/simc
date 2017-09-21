@@ -4651,7 +4651,7 @@ struct ice_lance_t : public frost_mage_spell_t
       }
     }
 
-    if ( s -> chain_target == 1 && p() -> sets -> has_set_bonus( MAGE_FROST, T20, B4 ) 
+    if ( s -> chain_target == 1 && p() -> sets -> has_set_bonus( MAGE_FROST, T21, B4 ) 
                                 && p() -> talents.splitting_ice -> ok() )
     {
       p() -> buffs.arctic_blast -> expire();
