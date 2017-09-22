@@ -2757,7 +2757,7 @@ struct silence_t final : public priest_spell_t
 
   void impact(action_state_t* state) override
   {
-    if (   target->type != ENEMY_ADD
+    if (   target->type == ENEMY_ADD
         || target->level() < sim->max_player_level + 3 )
     {
       priest.trigger_sephuzs_secret( state, MECHANIC_SILENCE );
