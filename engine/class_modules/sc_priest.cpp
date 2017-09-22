@@ -2749,10 +2749,11 @@ struct silence_t final : public priest_spell_t
 
     // Only interrupts, does not keep target silenced. This works in most cases since bosses are rarely able to be
     // completely silenced.
-    if ( target->debuffs.casting )
-    {
-      target->debuffs.casting->expire();
-    }
+    // Removed to not break Casting Patchwerk - 2017-09-22 
+    //if ( target->debuffs.casting )
+    //{
+      //target->debuffs.casting->expire();
+    //}
   }
 
   void impact(action_state_t* state) override
