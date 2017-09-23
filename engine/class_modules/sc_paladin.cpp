@@ -3783,6 +3783,9 @@ struct judgment_aoe_t : public paladin_melee_attack_t
 
       base_multiplier *= 1.0 + p -> artifact.highlords_judgment.percent();
 
+      if ( p -> sets -> has_set_bonus( PALADIN_RETRIBUTION, T21, B2 ) )
+        base_multiplier *= 1.0 + p -> sets -> set( PALADIN_RETRIBUTION, T21, B2 ) -> effectN( 1 ).percent();
+
       if ( p -> talents.greater_judgment -> ok() )
       {
         aoe += p -> talents.greater_judgment -> effectN( 2 ).base_value();
@@ -3862,6 +3865,8 @@ struct judgment_t : public paladin_melee_attack_t
     {
       base_costs[RESOURCE_MANA] = 0;
       base_multiplier *= 1.0 + p -> artifact.highlords_judgment.percent();
+      if ( p -> sets -> has_set_bonus( PALADIN_RETRIBUTION, T21, B2 ) )
+        base_multiplier *= 1.0 + p -> sets -> set( PALADIN_RETRIBUTION, T21, B2 ) -> effectN( 1 ).percent();
       impact_action = new judgment_aoe_t( p, options_str );
     }
     else if ( p -> specialization() == PALADIN_HOLY )
