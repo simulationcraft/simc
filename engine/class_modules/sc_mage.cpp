@@ -3020,6 +3020,9 @@ struct arcane_orb_t : public arcane_mage_spell_t
 
     trigger_am( am_trigger_source_id );
     trigger_arcane_charge();
+
+    p() -> buffs.quick_thinker -> trigger();
+
   }
 
   virtual timespan_t travel_time() const override
@@ -4651,6 +4654,12 @@ struct ice_lance_t : public frost_mage_spell_t
       }
     }
 
+    // TODO: Set bonus is currently bugged on PTR; probably intended to
+    // expire on any Ice Lance impact.
+    if ( p() -> sets -> has_set_bonus( MAGE_FROST, T21, B4 ) )
+    {
+      p() -> buffs.arctic_blast -> expire();
+    }
   }
 
   virtual double action_multiplier() const override
@@ -4659,6 +4668,7 @@ struct ice_lance_t : public frost_mage_spell_t
 
     am *= 1.0 + p() -> buffs.chain_reaction -> check_stack_value();
     am *= 1.0 + p() -> buffs.magtheridons_might -> check_stack_value();
+    am *= 1.0 + p() -> buffs.arctic_blast -> check_value();
 
     return am;
   }

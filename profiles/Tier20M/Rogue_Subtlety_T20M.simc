@@ -93,12 +93,12 @@ actions.stealth_cds=vanish,if=!variable.dsh_dfa&mantle_duration=0&cooldown.shado
 actions.stealth_cds+=/shadow_dance,if=charges_fractional>=variable.shd_fractional|target.time_to_die<cooldown.symbols_of_death.remains
 actions.stealth_cds+=/pool_resource,for_next=1,extra_amount=40
 actions.stealth_cds+=/shadowmeld,if=energy>=40&energy.deficit>=10+variable.ssw_refund
-actions.stealth_cds+=/shadow_dance,if=!variable.dsh_dfa&combo_points.deficit>=2+talent.subterfuge.enabled*2&(buff.symbols_of_death.remains>=1.2+gcd.remains|cooldown.symbols_of_death.remains>=12+(talent.dark_shadow.enabled&set_bonus.tier20_4pc)*3-(!talent.dark_shadow.enabled&set_bonus.tier20_4pc)*4|mantle_duration>0)&(spell_targets.shuriken_storm>=4|!buff.the_first_of_the_dead.up)
+actions.stealth_cds+=/shadow_dance,if=!variable.dsh_dfa&combo_points.deficit>=2+talent.subterfuge.enabled*2&(buff.symbols_of_death.remains>=1.2|cooldown.symbols_of_death.remains>=12+(talent.dark_shadow.enabled&set_bonus.tier20_4pc)*3-(!talent.dark_shadow.enabled&set_bonus.tier20_4pc)*4|mantle_duration>0)&(spell_targets.shuriken_storm>=4|!buff.the_first_of_the_dead.up)
 
 # Stealthed Rotation
 # If stealth is up, we really want to use Shadowstrike to benefits from the passive bonus, even if we are at max cp (from the precombat MfD).
 actions.stealthed=shadowstrike,if=buff.stealth.up
-actions.stealthed+=/call_action_list,name=finish,if=combo_points>=5+(talent.deeper_stratagem.enabled&buff.vanish.up)&(spell_targets.shuriken_storm>=3+equipped.shadow_satyrs_walk|(mantle_duration<=1.3&mantle_duration-gcd.remains>=0.3))
+actions.stealthed+=/call_action_list,name=finish,if=combo_points>=5+(talent.deeper_stratagem.enabled&buff.vanish.up)&(spell_targets.shuriken_storm>=3+equipped.shadow_satyrs_walk|(mantle_duration<=1.3&mantle_duration>=0.3))
 actions.stealthed+=/shuriken_storm,if=buff.shadowmeld.down&((combo_points.deficit>=2+equipped.insignia_of_ravenholdt&spell_targets.shuriken_storm>=3+equipped.shadow_satyrs_walk)|(combo_points.deficit>=1&buff.the_dreadlords_deceit.stack>=29))
 actions.stealthed+=/call_action_list,name=finish,if=combo_points>=5+(talent.deeper_stratagem.enabled&buff.vanish.up)&combo_points.deficit<3+buff.shadow_blades.up-equipped.mantle_of_the_master_assassin
 actions.stealthed+=/shadowstrike
@@ -116,13 +116,13 @@ feet=felscape_pathfinders,id=147030,bonus_id=1512/3563
 finger1=yathaes_thumb_ring,id=147021,bonus_id=1512/3563,enchant=binding_of_versatility
 finger2=band_of_rescinded_truths,id=147194,bonus_id=1512/3563,enchant=binding_of_versatility
 trinket1=specter_of_betrayal,id=151190,bonus_id=1522/3563
-trinket2=convergence_of_fates,id=140806,bonus_id=3519
+trinket2=convergence_of_fates,id=140806,bonus_id=3518/1502
 main_hand=fangs_of_the_devourer,id=128476,bonus_id=743,gem_id=147084/147111/147084,relic_id=1512:3563/1522:3563/1512:3563
 off_hand=fangs_of_the_devourer,id=128479,gem_id=0/0/0/0
 
 # Gear Summary
-# gear_ilvl=939.88
-# gear_agility=31356
+# gear_ilvl=939.56
+# gear_agility=31254
 # gear_stamina=46115
 # gear_crit_rating=7017
 # gear_haste_rating=2825

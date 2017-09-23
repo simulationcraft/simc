@@ -80,7 +80,7 @@ actions.cds+=/darkflight,if=equipped.thraxis_tricksy_treads&!variable.ss_useable
 actions.cds+=/curse_of_the_dreadblades,if=combo_points.deficit>=4&(!talent.ghostly_strike.enabled|debuff.ghostly_strike.up)
 
 # Finishers
-actions.finish=between_the_eyes,if=(mantle_duration>=gcd.remains+0.2&!equipped.thraxis_tricksy_treads)|(equipped.greenskins_waterlogged_wristcuffs&!buff.greenskins_waterlogged_wristcuffs.up)
+actions.finish=between_the_eyes,if=(mantle_duration>=0.2&!equipped.thraxis_tricksy_treads)|(equipped.greenskins_waterlogged_wristcuffs&!buff.greenskins_waterlogged_wristcuffs.up)
 actions.finish+=/run_through,if=!talent.death_from_above.enabled|energy.time_to_max<cooldown.death_from_above.remains+3.5
 
 # Stealth
@@ -102,13 +102,13 @@ feet=felscape_pathfinders,id=147030,bonus_id=1512/3563
 finger1=yathaes_thumb_ring,id=147021,bonus_id=1512/3563,enchant=binding_of_haste
 finger2=seal_of_the_second_duumvirate,id=147195,bonus_id=3563/1522,enchant=binding_of_haste
 trinket1=specter_of_betrayal,id=151190,bonus_id=1522/3563
-trinket2=convergence_of_fates,id=140806,bonus_id=3519
+trinket2=convergence_of_fates,id=140806,bonus_id=3518/1502
 main_hand=the_dreadblades,id=128872,bonus_id=742,gem_id=151189/147100/147114,relic_id=1512:3563/1512:3563/1512:3563
 off_hand=the_dreadblades,id=134552
 
 # Gear Summary
-# gear_ilvl=940.13
-# gear_agility=31258
+# gear_ilvl=939.81
+# gear_agility=31156
 # gear_stamina=46203
 # gear_crit_rating=7450
 # gear_haste_rating=8560

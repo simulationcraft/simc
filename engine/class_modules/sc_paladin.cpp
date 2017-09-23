@@ -132,7 +132,6 @@ public:
     absorb_buff_t* holy_shield_absorb; // Dummy buff to trigger spell damage "blocking" absorb effect
 
     buff_t* zeal;
-    buff_t* seal_of_light;
     buff_t* the_fires_of_justice;
     buff_t* blade_of_wrath;
     buff_t* divine_purpose;
@@ -150,6 +149,7 @@ public:
     buffs::wings_of_liberty_driver_t* wings_of_liberty_driver;
     buff_t* retribution_trinket; // 6.2 Spec-Specific Trinket
     buff_t* sacred_judgment;
+    buff_t* ret_t21_4p;
 
     // artifact
     buff_t* painful_truths;
@@ -331,7 +331,6 @@ public:
     const spell_data_t* word_of_glory;
     const spell_data_t* divine_intervention;
     const spell_data_t* divine_steed;
-    const spell_data_t* seal_of_light;
     const spell_data_t* divine_purpose;
     const spell_data_t* crusade;
     const spell_data_t* crusade_talent;
@@ -1898,9 +1897,12 @@ struct execution_sentence_t : public paladin_spell_t
   virtual double cost() const override
   {
     double base_cost = paladin_spell_t::cost();
-    if ( p() -> buffs.the_fires_of_justice -> up() && base_cost > 0 )
-      return base_cost - 1;
-    return base_cost;
+    int discounts = 0;
+    if ( p() -> buffs.the_fires_of_justice -> up() && base_cost > discounts )
+      discounts++;
+    if ( p() -> buffs.ret_t21_4p -> up() && base_cost > discounts )
+      discounts++;
+    return base_cost - discounts;
   }
 
   void execute() override
@@ -1915,9 +1917,15 @@ struct execution_sentence_t : public paladin_spell_t
         p() -> buffs.divine_purpose -> expire();
       }
     }
-    else if ( p() -> buffs.the_fires_of_justice -> up() )
-    {
-      p() -> buffs.the_fires_of_justice -> expire();
+    else {
+      if ( p() -> buffs.the_fires_of_justice -> up() )
+      {
+        p() -> buffs.the_fires_of_justice -> expire();
+      }
+      if ( p() -> buffs.ret_t21_4p -> up() )
+      {
+        p() -> buffs.ret_t21_4p -> expire();
+      }
     }
 
     if ( p() -> buffs.crusade -> check() )
@@ -3540,9 +3548,12 @@ struct divine_storm_t: public holy_power_consumer_t
   virtual double cost() const override
   {
     double base_cost = holy_power_consumer_t::cost();
-    if ( p() -> buffs.the_fires_of_justice -> up() && base_cost > 0 )
-      return base_cost - 1;
-    return base_cost;
+    int discounts = 0;
+    if ( p() -> buffs.the_fires_of_justice -> up() && base_cost > discounts )
+      discounts++;
+    if ( p() -> buffs.ret_t21_4p -> up() && base_cost > discounts )
+      discounts++;
+    return base_cost - discounts;
   }
 
   virtual double action_multiplier() const override
@@ -3562,6 +3573,8 @@ struct divine_storm_t: public holy_power_consumer_t
 
     if ( p() -> buffs.the_fires_of_justice -> up() && c > 0 )
       p() -> buffs.the_fires_of_justice -> expire();
+    if ( p() -> buffs.ret_t21_4p -> up() && c > 0 )
+      p() -> buffs.ret_t21_4p -> expire();
 
     if ( p() -> artifact.echo_of_the_highlord.rank() )
     {
@@ -3783,6 +3796,9 @@ struct judgment_aoe_t : public paladin_melee_attack_t
 
       base_multiplier *= 1.0 + p -> artifact.highlords_judgment.percent();
 
+      if ( p -> sets -> has_set_bonus( PALADIN_RETRIBUTION, T21, B2 ) )
+        base_multiplier *= 1.0 + p -> sets -> set( PALADIN_RETRIBUTION, T21, B2 ) -> effectN( 1 ).percent();
+
       if ( p -> talents.greater_judgment -> ok() )
       {
         aoe += p -> talents.greater_judgment -> effectN( 2 ).base_value();
@@ -3862,6 +3878,8 @@ struct judgment_t : public paladin_melee_attack_t
     {
       base_costs[RESOURCE_MANA] = 0;
       base_multiplier *= 1.0 + p -> artifact.highlords_judgment.percent();
+      if ( p -> sets -> has_set_bonus( PALADIN_RETRIBUTION, T21, B2 ) )
+        base_multiplier *= 1.0 + p -> sets -> set( PALADIN_RETRIBUTION, T21, B2 ) -> effectN( 1 ).percent();
       impact_action = new judgment_aoe_t( p, options_str );
     }
     else if ( p -> specialization() == PALADIN_HOLY )
@@ -3888,6 +3906,8 @@ struct judgment_t : public paladin_melee_attack_t
     }
     if ( p() -> sets -> has_set_bonus( PALADIN_RETRIBUTION, T20, B2 ) )
       p() -> buffs.sacred_judgment -> trigger();
+    if ( p() -> sets -> has_set_bonus( PALADIN_RETRIBUTION, T21, B4 ) )
+      p() -> buffs.ret_t21_4p -> trigger();
   }
 
   proc_types proc_type() const override
@@ -4168,9 +4188,12 @@ struct templars_verdict_t : public holy_power_consumer_t
   virtual double cost() const override
   {
     double base_cost = holy_power_consumer_t::cost();
-    if ( p() -> buffs.the_fires_of_justice -> up() && base_cost > 0 )
-      return base_cost - 1;
-    return base_cost;
+    int discounts = 0;
+    if ( p() -> buffs.the_fires_of_justice -> up() && base_cost > discounts )
+      discounts++;
+    if ( p() -> buffs.ret_t21_4p -> up() && base_cost > discounts )
+      discounts++;
+    return base_cost - discounts;
   }
 
   virtual double action_multiplier() const override
@@ -4191,6 +4214,8 @@ struct templars_verdict_t : public holy_power_consumer_t
     // TODO: do misses consume fires of justice?
     if ( p() -> buffs.the_fires_of_justice -> up() && c > 0 )
       p() -> buffs.the_fires_of_justice -> expire();
+    if ( p() -> buffs.ret_t21_4p -> up() && c > 0 )
+      p() -> buffs.ret_t21_4p -> expire();
 
     // missed/dodged/parried TVs do not consume Holy Power
     // check for a miss, and refund the appropriate amount of HP if we spent any
@@ -4229,9 +4254,12 @@ struct justicars_vengeance_t : public holy_power_consumer_t
   virtual double cost() const override
   {
     double base_cost = holy_power_consumer_t::cost();
-    if ( p() -> buffs.the_fires_of_justice -> up() && base_cost > 0 )
-      return base_cost - 1;
-    return base_cost;
+    int discounts = 0;
+    if ( p() -> buffs.the_fires_of_justice -> up() && base_cost > discounts )
+      discounts++;
+    if ( p() -> buffs.ret_t21_4p -> up() && base_cost > discounts )
+      discounts++;
+    return base_cost - discounts;
   }
 
   virtual void execute() override
@@ -4245,48 +4273,15 @@ struct justicars_vengeance_t : public holy_power_consumer_t
     if ( p() -> buffs.the_fires_of_justice -> up() && c > 0 )
       p() -> buffs.the_fires_of_justice -> expire();
 
+    if ( p() -> buffs.ret_t21_4p -> up() && c > 0 )
+      p() -> buffs.ret_t21_4p -> expire();
+
     // missed/dodged/parried TVs do not consume Holy Power
     // check for a miss, and refund the appropriate amount of HP if we spent any
     if ( result_is_miss( execute_state -> result ) && c > 0 )
     {
       p() -> resource_gain( RESOURCE_HOLY_POWER, c, p() -> gains.hp_templars_verdict_refund );
     }
-  }
-};
-
-// Seal of Light ========================================================================
-struct seal_of_light_t : public paladin_spell_t
-{
-  seal_of_light_t( paladin_t* p, const std::string& options_str  )
-    : paladin_spell_t( "seal_of_light", p, p -> find_talent_spell( "Seal of Light" ) )
-  {
-    parse_options( options_str );
-
-    may_miss = false;
-  }
-
-  virtual double cost() const override
-  {
-    double base_cost = std::max( base_costs[ RESOURCE_HOLY_POWER ], p() -> resources.current[ RESOURCE_HOLY_POWER ] );
-    if ( p() -> buffs.the_fires_of_justice -> up() && base_cost > 0 )
-      return base_cost - 1;
-    return base_cost;
-  }
-
-  virtual void execute() override
-  {
-    double c = cost();
-    paladin_spell_t::execute();
-
-    // TODO: verify this
-    if ( p() -> buffs.the_fires_of_justice -> up() )
-    {
-      p() -> buffs.the_fires_of_justice -> expire();
-      c += 1.0;
-    }
-
-    p() -> buffs.seal_of_light -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0,
-      c * ( p() -> buffs.seal_of_light -> data().duration() ) );
   }
 };
 
@@ -4457,7 +4452,6 @@ action_t* paladin_t::create_action( const std::string& name, const std::string& 
   if ( name == "wake_of_ashes"             ) return new wake_of_ashes_t            ( this, options_str );
   if ( name == "eye_of_tyr"                ) return new eye_of_tyr_t               ( this, options_str );
   if ( name == "seraphim"                  ) return new seraphim_t                 ( this, options_str );
-  if ( name == "seal_of_light"             ) return new seal_of_light_t            ( this, options_str );
   if ( name == "holy_light"                ) return new holy_light_t               ( this, options_str );
   if ( name == "flash_of_light"            ) return new flash_of_light_t           ( this, options_str );
   if ( name == "lay_on_hands"              ) return new lay_on_hands_t             ( this, options_str );
@@ -4777,7 +4771,6 @@ void paladin_t::create_buffs()
 
   // Ret
   buffs.zeal                           = buff_creator_t( this, "zeal", find_spell( 217020 ) );
-  buffs.seal_of_light                  = buff_creator_t( this, "seal_of_light", find_spell( 202273 ) );
   buffs.the_fires_of_justice           = buff_creator_t( this, "the_fires_of_justice", find_spell( 209785 ) );
   buffs.blade_of_wrath               = buff_creator_t( this, "blade_of_wrath", find_spell( 231843 ) );
   buffs.divine_purpose                 = buff_creator_t( this, "divine_purpose", find_spell( 223819 ) );
@@ -4803,7 +4796,7 @@ void paladin_t::create_buffs()
     .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
   // Tier Bonuses
-
+  buffs.ret_t21_4p             = buff_creator_t( this, "hidden_retribution_t21_4p", find_spell( 253806 ) );
   buffs.vindicators_fury       = buff_creator_t( this, "vindicators_fury", find_spell( 165903 ) )
                                  .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
                                  .add_invalidate( CACHE_PLAYER_HEAL_MULTIPLIER )
@@ -5521,7 +5514,6 @@ void paladin_t::init_spells()
   talents.word_of_glory              = find_talent_spell( "Word of Glory" );
   talents.divine_intervention        = find_talent_spell( "Divine Intervention" );
   talents.divine_steed               = find_talent_spell( "Divine Steed" );
-  talents.seal_of_light              = find_talent_spell( "Seal of Light" );
   talents.divine_purpose             = find_talent_spell( "Divine Purpose" ); // TODO: fix this
   talents.crusade                    = find_spell( 231895 );
   talents.crusade_talent             = find_talent_spell( "Crusade" );
