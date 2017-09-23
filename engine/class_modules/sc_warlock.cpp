@@ -467,6 +467,7 @@ public:
     proc_t* fatal_echos;
     proc_t* ua_tick_no_mg;
     proc_t* ua_tick_mg;
+	proc_t* affliction_t21_2pc;
     //demo
     proc_t* impending_doom;
     proc_t* improved_dreadstalkers;
@@ -2839,6 +2840,7 @@ struct agony_t: public warlock_spell_t
             }
           }
         }
+		p()->procs.affliction_t21_2pc->occur();
       }
     }
 
@@ -6826,6 +6828,7 @@ void warlock_t::init_procs()
   procs.demonology_t20_2pc = get_proc( "demonology_t20_2pc" );
   procs.ua_tick_no_mg = get_proc( "ua_tick_no_mg" );
   procs.ua_tick_mg = get_proc( "ua_tick_mg" );
+  procs.affliction_t21_2pc = get_proc("affliction_t21_2pc");
 }
 
 void warlock_t::apl_precombat()
