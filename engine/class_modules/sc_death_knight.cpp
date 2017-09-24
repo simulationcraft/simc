@@ -3530,7 +3530,7 @@ struct cold_heart_damage_t : public death_knight_spell_t
 struct freezing_death_t : public death_knight_spell_t
 {
   freezing_death_t( death_knight_t* p ) :
-    death_knight_spell_t( "freezing_death", p, p -> find_spell( 248397 ) ) // Placeholder spell ID until 253590 is properly whitelisted and extracted.
+    death_knight_spell_t( "freezing_death", p, p -> find_spell( 253590 ) )
   {
     background = true;
   }
@@ -4649,7 +4649,6 @@ struct t21_death_coil_t : public death_knight_spell_t
 
     if ( result_is_hit( execute_state -> result ) )
     {
-
       td( execute_state -> target ) -> debuff.scourge_of_worlds -> trigger();
     }
 
@@ -4784,7 +4783,6 @@ struct death_coil_t : public death_knight_spell_t
     }
 
     // T21 4P gives 20% chance to deal damage a second time
-    // It can proc the same mechanics as the original Death Coil with the exception of DA empowerment and T21 4P (so it can't proc off itself)
     if ( p() -> sets -> has_set_bonus( DEATH_KNIGHT_UNHOLY, T21, B4 ) && result_is_hit( state -> result ) )
     {
       if ( rng().roll( p() -> find_spell( 251872 ) -> proc_chance() ) ) 
