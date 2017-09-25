@@ -879,6 +879,11 @@ public:
     ret_dot_increase( ab::data().affected_by( player -> spec.retribution_paladin -> effectN( 2 ) ) ),
     ret_damage_increase_two( ab::data().affected_by( player -> spec.retribution_paladin -> effectN( 7 ) ) )
   {
+    // Aura buff to protection paladin added in 7.3
+    if ( this -> data().affected_by( p() -> passives.protection_paladin -> effectN( 10 ) ) && p() -> specialization() == PALADIN_PROTECTION )
+    {
+      this -> base_dd_multiplier *= 1.0 + p() -> passives.protection_paladin -> effectN( 10 ).percent();
+    }
   }
 
   paladin_t* p()

@@ -1376,6 +1376,7 @@ class SpellDataGenerator(DataGenerator):
           ( 205164, 0 ),    # Crystalline Swords
           ( 205165, 0 ),    # More crystalline swords stuff
           ( 191730, 0 ), ( 191727, 0 ), ( 191728, 0 ), ( 191729, 0 ), # Armies of the Damned debuffs
+          ( 253590, 0 ),    # T21 4P frost damage component
         ),
 
         # Shaman:
