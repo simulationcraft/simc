@@ -2417,7 +2417,7 @@ struct valkyr_pet_t : public death_knight_pet_t
     }
   }
   
-  void summon ( timespan_t t ) override
+  void summon ( timespan_t base_duration ) override
   {
     // Dark Arbiter has a random confusion time on spawn before starting casts.
     // Seems to have a bimodal distribution on how long an idle time there is after summoning, based
@@ -2430,12 +2430,16 @@ struct valkyr_pet_t : public death_knight_pet_t
     auto base = dist == 0 ? 2.25 : 3.25;
 
     confusion_time = timespan_t::from_seconds( rng().gauss( base, 0.25 ) );
-    
+
     // 7.3 : Examining logs showed that Dark Arbiter actually lasts one more second than it should.
     // Spreadsheet with data gathered from logs showing that the last cast can happen up until 21s after the start of DA's initial cast.
     // https://docs.google.com/spreadsheets/d/1ibSslYC3mHxpKAK_BvU7T6DbyY4KiVShH_Nvw8N0-Qo/edit?usp=sharing
+
+    // Further investigation showed that this additional duration is actually distributed between 0.9 and 1.1s (assumed random)
     
-    pet_t::summon(t + confusion_time + timespan_t::from_seconds( 1.0 ) );
+    timespan_t bonus_time = timespan_t::from_seconds( 0.9 ) + timespan_t::from_millis ( rng().range( 0, 200 ) );
+
+    pet_t::summon(base_duration + confusion_time + bonus_time );
   }
   
 };
