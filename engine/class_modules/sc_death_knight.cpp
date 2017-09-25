@@ -2439,7 +2439,7 @@ struct valkyr_pet_t : public death_knight_pet_t
     
     timespan_t bonus_time = timespan_t::from_seconds( 0.9 ) + timespan_t::from_millis ( rng().range( 0, 200 ) );
 
-    pet_t::summon(base_duration + confusion_time + bonus_time );
+    pet_t::summon( base_duration + confusion_time + bonus_time );
   }
   
 };
