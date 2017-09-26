@@ -2821,6 +2821,27 @@ struct agony_t: public warlock_spell_t
       }
     }
 
+    if ( p() -> sets -> has_set_bonus( WARLOCK_AFFLICTION, T21, B2 ) )
+    {
+      if ( rng().roll( p() -> sets -> set( WARLOCK_AFFLICTION, T21, B2 ) -> proc_chance() ) )
+      {
+        // Okay, we got a proc
+        // Apparently this extends every active UA, so we have to go through the target list
+        // and find every active UA and extend it.
+        for ( player_t* tgt : p() -> sim -> target_list ) {
+          warlock_td_t* target_data = td( tgt );
+          for ( int i = 0; i < MAX_UAS; i++ ) {
+            if ( target_data -> dots_unstable_affliction[i] -> is_ticking() ) {
+              target_data -> dots_unstable_affliction[i] -> extend_duration(
+                timespan_t::from_millis( p() -> sets -> set( WARLOCK_AFFLICTION, T21, B2 ) -> effectN( 1 ).base_value() ),
+                true
+              );
+            }
+          }
+        }
+      }
+    }
+
     warlock_spell_t::tick( d );
   }
 };
