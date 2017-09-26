@@ -4677,7 +4677,7 @@ struct t21_death_coil_t : public death_knight_spell_t
   {
     death_knight_spell_t::impact( state );
 
-    // Can't happen ingame but if anyone wants to have fun, might as well let them :D
+    // Can't happen ingame but if anyone wants to have fun by combining T21 4P and T19 4P, might as well let them
     if ( rng().roll( player -> sets -> set( DEATH_KNIGHT_UNHOLY, T19, B4 ) -> effectN( 1 ).percent() ) )
     {
       p() -> trigger_festering_wound( state, 1, true ); // TODO: Does this ignore ICD?
