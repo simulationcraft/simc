@@ -4620,13 +4620,13 @@ struct coils_of_devastation_t
 // Doesn't replicate DA Empowerment, T21 4P ( = doesn't proc off itself), Runic Corruption
 struct t21_death_coil_t : public death_knight_spell_t
 {
-  coils_of_devastation_t* coils_of_devastation;
   const spell_data_t* unholy_vigor;
+  coils_of_devastation_t* coils_of_devastation;
 
   t21_death_coil_t( death_knight_t* p, coils_of_devastation_t* cod , const std::string& options_str ) :
     death_knight_spell_t( "death_coil T21", p, p -> find_specialization_spell( "Death Coil" ) ),
-    coils_of_devastation ( cod ),
-    unholy_vigor( p -> find_spell( 1  96263 ) )
+    unholy_vigor( p -> find_spell( 196263 ) ), 
+    coils_of_devastation ( cod )
   {
     parse_options( options_str );
 
