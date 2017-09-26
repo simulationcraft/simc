@@ -1,4 +1,4 @@
-SimulationCraft 730-02 for World of Warcraft 7.3.0 Live (wow build 24931)
+SimulationCraft 730-03 for World of Warcraft 7.3.0 Live (wow build 24931)
 
 Name             : Dual Wield (Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
@@ -2253,7 +2253,7 @@ Attributes       : ........ ........ .......x ........   ...x...x ........ .....
                  : ........ ........ ........ .....x..   ........ ........ ........ ........ 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : x....... ......x. ........ ........   ........ ........ ........ ........ 
-                 : Cannot crit (93)
+                 : Cannot crit (93), Disable player multipliers (221)
 Effects          :
 #1 (id=307170)   : Apply Aura (6) | Periodic Damage (3): physical every 2 seconds
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
@@ -3236,7 +3236,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ .....x..   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Cannot crit (93)
+                 : Cannot crit (93), Disable player multipliers (221)
 Effects          :
 #1 (id=323006)   : School Damage (2): chaos
                    Base Value: 10 | Scaled Value: 10 | Radius: 0 - 8 yards | Target: Unknown(87) -> AOE enemy (instant) (16)
