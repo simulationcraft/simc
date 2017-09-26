@@ -84,7 +84,7 @@ actions.finish+=/run_through,if=!talent.death_from_above.enabled|energy.time_to_
 # Stealth
 actions.stealth=variable,name=ambush_condition,value=combo_points.deficit>=2+2*(talent.ghostly_strike.enabled&!debuff.ghostly_strike.up)+buff.broadsides.up&energy>60&!buff.jolly_roger.up&!buff.hidden_blade.up
 actions.stealth+=/ambush,if=variable.ambush_condition
-actions.stealth+=/vanish,if=variable.ambush_condition|(equipped.mantle_of_the_master_assassin&mantle_duration=0&!variable.rtb_reroll&!variable.ss_useable)
+actions.stealth+=/vanish,if=(variable.ambush_condition|equipped.mantle_of_the_master_assassin&!variable.rtb_reroll&!variable.ss_useable)&mantle_duration=0
 actions.stealth+=/shadowmeld,if=variable.ambush_condition
 
 head=mask_of_multitudinous_eyes,id=139204,bonus_id=1806
