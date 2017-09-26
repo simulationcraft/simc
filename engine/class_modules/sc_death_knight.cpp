@@ -7,22 +7,17 @@
 // Unholy
 // - Does Festering Wound (generation|consumption) require a positive hit result?
 // - Skelebro has an aoe spell (Arrow Spray), but the AI using it is very inconsistent
-// - T21 bonuses : 2P has a bloodlet-like mechanic, except that the damage of the dot is updated to the new value instead of added
-//   4P isn't implemented on PTR yet (as of 2017-8-12)
 // Blood
 // - Fix APL
 // - Support legendaries
-// - Overall damage may still be lower than live, may need to investigate further
+// - Overall damage may be lower than live, need to investigate further
 // - Refactor Blooddrinker so it's able to critically tick on damage
 // - Probably a bunch of other things as well
-// - Add T20 bonuses
 // - T21 buff you gain after DRW's expiration, SpellID is : 253381 for the buff, 251877 for the set bonus
-//   It is implemented on PTR, but triggered really weirdly and doesn't match tooltip
 // - Make Rapid Decomposition tick 10 times per DnD cast (current is 9)
 // - Make DnD tick 13 times with Rapid Decomp (current is 12)
 // Frost
-// - T21 4P Damage proc : Freezing Death, spellID : 253590, set bonus ID : 251875
-//   really low damage atm (2017-8-12), could only be placeholder
+// - Wait for next spelldata extract to enable T21 4P
 // - Implement Inexorable Assault ? maybe ? somehow ?
 
 #include "simulationcraft.hpp"
