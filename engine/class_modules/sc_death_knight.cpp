@@ -4626,7 +4626,7 @@ struct t21_death_coil_t : public death_knight_spell_t
   t21_death_coil_t( death_knight_t* p, coils_of_devastation_t* cod , const std::string& options_str ) :
     death_knight_spell_t( "death_coil T21", p, p -> find_specialization_spell( "Death Coil" ) ),
     coils_of_devastation ( cod ),
-    unholy_vigor( p -> find_spell( 196263 ) )
+    unholy_vigor( p -> find_spell( 1  96263 ) )
   {
     parse_options( options_str );
 
@@ -4690,8 +4690,8 @@ struct t21_death_coil_t : public death_knight_spell_t
 // TODO: Conveert to mimic blizzard spells
 struct death_coil_t : public death_knight_spell_t
 {
-  coils_of_devastation_t* coils_of_devastation;
   const spell_data_t* unholy_vigor;
+  coils_of_devastation_t* coils_of_devastation;
   t21_death_coil_t* t21_death_coil;
   
   death_coil_t( death_knight_t* p, const std::string& options_str ) :
