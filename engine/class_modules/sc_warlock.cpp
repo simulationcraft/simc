@@ -6985,6 +6985,7 @@ void warlock_t::apl_affliction()
   writhe->add_action( "agony,if=remains<=tick_time+gcd" );
   writhe->add_action( "agony,cycle_targets=1,max_cycle_targets=5,target_if=sim.target!=target&talent.soul_harvest.enabled&cooldown.soul_harvest.remains<cast_time*6&remains<=duration*0.3&target.time_to_die>=remains&time_to_die>tick_time*3" );
   writhe->add_action( "agony,cycle_targets=1,max_cycle_targets=3,target_if=sim.target!=target&remains<=tick_time+gcd&time_to_die>tick_time*3" );
+  writhe->add_action( "seed_of_corruption,if=talent.sow_the_seeds.enabled&spell_targets.seed_of_corruption>=3&soul_shard=5" );
   writhe->add_action( "unstable_affliction,if=soul_shard=5|(time_to_die<=((duration+cast_time)*soul_shard))" );
   writhe->add_action( "drain_soul,cycle_targets=1,if=target.time_to_die<=gcd*2&soul_shard<5" );
   writhe->add_action( "life_tap,if=talent.empowered_life_tap.enabled&buff.empowered_life_tap.remains<=gcd" );
@@ -7007,7 +7008,7 @@ void warlock_t::apl_affliction()
   writhe->add_action( "life_tap,if=mana.pct<40&(buff.active_uas.stack<1|!buff.deadwind_harvester.remains)" );
   writhe->add_action( "reap_souls,if=(buff.deadwind_harvester.remains+buff.tormented_souls.react*(5+equipped.144364))>=(12*(5+1.5*equipped.144364))" );
   writhe->add_action( "phantom_singularity" );
-  writhe->add_action( "seed_of_corruption,if=((talent.sow_the_seeds.enabled&spell_targets.seed_of_corruption>=3)|spell_targets.seed_of_corruption>=5)&dot.corruption.remains<=cast_time+travel_time" );
+  writhe->add_action( "seed_of_corruption,if=(talent.sow_the_seeds.enabled&spell_targets.seed_of_corruption>=3)|(spell_targets.seed_of_corruption>3&dot.corruption.refreshable)" );
   writhe->add_action( "unstable_affliction,if=talent.contagion.enabled&dot.unstable_affliction_1.remains<cast_time&dot.unstable_affliction_2.remains<cast_time&dot.unstable_affliction_3.remains<cast_time&dot.unstable_affliction_4.remains<cast_time&dot.unstable_affliction_5.remains<cast_time" );
   writhe->add_action( "unstable_affliction,cycle_targets=1,target_if=buff.deadwind_harvester.remains>=duration+cast_time&dot.unstable_affliction_1.remains<cast_time&dot.unstable_affliction_2.remains<cast_time&dot.unstable_affliction_3.remains<cast_time&dot.unstable_affliction_4.remains<cast_time&dot.unstable_affliction_5.remains<cast_time" );
   writhe->add_action( "unstable_affliction,if=buff.deadwind_harvester.remains>tick_time*2&(!talent.contagion.enabled|soul_shard>1|buff.soul_harvest.remains)&(dot.unstable_affliction_1.ticking+dot.unstable_affliction_2.ticking+dot.unstable_affliction_3.ticking+dot.unstable_affliction_4.ticking+dot.unstable_affliction_5.ticking<5)" );
@@ -7032,6 +7033,7 @@ void warlock_t::apl_affliction()
   mg->add_action( "reap_souls,if=!buff.deadwind_harvester.remains&time>5&((buff.tormented_souls.react>=4+active_enemies|buff.tormented_souls.react>=9)|target.time_to_die<=buff.tormented_souls.react*(5+1.5*equipped.144364)+(buff.deadwind_harvester.remains*(5+1.5*equipped.144364)%12*(5+1.5*equipped.144364)))" );
   mg->add_action( "agony,cycle_targets=1,max_cycle_targets=5,target_if=sim.target!=target&talent.soul_harvest.enabled&cooldown.soul_harvest.remains<cast_time*6&remains<=duration*0.3&target.time_to_die>=remains&time_to_die>tick_time*3" );
   mg->add_action( "agony,cycle_targets=1,max_cycle_targets=4,if=remains<=(tick_time+gcd)" );
+  mg->add_action( "seed_of_corruption,if=talent.sow_the_seeds.enabled&spell_targets.seed_of_corruption>=3&soul_shard=5" );
   mg->add_action( "unstable_affliction,if=target=sim.target&soul_shard=5" );
   mg->add_action( "drain_soul,cycle_targets=1,if=target.time_to_die<gcd*2&soul_shard<5" );
   mg->add_action( "life_tap,if=talent.empowered_life_tap.enabled&buff.empowered_life_tap.remains<=gcd" );
@@ -7056,7 +7058,7 @@ void warlock_t::apl_affliction()
   mg->add_action( "siphon_life,cycle_targets=1,if=remains<=(duration*0.3)&target.time_to_die>=remains&(buff.active_uas.stack=0|prev_gcd.1.siphon_life)" );
   mg->add_action( "corruption,cycle_targets=1,if=(!talent.sow_the_seeds.enabled|spell_targets.seed_of_corruption<3)&spell_targets.seed_of_corruption<5&remains<=(duration*0.3)&target.time_to_die>=remains&(buff.active_uas.stack=0|prev_gcd.1.corruption)" );
   mg->add_action( "life_tap,if=talent.empowered_life_tap.enabled&buff.empowered_life_tap.remains<duration*0.3|talent.malefic_grasp.enabled&target.time_to_die>15&mana.pct<10" );
-  mg->add_action( "seed_of_corruption,if=(talent.sow_the_seeds.enabled&spell_targets.seed_of_corruption>=3)|spell_targets.seed_of_corruption>=5|spell_targets.seed_of_corruption>=3&dot.corruption.remains<=cast_time+travel_time" );
+  mg->add_action( "seed_of_corruption,if=(talent.sow_the_seeds.enabled&spell_targets.seed_of_corruption>=3)|(spell_targets.seed_of_corruption>=5&dot.corruption.remains<=cast_time+travel_time)" );
   mg->add_action( "unstable_affliction,if=target=sim.target&target.time_to_die<30" );
   mg->add_action( "unstable_affliction,if=target=sim.target&active_enemies>1&soul_shard>=4" );
   mg->add_action( "unstable_affliction,if=target=sim.target&(buff.active_uas.stack=0|(!prev_gcd.3.unstable_affliction&prev_gcd.1.unstable_affliction))&dot.agony.remains>cast_time+(6.5*spell_haste)" );
