@@ -7,22 +7,17 @@
 // Unholy
 // - Does Festering Wound (generation|consumption) require a positive hit result?
 // - Skelebro has an aoe spell (Arrow Spray), but the AI using it is very inconsistent
-// - T21 bonuses : 2P has a bloodlet-like mechanic, except that the damage of the dot is updated to the new value instead of added
-//   4P isn't implemented on PTR yet (as of 2017-8-12)
 // Blood
 // - Fix APL
 // - Support legendaries
-// - Overall damage may still be lower than live, may need to investigate further
+// - Overall damage may be lower than live, need to investigate further
 // - Refactor Blooddrinker so it's able to critically tick on damage
 // - Probably a bunch of other things as well
-// - Add T20 bonuses
 // - T21 buff you gain after DRW's expiration, SpellID is : 253381 for the buff, 251877 for the set bonus
-//   It is implemented on PTR, but triggered really weirdly and doesn't match tooltip
 // - Make Rapid Decomposition tick 10 times per DnD cast (current is 9)
 // - Make DnD tick 13 times with Rapid Decomp (current is 12)
 // Frost
-// - T21 4P Damage proc : Freezing Death, spellID : 253590, set bonus ID : 251875
-//   really low damage atm (2017-8-12), could only be placeholder
+// - Wait for next spelldata extract to enable T21 4P
 // - Implement Inexorable Assault ? maybe ? somehow ?
 
 #include "simulationcraft.hpp"
@@ -453,6 +448,8 @@ public:
     haste_buff_t* hungering_rune_weapon_haste;
     buff_t* t20_2pc_unholy;
     buff_t* t20_4pc_frost;
+    buff_t* t20_blood;
+    buff_t* t21_4p_blood;
 
     absorb_buff_t* blood_shield;
     buff_t* rune_tap;
@@ -519,6 +516,9 @@ public:
     action_t* t20_2pc_unholy;
     action_t* cold_heart;
     action_t* dragged_to_helheim;
+    action_t* freezing_death;
+    action_t* t20_blood;
+    action_t* t21_4pc_blood;
   } active_spells;
 
   // Gains
@@ -765,6 +765,7 @@ public:
   struct rppm_t
   {
     real_ppm_t* shambler;
+    real_ppm_t* freezing_death;
   } rppm;
 
   // Pets and Guardians
@@ -2411,7 +2412,7 @@ struct valkyr_pet_t : public death_knight_pet_t
     }
   }
   
-  void summon ( timespan_t t ) override
+  void summon ( timespan_t base_duration ) override
   {
     // Dark Arbiter has a random confusion time on spawn before starting casts.
     // Seems to have a bimodal distribution on how long an idle time there is after summoning, based
@@ -2424,12 +2425,16 @@ struct valkyr_pet_t : public death_knight_pet_t
     auto base = dist == 0 ? 2.25 : 3.25;
 
     confusion_time = timespan_t::from_seconds( rng().gauss( base, 0.25 ) );
-    
+
     // 7.3 : Examining logs showed that Dark Arbiter actually lasts one more second than it should.
     // Spreadsheet with data gathered from logs showing that the last cast can happen up until 21s after the start of DA's initial cast.
     // https://docs.google.com/spreadsheets/d/1ibSslYC3mHxpKAK_BvU7T6DbyY4KiVShH_Nvw8N0-Qo/edit?usp=sharing
+
+    // Further investigation showed that this additional duration is actually distributed between 0.9 and 1.1s (assumed random)
     
-    pet_t::summon(t + confusion_time + timespan_t::from_seconds( 1.0 ) );
+    timespan_t bonus_time = timespan_t::from_seconds( 0.9 ) + timespan_t::from_millis ( rng().range( 0, 200 ) );
+
+    pet_t::summon( base_duration + confusion_time + bonus_time );
   }
   
 };
@@ -2919,6 +2924,7 @@ struct death_knight_melee_attack_t : public death_knight_action_t<melee_attack_t
   void trigger_avalanche( const action_state_t* state ) const;
   void trigger_crystalline_swords( const action_state_t* state ) const;
   void trigger_necrobomb( const action_state_t* state ) const;
+  void trigger_freezing_death( const action_state_t* state ) const;
 };
 
 // ==========================================================================
@@ -2949,6 +2955,9 @@ struct death_knight_spell_t : public death_knight_action_t<spell_t>
 
     return m;
   }
+
+  void trigger_freezing_death( const action_state_t* state ) const;
+
 };
 
 struct death_knight_heal_t : public death_knight_action_t<heal_t>
@@ -2994,6 +3003,7 @@ void death_knight_melee_attack_t::impact( action_state_t* state )
 
   trigger_avalanche( state );
   trigger_necrobomb( state );
+  trigger_freezing_death( state );
 }
 
 // death_knight_melee_attack_t::ready() =====================================
@@ -3149,6 +3159,34 @@ void death_knight_melee_attack_t::trigger_necrobomb( const action_state_t* state
   p() -> active_spells.necrobomb -> execute();
 }
 
+// death_knight_melee_attack_t::trigger_freezing_death ===================
+
+void death_knight_melee_attack_t::trigger_freezing_death (const action_state_t* state ) const
+{
+  if ( ! result_is_hit( state -> result ) )
+  {
+    return;
+  }
+
+  if ( school != SCHOOL_FROST )
+  {
+    return;
+  }
+
+  if ( ! p() -> sets -> has_set_bonus( DEATH_KNIGHT_FROST, T21, B4) )
+  {
+    return;
+  }
+
+  if ( ! p() -> rppm.freezing_death -> trigger() )
+  {
+    return;
+  }
+  
+  p() -> active_spells.freezing_death -> set_target( execute_state -> target );
+  p() -> active_spells.freezing_death -> execute();
+}
+
 // ==========================================================================
 // Death Knight Spell Methods
 // ==========================================================================
@@ -3173,6 +3211,35 @@ void death_knight_spell_t::execute()
 void death_knight_spell_t::impact( action_state_t* state )
 {
   base_t::impact( state );
+  trigger_freezing_death( state );
+}
+
+// death_knight_spell_t::trigger_freezing_death ===================
+
+void death_knight_spell_t::trigger_freezing_death (const action_state_t* state ) const
+{
+  if ( ! result_is_hit( state -> result ) )
+  {
+    return;
+  }
+
+  if ( school != SCHOOL_FROST )
+  {
+    return;
+  }
+
+  if ( ! p() -> sets -> has_set_bonus( DEATH_KNIGHT_FROST, T21, B4) )
+  {
+    return;
+  }
+
+  if ( ! p() -> rppm.freezing_death -> trigger() )
+  {
+    return;
+  }
+
+  p() -> active_spells.freezing_death -> set_target( execute_state -> target );
+  p() -> active_spells.freezing_death -> execute();
 }
 
 // ==========================================================================
@@ -3455,6 +3522,16 @@ struct cold_heart_damage_t : public death_knight_spell_t
     m *= 1.0 + ( p() -> buffs.cold_heart -> stack() - 1 );
 
     return m;
+  }
+};
+
+// Freezing Death, T21 4P for Frost DK
+struct freezing_death_t : public death_knight_spell_t
+{
+  freezing_death_t( death_knight_t* p ) :
+    death_knight_spell_t( "freezing_death", p, p -> find_spell( 253590 ) )
+  {
+    background = true;
   }
 };
 
@@ -3941,7 +4018,12 @@ struct blood_boil_t : public death_knight_spell_t
       p() -> buffs.skullflowers_haemostasis -> trigger();
 
       p() -> apply_diseases( state, DISEASE_BLOOD_PLAGUE );		
-    }		
+    }
+
+    if ( p() -> sets -> has_set_bonus( DEATH_KNIGHT_BLOOD, T20, B2 ) )
+    {
+      p() -> buffs.t20_blood -> trigger();
+    }
   }
 
 };
@@ -4518,14 +4600,105 @@ struct deaths_caress_t : public death_knight_spell_t
 
 // Death Coil ===============================================================
 
+// Unholy T21 2P
+// Will probably have to adapt it so it doesn't double dip with mastery once/if Blizzard makes it shadow damage
+struct coils_of_devastation_t 
+  : public residual_action::residual_periodic_action_t<death_knight_spell_t>
+{
+  coils_of_devastation_t( death_knight_t* p ) :
+    residual_action::residual_periodic_action_t<death_knight_spell_t>
+    ( "coils_of_devastation" , p, p -> find_spell( 253367 ) )
+  {
+    background = true;
+    may_miss = may_crit = false;
+  } 
+};
+
+// Unholy T21 4P
+// Procs some mechanics of Death Coil but not all of them
+// Replicates unholy vigor, scourge of the worlds, shadow infusion, T21 2P and Death March
+// Doesn't replicate DA Empowerment, T21 4P ( = doesn't proc off itself), Runic Corruption
+struct t21_death_coil_t : public death_knight_spell_t
+{
+  const spell_data_t* unholy_vigor;
+  coils_of_devastation_t* coils_of_devastation;
+
+  t21_death_coil_t( death_knight_t* p, coils_of_devastation_t* cod , const std::string& options_str ) :
+    death_knight_spell_t( "death_coil T21", p, p -> find_specialization_spell( "Death Coil" ) ),
+    unholy_vigor( p -> find_spell( 196263 ) ), 
+    coils_of_devastation ( cod )
+  {
+    parse_options( options_str );
+
+    attack_power_mod.direct = p -> find_spell( 47632 ) -> effectN( 1 ).ap_coeff();
+    base_multiplier *= 1.0 + p -> artifact.deadliest_coil.percent();
+
+    // TODO: Wrong damage spell so generic application does not work
+    base_multiplier *= 1.0 + p -> spec.unholy_death_knight -> effectN( 1 ).percent();
+  }
+
+  double cost() const override
+  {
+    return 0;
+  }
+
+  void execute() override
+  {
+    death_knight_spell_t::execute();
+
+    if ( result_is_hit( execute_state -> result ) )
+    {
+      td( execute_state -> target ) -> debuff.scourge_of_worlds -> trigger();
+    }
+
+    if ( p() -> talent.shadow_infusion -> ok() && ! p() -> buffs.dark_transformation -> up() )
+    {
+      p() -> cooldown.dark_transformation -> adjust( -timespan_t::from_seconds(
+        p() -> talent.shadow_infusion -> effectN( 1 ).base_value() ) );
+    }
+
+    if ( p() -> pets.ghoul_pet )
+    {
+      p() -> pets.ghoul_pet -> resource_gain( RESOURCE_ENERGY,
+        unholy_vigor -> effectN( 1 ).resource( RESOURCE_ENERGY ),
+        p() -> pets.ghoul_pet -> unholy_vigor,
+        this );
+    }
+
+    p() -> trigger_death_march( execute_state );
+  }
+
+  void impact( action_state_t* state ) override
+  {
+    death_knight_spell_t::impact( state );
+
+    // Can't happen ingame but if anyone wants to have fun by combining T21 4P and T19 4P, might as well let them
+    if ( rng().roll( player -> sets -> set( DEATH_KNIGHT_UNHOLY, T19, B4 ) -> effectN( 1 ).percent() ) )
+    {
+      p() -> trigger_festering_wound( state, 1, true ); // TODO: Does this ignore ICD?
+    }
+
+    // Coils of Devastation application
+    if ( p() -> sets -> has_set_bonus( DEATH_KNIGHT_UNHOLY, T21, B2 ) && result_is_hit( state -> result ) )
+    {
+      residual_action::trigger( coils_of_devastation, state -> target,
+        state -> result_amount * p() -> find_spell( 251871 ) -> effectN( 1 ).percent() );
+    }
+  }
+};
+
 // TODO: Conveert to mimic blizzard spells
 struct death_coil_t : public death_knight_spell_t
 {
   const spell_data_t* unholy_vigor;
+  coils_of_devastation_t* coils_of_devastation;
+  t21_death_coil_t* t21_death_coil;
   
   death_coil_t( death_knight_t* p, const std::string& options_str ) :
     death_knight_spell_t( "death_coil", p, p -> find_specialization_spell( "Death Coil" ) ),
-    unholy_vigor( p -> find_spell( 196263 ) )
+    unholy_vigor( p -> find_spell( 196263 ) ),
+    coils_of_devastation( nullptr ),
+    t21_death_coil( nullptr )
   {
     parse_options( options_str );
 
@@ -4535,6 +4708,17 @@ struct death_coil_t : public death_knight_spell_t
     // TODO: Wrong damage spell so generic application does not work
     base_multiplier *= 1.0 + p -> spec.unholy_death_knight -> effectN( 1 ).percent();
     
+    if ( p -> sets -> has_set_bonus( DEATH_KNIGHT_UNHOLY , T21, B2 ) )
+    {
+      coils_of_devastation = new coils_of_devastation_t( p );
+      add_child( coils_of_devastation );
+    }
+
+    if ( p -> sets -> has_set_bonus( DEATH_KNIGHT_UNHOLY, T21, B4 ) )
+    {
+      t21_death_coil = new t21_death_coil_t( p, coils_of_devastation, options_str );
+      add_child( t21_death_coil );
+    }
   }
 
   double cost() const override
@@ -4590,7 +4774,23 @@ struct death_coil_t : public death_knight_spell_t
     {
       p() -> trigger_festering_wound( state, 1, true ); // TODO: Does this ignore ICD?
     }
-    
+
+    // Coils of Devastation application
+    if ( p() -> sets -> has_set_bonus( DEATH_KNIGHT_UNHOLY, T21, B2 ) && result_is_hit( state -> result ) )
+    {
+      residual_action::trigger( coils_of_devastation, state -> target,
+        state -> result_amount * p() -> find_spell( 251871 ) -> effectN( 1 ).percent() );
+    }
+
+    // T21 4P gives 20% chance to deal damage a second time
+    if ( p() -> sets -> has_set_bonus( DEATH_KNIGHT_UNHOLY, T21, B4 ) && result_is_hit( state -> result ) )
+    {
+      if ( rng().roll( p() -> find_spell( 251872 ) -> proc_chance() ) ) 
+      {
+        t21_death_coil -> set_target( execute_state -> target );
+        t21_death_coil -> execute();
+      }
+    } 
   }
 };
 
@@ -4771,6 +4971,11 @@ struct death_strike_t : public death_knight_melee_attack_t
          p() -> buffs.bone_shield -> stack() >= p() -> talent.ossuary -> effectN( 1 ).base_value() )
     {
       c += p() -> spell.ossuary -> effectN( 1 ).resource( RESOURCE_RUNIC_POWER );
+    }
+
+    if ( p() -> buffs.t20_blood -> check() && p() -> sets -> has_set_bonus( DEATH_KNIGHT_BLOOD, T20, B4 ) )
+    {
+      c += p() -> find_spell( 242010 ) -> effectN( 2 ).resource( RESOURCE_RUNIC_POWER );
     }
 
     return c;
@@ -7234,6 +7439,11 @@ bool death_knight_t::create_actions()
     active_spells.dragged_to_helheim = new dragged_to_helheim_t( this );
   }
 
+  if ( spec.frost_death_knight -> ok() )
+  {
+    active_spells.freezing_death = new freezing_death_t( this );
+  }
+
   return player_t::create_actions();
 }
 
@@ -7506,6 +7716,7 @@ void death_knight_t::init_rng()
   player_t::init_rng();
 
   rppm.shambler = get_rppm( "shambler", artifact.the_shambler );
+  rppm.freezing_death = get_rppm ( "freezing death", find_spell( 251875) );
 }
 
 // death_knight_t::init_base ================================================
@@ -7871,11 +8082,9 @@ std::string death_knight_t::default_flask() const
                            ( true_level >= 80  ) ? "titanic_strength" :
                            "disabled";
 
-  // TODO: Blood
-  switch ( specialization() )
-  {
-    default: return flask_name;
-  }
+  // All specs use a strength flask as default
+  return flask_name;
+  
 }
 
 // death_knight_t::default_rune =============================================
@@ -8351,6 +8560,9 @@ void death_knight_t::create_buffs()
   buffs.t20_4pc_frost = buff_creator_t( this, "t20_4pc_frost" )
     .default_value( 0.01 )
     .chance( sets -> has_set_bonus( DEATH_KNIGHT_FROST, T20, B4 ) );
+  buffs.t20_blood = stat_buff_creator_t( this, "gravewarden", find_spell( 242010 ) )
+    .add_stat( STAT_VERSATILITY_RATING, find_spell( 242010 ) -> effectN( 1 ).base_value() );
+    
 }
 
 // death_knight_t::init_gains ===============================================

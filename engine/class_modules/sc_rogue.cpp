@@ -7414,7 +7414,7 @@ void rogue_t::init_action_list()
     action_priority_list_t* stealth = get_action_priority_list( "stealth", "Stealth" );
     stealth -> add_action( "variable,name=ambush_condition,value=combo_points.deficit>=2+2*(talent.ghostly_strike.enabled&!debuff.ghostly_strike.up)+buff.broadsides.up&energy>60&!buff.jolly_roger.up&!buff.hidden_blade.up" );
     stealth -> add_action( this, "Ambush", "if=variable.ambush_condition" );
-    stealth -> add_action( this, "Vanish", "if=variable.ambush_condition|(equipped.mantle_of_the_master_assassin&mantle_duration=0&!variable.rtb_reroll&!variable.ss_useable)" );
+    stealth -> add_action( this, "Vanish", "if=(variable.ambush_condition|equipped.mantle_of_the_master_assassin&!variable.rtb_reroll&!variable.ss_useable)&mantle_duration=0" );
     stealth -> add_action( "shadowmeld,if=variable.ambush_condition" );
   }
   else if ( specialization() == ROGUE_SUBTLETY )
