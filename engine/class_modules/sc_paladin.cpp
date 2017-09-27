@@ -3960,6 +3960,12 @@ struct judgment_t : public paladin_melee_attack_t
       // Judgment hits/crits reduce SotR recharge time
       if ( p() -> specialization() == PALADIN_PROTECTION )
       {
+        if ( p() -> sets -> has_set_bonus( PALADIN_PROTECTION, T20, B2 ) &&
+          rng().roll( p() -> sets -> set( PALADIN_PROTECTION, T20, B2 ) -> proc_chance() ) )
+        {
+          p() -> cooldowns.avengers_shield -> reset( true );
+        }
+      
         p() -> cooldowns.shield_of_the_righteous -> adjust( s -> result == RESULT_CRIT ? 2.0 * sotr_cdr : sotr_cdr );
 
         if ( p() -> sets -> has_set_bonus( PALADIN_PROTECTION, T20, B2 ) &&
