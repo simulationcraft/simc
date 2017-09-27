@@ -8101,7 +8101,7 @@ std::string death_knight_t::default_rune() const
 void death_knight_t::default_apl_frost()
 {
   action_priority_list_t* def         = get_action_priority_list( "default" );
-  action_priority_list_t* cds         = get_action_priority_list( "cds" );
+  action_priority_list_t* cooldowns   = get_action_priority_list( "cooldowns" );
   action_priority_list_t* cold_heart  = get_action_priority_list( "cold_heart" );
   action_priority_list_t* standard    = get_action_priority_list( "standard" );
   action_priority_list_t* obliteration= get_action_priority_list( "obliteration" );
@@ -8118,7 +8118,7 @@ void death_knight_t::default_apl_frost()
   def -> add_action( this, "Mind Freeze" );
   
   // Choose APL
-  def -> add_action( "call_action_list,name=cds" );
+  def -> add_action( "call_action_list,name=cooldowns" );
   def -> add_action( "run_action_list,name=bos_pooling,if=talent.breath_of_sindragosa.enabled&cooldown.breath_of_sindragosa.remains<15" );
   def -> add_action( "run_action_list,name=bos_ticking,if=dot.breath_of_sindragosa.ticking" );
   def -> add_action( "run_action_list,name=obliteration,if=buff.obliteration.up" );
@@ -8158,36 +8158,36 @@ void death_knight_t::default_apl_frost()
   bos_ticking -> add_action( this, "Empower Rune Weapon", "if=runic_power<30&rune.time_to_2>gcd" );
 	
   // Racials
-  cds -> add_action( "arcane_torrent,if=runic_power.deficit>=20&!talent.breath_of_sindragosa.enabled" );
-  cds -> add_action( "arcane_torrent,if=dot.breath_of_sindragosa.ticking&runic_power.deficit>=50&rune<2" );
-  cds -> add_action( "blood_fury,if=buff.pillar_of_frost.up" );
-  cds -> add_action( "berserking,if=buff.pillar_of_frost.up" );
+  cooldowns -> add_action( "arcane_torrent,if=runic_power.deficit>=20&!talent.breath_of_sindragosa.enabled" );
+  cooldowns -> add_action( "arcane_torrent,if=dot.breath_of_sindragosa.ticking&runic_power.deficit>=50&rune<2" );
+  cooldowns -> add_action( "blood_fury,if=buff.pillar_of_frost.up" );
+  cooldowns -> add_action( "berserking,if=buff.pillar_of_frost.up" );
 
   // On-use itemos
-  cds -> add_action( "use_items" );
-  cds -> add_action( "use_item,name=ring_of_collapsing_futures,"
+  cooldowns -> add_action( "use_items" );
+  cooldowns -> add_action( "use_item,name=ring_of_collapsing_futures,"
                      "if=(buff.temptation.stack=0&target.time_to_die>60)|target.time_to_die<60" );
-  cds -> add_action( "use_item,name=horn_of_valor,"
+  cooldowns -> add_action( "use_item,name=horn_of_valor,"
                      "if=buff.pillar_of_frost.up&(!talent.breath_of_sindragosa.enabled|!cooldown.breath_of_sindragosa.remains)" );
-  cds -> add_action( "use_item,name=draught_of_souls,"
+  cooldowns -> add_action( "use_item,name=draught_of_souls,"
                      "if=rune.time_to_5<3&(!dot.breath_of_sindragosa.ticking|runic_power>60)" );
-  cds -> add_action( "use_item,name=feloiled_infernal_machine,"
+  cooldowns -> add_action( "use_item,name=feloiled_infernal_machine,"
                      "if=!talent.obliteration.enabled|buff.obliteration.up" );
 
   // In-combat potion
-  cds -> add_action( "potion,if=buff.pillar_of_frost.up&(dot.breath_of_sindragosa.ticking|buff.obliteration.up|talent.hungering_rune_weapon.enabled)" );
+  cooldowns -> add_action( "potion,if=buff.pillar_of_frost.up&(dot.breath_of_sindragosa.ticking|buff.obliteration.up|talent.hungering_rune_weapon.enabled)" );
 
   // Pillar of Frost
-  cds -> add_action( this, "Pillar of Frost", "if=talent.obliteration.enabled&(cooldown.obliteration.remains>20|cooldown.obliteration.remains<10|!talent.icecap.enabled)", "Pillar of frost conditions" );
-  cds -> add_action( this, "Pillar of Frost", "if=talent.breath_of_sindragosa.enabled&cooldown.breath_of_sindragosa.ready&runic_power>50" );
-  cds -> add_action( this, "Pillar of Frost", "if=talent.breath_of_sindragosa.enabled&cooldown.breath_of_sindragosa.remains>40" );
-  cds -> add_action( this, "Pillar of Frost", "if=talent.hungering_rune_weapon.enabled" );
+  cooldowns -> add_action( this, "Pillar of Frost", "if=talent.obliteration.enabled&(cooldown.obliteration.remains>20|cooldown.obliteration.remains<10|!talent.icecap.enabled)", "Pillar of frost conditions" );
+  cooldowns -> add_action( this, "Pillar of Frost", "if=talent.breath_of_sindragosa.enabled&cooldown.breath_of_sindragosa.ready&runic_power>50" );
+  cooldowns -> add_action( this, "Pillar of Frost", "if=talent.breath_of_sindragosa.enabled&cooldown.breath_of_sindragosa.remains>40" );
+  cooldowns -> add_action( this, "Pillar of Frost", "if=talent.hungering_rune_weapon.enabled" );
   
   // Tier 100 cooldowns + Cold Heart
-  cds -> add_talent( this, "Breath of Sindragosa", "if=buff.pillar_of_frost.up" );
-  cds -> add_action( "call_action_list,name=cold_heart,if=equipped.cold_heart&((buff.cold_heart.stack>=10&!buff.obliteration.up)|target.time_to_die<=gcd)" );
-  cds -> add_talent( this, "Obliteration", "if=rune>=1&runic_power>=20&(!talent.frozen_pulse.enabled|rune<2|buff.pillar_of_frost.remains<=12)&(!talent.gathering_storm.enabled|!cooldown.remorseless_winter.ready)&(buff.pillar_of_frost.up|!talent.icecap.enabled)" );
-  cds -> add_talent( this, "Hungering Rune Weapon", "if=!buff.hungering_rune_weapon.up&rune.time_to_2>gcd&runic_power<40" );
+  cooldowns -> add_talent( this, "Breath of Sindragosa", "if=buff.pillar_of_frost.up" );
+  cooldowns -> add_action( "call_action_list,name=cold_heart,if=equipped.cold_heart&((buff.cold_heart.stack>=10&!buff.obliteration.up)|target.time_to_die<=gcd)" );
+  cooldowns -> add_talent( this, "Obliteration", "if=rune>=1&runic_power>=20&(!talent.frozen_pulse.enabled|rune<2|buff.pillar_of_frost.remains<=12)&(!talent.gathering_storm.enabled|!cooldown.remorseless_winter.ready)&(buff.pillar_of_frost.up|!talent.icecap.enabled)" );
+  cooldowns -> add_talent( this, "Hungering Rune Weapon", "if=!buff.hungering_rune_weapon.up&rune.time_to_2>gcd&runic_power<40" );
 
   // Cold Heart conditionals
   cold_heart -> add_action( this, "Chains of Ice", "if=buff.cold_heart.stack=20&buff.unholy_strength.up&cooldown.pillar_of_frost.remains>6", "Cold heart conditions" );
