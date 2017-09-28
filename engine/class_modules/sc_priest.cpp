@@ -427,7 +427,6 @@ public:
   role_e primary_role() const override;
   stat_e convert_hybrid_stat( stat_e s ) const override;
   void assess_damage( school_e school, dmg_e dtype, action_state_t* s ) override;
-  double composite_spell_crit_chance() const override;
   double composite_melee_haste() const override;
   double composite_melee_speed() const override;
   double composite_spell_haste() const override;
