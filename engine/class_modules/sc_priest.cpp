@@ -1811,6 +1811,20 @@ public:
     priest.buffs.shadowy_insight->expire();
   }
 
+  virtual double composite_crit_chance() const override
+  {
+    double c = priest_spell_t::composite_crit_chance();
+
+      if ( priest.sets->has_set_bonus( PRIEST_SHADOW, T21, B4 ) 
+      && priest.buffs.overwhelming_darkness->check() )
+    {
+      c +=   ( priest.buffs.overwhelming_darkness->check() - 1 )
+             * priest.buffs.overwhelming_darkness->data().effectN(1).percent();
+    }
+
+    return c;
+  }
+
   void execute() override
   {
     priest_spell_t::execute();
@@ -2042,6 +2056,20 @@ struct mind_flay_t final : public priest_spell_t
       am *= 1.0 + priest.buffs.void_ray->check() * priest.buffs.void_ray->data().effectN( 1 ).percent();
 
     return am;
+  }
+
+  virtual double composite_crit_chance() const override
+  {
+    double c = priest_spell_t::composite_crit_chance();
+
+    if (priest.sets->has_set_bonus(PRIEST_SHADOW, T21, B4)
+      && priest.buffs.overwhelming_darkness->check())
+    {
+      c += (priest.buffs.overwhelming_darkness->check() - 1)
+        * priest.buffs.overwhelming_darkness->data().effectN(1).percent();
+    }
+
+    return c;
   }
 
   /// Legendary the_twins_painful_touch
@@ -3151,6 +3179,20 @@ struct void_bolt_t final : public priest_spell_t
     }
   }
 
+  virtual double composite_crit_chance() const override
+  {
+    double c = priest_spell_t::composite_crit_chance();
+
+    if (priest.sets->has_set_bonus(PRIEST_SHADOW, T21, B4)
+      && priest.buffs.overwhelming_darkness->check())
+    {
+      c += (priest.buffs.overwhelming_darkness->check() - 1)
+        * priest.buffs.overwhelming_darkness->data().effectN(1).percent();
+    }
+
+    return c;
+  }
+
   bool ready() override
   {
     if ( !( priest.buffs.voidform->check() ) )
@@ -4187,20 +4229,6 @@ void priest_t::assess_damage( school_e school, dmg_e dtype, action_state_t* s )
   }
 
   player_t::assess_damage( school, dtype, s );
-}
-
-double priest_t::composite_spell_crit_chance() const
-{
-  double c = player_t::composite_spell_crit_chance();
-
-  if ( sets->has_set_bonus( PRIEST_SHADOW, T21, B4 ) 
-      && buffs.overwhelming_darkness->check() ) 
-  {
-    c +=   ( buffs.overwhelming_darkness->check() - 1 )
-         * buffs.overwhelming_darkness->data().effectN(1).percent();
-  }
-
-  return c;
 }
 
 double priest_t::composite_spell_haste() const
