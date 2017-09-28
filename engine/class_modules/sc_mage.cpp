@@ -4198,18 +4198,7 @@ struct frostbolt_t : public frost_mage_spell_t
 
       trigger_unstable_magic( s );
       trigger_shattered_fragments( s -> target );
-
-      p() -> buffs.arctic_blast -> expire();
     }
-  }
-
-  virtual double action_multiplier() const override
-  {
-    double am = frost_mage_spell_t::action_multiplier();
-
-    am *= 1.0 + p() -> buffs.arctic_blast -> check_value();
-
-    return am;
   }
 };
 
@@ -4654,8 +4643,6 @@ struct ice_lance_t : public frost_mage_spell_t
       }
     }
 
-    // TODO: Set bonus is currently bugged on PTR; probably intended to
-    // expire on any Ice Lance impact.
     if ( p() -> sets -> has_set_bonus( MAGE_FROST, T21, B4 ) )
     {
       p() -> buffs.arctic_blast -> expire();
@@ -9004,6 +8991,12 @@ public:
       .operation( hotfix::HOTFIX_SET )
       .modifier( 47.0 )
       .verification_value( 50.0 );
+
+    hotfix::register_effect( "Mage", "2017-09-28", "PTR change to Frost T21 4pc.", 473551 )
+      .field( "base_value" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 25.0 )
+      .verification_value( 75.0 );
   }
 
   virtual bool valid() const override { return true; }
