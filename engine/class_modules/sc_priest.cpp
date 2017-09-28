@@ -5186,7 +5186,7 @@ void priest_t::apl_shadow()
   // Surrender to Madness APL
   s2m->add_action(
       "silence,if=equipped.sephuzs_secret&(target.is_add|target.debuff.casting."
-      "react)&cooldown.buff_sephuzs_secret.remains<1&!buff.sephuzs_secret.up"
+      "react)&cooldown.buff_sephuzs_secret.up&!buff.sephuzs_secret.up"
       ",cycle_targets=1");
   s2m->add_action( "void_bolt,if=buff.insanity_drain_stacks.value<6&set_bonus.tier19_4pc" );
   s2m->add_action(
@@ -5280,7 +5280,7 @@ void priest_t::apl_shadow()
       "(buff.insanity_drain_stacks.value)" );
   vf->add_action(
     "silence,if=equipped.sephuzs_secret&(target.is_add|target.debuff.casting."
-    "react)&cooldown.buff_sephuzs_secret.remains<1&!buff.sephuzs_secret.up"
+    "react)&cooldown.buff_sephuzs_secret.up&!buff.sephuzs_secret.up"
     "&buff.insanity_drain_stacks.value>10,cycle_targets=1");
   vf->add_action( "void_bolt" );
 if ( race == RACE_BLOOD_ELF )

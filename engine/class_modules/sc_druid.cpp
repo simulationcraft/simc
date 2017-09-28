@@ -5682,9 +5682,6 @@ struct lunar_strike_t : public druid_spell_t
     if ( p() -> buff.lunar_empowerment -> check() )
       am *= 1.0 + composite_lunar_empowerment();
 
-    if (p()->sets->has_set_bonus(DRUID_BALANCE, T21, B2))
-      am *= 1.0 + p()->sets->set(DRUID_BALANCE, T21, B2)->effectN(2).percent();
-
     return am;
   }
 
@@ -6092,9 +6089,6 @@ struct solar_wrath_t : public druid_spell_t
     if ( p() -> buff.solar_empowerment -> check() )
       am *= 1.0 + composite_solar_empowerment();
 
-    if (p()->sets->has_set_bonus(DRUID_BALANCE, T21, B2))
-      am *= 1.0 + p()->sets->set(DRUID_BALANCE, T21, B2)->effectN(1).percent();
-
     return am;
   }
 
@@ -6221,6 +6215,9 @@ struct starfall_t : public druid_spell_t
 
       if ( p() -> mastery.starlight -> ok() )
         am *= 1.0 + p() -> cache.mastery_value();
+
+      if (p()->sets->has_set_bonus(DRUID_BALANCE, T21, B2))
+          am *= 1.0 + p()->sets->set(DRUID_BALANCE, T21, B2)->effectN(1).percent();
 
       return am;
     }
@@ -6421,6 +6418,9 @@ struct starsurge_t : public druid_spell_t
 
     if ( p() -> mastery.starlight -> ok() )
       am *= 1.0 + p() -> cache.mastery_value();
+
+    if (p()->sets->has_set_bonus(DRUID_BALANCE, T21, B2))
+        am *= 1.0 + p()->sets->set(DRUID_BALANCE, T21, B2)->effectN(2).percent();
 
     return am;
   }
