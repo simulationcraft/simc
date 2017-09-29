@@ -5321,16 +5321,6 @@ struct earth_shock_t : public shaman_spell_t
     }
   }
 
-  void schedule_travel( action_state_t* state ) override
-  {
-    if ( overload )
-    {
-      overload -> base_dd_min = overload -> base_dd_max = state -> result_total;
-    }
-
-    shaman_spell_t::schedule_travel( state );
-  }
-
   double spell_direct_power_coefficient( const action_state_t* ) const override
   { return base_coefficient * cost(); }
 
