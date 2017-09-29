@@ -128,7 +128,6 @@ struct rogue_td_t : public actor_target_data_t
     buff_t* kingsbane;
     buff_t* blood_of_the_assassinated;
     buff_t* toxic_blade;
-    buff_t* t21_2pc_assassination;
   } debuffs;
 
   rogue_td_t( player_t* target, rogue_t* source );
@@ -297,6 +296,7 @@ struct rogue_t : public player_t
     buff_t* t20_2pc_outlaw;
     haste_buff_t* t20_4pc_outlaw;
     // T21 Raid
+    buff_t* t21_2pc_assassination;
     buff_t* t21_2pc_outlaw;
 
 
@@ -1931,9 +1931,9 @@ struct rogue_poison_t : public rogue_attack_t
     double c = rogue_attack_t::composite_crit_chance();
 
     const rogue_td_t* tdata = td( target );
-    if ( affected_by.t21_2pc_assassination && tdata -> debuffs.t21_2pc_assassination -> up() )
+    if ( affected_by.t21_2pc_assassination && p() -> buffs.t21_2pc_assassination -> up() )
     {
-      c += tdata -> debuffs.t21_2pc_assassination -> value();
+      c += p() -> buffs.t21_2pc_assassination -> value();
     }
 
     return c;
@@ -1966,7 +1966,14 @@ struct deadly_poison_t : public rogue_poison_t
       }
 
       return m;
-    };
+    }
+
+    void impact( action_state_t* state ) override
+    {
+      rogue_poison_t::impact( state );
+
+      p() -> trigger_t21_4pc_assassination( state );
+    }
   };
 
   struct deadly_poison_dot_t : public rogue_poison_t
@@ -2895,7 +2902,7 @@ struct envenom_t : public rogue_attack_t
 
     if ( p() -> sets -> has_set_bonus( ROGUE_ASSASSINATION, T21, B2 ) )
     {
-      td( execute_state -> target ) -> debuffs.t21_2pc_assassination -> trigger();
+      p() -> buffs.t21_2pc_assassination -> trigger();
     }
   }
 };
@@ -6880,7 +6887,7 @@ void rogue_t::trigger_t21_4pc_assassination( const action_state_t* state )
 
   if ( rng().roll( sets -> set( ROGUE_ASSASSINATION, T21, B4 ) -> proc_chance() ) )
   {
-    resource_gain( RESOURCE_ENERGY, sets -> set( ROGUE_ASSASSINATION, T21, B4 ) -> effectN( 1 ).base_value(), gains.t21_4pc_assassination, state -> action );
+    resource_gain( RESOURCE_ENERGY, sets -> set( ROGUE_ASSASSINATION, T21, B4 ) -> effectN( 1 ).trigger() -> effectN( 1 ).base_value(), gains.t21_4pc_assassination, state -> action );
   }
 }
 
@@ -6941,8 +6948,6 @@ rogue_td_t::rogue_td_t( player_t* target, rogue_t* source ) :
     .default_value( vd -> effectN( 1 ).percent() );
   debuffs.toxic_blade = buff_creator_t( *this, "toxic_blade", source -> talent.toxic_blade -> effectN( 4 ).trigger() )
     .default_value( source -> talent.toxic_blade -> effectN( 4 ).trigger() -> effectN( 1 ).percent() );
-  debuffs.t21_2pc_assassination = buff_creator_t( *this, "virulent_poisons", source -> sets -> set( ROGUE_ASSASSINATION, T21, B2 ) -> effectN( 1 ).trigger() )
-    .default_value( source -> sets -> set( ROGUE_ASSASSINATION, T21, B2 ) -> effectN( 1 ).trigger() -> effectN( 1 ).percent() );
 
   debuffs.ghostly_strike = buff_creator_t( *this, "ghostly_strike", source -> talent.ghostly_strike )
     .default_value( source -> talent.ghostly_strike -> effectN( 5 ).percent() );
@@ -8433,6 +8438,8 @@ void rogue_t::create_buffs()
                                              .affects_regen( true )
                                              .add_invalidate( CACHE_ATTACK_SPEED );
   // T21 Raid
+  buffs.t21_2pc_assassination              = buff_creator_t( this, "virulent_poisons", sets -> set( ROGUE_ASSASSINATION, T21, B2 ) -> effectN( 1 ).trigger() )
+                                             .default_value( sets -> set( ROGUE_ASSASSINATION, T21, B2 ) -> effectN( 1 ).trigger() -> effectN( 1 ).percent() );
   buffs.t21_2pc_outlaw                     = buff_creator_t( this, "sharpened_sabers", find_spell( 252285 ) )
                                              .default_value( find_spell( 252285 ) -> effectN( 1 ).percent() );
 
