@@ -106,7 +106,7 @@ bool progress_bar_t::update( bool finished, int index )
     return false;
   }
 
-  if ( sim.target_error > 0 && sim.current_iteration < sim.analyze_error_interval )
+  if ( ! finished && sim.target_error > 0 && sim.current_iteration < sim.analyze_error_interval )
   {
     return false;
   }
