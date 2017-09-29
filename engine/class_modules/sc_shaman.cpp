@@ -4878,9 +4878,7 @@ struct icefury_t : public shaman_spell_t
   {
     shaman_spell_t::execute();
 
-    p() -> buff.icefury -> trigger( data().initial_stacks(), ( p() -> talent.icefury -> effectN( 3 ).percent() ) + ( p() -> buff.t21_2pc_elemental -> stack_value() ) );
-    
-    p()->buff.t21_2pc_elemental->expire();
+    p() -> buff.icefury -> trigger( data().initial_stacks(), ( p() -> talent.icefury -> effectN( 3 ).percent() ) );
 
   }
 };
@@ -5488,6 +5486,48 @@ struct flame_shock_t : public shaman_spell_t
 
 // Frost Shock Spell ========================================================
 
+// T21 4pc bonus
+struct frost_shock_overload_t : public elemental_overload_spell_t
+{
+  action_t* parent;
+  double base_coefficient;
+
+  frost_shock_overload_t( shaman_t* p, action_t* pa, double bc ) :
+    elemental_overload_spell_t( p, "frost_shock_overload", p -> find_spell( 252143 ) ),
+    parent( pa ), base_coefficient( bc )
+  {
+
+    // TODO: Currently not flagged to benefit, but safe assumption
+    crit_bonus_multiplier *= 1.0 + p -> spec.elemental_fury -> effectN( 1 ).percent()
+                                 + p -> artifact.elemental_destabilization.percent();
+  }
+
+  void init() override
+  {
+    elemental_overload_spell_t::init();
+
+    snapshot_flags |= STATE_SP | STATE_MUL_DA | STATE_VERSATILITY | STATE_MUL_PERSISTENT | STATE_TARGET;
+  }
+
+  double action_multiplier() const override
+  {
+    auto m = elemental_overload_spell_t::action_multiplier();
+
+    m *= 1.0 + p() -> buff.icefury -> value();
+
+    m *= 1.0 + p() -> buff.t21_2pc_elemental -> stack_value();
+
+    // TODO: Currently not in hotfix data but save to assume it'll be added
+    m *= 1.0 + p() -> spec.elemental_shaman -> effectN( 1 ).percent();
+
+    return m;
+  }
+
+  double spell_direct_power_coefficient( const action_state_t* ) const override
+  { return parent -> last_resource_cost * base_coefficient; }
+};
+
+
 struct frost_shock_t : public shaman_spell_t
 {
   double damage_coefficient;
@@ -5497,6 +5537,12 @@ struct frost_shock_t : public shaman_spell_t
     damage_coefficient( data().effectN( 3 ).percent() / secondary_costs[ RESOURCE_MAELSTROM ] )
   {
     // maybe this ability will get an increase at one point
+    if ( player -> sets -> has_set_bonus( SHAMAN_ELEMENTAL, T21, B4 ) )
+    {
+      overload = new frost_shock_overload_t( player, this, damage_coefficient);
+      add_child( overload );
+    }
+
   }
 
   double action_multiplier() const override
@@ -5507,6 +5553,8 @@ struct frost_shock_t : public shaman_spell_t
 
     m *= 1.0 + p() -> buff.icefury -> value();
 
+    m *= 1.0 + p() -> buff.t21_2pc_elemental -> stack_value();
+
     return m;
   }
 
@@ -5515,6 +5563,8 @@ struct frost_shock_t : public shaman_spell_t
     shaman_spell_t::execute();
 
     p() -> buff.icefury -> decrement();
+
+    p() -> buff.t21_2pc_elemental -> expire();
 
   }
 };
