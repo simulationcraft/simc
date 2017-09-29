@@ -8992,7 +8992,7 @@ public:
       .modifier( 47.0 )
       .verification_value( 50.0 );
 
-    hotfix::register_effect( "Mage", "2017-09-28", "PTR change to Frost T21 4pc.", 473551 )
+    hotfix::register_effect( "Mage", "2017-09-28", "PTR change to Frost T21 4pc.", 473551, hotfix::HOTFIX_FLAG_LIVE )
       .field( "base_value" )
       .operation( hotfix::HOTFIX_SET )
       .modifier( 25.0 )
