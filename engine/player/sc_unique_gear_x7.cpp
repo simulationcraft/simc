@@ -1646,6 +1646,46 @@ void item::khazgoroths_courage( special_effect_t& effect )
 
   new pantheon_proc_callback_t( effect,
     buff_creator_t( effect.player, "mark_of_khazgoroth", effect.driver() -> effectN( 2 ).trigger() ) );
+
+  auto empower_spell = effect.player -> find_spell( 256835 );
+  auto stat_amount = item_database::apply_combat_rating_multiplier( *effect.item,
+      empower_spell -> effectN( 1 ).average( effect.item ) );
+  stat_buff_t* empower_buff = stat_buff_creator_t( effect.player, "khazgoroths_shaping", empower_spell, effect.item )
+    .add_stat( STAT_CRIT_RATING, stat_amount, []( const stat_buff_t& b ) {
+      auto crit = b.source -> composite_spell_crit_rating();
+      auto haste = b.source -> composite_spell_haste_rating();
+      auto mastery = b.source -> composite_mastery_rating();
+      auto versatility = b.source -> composite_damage_versatility_rating();
+      return crit > haste && crit > mastery && crit > versatility;
+    } )
+    .add_stat( STAT_HASTE_RATING, stat_amount, []( const stat_buff_t& b ) {
+      auto crit = b.source -> composite_spell_crit_rating();
+      auto haste = b.source -> composite_spell_haste_rating();
+      auto mastery = b.source -> composite_mastery_rating();
+      auto versatility = b.source -> composite_damage_versatility_rating();
+      return haste > crit && haste > mastery && haste > versatility;
+    } )
+    .add_stat( STAT_MASTERY_RATING, stat_amount, []( const stat_buff_t& b ) {
+      auto crit = b.source -> composite_spell_crit_rating();
+      auto haste = b.source -> composite_spell_haste_rating();
+      auto mastery = b.source -> composite_mastery_rating();
+      auto versatility = b.source -> composite_damage_versatility_rating();
+      return mastery > crit && mastery > haste && mastery > versatility;
+    } )
+    .add_stat( STAT_VERSATILITY_RATING, stat_amount, []( const stat_buff_t& b ) {
+      auto crit = b.source -> composite_spell_crit_rating();
+      auto haste = b.source -> composite_spell_haste_rating();
+      auto mastery = b.source -> composite_mastery_rating();
+      auto versatility = b.source -> composite_damage_versatility_rating();
+      return versatility > crit && versatility > haste && versatility > mastery;
+    } );
+
+  effect.player -> sim -> expansion_data.pantheon_proxy -> register_pantheon_effect( [ empower_buff ]() {
+    if ( ! empower_buff -> check() )
+    {
+      empower_buff -> trigger();
+    }
+  } );
 }
 
 // Golganneth's Vitality ===================================================
