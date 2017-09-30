@@ -6987,6 +6987,7 @@ private:
     return false;
   }
 
+protected:
   /**
    * Base rules for proc execution.
    * 1) If we proc a buff, trigger it
