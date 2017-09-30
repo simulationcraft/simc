@@ -1569,50 +1569,12 @@ void item::amanthuls_vision( special_effect_t& effect )
   } );
 }
 
-// Golganneth's Vitality ===================================================
-
-struct ravaging_storm_t : public proc_spell_t
-{
-  ravaging_storm_t( const special_effect_t& effect ) :
-    proc_spell_t( "ravaging_storm", effect.player, effect.player -> find_spell( 257286 ), effect.item )
-  { }
-};
-
-// TODO: Can one have multiple Ravaging Storms active at the same time?
-// TODO: Golganneth's probably needs a buff triggered on the actor
-struct golganneths_vitality_proc_t : public pantheon_proc_callback_t
-{
-  action_t* damage;
-
-  golganneths_vitality_proc_t( const special_effect_t& e, buff_t* m ) :
-    pantheon_proc_callback_t( e, m ),
-    damage( create_proc_action<ravaging_storm_t>( "ravaging_storm", e ) )
-  { }
-
-protected:
-  void execute( action_t* a, action_state_t* state ) override
-  {
-    pantheon_proc_callback_t::execute( a, state );
-
-    make_event<ground_aoe_event_t>( *effect.player -> sim, effect.player, ground_aoe_params_t()
-        .target( state -> target )
-        .duration( effect.trigger() -> duration() )
-        .action( damage ) );
-  }
-};
-
-void item::golganneths_vitality( special_effect_t& effect )
-{
-  new golganneths_vitality_proc_t( effect,
-    buff_creator_t( effect.player, "mark_of_golganneth", effect.driver() -> effectN( 2 ).trigger() ) );
-}
-
 // Khaz'goroth's Courage ===================================================
 
-struct worldforgers_flame_t : public proc_spell_t
+struct pantheon_aa_proc_base_t : public proc_spell_t
 {
-  worldforgers_flame_t( const special_effect_t& effect ) :
-    proc_spell_t( "worldforgers_flame", effect.player, effect.player -> find_spell( 257244 ), effect.item )
+  pantheon_aa_proc_base_t( const std::string& name, const special_effect_t& effect, const spell_data_t* spell ) :
+    proc_spell_t( name, effect.player, spell, effect.item )
   { }
 
   // Hardcoded in the tooltip, various specs get a 0.5 modifier
@@ -1653,6 +1615,13 @@ struct worldforgers_flame_t : public proc_spell_t
   }
 };
 
+struct worldforgers_flame_t : public pantheon_aa_proc_base_t
+{
+  worldforgers_flame_t( const special_effect_t& effect ) :
+    pantheon_aa_proc_base_t( "worldforgers_flame", effect, effect.player -> find_spell( 257244 ) )
+  { }
+};
+
 void item::khazgoroths_courage( special_effect_t& effect )
 {
   // Secondary proc (generates the autoattack damage when Worldforger's Flame buff is up)
@@ -1677,6 +1646,81 @@ void item::khazgoroths_courage( special_effect_t& effect )
 
   new pantheon_proc_callback_t( effect,
     buff_creator_t( effect.player, "mark_of_khazgoroth", effect.driver() -> effectN( 2 ).trigger() ) );
+}
+
+// Golganneth's Vitality ===================================================
+
+struct ravaging_storm_t : public proc_spell_t
+{
+  ravaging_storm_t( const special_effect_t& effect ) :
+    proc_spell_t( "ravaging_storm", effect.player, effect.player -> find_spell( 257286 ), effect.item )
+  { }
+};
+
+// TODO: Can one have multiple Ravaging Storms active at the same time?
+// TODO: Golganneth's probably needs a buff triggered on the actor
+struct golganneths_vitality_proc_t : public pantheon_proc_callback_t
+{
+  action_t* damage;
+
+  golganneths_vitality_proc_t( const special_effect_t& e, buff_t* m ) :
+    pantheon_proc_callback_t( e, m ),
+    damage( create_proc_action<ravaging_storm_t>( "ravaging_storm", e ) )
+  { }
+
+protected:
+  void execute( action_t* a, action_state_t* state ) override
+  {
+    pantheon_proc_callback_t::execute( a, state );
+
+    make_event<ground_aoe_event_t>( *effect.player -> sim, effect.player, ground_aoe_params_t()
+        .target( state -> target )
+        .duration( effect.trigger() -> duration() )
+        .action( damage ) );
+  }
+};
+
+// Empowered auto attack lightning damage thingamajig
+struct golganneths_thunderous_wrath_t : public pantheon_aa_proc_base_t
+{
+  golganneths_thunderous_wrath_t( const special_effect_t& effect ) :
+    pantheon_aa_proc_base_t( "golganneths_thunderous_wrath", effect, effect.player -> find_spell( 257430 ) )
+  { }
+};
+
+void item::golganneths_vitality( special_effect_t& effect )
+{
+  new golganneths_vitality_proc_t( effect,
+    buff_creator_t( effect.player, "mark_of_golganneth", effect.driver() -> effectN( 2 ).trigger() ) );
+
+  // Secondary proc (generates the autoattack damage when Worldforger's Flame buff is up)
+  special_effect_t* secondary = new special_effect_t( effect.item );
+  secondary -> source = SPECIAL_EFFECT_SOURCE_ITEM;
+  secondary -> type = SPECIAL_EFFECT_EQUIP;
+  secondary -> spell_id = 256833;
+  secondary -> execute_action = create_proc_action<golganneths_thunderous_wrath_t>(
+    "golganneths_thunderous_wrath", *secondary );
+
+  effect.player -> special_effects.push_back( secondary );
+
+  auto secondary_cb = new dbc_proc_callback_t( effect.item, *secondary );
+  // Disable initially
+  secondary_cb -> initialize();
+  secondary_cb -> deactivate();
+
+  auto empower_spell = effect.player -> find_spell( 256833 );
+  buff_t* empower_buff = buff_creator_t( effect.player, "golganneths_thunderous_wrath", empower_spell, effect.item )
+    .stack_change_callback( [ secondary_cb ]( buff_t*, int, int new_ ) {
+      if ( new_ == 1 ) secondary_cb -> activate();
+      else             secondary_cb -> deactivate();
+    } );
+
+  effect.player -> sim -> expansion_data.pantheon_proxy -> register_pantheon_effect( [ empower_buff ]() {
+    if ( ! empower_buff -> check() )
+    {
+      empower_buff -> trigger();
+    }
+  } );
 }
 
 // Norgannon's Prowess =====================================================
