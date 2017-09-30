@@ -6,6 +6,7 @@
 #define X7_PANTHEON_HPP
 
 #include <vector>
+#include <functional>
 
 #include "sc_timespan.hpp"
 
