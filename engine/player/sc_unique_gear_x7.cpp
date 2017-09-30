@@ -112,6 +112,12 @@ namespace item
   void specter_of_betrayal( special_effect_t&          );
   void cradle_of_anguish( special_effect_t&            );
 
+  // 7.3.2 Raid
+  void amanthuls_vision( special_effect_t&             );
+  void golganneths_vitality( special_effect_t&         );
+  void khazgoroths_courage( special_effect_t&          );
+  void norgannons_prowess( special_effect_t&           );
+
   // 7.2.0 Dungeon
   void dreadstone_of_endless_shadows( special_effect_t& );
 
@@ -1508,6 +1514,143 @@ void item::cradle_of_anguish( special_effect_t& effect )
                                               effect.driver() -> effectN( 1 ).period() );
     }
   } );
+}
+
+// 7.3.2 Pantheon Trinkets =================================================
+
+struct pantheon_proc_callback_t : public dbc_proc_callback_t
+{
+  pantheon_proc_callback_t( const special_effect_t& effect ) :
+    dbc_proc_callback_t( effect.item, effect )
+  { }
+
+protected:
+  // TODO: Trigger pantheon system
+  void execute( action_t* a,  action_state_t* state ) override
+  {
+    dbc_proc_callback_t::execute( a, state );
+  }
+};
+
+// Aman'Thul's Vision ======================================================
+
+void item::amanthuls_vision( special_effect_t& effect )
+{
+  new pantheon_proc_callback_t( effect );
+}
+
+// Golganneth's Vitality ===================================================
+
+struct ravaging_storm_t : public proc_spell_t
+{
+  ravaging_storm_t( const special_effect_t& effect ) :
+    proc_spell_t( "ravaging_storm", effect.player, effect.player -> find_spell( 257286 ), effect.item )
+  { }
+};
+
+// TODO: Can one have multiple Ravaging Storms active at the same time?
+struct golganneths_vitality_proc_t : public pantheon_proc_callback_t
+{
+  action_t* damage;
+
+  golganneths_vitality_proc_t( const special_effect_t& e ) :
+    pantheon_proc_callback_t( e ),
+    damage( create_proc_action<ravaging_storm_t>( "ravaging_storm", e ) )
+  { }
+
+protected:
+  void execute( action_t* a, action_state_t* state ) override
+  {
+    pantheon_proc_callback_t::execute( a, state );
+
+    make_event<ground_aoe_event_t>( *effect.player -> sim, effect.player, ground_aoe_params_t()
+        .target( state -> target )
+        .duration( effect.trigger() -> duration() )
+        .action( damage ) );
+  }
+};
+
+void item::golganneths_vitality( special_effect_t& effect )
+{
+  new golganneths_vitality_proc_t( effect );
+}
+
+// Khaz'goroth's Courage ===================================================
+
+struct worldforgers_flame_t : public proc_spell_t
+{
+  worldforgers_flame_t( const special_effect_t& effect ) :
+    proc_spell_t( "worldforgers_flame", effect.player, effect.player -> find_spell( 257244 ), effect.item )
+  { }
+
+  // Hardcoded in the tooltip, various specs get a 0.5 modifier
+  double spec_multiplier() const
+  {
+    switch ( player -> specialization() )
+    {
+      case DEATH_KNIGHT_FROST:
+      case DEMON_HUNTER_HAVOC:
+      case DEMON_HUNTER_VENGEANCE:
+      case DRUID_FERAL:
+      case MONK_WINDWALKER:
+      case ROGUE_ASSASSINATION:
+      case ROGUE_SUBTLETY:
+      case ROGUE_OUTLAW:
+      case SHAMAN_ENHANCEMENT:
+      case WARRIOR_FURY:
+        return 0.5;
+      default:
+        return 1.0;
+    }
+  }
+
+  // Base damage is multiplied by the base weapon speed, and a spec specific multiplier (above)
+  // TODO: Dual wielders probably could have different speed weapons, code presumes main hand always
+  double action_multiplier() const override
+  {
+    double m = proc_spell_t::action_multiplier();
+
+    m *= spec_multiplier();
+
+    if ( player -> main_hand_weapon.type != WEAPON_NONE )
+    {
+      m *= player -> main_hand_weapon.swing_time.total_seconds();
+    }
+
+    return m;
+  }
+};
+
+void item::khazgoroths_courage( special_effect_t& effect )
+{
+  // Secondary proc (generates the autoattack damage when Worldforger's Flame buff is up)
+  special_effect_t* secondary = new special_effect_t( effect.item );
+  secondary -> source = SPECIAL_EFFECT_SOURCE_ITEM;
+  secondary -> type = SPECIAL_EFFECT_EQUIP;
+  secondary -> spell_id = 256826;
+  secondary -> execute_action = create_proc_action<worldforgers_flame_t>( "worldforgers_flame", *secondary );
+
+  effect.player -> special_effects.push_back( secondary );
+
+  auto secondary_cb = new dbc_proc_callback_t( effect.item, *secondary );
+  // Disable initially
+  secondary_cb -> initialize();
+  secondary_cb -> deactivate();
+
+  effect.custom_buff = buff_creator_t( effect.player, "worldforgers_flame", effect.trigger(), effect.item )
+    .stack_change_callback( [ secondary_cb ]( buff_t*, int, int new_ ) {
+      if ( new_ == 1 ) secondary_cb -> activate();
+      else             secondary_cb -> deactivate();
+    } );
+
+  new pantheon_proc_callback_t( effect );
+}
+
+// Norgannon's Prowess =====================================================
+
+void item::norgannons_prowess( special_effect_t& effect )
+{
+  new pantheon_proc_callback_t( effect );
 }
 
 // Toe Knee's Promise ======================================================
@@ -5636,6 +5779,12 @@ void unique_gear::register_special_effects_x7()
   register_special_effect( 242611, item::engine_of_eradication     );
   register_special_effect( 246461, item::specter_of_betrayal       );
   register_special_effect( 242640, item::cradle_of_anguish         );
+
+  /* Legion 7.3.2 Raid */
+  register_special_effect( 256817, item::amanthuls_vision          );
+  register_special_effect( 256819, item::golganneths_vitality      );
+  register_special_effect( 256825, item::khazgoroths_courage       );
+  register_special_effect( 256827, item::norgannons_prowess        );
 
   /* Legion 7.2.0 Dungeon */
   register_special_effect( 238498, item::dreadstone_of_endless_shadows );
