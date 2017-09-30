@@ -86,6 +86,7 @@ struct warlock_td_t: public actor_target_data_t
   buff_t* debuffs_roaring_blaze;
   buff_t* debuffs_havoc;
   buff_t* debuffs_jaws_of_shadow;
+  buff_t* debuffs_tormented_agony;
 
   int agony_stack;
   double soc_threshold;
@@ -148,6 +149,7 @@ public:
     action_t* harvester_of_souls;
     action_t* cry_havoc;
     action_t* rend_soul;
+    action_t* tormented_agony;
     spell_t* rain_of_fire;
     spell_t* corruption;
 
@@ -2754,6 +2756,9 @@ struct agony_t: public warlock_spell_t
     if ( p() -> talents.malefic_grasp -> ok() && td -> dots_drain_soul -> is_ticking() )
       m *= 1.0 + p() -> find_spell( 235155 ) -> effectN( 1 ).percent();
 
+    if ( td -> debuffs_tormented_agony -> check() )
+      m *= 1.0 + td -> debuffs_tormented_agony -> data().effectN( 1 ).percent();
+
     return m;
   }
 
@@ -3113,6 +3118,61 @@ struct unstable_affliction_t: public warlock_spell_t
       if ( p() -> legendary.stretens_insanity )
         p() -> buffs.stretens_insanity -> increment( 1 );
     }
+
+    if ( p() -> sets -> has_set_bonus( WARLOCK_AFFLICTION, T21, B4 ) )
+      p() -> active.tormented_agony -> schedule_execute();
+  }
+};
+
+// T21 4PC
+struct tormented_agony_t : public warlock_spell_t
+{
+  struct tormented_agony_debuff_engine_t : public warlock_spell_t
+  {
+    tormented_agony_debuff_engine_t( warlock_t* p ) :
+      warlock_spell_t( "tormented agony", p, p -> find_spell( 256807 ) )
+    {
+      harmful = may_crit = callbacks = false;
+      background = proc = true;
+      aoe = 0;
+      trigger_gcd = timespan_t::zero();
+    }
+
+    virtual void impact( action_state_t* s ) override
+    {
+      warlock_spell_t::impact( s );
+
+      td( s -> target ) -> debuffs_tormented_agony -> trigger();
+    }
+  };
+
+  propagate_const<player_t*> source_target;
+  tormented_agony_debuff_engine_t* tormented_agony;
+
+  tormented_agony_t( warlock_t* p ):
+    warlock_spell_t( "tormented agony", p, p -> find_spell( 256807 ) ),
+    tormented_agony( new tormented_agony_debuff_engine_t( p ) ),
+    source_target( nullptr )
+  {
+    harmful = may_crit = callbacks = false;
+    background = proc = true;
+    aoe = -1;
+    radius = data().effectN( 1 ).radius();
+    trigger_gcd = timespan_t::zero();
+  }
+
+  void execute() override
+  {
+    warlock_spell_t::execute();
+
+    for ( const auto target : sim -> target_non_sleeping_list )
+    {
+      if ( td( target ) -> dots_agony -> is_ticking() )
+      {
+        tormented_agony -> set_target( target );
+        tormented_agony -> execute();
+      }
+    }
   }
 };
 
@@ -3193,6 +3253,9 @@ struct corruption_t: public warlock_spell_t
 
     if ( p() -> talents.malefic_grasp -> ok() && td -> dots_drain_soul -> is_ticking() )
       m *= 1.0 + p() -> find_spell( 235155 ) -> effectN( 1 ).percent();
+
+    if ( td -> debuffs_tormented_agony -> check() )
+      m *= 1.0 + td -> debuffs_tormented_agony -> data().effectN( 1 ).percent();
 
     return m;
   }
@@ -5828,6 +5891,7 @@ warlock( p )
   debuffs_roaring_blaze = buff_creator_t( *this, "roaring_blaze", source -> find_spell( 205690 ) )
     .max_stack( 100 );
   debuffs_jaws_of_shadow = buff_creator_t( *this, "jaws_of_shadow", source -> find_spell( 242922 ) );
+  debuffs_tormented_agony = buff_creator_t( *this, "tormented_agony", source -> find_spell( 252938 ) );
 
   debuffs_havoc = new buffs::debuff_havoc_t( *this );
 
@@ -6536,6 +6600,7 @@ void warlock_t::init_spells()
   active.harvester_of_souls = new actions::harvester_of_souls_t( this );
   active.cry_havoc = new actions::cry_havoc_t( this );
   active.rend_soul = new actions::rend_soul_t( this );
+  active.tormented_agony = new actions::tormented_agony_t( this );
   if ( specialization() == WARLOCK_AFFLICTION )
   {
     active.corruption = new actions::corruption_t( this );
