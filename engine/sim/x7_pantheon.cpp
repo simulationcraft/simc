@@ -219,10 +219,17 @@ void pantheon_state_t::debug() const
     proxy_s << mark_strs[ i ];
     proxy_s << ": ";
 
-    auto time_left = buff_durations[ i ] - ( player -> sim -> current_time() - start_time[ i ] );
-    if ( start_time[ i ] >= timespan_t::zero() && time_left >= timespan_t::zero() )
+    if ( start_time[ i ] >= timespan_t::zero() )
     {
-      proxy_s << time_left.total_seconds();
+      auto time_left = buff_durations[ i ] - ( player -> sim -> current_time() - start_time[ i ] );
+      if ( time_left >= timespan_t::zero() )
+      {
+        proxy_s << time_left.total_seconds();
+      }
+      else
+      {
+        proxy_s << "N/A";
+      }
     }
     else
     {
