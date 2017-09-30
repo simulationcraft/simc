@@ -1520,15 +1520,31 @@ void item::cradle_of_anguish( special_effect_t& effect )
 
 struct pantheon_proc_callback_t : public dbc_proc_callback_t
 {
-  pantheon_proc_callback_t( const special_effect_t& effect ) :
-    dbc_proc_callback_t( effect.item, effect )
-  { }
+  buff_t* mark;
+
+  pantheon_proc_callback_t( const special_effect_t& effect, buff_t* m ) :
+    dbc_proc_callback_t( effect.item, effect ), mark( m )
+  {
+    // Ensure we have a proxy pantheon system to use
+    unique_gear::initialize_pantheon( effect.player );
+  }
+
+  void initialize() override
+  {
+    dbc_proc_callback_t::initialize();
+
+    listener -> sim -> expansion_data.pantheon_proxy -> register_pantheon_buff( mark );
+  }
 
 protected:
   // TODO: Trigger pantheon system
   void execute( action_t* a,  action_state_t* state ) override
   {
     dbc_proc_callback_t::execute( a, state );
+
+    mark -> trigger();
+
+    listener -> sim -> expansion_data.pantheon_proxy -> trigger_pantheon_buff();
   }
 };
 
@@ -1536,7 +1552,21 @@ protected:
 
 void item::amanthuls_vision( special_effect_t& effect )
 {
-  new pantheon_proc_callback_t( effect );
+  auto mark_spell = effect.player -> find_spell( effect.driver() -> effectN( 2 ).base_value() );
+  new pantheon_proc_callback_t( effect, buff_creator_t( effect.player, "mark_of_amanthul", mark_spell ) );
+
+  // Empower effect
+  auto empower_spell = effect.player -> find_spell( 256832 );
+  auto empower_amount = empower_spell -> effectN( 1 ).average( effect.item );
+  stat_buff_t* empower_buff = stat_buff_creator_t( effect.player, "amanthuls_grandeur", empower_spell, effect.item )
+    .add_stat( effect.player -> primary_stat(), empower_amount );
+
+  effect.player -> sim -> expansion_data.pantheon_proxy -> register_pantheon_effect( [ empower_buff ]() {
+    if ( ! empower_buff -> check() )
+    {
+      empower_buff -> trigger();
+    }
+  } );
 }
 
 // Golganneth's Vitality ===================================================
@@ -1549,12 +1579,13 @@ struct ravaging_storm_t : public proc_spell_t
 };
 
 // TODO: Can one have multiple Ravaging Storms active at the same time?
+// TODO: Golganneth's probably needs a buff triggered on the actor
 struct golganneths_vitality_proc_t : public pantheon_proc_callback_t
 {
   action_t* damage;
 
-  golganneths_vitality_proc_t( const special_effect_t& e ) :
-    pantheon_proc_callback_t( e ),
+  golganneths_vitality_proc_t( const special_effect_t& e, buff_t* m ) :
+    pantheon_proc_callback_t( e, m ),
     damage( create_proc_action<ravaging_storm_t>( "ravaging_storm", e ) )
   { }
 
@@ -1572,7 +1603,8 @@ protected:
 
 void item::golganneths_vitality( special_effect_t& effect )
 {
-  new golganneths_vitality_proc_t( effect );
+  new golganneths_vitality_proc_t( effect,
+    buff_creator_t( effect.player, "mark_of_golganneth", effect.driver() -> effectN( 2 ).trigger() ) );
 }
 
 // Khaz'goroth's Courage ===================================================
@@ -1643,14 +1675,16 @@ void item::khazgoroths_courage( special_effect_t& effect )
       else             secondary_cb -> deactivate();
     } );
 
-  new pantheon_proc_callback_t( effect );
+  new pantheon_proc_callback_t( effect,
+    buff_creator_t( effect.player, "mark_of_khazgoroth", effect.driver() -> effectN( 2 ).trigger() ) );
 }
 
 // Norgannon's Prowess =====================================================
 
 void item::norgannons_prowess( special_effect_t& effect )
 {
-  new pantheon_proc_callback_t( effect );
+  new pantheon_proc_callback_t( effect,
+    buff_creator_t( effect.player, "mark_of_norgannon", effect.driver() -> effectN( 2 ).trigger() ) );
 }
 
 // Toe Knee's Promise ======================================================

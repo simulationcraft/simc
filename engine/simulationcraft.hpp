@@ -144,6 +144,9 @@ namespace highchart {
 
 #include "player/artifact_data.hpp"
 
+// Legion-specific "pantheon trinket" system
+#include "sim/x7_pantheon.hpp"
+
 // Talent Translation =======================================================
 
 const int MAX_TALENT_ROWS = 7;
@@ -1685,6 +1688,7 @@ struct sim_t : private sc_thread_t
     bool                lavish_feast_as_dps;
     double              specter_of_betrayal_overlap_prob;
     std::vector<double> cradle_of_anguish_resets;
+    std::string         pantheon_trinket_users;
 
     expansion_opt_t() :
       infernal_cinders_users( 1 ), engine_of_eradication_orbs( 4 ),
@@ -1692,6 +1696,16 @@ struct sim_t : private sc_thread_t
       lavish_feast_as_dps( true ), specter_of_betrayal_overlap_prob( 1.0 )
     { }
   } expansion_opts;
+
+  // Expansion specific data
+  struct expansion_data_t
+  {
+    std::unique_ptr<unique_gear::pantheon_state_t> pantheon_proxy;
+
+    expansion_data_t() :
+      pantheon_proxy( nullptr )
+    { }
+  } expansion_data;
 
   // Auras and De-Buffs
   auto_dispose< std::vector<buff_t*> > buff_list;
