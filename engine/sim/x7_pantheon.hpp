@@ -23,23 +23,10 @@ namespace unique_gear
 struct pantheon_state_t
 {
   // Trinket base drivers
-  const std::vector<unsigned> drivers {
-    256817, // Mark of Aman'thul
-    256819, // Mark of Golganneth
-    256825, // Mark of Khaz'goroth
-    256822, // Mark of Eonar
-    256827, // Mark of Norgannon
-    256815, // Mark of Aggramar
-  };
+  static const std::vector<unsigned> drivers;
 
-  const std::vector<unsigned> marks {
-    256818, // Mark of Aman'thul
-    256821, // Mark of Golganneth
-    256826, // Mark of Khaz'goroth
-    256824, // Mark of Eonar
-    256828, // Mark of Norgannon
-    256816, // Mark of Aggramar
-  };
+  // Trinket "Mark" buffs
+  static const std::vector<unsigned> marks;
 
   // Durations of the non-empowered buffs
   std::vector<timespan_t> buff_durations;

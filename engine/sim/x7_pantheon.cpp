@@ -285,4 +285,22 @@ void pantheon_state_t::debug() const
 }
 
 
+const std::vector<unsigned> pantheon_state_t::drivers {
+  256817, // Mark of Aman'thul
+  256819, // Mark of Golganneth
+  256825, // Mark of Khaz'goroth
+  256822, // Mark of Eonar
+  256827, // Mark of Norgannon
+  256815, // Mark of Aggramar
+};
+
+const std::vector<unsigned> pantheon_state_t::marks {
+  256818, // Mark of Aman'thul
+  256821, // Mark of Golganneth
+  256826, // Mark of Khaz'goroth
+  256824, // Mark of Eonar
+  256828, // Mark of Norgannon
+  256816, // Mark of Aggramar
+};
+
 } // Namespace unique_gear ends
