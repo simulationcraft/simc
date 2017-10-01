@@ -9,11 +9,11 @@ struct pantheon_ticker_t : public event_t
 {
   unique_gear::pantheon_state_t& obj;
 
-  pantheon_ticker_t( unique_gear::pantheon_state_t& o ) :
+  pantheon_ticker_t( unique_gear::pantheon_state_t& o, const timespan_t& delay ) :
     event_t( *o.player ), obj( o )
   {
     // TODO: Configurable
-    schedule( timespan_t::from_seconds( 1 ) );
+    schedule( delay );
   }
 
   void execute() override
@@ -149,7 +149,7 @@ void pantheon_state_t::start()
 {
   if ( has_pantheon_capability() )
   {
-    attempt_event = make_event<pantheon_ticker_t>( *player -> sim, *this );
+    attempt_event = make_event<pantheon_ticker_t>( *player -> sim, *this, pantheon_ticker_delay() );
   }
 }
 
@@ -169,7 +169,7 @@ void pantheon_state_t::attempt()
 
   debug();
 
-  attempt_event = make_event<pantheon_ticker_t>( *player -> sim, *this );
+  attempt_event = make_event<pantheon_ticker_t>( *player -> sim, *this, pantheon_ticker_delay() );
 }
 
 void pantheon_state_t::trigger_pantheon_buff() const
@@ -291,6 +291,18 @@ void pantheon_state_t::debug() const
   player -> sim -> out_debug << user_s.str();
 }
 
+timespan_t pantheon_state_t::pantheon_ticker_delay() const
+{
+  if ( player -> sim -> expansion_opts.pantheon_trinket_interval_stddev == 0 )
+  {
+    return player -> sim -> expansion_opts.pantheon_trinket_interval;
+  }
+
+  auto dev = player -> sim -> expansion_opts.pantheon_trinket_interval *
+             player -> sim -> expansion_opts.pantheon_trinket_interval_stddev;
+
+  return player -> rng().gauss( player -> sim -> expansion_opts.pantheon_trinket_interval, dev );
+}
 
 const std::vector<unsigned> pantheon_state_t::drivers {
   256817, // Mark of Aman'thul

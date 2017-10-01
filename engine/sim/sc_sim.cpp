@@ -3281,6 +3281,8 @@ void sim_t::create_options()
   add_option( opt_bool( "legion.feast_as_dps", expansion_opts.lavish_feast_as_dps ) );
   add_option( opt_float( "legion.specter_of_betrayal_overlap_prob", expansion_opts.specter_of_betrayal_overlap_prob, 0, 1 ) );
   add_option( opt_string( "legion.pantheon_trinket_users", expansion_opts.pantheon_trinket_users ) );
+  add_option( opt_timespan( "legion.pantheon_trinket_interval", expansion_opts.pantheon_trinket_interval ) );
+  add_option( opt_float( "legion.pantheon_trinket_interval_stddev", expansion_opts.pantheon_trinket_interval_stddev ) );
   add_option( opt_func( "legion.cradle_of_anguish_resets", []( sim_t* sim, const std::string&, const std::string& value ) {
     auto split = util::string_split( value, ":/," );
     range::for_each( split, [ sim ]( const std::string& str ) {

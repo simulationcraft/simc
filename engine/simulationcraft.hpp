@@ -1689,11 +1689,15 @@ struct sim_t : private sc_thread_t
     double              specter_of_betrayal_overlap_prob;
     std::vector<double> cradle_of_anguish_resets;
     std::string         pantheon_trinket_users;
+    timespan_t          pantheon_trinket_interval;
+    double              pantheon_trinket_interval_stddev;
 
     expansion_opt_t() :
       infernal_cinders_users( 1 ), engine_of_eradication_orbs( 4 ),
       void_stalkers_contract_targets( -1 ),
-      lavish_feast_as_dps( true ), specter_of_betrayal_overlap_prob( 1.0 )
+      lavish_feast_as_dps( true ), specter_of_betrayal_overlap_prob( 1.0 ),
+      pantheon_trinket_interval( timespan_t::from_seconds( 1.0 ) ),
+      pantheon_trinket_interval_stddev( 0 )
     { }
   } expansion_opts;
 

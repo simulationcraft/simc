@@ -81,6 +81,8 @@ struct pantheon_state_t
   // Does the raid (including real actors and proxy ones) have pantheon empowerment capability?
   bool has_pantheon_capability() const;
 private:
+  // Generate pantheon proxy ticker delay duration based on user options
+  timespan_t pantheon_ticker_delay() const;
   // Parse input option
   void parse_options();
   // Output debug state to debug log
