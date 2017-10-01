@@ -39,40 +39,40 @@ void print_text_action( FILE* file, stats_t* s, int max_name_length,
   if ( s->num_direct_results.mean() > 0 )
   {
     util::fprintf( file, "  Miss=%.2f%%",
-                   s->direct_results[ RESULT_MISS ].pct );
+                   s->direct_results[ FULLTYPE_MISS ].pct );
   }
 
-  if ( s->direct_results[ RESULT_HIT ].actual_amount.sum() > 0 )
+  if ( s->direct_results[ FULLTYPE_HIT ].actual_amount.sum() > 0 )
   {
     util::fprintf( file, "  Hit=%4.0f|%4.0f|%4.0f",
-                   s->direct_results[ RESULT_HIT ].actual_amount.mean(),
-                   s->direct_results[ RESULT_HIT ].actual_amount.min(),
-                   s->direct_results[ RESULT_HIT ].actual_amount.max() );
+                   s->direct_results[ FULLTYPE_HIT ].actual_amount.mean(),
+                   s->direct_results[ FULLTYPE_HIT ].actual_amount.min(),
+                   s->direct_results[ FULLTYPE_HIT ].actual_amount.max() );
   }
-  if ( s->direct_results[ RESULT_CRIT ].actual_amount.sum() > 0 )
+  if ( s->direct_results[ FULLTYPE_CRIT ].actual_amount.sum() > 0 )
   {
     util::fprintf( file, "  Crit=%5.0f|%5.0f|%5.0f|%.1f%%",
-                   s->direct_results[ RESULT_CRIT ].actual_amount.mean(),
-                   s->direct_results[ RESULT_CRIT ].actual_amount.min(),
-                   s->direct_results[ RESULT_CRIT ].actual_amount.max(),
-                   s->direct_results[ RESULT_CRIT ].pct );
+                   s->direct_results[ FULLTYPE_CRIT ].actual_amount.mean(),
+                   s->direct_results[ FULLTYPE_CRIT ].actual_amount.min(),
+                   s->direct_results[ FULLTYPE_CRIT ].actual_amount.max(),
+                   s->direct_results[ FULLTYPE_CRIT ].pct );
   }
-  if ( s->direct_results[ RESULT_GLANCE ].actual_amount.sum() > 0 )
+  if ( s->direct_results[ FULLTYPE_GLANCE ].actual_amount.sum() > 0 )
   {
     util::fprintf(
         file, "  Glance=%4.0f|%.1f%%",
-        s->direct_results[ RESULT_GLANCE ].actual_amount.pretty_mean(),
-        s->direct_results[ RESULT_GLANCE ].pct );
+        s->direct_results[ FULLTYPE_GLANCE ].actual_amount.pretty_mean(),
+        s->direct_results[ FULLTYPE_GLANCE ].pct );
   }
-  if ( s->direct_results[ RESULT_DODGE ].count.sum() > 0 )
+  if ( s->direct_results[ FULLTYPE_DODGE ].count.sum() > 0 )
   {
     util::fprintf( file, "  Dodge=%.1f%%",
-                   s->direct_results[ RESULT_DODGE ].pct );
+                   s->direct_results[ FULLTYPE_DODGE ].pct );
   }
-  if ( s->direct_results[ RESULT_PARRY ].count.sum() > 0 )
+  if ( s->direct_results[ FULLTYPE_PARRY ].count.sum() > 0 )
   {
     util::fprintf( file, "  Parry=%.1f%%",
-                   s->direct_results[ RESULT_PARRY ].pct );
+                   s->direct_results[ FULLTYPE_PARRY ].pct );
   }
 
   if ( s->num_ticks.sum() > 0 )
