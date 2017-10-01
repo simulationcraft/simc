@@ -1801,7 +1801,7 @@ struct norgannons_command_t : public dbc_proc_callback_t
 
     // Reduce stacks, when stacks get to 0 it will disable this callback
     assert( buff != nullptr );
-    buff -> trigger();
+    buff -> decrement();
   }
 };
 
@@ -1829,7 +1829,6 @@ void item::norgannons_prowess( special_effect_t& effect )
 
   auto empower_spell = effect.player -> find_spell( 256836 );
   buff_t* empower_buff = buff_creator_t( effect.player, "norgannons_command", empower_spell, effect.item )
-    .reverse( true )
     .cd( empower_spell -> duration() )
     .stack_change_callback( [ secondary_cb ]( buff_t* b, int, int new_ ) {
       if ( new_ == b -> max_stack() ) secondary_cb -> activate();
