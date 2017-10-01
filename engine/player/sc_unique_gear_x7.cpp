@@ -1551,14 +1551,13 @@ void item::amanthuls_vision( special_effect_t& effect )
   auto empower_spell = effect.player -> find_spell( 256832 );
   auto empower_amount = empower_spell -> effectN( 1 ).average( effect.item );
   stat_buff_t* empower_buff = stat_buff_creator_t( effect.player, "amanthuls_grandeur", empower_spell, effect.item )
+    // Add an ICD to all of the buffs for the duration of the buff to ensure they do not refresh
+    .cd( empower_spell -> duration() )
     .add_stat( effect.player -> primary_stat(), empower_amount );
 
   effect.player -> sim -> expansion_data.pantheon_proxy -> register_pantheon_buff( effect.custom_buff );
   effect.player -> sim -> expansion_data.pantheon_proxy -> register_pantheon_effect( [ empower_buff ]() {
-    if ( ! empower_buff -> check() )
-    {
-      empower_buff -> trigger();
-    }
+    empower_buff -> trigger();
   } );
 }
 
@@ -1643,6 +1642,7 @@ void item::khazgoroths_courage( special_effect_t& effect )
   auto stat_amount = item_database::apply_combat_rating_multiplier( *effect.item,
       empower_spell -> effectN( 1 ).average( effect.item ) );
   stat_buff_t* empower_buff = stat_buff_creator_t( effect.player, "khazgoroths_shaping", empower_spell, effect.item )
+    .cd( empower_spell -> duration() )
     .add_stat( STAT_CRIT_RATING, stat_amount, []( const stat_buff_t& b ) {
       auto crit = b.source -> composite_spell_crit_rating();
       auto haste = b.source -> composite_spell_haste_rating();
@@ -1674,10 +1674,7 @@ void item::khazgoroths_courage( special_effect_t& effect )
 
   effect.player -> sim -> expansion_data.pantheon_proxy -> register_pantheon_buff( effect.custom_buff );
   effect.player -> sim -> expansion_data.pantheon_proxy -> register_pantheon_effect( [ empower_buff ]() {
-    if ( ! empower_buff -> check() )
-    {
-      empower_buff -> trigger();
-    }
+    empower_buff -> trigger();
   } );
 }
 
@@ -1750,6 +1747,7 @@ void item::golganneths_vitality( special_effect_t& effect )
 
   auto empower_spell = effect.player -> find_spell( 256833 );
   buff_t* empower_buff = buff_creator_t( effect.player, "golganneths_thunderous_wrath", empower_spell, effect.item )
+    .cd( empower_spell -> duration() )
     .stack_change_callback( [ secondary_cb ]( buff_t*, int, int new_ ) {
       if ( new_ == 1 ) secondary_cb -> activate();
       else             secondary_cb -> deactivate();
@@ -1757,10 +1755,7 @@ void item::golganneths_vitality( special_effect_t& effect )
 
   effect.player -> sim -> expansion_data.pantheon_proxy -> register_pantheon_buff( mark_buff );
   effect.player -> sim -> expansion_data.pantheon_proxy -> register_pantheon_effect( [ empower_buff ]() {
-    if ( ! empower_buff -> check() )
-    {
-      empower_buff -> trigger();
-    }
+    empower_buff -> trigger();
   } );
 }
 
@@ -1835,6 +1830,7 @@ void item::norgannons_prowess( special_effect_t& effect )
   auto empower_spell = effect.player -> find_spell( 256836 );
   buff_t* empower_buff = buff_creator_t( effect.player, "norgannons_command", empower_spell, effect.item )
     .reverse( true )
+    .cd( empower_spell -> duration() )
     .stack_change_callback( [ secondary_cb ]( buff_t* b, int, int new_ ) {
       if ( new_ == b -> max_stack() ) secondary_cb -> activate();
       else if ( new_ == 0           ) secondary_cb -> deactivate();
@@ -1842,10 +1838,7 @@ void item::norgannons_prowess( special_effect_t& effect )
 
   effect.player -> sim -> expansion_data.pantheon_proxy -> register_pantheon_buff( effect.custom_buff );
   effect.player -> sim -> expansion_data.pantheon_proxy -> register_pantheon_effect( [ empower_buff ]() {
-    if ( ! empower_buff -> check() )
-    {
-      empower_buff -> trigger( empower_buff -> max_stack() );
-    }
+    empower_buff -> trigger( empower_buff -> max_stack() );
   } );
 
   secondary_cb -> buff = empower_buff;
