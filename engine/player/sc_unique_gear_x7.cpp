@@ -1542,7 +1542,10 @@ protected:
   {
     dbc_proc_callback_t::execute( a, state );
 
-    mark -> trigger();
+    if ( ! mark -> check() )
+    {
+      mark -> trigger();
+    }
 
     listener -> sim -> expansion_data.pantheon_proxy -> trigger_pantheon_buff();
   }
@@ -1552,8 +1555,9 @@ protected:
 
 void item::amanthuls_vision( special_effect_t& effect )
 {
-  auto mark_spell = effect.player -> find_spell( effect.driver() -> effectN( 2 ).base_value() );
-  new pantheon_proc_callback_t( effect, buff_creator_t( effect.player, "mark_of_amanthul", mark_spell ) );
+  effect.custom_buff = effect.create_buff();
+
+  new pantheon_proc_callback_t( effect, effect.custom_buff );
 
   // Empower effect
   auto empower_spell = effect.player -> find_spell( 256832 );
@@ -1644,8 +1648,7 @@ void item::khazgoroths_courage( special_effect_t& effect )
       else             secondary_cb -> deactivate();
     } );
 
-  new pantheon_proc_callback_t( effect,
-    buff_creator_t( effect.player, "mark_of_khazgoroth", effect.driver() -> effectN( 2 ).trigger() ) );
+  new pantheon_proc_callback_t( effect, effect.custom_buff );
 
   auto empower_spell = effect.player -> find_spell( 256835 );
   auto stat_amount = item_database::apply_combat_rating_multiplier( *effect.item,
@@ -1765,10 +1768,88 @@ void item::golganneths_vitality( special_effect_t& effect )
 
 // Norgannon's Prowess =====================================================
 
+struct norgannon_nuke_t : public proc_spell_t
+{
+  norgannon_nuke_t( const special_effect_t& e, const std::string& name, const spell_data_t* s ) :
+    proc_spell_t( name, e.player, s, e.item )
+  { }
+};
+
+struct norgannons_command_t : public dbc_proc_callback_t
+{
+  buff_t* buff;
+  std::vector<action_t*> nukes;
+
+  norgannons_command_t( const special_effect_t& effect ) :
+    dbc_proc_callback_t( effect.item, effect ), buff( nullptr )
+  {
+    // Random damage spells used for the Norgannon's Command effect
+    static const std::vector<unsigned> nuke_spell_ids {
+      257241, 257242, 257243, 257532, 257533, 257534
+    };
+
+    // Initialize the actions
+    range::for_each( nuke_spell_ids, [ this, &effect ]( unsigned spell_id ) {
+      auto spell = effect.player -> find_spell( spell_id );
+      std::string name = spell -> name_cstr();
+      util::tokenize( name );
+
+      auto action = create_proc_action<norgannon_nuke_t>( name, effect, name, spell );
+      nukes.push_back( action );
+    } );
+  }
+
+  void execute( action_t* /* a */, action_state_t* state ) override
+  {
+    // Pick a random nuke from the list and shoot
+    size_t nuke_idx = static_cast<size_t>( rng().range( 0, nukes.size() ) );
+    nukes[ nuke_idx ] -> set_target( state -> target );
+    nukes[ nuke_idx ] -> execute();
+
+    // Reduce stacks, when stacks get to 0 it will disable this callback
+    assert( buff != nullptr );
+    buff -> trigger();
+  }
+};
+
 void item::norgannons_prowess( special_effect_t& effect )
 {
-  new pantheon_proc_callback_t( effect,
-    buff_creator_t( effect.player, "mark_of_norgannon", effect.driver() -> effectN( 2 ).trigger() ) );
+  // Pre-create the base trinket buff; we will use it as the "mark" buff for the pantheon state
+  // system
+  effect.custom_buff = effect.create_buff();
+
+  new pantheon_proc_callback_t( effect, effect.custom_buff );
+
+  // Empower effect
+  special_effect_t* secondary = new special_effect_t( effect.item );
+  secondary -> source = SPECIAL_EFFECT_SOURCE_ITEM;
+  secondary -> type = SPECIAL_EFFECT_EQUIP;
+  secondary -> spell_id = 256836;
+  secondary -> proc_flags2_ = PF2_ALL_HIT | PF2_PERIODIC_DAMAGE;
+
+  effect.player -> special_effects.push_back( secondary );
+
+  auto secondary_cb = new norgannons_command_t( *secondary );
+  // Disable initially
+  secondary_cb -> initialize();
+  secondary_cb -> deactivate();
+
+  auto empower_spell = effect.player -> find_spell( 256836 );
+  buff_t* empower_buff = buff_creator_t( effect.player, "norgannons_command", empower_spell, effect.item )
+    .reverse( true )
+    .stack_change_callback( [ secondary_cb ]( buff_t* b, int, int new_ ) {
+      if ( new_ == b -> max_stack() ) secondary_cb -> activate();
+      else if ( new_ == 0           ) secondary_cb -> deactivate();
+    } );
+
+  effect.player -> sim -> expansion_data.pantheon_proxy -> register_pantheon_effect( [ empower_buff ]() {
+    if ( ! empower_buff -> check() )
+    {
+      empower_buff -> trigger( empower_buff -> max_stack() );
+    }
+  } );
+
+  secondary_cb -> buff = empower_buff;
 }
 
 // Toe Knee's Promise ======================================================
