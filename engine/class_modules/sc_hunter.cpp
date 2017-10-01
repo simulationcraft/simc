@@ -3487,11 +3487,12 @@ struct marked_shot_t: public hunter_spell_t
   marked_shot_impact_t* impact;
   call_of_the_hunter_t* call_of_the_hunter;
   bool call_of_the_hunter_procced;
+  int t21_4p_targets_hit;
 
   marked_shot_t( hunter_t* p, const std::string& options_str ):
     hunter_spell_t( "marked_shot", p, p -> find_specialization_spell( "Marked Shot" ) ),
     impact( new marked_shot_impact_t( p ) ), call_of_the_hunter( nullptr ),
-    call_of_the_hunter_procced( false )
+    call_of_the_hunter_procced( false ), t21_4p_targets_hit( 0 )
   {
     parse_options( options_str );
 
@@ -3520,6 +3521,8 @@ struct marked_shot_t: public hunter_spell_t
     if ( p() -> artifacts.call_of_the_hunter.rank() )
       call_of_the_hunter_procced = p() -> ppm_call_of_the_hunter -> trigger();
 
+    t21_4p_targets_hit = 0;
+
     hunter_spell_t::execute();
 
     if ( p() -> clear_next_hunters_mark )
@@ -3536,10 +3539,12 @@ struct marked_shot_t: public hunter_spell_t
       impact -> set_target( s -> target );
       impact -> execute();
       if ( p() -> sets -> has_set_bonus( HUNTER_MARKSMANSHIP, T21, B4 ) &&
+           t21_4p_targets_hit < p() -> sets -> set( HUNTER_MARKSMANSHIP, T21, B4 ) -> effectN( 2 ).base_value() &&
            rng().roll( p() -> sets -> set( HUNTER_MARKSMANSHIP, T21, B4 ) -> effectN( 1 ).percent() ) )
       {
         impact -> execute();
         p() -> procs.t21_4p_mm -> occur();
+        t21_4p_targets_hit++;
       }
 
       if ( call_of_the_hunter_procced )
