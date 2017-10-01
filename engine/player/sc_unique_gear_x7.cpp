@@ -1520,20 +1520,11 @@ void item::cradle_of_anguish( special_effect_t& effect )
 
 struct pantheon_proc_callback_t : public dbc_proc_callback_t
 {
-  buff_t* mark;
-
-  pantheon_proc_callback_t( const special_effect_t& effect, buff_t* m ) :
-    dbc_proc_callback_t( effect.item, effect ), mark( m )
+  pantheon_proc_callback_t( const special_effect_t& effect ) :
+    dbc_proc_callback_t( effect.item, effect )
   {
     // Ensure we have a proxy pantheon system to use
     unique_gear::initialize_pantheon( effect.player );
-  }
-
-  void initialize() override
-  {
-    dbc_proc_callback_t::initialize();
-
-    listener -> sim -> expansion_data.pantheon_proxy -> register_pantheon_buff( mark );
   }
 
 protected:
@@ -1541,11 +1532,6 @@ protected:
   void execute( action_t* a,  action_state_t* state ) override
   {
     dbc_proc_callback_t::execute( a, state );
-
-    if ( ! mark -> check() )
-    {
-      mark -> trigger();
-    }
 
     listener -> sim -> expansion_data.pantheon_proxy -> trigger_pantheon_buff();
   }
@@ -1555,9 +1541,11 @@ protected:
 
 void item::amanthuls_vision( special_effect_t& effect )
 {
+  // Create the buff beforehand so we can register it as a pantheon marker buff to the pantheon
+  // state system
   effect.custom_buff = effect.create_buff();
 
-  new pantheon_proc_callback_t( effect, effect.custom_buff );
+  new pantheon_proc_callback_t( effect );
 
   // Empower effect
   auto empower_spell = effect.player -> find_spell( 256832 );
@@ -1565,6 +1553,7 @@ void item::amanthuls_vision( special_effect_t& effect )
   stat_buff_t* empower_buff = stat_buff_creator_t( effect.player, "amanthuls_grandeur", empower_spell, effect.item )
     .add_stat( effect.player -> primary_stat(), empower_amount );
 
+  effect.player -> sim -> expansion_data.pantheon_proxy -> register_pantheon_buff( effect.custom_buff );
   effect.player -> sim -> expansion_data.pantheon_proxy -> register_pantheon_effect( [ empower_buff ]() {
     if ( ! empower_buff -> check() )
     {
@@ -1648,7 +1637,7 @@ void item::khazgoroths_courage( special_effect_t& effect )
       else             secondary_cb -> deactivate();
     } );
 
-  new pantheon_proc_callback_t( effect, effect.custom_buff );
+  new pantheon_proc_callback_t( effect );
 
   auto empower_spell = effect.player -> find_spell( 256835 );
   auto stat_amount = item_database::apply_combat_rating_multiplier( *effect.item,
@@ -1683,6 +1672,7 @@ void item::khazgoroths_courage( special_effect_t& effect )
       return versatility > crit && versatility > haste && versatility > mastery;
     } );
 
+  effect.player -> sim -> expansion_data.pantheon_proxy -> register_pantheon_buff( effect.custom_buff );
   effect.player -> sim -> expansion_data.pantheon_proxy -> register_pantheon_effect( [ empower_buff ]() {
     if ( ! empower_buff -> check() )
     {
@@ -1705,16 +1695,20 @@ struct ravaging_storm_t : public proc_spell_t
 struct golganneths_vitality_proc_t : public pantheon_proc_callback_t
 {
   action_t* damage;
+  buff_t* mark;
 
-  golganneths_vitality_proc_t( const special_effect_t& e, buff_t* m ) :
-    pantheon_proc_callback_t( e, m ),
-    damage( create_proc_action<ravaging_storm_t>( "ravaging_storm", e ) )
+  golganneths_vitality_proc_t( const special_effect_t& e, buff_t* mark ) :
+    pantheon_proc_callback_t( e ),
+    damage( create_proc_action<ravaging_storm_t>( "ravaging_storm", e ) ),
+    mark( mark )
   { }
 
 protected:
   void execute( action_t* a, action_state_t* state ) override
   {
     pantheon_proc_callback_t::execute( a, state );
+
+    mark -> trigger();
 
     make_event<ground_aoe_event_t>( *effect.player -> sim, effect.player, ground_aoe_params_t()
         .target( state -> target )
@@ -1733,8 +1727,11 @@ struct golganneths_thunderous_wrath_t : public pantheon_aa_proc_base_t
 
 void item::golganneths_vitality( special_effect_t& effect )
 {
-  new golganneths_vitality_proc_t( effect,
-    buff_creator_t( effect.player, "mark_of_golganneth", effect.driver() -> effectN( 2 ).trigger() ) );
+  // Golganneth's Vitality has a separate mark buff that is used in the pantheon empower system,
+  // since the trinket effect itself generates no buff
+  buff_t* mark_buff = buff_creator_t( effect.player, "mark_of_golganneth", effect.driver() -> effectN( 2 ).trigger() );
+
+  new golganneths_vitality_proc_t( effect, mark_buff );
 
   // Secondary proc (generates the autoattack damage when Worldforger's Flame buff is up)
   special_effect_t* secondary = new special_effect_t( effect.item );
@@ -1758,6 +1755,7 @@ void item::golganneths_vitality( special_effect_t& effect )
       else             secondary_cb -> deactivate();
     } );
 
+  effect.player -> sim -> expansion_data.pantheon_proxy -> register_pantheon_buff( mark_buff );
   effect.player -> sim -> expansion_data.pantheon_proxy -> register_pantheon_effect( [ empower_buff ]() {
     if ( ! empower_buff -> check() )
     {
@@ -1818,7 +1816,7 @@ void item::norgannons_prowess( special_effect_t& effect )
   // system
   effect.custom_buff = effect.create_buff();
 
-  new pantheon_proc_callback_t( effect, effect.custom_buff );
+  new pantheon_proc_callback_t( effect );
 
   // Empower effect
   special_effect_t* secondary = new special_effect_t( effect.item );
@@ -1842,6 +1840,7 @@ void item::norgannons_prowess( special_effect_t& effect )
       else if ( new_ == 0           ) secondary_cb -> deactivate();
     } );
 
+  effect.player -> sim -> expansion_data.pantheon_proxy -> register_pantheon_buff( effect.custom_buff );
   effect.player -> sim -> expansion_data.pantheon_proxy -> register_pantheon_effect( [ empower_buff ]() {
     if ( ! empower_buff -> check() )
     {
