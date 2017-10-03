@@ -4441,6 +4441,10 @@ struct seed_of_corruption_t: public warlock_spell_t
     {
       aoe = 3;
     }
+
+	if (p()->sets->has_set_bonus(WARLOCK_AFFLICTION, T21, B4))
+		p()->active.tormented_agony->schedule_execute();
+
     warlock_spell_t::execute();
   }
 
