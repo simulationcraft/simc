@@ -298,6 +298,7 @@ struct rogue_t : public player_t
     // T21 Raid
     buff_t* t21_2pc_assassination;
     buff_t* t21_2pc_outlaw;
+    buff_t* t21_4pc_subtlety;
 
 
 
@@ -347,6 +348,7 @@ struct rogue_t : public player_t
     cooldown_t* shadow_nova;
     cooldown_t* toxic_blade;
     cooldown_t* curse_of_the_dreadblades;
+    cooldown_t* symbols_of_death;
   } cooldowns;
 
   // Gains
@@ -714,6 +716,7 @@ struct rogue_t : public player_t
     cooldowns.shadow_nova              = get_cooldown( "shadow_nova"              );
     cooldowns.toxic_blade              = get_cooldown( "toxic_blade"              );
     cooldowns.curse_of_the_dreadblades = get_cooldown( "curse_of_the_dreadblades" );
+    cooldowns.symbols_of_death         = get_cooldown( "symbols_of_death"         );
 
     regen_type = REGEN_DYNAMIC;
     regen_caches[CACHE_HASTE] = true;
@@ -806,6 +809,7 @@ struct rogue_t : public player_t
   void trigger_sephuzs_secret( const action_state_t* state, spell_mechanic mechanic, double proc_chance = -1.0 );
   void trigger_t21_4pc_assassination( const action_state_t* state );
   void trigger_t21_4pc_outlaw( const action_state_t* state );
+  void trigger_t21_4pc_subtlety( const action_state_t* state );
 
   // On-death trigger for Venomous Wounds energy replenish
   void trigger_venomous_wounds_death( player_t* );
@@ -2666,8 +2670,6 @@ struct backstab_t : public rogue_attack_t
     requires_weapon = WEAPON_DAGGER;
 
     base_multiplier *= 1.0 + p -> artifact.the_quiet_knife.percent();
-    if ( p -> sets -> has_set_bonus( ROGUE_SUBTLETY, T21, B2 ) )
-      base_multiplier *= 1.0 + p -> sets -> set( ROGUE_SUBTLETY, T21, B2 ) -> effectN( 1 ).percent();
 
     crit_bonus_multiplier *= 1.0 + p -> artifact.weak_point.percent();
   }
@@ -2704,6 +2706,8 @@ struct backstab_t : public rogue_attack_t
       p() -> trigger_combo_point_gain( p() -> buffs.the_first_of_the_dead -> data().effectN( 2 ).resource( RESOURCE_COMBO_POINT ),
                                        p() -> gains.the_first_of_the_dead, this );
     }
+
+    p() -> trigger_t21_4pc_subtlety( execute_state );
   }
 };
 
@@ -2966,15 +2970,6 @@ struct eviscerate_t : public rogue_attack_t
     if ( p() -> buffs.focused_shurikens -> up() )
     {
       p() -> buffs.focused_shurikens -> expire();
-    }
-
-    if ( p() -> sets -> has_set_bonus( ROGUE_SUBTLETY, T21, B4 ) )
-    {
-      if ( rng().roll( p() -> sets -> set( ROGUE_SUBTLETY, T21, B4 ) -> proc_chance() ) )
-      {
-        int cp = cast_state( execute_state ) -> cp * p() -> sets -> set( ROGUE_SUBTLETY, T21, B4 ) -> effectN( 1 ).percent();
-        p() -> trigger_combo_point_gain( cp , p() -> gains.t21_4pc_subtlety, this );
-      }
     }
   }
 };
@@ -3246,6 +3241,8 @@ struct gloomblade_t : public rogue_attack_t
       p() -> trigger_combo_point_gain( p() -> buffs.the_first_of_the_dead -> data().effectN( 2 ).resource( RESOURCE_COMBO_POINT ),
                                        p() -> gains.the_first_of_the_dead, this );
     }
+
+    p() -> trigger_t21_4pc_subtlety( execute_state );
   }
 };
 
@@ -4034,15 +4031,6 @@ struct nightblade_t : public rogue_attack_t
     {
       p() -> buffs.feeding_frenzy -> decrement();
     }
-
-    if ( p() -> sets -> has_set_bonus( ROGUE_SUBTLETY, T21, B4 ) )
-    {
-      if ( rng().roll( p() -> sets -> set( ROGUE_SUBTLETY, T21, B4 ) -> proc_chance() ) )
-      {
-        int cp = cast_state( execute_state ) -> cp * p() -> sets -> set( ROGUE_SUBTLETY, T21, B4 ) -> effectN( 1 ).percent();
-        p() -> trigger_combo_point_gain( cp , p() -> gains.t21_4pc_subtlety, this );
-      }
-    }
   }
 
   timespan_t composite_dot_duration( const action_state_t* s ) const override
@@ -4514,6 +4502,8 @@ struct shadowstrike_t : public rogue_attack_t
       grant_energy += p() -> ssw_refund_offset;
       p() -> resource_gain( RESOURCE_ENERGY, grant_energy, p() -> gains.shadow_satyrs_walk );
     }
+
+    p() -> trigger_t21_4pc_subtlety( execute_state );
   }
 
   double action_multiplier() const override
@@ -6765,6 +6755,13 @@ void rogue_t::spend_combo_points( const action_state_t* state )
     buffs.shadow_blades -> extend_duration( this, adjustment );
   }
 
+  if ( sets -> has_set_bonus( ROGUE_SUBTLETY, T21, B2 ) )
+  {
+    timespan_t v = timespan_t::from_seconds( sets -> set( ROGUE_SUBTLETY, T21, B2 ) -> effectN( 1 ).base_value() / 10.0 );
+    v *= - max_spend;
+    cooldowns.symbols_of_death -> adjust( v, false );
+  }
+
   state -> action -> stats -> consume_resource( RESOURCE_COMBO_POINT, max_spend );
   resource_loss( RESOURCE_COMBO_POINT, max_spend, nullptr, state ? state -> action : nullptr );
 
@@ -6773,6 +6770,11 @@ void rogue_t::spend_combo_points( const action_state_t* state )
                    max_spend, util::resource_type_string( RESOURCE_COMBO_POINT ),
                    state -> action -> name(), resources.current[ RESOURCE_COMBO_POINT ] );
 
+  if ( buffs.t21_4pc_subtlety -> up() )
+  {
+    trigger_combo_point_gain( max_spend, gains.t21_4pc_subtlety, state -> action );
+    buffs.t21_4pc_subtlety -> expire();
+  }
 }
 
 void rogue_t::trigger_insignia_of_ravenholdt( action_state_t* state )
@@ -6900,6 +6902,17 @@ void rogue_t::trigger_t21_4pc_outlaw( const action_state_t* state )
   {
     debug_cast<buffs::roll_the_bones_t*>( buffs.roll_the_bones ) -> trigger_inactive_buff( timespan_t::from_seconds( sets -> set( ROGUE_OUTLAW, T21, B4 ) -> effectN( 3 ).base_value() ) );
     procs.t21_4pc_outlaw -> occur();
+  }
+}
+
+void rogue_t::trigger_t21_4pc_subtlety( const action_state_t* state )
+{
+  if ( ! state -> action -> result_is_hit( state -> result ) || ! sets -> has_set_bonus( ROGUE_SUBTLETY, T21, B4 ) )
+    return;
+
+  if ( rng().roll( sets -> set( ROGUE_SUBTLETY, T21, B4 ) -> proc_chance() ) )
+  {
+    buffs.t21_4pc_subtlety -> trigger();
   }
 }
 
@@ -7309,7 +7322,7 @@ void rogue_t::init_action_list()
         cds -> add_action( racial_actions[i] + ",if=debuff.vendetta.up" );
     }
     cds -> add_talent( this, "Marked for Death", "target_if=min:target.time_to_die,if=target.time_to_die<combo_points.deficit*1.5|(raid_event.adds.in>40&combo_points.deficit>=cp_max_spend)" );
-    cds -> add_action( this, "Vendetta" );
+    cds -> add_action( this, "Vendetta", "if=!talent.exsanguinate.enabled|dot.rupture.ticking" );
     cds -> add_talent( this, "Exsanguinate", "if=!set_bonus.tier20_4pc&(prev_gcd.1.rupture&dot.rupture.remains>4+4*cp_max_spend&!stealthed.rogue|dot.garrote.pmultiplier>1&!cooldown.vanish.up&buff.subterfuge.up)" );
     cds -> add_talent( this, "Exsanguinate", "if=set_bonus.tier20_4pc&dot.garrote.remains>20&dot.rupture.remains>4+4*cp_max_spend" );
     cds -> add_action( this, "Vanish", "if=talent.nightstalker.enabled&combo_points>=cp_max_spend&!talent.exsanguinate.enabled&mantle_duration=0&((equipped.mantle_of_the_master_assassin&set_bonus.tier19_4pc)|((!equipped.mantle_of_the_master_assassin|!set_bonus.tier19_4pc)&(dot.rupture.refreshable|debuff.vendetta.up)))", "Nightstalker w/o Exsanguinate: Vanish Envenom if Mantle & T19_4PC, else Vanish Rupture" );
@@ -7339,10 +7352,10 @@ void rogue_t::init_action_list()
     maintain -> add_action( this, "Rupture", "if=!talent.exsanguinate.enabled&combo_points>=3&!ticking&mantle_duration<=0.2&target.time_to_die>6" );
     maintain -> add_action( this, "Rupture", "if=talent.exsanguinate.enabled&((combo_points>=cp_max_spend&cooldown.exsanguinate.remains<1)|(!ticking&(time>10|combo_points>=2+artifact.urge_to_kill.enabled)))" );
     maintain -> add_action( this, "Rupture", "cycle_targets=1,if=combo_points>=4&refreshable&(pmultiplier<=1|remains<=tick_time)&(!exsanguinated|remains<=tick_time*2)&target.time_to_die-remains>6" );
-    maintain -> add_action( "call_action_list,name=kb,if=combo_points.deficit>=1+(mantle_duration>=0.2)" );
+    maintain -> add_action( "call_action_list,name=kb,if=combo_points.deficit>=1+(mantle_duration>=0.2)&(!talent.exsanguinate.enabled|!cooldown.exanguinate.up|time>9)" );
     maintain -> add_action( "pool_resource,for_next=1" );
     maintain -> add_action( this, "Garrote", "cycle_targets=1,if=(!talent.subterfuge.enabled|!(cooldown.vanish.up&cooldown.vendetta.remains<=4))&combo_points.deficit>=1&refreshable&(pmultiplier<=1|remains<=tick_time)&(!exsanguinated|remains<=tick_time*2)&target.time_to_die-remains>4" );
-    maintain -> add_action( this, "Garrote", "if=set_bonus.tier20_4pc&talent.exsanguinate.enabled&prev_gcd.1.rupture&cooldown.exsanguinate.remains<1" );
+    maintain -> add_action( this, "Garrote", "if=set_bonus.tier20_4pc&talent.exsanguinate.enabled&prev_gcd.1.rupture&cooldown.exsanguinate.remains<1&(!cooldown.vanish.up|time>12)" );
   }
   else if ( specialization() == ROGUE_OUTLAW )
   {
@@ -8442,6 +8455,7 @@ void rogue_t::create_buffs()
                                              .default_value( sets -> set( ROGUE_ASSASSINATION, T21, B2 ) -> effectN( 1 ).trigger() -> effectN( 1 ).percent() );
   buffs.t21_2pc_outlaw                     = buff_creator_t( this, "sharpened_sabers", find_spell( 252285 ) )
                                              .default_value( find_spell( 252285 ) -> effectN( 1 ).percent() );
+  buffs.t21_4pc_subtlety                   = buff_creator_t( this, "shadow_gestures", sets -> set( ROGUE_SUBTLETY, T21, B4 ) -> effectN( 1 ).trigger() );
 
 
   // Artifact
