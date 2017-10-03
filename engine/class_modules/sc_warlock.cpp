@@ -77,6 +77,7 @@ struct warlock_td_t: public actor_target_data_t
   dot_t* dots_siphon_life;
   dot_t* dots_phantom_singularity;
   dot_t* dots_channel_demonfire;
+  dot_t* flames_of_argus;
 
   buff_t* debuffs_haunt;
   buff_t* debuffs_shadowflame;
@@ -87,6 +88,7 @@ struct warlock_td_t: public actor_target_data_t
   buff_t* debuffs_havoc;
   buff_t* debuffs_jaws_of_shadow;
   buff_t* debuffs_tormented_agony;
+  buff_t* debuffs_chaotic_flames;
 
   int agony_stack;
   double soc_threshold;
@@ -110,6 +112,7 @@ public:
   double agony_accumulator;
   double demonwrath_accumulator;
   int free_souls;
+  action_t* flames_of_argus;
 
   // Active Pet
   struct pets_t
@@ -150,6 +153,7 @@ public:
     action_t* cry_havoc;
     action_t* rend_soul;
     action_t* tormented_agony;
+	action_t* chaotic_flames;
     spell_t* rain_of_fire;
     spell_t* corruption;
 
@@ -410,6 +414,7 @@ public:
     buff_t* demonic_calling;
     buff_t* t18_4pc_driver;
     buff_t* dreaded_haste; // t20 4pc
+	buff_t* rage_of_guldan; // t21 2pc
 
     //destruction_buffs
     buff_t* backdraft;
@@ -495,6 +500,7 @@ public:
     proc_t* wild_imp;
     proc_t* fragment_wild_imp;
     proc_t* demonology_t20_2pc;
+	proc_t* rage_of_guldan;
     //destro
     proc_t* t18_4pc_destruction;
     proc_t* shadowy_tear;
@@ -542,6 +548,7 @@ public:
   virtual void      reset() override;
   virtual void      create_options() override;
   virtual action_t* create_action( const std::string& name, const std::string& options ) override;
+  bool create_actions();
   virtual pet_t*    create_pet( const std::string& name, const std::string& type = std::string() ) override;
   virtual void      create_pets() override;
   virtual std::string      create_profile( save_e = SAVE_ALL ) override;
@@ -2654,6 +2661,14 @@ public:
     }
   }
 
+  void trigger_flames_of_argus(action_state_t* s) {
+	  double amount = s->result_amount;
+
+	  amount *= p()->find_spell(251855)->effectN(1).percent();
+
+	  residual_action::trigger(p()->flames_of_argus, s->target, amount);
+  }
+
   static void accumulate_seed_of_corruption( warlock_td_t* td, double amount )
   {    td -> soc_threshold -= amount;
 
@@ -2684,6 +2699,8 @@ public:
   }
 
 };
+
+typedef residual_action::residual_periodic_action_t< warlock_spell_t > residual_action_t;
 
 // Affliction Spells
 struct agony_t: public warlock_spell_t
@@ -3584,8 +3601,6 @@ struct demonic_empowerment_t: public warlock_spell_t
   }
 };
 
-
-
 struct hand_of_guldan_t: public warlock_spell_t
 {
   struct trigger_imp_event_t : public player_event_t
@@ -3718,6 +3733,28 @@ struct hand_of_guldan_t: public warlock_spell_t
         imp_event =  make_event<trigger_imp_event_t>( *sim, p(), floor( shards_used ), true);
     }
   }
+};
+
+//Destruction Spells
+
+struct flames_of_argus_t : public residual_action_t
+{
+	flames_of_argus_t(warlock_t* player) :
+		residual_action_t("flames_of_argus", player, player -> find_spell(253097))
+	{
+		dot_duration = dbc::find_spell(player, 253097)->duration();
+		base_tick_time = dbc::find_spell(player, 253097)->effectN(1).period();
+		school = SCHOOL_CHROMATIC;
+
+		//!! NOTE NOTE NOTE !! This is super dangerous and means we have to be extra careful with correctly
+		// flagging thats that proc off events, to not proc off ignite if they shouldn't!
+		callbacks = true;
+	}
+
+	void tick(dot_t* dot) override
+	{
+		residual_action_t::tick(dot);
+	}
 };
 
 struct havoc_t: public warlock_spell_t
@@ -3987,6 +4024,17 @@ struct incinerate_t: public warlock_spell_t
     return cc;
   }
 
+  virtual double composite_target_crit_chance(player_t* t) const override
+  {
+	  double cc = warlock_spell_t::composite_target_crit_chance(t);
+	  warlock_td_t* td = this->td(t);
+
+	  if (td->debuffs_chaotic_flames->check())
+		  cc += p()->find_spell(253092)->effectN(1).percent();
+
+	  return cc;
+  }
+
   void impact( action_state_t* s ) override
   {
     warlock_spell_t::impact( s );
@@ -4140,6 +4188,8 @@ struct chaos_bolt_t: public warlock_spell_t
     warlock_spell_t::impact( s );
     if ( p() -> talents.eradication -> ok() && result_is_hit( s -> result ) )
       td( s -> target ) -> debuffs_eradication -> trigger();
+	if (p()->sets->has_set_bonus(WARLOCK_DESTRUCTION, T21, B2))
+		td(s->target)->debuffs_chaotic_flames->trigger();
     if ( p() -> artifact.cry_havoc.rank() && result_is_hit( s -> result ) && td( s -> target ) -> debuffs_havoc -> check() )
     {
       p() -> active.cry_havoc -> target = s -> target;
@@ -4159,6 +4209,7 @@ struct chaos_bolt_t: public warlock_spell_t
         duplicate -> execute();
       }
     }
+	trigger_flames_of_argus(s);
   }
 
   void execute() override
@@ -4446,6 +4497,9 @@ struct seed_of_corruption_t: public warlock_spell_t
 		p()->active.tormented_agony->schedule_execute();
 
     warlock_spell_t::execute();
+
+	if (p()->sets->has_set_bonus(WARLOCK_AFFLICTION, T21, B4))
+		p()->active.tormented_agony->schedule_execute();
   }
 
   void impact( action_state_t* s ) override
@@ -6317,6 +6371,15 @@ action_t* warlock_t::create_action( const std::string& action_name,
   a -> parse_options( options_str );
 
   return a;
+}
+
+bool warlock_t::create_actions()
+{
+	using namespace actions;
+
+	flames_of_argus = new flames_of_argus_t(this);
+
+	return player_t::create_actions();
 }
 
 pet_t* warlock_t::create_pet( const std::string& pet_name,
