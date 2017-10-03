@@ -7322,7 +7322,7 @@ void rogue_t::init_action_list()
         cds -> add_action( racial_actions[i] + ",if=debuff.vendetta.up" );
     }
     cds -> add_talent( this, "Marked for Death", "target_if=min:target.time_to_die,if=target.time_to_die<combo_points.deficit*1.5|(raid_event.adds.in>40&combo_points.deficit>=cp_max_spend)" );
-    cds -> add_action( this, "Vendetta" );
+    cds -> add_action( this, "Vendetta", "if=!talent.exsanguinate.enabled|dot.rupture.ticking" );
     cds -> add_talent( this, "Exsanguinate", "if=!set_bonus.tier20_4pc&(prev_gcd.1.rupture&dot.rupture.remains>4+4*cp_max_spend&!stealthed.rogue|dot.garrote.pmultiplier>1&!cooldown.vanish.up&buff.subterfuge.up)" );
     cds -> add_talent( this, "Exsanguinate", "if=set_bonus.tier20_4pc&dot.garrote.remains>20&dot.rupture.remains>4+4*cp_max_spend" );
     cds -> add_action( this, "Vanish", "if=talent.nightstalker.enabled&combo_points>=cp_max_spend&!talent.exsanguinate.enabled&mantle_duration=0&((equipped.mantle_of_the_master_assassin&set_bonus.tier19_4pc)|((!equipped.mantle_of_the_master_assassin|!set_bonus.tier19_4pc)&(dot.rupture.refreshable|debuff.vendetta.up)))", "Nightstalker w/o Exsanguinate: Vanish Envenom if Mantle & T19_4PC, else Vanish Rupture" );
@@ -7352,10 +7352,10 @@ void rogue_t::init_action_list()
     maintain -> add_action( this, "Rupture", "if=!talent.exsanguinate.enabled&combo_points>=3&!ticking&mantle_duration<=0.2&target.time_to_die>6" );
     maintain -> add_action( this, "Rupture", "if=talent.exsanguinate.enabled&((combo_points>=cp_max_spend&cooldown.exsanguinate.remains<1)|(!ticking&(time>10|combo_points>=2+artifact.urge_to_kill.enabled)))" );
     maintain -> add_action( this, "Rupture", "cycle_targets=1,if=combo_points>=4&refreshable&(pmultiplier<=1|remains<=tick_time)&(!exsanguinated|remains<=tick_time*2)&target.time_to_die-remains>6" );
-    maintain -> add_action( "call_action_list,name=kb,if=combo_points.deficit>=1+(mantle_duration>=0.2)" );
+    maintain -> add_action( "call_action_list,name=kb,if=combo_points.deficit>=1+(mantle_duration>=0.2)&(!talent.exsanguinate.enabled|!cooldown.exanguinate.up|time>9)" );
     maintain -> add_action( "pool_resource,for_next=1" );
     maintain -> add_action( this, "Garrote", "cycle_targets=1,if=(!talent.subterfuge.enabled|!(cooldown.vanish.up&cooldown.vendetta.remains<=4))&combo_points.deficit>=1&refreshable&(pmultiplier<=1|remains<=tick_time)&(!exsanguinated|remains<=tick_time*2)&target.time_to_die-remains>4" );
-    maintain -> add_action( this, "Garrote", "if=set_bonus.tier20_4pc&talent.exsanguinate.enabled&prev_gcd.1.rupture&cooldown.exsanguinate.remains<1" );
+    maintain -> add_action( this, "Garrote", "if=set_bonus.tier20_4pc&talent.exsanguinate.enabled&prev_gcd.1.rupture&cooldown.exsanguinate.remains<1&(!cooldown.vanish.up|time>12)" );
   }
   else if ( specialization() == ROGUE_OUTLAW )
   {
