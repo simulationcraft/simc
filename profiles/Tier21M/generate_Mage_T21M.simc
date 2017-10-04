@@ -8,21 +8,21 @@ artifact=53:0:0:0:0:783:1:784:4:785:4:786:4:787:4:788:4:789:4:790:4:791:4:792:4:
 crucible=1739:1780:786/1739:1780:789/1739:1780:786
 spec=frost
 
-head=runebound_collar,id=152138,ilevel=960
-neck=riveted_choker_of_delirium,id=151966,ilevel=960,enchant=mark_of_the_hidden_satyr
+head=crown_of_the_arcane_tempest,id=147147,ilevel=930
+neck=chain_of_the_unmaker,id=152283,ilevel=970,enchant=mark_of_the_hidden_satyr
 shoulders=runebound_mantle,id=152141,ilevel=960
 back=drape_of_the_arcane_tempest,id=147145,ilevel=930,enchant=binding_of_intellect
 chest=runebound_tunic,id=152140,ilevel=960
 wrists=magtheridons_banished_bracers,id=138140,ilevel=1000
-hands=gloves_of_the_arcane_tempest,id=147146,ilevel=930
-waist=cord_of_surging_hysteria,id=151942,ilevel=960
+hands=runebound_gloves,id=152137,ilevel=960
+waist=cord_of_blossoming_petals,id=151952,ilevel=960
 legs=runebound_leggings,id=152139,ilevel=960
 feet=lady_dacidions_silk_slippers,id=151945,ilevel=960
 finger1=seal_of_the_portalmaster,id=152063,ilevel=960,enchant=binding_of_versatility
-finger2=shard_of_the_exodar,id=132410,ilevel=1000,gems=200crit,enchant=binding_of_versatility
+finger2=shard_of_the_exodar,id=132410,ilevel=1000,gems=200versatility,enchant=binding_of_versatility
 # TODO: Replace with raid trinkets.
 trinket1=doomed_exarchs_memento,id=153172,ilevel=960
-trinket2=venerable_triad_statuette,id=152782,ilevel=960
+trinket2=macaree_focusing_amethyst,id=152783,ilevel=960
 main_hand=ebonchill,id=128862,gem_id=152042/152025/152042,relic_ilevel=960/960/960
 
 save=Mage_Frost_T21M.simc
