@@ -5950,6 +5950,8 @@ warlock( p )
     .max_stack( 100 );
   debuffs_jaws_of_shadow = buff_creator_t( *this, "jaws_of_shadow", source -> find_spell( 242922 ) );
   debuffs_tormented_agony = buff_creator_t( *this, "tormented_agony", source -> find_spell( 252938 ) );
+  debuffs_chaotic_flames = buff_creator_t( *this, "chaotic_flames", source -> find_spell( 253092 ) );
+
 
   debuffs_havoc = new buffs::debuff_havoc_t( *this );
 
