@@ -4947,8 +4947,7 @@ void priest_t::apl_precombat()
   precombat->add_action(
     "variable,name=s2msetup_time,op=set,value=(0.8*(83+(20+20*talent.fortress_of_the_mind"
     ".enabled)*set_bonus.tier20_4pc-(5*talent.sanlayn.enabled)+(30+42*(desired_targets>1)+"
-    "10*talent.lingering_insanity.enabled)*set_bonus.tier21_4pc*talent.auspicious_spirits."
-    "enabled+((33-13*set_bonus.tier20_4pc)*talent.reaper_of_souls.enabled)+set_bonus.tier19_2pc"
+    "((33-13*set_bonus.tier20_4pc)*talent.reaper_of_souls.enabled)+set_bonus.tier19_2pc"
     "*4+8*equipped.mangazas_madness+(raw_haste_pct*10*(1+0.7*set_bonus.tier20_4pc))*(2+(0.8*set_"
     "bonus.tier19_2pc)+(1*talent.reaper_of_souls.enabled)+(2*artifact.mass_hysteria.rank)-(1*talent"
     ".sanlayn.enabled)))),if=talent.surrender_to_madness.enabled" );
