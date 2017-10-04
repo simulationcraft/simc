@@ -13,6 +13,7 @@
  HEADERS += engine/util/generic.hpp
  HEADERS += engine/util/concurrency.hpp
  HEADERS += engine/util/cache.hpp
+ HEADERS += engine/sim/x7_pantheon.hpp
  HEADERS += engine/sim/sc_profileset.hpp
  HEADERS += engine/sim/sc_option.hpp
  HEADERS += engine/sim/sc_expressions.hpp
@@ -38,6 +39,7 @@
  SOURCES += engine/util/rng.cpp
  SOURCES += engine/util/io.cpp
  SOURCES += engine/util/concurrency.cpp
+ SOURCES += engine/sim/x7_pantheon.cpp
  SOURCES += engine/sim/sc_sim.cpp
  SOURCES += engine/sim/sc_scaling.cpp
  SOURCES += engine/sim/sc_reforge_plot.cpp

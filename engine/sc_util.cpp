@@ -1871,6 +1871,8 @@ stat_e util::translate_rating_mod( unsigned ratings )
     return STAT_LEECH_RATING;
   else if ( ratings & RATING_MOD_SPEED )
     return STAT_SPEED_RATING;
+  else if ( ratings & RATING_MOD_AVOIDANCE )
+    return STAT_AVOIDANCE_RATING;
 
   return STAT_NONE;
 }

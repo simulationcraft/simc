@@ -1,4 +1,4 @@
-SimulationCraft 730-02 for World of Warcraft 7.3.0 Live (wow build 24931)
+SimulationCraft 730-03 for World of Warcraft 7.3.2 PTR (wow build 25163)
 
 Name             : Block (Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
@@ -98,27 +98,6 @@ Effects          :
 #2 (id=219186)   : Dummy (3)
                    Base Value: 30 | Scaled Value: 30 | Target: Chain Friendly (45)
 Description      : Heals the friendly target for $s1, then jumps to heal the most injured nearby party or raid members. Healing is reduced by $?a157154[15][30]% after each jump. Heals $x1 total targets.
-
-Name             : Ancestral Spirit (id=2008) [Spell Family (11)] 
-Class            : Shaman
-School           : Nature
-Resource         : 4% Base Mana (0) (id=151) w/ Restoration Shaman (id=137039)
-Spell Level      : 14
-Range            : 40 yards
-Cast Time        : 10 seconds
-GCD              : 1.5 seconds
-Affecting spells : Spiritwalker's Grace (79206 effect#1), Lucidity (137326 effect#1)
-Attributes       : ........ ........ x....... ....x...   ........ ........ .x...... ........ 
-                 : ........ ........ ........ ........   ....x... ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Cannot be used in combat (28)
-Effects          :
-#2 (id=201012)   : Trigger Spell (64): (148037)
-                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 148037
-Description      : Returns the spirit to the body, restoring a dead target to life with $s1% of maximum health and mana. Cannot be cast when in combat.
 
 Name             : Earthbind Totem (id=2484) [Spell Family (11)] 
 Class            : Shaman
@@ -230,6 +209,7 @@ Attributes       : ....x... ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   .....x.. ........ ........ ........ 
                  : ........ ........ ........ ........   .....x.. ...x.... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Periodic effect affected by haste (173)
 Effects          :
 #1 (id=1925)     : Summon (28)
                    Base Value: 5 | Scaled Value: 5 | Misc Value: 3527 | Misc Value 2: 0xd4a | Target: Water Totem (42)
@@ -254,6 +234,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Periodic effect affected by haste (173)
 Effects          :
 #1 (id=2016)     : Apply Aura (6) | Periodic Trigger Spell (23): Healing Stream Totem every 2 seconds
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 52042 | Target: Self (1)
@@ -562,6 +543,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .x..x... ........ x.......   ........ ........ ........ ........ 
                  : ........ .....x.. ........ ........   ........ ........ ........ ........ 
+                 : Periodic effect affected by haste (173)
 Effects          :
 #1 (id=18390)    : Apply Aura (6) | Periodic Heal (8): every 1 seconds
                    Base Value: 4 | Scaled Value: 4 | Target: Friend (21)
@@ -1158,6 +1140,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .x..x... ........ x.......   ........ ........ ........ ........ 
                  : ........ .....x.. ........ ........   ........ ........ ........ ........ 
+                 : Periodic effect affected by haste (173)
 Effects          :
 #1 (id=53096)    : Apply Aura (6) | Periodic Heal (8): every 1 seconds
                    Base Value: 4 | Scaled Value: 4 | Target: Friend (21)
@@ -1223,6 +1206,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ..x.....   ........ ........ ........ ........ 
                  : ........ .x..x... ........ x.......   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Periodic effect affected by haste (173)
 Effects          :
 #1 (id=55127)    : Direct Heal (10)
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 2.50000 | Target: Friend (21)
@@ -1270,10 +1254,8 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=57399)    : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-                   Hotfixed: Chain Multiplier (0 -> 1)
 #2 (id=256832)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-                   Hotfixed: Chain Multiplier (0 -> 1)
 Description      : Your Chain Heal now has a watery appearance.
 
 Name             : Deluge (id=63925) 
@@ -1440,6 +1422,7 @@ Attributes       : ........ ........ x....... ........   ........ ..x..... .....
                  : ........ ..x..... ........ ........   ........ ........ ........ ........ 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ...x....   ........ ........ ........ ........ 
+                 : Periodic effect affected by haste (173)
 Effects          :
 #1 (id=67013)    : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Radius: 10 yards | Target: Unknown(87) -> AOE friendly (31)
@@ -1657,7 +1640,7 @@ Attributes       : ........ ........ x.x..... ........   ........ ..x..... .....
 Effects          :
 #1 (id=68406)    : Apply Aura (6) | Unknown(330)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 7 | Target: Self (1)
-                   Affected Spells: Lightning Bolt (403), Chain Lightning (421), Chain Heal (1064), Ancestral Spirit (2008), Ghost Wolf (2645), Healing Surge (8004), Lava Burst (51505), Hex (51514), Earthquake (61882), Healing Rain (73920), Healing Wave (77472), Earthquake (77478), Lava Beam (114074), Elemental Blast (117014), Lightning Bolt (187837), Healing Surge (188070), Lightning Bolt (188196), Chain Lightning (188443), Hex (196942), Wellspring (197995), Wellspring (197997), Gift of the Queen (207778), Queen's Decree (208899), Tidal Totem (209069), Hex (210873), Hex (211004), Hex (211010), Hex (211015), Ancestral Vision (212048), Lightning Bolt (214815), Lightning Bolt Overload (214816)
+                   Affected Spells: Lightning Bolt (403), Chain Lightning (421), Chain Heal (1064), Ghost Wolf (2645), Healing Surge (8004), Lava Burst (51505), Hex (51514), Earthquake (61882), Healing Rain (73920), Healing Wave (77472), Earthquake (77478), Lava Beam (114074), Elemental Blast (117014), Lightning Bolt (187837), Healing Surge (188070), Lightning Bolt (188196), Chain Lightning (188443), Hex (196942), Wellspring (197995), Wellspring (197997), Gift of the Queen (207778), Queen's Decree (208899), Tidal Totem (209069), Hex (210873), Hex (211004), Hex (211010), Hex (211015), Ancestral Vision (212048), Lightning Bolt (214815), Lightning Bolt Overload (214816)
 #2 (id=289427)   : Apply Aura (6) | Unknown(129)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : Calls upon the guidance of the spirits for $d, permitting movement while casting Shaman spells. Castable while casting.$?a192088[ Increases movement speed by $192088s2%.][]
@@ -1906,6 +1889,7 @@ Attributes       : ....x... ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ...x.... ........ ........ 
                  : ........ .....x.. ........ ........   ........ ........ ........ ........ 
+                 : Periodic effect affected by haste (173)
 Effects          :
 #1 (id=119337)   : Summon (28)
                    Base Value: 5 | Scaled Value: 5 | Misc Value: 59764 | Misc Value 2: 0x52 | Target: Water Totem (42)
@@ -2331,6 +2315,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .x...... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Periodic effect affected by haste (173)
 Effects          :
 #1 (id=134677)   : Apply Aura (6) | Periodic Damage (3): fire every 3 seconds
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.30000 | Target: Enemy (6)
@@ -2467,7 +2452,7 @@ Effects          :
                    Affected Spells (Category): Rockbiter (193786)
 #5 (id=191051)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 247 (Label) | Target: Self (1)
-                   Affected Spells (Label): Infernal Contract (225140), Living Carapace (225033), Sands of Time (225124), Vampiric Aura (225130), Wailing Souls (242609), Unending Hunger (242536), Chilling Nova (251940), Bulwark of Flame (251946), Hammer-Forged (251952), Pool of Pure Void (250766)
+                   Affected Spells (Label): Infernal Contract (225140), Living Carapace (225033), Sands of Time (225124), Vampiric Aura (225130), Wailing Souls (242609), Unending Hunger (242536), Chilling Nova (251940), Bulwark of Flame (251946), Hammer-Forged (251952), Pool of Pure Void (250766), Wave of Flame (251948)
 #6 (id=260709)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #7 (id=260710)   : Apply Aura (6) | Dummy (4)
@@ -2518,19 +2503,19 @@ Effects          :
                    Base Value: -30 | Scaled Value: -30 | Misc Value: 26 | Target: Self (1)
 #6 (id=260997)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 248 (Label) | Target: Self (1)
-                   Affected Spells (Label): Fel-Crazed Rage (225777), Colossal Slam (232044), Dread Torrent (246464), Ceaseless Toxin (242497), Umbral Glaive Storm (242556), Shattering Umbral Glaives (242557), Infernal Cinders (242218)
+                   Affected Spells (Label): Fel-Crazed Rage (225777), Colossal Slam (232044), Dread Torrent (246464), Ceaseless Toxin (242497), Umbral Glaive Storm (242556), Shattering Umbral Glaives (242557), Infernal Cinders (242218), Golganneth's Thunderous Wrath (257430), Worldforger's Flame (257244)
 #7 (id=260998)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Periodic Damage (22)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 22 | Misc Value 2: 248 (Label) | Target: Self (1)
-                   Affected Spells (Label): Fel-Crazed Rage (225777), Colossal Slam (232044), Dread Torrent (246464), Ceaseless Toxin (242497), Umbral Glaive Storm (242556), Shattering Umbral Glaives (242557), Infernal Cinders (242218)
+                   Affected Spells (Label): Fel-Crazed Rage (225777), Colossal Slam (232044), Dread Torrent (246464), Ceaseless Toxin (242497), Umbral Glaive Storm (242556), Shattering Umbral Glaives (242557), Infernal Cinders (242218), Golganneth's Thunderous Wrath (257430), Worldforger's Flame (257244)
 #8 (id=260999)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 249 (Label) | Target: Self (1)
                    Affected Spells (Label): Orb of Destruction (229700), Void Tendril (250834)
 #9 (id=261000)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 300 (Label) | Target: Self (1)
-                   Affected Spells (Label): Insidious Corruption (243941), Spectral Bolt (242571), Spectral Blast (246442), Apocalypse Missile (253243), Legion Bombardment (253248), Essence Swap (253258)
+                   Affected Spells (Label): Insidious Corruption (243941), Spectral Bolt (242571), Spectral Blast (246442), Legion Bombardment (253248), Prototype Personnel Decimator (255629), Legion Bombardment (255713), Legion Bombardment (255724)
 #10 (id=261001)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 333 (Label) | Target: Self (1)
-                   Affected Spells (Label): Void Slash (251034)
+                   Affected Spells (Label): Void Slash (251034), Shadow Strike (253324), Isolated Strike (255609), Fire Mines (253321), Ravaging Storm (257286)
 #11 (id=261002)   : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
                    Base Value: 25 | Scaled Value: 25 | Target: Self (1)
                    Affected Spells: Lightning Bolt (403), Chain Lightning (421), Lava Burst (51505), Lightning Bolt (187837), Lightning Bolt (188196), Flame Shock (188389), Chain Lightning (188443), Flame Shock (188838), Lightning Bolt (214815), Lightning Bolt Overload (214816)
@@ -2587,16 +2572,16 @@ Effects          :
                    Affected Spells: Echo of the Elements (108283)
 #6 (id=260987)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 248 (Label) | Target: Self (1)
-                   Affected Spells (Label): Fel-Crazed Rage (225777), Colossal Slam (232044), Dread Torrent (246464), Ceaseless Toxin (242497), Umbral Glaive Storm (242556), Shattering Umbral Glaives (242557), Infernal Cinders (242218)
+                   Affected Spells (Label): Fel-Crazed Rage (225777), Colossal Slam (232044), Dread Torrent (246464), Ceaseless Toxin (242497), Umbral Glaive Storm (242556), Shattering Umbral Glaives (242557), Infernal Cinders (242218), Golganneth's Thunderous Wrath (257430), Worldforger's Flame (257244)
 #7 (id=260988)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Periodic Damage (22)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 22 | Misc Value 2: 248 (Label) | Target: Self (1)
-                   Affected Spells (Label): Fel-Crazed Rage (225777), Colossal Slam (232044), Dread Torrent (246464), Ceaseless Toxin (242497), Umbral Glaive Storm (242556), Shattering Umbral Glaives (242557), Infernal Cinders (242218)
+                   Affected Spells (Label): Fel-Crazed Rage (225777), Colossal Slam (232044), Dread Torrent (246464), Ceaseless Toxin (242497), Umbral Glaive Storm (242556), Shattering Umbral Glaives (242557), Infernal Cinders (242218), Golganneth's Thunderous Wrath (257430), Worldforger's Flame (257244)
 #8 (id=260989)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 298 (Label) | Target: Self (1)
-                   Affected Spells (Label): Cleansing Matrix (242619), Fruitful Machinations (242623), Guiding Hand (242622), Infusion of Light (242621), Fel Shield (253277), Tarratus Keystone (253282), Refreshing Agony (253284), L'ura's Word (250781)
+                   Affected Spells (Label): Cleansing Matrix (242619), Fruitful Machinations (242623), Guiding Hand (242622), Infusion of Light (242621), Felshield (253277), Tarratus Keystone (253282), Refreshing Agony (253284), L'ura's Word (250781), Tarratus Keystone (255924), Refreshing Agony (255981), Highfather's Timekeeping (253288), Felshield (253278), Highfather's Timekeeping (255932), Emerald Blossom (257442), Verdant Embrace (257444)
 #9 (id=260990)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 333 (Label) | Target: Self (1)
-                   Affected Spells (Label): Void Slash (251034)
+                   Affected Spells (Label): Void Slash (251034), Shadow Strike (253324), Isolated Strike (255609), Fire Mines (253321), Ravaging Storm (257286)
 #10 (id=260991)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #11 (id=260992)   : Apply Aura (6) | Dummy (4)
@@ -2641,20 +2626,20 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 11 | Target: Self (1)
 #6 (id=261007)   : Parry (22)
                    Base Value: 0 | Scaled Value: 1 - 6 | Value Range: 6 | SP Coefficient: 1.00000 | Target: Self (1)
-#7 (id=261008)   : Apply Aura (6) | Increase Energy (35)
+#7 (id=261008)   : Apply Aura (6) | Unknown(418)
                    Base Value: 50 | Scaled Value: 50 | Misc Value: 11 | Target: Self (1)
 #8 (id=261009)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 249 (Label) | Target: Self (1)
                    Affected Spells (Label): Orb of Destruction (229700), Void Tendril (250834)
 #9 (id=261010)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Generic Modifier (0)
                    Base Value: -30 | Scaled Value: -30 | Misc Value 2: 265 (Label) | Target: Self (1)
-                   Affected Spells (Label): Infernal Cinders (242218), Fevered Touch (242650), Apocalypse Missile (253243), Legion Bombardment (253248)
+                   Affected Spells (Label): Infernal Cinders (242218), Fevered Touch (242650), Legion Bombardment (253248), Wave of Flame (251948), Prototype Personnel Decimator (255629), Legion Bombardment (255713), Legion Bombardment (255724), Felshield (253278), Fire Mines (253321), Norgannon's Fireball (257241), Worldforger's Flame (257244)
 #10 (id=261011)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 298 (Label) | Target: Self (1)
-                   Affected Spells (Label): Cleansing Matrix (242619), Fruitful Machinations (242623), Guiding Hand (242622), Infusion of Light (242621), Fel Shield (253277), Tarratus Keystone (253282), Refreshing Agony (253284), L'ura's Word (250781)
+                   Affected Spells (Label): Cleansing Matrix (242619), Fruitful Machinations (242623), Guiding Hand (242622), Infusion of Light (242621), Felshield (253277), Tarratus Keystone (253282), Refreshing Agony (253284), L'ura's Word (250781), Tarratus Keystone (255924), Refreshing Agony (255981), Highfather's Timekeeping (253288), Felshield (253278), Highfather's Timekeeping (255932), Emerald Blossom (257442), Verdant Embrace (257444)
 #11 (id=261012)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 300 (Label) | Target: Self (1)
-                   Affected Spells (Label): Insidious Corruption (243941), Spectral Bolt (242571), Spectral Blast (246442), Apocalypse Missile (253243), Legion Bombardment (253248), Essence Swap (253258)
+                   Affected Spells (Label): Insidious Corruption (243941), Spectral Bolt (242571), Spectral Blast (246442), Legion Bombardment (253248), Prototype Personnel Decimator (255629), Legion Bombardment (255713), Legion Bombardment (255724)
 #12 (id=261013)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #13 (id=261014)   : Apply Aura (6) | Dummy (4)
@@ -3132,7 +3117,7 @@ Attributes       : .......x ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Hidden (7)
+                 : Hidden (7), Periodic effect affected by haste (173)
 Effects          :
 #1 (id=241702)   : Apply Aura (6) | Periodic Dummy (226): every 3 seconds
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -3474,6 +3459,7 @@ Attributes       : ........ ........ x.x..... ..x.....   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .x..x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Periodic effect affected by haste (173)
 Effects          :
 #1 (id=274966)   : School Damage (2): fire
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.80000 | Target: Enemy (6)
@@ -3567,6 +3553,7 @@ Attributes       : ........ ........ x.x..... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .x..x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Periodic effect affected by haste (173)
 Effects          :
 #1 (id=275964)   : School Damage (2): fire
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.75000 | Target: Enemy (6)
@@ -4025,6 +4012,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Periodic effect affected by haste (173)
 Effects          :
 #1 (id=282007)   : Apply Aura (6) | Periodic Trigger Spell (23): Liquid Magma Totem every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 192223 | Target: Self (1)
@@ -4269,7 +4257,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ .....x..   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Cannot crit (93)
+                 : Cannot crit (93), Disable player multipliers (221)
 Effects          :
 #1 (id=286640)   : School Damage (2): nature
                    Base Value: 200 | Scaled Value: 200 | Target: Enemy (6)
@@ -4384,7 +4372,7 @@ Spell Level      : 38
 Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 5 seconds
-Affecting spells : Elemental Focus (16246 effect#1), Shaman Shock Range Bonus (32973 effect#1), Elemental Fury (60188 effect#1), Elemental Shaman (137040 effect#1), Lucidity (137326 effect#1), Icefury (210714 effect#3)
+Affecting spells : Elemental Focus (16246 effect#1), Shaman Shock Range Bonus (32973 effect#1), Elemental Fury (60188 effect#1), Elemental Shaman (137040 effect#1), Lucidity (137326 effect#1), Icefury (210714 effect#3), Earthen Strength (252141 effect#2)
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5796,7 +5784,7 @@ Stacks           : 4 initial, 4 maximum
 Proc Chance      : 100%
 Proc Flags       : ........ ....x... x....... ........ 
                  : AOE Hostile Spell, Hostile Spell
-Affecting spells : Elemental Focus (16246 effect#1), Elemental Fury (60188 effect#1), Elemental Shaman (137040 effect#1), Earthen Strength (252141 effect#2)
+Affecting spells : Elemental Focus (16246 effect#1), Elemental Fury (60188 effect#1), Elemental Shaman (137040 effect#1), 
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ....x... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6068,8 +6056,6 @@ Attributes       : ........ ........ x....... ....x...   ........ ........ .x...
 Effects          :
 #1 (id=314335)   : Unknown(172)
                    Base Value: 35 | Scaled Value: 35 | Radius: 100 yards | Target: Unknown(119)
-#2 (id=314336)   : Trigger Spell (64): (148037)
-                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 148037
 Description      : Returns all dead party members to life with $s1% of maximum health and mana.  Cannot be cast when in combat.
 
 Name             : Stormlash (id=213307) [Spell Family (11)] 
@@ -6099,7 +6085,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Passive (6)
+                 : Passive (6), Periodic effect affected by haste (173)
 Effects          :
 #1 (id=316714)   : Apply Aura (6) | Periodic Dummy (226): every 12 seconds
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -6233,6 +6219,7 @@ Attributes       : ........ ........ x....... ........   ........ ..x..... .....
                  : ........ ..x..... ........ ........   ........ ........ ........ ........ 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ...x....   ........ ........ ........ ........ 
+                 : Periodic effect affected by haste (173)
 Effects          :
 #1 (id=321033)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Radius: 10 yards | Target: Unknown(87) -> AOE friendly (31)
@@ -6316,7 +6303,7 @@ School           : Frost
 Spell Level      : 1
 Range            : 40 yards
 Velocity         : 40 yards/sec
-Affecting spells : Elemental Focus (16246 effect#1), Elemental Fury (60188 effect#1), Elemental Shaman (137040 effect#1), Earthen Strength (252141 effect#2)
+Affecting spells : Elemental Focus (16246 effect#1), Elemental Fury (60188 effect#1), Elemental Shaman (137040 effect#1), 
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ....x... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6615,7 +6602,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : Unlock powers at the Vindicaar's Matrix Core to use while on Argus. 
 
-Name             : Item - Shaman T21 Elemental 4P Bonus - Earth Shock Overload (id=251758) [Spell Family (11), Passive, Hidden] 
+Name             : Item - Shaman T21 Elemental 4P Bonus (id=251758) [Spell Family (11), Passive, Hidden] 
 Class            : Shaman
 School           : Physical
 Proc Chance      : 101%
@@ -6630,19 +6617,20 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=471342)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 30 | Scaled Value: 30 | Target: Self (1)
-Description      : Earth Shock has a $s1% chance to cause an Elemental Overload.
+                   Base Value: 15 | Scaled Value: 15 | Target: Self (1)
+Description      : Earth Shock and Frost Shock have a $s1% chance to cause an Elemental Overload.
 
 Name             : Earth Shock Overload (id=252143) [Spell Family (11)] 
 Class            : Shaman
 School           : Nature
 Range            : 100 yards
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ..x..... x....... ........ ........   ........ ........ ........ ........ 
+                 : ..x..... x....... ........ .....x..   ........ ........ ........ ........ 
                  : .......x ........ x....... ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ .....x..   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ....x... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Cannot crit (93), Disable player multipliers (221)
 Effects          :
 #1 (id=471896)   : School Damage (2): nature
                    Base Value: 1 | Scaled Value: 1 | Target: Enemy (6)

@@ -900,6 +900,9 @@ void option_db_t::parse_token( const std::string& token )
   }
   else
   {
+    // Replace any template variable in the name portion of the option, if found
+    do_replace( *this, name, name.find( "$(" ), 1 );
+
     add( "global", name, value );
   }
 }
