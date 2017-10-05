@@ -3279,7 +3279,7 @@ void sim_t::create_options()
   add_option( opt_int( "legion.engine_of_eradication_orbs", expansion_opts.engine_of_eradication_orbs, 0, 4 ) );
   add_option( opt_int( "legion.void_stalkers_contract_targets", expansion_opts.void_stalkers_contract_targets ) );
   add_option( opt_bool( "legion.feast_as_dps", expansion_opts.lavish_feast_as_dps ) );
-  add_option( opt_float( "legion.specter_of_betrayal_overlap_prob", expansion_opts.specter_of_betrayal_overlap_prob, 0, 1 ) );
+  add_option( opt_float( "legion.specter_of_betrayal_overlap", expansion_opts.specter_of_betrayal_overlap, 0, 1 ) );
   add_option( opt_string( "legion.pantheon_trinket_users", expansion_opts.pantheon_trinket_users ) );
   add_option( opt_timespan( "legion.pantheon_trinket_interval", expansion_opts.pantheon_trinket_interval ) );
   add_option( opt_float( "legion.pantheon_trinket_interval_stddev", expansion_opts.pantheon_trinket_interval_stddev ) );
