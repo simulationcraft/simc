@@ -6871,7 +6871,7 @@ void warlock_t::create_buffs()
     .default_value( sets -> set( WARLOCK_DEMONOLOGY, T20, B4 ) -> effectN( 1 ).trigger() -> effectN( 1 ).percent() );
   buffs.rage_of_guldan = buff_creator_t(this, "rage_of_guldan", sets->set( WARLOCK_DEMONOLOGY, T21, B2 ) -> effectN( 1 ).trigger() )
 	  .duration( find_spell( 257926 ) -> duration() )
-	  .max_stack( find_spell( 257926 ) -> max_stacks() )
+	  .max_stack( maybe_ptr(dbc.ptr) ? find_spell( 257926 ) -> max_stacks() : 1) //ptr 
 	  .default_value( find_spell( 257926 ) -> effectN( 1 ).base_value() )
 	  .refresh_behavior( BUFF_REFRESH_DURATION );
 
