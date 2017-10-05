@@ -1363,9 +1363,9 @@ struct dread_torrent_driver_t : public spell_t
   {
     spell_t::execute();
 
-    // If we fail to overlap (which happens with probability 1 - overlap_prob and there's been at least one reflection;
+    // If we fail to overlap (which happens with probability 1 - overlap and there's been at least one reflection;
     // just pulse the most recent one and return short circuiting the last logic
-    if (rng().roll(1 - sim->expansion_opts.specter_of_betrayal_overlap_prob) && !driver->reflections.empty())
+    if (rng().roll(1 - sim->expansion_opts.specter_of_betrayal_overlap) && !driver->reflections.empty())
     {
       pulse(driver->reflections.back());
       return;
