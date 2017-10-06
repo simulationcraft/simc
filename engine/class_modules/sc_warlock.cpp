@@ -414,7 +414,7 @@ public:
     buff_t* demonic_calling;
     buff_t* t18_4pc_driver;
     buff_t* dreaded_haste; // t20 4pc
-	buff_t* rage_of_guldan; // t21 2pc
+	  buff_t* rage_of_guldan; // t21 2pc
 
     //destruction_buffs
     buff_t* backdraft;
@@ -680,19 +680,25 @@ namespace pets {
     const warlock_t* o() const
     {
       return static_cast<warlock_t*>( owner );
-    }
-
+    }  
+    
     struct buffs_t
     {
       buff_t* demonic_synergy;
       haste_buff_t* demonic_empowerment;
       buff_t* the_expendables;
-	  buff_t* rage_of_guldan;
+	    buff_t* rage_of_guldan;
     } buffs;
+
+    struct cooldowns_t
+    {
+      cooldown_t* dreadbite;
+    } cooldowns;
 
     bool is_grimoire_of_service = false;
     bool is_demonbolt_enabled = true;
     bool is_lord_of_flames = false;
+    bool t21_4pc_damage = false;
 
     void trigger_sephuzs_secret( const action_state_t* state, spell_mechanic mechanic )
     {
@@ -1091,6 +1097,8 @@ struct firebolt_t: public warlock_pet_spell_t
 struct dreadbite_t : public warlock_pet_melee_attack_t
 {
   timespan_t dreadstalker_duration;
+  double t21_4pc_increase;
+
   dreadbite_t( warlock_pet_t* p ) :
     warlock_pet_melee_attack_t( "Dreadbite", p, p -> find_spell( 205196 ) )
   {
@@ -1099,7 +1107,27 @@ struct dreadbite_t : public warlock_pet_melee_attack_t
                             ( p -> o() -> sets->has_set_bonus( WARLOCK_DEMONOLOGY, T19, B4 )
                               ? p -> o() -> sets->set( WARLOCK_DEMONOLOGY, T19, B4 ) -> effectN( 1 ).time_value()
                               : timespan_t::zero() );
+
+    cooldown = p->cooldowns.dreadbite;
     cooldown -> duration = dreadstalker_duration + timespan_t::from_seconds( 1.0 );
+    t21_4pc_increase = p -> o() -> sets -> set( WARLOCK_DEMONOLOGY, T21, B4 ) -> effectN( 1 ).percent();
+  }
+
+  virtual double action_multiplier() const override
+  {
+    double m = warlock_pet_melee_attack_t::action_multiplier();
+
+    if ( p() -> t21_4pc_damage )
+      m *= 1.0 + t21_4pc_increase;
+
+    return m;
+  }
+
+  void execute() override
+  {
+    warlock_pet_melee_attack_t::execute();
+
+    p() -> t21_4pc_damage = false;
   }
 
   void impact( action_state_t* s ) override
@@ -1450,11 +1478,13 @@ struct eye_laser_t : public warlock_pet_spell_t
 //} // pets::actions
 
 warlock_pet_t::warlock_pet_t( sim_t* sim, warlock_t* owner, const std::string& pet_name, pet_e pt, bool guardian ):
-pet_t( sim, owner, pet_name, pt, guardian ), special_action( nullptr ), special_action_two( nullptr ), melee_attack( nullptr ), summon_stats( nullptr ), ascendance( nullptr )
+pet_t( sim, owner, pet_name, pt, guardian ), special_action( nullptr ), special_action_two( nullptr ), melee_attack( nullptr ), summon_stats( nullptr ), ascendance( nullptr ), cooldowns( cooldowns_t() )
 {
   owner_coeff.ap_from_sp = 1.0;
   owner_coeff.sp_from_sp = 1.0;
   owner_coeff.health = 0.5;
+
+  cooldowns.dreadbite = get_cooldown( "dreadbite" );
 
 //  ascendance = new thalkiels_ascendance_pet_spell_t( this );
 }
@@ -1532,7 +1562,7 @@ void warlock_pet_t::create_buffs()
     .chance( 1 )
     .default_value( find_spell( 211218 ) -> effectN( 1 ).percent() );
   buffs.rage_of_guldan = buff_creator_t( this, "rage_of_guldan", find_spell( 257926 ) )
-	.add_invalidate(CACHE_PLAYER_DAMAGE_MULTIPLIER); //change spell id to 253014 when whitelisted
+	  .add_invalidate(CACHE_PLAYER_DAMAGE_MULTIPLIER); //change spell id to 253014 when whitelisted
 }
 
 void warlock_pet_t::schedule_ready( timespan_t delta_time, bool waiting )
@@ -2199,6 +2229,8 @@ struct wild_imp_pet_t: public warlock_pet_t
 
 struct dreadstalker_t : public warlock_pet_t
 {
+  bool t21_4pc_reset;
+
   dreadstalker_t( sim_t* sim, warlock_t* owner ) :
     warlock_pet_t( sim, owner, "dreadstalker", PET_DREADSTALKER )
   {
@@ -2206,6 +2238,8 @@ struct dreadstalker_t : public warlock_pet_t
     regen_type = REGEN_DISABLED;
     owner_coeff.health = 0.4;
     owner_coeff.ap_from_sp = 1.1; // HOTFIX
+
+    t21_4pc_reset = false;
   }
 
   virtual double composite_melee_crit_chance() const override
@@ -2276,7 +2310,8 @@ struct darkglare_t : public warlock_pet_t
 // Spells
 namespace actions {
 
-struct warlock_heal_t: public heal_t
+struct warlock_heal_t
+: public heal_t
 {
   warlock_heal_t( const std::string& n, warlock_t* p, const uint32_t id ):
     heal_t( n, p, p -> find_spell( id ) )
@@ -3576,7 +3611,7 @@ struct demonic_empowerment_t: public warlock_spell_t
   }
 
   void execute() override
-    {
+  {
     warlock_spell_t::execute();
     for( auto& pet : p() -> pet_list )
     {
@@ -3598,11 +3633,28 @@ struct demonic_empowerment_t: public warlock_spell_t
       }
     }
 
+    if ( maybe_ptr( p()->dbc.ptr ) && p()->sets->has_set_bonus( WARLOCK_DEMONOLOGY, T21, B4 ) )
+    {
+      for ( size_t i = 0; i < p()->warlock_pet_list.dreadstalkers.size(); i++ )
+      {
+        if ( !p()->warlock_pet_list.dreadstalkers[i]->is_sleeping() )
+        {
+          if ( p()->warlock_pet_list.dreadstalkers[i]->t21_4pc_reset == false )
+          {
+            p()->warlock_pet_list.dreadstalkers[i]->t21_4pc_reset = true;
+            p()->warlock_pet_list.dreadstalkers[i]->cooldowns.dreadbite->reset( false );
+            p()->warlock_pet_list.dreadstalkers[i]->t21_4pc_damage = true;
+          }
+        }
+      }
+    }
+
     if ( p() -> talents.power_trip -> ok() && rng().roll( power_trip_rng ) )
       p() -> resource_gain( RESOURCE_SOUL_SHARD, 1, p() -> gains.power_trip );
 
     if ( p() -> talents.shadowy_inspiration -> ok() )
       p() -> buffs.shadowy_inspiration -> trigger();
+
   }
 };
 
@@ -3734,13 +3786,17 @@ struct hand_of_guldan_t: public warlock_spell_t
           shards_used *= 1.5;
         }
       }
+
       if ( s -> chain_target == 0 )
         imp_event =  make_event<trigger_imp_event_t>( *sim, p(), floor( shards_used ), true);
-	  if (p()->sets->has_set_bonus(WARLOCK_DEMONOLOGY, T21, B2)) {
-		  for (int i = 0; i < shards_used; i++) {
-			  p()->buffs.rage_of_guldan->trigger();
-		  }
-	  }
+
+	    if ( maybe_ptr( p() -> dbc.ptr ) && p()->sets->has_set_bonus(WARLOCK_DEMONOLOGY, T21, B2))
+      {
+		    for (int i = 0; i < shards_used; i++) 
+        {
+			    p()->buffs.rage_of_guldan->trigger();
+		    }
+	    }
     }
   }
 };
@@ -5012,10 +5068,20 @@ struct call_dreadstalkers_t : public warlock_spell_t
       if ( p() -> warlock_pet_list.dreadstalkers[i] -> is_sleeping() )
       {
         p() -> warlock_pet_list.dreadstalkers[i] -> summon( dreadstalker_duration );
-		p() -> warlock_pet_list.dreadstalkers[i] -> buffs.rage_of_guldan -> set_duration( dreadstalker_duration );
-		p() -> warlock_pet_list.dreadstalkers[i] -> buffs.rage_of_guldan -> set_default_value( p() -> buffs.rage_of_guldan -> stack_value());
-		p() -> warlock_pet_list.dreadstalkers[i] -> buffs.rage_of_guldan -> trigger();
-        p() -> procs.dreadstalker_debug -> occur();
+        p()->procs.dreadstalker_debug->occur();
+
+        if ( maybe_ptr( p()->dbc.ptr ) && p()->sets->has_set_bonus( WARLOCK_DEMONOLOGY, T21, B4 ) )
+        {
+          p()->warlock_pet_list.dreadstalkers[i]->t21_4pc_reset = false;
+          p()->warlock_pet_list.dreadstalkers[i]->t21_4pc_damage = false;
+        }
+
+        if ( maybe_ptr( p()->dbc.ptr ) && p()->sets->has_set_bonus( WARLOCK_DEMONOLOGY, T21, B2 ))
+        { 
+		      p() -> warlock_pet_list.dreadstalkers[i] -> buffs.rage_of_guldan -> set_duration( dreadstalker_duration );
+		      p() -> warlock_pet_list.dreadstalkers[i] -> buffs.rage_of_guldan -> set_default_value( p() -> buffs.rage_of_guldan -> stack_value());
+		      p() -> warlock_pet_list.dreadstalkers[i] -> buffs.rage_of_guldan -> trigger();
+        }
         if(p()->legendary.wilfreds_sigil_of_superior_summoning_flag && !p()->talents.grimoire_of_supremacy->ok())
         {
             p()->cooldowns.doomguard->adjust(p()->legendary.wilfreds_sigil_of_superior_summoning);
@@ -5025,7 +5091,6 @@ struct call_dreadstalkers_t : public warlock_spell_t
         if ( ++j == dreadstalker_count ) break;
       }
     }
-	p()->buffs.rage_of_guldan->expire();
 
     if ( p() -> talents.improved_dreadstalkers -> ok() )
     {
@@ -5037,6 +5102,7 @@ struct call_dreadstalkers_t : public warlock_spell_t
     }
 
     p() -> buffs.demonic_calling -> expire();
+	  p()->buffs.rage_of_guldan->expire();
 
     if ( recurrent_ritual > 0 )
     {
@@ -6871,7 +6937,7 @@ void warlock_t::create_buffs()
     .default_value( sets -> set( WARLOCK_DEMONOLOGY, T20, B4 ) -> effectN( 1 ).trigger() -> effectN( 1 ).percent() );
   buffs.rage_of_guldan = buff_creator_t(this, "rage_of_guldan", sets->set( WARLOCK_DEMONOLOGY, T21, B2 ) -> effectN( 1 ).trigger() )
 	  .duration( find_spell( 257926 ) -> duration() )
-	  .max_stack( maybe_ptr(dbc.ptr) ? find_spell( 257926 ) -> max_stacks() : 1) //ptr 
+	  .max_stack( maybe_ptr( dbc.ptr ) ? find_spell( 257926 ) -> max_stacks() : 1 )
 	  .default_value( find_spell( 257926 ) -> effectN( 1 ).base_value() )
 	  .refresh_behavior( BUFF_REFRESH_DURATION );
 
