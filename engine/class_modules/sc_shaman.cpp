@@ -3558,7 +3558,7 @@ struct stormstrike_base_t : public shaman_attack_t
     p() -> trigger_t19_oh_8pc( execute_state );
 
     //Currently assuming based on tooltip description that chance is on cast, not hit.
-    if ( p() -> sets -> has_set_bonus( SHAMAN_ENHANCEMENT, T21, B2 ) )
+    if ( may_proc_t21_2p && ! stormflurry)
     {
       if ( rng().roll( p() -> sets -> set(SHAMAN_ENHANCEMENT, T21, B2) -> proc_chance() ) )
       {
@@ -7444,7 +7444,7 @@ void shaman_t::create_buffs()
   buff.t21_2pc_elemental = buff_creator_t( this, "earthen_strength", sets -> set( SHAMAN_ELEMENTAL, T21, B2 ) -> effectN( 1 ).trigger() )
     .trigger_spell( sets -> set( SHAMAN_ELEMENTAL, T21, B2 ) )
     .default_value( sets -> set( SHAMAN_ELEMENTAL, T21, B2 ) -> effectN( 1 ).trigger() -> effectN( 1 ).percent() );
-  buff.t21_2pc_enhancement = buff_creator_t( this, "ss_buffs_rockbiter", sets -> set( SHAMAN_ENHANCEMENT, T21, B2 ) -> effectN( 1 ).trigger() )
+  buff.t21_2pc_enhancement = buff_creator_t( this, "force_of_the_mountain", sets -> set( SHAMAN_ENHANCEMENT, T21, B2 ) -> effectN( 1 ).trigger() )
     .trigger_spell( sets -> set( SHAMAN_ENHANCEMENT, T21, B2) ) 
     .default_value( sets -> set( SHAMAN_ENHANCEMENT, T21, B2 ) -> effectN( 1 ).trigger() -> effectN( 1 ).percent() );
 }
