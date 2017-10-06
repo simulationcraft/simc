@@ -53,6 +53,35 @@
     { "data_type": "H", "field": "unk_2",      "formats": { } },
     { "data_type": "H", "field": "unk_3",      "formats": { } }
   ],
+  "Creature": [
+    { "data_type": "I", "field": "id", "elements": 3 },
+    { "data_type": "I", "field": "unk_1" },
+    { "data_type": "I", "field": "unk_2", "elements": 4 },
+    { "data_type": "f", "field": "unk_3", "elements": 4 },
+    { "data_type": "S", "field": "name" },
+    { "data_type": "S", "field": "unk_4" },
+    { "data_type": "S", "field": "title" },
+    { "data_type": "S", "field": "unk_5" },
+    { "data_type": "B", "field": "id_creature" },
+    { "data_type": "B", "field": "unk_6" },
+    { "data_type": "B", "field": "unk_7" },
+    { "data_type": "B", "field": "unk_8" }
+  ],
+  "CreatureImmunities": [
+    { "data_type": "I", "field": "school", "elements": 2 },
+    { "data_type": "B", "field": "dispelType" },
+    { "data_type": "B", "field": "mechanicsAllowed" },
+    { "data_type": "B", "field": "mechanic" },
+    { "data_type": "B", "field": "effectsAllowed" },
+    { "data_type": "B", "field": "effect" },
+    { "data_type": "I", "field": "statesAllowed" },
+    { "data_type": "I", "field": "state", "elements": 8 },
+    { "data_type": "I", "field": "flags", "elements": 16 }
+  ],
+  "CreatureType": [
+    { "data_type": "S", "field": "name" },
+    { "data_type": "B", "field": "no_experience" }
+  ],
   "CurvePoint": [
     { "data_type": "f", "field": "val", "elements": 2, "formats": { "cpp": "%10.5f" } },
     { "data_type": "H", "field": "id_distribution", "formats": { "cpp": "%4u"    } },
