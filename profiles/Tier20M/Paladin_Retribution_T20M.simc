@@ -5,7 +5,8 @@ race=dwarf
 role=attack
 position=back
 talents=1202102
-artifact=2:0:0:0:0:40:1:41:4:42:4:43:4:44:4:47:4:49:1:50:4:51:4:52:4:53:4:54:1:350:1:351:1:352:1:353:1:1118:1:1275:1:1561:4:1562:1:1563:1:1564:1:1647:1
+artifact=2:0:0:0:0:40:1:41:4:42:4:43:4:44:4:47:4:49:1:50:4:51:4:52:4:53:4:54:1:350:1:351:1:352:1:353:1:1118:1:1275:1:1561:4:1562:1:1563:1:1564:24:1647:1
+crucible=1739:1780:53/1739:1780:53/1739:1780:50
 
 # This default action priority list is automatically created based on your character.
 # It is a attempt to provide you with a action list that is both simple and practicable,
@@ -89,12 +90,12 @@ trinket2=infernal_cinders,id=147009,ilevel=930
 main_hand=ashbringer,id=120978,bonus_id=737,gem_id=147099/147088/147099/0,relic_ilevel=940/930/940
 
 # Gear Summary
-# gear_ilvl=938.47
-# gear_strength=29036
-# gear_stamina=46265
-# gear_crit_rating=11180
+# gear_ilvl=939.47
+# gear_strength=29590
+# gear_stamina=47095
+# gear_crit_rating=11239
 # gear_haste_rating=8659
-# gear_mastery_rating=2925
+# gear_mastery_rating=2983
 # gear_versatility_rating=5334
 # gear_armor=4927
 # set_bonus=tier20_2pc=1

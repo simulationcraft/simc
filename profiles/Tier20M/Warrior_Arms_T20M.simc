@@ -4,8 +4,9 @@ level=110
 race=blood_elf
 role=attack
 position=back
-talents=1312122
-artifact=36:0:0:0:0:1136:1:1137:1:1138:1:1139:1:1140:1:1141:1:1142:1:1143:4:1144:4:1145:4:1146:4:1147:4:1148:4:1149:7:1150:4:1151:4:1356:1:1393:1:1613:4:1614:1:1615:1:1616:1:1714:1
+talents=1322322
+artifact=36:0:0:0:0:1136:1:1137:1:1138:1:1139:1:1140:1:1141:1:1142:1:1143:4:1144:4:1145:4:1146:4:1147:4:1148:4:1149:4:1150:4:1151:4:1356:1:1393:1:1613:4:1614:1:1615:1:1616:24:1714:1
+crucible=1739:1780:1149/1739:1780:1150/1739:1780:1150
 
 # This default action priority list is automatically created based on your character.
 # It is a attempt to provide you with a action list that is both simple and practicable,
@@ -106,15 +107,15 @@ finger1=scaled_band_of_servitude,id=147020,ilevel=930,enchant=binding_of_mastery
 finger2=ayalas_stone_heart,id=137052,ilevel=970,enchant=binding_of_mastery
 trinket1=engine_of_eradication,id=147015,bonus_id=3561,ilevel=930
 trinket2=cradle_of_anguish,id=147010,bonus_id=3561,ilevel=930
-main_hand=stromkar_the_warbreaker,id=128910,ilevel=951
+main_hand=stromkar_the_warbreaker,id=128910,gem_id=147102/151189/147110,relic_ilevel=930/930/930
 
 # Gear Summary
-# gear_ilvl=936.73
-# gear_strength=25437
-# gear_stamina=46214
-# gear_crit_rating=6068
+# gear_ilvl=937.73
+# gear_strength=25961
+# gear_stamina=46999
+# gear_crit_rating=6126
 # gear_haste_rating=7901
-# gear_mastery_rating=15674
+# gear_mastery_rating=15730
 # gear_versatility_rating=1241
 # gear_armor=4918
 # set_bonus=tier20_2pc=1
