@@ -715,7 +715,9 @@ namespace pets {
 
     struct travel_t: public action_t
     {
-      travel_t( player_t* player ): action_t( ACTION_OTHER, "travel", player ) {}
+      travel_t( player_t* player ): action_t( ACTION_OTHER, "travel", player ) {
+        trigger_gcd = timespan_t::zero();
+      }
       void execute() override { player -> current.distance = 1; }
       timespan_t execute_time() const override { return timespan_t::from_seconds( player -> current.distance / 33.0 ); }
       bool ready() override { return ( player -> current.distance > 1 ); }
