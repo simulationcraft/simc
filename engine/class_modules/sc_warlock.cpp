@@ -3802,8 +3802,6 @@ struct flames_of_argus_t: public residual_action_t
   {
     background = true;
     may_miss = may_crit = false;
-    //dot_duration = data().duration();
-    //base_tick_time = data().effectN( 1 ).period();
     school = SCHOOL_CHROMATIC;
   }
 };
