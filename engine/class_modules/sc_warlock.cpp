@@ -77,7 +77,6 @@ struct warlock_td_t: public actor_target_data_t
   dot_t* dots_siphon_life;
   dot_t* dots_phantom_singularity;
   dot_t* dots_channel_demonfire;
-  dot_t* flames_of_argus;
 
   buff_t* debuffs_haunt;
   buff_t* debuffs_shadowflame;
@@ -112,7 +111,6 @@ public:
   double agony_accumulator;
   double demonwrath_accumulator;
   int free_souls;
-  action_t* flames_of_argus;
 
   // Active Pet
   struct pets_t
@@ -2703,14 +2701,6 @@ public:
     }
   }
 
-  void trigger_flames_of_argus(action_state_t* s) {
-	  double amount = s->result_amount;
-
-	  amount *= p()->find_spell(251855)->effectN(1).percent();
-
-	  residual_action::trigger(p()->flames_of_argus, s->target, amount);
-  }
-
   static void accumulate_seed_of_corruption( warlock_td_t* td, double amount )
   {    td -> soc_threshold -= amount;
 
@@ -3805,24 +3795,17 @@ struct hand_of_guldan_t: public warlock_spell_t
 
 //Destruction Spells
 
-struct flames_of_argus_t : public residual_action_t
+struct flames_of_argus_t: public residual_action_t
 {
-	flames_of_argus_t(warlock_t* player) :
-		residual_action_t("flames_of_argus", player, player -> find_spell(253097))
-	{
-		dot_duration = dbc::find_spell(player, 253097)->duration();
-		base_tick_time = dbc::find_spell(player, 253097)->effectN(1).period();
-		school = SCHOOL_CHROMATIC;
-
-		//!! NOTE NOTE NOTE !! This is super dangerous and means we have to be extra careful with correctly
-		// flagging thats that proc off events, to not proc off ignite if they shouldn't!
-		callbacks = true;
-	}
-
-	void tick(dot_t* dot) override
-	{
-		residual_action_t::tick(dot);
-	}
+  flames_of_argus_t( warlock_t* player ) :
+    residual_action_t( "flames_of_argus", player, player -> find_spell( 253097 ) )
+  {
+    background = true;
+    may_miss = may_crit = false;
+    //dot_duration = data().duration();
+    //base_tick_time = data().effectN( 1 ).period();
+    school = SCHOOL_CHROMATIC;
+  }
 };
 
 struct havoc_t: public warlock_spell_t
@@ -4191,8 +4174,9 @@ struct chaos_bolt_t: public warlock_spell_t
   double refund;
   duplicate_chaos_bolt_t* duplicate;
   double duplicate_chance;
+  flames_of_argus_t* flames_of_argus;
   chaos_bolt_t( warlock_t* p ) :
-    warlock_spell_t( p, "Chaos Bolt" ), refund( 0 ), duplicate( nullptr ), duplicate_chance( 0 )
+    warlock_spell_t( p, "Chaos Bolt" ), refund( 0 ), duplicate( nullptr ), flames_of_argus( nullptr ), duplicate_chance( 0 )
   {
     can_havoc = true;
     affected_by_destruction_t20_4pc = true;
@@ -4211,6 +4195,12 @@ struct chaos_bolt_t: public warlock_spell_t
     duplicate_chance = p -> find_spell( 213014 ) -> proc_chance();
     duplicate -> travel_speed = travel_speed;
     add_child( duplicate );
+
+    if ( maybe_ptr( p->dbc.ptr ) && p->sets->has_set_bonus( WARLOCK_DESTRUCTION, T21, B4 ) )
+    {
+      flames_of_argus = new flames_of_argus_t( p );
+      add_child( flames_of_argus );
+    }
   }
 
   virtual void schedule_execute( action_state_t* state = nullptr ) override
@@ -4277,7 +4267,14 @@ struct chaos_bolt_t: public warlock_spell_t
         duplicate -> execute();
       }
     }
-	trigger_flames_of_argus(s);
+    if ( maybe_ptr( p()->dbc.ptr ) && p()->sets->has_set_bonus( WARLOCK_DESTRUCTION, T21, B4 ) )
+    {
+      double amount = s->result_amount;
+
+      amount *= p()->find_spell( 251855 )->effectN( 1 ).percent();
+
+      residual_action::trigger( flames_of_argus, s->target, s->result_amount * p()->sets->set( WARLOCK_DESTRUCTION, T21, B4 )->effectN( 1 ).percent() );
+    }
   }
 
   void execute() override
@@ -6460,8 +6457,6 @@ action_t* warlock_t::create_action( const std::string& action_name,
 bool warlock_t::create_actions()
 {
 	using namespace actions;
-
-	flames_of_argus = new flames_of_argus_t(this);
 
 	return player_t::create_actions();
 }
