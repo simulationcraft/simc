@@ -6398,7 +6398,7 @@ void hunter_t::apl_bm()
                                     "With both AotW cdr sources and OwtP, there's no visible benefit if it's delayed, use it on cd. With only one or neither, pair it with Bestial Wrath. Also use it if the fight will end when the buff does." );
   default_list -> add_action( this, "Kill Command", "target_if=min:bestial_ferocity.remains,if=equipped.qapla_eredun_war_order|talent.aspect_of_the_beast.enabled" );
   
-  default_list -> add_action( this, "Dire Beast", "if=!equipped.qapla_eredun_war_order|cooldown.kill_command.remains>=1",
+  default_list -> add_action( this, "Dire Beast", "if=(!equipped.qapla_eredun_war_order|cooldown.kill_command.remains>=1)|full_recharge_time<gcd.max|cooldown.titans_thunder.up|spell_targets>1",
                                     "With Qa'pla, try not to waste Kill Command cdr if it is just about to come off cooldown." );
   default_list -> add_talent( this, "Dire Frenzy", "if=(pet.cat.buff.dire_frenzy.remains<=gcd.max*1.2)|full_recharge_time<gcd.max|target.time_to_die<9" );
   
