@@ -3238,9 +3238,6 @@ struct ferocious_bite_t : public cat_attack_t
     req *= 1.0 + p() -> buff.berserk -> check_value();
     req *= 1.0 + p() -> buff.incarnation_cat -> check_value();
 
-    if ( p() -> buff.clearcasting -> check() )
-      req /= 2.0;
-
     if ( p() -> buff.apex_predator -> check() )
     {
        req *= ( 1 - p() -> buff.apex_predator -> data().effectN(1).percent() );
