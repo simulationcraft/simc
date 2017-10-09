@@ -7034,7 +7034,7 @@ void demon_hunter_t::apl_havoc()
     "If adds are present, use Nemesis on the lowest HP add in order to get the Nemesis buff for AoE");
   cd->add_talent(this, "Nemesis", "if=!raid_event.adds.exists&"
     "(buff.chaos_blades.up|buff.metamorphosis.up|cooldown.metamorphosis.adjusted_remains<20|target.time_to_die<=60)");
-  cd->add_talent(this, "Chaos Blades", "if=buff.metamorphosis.up|cooldown.metamorphosis.adjusted_remains>60|target.time_to_die<=12");
+  cd->add_talent(this, "Chaos Blades", "if=buff.metamorphosis.up|cooldown.metamorphosis.adjusted_remains>60|target.time_to_die<=duration");
   
   add_havoc_use_items(this, cd);
 
