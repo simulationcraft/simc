@@ -4010,6 +4010,8 @@ struct flurry_t : public frost_mage_spell_t
 
     if ( brain_freeze_up && p() -> sets -> has_set_bonus( MAGE_FROST, T21, B4 ) )
     {
+      // TODO: Seems to also be triggered by Brain Freeze expire (both natural and manual) and
+      // refresh. Check if this is still the case once Antorus goes live and possibly implement.
       p() -> buffs.arctic_blast -> trigger();
     }
 
