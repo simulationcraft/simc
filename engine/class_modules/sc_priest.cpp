@@ -1817,7 +1817,7 @@ public:
       if ( priest.sets->has_set_bonus( PRIEST_SHADOW, T21, B4 ) 
       && priest.buffs.overwhelming_darkness->check() )
     {
-      c +=   ( priest.buffs.overwhelming_darkness->check() - 1 )
+      c +=   ( priest.buffs.overwhelming_darkness->check() )
              * priest.buffs.overwhelming_darkness->data().effectN(1).percent();
     }
 
@@ -2064,8 +2064,8 @@ struct mind_flay_t final : public priest_spell_t
     if (priest.sets->has_set_bonus(PRIEST_SHADOW, T21, B4)
       && priest.buffs.overwhelming_darkness->check())
     {
-      c += (priest.buffs.overwhelming_darkness->check() - 1)
-        * priest.buffs.overwhelming_darkness->data().effectN(1).percent();
+      c += (  priest.buffs.overwhelming_darkness->check() )
+            * priest.buffs.overwhelming_darkness->data().effectN(1).percent();
     }
 
     return c;
@@ -3185,8 +3185,8 @@ struct void_bolt_t final : public priest_spell_t
     if (priest.sets->has_set_bonus(PRIEST_SHADOW, T21, B4)
       && priest.buffs.overwhelming_darkness->check())
     {
-      c += (priest.buffs.overwhelming_darkness->check() - 1)
-        * priest.buffs.overwhelming_darkness->data().effectN(1).percent();
+      c += (  priest.buffs.overwhelming_darkness->check() )
+            * priest.buffs.overwhelming_darkness->data().effectN(1).percent();
     }
 
     return c;
@@ -3684,7 +3684,6 @@ struct voidform_t final : public priest_buff_t<haste_buff_t>
 
     if ( priest.sets->has_set_bonus( PRIEST_SHADOW, T21, B4 ) )
     {
-      priest.buffs.overwhelming_darkness->expire();
       priest.buffs.overwhelming_darkness->trigger();
     }
 
@@ -3717,6 +3716,11 @@ struct voidform_t final : public priest_buff_t<haste_buff_t>
     }
 
     priest.buffs.sphere_of_insanity->expire();
+    
+    if ( priest.sets->has_set_bonus( PRIEST_SHADOW, T21, B4 ) )
+    {
+      priest.buffs.overwhelming_darkness->expire();
+    }
 
     if ( priest.buffs.surrender_to_madness->check() )
     {

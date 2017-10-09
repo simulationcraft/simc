@@ -7099,10 +7099,10 @@ void mage_t::create_buffs()
                                    .add_invalidate( CACHE_RUN_SPEED );
   buffs.ignition               = buff_creator_t( this, "ignition", find_spell( 246261 ) )
                                    .trigger_spell( sets -> set( MAGE_FIRE, T20, B2 ) );
-  buffs.ignition -> buff_duration = buffs.combustion -> buff_duration;
-
   buffs.inferno                = buff_creator_t( this, "inferno", find_spell( 253220 ) )
                                     .default_value( find_spell( 253220 ) -> effectN( 1 ).percent() );
+  buffs.inferno -> buff_duration = buffs.combustion -> buff_duration;
+
   buffs.heating_up             = buff_creator_t( this, "heating_up",  find_spell( 48107 ) );
   buffs.hot_streak             = buff_creator_t( this, "hot_streak",  find_spell( 48108 ) );
   buffs.pyretic_incantation    = buff_creator_t( this, "pyretic_incantation", find_spell( 194329 ) )
