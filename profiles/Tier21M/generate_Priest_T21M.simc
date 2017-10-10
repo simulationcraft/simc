@@ -20,7 +20,7 @@ feet=lady_dacidions_silk_slippers,id=151945,ilevel=960
 finger1=zealous_tormentors_ring,id=152284,ilevel=1000,enchant=binding_of_haste
 finger2=sephuzs_secret,id=132452,ilevel=1000,enchant=binding_of_haste,gem_id=151583
 # TODO: Trinkets other than Pantheon currently NYI, purely guessing here
-trinket1=amanthuls_vision,id=154172,ilevel=970
+trinket1=amanthuls_vision,id=154172,ilevel=1000
 trinket2=acrid_catalyst_injector,id=151955,ilevel=960
 main_hand=xalatath_blade_of_the_black_empire,id=128827,bonus_id=740,gem_id=152054/152028/152054,relic_ilevel=960/960/960
 off_hand=secrets_of_the_void,id=133958
