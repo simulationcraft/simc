@@ -117,6 +117,7 @@ namespace item
   void golganneths_vitality( special_effect_t&         );
   void khazgoroths_courage( special_effect_t&          );
   void norgannons_prowess( special_effect_t&           );
+  void prototype_personnel_decimator( special_effect_t& );
 
   // 7.2.0 Dungeon
   void dreadstone_of_endless_shadows( special_effect_t& );
@@ -1841,6 +1842,61 @@ void item::norgannons_prowess( special_effect_t& effect )
   } );
 
   secondary_cb -> buff = empower_buff;
+}
+
+// Prototype Personnel Decimator ===========================================
+
+struct personnel_decimator_t : public proc_spell_t
+{
+  personnel_decimator_t( const special_effect_t& effect ) :
+    proc_spell_t( "personnel_decimator", effect.player, effect.trigger() -> effectN( 1 ).trigger(), effect.item )
+  {
+    aoe = -1;
+  }
+
+  double composite_target_multiplier( player_t* target ) const override
+  {
+    double m = proc_spell_t::composite_target_multiplier( target );
+
+    double distance = 0;
+    if ( target != this -> target )
+    {
+      distance = this -> target -> get_player_distance( *target );
+    }
+
+    // TODO: Do something fancy based on the distance. Copy Pharamere's Forbidden Grimoire system
+    // for now, until better information appears.
+    m *= 1.0 - std::pow( std::min( distance, 20.0 ) / 30.0, 2 );
+
+    return m;
+  }
+};
+
+struct personnel_decimator_driver_t : public dbc_proc_callback_t
+{
+  personnel_decimator_driver_t( const special_effect_t& effect ) :
+    dbc_proc_callback_t( effect.item, effect )
+  { }
+
+  void trigger( action_t* a, void* call_data ) override
+  {
+    auto state = static_cast<action_state_t*>( call_data );
+    auto distance = effect.driver() -> effectN( 1 ).base_value();
+
+    if ( listener -> get_player_distance( *state -> target ) < distance )
+    {
+      return;
+    }
+
+    dbc_proc_callback_t::trigger( a, call_data );
+  }
+};
+
+void item::prototype_personnel_decimator( special_effect_t& effect )
+{
+  effect.execute_action = create_proc_action<personnel_decimator_t>( "personnel_decimator", effect );
+
+  new personnel_decimator_driver_t( effect );
 }
 
 // Toe Knee's Promise ======================================================
@@ -5975,6 +6031,7 @@ void unique_gear::register_special_effects_x7()
   register_special_effect( 256819, item::golganneths_vitality      );
   register_special_effect( 256825, item::khazgoroths_courage       );
   register_special_effect( 256827, item::norgannons_prowess        );
+  register_special_effect( 253242, item::prototype_personnel_decimator );
 
   /* Legion 7.2.0 Dungeon */
   register_special_effect( 238498, item::dreadstone_of_endless_shadows );
