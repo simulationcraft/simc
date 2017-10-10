@@ -6970,6 +6970,12 @@ std::string hunter_t::create_profile( save_e stype )
   std::string profile_str = player_t::create_profile( stype );
 
   profile_str += "summon_pet=" + summon_pet_str + "\n";
+  
+  if ( stype == SAVE_ALL )
+  {
+    if ( !hunter_fixed_time )
+      profile_str += "hunter_fixed_time=" + util::to_string( hunter_fixed_time ) + "\n";
+  }
 
   return profile_str;
 }
