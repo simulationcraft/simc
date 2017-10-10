@@ -5,7 +5,7 @@ role=spell
 position=back
 talents=2032021
 artifact=53:0:0:0:0:783:1:784:4:785:4:786:4:787:4:788:4:789:4:790:4:791:4:792:4:793:1:794:1:795:1:796:1:797:1:798:1:1296:1:1373:1:1537:4:1538:1:1539:1:1540:24:1641:1
-crucible=1739:1780:786/1739:1780:789/1739:1780:786
+crucible=1739:1780:789/1739:1780:789/1739:1780:789
 spec=frost
 
 head=crown_of_the_arcane_tempest,id=147147,ilevel=930
@@ -23,6 +23,6 @@ finger2=shard_of_the_exodar,id=132410,ilevel=1000,gems=200versatility,enchant=bi
 # TODO: Replace with raid trinkets.
 trinket1=doomed_exarchs_memento,id=153172,ilevel=960
 trinket2=macaree_focusing_amethyst,id=152783,ilevel=960
-main_hand=ebonchill,id=128862,gem_id=152042/152025/152042,relic_ilevel=960/960/960
+main_hand=ebonchill,id=128862,gem_id=155850/155846/155850,relic_ilevel=970/970/970
 
 save=Mage_Frost_T21M.simc
