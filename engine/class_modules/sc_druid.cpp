@@ -6657,13 +6657,17 @@ double brambles_handler( const action_state_t* s )
   // Calculate actual amount absorbed.
   double amount_absorbed = std::min( s -> result_mitigated, absorb_cap );
 
-  // Schedule reflected damage.
-  p -> active.brambles -> base_dd_min = p -> active.brambles -> base_dd_max = 
-    amount_absorbed;
-  action_state_t* ref_s = p -> active.brambles -> get_state();
-  ref_s -> target = s -> action -> player;
-  p -> active.brambles -> snapshot_state( ref_s, DMG_DIRECT );
-  p -> active.brambles -> schedule_execute( ref_s );
+  // Prevent self-harm
+  if ( s -> action -> player != p )
+  {
+    // Schedule reflected damage.
+    p -> active.brambles -> base_dd_min = p -> active.brambles -> base_dd_max =
+      amount_absorbed;
+    action_state_t* ref_s = p -> active.brambles -> get_state();
+    ref_s -> target = s -> action -> player;
+    p -> active.brambles -> snapshot_state( ref_s, DMG_DIRECT );
+    p -> active.brambles -> schedule_execute( ref_s );
+  }
 
   return amount_absorbed;
 }
@@ -9229,10 +9233,9 @@ void druid_t::assess_damage_imminent_pre_absorb( school_e, dmg_e, action_state_t
                      gain.bristling_fur );
     }
 
-    if ( buff.rage_of_the_sleeper -> up() )
+    // Prevent self-harm
+    if ( s -> action -> player != this )
     {
-      assert( s -> action -> player != this );
-
       active.rage_of_the_sleeper -> target = s -> action -> player;
       // Don't schedule to make sure to respect the set target.
       active.rage_of_the_sleeper -> execute();
