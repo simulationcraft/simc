@@ -9234,7 +9234,7 @@ void druid_t::assess_damage_imminent_pre_absorb( school_e, dmg_e, action_state_t
     }
 
     // Prevent self-harm
-    if ( s -> action -> player != this )
+    if ( buff.rage_of_the_sleeper -> up() && s -> action -> player != this )
     {
       active.rage_of_the_sleeper -> target = s -> action -> player;
       // Don't schedule to make sure to respect the set target.
