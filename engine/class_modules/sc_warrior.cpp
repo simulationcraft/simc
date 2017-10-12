@@ -3248,7 +3248,6 @@ struct rampage_event_t: public event_t
       warrior -> buff.odyns_champion -> trigger(); // Procs after last attack.
       warrior -> rampage_driver = nullptr;
       warrior -> buff.meat_cleaver -> expire();
-	  warrior -> buff.outrage -> expire();
     }
   }
 };
