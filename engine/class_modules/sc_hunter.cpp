@@ -2097,7 +2097,7 @@ struct pet_auto_attack_t: public hunter_main_pet_attack_t
   { p() -> main_hand_attack -> schedule_execute(); }
 
   bool ready() override
-  { return( p() -> main_hand_attack -> execute_event == nullptr ); } // not swinging
+  { return ! target -> is_sleeping() && p() -> main_hand_attack -> execute_event == nullptr; } // not swinging
 };
 
 // Pet Claw/Bite/Smack ======================================================
@@ -2676,9 +2676,7 @@ struct start_attack_t: public action_t
   }
 
   bool ready() override
-  {
-    return( player -> main_hand_attack -> execute_event == nullptr ); // not swinging
-  }
+  { return ! target -> is_sleeping() && player -> main_hand_attack -> execute_event == nullptr; } // not swinging
 };
 
 
