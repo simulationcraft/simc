@@ -1934,7 +1934,6 @@ struct rogue_poison_t : public rogue_attack_t
   {
     double c = rogue_attack_t::composite_crit_chance();
 
-    const rogue_td_t* tdata = td( target );
     if ( affected_by.t21_2pc_assassination && p() -> buffs.t21_2pc_assassination -> up() )
     {
       c += p() -> buffs.t21_2pc_assassination -> value();
