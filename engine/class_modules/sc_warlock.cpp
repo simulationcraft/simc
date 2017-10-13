@@ -7228,9 +7228,9 @@ void warlock_t::apl_affliction()
   writhe->add_action( "agony,if=refreshable&time_to_die>=remains" );
   writhe->add_action( "siphon_life,if=refreshable&time_to_die>=remains" );
   writhe->add_action( "corruption,if=refreshable&time_to_die>=remains" );
-  writhe->add_action( "agony,cycle_targets=1,target_if=sim.target!=target&time_to_die>tick_time*3&!buff.deadwind_harvester.remains&refreshable&time_to_die>tick_time*3" );
-  writhe->add_action( "siphon_life,cycle_targets=1,target_if=sim.target!=target&time_to_die>tick_time*3&!buff.deadwind_harvester.remains&refreshable&time_to_die>tick_time*3" );
-  writhe->add_action( "corruption,cycle_targets=1,target_if=sim.target!=target&time_to_die>tick_time*3&!buff.deadwind_harvester.remains&refreshable&time_to_die>tick_time*3" );
+  writhe->add_action( "agony,cycle_targets=1,target_if=sim.target!=target&time_to_die>tick_time*3&!buff.deadwind_harvester.remains&refreshable" );
+  writhe->add_action( "siphon_life,cycle_targets=1,target_if=sim.target!=target&time_to_die>tick_time*3&!buff.deadwind_harvester.remains&refreshable" );
+  writhe->add_action( "corruption,cycle_targets=1,target_if=sim.target!=target&time_to_die>tick_time*3&!buff.deadwind_harvester.remains&refreshable" );
   writhe->add_action( "life_tap,if=mana.pct<=10" );
   writhe->add_action( "life_tap,if=prev_gcd.1.life_tap&buff.active_uas.stack=0&mana.pct<50" );
   writhe->add_action( "drain_soul,chain=1,interrupt=1" );
