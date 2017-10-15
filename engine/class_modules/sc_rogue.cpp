@@ -4642,15 +4642,6 @@ struct slice_and_dice_t : public rogue_attack_t
     }
 
     p() -> buffs.slice_and_dice -> trigger( 1, snd_mod, -1.0, snd_duration );
-
-    // As of 2017-07-27 on 7.3 PTR, Refreshing SnD cancels RtB buffs from the T21 4pc bonus.
-    // I suppose this is a bug/oversight.
-    p() -> buffs.jolly_roger -> expire();
-    p() -> buffs.grand_melee -> expire();
-    p() -> buffs.shark_infested_waters -> expire();
-    p() -> buffs.true_bearing -> expire();
-    p() -> buffs.broadsides -> expire();
-    p() -> buffs.buried_treasure -> expire();
   }
 
   expr_t* create_expression( const std::string& name_str ) override
