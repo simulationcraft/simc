@@ -59,8 +59,8 @@ actions.aoe+=/cone_of_cold
 actions.aoe+=/ice_lance
 
 # Rune of Power is used when going into Icy Veins and while Icy Veins are up. Outside of Icy Veins, use Rune of Power when about to cap on charges or the target is about to die.
-actions.cooldowns=rune_of_power,if=cooldown.icy_veins.remains<cast_time|charges_fractional>1.9&cooldown.icy_veins.remains>10|buff.icy_veins.up|target.time_to_die.remains+5<charges_fractional*10
-actions.cooldowns+=/potion,if=cooldown.icy_veins.remains<1
+actions.cooldowns=rune_of_power,if=cooldown.icy_veins.remains<cast_time|charges_fractional>1.9&cooldown.icy_veins.remains>10|buff.icy_veins.up|target.time_to_die+5<charges_fractional*10
+actions.cooldowns+=/potion,if=cooldown.icy_veins.remains<1|target.time_to_die<60
 actions.cooldowns+=/icy_veins,if=buff.icy_veins.down
 actions.cooldowns+=/mirror_image
 actions.cooldowns+=/use_items
