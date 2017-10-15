@@ -4,7 +4,7 @@ level=110
 race=dwarf
 role=spell
 position=back
-talents=2032021
+talents=2033021
 artifact=53:0:0:0:0:783:1:784:4:785:4:786:4:787:4:788:4:789:4:790:4:791:4:792:4:793:1:794:1:795:1:796:1:797:1:798:1:1296:1:1373:1:1537:4:1538:1:1539:1:1540:24:1641:1
 crucible=1739:1780:789/1739:1780:789/1739:1780:789
 
@@ -109,31 +109,31 @@ actions.variables+=/variable,name=time_until_fof,value=10-(time-variable.iv_star
 actions.variables+=/variable,name=fof_react,value=buff.fingers_of_frost.react
 actions.variables+=/variable,name=fof_react,value=buff.fingers_of_frost.stack,if=equipped.lady_vashjs_grasp&buff.icy_veins.up&variable.time_until_fof>9|prev_off_gcd.freeze|ground_aoe.frozen_orb.remains>8.5
 
-head=crown_of_the_arcane_tempest,id=147147,ilevel=930
+head=runebound_collar,id=152138,ilevel=960
 neck=chain_of_the_unmaker,id=152283,ilevel=970,enchant=mark_of_the_hidden_satyr
 shoulders=runebound_mantle,id=152141,ilevel=960
 back=drape_of_the_arcane_tempest,id=147145,ilevel=930,enchant=binding_of_intellect
 chest=runebound_tunic,id=152140,ilevel=960
 wrists=magtheridons_banished_bracers,id=138140,ilevel=1000
-hands=runebound_gloves,id=152137,ilevel=960
+hands=gloves_of_the_arcane_tempest,id=147146,ilevel=930
 waist=cord_of_blossoming_petals,id=151952,ilevel=960
 legs=runebound_leggings,id=152139,ilevel=960
 feet=lady_dacidions_silk_slippers,id=151945,ilevel=960
-finger1=seal_of_the_portalmaster,id=152063,ilevel=960,enchant=binding_of_versatility
-finger2=shard_of_the_exodar,id=132410,ilevel=1000,gems=200versatility,enchant=binding_of_versatility
+finger1=seal_of_the_portalmaster,id=152063,ilevel=960,enchant=binding_of_critical_strike
+finger2=shard_of_the_exodar,id=132410,ilevel=1000,gems=200crit,enchant=binding_of_critical_strike
 trinket1=doomed_exarchs_memento,id=153172,ilevel=960
-trinket2=macaree_focusing_amethyst,id=152783,ilevel=960
+trinket2=amanthuls_vision,id=154172,ilevel=1000
 main_hand=ebonchill,id=128862,gem_id=155850/155846/155850,relic_ilevel=970/970/970
 
 # Gear Summary
-# gear_ilvl=964.60
-# gear_stamina=59398
-# gear_intellect=69216
-# gear_crit_rating=11404
-# gear_haste_rating=10898
-# gear_mastery_rating=3006
-# gear_versatility_rating=9308
-# gear_armor=2382
+# gear_ilvl=967.27
+# gear_stamina=59745
+# gear_intellect=65839
+# gear_crit_rating=11240
+# gear_haste_rating=12025
+# gear_mastery_rating=5632
+# gear_versatility_rating=10016
+# gear_armor=2389
 # set_bonus=tier20_2pc=1
 # set_bonus=tier21_2pc=1
 # set_bonus=tier21_4pc=1
