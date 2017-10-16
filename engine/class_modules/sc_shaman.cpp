@@ -3560,9 +3560,8 @@ struct stormstrike_base_t : public shaman_attack_t
     //Currently assuming based on tooltip description that chance is on cast, not hit.
     if ( may_proc_t21_2p && ! stormflurry)
     {
-      if ( rng().roll( p() -> sets -> set(SHAMAN_ENHANCEMENT, T21, B2) -> proc_chance() ) )
+      if ( p() -> buff.t21_2pc_enhancement -> trigger() )
       {
-        p() -> buff.t21_2pc_enhancement -> trigger();
         proc_t21_2p -> occur();
       }
     }
