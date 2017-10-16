@@ -37,7 +37,7 @@ actions+=/counterspell
 actions+=/ice_lance,if=variable.fof_react=0&prev_gcd.1.flurry
 # Time Warp is used right at the start. If the actor has Shard of the Exodar, try to synchronize the second Time Warp with Icy Veins. If the target is about to die, use Time Warp regardless.
 actions+=/time_warp,if=buff.bloodlust.down&(buff.exhaustion.down|equipped.shard_of_the_exodar)&(cooldown.icy_veins.remains<1|target.time_to_die<50)
-actions+=/call_action_list,name=movement
+actions+=/call_action_list,name=movement,moving=1
 actions+=/call_action_list,name=cooldowns
 actions+=/call_action_list,name=aoe,if=active_enemies>=3
 actions+=/call_action_list,name=single
@@ -69,14 +69,14 @@ actions.cooldowns+=/berserking
 actions.cooldowns+=/arcane_torrent
 
 actions.movement=blink,if=movement.distance>10
-actions.movement+=/ice_floes,if=buff.ice_floes.down&movement.distance>0&variable.fof_react=0
+actions.movement+=/ice_floes,if=buff.ice_floes.down&variable.fof_react=0
 
 # In some circumstances, it is possible for both Ice Lance and Ice Nova to benefit from a single Winter's Chill.
 actions.single=ice_nova,if=debuff.winters_chill.up
 actions.single+=/frostbolt,if=prev_off_gcd.water_jet
 # Basic Water Jet combo. Since Water Jet can only be used if the actor is not casting, we use it right after Frostbolt is executed. At the default distance, Frostbolt travels slightly over 1 s, giving Water Jet enough time to apply the DoT (Water Jet's cast time is 1 s, with haste scaling). The APL then forces another Frostbolt to guarantee getting both FoFs from the Water Jet. This works for most haste values (roughly from 0% to 160%). When changing the default distance, great care must be taken otherwise this action won't produce two FoFs.
 actions.single+=/water_jet,if=prev_gcd.1.frostbolt&buff.fingers_of_frost.stack<3&buff.brain_freeze.react=0
-actions.single+=/ray_of_frost,if=buff.icy_veins.up|(cooldown.icy_veins.remains>action.ray_of_frost.cooldown&buff.rune_of_power.down)
+actions.single+=/ray_of_frost,if=buff.icy_veins.up|cooldown.icy_veins.remains>action.ray_of_frost.cooldown&buff.rune_of_power.down
 # Winter's Chill from Flurry can apply to the spell cast right before (provided the travel time is long enough). This can be exploited to a great effect with Ebonbolt, Glacial Spike (which deal a lot of damage by themselves) and Frostbolt (as a guaranteed way to proc Frozen Veins and Chain Reaction). When using Glacial Spike, it is worth saving a Brain Freeze proc when Glacial Spike is right around the corner (i.e. with 4 or more Icicles). However, when the actor also has T20 2pc, Glacial Spike is delayed to fit into Frozen Mass, so we do not want to sit on a Brain Freeze proc for too long in that case.
 actions.single+=/flurry,if=prev_gcd.1.ebonbolt|buff.brain_freeze.react&(prev_gcd.1.glacial_spike|prev_gcd.1.frostbolt&(!talent.glacial_spike.enabled|buff.icicles.stack<=3|cooldown.frozen_orb.remains<=10&set_bonus.tier20_2pc))
 # With T20 2pc, Frozen Orb should be used as soon as it comes off CD.
@@ -97,7 +97,7 @@ actions.single+=/frostbolt,if=buff.frozen_mass.remains>execute_time+action.glaci
 actions.single+=/glacial_spike,if=cooldown.frozen_orb.remains>10|!set_bonus.tier20_2pc
 actions.single+=/frostbolt
 # While on the move, use instant Blizzard if available.
-actions.single+=/blizzard,if=cast_time=0
+actions.single+=/blizzard
 # Otherwise just use Ice Lance to do at least some damage.
 actions.single+=/ice_lance
 
