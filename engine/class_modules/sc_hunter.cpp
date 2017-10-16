@@ -208,14 +208,11 @@ public:
   // Procs
   struct procs_t
   {
-    proc_t* lock_and_load;
     proc_t* wild_call;
     proc_t* hunting_companion;
     proc_t* wasted_hunting_companion;
     proc_t* mortal_wounds;
     proc_t* zevrims_hunger;
-    proc_t* marking_targets;
-    proc_t* wasted_marking_targets;
     proc_t* wasted_sentinel_marks;
     proc_t* animal_instincts_mongoose;
     proc_t* animal_instincts_aspect;
@@ -2601,11 +2598,7 @@ struct auto_shot_t: public hunter_action_t < ranged_attack_t >
 
     if (p()->specialization() == HUNTER_MARKSMANSHIP && p()->ppm_hunters_mark->trigger())
     {
-      if (p()->buffs.marking_targets->up())
-        p()->procs.wasted_marking_targets->occur();
-
       p()->buffs.marking_targets->trigger();
-      p()->procs.marking_targets->occur();
     }
 
     if (p()->buffs.volley->up())
@@ -2629,7 +2622,6 @@ struct auto_shot_t: public hunter_action_t < ranged_attack_t >
     if ( rng().roll( p() -> talents.lock_and_load -> proc_chance() ) )
     {
       p() -> buffs.lock_and_load -> trigger( 2 );
-      p() -> procs.lock_and_load -> occur();
     }
 
     if ( s -> result == RESULT_CRIT && p() -> specialization() == HUNTER_BEAST_MASTERY )
@@ -3228,7 +3220,8 @@ struct legacy_of_the_windrunners_t: aimed_shot_base_t
 
 struct aimed_shot_t: public aimed_shot_base_t
 {
-  benefit_t* aimed_in_ca;
+  benefit_t* aimed_in_careful_aim;
+  benefit_t* aimed_in_critical_aimed;
   trick_shot_t* trick_shot;
   legacy_of_the_windrunners_t* legacy_of_the_windrunners;
   vulnerability_stats_t vulnerability_stats;
@@ -3236,7 +3229,8 @@ struct aimed_shot_t: public aimed_shot_base_t
 
   aimed_shot_t( hunter_t* p, const std::string& options_str ):
     aimed_shot_base_t( "aimed_shot", p, p -> find_specialization_spell( "Aimed Shot" ) ),
-    aimed_in_ca( p -> get_benefit( "aimed_in_careful_aim" ) ),
+    aimed_in_careful_aim( p -> get_benefit( "aimed_in_careful_aim" ) ),
+    aimed_in_critical_aimed( p -> get_benefit( "aimed_in_critical_aimed" ) ),
     trick_shot( nullptr ), legacy_of_the_windrunners( nullptr ),
     vulnerability_stats( p, this ), lock_and_loaded( false )
   {
@@ -3294,7 +3288,7 @@ struct aimed_shot_t: public aimed_shot_base_t
       trick_shot -> execute();
     }
 
-    aimed_in_ca -> update( p() -> buffs.careful_aim -> check() != 0 );
+    aimed_in_careful_aim -> update( p() -> buffs.careful_aim -> check() != 0 );
 
     if ( lock_and_loaded )
       p() -> buffs.lock_and_load -> decrement();
@@ -3323,6 +3317,12 @@ struct aimed_shot_t: public aimed_shot_base_t
     }
 
     vulnerability_stats.update( p(), this );
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    aimed_shot_base_t::impact( s );
+    aimed_in_critical_aimed -> update( p() -> buffs.t20_2p_critical_aimed_damage -> check() != 0 );
   }
 
   timespan_t execute_time() const override
@@ -6221,14 +6221,11 @@ void hunter_t::init_procs()
 {
   player_t::init_procs();
 
-  procs.lock_and_load                = get_proc( "lock_and_load" );
   procs.wild_call                    = get_proc( "wild_call" );
   procs.hunting_companion            = get_proc( "hunting_companion" );
   procs.wasted_hunting_companion     = get_proc( "wasted_hunting_companion" );
   procs.mortal_wounds                = get_proc( "mortal_wounds" );
   procs.zevrims_hunger               = get_proc( "zevrims_hunger" );
-  procs.marking_targets              = get_proc( "marking_targets" );
-  procs.wasted_marking_targets       = get_proc( "wasted_marking_targets" );
   procs.wasted_sentinel_marks        = get_proc( "wasted_sentinel_marks" );
   procs.animal_instincts_mongoose    = get_proc( "animal_instincts_mongoose" );
   procs.animal_instincts_aspect      = get_proc( "animal_instincts_aspect" );
