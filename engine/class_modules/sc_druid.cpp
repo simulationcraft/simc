@@ -3662,7 +3662,7 @@ struct bloody_gash_t : public cat_attack_t
       cat_attack_t::execute();
 
       //TODO(feral): Check if TWC procs from this
-      trigger_wildshapers_clutch(cat_attack_t::get_state());
+      //trigger_wildshapers_clutch(cat_attack_t::get_state());
       if ( p() -> sets -> has_set_bonus( DRUID_FERAL, T21, B4 ))
       {
          p() -> buff.apex_predator -> trigger();
