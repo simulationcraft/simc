@@ -1994,7 +1994,6 @@ struct ghoul_pet_t : public dt_pet_t
     dt_pet_t::init_action_list();
 
     action_priority_list_t* def = get_action_priority_list( "default" );
-    def -> add_action( "Gnaw" );
     def -> add_action( "Monstrous Blow" );
     def -> add_action( "Sweeping Claws" );
     def -> add_action( "Claw" );
@@ -2076,10 +2075,10 @@ struct sludge_belcher_pet_t : public dt_pet_t
     }
   };
 
-  struct monstrous_blow_t : public dt_melee_ability_t<sludge_belcher_pet_t>
+  struct powerful_smash_t : public dt_melee_ability_t<sludge_belcher_pet_t>
   {
-    monstrous_blow_t( sludge_belcher_pet_t* player, const std::string& options_str ):
-      super( player, "monstrous_blow", player -> find_spell( 91797 ), options_str )
+    powerful_smash_t( sludge_belcher_pet_t* player, const std::string& options_str ):
+      super( player, "powerful_smash", player -> find_spell( 212337 ), options_str )
     {
       cooldown = player -> get_cooldown( "smash" ); // Shares CD with Smash
     }
@@ -2111,8 +2110,7 @@ struct sludge_belcher_pet_t : public dt_pet_t
     dt_pet_t::init_action_list();
 
     action_priority_list_t* def = get_action_priority_list( "default" );
-    def -> add_action( "Smash" );
-    def -> add_action( "Monstrous Blow" );
+    def -> add_action( "Powerful Smash" );
     def -> add_action( "Vile Gas" );
     def -> add_action( "Cleaver" );
   }
@@ -2122,7 +2120,7 @@ struct sludge_belcher_pet_t : public dt_pet_t
     if ( name == "cleaver"        ) return new        cleaver_t( this, options_str );
     if ( name == "vile_gas"       ) return new       vile_gas_t( this, options_str );
     if ( name == "smash"          ) return new          smash_t( this, options_str );
-    if ( name == "monstrous_blow" ) return new monstrous_blow_t( this, options_str );
+    if ( name == "powerful_smash" ) return new powerful_smash_t( this, options_str );
 
     return dt_pet_t::create_action( name, options_str );
   }
@@ -4281,7 +4279,7 @@ struct chains_of_ice_t : public death_knight_spell_t
 struct rune_master_buff_t : public buff_t
 {
   rune_master_buff_t( death_knight_t* p ) :
-    buff_t( buff_creator_t( p, "rune master", p -> find_spell( 253381 ) )
+    buff_t( buff_creator_t( p, "rune_master", p -> find_spell( 253381 ) )
       .trigger_spell( p -> find_spell( 253381 ) ).affects_regen( true )
       .stack_change_callback( [ p ]( buff_t*, int, int ) { p -> _runes.update_coefficient(); } ) )
   { }
