@@ -3235,6 +3235,7 @@ struct charged_up_t : public arcane_mage_spell_t
     arcane_mage_spell_t::execute();
 
     trigger_arcane_charge( 4 );
+    p() -> buffs.quick_thinker -> trigger();
   }
 };
 
