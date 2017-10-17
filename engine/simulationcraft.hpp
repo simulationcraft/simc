@@ -144,6 +144,9 @@ namespace highchart {
 
 #include "player/artifact_data.hpp"
 
+// Legion-specific "pantheon trinket" system
+#include "sim/x7_pantheon.hpp"
+
 // Talent Translation =======================================================
 
 const int MAX_TALENT_ROWS = 7;
@@ -1683,15 +1686,30 @@ struct sim_t : private sc_thread_t
     int                 engine_of_eradication_orbs;
     int                 void_stalkers_contract_targets;
     bool                lavish_feast_as_dps;
-    bool                specter_of_betrayal_overlap;
+    double              specter_of_betrayal_overlap;
     std::vector<double> cradle_of_anguish_resets;
+    std::string         pantheon_trinket_users;
+    timespan_t          pantheon_trinket_interval;
+    double              pantheon_trinket_interval_stddev;
 
     expansion_opt_t() :
       infernal_cinders_users( 1 ), engine_of_eradication_orbs( 4 ),
       void_stalkers_contract_targets( -1 ),
-      lavish_feast_as_dps( true ), specter_of_betrayal_overlap( true )
+      lavish_feast_as_dps( true ), specter_of_betrayal_overlap( 1.0 ),
+      pantheon_trinket_interval( timespan_t::from_seconds( 1.0 ) ),
+      pantheon_trinket_interval_stddev( 0 )
     { }
   } expansion_opts;
+
+  // Expansion specific data
+  struct expansion_data_t
+  {
+    std::unique_ptr<unique_gear::pantheon_state_t> pantheon_proxy;
+
+    expansion_data_t() :
+      pantheon_proxy( nullptr )
+    { }
+  } expansion_data;
 
   // Auras and De-Buffs
   auto_dispose< std::vector<buff_t*> > buff_list;
@@ -6987,6 +7005,7 @@ private:
     return false;
   }
 
+protected:
   /**
    * Base rules for proc execution.
    * 1) If we proc a buff, trigger it

@@ -203,10 +203,18 @@ bool profilesets_t::parse( sim_t* sim )
     }
 
     auto has_output_opts = range::find_if( it -> second, []( const std::string& opt ) {
-      return opt.find( "output", 0, opt.find( "=" ) ) != std::string::npos ||
-             opt.find( "html", 0, opt.find( "=" ) ) != std::string::npos ||
-             opt.find( "xml", 0, opt.find( "=" ) ) != std::string::npos ||
-             opt.find( "json2", 0, opt.find( "=" ) ) != std::string::npos;
+      auto name_end = opt.find( "=" );
+      if ( name_end == std::string::npos )
+      {
+        return false;
+      }
+
+      auto name = opt.substr( 0, name_end );
+
+      return util::str_compare_ci( name, "output" ) ||
+             util::str_compare_ci( name, "html" ) ||
+             util::str_compare_ci( name, "xml" ) ||
+             util::str_compare_ci( name, "json2" );
     } ) != it -> second.end();
 
     //sim -> control = control;

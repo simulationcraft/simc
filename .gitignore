@@ -103,3 +103,4 @@ simulationcraft.sln
 simulationcraft*.db
 engine/simulationcraft.hpp.cpp
 gui/*_resource*
+.vs/

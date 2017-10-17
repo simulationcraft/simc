@@ -16,6 +16,7 @@ To change the list of source files, update the QT_ files and run synchronize.py
 		<ClInclude Include="..\engine\util\generic.hpp" />
 		<ClInclude Include="..\engine\util\concurrency.hpp" />
 		<ClInclude Include="..\engine\util\cache.hpp" />
+		<ClInclude Include="..\engine\sim\x7_pantheon.hpp" />
 		<ClInclude Include="..\engine\sim\sc_profileset.hpp" />
 		<ClInclude Include="..\engine\sim\sc_option.hpp" />
 		<ClInclude Include="..\engine\sim\sc_expressions.hpp" />
@@ -51,6 +52,9 @@ To change the list of source files, update the QT_ files and run synchronize.py
 		</ClCompile>
 		<ClCompile Include="..\engine\util\concurrency.cpp">
 			<PrecompiledHeader>NotUsing</PrecompiledHeader>
+		</ClCompile>
+		<ClCompile Include="..\engine\sim\x7_pantheon.cpp">
+			
 		</ClCompile>
 		<ClCompile Include="..\engine\sim\sc_sim.cpp">
 			
@@ -149,7 +153,7 @@ To change the list of source files, update the QT_ files and run synchronize.py
 			
 		</ClCompile>
 		<ClCompile Include="..\engine\player\artifact_data.cpp">
-			<PrecompiledHeader>NotUsing</PrecompiledHeader>
+			
 		</ClCompile>
 		<ClCompile Include="..\engine\interfaces\sc_wowhead.cpp">
 			

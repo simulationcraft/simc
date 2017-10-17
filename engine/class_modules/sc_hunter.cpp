@@ -192,6 +192,7 @@ public:
 
   // Custom Parameters
   std::string summon_pet_str;
+  bool hunter_fixed_time;
 
   // Gains
   struct gains_t
@@ -458,6 +459,7 @@ public:
     cooldowns.a_murder_of_crows   = get_cooldown( "a_murder_of_crows" );
 
     summon_pet_str = "cat";
+    hunter_fixed_time = true;
 
     base_gcd = timespan_t::from_seconds( 1.5 );
 
@@ -499,6 +501,7 @@ public:
   void      init_action_list() override;
   void      arise() override;
   void      reset() override;
+  void      combat_begin() override;
 
   void      regen( timespan_t periodicity = timespan_t::from_seconds( 0.25 ) ) override;
   double    composite_attack_power_multiplier() const override;
@@ -2094,7 +2097,7 @@ struct pet_auto_attack_t: public hunter_main_pet_attack_t
   { p() -> main_hand_attack -> schedule_execute(); }
 
   bool ready() override
-  { return( p() -> main_hand_attack -> execute_event == nullptr ); } // not swinging
+  { return ! target -> is_sleeping() && p() -> main_hand_attack -> execute_event == nullptr; } // not swinging
 };
 
 // Pet Claw/Bite/Smack ======================================================
@@ -2673,9 +2676,7 @@ struct start_attack_t: public action_t
   }
 
   bool ready() override
-  {
-    return( player -> main_hand_attack -> execute_event == nullptr ); // not swinging
-  }
+  { return ! target -> is_sleeping() && player -> main_hand_attack -> execute_event == nullptr; } // not swinging
 };
 
 
@@ -3487,11 +3488,12 @@ struct marked_shot_t: public hunter_spell_t
   marked_shot_impact_t* impact;
   call_of_the_hunter_t* call_of_the_hunter;
   bool call_of_the_hunter_procced;
+  int t21_4p_targets_hit;
 
   marked_shot_t( hunter_t* p, const std::string& options_str ):
     hunter_spell_t( "marked_shot", p, p -> find_specialization_spell( "Marked Shot" ) ),
     impact( new marked_shot_impact_t( p ) ), call_of_the_hunter( nullptr ),
-    call_of_the_hunter_procced( false )
+    call_of_the_hunter_procced( false ), t21_4p_targets_hit( 0 )
   {
     parse_options( options_str );
 
@@ -3520,6 +3522,8 @@ struct marked_shot_t: public hunter_spell_t
     if ( p() -> artifacts.call_of_the_hunter.rank() )
       call_of_the_hunter_procced = p() -> ppm_call_of_the_hunter -> trigger();
 
+    t21_4p_targets_hit = 0;
+
     hunter_spell_t::execute();
 
     if ( p() -> clear_next_hunters_mark )
@@ -3535,11 +3539,13 @@ struct marked_shot_t: public hunter_spell_t
     {
       impact -> set_target( s -> target );
       impact -> execute();
-      if ( p() -> sets -> has_set_bonus( HUNTER_MARKSMANSHIP, T21, B4 ) &&
+      if ( maybe_ptr(p()->dbc.ptr) && p() -> sets -> has_set_bonus( HUNTER_MARKSMANSHIP, T21, B4 ) &&
+           t21_4p_targets_hit < p() -> sets -> set( HUNTER_MARKSMANSHIP, T21, B4 ) -> effectN( 2 ).base_value() &&
            rng().roll( p() -> sets -> set( HUNTER_MARKSMANSHIP, T21, B4 ) -> effectN( 1 ).percent() ) )
       {
         impact -> execute();
         p() -> procs.t21_4p_mm -> occur();
+        t21_4p_targets_hit++;
       }
 
       if ( call_of_the_hunter_procced )
@@ -6391,10 +6397,10 @@ void hunter_t::apl_bm()
 
   default_list -> add_action( this, "Aspect of the Wild", "if=(equipped.call_of_the_wild&equipped.convergence_of_fates&talent.one_with_the_pack.enabled)|buff.bestial_wrath.remains>7|target.time_to_die<12",
                                     "With both AotW cdr sources and OwtP, there's no visible benefit if it's delayed, use it on cd. With only one or neither, pair it with Bestial Wrath. Also use it if the fight will end when the buff does." );
-  default_list -> add_action( this, "Kill Command", "target_if=min:bestial_ferocity.remains,if=equipped.qapla_eredun_war_order" );
+  default_list -> add_action( this, "Kill Command", "target_if=min:bestial_ferocity.remains,if=equipped.qapla_eredun_war_order|talent.aspect_of_the_beast.enabled" );
   
-  default_list -> add_action( this, "Dire Beast", "if=((!equipped.qapla_eredun_war_order|cooldown.kill_command.remains>=1)&(set_bonus.tier19_2pc|!buff.bestial_wrath.up))|full_recharge_time<gcd.max|cooldown.titans_thunder.up|spell_targets>1",
-                                    "Hold charges of Dire Beast as long as possible to take advantage of T20 2pc unless T19 2pc is on. With Qa'pla, also try not to waste Kill Command cdr if it is just about to come off cooldown." );
+  default_list -> add_action( this, "Dire Beast", "if=(!equipped.qapla_eredun_war_order|cooldown.kill_command.remains>=1)|full_recharge_time<gcd.max|cooldown.titans_thunder.up|spell_targets>1",
+                                    "With Qa'pla, try not to waste Kill Command cdr if it is just about to come off cooldown." );
   default_list -> add_talent( this, "Dire Frenzy", "if=(pet.cat.buff.dire_frenzy.remains<=gcd.max*1.2)|full_recharge_time<gcd.max|target.time_to_die<9" );
   
   default_list -> add_talent( this, "Barrage", "if=spell_targets.barrage>1" );
@@ -6654,6 +6660,34 @@ void hunter_t::reset()
   // Active
   active.pet = nullptr;
   active.sentinel = nullptr;
+}
+
+// hunter_t::combat_begin ==================================================
+
+void hunter_t::combat_begin()
+{
+  if ( !sim -> fixed_time )
+  {
+    if ( hunter_fixed_time )
+    {
+      for ( size_t i = 0; i < sim -> player_list.size(); ++i )
+      {
+        player_t* p = sim -> player_list[ i ];
+        if ( p -> specialization() != HUNTER_MARKSMANSHIP && p -> type != PLAYER_PET )
+        {
+          hunter_fixed_time = false;
+          break;
+        }
+      }
+      if ( hunter_fixed_time )
+      {
+        sim -> fixed_time = true;
+        sim -> errorf( "To fix issues with the target exploding <20% range due to execute, fixed_time=1 has been enabled. This gives similar results" );
+        sim -> errorf( "to execute's usage in a raid sim, without taking an eternity to simulate. To disable this option, add hunter_fixed_time=0 to your sim." );
+      }
+    }
+  }
+  player_t::combat_begin();
 }
 
 // hunter_t::arise ==========================================================
@@ -6924,6 +6958,7 @@ void hunter_t::create_options()
   player_t::create_options();
 
   add_option( opt_string( "summon_pet", summon_pet_str ) );
+  add_option( opt_bool( "hunter_fixed_time", hunter_fixed_time ) );
 }
 
 // hunter_t::create_profile =================================================
@@ -6933,6 +6968,12 @@ std::string hunter_t::create_profile( save_e stype )
   std::string profile_str = player_t::create_profile( stype );
 
   profile_str += "summon_pet=" + summon_pet_str + "\n";
+  
+  if ( stype == SAVE_ALL )
+  {
+    if ( !hunter_fixed_time )
+      profile_str += "hunter_fixed_time=" + util::to_string( hunter_fixed_time ) + "\n";
+  }
 
   return profile_str;
 }
@@ -6946,6 +6987,7 @@ void hunter_t::copy_from( player_t* source )
   hunter_t* p = debug_cast<hunter_t*>( source );
 
   summon_pet_str = p -> summon_pet_str;
+  hunter_fixed_time = p -> hunter_fixed_time;
 }
 
 // hunter_::convert_hybrid_stat ==============================================

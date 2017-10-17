@@ -3238,9 +3238,6 @@ struct ferocious_bite_t : public cat_attack_t
     req *= 1.0 + p() -> buff.berserk -> check_value();
     req *= 1.0 + p() -> buff.incarnation_cat -> check_value();
 
-    if ( p() -> buff.clearcasting -> check() )
-      req /= 2.0;
-
     if ( p() -> buff.apex_predator -> check() )
     {
        req *= ( 1 - p() -> buff.apex_predator -> data().effectN(1).percent() );
@@ -3665,7 +3662,7 @@ struct bloody_gash_t : public cat_attack_t
       cat_attack_t::execute();
 
       //TODO(feral): Check if TWC procs from this
-      trigger_wildshapers_clutch(cat_attack_t::get_state());
+      //trigger_wildshapers_clutch(cat_attack_t::get_state());
       if ( p() -> sets -> has_set_bonus( DRUID_FERAL, T21, B4 ))
       {
          p() -> buff.apex_predator -> trigger();
@@ -6660,13 +6657,17 @@ double brambles_handler( const action_state_t* s )
   // Calculate actual amount absorbed.
   double amount_absorbed = std::min( s -> result_mitigated, absorb_cap );
 
-  // Schedule reflected damage.
-  p -> active.brambles -> base_dd_min = p -> active.brambles -> base_dd_max = 
-    amount_absorbed;
-  action_state_t* ref_s = p -> active.brambles -> get_state();
-  ref_s -> target = s -> action -> player;
-  p -> active.brambles -> snapshot_state( ref_s, DMG_DIRECT );
-  p -> active.brambles -> schedule_execute( ref_s );
+  // Prevent self-harm
+  if ( s -> action -> player != p )
+  {
+    // Schedule reflected damage.
+    p -> active.brambles -> base_dd_min = p -> active.brambles -> base_dd_max =
+      amount_absorbed;
+    action_state_t* ref_s = p -> active.brambles -> get_state();
+    ref_s -> target = s -> action -> player;
+    p -> active.brambles -> snapshot_state( ref_s, DMG_DIRECT );
+    p -> active.brambles -> schedule_execute( ref_s );
+  }
 
   return amount_absorbed;
 }
@@ -8107,31 +8108,29 @@ void druid_t::apl_guardian()
 {
   action_priority_list_t* default_list    = get_action_priority_list( "default" );
 
-  std::vector<std::string> item_actions       = get_item_actions();
-  std::vector<std::string> racial_actions     = get_racial_actions();
+  std::vector<std::string> item_actions   = get_item_actions();
+  std::vector<std::string> racial_actions = get_racial_actions();
 
   default_list -> add_action( "auto_attack" );
 
   for (size_t i = 0; i < racial_actions.size(); i++)
-    default_list->add_action(racial_actions[i]);
+    default_list -> add_action(racial_actions[i]);
   for (size_t i = 0; i < item_actions.size(); i++)
-    default_list->add_action(item_actions[i]);
+    default_list -> add_action(item_actions[i]);
 
-  default_list->add_action("incarnation");
-  default_list->add_action("rage_of_the_sleeper");
-  default_list->add_action("lunar_beam");
-  default_list->add_action(this, "Frenzied Regeneration", "if=incoming_damage_5s%health.max>=0.5|health<=health.max*0.4");
-  default_list->add_action( "bristling_fur,if=buff.ironfur.stack=1|buff.ironfur.down" );
-  default_list->add_action(this, "Ironfur", "if=(buff.ironfur.up=0)|(buff.gory_fur.up=1)|(rage>=80)");
-  default_list->add_action(this, "Moonfire", "if=buff.incarnation.up=1&dot.moonfire.remains<=4.8");
-  default_list->add_action("thrash_bear,if=buff.incarnation.up=1&dot.thrash.remains<=4.5");
-  default_list->add_action(this, "Mangle");
-  default_list->add_action("thrash_bear");
-  default_list->add_action("pulverize,if=buff.pulverize.up=0|buff.pulverize.remains<=6");
-  default_list->add_action(this, "Moonfire", "if=buff.galactic_guardian.up=1&(!ticking|dot.moonfire.remains<=4.8)");
-  default_list->add_action(this, "Moonfire", "if=buff.galactic_guardian.up=1");
-  default_list->add_action(this, "Moonfire", "if=dot.moonfire.remains<=4.8");
-  default_list->add_action("swipe_bear");
+  default_list -> add_action( "incarnation" );
+  default_list -> add_action( this, "Rage of the Sleeper" );
+  default_list -> add_talent( this, "Lunar Beam" );
+  default_list -> add_action( this, "Frenzied Regeneration", "if=incoming_damage_5s%health.max>=0.5|health<=health.max*0.4" );
+  default_list -> add_talent( this, "Bristling Fur", "if=buff.ironfur.stack<=1" );
+  default_list -> add_action( this, "Ironfur", "if=!buff.ironfur.up|buff.gory_fur.up|rage>=80" );
+  default_list -> add_action( "thrash_bear,if=spell_targets.thrash_bear>=2" );
+  default_list -> add_action( this, "Mangle" );
+  default_list -> add_action( this, "Moonfire", "if=buff.galactic_guardian.up" );
+  default_list -> add_action( "thrash_bear" );
+  default_list -> add_talent( this, "Pulverize", "if=(buff.pulverize.remains<=6&dot.thrash_bear.stack>=2)|dot.thrash_bear.stack>3+equipped.elizes_everlasting_encasement*2" );
+  default_list -> add_action( this, "Moonfire", "target_if=dot.moonfire.refreshable&(spell_targets.swipe_bear<=3|equipped.fury_of_nature)" );
+  default_list -> add_action( "swipe_bear" );
 }
 
 // Restoration Combat Action Priority List ==================================
@@ -9234,10 +9233,9 @@ void druid_t::assess_damage_imminent_pre_absorb( school_e, dmg_e, action_state_t
                      gain.bristling_fur );
     }
 
-    if ( buff.rage_of_the_sleeper -> up() )
+    // Prevent self-harm
+    if ( buff.rage_of_the_sleeper -> up() && s -> action -> player != this )
     {
-      assert( s -> action -> player != this );
-
       active.rage_of_the_sleeper -> target = s -> action -> player;
       // Don't schedule to make sure to respect the set target.
       active.rage_of_the_sleeper -> execute();

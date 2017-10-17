@@ -4637,9 +4637,9 @@ struct soul_cleave_t : public demon_hunter_attack_t
     {
       action_state_t* erupting_souls_state = erupting_souls->get_state();
       erupting_souls->set_target(execute_state->target);
-      erupting_souls->snapshot_state(damage_state, DMG_DIRECT);
+      erupting_souls->snapshot_state(erupting_souls_state, DMG_DIRECT);
       erupting_souls_state->da_multiplier *= fragments_consumed;
-      erupting_souls->schedule_execute();
+      erupting_souls->schedule_execute(erupting_souls_state);
     }
 
     if (p()->legendary.the_defilers_lost_vambraces < timespan_t::zero())
@@ -7034,7 +7034,7 @@ void demon_hunter_t::apl_havoc()
     "If adds are present, use Nemesis on the lowest HP add in order to get the Nemesis buff for AoE");
   cd->add_talent(this, "Nemesis", "if=!raid_event.adds.exists&"
     "(buff.chaos_blades.up|buff.metamorphosis.up|cooldown.metamorphosis.adjusted_remains<20|target.time_to_die<=60)");
-  cd->add_talent(this, "Chaos Blades", "if=buff.metamorphosis.up|cooldown.metamorphosis.adjusted_remains>60|target.time_to_die<=12");
+  cd->add_talent(this, "Chaos Blades", "if=buff.metamorphosis.up|cooldown.metamorphosis.adjusted_remains>60|target.time_to_die<=duration");
   
   add_havoc_use_items(this, cd);
 

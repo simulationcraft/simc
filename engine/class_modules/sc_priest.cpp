@@ -1817,7 +1817,7 @@ public:
       if ( priest.sets->has_set_bonus( PRIEST_SHADOW, T21, B4 ) 
       && priest.buffs.overwhelming_darkness->check() )
     {
-      c +=   ( priest.buffs.overwhelming_darkness->check() - 1 )
+      c +=   ( priest.buffs.overwhelming_darkness->check() )
              * priest.buffs.overwhelming_darkness->data().effectN(1).percent();
     }
 
@@ -2064,8 +2064,8 @@ struct mind_flay_t final : public priest_spell_t
     if (priest.sets->has_set_bonus(PRIEST_SHADOW, T21, B4)
       && priest.buffs.overwhelming_darkness->check())
     {
-      c += (priest.buffs.overwhelming_darkness->check() - 1)
-        * priest.buffs.overwhelming_darkness->data().effectN(1).percent();
+      c += (  priest.buffs.overwhelming_darkness->check() )
+            * priest.buffs.overwhelming_darkness->data().effectN(1).percent();
     }
 
     return c;
@@ -3185,8 +3185,8 @@ struct void_bolt_t final : public priest_spell_t
     if (priest.sets->has_set_bonus(PRIEST_SHADOW, T21, B4)
       && priest.buffs.overwhelming_darkness->check())
     {
-      c += (priest.buffs.overwhelming_darkness->check() - 1)
-        * priest.buffs.overwhelming_darkness->data().effectN(1).percent();
+      c += (  priest.buffs.overwhelming_darkness->check() )
+            * priest.buffs.overwhelming_darkness->data().effectN(1).percent();
     }
 
     return c;
@@ -3684,7 +3684,6 @@ struct voidform_t final : public priest_buff_t<haste_buff_t>
 
     if ( priest.sets->has_set_bonus( PRIEST_SHADOW, T21, B4 ) )
     {
-      priest.buffs.overwhelming_darkness->expire();
       priest.buffs.overwhelming_darkness->trigger();
     }
 
@@ -3717,6 +3716,11 @@ struct voidform_t final : public priest_buff_t<haste_buff_t>
     }
 
     priest.buffs.sphere_of_insanity->expire();
+    
+    if ( priest.sets->has_set_bonus( PRIEST_SHADOW, T21, B4 ) )
+    {
+      priest.buffs.overwhelming_darkness->expire();
+    }
 
     if ( priest.buffs.surrender_to_madness->check() )
     {
@@ -4946,12 +4950,10 @@ void priest_t::apl_precombat()
     "variable,name=sear_dpgcd,op=set,value=80*(1+0.05*artifact.void_corruption.rank)" );
   precombat->add_action(
     "variable,name=s2msetup_time,op=set,value=(0.8*(83+(20+20*talent.fortress_of_the_mind"
-    ".enabled)*set_bonus.tier20_4pc-(5*talent.sanlayn.enabled)+(30+42*(desired_targets>1)+"
-    "10*talent.lingering_insanity.enabled)*set_bonus.tier21_4pc*talent.auspicious_spirits."
-    "enabled+((33-13*set_bonus.tier20_4pc)*talent.reaper_of_souls.enabled)+set_bonus.tier19_2pc"
-    "*4+8*equipped.mangazas_madness+(raw_haste_pct*10*(1+0.7*set_bonus.tier20_4pc))*(2+(0.8*set_"
-    "bonus.tier19_2pc)+(1*talent.reaper_of_souls.enabled)+(2*artifact.mass_hysteria.rank)-(1*talent"
-    ".sanlayn.enabled)))),if=talent.surrender_to_madness.enabled" );
+    ".enabled)*set_bonus.tier20_4pc-(5*talent.sanlayn.enabled)+((33-13*set_bonus.tier20_4pc)*"
+    "talent.reaper_of_souls.enabled)+set_bonus.tier19_2pc*4+8*equipped.mangazas_madness+(raw_haste_"
+    "pct*10*(1+0.7*set_bonus.tier20_4pc))*(2+(0.8*set_bonus.tier19_2pc)+(1*talent.reaper_of_souls."
+    "enabled)+(2*artifact.mass_hysteria.rank)-(1*talent.sanlayn.enabled)))),if=talent.surrender_to_madness.enabled" );
   if ( sim->allow_potions && true_level >= 80 )
   {
     if ( true_level > 100 )
