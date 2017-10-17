@@ -17,7 +17,6 @@
 // - Make Rapid Decomposition tick 10 times per DnD cast (current is 9)
 // - Make DnD tick 13 times with Rapid Decomp (current is 12)
 // Frost
-// - Wait for next spelldata extract to enable T21 4P
 // - Implement Inexorable Assault ? maybe ? somehow ?
 
 #include "simulationcraft.hpp"
