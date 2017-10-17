@@ -6435,12 +6435,17 @@ struct tombstone_t : public death_knight_spell_t
   {
     death_knight_spell_t::execute();
 
-    double power = p() -> buffs.bone_shield -> stack() * data().effectN( 3 ).base_value();
-    double shield = p() -> buffs.bone_shield -> check() * data().effectN( 4 ).percent();
+    double charges = p() -> buffs.bone_shield -> stack();
+    // Tomnstone doesn't consume more than 5 bone shield charges
+    if ( charges > 5 )
+      charges = 5;
+
+    double power = charges * data().effectN( 3 ).base_value();
+    double shield = charges * data().effectN( 4 ).percent();
 
     p() -> resource_gain( RESOURCE_RUNIC_POWER, power, p() -> gains.tombstone, this );
     p() -> buffs.tombstone -> trigger( 1, shield * p() -> resources.max[ RESOURCE_HEALTH ] );
-    p() -> buffs.bone_shield -> expire();
+    p() -> buffs.bone_shield -> decrement( p() -> find_spell( 219809 ) -> effectN( 5 ).base_value() );
   }
 };
 
