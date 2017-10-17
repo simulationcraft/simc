@@ -798,15 +798,21 @@ public:
     const spell_data_t* koltiras_newfound_will;
     const spell_data_t* seal_of_necrofantasia;
     const spell_data_t* perseverance_of_the_ebon_martyr;
-    const spell_data_t* sephuzs_secret;
-    const spell_data_t* death_march;
-    const spell_data_t* lanathels_lament;
     double toravons;
+
+    // Blood
+    const spell_data_t* lanathels_lament;
+    const spell_data_t* rattlegore_bone_legplates;
 
     // Unholy
     unsigned the_instructors_fourth_lesson;
     double draugr_girdle_everlasting_king;
     double uvanimor_the_unbeautiful;
+    const spell_data_t* death_march;
+
+
+    // Shared
+    const spell_data_t* sephuzs_secret;
 
     legendary_t() :
       koltiras_newfound_will( spell_data_t::not_found() ),
@@ -816,7 +822,8 @@ public:
       death_march( spell_data_t::not_found() ),
       lanathels_lament( spell_data_t::not_found() ),
       toravons( 0 ), the_instructors_fourth_lesson( 0 ), draugr_girdle_everlasting_king( 0 ),
-      uvanimor_the_unbeautiful( 0 )
+      uvanimor_the_unbeautiful( 0 ),
+      rattlegore_bone_legplates( spell_data_t::not_found() )
     { }
 
   } legendary;
@@ -6445,7 +6452,11 @@ struct tombstone_t : public death_knight_spell_t
 
     p() -> resource_gain( RESOURCE_RUNIC_POWER, power, p() -> gains.tombstone, this );
     p() -> buffs.tombstone -> trigger( 1, shield * p() -> resources.max[ RESOURCE_HEALTH ] );
-    p() -> buffs.bone_shield -> decrement( p() -> find_spell( 219809 ) -> effectN( 5 ).base_value() );
+    p() -> buffs.bone_shield -> decrement( charges );
+    if ( p() -> sets -> has_set_bonus( DEATH_KNIGHT_BLOOD, T21, B2 ) )
+    {
+      p() -> cooldown.dancing_rune_weapon -> adjust( charges * timespan_t::from_millis( p() -> find_spell( 251876 ) -> effectN( 1 ).base_value() ), false );
+    }
   }
 };
 
@@ -8675,33 +8686,43 @@ double death_knight_t::bone_shield_handler( const action_state_t* state ) const
   {
     return 0;
   }
-
-  if ( ! cooldown.bone_shield_icd -> up() )
+  
+  // Bone shield only lose stacks on auto-attack damage. The only distinguishing feature of auto attacks is that
+  // our enemies call them "melee_main_hand" and "melee_off_hand", so we need to check for "hand" in name_str
+  if ( util::str_in_str_ci( state -> action -> name_str, "_hand" ) && cooldown.bone_shield_icd -> up() )
   {
-    return 0;
+    buffs.bone_shield -> decrement();
+    
+    if ( sets -> has_set_bonus( DEATH_KNIGHT_BLOOD, T21, B2 ) )
+    {
+      cooldown.dancing_rune_weapon -> adjust( timespan_t::from_millis( find_spell( 251876 ) -> effectN( 1 ).base_value() ), false );
+    }
+
+    cooldown.bone_shield_icd -> start();
   }
 
   double absorbed = 0;
   double absorb_pct = buffs.bone_shield -> data().effectN( 5 ).percent();
-  int n_stacks = 1;
+
+  // Legendary pants increase the absorbed amount by 2%
+  absorb_pct += legendary.rattlegore_bone_legplates->effectN( 2 ).percent();
 
   if ( talent.spectral_deflection -> ok() && state -> result_raw >
        resources.max[ RESOURCE_HEALTH ] * talent.spectral_deflection -> effectN( 1 ).percent() &&
-       buffs.bone_shield -> check() > 1 )
+       buffs.bone_shield -> check() )
   {
     absorb_pct *= 2;
-    n_stacks *= 2;
+    buffs.bone_shield -> decrement();
+
+    if ( sets -> has_set_bonus( DEATH_KNIGHT_BLOOD, T21, B2 ) )
+    {
+      cooldown.dancing_rune_weapon -> adjust( timespan_t::from_millis( find_spell( 251876 ) -> effectN( 1 ).base_value() ), false );
+    }
   }
 
   absorbed = absorb_pct * state -> result_amount;
-
-  buffs.bone_shield -> decrement( n_stacks );
-  cooldown.bone_shield_icd -> start();
-
-  if ( n_stacks > 0 && sets -> has_set_bonus( DEATH_KNIGHT_BLOOD, T21, B2 ) )
-  {
-    cooldown.dancing_rune_weapon -> adjust( timespan_t::from_millis( find_spell( 251876 ) -> effectN( 1 ).base_value() ), false );
-  }
+  
+  
 
   return absorbed;
 }
@@ -8717,8 +8738,8 @@ void death_knight_t::init_absorb_priority()
                                   std::bind( &death_knight_t::bone_shield_handler, this, std::placeholders::_1 ) ) ) );
 
     // TODO: What is the absorb ordering for blood dks?
-    absorb_priority.push_back( 206977 ); // Blood Mirror
     absorb_priority.push_back( 195181 ); // Bone Shield (NYI)
+    absorb_priority.push_back( 206977 ); // Blood Mirror
     //absorb_priority.push_back( 77535  ); // Blood Shield
     //absorb_priority.push_back( 219809 ); // Tombstone
   }
@@ -9773,6 +9794,15 @@ struct lanathels_lament_t : public scoped_actor_callback_t<death_knight_t>
   { p -> legendary.lanathels_lament = p -> find_spell( 212975 ); }
 };
 
+struct rattlegore_bone_legplates_t : public scoped_actor_callback_t<death_knight_t>
+{
+  rattlegore_bone_legplates_t() : super( DEATH_KNIGHT )
+  { }
+
+  void manipulate( death_knight_t* p, const special_effect_t& e ) override
+  { p -> legendary.rattlegore_bone_legplates = e.driver(); }
+};
+
 struct death_knight_module_t : public module_t {
   death_knight_module_t() : module_t( DEATH_KNIGHT ) {}
 
@@ -9802,6 +9832,7 @@ struct death_knight_module_t : public module_t {
     unique_gear::register_special_effect( 212216, seal_of_necrofantasia_t() );
     unique_gear::register_special_effect( 216059, perseverance_of_the_ebon_martyr_t() );
     unique_gear::register_special_effect( 212974, lanathels_lament_t() );
+    unique_gear::register_special_effect( 205816, rattlegore_bone_legplates_t() );
     // 7.1.5
     unique_gear::register_special_effect( 235605, consorts_cold_core_t() );
     unique_gear::register_special_effect( 235556, death_march_t() );
