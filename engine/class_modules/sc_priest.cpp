@@ -427,7 +427,6 @@ public:
   role_e primary_role() const override;
   stat_e convert_hybrid_stat( stat_e s ) const override;
   void assess_damage( school_e school, dmg_e dtype, action_state_t* s ) override;
-  double composite_spell_crit_chance() const override;
   double composite_melee_haste() const override;
   double composite_melee_speed() const override;
   double composite_spell_haste() const override;
@@ -1811,6 +1810,20 @@ public:
     priest.buffs.shadowy_insight->expire();
   }
 
+  virtual double composite_crit_chance() const override
+  {
+    double c = priest_spell_t::composite_crit_chance();
+
+      if ( priest.sets->has_set_bonus( PRIEST_SHADOW, T21, B4 ) 
+      && priest.buffs.overwhelming_darkness->check() )
+    {
+      c +=   ( priest.buffs.overwhelming_darkness->check() )
+             * priest.buffs.overwhelming_darkness->data().effectN(1).percent();
+    }
+
+    return c;
+  }
+
   void execute() override
   {
     priest_spell_t::execute();
@@ -2042,6 +2055,20 @@ struct mind_flay_t final : public priest_spell_t
       am *= 1.0 + priest.buffs.void_ray->check() * priest.buffs.void_ray->data().effectN( 1 ).percent();
 
     return am;
+  }
+
+  virtual double composite_crit_chance() const override
+  {
+    double c = priest_spell_t::composite_crit_chance();
+
+    if (priest.sets->has_set_bonus(PRIEST_SHADOW, T21, B4)
+      && priest.buffs.overwhelming_darkness->check())
+    {
+      c += (  priest.buffs.overwhelming_darkness->check() )
+            * priest.buffs.overwhelming_darkness->data().effectN(1).percent();
+    }
+
+    return c;
   }
 
   /// Legendary the_twins_painful_touch
@@ -3151,6 +3178,20 @@ struct void_bolt_t final : public priest_spell_t
     }
   }
 
+  virtual double composite_crit_chance() const override
+  {
+    double c = priest_spell_t::composite_crit_chance();
+
+    if (priest.sets->has_set_bonus(PRIEST_SHADOW, T21, B4)
+      && priest.buffs.overwhelming_darkness->check())
+    {
+      c += (  priest.buffs.overwhelming_darkness->check() )
+            * priest.buffs.overwhelming_darkness->data().effectN(1).percent();
+    }
+
+    return c;
+  }
+
   bool ready() override
   {
     if ( !( priest.buffs.voidform->check() ) )
@@ -3643,7 +3684,6 @@ struct voidform_t final : public priest_buff_t<haste_buff_t>
 
     if ( priest.sets->has_set_bonus( PRIEST_SHADOW, T21, B4 ) )
     {
-      priest.buffs.overwhelming_darkness->expire();
       priest.buffs.overwhelming_darkness->trigger();
     }
 
@@ -3676,6 +3716,11 @@ struct voidform_t final : public priest_buff_t<haste_buff_t>
     }
 
     priest.buffs.sphere_of_insanity->expire();
+    
+    if ( priest.sets->has_set_bonus( PRIEST_SHADOW, T21, B4 ) )
+    {
+      priest.buffs.overwhelming_darkness->expire();
+    }
 
     if ( priest.buffs.surrender_to_madness->check() )
     {
@@ -4187,20 +4232,6 @@ void priest_t::assess_damage( school_e school, dmg_e dtype, action_state_t* s )
   }
 
   player_t::assess_damage( school, dtype, s );
-}
-
-double priest_t::composite_spell_crit_chance() const
-{
-  double c = player_t::composite_spell_crit_chance();
-
-  if ( sets->has_set_bonus( PRIEST_SHADOW, T21, B4 ) 
-      && buffs.overwhelming_darkness->check() ) 
-  {
-    c +=   ( buffs.overwhelming_darkness->check() - 1 )
-         * buffs.overwhelming_darkness->data().effectN(1).percent();
-  }
-
-  return c;
 }
 
 double priest_t::composite_spell_haste() const
@@ -4919,12 +4950,10 @@ void priest_t::apl_precombat()
     "variable,name=sear_dpgcd,op=set,value=80*(1+0.05*artifact.void_corruption.rank)" );
   precombat->add_action(
     "variable,name=s2msetup_time,op=set,value=(0.8*(83+(20+20*talent.fortress_of_the_mind"
-    ".enabled)*set_bonus.tier20_4pc-(5*talent.sanlayn.enabled)+(30+42*(desired_targets>1)+"
-    "10*talent.lingering_insanity.enabled)*set_bonus.tier21_4pc*talent.auspicious_spirits."
-    "enabled+((33-13*set_bonus.tier20_4pc)*talent.reaper_of_souls.enabled)+set_bonus.tier19_2pc"
-    "*4+8*equipped.mangazas_madness+(raw_haste_pct*10*(1+0.7*set_bonus.tier20_4pc))*(2+(0.8*set_"
-    "bonus.tier19_2pc)+(1*talent.reaper_of_souls.enabled)+(2*artifact.mass_hysteria.rank)-(1*talent"
-    ".sanlayn.enabled)))),if=talent.surrender_to_madness.enabled" );
+    ".enabled)*set_bonus.tier20_4pc-(5*talent.sanlayn.enabled)+((33-13*set_bonus.tier20_4pc)*"
+    "talent.reaper_of_souls.enabled)+set_bonus.tier19_2pc*4+8*equipped.mangazas_madness+(raw_haste_"
+    "pct*10*(1+0.7*set_bonus.tier20_4pc))*(2+(0.8*set_bonus.tier19_2pc)+(1*talent.reaper_of_souls."
+    "enabled)+(2*artifact.mass_hysteria.rank)-(1*talent.sanlayn.enabled)))),if=talent.surrender_to_madness.enabled" );
   if ( sim->allow_potions && true_level >= 80 )
   {
     if ( true_level > 100 )
@@ -5159,7 +5188,7 @@ void priest_t::apl_shadow()
   // Surrender to Madness APL
   s2m->add_action(
       "silence,if=equipped.sephuzs_secret&(target.is_add|target.debuff.casting."
-      "react)&cooldown.buff_sephuzs_secret.remains<1&!buff.sephuzs_secret.up"
+      "react)&cooldown.buff_sephuzs_secret.up&!buff.sephuzs_secret.up"
       ",cycle_targets=1");
   s2m->add_action( "void_bolt,if=buff.insanity_drain_stacks.value<6&set_bonus.tier19_4pc" );
   s2m->add_action(
@@ -5253,7 +5282,7 @@ void priest_t::apl_shadow()
       "(buff.insanity_drain_stacks.value)" );
   vf->add_action(
     "silence,if=equipped.sephuzs_secret&(target.is_add|target.debuff.casting."
-    "react)&cooldown.buff_sephuzs_secret.remains<1&!buff.sephuzs_secret.up"
+    "react)&cooldown.buff_sephuzs_secret.up&!buff.sephuzs_secret.up"
     "&buff.insanity_drain_stacks.value>10,cycle_targets=1");
   vf->add_action( "void_bolt" );
 if ( race == RACE_BLOOD_ELF )

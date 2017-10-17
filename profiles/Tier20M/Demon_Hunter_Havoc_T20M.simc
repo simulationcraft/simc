@@ -54,7 +54,7 @@ actions.cooldown+=/metamorphosis,if=talent.demonic.enabled&buff.metamorphosis.up
 # If adds are present, use Nemesis on the lowest HP add in order to get the Nemesis buff for AoE
 actions.cooldown+=/nemesis,target_if=min:target.time_to_die,if=raid_event.adds.exists&debuff.nemesis.down&(active_enemies>desired_targets|raid_event.adds.in>60)
 actions.cooldown+=/nemesis,if=!raid_event.adds.exists&(buff.chaos_blades.up|buff.metamorphosis.up|cooldown.metamorphosis.adjusted_remains<20|target.time_to_die<=60)
-actions.cooldown+=/chaos_blades,if=buff.metamorphosis.up|cooldown.metamorphosis.adjusted_remains>60|target.time_to_die<=12
+actions.cooldown+=/chaos_blades,if=buff.metamorphosis.up|cooldown.metamorphosis.adjusted_remains>60|target.time_to_die<=duration
 actions.cooldown+=/use_item,slot=trinket1
 actions.cooldown+=/potion,if=buff.metamorphosis.remains>25|target.time_to_die<30
 

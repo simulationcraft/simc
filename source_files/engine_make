@@ -13,6 +13,7 @@ SRC += \
     util$(PATHSEP)generic.hpp \
     util$(PATHSEP)concurrency.hpp \
     util$(PATHSEP)cache.hpp \
+    sim$(PATHSEP)x7_pantheon.hpp \
     sim$(PATHSEP)sc_profileset.hpp \
     sim$(PATHSEP)sc_option.hpp \
     sim$(PATHSEP)sc_expressions.hpp \
@@ -37,6 +38,7 @@ SRC += \
     util$(PATHSEP)rng.cpp \
     util$(PATHSEP)io.cpp \
     util$(PATHSEP)concurrency.cpp \
+    sim$(PATHSEP)x7_pantheon.cpp \
     sim$(PATHSEP)sc_sim.cpp \
     sim$(PATHSEP)sc_scaling.cpp \
     sim$(PATHSEP)sc_reforge_plot.cpp \

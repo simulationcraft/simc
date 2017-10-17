@@ -5821,7 +5821,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=473551)   : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
-                   Base Value: 75 | Scaled Value: 75 | Target: Self (1)
+                   Base Value: 25 | Scaled Value: 25 | Target: Self (1)
                    Affected Spells: Frostbolt (116), Frostbolt (228597)
 Description      : $@spelldesc251860
 Tooltip          : Damage of your next Frostbolt increased by $s1%.
