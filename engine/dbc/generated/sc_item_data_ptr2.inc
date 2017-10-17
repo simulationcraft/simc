@@ -1,6 +1,6 @@
 #define PTR_RAND_PROP_POINTS_SIZE (1300)
 
-// Random property points for item levels 1-1300, wow build 25255
+// Random property points for item levels 1-1300, wow build 25326
 static struct random_prop_data_t __ptr_rand_prop_points_data[] = {
   {    1, {     0,     0,     0,     0,     0 }, {     0,     0,     0,     0,     0 }, {     0,     0,     0,     0,     0 } },
   {    2, {     0,     0,     0,     0,     0 }, {     0,     0,     0,     0,     0 }, {     0,     0,     0,     0,     0 } },
@@ -1306,7 +1306,7 @@ static struct random_prop_data_t __ptr_rand_prop_points_data[] = {
 };
 #define PTR_RAND_SUFFIX_SIZE (450)
 
-// Random new-style item suffixes, wow build 25255
+// Random new-style item suffixes, wow build 25326
 static struct random_suffix_data_t __ptr_rand_suffix_data[] = {
   {   5, "of the Monkey"          , {  2802,  2803,     0,     0,     0 }, {  6666, 10000,     0,     0,     0 } },
   {   6, "of the Eagle"           , {  2804,  2803,     0,     0,     0 }, {  6666, 10000,     0,     0,     0 } },
@@ -1762,7 +1762,7 @@ static struct random_suffix_data_t __ptr_rand_suffix_data[] = {
 };
 #define PTR_SPELL_ITEM_ENCH_SIZE (4173)
 
-// Item enchantment data, wow build 25255
+// Item enchantment data, wow build 25326
 static struct item_enchantment_data_t __ptr_spell_item_ench_data[] = {
   {   13,  33,      0, -1,   5,   1,   0,   0, {   2,   0,   0 }, {    3,    0,    0 }, {      0,      0,      0 }, {  1.0000,  0.0000,  0.0000 },      0, "Sharpened (+$k1 Damage)"           },
   {   14,  33,      0, -1,  15,  15,   0,   0, {   2,   0,   0 }, {    4,    0,    0 }, {      0,      0,      0 }, {  0.3637,  0.0000,  0.0000 },      0, "Sharpened (+$k1 Damage)"           },
@@ -5939,7 +5939,7 @@ static struct item_enchantment_data_t __ptr_spell_item_ench_data[] = {
   { 5931,   1,      0,  0,   1, 100,   0,   0, {   3,   0,   0 }, {    0,    0,    0 }, { 254707,      0,      0 }, {  0.0000,  0.0000,  0.0000 }, 254706, "Lightbearer"                       },
   {    0,   0,      0,  0,   0,   0,   0,   0, {   0,   0,   0 }, {    0,    0,    0 }, {      0,      0,      0 }, {  0.0000,  0.0000,  0.0000 },      0, 0                                   },
 };
-// Item armor values data from ItemArmorQuality.dbc, ilevels 1-1300, wow build 25255
+// Item armor values data from ItemArmorQuality.dbc, ilevels 1-1300, wow build 25326
 static struct item_scale_data_t __ptr_itemarmorquality_data[] = {
   {    1, {  0.900,  0.950,  1.000,  1.000,  1.000,  1.000,  1.000 } },
   {    2, {  0.900,  0.950,  1.000,  1.000,  1.000,  1.000,  1.000 } },
@@ -7244,7 +7244,7 @@ static struct item_scale_data_t __ptr_itemarmorquality_data[] = {
   { 0, { 0, 0, 0, 0, 0, 0, 0 } }
 };
 
-// Item armor values data from ItemArmorShield.dbc, ilevels 1-1300, wow build 25255
+// Item armor values data from ItemArmorShield.dbc, ilevels 1-1300, wow build 25326
 static struct item_scale_data_t __ptr_itemarmorshield_data[] = {
   {    1, {   22.000,   23.000,   24.000,   31.000,   38.000,   38.000,   38.000 } },
   {    2, {   24.000,   25.000,   26.000,   33.000,   41.000,   41.000,   41.000 } },
@@ -8549,7 +8549,7 @@ static struct item_scale_data_t __ptr_itemarmorshield_data[] = {
   { 0, { 0, 0, 0, 0, 0, 0, 0 } }
 };
 
-// Item armor values data from ItemArmorTotal.dbc, ilevels 1-1300, wow build 25255
+// Item armor values data from ItemArmorTotal.dbc, ilevels 1-1300, wow build 25326
 static struct item_armor_type_data_t __ptr_itemarmortotal_data[] = {
   {    1, {    19.625,    31.400,    44.857,   78.5000 } },
   {    2, {    20.875,    33.400,    47.714,   83.5000 } },
@@ -9881,7 +9881,7 @@ static struct item_armor_type_data_t __ptr_armor_slot_data[] = {
   { 0, { 0, 0, 0, 0 } }
 };
 
-// Item damage data from ItemDamageOneHand.dbc, ilevels 1-1300, wow build 25255
+// Item damage data from ItemDamageOneHand.dbc, ilevels 1-1300, wow build 25326
 static struct item_scale_data_t __ptr_itemdamageonehand_data[] = {
   {    1, {     0.347,     0.520,     0.629,     1.050,     1.874,     1.874,     1.874 } },
   {    2, {     0.502,     0.755,     0.886,     1.377,     2.240,     2.240,     2.240 } },
@@ -11186,7 +11186,7 @@ static struct item_scale_data_t __ptr_itemdamageonehand_data[] = {
   { 0, { 0, 0, 0, 0, 0, 0, 0 } }
 };
 
-// Item damage data from ItemDamageOneHandCaster.dbc, ilevels 1-1300, wow build 25255
+// Item damage data from ItemDamageOneHandCaster.dbc, ilevels 1-1300, wow build 25326
 static struct item_scale_data_t __ptr_itemdamageonehandcaster_data[] = {
   {    1, {     0.173,     0.260,     0.315,     0.525,     0.937,     0.937,     0.937 } },
   {    2, {     0.251,     0.377,     0.443,     0.689,     1.120,     1.120,     1.120 } },
@@ -12491,7 +12491,7 @@ static struct item_scale_data_t __ptr_itemdamageonehandcaster_data[] = {
   { 0, { 0, 0, 0, 0, 0, 0, 0 } }
 };
 
-// Item damage data from ItemDamageTwoHand.dbc, ilevels 1-1300, wow build 25255
+// Item damage data from ItemDamageTwoHand.dbc, ilevels 1-1300, wow build 25326
 static struct item_scale_data_t __ptr_itemdamagetwohand_data[] = {
   {    1, {     0.446,     0.669,     0.810,     1.352,     2.412,     2.412,     2.412 } },
   {    2, {     0.646,     0.971,     1.140,     1.773,     2.883,     2.883,     2.883 } },
@@ -13796,7 +13796,7 @@ static struct item_scale_data_t __ptr_itemdamagetwohand_data[] = {
   { 0, { 0, 0, 0, 0, 0, 0, 0 } }
 };
 
-// Item damage data from ItemDamageTwoHandCaster.dbc, ilevels 1-1300, wow build 25255
+// Item damage data from ItemDamageTwoHandCaster.dbc, ilevels 1-1300, wow build 25326
 static struct item_scale_data_t __ptr_itemdamagetwohandcaster_data[] = {
   {    1, {     0.223,     0.335,     0.405,     0.676,     1.206,     1.206,     1.206 } },
   {    2, {     0.323,     0.486,     0.570,     0.886,     1.442,     1.442,     1.442 } },
@@ -15101,7 +15101,7 @@ static struct item_scale_data_t __ptr_itemdamagetwohandcaster_data[] = {
   { 0, { 0, 0, 0, 0, 0, 0, 0 } }
 };
 
-// Gem properties, wow build 25255
+// Gem properties, wow build 25326
 static struct gem_property_data_t __ptr_gem_property_data[] = {
   {    2,  2686, 0x00000002,    0 },
   {    3,  2687, 0x00000008,    0 },
@@ -17147,7 +17147,7 @@ static struct gem_property_data_t __ptr_gem_property_data[] = {
   {    0,     0, 0x00000000,    0 },
 };
 
-// Item upgrade rules, wow build level 25255
+// Item upgrade rules, wow build level 25326
 static struct item_upgrade_rule_t __ptr_item_upgrade_rule_data[] = {
   {    94,  445,  86741 },
   {    95,  445,  86743 },
@@ -26413,7 +26413,7 @@ static struct item_upgrade_rule_t __ptr_item_upgrade_rule_data[] = {
   {     0,    0,      0 },
 };
 
-// Upgrade rule data, wow build level 25255
+// Upgrade rule data, wow build level 25326
 static struct item_upgrade_t __ptr_upgrade_rule_data[] = {
   {   1,   1,    0,  8 },
   { 373,  89,    0,  4 },
@@ -26472,9 +26472,9 @@ static struct item_upgrade_t __ptr_upgrade_rule_data[] = {
   {   0,   0,    0,  0 },
 };
 
-#define PTR_ITEM_BONUS_TREE_SIZE (543)
+#define PTR_ITEM_BONUS_TREE_SIZE (544)
 
-// Item bonus trees, wow build 25255
+// Item bonus trees, wow build 25326
 static struct item_bonus_tree_entry_t __ptr_item_bonus_tree_data[PTR_ITEM_BONUS_TREE_SIZE] = {
   {    1,    1,  5,    0,    1 },
   {  107,   61,  5,    0,  449 },
@@ -27018,12 +27018,13 @@ static struct item_bonus_tree_entry_t __ptr_item_bonus_tree_data[PTR_ITEM_BONUS_
   { 2668,  638, 43,    0,    0 },
   { 2669,  639, 43,    0,    0 },
   { 2968,  869,  0,    0, 3983 },
+  { 3041,  929,  0,    0, 4213 },
   {    0,    0,  0,    0,    0 },
 };
 
-#define PTR_ITEM_BONUS_SIZE (3798)
+#define PTR_ITEM_BONUS_SIZE (3800)
 
-// Item bonuses, wow build 25255
+// Item bonuses, wow build 25326
 static struct item_bonus_entry_t __ptr_item_bonus_data[PTR_ITEM_BONUS_SIZE] = {
   {    1,    1,  1,     20,      0,  0 },
   {    2,    1,  2,      7,  15789,  1 },
@@ -30822,12 +30823,14 @@ static struct item_bonus_entry_t __ptr_item_bonus_data[PTR_ITEM_BONUS_SIZE] = {
   { 6273, 3995,  1,     50,      0,  0 },
   { 6274, 3996,  1,     55,      0,  0 },
   { 6275, 3997,  1,     60,      0,  0 },
+  { 6499, 4213,  1,     60,      0,  0 },
+  { 6500, 4213,  9,     13,      0,  1 },
   {    0,    0,  0,      0,      0,  0 },
 };
 
-#define PTR_ITEM_BONUS_MAP_SIZE (25673)
+#define PTR_ITEM_BONUS_MAP_SIZE (25674)
 
-// Item bonus map, wow build 25255
+// Item bonus map, wow build 25326
 static struct item_bonus_node_entry_t __ptr_item_bonus_map_data[PTR_ITEM_BONUS_MAP_SIZE] = {
   {     1, 109188,  393 },
   {   125, 109550,  438 },
@@ -56501,12 +56504,13 @@ static struct item_bonus_node_entry_t __ptr_item_bonus_map_data[PTR_ITEM_BONUS_M
   { 93572, 155855,  662 },
   { 93593, 155880,  665 },
   { 93594, 155880,  662 },
+  { 94487, 154172,  929 },
   {     0,      0,    0 },
 };
 
 #define PTR_SCALING_STAT_DISTRIBUTION_SIZE (314)
 
-// Scaling stat distributions, wow build 25255
+// Scaling stat distributions, wow build 25326
 static struct scaling_stat_distribution_t __ptr_scaling_stat_distribution_data[PTR_SCALING_STAT_DISTRIBUTION_SIZE] = {
   {    1,   0,  80,   956 },
   {    2,   0,  80,   956 },
@@ -56824,9 +56828,9 @@ static struct scaling_stat_distribution_t __ptr_scaling_stat_distribution_data[P
   {    0,   0,   0,     0 },
 };
 
-#define PTR_CURVE_POINT_SIZE (11849)
+#define PTR_CURVE_POINT_SIZE (11946)
 
-// Curve points data, wow build 25255
+// Curve points data, wow build 25326
 static struct curve_point_t __ptr_curve_point_data[PTR_CURVE_POINT_SIZE] = {
   {    8,  0,    0.00000,    1.00000 },
   {    9,  0,    0.00000,    1.00000 },
@@ -68046,10 +68050,10 @@ static struct curve_point_t __ptr_curve_point_data[PTR_CURVE_POINT_SIZE] = {
   { 5152,  1,    0.52364,  -17.11230 },
   { 5152,  2,    0.79273,  -42.35294 },
   { 5152,  3,    1.00000,  -80.00000 },
-  { 5153,  0,    0.00000,    0.00000 },
-  { 5153,  1,    0.73330,    0.00000 },
-  { 5153,  2,    5.05841,   -1.67365 },
-  { 5153,  3,    5.66950,  -23.76569 },
+  { 5153,  0,    0.00000,  -80.00000 },
+  { 5153,  1,    2.00300,    0.00000 },
+  { 5153,  2,    5.66950,    0.00000 },
+  { 5153,  3,    6.21268,  -22.42678 },
   { 5153,  4,    7.33300,  -80.00000 },
   { 5156,  0,    0.00000,  -80.00000 },
   { 5156,  1,    0.36364,  -58.60962 },
@@ -68336,9 +68340,9 @@ static struct curve_point_t __ptr_curve_point_data[PTR_CURVE_POINT_SIZE] = {
   { 5424,  1,    0.52364,  -17.11230 },
   { 5424,  2,    0.79273,  -42.35294 },
   { 5424,  3,    1.00000,  -80.00000 },
-  { 5425,  0,    0.00000,    0.15000 },
-  { 5425,  1,    4.00000,    0.35000 },
-  { 5425,  2,    7.00000,    1.00000 },
+  { 5425,  0,    0.00000,    0.85000 },
+  { 5425,  1,    4.00000,    0.27000 },
+  { 5425,  2,    7.00000,    0.00000 },
   { 5426,  0,    0.00000,   -1.00000 },
   { 5426,  1,    1.00000,    1.00000 },
   { 5427,  0,    0.00000,  -80.00000 },
@@ -68453,12 +68457,12 @@ static struct curve_point_t __ptr_curve_point_data[PTR_CURVE_POINT_SIZE] = {
   { 5469,  0,    0.00000,  -24.00000 },
   { 5469,  1,    4.00000,    9.53975 },
   { 5470,  0,    0.00000,  -80.00000 },
-  { 5470,  1,    0.20000,  -46.63102 },
-  { 5470,  2,    0.23636,  -37.64706 },
-  { 5470,  3,    0.28364,  -29.09091 },
-  { 5470,  4,    0.38182,  -18.82353 },
-  { 5470,  5,    0.52727,  -10.69518 },
-  { 5470,  6,    0.75000,   -3.00000 },
+  { 5470,  1,    0.29455,  -74.43850 },
+  { 5470,  2,    0.46182,  -68.02139 },
+  { 5470,  3,    0.58909,  -60.74866 },
+  { 5470,  4,    0.71273,  -51.33690 },
+  { 5470,  5,    0.80000,  -41.06952 },
+  { 5470,  6,    0.85818,  -26.95187 },
   { 5470,  7,    1.00000,    0.00000 },
   { 5471,  0,    0.00000,  -80.00000 },
   { 5471,  1,    0.30545,  -50.90909 },
@@ -68564,10 +68568,6 @@ static struct curve_point_t __ptr_curve_point_data[PTR_CURVE_POINT_SIZE] = {
   { 5490,  1,    1.30196,   -0.33473 },
   { 5490,  2,    4.40662,   -0.33473 },
   { 5490,  3,    8.65300,  -70.62761 },
-  { 5491,  0,    1.00000,  -48.20084 },
-  { 5491,  1,    4.70891,    0.00000 },
-  { 5491,  2,    5.69111,    0.00000 },
-  { 5491,  3,    7.33300,    0.00000 },
   { 5496,  0,    0.00000,    1.00000 },
   { 5496,  1,    1.00000,   15.00000 },
   { 5497,  0,    0.00000,  -80.00000 },
@@ -68669,19 +68669,120 @@ static struct curve_point_t __ptr_curve_point_data[PTR_CURVE_POINT_SIZE] = {
   { 5525,  2,    0.00000,    0.00000 },
   { 5525,  3,   24.14815,    0.00000 },
   { 5525,  4,   32.00000,  -80.00000 },
-  { 5526,  0,    0.00000,    0.00535 },
-  { 5526,  1,    8.00000,    0.35000 },
-  { 5526,  2,   12.00000,    1.00000 },
+  { 5526,  0,    0.00000,   20.00000 },
+  { 5526,  1,    8.00000,    2.00000 },
+  { 5526,  2,   11.00000,    0.00000 },
   { 5527,  0,    0.00000,    0.00000 },
-  { 5527,  1,    1.00000, -100.00000 },
-  { 5528,  0,    0.00000,    0.00000 },
-  { 5528,  1,    1.00000,   -1.00000 },
+  { 5527,  1,    1.00000,   -0.99990 },
+  { 5534,  0,    0.00000,    0.00000 },
+  { 5534,  1,    0.06729,    3.00000 },
+  { 5534,  2,    0.18445,    2.82878 },
+  { 5534,  3,    0.43852,    0.95533 },
+  { 5534,  4,    1.00000,    0.00000 },
+  { 5535,  0,    0.00000,  -80.00000 },
+  { 5535,  1,    0.36364,  -58.60962 },
+  { 5535,  2,    0.66909,  -42.78075 },
+  { 5535,  3,    0.84000,  -18.82353 },
+  { 5535,  4,    1.00000,    0.00000 },
+  { 5536,  0,    0.00000,    0.00000 },
+  { 5536,  1,    0.52364,  -17.11230 },
+  { 5536,  2,    0.79273,  -42.35294 },
+  { 5536,  3,    1.00000,  -80.00000 },
+  { 5537,  0,    0.00000,  -80.00000 },
+  { 5537,  1,    0.36364,  -58.60962 },
+  { 5537,  2,    0.66909,  -42.78075 },
+  { 5537,  3,    0.84000,  -18.82353 },
+  { 5537,  4,    1.00000,    0.00000 },
+  { 5538,  0,    0.00000,    0.00000 },
+  { 5538,  1,    0.52364,  -17.11230 },
+  { 5538,  2,    0.79273,  -42.35294 },
+  { 5538,  3,    1.00000,  -80.00000 },
+  { 5539,  0,    0.00000,  -80.00000 },
+  { 5539,  1,    0.13091,  -48.34225 },
+  { 5539,  2,    0.16727,  -35.08022 },
+  { 5539,  3,    0.22182,  -23.95722 },
+  { 5539,  4,    0.30909,  -14.97327 },
+  { 5539,  5,    0.50000,   -6.00000 },
+  { 5539,  6,    0.75000,   -3.00000 },
+  { 5539,  7,    1.00000,    0.00000 },
+  { 5540,  0,    0.00000,    0.00000 },
+  { 5540,  1,    0.50000,   -6.00000 },
+  { 5540,  2,    0.66545,  -16.25668 },
+  { 5540,  3,    0.77091,  -26.95187 },
+  { 5540,  4,    0.84000,  -37.21925 },
+  { 5540,  5,    0.88727,  -53.04813 },
+  { 5540,  6,    1.00000,  -80.00000 },
+  { 5541,  0,    0.00000,  -80.00000 },
+  { 5541,  1,    0.13091,  -48.34225 },
+  { 5541,  2,    0.16727,  -35.08022 },
+  { 5541,  3,    0.22182,  -23.95722 },
+  { 5541,  4,    0.30909,  -14.97327 },
+  { 5541,  5,    0.50000,   -6.00000 },
+  { 5541,  6,    0.75000,   -3.00000 },
+  { 5541,  7,    1.00000,    0.00000 },
+  { 5542,  0,    0.00000,    0.00000 },
+  { 5542,  1,    0.50000,   -6.00000 },
+  { 5542,  2,    0.66545,  -16.25668 },
+  { 5542,  3,    0.77091,  -26.95187 },
+  { 5542,  4,    0.84000,  -37.21925 },
+  { 5542,  5,    0.88727,  -53.04813 },
+  { 5542,  6,    1.00000,  -80.00000 },
+  { 5543,  0,    0.00000,  -80.00000 },
+  { 5543,  1,    0.13091,  -48.34225 },
+  { 5543,  2,    0.16727,  -35.08022 },
+  { 5543,  3,    0.22182,  -23.95722 },
+  { 5543,  4,    0.30909,  -14.97327 },
+  { 5543,  5,    0.50000,   -6.00000 },
+  { 5543,  6,    0.75000,   -3.00000 },
+  { 5543,  7,    1.00000,    0.00000 },
+  { 5544,  0,    0.00000,    0.00000 },
+  { 5544,  1,    0.50000,   -6.00000 },
+  { 5544,  2,    0.66545,  -16.25668 },
+  { 5544,  3,    0.77091,  -26.95187 },
+  { 5544,  4,    0.84000,  -37.21925 },
+  { 5544,  5,    0.88727,  -53.04813 },
+  { 5544,  6,    1.00000,  -80.00000 },
+  { 5545,  0,    0.00000,  -63.26360 },
+  { 5545,  1,    0.81260,    0.00000 },
+  { 5545,  2,    5.70549,    0.00000 },
+  { 5545,  3,    7.46900,    0.00000 },
+  { 5546,  0,    0.00000,  -80.00000 },
+  { 5546,  1,    0.36364,  -58.60962 },
+  { 5546,  2,    0.66909,  -42.78075 },
+  { 5546,  3,    0.84000,  -18.82353 },
+  { 5546,  4,    1.00000,    0.00000 },
+  { 5547,  0,    0.00000,    0.00000 },
+  { 5547,  1,    0.52364,  -17.11230 },
+  { 5547,  2,    0.79273,  -42.35294 },
+  { 5547,  3,    1.00000,  -80.00000 },
+  { 5548,  0,    0.00000,    1.00000 },
+  { 5548,  1,    1.00000,   -1.00000 },
+  { 5549,  0,    0.00000,  -80.00000 },
+  { 5549,  1,    0.36364,  -58.60962 },
+  { 5549,  2,    0.66909,  -42.78075 },
+  { 5549,  3,    0.84000,  -18.82353 },
+  { 5549,  4,    1.00000,    0.00000 },
+  { 5550,  0,    0.00000,    0.00000 },
+  { 5550,  1,    0.52364,  -17.11230 },
+  { 5550,  2,    0.79273,  -42.35294 },
+  { 5550,  3,    1.00000,  -80.00000 },
+  { 5551,  0,    0.00000,  -80.00000 },
+  { 5551,  1,    1.30704,  -80.00000 },
+  { 5551,  2,    2.03694,    0.00000 },
+  { 5551,  3,    5.66950,    0.00000 },
+  { 5551,  4,    6.21268,  -22.42678 },
+  { 5551,  5,    7.33300,  -80.00000 },
+  { 5552,  0,    0.00000,  -14.15900 },
+  { 5552,  1,    4.03994,   -0.10042 },
+  { 5552,  2,    4.56615,    0.10042 },
+  { 5552,  3,    7.33300,    0.10042 },
+  { 5552,  4,    7.33300,    0.00000 },
   {    0,  0,    0.00000,    0.00000 },
 };
 
 #define PTR_ITEM_NAME_DESCRIPTION_SIZE (239)
 
-// Item name descriptions, wow build 25255
+// Item name descriptions, wow build 25326
 static struct item_name_description_t __ptr_item_name_description_data[PTR_ITEM_NAME_DESCRIPTION_SIZE] = {
   {     2, "Now with extra description"   },
   {    20, "Season 10"                    },
@@ -68926,7 +69027,7 @@ static struct item_name_description_t __ptr_item_name_description_data[PTR_ITEM_
 
 #define PTR_ITEM_CHILD_EQUIPMENT_SIZE (23)
 
-// Item child equipment, wow build 25255
+// Item child equipment, wow build 25326
 static struct item_child_equipment_t __ptr_item_child_equipment_data[PTR_ITEM_CHILD_EQUIPMENT_SIZE] = {
   {  2, 127417,   1728 },
   {  3, 127829, 127830 },
