@@ -3967,7 +3967,6 @@ struct judgment_t : public paladin_melee_attack_t
         }
 
         p() -> cooldowns.shield_of_the_righteous -> adjust( s -> result == RESULT_CRIT ? 2.0 * sotr_cdr : sotr_cdr );
-
       }
     }
 
