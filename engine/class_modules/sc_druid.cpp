@@ -419,6 +419,7 @@ public:
     cooldown_t* swiftmend;
     cooldown_t* tigers_fury;
     cooldown_t* warrior_of_elune;
+    cooldown_t* barkskin;
   } cooldown;
 
   // Gains
@@ -795,6 +796,7 @@ public:
     cooldown.swiftmend           = get_cooldown( "swiftmend"           );
     cooldown.tigers_fury         = get_cooldown( "tigers_fury"         );
     cooldown.warrior_of_elune    = get_cooldown( "warrior_of_elune"    );
+    cooldown.barkskin            = get_cooldown( "barkskin"            );
 
     cooldown.wod_pvp_4pc_melee -> duration = timespan_t::from_seconds( 30.0 );
 
@@ -4154,6 +4156,11 @@ struct mangle_t : public bear_attack_t
   void execute() override
   {
     bear_attack_t::execute();
+
+    if ( p() -> buff.gore -> up() && p() -> sets -> has_set_bonus( DRUID_GUARDIAN, T21, B2 ) ) {
+      auto reduction = p() -> sets -> set( DRUID_GUARDIAN, T21, B2 ) -> effectN( 1 ).time_value();
+      p() -> cooldown.barkskin -> adjust( - reduction );
+    }
 
     p() -> buff.gore -> expire();
 
