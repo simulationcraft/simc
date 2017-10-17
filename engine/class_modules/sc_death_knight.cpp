@@ -9,11 +9,11 @@
 // - Skelebro has an aoe spell (Arrow Spray), but the AI using it is very inconsistent
 // Blood
 // - Fix APL
-// - Support legendaries
+// - Support legendaries :
+//    Implement rattlegore's RP cap increase
 // - Overall damage may be lower than live, need to investigate further
 // - Refactor Blooddrinker so it's able to critically tick on damage
 // - Probably a bunch of other things as well
-// - T21 buff you gain after DRW's expiration, SpellID is : 253381 for the buff, 251877 for the set bonus
 // - Make Rapid Decomposition tick 10 times per DnD cast (current is 9)
 // - Make DnD tick 13 times with Rapid Decomp (current is 12)
 // Frost
