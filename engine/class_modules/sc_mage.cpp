@@ -3012,6 +3012,8 @@ struct arcane_orb_bolt_t : public arcane_mage_spell_t
     {
       trigger_arcane_charge();
       trigger_am( am_trigger_source_id );
+
+      p() -> buffs.quick_thinker -> trigger();
     }
   }
 };
