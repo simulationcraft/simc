@@ -12,7 +12,6 @@
 // - Support legendaries :
 //    Implement rattlegore's RP cap increase
 // - Overall damage may be lower than live, need to investigate further
-// - Refactor Blooddrinker so it's able to critically tick on damage
 // - Probably a bunch of other things as well
 // - Make Rapid Decomposition tick 10 times per DnD cast (current is 9)
 // - Make DnD tick 13 times with Rapid Decomp (current is 12)
@@ -4154,8 +4153,8 @@ struct blooddrinker_t : public death_knight_spell_t
     heal( new blooddrinker_heal_t( p ) )
   {
     parse_options( options_str );
-
-    channeled = true;
+    tick_may_crit = channeled = hasted_ticks = tick_zero = true;
+   
     base_tick_time = timespan_t::from_seconds( 1.0 );
   }
 
@@ -4173,6 +4172,8 @@ struct blooddrinker_t : public death_knight_spell_t
   timespan_t tick_time( const action_state_t* ) const override
   { return base_tick_time; }
 };
+
+// Bloodworms ================================================================
 
 struct bloodworms_t : public death_knight_spell_t
 {
