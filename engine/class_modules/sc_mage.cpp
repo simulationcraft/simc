@@ -1470,7 +1470,7 @@ public:
     {
       base_multiplier *= 1.0 + p() -> spec.frost_mage -> effectN( 1 ).percent();
     }
-    if ( ! harmful && affected_by.shatter && p() -> spec.shatter -> ok() )
+    if ( harmful && affected_by.shatter && p() -> spec.shatter -> ok() )
     {
       snapshot_flags |= STATE_FROZEN;
       update_flags   |= STATE_FROZEN;
