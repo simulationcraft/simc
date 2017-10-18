@@ -1419,7 +1419,21 @@ struct mage_spell_state_t : public action_state_t
     frozen = mss -> frozen;
   }
 
-  virtual double composite_crit_chance() const override;
+  virtual double composite_crit_chance() const override
+  {
+    double c = action_state_t::composite_crit_chance();
+
+    if ( frozen )
+    {
+      auto p = debug_cast<const mage_t*>( action -> player );
+
+      // Multiplier is not in spell data, apparently.
+      c *= 1.5;
+      c += p -> spec.shatter -> effectN( 2 ).percent() + p -> spec.shatter_2 -> effectN( 1 ).percent();
+    }
+
+    return c;
+  }
 };
 
 struct mage_spell_t : public spell_t
@@ -1638,22 +1652,6 @@ public:
     }
   }
 };
-
-double mage_spell_state_t::composite_crit_chance() const
-{
-  double c = action_state_t::composite_crit_chance();
-
-  if ( frozen )
-  {
-    const mage_t* p = debug_cast<const mage_spell_t*>( action ) -> p();
-
-    // Multiplier is not in spell data, apparently.
-    c *= 1.5;
-    c += p -> spec.shatter -> effectN( 2 ).percent() + p -> spec.shatter_2 -> effectN( 1 ).percent();
-  }
-
-  return c;
-}
 
 typedef residual_action::residual_periodic_action_t< mage_spell_t > residual_action_t;
 
