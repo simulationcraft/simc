@@ -1392,17 +1392,31 @@ namespace actions {
 
 struct mage_spell_state_t : public action_state_t
 {
+  bool frozen;
+
   mage_spell_state_t( action_t* action, player_t* target ) :
-    action_state_t( action, target )
+    action_state_t( action, target ),
+    frozen( false )
   { }
 
-  virtual bool frozen() const
+  virtual void initialize() override
   {
-    const mage_t* p = debug_cast<const mage_t*>( action -> player );
-    const mage_td_t* td = p -> get_target_data( target );
+    action_state_t::initialize();
+    frozen = false;
+  }
 
-    return ( td -> debuffs.winters_chill -> check() )
-        || ( td -> debuffs.frozen -> check() );
+  virtual std::ostringstream& debug_str( std::ostringstream& s ) override
+  {
+    action_state_t::debug_str( s ) << " frozen=" << frozen;
+    return s;
+  }
+
+  virtual void copy_state( const action_state_t* s ) override
+  {
+    action_state_t::copy_state( s );
+    auto mss = debug_cast<const mage_spell_state_t*>( s );
+
+    frozen = mss -> frozen;
   }
 
   virtual double composite_crit_chance() const override;
@@ -1410,6 +1424,8 @@ struct mage_spell_state_t : public action_state_t
 
 struct mage_spell_t : public spell_t
 {
+  static const snapshot_state_e STATE_FROZEN = STATE_TGT_USER_1;
+
   struct affected_by_t
   {
     bool arcane_mage;
@@ -1454,8 +1470,13 @@ public:
     {
       base_multiplier *= 1.0 + p() -> spec.frost_mage -> effectN( 1 ).percent();
     }
+    if ( harmful && affected_by.shatter && p() -> spec.shatter -> ok() )
+    {
+      snapshot_flags |= STATE_FROZEN;
+      update_flags   |= STATE_FROZEN;
+    }
 
-    if ( !harmful || background )
+    if ( ! harmful || background )
     {
       triggers_arcane_missiles = false;
     }
@@ -1486,6 +1507,27 @@ public:
   virtual action_state_t* new_state() override
   {
     return new mage_spell_state_t( this, target );
+  }
+
+  virtual bool frozen( const action_state_t* s ) const
+  {
+    const mage_td_t* td = p() -> target_data[ s -> target ];
+
+    if ( ! td )
+      return false;
+
+    return ( td -> debuffs.winters_chill -> check() )
+        || ( td -> debuffs.frozen -> check() );
+  }
+
+  virtual void snapshot_internal( action_state_t* s, unsigned flags, dmg_e rt ) override
+  {
+    if ( flags & STATE_FROZEN )
+    {
+      debug_cast<mage_spell_state_t*>( s ) -> frozen = frozen( s );
+    }
+
+    spell_t::snapshot_internal( s, flags, rt );
   }
 
   virtual double cost() const override
@@ -1600,14 +1642,13 @@ public:
 double mage_spell_state_t::composite_crit_chance() const
 {
   double c = action_state_t::composite_crit_chance();
-  const mage_spell_t* spell = debug_cast<const mage_spell_t*>( action );
-  const mage_t* p = spell -> p();
 
-  if ( spell -> affected_by.shatter && p -> spec.shatter -> ok() && frozen() )
+  if ( frozen )
   {
+    const mage_t* p = debug_cast<const mage_spell_t*>( action ) -> p();
+
     // Multiplier is not in spell data, apparently.
     c *= 1.5;
-
     c += p -> spec.shatter -> effectN( 2 ).percent() + p -> spec.shatter_2 -> effectN( 1 ).percent();
   }
 
@@ -2176,7 +2217,7 @@ struct icicle_t : public frost_mage_spell_t
   icicle_t( mage_t* p ) :
     frost_mage_spell_t( "icicle", p, p -> find_spell( 148022 ) )
   {
-    may_crit = false;
+    may_crit = affected_by.shatter = false;
     proc = background = true;
 
     if ( p -> talents.splitting_ice -> ok() )
@@ -3145,7 +3186,7 @@ struct blizzard_t : public frost_mage_spell_t
     cooldown -> hasted = true;
     dot_duration = timespan_t::zero(); // This is just a driver for the ground effect.
     may_miss = false;
-    may_crit = false;
+    may_crit = affected_by.shatter = false;
   }
 
   double false_positive_pct() const override
@@ -3392,7 +3433,7 @@ struct comet_storm_t : public frost_mage_spell_t
   {
     parse_options( options_str );
     may_miss = false;
-    may_crit = false;
+    may_crit = affected_by.shatter = false;
     add_child( projectile );
 
     if ( legendary )
@@ -3979,7 +4020,7 @@ struct flurry_t : public frost_mage_spell_t
   {
     parse_options( options_str );
     may_miss = false;
-    may_crit = false;
+    may_crit = affected_by.shatter = false;
     add_child( flurry_bolt );
   }
 
@@ -4060,7 +4101,7 @@ struct frost_bomb_t : public frost_mage_spell_t
     parse_options( options_str );
     // Frost Bomb no longer has ticking damage.
     dot_duration = timespan_t::zero();
-    may_crit = false;
+    may_crit = affected_by.shatter = false;
 
     if ( p -> action.frost_bomb_explosion )
     {
@@ -4309,8 +4350,8 @@ struct frozen_orb_t : public frost_mage_spell_t
     parse_options( options_str );
     add_child( frozen_orb_bolt );
     add_child( ice_time_nova );
-    may_miss       = false;
-    may_crit       = false;
+    may_miss = false;
+    may_crit = affected_by.shatter = false;
   }
 
   virtual bool init_finished() override
@@ -4525,35 +4566,6 @@ struct ice_lance_state_t : public mage_spell_state_t
 
     fingers_of_frost = fss -> fingers_of_frost;
   }
-
-  virtual bool frozen() const override
-  {
-    if ( mage_spell_state_t::frozen() )
-      return true;
-
-    mage_t* m = debug_cast<mage_t*>( action -> player );
-
-    // In game, FoF Ice Lances are implemented using a global flag which determines
-    // whether to treat the targets as frozen or not. On IL execute, FoF is checked
-    // and the flag set accordingly.
-    //
-    // This works fine under normal circumstances. However, once GCD drops below IL's
-    // travel time, it's possible to:
-    //
-    //   a) cast FoF IL, cast non-FoF IL before the first one impacts
-    //   b) cast non-FoF IL, cast FoF IL before the first one impacts
-    //
-    // In the a) case, neither Ice Lance gets the extra damage/Shatter bonus, in the
-    // b) case, both Ice Lances do.
-    if ( m -> bugs )
-    {
-      return m -> state.fingers_of_frost_active;
-    }
-    else
-    {
-      return fingers_of_frost;
-    }
-  }
 };
 
 struct ice_lance_t : public frost_mage_spell_t
@@ -4584,6 +4596,33 @@ struct ice_lance_t : public frost_mage_spell_t
 
   virtual action_state_t* new_state() override
   { return new ice_lance_state_t( this, target ); }
+
+  virtual bool frozen( const action_state_t* s ) const override
+  {
+    if ( frost_mage_spell_t::frozen( s ) )
+      return true;
+
+    // In game, FoF Ice Lances are implemented using a global flag which determines
+    // whether to treat the targets as frozen or not. On IL execute, FoF is checked
+    // and the flag set accordingly.
+    //
+    // This works fine under normal circumstances. However, once GCD drops below IL's
+    // travel time, it's possible to:
+    //
+    //   a) cast FoF IL, cast non-FoF IL before the first one impacts
+    //   b) cast non-FoF IL, cast FoF IL before the first one impacts
+    //
+    // In the a) case, neither Ice Lance gets the extra damage/Shatter bonus, in the
+    // b) case, both Ice Lances do.
+    if ( p() -> bugs )
+    {
+      return p() -> state.fingers_of_frost_active;
+    }
+    else
+    {
+      return debug_cast<const ice_lance_state_t*>( s ) -> fingers_of_frost;
+    }
+  }
 
   virtual void execute() override
   {
@@ -4628,7 +4667,7 @@ struct ice_lance_t : public frost_mage_spell_t
     frost_mage_spell_t::impact( s );
 
     if ( result_is_hit( s -> result )
-      && debug_cast<mage_spell_state_t*>( s ) -> frozen() )
+      && debug_cast<mage_spell_state_t*>( s ) -> frozen )
     {
       if ( s -> chain_target == 0 )
       {
@@ -4667,7 +4706,7 @@ struct ice_lance_t : public frost_mage_spell_t
   {
     double m = frost_mage_spell_t::composite_da_multiplier( s );
 
-    if ( debug_cast<const mage_spell_state_t*>( s ) -> frozen() )
+    if ( debug_cast<const mage_spell_state_t*>( s ) -> frozen )
     {
       m *= 3.0;
       m *= 1.0 + p() -> artifact.obsidian_lance.percent();
