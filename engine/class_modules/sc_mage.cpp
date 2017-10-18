@@ -3061,9 +3061,6 @@ struct arcane_orb_t : public arcane_mage_spell_t
 
     trigger_am( am_trigger_source_id );
     trigger_arcane_charge();
-
-    p() -> buffs.quick_thinker -> trigger();
-
   }
 
   virtual timespan_t travel_time() const override
