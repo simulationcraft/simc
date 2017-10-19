@@ -13,8 +13,7 @@
 //    Implement rattlegore's RP cap increase
 // - Overall damage may be lower than live, need to investigate further
 // - Probably a bunch of other things as well
-// - Make Rapid Decomposition tick 10 times per DnD cast (current is 9)
-// - Make DnD tick 13 times with Rapid Decomp (current is 12)
+// - Make Rapid Decomposition work
 // Frost
 // - Implement Inexorable Assault ? maybe ? somehow ?
 
@@ -4518,6 +4517,8 @@ struct death_and_decay_base_t : public death_knight_spell_t
     // Note, radius and ground_aoe flag needs to be set in base so spell_targets expression works
     ground_aoe            = true;
     radius                = data().effectN( 1 ).radius_max();
+
+    cooldown -> duration += cooldown -> duration * p -> spec.blood_death_knight -> effectN( 5 ).percent();
   }
 
   double cost() const override
@@ -4538,7 +4539,8 @@ struct death_and_decay_base_t : public death_knight_spell_t
 
     make_event<ground_aoe_event_t>( *sim, player, ground_aoe_params_t()
       .target( execute_state -> target )
-      .duration( data().duration() )
+      // Dnd is supposed to last 10s, but a total of 11 ticks (13 with rapid decomposition) are observed so we're adding a duration of 0.5s to make it work properly
+      .duration( data().duration() + timespan_t::from_millis( 500 ) )
       .pulse_time( compute_tick_time() )
       .action( damage )
       // Keep track of on-going dnd events
@@ -4568,7 +4570,8 @@ private:
   timespan_t compute_tick_time() const
   {
     auto base = data().effectN( 3 ).period();
-    base *= 1.0 / ( 1.0 + p() -> talent.rapid_decomposition -> effectN( 3 ).percent() );
+
+    base -= timespan_t::from_millis( p() -> talent.rapid_decomposition -> effectN( 2 ).base_value() * 10 );
     return base;
   }
 };
@@ -8480,14 +8483,14 @@ void death_knight_t::create_buffs()
     .cd( timespan_t::zero() ); // Handled by the action
 
   buffs.death_and_decay     = buff_creator_t( this, "death_and_decay", find_spell( 188290 ) )
-                              .period( talent.rapid_decomposition -> ok()
-                                       ? timespan_t::from_seconds( 1.0 )
-                                       : timespan_t::zero() )
+                              .period( timespan_t::from_seconds( 1.0 ) )
+                              .duration( find_spell( 188290 ) -> duration() )
                               .tick_callback( [ this ]( buff_t*, int, timespan_t ) {
                                 if ( in_death_and_decay() )
                                 {
                                   resource_gain( RESOURCE_RUNIC_POWER,
-                                                 talent.rapid_decomposition -> effectN( 1 ).resource( RESOURCE_RUNIC_POWER ),
+                                                 // TODO spell data doesn't properly flag the gain as runic power so we need to change it to its negative value
+                                                 -1 * talent.rapid_decomposition -> effectN( 1 ).base_value() / 10,
                                                  gains.rapid_decomposition,
                                                  nullptr );
                                 }
