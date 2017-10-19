@@ -3628,7 +3628,6 @@ struct melee_t : public death_knight_melee_attack_t
         if ( p() -> buffs.crimson_scourge -> trigger() )
         {
           p() -> cooldown.death_and_decay -> reset( true );
-          p() -> cooldown.defile -> reset( true );
         }
       }
     }
