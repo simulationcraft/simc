@@ -4570,7 +4570,14 @@ private:
   {
     auto base = data().effectN( 3 ).period();
 
-    base -= timespan_t::from_millis( p() -> talent.rapid_decomposition -> effectN( 2 ).base_value() * 10 );
+    // 7.3.2 PTR
+    if ( maybe_ptr( p() -> dbc.ptr ) )
+      base += timespan_t::from_millis( p() -> talent.rapid_decomposition -> effectN( 1 ).base_value() * 10 );
+    else 
+      base += timespan_t::from_millis( p() -> talent.rapid_decomposition -> effectN( 2 ).base_value() * 10 );
+    
+    //base -= timespan_t::from_millis( 130 );
+
     return base;
   }
 };
@@ -8489,7 +8496,9 @@ void death_knight_t::create_buffs()
                                 {
                                   resource_gain( RESOURCE_RUNIC_POWER,
                                                  // TODO spell data doesn't properly flag the gain as runic power so we need to change it to its negative value
-                                                 -1 * talent.rapid_decomposition -> effectN( 1 ).base_value() / 10,
+                                                 dbc.ptr ? 
+                                                  talent.rapid_decomposition -> effectN( 3 ).base_value() :
+                                                  talent.rapid_decomposition -> effectN( 1 ).base_value() / 10 , 
                                                  gains.rapid_decomposition,
                                                  nullptr );
                                 }
