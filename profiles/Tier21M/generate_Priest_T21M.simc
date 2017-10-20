@@ -17,7 +17,7 @@ hands=gilded_seraphs_handwraps,id=152155,ilevel=960
 waist=mangazas_madness,id=132864,ilevel=1000
 legs=gilded_seraphs_leggings,id=152157,ilevel=960
 feet=lady_dacidions_silk_slippers,id=151945,ilevel=960
-finger1=zealous_tormentors_ring,id=152284,ilevel=1000,enchant=binding_of_haste
+finger1=zealous_tormentors_ring,id=152284,ilevel=960,enchant=binding_of_haste
 finger2=sephuzs_secret,id=132452,ilevel=1000,enchant=binding_of_haste,gem_id=151583
 # TODO: Trinkets other than Pantheon currently NYI, purely guessing here
 trinket1=amanthuls_vision,id=154172,ilevel=1000
