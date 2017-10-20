@@ -799,6 +799,7 @@ public:
     // Blood
     const spell_data_t* lanathels_lament;
     const spell_data_t* rattlegore_bone_legplates;
+    const spell_data_t* soulflayers_corruption;
 
     // Unholy
     unsigned the_instructors_fourth_lesson;
@@ -819,7 +820,8 @@ public:
       lanathels_lament( spell_data_t::not_found() ),
       toravons( 0 ), the_instructors_fourth_lesson( 0 ), draugr_girdle_everlasting_king( 0 ),
       uvanimor_the_unbeautiful( 0 ),
-      rattlegore_bone_legplates( spell_data_t::not_found() )
+      rattlegore_bone_legplates( spell_data_t::not_found() ),
+      soulflayers_corruption( spell_data_t::not_found() )
     { }
 
   } legendary;
@@ -3841,6 +3843,15 @@ struct blood_plague_t : public disease_t
     disease_t( p, "blood_plague", 55078 )
   {
     base_multiplier *= 1.0 + p -> artifact.coagulopathy.percent();
+  }
+
+  double action_multiplier() const override
+  {
+    double m = disease_t::action_multiplier();
+
+    m *= 1.0 + p() -> legendary.soulflayers_corruption -> effectN( 1 ).percent();
+
+    return m;
   }
 };
 
@@ -9797,7 +9808,7 @@ struct lanathels_lament_t : public scoped_actor_callback_t<death_knight_t>
   lanathels_lament_t() : super( DEATH_KNIGHT )
   { }
 
-  void manipulate( death_knight_t* p, const special_effect_t& ) override
+  void manipulate( death_knight_t* p, const special_effect_t& e ) override
   { p -> legendary.lanathels_lament = p -> find_spell( 212975 ); }
 };
 
@@ -9808,6 +9819,15 @@ struct rattlegore_bone_legplates_t : public scoped_actor_callback_t<death_knight
 
   void manipulate( death_knight_t* p, const special_effect_t& e ) override
   { p -> legendary.rattlegore_bone_legplates = e.driver(); }
+};
+
+struct soulflayers_corruption_t : public scoped_actor_callback_t<death_knight_t>
+{
+  soulflayers_corruption_t() : super( DEATH_KNIGHT )
+  { }
+
+  void manipulate( death_knight_t* p, const special_effect_t& e ) override
+  { p -> legendary.soulflayers_corruption = e.driver(); }
 };
 
 struct death_knight_module_t : public module_t {
@@ -9851,6 +9871,7 @@ struct death_knight_module_t : public module_t {
     // 7.2.5
     unique_gear::register_special_effect( 235592, cold_heart_t() );
     unique_gear::register_special_effect( 235592, cold_heart_buff_t(), true );
+    unique_gear::register_special_effect( 248066, soulflayers_corruption_t() );
   }
 
   void register_hotfixes() const override
