@@ -5008,7 +5008,7 @@ struct death_strike_heal_t : public death_knight_heal_t
       // Last resource cost doesn't return anything so we have to recalculate DS cost
       double c = 45;
             
-      // T20 4P doesn't actually reduce shackles of bryndaor's rp refund, even though it reduces the cost so it ignored
+      // T20 4P doesn't actually reduce shackles of bryndaor's rp refund, even though it reduces the cost so it is ignored
       
       // Ossuary
       if ( p() -> talent.ossuary -> ok() &&
@@ -8755,7 +8755,7 @@ double death_knight_t::bone_shield_handler( const action_state_t* state ) const
   double absorb_pct = buffs.bone_shield -> data().effectN( 5 ).percent();
 
   // Legendary pants increase the absorbed amount by 2%
-  absorb_pct += legendary.rattlegore_bone_legplates->effectN( 2 ).percent();
+  absorb_pct += legendary.rattlegore_bone_legplates -> effectN( 2 ).percent();
 
   if ( talent.spectral_deflection -> ok() && state -> result_raw >
        resources.max[ RESOURCE_HEALTH ] * talent.spectral_deflection -> effectN( 1 ).percent() &&
