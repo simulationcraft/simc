@@ -9,10 +9,10 @@
 // - Skelebro has an aoe spell (Arrow Spray), but the AI using it is very inconsistent
 // Blood
 // - Fix APL
-// - Support legendaries :
+// - Support some legendaries :
 //    Implement rattlegore's RP cap increase
-// - Overall damage may be lower than live, need to investigate further
-// - Probably a bunch of other things as well
+// - Heart Strike looks like it deals slightly too much damage
+// - Dancing Rune Weapon damage is still underestimated
 // Frost
 // - Implement Inexorable Assault ? maybe ? somehow ?
 
@@ -2768,6 +2768,12 @@ struct death_knight_action_t : public Base
     {
       this -> base_td_multiplier *= 1.0 + p -> spec.blood_death_knight -> effectN( 2 ).percent();
     }
+
+    // Special snowflake modifier for Consumption and Death Strike for blood
+    if ( this -> data().affected_by( p -> spec.blood_death_knight -> effectN( 3 ) ) && p -> specialization() == DEATH_KNIGHT_BLOOD )
+    {
+      this -> base_dd_multiplier *= 1.0 + p -> spec.blood_death_knight -> effectN( 3 ).percent();
+    }
   }
 
   death_knight_t* p() const
@@ -3196,9 +3202,13 @@ void death_knight_melee_attack_t::trigger_freezing_death (const action_state_t* 
   {
     return;
   }
-  
+ 
+  // A single proc deals damage 3 times for some reason
   p() -> active_spells.freezing_death -> set_target( execute_state -> target );
   p() -> active_spells.freezing_death -> execute();
+  p() -> active_spells.freezing_death -> execute();
+  p() -> active_spells.freezing_death -> execute();
+
 }
 
 // ==========================================================================
@@ -3252,7 +3262,10 @@ void death_knight_spell_t::trigger_freezing_death (const action_state_t* state )
     return;
   }
 
+  // A single proc deals damage 3 times for some reason
   p() -> active_spells.freezing_death -> set_target( execute_state -> target );
+  p() -> active_spells.freezing_death -> execute();
+  p() -> active_spells.freezing_death -> execute();
   p() -> active_spells.freezing_death -> execute();
 }
 
@@ -3540,10 +3553,10 @@ struct cold_heart_damage_t : public death_knight_spell_t
 };
 
 // Freezing Death, T21 4P for Frost DK
-struct freezing_death_t : public death_knight_spell_t
+struct freezing_death_t : public death_knight_melee_attack_t
 {
   freezing_death_t( death_knight_t* p ) :
-    death_knight_spell_t( "freezing_death", p, p -> find_spell( 253590 ) )
+    death_knight_melee_attack_t( "freezing_death", p, p -> find_spell( 253590 ) )
   {
     background = true;
   }
@@ -4060,6 +4073,7 @@ struct blood_mirror_damage_t : public death_knight_spell_t
     background = true;
     may_miss = false;
     callbacks = false;
+    may_crit = true;
   }
 
   void init() override
@@ -4672,7 +4686,6 @@ struct deaths_caress_t : public death_knight_spell_t
 // Death Coil ===============================================================
 
 // Unholy T21 2P
-// Will probably have to adapt it so it doesn't double dip with mastery once/if Blizzard makes it shadow damage
 struct coils_of_devastation_t 
   : public residual_action::residual_periodic_action_t<death_knight_spell_t>
 {
