@@ -13,7 +13,6 @@
 //    Implement rattlegore's RP cap increase
 // - Overall damage may be lower than live, need to investigate further
 // - Probably a bunch of other things as well
-// - Make Rapid Decomposition work
 // Frost
 // - Implement Inexorable Assault ? maybe ? somehow ?
 
@@ -4517,6 +4516,7 @@ struct death_and_decay_base_t : public death_knight_spell_t
     ground_aoe            = true;
     radius                = data().effectN( 1 ).radius_max();
 
+    // Blood has a 15s cooldown on DnD
     cooldown -> duration += cooldown -> duration * p -> spec.blood_death_knight -> effectN( 5 ).percent();
   }
 
@@ -4576,8 +4576,6 @@ private:
     else 
       base += timespan_t::from_millis( p() -> talent.rapid_decomposition -> effectN( 2 ).base_value() * 10 );
     
-    //base -= timespan_t::from_millis( 130 );
-
     return base;
   }
 };
