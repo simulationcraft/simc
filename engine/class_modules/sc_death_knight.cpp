@@ -537,7 +537,6 @@ public:
     gain_t* pestilent_pustules;
     gain_t* tombstone;
     gain_t* overpowered;
-    gain_t* t19_2pc_blood;
     gain_t* t19_4pc_blood;
     gain_t* scourge_the_unbeliever;
     gain_t* draugr_girdle_everlasting_king;
@@ -545,6 +544,7 @@ public:
     gain_t* koltiras_newfound_will;
     gain_t* t19_4pc_frost;
     gain_t* start_of_combat_overflow;
+    gain_t* shackles_of_bryndaor;
   } gains;
 
   // Specialization
@@ -800,6 +800,7 @@ public:
     const spell_data_t* lanathels_lament;
     const spell_data_t* rattlegore_bone_legplates;
     const spell_data_t* soulflayers_corruption;
+    const spell_data_t* shackles_of_bryndaor;
 
     // Unholy
     unsigned the_instructors_fourth_lesson;
@@ -821,7 +822,8 @@ public:
       toravons( 0 ), the_instructors_fourth_lesson( 0 ), draugr_girdle_everlasting_king( 0 ),
       uvanimor_the_unbeautiful( 0 ),
       rattlegore_bone_legplates( spell_data_t::not_found() ),
-      soulflayers_corruption( spell_data_t::not_found() )
+      soulflayers_corruption( spell_data_t::not_found() ),
+      shackles_of_bryndaor( spell_data_t::not_found() )
     { }
 
   } legendary;
@@ -2723,7 +2725,16 @@ struct death_knight_action_t : public Base
     {
       this -> energize_type = ENERGIZE_ON_CAST;
       this -> energize_resource = RESOURCE_RUNIC_POWER;
-      this -> energize_amount += std::fabs( this -> base_costs[ RESOURCE_RUNIC_POWER ] );
+
+      double rp_gain = std::fabs( this -> base_costs[ RESOURCE_RUNIC_POWER ] );
+      // T19 2P BDK
+      if ( this -> data().affected_by( p -> sets -> set ( DEATH_KNIGHT_BLOOD, T19, B2 ) -> effectN( 1 ) ) &&
+        p -> sets -> has_set_bonus( DEATH_KNIGHT_BLOOD, T19, B2 ) )
+      {
+        rp_gain *= 1.0 + p -> sets -> set ( DEATH_KNIGHT_BLOOD, T19, B2 ) -> effectN ( 1 ).percent();
+      }
+
+      this -> energize_amount += rp_gain;
       this -> base_costs[ RESOURCE_RUNIC_POWER ] = 0;
     }
 
@@ -4962,12 +4973,40 @@ struct death_strike_heal_t : public death_knight_heal_t
 
     m *= 1.0 + p() -> buffs.skullflowers_haemostasis -> stack_value();
 
+    m *= 1.0 + p() -> artifact.carrion_feast.percent();
+
     return m;
   }
 
   void impact( action_state_t* state ) override
   {
     death_knight_heal_t::impact( state );
+
+    // RP refund from shackles of bryndaor
+    // DS heals for a minimum of 10% of your max hp and is modified by vers and carrion feast traits.
+    // Shackles require the heal from DS to be above 10% of your max hp, before overheal.
+    // That means any point in versa or carrion feast automatically validates the trait
+    // TODO : find a proper way to account for DS heal pre-overheal
+    if ( state -> result_total > player -> resources.max[ RESOURCE_HEALTH ] * p() -> legendary.shackles_of_bryndaor -> effectN( 2 ).percent()
+      //|| p() -> artifact.carrion_feast.percent() > 0 
+      //|| p() -> composite_heal_versatility() > 0 
+      )
+    {
+      // Last resource cost doesn't return anything so we have to recalculate DS cost
+      double c = 45;
+            
+      // T20 4P doesn't actually reduce shackles of bryndaor's rp refund, even though it reduces the cost so it ignored
+      
+      // Ossuary
+      if ( p() -> talent.ossuary -> ok() &&
+        p() -> buffs.bone_shield -> stack() >= p() -> talent.ossuary -> effectN( 1 ).base_value() )
+      {
+        c += p() -> spell.ossuary -> effectN( 1 ).resource( RESOURCE_RUNIC_POWER );
+      }
+
+      p() -> resource_gain( RESOURCE_RUNIC_POWER, p() -> legendary.shackles_of_bryndaor -> effectN( 1 ).percent() * c,
+      p() -> gains.shackles_of_bryndaor, this );
+    }
 
     trigger_blood_shield( state );
   }
@@ -5032,7 +5071,7 @@ struct death_strike_t : public death_knight_melee_attack_t
     {
       c += p() -> spell.ossuary -> effectN( 1 ).resource( RESOURCE_RUNIC_POWER );
     }
-
+    
     if ( p() -> buffs.t20_blood -> check() && p() -> sets -> has_set_bonus( DEATH_KNIGHT_BLOOD, T20, B4 ) )
     {
       c += p() -> find_spell( 242010 ) -> effectN( 2 ).resource( RESOURCE_RUNIC_POWER );
@@ -5459,16 +5498,6 @@ struct heart_strike_t : public death_knight_melee_attack_t
     weapon = &( p -> main_hand_weapon );
   }
 
-  gain_t* energize_gain( const action_state_t* /* state */ ) const override
-  {
-    if ( p() -> sets -> has_set_bonus( DEATH_KNIGHT_BLOOD, T19, B2 ) )
-    {
-      return p() -> gains.t19_2pc_blood;
-    }
-
-    return gain;
-  }
-
   int n_targets() const override
   { return p() -> in_death_and_decay() ? 5 : 2; }
 
@@ -5741,16 +5770,6 @@ struct marrowrend_t : public death_knight_melee_attack_t
     base_multiplier    *= 1.0 + p -> artifact.bonebreaker.percent();
 
     weapon = &( p -> main_hand_weapon );
-  }
-
-  gain_t* energize_gain( const action_state_t* /* state */ ) const override
-  {
-    if ( p() -> sets -> has_set_bonus( DEATH_KNIGHT_BLOOD, T19, B2 ) )
-    {
-      return p() -> gains.t19_2pc_blood;
-    }
-
-    return gain;
   }
 
   void execute() override
@@ -8651,7 +8670,7 @@ void death_knight_t::init_gains()
   gains.rune                             = get_gain( "Rune Regeneration"          );
   gains.runic_empowerment                = get_gain( "Runic Empowerment"          );
   gains.empower_rune_weapon              = get_gain( "Empower Rune Weapon"        );
-  gains.blood_tap                        = get_gain( "blood_tap"                  );
+  gains.blood_tap                        = get_gain( "Blood tap"                  );
   gains.rapid_decomposition              = get_gain( "Rapid Decompostion"         );
   gains.rc                               = get_gain( "runic_corruption_all"       );
   gains.runic_attenuation                = get_gain( "Runic Attenuation"          );
@@ -8660,7 +8679,6 @@ void death_knight_t::init_gains()
   gains.pestilent_pustules               = get_gain( "Pestilent Pustules"         );
   gains.tombstone                        = get_gain( "Tombstone"                  );
   gains.overpowered                      = get_gain( "Over-Powered"               );
-  gains.t19_2pc_blood                    = get_gain( "Tier19 Blood 2PC"           );
   gains.t19_4pc_blood                    = get_gain( "Tier19 Blood 4PC"           );
   gains.scourge_the_unbeliever           = get_gain( "Scourge the Unbeliever"     );
   gains.draugr_girdle_everlasting_king   = get_gain( "Draugr, Girdle of the Everlasting King" );
@@ -8668,6 +8686,7 @@ void death_knight_t::init_gains()
   gains.koltiras_newfound_will           = get_gain( "Koltira's Newfound Will"    );
   gains.t19_4pc_frost                    = get_gain( "Tier19 Frost 4PC"           );
   gains.start_of_combat_overflow         = get_gain( "Start of Combat Overflow"   );
+  gains.shackles_of_bryndaor             = get_gain( "Shackles of Bryndaor"       );
 }
 
 // death_knight_t::init_procs ===============================================
@@ -9830,6 +9849,15 @@ struct soulflayers_corruption_t : public scoped_actor_callback_t<death_knight_t>
   { p -> legendary.soulflayers_corruption = e.driver(); }
 };
 
+struct shackles_of_bryndaor_t : public scoped_actor_callback_t<death_knight_t>
+{
+  shackles_of_bryndaor_t() : super( DEATH_KNIGHT )
+  { }
+
+  void manipulate( death_knight_t* p, const special_effect_t& e ) override
+  { p -> legendary.shackles_of_bryndaor = e.driver(); }
+};
+
 struct death_knight_module_t : public module_t {
   death_knight_module_t() : module_t( DEATH_KNIGHT ) {}
 
@@ -9860,6 +9888,7 @@ struct death_knight_module_t : public module_t {
     unique_gear::register_special_effect( 216059, perseverance_of_the_ebon_martyr_t() );
     unique_gear::register_special_effect( 212974, lanathels_lament_t() );
     unique_gear::register_special_effect( 205816, rattlegore_bone_legplates_t() );
+    unique_gear::register_special_effect( 209228, shackles_of_bryndaor_t() );
     // 7.1.5
     unique_gear::register_special_effect( 235605, consorts_cold_core_t() );
     unique_gear::register_special_effect( 235556, death_march_t() );
