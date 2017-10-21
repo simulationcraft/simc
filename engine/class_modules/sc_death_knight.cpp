@@ -8115,7 +8115,7 @@ std::string death_knight_t::default_potion() const
                               ( true_level >= 80 ) ? "golemblood_potion" :
                               "disabled";
 
-  std::string blood_potion = ( true_level > 100 ) ? "prolonged_power" :
+  std::string blood_potion = ( true_level > 100 ) ? "old_war" :
                               ( true_level >= 90 ) ? "draenic_strength" :
                               ( true_level >= 85 ) ? "mogu_power" :
                               ( true_level >= 80 ) ? "golemblood_potion" :
@@ -8145,7 +8145,11 @@ std::string death_knight_t::default_food() const
                             ( true_level >= 80 ) ? "seafood_magnifique_feast" :
                             "disabled";
 
-  std::string blood_food = "disabled";
+  std::string blood_food =  ( true_level > 100 ) ? "lavish_suramar_feast" :
+                            ( true_level >  90 ) ? "pickled_eel" :
+                            ( true_level >= 85 ) ? "sea_mist_rice_noodles" :
+                            ( true_level >= 80 ) ? "seafood_magnifique_feast" :
+                            "disabled";
 
   switch ( specialization() )
   {
@@ -8731,7 +8735,7 @@ double death_knight_t::bone_shield_handler( const action_state_t* state ) const
     if ( sets -> has_set_bonus( DEATH_KNIGHT_BLOOD, T21, B2 ) )
     {
       cooldown.dancing_rune_weapon -> adjust( timespan_t::from_millis( find_spell( 251876 ) -> effectN( 1 ).base_value() ), false );
-      p() -> cooldown.blood_tap -> adjust( timespan_t::from_seconds( -2.0 ), false );
+      cooldown.blood_tap -> adjust( timespan_t::from_seconds( -2.0 ), false );
     }
 
     cooldown.bone_shield_icd -> start();
@@ -8753,7 +8757,7 @@ double death_knight_t::bone_shield_handler( const action_state_t* state ) const
     if ( sets -> has_set_bonus( DEATH_KNIGHT_BLOOD, T21, B2 ) )
     {
       cooldown.dancing_rune_weapon -> adjust( timespan_t::from_millis( find_spell( 251876 ) -> effectN( 1 ).base_value() ), false );
-      p() -> cooldown.blood_tap -> adjust( timespan_t::from_seconds( -2.0 ), false );
+      cooldown.blood_tap -> adjust( timespan_t::from_seconds( -2.0 ), false );
     }
   }
 
