@@ -1927,6 +1927,9 @@ struct injector_proc_cb_t : public dbc_proc_callback_t
 
 void item::acrid_catalyst_injector( special_effect_t& effect )
 {
+  effect.proc_flags_ = PF_SPELL | PF_AOE_SPELL | PF_PERIODIC;
+  effect.proc_flags2_ = PF2_CRIT;
+
   auto p = effect.player;
 
   auto small_amount = effect.driver() -> effectN( 2 ).average( effect.item );
