@@ -2039,7 +2039,7 @@ struct legion_bombardment_t : public proc_spell_t
   struct legion_bombardment_tick_t : public proc_spell_t
   {
     legion_bombardment_tick_t( const special_effect_t& effect ) :
-      proc_spell_t( "legion_bombardment_tick", effect.player, effect.player -> find_spell( 255712 ), effect.item )
+      proc_spell_t( "legion_bombardment_tick", effect.player, effect.player -> find_spell( 257376 ), effect.item )
     {
       base_dd_min = base_dd_max = player -> find_spell( 256325 ) -> effectN( 1 ).average( effect.item );
       aoe = -1;

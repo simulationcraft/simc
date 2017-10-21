@@ -1240,6 +1240,8 @@ class SpellDataGenerator(DataGenerator):
          255742, 255744,
          # 7.3.0 Sheath of Asara
          255870, 257702,
+         # 7.3.0 Terminus Signaling Beacon
+         257376,
          # 7.3.2 Norgannon pantheon "random school" nukes
          257243, 257532, 257241, 257242, 257534, 257533,
         ),
