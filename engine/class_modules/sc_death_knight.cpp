@@ -9,15 +9,11 @@
 // - Skelebro has an aoe spell (Arrow Spray), but the AI using it is very inconsistent
 // Blood
 // - Fix APL
-// - Support legendaries
-// - Overall damage may be lower than live, need to investigate further
-// - Refactor Blooddrinker so it's able to critically tick on damage
-// - Probably a bunch of other things as well
-// - T21 buff you gain after DRW's expiration, SpellID is : 253381 for the buff, 251877 for the set bonus
-// - Make Rapid Decomposition tick 10 times per DnD cast (current is 9)
-// - Make DnD tick 13 times with Rapid Decomp (current is 12)
+// - Support some legendaries :
+//    Implement rattlegore's RP cap increase
+// - Heart Strike looks like it deals slightly too much damage
+// - Dancing Rune Weapon damage is still underestimated
 // Frost
-// - Wait for next spelldata extract to enable T21 4P
 // - Implement Inexorable Assault ? maybe ? somehow ?
 
 #include "simulationcraft.hpp"
@@ -541,7 +537,6 @@ public:
     gain_t* pestilent_pustules;
     gain_t* tombstone;
     gain_t* overpowered;
-    gain_t* t19_2pc_blood;
     gain_t* t19_4pc_blood;
     gain_t* scourge_the_unbeliever;
     gain_t* draugr_girdle_everlasting_king;
@@ -549,6 +544,7 @@ public:
     gain_t* koltiras_newfound_will;
     gain_t* t19_4pc_frost;
     gain_t* start_of_combat_overflow;
+    gain_t* shackles_of_bryndaor;
   } gains;
 
   // Specialization
@@ -798,15 +794,23 @@ public:
     const spell_data_t* koltiras_newfound_will;
     const spell_data_t* seal_of_necrofantasia;
     const spell_data_t* perseverance_of_the_ebon_martyr;
-    const spell_data_t* sephuzs_secret;
-    const spell_data_t* death_march;
-    const spell_data_t* lanathels_lament;
     double toravons;
+
+    // Blood
+    const spell_data_t* lanathels_lament;
+    const spell_data_t* rattlegore_bone_legplates;
+    const spell_data_t* soulflayers_corruption;
+    const spell_data_t* shackles_of_bryndaor;
 
     // Unholy
     unsigned the_instructors_fourth_lesson;
     double draugr_girdle_everlasting_king;
     double uvanimor_the_unbeautiful;
+    const spell_data_t* death_march;
+
+
+    // Shared
+    const spell_data_t* sephuzs_secret;
 
     legendary_t() :
       koltiras_newfound_will( spell_data_t::not_found() ),
@@ -816,7 +820,10 @@ public:
       death_march( spell_data_t::not_found() ),
       lanathels_lament( spell_data_t::not_found() ),
       toravons( 0 ), the_instructors_fourth_lesson( 0 ), draugr_girdle_everlasting_king( 0 ),
-      uvanimor_the_unbeautiful( 0 )
+      uvanimor_the_unbeautiful( 0 ),
+      rattlegore_bone_legplates( spell_data_t::not_found() ),
+      soulflayers_corruption( spell_data_t::not_found() ),
+      shackles_of_bryndaor( spell_data_t::not_found() )
     { }
 
   } legendary;
@@ -1988,7 +1995,6 @@ struct ghoul_pet_t : public dt_pet_t
     dt_pet_t::init_action_list();
 
     action_priority_list_t* def = get_action_priority_list( "default" );
-    def -> add_action( "Gnaw" );
     def -> add_action( "Monstrous Blow" );
     def -> add_action( "Sweeping Claws" );
     def -> add_action( "Claw" );
@@ -2070,10 +2076,10 @@ struct sludge_belcher_pet_t : public dt_pet_t
     }
   };
 
-  struct monstrous_blow_t : public dt_melee_ability_t<sludge_belcher_pet_t>
+  struct powerful_smash_t : public dt_melee_ability_t<sludge_belcher_pet_t>
   {
-    monstrous_blow_t( sludge_belcher_pet_t* player, const std::string& options_str ):
-      super( player, "monstrous_blow", player -> find_spell( 91797 ), options_str )
+    powerful_smash_t( sludge_belcher_pet_t* player, const std::string& options_str ):
+      super( player, "powerful_smash", player -> find_spell( 212337 ), options_str )
     {
       cooldown = player -> get_cooldown( "smash" ); // Shares CD with Smash
     }
@@ -2105,8 +2111,7 @@ struct sludge_belcher_pet_t : public dt_pet_t
     dt_pet_t::init_action_list();
 
     action_priority_list_t* def = get_action_priority_list( "default" );
-    def -> add_action( "Smash" );
-    def -> add_action( "Monstrous Blow" );
+    def -> add_action( "Powerful Smash" );
     def -> add_action( "Vile Gas" );
     def -> add_action( "Cleaver" );
   }
@@ -2116,7 +2121,7 @@ struct sludge_belcher_pet_t : public dt_pet_t
     if ( name == "cleaver"        ) return new        cleaver_t( this, options_str );
     if ( name == "vile_gas"       ) return new       vile_gas_t( this, options_str );
     if ( name == "smash"          ) return new          smash_t( this, options_str );
-    if ( name == "monstrous_blow" ) return new monstrous_blow_t( this, options_str );
+    if ( name == "powerful_smash" ) return new powerful_smash_t( this, options_str );
 
     return dt_pet_t::create_action( name, options_str );
   }
@@ -2720,7 +2725,16 @@ struct death_knight_action_t : public Base
     {
       this -> energize_type = ENERGIZE_ON_CAST;
       this -> energize_resource = RESOURCE_RUNIC_POWER;
-      this -> energize_amount += std::fabs( this -> base_costs[ RESOURCE_RUNIC_POWER ] );
+
+      double rp_gain = std::fabs( this -> base_costs[ RESOURCE_RUNIC_POWER ] );
+      // T19 2P BDK
+      if ( this -> data().affected_by( p -> sets -> set ( DEATH_KNIGHT_BLOOD, T19, B2 ) -> effectN( 1 ) ) &&
+        p -> sets -> has_set_bonus( DEATH_KNIGHT_BLOOD, T19, B2 ) )
+      {
+        rp_gain *= 1.0 + p -> sets -> set ( DEATH_KNIGHT_BLOOD, T19, B2 ) -> effectN ( 1 ).percent();
+      }
+
+      this -> energize_amount += rp_gain;
       this -> base_costs[ RESOURCE_RUNIC_POWER ] = 0;
     }
 
@@ -2753,6 +2767,12 @@ struct death_knight_action_t : public Base
     if ( this -> data().affected_by( p -> spec.blood_death_knight -> effectN( 2 ) ) && p -> specialization() == DEATH_KNIGHT_BLOOD )
     {
       this -> base_td_multiplier *= 1.0 + p -> spec.blood_death_knight -> effectN( 2 ).percent();
+    }
+
+    // Special snowflake modifier for Consumption and Death Strike for blood
+    if ( this -> data().affected_by( p -> spec.blood_death_knight -> effectN( 3 ) ) && p -> specialization() == DEATH_KNIGHT_BLOOD )
+    {
+      this -> base_dd_multiplier *= 1.0 + p -> spec.blood_death_knight -> effectN( 3 ).percent();
     }
   }
 
@@ -3182,9 +3202,13 @@ void death_knight_melee_attack_t::trigger_freezing_death (const action_state_t* 
   {
     return;
   }
-  
+ 
+  // A single proc deals damage 3 times for some reason
   p() -> active_spells.freezing_death -> set_target( execute_state -> target );
   p() -> active_spells.freezing_death -> execute();
+  p() -> active_spells.freezing_death -> execute();
+  p() -> active_spells.freezing_death -> execute();
+
 }
 
 // ==========================================================================
@@ -3238,7 +3262,10 @@ void death_knight_spell_t::trigger_freezing_death (const action_state_t* state )
     return;
   }
 
+  // A single proc deals damage 3 times for some reason
   p() -> active_spells.freezing_death -> set_target( execute_state -> target );
+  p() -> active_spells.freezing_death -> execute();
+  p() -> active_spells.freezing_death -> execute();
   p() -> active_spells.freezing_death -> execute();
 }
 
@@ -3526,10 +3553,10 @@ struct cold_heart_damage_t : public death_knight_spell_t
 };
 
 // Freezing Death, T21 4P for Frost DK
-struct freezing_death_t : public death_knight_spell_t
+struct freezing_death_t : public death_knight_melee_attack_t
 {
   freezing_death_t( death_knight_t* p ) :
-    death_knight_spell_t( "freezing_death", p, p -> find_spell( 253590 ) )
+    death_knight_melee_attack_t( "freezing_death", p, p -> find_spell( 253590 ) )
   {
     background = true;
   }
@@ -3626,7 +3653,6 @@ struct melee_t : public death_knight_melee_attack_t
         if ( p() -> buffs.crimson_scourge -> trigger() )
         {
           p() -> cooldown.death_and_decay -> reset( true );
-          p() -> cooldown.defile -> reset( true );
         }
       }
     }
@@ -3842,6 +3868,15 @@ struct blood_plague_t : public disease_t
   {
     base_multiplier *= 1.0 + p -> artifact.coagulopathy.percent();
   }
+
+  double action_multiplier() const override
+  {
+    double m = disease_t::action_multiplier();
+
+    m *= 1.0 + p() -> legendary.soulflayers_corruption -> effectN( 1 ).percent();
+
+    return m;
+  }
 };
 
 // Frost Fever ==============================================================
@@ -4038,6 +4073,7 @@ struct blood_mirror_damage_t : public death_knight_spell_t
     background = true;
     may_miss = false;
     callbacks = false;
+    may_crit = true;
   }
 
   void init() override
@@ -4150,8 +4186,8 @@ struct blooddrinker_t : public death_knight_spell_t
     heal( new blooddrinker_heal_t( p ) )
   {
     parse_options( options_str );
-
-    channeled = true;
+    tick_may_crit = channeled = hasted_ticks = tick_zero = true;
+   
     base_tick_time = timespan_t::from_seconds( 1.0 );
   }
 
@@ -4169,6 +4205,8 @@ struct blooddrinker_t : public death_knight_spell_t
   timespan_t tick_time( const action_state_t* ) const override
   { return base_tick_time; }
 };
+
+// Bloodworms ================================================================
 
 struct bloodworms_t : public death_knight_spell_t
 {
@@ -4270,6 +4308,43 @@ struct chains_of_ice_t : public death_knight_spell_t
 };
 
 // Dancing Rune Weapon ======================================================
+
+//T21 4P buff
+struct rune_master_buff_t : public buff_t
+{
+  rune_master_buff_t( death_knight_t* p ) :
+    buff_t( buff_creator_t( p, "rune_master", p -> find_spell( 253381 ) )
+      .trigger_spell( p -> find_spell( 253381 ) ).affects_regen( true )
+      .stack_change_callback( [ p ]( buff_t*, int, int ) { p -> _runes.update_coefficient(); } ) )
+  { }
+};
+
+
+// DRW buff
+struct dancing_rune_weapon_buff_t : public buff_t
+{
+  death_knight_t* p;
+
+  dancing_rune_weapon_buff_t( death_knight_t* p ) :
+    buff_t( buff_creator_t( p, "dancing_rune_weapon", p -> find_spell( 81256 ) )
+      .duration( p -> find_spell( 81256 ) -> duration() + p -> artifact.dance_of_darkness.time_value() )
+      .cd( timespan_t::zero() )
+      .add_invalidate( CACHE_PARRY ) ),
+    p( p )
+  { }
+
+  void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
+  {
+    buff_t::expire_override( expiration_stacks, remaining_duration );
+
+    // Triggers rune Master for blood T21 4P
+    if ( p -> sets -> has_set_bonus( DEATH_KNIGHT_BLOOD, T21, B4 ) )
+    {
+      p -> buffs.t21_4p_blood -> trigger();
+    }
+  }
+
+};
 
 struct dancing_rune_weapon_t : public death_knight_spell_t
 {
@@ -4476,6 +4551,9 @@ struct death_and_decay_base_t : public death_knight_spell_t
     // Note, radius and ground_aoe flag needs to be set in base so spell_targets expression works
     ground_aoe            = true;
     radius                = data().effectN( 1 ).radius_max();
+
+    // Blood has a 15s cooldown on DnD
+    cooldown -> duration += cooldown -> duration * p -> spec.blood_death_knight -> effectN( 5 ).percent();
   }
 
   double cost() const override
@@ -4496,7 +4574,8 @@ struct death_and_decay_base_t : public death_knight_spell_t
 
     make_event<ground_aoe_event_t>( *sim, player, ground_aoe_params_t()
       .target( execute_state -> target )
-      .duration( data().duration() )
+      // Dnd is supposed to last 10s, but a total of 11 ticks (13 with rapid decomposition) are observed so we're adding a duration of 0.5s to make it work properly
+      .duration( data().duration() + timespan_t::from_millis( 500 ) )
       .pulse_time( compute_tick_time() )
       .action( damage )
       // Keep track of on-going dnd events
@@ -4526,7 +4605,13 @@ private:
   timespan_t compute_tick_time() const
   {
     auto base = data().effectN( 3 ).period();
-    base *= 1.0 / ( 1.0 + p() -> talent.rapid_decomposition -> effectN( 3 ).percent() );
+
+    // 7.3.2 PTR
+    if ( maybe_ptr( p() -> dbc.ptr ) )
+      base += timespan_t::from_millis( p() -> talent.rapid_decomposition -> effectN( 1 ).base_value() * 10 );
+    else 
+      base += timespan_t::from_millis( p() -> talent.rapid_decomposition -> effectN( 2 ).base_value() * 10 );
+    
     return base;
   }
 };
@@ -4601,7 +4686,6 @@ struct deaths_caress_t : public death_knight_spell_t
 // Death Coil ===============================================================
 
 // Unholy T21 2P
-// Will probably have to adapt it so it doesn't double dip with mastery once/if Blizzard makes it shadow damage
 struct coils_of_devastation_t 
   : public residual_action::residual_periodic_action_t<death_knight_spell_t>
 {
@@ -4902,12 +4986,40 @@ struct death_strike_heal_t : public death_knight_heal_t
 
     m *= 1.0 + p() -> buffs.skullflowers_haemostasis -> stack_value();
 
+    m *= 1.0 + p() -> artifact.carrion_feast.percent();
+
     return m;
   }
 
   void impact( action_state_t* state ) override
   {
     death_knight_heal_t::impact( state );
+
+    // RP refund from shackles of bryndaor
+    // DS heals for a minimum of 10% of your max hp and is modified by vers and carrion feast traits.
+    // Shackles require the heal from DS to be above 10% of your max hp, before overheal.
+    // That means any point in versa or carrion feast automatically validates the trait
+    // TODO : find a proper way to account for DS heal pre-overheal
+    if ( state -> result_total > player -> resources.max[ RESOURCE_HEALTH ] * p() -> legendary.shackles_of_bryndaor -> effectN( 2 ).percent()
+      //|| p() -> artifact.carrion_feast.percent() > 0 
+      //|| p() -> composite_heal_versatility() > 0 
+      )
+    {
+      // Last resource cost doesn't return anything so we have to recalculate DS cost
+      double c = 45;
+            
+      // T20 4P doesn't actually reduce shackles of bryndaor's rp refund, even though it reduces the cost so it is ignored
+      
+      // Ossuary
+      if ( p() -> talent.ossuary -> ok() &&
+        p() -> buffs.bone_shield -> stack() >= p() -> talent.ossuary -> effectN( 1 ).base_value() )
+      {
+        c += p() -> spell.ossuary -> effectN( 1 ).resource( RESOURCE_RUNIC_POWER );
+      }
+
+      p() -> resource_gain( RESOURCE_RUNIC_POWER, p() -> legendary.shackles_of_bryndaor -> effectN( 1 ).percent() * c,
+      p() -> gains.shackles_of_bryndaor, this );
+    }
 
     trigger_blood_shield( state );
   }
@@ -4972,7 +5084,7 @@ struct death_strike_t : public death_knight_melee_attack_t
     {
       c += p() -> spell.ossuary -> effectN( 1 ).resource( RESOURCE_RUNIC_POWER );
     }
-
+    
     if ( p() -> buffs.t20_blood -> check() && p() -> sets -> has_set_bonus( DEATH_KNIGHT_BLOOD, T20, B4 ) )
     {
       c += p() -> find_spell( 242010 ) -> effectN( 2 ).resource( RESOURCE_RUNIC_POWER );
@@ -5399,16 +5511,6 @@ struct heart_strike_t : public death_knight_melee_attack_t
     weapon = &( p -> main_hand_weapon );
   }
 
-  gain_t* energize_gain( const action_state_t* /* state */ ) const override
-  {
-    if ( p() -> sets -> has_set_bonus( DEATH_KNIGHT_BLOOD, T19, B2 ) )
-    {
-      return p() -> gains.t19_2pc_blood;
-    }
-
-    return gain;
-  }
-
   int n_targets() const override
   { return p() -> in_death_and_decay() ? 5 : 2; }
 
@@ -5681,16 +5783,6 @@ struct marrowrend_t : public death_knight_melee_attack_t
     base_multiplier    *= 1.0 + p -> artifact.bonebreaker.percent();
 
     weapon = &( p -> main_hand_weapon );
-  }
-
-  gain_t* energize_gain( const action_state_t* /* state */ ) const override
-  {
-    if ( p() -> sets -> has_set_bonus( DEATH_KNIGHT_BLOOD, T19, B2 ) )
-    {
-      return p() -> gains.t19_2pc_blood;
-    }
-
-    return gain;
   }
 
   void execute() override
@@ -6398,12 +6490,21 @@ struct tombstone_t : public death_knight_spell_t
   {
     death_knight_spell_t::execute();
 
-    double power = p() -> buffs.bone_shield -> stack() * data().effectN( 3 ).base_value();
-    double shield = p() -> buffs.bone_shield -> check() * data().effectN( 4 ).percent();
+    double charges = p() -> buffs.bone_shield -> stack();
+    // Tomnstone doesn't consume more than 5 bone shield charges
+    if ( charges > 5 )
+      charges = 5;
+
+    double power = charges * data().effectN( 3 ).base_value();
+    double shield = charges * data().effectN( 4 ).percent();
 
     p() -> resource_gain( RESOURCE_RUNIC_POWER, power, p() -> gains.tombstone, this );
     p() -> buffs.tombstone -> trigger( 1, shield * p() -> resources.max[ RESOURCE_HEALTH ] );
-    p() -> buffs.bone_shield -> expire();
+    p() -> buffs.bone_shield -> decrement( charges );
+    if ( p() -> sets -> has_set_bonus( DEATH_KNIGHT_BLOOD, T21, B2 ) )
+    {
+      p() -> cooldown.dancing_rune_weapon -> adjust( charges * timespan_t::from_millis( p() -> find_spell( 251876 ) -> effectN( 1 ).base_value() ), false );
+    }
   }
 };
 
@@ -8101,7 +8202,7 @@ std::string death_knight_t::default_rune() const
 void death_knight_t::default_apl_frost()
 {
   action_priority_list_t* def         = get_action_priority_list( "default" );
-  action_priority_list_t* cds         = get_action_priority_list( "cds" );
+  action_priority_list_t* cooldowns   = get_action_priority_list( "cooldowns" );
   action_priority_list_t* cold_heart  = get_action_priority_list( "cold_heart" );
   action_priority_list_t* standard    = get_action_priority_list( "standard" );
   action_priority_list_t* obliteration= get_action_priority_list( "obliteration" );
@@ -8118,7 +8219,7 @@ void death_knight_t::default_apl_frost()
   def -> add_action( this, "Mind Freeze" );
   
   // Choose APL
-  def -> add_action( "call_action_list,name=cds" );
+  def -> add_action( "call_action_list,name=cooldowns" );
   def -> add_action( "run_action_list,name=bos_pooling,if=talent.breath_of_sindragosa.enabled&cooldown.breath_of_sindragosa.remains<15" );
   def -> add_action( "run_action_list,name=bos_ticking,if=dot.breath_of_sindragosa.ticking" );
   def -> add_action( "run_action_list,name=obliteration,if=buff.obliteration.up" );
@@ -8158,36 +8259,36 @@ void death_knight_t::default_apl_frost()
   bos_ticking -> add_action( this, "Empower Rune Weapon", "if=runic_power<30&rune.time_to_2>gcd" );
 	
   // Racials
-  cds -> add_action( "arcane_torrent,if=runic_power.deficit>=20&!talent.breath_of_sindragosa.enabled" );
-  cds -> add_action( "arcane_torrent,if=dot.breath_of_sindragosa.ticking&runic_power.deficit>=50&rune<2" );
-  cds -> add_action( "blood_fury,if=buff.pillar_of_frost.up" );
-  cds -> add_action( "berserking,if=buff.pillar_of_frost.up" );
+  cooldowns -> add_action( "arcane_torrent,if=runic_power.deficit>=20&!talent.breath_of_sindragosa.enabled" );
+  cooldowns -> add_action( "arcane_torrent,if=dot.breath_of_sindragosa.ticking&runic_power.deficit>=50&rune<2" );
+  cooldowns -> add_action( "blood_fury,if=buff.pillar_of_frost.up" );
+  cooldowns -> add_action( "berserking,if=buff.pillar_of_frost.up" );
 
   // On-use itemos
-  cds -> add_action( "use_items" );
-  cds -> add_action( "use_item,name=ring_of_collapsing_futures,"
+  cooldowns -> add_action( "use_items" );
+  cooldowns -> add_action( "use_item,name=ring_of_collapsing_futures,"
                      "if=(buff.temptation.stack=0&target.time_to_die>60)|target.time_to_die<60" );
-  cds -> add_action( "use_item,name=horn_of_valor,"
+  cooldowns -> add_action( "use_item,name=horn_of_valor,"
                      "if=buff.pillar_of_frost.up&(!talent.breath_of_sindragosa.enabled|!cooldown.breath_of_sindragosa.remains)" );
-  cds -> add_action( "use_item,name=draught_of_souls,"
+  cooldowns -> add_action( "use_item,name=draught_of_souls,"
                      "if=rune.time_to_5<3&(!dot.breath_of_sindragosa.ticking|runic_power>60)" );
-  cds -> add_action( "use_item,name=feloiled_infernal_machine,"
+  cooldowns -> add_action( "use_item,name=feloiled_infernal_machine,"
                      "if=!talent.obliteration.enabled|buff.obliteration.up" );
 
   // In-combat potion
-  cds -> add_action( "potion,if=buff.pillar_of_frost.up&(dot.breath_of_sindragosa.ticking|buff.obliteration.up|talent.hungering_rune_weapon.enabled)" );
+  cooldowns -> add_action( "potion,if=buff.pillar_of_frost.up&(dot.breath_of_sindragosa.ticking|buff.obliteration.up|talent.hungering_rune_weapon.enabled)" );
 
   // Pillar of Frost
-  cds -> add_action( this, "Pillar of Frost", "if=talent.obliteration.enabled&(cooldown.obliteration.remains>20|cooldown.obliteration.remains<10|!talent.icecap.enabled)", "Pillar of frost conditions" );
-  cds -> add_action( this, "Pillar of Frost", "if=talent.breath_of_sindragosa.enabled&cooldown.breath_of_sindragosa.ready&runic_power>50" );
-  cds -> add_action( this, "Pillar of Frost", "if=talent.breath_of_sindragosa.enabled&cooldown.breath_of_sindragosa.remains>40" );
-  cds -> add_action( this, "Pillar of Frost", "if=talent.hungering_rune_weapon.enabled" );
+  cooldowns -> add_action( this, "Pillar of Frost", "if=talent.obliteration.enabled&(cooldown.obliteration.remains>20|cooldown.obliteration.remains<10|!talent.icecap.enabled)", "Pillar of frost conditions" );
+  cooldowns -> add_action( this, "Pillar of Frost", "if=talent.breath_of_sindragosa.enabled&cooldown.breath_of_sindragosa.ready&runic_power>50" );
+  cooldowns -> add_action( this, "Pillar of Frost", "if=talent.breath_of_sindragosa.enabled&cooldown.breath_of_sindragosa.remains>40" );
+  cooldowns -> add_action( this, "Pillar of Frost", "if=talent.hungering_rune_weapon.enabled" );
   
   // Tier 100 cooldowns + Cold Heart
-  cds -> add_talent( this, "Breath of Sindragosa", "if=buff.pillar_of_frost.up" );
-  cds -> add_action( "call_action_list,name=cold_heart,if=equipped.cold_heart&((buff.cold_heart.stack>=10&!buff.obliteration.up)|target.time_to_die<=gcd)" );
-  cds -> add_talent( this, "Obliteration", "if=rune>=1&runic_power>=20&(!talent.frozen_pulse.enabled|rune<2|buff.pillar_of_frost.remains<=12)&(!talent.gathering_storm.enabled|!cooldown.remorseless_winter.ready)&(buff.pillar_of_frost.up|!talent.icecap.enabled)" );
-  cds -> add_talent( this, "Hungering Rune Weapon", "if=!buff.hungering_rune_weapon.up&rune.time_to_2>gcd&runic_power<40" );
+  cooldowns -> add_talent( this, "Breath of Sindragosa", "if=buff.pillar_of_frost.up" );
+  cooldowns -> add_action( "call_action_list,name=cold_heart,if=equipped.cold_heart&((buff.cold_heart.stack>=10&!buff.obliteration.up)|target.time_to_die<=gcd)" );
+  cooldowns -> add_talent( this, "Obliteration", "if=rune>=1&runic_power>=20&(!talent.frozen_pulse.enabled|rune<2|buff.pillar_of_frost.remains<=12)&(!talent.gathering_storm.enabled|!cooldown.remorseless_winter.ready)&(buff.pillar_of_frost.up|!talent.icecap.enabled)" );
+  cooldowns -> add_talent( this, "Hungering Rune Weapon", "if=!buff.hungering_rune_weapon.up&rune.time_to_2>gcd&runic_power<40" );
 
   // Cold Heart conditionals
   cold_heart -> add_action( this, "Chains of Ice", "if=buff.cold_heart.stack=20&buff.unholy_strength.up&cooldown.pillar_of_frost.remains>6", "Cold heart conditions" );
@@ -8423,23 +8524,22 @@ void death_knight_t::create_buffs()
                               } : buff_stack_change_callback_t() );
   buffs.crimson_scourge     = buff_creator_t( this, "crimson_scourge", find_spell( 81141 ) )
                               .trigger_spell( spec.crimson_scourge );
-  buffs.dancing_rune_weapon = buff_creator_t( this, "dancing_rune_weapon", find_spell( 81256 ) )
-                              .duration( find_spell( 81256 ) -> duration() + artifact.dance_of_darkness.time_value() )
-                              .cd( timespan_t::zero() )
-                              .add_invalidate( CACHE_PARRY );
+  buffs.dancing_rune_weapon = new dancing_rune_weapon_buff_t( this );
   buffs.dark_transformation = buff_creator_t( this, "dark_transformation", find_class_spell( "Dark Transformation" ) )
     .duration( find_specialization_spell( "Dark Transformation" ) -> duration() + artifact.eternal_agony.time_value() )
     .cd( timespan_t::zero() ); // Handled by the action
 
   buffs.death_and_decay     = buff_creator_t( this, "death_and_decay", find_spell( 188290 ) )
-                              .period( talent.rapid_decomposition -> ok()
-                                       ? timespan_t::from_seconds( 1.0 )
-                                       : timespan_t::zero() )
+                              .period( timespan_t::from_seconds( 1.0 ) )
+                              .duration( find_spell( 188290 ) -> duration() )
                               .tick_callback( [ this ]( buff_t*, int, timespan_t ) {
                                 if ( in_death_and_decay() )
                                 {
                                   resource_gain( RESOURCE_RUNIC_POWER,
-                                                 talent.rapid_decomposition -> effectN( 1 ).resource( RESOURCE_RUNIC_POWER ),
+                                                 // TODO spell data doesn't properly flag the gain as runic power so we need to change it to its negative value
+                                                 dbc.ptr ? 
+                                                  talent.rapid_decomposition -> effectN( 3 ).base_value() :
+                                                  talent.rapid_decomposition -> effectN( 1 ).base_value() / 10 , 
                                                  gains.rapid_decomposition,
                                                  nullptr );
                                 }
@@ -8547,7 +8647,7 @@ void death_knight_t::create_buffs()
   buffs.remorseless_winter = new remorseless_winter_buff_t( this );
 
 	buffs.hungering_rune_weapon = new hungering_rune_weapon_buff_t( this );
-  buffs.hungering_rune_weapon_haste = haste_buff_creator_t( this, "hrw_haste", talent.hungering_rune_weapon )
+  buffs.hungering_rune_weapon_haste = haste_buff_creator_t( this, "hungering_rune_weapon_haste", talent.hungering_rune_weapon )
 	  .default_value( talent.hungering_rune_weapon -> effectN( 3 ).percent() )
 	  .trigger_spell( talent.hungering_rune_weapon );
   
@@ -8557,11 +8657,12 @@ void death_knight_t::create_buffs()
     .default_value( find_spell( 246995 ) -> effectN( 1 ).percent() )
     .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
     .refresh_behavior( BUFF_REFRESH_EXTEND );
-  buffs.t20_4pc_frost = buff_creator_t( this, "t20_4pc_frost" )
+  buffs.t20_4pc_frost = buff_creator_t( this, "icy edge" )
     .default_value( 0.01 )
     .chance( sets -> has_set_bonus( DEATH_KNIGHT_FROST, T20, B4 ) );
   buffs.t20_blood = stat_buff_creator_t( this, "gravewarden", find_spell( 242010 ) )
     .add_stat( STAT_VERSATILITY_RATING, find_spell( 242010 ) -> effectN( 1 ).base_value() );
+  buffs.t21_4p_blood = new rune_master_buff_t( this );
     
 }
 
@@ -8582,7 +8683,7 @@ void death_knight_t::init_gains()
   gains.rune                             = get_gain( "Rune Regeneration"          );
   gains.runic_empowerment                = get_gain( "Runic Empowerment"          );
   gains.empower_rune_weapon              = get_gain( "Empower Rune Weapon"        );
-  gains.blood_tap                        = get_gain( "blood_tap"                  );
+  gains.blood_tap                        = get_gain( "Blood tap"                  );
   gains.rapid_decomposition              = get_gain( "Rapid Decompostion"         );
   gains.rc                               = get_gain( "runic_corruption_all"       );
   gains.runic_attenuation                = get_gain( "Runic Attenuation"          );
@@ -8591,7 +8692,6 @@ void death_knight_t::init_gains()
   gains.pestilent_pustules               = get_gain( "Pestilent Pustules"         );
   gains.tombstone                        = get_gain( "Tombstone"                  );
   gains.overpowered                      = get_gain( "Over-Powered"               );
-  gains.t19_2pc_blood                    = get_gain( "Tier19 Blood 2PC"           );
   gains.t19_4pc_blood                    = get_gain( "Tier19 Blood 4PC"           );
   gains.scourge_the_unbeliever           = get_gain( "Scourge the Unbeliever"     );
   gains.draugr_girdle_everlasting_king   = get_gain( "Draugr, Girdle of the Everlasting King" );
@@ -8599,6 +8699,7 @@ void death_knight_t::init_gains()
   gains.koltiras_newfound_will           = get_gain( "Koltira's Newfound Will"    );
   gains.t19_4pc_frost                    = get_gain( "Tier19 Frost 4PC"           );
   gains.start_of_combat_overflow         = get_gain( "Start of Combat Overflow"   );
+  gains.shackles_of_bryndaor             = get_gain( "Shackles of Bryndaor"       );
 }
 
 // death_knight_t::init_procs ===============================================
@@ -8635,33 +8736,43 @@ double death_knight_t::bone_shield_handler( const action_state_t* state ) const
   {
     return 0;
   }
-
-  if ( ! cooldown.bone_shield_icd -> up() )
+  
+  // Bone shield only lose stacks on auto-attack damage. The only distinguishing feature of auto attacks is that
+  // our enemies call them "melee_main_hand" and "melee_off_hand", so we need to check for "hand" in name_str
+  if ( util::str_in_str_ci( state -> action -> name_str, "_hand" ) && cooldown.bone_shield_icd -> up() )
   {
-    return 0;
+    buffs.bone_shield -> decrement();
+    
+    if ( sets -> has_set_bonus( DEATH_KNIGHT_BLOOD, T21, B2 ) )
+    {
+      cooldown.dancing_rune_weapon -> adjust( timespan_t::from_millis( find_spell( 251876 ) -> effectN( 1 ).base_value() ), false );
+    }
+
+    cooldown.bone_shield_icd -> start();
   }
 
   double absorbed = 0;
   double absorb_pct = buffs.bone_shield -> data().effectN( 5 ).percent();
-  int n_stacks = 1;
+
+  // Legendary pants increase the absorbed amount by 2%
+  absorb_pct += legendary.rattlegore_bone_legplates -> effectN( 2 ).percent();
 
   if ( talent.spectral_deflection -> ok() && state -> result_raw >
        resources.max[ RESOURCE_HEALTH ] * talent.spectral_deflection -> effectN( 1 ).percent() &&
-       buffs.bone_shield -> check() > 1 )
+       buffs.bone_shield -> check() )
   {
     absorb_pct *= 2;
-    n_stacks *= 2;
+    buffs.bone_shield -> decrement();
+
+    if ( sets -> has_set_bonus( DEATH_KNIGHT_BLOOD, T21, B2 ) )
+    {
+      cooldown.dancing_rune_weapon -> adjust( timespan_t::from_millis( find_spell( 251876 ) -> effectN( 1 ).base_value() ), false );
+    }
   }
 
   absorbed = absorb_pct * state -> result_amount;
-
-  buffs.bone_shield -> decrement( n_stacks );
-  cooldown.bone_shield_icd -> start();
-
-  if ( n_stacks > 0 && sets -> has_set_bonus( DEATH_KNIGHT_BLOOD, T21, B2 ) )
-  {
-    cooldown.dancing_rune_weapon -> adjust( timespan_t::from_millis( find_spell( 251876 ) -> effectN( 1 ).base_value() ), false );
-  }
+  
+  
 
   return absorbed;
 }
@@ -8677,8 +8788,8 @@ void death_knight_t::init_absorb_priority()
                                   std::bind( &death_knight_t::bone_shield_handler, this, std::placeholders::_1 ) ) ) );
 
     // TODO: What is the absorb ordering for blood dks?
-    absorb_priority.push_back( 206977 ); // Blood Mirror
     absorb_priority.push_back( 195181 ); // Bone Shield (NYI)
+    absorb_priority.push_back( 206977 ); // Blood Mirror
     //absorb_priority.push_back( 77535  ); // Blood Shield
     //absorb_priority.push_back( 219809 ); // Tombstone
   }
@@ -9276,7 +9387,12 @@ inline double death_knight_t::runes_per_second() const
   // Runic corruption doubles rune regeneration speed
   if ( buffs.runic_corruption -> check() )
   {
-    rps *= 2.0;
+    rps *= 1.0 + find_spell( 51460 ) -> effectN( 1 ).percent();
+  }
+
+  if ( buffs.t21_4p_blood -> check() )
+  {
+    rps *= 1.0 + find_spell( 253381 ) -> effectN( 1 ).percent();
   }
 
   return rps;
@@ -9288,7 +9404,12 @@ inline double death_knight_t::rune_regen_coefficient() const
   // Runic corruption doubles rune regeneration speed
   if ( buffs.runic_corruption -> check() )
   {
-    coeff *= .5;
+    coeff /= 1.0 + find_spell( 51460 ) -> effectN( 1 ).percent();
+  }
+
+  if ( buffs.t21_4p_blood -> check() )
+  {
+    coeff /= 1.0 + find_spell( 253381 ) -> effectN( 1 ).percent();
   }
 
   return coeff;
@@ -9719,8 +9840,35 @@ struct lanathels_lament_t : public scoped_actor_callback_t<death_knight_t>
   lanathels_lament_t() : super( DEATH_KNIGHT )
   { }
 
-  void manipulate( death_knight_t* p, const special_effect_t& ) override
+  void manipulate( death_knight_t* p, const special_effect_t& e ) override
   { p -> legendary.lanathels_lament = p -> find_spell( 212975 ); }
+};
+
+struct rattlegore_bone_legplates_t : public scoped_actor_callback_t<death_knight_t>
+{
+  rattlegore_bone_legplates_t() : super( DEATH_KNIGHT )
+  { }
+
+  void manipulate( death_knight_t* p, const special_effect_t& e ) override
+  { p -> legendary.rattlegore_bone_legplates = e.driver(); }
+};
+
+struct soulflayers_corruption_t : public scoped_actor_callback_t<death_knight_t>
+{
+  soulflayers_corruption_t() : super( DEATH_KNIGHT )
+  { }
+
+  void manipulate( death_knight_t* p, const special_effect_t& e ) override
+  { p -> legendary.soulflayers_corruption = e.driver(); }
+};
+
+struct shackles_of_bryndaor_t : public scoped_actor_callback_t<death_knight_t>
+{
+  shackles_of_bryndaor_t() : super( DEATH_KNIGHT )
+  { }
+
+  void manipulate( death_knight_t* p, const special_effect_t& e ) override
+  { p -> legendary.shackles_of_bryndaor = e.driver(); }
 };
 
 struct death_knight_module_t : public module_t {
@@ -9752,6 +9900,8 @@ struct death_knight_module_t : public module_t {
     unique_gear::register_special_effect( 212216, seal_of_necrofantasia_t() );
     unique_gear::register_special_effect( 216059, perseverance_of_the_ebon_martyr_t() );
     unique_gear::register_special_effect( 212974, lanathels_lament_t() );
+    unique_gear::register_special_effect( 205816, rattlegore_bone_legplates_t() );
+    unique_gear::register_special_effect( 209228, shackles_of_bryndaor_t() );
     // 7.1.5
     unique_gear::register_special_effect( 235605, consorts_cold_core_t() );
     unique_gear::register_special_effect( 235556, death_march_t() );
@@ -9763,6 +9913,7 @@ struct death_knight_module_t : public module_t {
     // 7.2.5
     unique_gear::register_special_effect( 235592, cold_heart_t() );
     unique_gear::register_special_effect( 235592, cold_heart_buff_t(), true );
+    unique_gear::register_special_effect( 248066, soulflayers_corruption_t() );
   }
 
   void register_hotfixes() const override
