@@ -12,7 +12,9 @@
 // - Support some legendaries :
 //    Implement rattlegore's RP cap increase
 // - Heart Strike looks like it deals slightly too much damage
-// - Dancing Rune Weapon damage is still underestimated
+// - Dancing Rune Weapon damage isn't completely accurate, could be AP inheritance ?
+// - Blood Feast
+// - Archimonde's Hatred Reborn when
 // Frost
 // - Implement Inexorable Assault ? maybe ? somehow ?
 
