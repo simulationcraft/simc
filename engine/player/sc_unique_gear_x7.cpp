@@ -119,6 +119,7 @@ namespace item
   void norgannons_prowess( special_effect_t&           );
   void prototype_personnel_decimator( special_effect_t& );
   void acrid_catalyst_injector( special_effect_t&      );
+  void vitality_resonator( special_effect_t&           );
 
   // 7.2.0 Dungeon
   void dreadstone_of_endless_shadows( special_effect_t& );
@@ -1973,6 +1974,61 @@ void item::acrid_catalyst_injector( special_effect_t& effect )
     if ( prev == 0 ) cb -> deactivate();
     if ( prev == 1 ) cb -> activate();
   };
+}
+
+// Vitality Resonator ======================================================
+struct reverberating_vitality_t : public proc_spell_t
+{
+  stat_buff_t* buff;
+
+  const double max_amount;
+  double amount;
+
+  reverberating_vitality_t( const special_effect_t& effect, stat_buff_t* buff_ ) :
+    proc_spell_t( effect ), buff( buff_ ),
+    max_amount( effect.driver() -> effectN( 2 ).average( effect.item ) ), amount( 0.0 )
+  { }
+
+  virtual timespan_t travel_time() const override
+  {
+    return timespan_t::from_seconds( 0.5 );
+  }
+
+  virtual void execute() override
+  {
+    proc_spell_t::execute();
+
+    // 100% Int at 100% hp, 50% Int at 0% hp, linear between.
+    amount = max_amount;
+    amount *= 0.5 + target -> health_percentage() * 0.005;
+  }
+
+  virtual void impact( action_state_t* s ) override
+  {
+    proc_spell_t::impact( s );
+
+    // TODO: Is there a better way to express this?
+    buff -> stats[ 0 ].amount = amount;
+    buff -> trigger();
+  }
+};
+
+void item::vitality_resonator( special_effect_t& effect )
+{
+  // Automatically created buff ignores the delay, disable it.
+  effect.disable_buff();
+
+  auto p = effect.player;
+
+  auto buff = debug_cast<stat_buff_t*>( buff_t::find( p, "reverberating_vitality" ) );
+  if ( ! buff )
+  {
+    buff = stat_buff_creator_t( p, "reverberating_vitality", p -> find_spell( 253258 ), effect.item )
+      .add_stat( STAT_INTELLECT, effect.driver() -> effectN( 2 ).average( effect.item ) )
+      .cd( timespan_t::zero() );
+  }
+
+  effect.execute_action = create_proc_action<reverberating_vitality_t>( "reverberating_vitality", effect, buff );
 }
 
 // Toe Knee's Promise ======================================================
@@ -6109,6 +6165,7 @@ void unique_gear::register_special_effects_x7()
   register_special_effect( 256827, item::norgannons_prowess        );
   register_special_effect( 253242, item::prototype_personnel_decimator );
   register_special_effect( 253259, item::acrid_catalyst_injector   );
+  register_special_effect( 253258, item::vitality_resonator        );
 
   /* Legion 7.2.0 Dungeon */
   register_special_effect( 238498, item::dreadstone_of_endless_shadows );
