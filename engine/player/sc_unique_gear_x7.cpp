@@ -118,6 +118,7 @@ namespace item
   void khazgoroths_courage( special_effect_t&          );
   void norgannons_prowess( special_effect_t&           );
   void prototype_personnel_decimator( special_effect_t& );
+  void acrid_catalyst_injector( special_effect_t&      );
 
   // 7.2.0 Dungeon
   void dreadstone_of_endless_shadows( special_effect_t& );
@@ -1897,6 +1898,78 @@ void item::prototype_personnel_decimator( special_effect_t& effect )
   effect.execute_action = create_proc_action<personnel_decimator_t>( "personnel_decimator", effect );
 
   new personnel_decimator_driver_t( effect );
+}
+
+// Acrid Catalyst Injector ===================================================
+struct injector_proc_cb_t : public dbc_proc_callback_t
+{
+  const std::vector<stat_buff_t*> small_buffs;
+  stat_buff_t* large_buff;
+
+  injector_proc_cb_t( const special_effect_t& effect,
+    const std::vector<stat_buff_t*>& small_buffs_, stat_buff_t* large_buff_ ) :
+    dbc_proc_callback_t( effect.item, effect ), small_buffs( small_buffs_ ), large_buff( large_buff_ )
+  { }
+
+  void execute( action_t* /* a */, action_state_t* /* state */ ) override
+  {
+    auto buff_index = static_cast<size_t>( rng().range( 0, small_buffs.size() ) );
+    auto buff = small_buffs[ buff_index ];
+
+    buff -> trigger();
+    if ( buff -> check() == buff -> max_stack() )
+    {
+      range::for_each( small_buffs, [] ( stat_buff_t* b ) { b -> expire(); } );
+      large_buff -> trigger();
+    }
+  }
+};
+
+void item::acrid_catalyst_injector( special_effect_t& effect )
+{
+  auto p = effect.player;
+
+  auto small_amount = effect.driver() -> effectN( 2 ).average( effect.item );
+  auto large_amount = effect.driver() -> effectN( 3 ).average( effect.item );
+
+  // Buffs
+  auto crit = debug_cast<stat_buff_t*>( buff_t::find( p, "brutality_of_the_legion" ) );
+  if ( ! crit )
+  {
+    crit = stat_buff_creator_t( p, "brutality_of_the_legion", p -> find_spell( 255742 ), effect.item )
+      .add_stat( STAT_CRIT_RATING, small_amount );
+  }
+
+  auto haste = debug_cast<stat_buff_t*>( buff_t::find( p, "fervor_of_the_legion" ) );
+  if ( ! haste )
+  {
+    haste = stat_buff_creator_t( p, "fervor_of_the_legion", p -> find_spell( 253261 ), effect.item )
+      .add_stat( STAT_HASTE_RATING, small_amount );
+  }
+
+  auto mastery = debug_cast<stat_buff_t*>( buff_t::find( p, "malice_of_the_legion" ) );
+  if ( ! mastery )
+  {
+    mastery = stat_buff_creator_t( p, "malice_of_the_legion", p -> find_spell( 255744 ), effect.item )
+      .add_stat( STAT_MASTERY_RATING, small_amount );
+  }
+
+  auto all = debug_cast<stat_buff_t*>( buff_t::find( p, "cycle_of_the_legion" ) );
+  if ( ! all )
+  {
+    all = stat_buff_creator_t( p, "cycle_of_the_legion", p -> find_spell( 253260 ), effect.item )
+      .add_stat( STAT_CRIT_RATING,    large_amount )
+      .add_stat( STAT_HASTE_RATING,   large_amount )
+      .add_stat( STAT_MASTERY_RATING, large_amount );
+  }
+
+  dbc_proc_callback_t* cb = new injector_proc_cb_t( effect, { crit, haste, mastery }, all );
+
+  all -> stack_change_callback = [ cb ] ( buff_t*, int prev, int cur )
+  {
+    if ( prev == 0 ) cb -> deactivate();
+    if ( prev == 1 ) cb -> activate();
+  };
 }
 
 // Toe Knee's Promise ======================================================
@@ -6032,6 +6105,7 @@ void unique_gear::register_special_effects_x7()
   register_special_effect( 256825, item::khazgoroths_courage       );
   register_special_effect( 256827, item::norgannons_prowess        );
   register_special_effect( 253242, item::prototype_personnel_decimator );
+  register_special_effect( 253259, item::acrid_catalyst_injector   );
 
   /* Legion 7.2.0 Dungeon */
   register_special_effect( 238498, item::dreadstone_of_endless_shadows );
