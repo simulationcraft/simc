@@ -451,6 +451,7 @@ public:
     buff_t* rune_tap;
     stat_buff_t* riposte;
     buff_t* shadow_of_death;
+    buff_t* vampiric_aura;
 
     haste_buff_t* icy_talons;
     buff_t* blighted_rune_weapon;
@@ -1927,16 +1928,6 @@ struct ghoul_pet_t : public dt_pet_t
     gnaw_t( ghoul_pet_t* player, const std::string& options_str ) :
       super( player, "gnaw", player -> find_spell( 91800 ), options_str, false )
     { }
-    /*
-    void execute() override
-    {
-      dt_melee_ability_t::execute();
-      if ( p() -> o() -> legendary.sephuzs_secret != nullptr )
-      {
-        p() -> o() -> buffs.sephuzs_secret -> trigger();
-      }
-    }
-    */
   };
 
   struct monstrous_blow_t : public dt_melee_ability_t<ghoul_pet_t>
@@ -1946,16 +1937,6 @@ struct ghoul_pet_t : public dt_pet_t
     {
       cooldown = player -> get_cooldown( "gnaw" ); // Shares CD with Gnaw
     }
-    /*
-    void execute() override
-    {
-      dt_melee_ability_t::execute();
-      if ( p() -> o() -> legendary.sephuzs_secret != nullptr )
-      {
-        p() -> o() -> buffs.sephuzs_secret -> trigger();
-      }
-    }
-    */
   };
 
   struct sweeping_claws_t : public dt_melee_ability_t<ghoul_pet_t>
@@ -2041,17 +2022,6 @@ struct sludge_belcher_pet_t : public dt_pet_t
     smash_t( sludge_belcher_pet_t* player, const std::string& options_str ):
       super( player, "smash", player -> find_spell( 212332 ), options_str, false )
     { }
-
-    /*
-    void execute() override
-    {
-      dt_melee_ability_t::execute();
-      if ( p() -> o() -> legendary.sephuzs_secret != nullptr )
-      {
-        p() -> o() -> buffs.sephuzs_secret -> trigger();
-      }
-    }
-    */
   };
 
   struct vile_gas_t : public dt_melee_ability_t<sludge_belcher_pet_t>
@@ -2083,17 +2053,6 @@ struct sludge_belcher_pet_t : public dt_pet_t
     {
       cooldown = player -> get_cooldown( "smash" ); // Shares CD with Smash
     }
-
-    /*
-    void execute() override
-    {
-      dt_melee_ability_t::execute();
-      if ( p() -> o() -> legendary.sephuzs_secret != nullptr )
-      {
-        p() -> o() -> buffs.sephuzs_secret -> trigger();
-      }
-    }
-    */
   };
 
   sludge_belcher_pet_t( death_knight_t* owner ) : dt_pet_t( owner, "sludge_belcher" )
@@ -2565,7 +2524,9 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
   {
     blood_plague_t( dancing_rune_weapon_pet_t* p ) :
       drw_spell_t( p, "blood_plague", p -> owner -> find_spell( 55078 ) )  // Also check spell id 55078
-    { }
+    {
+      base_multiplier *= 1.0 + p -> o() -> spec.blood_death_knight -> effectN( 2 ).percent();
+    }
   };
 
   struct blood_boil_t: public drw_spell_t
@@ -2577,7 +2538,9 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
       cooldown -> duration = timespan_t::zero();
       cooldown -> charges = 0;
 
-      base_multiplier *= 1.0 + p -> o() -> spec.blood_death_knight -> effectN( 5 ).percent();
+      base_multiplier *= 1.0 + p -> o() -> spec.blood_death_knight -> effectN( 1 ).percent();
+      base_multiplier *= 1.0 + p -> o() -> spec.blood_death_knight -> effectN( 6 ).percent();
+
     }
 
     void impact( action_state_t* s ) override
@@ -2598,7 +2561,9 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
   {
     deaths_caress_t( dancing_rune_weapon_pet_t* p ) :
       drw_spell_t( p, "deaths_caress", p -> owner -> find_specialization_spell( "Death's Caress" ) )
-    { }
+    {
+      base_multiplier *= 1.0 + p -> o() -> spec.blood_death_knight -> effectN( 1 ).percent();
+    }
 
     void impact( action_state_t* s ) override
     {
@@ -2619,6 +2584,7 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
     {
       weapon = &( p -> main_hand_weapon );
       base_multiplier *= 1.0 + p -> o() -> spec.blood_death_knight -> effectN( 1 ).percent();
+      base_multiplier *= 1.0 + p -> o() -> spec.blood_death_knight -> effectN( 3 ).percent();
     }
   };
 
@@ -2629,6 +2595,7 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
     {
       weapon = &( p -> main_hand_weapon );
       aoe = 2;
+      base_multiplier *= 1.0 + p -> o() -> spec.blood_death_knight -> effectN( 1 ).percent();
     }
   };
 
@@ -2638,6 +2605,7 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
       drw_attack_t( p, "marrowrend", p -> owner -> find_specialization_spell( "Marrowrend" ) )
     {
       weapon = &( p -> main_hand_weapon );
+      base_multiplier *= 1.0 + p -> o() -> spec.blood_death_knight -> effectN( 1 ).percent();
     }
   };
 
@@ -2648,6 +2616,8 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
     {
       weapon = &( p -> main_hand_weapon );
       aoe = -1;
+      base_multiplier *= 1.0 + p -> o() -> spec.blood_death_knight -> effectN( 1 ).percent();
+      base_multiplier *= 1.0 + p -> o() -> spec.blood_death_knight -> effectN( 3 ).percent();
     }
   };
 
@@ -5072,6 +5042,10 @@ struct death_strike_t : public death_knight_melee_attack_t
 
     m *= 1.0 + p() -> buffs.skullflowers_haemostasis -> stack_value();
 
+    // Would be nice to have spell data for that blizzard, thanks
+    if ( p() -> buffs.blood_shield -> check() && p() -> artifact.unending_thirst.rank() )
+      m *= 1.0 + 0.25;
+
     return m;
   }
 
@@ -5543,6 +5517,9 @@ struct consumption_t : public death_knight_melee_attack_t
   void execute() override
   {
     death_knight_melee_attack_t::execute();
+
+    if ( p() -> artifact.vampiric_aura.rank() )
+      p() -> buffs.vampiric_aura -> trigger();
 
     if ( p() -> buffs.dancing_rune_weapon -> check() )
     {
@@ -8651,6 +8628,9 @@ void death_knight_t::create_buffs()
 	  .default_value( talent.hungering_rune_weapon -> effectN( 3 ).percent() )
 	  .trigger_spell( talent.hungering_rune_weapon );
   
+  buffs.vampiric_aura = buff_creator_t( this, "vampiric_aura" )
+    .spell( find_spell( 238698 ) );
+
   buffs.t20_2pc_unholy = buff_creator_t( this, "master_of_ghouls" )
     .spell( find_spell( 246995 ) )
     .trigger_spell( sets -> set( DEATH_KNIGHT_UNHOLY, T20, B2 ) )
@@ -8996,11 +8976,12 @@ double death_knight_t::composite_leech() const
 {
   double leech = player_t::composite_leech();
 
-  // TODO: Additive or multiplicative?
-/*  if ( buffs.lichborne -> up() )
-  {
-    leech += buffs.lichborne -> data().effectN( 1 ).percent();
-  }*/
+  if ( buffs.blood_shield -> check() && artifact.unending_thirst.rank() )
+    // Would be nice to have spell data blizzard, ty
+    leech += 0.25;
+
+  if ( buffs.vampiric_aura -> check() )
+    leech += find_spell( 238698 ) -> effectN( 1 ).percent();
 
   return leech;
 }
@@ -9117,7 +9098,9 @@ double death_knight_t::composite_player_pet_damage_multiplier( const action_stat
 
   m *= 1.0 + artifact.soulbiter.percent();
   m *= 1.0 + artifact.fleshsearer.percent();
+  m *= 1.0 + artifact.sanguinary_affinity.percent();
   m *= 1.0 + artifact.cunning_of_the_ebon_blade.percent();
+  m *= 1.0 + artifact.fortitude_of_the_ebon_blade.percent();
 
   m *= 1.0 + spec.unholy_death_knight -> effectN( 3 ).percent();
 
