@@ -512,6 +512,7 @@ struct actor_target_data_t : public actor_pair_t, private noncopyable
     buff_t* solar_collapse;
     buff_t* volatile_magic;
     buff_t* maddening_whispers;
+    buff_t* shadow_blades;
   } debuff;
 
   struct atd_dot_t

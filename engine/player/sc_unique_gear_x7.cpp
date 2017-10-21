@@ -121,6 +121,7 @@ namespace item
   void acrid_catalyst_injector( special_effect_t&      );
   void vitality_resonator( special_effect_t&           );
   void terminus_signaling_beacon( special_effect_t&    );
+  void sheath_of_asara( special_effect_t&              );
 
   // 7.2.0 Dungeon
   void dreadstone_of_endless_shadows( special_effect_t& );
@@ -2079,6 +2080,97 @@ struct legion_bombardment_t : public proc_spell_t
 void item::terminus_signaling_beacon( special_effect_t& effect )
 {
   effect.execute_action = create_proc_action<legion_bombardment_t>( "legion_bombardment", effect );
+}
+
+// Sheath of Asara
+// TODO: In-game debuff is 255870, buff is 255856. But the spell data contains nothing of relevance.
+struct shadow_blades_debuff_t : public buff_t
+{
+  shadow_blades_debuff_t( const actor_pair_t& p, const special_effect_t& source_effect ) :
+    buff_t( buff_creator_t( p, "shadow_blades", source_effect.player -> find_spell( 253265 ), source_effect.item ) )
+  {
+    set_default_value( data().effectN( 2 ).percent() );
+  }
+};
+
+struct shadow_blades_constructor_t : public item_targetdata_initializer_t
+{
+  shadow_blades_constructor_t( unsigned iid, const std::vector<slot_e>& s ) :
+    item_targetdata_initializer_t( iid, s )
+  { }
+
+  void operator()( actor_target_data_t* td ) const override
+  {
+    const special_effect_t* effect = find_effect( td -> source );
+
+    if ( ! effect )
+    {
+      td -> debuff.shadow_blades = buff_creator_t( *td, "shadow_blades" );
+    }
+    else
+    {
+      assert( ! td -> debuff.shadow_blades );
+
+      td -> debuff.shadow_blades = new shadow_blades_debuff_t( *td, *effect );
+      td -> debuff.shadow_blades -> reset();
+    }
+  }
+};
+
+// TODO: Travel time?
+struct shadow_blade_t : public proc_spell_t
+{
+  shadow_blade_t( const special_effect_t& effect ) :
+    proc_spell_t( "shadow_blade", effect.player, effect.player -> find_spell( 257702 ), effect.item )
+  {
+    base_dd_min = base_dd_max = effect.driver() -> effectN( 2 ).average( effect.item );
+  }
+
+  virtual double composite_target_multiplier( player_t* target ) const override
+  {
+    double ctm = proc_spell_t::composite_target_multiplier( target );
+
+    ctm *= 1.0 + player -> get_target_data( target ) -> debuff.shadow_blades -> check_stack_value();
+
+    return ctm;
+  }
+
+  virtual void impact( action_state_t* s ) override
+  {
+    proc_spell_t::impact( s );
+
+    player -> get_target_data( target ) -> debuff.shadow_blades -> trigger();
+  }
+};
+
+struct shadow_blades_buff_t : public buff_t
+{
+  action_t* shadow_blade;
+  int blade_count;
+
+  shadow_blades_buff_t( const special_effect_t& effect ) :
+    buff_t( buff_creator_t( effect.player, "shadow_blades", effect.player -> find_spell( 253264 ), effect.item ) ),
+    shadow_blade( create_proc_action<shadow_blade_t>( "shadow_blade", effect ) ),
+    blade_count( effect.driver() -> effectN( 3 ).base_value() )
+  { }
+
+  virtual void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
+  {
+    buff_t::expire_override( expiration_stacks, remaining_duration );
+
+    // TODO: Looks like the pulse time isn't anywhere in spell data.
+    make_event<ground_aoe_event_t>( *sim, player, ground_aoe_params_t()
+      .pulse_time( timespan_t::from_seconds( 0.25 ) )
+      .action( shadow_blade )
+      .target( player -> target )
+      .n_pulses( blade_count ), true );
+  }
+};
+
+void item::sheath_of_asara( special_effect_t& effect )
+{
+  effect.custom_buff = new shadow_blades_buff_t( effect );
+  new dbc_proc_callback_t( effect.item, effect );
 }
 
 // Toe Knee's Promise ======================================================
@@ -6217,6 +6309,7 @@ void unique_gear::register_special_effects_x7()
   register_special_effect( 253259, item::acrid_catalyst_injector   );
   register_special_effect( 253258, item::vitality_resonator        );
   register_special_effect( 255724, item::terminus_signaling_beacon );
+  register_special_effect( 253263, item::sheath_of_asara           );
 
   /* Legion 7.2.0 Dungeon */
   register_special_effect( 238498, item::dreadstone_of_endless_shadows );
@@ -6308,4 +6401,5 @@ void unique_gear::register_target_data_initializers_x7( sim_t* sim )
   sim -> register_target_data_initializer( bough_of_corruption_constructor_t( 139336, trinkets ) );
   sim -> register_target_data_initializer( mrrgrias_favor_constructor_t( 142160, trinkets ) ) ;
   sim -> register_target_data_initializer( fury_of_the_burning_sun_constructor_t( 140801, trinkets ) );
+  sim -> register_target_data_initializer( shadow_blades_constructor_t( 151971, trinkets ) );
 }
