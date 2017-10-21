@@ -120,6 +120,7 @@ namespace item
   void prototype_personnel_decimator( special_effect_t& );
   void acrid_catalyst_injector( special_effect_t&      );
   void vitality_resonator( special_effect_t&           );
+  void terminus_signaling_beacon( special_effect_t&    );
 
   // 7.2.0 Dungeon
   void dreadstone_of_endless_shadows( special_effect_t& );
@@ -2029,6 +2030,55 @@ void item::vitality_resonator( special_effect_t& effect )
   }
 
   effect.execute_action = create_proc_action<reverberating_vitality_t>( "reverberating_vitality", effect, buff );
+}
+
+// Terminus Signalling Beacon ==================================================
+struct legion_bombardment_t : public proc_spell_t
+{
+  struct legion_bombardment_tick_t : public proc_spell_t
+  {
+    legion_bombardment_tick_t( const special_effect_t& effect ) :
+      proc_spell_t( "legion_bombardment_tick", effect.player, effect.player -> find_spell( 255712 ), effect.item )
+    {
+      base_dd_min = base_dd_max = player -> find_spell( 256325 ) -> effectN( 1 ).average( effect.item );
+      aoe = -1;
+    }
+  };
+
+  action_t* tick;
+
+  legion_bombardment_t( const special_effect_t& effect ) :
+    proc_spell_t( effect ),
+    tick( create_proc_action<legion_bombardment_tick_t>( "legion_bombardment_tick", effect ) )
+  { }
+
+  virtual timespan_t travel_time() const override
+  {
+    // Doesn't seem to vary with distance.
+    return timespan_t::from_seconds( 2.0 );
+  }
+
+  virtual void impact( action_state_t* s ) override
+  {
+    proc_spell_t::impact( s );
+
+    int pulses = 6;
+
+    // If the target is too close, the ship destroys itself after 3 ticks.
+    if ( player -> get_player_distance( *target ) < tick -> radius )
+      pulses = 3;
+
+    // TODO: Spell data is totally unhelpful. Seems to be 6 ticks over 6 seconds in game.
+    make_event<ground_aoe_event_t>( *sim, player, ground_aoe_params_t()
+      .action( tick )
+      .target( target )
+      .n_pulses( pulses ) );
+  }
+};
+
+void item::terminus_signaling_beacon( special_effect_t& effect )
+{
+  effect.execute_action = create_proc_action<legion_bombardment_t>( "legion_bombardment", effect );
 }
 
 // Toe Knee's Promise ======================================================
@@ -6166,6 +6216,7 @@ void unique_gear::register_special_effects_x7()
   register_special_effect( 253242, item::prototype_personnel_decimator );
   register_special_effect( 253259, item::acrid_catalyst_injector   );
   register_special_effect( 253258, item::vitality_resonator        );
+  register_special_effect( 255724, item::terminus_signaling_beacon );
 
   /* Legion 7.2.0 Dungeon */
   register_special_effect( 238498, item::dreadstone_of_endless_shadows );
