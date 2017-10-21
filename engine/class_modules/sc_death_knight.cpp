@@ -496,6 +496,7 @@ public:
     cooldown_t* pillar_of_frost;
     cooldown_t* sindragosas_fury;
     cooldown_t* vampiric_blood;
+    cooldown_t* blood_tap;
   } cooldown;
 
   // Active Spells
@@ -881,7 +882,8 @@ public:
     cooldown.icecap          = get_cooldown( "icecap" );
     cooldown.pillar_of_frost = get_cooldown( "pillar_of_frost" );
     cooldown.sindragosas_fury= get_cooldown( "sindragosas_fury" );
-    cooldown.vampiric_blood = get_cooldown( "vampiric_blood" );
+    cooldown.vampiric_blood  = get_cooldown( "vampiric_blood" );
+    cooldown.blood_tap       = get_cooldown( "blood_tap" );
 
     talent_points.register_validity_fn( [ this ] ( const spell_data_t* spell )
     {
@@ -6484,6 +6486,7 @@ struct tombstone_t : public death_knight_spell_t
     {
       p() -> cooldown.dancing_rune_weapon -> adjust( charges * timespan_t::from_millis( p() -> find_spell( 251876 ) -> effectN( 1 ).base_value() ), false );
     }
+    p() -> cooldown.blood_tap -> adjust( timespan_t::from_seconds( -2.0 * charges ), false );
   }
 };
 
@@ -8112,7 +8115,7 @@ std::string death_knight_t::default_potion() const
                               ( true_level >= 80 ) ? "golemblood_potion" :
                               "disabled";
 
-  std::string blood_potion = ( true_level > 100 ) ? "prolonged_power" :
+  std::string blood_potion = ( true_level > 100 ) ? "old_war" :
                               ( true_level >= 90 ) ? "draenic_strength" :
                               ( true_level >= 85 ) ? "mogu_power" :
                               ( true_level >= 80 ) ? "golemblood_potion" :
@@ -8142,7 +8145,11 @@ std::string death_knight_t::default_food() const
                             ( true_level >= 80 ) ? "seafood_magnifique_feast" :
                             "disabled";
 
-  std::string blood_food = "disabled";
+  std::string blood_food =  ( true_level > 100 ) ? "lavish_suramar_feast" :
+                            ( true_level >  90 ) ? "pickled_eel" :
+                            ( true_level >= 85 ) ? "sea_mist_rice_noodles" :
+                            ( true_level >= 80 ) ? "seafood_magnifique_feast" :
+                            "disabled";
 
   switch ( specialization() )
   {
@@ -8665,7 +8672,7 @@ void death_knight_t::init_gains()
   gains.rune                             = get_gain( "Rune Regeneration"          );
   gains.runic_empowerment                = get_gain( "Runic Empowerment"          );
   gains.empower_rune_weapon              = get_gain( "Empower Rune Weapon"        );
-  gains.blood_tap                        = get_gain( "Blood tap"                  );
+  gains.blood_tap                        = get_gain( "Blood Tap"                  );
   gains.rapid_decomposition              = get_gain( "Rapid Decompostion"         );
   gains.rc                               = get_gain( "runic_corruption_all"       );
   gains.runic_attenuation                = get_gain( "Runic Attenuation"          );
@@ -8728,6 +8735,7 @@ double death_knight_t::bone_shield_handler( const action_state_t* state ) const
     if ( sets -> has_set_bonus( DEATH_KNIGHT_BLOOD, T21, B2 ) )
     {
       cooldown.dancing_rune_weapon -> adjust( timespan_t::from_millis( find_spell( 251876 ) -> effectN( 1 ).base_value() ), false );
+      cooldown.blood_tap -> adjust( timespan_t::from_seconds( -2.0 ), false );
     }
 
     cooldown.bone_shield_icd -> start();
@@ -8749,13 +8757,12 @@ double death_knight_t::bone_shield_handler( const action_state_t* state ) const
     if ( sets -> has_set_bonus( DEATH_KNIGHT_BLOOD, T21, B2 ) )
     {
       cooldown.dancing_rune_weapon -> adjust( timespan_t::from_millis( find_spell( 251876 ) -> effectN( 1 ).base_value() ), false );
+      cooldown.blood_tap -> adjust( timespan_t::from_seconds( -2.0 ), false );
     }
   }
 
   absorbed = absorb_pct * state -> result_amount;
   
-  
-
   return absorbed;
 }
 
