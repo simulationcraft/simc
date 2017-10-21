@@ -1993,7 +1993,7 @@ struct reverberating_vitality_t : public proc_spell_t
 
   virtual timespan_t travel_time() const override
   {
-    return timespan_t::from_seconds( 0.5 );
+    return timespan_t::from_seconds( data().missile_speed() );
   }
 
   virtual void execute() override
