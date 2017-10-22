@@ -777,7 +777,8 @@ void print_text_performance( FILE* file, sim_t* sim )
       "  SimSeconds    = %.0f\n"
       "  CpuSeconds    = %.3f\n"
       "  WallSeconds   = %.3f\n"
-      "  MergeSeconds  = %.3f\n"
+      "  MergeSeconds  = %.6f\n"
+      "  InitSeconds   = %.6f\n"
       "  SpeedUp       = %.0f\n"
       "  EndTime       = %s (%.0f)\n\n",
       sim->rng().name(), sim->deterministic ? " (deterministic)" : "",
@@ -797,6 +798,7 @@ void print_text_performance( FILE* file, sim_t* sim )
       sim->iterations * sim->simulation_length.mean(), sim->elapsed_cpu,
       sim->elapsed_time,
       sim->merge_time,
+      sim->init_time,
       sim->iterations * sim->simulation_length.mean() / sim->elapsed_cpu,
       date_str, static_cast<double>( cur_time ) );
 #ifdef EVENT_QUEUE_DEBUG
@@ -1333,11 +1335,12 @@ void print_text_report( FILE* file, sim_t* sim, bool detail )
 
   sim -> profilesets.output( *sim, file );
 
+  print_text_performance( file, sim );
+
   if ( detail )
   {
     print_text_waiting_all( file, sim );
     print_text_iteration_data( file, sim );
-    print_text_performance( file, sim );
     print_text_scale_factors( file, sim );
     print_text_reference_dps( file, sim );
     print_text_monitor_cpu( file, sim );

@@ -1400,9 +1400,9 @@ sim_t::sim_t( sim_t* p, int index ) :
   elapsed_time( 0.0 ),
   work_done( 0 ),
   iteration_dmg( 0 ), priority_iteration_dmg( 0 ), iteration_heal( 0 ), iteration_absorb( 0 ),
-  merge_time( 0 ),
   raid_dps(), total_dmg(), raid_hps(), total_heal(), total_absorb(), raid_aps(),
   simulation_length( "Simulation Length", false ),
+  merge_time( 0 ),
   report_iteration_data( 0.025 ), min_report_iteration_data( -1 ),
   report_progress( 1 ),
   bloodlust_percent( 25 ), bloodlust_time( timespan_t::from_seconds( 0.5 ) ),
@@ -2341,6 +2341,8 @@ bool sim_t::init_actor_pets()
 
 bool sim_t::init()
 {
+  auto start = std::chrono::high_resolution_clock::now();
+
   if ( initialized )
     return true;
 
@@ -2515,6 +2517,9 @@ bool sim_t::init()
   profilesets.initialize( this );
 
   initialized = true;
+
+  auto end = std::chrono::high_resolution_clock::now();
+  init_time = std::chrono::duration<double, std::chrono::seconds::period>( end - start ).count();
 
   return canceled ? false : true;
 }
@@ -2726,6 +2731,7 @@ void sim_t::merge( sim_t& other_sim )
   range::append( iteration_data, other_sim.iteration_data );
   auto end = std::chrono::high_resolution_clock::now();
   merge_time += std::chrono::duration<double, std::chrono::seconds::period>( end - start ).count();
+  init_time += other_sim.init_time;
 }
 
 /// merge all sims together
