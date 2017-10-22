@@ -562,33 +562,33 @@ public:
     const spell_data_t* icebound_fortitude;
 
     // Blood
+    const spell_data_t* veteran_of_the_third_war;
+    const spell_data_t* riposte;
     const spell_data_t* crimson_scourge;
     const spell_data_t* blood_boil;
     const spell_data_t* deaths_caress;
     const spell_data_t* heart_strike;
     const spell_data_t* marrowrend;
     const spell_data_t* vampiric_blood;
-    const spell_data_t* veteran_of_the_third_war;
-    const spell_data_t* riposte;
 
     // Frost
     const spell_data_t* frost_fever;
-    const spell_data_t* remorseless_winter;
-    const spell_data_t* runic_empowerment;
     const spell_data_t* killing_machine;
+    const spell_data_t* runic_empowerment;
     const spell_data_t* rime;
     const spell_data_t* empower_rune_weapon;
     const spell_data_t* pillar_of_frost;
+    const spell_data_t* remorseless_winter;
 
     // Unholy
     const spell_data_t* festering_wound;
     const spell_data_t* runic_corruption;
-    const spell_data_t* outbreak;
     const spell_data_t* sudden_doom;
+    const spell_data_t* army_of_the_dead;
     const spell_data_t* dark_transformation;
     const spell_data_t* death_coil;
+    const spell_data_t* outbreak;
     const spell_data_t* scourge_strike;
-    const spell_data_t* army_of_the_dead;
 
   } spec;
 
@@ -619,7 +619,7 @@ public:
     const spell_data_t* avalanche;
     
     // Tier 4 
-    const spell_data_t* inexorable_assault; // Not yet implemented, new to 7.3 PTR
+    const spell_data_t* inexorable_assault; // Not yet implemented
     const spell_data_t* volatile_shielding;
 
     // Tier 6
@@ -772,16 +772,18 @@ public:
   struct spells_t {
     const spell_data_t* antimagic_shell;
     const spell_data_t* death_strike;
+
+    const spell_data_t* blood_shield;
+    const spell_data_t* bone_shield;
+    const spell_data_t* dancing_rune_weapon;
+    const spell_data_t* gravewarden;
     const spell_data_t* ossuary;
     const spell_data_t* rune_master;
-    const spell_data_t* dancing_rune_weapon;
-    const spell_data_t* unholy_vigor;
-    const spell_data_t* death_coil_damage;
-    const spell_data_t* blood_shield;
-    const spell_data_t* gravewarden;
-    const spell_data_t* runic_corruption;
-    const spell_data_t* bone_shield;
     const spell_data_t* vampiric_aura;
+
+    const spell_data_t* death_coil_damage;
+    const spell_data_t* unholy_vigor;
+    const spell_data_t* runic_corruption;
 
   } spell;
 
@@ -7854,47 +7856,46 @@ void death_knight_t::init_spells()
   // Generic
   spec.plate_specialization       = find_specialization_spell( "Plate Specialization" );
   spec.death_knight               = find_spell( 137005 ); // "Death Knight" passive
-  // IBF is a spec spell, but shared between all 3 specs /shrug
+  // Shared
   spec.icebound_fortitude         = find_specialization_spell( "Icebound Fortitude" );
 
   // Blood
   spec.blood_death_knight         = find_specialization_spell( "Blood Death Knight" );
-  spec.crimson_scourge            = find_specialization_spell( "Crimson Scourge" );
+  spec.veteran_of_the_third_war   = find_specialization_spell( "Veteran of the Third War" );
+  spec.riposte                    = find_specialization_spell( "Riposte" );
   spec.blood_boil                 = find_specialization_spell( "Blood Boil" );
+  spec.crimson_scourge            = find_specialization_spell( "Crimson Scourge" );
   spec.deaths_caress              = find_specialization_spell( "Death's Caress" );
   spec.heart_strike               = find_specialization_spell( "Heart Strike" );
   spec.marrowrend                 = find_specialization_spell( "Marrowrend" );
   spec.vampiric_blood             = find_specialization_spell( "Vampiric Blood" );
-  spec.veteran_of_the_third_war   = find_specialization_spell( "Veteran of the Third War" );
-  spec.riposte                    = find_specialization_spell( "Riposte" );
 
   // Frost
-  spec.frost_fever                = find_specialization_spell( "Frost Fever" );
-  spec.remorseless_winter         = find_specialization_spell( "Remorseless Winter" );
-  spec.runic_empowerment          = find_specialization_spell( "Runic Empowerment" );
-  spec.rime                       = find_specialization_spell( "Rime" );
-  spec.killing_machine            = find_specialization_spell( "Killing Machine" );
   spec.frost_death_knight         = find_specialization_spell( "Frost Death Knight" );
+  spec.frost_fever                = find_specialization_spell( "Frost Fever" );
+  spec.rime                       = find_specialization_spell( "Rime" );
+  spec.runic_empowerment          = find_specialization_spell( "Runic Empowerment" );
+  spec.killing_machine            = find_specialization_spell( "Killing Machine" );
   spec.empower_rune_weapon        = find_specialization_spell( "Empower Rune Weapon" );
   spec.pillar_of_frost            = find_specialization_spell( "Pillar of Frost" );
+  spec.remorseless_winter         = find_specialization_spell( "Remorseless Winter" );
 
   // Unholy
+  spec.unholy_death_knight        = find_specialization_spell( "Unholy Death Knight" );
   spec.festering_wound            = find_specialization_spell( "Festering Wound" );
-  spec.outbreak                   = find_specialization_spell( "Outbreak" );
   spec.runic_corruption           = find_specialization_spell( "Runic Corruption" );
   spec.sudden_doom                = find_specialization_spell( "Sudden Doom" );
-  spec.unholy_death_knight        = find_specialization_spell( "Unholy Death Knight" );
+  spec.army_of_the_dead           = find_specialization_spell( "Army of the Dead" );
   spec.dark_transformation        = find_specialization_spell( "Dark Transformation" );
   spec.death_coil                 = find_specialization_spell( "Death Coil" );
+  spec.outbreak                   = find_specialization_spell( "Outbreak" );
   spec.scourge_strike             = find_specialization_spell( "Scourge Strike" );
-  spec.army_of_the_dead           = find_specialization_spell( "Army of the Dead" );
 
   mastery.blood_shield            = find_mastery_spell( DEATH_KNIGHT_BLOOD );
   mastery.frozen_heart            = find_mastery_spell( DEATH_KNIGHT_FROST );
   mastery.dreadblade              = find_mastery_spell( DEATH_KNIGHT_UNHOLY );
 
   // Frost Talents
-  // Will change in 7.3
   // Tier 1
   talent.shattering_strikes    = find_talent_spell( "Shattering Strikes" );
   talent.icy_talons            = find_talent_spell( "Icy Talons" );
@@ -7908,8 +7909,8 @@ void death_knight_t::init_spells()
   talent.glacial_advance       = find_talent_spell( "Glacial Advance" ); 
   talent.avalanche             = find_talent_spell( "Avalanche" );
   
-  // Tier 4 : New talent in 7.3  
-  talent.inexorable_assault    = find_talent_spell( "Inexorable Assault" );
+  // Tier 4  
+  talent.inexorable_assault    = find_talent_spell( "Inexorable Assault" ); // TODO ? NYI
   talent.volatile_shielding    = find_talent_spell( "Volatile Shielding" );
     
   // Tier 6
@@ -7960,7 +7961,7 @@ void death_knight_t::init_spells()
 
   // Tier 2
   talent.rapid_decomposition   = find_talent_spell( "Rapid Decomposition" );
-  talent.heart_of_ice          = find_talent_spell( "Heart of ice" );
+  talent.heart_of_ice          = find_talent_spell( "Heart of ice" ); // TODO : NYI
   talent.spectral_deflection   = find_talent_spell( "Spectral Deflection" );
 
   // Tier 3
@@ -8053,24 +8054,31 @@ void death_knight_t::init_spells()
   artifact.carrion_feast       = find_artifact_spell( "Carrion Feast" );
   artifact.vampiric_aura       = find_artifact_spell( "Vampiric Aura" );
   artifact.souldrinker         = find_artifact_spell( "Souldrinker" );
+  
   // Generic spells
+  // Shared
   spell.antimagic_shell        = find_class_spell( "Anti-Magic Shell" );
   spell.death_strike           = find_class_spell( "Death Strike" );
+  
+  // Blood
+  spell.blood_shield           = find_spell( 77535 );
+  spell.bone_shield            = find_spell( 195181 );
+  spell.dancing_rune_weapon    = find_spell( 81256 );
+  spell.gravewarden            = find_spell( 242010 );
   spell.ossuary                = find_spell( 219788 );
   spell.rune_master            = find_spell( 253381 );
-  spell.dancing_rune_weapon    = find_spell( 81256 );
-  spell.unholy_vigor           = find_spell( 196263 );
-  spell.death_coil_damage      = find_spell( 47632 );
-  spell.blood_shield           = find_spell( 77535 );
-  spell.gravewarden            = find_spell( 242010 );
-  spell.runic_corruption       = find_spell( 51460 );
-  spell.bone_shield            = find_spell( 195181 );
   spell.vampiric_aura          = find_spell( 238698 );
+
+  // Frost
+  
+  // Unholy
+  spell.death_coil_damage      = find_spell( 47632 );
+  spell.runic_corruption       = find_spell( 51460 );
+  spell.unholy_vigor           = find_spell( 196263 );
 
   // Active Spells
   fallen_crusader += find_spell( 53365 ) -> effectN( 1 ).percent();
   fallen_crusader *= 1.0 + artifact.the_darkest_crusade.percent();
-
 }
 
 // death_knight_t::default_apl_dps_precombat ================================
