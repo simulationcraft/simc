@@ -8134,7 +8134,7 @@ std::string death_knight_t::default_potion() const
 
 std::string death_knight_t::default_food() const
 {
-  std::string frost_food = ( true_level > 100 ) ? "lavish_suramar_feast" :
+  std::string frost_food = ( true_level > 100 ) ? "lemon_herb_filet" :
                            ( true_level >  90 ) ? "pickled_eel" :
                            ( true_level >= 85 ) ? "sea_mist_rice_noodles" :
                            ( true_level >= 80 ) ? "seafood_magnifique_feast" :
