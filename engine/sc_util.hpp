@@ -15,6 +15,7 @@
 #include <vector>
 #include <string>
 #include <cstdarg>
+#include <chrono>
 
 // Forward declarations
 struct player_t;
