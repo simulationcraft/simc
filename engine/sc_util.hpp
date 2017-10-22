@@ -189,6 +189,14 @@ std::ostream& stream_printf( std::ostream&, const char* format, ... );
 template<class T>
 T from_string( const std::string& );
 
+template <class T>
+double duration_fp_seconds(const T& chrono_time)
+{
+  auto now = std::chrono::high_resolution_clock::now();
+
+  return std::chrono::duration<double, std::chrono::seconds::period>( now - chrono_time ).count();
+}
+
 template<>
 inline int from_string( const std::string& v )
 {

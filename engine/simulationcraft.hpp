@@ -1733,7 +1733,7 @@ struct sim_t : private sc_thread_t
   double     iteration_dmg, priority_iteration_dmg,  iteration_heal, iteration_absorb;
   simple_sample_data_t raid_dps, total_dmg, raid_hps, total_heal, total_absorb, raid_aps;
   extended_sample_data_t simulation_length;
-  double merge_time, init_time;
+  double merge_time, init_time, analyze_time;
   // Deterministic simulation iteration data collectors for specific iteration
   // replayability
   std::vector<iteration_data_entry_t> iteration_data, low_iteration_data, high_iteration_data;

@@ -777,8 +777,9 @@ void print_text_performance( FILE* file, sim_t* sim )
       "  SimSeconds    = %.0f\n"
       "  CpuSeconds    = %.3f\n"
       "  WallSeconds   = %.3f\n"
-      "  MergeSeconds  = %.6f\n"
       "  InitSeconds   = %.6f\n"
+      "  MergeSeconds  = %.6f\n"
+      "  AnalyzeSeconds= %.6f\n"
       "  SpeedUp       = %.0f\n"
       "  EndTime       = %s (%.0f)\n\n",
       sim->rng().name(), sim->deterministic ? " (deterministic)" : "",
@@ -799,6 +800,7 @@ void print_text_performance( FILE* file, sim_t* sim )
       sim->elapsed_time,
       sim->merge_time,
       sim->init_time,
+      sim->analyze_time,
       sim->iterations * sim->simulation_length.mean() / sim->elapsed_cpu,
       date_str, static_cast<double>( cur_time ) );
 #ifdef EVENT_QUEUE_DEBUG
