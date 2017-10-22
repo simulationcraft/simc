@@ -777,6 +777,7 @@ void print_text_performance( FILE* file, sim_t* sim )
       "  SimSeconds    = %.0f\n"
       "  CpuSeconds    = %.3f\n"
       "  WallSeconds   = %.3f\n"
+      "  MergeSeconds  = %.3f\n"
       "  SpeedUp       = %.0f\n"
       "  EndTime       = %s (%.0f)\n\n",
       sim->rng().name(), sim->deterministic ? " (deterministic)" : "",
@@ -795,6 +796,7 @@ void print_text_performance( FILE* file, sim_t* sim )
       sim->target->resources.base[ RESOURCE_HEALTH ],
       sim->iterations * sim->simulation_length.mean(), sim->elapsed_cpu,
       sim->elapsed_time,
+      sim->merge_time,
       sim->iterations * sim->simulation_length.mean() / sim->elapsed_cpu,
       date_str, static_cast<double>( cur_time ) );
 #ifdef EVENT_QUEUE_DEBUG

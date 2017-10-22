@@ -1595,6 +1595,7 @@ void to_json( JsonOutput root, const sim_t& sim )
     auto stats_root = root[ "statistics" ];
     stats_root[ "elapsed_cpu_seconds" ] = sim.elapsed_cpu;
     stats_root[ "elapsed_time_seconds" ] = sim.elapsed_time;
+    stats_root[ "merge_time_seconds" ] = sim.merge_time;
     stats_root[ "simulation_length" ] = sim.simulation_length;
     add_non_zero( stats_root, "raid_dps", sim.raid_dps );
     add_non_zero( stats_root, "raid_hps", sim.raid_hps );

@@ -1400,6 +1400,7 @@ sim_t::sim_t( sim_t* p, int index ) :
   elapsed_time( 0.0 ),
   work_done( 0 ),
   iteration_dmg( 0 ), priority_iteration_dmg( 0 ), iteration_heal( 0 ), iteration_absorb( 0 ),
+  merge_time( 0 ),
   raid_dps(), total_dmg(), raid_hps(), total_heal(), total_absorb(), raid_aps(),
   simulation_length( "Simulation Length", false ),
   report_iteration_data( 0.025 ), min_report_iteration_data( -1 ),
@@ -2683,6 +2684,7 @@ void sim_t::do_pause()
 /// merge sims
 void sim_t::merge( sim_t& other_sim )
 {
+  auto start = std::chrono::high_resolution_clock::now();
   auto_lock_t auto_lock( merge_mutex );
 
   if ( scaling -> scale_stat == STAT_NONE &&
@@ -2722,6 +2724,8 @@ void sim_t::merge( sim_t& other_sim )
   }
 
   range::append( iteration_data, other_sim.iteration_data );
+  auto end = std::chrono::high_resolution_clock::now();
+  merge_time += std::chrono::duration<double, std::chrono::seconds::period>( end - start ).count();
 }
 
 /// merge all sims together
