@@ -8061,42 +8061,43 @@ void death_knight_t::default_apl_dps_precombat()
 
 void death_knight_t::default_apl_blood()
 {
-  action_priority_list_t* def = get_action_priority_list( "default" );
-  action_priority_list_t* st  = get_action_priority_list( "st" );
+  action_priority_list_t* def        = get_action_priority_list( "default" );
+  action_priority_list_t* standard   = get_action_priority_list( "standard" );
+  // action_priority_list_t* cooldowns  = get_action_priority_list( "cooldowns" ); // Not used atm
 
   // Setup precombat APL for DPS spec
   default_apl_dps_precombat();
 
+  def -> add_action( "auto_attack" );
+  def -> add_action( this, "Mind Freeze" );
+
   // Racials
-  def->add_action("arcane_torrent,if=runic_power.deficit>20");
-  def->add_action("blood_fury");
-  def->add_action("berserking");
+  def -> add_action( "arcane_torrent,if=runic_power.deficit>20" );
+  def -> add_action( "blood_fury" );
+  def -> add_action( "berserking,if=buff.dancing_rune_weapon.up" );
 
   // On-use items
-  def->add_action("use_items");
+  def -> add_action( "use_items" );
 
-  // Default Actions
-  def -> add_action( "blood_boil,if=!dot.blood_plague.remains<=0" );
-  def -> add_action( "auto_attack" );
-  def -> add_action( "call_action_list,name=st" );
+  // Cooldowns
+  def -> add_action( "potion,if=buff.dancing_rune_weapon.up" );
+  def -> add_action( this, "Dancing Rune Weapon", "if=!cooldown.blooddrinker.ready&!cooldown.death_and_decay.ready" );
+  def -> add_action( "call_action_list,name=standard" );
 
   // Single Target Rotation
-  st -> add_action( "blooddrinker,if=talent.blooddrinker.enabled&(!(buff.dancing_rune_weapon.up))" );
-  st -> add_action( "dancing_rune_weapon" );
-  st -> add_action( "death_strike,if=prev_gcd.1.death_strike" );
-  st -> add_action( "marrowrend,if=buff.bone_shield.stack=0|buff.bone_shield.remains<(3*gcd.max)" );
-  st -> add_action( "vampiric_blood" );
-  st -> add_action( "blood_mirror,if=talent.blood_mirror.enabled" );
-  st -> add_action( "potion,if=(talent.bonestorm.enabled&dot.bonestorm.ticking)|talent.blood_mirror.enabled" );
-  st -> add_action( "consumption" );
-  st -> add_action( "death_and_decay,if=buff.crimson_scourge.up|talent.rapid_decomposition.enabled" );
-  st -> add_action( "bonestorm,if=talent.bonestorm.enabled&runic_power.deficit<10" );
-  st -> add_action( "marrowrend,if=buff.bone_shield.stack<5&active_enemies<3" );
-  st -> add_action( "death_strike,if=((runic_power>(80+10*!talent.ossuary.enabled)&talent.bonestorm.enabled&!dot.bonestorm.ticking&(cooldown.bonestorm.remains>15|((rune>3&runic_power.deficit<15)&cooldown.bonestorm.remains>5)))|!(talent.bonestorm.enabled))&(!talent.ossuary.enabled|buff.bone_shield.stack>5|rune>=3&runic_power.deficit<10)" );
-  st -> add_action( "death_and_decay" );
-  st -> add_action( "heart_strike,if=runic_power.deficit>=5|rune>3" );
-  st -> add_action( "blood_boil" );
-
+  standard -> add_action( this, "Death Strike", "if=runic_power.deficit<10" );
+  standard -> add_action( this, "Death and Decay", "if=talent.rapid_decomposition.enabled&!buff.dancing_rune_weapon.up" );
+  standard -> add_talent( this, "Blooddrinker", "if=!buff.dancing_rune_weapon.up" );
+  standard -> add_action( this, "Marrowrend", "if=buff.bone_shield.remains<=gcd*2" );
+  standard -> add_action( this, "Blood Boil", "if=charges_fractional>=1.8&buff.haemostasis.stack<5&(buff.haemostasis.stack<3|!buff.dancing_rune_weapon.up)" );
+  standard -> add_action( this, "Marrowrend", "if=buff.bone_shield.stack<5|!talent.ossuary.enabled|buff.bone_shield.remains<gcd*3" );
+  standard -> add_action( this, "Death Strike", "if=buff.blood_shield.up|(runic_power.deficit<15&runic_power.deficit<25|!buff.dancing_rune_weapon.up)" );
+  standard -> add_action( this, "Consumption" );
+  standard -> add_action( this, "Heart Strike", "if=buff.dancing_rune_weapon.up" );
+  standard -> add_action( this, "Death and Decay", "if=buff.crimson_scourge.up" );
+  standard -> add_action( this, "Blood Boil", "if=buff.haemostasis.stack<5&(buff.haemostasis.stack<3|!buff.dancing_rune_weapon.up)" );
+  standard -> add_action( this, "Death and Decay" );
+  standard -> add_action( this, "Heart Strike", "if=rune.time_to_3<gcd|buff.bone_shield.stack>6" );
 }
 
 // death_knight_t::default_potion ===========================================
