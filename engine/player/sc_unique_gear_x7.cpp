@@ -2084,15 +2084,6 @@ void item::terminus_signaling_beacon( special_effect_t& effect )
 
 // Sheath of Asara
 // TODO: In-game debuff is 255870, buff is 255856. But the spell data contains nothing of relevance.
-struct shadow_blades_debuff_t : public buff_t
-{
-  shadow_blades_debuff_t( const actor_pair_t& p, const special_effect_t& source_effect ) :
-    buff_t( buff_creator_t( p, "shadow_blades", source_effect.player -> find_spell( 253265 ), source_effect.item ) )
-  {
-    set_default_value( data().effectN( 2 ).percent() );
-  }
-};
-
 struct shadow_blades_constructor_t : public item_targetdata_initializer_t
 {
   shadow_blades_constructor_t( unsigned iid, const std::vector<slot_e>& s ) :
@@ -2111,7 +2102,9 @@ struct shadow_blades_constructor_t : public item_targetdata_initializer_t
     {
       assert( ! td -> debuff.shadow_blades );
 
-      td -> debuff.shadow_blades = new shadow_blades_debuff_t( *td, *effect );
+      auto spell = effect -> player -> find_spell( 253265 );
+      td -> debuff.shadow_blades = buff_creator_t( *td, "shadow_blades", spell, effect -> item )
+        .default_value( spell -> effectN( 2 ).percent() );
       td -> debuff.shadow_blades -> reset();
     }
   }
