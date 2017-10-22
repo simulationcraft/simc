@@ -119,9 +119,9 @@ hands=gloves_of_the_arcane_tempest,id=147146,ilevel=930
 waist=cord_of_blossoming_petals,id=151952,ilevel=960
 legs=runebound_leggings,id=152139,ilevel=960
 feet=lady_dacidions_silk_slippers,id=151945,ilevel=960
-finger1=seal_of_the_portalmaster,id=152063,ilevel=960,enchant=binding_of_critical_strike
-finger2=shard_of_the_exodar,id=132410,ilevel=1000,gems=200crit,enchant=binding_of_critical_strike
-trinket1=doomed_exarchs_memento,id=153172,ilevel=960
+finger1=seal_of_the_portalmaster,id=152063,ilevel=960,enchant=binding_of_versatility
+finger2=shard_of_the_exodar,id=132410,ilevel=1000,gems=200versatility,enchant=binding_of_versatility
+trinket1=acrid_catalyst_injector,id=151955,ilevel=960
 trinket2=amanthuls_vision,id=154172,ilevel=1000
 main_hand=ebonchill,id=128862,gem_id=155850/155846/155850,relic_ilevel=970/970/970
 
@@ -129,10 +129,10 @@ main_hand=ebonchill,id=128862,gem_id=155850/155846/155850,relic_ilevel=970/970/9
 # gear_ilvl=967.27
 # gear_stamina=59745
 # gear_intellect=65839
-# gear_crit_rating=11240
+# gear_crit_rating=10640
 # gear_haste_rating=12025
 # gear_mastery_rating=5632
-# gear_versatility_rating=10016
+# gear_versatility_rating=9139
 # gear_armor=2389
 # set_bonus=tier20_2pc=1
 # set_bonus=tier21_2pc=1
