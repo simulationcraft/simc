@@ -94,7 +94,7 @@ actions.burn+=/evocation,interrupt_if=ticks=2|mana.pct>=85,interrupt_immediate=1
 
 actions.conserve=mirror_image,if=variable.time_until_burn>recharge_time|variable.time_until_burn>target.time_to_die
 actions.conserve+=/mark_of_aluneth,if=mana.pct<85
-actions.conserve+=/strict_sequence,name=miniburn:rune_of_power:arcane_barrage:presence_of_mind,if=cooldown.presence_of_mind.up&set_bonus.tier20_4pc&variable.time_until_burn>30
+actions.conserve+=/strict_sequence,name=miniburn:rune_of_power:arcane_barrage:presence_of_mind,if=set_bonus.tier20_4pc&variable.time_until_burn>30
 # Use if we're about to cap on stacks, or we just used MoA.
 actions.conserve+=/rune_of_power,if=full_recharge_time<=execute_time|prev_gcd.1.mark_of_aluneth
 # We want Charged Up for our burn phase to refresh 2pt21 buff, but if we have time to let it recharge we can use it during conserve.
