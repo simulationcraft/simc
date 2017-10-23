@@ -1898,6 +1898,7 @@ struct personnel_decimator_driver_t : public dbc_proc_callback_t
 
 void item::prototype_personnel_decimator( special_effect_t& effect )
 {
+  effect.proc_flags_ = PF_RANGED | PF_RANGED_ABILITY | PF_SPELL | PF_AOE_SPELL | PF_PERIODIC;
   effect.execute_action = create_proc_action<personnel_decimator_t>( "personnel_decimator", effect );
 
   new personnel_decimator_driver_t( effect );
@@ -2162,6 +2163,7 @@ struct shadow_blades_buff_t : public buff_t
 
 void item::sheath_of_asara( special_effect_t& effect )
 {
+  effect.proc_flags_ = PF_RANGED | PF_RANGED_ABILITY | PF_SPELL | PF_AOE_SPELL | PF_PERIODIC;
   effect.custom_buff = new shadow_blades_buff_t( effect );
   new dbc_proc_callback_t( effect.item, effect );
 }
