@@ -7563,7 +7563,7 @@ void mage_t::apl_arcane()
   default_list -> add_action( mage_t::get_special_use_items( "pharameres_forbidden_grimoire" ) );
   default_list -> add_action( mage_t::get_special_use_items( "kiljaedens_burning_wish" ) );
   default_list -> add_action( "call_action_list,name=build,if=buff.arcane_charge.stack<buff.arcane_charge.max_stack&!burn_phase", "Build Arcane Charges before doing anything else. Burn phase has some specific actions for building Arcane Charges, so we avoid entering this list if currently burning." );
-  default_list -> add_action( "call_action_list,name=burn,if=variable.time_until_burn=0|burn_phase", "Enter burn actions if we're ready to burn, or already burning." );
+  default_list -> add_action( "call_action_list,name=burn,if=(buff.arcane_charge.stack=buff.arcane_charge.max_stack&variable.time_until_burn=0)|burn_phase", "Enter burn actions if we're ready to burn, or already burning." );
   default_list -> add_action( "call_action_list,name=conserve", "Fallback to conserve rotation." );
 
   variables    -> add_action( "variable,name=arcane_missiles_procs,op=set,value=buff.arcane_missiles.react", "Track the number of Arcane Missiles procs that we have." );

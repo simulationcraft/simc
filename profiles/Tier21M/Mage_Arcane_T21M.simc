@@ -42,7 +42,7 @@ actions+=/cancel_buff,name=presence_of_mind,if=active_enemies>1&set_bonus.tier20
 # Build Arcane Charges before doing anything else. Burn phase has some specific actions for building Arcane Charges, so we avoid entering this list if currently burning.
 actions+=/call_action_list,name=build,if=buff.arcane_charge.stack<buff.arcane_charge.max_stack&!burn_phase
 # Enter burn actions if we're ready to burn, or already burning.
-actions+=/call_action_list,name=burn,if=variable.time_until_burn=0|burn_phase
+actions+=/call_action_list,name=burn,if=(buff.arcane_charge.stack=buff.arcane_charge.max_stack&variable.time_until_burn=0)|burn_phase
 # Fallback to conserve rotation.
 actions+=/call_action_list,name=conserve
 

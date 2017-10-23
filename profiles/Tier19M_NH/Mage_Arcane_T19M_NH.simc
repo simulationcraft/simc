@@ -41,7 +41,7 @@ actions+=/cancel_buff,name=presence_of_mind,if=active_enemies>1&set_bonus.tier20
 # Build Arcane Charges before doing anything else. Burn phase has some specific actions for building Arcane Charges, so we avoid entering this list if currently burning.
 actions+=/call_action_list,name=build,if=buff.arcane_charge.stack<buff.arcane_charge.max_stack&!burn_phase
 # Enter burn actions if we're ready to burn, or already burning.
-actions+=/call_action_list,name=burn,if=variable.time_until_burn=0|burn_phase
+actions+=/call_action_list,name=burn,if=(buff.arcane_charge.stack=buff.arcane_charge.max_stack&variable.time_until_burn=0)|burn_phase
 # Fallback to conserve rotation.
 actions+=/call_action_list,name=conserve
 
@@ -96,6 +96,8 @@ actions.conserve=mirror_image,if=variable.time_until_burn>recharge_time|variable
 actions.conserve+=/mark_of_aluneth,if=mana.pct<85
 # Use if we're about to cap on stacks, or we just used MoA.
 actions.conserve+=/rune_of_power,if=full_recharge_time<=execute_time|prev_gcd.1.mark_of_aluneth
+# We want Charged Up for our burn phase to refresh 2pt21 buff, but if we have time to let it recharge we can use it during conserve.
+actions.conserve+=/strict_sequence,name=abarr_cu_combo:arcane_barrage:charged_up,if=talent.charged_up.enabled&cooldown.charged_up.recharge_time<variable.time_until_burn
 # Arcane Missiles are good, but not when there's multiple targets up.
 actions.conserve+=/arcane_missiles,if=variable.arcane_missiles_procs=buff.arcane_missiles.max_stack&active_enemies<3
 actions.conserve+=/supernova
