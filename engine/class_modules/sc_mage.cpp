@@ -7610,6 +7610,7 @@ void mage_t::apl_arcane()
 
   conserve -> add_talent( this, "Mirror Image", "if=variable.time_until_burn>recharge_time|variable.time_until_burn>target.time_to_die" );
   conserve -> add_action( this, "Mark of Aluneth", "if=mana.pct<85" );
+  conserve -> add_action( "strict_sequence,name=miniburn:rune_of_power:arcane_barrage:presence_of_mind,if=cooldown.presence_of_mind.up&set_bonus.tier20_4pc&variable.time_until_burn>30" );
   conserve -> add_talent( this, "Rune of Power", "if=full_recharge_time<=execute_time|prev_gcd.1.mark_of_aluneth", "Use if we're about to cap on stacks, or we just used MoA." );
   conserve -> add_action( "strict_sequence,name=abarr_cu_combo:arcane_barrage:charged_up,if=talent.charged_up.enabled&cooldown.charged_up.recharge_time<variable.time_until_burn", "We want Charged Up for our burn phase to refresh 2pt21 buff, but if we have time to let it recharge we can use it during conserve." );
   conserve -> add_action( this, "Arcane Missiles", "if=variable.arcane_missiles_procs=buff.arcane_missiles.max_stack&active_enemies<3", "Arcane Missiles are good, but not when there's multiple targets up." );
