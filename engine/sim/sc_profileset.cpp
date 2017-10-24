@@ -14,7 +14,8 @@ void insert_data( highchart::bar_chart_t&   chart,
                   const std::string&        name,
                   const color::rgb&         c,
                   const statistical_data_t& data,
-                  bool                      baseline )
+                  bool                      baseline,
+                  double                    baseline_median )
 {
   js::sc_js_t entry;
 
@@ -26,6 +27,7 @@ void insert_data( highchart::bar_chart_t&   chart,
   }
 
   entry.set( "name", name );
+  entry.set( "reldiff",  (data.median / baseline_median - 1.0) * 100);
   entry.set( "y", util::round( data.median ) );
 
   chart.add( "series.0.data", entry );
@@ -496,11 +498,13 @@ bool profilesets_t::generate_chart( const sim_t& sim, io::ofstream& out ) const
 
     auto base_offset = chart_id * MAX_CHART_ENTRIES;
 
+    int data_label_width = sim.chart_show_relative_difference ? 120 : 80;
+
     profileset.set( "series.0.name", chart_name );
     profileset.set( "series.1.type", "boxplot" );
     profileset.set( "series.1.name", chart_name );
     profileset.set( "yAxis.gridLineWidth", 0 );
-    profileset.set( "xAxis.offset", 80 );
+    profileset.set( "xAxis.offset", data_label_width );
     profileset.set_title( "Profile sets (median " + chart_name + ")" );
     profileset.set( "subtitle.text", "Baseline in red" );
     profileset.set( "subtitle.style.color", "#AA0000" );
@@ -529,7 +533,7 @@ bool profilesets_t::generate_chart( const sim_t& sim, io::ofstream& out ) const
     profileset.set( "plotOptions.bar.dataLabels.enabled", true );
     profileset.set( "plotOptions.bar.dataLabels.align", "left" );
     profileset.set( "plotOptions.bar.dataLabels.shadow", false );
-    profileset.set( "plotOptions.bar.dataLabels.x", -80 );
+    profileset.set( "plotOptions.bar.dataLabels.x", -data_label_width );
     profileset.set( "plotOptions.bar.dataLabels.color", c.str() );
     profileset.set( "plotOptions.bar.dataLabels.verticalAlign", "middle" );
     profileset.set( "plotOptions.bar.dataLabels.style.fontSize", "10pt" );
@@ -554,6 +558,9 @@ bool profilesets_t::generate_chart( const sim_t& sim, io::ofstream& out ) const
 
     profileset.set( "xAxis.labels.formatter", functor );
     profileset.value( "xAxis.labels.formatter" ).SetRawOutput( true );
+    if ( sim.chart_show_relative_difference ) {
+        profileset.set( "plotOptions.bar.dataLabels.format", "{y} ({point.reldiff}%)");
+    }
 
     for ( size_t i = base_offset, end = std::min( base_offset + MAX_CHART_ENTRIES, results.size() ); i < end; ++i )
     {
@@ -561,16 +568,16 @@ bool profilesets_t::generate_chart( const sim_t& sim, io::ofstream& out ) const
 
       if ( ! inserted && set -> result().median() <= baseline_data.median )
       {
-        insert_data( profileset, sim.player_no_pet_list.data().front() -> name(), c, baseline_data, true );
+        insert_data( profileset, sim.player_no_pet_list.data().front() -> name(), c, baseline_data, true, baseline_data.median );
         inserted = true;
       }
 
-      insert_data( profileset, set -> name(), c, set -> result().statistical_data(), false );
+      insert_data( profileset, set -> name(), c, set -> result().statistical_data(), false, baseline_data.median );
     }
 
     if ( inserted == false )
     {
-      insert_data( profileset, sim.player_no_pet_list.data().front() -> name(), c, baseline_data, true );
+      insert_data( profileset, sim.player_no_pet_list.data().front() -> name(), c, baseline_data, true, baseline_data.median );
     }
 
     out << profileset.to_string();

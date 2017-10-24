@@ -1934,7 +1934,6 @@ struct rogue_poison_t : public rogue_attack_t
   {
     double c = rogue_attack_t::composite_crit_chance();
 
-    const rogue_td_t* tdata = td( target );
     if ( affected_by.t21_2pc_assassination && p() -> buffs.t21_2pc_assassination -> up() )
     {
       c += p() -> buffs.t21_2pc_assassination -> value();
@@ -4643,15 +4642,6 @@ struct slice_and_dice_t : public rogue_attack_t
     }
 
     p() -> buffs.slice_and_dice -> trigger( 1, snd_mod, -1.0, snd_duration );
-
-    // As of 2017-07-27 on 7.3 PTR, Refreshing SnD cancels RtB buffs from the T21 4pc bonus.
-    // I suppose this is a bug/oversight.
-    p() -> buffs.jolly_roger -> expire();
-    p() -> buffs.grand_melee -> expire();
-    p() -> buffs.shark_infested_waters -> expire();
-    p() -> buffs.true_bearing -> expire();
-    p() -> buffs.broadsides -> expire();
-    p() -> buffs.buried_treasure -> expire();
   }
 
   expr_t* create_expression( const std::string& name_str ) override
@@ -7501,7 +7491,7 @@ void rogue_t::init_action_list()
         cds -> add_action( racial_actions[i] + ",if=stealthed.rogue" );
     }
     cds -> add_action( this, "Symbols of Death", "if=!talent.death_from_above.enabled&((time>10&energy.deficit>=40-stealthed.all*30)|(time<10&dot.nightblade.ticking))" );
-    cds -> add_action( this, "Symbols of Death", "if=(talent.death_from_above.enabled&cooldown.death_from_above.remains<=3&(dot.nightblade.remains>=cooldown.death_from_above.remains+3|target.time_to_die-dot.nightblade.remains<=6)&(time>=3|set_bonus.tier20_4pc|equipped.the_first_of_the_dead))|target.time_to_die-remains<=10" );
+    cds -> add_action( this, "Symbols of Death", "if=(talent.death_from_above.enabled&cooldown.death_from_above.remains<=1&(dot.nightblade.remains>=cooldown.death_from_above.remains+3|target.time_to_die-dot.nightblade.remains<=6)&(time>=3|set_bonus.tier20_4pc|equipped.the_first_of_the_dead))|target.time_to_die-remains<=10" );
     cds -> add_talent( this, "Marked for Death", "target_if=min:target.time_to_die,if=target.time_to_die<combo_points.deficit" );
     cds -> add_talent( this, "Marked for Death", "if=raid_event.adds.in>40&!stealthed.all&combo_points.deficit>=cp_max_spend" );
     cds -> add_action( this, "Shadow Blades", "if=(time>10&combo_points.deficit>=2+stealthed.all-equipped.mantle_of_the_master_assassin)|(time<10&(!talent.marked_for_death.enabled|combo_points.deficit>=3|dot.nightblade.ticking))" );

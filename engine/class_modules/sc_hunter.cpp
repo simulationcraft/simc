@@ -192,6 +192,7 @@ public:
 
   // Custom Parameters
   std::string summon_pet_str;
+  bool hunter_fixed_time;
 
   // Gains
   struct gains_t
@@ -207,14 +208,11 @@ public:
   // Procs
   struct procs_t
   {
-    proc_t* lock_and_load;
     proc_t* wild_call;
     proc_t* hunting_companion;
     proc_t* wasted_hunting_companion;
     proc_t* mortal_wounds;
     proc_t* zevrims_hunger;
-    proc_t* marking_targets;
-    proc_t* wasted_marking_targets;
     proc_t* wasted_sentinel_marks;
     proc_t* animal_instincts_mongoose;
     proc_t* animal_instincts_aspect;
@@ -458,6 +456,7 @@ public:
     cooldowns.a_murder_of_crows   = get_cooldown( "a_murder_of_crows" );
 
     summon_pet_str = "cat";
+    hunter_fixed_time = true;
 
     base_gcd = timespan_t::from_seconds( 1.5 );
 
@@ -499,6 +498,7 @@ public:
   void      init_action_list() override;
   void      arise() override;
   void      reset() override;
+  void      combat_begin() override;
 
   void      regen( timespan_t periodicity = timespan_t::from_seconds( 0.25 ) ) override;
   double    composite_attack_power_multiplier() const override;
@@ -2094,7 +2094,7 @@ struct pet_auto_attack_t: public hunter_main_pet_attack_t
   { p() -> main_hand_attack -> schedule_execute(); }
 
   bool ready() override
-  { return( p() -> main_hand_attack -> execute_event == nullptr ); } // not swinging
+  { return ! target -> is_sleeping() && p() -> main_hand_attack -> execute_event == nullptr; } // not swinging
 };
 
 // Pet Claw/Bite/Smack ======================================================
@@ -2598,11 +2598,7 @@ struct auto_shot_t: public hunter_action_t < ranged_attack_t >
 
     if (p()->specialization() == HUNTER_MARKSMANSHIP && p()->ppm_hunters_mark->trigger())
     {
-      if (p()->buffs.marking_targets->up())
-        p()->procs.wasted_marking_targets->occur();
-
       p()->buffs.marking_targets->trigger();
-      p()->procs.marking_targets->occur();
     }
 
     if (p()->buffs.volley->up())
@@ -2626,7 +2622,6 @@ struct auto_shot_t: public hunter_action_t < ranged_attack_t >
     if ( rng().roll( p() -> talents.lock_and_load -> proc_chance() ) )
     {
       p() -> buffs.lock_and_load -> trigger( 2 );
-      p() -> procs.lock_and_load -> occur();
     }
 
     if ( s -> result == RESULT_CRIT && p() -> specialization() == HUNTER_BEAST_MASTERY )
@@ -2673,9 +2668,7 @@ struct start_attack_t: public action_t
   }
 
   bool ready() override
-  {
-    return( player -> main_hand_attack -> execute_event == nullptr ); // not swinging
-  }
+  { return ! target -> is_sleeping() && player -> main_hand_attack -> execute_event == nullptr; } // not swinging
 };
 
 
@@ -3227,7 +3220,8 @@ struct legacy_of_the_windrunners_t: aimed_shot_base_t
 
 struct aimed_shot_t: public aimed_shot_base_t
 {
-  benefit_t* aimed_in_ca;
+  benefit_t* aimed_in_careful_aim;
+  benefit_t* aimed_in_critical_aimed;
   trick_shot_t* trick_shot;
   legacy_of_the_windrunners_t* legacy_of_the_windrunners;
   vulnerability_stats_t vulnerability_stats;
@@ -3235,7 +3229,8 @@ struct aimed_shot_t: public aimed_shot_base_t
 
   aimed_shot_t( hunter_t* p, const std::string& options_str ):
     aimed_shot_base_t( "aimed_shot", p, p -> find_specialization_spell( "Aimed Shot" ) ),
-    aimed_in_ca( p -> get_benefit( "aimed_in_careful_aim" ) ),
+    aimed_in_careful_aim( p -> get_benefit( "aimed_in_careful_aim" ) ),
+    aimed_in_critical_aimed( p -> get_benefit( "aimed_in_critical_aimed" ) ),
     trick_shot( nullptr ), legacy_of_the_windrunners( nullptr ),
     vulnerability_stats( p, this ), lock_and_loaded( false )
   {
@@ -3293,7 +3288,7 @@ struct aimed_shot_t: public aimed_shot_base_t
       trick_shot -> execute();
     }
 
-    aimed_in_ca -> update( p() -> buffs.careful_aim -> check() != 0 );
+    aimed_in_careful_aim -> update( p() -> buffs.careful_aim -> check() != 0 );
 
     if ( lock_and_loaded )
       p() -> buffs.lock_and_load -> decrement();
@@ -3322,6 +3317,12 @@ struct aimed_shot_t: public aimed_shot_base_t
     }
 
     vulnerability_stats.update( p(), this );
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    aimed_shot_base_t::impact( s );
+    aimed_in_critical_aimed -> update( p() -> buffs.t20_2p_critical_aimed_damage -> check() != 0 );
   }
 
   timespan_t execute_time() const override
@@ -6220,14 +6221,11 @@ void hunter_t::init_procs()
 {
   player_t::init_procs();
 
-  procs.lock_and_load                = get_proc( "lock_and_load" );
   procs.wild_call                    = get_proc( "wild_call" );
   procs.hunting_companion            = get_proc( "hunting_companion" );
   procs.wasted_hunting_companion     = get_proc( "wasted_hunting_companion" );
   procs.mortal_wounds                = get_proc( "mortal_wounds" );
   procs.zevrims_hunger               = get_proc( "zevrims_hunger" );
-  procs.marking_targets              = get_proc( "marking_targets" );
-  procs.wasted_marking_targets       = get_proc( "wasted_marking_targets" );
   procs.wasted_sentinel_marks        = get_proc( "wasted_sentinel_marks" );
   procs.animal_instincts_mongoose    = get_proc( "animal_instincts_mongoose" );
   procs.animal_instincts_aspect      = get_proc( "animal_instincts_aspect" );
@@ -6661,6 +6659,34 @@ void hunter_t::reset()
   active.sentinel = nullptr;
 }
 
+// hunter_t::combat_begin ==================================================
+
+void hunter_t::combat_begin()
+{
+  if ( !sim -> fixed_time )
+  {
+    if ( hunter_fixed_time )
+    {
+      for ( size_t i = 0; i < sim -> player_list.size(); ++i )
+      {
+        player_t* p = sim -> player_list[ i ];
+        if ( p -> specialization() != HUNTER_MARKSMANSHIP && p -> type != PLAYER_PET )
+        {
+          hunter_fixed_time = false;
+          break;
+        }
+      }
+      if ( hunter_fixed_time )
+      {
+        sim -> fixed_time = true;
+        sim -> errorf( "To fix issues with the target exploding <20% range due to execute, fixed_time=1 has been enabled. This gives similar results" );
+        sim -> errorf( "to execute's usage in a raid sim, without taking an eternity to simulate. To disable this option, add hunter_fixed_time=0 to your sim." );
+      }
+    }
+  }
+  player_t::combat_begin();
+}
+
 // hunter_t::arise ==========================================================
 
 void hunter_t::arise()
@@ -6929,6 +6955,7 @@ void hunter_t::create_options()
   player_t::create_options();
 
   add_option( opt_string( "summon_pet", summon_pet_str ) );
+  add_option( opt_bool( "hunter_fixed_time", hunter_fixed_time ) );
 }
 
 // hunter_t::create_profile =================================================
@@ -6938,6 +6965,12 @@ std::string hunter_t::create_profile( save_e stype )
   std::string profile_str = player_t::create_profile( stype );
 
   profile_str += "summon_pet=" + summon_pet_str + "\n";
+  
+  if ( stype == SAVE_ALL )
+  {
+    if ( !hunter_fixed_time )
+      profile_str += "hunter_fixed_time=" + util::to_string( hunter_fixed_time ) + "\n";
+  }
 
   return profile_str;
 }
@@ -6951,6 +6984,7 @@ void hunter_t::copy_from( player_t* source )
   hunter_t* p = debug_cast<hunter_t*>( source );
 
   summon_pet_str = p -> summon_pet_str;
+  hunter_fixed_time = p -> hunter_fixed_time;
 }
 
 // hunter_::convert_hybrid_stat ==============================================

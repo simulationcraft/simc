@@ -419,6 +419,7 @@ public:
     cooldown_t* swiftmend;
     cooldown_t* tigers_fury;
     cooldown_t* warrior_of_elune;
+    cooldown_t* barkskin;
   } cooldown;
 
   // Gains
@@ -795,6 +796,7 @@ public:
     cooldown.swiftmend           = get_cooldown( "swiftmend"           );
     cooldown.tigers_fury         = get_cooldown( "tigers_fury"         );
     cooldown.warrior_of_elune    = get_cooldown( "warrior_of_elune"    );
+    cooldown.barkskin            = get_cooldown( "barkskin"            );
 
     cooldown.wod_pvp_4pc_melee -> duration = timespan_t::from_seconds( 30.0 );
 
@@ -3662,7 +3664,7 @@ struct bloody_gash_t : public cat_attack_t
       cat_attack_t::execute();
 
       //TODO(feral): Check if TWC procs from this
-      trigger_wildshapers_clutch(cat_attack_t::get_state());
+      //trigger_wildshapers_clutch(cat_attack_t::get_state());
       if ( p() -> sets -> has_set_bonus( DRUID_FERAL, T21, B4 ))
       {
          p() -> buff.apex_predator -> trigger();
@@ -4154,6 +4156,11 @@ struct mangle_t : public bear_attack_t
   void execute() override
   {
     bear_attack_t::execute();
+
+    if ( p() -> buff.gore -> up() && p() -> sets -> has_set_bonus( DRUID_GUARDIAN, T21, B2 ) ) {
+      auto reduction = p() -> sets -> set( DRUID_GUARDIAN, T21, B2 ) -> effectN( 1 ).time_value();
+      p() -> cooldown.barkskin -> adjust( - reduction );
+    }
 
     p() -> buff.gore -> expire();
 
@@ -6657,13 +6664,17 @@ double brambles_handler( const action_state_t* s )
   // Calculate actual amount absorbed.
   double amount_absorbed = std::min( s -> result_mitigated, absorb_cap );
 
-  // Schedule reflected damage.
-  p -> active.brambles -> base_dd_min = p -> active.brambles -> base_dd_max = 
-    amount_absorbed;
-  action_state_t* ref_s = p -> active.brambles -> get_state();
-  ref_s -> target = s -> action -> player;
-  p -> active.brambles -> snapshot_state( ref_s, DMG_DIRECT );
-  p -> active.brambles -> schedule_execute( ref_s );
+  // Prevent self-harm
+  if ( s -> action -> player != p )
+  {
+    // Schedule reflected damage.
+    p -> active.brambles -> base_dd_min = p -> active.brambles -> base_dd_max =
+      amount_absorbed;
+    action_state_t* ref_s = p -> active.brambles -> get_state();
+    ref_s -> target = s -> action -> player;
+    p -> active.brambles -> snapshot_state( ref_s, DMG_DIRECT );
+    p -> active.brambles -> schedule_execute( ref_s );
+  }
 
   return amount_absorbed;
 }
@@ -8012,42 +8023,41 @@ void druid_t::apl_balance()
       default_list->add_action("use_item,name=horn_of_valor,if=cooldown.incarnation.remains>30|cooldown.celestial_alignment.remains>60");
   default_list -> add_action( "call_action_list,name=fury_of_elune,if=talent.fury_of_elune.enabled&cooldown.fury_of_elune.remains<target.time_to_die" );
   default_list -> add_action( "call_action_list,name=ed,if=equipped.the_emerald_dreamcatcher&active_enemies<=1" );
-  default_list -> add_action( this, "New Moon", "if=((charges=2&recharge_time<5)|charges=3)&astral_power.deficit>14" );
-  default_list -> add_action( this, "Half Moon", "if=((charges=2&recharge_time<5)|charges=3|(target.time_to_die<15&charges=2))&astral_power.deficit>24");
-  default_list -> add_action( this, "Full Moon", "if=((charges=2&recharge_time<5)|charges=3|target.time_to_die<15)&astral_power.deficit>44");
-  default_list -> add_talent( this, "Stellar Flare", "cycle_targets=1,max_cycle_targets=4,if=active_enemies<4&remains<7.2");
-  default_list -> add_action( this, "Moonfire", "cycle_targets=1,if=((talent.natures_balance.enabled&remains<3)|(remains<6.6&!talent.natures_balance.enabled))&astral_power.deficit>7" );
-  default_list -> add_action( this, "Sunfire", "if=((talent.natures_balance.enabled&remains<3)|(remains<5.4&!talent.natures_balance.enabled))&astral_power.deficit>7" );
-  default_list -> add_talent( this, "Astral Communion", "if=astral_power.deficit>=71" );
+  default_list -> add_talent( this, "Astral Communion", "if=astral_power.deficit>=79" );
+  default_list -> add_talent( this, "Warrior of Elune");
   default_list -> add_action( "incarnation,if=astral_power>=40" );
   default_list -> add_action( this, "Celestial Alignment", "if=astral_power>=40" );
-  default_list -> add_action( this, "Starfall", "if=buff.oneths_overconfidence.up&(!buff.solar_solstice.up|astral_power.deficit>44|buff.celestial_alignment.up|buff.incarnation.up)" );
-  default_list -> add_action( this, "Solar Wrath", "if=buff.solar_empowerment.stack=3" );
-  default_list -> add_action( this, "Lunar Strike", "if=buff.lunar_empowerment.stack=3" );
-  default_list -> add_action( this, "Starsurge", "if=buff.oneths_intuition.up");
-  default_list -> add_action( "call_action_list,name=AoE,if=(active_enemies>=2&talent.stellar_drift.enabled)|active_enemies>=3" );
-  default_list -> add_action( "call_action_list,name=single_target" );
+  default_list -> add_action("call_action_list,name=AoE,if=(spell_targets.starfall>=2&talent.stellar_drift.enabled)|spell_targets.starfall>=3");
+  default_list -> add_action("call_action_list,name=single_target");
   
+  ST -> add_talent( this, "Stellar Flare", "target_if=refreshable,if=target.time_to_die>10");
+  ST -> add_action( this, "Moonfire", "if=((talent.natures_balance.enabled&remains<3)|remains<6.6)&astral_power.deficit>7&target.time_to_die>8");
+  ST -> add_action( this, "Sunfire", "if=((talent.natures_balance.enabled&remains<3)|remains<5.4)&astral_power.deficit>7&target.time_to_die>8");
+  ST -> add_action( this, "Starfall", "if=buff.oneths_overconfidence.up&(!buff.astral_acceleration.up|buff.astral_acceleration.remains>5|astral_power.deficit<44)");
+  ST -> add_action( this, "Solar Wrath", "if=buff.solar_empowerment.stack=3");
+  ST -> add_action( this, "Lunar Strike", "if=buff.lunar_empowerment.stack=3");
   ST -> add_action( this, "Starsurge", "if=astral_power.deficit<44|(buff.celestial_alignment.up|buff.incarnation.up|buff.astral_acceleration.remains>5|(set_bonus.tier21_4pc&!buff.solar_solstice.up))|(gcd.max*(astral_power%40))>target.time_to_die");
-  ST -> add_action( this, "New Moon", "if=astral_power.deficit>14&!(buff.celestial_alignment.up|buff.incarnation.up)");
-  ST -> add_action( this, "Half Moon", "if=astral_power.deficit>24&!(buff.celestial_alignment.up|buff.incarnation.up)");
+  ST -> add_action( this, "New Moon", "if=astral_power.deficit>14&(!(buff.celestial_alignment.up|buff.incarnation.up)|(charges=2&recharge_time<5)|charges=3)");
+  ST -> add_action( this, "Half Moon", "if=astral_power.deficit>24&(!(buff.celestial_alignment.up|buff.incarnation.up)|(charges=2&recharge_time<5)|charges=3)");
   ST -> add_action( this, "Full Moon", "if=astral_power.deficit>44");
-  ST -> add_talent( this, "Warrior of Elune");
-  ST -> add_action( this, "Lunar Strike", "if=buff.warrior_of_elune.up");
+  ST -> add_action( this, "Lunar Strike", "if=buff.warrior_of_elune.up&buff.lunar_empowerment.up");
   ST -> add_action( this, "Solar Wrath", "if=buff.solar_empowerment.up");
   ST -> add_action( this, "Lunar Strike", "if=buff.lunar_empowerment.up");
   ST -> add_action( this, "Solar Wrath");
   
-  AoE -> add_action( this, "Starfall", "if=debuff.stellar_empowerment.remains<gcd.max*2|astral_power.deficit<22.5|(buff.celestial_alignment.remains>8|buff.incarnation.remains>8)|target.time_to_die<8");
-  AoE -> add_action( this, "New Moon", "if=astral_power.deficit>14");
+  AoE -> add_action( this, "Starfall", "if=debuff.stellar_empowerment.remains<gcd.max*2|astral_power.deficit<22.5|((buff.celestial_alignment.remains>8|buff.incarnation.remains>8))|target.time_to_die<8");
+  AoE -> add_talent( this, "Stellar Flare", "target_if=refreshable,if=target.time_to_die>10");
+  AoE -> add_action( this, "Sunfire", "target_if=refreshable,if=astral_power.deficit>7&target.time_to_die>4");
+  AoE -> add_action( this, "Moonfire", "target_if=refreshable,if=astral_power.deficit>7&target.time_to_die>4");
+  AoE -> add_action( this, "starsurge", "if=buff.oneths_intuition.up&(!buff.astral_acceleration.up|buff.astral_acceleration.remains>5|astral_power.deficit<44)");
+  AoE -> add_action( this, "New Moon", "if=astral_power.deficit>14&!(buff.celestial_alignment.up|buff.incarnation.up)");
   AoE -> add_action( this, "Half Moon", "if=astral_power.deficit>24");
   AoE -> add_action( this, "Full Moon", "if=astral_power.deficit>44");
-  AoE -> add_talent( this, "Warrior of Elune");
   AoE -> add_action( this, "Lunar Strike", "if=buff.warrior_of_elune.up");
   AoE -> add_action( this, "Solar Wrath", "if=buff.solar_empowerment.up");
   AoE -> add_action( this, "Lunar Strike", "if=buff.lunar_empowerment.up");
-  AoE -> add_action(this, "Moonfire", "if=equipped.lady_and_the_child&active_enemies=2&spell_haste>0.4&!(buff.celestial_alignment.up|buff.incarnation.up)");
-  AoE -> add_action( this, "Lunar Strike", "if=active_enemies>=4|spell_haste<0.45");
+  AoE -> add_action(this, "Moonfire", "if=equipped.lady_and_the_child&talent.soul_of_the_forest.enabled&active_enemies<5&spell_haste>0.4&!(buff.celestial_alignment.up|buff.incarnation.up)");
+  AoE -> add_action( this, "Lunar Strike", "if=spell_targets.lunar_strike>=4|spell_haste<0.45");
   AoE -> add_action( this, "Solar Wrath");
 
   FoE -> add_action( "incarnation,if=astral_power>=95&cooldown.fury_of_elune.remains<=gcd" );
@@ -9229,10 +9239,9 @@ void druid_t::assess_damage_imminent_pre_absorb( school_e, dmg_e, action_state_t
                      gain.bristling_fur );
     }
 
-    if ( buff.rage_of_the_sleeper -> up() )
+    // Prevent self-harm
+    if ( buff.rage_of_the_sleeper -> up() && s -> action -> player != this )
     {
-      assert( s -> action -> player != this );
-
       active.rage_of_the_sleeper -> target = s -> action -> player;
       // Don't schedule to make sure to respect the set target.
       active.rage_of_the_sleeper -> execute();

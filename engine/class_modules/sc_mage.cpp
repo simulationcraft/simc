@@ -1392,24 +1392,54 @@ namespace actions {
 
 struct mage_spell_state_t : public action_state_t
 {
+  bool frozen;
+
   mage_spell_state_t( action_t* action, player_t* target ) :
-    action_state_t( action, target )
+    action_state_t( action, target ),
+    frozen( false )
   { }
 
-  virtual bool frozen() const
+  virtual void initialize() override
   {
-    const mage_t* p = debug_cast<const mage_t*>( action -> player );
-    const mage_td_t* td = p -> get_target_data( target );
-
-    return ( td -> debuffs.winters_chill -> check() )
-        || ( td -> debuffs.frozen -> check() );
+    action_state_t::initialize();
+    frozen = false;
   }
 
-  virtual double composite_crit_chance() const override;
+  virtual std::ostringstream& debug_str( std::ostringstream& s ) override
+  {
+    action_state_t::debug_str( s ) << " frozen=" << frozen;
+    return s;
+  }
+
+  virtual void copy_state( const action_state_t* s ) override
+  {
+    action_state_t::copy_state( s );
+    auto mss = debug_cast<const mage_spell_state_t*>( s );
+
+    frozen = mss -> frozen;
+  }
+
+  virtual double composite_crit_chance() const override
+  {
+    double c = action_state_t::composite_crit_chance();
+
+    if ( frozen )
+    {
+      auto p = debug_cast<const mage_t*>( action -> player );
+
+      // Multiplier is not in spell data, apparently.
+      c *= 1.5;
+      c += p -> spec.shatter -> effectN( 2 ).percent() + p -> spec.shatter_2 -> effectN( 1 ).percent();
+    }
+
+    return c;
+  }
 };
 
 struct mage_spell_t : public spell_t
 {
+  static const snapshot_state_e STATE_FROZEN = STATE_TGT_USER_1;
+
   struct affected_by_t
   {
     bool arcane_mage;
@@ -1454,8 +1484,13 @@ public:
     {
       base_multiplier *= 1.0 + p() -> spec.frost_mage -> effectN( 1 ).percent();
     }
+    if ( harmful && affected_by.shatter && p() -> spec.shatter -> ok() )
+    {
+      snapshot_flags |= STATE_FROZEN;
+      update_flags   |= STATE_FROZEN;
+    }
 
-    if ( !harmful || background )
+    if ( ! harmful || background )
     {
       triggers_arcane_missiles = false;
     }
@@ -1486,6 +1521,27 @@ public:
   virtual action_state_t* new_state() override
   {
     return new mage_spell_state_t( this, target );
+  }
+
+  virtual bool frozen( const action_state_t* s ) const
+  {
+    const mage_td_t* td = p() -> target_data[ s -> target ];
+
+    if ( ! td )
+      return false;
+
+    return ( td -> debuffs.winters_chill -> check() )
+        || ( td -> debuffs.frozen -> check() );
+  }
+
+  virtual void snapshot_internal( action_state_t* s, unsigned flags, dmg_e rt ) override
+  {
+    if ( flags & STATE_FROZEN )
+    {
+      debug_cast<mage_spell_state_t*>( s ) -> frozen = frozen( s );
+    }
+
+    spell_t::snapshot_internal( s, flags, rt );
   }
 
   virtual double cost() const override
@@ -1596,23 +1652,6 @@ public:
     }
   }
 };
-
-double mage_spell_state_t::composite_crit_chance() const
-{
-  double c = action_state_t::composite_crit_chance();
-  const mage_spell_t* spell = debug_cast<const mage_spell_t*>( action );
-  const mage_t* p = spell -> p();
-
-  if ( spell -> affected_by.shatter && p -> spec.shatter -> ok() && frozen() )
-  {
-    // Multiplier is not in spell data, apparently.
-    c *= 1.5;
-
-    c += p -> spec.shatter -> effectN( 2 ).percent() + p -> spec.shatter_2 -> effectN( 1 ).percent();
-  }
-
-  return c;
-}
 
 typedef residual_action::residual_periodic_action_t< mage_spell_t > residual_action_t;
 
@@ -2176,7 +2215,7 @@ struct icicle_t : public frost_mage_spell_t
   icicle_t( mage_t* p ) :
     frost_mage_spell_t( "icicle", p, p -> find_spell( 148022 ) )
   {
-    may_crit = false;
+    may_crit = affected_by.shatter = false;
     proc = background = true;
 
     if ( p -> talents.splitting_ice -> ok() )
@@ -2973,6 +3012,8 @@ struct arcane_orb_bolt_t : public arcane_mage_spell_t
     {
       trigger_arcane_charge();
       trigger_am( am_trigger_source_id );
+
+      p() -> buffs.quick_thinker -> trigger();
     }
   }
 };
@@ -3020,9 +3061,6 @@ struct arcane_orb_t : public arcane_mage_spell_t
 
     trigger_am( am_trigger_source_id );
     trigger_arcane_charge();
-
-    p() -> buffs.quick_thinker -> trigger();
-
   }
 
   virtual timespan_t travel_time() const override
@@ -3145,7 +3183,7 @@ struct blizzard_t : public frost_mage_spell_t
     cooldown -> hasted = true;
     dot_duration = timespan_t::zero(); // This is just a driver for the ground effect.
     may_miss = false;
-    may_crit = false;
+    may_crit = affected_by.shatter = false;
   }
 
   double false_positive_pct() const override
@@ -3198,6 +3236,7 @@ struct charged_up_t : public arcane_mage_spell_t
     arcane_mage_spell_t::execute();
 
     trigger_arcane_charge( 4 );
+    p() -> buffs.quick_thinker -> trigger();
   }
 };
 
@@ -3391,7 +3430,7 @@ struct comet_storm_t : public frost_mage_spell_t
   {
     parse_options( options_str );
     may_miss = false;
-    may_crit = false;
+    may_crit = affected_by.shatter = false;
     add_child( projectile );
 
     if ( legendary )
@@ -3978,7 +4017,7 @@ struct flurry_t : public frost_mage_spell_t
   {
     parse_options( options_str );
     may_miss = false;
-    may_crit = false;
+    may_crit = affected_by.shatter = false;
     add_child( flurry_bolt );
   }
 
@@ -4010,6 +4049,8 @@ struct flurry_t : public frost_mage_spell_t
 
     if ( brain_freeze_up && p() -> sets -> has_set_bonus( MAGE_FROST, T21, B4 ) )
     {
+      // TODO: Seems to also be triggered by Brain Freeze expire (both natural and manual) and
+      // refresh. Check if this is still the case once Antorus goes live and possibly implement.
       p() -> buffs.arctic_blast -> trigger();
     }
 
@@ -4057,7 +4098,7 @@ struct frost_bomb_t : public frost_mage_spell_t
     parse_options( options_str );
     // Frost Bomb no longer has ticking damage.
     dot_duration = timespan_t::zero();
-    may_crit = false;
+    may_crit = affected_by.shatter = false;
 
     if ( p -> action.frost_bomb_explosion )
     {
@@ -4306,8 +4347,8 @@ struct frozen_orb_t : public frost_mage_spell_t
     parse_options( options_str );
     add_child( frozen_orb_bolt );
     add_child( ice_time_nova );
-    may_miss       = false;
-    may_crit       = false;
+    may_miss = false;
+    may_crit = affected_by.shatter = false;
   }
 
   virtual bool init_finished() override
@@ -4522,35 +4563,6 @@ struct ice_lance_state_t : public mage_spell_state_t
 
     fingers_of_frost = fss -> fingers_of_frost;
   }
-
-  virtual bool frozen() const override
-  {
-    if ( mage_spell_state_t::frozen() )
-      return true;
-
-    mage_t* m = debug_cast<mage_t*>( action -> player );
-
-    // In game, FoF Ice Lances are implemented using a global flag which determines
-    // whether to treat the targets as frozen or not. On IL execute, FoF is checked
-    // and the flag set accordingly.
-    //
-    // This works fine under normal circumstances. However, once GCD drops below IL's
-    // travel time, it's possible to:
-    //
-    //   a) cast FoF IL, cast non-FoF IL before the first one impacts
-    //   b) cast non-FoF IL, cast FoF IL before the first one impacts
-    //
-    // In the a) case, neither Ice Lance gets the extra damage/Shatter bonus, in the
-    // b) case, both Ice Lances do.
-    if ( m -> bugs )
-    {
-      return m -> state.fingers_of_frost_active;
-    }
-    else
-    {
-      return fingers_of_frost;
-    }
-  }
 };
 
 struct ice_lance_t : public frost_mage_spell_t
@@ -4581,6 +4593,33 @@ struct ice_lance_t : public frost_mage_spell_t
 
   virtual action_state_t* new_state() override
   { return new ice_lance_state_t( this, target ); }
+
+  virtual bool frozen( const action_state_t* s ) const override
+  {
+    if ( frost_mage_spell_t::frozen( s ) )
+      return true;
+
+    // In game, FoF Ice Lances are implemented using a global flag which determines
+    // whether to treat the targets as frozen or not. On IL execute, FoF is checked
+    // and the flag set accordingly.
+    //
+    // This works fine under normal circumstances. However, once GCD drops below IL's
+    // travel time, it's possible to:
+    //
+    //   a) cast FoF IL, cast non-FoF IL before the first one impacts
+    //   b) cast non-FoF IL, cast FoF IL before the first one impacts
+    //
+    // In the a) case, neither Ice Lance gets the extra damage/Shatter bonus, in the
+    // b) case, both Ice Lances do.
+    if ( p() -> bugs )
+    {
+      return p() -> state.fingers_of_frost_active;
+    }
+    else
+    {
+      return debug_cast<const ice_lance_state_t*>( s ) -> fingers_of_frost;
+    }
+  }
 
   virtual void execute() override
   {
@@ -4625,7 +4664,7 @@ struct ice_lance_t : public frost_mage_spell_t
     frost_mage_spell_t::impact( s );
 
     if ( result_is_hit( s -> result )
-      && debug_cast<mage_spell_state_t*>( s ) -> frozen() )
+      && debug_cast<mage_spell_state_t*>( s ) -> frozen )
     {
       if ( s -> chain_target == 0 )
       {
@@ -4664,7 +4703,7 @@ struct ice_lance_t : public frost_mage_spell_t
   {
     double m = frost_mage_spell_t::composite_da_multiplier( s );
 
-    if ( debug_cast<const mage_spell_state_t*>( s ) -> frozen() )
+    if ( debug_cast<const mage_spell_state_t*>( s ) -> frozen )
     {
       m *= 3.0;
       m *= 1.0 + p() -> artifact.obsidian_lance.percent();
@@ -7445,8 +7484,7 @@ void mage_t::apl_precombat()
   switch ( specialization() )
   {
     case MAGE_ARCANE:
-      precombat -> add_action( this, "Mark of Aluneth", "if=set_bonus.tier20_2pc|talent.charged_up.enabled" );
-      precombat -> add_action( this, "Arcane Blast", "if=!(set_bonus.tier20_2pc|talent.charged_up.enabled)" );
+      precombat -> add_action( this, "Arcane Blast" );
       break;
     case MAGE_FIRE:
       precombat -> add_action( this, "Pyroblast" );
@@ -7513,7 +7551,6 @@ void mage_t::apl_arcane()
   action_priority_list_t* variables           = get_action_priority_list( "variables"        );
   action_priority_list_t* build               = get_action_priority_list( "build"            );
   action_priority_list_t* conserve            = get_action_priority_list( "conserve"         );
-  action_priority_list_t* miniburn_init       = get_action_priority_list( "miniburn_init"    );
   action_priority_list_t* burn                = get_action_priority_list( "burn"             );
 
   default_list -> add_action( this, "Counterspell", "if=target.debuff.casting.react", "Interrupt the boss when possible." );
@@ -7525,8 +7562,8 @@ void mage_t::apl_arcane()
   default_list -> add_action( mage_t::get_special_use_items( "mrrgrias_favor" ) );
   default_list -> add_action( mage_t::get_special_use_items( "pharameres_forbidden_grimoire" ) );
   default_list -> add_action( mage_t::get_special_use_items( "kiljaedens_burning_wish" ) );
-  default_list -> add_action( "call_action_list,name=build,if=buff.arcane_charge.stack<buff.arcane_charge.max_stack&!burn_phase&time>0", "Build Arcane Charges before doing anything else. Burn phase has some specific actions for building Arcane Charges, so we avoid entering this list if currently burning." );
-  default_list -> add_action( "call_action_list,name=burn,if=variable.time_until_burn=0|burn_phase", "Enter burn actions if we're ready to burn, or already burning." );
+  default_list -> add_action( "call_action_list,name=build,if=buff.arcane_charge.stack<buff.arcane_charge.max_stack&!burn_phase", "Build Arcane Charges before doing anything else. Burn phase has some specific actions for building Arcane Charges, so we avoid entering this list if currently burning." );
+  default_list -> add_action( "call_action_list,name=burn,if=(buff.arcane_charge.stack=buff.arcane_charge.max_stack&variable.time_until_burn=0)|burn_phase", "Enter burn actions if we're ready to burn, or already burning." );
   default_list -> add_action( "call_action_list,name=conserve", "Fallback to conserve rotation." );
 
   variables    -> add_action( "variable,name=arcane_missiles_procs,op=set,value=buff.arcane_missiles.react", "Track the number of Arcane Missiles procs that we have." );
@@ -7534,21 +7571,20 @@ void mage_t::apl_arcane()
   variables    -> add_action( "variable,name=time_until_burn,op=max,value=cooldown.evocation.remains-variable.average_burn_length", "Burn condition #2: Evocation should be up by the time we finish burning. We use the custom variable average_burn_length to help estimate when Evocation will be available." );
   variables    -> add_action( "variable,name=time_until_burn,op=max,value=cooldown.presence_of_mind.remains,if=set_bonus.tier20_2pc", "Burn condition #3: 2pt20 grants a damage boost with Presence of Mind usage, so we definitely want to stack that with AP." );
   variables    -> add_action( "variable,name=time_until_burn,op=max,value=action.rune_of_power.usable_in,if=talent.rune_of_power.enabled", "Burn condition #4: We need an RoP charge if we've actually taken the talent. Check usable_in to see when we'll be able to cast, and ignore the line if we didn't take the talent." );
+  variables    -> add_action( "variable,name=time_until_burn,op=max,value=cooldown.charged_up.remains,if=talent.charged_up.enabled&set_bonus.tier21_2pc", "Burn condition #5: Charged Up allows the 2pt21 buff to be extended during our burn phase." );
   variables    -> add_action( "variable,name=time_until_burn,op=reset,if=target.time_to_die<variable.average_burn_length", "Boss is gonna die soon. All the above conditions don't really matter. We're just gonna burn our mana until combat ends." );
 
   build -> add_talent( this, "Arcane Orb" );
-  build -> add_talent( this, "Charged Up", "if=equipped.mystic_kilt_of_the_rune_master|(variable.arcane_missiles_procs=buff.arcane_missiles.max_stack&active_enemies<3)", "Use Charged Up on cooldown if we have the Kilt equipped for extra mana regen. Otherwise, use it if we cap out on Arcane Missiles to avoid munching a proc or having to cast Arcane Missiles at low Arcane Charges." );
   build -> add_action( this, "Arcane Missiles", "if=variable.arcane_missiles_procs=buff.arcane_missiles.max_stack&active_enemies<3", "If we cap out on Arcane Missiles, avoid munching another proc." );
   build -> add_action( this, "Arcane Explosion", "if=active_enemies>1" );
   build -> add_action( this, "Arcane Blast" );
 
   burn  -> add_action( "variable,name=total_burns,op=add,value=1,if=!burn_phase", "Increment our burn phase counter. Whenever we enter the `burn` actions without being in a burn phase, it means that we are about to start one." );
   burn  -> add_action( "start_burn_phase,if=!burn_phase", "The burn_phase variable is a flag indicating whether or not we are in a burn phase. It is set to 1 (True) with start_burn_phase, and 0 (False) with stop_burn_phase." );
-  burn  -> add_action( "stop_burn_phase,if=prev_gcd.1.evocation&cooldown.evocation.charges=0&burn_phase_duration>0", "Evocation is the end of our burn phase, but we check avaiable charges in case of Gravity Spiral. The final burn_phase_duration check is to prevent an infinite loop in SimC." );
+  burn  -> add_action( "stop_burn_phase,if=prev_gcd.1.evocation&cooldown.evocation.charges=0&burn_phase_duration>0", "Evocation is the end of our burn phase, but we check available charges in case of Gravity Spiral. The final burn_phase_duration check is to prevent an infinite loop in SimC." );
   burn  -> add_talent( this, "Nether Tempest", "if=refreshable|!ticking", "Use during pandemic refresh window or if the dot is missing." );
   burn  -> add_action( this, "Mark of Aluneth" );
   burn  -> add_talent( this, "Mirror Image" );
-  burn  -> add_talent( this, "Arcane Barrage", "if=set_bonus.tier20_2pc&cooldown.presence_of_mind.up&buff.arcane_charge.stack=buff.arcane_charge.max_stack", "Dump Arcane Charges before using PoM since we'll get them back immediately." );
   burn  -> add_talent( this, "Rune of Power", "if=mana.pct>30|(buff.arcane_power.up|cooldown.arcane_power.up)", "Prevents using RoP at super low mana." );
   burn  -> add_action( this, "Arcane Power" );
 
@@ -7559,7 +7595,9 @@ void mage_t::apl_arcane()
 
   burn  -> add_action( "potion,if=buff.arcane_power.up&(buff.berserking.up|buff.blood_fury.up|!(race.troll|race.orc))", "For Troll/Orc, it's best to sync potion with their racial buffs." );
   burn  -> add_action( "use_items,if=buff.arcane_power.up|target.time_to_die<cooldown.arcane_power.remains", "Pops any on-use items, e.g., Tarnished Sentinel Medallion." );
+  burn  -> add_action( this, "Arcane Barrage", "if=set_bonus.tier21_2pc&((set_bonus.tier20_2pc&cooldown.presence_of_mind.up)|(talent.charged_up.enabled&cooldown.charged_up.up))&buff.arcane_charge.stack=buff.arcane_charge.max_stack&buff.expanding_mind.down", "With 2pt20 or Charged Up we are able to extend the damage buff from 2pt21." );
   burn  -> add_action( this, "Presence of Mind", "if=((mana.pct>30|buff.arcane_power.up)&set_bonus.tier20_2pc)|buff.rune_of_power.remains<=buff.presence_of_mind.max_stack*action.arcane_blast.execute_time|buff.arcane_power.remains<=buff.presence_of_mind.max_stack*action.arcane_blast.execute_time", "With T20, use PoM at start of RoP/AP for damage buff. Without T20, use PoM at end of RoP/AP to cram in two final Arcane Blasts. Includes a mana condition to prevent using PoM at super low mana." );
+  burn  -> add_talent( this, "Charged Up", "if=buff.arcane_charge.stack<buff.arcane_charge.max_stack", "Use Charged Up to regain Arcane Charges after dumping to refresh 2pt21 buff." );
   burn  -> add_talent( this, "Arcane Orb" );
   burn  -> add_action( this, "Arcane Barrage", "if=active_enemies>4&equipped.mantle_of_the_first_kirin_tor&buff.arcane_charge.stack=buff.arcane_charge.max_stack", "Arcane Barrage has a good chance of launching an Arcane Orb at max Arcane Charge stacks." );
   burn  -> add_action( this, "Arcane Missiles", "if=variable.arcane_missiles_procs=buff.arcane_missiles.max_stack&active_enemies<3", "Arcane Missiles are good, but not when there's multiple targets up." );
@@ -7571,9 +7609,10 @@ void mage_t::apl_arcane()
   burn  -> add_action( this, "Evocation", "interrupt_if=ticks=2|mana.pct>=85,interrupt_immediate=1", "That last tick of Evocation is a waste; it's better for us to get back to casting." );
 
   conserve -> add_talent( this, "Mirror Image", "if=variable.time_until_burn>recharge_time|variable.time_until_burn>target.time_to_die" );
-  conserve -> add_action( this, "Mark of Aluneth" );
-  conserve -> add_talent( this, "Rune of Power", "if=full_recharge_time<=execute_time|(prev_gcd.1.mark_of_aluneth&!set_bonus.tier20_4pc)", "Use if we're about to cap on stacks, or we just used MoA with no T20 4pc." );
-  conserve -> add_action( "swap_action_list,name=miniburn_init,if=set_bonus.tier20_4pc&cooldown.presence_of_mind.up&cooldown.arcane_power.remains>20&(action.rune_of_power.usable|!talent.rune_of_power.enabled)", "Switch to a miniburn action list temporarily, just to get actions executed in the right order." );
+  conserve -> add_action( this, "Mark of Aluneth", "if=mana.pct<85" );
+  conserve -> add_action( "strict_sequence,name=miniburn:rune_of_power:arcane_barrage:presence_of_mind,if=set_bonus.tier20_4pc&variable.time_until_burn>30" );
+  conserve -> add_talent( this, "Rune of Power", "if=full_recharge_time<=execute_time|prev_gcd.1.mark_of_aluneth", "Use if we're about to cap on stacks, or we just used MoA." );
+  conserve -> add_action( "strict_sequence,name=abarr_cu_combo:arcane_barrage:charged_up,if=talent.charged_up.enabled&cooldown.charged_up.recharge_time<variable.time_until_burn", "We want Charged Up for our burn phase to refresh 2pt21 buff, but if we have time to let it recharge we can use it during conserve." );
   conserve -> add_action( this, "Arcane Missiles", "if=variable.arcane_missiles_procs=buff.arcane_missiles.max_stack&active_enemies<3", "Arcane Missiles are good, but not when there's multiple targets up." );
   conserve -> add_talent( this, "Supernova" );
   conserve -> add_talent( this, "Nether Tempest", "if=refreshable|!ticking", "Use during pandemic refresh window or if the dot is missing." );
@@ -7583,11 +7622,6 @@ void mage_t::apl_arcane()
   conserve -> add_action( this, "Arcane Barrage" );
   conserve -> add_action( this, "Arcane Explosion", "if=active_enemies>1", "The following two lines are here in case Arcane Barrage is on cooldown." );
   conserve -> add_action( this, "Arcane Blast" );
-
-  miniburn_init -> add_talent( this, "Rune of Power" );
-  miniburn_init -> add_action( this, "Arcane Barrage", "", "Dump Arcane Charge stacks. We don't have to check for T20 here; we already did that to enter this list." );
-  miniburn_init -> add_action( this, "Presence of Mind" );
-  miniburn_init -> add_action( "swap_action_list,name=default" );
 }
 
 // Fire Mage Action List ===================================================================================================
@@ -7604,9 +7638,9 @@ void mage_t::apl_fire()
   action_priority_list_t* standard            = get_action_priority_list( "standard_rotation" );
 
   default_list -> add_action( this, "Counterspell", "if=target.debuff.casting.react" );
-  default_list -> add_action( this, "Time Warp", "if=(time=0&buff.bloodlust.down)|(buff.bloodlust.down&equipped.132410&(cooldown.combustion.remains<1|target.time_to_die.remains<50))" );
+  default_list -> add_action( this, "Time Warp", "if=(time=0&buff.bloodlust.down)|(buff.bloodlust.down&equipped.132410&(cooldown.combustion.remains<1|target.time_to_die<50))" );
   default_list -> add_talent( this, "Mirror Image", "if=buff.combustion.down" );
-  default_list -> add_talent( this, "Rune of Power", "if=firestarter.active&action.rune_of_power.charges=2|cooldown.combustion.remains>40&buff.combustion.down&!talent.kindling.enabled|target.time_to_die.remains<11|talent.kindling.enabled&(charges_fractional>1.8|time<40)&cooldown.combustion.remains>40",
+  default_list -> add_talent( this, "Rune of Power", "if=firestarter.active&action.rune_of_power.charges=2|cooldown.combustion.remains>40&buff.combustion.down&!talent.kindling.enabled|target.time_to_die<11|talent.kindling.enabled&(charges_fractional>1.8|time<40)&cooldown.combustion.remains>40",
     "Standard Talent RoP Logic." );
   default_list -> add_talent( this, "Rune of Power", "if=(buff.kaelthas_ultimate_ability.react&(cooldown.combustion.remains>40|action.rune_of_power.charges>1))|(buff.erupting_infernal_core.up&(cooldown.combustion.remains>40|action.rune_of_power.charges>1))",
     "RoP use while using Legendary Items." );
@@ -7669,9 +7703,9 @@ void mage_t::apl_fire()
   standard    -> add_action( this, "Pyroblast", "if=buff.hot_streak.react&target.health.pct<=30&equipped.132454" );
   standard    -> add_action( this, "Pyroblast", "if=buff.kaelthas_ultimate_ability.react&execute_time<buff.kaelthas_ultimate_ability.remains" );
   standard    -> add_action( "call_action_list,name=active_talents" );
-  standard    -> add_action( this, "Fire Blast", "if=!talent.kindling.enabled&buff.heating_up.up&(!talent.rune_of_power.enabled|charges_fractional>1.4|cooldown.combustion.remains<40)&(3-charges_fractional)*(12*spell_haste)<cooldown.combustion.remains+3|target.time_to_die.remains<4" );
-  standard    -> add_action( this, "Fire Blast", "if=talent.kindling.enabled&buff.heating_up.up&(!talent.rune_of_power.enabled|charges_fractional>1.5|cooldown.combustion.remains<40)&(3-charges_fractional)*(18*spell_haste)<cooldown.combustion.remains+3|target.time_to_die.remains<4" );
-  standard    -> add_action( this, "Phoenix's Flames", "if=(buff.combustion.up|buff.rune_of_power.up|buff.incanters_flow.stack>3|talent.mirror_image.enabled)&artifact.phoenix_reborn.enabled&(4-charges_fractional)*13<cooldown.combustion.remains+5|target.time_to_die.remains<10" );
+  standard    -> add_action( this, "Fire Blast", "if=!talent.kindling.enabled&buff.heating_up.up&(!talent.rune_of_power.enabled|charges_fractional>1.4|cooldown.combustion.remains<40)&(3-charges_fractional)*(12*spell_haste)<cooldown.combustion.remains+3|target.time_to_die<4" );
+  standard    -> add_action( this, "Fire Blast", "if=talent.kindling.enabled&buff.heating_up.up&(!talent.rune_of_power.enabled|charges_fractional>1.5|cooldown.combustion.remains<40)&(3-charges_fractional)*(18*spell_haste)<cooldown.combustion.remains+3|target.time_to_die<4" );
+  standard    -> add_action( this, "Phoenix's Flames", "if=(buff.combustion.up|buff.rune_of_power.up|buff.incanters_flow.stack>3|talent.mirror_image.enabled)&artifact.phoenix_reborn.enabled&(4-charges_fractional)*13<cooldown.combustion.remains+5|target.time_to_die<10" );
   standard    -> add_action( this, "Phoenix's Flames", "if=(buff.combustion.up|buff.rune_of_power.up)&(4-charges_fractional)*30<cooldown.combustion.remains+5" );
   standard    -> add_action( this, "Phoenix's Flames", "if=charges_fractional>2.5&cooldown.combustion.remains>23" );
   standard    -> add_action( this, "Flamestrike", "if=(talent.flame_patch.enabled&active_enemies>3)|active_enemies>5" );
@@ -7695,12 +7729,12 @@ void mage_t::apl_frost()
   action_priority_list_t* variables    = get_action_priority_list( "variables"         );
 
   default_list -> add_action( "call_action_list,name=variables" );
-  default_list -> add_action( this, "Counterspell", "if=target.debuff.casting.react" );
+  default_list -> add_action( this, "Counterspell" );
   default_list -> add_action( this, "Ice Lance", "if=variable.fof_react=0&prev_gcd.1.flurry",
     "Free Ice Lance after Flurry. This action has rather high priority to ensure that we don't cast Rune of Power, Ray of Frost, "
     "etc. after Flurry and break up the combo. If FoF was already active, we do not lose anything by delaying the Ice Lance." );
   default_list -> add_action( this, "Time Warp",
-    "if=buff.bloodlust.down&(buff.exhaustion.down|equipped.shard_of_the_exodar)&(time=0|cooldown.icy_veins.remains<1|target.time_to_die<50)",
+    "if=buff.bloodlust.down&(buff.exhaustion.down|equipped.shard_of_the_exodar)&(cooldown.icy_veins.remains<1|target.time_to_die<50)",
 
     "Time Warp is used right at the start. If the actor has Shard of the Exodar, try to synchronize the second Time Warp with "
     "Icy Veins. If the target is about to die, use Time Warp regardless." );
@@ -7709,48 +7743,46 @@ void mage_t::apl_frost()
   default_list -> add_action( mage_t::get_special_use_items( "mrrgrias_favor" ) );
   default_list -> add_action( mage_t::get_special_use_items( "pharameres_forbidden_grimoire" ) );
   default_list -> add_action( mage_t::get_special_use_items( "kiljaedens_burning_wish" ) );
-  default_list -> add_action( "call_action_list,name=movement" );
+  default_list -> add_action( "call_action_list,name=movement,moving=1" );
   default_list -> add_action( "call_action_list,name=cooldowns" );
-  default_list -> add_action( "call_action_list,name=aoe,if=active_enemies>=4" );
+  default_list -> add_action( "call_action_list,name=aoe,if=active_enemies>=3" );
   default_list -> add_action( "call_action_list,name=single" );
 
   single -> add_talent( this, "Ice Nova", "if=debuff.winters_chill.up",
     "In some circumstances, it is possible for both Ice Lance and Ice Nova to benefit from a single Winter's Chill." );
-  single -> add_action( this, "Frozen Orb", "if=set_bonus.tier20_2pc",
-    "With T20 2pc, Frozen Orb should be used as soon as it comes off CD." );
   single -> add_action( this, "Frostbolt", "if=prev_off_gcd.water_jet" );
-  single -> add_action( "water_jet,if=prev_gcd.1.frostbolt&buff.fingers_of_frost.stack<(2+artifact.icy_hand.enabled)&buff.brain_freeze.react=0",
+  single -> add_action( "water_jet,if=prev_gcd.1.frostbolt&buff.fingers_of_frost.stack<3&buff.brain_freeze.react=0",
     "Basic Water Jet combo. Since Water Jet can only be used if the actor is not casting, we use it right after Frostbolt is executed. "
     "At the default distance, Frostbolt travels slightly over 1 s, giving Water Jet enough time to apply the DoT (Water Jet's cast time "
     "is 1 s, with haste scaling). The APL then forces another Frostbolt to guarantee getting both FoFs from the Water Jet. This works for "
     "most haste values (roughly from 0% to 160%). When changing the default distance, great care must be taken otherwise this action "
     "won't produce two FoFs." );
-  single -> add_talent( this, "Ray of Frost", "if=buff.icy_veins.up|(cooldown.icy_veins.remains>action.ray_of_frost.cooldown&buff.rune_of_power.down)" );
+  single -> add_talent( this, "Ray of Frost", "if=buff.icy_veins.up|cooldown.icy_veins.remains>action.ray_of_frost.cooldown&buff.rune_of_power.down" );
   single -> add_action( this, "Flurry",
-    "if=prev_gcd.1.ebonbolt|buff.brain_freeze.react&(!talent.glacial_spike.enabled&prev_gcd.1.frostbolt|talent.glacial_spike.enabled&"
-    "(prev_gcd.1.glacial_spike|prev_gcd.1.frostbolt&(buff.icicles.stack<=3|cooldown.frozen_orb.remains<=10&set_bonus.tier20_2pc)))",
+    "if=prev_gcd.1.ebonbolt|buff.brain_freeze.react&(prev_gcd.1.glacial_spike|prev_gcd.1.frostbolt&(!talent.glacial_spike.enabled"
+    "|buff.icicles.stack<=3|cooldown.frozen_orb.remains<=10&set_bonus.tier20_2pc))",
 
     "Winter's Chill from Flurry can apply to the spell cast right before (provided the travel time is long enough). This can be "
     "exploited to a great effect with Ebonbolt, Glacial Spike (which deal a lot of damage by themselves) and Frostbolt (as a "
     "guaranteed way to proc Frozen Veins and Chain Reaction). When using Glacial Spike, it is worth saving a Brain Freeze proc "
     "when Glacial Spike is right around the corner (i.e. with 4 or more Icicles). However, when the actor also has T20 2pc, "
     "Glacial Spike is delayed to fit into Frozen Mass, so we do not want to sit on a Brain Freeze proc for too long in that case." );
+  single -> add_action( this, "Frozen Orb", "if=set_bonus.tier20_2pc&variable.fof_react<3",
+    "With T20 2pc, Frozen Orb should be used as soon as it comes off CD." );
   single -> add_action( this, "Blizzard", "if=cast_time=0&active_enemies>1&variable.fof_react<3",
     "Freezing Rain Blizzard. While the normal Blizzard action is usually enough, right after Frozen Orb the actor will be "
     "getting a lot of FoFs, which might delay Blizzard to the point where we miss out on Freezing Rain. Therefore, if we are "
     "not at a risk of overcapping on FoF, use Blizzard before using Ice Lance." );
-  single -> add_talent( this, "Frost Bomb", "if=debuff.frost_bomb.remains<action.ice_lance.travel_time&variable.fof_react>0" );
-  single -> add_action( this, "Ice Lance", "if=variable.fof_react>0&cooldown.icy_veins.remains>10|variable.fof_react>2" );
+  single -> add_talent( this, "Frost Bomb", "if=debuff.frost_bomb.remains<action.ice_lance.travel_time&variable.fof_react" );
+  single -> add_action( this, "Ice Lance", "if=variable.fof_react" );
   single -> add_action( this, "Ebonbolt" );
   single -> add_action( this, "Frozen Orb" );
   single -> add_talent( this, "Ice Nova" );
   single -> add_talent( this, "Comet Storm" );
   single -> add_action( this, "Blizzard",
-    "if=active_enemies>2|active_enemies>1&!(talent.glacial_spike.enabled&talent.splitting_ice.enabled)|(buff.zannesu_journey.stack=5&"
-    "buff.zannesu_journey.remains>cast_time)",
+    "if=active_enemies>1|buff.zannesu_journey.stack=5&buff.zannesu_journey.remains>cast_time",
 
-    "Against low number of targets, Blizzard is used as a filler. Use it only against 2 or more targets, 3 or more when using Glacial "
-    "Spike and Splitting Ice. Zann'esu buffed Blizzard is used only at 5 stacks." );
+    "Against low number of targets, Blizzard is used as a filler. Zann'esu buffed Blizzard is used only at 5 stacks." );
   single -> add_action( this, "Frostbolt",
     "if=buff.frozen_mass.remains>execute_time+action.glacial_spike.execute_time+action.glacial_spike.travel_time&buff.brain_freeze.react=0&"
     "talent.glacial_spike.enabled",
@@ -7761,7 +7793,7 @@ void mage_t::apl_frost()
     "Glacial Spike is generally used as it is available, unless we have T20 2pc. In that case, Glacial Spike is delayed when "
     "Frozen Mass is happening soon (in less than 10 s)." );
   single -> add_action( this, "Frostbolt" );
-  single -> add_action( this, "Blizzard", "if=cast_time=0",
+  single -> add_action( this, "Blizzard", "",
     "While on the move, use instant Blizzard if available." );
   single -> add_action( this, "Ice Lance", "",
     "Otherwise just use Ice Lance to do at least some damage." );
@@ -7773,10 +7805,10 @@ void mage_t::apl_frost()
   aoe -> add_action( this, "Blizzard" );
   aoe -> add_talent( this, "Comet Storm" );
   aoe -> add_talent( this, "Ice Nova" );
-  aoe -> add_action( "water_jet,if=prev_gcd.1.frostbolt&buff.fingers_of_frost.stack<(2+artifact.icy_hand.enabled)&buff.brain_freeze.react=0" );
-  aoe -> add_action( this, "Flurry", "if=prev_gcd.1.ebonbolt|(prev_gcd.1.glacial_spike|prev_gcd.1.frostbolt)&buff.brain_freeze.react" );
-  aoe -> add_talent( this, "Frost Bomb", "if=debuff.frost_bomb.remains<action.ice_lance.travel_time&variable.fof_react>0" );
-  aoe -> add_action( this, "Ice Lance", "if=variable.fof_react>0" );
+  aoe -> add_action( "water_jet,if=prev_gcd.1.frostbolt&buff.fingers_of_frost.stack<3&buff.brain_freeze.react=0" );
+  aoe -> add_action( this, "Flurry", "if=prev_gcd.1.ebonbolt|buff.brain_freeze.react&(prev_gcd.1.glacial_spike|prev_gcd.1.frostbolt)" );
+  aoe -> add_talent( this, "Frost Bomb", "if=debuff.frost_bomb.remains<action.ice_lance.travel_time&variable.fof_react" );
+  aoe -> add_action( this, "Ice Lance", "if=variable.fof_react" );
   aoe -> add_action( this, "Ebonbolt" );
   aoe -> add_talent( this, "Glacial Spike" );
   aoe -> add_action( this, "Frostbolt" );
@@ -7785,12 +7817,12 @@ void mage_t::apl_frost()
 
   cooldowns -> add_talent( this, "Rune of Power",
     "if=cooldown.icy_veins.remains<cast_time|charges_fractional>1.9&cooldown.icy_veins.remains>10|buff.icy_veins.up|"
-    "target.time_to_die.remains+5<charges_fractional*10",
+    "target.time_to_die+5<charges_fractional*10",
 
     "Rune of Power is used when going into Icy Veins and while Icy Veins are up. Outside of Icy Veins, use Rune of Power "
     "when about to cap on charges or the target is about to die." );
-  cooldowns -> add_action( "potion,if=cooldown.icy_veins.remains<1" );
-  cooldowns -> add_action( this, "Icy Veins", "if=buff.icy_veins.down" );
+  cooldowns -> add_action( "potion,if=cooldown.icy_veins.remains<1|target.time_to_die<70" );
+  cooldowns -> add_action( this, "Icy Veins" );
   cooldowns -> add_talent( this, "Mirror Image" );
   cooldowns -> add_action( "use_items" );
   for( size_t i = 0; i < racial_actions.size(); i++ )
@@ -7799,7 +7831,7 @@ void mage_t::apl_frost()
   }
 
   movement -> add_action( this, "Blink", "if=movement.distance>10" );
-  movement -> add_talent( this, "Ice Floes", "if=buff.ice_floes.down&movement.distance>0&variable.fof_react=0" );
+  movement -> add_talent( this, "Ice Floes", "if=buff.ice_floes.down&variable.fof_react=0" );
 
   variables -> add_action( "variable,name=iv_start,value=time,if=prev_off_gcd.icy_veins",
     "Variable which tracks when Icy Veins were used. For use in time_until_fof variable." );

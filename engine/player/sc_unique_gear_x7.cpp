@@ -117,6 +117,11 @@ namespace item
   void golganneths_vitality( special_effect_t&         );
   void khazgoroths_courage( special_effect_t&          );
   void norgannons_prowess( special_effect_t&           );
+  void prototype_personnel_decimator( special_effect_t& );
+  void acrid_catalyst_injector( special_effect_t&      );
+  void vitality_resonator( special_effect_t&           );
+  void terminus_signaling_beacon( special_effect_t&    );
+  void sheath_of_asara( special_effect_t&              );
 
   // 7.2.0 Dungeon
   void dreadstone_of_endless_shadows( special_effect_t& );
@@ -1841,6 +1846,326 @@ void item::norgannons_prowess( special_effect_t& effect )
   } );
 
   secondary_cb -> buff = empower_buff;
+}
+
+// Prototype Personnel Decimator ===========================================
+
+struct personnel_decimator_t : public proc_spell_t
+{
+  personnel_decimator_t( const special_effect_t& effect ) :
+    proc_spell_t( "personnel_decimator", effect.player, effect.trigger() -> effectN( 1 ).trigger(), effect.item )
+  {
+    aoe = -1;
+  }
+
+  double composite_target_multiplier( player_t* target ) const override
+  {
+    double m = proc_spell_t::composite_target_multiplier( target );
+
+    double distance = 0;
+    if ( target != this -> target )
+    {
+      distance = this -> target -> get_player_distance( *target );
+    }
+
+    // TODO: Do something fancy based on the distance. Copy Pharamere's Forbidden Grimoire system
+    // for now, until better information appears.
+    m *= 1.0 - std::pow( std::min( distance, 20.0 ) / 30.0, 2 );
+
+    return m;
+  }
+};
+
+struct personnel_decimator_driver_t : public dbc_proc_callback_t
+{
+  personnel_decimator_driver_t( const special_effect_t& effect ) :
+    dbc_proc_callback_t( effect.item, effect )
+  { }
+
+  void trigger( action_t* a, void* call_data ) override
+  {
+    auto state = static_cast<action_state_t*>( call_data );
+    auto distance = effect.driver() -> effectN( 1 ).base_value();
+
+    if ( listener -> get_player_distance( *state -> target ) < distance )
+    {
+      return;
+    }
+
+    dbc_proc_callback_t::trigger( a, call_data );
+  }
+};
+
+void item::prototype_personnel_decimator( special_effect_t& effect )
+{
+  effect.proc_flags_ = PF_RANGED | PF_RANGED_ABILITY | PF_SPELL | PF_AOE_SPELL | PF_PERIODIC;
+  effect.execute_action = create_proc_action<personnel_decimator_t>( "personnel_decimator", effect );
+
+  new personnel_decimator_driver_t( effect );
+}
+
+// Acrid Catalyst Injector ===================================================
+struct injector_proc_cb_t : public dbc_proc_callback_t
+{
+  const std::vector<stat_buff_t*> small_buffs;
+  stat_buff_t* large_buff;
+
+  injector_proc_cb_t( const special_effect_t& effect,
+    const std::vector<stat_buff_t*>& small_buffs_, stat_buff_t* large_buff_ ) :
+    dbc_proc_callback_t( effect.item, effect ), small_buffs( small_buffs_ ), large_buff( large_buff_ )
+  { }
+
+  void execute( action_t* /* a */, action_state_t* /* state */ ) override
+  {
+    auto buff_index = static_cast<size_t>( rng().range( 0, small_buffs.size() ) );
+    auto buff = small_buffs[ buff_index ];
+
+    buff -> trigger();
+    if ( buff -> check() == buff -> max_stack() )
+    {
+      range::for_each( small_buffs, [] ( stat_buff_t* b ) { b -> expire(); } );
+      large_buff -> trigger();
+    }
+  }
+};
+
+void item::acrid_catalyst_injector( special_effect_t& effect )
+{
+  effect.proc_flags_ = PF_SPELL | PF_AOE_SPELL | PF_PERIODIC;
+  effect.proc_flags2_ = PF2_CRIT;
+
+  auto p = effect.player;
+
+  auto small_amount = effect.driver() -> effectN( 2 ).average( effect.item );
+  auto large_amount = effect.driver() -> effectN( 3 ).average( effect.item );
+
+  // Buffs
+  auto crit = debug_cast<stat_buff_t*>( buff_t::find( p, "brutality_of_the_legion" ) );
+  if ( ! crit )
+  {
+    crit = stat_buff_creator_t( p, "brutality_of_the_legion", p -> find_spell( 255742 ), effect.item )
+      .add_stat( STAT_CRIT_RATING, small_amount );
+  }
+
+  auto haste = debug_cast<stat_buff_t*>( buff_t::find( p, "fervor_of_the_legion" ) );
+  if ( ! haste )
+  {
+    haste = stat_buff_creator_t( p, "fervor_of_the_legion", p -> find_spell( 253261 ), effect.item )
+      .add_stat( STAT_HASTE_RATING, small_amount );
+  }
+
+  auto mastery = debug_cast<stat_buff_t*>( buff_t::find( p, "malice_of_the_legion" ) );
+  if ( ! mastery )
+  {
+    mastery = stat_buff_creator_t( p, "malice_of_the_legion", p -> find_spell( 255744 ), effect.item )
+      .add_stat( STAT_MASTERY_RATING, small_amount );
+  }
+
+  auto all = debug_cast<stat_buff_t*>( buff_t::find( p, "cycle_of_the_legion" ) );
+  if ( ! all )
+  {
+    all = stat_buff_creator_t( p, "cycle_of_the_legion", p -> find_spell( 253260 ), effect.item )
+      .add_stat( STAT_CRIT_RATING,    large_amount )
+      .add_stat( STAT_HASTE_RATING,   large_amount )
+      .add_stat( STAT_MASTERY_RATING, large_amount );
+  }
+
+  dbc_proc_callback_t* cb = new injector_proc_cb_t( effect, { crit, haste, mastery }, all );
+
+  all -> stack_change_callback = [ cb ] ( buff_t*, int prev, int cur )
+  {
+    if ( prev == 0 ) cb -> deactivate();
+    if ( prev == 1 ) cb -> activate();
+  };
+}
+
+// Vitality Resonator ======================================================
+struct reverberating_vitality_t : public proc_spell_t
+{
+  stat_buff_t* buff;
+
+  const double max_amount;
+  double amount;
+
+  reverberating_vitality_t( const special_effect_t& effect, stat_buff_t* buff_ ) :
+    proc_spell_t( effect ), buff( buff_ ),
+    max_amount( effect.driver() -> effectN( 2 ).average( effect.item ) ), amount( 0.0 )
+  { }
+
+  virtual timespan_t travel_time() const override
+  {
+    return timespan_t::from_seconds( data().missile_speed() );
+  }
+
+  virtual void execute() override
+  {
+    proc_spell_t::execute();
+
+    // 100% Int at 100% hp, 50% Int at 0% hp, linear between.
+    amount = max_amount;
+    amount *= 0.5 + target -> health_percentage() * 0.005;
+  }
+
+  virtual void impact( action_state_t* s ) override
+  {
+    proc_spell_t::impact( s );
+
+    // TODO: Is there a better way to express this?
+    buff -> stats[ 0 ].amount = amount;
+    buff -> trigger();
+  }
+};
+
+void item::vitality_resonator( special_effect_t& effect )
+{
+  // Automatically created buff ignores the delay, disable it.
+  effect.disable_buff();
+
+  auto p = effect.player;
+
+  auto buff = debug_cast<stat_buff_t*>( buff_t::find( p, "reverberating_vitality" ) );
+  if ( ! buff )
+  {
+    buff = stat_buff_creator_t( p, "reverberating_vitality", p -> find_spell( 253258 ), effect.item )
+      .add_stat( STAT_INTELLECT, effect.driver() -> effectN( 2 ).average( effect.item ) )
+      .cd( timespan_t::zero() );
+  }
+
+  effect.execute_action = create_proc_action<reverberating_vitality_t>( "reverberating_vitality", effect, buff );
+}
+
+// Terminus Signalling Beacon ==================================================
+struct legion_bombardment_t : public proc_spell_t
+{
+  struct legion_bombardment_tick_t : public proc_spell_t
+  {
+    legion_bombardment_tick_t( const special_effect_t& effect ) :
+      proc_spell_t( "legion_bombardment_tick", effect.player, effect.player -> find_spell( 257376 ), effect.item )
+    {
+      base_dd_min = base_dd_max = player -> find_spell( 256325 ) -> effectN( 1 ).average( effect.item );
+      aoe = -1;
+    }
+  };
+
+  action_t* tick;
+
+  legion_bombardment_t( const special_effect_t& effect ) :
+    proc_spell_t( effect ),
+    tick( create_proc_action<legion_bombardment_tick_t>( "legion_bombardment_tick", effect ) )
+  { }
+
+  virtual timespan_t travel_time() const override
+  {
+    // Doesn't seem to vary with distance.
+    return timespan_t::from_seconds( 2.0 );
+  }
+
+  virtual void impact( action_state_t* s ) override
+  {
+    proc_spell_t::impact( s );
+
+    int pulses = 6;
+
+    // If the target is too close, the ship destroys itself after 3 ticks.
+    if ( player -> get_player_distance( *target ) < tick -> radius )
+      pulses = 3;
+
+    // TODO: Spell data is totally unhelpful. Seems to be 6 ticks over 6 seconds in game.
+    make_event<ground_aoe_event_t>( *sim, player, ground_aoe_params_t()
+      .action( tick )
+      .target( target )
+      .n_pulses( pulses ) );
+  }
+};
+
+void item::terminus_signaling_beacon( special_effect_t& effect )
+{
+  effect.execute_action = create_proc_action<legion_bombardment_t>( "legion_bombardment", effect );
+}
+
+// Sheath of Asara
+// TODO: In-game debuff is 255870, buff is 255856. But the spell data contains nothing of relevance.
+struct shadow_blades_constructor_t : public item_targetdata_initializer_t
+{
+  shadow_blades_constructor_t( unsigned iid, const std::vector<slot_e>& s ) :
+    item_targetdata_initializer_t( iid, s )
+  { }
+
+  void operator()( actor_target_data_t* td ) const override
+  {
+    const special_effect_t* effect = find_effect( td -> source );
+
+    if ( ! effect )
+    {
+      td -> debuff.shadow_blades = buff_creator_t( *td, "shadow_blades" );
+    }
+    else
+    {
+      assert( ! td -> debuff.shadow_blades );
+
+      auto spell = effect -> player -> find_spell( 253265 );
+      td -> debuff.shadow_blades = buff_creator_t( *td, "shadow_blades", spell, effect -> item )
+        .default_value( spell -> effectN( 2 ).percent() );
+      td -> debuff.shadow_blades -> reset();
+    }
+  }
+};
+
+// TODO: Travel time?
+struct shadow_blade_t : public proc_spell_t
+{
+  shadow_blade_t( const special_effect_t& effect ) :
+    proc_spell_t( "shadow_blade", effect.player, effect.player -> find_spell( 257702 ), effect.item )
+  {
+    base_dd_min = base_dd_max = effect.driver() -> effectN( 2 ).average( effect.item );
+  }
+
+  virtual double composite_target_multiplier( player_t* target ) const override
+  {
+    double ctm = proc_spell_t::composite_target_multiplier( target );
+
+    ctm *= 1.0 + player -> get_target_data( target ) -> debuff.shadow_blades -> check_stack_value();
+
+    return ctm;
+  }
+
+  virtual void impact( action_state_t* s ) override
+  {
+    proc_spell_t::impact( s );
+
+    player -> get_target_data( target ) -> debuff.shadow_blades -> trigger();
+  }
+};
+
+struct shadow_blades_buff_t : public buff_t
+{
+  action_t* shadow_blade;
+  int blade_count;
+
+  shadow_blades_buff_t( const special_effect_t& effect ) :
+    buff_t( buff_creator_t( effect.player, "shadow_blades", effect.player -> find_spell( 253264 ), effect.item ) ),
+    shadow_blade( create_proc_action<shadow_blade_t>( "shadow_blade", effect ) ),
+    blade_count( effect.driver() -> effectN( 3 ).base_value() )
+  { }
+
+  virtual void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
+  {
+    buff_t::expire_override( expiration_stacks, remaining_duration );
+
+    // TODO: Looks like the pulse time isn't anywhere in spell data.
+    make_event<ground_aoe_event_t>( *sim, player, ground_aoe_params_t()
+      .pulse_time( timespan_t::from_seconds( 0.25 ) )
+      .action( shadow_blade )
+      .target( player -> target )
+      .n_pulses( blade_count ), true );
+  }
+};
+
+void item::sheath_of_asara( special_effect_t& effect )
+{
+  effect.proc_flags_ = PF_RANGED | PF_RANGED_ABILITY | PF_SPELL | PF_AOE_SPELL | PF_PERIODIC;
+  effect.custom_buff = new shadow_blades_buff_t( effect );
+  new dbc_proc_callback_t( effect.item, effect );
 }
 
 // Toe Knee's Promise ======================================================
@@ -5975,6 +6300,11 @@ void unique_gear::register_special_effects_x7()
   register_special_effect( 256819, item::golganneths_vitality      );
   register_special_effect( 256825, item::khazgoroths_courage       );
   register_special_effect( 256827, item::norgannons_prowess        );
+  register_special_effect( 253242, item::prototype_personnel_decimator );
+  register_special_effect( 253259, item::acrid_catalyst_injector   );
+  register_special_effect( 253258, item::vitality_resonator        );
+  register_special_effect( 255724, item::terminus_signaling_beacon );
+  register_special_effect( 253263, item::sheath_of_asara           );
 
   /* Legion 7.2.0 Dungeon */
   register_special_effect( 238498, item::dreadstone_of_endless_shadows );
@@ -6066,4 +6396,5 @@ void unique_gear::register_target_data_initializers_x7( sim_t* sim )
   sim -> register_target_data_initializer( bough_of_corruption_constructor_t( 139336, trinkets ) );
   sim -> register_target_data_initializer( mrrgrias_favor_constructor_t( 142160, trinkets ) ) ;
   sim -> register_target_data_initializer( fury_of_the_burning_sun_constructor_t( 140801, trinkets ) );
+  sim -> register_target_data_initializer( shadow_blades_constructor_t( 151971, trinkets ) );
 }

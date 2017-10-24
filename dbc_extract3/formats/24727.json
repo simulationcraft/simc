@@ -563,7 +563,7 @@
     { "data_type": "f", "field": "max_range", "elements": 2 },
     { "data_type": "S", "field": "display_name" },
     { "data_type": "S", "field": "display_name_short" },
-    { "data_type": "B", "field": "flags" }
+    { "data_type": "B", "field": "flag" }
   ],
   "SpellScaling": [
     { "data_type": "I", "field": "id_spell" },

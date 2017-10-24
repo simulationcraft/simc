@@ -1402,6 +1402,7 @@ sim_t::sim_t( sim_t* p, int index ) :
   iteration_dmg( 0 ), priority_iteration_dmg( 0 ), iteration_heal( 0 ), iteration_absorb( 0 ),
   raid_dps(), total_dmg(), raid_hps(), total_heal(), total_absorb(), raid_aps(),
   simulation_length( "Simulation Length", false ),
+  merge_time( 0 ), init_time( 0 ), analyze_time( 0 ),
   report_iteration_data( 0.025 ), min_report_iteration_data( -1 ),
   report_progress( 1 ),
   bloodlust_percent( 25 ), bloodlust_time( timespan_t::from_seconds( 0.5 ) ),
@@ -2340,6 +2341,8 @@ bool sim_t::init_actor_pets()
 
 bool sim_t::init()
 {
+  auto start = std::chrono::high_resolution_clock::now();
+
   if ( initialized )
     return true;
 
@@ -2515,6 +2518,8 @@ bool sim_t::init()
 
   initialized = true;
 
+  init_time = util::duration_fp_seconds( start );
+
   return canceled ? false : true;
 }
 
@@ -2523,6 +2528,8 @@ bool sim_t::init()
 
 void sim_t::analyze()
 {
+  auto start = std::chrono::high_resolution_clock::now();
+
   simulation_length.analyze();
   if ( simulation_length.mean() == 0 ) return;
 
@@ -2552,6 +2559,8 @@ void sim_t::analyze()
   range::sort( targets_by_name, compare_name() );
 
   analyze_iteration_data();
+
+  analyze_time = util::duration_fp_seconds( start );
 }
 
 /**
@@ -2683,6 +2692,7 @@ void sim_t::do_pause()
 /// merge sims
 void sim_t::merge( sim_t& other_sim )
 {
+  auto start = std::chrono::high_resolution_clock::now();
   auto_lock_t auto_lock( merge_mutex );
 
   if ( scaling -> scale_stat == STAT_NONE &&
@@ -2722,6 +2732,8 @@ void sim_t::merge( sim_t& other_sim )
   }
 
   range::append( iteration_data, other_sim.iteration_data );
+  merge_time += util::duration_fp_seconds( start );
+  init_time += other_sim.init_time;
 }
 
 /// merge all sims together

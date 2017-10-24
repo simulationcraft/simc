@@ -512,6 +512,7 @@ struct actor_target_data_t : public actor_pair_t, private noncopyable
     buff_t* solar_collapse;
     buff_t* volatile_magic;
     buff_t* maddening_whispers;
+    buff_t* shadow_blades;
   } debuff;
 
   struct atd_dot_t
@@ -1732,6 +1733,7 @@ struct sim_t : private sc_thread_t
   double     iteration_dmg, priority_iteration_dmg,  iteration_heal, iteration_absorb;
   simple_sample_data_t raid_dps, total_dmg, raid_hps, total_heal, total_absorb, raid_aps;
   extended_sample_data_t simulation_length;
+  double merge_time, init_time, analyze_time;
   // Deterministic simulation iteration data collectors for specific iteration
   // replayability
   std::vector<iteration_data_entry_t> iteration_data, low_iteration_data, high_iteration_data;
