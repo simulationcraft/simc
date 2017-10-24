@@ -158,9 +158,9 @@ actions.writhe+=/life_tap,if=talent.empowered_life_tap.enabled&buff.empowered_li
 actions.writhe+=/agony,if=refreshable&time_to_die>=remains
 actions.writhe+=/siphon_life,if=refreshable&time_to_die>=remains
 actions.writhe+=/corruption,if=refreshable&time_to_die>=remains
-actions.writhe+=/agony,cycle_targets=1,target_if=sim.target!=target&time_to_die>tick_time*3&!buff.deadwind_harvester.remains&refreshable&time_to_die>tick_time*3
-actions.writhe+=/siphon_life,cycle_targets=1,target_if=sim.target!=target&time_to_die>tick_time*3&!buff.deadwind_harvester.remains&refreshable&time_to_die>tick_time*3
-actions.writhe+=/corruption,cycle_targets=1,target_if=sim.target!=target&time_to_die>tick_time*3&!buff.deadwind_harvester.remains&refreshable&time_to_die>tick_time*3
+actions.writhe+=/agony,cycle_targets=1,target_if=sim.target!=target&time_to_die>tick_time*3&!buff.deadwind_harvester.remains&refreshable
+actions.writhe+=/siphon_life,cycle_targets=1,target_if=sim.target!=target&time_to_die>tick_time*3&!buff.deadwind_harvester.remains&refreshable
+actions.writhe+=/corruption,cycle_targets=1,target_if=sim.target!=target&time_to_die>tick_time*3&!buff.deadwind_harvester.remains&refreshable
 actions.writhe+=/life_tap,if=mana.pct<=10
 actions.writhe+=/life_tap,if=prev_gcd.1.life_tap&buff.active_uas.stack=0&mana.pct<50
 actions.writhe+=/drain_soul,chain=1,interrupt=1

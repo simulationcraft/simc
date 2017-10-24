@@ -4599,12 +4599,7 @@ private:
   timespan_t compute_tick_time() const
   {
     auto base = data().effectN( 3 ).period();
-
-    // 7.3.2 PTR
-    if ( maybe_ptr( p() -> dbc.ptr ) )
-      base += timespan_t::from_millis( p() -> talent.rapid_decomposition -> effectN( 1 ).base_value() * 10 );
-    else 
-      base += timespan_t::from_millis( p() -> talent.rapid_decomposition -> effectN( 2 ).base_value() * 10 );
+    base += timespan_t::from_millis( p() -> talent.rapid_decomposition -> effectN( 1 ).base_value() * 10 );
     
     return base;
   }
@@ -8135,8 +8130,9 @@ void death_knight_t::default_apl_blood()
   standard -> add_talent( this, "Blooddrinker", "if=!buff.dancing_rune_weapon.up" );
   standard -> add_action( this, "Marrowrend", "if=buff.bone_shield.remains<=gcd*2" );
   standard -> add_action( this, "Blood Boil", "if=charges_fractional>=1.8&buff.haemostasis.stack<5&(buff.haemostasis.stack<3|!buff.dancing_rune_weapon.up)" );
-  standard -> add_action( this, "Marrowrend", "if=buff.bone_shield.stack<5|!talent.ossuary.enabled|buff.bone_shield.remains<gcd*3" );
-  standard -> add_action( this, "Death Strike", "if=buff.blood_shield.up|(runic_power.deficit<15&runic_power.deficit<25|!buff.dancing_rune_weapon.up)" );
+  standard -> add_action( this, "Marrowrend", "if=(buff.bone_shield.stack<5&talent.ossuary.enabled)|buff.bone_shield.remains<gcd*3" );
+  standard -> add_talent( this, "Bonestorm", "if=runic_power>=100&spell_targets.bonestorm>=3" );
+  standard -> add_action( this, "Death Strike", "if=buff.blood_shield.up|(runic_power.deficit<15&(runic_power.deficit<25|!buff.dancing_rune_weapon.up))" );
   standard -> add_action( this, "Consumption" );
   standard -> add_action( this, "Heart Strike", "if=buff.dancing_rune_weapon.up" );
   standard -> add_action( this, "Death and Decay", "if=buff.crimson_scourge.up" );
@@ -8567,11 +8563,7 @@ void death_knight_t::create_buffs()
                               .tick_callback( [ this ]( buff_t*, int, timespan_t ) {
                                 if ( in_death_and_decay() )
                                 {
-                                  resource_gain( RESOURCE_RUNIC_POWER,
-                                                 // TODO spell data doesn't properly flag the gain as runic power so we need to change it to its negative value
-                                                 dbc.ptr ? 
-                                                  talent.rapid_decomposition -> effectN( 3 ).base_value() :
-                                                  talent.rapid_decomposition -> effectN( 1 ).base_value() / 10 , 
+                                  resource_gain( RESOURCE_RUNIC_POWER, talent.rapid_decomposition -> effectN( 3 ).base_value(), 
                                                  gains.rapid_decomposition,
                                                  nullptr );
                                 }
