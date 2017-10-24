@@ -8683,7 +8683,6 @@ void death_knight_t::create_buffs()
   
   buffs.vampiric_aura = buff_creator_t( this, "vampiric_aura" )
     .spell( spell.vampiric_aura );
-
   buffs.t20_2pc_unholy = buff_creator_t( this, "master_of_ghouls" )
     .spell( find_spell( 246995 ) )
     .trigger_spell( sets -> set( DEATH_KNIGHT_UNHOLY, T20, B2 ) )
