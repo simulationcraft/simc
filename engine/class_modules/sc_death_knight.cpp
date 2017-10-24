@@ -8135,7 +8135,7 @@ void death_knight_t::default_apl_blood()
   standard -> add_talent( this, "Blooddrinker", "if=!buff.dancing_rune_weapon.up" );
   standard -> add_action( this, "Marrowrend", "if=buff.bone_shield.remains<=gcd*2" );
   standard -> add_action( this, "Blood Boil", "if=charges_fractional>=1.8&buff.haemostasis.stack<5&(buff.haemostasis.stack<3|!buff.dancing_rune_weapon.up)" );
-  standard -> add_action( this, "Marrowrend", "if=buff.bone_shield.stack<5|!talent.ossuary.enabled|buff.bone_shield.remains<gcd*3" );
+  standard -> add_action( this, "Marrowrend", "if=(buff.bone_shield.stack<5&talent.ossuary.enabled)|buff.bone_shield.remains<gcd*3" );
   standard -> add_action( this, "Death Strike", "if=buff.blood_shield.up|(runic_power.deficit<15&runic_power.deficit<25|!buff.dancing_rune_weapon.up)" );
   standard -> add_action( this, "Consumption" );
   standard -> add_action( this, "Heart Strike", "if=buff.dancing_rune_weapon.up" );
