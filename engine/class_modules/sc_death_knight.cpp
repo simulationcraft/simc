@@ -4599,12 +4599,7 @@ private:
   timespan_t compute_tick_time() const
   {
     auto base = data().effectN( 3 ).period();
-
-    // 7.3.2 PTR
-    if ( maybe_ptr( p() -> dbc.ptr ) )
-      base += timespan_t::from_millis( p() -> talent.rapid_decomposition -> effectN( 1 ).base_value() * 10 );
-    else 
-      base += timespan_t::from_millis( p() -> talent.rapid_decomposition -> effectN( 2 ).base_value() * 10 );
+    base += timespan_t::from_millis( p() -> talent.rapid_decomposition -> effectN( 1 ).base_value() * 10 );
     
     return base;
   }
@@ -8567,11 +8562,7 @@ void death_knight_t::create_buffs()
                               .tick_callback( [ this ]( buff_t*, int, timespan_t ) {
                                 if ( in_death_and_decay() )
                                 {
-                                  resource_gain( RESOURCE_RUNIC_POWER,
-                                                 // TODO spell data doesn't properly flag the gain as runic power so we need to change it to its negative value
-                                                 dbc.ptr ? 
-                                                  talent.rapid_decomposition -> effectN( 3 ).base_value() :
-                                                  talent.rapid_decomposition -> effectN( 1 ).base_value() / 10 , 
+                                  resource_gain( RESOURCE_RUNIC_POWER, talent.rapid_decomposition -> effectN( 3 ).base_value(), 
                                                  gains.rapid_decomposition,
                                                  nullptr );
                                 }
