@@ -3539,7 +3539,7 @@ struct marked_shot_t: public hunter_spell_t
     {
       impact -> set_target( s -> target );
       impact -> execute();
-      if ( maybe_ptr(p()->dbc.ptr) && p() -> sets -> has_set_bonus( HUNTER_MARKSMANSHIP, T21, B4 ) &&
+      if ( p() -> sets -> has_set_bonus( HUNTER_MARKSMANSHIP, T21, B4 ) &&
            t21_4p_targets_hit < p() -> sets -> set( HUNTER_MARKSMANSHIP, T21, B4 ) -> effectN( 2 ).base_value() &&
            rng().roll( p() -> sets -> set( HUNTER_MARKSMANSHIP, T21, B4 ) -> effectN( 1 ).percent() ) )
       {
