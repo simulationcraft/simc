@@ -1,4 +1,4 @@
-SimulationCraft 730-03 for World of Warcraft 7.3.0 Live (wow build 24931)
+SimulationCraft 730-03 for World of Warcraft 7.3.2 Live (wow build 25383)
 
 Name             : Mend Pet (id=136) [Scaling Spell (4), Spell Family (9)] 
 Class            : Hunter
@@ -227,7 +227,7 @@ Spell Level      : 16
 Range            : 40 yards
 GCD              : 1.5 seconds
 Velocity         : 50 yards/sec
-Affecting spells : Freezing Trap (3355 effect#2), Refocus (24531 effect#1), Multi-Shot Damage Increase (28539 effect#1), Mortal Shots (36413 effect#1), Shot Power (37508 effect#1), Bombardment (82921 effect#2), Hunter (137014 effect#3), Beast Mastery Hunter (137015 effect#1), Marksmanship Hunter (137016 effect#1), Guide: Sharpshooting (178549 effect#2), Called Shot (190467 effect#1), Mastery: Sniper Training (193468 effect#1), Aspect of the Wild (193530 effect#3), Focus of the Titans (197139 effect#1), Roar of the Seven Lions (207318 effect#1), Trueshot (211327 effect#1), Bestial Rage (246116 effect#1), Item - Hunter T21 Marksmanship 2P Bonus - Marked Shot Buffs Focus Builders (251754 effect#1)
+Affecting spells : Freezing Trap (3355 effect#2), Refocus (24531 effect#1), Multi-Shot Damage Increase (28539 effect#1), Mortal Shots (36413 effect#1), Shot Power (37508 effect#1), Bombardment (82921 effect#2), Hunter (137014 effect#3), Beast Mastery Hunter (137015 effect#1), Marksmanship Hunter (137016 effect#1), Guide: Sharpshooting (178549 effect#2), Called Shot (190467 effect#1), Mastery: Sniper Training (193468 effect#1), Aspect of the Wild (193530 effect#3), Focus of the Titans (197139 effect#1), Roar of the Seven Lions (207318 effect#1), Trueshot (211327 effect#1), Bestial Rage (246116 effect#1), Item - Hunter T21 Marksmanship 2P Bonus (251754 effect#1)
 Attributes       : .x...... ........ x....... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ .x...... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .......x ........ ........ 
@@ -932,7 +932,7 @@ Spell Level      : 10
 Range            : 100 yards
 GCD              : 1.5 seconds
 Cooldown         : 7.5 seconds
-Affecting spells : Freezing Trap (3355 effect#2), Hunter (137014 effect#2), Beast Mastery Hunter (137015 effect#1), Guide: Sharpshooting (178549 effect#2), Aspect of the Wild (193530 effect#3), Pack Leader (197080 effect#1), Roar of the Seven Lions (207318 effect#1), Bestial Rage (246116 effect#1), Item - Hunter T21 Beast Mastery 2P Bonus - Kill Command Damage (251755 effect#1)
+Affecting spells : Freezing Trap (3355 effect#2), Hunter (137014 effect#2), Beast Mastery Hunter (137015 effect#1), Guide: Sharpshooting (178549 effect#2), Aspect of the Wild (193530 effect#3), Pack Leader (197080 effect#1), Roar of the Seven Lions (207318 effect#1), Bestial Rage (246116 effect#1), Item - Hunter T21 Beast Mastery 2P Bonus (251755 effect#1)
 Attributes       : ........ ........ x.x..x.. ........   ........ .xx..... ........ ..xxx... 
                  : ..x..... ........ ........ ........   ........ .....x.. ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1823,7 +1823,7 @@ Class            : Hunter
 School           : Physical
 Spell Level      : 1
 Range            : 100 yards
-Affecting spells : Hunter (137014 effect#2), Aspect of the Wild (193530 effect#3), Pack Leader (197080 effect#1), Roar of the Seven Lions (207318 effect#1), Bestial Rage (246116 effect#1), Item - Hunter T21 Beast Mastery 2P Bonus - Kill Command Damage (251755 effect#1)
+Affecting spells : Hunter (137014 effect#2), Aspect of the Wild (193530 effect#3), Pack Leader (197080 effect#1), Roar of the Seven Lions (207318 effect#1), Bestial Rage (246116 effect#1), Item - Hunter T21 Beast Mastery 2P Bonus (251755 effect#1)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2659,7 +2659,6 @@ Effects          :
                    Base Value: -50 | Scaled Value: -50 | Target: Self (1)
 #4 (id=255744)   : Apply Aura (6) | Modify Expertise% (240)
                    Base Value: 30 | Scaled Value: 30 | Target: Self (1)
-                   Hotfixed: Base Value (20 -> 30), Chain Multiplier (0 -> 1)
 #5 (id=255745)   : Apply Aura (6) | Unknown(119)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #6 (id=342165)   : Apply Aura (6) | Proc Trigger Spell (42)
@@ -2752,13 +2751,13 @@ Effects          :
                    Affected Spells (Category): Dire Frenzy (217200)
 #10 (id=260641)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 247 (Label) | Target: Self (1)
-                   Affected Spells (Label): Infernal Contract (225140), Living Carapace (225033), Sands of Time (225124), Vampiric Aura (225130), Wailing Souls (242609), Unending Hunger (242536), Chilling Nova (251940), Bulwark of Flame (251946), Hammer-Forged (251952), Pool of Pure Void (250766)
+                   Affected Spells (Label): Infernal Contract (225140), Living Carapace (225033), Sands of Time (225124), Vampiric Aura (225130), Wailing Souls (242609), Unending Hunger (242536), Chilling Nova (251940), Bulwark of Flame (251946), Hammer-Forged (251952), Pool of Pure Void (250766), Wave of Flame (251948)
 #11 (id=260642)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 249 (Label) | Target: Self (1)
                    Affected Spells (Label): Orb of Destruction (229700), Void Tendril (250834)
 #12 (id=260643)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 298 (Label) | Target: Self (1)
-                   Affected Spells (Label): Cleansing Matrix (242619), Fruitful Machinations (242623), Guiding Hand (242622), Infusion of Light (242621), Fel Shield (253277), Tarratus Keystone (253282), Refreshing Agony (253284), L'ura's Word (250781)
+                   Affected Spells (Label): Cleansing Matrix (242619), Fruitful Machinations (242623), Guiding Hand (242622), Infusion of Light (242621), Felshield (253277), Tarratus Keystone (253282), Refreshing Agony (253284), L'ura's Word (250781), Tarratus Keystone (255924), Refreshing Agony (255981), Highfather's Timekeeping (253288), Felshield (253278), Highfather's Timekeeping (255932), Emerald Blossom (257442), Verdant Embrace (257444)
 #13 (id=260644)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #14 (id=260645)   : Apply Aura (6) | Dummy (4)
@@ -2794,15 +2793,12 @@ Effects          :
 #1 (id=179698)   : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
                    Base Value: 12 | Scaled Value: 12 | Target: Self (1)
                    Affected Spells: Multi-Shot (2643), Kill Command (34026), Chimaera Shot (53209), Barrage (120360), Barrage (120361), A Murder of Crows (131900), Chimaera Shot (171454), Chimaera Shot (171457), Cobra Shot (193455), Volley (194392), Stomp (199530), Stampede (201594)
-                   Hotfixed: Base Value (6 -> 12), Chain Multiplier (0 -> 1)
 #2 (id=191138)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Damage (22)
                    Base Value: 12 | Scaled Value: 12 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Multi-Shot (2643), Kill Command (34026), Chimaera Shot (53209), Barrage (120360), Barrage (120361), A Murder of Crows (131900), Chimaera Shot (171454), Chimaera Shot (171457), Cobra Shot (193455), Volley (194392), Stomp (199530), Stampede (201594)
-                   Hotfixed: Base Value (6 -> 12), Chain Multiplier (0 -> 1)
 #3 (id=191139)   : Apply Aura (6) | Modify Pet Damage Done% (429)
                    Base Value: 12 | Scaled Value: 12 | Target: Self (1)
                    Affected Spells: Bestial Wrath (19574), Bestial Wrath (186254)
-                   Hotfixed: Base Value (6 -> 12), Chain Multiplier (0 -> 1)
 #4 (id=191140)   : Apply Aura (6) | Add Flat Modifier (107): Generic Modifier (0)
                    Base Value: -45 | Scaled Value: -45 | Target: Self (1)
                    Affected Spells: A Murder of Crows (131894), A Murder of Crows (131900), A Murder of Crows (206505)
@@ -2814,10 +2810,10 @@ Effects          :
                    Affected Spells: Volley (194386), Volley (194392)
 #7 (id=260898)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 248 (Label) | Target: Self (1)
-                   Affected Spells (Label): Fel-Crazed Rage (225777), Colossal Slam (232044), Dread Torrent (246464), Ceaseless Toxin (242497), Umbral Glaive Storm (242556), Shattering Umbral Glaives (242557), Infernal Cinders (242218)
+                   Affected Spells (Label): Fel-Crazed Rage (225777), Colossal Slam (232044), Dread Torrent (246464), Ceaseless Toxin (242497), Umbral Glaive Storm (242556), Shattering Umbral Glaives (242557), Infernal Cinders (242218), Golganneth's Thunderous Wrath (257430), Shadow Strike (253324), Worldforger's Flame (257244), Gorshalach's Legacy (255673), Gorshalach's Legacy (253329)
 #8 (id=260899)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Periodic Damage (22)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 22 | Misc Value 2: 248 (Label) | Target: Self (1)
-                   Affected Spells (Label): Fel-Crazed Rage (225777), Colossal Slam (232044), Dread Torrent (246464), Ceaseless Toxin (242497), Umbral Glaive Storm (242556), Shattering Umbral Glaives (242557), Infernal Cinders (242218)
+                   Affected Spells (Label): Fel-Crazed Rage (225777), Colossal Slam (232044), Dread Torrent (246464), Ceaseless Toxin (242497), Umbral Glaive Storm (242556), Shattering Umbral Glaives (242557), Infernal Cinders (242218), Golganneth's Thunderous Wrath (257430), Shadow Strike (253324), Worldforger's Flame (257244), Gorshalach's Legacy (255673), Gorshalach's Legacy (253329)
 #9 (id=260900)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #10 (id=260901)   : Apply Aura (6) | Dummy (4)
@@ -2844,10 +2840,10 @@ Effects          :
                    Affected Spells: Multi-Shot (2643)
 #2 (id=191134)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 248 (Label) | Target: Self (1)
-                   Affected Spells (Label): Fel-Crazed Rage (225777), Colossal Slam (232044), Dread Torrent (246464), Ceaseless Toxin (242497), Umbral Glaive Storm (242556), Shattering Umbral Glaives (242557), Infernal Cinders (242218)
+                   Affected Spells (Label): Fel-Crazed Rage (225777), Colossal Slam (232044), Dread Torrent (246464), Ceaseless Toxin (242497), Umbral Glaive Storm (242556), Shattering Umbral Glaives (242557), Infernal Cinders (242218), Golganneth's Thunderous Wrath (257430), Shadow Strike (253324), Worldforger's Flame (257244), Gorshalach's Legacy (255673), Gorshalach's Legacy (253329)
 #3 (id=191135)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Periodic Damage (22)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 22 | Misc Value 2: 248 (Label) | Target: Self (1)
-                   Affected Spells (Label): Fel-Crazed Rage (225777), Colossal Slam (232044), Dread Torrent (246464), Ceaseless Toxin (242497), Umbral Glaive Storm (242556), Shattering Umbral Glaives (242557), Infernal Cinders (242218)
+                   Affected Spells (Label): Fel-Crazed Rage (225777), Colossal Slam (232044), Dread Torrent (246464), Ceaseless Toxin (242497), Umbral Glaive Storm (242556), Shattering Umbral Glaives (242557), Infernal Cinders (242218), Golganneth's Thunderous Wrath (257430), Shadow Strike (253324), Worldforger's Flame (257244), Gorshalach's Legacy (255673), Gorshalach's Legacy (253329)
 #4 (id=191136)   : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
                    Base Value: 12 | Scaled Value: 12 | Target: Self (1)
                    Affected Spells: Multi-Shot (2643), Aimed Shot (19434), Barrage (120361), A Murder of Crows (131894), A Murder of Crows (131900), Arcane Shot (185358), Bursting Shot (186387), Aimed Shot (191043), Volley (194386), Volley (194392), Black Arrow (194599), Piercing Shot (198670), Windburst (204147), A Murder of Crows (206505), Marked Shot (212621), Piercing Shot (213678), Sidewinders (214579), Sidewinders (214581)
@@ -2891,19 +2887,16 @@ Effects          :
 #1 (id=179700)   : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
                    Base Value: 12 | Scaled Value: 12 | Target: Self (1)
                    Affected Spells: Explosive Trap (13812), Serpent Sting (118253), A Murder of Crows (131900), Steel Trap (162487), Lacerate (185855), Raptor Strike (186270), Carve (187708), Mongoose Bite (190928), Hatchet Toss (193265), Caltrops (194279), Dragonsfire Grenade (194858), Throwing Axes (200167), Steel Trap Expert (201199), Flanking Strike (202800), Fury of the Eagle (203413), Talon Strike (203525), On the Trail (204081), Butchery (212436), Echo of Ohn'ara (242798)
-                   Hotfixed: Base Value (7 -> 12), Chain Multiplier (0 -> 1)
 #2 (id=191130)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Damage (22)
                    Base Value: 12 | Scaled Value: 12 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Explosive Trap (13812), Serpent Sting (118253), A Murder of Crows (131900), Steel Trap (162487), Lacerate (185855), Raptor Strike (186270), Carve (187708), Mongoose Bite (190928), Hatchet Toss (193265), Caltrops (194279), Dragonsfire Grenade (194858), Throwing Axes (200167), Steel Trap Expert (201199), Flanking Strike (202800), Fury of the Eagle (203413), Talon Strike (203525), On the Trail (204081), Butchery (212436), Echo of Ohn'ara (242798)
-                   Hotfixed: Base Value (7 -> 12), Chain Multiplier (0 -> 1)
 #3 (id=191131)   : Apply Aura (6) | Modify Pet Damage Done% (429)
                    Base Value: 12 | Scaled Value: 12 | Target: Self (1)
-                   Hotfixed: Base Value (7 -> 12), Chain Multiplier (0 -> 1)
 #4 (id=191132)   : Apply Aura (6) | Unknown(153)
                    Base Value: 3 | Scaled Value: 3 | Target: Self (1)
 #5 (id=191133)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 300 (Label) | Target: Self (1)
-                   Affected Spells (Label): Insidious Corruption (243941), Spectral Bolt (242571), Spectral Blast (246442), Apocalypse Missile (253243), Legion Bombardment (253248), Essence Swap (253258)
+                   Affected Spells (Label): Insidious Corruption (243941), Spectral Bolt (242571), Spectral Blast (246442), Legion Bombardment (253248), Prototype Personnel Decimator (255629), Legion Bombardment (255713), Legion Bombardment (255724), Legion Bombardment (257376)
 #6 (id=260877)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #7 (id=260878)   : Apply Aura (6) | Dummy (4)
@@ -3181,6 +3174,7 @@ Class            : Hunter
 School           : Nature
 Spell Level      : 20
 Range            : 40 yards
+GCD              : 1 seconds
 Cooldown         : 600 seconds
 Category         : 26
 Category Cooldown: 600 seconds
@@ -3602,7 +3596,7 @@ Spell Level      : 10
 Range            : 40 yards
 GCD              : 1.5 seconds
 Velocity         : 70 yards/sec
-Affecting spells : Freezing Trap (3355 effect#2), Mortal Shots (36413 effect#1), Shot Power (37508 effect#1), Hunter (137014 effect#3), Marksmanship Hunter (137016 effect#4), Guide: Sharpshooting (178549 effect#2), Mastery: Sniper Training (193468 effect#1), True Aim (199803 effect#1), Item - Hunter T21 Marksmanship 2P Bonus - Marked Shot Buffs Focus Builders (251754 effect#1)
+Affecting spells : Freezing Trap (3355 effect#2), Mortal Shots (36413 effect#1), Shot Power (37508 effect#1), Hunter (137014 effect#3), Marksmanship Hunter (137016 effect#4), Guide: Sharpshooting (178549 effect#2), Mastery: Sniper Training (193468 effect#1), True Aim (199803 effect#1), Item - Hunter T21 Marksmanship 2P Bonus (251754 effect#1)
 Attributes       : .x...... ........ x....... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ .x...... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
@@ -4016,7 +4010,7 @@ Class            : Hunter
 School           : Physical
 Spell Level      : 1
 Range            : 50000 yards
-Affecting spells : Item - Hunter T21 Marksmanship 2P Bonus - Marked Shot Buffs Focus Builders (251754 effect#3)
+Affecting spells : Item - Hunter T21 Marksmanship 2P Bonus (251754 effect#3)
 Attributes       : ........ ........ ........ ...x....   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5075,7 +5069,7 @@ Effects          :
 #1 (id=293624)   : Apply Aura (6) | Add Flat Modifier (107): Spell Proc Chance (18)
                    Base Value: 30 | Scaled Value: 30 | Misc Value: 18 | Target: Self (1)
                    Affected Spells: Wild Call (185789), Wild Call (185791)
-Description      : Grants Wild Call a $s1% increased chance to reduce the cooldown of Dire $?s217200[Frenzy][Beast].
+Description      : Grants Wild Call a $s1% increased chance to reset the cooldown of Dire $?s217200[Frenzy][Beast].
 
 Name             : Stomp (id=199530) [Spell Family (9), Passive] 
 Class            : Hunter
@@ -6047,7 +6041,7 @@ Name             : Multi-Shot (id=213363) [Spell Family (9)]
 Class            : Hunter
 School           : Physical
 Spell Level      : 1
-Affecting spells : Hunter (137014 effect#3), Guide: Sharpshooting (178549 effect#2), Mastery: Sniper Training (193468 effect#1), Item - Hunter T21 Marksmanship 2P Bonus - Marked Shot Buffs Focus Builders (251754 effect#2)
+Affecting spells : Hunter (137014 effect#3), Guide: Sharpshooting (178549 effect#2), Mastery: Sniper Training (193468 effect#1), Item - Hunter T21 Marksmanship 2P Bonus (251754 effect#2)
 Attributes       : ........ ........ ........ ...x....   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6092,7 +6086,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Charges          : 2 (12 seconds cooldown)
 Category         : 1628: Hunter (137014 effect#4)
-Affecting spells : Freezing Trap (3355 effect#2), Hunter (137014 effect#3), Marksmanship Hunter (137016 effect#4), Guide: Sharpshooting (178549 effect#2), Called Shot (190467 effect#1), Critical Focus (191328 effect#2), Mastery: Sniper Training (193468 effect#1), Item - Hunter T21 Marksmanship 2P Bonus - Marked Shot Buffs Focus Builders (251754 effect#1), 
+Affecting spells : Freezing Trap (3355 effect#2), Hunter (137014 effect#3), Marksmanship Hunter (137016 effect#4), Guide: Sharpshooting (178549 effect#2), Called Shot (190467 effect#1), Critical Focus (191328 effect#2), Mastery: Sniper Training (193468 effect#1), Item - Hunter T21 Marksmanship 2P Bonus (251754 effect#1), 
 Attributes       : .x...... ........ x....... ........   ........ .xx..... ........ ........ 
                  : ........ ........ .x...... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ....x...   ........ ........ ........ ........ 
@@ -6119,7 +6113,7 @@ School           : Nature
 Spell Level      : 1
 Range            : 100 yards
 Velocity         : 18 yards/sec
-Affecting spells : Freezing Trap (3355 effect#2), Hunter (137014 effect#3), Marksmanship Hunter (137016 effect#4), Guide: Sharpshooting (178549 effect#2), Called Shot (190467 effect#1), Critical Focus (191328 effect#2), Mastery: Sniper Training (193468 effect#1), Item - Hunter T21 Marksmanship 2P Bonus - Marked Shot Buffs Focus Builders (251754 effect#1), 
+Affecting spells : Freezing Trap (3355 effect#2), Hunter (137014 effect#3), Marksmanship Hunter (137016 effect#4), Guide: Sharpshooting (178549 effect#2), Called Shot (190467 effect#1), Critical Focus (191328 effect#2), Mastery: Sniper Training (193468 effect#1), Item - Hunter T21 Marksmanship 2P Bonus (251754 effect#1), 
 Attributes       : .x...... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ .x...... ......x.   ........ ........ ........ ......x. 
                  : ........ ........ ........ ....x...   ........ .......x ........ ........ 

@@ -1,4 +1,4 @@
-SimulationCraft 730-03 for World of Warcraft 7.3.0 Live (wow build 24931)
+SimulationCraft 730-03 for World of Warcraft 7.3.2 Live (wow build 25383)
 
 Name             : Invisibility (id=66) [Spell Family (3)] 
 Class            : Arcane Fire Frost Mage
@@ -35,7 +35,7 @@ Range            : 40 yards
 Cast Time        : 2 seconds
 GCD              : 1.5 seconds
 Velocity         : 35 yards/sec
-Affecting spells : Icy Veins (12472 effect#2), Shatter (12982 effect#1), Frosty Zap (24392 effect#1), Improved Counterspell (24429 effect#1), Ice Floes (108839 effect#1), Ice Shard (166869 effect#1), Icy Caress (195315 effect#1), Ice Form (198144 effect#1), Lonely Winter (205024 effect#1), Shattering Bolts (214629 effect#1), Norgannon's Foresight (236380 effect#1), Arctic Blast (253257 effect#1)
+Affecting spells : Icy Veins (12472 effect#2), Shatter (12982 effect#1), Frosty Zap (24392 effect#1), Improved Counterspell (24429 effect#1), Ice Floes (108839 effect#1), Ice Shard (166869 effect#1), Icy Caress (195315 effect#1), Ice Form (198144 effect#1), Lonely Winter (205024 effect#1), Shattering Bolts (214629 effect#1), Norgannon's Foresight (236380 effect#1)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   .......x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -744,7 +744,7 @@ Spell Level      : 10
 Range            : 40 yards
 GCD              : 1.5 seconds
 Velocity         : 47 yards/sec
-Affecting spells : Shatter (12982 effect#1), Splitting Ice (56377 effect#1), Let It Go (195322 effect#1), Chain Reaction (195418 effect#1), Lonely Winter (205024 effect#1), Magtheridon's Might (214404 effect#1), Norgannon's Foresight (236380 effect#1)
+Affecting spells : Shatter (12982 effect#1), Splitting Ice (56377 effect#1), Let It Go (195322 effect#1), Chain Reaction (195418 effect#1), Lonely Winter (205024 effect#1), Magtheridon's Might (214404 effect#1), Norgannon's Foresight (236380 effect#1), Arctic Blast (253257 effect#1)
 Triggered by     : Fingers of Frost (44544)
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1158,7 +1158,7 @@ Effects          :
                    Base Value: -1 | Scaled Value: 0 | Value Range: 1 | Trigger Spell: 228354 | Target: Enemy (6)
 Description      : Unleash a flurry of ice, striking the target $s1 times for a total of ${$228354s2*$m1} Frost damage. Each hit reduces the target's movement speed by $228354s1% for $228354d.
 
-While Brain Freeze is active, Flurry also applies Winter's Chill to the target.
+While Brain Freeze is active, Flurry applies Winter's Chill, causing your target to take damage from your spells as if it were frozen.
 
 Name             : Ice Block (id=45438) [Spell Family (3)] 
 Class            : Mage
@@ -1975,7 +1975,7 @@ Range            : 40 yards
 Cooldown         : 0.5 seconds
 Charges          : 1 (12 seconds cooldown)
 Category         : 1500: Mage (137018 effect#2)
-Affecting spells : Mage Fire Blast Range Bonus (33066 effect#1), Fire Mage (137019 effect#1), Reignition Overdrive (194234 effect#1), Flame On (205029 effect#4), Fire Blast (231567 effect#2), Fire Blast (231568 effect#1), Norgannon's Foresight (236380 effect#1)
+Affecting spells : Mage Fire Blast Range Bonus (33066 effect#1), Fire Mage (137019 effect#1), Reignition Overdrive (194234 effect#1), Fire Blast (231567 effect#2), Fire Blast (231568 effect#1), Norgannon's Foresight (236380 effect#1)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : .......x ........ ........ ........   ........ ........ ........ ........ 
@@ -1985,9 +1985,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=120062)   : School Damage (2): fire
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.88800 | Target: Enemy (6)
-#2 (id=354887)   : Dummy (3)
-                   Base Value: 1 | Scaled Value: 1
-Description      : Blasts the enemy for $s1 Fire damage. Castable while casting other spells.$?a231568[ Always deals a critical strike.][]$?a231567[ Maximum $s2 charges.][]
+Description      : Blasts the enemy for $s1 Fire damage. Castable while casting other spells.$?a231568[ Always deals a critical strike.][]
 
 Name             : Greater Invisibility (id=110959) [Spell Family (3)] 
 Replaces         : Invisibility (id=66)
@@ -2459,19 +2457,19 @@ Effects          :
                    Affected Spells (Category): Fire Blast (108853)
 #3 (id=188984)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 247 (Label) | Target: Self (1)
-                   Affected Spells (Label): Infernal Contract (225140), Living Carapace (225033), Sands of Time (225124), Vampiric Aura (225130), Wailing Souls (242609), Unending Hunger (242536), Chilling Nova (251940), Bulwark of Flame (251946), Hammer-Forged (251952), Pool of Pure Void (250766)
+                   Affected Spells (Label): Infernal Contract (225140), Living Carapace (225033), Sands of Time (225124), Vampiric Aura (225130), Wailing Souls (242609), Unending Hunger (242536), Chilling Nova (251940), Bulwark of Flame (251946), Hammer-Forged (251952), Pool of Pure Void (250766), Wave of Flame (251948)
 #4 (id=188985)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 248 (Label) | Target: Self (1)
-                   Affected Spells (Label): Fel-Crazed Rage (225777), Colossal Slam (232044), Dread Torrent (246464), Ceaseless Toxin (242497), Umbral Glaive Storm (242556), Shattering Umbral Glaives (242557), Infernal Cinders (242218)
+                   Affected Spells (Label): Fel-Crazed Rage (225777), Colossal Slam (232044), Dread Torrent (246464), Ceaseless Toxin (242497), Umbral Glaive Storm (242556), Shattering Umbral Glaives (242557), Infernal Cinders (242218), Golganneth's Thunderous Wrath (257430), Shadow Strike (253324), Worldforger's Flame (257244), Gorshalach's Legacy (255673), Gorshalach's Legacy (253329)
 #5 (id=191129)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Periodic Damage (22)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 22 | Misc Value 2: 248 (Label) | Target: Self (1)
-                   Affected Spells (Label): Fel-Crazed Rage (225777), Colossal Slam (232044), Dread Torrent (246464), Ceaseless Toxin (242497), Umbral Glaive Storm (242556), Shattering Umbral Glaives (242557), Infernal Cinders (242218)
+                   Affected Spells (Label): Fel-Crazed Rage (225777), Colossal Slam (232044), Dread Torrent (246464), Ceaseless Toxin (242497), Umbral Glaive Storm (242556), Shattering Umbral Glaives (242557), Infernal Cinders (242218), Golganneth's Thunderous Wrath (257430), Shadow Strike (253324), Worldforger's Flame (257244), Gorshalach's Legacy (255673), Gorshalach's Legacy (253329)
 #6 (id=257393)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 298 (Label) | Target: Self (1)
-                   Affected Spells (Label): Cleansing Matrix (242619), Fruitful Machinations (242623), Guiding Hand (242622), Infusion of Light (242621), Fel Shield (253277), Tarratus Keystone (253282), Refreshing Agony (253284), L'ura's Word (250781)
+                   Affected Spells (Label): Cleansing Matrix (242619), Fruitful Machinations (242623), Guiding Hand (242622), Infusion of Light (242621), Felshield (253277), Tarratus Keystone (253282), Refreshing Agony (253284), L'ura's Word (250781), Tarratus Keystone (255924), Refreshing Agony (255981), Highfather's Timekeeping (253288), Felshield (253278), Highfather's Timekeeping (255932), Emerald Blossom (257442), Verdant Embrace (257444)
 #7 (id=260648)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 333 (Label) | Target: Self (1)
-                   Affected Spells (Label): Void Slash (251034)
+                   Affected Spells (Label): Void Slash (251034), Isolated Strike (255609), Fire Mines (253321), Ravaging Storm (257286)
 #8 (id=260649)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #9 (id=260650)   : Apply Aura (6) | Dummy (4)
@@ -3465,7 +3463,7 @@ Resource         : 10% Base Mana (0) (id=10319)
 Spell Level      : 40
 Duration         : 10 seconds
 Cooldown         : 120 seconds
-Affecting spells : Norgannon's Foresight (236380 effect#1), Pre-Ignited (238055 effect#1), Item - Mage T21 Fire 2P Bonus - Combustion Duration (251857 effect#1)
+Affecting spells : Norgannon's Foresight (236380 effect#1), Pre-Ignited (238055 effect#1), Item - Mage T21 Fire 2P Bonus (251857 effect#1)
 Attributes       : ........ ........ ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : .......x ........ ........ ........   ........ .x...... ........ ........ 
@@ -4138,9 +4136,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1500 | Target: Self (1)
 #3 (id=354874)   : Dummy (3)
                    Base Value: 2 | Scaled Value: 2
-#4 (id=354884)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 12 | Target: Self (1)
-                   Affected Spells: Fire Blast (108853)
 Description      : Reduces the cooldown of Fire Blast by $s3 seconds and increases the maximum number of charges by $s1.
 
 Name             : Frozen Touch (id=205030) [Spell Family (3), Passive] 
@@ -4970,7 +4965,7 @@ Class            : Mage
 School           : Frost
 Spell Level      : 1
 Range            : 100 yards
-Affecting spells : Icy Veins (12472 effect#2), Shatter (12982 effect#1), Frosty Zap (24392 effect#1), Improved Counterspell (24429 effect#1), Ice Floes (108839 effect#1), Frost Mage (137020 effect#1), Ice Shard (166869 effect#1), Icy Caress (195315 effect#1), Ice Form (198144 effect#1), Lonely Winter (205024 effect#1), Shattering Bolts (214629 effect#1), Norgannon's Foresight (236380 effect#1), Arctic Blast (253257 effect#1)
+Affecting spells : Icy Veins (12472 effect#2), Shatter (12982 effect#1), Frosty Zap (24392 effect#1), Improved Counterspell (24429 effect#1), Ice Floes (108839 effect#1), Frost Mage (137020 effect#1), Ice Shard (166869 effect#1), Icy Caress (195315 effect#1), Ice Form (198144 effect#1), Lonely Winter (205024 effect#1), Shattering Bolts (214629 effect#1), Norgannon's Foresight (236380 effect#1)
 Triggered by     : Frostbolt (116)
 Attributes       : ........ ........ x......x x..x....   .....x.. ........ ........ ........ 
                  : ..x..... ......x. ...x.... ........   ........ .x...... ........ ......x. 
@@ -4990,7 +4985,7 @@ School           : Frost
 Spell Level      : 5
 Range            : 100 yards
 GCD              : 1.5 seconds
-Affecting spells : Shatter (12982 effect#1), Splitting Ice (56377 effect#3), Frost Mage (137020 effect#1), Let It Go (195322 effect#1), Chain Reaction (195418 effect#1), Lonely Winter (205024 effect#1), Magtheridon's Might (214404 effect#1), Norgannon's Foresight (236380 effect#1)
+Affecting spells : Shatter (12982 effect#1), Splitting Ice (56377 effect#3), Frost Mage (137020 effect#1), Let It Go (195322 effect#1), Chain Reaction (195418 effect#1), Lonely Winter (205024 effect#1), Magtheridon's Might (214404 effect#1), Norgannon's Foresight (236380 effect#1), Arctic Blast (253257 effect#1)
 Attributes       : ........ ........ x.x....x x..x....   .....x.. ........ ........ ........ 
                  : ..x..... ......x. ...x.... ........   ........ .x...... ........ ......x. 
                  : .......x ........ ........ ........   ...x.... ........ .xx..... ........ 
@@ -5790,7 +5785,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : Unlock powers at the Vindicaar's Matrix Core to use while on Argus. 
 
-Name             : Item - Mage T21 Frost 4P Bonus - Brain Freeze Buffs Frostbolt (id=251860) [Spell Family (3), Passive, Hidden] 
+Name             : Item - Mage T21 Frost 4P Bonus (id=251860) [Spell Family (3), Passive, Hidden] 
 Class            : Mage
 School           : Physical
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
@@ -5803,7 +5798,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=471469)   : Apply Aura (6) | Dummy (4)
                    Base Value: 75 | Scaled Value: 75 | Target: Self (1)
-Description      : When you consume Brain Freeze, the damage of your next Frostbolt is increased by $253257s1%.
+Description      : When you consume Brain Freeze, the damage of your next Ice Lance is increased by $253257s1%.
 
 Name             : Arctic Blast (id=253257) [Spell Family (3)] 
 Class            : Mage
@@ -5822,9 +5817,9 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=473551)   : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
                    Base Value: 25 | Scaled Value: 25 | Target: Self (1)
-                   Affected Spells: Frostbolt (116), Frostbolt (228597)
+                   Affected Spells: Ice Lance (30455), Ice Lance (228598)
 Description      : $@spelldesc251860
-Tooltip          : Damage of your next Frostbolt increased by $s1%.
+Tooltip          : Damage of your next Ice Lance increased by $s1%.
 
 Name             : Vindicaar Matrix Crystal (id=255529) [Hidden] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
