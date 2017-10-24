@@ -1,4 +1,4 @@
-SimulationCraft 730-03 for World of Warcraft 7.3.2 Live (wow build 25326)
+SimulationCraft 730-03 for World of Warcraft 7.3.2 Live (wow build 25383)
 
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
 Class            : Discipline Shadow Priest
