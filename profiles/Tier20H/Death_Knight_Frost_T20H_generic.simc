@@ -11,7 +11,7 @@ crucible=1739:3:1780:3
 # Default consumables
 potion=prolonged_power
 flask=countless_armies
-food=lavish_suramar_feast
+food=lemon_herb_filet
 augmentation=defiled
 
 # This default action priority list is automatically created based on your character.
@@ -31,7 +31,7 @@ actions.precombat+=/potion
 # Executed every time the actor is available.
 actions=auto_attack
 actions+=/mind_freeze
-actions+=/call_action_list,name=cds
+actions+=/call_action_list,name=cooldowns
 actions+=/run_action_list,name=bos_pooling,if=talent.breath_of_sindragosa.enabled&cooldown.breath_of_sindragosa.remains<15
 actions+=/run_action_list,name=bos_ticking,if=dot.breath_of_sindragosa.ticking
 actions+=/run_action_list,name=obliteration,if=buff.obliteration.up
@@ -70,31 +70,31 @@ actions.bos_ticking+=/remorseless_winter,if=spell_targets.remorseless_winter>=2
 actions.bos_ticking+=/obliterate,if=runic_power.deficit>25|rune>3
 actions.bos_ticking+=/empower_rune_weapon,if=runic_power<30&rune.time_to_2>gcd
 
-actions.cds=arcane_torrent,if=runic_power.deficit>=20&!talent.breath_of_sindragosa.enabled
-actions.cds+=/arcane_torrent,if=dot.breath_of_sindragosa.ticking&runic_power.deficit>=50&rune<2
-actions.cds+=/blood_fury,if=buff.pillar_of_frost.up
-actions.cds+=/berserking,if=buff.pillar_of_frost.up
-actions.cds+=/use_items
-actions.cds+=/use_item,name=ring_of_collapsing_futures,if=(buff.temptation.stack=0&target.time_to_die>60)|target.time_to_die<60
-actions.cds+=/use_item,name=horn_of_valor,if=buff.pillar_of_frost.up&(!talent.breath_of_sindragosa.enabled|!cooldown.breath_of_sindragosa.remains)
-actions.cds+=/use_item,name=draught_of_souls,if=rune.time_to_5<3&(!dot.breath_of_sindragosa.ticking|runic_power>60)
-actions.cds+=/use_item,name=feloiled_infernal_machine,if=!talent.obliteration.enabled|buff.obliteration.up
-actions.cds+=/potion,if=buff.pillar_of_frost.up&(dot.breath_of_sindragosa.ticking|buff.obliteration.up|talent.hungering_rune_weapon.enabled)
-# Pillar of frost conditions
-actions.cds+=/pillar_of_frost,if=talent.obliteration.enabled&(cooldown.obliteration.remains>20|cooldown.obliteration.remains<10|!talent.icecap.enabled)
-actions.cds+=/pillar_of_frost,if=talent.breath_of_sindragosa.enabled&cooldown.breath_of_sindragosa.ready&runic_power>50
-actions.cds+=/pillar_of_frost,if=talent.breath_of_sindragosa.enabled&cooldown.breath_of_sindragosa.remains>40
-actions.cds+=/pillar_of_frost,if=talent.hungering_rune_weapon.enabled
-actions.cds+=/breath_of_sindragosa,if=buff.pillar_of_frost.up
-actions.cds+=/call_action_list,name=cold_heart,if=equipped.cold_heart&((buff.cold_heart.stack>=10&!buff.obliteration.up)|target.time_to_die<=gcd)
-actions.cds+=/obliteration,if=rune>=1&runic_power>=20&(!talent.frozen_pulse.enabled|rune<2|buff.pillar_of_frost.remains<=12)&(!talent.gathering_storm.enabled|!cooldown.remorseless_winter.ready)&(buff.pillar_of_frost.up|!talent.icecap.enabled)
-actions.cds+=/hungering_rune_weapon,if=!buff.hungering_rune_weapon.up&rune.time_to_2>gcd&runic_power<40
-
 # Cold heart conditions
 actions.cold_heart=chains_of_ice,if=buff.cold_heart.stack=20&buff.unholy_strength.up&cooldown.pillar_of_frost.remains>6
 actions.cold_heart+=/chains_of_ice,if=buff.pillar_of_frost.up&buff.pillar_of_frost.remains<gcd&(buff.cold_heart.stack>=11|(buff.cold_heart.stack>=10&set_bonus.tier20_4pc))
 actions.cold_heart+=/chains_of_ice,if=buff.unholy_strength.up&buff.unholy_strength.remains<gcd&buff.cold_heart.stack>16&cooldown.pillar_of_frost.remains>6
 actions.cold_heart+=/chains_of_ice,if=buff.cold_heart.stack>=4&target.time_to_die<=gcd
+
+actions.cooldowns=arcane_torrent,if=runic_power.deficit>=20&!talent.breath_of_sindragosa.enabled
+actions.cooldowns+=/arcane_torrent,if=dot.breath_of_sindragosa.ticking&runic_power.deficit>=50&rune<2
+actions.cooldowns+=/blood_fury,if=buff.pillar_of_frost.up
+actions.cooldowns+=/berserking,if=buff.pillar_of_frost.up
+actions.cooldowns+=/use_items
+actions.cooldowns+=/use_item,name=ring_of_collapsing_futures,if=(buff.temptation.stack=0&target.time_to_die>60)|target.time_to_die<60
+actions.cooldowns+=/use_item,name=horn_of_valor,if=buff.pillar_of_frost.up&(!talent.breath_of_sindragosa.enabled|!cooldown.breath_of_sindragosa.remains)
+actions.cooldowns+=/use_item,name=draught_of_souls,if=rune.time_to_5<3&(!dot.breath_of_sindragosa.ticking|runic_power>60)
+actions.cooldowns+=/use_item,name=feloiled_infernal_machine,if=!talent.obliteration.enabled|buff.obliteration.up
+actions.cooldowns+=/potion,if=buff.pillar_of_frost.up&(dot.breath_of_sindragosa.ticking|buff.obliteration.up|talent.hungering_rune_weapon.enabled)
+# Pillar of frost conditions
+actions.cooldowns+=/pillar_of_frost,if=talent.obliteration.enabled&(cooldown.obliteration.remains>20|cooldown.obliteration.remains<10|!talent.icecap.enabled)
+actions.cooldowns+=/pillar_of_frost,if=talent.breath_of_sindragosa.enabled&cooldown.breath_of_sindragosa.ready&runic_power>50
+actions.cooldowns+=/pillar_of_frost,if=talent.breath_of_sindragosa.enabled&cooldown.breath_of_sindragosa.remains>40
+actions.cooldowns+=/pillar_of_frost,if=talent.hungering_rune_weapon.enabled
+actions.cooldowns+=/breath_of_sindragosa,if=buff.pillar_of_frost.up
+actions.cooldowns+=/call_action_list,name=cold_heart,if=equipped.cold_heart&((buff.cold_heart.stack>=10&!buff.obliteration.up)|target.time_to_die<=gcd)
+actions.cooldowns+=/obliteration,if=rune>=1&runic_power>=20&(!talent.frozen_pulse.enabled|rune<2|buff.pillar_of_frost.remains<=12)&(!talent.gathering_storm.enabled|!cooldown.remorseless_winter.ready)&(buff.pillar_of_frost.up|!talent.icecap.enabled)
+actions.cooldowns+=/hungering_rune_weapon,if=!buff.hungering_rune_weapon.up&rune.time_to_2>gcd&runic_power<40
 
 # Obliteration rotation
 actions.obliteration=remorseless_winter,if=talent.gathering_storm.enabled
