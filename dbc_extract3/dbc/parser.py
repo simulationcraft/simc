@@ -118,6 +118,10 @@ class DBCacheParser:
         n_entries = 0
         while self.parse_offset < len(self.data):
             magic, unk_1, unk_2, length, sig, record_id, unk_3 = entry_unpacker.unpack_from(self.data, self.parse_offset)
+            if magic != b'XFTH':
+                logging.error('Invalid hotfix magic %s', magic.decode('utf-8'))
+                return False
+
             self.parse_offset += entry_unpacker.size
             if length == 0:
                 continue
@@ -145,9 +149,9 @@ class DBCacheParser:
         return True
 
     def parse_header(self):
-        header_unpack = struct.Struct('4sii')
+        header_unpack = struct.Struct('4sii32s')
 
-        self.magic, self.unk_1, self.build = header_unpack.unpack_from(self.data)
+        self.magic, self.unk_1, self.build, self.unk_u256 = header_unpack.unpack_from(self.data)
 
         if not self.is_magic():
             logging.error('DBCache.bin: Invalid data file format %s', self.magic.decode('utf-8'))
