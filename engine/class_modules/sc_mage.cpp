@@ -490,6 +490,11 @@ public:
     const spell_data_t* comet_storm;
   } talents;
 
+  struct uptimes_t {
+    uptime_t* burn_phase;
+    uptime_t* conserve_phase;
+  } uptimes;
+
   // Artifact
   struct artifact_spell_data_t
   {
@@ -580,6 +585,7 @@ public:
   virtual void        init_gains() override;
   virtual void        init_procs() override;
   virtual void        init_benefits() override;
+  virtual void        init_uptimes() override;
   virtual void        init_assessors() override;
   virtual void        invalidate_cache( cache_e c ) override;
   virtual void        init_resources( bool force ) override;
@@ -608,6 +614,8 @@ public:
   virtual double      temporary_movement_modifier() const override;
   virtual double      passive_movement_modifier() const override;
   virtual void        arise() override;
+  virtual void        combat_begin() override;
+  virtual void        combat_end() override;
   virtual std::string create_profile( save_e ) override;
   virtual void        copy_from( player_t* ) override;
 
@@ -6033,6 +6041,9 @@ struct start_burn_phase_t : public action_t
       sim -> cancel();
       return;
     }
+
+    p -> uptimes.burn_phase -> update( true, sim -> current_time() );
+    p -> uptimes.conserve_phase -> update( false, sim -> current_time() );
   }
 
   bool ready() override
@@ -6073,6 +6084,9 @@ struct stop_burn_phase_t : public action_t
       sim -> cancel();
       return;
     }
+
+    p -> uptimes.burn_phase -> update( false, sim -> current_time() );
+    p -> uptimes.conserve_phase -> update( true, sim -> current_time() );
   }
 
   bool ready() override
@@ -7345,6 +7359,17 @@ void mage_t::init_benefits()
   }
 }
 
+void mage_t::init_uptimes()
+{
+  player_t::init_uptimes();
+
+  if ( specialization() == MAGE_ARCANE )
+  {
+    uptimes.burn_phase = get_uptime( "Burn Phase" );
+    uptimes.conserve_phase = get_uptime( "Conserve Phase" );
+  }
+}
+
 // mage_t::init_assessors =====================================================
 
 void mage_t::init_assessors()
@@ -8258,6 +8283,28 @@ void mage_t::arise()
     timespan_t first_spread = timespan_t::from_seconds( rng().real() * 2.0 );
     ignite_spread_event =
         make_event<events::ignite_spread_event_t>( *sim, *this, first_spread );
+  }
+}
+
+void mage_t::combat_begin()
+{
+  player_t::combat_begin();
+
+  if ( specialization() == MAGE_ARCANE )
+  {
+    uptimes.burn_phase -> update( false, sim -> current_time() );
+    uptimes.conserve_phase -> update( true, sim -> current_time() );
+  }
+}
+
+void mage_t::combat_end()
+{
+  player_t::combat_end();
+
+  if ( specialization() == MAGE_ARCANE )
+  {
+    uptimes.burn_phase -> update( false, sim -> current_time() );
+    uptimes.conserve_phase -> update( false, sim -> current_time() );
   }
 }
 
