@@ -1964,9 +1964,7 @@ struct ghoul_pet_t : public dt_pet_t
   {
     monstrous_blow_t( ghoul_pet_t* player, const std::string& options_str ):
       super( player, "monstrous_blow", player -> find_spell( 91797 ), options_str )
-    {
-      cooldown = player -> get_cooldown( "gnaw" ); // Shares CD with Gnaw
-    }
+    { }
   };
 
   struct sweeping_claws_t : public dt_melee_ability_t<ghoul_pet_t>
@@ -2006,9 +2004,9 @@ struct ghoul_pet_t : public dt_pet_t
     dt_pet_t::init_action_list();
 
     action_priority_list_t* def = get_action_priority_list( "default" );
-    def -> add_action( "Monstrous Blow" );
     def -> add_action( "Sweeping Claws" );
     def -> add_action( "Claw" );
+    def -> add_action( "Monstrous Blow" );
   }
 
   action_t* create_action( const std::string& name, const std::string& options_str ) override
@@ -2080,9 +2078,7 @@ struct sludge_belcher_pet_t : public dt_pet_t
   {
     powerful_smash_t( sludge_belcher_pet_t* player, const std::string& options_str ):
       super( player, "powerful_smash", player -> find_spell( 212337 ), options_str )
-    {
-      cooldown = player -> get_cooldown( "smash" ); // Shares CD with Smash
-    }
+    { }
   };
 
   sludge_belcher_pet_t( death_knight_t* owner ) : dt_pet_t( owner, "sludge_belcher" )
@@ -2100,9 +2096,10 @@ struct sludge_belcher_pet_t : public dt_pet_t
     dt_pet_t::init_action_list();
 
     action_priority_list_t* def = get_action_priority_list( "default" );
-    def -> add_action( "Powerful Smash" );
     def -> add_action( "Vile Gas" );
     def -> add_action( "Cleaver" );
+    def -> add_action( "Powerful Smash" );
+
   }
 
   action_t* create_action( const std::string& name, const std::string& options_str ) override
