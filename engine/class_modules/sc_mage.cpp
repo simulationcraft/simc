@@ -388,6 +388,13 @@ public:
     proc_t* iv_extension_other;
   } procs;
 
+  // Sample data
+  struct sample_data_t
+  {
+    luxurious_sample_data_t* blizzard_cd_reduction_effective;
+    luxurious_sample_data_t* blizzard_cd_reduction_wasted;
+  } sample_data;
+
   // Specializations
   struct specializations_t
   {
@@ -3168,15 +3175,26 @@ struct blizzard_shard_t : public frost_mage_spell_t
     chills = true;
   }
 
-  void impact( action_state_t* s ) override
+  void execute() override
   {
-    frost_mage_spell_t::impact( s );
+    frost_mage_spell_t::execute();
 
-    if ( result_is_hit( s -> result ) )
+    if ( hit_any_target )
     {
-        p() -> cooldowns.frozen_orb
-            -> adjust( -10.0 * p() -> spec.blizzard_2
-                                   -> effectN( 1 ).time_value() );
+      timespan_t base_cd_reduction = -10.0 * p() -> spec.blizzard_2 -> effectN( 1 ).time_value();
+      timespan_t total_cd_reduction = num_targets_hit * base_cd_reduction;
+
+      // The timespan is negative, we need positive numbers for sample data.
+      double reduction = -total_cd_reduction.total_seconds();
+      double remaining = ( p() -> cooldowns.frozen_orb -> remains() ).total_seconds();
+
+      double effective = std::min( reduction, remaining );
+      p() -> sample_data.blizzard_cd_reduction_effective -> add( effective );
+
+      double wasted = reduction - effective;
+      p() -> sample_data.blizzard_cd_reduction_wasted -> add( wasted );
+
+      p() -> cooldowns.frozen_orb -> adjust( total_cd_reduction );
     }
   }
 
@@ -6603,6 +6621,7 @@ mage_t::mage_t( sim_t* sim, const std::string& name, race_e r ) :
   gains( gains_t() ),
   pets( pets_t() ),
   procs( procs_t() ),
+  sample_data( sample_data_t() ),
   spec( specializations_t() ),
   state( state_t() ),
   talents( talents_list_t() )
@@ -7303,6 +7322,9 @@ void mage_t::init_procs()
         procs.iv_extension_winters_chill    = get_proc( "Icy Veins extension from Winter's Chill" );
         procs.iv_extension_other            = get_proc( "Icy Veins extension from other sources" );
       }
+
+      sample_data.blizzard_cd_reduction_effective = get_sample_data( "Blizzard effective cooldown reduction" );
+      sample_data.blizzard_cd_reduction_wasted    = get_sample_data( "Blizzard wasted cooldown reduction" );
       break;
     case MAGE_FIRE:
       procs.heating_up_generated    = get_proc( "Heating Up generated" );
