@@ -7315,13 +7315,10 @@ void mage_t::init_procs()
     case MAGE_ARCANE:
       break;
     case MAGE_FROST:
-      procs.fingers_of_frost_wasted = get_proc( "Fingers of Frost wasted due to Winter's Chill" );
-      if ( talents.thermal_void -> ok() )
-      {
-        procs.iv_extension_fingers_of_frost = get_proc( "Icy Veins extension from Fingers of Frost" );
-        procs.iv_extension_winters_chill    = get_proc( "Icy Veins extension from Winter's Chill" );
-        procs.iv_extension_other            = get_proc( "Icy Veins extension from other sources" );
-      }
+      procs.fingers_of_frost_wasted       = get_proc( "Fingers of Frost wasted due to Winter's Chill" );
+      procs.iv_extension_fingers_of_frost = get_proc( "Icy Veins extension from Fingers of Frost" );
+      procs.iv_extension_winters_chill    = get_proc( "Icy Veins extension from Winter's Chill" );
+      procs.iv_extension_other            = get_proc( "Icy Veins extension from other sources" );
 
       sample_data.blizzard_cd_reduction_effective = get_sample_data( "Blizzard effective cooldown reduction" );
       sample_data.blizzard_cd_reduction_wasted    = get_sample_data( "Blizzard wasted cooldown reduction" );
