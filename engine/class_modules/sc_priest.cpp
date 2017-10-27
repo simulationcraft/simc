@@ -766,7 +766,11 @@ public:
       }
     }
   } insanity;
-   
+
+  std::string       default_potion() const override;
+  std::string       default_flask() const override;
+  std::string       default_food() const override;
+  std::string       default_rune() const override;
 };
 
 namespace pets
@@ -4855,89 +4859,16 @@ void priest_t::init_rng()
 void priest_t::apl_precombat()
 {
   action_priority_list_t* precombat = get_action_priority_list( "precombat" );
-
-  // Flask
-  if ( sim->allow_flasks && true_level >= 80 )
-  {
-    std::string flask_action = "flask,type=";
-
-    if ( true_level > 100 )
-    {
-      flask_action += "flask_of_the_whispered_pact";
-    }
-    else if ( true_level > 90 )
-    {
-      switch ( specialization() )
-      {
-        case PRIEST_DISCIPLINE:
-          flask_action += "greater_draenic_intellect_flask";
-          break;
-        case PRIEST_HOLY:
-          flask_action += "greater_draenic_intellect_flask";
-          break;
-        case PRIEST_SHADOW:
-        default:
-          if ( talents.auspicious_spirits->ok() )
-            flask_action += "greater_draenic_intellect_flask";
-          else
-            flask_action += "greater_draenic_intellect_flask";
-          break;
-      }
-    }
-    else if ( true_level > 85 )
-      flask_action += "warm_sun";
-    else
-      flask_action += "draconic_mind";
-
-    precombat->add_action( flask_action );
-  }
-
-  // Food
-  if ( sim->allow_food && level() >= 80 )
-  {
-    std::string food_action = "food,type=";
-
-    if ( level() > 100 )  // Break this in to specs at some point -- Twintop 2016/08/06
-    {
-      food_action += "azshari_salad";  // Haste
-    }
-    else if ( level() > 90 )
-    {
-      switch ( specialization() )
-      {
-        case PRIEST_DISCIPLINE:
-          if ( primary_role() != ROLE_HEAL )
-            food_action += "salty_squid_roll";
-          else
-            food_action += "pickled_eel";
-          break;
-        case PRIEST_HOLY:
-          food_action += "salty_squid_roll";
-          break;
-        case PRIEST_SHADOW:
-        default:
-          food_action += "buttered_sturgeon";
-          break;
-      }
-    }
-    else if ( level() > 85 )
-      food_action += "mogu_fish_stew";
-    else
-      food_action += "seafood_magnifique_feast";
-
-    precombat->add_action( food_action );
-  }
-
-  if ( true_level > 100 )
-    precombat->add_action( "augmentation,type=defiled" );
-
   // Snapshot stats
+  precombat->add_action("flask");
+  precombat->add_action("food");
+  precombat->add_action("augmentation");
   precombat->add_action( "snapshot_stats",
                          "Snapshot raid buffed stats before combat begins and "
                          "pre-potting is done." );
   precombat->add_action( 
-    "variable,name=cd_time,op=set,value=(10+(2-2*talent.mindbender.enabled*set_"
-    "bonus.tier20_4pc)*set_bonus.tier19_2pc+(3-3*talent.mindbender.enabled*set_"
+    "variable,name=cd_time,op=set,value=(12+(2-2*talent.mindbender.enabled*set_"
+    "bonus.tier20_4pc)*set_bonus.tier19_2pc+(1-3*talent.mindbender.enabled*set_"
     "bonus.tier20_4pc)*equipped.mangazas_madness+(6+5*talent.mindbender.enabled)"
     "*set_bonus.tier20_4pc+2*artifact.lash_of_insanity.rank)" );
   precombat->add_action( 
@@ -4956,14 +4887,7 @@ void priest_t::apl_precombat()
     "enabled)+(2*artifact.mass_hysteria.rank)-(1*talent.sanlayn.enabled)))),if=talent.surrender_to_madness.enabled" );
   if ( sim->allow_potions && true_level >= 80 )
   {
-    if ( true_level > 100 )
-      precombat->add_action( "potion,name=prolonged_power" );
-    else if ( true_level > 90 )
-      precombat->add_action( "potion,name=draenic_intellect" );
-    else if ( true_level > 85 )
-      precombat->add_action( "potion,name=jade_serpent" );
-    else
-      precombat->add_action( "potion,name=volcanic" );
+      precombat->add_action( "potion" );
   }
 
   // Precast
@@ -4979,6 +4903,46 @@ void priest_t::apl_precombat()
       precombat->add_action( "mind_blast" );
       break;
   }
+}
+
+std::string priest_t::default_potion() const
+{
+	std::string lvl110_potion =
+		"prolonged_power";
+
+	return (true_level >= 100) ? lvl110_potion :
+		(true_level >= 90) ? "draenic_intellect" :
+		(true_level >= 85) ? "jade_serpent" :
+		(true_level >= 80) ? "volcanic" :
+		"disabled";
+}
+
+std::string priest_t::default_flask() const
+{
+	return (true_level >= 100) ? "whispered_pact" :
+		(true_level >= 90) ? "greater_draenic_intellect_flask" :
+		(true_level >= 85) ? "warm_sun" :
+		(true_level >= 80) ? "draconic_mind" :
+		"disabled";
+}
+
+std::string priest_t::default_food() const
+{
+	std::string lvl100_food =
+		"buttered_sturgeon";
+
+	return (true_level > 100) ? "azshari_salad" :
+		(true_level >  90) ? lvl100_food :
+		(true_level >= 90) ? "mogu_fish_stew" :
+		(true_level >= 80) ? "seafood_magnifique_feast" :
+		"disabled";
+}
+
+std::string priest_t::default_rune() const
+{
+	return (true_level >= 110) ? "defiled" :
+		(true_level >= 100) ? "focus" :
+		"disabled";
 }
 
 bool priest_t::has_t18_class_trinket() const
@@ -5093,22 +5057,8 @@ void priest_t::apl_shadow()
   {
     if ( true_level > 100 )
       default_list->add_action(
-          "potion,name=prolonged_power,if=buff.bloodlust.react|target.time_to_"
-          "die<"
+          "potion,if=buff.bloodlust.react|target.time_to_die<"
           "=80|(target.health.pct<35&cooldown.power_infusion.remains<30)" );
-    else if ( true_level > 90 )
-      default_list->add_action(
-          "potion,name=draenic_intellect,if=buff.bloodlust.react|target.time_"
-          "to_die<=40" );
-    else if ( true_level > 85 )
-      default_list->add_action(
-          "potion,name=jade_serpent,if=buff.bloodlust.react|target.time_to_"
-          "die<"
-          "=40" );
-    else
-      default_list->add_action(
-          "potion,name=volcanic,if=buff.bloodlust.react|target.time_to_die<="
-          "40" );
   }
 
   // Choose which APL to use based on talents and fight conditions.
