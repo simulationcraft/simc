@@ -4502,7 +4502,7 @@ struct healing_touch_t : public druid_heal_t
     target = sim -> target;
     base_multiplier = 0;
 
-    base_multiplier *= 1.0 + p -> artifact.attuned_to_nature.percent();
+    //base_multiplier *= 1.0 + p -> artifact.attuned_to_nature.percent();
   }
 
   virtual double cost() const override
@@ -4679,6 +4679,7 @@ struct regrowth_t: public druid_heal_t
   regrowth_t( druid_t* p, const std::string& options_str ):
     druid_heal_t( "regrowth", p, p -> find_class_spell( "Regrowth" ), options_str )
   {
+    form_mask = NO_FORM | MOONKIN_FORM;
     ignore_false_positive = true;
 
 
