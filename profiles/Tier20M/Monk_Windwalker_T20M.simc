@@ -4,7 +4,7 @@ level=110
 race=blood_elf
 role=dps
 position=back
-talents=3010033
+talents=2010033
 artifact=50:0:0:0:0:800:4:801:4:820:4:821:4:822:4:824:4:825:4:826:1:827:1:828:1:829:4:830:1:831:1:832:1:833:1:1094:4:1341:1:1376:1:1549:4:1550:1:1551:1:1552:24:1644:1
 crucible=1739:1780:820/1739:1780:825/1739:1780:820
 
@@ -45,7 +45,6 @@ actions+=/call_action_list,name=st
 
 actions.cd=invoke_xuen_the_white_tiger
 actions.cd+=/use_item,name=specter_of_betrayal,if=(cooldown.serenity.remains>10|buff.serenity.up)|!talent.serenity.enabled
-actions.cd+=/use_item,name=vial_of_ceaseless_toxins,if=(buff.serenity.up&!equipped.specter_of_betrayal)|(equipped.specter_of_betrayal&(time<5|cooldown.serenity.remains<=8))|!talent.serenity.enabled|target.time_to_die<=cooldown.serenity.remains
 actions.cd+=/blood_fury
 actions.cd+=/berserking
 actions.cd+=/arcane_torrent,if=chi.max-chi>=1&energy.time_to_max>=0.5
@@ -111,30 +110,29 @@ actions.st+=/chi_burst
 
 head=xuens_helm,id=147154,bonus_id=3563/1512
 neck=locket_of_splintered_souls,id=147014,bonus_id=3563/1512,enchant=mark_of_the_hidden_satyr
-shoulders=pauldrons_of_enveloped_dissonance,id=138337,bonus_id=3518/1502
-back=cloak_of_enveloped_dissonance,id=138367,bonus_id=3518/1502,enchant=binding_of_agility
-chest=xuens_tunic,id=147151,bonus_id=3563/1512
+shoulders=xuens_shoulderguards,id=147156,bonus_id=3563/1512
+back=xuens_cloak,id=147152,bonus_id=3563/1512,enchant=binding_of_agility
+chest=the_emperors_capacitor,id=144239,bonus_id=3570
 wrists=drinking_horn_cover,id=137097,bonus_id=3570
 hands=xuens_gauntlets,id=147153,bonus_id=3563/1512
-waist=waistguard_of_profane_duplicity,id=147347,bonus_id=3563/1522
-legs=xuens_legguards,id=147155,bonus_id=3563/1512
-feet=katsuos_eclipse,id=137029,bonus_id=3570
+waist=waistguard_of_profane_duplicity,id=147347,bonus_id=3563/1512
+legs=bonespur_studded_legwraps,id=147035,bonus_id=3563/1512
+feet=felscape_pathfinders,id=147030,bonus_id=3563/1512
 finger1=yathaes_thumb_ring,id=147021,bonus_id=3563/1512,enchant=binding_of_mastery
 finger2=band_of_rescinded_truths,id=147194,bonus_id=3563/1512,enchant=binding_of_mastery
 trinket1=specter_of_betrayal,id=151190,bonus_id=3563/1522
-trinket2=vial_of_ceaseless_toxins,id=147011,bonus_id=3563/1512
+trinket2=engine_of_eradication,id=147015,bonus_id=3563/1512
 main_hand=fists_of_the_heavens,id=128940,bonus_id=734,gem_id=147113/147101/147113,relic_id=3563:1512/3563:1512/3563:1512
 off_hand=fists_of_the_heavens,id=133948
 
 # Gear Summary
-# gear_ilvl=937.63
-# gear_agility=30937
-# gear_stamina=44792
-# gear_crit_rating=7718
-# gear_haste_rating=5155
-# gear_mastery_rating=8813
-# gear_versatility_rating=4473
-# gear_armor=2678
-# set_bonus=tier19_2pc=1
+# gear_ilvl=940.13
+# gear_agility=29110
+# gear_stamina=46139
+# gear_crit_rating=8786
+# gear_haste_rating=1954
+# gear_mastery_rating=10491
+# gear_versatility_rating=6487
+# gear_armor=2729
 # set_bonus=tier20_2pc=1
 # set_bonus=tier20_4pc=1
