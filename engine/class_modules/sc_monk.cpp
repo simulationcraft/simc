@@ -1997,8 +1997,10 @@ public:
     main_hand_weapon.max_dmg = dbc.spell_scaling( o() -> type, level() );
     main_hand_weapon.damage = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
     main_hand_weapon.swing_time = timespan_t::from_seconds( 1.0 );
+    // At start of 7.3; AP conversion was 450%.
     owner_coeff.ap_from_ap = 4.508;
-    owner_coeff.ap_from_ap *= 1 + o() -> spec.windwalker_monk -> effectN( 1 ).percent();
+    // After buff to 25%; AP conversion is 563.5%
+    owner_coeff.ap_from_ap *= 1 + o() -> spec.windwalker_monk -> effectN( 1 ).percent(); 
   }
 
   monk_t* o()
@@ -10111,8 +10113,7 @@ void monk_t::apl_combat_windwalker()
   }
 
   def -> add_action( this, "Touch of Death", "if=target.time_to_die<=9" );
-  def -> add_action( "call_action_list,name=serenity_opener,if=((talent.serenity.enabled&cooldown.serenity.remains<=0)|buff.serenity.up)&active_enemies<2&set_bonus.tier20_4pc&set_bonus.tier19_2pc&equipped.drinking_horn_cover&time<20" );
-  def -> add_action( "call_action_list,name=serenity,if=(((talent.serenity.enabled&cooldown.serenity.remains<=0)|buff.serenity.up)&(!set_bonus.tier20_4pc&!set_bonus.tier19_2pc&!equipped.drinking_horn_cover))|(((talent.serenity.enabled&cooldown.serenity.remains<=0)|buff.serenity.up)&time>20)" );
+  def -> add_action( "call_action_list,name=serenity,if=(talent.serenity.enabled&cooldown.serenity.remains<=0)|buff.serenity.up" );
   def -> add_action( "call_action_list,name=sef,if=!talent.serenity.enabled&(buff.storm_earth_and_fire.up|cooldown.storm_earth_and_fire.charges=2)" );
   def -> add_action( "call_action_list,name=sef,if=!talent.serenity.enabled&equipped.drinking_horn_cover&(cooldown.strike_of_the_windlord.remains<=18&cooldown.fists_of_fury.remains<=12&chi>=3&cooldown.rising_sun_kick.remains<=1|target.time_to_die<=25|cooldown.touch_of_death.remains>112)&cooldown.storm_earth_and_fire.charges=1" );
   def -> add_action( "call_action_list,name=sef,if=!talent.serenity.enabled&!equipped.drinking_horn_cover&(cooldown.strike_of_the_windlord.remains<=14&cooldown.fists_of_fury.remains<=6&chi>=3&cooldown.rising_sun_kick.remains<=1|target.time_to_die<=15|cooldown.touch_of_death.remains>112)&cooldown.storm_earth_and_fire.charges=1" );
