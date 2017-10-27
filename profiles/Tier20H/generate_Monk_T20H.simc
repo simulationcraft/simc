@@ -21,6 +21,6 @@ finger1=yathaes_thumb_ring,id=147021,bonus_id=3562/1497,enchant=binding_of_maste
 finger2=band_of_rescinded_truths,id=147194,bonus_id=3562/1497,enchant=binding_of_mastery
 trinket1=specter_of_betrayal,id=151190,bonus_id=3562/1507
 trinket2=engine_of_eradication,id=147015,bonus_id=3562/1497
-main_hand=fists_of_the_heavens,id=128940,bonus_id=734,gem_id=147113/147101/147113,relic_id=3563:1512/3563:1512/3563:1512
+main_hand=fists_of_the_heavens,id=128940,bonus_id=734,gem_id=147113/147101/147113,relic_id=3562:1497/3562:1497/3562:1497
 off_hand=fists_of_the_heavens,id=133948
 save=Monk_Windwalker_T20H.simc

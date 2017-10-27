@@ -122,16 +122,16 @@ finger1=yathaes_thumb_ring,id=147021,bonus_id=3562/1497,enchant=binding_of_maste
 finger2=band_of_rescinded_truths,id=147194,bonus_id=3562/1497,enchant=binding_of_mastery
 trinket1=specter_of_betrayal,id=151190,bonus_id=3562/1507
 trinket2=engine_of_eradication,id=147015,bonus_id=3562/1497
-main_hand=fists_of_the_heavens,id=128940,bonus_id=734,gem_id=147113/147101/147113,relic_id=3563:1512/3563:1512/3563:1512
+main_hand=fists_of_the_heavens,id=128940,bonus_id=734,gem_id=147113/147101/147113,relic_id=3562:1497/3562:1497/3562:1497
 off_hand=fists_of_the_heavens,id=133948
 
 # Gear Summary
-# gear_ilvl=929.50
-# gear_agility=26820
-# gear_stamina=42343
-# gear_crit_rating=8317
+# gear_ilvl=927.63
+# gear_agility=26372
+# gear_stamina=41671
+# gear_crit_rating=8267
 # gear_haste_rating=1911
-# gear_mastery_rating=9965
+# gear_mastery_rating=9917
 # gear_versatility_rating=6028
 # gear_armor=2638
 # set_bonus=tier20_2pc=1
