@@ -393,6 +393,8 @@ public:
   {
     luxurious_sample_data_t* blizzard_cd_reduction_effective;
     luxurious_sample_data_t* blizzard_cd_reduction_wasted;
+
+    extended_sample_data_t* icy_veins_duration;
   } sample_data;
 
   // Specializations
@@ -622,6 +624,8 @@ public:
   virtual void        arise() override;
   virtual std::string create_profile( save_e ) override;
   virtual void        copy_from( player_t* ) override;
+  virtual void        merge( player_t& ) override;
+  virtual void        analyze( sim_t& ) override;
 
   target_specific_t<mage_td_t> target_data;
 
@@ -1331,8 +1335,31 @@ struct incanters_flow_t : public buff_t
   }
 };
 
+struct icy_veins_buff_t : public haste_buff_t
+{
+  mage_t* mage;
 
-struct lady_vashjs_grasp_t: public buff_t
+  icy_veins_buff_t( mage_t* p ) :
+    haste_buff_t( haste_buff_creator_t( p, "icy_veins", p -> find_spell( 12472 ) ) ),
+    mage( p )
+  {
+    set_default_value( data().effectN( 1 ).percent() );
+    set_cooldown( timespan_t::zero() );
+    buff_duration += p -> talents.thermal_void -> effectN( 2 ).time_value();
+  }
+
+  virtual void expire_override( int stacks, timespan_t duration ) override
+  {
+    mage -> buffs.lady_vashjs_grasp -> expire();
+    if ( mage -> talents.thermal_void -> ok() && duration == timespan_t::zero() )
+    {
+      mage -> sample_data.icy_veins_duration -> add( elapsed( sim -> current_time() ).total_seconds() );
+    }
+  }
+};
+
+
+struct lady_vashjs_grasp_t : public buff_t
 {
   int fof_source_id;
   mage_t* mage;
@@ -6676,6 +6703,8 @@ mage_t::~mage_t()
   delete benefits.arcane_missiles;
   delete benefits.fingers_of_frost;
   delete benefits.ray_of_frost;
+
+  delete sample_data.icy_veins_duration;
 }
 
 /// Touch of the Magi explosion trigger
@@ -6919,6 +6948,32 @@ void mage_t::copy_from( player_t* source )
   firestarter_time          = p -> firestarter_time;
   blessing_of_wisdom_count  = p -> blessing_of_wisdom_count;
   allow_shimmer_lance       = p -> allow_shimmer_lance;
+}
+
+// mage_t::merge =========================================================
+
+void mage_t::merge( player_t& other )
+{
+  player_t::merge( other );
+
+  mage_t& mage = dynamic_cast<mage_t&>( other );
+
+  if ( talents.thermal_void -> ok() )
+  {
+    sample_data.icy_veins_duration -> merge( *mage.sample_data.icy_veins_duration );
+  }
+}
+
+// mage_t::analyze =======================================================
+
+void mage_t::analyze( sim_t& s )
+{
+  player_t::analyze( s );
+
+  if ( talents.thermal_void -> ok() )
+  {
+    sample_data.icy_veins_duration -> analyze();
+  }
 }
 
 // mage_t::create_pets ========================================================
@@ -7245,13 +7300,7 @@ void mage_t::create_buffs()
   // This explains why some Icicle stacks remain if Glacial Spike executes with 5 Icicle stacks but less
   // than 5 actual Icicles.
   buffs.icicles                = buff_creator_t( this, "icicles", find_spell( 205473 ) );
-  buffs.icy_veins              = haste_buff_creator_t( this, "icy_veins", find_spell( 12472 ) )
-                                   .default_value( find_spell( 12472 ) -> effectN( 1 ).percent() )
-                                   .cd( timespan_t::zero() )
-                                   .stack_change_callback( [ this ] ( buff_t*, int, int cur )
-                                     { if ( cur == 0 ) buffs.lady_vashjs_grasp -> expire(); } );
-  buffs.icy_veins -> buff_duration += talents.thermal_void -> effectN( 2 ).time_value();
-
+  buffs.icy_veins              = new buffs::icy_veins_buff_t( this );
   buffs.ray_of_frost           = new buffs::ray_of_frost_buff_t( this );
 
   // Talents
@@ -7322,6 +7371,8 @@ void mage_t::init_procs()
 
       sample_data.blizzard_cd_reduction_effective = get_sample_data( "Blizzard effective cooldown reduction" );
       sample_data.blizzard_cd_reduction_wasted    = get_sample_data( "Blizzard wasted cooldown reduction" );
+
+      sample_data.icy_veins_duration = new extended_sample_data_t( "Icy Veins duration", false );
       break;
     case MAGE_FIRE:
       procs.heating_up_generated    = get_proc( "Heating Up generated" );
@@ -8677,17 +8728,36 @@ public:
 
   }
 
-  virtual void html_customsection( report::sc_html_stream& /* os*/ ) override
+  void html_customsection_icy_veins( report::sc_html_stream& os )
   {
-    (void) p;
-    /*// Custom Class Section
-    os << "\t\t\t\t<div class=\"player-section custom_section\">\n"
-        << "\t\t\t\t\t<h3 class=\"toggle open\">Custom Section</h3>\n"
-        << "\t\t\t\t\t<div class=\"toggle-content\">\n";
+    os << "<div class=\"player-section custom_section\">"
+       << "<h3 class=\"toggle open\">Icy Veins</h3>"
+       << "<div class=\"toggle-content\">";
 
-    os << p.name();
+    int num_buckets = as<int>( p.sample_data.icy_veins_duration -> max() - p.sample_data.icy_veins_duration -> min() ) + 1;
 
-    os << "\t\t\t\t\t\t</div>\n" << "\t\t\t\t\t</div>\n";*/
+    highchart::histogram_chart_t chart( highchart::build_id( p, "iv_dist" ), *p.sim );
+    p.sample_data.icy_veins_duration -> create_histogram( num_buckets );
+
+    if ( chart::generate_distribution(
+             chart, &p, p.sample_data.icy_veins_duration -> distribution, "Icy Veins Duration",
+             p.sample_data.icy_veins_duration -> mean(), p.sample_data.icy_veins_duration -> min(),
+             p.sample_data.icy_veins_duration -> max() ) )
+    {
+      chart.set( "tooltip.headerFormat", "<b>{point.key}</b> s<br/>" );
+      chart.set( "chart.width", std::to_string( 80 + num_buckets * 13 ) );
+      os << chart.to_target_div();
+      p.sim -> add_chart_data( chart );
+    }
+
+    os << "</div>"
+       << "</div>";
+  }
+
+  virtual void html_customsection( report::sc_html_stream& os ) override
+  {
+    if ( p.talents.thermal_void -> ok() )
+      html_customsection_icy_veins( os );
   }
 private:
   mage_t& p;
