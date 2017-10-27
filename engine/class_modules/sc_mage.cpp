@@ -381,6 +381,11 @@ public:
     proc_t* ignite_overwrite;  // Spread to target with existing ignite
 
     proc_t* controlled_burn; // Tracking Controlled Burn talent
+
+    proc_t* fingers_of_frost_wasted;
+    proc_t* iv_extension_fingers_of_frost;
+    proc_t* iv_extension_winters_chill;
+    proc_t* iv_extension_other;
   } procs;
 
   // Specializations
@@ -4681,15 +4686,23 @@ struct ice_lance_t : public frost_mage_spell_t
   {
     frost_mage_spell_t::impact( s );
 
-    if ( result_is_hit( s -> result )
-      && debug_cast<mage_spell_state_t*>( s ) -> frozen )
+    unsigned frozen = debug_cast<mage_spell_state_t*>( s ) -> frozen;
+
+    if ( result_is_hit( s -> result ) && frozen )
     {
-      if ( s -> chain_target == 0 )
+      if ( s -> chain_target == 0 && p() -> talents.thermal_void -> ok() )
       {
         timespan_t tv_extension = p() -> talents.thermal_void
                                       -> effectN( 1 ).time_value() * 1000;
 
         p() -> buffs.icy_veins -> extend_duration( p(), tv_extension );
+
+        if ( frozen & FROZEN_WINTERS_CHILL )
+          p() -> procs.iv_extension_winters_chill -> occur();
+        else if ( frozen & ~FROZEN_FINGERS_OF_FROST )
+          p() -> procs.iv_extension_other -> occur();
+        else
+          p() -> procs.iv_extension_fingers_of_frost -> occur();
       }
 
       if ( td( s -> target ) -> debuffs.frost_bomb -> check() )
@@ -4698,6 +4711,9 @@ struct ice_lance_t : public frost_mage_spell_t
         p() -> action.frost_bomb_explosion -> set_target( s -> target );
         p() -> action.frost_bomb_explosion -> execute();
       }
+
+      if ( ( frozen & FROZEN_FINGERS_OF_FROST ) && ( frozen & ~FROZEN_FINGERS_OF_FROST ) )
+        p() -> procs.fingers_of_frost_wasted -> occur();
     }
 
     if ( p() -> sets -> has_set_bonus( MAGE_FROST, T21, B4 ) )
@@ -7280,6 +7296,13 @@ void mage_t::init_procs()
     case MAGE_ARCANE:
       break;
     case MAGE_FROST:
+      procs.fingers_of_frost_wasted = get_proc( "Fingers of Frost wasted due to Winter's Chill" );
+      if ( talents.thermal_void -> ok() )
+      {
+        procs.iv_extension_fingers_of_frost = get_proc( "Icy Veins extension from Fingers of Frost" );
+        procs.iv_extension_winters_chill    = get_proc( "Icy Veins extension from Winter's Chill" );
+        procs.iv_extension_other            = get_proc( "Icy Veins extension from other sources" );
+      }
       break;
     case MAGE_FIRE:
       procs.heating_up_generated    = get_proc( "Heating Up generated" );
