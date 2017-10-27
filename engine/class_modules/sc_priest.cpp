@@ -4885,10 +4885,7 @@ void priest_t::apl_precombat()
     "talent.reaper_of_souls.enabled)+set_bonus.tier19_2pc*4+8*equipped.mangazas_madness+(raw_haste_"
     "pct*10*(1+0.7*set_bonus.tier20_4pc))*(2+(0.8*set_bonus.tier19_2pc)+(1*talent.reaper_of_souls."
     "enabled)+(2*artifact.mass_hysteria.rank)-(1*talent.sanlayn.enabled)))),if=talent.surrender_to_madness.enabled" );
-  if ( sim->allow_potions && true_level >= 80 )
-  {
-      precombat->add_action( "potion" );
-  }
+  precombat->add_action( "potion" );
 
   // Precast
   switch ( specialization() )
@@ -5053,13 +5050,9 @@ void priest_t::apl_shadow()
   }
 
   // Potions
-  if ( sim->allow_potions && true_level >= 80 )
-  {
-    if ( true_level > 100 )
-      default_list->add_action(
+  default_list->add_action(
           "potion,if=buff.bloodlust.react|target.time_to_die<"
           "=80|(target.health.pct<35&cooldown.power_infusion.remains<30)" );
-  }
 
   // Choose which APL to use based on talents and fight conditions.
 
