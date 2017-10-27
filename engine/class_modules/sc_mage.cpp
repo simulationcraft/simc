@@ -1392,22 +1392,23 @@ namespace actions {
 
 struct mage_spell_state_t : public action_state_t
 {
-  bool frozen;
+  // Simple bitfield for tracking sources of the Frozen effect.
+  unsigned frozen;
 
   mage_spell_state_t( action_t* action, player_t* target ) :
     action_state_t( action, target ),
-    frozen( false )
+    frozen( 0u )
   { }
 
   virtual void initialize() override
   {
     action_state_t::initialize();
-    frozen = false;
+    frozen = 0u;
   }
 
   virtual std::ostringstream& debug_str( std::ostringstream& s ) override
   {
-    action_state_t::debug_str( s ) << " frozen=" << frozen;
+    action_state_t::debug_str( s ) << " frozen=" << ( frozen != 0u );
     return s;
   }
 
@@ -1439,6 +1440,13 @@ struct mage_spell_state_t : public action_state_t
 struct mage_spell_t : public spell_t
 {
   static const snapshot_state_e STATE_FROZEN = STATE_TGT_USER_1;
+
+  enum frozen_source_t
+  {
+    FROZEN_WINTERS_CHILL    = 0x01,
+    FROZEN_ROOT             = 0x02,
+    FROZEN_FINGERS_OF_FROST = 0x04
+  };
 
   struct affected_by_t
   {
@@ -1523,15 +1531,22 @@ public:
     return new mage_spell_state_t( this, target );
   }
 
-  virtual bool frozen( const action_state_t* s ) const
+  virtual unsigned frozen( const action_state_t* s ) const
   {
     const mage_td_t* td = p() -> target_data[ s -> target ];
 
     if ( ! td )
-      return false;
+      return 0u;
 
-    return ( td -> debuffs.winters_chill -> check() )
-        || ( td -> debuffs.frozen -> check() );
+    unsigned source = 0u;
+
+    if ( td -> debuffs.winters_chill -> check() )
+      source |= FROZEN_WINTERS_CHILL;
+
+    if ( td -> debuffs.frozen -> check() )
+      source |= FROZEN_ROOT;
+
+    return source;
   }
 
   virtual void snapshot_internal( action_state_t* s, unsigned flags, dmg_e rt ) override
@@ -4594,10 +4609,9 @@ struct ice_lance_t : public frost_mage_spell_t
   virtual action_state_t* new_state() override
   { return new ice_lance_state_t( this, target ); }
 
-  virtual bool frozen( const action_state_t* s ) const override
+  virtual unsigned frozen( const action_state_t* s ) const override
   {
-    if ( frost_mage_spell_t::frozen( s ) )
-      return true;
+    unsigned source = frost_mage_spell_t::frozen( s );
 
     // In game, FoF Ice Lances are implemented using a global flag which determines
     // whether to treat the targets as frozen or not. On IL execute, FoF is checked
@@ -4613,12 +4627,16 @@ struct ice_lance_t : public frost_mage_spell_t
     // b) case, both Ice Lances do.
     if ( p() -> bugs )
     {
-      return p() -> state.fingers_of_frost_active;
+      if ( p() -> state.fingers_of_frost_active )
+        source |= FROZEN_FINGERS_OF_FROST;
     }
     else
     {
-      return debug_cast<const ice_lance_state_t*>( s ) -> fingers_of_frost;
+      if ( debug_cast<const ice_lance_state_t*>( s ) -> fingers_of_frost )
+        source |= FROZEN_FINGERS_OF_FROST;
     }
+
+    return source;
   }
 
   virtual void execute() override
