@@ -196,6 +196,53 @@ struct buff_source_benefit_t
   }
 };
 
+struct cooldown_reduction_data_t
+{
+  cooldown_t* cd;
+
+  luxurious_sample_data_t* effective;
+  luxurious_sample_data_t* wasted;
+
+  cooldown_reduction_data_t( cooldown_t* cooldown, const std::string& name ) :
+    cd( cooldown )
+  {
+    player_t* p = cd -> player;
+
+    effective = p -> get_sample_data( name + " effective cooldown reduction" );
+    wasted    = p -> get_sample_data( name + " wasted cooldown reduction" );
+  }
+
+  void add( timespan_t reduction )
+  {
+    assert( effective );
+    assert( wasted );
+
+    timespan_t remaining = timespan_t::zero();
+
+    if ( cd -> charges > 1 )
+    {
+      if ( cd -> recharge_event )
+      {
+        remaining = cd -> current_charge_remains() +
+          ( cd -> charges - cd -> current_charge - 1 ) * cd -> duration;
+      }
+    }
+    else
+    {
+      remaining = cd -> remains();
+    }
+
+    double reduction_sec = -reduction.total_seconds();
+    double remaining_sec = remaining.total_seconds();
+
+    double effective_sec = std::min( reduction_sec, remaining_sec );
+    effective -> add( effective_sec );
+
+    double wasted_sec = reduction_sec - effective_sec;
+    wasted -> add( wasted_sec );
+  }
+};
+
 struct mage_t : public player_t
 {
 public:
@@ -394,12 +441,9 @@ public:
   // Sample data
   struct sample_data_t
   {
-    luxurious_sample_data_t* blizzard_cd_reduction_effective;
-    luxurious_sample_data_t* blizzard_cd_reduction_wasted;
-    luxurious_sample_data_t* frozen_veins_cd_reduction_effective;
-    luxurious_sample_data_t* frozen_veins_cd_reduction_wasted;
-    luxurious_sample_data_t* t20_4pc_cd_reduction_effective;
-    luxurious_sample_data_t* t20_4pc_cd_reduction_wasted;
+    cooldown_reduction_data_t* blizzard;
+    cooldown_reduction_data_t* frozen_veins;
+    cooldown_reduction_data_t* t20_4pc;
 
     extended_sample_data_t* icy_veins_duration;
   } sample_data;
@@ -1328,16 +1372,7 @@ struct brain_freeze_buff_t : public buff_t
       if ( mage -> sets -> has_set_bonus( MAGE_FROST, T20, B4 ) )
       {
         timespan_t cd_reduction = -100 * mage -> sets -> set( MAGE_FROST, T20, B4 ) -> effectN( 1 ).time_value();
-
-        double reduction = -cd_reduction.total_seconds();
-        double remaining = ( mage -> cooldowns.icy_veins -> remains() ).total_seconds();
-
-        double effective = std::min( reduction, remaining );
-        mage -> sample_data.t20_4pc_cd_reduction_effective -> add( effective );
-
-        double wasted = reduction - effective;
-        mage -> sample_data.t20_4pc_cd_reduction_wasted -> add( wasted );
-
+        mage -> sample_data.t20_4pc -> add( cd_reduction );
         mage -> cooldowns.frozen_orb -> adjust( cd_reduction );
       }
     }
@@ -3240,17 +3275,7 @@ struct blizzard_shard_t : public frost_mage_spell_t
     {
       timespan_t base_cd_reduction = -10.0 * p() -> spec.blizzard_2 -> effectN( 1 ).time_value();
       timespan_t total_cd_reduction = num_targets_hit * base_cd_reduction;
-
-      // The timespan is negative, we need positive numbers for sample data.
-      double reduction = -total_cd_reduction.total_seconds();
-      double remaining = ( p() -> cooldowns.frozen_orb -> remains() ).total_seconds();
-
-      double effective = std::min( reduction, remaining );
-      p() -> sample_data.blizzard_cd_reduction_effective -> add( effective );
-
-      double wasted = reduction - effective;
-      p() -> sample_data.blizzard_cd_reduction_wasted -> add( wasted );
-
+      p() -> sample_data.blizzard -> add( total_cd_reduction );
       p() -> cooldowns.frozen_orb -> adjust( total_cd_reduction );
     }
   }
@@ -4331,16 +4356,7 @@ struct frostbolt_t : public frost_mage_spell_t
       if ( s -> result == RESULT_CRIT && p() -> artifact.frozen_veins.rank() )
       {
         timespan_t cd_reduction = p() -> artifact.frozen_veins.time_value();
-
-        double reduction = -cd_reduction.total_seconds();
-        double remaining = ( p() -> cooldowns.icy_veins -> remains() ).total_seconds();
-
-        double effective = std::min( reduction, remaining );
-        p() -> sample_data.frozen_veins_cd_reduction_effective -> add( effective );
-
-        double wasted = reduction - effective;
-        p() -> sample_data.frozen_veins_cd_reduction_wasted -> add( wasted );
-
+        p() -> sample_data.frozen_veins -> add( cd_reduction );
         p() -> cooldowns.icy_veins -> adjust( cd_reduction );
       }
       if ( s -> result == RESULT_CRIT && p() -> artifact.chain_reaction.rank() )
@@ -6760,6 +6776,9 @@ mage_t::~mage_t()
   delete benefits.fingers_of_frost;
   delete benefits.ray_of_frost;
 
+  delete sample_data.blizzard;
+  delete sample_data.frozen_veins;
+  delete sample_data.t20_4pc;
   delete sample_data.icy_veins_duration;
 }
 
@@ -7425,15 +7444,12 @@ void mage_t::init_procs()
       procs.iv_extension_winters_chill    = get_proc( "Icy Veins extension from Winter's Chill" );
       procs.iv_extension_other            = get_proc( "Icy Veins extension from other sources" );
 
-      sample_data.blizzard_cd_reduction_effective     = get_sample_data( "Blizzard effective cooldown reduction" );
-      sample_data.blizzard_cd_reduction_wasted        = get_sample_data( "Blizzard wasted cooldown reduction" );
-      sample_data.frozen_veins_cd_reduction_effective = get_sample_data( "Frozen Veins effective cooldown reduction" );
-      sample_data.frozen_veins_cd_reduction_wasted    = get_sample_data( "Frozen Veins wasted cooldown reduction" );
+      sample_data.blizzard     = new cooldown_reduction_data_t( cooldowns.frozen_orb, "Blizzard" );
+      sample_data.frozen_veins = new cooldown_reduction_data_t( cooldowns.icy_veins, "Frozen Veins" );
 
       if ( sets -> has_set_bonus( MAGE_FROST, T20, B4 ) )
       {
-        sample_data.t20_4pc_cd_reduction_effective = get_sample_data( "T20 4pc effective cooldown reduction" );
-        sample_data.t20_4pc_cd_reduction_wasted    = get_sample_data( "T20 4pc wasted cooldown reduction" );
+        sample_data.t20_4pc    = new cooldown_reduction_data_t( cooldowns.frozen_orb, "T20 4pc" );
       }
 
       sample_data.icy_veins_duration = new extended_sample_data_t( "Icy Veins duration", false );
