@@ -1356,11 +1356,8 @@ struct touch_of_the_magi_t : public buff_t
 // Custom buffs ===============================================================
 struct brain_freeze_buff_t : public buff_t
 {
-  mage_t* mage;
-
   brain_freeze_buff_t( mage_t* p ) :
-    buff_t( buff_creator_t( p, "brain_freeze", p -> find_spell( 190446 ) ) ),
-    mage( p )
+    buff_t( buff_creator_t( p, "brain_freeze", p -> find_spell( 190446 ) ) )
   { }
 
   bool trigger( int stacks = 1, double value = DEFAULT_VALUE(),
@@ -1369,6 +1366,7 @@ struct brain_freeze_buff_t : public buff_t
     bool success = buff_t::trigger( stacks, value, chance, duration );
     if ( success )
     {
+      auto mage = debug_cast<mage_t*>( player );
       if ( mage -> sets -> has_set_bonus( MAGE_FROST, T20, B4 ) )
       {
         timespan_t cd_reduction = -100 * mage -> sets -> set( MAGE_FROST, T20, B4 ) -> effectN( 1 ).time_value();
@@ -1415,11 +1413,8 @@ struct incanters_flow_t : public buff_t
 
 struct icy_veins_buff_t : public haste_buff_t
 {
-  mage_t* mage;
-
   icy_veins_buff_t( mage_t* p ) :
-    haste_buff_t( haste_buff_creator_t( p, "icy_veins", p -> find_spell( 12472 ) ) ),
-    mage( p )
+    haste_buff_t( haste_buff_creator_t( p, "icy_veins", p -> find_spell( 12472 ) ) )
   {
     set_default_value( data().effectN( 1 ).percent() );
     set_cooldown( timespan_t::zero() );
@@ -1428,6 +1423,7 @@ struct icy_veins_buff_t : public haste_buff_t
 
   virtual void expire_override( int stacks, timespan_t duration ) override
   {
+    auto mage = debug_cast<mage_t*>( player );
     mage -> buffs.lady_vashjs_grasp -> expire();
     if ( mage -> talents.thermal_void -> ok() && duration == timespan_t::zero() )
     {
@@ -1440,18 +1436,16 @@ struct icy_veins_buff_t : public haste_buff_t
 struct lady_vashjs_grasp_t : public buff_t
 {
   int fof_source_id;
-  mage_t* mage;
 
   lady_vashjs_grasp_t( mage_t* p ) :
     buff_t( buff_creator_t( p, "lady_vashjs_grasp", p -> find_spell( 208147 ) ) ),
-    fof_source_id( -1 ),
-    mage( p )
+    fof_source_id( -1 )
   {
-    set_tick_callback( [ this ] ( buff_t* /* buff */, int /* ticks */, const timespan_t& /* tick_time */ )
+    set_tick_callback( [ this, p ] ( buff_t* /* buff */, int /* ticks */, const timespan_t& /* tick_time */ )
     {
       assert( fof_source_id != -1 );
-      mage -> buffs.fingers_of_frost -> trigger();
-      mage -> benefits.fingers_of_frost -> update( fof_source_id );
+      p -> buffs.fingers_of_frost -> trigger();
+      p -> benefits.fingers_of_frost -> update( fof_source_id );
     } );
   }
 
@@ -1461,6 +1455,7 @@ struct lady_vashjs_grasp_t : public buff_t
     bool success = buff_t::trigger( stacks, value, chance, duration );
     if ( success )
     {
+      auto mage = debug_cast<mage_t*>( player );
       // Triggering LVG gives one stack of Fingers of Frost, regardless of the tick action.
       assert( fof_source_id != -1 );
       mage -> buffs.fingers_of_frost -> trigger();
