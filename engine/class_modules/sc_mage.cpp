@@ -6777,8 +6777,11 @@ mage_t::~mage_t()
   delete benefits.arcane_charge.arcane_missiles;
   delete benefits.arcane_charge.nether_tempest;
   delete benefits.arcane_missiles;
+  delete benefits.chain_reaction;
   delete benefits.fingers_of_frost;
+  delete benefits.magtheridons_might;
   delete benefits.ray_of_frost;
+  delete benefits.zannesu_journey;
 
   delete sample_data.blizzard;
   delete sample_data.frozen_veins;
