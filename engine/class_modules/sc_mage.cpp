@@ -4307,17 +4307,14 @@ struct frostbolt_t : public frost_mage_spell_t
 
     p() -> buffs.icicles -> trigger();
 
-    if ( hit_any_target )
-    {
-      double fof_proc_chance = p() -> spec.fingers_of_frost -> effectN( 1 ).percent();
-      fof_proc_chance *= 1.0 + p() -> talents.frozen_touch -> effectN( 1 ).percent();
-      trigger_fof( fof_source_id, fof_proc_chance );
+    double fof_proc_chance = p() -> spec.fingers_of_frost -> effectN( 1 ).percent();
+    fof_proc_chance *= 1.0 + p() -> talents.frozen_touch -> effectN( 1 ).percent();
+    trigger_fof( fof_source_id, fof_proc_chance );
 
-      double bf_proc_chance = p() -> spec.brain_freeze -> effectN( 1 ).percent();
-      bf_proc_chance += p() -> sets -> set( MAGE_FROST, T19, B2 ) -> effectN( 1 ).percent();
-      bf_proc_chance += p() -> artifact.clarity_of_thought.percent();
-      trigger_brain_freeze( bf_proc_chance );
-    }
+    double bf_proc_chance = p() -> spec.brain_freeze -> effectN( 1 ).percent();
+    bf_proc_chance += p() -> sets -> set( MAGE_FROST, T19, B2 ) -> effectN( 1 ).percent();
+    bf_proc_chance += p() -> artifact.clarity_of_thought.percent();
+    trigger_brain_freeze( bf_proc_chance );
 
     p() -> trigger_t19_oh();
   }
@@ -4326,41 +4323,40 @@ struct frostbolt_t : public frost_mage_spell_t
   {
     frost_mage_spell_t::impact( s );
 
-    if ( result_is_hit( s -> result ) )
+    if ( ! result_is_hit( s -> result ) )
+      return;
+
+    trigger_icicle_gain( s, icicle );
+
+    if ( p() -> pets.water_elemental && ! p() -> pets.water_elemental -> is_sleeping() )
+    {
+      auto we_td = p() -> pets.water_elemental -> get_target_data( s -> target );
+      if ( we_td -> water_jet -> up() )
+      {
+        trigger_fof( water_jet_fof_source_id, 1.0 );
+      }
+    }
+
+    //TODO: Fix hardcode once spelldata has value for proc rate.
+    if ( p() -> artifact.ice_nine.rank() && rng().roll( 0.15 ) )
     {
       trigger_icicle_gain( s, icicle );
+      p() -> buffs.icicles -> trigger();
+    }
 
-      if ( p() -> pets.water_elemental && !p() -> pets.water_elemental -> is_sleeping() )
-      {
-        auto we_td =
-          p() -> pets.water_elemental
-          -> get_target_data( s -> target );
+    trigger_unstable_magic( s );
+    trigger_shattered_fragments( s -> target );
 
-        if ( we_td -> water_jet -> up() )
-        {
-          trigger_fof( water_jet_fof_source_id, 1.0 );
-        }
-      }
+    if ( s -> result == RESULT_CRIT && p() -> artifact.frozen_veins.rank() )
+    {
+      timespan_t cd_reduction = p() -> artifact.frozen_veins.time_value();
+      p() -> sample_data.frozen_veins -> add( cd_reduction );
+      p() -> cooldowns.icy_veins -> adjust( cd_reduction );
+    }
 
-      //TODO: Fix hardcode once spelldata has value for proc rate.
-      if ( p() -> artifact.ice_nine.rank() && rng().roll( 0.15 ) )
-      {
-        trigger_icicle_gain( s, icicle );
-        p() -> buffs.icicles -> trigger();
-      }
-      if ( s -> result == RESULT_CRIT && p() -> artifact.frozen_veins.rank() )
-      {
-        timespan_t cd_reduction = p() -> artifact.frozen_veins.time_value();
-        p() -> sample_data.frozen_veins -> add( cd_reduction );
-        p() -> cooldowns.icy_veins -> adjust( cd_reduction );
-      }
-      if ( s -> result == RESULT_CRIT && p() -> artifact.chain_reaction.rank() )
-      {
-        p() -> buffs.chain_reaction -> trigger();
-      }
-
-      trigger_unstable_magic( s );
-      trigger_shattered_fragments( s -> target );
+    if ( s -> result == RESULT_CRIT && p() -> artifact.chain_reaction.rank() )
+    {
+      p() -> buffs.chain_reaction -> trigger();
     }
   }
 };
