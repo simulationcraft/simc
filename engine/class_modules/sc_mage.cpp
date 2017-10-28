@@ -4735,7 +4735,9 @@ struct ice_lance_t : public frost_mage_spell_t
 
     if ( result_is_hit( s -> result ) && frozen )
     {
-      if ( s -> chain_target == 0 && p() -> talents.thermal_void -> ok() )
+      if ( s -> chain_target == 0
+        && p() -> talents.thermal_void -> ok()
+        && p() -> buffs.icy_veins -> check() )
       {
         timespan_t tv_extension = p() -> talents.thermal_void
                                       -> effectN( 1 ).time_value() * 1000;
