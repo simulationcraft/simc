@@ -4788,21 +4788,15 @@ struct ice_lance_t : public frost_mage_spell_t
   {
     frost_mage_spell_t::impact( s );
 
-    if ( s -> chain_target == 0 )
+    if ( ! result_is_hit( s -> result ) )
+      return;
+
+    bool     primary = s -> chain_target == 0;
+    unsigned frozen  = debug_cast<mage_spell_state_t*>( s ) -> frozen;
+
+    if ( primary && frozen )
     {
-      p() -> benefits.chain_reaction -> update();
-
-      if ( p() -> benefits.magtheridons_might )
-        p() -> benefits.magtheridons_might -> update();
-    }
-
-    unsigned frozen = debug_cast<mage_spell_state_t*>( s ) -> frozen;
-
-    if ( result_is_hit( s -> result ) && frozen )
-    {
-      if ( s -> chain_target == 0
-        && p() -> talents.thermal_void -> ok()
-        && p() -> buffs.icy_veins -> check() )
+      if ( p() -> talents.thermal_void -> ok() && p() -> buffs.icy_veins -> check() )
       {
         timespan_t tv_extension = p() -> talents.thermal_void
                                       -> effectN( 1 ).time_value() * 1000;
@@ -4817,25 +4811,32 @@ struct ice_lance_t : public frost_mage_spell_t
           p() -> procs.iv_extension_fingers_of_frost -> occur();
       }
 
-      if ( td( s -> target ) -> debuffs.frost_bomb -> check() )
-      {
-        assert( p() -> action.frost_bomb_explosion );
-        p() -> action.frost_bomb_explosion -> set_target( s -> target );
-        p() -> action.frost_bomb_explosion -> execute();
-      }
-
-      if ( s -> chain_target == 0
-        && frozen &  FROZEN_FINGERS_OF_FROST
+      if ( frozen &  FROZEN_FINGERS_OF_FROST
         && frozen & ~FROZEN_FINGERS_OF_FROST )
       {
         p() -> procs.fingers_of_frost_wasted -> occur();
       }
     }
 
-    if ( p() -> sets -> has_set_bonus( MAGE_FROST, T21, B4 ) )
+    if ( frozen )
     {
-      p() -> buffs.arctic_blast -> expire();
+      if ( td( s -> target ) -> debuffs.frost_bomb -> check() )
+      {
+        assert( p() -> action.frost_bomb_explosion );
+        p() -> action.frost_bomb_explosion -> set_target( s -> target );
+        p() -> action.frost_bomb_explosion -> execute();
+      }
     }
+
+    if ( primary )
+    {
+      p() -> benefits.chain_reaction -> update();
+
+      if ( p() -> benefits.magtheridons_might )
+        p() -> benefits.magtheridons_might -> update();
+    }
+
+    p() -> buffs.arctic_blast -> expire();
   }
 
   virtual double action_multiplier() const override
