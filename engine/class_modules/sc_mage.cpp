@@ -252,8 +252,11 @@ public:
 
     buff_source_benefit_t* arcane_missiles;
 
+    buff_stack_benefit_t* chain_reaction;
     buff_source_benefit_t* fingers_of_frost;
+    buff_stack_benefit_t* magtheridons_might;
     buff_stack_benefit_t* ray_of_frost;
+    buff_stack_benefit_t* zannesu_journey;
   } benefits;
 
   // Buffs
@@ -393,6 +396,10 @@ public:
   {
     luxurious_sample_data_t* blizzard_cd_reduction_effective;
     luxurious_sample_data_t* blizzard_cd_reduction_wasted;
+    luxurious_sample_data_t* frozen_veins_cd_reduction_effective;
+    luxurious_sample_data_t* frozen_veins_cd_reduction_wasted;
+    luxurious_sample_data_t* t20_4pc_cd_reduction_effective;
+    luxurious_sample_data_t* t20_4pc_cd_reduction_wasted;
 
     extended_sample_data_t* icy_veins_duration;
   } sample_data;
@@ -1303,6 +1310,42 @@ struct touch_of_the_magi_t : public buff_t
 
 
 // Custom buffs ===============================================================
+struct brain_freeze_buff_t : public buff_t
+{
+  mage_t* mage;
+
+  brain_freeze_buff_t( mage_t* p ) :
+    buff_t( buff_creator_t( p, "brain_freeze", p -> find_spell( 190446 ) ) ),
+    mage( p )
+  { }
+
+  bool trigger( int stacks = 1, double value = DEFAULT_VALUE(),
+                double chance = -1.0, timespan_t duration = timespan_t::min() ) override
+  {
+    bool success = buff_t::trigger( stacks, value, chance, duration );
+    if ( success )
+    {
+      if ( mage -> sets -> has_set_bonus( MAGE_FROST, T20, B4 ) )
+      {
+        timespan_t cd_reduction = -100 * mage -> sets -> set( MAGE_FROST, T20, B4 ) -> effectN( 1 ).time_value();
+
+        double reduction = -cd_reduction.total_seconds();
+        double remaining = ( mage -> cooldowns.icy_veins -> remains() ).total_seconds();
+
+        double effective = std::min( reduction, remaining );
+        mage -> sample_data.t20_4pc_cd_reduction_effective -> add( effective );
+
+        double wasted = reduction - effective;
+        mage -> sample_data.t20_4pc_cd_reduction_wasted -> add( wasted );
+
+        mage -> cooldowns.frozen_orb -> adjust( cd_reduction );
+      }
+    }
+
+    return success;
+  }
+};
+
 struct incanters_flow_t : public buff_t
 {
   incanters_flow_t( mage_t* p ) :
@@ -1392,7 +1435,6 @@ struct lady_vashjs_grasp_t : public buff_t
     return success;
   }
 };
-
 
 struct ray_of_frost_buff_t : public buff_t
 {
@@ -2075,12 +2117,6 @@ struct frost_mage_spell_t : public mage_spell_t
 
     void execute() override
     {
-      if ( mage -> sets -> has_set_bonus( MAGE_FROST, T20, B4 ) )
-      {
-        mage -> cooldowns.frozen_orb
-             -> adjust( -100 * mage -> sets -> set( MAGE_FROST, T20, B4 ) -> effectN( 1 ).time_value() );
-      }
-
       mage -> buffs.brain_freeze -> trigger();
     }
   };
@@ -2115,12 +2151,6 @@ struct frost_mage_spell_t : public mage_spell_t
       }
       else
       {
-        if ( p() -> sets -> has_set_bonus( MAGE_FROST, T20, B4 ) )
-        {
-          p() -> cooldowns.frozen_orb
-              -> adjust( -100 * p() -> sets -> set( MAGE_FROST, T20, B4 ) -> effectN( 1 ).time_value() );
-        }
-
         p() -> buffs.brain_freeze -> trigger();
       }
     }
@@ -3271,6 +3301,11 @@ struct blizzard_t : public frost_mage_spell_t
   {
     frost_mage_spell_t::execute();
 
+    if ( p() -> benefits.zannesu_journey )
+    {
+      p() -> benefits.zannesu_journey -> update();
+    }
+
     timespan_t ground_aoe_duration = data().duration() * player -> cache.spell_speed();
     p() -> ground_aoe_expiration[ name_str ]
       = sim -> current_time() + ground_aoe_duration;
@@ -4295,7 +4330,18 @@ struct frostbolt_t : public frost_mage_spell_t
       }
       if ( s -> result == RESULT_CRIT && p() -> artifact.frozen_veins.rank() )
       {
-        p() -> cooldowns.icy_veins -> adjust( p() -> artifact.frozen_veins.time_value() );
+        timespan_t cd_reduction = p() -> artifact.frozen_veins.time_value();
+
+        double reduction = -cd_reduction.total_seconds();
+        double remaining = ( p() -> cooldowns.icy_veins -> remains() ).total_seconds();
+
+        double effective = std::min( reduction, remaining );
+        p() -> sample_data.frozen_veins_cd_reduction_effective -> add( effective );
+
+        double wasted = reduction - effective;
+        p() -> sample_data.frozen_veins_cd_reduction_wasted -> add( wasted );
+
+        p() -> cooldowns.icy_veins -> adjust( cd_reduction );
       }
       if ( s -> result == RESULT_CRIT && p() -> artifact.chain_reaction.rank() )
       {
@@ -4730,6 +4776,14 @@ struct ice_lance_t : public frost_mage_spell_t
   virtual void impact( action_state_t* s ) override
   {
     frost_mage_spell_t::impact( s );
+
+    if ( s -> chain_target == 0 )
+    {
+      p() -> benefits.chain_reaction -> update();
+
+      if ( p() -> benefits.magtheridons_might )
+        p() -> benefits.magtheridons_might -> update();
+    }
 
     unsigned frozen = debug_cast<mage_spell_state_t*>( s ) -> frozen;
 
@@ -7265,7 +7319,7 @@ void mage_t::create_buffs()
   // Frost
   buffs.arctic_blast           = buff_creator_t( this, "arctic_blast", find_spell( 253257 ) )
                                    .default_value( find_spell( 253257 ) -> effectN( 1 ).percent() );
-  buffs.brain_freeze           = buff_creator_t( this, "brain_freeze", find_spell( 190446 ) );
+  buffs.brain_freeze           = new buffs::brain_freeze_buff_t( this );
   buffs.bone_chilling          = buff_creator_t( this, "bone_chilling", find_spell( 205766 ) )
                                    .default_value( talents.bone_chilling -> effectN( 1 ).percent() / 10 )
                                    .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
@@ -7371,8 +7425,16 @@ void mage_t::init_procs()
       procs.iv_extension_winters_chill    = get_proc( "Icy Veins extension from Winter's Chill" );
       procs.iv_extension_other            = get_proc( "Icy Veins extension from other sources" );
 
-      sample_data.blizzard_cd_reduction_effective = get_sample_data( "Blizzard effective cooldown reduction" );
-      sample_data.blizzard_cd_reduction_wasted    = get_sample_data( "Blizzard wasted cooldown reduction" );
+      sample_data.blizzard_cd_reduction_effective     = get_sample_data( "Blizzard effective cooldown reduction" );
+      sample_data.blizzard_cd_reduction_wasted        = get_sample_data( "Blizzard wasted cooldown reduction" );
+      sample_data.frozen_veins_cd_reduction_effective = get_sample_data( "Frozen Veins effective cooldown reduction" );
+      sample_data.frozen_veins_cd_reduction_wasted    = get_sample_data( "Frozen Veins wasted cooldown reduction" );
+
+      if ( sets -> has_set_bonus( MAGE_FROST, T20, B4 ) )
+      {
+        sample_data.t20_4pc_cd_reduction_effective = get_sample_data( "T20 4pc effective cooldown reduction" );
+        sample_data.t20_4pc_cd_reduction_wasted    = get_sample_data( "T20 4pc wasted cooldown reduction" );
+      }
 
       sample_data.icy_veins_duration = new extended_sample_data_t( "Icy Veins duration", false );
       break;
@@ -7447,13 +7509,28 @@ void mage_t::init_benefits()
 
   if ( specialization() == MAGE_FROST )
   {
+    benefits.chain_reaction =
+      new buff_stack_benefit_t( buffs.chain_reaction, "Ice Lance +" );
+
     benefits.fingers_of_frost =
       new buff_source_benefit_t( buffs.fingers_of_frost );
+
+    if ( buffs.magtheridons_might -> default_chance != 0 )
+    {
+      benefits.magtheridons_might =
+        new buff_stack_benefit_t( buffs.magtheridons_might, "Ice Lance +" );
+    }
 
     if ( talents.ray_of_frost -> ok() )
     {
       benefits.ray_of_frost =
         new buff_stack_benefit_t( buffs.ray_of_frost, "Ray of Frost" );
+    }
+
+    if ( buffs.zannesu_journey -> default_chance != 0 )
+    {
+      benefits.zannesu_journey =
+        new buff_stack_benefit_t( buffs.zannesu_journey, "Blizzard +" );
     }
   }
 }
