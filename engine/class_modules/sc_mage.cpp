@@ -4829,8 +4829,12 @@ struct ice_lance_t : public frost_mage_spell_t
         p() -> action.frost_bomb_explosion -> execute();
       }
 
-      if ( ( frozen & FROZEN_FINGERS_OF_FROST ) && ( frozen & ~FROZEN_FINGERS_OF_FROST ) )
+      if ( s -> chain_target == 0
+        && frozen &  FROZEN_FINGERS_OF_FROST
+        && frozen & ~FROZEN_FINGERS_OF_FROST )
+      {
         p() -> procs.fingers_of_frost_wasted -> occur();
+      }
     }
 
     if ( p() -> sets -> has_set_bonus( MAGE_FROST, T21, B4 ) )
