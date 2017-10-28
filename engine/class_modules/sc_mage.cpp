@@ -780,7 +780,7 @@ struct water_elemental_pet_t : public mage_pet_t
     cooldown.wj_freeze -> duration = timespan_t::from_seconds( 25.0 );
   }
 
-  void init_action_list() override
+  virtual void init_action_list() override
   {
     clear_action_priority_lists();
     auto default_list = get_action_priority_list( "default" );
@@ -925,7 +925,7 @@ struct water_jet_t : public water_elemental_spell_t
         ->get_target_data( t ? t : target );
   }
 
-  void execute() override
+  virtual void execute() override
   {
     // If this is a queued execute, disable queued status
     if ( !autocast && queued )
@@ -961,7 +961,7 @@ struct water_jet_t : public water_elemental_spell_t
     td( d -> target ) -> water_jet -> expire();
   }
 
-  bool ready() override
+  virtual bool ready() override
   {
     // Not ready, until the owner gives permission to cast
     if ( !autocast && !queued )
@@ -970,7 +970,7 @@ struct water_jet_t : public water_elemental_spell_t
     return water_elemental_spell_t::ready();
   }
 
-  void reset() override
+  virtual void reset() override
   {
     water_elemental_spell_t::reset();
 
@@ -1050,7 +1050,7 @@ struct mirror_image_spell_t : public mage_pet_spell_t
     may_crit = true;
   }
 
-  bool init_finished() override
+  virtual bool init_finished() override
   {
     if ( p() -> o() -> pets.mirror_images[ 0 ] )
     {
@@ -1161,7 +1161,7 @@ struct cinder_impact_event_t : public event_t
   virtual const char* name() const override
   { return "cinder_impact_event"; }
 
-  void execute() override
+  virtual void execute() override
   {
     cinder -> set_target( target );
     cinder -> execute();
@@ -1200,8 +1200,8 @@ struct arcane_missiles_t : public buff_t
     return am_proc_chance;
   }
 
-  bool trigger( int stacks, double value,
-                double chance, timespan_t duration ) override
+  virtual bool trigger( int stacks, double value,
+                        double chance, timespan_t duration ) override
   {
     if ( chance < 0 )
     {
@@ -1239,11 +1239,11 @@ struct erosion_t : public buff_t
         data( _data )
     { }
 
-    const char* name() const override
+    virtual const char* name() const override
     { return "erosion_decay_event"; }
 
 
-    void execute() override
+    virtual void execute() override
     {
       debuff -> decrement();
 
@@ -1273,8 +1273,8 @@ struct erosion_t : public buff_t
     set_default_value( data().effectN( 1 ).percent() );
   }
 
-  bool trigger( int stacks, double value,
-                double chance, timespan_t duration ) override
+  virtual bool trigger( int stacks, double value,
+                        double chance, timespan_t duration ) override
   {
     bool triggered = buff_t::trigger( stacks, value, chance, duration );
 
@@ -1291,14 +1291,14 @@ struct erosion_t : public buff_t
     return triggered;
   }
 
-  void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
+  virtual void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
   {
     buff_t::expire_override( expiration_stacks, remaining_duration );
 
     event_t::cancel( decay_event );
   }
 
-  void reset() override
+  virtual void reset() override
   {
     event_t::cancel( decay_event );
     buff_t::reset();
@@ -1360,8 +1360,8 @@ struct brain_freeze_buff_t : public buff_t
     buff_t( buff_creator_t( p, "brain_freeze", p -> find_spell( 190446 ) ) )
   { }
 
-  bool trigger( int stacks = 1, double value = DEFAULT_VALUE(),
-                double chance = -1.0, timespan_t duration = timespan_t::min() ) override
+  virtual bool trigger( int stacks = 1, double value = DEFAULT_VALUE(),
+                        double chance = -1.0, timespan_t duration = timespan_t::min() ) override
   {
     bool success = buff_t::trigger( stacks, value, chance, duration );
     if ( success )
@@ -1391,7 +1391,7 @@ struct incanters_flow_t : public buff_t
     add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   }
 
-  void bump( int stacks, double value ) override
+  virtual void bump( int stacks, double value ) override
   {
     int before_stack = current_stack;
     buff_t::bump( stacks, value );
@@ -1400,7 +1400,7 @@ struct incanters_flow_t : public buff_t
       reverse = true;
   }
 
-  void decrement( int stacks, double value ) override
+  virtual void decrement( int stacks, double value ) override
   {
     // This buff will never fade; reverse direction at 1 stack.
     // Buff uptime reporting _should_ work ok with this solution
@@ -1449,8 +1449,8 @@ struct lady_vashjs_grasp_t : public buff_t
     } );
   }
 
-  bool trigger( int stacks = 1, double value = DEFAULT_VALUE(),
-                double chance = -1.0, timespan_t duration = timespan_t::min() ) override
+  virtual bool trigger( int stacks = 1, double value = DEFAULT_VALUE(),
+                        double chance = -1.0, timespan_t duration = timespan_t::min() ) override
   {
     bool success = buff_t::trigger( stacks, value, chance, duration );
     if ( success )
@@ -1800,7 +1800,7 @@ struct arcane_mage_spell_t : public mage_spell_t
     affected_by.erosion = true;
   }
 
-  void init() override
+  virtual void init() override
   {
     mage_spell_t::init();
 
@@ -2141,12 +2141,12 @@ struct frost_mage_spell_t : public mage_spell_t
       : event_t( *p, delay ), mage( p )
     { }
 
-    const char* name() const override
+    virtual const char* name() const override
     {
       return "brain_freeze_delay";
     }
 
-    void execute() override
+    virtual void execute() override
     {
       mage -> buffs.brain_freeze -> trigger();
     }
@@ -2311,13 +2311,13 @@ struct icicle_state_t : public mage_spell_state_t
     mage_spell_state_t( action, target ), source( nullptr )
   { }
 
-  void initialize() override
+  virtual void initialize() override
   { mage_spell_state_t::initialize(); source = nullptr; }
 
-  std::ostringstream& debug_str( std::ostringstream& s ) override
+  virtual std::ostringstream& debug_str( std::ostringstream& s ) override
   { mage_spell_state_t::debug_str( s ) << " source=" << ( source ? source -> name_str : "unknown" ); return s; }
 
-  void copy_state( const action_state_t* other ) override
+  virtual void copy_state( const action_state_t* other ) override
   {
     mage_spell_state_t::copy_state( other );
 
@@ -2344,7 +2344,7 @@ struct icicle_t : public frost_mage_spell_t
   // To correctly record damage and execute information to the correct source
   // action, we set the stats object of the icicle cast to the source stats object,
   // carried from trigger_icicle() to here through the execute_event_t.
-  void execute() override
+  virtual void execute() override
   {
     const icicle_state_t* is = debug_cast<const icicle_state_t*>( pre_execute_state );
     assert( is -> source );
@@ -2357,7 +2357,7 @@ struct icicle_t : public frost_mage_spell_t
   // because multiple icicles can be executing, causing the state object to be
   // set to another object between the execution of this specific icicle, and
   // the impact.
-  void impact( action_state_t* state ) override
+  virtual void impact( action_state_t* state ) override
   {
     const icicle_state_t* is = debug_cast<const icicle_state_t*>( state );
     assert( is -> source );
@@ -2366,10 +2366,10 @@ struct icicle_t : public frost_mage_spell_t
     frost_mage_spell_t::impact( state );
   }
 
-  action_state_t* new_state() override
+  virtual action_state_t* new_state() override
   { return new icicle_state_t( this, target ); }
 
-  void init() override
+  virtual void init() override
   {
     frost_mage_spell_t::init();
 
@@ -2494,7 +2494,7 @@ struct ignite_t : public residual_action_t
     }
   }
 
-  void tick( dot_t* dot ) override
+  virtual void tick( dot_t* dot ) override
   {
     residual_action_t::tick( dot );
 
@@ -2927,7 +2927,7 @@ struct arcane_missiles_tick_t : public arcane_mage_spell_t
     background  = true;
   }
 
-  void impact( action_state_t* s ) override
+  virtual void impact( action_state_t* s ) override
   {
     arcane_mage_spell_t::impact( s );
 
@@ -2943,17 +2943,17 @@ struct am_state_t : public mage_spell_state_t
     mage_spell_state_t( action, target ), rule_of_threes( false )
   { }
 
-  void initialize() override
+  virtual void initialize() override
   { mage_spell_state_t::initialize(); rule_of_threes = false; }
 
-  std::ostringstream& debug_str( std::ostringstream& s ) override
+  virtual std::ostringstream& debug_str( std::ostringstream& s ) override
   {
     mage_spell_state_t::debug_str( s )
       << " rule_of_threes=" << rule_of_threes;
     return s;
   }
 
-  void copy_state( const action_state_t* other ) override
+  virtual void copy_state( const action_state_t* other ) override
   {
     mage_spell_state_t::copy_state( other );
 
@@ -2991,7 +2991,7 @@ struct arcane_missiles_t : public arcane_mage_spell_t
     rule_of_threes_ratio = ( dot_duration / base_tick_time ) / rule_of_threes_ticks;
   }
 
-  double action_multiplier() const override
+  virtual double action_multiplier() const override
   {
     double am = arcane_mage_spell_t::action_multiplier();
 
@@ -3001,16 +3001,16 @@ struct arcane_missiles_t : public arcane_mage_spell_t
   }
 
   // Flag Arcane Missiles as direct damage for triggering effects
-  dmg_e amount_type( const action_state_t* /* state */, bool /* periodic */ ) const override
+  virtual dmg_e amount_type( const action_state_t* /* state */, bool /* periodic */ ) const override
   {
     return DMG_DIRECT;
   }
 
-  action_state_t* new_state() override
+  virtual action_state_t* new_state() override
   { return new am_state_t( this, target ); }
 
   // Roll (and snapshot) Rule of Threes here, it affects the whole AM channel.
-  void snapshot_state( action_state_t* state, dmg_e rt ) override
+  virtual void snapshot_state( action_state_t* state, dmg_e rt ) override
   {
     arcane_mage_spell_t::snapshot_state( state, rt );
 
@@ -3022,7 +3022,7 @@ struct arcane_missiles_t : public arcane_mage_spell_t
 
   // If Rule of Threes is used, return the channel duration in terms of number
   // of ticks, so we prevent weird issues with rounding on duration
-  timespan_t composite_dot_duration( const action_state_t* state ) const override
+  virtual timespan_t composite_dot_duration( const action_state_t* state ) const override
   {
     auto s = debug_cast<const am_state_t*>( state );
 
@@ -3037,7 +3037,7 @@ struct arcane_missiles_t : public arcane_mage_spell_t
   }
 
   // Adjust tick time on Rule of Threes
-  timespan_t tick_time( const action_state_t* state ) const override
+  virtual timespan_t tick_time( const action_state_t* state ) const override
   {
     auto s = debug_cast<const am_state_t*>( state );
 
@@ -3051,7 +3051,7 @@ struct arcane_missiles_t : public arcane_mage_spell_t
     }
   }
 
-  void execute() override
+  virtual void execute() override
   {
     p() -> benefits.arcane_charge.arcane_missiles -> update();
 
@@ -3075,14 +3075,14 @@ struct arcane_missiles_t : public arcane_mage_spell_t
     p() -> buffs.arcane_missiles -> decrement();
   }
 
-  void last_tick ( dot_t * d ) override
+  virtual void last_tick ( dot_t * d ) override
   {
     arcane_mage_spell_t::last_tick( d );
 
     trigger_arcane_charge();
   }
 
-  bool ready() override
+  virtual bool ready() override
   {
     if ( ! p() -> buffs.arcane_missiles -> check() )
       return false;
@@ -3090,7 +3090,7 @@ struct arcane_missiles_t : public arcane_mage_spell_t
     return arcane_mage_spell_t::ready();
   }
 
-  bool usable_moving() const override
+  virtual bool usable_moving() const override
   {
     if ( p() -> talents.slipstream -> ok() )
       return true;
@@ -3272,7 +3272,7 @@ struct blizzard_shard_t : public frost_mage_spell_t
     snapshot_flags &= ~STATE_FROZEN;
   }
 
-  void execute() override
+  virtual void execute() override
   {
     frost_mage_spell_t::execute();
 
@@ -3285,7 +3285,7 @@ struct blizzard_shard_t : public frost_mage_spell_t
     }
   }
 
-  double composite_persistent_multiplier( const action_state_t* s ) const override
+  virtual double composite_persistent_multiplier( const action_state_t* s ) const override
   {
     double cpm = frost_mage_spell_t::composite_persistent_multiplier( s );
 
@@ -3311,7 +3311,7 @@ struct blizzard_t : public frost_mage_spell_t
     may_crit = affected_by.shatter = false;
   }
 
-  double false_positive_pct() const override
+  virtual double false_positive_pct() const override
   {
     // Players are probably less likely to accidentally use blizzard than other spells.
     return ( frost_mage_spell_t::false_positive_pct() / 2 );
@@ -3390,7 +3390,7 @@ struct cinder_t : public fire_mage_spell_t
     triggers_pyretic_incantation = true;
   }
 
-  double composite_target_multiplier( player_t* target ) const override
+  virtual double composite_target_multiplier( player_t* target ) const override
   {
     double m = fire_mage_spell_t::composite_target_multiplier( target );
 
@@ -3575,7 +3575,7 @@ struct comet_storm_t : public frost_mage_spell_t
     return timespan_t::from_seconds( 1.0 );
   }
 
-  void impact( action_state_t* s ) override
+  virtual void impact( action_state_t* s ) override
   {
     frost_mage_spell_t::impact( s );
 
@@ -3789,7 +3789,7 @@ struct evocation_t : public arcane_mage_spell_t
     }
   }
 
-  bool usable_moving() const override
+  virtual bool usable_moving() const override
   {
     if ( p() -> talents.slipstream -> ok() )
       return true;
@@ -3870,7 +3870,7 @@ struct fireball_t : public fire_mage_spell_t
     }
   }
 
-  double composite_target_crit_chance( player_t* target ) const override
+  virtual double composite_target_crit_chance( player_t* target ) const override
   {
     double c = fire_mage_spell_t::composite_target_crit_chance( target );
 
@@ -3905,8 +3905,8 @@ struct flame_patch_t : public fire_mage_spell_t
   }
 
   // Override damage type to avoid triggering Doom Nova
-  dmg_e amount_type( const action_state_t* /* state */,
-                     bool /* periodic */ ) const override
+  virtual dmg_e amount_type( const action_state_t* /* state */,
+                             bool /* periodic */ ) const override
   {
     return DMG_OVER_TIME;
   }
@@ -4055,7 +4055,7 @@ struct flamestrike_t : public fire_mage_spell_t
     is -> hot_streak = p() -> buffs.hot_streak -> check() != 0;
   }
 
-  double composite_ignite_multiplier( const action_state_t* s ) const override
+  virtual double composite_ignite_multiplier( const action_state_t* s ) const override
   {
    const ignite_spell_state_t* is = debug_cast<const ignite_spell_state_t*>( s );
    return is -> hot_streak ? 2.0 : 1.0;
@@ -4927,7 +4927,7 @@ struct icy_veins_t : public frost_mage_spell_t
     harmful = false;
   }
 
-  bool init_finished() override
+  virtual bool init_finished() override
   {
     if ( lady_vashjs_grasp )
     {
@@ -5188,7 +5188,7 @@ struct mark_of_aluneth_explosion_t : public arcane_mage_spell_t
     }
   }
 
-  double action_multiplier() const override
+  virtual double action_multiplier() const override
   {
     double am = arcane_mage_spell_t::action_multiplier();
 
@@ -5222,7 +5222,7 @@ struct mark_of_aluneth_t : public arcane_mage_spell_t
     p() -> buffs.cord_of_infinity -> expire();
   }
 
-  double composite_persistent_multiplier( const action_state_t* state ) const override
+  virtual double composite_persistent_multiplier( const action_state_t* state ) const override
   {
     double m = arcane_mage_spell_t::composite_persistent_multiplier( state );
 
@@ -5232,7 +5232,7 @@ struct mark_of_aluneth_t : public arcane_mage_spell_t
     return m;
   }
 
-  void tick( dot_t* dot ) override
+  virtual void tick( dot_t* dot ) override
   {
     arcane_mage_spell_t::tick( dot );
     if ( p() -> talents.erosion -> ok() )
@@ -5241,7 +5241,7 @@ struct mark_of_aluneth_t : public arcane_mage_spell_t
     }
   }
 
-  void last_tick( dot_t* d ) override
+  virtual void last_tick( dot_t* d ) override
   {
     arcane_mage_spell_t::last_tick( d );
 
@@ -5281,8 +5281,8 @@ struct meteor_burn_t : public fire_mage_spell_t
   }
 
   // Override damage type because Meteor Burn is considered a DOT
-  dmg_e amount_type( const action_state_t* /* state */,
-                     bool /* periodic */ ) const override
+  virtual dmg_e amount_type( const action_state_t* /* state */,
+                             bool /* periodic */ ) const override
   {
     return DMG_OVER_TIME;
   }
@@ -5316,12 +5316,12 @@ struct meteor_impact_t: public fire_mage_spell_t
     }
   }
 
-  timespan_t travel_time() const override
+  virtual timespan_t travel_time() const override
   {
     return timespan_t::from_seconds( 1.0 );
   }
 
-  void impact( action_state_t* s ) override
+  virtual void impact( action_state_t* s ) override
   {
     fire_mage_spell_t::impact( s );
 
@@ -5374,7 +5374,7 @@ struct meteor_t : public fire_mage_spell_t
     return meteor_spawn;
   }
 
-  void impact( action_state_t* s ) override
+  virtual void impact( action_state_t* s ) override
   {
     fire_mage_spell_t::impact( s );
     meteor_impact -> set_target( s -> target );
@@ -5394,7 +5394,7 @@ struct mirror_image_t : public mage_spell_t
     harmful = false;
   }
 
-  bool init_finished() override
+  virtual bool init_finished() override
   {
     std::vector<pet_t*> images = p() -> pets.mirror_images;
 
@@ -5509,7 +5509,7 @@ struct nether_tempest_t : public arcane_mage_spell_t
     nether_tempest_aoe -> schedule_execute( aoe_state );
   }
 
-  double composite_persistent_multiplier( const action_state_t* state ) const override
+  virtual double composite_persistent_multiplier( const action_state_t* state ) const override
   {
     double m = arcane_mage_spell_t::composite_persistent_multiplier( state );
 
@@ -5760,13 +5760,14 @@ struct pyroblast_t : public fire_mage_spell_t
 
     return c;
   }
-   double composite_ignite_multiplier( const action_state_t* s ) const override
+
+  virtual double composite_ignite_multiplier( const action_state_t* s ) const override
   {
     const ignite_spell_state_t* is = debug_cast<const ignite_spell_state_t*>( s );
     return is -> hot_streak ? 2.0 : 1.0;
   }
 
-  double composite_target_crit_chance( player_t* target ) const override
+  virtual double composite_target_crit_chance( player_t* target ) const override
   {
     double c = fire_mage_spell_t::composite_target_crit_chance( target );
 
@@ -5792,7 +5793,7 @@ struct ray_of_frost_t : public frost_mage_spell_t
     hasted_ticks      = true;
   }
 
-  void init() override
+  virtual void init() override
   {
     frost_mage_spell_t::init();
     update_flags |= STATE_HASTE; // Not snapshotted for this spell.
@@ -6210,7 +6211,7 @@ struct start_burn_phase_t : public action_t
     }
   }
 
-  bool ready() override
+  virtual bool ready() override
   {
     mage_t* p = debug_cast<mage_t*>( player );
 
@@ -6250,7 +6251,7 @@ struct stop_burn_phase_t : public action_t
     }
   }
 
-  bool ready() override
+  virtual bool ready() override
   {
     mage_t* p = debug_cast<mage_t*>( player );
 
@@ -6362,7 +6363,7 @@ struct freeze_t : public action_t
     action_skill = 1;
   }
 
-  void reset() override
+  virtual void reset() override
   {
     action_t::reset();
 
@@ -6379,7 +6380,7 @@ struct freeze_t : public action_t
     }
   }
 
-  void execute() override
+  virtual void execute() override
   {
     assert( action );
 
@@ -6387,7 +6388,7 @@ struct freeze_t : public action_t
     action -> execute();
   }
 
-  bool ready() override
+  virtual bool ready() override
   {
     mage_t* m = debug_cast<mage_t*>( player );
     if ( m -> talents.lonely_winter -> ok() )
@@ -6423,7 +6424,7 @@ struct water_jet_t : public action_t
     action_skill = 1;
   }
 
-  void reset() override
+  virtual void reset() override
   {
     action_t::reset();
 
@@ -6439,7 +6440,7 @@ struct water_jet_t : public action_t
     }
   }
 
-  void execute() override
+  virtual void execute() override
   {
     assert( action );
     mage_t* m = debug_cast<mage_t*>( player );
@@ -6460,7 +6461,7 @@ struct water_jet_t : public action_t
     m -> pets.water_elemental -> schedule_ready();
   }
 
-  bool ready() override
+  virtual bool ready() override
   {
     mage_t* m = debug_cast<mage_t*>( player );
     if ( m -> talents.lonely_winter -> ok() )
@@ -6506,7 +6507,7 @@ struct icicle_event_t : public event_t
   virtual const char* name() const override
   { return "icicle_event"; }
 
-  void execute() override
+  virtual void execute() override
   {
     // If the target of the icicle is dead, stop the chain
     if ( target -> is_sleeping() )
@@ -6574,7 +6575,7 @@ struct ignite_spread_event_t : public event_t
   virtual const char* name() const override
   { return "ignite_spread_event"; }
 
-  void execute() override
+  virtual void execute() override
   {
     mage -> procs.ignite_spread -> occur();
     if ( mage -> sim -> log )
@@ -8577,7 +8578,7 @@ expr_t* mage_t::create_expression( action_t* a, const std::string& name_str )
       sicicles_expr_t( mage_t& m ) : mage_expr_t( "shooting_icicles", m )
       { }
 
-      double evaluate() override
+      virtual double evaluate() override
       { return mage.icicle_event != nullptr; }
     };
 
@@ -8591,7 +8592,7 @@ expr_t* mage_t::create_expression( action_t* a, const std::string& name_str )
       icicles_expr_t( mage_t& m ) : mage_expr_t( "icicles", m )
       { }
 
-      double evaluate() override
+      virtual double evaluate() override
       {
         if ( mage.icicles.empty() )
           return 0;
@@ -8636,7 +8637,7 @@ expr_t* mage_t::create_expression( action_t* a, const std::string& name_str )
         mage_expr_t( name, m ), a( a ), type( type )
       { }
 
-      double evaluate() override
+      virtual double evaluate() override
       {
         if ( ! mage.talents.firestarter -> ok() )
           return 0.0;
@@ -8692,7 +8693,7 @@ expr_t* mage_t::create_expression( action_t* a, const std::string& name_str )
         util::tolower( aoe_type );
       }
 
-      double evaluate() override
+      virtual double evaluate() override
       {
         timespan_t expiration;
 
@@ -8954,6 +8955,7 @@ struct sorcerous_shadowruby_pendant_driver_t : public spell_t
     sorcerous_spells[ 1 ] = new sorcerous_frostbolt_t( effect );
     sorcerous_spells[ 2 ] = new sorcerous_arcane_blast_t( effect );
   }
+
   virtual void execute() override
   {
     spell_t::execute();
@@ -8977,12 +8979,12 @@ struct sephuzs_secret_t : public class_buff_cb_t<mage_t, haste_buff_t, haste_buf
   sephuzs_secret_t(): super( MAGE, "sephuzs_secret" )
   { }
 
-  haste_buff_t*& buff_ptr( const special_effect_t& e ) override
+  virtual haste_buff_t*& buff_ptr( const special_effect_t& e ) override
   {
     return debug_cast<mage_t*>( e.player ) -> buffs.sephuzs_secret;
   }
 
-  haste_buff_creator_t creator( const special_effect_t& e ) const override
+  virtual haste_buff_creator_t creator( const special_effect_t& e ) const override
   {
     return super::creator( e )
       .spell( e.trigger() )
@@ -8997,7 +8999,7 @@ struct shard_of_the_exodar_t : public scoped_actor_callback_t<mage_t>
   shard_of_the_exodar_t() : super( MAGE )
   { }
 
-  void manipulate( mage_t* actor, const special_effect_t& /* e */ ) override
+  virtual void manipulate( mage_t* actor, const special_effect_t& /* e */ ) override
   {
     // Disable default Bloodlust and let us handle it in a custom way.
     actor -> cooldowns.time_warp -> charges = 2;
@@ -9012,7 +9014,7 @@ struct mystic_kilt_of_the_rune_master_t : public scoped_action_callback_t<arcane
   mystic_kilt_of_the_rune_master_t() : super( MAGE_ARCANE, "arcane_barrage" )
   { }
 
-  void manipulate( arcane_barrage_t* action, const special_effect_t& e ) override
+  virtual void manipulate( arcane_barrage_t* action, const special_effect_t& e ) override
   { action -> mystic_kilt_of_the_rune_master_regen = e.driver() -> effectN( 1 ).percent(); }
 };
 
@@ -9021,12 +9023,12 @@ struct rhonins_assaulting_armwraps_t : public class_buff_cb_t<mage_t, buff_t, bu
   rhonins_assaulting_armwraps_t() : super( MAGE_ARCANE, "rhonins_assaulting_armwraps" )
   { }
 
-  buff_t*& buff_ptr( const special_effect_t& e ) override
+  virtual buff_t*& buff_ptr( const special_effect_t& e ) override
   {
     return debug_cast<mage_t*>( e.player ) -> buffs.rhonins_assaulting_armwraps;
   }
 
-  buff_creator_t creator( const special_effect_t& e ) const override
+  virtual buff_creator_t creator( const special_effect_t& e ) const override
   {
     return super::creator( e )
       .spell( e.trigger() )
@@ -9039,12 +9041,12 @@ struct cord_of_infinity_t : public class_buff_cb_t<mage_t, buff_t, buff_creator_
   cord_of_infinity_t() : super( MAGE_ARCANE, "cord_of_infinity" )
   { }
 
-  buff_t*& buff_ptr( const special_effect_t& e ) override
+  virtual buff_t*& buff_ptr( const special_effect_t& e ) override
   {
     return debug_cast<mage_t*>( e.player ) -> buffs.cord_of_infinity;
   }
 
-  buff_creator_t creator( const special_effect_t& e ) const override
+  virtual buff_creator_t creator( const special_effect_t& e ) const override
   {
     return super::creator( e )
       .spell( e.trigger() )
@@ -9057,7 +9059,7 @@ struct gravity_spiral_t : public scoped_actor_callback_t<mage_t>
   gravity_spiral_t() : super( MAGE_ARCANE )
   { }
 
-  void manipulate( mage_t* actor, const special_effect_t& e ) override
+  virtual void manipulate( mage_t* actor, const special_effect_t& e ) override
   {
     actor -> cooldowns.evocation -> charges += e.driver() -> effectN( 1 ).base_value();
   }
@@ -9068,7 +9070,7 @@ struct mantle_of_the_first_kirin_tor_t : public scoped_action_callback_t<arcane_
   mantle_of_the_first_kirin_tor_t() : super( MAGE_ARCANE, "arcane_barrage" )
   { }
 
-  void manipulate( arcane_barrage_t* action, const special_effect_t& e ) override
+  virtual void manipulate( arcane_barrage_t* action, const special_effect_t& e ) override
   { action -> mantle_of_the_first_kirin_tor_chance = e.driver() -> effectN( 1 ).percent(); }
 };
 
@@ -9078,7 +9080,7 @@ struct koralons_burning_touch_t : public scoped_action_callback_t<scorch_t>
   koralons_burning_touch_t() : super( MAGE_FIRE, "scorch" )
   { }
 
-  void manipulate( scorch_t* action, const special_effect_t& e ) override
+  virtual void manipulate( scorch_t* action, const special_effect_t& e ) override
   {
     action -> koralons_burning_touch = true;
     action -> koralons_burning_touch_threshold = e.driver() -> effectN( 1 ).base_value();
@@ -9091,7 +9093,7 @@ struct darcklis_dragonfire_diadem_t : public scoped_action_callback_t<dragons_br
   darcklis_dragonfire_diadem_t() : super( MAGE_FIRE, "dragons_breath" )
   { }
 
-  void manipulate( dragons_breath_t* action, const special_effect_t& e ) override
+  virtual void manipulate( dragons_breath_t* action, const special_effect_t& e ) override
   {
     action -> radius += e.driver() -> effectN( 1 ).base_value();
     action -> base_multiplier *= 1.0 + e.driver() -> effectN( 2 ).percent();
@@ -9104,12 +9106,12 @@ struct marquee_bindings_of_the_sun_king_t : public class_buff_cb_t<mage_t, buff_
   marquee_bindings_of_the_sun_king_t() : super( MAGE_FIRE, "kaelthas_ultimate_ability" )
   { }
 
-  buff_t*& buff_ptr( const special_effect_t& e ) override
+  virtual buff_t*& buff_ptr( const special_effect_t& e ) override
   {
     return debug_cast<mage_t*>( e.player ) -> buffs.kaelthas_ultimate_ability;
   }
 
-  buff_creator_t creator( const special_effect_t& e ) const override
+  virtual buff_creator_t creator( const special_effect_t& e ) const override
   {
     return super::creator( e )
       .spell( e.player -> find_spell( 209455 ) )
@@ -9122,7 +9124,7 @@ struct pyrotex_ignition_cloth_t : public scoped_action_callback_t<phoenixs_flame
   pyrotex_ignition_cloth_t() : super( MAGE_FIRE, "phoenixs_flames" )
   { }
 
-  void manipulate( phoenixs_flames_t* action, const special_effect_t& e ) override
+  virtual void manipulate( phoenixs_flames_t* action, const special_effect_t& e ) override
   {
     action -> pyrotex_ignition_cloth = true;
     action -> pyrotex_ignition_cloth_reduction = e.driver() -> effectN( 1 ).time_value();
@@ -9134,12 +9136,12 @@ struct contained_infernal_core_t : public class_buff_cb_t<mage_t, buff_t, buff_c
   contained_infernal_core_t() : super( MAGE_FIRE, "contained_infernal_core" )
   { }
 
-  buff_t*& buff_ptr( const special_effect_t& e ) override
+  virtual buff_t*& buff_ptr( const special_effect_t& e ) override
   {
     return debug_cast<mage_t*>( e.player ) -> buffs.contained_infernal_core;
   }
 
-  buff_creator_t creator( const special_effect_t& e ) const override
+  virtual buff_creator_t creator( const special_effect_t& e ) const override
   {
     return super::creator( e )
       .spell( e.player -> find_spell( 248146 ) );
@@ -9152,12 +9154,12 @@ struct magtheridons_banished_bracers_t : public class_buff_cb_t<mage_t, buff_t, 
   magtheridons_banished_bracers_t() : super( MAGE_FROST, "magtheridons_might" )
   { }
 
-  buff_t*& buff_ptr( const special_effect_t& e ) override
+  virtual buff_t*& buff_ptr( const special_effect_t& e ) override
   {
     return debug_cast<mage_t*>( e.player ) -> buffs.magtheridons_might;
   }
 
-  buff_creator_t creator( const special_effect_t& e ) const override
+  virtual buff_creator_t creator( const special_effect_t& e ) const override
   {
     return super::creator( e )
       .spell( e.trigger() )
@@ -9170,12 +9172,12 @@ struct zannesu_journey_t : public class_buff_cb_t<mage_t, buff_t, buff_creator_t
   zannesu_journey_t() : super( MAGE_FROST, "zannesu_journey" )
   { }
 
-  buff_t*& buff_ptr( const special_effect_t& e ) override
+  virtual buff_t*& buff_ptr( const special_effect_t& e ) override
   {
     return debug_cast<mage_t*>( e.player ) -> buffs.zannesu_journey;
   }
 
-  buff_creator_t creator( const special_effect_t& e ) const override
+  virtual buff_creator_t creator( const special_effect_t& e ) const override
   {
     return super::creator( e )
       .spell( e.trigger() )
@@ -9188,7 +9190,7 @@ struct lady_vashjs_grasp_t : public scoped_action_callback_t<icy_veins_t>
   lady_vashjs_grasp_t() : super( MAGE_FROST, "icy_veins" )
   { }
 
-  void manipulate( icy_veins_t* action, const special_effect_t& /* e */ ) override
+  virtual void manipulate( icy_veins_t* action, const special_effect_t& /* e */ ) override
   {
     action -> lady_vashjs_grasp = true;
   }
@@ -9199,8 +9201,7 @@ struct ice_time_t : public scoped_action_callback_t<frozen_orb_t>
   ice_time_t() : super( MAGE_FROST, "frozen_orb" )
   { }
 
-  void manipulate( frozen_orb_t* action,
-                   const special_effect_t& /* e */ ) override
+  virtual void manipulate( frozen_orb_t* action, const special_effect_t& /* e */ ) override
   {
     action -> ice_time = true;
   }
@@ -9211,12 +9212,12 @@ struct shattered_fragments_of_sindragosa_t : public class_buff_cb_t<mage_t, buff
   shattered_fragments_of_sindragosa_t() : super( MAGE_FROST, "shattered_fragments_of_sindragosa" )
   { }
 
-  buff_t*& buff_ptr( const special_effect_t& e ) override
+  virtual buff_t*& buff_ptr( const special_effect_t& e ) override
   {
     return debug_cast<mage_t*>( e.player ) -> buffs.shattered_fragments_of_sindragosa;
   }
 
-  buff_creator_t creator( const special_effect_t& e ) const override
+  virtual buff_creator_t creator( const special_effect_t& e ) const override
   {
     return super::creator( e )
       .spell( e.player -> find_spell( 248176 ) );
