@@ -2306,6 +2306,8 @@ struct icicle_t : public frost_mage_spell_t
     may_crit = affected_by.shatter = false;
     proc = background = true;
 
+    base_dd_min = base_dd_max = 1.0;
+
     if ( p -> talents.splitting_ice -> ok() )
     {
       aoe = 1 + p -> talents.splitting_ice -> effectN( 1 ).base_value();
@@ -2471,6 +2473,8 @@ struct aegwynns_ascendance_t : public arcane_mage_spell_t
     aoe = -1;
     background = true;
     may_crit = false;
+
+    base_dd_min = base_dd_max = 1.0;
 
     affected_by.erosion = false;
   }
@@ -5093,6 +5097,8 @@ struct mark_of_aluneth_explosion_t : public arcane_mage_spell_t
     background = true;
     aoe = -1;
 
+    base_dd_min = base_dd_max = 1.0;
+
     // As of build 24461, 2017-07-03.
     if ( p -> bugs )
     {
@@ -6082,6 +6088,8 @@ struct touch_of_the_magi_explosion_t : public arcane_mage_spell_t
     may_miss = may_crit = callbacks = false;
     aoe = -1;
 
+    base_dd_min = base_dd_max = 1.0;
+
     affected_by.erosion = false;
   }
 
@@ -6213,6 +6221,8 @@ struct unstable_magic_explosion_t : public mage_spell_t
     callbacks = false;
     aoe = -1;
     background = true;
+
+    base_dd_min = base_dd_max = 1.0;
 
     switch ( p -> specialization() )
     {
