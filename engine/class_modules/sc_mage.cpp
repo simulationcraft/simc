@@ -3208,15 +3208,6 @@ struct blizzard_shard_t : public frost_mage_spell_t
     chills = true;
   }
 
-  virtual void init() override
-  {
-    frost_mage_spell_t::init();
-
-    // update_state is called before the first impact; prevent
-    // snapshot_state from skewing benefit analysis.
-    snapshot_flags &= ~STATE_FROZEN;
-  }
-
   virtual void execute() override
   {
     frost_mage_spell_t::execute();
@@ -4046,15 +4037,6 @@ struct flurry_bolt_t : public frost_mage_spell_t
     base_multiplier *= 1.0 + p -> artifact.ice_age.percent();
   }
 
-  virtual void init() override
-  {
-    frost_mage_spell_t::init();
-
-    // update_state is called before the first impact; prevent
-    // snapshot_state from skewing benefit analysis.
-    snapshot_flags &= ~STATE_FROZEN;
-  }
-
   virtual void impact( action_state_t* s ) override
   {
     frost_mage_spell_t::impact( s );
@@ -4381,15 +4363,6 @@ struct frozen_orb_bolt_t : public frost_mage_spell_t
     }
     crit_bonus_multiplier *= 1.0 + p -> artifact.orbital_strike.percent();
     chills = true;
-  }
-
-  virtual void init() override
-  {
-    frost_mage_spell_t::init();
-
-    // update_state is called before the first impact; prevent
-    // snapshot_state from skewing benefit analysis.
-    snapshot_flags &= ~STATE_FROZEN;
   }
 
   virtual bool init_finished() override
