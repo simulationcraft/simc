@@ -3334,7 +3334,7 @@ struct blizzard_t : public frost_mage_spell_t
   {
     frost_mage_spell_t::execute();
 
-    if ( p() -> benefits.zannesu_journey )
+    if ( p() -> buffs.zannesu_journey -> default_chance != 0.0 )
     {
       p() -> benefits.zannesu_journey -> update();
     }
@@ -4883,7 +4883,7 @@ struct ice_lance_t : public frost_mage_spell_t
     {
       p() -> benefits.chain_reaction -> update();
 
-      if ( p() -> benefits.magtheridons_might )
+      if ( p() -> buffs.magtheridons_might -> default_chance != 0.0 )
         p() -> benefits.magtheridons_might -> update();
     }
 
@@ -7513,7 +7513,10 @@ void mage_t::init_procs()
         sample_data.glacial_spike_icicles = get_sample_data( "Glacial Spike Icicle damage contribution" );
       }
 
-      sample_data.icy_veins_duration = new extended_sample_data_t( "Icy Veins duration", false );
+      if ( talents.thermal_void -> ok() )
+      {
+        sample_data.icy_veins_duration = new extended_sample_data_t( "Icy Veins duration", false );
+      }
       break;
     case MAGE_FIRE:
       procs.heating_up_generated    = get_proc( "Heating Up generated" );
@@ -7592,7 +7595,7 @@ void mage_t::init_benefits()
     benefits.fingers_of_frost =
       new buff_source_benefit_t( buffs.fingers_of_frost );
 
-    if ( buffs.magtheridons_might -> default_chance != 0 )
+    if ( buffs.magtheridons_might -> default_chance != 0.0 )
     {
       benefits.magtheridons_might =
         new buff_stack_benefit_t( buffs.magtheridons_might, "Ice Lance +" );
@@ -7604,7 +7607,7 @@ void mage_t::init_benefits()
         new buff_stack_benefit_t( buffs.ray_of_frost, "Ray of Frost" );
     }
 
-    if ( buffs.zannesu_journey -> default_chance != 0 )
+    if ( buffs.zannesu_journey -> default_chance != 0.0 )
     {
       benefits.zannesu_journey =
         new buff_stack_benefit_t( buffs.zannesu_journey, "Blizzard +" );
@@ -8381,7 +8384,7 @@ double mage_t::composite_spell_haste() const
   h /= 1.0 + buffs.quick_thinker -> check_value();
   h /= 1.0 + buffs.sephuzs_secret -> check_value();
 
-  if ( buffs.sephuzs_secret -> default_chance != 0 )
+  if ( buffs.sephuzs_secret -> default_chance != 0.0 )
   {
     h /= 1.0 + buffs.sephuzs_secret -> data().driver() -> effectN( 3 ).percent();
   }
@@ -8482,7 +8485,7 @@ double mage_t::passive_movement_modifier() const
 {
   double pmm = player_t::passive_movement_modifier();
 
-  if ( buffs.sephuzs_secret -> default_chance != 0 )
+  if ( buffs.sephuzs_secret -> default_chance != 0.0 )
   {
     pmm += buffs.sephuzs_secret -> data().driver() -> effectN( 2 ).percent();
   }
