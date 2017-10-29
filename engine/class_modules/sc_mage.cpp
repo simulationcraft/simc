@@ -4512,7 +4512,7 @@ struct glacial_spike_t : public frost_mage_spell_t
 
   virtual void record_data( action_state_t* data ) override
   {
-    mage_spell_t::record_data( data );
+    frost_mage_spell_t::record_data( data );
 
     if ( icicle_damage_ratio == 0.0 )
       return;
