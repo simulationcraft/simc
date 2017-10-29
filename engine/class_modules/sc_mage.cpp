@@ -411,7 +411,7 @@ public:
     std::vector<pet_t*> mirror_images;
 
     pets_t() : water_elemental( nullptr )
-    {}
+    { }
   } pets;
 
   // Procs
@@ -444,6 +444,9 @@ public:
     cooldown_reduction_data_t* blizzard;
     cooldown_reduction_data_t* frozen_veins;
     cooldown_reduction_data_t* t20_4pc;
+
+    luxurious_sample_data_t* glacial_spike_base;
+    luxurious_sample_data_t* glacial_spike_icicles;
 
     extended_sample_data_t* icy_veins_duration;
   } sample_data;
@@ -4572,6 +4575,9 @@ struct glacial_spike_t : public frost_mage_spell_t
 {
   double icicle_damage;
 
+  // So that we don't need custom action_state_t to store it.
+  mutable double icicle_damage_ratio;
+
   glacial_spike_t( mage_t* p, const std::string& options_str ) :
     frost_mage_spell_t( "glacial_spike", p, p -> talents.glacial_spike ),
     icicle_damage( 0.0 )
@@ -4597,10 +4603,27 @@ struct glacial_spike_t : public frost_mage_spell_t
     return frost_mage_spell_t::ready();
   }
 
+  virtual void record_data( action_state_t* data ) override
+  {
+    mage_spell_t::record_data( data );
+
+    if ( icicle_damage_ratio == 0.0 )
+      return;
+
+    double amount  = data -> result_amount;
+    double icicles = amount * icicle_damage_ratio;
+    double base    = amount - icicles;
+
+    p() -> sample_data.glacial_spike_base -> add( base );
+    p() -> sample_data.glacial_spike_icicles -> add( icicles );
+  }
+
   virtual double calculate_impact_direct_amount( action_state_t* s ) const override
   {
     double base_amount = frost_mage_spell_t::calculate_impact_direct_amount( s );
     double icicle_amount = icicle_damage;
+
+    icicle_damage_ratio = 0.0;
 
     // Icicle portion is only affected by target-based damage multipliers.
     icicle_amount *= s -> target_da_multiplier;
@@ -4619,6 +4642,10 @@ struct glacial_spike_t : public frost_mage_spell_t
     else
     {
       s -> result_total = amount;
+
+      if ( amount > 0 )
+        icicle_damage_ratio = icicle_amount / amount;
+
       return amount;
     }
   }
@@ -7478,6 +7505,12 @@ void mage_t::init_procs()
       if ( sets -> has_set_bonus( MAGE_FROST, T20, B4 ) )
       {
         sample_data.t20_4pc    = new cooldown_reduction_data_t( cooldowns.frozen_orb, "T20 4pc" );
+      }
+
+      if ( talents.glacial_spike -> ok() )
+      {
+        sample_data.glacial_spike_base    = get_sample_data( "Glacial Spike base damage contribution" );
+        sample_data.glacial_spike_icicles = get_sample_data( "Glacial Spike Icicle damage contribution" );
       }
 
       sample_data.icy_veins_duration = new extended_sample_data_t( "Icy Veins duration", false );
