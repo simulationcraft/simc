@@ -3787,7 +3787,8 @@ struct evocation_t : public arcane_mage_spell_t
         mana_gained * p() -> artifact.aegwynns_ascendance.percent();
 
       aegwynns_ascendance -> set_target( d -> target );
-      aegwynns_ascendance -> base_dd_adder = explosion_amount;
+      aegwynns_ascendance -> base_dd_min = explosion_amount;
+      aegwynns_ascendance -> base_dd_max = explosion_amount;
       aegwynns_ascendance -> execute();
     }
   }
@@ -5202,7 +5203,9 @@ struct mark_of_aluneth_explosion_t : public arcane_mage_spell_t
 
   virtual void execute() override
   {
-    base_dd_adder = p() -> resources.max[ RESOURCE_MANA ] * mana_to_damage_pct;
+    double damage = p() -> resources.max[ RESOURCE_MANA ] * mana_to_damage_pct;
+    base_dd_min = damage;
+    base_dd_max = damage;
 
     arcane_mage_spell_t::execute();
 
@@ -6198,7 +6201,9 @@ struct touch_of_the_magi_explosion_t : public arcane_mage_spell_t
 
   virtual void execute() override
   {
-    base_dd_adder *= p() -> artifact.touch_of_the_magi.data().effectN( 1 ).percent();
+    double mult = p() -> artifact.touch_of_the_magi.data().effectN( 1 ).percent();
+    base_dd_min *= mult;
+    base_dd_max *= mult;
 
     mage_spell_t::execute();
   }
@@ -6331,7 +6336,9 @@ struct unstable_magic_explosion_t : public mage_spell_t
 
   virtual void execute() override
   {
-    base_dd_adder *= data().effectN( 4 ).percent();
+    double mult = data().effectN( 4 ).percent();
+    base_dd_min *= mult;
+    base_dd_max *= mult;
 
     mage_spell_t::execute();
   }
@@ -6367,7 +6374,8 @@ void mage_spell_t::trigger_unstable_magic( action_state_t* s )
   if ( p() -> rng().roll( um_proc_rate ) )
   {
     p() -> action.unstable_magic_explosion -> set_target( s -> target );
-    p() -> action.unstable_magic_explosion -> base_dd_adder = s -> result_amount;
+    p() -> action.unstable_magic_explosion -> base_dd_min = s -> result_amount;
+    p() -> action.unstable_magic_explosion -> base_dd_max = s -> result_amount;
     p() -> action.unstable_magic_explosion -> execute();
   }
 }
@@ -6552,7 +6560,8 @@ struct icicle_event_t : public event_t
     new_s -> source = state.stats;
     new_s -> target = target;
 
-    mage -> icicle -> base_dd_adder = state.damage;
+    mage -> icicle -> base_dd_min = state.damage;
+    mage -> icicle -> base_dd_max = state.damage;
 
     // Immediately execute icicles so the correct damage is carried into the
     // travelling icicle object
@@ -6842,7 +6851,8 @@ void mage_t::trigger_touch_of_the_magi( buffs::touch_of_the_magi_t* buff )
 {
   assert( action.touch_of_the_magi_explosion );
   action.touch_of_the_magi_explosion -> set_target( buff -> player );
-  action.touch_of_the_magi_explosion -> base_dd_adder = buff -> accumulated_damage;
+  action.touch_of_the_magi_explosion -> base_dd_min = buff -> accumulated_damage;
+  action.touch_of_the_magi_explosion -> base_dd_max = buff -> accumulated_damage;
   action.touch_of_the_magi_explosion -> execute();
 }
 
@@ -7494,17 +7504,18 @@ void mage_t::init_procs()
     case MAGE_ARCANE:
       break;
     case MAGE_FROST:
-      procs.fingers_of_frost_wasted       = get_proc( "Fingers of Frost wasted due to Winter's Chill" );
-      procs.iv_extension_fingers_of_frost = get_proc( "Icy Veins extension from Fingers of Frost" );
-      procs.iv_extension_winters_chill    = get_proc( "Icy Veins extension from Winter's Chill" );
-      procs.iv_extension_other            = get_proc( "Icy Veins extension from other sources" );
+      procs.fingers_of_frost_wasted = get_proc( "Fingers of Frost wasted due to Winter's Chill" );
 
       sample_data.blizzard     = new cooldown_reduction_data_t( cooldowns.frozen_orb, "Blizzard" );
       sample_data.frozen_veins = new cooldown_reduction_data_t( cooldowns.icy_veins, "Frozen Veins" );
 
-      if ( sets -> has_set_bonus( MAGE_FROST, T20, B4 ) )
+      if ( talents.thermal_void -> ok() )
       {
-        sample_data.t20_4pc    = new cooldown_reduction_data_t( cooldowns.frozen_orb, "T20 4pc" );
+        procs.iv_extension_fingers_of_frost = get_proc( "Icy Veins extension from Fingers of Frost" );
+        procs.iv_extension_winters_chill    = get_proc( "Icy Veins extension from Winter's Chill" );
+        procs.iv_extension_other            = get_proc( "Icy Veins extension from other sources" );
+
+        sample_data.icy_veins_duration = new extended_sample_data_t( "Icy Veins duration", false );
       }
 
       if ( talents.glacial_spike -> ok() )
@@ -7513,9 +7524,9 @@ void mage_t::init_procs()
         sample_data.glacial_spike_icicles = get_sample_data( "Glacial Spike Icicle damage contribution" );
       }
 
-      if ( talents.thermal_void -> ok() )
+      if ( sets -> has_set_bonus( MAGE_FROST, T20, B4 ) )
       {
-        sample_data.icy_veins_duration = new extended_sample_data_t( "Icy Veins duration", false );
+        sample_data.t20_4pc = new cooldown_reduction_data_t( cooldowns.frozen_orb, "T20 4pc" );
       }
       break;
     case MAGE_FIRE:
@@ -8858,7 +8869,8 @@ void mage_t::trigger_icicle( const action_state_t* trigger_state, bool chain, pl
     new_state -> target = icicle_target;
     new_state -> source = d.stats;
 
-    icicle -> base_dd_adder = d.damage;
+    icicle -> base_dd_min = d.damage;
+    icicle -> base_dd_max = d.damage;
 
     // Immediately execute icicles so the correct damage is carried into the
     // travelling icicle object
