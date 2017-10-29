@@ -5101,8 +5101,8 @@ void priest_t::apl_shadow()
       "vampiric_touch,if=!talent.misery.enabled&dot.vampiric_touch.remains<"
       "(4+(4%3))*gcd" );
   main->add_action(
-      "void_eruption,if=talent.mindbender.enabled&cooldown.mindbender."
-	  "remains<(26+variable.haste_eval*1.5+gcd.max*4%3)" );
+      "void_eruption,if=(talent.mindbender.enabled&cooldown.mindbender."
+	  "remains<(26+variable.haste_eval*1.5+gcd.max*4%3))|!talent.mindbender.enabled" );
   main->add_action( "shadow_crash,if=talent.shadow_crash.enabled" );
   main->add_action(
       "shadow_word_death,if=(active_enemies<=4|(talent.reaper_of_souls.enabled"
