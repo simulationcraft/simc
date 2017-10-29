@@ -151,7 +151,6 @@ namespace item
 
   Forgefiend's Fabricator
   Seeping Scourgewing
-  Shadow-Singed Fang
   Gorshalach's Legacy
 
   Healer trinkets / other rubbish -----------
