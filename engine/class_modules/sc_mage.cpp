@@ -82,18 +82,11 @@ public:
   }
 };
 
-/// Icicle data, stored in an icicle container object. Contains a source stats object and the damage
-struct icicle_data_t
-{
-  double damage;
-  stats_t* stats;
-};
-
 /// Icicle container object, contains a timestamp and its corresponding icicle data!
 struct icicle_tuple_t
 {
   timespan_t timestamp;
-  icicle_data_t data;
+  double     damage;
 };
 
 struct mage_td_t : public actor_target_data_t
@@ -694,7 +687,7 @@ public:
   }
 
   // Public mage functions:
-  icicle_data_t get_icicle_object();
+  double get_icicle();
   void trigger_icicle( const action_state_t* trigger_state, bool chain = false, player_t* chain_target = nullptr );
   void trigger_touch_of_the_magi( buffs::touch_of_the_magi_t* touch_of_the_magi_buff );
   void trigger_t19_oh();
@@ -2190,7 +2183,7 @@ struct frost_mage_spell_t : public mage_spell_t
     }
   }
 
-  void trigger_icicle_gain( action_state_t* state, stats_t* stats )
+  void trigger_icicle_gain( action_state_t* state )
   {
     if ( ! p() -> spec.icicles -> ok() )
       return;
@@ -2227,8 +2220,7 @@ struct frost_mage_spell_t : public mage_spell_t
       p() -> trigger_icicle( state );
     }
 
-    icicle_tuple_t tuple{ p() -> sim -> current_time(),
-                          icicle_data_t{ amount, stats } };
+    icicle_tuple_t tuple{ p() -> sim -> current_time(), amount };
     p() -> icicles.push_back( tuple );
 
     if ( p() -> sim -> debug )
@@ -2306,28 +2298,6 @@ struct frost_mage_spell_t : public mage_spell_t
 
 // Icicles ==================================================================
 
-struct icicle_state_t : public mage_spell_state_t
-{
-  stats_t* source;
-
-  icicle_state_t( action_t* action, player_t* target ) :
-    mage_spell_state_t( action, target ), source( nullptr )
-  { }
-
-  virtual void initialize() override
-  { mage_spell_state_t::initialize(); source = nullptr; }
-
-  virtual std::ostringstream& debug_str( std::ostringstream& s ) override
-  { mage_spell_state_t::debug_str( s ) << " source=" << ( source ? source -> name_str : "unknown" ); return s; }
-
-  virtual void copy_state( const action_state_t* other ) override
-  {
-    mage_spell_state_t::copy_state( other );
-
-    source = debug_cast<const icicle_state_t*>( other ) -> source;
-  }
-};
-
 struct icicle_t : public frost_mage_spell_t
 {
   icicle_t( mage_t* p ) :
@@ -2343,34 +2313,6 @@ struct icicle_t : public frost_mage_spell_t
                                -> effectN( 2 ).percent();
     }
   }
-
-  // To correctly record damage and execute information to the correct source
-  // action, we set the stats object of the icicle cast to the source stats object,
-  // carried from trigger_icicle() to here through the execute_event_t.
-  virtual void execute() override
-  {
-    const icicle_state_t* is = debug_cast<const icicle_state_t*>( pre_execute_state );
-    assert( is -> source );
-    stats = is -> source;
-
-    frost_mage_spell_t::execute();
-  }
-
-  // And again, once the icicle impacts, we set the stats object here again
-  // because multiple icicles can be executing, causing the state object to be
-  // set to another object between the execution of this specific icicle, and
-  // the impact.
-  virtual void impact( action_state_t* state ) override
-  {
-    const icicle_state_t* is = debug_cast<const icicle_state_t*>( state );
-    assert( is -> source );
-    stats = is -> source;
-
-    frost_mage_spell_t::impact( state );
-  }
-
-  virtual action_state_t* new_state() override
-  { return new icicle_state_t( this, target ); }
 
   virtual void init() override
   {
@@ -4279,25 +4221,16 @@ struct frost_bomb_t : public frost_mage_spell_t
 
 struct frostbolt_t : public frost_mage_spell_t
 {
-  // Icicle stats variable to parent icicle damage to Frostbolt, instead of
-  // clumping Icicle damage together in reports.
-  stats_t* icicle;
-
   int water_jet_fof_source_id;
 
   frostbolt_t( mage_t* p, const std::string& options_str ) :
-    frost_mage_spell_t( "frostbolt", p,
-                        p -> find_specialization_spell( "Frostbolt" ) ),
-    icicle( p -> get_stats( "icicle" ) )
+    frost_mage_spell_t( "frostbolt", p, p -> find_specialization_spell( "Frostbolt" ) )
   {
     parse_options( options_str );
     parse_effect_data( p -> find_spell( 228597 ) -> effectN( 1 ) );
     if ( p -> spec.icicles -> ok() )
     {
-      stats -> add_child( icicle );
-      icicle -> school = school;
-      assert( p -> icicle );
-      icicle -> action_list.push_back( p -> icicle );
+      add_child( p -> icicle );
     }
     if ( p -> action.unstable_magic_explosion )
     {
@@ -4349,7 +4282,7 @@ struct frostbolt_t : public frost_mage_spell_t
     if ( ! result_is_hit( s -> result ) )
       return;
 
-    trigger_icicle_gain( s, icicle );
+    trigger_icicle_gain( s );
 
     if ( p() -> pets.water_elemental && ! p() -> pets.water_elemental -> is_sleeping() )
     {
@@ -4363,7 +4296,7 @@ struct frostbolt_t : public frost_mage_spell_t
     //TODO: Fix hardcode once spelldata has value for proc rate.
     if ( p() -> artifact.ice_nine.rank() && rng().roll( 0.15 ) )
     {
-      trigger_icicle_gain( s, icicle );
+      trigger_icicle_gain( s );
       p() -> buffs.icicles -> trigger();
     }
 
@@ -4661,8 +4594,7 @@ struct glacial_spike_t : public frost_mage_spell_t
 
     for ( int i = 0; i < icicle_count; i++ )
     {
-      icicle_data_t d = p() -> get_icicle_object();
-      icicle_damage += d.damage;
+      icicle_damage += p() -> get_icicle();
     }
 
     if ( sim -> debug )
@@ -6530,10 +6462,10 @@ struct icicle_event_t : public event_t
 {
   mage_t* mage;
   player_t* target;
-  icicle_data_t state;
+  double damage;
 
-  icicle_event_t( mage_t& m, const icicle_data_t& s, player_t* t, bool first = false ) :
-    event_t( m ), mage( &m ), target( t ), state( s )
+  icicle_event_t( mage_t& m, double d, player_t* t, bool first = false ) :
+    event_t( m ), mage( &m ), target( t ), damage( d )
   {
     double cast_time = first ? 0.25 : ( 0.4 * mage -> cache.spell_speed() );
 
@@ -6555,28 +6487,19 @@ struct icicle_event_t : public event_t
     }
 
     mage -> icicle -> set_target( target );
-    auto new_s = debug_cast<actions::icicle_state_t*>( mage -> icicle -> get_state() );
-    mage -> icicle -> snapshot_state( new_s, mage -> icicle -> amount_type( new_s ) );
-    new_s -> source = state.stats;
-    new_s -> target = target;
-
-    mage -> icicle -> base_dd_min = state.damage;
-    mage -> icicle -> base_dd_max = state.damage;
-
-    // Immediately execute icicles so the correct damage is carried into the
-    // travelling icicle object
-    mage -> icicle -> pre_execute_state = new_s;
+    mage -> icicle -> base_dd_min = damage;
+    mage -> icicle -> base_dd_max = damage;
     mage -> icicle -> execute();
 
     mage -> buffs.icicles -> decrement();
 
-    icicle_data_t new_state = mage -> get_icicle_object();
-    if ( new_state.damage > 0 )
+    double new_damage = mage -> get_icicle();
+    if ( new_damage > 0 )
     {
-      mage -> icicle_event = make_event<icicle_event_t>( sim(), *mage, new_state, target );
+      mage -> icicle_event = make_event<icicle_event_t>( sim(), *mage, new_damage, target );
       if ( mage -> sim -> debug )
         mage -> sim -> out_debug.printf( "%s icicle use on %s (chained), damage=%f, total=%u",
-                               mage -> name(), target -> name(), new_state.damage, as<unsigned>( mage -> icicles.size() ) );
+                               mage -> name(), target -> name(), new_damage, as<unsigned>( mage -> icicles.size() ) );
     }
     else
       mage -> icicle_event = nullptr;
@@ -8789,13 +8712,13 @@ stat_e mage_t::convert_hybrid_stat( stat_e s ) const
   }
 }
 
-// mage_t::get_icicle_object ==================================================
+// mage_t::get_icicle =======================================================
 
-icicle_data_t mage_t::get_icicle_object()
+double mage_t::get_icicle()
 {
   if ( icicles.empty() )
   {
-    return icicle_data_t{ 0.0, nullptr };
+    return 0.0;
   }
 
   timespan_t threshold = spec.icicles_driver -> duration();
@@ -8812,14 +8735,14 @@ icicle_data_t mage_t::get_icicle_object()
     icicles.erase( icicles.begin(), idx );
   }
 
-  if ( !icicles.empty() )
+  if ( ! icicles.empty() )
   {
-    icicle_data_t d = icicles.front().data;
+    double d = icicles.front().damage;
     icicles.erase( icicles.begin() );
     return d;
   }
 
-  return icicle_data_t{ 0.0, nullptr };
+  return 0.0;
 }
 
 void mage_t::trigger_icicle( const action_state_t* trigger_state, bool chain, player_t* chain_target )
@@ -8842,8 +8765,8 @@ void mage_t::trigger_icicle( const action_state_t* trigger_state, bool chain, pl
 
   if ( chain && ! icicle_event )
   {
-    icicle_data_t d = get_icicle_object();
-    if ( d.damage == 0.0 )
+    double d = get_icicle();
+    if ( d == 0.0 )
       return;
 
     assert( icicle_target );
@@ -8853,35 +8776,26 @@ void mage_t::trigger_icicle( const action_state_t* trigger_state, bool chain, pl
     {
       sim -> out_debug.printf( "%s icicle use on %s%s, damage=%f, total=%u",
                                name(), icicle_target -> name(),
-                               chain ? " (chained)" : "", d.damage,
+                               chain ? " (chained)" : "", d,
                                as<unsigned>( icicles.size() ) );
     }
   }
   else if ( ! chain )
   {
-    icicle_data_t d = get_icicle_object();
-    if ( d.damage == 0 )
+    double d = get_icicle();
+    if ( d == 0 )
       return;
 
     icicle -> set_target( icicle_target );
-    auto new_state = debug_cast<actions::icicle_state_t*>( icicle -> get_state() );
-    icicle -> snapshot_state( new_state, icicle -> amount_type( new_state ) );
-    new_state -> target = icicle_target;
-    new_state -> source = d.stats;
-
-    icicle -> base_dd_min = d.damage;
-    icicle -> base_dd_max = d.damage;
-
-    // Immediately execute icicles so the correct damage is carried into the
-    // travelling icicle object
-    icicle -> pre_execute_state = new_state;
+    icicle -> base_dd_min = d;
+    icicle -> base_dd_max = d;
     icicle -> execute();
 
     if ( sim -> debug )
     {
       sim -> out_debug.printf( "%s icicle use on %s%s, damage=%f, total=%u",
                                name(), icicle_target -> name(),
-                               chain ? " (chained)" : "", d.damage,
+                               chain ? " (chained)" : "", d,
                                as<unsigned>( icicles.size() ) );
     }
   }
