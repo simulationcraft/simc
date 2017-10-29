@@ -8,7 +8,7 @@
 // - Does Festering Wound (generation|consumption) require a positive hit result?
 // - Skelebro has an aoe spell (Arrow Spray), but the AI using it is very inconsistent
 // Blood
-// - Fix APL
+// - Bloodworms
 // - Support some legendaries :
 //    Implement rattlegore's RP cap increase
 // - Heart Strike looks like it deals slightly too much damage
@@ -549,6 +549,7 @@ public:
     gain_t* t19_4pc_frost;
     gain_t* start_of_combat_overflow;
     gain_t* shackles_of_bryndaor;
+    gain_t* heartbreaker;
   } gains;
 
   // Specialization
@@ -5486,9 +5487,6 @@ struct heart_strike_t : public death_knight_melee_attack_t
     death_knight_melee_attack_t( "heart_strike", p, p -> spec.heart_strike )
   {
     parse_options( options_str );
-
-    energize_type = ENERGIZE_PER_HIT;
-    energize_amount += p -> talent.heartbreaker -> effectN( 1 ).base_value();
     base_multiplier    *= 1.0 + p -> artifact.veinrender.percent();
 
     weapon = &( p -> main_hand_weapon );
@@ -5496,6 +5494,17 @@ struct heart_strike_t : public death_knight_melee_attack_t
 
   int n_targets() const override
   { return p() -> in_death_and_decay() ? 5 : 2; }
+
+  void impact ( action_state_t* state ) override
+  {
+    death_knight_melee_attack_t::impact( state );
+    
+    if ( p() -> talent.heartbreaker -> ok() && result_is_hit( state -> result ) )
+    {
+      p() -> resource_gain( RESOURCE_RUNIC_POWER, p() -> find_spell( 210738 ) -> effectN( 1 ).resource( RESOURCE_RUNIC_POWER ),
+      p() -> gains.heartbreaker, this );
+    }
+  }
 
   void execute() override
   {
@@ -8118,7 +8127,8 @@ void death_knight_t::default_apl_blood()
 
   // Cooldowns
   def -> add_action( "potion,if=buff.dancing_rune_weapon.up" );
-  def -> add_action( this, "Dancing Rune Weapon", "if=!cooldown.blooddrinker.ready&!cooldown.death_and_decay.ready" );
+  def -> add_action( this, "Dancing Rune Weapon", "if=(!talent.blooddrinker.enabled|!cooldown.blooddrinker.ready)&!cooldown.death_and_decay.ready" );
+  def -> add_action( this, "Vampiric Blood" );
   def -> add_action( "call_action_list,name=standard" );
 
   // Single Target Rotation
@@ -8311,7 +8321,7 @@ void death_knight_t::default_apl_frost()
   
   // Tier 100 cooldowns + Cold Heart
   cooldowns -> add_talent( this, "Breath of Sindragosa", "if=buff.pillar_of_frost.up" );
-  cooldowns -> add_action( "call_action_list,name=cold_heart,if=equipped.cold_heart&((buff.cold_heart.stack>=10&!buff.obliteration.up)|target.time_to_die<=gcd)" );
+  cooldowns -> add_action( "call_action_list,name=cold_heart,if=equipped.cold_heart&((buff.cold_heart.stack>=10&!buff.obliteration.up&debuff.razorice.stack>=3)|target.time_to_die<=gcd)" );
   cooldowns -> add_talent( this, "Obliteration", "if=rune>=1&runic_power>=20&(!talent.frozen_pulse.enabled|rune<2|buff.pillar_of_frost.remains<=12)&(!talent.gathering_storm.enabled|!cooldown.remorseless_winter.ready)&(buff.pillar_of_frost.up|!talent.icecap.enabled)" );
   cooldowns -> add_talent( this, "Hungering Rune Weapon", "if=!buff.hungering_rune_weapon.up&rune.time_to_2>gcd&runic_power<40" );
 
@@ -8721,6 +8731,7 @@ void death_knight_t::init_gains()
   gains.t19_4pc_frost                    = get_gain( "Tier19 Frost 4PC"           );
   gains.start_of_combat_overflow         = get_gain( "Start of Combat Overflow"   );
   gains.shackles_of_bryndaor             = get_gain( "Shackles of Bryndaor"       );
+  gains.heartbreaker                     = get_gain( "Heartbreaker"               );
 }
 
 // death_knight_t::init_procs ===============================================

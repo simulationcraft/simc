@@ -6,7 +6,7 @@ role=attack
 position=ranged_back
 talents=2202012
 artifact=56:0:0:0:0:868:4:869:4:870:4:871:4:872:4:873:4:874:4:875:4:876:1:877:1:878:1:879:1:880:1:881:1:882:1:1095:4:1336:1:1368:1:1517:4:1518:1:1519:1:1520:24:1636:1
-crucible=1739:3:1780:3:875:2:870:1
+crucible=1739:3:1780:3:875:1:870:2
 
 # Default consumables
 potion=prolonged_power
@@ -43,9 +43,9 @@ actions+=/stampede,if=buff.bloodlust.up|buff.bestial_wrath.up|cooldown.bestial_w
 actions+=/bestial_wrath,if=!buff.bestial_wrath.up
 # With both AotW cdr sources and OwtP, there's no visible benefit if it's delayed, use it on cd. With only one or neither, pair it with Bestial Wrath. Also use it if the fight will end when the buff does.
 actions+=/aspect_of_the_wild,if=(equipped.call_of_the_wild&equipped.convergence_of_fates&talent.one_with_the_pack.enabled)|buff.bestial_wrath.remains>7|target.time_to_die<12
-actions+=/kill_command,target_if=min:bestial_ferocity.remains,if=equipped.qapla_eredun_war_order
-# Hold charges of Dire Beast as long as possible to take advantage of T20 2pc unless T19 2pc is on. With Qa'pla, also try not to waste Kill Command cdr if it is just about to come off cooldown.
-actions+=/dire_beast,if=((!equipped.qapla_eredun_war_order|cooldown.kill_command.remains>=1)&(set_bonus.tier19_2pc|!buff.bestial_wrath.up))|full_recharge_time<gcd.max|cooldown.titans_thunder.up|spell_targets>1
+actions+=/kill_command,target_if=min:bestial_ferocity.remains,if=equipped.qapla_eredun_war_order|talent.aspect_of_the_beast.enabled
+# With Qa'pla, try not to waste Kill Command cdr if it is just about to come off cooldown.
+actions+=/dire_beast,if=(!equipped.qapla_eredun_war_order|cooldown.kill_command.remains>=1)|full_recharge_time<gcd.max|cooldown.titans_thunder.up|spell_targets>1
 actions+=/dire_frenzy,if=(pet.cat.buff.dire_frenzy.remains<=gcd.max*1.2)|full_recharge_time<gcd.max|target.time_to_die<9
 actions+=/barrage,if=spell_targets.barrage>1
 actions+=/titans_thunder,if=(talent.dire_frenzy.enabled&(buff.bestial_wrath.up|cooldown.bestial_wrath.remains>35))|buff.bestial_wrath.up
@@ -73,13 +73,13 @@ trinket2=electrostatic_lasso,id=151967,bonus_id=3612/1502
 main_hand=titanstrike,id=128861,bonus_id=726,gem_id=152059/152026/152293,relic_id=//,relic_ilevel=960/960/960
 
 # Gear Summary
-# gear_ilvl=958.00
-# gear_agility=34093
+# gear_ilvl=956.00
+# gear_agility=33213
 # gear_stamina=56793
-# gear_crit_rating=8702
-# gear_haste_rating=8937
-# gear_mastery_rating=14320
-# gear_versatility_rating=1162
+# gear_crit_rating=9931
+# gear_haste_rating=7851
+# gear_mastery_rating=10282
+# gear_versatility_rating=5057
 # gear_armor=3442
 # set_bonus=tier20_2pc=1
 # set_bonus=tier20_4pc=1

@@ -798,8 +798,8 @@ void print_text_performance( FILE* file, sim_t* sim )
       sim->target->resources.base[ RESOURCE_HEALTH ],
       sim->iterations * sim->simulation_length.mean(), sim->elapsed_cpu,
       sim->elapsed_time,
-      sim->merge_time,
       sim->init_time,
+      sim->merge_time,
       sim->analyze_time,
       sim->iterations * sim->simulation_length.mean() / sim->elapsed_cpu,
       date_str, static_cast<double>( cur_time ) );
