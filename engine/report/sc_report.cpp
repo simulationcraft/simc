@@ -442,7 +442,7 @@ bool report::check_gear_ilevel( player_t& p, sim_t& sim )
   {
     legendary_items_allowed      = 2;
     max_ilevel_allowed           = 970;
-    max_weapon_ilevel_allowed    = 990;
+    max_weapon_ilevel_allowed    = 999;
     tier_name                    = "T21M";
   }
   else
