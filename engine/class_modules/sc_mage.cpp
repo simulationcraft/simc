@@ -8880,15 +8880,13 @@ class mage_report_t : public player_report_extension_t
 public:
   mage_report_t( mage_t& player ) :
       p( player )
-  {
-
-  }
+  { }
 
   void html_customsection_icy_veins( report::sc_html_stream& os )
   {
-    os << "<div class=\"player-section custom_section\">"
-       << "<h3 class=\"toggle open\">Icy Veins</h3>"
-       << "<div class=\"toggle-content\">";
+    os << "<div class=\"player-section custom_section\">\n"
+       << "<h3 class=\"toggle open\">Icy Veins</h3>\n"
+       << "<div class=\"toggle-content\">\n";
 
     int num_buckets = as<int>( p.sample_data.icy_veins_duration -> max() - p.sample_data.icy_veins_duration -> min() ) + 1;
 
@@ -8906,12 +8904,15 @@ public:
       p.sim -> add_chart_data( chart );
     }
 
-    os << "</div>"
-       << "</div>";
+    os << "</div>\n"
+       << "</div>\n";
   }
 
   virtual void html_customsection( report::sc_html_stream& os ) override
   {
+    if ( p.sim -> report_details == 0 )
+      return;
+
     if ( p.talents.thermal_void -> ok() )
       html_customsection_icy_veins( os );
   }
