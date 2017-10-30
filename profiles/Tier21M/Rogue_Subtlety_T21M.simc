@@ -6,7 +6,7 @@ role=attack
 position=back
 talents=2310012
 artifact=17:0:0:0:0:851:1:852:4:853:4:854:4:855:4:856:4:857:4:858:4:859:4:860:4:861:1:862:1:863:1:864:1:865:1:866:1:1349:1:1386:1:1585:4:1586:1:1587:1:1588:24:1653:1
-crucible=1739:1780:857/1739:1780:857/1739:1780:857
+crucible=1739:1780:854/1739:1780:858/1739:1780:854
 
 # Default consumables
 potion=prolonged_power
@@ -101,29 +101,31 @@ actions.stealthed+=/shuriken_storm,if=buff.shadowmeld.down&((combo_points.defici
 actions.stealthed+=/call_action_list,name=finish,if=combo_points>=5+(talent.deeper_stratagem.enabled&buff.vanish.up)&combo_points.deficit<3+buff.shadow_blades.up-equipped.mantle_of_the_master_assassin
 actions.stealthed+=/shadowstrike
 
-head=general_erodus_tricorne,id=151985,bonus_id=3612/1502
-neck=collar_of_nullflame,id=151973,bonus_id=3612/1502,enchant=mark_of_the_trained_soldier
-shoulders=shoulderpads_of_the_demonic_blitz,id=151988,bonus_id=3612/1502
-back=cloak_of_the_burning_vanguard,id=151937,bonus_id=3612/1502,enchant=binding_of_agility
-chest=vest_of_waning_life,id=151982,bonus_id=3612/1502
+head=cavalier_hat_of_the_dashing_scoundrel,id=152163,bonus_id=3612/1502
+neck=vulcanarcore_pendant,id=151965,bonus_id=3612/1502,enchant=mark_of_the_trained_soldier
+shoulders=mantle_of_the_master_assassin,id=144236,bonus_id=3630
+back=cloak_of_the_dashing_scoundrel,id=152161,bonus_id=3612/1502,enchant=binding_of_agility
+chest=vest_of_the_dashing_scoundrel,id=152160,bonus_id=3612/1502
 wrists=fiendish_logisticians_wristwraps,id=151992,bonus_id=3612/1502
-hands=lurid_grips_of_the_obscene,id=151984,bonus_id=3612/1502
+hands=the_first_of_the_dead,id=151818,bonus_id=3630
 waist=portal_keepers_cincture,id=151990,bonus_id=3612/1502
-legs=caustic_titanspite_legguards,id=152282,bonus_id=3612/1502
-feet=lifebearing_footpads,id=151981,bonus_id=3612/1502
-finger1=band_of_the_sargerite_smith,id=152064,bonus_id=3612/1502,enchant=binding_of_mastery
-finger2=sullied_seal_of_the_pantheon,id=151972,bonus_id=3612/1502,enchant=binding_of_mastery
+legs=pants_of_the_dashing_scoundrel,id=152164,bonus_id=3612/1502
+feet=vicious_flamepaws,id=151983,bonus_id=3612/1502
+finger1=band_of_the_sargerite_smith,id=152064,bonus_id=3612/1502,enchant=binding_of_versatility
+finger2=sullied_seal_of_the_pantheon,id=151972,bonus_id=3612/1502,enchant=binding_of_versatility
 trinket1=shadowsinged_fang,id=151968,bonus_id=3612/1502
 trinket2=golganneths_vitality,id=154174,ilevel=1000
 main_hand=fangs_of_the_devourer,id=128476,bonus_id=743,gem_id=155848/152055/155848,relic_id=3612:1512/3612:1502/3612:1512
-off_hand=fangs_of_the_devourer,id=128479,gem_id=0/0/0/0
+off_hand=fangs_of_the_devourer,id=128479
 
 # Gear Summary
-# gear_ilvl=968.25
-# gear_agility=37402
-# gear_stamina=57869
-# gear_crit_rating=10041
-# gear_haste_rating=540
-# gear_mastery_rating=14552
-# gear_versatility_rating=5628
-# gear_armor=2936
+# gear_ilvl=972.63
+# gear_agility=39603
+# gear_stamina=61170
+# gear_crit_rating=10270
+# gear_haste_rating=1054
+# gear_mastery_rating=12377
+# gear_versatility_rating=7483
+# gear_armor=3013
+# set_bonus=tier21_2pc=1
+# set_bonus=tier21_4pc=1

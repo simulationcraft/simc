@@ -7,7 +7,7 @@ role=attack
 position=back
 talents=3310022
 artifact=44:0:0:0:0:1052:1:1053:1:1054:1:1055:1:1056:1:1057:1:1058:1:1059:4:1060:4:1061:4:1062:4:1063:4:1064:4:1065:4:1066:4:1067:4:1348:1:1385:1:1581:4:1582:1:1583:1:1584:24:1652:1
-crucible=1739:1780:1064/1739:1780:1064/1739:1780:1067
+crucible=1739:1780:1064/1739:1780:1067/1739:1780:1067
 
 # Default consumables
 potion=prolonged_power
@@ -88,29 +88,32 @@ actions.stealth+=/ambush,if=variable.ambush_condition
 actions.stealth+=/vanish,if=(variable.ambush_condition|equipped.mantle_of_the_master_assassin&!variable.rtb_reroll&!variable.ss_useable)&mantle_duration=0
 actions.stealth+=/shadowmeld,if=variable.ambush_condition
 
-head=general_erodus_tricorne,id=151985,bonus_id=3612/1502
-neck=collar_of_nullflame,id=151973,bonus_id=3612/1502,enchant=mark_of_the_trained_soldier
-shoulders=shoulderpads_of_the_demonic_blitz,id=151988,bonus_id=3612/1502
-back=cloak_of_the_burning_vanguard,id=151937,bonus_id=3612/1502,enchant=binding_of_agility
-chest=vest_of_waning_life,id=151982,bonus_id=3612/1502
-wrists=fiendish_logisticians_wristwraps,id=151992,bonus_id=3612/1502
-hands=lurid_grips_of_the_obscene,id=151984,bonus_id=3612/1502
-waist=portal_keepers_cincture,id=151990,bonus_id=3612/1502
-legs=caustic_titanspite_legguards,id=152282,bonus_id=3612/1502
-feet=lifebearing_footpads,id=151981,bonus_id=3612/1502
-finger1=band_of_the_sargerite_smith,id=152064,bonus_id=3612/1502,enchant=binding_of_versatility
-finger2=sullied_seal_of_the_pantheon,id=151972,bonus_id=3612/1502,enchant=binding_of_versatility
+head=fanged_slayers_helm,id=147172,bonus_id=1512/3563
+neck=chain_of_the_unmaker,id=152283,bonus_id=3612/1502,enchant=mark_of_the_hidden_satyr
+shoulders=shoulderpads_of_the_dashing_scoundrel,id=152165,bonus_id=3612/1502
+back=cloak_of_the_dashing_scoundrel,id=152161,bonus_id=3612/1502,enchant=binding_of_agility
+chest=vest_of_the_dashing_scoundrel,id=152160,bonus_id=3612/1502
+wrists=greenskins_waterlogged_wristcuffs,id=137099,bonus_id=3630
+hands=gloves_of_the_dashing_scoundrel,id=152162,bonus_id=3612/1502
+waist=belt_of_fractured_sanity,id=151991,bonus_id=3612/1502
+legs=fanged_slayers_legguards,id=147173,bonus_id=1512/3563
+feet=depraved_machinists_footpads,id=152412,bonus_id=3612/1502
+finger1=insignia_of_ravenholdt,id=137049,bonus_id=3630,gems=200crit,enchant=binding_of_critical_strike
+finger2=seal_of_the_portalmaster,id=152063,bonus_id=3612/1502,enchant=binding_of_critical_strike
 trinket1=shadowsinged_fang,id=151968,bonus_id=3612/1502
 trinket2=golganneths_vitality,id=154174,ilevel=1000
 main_hand=the_dreadblades,id=128872,bonus_id=742,gem_id=152028/155855/155853,relic_id=3612:1502/3612:1512/3612:1512
 off_hand=the_dreadblades,id=134552
 
 # Gear Summary
-# gear_ilvl=968.25
-# gear_agility=37402
-# gear_stamina=57869
-# gear_crit_rating=10041
-# gear_haste_rating=540
-# gear_mastery_rating=14152
-# gear_versatility_rating=6028
-# gear_armor=2936
+# gear_ilvl=968.88
+# gear_agility=36145
+# gear_stamina=57428
+# gear_crit_rating=10792
+# gear_haste_rating=9736
+# gear_mastery_rating=4506
+# gear_versatility_rating=6157
+# gear_armor=2874
+# set_bonus=tier20_2pc=1
+# set_bonus=tier21_2pc=1
+# set_bonus=tier21_4pc=1

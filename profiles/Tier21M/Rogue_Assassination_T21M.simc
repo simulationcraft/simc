@@ -4,7 +4,7 @@ level=110
 race=pandaren
 role=attack
 position=back
-talents=1210111
+talents=1230111
 artifact=43:0:0:0:0:323:4:324:4:325:4:326:4:327:4:328:4:329:4:330:4:331:4:332:1:333:1:334:1:335:1:337:1:346:1:347:1:1276:1:1384:1:1577:4:1578:1:1579:1:1580:24:1651:1
 crucible=1739:1780:330/1739:1780:325/1739:1780:325
 
@@ -87,15 +87,15 @@ actions.maintain+=/pool_resource,for_next=1
 actions.maintain+=/garrote,cycle_targets=1,if=(!talent.subterfuge.enabled|!(cooldown.vanish.up&cooldown.vendetta.remains<=4))&combo_points.deficit>=1&refreshable&(pmultiplier<=1|remains<=tick_time)&(!exsanguinated|remains<=tick_time*2)&target.time_to_die-remains>4
 actions.maintain+=/garrote,if=set_bonus.tier20_4pc&talent.exsanguinate.enabled&prev_gcd.1.rupture&cooldown.exsanguinate.remains<1&(!cooldown.vanish.up|time>12)
 
-head=general_erodus_tricorne,id=151985,bonus_id=3612/1502
+head=cavalier_hat_of_the_dashing_scoundrel,id=152163,bonus_id=3612/1502
 neck=collar_of_nullflame,id=151973,bonus_id=3612/1502,enchant=mark_of_the_trained_soldier
-shoulders=shoulderpads_of_the_demonic_blitz,id=151988,bonus_id=3612/1502
-back=cloak_of_the_burning_vanguard,id=151937,bonus_id=3612/1502,enchant=binding_of_agility
-chest=vest_of_waning_life,id=151982,bonus_id=3612/1502
-wrists=fiendish_logisticians_wristwraps,id=151992,bonus_id=3612/1502
+shoulders=mantle_of_the_master_assassin,id=144236,bonus_id=3630
+back=cloak_of_the_dashing_scoundrel,id=152161,bonus_id=3612/1502,enchant=binding_of_agility
+chest=vest_of_the_dashing_scoundrel,id=152160,bonus_id=3612/1502
+wrists=zoldyck_family_training_shackles,id=137098,bonus_id=3630
 hands=lurid_grips_of_the_obscene,id=151984,bonus_id=3612/1502
 waist=portal_keepers_cincture,id=151990,bonus_id=3612/1502
-legs=caustic_titanspite_legguards,id=152282,bonus_id=3612/1502
+legs=pants_of_the_dashing_scoundrel,id=152164,bonus_id=3612/1502
 feet=lifebearing_footpads,id=151981,bonus_id=3612/1502
 finger1=band_of_the_sargerite_smith,id=152064,bonus_id=3612/1502,enchant=binding_of_mastery
 finger2=sullied_seal_of_the_pantheon,id=151972,bonus_id=3612/1502,enchant=binding_of_mastery
@@ -105,11 +105,13 @@ main_hand=the_kingslayers,id=128870,bonus_id=741,gem_id=152055/152293/152092,rel
 off_hand=the_kingslayers,id=128869
 
 # Gear Summary
-# gear_ilvl=967.50
-# gear_agility=37154
-# gear_stamina=57497
-# gear_crit_rating=10019
-# gear_haste_rating=540
-# gear_mastery_rating=14530
-# gear_versatility_rating=5628
-# gear_armor=2936
+# gear_ilvl=971.88
+# gear_agility=39033
+# gear_stamina=60315
+# gear_crit_rating=8432
+# gear_haste_rating=900
+# gear_mastery_rating=15811
+# gear_versatility_rating=5935
+# gear_armor=2999
+# set_bonus=tier21_2pc=1
+# set_bonus=tier21_4pc=1
