@@ -1340,6 +1340,7 @@ sim_t::sim_t( sim_t* p, int index ) :
   current_mean( 0 ),
   analyze_error_interval( 100 ),
   analyze_number( 0 ),
+  cleanup_threads( false ),
   control( nullptr ),
   parent( p ),
   initialized( false ),
@@ -1474,7 +1475,7 @@ sim_t::sim_t( sim_t* p, int index ) :
 
 sim_t::~sim_t()
 {
-  assert( relatives.empty() );
+  assert( ( requires_cleanup() && relatives.empty() ) || ! requires_cleanup() );
   if( parent )
     parent -> remove_relative( this );
 }
@@ -2753,7 +2754,10 @@ void sim_t::merge()
     {
       child -> join();
       children[ i ] = nullptr;
-      delete child;
+      if ( requires_cleanup() )
+      {
+        delete child;
+      }
     }
   }
 
@@ -3088,6 +3092,7 @@ void sim_t::create_options()
 {
   // General
   add_option( opt_int( "iterations", iterations ) );
+  add_option( opt_bool( "cleanup_threads", cleanup_threads ) );
   add_option( opt_float( "target_error", target_error ) );
   add_option( opt_int( "analyze_error_interval", analyze_error_interval ) );
   add_option( opt_func( "process_priority", parse_process_priority ) );
@@ -3846,4 +3851,29 @@ bool sim_t::has_raid_event( const std::string& name ) const
   } );
 
   return it != raid_events.end();
+}
+
+// Determine when the main thread must clean up child threads (i.e., delete them)
+bool sim_t::requires_cleanup() const
+{
+  // .. if we are a profileset simulation
+  if ( profileset_enabled )
+  {
+    return true;
+  }
+
+  // .. if we are simulating a scale factor calculation
+  if ( scaling -> scale_stat != STAT_NONE )
+  {
+    return true;
+  }
+
+  // .. if we are simulating a reforge plot
+  if ( ! reforge_plot -> reforge_plot_stat_str.empty() )
+  {
+    return true;
+  }
+
+  // .. or finally, clean up child threads based on the "cleanup_threads" option value
+  return cleanup_threads;
 }
