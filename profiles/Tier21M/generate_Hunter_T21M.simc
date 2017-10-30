@@ -46,9 +46,9 @@ wrists=scalding_shatterguards,id=152280,bonus_id=3612/1502
 hands=serpentstalker_grips,id=152132,bonus_id=3612/1502
 waist=depraved_tacticians_waistguard,id=152006,bonus_id=3612/1502
 legs=serpentstalker_legguards,id=152134,bonus_id=3612/1502
-feet=ullrs_feather_snowshoes,id=137033,bonus_id=3571,ilevel=1000
+feet=ullrs_feather_snowshoes,id=137033,bonus_id=3630
 finger1=sullied_seal_of_the_pantheon,id=151972,bonus_id=3612/1502,enchant=200mastery
-finger2=soul_of_the_huntmaster,id=151641,bonus_id=3571,ilevel=1000,gems=200mastery,enchant=200mastery
+finger2=soul_of_the_huntmaster,id=151641,bonus_id=3630,gems=200mastery,enchant=200mastery
 trinket1=tarnished_sentinel_medallion,id=147017,bonus_id=1512/3563
 trinket2=amanthuls_vision,id=154172,ilevel=1000
 main_hand=thasdorah_legacy_of_the_windrunners,id=128826,gem_id=155853/155847/152291,relic_id=3612:1512/3612:1512/3612:1502
