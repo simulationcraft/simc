@@ -7,11 +7,11 @@ spec=windwalker
 artifact=50:0:0:0:0:800:4:801:4:820:4:821:4:822:4:824:4:825:4:826:1:827:1:828:1:829:4:830:1:831:1:832:1:833:1:1094:4:1341:1:1376:1:1549:4:1550:1:1551:1:1552:24:1644:1
 crucible=1739:1780:820/1739:1780:825/1739:1780:820
 
-head=the_wind_blows,id=151811,ilevel=1000
+head=the_wind_blows,id=151811,bonus_id=3630 
 neck=collar_of_nullflame,id=151973,bonus_id=3612/1502,enchant=mark_of_the_hidden_satyr
 shoulders=meditation_spheres_of_chiji,id=152147,bonus_id=3612/1502
 back=cloak_of_chiji,id=152143,bonus_id=3612/1502,enchant=binding_of_agility
-chest=the_emperors_capacitor,id=144239,ilevel=1000
+chest=the_emperors_capacitor,id=144239,bonus_id=3630
 wrists=fiendish_logisticians_wristwraps,id=151992,bonus_id=3612/1502
 hands=grips_of_chiji,id=152144,bonus_id=3612/1502
 waist=belt_of_fractured_sanity,id=151991,bonus_id=3612/1502
@@ -19,7 +19,7 @@ legs=leggings_of_chiji,id=152146,bonus_id=3612/1502
 feet=vicious_flamepaws,id=151983,bonus_id=3612/1502
 finger1=sullied_seal_of_the_pantheon,id=151972,bonus_id=3612/1502,enchant=binding_of_mastery
 finger2=band_of_the_sargerite_smith,id=152064,bonus_id=3612/1502,enchant=binding_of_mastery
-trinket1=golganneths_vitality,id=154174,ilevel=1000
+trinket1=golganneths_vitality,id=154174,bonus_id=4213 
 trinket2=shadowsinged_fang,id=151968,bonus_id=3612/1502
 main_hand=fists_of_the_heavens,id=128940,bonus_id=734,gem_id=155853/152047/155853,relic_id=3612:1512/3612:1502/3612:1512
 off_hand=fists_of_the_heavens,id=133948
