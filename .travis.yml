@@ -66,4 +66,4 @@ script:
   - if [ "$TRAVIS_OS_NAME" == "linux" ]; then valgrind --show-reachable=yes --leak-check=summary ./engine/simc Raid_T19P.simc iterations=5 threads=1 output=/dev/null cleanup_threads=1; fi
   - if [ "$TRAVIS_OS_NAME" == "linux" ]; then valgrind --show-reachable=yes --leak-check=summary ./engine/simc Raid_T19P.simc iterations=5 threads=1 fight_style=HelterSkelter output=/dev/null cleanup_threads=1; fi
   - if [ "$TRAVIS_OS_NAME" == "linux" ]; then valgrind --show-reachable=yes --leak-check=summary ./engine/simc Raid_T19P.simc iterations=5 threads=1 fight_style=HecticAddCleave output=/dev/null cleanup_threads=1; fi
-  - if [ "$TRAVIS_OS_NAME" == "linux" ]; then valgrind --show-reachable=yes --leak-check=summary ./engine/simc Raid_T19P.simc iterations=5 threads=1 fight_style=BeastLord output=/dev/null cleanup_threads=; fi
+  - if [ "$TRAVIS_OS_NAME" == "linux" ]; then valgrind --show-reachable=yes --leak-check=summary ./engine/simc Raid_T19P.simc iterations=5 threads=1 fight_style=BeastLord output=/dev/null cleanup_threads=1; fi
