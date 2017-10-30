@@ -5102,7 +5102,8 @@ void priest_t::apl_shadow()
       "(4+(4%3))*gcd" );
   main->add_action(
       "void_eruption,if=(talent.mindbender.enabled&cooldown.mindbender."
-	  "remains<(26+variable.haste_eval*1.5+gcd.max*4%3))|!talent.mindbender.enabled" );
+	  "remains<(26+variable.haste_eval*1.5+gcd.max*4%3))|!talent.mindbender"
+	  ".enabled|set_bonus.tier20_4pc" );
   main->add_action( "shadow_crash,if=talent.shadow_crash.enabled" );
   main->add_action(
       "shadow_word_death,if=(active_enemies<=4|(talent.reaper_of_souls.enabled"
@@ -5251,8 +5252,9 @@ if ( race == RACE_BLOOD_ELF )
       "stacks."
       "value)+60))" );
   vf->add_action(
-      "mindbender,if=buff.insanity_drain_stacks.value>=(variable.cd_time+variable.haste_"
-	  "eval-(3*set_bonus.tier20_4pc*(raid_event.movement.in<15)*((active_enemies-(raid_event"
+      "mindbender,if=buff.insanity_drain_stacks.value>=(variable.cd_time+(variable.haste_"
+	  "eval*!set_bonus.tier20_4pc)-(3*set_bonus.tier20_4pc*(raid_event.movement.in<15)*"
+	  "((active_enemies-(raid_event"
 	  ".adds.count*(raid_event.adds.remains>0)))=1))+(5-3*set_bonus.tier20_4pc)*buff.bloodlust."
 	  "up+2*talent.fortress_of_the_mind.enabled*set_bonus.tier20_4pc)&(!talent.surrender_to_"
 	  "madness.enabled|(talent.surrender_to_madness.enabled&target.time_to_die>variable."
