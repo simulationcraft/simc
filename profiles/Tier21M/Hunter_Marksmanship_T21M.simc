@@ -6,7 +6,7 @@ role=attack
 position=ranged_back
 talents=1303013
 artifact=55:0:0:0:0:307:1:308:1:309:1:310:1:311:1:312:4:313:4:314:4:315:4:316:4:317:4:318:4:319:4:320:4:321:1:322:1:1337:1:1369:1:1521:4:1522:1:1523:1:1524:24:1637:1
-crucible=1739:3:1780:3:1521:1:319:2
+crucible=1739:1780:1521/1739:1780:1521/1739:1780:319
 
 # Default consumables
 potion=prolonged_power
@@ -112,32 +112,32 @@ actions.targetdie+=/marked_shot
 actions.targetdie+=/arcane_shot
 actions.targetdie+=/sidewinders
 
-head=wildstalker_helmet,id=147142,bonus_id=3524,ilevel=930
-neck=chain_of_the_unmaker,id=152283,bonus_id=3612/1502,enchant_id=5890
-shoulders=wildstalker_spaulders,id=147144,bonus_id=3524,ilevel=930
-back=wildstalker_cape,id=147140,bonus_id=3524,ilevel=930,enchant_id=5435
-chest=serpentstalker_tunic,id=152130,bonus_id=3612/1502
-wrists=realitysplitting_wristguards,id=152008,bonus_id=3612/1502
-hands=serpentstalker_grips,id=152132,bonus_id=3612/1502
-waist=depraved_tacticians_waistguard,id=152006,bonus_id=3612/1502
-legs=wildstalker_leggings,id=147143,bonus_id=3524,ilevel=930
-feet=ullrs_feather_snowshoes,id=137033,bonus_id=3571,ilevel=1000
-finger1=band_of_the_sargerite_smith,id=152064,bonus_id=3612/1502,enchant_id=5429
-finger2=soul_of_the_huntmaster,id=151641,bonus_id=3571,ilevel=1000,gem_id=130222,enchant_id=5429
-trinket1=tarnished_sentinel_medallion,id=147017,bonus_id=1512/3563
-trinket2=electrostatic_lasso,id=151967,bonus_id=3612/1502
-main_hand=thasdorah_legacy_of_the_windrunners,id=128826,bonus_id=727,gem_id=152060/152092/152291,relic_id=//,relic_ilevel=960/960/960
+head=wildstalker_helmet,id=147142,ilevel=930
+neck=chain_of_the_unmaker,id=152283,ilevel=970,enchant=mark_of_the_trained_soldier
+shoulders=serpentstalker_mantle,id=152135,ilevel=960
+back=wildstalker_cape,id=147140,ilevel=930,enchant=200agi
+chest=serpentstalker_tunic,id=152130,ilevel=960
+wrists=scalding_shatterguards,id=152280,ilevel=960
+hands=serpentstalker_grips,id=152132,ilevel=960
+waist=depraved_tacticians_waistguard,id=152006,ilevel=960
+legs=serpentstalker_legguards,id=152134,ilevel=960
+feet=ullrs_feather_snowshoes,id=137033,ilevel=1000
+finger1=loop_of_the_lifebinder,id=152688,ilevel=960,enchant=200mastery
+finger2=soul_of_the_huntmaster,id=151641,ilevel=1000,gems=200mastery,enchant=200mastery
+trinket1=tarnished_sentinel_medallion,id=147017,ilevel=930
+trinket2=amanthuls_vision,id=154172,ilevel=1000
+main_hand=thasdorah_legacy_of_the_windrunners,id=128826,gem_id=155853/152092/152291,relic_ilevel=970/960/960
 
 # Gear Summary
-# gear_ilvl=956.00
-# gear_agility=33213
-# gear_stamina=56793
-# gear_crit_rating=10654
-# gear_haste_rating=6878
-# gear_mastery_rating=11080
-# gear_versatility_rating=2818
-# gear_armor=3451
+# gear_ilvl=964.87
+# gear_agility=32246
+# gear_stamina=59435
+# gear_crit_rating=11782
+# gear_haste_rating=8846
+# gear_mastery_rating=14310
+# gear_versatility_rating=2671
+# gear_armor=3535
 # set_bonus=tier20_2pc=1
-# set_bonus=tier20_4pc=1
 # set_bonus=tier21_2pc=1
+# set_bonus=tier21_4pc=1
 summon_pet=cat
