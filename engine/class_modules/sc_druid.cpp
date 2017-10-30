@@ -4502,7 +4502,7 @@ struct healing_touch_t : public druid_heal_t
     target = sim -> target;
     base_multiplier = 0;
 
-    base_multiplier *= 1.0 + p -> artifact.attuned_to_nature.percent();
+    //base_multiplier *= 1.0 + p -> artifact.attuned_to_nature.percent();
   }
 
   virtual double cost() const override
@@ -4679,6 +4679,8 @@ struct regrowth_t: public druid_heal_t
   regrowth_t( druid_t* p, const std::string& options_str ):
     druid_heal_t( "regrowth", p, p -> find_class_spell( "Regrowth" ), options_str )
   {
+    form_mask = NO_FORM | MOONKIN_FORM;
+    may_autounshift = true;
     ignore_false_positive = true;
 
 
@@ -7781,6 +7783,8 @@ void druid_t::apl_feral()
    st->add_action("rake,if=buff.prowl.up|buff.shadowmeld.up");
    st->add_action("call_action_list,name=cooldowns");
    st->add_action("regrowth,if=combo_points=5&talent.bloodtalons.enabled&buff.bloodtalons.down&(!buff.incarnation.up|dot.rip.remains<8|dot.rake.remains<5)");
+   st->add_action("regrowth,if=talent.bloodtalons.enabled&buff.bloodtalons.down&buff.apex_predator.up");
+   st->add_action("ferocious_bite,max_energy=1,if=buff.apex_predator.up");
    st->add_action("run_action_list,name=st_finishers,if=combo_points>4");
    st->add_action("run_action_list,name=st_generators");
 
@@ -9307,6 +9311,10 @@ void druid_t::shapeshift( form_e f )
   case MOONKIN_FORM_AFFINITY:
     buff.moonkin_form_affinity -> trigger();
     break;
+  case NO_FORM:
+     if ( buff.rage_of_the_sleeper -> check() )
+        buff.rage_of_the_sleeper -> expire();
+     break;
   default:
     assert( 0 );
     break;

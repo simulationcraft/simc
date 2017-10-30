@@ -6,7 +6,7 @@ role=attack
 position=ranged_back
 talents=1303013
 artifact=55:0:0:0:0:307:1:308:1:309:1:310:1:311:1:312:4:313:4:314:4:315:4:316:4:317:4:318:4:319:4:320:4:321:1:322:1:1337:1:1369:1:1521:4:1522:1:1523:1:1524:24:1637:1
-crucible=1739:3:1780:3:1521:1:319:2
+crucible=1739:1780:1521/1739:1780:1521/1739:1780:319
 
 # Default consumables
 potion=prolonged_power
@@ -90,6 +90,7 @@ actions.patient_sniper+=/windburst,if=variable.vuln_aim_casts<1&!variable.poolin
 actions.patient_sniper+=/black_arrow,if=variable.can_gcd&(!variable.pooling_for_piercing|(lowest_vuln_within.5>gcd.max&focus>85))
 actions.patient_sniper+=/a_murder_of_crows,if=(!variable.pooling_for_piercing|lowest_vuln_within.5>gcd.max)&(target.time_to_die>=cooldown+duration|target.health.pct<20|target.time_to_die<16)&variable.vuln_aim_casts=0
 actions.patient_sniper+=/barrage,if=spell_targets>2|(target.health.pct<20&buff.bullseye.stack<25)
+actions.patient_sniper+=/aimed_shot,if=action.windburst.in_flight&focus+action.arcane_shot.cast_regen+cast_regen>focus.max
 actions.patient_sniper+=/aimed_shot,if=debuff.vulnerability.up&buff.lock_and_load.up&(!variable.pooling_for_piercing|lowest_vuln_within.5>gcd.max)
 actions.patient_sniper+=/aimed_shot,if=spell_targets.multishot>1&debuff.vulnerability.remains>execute_time&(!variable.pooling_for_piercing|(focus>100&lowest_vuln_within.5>(execute_time+gcd.max)))
 actions.patient_sniper+=/multishot,if=spell_targets>1&variable.can_gcd&focus+cast_regen+action.aimed_shot.cast_regen<focus.max&(!variable.pooling_for_piercing|lowest_vuln_within.5>gcd.max)
@@ -111,31 +112,32 @@ actions.targetdie+=/marked_shot
 actions.targetdie+=/arcane_shot
 actions.targetdie+=/sidewinders
 
-head=wildstalker_helmet,id=147142,bonus_id=3524,ilevel=930
-neck=chain_of_the_unmaker,id=152283,bonus_id=3524,bonus_id=3612/1502,enchant_id=5890
-shoulders=wildstalker_spaulders,id=147144,bonus_id=3524,ilevel=930
-back=wildstalker_cape,id=147140,bonus_id=3524,ilevel=930,enchant_id=5435
-chest=serpentstalker_tunic,id=152130,bonus_id=3524,bonus_id=3612/1502
-wrists=reality-splitting_wristguards,id=152008,bonus_id=3524,bonus_id=3612/1502
-hands=serpentstalker_grips,id=152132,bonus_id=3524,bonus_id=3612/1502
-waist=depraved_tacticians_waistguard,id=152006,bonus_id=3524,bonus_id=3612/1502
-legs=wildstalker_leggings,id=147143,bonus_id=3524,ilevel=930
-feet=ullrs_feather_snowshoes,id=137033,bonus_id=3571,ilevel=1000
-finger1=band_of_the_sargerite_smith,id=152064,bonus_id=3524,bonus_id=3612/1502,enchant_id=5429
-finger2=soul_of_the_huntmaster,id=151641,bonus_id=3571,ilevel=1000,gem_id=130222,enchant_id=5429
+head=serpentstalker_helmet,id=152133,bonus_id=3612/1502
+neck=chain_of_the_unmaker,id=152283,bonus_id=3612/1502,enchant=mark_of_the_trained_soldier
+shoulders=serpentstalker_mantle,id=152135,bonus_id=3612/1502
+back=wildstalker_cape,id=147140,bonus_id=1512/3563,enchant=200agi
+chest=wildstalker_chestguard,id=147139,bonus_id=1512/3563
+wrists=scalding_shatterguards,id=152280,bonus_id=3612/1502
+hands=serpentstalker_grips,id=152132,bonus_id=3612/1502
+waist=depraved_tacticians_waistguard,id=152006,bonus_id=3612/1502
+legs=serpentstalker_legguards,id=152134,bonus_id=3612/1502
+feet=ullrs_feather_snowshoes,id=137033,bonus_id=3630
+finger1=sullied_seal_of_the_pantheon,id=151972,bonus_id=3612/1502,enchant=200mastery
+finger2=soul_of_the_huntmaster,id=151641,bonus_id=3630,gems=200mastery,enchant=200mastery
 trinket1=tarnished_sentinel_medallion,id=147017,bonus_id=1512/3563
-trinket2=electrostatic_lasso,id=151967,bonus_id=3612/1502
-main_hand=thasdorah_legacy_of_the_windrunners,id=128826,bonus_id=727,gem_id=152060/152092/152291,relic_id=//,relic_ilevel=960/960/960
+trinket2=amanthuls_vision,id=154172,ilevel=1000
+main_hand=thasdorah_legacy_of_the_windrunners,id=128826,gem_id=155853/155847/152291,relic_id=3612:1512/3612:1512/3612:1502
 
 # Gear Summary
-# gear_ilvl=937.60
-# gear_agility=28121
-# gear_stamina=47234
-# gear_crit_rating=9349
-# gear_haste_rating=6445
-# gear_mastery_rating=11469
-# gear_versatility_rating=515
-# gear_armor=3285
+# gear_ilvl=965.73
+# gear_agility=32392
+# gear_stamina=59966
+# gear_crit_rating=10555
+# gear_haste_rating=9089
+# gear_mastery_rating=13839
+# gear_versatility_rating=4415
+# gear_armor=3526
 # set_bonus=tier20_2pc=1
-# set_bonus=tier20_4pc=1
+# set_bonus=tier21_2pc=1
+# set_bonus=tier21_4pc=1
 summon_pet=cat

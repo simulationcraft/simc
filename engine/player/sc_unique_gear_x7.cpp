@@ -147,6 +147,12 @@ namespace item
 
   Everything
 
+  Antorus -----------------------------------
+
+  Forgefiend's Fabricator
+  Seeping Scourgewing
+  Gorshalach's Legacy
+
   Healer trinkets / other rubbish -----------
 
   cocoon_of_enforced_solitude
@@ -4425,6 +4431,7 @@ void item::moonlit_prism( special_effect_t& effect )
   effect2 -> proc_chance_ = 1.0;
   effect2 -> spell_id = effect.driver() -> id();
   effect2 -> cooldown_ = timespan_t::zero();
+  effect2 -> proc_flags_ = PF_RANGED | PF_RANGED_ABILITY | PF_SPELL | PF_AOE_SPELL;
   effect.player -> special_effects.push_back( effect2 );
 
   // Create callback; it will be enabled when the buff is active.

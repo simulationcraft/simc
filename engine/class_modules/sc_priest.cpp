@@ -766,7 +766,11 @@ public:
       }
     }
   } insanity;
-   
+
+  std::string       default_potion() const override;
+  std::string       default_flask() const override;
+  std::string       default_food() const override;
+  std::string       default_rune() const override;
 };
 
 namespace pets
@@ -4855,89 +4859,21 @@ void priest_t::init_rng()
 void priest_t::apl_precombat()
 {
   action_priority_list_t* precombat = get_action_priority_list( "precombat" );
-
-  // Flask
-  if ( sim->allow_flasks && true_level >= 80 )
-  {
-    std::string flask_action = "flask,type=";
-
-    if ( true_level > 100 )
-    {
-      flask_action += "flask_of_the_whispered_pact";
-    }
-    else if ( true_level > 90 )
-    {
-      switch ( specialization() )
-      {
-        case PRIEST_DISCIPLINE:
-          flask_action += "greater_draenic_intellect_flask";
-          break;
-        case PRIEST_HOLY:
-          flask_action += "greater_draenic_intellect_flask";
-          break;
-        case PRIEST_SHADOW:
-        default:
-          if ( talents.auspicious_spirits->ok() )
-            flask_action += "greater_draenic_intellect_flask";
-          else
-            flask_action += "greater_draenic_intellect_flask";
-          break;
-      }
-    }
-    else if ( true_level > 85 )
-      flask_action += "warm_sun";
-    else
-      flask_action += "draconic_mind";
-
-    precombat->add_action( flask_action );
-  }
-
-  // Food
-  if ( sim->allow_food && level() >= 80 )
-  {
-    std::string food_action = "food,type=";
-
-    if ( level() > 100 )  // Break this in to specs at some point -- Twintop 2016/08/06
-    {
-      food_action += "azshari_salad";  // Haste
-    }
-    else if ( level() > 90 )
-    {
-      switch ( specialization() )
-      {
-        case PRIEST_DISCIPLINE:
-          if ( primary_role() != ROLE_HEAL )
-            food_action += "salty_squid_roll";
-          else
-            food_action += "pickled_eel";
-          break;
-        case PRIEST_HOLY:
-          food_action += "salty_squid_roll";
-          break;
-        case PRIEST_SHADOW:
-        default:
-          food_action += "buttered_sturgeon";
-          break;
-      }
-    }
-    else if ( level() > 85 )
-      food_action += "mogu_fish_stew";
-    else
-      food_action += "seafood_magnifique_feast";
-
-    precombat->add_action( food_action );
-  }
-
-  if ( true_level > 100 )
-    precombat->add_action( "augmentation,type=defiled" );
-
   // Snapshot stats
+  precombat->add_action("flask");
+  precombat->add_action("food");
+  precombat->add_action("augmentation");
   precombat->add_action( "snapshot_stats",
                          "Snapshot raid buffed stats before combat begins and "
                          "pre-potting is done." );
+
+  // do all kinds of calculation here to reduce CPU time
+  precombat->add_action(
+	  "variable,name=haste_eval,op=set,value=(raw_haste_pct-0.3)*(10+10*equipped.mangazas_madness)");
+  precombat->add_action("variable,name=haste_eval,op=max,value=0");
   precombat->add_action( 
-    "variable,name=cd_time,op=set,value=(10+(2-2*talent.mindbender.enabled*set_"
-    "bonus.tier20_4pc)*set_bonus.tier19_2pc+(3-3*talent.mindbender.enabled*set_"
+    "variable,name=cd_time,op=set,value=(12+(2-2*talent.mindbender.enabled*set_"
+    "bonus.tier20_4pc)*set_bonus.tier19_2pc+(1-3*talent.mindbender.enabled*set_"
     "bonus.tier20_4pc)*equipped.mangazas_madness+(6+5*talent.mindbender.enabled)"
     "*set_bonus.tier20_4pc+2*artifact.lash_of_insanity.rank)" );
   precombat->add_action( 
@@ -4954,17 +4890,7 @@ void priest_t::apl_precombat()
     "talent.reaper_of_souls.enabled)+set_bonus.tier19_2pc*4+8*equipped.mangazas_madness+(raw_haste_"
     "pct*10*(1+0.7*set_bonus.tier20_4pc))*(2+(0.8*set_bonus.tier19_2pc)+(1*talent.reaper_of_souls."
     "enabled)+(2*artifact.mass_hysteria.rank)-(1*talent.sanlayn.enabled)))),if=talent.surrender_to_madness.enabled" );
-  if ( sim->allow_potions && true_level >= 80 )
-  {
-    if ( true_level > 100 )
-      precombat->add_action( "potion,name=prolonged_power" );
-    else if ( true_level > 90 )
-      precombat->add_action( "potion,name=draenic_intellect" );
-    else if ( true_level > 85 )
-      precombat->add_action( "potion,name=jade_serpent" );
-    else
-      precombat->add_action( "potion,name=volcanic" );
-  }
+  precombat->add_action( "potion" );
 
   // Precast
   switch ( specialization() )
@@ -4979,6 +4905,46 @@ void priest_t::apl_precombat()
       precombat->add_action( "mind_blast" );
       break;
   }
+}
+
+std::string priest_t::default_potion() const
+{
+	std::string lvl110_potion =
+		"prolonged_power";
+
+	return (true_level >= 100) ? lvl110_potion :
+		(true_level >= 90) ? "draenic_intellect" :
+		(true_level >= 85) ? "jade_serpent" :
+		(true_level >= 80) ? "volcanic" :
+		"disabled";
+}
+
+std::string priest_t::default_flask() const
+{
+	return (true_level >= 100) ? "whispered_pact" :
+		(true_level >= 90) ? "greater_draenic_intellect_flask" :
+		(true_level >= 85) ? "warm_sun" :
+		(true_level >= 80) ? "draconic_mind" :
+		"disabled";
+}
+
+std::string priest_t::default_food() const
+{
+	std::string lvl100_food =
+		"buttered_sturgeon";
+
+	return (true_level > 100) ? "azshari_salad" :
+		(true_level >  90) ? lvl100_food :
+		(true_level >= 90) ? "mogu_fish_stew" :
+		(true_level >= 80) ? "seafood_magnifique_feast" :
+		"disabled";
+}
+
+std::string priest_t::default_rune() const
+{
+	return (true_level >= 110) ? "defiled" :
+		(true_level >= 100) ? "focus" :
+		"disabled";
 }
 
 bool priest_t::has_t18_class_trinket() const
@@ -5089,27 +5055,9 @@ void priest_t::apl_shadow()
   }
 
   // Potions
-  if ( sim->allow_potions && true_level >= 80 )
-  {
-    if ( true_level > 100 )
-      default_list->add_action(
-          "potion,name=prolonged_power,if=buff.bloodlust.react|target.time_to_"
-          "die<"
+  default_list->add_action(
+          "potion,if=buff.bloodlust.react|target.time_to_die<"
           "=80|(target.health.pct<35&cooldown.power_infusion.remains<30)" );
-    else if ( true_level > 90 )
-      default_list->add_action(
-          "potion,name=draenic_intellect,if=buff.bloodlust.react|target.time_"
-          "to_die<=40" );
-    else if ( true_level > 85 )
-      default_list->add_action(
-          "potion,name=jade_serpent,if=buff.bloodlust.react|target.time_to_"
-          "die<"
-          "=40" );
-    else
-      default_list->add_action(
-          "potion,name=volcanic,if=buff.bloodlust.react|target.time_to_die<="
-          "40" );
-  }
 
   // Choose which APL to use based on talents and fight conditions.
 
@@ -5153,7 +5101,9 @@ void priest_t::apl_shadow()
       "vampiric_touch,if=!talent.misery.enabled&dot.vampiric_touch.remains<"
       "(4+(4%3))*gcd" );
   main->add_action(
-      "void_eruption" );
+      "void_eruption,if=(talent.mindbender.enabled&cooldown.mindbender."
+	  "remains<(26+variable.haste_eval*1.5+gcd.max*4%3))|!talent.mindbender"
+	  ".enabled|set_bonus.tier20_4pc" );
   main->add_action( "shadow_crash,if=talent.shadow_crash.enabled" );
   main->add_action(
       "shadow_word_death,if=(active_enemies<=4|(talent.reaper_of_souls.enabled"
@@ -5302,13 +5252,13 @@ if ( race == RACE_BLOOD_ELF )
       "stacks."
       "value)+60))" );
   vf->add_action(
-      "mindbender,if=buff.insanity_drain_stacks.value>=(variable.cd_time-(3*set_"
-      "bonus.tier20_4pc*(raid_event.movement.in<15)*((active_enemies-(raid_event."
-      "adds.count*(raid_event.adds.remains>0)))=1))+(5-3*set_bonus.tier20_4pc)*buff"
-      ".bloodlust.up+2*talent.fortress_of_the_mind"
-      ".enabled*set_bonus.tier20_4pc)&(!talent.surrender_to_madness.enabled|(talent."
-      "surrender_to_madness.enabled&target.time_to_die>variable.s2mcheck-buff.insanity"
-      "_drain_stacks.value))" );
+      "mindbender,if=buff.insanity_drain_stacks.value>=(variable.cd_time+(variable.haste_"
+	  "eval*!set_bonus.tier20_4pc)-(3*set_bonus.tier20_4pc*(raid_event.movement.in<15)*"
+	  "((active_enemies-(raid_event"
+	  ".adds.count*(raid_event.adds.remains>0)))=1))+(5-3*set_bonus.tier20_4pc)*buff.bloodlust."
+	  "up+2*talent.fortress_of_the_mind.enabled*set_bonus.tier20_4pc)&(!talent.surrender_to_"
+	  "madness.enabled|(talent.surrender_to_madness.enabled&target.time_to_die>variable."
+	  "s2mcheck-buff.insanity_drain_stacks.value))" );
   vf->add_action(
       "power_infusion,if=buff.insanity_drain_stacks.value>=(variable.cd_time+5*buff."
       "bloodlust.up*(1+1*set_bonus.tier20_4pc))&(!talent.surrender_to_madness.enabled"

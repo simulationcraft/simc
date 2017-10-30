@@ -1577,7 +1577,8 @@ Attributes       : ....x... ........ ........ ........   ........ ..x..... .....
 Effects          :
 #1 (id=87073)    : Apply Aura (6) | Add Flat Modifier (107): Spell Targets (17)
                    Base Value: 4 | Scaled Value: 4 | Misc Value: 17 | Target: Self (1)
-                   Affected Spells: Bloodthirst (23881), Rampage (184367), Rampage (184707), Rampage (184709), Rampage (201363), Rampage (201364), Rampage (218617)
+                   Affected Spells: Bloodthirst (23881)
+                   Hotfixed: Affects Spells, Chain Multiplier (0 -> 1)
 #2 (id=333347)   : Apply Aura (6) | Dummy (4)
                    Base Value: 3 | Scaled Value: 3 | Misc Value: 17 | Target: Self (1)
                    Affected Spells: Bloodthirst (23881)
@@ -2987,6 +2988,7 @@ Description      : Reduces damage taken by $s1%, and Bloodthirst restores an add
 Tooltip          : Damage taken reduced by $s1%. Bloodthirst restores an additional $s2% health.
 
 Name             : Rampage (id=184367) [Spell Family (4)] 
+Hotfixed         : Affecting Spells
 Class            : Fury Warrior
 School           : Physical
 Resource         : 85 Rage (1) (id=10117)
@@ -2994,7 +2996,7 @@ Spell Level      : 12
 Range            : 5 yards
 GCD              : 2 seconds
 Cooldown         : 1.5 seconds
-Affecting spells : Meat Cleaver (85739 effect#1), Warrior (137047 effect#2), Fury Warrior (137050 effect#1), Unstoppable (200853 effect#1), Reckless Abandon (202751 effect#3), Carnage (202922 effect#1), Massacre (206316 effect#1), Outrage (253385 effect#1)
+Affecting spells : Warrior (137047 effect#2), Fury Warrior (137050 effect#1), Unstoppable (200853 effect#1), Reckless Abandon (202751 effect#3), Carnage (202922 effect#1), Massacre (206316 effect#1), Outrage (253385 effect#1)
 Attributes       : ........ ........ ..x..... ........   ........ .xx..... ........ ........ 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3007,7 +3009,8 @@ Effects          :
 #2 (id=267215)   : Dummy (3)
                    Base Value: 2 | Scaled Value: 2 | Target: Enemy (6)
 #3 (id=267216)   : Trigger Spell (64): Rampage
-                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 218617 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 100 | Trigger Spell: 218617 | Target: Enemy (6)
+                   Hotfixed: Misc Value (0 -> 100), Chain Multiplier (0 -> 1)
 #4 (id=268060)   : Trigger Spell (64): Rampage
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 300 | Trigger Spell: 184707 | Target: Enemy (6)
 #5 (id=268061)   : Trigger Spell (64): Rampage
@@ -3024,7 +3027,7 @@ School           : Physical
 Spell Level      : 1
 Range            : 8 yards
 Proc Chance      : 101%
-Affecting spells : Meat Cleaver (85739 effect#1), Warrior (137047 effect#2), Fury Warrior (137050 effect#1), Unstoppable (200853 effect#1), Carnage (202922 effect#1), Massacre (206316 effect#1), Outrage (253385 effect#1)
+Affecting spells : Warrior (137047 effect#2), Fury Warrior (137050 effect#1), Unstoppable (200853 effect#1), Carnage (202922 effect#1), Massacre (206316 effect#1), Outrage (253385 effect#1)
 Triggered by     : Rampage (184367)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ....x... ........ ........   ........ ........ ........ x....... 
@@ -3045,7 +3048,7 @@ School           : Physical
 Spell Level      : 1
 Range            : 8 yards
 Proc Chance      : 101%
-Affecting spells : Meat Cleaver (85739 effect#1), Warrior (137047 effect#2), Fury Warrior (137050 effect#1), Unstoppable (200853 effect#1), Carnage (202922 effect#1), Massacre (206316 effect#1), Outrage (253385 effect#1)
+Affecting spells : Warrior (137047 effect#2), Fury Warrior (137050 effect#1), Unstoppable (200853 effect#1), Carnage (202922 effect#1), Massacre (206316 effect#1), Outrage (253385 effect#1)
 Triggered by     : Rampage (184367)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ........ 
                  : ........ ....x... ........ ........   ........ .xx..... ........ ........ 
@@ -3437,7 +3440,7 @@ School           : Physical
 Spell Level      : 1
 Range            : 8 yards
 Proc Chance      : 101%
-Affecting spells : Meat Cleaver (85739 effect#1), Warrior (137047 effect#2), Fury Warrior (137050 effect#1), Unstoppable (200853 effect#1), Carnage (202922 effect#1), Massacre (206316 effect#1), Outrage (253385 effect#1)
+Affecting spells : Warrior (137047 effect#2), Fury Warrior (137050 effect#1), Unstoppable (200853 effect#1), Carnage (202922 effect#1), Massacre (206316 effect#1), Outrage (253385 effect#1)
 Triggered by     : Rampage (184367)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ........ 
                  : ........ ....x... ........ ........   ........ .xx..... ........ ........ 
@@ -3459,7 +3462,7 @@ School           : Physical
 Spell Level      : 1
 Range            : 8 yards
 Proc Chance      : 101%
-Affecting spells : Meat Cleaver (85739 effect#1), Warrior (137047 effect#2), Fury Warrior (137050 effect#1), Unstoppable (200853 effect#1), Carnage (202922 effect#1), Massacre (206316 effect#1), Outrage (253385 effect#1)
+Affecting spells : Warrior (137047 effect#2), Fury Warrior (137050 effect#1), Unstoppable (200853 effect#1), Carnage (202922 effect#1), Massacre (206316 effect#1), Outrage (253385 effect#1)
 Triggered by     : Rampage (184367)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ....x... ........ ........   ........ ........ ........ x....... 
@@ -4745,7 +4748,7 @@ School           : Physical
 Spell Level      : 1
 Range            : 8 yards
 Proc Chance      : 101%
-Affecting spells : Meat Cleaver (85739 effect#1), Warrior (137047 effect#2), Fury Warrior (137050 effect#1), Unstoppable (200853 effect#1), Carnage (202922 effect#1), Massacre (206316 effect#1), Outrage (253385 effect#1)
+Affecting spells : Warrior (137047 effect#2), Fury Warrior (137050 effect#1), Unstoppable (200853 effect#1), Carnage (202922 effect#1), Massacre (206316 effect#1), Outrage (253385 effect#1)
 Triggered by     : Rampage (184367)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ........ 
                  : ........ ....x... ........ ........   ........ .xx..... ........ ........ 

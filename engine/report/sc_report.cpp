@@ -438,12 +438,19 @@ bool report::check_gear_ilevel( player_t& p, sim_t& sim )
     max_weapon_ilevel_allowed    = 960;
     tier_name                    = "T20M";
   }
+  else if ( p.report_information.save_str.find( "T21M" ) != std::string::npos )
+  {
+    legendary_items_allowed      = 2;
+    max_ilevel_allowed           = 970;
+    max_weapon_ilevel_allowed    = 999;
+    tier_name                    = "T21M";
+  }
   else
   {
     return return_value;
   }
 
-  max_legendary_ilevel_allowed = 970;
+  max_legendary_ilevel_allowed = 1000;
 
   const slot_e SLOT_OUT_ORDER[] = {
       SLOT_HEAD,      SLOT_NECK,     SLOT_SHOULDERS, SLOT_BACK,
@@ -461,7 +468,8 @@ bool report::check_gear_ilevel( player_t& p, sim_t& sim )
   {
     item_t& item = p.items[ slot ];
 
-    if ( item.parsed.data.quality == 5 )
+    if ( item.parsed.data.quality == 5 &&
+         item.parsed.data.id != 154172 ) // Ignore Aman'thul trinket
       equipped_legendary_items++;
 
     if ( slot == SLOT_MAIN_HAND || slot == SLOT_OFF_HAND ||
@@ -617,6 +625,18 @@ bool report::check_artifact_points( const player_t& p, sim_t& sim )
   {
     max_purchased = 75;
     tier_name     = "T20M";
+    max_crucible  = 9;
+  }
+  else if ( p.report_information.save_str.find( "T21H" ) != std::string::npos )
+  {
+    max_purchased = 75;
+    tier_name     = "T21H";
+    max_crucible  = 9;
+  }
+  else if ( p.report_information.save_str.find( "T21M" ) != std::string::npos )
+  {
+    max_purchased = 75;
+    tier_name     = "T21M";
     max_crucible  = 9;
   }
   else

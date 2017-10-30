@@ -1210,6 +1210,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 100 | Trigger Spell: 47666 | Target: Enemy (6)
 
 Name             : Guardian Spirit (id=47788) [Spell Family (6)] 
+Hotfixed         : Attributes
 Class            : Holy Priest
 School           : Holy
 Resource         : 0.9% Base Mana (0) (id=2205)
@@ -1224,7 +1225,7 @@ Attributes       : ........ ........ x.x..... ........   ........ ........ .x...
                  : ........ ........ ........ ........   ...x.... ........ ........ ........ 
                  : ........ ........ ......x. ..x.....   ........ ........ ........ ........ 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
-                 : ........ .....x.. ........ ........   ........ ........ ..xx.... ....x... 
+                 : ........ .....x.. ........ ....x...   ........ ........ ..xx.... ....x... 
 Effects          :
 #1 (id=40042)    : Apply Aura (6) | Unknown(118)
                    Base Value: 40 | Scaled Value: 40 | Misc Value: 127 | Target: Friend (21)
@@ -3143,11 +3144,13 @@ Effects          :
 Description      : Void Eruption may be cast anytime your Insanity level is ${100+$m1/100} or higher$@switch<$s4>[][, and Voidform increases Shadow damage dealt by an additional $s3%].
 
 Name             : Mind Flay (id=193473) [Spell Family (6)] 
+Hotfixed         : Cooldown, GCD, Category Cooldown
 Class            : Priest
 School           : Shadow
 Spell Level      : 10
 Range            : 100 yards
 Duration         : 10 seconds
+Cooldown         : 1 seconds
 Attributes       : ........ ........ x....... ........   ..x..... ......x. ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ...x.... 
