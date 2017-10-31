@@ -123,6 +123,7 @@ namespace item
   void terminus_signaling_beacon( special_effect_t&    );
   void sheath_of_asara( special_effect_t&              );
   void seeping_scourgewing( special_effect_t&          );
+  void gorshalach_legacy( special_effect_t&           );
 
   // 7.2.0 Dungeon
   void dreadstone_of_endless_shadows( special_effect_t& );
@@ -2173,6 +2174,63 @@ void item::sheath_of_asara( special_effect_t& effect )
   effect.proc_flags_ = PF_RANGED | PF_RANGED_ABILITY | PF_SPELL | PF_AOE_SPELL | PF_PERIODIC;
   effect.custom_buff = new shadow_blades_buff_t( effect );
   new dbc_proc_callback_t( effect.item, effect );
+}
+
+// Gorshalach's Legacy =====================================================
+struct echo_of_gorshalach_t : public proc_spell_t
+{
+   struct gorshalach_legacy_t : public proc_spell_t
+   {
+      gorshalach_legacy_t(const special_effect_t& effect) :
+         proc_spell_t("gorshalachs_legacy_1", effect.player, effect.player ->find_spell(253329), effect.item)
+      {
+      }
+      //Always crits
+      virtual double composite_crit_chance() const override { return 1.0; }
+   };
+
+   struct gorshalach_bigger_legacy_t : public proc_spell_t
+   {
+      gorshalach_bigger_legacy_t(const special_effect_t& effect) :
+         proc_spell_t("gorshalachs_legacy_2", effect.player, effect.player ->find_spell(255673), effect.item)
+      {
+      }
+      //Always crits
+      virtual double composite_crit_chance() const override { return 1.0; }
+   };
+
+   action_t* legacy;
+   action_t* legacy2;
+   buff_t* echo;
+
+   echo_of_gorshalach_t(const special_effect_t& effect) :
+      proc_spell_t("echo_of_gorshalach", effect.player, effect.player->find_spell(255672), effect.item),
+      legacy(create_proc_action<gorshalach_legacy_t>("gorshalachs_legacy_mh", effect)),
+      legacy2(create_proc_action<gorshalach_bigger_legacy_t>("gorshalachs_legacy_oh", effect))
+   {
+      //TODO: Whitelist this spell (255672) and use spelldata!
+      echo = buff_creator_t(effect.player, "echo_of_gorshalach")
+         .max_stack(15)
+         .duration(timespan_t::from_seconds(60));
+   }
+
+   void execute() override
+   {
+      echo->increment();
+      //TODO: spell data being unhelpful, so hardcoding this for now
+      if (echo->stack() == 15)
+      {
+         echo->expire();
+         legacy->execute();
+         legacy2->execute();
+      }
+   };
+};
+
+void item::gorshalach_legacy( special_effect_t& effect )
+{
+   effect.execute_action = create_proc_action<echo_of_gorshalach_t>("echo_of_gorshalach", effect);
+   new dbc_proc_callback_t(effect.player, effect);
 }
 
 // Seeping Scourgewing =====================================================
@@ -6354,6 +6412,7 @@ void unique_gear::register_special_effects_x7()
   register_special_effect( 255724, item::terminus_signaling_beacon );
   register_special_effect( 253263, item::sheath_of_asara           );
   register_special_effect( 253323, item::seeping_scourgewing       );
+  register_special_effect( 253326, item::gorshalach_legacy         );
 
   /* Legion 7.2.0 Dungeon */
   register_special_effect( 238498, item::dreadstone_of_endless_shadows );
