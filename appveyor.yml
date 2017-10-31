@@ -17,11 +17,16 @@ platform: x64
 
 # build Configuration, i.e. Debug, Release, etc.
 configuration: WebEngine
+environment:
+  matrix:
+    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
+    # Custom build Configuration, i.e. Debug, Release, etc.
+    build_script:	
+    - MSBuild.exe simc_vs2015.sln /t:simc /maxcpucount
 
-# Custom build Configuration, i.e. Debug, Release, etc.
-build_script:	
-  - if [ "$APPVEYOR_BUILD_WORKER_IMAGE" == "Visual Studio 2015"]; then MSBuild.exe simc_vs2015.sln /t:simc /maxcpucount; fi
-  - if [ "$APPVEYOR_BUILD_WORKER_IMAGE" == "Visual Studio 2017"]; then MSBuild.exe simc_vs2017.sln /t:simc /maxcpucount; fi
+    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
+      build_script:	
+      - MSBuild.exe simc_vs2017.sln /t:simc /maxcpucount
 
 test_script:
   ## pass
