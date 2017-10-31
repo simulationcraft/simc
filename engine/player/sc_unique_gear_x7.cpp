@@ -122,6 +122,7 @@ namespace item
   void vitality_resonator( special_effect_t&           );
   void terminus_signaling_beacon( special_effect_t&    );
   void sheath_of_asara( special_effect_t&              );
+  void seeping_scourgewing( special_effect_t&          );
 
   // 7.2.0 Dungeon
   void dreadstone_of_endless_shadows( special_effect_t& );
@@ -2172,6 +2173,47 @@ void item::sheath_of_asara( special_effect_t& effect )
   effect.proc_flags_ = PF_RANGED | PF_RANGED_ABILITY | PF_SPELL | PF_AOE_SPELL | PF_PERIODIC;
   effect.custom_buff = new shadow_blades_buff_t( effect );
   new dbc_proc_callback_t( effect.item, effect );
+}
+
+// Seeping Scourgewing =====================================================
+struct shadow_strike_t: public proc_spell_t
+{
+  struct isolated_strike_t : public proc_spell_t
+  {
+    isolated_strike_t( const special_effect_t& effect ) :
+      proc_spell_t( "isolated_strike", effect.player, effect.player -> find_spell( 255609 ), effect.item )
+    {}
+  };
+
+  action_t* isolated_strike;
+  int target_radius;
+
+  shadow_strike_t( const special_effect_t& effect ) :
+    proc_spell_t( "shadow_strike", effect.player, effect.trigger(), effect.item ),
+    isolated_strike( create_proc_action<isolated_strike_t>( "isolated_strike", effect ) ),
+    target_radius( effect.driver() -> effectN( 1 ).base_value() )
+  {}
+
+  void execute() override
+  {
+    proc_spell_t::execute();
+
+    for ( const player_t* actor : sim -> actor_list )
+    {
+      if ( actor != target && actor -> is_enemy() &&
+        target -> get_position_distance(actor -> x_position, actor -> y_position) < 8 )
+      {
+        return; // There is another enemy near to our target.
+      }
+    }
+    isolated_strike -> execute();
+  }
+};
+
+void item::seeping_scourgewing( special_effect_t& effect )
+{
+   effect.execute_action = create_proc_action<shadow_strike_t>( "shadow_strike", effect );
+   new dbc_proc_callback_t( effect.player, effect );
 }
 
 // Toe Knee's Promise ======================================================
@@ -6312,6 +6354,7 @@ void unique_gear::register_special_effects_x7()
   register_special_effect( 253258, item::vitality_resonator        );
   register_special_effect( 255724, item::terminus_signaling_beacon );
   register_special_effect( 253263, item::sheath_of_asara           );
+  register_special_effect( 253323, item::seeping_scourgewing       );
 
   /* Legion 7.2.0 Dungeon */
   register_special_effect( 238498, item::dreadstone_of_endless_shadows );
