@@ -2201,7 +2201,7 @@ struct shadow_strike_t: public proc_spell_t
     for ( const player_t* actor : sim -> actor_list )
     {
       if ( actor != target && actor -> is_enemy() &&
-        target -> get_position_distance(actor -> x_position, actor -> y_position) < 8 )
+        target -> get_position_distance(actor -> x_position, actor -> y_position) < target_radius )
       {
         return; // There is another enemy near to our target.
       }
