@@ -26,7 +26,7 @@ static const enchant_db_item_t __enchant_db[] = {
 
 size_t enchant_map_key(const dbc_t& dbc, const item_enchantment_data_t& enchant)
 {
-  return dbc.ptr << 63 | enchant.id;
+  return static_cast<unsigned>(dbc.ptr) << 31 | enchant.id;
 }
 
 thread_local std::unordered_map<size_t, std::string> cached_enchant_names;

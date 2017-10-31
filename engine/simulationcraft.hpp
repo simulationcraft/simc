@@ -471,7 +471,7 @@ struct gear_stats_t
     speed_rating += right.speed_rating;
     avoidance_rating += right.avoidance_rating;
     range::transform ( attribute, right.attribute, attribute.begin(), std::plus<double>() );
-    range::transform ( resource, right.resource, resource.begin(), std::plus<int>() );
+    range::transform ( resource, right.resource, resource.begin(), std::plus<double>() );
     return *this;
   }
 
