@@ -20,7 +20,7 @@ configuration: WebEngine
 
 build:
   parallel: true                  # enable MSBuild parallel builds
-  project: simc_vs2015.sln      # path to Visual Studio solution or project
+  project: vs/simc_vs2015.vcxproj      # path to Visual Studio solution or project
 
 test_script:
   ## pass
