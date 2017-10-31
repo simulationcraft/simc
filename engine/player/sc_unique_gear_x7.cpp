@@ -2198,10 +2198,9 @@ struct shadow_strike_t: public proc_spell_t
   {
     proc_spell_t::execute();
 
-    for ( const player_t* actor : sim -> actor_list )
+    for ( const player_t* enemy : sim -> target_non_sleeping_list )
     {
-      if ( actor != target && actor -> is_enemy() &&
-        target -> get_position_distance(actor -> x_position, actor -> y_position) < target_radius )
+      if ( enemy != target && target -> get_position_distance(enemy -> x_position, enemy -> y_position) < target_radius )
       {
         return; // There is another enemy near to our target.
       }
