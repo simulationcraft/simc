@@ -20,8 +20,8 @@ configuration: WebEngine
 
 # Custom build Configuration, i.e. Debug, Release, etc.
 build_script:	
-  - if[[ "$env:APPVEYOR_BUILD_WORKER_IMAGE" == "Visual Studio 2015"]]; then MSBuild.exe simc_vs2015.sln /t:simc /maxcpucount ; fi
-  - if[[ "$env:APPVEYOR_BUILD_WORKER_IMAGE" == "Visual Studio 2017"]]; then MSBuild.exe simc_vs2017.sln /t:simc /maxcpucount ; fi
+  - if [ "$env:APPVEYOR_BUILD_WORKER_IMAGE" == "Visual Studio 2015"]; then MSBuild.exe simc_vs2015.sln /t:simc /maxcpucount ; fi
+  - if [ "$env:APPVEYOR_BUILD_WORKER_IMAGE" == "Visual Studio 2017"]; then MSBuild.exe simc_vs2017.sln /t:simc /maxcpucount ; fi
 
 test_script:
   ## pass
