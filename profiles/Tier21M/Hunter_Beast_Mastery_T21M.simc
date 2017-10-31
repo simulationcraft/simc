@@ -67,21 +67,21 @@ actions+=/cobra_shot,if=(cooldown.kill_command.remains>focus.time_to_max&cooldow
 
 actions+=/dire_beast,if=buff.bestial_wrath.up
 
-head=wildstalker_helmet,id=147142,bonus_id=3524,ilevel=930
-neck=chain_of_the_unmaker,id=152283,bonus_id=3612/1502,enchant_id=5890
-shoulders=wildstalker_spaulders,id=147144,bonus_id=3524,ilevel=930
-back=wildstalker_cape,id=147140,bonus_id=3524,ilevel=930,enchant_id=5435
-chest=serpentstalker_tunic,id=152130,bonus_id=3612/1502
-wrists=scalding_shatterguards,id=152280,bonus_id=3612/1502
-hands=serpentstalker_grips,id=152132,bonus_id=3612/1502
-waist=roar_of_the_seven_lions,id=137080,bonus_id=3571,ilevel=1000
-legs=wildstalker_leggings,id=147143,bonus_id=3524,ilevel=930
-feet=greatboots_of_the_searing_tempest,id=152684,bonus_id=3612/1502
-finger1=seal_of_the_portalmaster,id=152063,bonus_id=3612/1502,enchant_id=5429
-finger2=the_apex_predators_claw,id=137382,bonus_id=3571,ilevel=1000,gem_id=130222,enchant_id=5429
-trinket1=tarnished_sentinel_medallion,id=147017,bonus_id=1512/3563
-trinket2=electrostatic_lasso,id=151967,bonus_id=3612/1502
-main_hand=titanstrike,id=128861,bonus_id=726,gem_id=152059/152026/152293,relic_id=//,relic_ilevel=960/960/960
+head=serpentstalker_helmet,id=152133,bonus_id=3524,ilevel=960
+neck=chain_of_the_unmaker,id=152283,bonus_id=3524,ilevel=970,enchant=600mastery
+shoulders=the_mantle_of_command,id=144326,bonus_id=3571,ilevel=1000
+back=serpentstalker_drape,id=152131,bonus_id=3524,ilevel=960,enchant=200agi
+chest=parsels_tongue,id=151805,bonus_id=3571,ilevel=1000
+wrists=scalding_shatterguards,id=152280,bonus_id=3524,ilevel=960
+hands=serpentstalker_grips,id=152132,bonus_id=3524,ilevel=960
+waist=worldravager_waistguard,id=152683,bonus_id=3524,ilevel=960
+legs=serpentstalker_legguards,id=152134,bonus_id=3524,ilevel=960
+feet=deft_soulhunters_sabatons,id=151996,bonus_id=3524,ilevel=960
+finger1=sullied_seal_of_the_pantheon,id=151972,bonus_id=3524,ilevel=970,enchant=200mastery
+finger2=band_of_the_sargerite_smith,id=152064,bonus_id=3524,ilevel=960,enchant=200mastery
+trinket1=cradle_of_anguish,id=147010,bonus_id=3524,ilevel=930
+trinket2=amanthuls_vision,id=154172,bonus_id=3571,ilevel=1000
+main_hand=titanstrike,id=128861,bonus_id=726,gem_id=155853/152025/152293,relic_id=//,relic_ilevel=970/960/960
 
 # Gear Summary
 # gear_ilvl=956.00
