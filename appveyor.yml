@@ -18,9 +18,9 @@ platform: x64
 # build Configuration, i.e. Debug, Release, etc.
 configuration: WebEngine
 
-build:
-  parallel: true                  # enable MSBuild parallel builds
-  project: vs/simc_vs2015.vcxproj      # path to Visual Studio solution or project
+# Custom build Configuration, i.e. Debug, Release, etc.
+build_script:	
+  -  MSBuild.exe simc_vs2015.sln /t:simc /maxcpucount
 
 test_script:
   ## pass
