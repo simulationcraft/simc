@@ -1244,6 +1244,8 @@ class SpellDataGenerator(DataGenerator):
          257376,
          # 7.3.2 Norgannon pantheon "random school" nukes
          257243, 257532, 257241, 257242, 257534, 257533,
+         # 7.3.2 Gorshalach's Legacy
+         255672,
         ),
 
         # Warrior:
