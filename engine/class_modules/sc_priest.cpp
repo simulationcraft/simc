@@ -557,14 +557,32 @@ public:
 
     const double base_drain_per_sec;
     const double stack_drain_multiplier;
+    double base_drain_multiplier;
 
-    insanity_state_t( priest_t& a )
-      : end( nullptr ),
+    insanity_state_t( priest_t& a ) :
+        end( nullptr ),
         last_drained( timespan_t::zero() ),
         actor( a ),
         base_drain_per_sec( a.find_spell( 194249 )->effectN( 2 ).base_value() / -500.0 ),
-        stack_drain_multiplier( 2 / 3.0 )  // Hardcoded Patch 7.1.5 (2016-12-02)
+        stack_drain_multiplier( 2 / 3.0 ),  // Hardcoded Patch 7.1.5 (2016-12-02)
+        base_drain_multiplier( 1.0 )
     {
+
+    }
+
+    /// Deferred init for actor dependent stuff not ready in the ctor
+    void init()
+    {
+      if ( actor.sets->has_set_bonus( PRIEST_SHADOW, T20, B4 ) )
+      {
+        if ( actor.talents.surrender_to_madness->ok() )
+        {
+          base_drain_multiplier -= actor.sets->set( PRIEST_SHADOW, T20, B4 )->effectN( 2 ).percent();
+        } else
+        {
+          base_drain_multiplier -= actor.sets->set( PRIEST_SHADOW, T20, B4 )->effectN( 1 ).percent();
+        }
+      }
     }
 
     /// Start the insanity drain tracking
@@ -611,15 +629,7 @@ public:
         return 0;
       }
 
-      double drain_multiplier = 1.0 
-                              - ( actor.sets->has_set_bonus(PRIEST_SHADOW, T20, B4)
-                                * (  actor.talents.surrender_to_madness->ok()
-                                     ? actor.sets->set( PRIEST_SHADOW, T20, B4 )->effectN( 2 ).percent()
-                                     : actor.sets->set( PRIEST_SHADOW, T20, B4 )->effectN( 1 ).percent() 
-                                  ) 
-                                );
-
-      return drain_multiplier * (     base_drain_per_sec 
+      return base_drain_multiplier * (     base_drain_per_sec
                                   + ( actor.buffs.insanity_drain_stacks->current_value - 1 ) 
                                       * stack_drain_multiplier );
     }
@@ -4582,6 +4592,9 @@ void priest_t::init_scaling()
   // Atonement heals are capped at a percentage of the Priest's health, so there may be scaling with stamina.
   if ( specs.atonement->ok() && primary_role() == ROLE_HEAL )
     scaling -> enable( STAT_STAMINA );
+
+  // Just hook insanity init in here when actor set bonuses are ready
+  insanity.init();
 }
 
 void priest_t::init_spells()
