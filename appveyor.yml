@@ -7,7 +7,7 @@
 # Build worker image (VM template)
 image:
 - Visual Studio 2015
-#- Visual Studio 2017
+- Visual Studio 2017
 
 # fetch repository as zip archive
 shallow_clone: true
@@ -20,7 +20,8 @@ configuration: WebEngine
 
 # Custom build Configuration, i.e. Debug, Release, etc.
 build_script:	
-  -  MSBuild.exe simc_vs2015.sln /t:simc /maxcpucount
+  - if [ "$APPVEYOR_BUILD_WORKER_IMAGE" == "Visual Studio 2015"]; then MSBuild.exe simc_vs2015.sln /t:simc /maxcpucount; fi
+  - if [ "$APPVEYOR_BUILD_WORKER_IMAGE" == "Visual Studio 2017"]; then MSBuild.exe simc_vs2017.sln /t:simc /maxcpucount; fi
 
 test_script:
   ## pass
