@@ -5589,6 +5589,9 @@ struct siphon_life_t : public warlock_spell_t
     if ( p() -> talents.malefic_grasp -> ok() && td -> dots_drain_soul -> is_ticking() )
       m *= 1.0 + malefic_grasp_damage_increase;
 
+	if (td->debuffs_tormented_agony->check())
+		m *= 1.0 + td->debuffs_tormented_agony->data().effectN(1).percent();
+
     return m;
   }
 };

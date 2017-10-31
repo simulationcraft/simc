@@ -3740,6 +3740,7 @@ struct rockbiter_t : public shaman_spell_t
     {
       //spell data currently iffy - hardcode for now
       m *= 1.0 + p() -> buff.t21_2pc_enhancement -> check_value();
+      p() ->buff.t21_2pc_enhancement -> expire();
     }
 
     return m;
