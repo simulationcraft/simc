@@ -19,6 +19,16 @@ os:
 compiler:
   - gcc
   - clang
+  
+addons:
+  apt:
+    sources:
+      - sourceline: 'ppa:ubuntu-toolchain-r/test'
+      - sourceline: 'ppa:duggan/bats'
+    packages:
+      - valgrind
+      - g++-5
+      - bats
 
 #env:
   # Each line is a separate build in the build matrix. A build in the build
@@ -35,12 +45,12 @@ matrix:
 
 before_install:
   # Install bats
-  - if [ "$TRAVIS_OS_NAME" == "linux" ]; then sudo add-apt-repository ppa:duggan/bats -y && sudo apt-get update -qq && sudo apt-get install -qq bats; fi
+  #- if [ "$TRAVIS_OS_NAME" == "linux" ]; then sudo add-apt-repository ppa:duggan/bats -y && sudo apt-get update -qq && sudo apt-get install -qq bats; fi
     #- if [ "$TRAVIS_OS_NAME" == "osx" ]; then brew update && brew install bats coreutils; fi
   - if [ "$TRAVIS_OS_NAME" == "osx" ]; then brew update && brew install bats; fi
 
   # Install valgrind on Linux
-  - if [ "$TRAVIS_OS_NAME" == "linux" ]; then sudo apt-get install -qq valgrind; fi
+  #- if [ "$TRAVIS_OS_NAME" == "linux" ]; then sudo apt-get install -qq valgrind; fi
 
 notifications:
   irc:
