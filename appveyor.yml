@@ -16,7 +16,7 @@ shallow_clone: true
 platform: x64
 
 # build Configuration, i.e. Debug, Release, etc.
-configuration: Release
+configuration: WebEngine
 
 build:
   parallel: true                  # enable MSBuild parallel builds
