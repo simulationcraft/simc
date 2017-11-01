@@ -3625,7 +3625,7 @@ struct demonic_empowerment_t: public warlock_spell_t
       }
     }
 
-    if ( maybe_ptr( p()->dbc.ptr ) && p()->sets->has_set_bonus( WARLOCK_DEMONOLOGY, T21, B4 ) )
+    if ( p()->sets->has_set_bonus( WARLOCK_DEMONOLOGY, T21, B4 ) )
     {
       for ( size_t i = 0; i < p()->warlock_pet_list.dreadstalkers.size(); i++ )
       {
@@ -3782,7 +3782,7 @@ struct hand_of_guldan_t: public warlock_spell_t
       if ( s -> chain_target == 0 )
         imp_event =  make_event<trigger_imp_event_t>( *sim, p(), floor( shards_used ), true);
 
-	    if ( maybe_ptr( p() -> dbc.ptr ) && p()->sets->has_set_bonus(WARLOCK_DEMONOLOGY, T21, B2))
+	    if ( p()->sets->has_set_bonus(WARLOCK_DEMONOLOGY, T21, B2))
       {
 		    for (int i = 0; i < shards_used; i++) 
         {
@@ -4194,7 +4194,7 @@ struct chaos_bolt_t: public warlock_spell_t
     duplicate -> travel_speed = travel_speed;
     add_child( duplicate );
 
-    if ( maybe_ptr( p->dbc.ptr ) && p->sets->has_set_bonus( WARLOCK_DESTRUCTION, T21, B4 ) )
+    if ( p->sets->has_set_bonus( WARLOCK_DESTRUCTION, T21, B4 ) )
     {
       flames_of_argus = new flames_of_argus_t( p );
       add_child( flames_of_argus );
@@ -4265,7 +4265,7 @@ struct chaos_bolt_t: public warlock_spell_t
         duplicate -> execute();
       }
     }
-    if ( maybe_ptr( p()->dbc.ptr ) && p()->sets->has_set_bonus( WARLOCK_DESTRUCTION, T21, B4 ) )
+    if ( p()->sets->has_set_bonus( WARLOCK_DESTRUCTION, T21, B4 ) )
     {
       double amount = s->result_amount;
 
@@ -5067,13 +5067,13 @@ struct call_dreadstalkers_t : public warlock_spell_t
         p() -> warlock_pet_list.dreadstalkers[i] -> summon( dreadstalker_duration );
         p()->procs.dreadstalker_debug->occur();
 
-        if ( maybe_ptr( p()->dbc.ptr ) && p()->sets->has_set_bonus( WARLOCK_DEMONOLOGY, T21, B4 ) )
+        if ( p()->sets->has_set_bonus( WARLOCK_DEMONOLOGY, T21, B4 ) )
         {
           p()->warlock_pet_list.dreadstalkers[i]->t21_4pc_reset = false;
           p()->warlock_pet_list.dreadstalkers[i]->t21_4pc_damage = false;
         }
 
-        if ( maybe_ptr( p()->dbc.ptr ) && p()->sets->has_set_bonus( WARLOCK_DEMONOLOGY, T21, B2 ))
+        if ( p()->sets->has_set_bonus( WARLOCK_DEMONOLOGY, T21, B2 ))
         { 
 		      p() -> warlock_pet_list.dreadstalkers[i] -> buffs.rage_of_guldan -> set_duration( dreadstalker_duration );
 		      p() -> warlock_pet_list.dreadstalkers[i] -> buffs.rage_of_guldan -> set_default_value( p() -> buffs.rage_of_guldan -> stack_value());
@@ -5588,6 +5588,9 @@ struct siphon_life_t : public warlock_spell_t
 
     if ( p() -> talents.malefic_grasp -> ok() && td -> dots_drain_soul -> is_ticking() )
       m *= 1.0 + malefic_grasp_damage_increase;
+
+	if (td->debuffs_tormented_agony->check())
+		m *= 1.0 + td->debuffs_tormented_agony->data().effectN(1).percent();
 
     return m;
   }
@@ -6932,7 +6935,7 @@ void warlock_t::create_buffs()
     .default_value( sets -> set( WARLOCK_DEMONOLOGY, T20, B4 ) -> effectN( 1 ).trigger() -> effectN( 1 ).percent() );
   buffs.rage_of_guldan = buff_creator_t(this, "rage_of_guldan", sets->set( WARLOCK_DEMONOLOGY, T21, B2 ) -> effectN( 1 ).trigger() )
 	  .duration( find_spell( 257926 ) -> duration() )
-	  .max_stack( maybe_ptr( dbc.ptr ) ? find_spell( 257926 ) -> max_stacks() : 1 )
+	  .max_stack( find_spell( 257926 ) -> max_stacks() )
 	  .default_value( find_spell( 257926 ) -> effectN( 1 ).base_value() )
 	  .refresh_behavior( BUFF_REFRESH_DURATION );
 

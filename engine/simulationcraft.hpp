@@ -471,7 +471,7 @@ struct gear_stats_t
     speed_rating += right.speed_rating;
     avoidance_rating += right.avoidance_rating;
     range::transform ( attribute, right.attribute, attribute.begin(), std::plus<double>() );
-    range::transform ( resource, right.resource, resource.begin(), std::plus<int>() );
+    range::transform ( resource, right.resource, resource.begin(), std::plus<double>() );
     return *this;
   }
 
@@ -1557,6 +1557,9 @@ struct sim_t : private sc_thread_t
   double current_error;
   double current_mean;
   int analyze_error_interval, analyze_number;
+  // Clean up memory for threads after iterating (defaults to no in normal operation, some options
+  // will force-enable the option)
+  bool cleanup_threads;
 
   sim_control_t* control;
   sim_t*      parent;
@@ -1984,6 +1987,7 @@ private:
   void print_spell_query();
   void enable_debug_seed();
   void disable_debug_seed();
+  bool requires_cleanup() const;
 };
 
 // Module ===================================================================

@@ -122,6 +122,9 @@ namespace item
   void vitality_resonator( special_effect_t&           );
   void terminus_signaling_beacon( special_effect_t&    );
   void sheath_of_asara( special_effect_t&              );
+  void seeping_scourgewing( special_effect_t&          );
+  void gorshalach_legacy( special_effect_t&            );
+  void forgefiends_fabricator( special_effect_t&       );
 
   // 7.2.0 Dungeon
   void dreadstone_of_endless_shadows( special_effect_t& );
@@ -146,6 +149,11 @@ namespace item
   Nighthold ---------------------------------
 
   Everything
+
+  Antorus -----------------------------------
+
+  Forgefiend's Fabricator
+  Gorshalach's Legacy (Partially implemented)
 
   Healer trinkets / other rubbish -----------
 
@@ -2166,6 +2174,177 @@ void item::sheath_of_asara( special_effect_t& effect )
   effect.proc_flags_ = PF_RANGED | PF_RANGED_ABILITY | PF_SPELL | PF_AOE_SPELL | PF_PERIODIC;
   effect.custom_buff = new shadow_blades_buff_t( effect );
   new dbc_proc_callback_t( effect.item, effect );
+}
+
+// Gorshalach's Legacy =====================================================
+struct echo_of_gorshalach_t : public proc_spell_t
+{
+   struct gorshalach_legacy_t : public proc_spell_t
+   {
+      gorshalach_legacy_t(const special_effect_t& effect) :
+         proc_spell_t("gorshalachs_legacy_1", effect.player, effect.player ->find_spell(253329), effect.item)
+      {
+      }
+      //Always crits
+      virtual double composite_crit_chance() const override { return 1.0; }
+   };
+
+   struct gorshalach_bigger_legacy_t : public proc_spell_t
+   {
+      gorshalach_bigger_legacy_t(const special_effect_t& effect) :
+         proc_spell_t("gorshalachs_legacy_2", effect.player, effect.player ->find_spell(255673), effect.item)
+      {
+      }
+      //Always crits
+      virtual double composite_crit_chance() const override { return 1.0; }
+   };
+
+   action_t* legacy;
+   action_t* legacy2;
+   buff_t* echo;
+
+   echo_of_gorshalach_t(const special_effect_t& effect) :
+      proc_spell_t("echo_of_gorshalach", effect.player, effect.player->find_spell(255672), effect.item),
+      legacy(create_proc_action<gorshalach_legacy_t>("gorshalachs_legacy_mh", effect)),
+      legacy2(create_proc_action<gorshalach_bigger_legacy_t>("gorshalachs_legacy_oh", effect))
+   {
+      //TODO: Whitelist this spell (255672) and use spelldata!
+      echo = buff_creator_t(effect.player, "echo_of_gorshalach")
+         .max_stack(15)
+         .duration(timespan_t::from_seconds(60));
+   }
+
+   void execute() override
+   {
+      echo -> increment();
+      //TODO: spell data being unhelpful, so hardcoding this for now
+      if ( echo -> stack() == echo -> max_stack() )
+      {
+         echo -> expire();
+         legacy -> execute();
+         legacy2 -> execute();
+      }
+   };
+};
+
+void item::gorshalach_legacy( special_effect_t& effect )
+{
+   effect.execute_action = create_proc_action<echo_of_gorshalach_t>("echo_of_gorshalach", effect);
+   new dbc_proc_callback_t(effect.player, effect);
+}
+
+// Seeping Scourgewing =====================================================
+struct shadow_strike_t: public proc_spell_t
+{
+  struct isolated_strike_t : public proc_spell_t
+  {
+    isolated_strike_t( const special_effect_t& effect ) :
+      proc_spell_t( "isolated_strike", effect.player, effect.player -> find_spell( 255609 ), effect.item )
+    {}
+  };
+
+  action_t* isolated_strike;
+  int target_radius;
+
+  shadow_strike_t( const special_effect_t& effect ) :
+    proc_spell_t( "shadow_strike", effect.player, effect.trigger(), effect.item ),
+    isolated_strike( create_proc_action<isolated_strike_t>( "isolated_strike", effect ) ),
+    target_radius( effect.driver() -> effectN( 1 ).base_value() )
+  {}
+
+  void execute() override
+  {
+    proc_spell_t::execute();
+
+    for ( const player_t* enemy : sim -> target_non_sleeping_list )
+    {
+      if ( enemy != target && target -> get_position_distance(enemy -> x_position, enemy -> y_position) < target_radius )
+      {
+        return; // There is another enemy near to our target.
+      }
+    }
+    isolated_strike -> execute();
+  }
+};
+
+void item::seeping_scourgewing( special_effect_t& effect )
+{
+   effect.execute_action = create_proc_action<shadow_strike_t>( "shadow_strike", effect );
+   new dbc_proc_callback_t( effect.player, effect );
+}
+
+// Forgefiend's Fabricator =================================================
+// TODO figure out a way to have multiple "mines out" and be able to have an
+// on-use force the mines to explode.
+// Mines get increased multipliers on explosion and not on cast 
+
+struct fire_mines_t : public spell_t
+{
+  timespan_t travel;
+  fire_mines_t( const special_effect_t& effect ) :
+    spell_t( "fire_mines", effect.player, effect.player -> find_spell( 253321 ) ),
+    travel( effect.player -> find_spell( 253320 ) -> duration() )
+  {
+    background = may_crit = true;
+    callbacks = false;
+    school = SCHOOL_FIRE;
+    base_dd_min = base_dd_max = player -> find_spell( 253321 ) -> effectN( 1 ).average( effect.item );
+    aoe = -1;
+    radius = player -> find_spell( 253321 ) -> effectN( 1 ).radius();
+  }
+
+  timespan_t travel_time() const override
+  {
+    // This is an incorrect implementation but want to have something mildy in for testing reasons
+    // Since the trinket leaves a bomb at the location and detonates after 15 seconds,
+    // to simulate the delay, giving the proc a 15 second travel time.
+    return travel;
+  }
+
+  virtual double calculate_direct_amount(action_state_t* s) const override
+  { return 0.0; }
+
+  virtual result_e calculate_result(action_state_t* s) const override
+  { return RESULT_NONE; }
+
+  virtual void impact( action_state_t* s ) override
+  {
+    // Probably not the right modeling but makes it so that bombs are snapshot 
+    // on explosion instead of at cast
+    snapshot_internal( s, snapshot_flags, amount_type( s ) );
+
+    s -> result = spell_base_t::calculate_result( s );
+    s -> result_amount = spell_base_t::calculate_direct_amount( s );
+
+    spell_t::impact( s );
+  }
+};
+
+struct fire_mines_driver_t : public proc_spell_t
+{
+  fire_mines_t* fire_mines;
+
+  fire_mines_driver_t( const special_effect_t& effect ) :
+    proc_spell_t( "fire_mines_driver", effect.player, effect.player -> find_spell( 256025 ), effect.item ),
+    fire_mines( new fire_mines_t( effect ) )
+  {
+    background = true;
+  }
+
+  void execute() override
+  {
+    proc_spell_t::execute();
+
+    // It appears that 2 mines get thrown out for every proc
+    for ( int i = 0; i < 2; i++ )
+      fire_mines -> execute();
+  }
+};
+
+void item::forgefiends_fabricator( special_effect_t& effect )
+{
+   effect.execute_action = create_proc_action<fire_mines_driver_t>( "fire_mines", effect );
+   new dbc_proc_callback_t( effect.player, effect );
 }
 
 // Toe Knee's Promise ======================================================
@@ -4425,6 +4604,7 @@ void item::moonlit_prism( special_effect_t& effect )
   effect2 -> proc_chance_ = 1.0;
   effect2 -> spell_id = effect.driver() -> id();
   effect2 -> cooldown_ = timespan_t::zero();
+  effect2 -> proc_flags_ = PF_RANGED | PF_RANGED_ABILITY | PF_SPELL | PF_AOE_SPELL;
   effect.player -> special_effects.push_back( effect2 );
 
   // Create callback; it will be enabled when the buff is active.
@@ -6305,6 +6485,9 @@ void unique_gear::register_special_effects_x7()
   register_special_effect( 253258, item::vitality_resonator        );
   register_special_effect( 255724, item::terminus_signaling_beacon );
   register_special_effect( 253263, item::sheath_of_asara           );
+  register_special_effect( 253323, item::seeping_scourgewing       );
+  register_special_effect( 253326, item::gorshalach_legacy         );
+  register_special_effect( 253310, item::forgefiends_fabricator    );
 
   /* Legion 7.2.0 Dungeon */
   register_special_effect( 238498, item::dreadstone_of_endless_shadows );

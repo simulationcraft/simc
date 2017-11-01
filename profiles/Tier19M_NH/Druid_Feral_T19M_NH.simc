@@ -64,6 +64,8 @@ actions.single_target+=/auto_attack
 actions.single_target+=/rake,if=buff.prowl.up|buff.shadowmeld.up
 actions.single_target+=/call_action_list,name=cooldowns
 actions.single_target+=/regrowth,if=combo_points=5&talent.bloodtalons.enabled&buff.bloodtalons.down&(!buff.incarnation.up|dot.rip.remains<8|dot.rake.remains<5)
+actions.single_target+=/regrowth,if=talent.bloodtalons.enabled&buff.bloodtalons.down&buff.apex_predator.up
+actions.single_target+=/ferocious_bite,max_energy=1,if=buff.apex_predator.up
 actions.single_target+=/run_action_list,name=st_finishers,if=combo_points>4
 actions.single_target+=/run_action_list,name=st_generators
 

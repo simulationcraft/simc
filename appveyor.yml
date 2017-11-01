@@ -3,18 +3,24 @@
 # Syntax for this file:
 # http://www.appveyor.com/docs/appveyor-yml
 
-# See http://msdn.microsoft.com/en-us/library/ms164311.aspx for
-# command-line options to MSBuild.
 
-# Speeding up a Visual Studio build.
-# http://blogs.msdn.com/b/vcblog/archive/2011/01/05/damn-my-vc-project-is-building-slower-in-vs2010-what-do-i-do-now-a-step-by-step-guide.aspx
+# Build worker image (VM template)
+image:
+- Visual Studio 2015
+#- Visual Studio 2017
 
+# fetch repository as zip archive
 shallow_clone: true
 
+# build platform, i.e. x86, x64, Any CPU. This setting is optional.
 platform: x64
 
-build_script:
-  - MSBuild.exe simc_vs2013.sln /t:simc
+# build Configuration, i.e. Debug, Release, etc.
+configuration: WebEngine
+
+# Custom build Configuration, i.e. Debug, Release, etc.
+build_script:	
+  - MSBuild.exe simc_vs2015.sln /t:simc /maxcpucount
 
 test_script:
   ## pass
