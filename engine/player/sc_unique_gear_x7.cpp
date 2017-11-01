@@ -123,7 +123,8 @@ namespace item
   void terminus_signaling_beacon( special_effect_t&    );
   void sheath_of_asara( special_effect_t&              );
   void seeping_scourgewing( special_effect_t&          );
-  void gorshalach_legacy( special_effect_t&           );
+  void gorshalach_legacy( special_effect_t&            );
+  void forgefiends_fabricator( special_effect_t&       );
 
   // 7.2.0 Dungeon
   void dreadstone_of_endless_shadows( special_effect_t& );
@@ -152,8 +153,7 @@ namespace item
   Antorus -----------------------------------
 
   Forgefiend's Fabricator
-  Seeping Scourgewing
-  Gorshalach's Legacy
+  Gorshalach's Legacy (Partially implemented)
 
   Healer trinkets / other rubbish -----------
 
@@ -2216,13 +2216,13 @@ struct echo_of_gorshalach_t : public proc_spell_t
 
    void execute() override
    {
-      echo->increment();
+      echo -> increment();
       //TODO: spell data being unhelpful, so hardcoding this for now
-      if (echo->stack() == 15)
+      if ( echo -> stack() == echo -> max_stack() )
       {
-         echo->expire();
-         legacy->execute();
-         legacy2->execute();
+         echo -> expire();
+         legacy -> execute();
+         legacy2 -> execute();
       }
    };
 };
@@ -2270,6 +2270,39 @@ struct shadow_strike_t: public proc_spell_t
 void item::seeping_scourgewing( special_effect_t& effect )
 {
    effect.execute_action = create_proc_action<shadow_strike_t>( "shadow_strike", effect );
+   new dbc_proc_callback_t( effect.player, effect );
+}
+
+// Forgefiend's Fabricator =================================================
+// TODO figure out a way to have multiple "mines out" and be able to have an
+// on-use force the mines to explode.
+// Mines get increased multipliers on explosion and not on cast 
+
+struct forgefiends_fabricator_t : public proc_spell_t
+{
+  timespan_t travel;
+  forgefiends_fabricator_t( const special_effect_t& effect ) :
+    proc_spell_t( "fire_mines", effect.player, effect.player -> find_spell( 253321 ), effect.item ),
+    travel ( effect.player -> find_spell( 253320 ) -> duration() )
+  {
+    background = may_crit = true;
+    callbacks = false;
+    base_dd_min = base_dd_max = player -> find_spell( 253321 ) -> effectN( 1 ).average( effect.item );
+    aoe = -1;
+  }
+
+  timespan_t travel_time() const override
+  {
+    // This is an incorrect implementation but want to have something mildy in for testing reasons
+    // Since the trinket leaves a bomb at the location and detonates after 15 seconds,
+    // to simulate the delay, giving the proc a 15 second travel time.
+    return travel;
+  }
+};
+
+void item::forgefiends_fabricator( special_effect_t& effect )
+{
+   effect.execute_action = create_proc_action<forgefiends_fabricator_t>( "forgefiends_fabricator", effect );
    new dbc_proc_callback_t( effect.player, effect );
 }
 
@@ -6413,6 +6446,7 @@ void unique_gear::register_special_effects_x7()
   register_special_effect( 253263, item::sheath_of_asara           );
   register_special_effect( 253323, item::seeping_scourgewing       );
   register_special_effect( 253326, item::gorshalach_legacy         );
+  register_special_effect( 253310, item::forgefiends_fabricator    );
 
   /* Legion 7.2.0 Dungeon */
   register_special_effect( 238498, item::dreadstone_of_endless_shadows );
