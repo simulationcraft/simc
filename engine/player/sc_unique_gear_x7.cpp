@@ -2278,17 +2278,19 @@ void item::seeping_scourgewing( special_effect_t& effect )
 // on-use force the mines to explode.
 // Mines get increased multipliers on explosion and not on cast 
 
-struct forgefiends_fabricator_t : public proc_spell_t
+struct fire_mines_t : public spell_t
 {
   timespan_t travel;
-  forgefiends_fabricator_t( const special_effect_t& effect ) :
-    proc_spell_t( "fire_mines", effect.player, effect.player -> find_spell( 253321 ), effect.item ),
-    travel ( effect.player -> find_spell( 253320 ) -> duration() )
+  fire_mines_t( const special_effect_t& effect ) :
+    spell_t( "fire_mines", effect.player, effect.player -> find_spell( 253321 ) ),
+    travel( effect.player -> find_spell( 253320 ) -> duration() )
   {
     background = may_crit = true;
     callbacks = false;
+    school = SCHOOL_FIRE;
     base_dd_min = base_dd_max = player -> find_spell( 253321 ) -> effectN( 1 ).average( effect.item );
     aoe = -1;
+    radius = player -> find_spell( 253321 ) -> effectN( 1 ).radius();
   }
 
   timespan_t travel_time() const override
@@ -2298,11 +2300,50 @@ struct forgefiends_fabricator_t : public proc_spell_t
     // to simulate the delay, giving the proc a 15 second travel time.
     return travel;
   }
+
+  virtual double calculate_direct_amount(action_state_t* s) const override
+  { return 0.0; }
+
+  virtual result_e calculate_result(action_state_t* s) const override
+  { return RESULT_NONE; }
+
+  virtual void impact( action_state_t* s ) override
+  {
+    // Probably not the right modeling but makes it so that bombs are snapshot 
+    // on explosion instead of at cast
+    snapshot_internal( s, snapshot_flags, amount_type( s ) );
+
+    s -> result = spell_base_t::calculate_result( s );
+    s -> result_amount = spell_base_t::calculate_direct_amount( s );
+
+    spell_t::impact( s );
+  }
+};
+
+struct fire_mines_driver_t : public proc_spell_t
+{
+  fire_mines_t* fire_mines;
+
+  fire_mines_driver_t( const special_effect_t& effect ) :
+    proc_spell_t( "fire_mines_driver", effect.player, effect.player -> find_spell( 256025 ), effect.item ),
+    fire_mines( new fire_mines_t( effect ) )
+  {
+    background = true;
+  }
+
+  void execute() override
+  {
+    proc_spell_t::execute();
+
+    // It appears that 2 mines get thrown out for every proc
+    for ( int i = 0; i < 2; i++ )
+      fire_mines -> execute();
+  }
 };
 
 void item::forgefiends_fabricator( special_effect_t& effect )
 {
-   effect.execute_action = create_proc_action<forgefiends_fabricator_t>( "forgefiends_fabricator", effect );
+   effect.execute_action = create_proc_action<fire_mines_driver_t>( "fire_mines", effect );
    new dbc_proc_callback_t( effect.player, effect );
 }
 
