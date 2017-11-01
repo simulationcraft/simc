@@ -224,6 +224,9 @@ public:
   int blessing_of_wisdom_count;
   bool allow_shimmer_lance;
 
+  extended_sample_data_t* burn_duration_history;
+  extended_sample_data_t* burn_initial_mana;
+
   // Cached actions
   struct actions_t
   {
@@ -618,6 +621,8 @@ public:
   virtual void        combat_end() override;
   virtual std::string create_profile( save_e ) override;
   virtual void        copy_from( player_t* ) override;
+  virtual void        merge( player_t& ) override;
+  virtual void        analyze( sim_t& ) override;
 
   target_specific_t<mage_td_t> target_data;
 
@@ -6042,6 +6047,7 @@ struct start_burn_phase_t : public action_t
       return;
     }
 
+    p -> burn_initial_mana -> add( p -> resources.current[ RESOURCE_MANA ] / p -> resources.max[ RESOURCE_MANA ] * 100);
     p -> uptimes.burn_phase -> update( true, sim -> current_time() );
     p -> uptimes.conserve_phase -> update( false, sim -> current_time() );
   }
@@ -6074,6 +6080,8 @@ struct stop_burn_phase_t : public action_t
   virtual void execute() override
   {
     mage_t* p = debug_cast<mage_t*>( player );
+
+    p -> burn_duration_history -> add( p -> burn_phase.duration( sim -> current_time() ).total_seconds() );
 
     bool success = p -> burn_phase.disable( sim -> current_time() );
     if ( !success )
@@ -6576,6 +6584,8 @@ mage_t::mage_t( sim_t* sim, const std::string& name, race_e r ) :
   firestarter_time( timespan_t::zero() ),
   allow_shimmer_lance( false ),
   blessing_of_wisdom_count( 0 ),
+  burn_duration_history( nullptr ),
+  burn_initial_mana( nullptr ),
   action( actions_t() ),
   benefits( benefits_t() ),
   buffs( buffs_t() ),
@@ -6637,6 +6647,8 @@ mage_t::~mage_t()
   delete benefits.arcane_missiles;
   delete benefits.fingers_of_frost;
   delete benefits.ray_of_frost;
+  delete burn_duration_history;
+  delete burn_initial_mana;
 }
 
 /// Touch of the Magi explosion trigger
@@ -6880,6 +6892,29 @@ void mage_t::copy_from( player_t* source )
   firestarter_time          = p -> firestarter_time;
   blessing_of_wisdom_count  = p -> blessing_of_wisdom_count;
   allow_shimmer_lance       = p -> allow_shimmer_lance;
+}
+
+void mage_t::merge( player_t& other )
+{
+  player_t::merge( other );
+
+  mage_t& mage = dynamic_cast< mage_t& >( other );
+
+  if ( specialization() == MAGE_ARCANE )
+  {
+    burn_duration_history -> merge ( *mage.burn_duration_history );
+    burn_initial_mana -> merge( *mage.burn_initial_mana );
+  }
+}
+
+void mage_t::analyze( sim_t& s )
+{
+  player_t::analyze( s );
+
+  if ( specialization() == MAGE_ARCANE ) {
+    burn_duration_history -> analyze();
+    burn_initial_mana -> analyze();
+  }
 }
 
 // mage_t::create_pets ========================================================
@@ -7367,6 +7402,9 @@ void mage_t::init_uptimes()
   {
     uptimes.burn_phase = get_uptime( "Burn Phase" );
     uptimes.conserve_phase = get_uptime( "Conserve Phase" );
+
+    burn_duration_history = new extended_sample_data_t( name_str + "_Burn_Duration_History", false );
+    burn_initial_mana = new extended_sample_data_t( name_str + "_Burn_Initial_Mana", false );
   }
 }
 
@@ -8664,20 +8702,87 @@ public:
 
   }
 
-  virtual void html_customsection( report::sc_html_stream& /* os*/ ) override
+  virtual void html_customsection( report::sc_html_stream& os ) override
   {
-    (void) p;
-    /*// Custom Class Section
-    os << "\t\t\t\t<div class=\"player-section custom_section\">\n"
-        << "\t\t\t\t\t<h3 class=\"toggle open\">Custom Section</h3>\n"
-        << "\t\t\t\t\t<div class=\"toggle-content\">\n";
-
-    os << p.name();
-
-    os << "\t\t\t\t\t\t</div>\n" << "\t\t\t\t\t</div>\n";*/
+    if ( p.specialization() == MAGE_ARCANE )
+    {
+      html_customsection_burn_phases( os );
+    }
   }
 private:
   mage_t& p;
+
+  void html_customsection_burn_phases( report::sc_html_stream& os )
+  {
+    os << "<div class=\"player-section custom_section\">"
+       << "<h3 class=\"toggle open\">Burn Phases</h3>"
+       << "<div class=\"toggle-content\">";
+
+    os << "<p>Burn phase duration tracks the amount of time spent in each burn phase. This is defined as the time between a "
+       << "start_burn_phase and stop_burn_phase action being executed. Note that \"execute\" burn phases, i.e., the "
+       << "final burn of a fight, is also included.</p>";
+
+    os << "<div style=\"display: flex;\">"
+       << "<table class=\"sc\" style=\"margin-top: 5px;\">"
+       << "<thead>"
+       << "<tr>"
+       << "<th>Burn Phase Duration</th>"
+       << "</tr>"
+       << "<tbody>";
+
+    os.format("<tr><td class=\"left\">Count</td><td>%d</td></tr>", p.burn_duration_history -> count() );
+    os.format("<tr><td class=\"left\">Minimum</td><td>%.3f</td></tr>", p.burn_duration_history -> min() );
+    os.format("<tr><td class=\"left\">5<sup>th</sup> percentile</td><td>%.3f</td></tr>", p.burn_duration_history -> percentile( 0.05 ) );
+    os.format("<tr><td class=\"left\">Mean</td><td>%.3f</td></tr>", p.burn_duration_history -> mean() );
+    os.format("<tr><td class=\"left\">95<sup>th</sup> percentile</td><td>%.3f</td></tr>", p.burn_duration_history -> percentile( 0.95 ) );
+    os.format("<tr><td class=\"left\">Max</td><td>%.3f</td></tr>", p.burn_duration_history -> max() );
+    os.format("<tr><td class=\"left\">Variance</td><td>%.3f</td></tr>", p.burn_duration_history -> variance );
+    os.format("<tr><td class=\"left\">Mean Variance</td><td>%.3f</td></tr>", p.burn_duration_history -> mean_variance );
+    os.format("<tr><td class=\"left\">Mean Std. Dev</td><td>%.3f</td></tr>", p.burn_duration_history -> mean_std_dev );
+
+    os << "</tbody>"
+       << "</table>";
+
+    highchart::histogram_chart_t burn_duration_history_chart( highchart::build_id( p, "burn_duration_history" ), *p.sim );
+    if ( chart::generate_distribution(
+        burn_duration_history_chart, &p, p.burn_duration_history -> distribution, "Burn Duration",
+        p.burn_duration_history -> mean(),
+        p.burn_duration_history -> min(),
+        p.burn_duration_history -> max() ) )
+    {
+      burn_duration_history_chart.set( "tooltip.headerFormat", "<b>{point.key}</b> s<br/>" );
+      burn_duration_history_chart.set( "chart.width", "575" );
+      os << burn_duration_history_chart.to_target_div();
+      p.sim -> add_chart_data( burn_duration_history_chart );
+    }
+
+    os << "</div>";
+
+    os << "<p>Mana at burn start is the mana level recorded (in percentage of total mana) when a start_burn_phase command is executed.</p>";
+
+    os << "<table class=\"sc\">"
+       << "<thead>"
+       << "<tr>"
+       << "<th>Mana at Burn Start</th>"
+       << "</tr>"
+       << "<tbody>";
+
+    os.format("<tr><td class=\"left\">Count</td><td>%d</td></tr>", p.burn_initial_mana -> count() );
+    os.format("<tr><td class=\"left\">Minimum</td><td>%.3f</td></tr>", p.burn_initial_mana -> min() );
+    os.format("<tr><td class=\"left\">5<sup>th</sup> percentile</td><td>%.3f</td></tr>", p.burn_initial_mana -> percentile( 0.05 ) );
+    os.format("<tr><td class=\"left\">Mean</td><td>%.3f</td></tr>", p.burn_initial_mana -> mean() );
+    os.format("<tr><td class=\"left\">95<sup>th</sup> percentile</td><td>%.3f</td></tr>", p.burn_initial_mana -> percentile( 0.95 ) );
+    os.format("<tr><td class=\"left\">Max</td><td>%.3f</td></tr>", p.burn_initial_mana -> max() );
+    os.format("<tr><td class=\"left\">Variance</td><td>%.3f</td></tr>", p.burn_initial_mana -> variance );
+    os.format("<tr><td class=\"left\">Mean Variance</td><td>%.3f</td></tr>", p.burn_initial_mana -> mean_variance );
+    os.format("<tr><td class=\"left\">Mean Std. Dev</td><td>%.3f</td></tr>", p.burn_initial_mana -> mean_std_dev );
+
+    os << "</tbody>"
+       << "</table>";
+
+    os << "</div>"
+       << "</div>";
+  }
 };
 // Custom Gear ==============================================================
 using namespace unique_gear;
