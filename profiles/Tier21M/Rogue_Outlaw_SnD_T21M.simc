@@ -100,7 +100,7 @@ legs=pants_of_the_dashing_scoundrel,id=152164,bonus_id=3612/1502
 feet=vicious_flamepaws,id=151983,bonus_id=3612/1502
 finger1=insignia_of_ravenholdt,id=137049,bonus_id=3630,gems=200versatility,enchant=binding_of_versatility
 finger2=sullied_seal_of_the_pantheon,id=151972,bonus_id=3612/1502,enchant=binding_of_versatility
-trinket1=shadowsinged_fang,id=151968,bonus_id=3612/1502
+trinket1=gorshalachs_legacy,id=152093,bonus_id=3612/1502
 trinket2=golganneths_vitality,id=154174,ilevel=1000
 main_hand=the_dreadblades,id=128872,bonus_id=742,gem_id=152028/155855/155853,relic_id=3612:1502/3612:1512/3612:1512
 off_hand=the_dreadblades,id=134552
@@ -110,7 +110,7 @@ off_hand=the_dreadblades,id=134552
 # gear_agility=38594
 # gear_stamina=61104
 # gear_crit_rating=8953
-# gear_haste_rating=5993
+# gear_haste_rating=7470
 # gear_mastery_rating=8691
 # gear_versatility_rating=8115
 # gear_armor=2979

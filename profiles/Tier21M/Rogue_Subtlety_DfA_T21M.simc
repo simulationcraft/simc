@@ -113,7 +113,7 @@ legs=pants_of_the_dashing_scoundrel,id=152164,bonus_id=3612/1502
 feet=vicious_flamepaws,id=151983,bonus_id=3612/1502
 finger1=band_of_the_sargerite_smith,id=152064,bonus_id=3612/1502,enchant=binding_of_versatility
 finger2=sullied_seal_of_the_pantheon,id=151972,bonus_id=3612/1502,enchant=binding_of_versatility
-trinket1=shadowsinged_fang,id=151968,bonus_id=3612/1502
+trinket1=seeping_scourgewing,id=151964,bonus_id=3612/1502
 trinket2=golganneths_vitality,id=154174,ilevel=1000
 main_hand=fangs_of_the_devourer,id=128476,bonus_id=743,gem_id=155848/152055/155848,relic_id=3612:1512/3612:1502/3612:1512
 off_hand=fangs_of_the_devourer,id=128479
@@ -125,7 +125,7 @@ off_hand=fangs_of_the_devourer,id=128479
 # gear_crit_rating=8340
 # gear_haste_rating=1054
 # gear_mastery_rating=14790
-# gear_versatility_rating=7000
+# gear_versatility_rating=8477
 # gear_armor=3013
 # set_bonus=tier21_2pc=1
 # set_bonus=tier21_4pc=1

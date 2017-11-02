@@ -77,7 +77,7 @@ legs=fanged_slayers_legguards,id=147173,bonus_id=1512/3563
 feet=depraved_machinists_footpads,id=152412,bonus_id=3612/1502
 finger1=insignia_of_ravenholdt,id=137049,bonus_id=3630,gems=200crit,enchant=binding_of_critical_strike
 finger2=seal_of_the_portalmaster,id=152063,bonus_id=3612/1502,enchant=binding_of_critical_strike
-trinket1=shadowsinged_fang,id=151968,bonus_id=3612/1502
+trinket1=seeping_scourgewing,id=151964,bonus_id=3612/1502
 trinket2=golganneths_vitality,id=154174,ilevel=1000
 main_hand=the_dreadblades,id=128872,bonus_id=742,gem_id=152028/155855/155853,relic_id=3612:1502/3612:1512/3612:1512
 off_hand=the_dreadblades,id=134552
@@ -106,7 +106,7 @@ legs=pants_of_the_dashing_scoundrel,id=152164,bonus_id=3612/1502
 feet=vicious_flamepaws,id=151983,bonus_id=3612/1502
 finger1=insignia_of_ravenholdt,id=137049,bonus_id=3630,gems=200versatility,enchant=binding_of_versatility
 finger2=sullied_seal_of_the_pantheon,id=151972,bonus_id=3612/1502,enchant=binding_of_versatility
-trinket1=shadowsinged_fang,id=151968,bonus_id=3612/1502
+trinket1=gorshalachs_legacy,id=152093,bonus_id=3612/1502
 trinket2=golganneths_vitality,id=154174,ilevel=1000
 main_hand=the_dreadblades,id=128872,bonus_id=742,gem_id=152028/155855/155853,relic_id=3612:1502/3612:1512/3612:1512
 off_hand=the_dreadblades,id=134552
@@ -134,7 +134,7 @@ legs=pants_of_the_dashing_scoundrel,id=152164,bonus_id=3612/1502
 feet=vicious_flamepaws,id=151983,bonus_id=3612/1502
 finger1=band_of_the_sargerite_smith,id=152064,bonus_id=3612/1502,enchant=binding_of_versatility
 finger2=sullied_seal_of_the_pantheon,id=151972,bonus_id=3612/1502,enchant=binding_of_versatility
-trinket1=shadowsinged_fang,id=151968,bonus_id=3612/1502
+trinket1=seeping_scourgewing,id=151964,bonus_id=3612/1502
 trinket2=golganneths_vitality,id=154174,ilevel=1000
 main_hand=fangs_of_the_devourer,id=128476,bonus_id=743,gem_id=155848/152055/155848,relic_id=3612:1512/3612:1502/3612:1512
 off_hand=fangs_of_the_devourer,id=128479
@@ -162,7 +162,7 @@ legs=pants_of_the_dashing_scoundrel,id=152164,bonus_id=3612/1502
 feet=vicious_flamepaws,id=151983,bonus_id=3612/1502
 finger1=band_of_the_sargerite_smith,id=152064,bonus_id=3612/1502,enchant=binding_of_versatility
 finger2=sullied_seal_of_the_pantheon,id=151972,bonus_id=3612/1502,enchant=binding_of_versatility
-trinket1=shadowsinged_fang,id=151968,bonus_id=3612/1502
+trinket1=seeping_scourgewing,id=151964,bonus_id=3612/1502
 trinket2=golganneths_vitality,id=154174,ilevel=1000
 main_hand=fangs_of_the_devourer,id=128476,bonus_id=743,gem_id=155848/152055/155848,relic_id=3612:1512/3612:1502/3612:1512
 off_hand=fangs_of_the_devourer,id=128479
