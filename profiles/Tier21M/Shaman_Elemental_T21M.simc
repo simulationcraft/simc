@@ -6,12 +6,12 @@ role=spell
 position=back
 talents=3001331
 artifact=40:0:0:0:0:291:1:292:1:293:1:294:1:295:1:296:1:297:1:298:4:299:4:300:4:301:4:302:4:303:4:304:4:305:4:306:4:1350:1:1387:1:1589:4:1590:1:1591:1:1592:24:1683:1
-crucible=1739:3:1771:3:1589:3
+crucible=1739:3:1589:3:1777:3
 
 # Default consumables
 potion=prolonged_power
 flask=whispered_pact
-food=lavish_suramar_feast
+food=hungry_magister
 augmentation=defiled
 
 # This default action priority list is automatically created based on your character.
@@ -140,31 +140,31 @@ actions.single_lr+=/flame_shock,moving=1,target_if=refreshable
 actions.single_lr+=/earth_shock,moving=1
 actions.single_lr+=/flame_shock,moving=1,if=movement.distance>6
 
-head=headdress_of_venerated_spirits,id=152169,ilevel=960
+head=helm_of_the_awakened_soul,id=152423,ilevel=970
 neck=chain_of_the_unmaker,id=152283,ilevel=970,enchant=mark_of_the_claw
 shoulders=pauldrons_of_venerated_spirits,id=152171,ilevel=960
-back=greatcloak_of_the_dark_pantheon,id=152062,ilevel=960,enchant=binding_of_intellect
+back=drape_of_venerated_spirits,id=152167,ilevel=960,enchant=200int
 chest=robes_of_venerated_spirits,id=152166,ilevel=960
-wrists=realitysplitting_wristguards,id=152008,ilevel=960
+wrists=scalding_shatterguards,id=152280,ilevel=960
 hands=smoldering_heart,id=151819,ilevel=1000
 waist=worldravager_waistguard,id=152683,ilevel=960
 legs=leggings_of_venerated_spirits,id=152170,ilevel=960
 feet=the_deceivers_blood_pact,id=137035,ilevel=1000
-finger1=zealous_tormentors_ring,id=152284,ilevel=960,enchant=binding_of_critical_strike
-finger2=band_of_the_sargerite_smith,id=152064,ilevel=960,enchant=binding_of_critical_strike
+finger1=sullied_seal_of_the_pantheon,id=151972,ilevel=970,enchant=200crit
+finger2=band_of_the_sargerite_smith,id=152064,ilevel=960,enchant=200crit
 trinket1=acrid_catalyst_injector,id=151955,ilevel=960
 trinket2=amanthuls_vision,id=154172,ilevel=1000
 main_hand=the_fist_of_raden,id=128935,bonus_id=744,gem_id=152059/155850/152059,relic_ilevel=960/970/960
 off_hand=the_highkeepers_ward,id=128936
 
 # Gear Summary
-# gear_ilvl=972.25
-# gear_stamina=62017
-# gear_intellect=66691
-# gear_crit_rating=14051
-# gear_haste_rating=12542
-# gear_mastery_rating=6333
-# gear_versatility_rating=3665
-# gear_armor=3647
+# gear_ilvl=973.50
+# gear_stamina=62886
+# gear_intellect=67062
+# gear_crit_rating=11831
+# gear_haste_rating=9060
+# gear_mastery_rating=11322
+# gear_versatility_rating=4719
+# gear_armor=3662
 # set_bonus=tier21_2pc=1
 # set_bonus=tier21_4pc=1
