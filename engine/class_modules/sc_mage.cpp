@@ -442,6 +442,9 @@ public:
     luxurious_sample_data_t* glacial_spike_icicles;
 
     extended_sample_data_t* icy_veins_duration;
+
+    extended_sample_data_t* burn_duration_history;
+    extended_sample_data_t* burn_initial_mana;
   } sample_data;
 
   // Specializations
@@ -551,6 +554,11 @@ public:
     const spell_data_t* comet_storm;
   } talents;
 
+  struct uptimes_t {
+    uptime_t* burn_phase;
+    uptime_t* conserve_phase;
+  } uptimes;
+
   // Artifact
   struct artifact_spell_data_t
   {
@@ -641,6 +649,7 @@ public:
   virtual void        init_gains() override;
   virtual void        init_procs() override;
   virtual void        init_benefits() override;
+  virtual void        init_uptimes() override;
   virtual void        init_assessors() override;
   virtual void        invalidate_cache( cache_e c ) override;
   virtual void        init_resources( bool force ) override;
@@ -669,6 +678,8 @@ public:
   virtual double      temporary_movement_modifier() const override;
   virtual double      passive_movement_modifier() const override;
   virtual void        arise() override;
+  virtual void        combat_begin() override;
+  virtual void        combat_end() override;
   virtual std::string create_profile( save_e ) override;
   virtual void        copy_from( player_t* ) override;
   virtual void        merge( player_t& ) override;
@@ -1417,7 +1428,7 @@ struct icy_veins_buff_t : public haste_buff_t
     buff_duration += p -> talents.thermal_void -> effectN( 2 ).time_value();
   }
 
-  virtual void expire_override( int stacks, timespan_t duration ) override
+  virtual void expire_override( int /* stacks */, timespan_t duration ) override
   {
     auto mage = debug_cast<mage_t*>( player );
     mage -> buffs.lady_vashjs_grasp -> expire();
@@ -6154,6 +6165,10 @@ struct start_burn_phase_t : public action_t
       sim -> cancel();
       return;
     }
+
+    p -> sample_data.burn_initial_mana -> add( p -> resources.current[ RESOURCE_MANA ] / p -> resources.max[ RESOURCE_MANA ] * 100);
+    p -> uptimes.burn_phase -> update( true, sim -> current_time() );
+    p -> uptimes.conserve_phase -> update( false, sim -> current_time() );
   }
 
   virtual bool ready() override
@@ -6185,6 +6200,8 @@ struct stop_burn_phase_t : public action_t
   {
     mage_t* p = debug_cast<mage_t*>( player );
 
+    p -> sample_data.burn_duration_history -> add( p -> burn_phase.duration( sim -> current_time() ).total_seconds() );
+
     bool success = p -> burn_phase.disable( sim -> current_time() );
     if ( !success )
     {
@@ -6194,6 +6211,9 @@ struct stop_burn_phase_t : public action_t
       sim -> cancel();
       return;
     }
+
+    p -> uptimes.burn_phase -> update( false, sim -> current_time() );
+    p -> uptimes.conserve_phase -> update( true, sim -> current_time() );
   }
 
   virtual bool ready() override
@@ -6678,8 +6698,8 @@ mage_t::mage_t( sim_t* sim, const std::string& name, race_e r ) :
   distance_from_rune( 0.0 ),
   global_cinder_count( 0.0 ),
   firestarter_time( timespan_t::zero() ),
-  allow_shimmer_lance( false ),
   blessing_of_wisdom_count( 0 ),
+  allow_shimmer_lance( false ),
   action( actions_t() ),
   benefits( benefits_t() ),
   buffs( buffs_t() ),
@@ -6745,6 +6765,9 @@ mage_t::~mage_t()
   delete benefits.magtheridons_might;
   delete benefits.ray_of_frost;
   delete benefits.zannesu_journey;
+
+  delete sample_data.burn_duration_history;
+  delete sample_data.burn_initial_mana;
 
   delete sample_data.blizzard;
   delete sample_data.frozen_veins;
@@ -7002,11 +7025,28 @@ void mage_t::merge( player_t& other )
 {
   player_t::merge( other );
 
-  mage_t& mage = dynamic_cast<mage_t&>( other );
+  mage_t& mage = dynamic_cast< mage_t& >( other );
 
-  if ( talents.thermal_void -> ok() )
+  switch ( specialization() )
   {
-    sample_data.icy_veins_duration -> merge( *mage.sample_data.icy_veins_duration );
+    case MAGE_ARCANE:
+      sample_data.burn_duration_history -> merge ( *mage.sample_data.burn_duration_history );
+      sample_data.burn_initial_mana -> merge( *mage.sample_data.burn_initial_mana );
+      break;
+
+    case MAGE_FIRE:
+      break;
+
+    case MAGE_FROST:
+      if ( talents.thermal_void -> ok() )
+      {
+        sample_data.icy_veins_duration -> merge( *mage.sample_data.icy_veins_duration );
+      }
+      break;
+
+    default:
+      // Inhibit warnings from -Wswitch
+      break;
   }
 }
 
@@ -7016,9 +7056,26 @@ void mage_t::analyze( sim_t& s )
 {
   player_t::analyze( s );
 
-  if ( talents.thermal_void -> ok() )
+  switch ( specialization() )
   {
-    sample_data.icy_veins_duration -> analyze();
+    case MAGE_ARCANE:
+      sample_data.burn_duration_history -> analyze();
+      sample_data.burn_initial_mana -> analyze();
+      break;
+
+    case MAGE_FIRE:
+      break;
+
+    case MAGE_FROST:
+      if ( talents.thermal_void -> ok() )
+      {
+        sample_data.icy_veins_duration -> analyze();
+      }
+      break;
+
+    default:
+      // Inhibit warnings from -Wswitch
+      break;
   }
 }
 
@@ -7472,7 +7529,6 @@ void mage_t::init_resources( bool force )
     recalculate_resource_max( RESOURCE_MANA );
   }
 }
-// mage_t::init_uptimes =====================================================
 
 void mage_t::init_benefits()
 {
@@ -7529,6 +7585,20 @@ void mage_t::init_benefits()
       benefits.zannesu_journey =
         new buff_stack_benefit_t( buffs.zannesu_journey, "Blizzard +" );
     }
+  }
+}
+
+void mage_t::init_uptimes()
+{
+  player_t::init_uptimes();
+
+  if ( specialization() == MAGE_ARCANE )
+  {
+    uptimes.burn_phase = get_uptime( "Burn Phase" );
+    uptimes.conserve_phase = get_uptime( "Conserve Phase" );
+
+    sample_data.burn_duration_history = new extended_sample_data_t( name_str + "_Burn_Duration_History", false );
+    sample_data.burn_initial_mana = new extended_sample_data_t( name_str + "_Burn_Initial_Mana", false );
   }
 }
 
@@ -8448,6 +8518,28 @@ void mage_t::arise()
   }
 }
 
+void mage_t::combat_begin()
+{
+  player_t::combat_begin();
+
+  if ( specialization() == MAGE_ARCANE )
+  {
+    uptimes.burn_phase -> update( false, sim -> current_time() );
+    uptimes.conserve_phase -> update( true, sim -> current_time() );
+  }
+}
+
+void mage_t::combat_end()
+{
+  player_t::combat_end();
+
+  if ( specialization() == MAGE_ARCANE )
+  {
+    uptimes.burn_phase -> update( false, sim -> current_time() );
+    uptimes.conserve_phase -> update( false, sim -> current_time() );
+  }
+}
+
 // mage_t::create_expression ================================================
 
 expr_t* mage_t::create_expression( action_t* a, const std::string& name_str )
@@ -8825,11 +8917,102 @@ public:
     if ( p.sim -> report_details == 0 )
       return;
 
-    if ( p.talents.thermal_void -> ok() )
-      html_customsection_icy_veins( os );
+    switch ( p.specialization() )
+    {
+      case MAGE_ARCANE:
+        html_customsection_burn_phases( os );
+        break;
+
+      case MAGE_FIRE:
+        break;
+
+      case MAGE_FROST:
+        if ( p.talents.thermal_void -> ok() )
+        {
+          html_customsection_icy_veins( os );
+        }
+
+        break;
+
+      default:
+        // Inhibit warnings from -Wswitch
+        break;
+    }
   }
 private:
   mage_t& p;
+
+  void html_customsection_burn_phases( report::sc_html_stream& os )
+  {
+    os << "<div class=\"player-section custom_section\">"
+       << "<h3 class=\"toggle open\">Burn Phases</h3>"
+       << "<div class=\"toggle-content\">";
+
+    os << "<p>Burn phase duration tracks the amount of time spent in each burn phase. This is defined as the time between a "
+       << "start_burn_phase and stop_burn_phase action being executed. Note that \"execute\" burn phases, i.e., the "
+       << "final burn of a fight, is also included.</p>";
+
+    os << "<div style=\"display: flex;\">"
+       << "<table class=\"sc\" style=\"margin-top: 5px;\">"
+       << "<thead>"
+       << "<tr>"
+       << "<th>Burn Phase Duration</th>"
+       << "</tr>"
+       << "<tbody>";
+
+    os.format("<tr><td class=\"left\">Count</td><td>%d</td></tr>", p.sample_data.burn_duration_history -> count() );
+    os.format("<tr><td class=\"left\">Minimum</td><td>%.3f</td></tr>", p.sample_data.burn_duration_history -> min() );
+    os.format("<tr><td class=\"left\">5<sup>th</sup> percentile</td><td>%.3f</td></tr>", p.sample_data.burn_duration_history -> percentile( 0.05 ) );
+    os.format("<tr><td class=\"left\">Mean</td><td>%.3f</td></tr>", p.sample_data.burn_duration_history -> mean() );
+    os.format("<tr><td class=\"left\">95<sup>th</sup> percentile</td><td>%.3f</td></tr>", p.sample_data.burn_duration_history -> percentile( 0.95 ) );
+    os.format("<tr><td class=\"left\">Max</td><td>%.3f</td></tr>", p.sample_data.burn_duration_history -> max() );
+    os.format("<tr><td class=\"left\">Variance</td><td>%.3f</td></tr>", p.sample_data.burn_duration_history -> variance );
+    os.format("<tr><td class=\"left\">Mean Variance</td><td>%.3f</td></tr>", p.sample_data.burn_duration_history -> mean_variance );
+    os.format("<tr><td class=\"left\">Mean Std. Dev</td><td>%.3f</td></tr>", p.sample_data.burn_duration_history -> mean_std_dev );
+
+    os << "</tbody>"
+       << "</table>";
+
+    highchart::histogram_chart_t burn_duration_history_chart( highchart::build_id( p, "burn_duration_history" ), *p.sim );
+    if ( chart::generate_distribution(
+        burn_duration_history_chart, &p, p.sample_data.burn_duration_history -> distribution, "Burn Duration",
+        p.sample_data.burn_duration_history -> mean(),
+        p.sample_data.burn_duration_history -> min(),
+        p.sample_data.burn_duration_history -> max() ) )
+    {
+      burn_duration_history_chart.set( "tooltip.headerFormat", "<b>{point.key}</b> s<br/>" );
+      burn_duration_history_chart.set( "chart.width", "575" );
+      os << burn_duration_history_chart.to_target_div();
+      p.sim -> add_chart_data( burn_duration_history_chart );
+    }
+
+    os << "</div>";
+
+    os << "<p>Mana at burn start is the mana level recorded (in percentage of total mana) when a start_burn_phase command is executed.</p>";
+
+    os << "<table class=\"sc\">"
+       << "<thead>"
+       << "<tr>"
+       << "<th>Mana at Burn Start</th>"
+       << "</tr>"
+       << "<tbody>";
+
+    os.format("<tr><td class=\"left\">Count</td><td>%d</td></tr>", p.sample_data.burn_initial_mana -> count() );
+    os.format("<tr><td class=\"left\">Minimum</td><td>%.3f</td></tr>", p.sample_data.burn_initial_mana -> min() );
+    os.format("<tr><td class=\"left\">5<sup>th</sup> percentile</td><td>%.3f</td></tr>", p.sample_data.burn_initial_mana -> percentile( 0.05 ) );
+    os.format("<tr><td class=\"left\">Mean</td><td>%.3f</td></tr>", p.sample_data.burn_initial_mana -> mean() );
+    os.format("<tr><td class=\"left\">95<sup>th</sup> percentile</td><td>%.3f</td></tr>", p.sample_data.burn_initial_mana -> percentile( 0.95 ) );
+    os.format("<tr><td class=\"left\">Max</td><td>%.3f</td></tr>", p.sample_data.burn_initial_mana -> max() );
+    os.format("<tr><td class=\"left\">Variance</td><td>%.3f</td></tr>", p.sample_data.burn_initial_mana -> variance );
+    os.format("<tr><td class=\"left\">Mean Variance</td><td>%.3f</td></tr>", p.sample_data.burn_initial_mana -> mean_variance );
+    os.format("<tr><td class=\"left\">Mean Std. Dev</td><td>%.3f</td></tr>", p.sample_data.burn_initial_mana -> mean_std_dev );
+
+    os << "</tbody>"
+       << "</table>";
+
+    os << "</div>"
+       << "</div>";
+  }
 };
 // Custom Gear ==============================================================
 using namespace unique_gear;
