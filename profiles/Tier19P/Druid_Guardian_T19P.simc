@@ -38,16 +38,14 @@ actions+=/incarnation
 actions+=/rage_of_the_sleeper
 actions+=/lunar_beam
 actions+=/frenzied_regeneration,if=incoming_damage_5s%health.max>=0.5|health<=health.max*0.4
-actions+=/bristling_fur,if=buff.ironfur.stack=1|buff.ironfur.down
-actions+=/ironfur,if=(buff.ironfur.up=0)|(buff.gory_fur.up=1)|(rage>=80)
-actions+=/moonfire,if=buff.incarnation.up=1&dot.moonfire.remains<=4.8
-actions+=/thrash_bear,if=buff.incarnation.up=1&dot.thrash.remains<=4.5
+actions+=/bristling_fur,if=buff.ironfur.stack<=1
+actions+=/ironfur,if=!buff.ironfur.up|buff.gory_fur.up|rage>=80
+actions+=/thrash_bear,if=spell_targets.thrash_bear>=2
 actions+=/mangle
+actions+=/moonfire,if=buff.galactic_guardian.up
 actions+=/thrash_bear
-actions+=/pulverize,if=buff.pulverize.up=0|buff.pulverize.remains<=6
-actions+=/moonfire,if=buff.galactic_guardian.up=1&(!ticking|dot.moonfire.remains<=4.8)
-actions+=/moonfire,if=buff.galactic_guardian.up=1
-actions+=/moonfire,if=dot.moonfire.remains<=4.8
+actions+=/pulverize,if=(buff.pulverize.remains<=6&dot.thrash_bear.stack>=2)|dot.thrash_bear.stack>3+equipped.elizes_everlasting_encasement*2
+actions+=/moonfire,target_if=dot.moonfire.refreshable&(spell_targets.swipe_bear<=3|equipped.fury_of_nature)
 actions+=/swipe_bear
 
 head=hood_of_the_blind_executioner,id=137511
