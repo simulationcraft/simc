@@ -651,6 +651,7 @@ bool report::check_artifact_points( const player_t& p, sim_t& sim )
       sim.errorf(
           "Player %s has more than 3 extra points in trait %s.\n",
           p.name(), power -> name );
+      return false;
     }
   }
 
