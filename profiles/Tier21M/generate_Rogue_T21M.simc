@@ -26,7 +26,7 @@ main_hand=the_kingslayers,id=128870,bonus_id=741,gem_id=152055/152293/152092,rel
 off_hand=the_kingslayers,id=128869
 save=Rogue_Assassination_T21M.simc
 
-rogue="Rogue_Assassination-Exsg_T21M"
+rogue="Rogue_Assassination_Exsg_T21M"
 level=110
 race=pandaren
 role=attack
@@ -52,7 +52,7 @@ trinket1=shadowsinged_fang,id=151968,bonus_id=3612/1502
 trinket2=golganneths_vitality,id=154174,ilevel=1000
 main_hand=the_kingslayers,id=128870,bonus_id=741,gem_id=152055/152293/152092,relic_id=3612:1502/3612:1502/3612:1502
 off_hand=the_kingslayers,id=128869
-save=Rogue_Assassination-Exsg_T21M.simc
+save=Rogue_Assassination_Exsg_T21M.simc
 
 rogue="Rogue_Outlaw_T21M"
 level=110
@@ -83,7 +83,7 @@ main_hand=the_dreadblades,id=128872,bonus_id=742,gem_id=152028/155855/155853,rel
 off_hand=the_dreadblades,id=134552
 save=Rogue_Outlaw_T21M.simc
 
-rogue="Rogue_Outlaw-SnD_T21M"
+rogue="Rogue_Outlaw_SnD_T21M"
 level=110
 race=night_elf
 timeofday=day
@@ -110,7 +110,7 @@ trinket1=gorshalachs_legacy,id=152093,bonus_id=3612/1502
 trinket2=golganneths_vitality,id=154174,ilevel=1000
 main_hand=the_dreadblades,id=128872,bonus_id=742,gem_id=152028/155855/155853,relic_id=3612:1502/3612:1512/3612:1512
 off_hand=the_dreadblades,id=134552
-save=Rogue_Outlaw-SnD_T21M.simc
+save=Rogue_Outlaw_SnD_T21M.simc
 
 rogue="Rogue_Subtlety_T21M"
 level=110
@@ -140,7 +140,7 @@ main_hand=fangs_of_the_devourer,id=128476,bonus_id=743,gem_id=155848/152055/1558
 off_hand=fangs_of_the_devourer,id=128479
 save=Rogue_Subtlety_T21M.simc
 
-rogue="Rogue_Subtlety-DfA_T21M"
+rogue="Rogue_Subtlety_DfA_T21M"
 level=110
 race=dwarf
 role=attack
@@ -166,4 +166,4 @@ trinket1=seeping_scourgewing,id=151964,bonus_id=3612/1502
 trinket2=golganneths_vitality,id=154174,ilevel=1000
 main_hand=fangs_of_the_devourer,id=128476,bonus_id=743,gem_id=155848/152055/155848,relic_id=3612:1512/3612:1502/3612:1512
 off_hand=fangs_of_the_devourer,id=128479
-save=Rogue_Subtlety-DfA_T21M.simc
+save=Rogue_Subtlety_DfA_T21M.simc

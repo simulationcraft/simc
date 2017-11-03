@@ -27,7 +27,7 @@ off_hand=the_highkeepers_ward,id=128936
 save=Shaman_Elemental_T20M.simc
 
 
-shaman="Shaman_Elemental-Gambling_T20M"
+shaman="Shaman_Elemental_Gambling_T20M"
 level=110
 race=tauren
 role=spell
@@ -53,7 +53,7 @@ trinket1=tome_of_unraveling_sanity,id=147019,ilevel=940
 trinket2=whispers_in_the_dark,id=140809,ilevel=910
 main_hand=the_fist_of_raden,id=128935,bonus_id=744,gem_id=147112/147095/147112,relic_ilevel=930/940/930
 off_hand=the_highkeepers_ward,id=128936
-save=Shaman_Elemental-Gambling_T20M.simc
+save=Shaman_Elemental_Gambling_T20M.simc
 
 
 shaman="Shaman_Enhancement_T20M"
