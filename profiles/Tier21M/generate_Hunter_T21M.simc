@@ -55,3 +55,33 @@ main_hand=thasdorah_legacy_of_the_windrunners,id=128826,gem_id=155853/155847/152
 
 
 save=Hunter_Marksmanship_T21M.simc
+
+
+hunter="Hunter_Survival_T21M"
+level=110
+race=troll
+role=attack
+position=back
+talents=3303031
+artifact=34:0:0:0:0:1068:1:1070:4:1071:4:1072:4:1073:4:1074:4:1075:4:1076:4:1077:4:1078:4:1079:1:1080:1:1081:1:1082:1:1083:1:1084:1:1338:1:1370:1:1525:4:1526:1:1527:1:1528:24:1638:1
+crucible=1739:1780:1525/1739:1780:1070/1739:1780:1525
+spec=survival
+
+head=helm_of_the_awakened_soul,id=152423,bonus_id=3612/1502
+neck=chain_of_the_unmaker,id=152283,bonus_id=3612/1502,enchant=mark_of_the_claw
+shoulders=serpentstalker_mantle,id=152135,bonus_id=3612/1502
+back=serpentstalker_drape,id=152131,bonus_id=3612/1502,enchant=binding_of_agility
+chest=serpentstalker_tunic,id=152130,bonus_id=3612/1502
+wrists=call_of_the_wild,id=137101,bonus_id=3630
+hands=serpentstalker_grips,id=152132,bonus_id=3612/1502
+waist=sash_of_the_gilded_rose,id=152007,bonus_id=3612/1502
+legs=battalionshattering_leggings,id=152002,bonus_id=3612/1502
+feet=deft_soulhunters_sabatons,id=151996,bonus_id=3612/1502
+finger1=seal_of_the_portalmaster,id=152063,bonus_id=3612/1502,enchant=binding_of_haste
+finger2=sephuzs_secret,id=132452,bonus_id=3630,gems=200haste,enchant=binding_of_haste
+trinket1=gorshalachs_legacy,id=152093,bonus_id=3612/1502
+trinket2=golganneths_vitality,id=154174,ilevel=1000
+main_hand=talonclaw,id=128808,bonus_id=728,gem_id=152060/155855/155847,relic_id=3612:1502/3612:1512/3612:1512
+
+
+save=Hunter_Survival_T21M.simc
