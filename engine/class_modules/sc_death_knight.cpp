@@ -2554,6 +2554,7 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
       drw_spell_t( p, "blood_plague", p -> o() -> find_spell( 55078 ) ) 
     {
       base_multiplier *= 1.0 + p -> o() -> spec.blood_death_knight -> effectN( 2 ).percent();
+      base_multiplier *= 1.0 + p -> o() -> legendary.soulflayers_corruption -> effectN( 1 ).percent();
     }
   };
 
