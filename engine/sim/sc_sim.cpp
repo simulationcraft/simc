@@ -2615,7 +2615,7 @@ bool sim_t::iterate()
 
     combat();
 
-    if ( progress_bar.update( false, current_index ) )
+    if ( progress_bar.update( false, as<int>(current_index) ) )
     {
       progress_bar.output( false );
     }
@@ -2643,7 +2643,7 @@ bool sim_t::iterate()
     }
   } while ( more_work && ! canceled );
 
-  if ( ! canceled && progress_bar.update( true, current_index ) )
+  if ( ! canceled && progress_bar.update( true, as<int>(current_index) ) )
   {
     progress_bar.output( true );
   }

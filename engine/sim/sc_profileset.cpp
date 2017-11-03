@@ -394,7 +394,7 @@ int profilesets_t::max_name_length() const
     }
   } );
 
-  return len;
+  return as<int>(len);
 }
 
 void profilesets_t::output( const sim_t& sim, js::JsonOutput& root ) const

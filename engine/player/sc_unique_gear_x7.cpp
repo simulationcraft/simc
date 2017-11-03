@@ -1925,7 +1925,7 @@ struct injector_proc_cb_t : public dbc_proc_callback_t
 
   void execute( action_t* /* a */, action_state_t* /* state */ ) override
   {
-    auto buff_index = static_cast<size_t>( rng().range( 0, small_buffs.size() ) );
+    auto buff_index = static_cast<size_t>( rng().range( size_t(0), small_buffs.size() ) );
     auto buff = small_buffs[ buff_index ];
 
     buff -> trigger();
@@ -6199,7 +6199,7 @@ struct netherlight_base_t : public proc_spell_t
     if ( dot -> tick_event )
     {
       timespan_t tick_time = dot -> current_action -> tick_time( dot -> state );
-      int tick_count = std::round( triggered_duration.total_seconds() / tick_time.total_seconds() );
+      int tick_count = static_cast<int>(std::round( triggered_duration.total_seconds() / tick_time.total_seconds() ));
 
       return tick_count * tick_time + dot -> tick_event -> remains();
     }

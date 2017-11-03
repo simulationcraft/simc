@@ -15,19 +15,19 @@ std::string progress_bar_t::format_time( double t )
 
   if ( remainder >= 86400 )
   {
-    days = remainder / 86400;
+    days = static_cast<int>(remainder / 86400);
     remainder -= days * 86400;
   }
 
   if ( remainder >= 3600 )
   {
-    hours = remainder / 3600;
+    hours = static_cast<int>(remainder / 3600);
     remainder -= hours * 3600;
   }
 
   if ( remainder >= 60 )
   {
-    minutes = remainder / 60;
+    minutes = static_cast<int>(remainder / 60);
     remainder -= minutes * 60;
   }
 

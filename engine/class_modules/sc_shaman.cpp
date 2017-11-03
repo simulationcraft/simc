@@ -1313,7 +1313,7 @@ public:
       return;
     }
 
-    size_t spell_idx = ab::rng().range( 0, p() -> action.unleash_doom.size() );
+    size_t spell_idx = ab::rng().range( 0, static_cast<double>(p() -> action.unleash_doom.size()) );
     p() -> action.unleash_doom[ spell_idx ] -> set_target( state -> target );
     p() -> action.unleash_doom[ spell_idx ] -> schedule_execute();
     proc_ud -> occur();
