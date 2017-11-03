@@ -25,7 +25,7 @@ main_hand=the_kingslayers,id=128870,bonus_id=741,gem_id=137549/137543/142510,rel
 off_hand=the_kingslayers,id=128869
 save=Rogue_Assassination_T19M.simc
 
-rogue="Rogue_Assassination_Exsg_T19M"
+rogue="Rogue_Assassination-Exsg_T19M"
 level=110
 race=pandaren
 role=attack
@@ -50,7 +50,7 @@ trinket1=hunger_of_the_pack,id=136975,bonus_id=1537/1727
 trinket2=eye_of_guarm,id=142506,bonus_id=603/3469
 main_hand=the_kingslayers,id=128870,bonus_id=741,gem_id=139268/139261/139260,relic_id=1806/1806/1806
 off_hand=the_kingslayers,id=128869
-save=Rogue_Assassination_Exsg_T19M.simc
+save=Rogue_Assassination-Exsg_T19M.simc
 
 rogue="Rogue_Outlaw_T19M"
 level=110

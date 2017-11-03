@@ -26,8 +26,8 @@ main_hand=twinblades_of_the_deceiver,id=127829,bonus_id=719,gem_id=140824/140823
 off_hand=twinblades_of_the_deceiver,id=127830,gem_id=0/0/0/0,relic_id=0/0
 save=Demon_Hunter_Havoc_T19M_NH.simc
 
-copy="Demon_Hunter_Havoc_Demonic_T19M_NH","Demon_Hunter_Havoc_T19M_NH"
+copy="Demon_Hunter_Havoc-Demonic_T19M_NH","Demon_Hunter_Havoc_T19M_NH"
 talents=3310333
 finger1=ring_of_exclusive_servitude,id=140906,bonus_id=3519,enchant=binding_of_critical_strike
 trinket2=nightblooming_frond,id=140802,bonus_id=3519
-save=Demon_Hunter_Havoc_Demonic_T19M_NH.simc
+save=Demon_Hunter_Havoc-Demonic_T19M_NH.simc

@@ -400,36 +400,17 @@ bool report::check_gear_ilevel( player_t& p, sim_t& sim )
     max_weapon_ilevel_allowed = 903;
     tier_name                 = "T19P";
   }
-  else if ( p.report_information.save_str.find( "T19H_NH" ) != std::string::npos )
-  {
-    max_ilevel_allowed           = 895;
-    max_weapon_ilevel_allowed    = 927;
-    tier_name                    = "T19H_NH";
-  }
   else if ( p.report_information.save_str.find( "T19M_NH" ) != std::string::npos )
   {
     max_ilevel_allowed           = 910;
     max_weapon_ilevel_allowed    = 933;
     tier_name                    = "T19M_NH";
   }
-  else if ( p.report_information.save_str.find( "T19H" ) != std::string::npos )
-  {
-    max_ilevel_allowed        = 865;
-    max_weapon_ilevel_allowed = 900;
-    tier_name                 = "T19H";
-  }
   else if ( p.report_information.save_str.find( "T19M" ) != std::string::npos )
   {
     max_ilevel_allowed           = 895;
     max_weapon_ilevel_allowed    = 918;
     tier_name                    = "T19M";
-  }
-  else if ( p.report_information.save_str.find( "T20H" ) != std::string::npos )
-  {
-    legendary_items_allowed   = 2;
-    max_ilevel_allowed        = 925;
-    max_weapon_ilevel_allowed = 945;
-    tier_name                 = "T20H";
   }
   else if ( p.report_information.save_str.find( "T20M" ) != std::string::npos )
   {
@@ -595,20 +576,10 @@ bool report::check_artifact_points( const player_t& p, sim_t& sim )
     max_purchased = 19;
     tier_name     = "T19P";
   }
-  else if ( p.report_information.save_str.find( "T19H_NH" ) != std::string::npos )
-  {
-    max_purchased = 42;
-    tier_name     = "T19H_NH";
-  }
   else if ( p.report_information.save_str.find( "T19M_NH" ) != std::string::npos )
   {
     max_purchased = 52;
     tier_name     = "T19M_NH";
-  }
-  else if ( p.report_information.save_str.find( "T19H" ) != std::string::npos )
-  {
-    max_purchased = 35;
-    tier_name     = "T19H";
   }
   else if ( p.report_information.save_str.find( "T19M" ) != std::string::npos )
   {

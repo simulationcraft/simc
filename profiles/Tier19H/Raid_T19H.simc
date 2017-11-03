@@ -7,7 +7,7 @@
 # * No items from Violet Hold (unless 840 ilevel)
 # * No items from World Bosses / World Quests / BoEs
 # * No items from Nighthold (including set bonuses)
-# * No Legendaries (see Raid_T19x_Legendary.simc)
+# * No Legendaries
 # * No Random Gems (ie. Bonus RNG Gem Slots)
 # * No Tertiary Stats
 # * No Ranked Gear (ie. Warforged/Titanforged)
@@ -45,11 +45,11 @@ Paladin_Retribution_T19H.simc
 
 # Priest
 Priest_Shadow_T19H.simc
-Priest_Shadow_S2M_T19H.simc
+Priest_Shadow-S2M_T19H.simc
 
 # Rogue
 Rogue_Assassination_T19H.simc
-Rogue_Assassination_Exsg_T19H.simc
+Rogue_Assassination-Exsg_T19H.simc
 Rogue_Outlaw_T19H.simc
 Rogue_Subtlety_T19H.simc
 

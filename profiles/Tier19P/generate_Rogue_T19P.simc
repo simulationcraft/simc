@@ -25,7 +25,7 @@ main_hand=the_kingslayers,id=128870,bonus_id=741,,gem_id=137549/137543/136718,re
 off_hand=the_kingslayers,id=128869
 save=Rogue_Assassination_T19P.simc
 
-rogue="Rogue_Assassination_Exsg_T19P"
+rogue="Rogue_Assassination-Exsg_T19P"
 level=110
 race=orc
 role=attack
@@ -50,7 +50,7 @@ trinket1=hunger_of_the_pack,id=136975,bonus_id=1727/3383
 trinket2=tirathons_betrayal,id=137537,bonus_id=1727/3383
 main_hand=the_kingslayers,id=128870,bonus_id=741,gem_id=137399/133763/137412,relic_id=1727:3383/1727:3383/1727:3383
 off_hand=the_kingslayers,id=128869
-save=Rogue_Assassination_Exsg_T19P.simc
+save=Rogue_Assassination-Exsg_T19P.simc
 
 rogue="Rogue_Outlaw_T19P"
 level=110

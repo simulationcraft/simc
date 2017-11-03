@@ -25,7 +25,7 @@ main_hand=the_kingslayers,id=128870,bonus_id=741,gem_id=140822/140815/140819,rel
 off_hand=the_kingslayers,id=128869
 save=Rogue_Assassination_T19M_NH.simc
 
-rogue="Rogue_Assassination_Exsg_T19M_NH"
+rogue="Rogue_Assassination-Exsg_T19M_NH"
 level=110
 race=pandaren
 role=attack
@@ -50,7 +50,7 @@ trinket1=nightblooming_frond,id=140802,bonus_id=3519
 trinket2=convergence_of_fates,id=140806,bonus_id=3519
 main_hand=the_kingslayers,id=128870,bonus_id=741,gem_id=140823/140817/140819,relic_id=3519/3519/3519
 off_hand=the_kingslayers,id=128869
-save=Rogue_Assassination_Exsg_T19M_NH.simc
+save=Rogue_Assassination-Exsg_T19M_NH.simc
 
 rogue="Rogue_Outlaw_T19M_NH"
 level=110

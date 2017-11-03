@@ -3,7 +3,7 @@
 # * Ilvl Cap: 885
 # * Artifact Rank Cap: 34
 # * 3 Relics with max ilevel of 885
-# * No Legendaries (see Raid_T19x_Legendary.simc)
+# * No Legendaries
 # * No items from Nighthold (including set bonuses)
 # * No items from World Bosses / World Quests / BoEs
 # * Mythic+ gear is permitted up to the Mythic+ item level cap
@@ -39,10 +39,10 @@ Monk_Windwalker_T19M.simc
 Paladin_Retribution_T19M.simc
 
 Priest_Shadow_T19M.simc
-Priest_Shadow_S2M_T19M.simc
+Priest_Shadow-S2M_T19M.simc
 
 Rogue_Assassination_T19M.simc
-Rogue_Assassination_Exsg_T19M.simc
+Rogue_Assassination-Exsg_T19M.simc
 Rogue_Outlaw_T19M.simc
 Rogue_Subtlety_T19M.simc
 
