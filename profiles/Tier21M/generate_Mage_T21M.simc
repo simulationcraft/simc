@@ -8,21 +8,21 @@ artifact=53:0:0:0:0:783:1:784:4:785:4:786:4:787:4:788:4:789:4:790:4:791:4:792:4:
 crucible=1739:1780:789/1739:1780:789/1739:1780:789
 spec=frost
 
-head=runebound_collar,id=152138,ilevel=960
-neck=chain_of_the_unmaker,id=152283,ilevel=970,enchant=mark_of_the_hidden_satyr
-shoulders=runebound_mantle,id=152141,ilevel=960
-back=drape_of_the_arcane_tempest,id=147145,ilevel=930,enchant=binding_of_intellect
-chest=runebound_tunic,id=152140,ilevel=960
-wrists=magtheridons_banished_bracers,id=138140,ilevel=1000
-hands=gloves_of_the_arcane_tempest,id=147146,ilevel=930
-waist=cord_of_blossoming_petals,id=151952,ilevel=960
-legs=runebound_leggings,id=152139,ilevel=960
-feet=lady_dacidions_silk_slippers,id=151945,ilevel=960
-finger1=seal_of_the_portalmaster,id=152063,ilevel=960,enchant=binding_of_versatility
-finger2=shard_of_the_exodar,id=132410,ilevel=1000,gems=200versatility,enchant=binding_of_versatility
-trinket1=acrid_catalyst_injector,id=151955,ilevel=960
-trinket2=amanthuls_vision,id=154172,ilevel=1000
-main_hand=ebonchill,id=128862,gem_id=155850/155846/155850,relic_ilevel=970/970/970
+head=runebound_collar,id=152138,bonus_id=3612/1502
+neck=chain_of_the_unmaker,id=152283,bonus_id=3612/1502,enchant=mark_of_the_hidden_satyr
+shoulders=runebound_mantle,id=152141,bonus_id=3612/1502
+back=drape_of_the_arcane_tempest,id=147145,bonus_id=3563/1512,enchant=binding_of_intellect
+chest=runebound_tunic,id=152140,bonus_id=3612/1502
+wrists=magtheridons_banished_bracers,id=138140,bonus_id=3630
+hands=gloves_of_the_arcane_tempest,id=147146,bonus_id=3563/1512
+waist=cord_of_blossoming_petals,id=151952,bonus_id=3612/1502
+legs=runebound_leggings,id=152139,bonus_id=3612/1502
+feet=lady_dacidions_silk_slippers,id=151945,bonus_id=3612/1502
+finger1=seal_of_the_portalmaster,id=152063,bonus_id=3612/1502,enchant=binding_of_versatility
+finger2=shard_of_the_exodar,id=132410,bonus_id=3630,gem_id=151585,enchant=binding_of_versatility
+trinket1=acrid_catalyst_injector,id=151955,bonus_id=3612/1502
+trinket2=amanthuls_vision,id=154172,bonus_id=4213
+main_hand=ebonchill,id=128862,bonus_id=731,gem_id=155850/155846/155850,relic_id=3612:1512/3612:1512/3612:1512
 
 save=Mage_Frost_T21M.simc
 
