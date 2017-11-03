@@ -388,7 +388,6 @@ bool report::check_gear_ilevel( player_t& p, sim_t& sim )
 {
   int max_ilevel_allowed           = 0;
   int max_weapon_ilevel_allowed    = 0;
-  bool return_value                = true;
   int max_legendary_ilevel_allowed = 0;
   int equipped_legendary_items     = 0;
   int legendary_items_allowed      = 0;
@@ -422,13 +421,13 @@ bool report::check_gear_ilevel( player_t& p, sim_t& sim )
   else if ( p.report_information.save_str.find( "T21M" ) != std::string::npos )
   {
     legendary_items_allowed      = 2;
-    max_ilevel_allowed           = 970;
+    max_ilevel_allowed           = 1000;
     max_weapon_ilevel_allowed    = 999;
     tier_name                    = "T21M";
   }
   else
   {
-    return return_value;
+    return true;
   }
 
   max_legendary_ilevel_allowed = 1000;
@@ -464,7 +463,6 @@ bool report::check_gear_ilevel( player_t& p, sim_t& sim )
             p.name(), util::to_string( item.parsed.data.level ).c_str(),
             tier_name.c_str(),
             util::to_string( max_weapon_ilevel_allowed ).c_str() );
-        return_value = false;
       }
     }
     else if ( item.parsed.data.quality == 5 &&
@@ -476,7 +474,6 @@ bool report::check_gear_ilevel( player_t& p, sim_t& sim )
           p.name(), util::slot_type_string( slot ),
           util::to_string( item.parsed.data.level ).c_str(), tier_name.c_str(),
           util::to_string( max_legendary_ilevel_allowed ).c_str() );
-      return_value = false;
     }
     else if ( item.parsed.data.quality != 5 &&
               ( item.parsed.data.level > max_ilevel_allowed ) )
@@ -487,7 +484,6 @@ bool report::check_gear_ilevel( player_t& p, sim_t& sim )
           p.name(), util::slot_type_string( slot ),
           util::to_string( item.parsed.data.level ).c_str(), tier_name.c_str(),
           util::to_string( max_ilevel_allowed ).c_str() );
-      return_value = false;
     }
 
     if ( !( slot == SLOT_MAIN_HAND || slot == SLOT_OFF_HAND ||
@@ -510,7 +506,6 @@ bool report::check_gear_ilevel( player_t& p, sim_t& sim )
               "default, this is to ensure that all default profiles within %s "
               "are as equal as possible.\n",
               p.name(), util::slot_type_string( slot ), tier_name.c_str() );
-          return_value = false;
           break;
         }
       }
@@ -538,7 +533,6 @@ bool report::check_gear_ilevel( player_t& p, sim_t& sim )
                 "%s and %s, please remove one of the unique items.\n",
                 p.name(), util::slot_type_string( slot ),
                 util::slot_type_string( slot2 ) );
-          return_value = false;
         }
       }
     }
@@ -549,10 +543,9 @@ bool report::check_gear_ilevel( player_t& p, sim_t& sim )
         "Player %s has %s legendary items. %s allows %s legendary item(s).\n",
         p.name(), util::to_string( equipped_legendary_items ).c_str(),
         tier_name.c_str(), util::to_string( legendary_items_allowed ).c_str() );
-    return_value = false;
   }
 
-  return return_value;
+  return true;
 }
 
 // report::check_artifact_points ============================================
@@ -624,7 +617,6 @@ bool report::check_artifact_points( const player_t& p, sim_t& sim )
         "Player %s has %s artifact points, maximum allowed for %s is %s.\n",
         p.name(), util::to_string( purchased_points ).c_str(),
         tier_name.c_str(), util::to_string( max_purchased ).c_str() );
-    return false;
   }
   else if ( purchased_points < max_purchased && p.level() == 110 )
   {
@@ -640,7 +632,6 @@ bool report::check_artifact_points( const player_t& p, sim_t& sim )
         "Player %s has %s crucible points, maximum allowed for %s is %s.\n",
         p.name(), util::to_string( crucible_points ).c_str(),
         tier_name.c_str(), util::to_string( max_crucible ).c_str() );
-    return false;
   }
   else if ( crucible_points < max_crucible )
   {
@@ -660,7 +651,6 @@ bool report::check_artifact_points( const player_t& p, sim_t& sim )
       sim.errorf(
           "Player %s has more than 3 extra points in trait %s.\n",
           p.name(), power -> name );
-      return false;
     }
   }
 
