@@ -954,7 +954,7 @@ void option_db_t::parse_args( const std::vector<std::string>& args )
 
 option_db_t::option_db_t()
 {
-  std::vector<std::string> paths = { "./profiles", "../profiles", SC_SHARED_DATA };
+  std::vector<std::string> paths = { "..", "./profiles", "../profiles", SC_SHARED_DATA };
 
   // This makes baby pandas cry a bit less, but still makes them weep.
 
@@ -976,6 +976,12 @@ option_db_t::option_db_t()
     // Skip current path, we arleady have that
     if ( path == "." )
       continue;
+
+    // Add parent path for windows-only since SC_SHARED_DATA isn't set by Visual Studio
+    #if !defined( SC_WINDOWS )
+      if ( path == ".." )
+        continue;
+    #endif
 
     auto_path.push_back( path );
 
