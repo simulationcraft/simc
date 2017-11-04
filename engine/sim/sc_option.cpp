@@ -842,8 +842,7 @@ void option_db_t::parse_line( const std::string& line )
     return;
   }
 
-  std::vector<std::string> tokens;
-  util::string_split_allow_quotes( tokens, line, " \t\n\r" );
+  auto tokens = util::string_split_allow_quotes( line, " \t\n\r" );
 
   for( const auto& token : tokens )
   {
