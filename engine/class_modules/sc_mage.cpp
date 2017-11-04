@@ -8125,7 +8125,7 @@ double mage_t::composite_player_critical_damage_multiplier( const action_state_t
 {
   double m = player_t::composite_player_critical_damage_multiplier( s );
 
-  if ( dbc::is_school( s -> action -> school, SCHOOL_FIRE ) )
+  if ( dbc::is_school( s -> action -> get_school(), SCHOOL_FIRE ) )
   {
     m *= 1.0 + artifact.burning_gaze.percent();
   }
@@ -8148,11 +8148,7 @@ double mage_t::composite_player_pet_damage_multiplier( const action_state_t* s )
   double m = player_t::composite_player_pet_damage_multiplier( s );
 
   m *= 1.0 + buffs.rune_of_power -> check_value();
-
-  if ( talents.incanters_flow -> ok() )
-  {
-    m *= 1.0 + buffs.incanters_flow -> check_stack_value();
-  }
+  m *= 1.0 + buffs.incanters_flow -> check_stack_value();
 
   m *= 1.0 + artifact.ancient_power.percent();
   m *= 1.0 + artifact.intensity_of_the_tirisgarde.data().effectN( 3 ).percent();
@@ -8173,11 +8169,7 @@ double mage_t::composite_player_multiplier( school_e school ) const
   double m = player_t::composite_player_multiplier( school );
 
   m *= 1.0 + buffs.rune_of_power -> check_value();
-
-  if ( talents.incanters_flow -> ok() )
-  {
-    m *= 1.0 + buffs.incanters_flow -> check_stack_value();
-  }
+  m *= 1.0 + buffs.incanters_flow -> check_stack_value();
 
   // TODO: Check if AP interacts with multischool damage that includes physical.
   if ( ! dbc::is_school( school, SCHOOL_PHYSICAL ) )
