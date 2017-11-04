@@ -134,6 +134,7 @@ template<class T>
 struct opts_helper_t : public option_t
 {
   typedef opts_helper_t<T> base_t;
+
   opts_helper_t( const std::string& name, T& ref ) :
     option_t( name ),
     _ref( ref )
@@ -157,6 +158,7 @@ protected:
     _ref = v;
     return true;
   }
+
   std::ostream& print( std::ostream& stream ) const override
   {
      stream << name() << "="  <<  _ref << "\n";
@@ -172,6 +174,7 @@ struct opt_append_t : public option_t
     option_t( name ),
     _ref( addr )
   { }
+
 protected:
   bool parse( sim_t*, const std::string& n, const std::string& v ) const override
   {
@@ -181,6 +184,7 @@ protected:
     _ref += v;
     return true;
   }
+
   std::ostream& print( std::ostream& stream ) const override
   {
      stream << name() << "+="  <<  _ref << "\n";
@@ -201,13 +205,12 @@ protected:
   {
     if ( n != name() )
       return false;
-#if defined( SC_WINDOWS ) && defined( SC_VS )
-    _ref = _strtoui64( v.c_str(), nullptr, 10 );
-#else
-    _ref = strtoull( v.c_str(), nullptr, 10 );
-#endif
+
+    _ref = std::stoull( v, nullptr, 10 );
+
     return true;
   }
+
   std::ostream& print( std::ostream& stream ) const override
   {
      stream << name() << "="  <<  _ref << "\n";
@@ -229,9 +232,10 @@ protected:
     if ( n != name() )
       return false;
 
-    _ref = strtol( v.c_str(), nullptr, 10 );
+    _ref = std::stoi( v, nullptr, 10 );
     return true;
   }
+
   std::ostream& print( std::ostream& stream ) const override
   {
      stream << name() << "="  <<  _ref << "\n";
@@ -255,7 +259,7 @@ protected:
     if ( n != name() )
       return false;
 
-    int tmp = strtol( v.c_str(), nullptr, 10 );
+    int tmp = std::stoi( v, nullptr, 10 );
     // Range checking
     if ( tmp < _min || tmp > _max ) {
       std::stringstream s;
@@ -266,6 +270,7 @@ protected:
     _ref = tmp;
     return true;
   }
+
   std::ostream& print( std::ostream& stream ) const override
   {
      stream << name() << "="  <<  _ref << "\n";
@@ -288,9 +293,10 @@ protected:
     if ( n != name() )
       return false;
 
-    _ref = strtoul( v.c_str(), nullptr, 10 );
+    _ref = std::stoul( v, nullptr, 10 );
     return true;
   }
+
   std::ostream& print( std::ostream& stream ) const override
   {
      stream << name() << "="  <<  _ref << "\n";
@@ -314,7 +320,7 @@ protected:
     if ( n != name() )
       return false;
 
-    unsigned int tmp = strtoul( v.c_str(), nullptr, 10 );
+    unsigned int tmp = std::stoul( v, nullptr, 10 );
     // Range checking
     if ( tmp < _min || tmp > _max ) {
       std::stringstream s;
@@ -325,6 +331,7 @@ protected:
     _ref = tmp;
     return true;
   }
+
   std::ostream& print( std::ostream& stream ) const override
   {
      stream << name() << "="  <<  _ref << "\n";
@@ -347,9 +354,10 @@ protected:
     if ( n != name() )
       return false;
 
-    _ref = strtod( v.c_str(), nullptr );
+    _ref = std::stod( v, nullptr );
     return true;
   }
+
   std::ostream& print( std::ostream& stream ) const override
   {
      stream << name() << "="  <<  _ref << "\n";
@@ -373,7 +381,7 @@ protected:
     if ( n != name() )
       return false;
 
-    double tmp = strtod( v.c_str(), nullptr );
+    double tmp = std::stod( v, nullptr );
     // Range checking
     if ( tmp < _min || tmp > _max ) {
       std::stringstream s;
@@ -384,6 +392,7 @@ protected:
     _ref = tmp;
     return true;
   }
+
   std::ostream& print( std::ostream& stream ) const override
   {
      stream << name() << "="  <<  _ref << "\n";
@@ -406,9 +415,10 @@ protected:
     if ( n != name() )
       return false;
 
-    _ref = timespan_t::from_seconds( strtod( v.c_str(), nullptr ) );
+    _ref = timespan_t::from_seconds( std::stod( v, nullptr ) );
     return true;
   }
+
   std::ostream& print( std::ostream& stream ) const override
   {
      stream << name() << "="  <<  _ref << "\n";
@@ -432,7 +442,7 @@ protected:
     if ( n != name() )
       return false;
 
-    timespan_t tmp = timespan_t::from_seconds( strtod( v.c_str(), nullptr ) );
+    timespan_t tmp = timespan_t::from_seconds( std::stod( v, nullptr ) );
     // Range checking
     if ( tmp < _min || tmp > _max ) {
       std::stringstream s;
@@ -472,7 +482,7 @@ protected:
       throw std::invalid_argument( s.str() );
     }
 
-    _ref = strtol( v.c_str(), nullptr, 10 ) != 0;
+    _ref = std::stoi( v, nullptr, 10 ) != 0;
     return true;
   }
   std::ostream& print( std::ostream& stream ) const override
@@ -503,7 +513,7 @@ protected:
       throw std::invalid_argument( s.str() );
     }
 
-    _ref = strtol( v.c_str(), nullptr, 10 );
+    _ref = std::stoi( v, nullptr, 10 );
     return true;
   }
   std::ostream& print( std::ostream& stream ) const override
@@ -658,7 +668,9 @@ protected:
   {
     stream << name() << "=";
     for ( list_t::const_iterator it = _ref.begin(), end = _ref.end(); it != end; ++it )
-          stream << name() << (*it) << " ";
+    {
+      stream << name() << (*it) << " ";
+    }
     stream << "\n";
     return stream;
   }
