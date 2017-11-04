@@ -108,7 +108,7 @@ struct mage_td_t : public actor_target_data_t
     buffs::touch_of_the_magi_t* touch_of_the_magi;
 
     buff_t* frost_bomb;
-    buff_t* water_jet; // Proxy Water Jet to compensate for expression system
+    buff_t* water_jet;
     buff_t* winters_chill;
     buff_t* frozen;
   } debuffs;
@@ -759,20 +759,8 @@ namespace water_elemental
 // ==========================================================================
 // Pet Water Elemental
 // ==========================================================================
-struct water_elemental_pet_t;
-
-struct water_elemental_pet_td_t : public actor_target_data_t
-{
-  buff_t* water_jet;
-
-public:
-  water_elemental_pet_td_t( player_t* target, water_elemental_pet_t* welly );
-};
-
 struct water_elemental_pet_t : public mage_pet_t
 {
-  target_specific_t<water_elemental_pet_td_t> target_data;
-
   struct cooldowns_t
   {
     cooldown_t* wj_freeze; // Shared Freeze/Water Jet cooldown.
@@ -801,32 +789,9 @@ struct water_elemental_pet_t : public mage_pet_t
     mage_pet_t::init_action_list();
   }
 
-  water_elemental_pet_td_t* td( player_t* t ) const
-  {
-    return get_target_data( t );
-  }
-
-  virtual water_elemental_pet_td_t* get_target_data(
-      player_t* target ) const override
-  {
-    water_elemental_pet_td_t*& td = target_data[ target ];
-    if ( !td )
-      td = new water_elemental_pet_td_t(
-          target, const_cast<water_elemental_pet_t*>( this ) );
-    return td;
-  }
-
   virtual action_t* create_action( const std::string& name,
                                    const std::string& options_str ) override;
 };
-
-water_elemental_pet_td_t::water_elemental_pet_td_t(
-    player_t* target, water_elemental_pet_t* welly )
-  : actor_target_data_t( target, welly )
-{
-  water_jet = buff_creator_t( *this, "water_jet", welly -> find_spell( 135029 ) )
-                  .cd( timespan_t::zero() );
-}
 
 struct water_elemental_spell_t : public mage_pet_spell_t
 {
@@ -925,11 +890,6 @@ struct water_jet_t : public water_elemental_spell_t
     tick_zero         = true;
     cooldown = p -> cooldown.wj_freeze;
   }
-  water_elemental_pet_td_t* td( player_t* t ) const
-  {
-    return static_cast<water_elemental_pet_t*>( player )
-        ->get_target_data( t ? t : target );
-  }
 
   virtual void execute() override
   {
@@ -949,22 +909,18 @@ struct water_jet_t : public water_elemental_spell_t
   {
     water_elemental_spell_t::impact( s );
 
-    td( s -> target )
-        -> water_jet -> trigger( 1, buff_t::DEFAULT_VALUE(), 1.0,
-                              dot_duration * player -> composite_spell_speed() );
-
-    // Trigger hidden proxy water jet for the mage, so
-    // debuff.water_jet.<expression> works
-    o() -> get_target_data( s->target )
-        -> debuffs.water_jet -> trigger(
-            1, buff_t::DEFAULT_VALUE(), 1.0,
-            dot_duration * player -> composite_spell_speed() );
+    timespan_t duration = composite_dot_duration( s );
+    o() -> get_target_data( s -> target )
+        -> debuffs.water_jet -> trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, duration );
   }
 
   virtual void last_tick( dot_t* d ) override
   {
     water_elemental_spell_t::last_tick( d );
-    td( d -> target ) -> water_jet -> expire();
+
+    // If the channel is cancelled early, remove the debuff.
+    o() -> get_target_data( d -> target )
+        -> debuffs.water_jet -> expire();
   }
 
   virtual bool ready() override
@@ -4248,13 +4204,9 @@ struct frostbolt_t : public frost_mage_spell_t
 
     trigger_icicle_gain( s );
 
-    if ( p() -> pets.water_elemental && ! p() -> pets.water_elemental -> is_sleeping() )
+    if ( td( s -> target ) -> debuffs.water_jet -> check() )
     {
-      auto we_td = p() -> pets.water_elemental -> get_target_data( s -> target );
-      if ( we_td -> water_jet -> up() )
-      {
-        trigger_fof( water_jet_fof_source_id, 1.0 );
-      }
+      trigger_fof( water_jet_fof_source_id, 1.0 );
     }
 
     //TODO: Fix hardcode once spelldata has value for proc rate.
@@ -6637,21 +6589,16 @@ mage_td_t::mage_td_t( player_t* target, mage_t* mage ) :
   dots.mark_of_aluneth   = target -> get_dot( "mark_of_aluneth",   mage );
   dots.nether_tempest    = target -> get_dot( "nether_tempest",    mage );
 
-  debuffs.erosion     = new buffs::erosion_t( this );
-  debuffs.slow        = buff_creator_t( *this, "slow",
-                                        mage -> find_spell( 31589 ) );
+  debuffs.erosion       = new buffs::erosion_t( this );
+  debuffs.slow          = buff_creator_t( *this, "slow", mage -> find_spell( 31589 ) );
   debuffs.touch_of_the_magi = new buffs::touch_of_the_magi_t( this );
 
-  debuffs.frost_bomb  = buff_creator_t( *this, "frost_bomb",
-                                        mage -> talents.frost_bomb );
-  debuffs.frozen      = buff_creator_t( *this, "frozen" )
-                          .duration( timespan_t::from_seconds( 0.5 ) );
-  debuffs.water_jet   = buff_creator_t( *this, "water_jet",
-                                        mage -> find_spell( 135029 ) )
-                          .quiet( true )
-                          .cd( timespan_t::zero() );
-  debuffs.winters_chill = buff_creator_t( *this, "winters_chill",
-                                        mage -> find_spell( 228358 ) );
+  debuffs.frost_bomb    = buff_creator_t( *this, "frost_bomb", mage -> talents.frost_bomb );
+  debuffs.frozen        = buff_creator_t( *this, "frozen" )
+                            .duration( timespan_t::from_seconds( 0.5 ) );
+  debuffs.water_jet     = buff_creator_t( *this, "water_jet", mage -> find_spell( 135029 ) )
+                            .cd( timespan_t::zero() );
+  debuffs.winters_chill = buff_creator_t( *this, "winters_chill", mage -> find_spell( 228358 ) );
 
 }
 
