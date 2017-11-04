@@ -700,7 +700,6 @@ public:
   // Public mage functions:
   double get_icicle();
   void trigger_icicle( const action_state_t* trigger_state, bool chain = false, player_t* chain_target = nullptr );
-  void trigger_touch_of_the_magi( buffs::touch_of_the_magi_t* touch_of_the_magi_buff );
   void trigger_t19_oh();
 
   bool apply_crowd_control( const action_state_t* state, spell_mechanic type );
@@ -1317,15 +1316,17 @@ struct erosion_t : public buff_t
 
 struct touch_of_the_magi_t : public buff_t
 {
-  mage_t* mage;
   double accumulated_damage;
 
   touch_of_the_magi_t( mage_td_t* td ) :
-    buff_t( buff_creator_t( *td, "touch_of_the_magi",
-                            td -> source -> find_spell( 210824 ) ) ),
-    mage( static_cast<mage_t*>( td -> source ) ),
+    buff_t( buff_creator_t( *td, "touch_of_the_magi", td -> source -> find_spell( 210824 ) ) ),
     accumulated_damage( 0.0 )
-  { }
+  {
+    const spell_data_t* data = source -> find_spell( 210725 );
+
+    default_chance = data -> proc_chance();
+    set_cooldown( data -> internal_cooldown() );
+  }
 
   virtual void reset() override
   {
@@ -1333,11 +1334,17 @@ struct touch_of_the_magi_t : public buff_t
     accumulated_damage = 0.0;
   }
 
-  virtual void aura_loss() override
+  virtual void expire_override( int stacks, timespan_t duration ) override
   {
-    buff_t::aura_loss();
+    buff_t::expire_override( stacks, duration );
 
-    mage -> trigger_touch_of_the_magi( this );
+    auto mage = debug_cast<mage_t*>( source );
+    assert( mage -> action.touch_of_the_magi_explosion );
+
+    mage -> action.touch_of_the_magi_explosion -> set_target( player );
+    mage -> action.touch_of_the_magi_explosion -> base_dd_min = accumulated_damage;
+    mage -> action.touch_of_the_magi_explosion -> base_dd_max = accumulated_damage;
+    mage -> action.touch_of_the_magi_explosion -> execute();
 
     accumulated_damage = 0.0;
   }
@@ -1354,7 +1361,6 @@ struct touch_of_the_magi_t : public buff_t
     }
 
     accumulated_damage += state -> result_amount;
-
     return accumulated_damage;
   }
 };
@@ -2632,60 +2638,17 @@ struct arcane_barrage_t : public arcane_mage_spell_t
 
 struct arcane_blast_t : public arcane_mage_spell_t
 {
-  struct touch_of_the_magi_t
-  {
-    mage_t* mage;
-    const spell_data_t* data;
-    cooldown_t* icd;
-
-    touch_of_the_magi_t( mage_t* p ) :
-      mage( p ),
-      data( p -> find_spell( 210725 ) ),
-      icd( p -> get_cooldown( "touch_of_the_magi_icd" ) )
-    { }
-
-    bool trigger_if_up( action_state_t* s )
-    {
-      if ( icd -> down() )
-      {
-        return false;
-      }
-
-      buff_t* touch = mage -> get_target_data( s -> target ) -> debuffs.touch_of_the_magi;
-      bool triggered = touch -> trigger( 1, buff_t::DEFAULT_VALUE(),
-                                         data -> proc_chance() );
-
-      if ( triggered )
-      {
-        icd -> start( data -> internal_cooldown() );
-      }
-
-      return triggered;
-    }
-  } * touch_of_the_magi;
-
   arcane_blast_t( mage_t* p, const std::string& options_str ) :
-    arcane_mage_spell_t( "arcane_blast", p,
-                         p -> find_specialization_spell( "Arcane Blast" ) ),
-    touch_of_the_magi( nullptr )
+    arcane_mage_spell_t( "arcane_blast", p, p -> find_specialization_spell( "Arcane Blast" ) )
   {
     parse_options( options_str );
     triggers_arcane_missiles = false; // Disable default AM proc logic.
     base_multiplier *= 1.0 + p -> artifact.blasting_rod.percent();
 
-    if ( p -> artifact.touch_of_the_magi.rank() )
-    {
-      touch_of_the_magi = new touch_of_the_magi_t( p );
-    }
     if ( p -> action.unstable_magic_explosion )
     {
       add_child( p -> action.unstable_magic_explosion );
     }
-  }
-
-  ~arcane_blast_t()
-  {
-    delete touch_of_the_magi;
   }
 
   virtual bool init_finished() override
@@ -2774,7 +2737,7 @@ struct arcane_blast_t : public arcane_mage_spell_t
 
       if ( p() -> artifact.touch_of_the_magi.rank() )
       {
-        touch_of_the_magi -> trigger_if_up( s );
+        p() -> get_target_data( s -> target ) -> debuffs.touch_of_the_magi -> trigger();
       }
     }
   }
@@ -6777,16 +6740,6 @@ mage_t::~mage_t()
   delete sample_data.frozen_veins;
   delete sample_data.t20_4pc;
   delete sample_data.icy_veins_duration;
-}
-
-/// Touch of the Magi explosion trigger
-void mage_t::trigger_touch_of_the_magi( buffs::touch_of_the_magi_t* buff )
-{
-  assert( action.touch_of_the_magi_explosion );
-  action.touch_of_the_magi_explosion -> set_target( buff -> player );
-  action.touch_of_the_magi_explosion -> base_dd_min = buff -> accumulated_damage;
-  action.touch_of_the_magi_explosion -> base_dd_max = buff -> accumulated_damage;
-  action.touch_of_the_magi_explosion -> execute();
 }
 
 void mage_t::trigger_t19_oh()
