@@ -2105,14 +2105,14 @@ struct shadow_blades_constructor_t : public item_targetdata_initializer_t
 
     if ( ! effect )
     {
-      td -> debuff.shadow_blades = buff_creator_t( *td, "shadow_blades" );
+      td -> debuff.shadow_blades = buff_creator_t( *td, "shadow_blades_debuff" );
     }
     else
     {
       assert( ! td -> debuff.shadow_blades );
 
       auto spell = effect -> player -> find_spell( 253265 );
-      td -> debuff.shadow_blades = buff_creator_t( *td, "shadow_blades", spell, effect -> item )
+      td -> debuff.shadow_blades = buff_creator_t( *td, "shadow_blades_debuff", spell, effect -> item )
         .default_value( spell -> effectN( 2 ).percent() );
       td -> debuff.shadow_blades -> reset();
     }
