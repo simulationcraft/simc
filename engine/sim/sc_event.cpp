@@ -234,10 +234,13 @@ void event_manager_t::add_event( event_t* e, timespan_t delta_time )
     event_queue_depth_samples.resize( traversed + 1 );
   }
   event_queue_depth_samples[ traversed ].first++;
-  if ( !*prev && traversed )
+  if ( !(*prev) )
   {
     event_queue_depth_samples[ traversed ].second++;
-    n_end_insert++;
+    if ( traversed )
+    {
+    	n_end_insert++;
+    }
   }
 #endif
   // insert event
