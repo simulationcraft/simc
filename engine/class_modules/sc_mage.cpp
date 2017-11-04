@@ -1367,22 +1367,33 @@ struct brain_freeze_buff_t : public buff_t
     buff_t( buff_creator_t( p, "brain_freeze", p -> find_spell( 190446 ) ) )
   { }
 
-  virtual bool trigger( int stacks = 1, double value = DEFAULT_VALUE(),
-                        double chance = -1.0, timespan_t duration = timespan_t::min() ) override
+  virtual void execute( int stacks, double value, timespan_t duration ) override
   {
-    bool success = buff_t::trigger( stacks, value, chance, duration );
-    if ( success )
-    {
-      auto mage = debug_cast<mage_t*>( player );
-      if ( mage -> sets -> has_set_bonus( MAGE_FROST, T20, B4 ) )
-      {
-        timespan_t cd_reduction = -100 * mage -> sets -> set( MAGE_FROST, T20, B4 ) -> effectN( 1 ).time_value();
-        mage -> sample_data.t20_4pc -> add( cd_reduction );
-        mage -> cooldowns.frozen_orb -> adjust( cd_reduction );
-      }
-    }
+    buff_t::execute( stacks, value, duration );
 
-    return success;
+    auto mage = debug_cast<mage_t*>( player );
+    if ( mage -> sets -> has_set_bonus( MAGE_FROST, T20, B4 ) )
+    {
+      timespan_t cd_reduction = -100 * mage -> sets -> set( MAGE_FROST, T20, B4 ) -> effectN( 1 ).time_value();
+      mage -> sample_data.t20_4pc -> add( cd_reduction );
+      mage -> cooldowns.frozen_orb -> adjust( cd_reduction );
+    }
+  }
+
+  virtual void refresh( int stacks, double value, timespan_t duration ) override
+  {
+    buff_t::refresh( stacks, value, duration );
+
+    // The T21 4pc buff seems to be triggered on refresh as well as expire.
+    // As of build 25383, 2017-11-04.
+    debug_cast<mage_t*>( player ) -> buffs.arctic_blast -> trigger();
+  }
+
+  virtual void expire_override( int stacks, timespan_t duration ) override
+  {
+    buff_t::expire_override( stacks, duration );
+
+    debug_cast<mage_t*>( player ) -> buffs.arctic_blast -> trigger();
   }
 };
 
@@ -1428,8 +1439,10 @@ struct icy_veins_buff_t : public haste_buff_t
     buff_duration += p -> talents.thermal_void -> effectN( 2 ).time_value();
   }
 
-  virtual void expire_override( int /* stacks */, timespan_t duration ) override
+  virtual void expire_override( int stacks, timespan_t duration ) override
   {
+    buff_t::expire_override( stacks, duration );
+
     auto mage = debug_cast<mage_t*>( player );
     mage -> buffs.lady_vashjs_grasp -> expire();
     if ( mage -> talents.thermal_void -> ok() && duration == timespan_t::zero() )
@@ -1438,7 +1451,6 @@ struct icy_veins_buff_t : public haste_buff_t
     }
   }
 };
-
 
 struct lady_vashjs_grasp_t : public buff_t
 {
@@ -1456,20 +1468,15 @@ struct lady_vashjs_grasp_t : public buff_t
     } );
   }
 
-  virtual bool trigger( int stacks = 1, double value = DEFAULT_VALUE(),
-                        double chance = -1.0, timespan_t duration = timespan_t::min() ) override
+  virtual void execute( int stacks, double value, timespan_t duration ) override
   {
-    bool success = buff_t::trigger( stacks, value, chance, duration );
-    if ( success )
-    {
-      auto mage = debug_cast<mage_t*>( player );
-      // Triggering LVG gives one stack of Fingers of Frost, regardless of the tick action.
-      assert( fof_source_id != -1 );
-      mage -> buffs.fingers_of_frost -> trigger();
-      mage -> benefits.fingers_of_frost -> update( fof_source_id );
-    }
+    buff_t::execute( stacks, value, duration );
 
-    return success;
+    auto mage = debug_cast<mage_t*>( player );
+    // Triggering LVG gives one stack of Fingers of Frost, regardless of the tick action.
+    assert( fof_source_id != -1 );
+    mage -> buffs.fingers_of_frost -> trigger();
+    mage -> benefits.fingers_of_frost -> update( fof_source_id );
   }
 };
 
@@ -1485,18 +1492,18 @@ struct ray_of_frost_buff_t : public buff_t
     rof_cd = rof_data -> cooldown() - rof_data -> duration();
   }
 
-  //TODO: This be calling expire_override instead
-  virtual void aura_loss() override
+  virtual void expire_override( int stacks, timespan_t duration ) override
   {
-    buff_t::aura_loss();
+    buff_t::expire_override( stacks, duration );
 
-    mage_t* p = static_cast<mage_t*>( player );
-    p -> cooldowns.ray_of_frost -> start( rof_cd );
-
-    if ( p -> channeling && p -> channeling -> id == 205021 ) // 205021 is the spell id for ray of frost action
+    auto mage = debug_cast<mage_t*>( player );
+    // 205021 is the spell id for Ray of Frost
+    if ( mage -> channeling && mage -> channeling -> id == 205021 )
     {
-      p -> channeling -> interrupt_action();
+      mage -> channeling -> interrupt_action();
     }
+
+    mage -> cooldowns.ray_of_frost -> start( rof_cd );
   }
 };
 
@@ -4124,19 +4131,10 @@ struct flurry_t : public frost_mage_spell_t
   {
     frost_mage_spell_t::execute();
 
-    bool brain_freeze_up = p() -> buffs.brain_freeze -> up();
-    p() -> buffs.zannesu_journey -> trigger();
-    p() -> state.brain_freeze_active = brain_freeze_up;
-    p() -> state.flurry_bolt_count = 0;
-
-    if ( brain_freeze_up && p() -> sets -> has_set_bonus( MAGE_FROST, T21, B4 ) )
-    {
-      // TODO: Seems to also be triggered by Brain Freeze expire (both natural and manual) and
-      // refresh. Check if this is still the case once Antorus goes live and possibly implement.
-      p() -> buffs.arctic_blast -> trigger();
-    }
-
+    p() -> state.brain_freeze_active = p() -> buffs.brain_freeze -> up();
     p() -> buffs.brain_freeze -> expire();
+    p() -> state.flurry_bolt_count = 0;
+    p() -> buffs.zannesu_journey -> trigger();
   }
 
   virtual void impact( action_state_t* s ) override
@@ -7363,7 +7361,8 @@ void mage_t::create_buffs()
 
   // Frost
   buffs.arctic_blast           = buff_creator_t( this, "arctic_blast", find_spell( 253257 ) )
-                                   .default_value( find_spell( 253257 ) -> effectN( 1 ).percent() );
+                                   .default_value( find_spell( 253257 ) -> effectN( 1 ).percent() )
+                                   .chance( sets -> has_set_bonus( MAGE_FROST, T21, B4 ) ? 1.0 : 0.0 );
   buffs.brain_freeze           = new buffs::brain_freeze_buff_t( this );
   buffs.bone_chilling          = buff_creator_t( this, "bone_chilling", find_spell( 205766 ) )
                                    .default_value( talents.bone_chilling -> effectN( 1 ).percent() / 10 )
