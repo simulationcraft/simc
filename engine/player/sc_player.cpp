@@ -784,7 +784,7 @@ player_t::player_t( sim_t*             s,
   actor_index = sim -> actor_list.size();
   sim -> actor_list.push_back( this );
 
-  if ( ! is_enemy() && ! is_pet() )
+  if ( ! is_enemy() && ! is_pet() && type != HEALING_ENEMY )
   {
     artifact = artifact::player_artifact_data_t::create( this );
   }
@@ -1910,6 +1910,8 @@ bool player_t::init_artifact()
 
   if ( artifact_id == 0 )
   {
+	sim->errorf("No Artifact ID found for player '%s'! Please note that "
+			  "SimC currently does not support players without specalization.", name() );
     return false;
   }
 
