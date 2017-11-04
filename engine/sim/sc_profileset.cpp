@@ -9,7 +9,7 @@
 #include "sc_profileset.hpp"
 
 namespace profileset
-{
+{ 
 void insert_data( highchart::bar_chart_t&   chart,
                   const std::string&        name,
                   const color::rgb&         c,
