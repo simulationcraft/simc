@@ -1980,7 +1980,7 @@ void item::acrid_catalyst_injector( special_effect_t& effect )
 
   dbc_proc_callback_t* cb = new injector_proc_cb_t( effect, { crit, haste, mastery }, all );
 
-  all -> stack_change_callback = [ cb ] ( buff_t*, int prev, int cur )
+  all -> stack_change_callback = [ cb ] ( buff_t*, int prev, int /*cur*/ )
   {
     if ( prev == 0 ) cb -> deactivate();
     if ( prev == 1 ) cb -> activate();
@@ -2301,10 +2301,10 @@ struct fire_mines_t : public spell_t
     return travel;
   }
 
-  virtual double calculate_direct_amount(action_state_t* s) const override
+  virtual double calculate_direct_amount(action_state_t*) const override
   { return 0.0; }
 
-  virtual result_e calculate_result(action_state_t* s) const override
+  virtual result_e calculate_result(action_state_t*) const override
   { return RESULT_NONE; }
 
   virtual void impact( action_state_t* s ) override

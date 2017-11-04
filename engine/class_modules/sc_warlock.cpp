@@ -3200,8 +3200,8 @@ struct tormented_agony_t : public warlock_spell_t
 
   tormented_agony_t( warlock_t* p ):
     warlock_spell_t( "tormented agony", p, p -> find_spell( 256807 ) ),
-    tormented_agony( new tormented_agony_debuff_engine_t( p ) ),
-    source_target( nullptr )
+    source_target( nullptr ),
+    tormented_agony( new tormented_agony_debuff_engine_t( p ) )
   {
     harmful = may_crit = callbacks = false;
     background = proc = true;
@@ -4173,8 +4173,10 @@ struct chaos_bolt_t: public warlock_spell_t
   duplicate_chaos_bolt_t* duplicate;
   double duplicate_chance;
   flames_of_argus_t* flames_of_argus;
+
   chaos_bolt_t( warlock_t* p ) :
-    warlock_spell_t( p, "Chaos Bolt" ), refund( 0 ), duplicate( nullptr ), flames_of_argus( nullptr ), duplicate_chance( 0 )
+    warlock_spell_t( p, "Chaos Bolt" ),
+    refund( 0 ), duplicate( nullptr ), duplicate_chance( 0 ), flames_of_argus( nullptr )
   {
     can_havoc = true;
     affected_by_destruction_t20_4pc = true;
@@ -7435,11 +7437,11 @@ void warlock_t::reset()
 
   // Figure out up to what actor ID we should reset. This is the max of target list actors, and
   // their pets
-  size_t max_idx = sim -> target_list.data().back() -> actor_index + 1;
-  if ( sim -> target_list.data().back() -> pet_list.size() > 0 )
-  {
-    max_idx = sim -> target_list.data().back() -> pet_list.back() -> actor_index + 1;
-  }
+//  size_t max_idx = sim -> target_list.data().back() -> actor_index + 1;
+//  if ( sim -> target_list.data().back() -> pet_list.size() > 0 )
+//  {
+//    max_idx = sim -> target_list.data().back() -> pet_list.back() -> actor_index + 1;
+//  }
 
   range::for_each( sim -> target_list, [ this ]( const player_t* t ) {
     if ( auto td = target_data[ t ] )

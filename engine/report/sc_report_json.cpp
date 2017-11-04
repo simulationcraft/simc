@@ -55,9 +55,6 @@ void add_non_zero( JsonOutput root, const char* name, const timespan_t& v )
 void add_non_zero( JsonOutput root, const char* name, double v )
 { add_non_default( root, name, v, 0.0 ); }
 
-void add_non_zero( JsonOutput root, const char* name, unsigned v )
-{ add_non_default( root, name, v, 0U ); }
-
 void add_non_zero( JsonOutput root, const char* name, int v )
 { add_non_default( root, name, v, 0 ); }
 

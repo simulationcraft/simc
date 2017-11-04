@@ -7864,7 +7864,7 @@ void demon_hunter_t::activate_soul_fragment(soul_fragment_t* frag)
 {
   if (frag->type == SOUL_FRAGMENT_LESSER)
   {
-    const int active_fragments = get_active_soul_fragments(frag->type);
+    auto active_fragments = get_active_soul_fragments(frag->type);
     if(active_fragments > MAX_SOUL_FRAGMENTS)
     {
       // Find and delete the oldest active fragment of this type.

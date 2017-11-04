@@ -385,11 +385,11 @@ size_t progress_bar_t::compute_total_phases()
     n_actors = sim.player_no_pet_list.size();
   }
 
-  size_t reforge_plot_phases = 0;
-  if ( sim.reforge_plot -> num_stat_combos > 0 )
-  {
-    reforge_plot_phases = n_actors * sim.reforge_plot -> num_stat_combos;
-  }
+//  size_t reforge_plot_phases = 0;
+//  if ( sim.reforge_plot -> num_stat_combos > 0 )
+//  {
+//    reforge_plot_phases = n_actors * sim.reforge_plot -> num_stat_combos;
+//  }
 
   auto work = n_actors /* baseline */ +
               n_scale_factor_phases() +

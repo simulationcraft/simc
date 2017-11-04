@@ -847,14 +847,16 @@ public:
       koltiras_newfound_will( spell_data_t::not_found() ),
       seal_of_necrofantasia( spell_data_t::not_found() ),
       perseverance_of_the_ebon_martyr( spell_data_t::not_found() ),
-      sephuzs_secret( nullptr ),
-      death_march( spell_data_t::not_found() ),
+      toravons( 0 ),
       lanathels_lament( spell_data_t::not_found() ),
-      toravons( 0 ), the_instructors_fourth_lesson( 0 ), draugr_girdle_everlasting_king( 0 ),
-      uvanimor_the_unbeautiful( 0 ),
       rattlegore_bone_legplates( spell_data_t::not_found() ),
       soulflayers_corruption( spell_data_t::not_found() ),
-      shackles_of_bryndaor( spell_data_t::not_found() )
+      shackles_of_bryndaor( spell_data_t::not_found() ),
+      the_instructors_fourth_lesson( 0 ),
+      draugr_girdle_everlasting_king( 0 ),
+      uvanimor_the_unbeautiful( 0 ),
+      death_march( spell_data_t::not_found() ),
+      sephuzs_secret( nullptr )
     { }
 
   } legendary;
@@ -9876,7 +9878,7 @@ struct lanathels_lament_t : public scoped_actor_callback_t<death_knight_t>
   lanathels_lament_t() : super( DEATH_KNIGHT )
   { }
 
-  void manipulate( death_knight_t* p, const special_effect_t& e ) override
+  void manipulate( death_knight_t* p, const special_effect_t& ) override
   { p -> legendary.lanathels_lament = p -> find_spell( 212975 ); }
 };
 
