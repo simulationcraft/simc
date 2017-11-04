@@ -1422,6 +1422,8 @@ struct lady_vashjs_grasp_t : public buff_t
     buff_t( buff_creator_t( p, "lady_vashjs_grasp", p -> find_spell( 208147 ) ) ),
     fof_source_id( -1 )
   {
+    // Disable by default.
+    default_chance = 0.0;
     set_tick_callback( [ this, p ] ( buff_t* /* buff */, int /* ticks */, const timespan_t& /* tick_time */ )
     {
       assert( fof_source_id != -1 );
@@ -4784,11 +4786,8 @@ struct ice_nova_t : public frost_mage_spell_t
 
 struct icy_veins_t : public frost_mage_spell_t
 {
-  bool lady_vashjs_grasp;
-
   icy_veins_t( mage_t* p, const std::string& options_str ) :
-    frost_mage_spell_t( "icy_veins", p, p -> find_specialization_spell( "Icy Veins" ) ),
-    lady_vashjs_grasp( false )
+    frost_mage_spell_t( "icy_veins", p, p -> find_specialization_spell( "Icy Veins" ) )
   {
     parse_options( options_str );
     harmful = false;
@@ -4796,7 +4795,7 @@ struct icy_veins_t : public frost_mage_spell_t
 
   virtual bool init_finished() override
   {
-    if ( lady_vashjs_grasp )
+    if ( p() -> buffs.lady_vashjs_grasp -> default_chance != 0.0 )
     {
       debug_cast<buffs::lady_vashjs_grasp_t*>( p() -> buffs.lady_vashjs_grasp ) -> fof_source_id =
         p() -> benefits.fingers_of_frost -> get_source_id( "Lady Vashj's Grasp" );
@@ -4811,13 +4810,11 @@ struct icy_veins_t : public frost_mage_spell_t
 
     p() -> buffs.icy_veins -> trigger();
 
-    if ( lady_vashjs_grasp )
-    {
-      // Refreshing infinite ticking buff doesn't quite work, remove
-      // LVG manually and then trigger it again.
-      p() -> buffs.lady_vashjs_grasp -> expire();
-      p() -> buffs.lady_vashjs_grasp -> trigger();
-    }
+    // Refreshing infinite ticking buff doesn't quite work, remove
+    // LVG manually and then trigger it again.
+    p() -> buffs.lady_vashjs_grasp -> expire();
+    p() -> buffs.lady_vashjs_grasp -> trigger();
+
     if ( p() -> artifact.chilled_to_the_core.rank() )
     {
       p() -> buffs.chilled_to_the_core -> trigger();
@@ -9234,14 +9231,14 @@ struct zannesu_journey_t : public class_buff_cb_t<mage_t, buff_t, buff_creator_t
   }
 };
 
-struct lady_vashjs_grasp_t : public scoped_action_callback_t<icy_veins_t>
+struct lady_vashjs_grasp_t : public scoped_actor_callback_t<mage_t>
 {
-  lady_vashjs_grasp_t() : super( MAGE_FROST, "icy_veins" )
+  lady_vashjs_grasp_t() : super( MAGE_FROST )
   { }
 
-  virtual void manipulate( icy_veins_t* action, const special_effect_t& /* e */ ) override
+  virtual void manipulate( mage_t* actor, const special_effect_t& /* e */ ) override
   {
-    action -> lady_vashjs_grasp = true;
+    actor -> buffs.lady_vashjs_grasp -> default_chance = 1.0;
   }
 };
 
