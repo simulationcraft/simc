@@ -1,8 +1,8 @@
 optimal_raid=1
 default_actions=1
 
-# T21_Death_Knight_Frost.simc
-# T21_Death_Knight_Unholy.simc
+T21_Death_Knight_Frost.simc
+T21_Death_Knight_Unholy.simc
 
 # T21_Demon_Hunter_Havoc.simc
 

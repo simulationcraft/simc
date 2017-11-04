@@ -15,7 +15,7 @@
 # * It is recommended to use enchant name (ex : ",enchant=binding_of_mastery") rather than id/hardcoded stats.
 
 # Death Knight
-# T21_Generate_Death_Knight.simc
+T21_Generate_Death_Knight.simc
 
 # Demon Hunter
 # T21_Generate_Demon_Hunter.simc
