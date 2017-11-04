@@ -288,7 +288,10 @@ int sim_t::main( const std::vector<std::string>& args )
       }
     }
     else
+    {
+      util::printf("Simulation was canceled.\n");
       canceled = 1;
+    }
   }
 
   std::cout << std::endl;
