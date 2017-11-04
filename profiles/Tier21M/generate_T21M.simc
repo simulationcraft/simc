@@ -33,7 +33,7 @@ generate_Mage_T21M.simc
 generate_Monk_T21M.simc
 
 # Paladin
-# generate_Paladin_T21M.simc
+generate_Paladin_T21M.simc
 
 # Priest
 generate_Priest_T21M.simc

@@ -1,12 +1,12 @@
-paladin="Paladin_Retribution_T20M"
+paladin="Paladin_Retribution_T21M"
 spec=retribution
 level=110
 race=dwarf
 role=attack
 position=back
-talents=1202102
-artifact=2:0:0:0:0:40:1:41:4:42:4:43:4:44:4:47:4:49:1:50:4:51:4:52:4:53:4:54:1:350:1:351:1:352:1:353:1:1118:1:1275:1:1561:4:1562:1:1563:1:1564:24:1647:1
-crucible=1739:1780:53/1739:1780:53/1739:1780:50
+talents=1302002
+artifact=2:0:0:0:0:40:1:41:4:42:4:43:4:44:4:47:4:49:1:50:4:51:4:52:4:53:4:54:1:350:1:351:1:352:1:353:1:1118:1:1275:1:1561:4:1562:1:1563:1:1564:25:1647:1
+crucible=1739:1780:53/1739:1780:41/1739:1780:41
 
 # This default action priority list is automatically created based on your character.
 # It is a attempt to provide you with a action list that is both simple and practicable,
@@ -29,8 +29,7 @@ actions+=/call_action_list,name=opener,if=time<2
 actions+=/call_action_list,name=cooldowns
 actions+=/call_action_list,name=generators
 
-actions.cooldowns=use_item,name=specter_of_betrayal,if=(buff.crusade.up&buff.crusade.stack>=15|cooldown.crusade.remains>gcd*2)|(buff.avenging_wrath.up|cooldown.avenging_wrath.remains>gcd*2)
-actions.cooldowns+=/potion,name=old_war,if=(buff.bloodlust.react|buff.avenging_wrath.up|buff.crusade.up&buff.crusade.remains<25|target.time_to_die<=40)
+actions.cooldowns=potion,name=old_war,if=(buff.bloodlust.react|buff.avenging_wrath.up|buff.crusade.up&buff.crusade.remains<25|target.time_to_die<=40)
 actions.cooldowns+=/blood_fury
 actions.cooldowns+=/berserking
 actions.cooldowns+=/arcane_torrent,if=(buff.crusade.up|buff.avenging_wrath.up)&holy_power=2&(cooldown.blade_of_justice.remains>gcd|cooldown.divine_hammer.remains>gcd)
@@ -73,30 +72,30 @@ actions.opener+=/blade_of_justice,if=equipped.137048|race.blood_elf|!cooldown.wa
 actions.opener+=/divine_hammer,if=equipped.137048|race.blood_elf|!cooldown.wake_of_ashes.up
 actions.opener+=/wake_of_ashes
 
-head=radiant_lightbringer_crown,id=147160,ilevel=930
-neck=string_of_extracted_incisors,id=147013,ilevel=930,enchant=mark_of_the_hidden_satyr
-shoulders=gravedredged_pauldrons,id=147070,ilevel=930
-back=whisper_of_the_nathrezim,id=137020,ilevel=970,enchant=200str
-chest=radiant_lightbringer_breastplate,id=147157,ilevel=930
-wrists=bonemealcrusted_armplates,id=147073,ilevel=930
-hands=radiant_lightbringer_gauntlets,id=147159,ilevel=930
-waist=chain_of_thrayn,id=137086,ilevel=970
-legs=radiant_lightbringer_greaves,id=147161,ilevel=930
-feet=spiked_terrorwake_greatboots,id=147428,ilevel=930
-finger1=yathaes_thumb_ring,id=147021,ilevel=930,enchant_id=5428
-finger2=seal_of_the_second_duumvirate,id=147195,ilevel=940,enchant=200haste
-trinket1=specter_of_betrayal,id=151190,ilevel=940
-trinket2=infernal_cinders,id=147009,ilevel=930
-main_hand=ashbringer,id=120978,bonus_id=737,gem_id=147099/147088/147099/0,relic_ilevel=940/930/940
+head=lights_vanguard_helm,id=152151,ilevel=960
+neck=chain_of_the_unmaker,id=152283,ilevel=970,enchant_id=5890
+shoulders=lights_vanguard_shoulderplates,id=152153,ilevel=960
+back=whisper_of_the_nathrezim,id=137020,ilevel=1000,enchant_id=5434
+chest=lights_vanguard_breastplate,id=152148,ilevel=960
+wrists=vambraces_of_lifes_assurance,id=152023,ilevel=960
+hands=lights_vanguard_gauntlets,id=152150,ilevel=960
+waist=grondfather_girdle,id=152022,ilevel=960
+legs=cosmosculling_legplates,id=152016,ilevel=970
+feet=burning_coven_sabatons,id=152010,ilevel=960
+finger1=sullied_seal_of_the_pantheon,id=151972,ilevel=970,enchant_id=5429
+finger2=soul_of_the_highlord,id=151644,ilevel=1000,gem_id=151584,enchant_id=5429
+trinket1=gorshalachs_legacy,id=152093,ilevel=960
+trinket2=khazgoroths_courage,id=154176,ilevel=1000
+main_hand=ashbringer,id=120978,bonus_id=737,gem_id=152043/152038/152043,relic_ilevel=970/960/970
 
 # Gear Summary
-# gear_ilvl=939.47
-# gear_strength=29590
-# gear_stamina=47095
-# gear_crit_rating=11239
-# gear_haste_rating=8659
-# gear_mastery_rating=2983
-# gear_versatility_rating=5334
-# gear_armor=4927
-# set_bonus=tier20_2pc=1
-# set_bonus=tier20_4pc=1
+# gear_ilvl=972.40
+# gear_strength=39124
+# gear_stamina=62209
+# gear_crit_rating=8317
+# gear_haste_rating=10084
+# gear_mastery_rating=10809
+# gear_versatility_rating=3484
+# gear_armor=5244
+# set_bonus=tier21_2pc=1
+# set_bonus=tier21_4pc=1
