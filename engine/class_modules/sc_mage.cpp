@@ -2666,7 +2666,8 @@ struct arcane_blast_t : public arcane_mage_spell_t
 
   arcane_blast_t( mage_t* p, const std::string& options_str ) :
     arcane_mage_spell_t( "arcane_blast", p,
-                         p -> find_specialization_spell( "Arcane Blast" ) )
+                         p -> find_specialization_spell( "Arcane Blast" ) ),
+    touch_of_the_magi( nullptr )
   {
     parse_options( options_str );
     triggers_arcane_missiles = false; // Disable default AM proc logic.
@@ -2680,6 +2681,11 @@ struct arcane_blast_t : public arcane_mage_spell_t
     {
       add_child( p -> action.unstable_magic_explosion );
     }
+  }
+
+  ~arcane_blast_t()
+  {
+    delete touch_of_the_magi;
   }
 
   virtual bool init_finished() override
