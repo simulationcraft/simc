@@ -67,7 +67,7 @@ rgb& rgb::adjust( double v )
 
   r_ = static_cast<unsigned char>(r_ * v);
   g_ = static_cast<unsigned char>(g_ * v);
-  b_ = static_cast<unsigned char>(g_ * v);
+  b_ = static_cast<unsigned char>(b_ * v);
   return *this;
 }
 
