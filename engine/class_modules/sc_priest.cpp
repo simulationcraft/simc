@@ -2045,9 +2045,12 @@ struct mind_flay_t final : public priest_spell_t
     is_sphere_of_insanity_spell = true;
     energize_type               = ENERGIZE_NONE;  // disable resource generation from spell data
 
-    priest.active_spells.mind_sear_tick = new mind_sear_tick_t( p );
+    if ( p.find_spell( 234702 ) -> ok() )
+    {
+		priest.active_spells.mind_sear_tick = new mind_sear_tick_t( p );
+		add_child( priest.active_spells.mind_sear_tick );
+    }
     priest.active_spells.void_tendril = new new_void_tendril_mind_flay_t( p );
-    add_child( priest.active_spells.mind_sear_tick );
     add_child( priest.active_spells.void_tendril );
 
     if ( p.artifact.void_siphon.rank() )
@@ -2145,7 +2148,7 @@ struct mind_flay_t final : public priest_spell_t
     {
       priest_spell_t::tick( d );
 
-      if ( td->dots.shadow_word_pain->is_ticking() )
+      if ( priest.active_spells.mind_sear_tick && td->dots.shadow_word_pain->is_ticking() )
       {
         // AoE flay
         priest.active_spells.mind_sear_tick->trigger( d->target );
