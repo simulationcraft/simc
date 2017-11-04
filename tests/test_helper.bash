@@ -8,7 +8,7 @@ function sim() {
 }
 
 function class_sim() {
-  PROFILE_DIR="${SIMC_PROFILE_DIR}"
+  PROFILE_DIR=${SIMC_PROFILE_DIR}
   PROFILES=$(ls "${PROFILE_DIR}"/*_$1_*.simc)
   PROFILE_TALENTS=$("${BATS_TEST_DIRNAME}"/talent_options $1)
   for spec in $PROFILES; do
@@ -19,7 +19,7 @@ function class_sim() {
 }
 
 function class_sim2() {
-  PROFILE_DIR="${SIMC_PROFILE_DIR}"
+  PROFILE_DIR=${SIMC_PROFILE_DIR}
   PROFILES=( $(ls "${PROFILE_DIR}"/*_$1_*.simc) )
   PROFILE_TALENTS=( $("${BATS_TEST_DIRNAME}"/talent_options $1) )
   for spec in ${PROFILES[@]}; do
