@@ -853,6 +853,7 @@ void print_text_performance( FILE* file, sim_t* sim )
 
   util::fprintf( file, "Total: %.3f%% Alloc Samples: %llu\n", total_p,
                  sim->event_mgr.n_requested_events );
+  util::fprintf( file, "Alloc size used for event_t: %u\n", util::next_power_of_two( 2 * sizeof( event_t ) ) );
 #endif
 }
 

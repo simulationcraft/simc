@@ -1910,8 +1910,8 @@ bool player_t::init_artifact()
 
   if ( artifact_id == 0 )
   {
-	sim->errorf("No Artifact ID found for player '%s'! Please note that "
-			  "SimC currently does not support players without specalization.", name() );
+    sim->errorf("No Artifact ID found for player '%s'! Please note that "
+        "SimC currently does not support players without specalization.", name() );
     return false;
   }
 
