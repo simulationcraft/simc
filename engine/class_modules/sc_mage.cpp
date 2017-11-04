@@ -6249,10 +6249,8 @@ struct freeze_t : public action_t
     action_skill = 1;
   }
 
-  virtual void reset() override
+  virtual bool init_finished() override
   {
-    action_t::reset();
-
     mage_t* m = debug_cast<mage_t*>( player );
 
     if ( m -> pets.water_elemental && ! action )
@@ -6264,6 +6262,8 @@ struct freeze_t : public action_t
         water_jet -> autocast = false;
       }
     }
+
+    return action_t::init_finished();
   }
 
   virtual void execute() override
@@ -6282,10 +6282,10 @@ struct freeze_t : public action_t
       return false;
     }
 
-    if ( !action )
+    if ( ! action )
       return false;
 
-    if ( !action -> ready() )
+    if ( ! action -> ready() )
       return false;
 
     return action_t::ready();
@@ -6310,10 +6310,8 @@ struct water_jet_t : public action_t
     action_skill = 1;
   }
 
-  virtual void reset() override
+  virtual bool init_finished() override
   {
-    action_t::reset();
-
     mage_t* m = debug_cast<mage_t*>( player );
 
     if ( m -> pets.water_elemental && ! action )
@@ -6324,6 +6322,8 @@ struct water_jet_t : public action_t
         action -> autocast = false;
       }
     }
+
+    return action_t::init_finished();
   }
 
   virtual void execute() override
@@ -6355,7 +6355,7 @@ struct water_jet_t : public action_t
       return false;
     }
 
-    if ( !action )
+    if ( ! action )
       return false;
 
     // Ensure that the Water Elemental's water_jet is ready. Note that this
