@@ -8033,12 +8033,12 @@ void mage_t::apl_frost()
   single -> add_talent( this, "Ray of Frost", "if=buff.icy_veins.up|cooldown.icy_veins.remains>action.ray_of_frost.cooldown&buff.rune_of_power.down" );
   single -> add_action( this, "Flurry",
     "if=prev_gcd.1.ebonbolt|buff.brain_freeze.react&(prev_gcd.1.glacial_spike|prev_gcd.1.frostbolt&(!talent.glacial_spike.enabled"
-    "|buff.icicles.stack<=3|cooldown.frozen_orb.remains<=10&set_bonus.tier20_2pc))",
+    "|buff.icicles.stack<=4|cooldown.frozen_orb.remains<=10&set_bonus.tier20_2pc))",
 
     "Winter's Chill from Flurry can apply to the spell cast right before (provided the travel time is long enough). This can be "
     "exploited to a great effect with Ebonbolt, Glacial Spike (which deal a lot of damage by themselves) and Frostbolt (as a "
     "guaranteed way to proc Frozen Veins and Chain Reaction). When using Glacial Spike, it is worth saving a Brain Freeze proc "
-    "when Glacial Spike is right around the corner (i.e. with 4 or more Icicles). However, when the actor also has T20 2pc, "
+    "when Glacial Spike is right around the corner (i.e. with 5 Icicles). However, when the actor also has T20 2pc, "
     "Glacial Spike is delayed to fit into Frozen Mass, so we do not want to sit on a Brain Freeze proc for too long in that case." );
   single -> add_action( this, "Frozen Orb", "if=set_bonus.tier20_2pc&variable.fof_react<3",
     "With T20 2pc, Frozen Orb should be used as soon as it comes off CD." );
