@@ -393,37 +393,31 @@ bool report::check_gear_ilevel( player_t& p, sim_t& sim )
   int legendary_items_allowed      = 0;
   std::string tier_name            = "";
 
-  if ( p.report_information.save_str.find( "T19P" ) != std::string::npos )
+  if ( p.report_information.save_str.find( "PR" ) != std::string::npos )
   {
     max_ilevel_allowed        = 875;
     max_weapon_ilevel_allowed = 903;
-    tier_name                 = "T19P";
+    tier_name                 = "PR";
   }
-  else if ( p.report_information.save_str.find( "T19M_NH" ) != std::string::npos )
+  else if ( p.report_information.save_str.find( "T19" ) != std::string::npos )
   {
     max_ilevel_allowed           = 910;
     max_weapon_ilevel_allowed    = 933;
-    tier_name                    = "T19M_NH";
+    tier_name                    = "T19";
   }
-  else if ( p.report_information.save_str.find( "T19M" ) != std::string::npos )
-  {
-    max_ilevel_allowed           = 895;
-    max_weapon_ilevel_allowed    = 918;
-    tier_name                    = "T19M";
-  }
-  else if ( p.report_information.save_str.find( "T20M" ) != std::string::npos )
+  else if ( p.report_information.save_str.find( "T20" ) != std::string::npos )
   {
     legendary_items_allowed      = 2;
     max_ilevel_allowed           = 940;
     max_weapon_ilevel_allowed    = 960;
-    tier_name                    = "T20M";
+    tier_name                    = "T20";
   }
-  else if ( p.report_information.save_str.find( "T21M" ) != std::string::npos )
+  else if ( p.report_information.save_str.find( "T21" ) != std::string::npos )
   {
     legendary_items_allowed      = 2;
     max_ilevel_allowed           = 1000;
     max_weapon_ilevel_allowed    = 999;
-    tier_name                    = "T21M";
+    tier_name                    = "T21";
   }
   else
   {
@@ -564,43 +558,26 @@ bool report::check_artifact_points( const player_t& p, sim_t& sim )
 
   std::string tier_name = "";
 
-  if ( p.report_information.save_str.find( "T19P" ) != std::string::npos )
+  if ( p.report_information.save_str.find( "PR" ) != std::string::npos )
   {
     max_purchased = 19;
-    tier_name     = "T19P";
+    tier_name     = "PR";
   }
-  else if ( p.report_information.save_str.find( "T19M_NH" ) != std::string::npos )
+  else if ( p.report_information.save_str.find( "T19" ) != std::string::npos )
   {
     max_purchased = 52;
-    tier_name     = "T19M_NH";
+    tier_name     = "T19";
   }
-  else if ( p.report_information.save_str.find( "T19M" ) != std::string::npos )
-  {
-    max_purchased = 36;
-    tier_name     = "T19M";
-  }
-  else if ( p.report_information.save_str.find( "T20H" ) != std::string::npos )
-  {
-    max_purchased = 66;
-    tier_name     = "T20H";
-    max_crucible  = 6;
-  }
-  else if ( p.report_information.save_str.find( "T20M" ) != std::string::npos )
+  else if ( p.report_information.save_str.find( "T20" ) != std::string::npos )
   {
     max_purchased = 75;
-    tier_name     = "T20M";
+    tier_name     = "T20";
     max_crucible  = 9;
   }
-  else if ( p.report_information.save_str.find( "T21H" ) != std::string::npos )
+  else if ( p.report_information.save_str.find( "T21" ) != std::string::npos )
   {
     max_purchased = 75;
-    tier_name     = "T21H";
-    max_crucible  = 9;
-  }
-  else if ( p.report_information.save_str.find( "T21M" ) != std::string::npos )
-  {
-    max_purchased = 75;
-    tier_name     = "T21M";
+    tier_name     = "T21";
     max_crucible  = 9;
   }
   else
