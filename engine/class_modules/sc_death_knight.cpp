@@ -8778,7 +8778,7 @@ double death_knight_t::bone_shield_handler( const action_state_t* state ) const
     
     if ( sets -> has_set_bonus( DEATH_KNIGHT_BLOOD, T21, B2 ) )
     {
-      cooldown.dancing_rune_weapon -> adjust( timespan_t::from_millis( sets -> set( DEATH_KNIGHT_BLOOD, T21, B4) -> effectN( 1 ).base_value() ), false );
+      cooldown.dancing_rune_weapon -> adjust( timespan_t::from_millis( sets -> set( DEATH_KNIGHT_BLOOD, T21, B2) -> effectN( 1 ).base_value() ), false );
       cooldown.blood_tap -> adjust( timespan_t::from_seconds( -2.0 ), false );
     }
 
@@ -8800,7 +8800,7 @@ double death_knight_t::bone_shield_handler( const action_state_t* state ) const
 
     if ( sets -> has_set_bonus( DEATH_KNIGHT_BLOOD, T21, B2 ) )
     {
-      cooldown.dancing_rune_weapon -> adjust( timespan_t::from_millis( sets -> set( DEATH_KNIGHT_BLOOD, T21, B4) -> effectN( 1 ).base_value() ), false );
+      cooldown.dancing_rune_weapon -> adjust( timespan_t::from_millis( sets -> set( DEATH_KNIGHT_BLOOD, T21, B2) -> effectN( 1 ).base_value() ), false );
       cooldown.blood_tap -> adjust( timespan_t::from_seconds( -2.0 ), false );
     }
   }
