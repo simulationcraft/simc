@@ -13,8 +13,6 @@
 
 namespace { // UNNAMED NAMESPACE ============================================
 
-// is_white_space ===========================================================
-
 bool is_white_space( char c )
 {
   return ( c == ' ' || c == '\t' || c == '\n' || c == '\r' );
@@ -27,13 +25,11 @@ char* skip_white_space( char* s )
   return s;
 }
 
-// option_db_t::open_file ===================================================
-
 io::cfile open_file( const std::vector<std::string>& splits, const std::string& name, std::string& actual_name )
 {
-  for ( size_t i = 0; i < splits.size(); i++ )
+  for ( auto& split : splits )
   {
-    auto file_path = splits[ i ] + "/" + name;
+    auto file_path = split + "/" + name;
     FILE* f = io::fopen( file_path, "r" );
     if ( f )
     {
@@ -79,10 +75,11 @@ std::string base_name( const std::string& file_path )
 
 void do_replace( const option_db_t& opts, std::string& str, std::string::size_type begin, int depth )
 {
-  if ( depth > 10 )
+  static const int max_depth = 10;
+  if ( depth > max_depth )
   {
     std::stringstream s;
-    s << "Nesting depth exceeded for: '" << str << "'";
+    s << "Nesting depth exceeded for: '" << str << "' (max: " << max_depth << ")";
     throw std::invalid_argument( s.str() );
   }
 
@@ -115,6 +112,16 @@ void do_replace( const option_db_t& opts, std::string& str, std::string::size_ty
 
   str.replace( begin, end - begin + 1, opts.var_map.at( var ) );
 }
+
+
+// Shared data base path
+#ifndef SC_SHARED_DATA
+  #if defined( SC_LINUX_PACKAGING )
+    const char* SC_SHARED_DATA SC_LINUX_PACKAGING = "/profiles";
+  #else
+    const char* SC_SHARED_DATA = "";
+  #endif
+#endif
 
 } // UNNAMED NAMESPACE ======================================================
 
@@ -695,8 +702,12 @@ bool opts::parse( sim_t*                 sim,
                       const std::string&     value )
 {
   for ( auto& option : options )
+  {
     if ( option -> parse_option( sim, name, value ) )
+    {
       return true;
+    }
+  }
 
   return false;
 }
@@ -747,11 +758,11 @@ void opts::parse( sim_t*                 sim,
 
 bool option_db_t::parse_file( FILE* file )
 {
-  char buffer[ 1024 ];
+  std::array<char, 1024> buffer;
   bool first = true;
-  while ( fgets( buffer, sizeof( buffer ), file ) )
+  while ( fgets( buffer.data(), buffer.size(), file ) )
   {
-    char *b = buffer;
+    char* b = buffer.data();
     if ( first )
     {
       first = false;
@@ -759,12 +770,16 @@ bool option_db_t::parse_file( FILE* file )
       // Skip the UTF-8 BOM, if any.
       size_t len = strlen( b );
       if ( len >= 3 && utf8::is_bom( b ) )
+      {
         b += 3;
+      }
     }
 
     b = skip_white_space( b );
     if ( *b == '#' || *b == '\0' )
+    {
       continue;
+    }
 
     parse_line( io::maybe_latin1_to_utf8( b ) );
   }
@@ -781,12 +796,16 @@ void option_db_t::parse_text( const std::string& text )
   while ( true )
   {
     while ( first < text.size() && is_white_space( text[ first ] ) )
+    {
       ++first;
+    }
 
     if ( first >= text.size() )
+    {
       break;
+    }
 
-    std::string::size_type last = text.find( '\n', first );
+    auto last = text.find( '\n', first );
     if ( false )
     {
       std::cerr << "first = " << first << ", last = " << last << " ["
@@ -807,14 +826,16 @@ void option_db_t::parse_text( const std::string& text )
 void option_db_t::parse_line( const std::string& line )
 {
   if ( line[ 0 ] == '#' )
+  {
     return;
+  }
 
   std::vector<std::string> tokens;
-  size_t num_tokens = util::string_split_allow_quotes( tokens, line, " \t\n\r" );
+  util::string_split_allow_quotes( tokens, line, " \t\n\r" );
 
-  for ( size_t i = 0; i < num_tokens; ++i )
+  for( const auto& token : tokens )
   {
-    parse_token( tokens[ i ] );
+    parse_token( token );
   }
 
 }
@@ -911,26 +932,17 @@ void option_db_t::parse_token( const std::string& token )
 
 void option_db_t::parse_args( const std::vector<std::string>& args )
 {
-  for ( size_t i = 0; i < args.size(); ++i )
-    parse_token( args[ i ] );
+  for ( auto& arg : args )
+  {
+    parse_token( arg );
+  }
 }
 
 // option_db_t::option_db_t =================================================
 
-#ifndef SC_SHARED_DATA
-  #if defined( SC_LINUX_PACKAGING )
-    #define SC_SHARED_DATA SC_LINUX_PACKAGING "/profiles"
-  #else
-    #define SC_SHARED_DATA ".."
-  #endif
-#endif
-
 option_db_t::option_db_t()
 {
-  const char* paths[] = { "./profiles", "../profiles", SC_SHARED_DATA };
-  int n_paths = 2;
-  if ( ! util::str_compare_ci( SC_SHARED_DATA, ".." ) )
-    n_paths++;
+  std::vector<std::string> paths = { "./profiles", "../profiles", SC_SHARED_DATA };
 
   // This makes baby pandas cry a bit less, but still makes them weep.
 
@@ -942,28 +954,31 @@ option_db_t::option_db_t()
   // root directory, depending on whether the user issues make install or not.
   // In addition, if SC_SHARED_DATA is given, search our profile directory
   // structure directly from there as well.
-  for ( int j = 0; j < n_paths; j++ )
+  for ( auto path : paths )
   {
-    std::string prefix = paths[ j ];
     // Skip empty SHARED_DATA define, as the default ("..") is already
     // included.
-    if ( prefix.empty() )
+    if ( path.empty() )
       continue;
 
-    auto_path.push_back( prefix );
+    // Skip current path, we arleady have that
+    if ( path == "." )
+      continue;
 
-    prefix += "/";
+    auto_path.push_back( path );
+
+    path += "/";
 
     // Add profiles that doesn't match the tier pattern
-    auto_path.push_back( prefix + "generators" );
-    auto_path.push_back( prefix + "generators/PreRaids" );
-    auto_path.push_back( prefix + "PreRaids" );
+    auto_path.push_back( path + "generators" );
+    auto_path.push_back( path + "generators/PreRaids" );
+    auto_path.push_back( path + "PreRaids" );
 
     // Add profiles for each tier
     for ( unsigned i = 0; i < N_TIER; ++i )
     {
-      auto_path.push_back( prefix + "generators/Tier" + util::to_string( MIN_TIER + i ) );
-      auto_path.push_back( prefix + "Tier" + util::to_string( MIN_TIER + i ) );
+      auto_path.push_back( path + "generators/Tier" + util::to_string( MIN_TIER + i ) );
+      auto_path.push_back( path + "Tier" + util::to_string( MIN_TIER + i ) );
     }
   }
 }
@@ -1021,6 +1036,3 @@ std::unique_ptr<option_t> opt_func( const std::string& n, const opts::function_t
 
 std::unique_ptr<option_t> opt_deprecated( const std::string& n, const std::string& new_option )
 { return std::unique_ptr<option_t>(new opts::opts_deperecated_t( n, new_option )); }
-
-#undef SC_SHARED_DATA
-
