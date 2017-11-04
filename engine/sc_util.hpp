@@ -125,7 +125,7 @@ bool socket_gem_match( item_socket_color socket, item_socket_color gem );
 double crit_multiplier( meta_gem_e gem );
 
 std::vector<std::string> string_split( const std::string& str, const std::string& delim );
-size_t string_split_allow_quotes( std::vector<std::string>& results, const std::string& str, const char* delim );
+std::vector<std::string> string_split_allow_quotes( std::string str, const char* delim );
 size_t string_split( const std::string& str, const char* delim, const char* format, ... );
 void string_strip_quotes( std::string& str );
 void replace_all( std::string& s, const std::string&, const std::string& );
@@ -153,7 +153,6 @@ std::string decode_html( const std::string& str );
 void urlencode( std::string& str );
 void urldecode( std::string& str );
 std::string uchar_to_hex( unsigned char );
-std::string google_image_chart_encode( const std::string& str );
 std::string create_blizzard_talent_url( const player_t& p );
 std::string create_wowhead_artifact_url( const player_t& p );
 
