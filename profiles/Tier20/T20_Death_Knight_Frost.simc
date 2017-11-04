@@ -1,0 +1,158 @@
+deathknight="T20_Death_Knight_Frost"
+spec=frost
+level=110
+race=blood_elf
+role=attack
+position=back
+talents=3210031
+artifact=12:0:0:0:0:108:4:109:4:110:4:111:4:113:4:114:4:115:4:117:4:119:1:120:1:122:1:123:1:124:1:1090:4:1091:1:1092:1:1332:1:1360:1:1485:4:1486:1:1487:1:1488:24:1628:1
+crucible=1739:3:1780:3:110:3
+
+# Default consumables
+potion=prolonged_power
+flask=countless_armies
+food=lemon_herb_filet
+augmentation=defiled
+
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
+
+# Executed before combat begins. Accepts non-harmful actions only.
+actions.precombat=flask
+actions.precombat+=/food
+actions.precombat+=/augmentation
+# Snapshot raid buffed stats before combat begins and pre-potting is done.
+actions.precombat+=/snapshot_stats
+actions.precombat+=/potion
+
+# Executed every time the actor is available.
+actions=auto_attack
+actions+=/mind_freeze
+actions+=/call_action_list,name=cooldowns
+actions+=/run_action_list,name=bos_pooling,if=talent.breath_of_sindragosa.enabled&cooldown.breath_of_sindragosa.remains<15
+actions+=/run_action_list,name=bos_ticking,if=dot.breath_of_sindragosa.ticking
+actions+=/run_action_list,name=obliteration,if=buff.obliteration.up
+actions+=/call_action_list,name=standard
+
+# Breath of Sindragosa pooling rotation : starts 15s before the cd becomes available
+actions.bos_pooling=remorseless_winter,if=talent.gathering_storm.enabled
+actions.bos_pooling+=/howling_blast,if=buff.rime.react&rune.time_to_4<(gcd*2)
+actions.bos_pooling+=/obliterate,if=rune.time_to_6<gcd&!talent.gathering_storm.enabled
+actions.bos_pooling+=/obliterate,if=rune.time_to_4<gcd&(cooldown.breath_of_sindragosa.remains|runic_power.deficit>=30)
+actions.bos_pooling+=/frost_strike,if=runic_power.deficit<5&set_bonus.tier19_4pc&cooldown.breath_of_sindragosa.remains&(!talent.shattering_strikes.enabled|debuff.razorice.stack<5|cooldown.breath_of_sindragosa.remains>6)
+actions.bos_pooling+=/remorseless_winter,if=buff.rime.react&equipped.perseverance_of_the_ebon_martyr
+actions.bos_pooling+=/howling_blast,if=buff.rime.react&(buff.remorseless_winter.up|cooldown.remorseless_winter.remains>gcd|(!equipped.perseverance_of_the_ebon_martyr&!talent.gathering_storm.enabled))
+actions.bos_pooling+=/obliterate,if=!buff.rime.react&!(talent.gathering_storm.enabled&!(cooldown.remorseless_winter.remains>(gcd*2)|rune>4))&rune>3
+actions.bos_pooling+=/sindragosas_fury,if=(equipped.consorts_cold_core|buff.pillar_of_frost.up)&buff.unholy_strength.up&debuff.razorice.stack=5
+actions.bos_pooling+=/frost_strike,if=runic_power.deficit<30&(!talent.shattering_strikes.enabled|debuff.razorice.stack<5|cooldown.breath_of_sindragosa.remains>rune.time_to_4)
+actions.bos_pooling+=/frostscythe,if=buff.killing_machine.up&(!equipped.koltiras_newfound_will|spell_targets.frostscythe>=2)
+actions.bos_pooling+=/glacial_advance,if=spell_targets.glacial_advance>=2
+actions.bos_pooling+=/remorseless_winter,if=spell_targets.remorseless_winter>=2
+actions.bos_pooling+=/frostscythe,if=spell_targets.frostscythe>=3
+actions.bos_pooling+=/frost_strike,if=(cooldown.remorseless_winter.remains<(gcd*2)|buff.gathering_storm.stack=10)&cooldown.breath_of_sindragosa.remains>rune.time_to_4&talent.gathering_storm.enabled&(!talent.shattering_strikes.enabled|debuff.razorice.stack<5|cooldown.breath_of_sindragosa.remains>6)
+actions.bos_pooling+=/obliterate,if=!buff.rime.react&(!talent.gathering_storm.enabled|cooldown.remorseless_winter.remains>gcd)
+actions.bos_pooling+=/frost_strike,if=cooldown.breath_of_sindragosa.remains>rune.time_to_4&(!talent.shattering_strikes.enabled|debuff.razorice.stack<5|cooldown.breath_of_sindragosa.remains>6)
+
+# Breath of Sindragosa uptime rotation
+actions.bos_ticking=frost_strike,if=talent.shattering_strikes.enabled&runic_power<40&rune.time_to_2>2&cooldown.empower_rune_weapon.remains&debuff.razorice.stack=5&(cooldown.horn_of_winter.remains|!talent.horn_of_winter.enabled)
+actions.bos_ticking+=/remorseless_winter,if=runic_power>=30&((buff.rime.react&equipped.perseverance_of_the_ebon_martyr)|(talent.gathering_storm.enabled&(buff.remorseless_winter.remains<=gcd|!buff.remorseless_winter.remains)))
+actions.bos_ticking+=/howling_blast,if=((runic_power>=20&set_bonus.tier19_4pc)|runic_power>=30)&buff.rime.react
+actions.bos_ticking+=/frost_strike,if=set_bonus.tier20_2pc&runic_power.deficit<=15&rune<=3&buff.pillar_of_frost.up&!talent.shattering_strikes.enabled
+actions.bos_ticking+=/obliterate,if=runic_power<=45|rune.time_to_5<gcd
+actions.bos_ticking+=/sindragosas_fury,if=(equipped.consorts_cold_core|buff.pillar_of_frost.up)&buff.unholy_strength.up&debuff.razorice.stack=5
+actions.bos_ticking+=/horn_of_winter,if=runic_power.deficit>=30&rune.time_to_3>gcd
+actions.bos_ticking+=/frostscythe,if=buff.killing_machine.up&(!equipped.koltiras_newfound_will|talent.gathering_storm.enabled|spell_targets.frostscythe>=2)
+actions.bos_ticking+=/glacial_advance,if=spell_targets.glacial_advance>=2
+actions.bos_ticking+=/remorseless_winter,if=spell_targets.remorseless_winter>=2
+actions.bos_ticking+=/obliterate,if=runic_power.deficit>25|rune>3
+actions.bos_ticking+=/empower_rune_weapon,if=runic_power<30&rune.time_to_2>gcd
+
+# Cold heart conditions
+actions.cold_heart=chains_of_ice,if=buff.cold_heart.stack=20&buff.unholy_strength.up&cooldown.pillar_of_frost.remains>6
+actions.cold_heart+=/chains_of_ice,if=buff.pillar_of_frost.up&buff.pillar_of_frost.remains<gcd&(buff.cold_heart.stack>=11|(buff.cold_heart.stack>=10&set_bonus.tier20_4pc))
+actions.cold_heart+=/chains_of_ice,if=buff.unholy_strength.up&buff.unholy_strength.remains<gcd&buff.cold_heart.stack>16&cooldown.pillar_of_frost.remains>6
+actions.cold_heart+=/chains_of_ice,if=buff.cold_heart.stack>=4&target.time_to_die<=gcd
+
+actions.cooldowns=arcane_torrent,if=runic_power.deficit>=20&!talent.breath_of_sindragosa.enabled
+actions.cooldowns+=/arcane_torrent,if=dot.breath_of_sindragosa.ticking&runic_power.deficit>=50&rune<2
+actions.cooldowns+=/blood_fury,if=buff.pillar_of_frost.up
+actions.cooldowns+=/berserking,if=buff.pillar_of_frost.up
+actions.cooldowns+=/use_items
+actions.cooldowns+=/use_item,name=ring_of_collapsing_futures,if=(buff.temptation.stack=0&target.time_to_die>60)|target.time_to_die<60
+actions.cooldowns+=/use_item,name=horn_of_valor,if=buff.pillar_of_frost.up&(!talent.breath_of_sindragosa.enabled|!cooldown.breath_of_sindragosa.remains)
+actions.cooldowns+=/use_item,name=draught_of_souls,if=rune.time_to_5<3&(!dot.breath_of_sindragosa.ticking|runic_power>60)
+actions.cooldowns+=/use_item,name=feloiled_infernal_machine,if=!talent.obliteration.enabled|buff.obliteration.up
+actions.cooldowns+=/potion,if=buff.pillar_of_frost.up&(dot.breath_of_sindragosa.ticking|buff.obliteration.up|talent.hungering_rune_weapon.enabled)
+# Pillar of frost conditions
+actions.cooldowns+=/pillar_of_frost,if=talent.obliteration.enabled&(cooldown.obliteration.remains>20|cooldown.obliteration.remains<10|!talent.icecap.enabled)
+actions.cooldowns+=/pillar_of_frost,if=talent.breath_of_sindragosa.enabled&cooldown.breath_of_sindragosa.ready&runic_power>50
+actions.cooldowns+=/pillar_of_frost,if=talent.breath_of_sindragosa.enabled&cooldown.breath_of_sindragosa.remains>40
+actions.cooldowns+=/pillar_of_frost,if=talent.hungering_rune_weapon.enabled
+actions.cooldowns+=/breath_of_sindragosa,if=buff.pillar_of_frost.up
+actions.cooldowns+=/call_action_list,name=cold_heart,if=equipped.cold_heart&((buff.cold_heart.stack>=10&!buff.obliteration.up&debuff.razorice.stack>=3)|target.time_to_die<=gcd)
+actions.cooldowns+=/obliteration,if=rune>=1&runic_power>=20&(!talent.frozen_pulse.enabled|rune<2|buff.pillar_of_frost.remains<=12)&(!talent.gathering_storm.enabled|!cooldown.remorseless_winter.ready)&(buff.pillar_of_frost.up|!talent.icecap.enabled)
+actions.cooldowns+=/hungering_rune_weapon,if=!buff.hungering_rune_weapon.up&rune.time_to_2>gcd&runic_power<40
+
+# Obliteration rotation
+actions.obliteration=remorseless_winter,if=talent.gathering_storm.enabled
+actions.obliteration+=/frostscythe,if=buff.killing_machine.up&spell_targets.frostscythe>1
+actions.obliteration+=/obliterate,if=buff.killing_machine.up|(spell_targets.howling_blast>=3&!buff.rime.up)
+actions.obliteration+=/howling_blast,if=buff.rime.up&spell_targets.howling_blast>1
+actions.obliteration+=/howling_blast,if=!buff.rime.up&spell_targets.howling_blast>2&rune>3&talent.freezing_fog.enabled&talent.gathering_storm.enabled
+actions.obliteration+=/frost_strike,if=!buff.rime.up|rune.time_to_1>=gcd|runic_power.deficit<20
+actions.obliteration+=/howling_blast,if=buff.rime.up
+actions.obliteration+=/obliterate
+
+# Standard rotation
+actions.standard=frost_strike,if=talent.icy_talons.enabled&buff.icy_talons.remains<=gcd
+actions.standard+=/frost_strike,if=talent.shattering_strikes.enabled&debuff.razorice.stack=5&buff.gathering_storm.stack<2&!buff.rime.up
+actions.standard+=/remorseless_winter,if=(buff.rime.react&equipped.perseverance_of_the_ebon_martyr)|talent.gathering_storm.enabled
+actions.standard+=/obliterate,if=(equipped.koltiras_newfound_will&talent.frozen_pulse.enabled&set_bonus.tier19_2pc=1)|rune.time_to_4<gcd&buff.hungering_rune_weapon.up
+actions.standard+=/frost_strike,if=(!talent.shattering_strikes.enabled|debuff.razorice.stack<5)&runic_power.deficit<10
+actions.standard+=/howling_blast,if=buff.rime.react
+actions.standard+=/obliterate,if=(equipped.koltiras_newfound_will&talent.frozen_pulse.enabled&set_bonus.tier19_2pc=1)|rune.time_to_5<gcd
+actions.standard+=/sindragosas_fury,if=(equipped.consorts_cold_core|buff.pillar_of_frost.up)&buff.unholy_strength.up&debuff.razorice.stack=5
+actions.standard+=/frost_strike,if=runic_power.deficit<10&!buff.hungering_rune_weapon.up
+actions.standard+=/frostscythe,if=buff.killing_machine.up&(!equipped.koltiras_newfound_will|spell_targets.frostscythe>=2)
+actions.standard+=/obliterate,if=buff.killing_machine.react
+actions.standard+=/frost_strike,if=runic_power.deficit<20
+actions.standard+=/remorseless_winter,if=spell_targets.remorseless_winter>=2
+actions.standard+=/glacial_advance,if=spell_targets.glacial_advance>=2
+actions.standard+=/frostscythe,if=spell_targets.frostscythe>=3
+actions.standard+=/obliterate,if=!talent.gathering_storm.enabled|cooldown.remorseless_winter.remains>(gcd*2)
+actions.standard+=/horn_of_winter,if=!buff.hungering_rune_weapon.up&(rune.time_to_2>gcd|!talent.frozen_pulse.enabled)
+actions.standard+=/frost_strike,if=!(runic_power<50&talent.obliteration.enabled&cooldown.obliteration.remains<=gcd)
+actions.standard+=/obliterate,if=!talent.gathering_storm.enabled|talent.icy_talons.enabled
+actions.standard+=/empower_rune_weapon,if=!talent.breath_of_sindragosa.enabled|target.time_to_die<cooldown.breath_of_sindragosa.remains
+
+head=gravewarden_visage,id=147124,bonus_id=1512/3563
+neck=locket_of_splintered_souls,id=147014,bonus_id=1512/3563,enchant=mark_of_the_hidden_satyr
+shoulders=gravewarden_pauldrons,id=147126,bonus_id=1512/3563
+back=gravewarden_cloak,id=147122,bonus_id=1512/3563,enchant=binding_of_strength
+chest=cold_heart,id=151796,bonus_id=3570
+wrists=toravons_whiteout_bindings,id=132458,bonus_id=3570
+hands=gravewarden_handguards,id=147123,bonus_id=1512/3563
+waist=soulrenders_greatbelt,id=147072,bonus_id=1522/3563
+legs=greaves_of_impure_midnight,id=147066,bonus_id=1522/3563
+feet=iron_ballast_sabatons,id=147059,bonus_id=1512/3563
+finger1=scaled_band_of_servitude,id=147020,bonus_id=1512/3563,enchant=binding_of_mastery
+finger2=seal_of_the_second_duumvirate,id=147195,bonus_id=1512/3563,enchant=binding_of_mastery
+trinket1=cradle_of_anguish,id=147010,bonus_id=1512/3563
+trinket2=specter_of_betrayal,id=151190,bonus_id=1522/3563
+main_hand=blades_of_the_fallen_prince,id=128292,gem_id=147095/147111/147095,relic_id=1522:3563/1522:3563/1522:3563,enchant=rune_of_razorice
+off_hand=blades_of_the_fallen_prince,id=128293,enchant=rune_of_the_fallen_crusader
+
+# Gear Summary
+# gear_ilvl=942.50
+# gear_strength=29901
+# gear_stamina=47327
+# gear_crit_rating=8330
+# gear_haste_rating=8722
+# gear_mastery_rating=9495
+# gear_versatility_rating=1357
+# gear_armor=4991
+# set_bonus=tier20_2pc=1
+# set_bonus=tier20_4pc=1

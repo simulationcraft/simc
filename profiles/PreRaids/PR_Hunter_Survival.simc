@@ -1,0 +1,125 @@
+hunter="PR_Hunter_Survival"
+spec=survival
+level=110
+race=blood_elf
+role=attack
+position=back
+talents=3101031
+artifact=34:0:0:0:0:1068:1:1072:3:1073:3:1074:3:1075:3:1076:3:1077:2:1079:1:1080:1:1082:1:1084:1:1338:1
+
+# Default consumables
+potion=prolonged_power
+flask=seventh_demon
+food=lavish_suramar_feast
+augmentation=defiled
+
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
+
+# Executed before combat begins. Accepts non-harmful actions only.
+actions.precombat=flask
+actions.precombat+=/augmentation
+actions.precombat+=/food
+actions.precombat+=/summon_pet
+# Snapshot raid buffed stats before combat begins and pre-potting is done.
+actions.precombat+=/snapshot_stats
+actions.precombat+=/potion
+actions.precombat+=/explosive_trap
+actions.precombat+=/steel_trap
+actions.precombat+=/dragonsfire_grenade
+actions.precombat+=/harpoon
+
+# Executed every time the actor is available.
+actions=auto_attack
+actions+=/muzzle,if=target.debuff.casting.react
+actions+=/use_items
+actions+=/call_action_list,name=mokMaintain,if=talent.way_of_the_moknathal.enabled
+actions+=/call_action_list,name=CDs
+actions+=/call_action_list,name=preBitePhase,if=!buff.mongoose_fury.up
+actions+=/call_action_list,name=aoe,if=active_enemies>=3
+actions+=/call_action_list,name=bitePhase
+actions+=/call_action_list,name=biteFill
+actions+=/call_action_list,name=fillers
+
+actions.CDs=arcane_torrent,if=focus<=30
+actions.CDs+=/berserking,if=buff.aspect_of_the_eagle.up
+actions.CDs+=/blood_fury,if=buff.aspect_of_the_eagle.up
+actions.CDs+=/potion,if=buff.aspect_of_the_eagle.up
+actions.CDs+=/snake_hunter,if=cooldown.mongoose_bite.charges=0&buff.mongoose_fury.remains>3*gcd&buff.aspect_of_the_eagle.down
+actions.CDs+=/aspect_of_the_eagle,if=buff.mongoose_fury.stack>=2&buff.mongoose_fury.remains>3*gcd
+
+actions.aoe=butchery
+actions.aoe+=/caltrops,if=!ticking
+actions.aoe+=/explosive_trap
+actions.aoe+=/carve,if=(talent.serpent_sting.enabled&dot.serpent_sting.refreshable)|(active_enemies>5)
+
+actions.biteFill=spitting_cobra
+actions.biteFill+=/butchery,if=equipped.frizzos_fingertrap&dot.lacerate.refreshable
+actions.biteFill+=/carve,if=equipped.frizzos_fingertrap&dot.lacerate.refreshable
+actions.biteFill+=/lacerate,if=refreshable
+actions.biteFill+=/raptor_strike,if=active_enemies=1&talent.serpent_sting.enabled&dot.serpent_sting.refreshable
+actions.biteFill+=/steel_trap
+actions.biteFill+=/a_murder_of_crows
+actions.biteFill+=/dragonsfire_grenade
+actions.biteFill+=/explosive_trap
+actions.biteFill+=/caltrops,if=!ticking
+
+actions.bitePhase=fury_of_the_eagle,if=(!talent.way_of_the_moknathal.enabled|buff.moknathal_tactics.remains>(gcd*(8%3)))&buff.mongoose_fury.stack>3&cooldown.mongoose_bite.charges<1&!buff.aspect_of_the_eagle.up,interrupt_if=(talent.way_of_the_moknathal.enabled&buff.moknathal_tactics.remains<=tick_time)|(cooldown.mongoose_bite.charges=3)
+actions.bitePhase+=/lacerate,if=!dot.lacerate.ticking&set_bonus.tier20_4pc&buff.mongoose_fury.duration>cooldown.mongoose_bite.charges*gcd
+actions.bitePhase+=/mongoose_bite,if=charges>=2&cooldown.mongoose_bite.remains<gcd*2
+actions.bitePhase+=/flanking_strike,if=((buff.mongoose_fury.remains>(gcd*(cooldown.mongoose_bite.charges+2)))&cooldown.mongoose_bite.charges<=1)&(!set_bonus.tier19_4pc|(set_bonus.tier19_4pc&!buff.aspect_of_the_eagle.up))
+actions.bitePhase+=/mongoose_bite,if=buff.mongoose_fury.up
+actions.bitePhase+=/flanking_strike
+
+actions.fillers=carve,if=active_enemies>1&talent.serpent_sting.enabled&dot.serpent_sting.refreshable
+actions.fillers+=/throwing_axes
+actions.fillers+=/carve,if=active_enemies>2
+actions.fillers+=/raptor_strike,if=(talent.way_of_the_moknathal.enabled&buff.moknathal_tactics.remains<gcd*4)|(focus>((25-focus.regen*gcd)+55))
+
+actions.mokMaintain=raptor_strike,if=(buff.moknathal_tactics.remains<gcd)|(buff.moknathal_tactics.stack<2)
+
+actions.preBitePhase=flanking_strike,if=cooldown.mongoose_bite.charges<3
+actions.preBitePhase+=/spitting_cobra
+actions.preBitePhase+=/dragonsfire_grenade
+actions.preBitePhase+=/raptor_strike,if=active_enemies=1&talent.serpent_sting.enabled&dot.serpent_sting.refreshable
+actions.preBitePhase+=/steel_trap
+actions.preBitePhase+=/a_murder_of_crows
+actions.preBitePhase+=/explosive_trap
+actions.preBitePhase+=/lacerate,if=refreshable
+actions.preBitePhase+=/butchery,if=equipped.frizzos_fingertrap&dot.lacerate.refreshable
+actions.preBitePhase+=/carve,if=equipped.frizzos_fingertrap&dot.lacerate.refreshable
+actions.preBitePhase+=/mongoose_bite,if=charges=3&cooldown.flanking_strike.remains>=gcd
+actions.preBitePhase+=/caltrops,if=!ticking
+actions.preBitePhase+=/flanking_strike
+actions.preBitePhase+=/lacerate,if=remains<14&set_bonus.tier20_2pc
+
+head=helm_of_endless_dunes,id=134471,ilevel=840
+neck=understone_gorget,id=134491,ilevel=840,enchant=mark_of_the_hidden_satyr
+shoulders=epaulets_of_deceitful_intent,id=134480,ilevel=840
+back=cape_of_rigid_order,id=134402,ilevel=840,enchant=200agi
+chest=decontaminated_chain_tunic,id=134463,ilevel=840
+wrists=remorseless_chain_armbands,id=137405,ilevel=840
+hands=gloves_of_fleshshaping,id=134468,ilevel=840
+waist=cinch_of_frozen_fear,id=134482,ilevel=840
+legs=leggings_of_acidic_venom,id=137450,ilevel=840
+feet=plasmadrilled_steel_toes,id=137444,ilevel=840
+finger1=ring_of_contempt,id=134490,ilevel=840,enchant=200vers
+finger2=ring_of_looming_menace,id=134533,ilevel=840,enchant=200vers
+trinket1=chaos_talisman,id=137459,ilevel=840
+trinket2=tirathons_betrayal,id=137537,ilevel=840
+main_hand=talonclaw,id=128808,ilevel=870
+
+# Gear Summary
+# gear_ilvl=842.00
+# gear_agility=11859
+# gear_stamina=18863
+# gear_crit_rating=5604
+# gear_haste_rating=6218
+# gear_mastery_rating=2054
+# gear_versatility_rating=4451
+# gear_armor=2433
+# set_bonus=tier19p_mail_2pc=1
+summon_pet=cat
