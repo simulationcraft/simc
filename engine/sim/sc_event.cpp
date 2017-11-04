@@ -186,6 +186,7 @@ void event_manager_t::recycle_event( event_t* e )
 
 void event_manager_t::add_event( event_t* e, timespan_t delta_time )
 {
+  assert( e -> next == nullptr );
   e->id = ++global_event_id;
 
   if ( delta_time < timespan_t::zero() )
@@ -268,6 +269,7 @@ void event_manager_t::reschedule_event( event_t* e )
   if ( sim->debug )
     sim->out_debug.printf( "Reschedule Event: %s %d", e->name(), e->id );
 
+  e -> next = nullptr;
   add_event( e, ( e->reschedule_time - current_time ) );
 }
 
