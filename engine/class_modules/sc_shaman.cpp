@@ -7870,7 +7870,7 @@ void shaman_t::init_action_list()
   {
     if ( ! quiet )
       sim -> errorf( "Player %s's role (%s) or spec(%s) isn't supported yet.",
-                     name(), util::role_type_string( primary_role() ), dbc::specialization_string( specialization() ).c_str() );
+                     name(), util::role_type_string( primary_role() ), util::specialization_string( specialization() ) );
     quiet = true;
     return;
   }

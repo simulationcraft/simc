@@ -821,8 +821,9 @@ void print_text_performance( FILE* file, sim_t* sim )
                 static_cast<double>(
                     sim->event_mgr.event_queue_depth_samples[ i ].second ) /
                 sim->event_mgr.event_queue_depth_samples[ i ].first;
-    util::fprintf( file, "Depth: %-4u Samples: %-7u (%.3f%% / %.3f%%)\n", i,
-                   sim->event_mgr.event_queue_depth_samples[ i ].first, p, p2 );
+    util::fprintf( file, "Depth: %-4u Samples: %-9u (%6.3f%%) end-inserts: %-9u (%6.3f%%)\n", i,
+                   sim->event_mgr.event_queue_depth_samples[ i ].first, p,
+				   sim->event_mgr.event_queue_depth_samples[ i ].second, p2 );
 
     total_p += p;
   }

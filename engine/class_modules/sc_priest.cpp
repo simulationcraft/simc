@@ -5453,6 +5453,15 @@ priest_td_t* priest_t::find_target_data( player_t* target ) const
 
 void priest_t::init_action_list()
 {
+  if ( specialization() == PRIEST_HOLY )
+  {
+	if ( ! quiet )
+	  sim -> errorf( "Player %s's role (%s) or spec(%s) is currently not supported.",
+					 name(), util::role_type_string( primary_role() ), util::specialization_string( specialization() ) );
+	quiet = true;
+	return;
+  }
+
   if ( !action_list_str.empty() )
   {
     player_t::init_action_list();
