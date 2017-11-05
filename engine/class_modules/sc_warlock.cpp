@@ -7323,7 +7323,7 @@ void warlock_t::apl_demonology()
   action_list_str += "/soul_harvest,if=!buff.soul_harvest.remains";
   action_list_str += "/potion,name=prolonged_power,if=buff.soul_harvest.remains|target.time_to_die<=70|trinket.proc.any.react";
   action_list_str += "/shadowflame,if=charges=2&spell_targets.demonwrath<5";
-  add_action( "Thal'kiel's Consumption", "if=(dreadstalker_remaining_duration>execute_time|talent.implosion.enabled&spell_targets.implosion>=3)&wild_imp_count>3&wild_imp_remaining_duration>execute_time" );
+  add_action( "Thal'kiel's Consumption", "if=(dreadstalker_remaining_duration>execute_time|talent.implosion.enabled&spell_targets.implosion>=3)&(wild_imp_count>3&dreadstalker_count<=2|wild_imp_count>5)&wild_imp_remaining_duration>execute_time" );
   add_action( "Life Tap", "if=mana.pct<=15|(mana.pct<=65&((cooldown.call_dreadstalkers.remains<=0.75&soul_shard>=2)|((cooldown.call_dreadstalkers.remains<gcd*2)&(cooldown.summon_doomguard.remains<=0.75|cooldown.service_pet.remains<=0.75)&soul_shard>=3)))" );
   add_action( "Demonwrath", "chain=1,interrupt=1,if=spell_targets.demonwrath>=3" );
   add_action( "Demonwrath", "moving=1,chain=1,interrupt=1" );
