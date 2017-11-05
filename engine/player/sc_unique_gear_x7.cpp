@@ -2250,7 +2250,9 @@ struct shadow_strike_t: public proc_spell_t
     proc_spell_t( "shadow_strike", effect.player, effect.trigger(), effect.item ),
     isolated_strike( create_proc_action<isolated_strike_t>( "isolated_strike", effect ) ),
     target_radius( effect.driver() -> effectN( 1 ).base_value() )
-  {}
+  {
+    add_child( isolated_strike );
+  }
 
   void execute() override
   {
