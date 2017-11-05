@@ -7626,7 +7626,7 @@ void demon_hunter_t::recalculate_resource_max( resource_e r )
     resources.max[ r ] *= 1.0 + artifact.will_of_the_illidari.percent();
 
     // Update Metamorphosis' value for the new health amount.
-    if ( buff.metamorphosis -> check() )
+    if ( specialization() == DEMON_HUNTER_VENGEANCE && buff.metamorphosis->check() )
     {
       assert( metamorphosis_health > 0 );
 
