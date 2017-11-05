@@ -696,7 +696,7 @@ namespace pets {
     bool is_grimoire_of_service = false;
     bool is_demonbolt_enabled = true;
     bool is_lord_of_flames = false;
-    bool t21_4pc_damage = false;
+    bool t21_4pc_reset = false;
 
     void trigger_sephuzs_secret( const action_state_t* state, spell_mechanic mechanic )
     {
@@ -1108,8 +1108,10 @@ struct dreadbite_t : public warlock_pet_melee_attack_t
                               ? p -> o() -> sets->set( WARLOCK_DEMONOLOGY, T19, B4 ) -> effectN( 1 ).time_value()
                               : timespan_t::zero() );
 
-    cooldown = p->cooldowns.dreadbite;
+    cooldown = p -> cooldowns.dreadbite;
     cooldown -> duration = dreadstalker_duration + timespan_t::from_seconds( 1.0 );
+    if ( p -> o() -> sets -> has_set_bonus( WARLOCK_DEMONOLOGY, T21, B4 ) )
+      cooldown -> charges += 1.0;
     t21_4pc_increase = p -> o() -> sets -> set( WARLOCK_DEMONOLOGY, T21, B4 ) -> effectN( 1 ).percent();
   }
 
@@ -1117,7 +1119,7 @@ struct dreadbite_t : public warlock_pet_melee_attack_t
   {
     double m = warlock_pet_melee_attack_t::action_multiplier();
 
-    if ( p() -> t21_4pc_damage )
+    if ( p()->o()->sets->has_set_bonus( WARLOCK_DEMONOLOGY, T21, B4 ) && p()->cooldowns.dreadbite->current_charge <= 1 )
       m *= 1.0 + t21_4pc_increase;
 
     return m;
@@ -1126,8 +1128,6 @@ struct dreadbite_t : public warlock_pet_melee_attack_t
   void execute() override
   {
     warlock_pet_melee_attack_t::execute();
-
-    p() -> t21_4pc_damage = false;
   }
 
   void impact( action_state_t* s ) override
@@ -2229,8 +2229,6 @@ struct wild_imp_pet_t: public warlock_pet_t
 
 struct dreadstalker_t : public warlock_pet_t
 {
-  bool t21_4pc_reset;
-
   dreadstalker_t( sim_t* sim, warlock_t* owner ) :
     warlock_pet_t( sim, owner, "dreadstalker", PET_DREADSTALKER )
   {
@@ -2238,8 +2236,6 @@ struct dreadstalker_t : public warlock_pet_t
     regen_type = REGEN_DISABLED;
     owner_coeff.health = 0.4;
     owner_coeff.ap_from_sp = 1.1; // HOTFIX
-
-    t21_4pc_reset = false;
   }
 
   virtual double composite_melee_crit_chance() const override
@@ -2277,6 +2273,14 @@ struct dreadstalker_t : public warlock_pet_t
     if ( name == "dreadbite" ) return new dreadbite_t( this );
 
     return warlock_pet_t::create_action( name, options_str );
+  }
+
+  void arise() override
+  {
+    warlock_pet_t::arise();
+
+    if ( o()->sets->has_set_bonus( WARLOCK_DEMONOLOGY, T21, B4 ) )
+      cooldowns.dreadbite->current_charge = 1.0;
   }
 };
 
@@ -3634,8 +3638,7 @@ struct demonic_empowerment_t: public warlock_spell_t
           if ( p()->warlock_pet_list.dreadstalkers[i]->t21_4pc_reset == false )
           {
             p()->warlock_pet_list.dreadstalkers[i]->t21_4pc_reset = true;
-            p()->warlock_pet_list.dreadstalkers[i]->cooldowns.dreadbite->reset( false );
-            p()->warlock_pet_list.dreadstalkers[i]->t21_4pc_damage = true;
+            p()->warlock_pet_list.dreadstalkers[i]->cooldowns.dreadbite->adjust( -p()->warlock_pet_list.dreadstalkers[i]->cooldowns.dreadbite->duration ); //decrease remaining time by the duration of one charge, i.e., add one charge
           }
         }
       }
@@ -5072,7 +5075,6 @@ struct call_dreadstalkers_t : public warlock_spell_t
         if ( p()->sets->has_set_bonus( WARLOCK_DEMONOLOGY, T21, B4 ) )
         {
           p()->warlock_pet_list.dreadstalkers[i]->t21_4pc_reset = false;
-          p()->warlock_pet_list.dreadstalkers[i]->t21_4pc_damage = false;
         }
 
         if ( p()->sets->has_set_bonus( WARLOCK_DEMONOLOGY, T21, B2 ))
