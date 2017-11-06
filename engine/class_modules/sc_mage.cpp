@@ -761,17 +761,10 @@ namespace water_elemental
 // ==========================================================================
 struct water_elemental_pet_t : public mage_pet_t
 {
-  struct cooldowns_t
-  {
-    cooldown_t* wj_freeze; // Shared Freeze/Water Jet cooldown.
-  } cooldown;
-
   water_elemental_pet_t( sim_t* sim, mage_t* owner )
     : mage_pet_t( sim, owner, "water_elemental" )
   {
     owner_coeff.sp_from_sp = 0.75;
-    cooldown.wj_freeze = get_cooldown( "wj_freeze" );
-    cooldown.wj_freeze -> duration = timespan_t::from_seconds( 25.0 );
   }
 
   virtual void init_action_list() override
@@ -849,7 +842,8 @@ struct freeze_t : public water_elemental_spell_t
     ignore_false_positive = true;
     action_skill          = 1;
 
-    cooldown = p -> cooldown.wj_freeze;
+    internal_cooldown = p -> get_cooldown( "wj_freeze" );
+    internal_cooldown -> duration = data().category_cooldown();
   }
 
   virtual bool init_finished() override
@@ -886,9 +880,10 @@ struct water_jet_t : public water_elemental_spell_t
       autocast( true )
   {
     parse_options( options_str );
-    channeled = tick_may_crit = true;
-    tick_zero         = true;
-    cooldown = p -> cooldown.wj_freeze;
+    channeled = tick_may_crit = tick_zero = true;
+
+    internal_cooldown = p -> get_cooldown( "wj_freeze" );
+    internal_cooldown -> duration = data().category_cooldown();
   }
 
   virtual void execute() override
@@ -899,7 +894,7 @@ struct water_jet_t : public water_elemental_spell_t
 
     // Don't execute Water Jet if Water Elemental used Freeze
     // during the cast
-    if ( cooldown -> up() )
+    if ( internal_cooldown -> up() )
     {
       water_elemental_spell_t::execute();
     }
