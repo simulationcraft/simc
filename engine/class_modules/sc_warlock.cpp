@@ -4109,8 +4109,10 @@ struct incinerate_t: public warlock_spell_t
 struct duplicate_chaos_bolt_t : public warlock_spell_t
 {
   player_t* original_target;
+  flames_of_argus_t* flames_of_argus;
+
   duplicate_chaos_bolt_t( warlock_t* p ) :
-    warlock_spell_t( "chaos_bolt_magistrike", p, p -> find_spell( 213229 ) ),
+    warlock_spell_t( "chaos_bolt_magistrike", p, p -> find_spell( 213229 ) ), flames_of_argus( nullptr ),
     original_target( nullptr )
   {
     background = dual = true;
@@ -4118,6 +4120,11 @@ struct duplicate_chaos_bolt_t : public warlock_spell_t
     base_multiplier *= 1.0 + ( p -> sets->set( WARLOCK_DESTRUCTION, T18, B2 ) -> effectN( 2 ).percent() );
     base_multiplier *= 1.0 + ( p -> sets->set( WARLOCK_DESTRUCTION, T17, B4 ) -> effectN( 1 ).percent() );
     base_multiplier *= 1.0 + ( p -> talents.reverse_entropy -> effectN( 2 ).percent() );
+
+    if ( p->sets->has_set_bonus( WARLOCK_DESTRUCTION, T21, B4 ) )
+    {
+      flames_of_argus = new flames_of_argus_t( p );
+    }
   }
 
   timespan_t travel_time() const override
@@ -4170,6 +4177,23 @@ struct duplicate_chaos_bolt_t : public warlock_spell_t
     state -> result_total *= 1.0 + player -> cache.spell_crit_chance() + state -> target_crit_chance;
 
     return state -> result_total;
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    warlock_spell_t::impact( s );
+
+    if ( p()->sets->has_set_bonus( WARLOCK_DESTRUCTION, T21, B2 ) )
+      td( s->target )->debuffs_chaotic_flames->trigger();
+
+    if ( p()->sets->has_set_bonus( WARLOCK_DESTRUCTION, T21, B4 ) )
+    {
+      double amount = s->result_amount;
+
+      amount *= p()->find_spell( 251855 )->effectN( 1 ).percent();
+
+      residual_action::trigger( flames_of_argus, s->target, s->result_amount * p()->sets->set( WARLOCK_DESTRUCTION, T21, B4 )->effectN( 1 ).percent() );
+    }
   }
 };
 
