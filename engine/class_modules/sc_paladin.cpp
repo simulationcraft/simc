@@ -3776,7 +3776,7 @@ struct shield_of_vengeance_proc_t : public paladin_spell_t
     snapshot_flags = 0;
   }
 
-  proc_types proc_type() const override
+  proc_types proc_type() const
   {
     return PROC1_MELEE_ABILITY;
   }

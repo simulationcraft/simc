@@ -3898,7 +3898,7 @@ struct crash_lightning_t : public shaman_attack_t
     {
       if ( p() -> pet.doom_wolves[ 0 ] )
       {
-        range::for_each( p() -> pet.doom_wolves, []( pet_t* pet ) {
+        range::for_each( p() -> pet.doom_wolves, [ this ]( pet_t* pet ) {
           pet::base_wolf_t* wolf = debug_cast<pet::doom_wolf_base_t*>( pet );
           if ( ! wolf -> is_sleeping() )
           {
@@ -3911,7 +3911,7 @@ struct crash_lightning_t : public shaman_attack_t
     {
       if ( p() -> pet.spirit_wolves[ 0 ] )
       {
-        range::for_each( p() -> pet.spirit_wolves, []( pet_t* pet ) {
+        range::for_each( p() -> pet.spirit_wolves, [ this ]( pet_t* pet ) {
           pet::base_wolf_t* wolf = debug_cast<pet::spirit_wolf_t*>( pet );
           if ( ! wolf -> is_sleeping() )
           {
@@ -7029,7 +7029,7 @@ void shaman_t::trigger_lightning_rod_damage( const action_state_t* state )
   // Can't schedule_execute here, since Chain Lightning may trigger immediately on multiple
   // Lightning Rod targets, overriding base_dd_min/max with a different value (that would be used
   // for allt he scheduled damage execute events of Lightning Rod).
-  range::for_each( lightning_rods, [ this ]( player_t* t ) {
+  range::for_each( lightning_rods, [ this, amount ]( player_t* t ) {
     action.lightning_rod -> set_target( t );
     action.lightning_rod -> execute();
   } );
