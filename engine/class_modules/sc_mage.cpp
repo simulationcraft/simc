@@ -9300,11 +9300,23 @@ public:
 
   virtual void register_hotfixes() const override
   {
-    hotfix::register_spell( "Mage", "2017-01-11", "Incorrect spell level for Frozen Orb Bolt.", 84721 )
+    hotfix::register_spell( "Mage", "2017-01-11", "Incorrect spell level for Frozen Orb bolt.", 84721 )
       .field( "spell_level" )
       .operation( hotfix::HOTFIX_SET )
       .modifier( 57 )
       .verification_value( 81 );
+
+    hotfix::register_spell( "Mage", "2017-11-06", "Incorrect spell level for Icicles driver.", 148012 )
+      .field( "spell_level" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 78 )
+      .verification_value( 80 );
+
+    hotfix::register_spell( "Mage", "2017-11-06", "Incorrect spell level for Icicle.", 148022 )
+      .field( "spell_level" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 78 )
+      .verification_value( 80 );
 
     hotfix::register_spell( "Mage", "2017-03-20", "Manually set Frozen Orb's travel speed.", 84714 )
       .field( "prj_speed" )
