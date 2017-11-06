@@ -432,7 +432,7 @@ public:
   double composite_spell_haste() const override;
   double composite_spell_speed() const override;
   double composite_player_multiplier( school_e school ) const override;
-  double composite_player_pet_damage_multiplier(const action_state_t*) const;
+  double composite_player_pet_damage_multiplier(const action_state_t*) const override;
   double composite_player_absorb_multiplier( const action_state_t* s ) const override;
   double composite_player_heal_multiplier( const action_state_t* s ) const override;
   double composite_player_target_multiplier( player_t* t, school_e school ) const override;
@@ -5506,7 +5506,7 @@ void priest_t::combat_begin()
     {
       // Check if there are any players in the sim other than shadow priests with Surrender to Madness
       bool found_non_stm_players =
-          ( sim->player_list.end() != range::find_if( sim->player_list, [this]( const player_t* p ) {
+          ( sim->player_list.end() != range::find_if( sim->player_list, []( const player_t* p ) {
               if ( p->role == ROLE_NONE )
               {
                 return false;

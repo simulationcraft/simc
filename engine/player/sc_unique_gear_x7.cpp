@@ -6125,7 +6125,7 @@ struct eyasus_driver_t : public spell_t
     spell_t::execute();
 
     // Choose a buff and trigger the mulligan one
-    range::for_each( mulligan_buffs, [ this ]( buff_t* b ) { b -> expire(); } );
+    range::for_each( mulligan_buffs, []( buff_t* b ) { b -> expire(); } );
     current_roll = static_cast<unsigned>( rng().range( 0, mulligan_buffs.size() ) );
     mulligan_buffs[ current_roll ] -> trigger();
     if ( ! first_roll )
