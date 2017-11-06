@@ -545,7 +545,7 @@ public:
   virtual void      reset() override;
   virtual void      create_options() override;
   virtual action_t* create_action( const std::string& name, const std::string& options ) override;
-  bool create_actions();
+  bool create_actions() override;
   virtual pet_t*    create_pet( const std::string& name, const std::string& type = std::string() ) override;
   virtual void      create_pets() override;
   virtual std::string      create_profile( save_e = SAVE_ALL ) override;
@@ -4112,8 +4112,9 @@ struct duplicate_chaos_bolt_t : public warlock_spell_t
   flames_of_argus_t* flames_of_argus;
 
   duplicate_chaos_bolt_t( warlock_t* p ) :
-    warlock_spell_t( "chaos_bolt_magistrike", p, p -> find_spell( 213229 ) ), flames_of_argus( nullptr ),
-    original_target( nullptr )
+    warlock_spell_t( "chaos_bolt_magistrike", p, p -> find_spell( 213229 ) ),
+    original_target( nullptr ),
+    flames_of_argus( nullptr )
   {
     background = dual = true;
     crit_bonus_multiplier *= 1.0 + p -> artifact.chaotic_instability.percent();

@@ -4601,7 +4601,7 @@ void player_t::arise()
 
   current_attack_speed = cache.attack_speed();
 
-  range::for_each( callbacks_on_arise, [ this ]( const std::function<void(void)>& fn ) { fn(); } );
+  range::for_each( callbacks_on_arise, []( const std::function<void(void)>& fn ) { fn(); } );
 }
 
 // player_t::demise =========================================================
