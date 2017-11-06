@@ -6595,7 +6595,8 @@ mage_td_t::mage_td_t( player_t* target, mage_t* mage ) :
                             .duration( timespan_t::from_seconds( 0.5 ) );
   debuffs.water_jet     = buff_creator_t( *this, "water_jet", mage -> find_spell( 135029 ) )
                             .cd( timespan_t::zero() );
-  debuffs.winters_chill = buff_creator_t( *this, "winters_chill", mage -> find_spell( 228358 ) );
+  debuffs.winters_chill = buff_creator_t( *this, "winters_chill", mage -> find_spell( 228358 ) )
+                            .chance( mage -> spec.brain_freeze_2 -> ok() ? 1.0 : 0.0 );
 
 }
 
