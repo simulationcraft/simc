@@ -9277,9 +9277,7 @@ expr_t* player_t::create_expression( action_t* a,
       case STAT_PARRY_RATING:     return make_mem_fn_expr( expression_str, *this, &player_t::composite_parry_rating );
       case STAT_BLOCK_RATING:     return make_mem_fn_expr( expression_str, *this, &player_t::composite_block_rating );
       case STAT_MASTERY_RATING:   return make_mem_fn_expr( expression_str, *this, &player_t::composite_mastery_rating );
-      case RATING_DAMAGE_VERSATILITY: return make_mem_fn_expr( expression_str, *this, &player_t::composite_damage_versatility_rating );
-      case RATING_HEAL_VERSATILITY: return make_mem_fn_expr( expression_str, *this, &player_t::composite_heal_versatility_rating );
-      case RATING_MITIGATION_VERSATILITY: return make_mem_fn_expr( expression_str, *this, &player_t::composite_mitigation_versatility_rating );
+      case STAT_VERSATILITY_RATING: return make_mem_fn_expr( expression_str, *this, &player_t::composite_damage_versatility_rating );
       default: break;
     }
 
