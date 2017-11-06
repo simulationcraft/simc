@@ -1869,6 +1869,11 @@ struct dt_pet_auto_attack_t : public auto_attack_melee_t<T>
 
 struct dt_pet_t : public base_ghoul_pet_t
 {
+  struct cooldowns_t
+  {
+    cooldown_t* gnaw_smash; // shared cd between gnaw/smash and their DT'd counterparts
+  } cooldown;
+
   // Unholy T18 4pc buff
   buff_t* crazed_monstrosity;
 
@@ -1878,7 +1883,10 @@ struct dt_pet_t : public base_ghoul_pet_t
   dt_pet_t( death_knight_t* owner, const std::string& name ) :
     base_ghoul_pet_t( owner, name, false ), crazed_monstrosity( nullptr ),
     unholy_vigor( get_gain( "Unholy Vigor" ) )
-  { }
+  {
+    cooldown.gnaw_smash = get_cooldown( "gnaw_smash" );
+    cooldown.gnaw_smash -> duration = find_spell( 91800 ) -> cooldown();
+  }
 
   attack_t* create_auto_attack() override
   { return new dt_pet_auto_attack_t< dt_pet_t >( this ); }
@@ -1956,20 +1964,6 @@ struct ghoul_pet_t : public dt_pet_t
     }
   };
 
-  struct gnaw_t : public dt_melee_ability_t<ghoul_pet_t>
-  {
-    gnaw_t( ghoul_pet_t* player, const std::string& options_str ) :
-      super( player, "gnaw", player -> find_spell( 91800 ), options_str, false )
-    { }
-  };
-
-  struct monstrous_blow_t : public dt_melee_ability_t<ghoul_pet_t>
-  {
-    monstrous_blow_t( ghoul_pet_t* player, const std::string& options_str ):
-      super( player, "monstrous_blow", player -> find_spell( 91797 ), options_str )
-    { }
-  };
-
   struct sweeping_claws_t : public dt_melee_ability_t<ghoul_pet_t>
   {
     sweeping_claws_t( ghoul_pet_t* player, const std::string& options_str ) :
@@ -1992,6 +1986,24 @@ struct ghoul_pet_t : public dt_pet_t
     }
   };
 
+  struct gnaw_t : public dt_melee_ability_t<ghoul_pet_t>
+  {
+    gnaw_t( ghoul_pet_t* player, const std::string& options_str ) :
+      super( player, "gnaw", player -> find_spell( 91800 ), options_str, false )
+    {
+      cooldown = player -> get_cooldown( "gnaw_smash" );
+    }
+  };
+
+  struct monstrous_blow_t : public dt_melee_ability_t<ghoul_pet_t>
+  {
+    monstrous_blow_t( ghoul_pet_t* player, const std::string& options_str ):
+      super( player, "monstrous_blow", player -> find_spell( 91797 ), options_str )
+    {
+      cooldown = player -> get_cooldown( "gnaw_smash" );
+    }
+  };
+
   ghoul_pet_t( death_knight_t* owner ) : dt_pet_t( owner, "ghoul" )
   { }
 
@@ -2010,6 +2022,7 @@ struct ghoul_pet_t : public dt_pet_t
     def -> add_action( "Sweeping Claws" );
     def -> add_action( "Claw" );
     def -> add_action( "Monstrous Blow" );
+    // def -> add_action( "Gnaw" ); Unused because a dps loss compared to waiting for DT and casting Monstrous Blow
   }
 
   action_t* create_action( const std::string& name, const std::string& options_str ) override
@@ -2048,13 +2061,6 @@ struct sludge_belcher_pet_t : public dt_pet_t
     }
   };
 
-  struct smash_t : public dt_melee_ability_t<sludge_belcher_pet_t>
-  {
-    smash_t( sludge_belcher_pet_t* player, const std::string& options_str ):
-      super( player, "smash", player -> find_spell( 212332 ), options_str, false )
-    { }
-  };
-
   struct vile_gas_t : public dt_melee_ability_t<sludge_belcher_pet_t>
   {
     vile_gas_t( sludge_belcher_pet_t* player, const std::string& options_str ) :
@@ -2077,11 +2083,22 @@ struct sludge_belcher_pet_t : public dt_pet_t
     }
   };
 
+  struct smash_t : public dt_melee_ability_t<sludge_belcher_pet_t>
+  {
+    smash_t( sludge_belcher_pet_t* player, const std::string& options_str ):
+      super( player, "smash", player -> find_spell( 212332 ), options_str, false )
+    {
+      cooldown = player -> get_cooldown( "gnaw_smash" );
+    }
+  };
+
   struct powerful_smash_t : public dt_melee_ability_t<sludge_belcher_pet_t>
   {
     powerful_smash_t( sludge_belcher_pet_t* player, const std::string& options_str ):
       super( player, "powerful_smash", player -> find_spell( 212337 ), options_str )
-    { }
+    {
+      cooldown = player -> get_cooldown( "gnaw_smash" );
+    }
   };
 
   sludge_belcher_pet_t( death_knight_t* owner ) : dt_pet_t( owner, "sludge_belcher" )
@@ -2102,7 +2119,7 @@ struct sludge_belcher_pet_t : public dt_pet_t
     def -> add_action( "Vile Gas" );
     def -> add_action( "Cleaver" );
     def -> add_action( "Powerful Smash" );
-
+    // def -> add_action( "Smash" ); Unused because a dps loss compared to waiting for DT and casting Monstrous Blow
   }
 
   action_t* create_action( const std::string& name, const std::string& options_str ) override
@@ -2111,6 +2128,7 @@ struct sludge_belcher_pet_t : public dt_pet_t
     if ( name == "vile_gas"       ) return new       vile_gas_t( this, options_str );
     if ( name == "smash"          ) return new          smash_t( this, options_str );
     if ( name == "powerful_smash" ) return new powerful_smash_t( this, options_str );
+
 
     return dt_pet_t::create_action( name, options_str );
   }
