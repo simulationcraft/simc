@@ -27,7 +27,7 @@ addons:
       - sourceline: 'ppa:duggan/bats'
     packages:
       - valgrind
-      - g++-4.9
+      - g++-4.8
       - bats
 
 #env:
@@ -57,7 +57,7 @@ notifications:
 
 install:
   # Build SimulationCraft
-  - if [ "$TRAVIS_OS_NAME" == "linux" ]; then CXX=g++-4.9 && ${CXX} -v && make CXX=g++-4.9 DEBUG=1 -C engine -j 2; fi
+  - if [ "$TRAVIS_OS_NAME" == "linux" ]; then make CXX=g++-4.8 DEBUG=1 -C engine -j 2; fi
   - if [ "$TRAVIS_OS_NAME" == "osx"   ]; then make DEBUG=1 SANITIZE=1 -C engine -j 2; fi
 
 script:
