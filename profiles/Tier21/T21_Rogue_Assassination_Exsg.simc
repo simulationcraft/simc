@@ -1,12 +1,12 @@
 rogue="T21_Rogue_Assassination_Exsg"
 spec=assassination
 level=110
-race=pandaren
+race=human
 role=attack
 position=back
 talents=2110131
 artifact=43:0:0:0:0:323:4:324:4:325:4:326:4:327:4:328:4:329:4:330:4:331:4:332:1:333:1:334:1:335:1:337:1:346:1:347:1:1276:1:1384:1:1577:4:1578:1:1579:1:1580:24:1651:1
-crucible=1739:1780:330/1739:1780:325/1739:1780:325
+crucible=1739:1777:330/1739:1777:330/1739:1777:328
 
 # Default consumables
 potion=prolonged_power
@@ -101,16 +101,16 @@ finger1=band_of_the_sargerite_smith,id=152064,bonus_id=3612/1502,enchant=binding
 finger2=sullied_seal_of_the_pantheon,id=151972,bonus_id=3612/1502,enchant=binding_of_critical_strike
 trinket1=shadowsinged_fang,id=151968,bonus_id=3612/1502
 trinket2=golganneths_vitality,id=154174,ilevel=1000
-main_hand=the_kingslayers,id=128870,bonus_id=741,gem_id=152055/152293/152092,relic_id=3612:1502/3612:1502/3612:1502
+main_hand=the_kingslayers,id=128870,bonus_id=741,gem_id=152054/155855/152092,relic_id=3612:1502/3612:1512/3612:1502
 off_hand=the_kingslayers,id=128869
 
 # Gear Summary
-# gear_ilvl=968.75
-# gear_agility=37645
-# gear_stamina=58545
-# gear_crit_rating=10899
+# gear_ilvl=969.13
+# gear_agility=37767
+# gear_stamina=58727
+# gear_crit_rating=10909
 # gear_haste_rating=2953
-# gear_mastery_rating=10976
+# gear_mastery_rating=10986
 # gear_versatility_rating=6184
 # gear_armor=2933
 # set_bonus=tier20_2pc=1

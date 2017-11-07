@@ -1,11 +1,11 @@
 rogue="T21_Rogue_Assassination"
 level=110
-race=pandaren
+race=human
 role=attack
 position=back
 talents=1230111
 artifact=43:0:0:0:0:323:4:324:4:325:4:326:4:327:4:328:4:329:4:330:4:331:4:332:1:333:1:334:1:335:1:337:1:346:1:347:1:1276:1:1384:1:1577:4:1578:1:1579:1:1580:24:1651:1
-crucible=1739:1780:330/1739:1780:325/1739:1780:325
+crucible=1739:1777:330/1739:1777:325/1739:1777:325
 spec=assassination
 
 head=cavalier_hat_of_the_dashing_scoundrel,id=152163,bonus_id=3612/1502
@@ -30,12 +30,12 @@ save=T21_Rogue_Assassination.simc
 
 rogue="T21_Rogue_Assassination_Exsg"
 level=110
-race=pandaren
+race=human
 role=attack
 position=back
 talents=2110131
 artifact=43:0:0:0:0:323:4:324:4:325:4:326:4:327:4:328:4:329:4:330:4:331:4:332:1:333:1:334:1:335:1:337:1:346:1:347:1:1276:1:1384:1:1577:4:1578:1:1579:1:1580:24:1651:1
-crucible=1739:1780:330/1739:1780:325/1739:1780:325
+crucible=1739:1777:330/1739:1777:330/1739:1777:328
 spec=assassination
 
 head=cavalier_hat_of_the_dashing_scoundrel,id=152163,bonus_id=3612/1502
@@ -52,7 +52,7 @@ finger1=band_of_the_sargerite_smith,id=152064,bonus_id=3612/1502,enchant=binding
 finger2=sullied_seal_of_the_pantheon,id=151972,bonus_id=3612/1502,enchant=binding_of_critical_strike
 trinket1=shadowsinged_fang,id=151968,bonus_id=3612/1502
 trinket2=golganneths_vitality,id=154174,ilevel=1000
-main_hand=the_kingslayers,id=128870,bonus_id=741,gem_id=152055/152293/152092,relic_id=3612:1502/3612:1502/3612:1502
+main_hand=the_kingslayers,id=128870,bonus_id=741,gem_id=152054/155855/152092,relic_id=3612:1502/3612:1512/3612:1502
 off_hand=the_kingslayers,id=128869
 
 save=T21_Rogue_Assassination_Exsg.simc
