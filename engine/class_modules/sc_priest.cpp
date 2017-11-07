@@ -5105,6 +5105,9 @@ void priest_t::apl_shadow()
       "surrender_to_madness,if=talent.surrender_to_madness.enabled&target.time_"
       "to_die<=variable.s2mcheck" );
   main->add_action(
+	  "shadow_word_death,if=equipped.zeks_exterminatus&equipped."
+	  "mangazas_madness&buff.zeks_exterminatus.react");
+  main->add_action(
       "shadow_word_pain,if=talent.misery.enabled&dot.shadow_word_pain.remains<"
       "gcd.max,moving=1,cycle_targets=1" );
   main->add_action(
@@ -5124,7 +5127,8 @@ void priest_t::apl_shadow()
   main->add_action(
       "shadow_word_death,if=(active_enemies<=4|(talent.reaper_of_souls.enabled"
       "&active_enemies<=2))&cooldown.shadow_word_death.charges=2&insanity<="
-      "(85-15*talent.reaper_of_souls.enabled)" );
+      "(85-15*talent.reaper_of_souls.enabled)|(equipped.zeks_exterminatus&"
+	  "buff.zeks_exterminatus.react)" );
   main->add_action(
       "mind_blast,if=active_enemies<=4&talent.legacy_of_the_void.enabled&("
       "insanity"
@@ -5251,6 +5255,9 @@ void priest_t::apl_shadow()
     "react)&cooldown.buff_sephuzs_secret.up&!buff.sephuzs_secret.up"
     "&buff.insanity_drain_stacks.value>10,cycle_targets=1");
   vf->add_action( "void_bolt" );
+  vf->add_action(
+	  "shadow_word_death,if=equipped.zeks_exterminatus&equipped."
+	  "mangazas_madness&buff.zeks_exterminatus.react");
 if ( race == RACE_BLOOD_ELF )
    vf->add_action( 
     "arcane_torrent,if=buff.insanity_drain_stacks.value>=20&(insanity-"
@@ -5302,7 +5309,8 @@ if ( race == RACE_BLOOD_ELF )
       "max*0.28&active_enemies<=4" );
   vf->add_action(
       "shadow_word_death,if=(active_enemies<=4|(talent.reaper_of_souls"
-      ".enabled&active_enemies<=2))&cooldown.shadow_word_death.charges=2" );
+      ".enabled&active_enemies<=2))&cooldown.shadow_word_death.charges=2|"
+	  "(equipped.zeks_exterminatus&buff.zeks_exterminatus.react)" );
   vf->add_action( 
       "shadowfiend,if=!talent.mindbender.enabled&buff.voidform.stack>15" );
   vf->add_action(
