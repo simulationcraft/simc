@@ -7901,7 +7901,8 @@ void rogue_t::init_base_stats()
     if ( rogue_ready_trigger )
     {
       ready_type = READY_TRIGGER;
-      sim -> errorf( "[Rogue] ready_trigger=1 has been enabled. You can disable by adding rogue_ready_trigger=0 to your actor" );
+      // Disabled for now
+      // sim -> errorf( "[Rogue] ready_trigger=1 has been enabled. You can disable by adding rogue_ready_trigger=0 to your actor" );
     }
   }
 }
@@ -8894,7 +8895,8 @@ void rogue_t::combat_begin()
       if ( rogue_optimize_expressions )
       {
         sim -> optimize_expressions = true;
-        sim -> errorf( "[Rogue] optimize_expressions=1 has been enabled. You can disable by adding rogue_ready_trigger=0 to every rogue actor" );
+        // Disabled for now
+        // sim -> errorf( "[Rogue] optimize_expressions=1 has been enabled. You can disable by adding rogue_ready_trigger=0 to every rogue actor" );
       }
     }
   }
