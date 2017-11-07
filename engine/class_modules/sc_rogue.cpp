@@ -3056,21 +3056,13 @@ struct garrote_t : public rogue_attack_t
     base_multiplier *= 1.0 + p -> artifact.strangler.percent();
     may_crit = false;
 
-    if ( p -> sets -> has_set_bonus( ROGUE_ASSASSINATION, T20, B2 ) )
+    if ( p -> sets -> has_set_bonus( ROGUE_ASSASSINATION, T20, B2 ) ) {
+      base_costs[ RESOURCE_ENERGY ] += p -> sets -> set( ROGUE_ASSASSINATION, T20, B2 ) -> effectN( 2 ).base_value();
       cooldown -> duration = data().cooldown() + p -> sets -> set( ROGUE_ASSASSINATION, T20, B2 ) -> effectN( 1 ).time_value();
+    }
 
     if ( p -> sets -> has_set_bonus( ROGUE_ASSASSINATION, T20, B4 ) )
       base_multiplier *= 1.0 + p -> sets -> set( ROGUE_ASSASSINATION, T20, B4 ) -> effectN( 1 ).percent();
-  }
-
-  double cost() const override
-  {
-    double c = rogue_attack_t::cost();
-
-    if ( p() -> sets -> has_set_bonus( ROGUE_ASSASSINATION, T20, B2 ) )
-      c += p() -> sets -> set( ROGUE_ASSASSINATION, T20, B2 ) -> effectN( 2 ).base_value();
-
-    return c;
   }
 
   double composite_persistent_multiplier( const action_state_t* state ) const override
@@ -3146,16 +3138,9 @@ struct gouge_t : public rogue_attack_t
     rogue_attack_t( "gouge", p, p -> find_specialization_spell( "Gouge" ), options_str )
   {
     requires_stealth  = false;
-  }
 
-  double cost() const override
-  {
-    if ( p() -> talent.dirty_tricks -> ok() )
-    {
-      return 0;
-    }
-
-    return rogue_attack_t::cost();
+    if ( p -> talent.dirty_tricks -> ok() )
+      base_costs[ RESOURCE_ENERGY ] = 0;
   }
 
   void execute() override
@@ -3878,7 +3863,7 @@ struct mutilate_strike_t : public rogue_attack_t
 
     p() -> trigger_seal_fate( state );
 
-    if ( result_is_hit( state -> result ) && p() -> sets -> has_set_bonus( ROGUE_ASSASSINATION, T19, B2 ) )
+    if ( p() -> sets -> has_set_bonus( ROGUE_ASSASSINATION, T19, B2 ) && result_is_hit( state -> result ) )
     {
       double amount = state -> result_amount * p() -> sets -> set( ROGUE_ASSASSINATION, T19, B2 ) -> effectN( 1 ).percent();
 
@@ -7894,8 +7879,6 @@ void rogue_t::init_base_stats()
 
   if ( main_hand_weapon.type == WEAPON_DAGGER && off_hand_weapon.type == WEAPON_DAGGER )
     resources.base[ RESOURCE_ENERGY ] += spec.assassins_resolve -> effectN( 1 ).base_value();
-  //if ( sets -> has_set_bonus( SET_MELEE, PVP, B2 ) )
-  //  resources.base[ RESOURCE_ENERGY ] += 10;
 
   base_energy_regen_per_second = 10 * ( 1.0 + spec.vitality -> effectN( 1 ).percent() );
   base_energy_regen_per_second *= 1.0 + talent.vigor -> effectN( 2 ).percent();
@@ -7918,8 +7901,7 @@ void rogue_t::init_base_stats()
     if ( rogue_ready_trigger )
     {
       ready_type = READY_TRIGGER;
-      sim -> errorf( "To improve performance due to rogue pooling, ready_trigger=1 has been enabled." );
-      sim -> errorf( "To disable this option, add rogue_ready_trigger=0 to your rogue actor." );
+      sim -> errorf( "[Rogue] ready_trigger=1 has been enabled. You can disable by adding rogue_ready_trigger=0 to your actor" );
     }
   }
 }
@@ -8912,8 +8894,7 @@ void rogue_t::combat_begin()
       if ( rogue_optimize_expressions )
       {
         sim -> optimize_expressions = true;
-        sim -> errorf( "To improve performance with rogue APLs lines that might be always false, optimize_expressions=1 has been enabled." );
-        sim -> errorf( "To disable this option, add rogue_optimize_expressions=0 to every rogue actor." );
+        sim -> errorf( "[Rogue] optimize_expressions=1 has been enabled. You can disable by adding rogue_ready_trigger=0 to every rogue actor" );
       }
     }
   }
