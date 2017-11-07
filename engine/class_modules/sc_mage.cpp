@@ -1540,11 +1540,11 @@ struct mage_spell_t : public spell_t
 
     bool erosion;
     bool shatter;
+
+    bool ice_floes;
   } affected_by;
 
-  bool consumes_ice_floes;
   bool triggers_arcane_missiles;
-
   int am_trigger_source_id;
 public:
 
@@ -1552,13 +1552,13 @@ public:
                 const spell_data_t* s = spell_data_t::nil() ) :
     spell_t( n, p, s ),
     affected_by( affected_by_t() ),
-    consumes_ice_floes( true ),
     triggers_arcane_missiles( true ),
     am_trigger_source_id( -1 )
   {
     may_crit      = true;
     tick_may_crit = true;
     weapon_multiplier = 0.0;
+    affected_by.ice_floes = data().affected_by( p -> talents.ice_floes -> effectN( 1 ) );
   }
 
   virtual void init() override
@@ -1582,7 +1582,6 @@ public:
       snapshot_flags |= STATE_FROZEN;
       update_flags   |= STATE_FROZEN;
     }
-
     if ( ! harmful || background )
     {
       triggers_arcane_missiles = false;
@@ -1650,11 +1649,8 @@ public:
 
     if ( p() -> buffs.arcane_power -> check() )
     {
-      double arcane_power_reduction;
-      arcane_power_reduction = p() -> buffs.arcane_power -> data().effectN( 2 ).percent()
-                             + p() -> talents.overpowered -> effectN( 2 ).percent();
-
-      c *= 1.0 + arcane_power_reduction;
+      c *= 1.0 + p() -> buffs.arcane_power -> data().effectN( 2 ).percent()
+               + p() -> talents.overpowered -> effectN( 2 ).percent();
     }
 
     return c;
@@ -1662,9 +1658,7 @@ public:
 
   virtual bool usable_moving() const override
   {
-    buff_t* ice_floes = p() -> buffs.ice_floes;
-
-    if ( ice_floes -> check() && data().affected_by( ice_floes -> data().effectN( 1 ) ) )
+    if ( p() -> buffs.ice_floes -> check() && affected_by.ice_floes )
     {
       return true;
     }
@@ -1676,8 +1670,7 @@ public:
   void trigger_am( int source_id, double chance = -1.0,
                    int stacks = 1 )
   {
-    if ( static_cast<buff_t*>( p() -> buffs.arcane_missiles )
-             -> trigger( stacks, buff_t::DEFAULT_VALUE(), chance ) )
+    if ( p() -> buffs.arcane_missiles -> trigger( stacks, buff_t::DEFAULT_VALUE(), chance, timespan_t::min() ) )
     {
       if ( source_id < 0 )
       {
@@ -1698,7 +1691,10 @@ public:
     if ( background )
       return;
 
-    if ( execute_time() > timespan_t::zero() && consumes_ice_floes && p() -> buffs.ice_floes -> up() )
+    if ( affected_by.ice_floes
+      && p() -> talents.ice_floes -> ok()
+      && execute_time() > timespan_t::zero()
+      && p() -> buffs.ice_floes -> up() )
     {
       p() -> buffs.ice_floes -> decrement();
     }
@@ -1708,7 +1704,7 @@ public:
       trigger_am( am_trigger_source_id );
     }
 
-    if ( harmful && !background && p() -> talents.incanters_flow -> ok() )
+    if ( harmful && p() -> talents.incanters_flow -> ok() )
     {
       p() -> benefits.incanters_flow -> update();
     }
@@ -1753,7 +1749,7 @@ public:
   }
 };
 
-typedef residual_action::residual_periodic_action_t< mage_spell_t > residual_action_t;
+typedef residual_action::residual_periodic_action_t<mage_spell_t> residual_action_t;
 
 
 // ============================================================================
@@ -4538,7 +4534,7 @@ struct ice_floes_t : public mage_spell_t
   {
     mage_spell_t::execute();
 
-    p() -> buffs.ice_floes -> trigger( 1 );
+    p() -> buffs.ice_floes -> trigger();
   }
 };
 
@@ -5744,7 +5740,6 @@ struct scorch_t : public fire_mage_spell_t
     triggers_hot_streak = true;
     triggers_ignite = true;
     triggers_pyretic_incantation = true;
-    consumes_ice_floes = false;
   }
 
   virtual double action_multiplier() const override
