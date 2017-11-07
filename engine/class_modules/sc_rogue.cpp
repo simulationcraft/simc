@@ -658,6 +658,8 @@ struct rogue_t : public player_t
   // Options
   int initial_combo_points;
   int ssw_refund_offset;
+  bool rogue_optimize_expressions = true;
+  bool rogue_ready_trigger = true;
 
   rogue_t( sim_t* sim, const std::string& name, race_e r = RACE_NIGHT_ELF ) :
     player_t( sim, ROGUE, name, r ),
@@ -7900,6 +7902,26 @@ void rogue_t::init_base_stats()
 
   base_gcd = timespan_t::from_seconds( 1.0 );
   min_gcd  = timespan_t::from_seconds( 1.0 );
+
+  // Force ready trigger if there is a rogue player
+  if ( rogue_ready_trigger )
+  {
+    for ( size_t i = 0; i < sim -> player_list.size(); ++i )
+    {
+      player_t* p = sim -> player_list[i];
+      if ( p -> specialization() != ROGUE_ASSASSINATION && p -> specialization() != ROGUE_OUTLAW && p -> specialization() != ROGUE_SUBTLETY )
+      {
+        rogue_ready_trigger = false;
+        break;
+      }
+    }
+    if ( rogue_ready_trigger )
+    {
+      ready_type = READY_TRIGGER;
+      sim -> errorf( "To improve performance due to rogue pooling, ready_trigger=1 has been enabled." );
+      sim -> errorf( "To disable this option, add rogue_ready_trigger=0 to your rogue actor." );
+    }
+  }
 }
 
 // rogue_t::init_spells =====================================================
@@ -8602,6 +8624,8 @@ void rogue_t::create_options()
   add_option( opt_func( "fixed_rtb", parse_fixed_rtb ) );
   add_option( opt_func( "fixed_rtb_odds", parse_fixed_rtb_odds ) );
   add_option( opt_int( "ssw_refund_offset", ssw_refund_offset ) );
+  add_option( opt_bool( "rogue_optimize_expressions", rogue_optimize_expressions ) );
+  add_option( opt_bool( "rogue_ready_trigger", rogue_ready_trigger ) );
 
   player_t::create_options();
 }
@@ -8872,6 +8896,28 @@ void rogue_t::arise()
 
 void rogue_t::combat_begin()
 {
+  if ( !sim -> optimize_expressions )
+  {
+    if ( rogue_optimize_expressions )
+    {
+      for ( size_t i = 0; i < sim -> player_list.size(); ++i )
+      {
+        player_t* p = sim -> player_list[i];
+        if ( p -> specialization() != ROGUE_ASSASSINATION && p -> specialization() != ROGUE_OUTLAW && p -> specialization() != ROGUE_SUBTLETY )
+        {
+          rogue_optimize_expressions = false;
+          break;
+        }
+      }
+      if ( rogue_optimize_expressions )
+      {
+        sim -> optimize_expressions = true;
+        sim -> errorf( "To improve performance with rogue APLs lines that might be always false, optimize_expressions=1 has been enabled." );
+        sim -> errorf( "To disable this option, add rogue_optimize_expressions=0 to every rogue actor." );
+      }
+    }
+  }
+
   player_t::combat_begin();
 
   if ( legendary.the_dreadlords_deceit )
