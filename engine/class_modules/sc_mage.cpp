@@ -2673,7 +2673,7 @@ struct arcane_blast_t : public arcane_mage_spell_t
 
     if ( p() -> talents.temporal_flux -> ok() )
     {
-      t *=  1.0 + p() -> buffs.arcane_charge -> stack() *
+      t *=  1.0 + p() -> buffs.arcane_charge -> check() *
                   p() -> talents.temporal_flux -> effectN( 1 ).percent();
     }
 
@@ -8227,7 +8227,7 @@ double mage_t::composite_mastery_rating() const
 {
   double m = player_t::composite_mastery_rating();
 
-  if ( buffs.combustion -> up() )
+  if ( buffs.combustion -> check() )
   {
     m += mage_t::composite_spell_crit_rating() * buffs.combustion -> data().effectN( 3 ).percent();
   }
@@ -8364,7 +8364,7 @@ double mage_t::temporary_movement_modifier() const
 {
   double tmm = player_t::temporary_movement_modifier();
 
-  if ( buffs.sephuzs_secret -> up() )
+  if ( buffs.sephuzs_secret -> check() )
   {
     tmm = std::max( buffs.sephuzs_secret -> data().effectN( 1 ).percent(), tmm );
   }
