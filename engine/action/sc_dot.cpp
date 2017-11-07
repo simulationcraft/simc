@@ -857,6 +857,7 @@ timespan_t dot_t::time_to_next_tick() const
     return timespan_t::zero();
   if ( !ticking )
     return timespan_t::zero();
+  assert(tick_event);
   return tick_event->remains();
 }
 
