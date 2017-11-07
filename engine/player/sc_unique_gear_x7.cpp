@@ -125,6 +125,7 @@ namespace item
   void seeping_scourgewing( special_effect_t&          );
   void gorshalach_legacy( special_effect_t&            );
   void forgefiends_fabricator( special_effect_t&       );
+  void forgefiends_fabricator_detonate(special_effect_t&);
 
   // 7.2.0 Dungeon
   void dreadstone_of_endless_shadows( special_effect_t& );
@@ -2331,6 +2332,7 @@ struct fire_mines_driver_t : public proc_spell_t
     fire_mines( new fire_mines_t( effect ) )
   {
     background = true;
+    effect.player->forgefiends_fabricator_fire_mine = fire_mines;
   }
 
   void execute() override
@@ -2348,6 +2350,34 @@ void item::forgefiends_fabricator( special_effect_t& effect )
    effect.execute_action = create_proc_action<fire_mines_driver_t>( "fire_mines", effect );
    new dbc_proc_callback_t( effect.player, effect );
 }
+
+struct fire_mines_detonator_driver_t : public proc_spell_t
+{
+  fire_mines_detonator_driver_t( const special_effect_t& effect ) :
+    proc_spell_t( "fire_mines_detonator", effect.player, effect.player -> find_spell(253322), effect.item)
+  { }
+
+  bool ready() override
+  {
+    if ( !player -> forgefiends_fabricator_fire_mine -> has_travel_events() ) 
+      return false;
+
+    return proc_spell_t::ready();
+  }
+
+  void execute() override
+  {
+    proc_spell_t::execute();
+
+    player->forgefiends_fabricator_fire_mine->execute_all_travel_events();
+  }
+};
+
+void item::forgefiends_fabricator_detonate(special_effect_t& effect)
+{
+  effect.execute_action = new fire_mines_detonator_driver_t(effect);
+}
+
 
 // Toe Knee's Promise ======================================================
 
@@ -6490,6 +6520,7 @@ void unique_gear::register_special_effects_x7()
   register_special_effect( 253323, item::seeping_scourgewing       );
   register_special_effect( 253326, item::gorshalach_legacy         );
   register_special_effect( 253310, item::forgefiends_fabricator    );
+  register_special_effect( 253322, item::forgefiends_fabricator_detonate  );
 
   /* Legion 7.2.0 Dungeon */
   register_special_effect( 238498, item::dreadstone_of_endless_shadows );

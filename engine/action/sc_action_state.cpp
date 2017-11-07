@@ -244,6 +244,8 @@ travel_event_t::travel_event_t( action_t* a, action_state_t* state,
 
 void travel_event_t::execute()
 {
+  if ( !state ) return;
+  
   if ( !state->target->is_sleeping() )
   {
     action->impact( state );
