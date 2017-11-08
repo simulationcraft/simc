@@ -741,7 +741,9 @@ struct mage_pet_spell_t : public spell_t
 {
   mage_pet_spell_t( const std::string& n, mage_pet_t* p, const spell_data_t* s )
     : spell_t( n, p, s )
-  { }
+  {
+    may_crit = tick_may_crit = true;
+  }
 
   mage_t* o()
   {
@@ -812,9 +814,8 @@ struct waterbolt_t : public water_elemental_spell_t
   waterbolt_t( water_elemental_pet_t* p, const std::string& options_str )
     : water_elemental_spell_t( "waterbolt", p, p -> find_pet_spell( "Waterbolt" ) )
   {
-    trigger_gcd = timespan_t::zero();
     parse_options( options_str );
-    may_crit = true;
+    trigger_gcd = timespan_t::zero();
     base_multiplier *= 1.0 + o() -> artifact.its_cold_outside.data().effectN( 3 ).percent();
   }
 
@@ -838,7 +839,6 @@ struct freeze_t : public water_elemental_spell_t
   {
     parse_options( options_str );
     aoe                   = -1;
-    may_crit              = true;
     ignore_false_positive = true;
     action_skill          = 1;
 
@@ -848,9 +848,8 @@ struct freeze_t : public water_elemental_spell_t
 
   virtual bool init_finished() override
   {
-    water_elemental_pet_t* p = static_cast<water_elemental_pet_t*>( player );
-    fof_source_id = p -> o() -> benefits.fingers_of_frost
-                             -> get_source_id( data().name_cstr() );
+    fof_source_id = o() -> benefits.fingers_of_frost
+                        -> get_source_id( data().name_cstr() );
 
     return water_elemental_spell_t::init_finished();
   }
@@ -880,7 +879,7 @@ struct water_jet_t : public water_elemental_spell_t
       autocast( true )
   {
     parse_options( options_str );
-    channeled = tick_may_crit = tick_zero = true;
+    channeled = tick_zero = true;
 
     internal_cooldown = p -> get_cooldown( "wj_freeze" );
     internal_cooldown -> duration = data().category_cooldown();
@@ -889,7 +888,7 @@ struct water_jet_t : public water_elemental_spell_t
   virtual void execute() override
   {
     // If this is a queued execute, disable queued status
-    if ( !autocast && queued )
+    if ( ! autocast && queued )
       queued = false;
 
     // Don't execute Water Jet if Water Elemental used Freeze
@@ -921,7 +920,7 @@ struct water_jet_t : public water_elemental_spell_t
   virtual bool ready() override
   {
     // Not ready, until the owner gives permission to cast
-    if ( !autocast && !queued )
+    if ( ! autocast && ! queued )
       return false;
 
     return water_elemental_spell_t::ready();
@@ -993,8 +992,9 @@ struct mirror_image_pet_t : public mage_pet_t
   {
     mage_pet_t::create_buffs();
 
-    arcane_charge =
-        buff_creator_t( this, "arcane_charge", o() -> spec.arcane_charge );
+    // MI Arcane Charge is hardcoded as 25% damage increase.
+    arcane_charge = buff_creator_t( this, "arcane_charge", o() -> spec.arcane_charge )
+                      .default_value( 0.25 );
   }
 };
 
@@ -1003,9 +1003,7 @@ struct mirror_image_spell_t : public mage_pet_spell_t
   mirror_image_spell_t( const std::string& n, mirror_image_pet_t* p,
                         const spell_data_t* s )
     : mage_pet_spell_t( n, p, s )
-  {
-    may_crit = true;
-  }
+  { }
 
   virtual bool init_finished() override
   {
@@ -1026,8 +1024,7 @@ struct mirror_image_spell_t : public mage_pet_spell_t
 struct arcane_blast_t : public mirror_image_spell_t
 {
   arcane_blast_t( mirror_image_pet_t* p, const std::string& options_str )
-    : mirror_image_spell_t( "arcane_blast", p,
-                            p -> find_pet_spell( "Arcane Blast" ) )
+    : mirror_image_spell_t( "arcane_blast", p, p -> find_pet_spell( "Arcane Blast" ) )
   {
     parse_options( options_str );
     base_multiplier *= 1.0 + o() -> spec.arcane_mage -> effectN( 1 ).percent();
@@ -1037,15 +1034,14 @@ struct arcane_blast_t : public mirror_image_spell_t
   {
     mirror_image_spell_t::execute();
 
-    p()->arcane_charge->trigger();
+    p() -> arcane_charge -> trigger();
   }
 
   virtual double action_multiplier() const override
   {
     double am = mirror_image_spell_t::action_multiplier();
 
-    // MI Arcane Charges are still hardcoded as 25% damage gains
-    am *= 1.0 + p()->arcane_charge->check() * 0.25;
+    am *= 1.0 + p() -> arcane_charge -> check_stack_value();
 
     return am;
   }
