@@ -2394,7 +2394,15 @@ bool sim_t::init()
   }
 
   // set scaling metric
-  scaling -> scaling_metric = util::parse_scale_metric( scaling -> scale_over );
+  if ( ! scaling -> scale_over.empty() )
+  {
+    scaling -> scaling_metric = util::parse_scale_metric( scaling -> scale_over );
+    if ( scaling -> scaling_metric == SCALE_METRIC_NONE )
+    {
+      errorf( "Unknown scaling metric '%s'", scaling -> scale_over.c_str() );
+      return false;
+    }
+  }
 
   // Find Already defined target, otherwise create a new one.
   if ( debug )
