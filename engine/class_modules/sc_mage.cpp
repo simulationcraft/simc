@@ -2386,27 +2386,27 @@ struct ignite_t : public residual_action_t
   conflagration_t* conflagration;
   phoenix_reborn_t* phoenix_reborn;
 
-  ignite_t( mage_t* player ) :
-    residual_action_t( "ignite", player, player -> find_spell( 12846 ) ),
+  ignite_t( mage_t* p ) :
+    residual_action_t( "ignite", p, p -> find_spell( 12846 ) ),
     conflagration( nullptr ),
     phoenix_reborn( nullptr )
   {
-    dot_duration = dbc::find_spell( player, 12654 ) -> duration();
-    base_tick_time = dbc::find_spell( player, 12654 ) -> effectN( 1 ).period();
+    dot_duration = p -> find_spell( 12654 ) -> duration();
+    base_tick_time = p -> find_spell( 12654 ) -> effectN( 1 ).period();
     school = SCHOOL_FIRE;
 
     //!! NOTE NOTE NOTE !! This is super dangerous and means we have to be extra careful with correctly
     // flagging thats that proc off events, to not proc off ignite if they shouldn't!
     callbacks = true;
 
-    if ( player -> talents.conflagration -> ok() )
+    if ( p -> talents.conflagration -> ok() )
     {
-      conflagration = new conflagration_t( player );
+      conflagration = new conflagration_t( p );
     }
 
-    if ( player -> artifact.phoenix_reborn.rank() )
+    if ( p -> artifact.phoenix_reborn.rank() )
     {
-      phoenix_reborn = new phoenix_reborn_t( player );
+      phoenix_reborn = new phoenix_reborn_t( p );
     }
   }
 
@@ -2765,13 +2765,9 @@ struct arcane_explosion_t : public arcane_mage_spell_t
           .target( execute_state -> target )
           .n_pulses( 1 )
           .action( time_and_space ) );
+      }
 
-        p() -> buffs.time_and_space -> trigger();
-      }
-      else
-      {
-        p() -> buffs.time_and_space -> trigger();
-      }
+      p() -> buffs.time_and_space -> trigger();
     }
   }
 
@@ -3069,6 +3065,7 @@ struct arcane_orb_t : public arcane_mage_spell_t
   {
     arcane_mage_spell_t::impact( s );
 
+    orb_bolt -> set_target( s -> target );
     orb_bolt -> execute();
   }
 };
@@ -3258,7 +3255,6 @@ struct cinder_t : public fire_mage_spell_t
     background = true;
     aoe = -1;
     triggers_ignite = true;
-    //TODO: Revisit this once skullflower confirms intended behavior.
     triggers_pyretic_incantation = true;
   }
 
@@ -3567,7 +3563,7 @@ struct ebonbolt_t : public frost_mage_spell_t
     // Tarnished Sentinel Medallion.
     parse_options( options_str );
     parse_effect_data( p -> find_spell( 228599 ) -> effectN( 1 ) );
-    if ( !p -> artifact.ebonbolt.rank() )
+    if ( ! p -> artifact.ebonbolt.rank() )
     {
       background = true;
     }
@@ -4561,9 +4557,9 @@ struct ice_lance_state_t : public mage_spell_state_t
   virtual void copy_state( const action_state_t* s ) override
   {
     mage_spell_state_t::copy_state( s );
-    auto fss = debug_cast<const ice_lance_state_t*>( s );
+    auto ils = debug_cast<const ice_lance_state_t*>( s );
 
-    fingers_of_frost = fss -> fingers_of_frost;
+    fingers_of_frost = ils -> fingers_of_frost;
   }
 };
 
@@ -4639,7 +4635,7 @@ struct ice_lance_t : public frost_mage_spell_t
     // seconds, the latter adjusted by haste. Casting continues until all
     // Icicles are gone, including new ones that accumulate while they're being
     // fired. If target dies, Icicles stop.
-    if ( !p() -> talents.glacial_spike -> ok() )
+    if ( ! p() -> talents.glacial_spike -> ok() )
     {
       p() -> trigger_icicle( execute_state, true, target );
     }
@@ -5509,7 +5505,7 @@ struct pyroblast_t : public fire_mage_spell_t
     double am = fire_mage_spell_t::action_multiplier();
 
     if ( p() -> buffs.kaelthas_ultimate_ability -> check() &&
-         !p() -> buffs.hot_streak -> check() )
+         ! p() -> buffs.hot_streak -> check() )
     {
       am *= 1.0 + p() -> buffs.kaelthas_ultimate_ability -> data().effectN( 1 ).percent();
     }
@@ -5541,7 +5537,7 @@ struct pyroblast_t : public fire_mage_spell_t
     fire_mage_spell_t::execute();
 
     if ( p() -> buffs.kaelthas_ultimate_ability -> check() &&
-        !p() -> buffs.hot_streak -> check() )
+         ! p() -> buffs.hot_streak -> check() )
     {
       p() -> buffs.kaelthas_ultimate_ability -> expire();
     }
@@ -5562,10 +5558,8 @@ struct pyroblast_t : public fire_mage_spell_t
     {
       return;
     }
-    else
-    {
-      p() -> buffs.hot_streak -> expire();
-    }
+
+    p() -> buffs.hot_streak -> expire();
   }
 
   virtual void snapshot_state( action_state_t* s, dmg_e rt ) override
@@ -5662,7 +5656,7 @@ struct ray_of_frost_t : public frost_mage_spell_t
 
     // Technically, the "castable duration" buff should be ID:208166
     // To keep things simple, we just apply a 0 stack of the damage buff 208141
-    if ( !p() -> buffs.ray_of_frost -> check() )
+    if ( ! p() -> buffs.ray_of_frost -> check() )
     {
       p() -> buffs.ray_of_frost -> trigger( 0 );
     }
@@ -5891,11 +5885,11 @@ struct summon_water_elemental_t : public frost_mage_spell_t
 
   virtual bool ready() override
   {
-    if ( !frost_mage_spell_t::ready() || p() -> talents.lonely_winter -> ok() )
+    if ( ! frost_mage_spell_t::ready() || p() -> talents.lonely_winter -> ok() )
       return false;
 
     // TODO: Check this
-    return !p() -> pets.water_elemental ||
+    return ! p() -> pets.water_elemental ||
            p() -> pets.water_elemental -> is_sleeping();
   }
 };
@@ -5980,10 +5974,10 @@ struct time_warp_t : public mage_spell_t
     // apply to us.
     bool shard = p() -> player_t::buffs.bloodlust -> default_chance == 0.0;
 
-    if ( !shard && sim -> overrides.bloodlust )
+    if ( ! shard && sim -> overrides.bloodlust )
       return false;
 
-    if ( !shard && player -> buffs.exhaustion -> check() )
+    if ( ! shard && player -> buffs.exhaustion -> check() )
       return false;
 
     return mage_spell_t::ready();
@@ -6059,7 +6053,7 @@ struct start_burn_phase_t : public action_t
     mage_t* p = debug_cast<mage_t*>( player );
 
     bool success = p -> burn_phase.enable( sim -> current_time() );
-    if ( !success )
+    if ( ! success )
     {
       sim -> errorf( "%s start_burn_phase infinite loop detected (no time passing between executes) at '%s'",
                      p -> name(), signature_str.c_str() );
@@ -6105,7 +6099,7 @@ struct stop_burn_phase_t : public action_t
     p -> sample_data.burn_duration_history -> add( p -> burn_phase.duration( sim -> current_time() ).total_seconds() );
 
     bool success = p -> burn_phase.disable( sim -> current_time() );
-    if ( !success )
+    if ( ! success )
     {
       sim -> errorf( "%s stop_burn_phase infinite loop detected (no time passing between executes) at '%s'",
                      p -> name(), signature_str.c_str() );
@@ -6122,7 +6116,7 @@ struct stop_burn_phase_t : public action_t
   {
     mage_t* p = debug_cast<mage_t*>( player );
 
-    if ( !p -> burn_phase.on() )
+    if ( ! p -> burn_phase.on() )
     {
       return false;
     }
@@ -6264,9 +6258,7 @@ struct freeze_t : public action_t
   {
     mage_t* m = debug_cast<mage_t*>( player );
     if ( m -> talents.lonely_winter -> ok() )
-    {
       return false;
-    }
 
     if ( ! action )
       return false;
@@ -6337,9 +6329,7 @@ struct water_jet_t : public action_t
   {
     mage_t* m = debug_cast<mage_t*>( player );
     if ( m -> talents.lonely_winter -> ok() )
-    {
       return false;
-    }
 
     if ( ! action )
       return false;
@@ -6417,7 +6407,7 @@ struct ignite_spread_event_t : public event_t
 
   static double ignite_bank( dot_t* ignite )
   {
-    if ( !ignite -> is_ticking() )
+    if ( ! ignite -> is_ticking() )
     {
       return 0.0;
     }
@@ -6982,7 +6972,7 @@ void mage_t::create_pets()
       pets.mirror_images.push_back( new pets::mirror_image::mirror_image_pet_t( sim, this ) );
       if ( i > 0 )
       {
-        pets.mirror_images[ i ] -> quiet = 1;
+        pets.mirror_images[ i ] -> quiet = true;
       }
     }
   }
@@ -8070,16 +8060,15 @@ void mage_t::recalculate_resource_max( resource_e rt )
     return player_t::recalculate_resource_max( rt );
   }
 
-  double current_mana = resources.current[ rt ],
-         current_mana_max = resources.max[ rt ],
-         mana_percent = current_mana / current_mana_max;
+  double current_mana = resources.current[ rt ];
+  double current_mana_max = resources.max[ rt ];
+  double mana_percent = current_mana / current_mana_max;
 
   player_t::recalculate_resource_max( rt );
 
   if ( spec.savant -> ok() )
   {
-    resources.max[ rt ] *= 1.0 +
-      composite_mastery() * ( spec.savant -> effectN( 1 ).mastery_value() );
+    resources.max[ rt ] *= 1.0 + composite_mastery() * spec.savant -> effectN( 1 ).mastery_value();
     resources.current[ rt ] = resources.max[ rt ] * mana_percent;
     if ( sim -> debug )
     {
@@ -8222,7 +8211,8 @@ double mage_t::composite_mastery_rating() const
   {
     m += mage_t::composite_spell_crit_rating() * buffs.combustion -> data().effectN( 3 ).percent();
   }
- return m;
+
+  return m;
 }
 
 // mage_t::composite_spell_crit_rating ===============================================
@@ -8237,8 +8227,8 @@ double mage_t::composite_spell_crit_rating() const
   }
 
   return cr;
-
 }
+
 // mage_t::composite_spell_crit_chance ===============================================
 
 double mage_t::composite_spell_crit_chance() const
@@ -8389,19 +8379,6 @@ void mage_t::arise()
 
   if ( talents.incanters_flow -> ok() )
     buffs.incanters_flow -> trigger();
-
-  switch ( specialization() )
-  {
-    case MAGE_ARCANE:
-      break;
-    case MAGE_FROST:
-      break;
-    case MAGE_FIRE:
-      break;
-    default:
-      apl_default(); // DEFAULT
-      break;
-  }
 
   if ( blessing_of_wisdom_count > 0 )
   {
