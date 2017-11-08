@@ -4857,7 +4857,8 @@ void priest_t::apl_precombat()
 
   // do all kinds of calculation here to reduce CPU time
   precombat->add_action(
-      "variable,name=haste_eval,op=set,value=(raw_haste_pct-0.3)*(10+10*equipped.mangazas_madness)" );
+      "variable,name=haste_eval,op=set,value=(raw_haste_pct-0.3)*(10+10*equipped."
+	  "mangazas_madness+5*talent.fortress_of_the_mind.enabled)" );
   precombat->add_action( "variable,name=haste_eval,op=max,value=0" );
   precombat->add_action(
       "variable,name=cd_time,op=set,value=(12+(2-2*talent.mindbender.enabled*set_"
@@ -5090,8 +5091,8 @@ void priest_t::apl_shadow()
       "(4+(4%3))*gcd" );
   main->add_action(
       "void_eruption,if=(talent.mindbender.enabled&cooldown.mindbender."
-      "remains<(26+variable.haste_eval*1.5+gcd.max*4%3))|!talent.mindbender"
-      ".enabled|set_bonus.tier20_4pc" );
+      "remains<(26+1*talent.fortress_of_the_mind.enabled+variable.haste_"
+	  "eval*1.5+gcd.max*4%3))|!talent.mindbender.enabled|set_bonus.tier20_4pc" );
   main->add_action( "shadow_crash,if=talent.shadow_crash.enabled" );
   main->add_action(
       "shadow_word_death,if=(active_enemies<=4|(talent.reaper_of_souls.enabled"
