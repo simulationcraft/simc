@@ -9282,6 +9282,12 @@ public:
       .modifier( 78 )
       .verification_value( 80 );
 
+    hotfix::register_spell( "Mage", "2017-11-08", "Incorrect spell level for Ignite.", 12654 )
+      .field( "spell_level" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 78 )
+      .verification_value( 99 );
+
     hotfix::register_spell( "Mage", "2017-03-20", "Manually set Frozen Orb's travel speed.", 84714 )
       .field( "prj_speed" )
       .operation( hotfix::HOTFIX_SET )
