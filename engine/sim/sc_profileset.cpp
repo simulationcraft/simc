@@ -153,6 +153,50 @@ profile_set_t::~profile_set_t()
   delete m_options;
 }
 
+const profile_result_t& profile_set_t::result( scale_metric_e metric ) const
+{
+  static const profile_result_t __default {};
+
+  if ( m_results.size() == 0 )
+  {
+    return __default;
+  }
+
+  if ( metric == SCALE_METRIC_NONE )
+  {
+    return m_results.front();
+  }
+
+  auto it = range::find_if( m_results, [ metric ]( const profile_result_t& result ) {
+    return metric == result.metric();
+  } );
+
+  if ( it != m_results.end() )
+  {
+    return *it;
+  }
+
+  return __default;
+}
+
+profile_result_t& profile_set_t::result( scale_metric_e metric )
+{
+  assert( metric != SCALE_METRIC_NONE );
+
+  auto it = range::find_if( m_results, [ metric ]( profile_result_t& result ) {
+    return metric == result.metric();
+  } );
+
+  if ( it != m_results.end() )
+  {
+    return *it;
+  }
+
+  m_results.push_back( profile_result_t( metric ) );
+
+  return m_results.back();
+}
+
 bool profilesets_t::validate( sim_t* ps_sim )
 {
   if ( ps_sim -> player_no_pet_list.size() > 1 )
@@ -361,17 +405,20 @@ bool profilesets_t::iterate( sim_t* parent )
 
     const auto player = profile_sim -> player_no_pet_list.data().front();
     auto progress = profile_sim -> progress( nullptr, 0 );
-    auto data = metric_data( player );
 
-    set -> result()
-      .min( data.min )
-      .first_quartile( data.first_quartile )
-      .median( data.median )
-      .mean( data.mean )
-      .third_quartile( data.third_quartile )
-      .max( data.max )
-      .stddev( data.std_dev )
-      .iterations( progress.current_iterations );
+    range::for_each( parent -> profileset_metric, [ & ]( scale_metric_e metric ) {
+      auto data = metric_data( player, metric );
+
+      set -> result( metric )
+        .min( data.min )
+        .first_quartile( data.first_quartile )
+        .median( data.median )
+        .mean( data.mean )
+        .third_quartile( data.third_quartile )
+        .max( data.max )
+        .stddev( data.std_dev )
+        .iterations( progress.current_iterations );
+    } );
 
     delete profile_sim;
   }
@@ -399,18 +446,19 @@ int profilesets_t::max_name_length() const
 
 void profilesets_t::output( const sim_t& sim, js::JsonOutput& root ) const
 {
-  root[ "metric" ] = util::scale_metric_type_string( sim.profileset_metric );
+  root[ "metric" ] = util::scale_metric_type_string( sim.profileset_metric.front() );
 
-  auto& results = root[ "results" ].make_array();
+  auto results = root[ "results" ].make_array();
 
-  range::for_each( m_profilesets, [ &results ]( const profileset_entry_t& profileset ) {
-    if ( profileset -> result().mean() == 0 )
+  range::for_each( m_profilesets, [ &results, &sim ]( const profileset_entry_t& profileset ) {
+    const auto& result = profileset -> result();
+
+    if ( result.mean() == 0 )
     {
       return;
     }
 
-    auto obj = results.add();
-    const auto& result = profileset -> result();
+    auto&& obj = results.add();
 
     obj[ "name" ] = profileset -> name();
     obj[ "mean" ] = result.mean();
@@ -426,6 +474,29 @@ void profilesets_t::output( const sim_t& sim, js::JsonOutput& root ) const
     }
 
     obj[ "iterations" ] = as<uint64_t>( result.iterations() );
+
+    if ( profileset -> results() > 1 )
+    {
+      auto results2 = obj[ "additional_metrics" ].make_array();
+      for ( size_t midx = 1; midx < sim.profileset_metric.size(); ++midx )
+      {
+        auto obj2 = results2.add();
+        const auto& result = profileset -> result( sim.profileset_metric[ midx ] );
+
+        obj2[ "metric" ] = util::scale_metric_type_string( sim.profileset_metric[ midx ] );
+        obj2[ "mean" ] = result.mean();
+        obj2[ "min" ] = result.min();
+        obj2[ "max" ] = result.max();
+        obj2[ "stddev" ] = result.stddev();
+
+        if ( result.median() != 0 )
+        {
+          obj2[ "median" ] = result.median();
+          obj2[ "first_quartile" ] = result.first_quartile();
+          obj2[ "third_quartile" ] = result.third_quartile();
+        }
+      }
+    }
   } );
 }
 
@@ -437,7 +508,7 @@ void profilesets_t::output( const sim_t& sim, FILE* out ) const
   }
 
   util::fprintf( out, "\n\nProfilesets (median %s):\n",
-    util::scale_metric_type_string( sim.profileset_metric ) );
+    util::scale_metric_type_string( sim.profileset_metric.front() ) );
 
   std::vector<const profile_set_t*> results;
   generate_sorted_profilesets( results );
@@ -483,11 +554,11 @@ bool profilesets_t::generate_chart( const sim_t& sim, io::ofstream& out ) const
 
   // Baseline data, insert into the correct position in the for loop below
   const auto baseline = sim.player_no_pet_list.data().front();
-  auto baseline_data = metric_data( baseline );
+  auto baseline_data = metric_data( baseline, sim.profileset_metric.front() );
   auto inserted = false;
   // Bar color
   const auto& c = color::class_color( sim.player_no_pet_list.data().front() -> type );
-  std::string chart_name = util::scale_metric_type_string( sim.profileset_metric );
+  std::string chart_name = util::scale_metric_type_string( sim.profileset_metric.front() );
 
   std::vector<const profile_set_t*> results;
   generate_sorted_profilesets( results );
@@ -565,8 +636,9 @@ bool profilesets_t::generate_chart( const sim_t& sim, io::ofstream& out ) const
     for ( size_t i = base_offset, end = std::min( base_offset + MAX_CHART_ENTRIES, results.size() ); i < end; ++i )
     {
       const auto set = results[ i ];
+      const auto& data = set -> result( sim.profileset_metric.front() );
 
-      if ( ! inserted && set -> result().median() <= baseline_data.median )
+      if ( ! inserted && data.median() <= baseline_data.median )
       {
         insert_data( profileset, sim.player_no_pet_list.data().front() -> name(), c, baseline_data, true, baseline_data.median );
         inserted = true;
@@ -594,13 +666,21 @@ void create_options( sim_t* sim )
   sim -> add_option( opt_func( "profileset_metric", []( sim_t*             sim,
                                                         const std::string&,
                                                         const std::string& value ) {
-    scale_metric_e metric = util::parse_scale_metric( value );
-    if ( metric == SCALE_METRIC_NONE )
+    sim -> profileset_metric.clear();
+
+    auto split = util::string_split( value, "/:," );
+    for ( const auto& v : split )
     {
-      return false;
+      auto metric = util::parse_scale_metric( v );
+      if ( metric == SCALE_METRIC_NONE )
+      {
+        sim -> errorf( "Invalid profileset metric '%s'", v.c_str() );
+        return false;
+      }
+
+      sim -> profileset_metric.push_back( metric );
     }
 
-    sim -> profileset_metric = metric;
     return true;
   } ) );
 }
@@ -611,11 +691,11 @@ statistical_data_t collect( const extended_sample_data_t& c )
            c.percentile( 0.75 ), c.max(), c.std_dev };
 }
 
-statistical_data_t metric_data( const player_t* player )
+statistical_data_t metric_data( const player_t* player, scale_metric_e metric )
 {
   const auto& d = player -> collected_data;
 
-  switch ( player -> sim -> profileset_metric )
+  switch ( metric )
   {
     case SCALE_METRIC_DPS:       return collect( d.dps );
     case SCALE_METRIC_DPSE:      return collect( d.dpse );
