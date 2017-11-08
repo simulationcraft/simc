@@ -114,7 +114,7 @@ scaling_t::scaling_t( sim_t* s ) :
   current_scaling_stat( STAT_NONE ),
   num_scaling_stats( 0 ),
   remaining_scaling_stats( 0 ),
-  scale_over(), scaling_metric( SCALE_METRIC_NONE ), scale_over_player()
+  scale_over(), scaling_metric( SCALE_METRIC_DPS ), scale_over_player()
 {
   create_options();
 }

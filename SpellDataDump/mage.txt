@@ -2749,7 +2749,7 @@ Description      : $@spelldesc146662
 Name             : Icicle (id=148012) [Spell Family (3), Hidden] 
 Class            : Mage
 School           : Physical
-Spell Level      : 80
+Spell Level      : 78
 Duration         : 60 seconds
 Proc Chance      : 101%
 Attributes       : .......x x....... ........ ........   ........ ........ ........ ........ 
@@ -2770,7 +2770,7 @@ Tooltip          : Icicle storing $w1 damage.
 Name             : Icicle (id=148022) [Spell Family (3)] 
 Class            : Mage
 School           : Frost
-Spell Level      : 80
+Spell Level      : 78
 Range            : 100 yards
 Velocity         : 20 yards/sec
 Proc Chance      : 101%

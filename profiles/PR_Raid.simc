@@ -1,0 +1,56 @@
+optimal_raid=1
+default_actions=1
+
+# Death Knight
+PR_Death_Knight_Frost.simc
+PR_Death_Knight_Unholy.simc
+
+# Demon Hunter
+PR_Demon_Hunter_Havoc.simc
+PR_Demon_Hunter_Vengeance.simc
+
+# Druid
+PR_Druid_Balance.simc
+PR_Druid_Feral.simc
+PR_Druid_Guardian.simc
+
+# Hunter
+PR_Hunter_Beast_Mastery.simc
+PR_Hunter_Marksmanship.simc
+PR_Hunter_Survival.simc
+
+# Mage
+PR_Mage_Arcane.simc
+PR_Mage_Fire.simc
+PR_Mage_Frost.simc
+
+# Monk
+PR_Monk_Windwalker.simc
+
+# Paladin
+PR_Paladin_Protection.simc
+PR_Paladin_Retribution.simc
+
+# Priest
+PR_Priest_Shadow.simc
+PR_Priest_Shadow_S2M.simc
+
+# Rogue
+PR_Rogue_Assassination.simc
+PR_Rogue_Assassination_Exsg.simc
+PR_Rogue_Outlaw.simc
+PR_Rogue_Subtlety.simc
+
+# Shaman
+PR_Shaman_Elemental.simc
+PR_Shaman_Enhancement.simc
+
+# Warlock
+PR_Warlock_Affliction.simc
+PR_Warlock_Demonology.simc
+PR_Warlock_Destruction.simc
+
+# Warrior
+PR_Warrior_Arms.simc
+PR_Warrior_Fury.simc
+PR_Warrior_Protection.simc

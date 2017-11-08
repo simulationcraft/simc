@@ -1434,7 +1434,7 @@ sim_t::sim_t( sim_t* p, int index ) :
   display_hotfixes( false ),
   disable_hotfixes( false ),
   display_bonus_ids( false ),
-  profileset_metric( SCALE_METRIC_DPS ),
+  profileset_metric( { SCALE_METRIC_DPS } ),
   profileset_enabled( false )
 {
   item_db_sources.assign( std::begin( default_item_db_sources ),
@@ -2394,7 +2394,15 @@ bool sim_t::init()
   }
 
   // set scaling metric
-  scaling -> scaling_metric = util::parse_scale_metric( scaling -> scale_over );
+  if ( ! scaling -> scale_over.empty() )
+  {
+    scaling -> scaling_metric = util::parse_scale_metric( scaling -> scale_over );
+    if ( scaling -> scaling_metric == SCALE_METRIC_NONE )
+    {
+      errorf( "Unknown scaling metric '%s'", scaling -> scale_over.c_str() );
+      return false;
+    }
+  }
 
   // Find Already defined target, otherwise create a new one.
   if ( debug )
@@ -2615,7 +2623,7 @@ bool sim_t::iterate()
 
     combat();
 
-    if ( progress_bar.update( false, current_index ) )
+    if ( progress_bar.update( false, as<int>(current_index) ) )
     {
       progress_bar.output( false );
     }
@@ -2643,7 +2651,7 @@ bool sim_t::iterate()
     }
   } while ( more_work && ! canceled );
 
-  if ( ! canceled && progress_bar.update( true, current_index ) )
+  if ( ! canceled && progress_bar.update( true, as<int>(current_index) ) )
   {
     progress_bar.output( true );
   }
@@ -2694,6 +2702,7 @@ void sim_t::do_pause()
 void sim_t::merge( sim_t& other_sim )
 {
   auto_lock_t auto_lock( merge_mutex );
+  auto start = std::chrono::high_resolution_clock::now();
 
   if ( scaling -> scale_stat == STAT_NONE &&
        scaling -> calculate_scale_factors == 0 &&
@@ -2732,6 +2741,7 @@ void sim_t::merge( sim_t& other_sim )
   }
 
   range::append( iteration_data, other_sim.iteration_data );
+  merge_time += util::duration_fp_seconds( start );
   init_time += other_sim.init_time;
 }
 
@@ -2743,7 +2753,6 @@ void sim_t::merge()
   if ( children.empty() )
     return;
 
-  auto start = std::chrono::high_resolution_clock::now();
   merge_mutex.unlock();
 
   for ( size_t i = 0; i < children.size(); i++ )
@@ -2759,8 +2768,6 @@ void sim_t::merge()
       }
     }
   }
-
-  merge_time += util::duration_fp_seconds( start );
 
   children.clear();
 }

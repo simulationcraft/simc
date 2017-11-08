@@ -1,0 +1,108 @@
+warlock="T20_Warlock_Demonology"
+spec=demonology
+level=110
+race=troll
+role=spell
+position=back
+talents=1202023
+artifact=37:0:0:0:0:1170:1:1171:4:1172:4:1173:4:1174:4:1175:4:1176:4:1177:4:1178:4:1179:4:1180:1:1181:1:1182:1:1183:1:1184:1:1185:1:1354:1:1391:1:1605:4:1606:1:1607:1:1608:24:1712:1
+crucible=1739:3:1770:3:1605:3
+
+# Default consumables
+potion=prolonged_power
+flask=whispered_pact
+food=azshari_salad
+augmentation=defiled
+
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
+
+# Executed before combat begins. Accepts non-harmful actions only.
+actions.precombat=flask
+actions.precombat+=/food
+actions.precombat+=/augmentation
+actions.precombat+=/summon_pet,if=!talent.grimoire_of_supremacy.enabled&(!talent.grimoire_of_sacrifice.enabled|buff.demonic_power.down)
+actions.precombat+=/summon_infernal,if=talent.grimoire_of_supremacy.enabled&artifact.lord_of_flames.rank>0
+actions.precombat+=/summon_infernal,if=talent.grimoire_of_supremacy.enabled&active_enemies>1
+actions.precombat+=/summon_doomguard,if=talent.grimoire_of_supremacy.enabled&active_enemies=1&artifact.lord_of_flames.rank=0
+actions.precombat+=/snapshot_stats
+actions.precombat+=/potion
+actions.precombat+=/demonic_empowerment
+actions.precombat+=/demonbolt
+actions.precombat+=/shadow_bolt
+
+# Executed every time the actor is available.
+actions=implosion,if=wild_imp_remaining_duration<=action.shadow_bolt.execute_time&(buff.demonic_synergy.remains|talent.soul_conduit.enabled|(!talent.soul_conduit.enabled&spell_targets.implosion>1)|wild_imp_count<=4)
+actions+=/variable,name=3min,value=doomguard_no_de>0|infernal_no_de>0
+actions+=/variable,name=no_de1,value=dreadstalker_no_de>0|darkglare_no_de>0|doomguard_no_de>0|infernal_no_de>0|service_no_de>0
+actions+=/variable,name=no_de2,value=(variable.3min&service_no_de>0)|(variable.3min&wild_imp_no_de>0)|(variable.3min&dreadstalker_no_de>0)|(service_no_de>0&dreadstalker_no_de>0)|(service_no_de>0&wild_imp_no_de>0)|(dreadstalker_no_de>0&wild_imp_no_de>0)|(prev_gcd.1.hand_of_guldan&variable.no_de1)
+actions+=/implosion,if=prev_gcd.1.hand_of_guldan&((wild_imp_remaining_duration<=3&buff.demonic_synergy.remains)|(wild_imp_remaining_duration<=4&spell_targets.implosion>2))
+actions+=/shadowflame,if=(debuff.shadowflame.stack>0&remains<action.shadow_bolt.cast_time+travel_time)&spell_targets.demonwrath<5
+actions+=/summon_infernal,if=(!talent.grimoire_of_supremacy.enabled&spell_targets.infernal_awakening>2)&equipped.132369
+actions+=/summon_doomguard,if=!talent.grimoire_of_supremacy.enabled&spell_targets.infernal_awakening<=2&equipped.132369
+actions+=/call_dreadstalkers,if=((!talent.summon_darkglare.enabled|talent.power_trip.enabled)&(spell_targets.implosion<3|!talent.implosion.enabled))&!(soul_shard=5&buff.demonic_calling.remains)
+actions+=/doom,cycle_targets=1,if=(!talent.hand_of_doom.enabled&target.time_to_die>duration&(!ticking|remains<duration*0.3))&!(variable.no_de1|prev_gcd.1.hand_of_guldan)
+actions+=/shadowflame,if=(charges=2&soul_shard<5)&spell_targets.demonwrath<5&!variable.no_de1
+actions+=/service_pet
+actions+=/summon_doomguard,if=!talent.grimoire_of_supremacy.enabled&spell_targets.infernal_awakening<=2&(target.time_to_die>180|target.health.pct<=20|target.time_to_die<30)
+actions+=/summon_infernal,if=!talent.grimoire_of_supremacy.enabled&spell_targets.infernal_awakening>2
+actions+=/summon_doomguard,if=talent.grimoire_of_supremacy.enabled&spell_targets.summon_infernal=1&equipped.132379&!cooldown.sindorei_spite_icd.remains
+actions+=/summon_infernal,if=talent.grimoire_of_supremacy.enabled&spell_targets.summon_infernal>1&equipped.132379&!cooldown.sindorei_spite_icd.remains
+actions+=/shadow_bolt,if=buff.shadowy_inspiration.remains&soul_shard<5&!prev_gcd.1.doom&!variable.no_de2
+actions+=/summon_darkglare,if=prev_gcd.1.hand_of_guldan|prev_gcd.1.call_dreadstalkers|talent.power_trip.enabled
+actions+=/summon_darkglare,if=cooldown.call_dreadstalkers.remains>5&soul_shard<3
+actions+=/summon_darkglare,if=cooldown.call_dreadstalkers.remains<=action.summon_darkglare.cast_time&(soul_shard>=3|soul_shard>=1&buff.demonic_calling.react)
+actions+=/call_dreadstalkers,if=talent.summon_darkglare.enabled&(spell_targets.implosion<3|!talent.implosion.enabled)&(cooldown.summon_darkglare.remains>2|prev_gcd.1.summon_darkglare|cooldown.summon_darkglare.remains<=action.call_dreadstalkers.cast_time&soul_shard>=3|cooldown.summon_darkglare.remains<=action.call_dreadstalkers.cast_time&soul_shard>=1&buff.demonic_calling.react)
+actions+=/hand_of_guldan,if=soul_shard>=4&(((!(variable.no_de1|prev_gcd.1.hand_of_guldan)&(pet_count>=13&!talent.shadowy_inspiration.enabled|pet_count>=6&talent.shadowy_inspiration.enabled))|!variable.no_de2|soul_shard=5)&talent.power_trip.enabled)
+actions+=/hand_of_guldan,if=(soul_shard>=3&prev_gcd.1.call_dreadstalkers&!artifact.thalkiels_ascendance.rank)|soul_shard>=5|(soul_shard>=4&cooldown.summon_darkglare.remains>2)
+actions+=/demonic_empowerment,if=(((talent.power_trip.enabled&(!talent.implosion.enabled|spell_targets.demonwrath<=1))|!talent.implosion.enabled|(talent.implosion.enabled&!talent.soul_conduit.enabled&spell_targets.demonwrath<=3))&(wild_imp_no_de>3|prev_gcd.1.hand_of_guldan))|(prev_gcd.1.hand_of_guldan&wild_imp_no_de=0&wild_imp_remaining_duration<=0)|(prev_gcd.1.implosion&wild_imp_no_de>0)
+actions+=/demonic_empowerment,if=variable.no_de1|prev_gcd.1.hand_of_guldan
+actions+=/use_items
+actions+=/berserking
+actions+=/blood_fury
+actions+=/soul_harvest,if=!buff.soul_harvest.remains
+actions+=/potion,name=prolonged_power,if=buff.soul_harvest.remains|target.time_to_die<=70|trinket.proc.any.react
+actions+=/shadowflame,if=charges=2&spell_targets.demonwrath<5
+actions+=/thalkiels_consumption,if=(dreadstalker_remaining_duration>execute_time|talent.implosion.enabled&spell_targets.implosion>=3)&(wild_imp_count>3&dreadstalker_count<=2|wild_imp_count>5)&wild_imp_remaining_duration>execute_time
+actions+=/life_tap,if=mana.pct<=15|(mana.pct<=65&((cooldown.call_dreadstalkers.remains<=0.75&soul_shard>=2)|((cooldown.call_dreadstalkers.remains<gcd*2)&(cooldown.summon_doomguard.remains<=0.75|cooldown.service_pet.remains<=0.75)&soul_shard>=3)))
+actions+=/demonwrath,chain=1,interrupt=1,if=spell_targets.demonwrath>=3
+actions+=/demonwrath,moving=1,chain=1,interrupt=1
+actions+=/demonbolt
+actions+=/shadow_bolt,if=buff.shadowy_inspiration.remains
+actions+=/demonic_empowerment,if=artifact.thalkiels_ascendance.rank&talent.power_trip.enabled&!talent.demonbolt.enabled&talent.shadowy_inspiration.enabled
+actions+=/shadow_bolt
+actions+=/life_tap
+
+head=wakeners_loyalty,id=144385,ilevel=970
+neck=string_of_extracted_incisors,id=147013,ilevel=930,enchant_id=5437
+shoulders=recurrent_ritual,id=132393,ilevel=970
+back=diabolic_shroud,id=147181,ilevel=930,enchant_id=5436
+chest=diabolic_robe,id=147185,ilevel=930
+wrists=ravenous_devotees_bracelets,id=147000,ilevel=930
+hands=diabolic_gloves,id=147182,ilevel=930
+waist=striferiddled_cinch,id=146999,ilevel=930
+legs=diabolic_leggings,id=147184,ilevel=930
+feet=slippers_of_enduring_vigilance,id=146987,ilevel=930
+finger1=scaled_band_of_servitude,id=147020,ilevel=930,enchant_id=5428
+finger2=seal_of_the_second_duumvirate,id=147195,ilevel=940,enchant_id=5428
+trinket1=charm_of_the_rising_tide,id=147002,ilevel=930
+trinket2=whispers_in_the_dark,id=140809,ilevel=910
+main_hand=spine_of_thalkiel,id=137246,ilevel=939,gem_id=0/0/0/0,relic_id=0/0
+off_hand=skull_of_the_manari,id=128943,bonus_id=748,gem_id=147087/147091/147110,relic_id=1512/1522/1512
+
+# Gear Summary
+# gear_ilvl=939.25
+# gear_stamina=47717
+# gear_intellect=32456
+# gear_spell_power=23644
+# gear_crit_rating=4799
+# gear_haste_rating=12094
+# gear_mastery_rating=6935
+# gear_versatility_rating=3161
+# gear_armor=2246
+# set_bonus=tier20_2pc=1
+# set_bonus=tier20_4pc=1
+default_pet=felguard

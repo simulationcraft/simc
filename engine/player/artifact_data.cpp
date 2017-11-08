@@ -825,7 +825,7 @@ bool player_artifact_data_t::parse()
 
   bool has_relic_opts = false;
   // Adjust artifact points based on relic traits
-  for ( size_t i = 0; i < relics.size(); ++i )
+  for ( unsigned i = 0; i < relics.size(); ++i )
   {
     auto item_id = relics[ i ];
 

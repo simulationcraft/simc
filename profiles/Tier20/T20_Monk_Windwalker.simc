@@ -1,0 +1,137 @@
+monk="T20_Monk_Windwalker"
+spec=windwalker
+level=110
+race=blood_elf
+role=dps
+position=back
+talents=2010033
+artifact=50:0:0:0:0:800:4:801:4:820:4:821:4:822:4:824:4:825:4:826:1:827:1:828:1:829:4:830:1:831:1:832:1:833:1:1094:4:1341:1:1376:1:1549:4:1550:1:1551:1:1552:24:1644:1
+crucible=1739:1780:820/1739:1780:825/1739:1780:820
+
+# Default consumables
+potion=prolonged_power
+flask=seventh_demon
+food=lavish_suramar_feast
+augmentation=defiled
+
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
+
+# Executed before combat begins. Accepts non-harmful actions only.
+actions.precombat=flask
+actions.precombat+=/food
+actions.precombat+=/augmentation
+# Snapshot raid buffed stats before combat begins and pre-potting is done.
+actions.precombat+=/snapshot_stats
+actions.precombat+=/potion
+actions.precombat+=/chi_burst
+actions.precombat+=/chi_wave
+
+# Executed every time the actor is available.
+actions=auto_attack
+actions+=/spear_hand_strike,if=target.debuff.casting.react
+actions+=/touch_of_karma,interval=90,pct_health=0.5
+actions+=/potion,if=buff.serenity.up|buff.storm_earth_and_fire.up|(!talent.serenity.enabled&trinket.proc.agility.react)|buff.bloodlust.react|target.time_to_die<=60
+actions+=/touch_of_death,if=target.time_to_die<=9
+actions+=/call_action_list,name=serenity,if=(talent.serenity.enabled&cooldown.serenity.remains<=0)|buff.serenity.up
+actions+=/call_action_list,name=sef,if=!talent.serenity.enabled&(buff.storm_earth_and_fire.up|cooldown.storm_earth_and_fire.charges=2)
+actions+=/call_action_list,name=sef,if=!talent.serenity.enabled&equipped.drinking_horn_cover&(cooldown.strike_of_the_windlord.remains<=18&cooldown.fists_of_fury.remains<=12&chi>=3&cooldown.rising_sun_kick.remains<=1|target.time_to_die<=25|cooldown.touch_of_death.remains>112)&cooldown.storm_earth_and_fire.charges=1
+actions+=/call_action_list,name=sef,if=!talent.serenity.enabled&!equipped.drinking_horn_cover&(cooldown.strike_of_the_windlord.remains<=14&cooldown.fists_of_fury.remains<=6&chi>=3&cooldown.rising_sun_kick.remains<=1|target.time_to_die<=15|cooldown.touch_of_death.remains>112)&cooldown.storm_earth_and_fire.charges=1
+actions+=/call_action_list,name=st
+
+actions.cd=invoke_xuen_the_white_tiger
+actions.cd+=/use_item,name=specter_of_betrayal,if=(cooldown.serenity.remains>10|buff.serenity.up)|!talent.serenity.enabled
+actions.cd+=/blood_fury
+actions.cd+=/berserking
+actions.cd+=/arcane_torrent,if=chi.max-chi>=1&energy.time_to_max>=0.5
+actions.cd+=/touch_of_death,cycle_targets=1,max_cycle_targets=2,if=!artifact.gale_burst.enabled&equipped.hidden_masters_forbidden_touch&!prev_gcd.1.touch_of_death
+actions.cd+=/touch_of_death,if=!artifact.gale_burst.enabled&!equipped.hidden_masters_forbidden_touch
+actions.cd+=/touch_of_death,cycle_targets=1,max_cycle_targets=2,if=artifact.gale_burst.enabled&((talent.serenity.enabled&cooldown.serenity.remains<=1)|chi>=2)&(cooldown.strike_of_the_windlord.remains<8|cooldown.fists_of_fury.remains<=4)&cooldown.rising_sun_kick.remains<7&!prev_gcd.1.touch_of_death
+
+actions.sef=tiger_palm,cycle_targets=1,if=!prev_gcd.1.tiger_palm&energy=energy.max&chi<1
+actions.sef+=/arcane_torrent,if=chi.max-chi>=1&energy.time_to_max>=0.5
+actions.sef+=/call_action_list,name=cd
+actions.sef+=/storm_earth_and_fire,if=!buff.storm_earth_and_fire.up
+actions.sef+=/call_action_list,name=st
+
+actions.serenity=tiger_palm,cycle_targets=1,if=!prev_gcd.1.tiger_palm&energy=energy.max&chi<1&!buff.serenity.up
+actions.serenity+=/call_action_list,name=cd
+actions.serenity+=/serenity
+actions.serenity+=/rising_sun_kick,cycle_targets=1,if=active_enemies<3
+actions.serenity+=/strike_of_the_windlord
+actions.serenity+=/blackout_kick,cycle_targets=1,if=(!prev_gcd.1.blackout_kick)&(prev_gcd.1.strike_of_the_windlord|prev_gcd.1.fists_of_fury)&active_enemies<2
+actions.serenity+=/fists_of_fury,if=((equipped.drinking_horn_cover&buff.pressure_point.remains<=2&set_bonus.tier20_4pc)&(cooldown.rising_sun_kick.remains>1|active_enemies>1)),interrupt=1
+actions.serenity+=/fists_of_fury,if=((!equipped.drinking_horn_cover|buff.bloodlust.up|buff.serenity.remains<1)&(cooldown.rising_sun_kick.remains>1|active_enemies>1)),interrupt=1
+actions.serenity+=/spinning_crane_kick,if=active_enemies>=3&!prev_gcd.1.spinning_crane_kick
+actions.serenity+=/rushing_jade_wind,if=!prev_gcd.1.rushing_jade_wind&buff.rushing_jade_wind.down&buff.serenity.remains>=4
+actions.serenity+=/rising_sun_kick,cycle_targets=1,if=active_enemies>=3
+actions.serenity+=/rushing_jade_wind,if=!prev_gcd.1.rushing_jade_wind&buff.rushing_jade_wind.down&active_enemies>1
+actions.serenity+=/spinning_crane_kick,if=!prev_gcd.1.spinning_crane_kick
+actions.serenity+=/blackout_kick,cycle_targets=1,if=!prev_gcd.1.blackout_kick
+
+actions.serenity_opener=tiger_palm,cycle_targets=1,if=!prev_gcd.1.tiger_palm&energy=energy.max&chi<1&!buff.serenity.up&cooldown.fists_of_fury.remains<=0
+actions.serenity_opener+=/arcane_torrent,if=chi.max-chi>=1&energy.time_to_max>=0.5
+actions.serenity_opener+=/call_action_list,name=cd,if=cooldown.fists_of_fury.remains>1
+actions.serenity_opener+=/serenity,if=cooldown.fists_of_fury.remains>1
+actions.serenity_opener+=/rising_sun_kick,cycle_targets=1,if=active_enemies<3&buff.serenity.up
+actions.serenity_opener+=/strike_of_the_windlord,if=buff.serenity.up
+actions.serenity_opener+=/blackout_kick,cycle_targets=1,if=(!prev_gcd.1.blackout_kick)&(prev_gcd.1.strike_of_the_windlord)
+actions.serenity_opener+=/fists_of_fury,if=cooldown.rising_sun_kick.remains>1|buff.serenity.down,interrupt=1
+actions.serenity_opener+=/blackout_kick,cycle_targets=1,if=buff.serenity.down&chi<=2&cooldown.serenity.remains<=0&prev_gcd.1.tiger_palm
+actions.serenity_opener+=/tiger_palm,cycle_targets=1,if=chi=1
+
+actions.st=call_action_list,name=cd
+actions.st+=/energizing_elixir,if=chi<=1&(cooldown.rising_sun_kick.remains=0|(artifact.strike_of_the_windlord.enabled&cooldown.strike_of_the_windlord.remains=0)|energy<50)
+actions.st+=/arcane_torrent,if=chi.max-chi>=1&energy.time_to_max>=0.5
+actions.st+=/tiger_palm,cycle_targets=1,if=!prev_gcd.1.tiger_palm&energy.time_to_max<=0.5&chi.max-chi>=2
+actions.st+=/strike_of_the_windlord,if=!talent.serenity.enabled|cooldown.serenity.remains>=10
+actions.st+=/rising_sun_kick,cycle_targets=1,if=((chi>=3&energy>=40)|chi>=5)&(!talent.serenity.enabled|cooldown.serenity.remains>=6)
+actions.st+=/fists_of_fury,if=talent.serenity.enabled&!equipped.drinking_horn_cover&cooldown.serenity.remains>=5&energy.time_to_max>2
+actions.st+=/fists_of_fury,if=talent.serenity.enabled&equipped.drinking_horn_cover&(cooldown.serenity.remains>=15|cooldown.serenity.remains<=4)&energy.time_to_max>2
+actions.st+=/fists_of_fury,if=!talent.serenity.enabled&energy.time_to_max>2
+actions.st+=/rising_sun_kick,cycle_targets=1,if=!talent.serenity.enabled|cooldown.serenity.remains>=5
+actions.st+=/whirling_dragon_punch
+actions.st+=/blackout_kick,cycle_targets=1,if=!prev_gcd.1.blackout_kick&chi.max-chi>=1&set_bonus.tier21_4pc&(!set_bonus.tier19_2pc|talent.serenity.enabled|buff.bok_proc.up)
+actions.st+=/spinning_crane_kick,if=(active_enemies>=3|(buff.bok_proc.up&chi.max-chi>=0))&!prev_gcd.1.spinning_crane_kick&set_bonus.tier21_4pc
+actions.st+=/crackling_jade_lightning,if=equipped.the_emperors_capacitor&buff.the_emperors_capacitor.stack>=19&energy.time_to_max>3
+actions.st+=/crackling_jade_lightning,if=equipped.the_emperors_capacitor&buff.the_emperors_capacitor.stack>=14&cooldown.serenity.remains<13&talent.serenity.enabled&energy.time_to_max>3
+actions.st+=/spinning_crane_kick,if=active_enemies>=3&!prev_gcd.1.spinning_crane_kick
+actions.st+=/rushing_jade_wind,if=chi.max-chi>1&!prev_gcd.1.rushing_jade_wind
+actions.st+=/blackout_kick,cycle_targets=1,if=(chi>1|buff.bok_proc.up|(talent.energizing_elixir.enabled&cooldown.energizing_elixir.remains<cooldown.fists_of_fury.remains))&((cooldown.rising_sun_kick.remains>1&(!artifact.strike_of_the_windlord.enabled|cooldown.strike_of_the_windlord.remains>1)|chi>2)&(cooldown.fists_of_fury.remains>1|chi>3)|prev_gcd.1.tiger_palm)&!prev_gcd.1.blackout_kick
+actions.st+=/chi_wave,if=energy.time_to_max>1
+actions.st+=/chi_burst,if=energy.time_to_max>1
+actions.st+=/tiger_palm,cycle_targets=1,if=!prev_gcd.1.tiger_palm&(chi.max-chi>=2|energy.time_to_max<1)
+actions.st+=/chi_wave
+actions.st+=/chi_burst
+
+head=xuens_helm,id=147154,bonus_id=3563/1512
+neck=locket_of_splintered_souls,id=147014,bonus_id=3563/1512,enchant=mark_of_the_hidden_satyr
+shoulders=xuens_shoulderguards,id=147156,bonus_id=3563/1512
+back=xuens_cloak,id=147152,bonus_id=3563/1512,enchant=binding_of_agility
+chest=the_emperors_capacitor,id=144239,bonus_id=3570
+wrists=drinking_horn_cover,id=137097,bonus_id=3570
+hands=xuens_gauntlets,id=147153,bonus_id=3563/1512
+waist=waistguard_of_profane_duplicity,id=147347,bonus_id=3563/1512
+legs=bonespur_studded_legwraps,id=147035,bonus_id=3563/1512
+feet=felscape_pathfinders,id=147030,bonus_id=3563/1512
+finger1=yathaes_thumb_ring,id=147021,bonus_id=3563/1512,enchant=binding_of_mastery
+finger2=band_of_rescinded_truths,id=147194,bonus_id=3563/1512,enchant=binding_of_mastery
+trinket1=specter_of_betrayal,id=151190,bonus_id=3563/1522
+trinket2=engine_of_eradication,id=147015,bonus_id=3563/1512
+main_hand=fists_of_the_heavens,id=128940,bonus_id=734,gem_id=147113/147101/147113,relic_id=3563:1512/3563:1512/3563:1512
+off_hand=fists_of_the_heavens,id=133948
+
+# Gear Summary
+# gear_ilvl=940.13
+# gear_agility=29110
+# gear_stamina=46139
+# gear_crit_rating=8786
+# gear_haste_rating=1954
+# gear_mastery_rating=10491
+# gear_versatility_rating=6487
+# gear_armor=2729
+# set_bonus=tier20_2pc=1
+# set_bonus=tier20_4pc=1

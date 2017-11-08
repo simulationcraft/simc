@@ -124,7 +124,7 @@ void parse_profession( std::string&               professions_str,
 const rapidjson::Value* choose_talent_spec( const rapidjson::Value& talents,
                                                    const std::string& )
 {
-  for ( size_t i = 0; i < talents.Size(); ++i )
+  for (rapidjson::SizeType i = 0; i < talents.Size(); ++i )
   {
     if ( talents[ i ].HasMember( "selected" ) )
     {

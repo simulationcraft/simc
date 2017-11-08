@@ -847,14 +847,16 @@ public:
       koltiras_newfound_will( spell_data_t::not_found() ),
       seal_of_necrofantasia( spell_data_t::not_found() ),
       perseverance_of_the_ebon_martyr( spell_data_t::not_found() ),
-      sephuzs_secret( nullptr ),
-      death_march( spell_data_t::not_found() ),
+      toravons( 0 ),
       lanathels_lament( spell_data_t::not_found() ),
-      toravons( 0 ), the_instructors_fourth_lesson( 0 ), draugr_girdle_everlasting_king( 0 ),
-      uvanimor_the_unbeautiful( 0 ),
       rattlegore_bone_legplates( spell_data_t::not_found() ),
       soulflayers_corruption( spell_data_t::not_found() ),
-      shackles_of_bryndaor( spell_data_t::not_found() )
+      shackles_of_bryndaor( spell_data_t::not_found() ),
+      the_instructors_fourth_lesson( 0 ),
+      draugr_girdle_everlasting_king( 0 ),
+      uvanimor_the_unbeautiful( 0 ),
+      death_march( spell_data_t::not_found() ),
+      sephuzs_secret( nullptr )
     { }
 
   } legendary;
@@ -1867,6 +1869,11 @@ struct dt_pet_auto_attack_t : public auto_attack_melee_t<T>
 
 struct dt_pet_t : public base_ghoul_pet_t
 {
+  struct cooldowns_t
+  {
+    cooldown_t* gnaw_smash; // shared cd between gnaw/smash and their DT'd counterparts
+  } cooldown;
+
   // Unholy T18 4pc buff
   buff_t* crazed_monstrosity;
 
@@ -1876,7 +1883,10 @@ struct dt_pet_t : public base_ghoul_pet_t
   dt_pet_t( death_knight_t* owner, const std::string& name ) :
     base_ghoul_pet_t( owner, name, false ), crazed_monstrosity( nullptr ),
     unholy_vigor( get_gain( "Unholy Vigor" ) )
-  { }
+  {
+    cooldown.gnaw_smash = get_cooldown( "gnaw_smash" );
+    cooldown.gnaw_smash -> duration = find_spell( 91800 ) -> cooldown();
+  }
 
   attack_t* create_auto_attack() override
   { return new dt_pet_auto_attack_t< dt_pet_t >( this ); }
@@ -1954,20 +1964,6 @@ struct ghoul_pet_t : public dt_pet_t
     }
   };
 
-  struct gnaw_t : public dt_melee_ability_t<ghoul_pet_t>
-  {
-    gnaw_t( ghoul_pet_t* player, const std::string& options_str ) :
-      super( player, "gnaw", player -> find_spell( 91800 ), options_str, false )
-    { }
-  };
-
-  struct monstrous_blow_t : public dt_melee_ability_t<ghoul_pet_t>
-  {
-    monstrous_blow_t( ghoul_pet_t* player, const std::string& options_str ):
-      super( player, "monstrous_blow", player -> find_spell( 91797 ), options_str )
-    { }
-  };
-
   struct sweeping_claws_t : public dt_melee_ability_t<ghoul_pet_t>
   {
     sweeping_claws_t( ghoul_pet_t* player, const std::string& options_str ) :
@@ -1990,6 +1986,24 @@ struct ghoul_pet_t : public dt_pet_t
     }
   };
 
+  struct gnaw_t : public dt_melee_ability_t<ghoul_pet_t>
+  {
+    gnaw_t( ghoul_pet_t* player, const std::string& options_str ) :
+      super( player, "gnaw", player -> find_spell( 91800 ), options_str, false )
+    {
+      cooldown = player -> get_cooldown( "gnaw_smash" );
+    }
+  };
+
+  struct monstrous_blow_t : public dt_melee_ability_t<ghoul_pet_t>
+  {
+    monstrous_blow_t( ghoul_pet_t* player, const std::string& options_str ):
+      super( player, "monstrous_blow", player -> find_spell( 91797 ), options_str )
+    {
+      cooldown = player -> get_cooldown( "gnaw_smash" );
+    }
+  };
+
   ghoul_pet_t( death_knight_t* owner ) : dt_pet_t( owner, "ghoul" )
   { }
 
@@ -2008,6 +2022,7 @@ struct ghoul_pet_t : public dt_pet_t
     def -> add_action( "Sweeping Claws" );
     def -> add_action( "Claw" );
     def -> add_action( "Monstrous Blow" );
+    // def -> add_action( "Gnaw" ); Unused because a dps loss compared to waiting for DT and casting Monstrous Blow
   }
 
   action_t* create_action( const std::string& name, const std::string& options_str ) override
@@ -2046,13 +2061,6 @@ struct sludge_belcher_pet_t : public dt_pet_t
     }
   };
 
-  struct smash_t : public dt_melee_ability_t<sludge_belcher_pet_t>
-  {
-    smash_t( sludge_belcher_pet_t* player, const std::string& options_str ):
-      super( player, "smash", player -> find_spell( 212332 ), options_str, false )
-    { }
-  };
-
   struct vile_gas_t : public dt_melee_ability_t<sludge_belcher_pet_t>
   {
     vile_gas_t( sludge_belcher_pet_t* player, const std::string& options_str ) :
@@ -2075,11 +2083,22 @@ struct sludge_belcher_pet_t : public dt_pet_t
     }
   };
 
+  struct smash_t : public dt_melee_ability_t<sludge_belcher_pet_t>
+  {
+    smash_t( sludge_belcher_pet_t* player, const std::string& options_str ):
+      super( player, "smash", player -> find_spell( 212332 ), options_str, false )
+    {
+      cooldown = player -> get_cooldown( "gnaw_smash" );
+    }
+  };
+
   struct powerful_smash_t : public dt_melee_ability_t<sludge_belcher_pet_t>
   {
     powerful_smash_t( sludge_belcher_pet_t* player, const std::string& options_str ):
       super( player, "powerful_smash", player -> find_spell( 212337 ), options_str )
-    { }
+    {
+      cooldown = player -> get_cooldown( "gnaw_smash" );
+    }
   };
 
   sludge_belcher_pet_t( death_knight_t* owner ) : dt_pet_t( owner, "sludge_belcher" )
@@ -2100,7 +2119,7 @@ struct sludge_belcher_pet_t : public dt_pet_t
     def -> add_action( "Vile Gas" );
     def -> add_action( "Cleaver" );
     def -> add_action( "Powerful Smash" );
-
+    // def -> add_action( "Smash" ); Unused because a dps loss compared to waiting for DT and casting Monstrous Blow
   }
 
   action_t* create_action( const std::string& name, const std::string& options_str ) override
@@ -2109,6 +2128,7 @@ struct sludge_belcher_pet_t : public dt_pet_t
     if ( name == "vile_gas"       ) return new       vile_gas_t( this, options_str );
     if ( name == "smash"          ) return new          smash_t( this, options_str );
     if ( name == "powerful_smash" ) return new powerful_smash_t( this, options_str );
+
 
     return dt_pet_t::create_action( name, options_str );
   }
@@ -2554,6 +2574,7 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
       drw_spell_t( p, "blood_plague", p -> o() -> find_spell( 55078 ) ) 
     {
       base_multiplier *= 1.0 + p -> o() -> spec.blood_death_knight -> effectN( 2 ).percent();
+      base_multiplier *= 1.0 + p -> o() -> legendary.soulflayers_corruption -> effectN( 1 ).percent();
     }
   };
 
@@ -8777,7 +8798,7 @@ double death_knight_t::bone_shield_handler( const action_state_t* state ) const
     
     if ( sets -> has_set_bonus( DEATH_KNIGHT_BLOOD, T21, B2 ) )
     {
-      cooldown.dancing_rune_weapon -> adjust( timespan_t::from_millis( sets -> set( DEATH_KNIGHT_BLOOD, T21, B4) -> effectN( 1 ).base_value() ), false );
+      cooldown.dancing_rune_weapon -> adjust( timespan_t::from_millis( sets -> set( DEATH_KNIGHT_BLOOD, T21, B2) -> effectN( 1 ).base_value() ), false );
       cooldown.blood_tap -> adjust( timespan_t::from_seconds( -2.0 ), false );
     }
 
@@ -8799,7 +8820,7 @@ double death_knight_t::bone_shield_handler( const action_state_t* state ) const
 
     if ( sets -> has_set_bonus( DEATH_KNIGHT_BLOOD, T21, B2 ) )
     {
-      cooldown.dancing_rune_weapon -> adjust( timespan_t::from_millis( sets -> set( DEATH_KNIGHT_BLOOD, T21, B4) -> effectN( 1 ).base_value() ), false );
+      cooldown.dancing_rune_weapon -> adjust( timespan_t::from_millis( sets -> set( DEATH_KNIGHT_BLOOD, T21, B2) -> effectN( 1 ).base_value() ), false );
       cooldown.blood_tap -> adjust( timespan_t::from_seconds( -2.0 ), false );
     }
   }
@@ -9875,7 +9896,7 @@ struct lanathels_lament_t : public scoped_actor_callback_t<death_knight_t>
   lanathels_lament_t() : super( DEATH_KNIGHT )
   { }
 
-  void manipulate( death_knight_t* p, const special_effect_t& e ) override
+  void manipulate( death_knight_t* p, const special_effect_t& ) override
   { p -> legendary.lanathels_lament = p -> find_spell( 212975 ); }
 };
 

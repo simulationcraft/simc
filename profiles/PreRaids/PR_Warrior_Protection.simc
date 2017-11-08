@@ -1,0 +1,68 @@
+warrior="PR_Warrior_Protection"
+spec=protection
+level=110
+race=tauren
+role=tank
+position=front
+talents=1222312
+artifact=11:0:0:0:0:91:1:92:1:93:1:95:2:99:3:100:3:101:3:102:3:103:1:104:1:1358:1
+
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
+
+# Executed before combat begins. Accepts non-harmful actions only.
+actions.precombat=flask,type=countless_armies
+actions.precombat+=/food,type=lavish_suramar_feast
+actions.precombat+=/augmentation,type=defiled
+# Snapshot raid buffed stats before combat begins and pre-potting is done.
+actions.precombat+=/snapshot_stats
+actions.precombat+=/potion,name=old_war
+
+# Executed every time the actor is available.
+actions=auto_attack
+actions+=/intercept
+actions+=/blood_fury
+actions+=/berserking
+actions+=/arcane_torrent
+actions+=/call_action_list,name=prot
+
+actions.prot=potion,name=old_war,if=target.time_to_die<25
+actions.prot+=/battle_cry,if=cooldown.shield_slam.remains=0
+actions.prot+=/demoralizing_shout
+actions.prot+=/ravager,if=talent.ravager.enabled
+actions.prot+=/shield_block,if=cooldown.shield_slam.remains=0
+actions.prot+=/ignore_pain,if=(!talent.vengeance.enabled&buff.renewed_fury.remains<1.5)|(!talent.vengeance.enabled&rage.deficit>=40)|(buff.vengeance_ignore_pain.up)|(talent.vengeance.enabled&!buff.vengeance_ignore_pain.up&!buff.vengeance_revenge.up&rage<30&!buff.revenge.react)
+actions.prot+=/shield_slam
+actions.prot+=/revenge,if=(!talent.vengeance.enabled)|(talent.vengeance.enabled&buff.revenge.react&!buff.vengeance_ignore_pain.up)|(buff.vengeance_revenge.up)|(talent.vengeance.enabled&!buff.vengeance_ignore_pain.up&!buff.vengeance_revenge.up&rage>=30)
+actions.prot+=/thunder_clap
+actions.prot+=/devastate
+
+head=vision_of_the_spider_queen,id=137451,bonus_id=1492/1727
+neck=raven_filigree_pendant,id=134499,bonus_id=1492/1727,enchant=mark_of_the_heavy_hide
+shoulders=pauldrons_of_the_allfather,id=133631,bonus_id=1492/1727
+back=mainsail_cloak,id=134406,bonus_id=1492/1727,enchant=binding_of_strength
+chest=etheldrins_breastplate,id=136976,bonus_id=1492/1727
+wrists=wristbands_of_magnificent_splendor,id=139283,bonus_id=1492/1727
+hands=bloodspattered_gauntlets,id=137525,bonus_id=1492/1727
+waist=greatbelt_of_disruption,id=137310,bonus_id=1492/1727
+legs=greaves_of_ruinous_dominion,id=134515,bonus_id=1492/1727
+feet=leadfoot_earthshakers,id=134507,bonus_id=1492/1727
+finger1=band_of_crystalline_bone,id=134493,bonus_id=1492/1727,enchant=binding_of_versatility
+finger2=braided_silver_ring,id=134539,bonus_id=1492/1727,enchant=binding_of_versatility
+trinket1=memento_of_angerboda,id=133644,bonus_id=1492/1727
+trinket2=impenetrable_nerubian_husk,id=137430,bonus_id=1492/1727
+main_hand=scaleshard,id=128288
+off_hand=scale_of_the_earthwarder,id=128289,gem_id=133763/137412/133686,relic_id=1492:1727/1492:1727/1492:1727
+
+# Gear Summary
+# gear_ilvl=843.75
+# gear_strength=11844
+# gear_stamina=18842
+# gear_crit_rating=1019
+# gear_haste_rating=1899
+# gear_mastery_rating=8104
+# gear_versatility_rating=7295
+# gear_armor=3965

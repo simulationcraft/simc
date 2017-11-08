@@ -33,6 +33,7 @@ struct statistical_data_t
 
 class profile_result_t
 {
+  scale_metric_e m_metric;
   double         m_mean;
   double         m_median;
   double         m_min;
@@ -43,9 +44,16 @@ class profile_result_t
   size_t         m_iterations;
 
 public:
-  profile_result_t() : m_mean( 0 ), m_median( 0 ), m_min( 0 ), m_max( 0 ), m_1stquartile( 0 ),
-    m_3rdquartile( 0 ), m_stddev( 0 ), m_iterations( 0 )
+  profile_result_t() : m_metric( SCALE_METRIC_NONE ), m_mean( 0 ), m_median( 0 ), m_min( 0 ),
+    m_max( 0 ), m_1stquartile( 0 ), m_3rdquartile( 0 ), m_stddev( 0 ), m_iterations( 0 )
   { }
+
+  profile_result_t( scale_metric_e m ) : m_metric( m ), m_mean( 0 ), m_median( 0 ), m_min( 0 ),
+    m_max( 0 ), m_1stquartile( 0 ), m_3rdquartile( 0 ), m_stddev( 0 ), m_iterations( 0 )
+  { }
+
+  scale_metric_e metric() const
+  { return m_metric; }
 
   double mean() const
   { return m_mean; }
@@ -101,10 +109,10 @@ public:
 
 class profile_set_t
 {
-  std::string      m_name;
-  sim_control_t*   m_options;
-  profile_result_t m_result;
-  bool             m_has_output;
+  std::string                   m_name;
+  sim_control_t*                m_options;
+  std::vector<profile_result_t> m_results;
+  bool                          m_has_output;
 
 public:
   profile_set_t( const std::string& name, sim_control_t* opts, bool has_ouput );
@@ -116,11 +124,12 @@ public:
 
   sim_control_t* options() const;
 
-  const profile_result_t& result() const
-  { return m_result; }
+  const profile_result_t& result( scale_metric_e metric = SCALE_METRIC_NONE ) const;
 
-  profile_result_t& result()
-  { return m_result; }
+  profile_result_t& result( scale_metric_e metric );
+
+  size_t results() const
+  { return m_results.size(); }
 
   bool has_output() const
   { return m_has_output; }
@@ -200,7 +209,7 @@ public:
 void create_options( sim_t* sim );
 
 statistical_data_t collect( const extended_sample_data_t& c );
-statistical_data_t metric_data( const player_t* player );
+statistical_data_t metric_data( const player_t* player, scale_metric_e metric );
 
 } /* Namespace profileset ends */
 

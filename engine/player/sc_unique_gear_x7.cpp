@@ -125,6 +125,7 @@ namespace item
   void seeping_scourgewing( special_effect_t&          );
   void gorshalach_legacy( special_effect_t&            );
   void forgefiends_fabricator( special_effect_t&       );
+  void forgefiends_fabricator_detonate(special_effect_t&);
 
   // 7.2.0 Dungeon
   void dreadstone_of_endless_shadows( special_effect_t& );
@@ -1925,7 +1926,7 @@ struct injector_proc_cb_t : public dbc_proc_callback_t
 
   void execute( action_t* /* a */, action_state_t* /* state */ ) override
   {
-    auto buff_index = static_cast<size_t>( rng().range( 0, small_buffs.size() ) );
+    auto buff_index = static_cast<size_t>( rng().range( size_t(0), small_buffs.size() ) );
     auto buff = small_buffs[ buff_index ];
 
     buff -> trigger();
@@ -1980,7 +1981,7 @@ void item::acrid_catalyst_injector( special_effect_t& effect )
 
   dbc_proc_callback_t* cb = new injector_proc_cb_t( effect, { crit, haste, mastery }, all );
 
-  all -> stack_change_callback = [ cb ] ( buff_t*, int prev, int cur )
+  all -> stack_change_callback = [ cb ] ( buff_t*, int prev, int /*cur*/ )
   {
     if ( prev == 0 ) cb -> deactivate();
     if ( prev == 1 ) cb -> activate();
@@ -2105,14 +2106,14 @@ struct shadow_blades_constructor_t : public item_targetdata_initializer_t
 
     if ( ! effect )
     {
-      td -> debuff.shadow_blades = buff_creator_t( *td, "shadow_blades" );
+      td -> debuff.shadow_blades = buff_creator_t( *td, "shadow_blades_debuff" );
     }
     else
     {
       assert( ! td -> debuff.shadow_blades );
 
       auto spell = effect -> player -> find_spell( 253265 );
-      td -> debuff.shadow_blades = buff_creator_t( *td, "shadow_blades", spell, effect -> item )
+      td -> debuff.shadow_blades = buff_creator_t( *td, "shadow_blades_debuff", spell, effect -> item )
         .default_value( spell -> effectN( 2 ).percent() );
       td -> debuff.shadow_blades -> reset();
     }
@@ -2250,7 +2251,9 @@ struct shadow_strike_t: public proc_spell_t
     proc_spell_t( "shadow_strike", effect.player, effect.trigger(), effect.item ),
     isolated_strike( create_proc_action<isolated_strike_t>( "isolated_strike", effect ) ),
     target_radius( effect.driver() -> effectN( 1 ).base_value() )
-  {}
+  {
+    add_child( isolated_strike );
+  }
 
   void execute() override
   {
@@ -2301,10 +2304,10 @@ struct fire_mines_t : public spell_t
     return travel;
   }
 
-  virtual double calculate_direct_amount(action_state_t* s) const override
+  virtual double calculate_direct_amount(action_state_t*) const override
   { return 0.0; }
 
-  virtual result_e calculate_result(action_state_t* s) const override
+  virtual result_e calculate_result(action_state_t*) const override
   { return RESULT_NONE; }
 
   virtual void impact( action_state_t* s ) override
@@ -2329,6 +2332,7 @@ struct fire_mines_driver_t : public proc_spell_t
     fire_mines( new fire_mines_t( effect ) )
   {
     background = true;
+    effect.player->forgefiends_fabricator_fire_mine = fire_mines;
   }
 
   void execute() override
@@ -2346,6 +2350,34 @@ void item::forgefiends_fabricator( special_effect_t& effect )
    effect.execute_action = create_proc_action<fire_mines_driver_t>( "fire_mines", effect );
    new dbc_proc_callback_t( effect.player, effect );
 }
+
+struct fire_mines_detonator_driver_t : public proc_spell_t
+{
+  fire_mines_detonator_driver_t( const special_effect_t& effect ) :
+    proc_spell_t( "fire_mines_detonator", effect.player, effect.player -> find_spell(253322), effect.item)
+  { }
+
+  bool ready() override
+  {
+    if ( !player -> forgefiends_fabricator_fire_mine -> has_travel_events() ) 
+      return false;
+
+    return proc_spell_t::ready();
+  }
+
+  void execute() override
+  {
+    proc_spell_t::execute();
+
+    player->forgefiends_fabricator_fire_mine->execute_all_travel_events();
+  }
+};
+
+void item::forgefiends_fabricator_detonate(special_effect_t& effect)
+{
+  effect.execute_action = new fire_mines_detonator_driver_t(effect);
+}
+
 
 // Toe Knee's Promise ======================================================
 
@@ -6123,7 +6155,7 @@ struct eyasus_driver_t : public spell_t
     spell_t::execute();
 
     // Choose a buff and trigger the mulligan one
-    range::for_each( mulligan_buffs, [ this ]( buff_t* b ) { b -> expire(); } );
+    range::for_each( mulligan_buffs, []( buff_t* b ) { b -> expire(); } );
     current_roll = static_cast<unsigned>( rng().range( 0, mulligan_buffs.size() ) );
     mulligan_buffs[ current_roll ] -> trigger();
     if ( ! first_roll )
@@ -6199,7 +6231,7 @@ struct netherlight_base_t : public proc_spell_t
     if ( dot -> tick_event )
     {
       timespan_t tick_time = dot -> current_action -> tick_time( dot -> state );
-      int tick_count = std::round( triggered_duration.total_seconds() / tick_time.total_seconds() );
+      int tick_count = static_cast<int>(std::round( triggered_duration.total_seconds() / tick_time.total_seconds() ));
 
       return tick_count * tick_time + dot -> tick_event -> remains();
     }
@@ -6488,6 +6520,7 @@ void unique_gear::register_special_effects_x7()
   register_special_effect( 253323, item::seeping_scourgewing       );
   register_special_effect( 253326, item::gorshalach_legacy         );
   register_special_effect( 253310, item::forgefiends_fabricator    );
+  register_special_effect( 253322, item::forgefiends_fabricator_detonate  );
 
   /* Legion 7.2.0 Dungeon */
   register_special_effect( 238498, item::dreadstone_of_endless_shadows );

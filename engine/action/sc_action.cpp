@@ -1641,7 +1641,7 @@ void action_t::assess_damage( dmg_e type, action_state_t* s )
   player -> assessor_out_damage.execute( type, s );
 
   // TODO: Should part of this move to assessing, priority_iteration_damage for example?
-  if ( s -> result_amount > 0 || result_is_miss( s -> result ) )
+  if ( s -> result_raw > 0 || result_is_miss( s -> result ) )
   {
     if ( s -> target == sim -> target )
     {
@@ -3409,6 +3409,14 @@ void action_t::remove_travel_event( travel_event_t* e )
   std::vector<travel_event_t*>::iterator pos = range::find( travel_events, e );
   if ( pos != travel_events.end() )
     erase_unordered( travel_events, pos );
+}
+
+void action_t::execute_all_travel_events()
+{
+  for ( const auto& TravelEvent : travel_events)
+  {
+    TravelEvent->execute();
+  }
 }
 
 void action_t::do_teleport( action_state_t* state )

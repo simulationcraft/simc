@@ -3969,8 +3969,8 @@ void print_html_player_procs( report::sc_html_stream& os,
 {
   // Procs Section
   os << "<div class=\"player-section procs\">\n"
-     << "<h3 class=\"toggle\">Procs</h3>\n"
-     << "<div class=\"toggle-content open\">\n"
+     << "<h3 class=\"toggle open\">Procs</h3>\n"
+     << "<div class=\"toggle-content\">\n"
      << "<table class=\"sc\">\n"
      << "<tr>\n"
      << "<th></th>\n"

@@ -10236,7 +10236,7 @@ struct oakhearts_puny_quods_buff_t : public class_buff_cb_t<druid_t>
       .spell( e.driver() -> effectN( 1 ).trigger() )
       .default_value( e.driver() -> effectN( 1 ).trigger()
         -> effectN( 2 ).resource( RESOURCE_RAGE ) )
-      .tick_callback( [ this ]( buff_t* b, int, const timespan_t& ) {
+      .tick_callback( []( buff_t* b, int, const timespan_t& ) {
       b -> player -> resource_gain( RESOURCE_RAGE,
         b -> default_value,
         debug_cast<druid_t*>( b -> player ) -> gain.oakhearts_puny_quods ); } );

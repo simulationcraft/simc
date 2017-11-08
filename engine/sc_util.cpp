@@ -115,6 +115,83 @@ int vfprintf_helper( FILE *stream, const char *fmt, va_list args )
 stopwatch_t wall_sw( STOPWATCH_WALL );
 stopwatch_t  cpu_sw( STOPWATCH_CPU  );
 
+
+void stat_search( std::string&              encoding_str,
+                         std::vector<std::string>& description_tokens,
+                         stat_e                    type,
+                         const std::string&        stat_str )
+{
+  std::vector<std::string> stat_tokens = util::string_split( stat_str, " " );
+  size_t num_descriptions = description_tokens.size();
+
+  for ( size_t i = 0; i < num_descriptions; i++ )
+  {
+    bool match = true;
+
+    for ( size_t j = 0; j < stat_tokens.size() && match; j++ )
+    {
+      if ( ( i + j ) == num_descriptions )
+      {
+        match = false;
+      }
+      else
+      {
+        if ( stat_tokens[ j ][ 0 ] == '!' )
+        {
+          if ( stat_tokens[ j ].substr( 1 ) == description_tokens[ i + j ] )
+          {
+            match = false;
+          }
+        }
+        else
+        {
+          if ( stat_tokens[ j ] != description_tokens[ i + j ] )
+          {
+            match = false;
+          }
+        }
+      }
+    }
+
+    if ( match )
+    {
+      std::string value_str;
+
+      if ( ( i > 0 ) &&
+           ( util::is_number( description_tokens[ i - 1 ] ) ) )
+      {
+        value_str = description_tokens[ i - 1 ];
+      }
+      if ( ( ( i + stat_tokens.size() + 1 ) < num_descriptions ) &&
+           ( description_tokens[ i + stat_tokens.size() ] == "by" ) &&
+           ( util::is_number( description_tokens[ i + stat_tokens.size() + 1 ] ) ) )
+      {
+        value_str = description_tokens[ i + stat_tokens.size() + 1 ];
+      }
+
+      if ( ! value_str.empty() )
+      {
+        encoding_str += '_' + value_str + util::stat_type_abbrev( type );
+      }
+    }
+  }
+}
+
+/// Check if given string is a proc description
+bool is_proc_description( const std::string& description_str )
+{
+  if ( description_str.find( "chance" ) != std::string::npos ) return true;
+  if ( description_str.find( "stack"  ) != std::string::npos ) return true;
+  if ( description_str.find( "time"   ) != std::string::npos ) return true;
+  if ( ( description_str.find( "_sec"   ) != std::string::npos ) &&
+       ! ( ( description_str.find( "restores" ) != std::string::npos ) &&
+           ( ( description_str.find( "_per_5_sec" ) != std::string::npos ) ||
+             ( description_str.find( "_every_5_sec" ) != std::string::npos ) ) ) )
+    return true;
+
+  return false;
+}
+
 } // anonymous namespace ============================================
 
 
@@ -1487,7 +1564,7 @@ const char* util::scale_metric_type_string( scale_metric_e sm )
     case SCALE_METRIC_TMI:       return "Theck-Meloree-Index";
     case SCALE_METRIC_ETMI:      return "Effective Theck-Meloree-Index";
     case SCALE_METRIC_DEATHS:    return "Deaths";
-    default:                     return "Damage per Second"; //When set to "Default", assume dps until we have a better solution.
+    default:                     return "Unknown";
   }
 }
 
@@ -1510,7 +1587,7 @@ const char* util::scale_metric_type_abbrev( scale_metric_e sm )
     case SCALE_METRIC_TMI:       return "tmi";
     case SCALE_METRIC_ETMI:      return "etmi";
     case SCALE_METRIC_DEATHS:    return "deaths";
-    default:                     return "dps"; //When set to "Default", assume dps until we have a better solution.
+    default:                     return "unknown";
   }
 }
 
@@ -1534,7 +1611,7 @@ bool util::parse_origin( std::string& region_str,
                          std::string& name_str,
                          const std::string& origin_str )
 {
-  std::vector<std::string> tokens = string_split( origin_str, "/:.?&=" );
+  auto tokens = string_split( origin_str, "/:.?&=" );
 
   if ( origin_str.find( ".battle.net" ) != std::string::npos )
   {
@@ -1583,7 +1660,10 @@ bool util::parse_origin( std::string& region_str,
 int util::class_id_mask( player_e type )
 {
   int cid = class_id( type );
-  if ( cid <= 0 ) return 0;
+  if ( cid <= 0 )
+  {
+    return 0;
+  }
   return 1 << ( cid - 1 );
 }
 
@@ -2021,9 +2101,9 @@ std::vector<std::string> util::string_split( const std::string& str, const std::
 
 /* Splits the string while skipping and stripping quoted parts in the string
  */
-size_t util::string_split_allow_quotes( std::vector<std::string>& results, const std::string& str, const char* delim )
+std::vector<std::string> util::string_split_allow_quotes( std::string str, const char* delim )
 {
-  std::string buffer = str;
+  std::vector<std::string> results;
   std::string::size_type cut_pt, start = 0;
 
   std::string not_in_quote = delim;
@@ -2032,27 +2112,27 @@ size_t util::string_split_allow_quotes( std::vector<std::string>& results, const
   static const std::string in_quote = "\"";
   const std::string* search = &not_in_quote;
 
-  while ( ( cut_pt = buffer.find_first_of( *search, start ) ) != buffer.npos )
+  while ( ( cut_pt = str.find_first_of( *search, start ) ) != str.npos )
   {
-    if ( buffer[ cut_pt ] == '"' )
+    if ( str[ cut_pt ] == '"' )
     {
-      buffer.erase( cut_pt, 1 );
+      str.erase( cut_pt, 1 );
       start = cut_pt;
       search = ( search == &not_in_quote ) ? &in_quote : &not_in_quote;
     }
     else if ( search == &not_in_quote )
     {
       if ( cut_pt > 0 )
-        results.push_back( buffer.substr( 0, cut_pt ) );
-      buffer.erase( 0, cut_pt + 1 );
+        results.push_back( str.substr( 0, cut_pt ) );
+      str.erase( 0, cut_pt + 1 );
       start = 0;
     }
   }
 
-  if ( buffer.length() > 0 )
-    results.push_back( buffer );
+  if ( str.length() > 0 )
+    results.push_back( str );
 
-  return results.size();
+  return results;
 }
 
 
@@ -2125,10 +2205,10 @@ const char* util::retarget_event_string( retarget_event_e event )
 
 const char* util::specialization_string( specialization_e spec )
 {
-  for ( size_t i = 0; i < sizeof_array( spec_map ); i++ )
+  for ( const auto& entry : spec_map )
   {
-    if ( spec == spec_map[ i ].spec )
-      return spec_map[ i ].name;
+    if ( spec == entry.spec )
+      return entry.name;
   }
 
   return "Unknown";
@@ -2138,10 +2218,10 @@ const char* util::specialization_string( specialization_e spec )
 
 specialization_e util::parse_specialization_type( const std::string &name )
 {
-  for ( size_t i = 0; i < sizeof_array( spec_map ); i++ )
+  for ( const auto& entry : spec_map )
   {
-    if ( util::str_compare_ci( name, spec_map[ i ].name ) )
-      return spec_map[ i ].spec;
+    if ( util::str_compare_ci( name, entry.name ) )
+      return entry.spec;
   }
 
   return SPEC_NONE;
@@ -2364,10 +2444,8 @@ void util::urlencode( std::string& str )
 
   std::string temp;
 
-  for ( std::string::size_type i = 0, l = str.length(); i < l; ++i )
+  for ( unsigned char c : str )
   {
-    unsigned char c = str[ i ];
-
     if ( c > 0x7F || c == ' ' || c == '\'' )
     {
       temp += "%";
@@ -2382,32 +2460,6 @@ void util::urlencode( std::string& str )
   }
 
   str.swap( temp );
-}
-
-// google image chart encoding ================================================
-
-std::string util::google_image_chart_encode( const std::string& str )
-{
-  std::string::size_type l = str.length();
-  if ( ! l ) return str;
-
-  std::string temp;
-  for ( std::string::size_type i = 0; i < l; ++i )
-  {
-    unsigned char c = str[ i ];
-    if ( c == '+' )
-      temp += "%2B";
-    else if ( c == '&' )
-      temp += "%26";
-    else if ( c == '|' )
-      temp += "%7E"; // pipe is a newline in google API, replace with ~
-    else if ( c == '>' )
-      temp += "%3E";
-    else
-      temp += c;
-  }
-
-  return temp;
 }
 
 // create_wowhead_artifact_url ==============================================
@@ -2710,16 +2762,21 @@ double util::round( double X, unsigned int decplaces )
   }
 }
 
-// tolower ==================================================================
-
+/// Transform string to all lower-case
 void util::tolower( std::string& str )
 {
   // Transform all chars to lower case
   range::transform_self( str, ( int( * )( int ) ) std::tolower );
 }
 
-// tokenize =================================================================
-
+/*
+ * Tokenize a string
+ *
+ * * all lower-case
+ * * Replace whitespace with underscore
+ * * Erase some special characters
+ * * etc.
+ */
 void util::tokenize( std::string& name )
 {
   if ( name.empty() ) return;
@@ -2764,7 +2821,6 @@ std::string util::tokenize_fn( std::string name )
   tokenize(name);
   return name;
 }
-// inverse_tokenize =========================================================
 
 std::string util::inverse_tokenize( const std::string& name )
 {
@@ -2793,89 +2849,14 @@ std::string util::inverse_tokenize( const std::string& name )
 
 bool util::is_number( const std::string& s )
 {
-  for (auto & elem : s)
-    if ( ! std::isdigit( elem ) )
-      return false;
-  return true;
-}
-
-// stat_search ==============================================================
-
-static void stat_search( std::string&              encoding_str,
-                         std::vector<std::string>& description_tokens,
-                         stat_e                    type,
-                         const std::string&        stat_str )
-{
-  std::vector<std::string> stat_tokens = util::string_split( stat_str, " " );
-  size_t num_descriptions = description_tokens.size();
-
-  for ( size_t i = 0; i < num_descriptions; i++ )
+  for (auto& elem : s)
   {
-    bool match = true;
-
-    for ( size_t j = 0; j < stat_tokens.size() && match; j++ )
+    if ( ! std::isdigit( elem ) )
     {
-      if ( ( i + j ) == num_descriptions )
-      {
-        match = false;
-      }
-      else
-      {
-        if ( stat_tokens[ j ][ 0 ] == '!' )
-        {
-          if ( stat_tokens[ j ].substr( 1 ) == description_tokens[ i + j ] )
-          {
-            match = false;
-          }
-        }
-        else
-        {
-          if ( stat_tokens[ j ] != description_tokens[ i + j ] )
-          {
-            match = false;
-          }
-        }
-      }
-    }
-
-    if ( match )
-    {
-      std::string value_str;
-
-      if ( ( i > 0 ) &&
-           ( util::is_number( description_tokens[ i - 1 ] ) ) )
-      {
-        value_str = description_tokens[ i - 1 ];
-      }
-      if ( ( ( i + stat_tokens.size() + 1 ) < num_descriptions ) &&
-           ( description_tokens[ i + stat_tokens.size() ] == "by" ) &&
-           ( util::is_number( description_tokens[ i + stat_tokens.size() + 1 ] ) ) )
-      {
-        value_str = description_tokens[ i + stat_tokens.size() + 1 ];
-      }
-
-      if ( ! value_str.empty() )
-      {
-        encoding_str += '_' + value_str + util::stat_type_abbrev( type );
-      }
+      return false;
     }
   }
-}
-
-// is_proc_description ======================================================
-
-static bool is_proc_description( const std::string& description_str )
-{
-  if ( description_str.find( "chance" ) != std::string::npos ) return true;
-  if ( description_str.find( "stack"  ) != std::string::npos ) return true;
-  if ( description_str.find( "time"   ) != std::string::npos ) return true;
-  if ( ( description_str.find( "_sec"   ) != std::string::npos ) &&
-       ! ( ( description_str.find( "restores" ) != std::string::npos ) &&
-           ( ( description_str.find( "_per_5_sec" ) != std::string::npos ) ||
-             ( description_str.find( "_every_5_sec" ) != std::string::npos ) ) ) )
-    return true;
-
-  return false;
+  return true;
 }
 
 // fuzzy_stats ==============================================================

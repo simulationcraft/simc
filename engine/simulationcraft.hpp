@@ -1911,7 +1911,7 @@ struct sim_t : private sc_thread_t
   // Profilesets
   opts::map_list_t profileset_map;
   profileset::profilesets_t profilesets;
-  scale_metric_e profileset_metric;
+  std::vector<scale_metric_e> profileset_metric;
   bool profileset_enabled;
 
   sim_t( sim_t* parent = nullptr, int thread_index = 0 );
@@ -4094,6 +4094,9 @@ struct player_t : public actor_t
   double warlords_unseeing_eye;
   stats_t* warlords_unseeing_eye_stats;
 
+  // Forgefiend's Fabricator (7.3.2 Antorus Trinket)
+  action_t* forgefiends_fabricator_fire_mine;
+
   // Misc Multipliers
   // auto attack multiplier (for Jeweled Signet of Melandrus and similar effects)
   double auto_attack_multiplier;
@@ -5851,6 +5854,8 @@ public:
   void parse_target_str();
 
   void remove_travel_event( travel_event_t* e );
+
+  void execute_all_travel_events();
 
   void reschedule_queue_event();
 

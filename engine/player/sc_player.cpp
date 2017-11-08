@@ -757,6 +757,7 @@ player_t::player_t( sim_t*             s,
   item_cooldown( cooldown_t( "item_cd", *this ) ),
   legendary_tank_cloak_cd( nullptr ),
   warlords_unseeing_eye( 0.0 ),
+  forgefiends_fabricator_fire_mine(nullptr),
   auto_attack_multiplier( 1.0 ),
   scaling( ( ! is_pet() || sim -> report_pets_separately ) ? new player_scaling_t() : nullptr ),
   // Movement & Position
@@ -784,7 +785,7 @@ player_t::player_t( sim_t*             s,
   actor_index = sim -> actor_list.size();
   sim -> actor_list.push_back( this );
 
-  if ( ! is_enemy() && ! is_pet() )
+  if ( ! is_enemy() && ! is_pet() && type != HEALING_ENEMY )
   {
     artifact = artifact::player_artifact_data_t::create( this );
   }
@@ -1910,6 +1911,8 @@ bool player_t::init_artifact()
 
   if ( artifact_id == 0 )
   {
+    sim->errorf("No Artifact ID found for player '%s'! Please note that "
+        "SimC currently does not support players without specalization.", name() );
     return false;
   }
 
@@ -4599,7 +4602,7 @@ void player_t::arise()
 
   current_attack_speed = cache.attack_speed();
 
-  range::for_each( callbacks_on_arise, [ this ]( const std::function<void(void)>& fn ) { fn(); } );
+  range::for_each( callbacks_on_arise, []( const std::function<void(void)>& fn ) { fn(); } );
 }
 
 // player_t::demise =========================================================
@@ -9275,9 +9278,7 @@ expr_t* player_t::create_expression( action_t* a,
       case STAT_PARRY_RATING:     return make_mem_fn_expr( expression_str, *this, &player_t::composite_parry_rating );
       case STAT_BLOCK_RATING:     return make_mem_fn_expr( expression_str, *this, &player_t::composite_block_rating );
       case STAT_MASTERY_RATING:   return make_mem_fn_expr( expression_str, *this, &player_t::composite_mastery_rating );
-      case RATING_DAMAGE_VERSATILITY: return make_mem_fn_expr( expression_str, *this, &player_t::composite_damage_versatility_rating );
-      case RATING_HEAL_VERSATILITY: return make_mem_fn_expr( expression_str, *this, &player_t::composite_heal_versatility_rating );
-      case RATING_MITIGATION_VERSATILITY: return make_mem_fn_expr( expression_str, *this, &player_t::composite_mitigation_versatility_rating );
+      case STAT_VERSATILITY_RATING: return make_mem_fn_expr( expression_str, *this, &player_t::composite_damage_versatility_rating );
       default: break;
     }
 

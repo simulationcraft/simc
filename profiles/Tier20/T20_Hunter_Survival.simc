@@ -1,0 +1,127 @@
+hunter="T20_Hunter_Survival"
+spec=survival
+level=110
+race=troll
+role=attack
+position=back
+talents=3303031
+artifact=34:0:0:0:0:1068:1:1070:4:1071:4:1072:4:1073:4:1074:4:1075:4:1076:4:1077:4:1078:4:1079:1:1080:1:1081:1:1082:1:1083:1:1084:1:1338:1:1370:1:1525:4:1526:1:1527:1:1528:24:1638:1
+crucible=1739:3:1780:3:1070:2:1525:1
+
+# Default consumables
+potion=prolonged_power
+flask=seventh_demon
+food=lavish_suramar_feast
+augmentation=defiled
+
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
+
+# Executed before combat begins. Accepts non-harmful actions only.
+actions.precombat=flask
+actions.precombat+=/augmentation
+actions.precombat+=/food
+actions.precombat+=/summon_pet
+# Snapshot raid buffed stats before combat begins and pre-potting is done.
+actions.precombat+=/snapshot_stats
+actions.precombat+=/potion
+actions.precombat+=/explosive_trap
+actions.precombat+=/steel_trap
+actions.precombat+=/dragonsfire_grenade
+actions.precombat+=/harpoon
+
+# Executed every time the actor is available.
+actions=auto_attack
+actions+=/muzzle,if=target.debuff.casting.react
+actions+=/use_items
+actions+=/call_action_list,name=mokMaintain,if=talent.way_of_the_moknathal.enabled
+actions+=/call_action_list,name=CDs
+actions+=/call_action_list,name=preBitePhase,if=!buff.mongoose_fury.up
+actions+=/call_action_list,name=aoe,if=active_enemies>=3
+actions+=/call_action_list,name=bitePhase
+actions+=/call_action_list,name=biteFill
+actions+=/call_action_list,name=fillers
+
+actions.CDs=arcane_torrent,if=focus<=30
+actions.CDs+=/berserking,if=buff.aspect_of_the_eagle.up
+actions.CDs+=/blood_fury,if=buff.aspect_of_the_eagle.up
+actions.CDs+=/potion,if=buff.aspect_of_the_eagle.up
+actions.CDs+=/snake_hunter,if=cooldown.mongoose_bite.charges=0&buff.mongoose_fury.remains>3*gcd&buff.aspect_of_the_eagle.down
+actions.CDs+=/aspect_of_the_eagle,if=buff.mongoose_fury.stack>=2&buff.mongoose_fury.remains>3*gcd
+
+actions.aoe=butchery
+actions.aoe+=/caltrops,if=!ticking
+actions.aoe+=/explosive_trap
+actions.aoe+=/carve,if=(talent.serpent_sting.enabled&dot.serpent_sting.refreshable)|(active_enemies>5)
+
+actions.biteFill=spitting_cobra
+actions.biteFill+=/butchery,if=equipped.frizzos_fingertrap&dot.lacerate.refreshable
+actions.biteFill+=/carve,if=equipped.frizzos_fingertrap&dot.lacerate.refreshable
+actions.biteFill+=/lacerate,if=refreshable
+actions.biteFill+=/raptor_strike,if=active_enemies=1&talent.serpent_sting.enabled&dot.serpent_sting.refreshable
+actions.biteFill+=/steel_trap
+actions.biteFill+=/a_murder_of_crows
+actions.biteFill+=/dragonsfire_grenade
+actions.biteFill+=/explosive_trap
+actions.biteFill+=/caltrops,if=!ticking
+
+actions.bitePhase=fury_of_the_eagle,if=(!talent.way_of_the_moknathal.enabled|buff.moknathal_tactics.remains>(gcd*(8%3)))&buff.mongoose_fury.stack>3&cooldown.mongoose_bite.charges<1&!buff.aspect_of_the_eagle.up,interrupt_if=(talent.way_of_the_moknathal.enabled&buff.moknathal_tactics.remains<=tick_time)|(cooldown.mongoose_bite.charges=3)
+actions.bitePhase+=/lacerate,if=!dot.lacerate.ticking&set_bonus.tier20_4pc&buff.mongoose_fury.duration>cooldown.mongoose_bite.charges*gcd
+actions.bitePhase+=/mongoose_bite,if=charges>=2&cooldown.mongoose_bite.remains<gcd*2
+actions.bitePhase+=/flanking_strike,if=((buff.mongoose_fury.remains>(gcd*(cooldown.mongoose_bite.charges+2)))&cooldown.mongoose_bite.charges<=1)&(!set_bonus.tier19_4pc|(set_bonus.tier19_4pc&!buff.aspect_of_the_eagle.up))
+actions.bitePhase+=/mongoose_bite,if=buff.mongoose_fury.up
+actions.bitePhase+=/flanking_strike
+
+actions.fillers=carve,if=active_enemies>1&talent.serpent_sting.enabled&dot.serpent_sting.refreshable
+actions.fillers+=/throwing_axes
+actions.fillers+=/carve,if=active_enemies>2
+actions.fillers+=/raptor_strike,if=(talent.way_of_the_moknathal.enabled&buff.moknathal_tactics.remains<gcd*4)|(focus>((25-focus.regen*gcd)+55))
+
+actions.mokMaintain=raptor_strike,if=(buff.moknathal_tactics.remains<gcd)|(buff.moknathal_tactics.stack<2)
+
+actions.preBitePhase=flanking_strike,if=cooldown.mongoose_bite.charges<3
+actions.preBitePhase+=/spitting_cobra
+actions.preBitePhase+=/dragonsfire_grenade
+actions.preBitePhase+=/raptor_strike,if=active_enemies=1&talent.serpent_sting.enabled&dot.serpent_sting.refreshable
+actions.preBitePhase+=/steel_trap
+actions.preBitePhase+=/a_murder_of_crows
+actions.preBitePhase+=/explosive_trap
+actions.preBitePhase+=/lacerate,if=refreshable
+actions.preBitePhase+=/butchery,if=equipped.frizzos_fingertrap&dot.lacerate.refreshable
+actions.preBitePhase+=/carve,if=equipped.frizzos_fingertrap&dot.lacerate.refreshable
+actions.preBitePhase+=/mongoose_bite,if=charges=3&cooldown.flanking_strike.remains>=gcd
+actions.preBitePhase+=/caltrops,if=!ticking
+actions.preBitePhase+=/flanking_strike
+actions.preBitePhase+=/lacerate,if=remains<14&set_bonus.tier20_2pc
+
+head=wildstalker_helmet,id=147142,bonus_id=1512/3563
+neck=string_of_extracted_incisors,id=147013,bonus_id=1512/3563,enchant=mark_of_the_claw
+shoulders=wildstalker_spaulders,id=147144,bonus_id=1512/3563
+back=wildstalker_cape,id=147140,bonus_id=1512/3563,enchant=binding_of_agility
+chest=hauberk_of_frozen_mist,id=147043,bonus_id=1512/3563
+wrists=call_of_the_wild,id=137101,bonus_id=3570
+hands=vicegrip_of_the_unrepentant,id=147048,bonus_id=1522/3563
+waist=pristine_moonwrought_clasp,id=147427,bonus_id=1512/3563
+legs=wildstalker_leggings,id=147143,bonus_id=1512/3563
+feet=starstalker_treads,id=147046,bonus_id=1522/3563
+finger1=sephuzs_secret,id=132452,bonus_id=3570,gems=200agility,enchant=binding_of_haste
+finger2=seal_of_the_second_duumvirate,id=147195,bonus_id=1522/3563,enchant=binding_of_haste
+trinket1=specter_of_betrayal,id=151190,bonus_id=1522/3563
+trinket2=cradle_of_anguish,id=147010,bonus_id=1512/3563
+main_hand=talonclaw,id=128808,bonus_id=728,gem_id=147112/147102/147082,relic_id=1512:3563/1512:3563/1522:3563
+
+# Gear Summary
+# gear_ilvl=940.60
+# gear_agility=29119
+# gear_stamina=47184
+# gear_crit_rating=11001
+# gear_haste_rating=11306
+# gear_mastery_rating=3703
+# gear_versatility_rating=3025
+# gear_armor=3279
+# set_bonus=tier20_2pc=1
+# set_bonus=tier20_4pc=1
+summon_pet=cat
