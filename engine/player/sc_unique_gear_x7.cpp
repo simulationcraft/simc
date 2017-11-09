@@ -2383,6 +2383,7 @@ struct fire_mines_detonator_t : public proc_spell_t
       if ( auto mines_driver = dynamic_cast<fire_mines_driver_t*>( cb ) )
       {
         active_mines = &mines_driver -> active_mines;
+        break;
       }
     }
 
