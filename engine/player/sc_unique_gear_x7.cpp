@@ -2277,89 +2277,95 @@ void item::seeping_scourgewing( special_effect_t& effect )
 }
 
 // Forgefiend's Fabricator =================================================
-// TODO figure out a way to have multiple "mines out" and be able to have an
-// on-use force the mines to explode.
-// Mines get increased multipliers on explosion and not on cast 
+// TODO: Expression support?
 
-struct fire_mines_t : public spell_t
+struct fire_mines_t : public proc_spell_t
 {
-  timespan_t travel;
   fire_mines_t( const special_effect_t& effect ) :
-    spell_t( "fire_mines", effect.player, effect.player -> find_spell( 253321 ) ),
-    travel( effect.player -> find_spell( 253320 ) -> duration() )
-  {
-    background = may_crit = true;
-    callbacks = false;
-    school = SCHOOL_FIRE;
-    base_dd_min = base_dd_max = player -> find_spell( 253321 ) -> effectN( 1 ).average( effect.item );
-    aoe = -1;
-    radius = player -> find_spell( 253321 ) -> effectN( 1 ).radius();
-  }
-
-  timespan_t travel_time() const override
-  {
-    // This is an incorrect implementation but want to have something mildy in for testing reasons
-    // Since the trinket leaves a bomb at the location and detonates after 15 seconds,
-    // to simulate the delay, giving the proc a 15 second travel time.
-    return travel;
-  }
-
-  virtual double calculate_direct_amount(action_state_t*) const override
-  { return 0.0; }
-
-  virtual result_e calculate_result(action_state_t*) const override
-  { return RESULT_NONE; }
-
-  virtual void impact( action_state_t* s ) override
-  {
-    // Probably not the right modeling but makes it so that bombs are snapshot 
-    // on explosion instead of at cast
-    snapshot_internal( s, snapshot_flags, amount_type( s ) );
-
-    s -> result = spell_base_t::calculate_result( s );
-    s -> result_amount = spell_base_t::calculate_direct_amount( s );
-
-    spell_t::impact( s );
-  }
+    proc_spell_t( "fire_mines", effect.player, effect.player -> find_spell( 253321 ), effect.item )
+  { }
 };
 
-struct fire_mines_driver_t : public proc_spell_t
+struct fire_mines_driver_t : public dbc_proc_callback_t
 {
-  fire_mines_t* fire_mines;
-
-  fire_mines_driver_t( const special_effect_t& effect ) :
-    proc_spell_t( "fire_mines_driver", effect.player, effect.player -> find_spell( 256025 ), effect.item ),
-    fire_mines( new fire_mines_t( effect ) )
+  struct mine_explosion_event_t : public event_t
   {
-    background = true;
-    effect.player->forgefiends_fabricator_fire_mine = fire_mines;
-  }
+    action_t* action;
+    player_t* target;
 
-  void execute() override
+    double x;
+    double y;
+
+    mine_explosion_event_t( action_t* a, player_t* t, double x_, double y_, timespan_t delay )
+      : event_t( *a -> player, delay ), action( a ), target( t ), x( x_ ), y( y_ )
+    { }
+
+    virtual const char* name() const override
+    {
+      return "fire_mine_explosion";
+    }
+
+    virtual void execute() override
+    {
+      action -> set_target( target );
+
+      // Set the original position.
+      action_state_t* state = action -> get_state();
+      action -> snapshot_state( state, action -> amount_type( state ) );
+      state -> target     = target;
+      state -> original_x = x;
+      state -> original_y = y;
+
+      action -> schedule_execute( state );
+
+      auto& events = action -> player -> forgefiends_fabricator_mines;
+      auto it = range::find( events, this );
+      if ( it != events.end() )
+        erase_unordered( events, it );
+    }
+  };
+
+  action_t* fire_mines;
+  const timespan_t timer;
+
+  fire_mines_driver_t( const special_effect_t& effect, action_t* mines ) :
+    dbc_proc_callback_t( effect.item, effect ),
+    fire_mines( mines ),
+    timer( effect.player -> find_spell( 253320 ) -> duration() )
+  { }
+
+  void execute( action_t* /* a */, action_state_t* state ) override
   {
-    proc_spell_t::execute();
-
-    // It appears that 2 mines get thrown out for every proc
+    // Trinket creates two mines per proc.
     for ( int i = 0; i < 2; i++ )
-      fire_mines -> execute();
+    {
+      // Mine spawns under the target.
+      event_t* e = make_event<mine_explosion_event_t>( *listener -> sim,
+        fire_mines,
+        state -> target,
+        state -> target -> x_position,
+        state -> target -> y_position,
+        timer );
+      listener -> forgefiends_fabricator_mines.push_back( e );
+    }
   }
 };
 
 void item::forgefiends_fabricator( special_effect_t& effect )
 {
-   effect.execute_action = create_proc_action<fire_mines_driver_t>( "fire_mines", effect );
-   new dbc_proc_callback_t( effect.player, effect );
+  action_t* mines = create_proc_action<fire_mines_t>( "fire_mines", effect );
+  new fire_mines_driver_t( effect, mines );
 }
 
-struct fire_mines_detonator_driver_t : public proc_spell_t
+struct fire_mines_detonator_t : public proc_spell_t
 {
-  fire_mines_detonator_driver_t( const special_effect_t& effect ) :
-    proc_spell_t( "fire_mines_detonator", effect.player, effect.player -> find_spell(253322), effect.item)
+  fire_mines_detonator_t( const special_effect_t& effect ) :
+    proc_spell_t( "fire_mines_detonator", effect.player, effect.player -> find_spell( 253322 ), effect.item )
   { }
 
   bool ready() override
   {
-    if ( !player -> forgefiends_fabricator_fire_mine -> has_travel_events() ) 
+    if ( player -> forgefiends_fabricator_mines.empty() )
       return false;
 
     return proc_spell_t::ready();
@@ -2369,13 +2375,20 @@ struct fire_mines_detonator_driver_t : public proc_spell_t
   {
     proc_spell_t::execute();
 
-    player->forgefiends_fabricator_fire_mine->execute_all_travel_events();
+    while ( ! player -> forgefiends_fabricator_mines.empty() )
+    {
+      event_t* e = player -> forgefiends_fabricator_mines.front();
+      e -> execute();
+      event_t::cancel( e );
+    }
+
+    player -> forgefiends_fabricator_mines.clear();
   }
 };
 
-void item::forgefiends_fabricator_detonate(special_effect_t& effect)
+void item::forgefiends_fabricator_detonate( special_effect_t& effect )
 {
-  effect.execute_action = new fire_mines_detonator_driver_t(effect);
+  effect.execute_action = new fire_mines_detonator_t( effect );
 }
 
 

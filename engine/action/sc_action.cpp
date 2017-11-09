@@ -3411,14 +3411,6 @@ void action_t::remove_travel_event( travel_event_t* e )
     erase_unordered( travel_events, pos );
 }
 
-void action_t::execute_all_travel_events()
-{
-  for ( const auto& TravelEvent : travel_events)
-  {
-    TravelEvent->execute();
-  }
-}
-
 void action_t::do_teleport( action_state_t* state )
 {
   player -> teleport( composite_teleport_distance( state ) );
