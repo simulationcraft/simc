@@ -80,7 +80,7 @@ finger1=band_of_the_sargerite_smith,id=152064,bonus_id=3612/1502,enchant=binding
 finger2=shard_of_the_exodar,id=132410,bonus_id=3630,gem_id=151580,enchant=binding_of_critical_strike
 trinket1=acrid_catalyst_injector,id=151955,bonus_id=3612/1502
 trinket2=amanthuls_vision,id=154172,bonus_id=4213
-main_hand=felomelorn,id=128820,gem_id=155849/152026/155849,relic_id=3612:1512/3612:1502/3612:1512
+main_hand=felomelorn,id=128820,gem_id=155849/152026/155849,bonus_id=730,relic_id=3612:1512/3612:1502/3612:1512
 off_hand=heart_of_the_phoenix,id=133959
 
 firestarter_time=20
