@@ -463,6 +463,7 @@ public:
     const spell_data_t* fire_blast_2;
     const spell_data_t* fire_blast_3;
     const spell_data_t* fire_mage;
+    const spell_data_t* hot_streak;
     const spell_data_t* ignite;
 
     // Frost
@@ -1910,6 +1911,9 @@ struct fire_mage_spell_t : public mage_spell_t
   void handle_hot_streak( action_state_t* s )
   {
     mage_t* p = this -> p();
+
+    if ( ! p -> spec.hot_streak -> ok() )
+      return;
 
     p -> procs.hot_streak_spell -> occur();
 
@@ -7123,6 +7127,7 @@ void mage_t::init_spells()
   spec.fire_blast_2          = find_specialization_spell( 231568 );
   spec.fire_blast_3          = find_specialization_spell( 231567 );
   spec.fire_mage             = find_specialization_spell( 137019 );
+  spec.hot_streak            = find_specialization_spell( 195283 );
 
   spec.brain_freeze          = find_specialization_spell( "Brain Freeze"     );
   spec.brain_freeze_2        = find_specialization_spell( 231584 );
