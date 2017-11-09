@@ -2605,7 +2605,7 @@ struct arcane_blast_t : public arcane_mage_spell_t
     triggers_arcane_missiles = false; // Disable default AM proc logic.
     base_multiplier *= 1.0 + p -> artifact.blasting_rod.percent();
 
-    if ( p -> action.unstable_magic_explosion )
+    if ( p -> specialization() == MAGE_ARCANE && p -> action.unstable_magic_explosion )
     {
       add_child( p -> action.unstable_magic_explosion );
     }
@@ -3687,7 +3687,7 @@ struct fireball_t : public fire_mage_spell_t
     base_multiplier *= 1.0 + p -> artifact.great_balls_of_fire.percent();
     base_execute_time *= 1.0 + p -> artifact.fire_at_will.percent();
     add_child( conflagration_dot );
-    if ( p -> action.unstable_magic_explosion )
+    if ( p -> specialization() == MAGE_FIRE && p -> action.unstable_magic_explosion )
     {
       add_child( p -> action.unstable_magic_explosion );
     }
@@ -4140,7 +4140,7 @@ struct frostbolt_t : public frost_mage_spell_t
     {
       add_child( p -> icicle );
     }
-    if ( p -> action.unstable_magic_explosion )
+    if ( p -> specialization() == MAGE_FROST && p -> action.unstable_magic_explosion )
     {
       add_child( p -> action.unstable_magic_explosion );
     }
