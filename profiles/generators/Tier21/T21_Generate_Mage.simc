@@ -83,4 +83,6 @@ trinket2=amanthuls_vision,id=154172,bonus_id=4213
 main_hand=felomelorn,id=128820,gem_id=155849/152026/155849,relic_id=3612:1512/3612:1502/3612:1512
 off_hand=heart_of_the_phoenix,id=133959
 
+firestarter_time=20
+
 save=T21_Mage_Fire.simc
