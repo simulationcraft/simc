@@ -8009,8 +8009,7 @@ void mage_t::apl_default()
 {
   action_priority_list_t* default_list = get_action_priority_list( "default" );
 
-  // TODO: What do mages below level 10 without specs actually use?
-  default_list -> add_action( "Fireball" );
+  default_list -> add_action( "Frostbolt" );
 }
 
 
