@@ -4094,9 +4094,6 @@ struct player_t : public actor_t
   double warlords_unseeing_eye;
   stats_t* warlords_unseeing_eye_stats;
 
-  // Forgefiend's Fabricator (7.3.2 Antorus Trinket)
-  std::vector<event_t*> forgefiends_fabricator_mines;
-
   // Misc Multipliers
   // auto attack multiplier (for Jeweled Signet of Melandrus and similar effects)
   double auto_attack_multiplier;

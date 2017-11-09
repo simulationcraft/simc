@@ -2296,8 +2296,10 @@ struct fire_mines_driver_t : public dbc_proc_callback_t
     double x;
     double y;
 
-    mine_explosion_event_t( action_t* a, player_t* t, double x_, double y_, timespan_t delay )
-      : event_t( *a -> player, delay ), action( a ), target( t ), x( x_ ), y( y_ )
+    std::vector<event_t*>* active_mines;
+
+    mine_explosion_event_t( action_t* a, player_t* t, double x_, double y_, std::vector<event_t*>* am, timespan_t delay ) :
+      event_t( *a -> player, delay ), action( a ), target( t ), x( x_ ), y( y_ ), active_mines( am )
     { }
 
     virtual const char* name() const override
@@ -2318,21 +2320,28 @@ struct fire_mines_driver_t : public dbc_proc_callback_t
 
       action -> schedule_execute( state );
 
-      auto& events = action -> player -> forgefiends_fabricator_mines;
-      auto it = range::find( events, this );
-      if ( it != events.end() )
-        erase_unordered( events, it );
+      auto it = range::find( *active_mines, this );
+      if ( it != active_mines -> end() )
+        erase_unordered( *active_mines, it );
     }
   };
 
   action_t* fire_mines;
+  std::vector<event_t*> active_mines;
   const timespan_t timer;
 
   fire_mines_driver_t( const special_effect_t& effect, action_t* mines ) :
     dbc_proc_callback_t( effect.item, effect ),
     fire_mines( mines ),
+    active_mines(),
     timer( effect.player -> find_spell( 253320 ) -> duration() )
   { }
+
+  void reset() override
+  {
+    dbc_proc_callback_t::reset();
+    active_mines.clear();
+  }
 
   void execute( action_t* /* a */, action_state_t* state ) override
   {
@@ -2345,8 +2354,9 @@ struct fire_mines_driver_t : public dbc_proc_callback_t
         state -> target,
         state -> target -> x_position,
         state -> target -> y_position,
+        &active_mines,
         timer );
-      listener -> forgefiends_fabricator_mines.push_back( e );
+      active_mines.push_back( e );
     }
   }
 };
@@ -2359,13 +2369,32 @@ void item::forgefiends_fabricator( special_effect_t& effect )
 
 struct fire_mines_detonator_t : public proc_spell_t
 {
+  std::vector<event_t*>* active_mines;
+
   fire_mines_detonator_t( const special_effect_t& effect ) :
-    proc_spell_t( "fire_mines_detonator", effect.player, effect.player -> find_spell( 253322 ), effect.item )
+    proc_spell_t( "fire_mines_detonator", effect.player, effect.player -> find_spell( 253322 ), effect.item ),
+    active_mines( nullptr )
   { }
+
+  bool init_finished() override
+  {
+    for ( auto cb : player -> callbacks.all_callbacks )
+    {
+      if ( auto mines_driver = dynamic_cast<fire_mines_driver_t*>( cb ) )
+      {
+        active_mines = &mines_driver -> active_mines;
+      }
+    }
+
+    if ( ! active_mines )
+      return false;
+
+    return proc_spell_t::init_finished();
+  }
 
   bool ready() override
   {
-    if ( player -> forgefiends_fabricator_mines.empty() )
+    if ( active_mines -> empty() )
       return false;
 
     return proc_spell_t::ready();
@@ -2375,14 +2404,14 @@ struct fire_mines_detonator_t : public proc_spell_t
   {
     proc_spell_t::execute();
 
-    while ( ! player -> forgefiends_fabricator_mines.empty() )
+    while ( ! active_mines -> empty() )
     {
-      event_t* e = player -> forgefiends_fabricator_mines.front();
+      event_t* e = active_mines -> front();
       e -> execute();
       event_t::cancel( e );
     }
 
-    player -> forgefiends_fabricator_mines.clear();
+    active_mines -> clear();
   }
 };
 

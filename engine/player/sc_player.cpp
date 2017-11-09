@@ -757,7 +757,6 @@ player_t::player_t( sim_t*             s,
   item_cooldown( cooldown_t( "item_cd", *this ) ),
   legendary_tank_cloak_cd( nullptr ),
   warlords_unseeing_eye( 0.0 ),
-  forgefiends_fabricator_mines(),
   auto_attack_multiplier( 1.0 ),
   scaling( ( ! is_pet() || sim -> report_pets_separately ) ? new player_scaling_t() : nullptr ),
   // Movement & Position
@@ -4372,8 +4371,6 @@ void player_t::reset()
 
   for ( auto& elem : variables )
     elem -> reset();
-
-  forgefiends_fabricator_mines.clear();
 
 #ifndef NDEBUG
   for (auto & elem : active_dots)
