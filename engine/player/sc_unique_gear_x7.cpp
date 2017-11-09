@@ -2395,7 +2395,7 @@ struct fire_mines_detonator_t : public proc_spell_t
 
   bool ready() override
   {
-    if ( active_mines -> empty() )
+    if ( ! active_mines || active_mines -> empty() )
       return false;
 
     return proc_spell_t::ready();
@@ -2404,6 +2404,8 @@ struct fire_mines_detonator_t : public proc_spell_t
   void execute() override
   {
     proc_spell_t::execute();
+
+    assert( active_mines );
 
     while ( ! active_mines -> empty() )
     {
