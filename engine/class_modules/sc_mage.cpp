@@ -4385,6 +4385,7 @@ struct frozen_orb_t : public frost_mage_spell_t
         .expiration_callback( [ this, t, x, y ] () {
           if ( ice_time )
           {
+            ice_time_nova -> set_target( target );
             action_state_t* state = ice_time_nova -> get_state();
             ice_time_nova -> snapshot_state( state, ice_time_nova -> amount_type( state ) );
             // Make sure Ice Time works correctly with distance targetting, e.g.
