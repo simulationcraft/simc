@@ -10049,7 +10049,7 @@ void monk_t::apl_combat_brewmaster()
     }
   }
 
-  def -> add_action( "call_action_list,name=st,if=active_enemies<3" );
+  def -> add_action( "call_action_list,name=st" ); //,if=active_enemies<3" );
 //  def -> add_action( "call_action_list,name=aoe,if=active_enemies>=3" );
 
 //  st -> add_action( this, "Purifying Brew", "if=stagger.heavy" );
