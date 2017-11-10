@@ -392,7 +392,6 @@ public:
     buff_t* lady_vashjs_grasp;
     buff_t* magtheridons_might;
     buff_t* rhonins_assaulting_armwraps;
-    buff_t* shard_time_warp;
     buff_t* zannesu_journey;
 
     haste_buff_t* sephuzs_secret;
