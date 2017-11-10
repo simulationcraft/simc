@@ -7365,8 +7365,8 @@ void mage_t::init_uptimes()
       uptime.burn_phase     = get_uptime( "Burn Phase" );
       uptime.conserve_phase = get_uptime( "Conserve Phase" );
 
-      sample_data.burn_duration_history = new extended_sample_data_t( "burn_duration_history", false );
-      sample_data.burn_initial_mana     = new extended_sample_data_t( "burn_initial_mana", false );
+      sample_data.burn_duration_history = new extended_sample_data_t( "Burn duration history", false );
+      sample_data.burn_initial_mana     = new extended_sample_data_t( "Burn initial mana", false );
       break;
 
     case MAGE_FROST:
