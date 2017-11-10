@@ -234,8 +234,6 @@ public:
   // Benefits
   struct benefits_t
   {
-    buff_stack_benefit_t* incanters_flow;
-
     struct arcane_charge_benefits_t
     {
       buff_stack_benefit_t* arcane_barrage;
@@ -1643,11 +1641,6 @@ public:
     if ( p() -> specialization() == MAGE_ARCANE && hit_any_target && triggers_arcane_missiles )
     {
       trigger_am();
-    }
-
-    if ( harmful && p() -> talents.incanters_flow -> ok() )
-    {
-      p() -> benefits.incanters_flow -> update();
     }
   }
 
@@ -6564,7 +6557,6 @@ mage_t::mage_t( sim_t* sim, const std::string& name, race_e r ) :
 
 mage_t::~mage_t()
 {
-  delete benefits.incanters_flow;
   delete benefits.arcane_charge.arcane_barrage;
   delete benefits.arcane_charge.arcane_blast;
   delete benefits.arcane_charge.arcane_explosion;
@@ -7319,12 +7311,6 @@ void mage_t::init_benefits()
 {
   player_t::init_benefits();
 
-  if ( talents.incanters_flow -> ok() )
-  {
-    benefits.incanters_flow =
-      new buff_stack_benefit_t( buffs.incanters_flow, "Incanter's Flow" );
-  }
-
   if ( specialization() == MAGE_ARCANE )
   {
     benefits.arcane_charge.arcane_barrage =
@@ -7356,7 +7342,7 @@ void mage_t::init_benefits()
     if ( talents.ray_of_frost -> ok() )
     {
       benefits.ray_of_frost =
-        new buff_stack_benefit_t( buffs.ray_of_frost, "Ray of Frost" );
+        new buff_stack_benefit_t( buffs.ray_of_frost, "Ray of Frost Tick +" );
     }
 
     if ( buffs.zannesu_journey -> default_chance != 0.0 )
