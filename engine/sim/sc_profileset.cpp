@@ -569,7 +569,7 @@ bool profilesets_t::generate_chart( const sim_t& sim, io::ofstream& out ) const
 
     auto base_offset = chart_id * MAX_CHART_ENTRIES;
 
-    int data_label_width = sim.chart_show_relative_difference ? 120 : 80;
+    int data_label_width = sim.chart_show_relative_difference ? 140 : 80;
 
     profileset.set( "series.0.name", chart_name );
     profileset.set( "series.1.type", "boxplot" );
