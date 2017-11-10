@@ -487,6 +487,11 @@ inline void append( Range1& destination, Range2& source )
   destination.insert( destination.end(), source.begin(), source.end() );
 }
 
+template <typename Range, typename Predicate>
+inline auto count_if( Range& r, Predicate p ) -> typename std::iterator_traits<decltype(range::begin( r ))>::difference_type
+{
+  return std::count_if( range::begin( r ), range::end( r ), p );
+}
 }  // namespace range ========================================================
 
 // Adapter for container of owned pointers; automatically deletes the
