@@ -144,83 +144,6 @@ struct buff_stack_benefit_t
   }
 };
 
-struct buff_source_benefit_t
-{
-  const buff_t* buff;
-  std::vector<std::string> sources;
-  std::vector<benefit_t*> buff_source_benefit;
-
-  buff_source_benefit_t( const buff_t* _buff ) :
-    buff( _buff )
-  { }
-
-  int get_source_id( const char* source )
-  {
-    std::string source_str = std::string( source );
-    for ( size_t i = 0; i < sources.size(); i++ )
-    {
-      if ( sources[i] == source_str )
-      {
-        return as<int>( i );
-      }
-    }
-
-    sources.push_back( source_str );
-
-    std::string benefit_name =
-      std::string( buff -> data().name_cstr() ) + " from " + source_str;
-    benefit_t* source_benefit = buff -> player -> get_benefit( benefit_name );
-    buff_source_benefit.push_back( source_benefit );
-
-    return as<int>( sources.size() - 1 );
-  }
-
-  void update( int source_id, int stacks = 1 )
-  {
-    assert( source_id >= 0 && source_id < as<int>( sources.size() ) );
-
-    for ( size_t i = 0; i < sources.size(); i++ )
-    {
-      for ( int j = 0; j < stacks; j++ )
-      {
-        buff_source_benefit[i] -> update( as<int>( i ) == source_id );
-      }
-    }
-  }
-};
-
-// Helper structure representing one source of buff_source_benefit_t.
-struct benefit_source_t
-{
-  int source_id;
-  buff_source_benefit_t* benefit;
-
-  benefit_source_t() :
-    source_id( -1 ),
-    benefit( nullptr )
-  { }
-
-  void init( const char* name, buff_source_benefit_t* benefit_ )
-  {
-    if ( ! benefit_ )
-      return;
-
-    benefit = benefit_;
-    source_id = benefit -> get_source_id( name ? name : "Unknown" );
-  }
-
-  void update( int stacks = 1 )
-  {
-    if ( ! benefit || source_id < 0 )
-    {
-      assert( false );
-      return;
-    }
-
-    benefit -> update( source_id, stacks );
-  }
-};
-
 struct cooldown_reduction_data_t
 {
   cooldown_t* cd;
@@ -322,10 +245,7 @@ public:
       buff_stack_benefit_t* nether_tempest;
     } arcane_charge;
 
-    buff_source_benefit_t* arcane_missiles;
-
     buff_stack_benefit_t* chain_reaction;
-    buff_source_benefit_t* fingers_of_frost;
     buff_stack_benefit_t* magtheridons_might;
     buff_stack_benefit_t* ray_of_frost;
     buff_stack_benefit_t* zannesu_journey;
@@ -864,7 +784,7 @@ struct waterbolt_t : public water_elemental_spell_t
 
 struct freeze_t : public water_elemental_spell_t
 {
-  benefit_source_t fof_source;
+  proc_t* proc_fof;
 
   freeze_t( water_elemental_pet_t* p, const std::string& options_str ) :
     water_elemental_spell_t( "freeze", p, p -> find_pet_spell( "Freeze" ) )
@@ -880,7 +800,7 @@ struct freeze_t : public water_elemental_spell_t
 
   virtual bool init_finished() override
   {
-    fof_source.init( data().name_cstr(), o() -> benefits.fingers_of_frost );
+    proc_fof = o() -> get_proc( std::string( "Fingers of Frost from " ) + data().name_cstr() );
     return water_elemental_spell_t::init_finished();
   }
 
@@ -892,7 +812,7 @@ struct freeze_t : public water_elemental_spell_t
     if ( success )
     {
       o() -> buffs.fingers_of_frost -> trigger();
-      fof_source.update();
+      proc_fof -> occur();
     }
   }
 };
@@ -1437,7 +1357,7 @@ struct icy_veins_buff_t : public haste_buff_t
 
 struct lady_vashjs_grasp_t : public buff_t
 {
-  benefit_source_t fof_source;
+  proc_t* proc_fof;
 
   lady_vashjs_grasp_t( mage_t* p ) :
     buff_t( buff_creator_t( p, "lady_vashjs_grasp", p -> find_spell( 208147 ) ) )
@@ -1447,7 +1367,7 @@ struct lady_vashjs_grasp_t : public buff_t
     set_tick_callback( [ this, p ] ( buff_t* /* buff */, int /* ticks */, const timespan_t& /* tick_time */ )
     {
       p -> buffs.fingers_of_frost -> trigger();
-      fof_source.update();
+      proc_fof -> occur();
     } );
   }
 
@@ -1458,7 +1378,7 @@ struct lady_vashjs_grasp_t : public buff_t
     auto mage = debug_cast<mage_t*>( player );
     // Triggering LVG gives one stack of Fingers of Frost, regardless of the tick action.
     mage -> buffs.fingers_of_frost -> trigger();
-    fof_source.update();
+    proc_fof -> occur();
   }
 };
 
@@ -1568,7 +1488,7 @@ struct mage_spell_t : public spell_t
   } affected_by;
 
   bool triggers_arcane_missiles;
-  benefit_source_t am_source;
+  proc_t* proc_am;
 public:
 
   mage_spell_t( const std::string& n, mage_t* p,
@@ -1615,7 +1535,7 @@ public:
     if ( p() -> specialization() == MAGE_ARCANE
       && triggers_arcane_missiles )
     {
-      am_source.init( data().name_cstr(), p() -> benefits.arcane_missiles );
+      proc_am = p() -> get_proc( std::string( "Arcane Missiles! from " ) + data().name_cstr() );
     }
 
     return spell_t::init_finished();
@@ -1687,14 +1607,21 @@ public:
   }
 
   // You can thank Frost Nova for why this isn't in arcane_mage_spell_t instead
-  void trigger_am( double chance = -1.0, int stacks = 1, benefit_source_t* source = nullptr )
+  void trigger_am( double chance = -1.0, int stacks = 1, proc_t* source = nullptr )
   {
     if ( ! source )
-      source = &am_source;
+      source = proc_am;
 
     if ( p() -> buffs.arcane_missiles -> trigger( stacks, buff_t::DEFAULT_VALUE(), chance, timespan_t::min() ) )
     {
-      source -> update( stacks );
+      if ( ! source )
+      {
+        assert( false );
+        return;
+      }
+
+      for ( int i = 0; i < stacks; i++ )
+        source -> occur();
     }
   }
 
@@ -2093,7 +2020,7 @@ struct frost_mage_spell_t : public mage_spell_t
   bool chills;
   bool calculate_on_impact;
 
-  benefit_source_t fof_source;
+  proc_t* proc_fof;
 
   unsigned impact_flags;
 
@@ -2137,15 +2064,22 @@ struct frost_mage_spell_t : public mage_spell_t
     }
   };
 
-  void trigger_fof( double chance, int stacks = 1, benefit_source_t* source = nullptr )
+  void trigger_fof( double chance, int stacks = 1, proc_t* source = nullptr )
   {
     if ( ! source )
-      source = &fof_source;
+      source = proc_fof;
 
     bool success = p() -> buffs.fingers_of_frost -> trigger( stacks, buff_t::DEFAULT_VALUE(), chance );
     if ( success )
     {
-      source -> update( stacks );
+      if ( ! source )
+      {
+        assert( false );
+        return;
+      }
+
+      for ( int i = 0; i < stacks; i++ )
+        source -> occur();
     }
   }
 
@@ -2612,7 +2546,7 @@ struct arcane_blast_t : public arcane_mage_spell_t
 
   virtual bool init_finished() override
   {
-    am_source.init( data().name_cstr(), p() -> benefits.arcane_missiles );
+    proc_am = p() -> get_proc( std::string( "Arcane Missiles! from " ) + data().name_cstr() );
     return arcane_mage_spell_t::init_finished();
   }
 
@@ -3000,7 +2934,7 @@ struct arcane_orb_bolt_t : public arcane_mage_spell_t
 
   virtual bool init_finished() override
   {
-    am_source.init( "Arcane Orb Impact", p() -> benefits.arcane_missiles );
+    proc_am = p() -> get_proc( "Arcane Missiles! from Arcane Orb Impact" );
     return arcane_mage_spell_t::init_finished();
   }
 
@@ -3046,7 +2980,7 @@ struct arcane_orb_t : public arcane_mage_spell_t
 
   virtual bool init_finished() override
   {
-    am_source.init( data().name_cstr(), p() -> benefits.arcane_missiles );
+    proc_am = p() -> get_proc( std::string( "Arcane Missiles! from " ) + data().name_cstr() );
     return arcane_mage_spell_t::init_finished();
   }
 
@@ -4128,7 +4062,7 @@ struct frost_bomb_t : public frost_mage_spell_t
 
 struct frostbolt_t : public frost_mage_spell_t
 {
-  benefit_source_t water_jet_fof_source;
+  proc_t* proc_fof_water_jet;
 
   frostbolt_t( mage_t* p, const std::string& options_str ) :
     frost_mage_spell_t( "frostbolt", p, p -> find_specialization_spell( "Frostbolt" ) )
@@ -4156,8 +4090,8 @@ struct frostbolt_t : public frost_mage_spell_t
 
   virtual bool init_finished() override
   {
-    fof_source.init( data().name_cstr(), p() -> benefits.fingers_of_frost );
-    water_jet_fof_source.init( "Water Jet", p() -> benefits.fingers_of_frost );
+    proc_fof = p() -> get_proc( std::string( "Fingers of Frost from " ) + data().name_cstr() );
+    proc_fof_water_jet = p() -> get_proc( "Fingers of Frost from Water Jet" );
     return frost_mage_spell_t::init_finished();
   }
 
@@ -4190,7 +4124,7 @@ struct frostbolt_t : public frost_mage_spell_t
 
     if ( td( s -> target ) -> debuffs.water_jet -> check() )
     {
-      trigger_fof( 1.0, 1, &water_jet_fof_source );
+      trigger_fof( 1.0, 1, proc_fof_water_jet );
     }
 
     //TODO: Fix hardcode once spelldata has value for proc rate.
@@ -4285,7 +4219,7 @@ struct frozen_orb_bolt_t : public frost_mage_spell_t
 
   virtual bool init_finished() override
   {
-    fof_source.init( "Frozen Orb Tick", p() -> benefits.fingers_of_frost );
+    proc_fof = p() -> get_proc( "Fingers of Frost from Frozen Orb Tick" );
     return frost_mage_spell_t::init_finished();
   }
 
@@ -4325,7 +4259,7 @@ struct frozen_orb_t : public frost_mage_spell_t
 
   virtual bool init_finished() override
   {
-    fof_source.init( "Frozen Orb Initial Impact", p() -> benefits.fingers_of_frost );
+    proc_fof = p() -> get_proc( "Fingers of Frost from Frozen Orb Initial Impact" );
     return frost_mage_spell_t::init_finished();
   }
 
@@ -4777,7 +4711,7 @@ struct icy_veins_t : public frost_mage_spell_t
     if ( p() -> buffs.lady_vashjs_grasp -> default_chance != 0.0 )
     {
       debug_cast<buffs::lady_vashjs_grasp_t*>( p() -> buffs.lady_vashjs_grasp )
-        -> fof_source.init( "Lady Vashj's Grasp", p() -> benefits.fingers_of_frost );
+        -> proc_fof = p() -> get_proc( "Fingers of Frost from Lady Vashj's Grasp" );
     }
 
     return frost_mage_spell_t::init_finished();
@@ -5309,7 +5243,7 @@ struct nether_tempest_t : public arcane_mage_spell_t
 
   virtual bool init_finished() override
   {
-    am_source.init( data().name_cstr(), p() -> benefits.arcane_missiles );
+    proc_am = p() -> get_proc( std::string( "Arcane Missiles! from " ) + data().name_cstr() );
     return arcane_mage_spell_t::init_finished();
   }
 
@@ -5818,7 +5752,7 @@ struct slow_t : public arcane_mage_spell_t
 
 struct supernova_t : public arcane_mage_spell_t
 {
-  benefit_source_t sn_aoe_am_source;
+  proc_t* proc_am_sn_aoe;
 
   supernova_t( mage_t* p, const std::string& options_str ) :
     arcane_mage_spell_t( "supernova", p, p -> talents.supernova )
@@ -5834,7 +5768,7 @@ struct supernova_t : public arcane_mage_spell_t
 
   virtual bool init_finished() override
   {
-    sn_aoe_am_source.init( "Supernova AOE", p() -> benefits.arcane_missiles );
+    proc_am_sn_aoe = p() -> get_proc( "Arcane Missiles! from Supernova AOE" );
     return arcane_mage_spell_t::init_finished();
   }
 
@@ -5846,7 +5780,7 @@ struct supernova_t : public arcane_mage_spell_t
     {
       // NOTE: Supernova AOE effect causes secondary trigger chance for AM
       // TODO: Verify this is still the case
-      trigger_am( -1.0, 1, &sn_aoe_am_source );
+      trigger_am( -1.0, 1, proc_am_sn_aoe );
     }
   }
 };
@@ -6636,9 +6570,7 @@ mage_t::~mage_t()
   delete benefits.arcane_charge.arcane_explosion;
   delete benefits.arcane_charge.arcane_missiles;
   delete benefits.arcane_charge.nether_tempest;
-  delete benefits.arcane_missiles;
   delete benefits.chain_reaction;
-  delete benefits.fingers_of_frost;
   delete benefits.magtheridons_might;
   delete benefits.ray_of_frost;
   delete benefits.zannesu_journey;
@@ -7408,18 +7340,12 @@ void mage_t::init_benefits()
       benefits.arcane_charge.nether_tempest =
         new buff_stack_benefit_t( buffs.arcane_charge, "Nether Tempest" );
     }
-
-    benefits.arcane_missiles =
-      new buff_source_benefit_t( buffs.arcane_missiles );
   }
 
   if ( specialization() == MAGE_FROST )
   {
     benefits.chain_reaction =
       new buff_stack_benefit_t( buffs.chain_reaction, "Ice Lance +" );
-
-    benefits.fingers_of_frost =
-      new buff_source_benefit_t( buffs.fingers_of_frost );
 
     if ( buffs.magtheridons_might -> default_chance != 0.0 )
     {
