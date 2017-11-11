@@ -152,10 +152,8 @@ namespace item
   Everything
 
   Antorus -----------------------------------
-
-  Forgefiend's Fabricator
-  Gorshalach's Legacy (Partially implemented)
-
+  
+  Every DPS trinket implemented.
   Healer trinkets / other rubbish -----------
 
   cocoon_of_enforced_solitude
@@ -2184,10 +2182,11 @@ struct echo_of_gorshalach_t : public proc_spell_t
    {
       gorshalach_legacy_t(const special_effect_t& effect) :
          proc_spell_t("gorshalachs_legacy_1", effect.player, effect.player ->find_spell(253329), effect.item)
-      {
+      {  
       }
-      //Always crits
+      //Always crits but the damage is baked into base data
       virtual double composite_crit_chance() const override { return 1.0; }
+      virtual double composite_crit_damage_bonus_multiplier() const override { return 0.0; }
    };
 
    struct gorshalach_bigger_legacy_t : public proc_spell_t
@@ -2196,8 +2195,9 @@ struct echo_of_gorshalach_t : public proc_spell_t
          proc_spell_t("gorshalachs_legacy_2", effect.player, effect.player ->find_spell(255673), effect.item)
       {
       }
-      //Always crits
+      //Always crits but the damage is baked into base data
       virtual double composite_crit_chance() const override { return 1.0; }
+      virtual double composite_crit_damage_bonus_multiplier() const override { return 0.0; }
    };
 
    action_t* legacy;
@@ -2206,19 +2206,15 @@ struct echo_of_gorshalach_t : public proc_spell_t
 
    echo_of_gorshalach_t(const special_effect_t& effect) :
       proc_spell_t("echo_of_gorshalach", effect.player, effect.player->find_spell(255672), effect.item),
-      legacy(create_proc_action<gorshalach_legacy_t>("gorshalachs_legacy_mh", effect)),
-      legacy2(create_proc_action<gorshalach_bigger_legacy_t>("gorshalachs_legacy_oh", effect))
+      legacy(create_proc_action<gorshalach_legacy_t>("gorshalachs_legacy_1", effect)),
+      legacy2(create_proc_action<gorshalach_bigger_legacy_t>("gorshalachs_legacy_2", effect))
    {
-      //TODO: Whitelist this spell (255672) and use spelldata!
-      echo = buff_creator_t(effect.player, "echo_of_gorshalach")
-         .max_stack(15)
-         .duration(timespan_t::from_seconds(60));
+     echo = buff_creator_t(effect.player, "echo_of_gorshalach", effect.player->find_spell(253327), effect.item);
    }
 
    void execute() override
    {
       echo -> increment();
-      //TODO: spell data being unhelpful, so hardcoding this for now
       if ( echo -> stack() == echo -> max_stack() )
       {
          echo -> expire();
