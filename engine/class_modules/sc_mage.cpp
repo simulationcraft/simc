@@ -363,6 +363,7 @@ public:
     proc_t* heating_up_removed;           // Non-crits with HU >200ms after application
     proc_t* heating_up_ib_converted;      // IBs used on HU
     proc_t* hot_streak;                   // Total HS generated
+    proc_t* hot_streak_pyromaniac;        // Total HS from Pyromaniac
     proc_t* hot_streak_spell;             // HU/HS spell impacts
     proc_t* hot_streak_spell_crit;        // HU/HS spell crits
     proc_t* hot_streak_spell_crit_wasted; // HU/HS spell crits with HS
@@ -432,6 +433,7 @@ public:
   {
     bool brain_freeze_active;
     bool fingers_of_frost_active;
+    bool hot_streak_active;
     bool ignition_active;
 
     int flurry_bolt_count;
@@ -3783,14 +3785,27 @@ struct flamestrike_t : public fire_mage_spell_t
 
   virtual void execute() override
   {
+    bool hot_streak = p() -> buffs.hot_streak -> up();
+    p() -> state.hot_streak_active = hot_streak;
+
     fire_mage_spell_t::execute();
+
+    // Ignition/Critical Massive buffs are removed shortly after Flamestrike/Pyroblast cast.
+    // In a situation where you're hardcasting FS/PB followed by a Hot Streak FS/FB, both
+    // spells actually benefit. As of build 25480, 2017-11-11.
+    p() -> buffs.ignition -> expire( p() -> bugs ? timespan_t::from_millis( 15 ) : timespan_t::zero() );
+    p() -> buffs.critical_massive -> expire( p() -> bugs ? timespan_t::from_millis( 15 ) : timespan_t::zero() );
+
     p() -> buffs.hot_streak -> expire();
 
-    // Ignition buff is removed shortly after Flamestrike/Pyroblast cast. In a situation
-    // where you're hardcasting FS/PB followed by a Hot Streak FS/FB, both spells actually
-    // benefit. As of build 25480, 2017-11-11.
-    p() -> buffs.ignition -> expire( p() -> bugs ? timespan_t::from_millis( 15 ) : timespan_t::zero() );
-    p() -> buffs.critical_massive -> expire();
+    if ( p() -> talents.pyromaniac -> ok()
+      && hot_streak
+      && rng().roll( p() -> talents.pyromaniac -> effectN( 1 ).percent() ) )
+    {
+      p() -> procs.hot_streak -> occur();
+      p() -> procs.hot_streak_pyromaniac -> occur();
+      p() -> buffs.hot_streak -> trigger();
+    }
   }
 
   virtual void impact( action_state_t* state ) override
@@ -3845,8 +3860,15 @@ struct flamestrike_t : public fire_mage_spell_t
 
   virtual double composite_ignite_multiplier( const action_state_t* s ) const override
   {
-   const ignite_spell_state_t* is = debug_cast<const ignite_spell_state_t*>( s );
-   return is -> hot_streak ? 2.0 : 1.0;
+    if ( p() -> bugs )
+    {
+      return p() -> state.hot_streak_active ? 2.0 : 1.0;
+    }
+    else
+    {
+      const ignite_spell_state_t* iss = debug_cast<const ignite_spell_state_t*>( s );
+      return iss -> hot_streak ? 2.0 : 1.0;
+    }
   }
 
   virtual double action_multiplier() const override
@@ -5439,34 +5461,36 @@ struct pyroblast_t : public fire_mage_spell_t
 
   virtual void execute() override
   {
-    p() -> buffs.hot_streak -> up();
+    bool hot_streak = p() -> buffs.hot_streak -> up();
+    p() -> state.hot_streak_active = hot_streak;
 
     fire_mage_spell_t::execute();
 
-    if ( p() -> buffs.kaelthas_ultimate_ability -> check() &&
-         ! p() -> buffs.hot_streak -> check() )
+    if ( p() -> buffs.kaelthas_ultimate_ability -> check() && ! hot_streak )
     {
       p() -> buffs.kaelthas_ultimate_ability -> expire();
     }
-    if ( p() -> buffs.hot_streak -> check() )
+    if ( hot_streak )
     {
       p() -> buffs.kaelthas_ultimate_ability -> trigger();
     }
 
-    // Ignition buff is removed shortly after Flamestrike/Pyroblast cast. In a situation
-    // where you're hardcasting FS/PB followed by a Hot Streak FS/FB, both spells actually
-    // benefit. As of build 25480, 2017-11-11.
+    // Ignition/Critical Massive buffs are removed shortly after Flamestrike/Pyroblast cast.
+    // In a situation where you're hardcasting FS/PB followed by a Hot Streak FS/FB, both
+    // spells actually benefit. As of build 25480, 2017-11-11.
     p() -> buffs.ignition -> expire( p() -> bugs ? timespan_t::from_millis( 15 ) : timespan_t::zero() );
-    p() -> buffs.critical_massive -> expire();
-
-    //TODO: Does this interact with T19 4pc?
-    if ( p() -> talents.pyromaniac -> ok() &&
-         rng().roll( p() -> talents.pyromaniac -> effectN( 1 ).percent() ) )
-    {
-      return;
-    }
+    p() -> buffs.critical_massive -> expire( p() -> bugs ? timespan_t::from_millis( 15 ) : timespan_t::zero() );
 
     p() -> buffs.hot_streak -> expire();
+
+    if ( p() -> talents.pyromaniac -> ok()
+      && hot_streak
+      && rng().roll( p() -> talents.pyromaniac -> effectN( 1 ).percent() ) )
+    {
+      p() -> procs.hot_streak -> occur();
+      p() -> procs.hot_streak_pyromaniac -> occur();
+      p() -> buffs.hot_streak -> trigger();
+    }
   }
 
   virtual void snapshot_state( action_state_t* s, dmg_e rt ) override
@@ -5519,8 +5543,15 @@ struct pyroblast_t : public fire_mage_spell_t
 
   virtual double composite_ignite_multiplier( const action_state_t* s ) const override
   {
-    const ignite_spell_state_t* is = debug_cast<const ignite_spell_state_t*>( s );
-    return is -> hot_streak ? 2.0 : 1.0;
+    if ( p() -> bugs )
+    {
+      return p() -> state.hot_streak_active ? 2.0 : 1.0;
+    }
+    else
+    {
+      const ignite_spell_state_t* iss = debug_cast<const ignite_spell_state_t*>( s );
+      return iss -> hot_streak ? 2.0 : 1.0;
+    }
   }
 
   virtual double composite_target_crit_chance( player_t* target ) const override
@@ -7229,6 +7260,7 @@ void mage_t::init_procs()
       procs.heating_up_removed           = get_proc( "Heating Up removed" );
       procs.heating_up_ib_converted      = get_proc( "IB conversions of HU" );
       procs.hot_streak                   = get_proc( "Total Hot Streak procs" );
+      procs.hot_streak_pyromaniac        = get_proc( "Total Hot Streak procs from Pyromaniac" );
       procs.hot_streak_spell             = get_proc( "Hot Streak spells used" );
       procs.hot_streak_spell_crit        = get_proc( "Hot Streak spell crits" );
       procs.hot_streak_spell_crit_wasted = get_proc( "Wasted Hot Streak spell crits" );
