@@ -8095,7 +8095,7 @@ void druid_t::apl_balance()
   ED -> add_talent( this, "Stellar Flare", "cycle_targets=1,max_cycle_targets=4,if=active_enemies<4&remains<7.2");
   ED -> add_action( this, "Moonfire", "if=((talent.natures_balance.enabled&remains<3)|(remains<6.6&!talent.natures_balance.enabled))&(buff.the_emerald_dreamcatcher.remains>gcd.max|!buff.the_emerald_dreamcatcher.up)");
   ED -> add_action( this, "Sunfire", "if=((talent.natures_balance.enabled&remains<3)|(remains<5.4&!talent.natures_balance.enabled))&(buff.the_emerald_dreamcatcher.remains>gcd.max|!buff.the_emerald_dreamcatcher.up)");
-  ED -> add_action( this, "Force of Nature", "if=buff.the_emerald_dreamcatcher.remains>execute_time");
+  ED -> add_talent( this, "Force of Nature", "if=buff.the_emerald_dreamcatcher.remains>execute_time");
   ED -> add_action( this, "Starfall", "if=buff.oneths_overconfidence.up&buff.the_emerald_dreamcatcher.remains>execute_time");
   ED -> add_action( this, "New Moon", "if=astral_power.deficit>=10&buff.the_emerald_dreamcatcher.remains>execute_time&astral_power>=16");
   ED -> add_action( this, "Half Moon", "if=astral_power.deficit>=20&buff.the_emerald_dreamcatcher.remains>execute_time&astral_power>=6");
