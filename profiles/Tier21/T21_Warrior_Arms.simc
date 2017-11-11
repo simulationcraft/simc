@@ -102,21 +102,21 @@ wrists=vambraces_of_lifes_assurance,id=152023,bonus_id=3612/1502
 hands=archavons_heavy_hand,id=137060,bonus_id=3630
 waist=grondfather_girdle,id=152022,bonus_id=3612/1502
 legs=cosmosculling_legplates,id=152016,bonus_id=3612/1502
-feet=burning_coven_sabatons,id=152010,bonus_id=3612/1502
+feet=eredar_warcouncil_sabatons,id=152011,bonus_id=3612/1502
 finger1=sullied_seal_of_the_pantheon,id=151972,bonus_id=3612/1502,enchant=binding_of_mastery
 finger2=ayalas_stone_heart,id=137052,bonus_id=3630,gem_id=130222,enchant=binding_of_mastery
-trinket1=khazgoroths_courage,id=154176,bonus_id=4213
-trinket2=gorshalachs_legacy,id=152093,bonus_id=3612/1502
+trinket1=gorshalachs_legacy,id=152093,bonus_id=3612/1502
+trinket2=amanthuls_vision,id=154172,bonus_id=4213
 main_hand=stromkar_the_warbreaker,id=128910,gem_id=152293/152092/152054,relic_id=3612:1512/3612:1502/3612:1512
 
 # Gear Summary
 # gear_ilvl=971.73
-# gear_strength=39446
+# gear_strength=34208
 # gear_stamina=62380
-# gear_crit_rating=6567
-# gear_haste_rating=10061
-# gear_mastery_rating=13703
-# gear_versatility_rating=3802
+# gear_crit_rating=7997
+# gear_haste_rating=10561
+# gear_mastery_rating=15488
+# gear_versatility_rating=5808
 # gear_armor=5265
 # set_bonus=tier21_2pc=1
 # set_bonus=tier21_4pc=1
