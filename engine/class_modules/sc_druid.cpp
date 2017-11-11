@@ -8034,6 +8034,7 @@ void druid_t::apl_balance()
   default_list -> add_action("call_action_list,name=AoE,if=(spell_targets.starfall>=2&talent.stellar_drift.enabled)|spell_targets.starfall>=3");
   default_list -> add_action("call_action_list,name=single_target");
   
+  ST -> add_talent( this, "Force of Nature");
   ST -> add_talent( this, "Stellar Flare", "target_if=refreshable,if=target.time_to_die>10");
   ST -> add_action( this, "Moonfire", "if=((talent.natures_balance.enabled&remains<3)|remains<6.6)&astral_power.deficit>7&target.time_to_die>8");
   ST -> add_action( this, "Sunfire", "if=((talent.natures_balance.enabled&remains<3)|remains<5.4)&astral_power.deficit>7&target.time_to_die>8");
@@ -8053,6 +8054,7 @@ void druid_t::apl_balance()
   AoE -> add_talent( this, "Stellar Flare", "target_if=refreshable,if=target.time_to_die>10");
   AoE -> add_action( this, "Sunfire", "target_if=refreshable,if=astral_power.deficit>7&target.time_to_die>4");
   AoE -> add_action( this, "Moonfire", "target_if=refreshable,if=astral_power.deficit>7&target.time_to_die>4");
+  AoE -> add_talent( this, "Force of Nature");
   AoE -> add_action( this, "starsurge", "if=buff.oneths_intuition.up&(!buff.astral_acceleration.up|buff.astral_acceleration.remains>5|astral_power.deficit<44)");
   AoE -> add_action( this, "New Moon", "if=astral_power.deficit>14&!(buff.celestial_alignment.up|buff.incarnation.up)");
   AoE -> add_action( this, "Half Moon", "if=astral_power.deficit>24");
