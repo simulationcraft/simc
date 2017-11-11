@@ -6628,7 +6628,7 @@ struct force_of_nature_t : public druid_spell_t
   {
     parse_options( options );
     harmful = may_crit = false;
-    summon_duration = data().duration() + timespan_t::from_millis( 1 );
+    summon_duration = p->find_spell(248280)->duration() + timespan_t::from_millis(1);
   }
 
   virtual void execute() override
