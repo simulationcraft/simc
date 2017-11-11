@@ -8067,7 +8067,7 @@ void druid_t::apl_balance()
   AoE -> add_action( this, "Solar Wrath");
 
   FoE -> add_action( "incarnation,if=astral_power>=95&cooldown.fury_of_elune.remains<=gcd" );
-  FoE -> add_talent( this, "Force of Nature", "if=!buff.fury_of_elune.up");
+  FoE -> add_talent( this, "Force of Nature", "if=!buff.fury_of_elune_up.up");
   FoE -> add_talent( this, "Fury of Elune", "if=astral_power>=95" );
   FoE -> add_action( this, "New Moon", "if=((charges=2&recharge_time<5)|charges=3)&&(buff.fury_of_elune_up.up|(cooldown.fury_of_elune.remains>gcd*3&astral_power<=90))" );
   FoE -> add_action( this, "Half Moon", "if=((charges=2&recharge_time<5)|charges=3)&&(buff.fury_of_elune_up.up|(cooldown.fury_of_elune.remains>gcd*3&astral_power<=80))" );
