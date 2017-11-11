@@ -123,9 +123,45 @@ void do_replace( const option_db_t& opts, std::string& str, std::string::size_ty
   #endif
 #endif
 
-} // UNNAMED NAMESPACE ======================================================
+struct converter_uint64_t
+{
+  static uint64_t convert( const std::string& v )
+  {
+    return std::stoull( v );
+  }
+};
 
-namespace opts {
+struct converter_int_t
+{
+  static int convert( const std::string& v )
+  {
+    return std::stoi( v );
+  }
+};
+
+struct converter_uint_t
+{
+  static unsigned int convert( const std::string& v )
+  {
+    return std::stoul( v );
+  }
+};
+
+struct converter_double_t
+{
+  static double convert( const std::string& v )
+  {
+    return std::stod( v );
+  }
+};
+
+struct converter_timespan_t
+{
+  static timespan_t convert( const std::string& v )
+  {
+    return timespan_t::from_seconds( std::stod( v ) );
+  }
+};
 
 /* Option helper class
  * Stores a reference of given type T
@@ -194,9 +230,15 @@ private:
   std::string& _ref;
 };
 
-struct opt_uint64_t : public option_t
+/**
+ * Option template for converting numeric type (unsigned, int, double, etc.)
+ *
+ * Empty input string is silently interpreted as 0, allowing for options with empty value.
+ */
+template<typename T, typename Converter>
+struct opt_numeric_t : public option_t
 {
-  opt_uint64_t( const std::string& name, uint64_t& addr ) :
+  opt_numeric_t( const std::string& name, T& addr ) :
     option_t( name ),
     _ref( addr )
   { }
@@ -206,7 +248,10 @@ protected:
     if ( n != name() )
       return false;
 
-    _ref = std::stoull( v, nullptr, 10 );
+    if ( v.empty() )
+      _ref = {};
+    else
+      _ref = Converter::convert( v );
 
     return true;
   }
@@ -217,49 +262,38 @@ protected:
      return stream;
   }
 private:
-  uint64_t& _ref;
+  T& _ref;
 };
 
-struct opt_int_t : public option_t
+
+/**
+ * Option template for converting numeric type (unsigned, int, double, etc.) with min/max check
+ *
+ * Throws std::invalid_argument if value is out of min/max bounds.
+ * Empty input string is silently interpreted as 0, allowing for options with empty value.
+ */
+template<typename T, typename Converter>
+struct opt_numeric_mm_t : public option_t
 {
-  opt_int_t( const std::string& name, int& addr ) :
-    option_t( name ),
-    _ref( addr )
-  { }
-protected:
-  bool parse( sim_t*, const std::string& n, const std::string& v ) const override
-  {
-    if ( n != name() )
-      return false;
-
-    _ref = std::stoi( v, nullptr, 10 );
-    return true;
-  }
-
-  std::ostream& print( std::ostream& stream ) const override
-  {
-     stream << name() << "="  <<  _ref << "\n";
-     return stream;
-  }
-private:
-  int& _ref;
-};
-
-struct opt_int_mm_t : public option_t
-{
-  opt_int_mm_t( const std::string& name, int& addr, int min, int max ) :
+  opt_numeric_mm_t( const std::string& name, T& addr, T min, T max ) :
     option_t( name ),
     _ref( addr ),
     _min( min ),
     _max( max )
   { }
+
 protected:
   bool parse( sim_t*, const std::string& n, const std::string& v ) const override
   {
     if ( n != name() )
       return false;
 
-    int tmp = std::stoi( v, nullptr, 10 );
+    T tmp;
+    if ( v.empty() )
+      tmp = {};
+    else
+      tmp = Converter::convert( v );
+
     // Range checking
     if ( tmp < _min || tmp > _max ) {
       std::stringstream s;
@@ -277,190 +311,8 @@ protected:
      return stream;
   }
 private:
-  int& _ref;
-  int _min, _max;
-};
-
-struct opt_uint_t : public option_t
-{
-  opt_uint_t( const std::string& name, unsigned int& addr ) :
-    option_t( name ),
-    _ref( addr )
-  { }
-protected:
-  bool parse( sim_t*, const std::string& n, const std::string& v ) const override
-  {
-    if ( n != name() )
-      return false;
-
-    _ref = std::stoul( v, nullptr, 10 );
-    return true;
-  }
-
-  std::ostream& print( std::ostream& stream ) const override
-  {
-     stream << name() << "="  <<  _ref << "\n";
-     return stream;
-  }
-private:
-  unsigned int& _ref;
-};
-
-struct opt_uint_mm_t : public option_t
-{
-  opt_uint_mm_t( const std::string& name, unsigned int& addr, unsigned int min, unsigned int max ) :
-    option_t( name ),
-    _ref( addr ),
-    _min( min ),
-    _max( max )
-  { }
-protected:
-  bool parse( sim_t*, const std::string& n, const std::string& v ) const override
-  {
-    if ( n != name() )
-      return false;
-
-    unsigned int tmp = std::stoul( v, nullptr, 10 );
-    // Range checking
-    if ( tmp < _min || tmp > _max ) {
-      std::stringstream s;
-      s << "Option '" << n << "' with value '" << v
-          << "' not within valid boundaries [" << _min << " - " << _max << "]";
-      throw std::invalid_argument(s.str());
-    }
-    _ref = tmp;
-    return true;
-  }
-
-  std::ostream& print( std::ostream& stream ) const override
-  {
-     stream << name() << "="  <<  _ref << "\n";
-     return stream;
-  }
-private:
-  unsigned int& _ref;
-  unsigned int _min, _max;
-};
-
-struct opt_double_t : public option_t
-{
-  opt_double_t( const std::string& name, double& addr ) :
-    option_t( name ),
-    _ref( addr )
-  { }
-protected:
-  bool parse( sim_t*, const std::string& n, const std::string& v ) const override
-  {
-    if ( n != name() )
-      return false;
-
-    _ref = std::stod( v, nullptr );
-    return true;
-  }
-
-  std::ostream& print( std::ostream& stream ) const override
-  {
-     stream << name() << "="  <<  _ref << "\n";
-     return stream;
-  }
-private:
-  double& _ref;
-};
-
-struct opt_double_mm_t : public option_t
-{
-  opt_double_mm_t( const std::string& name, double& addr, double min, double max ) :
-    option_t( name ),
-    _ref( addr ),
-    _min( min ),
-    _max( max )
-  { }
-protected:
-  bool parse( sim_t*, const std::string& n, const std::string& v ) const override
-  {
-    if ( n != name() )
-      return false;
-
-    double tmp = std::stod( v, nullptr );
-    // Range checking
-    if ( tmp < _min || tmp > _max ) {
-      std::stringstream s;
-      s << "Option '" << n << "' with value '" << v
-          << "' not within valid boundaries [" << _min << " - " << _max << "]";
-      throw std::invalid_argument(s.str());
-    }
-    _ref = tmp;
-    return true;
-  }
-
-  std::ostream& print( std::ostream& stream ) const override
-  {
-     stream << name() << "="  <<  _ref << "\n";
-     return stream;
-  }
-private:
-  double& _ref;
-  double _min, _max;
-};
-
-struct opt_timespan_t : public option_t
-{
-  opt_timespan_t( const std::string& name, timespan_t& addr ) :
-    option_t( name ),
-    _ref( addr )
-  { }
-protected:
-  bool parse( sim_t*, const std::string& n, const std::string& v ) const override
-  {
-    if ( n != name() )
-      return false;
-
-    _ref = timespan_t::from_seconds( std::stod( v, nullptr ) );
-    return true;
-  }
-
-  std::ostream& print( std::ostream& stream ) const override
-  {
-     stream << name() << "="  <<  _ref << "\n";
-     return stream;
-  }
-private:
-  timespan_t& _ref;
-};
-
-struct opt_timespan_mm_t : public option_t
-{
-  opt_timespan_mm_t( const std::string& name, timespan_t& addr, timespan_t min, timespan_t max ) :
-    option_t( name ),
-    _ref( addr ),
-    _min( min ),
-    _max( max )
-  { }
-protected:
-  bool parse( sim_t*, const std::string& n, const std::string& v ) const override
-  {
-    if ( n != name() )
-      return false;
-
-    timespan_t tmp = timespan_t::from_seconds( std::stod( v, nullptr ) );
-    // Range checking
-    if ( tmp < _min || tmp > _max ) {
-      std::stringstream s;
-      s << "Option '" << n << "' with value '" << v
-          << "' not within valid boundaries [" << _min << " - " << _max << "]";
-      throw std::invalid_argument(s.str());
-    }
-    _ref = tmp;
-    return true;
-  }
-  std::ostream& print( std::ostream& stream ) const override
-  {
-     stream << name() << "="  <<  _ref << "\n";
-     return stream;
-  }
-private:
-  timespan_t& _ref;
-  timespan_t _min, _max;
+  T& _ref;
+  T _min, _max;
 };
 
 struct opt_bool_t : public option_t
@@ -482,7 +334,7 @@ protected:
       throw std::invalid_argument( s.str() );
     }
 
-    _ref = std::stoi( v, nullptr, 10 ) != 0;
+    _ref = std::stoi( v ) != 0;
     return true;
   }
   std::ostream& print( std::ostream& stream ) const override
@@ -513,7 +365,7 @@ protected:
       throw std::invalid_argument( s.str() );
     }
 
-    _ref = std::stoi( v, nullptr, 10 );
+    _ref = std::stoi( v );
     return true;
   }
   std::ostream& print( std::ostream& stream ) const override
@@ -527,7 +379,7 @@ private:
 
 struct opts_sim_func_t : public option_t
 {
-  opts_sim_func_t( const std::string& name, const function_t& ref ) :
+  opts_sim_func_t( const std::string& name, const opts::function_t& ref ) :
     option_t( name ),
     _fun( ref )
   { }
@@ -542,12 +394,12 @@ protected:
   std::ostream& print( std::ostream& stream ) const override
   { return stream << "function option: " << name() << "\n"; }
 private:
-  function_t _fun;
+  opts::function_t _fun;
 };
 
 struct opts_map_t : public option_t
 {
-  opts_map_t( const std::string& name, map_t& ref ) :
+  opts_map_t( const std::string& name, opts::map_t& ref ) :
     option_t( name ),
     _ref( ref )
   { }
@@ -575,16 +427,16 @@ protected:
   }
   std::ostream& print( std::ostream& stream ) const override
   {
-    for ( map_t::const_iterator it = _ref.begin(), end = _ref.end(); it != end; ++it )
-          stream << name() << it->first << "="<< it->second << "\n";
+    for ( const auto& entry : _ref )
+          stream << name() << entry.first << "="<< entry.second << "\n";
      return stream;
   }
-  map_t& _ref;
+  opts::map_t& _ref;
 };
 
 struct opts_map_list_t : public option_t
 {
-  opts_map_list_t( const std::string& name, map_list_t& ref ) :
+  opts_map_list_t( const std::string& name, opts::map_list_t& ref ) :
     option_t( name ), _ref( ref )
   { }
 
@@ -624,13 +476,13 @@ protected:
 
   std::ostream& print( std::ostream& stream ) const override
   {
-    for ( map_list_t::const_iterator it = _ref.begin(), end = _ref.end(); it != end; ++it )
+    for ( auto& entry : _ref )
     {
-      for ( auto valit = it -> second.begin(), end = it -> second.end(); valit != end; ++valit )
+      for ( auto i = 0u; i < entry.second.size(); ++i )
       {
-        stream << name() << it -> first;
+        stream << name() << entry.first;
 
-        if ( valit == it -> second.begin() )
+        if ( i == 0 )
         {
           stream << "=";
         }
@@ -639,18 +491,18 @@ protected:
           stream << "+=";
         }
 
-        stream << *valit << "\n";
+        stream << entry.second[ i ] << "\n";
       }
     }
     return stream;
   }
 
-  map_list_t& _ref;
+  opts::map_list_t& _ref;
 };
 
 struct opts_list_t : public option_t
 {
-  opts_list_t( const std::string& name, list_t& ref ) :
+  opts_list_t( const std::string& name, opts::list_t& ref ) :
     option_t( name ),
     _ref( ref )
   { }
@@ -667,15 +519,15 @@ protected:
   std::ostream& print( std::ostream& stream ) const override
   {
     stream << name() << "=";
-    for ( list_t::const_iterator it = _ref.begin(), end = _ref.end(); it != end; ++it )
+    for ( auto& entry : _ref )
     {
-      stream << name() << (*it) << " ";
+      stream << name() << entry << " ";
     }
     stream << "\n";
     return stream;
   }
 private:
-  list_t& _ref;
+  opts::list_t& _ref;
 };
 
 struct opts_deperecated_t : public option_t
@@ -1001,55 +853,55 @@ option_db_t::option_db_t()
 }
 
 std::unique_ptr<option_t> opt_string( const std::string& n, std::string& v )
-{ return std::unique_ptr<option_t>(new opts::opt_string_t( n, v )); }
+{ return std::unique_ptr<option_t>(new opt_string_t( n, v )); }
 
 std::unique_ptr<option_t> opt_append( const std::string& n, std::string& v )
-{ return std::unique_ptr<option_t>(new opts::opt_append_t( n, v )); }
+{ return std::unique_ptr<option_t>(new opt_append_t( n, v )); }
 
 std::unique_ptr<option_t> opt_bool( const std::string& n, int& v )
-{ return std::unique_ptr<option_t>(new opts::opt_bool_int_t( n, v )); }
+{ return std::unique_ptr<option_t>(new opt_bool_int_t( n, v )); }
 
 std::unique_ptr<option_t> opt_bool( const std::string& n, bool& v )
-{ return std::unique_ptr<option_t>(new opts::opt_bool_t( n, v )); }
+{ return std::unique_ptr<option_t>(new opt_bool_t( n, v )); }
 
 std::unique_ptr<option_t> opt_uint64( const std::string& n, uint64_t& v )
-{ return std::unique_ptr<option_t>(new opts::opt_uint64_t( n, v )); }
+{ return std::unique_ptr<option_t>(new opt_numeric_t<uint64_t, converter_uint64_t>( n, v )); }
 
 std::unique_ptr<option_t> opt_int( const std::string& n, int& v )
-{ return std::unique_ptr<option_t>(new opts::opt_int_t( n, v )); }
+{ return std::unique_ptr<option_t>(new opt_numeric_t<int, converter_int_t>( n, v )); }
 
 std::unique_ptr<option_t> opt_int( const std::string& n, int& v, int min, int max )
-{ return std::unique_ptr<option_t>(new opts::opt_int_mm_t( n, v, min, max )); }
+{ return std::unique_ptr<option_t>(new opt_numeric_mm_t<int, converter_int_t>( n, v, min, max )); }
 
 std::unique_ptr<option_t> opt_uint( const std::string& n, unsigned& v )
-{ return std::unique_ptr<option_t>(new opts::opt_uint_t( n, v )); }
+{ return std::unique_ptr<option_t>(new opt_numeric_t<unsigned, converter_uint_t>( n, v )); }
 
 std::unique_ptr<option_t> opt_uint( const std::string& n, unsigned& v, unsigned min, unsigned max )
-{ return std::unique_ptr<option_t>(new opts::opt_uint_mm_t( n, v, min, max )); }
+{ return std::unique_ptr<option_t>(new opt_numeric_mm_t<unsigned, converter_uint_t>( n, v, min, max )); }
 
 std::unique_ptr<option_t> opt_float( const std::string& n, double& v )
-{ return std::unique_ptr<option_t>(new opts::opt_double_t( n, v )); }
+{ return std::unique_ptr<option_t>(new opt_numeric_t<double, converter_double_t>( n, v )); }
 
 std::unique_ptr<option_t> opt_float( const std::string& n, double& v, double min, double max )
-{ return std::unique_ptr<option_t>(new opts::opt_double_mm_t( n, v, min, max )); }
+{ return std::unique_ptr<option_t>(new opt_numeric_mm_t<double, converter_double_t>( n, v, min, max )); }
 
 std::unique_ptr<option_t> opt_timespan( const std::string& n, timespan_t& v )
-{ return std::unique_ptr<option_t>(new opts::opt_timespan_t( n, v )); }
+{ return std::unique_ptr<option_t>(new opt_numeric_t<timespan_t, converter_timespan_t>( n, v )); }
 
 std::unique_ptr<option_t> opt_timespan( const std::string& n, timespan_t& v, timespan_t min, timespan_t max )
-{ return std::unique_ptr<option_t>(new opts::opt_timespan_mm_t( n, v, min, max )); }
+{ return std::unique_ptr<option_t>(new opt_numeric_mm_t<timespan_t, converter_timespan_t>( n, v, min, max )); }
 
 std::unique_ptr<option_t> opt_list( const std::string& n, opts::list_t& v )
-{ return std::unique_ptr<option_t>(new opts::opts_list_t( n, v )); }
+{ return std::unique_ptr<option_t>(new opts_list_t( n, v )); }
 
 std::unique_ptr<option_t> opt_map( const std::string& n, opts::map_t& v )
-{ return std::unique_ptr<option_t>(new opts::opts_map_t( n, v )); }
+{ return std::unique_ptr<option_t>(new opts_map_t( n, v )); }
 
 std::unique_ptr<option_t> opt_map_list( const std::string& n, opts::map_list_t& v )
-{ return std::unique_ptr<option_t>(new opts::opts_map_list_t( n, v )); }
+{ return std::unique_ptr<option_t>(new opts_map_list_t( n, v )); }
 
 std::unique_ptr<option_t> opt_func( const std::string& n, const opts::function_t& f )
-{ return std::unique_ptr<option_t>(new opts::opts_sim_func_t( n, f )); }
+{ return std::unique_ptr<option_t>(new opts_sim_func_t( n, f )); }
 
 std::unique_ptr<option_t> opt_deprecated( const std::string& n, const std::string& new_option )
-{ return std::unique_ptr<option_t>(new opts::opts_deperecated_t( n, new_option )); }
+{ return std::unique_ptr<option_t>(new opts_deperecated_t( n, new_option )); }
