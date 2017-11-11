@@ -997,7 +997,7 @@ struct arcane_blast_t : public mirror_image_spell_t
     double tm = mirror_image_spell_t::composite_target_multiplier( target );
 
     // Arcane Blast (88084) should work with Erosion, according to the spell data.
-    // Does not work in game, as of build 24461, 2017-07-03.
+    // Does not work in game, as of build 25480, 2017-11-11.
     if ( ! o() -> bugs )
     {
       mage_td_t* tdata = o() -> get_target_data( target );
@@ -1675,7 +1675,7 @@ public:
 
       // It looks like the debuff expiration is slightly delayed in game, allowing two spells
       // impacting at the same time to trigger multiple Meteors or Comet Storms.
-      // As of build 24461, 2017-07-18.
+      // As of build 25480, 2017-11-11.
       primed_buff -> expire( p() -> bugs ? timespan_t::from_millis( 30 ) : timespan_t::zero() );
     }
   }
@@ -1726,7 +1726,7 @@ struct arcane_mage_spell_t : public mage_spell_t
       // The damage bonus given by mastery seems to be snapshot at the moment
       // Arcane Charge is gained. As long as the stack number remains the same,
       // any future changes to mastery will have no effect.
-      // As of build 24461, 2017-07-03.
+      // As of build 25480, 2017-11-11.
       if ( ac -> check() < ac -> max_stack() )
       {
         ac -> trigger( stacks, savant_damage_bonus() );
@@ -1974,14 +1974,6 @@ struct fire_mage_spell_t : public mage_spell_t
   // Helper methods for Contained Infernal Core.
   void trigger_infernal_core( player_t* target )
   {
-    // As of PTR build 24287, 2017-06-08, casting Fireball and instant Pyroblast
-    // while at 28 stacks removes tracking buff, then triggers primed buff and
-    // one stack of tracking buff (instead of triggering the Meteor). Next cast
-    // then expires the primed buff, triggers the Meteor and triggers a second
-    // stack of the tracking buff.
-    // Conversely, doing the same when only the primed buff is active only
-    // triggers Meteor (it should also trigger one stack of the tracking buff).
-    // TODO: Check this
     trigger_legendary_effect( p() -> buffs.contained_infernal_core,
                               p() -> buffs.erupting_infernal_core,
                               p() -> action.legendary_meteor,
@@ -2276,7 +2268,6 @@ struct conflagration_dot_t : public fire_mage_spell_t
   conflagration_dot_t( mage_t* p ) :
     fire_mage_spell_t( "conflagration_dot", p, p -> find_spell( 226757 ) )
   {
-    //TODO: Check callbacks
     hasted_ticks = false;
     tick_may_crit = may_crit = false;
     background = true;
@@ -2406,7 +2397,7 @@ struct arcane_rebound_t : public arcane_mage_spell_t
     arcane_mage_spell_t( "arcane_rebound", p, p -> find_spell( 210817 ) )
   {
     background = true;
-    callbacks = false; // TODO: Is this true?
+    callbacks = false;
     aoe = -1;
   }
 
@@ -2553,6 +2544,7 @@ struct arcane_blast_t : public arcane_mage_spell_t
     {
       c = 0;
     }
+
     return c;
   }
 
@@ -2635,7 +2627,7 @@ struct time_and_space_t : public arcane_mage_spell_t
     background = true;
 
     // All other background actions trigger Erosion.
-    // As of build 24461, 2017-07-03.
+    // As of build 25480, 2017-11-11.
     if ( p -> bugs )
     {
       triggers_erosion = false;
@@ -3796,7 +3788,7 @@ struct flamestrike_t : public fire_mage_spell_t
 
     // Ignition buff is removed shortly after Flamestrike/Pyroblast cast. In a situation
     // where you're hardcasting FS/PB followed by a Hot Streak FS/FB, both spells actually
-    // benefit. As of build 24461, 2017-07-05.
+    // benefit. As of build 25480, 2017-11-11.
     p() -> buffs.ignition -> expire( p() -> bugs ? timespan_t::from_millis( 15 ) : timespan_t::zero() );
     p() -> buffs.critical_massive -> expire();
   }
@@ -3820,7 +3812,7 @@ struct flamestrike_t : public fire_mage_spell_t
       // None of the following Aftershocks get Ignition crit bonus.
       //
       // This should model that behavior correctly. Otherwise we might need custom snapshotting.
-      // Last checked: build 24461, 2017-07-03.
+      // Last checked: build 25480, 2017-11-11.
       // TODO: Check if this is still true.
       p() -> state.ignition_active = p() -> buffs.ignition -> up();
 
@@ -4930,7 +4922,7 @@ struct mark_of_aluneth_explosion_t : public arcane_mage_spell_t
 
     base_dd_min = base_dd_max = 1.0;
 
-    // As of build 24461, 2017-07-03.
+    // As of build 25480, 2017-11-11.
     if ( p -> bugs )
     {
       affected_by.arcane_mage = false;
@@ -5075,13 +5067,12 @@ struct meteor_impact_t: public fire_mage_spell_t
     background = true;
     aoe = targets;
     split_aoe_damage = true;
-    //TODO: Revisit PI behavior once Skullflower confirms behavior.
     triggers_ignite = true;
 
     meteor_burn_pulse_time = meteor_burn -> data().effectN( 1 ).period();
 
     // It seems that the 8th tick happens only very rarely in game.
-    // As of build 24461, 2017-07-03.
+    // As of build 25480, 2017-11-11.
     if ( p -> bugs )
     {
       meteor_burn_duration -= meteor_burn_pulse_time;
@@ -5322,7 +5313,7 @@ struct phoenixs_flames_splash_t : public fire_mage_spell_t
     double am = fire_mage_spell_t::action_multiplier();
 
     // Phoenix's Flames splash deal 25% less damage compared to the
-    // spell data/tooltip values. As of build 24461, 2017-07-03.
+    // spell data/tooltip values. As of build 25480, 2017-11-11.
     am *= std::pow( strafing_run_multiplier, p() -> bugs ? chain_number + 1 : chain_number );
 
     return am;
@@ -5464,7 +5455,7 @@ struct pyroblast_t : public fire_mage_spell_t
 
     // Ignition buff is removed shortly after Flamestrike/Pyroblast cast. In a situation
     // where you're hardcasting FS/PB followed by a Hot Streak FS/FB, both spells actually
-    // benefit. As of build 24461, 2017-07-05.
+    // benefit. As of build 25480, 2017-11-11.
     p() -> buffs.ignition -> expire( p() -> bugs ? timespan_t::from_millis( 15 ) : timespan_t::zero() );
     p() -> buffs.critical_massive -> expire();
 
@@ -5769,8 +5760,8 @@ struct supernova_t : public arcane_mage_spell_t
 
     if ( hit_any_target && num_targets_hit > 1 )
     {
-      // NOTE: Supernova AOE effect causes secondary trigger chance for AM
-      // TODO: Verify this is still the case
+      // Supernova AOE effect causes secondary trigger chance for AM.
+      // As of build 25480, 2017-11-11.
       trigger_am( -1.0, 1, proc_am_sn_aoe );
     }
   }
