@@ -649,10 +649,8 @@ public:
 
   // Public mage functions:
   double get_icicle();
-  void trigger_icicle( const action_state_t* trigger_state, bool chain = false, player_t* chain_target = nullptr );
-  void trigger_t19_oh();
-
-  bool apply_crowd_control( const action_state_t* state, spell_mechanic type );
+  void   trigger_icicle( const action_state_t* trigger_state, bool chain = false, player_t* chain_target = nullptr );
+  bool   apply_crowd_control( const action_state_t* state, spell_mechanic type );
 
   void              apl_precombat();
   void              apl_arcane();
@@ -2578,7 +2576,7 @@ struct arcane_blast_t : public arcane_mage_spell_t
       p() -> buffs.presence_of_mind -> decrement();
     }
 
-    p() -> trigger_t19_oh();
+    p() -> buffs.t19_oh_buff -> trigger();
     p() -> buffs.quick_thinker -> trigger();
   }
 
@@ -3634,7 +3632,7 @@ struct fireball_t : public fire_mage_spell_t
       p() -> buffs.ignition -> trigger();
     }
 
-    p() -> trigger_t19_oh();
+    p() -> buffs.t19_oh_buff -> trigger();
   }
 
   virtual void impact( action_state_t* s ) override
@@ -4103,7 +4101,7 @@ struct frostbolt_t : public frost_mage_spell_t
     bf_proc_chance += p() -> artifact.clarity_of_thought.percent();
     trigger_brain_freeze( bf_proc_chance );
 
-    p() -> trigger_t19_oh();
+    p() -> buffs.t19_oh_buff -> trigger();
   }
 
   virtual void impact( action_state_t* s ) override
@@ -6576,14 +6574,6 @@ mage_t::~mage_t()
   delete sample_data.icy_veins_duration;
 }
 
-void mage_t::trigger_t19_oh()
-{
-  if ( sets -> has_set_bonus( specialization(), T19OH, B8 ) )
-  {
-    buffs.t19_oh_buff -> trigger();
-  }
-}
-
 bool mage_t::apply_crowd_control( const action_state_t* state, spell_mechanic type )
 {
   if ( type == MECHANIC_INTERRUPT )
@@ -7230,7 +7220,7 @@ void mage_t::create_buffs()
                        gains.greater_blessing_of_wisdom ); } )
     -> set_period( find_spell( 203539 ) -> effectN( 2 ).period() )
     -> set_tick_behavior( BUFF_TICK_CLIP );
-  buffs.t19_oh_buff = stat_buff_creator_t( this, "ancient_knowledge", find_spell( 221648 ) )
+  buffs.t19_oh_buff = stat_buff_creator_t( this, "ancient_knowledge", sets -> set( specialization(), T19OH, B8 ) -> effectN( 1 ).trigger() )
                         .trigger_spell( sets -> set( specialization(), T19OH, B8 ) );
   buffs.shimmer     = buff_creator_t( this, "shimmer", find_spell( 212653 ) );
 }
