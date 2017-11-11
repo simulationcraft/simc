@@ -3866,8 +3866,7 @@ struct flamestrike_t : public fire_mage_spell_t
     }
     else
     {
-      const ignite_spell_state_t* iss = debug_cast<const ignite_spell_state_t*>( s );
-      return iss -> hot_streak ? 2.0 : 1.0;
+      return debug_cast<const ignite_spell_state_t*>( s ) -> hot_streak ? 2.0 : 1.0;
     }
   }
 
@@ -5549,8 +5548,7 @@ struct pyroblast_t : public fire_mage_spell_t
     }
     else
     {
-      const ignite_spell_state_t* iss = debug_cast<const ignite_spell_state_t*>( s );
-      return iss -> hot_streak ? 2.0 : 1.0;
+      return debug_cast<const ignite_spell_state_t*>( s ) -> hot_streak ? 2.0 : 1.0;
     }
   }
 
