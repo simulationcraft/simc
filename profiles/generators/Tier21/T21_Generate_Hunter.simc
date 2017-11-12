@@ -26,6 +26,34 @@ main_hand=titanstrike,id=128861,bonus_id=726,gem_id=155853/152025/152293,relic_i
 
 save=T21_Hunter_Beast_Mastery.simc
 
+hunter="T21_Hunter_Beast_Mastery_Stomp"
+spec=beast_mastery
+level=110
+race=orc
+role=attack
+position=ranged_back
+talents=2101012
+artifact=56:0:0:0:0:868:4:869:4:870:4:871:4:872:4:873:4:874:4:875:4:876:1:877:1:878:1:879:1:880:1:881:1:882:1:1095:4:1336:1:1368:1:1517:4:1518:1:1519:1:1520:24:1636:1
+crucible=1739:3:1780:3:875:1:870:2
+
+head=helm_of_the_awakened_soul,id=152423,bonus_id=3612/1502
+neck=chain_of_the_unmaker,id=152283,bonus_id=3612/1502,enchant=mark_of_the_claw
+shoulders=serpentstalker_mantle,id=152135,bonus_id=3612/1502
+back=serpentstalker_drape,id=152131,bonus_id=3612/1502,enchant=binding_of_agility
+chest=parsels_tongue,id=151805,bonus_id=3570,bonus_id=3630
+wrists=call_of_the_wild,id=137101,bonus_id=3570,bonus_id=3630
+hands=serpentstalker_grips,id=152132,bonus_id=3612/1502
+waist=depraved_tacticians_waistguard,id=152006,bonus_id=3612/1502
+legs=serpentstalker_legguards,id=152134,bonus_id=3612/1502
+feet=greatboots_of_the_searing_tempest,id=152684,bonus_id=3612/1502
+finger1=sullied_seal_of_the_pantheon,id=151972,bonus_id=3612/1502,enchant=binding_of_critical_strike
+finger2=band_of_the_sargerite_smith,id=152064,bonus_id=3612/1502,enchant=binding_of_critical_strike
+trinket1=shadowsinged_fang,id=151968,bonus_id=3612/1502
+trinket2=amanthuls_vision,id=154172,ilevel=1000
+main_hand=titanstrike,id=128861,bonus_id=726,gem_id=155853/152025/152293,relic_id=3612:1512/3612:1502/3612:1502
+
+save=T21_Hunter_Beast_Mastery_Stomp.simc
+
 
 hunter="T21_Hunter_Marksmanship"
 level=110

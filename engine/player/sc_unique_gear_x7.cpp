@@ -152,10 +152,8 @@ namespace item
   Everything
 
   Antorus -----------------------------------
-
-  Forgefiend's Fabricator
-  Gorshalach's Legacy (Partially implemented)
-
+  
+  Every DPS trinket implemented.
   Healer trinkets / other rubbish -----------
 
   cocoon_of_enforced_solitude
@@ -2178,60 +2176,67 @@ void item::sheath_of_asara( special_effect_t& effect )
 }
 
 // Gorshalach's Legacy =====================================================
-struct echo_of_gorshalach_t : public proc_spell_t
+struct gorshalach_legacy_t : public proc_spell_t
 {
-   struct gorshalach_legacy_t : public proc_spell_t
-   {
-      gorshalach_legacy_t(const special_effect_t& effect) :
-         proc_spell_t("gorshalachs_legacy_1", effect.player, effect.player ->find_spell(253329), effect.item)
-      {
-      }
-      //Always crits
-      virtual double composite_crit_chance() const override { return 1.0; }
-   };
+  gorshalach_legacy_t( const special_effect_t& effect ) :
+      proc_spell_t( "gorshalachs_legacy_1", effect.player, effect.player -> find_spell( 253329 ), effect.item )
+  {
+    // Spell data contains crit damage.
+    base_dd_min /= 2.0;
+    base_dd_max /= 2.0;
+  }
 
-   struct gorshalach_bigger_legacy_t : public proc_spell_t
-   {
-      gorshalach_bigger_legacy_t(const special_effect_t& effect) :
-         proc_spell_t("gorshalachs_legacy_2", effect.player, effect.player ->find_spell(255673), effect.item)
-      {
-      }
-      //Always crits
-      virtual double composite_crit_chance() const override { return 1.0; }
-   };
+  // Always crits.
+  virtual double composite_crit_chance() const override { return 1.0; }
+};
 
-   action_t* legacy;
-   action_t* legacy2;
-   buff_t* echo;
+struct gorshalach_bigger_legacy_t : public proc_spell_t
+{
+  gorshalach_bigger_legacy_t( const special_effect_t& effect ) :
+      proc_spell_t( "gorshalachs_legacy_2", effect.player, effect.player -> find_spell( 255673 ), effect.item )
+  {
+    // Spell data contains crit damage.
+    base_dd_min /= 2.0;
+    base_dd_max /= 2.0;
+  }
 
-   echo_of_gorshalach_t(const special_effect_t& effect) :
-      proc_spell_t("echo_of_gorshalach", effect.player, effect.player->find_spell(255672), effect.item),
-      legacy(create_proc_action<gorshalach_legacy_t>("gorshalachs_legacy_mh", effect)),
-      legacy2(create_proc_action<gorshalach_bigger_legacy_t>("gorshalachs_legacy_oh", effect))
-   {
-      //TODO: Whitelist this spell (255672) and use spelldata!
-      echo = buff_creator_t(effect.player, "echo_of_gorshalach")
-         .max_stack(15)
-         .duration(timespan_t::from_seconds(60));
-   }
+  // Always crits.
+  virtual double composite_crit_chance() const override { return 1.0; }
+};
 
-   void execute() override
-   {
-      echo -> increment();
-      //TODO: spell data being unhelpful, so hardcoding this for now
-      if ( echo -> stack() == echo -> max_stack() )
-      {
-         echo -> expire();
-         legacy -> execute();
-         legacy2 -> execute();
-      }
-   };
+struct echo_of_gorshalach_cb_t : public dbc_proc_callback_t
+{
+  action_t* legacy_1;
+  action_t* legacy_2;
+
+  echo_of_gorshalach_cb_t( const special_effect_t& effect ) :
+    dbc_proc_callback_t( effect.item, effect ),
+    legacy_1( create_proc_action<gorshalach_legacy_t>( "gorshalachs_legacy_1", effect ) ),
+    legacy_2( create_proc_action<gorshalach_bigger_legacy_t>( "gorshalachs_legacy_2", effect ) )
+  { }
+
+  void execute( action_t* /* a */, action_state_t* /* state */ ) override
+  {
+    proc_buff -> trigger();
+    if ( proc_buff -> check() == proc_buff -> max_stack() )
+    {
+      legacy_1 -> execute();
+      legacy_2 -> execute();
+      proc_buff -> expire();
+    }
+  }
 };
 
 void item::gorshalach_legacy( special_effect_t& effect )
 {
-   effect.execute_action = create_proc_action<echo_of_gorshalach_t>("echo_of_gorshalach", effect);
-   new dbc_proc_callback_t(effect.player, effect);
+  buff_t* echo = buff_t::find( effect.player, "echo_of_gorshalach" );
+  if ( ! echo )
+  {
+    echo = buff_creator_t( effect.player, "echo_of_gorshalach", effect.player -> find_spell( 253327 ), effect.item );
+  }
+
+  effect.custom_buff = echo;
+  new echo_of_gorshalach_cb_t( effect );
 }
 
 // Seeping Scourgewing =====================================================
@@ -2277,89 +2282,125 @@ void item::seeping_scourgewing( special_effect_t& effect )
 }
 
 // Forgefiend's Fabricator =================================================
-// TODO figure out a way to have multiple "mines out" and be able to have an
-// on-use force the mines to explode.
-// Mines get increased multipliers on explosion and not on cast 
+// TODO: Expression support?
 
-struct fire_mines_t : public spell_t
+struct fire_mines_t : public proc_spell_t
 {
-  timespan_t travel;
   fire_mines_t( const special_effect_t& effect ) :
-    spell_t( "fire_mines", effect.player, effect.player -> find_spell( 253321 ) ),
-    travel( effect.player -> find_spell( 253320 ) -> duration() )
-  {
-    background = may_crit = true;
-    callbacks = false;
-    school = SCHOOL_FIRE;
-    base_dd_min = base_dd_max = player -> find_spell( 253321 ) -> effectN( 1 ).average( effect.item );
-    aoe = -1;
-    radius = player -> find_spell( 253321 ) -> effectN( 1 ).radius();
-  }
-
-  timespan_t travel_time() const override
-  {
-    // This is an incorrect implementation but want to have something mildy in for testing reasons
-    // Since the trinket leaves a bomb at the location and detonates after 15 seconds,
-    // to simulate the delay, giving the proc a 15 second travel time.
-    return travel;
-  }
-
-  virtual double calculate_direct_amount(action_state_t*) const override
-  { return 0.0; }
-
-  virtual result_e calculate_result(action_state_t*) const override
-  { return RESULT_NONE; }
-
-  virtual void impact( action_state_t* s ) override
-  {
-    // Probably not the right modeling but makes it so that bombs are snapshot 
-    // on explosion instead of at cast
-    snapshot_internal( s, snapshot_flags, amount_type( s ) );
-
-    s -> result = spell_base_t::calculate_result( s );
-    s -> result_amount = spell_base_t::calculate_direct_amount( s );
-
-    spell_t::impact( s );
-  }
+    proc_spell_t( "fire_mines", effect.player, effect.player -> find_spell( 253321 ), effect.item )
+  { }
 };
 
-struct fire_mines_driver_t : public proc_spell_t
+struct fire_mines_driver_t : public dbc_proc_callback_t
 {
-  fire_mines_t* fire_mines;
-
-  fire_mines_driver_t( const special_effect_t& effect ) :
-    proc_spell_t( "fire_mines_driver", effect.player, effect.player -> find_spell( 256025 ), effect.item ),
-    fire_mines( new fire_mines_t( effect ) )
+  struct mine_explosion_event_t : public event_t
   {
-    background = true;
-    effect.player->forgefiends_fabricator_fire_mine = fire_mines;
+    action_t* action;
+    player_t* target;
+
+    double x;
+    double y;
+
+    std::vector<event_t*>* active_mines;
+
+    mine_explosion_event_t( action_t* a, player_t* t, double x_, double y_, std::vector<event_t*>* am, timespan_t delay ) :
+      event_t( *a -> player, delay ), action( a ), target( t ), x( x_ ), y( y_ ), active_mines( am )
+    { }
+
+    virtual const char* name() const override
+    {
+      return "fire_mine_explosion";
+    }
+
+    virtual void execute() override
+    {
+      action -> set_target( target );
+
+      // Set the original position.
+      action_state_t* state = action -> get_state();
+      action -> snapshot_state( state, action -> amount_type( state ) );
+      state -> target     = target;
+      state -> original_x = x;
+      state -> original_y = y;
+
+      action -> schedule_execute( state );
+
+      auto it = range::find( *active_mines, this );
+      if ( it != active_mines -> end() )
+        erase_unordered( *active_mines, it );
+    }
+  };
+
+  action_t* fire_mines;
+  std::vector<event_t*> active_mines;
+  const timespan_t timer;
+
+  fire_mines_driver_t( const special_effect_t& effect, action_t* mines ) :
+    dbc_proc_callback_t( effect.item, effect ),
+    fire_mines( mines ),
+    active_mines(),
+    timer( effect.player -> find_spell( 253320 ) -> duration() )
+  { }
+
+  void reset() override
+  {
+    dbc_proc_callback_t::reset();
+    active_mines.clear();
   }
 
-  void execute() override
+  void execute( action_t* /* a */, action_state_t* state ) override
   {
-    proc_spell_t::execute();
-
-    // It appears that 2 mines get thrown out for every proc
+    // Trinket creates two mines per proc.
     for ( int i = 0; i < 2; i++ )
-      fire_mines -> execute();
+    {
+      // Mine spawns under the target.
+      event_t* e = make_event<mine_explosion_event_t>( *listener -> sim,
+        fire_mines,
+        state -> target,
+        state -> target -> x_position,
+        state -> target -> y_position,
+        &active_mines,
+        timer );
+      active_mines.push_back( e );
+    }
   }
 };
 
 void item::forgefiends_fabricator( special_effect_t& effect )
 {
-   effect.execute_action = create_proc_action<fire_mines_driver_t>( "fire_mines", effect );
-   new dbc_proc_callback_t( effect.player, effect );
+  action_t* mines = create_proc_action<fire_mines_t>( "fire_mines", effect );
+  new fire_mines_driver_t( effect, mines );
 }
 
-struct fire_mines_detonator_driver_t : public proc_spell_t
+struct fire_mines_detonator_t : public proc_spell_t
 {
-  fire_mines_detonator_driver_t( const special_effect_t& effect ) :
-    proc_spell_t( "fire_mines_detonator", effect.player, effect.player -> find_spell(253322), effect.item)
+  std::vector<event_t*>* active_mines;
+
+  fire_mines_detonator_t( const special_effect_t& effect ) :
+    proc_spell_t( "fire_mines_detonator", effect.player, effect.player -> find_spell( 253322 ), effect.item ),
+    active_mines( nullptr )
   { }
+
+  bool init_finished() override
+  {
+    for ( auto cb : player -> callbacks.all_callbacks )
+    {
+      if ( auto mines_driver = dynamic_cast<fire_mines_driver_t*>( cb ) )
+      {
+        active_mines = &mines_driver -> active_mines;
+        break;
+      }
+    }
+
+    if ( ! active_mines )
+      return false;
+
+    return proc_spell_t::init_finished();
+  }
 
   bool ready() override
   {
-    if ( !player -> forgefiends_fabricator_fire_mine -> has_travel_events() ) 
+    if ( ! active_mines || active_mines -> empty() )
       return false;
 
     return proc_spell_t::ready();
@@ -2369,13 +2410,22 @@ struct fire_mines_detonator_driver_t : public proc_spell_t
   {
     proc_spell_t::execute();
 
-    player->forgefiends_fabricator_fire_mine->execute_all_travel_events();
+    assert( active_mines );
+
+    while ( ! active_mines -> empty() )
+    {
+      event_t* e = active_mines -> front();
+      e -> execute();
+      event_t::cancel( e );
+    }
+
+    active_mines -> clear();
   }
 };
 
-void item::forgefiends_fabricator_detonate(special_effect_t& effect)
+void item::forgefiends_fabricator_detonate( special_effect_t& effect )
 {
-  effect.execute_action = new fire_mines_detonator_driver_t(effect);
+  effect.execute_action = new fire_mines_detonator_t( effect );
 }
 
 

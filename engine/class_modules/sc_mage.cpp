@@ -144,51 +144,6 @@ struct buff_stack_benefit_t
   }
 };
 
-struct buff_source_benefit_t
-{
-  const buff_t* buff;
-  std::vector<std::string> sources;
-  std::vector<benefit_t*> buff_source_benefit;
-
-  buff_source_benefit_t( const buff_t* _buff ) :
-    buff( _buff )
-  { }
-
-  int get_source_id( const char* source )
-  {
-    std::string source_str = std::string( source );
-    for ( size_t i = 0; i < sources.size(); i++ )
-    {
-      if ( sources[i] == source_str )
-      {
-        return as<int>( i );
-      }
-    }
-
-    sources.push_back( source_str );
-
-    std::string benefit_name =
-      std::string( buff -> data().name_cstr() ) + " from " + source_str;
-    benefit_t* source_benefit = buff -> player -> get_benefit( benefit_name );
-    buff_source_benefit.push_back( source_benefit );
-
-    return as<int>( sources.size() - 1 );
-  }
-
-  void update( int source_id, int stacks = 1 )
-  {
-    assert( source_id >= 0 && source_id < as<int>( sources.size() ) );
-
-    for ( size_t i = 0; i < sources.size(); i++ )
-    {
-      for ( int j = 0; j < stacks; j++ )
-      {
-        buff_source_benefit[i] -> update( as<int>( i ) == source_id );
-      }
-    }
-  }
-};
-
 struct cooldown_reduction_data_t
 {
   cooldown_t* cd;
@@ -279,8 +234,6 @@ public:
   // Benefits
   struct benefits_t
   {
-    buff_stack_benefit_t* incanters_flow;
-
     struct arcane_charge_benefits_t
     {
       buff_stack_benefit_t* arcane_barrage;
@@ -290,10 +243,7 @@ public:
       buff_stack_benefit_t* nether_tempest;
     } arcane_charge;
 
-    buff_source_benefit_t* arcane_missiles;
-
     buff_stack_benefit_t* chain_reaction;
-    buff_source_benefit_t* fingers_of_frost;
     buff_stack_benefit_t* magtheridons_might;
     buff_stack_benefit_t* ray_of_frost;
     buff_stack_benefit_t* zannesu_journey;
@@ -360,7 +310,6 @@ public:
     buff_t* lady_vashjs_grasp;
     buff_t* magtheridons_might;
     buff_t* rhonins_assaulting_armwraps;
-    buff_t* shard_time_warp;
     buff_t* zannesu_journey;
 
     haste_buff_t* sephuzs_secret;
@@ -414,6 +363,7 @@ public:
     proc_t* heating_up_removed;           // Non-crits with HU >200ms after application
     proc_t* heating_up_ib_converted;      // IBs used on HU
     proc_t* hot_streak;                   // Total HS generated
+    proc_t* hot_streak_pyromaniac;        // Total HS from Pyromaniac
     proc_t* hot_streak_spell;             // HU/HS spell impacts
     proc_t* hot_streak_spell_crit;        // HU/HS spell crits
     proc_t* hot_streak_spell_crit_wasted; // HU/HS spell crits with HS
@@ -463,6 +413,7 @@ public:
     const spell_data_t* fire_blast_2;
     const spell_data_t* fire_blast_3;
     const spell_data_t* fire_mage;
+    const spell_data_t* hot_streak;
     const spell_data_t* ignite;
 
     // Frost
@@ -482,6 +433,7 @@ public:
   {
     bool brain_freeze_active;
     bool fingers_of_frost_active;
+    bool hot_streak_active;
     bool ignition_active;
 
     int flurry_bolt_count;
@@ -699,10 +651,8 @@ public:
 
   // Public mage functions:
   double get_icicle();
-  void trigger_icicle( const action_state_t* trigger_state, bool chain = false, player_t* chain_target = nullptr );
-  void trigger_t19_oh();
-
-  bool apply_crowd_control( const action_state_t* state, spell_mechanic type );
+  void   trigger_icicle( const action_state_t* trigger_state, bool chain = false, player_t* chain_target = nullptr );
+  bool   apply_crowd_control( const action_state_t* state, spell_mechanic type );
 
   void              apl_precombat();
   void              apl_arcane();
@@ -741,7 +691,9 @@ struct mage_pet_spell_t : public spell_t
 {
   mage_pet_spell_t( const std::string& n, mage_pet_t* p, const spell_data_t* s )
     : spell_t( n, p, s )
-  { }
+  {
+    may_crit = tick_may_crit = true;
+  }
 
   mage_t* o()
   {
@@ -812,9 +764,8 @@ struct waterbolt_t : public water_elemental_spell_t
   waterbolt_t( water_elemental_pet_t* p, const std::string& options_str )
     : water_elemental_spell_t( "waterbolt", p, p -> find_pet_spell( "Waterbolt" ) )
   {
-    trigger_gcd = timespan_t::zero();
     parse_options( options_str );
-    may_crit = true;
+    trigger_gcd = timespan_t::zero();
     base_multiplier *= 1.0 + o() -> artifact.its_cold_outside.data().effectN( 3 ).percent();
   }
 
@@ -831,14 +782,13 @@ struct waterbolt_t : public water_elemental_spell_t
 
 struct freeze_t : public water_elemental_spell_t
 {
-  int fof_source_id;
+  proc_t* proc_fof;
 
-  freeze_t( water_elemental_pet_t* p, const std::string& options_str )
-    : water_elemental_spell_t( "freeze", p, p -> find_pet_spell( "Freeze" ) )
+  freeze_t( water_elemental_pet_t* p, const std::string& options_str ) :
+    water_elemental_spell_t( "freeze", p, p -> find_pet_spell( "Freeze" ) )
   {
     parse_options( options_str );
     aoe                   = -1;
-    may_crit              = true;
     ignore_false_positive = true;
     action_skill          = 1;
 
@@ -848,10 +798,7 @@ struct freeze_t : public water_elemental_spell_t
 
   virtual bool init_finished() override
   {
-    water_elemental_pet_t* p = static_cast<water_elemental_pet_t*>( player );
-    fof_source_id = p -> o() -> benefits.fingers_of_frost
-                             -> get_source_id( data().name_cstr() );
-
+    proc_fof = o() -> get_proc( std::string( "Fingers of Frost from " ) + data().name_cstr() );
     return water_elemental_spell_t::init_finished();
   }
 
@@ -863,7 +810,7 @@ struct freeze_t : public water_elemental_spell_t
     if ( success )
     {
       o() -> buffs.fingers_of_frost -> trigger();
-      o() -> benefits.fingers_of_frost -> update( fof_source_id );
+      proc_fof -> occur();
     }
   }
 };
@@ -880,7 +827,7 @@ struct water_jet_t : public water_elemental_spell_t
       autocast( true )
   {
     parse_options( options_str );
-    channeled = tick_may_crit = tick_zero = true;
+    channeled = tick_zero = true;
 
     internal_cooldown = p -> get_cooldown( "wj_freeze" );
     internal_cooldown -> duration = data().category_cooldown();
@@ -889,7 +836,7 @@ struct water_jet_t : public water_elemental_spell_t
   virtual void execute() override
   {
     // If this is a queued execute, disable queued status
-    if ( !autocast && queued )
+    if ( ! autocast && queued )
       queued = false;
 
     // Don't execute Water Jet if Water Elemental used Freeze
@@ -921,7 +868,7 @@ struct water_jet_t : public water_elemental_spell_t
   virtual bool ready() override
   {
     // Not ready, until the owner gives permission to cast
-    if ( !autocast && !queued )
+    if ( ! autocast && ! queued )
       return false;
 
     return water_elemental_spell_t::ready();
@@ -993,8 +940,9 @@ struct mirror_image_pet_t : public mage_pet_t
   {
     mage_pet_t::create_buffs();
 
-    arcane_charge =
-        buff_creator_t( this, "arcane_charge", o() -> spec.arcane_charge );
+    // MI Arcane Charge is hardcoded as 25% damage increase.
+    arcane_charge = buff_creator_t( this, "arcane_charge", o() -> spec.arcane_charge )
+                      .default_value( 0.25 );
   }
 };
 
@@ -1003,9 +951,7 @@ struct mirror_image_spell_t : public mage_pet_spell_t
   mirror_image_spell_t( const std::string& n, mirror_image_pet_t* p,
                         const spell_data_t* s )
     : mage_pet_spell_t( n, p, s )
-  {
-    may_crit = true;
-  }
+  { }
 
   virtual bool init_finished() override
   {
@@ -1026,8 +972,7 @@ struct mirror_image_spell_t : public mage_pet_spell_t
 struct arcane_blast_t : public mirror_image_spell_t
 {
   arcane_blast_t( mirror_image_pet_t* p, const std::string& options_str )
-    : mirror_image_spell_t( "arcane_blast", p,
-                            p -> find_pet_spell( "Arcane Blast" ) )
+    : mirror_image_spell_t( "arcane_blast", p, p -> find_pet_spell( "Arcane Blast" ) )
   {
     parse_options( options_str );
     base_multiplier *= 1.0 + o() -> spec.arcane_mage -> effectN( 1 ).percent();
@@ -1037,15 +982,14 @@ struct arcane_blast_t : public mirror_image_spell_t
   {
     mirror_image_spell_t::execute();
 
-    p()->arcane_charge->trigger();
+    p() -> arcane_charge -> trigger();
   }
 
   virtual double action_multiplier() const override
   {
     double am = mirror_image_spell_t::action_multiplier();
 
-    // MI Arcane Charges are still hardcoded as 25% damage gains
-    am *= 1.0 + p()->arcane_charge->check() * 0.25;
+    am *= 1.0 + p() -> arcane_charge -> check_stack_value();
 
     return am;
   }
@@ -1055,7 +999,7 @@ struct arcane_blast_t : public mirror_image_spell_t
     double tm = mirror_image_spell_t::composite_target_multiplier( target );
 
     // Arcane Blast (88084) should work with Erosion, according to the spell data.
-    // Does not work in game, as of build 24461, 2017-07-03.
+    // Does not work in game, as of build 25480, 2017-11-11.
     if ( ! o() -> bugs )
     {
       mage_td_t* tdata = o() -> get_target_data( target );
@@ -1411,19 +1355,17 @@ struct icy_veins_buff_t : public haste_buff_t
 
 struct lady_vashjs_grasp_t : public buff_t
 {
-  int fof_source_id;
+  proc_t* proc_fof;
 
   lady_vashjs_grasp_t( mage_t* p ) :
-    buff_t( buff_creator_t( p, "lady_vashjs_grasp", p -> find_spell( 208147 ) ) ),
-    fof_source_id( -1 )
+    buff_t( buff_creator_t( p, "lady_vashjs_grasp", p -> find_spell( 208147 ) ) )
   {
     // Disable by default.
     default_chance = 0.0;
     set_tick_callback( [ this, p ] ( buff_t* /* buff */, int /* ticks */, const timespan_t& /* tick_time */ )
     {
-      assert( fof_source_id != -1 );
       p -> buffs.fingers_of_frost -> trigger();
-      p -> benefits.fingers_of_frost -> update( fof_source_id );
+      proc_fof -> occur();
     } );
   }
 
@@ -1433,9 +1375,8 @@ struct lady_vashjs_grasp_t : public buff_t
 
     auto mage = debug_cast<mage_t*>( player );
     // Triggering LVG gives one stack of Fingers of Frost, regardless of the tick action.
-    assert( fof_source_id != -1 );
     mage -> buffs.fingers_of_frost -> trigger();
-    mage -> benefits.fingers_of_frost -> update( fof_source_id );
+    proc_fof -> occur();
   }
 };
 
@@ -1540,25 +1481,24 @@ struct mage_spell_t : public spell_t
 
     bool erosion;
     bool shatter;
+
+    bool ice_floes;
   } affected_by;
 
-  bool consumes_ice_floes;
   bool triggers_arcane_missiles;
-
-  int am_trigger_source_id;
+  proc_t* proc_am;
 public:
 
   mage_spell_t( const std::string& n, mage_t* p,
                 const spell_data_t* s = spell_data_t::nil() ) :
     spell_t( n, p, s ),
     affected_by( affected_by_t() ),
-    consumes_ice_floes( true ),
-    triggers_arcane_missiles( true ),
-    am_trigger_source_id( -1 )
+    triggers_arcane_missiles( true )
   {
     may_crit      = true;
     tick_may_crit = true;
     weapon_multiplier = 0.0;
+    affected_by.ice_floes = data().affected_by( p -> talents.ice_floes -> effectN( 1 ) );
   }
 
   virtual void init() override
@@ -1582,7 +1522,6 @@ public:
       snapshot_flags |= STATE_FROZEN;
       update_flags   |= STATE_FROZEN;
     }
-
     if ( ! harmful || background )
     {
       triggers_arcane_missiles = false;
@@ -1591,12 +1530,10 @@ public:
 
   virtual bool init_finished() override
   {
-    if ( p() -> specialization() == MAGE_ARCANE &&
-         triggers_arcane_missiles &&
-         data().ok() )
+    if ( p() -> specialization() == MAGE_ARCANE
+      && triggers_arcane_missiles )
     {
-      am_trigger_source_id = p() -> benefits.arcane_missiles
-                                 -> get_source_id( data().name_cstr() );
+      proc_am = p() -> get_proc( std::string( "Arcane Missiles! from " ) + data().name_cstr() );
     }
 
     return spell_t::init_finished();
@@ -1650,11 +1587,8 @@ public:
 
     if ( p() -> buffs.arcane_power -> check() )
     {
-      double arcane_power_reduction;
-      arcane_power_reduction = p() -> buffs.arcane_power -> data().effectN( 2 ).percent()
-                             + p() -> talents.overpowered -> effectN( 2 ).percent();
-
-      c *= 1.0 + arcane_power_reduction;
+      c *= 1.0 + p() -> buffs.arcane_power -> data().effectN( 2 ).percent()
+               + p() -> talents.overpowered -> effectN( 2 ).percent();
     }
 
     return c;
@@ -1662,9 +1596,7 @@ public:
 
   virtual bool usable_moving() const override
   {
-    buff_t* ice_floes = p() -> buffs.ice_floes;
-
-    if ( ice_floes -> check() && data().affected_by( ice_floes -> data().effectN( 1 ) ) )
+    if ( p() -> buffs.ice_floes -> check() && affected_by.ice_floes )
     {
       return true;
     }
@@ -1673,21 +1605,21 @@ public:
   }
 
   // You can thank Frost Nova for why this isn't in arcane_mage_spell_t instead
-  void trigger_am( int source_id, double chance = -1.0,
-                   int stacks = 1 )
+  void trigger_am( double chance = -1.0, int stacks = 1, proc_t* source = nullptr )
   {
-    if ( static_cast<buff_t*>( p() -> buffs.arcane_missiles )
-             -> trigger( stacks, buff_t::DEFAULT_VALUE(), chance ) )
+    if ( ! source )
+      source = proc_am;
+
+    if ( p() -> buffs.arcane_missiles -> trigger( stacks, buff_t::DEFAULT_VALUE(), chance, timespan_t::min() ) )
     {
-      if ( source_id < 0 )
+      if ( ! source )
       {
-        p() -> sim -> out_debug.printf( "Action %s does not have valid AM source_id",
-                                        name_str.c_str() );
+        assert( false );
+        return;
       }
-      else
-      {
-        p() -> benefits.arcane_missiles -> update( source_id, stacks );
-      }
+
+      for ( int i = 0; i < stacks; i++ )
+        source -> occur();
     }
   }
 
@@ -1698,19 +1630,17 @@ public:
     if ( background )
       return;
 
-    if ( execute_time() > timespan_t::zero() && consumes_ice_floes && p() -> buffs.ice_floes -> up() )
+    if ( affected_by.ice_floes
+      && p() -> talents.ice_floes -> ok()
+      && execute_time() > timespan_t::zero()
+      && p() -> buffs.ice_floes -> up() )
     {
       p() -> buffs.ice_floes -> decrement();
     }
 
     if ( p() -> specialization() == MAGE_ARCANE && hit_any_target && triggers_arcane_missiles )
     {
-      trigger_am( am_trigger_source_id );
-    }
-
-    if ( harmful && !background && p() -> talents.incanters_flow -> ok() )
-    {
-      p() -> benefits.incanters_flow -> update();
+      trigger_am();
     }
   }
 
@@ -1747,13 +1677,13 @@ public:
 
       // It looks like the debuff expiration is slightly delayed in game, allowing two spells
       // impacting at the same time to trigger multiple Meteors or Comet Storms.
-      // As of build 24461, 2017-07-18.
+      // As of build 25480, 2017-11-11.
       primed_buff -> expire( p() -> bugs ? timespan_t::from_millis( 30 ) : timespan_t::zero() );
     }
   }
 };
 
-typedef residual_action::residual_periodic_action_t< mage_spell_t > residual_action_t;
+typedef residual_action::residual_periodic_action_t<mage_spell_t> residual_action_t;
 
 
 // ============================================================================
@@ -1798,7 +1728,7 @@ struct arcane_mage_spell_t : public mage_spell_t
       // The damage bonus given by mastery seems to be snapshot at the moment
       // Arcane Charge is gained. As long as the stack number remains the same,
       // any future changes to mastery will have no effect.
-      // As of build 24461, 2017-07-03.
+      // As of build 25480, 2017-11-11.
       if ( ac -> check() < ac -> max_stack() )
       {
         ac -> trigger( stacks, savant_damage_bonus() );
@@ -1918,6 +1848,9 @@ struct fire_mage_spell_t : public mage_spell_t
   void handle_hot_streak( action_state_t* s )
   {
     mage_t* p = this -> p();
+
+    if ( ! p -> spec.hot_streak -> ok() )
+      return;
 
     p -> procs.hot_streak_spell -> occur();
 
@@ -2043,14 +1976,6 @@ struct fire_mage_spell_t : public mage_spell_t
   // Helper methods for Contained Infernal Core.
   void trigger_infernal_core( player_t* target )
   {
-    // As of PTR build 24287, 2017-06-08, casting Fireball and instant Pyroblast
-    // while at 28 stacks removes tracking buff, then triggers primed buff and
-    // one stack of tracking buff (instead of triggering the Meteor). Next cast
-    // then expires the primed buff, triggers the Meteor and triggers a second
-    // stack of the tracking buff.
-    // Conversely, doing the same when only the primed buff is active only
-    // triggers Meteor (it should also trigger one stack of the tracking buff).
-    // TODO: Check this
     trigger_legendary_effect( p() -> buffs.contained_infernal_core,
                               p() -> buffs.erupting_infernal_core,
                               p() -> action.legendary_meteor,
@@ -2080,7 +2005,7 @@ struct frost_mage_spell_t : public mage_spell_t
   bool chills;
   bool calculate_on_impact;
 
-  int fof_source_id;
+  proc_t* proc_fof;
 
   unsigned impact_flags;
 
@@ -2089,7 +2014,6 @@ struct frost_mage_spell_t : public mage_spell_t
     : mage_spell_t( n, p, s ),
       chills( false ),
       calculate_on_impact( false ),
-      fof_source_id( -1 ),
       impact_flags( 0u )
   {
     affected_by.frost_mage = true;
@@ -2125,22 +2049,22 @@ struct frost_mage_spell_t : public mage_spell_t
     }
   };
 
-  void trigger_fof( int source_id, double chance, int stacks = 1 )
+  void trigger_fof( double chance, int stacks = 1, proc_t* source = nullptr )
   {
-    bool success = p() -> buffs.fingers_of_frost
-                       -> trigger( stacks, buff_t::DEFAULT_VALUE(), chance );
+    if ( ! source )
+      source = proc_fof;
 
+    bool success = p() -> buffs.fingers_of_frost -> trigger( stacks, buff_t::DEFAULT_VALUE(), chance );
     if ( success )
     {
-      if ( source_id < 0 )
+      if ( ! source )
       {
-        p() -> sim -> out_debug.printf( "Action %s does not have valid fof source_id",
-                                        name_str.c_str() );
+        assert( false );
+        return;
       }
-      else
-      {
-        p() -> benefits.fingers_of_frost -> update( source_id, stacks );
-      }
+
+      for ( int i = 0; i < stacks; i++ )
+        source -> occur();
     }
   }
 
@@ -2170,14 +2094,15 @@ struct frost_mage_spell_t : public mage_spell_t
 
     double m = state -> target_da_multiplier;
 
-    // Invulnerability event may make it so that there's no damage associated with the icicle
-    // trigger. In that case, don't trigger any icicle gains.
-    if ( m == 0 )
-    {
+    // Do not create zero damage Icicles (e.g. due to invulnerability events).
+    if ( m == 0.0 )
       return;
-    }
 
     double amount = state -> result_amount / m * p() -> cache.mastery_value();
+
+    if ( amount == 0.0 )
+      return;
+
     if ( p() -> artifact.black_ice.rank() && rng().roll( 0.2 ) )
     {
       amount *= 2;
@@ -2345,7 +2270,6 @@ struct conflagration_dot_t : public fire_mage_spell_t
   conflagration_dot_t( mage_t* p ) :
     fire_mage_spell_t( "conflagration_dot", p, p -> find_spell( 226757 ) )
   {
-    //TODO: Check callbacks
     hasted_ticks = false;
     tick_may_crit = may_crit = false;
     background = true;
@@ -2394,27 +2318,27 @@ struct ignite_t : public residual_action_t
   conflagration_t* conflagration;
   phoenix_reborn_t* phoenix_reborn;
 
-  ignite_t( mage_t* player ) :
-    residual_action_t( "ignite", player, player -> find_spell( 12846 ) ),
+  ignite_t( mage_t* p ) :
+    residual_action_t( "ignite", p, p -> find_spell( 12846 ) ),
     conflagration( nullptr ),
     phoenix_reborn( nullptr )
   {
-    dot_duration = dbc::find_spell( player, 12654 ) -> duration();
-    base_tick_time = dbc::find_spell( player, 12654 ) -> effectN( 1 ).period();
+    dot_duration = p -> find_spell( 12654 ) -> duration();
+    base_tick_time = p -> find_spell( 12654 ) -> effectN( 1 ).period();
     school = SCHOOL_FIRE;
 
     //!! NOTE NOTE NOTE !! This is super dangerous and means we have to be extra careful with correctly
     // flagging thats that proc off events, to not proc off ignite if they shouldn't!
     callbacks = true;
 
-    if ( player -> talents.conflagration -> ok() )
+    if ( p -> talents.conflagration -> ok() )
     {
-      conflagration = new conflagration_t( player );
+      conflagration = new conflagration_t( p );
     }
 
-    if ( player -> artifact.phoenix_reborn.rank() )
+    if ( p -> artifact.phoenix_reborn.rank() )
     {
-      phoenix_reborn = new phoenix_reborn_t( player );
+      phoenix_reborn = new phoenix_reborn_t( p );
     }
   }
 
@@ -2475,7 +2399,7 @@ struct arcane_rebound_t : public arcane_mage_spell_t
     arcane_mage_spell_t( "arcane_rebound", p, p -> find_spell( 210817 ) )
   {
     background = true;
-    callbacks = false; // TODO: Is this true?
+    callbacks = false;
     aoe = -1;
   }
 
@@ -2598,7 +2522,7 @@ struct arcane_blast_t : public arcane_mage_spell_t
     triggers_arcane_missiles = false; // Disable default AM proc logic.
     base_multiplier *= 1.0 + p -> artifact.blasting_rod.percent();
 
-    if ( p -> action.unstable_magic_explosion )
+    if ( p -> specialization() == MAGE_ARCANE && p -> action.unstable_magic_explosion )
     {
       add_child( p -> action.unstable_magic_explosion );
     }
@@ -2606,9 +2530,7 @@ struct arcane_blast_t : public arcane_mage_spell_t
 
   virtual bool init_finished() override
   {
-    am_trigger_source_id = p() -> benefits.arcane_missiles
-                               -> get_source_id( data().name_cstr() );
-
+    proc_am = p() -> get_proc( std::string( "Arcane Missiles! from " ) + data().name_cstr() );
     return arcane_mage_spell_t::init_finished();
   }
 
@@ -2624,6 +2546,7 @@ struct arcane_blast_t : public arcane_mage_spell_t
     {
       c = 0;
     }
+
     return c;
   }
 
@@ -2638,9 +2561,7 @@ struct arcane_blast_t : public arcane_mage_spell_t
 
     if ( hit_any_target )
     {
-      trigger_am( am_trigger_source_id,
-                  p() -> buffs.arcane_missiles -> proc_chance() * 2.0 );
-
+      trigger_am( p() -> buffs.arcane_missiles -> proc_chance() * 2.0 );
       trigger_arcane_charge();
     }
 
@@ -2649,7 +2570,7 @@ struct arcane_blast_t : public arcane_mage_spell_t
       p() -> buffs.presence_of_mind -> decrement();
     }
 
-    p() -> trigger_t19_oh();
+    p() -> buffs.t19_oh_buff -> trigger();
     p() -> buffs.quick_thinker -> trigger();
   }
 
@@ -2673,7 +2594,7 @@ struct arcane_blast_t : public arcane_mage_spell_t
 
     if ( p() -> talents.temporal_flux -> ok() )
     {
-      t *=  1.0 + p() -> buffs.arcane_charge -> stack() *
+      t *=  1.0 + p() -> buffs.arcane_charge -> check() *
                   p() -> talents.temporal_flux -> effectN( 1 ).percent();
     }
 
@@ -2708,7 +2629,7 @@ struct time_and_space_t : public arcane_mage_spell_t
     background = true;
 
     // All other background actions trigger Erosion.
-    // As of build 24461, 2017-07-03.
+    // As of build 25480, 2017-11-11.
     if ( p -> bugs )
     {
       triggers_erosion = false;
@@ -2773,13 +2694,9 @@ struct arcane_explosion_t : public arcane_mage_spell_t
           .target( execute_state -> target )
           .n_pulses( 1 )
           .action( time_and_space ) );
+      }
 
-        p() -> buffs.time_and_space -> trigger();
-      }
-      else
-      {
-        p() -> buffs.time_and_space -> trigger();
-      }
+      p() -> buffs.time_and_space -> trigger();
     }
   }
 
@@ -3002,9 +2919,7 @@ struct arcane_orb_bolt_t : public arcane_mage_spell_t
 
   virtual bool init_finished() override
   {
-    am_trigger_source_id = p() -> benefits.arcane_missiles
-                               -> get_source_id( "Arcane Orb Impact" );
-
+    proc_am = p() -> get_proc( "Arcane Missiles! from Arcane Orb Impact" );
     return arcane_mage_spell_t::init_finished();
   }
 
@@ -3015,7 +2930,7 @@ struct arcane_orb_bolt_t : public arcane_mage_spell_t
     if ( result_is_hit( s -> result ) )
     {
       trigger_arcane_charge();
-      trigger_am( am_trigger_source_id );
+      trigger_am();
 
       p() -> buffs.quick_thinker -> trigger();
     }
@@ -3050,20 +2965,14 @@ struct arcane_orb_t : public arcane_mage_spell_t
 
   virtual bool init_finished() override
   {
-    if ( data().ok() )
-    {
-      am_trigger_source_id = p() -> benefits.arcane_missiles
-                                 -> get_source_id( data().name_cstr() );
-    }
-
+    proc_am = p() -> get_proc( std::string( "Arcane Missiles! from " ) + data().name_cstr() );
     return arcane_mage_spell_t::init_finished();
   }
 
   virtual void execute() override
   {
     arcane_mage_spell_t::execute();
-
-    trigger_am( am_trigger_source_id );
+    trigger_am();
     trigger_arcane_charge();
   }
 
@@ -3077,6 +2986,7 @@ struct arcane_orb_t : public arcane_mage_spell_t
   {
     arcane_mage_spell_t::impact( s );
 
+    orb_bolt -> set_target( s -> target );
     orb_bolt -> execute();
   }
 };
@@ -3266,7 +3176,6 @@ struct cinder_t : public fire_mage_spell_t
     background = true;
     aoe = -1;
     triggers_ignite = true;
-    //TODO: Revisit this once skullflower confirms intended behavior.
     triggers_pyretic_incantation = true;
   }
 
@@ -3575,7 +3484,7 @@ struct ebonbolt_t : public frost_mage_spell_t
     // Tarnished Sentinel Medallion.
     parse_options( options_str );
     parse_effect_data( p -> find_spell( 228599 ) -> effectN( 1 ) );
-    if ( !p -> artifact.ebonbolt.rank() )
+    if ( ! p -> artifact.ebonbolt.rank() )
     {
       background = true;
     }
@@ -3696,7 +3605,7 @@ struct fireball_t : public fire_mage_spell_t
     base_multiplier *= 1.0 + p -> artifact.great_balls_of_fire.percent();
     base_execute_time *= 1.0 + p -> artifact.fire_at_will.percent();
     add_child( conflagration_dot );
-    if ( p -> action.unstable_magic_explosion )
+    if ( p -> specialization() == MAGE_FIRE && p -> action.unstable_magic_explosion )
     {
       add_child( p -> action.unstable_magic_explosion );
     }
@@ -3717,7 +3626,7 @@ struct fireball_t : public fire_mage_spell_t
       p() -> buffs.ignition -> trigger();
     }
 
-    p() -> trigger_t19_oh();
+    p() -> buffs.t19_oh_buff -> trigger();
   }
 
   virtual void impact( action_state_t* s ) override
@@ -3876,14 +3785,27 @@ struct flamestrike_t : public fire_mage_spell_t
 
   virtual void execute() override
   {
+    bool hot_streak = p() -> buffs.hot_streak -> up();
+    p() -> state.hot_streak_active = hot_streak;
+
     fire_mage_spell_t::execute();
+
+    // Ignition/Critical Massive buffs are removed shortly after Flamestrike/Pyroblast cast.
+    // In a situation where you're hardcasting FS/PB followed by a Hot Streak FS/FB, both
+    // spells actually benefit. As of build 25480, 2017-11-11.
+    p() -> buffs.ignition -> expire( p() -> bugs ? timespan_t::from_millis( 15 ) : timespan_t::zero() );
+    p() -> buffs.critical_massive -> expire( p() -> bugs ? timespan_t::from_millis( 15 ) : timespan_t::zero() );
+
     p() -> buffs.hot_streak -> expire();
 
-    // Ignition buff is removed shortly after Flamestrike/Pyroblast cast. In a situation
-    // where you're hardcasting FS/PB followed by a Hot Streak FS/FB, both spells actually
-    // benefit. As of build 24461, 2017-07-05.
-    p() -> buffs.ignition -> expire( p() -> bugs ? timespan_t::from_millis( 15 ) : timespan_t::zero() );
-    p() -> buffs.critical_massive -> expire();
+    if ( p() -> talents.pyromaniac -> ok()
+      && hot_streak
+      && rng().roll( p() -> talents.pyromaniac -> effectN( 1 ).percent() ) )
+    {
+      p() -> procs.hot_streak -> occur();
+      p() -> procs.hot_streak_pyromaniac -> occur();
+      p() -> buffs.hot_streak -> trigger();
+    }
   }
 
   virtual void impact( action_state_t* state ) override
@@ -3905,7 +3827,7 @@ struct flamestrike_t : public fire_mage_spell_t
       // None of the following Aftershocks get Ignition crit bonus.
       //
       // This should model that behavior correctly. Otherwise we might need custom snapshotting.
-      // Last checked: build 24461, 2017-07-03.
+      // Last checked: build 25480, 2017-11-11.
       // TODO: Check if this is still true.
       p() -> state.ignition_active = p() -> buffs.ignition -> up();
 
@@ -3938,8 +3860,14 @@ struct flamestrike_t : public fire_mage_spell_t
 
   virtual double composite_ignite_multiplier( const action_state_t* s ) const override
   {
-   const ignite_spell_state_t* is = debug_cast<const ignite_spell_state_t*>( s );
-   return is -> hot_streak ? 2.0 : 1.0;
+    if ( p() -> bugs )
+    {
+      return p() -> state.hot_streak_active ? 2.0 : 1.0;
+    }
+    else
+    {
+      return debug_cast<const ignite_spell_state_t*>( s ) -> hot_streak ? 2.0 : 1.0;
+    }
   }
 
   virtual double action_multiplier() const override
@@ -4138,7 +4066,7 @@ struct frost_bomb_t : public frost_mage_spell_t
 
 struct frostbolt_t : public frost_mage_spell_t
 {
-  int water_jet_fof_source_id;
+  proc_t* proc_fof_water_jet;
 
   frostbolt_t( mage_t* p, const std::string& options_str ) :
     frost_mage_spell_t( "frostbolt", p, p -> find_specialization_spell( "Frostbolt" ) )
@@ -4149,7 +4077,7 @@ struct frostbolt_t : public frost_mage_spell_t
     {
       add_child( p -> icicle );
     }
-    if ( p -> action.unstable_magic_explosion )
+    if ( p -> specialization() == MAGE_FROST && p -> action.unstable_magic_explosion )
     {
       add_child( p -> action.unstable_magic_explosion );
     }
@@ -4166,11 +4094,8 @@ struct frostbolt_t : public frost_mage_spell_t
 
   virtual bool init_finished() override
   {
-    fof_source_id = p() -> benefits.fingers_of_frost
-                        -> get_source_id( data().name_cstr() );
-    water_jet_fof_source_id = p() -> benefits.fingers_of_frost
-                                  -> get_source_id( "Water Jet" );
-
+    proc_fof = p() -> get_proc( std::string( "Fingers of Frost from " ) + data().name_cstr() );
+    proc_fof_water_jet = p() -> get_proc( "Fingers of Frost from Water Jet" );
     return frost_mage_spell_t::init_finished();
   }
 
@@ -4182,14 +4107,14 @@ struct frostbolt_t : public frost_mage_spell_t
 
     double fof_proc_chance = p() -> spec.fingers_of_frost -> effectN( 1 ).percent();
     fof_proc_chance *= 1.0 + p() -> talents.frozen_touch -> effectN( 1 ).percent();
-    trigger_fof( fof_source_id, fof_proc_chance );
+    trigger_fof( fof_proc_chance );
 
     double bf_proc_chance = p() -> spec.brain_freeze -> effectN( 1 ).percent();
     bf_proc_chance += p() -> sets -> set( MAGE_FROST, T19, B2 ) -> effectN( 1 ).percent();
     bf_proc_chance += p() -> artifact.clarity_of_thought.percent();
     trigger_brain_freeze( bf_proc_chance );
 
-    p() -> trigger_t19_oh();
+    p() -> buffs.t19_oh_buff -> trigger();
   }
 
   virtual void impact( action_state_t* s ) override
@@ -4203,7 +4128,7 @@ struct frostbolt_t : public frost_mage_spell_t
 
     if ( td( s -> target ) -> debuffs.water_jet -> check() )
     {
-      trigger_fof( water_jet_fof_source_id, 1.0 );
+      trigger_fof( 1.0, 1, proc_fof_water_jet );
     }
 
     //TODO: Fix hardcode once spelldata has value for proc rate.
@@ -4298,9 +4223,7 @@ struct frozen_orb_bolt_t : public frost_mage_spell_t
 
   virtual bool init_finished() override
   {
-    fof_source_id = p() -> benefits.fingers_of_frost
-                        -> get_source_id( "Frozen Orb Tick" );
-
+    proc_fof = p() -> get_proc( "Fingers of Frost from Frozen Orb Tick" );
     return frost_mage_spell_t::init_finished();
   }
 
@@ -4312,7 +4235,7 @@ struct frozen_orb_bolt_t : public frost_mage_spell_t
       double fof_proc_chance = p() -> spec.fingers_of_frost -> effectN( 1 ).percent();
       fof_proc_chance += p() -> sets -> set( MAGE_FROST, T19, B4 ) -> effectN( 1 ).percent();
       fof_proc_chance *= 1.0 + p() -> talents.frozen_touch -> effectN( 1 ).percent();
-      trigger_fof( fof_source_id, fof_proc_chance );
+      trigger_fof( fof_proc_chance );
     }
   }
 };
@@ -4340,9 +4263,7 @@ struct frozen_orb_t : public frost_mage_spell_t
 
   virtual bool init_finished() override
   {
-    fof_source_id = p() -> benefits.fingers_of_frost
-                        -> get_source_id( "Frozen Orb Initial Impact" );
-
+    proc_fof = p() -> get_proc( "Fingers of Frost from Frozen Orb Initial Impact" );
     return frost_mage_spell_t::init_finished();
   }
 
@@ -4383,7 +4304,7 @@ struct frozen_orb_t : public frost_mage_spell_t
 
     if ( result_is_hit( s -> result ) )
     {
-      trigger_fof( fof_source_id, 1.0 );
+      trigger_fof( 1.0 );
       make_event<ground_aoe_event_t>( *sim, p(), ground_aoe_params_t()
         .pulse_time( timespan_t::from_seconds( 0.5 ) )
         .target( t )
@@ -4392,6 +4313,7 @@ struct frozen_orb_t : public frost_mage_spell_t
         .expiration_callback( [ this, t, x, y ] () {
           if ( ice_time )
           {
+            ice_time_nova -> set_target( target );
             action_state_t* state = ice_time_nova -> get_state();
             ice_time_nova -> snapshot_state( state, ice_time_nova -> amount_type( state ) );
             // Make sure Ice Time works correctly with distance targetting, e.g.
@@ -4538,7 +4460,7 @@ struct ice_floes_t : public mage_spell_t
   {
     mage_spell_t::execute();
 
-    p() -> buffs.ice_floes -> trigger( 1 );
+    p() -> buffs.ice_floes -> trigger();
   }
 };
 
@@ -4569,9 +4491,9 @@ struct ice_lance_state_t : public mage_spell_state_t
   virtual void copy_state( const action_state_t* s ) override
   {
     mage_spell_state_t::copy_state( s );
-    auto fss = debug_cast<const ice_lance_state_t*>( s );
+    auto ils = debug_cast<const ice_lance_state_t*>( s );
 
-    fingers_of_frost = fss -> fingers_of_frost;
+    fingers_of_frost = ils -> fingers_of_frost;
   }
 };
 
@@ -4647,7 +4569,7 @@ struct ice_lance_t : public frost_mage_spell_t
     // seconds, the latter adjusted by haste. Casting continues until all
     // Icicles are gone, including new ones that accumulate while they're being
     // fired. If target dies, Icicles stop.
-    if ( !p() -> talents.glacial_spike -> ok() )
+    if ( ! p() -> talents.glacial_spike -> ok() )
     {
       p() -> trigger_icicle( execute_state, true, target );
     }
@@ -4792,8 +4714,8 @@ struct icy_veins_t : public frost_mage_spell_t
   {
     if ( p() -> buffs.lady_vashjs_grasp -> default_chance != 0.0 )
     {
-      debug_cast<buffs::lady_vashjs_grasp_t*>( p() -> buffs.lady_vashjs_grasp ) -> fof_source_id =
-        p() -> benefits.fingers_of_frost -> get_source_id( "Lady Vashj's Grasp" );
+      debug_cast<buffs::lady_vashjs_grasp_t*>( p() -> buffs.lady_vashjs_grasp )
+        -> proc_fof = p() -> get_proc( "Fingers of Frost from Lady Vashj's Grasp" );
     }
 
     return frost_mage_spell_t::init_finished();
@@ -5021,7 +4943,7 @@ struct mark_of_aluneth_explosion_t : public arcane_mage_spell_t
 
     base_dd_min = base_dd_max = 1.0;
 
-    // As of build 24461, 2017-07-03.
+    // As of build 25480, 2017-11-11.
     if ( p -> bugs )
     {
       affected_by.arcane_mage = false;
@@ -5166,13 +5088,12 @@ struct meteor_impact_t: public fire_mage_spell_t
     background = true;
     aoe = targets;
     split_aoe_damage = true;
-    //TODO: Revisit PI behavior once Skullflower confirms behavior.
     triggers_ignite = true;
 
     meteor_burn_pulse_time = meteor_burn -> data().effectN( 1 ).period();
 
     // It seems that the 8th tick happens only very rarely in game.
-    // As of build 24461, 2017-07-03.
+    // As of build 25480, 2017-11-11.
     if ( p -> bugs )
     {
       meteor_burn_duration -= meteor_burn_pulse_time;
@@ -5325,12 +5246,7 @@ struct nether_tempest_t : public arcane_mage_spell_t
 
   virtual bool init_finished() override
   {
-    if ( data().ok() )
-    {
-      am_trigger_source_id = p() -> benefits.arcane_missiles
-                                 -> get_source_id( data().name_cstr() );
-    }
-
+    proc_am = p() -> get_proc( std::string( "Arcane Missiles! from " ) + data().name_cstr() );
     return arcane_mage_spell_t::init_finished();
   }
 
@@ -5357,7 +5273,7 @@ struct nether_tempest_t : public arcane_mage_spell_t
         td( p() -> last_bomb_target ) -> dots.nether_tempest -> cancel();
       }
 
-      trigger_am( am_trigger_source_id, am_proc_chance );
+      trigger_am( am_proc_chance );
       p() -> last_bomb_target = execute_state -> target;
     }
   }
@@ -5418,7 +5334,7 @@ struct phoenixs_flames_splash_t : public fire_mage_spell_t
     double am = fire_mage_spell_t::action_multiplier();
 
     // Phoenix's Flames splash deal 25% less damage compared to the
-    // spell data/tooltip values. As of build 24461, 2017-07-03.
+    // spell data/tooltip values. As of build 25480, 2017-11-11.
     am *= std::pow( strafing_run_multiplier, p() -> bugs ? chain_number + 1 : chain_number );
 
     return am;
@@ -5517,7 +5433,7 @@ struct pyroblast_t : public fire_mage_spell_t
     double am = fire_mage_spell_t::action_multiplier();
 
     if ( p() -> buffs.kaelthas_ultimate_ability -> check() &&
-         !p() -> buffs.hot_streak -> check() )
+         ! p() -> buffs.hot_streak -> check() )
     {
       am *= 1.0 + p() -> buffs.kaelthas_ultimate_ability -> data().effectN( 1 ).percent();
     }
@@ -5544,35 +5460,35 @@ struct pyroblast_t : public fire_mage_spell_t
 
   virtual void execute() override
   {
-    p() -> buffs.hot_streak -> up();
+    bool hot_streak = p() -> buffs.hot_streak -> up();
+    p() -> state.hot_streak_active = hot_streak;
 
     fire_mage_spell_t::execute();
 
-    if ( p() -> buffs.kaelthas_ultimate_ability -> check() &&
-        !p() -> buffs.hot_streak -> check() )
+    if ( p() -> buffs.kaelthas_ultimate_ability -> check() && ! hot_streak )
     {
       p() -> buffs.kaelthas_ultimate_ability -> expire();
     }
-    if ( p() -> buffs.hot_streak -> check() )
+    if ( hot_streak )
     {
       p() -> buffs.kaelthas_ultimate_ability -> trigger();
     }
 
-    // Ignition buff is removed shortly after Flamestrike/Pyroblast cast. In a situation
-    // where you're hardcasting FS/PB followed by a Hot Streak FS/FB, both spells actually
-    // benefit. As of build 24461, 2017-07-05.
+    // Ignition/Critical Massive buffs are removed shortly after Flamestrike/Pyroblast cast.
+    // In a situation where you're hardcasting FS/PB followed by a Hot Streak FS/FB, both
+    // spells actually benefit. As of build 25480, 2017-11-11.
     p() -> buffs.ignition -> expire( p() -> bugs ? timespan_t::from_millis( 15 ) : timespan_t::zero() );
-    p() -> buffs.critical_massive -> expire();
+    p() -> buffs.critical_massive -> expire( p() -> bugs ? timespan_t::from_millis( 15 ) : timespan_t::zero() );
 
-    //TODO: Does this interact with T19 4pc?
-    if ( p() -> talents.pyromaniac -> ok() &&
-         rng().roll( p() -> talents.pyromaniac -> effectN( 1 ).percent() ) )
+    p() -> buffs.hot_streak -> expire();
+
+    if ( p() -> talents.pyromaniac -> ok()
+      && hot_streak
+      && rng().roll( p() -> talents.pyromaniac -> effectN( 1 ).percent() ) )
     {
-      return;
-    }
-    else
-    {
-      p() -> buffs.hot_streak -> expire();
+      p() -> procs.hot_streak -> occur();
+      p() -> procs.hot_streak_pyromaniac -> occur();
+      p() -> buffs.hot_streak -> trigger();
     }
   }
 
@@ -5626,8 +5542,14 @@ struct pyroblast_t : public fire_mage_spell_t
 
   virtual double composite_ignite_multiplier( const action_state_t* s ) const override
   {
-    const ignite_spell_state_t* is = debug_cast<const ignite_spell_state_t*>( s );
-    return is -> hot_streak ? 2.0 : 1.0;
+    if ( p() -> bugs )
+    {
+      return p() -> state.hot_streak_active ? 2.0 : 1.0;
+    }
+    else
+    {
+      return debug_cast<const ignite_spell_state_t*>( s ) -> hot_streak ? 2.0 : 1.0;
+    }
   }
 
   virtual double composite_target_crit_chance( player_t* target ) const override
@@ -5638,6 +5560,7 @@ struct pyroblast_t : public fire_mage_spell_t
     {
       c = 1.0;
     }
+
     return c;
   }
 };
@@ -5670,14 +5593,13 @@ struct ray_of_frost_t : public frost_mage_spell_t
 
     // Technically, the "castable duration" buff should be ID:208166
     // To keep things simple, we just apply a 0 stack of the damage buff 208141
-    if ( !p() -> buffs.ray_of_frost -> check() )
+    if ( ! p() -> buffs.ray_of_frost -> check() )
     {
       p() -> buffs.ray_of_frost -> trigger( 0 );
     }
   }
 
-  virtual timespan_t composite_dot_duration( const action_state_t* /* s */ )
-    const override
+  virtual timespan_t composite_dot_duration( const action_state_t* /* s */ ) const override
   {
     return data().duration();
   }
@@ -5733,8 +5655,7 @@ struct scorch_t : public fire_mage_spell_t
   double koralons_burning_touch_multiplier;
 
   scorch_t( mage_t* p, const std::string& options_str ) :
-    fire_mage_spell_t( "scorch", p,
-                       p -> find_specialization_spell( "Scorch" ) ),
+    fire_mage_spell_t( "scorch", p, p -> find_specialization_spell( "Scorch" ) ),
     koralons_burning_touch( false ),
     koralons_burning_touch_threshold( 0.0 ),
     koralons_burning_touch_multiplier( 0.0 )
@@ -5744,7 +5665,6 @@ struct scorch_t : public fire_mage_spell_t
     triggers_hot_streak = true;
     triggers_ignite = true;
     triggers_pyretic_incantation = true;
-    consumes_ice_floes = false;
   }
 
   virtual double action_multiplier() const override
@@ -5767,6 +5687,7 @@ struct scorch_t : public fire_mage_spell_t
     {
       c = 1.0;
     }
+
     return c;
   }
 
@@ -5842,7 +5763,7 @@ struct slow_t : public arcane_mage_spell_t
 
 struct supernova_t : public arcane_mage_spell_t
 {
-  int sn_aoe_am_source_id;
+  proc_t* proc_am_sn_aoe;
 
   supernova_t( mage_t* p, const std::string& options_str ) :
     arcane_mage_spell_t( "supernova", p, p -> talents.supernova )
@@ -5858,9 +5779,7 @@ struct supernova_t : public arcane_mage_spell_t
 
   virtual bool init_finished() override
   {
-    sn_aoe_am_source_id = p() -> benefits.arcane_missiles
-                              -> get_source_id( "Supernova AOE" );
-
+    proc_am_sn_aoe = p() -> get_proc( "Arcane Missiles! from Supernova AOE" );
     return arcane_mage_spell_t::init_finished();
   }
 
@@ -5870,9 +5789,9 @@ struct supernova_t : public arcane_mage_spell_t
 
     if ( hit_any_target && num_targets_hit > 1 )
     {
-      // NOTE: Supernova AOE effect causes secondary trigger chance for AM
-      // TODO: Verify this is still the case
-      trigger_am( sn_aoe_am_source_id );
+      // Supernova AOE effect causes secondary trigger chance for AM.
+      // As of build 25480, 2017-11-11.
+      trigger_am( -1.0, 1, proc_am_sn_aoe );
     }
   }
 };
@@ -5900,11 +5819,11 @@ struct summon_water_elemental_t : public frost_mage_spell_t
 
   virtual bool ready() override
   {
-    if ( !frost_mage_spell_t::ready() || p() -> talents.lonely_winter -> ok() )
+    if ( ! frost_mage_spell_t::ready() || p() -> talents.lonely_winter -> ok() )
       return false;
 
     // TODO: Check this
-    return !p() -> pets.water_elemental ||
+    return ! p() -> pets.water_elemental ||
            p() -> pets.water_elemental -> is_sleeping();
   }
 };
@@ -5989,10 +5908,10 @@ struct time_warp_t : public mage_spell_t
     // apply to us.
     bool shard = p() -> player_t::buffs.bloodlust -> default_chance == 0.0;
 
-    if ( !shard && sim -> overrides.bloodlust )
+    if ( ! shard && sim -> overrides.bloodlust )
       return false;
 
-    if ( !shard && player -> buffs.exhaustion -> check() )
+    if ( ! shard && player -> buffs.exhaustion -> check() )
       return false;
 
     return mage_spell_t::ready();
@@ -6068,7 +5987,7 @@ struct start_burn_phase_t : public action_t
     mage_t* p = debug_cast<mage_t*>( player );
 
     bool success = p -> burn_phase.enable( sim -> current_time() );
-    if ( !success )
+    if ( ! success )
     {
       sim -> errorf( "%s start_burn_phase infinite loop detected (no time passing between executes) at '%s'",
                      p -> name(), signature_str.c_str() );
@@ -6114,7 +6033,7 @@ struct stop_burn_phase_t : public action_t
     p -> sample_data.burn_duration_history -> add( p -> burn_phase.duration( sim -> current_time() ).total_seconds() );
 
     bool success = p -> burn_phase.disable( sim -> current_time() );
-    if ( !success )
+    if ( ! success )
     {
       sim -> errorf( "%s stop_burn_phase infinite loop detected (no time passing between executes) at '%s'",
                      p -> name(), signature_str.c_str() );
@@ -6131,7 +6050,7 @@ struct stop_burn_phase_t : public action_t
   {
     mage_t* p = debug_cast<mage_t*>( player );
 
-    if ( !p -> burn_phase.on() )
+    if ( ! p -> burn_phase.on() )
     {
       return false;
     }
@@ -6273,9 +6192,7 @@ struct freeze_t : public action_t
   {
     mage_t* m = debug_cast<mage_t*>( player );
     if ( m -> talents.lonely_winter -> ok() )
-    {
       return false;
-    }
 
     if ( ! action )
       return false;
@@ -6346,9 +6263,7 @@ struct water_jet_t : public action_t
   {
     mage_t* m = debug_cast<mage_t*>( player );
     if ( m -> talents.lonely_winter -> ok() )
-    {
       return false;
-    }
 
     if ( ! action )
       return false;
@@ -6358,7 +6273,7 @@ struct water_jet_t : public action_t
     // properties of the spell (most importantly, the cooldown). If normal
     // ready() was called, this would always return false, as queued = false,
     // before this action executes.
-    if ( ! action -> spell_t::ready() )
+    if ( ! action -> pets::water_elemental::water_elemental_spell_t::ready() )
       return false;
 
     // Don't re-execute if water jet is already queued
@@ -6408,7 +6323,7 @@ struct icicle_event_t : public event_t
     mage -> buffs.icicles -> decrement();
 
     double new_damage = mage -> get_icicle();
-    if ( new_damage > 0 )
+    if ( new_damage > 0.0 )
     {
       mage -> icicle_event = make_event<icicle_event_t>( sim(), *mage, new_damage, target );
       if ( mage -> sim -> debug )
@@ -6426,7 +6341,7 @@ struct ignite_spread_event_t : public event_t
 
   static double ignite_bank( dot_t* ignite )
   {
-    if ( !ignite -> is_ticking() )
+    if ( ! ignite -> is_ticking() )
     {
       return 0.0;
     }
@@ -6581,18 +6496,17 @@ mage_td_t::mage_td_t( player_t* target, mage_t* mage ) :
   dots.mark_of_aluneth   = target -> get_dot( "mark_of_aluneth",   mage );
   dots.nether_tempest    = target -> get_dot( "nether_tempest",    mage );
 
-  debuffs.erosion       = new buffs::erosion_t( this );
-  debuffs.slow          = buff_creator_t( *this, "slow", mage -> find_spell( 31589 ) );
+  debuffs.erosion           = new buffs::erosion_t( this );
+  debuffs.slow              = buff_creator_t( *this, "slow", mage -> find_spell( 31589 ) );
   debuffs.touch_of_the_magi = new buffs::touch_of_the_magi_t( this );
 
-  debuffs.frost_bomb    = buff_creator_t( *this, "frost_bomb", mage -> talents.frost_bomb );
-  debuffs.frozen        = buff_creator_t( *this, "frozen" )
-                            .duration( timespan_t::from_seconds( 0.5 ) );
-  debuffs.water_jet     = buff_creator_t( *this, "water_jet", mage -> find_spell( 135029 ) )
-                            .cd( timespan_t::zero() );
-  debuffs.winters_chill = buff_creator_t( *this, "winters_chill", mage -> find_spell( 228358 ) )
-                            .chance( mage -> spec.brain_freeze_2 -> ok() ? 1.0 : 0.0 );
-
+  debuffs.frost_bomb        = buff_creator_t( *this, "frost_bomb", mage -> talents.frost_bomb );
+  debuffs.frozen            = buff_creator_t( *this, "frozen" )
+                                .duration( timespan_t::from_seconds( 0.5 ) );
+  debuffs.water_jet         = buff_creator_t( *this, "water_jet", mage -> find_spell( 135029 ) )
+                                .cd( timespan_t::zero() );
+  debuffs.winters_chill     = buff_creator_t( *this, "winters_chill", mage -> find_spell( 228358 ) )
+                                .chance( mage -> spec.brain_freeze_2 -> ok() ? 1.0 : 0.0 );
 }
 
 mage_t::mage_t( sim_t* sim, const std::string& name, race_e r ) :
@@ -6660,15 +6574,12 @@ mage_t::mage_t( sim_t* sim, const std::string& name, race_e r ) :
 
 mage_t::~mage_t()
 {
-  delete benefits.incanters_flow;
   delete benefits.arcane_charge.arcane_barrage;
   delete benefits.arcane_charge.arcane_blast;
   delete benefits.arcane_charge.arcane_explosion;
   delete benefits.arcane_charge.arcane_missiles;
   delete benefits.arcane_charge.nether_tempest;
-  delete benefits.arcane_missiles;
   delete benefits.chain_reaction;
-  delete benefits.fingers_of_frost;
   delete benefits.magtheridons_might;
   delete benefits.ray_of_frost;
   delete benefits.zannesu_journey;
@@ -6680,14 +6591,6 @@ mage_t::~mage_t()
   delete sample_data.frozen_veins;
   delete sample_data.t20_4pc;
   delete sample_data.icy_veins_duration;
-}
-
-void mage_t::trigger_t19_oh()
-{
-  if ( sets -> has_set_bonus( specialization(), T19OH, B8 ) )
-  {
-    buffs.t19_oh_buff -> trigger();
-  }
 }
 
 bool mage_t::apply_crowd_control( const action_state_t* state, spell_mechanic type )
@@ -6721,67 +6624,63 @@ action_t* mage_t::create_action( const std::string& name,
   using namespace actions;
 
   // Arcane
-  if ( name == "arcane_barrage"    ) return new             arcane_barrage_t( this, options_str );
-  if ( name == "arcane_blast"      ) return new               arcane_blast_t( this, options_str );
-  if ( name == "arcane_explosion"  ) return new           arcane_explosion_t( this, options_str );
-  if ( name == "arcane_missiles"   ) return new            arcane_missiles_t( this, options_str );
-  if ( name == "arcane_orb"        ) return new                 arcane_orb_t( this, options_str );
-  if ( name == "arcane_power"      ) return new               arcane_power_t( this, options_str );
-  if ( name == "charged_up"        ) return new                 charged_up_t( this, options_str );
-  if ( name == "evocation"         ) return new                  evocation_t( this, options_str );
-  if ( name == "nether_tempest"    ) return new             nether_tempest_t( this, options_str );
-  if ( name == "presence_of_mind"  ) return new           presence_of_mind_t( this, options_str );
-  if ( name == "slow"              ) return new                       slow_t( this, options_str );
-  if ( name == "summon_arcane_familiar") return new summon_arcane_familiar_t( this, options_str );
-  if ( name == "supernova"         ) return new                  supernova_t( this, options_str );
+  if ( name == "arcane_barrage"         ) return new         arcane_barrage_t( this, options_str );
+  if ( name == "arcane_blast"           ) return new           arcane_blast_t( this, options_str );
+  if ( name == "arcane_explosion"       ) return new       arcane_explosion_t( this, options_str );
+  if ( name == "arcane_missiles"        ) return new        arcane_missiles_t( this, options_str );
+  if ( name == "arcane_orb"             ) return new             arcane_orb_t( this, options_str );
+  if ( name == "arcane_power"           ) return new           arcane_power_t( this, options_str );
+  if ( name == "charged_up"             ) return new             charged_up_t( this, options_str );
+  if ( name == "evocation"              ) return new              evocation_t( this, options_str );
+  if ( name == "nether_tempest"         ) return new         nether_tempest_t( this, options_str );
+  if ( name == "presence_of_mind"       ) return new       presence_of_mind_t( this, options_str );
+  if ( name == "slow"                   ) return new                   slow_t( this, options_str );
+  if ( name == "summon_arcane_familiar" ) return new summon_arcane_familiar_t( this, options_str );
+  if ( name == "supernova"              ) return new              supernova_t( this, options_str );
 
-  if ( name == "start_burn_phase"  ) return new           start_burn_phase_t( this, options_str );
-  if ( name == "stop_burn_phase"   ) return new            stop_burn_phase_t( this, options_str );
+  if ( name == "start_burn_phase"       ) return new       start_burn_phase_t( this, options_str );
+  if ( name == "stop_burn_phase"        ) return new        stop_burn_phase_t( this, options_str );
 
   // Fire
-  if ( name == "blast_wave"        ) return new              blast_wave_t( this, options_str );
-  if ( name == "cinderstorm"       ) return new             cinderstorm_t( this, options_str );
-  if ( name == "combustion"        ) return new              combustion_t( this, options_str );
-  if ( name == "dragons_breath"    ) return new          dragons_breath_t( this, options_str );
-  if ( name == "fireball"          ) return new                fireball_t( this, options_str );
-  if ( name == "flamestrike"       ) return new             flamestrike_t( this, options_str );
-  if ( name == "fire_blast"        ) return new              fire_blast_t( this, options_str );
-  if ( name == "living_bomb"       ) return new             living_bomb_t( this, options_str );
-  if ( name == "meteor"            ) return new                  meteor_t( this, options_str );
-  if ( name == "pyroblast"         ) return new               pyroblast_t( this, options_str );
-  if ( name == "scorch"            ) return new                  scorch_t( this, options_str );
+  if ( name == "blast_wave"             ) return new             blast_wave_t( this, options_str );
+  if ( name == "cinderstorm"            ) return new            cinderstorm_t( this, options_str );
+  if ( name == "combustion"             ) return new             combustion_t( this, options_str );
+  if ( name == "dragons_breath"         ) return new         dragons_breath_t( this, options_str );
+  if ( name == "fireball"               ) return new               fireball_t( this, options_str );
+  if ( name == "flamestrike"            ) return new            flamestrike_t( this, options_str );
+  if ( name == "fire_blast"             ) return new             fire_blast_t( this, options_str );
+  if ( name == "living_bomb"            ) return new            living_bomb_t( this, options_str );
+  if ( name == "meteor"                 ) return new                 meteor_t( this, options_str );
+  if ( name == "pyroblast"              ) return new              pyroblast_t( this, options_str );
+  if ( name == "scorch"                 ) return new                 scorch_t( this, options_str );
 
   // Frost
-  if ( name == "blizzard"          ) return new                blizzard_t( this, options_str );
-  if ( name == "cold_snap"         ) return new               cold_snap_t( this, options_str );
-  if ( name == "comet_storm"       ) return new             comet_storm_t( this, options_str );
-  if ( name == "cone_of_cold"      ) return new            cone_of_cold_t( this, options_str );
-  if ( name == "flurry"            ) return new                  flurry_t( this, options_str );
-  if ( name == "freeze"            ) return new                  freeze_t( this, options_str );
-  if ( name == "frost_bomb"        ) return new              frost_bomb_t( this, options_str );
-  if ( name == "frostbolt"         ) return new               frostbolt_t( this, options_str );
-  if ( name == "frozen_orb"        ) return new              frozen_orb_t( this, options_str );
-  if ( name == "glacial_spike"     ) return new           glacial_spike_t( this, options_str );
-  if ( name == "ice_floes"         ) return new               ice_floes_t( this, options_str );
-  if ( name == "ice_lance"         ) return new               ice_lance_t( this, options_str );
-  if ( name == "ice_nova"          ) return new                ice_nova_t( this, options_str );
-  if ( name == "icy_veins"         ) return new               icy_veins_t( this, options_str );
-  if ( name == "ray_of_frost"      ) return new            ray_of_frost_t( this, options_str );
-  if ( name == "water_elemental"   ) return new  summon_water_elemental_t( this, options_str );
-  if ( name == "water_jet"         ) return new               water_jet_t( this, options_str );
+  if ( name == "blizzard"               ) return new               blizzard_t( this, options_str );
+  if ( name == "cold_snap"              ) return new              cold_snap_t( this, options_str );
+  if ( name == "comet_storm"            ) return new            comet_storm_t( this, options_str );
+  if ( name == "cone_of_cold"           ) return new           cone_of_cold_t( this, options_str );
+  if ( name == "flurry"                 ) return new                 flurry_t( this, options_str );
+  if ( name == "frost_bomb"             ) return new             frost_bomb_t( this, options_str );
+  if ( name == "frostbolt"              ) return new              frostbolt_t( this, options_str );
+  if ( name == "frozen_orb"             ) return new             frozen_orb_t( this, options_str );
+  if ( name == "glacial_spike"          ) return new          glacial_spike_t( this, options_str );
+  if ( name == "ice_floes"              ) return new              ice_floes_t( this, options_str );
+  if ( name == "ice_lance"              ) return new              ice_lance_t( this, options_str );
+  if ( name == "ice_nova"               ) return new               ice_nova_t( this, options_str );
+  if ( name == "icy_veins"              ) return new              icy_veins_t( this, options_str );
+  if ( name == "ray_of_frost"           ) return new           ray_of_frost_t( this, options_str );
+  if ( name == "water_elemental"        ) return new summon_water_elemental_t( this, options_str );
+
+  if ( name == "freeze"                 ) return new                 freeze_t( this, options_str );
+  if ( name == "water_jet"              ) return new              water_jet_t( this, options_str );
 
   // Artifact Specific Spells
-  // Arcane
-  if ( name == "mark_of_aluneth"   ) return new          mark_of_aluneth_t( this, options_str );
-
-  // Fire
-  if ( name == "phoenixs_flames"   ) return new          phoenixs_flames_t( this, options_str );
-
-  // Frost
-  if ( name == "ebonbolt"          ) return new                 ebonbolt_t( this, options_str );
+  if ( name == "mark_of_aluneth"        ) return new        mark_of_aluneth_t( this, options_str );
+  if ( name == "phoenixs_flames"        ) return new        phoenixs_flames_t( this, options_str );
+  if ( name == "ebonbolt"               ) return new               ebonbolt_t( this, options_str );
 
   // Shared spells
-  if ( name == "blink"             )
+  if ( name == "blink" )
   {
     if ( talents.shimmer -> ok() )
     {
@@ -6792,29 +6691,14 @@ action_t* mage_t::create_action( const std::string& name,
       return new blink_t( this, options_str );
     }
   }
-  if ( name == "counterspell"      ) return new            counterspell_t( this, options_str );
-  if ( name == "frost_nova"        ) return new              frost_nova_t( this, options_str );
-  if ( name == "time_warp"         ) return new               time_warp_t( this, options_str );
+  if ( name == "counterspell"           ) return new           counterspell_t( this, options_str );
+  if ( name == "frost_nova"             ) return new             frost_nova_t( this, options_str );
+  if ( name == "time_warp"              ) return new              time_warp_t( this, options_str );
 
   // Shared talents
-  if ( name == "mage_bomb"         )
-  {
-    if ( talents.frost_bomb -> ok() )
-    {
-      return new frost_bomb_t( this, options_str );
-    }
-    else if ( talents.living_bomb -> ok() )
-    {
-      return new living_bomb_t( this, options_str );
-    }
-    else if ( talents.nether_tempest -> ok() )
-    {
-      return new nether_tempest_t( this, options_str );
-    }
-  }
-  if ( name == "mirror_image"      ) return new            mirror_image_t( this, options_str );
-  if ( name == "rune_of_power"     ) return new           rune_of_power_t( this, options_str );
-  if ( name == "shimmer"           ) return new                 shimmer_t( this, options_str );
+  if ( name == "mirror_image"           ) return new           mirror_image_t( this, options_str );
+  if ( name == "rune_of_power"          ) return new          rune_of_power_t( this, options_str );
+  if ( name == "shimmer"                ) return new                shimmer_t( this, options_str );
 
   return player_t::create_action( name, options_str );
 }
@@ -6991,7 +6875,7 @@ void mage_t::create_pets()
       pets.mirror_images.push_back( new pets::mirror_image::mirror_image_pet_t( sim, this ) );
       if ( i > 0 )
       {
-        pets.mirror_images[ i ] -> quiet = 1;
+        pets.mirror_images[ i ] -> quiet = true;
       }
     }
   }
@@ -7141,6 +7025,7 @@ void mage_t::init_spells()
   spec.fire_blast_2          = find_specialization_spell( 231568 );
   spec.fire_blast_3          = find_specialization_spell( 231567 );
   spec.fire_mage             = find_specialization_spell( 137019 );
+  spec.hot_streak            = find_specialization_spell( 195283 );
 
   spec.brain_freeze          = find_specialization_spell( "Brain Freeze"     );
   spec.brain_freeze_2        = find_specialization_spell( 231584 );
@@ -7180,10 +7065,6 @@ void mage_t::init_base_stats()
 void mage_t::create_buffs()
 {
   player_t::create_buffs();
-
-  // buff_t( player, name, max_stack, duration, chance=-1, cd=-1, quiet=false, reverse=false, activated=true )
-  // buff_t( player, id, name, chance=-1, cd=-1, quiet=false, reverse=false, activated=true )
-  // buff_t( player, name, spellname, chance=-1, cd=-1, quiet=false, reverse=false, activated=true )
 
   // Arcane
   buffs.arcane_charge         = buff_creator_t( this, "arcane_charge", spec.arcane_charge );
@@ -7335,7 +7216,7 @@ void mage_t::create_buffs()
                        gains.greater_blessing_of_wisdom ); } )
     -> set_period( find_spell( 203539 ) -> effectN( 2 ).period() )
     -> set_tick_behavior( BUFF_TICK_CLIP );
-  buffs.t19_oh_buff = stat_buff_creator_t( this, "ancient_knowledge", find_spell( 221648 ) )
+  buffs.t19_oh_buff = stat_buff_creator_t( this, "ancient_knowledge", sets -> set( specialization(), T19OH, B8 ) -> effectN( 1 ).trigger() )
                         .trigger_spell( sets -> set( specialization(), T19OH, B8 ) );
   buffs.shimmer     = buff_creator_t( this, "shimmer", find_spell( 212653 ) );
 }
@@ -7373,20 +7254,19 @@ void mage_t::init_procs()
       }
       break;
     case MAGE_FIRE:
-      procs.heating_up_generated    = get_proc( "Heating Up generated" );
-      procs.heating_up_removed      = get_proc( "Heating Up removed" );
-      procs.heating_up_ib_converted = get_proc( "IB conversions of HU" );
-      procs.hot_streak              = get_proc( "Total Hot Streak procs" );
-      procs.hot_streak_spell        = get_proc( "Hot Streak spells used" );
-      procs.hot_streak_spell_crit   = get_proc( "Hot Streak spell crits" );
-      procs.hot_streak_spell_crit_wasted =
-        get_proc( "Wasted Hot Streak spell crits" );
+      procs.heating_up_generated         = get_proc( "Heating Up generated" );
+      procs.heating_up_removed           = get_proc( "Heating Up removed" );
+      procs.heating_up_ib_converted      = get_proc( "IB conversions of HU" );
+      procs.hot_streak                   = get_proc( "Total Hot Streak procs" );
+      procs.hot_streak_pyromaniac        = get_proc( "Total Hot Streak procs from Pyromaniac" );
+      procs.hot_streak_spell             = get_proc( "Hot Streak spells used" );
+      procs.hot_streak_spell_crit        = get_proc( "Hot Streak spell crits" );
+      procs.hot_streak_spell_crit_wasted = get_proc( "Wasted Hot Streak spell crits" );
 
       procs.ignite_applied    = get_proc( "Direct Ignite applications" );
       procs.ignite_spread     = get_proc( "Ignites spread" );
       procs.ignite_new_spread = get_proc( "Ignites spread to new targets" );
-      procs.ignite_overwrite  =
-        get_proc( "Ignites spread to target with existing ignite" );
+      procs.ignite_overwrite  = get_proc( "Ignites spread to target with existing ignite" );
       procs.controlled_burn   = get_proc(" Controlled Burn HU -> HS Conversion ");
       break;
     default:
@@ -7416,12 +7296,6 @@ void mage_t::init_benefits()
 {
   player_t::init_benefits();
 
-  if ( talents.incanters_flow -> ok() )
-  {
-    benefits.incanters_flow =
-      new buff_stack_benefit_t( buffs.incanters_flow, "Incanter's Flow" );
-  }
-
   if ( specialization() == MAGE_ARCANE )
   {
     benefits.arcane_charge.arcane_barrage =
@@ -7437,18 +7311,12 @@ void mage_t::init_benefits()
       benefits.arcane_charge.nether_tempest =
         new buff_stack_benefit_t( buffs.arcane_charge, "Nether Tempest" );
     }
-
-    benefits.arcane_missiles =
-      new buff_source_benefit_t( buffs.arcane_missiles );
   }
 
   if ( specialization() == MAGE_FROST )
   {
     benefits.chain_reaction =
       new buff_stack_benefit_t( buffs.chain_reaction, "Ice Lance +" );
-
-    benefits.fingers_of_frost =
-      new buff_source_benefit_t( buffs.fingers_of_frost );
 
     if ( buffs.magtheridons_might -> default_chance != 0.0 )
     {
@@ -7459,7 +7327,7 @@ void mage_t::init_benefits()
     if ( talents.ray_of_frost -> ok() )
     {
       benefits.ray_of_frost =
-        new buff_stack_benefit_t( buffs.ray_of_frost, "Ray of Frost" );
+        new buff_stack_benefit_t( buffs.ray_of_frost, "Ray of Frost Tick +" );
     }
 
     if ( buffs.zannesu_journey -> default_chance != 0.0 )
@@ -7482,8 +7350,8 @@ void mage_t::init_uptimes()
       uptime.burn_phase     = get_uptime( "Burn Phase" );
       uptime.conserve_phase = get_uptime( "Conserve Phase" );
 
-      sample_data.burn_duration_history = new extended_sample_data_t( "burn_duration_history", false );
-      sample_data.burn_initial_mana     = new extended_sample_data_t( "burn_initial_mana", false );
+      sample_data.burn_duration_history = new extended_sample_data_t( "Burn duration history", false );
+      sample_data.burn_initial_mana     = new extended_sample_data_t( "Burn initial mana", false );
       break;
 
     case MAGE_FROST:
@@ -7701,7 +7569,7 @@ std::string mage_t::default_food() const
   return ( true_level > 100 ) ? "lemon_herb_filet" :
          ( true_level >  90 ) ? lvl100_food :
          ( true_level >= 90 ) ? "mogu_fish_stew" :
-         ( true_level >= 80 ) ? "seafood_magnifique_feast" :
+         ( true_level >= 80 ) ? "severed_sagefish_head" :
                                 "disabled";
 }
 
@@ -8022,8 +7890,7 @@ void mage_t::apl_default()
 {
   action_priority_list_t* default_list = get_action_priority_list( "default" );
 
-  // TODO: What do mages below level 10 without specs actually use?
-  default_list -> add_action( "Fireball" );
+  default_list -> add_action( "Frostbolt" );
 }
 
 
@@ -8079,16 +7946,15 @@ void mage_t::recalculate_resource_max( resource_e rt )
     return player_t::recalculate_resource_max( rt );
   }
 
-  double current_mana = resources.current[ rt ],
-         current_mana_max = resources.max[ rt ],
-         mana_percent = current_mana / current_mana_max;
+  double current_mana = resources.current[ rt ];
+  double current_mana_max = resources.max[ rt ];
+  double mana_percent = current_mana / current_mana_max;
 
   player_t::recalculate_resource_max( rt );
 
   if ( spec.savant -> ok() )
   {
-    resources.max[ rt ] *= 1.0 +
-      composite_mastery() * ( spec.savant -> effectN( 1 ).mastery_value() );
+    resources.max[ rt ] *= 1.0 + composite_mastery() * spec.savant -> effectN( 1 ).mastery_value();
     resources.current[ rt ] = resources.max[ rt ] * mana_percent;
     if ( sim -> debug )
     {
@@ -8227,11 +8093,12 @@ double mage_t::composite_mastery_rating() const
 {
   double m = player_t::composite_mastery_rating();
 
-  if ( buffs.combustion -> up() )
+  if ( buffs.combustion -> check() )
   {
     m += mage_t::composite_spell_crit_rating() * buffs.combustion -> data().effectN( 3 ).percent();
   }
- return m;
+
+  return m;
 }
 
 // mage_t::composite_spell_crit_rating ===============================================
@@ -8246,8 +8113,8 @@ double mage_t::composite_spell_crit_rating() const
   }
 
   return cr;
-
 }
+
 // mage_t::composite_spell_crit_chance ===============================================
 
 double mage_t::composite_spell_crit_chance() const
@@ -8364,7 +8231,7 @@ double mage_t::temporary_movement_modifier() const
 {
   double tmm = player_t::temporary_movement_modifier();
 
-  if ( buffs.sephuzs_secret -> up() )
+  if ( buffs.sephuzs_secret -> check() )
   {
     tmm = std::max( buffs.sephuzs_secret -> data().effectN( 1 ).percent(), tmm );
   }
@@ -8398,19 +8265,6 @@ void mage_t::arise()
 
   if ( talents.incanters_flow -> ok() )
     buffs.incanters_flow -> trigger();
-
-  switch ( specialization() )
-  {
-    case MAGE_ARCANE:
-      break;
-    case MAGE_FROST:
-      break;
-    case MAGE_FIRE:
-      break;
-    default:
-      apl_default(); // DEFAULT
-      break;
-  }
 
   if ( blessing_of_wisdom_count > 0 )
   {
@@ -8698,29 +8552,22 @@ stat_e mage_t::convert_hybrid_stat( stat_e s ) const
 double mage_t::get_icicle()
 {
   if ( icicles.empty() )
-  {
     return 0.0;
-  }
 
-  timespan_t threshold = spec.icicles_driver -> duration();
+  // All Icicles created before the treshold timed out.
+  timespan_t threshold = sim -> current_time() - spec.icicles_driver -> duration();
 
   // Find first icicle which did not time out
-  auto idx =
-      range::find_if( icicles, [ this, threshold ] ( const icicle_tuple_t& t ) {
-        return sim -> current_time() - t.timestamp < threshold;
-      } );
+  auto idx = range::find_if( icicles, [ threshold ] ( const icicle_tuple_t& t ) { return t.timestamp > threshold; } );
 
   // Remove all timed out icicles
-  if ( idx != icicles.begin() )
-  {
-    icicles.erase( icicles.begin(), idx );
-  }
+  icicles.erase( icicles.begin(), idx );
 
   if ( ! icicles.empty() )
   {
-    double d = icicles.front().damage;
+    double damage = icicles.front().damage;
     icicles.erase( icicles.begin() );
-    return d;
+    return damage;
   }
 
   return 0.0;
@@ -8746,37 +8593,37 @@ void mage_t::trigger_icicle( const action_state_t* trigger_state, bool chain, pl
 
   if ( chain && ! icicle_event )
   {
-    double d = get_icicle();
-    if ( d == 0.0 )
+    double damage = get_icicle();
+    if ( damage == 0.0 )
       return;
 
     assert( icicle_target );
-    icicle_event = make_event<events::icicle_event_t>( *sim, *this, d, icicle_target, true );
+    icicle_event = make_event<events::icicle_event_t>( *sim, *this, damage, icicle_target, true );
 
     if ( sim -> debug )
     {
       sim -> out_debug.printf( "%s icicle use on %s%s, damage=%f, total=%u",
                                name(), icicle_target -> name(),
-                               chain ? " (chained)" : "", d,
+                               chain ? " (chained)" : "", damage,
                                as<unsigned>( icicles.size() ) );
     }
   }
   else if ( ! chain )
   {
-    double d = get_icicle();
-    if ( d == 0 )
+    double damage = get_icicle();
+    if ( damage == 0.0 )
       return;
 
     icicle -> set_target( icicle_target );
-    icicle -> base_dd_min = d;
-    icicle -> base_dd_max = d;
+    icicle -> base_dd_min = damage;
+    icicle -> base_dd_max = damage;
     icicle -> execute();
 
     if ( sim -> debug )
     {
       sim -> out_debug.printf( "%s icicle use on %s%s, damage=%f, total=%u",
                                name(), icicle_target -> name(),
-                               chain ? " (chained)" : "", d,
+                               chain ? " (chained)" : "", damage,
                                as<unsigned>( icicles.size() ) );
     }
   }
@@ -9266,7 +9113,7 @@ public:
 
   virtual player_t* create_player( sim_t* sim, const std::string& name, race_e r = RACE_NONE ) const override
   {
-    auto  p = new mage_t( sim, name, r );
+    auto p = new mage_t( sim, name, r );
     p -> report_extension = std::unique_ptr<player_report_extension_t>( new mage_report_t( *p ) );
     return p;
   }
@@ -9312,6 +9159,12 @@ public:
       .operation( hotfix::HOTFIX_SET )
       .modifier( 78 )
       .verification_value( 80 );
+
+    hotfix::register_spell( "Mage", "2017-11-08", "Incorrect spell level for Ignite.", 12654 )
+      .field( "spell_level" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 78 )
+      .verification_value( 99 );
 
     hotfix::register_spell( "Mage", "2017-03-20", "Manually set Frozen Orb's travel speed.", 84714 )
       .field( "prj_speed" )

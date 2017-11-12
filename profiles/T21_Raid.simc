@@ -6,7 +6,7 @@ T21_Death_Knight_Unholy.simc
 
 T21_Demon_Hunter_Havoc.simc
 
-# T21_Druid_Feral.simc
+T21_Druid_Feral.simc
 T21_Druid_Balance.simc
 
 T21_Hunter_Beast_Mastery.simc
@@ -23,19 +23,16 @@ T21_Paladin_Retribution.simc
 
 T21_Priest_Shadow.simc
 
-T21_Rogue_Assassination.simc
 T21_Rogue_Assassination_Exsg.simc
 T21_Rogue_Outlaw.simc
-T21_Rogue_Outlaw_SnD.simc
-T21_Rogue_Subtlety.simc
 T21_Rogue_Subtlety_DfA.simc
 
 T21_Shaman_Elemental.simc
 # T21_Shaman_Enhancement.simc
 
-# T21_Warlock_Affliction.simc
-# T21_Warlock_Demonology.simc
-# T21_Warlock_Destruction.simc
+T21_Warlock_Affliction.simc
+T21_Warlock_Demonology.simc
+T21_Warlock_Destruction.simc
 
-# T21_Warrior_Arms.simc
-# T21_Warrior_Fury.simc
+T21_Warrior_Arms.simc
+T21_Warrior_Fury.simc

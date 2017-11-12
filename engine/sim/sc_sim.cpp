@@ -1434,7 +1434,7 @@ sim_t::sim_t( sim_t* p, int index ) :
   display_hotfixes( false ),
   disable_hotfixes( false ),
   display_bonus_ids( false ),
-  profileset_metric( SCALE_METRIC_DPS ),
+  profileset_metric( { SCALE_METRIC_DPS } ),
   profileset_enabled( false )
 {
   item_db_sources.assign( std::begin( default_item_db_sources ),
@@ -2394,7 +2394,15 @@ bool sim_t::init()
   }
 
   // set scaling metric
-  scaling -> scaling_metric = util::parse_scale_metric( scaling -> scale_over );
+  if ( ! scaling -> scale_over.empty() )
+  {
+    scaling -> scaling_metric = util::parse_scale_metric( scaling -> scale_over );
+    if ( scaling -> scaling_metric == SCALE_METRIC_NONE )
+    {
+      errorf( "Unknown scaling metric '%s'", scaling -> scale_over.c_str() );
+      return false;
+    }
+  }
 
   // Find Already defined target, otherwise create a new one.
   if ( debug )

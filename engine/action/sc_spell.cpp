@@ -28,29 +28,29 @@ spell_base_t::spell_base_t( action_e at,
 
 timespan_t spell_base_t::execute_time() const
 {
-  timespan_t t = base_execute_time;
-
   if ( ! harmful && ! player -> in_combat )
     return timespan_t::zero();
 
-  if ( t <= timespan_t::zero() ) return timespan_t::zero();
+  timespan_t t = base_execute_time;
+
+  if ( t <= timespan_t::zero() ) {
+    return timespan_t::zero();
+  }
+
   t *= composite_haste();
 
   return t;
-}
-
-timespan_t spell_base_t::tick_time( const action_state_t* state ) const
-{
-  return action_t::tick_time( state );
 }
 
 result_e spell_base_t::calculate_result( action_state_t* s ) const
 {
   result_e result = RESULT_NONE;
 
-  if ( ! s -> target ) return RESULT_NONE;
+  if ( ! s -> target )
+    return RESULT_NONE;
 
-  if ( ! may_hit ) return RESULT_NONE;
+  if ( ! may_hit )
+    return RESULT_NONE;
 
   if ( ( result == RESULT_NONE ) && may_miss )
   {
@@ -144,12 +144,6 @@ double spell_t::miss_chance( double hit, player_t* t ) const
   return miss;
 }
 
-void spell_t::assess_damage( dmg_e type,
-                             action_state_t* s )
-{
-  spell_base_t::assess_damage( type, s );
-}
-
 dmg_e spell_t::amount_type( const action_state_t* /* state */, bool periodic ) const
 {
   if ( periodic )
@@ -179,11 +173,6 @@ dmg_e spell_t::report_amount_type( const action_state_t* state ) const
   }
 
   return result_type;
-}
-
-void spell_t::execute()
-{
-  spell_base_t::execute();
 }
 
 void spell_t::init()
@@ -353,13 +342,6 @@ double heal_t::calculate_tick_amount( action_state_t* state, double dmg_multipli
   return base_t::calculate_tick_amount( state, dmg_multiplier );
 }
 
-// heal_t::execute ==========================================================
-
-void heal_t::execute()
-{
-  spell_base_t::execute();
-}
-
 // heal_t::assess_damage ====================================================
 
 void heal_t::assess_damage( dmg_e heal_type,
@@ -419,9 +401,8 @@ player_t* heal_t::find_greatest_difference_player()
 {
   double max = 0;
   player_t* max_player = player;
-  for ( size_t i = 0; i < sim -> player_list.size(); ++i )
+  for ( const auto& p : sim -> player_list )
   {
-    player_t* p = sim -> player_list[ i ];
     // No love for pets right now
     double diff = p -> is_pet() ? 0 : p -> resources.max[ RESOURCE_HEALTH ] - p -> resources.current[ RESOURCE_HEALTH ];
     if ( diff > max )
@@ -440,9 +421,8 @@ player_t* heal_t::find_lowest_player()
   double min = 1.0;
   player_t* max_player = player;
 
-  for ( size_t i = 0; i < sim -> player_no_pet_list.size(); ++i ) // check players only
+  for ( const auto& p : sim -> player_no_pet_list ) // check players only
   {
-    player_t* p = sim -> player_no_pet_list[ i ];
     double hp_pct =  p -> resources.pct( RESOURCE_HEALTH );
     if ( hp_pct < min )
     {
@@ -453,10 +433,10 @@ player_t* heal_t::find_lowest_player()
 
   if ( min == 1.0 ) // no player found - check pets
   {
-    for ( size_t i = 0; i < sim -> player_list.size(); ++i )
+    for ( const auto& p : sim -> player_list )
     {
-      player_t* p = sim -> player_list[ i ];
-      if ( !p -> is_pet() ) continue;
+      if ( !p -> is_pet() )
+        continue;
       double hp_pct =  p -> resources.pct( RESOURCE_HEALTH );
       if ( hp_pct < min )
       {
@@ -503,23 +483,21 @@ player_t* heal_t::smart_target() const
   std::vector<player_t*> injured_targets;
   player_t* target;
   // First check non-pet target
-  for( size_t i = 0 ; i < sim -> healing_no_pet_list.size() ; i++ )
+  for( const auto& p : sim -> healing_no_pet_list )
   {
-    player_t* temp_p = sim -> healing_no_pet_list[ i ];
-    if( temp_p -> health_percentage() < 100 )
+    if( p -> health_percentage() < 100 )
     {
-      injured_targets.push_back( temp_p );
+      injured_targets.push_back( p );
     }
   }
   // Check pets if we didn't find any injured non-pets
   if( injured_targets.empty() )
   {
-    for( size_t i = 0 ; i < sim -> healing_pet_list.size() ; i++ )
+    for( const auto& p : sim -> healing_pet_list )
     {
-      player_t* temp_p = sim -> healing_pet_list[ i ];
-      if( temp_p -> health_percentage() < 100 )
+      if( p -> health_percentage() < 100 )
       {
-        injured_targets.push_back( temp_p );
+        injured_targets.push_back( p );
       }
     }
   }
@@ -537,18 +515,14 @@ player_t* heal_t::smart_target() const
 
 int heal_t::num_targets() const
 {
-  int count = 0;
-
-  for ( size_t i = 0, actors = sim -> actor_list.size(); i < actors; i++ )
-  {
-    player_t* t = sim -> actor_list[ i ];
-
-    if ( ! t -> is_sleeping() && ! t -> is_enemy() && ( t != target ) )
-      if ( ! group_only || ( t -> party == target -> party ) )
-        count++;
-  }
-
-  return count;
+  return range::count_if(sim->actor_list,
+      [this]( player_t* t ) {
+    if ( t -> is_sleeping() ) return false;
+    if( t -> is_enemy() ) return false;
+    if ( t == target ) return false;
+    if ( group_only && ( t -> party != target -> party ) ) return false;
+    return true;
+  });
 }
 
 // heal_t::available_targets ================================================
@@ -558,10 +532,8 @@ size_t heal_t::available_targets( std::vector< player_t* >& tl ) const
   tl.clear();
   tl.push_back( target );
 
-  for ( size_t i = 0, actors = sim -> player_non_sleeping_list.size(); i < actors; i++ )
+  for ( const auto& t : sim -> player_non_sleeping_list )
   {
-    player_t* t = sim -> player_non_sleeping_list[ i ];
-
     if ( t != target )
       if ( ! group_only || ( t -> party == target -> party ) )
         tl.push_back( t );
@@ -574,23 +546,9 @@ size_t heal_t::available_targets( std::vector< player_t* >& tl ) const
 
 expr_t* heal_t::create_expression( const std::string& name )
 {
-  class heal_expr_t : public expr_t
-  {
-  public:
-    heal_t& heal;
-
-    heal_expr_t( const std::string& name, heal_t& h ) :
-      expr_t( name ), heal( h ) {}
-  };
-
   if ( name_str == "active_allies" )
   {
-    struct active_allies_expr_t : public heal_expr_t
-    {
-      active_allies_expr_t( heal_t& h ) : heal_expr_t( "active_allies", h ) {}
-      virtual double evaluate() override { return heal.num_targets(); }
-    };
-    return new active_allies_expr_t( *this );
+    return make_fn_expr("active_allies", [this]{ return num_targets();} );
   }
 
   return spell_base_t::create_expression( name );
@@ -624,13 +582,6 @@ void absorb_t::activate()
   sim -> player_non_sleeping_list.register_callback( [ this ]( player_t* ) {
     target_cache.is_valid = false;
   } );
-}
-
-// absorb_t::execute ========================================================
-
-void absorb_t::execute()
-{
-  spell_base_t::execute();
 }
 
 // absorb_t::impact =========================================================
@@ -669,16 +620,12 @@ void absorb_t::assess_damage( dmg_e  /*heal_type*/ , // commented to remove comp
 
 int absorb_t::num_targets() const
 {
-  int count = 0;
-  for ( size_t i = 0, actors = sim -> actor_list.size(); i < actors; i++ )
-  {
-    player_t* t = sim -> actor_list[ i ];
-
-    if ( ! t -> is_sleeping() && ! t -> is_enemy() )
-      count++;
-  }
-
-  return count;
+  return range::count_if(sim->actor_list,
+      []( player_t* t ) {
+    if ( t -> is_sleeping() ) return false;
+    if( t -> is_enemy() ) return false;
+    return true;
+  });
 }
 
 // absorb_t::available_targets ==============================================
@@ -688,10 +635,8 @@ size_t absorb_t::available_targets( std::vector< player_t* >& tl ) const
   tl.clear();
   tl.push_back( target );
 
-  for ( size_t i = 0, actors = sim -> player_non_sleeping_list.size(); i < actors; i++ )
+  for ( const auto& t : sim -> player_non_sleeping_list )
   {
-    player_t* t = sim -> player_non_sleeping_list[ i ];
-
     if ( t != target )
       tl.push_back( t );
   }
