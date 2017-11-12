@@ -7824,7 +7824,7 @@ void shaman_t::init_action_list_enhancement()
 
   cds -> add_action( this, "Bloodlust", generate_bloodlust_options(),
     "Bloodlust casting behavior mirrors the simulator settings for proxy bloodlust. See options 'bloodlust_percent', and 'bloodlust_time'. " );
-  cds -> add_action( "berserking,if=buff.ascendance.up|(feral_spirit.remains>5)|level<100" );
+  cds -> add_action( "berserking,if=buff.ascendance.up|(cooldown.doom_winds.up)|level<100" );
   cds -> add_action( "blood_fury,if=buff.ascendance.up|(feral_spirit.remains>5)|level<100" );
   cds -> add_action( "potion,if=buff.ascendance.up|!talent.ascendance.enabled&feral_spirit.remains>5|target.time_to_die<=60" );
   cds -> add_action( this, "Feral Spirit" );
@@ -7839,6 +7839,7 @@ void shaman_t::init_action_list_enhancement()
   core -> add_action( this, "Windstrike" );
   core -> add_action( this, "Stormstrike", "if=buff.stormbringer.up&variable.furyCheck25" );
   core -> add_action( this, "Crash Lightning", "if=active_enemies>=4|(active_enemies>=2&talent.crashing_storm.enabled)" );
+  core -> add_action( this, "rockbiter,if=buff.force_of_the_mountain.up" );
   core -> add_action( this, "Lightning Bolt", "if=talent.overcharge.enabled&variable.furyCheck45&maelstrom>=40" );
   core -> add_action( this, "Stormstrike", "if=(!talent.overcharge.enabled&variable.furyCheck45)|(talent.overcharge.enabled&variable.furyCheck80)" );
   core -> add_action( this, "Frostbrand", "if=variable.akainuAS" );

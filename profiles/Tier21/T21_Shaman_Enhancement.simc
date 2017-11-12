@@ -1,0 +1,130 @@
+shaman="T21_Shaman_Enhancement"
+spec=enhancement
+level=110
+race=troll
+role=attack
+position=back
+talents=3132123
+artifact=41:0:0:0:0:899:1:900:1:901:1:902:1:903:1:904:1:905:4:906:4:907:4:908:4:909:4:910:4:911:4:912:4:913:4:930:1:1351:1:1388:1:1593:4:1594:1:1595:1:1596:24:1687:1
+crucible=1739:1771:910/1739:1771:910/1739:1771:910
+
+# Default consumables
+potion=prolonged_power
+flask=seventh_demon
+food=lavish_suramar_feast
+augmentation=defiled
+
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
+
+# Executed before combat begins. Accepts non-harmful actions only.
+actions.precombat=flask
+actions.precombat+=/food
+actions.precombat+=/augmentation
+# Snapshot raid buffed stats before combat begins and pre-potting is done.
+actions.precombat+=/snapshot_stats
+actions.precombat+=/potion
+actions.precombat+=/lightning_shield
+
+# Executed every time the actor is available.
+actions=wind_shear
+actions+=/variable,name=hailstormCheck,value=((talent.hailstorm.enabled&!buff.frostbrand.up)|!talent.hailstorm.enabled)
+actions+=/variable,name=furyCheck80,value=(!talent.fury_of_air.enabled|(talent.fury_of_air.enabled&maelstrom>80))
+actions+=/variable,name=furyCheck70,value=(!talent.fury_of_air.enabled|(talent.fury_of_air.enabled&maelstrom>70))
+actions+=/variable,name=furyCheck45,value=(!talent.fury_of_air.enabled|(talent.fury_of_air.enabled&maelstrom>45))
+actions+=/variable,name=furyCheck25,value=(!talent.fury_of_air.enabled|(talent.fury_of_air.enabled&maelstrom>25))
+actions+=/variable,name=OCPool70,value=(!talent.overcharge.enabled|(talent.overcharge.enabled&maelstrom>70))
+actions+=/variable,name=OCPool60,value=(!talent.overcharge.enabled|(talent.overcharge.enabled&maelstrom>60))
+actions+=/variable,name=heartEquipped,value=(equipped.151819)
+actions+=/variable,name=akainuEquipped,value=(equipped.137084)
+actions+=/variable,name=akainuAS,value=(variable.akainuEquipped&buff.hot_hand.react&!buff.frostbrand.up)
+actions+=/variable,name=LightningCrashNotUp,value=(!buff.lightning_crash.up&set_bonus.tier20_2pc)
+actions+=/variable,name=alphaWolfCheck,value=((pet.frost_wolf.buff.alpha_wolf.remains<2&pet.fiery_wolf.buff.alpha_wolf.remains<2&pet.lightning_wolf.buff.alpha_wolf.remains<2)&feral_spirit.remains>4)
+actions+=/auto_attack
+actions+=/use_items
+actions+=/call_action_list,name=opener
+actions+=/call_action_list,name=asc,if=buff.ascendance.up
+actions+=/call_action_list,name=buffs
+actions+=/call_action_list,name=cds
+actions+=/call_action_list,name=core
+actions+=/call_action_list,name=filler
+
+actions.asc=earthen_spike
+actions.asc+=/doom_winds,if=cooldown.strike.up
+actions.asc+=/windstrike
+
+actions.buffs=rockbiter,if=talent.landslide.enabled&!buff.landslide.up
+actions.buffs+=/fury_of_air,if=!ticking&maelstrom>22
+actions.buffs+=/crash_lightning,if=artifact.alpha_wolf.rank&prev_gcd.1.feral_spirit
+actions.buffs+=/flametongue,if=!buff.flametongue.up
+actions.buffs+=/frostbrand,if=talent.hailstorm.enabled&!buff.frostbrand.up&variable.furyCheck45
+actions.buffs+=/flametongue,if=buff.flametongue.remains<6+gcd&cooldown.doom_winds.remains<gcd*2
+actions.buffs+=/frostbrand,if=talent.hailstorm.enabled&buff.frostbrand.remains<6+gcd&cooldown.doom_winds.remains<gcd*2
+
+# Bloodlust casting behavior mirrors the simulator settings for proxy bloodlust. See options 'bloodlust_percent', and 'bloodlust_time'. 
+actions.cds=bloodlust,if=target.health.pct<25|time>0.500
+actions.cds+=/berserking,if=buff.ascendance.up|(feral_spirit.remains>5)|level<100
+actions.cds+=/blood_fury,if=buff.ascendance.up|(feral_spirit.remains>5)|level<100
+actions.cds+=/potion,if=buff.ascendance.up|!talent.ascendance.enabled&feral_spirit.remains>5|target.time_to_die<=60
+actions.cds+=/feral_spirit
+actions.cds+=/doom_winds,if=cooldown.ascendance.remains>6|talent.boulderfist.enabled|debuff.earthen_spike.up
+actions.cds+=/ascendance,if=(cooldown.strike.remains>0)&buff.ascendance.down
+
+actions.core=earthen_spike,if=variable.furyCheck25
+actions.core+=/crash_lightning,if=!buff.crash_lightning.up&active_enemies>=2
+actions.core+=/windsong
+actions.core+=/crash_lightning,if=active_enemies>=8|(active_enemies>=6&talent.crashing_storm.enabled)
+actions.core+=/windstrike
+actions.core+=/stormstrike,if=buff.stormbringer.up&variable.furyCheck25
+actions.core+=/crash_lightning,if=active_enemies>=4|(active_enemies>=2&talent.crashing_storm.enabled)
+actions.core+=/lightning_bolt,if=talent.overcharge.enabled&variable.furyCheck45&maelstrom>=40
+actions.core+=/stormstrike,if=(!talent.overcharge.enabled&variable.furyCheck45)|(talent.overcharge.enabled&variable.furyCheck80)
+actions.core+=/frostbrand,if=variable.akainuAS
+actions.core+=/lava_lash,if=buff.hot_hand.react&((variable.akainuEquipped&buff.frostbrand.up)|!variable.akainuEquipped)
+actions.core+=/sundering,if=active_enemies>=3
+actions.core+=/crash_lightning,if=active_enemies>=3|variable.LightningCrashNotUp|variable.alphaWolfCheck
+
+actions.filler=rockbiter,if=maelstrom<120
+actions.filler+=/flametongue,if=buff.flametongue.remains<4.8
+actions.filler+=/crash_lightning,if=(talent.crashing_storm.enabled|active_enemies>=2)&debuff.earthen_spike.up&maelstrom>=40&variable.OCPool60
+actions.filler+=/frostbrand,if=talent.hailstorm.enabled&buff.frostbrand.remains<4.8&maelstrom>40
+actions.filler+=/frostbrand,if=variable.akainuEquipped&!buff.frostbrand.up&maelstrom>=75
+actions.filler+=/sundering
+actions.filler+=/lava_lash,if=maelstrom>=50&variable.OCPool70&variable.furyCheck80
+actions.filler+=/rockbiter
+actions.filler+=/crash_lightning,if=(maelstrom>=65|talent.crashing_storm.enabled|active_enemies>=2)&variable.OCPool60&variable.furyCheck45
+actions.filler+=/flametongue
+
+actions.opener=rockbiter,if=maelstrom<15&time<gcd
+
+head=helm_of_the_awakened_soul,id=152423,bonus_id=3610/1472,ilevel=970
+neck=riveted_choker_of_delirium,id=151966,bonus_id=3610/1472,ilevel=960,enchant=mark_of_the_hidden_satyr
+shoulders=pauldrons_of_venerated_spirits,id=152171,bonus_id=3610/1472,ilevel=960
+back=drape_of_venerated_spirits,id=152167,bonus_id=3610/1472,ilevel=960,enchant=200agi
+chest=robes_of_venerated_spirits,id=152166,bonus_id=3610/1472,ilevel=960
+wrists=realitysplitting_wristguards,id=152008,bonus_id=3610/1472,ilevel=960
+hands=smoldering_heart,id=151819,bonus_id=3570,ilevel=1000
+waist=worldravager_waistguard,id=152683,bonus_id=3610/1472,ilevel=960
+legs=leggings_of_venerated_spirits,id=152170,bonus_id=3610/1472,ilevel=960
+feet=greatboots_of_the_searing_tempest,id=152684,bonus_id=3610/1472,ilevel=960
+finger1=eye_of_the_twisting_nether,id=137050,bonus_id=3570,ilevel=1000,gems=200haste,enchant=200haste
+finger2=loop_of_the_lifebinder,id=152688,bonus_id=3610/1472,ilevel=960,enchant=200haste
+trinket1=golganneths_vitality,id=154174,ilevel=1000
+trinket2=gorshalachs_legacy,id=152093,bonus_id=3610/1472,ilevel=960
+main_hand=doomhammer,id=128819,gem_id=140835/139261/147113,relic_id=0/0/0,relic_ilevel=970/970/970
+off_hand=fury_of_the_stonemother,id=128873
+
+# Gear Summary
+# gear_ilvl=973.00
+# gear_agility=38816
+# gear_stamina=61124
+# gear_crit_rating=3527
+# gear_haste_rating=15880
+# gear_mastery_rating=11815
+# gear_versatility_rating=1782
+# gear_armor=3609
+# set_bonus=tier21_2pc=1
+# set_bonus=tier21_4pc=1

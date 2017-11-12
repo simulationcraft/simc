@@ -8582,12 +8582,9 @@ artifact_power_t player_t::find_artifact_spell( unsigned power_id ) const
   // Rank data missing for the power
   if ( rank_index + 1 > ranks.size() )
   {
-    if ( sim -> debug )
-    {
-      sim -> out_debug.printf( "%s too high rank (%u/%u) given for artifact power %s",
-          this -> name(), rank_index + 1, ranks.size(),
-          power_data -> name ? power_data -> name : "Unknown" );
-    }
+    sim -> errorf( "%s too high rank (%u/%u) given for artifact power %s, disabling power",
+        this -> name(), rank_index + 1, ranks.size(),
+        power_data -> name ? power_data -> name : "Unknown" );
 
     return artifact_power_t();
   }
