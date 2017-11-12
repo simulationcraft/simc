@@ -58,7 +58,7 @@ actions.cooldowns=rampage,if=talent.massacre.enabled&buff.massacre.react&buff.en
 actions.cooldowns+=/bloodthirst,if=target.health.pct<20&buff.enrage.remains<1
 actions.cooldowns+=/execute,if=equipped.draught_of_souls&cooldown.draught_of_souls.remains<1&buff.juggernaut.remains<3
 actions.cooldowns+=/use_item,name=draught_of_souls,if=equipped.draught_of_souls&buff.battle_cry.remains>2&buff.enrage.remains>2&((talent.dragon_roar.enabled&buff.dragon_roar.remains>=3)|!talent.dragon_roar.enabled)
-actions.cooldowns+=/odyns_fury,if=buff.enrage.up&target.health.pct>20&((cooldown.raging_blow.remains>0&talent.inner_rage.enabled)|!talent.inner_rage.enabled)
+actions.cooldowns+=/odyns_fury,if=buff.enrage.up&cooldown.raging_blow.remains>0&target.health.pct>20
 actions.cooldowns+=/execute
 actions.cooldowns+=/raging_blow,if=talent.inner_rage.enabled&buff.enrage.up
 actions.cooldowns+=/rampage,if=talent.reckless_abandon.enabled&!talent.frothing_berserker.enabled|(talent.frothing_berserker.enabled&rage>=100)
