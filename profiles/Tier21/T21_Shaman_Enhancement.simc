@@ -1,11 +1,12 @@
-shaman="PR_Shaman_Enhancement"
+shaman="T21_Shaman_Enhancement"
 spec=enhancement
 level=110
 race=troll
 role=attack
 position=back
-talents=2002222
-artifact=41:137316:137543:133682:0:899:1:901:1:902:1:903:1:904:1:905:1:906:1:909:3:910:5:911:3:912:3:913:1:1351:1
+talents=3132123
+artifact=41:0:0:0:0:899:1:900:1:901:1:902:1:903:1:904:1:905:4:906:4:907:4:908:4:909:4:910:4:911:4:912:4:913:4:930:1:1351:1:1388:1:1593:4:1594:1:1595:1:1596:24:1687:1
+crucible=1739:1771:910/1739:1771:910/1739:1771:910
 
 # Default consumables
 potion=prolonged_power
@@ -99,29 +100,31 @@ actions.filler+=/flametongue
 
 actions.opener=rockbiter,if=maelstrom<15&time<gcd
 
-head=collar_of_honorable_exultation,id=136777,bonus_id=1492/1727
-neck=wolfstride_pendant,id=133633,bonus_id=1492/1727,enchant=mark_of_the_hidden_satyr
-shoulders=epaulets_of_deceitful_intent,id=134480,bonus_id=1492/1727
-back=cape_of_rigid_order,id=134402,bonus_id=1492/1727,enchant=binding_of_agility
-chest=thunderfused_valkyr_hauberk,id=133622,bonus_id=1492/1727
-wrists=remorseless_chain_armbands,id=137405,bonus_id=1492/1727
-hands=lavabreaker_gauntlets,id=137519,bonus_id=1492/1727
-waist=belt_of_mighty_links,id=137456,bonus_id=1492/1727
-legs=mute_erasure_legguards,id=134475,bonus_id=1492/1727
-feet=whelp_handlers_lined_boots,id=134464,bonus_id=1492/1727
-finger1=grasping_tentacle_loop,id=133634,bonus_id=1492/1727,enchant=binding_of_mastery
-finger2=archdruids_tainted_seal,id=134487,bonus_id=1492/1727,enchant=binding_of_mastery
-trinket1=devilsaur_shockbaton,id=140030,bonus_id=1492/1727
-trinket2=sixfeather_fan,id=141585,bonus_id=1492/1727
-main_hand=doomhammer,id=128819,bonus_id=741,gem_id=137316/137543/133682,relic_id=1492:3412/1492:3412/1492:3412
+head=helm_of_the_awakened_soul,id=152423,bonus_id=3610/1472,ilevel=970
+neck=riveted_choker_of_delirium,id=151966,bonus_id=3610/1472,ilevel=960,enchant=mark_of_the_hidden_satyr
+shoulders=pauldrons_of_venerated_spirits,id=152171,bonus_id=3610/1472,ilevel=960
+back=drape_of_venerated_spirits,id=152167,bonus_id=3610/1472,ilevel=960,enchant=200agi
+chest=robes_of_venerated_spirits,id=152166,bonus_id=3610/1472,ilevel=960
+wrists=realitysplitting_wristguards,id=152008,bonus_id=3610/1472,ilevel=960
+hands=smoldering_heart,id=151819,bonus_id=3570,ilevel=1000
+waist=worldravager_waistguard,id=152683,bonus_id=3610/1472,ilevel=960
+legs=leggings_of_venerated_spirits,id=152170,bonus_id=3610/1472,ilevel=960
+feet=greatboots_of_the_searing_tempest,id=152684,bonus_id=3610/1472,ilevel=960
+finger1=eye_of_the_twisting_nether,id=137050,bonus_id=3570,ilevel=1000,gems=200haste,enchant=200haste
+finger2=loop_of_the_lifebinder,id=152688,bonus_id=3610/1472,ilevel=960,enchant=200haste
+trinket1=golganneths_vitality,id=154174,ilevel=1000
+trinket2=gorshalachs_legacy,id=152093,bonus_id=3610/1472,ilevel=960
+main_hand=doomhammer,id=128819,gem_id=140835/139261/147113,relic_id=0/0/0,relic_ilevel=970/970/970
 off_hand=fury_of_the_stonemother,id=128873
 
 # Gear Summary
-# gear_ilvl=843.13
-# gear_agility=11519
-# gear_stamina=18512
-# gear_crit_rating=2209
-# gear_haste_rating=5009
-# gear_mastery_rating=10903
-# gear_armor=2433
-# set_bonus=tier19p_mail_2pc=1
+# gear_ilvl=973.00
+# gear_agility=38816
+# gear_stamina=61124
+# gear_crit_rating=3527
+# gear_haste_rating=15880
+# gear_mastery_rating=11815
+# gear_versatility_rating=1782
+# gear_armor=3609
+# set_bonus=tier21_2pc=1
+# set_bonus=tier21_4pc=1
