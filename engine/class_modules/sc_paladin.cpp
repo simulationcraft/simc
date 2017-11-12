@@ -2434,7 +2434,7 @@ struct holy_shock_heal_t : public paladin_heal_t
   }
 };
 
-struct holy_shock_t : public paladin_heal_t
+struct holy_shock_t : public paladin_spell_t
 {
   holy_shock_damage_t* damage;
   holy_shock_heal_t* heal;
@@ -2443,7 +2443,7 @@ struct holy_shock_t : public paladin_heal_t
   bool dmg;
 
   holy_shock_t( paladin_t* p, const std::string& options_str )
-    : paladin_heal_t( "holy_shock", p, p -> find_specialization_spell( 20473 ) ),
+    : paladin_spell_t( "holy_shock", p, p -> find_specialization_spell( 20473 ) ),
     cooldown_mult( 1.0 ), dmg( false )
   {
     add_option( opt_bool( "damage", dmg ) );
@@ -2482,7 +2482,7 @@ struct holy_shock_t : public paladin_heal_t
       cooldown -> duration = cd_duration;
 //      cooldown -> duration = timespan_t::from_seconds( 9.0 );
       
-    paladin_heal_t::execute();
+    paladin_spell_t::execute();
       
       if ( p() -> buffs.divine_purpose -> check() )
       {
@@ -2504,7 +2504,7 @@ struct holy_shock_t : public paladin_heal_t
 
   double cooldown_multiplier() override
   {
-    double cdm = paladin_heal_t::cooldown_multiplier();
+    double cdm = paladin_spell_t::cooldown_multiplier();
 
     if ( p() -> buffs.avenging_wrath -> check() )
       cdm += cooldown_mult;
