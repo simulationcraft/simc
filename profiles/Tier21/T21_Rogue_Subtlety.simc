@@ -106,13 +106,13 @@ neck=vulcanarcore_pendant,id=151965,bonus_id=3612/1502,enchant=mark_of_the_train
 shoulders=fanged_slayers_shoulderpads,id=147174,ilevel=930
 back=cloak_of_the_dashing_scoundrel,id=152161,bonus_id=3612/1502,enchant=binding_of_agility
 chest=vest_of_the_dashing_scoundrel,id=152160,bonus_id=3612/1502
-wrists=fiendish_logisticians_wristwraps,id=151992,bonus_id=3612/1502
+wrists=denial_of_the_halfgiants,id=137100,bonus_id=3630
 hands=fanged_slayers_handguards,id=147171,ilevel=930
 waist=portal_keepers_cincture,id=151990,bonus_id=3612/1502
 legs=pants_of_the_dashing_scoundrel,id=152164,bonus_id=3612/1502
 feet=lifebearing_footpads,id=151981,bonus_id=3612/1502
 finger1=insignia_of_ravenholdt,id=137049,bonus_id=3630,gems=200crit,enchant=binding_of_critical_strike
-finger2=soul_of_the_shadowblade,id=150936,bonus_id=3630,gems=200crit,enchant=binding_of_critical_strike
+finger2=band_of_the_sargerite_smith,id=152064,bonus_id=3612/1502,enchant=binding_of_critical_strike
 trinket1=seeping_scourgewing,id=151964,bonus_id=3612/1502
 trinket2=golganneths_vitality,id=154174,ilevel=1000
 main_hand=fangs_of_the_devourer,id=128476,bonus_id=743,gem_id=155848/152057/155848,relic_id=3612:1512/3612:1502/3612:1512
@@ -120,13 +120,13 @@ off_hand=fangs_of_the_devourer,id=128479
 
 # Gear Summary
 # gear_ilvl=968.25
-# gear_agility=35643
+# gear_agility=36607
 # gear_stamina=57810
-# gear_crit_rating=14049
-# gear_haste_rating=3384
-# gear_mastery_rating=7774
+# gear_crit_rating=14614
+# gear_haste_rating=1922
+# gear_mastery_rating=9192
 # gear_versatility_rating=7389
-# gear_armor=2858
+# gear_armor=2887
 # set_bonus=tier20_2pc=1
 # set_bonus=tier21_2pc=1
 # set_bonus=tier21_4pc=1
