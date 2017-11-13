@@ -78,13 +78,13 @@ main_hand=titanstrike,id=128861,bonus_id=726,gem_id=155853/152025/152293,relic_i
 
 # Gear Summary
 # gear_ilvl=972.20
-# gear_agility=35454
-# gear_stamina=63116
-# gear_crit_rating=11564
-# gear_haste_rating=8757
-# gear_mastery_rating=12791
+# gear_agility=35776
+# gear_stamina=63599
+# gear_crit_rating=12118
+# gear_haste_rating=8333
+# gear_mastery_rating=12723
 # gear_versatility_rating=3867
-# gear_armor=3671
+# gear_armor=3690
 # set_bonus=tier21_2pc=1
 # set_bonus=tier21_4pc=1
 summon_pet=cat
