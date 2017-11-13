@@ -2025,7 +2025,11 @@ void print_html_player_action_priority_list( report::sc_html_stream& os,
         "<td class=\"left\">%s</td>\n"
         "</tr>\n",
         a->marker ? a->marker : ' ',
-        a->total_executions / (double)sim.iterations, as.c_str() );
+        a->total_executions /
+          (double)( sim.single_actor_batch ?
+            a -> player -> collected_data.total_iterations + sim.threads :
+            sim.iterations ),
+        as.c_str() );
   }
 
   if ( alist && alist->used )
