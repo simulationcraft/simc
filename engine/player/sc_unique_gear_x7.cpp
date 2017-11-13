@@ -152,10 +152,8 @@ namespace item
   Everything
 
   Antorus -----------------------------------
-
-  Forgefiend's Fabricator
-  Gorshalach's Legacy (Partially implemented)
-
+  
+  Every DPS trinket implemented.
   Healer trinkets / other rubbish -----------
 
   cocoon_of_enforced_solitude
@@ -2178,60 +2176,67 @@ void item::sheath_of_asara( special_effect_t& effect )
 }
 
 // Gorshalach's Legacy =====================================================
-struct echo_of_gorshalach_t : public proc_spell_t
+struct gorshalach_legacy_t : public proc_spell_t
 {
-   struct gorshalach_legacy_t : public proc_spell_t
-   {
-      gorshalach_legacy_t(const special_effect_t& effect) :
-         proc_spell_t("gorshalachs_legacy_1", effect.player, effect.player ->find_spell(253329), effect.item)
-      {
-      }
-      //Always crits
-      virtual double composite_crit_chance() const override { return 1.0; }
-   };
+  gorshalach_legacy_t( const special_effect_t& effect ) :
+      proc_spell_t( "gorshalachs_legacy_1", effect.player, effect.player -> find_spell( 253329 ), effect.item )
+  {
+    // Spell data contains crit damage.
+    base_dd_min /= 2.0;
+    base_dd_max /= 2.0;
+  }
 
-   struct gorshalach_bigger_legacy_t : public proc_spell_t
-   {
-      gorshalach_bigger_legacy_t(const special_effect_t& effect) :
-         proc_spell_t("gorshalachs_legacy_2", effect.player, effect.player ->find_spell(255673), effect.item)
-      {
-      }
-      //Always crits
-      virtual double composite_crit_chance() const override { return 1.0; }
-   };
+  // Always crits.
+  virtual double composite_crit_chance() const override { return 1.0; }
+};
 
-   action_t* legacy;
-   action_t* legacy2;
-   buff_t* echo;
+struct gorshalach_bigger_legacy_t : public proc_spell_t
+{
+  gorshalach_bigger_legacy_t( const special_effect_t& effect ) :
+      proc_spell_t( "gorshalachs_legacy_2", effect.player, effect.player -> find_spell( 255673 ), effect.item )
+  {
+    // Spell data contains crit damage.
+    base_dd_min /= 2.0;
+    base_dd_max /= 2.0;
+  }
 
-   echo_of_gorshalach_t(const special_effect_t& effect) :
-      proc_spell_t("echo_of_gorshalach", effect.player, effect.player->find_spell(255672), effect.item),
-      legacy(create_proc_action<gorshalach_legacy_t>("gorshalachs_legacy_mh", effect)),
-      legacy2(create_proc_action<gorshalach_bigger_legacy_t>("gorshalachs_legacy_oh", effect))
-   {
-      //TODO: Whitelist this spell (255672) and use spelldata!
-      echo = buff_creator_t(effect.player, "echo_of_gorshalach")
-         .max_stack(15)
-         .duration(timespan_t::from_seconds(60));
-   }
+  // Always crits.
+  virtual double composite_crit_chance() const override { return 1.0; }
+};
 
-   void execute() override
-   {
-      echo -> increment();
-      //TODO: spell data being unhelpful, so hardcoding this for now
-      if ( echo -> stack() == echo -> max_stack() )
-      {
-         echo -> expire();
-         legacy -> execute();
-         legacy2 -> execute();
-      }
-   };
+struct echo_of_gorshalach_cb_t : public dbc_proc_callback_t
+{
+  action_t* legacy_1;
+  action_t* legacy_2;
+
+  echo_of_gorshalach_cb_t( const special_effect_t& effect ) :
+    dbc_proc_callback_t( effect.item, effect ),
+    legacy_1( create_proc_action<gorshalach_legacy_t>( "gorshalachs_legacy_1", effect ) ),
+    legacy_2( create_proc_action<gorshalach_bigger_legacy_t>( "gorshalachs_legacy_2", effect ) )
+  { }
+
+  void execute( action_t* /* a */, action_state_t* /* state */ ) override
+  {
+    proc_buff -> trigger();
+    if ( proc_buff -> check() == proc_buff -> max_stack() )
+    {
+      legacy_1 -> execute();
+      legacy_2 -> execute();
+      proc_buff -> expire();
+    }
+  }
 };
 
 void item::gorshalach_legacy( special_effect_t& effect )
 {
-   effect.execute_action = create_proc_action<echo_of_gorshalach_t>("echo_of_gorshalach", effect);
-   new dbc_proc_callback_t(effect.player, effect);
+  buff_t* echo = buff_t::find( effect.player, "echo_of_gorshalach" );
+  if ( ! echo )
+  {
+    echo = buff_creator_t( effect.player, "echo_of_gorshalach", effect.player -> find_spell( 253327 ), effect.item );
+  }
+
+  effect.custom_buff = echo;
+  new echo_of_gorshalach_cb_t( effect );
 }
 
 // Seeping Scourgewing =====================================================

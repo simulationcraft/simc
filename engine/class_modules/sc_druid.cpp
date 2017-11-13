@@ -6628,7 +6628,7 @@ struct force_of_nature_t : public druid_spell_t
   {
     parse_options( options );
     harmful = may_crit = false;
-    summon_duration = data().duration() + timespan_t::from_millis( 1 );
+    summon_duration = p->find_spell(248280)->duration() + timespan_t::from_millis(1);
   }
 
   virtual void execute() override
@@ -7378,7 +7378,7 @@ void druid_t::create_buffs()
 
   buff.celestial_alignment   = new celestial_alignment_buff_t( *this );
 
-  buff.fury_of_elune_up      = buff_creator_t( this, "fury_of_elune_up", spell_data_t::nil() )
+  buff.fury_of_elune_up      = buff_creator_t( this, "fury_of_elune", spell_data_t::nil() )
                                .max_stack( 10 ); // Tracking buff for APL use
 
   buff.lunar_empowerment     = buff_creator_t( this, "lunar_empowerment", find_spell( 164547 ) )
@@ -8034,6 +8034,7 @@ void druid_t::apl_balance()
   default_list -> add_action("call_action_list,name=AoE,if=(spell_targets.starfall>=2&talent.stellar_drift.enabled)|spell_targets.starfall>=3");
   default_list -> add_action("call_action_list,name=single_target");
   
+  ST -> add_talent( this, "Force of Nature");
   ST -> add_talent( this, "Stellar Flare", "target_if=refreshable,if=target.time_to_die>10");
   ST -> add_action( this, "Moonfire", "if=((talent.natures_balance.enabled&remains<3)|remains<6.6)&astral_power.deficit>7&target.time_to_die>8");
   ST -> add_action( this, "Sunfire", "if=((talent.natures_balance.enabled&remains<3)|remains<5.4)&astral_power.deficit>7&target.time_to_die>8");
@@ -8053,6 +8054,7 @@ void druid_t::apl_balance()
   AoE -> add_talent( this, "Stellar Flare", "target_if=refreshable,if=target.time_to_die>10");
   AoE -> add_action( this, "Sunfire", "target_if=refreshable,if=astral_power.deficit>7&target.time_to_die>4");
   AoE -> add_action( this, "Moonfire", "target_if=refreshable,if=astral_power.deficit>7&target.time_to_die>4");
+  AoE -> add_talent( this, "Force of Nature");
   AoE -> add_action( this, "starsurge", "if=buff.oneths_intuition.up&(!buff.astral_acceleration.up|buff.astral_acceleration.remains>5|astral_power.deficit<44)");
   AoE -> add_action( this, "New Moon", "if=astral_power.deficit>14&!(buff.celestial_alignment.up|buff.incarnation.up)");
   AoE -> add_action( this, "Half Moon", "if=astral_power.deficit>24");
@@ -8065,23 +8067,23 @@ void druid_t::apl_balance()
   AoE -> add_action( this, "Solar Wrath");
 
   FoE -> add_action( "incarnation,if=astral_power>=95&cooldown.fury_of_elune.remains<=gcd" );
-  FoE -> add_action( this, "astral_power>=95&cooldown.fury_of_elune.remains<=gcd" );
+  FoE -> add_talent( this, "Force of Nature", "if=!buff.fury_of_elune.up");
   FoE -> add_talent( this, "Fury of Elune", "if=astral_power>=95" );
-  FoE -> add_action( this, "New Moon", "if=((charges=2&recharge_time<5)|charges=3)&&(buff.fury_of_elune_up.up|(cooldown.fury_of_elune.remains>gcd*3&astral_power<=90))" );
-  FoE -> add_action( this, "Half Moon", "if=((charges=2&recharge_time<5)|charges=3)&&(buff.fury_of_elune_up.up|(cooldown.fury_of_elune.remains>gcd*3&astral_power<=80))" );
-  FoE -> add_action( this, "Full Moon", "if=((charges=2&recharge_time<5)|charges=3)&&(buff.fury_of_elune_up.up|(cooldown.fury_of_elune.remains>gcd*3&astral_power<=60))" );
-  FoE -> add_talent( this, "Astral Communion", "if=buff.fury_of_elune_up.up&astral_power<=25" );
-  FoE -> add_talent( this, "Warrior of Elune", "if=buff.fury_of_elune_up.up|(cooldown.fury_of_elune.remains>=35&buff.lunar_empowerment.up)" );
+  FoE -> add_action( this, "New Moon", "if=((charges=2&recharge_time<5)|charges=3)&&(buff.fury_of_elune.up|(cooldown.fury_of_elune.remains>gcd*3&astral_power<=90))" );
+  FoE -> add_action( this, "Half Moon", "if=((charges=2&recharge_time<5)|charges=3)&&(buff.fury_of_elune.up|(cooldown.fury_of_elune.remains>gcd*3&astral_power<=80))" );
+  FoE -> add_action( this, "Full Moon", "if=((charges=2&recharge_time<5)|charges=3)&&(buff.fury_of_elune.up|(cooldown.fury_of_elune.remains>gcd*3&astral_power<=60))" );
+  FoE -> add_talent( this, "Astral Communion", "if=buff.fury_of_elune.up&astral_power<=25" );
+  FoE -> add_talent( this, "Warrior of Elune", "if=buff.fury_of_elune.up|(cooldown.fury_of_elune.remains>=35&buff.lunar_empowerment.up)" );
   FoE -> add_action( this, "Lunar Strike", "if=buff.warrior_of_elune.up&(astral_power<=90|(astral_power<=85&buff.incarnation.up))" );
-  FoE -> add_action( this, "New Moon", "if=astral_power<=90&buff.fury_of_elune_up.up" );
-  FoE -> add_action( this, "Half Moon", "if=astral_power<=80&buff.fury_of_elune_up.up&astral_power>cast_time*12" );
-  FoE -> add_action( this, "Full Moon", "if=astral_power<=60&buff.fury_of_elune_up.up&astral_power>cast_time*12" );
-  FoE -> add_action( this, "Moonfire", "if=buff.fury_of_elune_up.down&remains<=6.6" );
-  FoE -> add_action( this, "Sunfire", "if=buff.fury_of_elune_up.down&remains<5.4" );
+  FoE -> add_action( this, "New Moon", "if=astral_power<=90&buff.fury_of_elune.up" );
+  FoE -> add_action( this, "Half Moon", "if=astral_power<=80&buff.fury_of_elune.up&astral_power>cast_time*12" );
+  FoE -> add_action( this, "Full Moon", "if=astral_power<=60&buff.fury_of_elune.up&astral_power>cast_time*12" );
+  FoE -> add_action( this, "Moonfire", "if=buff.fury_of_elune.down&remains<=6.6" );
+  FoE -> add_action( this, "Sunfire", "if=buff.fury_of_elune.down&remains<5.4" );
   FoE -> add_talent( this, "Stellar Flare", "if=remains<7.2&active_enemies=1" );
-  FoE -> add_action( this, "Starfall", "if=(active_enemies>=2&talent.stellar_flare.enabled|active_enemies>=3)&buff.fury_of_elune_up.down&cooldown.fury_of_elune.remains>10" );
-  FoE -> add_action( this, "Starsurge", "if=active_enemies<=2&buff.fury_of_elune_up.down&cooldown.fury_of_elune.remains>7" );
-  FoE -> add_action( this, "Starsurge", "if=buff.fury_of_elune_up.down&((astral_power>=92&cooldown.fury_of_elune.remains>gcd*3)|(cooldown.warrior_of_elune.remains<=5&cooldown.fury_of_elune.remains>=35&buff.lunar_empowerment.stack<2))" );
+  FoE -> add_action( this, "Starfall", "if=(active_enemies>=2&talent.stellar_flare.enabled|active_enemies>=3)&buff.fury_of_elune.down&cooldown.fury_of_elune.remains>10" );
+  FoE -> add_action( this, "Starsurge", "if=active_enemies<=2&buff.fury_of_elune.down&cooldown.fury_of_elune.remains>7" );
+  FoE -> add_action( this, "Starsurge", "if=buff.fury_of_elune.down&((astral_power>=92&cooldown.fury_of_elune.remains>gcd*3)|(cooldown.warrior_of_elune.remains<=5&cooldown.fury_of_elune.remains>=35&buff.lunar_empowerment.stack<2))" );
   FoE -> add_action( this, "Solar Wrath", "if=buff.solar_empowerment.up" );
   FoE -> add_action( this, "Lunar Strike", "if=buff.lunar_empowerment.stack=3|(buff.lunar_empowerment.remains<5&buff.lunar_empowerment.up)|active_enemies>=2" );
   FoE -> add_action( this, "Solar Wrath" );
@@ -8093,6 +8095,7 @@ void druid_t::apl_balance()
   ED -> add_talent( this, "Stellar Flare", "cycle_targets=1,max_cycle_targets=4,if=active_enemies<4&remains<7.2");
   ED -> add_action( this, "Moonfire", "if=((talent.natures_balance.enabled&remains<3)|(remains<6.6&!talent.natures_balance.enabled))&(buff.the_emerald_dreamcatcher.remains>gcd.max|!buff.the_emerald_dreamcatcher.up)");
   ED -> add_action( this, "Sunfire", "if=((talent.natures_balance.enabled&remains<3)|(remains<5.4&!talent.natures_balance.enabled))&(buff.the_emerald_dreamcatcher.remains>gcd.max|!buff.the_emerald_dreamcatcher.up)");
+  ED -> add_talent( this, "Force of Nature", "if=buff.the_emerald_dreamcatcher.remains>execute_time");
   ED -> add_action( this, "Starfall", "if=buff.oneths_overconfidence.up&buff.the_emerald_dreamcatcher.remains>execute_time");
   ED -> add_action( this, "New Moon", "if=astral_power.deficit>=10&buff.the_emerald_dreamcatcher.remains>execute_time&astral_power>=16");
   ED -> add_action( this, "Half Moon", "if=astral_power.deficit>=20&buff.the_emerald_dreamcatcher.remains>execute_time&astral_power>=6");

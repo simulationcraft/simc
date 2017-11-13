@@ -5239,7 +5239,7 @@ void warrior_t::apl_fury()
       cooldowns -> add_action( "use_item,name=" + items[i].name_str + ",if=equipped.draught_of_souls&buff.battle_cry.remains>2&buff.enrage.remains>2&((talent.dragon_roar.enabled&buff.dragon_roar.remains>=3)|!talent.dragon_roar.enabled)" );
     }
   }
-  cooldowns -> add_action( this, "Odyn's Fury", "if=buff.enrage.up&cooldown.raging_blow.remains>0&target.health.pct>20" );
+  cooldowns -> add_action( this, "Odyn's Fury", "if=buff.enrage.up&target.health.pct>20&((cooldown.raging_blow.remains>0&talent.inner_rage.enabled)|!talent.inner_rage.enabled)" );
   cooldowns -> add_action( this, "Execute" );
   cooldowns -> add_action( this, "Raging Blow", "if=talent.inner_rage.enabled&buff.enrage.up" );
   cooldowns -> add_action( this, "Rampage", "if=talent.reckless_abandon.enabled&!talent.frothing_berserker.enabled|(talent.frothing_berserker.enabled&rage>=100)" );

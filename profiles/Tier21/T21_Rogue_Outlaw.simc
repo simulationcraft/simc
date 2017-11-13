@@ -88,32 +88,31 @@ actions.stealth+=/ambush,if=variable.ambush_condition
 actions.stealth+=/vanish,if=(variable.ambush_condition|equipped.mantle_of_the_master_assassin&!variable.rtb_reroll&!variable.ss_useable)&mantle_duration=0
 actions.stealth+=/shadowmeld,if=variable.ambush_condition
 
-head=fanged_slayers_helm,id=147172,bonus_id=1512/3563
+head=headdress_of_living_brambles,id=152681,bonus_id=3612/1502
 neck=chain_of_the_unmaker,id=152283,bonus_id=3612/1502,enchant=mark_of_the_hidden_satyr
 shoulders=shoulderpads_of_the_dashing_scoundrel,id=152165,bonus_id=3612/1502
 back=cloak_of_the_dashing_scoundrel,id=152161,bonus_id=3612/1502,enchant=binding_of_agility
-chest=vest_of_the_dashing_scoundrel,id=152160,bonus_id=3612/1502
+chest=vest_of_waning_life,id=151982,bonus_id=3612/1502
 wrists=greenskins_waterlogged_wristcuffs,id=137099,bonus_id=3630
 hands=gloves_of_the_dashing_scoundrel,id=152162,bonus_id=3612/1502
 waist=belt_of_fractured_sanity,id=151991,bonus_id=3612/1502
-legs=fanged_slayers_legguards,id=147173,bonus_id=1512/3563
+legs=pants_of_the_dashing_scoundrel,id=152164,bonus_id=3612/1502
 feet=depraved_machinists_footpads,id=152412,bonus_id=3612/1502
-finger1=insignia_of_ravenholdt,id=137049,bonus_id=3630,gems=200crit,enchant=binding_of_critical_strike
-finger2=seal_of_the_portalmaster,id=152063,bonus_id=3612/1502,enchant=binding_of_critical_strike
+finger1=insignia_of_ravenholdt,id=137049,bonus_id=3630,gems=200haste,enchant=binding_of_haste
+finger2=seal_of_the_portalmaster,id=152063,bonus_id=3612/1502,enchant=binding_of_haste
 trinket1=seeping_scourgewing,id=151964,bonus_id=3612/1502
 trinket2=golganneths_vitality,id=154174,ilevel=1000
 main_hand=the_dreadblades,id=128872,bonus_id=742,gem_id=152028/155855/155853,relic_id=3612:1502/3612:1512/3612:1512
 off_hand=the_dreadblades,id=134552
 
 # Gear Summary
-# gear_ilvl=968.88
-# gear_agility=36145
-# gear_stamina=57428
-# gear_crit_rating=10792
-# gear_haste_rating=9736
-# gear_mastery_rating=4506
-# gear_versatility_rating=7634
-# gear_armor=2874
-# set_bonus=tier20_2pc=1
+# gear_ilvl=973.25
+# gear_agility=38366
+# gear_stamina=60761
+# gear_crit_rating=13425
+# gear_haste_rating=9897
+# gear_mastery_rating=1965
+# gear_versatility_rating=7899
+# gear_armor=2965
 # set_bonus=tier21_2pc=1
 # set_bonus=tier21_4pc=1
