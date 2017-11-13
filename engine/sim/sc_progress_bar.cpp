@@ -277,21 +277,19 @@ bool progress_bar_t::update_normal( const sim_progress_t& progress, bool finishe
       str::format( status, " %dmsec", total_msec );
     }
   }
-  else
-  {
-    if ( total_work() > 0 )
-    {
-      auto average_spent = average_simulation_time();
-      auto phases_left = total_work() - current_progress();
-      auto time_left = std::max( 0.0, average_spent - ( util::wall_time() - start_time ) );
-      auto total_left = phases_left * average_spent + time_left;
 
-      if ( total_left > 0 )
-      {
-        status += " (";
-        status += format_time( total_left );
-        status += ")";
-      }
+  if ( total_work() > 0 )
+  {
+    auto average_spent = average_simulation_time();
+    auto phases_left = total_work() - current_progress();
+    auto time_left = std::max( 0.0, average_spent - ( util::wall_time() - start_time ) );
+    auto total_left = phases_left * average_spent + time_left;
+
+    if ( total_left > 0 )
+    {
+      status += " (";
+      status += format_time( total_left );
+      status += ")";
     }
   }
 
