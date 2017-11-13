@@ -7574,7 +7574,7 @@ std::string shaman_t::default_flask() const
 
 std::string shaman_t::default_food() const
 {
-  std::string elemental_food = ( true_level > 100  ) ? "lavish_suramar_feast" :
+  std::string elemental_food = ( true_level > 100  ) ? "lemon_herb_filet" :
                                ( true_level > 90   ) ? "pickled_eel" :
                                ( true_level >= 90  ) ? "mogu_fish_stew" :
                                ( true_level >= 80  ) ? "seafood_magnifique_feast" :
