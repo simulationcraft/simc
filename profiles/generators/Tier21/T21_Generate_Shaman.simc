@@ -28,7 +28,7 @@ finger1=sullied_seal_of_the_pantheon,id=151972,ilevel=970,enchant=200crit
 finger2=band_of_the_sargerite_smith,id=152064,ilevel=960,enchant=200crit
 trinket1=acrid_catalyst_injector,id=151955,ilevel=960
 trinket2=amanthuls_vision,id=154172,ilevel=1000
-main_hand=the_fist_of_raden,id=128935,bonus_id=744,gem_id=152059/155850/152059,relic_ilevel=960/970/960
+main_hand=the_fist_of_raden,id=128935,bonus_id=744,gem_id=155853/155850/155853,relic_ilevel=970/970/970
 off_hand=the_highkeepers_ward,id=128936
 
 save=T21_Shaman_Elemental.simc
