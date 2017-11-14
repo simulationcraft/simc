@@ -7592,7 +7592,7 @@ std::string druid_t::default_potion() const
                               (true_level >= 80) ? "volcanic" :
                               "disabled";
 
-      std::string feral_pot = (true_level > 100) ? "old_war" : //TODO(feral): Check pp conditional ~1m dps/915 ilvl
+      std::string feral_pot = (true_level > 100) ? "potion_of_prolonged_power" : 
                               (true_level >= 90) ? "draenic_agility" :
                               (true_level >= 85) ? "virmens_bite" :
                               (true_level >= 80) ? "tolvir" :
@@ -7620,7 +7620,8 @@ std::string druid_t::default_potion() const
 
 std::string druid_t::default_food() const
 {
-   return (true_level >  100) ? "lavish_suramar_feast" :
+   return (true_level > 100 && specialization() == DRUID_FERAL) ? "lemon_herb_filet" :
+          (true_level >  100) ? "lavish_suramar_feast" :
           (true_level >  90) ?  "pickled_eel" :
           (true_level >= 90) ?  "sea_mist_rice_noodles" :
           (true_level >= 80) ?  "seafood_magnifique_feast" :
@@ -7771,6 +7772,7 @@ void druid_t::apl_feral()
    //cooldowns->add_action("rake,if=buff.prowl.up|buff.shadowmeld.up");
    cooldowns->add_action("berserk,if=energy>=30&(cooldown.tigers_fury.remains>5|buff.tigers_fury.up)");
    cooldowns->add_action("tigers_fury,if=energy.deficit>=60");
+   cooldowns->add_action("berserking");
    cooldowns->add_action("elunes_guidance,if=combo_points=0&energy>=50");
    cooldowns->add_action("incarnation,if=energy>=30&(cooldown.tigers_fury.remains>15|buff.tigers_fury.up)");
    cooldowns->add_action("potion,name=prolonged_power,if=target.time_to_die<65|(time_to_die<180&(buff.berserk.up|buff.incarnation.up))");
@@ -7779,12 +7781,13 @@ void druid_t::apl_feral()
    cooldowns->add_action("use_items");
 
    st->add_action("cat_form,if=!buff.cat_form.up");
-   st->add_action("auto_attack");
    st->add_action("rake,if=buff.prowl.up|buff.shadowmeld.up");
+   st->add_action("auto_attack");
    st->add_action("call_action_list,name=cooldowns");
-   st->add_action("regrowth,if=combo_points=5&talent.bloodtalons.enabled&buff.bloodtalons.down&(!buff.incarnation.up|dot.rip.remains<8|dot.rake.remains<5)");
-   st->add_action("regrowth,if=talent.bloodtalons.enabled&buff.bloodtalons.down&buff.apex_predator.up");
-   st->add_action("ferocious_bite,max_energy=1,if=buff.apex_predator.up");
+   st->add_action("ferocious_bite,target_if=dot.rip.ticking&dot.rip.remains<3&target.time_to_die>10&(target.health.pct<25|talent.sabertooth.enabled)");
+   st->add_action("regrowth,if=combo_points=5&buff.predatory_swiftness.up&talent.bloodtalons.enabled&buff.bloodtalons.down&(!buff.incarnation.up|dot.rip.remains<8)");
+   st->add_action("regrowth,if=combo_points>3&talent.bloodtalons.enabled&buff.predatory_swiftness.up&buff.apex_predator.up&buff.incarnation.down");
+   st->add_action("ferocious_bite,if=buff.apex_predator.up");
    st->add_action("run_action_list,name=st_finishers,if=combo_points>4");
    st->add_action("run_action_list,name=st_generators");
 
@@ -7802,19 +7805,21 @@ void druid_t::apl_feral()
    generator->add_action("regrowth,if=equipped.ailuro_pouncers&talent.bloodtalons.enabled&(buff.predatory_swiftness.stack>2|(buff.predatory_swiftness.stack>1&dot.rake.remains<3))&buff.bloodtalons.down");
    generator->add_action("brutal_slash,if=spell_targets.brutal_slash>desired_targets");
    generator->add_action("pool_resource,for_next=1");
-   generator->add_action("thrash_cat,if=(!ticking|remains<duration*0.3)&(spell_targets.thrash_cat>2)");
+   generator->add_action("thrash_cat,if=refreshable&(spell_targets.thrash_cat>2)");
+   generator->add_action("pool_resource,for_next=1");
+   generator->add_action("thrash_cat,if=spell_targets.thrash_cat>3&equipped.luffa_wrappings&talent.brutal_slash.enabled");
    generator->add_action("pool_resource,for_next=1");
    generator->add_action("rake,target_if=!ticking|(!talent.bloodtalons.enabled&remains<duration*0.3)&target.time_to_die>4");
    generator->add_action("pool_resource,for_next=1");
    generator->add_action("rake,target_if=talent.bloodtalons.enabled&buff.bloodtalons.up&((remains<=7)&persistent_multiplier>dot.rake.pmultiplier*0.85)&target.time_to_die>4");
    generator->add_action("brutal_slash,if=(buff.tigers_fury.up&(raid_event.adds.in>(1+max_charges-charges_fractional)*recharge_time))");
-   generator->add_action("moonfire_cat,target_if=remains<=duration*0.3");
+   generator->add_action("moonfire_cat,target_if=refreshable");
    generator->add_action("pool_resource,for_next=1");
-   generator->add_action("thrash_cat,if=(!ticking|remains<duration*0.3)&(variable.use_thrash=2|spell_targets.thrash_cat>1)");
-   generator->add_action("thrash_cat,if=(!ticking|remains<duration*0.3)&variable.use_thrash=1&buff.clearcasting.react");
+   generator->add_action("thrash_cat,if=refreshable&(variable.use_thrash=2|spell_targets.thrash_cat>1)");
+   generator->add_action("thrash_cat,if=refreshable&variable.use_thrash=1&buff.clearcasting.react");
    generator->add_action("pool_resource,for_next=1");
    generator->add_action("swipe_cat,if=spell_targets.swipe_cat>1");
-   generator->add_action("shred");
+   generator->add_action("shred,if=dot.rake.remains>(action.shred.cost+action.rake.cost-energy)%energy.regen|buff.clearcasting.react");
 
  //  action_priority_list_t* def = get_action_priority_list("default");
  //  action_priority_list_t* opener = get_action_priority_list("opener");
