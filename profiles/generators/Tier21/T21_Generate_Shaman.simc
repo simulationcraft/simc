@@ -50,21 +50,21 @@ flask=seventh_demon
 food=lemon_herb_filet
 augmentation=defiled
 
-head=helm_of_the_awakened_soul,id=152423,bonus_id=3610/1472,bonus_id=3612/1502
-neck=riveted_choker_of_delirium,id=151966,bonus_id=3610/1472,bonus_id=3612/1502,enchant=mark_of_the_hidden_satyr
-shoulders=pauldrons_of_venerated_spirits,id=152171,bonus_id=3610/1472,bonus_id=3612/1502
-back=drape_of_venerated_spirits,id=152167,bonus_id=3610/1472,bonus_id=3612/1502,enchant=200agi
-chest=robes_of_venerated_spirits,id=152166,bonus_id=3610/1472,bonus_id=3612/1502
-wrists=realitysplitting_wristguards,id=152008,bonus_id=3610/1472,bonus_id=3612/1502
-hands=smoldering_heart,id=151819,bonus_id=3570,bonus_id=3630
-waist=worldravager_waistguard,id=152683,bonus_id=3610/1472,bonus_id=3612/1502
-legs=leggings_of_venerated_spirits,id=152170,bonus_id=3610/1472,bonus_id=3612/1502
-feet=greatboots_of_the_searing_tempest,id=152684,bonus_id=3610/1472,bonus_id=3612/1502
-finger1=eye_of_the_twisting_nether,id=137050,bonus_id=3570,bonus_id=3630,gem_id=151583,enchant=200haste
-finger2=loop_of_the_lifebinder,id=152688,bonus_id=3610/1472,bonus_id=3612/1502,enchant=200haste
+head=helm_of_the_awakened_soul,id=152423,bonus_id=3612/1502
+neck=riveted_choker_of_delirium,id=151966,bonus_id=3612/1502,enchant=mark_of_the_hidden_satyr
+shoulders=pauldrons_of_venerated_spirits,id=152171,bonus_id=3612/1502
+back=drape_of_venerated_spirits,id=152167,bonus_id=3612/1502,enchant=200agi
+chest=robes_of_venerated_spirits,id=152166,bonus_id=3612/1502
+wrists=realitysplitting_wristguards,id=152008,bonus_id=3612/1502
+hands=smoldering_heart,id=151819,bonus_id=3630
+waist=worldravager_waistguard,id=152683,bonus_id=3612/1502
+legs=leggings_of_venerated_spirits,id=152170,bonus_id=3612/1502
+feet=greatboots_of_the_searing_tempest,id=152684,bonus_id=3612/1502
+finger1=eye_of_the_twisting_nether,id=137050,bonus_id=3630,gem_id=151583,enchant=200haste
+finger2=loop_of_the_lifebinder,id=152688,bonus_id=3612/1502,enchant=200haste
 trinket1=golganneths_vitality,id=154174,bonus_id=4213
-trinket2=seeping_scourgewing,id=151964,bonus_id=3612/1502
-main_hand=doomhammer,id=128819,gem_id=155849/152049/152061,relic_id=3612:1512/3612:1512/3612:1512
+trinket2=gorshalachs_legacy,id=152093,bonus_id=3612/1502
+main_hand=doomhammer,id=128819,gem_id=155849/155855/155853,relic_id=3612:1512/3612:1512/3612:1512
 off_hand=fury_of_the_stonemother,id=128873
 
 save=T21_Shaman_Enhancement.simc
