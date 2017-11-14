@@ -122,6 +122,10 @@ namespace item
   void vitality_resonator( special_effect_t&           );
   void terminus_signaling_beacon( special_effect_t&    );
   void sheath_of_asara( special_effect_t&              );
+  void seeping_scourgewing( special_effect_t&          );
+  void gorshalach_legacy( special_effect_t&            );
+  void forgefiends_fabricator( special_effect_t&       );
+  void forgefiends_fabricator_detonate(special_effect_t&);
 
   // 7.2.0 Dungeon
   void dreadstone_of_endless_shadows( special_effect_t& );
@@ -148,11 +152,8 @@ namespace item
   Everything
 
   Antorus -----------------------------------
-
-  Forgefiend's Fabricator
-  Seeping Scourgewing
-  Gorshalach's Legacy
-
+  
+  Every DPS trinket implemented.
   Healer trinkets / other rubbish -----------
 
   cocoon_of_enforced_solitude
@@ -1531,8 +1532,10 @@ void item::cradle_of_anguish( special_effect_t& effect )
 
 struct pantheon_proc_callback_t : public dbc_proc_callback_t
 {
-  pantheon_proc_callback_t( const special_effect_t& effect ) :
-    dbc_proc_callback_t( effect.item, effect )
+  buff_t* base_buff;
+
+  pantheon_proc_callback_t( const special_effect_t& effect, buff_t* base_buff ) :
+    dbc_proc_callback_t( effect.item, effect ), base_buff( base_buff )
   {
     // Ensure we have a proxy pantheon system to use
     unique_gear::initialize_pantheon( effect.player );
@@ -1544,7 +1547,7 @@ protected:
   {
     dbc_proc_callback_t::execute( a, state );
 
-    listener -> sim -> expansion_data.pantheon_proxy -> trigger_pantheon_buff();
+    listener -> sim -> expansion_data.pantheon_proxy -> trigger_pantheon_buff( base_buff );
   }
 };
 
@@ -1556,18 +1559,15 @@ void item::amanthuls_vision( special_effect_t& effect )
   // state system
   effect.custom_buff = effect.create_buff();
 
-  new pantheon_proc_callback_t( effect );
+  new pantheon_proc_callback_t( effect, effect.custom_buff );
 
   // Empower effect
   auto empower_spell = effect.player -> find_spell( 256832 );
   auto empower_amount = empower_spell -> effectN( 1 ).average( effect.item );
   stat_buff_t* empower_buff = stat_buff_creator_t( effect.player, "amanthuls_grandeur", empower_spell, effect.item )
-    // Add an ICD to all of the buffs for the duration of the buff to ensure they do not refresh
-    .cd( empower_spell -> duration() )
     .add_stat( effect.player -> primary_stat(), empower_amount );
 
-  effect.player -> sim -> expansion_data.pantheon_proxy -> register_pantheon_buff( effect.custom_buff );
-  effect.player -> sim -> expansion_data.pantheon_proxy -> register_pantheon_effect( [ empower_buff ]() {
+  effect.player -> sim -> expansion_data.pantheon_proxy -> register_pantheon_effect( effect.custom_buff, [ empower_buff ]() {
     empower_buff -> trigger();
   } );
 }
@@ -1647,13 +1647,12 @@ void item::khazgoroths_courage( special_effect_t& effect )
       else             secondary_cb -> deactivate();
     } );
 
-  new pantheon_proc_callback_t( effect );
+  new pantheon_proc_callback_t( effect, effect.custom_buff );
 
   auto empower_spell = effect.player -> find_spell( 256835 );
   auto stat_amount = item_database::apply_combat_rating_multiplier( *effect.item,
       empower_spell -> effectN( 1 ).average( effect.item ) );
   stat_buff_t* empower_buff = stat_buff_creator_t( effect.player, "khazgoroths_shaping", empower_spell, effect.item )
-    .cd( empower_spell -> duration() )
     .add_stat( STAT_CRIT_RATING, stat_amount, []( const stat_buff_t& b ) {
       auto crit = b.source -> composite_spell_crit_rating();
       auto haste = b.source -> composite_spell_haste_rating();
@@ -1683,8 +1682,7 @@ void item::khazgoroths_courage( special_effect_t& effect )
       return versatility > crit && versatility > haste && versatility > mastery;
     } );
 
-  effect.player -> sim -> expansion_data.pantheon_proxy -> register_pantheon_buff( effect.custom_buff );
-  effect.player -> sim -> expansion_data.pantheon_proxy -> register_pantheon_effect( [ empower_buff ]() {
+  effect.player -> sim -> expansion_data.pantheon_proxy -> register_pantheon_effect( effect.custom_buff, [ empower_buff ]() {
     empower_buff -> trigger();
   } );
 }
@@ -1706,7 +1704,7 @@ struct golganneths_vitality_proc_t : public pantheon_proc_callback_t
   buff_t* mark;
 
   golganneths_vitality_proc_t( const special_effect_t& e, buff_t* mark ) :
-    pantheon_proc_callback_t( e ),
+    pantheon_proc_callback_t( e, mark ),
     damage( create_proc_action<ravaging_storm_t>( "ravaging_storm", e ) ),
     mark( mark )
   { }
@@ -1758,14 +1756,12 @@ void item::golganneths_vitality( special_effect_t& effect )
 
   auto empower_spell = effect.player -> find_spell( 256833 );
   buff_t* empower_buff = buff_creator_t( effect.player, "golganneths_thunderous_wrath", empower_spell, effect.item )
-    .cd( empower_spell -> duration() )
     .stack_change_callback( [ secondary_cb ]( buff_t*, int, int new_ ) {
       if ( new_ == 1 ) secondary_cb -> activate();
       else             secondary_cb -> deactivate();
     } );
 
-  effect.player -> sim -> expansion_data.pantheon_proxy -> register_pantheon_buff( mark_buff );
-  effect.player -> sim -> expansion_data.pantheon_proxy -> register_pantheon_effect( [ empower_buff ]() {
+  effect.player -> sim -> expansion_data.pantheon_proxy -> register_pantheon_effect( mark_buff, [ empower_buff ]() {
     empower_buff -> trigger();
   } );
 }
@@ -1822,7 +1818,7 @@ void item::norgannons_prowess( special_effect_t& effect )
   // system
   effect.custom_buff = effect.create_buff();
 
-  new pantheon_proc_callback_t( effect );
+  new pantheon_proc_callback_t( effect, effect.custom_buff );
 
   // Empower effect
   special_effect_t* secondary = new special_effect_t( effect.item );
@@ -1840,14 +1836,12 @@ void item::norgannons_prowess( special_effect_t& effect )
 
   auto empower_spell = effect.player -> find_spell( 256836 );
   buff_t* empower_buff = buff_creator_t( effect.player, "norgannons_command", empower_spell, effect.item )
-    .cd( empower_spell -> duration() )
     .stack_change_callback( [ secondary_cb ]( buff_t* b, int, int new_ ) {
       if ( new_ == b -> max_stack() ) secondary_cb -> activate();
       else if ( new_ == 0           ) secondary_cb -> deactivate();
     } );
 
-  effect.player -> sim -> expansion_data.pantheon_proxy -> register_pantheon_buff( effect.custom_buff );
-  effect.player -> sim -> expansion_data.pantheon_proxy -> register_pantheon_effect( [ empower_buff ]() {
+  effect.player -> sim -> expansion_data.pantheon_proxy -> register_pantheon_effect( effect.custom_buff, [ empower_buff ]() {
     empower_buff -> trigger( empower_buff -> max_stack() );
   } );
 
@@ -1923,7 +1917,7 @@ struct injector_proc_cb_t : public dbc_proc_callback_t
 
   void execute( action_t* /* a */, action_state_t* /* state */ ) override
   {
-    auto buff_index = static_cast<size_t>( rng().range( 0, small_buffs.size() ) );
+    auto buff_index = static_cast<size_t>( rng().range( size_t(0), small_buffs.size() ) );
     auto buff = small_buffs[ buff_index ];
 
     buff -> trigger();
@@ -1978,7 +1972,7 @@ void item::acrid_catalyst_injector( special_effect_t& effect )
 
   dbc_proc_callback_t* cb = new injector_proc_cb_t( effect, { crit, haste, mastery }, all );
 
-  all -> stack_change_callback = [ cb ] ( buff_t*, int prev, int cur )
+  all -> stack_change_callback = [ cb ] ( buff_t*, int prev, int /*cur*/ )
   {
     if ( prev == 0 ) cb -> deactivate();
     if ( prev == 1 ) cb -> activate();
@@ -2103,14 +2097,14 @@ struct shadow_blades_constructor_t : public item_targetdata_initializer_t
 
     if ( ! effect )
     {
-      td -> debuff.shadow_blades = buff_creator_t( *td, "shadow_blades" );
+      td -> debuff.shadow_blades = buff_creator_t( *td, "shadow_blades_debuff" );
     }
     else
     {
       assert( ! td -> debuff.shadow_blades );
 
       auto spell = effect -> player -> find_spell( 253265 );
-      td -> debuff.shadow_blades = buff_creator_t( *td, "shadow_blades", spell, effect -> item )
+      td -> debuff.shadow_blades = buff_creator_t( *td, "shadow_blades_debuff", spell, effect -> item )
         .default_value( spell -> effectN( 2 ).percent() );
       td -> debuff.shadow_blades -> reset();
     }
@@ -2173,6 +2167,260 @@ void item::sheath_of_asara( special_effect_t& effect )
   effect.custom_buff = new shadow_blades_buff_t( effect );
   new dbc_proc_callback_t( effect.item, effect );
 }
+
+// Gorshalach's Legacy =====================================================
+struct gorshalach_legacy_t : public proc_spell_t
+{
+  gorshalach_legacy_t( const special_effect_t& effect ) :
+      proc_spell_t( "gorshalachs_legacy_1", effect.player, effect.player -> find_spell( 253329 ), effect.item )
+  {
+    // Spell data contains crit damage.
+    base_dd_min /= 2.0;
+    base_dd_max /= 2.0;
+  }
+
+  // Always crits.
+  virtual double composite_crit_chance() const override { return 1.0; }
+};
+
+struct gorshalach_bigger_legacy_t : public proc_spell_t
+{
+  gorshalach_bigger_legacy_t( const special_effect_t& effect ) :
+      proc_spell_t( "gorshalachs_legacy_2", effect.player, effect.player -> find_spell( 255673 ), effect.item )
+  {
+    // Spell data contains crit damage.
+    base_dd_min /= 2.0;
+    base_dd_max /= 2.0;
+  }
+
+  // Always crits.
+  virtual double composite_crit_chance() const override { return 1.0; }
+};
+
+struct echo_of_gorshalach_cb_t : public dbc_proc_callback_t
+{
+  action_t* legacy_1;
+  action_t* legacy_2;
+
+  echo_of_gorshalach_cb_t( const special_effect_t& effect ) :
+    dbc_proc_callback_t( effect.item, effect ),
+    legacy_1( create_proc_action<gorshalach_legacy_t>( "gorshalachs_legacy_1", effect ) ),
+    legacy_2( create_proc_action<gorshalach_bigger_legacy_t>( "gorshalachs_legacy_2", effect ) )
+  { }
+
+  void execute( action_t* /* a */, action_state_t* /* state */ ) override
+  {
+    proc_buff -> trigger();
+    if ( proc_buff -> check() == proc_buff -> max_stack() )
+    {
+      legacy_1 -> execute();
+      legacy_2 -> execute();
+      proc_buff -> expire();
+    }
+  }
+};
+
+void item::gorshalach_legacy( special_effect_t& effect )
+{
+  buff_t* echo = buff_t::find( effect.player, "echo_of_gorshalach" );
+  if ( ! echo )
+  {
+    echo = buff_creator_t( effect.player, "echo_of_gorshalach", effect.player -> find_spell( 253327 ), effect.item );
+  }
+
+  effect.custom_buff = echo;
+  new echo_of_gorshalach_cb_t( effect );
+}
+
+// Seeping Scourgewing =====================================================
+struct shadow_strike_t: public proc_spell_t
+{
+  struct isolated_strike_t : public proc_spell_t
+  {
+    isolated_strike_t( const special_effect_t& effect ) :
+      proc_spell_t( "isolated_strike", effect.player, effect.player -> find_spell( 255609 ), effect.item )
+    {}
+  };
+
+  action_t* isolated_strike;
+  int target_radius;
+
+  shadow_strike_t( const special_effect_t& effect ) :
+    proc_spell_t( "shadow_strike", effect.player, effect.trigger(), effect.item ),
+    isolated_strike( create_proc_action<isolated_strike_t>( "isolated_strike", effect ) ),
+    target_radius( effect.driver() -> effectN( 1 ).base_value() )
+  {
+    add_child( isolated_strike );
+  }
+
+  void execute() override
+  {
+    proc_spell_t::execute();
+
+    for ( const player_t* enemy : sim -> target_non_sleeping_list )
+    {
+      if ( enemy != target && target -> get_position_distance(enemy -> x_position, enemy -> y_position) < target_radius )
+      {
+        return; // There is another enemy near to our target.
+      }
+    }
+    isolated_strike -> execute();
+  }
+};
+
+void item::seeping_scourgewing( special_effect_t& effect )
+{
+   effect.execute_action = create_proc_action<shadow_strike_t>( "shadow_strike", effect );
+   new dbc_proc_callback_t( effect.player, effect );
+}
+
+// Forgefiend's Fabricator =================================================
+// TODO: Expression support?
+
+struct fire_mines_t : public proc_spell_t
+{
+  fire_mines_t( const special_effect_t& effect ) :
+    proc_spell_t( "fire_mines", effect.player, effect.player -> find_spell( 253321 ), effect.item )
+  { }
+};
+
+struct fire_mines_driver_t : public dbc_proc_callback_t
+{
+  struct mine_explosion_event_t : public event_t
+  {
+    action_t* action;
+    player_t* target;
+
+    double x;
+    double y;
+
+    std::vector<event_t*>* active_mines;
+
+    mine_explosion_event_t( action_t* a, player_t* t, double x_, double y_, std::vector<event_t*>* am, timespan_t delay ) :
+      event_t( *a -> player, delay ), action( a ), target( t ), x( x_ ), y( y_ ), active_mines( am )
+    { }
+
+    virtual const char* name() const override
+    {
+      return "fire_mine_explosion";
+    }
+
+    virtual void execute() override
+    {
+      action -> set_target( target );
+
+      // Set the original position.
+      action_state_t* state = action -> get_state();
+      action -> snapshot_state( state, action -> amount_type( state ) );
+      state -> target     = target;
+      state -> original_x = x;
+      state -> original_y = y;
+
+      action -> schedule_execute( state );
+
+      auto it = range::find( *active_mines, this );
+      if ( it != active_mines -> end() )
+        erase_unordered( *active_mines, it );
+    }
+  };
+
+  action_t* fire_mines;
+  std::vector<event_t*> active_mines;
+  const timespan_t timer;
+
+  fire_mines_driver_t( const special_effect_t& effect, action_t* mines ) :
+    dbc_proc_callback_t( effect.item, effect ),
+    fire_mines( mines ),
+    active_mines(),
+    timer( effect.player -> find_spell( 253320 ) -> duration() )
+  { }
+
+  void reset() override
+  {
+    dbc_proc_callback_t::reset();
+    active_mines.clear();
+  }
+
+  void execute( action_t* /* a */, action_state_t* state ) override
+  {
+    // Trinket creates two mines per proc.
+    for ( int i = 0; i < 2; i++ )
+    {
+      // Mine spawns under the target.
+      event_t* e = make_event<mine_explosion_event_t>( *listener -> sim,
+        fire_mines,
+        state -> target,
+        state -> target -> x_position,
+        state -> target -> y_position,
+        &active_mines,
+        timer );
+      active_mines.push_back( e );
+    }
+  }
+};
+
+void item::forgefiends_fabricator( special_effect_t& effect )
+{
+  action_t* mines = create_proc_action<fire_mines_t>( "fire_mines", effect );
+  new fire_mines_driver_t( effect, mines );
+}
+
+struct fire_mines_detonator_t : public proc_spell_t
+{
+  std::vector<event_t*>* active_mines;
+
+  fire_mines_detonator_t( const special_effect_t& effect ) :
+    proc_spell_t( "fire_mines_detonator", effect.player, effect.player -> find_spell( 253322 ), effect.item ),
+    active_mines( nullptr )
+  { }
+
+  bool init_finished() override
+  {
+    for ( auto cb : player -> callbacks.all_callbacks )
+    {
+      if ( auto mines_driver = dynamic_cast<fire_mines_driver_t*>( cb ) )
+      {
+        active_mines = &mines_driver -> active_mines;
+        break;
+      }
+    }
+
+    if ( ! active_mines )
+      return false;
+
+    return proc_spell_t::init_finished();
+  }
+
+  bool ready() override
+  {
+    if ( ! active_mines || active_mines -> empty() )
+      return false;
+
+    return proc_spell_t::ready();
+  }
+
+  void execute() override
+  {
+    proc_spell_t::execute();
+
+    assert( active_mines );
+
+    while ( ! active_mines -> empty() )
+    {
+      event_t* e = active_mines -> front();
+      e -> execute();
+      event_t::cancel( e );
+    }
+
+    active_mines -> clear();
+  }
+};
+
+void item::forgefiends_fabricator_detonate( special_effect_t& effect )
+{
+  effect.execute_action = new fire_mines_detonator_t( effect );
+}
+
 
 // Toe Knee's Promise ======================================================
 
@@ -5950,7 +6198,7 @@ struct eyasus_driver_t : public spell_t
     spell_t::execute();
 
     // Choose a buff and trigger the mulligan one
-    range::for_each( mulligan_buffs, [ this ]( buff_t* b ) { b -> expire(); } );
+    range::for_each( mulligan_buffs, []( buff_t* b ) { b -> expire(); } );
     current_roll = static_cast<unsigned>( rng().range( 0, mulligan_buffs.size() ) );
     mulligan_buffs[ current_roll ] -> trigger();
     if ( ! first_roll )
@@ -6026,7 +6274,7 @@ struct netherlight_base_t : public proc_spell_t
     if ( dot -> tick_event )
     {
       timespan_t tick_time = dot -> current_action -> tick_time( dot -> state );
-      int tick_count = std::round( triggered_duration.total_seconds() / tick_time.total_seconds() );
+      int tick_count = static_cast<int>(std::round( triggered_duration.total_seconds() / tick_time.total_seconds() ));
 
       return tick_count * tick_time + dot -> tick_event -> remains();
     }
@@ -6312,6 +6560,10 @@ void unique_gear::register_special_effects_x7()
   register_special_effect( 253258, item::vitality_resonator        );
   register_special_effect( 255724, item::terminus_signaling_beacon );
   register_special_effect( 253263, item::sheath_of_asara           );
+  register_special_effect( 253323, item::seeping_scourgewing       );
+  register_special_effect( 253326, item::gorshalach_legacy         );
+  register_special_effect( 253310, item::forgefiends_fabricator    );
+  register_special_effect( 253322, item::forgefiends_fabricator_detonate  );
 
   /* Legion 7.2.0 Dungeon */
   register_special_effect( 238498, item::dreadstone_of_endless_shadows );

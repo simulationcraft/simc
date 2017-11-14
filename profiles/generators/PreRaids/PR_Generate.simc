@@ -1,0 +1,48 @@
+# PreRaids
+# Legion Pre-Raids
+# * Ilvl Cap: 880 (875 for Nightbane)
+# * Artifact Relics: 3
+# * Artifact Rank Cap: 19
+# * Standard Mythic 5 Man Loot Only
+# * No Legendaries
+# * No Random Gems (ie. Bonus RNG Gem Slots)
+# * No Tertiary Stats
+# * No Ranked Gear (ie. Warforged/Titanforged)
+# * No Hardcoded Stats (generally if an item gives wrong stats: either bonus_id is wrong, either the item no longer exists in-game)
+# * It is recommended to use enchant name (ex : ",enchant=binding_of_mastery") rather than id/hardcoded stats.
+
+# Death Knight
+PR_Generate_Death_Knight.simc
+
+# Demon Hunter
+PR_Generate_Demon_Hunter.simc
+
+# Druid
+PR_Generate_Druid.simc
+
+# Hunter
+PR_Generate_Hunter.simc
+
+# Mage
+PR_Generate_Mage.simc
+
+# Monk
+PR_Generate_Monk.simc
+
+# Paladin
+PR_Generate_Paladin.simc
+
+# Priest
+PR_Generate_Priest.simc
+
+# Rogue
+PR_Generate_Rogue.simc
+
+# Shaman
+PR_Generate_Shaman.simc
+
+# Warlock
+PR_Generate_Warlock.simc
+
+# Warrior
+PR_Generate_Warrior.simc

@@ -784,7 +784,7 @@ player_t::player_t( sim_t*             s,
   actor_index = sim -> actor_list.size();
   sim -> actor_list.push_back( this );
 
-  if ( ! is_enemy() && ! is_pet() )
+  if ( ! is_enemy() && ! is_pet() && type != HEALING_ENEMY )
   {
     artifact = artifact::player_artifact_data_t::create( this );
   }
@@ -1910,6 +1910,8 @@ bool player_t::init_artifact()
 
   if ( artifact_id == 0 )
   {
+    sim->errorf("No Artifact ID found for player '%s'! Please note that "
+        "SimC currently does not support players without specalization.", name() );
     return false;
   }
 
@@ -4599,7 +4601,7 @@ void player_t::arise()
 
   current_attack_speed = cache.attack_speed();
 
-  range::for_each( callbacks_on_arise, [ this ]( const std::function<void(void)>& fn ) { fn(); } );
+  range::for_each( callbacks_on_arise, []( const std::function<void(void)>& fn ) { fn(); } );
 }
 
 // player_t::demise =========================================================
@@ -8580,12 +8582,9 @@ artifact_power_t player_t::find_artifact_spell( unsigned power_id ) const
   // Rank data missing for the power
   if ( rank_index + 1 > ranks.size() )
   {
-    if ( sim -> debug )
-    {
-      sim -> out_debug.printf( "%s too high rank (%u/%u) given for artifact power %s",
-          this -> name(), rank_index + 1, ranks.size(),
-          power_data -> name ? power_data -> name : "Unknown" );
-    }
+    sim -> errorf( "%s too high rank (%u/%u) given for artifact power %s, disabling power",
+        this -> name(), rank_index + 1, ranks.size(),
+        power_data -> name ? power_data -> name : "Unknown" );
 
     return artifact_power_t();
   }
@@ -9275,9 +9274,7 @@ expr_t* player_t::create_expression( action_t* a,
       case STAT_PARRY_RATING:     return make_mem_fn_expr( expression_str, *this, &player_t::composite_parry_rating );
       case STAT_BLOCK_RATING:     return make_mem_fn_expr( expression_str, *this, &player_t::composite_block_rating );
       case STAT_MASTERY_RATING:   return make_mem_fn_expr( expression_str, *this, &player_t::composite_mastery_rating );
-      case RATING_DAMAGE_VERSATILITY: return make_mem_fn_expr( expression_str, *this, &player_t::composite_damage_versatility_rating );
-      case RATING_HEAL_VERSATILITY: return make_mem_fn_expr( expression_str, *this, &player_t::composite_heal_versatility_rating );
-      case RATING_MITIGATION_VERSATILITY: return make_mem_fn_expr( expression_str, *this, &player_t::composite_mitigation_versatility_rating );
+      case STAT_VERSATILITY_RATING: return make_mem_fn_expr( expression_str, *this, &player_t::composite_damage_versatility_rating );
       default: break;
     }
 

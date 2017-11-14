@@ -770,8 +770,8 @@ void print_text_performance( FILE* file, sim_t* sim )
 #ifdef EVENT_QUEUE_DEBUG
       "  AllocEvents   = %u\n"
       "  EndInsert     = %u (%.3f%%)\n"
-      "  MaxQueueDepth = %u\n"
-      "  AvgQueueDepth = %.3f\n"
+      "  MaxTravDepth  = %u\n"
+      "  AvgTravDepth  = %.3f\n"
 #endif
       "  TargetHealth  = %.0f\n"
       "  SimSeconds    = %.0f\n"
@@ -821,10 +821,12 @@ void print_text_performance( FILE* file, sim_t* sim )
                 static_cast<double>(
                     sim->event_mgr.event_queue_depth_samples[ i ].second ) /
                 sim->event_mgr.event_queue_depth_samples[ i ].first;
-    util::fprintf( file, "Depth: %-4u Samples: %-7u (%.3f%% / %.3f%%)\n", i,
-                   sim->event_mgr.event_queue_depth_samples[ i ].first, p, p2 );
-
     total_p += p;
+    util::fprintf( file, "Depth: %-4u Samples: %-9u (%6.3f%% / %7.3f%%) tail-inserts: %-9u (%6.3f%%)\n", i,
+                   sim->event_mgr.event_queue_depth_samples[ i ].first, p, total_p,
+				   sim->event_mgr.event_queue_depth_samples[ i ].second, p2 );
+
+
   }
   util::fprintf( file, "Total: %.3f%% Samples: %llu\n", total_p,
                  sim->event_mgr.events_added );
@@ -851,6 +853,7 @@ void print_text_performance( FILE* file, sim_t* sim )
 
   util::fprintf( file, "Total: %.3f%% Alloc Samples: %llu\n", total_p,
                  sim->event_mgr.n_requested_events );
+  util::fprintf( file, "Alloc size used for event_t: %u\n", util::next_power_of_two( 2 * sizeof( event_t ) ) );
 #endif
 }
 

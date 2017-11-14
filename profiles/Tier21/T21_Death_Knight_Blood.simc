@@ -1,0 +1,84 @@
+deathknight="T21_Death_Knight_Blood"
+spec=blood
+level=110
+race=blood_elf
+role=tank
+position=front
+talents=3112031
+artifact=15:0:0:0:0:272:4:273:4:274:4:275:4:276:4:277:4:278:4:279:4:280:4:281:1:282:1:283:1:284:1:285:1:286:1:289:1:1331:1:1359:1:1481:4:1482:1:1483:1:1484:24:1627:1
+crucible=1739:1778:275/1739:1778:275/1739:1778:275
+
+# Default consumables
+potion=old_war
+flask=countless_armies
+food=lavish_suramar_feast
+augmentation=defiled
+
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
+
+# Executed before combat begins. Accepts non-harmful actions only.
+actions.precombat=flask
+actions.precombat+=/food
+actions.precombat+=/augmentation
+# Snapshot raid buffed stats before combat begins and pre-potting is done.
+actions.precombat+=/snapshot_stats
+actions.precombat+=/potion
+
+# Executed every time the actor is available.
+actions=auto_attack
+actions+=/mind_freeze
+actions+=/arcane_torrent,if=runic_power.deficit>20
+actions+=/blood_fury
+actions+=/berserking,if=buff.dancing_rune_weapon.up
+actions+=/use_items
+actions+=/potion,if=buff.dancing_rune_weapon.up
+actions+=/dancing_rune_weapon,if=(!talent.blooddrinker.enabled|!cooldown.blooddrinker.ready)&!cooldown.death_and_decay.ready
+actions+=/vampiric_blood
+actions+=/call_action_list,name=standard
+
+actions.standard=death_strike,if=runic_power.deficit<10
+actions.standard+=/death_and_decay,if=talent.rapid_decomposition.enabled&!buff.dancing_rune_weapon.up
+actions.standard+=/blooddrinker,if=!buff.dancing_rune_weapon.up
+actions.standard+=/marrowrend,if=buff.bone_shield.remains<=gcd*2
+actions.standard+=/blood_boil,if=charges_fractional>=1.8&buff.haemostasis.stack<5&(buff.haemostasis.stack<3|!buff.dancing_rune_weapon.up)
+actions.standard+=/marrowrend,if=(buff.bone_shield.stack<5&talent.ossuary.enabled)|buff.bone_shield.remains<gcd*3
+actions.standard+=/bonestorm,if=runic_power>=100&spell_targets.bonestorm>=3
+actions.standard+=/death_strike,if=buff.blood_shield.up|(runic_power.deficit<15&(runic_power.deficit<25|!buff.dancing_rune_weapon.up))
+actions.standard+=/consumption
+actions.standard+=/heart_strike,if=buff.dancing_rune_weapon.up
+actions.standard+=/death_and_decay,if=buff.crimson_scourge.up
+actions.standard+=/blood_boil,if=buff.haemostasis.stack<5&(buff.haemostasis.stack<3|!buff.dancing_rune_weapon.up)
+actions.standard+=/death_and_decay
+actions.standard+=/heart_strike,if=rune.time_to_3<gcd|buff.bone_shield.stack>6
+
+head=dreadwake_helm,id=152115,bonus_id=3612/1502
+neck=chain_of_the_unmaker,id=152283,bonus_id=3612/1502,enchant=mark_of_the_hidden_satyr
+shoulders=skullflowers_haemostasis,id=144281,bonus_id=3630
+back=gravewarden_cloak,id=147122,bonus_id=3563/1512,enchant=binding_of_strength
+chest=soulflayers_corruption,id=151795,bonus_id=3630
+wrists=varimathras_shattered_manacles,id=152281,bonus_id=3612/1502
+hands=gravewarden_handguards,id=147123,bonus_id=3563/1512
+waist=flamelicked_girdle,id=152021,bonus_id=3612/1502
+legs=dreadwake_legplates,id=152116,bonus_id=3612/1502
+feet=doomwalker_warboots,id=152009,bonus_id=3612/1502
+finger1=zealous_tormentors_ring,id=152284,bonus_id=3612/1502,enchant=binding_of_haste
+finger2=band_of_the_sargerite_smith,id=152064,bonus_id=3612/1502,enchant=binding_of_haste
+trinket1=aggramars_conviction,id=154173,bonus_id=4213
+trinket2=astral_alchemist_stone,id=151607,bonus_id=3609/601/3608
+main_hand=maw_of_the_damned,id=128402,gem_id=155847/155855/155852,relic_id=3612:1512/3612:1512/3612:1512,enchant=rune_of_the_fallen_crusader
+
+# Gear Summary
+# gear_ilvl=965.60
+# gear_strength=39726
+# gear_stamina=61354
+# gear_crit_rating=12378
+# gear_haste_rating=8984
+# gear_mastery_rating=6251
+# gear_versatility_rating=4475
+# gear_armor=5284
+# set_bonus=tier20_2pc=1
+# set_bonus=tier21_2pc=1

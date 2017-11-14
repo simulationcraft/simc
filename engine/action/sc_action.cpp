@@ -1641,7 +1641,7 @@ void action_t::assess_damage( dmg_e type, action_state_t* s )
   player -> assessor_out_damage.execute( type, s );
 
   // TODO: Should part of this move to assessing, priority_iteration_damage for example?
-  if ( s -> result_amount > 0 || result_is_miss( s -> result ) )
+  if ( s -> result_raw > 0 || result_is_miss( s -> result ) )
   {
     if ( s -> target == sim -> target )
     {

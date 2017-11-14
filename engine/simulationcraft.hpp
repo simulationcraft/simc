@@ -471,7 +471,7 @@ struct gear_stats_t
     speed_rating += right.speed_rating;
     avoidance_rating += right.avoidance_rating;
     range::transform ( attribute, right.attribute, attribute.begin(), std::plus<double>() );
-    range::transform ( resource, right.resource, resource.begin(), std::plus<int>() );
+    range::transform ( resource, right.resource, resource.begin(), std::plus<double>() );
     return *this;
   }
 
@@ -1911,7 +1911,7 @@ struct sim_t : private sc_thread_t
   // Profilesets
   opts::map_list_t profileset_map;
   profileset::profilesets_t profilesets;
-  scale_metric_e profileset_metric;
+  std::vector<scale_metric_e> profileset_metric;
   bool profileset_enabled;
 
   sim_t( sim_t* parent = nullptr, int thread_index = 0 );
@@ -6384,7 +6384,6 @@ struct spell_base_t : public action_t
 
   // Spell Base Overrides
   virtual timespan_t execute_time() const override;
-  virtual timespan_t tick_time( const action_state_t* state ) const override;
   virtual result_e   calculate_result( action_state_t* ) const override;
   virtual void   execute() override;
   virtual void   schedule_execute( action_state_t* execute_state = nullptr ) override;
@@ -6421,10 +6420,8 @@ public:
   spell_t( const std::string& token, player_t* p, const spell_data_t* s = spell_data_t::nil() );
 
   // Harmful Spell Overrides
-  virtual void   assess_damage( dmg_e, action_state_t* ) override;
   virtual dmg_e amount_type( const action_state_t* /* state */, bool /* periodic */ = false ) const override;
   virtual dmg_e report_amount_type( const action_state_t* /* state */ ) const override;
-  virtual void   execute() override;
   virtual double miss_chance( double hit, player_t* t ) const override;
   virtual void   init() override;
   virtual double composite_hit() const override
@@ -6454,7 +6451,6 @@ public:
   void activate() override;
   virtual double calculate_direct_amount( action_state_t* state ) const override;
   virtual double calculate_tick_amount( action_state_t* state, double dmg_multiplier ) const override;
-  virtual void execute() override;
   player_t* find_greatest_difference_player();
   player_t* find_lowest_player();
   std::vector < player_t* > find_lowest_players( int num_players ) const;
@@ -6523,7 +6519,6 @@ struct absorb_t : public spell_base_t
     return creator();
   }
 
-  virtual void execute() override;
   virtual void assess_damage( dmg_e, action_state_t* ) override;
   virtual dmg_e amount_type( const action_state_t* /* state */, bool /* periodic */ = false ) const override
   { return ABSORB; }

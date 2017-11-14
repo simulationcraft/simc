@@ -4811,7 +4811,7 @@ struct touch_of_death_t: public monk_spell_t
 
   double target_armor( player_t* ) const override { return 0; }
 
-  double calculate_tick_amount( action_state_t*, double /*dot_multiplier*/ ) const override
+  double calculate_tick_amount( action_state_t* s, double /*dot_multiplier*/ ) const override
   {
     double amount = p() -> resources.max[RESOURCE_HEALTH];
 
@@ -4824,6 +4824,9 @@ struct touch_of_death_t: public monk_spell_t
 
     if ( p() -> buff.combo_strikes -> up() )
       amount *= 1 + p() -> cache.mastery_value();
+
+    s -> result_raw = amount;
+    s -> result_total = amount;
 
     return amount;
   }
@@ -10046,7 +10049,7 @@ void monk_t::apl_combat_brewmaster()
     }
   }
 
-  def -> add_action( "call_action_list,name=st,if=active_enemies<3" );
+  def -> add_action( "call_action_list,name=st" ); //,if=active_enemies<3" );
 //  def -> add_action( "call_action_list,name=aoe,if=active_enemies>=3" );
 
 //  st -> add_action( this, "Purifying Brew", "if=stagger.heavy" );

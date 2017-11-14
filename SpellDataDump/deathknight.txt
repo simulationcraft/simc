@@ -5562,6 +5562,28 @@ Description      : Smash the target with the blunt side of the cleaver, dealing 
 
 |CFFE55BB0Dark Transformation: Strike an enemy with a smashing attack, dealing $91797s2% of normal melee damage and stunning for $91797d.|R][]
 
+Name             : Powerful Smash (id=212337) [Spell Family (15)] 
+Class            : Death Knight
+School           : Physical
+Spell Level      : 1
+Range            : 5 yards
+Duration         : 2 seconds
+Cooldown         : 90 seconds
+Stance Mask      : 0x00000040
+Attributes       : ....x... ........ ..x..... ........   ........ .x...... .x...... ...x.... 
+                 : ........ ........ ...xx... ........   ........ ........ ........ ........ 
+                 : ........ .......x ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=314803)   : Apply Aura (6) | Stun (12)
+                   Base Value: 0 | Scaled Value: 0 | Mechanic: Unknown(95) | Target: Enemy (6)
+#2 (id=314804)   : Weapon Damage% (31)
+                   Base Value: 125 | Scaled Value: 1.25 | Target: Enemy (6)
+Description      : $@spelldesc212336
+Tooltip          : Stunned.
+
 Name             : Vile Gas (id=212338) 
 Class            : Death Knight
 School           : Shadow

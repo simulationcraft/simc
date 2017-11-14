@@ -14,6 +14,7 @@
 #include <vector>
 #include <memory>
 #include <cstring>
+#include <sstream>
 
 #include "sc_timespan.hpp"
 
@@ -29,7 +30,16 @@ public:
 { }
   virtual ~option_t() { }
   bool parse_option( sim_t* sim , const std::string& n, const std::string& value ) const
-  { return parse( sim, n, value ); }
+  {
+    try {
+      return parse( sim, n, value );
+    }
+    catch ( const std::exception& e) {
+      std::stringstream s;
+      s << "Could not parse option '" << n << "' with value '" << value << "': " << e.what();
+      throw std::invalid_argument(s.str());
+    }
+  }
   std::string name() const
   { return _name; }
   std::ostream& print_option( std::ostream& stream ) const

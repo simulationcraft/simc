@@ -1242,6 +1242,10 @@ class SpellDataGenerator(DataGenerator):
          255870, 257702,
          # 7.3.0 Terminus Signaling Beacon
          257376,
+         # 7.3.0 Gorshalach's Legacy
+         255672,
+         # 7.3.0 Forgefiend's Fabricator
+         253322, 256025, 
          # 7.3.2 Norgannon pantheon "random school" nukes
          257243, 257532, 257241, 257242, 257534, 257533,
         ),
@@ -1373,6 +1377,7 @@ class SpellDataGenerator(DataGenerator):
           ( 212333, 5 ),    # Cleaver for Sludge Belcher
           ( 212332, 5 ),    # Smash for Sludge Belcher
           ( 212338, 5 ),    # Vile Gas for Sludge Belcher
+		  ( 212337, 5 ),	# Powerful Smash for Sludge Belcher
           ( 198715, 5 ),    # Val'kyr Strike for Dark Arbiter
           ( 211947, 0 ),    # Shadow Empowerment for Dark Arbiter
           ( 81141, 0 ),     # Crimson Scourge buff

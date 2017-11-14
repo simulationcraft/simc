@@ -1,9 +1,15 @@
-for tier in 19P 19H 19M 19H_NH 19M_NH 20H 20M
+# PreRaids doesn't match the typical pattern
+cd 'profiles/PreRaids/'
+pwd
+../../engine/simc 'PR_Generate.simc'
+cd ../..
+# TierXX profiles generation
+for tier in 19 20 21
 do
   PROFDIR='profiles/Tier'$tier'/'
   cd $PROFDIR
   pwd
-  ../../engine/simc 'generate_T'$tier".simc"
+  ../../engine/simc 'T'$tier'_Generate.simc'
   cd ../..
 done
-echo "done"
+echo 'done'

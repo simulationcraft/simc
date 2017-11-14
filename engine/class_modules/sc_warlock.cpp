@@ -545,7 +545,7 @@ public:
   virtual void      reset() override;
   virtual void      create_options() override;
   virtual action_t* create_action( const std::string& name, const std::string& options ) override;
-  bool create_actions();
+  bool create_actions() override;
   virtual pet_t*    create_pet( const std::string& name, const std::string& type = std::string() ) override;
   virtual void      create_pets() override;
   virtual std::string      create_profile( save_e = SAVE_ALL ) override;
@@ -688,15 +688,12 @@ namespace pets {
 	    buff_t* rage_of_guldan;
     } buffs;
 
-    struct cooldowns_t
-    {
-      cooldown_t* dreadbite;
-    } cooldowns;
-
     bool is_grimoire_of_service = false;
     bool is_demonbolt_enabled = true;
     bool is_lord_of_flames = false;
-    bool t21_4pc_damage = false;
+    bool t21_4pc_reset = false;
+    int bites_executed = 0;
+    int dreadbite_executes = 0;
 
     void trigger_sephuzs_secret( const action_state_t* state, spell_mechanic mechanic )
     {
@@ -1107,17 +1104,22 @@ struct dreadbite_t : public warlock_pet_melee_attack_t
                             ( p -> o() -> sets->has_set_bonus( WARLOCK_DEMONOLOGY, T19, B4 )
                               ? p -> o() -> sets->set( WARLOCK_DEMONOLOGY, T19, B4 ) -> effectN( 1 ).time_value()
                               : timespan_t::zero() );
+    t21_4pc_increase = p->o()->sets->set( WARLOCK_DEMONOLOGY, T21, B4 )->effectN( 1 ).percent();
+  }
 
-    cooldown = p->cooldowns.dreadbite;
-    cooldown -> duration = dreadstalker_duration + timespan_t::from_seconds( 1.0 );
-    t21_4pc_increase = p -> o() -> sets -> set( WARLOCK_DEMONOLOGY, T21, B4 ) -> effectN( 1 ).percent();
+  virtual bool ready() override
+  {
+    if ( p()->dreadbite_executes <= 0 )
+      return false;
+
+    return warlock_pet_melee_attack_t::ready();
   }
 
   virtual double action_multiplier() const override
   {
     double m = warlock_pet_melee_attack_t::action_multiplier();
 
-    if ( p() -> t21_4pc_damage )
+    if ( p()->o()->sets->has_set_bonus( WARLOCK_DEMONOLOGY, T21, B4 ) && p()->bites_executed == 1 )
       m *= 1.0 + t21_4pc_increase;
 
     return m;
@@ -1127,12 +1129,14 @@ struct dreadbite_t : public warlock_pet_melee_attack_t
   {
     warlock_pet_melee_attack_t::execute();
 
-    p() -> t21_4pc_damage = false;
+    p()->dreadbite_executes--;
   }
 
   void impact( action_state_t* s ) override
   {
     warlock_pet_melee_attack_t::impact( s );
+
+    p()->bites_executed++;
 
     if ( result_is_hit( s -> result ) && p() -> o() -> artifact.jaws_of_shadow.rank() )
     {
@@ -1478,13 +1482,11 @@ struct eye_laser_t : public warlock_pet_spell_t
 //} // pets::actions
 
 warlock_pet_t::warlock_pet_t( sim_t* sim, warlock_t* owner, const std::string& pet_name, pet_e pt, bool guardian ):
-pet_t( sim, owner, pet_name, pt, guardian ), special_action( nullptr ), special_action_two( nullptr ), melee_attack( nullptr ), summon_stats( nullptr ), ascendance( nullptr ), cooldowns( cooldowns_t() )
+pet_t( sim, owner, pet_name, pt, guardian ), special_action( nullptr ), special_action_two( nullptr ), melee_attack( nullptr ), summon_stats( nullptr ), ascendance( nullptr )
 {
   owner_coeff.ap_from_sp = 1.0;
   owner_coeff.sp_from_sp = 1.0;
   owner_coeff.health = 0.5;
-
-  cooldowns.dreadbite = get_cooldown( "dreadbite" );
 
 //  ascendance = new thalkiels_ascendance_pet_spell_t( this );
 }
@@ -2229,8 +2231,6 @@ struct wild_imp_pet_t: public warlock_pet_t
 
 struct dreadstalker_t : public warlock_pet_t
 {
-  bool t21_4pc_reset;
-
   dreadstalker_t( sim_t* sim, warlock_t* owner ) :
     warlock_pet_t( sim, owner, "dreadstalker", PET_DREADSTALKER )
   {
@@ -2238,8 +2238,6 @@ struct dreadstalker_t : public warlock_pet_t
     regen_type = REGEN_DISABLED;
     owner_coeff.health = 0.4;
     owner_coeff.ap_from_sp = 1.1; // HOTFIX
-
-    t21_4pc_reset = false;
   }
 
   virtual double composite_melee_crit_chance() const override
@@ -2270,6 +2268,17 @@ struct dreadstalker_t : public warlock_pet_t
     resources.base[RESOURCE_ENERGY] = 0;
     base_energy_regen_per_second = 0;
     melee_attack = new warlock_pet_melee_t( this );
+  }
+
+  void arise() override
+  {
+    warlock_pet_t::arise();
+
+    dreadbite_executes = 1;
+    bites_executed = 0;
+
+    if ( o()->sets->has_set_bonus( WARLOCK_DEMONOLOGY, T21, B4 ) )
+      t21_4pc_reset = false;
   }
 
   virtual action_t* create_action( const std::string& name, const std::string& options_str ) override
@@ -3200,8 +3209,8 @@ struct tormented_agony_t : public warlock_spell_t
 
   tormented_agony_t( warlock_t* p ):
     warlock_spell_t( "tormented agony", p, p -> find_spell( 256807 ) ),
-    tormented_agony( new tormented_agony_debuff_engine_t( p ) ),
-    source_target( nullptr )
+    source_target( nullptr ),
+    tormented_agony( new tormented_agony_debuff_engine_t( p ) )
   {
     harmful = may_crit = callbacks = false;
     background = proc = true;
@@ -3631,11 +3640,10 @@ struct demonic_empowerment_t: public warlock_spell_t
       {
         if ( !p()->warlock_pet_list.dreadstalkers[i]->is_sleeping() )
         {
-          if ( p()->warlock_pet_list.dreadstalkers[i]->t21_4pc_reset == false )
+          if ( !p()->warlock_pet_list.dreadstalkers[i]->t21_4pc_reset )
           {
+            p()->warlock_pet_list.dreadstalkers[i]->dreadbite_executes++;
             p()->warlock_pet_list.dreadstalkers[i]->t21_4pc_reset = true;
-            p()->warlock_pet_list.dreadstalkers[i]->cooldowns.dreadbite->reset( false );
-            p()->warlock_pet_list.dreadstalkers[i]->t21_4pc_damage = true;
           }
         }
       }
@@ -4101,15 +4109,23 @@ struct incinerate_t: public warlock_spell_t
 struct duplicate_chaos_bolt_t : public warlock_spell_t
 {
   player_t* original_target;
+  flames_of_argus_t* flames_of_argus;
+
   duplicate_chaos_bolt_t( warlock_t* p ) :
     warlock_spell_t( "chaos_bolt_magistrike", p, p -> find_spell( 213229 ) ),
-    original_target( nullptr )
+    original_target( nullptr ),
+    flames_of_argus( nullptr )
   {
     background = dual = true;
     crit_bonus_multiplier *= 1.0 + p -> artifact.chaotic_instability.percent();
     base_multiplier *= 1.0 + ( p -> sets->set( WARLOCK_DESTRUCTION, T18, B2 ) -> effectN( 2 ).percent() );
     base_multiplier *= 1.0 + ( p -> sets->set( WARLOCK_DESTRUCTION, T17, B4 ) -> effectN( 1 ).percent() );
     base_multiplier *= 1.0 + ( p -> talents.reverse_entropy -> effectN( 2 ).percent() );
+
+    if ( p->sets->has_set_bonus( WARLOCK_DESTRUCTION, T21, B4 ) )
+    {
+      flames_of_argus = new flames_of_argus_t( p );
+    }
   }
 
   timespan_t travel_time() const override
@@ -4163,6 +4179,23 @@ struct duplicate_chaos_bolt_t : public warlock_spell_t
 
     return state -> result_total;
   }
+
+  void impact( action_state_t* s ) override
+  {
+    warlock_spell_t::impact( s );
+
+    if ( p()->sets->has_set_bonus( WARLOCK_DESTRUCTION, T21, B2 ) )
+      td( s->target )->debuffs_chaotic_flames->trigger();
+
+    if ( p()->sets->has_set_bonus( WARLOCK_DESTRUCTION, T21, B4 ) )
+    {
+      double amount = s->result_amount;
+
+      amount *= p()->find_spell( 251855 )->effectN( 1 ).percent();
+
+      residual_action::trigger( flames_of_argus, s->target, s->result_amount * p()->sets->set( WARLOCK_DESTRUCTION, T21, B4 )->effectN( 1 ).percent() );
+    }
+  }
 };
 
 struct chaos_bolt_t: public warlock_spell_t
@@ -4173,8 +4206,10 @@ struct chaos_bolt_t: public warlock_spell_t
   duplicate_chaos_bolt_t* duplicate;
   double duplicate_chance;
   flames_of_argus_t* flames_of_argus;
+
   chaos_bolt_t( warlock_t* p ) :
-    warlock_spell_t( p, "Chaos Bolt" ), refund( 0 ), duplicate( nullptr ), flames_of_argus( nullptr ), duplicate_chance( 0 )
+    warlock_spell_t( p, "Chaos Bolt" ),
+    refund( 0 ), duplicate( nullptr ), duplicate_chance( 0 ), flames_of_argus( nullptr )
   {
     can_havoc = true;
     affected_by_destruction_t20_4pc = true;
@@ -5066,12 +5101,6 @@ struct call_dreadstalkers_t : public warlock_spell_t
       {
         p() -> warlock_pet_list.dreadstalkers[i] -> summon( dreadstalker_duration );
         p()->procs.dreadstalker_debug->occur();
-
-        if ( p()->sets->has_set_bonus( WARLOCK_DEMONOLOGY, T21, B4 ) )
-        {
-          p()->warlock_pet_list.dreadstalkers[i]->t21_4pc_reset = false;
-          p()->warlock_pet_list.dreadstalkers[i]->t21_4pc_damage = false;
-        }
 
         if ( p()->sets->has_set_bonus( WARLOCK_DEMONOLOGY, T21, B2 ))
         { 
@@ -7321,7 +7350,7 @@ void warlock_t::apl_demonology()
   action_list_str += "/soul_harvest,if=!buff.soul_harvest.remains";
   action_list_str += "/potion,name=prolonged_power,if=buff.soul_harvest.remains|target.time_to_die<=70|trinket.proc.any.react";
   action_list_str += "/shadowflame,if=charges=2&spell_targets.demonwrath<5";
-  add_action( "Thal'kiel's Consumption", "if=(dreadstalker_remaining_duration>execute_time|talent.implosion.enabled&spell_targets.implosion>=3)&wild_imp_count>3&wild_imp_remaining_duration>execute_time" );
+  add_action( "Thal'kiel's Consumption", "if=(dreadstalker_remaining_duration>execute_time|talent.implosion.enabled&spell_targets.implosion>=3)&(wild_imp_count>3&dreadstalker_count<=2|wild_imp_count>5)&wild_imp_remaining_duration>execute_time" );
   add_action( "Life Tap", "if=mana.pct<=15|(mana.pct<=65&((cooldown.call_dreadstalkers.remains<=0.75&soul_shard>=2)|((cooldown.call_dreadstalkers.remains<gcd*2)&(cooldown.summon_doomguard.remains<=0.75|cooldown.service_pet.remains<=0.75)&soul_shard>=3)))" );
   add_action( "Demonwrath", "chain=1,interrupt=1,if=spell_targets.demonwrath>=3" );
   add_action( "Demonwrath", "moving=1,chain=1,interrupt=1" );
@@ -7435,11 +7464,11 @@ void warlock_t::reset()
 
   // Figure out up to what actor ID we should reset. This is the max of target list actors, and
   // their pets
-  size_t max_idx = sim -> target_list.data().back() -> actor_index + 1;
-  if ( sim -> target_list.data().back() -> pet_list.size() > 0 )
-  {
-    max_idx = sim -> target_list.data().back() -> pet_list.back() -> actor_index + 1;
-  }
+//  size_t max_idx = sim -> target_list.data().back() -> actor_index + 1;
+//  if ( sim -> target_list.data().back() -> pet_list.size() > 0 )
+//  {
+//    max_idx = sim -> target_list.data().back() -> pet_list.back() -> actor_index + 1;
+//  }
 
   range::for_each( sim -> target_list, [ this ]( const player_t* t ) {
     if ( auto td = target_data[ t ] )

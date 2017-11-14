@@ -1,0 +1,141 @@
+demonhunter="T21_Demon_Hunter_Havoc"
+spec=havoc
+level=110
+race=blood_elf
+role=attack
+position=back
+talents=3310333
+talent_override=momentum,if=active_enemies>1|raid_event.adds.exists
+talent_override=fel_barrage,if=(active_enemies>1|raid_event.adds.exists)&!talent.demonic.enabled
+talent_override=momentum,if=active_enemies>1|raid_event.adds.exists
+artifact=3:0:0:0:0:1000:4:1001:4:1002:4:1003:4:1004:4:1005:4:1006:4:1007:4:1008:4:1010:1:1011:1:1012:1:1013:1:1014:1:1015:1:1016:1:1330:1:1362:1:1493:4:1494:1:1495:1:1496:24:1630:1
+crucible=1739:3:1777:3:1001:2:1000:1
+
+# Default consumables
+potion=prolonged_power
+flask=seventh_demon
+food=the_hungry_magister
+augmentation=defiled
+
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
+
+# Executed before combat begins. Accepts non-harmful actions only.
+actions.precombat=flask
+actions.precombat+=/augmentation
+actions.precombat+=/food
+# Snapshot raid buffed stats before combat begins and pre-potting is done.
+actions.precombat+=/snapshot_stats
+actions.precombat+=/potion
+actions.precombat+=/metamorphosis,if=!(talent.demon_reborn.enabled&talent.demonic.enabled)
+
+# Executed every time the actor is available.
+actions=auto_attack
+actions+=/variable,name=waiting_for_nemesis,value=!(!talent.nemesis.enabled|cooldown.nemesis.ready|cooldown.nemesis.remains>target.time_to_die|cooldown.nemesis.remains>60)
+actions+=/variable,name=waiting_for_chaos_blades,value=!(!talent.chaos_blades.enabled|cooldown.chaos_blades.ready|cooldown.chaos_blades.remains>target.time_to_die|cooldown.chaos_blades.remains>60)
+# "Getting ready to use meta" conditions, this is used in a few places.
+actions+=/variable,name=pooling_for_meta,value=!talent.demonic.enabled&cooldown.metamorphosis.remains<6&fury.deficit>30&(!variable.waiting_for_nemesis|cooldown.nemesis.remains<10)&(!variable.waiting_for_chaos_blades|cooldown.chaos_blades.remains<6)
+# Blade Dance conditions. Always if First Blood is talented or the T20 4pc set bonus, otherwise at 6+ targets with Chaos Cleave or 3+ targets without.
+actions+=/variable,name=blade_dance,value=talent.first_blood.enabled|set_bonus.tier20_4pc|spell_targets.blade_dance1>=3+(talent.chaos_cleave.enabled*3)
+# Blade Dance pooling condition, so we don't spend too much fury on Chaos Strike when we need it soon.
+actions+=/variable,name=pooling_for_blade_dance,value=variable.blade_dance&(fury<75-talent.first_blood.enabled*20)
+# Chaos Strike pooling condition, so we don't spend too much fury when we need it for Chaos Cleave AoE
+actions+=/variable,name=pooling_for_chaos_strike,value=talent.chaos_cleave.enabled&fury.deficit>40&!raid_event.adds.up&raid_event.adds.in<2*gcd
+actions+=/consume_magic
+actions+=/call_action_list,name=cooldown,if=gcd.remains=0
+actions+=/run_action_list,name=demonic,if=talent.demonic.enabled
+actions+=/run_action_list,name=normal
+
+# Use Metamorphosis when we are done pooling Fury and when we are not waiting for other cooldowns to sync.
+actions.cooldown=metamorphosis,if=!(talent.demonic.enabled|variable.pooling_for_meta|variable.waiting_for_nemesis|variable.waiting_for_chaos_blades)|target.time_to_die<25
+actions.cooldown+=/metamorphosis,if=talent.demonic.enabled&buff.metamorphosis.up&fury<40
+# If adds are present, use Nemesis on the lowest HP add in order to get the Nemesis buff for AoE
+actions.cooldown+=/nemesis,target_if=min:target.time_to_die,if=raid_event.adds.exists&debuff.nemesis.down&(active_enemies>desired_targets|raid_event.adds.in>60)
+actions.cooldown+=/nemesis,if=!raid_event.adds.exists&(buff.chaos_blades.up|buff.metamorphosis.up|cooldown.metamorphosis.adjusted_remains<20|target.time_to_die<=60)
+actions.cooldown+=/chaos_blades,if=buff.metamorphosis.up|cooldown.metamorphosis.adjusted_remains>60|target.time_to_die<=duration
+actions.cooldown+=/potion,if=buff.metamorphosis.remains>25|target.time_to_die<30
+
+# Specific APL for the Blind Fury+Demonic Appetite+Demonic build
+actions.demonic=pick_up_fragment,if=fury.deficit>=35&(cooldown.eye_beam.remains>5|buff.metamorphosis.up)
+# Vengeful Retreat backwards through the target to minimize downtime.
+actions.demonic+=/vengeful_retreat,if=(talent.prepared.enabled|talent.momentum.enabled)&buff.prepared.down&buff.momentum.down
+# Fel Rush for Momentum.
+actions.demonic+=/fel_rush,if=(talent.momentum.enabled|talent.fel_mastery.enabled)&(!talent.momentum.enabled|(charges=2|cooldown.vengeful_retreat.remains>4)&buff.momentum.down)&(charges=2|(raid_event.movement.in>10&raid_event.adds.in>10))
+actions.demonic+=/throw_glaive,if=talent.bloodlet.enabled&(!talent.momentum.enabled|buff.momentum.up)&charges=2
+actions.demonic+=/death_sweep,if=variable.blade_dance
+actions.demonic+=/fel_eruption
+actions.demonic+=/fury_of_the_illidari,if=(active_enemies>desired_targets)|(raid_event.adds.in>55&(!talent.momentum.enabled|buff.momentum.up))
+actions.demonic+=/blade_dance,if=variable.blade_dance&cooldown.eye_beam.remains>5&!cooldown.metamorphosis.ready
+actions.demonic+=/throw_glaive,if=talent.bloodlet.enabled&spell_targets>=2&(!talent.master_of_the_glaive.enabled|!talent.momentum.enabled|buff.momentum.up)&(spell_targets>=3|raid_event.adds.in>recharge_time+cooldown)
+actions.demonic+=/felblade,if=fury.deficit>=30
+actions.demonic+=/eye_beam,if=spell_targets.eye_beam_tick>desired_targets|!buff.metamorphosis.extended_by_demonic|(set_bonus.tier21_4pc&buff.metamorphosis.remains>8)
+actions.demonic+=/annihilation,if=(!talent.momentum.enabled|buff.momentum.up|fury.deficit<30+buff.prepared.up*8|buff.metamorphosis.remains<5)&!variable.pooling_for_blade_dance
+actions.demonic+=/throw_glaive,if=talent.bloodlet.enabled&(!talent.master_of_the_glaive.enabled|!talent.momentum.enabled|buff.momentum.up)&raid_event.adds.in>recharge_time+cooldown
+actions.demonic+=/chaos_strike,if=(!talent.momentum.enabled|buff.momentum.up|fury.deficit<30+buff.prepared.up*8)&!variable.pooling_for_chaos_strike&!variable.pooling_for_meta&!variable.pooling_for_blade_dance
+actions.demonic+=/fel_rush,if=!talent.momentum.enabled&(buff.metamorphosis.down|talent.demon_blades.enabled)&(charges=2|(raid_event.movement.in>10&raid_event.adds.in>10))
+actions.demonic+=/demons_bite
+actions.demonic+=/throw_glaive,if=buff.out_of_range.up|!talent.bloodlet.enabled
+actions.demonic+=/fel_rush,if=movement.distance>15|(buff.out_of_range.up&!talent.momentum.enabled)
+actions.demonic+=/vengeful_retreat,if=movement.distance>15
+
+# General APL for Non-Demonic Builds
+actions.normal=pick_up_fragment,if=talent.demonic_appetite.enabled&fury.deficit>=35
+# Vengeful Retreat backwards through the target to minimize downtime.
+actions.normal+=/vengeful_retreat,if=(talent.prepared.enabled|talent.momentum.enabled)&buff.prepared.down&buff.momentum.down
+# Fel Rush for Momentum and for fury from Fel Mastery.
+actions.normal+=/fel_rush,if=(talent.momentum.enabled|talent.fel_mastery.enabled)&(!talent.momentum.enabled|(charges=2|cooldown.vengeful_retreat.remains>4)&buff.momentum.down)&(!talent.fel_mastery.enabled|fury.deficit>=25)&(charges=2|(raid_event.movement.in>10&raid_event.adds.in>10))
+# Use Fel Barrage at max charges, saving it for Momentum and adds if possible.
+actions.normal+=/fel_barrage,if=(buff.momentum.up|!talent.momentum.enabled)&(active_enemies>desired_targets|raid_event.adds.in>30)
+actions.normal+=/throw_glaive,if=talent.bloodlet.enabled&(!talent.momentum.enabled|buff.momentum.up)&charges=2
+actions.normal+=/felblade,if=fury<15&(cooldown.death_sweep.remains<2*gcd|cooldown.blade_dance.remains<2*gcd)
+actions.normal+=/death_sweep,if=variable.blade_dance
+actions.normal+=/fel_rush,if=charges=2&!talent.momentum.enabled&!talent.fel_mastery.enabled&!buff.metamorphosis.up
+actions.normal+=/fel_eruption
+actions.normal+=/fury_of_the_illidari,if=(active_enemies>desired_targets)|(raid_event.adds.in>55&(!talent.momentum.enabled|buff.momentum.up)&(!talent.chaos_blades.enabled|buff.chaos_blades.up|cooldown.chaos_blades.remains>30|target.time_to_die<cooldown.chaos_blades.remains))
+actions.normal+=/blade_dance,if=variable.blade_dance
+actions.normal+=/throw_glaive,if=talent.bloodlet.enabled&spell_targets>=2&(!talent.master_of_the_glaive.enabled|!talent.momentum.enabled|buff.momentum.up)&(spell_targets>=3|raid_event.adds.in>recharge_time+cooldown)
+actions.normal+=/felblade,if=fury.deficit>=30+buff.prepared.up*8
+actions.normal+=/eye_beam,if=spell_targets.eye_beam_tick>desired_targets|(spell_targets.eye_beam_tick>=3&raid_event.adds.in>cooldown)|(talent.blind_fury.enabled&fury.deficit>=35)|set_bonus.tier21_2pc
+actions.normal+=/annihilation,if=(talent.demon_blades.enabled|!talent.momentum.enabled|buff.momentum.up|fury.deficit<30+buff.prepared.up*8|buff.metamorphosis.remains<5)&!variable.pooling_for_blade_dance
+actions.normal+=/throw_glaive,if=talent.bloodlet.enabled&(!talent.master_of_the_glaive.enabled|!talent.momentum.enabled|buff.momentum.up)&raid_event.adds.in>recharge_time+cooldown
+actions.normal+=/throw_glaive,if=!talent.bloodlet.enabled&buff.metamorphosis.down&spell_targets>=3
+actions.normal+=/chaos_strike,if=(talent.demon_blades.enabled|!talent.momentum.enabled|buff.momentum.up|fury.deficit<30+buff.prepared.up*8)&!variable.pooling_for_chaos_strike&!variable.pooling_for_meta&!variable.pooling_for_blade_dance
+actions.normal+=/fel_rush,if=!talent.momentum.enabled&raid_event.movement.in>charges*10&(talent.demon_blades.enabled|buff.metamorphosis.down)
+actions.normal+=/demons_bite
+actions.normal+=/throw_glaive,if=buff.out_of_range.up
+actions.normal+=/felblade,if=movement.distance>15|buff.out_of_range.up
+actions.normal+=/fel_rush,if=movement.distance>15|(buff.out_of_range.up&!talent.momentum.enabled)
+actions.normal+=/vengeful_retreat,if=movement.distance>15
+actions.normal+=/throw_glaive,if=!talent.bloodlet.enabled
+
+head=raddons_cascading_eyes,id=137061,bonus_id=3630
+neck=chain_of_the_unmaker,id=152283,bonus_id=3612/1502,enchant=mark_of_the_trained_soldier
+shoulders=shoulderpads_of_the_demonic_blitz,id=151988,bonus_id=3612/1502
+back=felreaper_drape,id=152119,bonus_id=3612/1502,enchant=binding_of_agility
+chest=felreaper_vest,id=152118,bonus_id=3612/1502
+wrists=fiendish_logisticians_wristwraps,id=151992,bonus_id=3612/1502
+hands=felreaper_gloves,id=152120,bonus_id=3612/1502
+waist=portal_keepers_cincture,id=151990,bonus_id=3612/1502
+legs=felreaper_leggings,id=152122,bonus_id=3612/1502
+feet=lifebearing_footpads,id=151981,bonus_id=3612/1502
+finger1=anger_of_the_halfgiants,id=137038,bonus_id=3630,gems=200crit,enchant=binding_of_critical_strike
+finger2=band_of_the_sargerite_smith,id=152064,bonus_id=3612/1502,enchant=binding_of_critical_strike
+trinket1=seeping_scourgewing,id=151964,bonus_id=3612/1502
+trinket2=golganneths_vitality,id=154174,ilevel=1000
+main_hand=twinblades_of_the_deceiver,id=127829,bonus_id=719,gem_id=152033/155852/152033/0,relic_id=3612:1512/3612:1512/3612:1512
+off_hand=twinblades_of_the_deceiver,id=127830,gem_id=0/0/0/0,relic_id=0/0
+
+# Gear Summary
+# gear_ilvl=973.00
+# gear_agility=38873
+# gear_stamina=61522
+# gear_crit_rating=17249
+# gear_haste_rating=5738
+# gear_mastery_rating=7226
+# gear_versatility_rating=3663
+# gear_armor=2975
+# set_bonus=tier21_2pc=1
+# set_bonus=tier21_4pc=1

@@ -55,9 +55,6 @@ void add_non_zero( JsonOutput root, const char* name, const timespan_t& v )
 void add_non_zero( JsonOutput root, const char* name, double v )
 { add_non_default( root, name, v, 0.0 ); }
 
-void add_non_zero( JsonOutput root, const char* name, unsigned v )
-{ add_non_default( root, name, v, 0U ); }
-
 void add_non_zero( JsonOutput root, const char* name, int v )
 { add_non_default( root, name, v, 0 ); }
 
@@ -317,7 +314,7 @@ void to_json( JsonOutput root, const buff_t* b )
 void buffs_to_json( JsonOutput root, const player_t& p )
 {
   root.make_array();
-  range::for_each( p.buff_list, [ &root, &p ]( const buff_t* b ) {
+  range::for_each( p.buff_list, [ &root]( const buff_t* b ) {
     if ( b -> avg_start.mean() == 0 )
     {
       return;
@@ -704,7 +701,7 @@ void to_json( JsonOutput root,
 
     auto resources = json[ "resources" ];
     auto resources_max = json[ "resources_max" ];
-    range::for_each( relevant_resources, [ &json, &resources, &resources_max, &entry ]( resource_e r ) {
+    range::for_each( relevant_resources, [ &resources, &resources_max, &entry ]( resource_e r ) {
       resources[ util::resource_type_string( r ) ] = entry -> resource_snapshot[ r ];
       // TODO: Why do we have this instead of using some static one?
       resources_max[ util::resource_type_string( r ) ] = entry -> resource_max_snapshot[ r ];
@@ -848,7 +845,7 @@ void collected_data_to_json( JsonOutput root, const player_t& p )
     } );
 
     // Stat timelines, if they exist
-    range::for_each( cd.stat_timelines, [ &root, &cd ]( const player_collected_data_t::stat_timeline_t& stl ) {
+    range::for_each( cd.stat_timelines, [ &root]( const player_collected_data_t::stat_timeline_t& stl ) {
       add_non_zero( root[ "stat_timelines" ], util::stat_type_string( stl.type ), stl.timeline );
     } );
 

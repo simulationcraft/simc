@@ -63,16 +63,14 @@
 #  error "Visual Studio 11 ( 2012 ) or lower not supported"
 #endif
 
-#if defined( SC_CLANG ) && SC_CLANG < 30100
-#  error "clang++ below version 3.1 not supported"
+// Last updated 2017-11-07: Support gcc4.8 with full C++11 support for now
+// Debian 8 (Jessie) with gcc 4.9 and clang3.5
+// Ubuntu 16.04: gcc 5.3, clang3.8
+#if defined( SC_CLANG ) && SC_CLANG < 30500
+#  error "clang++ below version 3.5 not supported"
 #endif
-
-#if defined( SC_GCC ) && SC_GCC < 40700
-#  error "g++ below version 4.7 not supported"
-#endif
-
 #if defined( SC_GCC ) && SC_GCC < 40800
-#  warning "g++ below version 4.8 is deprecated. Please update until 2017-05-01."
+#  error "g++ below version 4.8 not supported"
 #endif
 
 // ==========================================================================

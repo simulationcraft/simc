@@ -1792,7 +1792,7 @@ bonus_id={ 3586 }, ilevel_adjust={ 45 }
 bonus_id={ 3587 }, ilevel_adjust={ 6 }
 bonus_id={ 3588 }, ilevel_adjust={ 9 }
 bonus_id={ 3589 }, desc={ Timewarped }, ilevel={ 10 @plvl 1 - 900 @plvl 110 }
-bonus_id={ 3590 }, desc={ Warforged }, ilevel={ 10 @plvl 1 - 900 @plvl 110 }
+bonus_id={ 3590 }, desc={ Warforged }, ilevel={ 10 @plvl 1 - 10 @plvl 0 }
 bonus_id={ 3591 }, ilevel={ 10 @plvl 0 - 800 @plvl 110 }
 bonus_id={ 3592 }, ilevel={ 10 @plvl 0 - 800 @plvl 110 }
 bonus_id={ 3593 }, ilevel_adjust={ 5 }
@@ -1820,7 +1820,7 @@ bonus_id={ 3617 }, ilevel={ 569 @plvl 90 - 800 @plvl 110 }
 bonus_id={ 3618 }, suffix={ Shatug }, stats={ 60% Sta [0.9999], 40% Vers [0.6666] }
 bonus_id={ 3619 }, suffix={ F'harg }, stats={ 57% StrAgi [0.6666], 43% BonusArmor [0.5106] }
 bonus_id={ 3621 }, ilevel={ 10 @plvl 1 - 900 @plvl 110 }
-bonus_id={ 3622 }, desc={ Warforged }, ilevel={ 10 @plvl 1 - 900 @plvl 110 }
+bonus_id={ 3622 }, desc={ Warforged }, ilevel={ 10 @plvl 1 - 10 @plvl 0 }
 bonus_id={ 3623 }, desc={ Timewarped }, ilevel={ 10 @plvl 1 - 880 @plvl 110 }
 bonus_id={ 3624 }, desc={ Warforged }, ilevel={ 10 @plvl 1 - 895 @plvl 110 }
 bonus_id={ 3625 }, desc={ Timewarped }, ilevel={ 10 @plvl 1 - 930 @plvl 110 }

@@ -1,0 +1,158 @@
+druid="T20_Druid_Balance"
+spec=balance
+level=110
+race=troll
+role=spell
+position=back
+talents=3200233
+artifact=59:0:0:0:0:1034:4:1035:4:1036:4:1037:4:1038:4:1039:4:1040:4:1041:4:1042:4:1043:1:1044:1:1045:1:1046:1:1047:1:1048:1:1049:1:1294:1:1364:1:1501:4:1502:1:1503:1:1504:24:1632:1
+crucible=1739:3:1780:3:1039:2:1038:1
+
+# Default consumables
+potion=potion_of_prolonged_power
+flask=whispered_pact
+food=lavish_suramar_feast
+augmentation=defiled
+
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
+
+# Executed before combat begins. Accepts non-harmful actions only.
+actions.precombat=flask
+actions.precombat+=/food
+actions.precombat+=/augmentation
+actions.precombat+=/moonkin_form
+actions.precombat+=/blessing_of_elune
+# Snapshot raid buffed stats before combat begins and pre-potting is done.
+actions.precombat+=/snapshot_stats
+actions.precombat+=/potion
+actions.precombat+=/new_moon
+
+# Executed every time the actor is available.
+actions=potion,name=potion_of_prolonged_power,if=buff.celestial_alignment.up|buff.incarnation.up
+actions+=/blessing_of_elune,if=active_enemies<=2&talent.blessing_of_the_ancients.enabled&buff.blessing_of_elune.down
+actions+=/blessing_of_elune,if=active_enemies>=3&talent.blessing_of_the_ancients.enabled&buff.blessing_of_anshe.down
+actions+=/blood_fury,if=buff.celestial_alignment.up|buff.incarnation.up
+actions+=/berserking,if=buff.celestial_alignment.up|buff.incarnation.up
+actions+=/arcane_torrent,if=buff.celestial_alignment.up|buff.incarnation.up
+actions+=/use_items
+actions+=/use_item,name=tarnished_sentinel_medallion,if=cooldown.incarnation.remains>60|cooldown.celestial_alignment.remains>60
+actions+=/call_action_list,name=fury_of_elune,if=talent.fury_of_elune.enabled&cooldown.fury_of_elune.remains<target.time_to_die
+actions+=/call_action_list,name=ed,if=equipped.the_emerald_dreamcatcher&active_enemies<=1
+actions+=/astral_communion,if=astral_power.deficit>=79
+actions+=/warrior_of_elune
+actions+=/incarnation,if=astral_power>=40
+actions+=/celestial_alignment,if=astral_power>=40
+actions+=/call_action_list,name=AoE,if=(spell_targets.starfall>=2&talent.stellar_drift.enabled)|spell_targets.starfall>=3
+actions+=/call_action_list,name=single_target
+
+actions.AoE=starfall,if=debuff.stellar_empowerment.remains<gcd.max*2|astral_power.deficit<22.5|((buff.celestial_alignment.remains>8|buff.incarnation.remains>8))|target.time_to_die<8
+actions.AoE+=/stellar_flare,target_if=refreshable,if=target.time_to_die>10
+actions.AoE+=/sunfire,target_if=refreshable,if=astral_power.deficit>7&target.time_to_die>4
+actions.AoE+=/moonfire,target_if=refreshable,if=astral_power.deficit>7&target.time_to_die>4
+actions.AoE+=/force_of_nature
+actions.AoE+=/starsurge,if=buff.oneths_intuition.up&(!buff.astral_acceleration.up|buff.astral_acceleration.remains>5|astral_power.deficit<44)
+actions.AoE+=/new_moon,if=astral_power.deficit>14&!(buff.celestial_alignment.up|buff.incarnation.up)
+actions.AoE+=/half_moon,if=astral_power.deficit>24
+actions.AoE+=/full_moon,if=astral_power.deficit>44
+actions.AoE+=/lunar_strike,if=buff.warrior_of_elune.up
+actions.AoE+=/solar_wrath,if=buff.solar_empowerment.up
+actions.AoE+=/lunar_strike,if=buff.lunar_empowerment.up
+actions.AoE+=/moonfire,if=equipped.lady_and_the_child&talent.soul_of_the_forest.enabled&active_enemies<5&spell_haste>0.4&!(buff.celestial_alignment.up|buff.incarnation.up)
+actions.AoE+=/lunar_strike,if=spell_targets.lunar_strike>=4|spell_haste<0.45
+actions.AoE+=/solar_wrath
+
+actions.ed=astral_communion,if=astral_power.deficit>=75&buff.the_emerald_dreamcatcher.up
+actions.ed+=/incarnation,if=astral_power>=60|buff.bloodlust.up
+actions.ed+=/celestial_alignment,if=astral_power>=60&!buff.the_emerald_dreamcatcher.up
+actions.ed+=/starsurge,if=(gcd.max*astral_power%26)>target.time_to_die
+actions.ed+=/stellar_flare,cycle_targets=1,max_cycle_targets=4,if=active_enemies<4&remains<7.2
+actions.ed+=/moonfire,if=((talent.natures_balance.enabled&remains<3)|(remains<6.6&!talent.natures_balance.enabled))&(buff.the_emerald_dreamcatcher.remains>gcd.max|!buff.the_emerald_dreamcatcher.up)
+actions.ed+=/sunfire,if=((talent.natures_balance.enabled&remains<3)|(remains<5.4&!talent.natures_balance.enabled))&(buff.the_emerald_dreamcatcher.remains>gcd.max|!buff.the_emerald_dreamcatcher.up)
+actions.ed+=/force_of_nature,if=buff.the_emerald_dreamcatcher.remains>execute_time
+actions.ed+=/starfall,if=buff.oneths_overconfidence.up&buff.the_emerald_dreamcatcher.remains>execute_time
+actions.ed+=/new_moon,if=astral_power.deficit>=10&buff.the_emerald_dreamcatcher.remains>execute_time&astral_power>=16
+actions.ed+=/half_moon,if=astral_power.deficit>=20&buff.the_emerald_dreamcatcher.remains>execute_time&astral_power>=6
+actions.ed+=/full_moon,if=astral_power.deficit>=40&buff.the_emerald_dreamcatcher.remains>execute_time
+actions.ed+=/lunar_strike,if=(buff.lunar_empowerment.up&buff.the_emerald_dreamcatcher.remains>execute_time&(!(buff.celestial_alignment.up|buff.incarnation.up)&astral_power.deficit>=15|(buff.celestial_alignment.up|buff.incarnation.up)&astral_power.deficit>=22.5))&spell_haste<0.4
+actions.ed+=/solar_wrath,if=buff.solar_empowerment.stack>1&buff.the_emerald_dreamcatcher.remains>2*execute_time&astral_power>=6&(dot.moonfire.remains>5|(dot.sunfire.remains<5.4&dot.moonfire.remains>6.6))&(!(buff.celestial_alignment.up|buff.incarnation.up)&astral_power.deficit>=10|(buff.celestial_alignment.up|buff.incarnation.up)&astral_power.deficit>=15)
+actions.ed+=/lunar_strike,if=buff.lunar_empowerment.up&buff.the_emerald_dreamcatcher.remains>execute_time&astral_power>=11&(!(buff.celestial_alignment.up|buff.incarnation.up)&astral_power.deficit>=15|(buff.celestial_alignment.up|buff.incarnation.up)&astral_power.deficit>=22.5)
+actions.ed+=/solar_wrath,if=buff.solar_empowerment.up&buff.the_emerald_dreamcatcher.remains>execute_time&astral_power>=16&(!(buff.celestial_alignment.up|buff.incarnation.up)&astral_power.deficit>=10|(buff.celestial_alignment.up|buff.incarnation.up)&astral_power.deficit>=15)
+actions.ed+=/starsurge,if=(buff.the_emerald_dreamcatcher.up&buff.the_emerald_dreamcatcher.remains<gcd.max)|astral_power>85|((buff.celestial_alignment.up|buff.incarnation.up)&astral_power>30)
+actions.ed+=/starfall,if=buff.oneths_overconfidence.up
+actions.ed+=/new_moon,if=astral_power.deficit>=10
+actions.ed+=/half_moon,if=astral_power.deficit>=20
+actions.ed+=/full_moon,if=astral_power.deficit>=40
+actions.ed+=/solar_wrath,if=buff.solar_empowerment.up
+actions.ed+=/lunar_strike,if=buff.lunar_empowerment.up
+actions.ed+=/solar_wrath
+
+actions.fury_of_elune=incarnation,if=astral_power>=95&cooldown.fury_of_elune.remains<=gcd
+actions.fury_of_elune+=/force_of_nature,if=!buff.fury_of_elune.up
+actions.fury_of_elune+=/fury_of_elune,if=astral_power>=95
+actions.fury_of_elune+=/new_moon,if=((charges=2&recharge_time<5)|charges=3)&&(buff.fury_of_elune.up|(cooldown.fury_of_elune.remains>gcd*3&astral_power<=90))
+actions.fury_of_elune+=/half_moon,if=((charges=2&recharge_time<5)|charges=3)&&(buff.fury_of_elune.up|(cooldown.fury_of_elune.remains>gcd*3&astral_power<=80))
+actions.fury_of_elune+=/full_moon,if=((charges=2&recharge_time<5)|charges=3)&&(buff.fury_of_elune.up|(cooldown.fury_of_elune.remains>gcd*3&astral_power<=60))
+actions.fury_of_elune+=/astral_communion,if=buff.fury_of_elune.up&astral_power<=25
+actions.fury_of_elune+=/warrior_of_elune,if=buff.fury_of_elune.up|(cooldown.fury_of_elune.remains>=35&buff.lunar_empowerment.up)
+actions.fury_of_elune+=/lunar_strike,if=buff.warrior_of_elune.up&(astral_power<=90|(astral_power<=85&buff.incarnation.up))
+actions.fury_of_elune+=/new_moon,if=astral_power<=90&buff.fury_of_elune.up
+actions.fury_of_elune+=/half_moon,if=astral_power<=80&buff.fury_of_elune.up&astral_power>cast_time*12
+actions.fury_of_elune+=/full_moon,if=astral_power<=60&buff.fury_of_elune.up&astral_power>cast_time*12
+actions.fury_of_elune+=/moonfire,if=buff.fury_of_elune.down&remains<=6.6
+actions.fury_of_elune+=/sunfire,if=buff.fury_of_elune.down&remains<5.4
+actions.fury_of_elune+=/stellar_flare,if=remains<7.2&active_enemies=1
+actions.fury_of_elune+=/starfall,if=(active_enemies>=2&talent.stellar_flare.enabled|active_enemies>=3)&buff.fury_of_elune.down&cooldown.fury_of_elune.remains>10
+actions.fury_of_elune+=/starsurge,if=active_enemies<=2&buff.fury_of_elune.down&cooldown.fury_of_elune.remains>7
+actions.fury_of_elune+=/starsurge,if=buff.fury_of_elune.down&((astral_power>=92&cooldown.fury_of_elune.remains>gcd*3)|(cooldown.warrior_of_elune.remains<=5&cooldown.fury_of_elune.remains>=35&buff.lunar_empowerment.stack<2))
+actions.fury_of_elune+=/solar_wrath,if=buff.solar_empowerment.up
+actions.fury_of_elune+=/lunar_strike,if=buff.lunar_empowerment.stack=3|(buff.lunar_empowerment.remains<5&buff.lunar_empowerment.up)|active_enemies>=2
+actions.fury_of_elune+=/solar_wrath
+
+actions.single_target=force_of_nature
+actions.single_target+=/stellar_flare,target_if=refreshable,if=target.time_to_die>10
+actions.single_target+=/moonfire,if=((talent.natures_balance.enabled&remains<3)|remains<6.6)&astral_power.deficit>7&target.time_to_die>8
+actions.single_target+=/sunfire,if=((talent.natures_balance.enabled&remains<3)|remains<5.4)&astral_power.deficit>7&target.time_to_die>8
+actions.single_target+=/starfall,if=buff.oneths_overconfidence.up&(!buff.astral_acceleration.up|buff.astral_acceleration.remains>5|astral_power.deficit<44)
+actions.single_target+=/solar_wrath,if=buff.solar_empowerment.stack=3
+actions.single_target+=/lunar_strike,if=buff.lunar_empowerment.stack=3
+actions.single_target+=/starsurge,if=astral_power.deficit<44|(buff.celestial_alignment.up|buff.incarnation.up|buff.astral_acceleration.remains>5|(set_bonus.tier21_4pc&!buff.solar_solstice.up))|(gcd.max*(astral_power%40))>target.time_to_die
+actions.single_target+=/new_moon,if=astral_power.deficit>14&(!(buff.celestial_alignment.up|buff.incarnation.up)|(charges=2&recharge_time<5)|charges=3)
+actions.single_target+=/half_moon,if=astral_power.deficit>24&(!(buff.celestial_alignment.up|buff.incarnation.up)|(charges=2&recharge_time<5)|charges=3)
+actions.single_target+=/full_moon,if=astral_power.deficit>44
+actions.single_target+=/lunar_strike,if=buff.warrior_of_elune.up&buff.lunar_empowerment.up
+actions.single_target+=/solar_wrath,if=buff.solar_empowerment.up
+actions.single_target+=/lunar_strike,if=buff.lunar_empowerment.up
+actions.single_target+=/solar_wrath
+
+head=stormheart_headdress,id=147136,ilevel=930
+neck=string_of_extracted_incisors,id=147013,ilevel=930,enchant=mark_of_the_trained_soldier
+shoulders=mantle_of_the_astral_warden,id=138336,ilevel=905
+back=cloak_of_the_astral_warden,id=138366,ilevel=905,enchant=binding_of_intellect
+chest=stormheart_tunic,id=147133,ilevel=930
+wrists=oneths_intuition,id=137092,ilevel=970
+hands=stormheart_gloves,id=147135,ilevel=930
+waist=waistguard_of_profane_duplicity,id=147347,ilevel=940
+legs=stormheart_legguards,id=147137,ilevel=930
+feet=treads_of_violent_intrusion,id=147424,ilevel=930
+finger1=impeccable_fel_essence,id=137039,ilevel=970,gems=200mastery,enchant=binding_of_mastery
+finger2=seal_of_the_second_duumvirate,id=147195,ilevel=940,enchant=binding_of_mastery
+trinket1=tarnished_sentinel_medallion,id=147017,ilevel=930
+trinket2=terror_from_below,id=147016,ilevel=930
+main_hand=scythe_of_elune,id=128858,bonus_id=722,gem_id=147079/147107/147079/0,relic_ilevel=940/930/940
+
+# Gear Summary
+# gear_ilvl=936.13
+# gear_stamina=45870
+# gear_intellect=48204
+# gear_crit_rating=6059
+# gear_haste_rating=11970
+# gear_mastery_rating=9627
+# gear_versatility_rating=3255
+# gear_armor=2636
+# set_bonus=tier19_2pc=1
+# set_bonus=tier20_2pc=1
+# set_bonus=tier20_4pc=1

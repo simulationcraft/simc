@@ -658,6 +658,8 @@ struct rogue_t : public player_t
   // Options
   int initial_combo_points;
   int ssw_refund_offset;
+  bool rogue_optimize_expressions = true;
+  bool rogue_ready_trigger = true;
 
   rogue_t( sim_t* sim, const std::string& name, race_e r = RACE_NIGHT_ELF ) :
     player_t( sim, ROGUE, name, r ),
@@ -3054,21 +3056,13 @@ struct garrote_t : public rogue_attack_t
     base_multiplier *= 1.0 + p -> artifact.strangler.percent();
     may_crit = false;
 
-    if ( p -> sets -> has_set_bonus( ROGUE_ASSASSINATION, T20, B2 ) )
+    if ( p -> sets -> has_set_bonus( ROGUE_ASSASSINATION, T20, B2 ) ) {
+      base_costs[ RESOURCE_ENERGY ] += p -> sets -> set( ROGUE_ASSASSINATION, T20, B2 ) -> effectN( 2 ).base_value();
       cooldown -> duration = data().cooldown() + p -> sets -> set( ROGUE_ASSASSINATION, T20, B2 ) -> effectN( 1 ).time_value();
+    }
 
     if ( p -> sets -> has_set_bonus( ROGUE_ASSASSINATION, T20, B4 ) )
       base_multiplier *= 1.0 + p -> sets -> set( ROGUE_ASSASSINATION, T20, B4 ) -> effectN( 1 ).percent();
-  }
-
-  double cost() const override
-  {
-    double c = rogue_attack_t::cost();
-
-    if ( p() -> sets -> has_set_bonus( ROGUE_ASSASSINATION, T20, B2 ) )
-      c += p() -> sets -> set( ROGUE_ASSASSINATION, T20, B2 ) -> effectN( 2 ).base_value();
-
-    return c;
   }
 
   double composite_persistent_multiplier( const action_state_t* state ) const override
@@ -3144,16 +3138,9 @@ struct gouge_t : public rogue_attack_t
     rogue_attack_t( "gouge", p, p -> find_specialization_spell( "Gouge" ), options_str )
   {
     requires_stealth  = false;
-  }
 
-  double cost() const override
-  {
-    if ( p() -> talent.dirty_tricks -> ok() )
-    {
-      return 0;
-    }
-
-    return rogue_attack_t::cost();
+    if ( p -> talent.dirty_tricks -> ok() )
+      base_costs[ RESOURCE_ENERGY ] = 0;
   }
 
   void execute() override
@@ -3876,7 +3863,7 @@ struct mutilate_strike_t : public rogue_attack_t
 
     p() -> trigger_seal_fate( state );
 
-    if ( result_is_hit( state -> result ) && p() -> sets -> has_set_bonus( ROGUE_ASSASSINATION, T19, B2 ) )
+    if ( p() -> sets -> has_set_bonus( ROGUE_ASSASSINATION, T19, B2 ) && result_is_hit( state -> result ) )
     {
       double amount = state -> result_amount * p() -> sets -> set( ROGUE_ASSASSINATION, T19, B2 ) -> effectN( 1 ).percent();
 
@@ -7395,6 +7382,8 @@ void rogue_t::init_action_list()
       {
         if ( items[i].name_str == "specter_of_betrayal" )
           cds -> add_action( "use_item,name=" + items[i].name_str + ",if=(mantle_duration>0|buff.curse_of_the_dreadblades.up|(cooldown.vanish.remains>11&cooldown.curse_of_the_dreadblades.remains>11))" );
+        else if ( items[i].name_str == "void_stalkers_contract" )
+          cds -> add_action( "use_item,name=" + items[i].name_str + ",if=mantle_duration>0|buff.curse_of_the_dreadblades.up" );
         else
           cds -> add_action( "use_item,name=" + items[i].name_str + ",if=buff.bloodlust.react|target.time_to_die<=20|combo_points.deficit<=2" );
       }
@@ -7470,7 +7459,7 @@ void rogue_t::init_action_list()
           cds -> add_action( "use_item,name=" + items[i].name_str + ",if=talent.dark_shadow.enabled&buff.shadow_dance.up&(!set_bonus.tier20_4pc|buff.symbols_of_death.up|(!talent.death_from_above.enabled&((mantle_duration>=3|!equipped.mantle_of_the_master_assassin)|cooldown.vanish.remains>=43)))" );
           cds -> add_action( "use_item,name=" + items[i].name_str + ",if=!talent.dark_shadow.enabled&!buff.stealth.up&!buff.vanish.up&(mantle_duration>=3|!equipped.mantle_of_the_master_assassin)" );
         }
-        else if ( items[i].name_str == "umbral_moonglaives" )
+        else if ( items[i].name_str == "umbral_moonglaives" || items[i].name_str == "void_stalkers_contract" )
         {
           cds -> add_action( "use_item,name=" + items[i].name_str + ",if=talent.dark_shadow.enabled&!buff.stealth.up&!buff.vanish.up&buff.shadow_dance.up&(buff.symbols_of_death.up|(!talent.death_from_above.enabled&(mantle_duration>=3|!equipped.mantle_of_the_master_assassin)))" );
           cds -> add_action( "use_item,name=" + items[i].name_str + ",if=!talent.dark_shadow.enabled&!buff.stealth.up&!buff.vanish.up&(mantle_duration>=3|!equipped.mantle_of_the_master_assassin)" );
@@ -7890,14 +7879,32 @@ void rogue_t::init_base_stats()
 
   if ( main_hand_weapon.type == WEAPON_DAGGER && off_hand_weapon.type == WEAPON_DAGGER )
     resources.base[ RESOURCE_ENERGY ] += spec.assassins_resolve -> effectN( 1 ).base_value();
-  //if ( sets -> has_set_bonus( SET_MELEE, PVP, B2 ) )
-  //  resources.base[ RESOURCE_ENERGY ] += 10;
 
   base_energy_regen_per_second = 10 * ( 1.0 + spec.vitality -> effectN( 1 ).percent() );
   base_energy_regen_per_second *= 1.0 + talent.vigor -> effectN( 2 ).percent();
 
   base_gcd = timespan_t::from_seconds( 1.0 );
   min_gcd  = timespan_t::from_seconds( 1.0 );
+
+  // Force ready trigger if there is a rogue player
+  if ( rogue_ready_trigger )
+  {
+    for ( size_t i = 0; i < sim -> player_list.size(); ++i )
+    {
+      player_t* p = sim -> player_list[i];
+      if ( p -> specialization() != ROGUE_ASSASSINATION && p -> specialization() != ROGUE_OUTLAW && p -> specialization() != ROGUE_SUBTLETY )
+      {
+        rogue_ready_trigger = false;
+        break;
+      }
+    }
+    if ( rogue_ready_trigger )
+    {
+      ready_type = READY_TRIGGER;
+      // Disabled for now
+      // sim -> errorf( "[Rogue] ready_trigger=1 has been enabled. You can disable by adding rogue_ready_trigger=0 to your actor" );
+    }
+  }
 }
 
 // rogue_t::init_spells =====================================================
@@ -8600,6 +8607,8 @@ void rogue_t::create_options()
   add_option( opt_func( "fixed_rtb", parse_fixed_rtb ) );
   add_option( opt_func( "fixed_rtb_odds", parse_fixed_rtb_odds ) );
   add_option( opt_int( "ssw_refund_offset", ssw_refund_offset ) );
+  add_option( opt_bool( "rogue_optimize_expressions", rogue_optimize_expressions ) );
+  add_option( opt_bool( "rogue_ready_trigger", rogue_ready_trigger ) );
 
   player_t::create_options();
 }
@@ -8870,6 +8879,28 @@ void rogue_t::arise()
 
 void rogue_t::combat_begin()
 {
+  if ( !sim -> optimize_expressions )
+  {
+    if ( rogue_optimize_expressions )
+    {
+      for ( size_t i = 0; i < sim -> player_list.size(); ++i )
+      {
+        player_t* p = sim -> player_list[i];
+        if ( p -> specialization() != ROGUE_ASSASSINATION && p -> specialization() != ROGUE_OUTLAW && p -> specialization() != ROGUE_SUBTLETY )
+        {
+          rogue_optimize_expressions = false;
+          break;
+        }
+      }
+      if ( rogue_optimize_expressions )
+      {
+        sim -> optimize_expressions = true;
+        // Disabled for now
+        // sim -> errorf( "[Rogue] optimize_expressions=1 has been enabled. You can disable by adding rogue_ready_trigger=0 to every rogue actor" );
+      }
+    }
+  }
+
   player_t::combat_begin();
 
   if ( legendary.the_dreadlords_deceit )

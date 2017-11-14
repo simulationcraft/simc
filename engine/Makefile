@@ -55,7 +55,7 @@ endif
 
 MKDIR      = mkdir
 CXX        = g++
-CPP_FLAGS  = -Wall -Wextra -Woverloaded-virtual -W -I. -DSC_SHARED_DATA=\"$(SHARED_DATA)\" --std=c++0x -O3 -MMD -MP
+CPP_FLAGS  = -Wall -Wextra -Woverloaded-virtual -W -I. -DSC_SHARED_DATA=\"$(SHARED_DATA)\" --std=c++11 -O3 -MMD -MP
 OPTS       =
 GIT        = $(shell [ -d ../.git ] && which git)
 
@@ -109,6 +109,11 @@ ifneq (${C++03},)
 endif
 ifneq (${LTO},)
   OPTS += -flto
+endif
+
+ifneq (${LTO_THIN},)
+  OPTS += -flto=thin
+  -fuse-ld=lld
 endif
 ifneq (${MARCH_NATIVE},)
   OPTS += -march=native
