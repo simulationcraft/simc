@@ -80,6 +80,7 @@ actions.core+=/crash_lightning,if=active_enemies>=8|(active_enemies>=6&talent.cr
 actions.core+=/windstrike
 actions.core+=/stormstrike,if=buff.stormbringer.up&variable.furyCheck25
 actions.core+=/crash_lightning,if=active_enemies>=4|(active_enemies>=2&talent.crashing_storm.enabled)
+actions.core+=/rockbiter,if=buff.force_of_the_mountain.up
 actions.core+=/lightning_bolt,if=talent.overcharge.enabled&variable.furyCheck45&maelstrom>=40
 actions.core+=/stormstrike,if=(!talent.overcharge.enabled&variable.furyCheck45)|(talent.overcharge.enabled&variable.furyCheck80)
 actions.core+=/frostbrand,if=variable.akainuAS

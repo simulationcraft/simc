@@ -7839,7 +7839,7 @@ void shaman_t::init_action_list_enhancement()
   core -> add_action( this, "Windstrike" );
   core -> add_action( this, "Stormstrike", "if=buff.stormbringer.up&variable.furyCheck25" );
   core -> add_action( this, "Crash Lightning", "if=active_enemies>=4|(active_enemies>=2&talent.crashing_storm.enabled)" );
-  core -> add_action( this, "Rockbiter,if=buff.force_of_the_mountain.up" );
+  core -> add_action( this, "Rockbiter" , "if=buff.force_of_the_mountain.up" );
   core -> add_action( this, "Lightning Bolt", "if=talent.overcharge.enabled&variable.furyCheck45&maelstrom>=40" );
   core -> add_action( this, "Stormstrike", "if=(!talent.overcharge.enabled&variable.furyCheck45)|(talent.overcharge.enabled&variable.furyCheck80)" );
   core -> add_action( this, "Frostbrand", "if=variable.akainuAS" );
