@@ -597,6 +597,7 @@ public:
   resource_e primary_resource() const override { return RESOURCE_RAGE; }
   role_e     primary_role() const override;
   stat_e     convert_hybrid_stat( stat_e s ) const override;
+  stat_e     primary_stat() const override { return STAT_STRENGTH; }
   void       assess_damage_imminent_pre_absorb( school_e, dmg_e, action_state_t* s ) override;
   void       assess_damage_imminent( school_e, dmg_e, action_state_t* s ) override;
   void       assess_damage( school_e, dmg_e, action_state_t* ) override;
