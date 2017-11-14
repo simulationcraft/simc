@@ -1532,8 +1532,10 @@ void item::cradle_of_anguish( special_effect_t& effect )
 
 struct pantheon_proc_callback_t : public dbc_proc_callback_t
 {
-  pantheon_proc_callback_t( const special_effect_t& effect ) :
-    dbc_proc_callback_t( effect.item, effect )
+  buff_t* base_buff;
+
+  pantheon_proc_callback_t( const special_effect_t& effect, buff_t* base_buff ) :
+    dbc_proc_callback_t( effect.item, effect ), base_buff( base_buff )
   {
     // Ensure we have a proxy pantheon system to use
     unique_gear::initialize_pantheon( effect.player );
@@ -1545,7 +1547,7 @@ protected:
   {
     dbc_proc_callback_t::execute( a, state );
 
-    listener -> sim -> expansion_data.pantheon_proxy -> trigger_pantheon_buff();
+    listener -> sim -> expansion_data.pantheon_proxy -> trigger_pantheon_buff( base_buff );
   }
 };
 
@@ -1557,7 +1559,7 @@ void item::amanthuls_vision( special_effect_t& effect )
   // state system
   effect.custom_buff = effect.create_buff();
 
-  new pantheon_proc_callback_t( effect );
+  new pantheon_proc_callback_t( effect, effect.custom_buff );
 
   // Empower effect
   auto empower_spell = effect.player -> find_spell( 256832 );
@@ -1567,8 +1569,7 @@ void item::amanthuls_vision( special_effect_t& effect )
     .cd( empower_spell -> duration() )
     .add_stat( effect.player -> primary_stat(), empower_amount );
 
-  effect.player -> sim -> expansion_data.pantheon_proxy -> register_pantheon_buff( effect.custom_buff );
-  effect.player -> sim -> expansion_data.pantheon_proxy -> register_pantheon_effect( [ empower_buff ]() {
+  effect.player -> sim -> expansion_data.pantheon_proxy -> register_pantheon_effect( effect.custom_buff, [ empower_buff ]() {
     empower_buff -> trigger();
   } );
 }
@@ -1648,7 +1649,7 @@ void item::khazgoroths_courage( special_effect_t& effect )
       else             secondary_cb -> deactivate();
     } );
 
-  new pantheon_proc_callback_t( effect );
+  new pantheon_proc_callback_t( effect, effect.custom_buff );
 
   auto empower_spell = effect.player -> find_spell( 256835 );
   auto stat_amount = item_database::apply_combat_rating_multiplier( *effect.item,
@@ -1684,8 +1685,7 @@ void item::khazgoroths_courage( special_effect_t& effect )
       return versatility > crit && versatility > haste && versatility > mastery;
     } );
 
-  effect.player -> sim -> expansion_data.pantheon_proxy -> register_pantheon_buff( effect.custom_buff );
-  effect.player -> sim -> expansion_data.pantheon_proxy -> register_pantheon_effect( [ empower_buff ]() {
+  effect.player -> sim -> expansion_data.pantheon_proxy -> register_pantheon_effect( effect.custom_buff, [ empower_buff ]() {
     empower_buff -> trigger();
   } );
 }
@@ -1707,7 +1707,7 @@ struct golganneths_vitality_proc_t : public pantheon_proc_callback_t
   buff_t* mark;
 
   golganneths_vitality_proc_t( const special_effect_t& e, buff_t* mark ) :
-    pantheon_proc_callback_t( e ),
+    pantheon_proc_callback_t( e, mark ),
     damage( create_proc_action<ravaging_storm_t>( "ravaging_storm", e ) ),
     mark( mark )
   { }
@@ -1765,8 +1765,7 @@ void item::golganneths_vitality( special_effect_t& effect )
       else             secondary_cb -> deactivate();
     } );
 
-  effect.player -> sim -> expansion_data.pantheon_proxy -> register_pantheon_buff( mark_buff );
-  effect.player -> sim -> expansion_data.pantheon_proxy -> register_pantheon_effect( [ empower_buff ]() {
+  effect.player -> sim -> expansion_data.pantheon_proxy -> register_pantheon_effect( mark_buff, [ empower_buff ]() {
     empower_buff -> trigger();
   } );
 }
@@ -1823,7 +1822,7 @@ void item::norgannons_prowess( special_effect_t& effect )
   // system
   effect.custom_buff = effect.create_buff();
 
-  new pantheon_proc_callback_t( effect );
+  new pantheon_proc_callback_t( effect, effect.custom_buff );
 
   // Empower effect
   special_effect_t* secondary = new special_effect_t( effect.item );
@@ -1847,8 +1846,7 @@ void item::norgannons_prowess( special_effect_t& effect )
       else if ( new_ == 0           ) secondary_cb -> deactivate();
     } );
 
-  effect.player -> sim -> expansion_data.pantheon_proxy -> register_pantheon_buff( effect.custom_buff );
-  effect.player -> sim -> expansion_data.pantheon_proxy -> register_pantheon_effect( [ empower_buff ]() {
+  effect.player -> sim -> expansion_data.pantheon_proxy -> register_pantheon_effect( effect.custom_buff, [ empower_buff ]() {
     empower_buff -> trigger( empower_buff -> max_stack() );
   } );
 

@@ -7,6 +7,7 @@
 
 #include <vector>
 #include <functional>
+#include <unordered_map>
 
 #include "sc_timespan.hpp"
 
@@ -22,14 +23,20 @@ namespace unique_gear
 // real actors), triggers empowered buffs on the actors
 struct pantheon_state_t
 {
-  // Trinket base drivers
-  static const std::vector<unsigned> drivers;
+  // Number of unique buffs required to trigger pantheon empowerment
+  static const int    N_UNIQUE_BUFFS = 4;
+  // Wildcard slot (Aman'Thul), can replace anything in the other slots
+  static const size_t O_WILDCARD_TRINKET = 0;
+  // Offset where unique buffs start
+  static const size_t O_UNIQUE_TRINKET = 1;
 
-  // Trinket "Mark" buffs
-  static const std::vector<unsigned> marks;
-
-  // Durations of the non-empowered buffs
-  std::vector<timespan_t> buff_durations;
+  // Simple state to keep track of per proxy buff, or real actor buff
+  struct pantheon_buff_state_t
+  {
+    buff_t*     actor_buff;
+    real_ppm_t* rppm_object;
+    timespan_t  proxy_end_time;
+  };
 
   // Empowered pantheon effect callback for trinkets
   using pantheon_effect_cb_t = std::function<void(void)>;
@@ -42,31 +49,33 @@ struct pantheon_state_t
   std::vector<pantheon_opt_t>           pantheon_opts;
   // RPPM objects associated with proxy buffs
   std::vector<std::vector<real_ppm_t*>> rppm_objs;
-  // Start times of proxy buffs (timespan_t::min() if never triggered)
-  std::vector<timespan_t>               start_time;
+  // Base trinket effects, bucketed by type
+  std::vector<std::vector<pantheon_buff_state_t>> pantheon_state;
+  // Current state (in pantheon_state above) is proxy only?
+  bool                                  proxy_state_only;
   // Real pantheon trinket buffs per type
   std::vector<std::vector<buff_t*>>     actor_buffs;
-  // Pantheon buffs on actors
-  std::vector<pantheon_effect_cb_t>     pantheon_effects;
   // Proxy buff attempt ticker
   event_t*                              attempt_event;
+  // Map of actor base pantheon buff pointer -> pantheon effect callback
+  std::unordered_map<buff_t*, pantheon_effect_cb_t> cbmap;
 
   pantheon_state_t( player_t* player );
 
   // (Attempt to) proc proxy pantheon trinkets. Called by the pantheon event every X seconds
   void attempt();
 
-  // Check and potentially trigger pantheon buffs on all actors with their corresponding trinket.
-  // Called by attempt above on a successful proxy buff trigger, and each real pantheon trinket upon
-  // successful triggering.
-  void trigger_pantheon_buff() const;
-
-  // Register a pantheon buff from a real actor
-  void register_pantheon_buff( buff_t* b );
+  // Actor triggers one of the base trinket buffs for the pantheon trinkets
+  void trigger_pantheon_buff( buff_t* triggering_buff );
 
   // Register a pantheon "empowered" effect to trigger
-  void register_pantheon_effect( const pantheon_effect_cb_t& effect )
-  { pantheon_effects.push_back( effect ); }
+  void register_pantheon_effect( buff_t* actor_base_buff, const pantheon_effect_cb_t& effect )
+  {
+    assert( buff_type( actor_base_buff ) < actor_buffs.size() );
+
+    actor_buffs[ buff_type( actor_base_buff ) ].push_back( actor_base_buff );
+    cbmap[ actor_base_buff ] = effect;
+  }
 
   // Start the proxy pantheon system
   void start();
@@ -74,19 +83,47 @@ struct pantheon_state_t
   // Reset state to initial values
   void reset()
   {
-    range::fill( start_time, timespan_t::min() );
+    range::for_each( pantheon_state, []( std::vector<pantheon_buff_state_t>& states ) {
+      states.clear();
+    } );
+
     attempt_event = nullptr;
+    proxy_state_only = true;
   }
 
   // Does the raid (including real actors and proxy ones) have pantheon empowerment capability?
   bool has_pantheon_capability() const;
 private:
+  // Determine if the total buff state allows empowerment to activate
+  bool empowerment_state() const;
+  // Trigger active empowerment buffs and clear state
+  void trigger_empowerment();
+
   // Generate pantheon proxy ticker delay duration based on user options
   timespan_t pantheon_ticker_delay() const;
   // Parse input option
   void parse_options();
-  // Output debug state to debug log
+  // Output state to debug log
   void debug() const;
+
+  // Does pantheon state exist for a given proxy base trinket buff, or a real trinket buff
+  pantheon_buff_state_t* buff_state( size_t type, const real_ppm_t* );
+  pantheon_buff_state_t* buff_state( size_t type, const buff_t* );
+
+  // Translate player (base trinket) buff to pantheon system slot
+  size_t buff_type( const buff_t* ) const;
+
+  // Clean up buff state
+  void cleanup_state();
+
+  // Durations of the non-empowered buffs
+  std::vector<timespan_t> buff_durations;
+
+  // Trinket base drivers
+  static const std::vector<unsigned> drivers;
+
+  // Trinket "Mark" buffs
+  static const std::vector<unsigned> marks;
 };
 
 // Creates the global proxy pantheon object to the simulator object of the actor given
