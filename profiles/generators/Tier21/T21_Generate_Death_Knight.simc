@@ -37,7 +37,7 @@ artifact=16:0:0:0:0:149:1:150:1:151:1:152:1:153:1:154:1:156:4:157:4:158:4:262:4:
 crucible=1739:3:1778:3:156:3
 
 head=dreadwake_helm,id=152115,bonus_id=3612/1502
-neck=riveted_choker_of_delirium,id=151966,bonus_id=3612/1512,enchant=mark_of_the_trained_soldier
+neck=riveted_choker_of_delirium,id=151966,bonus_id=3612/1502,enchant=mark_of_the_trained_soldier
 shoulders=taktheritrixs_shoulderpads,id=137075,bonus_id=3630
 back=dreadwake_greatcloak,id=152113,bonus_id=3612/1502,enchant=binding_of_strength
 chest=cold_heart,id=151796,bonus_id=3630
@@ -47,10 +47,10 @@ waist=grondfather_girdle,id=152022,bonus_id=3612/1502
 legs=dreadwake_legplates,id=152116,bonus_id=3612/1502
 feet=burning_coven_sabatons,id=152010,bonus_id=3612/1502
 finger1=loop_of_the_lifebinder,id=152688,bonus_id=3612/1502,enchant=binding_of_mastery
-finger2=band_of_the_sargerite_smith,id=152064,bonus_id=3612/1512,enchant=binding_of_mastery
+finger2=band_of_the_sargerite_smith,id=152064,bonus_id=3612/1502,enchant=binding_of_mastery
 trinket1=khazgoroths_courage,id=154176,bonus_id=4213
 trinket2=seeping_scourgewing,id=151964,bonus_id=3612/1502
-main_hand=apocalypse,id=128403,gem_id=155849/152055/152295,relic_id=3612:1512/3612:1512/3612:1512,enchant=rune_of_the_fallen_crusader
+main_hand=apocalypse,id=128403,gem_id=155849/152055/152295,relic_id=3612:1512/3612:1502/3612:1502,enchant=rune_of_the_fallen_crusader
 
 save=T21_Death_Knight_Unholy.simc
 
