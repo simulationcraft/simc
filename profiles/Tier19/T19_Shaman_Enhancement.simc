@@ -10,7 +10,7 @@ artifact=41:0:0:0:0:899:1:900:1:901:1:902:1:903:1:904:1:905:4:906:4:907:4:908:4:
 # Default consumables
 potion=prolonged_power
 flask=seventh_demon
-food=lavish_suramar_feast
+food=lemon_herb_filet
 augmentation=defiled
 
 # This default action priority list is automatically created based on your character.
@@ -79,6 +79,7 @@ actions.core+=/crash_lightning,if=active_enemies>=8|(active_enemies>=6&talent.cr
 actions.core+=/windstrike
 actions.core+=/stormstrike,if=buff.stormbringer.up&variable.furyCheck25
 actions.core+=/crash_lightning,if=active_enemies>=4|(active_enemies>=2&talent.crashing_storm.enabled)
+actions.core+=/rockbiter,if=buff.force_of_the_mountain.up
 actions.core+=/lightning_bolt,if=talent.overcharge.enabled&variable.furyCheck45&maelstrom>=40
 actions.core+=/stormstrike,if=(!talent.overcharge.enabled&variable.furyCheck45)|(talent.overcharge.enabled&variable.furyCheck80)
 actions.core+=/frostbrand,if=variable.akainuAS
