@@ -828,12 +828,6 @@ option_db_t::option_db_t()
     if ( path == "." )
       continue;
 
-    // Add parent path for windows-only since SC_SHARED_DATA isn't set by Visual Studio
-    #if !defined( SC_WINDOWS )
-      if ( path == ".." )
-        continue;
-    #endif
-
     auto_path.push_back( path );
 
     path += "/";
