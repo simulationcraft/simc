@@ -8,19 +8,103 @@ talents=2300131
 artifact=49:0:0:0:0:1120:1:1121:4:1122:4:1123:4:1124:4:1125:4:1126:4:1127:4:1128:4:1129:4:1130:1:1131:1:1132:1:1133:1:1134:1:1135:1:1343:1:1378:1:1557:4:1558:1:1559:1:1560:24:1646:1
 crucible=1739:1784:1124/1739:1784:1129/1739:1784:1129
 
-head=titan_subjugators_visage,id=152014,bonus_id=3612/1502
-neck=riveted_choker_of_delirium,id=151966,bonus_id=3612/1502,enchant_id=5890
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
+
+# Executed before combat begins. Accepts non-harmful actions only.
+actions.precombat=flask,type=flask_of_ten_thousand_scars
+actions.precombat+=/flask,type=flask_of_the_countless_armies,if=role.attack|using_apl.max_dps
+actions.precombat+=/food,type=seedbattered_fish_plate
+actions.precombat+=/food,type=azshari_salad,if=role.attack|using_apl.max_dps
+# Snapshot raid buffed stats before combat begins and pre-potting is done.
+actions.precombat+=/snapshot_stats
+actions.precombat+=/potion,name=unbending_potion
+
+# Executed every time the actor is available.
+actions=auto_attack
+actions+=/use_item,name=apocalypse_drive
+actions+=/blood_fury
+actions+=/berserking
+actions+=/arcane_torrent
+actions+=/blood_fury
+actions+=/berserking
+actions+=/arcane_torrent
+actions+=/call_action_list,name=prot
+
+# This is a high-DPS (but low-survivability) configuration.
+# Invoke by adding "actions+=/run_action_list,name=max_dps" to the beginning of the default APL.
+actions.max_dps=auto_attack
+actions.max_dps+=/use_item,name=apocalypse_drive
+actions.max_dps+=/blood_fury
+actions.max_dps+=/berserking
+actions.max_dps+=/arcane_torrent
+
+# This is a high-survivability (but low-DPS) configuration.
+# Invoke by adding "actions+=/run_action_list,name=max_survival" to the beginning of the default APL.
+actions.max_survival=auto_attack
+actions.max_survival+=/use_item,name=apocalypse_drive
+actions.max_survival+=/blood_fury
+actions.max_survival+=/berserking
+actions.max_survival+=/arcane_torrent
+
+actions.prot=seraphim,if=talent.seraphim.enabled&action.shield_of_the_righteous.charges>=2
+actions.prot+=/shield_of_the_righteous,if=(!talent.seraphim.enabled|action.shield_of_the_righteous.charges>2)&!(debuff.eye_of_tyr.up&buff.aegis_of_light.up&buff.ardent_defender.up&buff.guardian_of_ancient_kings.up&buff.divine_shield.up&buff.potion.up)
+actions.prot+=/shield_of_the_righteous,if=(talent.bastion_of_light.enabled&talent.seraphim.enabled&buff.seraphim.up&cooldown.bastion_of_light.up)&!(debuff.eye_of_tyr.up&buff.aegis_of_light.up&buff.ardent_defender.up&buff.guardian_of_ancient_kings.up&buff.divine_shield.up&buff.potion.up)
+actions.prot+=/shield_of_the_righteous,if=(talent.bastion_of_light.enabled&!talent.seraphim.enabled&cooldown.bastion_of_light.up)&!(debuff.eye_of_tyr.up&buff.aegis_of_light.up&buff.ardent_defender.up&buff.guardian_of_ancient_kings.up&buff.divine_shield.up&buff.potion.up)
+actions.prot+=/bastion_of_light,if=talent.bastion_of_light.enabled&action.shield_of_the_righteous.charges<1
+actions.prot+=/light_of_the_protector,if=(health.pct<40)
+actions.prot+=/hand_of_the_protector,if=(health.pct<40)
+actions.prot+=/light_of_the_protector,if=(incoming_damage_10000ms<health.max*1.25)&health.pct<55&talent.righteous_protector.enabled
+actions.prot+=/light_of_the_protector,if=(incoming_damage_13000ms<health.max*1.6)&health.pct<55
+actions.prot+=/hand_of_the_protector,if=(incoming_damage_6000ms<health.max*0.7)&health.pct<65&talent.righteous_protector.enabled
+actions.prot+=/hand_of_the_protector,if=(incoming_damage_9000ms<health.max*1.2)&health.pct<55
+actions.prot+=/divine_steed,if=talent.knight_templar.enabled&incoming_damage_2500ms>health.max*0.4&!(debuff.eye_of_tyr.up|buff.aegis_of_light.up|buff.ardent_defender.up|buff.guardian_of_ancient_kings.up|buff.divine_shield.up|buff.potion.up)
+actions.prot+=/eye_of_tyr,if=incoming_damage_2500ms>health.max*0.4&!(debuff.eye_of_tyr.up|buff.aegis_of_light.up|buff.ardent_defender.up|buff.guardian_of_ancient_kings.up|buff.divine_shield.up|buff.potion.up)
+actions.prot+=/aegis_of_light,if=incoming_damage_2500ms>health.max*0.4&!(debuff.eye_of_tyr.up|buff.aegis_of_light.up|buff.ardent_defender.up|buff.guardian_of_ancient_kings.up|buff.divine_shield.up|buff.potion.up)
+actions.prot+=/guardian_of_ancient_kings,if=incoming_damage_2500ms>health.max*0.4&!(debuff.eye_of_tyr.up|buff.aegis_of_light.up|buff.ardent_defender.up|buff.guardian_of_ancient_kings.up|buff.divine_shield.up|buff.potion.up)
+actions.prot+=/divine_shield,if=talent.final_stand.enabled&incoming_damage_2500ms>health.max*0.4&!(debuff.eye_of_tyr.up|buff.aegis_of_light.up|buff.ardent_defender.up|buff.guardian_of_ancient_kings.up|buff.divine_shield.up|buff.potion.up)
+actions.prot+=/ardent_defender,if=incoming_damage_2500ms>health.max*0.4&!(debuff.eye_of_tyr.up|buff.aegis_of_light.up|buff.ardent_defender.up|buff.guardian_of_ancient_kings.up|buff.divine_shield.up|buff.potion.up)
+actions.prot+=/lay_on_hands,if=health.pct<15
+actions.prot+=/potion,name=unbending_potion
+actions.prot+=/potion,name=draenic_strength,if=incoming_damage_2500ms>health.max*0.4&&!(debuff.eye_of_tyr.up|buff.aegis_of_light.up|buff.ardent_defender.up|buff.guardian_of_ancient_kings.up|buff.divine_shield.up|buff.potion.up)|target.time_to_die<=25
+actions.prot+=/stoneform,if=incoming_damage_2500ms>health.max*0.4&!(debuff.eye_of_tyr.up|buff.aegis_of_light.up|buff.ardent_defender.up|buff.guardian_of_ancient_kings.up|buff.divine_shield.up|buff.potion.up)
+actions.prot+=/avenging_wrath,if=!talent.seraphim.enabled
+actions.prot+=/avenging_wrath,if=talent.seraphim.enabled&buff.seraphim.up
+actions.prot+=/judgment
+actions.prot+=/avengers_shield,if=talent.crusaders_judgment.enabled&buff.grand_crusader.up
+actions.prot+=/blessed_hammer
+actions.prot+=/avengers_shield
+actions.prot+=/consecration
+actions.prot+=/blinding_light
+actions.prot+=/hammer_of_the_righteous
+
+head=titansubjugators_visage,id=152014,bonus_id=3612/1502
+neck=riveted_choker_of_delirium,id=151966,bonus_id=3612/1502,enchant=mark_of_the_trained_soldier
 shoulders=lights_vanguard_shoulderplates,id=152153,bonus_id=3612/1502
-back=drape_of_the_spirited_hunt,id=151938,bonus_id=3612/1502,enchant_id=5434
+back=drape_of_the_spirited_hunt,id=151938,bonus_id=3612/1502,enchant=binding_of_strength
 chest=lights_vanguard_breastplate,id=152148,bonus_id=3612/1502
 wrists=vambraces_of_lifes_assurance,id=152023,bonus_id=3612/1502
 hands=molten_bite_handguards,id=152012,bonus_id=3612/1502
-waist=rethus_incessant_courage,id=146667,ilevel=1000,,gem_id=151583/151583/151583
-legs=cosmos_culling_legplates,id=152016,bonus_id=3612/1502
+waist=rethus_incessant_courage,id=146667,bonus_id=3630,gem_id=151583/151583/151583
+legs=cosmosculling_legplates,id=152016,bonus_id=3612/1502
 feet=burning_coven_sabatons,id=152010,bonus_id=3612/1502
 finger1=zealous_tormentors_ring,id=152284,bonus_id=3612/1502,enchant_id=5428
-finger2=heathcliffs_immortality,id=137047,ilevel=1000,gem_id=151583,enchant_id=5428
+finger2=heathcliffs_immortality,id=137047,bonus_id=3630,gem_id=151583,enchant_id=5428
 trinket1=apocalypse_drive,id=151975,bonus_id=3612/1502
-trinket2=amanthuls_vision,id=154172,ilevel=1000
+trinket2=amanthuls_vision,id=154172,bonus_id=4213
 main_hand=oathseeker,id=128867
-off_hand=truthguard,id=128866,gem_id=152043/152048/155846,relic_ilevel=960/960/970o
+off_hand=truthguard,id=128866,gem_id=152043/152048/155846,relic_id=3612:1502/3612:1502/3612:1512
+
+# Gear Summary
+# gear_ilvl=972.25
+# gear_strength=34015
+# gear_stamina=61779
+# gear_crit_rating=5748
+# gear_haste_rating=20662
+# gear_mastery_rating=10639
+# gear_versatility_rating=3143
+# gear_armor=5260
+# set_bonus=tier21_2pc=1

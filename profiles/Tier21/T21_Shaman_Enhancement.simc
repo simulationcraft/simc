@@ -80,7 +80,6 @@ actions.core+=/crash_lightning,if=active_enemies>=8|(active_enemies>=6&talent.cr
 actions.core+=/windstrike
 actions.core+=/stormstrike,if=buff.stormbringer.up&variable.furyCheck25
 actions.core+=/crash_lightning,if=active_enemies>=4|(active_enemies>=2&talent.crashing_storm.enabled)
-actions.core+=/rockbiter,if=buff.force_of_the_mountain.up
 actions.core+=/lightning_bolt,if=talent.overcharge.enabled&variable.furyCheck45&maelstrom>=40
 actions.core+=/stormstrike,if=(!talent.overcharge.enabled&variable.furyCheck45)|(talent.overcharge.enabled&variable.furyCheck80)
 actions.core+=/frostbrand,if=variable.akainuAS
@@ -104,15 +103,15 @@ actions.opener=rockbiter,if=maelstrom<15&time<gcd
 head=helm_of_the_awakened_soul,id=152423,bonus_id=3612/1502
 neck=riveted_choker_of_delirium,id=151966,bonus_id=3612/1502,enchant=mark_of_the_hidden_satyr
 shoulders=pauldrons_of_venerated_spirits,id=152171,bonus_id=3612/1502
-back=drape_of_venerated_spirits,id=152167,bonus_id=3612/1502,enchant=200agi
+back=drape_of_venerated_spirits,id=152167,bonus_id=3612/1502,enchant=binding_of_agility
 chest=robes_of_venerated_spirits,id=152166,bonus_id=3612/1502
 wrists=realitysplitting_wristguards,id=152008,bonus_id=3612/1502
 hands=smoldering_heart,id=151819,bonus_id=3630
 waist=worldravager_waistguard,id=152683,bonus_id=3612/1502
 legs=leggings_of_venerated_spirits,id=152170,bonus_id=3612/1502
 feet=greatboots_of_the_searing_tempest,id=152684,bonus_id=3612/1502
-finger1=eye_of_the_twisting_nether,id=137050,bonus_id=3630,gem_id=151583,enchant=200haste
-finger2=loop_of_the_lifebinder,id=152688,bonus_id=3612/1502,enchant=200haste
+finger1=eye_of_the_twisting_nether,id=137050,bonus_id=3630,gem_id=151583,enchant=binding_of_haste
+finger2=loop_of_the_lifebinder,id=152688,bonus_id=3612/1502,enchant=binding_of_haste
 trinket1=golganneths_vitality,id=154174,bonus_id=4213
 trinket2=gorshalachs_legacy,id=152093,bonus_id=3612/1502
 main_hand=doomhammer,id=128819,gem_id=155849/155855/155853,relic_id=3612:1512/3612:1512/3612:1512

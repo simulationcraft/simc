@@ -11,7 +11,7 @@ crucible=1739:3:1771:3:301:2:1589:1
 # Default consumables
 potion=prolonged_power
 flask=whispered_pact
-food=lemon_herb_filet
+food=lavish_suramar_feast
 augmentation=defiled
 
 # This default action priority list is automatically created based on your character.

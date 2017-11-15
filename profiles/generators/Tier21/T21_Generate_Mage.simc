@@ -37,21 +37,21 @@ artifact=4:0:0:0:0:72:4:73:1:74:4:75:4:77:4:78:1:79:4:80:1:81:4:82:4:83:4:84:4:8
 crucible=1739:1780:1529/1739:1780:82/1739:1780:1529
 spec=arcane
 
-head=runebound_collar,id=152138,ilevel=960
-neck=vulcanarcore_pendant,id=151965,ilevel=960,enchant=mark_of_the_hidden_satyr
-shoulders=runebound_mantle,id=152141,ilevel=960
-back=drape_of_the_arcane_tempest,id=147145,ilevel=930,enchant=binding_of_intellect
-chest=runebound_tunic,id=152140,ilevel=960
-wrists=blooddrenched_bindings,id=151954,ilevel=960
-hands=gloves_of_the_arcane_tempest,id=147146,ilevel=930
-waist=cord_of_blossoming_petals,id=151952,ilevel=960
-legs=runebound_leggings,id=152139,ilevel=960
-feet=lady_dacidions_silk_slippers,id=151945,ilevel=960
-finger1=soul_of_the_archmage,id=151642,ilevel=1000,gems=200vers,enchant=binding_of_versatility
-finger2=shard_of_the_exodar,id=132410,ilevel=1000,gems=200vers,enchant=binding_of_versatility
-trinket1=tarnished_sentinel_medallion,id=147017,ilevel=930
-trinket2=amanthuls_vision,id=154172,ilevel=1000
-main_hand=aluneth,id=127857,gem_id=155846/155850/155846,relic_ilevel=970/970/970
+head=runebound_collar,id=152138,bonus_id=3612/1502
+neck=vulcanarcore_pendant,id=151965,bonus_id=3612/1502,enchant=mark_of_the_hidden_satyr
+shoulders=runebound_mantle,id=152141,bonus_id=3612/1502
+back=drape_of_the_arcane_tempest,id=147145,bonus_id=3563/1512,enchant=binding_of_intellect
+chest=runebound_tunic,id=152140,bonus_id=3612/1502
+wrists=blooddrenched_bindings,id=151954,bonus_id=3612/1502
+hands=gloves_of_the_arcane_tempest,id=147146,bonus_id=3563/1512
+waist=cord_of_blossoming_petals,id=151952,bonus_id=3612/1502
+legs=runebound_leggings,id=152139,bonus_id=3612/1502
+feet=lady_dacidions_silk_slippers,id=151945,bonus_id=3612/1502
+finger1=soul_of_the_archmage,id=151642,bonus_id=3630,gem_id=151585,enchant=binding_of_versatility
+finger2=shard_of_the_exodar,id=132410,bonus_id=3630,gem_id=151585,enchant=binding_of_versatility
+trinket1=tarnished_sentinel_medallion,id=147017,bonus_id=3563/1512
+trinket2=amanthuls_vision,id=154172,bonus_id=4213
+main_hand=aluneth,id=127857,gem_id=155846/155850/155846,relic_id=3612:1512/3612:1512/3612:1512
 
 save=T21_Mage_Arcane.simc
 

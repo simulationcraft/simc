@@ -30,7 +30,7 @@ actions+=/blood_fury,if=buff.battle_cry.up|target.time_to_die<=16
 actions+=/berserking,if=buff.battle_cry.up|target.time_to_die<=11
 actions+=/arcane_torrent,if=buff.battle_cry_deadly_calm.down&rage.deficit>40&cooldown.battle_cry.remains
 actions+=/avatar,if=gcd.remains<0.25&(buff.battle_cry.up|cooldown.battle_cry.remains<15)|target.time_to_die<=20
-actions+=/battle_cry,if=((target.time_to_die>=70|set_bonus.tier20_4pc)&((gcd.remains<=0.5&prev_gcd.1.ravager)|!talent.ravager.enabled&!gcd.remains&target.debuff.colossus_smash.remains>=5&(!cooldown.bladestorm.remains|!set_bonus.tier20_4pc)&(!talent.rend.enabled|dot.rend.remains>4)))|buff.executioners_precision.stack=2&buff.shattered_defenses.up&!gcd.remains&!set_bonus.tier20_4pc
+actions+=/battle_cry,if=target.time_to_die<=6|(gcd.remains<=0.5&prev_gcd.1.ravager)|!talent.ravager.enabled&!gcd.remains&target.debuff.colossus_smash.remains>=5&(!cooldown.bladestorm.remains|!set_bonus.tier20_4pc)&(!talent.rend.enabled|dot.rend.remains>4)
 actions+=/run_action_list,name=cleave,if=spell_targets.whirlwind>=2&talent.sweeping_strikes.enabled
 actions+=/run_action_list,name=aoe,if=spell_targets.whirlwind>=5&!talent.sweeping_strikes.enabled
 actions+=/run_action_list,name=execute,target_if=target.health.pct<=20&spell_targets.whirlwind<5
@@ -64,14 +64,13 @@ actions.cleave+=/shockwave
 actions.cleave+=/storm_bolt
 
 actions.execute=bladestorm,if=buff.battle_cry.up&(set_bonus.tier20_4pc|equipped.the_great_storms_eye)
-actions.execute+=/colossus_smash,if=buff.shattered_defenses.down&(buff.battle_cry.down|(buff.executioners_precision.stack=2&(cooldown.battle_cry.remains<1|buff.battle_cry.up)))
+actions.execute+=/colossus_smash,if=buff.shattered_defenses.down&(buff.battle_cry.down|buff.battle_cry.remains>gcd.max)
 actions.execute+=/warbreaker,if=(raid_event.adds.in>90|!raid_event.adds.exists)&cooldown.mortal_strike.remains<=gcd.remains&buff.shattered_defenses.down&buff.executioners_precision.stack=2
 # actions.execute+=/heroic_charge,if=rage.deficit>=55&(!cooldown.heroic_leap.remains|swing.mh.remains>1.2)&buff.battle_cry.down
 #Remove the # above to run out of melee and charge back in for rage.
 actions.execute+=/focused_rage,if=rage.deficit<35
 actions.execute+=/rend,if=remains<5&cooldown.battle_cry.remains<2&(cooldown.bladestorm.remains<2|!set_bonus.tier20_4pc)
 actions.execute+=/ravager,if=cooldown.battle_cry.remains<=gcd&debuff.colossus_smash.remains>6
-actions.execute+=/whirlwind,if=buff.weighted_blade.stack=3
 actions.execute+=/mortal_strike,if=buff.executioners_precision.stack=2&buff.shattered_defenses.up
 actions.execute+=/overpower,if=rage<40
 actions.execute+=/execute,if=buff.shattered_defenses.down|rage>=40|talent.dauntless.enabled&rage>=36

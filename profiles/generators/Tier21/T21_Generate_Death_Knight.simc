@@ -31,7 +31,7 @@ deathknight="T21_Death_Knight_Unholy"
 level=110
 race=blood_elf
 role=dps
-talents=3211031
+talents=3211011
 spec=unholy
 artifact=16:0:0:0:0:149:1:150:1:151:1:152:1:153:1:154:1:156:4:157:4:158:4:262:4:263:1:264:4:265:4:266:4:267:4:1119:4:1333:1:1361:1:1489:4:1490:1:1491:1:1492:24:1629:1
 crucible=1739:3:1778:3:266:2:156:1
@@ -46,11 +46,13 @@ hands=dreadwake_gauntlets,id=152114,bonus_id=3612/1502
 waist=nathrezim_battle_girdle,id=152020,bonus_id=3612/1502
 legs=dreadwake_legplates,id=152116,bonus_id=3612/1502
 feet=burning_coven_sabatons,id=152010,bonus_id=3612/1502
-finger1=loop_of_the_lifebinder,id=152688,bonus_id=3612/1502,enchant=binding_of_haste
+finger1=loop_of_the_lifebinder,id=152688,bonus_id=3612/1502,enchant=binding_of_mastery
 finger2=sullied_seal_of_the_pantheon,id=151972,bonus_id=3612/1502,enchant=binding_of_haste
 trinket1=khazgoroths_courage,id=154176,bonus_id=4213
 trinket2=seeping_scourgewing,id=151964,bonus_id=3612/1502
 main_hand=apocalypse,id=128403,gem_id=155849/152056/155847,relic_id=3612:1512/3612:1502/3612:1512,enchant=rune_of_the_fallen_crusader
+
+food=azshari_salad
 
 save=T21_Death_Knight_Unholy.simc
 
@@ -61,7 +63,7 @@ role=tank
 talents=3112031
 spec=blood
 artifact=15:0:0:0:0:272:4:273:4:274:4:275:4:276:4:277:4:278:4:279:4:280:4:281:1:282:1:283:1:284:1:285:1:286:1:289:1:1331:1:1359:1:1481:4:1482:1:1483:1:1484:24:1627:1
-crucible=1739:1778:275/1739:1778:275/1739:1778:275
+crucible=1739:3:1778:3:275:3
 
 head=dreadwake_helm,id=152115,bonus_id=3612/1502
 neck=chain_of_the_unmaker,id=152283,bonus_id=3612/1502,enchant=mark_of_the_hidden_satyr

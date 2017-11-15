@@ -128,21 +128,21 @@ actions.single_target+=/solar_wrath,if=buff.solar_empowerment.up
 actions.single_target+=/lunar_strike,if=buff.lunar_empowerment.up
 actions.single_target+=/solar_wrath
 
-head=bearmantle_headdress,id=152127,ilevel=960
-neck=chain_of_the_unmaker,id=152283,ilevel=970,enchant=mark_of_the_trained_soldier
-shoulders=stormheart_mantle,id=147138,ilevel=930
-back=stormheart_drape,id=147134,ilevel=930,enchant=200int
-chest=bearmantle_harness,id=152124,ilevel=960
-wrists=oneths_intuition,id=137092,ilevel=1000
-hands=stormheart_gloves,id=147135,ilevel=930
-waist=deathenveloping_cincture,id=151986,ilevel=970
-legs=stormheart_legguards,id=147137,ilevel=930
-feet=depraved_machinists_footpads,id=152412,ilevel=960
-finger1=impeccable_fel_essence,id=137039,ilevel=1000,gems=200mastery,enchant=200mastery
-finger2=loop_of_the_lifebinder,id=152688,ilevel=960,enchant=200mastery
-trinket1=acrid_catalyst_injector,id=151955,ilevel=960
-trinket2=amanthuls_vision,id=154172,ilevel=1000
-main_hand=scythe_of_elune,id=128858,bonus_id=722,gem_id=155846/152050/155846/0,relic_ilevel=970/970/970
+head=bearmantle_headdress,id=152127,bonus_id=3612/1502
+neck=chain_of_the_unmaker,id=152283,bonus_id=3612/1502,enchant=mark_of_the_trained_soldier
+shoulders=stormheart_mantle,id=147138,bonus_id=3563/1512
+back=stormheart_drape,id=147134,bonus_id=3563/1512,enchant=binding_of_intellect
+chest=bearmantle_harness,id=152124,bonus_id=3612/1502
+wrists=oneths_intuition,id=137092,bonus_id=3630
+hands=stormheart_gloves,id=147135,bonus_id=3563/1512
+waist=deathenveloping_cincture,id=151986,bonus_id=3612/1502
+legs=stormheart_legguards,id=147137,bonus_id=3563/1512
+feet=depraved_machinists_footpads,id=152412,bonus_id=3612/1502
+finger1=impeccable_fel_essence,id=137039,bonus_id=3630,gem_id=151584,enchant=binding_of_mastery
+finger2=loop_of_the_lifebinder,id=152688,bonus_id=3612/1502,enchant=binding_of_mastery
+trinket1=acrid_catalyst_injector,id=151955,bonus_id=3612/1502
+trinket2=amanthuls_vision,id=154172,bonus_id=4213
+main_hand=scythe_of_elune,id=128858,bonus_id=722,gem_id=155846/155854/155846/0,relic_id=3612:1512/3612:1512/3612:1512
 
 # Gear Summary
 # gear_ilvl=963.93

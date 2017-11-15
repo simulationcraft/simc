@@ -4,14 +4,14 @@ level=110
 race=blood_elf
 role=attack
 position=back
-talents=3211031
+talents=3211011
 artifact=16:0:0:0:0:149:1:150:1:151:1:152:1:153:1:154:1:156:4:157:4:158:4:262:4:263:1:264:4:265:4:266:4:267:4:1119:4:1333:1:1361:1:1489:4:1490:1:1491:1:1492:24:1629:1
 crucible=1739:3:1778:3:266:2:156:1
 
 # Default consumables
 potion=prolonged_power
 flask=countless_armies
-food=nightborne_delicacy_platter
+food=azshari_salad
 augmentation=defiled
 
 # This default action priority list is automatically created based on your character.
@@ -107,7 +107,7 @@ hands=dreadwake_gauntlets,id=152114,bonus_id=3612/1502
 waist=nathrezim_battle_girdle,id=152020,bonus_id=3612/1502
 legs=dreadwake_legplates,id=152116,bonus_id=3612/1502
 feet=burning_coven_sabatons,id=152010,bonus_id=3612/1502
-finger1=loop_of_the_lifebinder,id=152688,bonus_id=3612/1502,enchant=binding_of_haste
+finger1=loop_of_the_lifebinder,id=152688,bonus_id=3612/1502,enchant=binding_of_mastery
 finger2=sullied_seal_of_the_pantheon,id=151972,bonus_id=3612/1502,enchant=binding_of_haste
 trinket1=khazgoroths_courage,id=154176,bonus_id=4213
 trinket2=seeping_scourgewing,id=151964,bonus_id=3612/1502
@@ -118,8 +118,8 @@ main_hand=apocalypse,id=128403,gem_id=155849/152056/155847,relic_id=3612:1512/36
 # gear_strength=40789
 # gear_stamina=62949
 # gear_crit_rating=3893
-# gear_haste_rating=9313
-# gear_mastery_rating=15558
+# gear_haste_rating=9113
+# gear_mastery_rating=15758
 # gear_versatility_rating=4315
 # gear_armor=5339
 # set_bonus=tier21_2pc=1

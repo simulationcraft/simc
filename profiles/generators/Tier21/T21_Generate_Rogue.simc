@@ -21,7 +21,7 @@ feet=lifebearing_footpads,id=151981,bonus_id=3612/1502
 finger1=band_of_the_sargerite_smith,id=152064,bonus_id=3612/1502,enchant=binding_of_mastery
 finger2=sullied_seal_of_the_pantheon,id=151972,bonus_id=3612/1502,enchant=binding_of_mastery
 trinket1=shadowsinged_fang,id=151968,bonus_id=3612/1502
-trinket2=golganneths_vitality,id=154174,ilevel=1000
+trinket2=golganneths_vitality,id=154174,bonus_id=4213
 main_hand=the_kingslayers,id=128870,bonus_id=741,gem_id=152055/152293/152092,relic_id=3612:1502/3612:1502/3612:1502
 off_hand=the_kingslayers,id=128869
 
@@ -51,7 +51,7 @@ feet=duskwalkers_footpads,id=137030,bonus_id=3630
 finger1=band_of_the_sargerite_smith,id=152064,bonus_id=3612/1502,enchant=binding_of_critical_strike
 finger2=sullied_seal_of_the_pantheon,id=151972,bonus_id=3612/1502,enchant=binding_of_critical_strike
 trinket1=shadowsinged_fang,id=151968,bonus_id=3612/1502
-trinket2=golganneths_vitality,id=154174,ilevel=1000
+trinket2=golganneths_vitality,id=154174,bonus_id=4213
 main_hand=the_kingslayers,id=128870,bonus_id=741,gem_id=152054/155855/152092,relic_id=3612:1502/3612:1512/3612:1502
 off_hand=the_kingslayers,id=128869
 
@@ -79,10 +79,10 @@ hands=gloves_of_the_dashing_scoundrel,id=152162,bonus_id=3612/1502
 waist=belt_of_fractured_sanity,id=151991,bonus_id=3612/1502
 legs=pants_of_the_dashing_scoundrel,id=152164,bonus_id=3612/1502
 feet=depraved_machinists_footpads,id=152412,bonus_id=3612/1502
-finger1=insignia_of_ravenholdt,id=137049,bonus_id=3630,gems=200haste,enchant=binding_of_haste
+finger1=insignia_of_ravenholdt,id=137049,bonus_id=3630,gem_id=151583,enchant=binding_of_haste
 finger2=seal_of_the_portalmaster,id=152063,bonus_id=3612/1502,enchant=binding_of_haste
 trinket1=seeping_scourgewing,id=151964,bonus_id=3612/1502
-trinket2=golganneths_vitality,id=154174,ilevel=1000
+trinket2=golganneths_vitality,id=154174,bonus_id=4213
 main_hand=the_dreadblades,id=128872,bonus_id=742,gem_id=152028/155855/155853,relic_id=3612:1502/3612:1512/3612:1512
 off_hand=the_dreadblades,id=134552
 
@@ -110,10 +110,10 @@ hands=gloves_of_the_dashing_scoundrel,id=152162,bonus_id=3612/1502
 waist=deathenveloping_cincture,id=151986,bonus_id=3612/1502
 legs=pants_of_the_dashing_scoundrel,id=152164,bonus_id=3612/1502
 feet=vicious_flamepaws,id=151983,bonus_id=3612/1502
-finger1=insignia_of_ravenholdt,id=137049,bonus_id=3630,gems=200versatility,enchant=binding_of_versatility
+finger1=insignia_of_ravenholdt,id=137049,bonus_id=3630,gem_id=151585,enchant=binding_of_versatility
 finger2=sullied_seal_of_the_pantheon,id=151972,bonus_id=3612/1502,enchant=binding_of_versatility
 trinket1=gorshalachs_legacy,id=152093,bonus_id=3612/1502
-trinket2=golganneths_vitality,id=154174,ilevel=1000
+trinket2=golganneths_vitality,id=154174,bonus_id=4213
 main_hand=the_dreadblades,id=128872,bonus_id=742,gem_id=152028/155855/155853,relic_id=3612:1502/3612:1512/3612:1512
 off_hand=the_dreadblades,id=134552
 
@@ -132,18 +132,18 @@ spec=subtlety
 
 head=cavalier_hat_of_the_dashing_scoundrel,id=152163,bonus_id=3612/1502
 neck=vulcanarcore_pendant,id=151965,bonus_id=3612/1502,enchant=mark_of_the_trained_soldier
-shoulder=fanged_slayers_shoulderpads,id=147174,ilevel=930
+shoulder=fanged_slayers_shoulderpads,id=147174,bonus_id=3563/1512
 back=cloak_of_the_dashing_scoundrel,id=152161,bonus_id=3612/1502,enchant=binding_of_agility
 chest=vest_of_the_dashing_scoundrel,id=152160,bonus_id=3612/1502
 wrist=denial_of_the_halfgiants,id=137100,bonus_id=3630
-hands=fanged_slayers_handguards,id=147171,ilevel=930
+hands=fanged_slayers_handguards,id=147171,bonus_id=3563/1512
 waist=portal_keepers_cincture,id=151990,bonus_id=3612/1502
 legs=pants_of_the_dashing_scoundrel,id=152164,bonus_id=3612/1502
 feet=lifebearing_footpads,id=151981,bonus_id=3612/1502
-finger1=insignia_of_ravenholdt,id=137049,bonus_id=3630,gems=200crit,enchant=binding_of_critical_strike
+finger1=insignia_of_ravenholdt,id=137049,bonus_id=3630,gem_id=151580,enchant=binding_of_critical_strike
 finger2=band_of_the_sargerite_smith,id=152064,bonus_id=3612/1502,enchant=binding_of_critical_strike
 trinket1=seeping_scourgewing,id=151964,bonus_id=3612/1502
-trinket2=golganneths_vitality,id=154174,ilevel=1000
+trinket2=golganneths_vitality,id=154174,bonus_id=4213
 main_hand=fangs_of_the_devourer,id=128476,bonus_id=743,gem_id=155848/152057/155848,relic_id=3612:1512/3612:1502/3612:1512
 off_hand=fangs_of_the_devourer,id=128479
 
@@ -170,10 +170,10 @@ hands=fanged_slayers_handguards,id=147171,bonus_id=1512/3563
 waist=portal_keepers_cincture,id=151990,bonus_id=3612/1502
 legs=pants_of_the_dashing_scoundrel,id=152164,bonus_id=3612/1502
 feet=lifebearing_footpads,id=151981,bonus_id=3612/1502
-finger1=insignia_of_ravenholdt,id=137049,bonus_id=3630,gems=200crit,enchant=binding_of_critical_strike
-finger2=soul_of_the_shadowblade,id=150936,bonus_id=3630,gems=200crit,enchant=binding_of_critical_strike
+finger1=insignia_of_ravenholdt,id=137049,bonus_id=3630,gem_id=151580,enchant=binding_of_critical_strike
+finger2=soul_of_the_shadowblade,id=150936,bonus_id=3630,gem_id=151580,enchant=binding_of_critical_strike
 trinket1=seeping_scourgewing,id=151964,bonus_id=3612/1502
-trinket2=golganneths_vitality,id=154174,ilevel=1000
+trinket2=golganneths_vitality,id=154174,bonus_id=4213
 main_hand=fangs_of_the_devourer,id=128476,bonus_id=743,gem_id=155848/152057/155848,relic_id=3612:1512/3612:1502/3612:1512
 off_hand=fangs_of_the_devourer,id=128479
 

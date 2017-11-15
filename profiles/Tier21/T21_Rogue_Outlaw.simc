@@ -98,10 +98,10 @@ hands=gloves_of_the_dashing_scoundrel,id=152162,bonus_id=3612/1502
 waist=belt_of_fractured_sanity,id=151991,bonus_id=3612/1502
 legs=pants_of_the_dashing_scoundrel,id=152164,bonus_id=3612/1502
 feet=depraved_machinists_footpads,id=152412,bonus_id=3612/1502
-finger1=insignia_of_ravenholdt,id=137049,bonus_id=3630,gems=200haste,enchant=binding_of_haste
+finger1=insignia_of_ravenholdt,id=137049,bonus_id=3630,gem_id=151583,enchant=binding_of_haste
 finger2=seal_of_the_portalmaster,id=152063,bonus_id=3612/1502,enchant=binding_of_haste
 trinket1=seeping_scourgewing,id=151964,bonus_id=3612/1502
-trinket2=golganneths_vitality,id=154174,ilevel=1000
+trinket2=golganneths_vitality,id=154174,bonus_id=4213
 main_hand=the_dreadblades,id=128872,bonus_id=742,gem_id=152028/155855/155853,relic_id=3612:1502/3612:1512/3612:1512
 off_hand=the_dreadblades,id=134552
 

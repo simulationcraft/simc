@@ -10,7 +10,7 @@ artifact=40:0:0:0:0:291:1:292:1:293:1:294:1:296:1:300:2:301:3:302:3:303:3:304:3:
 # Default consumables
 potion=prolonged_power
 flask=whispered_pact
-food=lemon_herb_filet
+food=lavish_suramar_feast
 augmentation=defiled
 
 # This default action priority list is automatically created based on your character.
