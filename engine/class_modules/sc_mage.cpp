@@ -6191,7 +6191,7 @@ struct freeze_t : public action_t
 
   virtual void execute() override
   {
-    assert( freeze );
+    assert( pet_freeze );
 
     pet_freeze -> set_target( target );
     pet_freeze -> execute();
