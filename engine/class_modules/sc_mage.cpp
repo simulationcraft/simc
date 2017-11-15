@@ -726,7 +726,6 @@ struct water_elemental_pet_t : public mage_pet_t
 
     default_list -> add_action( this, find_pet_spell( "Water Jet" ), "Water Jet" );
     default_list -> add_action( this, find_pet_spell( "Waterbolt" ), "Waterbolt" );
-    default_list -> add_action( this, find_pet_spell( "Freeze"    ), "Freeze"    );
 
     // Default
     use_default_action_list = true;
@@ -784,13 +783,11 @@ struct freeze_t : public water_elemental_spell_t
 {
   proc_t* proc_fof;
 
-  freeze_t( water_elemental_pet_t* p, const std::string& options_str ) :
+  freeze_t( water_elemental_pet_t* p ) :
     water_elemental_spell_t( "freeze", p, p -> find_pet_spell( "Freeze" ) )
   {
-    parse_options( options_str );
-    aoe                   = -1;
-    ignore_false_positive = true;
-    action_skill          = 1;
+    background = true;
+    aoe = -1;
 
     internal_cooldown = p -> get_cooldown( "wj_freeze" );
     internal_cooldown -> duration = data().category_cooldown();
@@ -885,8 +882,6 @@ struct water_jet_t : public water_elemental_spell_t
 action_t* water_elemental_pet_t::create_action( const std::string& name,
                                                 const std::string& options_str )
 {
-  if ( name == "freeze" )
-    return new freeze_t( this, options_str );
   if ( name == "waterbolt" )
     return new waterbolt_t( this, options_str );
   if ( name == "water_jet" )
@@ -5819,12 +5814,16 @@ struct summon_water_elemental_t : public frost_mage_spell_t
 
   virtual bool ready() override
   {
-    if ( ! frost_mage_spell_t::ready() || p() -> talents.lonely_winter -> ok() )
+    if ( ! p() -> pets.water_elemental )
       return false;
 
-    // TODO: Check this
-    return ! p() -> pets.water_elemental ||
-           p() -> pets.water_elemental -> is_sleeping();
+    if ( ! p() -> pets.water_elemental -> is_sleeping() )
+      return false;
+
+    if ( p() -> talents.lonely_winter -> ok() )
+      return false;
+
+    return frost_mage_spell_t::ready();
   }
 };
 
@@ -6149,10 +6148,11 @@ void mage_spell_t::trigger_unstable_magic( action_state_t* s )
 
 struct freeze_t : public action_t
 {
-  pets::water_elemental::freeze_t* action;
+  action_t* pet_freeze;
 
   freeze_t( mage_t* p, const std::string& options_str ) :
-    action_t( ACTION_OTHER, "freeze", p ), action( nullptr )
+    action_t( ACTION_OTHER, "freeze", p ),
+    pet_freeze( nullptr )
   {
     parse_options( options_str );
 
@@ -6165,39 +6165,52 @@ struct freeze_t : public action_t
 
   virtual bool init_finished() override
   {
+    bool ret = action_t::init_finished();
+
     mage_t* m = debug_cast<mage_t*>( player );
 
-    if ( m -> pets.water_elemental && ! action )
+    if ( ! m -> pets.water_elemental )
+      return ret;
+
+    pet_freeze = m -> pets.water_elemental -> find_action( "freeze" );
+
+    if ( ! pet_freeze )
     {
-      action         = dynamic_cast<pets::water_elemental::freeze_t*   >( m -> pets.water_elemental -> find_action( "freeze"    ) );
-      auto water_jet = dynamic_cast<pets::water_elemental::water_jet_t*>( m -> pets.water_elemental -> find_action( "water_jet" ) );
-      if ( action && water_jet )
-      {
-        water_jet -> autocast = false;
-      }
+      pet_freeze = new pets::water_elemental::freeze_t( m -> pets.water_elemental );
+      pet_freeze -> init();
     }
 
-    return action_t::init_finished();
+    auto water_jet = dynamic_cast<pets::water_elemental::water_jet_t*>( m -> pets.water_elemental -> find_action( "water_jet" ) );
+    if ( water_jet )
+    {
+      water_jet -> autocast = false;
+    }
+
+    return ret;
   }
 
   virtual void execute() override
   {
-    assert( action );
+    assert( freeze );
 
-    action -> set_target( target );
-    action -> execute();
+    pet_freeze -> set_target( target );
+    pet_freeze -> execute();
   }
 
   virtual bool ready() override
   {
     mage_t* m = debug_cast<mage_t*>( player );
-    if ( m -> talents.lonely_winter -> ok() )
+
+    if ( ! m -> pets.water_elemental )
       return false;
 
-    if ( ! action )
+    if ( m -> pets.water_elemental -> is_sleeping() )
       return false;
 
-    if ( ! action -> ready() )
+    if ( ! pet_freeze )
+      return false;
+
+    if ( ! pet_freeze -> ready() )
       return false;
 
     return action_t::ready();
@@ -6211,7 +6224,8 @@ struct water_jet_t : public action_t
   pets::water_elemental::water_jet_t* action;
 
   water_jet_t( mage_t* p, const std::string& options_str ) :
-    action_t( ACTION_OTHER, "water_jet", p ), action( nullptr )
+    action_t( ACTION_OTHER, "water_jet", p ),
+    action( nullptr )
   {
     parse_options( options_str );
 
@@ -6226,7 +6240,7 @@ struct water_jet_t : public action_t
   {
     mage_t* m = debug_cast<mage_t*>( player );
 
-    if ( m -> pets.water_elemental && ! action )
+    if ( m -> pets.water_elemental )
     {
       action = dynamic_cast<pets::water_elemental::water_jet_t*>( m -> pets.water_elemental -> find_action( "water_jet" ) );
       if ( action )
@@ -6241,8 +6255,10 @@ struct water_jet_t : public action_t
   virtual void execute() override
   {
     assert( action );
+
     mage_t* m = debug_cast<mage_t*>( player );
     action -> queued = true;
+
     // Interrupt existing cast
     if ( m -> pets.water_elemental -> executing )
     {
@@ -6262,7 +6278,11 @@ struct water_jet_t : public action_t
   virtual bool ready() override
   {
     mage_t* m = debug_cast<mage_t*>( player );
-    if ( m -> talents.lonely_winter -> ok() )
+
+    if ( ! m -> pets.water_elemental )
+      return false;
+
+    if ( m -> pets.water_elemental -> is_sleeping() )
       return false;
 
     if ( ! action )
