@@ -3451,7 +3451,7 @@ Class            : Restoration Druid
 School           : Nature
 Spell Level      : 34
 Range            : 100 yards
-Affecting spells : Bear Form (5487 effect#8), Incarnation: King of the Jungle (102543 effect#1), Berserk (106951 effect#1), Astral Influence (197524 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Awakened (253434 effect#1)
+Affecting spells : Bear Form (5487 effect#8), Incarnation: King of the Jungle (102543 effect#1), Berserk (106951 effect#1), Astral Influence (197524 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), 
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3468,7 +3468,7 @@ Name             : Ysera's Gift (id=145109) [Spell Family (7)]
 Class            : Druid
 School           : Nature
 Spell Level      : 1
-Affecting spells : Bear Form (5487 effect#8), Incarnation: King of the Jungle (102543 effect#1), Berserk (106951 effect#1), Astral Influence (197524 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Awakened (253434 effect#1)
+Affecting spells : Bear Form (5487 effect#8), Incarnation: King of the Jungle (102543 effect#1), Berserk (106951 effect#1), Astral Influence (197524 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), 
 Attributes       : ........ ........ ........ x..x....   .....x.. ..x..... ........ ........ 
                  : ........ ......x. ........ ....xx..   ........ ........ x....... ......x. 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -3486,7 +3486,7 @@ Class            : Druid
 School           : Nature
 Spell Level      : 1
 Range            : 30 yards
-Affecting spells : Bear Form (5487 effect#8), Incarnation: King of the Jungle (102543 effect#1), Berserk (106951 effect#1), Astral Influence (197524 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Awakened (253434 effect#1)
+Affecting spells : Bear Form (5487 effect#8), Incarnation: King of the Jungle (102543 effect#1), Berserk (106951 effect#1), Astral Influence (197524 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), 
 Attributes       : ........ ........ ........ x..x....   .....x.. ..x..... ...x.... ........ 
                  : ........ ......x. ........ ....xx..   ........ ........ x....... ......x. 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 

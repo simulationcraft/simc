@@ -506,7 +506,7 @@ Tooltip          : Haste increased by $w1% and immune to pushback.
 Name             : Ignite (id=12654) [Spell Family (3)] 
 Class            : Mage
 School           : Fire
-Spell Level      : 99
+Spell Level      : 78
 Range            : 50000 yards
 Duration         : 9 seconds
 Affecting spells : Everburning Consumption (194314 effect#1), Norgannon's Foresight (236380 effect#1)
