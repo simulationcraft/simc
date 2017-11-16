@@ -38,7 +38,7 @@ crucible=1739:1780:1529/1739:1780:82/1739:1780:1529
 spec=arcane
 
 head=runebound_collar,id=152138,bonus_id=3612/1502
-neck=vulcanarcore_pendant,id=151965,bonus_id=3612/1502,enchant=mark_of_the_hidden_satyr
+neck=chain_of_the_unmaker,id=152283,bonus_id=3612/1502,enchant=mark_of_the_hidden_satyr
 shoulders=runebound_mantle,id=152141,bonus_id=3612/1502
 back=drape_of_the_arcane_tempest,id=147145,bonus_id=3563/1512,enchant=binding_of_intellect
 chest=runebound_tunic,id=152140,bonus_id=3612/1502

@@ -7646,7 +7646,7 @@ void mage_t::apl_arcane()
   variables    -> add_action( "variable,name=time_until_burn,op=reset,if=target.time_to_die<variable.average_burn_length", "Boss is gonna die soon. All the above conditions don't really matter. We're just gonna burn our mana until combat ends." );
 
   build -> add_talent( this, "Arcane Orb" );
-  build -> add_action( this, "Arcane Missiles", "if=variable.arcane_missiles_procs=buff.arcane_missiles.max_stack&active_enemies<3", "If we cap out on Arcane Missiles, avoid munching another proc." );
+  build -> add_action( this, "Arcane Missiles", "if=active_enemies<3&(variable.arcane_missiles_procs=buff.arcane_missiles.max_stack|(variable.arcane_missiles_procs&mana.pct<=50&buff.arcane_charge.stack=3))", "Use Arcane Missiles at max stacks to avoid munching a proc. Alternatively, we can cast at 3 stacks of Arcane Charge to conserve mana." );
   build -> add_action( this, "Arcane Explosion", "if=active_enemies>1" );
   build -> add_action( this, "Arcane Blast" );
 
