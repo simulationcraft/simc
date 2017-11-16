@@ -114,16 +114,16 @@ feet=greatboots_of_the_searing_tempest,id=152684,bonus_id=3612/1502
 finger1=eye_of_the_twisting_nether,id=137050,bonus_id=3630,gem_id=151583,enchant=binding_of_haste
 finger2=loop_of_the_lifebinder,id=152688,bonus_id=3612/1502,enchant=binding_of_haste
 trinket1=golganneths_vitality,id=154174,bonus_id=4213
-trinket2=gorshalachs_legacy,id=152093,bonus_id=3612/1502
+trinket2=cradle_of_anguish,id=147010,bonus_id=3563/1512
 main_hand=doomhammer,id=128819,gem_id=155849/155855/155853,relic_id=3612:1512/3612:1512/3612:1512
 off_hand=fury_of_the_stonemother,id=128873
 
 # Gear Summary
-# gear_ilvl=973.00
+# gear_ilvl=971.13
 # gear_agility=38816
 # gear_stamina=61124
 # gear_crit_rating=3527
-# gear_haste_rating=15880
+# gear_haste_rating=15723
 # gear_mastery_rating=11815
 # gear_versatility_rating=1782
 # gear_armor=3609
