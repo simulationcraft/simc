@@ -1810,6 +1810,17 @@ struct fire_mage_spell_t : public mage_spell_t
     affected_by.fire_mage = true;
   }
 
+  // Use only after schedule_execute, which sets time_to_execute.
+  bool benefits_from_hot_streak( bool benefit_tracking = false ) const
+  {
+    if ( benefit_tracking )
+      p() -> buffs.hot_streak -> up();
+
+    // In-game, only instant cast Pyroblast and Flamestrike benefit from (and
+    // consume) Hot Streak.
+    return time_to_execute == timespan_t::zero() && p() -> buffs.hot_streak -> check();
+  }
+
   virtual void impact( action_state_t* s ) override
   {
     mage_spell_t::impact( s );
@@ -3780,7 +3791,7 @@ struct flamestrike_t : public fire_mage_spell_t
 
   virtual void execute() override
   {
-    bool hot_streak = p() -> buffs.hot_streak -> up();
+    bool hot_streak = benefits_from_hot_streak( true );
     p() -> state.hot_streak_active = hot_streak;
 
     fire_mage_spell_t::execute();
@@ -3791,15 +3802,17 @@ struct flamestrike_t : public fire_mage_spell_t
     p() -> buffs.ignition -> expire( p() -> bugs ? timespan_t::from_millis( 15 ) : timespan_t::zero() );
     p() -> buffs.critical_massive -> expire( p() -> bugs ? timespan_t::from_millis( 15 ) : timespan_t::zero() );
 
-    p() -> buffs.hot_streak -> expire();
-
-    if ( p() -> talents.pyromaniac -> ok()
-      && hot_streak
-      && rng().roll( p() -> talents.pyromaniac -> effectN( 1 ).percent() ) )
+    if ( hot_streak )
     {
-      p() -> procs.hot_streak -> occur();
-      p() -> procs.hot_streak_pyromaniac -> occur();
-      p() -> buffs.hot_streak -> trigger();
+      p() -> buffs.hot_streak -> expire();
+
+      if ( p() -> talents.pyromaniac -> ok()
+        && rng().roll( p() -> talents.pyromaniac -> effectN( 1 ).percent() ) )
+      {
+        p() -> procs.hot_streak -> occur();
+        p() -> procs.hot_streak_pyromaniac -> occur();
+        p() -> buffs.hot_streak -> trigger();
+      }
     }
   }
 
@@ -3848,9 +3861,7 @@ struct flamestrike_t : public fire_mage_spell_t
   virtual void snapshot_state( action_state_t* s, dmg_e rt ) override
   {
     fire_mage_spell_t::snapshot_state( s, rt );
-
-    ignite_spell_state_t* is = debug_cast<ignite_spell_state_t*>( s );
-    is -> hot_streak = p() -> buffs.hot_streak -> check() != 0;
+    debug_cast<ignite_spell_state_t*>( s ) -> hot_streak = benefits_from_hot_streak();
   }
 
   virtual double composite_ignite_multiplier( const action_state_t* s ) const override
@@ -5427,8 +5438,7 @@ struct pyroblast_t : public fire_mage_spell_t
   {
     double am = fire_mage_spell_t::action_multiplier();
 
-    if ( p() -> buffs.kaelthas_ultimate_ability -> check() &&
-         ! p() -> buffs.hot_streak -> check() )
+    if ( p() -> buffs.kaelthas_ultimate_ability -> check() && ! benefits_from_hot_streak() )
     {
       am *= 1.0 + p() -> buffs.kaelthas_ultimate_ability -> data().effectN( 1 ).percent();
     }
@@ -5455,7 +5465,7 @@ struct pyroblast_t : public fire_mage_spell_t
 
   virtual void execute() override
   {
-    bool hot_streak = p() -> buffs.hot_streak -> up();
+    bool hot_streak = benefits_from_hot_streak( true );
     p() -> state.hot_streak_active = hot_streak;
 
     fire_mage_spell_t::execute();
@@ -5475,24 +5485,24 @@ struct pyroblast_t : public fire_mage_spell_t
     p() -> buffs.ignition -> expire( p() -> bugs ? timespan_t::from_millis( 15 ) : timespan_t::zero() );
     p() -> buffs.critical_massive -> expire( p() -> bugs ? timespan_t::from_millis( 15 ) : timespan_t::zero() );
 
-    p() -> buffs.hot_streak -> expire();
-
-    if ( p() -> talents.pyromaniac -> ok()
-      && hot_streak
-      && rng().roll( p() -> talents.pyromaniac -> effectN( 1 ).percent() ) )
+    if ( hot_streak )
     {
-      p() -> procs.hot_streak -> occur();
-      p() -> procs.hot_streak_pyromaniac -> occur();
-      p() -> buffs.hot_streak -> trigger();
+      p() -> buffs.hot_streak -> expire();
+
+      if ( p() -> talents.pyromaniac -> ok()
+        && rng().roll( p() -> talents.pyromaniac -> effectN( 1 ).percent() ) )
+      {
+        p() -> procs.hot_streak -> occur();
+        p() -> procs.hot_streak_pyromaniac -> occur();
+        p() -> buffs.hot_streak -> trigger();
+      }
     }
   }
 
   virtual void snapshot_state( action_state_t* s, dmg_e rt ) override
   {
     fire_mage_spell_t::snapshot_state( s, rt );
-
-    ignite_spell_state_t* is = debug_cast<ignite_spell_state_t*>( s );
-    is -> hot_streak = p() -> buffs.hot_streak -> check() != 0;
+    debug_cast<ignite_spell_state_t*>( s ) -> hot_streak = benefits_from_hot_streak();
   }
 
   virtual timespan_t travel_time() const override
