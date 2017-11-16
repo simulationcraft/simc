@@ -1897,7 +1897,7 @@ struct fire_mage_spell_t : public mage_spell_t
           p -> procs.heating_up_generated -> occur();
           p -> buffs.heating_up -> trigger(
             1, buff_t::DEFAULT_VALUE(), -1.0,
-            p -> buffs.heating_up -> data().duration() * p -> cache.spell_speed() );
+            p -> buffs.heating_up -> buff_duration * p -> cache.spell_speed() );
 
           // Controlled Burn HU -> HS conversion
           if ( p -> talents.controlled_burn -> ok() &&
