@@ -8,21 +8,21 @@ artifact=2:0:0:0:0:40:1:41:4:42:4:43:4:44:4:47:4:49:1:50:4:51:4:52:4:53:4:54:1:3
 crucible=1739:1780:53/1739:1780:41/1739:1780:41
 spec=retribution
 
-head=lights_vanguard_helm,id=152151,ilevel=960
-neck=chain_of_the_unmaker,id=152283,ilevel=970,enchant_id=5890
-shoulders=lights_vanguard_shoulderplates,id=152153,ilevel=960
-back=whisper_of_the_nathrezim,id=137020,ilevel=1000,enchant_id=5434
-chest=lights_vanguard_breastplate,id=152148,ilevel=960
-wrists=vambraces_of_lifes_assurance,id=152023,ilevel=960
-hands=lights_vanguard_gauntlets,id=152150,ilevel=960
-waist=grondfather_girdle,id=152022,ilevel=960
-legs=cosmosculling_legplates,id=152016,ilevel=970
-feet=burning_coven_sabatons,id=152010,ilevel=960
-finger1=sullied_seal_of_the_pantheon,id=151972,ilevel=970,enchant_id=5429
-finger2=soul_of_the_highlord,id=151644,ilevel=1000,gem_id=151584,enchant_id=5429
-trinket1=seeping_scourgewing,id=151964,ilevel=960
-trinket2=amanthuls_vision,id=154172,ilevel=1000
-main_hand=ashbringer,id=120978,bonus_id=737,gem_id=152043/152038/152043,relic_ilevel=970/960/970
+head=lights_vanguard_helm,id=152151,bonus_id=3612/1502
+neck=chain_of_the_unmaker,id=152283,bonus_id=3612/1502,enchant_id=5890
+shoulders=lights_vanguard_shoulderplates,id=152153,bonus_id=3612/1502
+back=whisper_of_the_nathrezim,id=137020,bonus_id=3630,enchant_id=5434
+chest=lights_vanguard_breastplate,id=152148,bonus_id=3612/1502
+wrists=vambraces_of_lifes_assurance,id=152023,bonus_id=3612/1502
+hands=lights_vanguard_gauntlets,id=152150,bonus_id=3612/1502
+waist=grondfather_girdle,id=152022,bonus_id=3612/1502
+legs=cosmosculling_legplates,id=152016,bonus_id=3612/1502
+feet=burning_coven_sabatons,id=152010,bonus_id=3612/1502
+finger1=sullied_seal_of_the_pantheon,id=151972,bonus_id=3612/1502,enchant_id=5429
+finger2=soul_of_the_highlord,id=151644,bonus_id=3630,gem_id=151584,enchant_id=5429
+trinket1=seeping_scourgewing,id=151964,bonus_id=3612/1502
+trinket2=amanthuls_vision,id=154172,bonus_id=4213
+main_hand=ashbringer,id=120978,bonus_id=737,gem_id=152043/152038/152043,relic_id=3612:1502/3612:1502/3612:1502
 
 save=T21_Paladin_Retribution.simc
 
