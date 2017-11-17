@@ -7,7 +7,7 @@ role=spell
 position=back
 talents=3323233
 artifact=59:0:0:0:0:1034:4:1035:4:1036:4:1037:4:1038:4:1039:4:1040:4:1041:4:1042:4:1043:1:1044:1:1045:1:1046:1:1047:1:1048:1:1049:1:1294:1:1364:1:1501:4:1502:1:1503:1:1504:24:1632:1
-crucible=1739:3:1778:3:1042:2:1039:1
+crucible=1739:3:1780:3:1036:2:1039:1
 
 # Default consumables
 potion=potion_of_prolonged_power
@@ -129,7 +129,7 @@ actions.single_target+=/lunar_strike,if=buff.lunar_empowerment.up
 actions.single_target+=/solar_wrath
 
 head=bearmantle_headdress,id=152127,bonus_id=3612/1502
-neck=chain_of_the_unmaker,id=152283,bonus_id=3612/1502,enchant=mark_of_the_trained_soldier
+neck=riveted_choker_of_delirium,id=151966,ilevel=960,enchant=mark_of_the_trained_soldier
 shoulders=stormheart_mantle,id=147138,bonus_id=3563/1512
 back=stormheart_drape,id=147134,bonus_id=3563/1512,enchant=binding_of_intellect
 chest=bearmantle_harness,id=152124,bonus_id=3612/1502
@@ -137,9 +137,9 @@ wrists=oneths_intuition,id=137092,bonus_id=3630
 hands=stormheart_gloves,id=147135,bonus_id=3563/1512
 waist=deathenveloping_cincture,id=151986,bonus_id=3612/1502
 legs=stormheart_legguards,id=147137,bonus_id=3563/1512
-feet=depraved_machinists_footpads,id=152412,bonus_id=3612/1502
+feet=vicious_flamepaws,id=151983,ilevel=960
 finger1=impeccable_fel_essence,id=137039,bonus_id=3630,gem_id=151584,enchant=binding_of_mastery
-finger2=loop_of_the_lifebinder,id=152688,bonus_id=3612/1502,enchant=binding_of_mastery
+finger2=sullied_seal_of_the_pantheon,id=151972,ilevel=970,enchant=binding_of_mastery
 trinket1=acrid_catalyst_injector,id=151955,bonus_id=3612/1502
 trinket2=amanthuls_vision,id=154172,bonus_id=4213
 main_hand=scythe_of_elune,id=128858,bonus_id=722,gem_id=155846/155854/155846/0,relic_id=3612:1512/3612:1512/3612:1512
@@ -148,10 +148,10 @@ main_hand=scythe_of_elune,id=128858,bonus_id=722,gem_id=155846/155854/155846/0,r
 # gear_ilvl=963.93
 # gear_stamina=57733
 # gear_intellect=64497
-# gear_crit_rating=8785
-# gear_haste_rating=12895
-# gear_mastery_rating=12438
-# gear_versatility_rating=3583
+# gear_crit_rating=5228
+# gear_haste_rating=11501
+# gear_mastery_rating=14801
+# gear_versatility_rating=6170
 # gear_armor=2837
 # set_bonus=tier20_2pc=1
 # set_bonus=tier20_4pc=1
