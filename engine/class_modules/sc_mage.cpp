@@ -8065,8 +8065,7 @@ double mage_t::composite_player_multiplier( school_e school ) const
   m *= 1.0 + buffs.rune_of_power -> check_value();
   m *= 1.0 + buffs.incanters_flow -> check_stack_value();
 
-  // TODO: Check if AP interacts with multischool damage that includes physical.
-  if ( ! dbc::is_school( school, SCHOOL_PHYSICAL ) )
+  if ( school != SCHOOL_PHYSICAL )
   {
     m *= 1.0 + buffs.arcane_power -> check_value();
   }
