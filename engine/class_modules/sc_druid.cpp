@@ -368,6 +368,7 @@ public:
     buff_t* tigers_fury;
     buff_t* feral_tier17_4pc;
     buff_t* fury_of_ashamane;
+    buff_t* jungle_stalker;
 
     // Guardian
     // adaptive fur for each basic magic school
@@ -2575,7 +2576,8 @@ public:
        }
     }
 
-    if ( p-> specialization() == DRUID_FERAL &&  p -> talent.soul_of_the_forest -> ok() && ( data().affected_by( p -> talent.soul_of_the_forest -> effectN(2)) | data().affected_by( p -> talent.soul_of_the_forest -> effectN(3) )))
+    if ( p-> specialization() == DRUID_FERAL &&  p -> talent.soul_of_the_forest -> ok() &&
+      ( data().affected_by( p -> talent.soul_of_the_forest -> effectN(2)) | data().affected_by( p -> talent.soul_of_the_forest -> effectN(3) )))
     {
        base_td_multiplier *= 1.0 + p->talent.soul_of_the_forest->effectN(3).percent();
        base_dd_multiplier *= 1.0 + p->talent.soul_of_the_forest->effectN(2).percent();
@@ -5492,6 +5494,7 @@ struct incarnation_t : public druid_spell_t
 
     spec_buff -> trigger();
     p() -> buff.feral_instinct -> trigger();
+    p() -> buff.jungle_stalker -> trigger();
 
     if ( ! p() -> in_combat )
     {
@@ -6024,7 +6027,7 @@ struct prowl_t : public druid_spell_t
       return false;
 
     if ( p() -> in_combat && ! ( p() -> specialization() == DRUID_FERAL &&
-      p() -> buff.incarnation_cat -> check() ) )
+      p() -> buff.jungle_stalker -> check() ) )
     {
       return false;
     }
@@ -7323,6 +7326,8 @@ void druid_t::create_buffs()
 
   buff.incarnation_cat       = new incarnation_cat_buff_t( *this );
 
+  buff.jungle_stalker        = buff_creator_t( this, "jungle_stalker", find_spell( 252071 ) );
+
   buff.incarnation_bear      = buff_creator_t( this, "incarnation_guardian_of_ursoc", talent.incarnation_bear )
                                .add_invalidate( CACHE_ARMOR )
                                .cd( timespan_t::zero() );
@@ -7770,6 +7775,7 @@ void druid_t::apl_feral()
 
    cooldowns->add_action("dash,if=!buff.cat_form.up");
    //cooldowns->add_action("rake,if=buff.prowl.up|buff.shadowmeld.up");
+   cooldowns->add_action("prowl,if=buff.incarnation.remains<0.5&buff.jungle_stalker.up");
    cooldowns->add_action("berserk,if=energy>=30&(cooldown.tigers_fury.remains>5|buff.tigers_fury.up)");
    cooldowns->add_action("tigers_fury,if=energy.deficit>=60");
    cooldowns->add_action("berserking");
