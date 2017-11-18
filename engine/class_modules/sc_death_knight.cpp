@@ -5,7 +5,6 @@
 
 // TODO:
 // Unholy
-// - Does Festering Wound (generation|consumption) require a positive hit result?
 // - Skelebro has an aoe spell (Arrow Spray), but the AI using it is very inconsistent
 // Blood
 // - Bloodworms
@@ -489,7 +488,6 @@ public:
     cooldown_t* death_and_decay;
     cooldown_t* defile;
     cooldown_t* empower_rune_weapon;
-    cooldown_t* festering_wound;
     cooldown_t* frost_fever;
     cooldown_t* hungering_rune_weapon;
     cooldown_t* icecap;
@@ -906,7 +904,6 @@ public:
     cooldown.death_and_decay = get_cooldown( "death_and_decay" );
     cooldown.defile          = get_cooldown( "defile" );
     cooldown.empower_rune_weapon = get_cooldown( "empower_rune_weapon" );
-    cooldown.festering_wound = get_cooldown( "festering_wound" );
     cooldown.hungering_rune_weapon = get_cooldown( "hungering_rune_weapon" );
     cooldown.icecap          = get_cooldown( "icecap" );
     cooldown.pillar_of_frost = get_cooldown( "pillar_of_frost" );
@@ -1002,7 +999,7 @@ public:
   double    rune_regen_coefficient() const;
   void      trigger_runic_empowerment( double rpcost );
   bool      trigger_runic_corruption( double rpcost, double override_chance = -1.0 );
-  void      trigger_festering_wound( const action_state_t* state, unsigned n_stacks = 1, bool bypass_icd = false );
+  void      trigger_festering_wound( const action_state_t* state, unsigned n_stacks = 1 );
   void      burst_festering_wound( const action_state_t* state, unsigned n = 1 );
   void      trigger_death_march( const action_state_t* state );
   void      apply_diseases( action_state_t* state, unsigned diseases );
@@ -1714,7 +1711,7 @@ struct dt_melee_ability_t : public pet_melee_attack_t<T>
       return;
     }
 
-    this -> p() -> o() -> trigger_festering_wound( state, 1, true ); // Bypass ICD
+    this -> p() -> o() -> trigger_festering_wound( state, 1 );
   }
 
   void execute() override
@@ -1979,7 +1976,8 @@ struct ghoul_pet_t : public dt_pet_t
 
       if ( p() -> o() -> artifact.black_claws.rank() > 0 &&
            p() -> o() -> buffs.dark_transformation -> up() &&
-           rng().roll( p() -> o() -> artifact.black_claws.data().effectN( 1 ).percent() ) )
+           rng().roll( p() -> o() -> artifact.black_claws.data().effectN( 1 ).percent() )
+          )
       {
         p() -> o() -> burst_festering_wound( state, 1 );
       }
@@ -2076,7 +2074,8 @@ struct sludge_belcher_pet_t : public dt_pet_t
 
       if ( p() -> o() -> artifact.black_claws.rank() > 0 &&
            p() -> o() -> buffs.dark_transformation -> up() &&
-           rng().roll( p() -> o() -> artifact.black_claws.data().effectN( 1 ).percent() ) )
+           rng().roll( p() -> o() -> artifact.black_claws.data().effectN( 1 ).percent() )
+        )
       {
         p() -> o() -> burst_festering_wound( state, 1 );
       }
@@ -3745,7 +3744,7 @@ struct apocalypse_t : public death_knight_melee_attack_t
 
     weapon = &( p -> main_hand_weapon );
 
-    // Note: 7.2 adds the 3 rune energize effect explicitly to the Apocalypse base spell, instead of
+    // Note: 7.2 adds the 2 rune energize effect explicitly to the Apocalypse base spell, instead of
     // having it as a separate mechanism. We disable it here unconditionally, since we implement the
     // rune replenish through other means (death_knigt_t::replenish_rune).
     energize_type = ENERGIZE_NONE;
@@ -3760,18 +3759,18 @@ struct apocalypse_t : public death_knight_melee_attack_t
     if ( result_is_hit( execute_state -> result ) )
     {
       p() -> burst_festering_wound( execute_state, n_wounds );
-    }
-
-    for ( int i = 0; i < n_wounds; ++i )
-    {
-      timespan_t duration = summon -> duration() - duration_penalty;
-      if ( duration <= timespan_t::zero() )
+      
+      for ( int i = 0; i < n_wounds; ++i )
       {
-        duration = timespan_t::from_seconds( 1 );
-      }
+        timespan_t duration = summon -> duration() - duration_penalty;
+        if ( duration <= timespan_t::zero() )
+        {
+          duration = timespan_t::from_seconds( 1 );
+        }
 
-      p() -> pets.apocalypse_ghoul[ i ] -> summon( duration );
-      p() -> buffs.t20_2pc_unholy -> trigger();
+        p() -> pets.apocalypse_ghoul[ i ] -> summon( duration );
+        p() -> buffs.t20_2pc_unholy -> trigger();
+      }
     }
 
     if ( p() -> artifact.deaths_harbinger.rank() > 0 )
@@ -4764,10 +4763,10 @@ struct t21_death_coil_t : public death_knight_spell_t
   {
     death_knight_spell_t::impact( state );
 
-    // Can't happen ingame but if anyone wants to have fun by combining T21 4P and T19 4P, might as well let them
+    // Can't happen ingame but if anyone wants to have fun combining T21 4P and T19 4P, might as well let them
     if ( rng().roll( player -> sets -> set( DEATH_KNIGHT_UNHOLY, T19, B4 ) -> effectN( 1 ).percent() ) )
     {
-      p() -> trigger_festering_wound( state, 1, true ); // TODO: Does this ignore ICD?
+      p() -> trigger_festering_wound( state, 1 );
     }
 
     // Coils of Devastation application
@@ -4864,7 +4863,7 @@ struct death_coil_t : public death_knight_spell_t
 
     if ( rng().roll( player -> sets -> set( DEATH_KNIGHT_UNHOLY, T19, B4 ) -> effectN( 1 ).percent() ) )
     {
-      p() -> trigger_festering_wound( state, 1, true ); // TODO: Does this ignore ICD?
+      p() -> trigger_festering_wound( state, 1 );
     }
 
     // Coils of Devastation application
@@ -7390,9 +7389,9 @@ bool death_knight_t::trigger_runic_corruption( double rpcost, double override_ch
   return true;
 }
 
-void death_knight_t::trigger_festering_wound( const action_state_t* state, unsigned n, bool bypass_icd )
+void death_knight_t::trigger_festering_wound( const action_state_t* state, unsigned n )
 {
-  if ( ! bypass_icd && cooldown.festering_wound -> down() )
+  if ( ! state -> action -> result_is_hit( state -> result ) )
   {
     return;
   }
@@ -7400,8 +7399,6 @@ void death_knight_t::trigger_festering_wound( const action_state_t* state, unsig
   auto td = get_target_data( state -> target );
 
   td -> debuff.festering_wound -> trigger( n );
-
-  cooldown.festering_wound -> start( spec.festering_wound -> internal_cooldown() );
 }
 
 void death_knight_t::burst_festering_wound( const action_state_t* state, unsigned n )
@@ -7474,7 +7471,7 @@ void death_knight_t::burst_festering_wound( const action_state_t* state, unsigne
     return;
   }
 
-  if ( state -> action -> result_is_miss( state -> result ) )
+  if ( ! state -> action -> result_is_hit( state -> result ) )
   {
     return;
   }
