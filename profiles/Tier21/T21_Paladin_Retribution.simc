@@ -1,7 +1,7 @@
 paladin="T21_Paladin_Retribution"
 spec=retribution
 level=110
-race=dwarf
+race=blood_elf
 role=attack
 position=back
 talents=1302002
@@ -73,29 +73,29 @@ actions.opener+=/divine_hammer,if=equipped.137048|race.blood_elf|!cooldown.wake_
 actions.opener+=/wake_of_ashes
 
 head=lights_vanguard_helm,id=152151,bonus_id=3612/1502
-neck=chain_of_the_unmaker,id=152283,bonus_id=3612/1502,enchant=mark_of_the_trained_soldier
+neck=chain_of_the_unmaker,id=152283,bonus_id=3612/1502,enchant_id=5890
 shoulders=lights_vanguard_shoulderplates,id=152153,bonus_id=3612/1502
-back=whisper_of_the_nathrezim,id=137020,bonus_id=3630,enchant=binding_of_strength
+back=whisper_of_the_nathrezim,id=137020,bonus_id=3630,enchant_id=5434
 chest=lights_vanguard_breastplate,id=152148,bonus_id=3612/1502
 wrists=vambraces_of_lifes_assurance,id=152023,bonus_id=3612/1502
 hands=lights_vanguard_gauntlets,id=152150,bonus_id=3612/1502
 waist=grondfather_girdle,id=152022,bonus_id=3612/1502
 legs=cosmosculling_legplates,id=152016,bonus_id=3612/1502
 feet=burning_coven_sabatons,id=152010,bonus_id=3612/1502
-finger1=sullied_seal_of_the_pantheon,id=151972,bonus_id=3612/1502,enchant=binding_of_mastery
-finger2=soul_of_the_highlord,id=151644,bonus_id=3630,gem_id=151584,enchant=binding_of_mastery
-trinket1=gorshalachs_legacy,id=152093,bonus_id=3612/1502
-trinket2=khazgoroths_courage,id=154176,bonus_id=4213
+finger1=sullied_seal_of_the_pantheon,id=151972,bonus_id=3612/1502,enchant_id=5429
+finger2=soul_of_the_highlord,id=151644,bonus_id=3630,gem_id=151584,enchant_id=5429
+trinket1=seeping_scourgewing,id=151964,bonus_id=3612/1502
+trinket2=amanthuls_vision,id=154172,bonus_id=4213
 main_hand=ashbringer,id=120978,bonus_id=737,gem_id=152043/152038/152043,relic_id=3612:1502/3612:1502/3612:1502
 
 # Gear Summary
 # gear_ilvl=972.00
-# gear_strength=38836
+# gear_strength=33598
 # gear_stamina=61777
-# gear_crit_rating=8290
-# gear_haste_rating=10084
-# gear_mastery_rating=10783
-# gear_versatility_rating=3484
+# gear_crit_rating=9720
+# gear_haste_rating=10037
+# gear_mastery_rating=12213
+# gear_versatility_rating=6391
 # gear_armor=5244
 # set_bonus=tier21_2pc=1
 # set_bonus=tier21_4pc=1
