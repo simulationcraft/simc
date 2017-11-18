@@ -1591,25 +1591,11 @@ public:
 
   void trigger_bloody_gash(player_t* t, double dmg)
   {
-     //druid_t* d = (druid_t*)t;
-
-     // All ok, trigger the damage
-     /*spell->target = target;
-     spell->base_dd_min = spell->base_dd_max = state->result_amount * multiplier;
-     spell->execute();*/
      if ( p() -> sets -> has_set_bonus( DRUID_FERAL, T21, B2 ) && p() -> rng().roll( p() -> find_spell(251789) -> proc_chance() ) )
      {
         p()->active.bloody_gash->target = t;
-        p()->active.bloody_gash->base_dd_min = dmg;
+        p()->active.bloody_gash->base_dd_min = p()->active.bloody_gash->base_dd_max = dmg;
         p()->active.bloody_gash->execute();
-
-
-
-        if (p()->sim->debug || p()->sim->log)
-        {
-           p()->sim->out_log.printf("Bloody Gash triggered from %s", ab::name());
-        }
-
      }
   }
 
@@ -3634,10 +3620,8 @@ struct rip_t : public cat_attack_t
      trigger_wildshapers_clutch(d->state);
 
      trigger_bloody_gash(d->target, d->state->result_total);
-     if ( p() -> sets ->has_set_bonus(DRUID_FERAL, T21, B4) )
-     {
-        p() -> buff.apex_predator -> trigger();
-     }
+    p() -> buff.apex_predator -> trigger();
+
   }
 
   void last_tick( dot_t* d ) override
@@ -3652,26 +3636,35 @@ struct rip_t : public cat_attack_t
 struct bloody_gash_t : public cat_attack_t
 {
    bloody_gash_t(druid_t* p) :
-      cat_attack_t("bloody_gash", p, p -> find_spell(251789) )
+      cat_attack_t("bloody_gash", p, p -> find_spell(252750) )
    {
       background = dual = proc = may_crit = true;
       may_miss = may_dodge = may_parry = false;
-      may_block = true;
-      direct_bleed = true;
-      
+      may_block = true;  
+   }
+
+   virtual void init() override
+   {
+     cat_attack_t::init();
+
+     snapshot_flags &= STATE_NO_MULTIPLIER;
+     snapshot_flags |= STATE_TGT_MUL_DA;
    }
 
    void execute() override
    {
-      cat_attack_t::execute();
-
-      //TODO(feral): Check if TWC procs from this
-      //trigger_wildshapers_clutch(cat_attack_t::get_state());
-      if ( p() -> sets -> has_set_bonus( DRUID_FERAL, T21, B4 ))
-      {
-         p() -> buff.apex_predator -> trigger();
-      }
+      cat_attack_t::execute(); 
+     
+      p() -> buff.apex_predator -> trigger();
    }
+
+   void impact(action_state_t* s) override
+   {
+     cat_attack_t::impact(s);
+
+     trigger_wildshapers_clutch(s);
+   }
+
 };
 
 // Savage Roar ==============================================================
@@ -7429,7 +7422,7 @@ void druid_t::create_buffs()
                                   resource_gain( RESOURCE_ENERGY, b -> check_value(), gain.ashamanes_energy ); } );
 
   buff.apex_predator        = buff_creator_t(this, "apex_predator", find_spell(252752))
-                               .chance( /*( parent -> sets -> has_set_bonus( DRUID_FERAL, T21, B4) ?*/ find_spell( 251790 ) -> proc_chance() /*: 0 )*/ );
+                               .chance(  sets -> has_set_bonus( DRUID_FERAL, T21, B4) ? find_spell( 251790 ) -> proc_chance() : 0 /*: 0 )*/ );
 
   buff.berserk               = new berserk_buff_t( *this );
 

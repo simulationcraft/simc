@@ -1,4 +1,4 @@
-SimulationCraft 730-03 for World of Warcraft 7.3.2 Live (wow build 25383)
+SimulationCraft 730-03 for World of Warcraft 7.3.2 Live (wow build 25383, git build 788fb7f)
 
 Name             : Incapacitating Roar (id=99) [Spell Family (7)] 
 Class            : Guardian Druid
@@ -7101,6 +7101,24 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : Unlock powers at the Vindicaar's Matrix Core to use while on Argus. 
 
+Name             : Item - Druid  T21 Feral 2P Bonus (id=251789) [Spell Family (7), Passive, Hidden] 
+Class            : Druid
+School           : Physical
+Proc Chance      : 10%
+Proc Flags       : ........ ........ ..x..... ........ 
+                 : Periodic
+Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ x....... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ x....... ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6), Hidden (7)
+Effects          :
+#1 (id=471380)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+Description      : When Rip deals damage, there is a $h% chance for it to deal damage again.
+
 Name             : Jungle Stalker (Talent, Shapeshift) (id=252071) [Spell Family (7)] 
 Class            : Druid
 School           : Physical
@@ -7122,6 +7140,25 @@ Effects          :
                    Affected Spells: Prowl (5215), Prowl (102547)
 Description      : $@spelldesc102543
 Tooltip          : Allows the use of Prowl even while in combat.
+
+Name             : Bloody Gash (id=252750) [Spell Family (7)] 
+Class            : Druid
+School           : Physical
+Range            : 100 yards
+Proc Chance      : 30%
+Proc Flags       : ........ ........ ..x..... ........ 
+                 : Periodic
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ..x..... x....... ........ ........   ........ ........ ........ ........ 
+                 : .......x ........ x....... ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ .....x..   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ....x... ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Disable player multipliers (221)
+Effects          :
+#1 (id=472787)   : School Damage (2): physical
+                   Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
+Description      : $@spelldesc251789
 
 Name             : Vindicaar Matrix Crystal (id=255529) [Hidden] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
