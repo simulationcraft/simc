@@ -1245,12 +1245,12 @@ struct touch_of_the_magi_t : public buff_t
     {
       sim -> out_debug.printf(
         "%s's %s accumulates %f additional damage: %f -> %f",
-        player -> name(), name(), state -> result_amount,
-        accumulated_damage, accumulated_damage + state -> result_amount
+        player -> name(), name(), state -> result_total,
+        accumulated_damage, accumulated_damage + state -> result_total
       );
     }
 
-    accumulated_damage += state -> result_amount;
+    accumulated_damage += state -> result_total;
     return accumulated_damage;
   }
 };
@@ -1949,7 +1949,7 @@ struct fire_mage_spell_t : public mage_spell_t
 
   void trigger_ignite( action_state_t* s )
   {
-    double amount = s -> result_amount * p() -> cache.mastery_value();
+    double amount = s -> result_total * p() -> cache.mastery_value();
 
     // TODO: Use client data from hot streak
     amount *= composite_ignite_multiplier( s );
@@ -2106,7 +2106,7 @@ struct frost_mage_spell_t : public mage_spell_t
     if ( m == 0.0 )
       return;
 
-    double amount = state -> result_amount / m * p() -> cache.mastery_value();
+    double amount = state -> result_total / m * p() -> cache.mastery_value();
 
     if ( amount == 0.0 )
       return;
@@ -4378,7 +4378,7 @@ struct glacial_spike_t : public frost_mage_spell_t
     if ( icicle_damage_ratio == 0.0 )
       return;
 
-    double amount  = data -> result_amount;
+    double amount  = data -> result_total;
     double icicles = amount * icicle_damage_ratio;
     double base    = amount - icicles;
 
@@ -6150,8 +6150,8 @@ void mage_spell_t::trigger_unstable_magic( action_state_t* s )
   if ( p() -> rng().roll( um_proc_rate ) )
   {
     p() -> action.unstable_magic_explosion -> set_target( s -> target );
-    p() -> action.unstable_magic_explosion -> base_dd_min = s -> result_amount;
-    p() -> action.unstable_magic_explosion -> base_dd_max = s -> result_amount;
+    p() -> action.unstable_magic_explosion -> base_dd_min = s -> result_total;
+    p() -> action.unstable_magic_explosion -> base_dd_max = s -> result_total;
     p() -> action.unstable_magic_explosion -> execute();
   }
 }
