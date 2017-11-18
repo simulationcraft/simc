@@ -1,4 +1,4 @@
-SimulationCraft 730-03 for World of Warcraft 7.3.2 Live (wow build 25383)
+SimulationCraft 730-03 for World of Warcraft 7.3.2 Live (wow build 25383, git build 788fb7f)
 
 Name             : Dual Wield (Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
@@ -2596,10 +2596,10 @@ Effects          :
                    Affected Spells (Label): Infernal Contract (225140), Living Carapace (225033), Sands of Time (225124), Vampiric Aura (225130), Wailing Souls (242609), Unending Hunger (242536), Chilling Nova (251940), Bulwark of Flame (251946), Hammer-Forged (251952), Pool of Pure Void (250766), Wave of Flame (251948)
 #5 (id=191173)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Generic Modifier (0)
                    Base Value: -30 | Scaled Value: -30 | Misc Value 2: 281 (Label) | Target: Self (1)
-                   Affected Spells (Label): Fel-Crazed Rage (225777), Orb of Destruction (229700), Ceaseless Toxin (242497), Spear of Anguish (242605), Unending Hunger (242536), Dread Torrent (246464), Insidious Corruption (243941), Piercing Anguish (246751), Shadow Blades (253263), Shadow Blades (253265), Void Tendril (250834), Pool of Pure Void (250766), Shadow Blades (255818), Shadow Blades (255870), Shadow Strike (253324), Sorrow (253022), Torment the Weak (252907), Chaotic Darkness (252896), Shadowbind (252879), Isolated Strike (255609), Shadow Blades (257702)
+                   Affected Spells (Label): Fel-Crazed Rage (225777), Orb of Destruction (229700), Ceaseless Toxin (242497), Spear of Anguish (242605), Unending Hunger (242536), Dread Torrent (246464), Insidious Corruption (243941), Piercing Anguish (246751), Shadow Blades (253263), Shadow Blades (253265), Void Tendril (250834), Pool of Pure Void (250766), Shadow Blades (255818), Shadow Blades (255870), Shadow Strike (253324), Sorrow (253022), Torment the Weak (252907), Chaotic Darkness (252896), Shadowbind (252879), Isolated Strike (255609), Shadow Blades (257702), Shadow Blades (257702)
 #6 (id=260787)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Periodic Damage (22)
                    Base Value: -30 | Scaled Value: -30 | Misc Value: 22 | Misc Value 2: 281 (Label) | Target: Self (1)
-                   Affected Spells (Label): Fel-Crazed Rage (225777), Orb of Destruction (229700), Ceaseless Toxin (242497), Spear of Anguish (242605), Unending Hunger (242536), Dread Torrent (246464), Insidious Corruption (243941), Piercing Anguish (246751), Shadow Blades (253263), Shadow Blades (253265), Void Tendril (250834), Pool of Pure Void (250766), Shadow Blades (255818), Shadow Blades (255870), Shadow Strike (253324), Sorrow (253022), Torment the Weak (252907), Chaotic Darkness (252896), Shadowbind (252879), Isolated Strike (255609), Shadow Blades (257702)
+                   Affected Spells (Label): Fel-Crazed Rage (225777), Orb of Destruction (229700), Ceaseless Toxin (242497), Spear of Anguish (242605), Unending Hunger (242536), Dread Torrent (246464), Insidious Corruption (243941), Piercing Anguish (246751), Shadow Blades (253263), Shadow Blades (253265), Void Tendril (250834), Pool of Pure Void (250766), Shadow Blades (255818), Shadow Blades (255870), Shadow Strike (253324), Sorrow (253022), Torment the Weak (252907), Chaotic Darkness (252896), Shadowbind (252879), Isolated Strike (255609), Shadow Blades (257702), Shadow Blades (257702)
 #7 (id=260788)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #8 (id=260789)   : Apply Aura (6) | Dummy (4)

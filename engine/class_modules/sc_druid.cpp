@@ -368,6 +368,7 @@ public:
     buff_t* tigers_fury;
     buff_t* feral_tier17_4pc;
     buff_t* fury_of_ashamane;
+    buff_t* jungle_stalker;
 
     // Guardian
     // adaptive fur for each basic magic school
@@ -1590,25 +1591,11 @@ public:
 
   void trigger_bloody_gash(player_t* t, double dmg)
   {
-     //druid_t* d = (druid_t*)t;
-
-     // All ok, trigger the damage
-     /*spell->target = target;
-     spell->base_dd_min = spell->base_dd_max = state->result_amount * multiplier;
-     spell->execute();*/
      if ( p() -> sets -> has_set_bonus( DRUID_FERAL, T21, B2 ) && p() -> rng().roll( p() -> find_spell(251789) -> proc_chance() ) )
      {
         p()->active.bloody_gash->target = t;
-        p()->active.bloody_gash->base_dd_min = dmg;
+        p()->active.bloody_gash->base_dd_min = p()->active.bloody_gash->base_dd_max = dmg;
         p()->active.bloody_gash->execute();
-
-
-
-        if (p()->sim->debug || p()->sim->log)
-        {
-           p()->sim->out_log.printf("Bloody Gash triggered from %s", ab::name());
-        }
-
      }
   }
 
@@ -2575,7 +2562,8 @@ public:
        }
     }
 
-    if ( p-> specialization() == DRUID_FERAL &&  p -> talent.soul_of_the_forest -> ok() && ( data().affected_by( p -> talent.soul_of_the_forest -> effectN(2)) | data().affected_by( p -> talent.soul_of_the_forest -> effectN(3) )))
+    if ( p-> specialization() == DRUID_FERAL &&  p -> talent.soul_of_the_forest -> ok() &&
+      ( data().affected_by( p -> talent.soul_of_the_forest -> effectN(2)) | data().affected_by( p -> talent.soul_of_the_forest -> effectN(3) )))
     {
        base_td_multiplier *= 1.0 + p->talent.soul_of_the_forest->effectN(3).percent();
        base_dd_multiplier *= 1.0 + p->talent.soul_of_the_forest->effectN(2).percent();
@@ -3632,10 +3620,8 @@ struct rip_t : public cat_attack_t
      trigger_wildshapers_clutch(d->state);
 
      trigger_bloody_gash(d->target, d->state->result_total);
-     if ( p() -> sets ->has_set_bonus(DRUID_FERAL, T21, B4) )
-     {
-        p() -> buff.apex_predator -> trigger();
-     }
+    p() -> buff.apex_predator -> trigger();
+
   }
 
   void last_tick( dot_t* d ) override
@@ -3650,26 +3636,35 @@ struct rip_t : public cat_attack_t
 struct bloody_gash_t : public cat_attack_t
 {
    bloody_gash_t(druid_t* p) :
-      cat_attack_t("bloody_gash", p, p -> find_spell(251789) )
+      cat_attack_t("bloody_gash", p, p -> find_spell(252750) )
    {
       background = dual = proc = may_crit = true;
       may_miss = may_dodge = may_parry = false;
-      may_block = true;
-      direct_bleed = true;
-      
+      may_block = true;  
+   }
+
+   virtual void init() override
+   {
+     cat_attack_t::init();
+
+     snapshot_flags &= STATE_NO_MULTIPLIER;
+     snapshot_flags |= STATE_TGT_MUL_DA;
    }
 
    void execute() override
    {
-      cat_attack_t::execute();
-
-      //TODO(feral): Check if TWC procs from this
-      //trigger_wildshapers_clutch(cat_attack_t::get_state());
-      if ( p() -> sets -> has_set_bonus( DRUID_FERAL, T21, B4 ))
-      {
-         p() -> buff.apex_predator -> trigger();
-      }
+      cat_attack_t::execute(); 
+     
+      p() -> buff.apex_predator -> trigger();
    }
+
+   void impact(action_state_t* s) override
+   {
+     cat_attack_t::impact(s);
+
+     trigger_wildshapers_clutch(s);
+   }
+
 };
 
 // Savage Roar ==============================================================
@@ -5492,6 +5487,7 @@ struct incarnation_t : public druid_spell_t
 
     spec_buff -> trigger();
     p() -> buff.feral_instinct -> trigger();
+    p() -> buff.jungle_stalker -> trigger();
 
     if ( ! p() -> in_combat )
     {
@@ -6024,7 +6020,7 @@ struct prowl_t : public druid_spell_t
       return false;
 
     if ( p() -> in_combat && ! ( p() -> specialization() == DRUID_FERAL &&
-      p() -> buff.incarnation_cat -> check() ) )
+      p() -> buff.jungle_stalker -> check() ) )
     {
       return false;
     }
@@ -7323,6 +7319,8 @@ void druid_t::create_buffs()
 
   buff.incarnation_cat       = new incarnation_cat_buff_t( *this );
 
+  buff.jungle_stalker        = buff_creator_t( this, "jungle_stalker", find_spell( 252071 ) );
+
   buff.incarnation_bear      = buff_creator_t( this, "incarnation_guardian_of_ursoc", talent.incarnation_bear )
                                .add_invalidate( CACHE_ARMOR )
                                .cd( timespan_t::zero() );
@@ -7424,7 +7422,7 @@ void druid_t::create_buffs()
                                   resource_gain( RESOURCE_ENERGY, b -> check_value(), gain.ashamanes_energy ); } );
 
   buff.apex_predator        = buff_creator_t(this, "apex_predator", find_spell(252752))
-                               .chance( /*( parent -> sets -> has_set_bonus( DRUID_FERAL, T21, B4) ?*/ find_spell( 251790 ) -> proc_chance() /*: 0 )*/ );
+                               .chance(  sets -> has_set_bonus( DRUID_FERAL, T21, B4) ? find_spell( 251790 ) -> proc_chance() : 0 /*: 0 )*/ );
 
   buff.berserk               = new berserk_buff_t( *this );
 
@@ -7592,7 +7590,7 @@ std::string druid_t::default_potion() const
                               (true_level >= 80) ? "volcanic" :
                               "disabled";
 
-      std::string feral_pot = (true_level > 100) ? "old_war" : //TODO(feral): Check pp conditional ~1m dps/915 ilvl
+      std::string feral_pot = (true_level > 100) ? "potion_of_prolonged_power" : 
                               (true_level >= 90) ? "draenic_agility" :
                               (true_level >= 85) ? "virmens_bite" :
                               (true_level >= 80) ? "tolvir" :
@@ -7620,7 +7618,8 @@ std::string druid_t::default_potion() const
 
 std::string druid_t::default_food() const
 {
-   return (true_level >  100) ? "lavish_suramar_feast" :
+   return (true_level > 100 && specialization() == DRUID_FERAL) ? "lemon_herb_filet" :
+          (true_level >  100) ? "lavish_suramar_feast" :
           (true_level >  90) ?  "pickled_eel" :
           (true_level >= 90) ?  "sea_mist_rice_noodles" :
           (true_level >= 80) ?  "seafood_magnifique_feast" :
@@ -7769,8 +7768,10 @@ void druid_t::apl_feral()
 
    cooldowns->add_action("dash,if=!buff.cat_form.up");
    //cooldowns->add_action("rake,if=buff.prowl.up|buff.shadowmeld.up");
+   cooldowns->add_action("prowl,if=buff.incarnation.remains<0.5&buff.jungle_stalker.up");
    cooldowns->add_action("berserk,if=energy>=30&(cooldown.tigers_fury.remains>5|buff.tigers_fury.up)");
    cooldowns->add_action("tigers_fury,if=energy.deficit>=60");
+   cooldowns->add_action("berserking");
    cooldowns->add_action("elunes_guidance,if=combo_points=0&energy>=50");
    cooldowns->add_action("incarnation,if=energy>=30&(cooldown.tigers_fury.remains>15|buff.tigers_fury.up)");
    cooldowns->add_action("potion,name=prolonged_power,if=target.time_to_die<65|(time_to_die<180&(buff.berserk.up|buff.incarnation.up))");
@@ -7779,12 +7780,13 @@ void druid_t::apl_feral()
    cooldowns->add_action("use_items");
 
    st->add_action("cat_form,if=!buff.cat_form.up");
-   st->add_action("auto_attack");
    st->add_action("rake,if=buff.prowl.up|buff.shadowmeld.up");
+   st->add_action("auto_attack");
    st->add_action("call_action_list,name=cooldowns");
-   st->add_action("regrowth,if=combo_points=5&talent.bloodtalons.enabled&buff.bloodtalons.down&(!buff.incarnation.up|dot.rip.remains<8|dot.rake.remains<5)");
-   st->add_action("regrowth,if=talent.bloodtalons.enabled&buff.bloodtalons.down&buff.apex_predator.up");
-   st->add_action("ferocious_bite,max_energy=1,if=buff.apex_predator.up");
+   st->add_action("ferocious_bite,target_if=dot.rip.ticking&dot.rip.remains<3&target.time_to_die>10&(target.health.pct<25|talent.sabertooth.enabled)");
+   st->add_action("regrowth,if=combo_points=5&buff.predatory_swiftness.up&talent.bloodtalons.enabled&buff.bloodtalons.down&(!buff.incarnation.up|dot.rip.remains<8)");
+   st->add_action("regrowth,if=combo_points>3&talent.bloodtalons.enabled&buff.predatory_swiftness.up&buff.apex_predator.up&buff.incarnation.down");
+   st->add_action("ferocious_bite,if=buff.apex_predator.up");
    st->add_action("run_action_list,name=st_finishers,if=combo_points>4");
    st->add_action("run_action_list,name=st_generators");
 
@@ -7802,19 +7804,21 @@ void druid_t::apl_feral()
    generator->add_action("regrowth,if=equipped.ailuro_pouncers&talent.bloodtalons.enabled&(buff.predatory_swiftness.stack>2|(buff.predatory_swiftness.stack>1&dot.rake.remains<3))&buff.bloodtalons.down");
    generator->add_action("brutal_slash,if=spell_targets.brutal_slash>desired_targets");
    generator->add_action("pool_resource,for_next=1");
-   generator->add_action("thrash_cat,if=(!ticking|remains<duration*0.3)&(spell_targets.thrash_cat>2)");
+   generator->add_action("thrash_cat,if=refreshable&(spell_targets.thrash_cat>2)");
+   generator->add_action("pool_resource,for_next=1");
+   generator->add_action("thrash_cat,if=spell_targets.thrash_cat>3&equipped.luffa_wrappings&talent.brutal_slash.enabled");
    generator->add_action("pool_resource,for_next=1");
    generator->add_action("rake,target_if=!ticking|(!talent.bloodtalons.enabled&remains<duration*0.3)&target.time_to_die>4");
    generator->add_action("pool_resource,for_next=1");
    generator->add_action("rake,target_if=talent.bloodtalons.enabled&buff.bloodtalons.up&((remains<=7)&persistent_multiplier>dot.rake.pmultiplier*0.85)&target.time_to_die>4");
    generator->add_action("brutal_slash,if=(buff.tigers_fury.up&(raid_event.adds.in>(1+max_charges-charges_fractional)*recharge_time))");
-   generator->add_action("moonfire_cat,target_if=remains<=duration*0.3");
+   generator->add_action("moonfire_cat,target_if=refreshable");
    generator->add_action("pool_resource,for_next=1");
-   generator->add_action("thrash_cat,if=(!ticking|remains<duration*0.3)&(variable.use_thrash=2|spell_targets.thrash_cat>1)");
-   generator->add_action("thrash_cat,if=(!ticking|remains<duration*0.3)&variable.use_thrash=1&buff.clearcasting.react");
+   generator->add_action("thrash_cat,if=refreshable&(variable.use_thrash=2|spell_targets.thrash_cat>1)");
+   generator->add_action("thrash_cat,if=refreshable&variable.use_thrash=1&buff.clearcasting.react");
    generator->add_action("pool_resource,for_next=1");
    generator->add_action("swipe_cat,if=spell_targets.swipe_cat>1");
-   generator->add_action("shred");
+   generator->add_action("shred,if=dot.rake.remains>(action.shred.cost+action.rake.cost-energy)%energy.regen|buff.clearcasting.react");
 
  //  action_priority_list_t* def = get_action_priority_list("default");
  //  action_priority_list_t* opener = get_action_priority_list("opener");

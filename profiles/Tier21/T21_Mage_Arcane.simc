@@ -47,8 +47,8 @@ actions+=/call_action_list,name=burn,if=(buff.arcane_charge.stack=buff.arcane_ch
 actions+=/call_action_list,name=conserve
 
 actions.build=arcane_orb
-# If we cap out on Arcane Missiles, avoid munching another proc.
-actions.build+=/arcane_missiles,if=variable.arcane_missiles_procs=buff.arcane_missiles.max_stack&active_enemies<3
+# Use Arcane Missiles at max stacks to avoid munching a proc. Alternatively, we can cast at 3 stacks of Arcane Charge to conserve mana.
+actions.build+=/arcane_missiles,if=active_enemies<3&(variable.arcane_missiles_procs=buff.arcane_missiles.max_stack|(variable.arcane_missiles_procs&mana.pct<=50&buff.arcane_charge.stack=3))
 actions.build+=/arcane_explosion,if=active_enemies>1
 actions.build+=/arcane_blast
 
@@ -130,30 +130,30 @@ actions.variables+=/variable,name=time_until_burn,op=max,value=cooldown.charged_
 # Boss is gonna die soon. All the above conditions don't really matter. We're just gonna burn our mana until combat ends.
 actions.variables+=/variable,name=time_until_burn,op=reset,if=target.time_to_die<variable.average_burn_length
 
-head=runebound_collar,id=152138,ilevel=960
-neck=vulcanarcore_pendant,id=151965,ilevel=960,enchant=mark_of_the_hidden_satyr
-shoulders=runebound_mantle,id=152141,ilevel=960
-back=drape_of_the_arcane_tempest,id=147145,ilevel=930,enchant=binding_of_intellect
-chest=runebound_tunic,id=152140,ilevel=960
-wrists=blooddrenched_bindings,id=151954,ilevel=960
-hands=gloves_of_the_arcane_tempest,id=147146,ilevel=930
-waist=cord_of_blossoming_petals,id=151952,ilevel=960
-legs=runebound_leggings,id=152139,ilevel=960
-feet=lady_dacidions_silk_slippers,id=151945,ilevel=960
-finger1=soul_of_the_archmage,id=151642,ilevel=1000,gems=200vers,enchant=binding_of_versatility
-finger2=shard_of_the_exodar,id=132410,ilevel=1000,gems=200vers,enchant=binding_of_versatility
-trinket1=tarnished_sentinel_medallion,id=147017,ilevel=930
-trinket2=amanthuls_vision,id=154172,ilevel=1000
-main_hand=aluneth,id=127857,gem_id=155846/155850/155846,relic_ilevel=970/970/970
+head=runebound_collar,id=152138,bonus_id=3612/1502
+neck=chain_of_the_unmaker,id=152283,bonus_id=3612/1502,enchant=mark_of_the_hidden_satyr
+shoulders=runebound_mantle,id=152141,bonus_id=3612/1502
+back=drape_of_the_arcane_tempest,id=147145,bonus_id=3563/1512,enchant=binding_of_intellect
+chest=runebound_tunic,id=152140,bonus_id=3612/1502
+wrists=blooddrenched_bindings,id=151954,bonus_id=3612/1502
+hands=gloves_of_the_arcane_tempest,id=147146,bonus_id=3563/1512
+waist=cord_of_blossoming_petals,id=151952,bonus_id=3612/1502
+legs=runebound_leggings,id=152139,bonus_id=3612/1502
+feet=lady_dacidions_silk_slippers,id=151945,bonus_id=3612/1502
+finger1=soul_of_the_archmage,id=151642,bonus_id=3630,gem_id=151585,enchant=binding_of_versatility
+finger2=shard_of_the_exodar,id=132410,bonus_id=3630,gem_id=151585,enchant=binding_of_versatility
+trinket1=tarnished_sentinel_medallion,id=147017,bonus_id=3563/1512
+trinket2=amanthuls_vision,id=154172,bonus_id=4213
+main_hand=aluneth,id=127857,gem_id=155846/155850/155846,relic_id=3612:1512/3612:1512/3612:1512
 
 # Gear Summary
-# gear_ilvl=964.60
-# gear_stamina=59433
+# gear_ilvl=965.27
+# gear_stamina=59745
 # gear_intellect=61267
-# gear_crit_rating=11737
-# gear_haste_rating=10435
+# gear_crit_rating=12755
+# gear_haste_rating=11973
 # gear_mastery_rating=8207
-# gear_versatility_rating=8977
+# gear_versatility_rating=6685
 # gear_armor=2364
 # set_bonus=tier20_2pc=1
 # set_bonus=tier21_2pc=1

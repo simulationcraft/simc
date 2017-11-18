@@ -79,21 +79,21 @@ actions+=/immolate,cycle_targets=1,if=(active_enemies<5|!talent.fire_and_brimsto
 actions+=/incinerate
 actions+=/life_tap
 
-head=grim_inquisitors_death_mask,id=152174,ilevel=960
-neck=chain_of_the_unmaker,id=152283,ilevel=970,enchant=mark_of_the_trained_soldier
-shoulders=lessons_of_spacetime,id=144369,ilevel=1000
-back=grim_inquisitors_cloak,id=152172,ilevel=960,enchant_id=5436
-chest=grim_inquisitors_robes,id=152176,ilevel=960
-wrists=blooddrenched_bindings,id=151954,ilevel=960
-hands=grim_inquisitors_gloves,id=152173,ilevel=960
-waist=feretory_of_souls,id=132456,ilevel=1000
-legs=grim_inquisitors_leggings,id=152175,ilevel=960
-feet=lady_dacidions_silk_slippers,id=151945,ilevel=960
-finger1=zealous_tormentors_ring,id=152284,ilevel=960,enchant=binding_of_haste
-finger2=band_of_the_sargerite_smith,id=152064,ilevel=960,enchant=binding_of_haste
-trinket1=acrid_catalyst_injector,id=151955,ilevel=960
-trinket2=amanthuls_vision,id=154172,ilevel=1000
-main_hand=scepter_of_sargeras,id=128941,gem_id=152031/155849/152031,relic_id=1502/1512/1502
+head=grim_inquisitors_death_mask,id=152174,bonus_id=3612/1502
+neck=chain_of_the_unmaker,id=152283,bonus_id=3612/1502,enchant=mark_of_the_trained_soldier
+shoulders=lessons_of_spacetime,id=144369,bonus_id=3630
+back=grim_inquisitors_cloak,id=152172,bonus_id=3612/1502,enchant=binding_of_intellect
+chest=grim_inquisitors_robes,id=152176,bonus_id=3612/1502
+wrists=blooddrenched_bindings,id=151954,bonus_id=3612/1502
+hands=grim_inquisitors_gloves,id=152173,bonus_id=3612/1502
+waist=feretory_of_souls,id=132456,bonus_id=3630
+legs=grim_inquisitors_leggings,id=152175,bonus_id=3612/1502
+feet=lady_dacidions_silk_slippers,id=151945,bonus_id=3612/1502
+finger1=zealous_tormentors_ring,id=152284,bonus_id=3612/1502,enchant=binding_of_haste
+finger2=band_of_the_sargerite_smith,id=152064,bonus_id=3612/1502,enchant=binding_of_haste
+trinket1=acrid_catalyst_injector,id=151955,bonus_id=3612/1502
+trinket2=amanthuls_vision,id=154172,bonus_id=4213
+main_hand=scepter_of_sargeras,id=128941,gem_id=152031/155849/152031,relic_id=3612:1502/3612:1512/3612:1502
 
 # Gear Summary
 # gear_ilvl=970.87

@@ -80,6 +80,7 @@ actions.core+=/crash_lightning,if=active_enemies>=8|(active_enemies>=6&talent.cr
 actions.core+=/windstrike
 actions.core+=/stormstrike,if=buff.stormbringer.up&variable.furyCheck25
 actions.core+=/crash_lightning,if=active_enemies>=4|(active_enemies>=2&talent.crashing_storm.enabled)
+actions.core+=/rockbiter,if=buff.force_of_the_mountain.up
 actions.core+=/lightning_bolt,if=talent.overcharge.enabled&variable.furyCheck45&maelstrom>=40
 actions.core+=/stormstrike,if=(!talent.overcharge.enabled&variable.furyCheck45)|(talent.overcharge.enabled&variable.furyCheck80)
 actions.core+=/frostbrand,if=variable.akainuAS
@@ -100,31 +101,31 @@ actions.filler+=/flametongue
 
 actions.opener=rockbiter,if=maelstrom<15&time<gcd
 
-head=helm_of_the_awakened_soul,id=152423,bonus_id=3610/1472,bonus_id=3612/1502
-neck=riveted_choker_of_delirium,id=151966,bonus_id=3610/1472,bonus_id=3612/1502,enchant=mark_of_the_hidden_satyr
-shoulders=pauldrons_of_venerated_spirits,id=152171,bonus_id=3610/1472,bonus_id=3612/1502
-back=drape_of_venerated_spirits,id=152167,bonus_id=3610/1472,bonus_id=3612/1502,enchant=200agi
-chest=robes_of_venerated_spirits,id=152166,bonus_id=3610/1472,bonus_id=3612/1502
-wrists=realitysplitting_wristguards,id=152008,bonus_id=3610/1472,bonus_id=3612/1502
-hands=smoldering_heart,id=151819,bonus_id=3570,bonus_id=3630
-waist=worldravager_waistguard,id=152683,bonus_id=3610/1472,bonus_id=3612/1502
-legs=leggings_of_venerated_spirits,id=152170,bonus_id=3610/1472,bonus_id=3612/1502
-feet=greatboots_of_the_searing_tempest,id=152684,bonus_id=3610/1472,bonus_id=3612/1502
-finger1=eye_of_the_twisting_nether,id=137050,bonus_id=3570,bonus_id=3630,gem_id=151583,enchant=200haste
-finger2=loop_of_the_lifebinder,id=152688,bonus_id=3610/1472,bonus_id=3612/1502,enchant=200haste
+head=helm_of_the_awakened_soul,id=152423,bonus_id=3612/1502
+neck=riveted_choker_of_delirium,id=151966,bonus_id=3612/1502,enchant=mark_of_the_hidden_satyr
+shoulders=pauldrons_of_venerated_spirits,id=152171,bonus_id=3612/1502
+back=drape_of_venerated_spirits,id=152167,bonus_id=3612/1502,enchant=binding_of_agility
+chest=robes_of_venerated_spirits,id=152166,bonus_id=3612/1502
+wrists=realitysplitting_wristguards,id=152008,bonus_id=3612/1502
+hands=smoldering_heart,id=151819,bonus_id=3630
+waist=worldravager_waistguard,id=152683,bonus_id=3612/1502
+legs=leggings_of_venerated_spirits,id=152170,bonus_id=3612/1502
+feet=greatboots_of_the_searing_tempest,id=152684,bonus_id=3612/1502
+finger1=eye_of_the_twisting_nether,id=137050,bonus_id=3630,gem_id=151583,enchant=binding_of_haste
+finger2=loop_of_the_lifebinder,id=152688,bonus_id=3612/1502,enchant=binding_of_haste
 trinket1=golganneths_vitality,id=154174,bonus_id=4213
-trinket2=seeping_scourgewing,id=151964,bonus_id=3612/1502
-main_hand=doomhammer,id=128819,gem_id=155849/152049/152061,relic_id=3612:1512/3612:1512/3612:1512
+trinket2=cradle_of_anguish,id=147010,bonus_id=3563/1512
+main_hand=doomhammer,id=128819,gem_id=155849/155855/155853,relic_id=3612:1512/3612:1512/3612:1512
 off_hand=fury_of_the_stonemother,id=128873
 
 # Gear Summary
-# gear_ilvl=973.00
+# gear_ilvl=971.13
 # gear_agility=38816
 # gear_stamina=61124
 # gear_crit_rating=3527
-# gear_haste_rating=14403
+# gear_haste_rating=15723
 # gear_mastery_rating=11815
-# gear_versatility_rating=3259
+# gear_versatility_rating=1782
 # gear_armor=3609
 # set_bonus=tier21_2pc=1
 # set_bonus=tier21_4pc=1

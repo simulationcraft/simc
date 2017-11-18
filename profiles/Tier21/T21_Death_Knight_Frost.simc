@@ -141,16 +141,16 @@ feet=doomwalker_warboots,id=152009,bonus_id=3612/1502
 finger1=zealous_tormentors_ring,id=152284,bonus_id=3612/1502,enchant=binding_of_haste
 finger2=seal_of_the_portalmaster,id=152063,bonus_id=3612/1502,enchant=binding_of_haste
 trinket1=amanthuls_vision,id=154172,bonus_id=4213
-trinket2=shadowsinged_fang,id=151968,bonus_id=3612/1502
+trinket2=cradle_of_anguish,id=147010,bonus_id=3563/1512
 main_hand=blades_of_the_fallen_prince,id=128292,gem_id=155850/155852/155850,relic_id=3612:1512/3612:1512/3612:1512,enchant=rune_of_razorice
 off_hand=blades_of_the_fallen_prince,id=128293,enchant=rune_of_the_fallen_crusader
 
 # Gear Summary
-# gear_ilvl=973.63
+# gear_ilvl=971.75
 # gear_strength=34970
 # gear_stamina=62079
 # gear_crit_rating=10984
-# gear_haste_rating=12399
+# gear_haste_rating=13719
 # gear_mastery_rating=8314
 # gear_versatility_rating=4726
 # gear_armor=5331

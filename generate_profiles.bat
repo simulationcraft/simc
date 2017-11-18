@@ -9,13 +9,13 @@ cd "profiles"
 :: PreRaids doesn't match the typical pattern
 cd "PreRaids"
 echo Running PR_Generate.simc in %cd%
-%~dp0simc.exe PR_Generate.simc
+"%~dp0simc.exe" PR_Generate.simc
 cd ..\
 :: TierXX profiles generation
 for %%g in (19, 20, 21) do (
   cd Tier%%g
   echo Running T%%g_Generate.simc in %cd%
-  %~dp0simc.exe T%%g_Generate.simc
+  "%~dp0simc.exe" T%%g_Generate.simc
   cd ..\
 )
 goto pause

@@ -76,22 +76,22 @@ actions+=/demonic_empowerment,if=artifact.thalkiels_ascendance.rank&talent.power
 actions+=/shadow_bolt
 actions+=/life_tap
 
-head=wakeners_loyalty,id=144385,ilevel=1000
-neck=riveted_choker_of_delirium,id=151966,ilevel=960,enchant_id=5437
-shoulders=recurrent_ritual,id=132393,ilevel=1000
-back=grim_inquisitors_cloak,id=152172,ilevel=960,enchant_id=5436
-chest=grim_inquisitors_robes,id=152176,ilevel=960
-wrists=blooddrenched_bindings,id=151954,ilevel=960
-hands=grim_inquisitors_gloves,id=152173,ilevel=960
-waist=cord_of_surging_hysteria,id=151942,ilevel=960
-legs=grim_inquisitors_leggings,id=152175,ilevel=960
-feet=lady_dacidions_silk_slippers,id=151945,ilevel=960
-finger1=zealous_tormentors_ring,id=152284,ilevel=960,enchant_id=5428
-finger2=loop_of_the_lifebinder,id=152688,ilevel=960,enchant_id=5428
-trinket1=acrid_catalyst_injector,id=151955,ilevel=960
-trinket2=amanthuls_vision,id=154172,ilevel=1000
+head=wakeners_loyalty,id=144385,bonus_id=3630
+neck=riveted_choker_of_delirium,id=151966,bonus_id=3612/1502,enchant=mark_of_the_claw
+shoulders=recurrent_ritual,id=132393,bonus_id=3630
+back=grim_inquisitors_cloak,id=152172,bonus_id=3612/1502,enchant=binding_of_intellect
+chest=grim_inquisitors_robes,id=152176,bonus_id=3612/1502
+wrists=blooddrenched_bindings,id=151954,bonus_id=3612/1502
+hands=grim_inquisitors_gloves,id=152173,bonus_id=3612/1502
+waist=cord_of_surging_hysteria,id=151942,bonus_id=3612/1502
+legs=grim_inquisitors_leggings,id=152175,bonus_id=3612/1502
+feet=lady_dacidions_silk_slippers,id=151945,bonus_id=3612/1502
+finger1=zealous_tormentors_ring,id=152284,bonus_id=3612/1502,enchant=binding_of_haste
+finger2=loop_of_the_lifebinder,id=152688,bonus_id=3612/1502,enchant=binding_of_haste
+trinket1=acrid_catalyst_injector,id=151955,bonus_id=3612/1502
+trinket2=amanthuls_vision,id=154172,bonus_id=4213
 main_hand=spine_of_thalkiel,id=137246,gem_id=0/0/0/0,relic_id=0/0
-off_hand=skull_of_the_manari,id=128943,bonus_id=748,gem_id=152056/155849/152031,relic_id=1502/1512/1502
+off_hand=skull_of_the_manari,id=128943,bonus_id=748,gem_id=152056/155849/152031,relic_id=3612:1502/3612:1512/3612:1502
 
 # Gear Summary
 # gear_ilvl=971.63

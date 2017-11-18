@@ -124,17 +124,17 @@ feet=lifebearing_footpads,id=151981,bonus_id=3612/1502
 finger1=anger_of_the_halfgiants,id=137038,bonus_id=3630,gems=200crit,enchant=binding_of_critical_strike
 finger2=band_of_the_sargerite_smith,id=152064,bonus_id=3612/1502,enchant=binding_of_critical_strike
 trinket1=seeping_scourgewing,id=151964,bonus_id=3612/1502
-trinket2=golganneths_vitality,id=154174,ilevel=1000
-main_hand=twinblades_of_the_deceiver,id=127829,bonus_id=719,gem_id=152033/155852/152033/0,relic_id=3612:1512/3612:1512/3612:1512
+trinket2=golganneths_vitality,id=154174,bonus_id=4213
+main_hand=twinblades_of_the_deceiver,id=127829,bonus_id=719,gem_id=152033/155852/152033/0,relic_id=3612:1502/3612:1512/3612:1502
 off_hand=twinblades_of_the_deceiver,id=127830,gem_id=0/0/0/0,relic_id=0/0
 
 # Gear Summary
-# gear_ilvl=973.00
-# gear_agility=38873
-# gear_stamina=61522
-# gear_crit_rating=17249
+# gear_ilvl=972.25
+# gear_agility=38619
+# gear_stamina=61140
+# gear_crit_rating=17225
 # gear_haste_rating=5738
-# gear_mastery_rating=7226
+# gear_mastery_rating=7204
 # gear_versatility_rating=3663
 # gear_armor=2975
 # set_bonus=tier21_2pc=1

@@ -1,4 +1,4 @@
-SimulationCraft 730-03 for World of Warcraft 7.3.2 Live (wow build 25383)
+SimulationCraft 730-03 for World of Warcraft 7.3.2 Live (wow build 25383, git build 788fb7f)
 
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
 Class            : Discipline Shadow Priest
@@ -189,11 +189,16 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=243)      : Direct Heal (10)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.50000 | Radius: 0 - 40 yards | Target: Friend (21) -> AOE friendly (31)
+                   Hotfixed: Chain Multiplier (0 -> 1), Target 1 (132 -> 21)
+#2 (id=105332)   : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.50000 | Radius: 0 - 40 yards | Target: Unknown(132) -> AOE friendly (31)
-#2 (id=105332)   : Trigger Spell (64): Prayer of Healing
-                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 98367 | Target: Unknown(25)
+                   Hotfixed: Type (64 -> 10), SP Coefficient (0 -> 2.5), Trigger Spell (98367 -> 0), Chain Multiplier (0 -> 1), Target 1 (25 -> 132), Target 2 (0 -> 31)
 #3 (id=288930)   : Dummy (3)
                    Base Value: 5 | Scaled Value: 5
+#4 (id=485632)   : Trigger Spell (64): Prayer of Healing
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 98367 | Target: Unknown(25)
+                   Hotfixed: NEW EFFECT
 Description      : A powerful prayer that heals the target and the ${$s3-1} nearest allies within $A1 yards for $s1.
 
 Name             : Mind Control (id=605) [Spell Family (6)] 
@@ -2537,18 +2542,23 @@ Effects          :
                    Affected Spells (Label): Nightmare Essence (214350), Withering Consumption (215884), Plague Swarm (221812), Devilsaur Shock Leash (224078), Deadly Grace (188091), Rancid Maw (215405), Thunder Ritual (230224), Pepper Breath (201573), Pepper Breath (225623), Pepper Breath (225624), Recursive Strikes (225739), Fel-Crazed Rage (225777), Cruel Garrote (230011), Fel Barbs (238523), Infernal Cinders (242218), Ceaseless Toxin (242497), Unending Hunger (242536), Spectral Bolt (242571), Fevered Touch (242650), Fel Lash (188505), Wind Bolt (227870), Spectral Blast (246442), Felshield (253278), Void Slash (251034), Torment the Weak (252907), Chaotic Darkness (252896), Secure in the Light (253073), Infusion of Light (253098), Shadow Strike (253324), Isolated Strike (255609), Shadowbind (252879), Norgannon's Fireball (257241), Norgannon's Frostbolt (257242), Norgannon's Arcane Missile (257243), Norgannon's Divine Smite (257532), Norgannon's Wrath (257533), Norgannon's Shadow Bolt (257534), Worldforger's Flame (257244)
 #7 (id=260958)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -55 | Scaled Value: -55 | Misc Value: 3 | Misc Value 2: 231 (Label) | Target: Self (1)
-                   Affected Spells (Label): Taint of the Sea (215672), Recursive Strikes (225736), Insidious Corruption (243941), Refreshing Agony (253284)
-#8 (id=260959)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Generic Modifier (0)
+                   Affected Spells (Label): Taint of the Sea (215672), Recursive Strikes (225736), Insidious Corruption (243941), Refreshing Agony (253284), Shadow Blades (257702)
+#8 (id=260959)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 2 (12)
+                   Base Value: -55 | Scaled Value: -55 | Misc Value: 12 | Misc Value 2: 358 (Label) | Target: Self (1)
+                   Affected Spells (Label): 
+                   Hotfixed: Base Value (-65 -> -55), Misc Value (0 -> 12), Misc Value 2 (230 -> 358), Chain Multiplier (0 -> 1)
+#9 (id=260960)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Generic Modifier (0)
                    Base Value: -65 | Scaled Value: -65 | Misc Value 2: 230 (Label) | Target: Self (1)
                    Affected Spells (Label): Nightfall (213786), Fel Meteor (214052), Orb of Destruction (229700), Solar Collapse (229737), Nether Meteor (225764), Kil'jaeden's Burning Wish (235999), Crystalline Shockwave (225716), Arcane Swipe (225721), Colossal Slam (232044), Dread Torrent (246464), Piercing Anguish (246751), Umbral Glaive Storm (242556), Shattering Umbral Glaives (242557), Void Tendril (250834), Legion Bombardment (253248), Shadow Blades (253265), Gorshalach's Legacy (253329), Sorrow (253022), Prototype Personnel Decimator (255629), Echo of Gorshalach (255672), Gorshalach's Legacy (255673), Legion Bombardment (255713), Legion Bombardment (255724), Fire Mines (253321), Ravaging Storm (257286), Golganneth's Thunderous Wrath (257430), Legion Bombardment (257376)
-#9 (id=260960)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
+                   Hotfixed: Misc Value (3 -> 0), Misc Value 2 (232 -> 230), Chain Multiplier (0 -> 1)
+#10 (id=260961)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -65 | Scaled Value: -65 | Misc Value: 3 | Misc Value 2: 232 (Label) | Target: Self (1)
-                   Affected Spells (Label): Dark Blast (215444), Mechanical Bomb Squirrel (216085), Tormenting Cyclone (221845), Volatile Ichor (222187), Poisoned Dreams (222705), Flame Wreath (230257), Volatile Energy (230236), Carrion Swarm (225131), Terror From Below (242524), Spear of Anguish (242605), Shadow Wave (215089), Shadow Blades (253263), Pool of Pure Void (250766), Shadow Blades (255818), Shadow Blades (255870), Shadow Blades (257702)
-#10 (id=260961)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 2 (12)
+                   Affected Spells (Label): Dark Blast (215444), Mechanical Bomb Squirrel (216085), Tormenting Cyclone (221845), Volatile Ichor (222187), Poisoned Dreams (222705), Flame Wreath (230257), Volatile Energy (230236), Carrion Swarm (225131), Terror From Below (242524), Spear of Anguish (242605), Shadow Wave (215089), Shadow Blades (253263), Pool of Pure Void (250766), Shadow Blades (255818), Shadow Blades (255870)
+                   Hotfixed: Misc Value (12 -> 3), Misc Value 2 (243 -> 232), Chain Multiplier (0 -> 1)
+#11 (id=260962)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 2 (12)
                    Base Value: -65 | Scaled Value: -65 | Misc Value: 12 | Misc Value 2: 243 (Label) | Target: Self (1)
                    Affected Spells (Label): Flame Gale (230213)
-#11 (id=260962)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+                   Hotfixed: Sub Type (4 -> 218), Base Value (0 -> -65), Misc Value (0 -> 12), Misc Value 2 (0 -> 243), Chain Multiplier (0 -> 1)
 #12 (id=260963)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #13 (id=260964)   : Apply Aura (6) | Dummy (4)
@@ -2567,6 +2577,9 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #20 (id=353146)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+#21 (id=484060)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+                   Hotfixed: NEW EFFECT
 Description      : Discipline Priest core passive
 
 Name             : Shadow Priest (id=137033) [Spell Family (6), Passive, Hidden] 

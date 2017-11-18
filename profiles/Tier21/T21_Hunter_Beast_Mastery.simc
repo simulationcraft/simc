@@ -73,7 +73,7 @@ feet=greatboots_of_the_searing_tempest,id=152684,bonus_id=3612/1502
 finger1=sullied_seal_of_the_pantheon,id=151972,bonus_id=3612/1502,enchant=binding_of_mastery
 finger2=band_of_the_sargerite_smith,id=152064,bonus_id=3612/1502,enchant=binding_of_mastery
 trinket1=convergence_of_fates,id=140806,bonus_id=3518
-trinket2=amanthuls_vision,id=154172,ilevel=1000
+trinket2=amanthuls_vision,id=154172,bonus_id=4213
 main_hand=titanstrike,id=128861,bonus_id=726,gem_id=155853/152025/152293,relic_id=3612:1512/3612:1502/3612:1502
 
 # Gear Summary

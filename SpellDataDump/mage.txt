@@ -1,4 +1,4 @@
-SimulationCraft 730-03 for World of Warcraft 7.3.2 Live (wow build 25383)
+SimulationCraft 730-03 for World of Warcraft 7.3.2 Live (wow build 25383, git build 788fb7f)
 
 Name             : Invisibility (id=66) [Spell Family (3)] 
 Class            : Arcane Fire Frost Mage
@@ -506,7 +506,7 @@ Tooltip          : Haste increased by $w1% and immune to pushback.
 Name             : Ignite (id=12654) [Spell Family (3)] 
 Class            : Mage
 School           : Fire
-Spell Level      : 99
+Spell Level      : 78
 Range            : 50000 yards
 Duration         : 9 seconds
 Affecting spells : Everburning Consumption (194314 effect#1), Norgannon's Foresight (236380 effect#1)

@@ -1566,6 +1566,7 @@ class SpellDataGenerator(DataGenerator):
           ( 213666, 1 ),       # Echoing Stars artifact spell
           ( 69369,  2 ),       # Predatory Swiftness buff
           ( 227034, 3 ),       # Nature's Guardian heal
+          ( 252750, 2 ),       # Feral tier21_2pc
         ),
         # Demon Hunter:
         (

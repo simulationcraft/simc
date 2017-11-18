@@ -108,15 +108,15 @@ finger1=sullied_seal_of_the_pantheon,id=151972,bonus_id=3612/1502,enchant=bindin
 finger2=ayalas_stone_heart,id=137052,bonus_id=3630,gem_id=130222,enchant=binding_of_mastery
 trinket1=gorshalachs_legacy,id=152093,bonus_id=3612/1502
 trinket2=amanthuls_vision,id=154172,bonus_id=4213
-main_hand=stromkar_the_warbreaker,id=128910,gem_id=152293/152092/152054,relic_id=3612:1512/3612:1502/3612:1512
+main_hand=stromkar_the_warbreaker,id=128910,gem_id=152293/152092/152054,relic_id=3612:1502/3612:1502/3612:1502
 
 # Gear Summary
-# gear_ilvl=971.73
-# gear_strength=34208
-# gear_stamina=62380
-# gear_crit_rating=7997
+# gear_ilvl=971.33
+# gear_strength=33920
+# gear_stamina=61948
+# gear_crit_rating=7970
 # gear_haste_rating=10561
-# gear_mastery_rating=15488
+# gear_mastery_rating=15462
 # gear_versatility_rating=5808
 # gear_armor=5265
 # set_bonus=tier21_2pc=1
