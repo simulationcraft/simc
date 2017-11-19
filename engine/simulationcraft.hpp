@@ -846,7 +846,7 @@ public:
   int current_stack;
   timespan_t buff_duration;
   double default_chance;
-  std::vector<timespan_t> stack_occurrence, stack_react_time;
+  std::vector<timespan_t> stack_react_time;
   std::vector<event_t*> stack_react_ready_triggers;
 
   buff_refresh_behavior_e refresh_behavior;

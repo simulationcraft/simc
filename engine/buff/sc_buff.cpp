@@ -428,7 +428,6 @@ buff_t* buff_t::set_max_stack( int max_stack )
     sim -> errorf( "buff %s: initialized with max_stack > 999. Setting max_stack to 999.\n", name_str.c_str() );
   }
 
-  stack_occurrence.resize( _max_stack + 1 );
   stack_react_time.resize( _max_stack + 1 );
   stack_react_ready_triggers.resize( _max_stack + 1 );
 
@@ -771,10 +770,6 @@ bool buff_t::may_react( int stack )
   if ( ! reactable           ) return false;
 
   if ( stack > _max_stack ) return false;
-
-  timespan_t occur = stack_occurrence[ stack ];
-
-  if ( occur <= timespan_t::zero() ) return true;
 
   return sim -> current_time() > stack_react_time[ stack ];
 }
@@ -1308,7 +1303,6 @@ void buff_t::bump( int stacks, double value )
       timespan_t react = sim -> current_time() + total_reaction_time;
       for ( int i = before_stack + 1; i <= current_stack; i++ )
       {
-        stack_occurrence[ i ] = sim -> current_time();
         stack_react_time[ i ] = react;
         if ( player && player -> ready_type == READY_TRIGGER )
         {
@@ -1491,7 +1485,6 @@ void buff_t::expire( timespan_t delay )
 void buff_t::predict()
 {
   // Guarantee that may_react() will return true if the buff is present.
-  fill( &stack_occurrence[ 0 ], &stack_occurrence[ current_stack + 1 ], timespan_t::min() );
   fill( &stack_react_time[ 0 ], &stack_react_time[ current_stack + 1 ], timespan_t::min() );
 }
 
