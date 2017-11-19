@@ -118,9 +118,9 @@ main_hand=talonclaw,id=128808,bonus_id=728,gem_id=152060/155855/155847,relic_id=
 # gear_agility=39124
 # gear_stamina=61897
 # gear_crit_rating=11936
-# gear_haste_rating=12017
+# gear_haste_rating=10540
 # gear_mastery_rating=4264
-# gear_versatility_rating=5307
+# gear_versatility_rating=6784
 # gear_armor=3594
 # set_bonus=tier21_2pc=1
 # set_bonus=tier21_4pc=1

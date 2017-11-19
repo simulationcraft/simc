@@ -46,8 +46,8 @@ actions+=/call_action_list,name=burn,if=(buff.arcane_charge.stack=buff.arcane_ch
 actions+=/call_action_list,name=conserve
 
 actions.build=arcane_orb
-# Use Arcane Missiles at max stacks to avoid munching a proc. Alternatively, we can cast at 3 stacks of Arcane Charge to conserve mana.
-actions.build+=/arcane_missiles,if=active_enemies<3&(variable.arcane_missiles_procs=buff.arcane_missiles.max_stack|(variable.arcane_missiles_procs&mana.pct<=50&buff.arcane_charge.stack=3))
+# If we cap out on Arcane Missiles, avoid munching another proc.
+actions.build+=/arcane_missiles,if=variable.arcane_missiles_procs=buff.arcane_missiles.max_stack&active_enemies<3
 actions.build+=/arcane_explosion,if=active_enemies>1
 actions.build+=/arcane_blast
 
