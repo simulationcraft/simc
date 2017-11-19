@@ -778,12 +778,12 @@ bool buff_t::may_react( int stack )
 
 int buff_t::stack_react()
 {
-  int stack = 0;
+  int stack = current_stack;
 
-  for ( int i = 1; i <= current_stack; i++ )
+  for ( int i = current_stack; i >= 1; i-- )
   {
-    if ( stack_react_time[ i ] > sim -> current_time() ) break;
-    stack++;
+    if ( stack_react_time[ i ] <= sim -> current_time() ) break;
+    stack--;
   }
 
   return stack;
