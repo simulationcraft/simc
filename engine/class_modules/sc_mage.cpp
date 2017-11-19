@@ -1628,7 +1628,7 @@ public:
 
     if ( affected_by.ice_floes
       && p() -> talents.ice_floes -> ok()
-      && execute_time() > timespan_t::zero()
+      && time_to_execute > timespan_t::zero()
       && p() -> buffs.ice_floes -> up() )
     {
       p() -> buffs.ice_floes -> decrement();
