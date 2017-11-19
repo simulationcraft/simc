@@ -7811,7 +7811,7 @@ void mage_t::apl_frost()
   action_priority_list_t* movement     = get_action_priority_list( "movement"          );
 
   default_list -> add_action( this, "Counterspell" );
-  default_list -> add_action( this, "Ice Lance", "if=variable.fof_react=0&prev_gcd.1.flurry",
+  default_list -> add_action( this, "Ice Lance", "if=buff.fingers_of_frost.react=0&prev_gcd.1.flurry",
     "Free Ice Lance after Flurry. This action has rather high priority to ensure that we don't cast Rune of Power, Ray of Frost, "
     "etc. after Flurry and break up the combo. If FoF was already active, we do not lose anything by delaying the Ice Lance." );
   default_list -> add_action( this, "Time Warp",
@@ -7848,14 +7848,14 @@ void mage_t::apl_frost()
     "guaranteed way to proc Frozen Veins and Chain Reaction). When using Glacial Spike, it is worth saving a Brain Freeze proc "
     "when Glacial Spike is right around the corner (i.e. with 5 Icicles). However, when the actor also has T20 2pc, "
     "Glacial Spike is delayed to fit into Frozen Mass, so we do not want to sit on a Brain Freeze proc for too long in that case." );
-  single -> add_action( this, "Frozen Orb", "if=set_bonus.tier20_2pc&variable.fof_react<3",
+  single -> add_action( this, "Frozen Orb", "if=set_bonus.tier20_2pc&buff.fingers_of_frost.react<3",
     "With T20 2pc, Frozen Orb should be used as soon as it comes off CD." );
-  single -> add_action( this, "Blizzard", "if=cast_time=0&active_enemies>1&variable.fof_react<3",
+  single -> add_action( this, "Blizzard", "if=cast_time=0&active_enemies>1&buff.fingers_of_frost.react<3",
     "Freezing Rain Blizzard. While the normal Blizzard action is usually enough, right after Frozen Orb the actor will be "
     "getting a lot of FoFs, which might delay Blizzard to the point where we miss out on Freezing Rain. Therefore, if we are "
     "not at a risk of overcapping on FoF, use Blizzard before using Ice Lance." );
-  single -> add_talent( this, "Frost Bomb", "if=debuff.frost_bomb.remains<action.ice_lance.travel_time&variable.fof_react" );
-  single -> add_action( this, "Ice Lance", "if=variable.fof_react" );
+  single -> add_talent( this, "Frost Bomb", "if=debuff.frost_bomb.remains<action.ice_lance.travel_time&buff.fingers_of_frost.react" );
+  single -> add_action( this, "Ice Lance", "if=buff.fingers_of_frost.react" );
   single -> add_action( this, "Ebonbolt" );
   single -> add_action( this, "Frozen Orb" );
   single -> add_talent( this, "Ice Nova" );
@@ -7888,8 +7888,8 @@ void mage_t::apl_frost()
   aoe -> add_talent( this, "Ice Nova" );
   aoe -> add_action( "water_jet,if=prev_gcd.1.frostbolt&buff.fingers_of_frost.stack<3&buff.brain_freeze.react=0" );
   aoe -> add_action( this, "Flurry", "if=prev_gcd.1.ebonbolt|buff.brain_freeze.react&(prev_gcd.1.glacial_spike|prev_gcd.1.frostbolt)" );
-  aoe -> add_talent( this, "Frost Bomb", "if=debuff.frost_bomb.remains<action.ice_lance.travel_time&variable.fof_react" );
-  aoe -> add_action( this, "Ice Lance", "if=variable.fof_react" );
+  aoe -> add_talent( this, "Frost Bomb", "if=debuff.frost_bomb.remains<action.ice_lance.travel_time&buff.fingers_of_frost.react" );
+  aoe -> add_action( this, "Ice Lance", "if=buff.fingers_of_frost.react" );
   aoe -> add_action( this, "Ebonbolt" );
   aoe -> add_talent( this, "Glacial Spike" );
   aoe -> add_action( this, "Frostbolt" );
@@ -7912,7 +7912,7 @@ void mage_t::apl_frost()
   }
 
   movement -> add_action( this, "Blink", "if=movement.distance>10" );
-  movement -> add_talent( this, "Ice Floes", "if=buff.ice_floes.down&variable.fof_react=0" );
+  movement -> add_talent( this, "Ice Floes", "if=buff.ice_floes.down&buff.fingers_of_frost.react=0" );
 }
 
 // Default Action List ========================================================
