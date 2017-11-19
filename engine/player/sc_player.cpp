@@ -690,7 +690,11 @@ player_t::player_t( sim_t*             s,
   pet_list(), active_pets(),
   invert_scaling( 0 ),
   // Reaction
-  reaction_offset( timespan_t::from_seconds( 0.1 ) ), reaction_mean( timespan_t::from_seconds( 0.3 ) ), reaction_stddev( timespan_t::zero() ), reaction_nu( timespan_t::from_seconds( 0.25 ) ),
+  reaction_offset( timespan_t::from_seconds( 0.1 ) ),
+  reaction_max( timespan_t::from_seconds( 1.4 ) ),
+  reaction_mean( timespan_t::from_seconds( 0.3 ) ),
+  reaction_stddev( timespan_t::zero() ),
+  reaction_nu( timespan_t::from_seconds( 0.25 ) ),
   // Latency
   world_lag( timespan_t::from_seconds( 0.1 ) ), world_lag_stddev( timespan_t::min() ),
   brain_lag( timespan_t::zero() ), brain_lag_stddev( timespan_t::min() ),
@@ -5111,7 +5115,7 @@ timespan_t player_t::time_to_percent( double percent ) const
 
 timespan_t player_t::total_reaction_time()
 {
-  return reaction_offset + rng().exgauss( reaction_mean, reaction_stddev, reaction_nu );
+  return std::min( reaction_max, reaction_offset + rng().exgauss( reaction_mean, reaction_stddev, reaction_nu ) );
 }
 
 // player_t::stat_gain ======================================================
@@ -10276,6 +10280,7 @@ void player_t::create_options()
     add_option( opt_timespan( "reaction_time_stddev", reaction_stddev ) );
     add_option( opt_timespan( "reaction_time_nu", reaction_nu ) );
     add_option( opt_timespan( "reaction_time_offset", reaction_offset ) );
+    add_option( opt_timespan( "reaction_time_max", reaction_max ) );
     add_option( opt_bool( "stat_cache", cache.active ) );
     add_option( opt_bool( "karazhan_trinkets_paired", karazhan_trinkets_paired ) );
 }

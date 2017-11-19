@@ -3840,7 +3840,7 @@ struct player_t : public actor_t
   int         invert_scaling;
 
   // Reaction
-  timespan_t  reaction_offset, reaction_mean, reaction_stddev, reaction_nu;
+  timespan_t  reaction_offset, reaction_max, reaction_mean, reaction_stddev, reaction_nu;
   // Latency
   timespan_t  world_lag, world_lag_stddev;
   timespan_t  brain_lag, brain_lag_stddev;
