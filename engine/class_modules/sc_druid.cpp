@@ -6011,6 +6011,7 @@ struct prowl_t : public druid_spell_t
     if ( sim -> log )
       sim -> out_log.printf( "%s performs %s", player -> name(), name() );
 
+    p() -> buff.jungle_stalker -> expire();
     p() -> buff.prowl -> trigger();
   }
 
@@ -7768,7 +7769,7 @@ void druid_t::apl_feral()
 
    cooldowns->add_action("dash,if=!buff.cat_form.up");
    //cooldowns->add_action("rake,if=buff.prowl.up|buff.shadowmeld.up");
-   //cooldowns->add_action("prowl,if=buff.incarnation.remains<0.5&buff.jungle_stalker.up");
+   cooldowns->add_action("prowl,if=buff.incarnation.remains<0.5&buff.jungle_stalker.up");
    cooldowns->add_action("berserk,if=energy>=30&(cooldown.tigers_fury.remains>5|buff.tigers_fury.up)");
    cooldowns->add_action("tigers_fury,if=energy.deficit>=60");
    cooldowns->add_action("berserking");
