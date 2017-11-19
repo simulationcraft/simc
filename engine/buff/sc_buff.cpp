@@ -432,7 +432,7 @@ buff_t* buff_t::set_max_stack( int max_stack )
   stack_react_time.resize( _max_stack + 1 );
   stack_react_ready_triggers.resize( _max_stack + 1 );
 
-  if ( as<int>( stack_uptime.size() ) < _max_stack )
+  if ( as<int>( stack_uptime.size() ) < _max_stack + 1 )
   {
     stack_uptime.resize( _max_stack + 1 );
   }
