@@ -410,6 +410,7 @@ public:
     // Fire
     const spell_data_t* critical_mass;
     const spell_data_t* critical_mass_2;
+    const spell_data_t* enhanced_pyrotechnics;
     const spell_data_t* fire_blast_2;
     const spell_data_t* fire_blast_3;
     const spell_data_t* fire_mage;
@@ -7054,6 +7055,7 @@ void mage_t::init_spells()
 
   spec.critical_mass         = find_specialization_spell( "Critical Mass"    );
   spec.critical_mass_2       = find_specialization_spell( 231630 );
+  spec.enhanced_pyrotechnics = find_specialization_spell( 157642 );
   spec.fire_blast_2          = find_specialization_spell( 231568 );
   spec.fire_blast_3          = find_specialization_spell( 231567 );
   spec.fire_mage             = find_specialization_spell( 137019 );
@@ -7149,6 +7151,7 @@ void mage_t::create_buffs()
   buffs.critical_massive       = buff_creator_t( this, "critical_massive", find_spell( 242251 ) )
                                    .default_value( find_spell( 242251 ) -> effectN( 1 ).percent() );
   buffs.enhanced_pyrotechnics  = buff_creator_t( this, "enhanced_pyrotechnics", find_spell( 157644 ) )
+                                   .chance( spec.enhanced_pyrotechnics -> ok() ? 1.0 : 0.0 )
                                    .default_value( find_spell( 157644 ) -> effectN( 1 ).percent()
                                        + sets -> set( MAGE_FIRE, T19, B2 ) -> effectN( 1 ).percent() );
   buffs.erupting_infernal_core = buff_creator_t( this, "erupting_infernal_core", find_spell( 248147 ) );
