@@ -808,6 +808,7 @@ struct freeze_t : public water_elemental_spell_t
     if ( success )
     {
       o() -> buffs.fingers_of_frost -> trigger();
+      o() -> buffs.fingers_of_frost -> predict();
       proc_fof -> occur();
     }
   }
@@ -1361,6 +1362,7 @@ struct lady_vashjs_grasp_t : public buff_t
     set_tick_callback( [ this, p ] ( buff_t* /* buff */, int /* ticks */, const timespan_t& /* tick_time */ )
     {
       p -> buffs.fingers_of_frost -> trigger();
+      p -> buffs.fingers_of_frost -> predict();
       proc_fof -> occur();
     } );
   }
@@ -1372,6 +1374,7 @@ struct lady_vashjs_grasp_t : public buff_t
     auto mage = debug_cast<mage_t*>( player );
     // Triggering LVG gives one stack of Fingers of Frost, regardless of the tick action.
     mage -> buffs.fingers_of_frost -> trigger();
+    mage -> buffs.fingers_of_frost -> predict();
     proc_fof -> occur();
   }
 };
@@ -2074,6 +2077,9 @@ struct frost_mage_spell_t : public mage_spell_t
 
       for ( int i = 0; i < stacks; i++ )
         source -> occur();
+
+      if ( chance >= 1.0 )
+        p() -> buffs.fingers_of_frost -> predict();
     }
   }
 
