@@ -5487,7 +5487,12 @@ struct incarnation_t : public druid_spell_t
 
     spec_buff -> trigger();
     p() -> buff.feral_instinct -> trigger();
-    p() -> buff.jungle_stalker -> trigger();
+
+    if ( p() -> buff.incarnation_cat -> check() )
+    {
+      p() -> buff.jungle_stalker -> trigger();
+    }
+
 
     if ( ! p() -> in_combat )
     {
