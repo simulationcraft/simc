@@ -4569,9 +4569,10 @@ struct ice_lance_t : public frost_mage_spell_t
 
   virtual void execute() override
   {
+    p() -> state.fingers_of_frost_active = p() -> buffs.fingers_of_frost -> up();
+
     frost_mage_spell_t::execute();
 
-    p() -> state.fingers_of_frost_active = p() -> buffs.fingers_of_frost -> up();
     p() -> buffs.magtheridons_might -> trigger();
     p() -> buffs.fingers_of_frost -> decrement();
 
