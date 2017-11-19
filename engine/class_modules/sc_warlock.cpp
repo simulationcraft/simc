@@ -7216,6 +7216,8 @@ void warlock_t::apl_affliction()
   haunt->add_action( "reap_souls,if=!buff.deadwind_harvester.remains&(buff.active_uas.stack>1|(prev_gcd.1.unstable_affliction&buff.tormented_souls.react>1))" );
   haunt->add_action( "life_tap,if=mana.pct<=10" );
   haunt->add_action( "life_tap,if=prev_gcd.1.life_tap&buff.active_uas.stack=0&mana.pct<50" );
+  if ( find_item( 137541 ) )
+    haunt->add_action( "drain_soul,early_chain_if=buff.elunes_light.remains,interrupt=1" );
   haunt->add_action( "drain_soul,chain=1,interrupt=1" );
   haunt->add_action( "life_tap,moving=1,if=mana.pct<80" );
   haunt->add_action( "agony,moving=1,cycle_targets=1,if=remains<=duration-(3*tick_time)" );
@@ -7266,6 +7268,8 @@ void warlock_t::apl_affliction()
   writhe->add_action( "corruption,cycle_targets=1,target_if=sim.target!=target&time_to_die>tick_time*3&!buff.deadwind_harvester.remains&refreshable" );
   writhe->add_action( "life_tap,if=mana.pct<=10" );
   writhe->add_action( "life_tap,if=prev_gcd.1.life_tap&buff.active_uas.stack=0&mana.pct<50" );
+  if ( find_item( 137541 ) )
+    writhe->add_action( "drain_soul,early_chain_if=buff.elunes_light.remains,interrupt=1" );
   writhe->add_action( "drain_soul,chain=1,interrupt=1" );
   writhe->add_action( "life_tap,moving=1,if=mana.pct<80" );
   writhe->add_action( "agony,moving=1,cycle_targets=1,if=remains<=duration-(3*tick_time)" );
@@ -7308,6 +7312,8 @@ void warlock_t::apl_affliction()
   mg->add_action( "reap_souls,if=buff.deadwind_harvester.remains<dot.unstable_affliction_1.remains|buff.deadwind_harvester.remains<dot.unstable_affliction_2.remains|buff.deadwind_harvester.remains<dot.unstable_affliction_3.remains|buff.deadwind_harvester.remains<dot.unstable_affliction_4.remains|buff.deadwind_harvester.remains<dot.unstable_affliction_5.remains&buff.active_uas.stack>1" );
   mg->add_action( "life_tap,if=mana.pct<=10" );
   mg->add_action( "life_tap,if=prev_gcd.1.life_tap&buff.active_uas.stack=0&mana.pct<50" );
+  if ( find_item( 137541 ) )
+    mg->add_action( "drain_soul,early_chain_if=buff.elunes_light.remains,interrupt=1" );
   mg->add_action( "drain_soul,chain=1,interrupt=1" );
   mg->add_action( "life_tap,moving=1,if=mana.pct<80" );
   mg->add_action( "agony,moving=1,cycle_targets=1,if=remains<duration-(3*tick_time)" );
