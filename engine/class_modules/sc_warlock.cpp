@@ -2582,9 +2582,6 @@ public:
                         }
                     }
 
-//                  if ( pl -> is_sleeping() )
-//                  {
-//                  }
                 }
               };
 
@@ -3696,7 +3693,32 @@ struct demonic_empowerment_t: public warlock_spell_t
     }
 
     if ( p() -> talents.power_trip -> ok() && rng().roll( power_trip_rng ) )
-      p() -> resource_gain( RESOURCE_SOUL_SHARD, 1, p() -> gains.power_trip );
+    {
+        struct pt_delay_event: public player_event_t
+        {
+          gain_t* shard_gain;
+          warlock_t* pl;
+
+
+          pt_delay_event( warlock_t* p ):
+            player_event_t( *p, timespan_t::from_millis(100) ), shard_gain( p -> gains.soul_conduit ), pl(p)
+          {
+          }
+          virtual const char* name() const override
+          { return "powertrip_delay_event"; }
+          virtual void execute() override
+          {
+              pl -> resource_gain( RESOURCE_SOUL_SHARD, 1, pl -> gains.power_trip );
+
+          }
+        };
+
+        pt_delay_event *evnt;
+        evnt = make_event<pt_delay_event>( *p()->sim, p());
+
+
+//        p() -> resource_gain( RESOURCE_SOUL_SHARD, 1, p() -> gains.power_trip );
+    }
 
     if ( p() -> talents.shadowy_inspiration -> ok() )
       p() -> buffs.shadowy_inspiration -> trigger();
