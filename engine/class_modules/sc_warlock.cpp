@@ -2551,16 +2551,61 @@ public:
 
       if ( p()->talents.soul_conduit->ok() )
       {
-        double soul_conduit_rng = p()->talents.soul_conduit->effectN( 1 ).percent() + p()->spec.destruction->effectN( 4 ).percent();
 
-        for ( int i = 0; i < last_resource_cost; i++ )
-        {
-          if ( rng().roll( soul_conduit_rng ) )
+          if( p()->specialization() == WARLOCK_DEMONOLOGY )
           {
-            p()->resource_gain( RESOURCE_SOUL_SHARD, 1.0, p()->gains.soul_conduit );
-            p()->procs.soul_conduit->occur();
+              struct demo_sc_event: public player_event_t
+              {
+                gain_t* shard_gain;
+                warlock_t* pl;
+                int shards_used;
+
+
+                demo_sc_event( warlock_t* p, int c ):
+                  player_event_t( *p, timespan_t::from_millis(100) ), shard_gain( p -> gains.soul_conduit ), pl(p), shards_used(c)
+                {
+                }
+                virtual const char* name() const override
+                { return "demonology_sc_event"; }
+                virtual void execute() override
+                {
+                    double soul_conduit_rng = pl->talents.soul_conduit->effectN( 1 ).percent() + pl->spec.destruction->effectN( 4 ).percent();
+
+                    double last_res_cost = pl->last_foreground_action->last_resource_cost;
+
+                    for ( int i = 0; i < shards_used; i++ )
+                    {
+                        if ( rng().roll( soul_conduit_rng ) )
+                        {
+                            pl->resource_gain( RESOURCE_SOUL_SHARD, 1.0, pl->gains.soul_conduit );
+                            pl->procs.soul_conduit->occur();
+                        }
+                    }
+
+//                  if ( pl -> is_sleeping() )
+//                  {
+//                  }
+                }
+              };
+
+              demo_sc_event *evnt;
+              evnt = make_event<demo_sc_event>( *p()->sim, p(), last_resource_cost);
+
+
           }
-        }
+          else
+          {
+              double soul_conduit_rng = p()->talents.soul_conduit->effectN( 1 ).percent() + p()->spec.destruction->effectN( 4 ).percent();
+
+              for ( int i = 0; i < last_resource_cost; i++ )
+              {
+                  if ( rng().roll( soul_conduit_rng ) )
+                  {
+                      p()->resource_gain( RESOURCE_SOUL_SHARD, 1.0, p()->gains.soul_conduit );
+                      p()->procs.soul_conduit->occur();
+                  }
+              }
+          }
       }
       if ( p() -> legendary.wakeners_loyalty_enabled && p() -> specialization() == WARLOCK_DEMONOLOGY )
       {
