@@ -2453,7 +2453,9 @@ struct arcane_barrage_t : public arcane_mage_spell_t
     // Hard to tell which part (if any) is a bug.
     // TODO: Check this.
     int charges = p() -> buffs.arcane_charge -> check();
-    aoe = ( charges == 0 ) ? 0 : 1 + charges;
+
+    if ( p() -> spec.arcane_barrage_2 -> ok() )
+      aoe = ( charges == 0 ) ? 0 : 1 + charges;
 
     if ( rng().roll( mantle_of_the_first_kirin_tor_chance * charges ) )
     {
