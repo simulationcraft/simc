@@ -1712,7 +1712,7 @@ struct arcane_mage_spell_t : public mage_spell_t
   double savant_damage_bonus() const
   {
     return p() -> spec.arcane_charge -> effectN( 1 ).percent() +
-      p() -> composite_mastery() * p() -> spec.savant -> effectN( 2 ).mastery_value();
+      p() -> cache.mastery() * p() -> spec.savant -> effectN( 2 ).mastery_value();
   }
 
   void trigger_arcane_charge( int stacks = 1 )
@@ -7939,7 +7939,7 @@ double mage_t::mana_regen_per_second() const
 
   if ( spec.savant -> ok() )
   {
-    mps *= 1.0 + composite_mastery() * spec.savant -> effectN( 1 ).mastery_value();
+    mps *= 1.0 + cache.mastery() * spec.savant -> effectN( 1 ).mastery_value();
   }
 
   return mps;
@@ -7991,7 +7991,7 @@ void mage_t::recalculate_resource_max( resource_e rt )
 
   if ( spec.savant -> ok() )
   {
-    resources.max[ rt ] *= 1.0 + composite_mastery() * spec.savant -> effectN( 1 ).mastery_value();
+    resources.max[ rt ] *= 1.0 + cache.mastery() * spec.savant -> effectN( 1 ).mastery_value();
     resources.current[ rt ] = resources.max[ rt ] * mana_percent;
     if ( sim -> debug )
     {
