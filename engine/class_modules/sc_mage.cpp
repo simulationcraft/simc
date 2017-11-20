@@ -1864,6 +1864,8 @@ struct fire_mage_spell_t : public mage_spell_t
 
     p -> procs.hot_streak_spell -> occur();
 
+    bool guaranteed = s -> composite_crit_chance() >= 1.0;
+
     if ( s -> result == RESULT_CRIT )
     {
       p -> procs.hot_streak_spell_crit -> occur();
@@ -1872,6 +1874,8 @@ struct fire_mage_spell_t : public mage_spell_t
       if ( p -> buffs.hot_streak -> check() )
       {
         p -> procs.hot_streak_spell_crit_wasted -> occur();
+        if ( guaranteed )
+          p -> buffs.hot_streak -> predict();
       }
       else
       {
@@ -1885,8 +1889,11 @@ struct fire_mage_spell_t : public mage_spell_t
             p -> procs.heating_up_ib_converted -> occur();
           }
 
+          bool hu_react = p -> buffs.heating_up -> stack_react() > 0;
           p -> buffs.heating_up -> expire();
           p -> buffs.hot_streak -> trigger();
+          if ( guaranteed && hu_react )
+            p -> buffs.hot_streak -> predict();
 
           //TODO: Add proc tracking to this to track from talent or non-talent sources.
           if ( p -> sets -> has_set_bonus( MAGE_FIRE, T19, B4 ) &&
@@ -1902,6 +1909,8 @@ struct fire_mage_spell_t : public mage_spell_t
           p -> buffs.heating_up -> trigger(
             1, buff_t::DEFAULT_VALUE(), -1.0,
             p -> buffs.heating_up -> buff_duration * p -> cache.spell_speed() );
+          if ( guaranteed )
+            p -> buffs.heating_up -> predict();
 
           // Controlled Burn HU -> HS conversion
           if ( p -> talents.controlled_burn -> ok() &&
