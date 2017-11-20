@@ -7714,7 +7714,7 @@ void mage_t::apl_fire()
   combustion_phase -> add_action( this, "Dragon's Breath", "if=buff.hot_streak.down&action.fire_blast.charges<1&action.phoenixs_flames.charges<1" );
   combustion_phase -> add_action( this, "Scorch", "if=target.health.pct<=30&equipped.132454");
 
-  rop_phase        -> add_action( this, "Fire Blast", "if=buff.heating_up.down&buff.hot_streak.down" );
+  rop_phase        -> add_action( this, "Fire Blast", "if=buff.heating_up.down&buff.hot_streak.down&!talent.firestarer.enabled" );
   rop_phase        -> add_action( this, "Flamestrike", "if=((talent.flame_patch.enabled&active_enemies>1)|active_enemies>3)&buff.hot_streak.up" );
   rop_phase        -> add_action( this, "Pyroblast", "if=buff.hot_streak.up" );
   rop_phase        -> add_action( "call_action_list,name=active_talents" );
