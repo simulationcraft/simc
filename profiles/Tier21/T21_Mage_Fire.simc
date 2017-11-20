@@ -68,7 +68,7 @@ actions.rop_phase=rune_of_power
 actions.rop_phase+=/flamestrike,if=((talent.flame_patch.enabled&active_enemies>1)|active_enemies>3)&buff.hot_streak.react
 actions.rop_phase+=/pyroblast,if=buff.hot_streak.react
 actions.rop_phase+=/call_action_list,name=active_talents
-actions.rop_phase+=/pyroblast,if=buff.kaelthas_ultimate_ability.react&execute_time<buff.kaelthas_ultimate_ability.remains
+actions.rop_phase+=/pyroblast,if=buff.kaelthas_ultimate_ability.react&execute_time<buff.kaelthas_ultimate_ability.remains&buff.rune_of_power.remains>cast_time
 actions.rop_phase+=/fire_blast,if=!prev_off_gcd.fire_blast&buff.heating_up.react&firestarter.active&charges_fractional>1.7
 actions.rop_phase+=/phoenixs_flames,if=!prev_gcd.1.phoenixs_flames&charges_fractional>2.7&firestarter.active
 actions.rop_phase+=/fire_blast,if=!prev_off_gcd.fire_blast&!firestarter.active
@@ -82,7 +82,7 @@ actions.standard_rotation=flamestrike,if=((talent.flame_patch.enabled&active_ene
 actions.standard_rotation+=/pyroblast,if=buff.hot_streak.react&buff.hot_streak.remains<action.fireball.execute_time
 actions.standard_rotation+=/pyroblast,if=buff.hot_streak.react&firestarter.active&!talent.rune_of_power.enabled
 actions.standard_rotation+=/phoenixs_flames,if=charges_fractional>2.7&active_enemies>2
-actions.standard_rotation+=/pyroblast,if=buff.hot_streak.react&!prev_gcd.1.pyroblast
+actions.standard_rotation+=/pyroblast,if=buff.hot_streak.react&(!prev_gcd.1.pyroblast|action.pyroblast.in_flight)
 actions.standard_rotation+=/pyroblast,if=buff.hot_streak.react&target.health.pct<=30&equipped.132454
 actions.standard_rotation+=/pyroblast,if=buff.kaelthas_ultimate_ability.react&execute_time<buff.kaelthas_ultimate_ability.remains
 actions.standard_rotation+=/call_action_list,name=active_talents
@@ -94,6 +94,7 @@ actions.standard_rotation+=/phoenixs_flames,if=charges_fractional>2.5&cooldown.c
 actions.standard_rotation+=/flamestrike,if=(talent.flame_patch.enabled&active_enemies>3)|active_enemies>5
 actions.standard_rotation+=/scorch,if=target.health.pct<=30&equipped.132454
 actions.standard_rotation+=/fireball
+actions.standard_rotation+=/scorch
 
 head=runebound_collar,id=152138,bonus_id=3612/1502
 neck=chain_of_the_unmaker,id=152283,bonus_id=3612/1502,enchant=mark_of_the_hidden_satyr
