@@ -5208,10 +5208,10 @@ void warrior_t::apl_fury()
     {
       default_list -> add_action( racial_actions[i] + ",if=rage<rage.max-40" );
     }
-	else if ( racial_actions[i] == "berserking" )
-	{
-	  default_list -> add_action( racial_actions[i] + ",if=(buff.battle_cry.up&(buff.avatar.up|!talent.avatar.enabled))|(buff.battle_cry.up&target.time_to_die<40)" );
-	}
+    else if ( racial_actions[i] == "berserking" )
+    {
+      default_list -> add_action( racial_actions[i] + ",if=(buff.battle_cry.up&(buff.avatar.up|!talent.avatar.enabled))|(buff.battle_cry.up&target.time_to_die<40)" );
+    }
     else
     {
       default_list -> add_action( racial_actions[i] + ",if=buff.battle_cry.up" );
