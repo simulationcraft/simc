@@ -7771,7 +7771,7 @@ void mage_t::apl_fire()
   rop_phase        -> add_action( this, "Flamestrike", "if=((talent.flame_patch.enabled&active_enemies>1)|active_enemies>3)&buff.hot_streak.react" );
   rop_phase        -> add_action( this, "Pyroblast", "if=buff.hot_streak.react" );
   rop_phase        -> add_action( "call_action_list,name=active_talents" );
-  rop_phase        -> add_action( this, "Pyroblast", "if=buff.kaelthas_ultimate_ability.react&execute_time<buff.kaelthas_ultimate_ability.remains" );
+  rop_phase        -> add_action( this, "Pyroblast", "if=buff.kaelthas_ultimate_ability.react&execute_time<buff.kaelthas_ultimate_ability.remains&buff.rune_of_power.remains>cast_time" );
   rop_phase        -> add_action( this, "Fire Blast", "if=!prev_off_gcd.fire_blast&buff.heating_up.react&firestarter.active&charges_fractional>1.7" );
   rop_phase        -> add_action( this, "Phoenix's Flames", "if=!prev_gcd.1.phoenixs_flames&charges_fractional>2.7&firestarter.active" );
   rop_phase        -> add_action( this, "Fire Blast", "if=!prev_off_gcd.fire_blast&!firestarter.active" );
@@ -7790,7 +7790,7 @@ void mage_t::apl_fire()
   standard    -> add_action( this, "Flamestrike", "if=((talent.flame_patch.enabled&active_enemies>1)|active_enemies>3)&buff.hot_streak.react" );
   standard    -> add_action( this, "Pyroblast", "if=buff.hot_streak.react&buff.hot_streak.remains<action.fireball.execute_time" );
   standard    -> add_action( this, "Pyroblast", "if=buff.hot_streak.react&firestarter.active&!talent.rune_of_power.enabled" );
-  standard    -> add_action( this, "Phoenix's Flames", "if=(charges_fractional>2.7&active_enemies>2)|(buff.heating_up.down&buff.hot_streak.down&buff.kaelthas_ultimate_ability.up)" );
+  standard    -> add_action( this, "Phoenix's Flames", "if=(charges_fractional>2.7&active_enemies>2)" );
   standard    -> add_action( this, "Pyroblast", "if=buff.hot_streak.react&(!prev_gcd.1.pyroblast|action.pyroblast.in_flight)" );
   standard    -> add_action( this, "Pyroblast", "if=buff.hot_streak.react&target.health.pct<=30&equipped.132454" );
   standard    -> add_action( this, "Pyroblast", "if=buff.kaelthas_ultimate_ability.react&execute_time<buff.kaelthas_ultimate_ability.remains" );
@@ -7803,7 +7803,7 @@ void mage_t::apl_fire()
   standard    -> add_action( this, "Flamestrike", "if=(talent.flame_patch.enabled&active_enemies>3)|active_enemies>5" );
   standard    -> add_action( this, "Scorch", "if=target.health.pct<=30&equipped.132454" );
   standard    -> add_action( this, "Fireball" );
-  standard    -> add_action( this, "Scorch", "if=moving=1" );
+  standard    -> add_action( this, "Scorch" );
 
 
 }
