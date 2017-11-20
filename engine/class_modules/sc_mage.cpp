@@ -7764,7 +7764,7 @@ void mage_t::apl_fire()
   combustion_phase -> add_action( this, "Fire Blast", "if=buff.heating_up.react" );
   combustion_phase -> add_action( this, "Phoenix's Flames" );
   combustion_phase -> add_action( this, "Scorch", "if=buff.combustion.remains>cast_time" );
-  combustion_phase -> add_action( this, "Dragon's Breath", "if=buff.hot_streak.down&action.fire_blast.charges<1&action.phoenixs_flames.charges<1" );
+  combustion_phase -> add_action( this, "Dragon's Breath", "if=!buff.hot_streak.react&action.fire_blast.charges<1&action.phoenixs_flames.charges<1" );
   combustion_phase -> add_action( this, "Scorch", "if=target.health.pct<=30&equipped.132454");
 
   rop_phase        -> add_talent( this, "Rune of Power" );
@@ -7784,7 +7784,7 @@ void mage_t::apl_fire()
   active_talents   -> add_talent( this, "Blast Wave", "if=(buff.combustion.down)|(buff.combustion.up&action.fire_blast.charges<1&action.phoenixs_flames.charges<1)" );
   active_talents   -> add_talent( this, "Meteor", "if=cooldown.combustion.remains>40|(cooldown.combustion.remains>target.time_to_die)|buff.rune_of_power.up|firestarter.active" );
   active_talents   -> add_talent( this, "Cinderstorm", "if=cooldown.combustion.remains<cast_time&(buff.rune_of_power.up|!talent.rune_on_power.enabled)|cooldown.combustion.remains>10*spell_haste&!buff.combustion.up" );
-  active_talents   -> add_action( this, "Dragon's Breath", "if=equipped.132863|(talent.alexstraszas_fury.enabled&buff.hot_streak.down)" );
+  active_talents   -> add_action( this, "Dragon's Breath", "if=equipped.132863|(talent.alexstraszas_fury.enabled&!buff.hot_streak.react)" );
   active_talents   -> add_talent( this, "Living Bomb", "if=active_enemies>1&buff.combustion.down" );
 
   standard    -> add_action( this, "Flamestrike", "if=((talent.flame_patch.enabled&active_enemies>1)|active_enemies>3)&buff.hot_streak.react" );
@@ -7820,7 +7820,7 @@ void mage_t::apl_frost()
   action_priority_list_t* movement     = get_action_priority_list( "movement"          );
 
   default_list -> add_action( this, "Counterspell" );
-  default_list -> add_action( this, "Ice Lance", "if=buff.fingers_of_frost.react=0&prev_gcd.1.flurry",
+  default_list -> add_action( this, "Ice Lance", "if=!buff.fingers_of_frost.react&prev_gcd.1.flurry",
     "Free Ice Lance after Flurry. This action has rather high priority to ensure that we don't cast Rune of Power, Ray of Frost, "
     "etc. after Flurry and break up the combo. If FoF was already active, we do not lose anything by delaying the Ice Lance." );
   default_list -> add_action( this, "Time Warp",
@@ -7841,7 +7841,7 @@ void mage_t::apl_frost()
   single -> add_talent( this, "Ice Nova", "if=debuff.winters_chill.up",
     "In some circumstances, it is possible for both Ice Lance and Ice Nova to benefit from a single Winter's Chill." );
   single -> add_action( this, "Frostbolt", "if=prev_off_gcd.water_jet" );
-  single -> add_action( "water_jet,if=prev_gcd.1.frostbolt&buff.fingers_of_frost.stack<3&buff.brain_freeze.react=0",
+  single -> add_action( "water_jet,if=prev_gcd.1.frostbolt&buff.fingers_of_frost.stack<3&!buff.brain_freeze.react",
     "Basic Water Jet combo. Since Water Jet can only be used if the actor is not casting, we use it right after Frostbolt is executed. "
     "At the default distance, Frostbolt travels slightly over 1 s, giving Water Jet enough time to apply the DoT (Water Jet's cast time "
     "is 1 s, with haste scaling). The APL then forces another Frostbolt to guarantee getting both FoFs from the Water Jet. This works for "
@@ -7874,7 +7874,7 @@ void mage_t::apl_frost()
 
     "Against low number of targets, Blizzard is used as a filler. Zann'esu buffed Blizzard is used only at 5 stacks." );
   single -> add_action( this, "Frostbolt",
-    "if=buff.frozen_mass.remains>execute_time+action.glacial_spike.execute_time+action.glacial_spike.travel_time&buff.brain_freeze.react=0&"
+    "if=buff.frozen_mass.remains>execute_time+action.glacial_spike.execute_time+action.glacial_spike.travel_time&!buff.brain_freeze.react&"
     "talent.glacial_spike.enabled",
 
     "While Frozen Mass is active, we want to fish for Brain Freeze for the next Glacial Spike. Stop when Frozen Mass is about to run out "
@@ -7895,7 +7895,7 @@ void mage_t::apl_frost()
   aoe -> add_action( this, "Blizzard" );
   aoe -> add_talent( this, "Comet Storm" );
   aoe -> add_talent( this, "Ice Nova" );
-  aoe -> add_action( "water_jet,if=prev_gcd.1.frostbolt&buff.fingers_of_frost.stack<3&buff.brain_freeze.react=0" );
+  aoe -> add_action( "water_jet,if=prev_gcd.1.frostbolt&buff.fingers_of_frost.stack<3&!buff.brain_freeze.react" );
   aoe -> add_action( this, "Flurry", "if=prev_gcd.1.ebonbolt|buff.brain_freeze.react&(prev_gcd.1.glacial_spike|prev_gcd.1.frostbolt)" );
   aoe -> add_talent( this, "Frost Bomb", "if=debuff.frost_bomb.remains<action.ice_lance.travel_time&buff.fingers_of_frost.react" );
   aoe -> add_action( this, "Ice Lance", "if=buff.fingers_of_frost.react" );
@@ -7921,7 +7921,7 @@ void mage_t::apl_frost()
   }
 
   movement -> add_action( this, "Blink", "if=movement.distance>10" );
-  movement -> add_talent( this, "Ice Floes", "if=buff.ice_floes.down&buff.fingers_of_frost.react=0" );
+  movement -> add_talent( this, "Ice Floes", "if=buff.ice_floes.down&!buff.fingers_of_frost.react" );
 }
 
 // Default Action List ========================================================
