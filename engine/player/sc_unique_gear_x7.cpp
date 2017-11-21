@@ -1693,7 +1693,9 @@ struct ravaging_storm_t : public proc_spell_t
 {
   ravaging_storm_t( const special_effect_t& effect ) :
     proc_spell_t( "ravaging_storm", effect.player, effect.player -> find_spell( 257286 ), effect.item )
-  { }
+  {
+    split_aoe_damage = true;
+  }
 };
 
 // TODO: Can one have multiple Ravaging Storms active at the same time?
@@ -4541,7 +4543,7 @@ void item::elementium_bomb_squirrel( special_effect_t& effect )
 struct kiljaedens_burning_wish_t : public proc_spell_t
 {
   kiljaedens_burning_wish_t( const special_effect_t& effect ) :
-    proc_spell_t( "kiljaedens_burning_wish", effect.player, effect.player -> find_spell( 235999 ) )
+    proc_spell_t( "kiljaedens_burning_wish", effect.player, dbc::find_spell( effect.player, 235999 ) )
   {
     background = may_crit = true;
     aoe = -1;
@@ -4568,6 +4570,8 @@ struct kiljaedens_burning_wish_t : public proc_spell_t
   virtual double composite_crit_chance() const override
   { return 1.0; }
 
+  virtual bool verify_actor_level() const override
+  { return true; }
 };
 
 void item::kiljadens_burning_wish( special_effect_t& effect )
