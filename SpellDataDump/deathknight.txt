@@ -6205,7 +6205,8 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=474078)   : Weapon Damage% (31)
-                   Base Value: 420 | Scaled Value: 4.2 | Target: Unknown(25)
+                   Base Value: 210 | Scaled Value: 2.1 | Target: Unknown(25)
+                   Hotfixed: Base Value (420 -> 210), Chain Multiplier (0 -> 1)
 Description      : $@spelldesc251875
 
 Name             : Inexorable Assault (id=253593) [Spell Family (15), Passive] 
