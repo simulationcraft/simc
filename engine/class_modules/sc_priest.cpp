@@ -1802,7 +1802,7 @@ public:
     }
 
     if ( priest.sets->has_set_bonus( PRIEST_SHADOW, T21, B2 ) )
-      crit_bonus_multiplier *= 1.0 + ( priest.sets->set( PRIEST_SHADOW, T21, B2 )->effectN( 1 ).percent() );
+      crit_bonus_multiplier *= 1.0 + priest.sets->set( PRIEST_SHADOW, T21, B2 )->effectN( 1 ).percent();
   }
 
   void init() override
@@ -1830,7 +1830,7 @@ public:
     if ( priest.sets->has_set_bonus( PRIEST_SHADOW, T21, B4 ) && priest.buffs.overwhelming_darkness->check() )
     {
       c += ( priest.buffs.overwhelming_darkness->check() ) *
-           priest.buffs.overwhelming_darkness->data().effectN( 1 ).percent();
+           ( priest.buffs.overwhelming_darkness->data().effectN( 1 ).percent() / 2.0 );
     }
 
     return c;
@@ -2072,7 +2072,7 @@ struct mind_flay_t final : public priest_spell_t
     if ( priest.sets->has_set_bonus( PRIEST_SHADOW, T21, B4 ) && priest.buffs.overwhelming_darkness->check() )
     {
       c += ( priest.buffs.overwhelming_darkness->check() ) *
-           priest.buffs.overwhelming_darkness->data().effectN( 1 ).percent();
+           ( priest.buffs.overwhelming_darkness->data().effectN( 1 ).percent() / 2.0 );
     }
 
     return c;
@@ -3185,7 +3185,7 @@ struct void_bolt_t final : public priest_spell_t
     if ( priest.sets->has_set_bonus( PRIEST_SHADOW, T21, B4 ) && priest.buffs.overwhelming_darkness->check() )
     {
       c += ( priest.buffs.overwhelming_darkness->check() ) *
-           priest.buffs.overwhelming_darkness->data().effectN( 1 ).percent();
+           ( priest.buffs.overwhelming_darkness->data().effectN( 1 ).percent() / 2.0 );
     }
 
     return c;
