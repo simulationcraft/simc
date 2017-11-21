@@ -3638,8 +3638,8 @@ struct bloody_gash_t : public cat_attack_t
    bloody_gash_t(druid_t* p) :
       cat_attack_t("bloody_gash", p, p -> find_spell(252750) )
    {
-      background = dual = proc = may_crit = true;
-      may_miss = may_dodge = may_parry = false;
+      background = dual = proc = true;
+      may_miss = may_dodge = may_parry = may_crit = false;
       may_block = true;  
    }
 
