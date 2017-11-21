@@ -1693,7 +1693,9 @@ struct ravaging_storm_t : public proc_spell_t
 {
   ravaging_storm_t( const special_effect_t& effect ) :
     proc_spell_t( "ravaging_storm", effect.player, effect.player -> find_spell( 257286 ), effect.item )
-  { }
+  {
+    split_aoe_damage = true;
+  }
 };
 
 // TODO: Can one have multiple Ravaging Storms active at the same time?
