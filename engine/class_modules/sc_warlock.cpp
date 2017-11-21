@@ -2551,16 +2551,58 @@ public:
 
       if ( p()->talents.soul_conduit->ok() )
       {
-        double soul_conduit_rng = p()->talents.soul_conduit->effectN( 1 ).percent() + p()->spec.destruction->effectN( 4 ).percent();
 
-        for ( int i = 0; i < last_resource_cost; i++ )
-        {
-          if ( rng().roll( soul_conduit_rng ) )
+          if( p()->specialization() == WARLOCK_DEMONOLOGY )
           {
-            p()->resource_gain( RESOURCE_SOUL_SHARD, 1.0, p()->gains.soul_conduit );
-            p()->procs.soul_conduit->occur();
+              struct demo_sc_event: public player_event_t
+              {
+                gain_t* shard_gain;
+                warlock_t* pl;
+                int shards_used;
+
+
+                demo_sc_event( warlock_t* p, int c ):
+                  player_event_t( *p, timespan_t::from_millis(100) ), shard_gain( p -> gains.soul_conduit ), pl(p), shards_used(c)
+                {
+                }
+                virtual const char* name() const override
+                { return "demonology_sc_event"; }
+                virtual void execute() override
+                {
+                    double soul_conduit_rng = pl->talents.soul_conduit->effectN( 1 ).percent() + pl->spec.destruction->effectN( 4 ).percent();
+
+                    double last_res_cost = pl->last_foreground_action->last_resource_cost;
+
+                    for ( int i = 0; i < shards_used; i++ )
+                    {
+                        if ( rng().roll( soul_conduit_rng ) )
+                        {
+                            pl->resource_gain( RESOURCE_SOUL_SHARD, 1.0, pl->gains.soul_conduit );
+                            pl->procs.soul_conduit->occur();
+                        }
+                    }
+
+                }
+              };
+
+              demo_sc_event *evnt;
+              evnt = make_event<demo_sc_event>( *p()->sim, p(), last_resource_cost);
+
+
           }
-        }
+          else
+          {
+              double soul_conduit_rng = p()->talents.soul_conduit->effectN( 1 ).percent() + p()->spec.destruction->effectN( 4 ).percent();
+
+              for ( int i = 0; i < last_resource_cost; i++ )
+              {
+                  if ( rng().roll( soul_conduit_rng ) )
+                  {
+                      p()->resource_gain( RESOURCE_SOUL_SHARD, 1.0, p()->gains.soul_conduit );
+                      p()->procs.soul_conduit->occur();
+                  }
+              }
+          }
       }
       if ( p() -> legendary.wakeners_loyalty_enabled && p() -> specialization() == WARLOCK_DEMONOLOGY )
       {
@@ -3651,7 +3693,32 @@ struct demonic_empowerment_t: public warlock_spell_t
     }
 
     if ( p() -> talents.power_trip -> ok() && rng().roll( power_trip_rng ) )
-      p() -> resource_gain( RESOURCE_SOUL_SHARD, 1, p() -> gains.power_trip );
+    {
+        struct pt_delay_event: public player_event_t
+        {
+          gain_t* shard_gain;
+          warlock_t* pl;
+
+
+          pt_delay_event( warlock_t* p ):
+            player_event_t( *p, timespan_t::from_millis(100) ), shard_gain( p -> gains.soul_conduit ), pl(p)
+          {
+          }
+          virtual const char* name() const override
+          { return "powertrip_delay_event"; }
+          virtual void execute() override
+          {
+              pl -> resource_gain( RESOURCE_SOUL_SHARD, 1, pl -> gains.power_trip );
+
+          }
+        };
+
+        pt_delay_event *evnt;
+        evnt = make_event<pt_delay_event>( *p()->sim, p());
+
+
+//        p() -> resource_gain( RESOURCE_SOUL_SHARD, 1, p() -> gains.power_trip );
+    }
 
     if ( p() -> talents.shadowy_inspiration -> ok() )
       p() -> buffs.shadowy_inspiration -> trigger();
@@ -7216,6 +7283,8 @@ void warlock_t::apl_affliction()
   haunt->add_action( "reap_souls,if=!buff.deadwind_harvester.remains&(buff.active_uas.stack>1|(prev_gcd.1.unstable_affliction&buff.tormented_souls.react>1))" );
   haunt->add_action( "life_tap,if=mana.pct<=10" );
   haunt->add_action( "life_tap,if=prev_gcd.1.life_tap&buff.active_uas.stack=0&mana.pct<50" );
+  if ( find_item( 137541 ) )
+    haunt->add_action( "drain_soul,early_chain_if=buff.elunes_light.remains&buff.elunes_light.stack<20,interrupt=1" );
   haunt->add_action( "drain_soul,chain=1,interrupt=1" );
   haunt->add_action( "life_tap,moving=1,if=mana.pct<80" );
   haunt->add_action( "agony,moving=1,cycle_targets=1,if=remains<=duration-(3*tick_time)" );
@@ -7266,6 +7335,8 @@ void warlock_t::apl_affliction()
   writhe->add_action( "corruption,cycle_targets=1,target_if=sim.target!=target&time_to_die>tick_time*3&!buff.deadwind_harvester.remains&refreshable" );
   writhe->add_action( "life_tap,if=mana.pct<=10" );
   writhe->add_action( "life_tap,if=prev_gcd.1.life_tap&buff.active_uas.stack=0&mana.pct<50" );
+  if ( find_item( 137541 ) )
+    writhe->add_action( "drain_soul,early_chain_if=buff.elunes_light.remains&buff.elunes_light.stack<20,interrupt=1" );
   writhe->add_action( "drain_soul,chain=1,interrupt=1" );
   writhe->add_action( "life_tap,moving=1,if=mana.pct<80" );
   writhe->add_action( "agony,moving=1,cycle_targets=1,if=remains<=duration-(3*tick_time)" );
@@ -7308,6 +7379,8 @@ void warlock_t::apl_affliction()
   mg->add_action( "reap_souls,if=buff.deadwind_harvester.remains<dot.unstable_affliction_1.remains|buff.deadwind_harvester.remains<dot.unstable_affliction_2.remains|buff.deadwind_harvester.remains<dot.unstable_affliction_3.remains|buff.deadwind_harvester.remains<dot.unstable_affliction_4.remains|buff.deadwind_harvester.remains<dot.unstable_affliction_5.remains&buff.active_uas.stack>1" );
   mg->add_action( "life_tap,if=mana.pct<=10" );
   mg->add_action( "life_tap,if=prev_gcd.1.life_tap&buff.active_uas.stack=0&mana.pct<50" );
+  if ( find_item( 137541 ) )
+    mg->add_action( "drain_soul,early_chain_if=buff.elunes_light.remains&buff.elunes_light.stack<20,interrupt=1" );
   mg->add_action( "drain_soul,chain=1,interrupt=1" );
   mg->add_action( "life_tap,moving=1,if=mana.pct<80" );
   mg->add_action( "agony,moving=1,cycle_targets=1,if=remains<duration-(3*tick_time)" );

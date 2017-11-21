@@ -846,7 +846,7 @@ public:
   int current_stack;
   timespan_t buff_duration;
   double default_chance;
-  std::vector<timespan_t> stack_occurrence, stack_react_time;
+  std::vector<timespan_t> stack_react_time;
   std::vector<event_t*> stack_react_ready_triggers;
 
   buff_refresh_behavior_e refresh_behavior;
@@ -3840,7 +3840,7 @@ struct player_t : public actor_t
   int         invert_scaling;
 
   // Reaction
-  timespan_t  reaction_offset, reaction_mean, reaction_stddev, reaction_nu;
+  timespan_t  reaction_offset, reaction_max, reaction_mean, reaction_stddev, reaction_nu;
   // Latency
   timespan_t  world_lag, world_lag_stddev;
   timespan_t  brain_lag, brain_lag_stddev;

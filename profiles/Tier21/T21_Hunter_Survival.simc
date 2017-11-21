@@ -109,7 +109,7 @@ legs=battalionshattering_leggings,id=152002,bonus_id=3612/1502
 feet=deft_soulhunters_sabatons,id=151996,bonus_id=3612/1502
 finger1=seal_of_the_portalmaster,id=152063,bonus_id=3612/1502,enchant=binding_of_haste
 finger2=sephuzs_secret,id=132452,bonus_id=3630,gem_id=151583,enchant=binding_of_haste
-trinket1=gorshalachs_legacy,id=152093,bonus_id=3612/1502
+trinket1=seeping_scourgewing,id=151964,bonus_id=3612/1502
 trinket2=golganneths_vitality,id=154174,bonus_id=4213
 main_hand=talonclaw,id=128808,bonus_id=728,gem_id=152060/155855/155847,relic_id=3612:1502/3612:1512/3612:1512
 
@@ -118,9 +118,9 @@ main_hand=talonclaw,id=128808,bonus_id=728,gem_id=152060/155855/155847,relic_id=
 # gear_agility=39124
 # gear_stamina=61897
 # gear_crit_rating=11936
-# gear_haste_rating=12017
+# gear_haste_rating=10540
 # gear_mastery_rating=4264
-# gear_versatility_rating=5307
+# gear_versatility_rating=6784
 # gear_armor=3594
 # set_bonus=tier21_2pc=1
 # set_bonus=tier21_4pc=1

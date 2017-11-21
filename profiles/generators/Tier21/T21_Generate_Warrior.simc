@@ -45,10 +45,10 @@ chest=juggernaut_breastplate,id=152178,bonus_id=3612/1502
 wrists=vambraces_of_lifes_assurance,id=152023,bonus_id=3612/1502
 hands=juggernaut_gauntlets,id=152180,bonus_id=3612/1502
 waist=grondfather_girdle,id=152022,bonus_id=3612/1502
-legs=valarjar_berserkers,id=151824,bonus_id=3570,bonus_id=3630
+legs=valarjar_berserkers,id=151824,bonus_id=3630
 feet=burning_coven_sabatons,id=152010,bonus_id=3612/1502
 finger1=sullied_seal_of_the_pantheon,id=151972,ilevel=970,enchant=200haste
-finger2=soul_of_the_battlelord,id=151650,bonus_id=3570,bonus_id=3630,gems=200haste,enchant=binding_of_haste
+finger2=soul_of_the_battlelord,id=151650,bonus_id=3630,gems=200haste,enchant=binding_of_haste
 trinket1=convergence_of_fates,id=140806,bonus_id=3518
 trinket2=khazgoroths_courage,id=154176,bonus_id=4213
 main_hand=warswords_of_the_valarjar,id=128908,bonus_id=751,gem_id=155849/155853/152293,relic_id=3612:1512/3612:1512/3612:1502

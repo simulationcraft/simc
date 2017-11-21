@@ -1180,6 +1180,7 @@ void to_json( JsonOutput& arr, const player_t& p )
 
   root[ "invert_scaling" ] = p.invert_scaling;
   root[ "reaction_offset" ] = p.reaction_offset;
+  root[ "reaction_max" ] = p.reaction_max;
   root[ "reaction_mean" ] = p.reaction_mean;
   root[ "reaction_stddev" ] = p.reaction_stddev;
   root[ "reaction_nu" ] = p.reaction_nu;
@@ -1285,6 +1286,7 @@ js::sc_js_t to_json( const player_t& p )
   }
   node.set( "invert_scaling", p.invert_scaling );
   node.set( "reaction_offset", to_json( p.reaction_offset ) );
+  node.set( "reaction_max", to_json( p.reaction_max ) );
   node.set( "reaction_mean", to_json( p.reaction_mean ) );
   node.set( "reaction_stddev", to_json( p.reaction_stddev ) );
   node.set( "reaction_nu", to_json( p.reaction_nu ) );
