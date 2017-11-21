@@ -4971,9 +4971,10 @@ struct death_from_above_t : public rogue_attack_t
   {
     rogue_attack_t::execute();
 
-    p() -> buffs.death_from_above -> trigger();
-
     timespan_t oor_delay = timespan_t::from_seconds( rng().gauss( 1.475, 0.025 ) );
+
+    // Make Dfa buff longer than driver since driver tick will expire it and DfA should not run out first.
+    p() -> buffs.death_from_above -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, oor_delay + timespan_t::from_millis( 50 ) );
 
     adjust_attack( player -> main_hand_attack, oor_delay );
     adjust_attack( player -> off_hand_attack, oor_delay );
@@ -8356,8 +8357,9 @@ void rogue_t::create_buffs()
                                   .default_value( find_spell( 193538 ) -> effectN( 1 ).percent() )
                                   .chance( talent.alacrity -> ok() );
   buffs.death_from_above        = buff_creator_t( this, "death_from_above", spell.death_from_above )
-                                  // Note: Duration is hardcoded to 1.475s to match the current model and then let it trackable in the APL
-                                  .duration( timespan_t::from_seconds( 1.475 ) )
+                                  // Note: Duration is set to 1.475s (+/- gauss RNG) on action execution in order to match the current model
+                                  // and then let it be trackable in the APL. The driver will also expire this buff when the finisher is scheduled.
+                                  //.duration( timespan_t::from_seconds( 1.475 ) )
                                   .quiet( true );
   buffs.subterfuge              = new buffs::subterfuge_t( this );
   // Assassination
