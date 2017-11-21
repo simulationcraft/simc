@@ -1,4 +1,4 @@
-SimulationCraft 730-03 for World of Warcraft 7.3.2 Live (wow build 25383, git build 788fb7f)
+SimulationCraft 730-03 for World of Warcraft 7.3.2 Live (wow build 25383)
 
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
 Class            : Discipline Shadow Priest
@@ -372,7 +372,7 @@ Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Charges          : 1 (9 seconds cooldown)
 Category         : 1602: Priest (137030 effect#2)
-Affecting spells : Shadowy Insight (124430 effect#1), Priest (137030 effect#2), Shadow Priest (137033 effect#1), Lucidity (137323 effect#1), Mental Fatigue (185104 effect#1), Fortress of the Mind (193195 effect#2), Mind Shattering (193643 effect#1), Voidform (194249 effect#4), Empty Mind (247226 effect#1), Item - Priest T21 Shadow 2P Bonus (251845 effect#1), Overwhelming Darkness (252909 effect#1)
+Affecting spells : Shadowy Insight (124430 effect#1), Priest (137030 effect#2), Shadow Priest (137033 effect#1), Lucidity (137323 effect#1), Mental Fatigue (185104 effect#1), Fortress of the Mind (193195 effect#2), Mind Shattering (193643 effect#1), Voidform (194249 effect#4), Empty Mind (247226 effect#1), Item - Priest T21 Shadow 2P Bonus (251845 effect#1), Overwhelming Darkness (252909 effect#1), 
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -524,7 +524,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 3 seconds
 Stance Mask      : 0x08000000
-Affecting spells : Shadow Priest (137033 effect#2), Lucidity (137323 effect#1), Mental Fatigue (185104 effect#1), Fortress of the Mind (193195 effect#1), Voidform (194249 effect#4), Void Ray (205372 effect#1), Void Siphon (215322 effect#2), Item - Priest T21 Shadow 2P Bonus (251845 effect#1), Overwhelming Darkness (252909 effect#1)
+Affecting spells : Shadow Priest (137033 effect#2), Lucidity (137323 effect#1), Mental Fatigue (185104 effect#1), Fortress of the Mind (193195 effect#1), Voidform (194249 effect#4), Void Ray (205372 effect#1), Void Siphon (215322 effect#2), Item - Priest T21 Shadow 2P Bonus (251845 effect#1), Overwhelming Darkness (252909 effect#1), 
 Attributes       : ........ ........ x....... ........   ..x..... ......x. ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .....x.. ........ ...x.... 
@@ -4132,7 +4132,7 @@ Velocity         : 40 yards/sec
 Cooldown         : 4.5 seconds
 Category         : 1660
 Category Cooldown: 4.5 seconds
-Affecting spells : Mastery: Madness (77486 effect#1), Priest (137030 effect#1), Shadow Priest (137033 effect#1), Sinister Thoughts (194026 effect#1), Voidform (194249 effect#4), Void (211657 effect#1), Overwhelming Darkness (252909 effect#1)
+Affecting spells : Mastery: Madness (77486 effect#1), Priest (137030 effect#1), Shadow Priest (137033 effect#1), Sinister Thoughts (194026 effect#1), Voidform (194249 effect#4), Void (211657 effect#1), Overwhelming Darkness (252909 effect#1), 
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
