@@ -10144,6 +10144,8 @@ void monk_t::apl_combat_windwalker()
         cd -> add_action( "use_item,name=" + items[i].name_str + ",if=(buff.serenity.up&!equipped.specter_of_betrayal)|(equipped.specter_of_betrayal&(time<5|cooldown.serenity.remains<=8))|!talent.serenity.enabled|target.time_to_die<=cooldown.serenity.remains" );
       else if ( items[i].name_str == "specter_of_betrayal" )
         cd -> add_action( "use_item,name=" + items[i].name_str + ",if=(cooldown.serenity.remains>10|buff.serenity.up)|!talent.serenity.enabled" );
+      else if ( items[i].name_str == "forgefiends_fabricator"  )
+        cd -> add_action( "use_item,name=" + items[i].name_str + ",if=buff.serenity.remains<1|(!talent.serenity.enabled&debuff.touch_of_death.up)" );
       else if ( ( items[i].name_str != "draught_of_souls" ) || ( items[i].name_str != "archimondes_hatred_reborn" ) )
         cd -> add_action( "use_item,name=" + items[i].name_str );
     }
