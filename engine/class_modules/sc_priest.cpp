@@ -346,10 +346,8 @@ public:
     propagate_const<proc_t*> t17_2pc_caster_mind_blast_reset_overflow_seconds;
     propagate_const<proc_t*> t17_4pc_holy;
     propagate_const<proc_t*> t17_4pc_holy_overflow;
-    propagate_const<proc_t*> void_eruption_both_dots;
+    propagate_const<proc_t*> void_eruption_has_dots;
     propagate_const<proc_t*> void_eruption_no_dots;
-    propagate_const<proc_t*> void_eruption_only_shadow_word_pain;
-    propagate_const<proc_t*> void_eruption_only_vampiric_touch;
     propagate_const<proc_t*> void_tendril;
   } procs;
 
@@ -3270,30 +3268,13 @@ struct void_eruption_t final : public priest_spell_t
     while ( it != tl.end() )
     {
       priest_td_t& td = priest_spell_t::get_td( *it );
+    
+      if ( td.dots.shadow_word_pain->is_ticking() || td.dots.vampiric_touch->is_ticking() )
+      {
+        priest.procs.void_eruption_has_dots->occur();
+      }     
 
-      if ( !td.dots.shadow_word_pain->is_ticking() && !td.dots.vampiric_touch->is_ticking() )  // Neither SWP nor VT
-      {
-        priest.procs.void_eruption_no_dots->occur();
-        it = tl.erase( it );
-      }
-      else if ( td.dots.shadow_word_pain->is_ticking() && td.dots.vampiric_touch->is_ticking() )  // Both SWP and VT
-      {
-        priest.procs.void_eruption_both_dots->occur();
-        it = tl.insert( it, *it );
-        it += 2;
-      }
-      else  // SWP or VT
-      {
-        if ( td.dots.shadow_word_pain->is_ticking() )
-        {
-          priest.procs.void_eruption_only_shadow_word_pain->occur();
-        }
-        else
-        {
-          priest.procs.void_eruption_only_vampiric_touch->occur();
-        }
-        it++;
-      }
+      it++;      
     }
 
     return tl;
@@ -4109,12 +4090,9 @@ void priest_t::create_procs()
   procs.serendipity_overflow    = get_proc( "Serendipity lost to overflow (Non-Tier 17 4pc)" );
   procs.t17_4pc_holy            = get_proc( "Tier17 4pc Serendipity" );
   procs.t17_4pc_holy_overflow   = get_proc( "Tier17 4pc Serendipity lost to overflow" );
-  procs.void_eruption_both_dots = get_proc( "Void Eruption casted when a target with both DoTs was up" );
+  procs.void_eruption_has_dots = get_proc( "Void Eruption casted when a target with DoTs was up" );
   procs.void_eruption_no_dots   = get_proc( "Void Eruption casted when a target with no DoTs was up" );
-  procs.void_eruption_only_shadow_word_pain =
-      get_proc( "Void Eruption casted when a target with only Shadow Word: Pain was up" );
-  procs.void_eruption_only_vampiric_touch =
-      get_proc( "Void Eruption casted when a target with only Vampiric Touch was up" );
+  
   procs.void_tendril = get_proc( "Void Tendril spawned from Call to the Void" );
 
   procs.legendary_anunds_last_breath = get_proc(
@@ -5693,35 +5671,49 @@ struct priest_module_t final : public module_t
   }
   void register_hotfixes() const override
   {
-    /*
-     hotfix::register_effect( "Priest", "2016-09-26", "Mind Sear damage increased
-     by 80% and Insanity generation increased by 50%.", 326288 )
-     .field( "sp_coefficient" )
-     .operation( hotfix::HOTFIX_MUL )
-     .modifier( 1.80 )
-     .verification_value( 0.30 );
+    
+     hotfix::register_effect( "Priest", "2017-11-22", "Void Eruption Damage increased by 700%", 343748 )
+       .field( "sp_coefficient" )
+       .operation( hotfix::HOTFIX_SET )
+       .modifier( 12.0 )
+       .verification_value( 1.5 );
 
-     hotfix::register_effect( "Priest", "2016-09-26", "Mind Flay damage increased
-     by 20%.", 7301 )
-     .field( "sp_coefficient" )
-     .operation( hotfix::HOTFIX_MUL )
-     .modifier( 1.20 )
-     .verification_value( 0.50 );
+     hotfix::register_effect( "Priest", "2017-11-22", "Shadowcrash Insanity increased to 20.", 303254 )
+       .field( "base_value" )
+       .operation( hotfix::HOTFIX_SET )
+       .modifier( 2000 )
+       .verification_value( 1500 );
 
-     hotfix::register_effect( "Priest", "2016-09-26", "Mind Spike damage
-     increased by 28%.", 66820 )
-     .field( "sp_coefficient" )
-     .operation( hotfix::HOTFIX_MUL )
-     .modifier( 1.28 )
-     .verification_value( 0.35 );
+     hotfix::register_spell( "Priest", "2017-11-22", "Shadowcrash Cooldown Reduced to 20s.", 205385 )
+       .field( "cooldown" )
+       .operation( hotfix::HOTFIX_SET )
+       .modifier( 20.0 )
+       .verification_value( 30.0 );
 
-     hotfix::register_spell( "Priest", "2016-09-26", "Void Ray maximum stacks
-     reduced to 4.", 205372 )
-     .field( "max_stack" )
-     .operation( hotfix::HOTFIX_SET )
-     .modifier( 4.0 )
-     .verification_value( 5.0 );
-     */
+     hotfix::register_effect( "Priest", "2017-11-22", "Mind Sear damage increased by 50%.", 359434 )
+       .field( "sp_coefficient" )
+       .operation( hotfix::HOTFIX_SET )
+       .modifier( 0.6 )
+       .verification_value( 0.4 );
+
+     hotfix::register_effect( "Priest", "2017-11-22", "Heart of the Void reduced to 75%.", 465097 )
+       .field( "base_value" )
+       .operation( hotfix::HOTFIX_SET )
+       .modifier( 75 )
+       .verification_value( 300 );
+
+     hotfix::register_effect( "Priest", "2017-11-22", "Vampiric Touch damage reduced by 4%.", 25010 )
+       .field( "sp_coefficient" )
+       .operation( hotfix::HOTFIX_SET )
+       .modifier( 0.6816 )
+       .verification_value( 0.71 );
+
+     hotfix::register_effect( "Priest", "2017-11-22", "Shadow Word: Pain damage reduced by 4%.", 254257 )
+       .field( "sp_coefficient" )
+       .operation( hotfix::HOTFIX_SET )
+       .modifier( 0.3649 )
+       .verification_value( 0.38 );
+     
   }
 
   void combat_begin( sim_t* ) const override
