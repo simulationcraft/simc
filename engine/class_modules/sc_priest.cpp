@@ -4839,6 +4839,9 @@ void priest_t::apl_precombat()
       "variable,name=haste_eval,op=set,value=(raw_haste_pct-0.3)*(10+10*equipped."
 	  "mangazas_madness+5*talent.fortress_of_the_mind.enabled)" );
   precombat->add_action( "variable,name=haste_eval,op=max,value=0" );
+  precombat->add_action( 
+	  "variable,name=erupt_eval,op=set,value=26+1*talent.fortress_of_the_mind.enabled-"
+	  "4*talent.Sanlayn.enabled-3*talent.Shadowy_insight.enabled+variable.haste_eval*1.5" );
   precombat->add_action(
       "variable,name=cd_time,op=set,value=(12+(2-2*talent.mindbender.enabled*set_"
       "bonus.tier20_4pc)*set_bonus.tier19_2pc+(1-3*talent.mindbender.enabled*set_"
@@ -5069,9 +5072,8 @@ void priest_t::apl_shadow()
       "vampiric_touch,if=!talent.misery.enabled&dot.vampiric_touch.remains<"
       "(4+(4%3))*gcd" );
   main->add_action(
-      "void_eruption,if=(talent.mindbender.enabled&cooldown.mindbender."
-      "remains<(26+1*talent.fortress_of_the_mind.enabled+variable.haste_"
-	  "eval*1.5+gcd.max*4%3))|!talent.mindbender.enabled|set_bonus.tier20_4pc" );
+      "void_eruption,if=(talent.mindbender.enabled&cooldown.mindbender.remains<"
+	  "(variable.erupt_eval+gcd.max*4%3))|!talent.mindbender.enabled|set_bonus.tier20_4pc" );
   main->add_action( "shadow_crash,if=talent.shadow_crash.enabled" );
   main->add_action(
       "shadow_word_death,if=(active_enemies<=4|(talent.reaper_of_souls.enabled"
