@@ -3573,8 +3573,8 @@ struct blackout_kick_t: public monk_melee_attack_t
           am *= 1.0 + sef_mult;
         }
 
-        if ( p() -> sets -> has_set_bonus( MONK_WINDWALKER, T21, B2 ) && p() -> buff.bok_proc -> up() )
-          am *= 1 + p() -> sets -> set( MONK_WINDWALKER, T21, B2) -> effectN( 1 ).percent();
+        if ( p() -> sets -> has_set_bonus( MONK_WINDWALKER, T21, B4 ) && p() -> buff.bok_proc -> up() )
+          am *= 1 + p() -> sets -> set( MONK_WINDWALKER, T21, B4) -> effectN( 1 ).percent();
         break;
       }
       default: break;
@@ -3591,8 +3591,8 @@ struct blackout_kick_t: public monk_melee_attack_t
       p() -> buff.bok_proc -> expire();
       p() -> gain.bok_proc -> add( RESOURCE_CHI, base_costs[RESOURCE_CHI] );
 
-      if ( p() -> sets -> has_set_bonus( MONK_WINDWALKER, T21, B4 ) && rng().roll( p() -> sets -> set( MONK_WINDWALKER, T21, B4 ) -> effectN( 1 ).percent() ) )
-        p() -> resource_gain( RESOURCE_CHI, p() -> sets -> set( MONK_WINDWALKER, T21, B4 ) -> effectN(2).base_value(), p() -> gain.tier21_4pc_dps, this );
+      if ( p() -> sets -> has_set_bonus( MONK_WINDWALKER, T21, B2 ) )
+        p() -> resource_gain( RESOURCE_CHI, p() -> sets -> set( MONK_WINDWALKER, T21, B2 ) -> effectN( 2 ).base_value(), p() -> gain.tier21_4pc_dps );
     }
 
     // Windwalker Tier 18 (WoD 6.2) trinket effect is in use, adjust Rising Sun Kick proc chance based on spell data
@@ -9528,8 +9528,8 @@ void monk_t::assess_damage(school_e school,
       if ( legendary.anvil_hardened_wristwraps )
         cooldown.brewmaster_active_mitigation -> adjust( -1 * timespan_t::from_seconds( legendary.anvil_hardened_wristwraps -> effectN( 1 ).base_value() / 10 ) );
 
-      if ( sets -> has_set_bonus( MONK_BREWMASTER, T21, B4 ) && rng().roll( sets -> set( MONK_BREWMASTER, T21, B4 ) -> proc_chance() ) )
-       cooldown.breath_of_fire -> reset( true, true );
+      if ( sets -> has_set_bonus( MONK_BREWMASTER, T21, B4 )  )
+       cooldown.breath_of_fire -> adjust( -1 * timespan_t::from_seconds( sets -> set( MONK_BREWMASTER, T21, B4 ) -> effectN( 1 ).base_value() ) );
     }
     if ( s -> result == RESULT_MISS )
     {
