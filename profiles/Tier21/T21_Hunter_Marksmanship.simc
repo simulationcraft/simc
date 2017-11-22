@@ -11,7 +11,7 @@ crucible=1739:1780:1521/1739:1780:1521/1739:1780:319
 # Default consumables
 potion=prolonged_power
 flask=seventh_demon
-food=nightborne_delicacy_platter
+food=lavish_suramar_feast
 augmentation=defiled
 
 # This default action priority list is automatically created based on your character.
