@@ -5687,8 +5687,8 @@ struct priest_module_t final : public module_t
      hotfix::register_spell( "Priest", "2017-11-22", "Shadowcrash Cooldown Reduced to 20s.", 205385 )
        .field( "cooldown" )
        .operation( hotfix::HOTFIX_SET )
-       .modifier( 20.0 )
-       .verification_value( 30.0 );
+       .modifier( 20000.0 )
+       .verification_value( 30000.0 );
 
      hotfix::register_effect( "Priest", "2017-11-22", "Mind Sear damage increased by 50%.", 359434 )
        .field( "sp_coefficient" )
