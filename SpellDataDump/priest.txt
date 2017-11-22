@@ -163,7 +163,7 @@ Effects          :
 #1 (id=242)      : School Damage (2): shadow
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.38000 | Target: Enemy (6)
 #2 (id=254257)   : Apply Aura (6) | Periodic Damage (3): shadow every 2 seconds
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.38000 | Target: Enemy (6)
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.36490 | Target: Enemy (6)
 #3 (id=323674)   : Energize Power (30)
                    Base Value: 400 | Scaled Value: 400 | Misc Value: insanity | Target: Self (1)
 Description      : A word of darkness that causes $s1 Shadow damage instantly, and an additional $o2 Shadow damage over $d.$?a185916[
@@ -956,7 +956,7 @@ Effects          :
 #1 (id=25009)    : Apply Aura (6) | Dummy (4)
                    Base Value: 2 | Scaled Value: 2 | Target: Enemy (6)
 #2 (id=25010)    : Apply Aura (6) | Periodic Health Leech (53)
-                   Base Value: 1 | Scaled Value: 1 | Value Multiplier: 0.5 | SP Coefficient: 0.71000 | Target: Enemy (6)
+                   Base Value: 1 | Scaled Value: 1 | Value Multiplier: 0.5 | SP Coefficient: 0.68160 | Target: Enemy (6)
 #3 (id=323673)   : Energize Power (30)
                    Base Value: 600 | Scaled Value: 600 | Misc Value: insanity | Target: Self (1)
 Description      : A touch of darkness that causes $34914o2 Shadow damage over $34914d, and heals the Priest for ${$e2*100}% of damage dealt.
@@ -4086,7 +4086,7 @@ School           : Shadow
 Range            : 40 yards
 GCD              : 1.5 seconds
 Velocity         : 2.5 yards/sec
-Cooldown         : 30 seconds
+Cooldown         : 20 seconds
 Affecting spells : Shadow Priest (137033 effect#1), Voidform (194249 effect#4)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4098,7 +4098,7 @@ Effects          :
 #1 (id=303253)   : Trigger Missiles (32)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 205386 | Radius: 8 yards | Target: Unknown(87)
 #2 (id=303254)   : Energize Power (30)
-                   Base Value: 1500 | Scaled Value: 1500 | Misc Value: insanity | Target: Self (1)
+                   Base Value: 2000 | Scaled Value: 2000 | Misc Value: insanity | Target: Self (1)
 Description      : Hurl a bolt of slow-moving Shadow energy at the destination, dealing $205386s1 Shadow damage to all targets within $205386A1 yards.
 
 |cFFFFFFFFGenerates $/100;s2 Insanity.|r
@@ -4565,7 +4565,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=343748)   : School Damage (2): shadow
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.50000 | Target: Enemy (6)
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 12.00000 | Target: Enemy (6)
 Description      : $@spelldesc228260
 
 Name             : Smite (Rank 2) (id=231682) [Spell Family (6), Passive] 
@@ -4755,7 +4755,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : Not a proc (105)
 Effects          :
 #1 (id=359434)   : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.40000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.60000 | Target: Enemy (6)
 Description      : $@spelldesc234702
 
 Name             : Misery (id=238558) [Spell Family (6), Passive] 
