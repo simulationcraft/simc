@@ -1458,6 +1458,7 @@ class SpellDataGenerator(DataGenerator):
           ( 222321, 0 ),                            # Sorcerous Arcane Blast
           ( 205473, 0 ),                            # Icicles buff
           ( 253257, 0 ),                            # Frost T21 4P Arctic Blast
+          ( 187292, 0 ),                            # Ro3 buff (?)
         ),
 
         # Warlock:
