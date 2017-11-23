@@ -226,6 +226,11 @@ void pantheon_state_t::trigger_pantheon_buff( buff_t* actor_buff )
   }
 
   auto slot = buff_type( actor_buff );
+  if ( slot >= marks.size() )
+  {
+    return;
+  }
+
   auto state = buff_state( slot, actor_buff );
   if ( state == nullptr )
   {
@@ -281,7 +286,7 @@ void pantheon_state_t::trigger_empowerment()
 {
   if ( player -> sim -> debug )
   {
-    player -> sim -> out_debug.printf( "Pantheon state: Triggering empowerment on actors" );
+    player -> sim -> out_debug.printf( "Pantheon state: Triggering empowerment on actors and clearing state" );
     debug();
   }
 
@@ -306,7 +311,7 @@ void pantheon_state_t::trigger_empowerment()
   {
     if ( player -> sim -> debug )
     {
-      player -> sim -> out_debug.printf( "Pantheon state: Only proxy buffs up, clearing state" );
+      player -> sim -> out_debug.printf( "Pantheon state: Only proxy buffs up" );
     }
 
     range::for_each( pantheon_state, []( std::vector<pantheon_buff_state_t>& states ) {
@@ -315,6 +320,7 @@ void pantheon_state_t::trigger_empowerment()
   }
 
   proxy_state_only = true;
+  debug();
 }
 
 void pantheon_state_t::debug() const
@@ -334,7 +340,7 @@ void pantheon_state_t::debug() const
   {
     const auto& states = pantheon_state[ slot ];
 
-    proxy_s << mark_strs[  slot ] << ": ";
+    proxy_s << mark_strs[ slot ] << ": ";
     proxy_s << "(" << states.size() << ")";
 
     if ( states.size() > 0 )
@@ -441,11 +447,18 @@ void pantheon_state_t::cleanup_state()
 
 size_t pantheon_state_t::buff_type( const buff_t* actor_buff ) const
 {
-  auto it = range::find_if( drivers, [ actor_buff ]( unsigned id ) {
+  auto it = range::find_if( marks, [ actor_buff ]( unsigned id ) {
     return id == actor_buff -> data().id();
   } );
 
-  return it != drivers.end();
+  if ( it != marks.end() )
+  {
+    return std::distance( marks.begin(), it );
+  }
+  else
+  {
+    return marks.size();
+  }
 }
 
 const std::vector<unsigned> pantheon_state_t::drivers {

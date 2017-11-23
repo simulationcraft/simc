@@ -110,7 +110,8 @@ private:
   pantheon_buff_state_t* buff_state( size_t type, const real_ppm_t* );
   pantheon_buff_state_t* buff_state( size_t type, const buff_t* );
 
-  // Translate player (base trinket) buff to pantheon system slot
+  // Translate player (base trinket) buff to pantheon system slot. Returns drivers.size() + 1 (i.e.,
+  // more entries than there are pantheon trinket types) if the buff is invalid.
   size_t buff_type( const buff_t* ) const;
 
   // Clean up buff state
