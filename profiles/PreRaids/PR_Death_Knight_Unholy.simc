@@ -35,7 +35,7 @@ actions=auto_attack
 actions+=/mind_freeze
 # Racials, Items, and other ogcds
 actions+=/arcane_torrent,if=runic_power.deficit>20
-actions+=/blood fury
+actions+=/blood_fury
 actions+=/berserking
 actions+=/use_items
 actions+=/use_item,name=feloiled_infernal_machine,if=pet.valkyr_battlemaiden.active|!talent.dark_arbiter.enabled

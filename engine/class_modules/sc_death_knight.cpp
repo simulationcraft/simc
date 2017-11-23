@@ -8406,7 +8406,7 @@ void death_knight_t::default_apl_unholy()
   
   // Ogcd cooldowns
   def -> add_action( "arcane_torrent,if=runic_power.deficit>20", "Racials, Items, and other ogcds" );
-  def -> add_action( "blood fury" );
+  def -> add_action( "blood_fury" );
   def -> add_action( "berserking" );
   def -> add_action( "use_items" );
   def -> add_action( "use_item,name=feloiled_infernal_machine,"
