@@ -1714,9 +1714,11 @@ struct golganneths_vitality_proc_t : public pantheon_proc_callback_t
 protected:
   void execute( action_t* a, action_state_t* state ) override
   {
-    pantheon_proc_callback_t::execute( a, state );
-
+    // Note, buff needs to be up before pantheon_proc_callback_t::execute is called, as the buff's
+    // state will be used to determine empowerment state
     mark -> trigger();
+
+    pantheon_proc_callback_t::execute( a, state );
 
     make_event<ground_aoe_event_t>( *effect.player -> sim, effect.player, ground_aoe_params_t()
         .target( state -> target )
