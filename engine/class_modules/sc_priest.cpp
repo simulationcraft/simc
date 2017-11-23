@@ -5053,189 +5053,137 @@ void priest_t::apl_shadow()
   check->add_action( "variable,op=min,name=s2mcheck,value=180" );
 
   // Main APL
-  main->add_action(
-      "surrender_to_madness,if=talent.surrender_to_madness.enabled&target.time_"
-      "to_die<=variable.s2mcheck" );
-  main->add_action(
-      "shadow_word_death,if=equipped.zeks_exterminatus&equipped."
-      "mangazas_madness&buff.zeks_exterminatus.react" );
-  main->add_action(
-      "shadow_word_pain,if=talent.misery.enabled&dot.shadow_word_pain.remains<"
-      "gcd.max,moving=1,cycle_targets=1" );
-  main->add_action(
-      "vampiric_touch,if=talent.misery.enabled&(dot.vampiric_touch.remains<3"
-      "*gcd.max|dot.shadow_word_pain.remains<3*gcd.max),cycle_targets=1" );
-  main->add_action(
-      "shadow_word_pain,if=!talent.misery.enabled&dot.shadow_word_pain.remains"
-      "<(3+(4%3))*gcd" );
-  main->add_action(
-      "vampiric_touch,if=!talent.misery.enabled&dot.vampiric_touch.remains<"
-      "(4+(4%3))*gcd" );
-  main->add_action(
-      "void_eruption,if=(talent.mindbender.enabled&cooldown.mindbender.remains<"
-	  "(variable.erupt_eval+gcd.max*4%3))|!talent.mindbender.enabled|set_bonus.tier20_4pc" );
-  main->add_action( "shadow_crash,if=talent.shadow_crash.enabled" );
-  main->add_action(
-      "shadow_word_death,if=(active_enemies<=4|(talent.reaper_of_souls.enabled"
-      "&active_enemies<=2))&cooldown.shadow_word_death.charges=2&insanity<="
+  main->add_talent( this, "Surrender to Madness", "if=talent.surrender_to_madness.enabled&target.time_to_die<=variable.s2mcheck" );
+  main->add_action( this, "Shadow Word: Death", "if=equipped.zeks_exterminatus&equipped.mangazas_madness&buff.zeks_exterminatus.react" );
+  main->add_action( this, "Shadow Word: Pain", "if=talent.misery.enabled&dot.shadow_word_pain.remains<gcd.max,moving=1,cycle_targets=1" );
+  main->add_action( this, "Vampiric Touch", "if=talent.misery.enabled&(dot.vampiric_touch.remains<3*gcd.max|dot.shadow_word_pain.remains<3*gcd.max),cycle_targets=1" );
+  main->add_action( this, "Shadow Word: Pain", "if=!talent.misery.enabled&dot.shadow_word_pain.remains<(3+(4%3))*gcd" );
+  main->add_action( this, "Vampiric Touch", "if=!talent.misery.enabled&dot.vampiric_touch.remains<(4+(4%3))*gcd" );
+  main->add_action( this, "Void Eruption", "if=(talent.mindbender.enabled&cooldown.mindbender.remains<(variable.erupt_eval+gcd.max*4%3))|!talent.mindbender.enabled|set_bonus.tier20_4pc" );
+  main->add_talent( this, "Shadow Crash", "if=talent.shadow_crash.enabled" );
+  main->add_action( this, "Shadow Word: Death", "if=(active_enemies<=4|(talent.reaper_of_souls.enabled&active_enemies<=2))&cooldown.shadow_word_death.charges=2&insanity<="
       "(85-15*talent.reaper_of_souls.enabled)|(equipped.zeks_exterminatus&"
       "buff.zeks_exterminatus.react)" );
-  main->add_action(
-      "mind_blast,if=active_enemies<=4&talent.legacy_of_the_void.enabled&("
-      "insanity"
+  main->add_action( this, "Mind Blast", "if=active_enemies<=4&talent.legacy_of_the_void.enabled&(insanity"
       "<=81|(insanity<=75.2&talent.fortress_of_the_mind.enabled))" );
-  main->add_action(
-      "mind_blast,if=active_enemies<=4&!talent.legacy_of_the_void.enabled|("
-      "insanity"
+  main->add_action( this, "Mind Blast", "if=active_enemies<=4&!talent.legacy_of_the_void.enabled|(insanity"
       "<=96|(insanity<=95.2&talent.fortress_of_the_mind.enabled))" );
-  main->add_action(
-      "shadow_word_pain,if=!talent.misery.enabled&!ticking&target.time_to_die"
+  main->add_action( this, "Shadow Word: Pain", "if=!talent.misery.enabled&!ticking&target.time_to_die"
       ">10&(active_enemies<5&(talent.auspicious_spirits.enabled|talent.shadowy_"
       "insight.enabled)),cycle_targets=1" );
-  main->add_action(
-      "vampiric_touch,if=active_enemies>1&!talent.misery.enabled&!ticking&(variable"
+  main->add_action( this, "Vampiric Touch", "if=active_enemies>1&!talent.misery.enabled&!ticking&(variable"
       ".dot_vt_dpgcd*target.time_to_die%(gcd.max*(156+variable.sear_dpgcd*(active_"
       "enemies-1))))>1,cycle_targets=1" );
-  main->add_action(
-      "shadow_word_pain,if=active_enemies>1&!talent.misery.enabled&!ticking&(variable"
+  main->add_action(this, "Shadow Word: Pain", "if=active_enemies>1&!talent.misery.enabled&!ticking&(variable"
       ".dot_swp_dpgcd*target.time_to_die%(gcd.max*(118+variable.sear_dpgcd*(active_"
       "enemies-1))))>1,cycle_targets=1" );
-  main->add_action(
-      "shadow_word_void,if=talent.shadow_word_void.enabled&(insanity<=75-10*"
+  main->add_talent(this, "Shadow Word: Void", "if=talent.shadow_word_void.enabled&(insanity<=75-10*"
       "talent.legacy_of_the_void.enabled)" );
-  main->add_action( "mind_flay,interrupt=1,chain=1" );
-  main->add_action( "shadow_word_pain" );
+  main->add_action( this, "Mind Flay", "interrupt=1,chain=1" );
+  main->add_action( this, "Shadow Word: Pain" );
 
   // Surrender to Madness APL
-  s2m->add_action(
-      "silence,if=equipped.sephuzs_secret&(target.is_add|target.debuff.casting."
+  s2m->add_action(this, "Silence", "if=equipped.sephuzs_secret&(target.is_add|target.debuff.casting."
       "react)&cooldown.buff_sephuzs_secret.up&!buff.sephuzs_secret.up"
       ",cycle_targets=1" );
-  s2m->add_action( "void_bolt,if=buff.insanity_drain_stacks.value<6&set_bonus.tier19_4pc" );
-  s2m->add_action(
-      "mind_bomb,if=equipped.sephuzs_secret&target.is_add&cooldown.buff_sephuzs_"
+  s2m->add_action( this, "Void Bolt", "if=buff.insanity_drain_stacks.value<6&set_bonus.tier19_4pc" );
+  s2m->add_talent( this, "Mind Bomb", "if=equipped.sephuzs_secret&target.is_add&cooldown.buff_sephuzs_"
       "secret.remains<1&!buff.sephuzs_secret.up,cycle_targets=1" );
-  s2m->add_action( "shadow_crash,if=talent.shadow_crash.enabled" );
-  s2m->add_action(
-      "mindbender,if=cooldown.shadow_word_death.charges=0&buff.voidform.stack>(45"
+  s2m->add_talent( this, "Shadow Crash", "if=talent.shadow_crash.enabled" );
+  s2m->add_talent( this, "Mindbender", "if=cooldown.shadow_word_death.charges=0&buff.voidform.stack>(45"
       "+25*set_bonus.tier20_4pc)" );
-  s2m->add_action(
-      "void_torrent,if=dot.shadow_word_pain.remains>5.5&dot.vampiric_"
+  s2m->add_action( this, "Void Torrent", "if=dot.shadow_word_pain.remains>5.5&dot.vampiric_"
       "touch.remains>5.5&!buff.power_infusion.up|buff.voidform.stack<5" );
   s2m->add_action( "berserking,if=buff.voidform.stack>=65" );
-  s2m->add_action(
-      "shadow_word_death,if=current_insanity_drain*gcd.max>insanity&(insanity-"
+  s2m->add_action( this, "Shadow Word: Death", "if=current_insanity_drain*gcd.max>insanity&(insanity-"
       "(current_insanity_drain*gcd.max)+(30+30*talent.reaper_of_souls.enabled)<100)" );
   if ( race == RACE_BLOOD_ELF )
-    s2m->add_action(
+    s2m->add_action( 
         "arcane_torrent,if=buff.insanity_drain_stacks.value>=65"
         "&(insanity-(current_insanity_drain*gcd.max)+30)<100" );
-  s2m->add_action(
-      "power_infusion,if=cooldown.shadow_word_death.charges=0&buff.voidform.stack"
+  s2m->add_talent( this, "Power Infusion", "if=cooldown.shadow_word_death.charges=0&buff.voidform.stack"
       ">(45+25*set_bonus.tier20_4pc)|target.time_to_die<=30" );
-  s2m->add_action( "void_bolt" );
-  s2m->add_action(
-      "shadow_word_death,if=(active_enemies<=4|(talent.reaper_of_souls.enabled&"
-      "active_"
+  s2m->add_action( this, "Void Bolt" );
+  s2m->add_action( this, "Shadow Word: Death", "if=(active_enemies<=4|(talent.reaper_of_souls.enabled&active_"
       "enemies<=2))&current_insanity_drain*gcd.max>insanity&(insanity-"
       "(current_insanity_drain*gcd.max)+(30+30*talent.reaper_of_souls.enabled))"
       "<100" );
   s2m->add_action(
       "wait,sec=action.void_bolt.usable_in,if=action.void_bolt.usable_in<gcd."
       "max*0.28" );
-  s2m->add_action(
-      "dispersion,if=current_insanity_drain*gcd.max>insanity&!buff.power_"
+  s2m->add_action( this, "Dispersion", "if=current_insanity_drain*gcd.max>insanity&!buff.power_"
       "infusion.up|(buff.voidform.stack>76&cooldown.shadow_word_death.charges=0"
       "&current_insanity_drain*gcd.max>insanity)" );
-  s2m->add_action( "mind_blast,if=active_enemies<=5" );
+  s2m->add_action( this, "Mind Blast", "if=active_enemies<=5" );
   s2m->add_action(
       "wait,sec=action.mind_blast.usable_in,if=action.mind_blast.usable_in<gcd."
       "max*0.28&active_enemies<=5" );
-  s2m->add_action(
-      "shadow_word_death,if=(active_enemies<=4|(talent.reaper_of_souls.enabled&"
+  s2m->add_action( this, "Shadow Word: Death", "if=(active_enemies<=4|(talent.reaper_of_souls.enabled&"
       "active_enemies<=2))&cooldown.shadow_word_death.charges=2" );
-  s2m->add_action( "shadowfiend,if=!talent.mindbender.enabled&buff.voidform.stack>15" );
-  s2m->add_action(
-      "shadow_word_void,if=talent.shadow_word_void.enabled&(insanity-(current_"
+  s2m->add_action( this, "Shadowfiend", "if=!talent.mindbender.enabled&buff.voidform.stack>15" );
+  s2m->add_talent( this, "Shadow Word: Void", "if=talent.shadow_word_void.enabled&(insanity-(current_"
       "insanity_drain*gcd.max)+50)<100" );
-  s2m->add_action(
-      "shadow_word_pain,if=talent.misery.enabled&dot.shadow_word_pain.remains"
+  s2m->add_action( this, "Shadow Word: Pain", "if=talent.misery.enabled&dot.shadow_word_pain.remains"
       "<gcd,moving=1,cycle_targets=1" );
-  s2m->add_action(
-      "vampiric_touch,if=talent.misery.enabled&(dot.vampiric_touch.remains<3*"
+  s2m->add_action( this, "Vampiric Touch", "if=talent.misery.enabled&(dot.vampiric_touch.remains<3*"
       "gcd.max|dot.shadow_word_pain.remains<3*gcd.max),cycle_targets=1" );
-  s2m->add_action(
-      "shadow_word_pain,if=!talent.misery.enabled&!ticking&(active_enemies<5|"
+  s2m->add_action( this, "Shadow Word: Pain", "if=!talent.misery.enabled&!ticking&(active_enemies<5|"
       "talent.auspicious_spirits.enabled|talent.shadowy_insight.enabled|"
       "artifact"
       ".sphere_of_insanity.rank)" );
-  s2m->add_action(
-      "vampiric_touch,if=!talent.misery.enabled&!ticking&(active_enemies<4|"
+  s2m->add_action( this, "Vampiric Touch", "if=!talent.misery.enabled&!ticking&(active_enemies<4|"
       "talent."
       "sanlayn.enabled|(talent.auspicious_spirits.enabled&artifact.unleash_the_"
       "shadows.rank))" );
-  s2m->add_action(
-      "shadow_word_pain,if=!talent.misery.enabled&!ticking&target.time_to_die>"
+  s2m->add_action( this, "Shadow Word: Pain", "if=!talent.misery.enabled&!ticking&target.time_to_die>"
       "10&"
       "(active_enemies<5&(talent.auspicious_spirits.enabled|talent.shadowy_"
       "insight"
       ".enabled)),cycle_targets=1" );
-  s2m->add_action(
-      "vampiric_touch,if=!talent.misery.enabled&!ticking&target.time_to_die>10&"
+  s2m->add_action( this, "Vampiric Touch", "if=!talent.misery.enabled&!ticking&target.time_to_die>10&"
       "(active_enemies<4|talent.sanlayn.enabled|(talent.auspicious_spirits."
       "enabled&"
       "artifact.unleash_the_shadows.rank)),cycle_targets=1" );
-  s2m->add_action(
-      "shadow_word_pain,if=!talent.misery.enabled&!ticking&target.time_to_die>"
+  s2m->add_action( this, "Shadow Word: Pain", "if=!talent.misery.enabled&!ticking&target.time_to_die>"
       "10&"
       "(active_enemies<5&artifact.sphere_of_insanity.rank),cycle_targets=1" );
-  s2m->add_action(
-      "mind_flay,chain=1,interrupt_immediate=1,interrupt_if=ticks>=2&(action."
+  s2m->add_action( this, "Mind Flay", "chain=1,interrupt_immediate=1,interrupt_if=ticks>=2&(action."
       "void_"
       "bolt.usable|(current_insanity_drain*gcd.max>insanity&(insanity-(current_"
       "insanity_drain*gcd.max)+60)<100&cooldown.shadow_word_death.charges>=1)"
       ")" );
 
   // Voidform APL
-  vf->add_action(
-      "surrender_to_madness,if=talent.surrender_to_madness.enabled&insanity>="
+  vf->add_talent( this, "Surrender to Madness", "if=talent.surrender_to_madness.enabled&insanity>="
       "25&(cooldown.void_bolt.up|cooldown.void_torrent.up|cooldown.shadow_word_"
       "death.up|buff.shadowy_insight.up)&target.time_to_die<=variable.s2mcheck-"
       "(buff.insanity_drain_stacks.value)" );
-  vf->add_action(
-      "silence,if=equipped.sephuzs_secret&(target.is_add|target.debuff.casting."
+  vf->add_action( this, "Silence", "if=equipped.sephuzs_secret&(target.is_add|target.debuff.casting."
       "react)&cooldown.buff_sephuzs_secret.up&!buff.sephuzs_secret.up"
       "&buff.insanity_drain_stacks.value>10,cycle_targets=1" );
-  vf->add_action( "void_bolt" );
-  vf->add_action(
-      "shadow_word_death,if=equipped.zeks_exterminatus&equipped."
+  vf->add_action( this, "Void Bolt" );
+  vf->add_action( this, "Shadow Word: Death", "if=equipped.zeks_exterminatus&equipped."
       "mangazas_madness&buff.zeks_exterminatus.react" );
   if ( race == RACE_BLOOD_ELF )
     vf->add_action(
         "arcane_torrent,if=buff.insanity_drain_stacks.value>=20&(insanity-"
         "(current_insanity_drain*gcd.max)+15)<100" );
-  vf->add_action(
-      "mind_bomb,if=equipped.sephuzs_secret&target.is_add&cooldown.buff_sephuzs_"
+  vf->add_talent( this, "Mind Bomb", "if=equipped.sephuzs_secret&target.is_add&cooldown.buff_sephuzs_"
       "secret.remains<1&!buff.sephuzs_secret.up&buff.insanity_drain_stacks.value>10"
       ",cycle_targets=1" );
-  vf->add_action( "shadow_crash,if=talent.shadow_crash.enabled" );
-  vf->add_action(
-      "void_torrent,if=dot.shadow_word_pain.remains>5.5&dot.vampiric_touch."
-      "remains"
+  vf->add_talent( this, "Shadow Crash", "if=talent.shadow_crash.enabled" );
+  vf->add_action( this, "Void Torrent", "if=dot.shadow_word_pain.remains>5.5&dot.vampiric_touch.remains"
       ">5.5&(!talent.surrender_to_madness.enabled|(talent.surrender_to_madness."
       "enabled&target.time_to_die>variable.s2mcheck-(buff.insanity_drain_"
-      "stacks."
-      "value)+60))" );
-  vf->add_action(
-      "mindbender,if=buff.insanity_drain_stacks.value>=(variable.cd_time+(variable.haste_"
+      "stacks.value)+60))" );
+  vf->add_talent( this, "Mindbender", "if=buff.insanity_drain_stacks.value>=(variable.cd_time+(variable.haste_"
       "eval*!set_bonus.tier20_4pc)-(3*set_bonus.tier20_4pc*(raid_event.movement.in<15)*"
       "((active_enemies-(raid_event"
       ".adds.count*(raid_event.adds.remains>0)))=1))+(5-3*set_bonus.tier20_4pc)*buff.bloodlust."
       "up+2*talent.fortress_of_the_mind.enabled*set_bonus.tier20_4pc)&(!talent.surrender_to_"
       "madness.enabled|(talent.surrender_to_madness.enabled&target.time_to_die>variable."
       "s2mcheck-buff.insanity_drain_stacks.value))" );
-  vf->add_action(
-      "power_infusion,if=buff.insanity_drain_stacks.value>=(variable.cd_time+5*buff."
+  vf->add_talent( this, "Power Infusion", "if=buff.insanity_drain_stacks.value>=(variable.cd_time+5*buff."
       "bloodlust.up*(1+1*set_bonus.tier20_4pc))&(!talent.surrender_to_madness.enabled"
       "|(talent.surrender_to_madness.enabled&target.time_to_die>variable.s2mcheck-(buff"
       ".insanity_drain_stacks.value)+61))" );
@@ -5246,8 +5194,7 @@ void priest_t::apl_shadow()
       "enabled&"
       "target.time_to_die>variable.s2mcheck-(buff.insanity_drain_stacks.value)+"
       "60))" );
-  vf->add_action(
-      "shadow_word_death,if=(active_enemies<=4|(talent.reaper_of_souls.enabled&"
+  vf->add_action( this, "Shadow Word: Death", "if=(active_enemies<=4|(talent.reaper_of_souls.enabled&"
       "active_"
       "enemies<=2))&current_insanity_drain*gcd.max>insanity&(insanity-"
       "(current_insanity_drain*gcd.max)+(15+15*talent.reaper_of_souls.enabled))"
@@ -5255,50 +5202,41 @@ void priest_t::apl_shadow()
   vf->add_action(
       "wait,sec=action.void_bolt.usable_in,if=action.void_bolt.usable_in<gcd."
       "max*0.28" );
-  vf->add_action( "mind_blast,if=active_enemies<=4" );
+  vf->add_action( this, "Mind Blast", "if=active_enemies<=4" );
   vf->add_action(
       "wait,sec=action.mind_blast.usable_in,if=action.mind_blast.usable_in<gcd."
       "max*0.28&active_enemies<=4" );
-  vf->add_action(
-      "shadow_word_death,if=(active_enemies<=4|(talent.reaper_of_souls"
+  vf->add_action( this, "Shadow Word: Death", "if=(active_enemies<=4|(talent.reaper_of_souls"
       ".enabled&active_enemies<=2))&cooldown.shadow_word_death.charges=2|"
       "(equipped.zeks_exterminatus&buff.zeks_exterminatus.react)" );
-  vf->add_action( "shadowfiend,if=!talent.mindbender.enabled&buff.voidform.stack>15" );
-  vf->add_action(
-      "shadow_word_void,if=talent.shadow_word_void.enabled&(insanity-(current_"
+  vf->add_action( this, "Shadowfiend", "if=!talent.mindbender.enabled&buff.voidform.stack>15" );
+  vf->add_talent( this, "Shadow Word: Void", "if=talent.shadow_word_void.enabled&(insanity-(current_"
       "insanity_drain*gcd.max)+25)<100" );
-  vf->add_action(
-      "shadow_word_pain,if=talent.misery.enabled&dot.shadow_word_pain.remains"
+  vf->add_action( this, "Shadow Word: Pain", "if=talent.misery.enabled&dot.shadow_word_pain.remains"
       "<gcd,moving=1,cycle_targets=1" );
-  vf->add_action(
-      "vampiric_touch,if=talent.misery.enabled&(dot.vampiric_touch.remains<3*"
+  vf->add_action( this, "Vampiric Touch", "if=talent.misery.enabled&(dot.vampiric_touch.remains<3*"
       "gcd.max|dot.shadow_word_pain.remains<3*gcd.max)&target.time_to_die>5*gcd."
       "max,cycle_targets=1" );
-  vf->add_action(
-      "shadow_word_pain,if=!talent.misery.enabled&!ticking&(active_enemies<5|"
+  vf->add_action( this, "Shadow Word: Pain", "if=!talent.misery.enabled&!ticking&(active_enemies<5|"
       "talent.auspicious_spirits.enabled|talent.shadowy_insight.enabled|"
       "artifact"
       ".sphere_of_insanity.rank)" );
-  vf->add_action(
-      "vampiric_touch,if=!talent.misery.enabled&!ticking&(active_enemies<4|"
+  vf->add_action( this, "Vampiric Touch", "if=!talent.misery.enabled&!ticking&(active_enemies<4|"
       "talent."
       "sanlayn.enabled|(talent.auspicious_spirits.enabled&artifact.unleash_the_"
       "shadows.rank))" );
-  vf->add_action(
-      "vampiric_touch,if=active_enemies>1&!talent.misery.enabled&!ticking&((1+0.02"
+  vf->add_action( this, "Vampiric Touch", "if=active_enemies>1&!talent.misery.enabled&!ticking&((1+0.02"
       "*buff.voidform.stack)*variable.dot_vt_dpgcd*target.time_to_die%(gcd.max*(156"
       "+variable.sear_dpgcd*(active_enemies-1))))>1,cycle_targets=1" );
-  vf->add_action(
-      "shadow_word_pain,if=active_enemies>1&!talent.misery.enabled&!ticking&((1+0.02"
+  vf->add_action( this, "Shadow Word: Pain", "if=active_enemies>1&!talent.misery.enabled&!ticking&((1+0.02"
       "*buff.voidform.stack)*variable.dot_swp_dpgcd*target.time_to_die%(gcd.max*(118"
       "+variable.sear_dpgcd*(active_enemies-1))))>1,cycle_targets=1" );
-  vf->add_action(
-      "mind_flay,chain=1,interrupt_immediate=1,interrupt_if=ticks>=2&(action."
+  vf->add_action( this, "Mind Flay", "chain=1,interrupt_immediate=1,interrupt_if=ticks>=2&(action."
       "void_"
       "bolt.usable|(current_insanity_drain*gcd.max>insanity&(insanity-(current_"
       "insanity_drain*gcd.max)+30)<100&cooldown.shadow_word_death.charges>=1)"
       ")" );
-  vf->add_action( "shadow_word_pain" );
+  vf->add_action( this, "Shadow Word: Pain" );
 }
 
 /** Discipline Heal Combat Action Priority List */
