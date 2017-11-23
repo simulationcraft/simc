@@ -8254,13 +8254,13 @@ std::string death_knight_t::default_rune() const
 
 void death_knight_t::default_apl_frost()
 {
-  action_priority_list_t* def         = get_action_priority_list( "default" );
-  action_priority_list_t* cooldowns   = get_action_priority_list( "cooldowns" );
-  action_priority_list_t* cold_heart  = get_action_priority_list( "cold_heart" );
-  action_priority_list_t* standard    = get_action_priority_list( "standard" );
-  action_priority_list_t* obliteration= get_action_priority_list( "obliteration" );
-  action_priority_list_t* bos_pooling = get_action_priority_list( "bos_pooling" );
-  action_priority_list_t* bos_ticking = get_action_priority_list( "bos_ticking" );
+  action_priority_list_t* def          = get_action_priority_list( "default" );
+  action_priority_list_t* cooldowns    = get_action_priority_list( "cooldowns" );
+  action_priority_list_t* cold_heart   = get_action_priority_list( "cold_heart" );
+  action_priority_list_t* standard     = get_action_priority_list( "standard" );
+  action_priority_list_t* obliteration = get_action_priority_list( "obliteration" );
+  action_priority_list_t* bos_pooling  = get_action_priority_list( "bos_pooling" );
+  action_priority_list_t* bos_ticking  = get_action_priority_list( "bos_ticking" );
   
 
   // Setup precombat APL for DPS spec
@@ -8385,102 +8385,99 @@ void death_knight_t::default_apl_frost()
 
 void death_knight_t::default_apl_unholy()
 {
-  action_priority_list_t* precombat = get_action_priority_list("precombat");
-  action_priority_list_t* def = get_action_priority_list("default");
-  action_priority_list_t* valkyr = get_action_priority_list("valkyr");
-  action_priority_list_t* generic = get_action_priority_list("generic");
-  action_priority_list_t* aoe = get_action_priority_list("aoe");
+  action_priority_list_t* precombat  = get_action_priority_list( "precombat"  );
+  action_priority_list_t* def        = get_action_priority_list( "default"    );
+  action_priority_list_t* valkyr     = get_action_priority_list(" valkyr"     );
+  action_priority_list_t* generic    = get_action_priority_list( "generic"    );
+  action_priority_list_t* aoe        = get_action_priority_list( "aoe"        );
+  action_priority_list_t* cooldowns  = get_action_priority_list( "cooldowns"  );
+  action_priority_list_t* dt         = get_action_priority_list( "dt"         );
+  action_priority_list_t* cold_heart = get_action_priority_list( "cold_heart" );
 
   // Setup precombat APL for DPS spec
   default_apl_dps_precombat();
 
-  precombat->add_action(this, "Raise Dead");
-  precombat->add_action(this, "Army of the Dead");
-  precombat->add_talent(this, "Blighted Rune Weapon");
+  precombat -> add_action( this, "Raise Dead" );
+  precombat -> add_action( this, "Army of the Dead" );
+  precombat -> add_talent( this, "Blighted Rune Weapon" );
 
-  def->add_action("auto_attack");
-  def->add_action(this, "Mind Freeze");
+  def -> add_action( "auto_attack" );
+  def -> add_action( this, "Mind Freeze" );
 
-  // Racials
-  def->add_action("arcane_torrent,if=runic_power.deficit>20");
-  def->add_action("blood_fury");
-  def->add_action("berserking");
+  // Action Lists
+  def -> add_action( "call_action_list,name=cds" );
+  def -> add_action( "run_action_list,name=valkyr,if=pet.valkyr_battlemaiden.active&talent.dark_arbiter.enabled" );
+  def -> add_action( "call_action_list,name=generic" );
 
-  // On-use items
-  def->add_action("use_items");
-  def->add_action("use_item,name=feloiled_infernal_machine,"
-                  "if=pet.valkyr_battlemaiden.active|!talent.dark_arbiter.enabled");
-  def->add_action("use_item,name=ring_of_collapsing_futures,"
-                  "if=(buff.temptation.stack=0&target.time_to_die>60)|target.time_to_die<60");
-
+  // Cooldowns action list
+  cooldowns -> add_action( "arcane_torrent,if=runic_power.deficit>20", "Racials, Items, and other ogcds" );
+  cooldowns -> add_action( "blood fury" );
+  cooldowns -> add_cation( "berserking" );
+  cooldowns -> add_action( "use_items" );
+  cooldowns -> add_action( "use_item,name=feloiled_infernal_machine,"
+                  "if=pet.valkyr_battlemaiden.active|!talent.dark_arbiter.enabled" );
+  cooldowns -> add_action( "use_item,name=ring_of_collapsing_futures,"
+                  "if=(buff.temptation.stack=0&target.time_to_die>60)|target.time_to_die<60" );
   // In-combat potion
-  def->add_action("potion,if=buff.unholy_strength.react");
-
-  // Generic things that should be always done
-  def->add_action(this, "Outbreak", "target_if=(dot.virulent_plague.tick_time_remains+tick_time<=dot.virulent_plague.remains)&dot.virulent_plague.remains<=gcd");
-  def->add_action(this, "Army of the Dead" );
-  def->add_action(this, "Dark Transformation", "if=equipped.137075&cooldown.dark_arbiter.remains>165");
-  def->add_action(this, "Dark Transformation", "if=equipped.137075&!talent.shadow_infusion.enabled&cooldown.dark_arbiter.remains>55");
-  def->add_action(this, "Dark Transformation", "if=equipped.137075&talent.shadow_infusion.enabled&cooldown.dark_arbiter.remains>35");
-  def->add_action(this, "Dark Transformation", "if=equipped.137075&target.time_to_die<cooldown.dark_arbiter.remains-8");
-  def->add_action(this, "Dark Transformation", "if=equipped.137075&cooldown.summon_gargoyle.remains>160");
-  def->add_action(this, "Dark Transformation", "if=equipped.137075&!talent.shadow_infusion.enabled&cooldown.summon_gargoyle.remains>55");
-  def->add_action(this, "Dark Transformation", "if=equipped.137075&talent.shadow_infusion.enabled&cooldown.summon_gargoyle.remains>35");
-  def->add_action(this, "Dark Transformation", "if=equipped.137075&target.time_to_die<cooldown.summon_gargoyle.remains-8");
-  def->add_action(this, "Dark Transformation", "if=!equipped.137075&rune<=3");
-  def->add_talent(this, "Blighted Rune Weapon", "if=debuff.festering_wound.stack<=4");
-
-  // Pick an APL to run
-  def->add_action("run_action_list,name=valkyr,if=talent.dark_arbiter.enabled&pet.valkyr_battlemaiden.active");
-  def->add_action("call_action_list,name=generic");
+  cooldowns -> add_action( "potion,if=buff.unholy_strength.react" );
+  // Ogcd cooldowns
+  cooldowns -> add_talent( this, "Blighted Rune Weapon", "if=debuff.festering_wound.stack<=4" );
+  // Maintain Virulent Plague
+  cooldowns -> add_action( this, "Outbreak", "target_if=(dot.virulent_plague.tick_time_remains+tick_time<=dot.virulent_plague.remains)&dot.virulent_plague.remains<=gcd" );
+  cooldowns -> add_action( "call_action_list,name=cold_heart,if=equipped.cold_heart&buff.cold_heart.stack>10&!debuff.soul_reaper.up" );
+  // On-gcd cooldowns
+  cooldowns -> add_action( this, "Army of the Dead" );
+  cooldowns -> add_action( this, "Apocalypse", "if=debuff.festering_wound.stack>=6" );
+  cooldowns -> add_talent( this, "Dark Arbiter", "if=(!equipped.137075|cooldown.dark_transformation.remains<2)&runic_power.deficit<30" );
+  cooldowns -> add_action( this, "Summon Gargoyle", "if=(!equipped.137075|cooldown.dark_transformation.remains<10)&rune.time_to_4>=gcd" );
+  cooldowns -> add_talent( this, "Soul Reaper", "if=(debuff.festering_wound.stack>=6&cooldown.apocalypse.remains<=gcd)|(debuff.festering_wound.stack>=3&rune>=3&cooldown.apocalypse.remains>20)" );
+  cooldowns -> add_action( "call_action_list,name=dt,if=cooldown.dark_transformation.ready" );
   
+  // Cold Heart
+  cold_heart -> add_action( this, "Chains of ice", "if=buff.unholy_strength.remains<gcd&buff.unholy_strength.react&buff.cold_heart.stack>16", "Cold Heart legendary" );
+  cold_heart -> add_action( this, "Chains of ice", "if=buff.master_of_ghouls.remains<gcd&buff.master_of_ghouls.up&buff.cold_heart.stack>17" );
+  cold_heart -> add_action( this, "Chains of ice", "if=buff.cold_heart.stack=20&buff.unholy_strength.react" );
+
+  // Dark Transformation conditionals
+  dt -> add_action( this, "Dark Transformation", "if=equipped.137075&talent.dark_arbiter.enabled&(talent.shadow_infusion.enabled|cooldown.dark_arbiter.remains>52)&cooldown.dark_arbiter.remains>30&!equipped.140806", "Dark Transformation List" );
+  dt -> add_action( this, "Dark Transformation", "if=equipped.137075&(talent.shadow_infusion.enabled|cooldown.dark_arbiter.remains>(52*1.333))&equipped.140806&cooldown.dark_arbiter.remains>(30*1.333)" );
+  dt -> add_action( this, "Dark Transformation", "if=equipped.137075&target.time_to_die<cooldown.dark_arbiter.remains-8" );
+  dt -> add_action( this, "Dark Transformation", "if=equipped.137075&(talent.shadow_infusion.enabled|cooldown.summon_gargoyle.remains>55)&cooldown.summon_gargoyle.remains>35" );
+  dt -> add_action( this, "Dark Transformation", "if=equipped.137075&target.time_to_die<cooldown.summon_gargoyle.remains-8" );
+  dt -> add_action( this, "Dark Transformation", "if=!equipped.137075&rune<=3" );
+
   // Default generic target APL
-  generic->add_talent(this, "Dark Arbiter", "if=!equipped.137075&runic_power.deficit<30");
-  generic->add_action(this, "Apocalypse", "if=equipped.137075&debuff.festering_wound.stack>=6&talent.dark_arbiter.enabled");
-  generic->add_talent(this, "Dark Arbiter", "if=equipped.137075&runic_power.deficit<30&cooldown.dark_transformation.remains<2");
-  generic->add_action(this, "Summon Gargoyle", "if=!equipped.137075,if=rune<=3");
-  generic->add_action(this, "Chains of Ice", "if=buff.unholy_strength.up&buff.cold_heart.stack>19");
-  generic->add_action(this, "Summon Gargoyle", "if=equipped.137075&cooldown.dark_transformation.remains<10&rune<=3");
-  generic->add_talent(this, "Soul Reaper", "if=debuff.festering_wound.stack>=6&cooldown.apocalypse.remains<4");
-  generic->add_action(this, "Apocalypse", "if=debuff.festering_wound.stack>=6");
-  generic->add_action(this, "Death Coil", "if=runic_power.deficit<10");
-  generic->add_action(this, "Death Coil", "if=!talent.dark_arbiter.enabled&buff.sudden_doom.up&!buff.necrosis.up&rune<=3");
-  generic->add_action(this, "Death Coil", "if=talent.dark_arbiter.enabled&buff.sudden_doom.up&cooldown.dark_arbiter.remains>5&rune<=3");
-  generic->add_action(this, "Festering Strike", "if=debuff.festering_wound.stack<6&cooldown.apocalypse.remains<=6");
-  generic->add_talent(this, "Soul Reaper", "if=debuff.festering_wound.stack>=3");
-  generic->add_action(this, "Festering Strike", "if=debuff.soul_reaper.up&!debuff.festering_wound.up");
-  generic->add_action(this, "Scourge Strike", "if=debuff.soul_reaper.up&debuff.festering_wound.stack>=1");
-  generic->add_talent(this, "Clawing Shadows", "if=debuff.soul_reaper.up&debuff.festering_wound.stack>=1");
-  // Misc things
-  generic->add_talent(this, "Defile");
-  generic->add_action("call_action_list,name=aoe,if=active_enemies>=2");
-  // Playing with Wounds
-  generic->add_action(this, "Festering Strike", "if=debuff.festering_wound.stack<=2&(debuff.festering_wound.stack<=4|(buff.blighted_rune_weapon.up|talent.castigator.enabled))&runic_power.deficit>5&(runic_power.deficit>23|!talent.castigator.enabled)");
-  generic->add_action(this, "Death Coil", "if=!buff.necrosis.up&talent.necrosis.enabled&rune.time_to_4>gcd");
-  generic->add_action(this, "Scourge Strike", "if=(buff.necrosis.react|buff.unholy_strength.react|rune>=2)&debuff.festering_wound.stack>=1&(debuff.festering_wound.stack>=3|!(talent.castigator.enabled|equipped.132448))&runic_power.deficit>9&(runic_power.deficit>23|!talent.castigator.enabled)");
-  generic->add_talent(this, "Clawing Shadows", "if=(buff.necrosis.react|buff.unholy_strength.react|rune>=2)&debuff.festering_wound.stack>=1&(debuff.festering_wound.stack>=3|!equipped.132448)&runic_power.deficit>9");
+  generic -> add_action( this, "Scourge Strike", "if=debuff.soul_reaper.up&debuff.festering_wound.up" );
+  generic -> add_talent( this, "Clawing Shadows", "if=debuff.soul_reaper.up&debuff.festering_wound.up" );
+  generic -> add_action( this, "Death Coil", "if=runic_power.deficit<22&(talent.shadow_infusion.enabled|(!talent.dark_arbiter.enabled|cooldown.dark_arbiter.remains>5))" );
+  generic -> add_action( this, "Death Coil", "if=!buff.necrosis.up&buff.sudden_doom.react&((!talent.dark_arbiter.enabled&rune<=3)|cooldown.dark_arbiter.remains>5)" );
+  generic -> add_action( this, "Festering Strike", "if=debuff.festering_wound.stack<6&cooldown.apocalypse.remains<=6" );
+  // Switch to aoe
+  generic -> add_talent( this, "Defile", "Switch to aoe" );
+  generic -> add_action( "call_action_list,name=aoe,if=active_enemies>=2" );
+  // Wounds management
+  generic -> add_action( this, "Festering Strike", "if=(buff.blighted_rune_weapon.stack*2+debuff.festering_wound.stack)<=2|((buff.blighted_rune_weapon.stack*2+debuff.festering_wound.stack)<=4&talent.castigator.enabled)&(cooldown.army_of_the_dead.remains>5|rune.time_to_4<=gcd)" );
+  generic -> add_action( this, "Death Coil", "if=!buff.necrosis.up&talent.necrosis.enabled&rune.time_to_4>=gcd" );
+  generic -> add_action( this, "Scourge Strike", "if=(buff.necrosis.up|buff.unholy_strength.react|rune>=2)&debuff.festering_wound.stack>=1&(debuff.festering_wound.stack>=3|!(talent.castigator.enabled|equipped.132448))&(cooldown.army_of_the_dead.remains>5|rune.time_to_4<=gcd)" );
+  generic -> add_talent( this, "Clawing Shadows", "if=(buff.necrosis.up|buff.unholy_strength.react|rune>=2)&debuff.festering_wound.stack>=1&(debuff.festering_wound.stack>=3|!equipped.132448)&(cooldown.army_of_the_dead.remains>5|rune.time_to_4<=gcd)" );
   // Death Coil filler
-  generic->add_action(this, "Death Coil", "if=talent.shadow_infusion.enabled&talent.dark_arbiter.enabled&!buff.dark_transformation.up&cooldown.dark_arbiter.remains>10");
-  generic->add_action(this, "Death Coil", "if=talent.shadow_infusion.enabled&!talent.dark_arbiter.enabled&!buff.dark_transformation.up");
-  generic->add_action(this, "Death Coil", "if=talent.dark_arbiter.enabled&cooldown.dark_arbiter.remains>10");
-  generic->add_action(this, "Death Coil", "if=!talent.shadow_infusion.enabled&!talent.dark_arbiter.enabled");
+  generic -> add_action( this, "Death Coil", "if=(talent.dark_arbiter.enabled&cooldown.dark_arbiter.remains>10)|!talent.dark_arbiter.enabled");
 
   // Generic AOE actions to be done
-  aoe->add_action(this, "Death and Decay", "if=spell_targets.death_and_decay>=2");
-  aoe->add_talent(this, "Epidemic", "if=spell_targets.epidemic>4");
-  aoe->add_action(this, "Scourge Strike", "if=spell_targets.scourge_strike>=2&(death_and_decay.ticking|defile.ticking)");
-  aoe->add_talent(this, "Clawing Shadows", "if=spell_targets.clawing_shadows>=2&(death_and_decay.ticking|defile.ticking)");
-  aoe->add_talent(this, "Epidemic", "if=spell_targets.epidemic>2");
+  aoe -> add_action( this, "Death and Decay", "if=spell_targets.death_and_decay>=2", "AoE rotation" );
+  aoe -> add_talent( this, "Epidemic", "if=spell_targets.epidemic>4" );
+  aoe -> add_action( this, "Scourge Strike", "if=spell_targets.scourge_strike>=2&(death_and_decay.ticking|defile.ticking)" );
+  aoe -> add_talent( this, "Clawing Shadows", "if=spell_targets.clawing_shadows>=2&(death_and_decay.ticking|defile.ticking)" );
+  aoe -> add_talent( this, "Epidemic", "if=spell_targets.epidemic>2" );
 
   // Valkyr APL
-  valkyr->add_action(this, "Death Coil");
-  valkyr->add_action(this, "Apocalypse", "if=debuff.festering_wound.stack>=6");
-  valkyr->add_action(this, "Festering Strike", "if=debuff.festering_wound.stack<6&cooldown.apocalypse.remains<3");
-  valkyr->add_action("call_action_list,name=aoe,if=active_enemies>=2");
-  // Single target base rotation when Valkyr is around
-  valkyr->add_action(this, "Festering Strike", "if=debuff.festering_wound.stack<=4");
-  valkyr->add_action(this, "Scourge Strike", "if=debuff.festering_wound.up");
-  valkyr->add_talent(this, "Clawing Shadows", "if=debuff.festering_wound.up");
+  valkyr -> add_action( this, "Death Coil", "Val'kyr rotation" );
+  valkyr -> add_action( this, "Apocalypse", "if=debuff.festering_wound.stack>=6" );
+  valkyr -> add_action( this, "Festering Strike", "if=debuff.festering_wound.stack<6&cooldown.apocalypse.remains<3" );
+  valkyr -> add_action( "call_action_list,name=aoe,if=active_enemies>=2" );
+  valkyr -> add_action( this, "Festering Strike", "if=debuff.festering_wound.stack<=4" );
+  valkyr -> add_action( this, "Scourge Strike", "if=debuff.festering_wound.up" );
+  valkyr -> add_talent( this, "Clawing Shadows", "if=debuff.festering_wound.up" );
 }
 
 // death_knight_t::init_actions =============================================
