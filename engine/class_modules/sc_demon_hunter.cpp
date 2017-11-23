@@ -6964,7 +6964,7 @@ void demon_hunter_t::apl_havoc()
   demonic->add_action(this, "Throw Glaive", "if=talent.bloodlet.enabled&spell_targets>=2&"
     "(!talent.master_of_the_glaive.enabled|!talent.momentum.enabled|buff.momentum.up)&"
     "(spell_targets>=3|raid_event.adds.in>recharge_time+cooldown)");
-  demonic->add_talent(this, "Felblade", "if=fury.deficit>=30");
+  demonic->add_talent(this, "Felblade", "if=fury.deficit>=30&(fury<40|buff.metamorphosis.down)");
   demonic->add_action(this, "Eye Beam", "if=spell_targets.eye_beam_tick>desired_targets|!buff.metamorphosis.extended_by_demonic|(set_bonus.tier21_4pc&buff.metamorphosis.remains>8)");
   demonic->add_action(this, spec.annihilation, "annihilation", 
     "if=(!talent.momentum.enabled|buff.momentum.up|fury.deficit<30+buff.prepared.up*8|buff.metamorphosis.remains<5)&"
@@ -6973,7 +6973,7 @@ void demon_hunter_t::apl_havoc()
     "(!talent.master_of_the_glaive.enabled|!talent.momentum.enabled|buff.momentum.up)&raid_event.adds.in>recharge_time+cooldown");
   demonic->add_action(this, "Chaos Strike", "if=(!talent.momentum.enabled|buff.momentum.up|fury.deficit<30+buff.prepared.up*8)&"
     "!variable.pooling_for_chaos_strike&!variable.pooling_for_meta&!variable.pooling_for_blade_dance");
-  demonic->add_action(this, "Fel Rush", "if=!talent.momentum.enabled&(buff.metamorphosis.down|talent.demon_blades.enabled)&"
+  demonic->add_action(this, "Fel Rush", "if=!talent.momentum.enabled&!cooldown.eye_beam.ready&(buff.metamorphosis.down|talent.demon_blades.enabled)&"
     "(charges=2|(raid_event.movement.in>10&raid_event.adds.in>10))");
   demonic->add_action(this, "Demon's Bite");
   demonic->add_action(this, "Throw Glaive", "if=buff.out_of_range.up|!talent.bloodlet.enabled");
