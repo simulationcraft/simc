@@ -1525,6 +1525,7 @@ class SpellDataGenerator(DataGenerator):
           ( 240672, 3 ), # Master of Combinations Artifact trait buff
           ( 242387, 3 ), # Thunderfist Artifact trait buff
           ( 211432, 3 ), # Tier 19 4-piece DPS Buff
+          ( 252768, 3 ), # Tier 21 2-piece DPS effect
           # Legendary
           ( 213114, 3 ), # Hidden Master's Forbidden Touch buff
         ),

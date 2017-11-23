@@ -283,6 +283,7 @@ public:
     gain_t* energy_refund;
     gain_t* energizing_elixir_chi;
     gain_t* energizing_elixir_energy;
+    gain_t* focus_of_xuen;
     gain_t* fortuitous_spheres;
     gain_t* gift_of_the_ox;
     gain_t* healing_elixir;
@@ -296,7 +297,6 @@ public:
     gain_t* effuse;
     gain_t* spirit_of_the_crane;
     gain_t* tier17_2pc_healer;
-    gain_t* tier21_4pc_dps;
     gain_t* tiger_palm;
   } gain;
 
@@ -614,6 +614,7 @@ public:
     const spell_data_t* cyclone_strikes;
     const spell_data_t* dizzying_kicks;
     const spell_data_t* fists_of_fury_tick;
+    const spell_data_t* focus_of_xuen;
     const spell_data_t* gale_burst;
     const spell_data_t* hit_combo;
     const spell_data_t* mark_of_the_crane;
@@ -3592,7 +3593,8 @@ struct blackout_kick_t: public monk_melee_attack_t
       p() -> gain.bok_proc -> add( RESOURCE_CHI, base_costs[RESOURCE_CHI] );
 
       if ( p() -> sets -> has_set_bonus( MONK_WINDWALKER, T21, B2 ) )
-        p() -> resource_gain( RESOURCE_CHI, p() -> sets -> set( MONK_WINDWALKER, T21, B2 ) -> effectN( 2 ).base_value(), p() -> gain.tier21_4pc_dps );
+        // use p() -> passives.focus_of_xuen -> effectN( 1 ).base_value() once spell pull is done again.
+        p() -> resource_gain( RESOURCE_CHI, p() -> sets -> set( MONK_WINDWALKER, T21, B2 ) -> effectN( 2 ).base_value(), p() -> gain.focus_of_xuen );
     }
 
     // Windwalker Tier 18 (WoD 6.2) trinket effect is in use, adjust Rising Sun Kick proc chance based on spell data
@@ -8351,6 +8353,7 @@ void monk_t::init_spells()
   passives.cyclone_strikes                  = find_spell( 220358 );
   passives.dizzying_kicks                   = find_spell( 196723 );
   passives.fists_of_fury_tick               = find_spell( 117418 );
+  passives.focus_of_xuen                    = find_spell( 252768 );
   passives.gale_burst                       = find_spell( 195403 );
   passives.hit_combo                        = find_spell( 196741 );
   passives.mark_of_the_crane                = find_spell( 228287 );
@@ -8693,26 +8696,26 @@ void monk_t::init_gains()
   base_t::init_gains();
 
   gain.black_ox_brew_energy     = get_gain( "black_ox_brew_energy" );
-  gain.chi_refund               = get_gain( "chi_refund" );
-  gain.power_strikes            = get_gain( "power_strikes" );
   gain.bok_proc                 = get_gain( "blackout_kick_proc" );
+  gain.chi_refund               = get_gain( "chi_refund" );
   gain.crackling_jade_lightning = get_gain( "crackling_jade_lightning" );
+  gain.effuse                   = get_gain( "effuse" );
   gain.energizing_elixir_energy = get_gain( "energizing_elixir_energy" );
   gain.energizing_elixir_chi    = get_gain( "energizing_elixir_chi" );
   gain.energy_refund            = get_gain( "energy_refund" );
+  gain.focus_of_xuen            = get_gain( "focus_of_xuen" );
+  gain.gift_of_the_ox           = get_gain( "gift_of_the_ox" );
   gain.keg_smash                = get_gain( "keg_smash" );
   gain.mana_tea                 = get_gain( "mana_tea" );
+  gain.power_strikes            = get_gain( "power_strikes" );
   gain.renewing_mist            = get_gain( "renewing_mist" );
+  gain.rushing_jade_wind        = get_gain( "rushing_jade_wind" );
   gain.serenity                 = get_gain( "serenity" );
   gain.soothing_mist            = get_gain( "soothing_mist" );
   gain.spinning_crane_kick      = get_gain( "spinning_crane_kick" );
   gain.spirit_of_the_crane      = get_gain( "spirit_of_the_crane" );
-  gain.rushing_jade_wind        = get_gain( "rushing_jade_wind" );
-  gain.effuse                   = get_gain( "effuse" );
   gain.tier17_2pc_healer        = get_gain( "tier17_2pc_healer" );
-  gain.tier21_4pc_dps           = get_gain( "tier21_4pc_dps" );
   gain.tiger_palm               = get_gain( "tiger_palm" );
-  gain.gift_of_the_ox           = get_gain( "gift_of_the_ox" );
 }
 
 // monk_t::init_procs =======================================================
