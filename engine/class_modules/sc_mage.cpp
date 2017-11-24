@@ -4548,6 +4548,7 @@ struct ice_lance_t : public frost_mage_spell_t
                                p -> artifact.its_cold_outside.data().effectN( 2 ).percent();
     }
 
+    // TODO: Cleave distance for SI seems to be 8 + hitbox size.
     if ( p -> talents.splitting_ice -> ok() )
     {
       base_multiplier *= 1.0 + p -> talents.splitting_ice
