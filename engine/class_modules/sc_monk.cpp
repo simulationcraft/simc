@@ -10298,8 +10298,8 @@ void monk_t::apl_combat_mistweaver()
   
   def -> add_action( "potion" );
 
-  def -> add_action( "run_action_list,name=aoe,if=active_enemies>=3" );
-  def -> add_action( "call_action_list,name=st,if=active_enemies<3" );
+  def -> add_action( "run_action_list,name=aoe,if=active_enemies>=4" );
+  def -> add_action( "call_action_list,name=st,if=active_enemies<4" );
 
   st -> add_action( this, "Rising Sun Kick" );
   st -> add_action( this, "Blackout Kick", "if=buff.teachings_of_the_monastery.stack=3&cooldown.rising_sun_kick.remains<12" );
