@@ -2373,7 +2373,7 @@ bool player_t::init_actions()
 
   if ( choose_action_list.empty() ) choose_action_list = "default";
 
-  action_priority_list_t* default_action_list = find_action_priority_list( choose_action_list );
+  default_action_list = find_action_priority_list( choose_action_list );
 
   if ( ! default_action_list && choose_action_list != "default" )
   {
