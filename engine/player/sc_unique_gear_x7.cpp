@@ -1829,6 +1829,7 @@ void item::norgannons_prowess( special_effect_t& effect )
   secondary -> source = SPECIAL_EFFECT_SOURCE_ITEM;
   secondary -> type = SPECIAL_EFFECT_EQUIP;
   secondary -> spell_id = 256836;
+  secondary -> proc_flags_ = PF_SPELL | PF_AOE_SPELL | PF_PERIODIC;
   secondary -> proc_flags2_ = PF2_ALL_HIT | PF2_PERIODIC_DAMAGE;
 
   effect.player -> special_effects.push_back( secondary );
