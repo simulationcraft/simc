@@ -1146,15 +1146,14 @@ struct erosion_t : public buff_t
     virtual void execute() override
     {
       debuff -> decay_event = nullptr;
-
       debuff -> decrement();
 
       // Always update the parent debuff's reference to the decay event, so that it
       // can be cancelled upon a new application of the debuff
       if ( debuff -> check() > 0 )
       {
-        debuff->decay_event = make_event<erosion_event_t>(
-            sim(), *( debuff->source ), debuff, data );
+        debuff -> decay_event = make_event<erosion_event_t>(
+            sim(), *debuff -> source, debuff, data );
       }
     }
   };
@@ -1192,7 +1191,6 @@ struct erosion_t : public buff_t
   virtual void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
   {
     buff_t::expire_override( expiration_stacks, remaining_duration );
-
     event_t::cancel( decay_event );
   }
 
@@ -6369,13 +6367,14 @@ struct icicle_event_t : public event_t
 
   virtual void execute() override
   {
+    mage -> icicle_event = nullptr;
+
     // If the target of the icicle is dead, stop the chain
     if ( target -> is_sleeping() )
     {
       if ( mage -> sim -> debug )
         mage -> sim -> out_debug.printf( "%s icicle use on %s (sleeping target), stopping",
             mage -> name(), target -> name() );
-      mage -> icicle_event = nullptr;
       return;
     }
 
@@ -6394,8 +6393,6 @@ struct icicle_event_t : public event_t
         mage -> sim -> out_debug.printf( "%s icicle use on %s (chained), damage=%f, total=%u",
                                mage -> name(), target -> name(), new_damage, as<unsigned>( mage -> icicles.size() ) );
     }
-    else
-      mage -> icicle_event = nullptr;
   }
 };
 
@@ -6429,6 +6426,7 @@ struct ignite_spread_event_t : public event_t
 
   virtual void execute() override
   {
+    mage -> ignite_spread_event = nullptr;
     mage -> procs.ignite_spread -> occur();
     if ( mage -> sim -> log )
     {
@@ -6479,7 +6477,7 @@ struct ignite_spread_event_t : public event_t
       active_ignites.pop_back();
       double source_bank = ignite_bank(source);
 
-      if ( !candidates.empty() )
+      if ( ! candidates.empty() )
       {
         // Skip candidates that have equal ignite bank size to the source
         int index = as<int>( candidates.size() ) - 1;
