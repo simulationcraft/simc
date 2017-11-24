@@ -2601,6 +2601,7 @@ struct adrenaline_rush_t : public rogue_attack_t
     rogue_attack_t( "adrenaline_rush", p, p -> find_specialization_spell( "Adrenaline Rush" ), options_str )
   {
     harmful = may_miss = may_crit = false;
+    use_off_gcd = p -> talent.death_from_above -> ok();
 
     cooldown -> duration += p -> artifact.fortunes_boon.time_value();
   }
@@ -4652,6 +4653,7 @@ struct sprint_t : public rogue_attack_t
     harmful = callbacks = false;
     cooldown = p -> cooldowns.sprint;
     ignore_false_positive = true;
+    use_off_gcd = p -> talent.death_from_above -> ok();
 
     cooldown -> duration = data().cooldown()
                             + p -> spell.sprint_2 -> effectN( 1 ).time_value()
