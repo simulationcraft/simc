@@ -301,6 +301,7 @@ public:
     buff_t* chain_reaction;
     buff_t* chilled_to_the_core;
     buff_t* freezing_rain;
+    buff_t* rule_of_threes;
     buff_t* time_and_space;
     buff_t* warmth_of_the_phoenix;
 
@@ -438,6 +439,7 @@ public:
     bool ignition_active;
 
     int flurry_bolt_count;
+    int arcane_missile_refresh;
   } state;
 
   // Talents
@@ -2769,19 +2771,23 @@ struct arcane_missiles_tick_t : public arcane_mage_spell_t
 
 struct am_state_t : public mage_spell_state_t
 {
-  bool rule_of_threes;
+  double extra_tick_time_reduction;
 
   am_state_t( action_t* action, player_t* target ) :
-    mage_spell_state_t( action, target ), rule_of_threes( false )
+    mage_spell_state_t( action, target ),
+    extra_tick_time_reduction( 1.0 )
   { }
 
   virtual void initialize() override
-  { mage_spell_state_t::initialize(); rule_of_threes = false; }
+  {
+    mage_spell_state_t::initialize();
+    extra_tick_time_reduction = 1.0;
+  }
 
   virtual std::ostringstream& debug_str( std::ostringstream& s ) override
   {
     mage_spell_state_t::debug_str( s )
-      << " rule_of_threes=" << rule_of_threes;
+      << " extra_tick_time_reduction=" << extra_tick_time_reduction;
     return s;
   }
 
@@ -2789,15 +2795,12 @@ struct am_state_t : public mage_spell_state_t
   {
     mage_spell_state_t::copy_state( other );
 
-    rule_of_threes = debug_cast<const am_state_t*>( other ) -> rule_of_threes;
+    extra_tick_time_reduction = debug_cast<const am_state_t*>( other ) -> extra_tick_time_reduction;
   }
 };
 
 struct arcane_missiles_t : public arcane_mage_spell_t
 {
-  double rule_of_threes_ticks;
-  double rule_of_threes_ratio;
-
   arcane_missiles_t( mage_t* p, const std::string& options_str ) :
     arcane_mage_spell_t( "arcane_missiles", p,
                          p -> find_specialization_spell( "Arcane Missiles" ) )
@@ -2816,11 +2819,6 @@ struct arcane_missiles_t : public arcane_mage_spell_t
 
     base_multiplier *= 1.0 + p -> artifact.aegwynns_fury.percent();
     base_crit += p -> artifact.aegwynns_intensity.percent();
-
-    // Not including the first, instant tick.
-    rule_of_threes_ticks = dot_duration / base_tick_time +
-      p -> artifact.rule_of_threes.data().effectN( 2 ).base_value();
-    rule_of_threes_ratio = ( dot_duration / base_tick_time ) / rule_of_threes_ticks;
   }
 
   virtual double action_multiplier() const override
@@ -2841,51 +2839,68 @@ struct arcane_missiles_t : public arcane_mage_spell_t
   virtual action_state_t* new_state() override
   { return new am_state_t( this, target ); }
 
-  // Roll (and snapshot) Rule of Threes here, it affects the whole AM channel.
+  // We need to snapshot any tick time reduction effect here so that it correctly affects the whole
+  // channel.
   virtual void snapshot_state( action_state_t* state, dmg_e rt ) override
   {
     arcane_mage_spell_t::snapshot_state( state, rt );
 
-    if ( rng().roll( p() -> artifact.rule_of_threes.data().effectN( 1 ).percent() / 10.0 ) )
-    {
-      debug_cast<am_state_t*>( state ) -> rule_of_threes = true;
-    }
+    debug_cast<am_state_t*>( state ) -> extra_tick_time_reduction *= 1.0 + p() -> buffs.rule_of_threes -> check_value();
   }
 
-  // If Rule of Threes is used, return the channel duration in terms of number
-  // of ticks, so we prevent weird issues with rounding on duration
-  virtual timespan_t composite_dot_duration( const action_state_t* state ) const override
+  virtual timespan_t composite_dot_duration( const action_state_t* s ) const override
   {
-    auto s = debug_cast<const am_state_t*>( state );
+    // AM channel duration is a bit fuzzy, it will go above or below the standard 2 s
+    // to make sure it has the correct number of ticks.
 
-    if ( s -> rule_of_threes )
-    {
-      return tick_time( state ) * rule_of_threes_ticks;
-    }
-    else
-    {
-      return arcane_mage_spell_t::composite_dot_duration( state );
-    }
+    timespan_t full_duration = dot_duration * s -> haste;
+    timespan_t tick_duration = tick_time( s );
+
+    double ticks = std::round( full_duration / tick_duration );
+
+    return ticks * tick_duration;
   }
 
-  // Adjust tick time on Rule of Threes
-  virtual timespan_t tick_time( const action_state_t* state ) const override
+  virtual timespan_t tick_time( const action_state_t* s ) const override
   {
-    auto s = debug_cast<const am_state_t*>( state );
+    return debug_cast<const am_state_t*>( s ) -> extra_tick_time_reduction * arcane_mage_spell_t::tick_time( s );
+  }
 
-    if ( s -> rule_of_threes )
-    {
-      return base_tick_time * rule_of_threes_ratio * state -> haste;
-    }
-    else
-    {
-      return arcane_mage_spell_t::tick_time( state );
-    }
+  virtual double last_tick_factor( const dot_t*, const timespan_t&, const timespan_t& ) const override
+  {
+    // AM always does full damage, even on "partial" ticks.
+    return 1.0;
+  }
+
+  timespan_t calculate_dot_refresh_duration( const dot_t* dot, timespan_t triggered_duration ) const override
+  {
+    // 30% refresh rule apparently works with AM as well!
+    return triggered_duration + std::min( triggered_duration * 0.3, dot -> remains() );
   }
 
   virtual void execute() override
   {
+    dot_t* dot = get_dot( target );
+    if ( dot -> is_ticking() )
+    {
+      // Refresh due to chaining, last_tick is not happening so we need to trigger AC.
+      trigger_arcane_charge();
+      p() -> state.arcane_missile_refresh++;
+    }
+    else
+    {
+      // Fresh AM channel.
+      p() -> state.arcane_missile_refresh = 0;
+    }
+
     p() -> benefits.arcane_charge.arcane_missiles -> update();
+
+    // Rule of Threes handling seems to be skipped on the first refresh.
+    if ( ! ( p() -> bugs && p() -> state.arcane_missile_refresh == 1 ) )
+    {
+      p() -> buffs.rule_of_threes -> expire();
+      p() -> buffs.rule_of_threes -> trigger();
+    }
 
     arcane_mage_spell_t::execute();
 
@@ -2907,11 +2922,11 @@ struct arcane_missiles_t : public arcane_mage_spell_t
     p() -> buffs.arcane_missiles -> decrement();
   }
 
-  virtual void last_tick ( dot_t * d ) override
+  virtual void last_tick( dot_t* d ) override
   {
     arcane_mage_spell_t::last_tick( d );
-
     trigger_arcane_charge();
+    p() -> buffs.rule_of_threes -> expire();
   }
 
   virtual bool ready() override
@@ -7251,6 +7266,10 @@ void mage_t::create_buffs()
                                   .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
                                   .default_value( find_spell( 195446 ) -> effectN( 1 ).percent() );
   buffs.freezing_rain         = buff_creator_t( this, "freezing_rain", find_spell( 240555 ) );
+  buffs.rule_of_threes        = buff_creator_t( this, "rule_of_threes", find_spell( 187292 ) )
+                                  .chance( artifact.rule_of_threes.data().effectN( 1 ).percent() / 10.0 )
+                                  .default_value( find_spell( 187292 ) -> effectN( 1 ).percent() )
+                                  .quiet( true );
   buffs.time_and_space        = buff_creator_t( this, "time_and_space", find_spell( 240692 ) );
   buffs.warmth_of_the_phoenix = stat_buff_creator_t( this, "warmth_of_the_phoenix", find_spell( 240671 ) )
                                   .add_stat( STAT_CRIT_RATING, find_spell( 240671 ) -> effectN( 1 ).base_value() )
