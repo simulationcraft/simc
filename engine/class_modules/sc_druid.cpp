@@ -8109,7 +8109,7 @@ void druid_t::apl_balance()
   AoE -> add_action( this, "Lunar Strike", "if=buff.warrior_of_elune.up");
   AoE -> add_action( this, "Solar Wrath", "if=buff.solar_empowerment.up");
   AoE -> add_action( this, "Lunar Strike", "if=buff.lunar_empowerment.up");
-  AoE -> add_action(this, "Moonfire", "if=equipped.lady_and_the_child&talent.soul_of_the_forest.enabled&(active_enemies<3|(active_enemies<4&!set_bous.tier20_4pc)|(equipped.radiant_moonlight&active_enemies<7&!set_bous.tier20_4pc))&spell_haste>0.4&!buff.celestial_alignment.up&(!buff.incarnation.up|active_enemies>3)");
+  AoE -> add_action( this, "Moonfire", "if=equipped.lady_and_the_child&talent.soul_of_the_forest.enabled&(active_enemies<3|(active_enemies<4&!set_bonus.tier20_4pc)|(equipped.radiant_moonlight&active_enemies<7&!set_bonus.tier20_4pc))&spell_haste>0.4&!buff.celestial_alignment.up&(!buff.incarnation.up|active_enemies>3)");
   AoE -> add_action( this, "Lunar Strike", "if=spell_targets.lunar_strike>=4|spell_haste<0.45");
   AoE -> add_action( this, "Solar Wrath");
 
