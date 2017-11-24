@@ -2373,19 +2373,19 @@ bool player_t::init_actions()
 
   if ( choose_action_list.empty() ) choose_action_list = "default";
 
-  action_priority_list_t* chosen_action_list = find_action_priority_list( choose_action_list );
+  action_priority_list_t* default_action_list = find_action_priority_list( choose_action_list );
 
-  if ( ! chosen_action_list && choose_action_list != "default" )
+  if ( ! default_action_list && choose_action_list != "default" )
   {
     sim -> errorf( "Action List %s not found, using default action list.\n",
       choose_action_list.c_str() );
-    chosen_action_list = find_action_priority_list( "default" );
+    default_action_list = find_action_priority_list( "default" );
   }
 
-  if ( chosen_action_list )
+  if ( default_action_list )
   {
-    activate_action_list( chosen_action_list );
-    if ( have_off_gcd_actions ) activate_action_list( chosen_action_list, true );
+    activate_action_list( default_action_list );
+    if ( have_off_gcd_actions ) activate_action_list( default_action_list, true );
   }
   else
   {
@@ -4382,6 +4382,16 @@ void player_t::reset()
     assert( elem == 0 );
   }
 #endif
+
+  if ( active_action_list != default_action_list )
+  {
+    active_action_list = default_action_list;
+  }
+
+  if ( active_off_gcd_list && active_off_gcd_list != default_action_list )
+  {
+    active_off_gcd_list = default_action_list;
+  }
 }
 
 // player_t::trigger_ready ==================================================
