@@ -1145,6 +1145,8 @@ struct erosion_t : public buff_t
 
     virtual void execute() override
     {
+      debuff -> decay_event = nullptr;
+
       debuff -> decrement();
 
       // Always update the parent debuff's reference to the decay event, so that it
@@ -1153,10 +1155,6 @@ struct erosion_t : public buff_t
       {
         debuff->decay_event = make_event<erosion_event_t>(
             sim(), *( debuff->source ), debuff, data );
-      }
-      else
-      {
-        debuff -> decay_event = nullptr;
       }
     }
   };
