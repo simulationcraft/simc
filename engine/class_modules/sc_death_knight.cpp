@@ -5386,19 +5386,22 @@ struct frostscythe_t : public death_knight_melee_attack_t
 
 struct frost_strike_strike_t : public death_knight_melee_attack_t
 {
+  bool shattered;
+
   frost_strike_strike_t( death_knight_t* p, const std::string& n, weapon_t* w, const spell_data_t* s ) :
     death_knight_melee_attack_t( n, p, s )
   {
     background = special = true;
     weapon = w;
     range += p -> artifact.chill_of_the_grave.value();
+    shattered = false;
   }
 
   double composite_target_multiplier( player_t* target ) const override
   {
     double m = death_knight_melee_attack_t::composite_target_multiplier( target );
 
-    if ( td( target ) -> debuff.razorice -> stack() == 5 ) // TODO: Hardcoded, sad face
+    if ( shattered )
     {
       m *= 1.0 + p() -> talent.shattering_strikes -> effectN( 1 ).percent();
     }
@@ -5406,10 +5409,11 @@ struct frost_strike_strike_t : public death_knight_melee_attack_t
     return m;
   }
 
-  void execute() override
+  void execute( bool ss )
   {
-    death_knight_melee_attack_t::execute();
-
+    shattered = ss;
+    execute();
+    
     // TODO: Both hands, or just main hand?
     trigger_icecap( execute_state );
 
@@ -5418,6 +5422,11 @@ struct frost_strike_strike_t : public death_knight_melee_attack_t
     {
       p() -> buffs.t18_4pc_frost_crit -> trigger();
     }
+  }
+
+  void execute() override
+  {
+    death_knight_melee_attack_t::execute();
   }
 };
 
@@ -5443,21 +5452,24 @@ struct frost_strike_t : public death_knight_melee_attack_t
   {
     death_knight_melee_attack_t::execute();
 
+    death_knight_td_t* tdata = td( execute_state -> target );
+    bool shattered = false;
+    
+    if ( p() -> talent.shattering_strikes -> ok() &&
+      tdata -> debuff.razorice -> stack() == 5 ) // TODO: Hardcoded, sad face
+    {
+      tdata -> debuff.razorice -> expire();
+      shattered = true;
+    }
+        
     if ( result_is_hit( execute_state -> result ) )
     {
       mh -> set_target( execute_state -> target );
-      mh -> execute();
+      mh -> execute( shattered );
       oh -> set_target( execute_state -> target );
-      oh -> execute();
+      oh -> execute( shattered );
 
       p() -> trigger_runic_empowerment( last_resource_cost );
-    }
-
-    death_knight_td_t* tdata = td( execute_state -> target );
-    if ( p() -> talent.shattering_strikes -> ok() &&
-         tdata -> debuff.razorice -> stack() == 5 ) // TODO: Hardcoded, sad face
-    {
-      tdata -> debuff.razorice -> expire();
     }
 
     p() -> buffs.icy_talons -> trigger();
@@ -7119,10 +7131,11 @@ void runeforge::razorice_attack( special_effect_t& effect )
     }
   };
 
-  effect.proc_flags_ = PF_MELEE | PF_MELEE_ABILITY;
+  effect.proc_flags_ = PF_MELEE | PF_MELEE_ABILITY | PF_AOE_SPELL;
   effect.proc_flags2_ = PF2_ALL_HIT;
   effect.execute_action = new razorice_attack_t( debug_cast<death_knight_t*>( effect.item -> player ), effect.name() );
   effect.proc_chance_ = 1.0;
+  effect.weapon_proc = true;
   new dbc_proc_callback_t( effect.item, effect );
 }
 
@@ -7142,8 +7155,9 @@ void runeforge::razorice_debuff( special_effect_t& effect )
     }
   };
 
-  effect.proc_flags_ = PF_MELEE | PF_MELEE_ABILITY;
+  effect.proc_flags_ = PF_MELEE | PF_MELEE_ABILITY | PF_AOE_SPELL;
   effect.proc_flags2_ = PF2_ALL_HIT;
+  effect.weapon_proc = true;
 
   new razorice_callback_t( effect );
 }
