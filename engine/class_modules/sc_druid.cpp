@@ -2246,8 +2246,7 @@ struct moonfire_t : public druid_spell_t
       {
         p() -> resource_gain( RESOURCE_RAGE, p() -> buff.galactic_guardian -> value(), p() -> gain.galactic_guardian );
         p() -> buff.galactic_guardian -> expire();
-      }
-      trigger_wax_and_wane();
+      }      
     }
 
     size_t available_targets( std::vector< player_t* >& tl ) const override
@@ -2318,6 +2317,8 @@ struct moonfire_t : public druid_spell_t
       target_cache.is_valid = false;
 
       druid_spell_t::execute();
+
+      trigger_wax_and_wane();
 
       if ( p() -> artifact.circadian_invocation.rank() )
       {
@@ -8069,6 +8070,8 @@ void druid_t::apl_balance()
       default_list->add_action("use_item,name=charm_of_the_rising_tide,if=cooldown.incarnation.remains>30|cooldown.celestial_alignment.remains>60");
   if (items[SLOT_TRINKET_1].name_str == "horn_of_valor" || items[SLOT_TRINKET_2].name_str == "horn_of_valor")
       default_list->add_action("use_item,name=horn_of_valor,if=cooldown.incarnation.remains>30|cooldown.celestial_alignment.remains>60");
+  if (items[SLOT_TRINKET_1].name_str == "vitality_resonator" || items[SLOT_TRINKET_2].name_str == "vitality_resonator")
+      default_list->add_action("use_item,name=vitality_resonator,if=(cooldown.incarnation.remains>45&!buff.incarnation.up)|buff.incarnation.remains<16|cooldown.celestial_alignment.remains>60");
   default_list -> add_action( "call_action_list,name=fury_of_elune,if=talent.fury_of_elune.enabled&cooldown.fury_of_elune.remains<target.time_to_die" );
   default_list -> add_action( "call_action_list,name=ed,if=equipped.the_emerald_dreamcatcher&active_enemies<=1" );
   default_list -> add_talent( this, "Astral Communion", "if=astral_power.deficit>=79" );
@@ -8082,7 +8085,7 @@ void druid_t::apl_balance()
   ST -> add_talent( this, "Stellar Flare", "target_if=refreshable,if=target.time_to_die>10");
   ST -> add_action( this, "Moonfire", "if=((talent.natures_balance.enabled&remains<3)|remains<6.6)&astral_power.deficit>7&target.time_to_die>8");
   ST -> add_action( this, "Sunfire", "if=((talent.natures_balance.enabled&remains<3)|remains<5.4)&astral_power.deficit>7&target.time_to_die>8");
-  ST -> add_action( this, "Starfall", "if=buff.oneths_overconfidence.up&(!buff.astral_acceleration.up|buff.astral_acceleration.remains>5|astral_power.deficit<44)");
+  ST -> add_action( this, "Starfall", "if=buff.oneths_overconfidence.react&(!buff.astral_acceleration.up|buff.astral_acceleration.remains>5|astral_power.deficit<44)");
   ST -> add_action( this, "Solar Wrath", "if=buff.solar_empowerment.stack=3");
   ST -> add_action( this, "Lunar Strike", "if=buff.lunar_empowerment.stack=3");
   ST -> add_action( this, "Starsurge", "if=astral_power.deficit<44|(buff.celestial_alignment.up|buff.incarnation.up|buff.astral_acceleration.remains>5|(set_bonus.tier21_4pc&!buff.solar_solstice.up))|(gcd.max*(astral_power%40))>target.time_to_die");
@@ -8099,14 +8102,14 @@ void druid_t::apl_balance()
   AoE -> add_action( this, "Sunfire", "target_if=refreshable,if=astral_power.deficit>7&target.time_to_die>4");
   AoE -> add_action( this, "Moonfire", "target_if=refreshable,if=astral_power.deficit>7&target.time_to_die>4");
   AoE -> add_talent( this, "Force of Nature");
-  AoE -> add_action( this, "starsurge", "if=buff.oneths_intuition.up&(!buff.astral_acceleration.up|buff.astral_acceleration.remains>5|astral_power.deficit<44)");
-  AoE -> add_action( this, "New Moon", "if=astral_power.deficit>14&!(buff.celestial_alignment.up|buff.incarnation.up)");
+  AoE -> add_action( this, "starsurge", "if=buff.oneths_intuition.react&(!buff.astral_acceleration.up|buff.astral_acceleration.remains>5|astral_power.deficit<44)");
+  AoE -> add_action( this, "New Moon", "if=astral_power.deficit>14&(!(buff.celestial_alignment.up|buff.incarnation.up)|(charges=2&recharge_time<5)|charges=3)");
   AoE -> add_action( this, "Half Moon", "if=astral_power.deficit>24");
   AoE -> add_action( this, "Full Moon", "if=astral_power.deficit>44");
   AoE -> add_action( this, "Lunar Strike", "if=buff.warrior_of_elune.up");
   AoE -> add_action( this, "Solar Wrath", "if=buff.solar_empowerment.up");
   AoE -> add_action( this, "Lunar Strike", "if=buff.lunar_empowerment.up");
-  AoE -> add_action(this, "Moonfire", "if=equipped.lady_and_the_child&talent.soul_of_the_forest.enabled&active_enemies<5&spell_haste>0.4&!(buff.celestial_alignment.up|buff.incarnation.up)");
+  AoE -> add_action(this, "Moonfire", "if=equipped.lady_and_the_child&talent.soul_of_the_forest.enabled&(active_enemies<3|(active_enemies<4&!set_bous.tier20_4pc)|(equipped.radiant_moonlight&active_enemies<7&!set_bous.tier20_4pc))&spell_haste>0.4&!buff.celestial_alignment.up&(!buff.incarnation.up|active_enemies>3)");
   AoE -> add_action( this, "Lunar Strike", "if=spell_targets.lunar_strike>=4|spell_haste<0.45");
   AoE -> add_action( this, "Solar Wrath");
 
@@ -8140,7 +8143,7 @@ void druid_t::apl_balance()
   ED -> add_action( this, "Moonfire", "if=((talent.natures_balance.enabled&remains<3)|(remains<6.6&!talent.natures_balance.enabled))&(buff.the_emerald_dreamcatcher.remains>gcd.max|!buff.the_emerald_dreamcatcher.up)");
   ED -> add_action( this, "Sunfire", "if=((talent.natures_balance.enabled&remains<3)|(remains<5.4&!talent.natures_balance.enabled))&(buff.the_emerald_dreamcatcher.remains>gcd.max|!buff.the_emerald_dreamcatcher.up)");
   ED -> add_talent( this, "Force of Nature", "if=buff.the_emerald_dreamcatcher.remains>execute_time");
-  ED -> add_action( this, "Starfall", "if=buff.oneths_overconfidence.up&buff.the_emerald_dreamcatcher.remains>execute_time");
+  ED -> add_action( this, "Starfall", "if=buff.oneths_overconfidence.react&buff.the_emerald_dreamcatcher.remains>execute_time");
   ED -> add_action( this, "New Moon", "if=astral_power.deficit>=10&buff.the_emerald_dreamcatcher.remains>execute_time&astral_power>=16");
   ED -> add_action( this, "Half Moon", "if=astral_power.deficit>=20&buff.the_emerald_dreamcatcher.remains>execute_time&astral_power>=6");
   ED -> add_action( this, "Full Moon", "if=astral_power.deficit>=40&buff.the_emerald_dreamcatcher.remains>execute_time");
