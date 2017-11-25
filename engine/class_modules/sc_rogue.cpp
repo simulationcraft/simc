@@ -1341,6 +1341,7 @@ struct rogue_attack_t : public melee_attack_t
 
   expr_t* create_nightblade_finality_expression();
   expr_t* create_improved_snd_expression();
+  expr_t* create_rtb_buff_t21_expression( const buff_t* rtb_buff );
   expr_t* create_expression( const std::string& name_str ) override;
 };
 
@@ -5316,6 +5317,15 @@ expr_t* actions::rogue_attack_t::create_improved_snd_expression()
   } );
 }
 
+// rogue_attack_t::create_rtb_buff_t21_expression ==============================
+
+expr_t* actions::rogue_attack_t::create_rtb_buff_t21_expression( const buff_t* rtb_buff )
+{
+  return make_fn_expr( "t21", [ this, rtb_buff ]() {
+    return rtb_buff -> check() && rtb_buff -> remains() != p() -> buffs.roll_the_bones -> remains();
+  } );
+}
+
 // rogue_attack_t::create_expression =========================================
 
 expr_t* actions::rogue_attack_t::create_expression( const std::string& name_str )
@@ -5338,6 +5348,30 @@ expr_t* actions::rogue_attack_t::create_expression( const std::string& name_str 
   else if ( util::str_compare_ci( name_str, "buff.slice_and_dice.improved" ) )
   {
     return create_improved_snd_expression();
+  }
+  else if ( util::str_compare_ci( name_str, "buff.broadsides.t21" ) )
+  {
+    return create_rtb_buff_t21_expression( p() -> buffs.broadsides );
+  }
+  else if ( util::str_compare_ci( name_str, "buff.buried_treasure.t21" ) )
+  {
+    return create_rtb_buff_t21_expression( p() -> buffs.buried_treasure );
+  }
+  else if ( util::str_compare_ci( name_str, "buff.grand_melee.t21" ) )
+  {
+    return create_rtb_buff_t21_expression( p() -> buffs.grand_melee );
+  }
+  else if ( util::str_compare_ci( name_str, "buff.jolly_roger.t21" ) )
+  {
+    return create_rtb_buff_t21_expression( p() -> buffs.jolly_roger );
+  }
+  else if ( util::str_compare_ci( name_str, "buff.shark_infested_waters.t21" ) )
+  {
+    return create_rtb_buff_t21_expression( p() -> buffs.shark_infested_waters );
+  }
+  else if ( util::str_compare_ci( name_str, "buff.true_bearing.t21" ) )
+  {
+    return create_rtb_buff_t21_expression( p() -> buffs.true_bearing );
   }
 
   return melee_attack_t::create_expression( name_str );
@@ -5982,7 +6016,6 @@ struct roll_the_bones_t : public buff_t
 
     // Remove all secondary buffs, but only if expiry was explicitly triggered.
     // This prevents removal of T21 4pc buffs if regular RtB buffs drop.
-    // Also drop all buffs, if SnD is selected.
     if ( remaining_duration > timespan_t::zero() )
       expire_secondary_buffs();
   }
