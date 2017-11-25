@@ -5844,7 +5844,7 @@ void warrior_t::create_buffs()
     .chance( sets -> set( WARRIOR_FURY, T20, B2 ) -> proc_chance() );
 
   buff.t20_fury_4p = buff_creator_t( this, "t20_fury_4p", talents.inner_rage -> ok() ? find_spell( 242953 ) : find_spell( 242952 ) )
-    .default_value( talents.inner_rage -> ok() ? find_spell( 242953 ) -> effectN( 1 ).percent() : find_spell( 252952 )  -> effectN( 1 ).percent() )
+    .default_value( talents.inner_rage -> ok() ? find_spell( 242953 ) -> effectN( 1 ).percent() : find_spell( 242952 )  -> effectN( 1 ).percent() )
     .chance( sets -> has_set_bonus( WARRIOR_FURY, T20, B4 ) );
 
   buff.executioners_precision = buff_creator_t( this, "executioners_precision", artifact.executioners_precision.data().effectN( 1 ).trigger() )
