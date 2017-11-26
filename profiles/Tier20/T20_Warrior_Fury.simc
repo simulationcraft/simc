@@ -61,7 +61,7 @@ actions.cooldowns=rampage,if=buff.massacre.react&buff.enrage.remains<1
 actions.cooldowns+=/bloodthirst,if=target.health.pct<20&buff.enrage.remains<1
 actions.cooldowns+=/execute
 actions.cooldowns+=/raging_blow,if=talent.inner_rage.enabled&buff.enrage.up
-actions.cooldowns+=/rampage
+actions.cooldowns+=/rampage,if=(rage>=100&talent.frothing_berserker.enabled&!set_bonus.tier21_4pc)|set_bonus.tier21_4pc|!talent.frothing_berserker.enabled
 actions.cooldowns+=/odyns_fury,if=buff.enrage.up&(cooldown.raging_blow.remains>0|!talent.inner_rage.enabled)
 actions.cooldowns+=/berserker_rage,if=talent.outburst.enabled&buff.enrage.down&buff.battle_cry.up
 actions.cooldowns+=/bloodthirst,if=(buff.enrage.remains<1&!talent.outburst.enabled)|!talent.inner_rage.enabled

@@ -5247,7 +5247,7 @@ void warrior_t::apl_fury()
     }
   }
   cooldowns -> add_action( this, "Raging Blow", "if=talent.inner_rage.enabled&buff.enrage.up" );
-  cooldowns -> add_action( this, "Rampage" );
+  cooldowns -> add_action( this, "Rampage", "if=(rage>=100&talent.frothing_berserker.enabled&!set_bonus.tier21_4pc)|set_bonus.tier21_4pc|!talent.frothing_berserker.enabled" );
   cooldowns -> add_action( this, "Odyn's Fury", "if=buff.enrage.up&(cooldown.raging_blow.remains>0|!talent.inner_rage.enabled)" );
   cooldowns -> add_action( this, "Berserker Rage", "if=talent.outburst.enabled&buff.enrage.down&buff.battle_cry.up" );
   cooldowns -> add_action( this, "Bloodthirst", "if=(buff.enrage.remains<1&!talent.outburst.enabled)|!talent.inner_rage.enabled" );
