@@ -1565,7 +1565,7 @@ void item::amanthuls_vision( special_effect_t& effect )
   auto empower_spell = effect.player -> find_spell( 256832 );
   auto empower_amount = empower_spell -> effectN( 1 ).average( effect.item );
   stat_buff_t* empower_buff = stat_buff_creator_t( effect.player, "amanthuls_grandeur", empower_spell, effect.item )
-    .add_stat( effect.player -> primary_stat(), empower_amount );
+    .add_stat( effect.player -> convert_hybrid_stat( STAT_STR_AGI_INT ), empower_amount );
 
   effect.player -> sim -> expansion_data.pantheon_proxy -> register_pantheon_effect( effect.custom_buff, [ empower_buff ]() {
     empower_buff -> trigger();
