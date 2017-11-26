@@ -52,14 +52,14 @@ actions.AoE+=/stellar_flare,target_if=refreshable,if=target.time_to_die>10
 actions.AoE+=/sunfire,target_if=refreshable,if=astral_power.deficit>7&target.time_to_die>4
 actions.AoE+=/moonfire,target_if=refreshable,if=astral_power.deficit>7&target.time_to_die>4
 actions.AoE+=/force_of_nature
-actions.AoE+=/starsurge,if=buff.oneths_intuition.up&(!buff.astral_acceleration.up|buff.astral_acceleration.remains>5|astral_power.deficit<44)
-actions.AoE+=/new_moon,if=astral_power.deficit>14&!(buff.celestial_alignment.up|buff.incarnation.up)
+actions.AoE+=/starsurge,if=buff.oneths_intuition.react&(!buff.astral_acceleration.up|buff.astral_acceleration.remains>5|astral_power.deficit<44)
+actions.AoE+=/new_moon,if=astral_power.deficit>14&(!(buff.celestial_alignment.up|buff.incarnation.up)|(charges=2&recharge_time<5)|charges=3)
 actions.AoE+=/half_moon,if=astral_power.deficit>24
 actions.AoE+=/full_moon,if=astral_power.deficit>44
 actions.AoE+=/lunar_strike,if=buff.warrior_of_elune.up
 actions.AoE+=/solar_wrath,if=buff.solar_empowerment.up
 actions.AoE+=/lunar_strike,if=buff.lunar_empowerment.up
-actions.AoE+=/moonfire,if=equipped.lady_and_the_child&talent.soul_of_the_forest.enabled&active_enemies<5&spell_haste>0.4&!(buff.celestial_alignment.up|buff.incarnation.up)
+actions.AoE+=/moonfire,if=equipped.lady_and_the_child&talent.soul_of_the_forest.enabled&(active_enemies<3|(active_enemies<4&!set_bonus.tier20_4pc)|(equipped.radiant_moonlight&active_enemies<7&!set_bonus.tier20_4pc))&spell_haste>0.4&!buff.celestial_alignment.up&(!buff.incarnation.up|active_enemies>3)
 actions.AoE+=/lunar_strike,if=spell_targets.lunar_strike>=4|spell_haste<0.45
 actions.AoE+=/solar_wrath
 
@@ -71,7 +71,7 @@ actions.ed+=/stellar_flare,cycle_targets=1,max_cycle_targets=4,if=active_enemies
 actions.ed+=/moonfire,if=((talent.natures_balance.enabled&remains<3)|(remains<6.6&!talent.natures_balance.enabled))&(buff.the_emerald_dreamcatcher.remains>gcd.max|!buff.the_emerald_dreamcatcher.up)
 actions.ed+=/sunfire,if=((talent.natures_balance.enabled&remains<3)|(remains<5.4&!talent.natures_balance.enabled))&(buff.the_emerald_dreamcatcher.remains>gcd.max|!buff.the_emerald_dreamcatcher.up)
 actions.ed+=/force_of_nature,if=buff.the_emerald_dreamcatcher.remains>execute_time
-actions.ed+=/starfall,if=buff.oneths_overconfidence.up&buff.the_emerald_dreamcatcher.remains>execute_time
+actions.ed+=/starfall,if=buff.oneths_overconfidence.react&buff.the_emerald_dreamcatcher.remains>execute_time
 actions.ed+=/new_moon,if=astral_power.deficit>=10&buff.the_emerald_dreamcatcher.remains>execute_time&astral_power>=16
 actions.ed+=/half_moon,if=astral_power.deficit>=20&buff.the_emerald_dreamcatcher.remains>execute_time&astral_power>=6
 actions.ed+=/full_moon,if=astral_power.deficit>=40&buff.the_emerald_dreamcatcher.remains>execute_time
@@ -114,7 +114,7 @@ actions.single_target=force_of_nature
 actions.single_target+=/stellar_flare,target_if=refreshable,if=target.time_to_die>10
 actions.single_target+=/moonfire,if=((talent.natures_balance.enabled&remains<3)|remains<6.6)&astral_power.deficit>7&target.time_to_die>8
 actions.single_target+=/sunfire,if=((talent.natures_balance.enabled&remains<3)|remains<5.4)&astral_power.deficit>7&target.time_to_die>8
-actions.single_target+=/starfall,if=buff.oneths_overconfidence.up&(!buff.astral_acceleration.up|buff.astral_acceleration.remains>5|astral_power.deficit<44)
+actions.single_target+=/starfall,if=buff.oneths_overconfidence.react&(!buff.astral_acceleration.up|buff.astral_acceleration.remains>5|astral_power.deficit<44)
 actions.single_target+=/solar_wrath,if=buff.solar_empowerment.stack=3
 actions.single_target+=/lunar_strike,if=buff.lunar_empowerment.stack=3
 actions.single_target+=/starsurge,if=astral_power.deficit<44|(buff.celestial_alignment.up|buff.incarnation.up|buff.astral_acceleration.remains>5|(set_bonus.tier21_4pc&!buff.solar_solstice.up))|(gcd.max*(astral_power%40))>target.time_to_die

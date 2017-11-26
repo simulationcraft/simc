@@ -6,7 +6,7 @@ role=attack
 position=back
 talents=1230111
 artifact=43:0:0:0:0:323:4:324:4:325:4:326:4:327:4:328:4:329:4:330:4:331:4:332:1:333:1:334:1:335:1:337:1:346:1:347:1:1276:1:1384:1:1577:4:1578:1:1579:1:1580:24:1651:1
-crucible=1739:1777:330/1739:1777:325/1739:1777:325
+crucible=1739:1771:330/1739:1771:325/1739:1771:325
 
 # Default consumables
 potion=prolonged_power
@@ -96,7 +96,7 @@ wrists=zoldyck_family_training_shackles,id=137098,bonus_id=3630
 hands=lurid_grips_of_the_obscene,id=151984,bonus_id=3612/1502
 waist=portal_keepers_cincture,id=151990,bonus_id=3612/1502
 legs=pants_of_the_dashing_scoundrel,id=152164,bonus_id=3612/1502
-feet=lifebearing_footpads,id=151981,bonus_id=3612/1502
+feet=vicious_flamepaws,id=151983,bonus_id=3612/1502
 finger1=band_of_the_sargerite_smith,id=152064,bonus_id=3612/1502,enchant=binding_of_mastery
 finger2=sullied_seal_of_the_pantheon,id=151972,bonus_id=3612/1502,enchant=binding_of_mastery
 trinket1=shadowsinged_fang,id=151968,bonus_id=3612/1502
@@ -108,10 +108,10 @@ off_hand=the_kingslayers,id=128869
 # gear_ilvl=971.88
 # gear_agility=39033
 # gear_stamina=60315
-# gear_crit_rating=8432
+# gear_crit_rating=7590
 # gear_haste_rating=900
-# gear_mastery_rating=15811
-# gear_versatility_rating=5935
+# gear_mastery_rating=15988
+# gear_versatility_rating=6600
 # gear_armor=2999
 # set_bonus=tier21_2pc=1
 # set_bonus=tier21_4pc=1

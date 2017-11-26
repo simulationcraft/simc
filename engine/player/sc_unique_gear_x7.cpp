@@ -1565,7 +1565,7 @@ void item::amanthuls_vision( special_effect_t& effect )
   auto empower_spell = effect.player -> find_spell( 256832 );
   auto empower_amount = empower_spell -> effectN( 1 ).average( effect.item );
   stat_buff_t* empower_buff = stat_buff_creator_t( effect.player, "amanthuls_grandeur", empower_spell, effect.item )
-    .add_stat( effect.player -> primary_stat(), empower_amount );
+    .add_stat( effect.player -> convert_hybrid_stat( STAT_STR_AGI_INT ), empower_amount );
 
   effect.player -> sim -> expansion_data.pantheon_proxy -> register_pantheon_effect( effect.custom_buff, [ empower_buff ]() {
     empower_buff -> trigger();
@@ -1693,7 +1693,9 @@ struct ravaging_storm_t : public proc_spell_t
 {
   ravaging_storm_t( const special_effect_t& effect ) :
     proc_spell_t( "ravaging_storm", effect.player, effect.player -> find_spell( 257286 ), effect.item )
-  { }
+  {
+    split_aoe_damage = true;
+  }
 };
 
 // TODO: Can one have multiple Ravaging Storms active at the same time?
@@ -1712,9 +1714,11 @@ struct golganneths_vitality_proc_t : public pantheon_proc_callback_t
 protected:
   void execute( action_t* a, action_state_t* state ) override
   {
-    pantheon_proc_callback_t::execute( a, state );
-
+    // Note, buff needs to be up before pantheon_proc_callback_t::execute is called, as the buff's
+    // state will be used to determine empowerment state
     mark -> trigger();
+
+    pantheon_proc_callback_t::execute( a, state );
 
     make_event<ground_aoe_event_t>( *effect.player -> sim, effect.player, ground_aoe_params_t()
         .target( state -> target )
@@ -1825,6 +1829,7 @@ void item::norgannons_prowess( special_effect_t& effect )
   secondary -> source = SPECIAL_EFFECT_SOURCE_ITEM;
   secondary -> type = SPECIAL_EFFECT_EQUIP;
   secondary -> spell_id = 256836;
+  secondary -> proc_flags_ = PF_SPELL | PF_AOE_SPELL | PF_PERIODIC;
   secondary -> proc_flags2_ = PF2_ALL_HIT | PF2_PERIODIC_DAMAGE;
 
   effect.player -> special_effects.push_back( secondary );
@@ -4541,7 +4546,7 @@ void item::elementium_bomb_squirrel( special_effect_t& effect )
 struct kiljaedens_burning_wish_t : public proc_spell_t
 {
   kiljaedens_burning_wish_t( const special_effect_t& effect ) :
-    proc_spell_t( "kiljaedens_burning_wish", effect.player, effect.player -> find_spell( 235999 ) )
+    proc_spell_t( "kiljaedens_burning_wish", effect.player, dbc::find_spell( effect.player, 235999 ) )
   {
     background = may_crit = true;
     aoe = -1;
@@ -4568,6 +4573,8 @@ struct kiljaedens_burning_wish_t : public proc_spell_t
   virtual double composite_crit_chance() const override
   { return 1.0; }
 
+  virtual bool verify_actor_level() const override
+  { return true; }
 };
 
 void item::kiljadens_burning_wish( special_effect_t& effect )

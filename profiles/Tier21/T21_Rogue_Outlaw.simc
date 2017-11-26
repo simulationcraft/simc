@@ -89,16 +89,16 @@ actions.stealth+=/vanish,if=(variable.ambush_condition|equipped.mantle_of_the_ma
 actions.stealth+=/shadowmeld,if=variable.ambush_condition
 
 head=headdress_of_living_brambles,id=152681,bonus_id=3612/1502
-neck=chain_of_the_unmaker,id=152283,bonus_id=3612/1502,enchant=mark_of_the_hidden_satyr
-shoulders=shoulderpads_of_the_dashing_scoundrel,id=152165,bonus_id=3612/1502
+neck=vulcanarcore_pendant,id=151965,bonus_id=3612/1502,enchant=mark_of_the_hidden_satyr
+shoulders=mantle_of_the_master_assassin,id=144236,bonus_id=3630
 back=cloak_of_the_dashing_scoundrel,id=152161,bonus_id=3612/1502,enchant=binding_of_agility
-chest=vest_of_waning_life,id=151982,bonus_id=3612/1502
+chest=vest_of_the_dashing_scoundrel,id=152160,bonus_id=3612/1502
 wrists=greenskins_waterlogged_wristcuffs,id=137099,bonus_id=3630
 hands=gloves_of_the_dashing_scoundrel,id=152162,bonus_id=3612/1502
-waist=belt_of_fractured_sanity,id=151991,bonus_id=3612/1502
+waist=deathenveloping_cincture,id=151986,bonus_id=3612/1502
 legs=pants_of_the_dashing_scoundrel,id=152164,bonus_id=3612/1502
 feet=depraved_machinists_footpads,id=152412,bonus_id=3612/1502
-finger1=insignia_of_ravenholdt,id=137049,bonus_id=3630,gem_id=151583,enchant=binding_of_haste
+finger1=zealous_tormentors_ring,id=152284,bonus_id=3612/1502,enchant=binding_of_haste
 finger2=seal_of_the_portalmaster,id=152063,bonus_id=3612/1502,enchant=binding_of_haste
 trinket1=seeping_scourgewing,id=151964,bonus_id=3612/1502
 trinket2=golganneths_vitality,id=154174,bonus_id=4213
@@ -106,13 +106,13 @@ main_hand=the_dreadblades,id=128872,bonus_id=742,gem_id=152028/155855/155853,rel
 off_hand=the_dreadblades,id=134552
 
 # Gear Summary
-# gear_ilvl=973.25
-# gear_agility=38366
-# gear_stamina=60761
-# gear_crit_rating=13425
-# gear_haste_rating=9897
-# gear_mastery_rating=1965
-# gear_versatility_rating=7899
-# gear_armor=2965
+# gear_ilvl=972.63
+# gear_agility=39558
+# gear_stamina=60792
+# gear_crit_rating=8563
+# gear_haste_rating=9362
+# gear_mastery_rating=5242
+# gear_versatility_rating=8627
+# gear_armor=3008
 # set_bonus=tier21_2pc=1
 # set_bonus=tier21_4pc=1
