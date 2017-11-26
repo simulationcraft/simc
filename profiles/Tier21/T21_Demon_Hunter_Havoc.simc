@@ -5,7 +5,6 @@ race=blood_elf
 role=attack
 position=back
 talents=3310333
-talent_override=momentum,if=active_enemies>1|raid_event.adds.exists
 talent_override=fel_barrage,if=(active_enemies>1|raid_event.adds.exists)&!talent.demonic.enabled
 talent_override=momentum,if=active_enemies>1|raid_event.adds.exists
 artifact=3:0:0:0:0:1000:4:1001:4:1002:4:1003:4:1004:4:1005:4:1006:4:1007:4:1008:4:1010:1:1011:1:1012:1:1013:1:1014:1:1015:1:1016:1:1330:1:1362:1:1493:4:1494:1:1495:1:1496:24:1630:1
@@ -70,12 +69,12 @@ actions.demonic+=/fel_eruption
 actions.demonic+=/fury_of_the_illidari,if=(active_enemies>desired_targets)|(raid_event.adds.in>55&(!talent.momentum.enabled|buff.momentum.up))
 actions.demonic+=/blade_dance,if=variable.blade_dance&cooldown.eye_beam.remains>5&!cooldown.metamorphosis.ready
 actions.demonic+=/throw_glaive,if=talent.bloodlet.enabled&spell_targets>=2&(!talent.master_of_the_glaive.enabled|!talent.momentum.enabled|buff.momentum.up)&(spell_targets>=3|raid_event.adds.in>recharge_time+cooldown)
-actions.demonic+=/felblade,if=fury.deficit>=30
+actions.demonic+=/felblade,if=fury.deficit>=30&(fury<40|buff.metamorphosis.down)
 actions.demonic+=/eye_beam,if=spell_targets.eye_beam_tick>desired_targets|!buff.metamorphosis.extended_by_demonic|(set_bonus.tier21_4pc&buff.metamorphosis.remains>8)
 actions.demonic+=/annihilation,if=(!talent.momentum.enabled|buff.momentum.up|fury.deficit<30+buff.prepared.up*8|buff.metamorphosis.remains<5)&!variable.pooling_for_blade_dance
 actions.demonic+=/throw_glaive,if=talent.bloodlet.enabled&(!talent.master_of_the_glaive.enabled|!talent.momentum.enabled|buff.momentum.up)&raid_event.adds.in>recharge_time+cooldown
 actions.demonic+=/chaos_strike,if=(!talent.momentum.enabled|buff.momentum.up|fury.deficit<30+buff.prepared.up*8)&!variable.pooling_for_chaos_strike&!variable.pooling_for_meta&!variable.pooling_for_blade_dance
-actions.demonic+=/fel_rush,if=!talent.momentum.enabled&(buff.metamorphosis.down|talent.demon_blades.enabled)&(charges=2|(raid_event.movement.in>10&raid_event.adds.in>10))
+actions.demonic+=/fel_rush,if=!talent.momentum.enabled&!cooldown.eye_beam.ready&(buff.metamorphosis.down|talent.demon_blades.enabled)&(charges=2|(raid_event.movement.in>10&raid_event.adds.in>10))
 actions.demonic+=/demons_bite
 actions.demonic+=/throw_glaive,if=buff.out_of_range.up|!talent.bloodlet.enabled
 actions.demonic+=/fel_rush,if=movement.distance>15|(buff.out_of_range.up&!talent.momentum.enabled)
@@ -111,31 +110,31 @@ actions.normal+=/fel_rush,if=movement.distance>15|(buff.out_of_range.up&!talent.
 actions.normal+=/vengeful_retreat,if=movement.distance>15
 actions.normal+=/throw_glaive,if=!talent.bloodlet.enabled
 
-head=raddons_cascading_eyes,id=137061,bonus_id=3630
+head=felreaper_hood,id=152121,bonus_id=3612/1502
 neck=chain_of_the_unmaker,id=152283,bonus_id=3612/1502,enchant=mark_of_the_trained_soldier
 shoulders=shoulderpads_of_the_demonic_blitz,id=151988,bonus_id=3612/1502
 back=felreaper_drape,id=152119,bonus_id=3612/1502,enchant=binding_of_agility
-chest=felreaper_vest,id=152118,bonus_id=3612/1502
+chest=vest_of_waning_life,id=151982,bonus_id=3612/1502
 wrists=fiendish_logisticians_wristwraps,id=151992,bonus_id=3612/1502
 hands=felreaper_gloves,id=152120,bonus_id=3612/1502
 waist=portal_keepers_cincture,id=151990,bonus_id=3612/1502
 legs=felreaper_leggings,id=152122,bonus_id=3612/1502
 feet=lifebearing_footpads,id=151981,bonus_id=3612/1502
 finger1=anger_of_the_halfgiants,id=137038,bonus_id=3630,gems=200crit,enchant=binding_of_critical_strike
-finger2=band_of_the_sargerite_smith,id=152064,bonus_id=3612/1502,enchant=binding_of_critical_strike
+finger2=sephuzs_secret,id=132452,bonus_id=3630,gems=200crit,enchant=binding_of_critical_strike
 trinket1=seeping_scourgewing,id=151964,bonus_id=3612/1502
 trinket2=golganneths_vitality,id=154174,bonus_id=4213
 main_hand=twinblades_of_the_deceiver,id=127829,bonus_id=719,gem_id=152033/155852/152033/0,relic_id=3612:1502/3612:1512/3612:1502
 off_hand=twinblades_of_the_deceiver,id=127830,gem_id=0/0/0/0,relic_id=0/0
 
 # Gear Summary
-# gear_ilvl=972.25
-# gear_agility=38619
-# gear_stamina=61140
-# gear_crit_rating=17225
-# gear_haste_rating=5738
-# gear_mastery_rating=7204
-# gear_versatility_rating=3663
-# gear_armor=2975
+# gear_ilvl=972.88
+# gear_agility=37276
+# gear_stamina=60571
+# gear_crit_rating=18830
+# gear_haste_rating=7310
+# gear_mastery_rating=5434
+# gear_versatility_rating=3359
+# gear_armor=2936
 # set_bonus=tier21_2pc=1
 # set_bonus=tier21_4pc=1

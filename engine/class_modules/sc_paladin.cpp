@@ -34,9 +34,7 @@
     - BoK/BoW
     - Check mana/mana regen for ret, sword of light has been significantly changed to no longer have the mana regen stuff, or the bonus to healing, reduction in mana costs, etc.
   TODO (prot):
-    - Aggramar's Stride (leg)
     - Uther's Guard (leg)
-    - Aegisjalmur, the Armguards of Awe (leg)
     - Tyr's Hand of Faith (leg)
     - Ilterendi, Crown Jewel of Silvermoon (leg - Holy?)
     - Aegis of Light: Convert from self-buff to totem/pet with area buff? (low priority)
@@ -44,7 +42,6 @@
     - Everything below this line is super-low priority and can probably be ignored ======
     - Final Stand?? (like Hand of Reckoning, but AOE)
     - Blessing of Spellweaving??
-    - Retribution Aura?? (like HS, but would need to be in player_t to trigger off of other players being hit)
 */
 #include "simulationcraft.hpp"
 
@@ -5035,8 +5032,8 @@ void paladin_t::generate_action_prio_list_prot()
   {
     if (true_level > 100)
     {
-      precombat->add_action("flask,type=flask_of_ten_thousand_scars");
-      precombat->add_action("flask,type=flask_of_the_countless_armies,if=role.attack|using_apl.max_dps");
+      precombat->add_action("flask,type=flask_of_ten_thousand_scars,if=!talent.seraphim.enabled");
+      precombat->add_action("flask,type=flask_of_the_countless_armies,if=(role.attack|talent.seraphim.enabled)");
     }
     else if ( true_level > 90 )
     {
@@ -5054,8 +5051,8 @@ void paladin_t::generate_action_prio_list_prot()
   {
     if (level() > 100)
     {
-      precombat->add_action("food,type=seedbattered_fish_plate");
-      precombat->add_action("food,type=azshari_salad,if=role.attack|using_apl.max_dps");
+      precombat->add_action("food,type=seedbattered_fish_plate,if=!talent.seraphim.enabled");
+      precombat->add_action("food,type=lavish_suramar_feast,if=(role.attack|talent.seraphim.enabled)");
     }
     else if ( level() > 90 )
     {
@@ -5077,8 +5074,11 @@ void paladin_t::generate_action_prio_list_prot()
   {
     // no need for off/def pot options - Draenic Armor gives more AP than Draenic STR,
     // and Mountains potion is pathetic at L90
-    if (true_level > 100)
-      potion_type = "unbending_potion";
+	if (true_level > 100) {
+		  potion_type = "unbending_potion,if=!talent.seraphim.enabled";
+		  potion_type = "old_war,if=(role.attack|talent.seraphim.enabled)&active_enemies<3";
+		  potion_type = "prolonged_power,if=(role.attack|talent.seraphim.enabled)&active_enemies>=3";
+	  }
     else if ( true_level > 90 )
       potion_type = "draenic_strength";
     else if ( true_level >= 80 )
@@ -5137,32 +5137,33 @@ void paladin_t::generate_action_prio_list_prot()
   def->add_action("call_action_list,name=prot");
 
   //defensive
-  prot->add_talent(this, "Seraphim", "if=talent.seraphim.enabled&action.shield_of_the_righteous.charges>=2");
-  prot->add_action(this, "Shield of the Righteous", "if=(!talent.seraphim.enabled|action.shield_of_the_righteous.charges>2)&!(debuff.eye_of_tyr.up&buff.aegis_of_light.up&buff.ardent_defender.up&buff.guardian_of_ancient_kings.up&buff.divine_shield.up&buff.potion.up)");
-  prot->add_action(this, "Shield of the Righteous", "if=(talent.bastion_of_light.enabled&talent.seraphim.enabled&buff.seraphim.up&cooldown.bastion_of_light.up)&!(debuff.eye_of_tyr.up&buff.aegis_of_light.up&buff.ardent_defender.up&buff.guardian_of_ancient_kings.up&buff.divine_shield.up&buff.potion.up)");
-  prot->add_action(this, "Shield of the Righteous", "if=(talent.bastion_of_light.enabled&!talent.seraphim.enabled&cooldown.bastion_of_light.up)&!(debuff.eye_of_tyr.up&buff.aegis_of_light.up&buff.ardent_defender.up&buff.guardian_of_ancient_kings.up&buff.divine_shield.up&buff.potion.up)");
-  prot->add_talent(this, "Bastion of Light", "if=talent.bastion_of_light.enabled&action.shield_of_the_righteous.charges<1");
+  //prot->add_talent(this, "Seraphim", "if=talent.seraphim.enabled&action.shield_of_the_righteous.charges>=2");
+  prot->add_action(this, "Shield of the Righteous", "if=!talent.seraphim.enabled&(action.shield_of_the_righteous.charges>2)&!(debuff.eye_of_tyr.up&buff.aegis_of_light.up&buff.ardent_defender.up&buff.guardian_of_ancient_kings.up&buff.divine_shield.up&buff.potion.up)");
+  //prot->add_action(this, "Shield of the Righteous", "if=(talent.bastion_of_light.enabled&talent.seraphim.enabled&buff.seraphim.up&cooldown.bastion_of_light.up)&!(debuff.eye_of_tyr.up&buff.aegis_of_light.up&buff.ardent_defender.up&buff.guardian_of_ancient_kings.up&buff.divine_shield.up&buff.potion.up)");
+  //prot->add_action(this, "Shield of the Righteous", "if=(talent.bastion_of_light.enabled&!talent.seraphim.enabled&cooldown.bastion_of_light.up)&!(debuff.eye_of_tyr.up&buff.aegis_of_light.up&buff.ardent_defender.up&buff.guardian_of_ancient_kings.up&buff.divine_shield.up&buff.potion.up)");
+  prot->add_talent(this, "Bastion of Light", "if=!talent.seraphim.enabled&talent.bastion_of_light.enabled&action.shield_of_the_righteous.charges<1");
   prot->add_action(this, "Light of the Protector", "if=(health.pct<40)");
   prot->add_talent(this, "Hand of the Protector",  "if=(health.pct<40)");
   prot->add_action(this, "Light of the Protector", "if=("+threshold_lotp_rp+")&health.pct<55&talent.righteous_protector.enabled");
   prot->add_action(this, "Light of the Protector", "if=("+threshold_lotp+")&health.pct<55");
   prot->add_talent(this, "Hand of the Protector",  "if=("+threshold_hotp_rp+")&health.pct<65&talent.righteous_protector.enabled");
   prot->add_talent(this, "Hand of the Protector",  "if=("+threshold_hotp+")&health.pct<55");
-  prot->add_action(this, "Divine Steed", "if=talent.knight_templar.enabled&" + threshold + "&!(debuff.eye_of_tyr.up|buff.aegis_of_light.up|buff.ardent_defender.up|buff.guardian_of_ancient_kings.up|buff.divine_shield.up|buff.potion.up)");
-  prot->add_action(this, "Eye of Tyr", "if=" + threshold + "&!(debuff.eye_of_tyr.up|buff.aegis_of_light.up|buff.ardent_defender.up|buff.guardian_of_ancient_kings.up|buff.divine_shield.up|buff.potion.up)");
-  prot->add_talent(this, "Aegis of Light", "if=" + threshold + "&!(debuff.eye_of_tyr.up|buff.aegis_of_light.up|buff.ardent_defender.up|buff.guardian_of_ancient_kings.up|buff.divine_shield.up|buff.potion.up)");
-  prot->add_action(this, "Guardian of Ancient Kings", "if=" + threshold + "&!(debuff.eye_of_tyr.up|buff.aegis_of_light.up|buff.ardent_defender.up|buff.guardian_of_ancient_kings.up|buff.divine_shield.up|buff.potion.up)");
-  prot->add_action(this, "Divine Shield", "if=talent.final_stand.enabled&" + threshold + "&!(debuff.eye_of_tyr.up|buff.aegis_of_light.up|buff.ardent_defender.up|buff.guardian_of_ancient_kings.up|buff.divine_shield.up|buff.potion.up)");
-  prot->add_action(this, "Ardent Defender", "if=" + threshold + "&!(debuff.eye_of_tyr.up|buff.aegis_of_light.up|buff.ardent_defender.up|buff.guardian_of_ancient_kings.up|buff.divine_shield.up|buff.potion.up)");
-  prot->add_action(this, "Lay on Hands", "if=health.pct<15");
+  prot->add_action(this, "Divine Steed", "if=!talent.seraphim.enabled&talent.knight_templar.enabled&" + threshold + "&!(debuff.eye_of_tyr.up|buff.aegis_of_light.up|buff.ardent_defender.up|buff.guardian_of_ancient_kings.up|buff.divine_shield.up|buff.potion.up)");
+  prot->add_action(this, "Eye of Tyr", "if=!talent.seraphim.enabled&" + threshold + "&!(debuff.eye_of_tyr.up|buff.aegis_of_light.up|buff.ardent_defender.up|buff.guardian_of_ancient_kings.up|buff.divine_shield.up|buff.potion.up)");
+  prot->add_talent(this, "Aegis of Light", "if=!talent.seraphim.enabled&" + threshold + "&!(debuff.eye_of_tyr.up|buff.aegis_of_light.up|buff.ardent_defender.up|buff.guardian_of_ancient_kings.up|buff.divine_shield.up|buff.potion.up)");
+  prot->add_action(this, "Guardian of Ancient Kings", "if=!talent.seraphim.enabled&" + threshold + "&!(debuff.eye_of_tyr.up|buff.aegis_of_light.up|buff.ardent_defender.up|buff.guardian_of_ancient_kings.up|buff.divine_shield.up|buff.potion.up)");
+  prot->add_action(this, "Divine Shield", "if=!talent.seraphim.enabled&talent.final_stand.enabled&" + threshold + "&!(debuff.eye_of_tyr.up|buff.aegis_of_light.up|buff.ardent_defender.up|buff.guardian_of_ancient_kings.up|buff.divine_shield.up|buff.potion.up)");
+  prot->add_action(this, "Ardent Defender", "if=!talent.seraphim.enabled&" + threshold + "&!(debuff.eye_of_tyr.up|buff.aegis_of_light.up|buff.ardent_defender.up|buff.guardian_of_ancient_kings.up|buff.divine_shield.up|buff.potion.up)");
+  prot->add_action(this, "Lay on Hands", "if=!talent.seraphim.enabled&health.pct<15");
 
   //potion
   if (sim->allow_potions)
   {
     if (level() > 100)
     {
-      //prot->add_action("potion,name=the_old_war,if=role.attack|using_apl.max_dps");
-      prot->add_action("potion,name=unbending_potion");
+      prot->add_action("potion,name=old_war,if=buff.avenging_wrath.up&talent.seraphim.enabled&active_enemies<3");
+	  prot->add_action("potion,name=prolonged_power,if=buff.avenging_wrath.up&talent.seraphim.enabled&active_enemies>=3");
+      prot->add_action("potion,name=unbending_potion,if=!talent.seraphim.enabled");
     }
     if (true_level > 90)
     {
@@ -5175,19 +5176,34 @@ void paladin_t::generate_action_prio_list_prot()
   }
 
   //stoneform
-  prot->add_action("stoneform,if=" + threshold + "&!(debuff.eye_of_tyr.up|buff.aegis_of_light.up|buff.ardent_defender.up|buff.guardian_of_ancient_kings.up|buff.divine_shield.up|buff.potion.up)");
+  prot->add_action("stoneform,if=!talent.seraphim.enabled&" + threshold + "&!(debuff.eye_of_tyr.up|buff.aegis_of_light.up|buff.ardent_defender.up|buff.guardian_of_ancient_kings.up|buff.divine_shield.up|buff.potion.up)");
 
   //dps-single-target
   prot->add_action(this, "Avenging Wrath", "if=!talent.seraphim.enabled");
-  prot->add_action(this, "Avenging Wrath", "if=talent.seraphim.enabled&buff.seraphim.up");
-  //prot -> add_action( "call_action_list,name=prot_aoe,if=spell_targets.avenger_shield>3" );
-  prot->add_action(this, "Judgment");
-  prot->add_action(this, "Avenger's Shield","if=talent.crusaders_judgment.enabled&buff.grand_crusader.up");
-  prot->add_talent(this, "Blessed Hammer");
-  prot->add_action(this, "Avenger's Shield");
-  prot->add_action(this, "Consecration" );
-  prot->add_talent(this, "Blinding Light");
-  prot->add_action(this, "Hammer of the Righteous");
+  //prot->add_action(this, "Avenging Wrath", "if=talent.seraphim.enabled&buff.seraphim.up");
+  //prot->add_action( "call_action_list,name=prot_aoe,if=spell_targets.avenger_shield>3" );
+  prot->add_action(this, "Judgment", "if=!talent.seraphim.enabled");
+  prot->add_action(this, "Avenger's Shield","if=!talent.seraphim.enabled&talent.crusaders_judgment.enabled&buff.grand_crusader.up");
+  prot->add_talent(this, "Blessed Hammer", "if=!talent.seraphim.enabled");
+  prot->add_action(this, "Avenger's Shield", "if=!talent.seraphim.enabled");
+  prot->add_action(this, "Consecration", "if=!talent.seraphim.enabled");
+  prot->add_action(this, "Hammer of the Righteous", "if=!talent.seraphim.enabled");
+
+  //max dps build
+
+  prot->add_talent(this,"Seraphim","if=talent.seraphim.enabled&action.shield_of_the_righteous.charges>=2");
+  prot->add_action(this, "Avenging Wrath", "if=talent.seraphim.enabled&(buff.seraphim.up|cooldown.seraphim.remains<4)");
+  prot->add_action(this, "Ardent Defender", "if=talent.seraphim.enabled&buff.seraphim.up");
+  prot->add_action(this, "Shield of the Righteous", "if=talent.seraphim.enabled&(cooldown.consecration.remains>=0.1&(action.shield_of_the_righteous.charges>2.5&cooldown.seraphim.remains>3)|(buff.seraphim.up))");
+  prot->add_action(this, "Eye of Tyr", "if=talent.seraphim.enabled&equipped.151812&buff.seraphim.up");
+  prot->add_action(this, "Avenger's Shield", "if=talent.seraphim.enabled");
+  prot->add_action(this, "Judgment", "if=talent.seraphim.enabled&(active_enemies<2|set_bonus.tier20_2pc)");
+  prot->add_action(this, "Consecration", "if=talent.seraphim.enabled&(buff.seraphim.remains>6|buff.seraphim.down)");
+  prot->add_action(this, "Judgment", "if=talent.seraphim.enabled");
+  prot->add_action(this, "Consecration", "if=talent.seraphim.enabled");
+  prot->add_action(this, "Eye Of Tyr", "if=talent.seraphim.enabled&!equipped.151812");
+  prot->add_talent(this, "Blessed Hammer", "if=talent.seraphim.enabled");
+  prot->add_action(this, "Hammer of the Righteous", "if=talent.seraphim.enabled");
 
 
 

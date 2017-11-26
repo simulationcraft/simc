@@ -5247,7 +5247,7 @@ void warrior_t::apl_fury()
     }
   }
   cooldowns -> add_action( this, "Raging Blow", "if=talent.inner_rage.enabled&buff.enrage.up" );
-  cooldowns -> add_action( this, "Rampage" );
+  cooldowns -> add_action( this, "Rampage", "if=(rage>=100&talent.frothing_berserker.enabled&!set_bonus.tier21_4pc)|set_bonus.tier21_4pc|!talent.frothing_berserker.enabled" );
   cooldowns -> add_action( this, "Odyn's Fury", "if=buff.enrage.up&(cooldown.raging_blow.remains>0|!talent.inner_rage.enabled)" );
   cooldowns -> add_action( this, "Berserker Rage", "if=talent.outburst.enabled&buff.enrage.down&buff.battle_cry.up" );
   cooldowns -> add_action( this, "Bloodthirst", "if=(buff.enrage.remains<1&!talent.outburst.enabled)|!talent.inner_rage.enabled" );
@@ -5843,8 +5843,8 @@ void warrior_t::create_buffs()
     .default_value( sets -> set( WARRIOR_FURY, T20, B2 ) -> effectN( 1 ).trigger() -> effectN( 1 ).percent() )
     .chance( sets -> set( WARRIOR_FURY, T20, B2 ) -> proc_chance() );
 
-  buff.t20_fury_4p = buff_creator_t( this, "t20_fury_4p", talents.inner_rage -> ok() ? find_spell( 242953 ) : find_spell( 252952 ) )
-    .default_value( talents.inner_rage -> ok() ? find_spell( 242953 ) -> effectN( 1 ).percent() : find_spell( 252952 )  -> effectN( 1 ).percent() )
+  buff.t20_fury_4p = buff_creator_t( this, "t20_fury_4p", talents.inner_rage -> ok() ? find_spell( 242953 ) : find_spell( 242952 ) )
+    .default_value( talents.inner_rage -> ok() ? find_spell( 242953 ) -> effectN( 1 ).percent() : find_spell( 242952 )  -> effectN( 1 ).percent() )
     .chance( sets -> has_set_bonus( WARRIOR_FURY, T20, B4 ) );
 
   buff.executioners_precision = buff_creator_t( this, "executioners_precision", artifact.executioners_precision.data().effectN( 1 ).trigger() )
@@ -6856,9 +6856,7 @@ struct ayalas_stone_heart_t: public unique_gear::class_buff_cb_t<warrior_t>
   buff_creator_t creator( const special_effect_t& e ) const override
   { 
     return super::creator( e )
-      // spell data no longer says "Haste Multiplier"
-      // however in game testing suggests it is still scaled by haste
-    .rppm_scale( RPPM_HASTE )
+    .rppm_scale( RPPM_NONE )
       .spell( e.driver() -> effectN( 1 ).trigger() )
       .trigger_spell( e.driver() );
   }

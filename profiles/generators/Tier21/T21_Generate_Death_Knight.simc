@@ -4,18 +4,18 @@ level=110
 race=blood_elf
 role=attack
 position=back
-talents=3210031
+talents=1210031
 artifact=12:0:0:0:0:108:4:109:4:110:4:111:4:113:4:114:4:115:4:117:4:119:1:120:1:122:1:123:1:124:1:1090:4:1091:1:1092:1:1332:1:1360:1:1485:4:1486:1:1487:1:1488:24:1628:1
-crucible=1739:3:1774:3:110:2:108:1
+crucible=1739:3:1774:3:110:2:113:1
 
 head=dreadwake_helm,id=152115,bonus_id=3612/1502
 neck=chain_of_the_unmaker,id=152283,bonus_id=3612/1502,enchant=mark_of_the_claw
 shoulder=dreadwake_pauldrons,id=152117,bonus_id=3612/1502
 back=dreadwake_greatcloak,id=152113,bonus_id=3612/1502,enchant=binding_of_strength
-chest=cold_heart,id=151796,bonus_id=3630
+chest=dreadwake_bonecage,id=152112,bonus_id=3612/1502
 wrist=toravons_whiteout_bindings,id=132458,bonus_id=3630
-hands=dreadwake_gauntlets,id=152114,bonus_id=3612/1502
-waist=grondfather_girdle,id=152022,bonus_id=3612/1502
+hands=nascent_deathbringers_clutches,id=152686,bonus_id=3612/1502
+waist=koltiras_newfound_will,id=132366,bonus_id=3630
 legs=cosmosculling_legplates,id=152016,bonus_id=3612/1502
 feet=doomwalker_warboots,id=152009,bonus_id=3612/1502
 finger1=zealous_tormentors_ring,id=152284,bonus_id=3612/1502,enchant=binding_of_haste

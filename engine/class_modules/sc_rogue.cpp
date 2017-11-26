@@ -780,6 +780,10 @@ struct rogue_t : public player_t
 
   bool poisoned_enemy( player_t* target, bool deadly_fade = false ) const;
 
+  // Custom class expressions
+  expr_t* create_improved_snd_expression();
+  expr_t* create_rtb_buff_t21_expression( const buff_t* rtb_buff );
+
   void trigger_auto_attack( const action_state_t* );
   void trigger_seal_fate( const action_state_t* );
   void trigger_main_gauche( const action_state_t*, double = 0 );
@@ -1340,7 +1344,6 @@ struct rogue_attack_t : public melee_attack_t
   { return 0.0; }
 
   expr_t* create_nightblade_finality_expression();
-  expr_t* create_improved_snd_expression();
   expr_t* create_expression( const std::string& name_str ) override;
 };
 
@@ -2601,6 +2604,7 @@ struct adrenaline_rush_t : public rogue_attack_t
     rogue_attack_t( "adrenaline_rush", p, p -> find_specialization_spell( "Adrenaline Rush" ), options_str )
   {
     harmful = may_miss = may_crit = false;
+    use_off_gcd = p -> talent.death_from_above -> ok();
 
     cooldown -> duration += p -> artifact.fortunes_boon.time_value();
   }
@@ -4635,7 +4639,7 @@ struct slice_and_dice_t : public rogue_attack_t
   {
     if ( util::str_compare_ci( name_str, "improved" ) )
     {
-      return create_improved_snd_expression();
+      return p() -> create_improved_snd_expression();
     }
 
     return rogue_attack_t::create_expression( name_str );
@@ -4652,6 +4656,7 @@ struct sprint_t : public rogue_attack_t
     harmful = callbacks = false;
     cooldown = p -> cooldowns.sprint;
     ignore_false_positive = true;
+    use_off_gcd = p -> talent.death_from_above -> ok();
 
     cooldown -> duration = data().cooldown()
                             + p -> spell.sprint_2 -> effectN( 1 ).time_value()
@@ -4971,9 +4976,10 @@ struct death_from_above_t : public rogue_attack_t
   {
     rogue_attack_t::execute();
 
-    p() -> buffs.death_from_above -> trigger();
-
     timespan_t oor_delay = timespan_t::from_seconds( rng().gauss( 1.475, 0.025 ) );
+
+    // Make Dfa buff longer than driver since driver tick will expire it and DfA should not run out first.
+    p() -> buffs.death_from_above -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, oor_delay + timespan_t::from_millis( 50 ) );
 
     adjust_attack( player -> main_hand_attack, oor_delay );
     adjust_attack( player -> off_hand_attack, oor_delay );
@@ -5303,16 +5309,6 @@ expr_t* actions::rogue_attack_t::create_nightblade_finality_expression()
   } );
 }
 
-// rogue_attack_t::create_improved_snd_expression ==============================
-
-expr_t* actions::rogue_attack_t::create_improved_snd_expression()
-{
-  return make_fn_expr( "improved", [ this ]() {
-    // The SnD buff value is a modifier for the talent effect percentage. Is it >1, our SnD is improved.
-    return p() -> buffs.slice_and_dice -> up() && p() -> buffs.slice_and_dice -> value() > 1.0;
-  } );
-}
-
 // rogue_attack_t::create_expression =========================================
 
 expr_t* actions::rogue_attack_t::create_expression( const std::string& name_str )
@@ -5331,10 +5327,6 @@ expr_t* actions::rogue_attack_t::create_expression( const std::string& name_str 
   else if ( util::str_compare_ci( name_str, "dot.nightblade.finality" ) )
   {
     return create_nightblade_finality_expression();
-  }
-  else if ( util::str_compare_ci( name_str, "buff.slice_and_dice.improved" ) )
-  {
-    return create_improved_snd_expression();
   }
 
   return melee_attack_t::create_expression( name_str );
@@ -5979,7 +5971,6 @@ struct roll_the_bones_t : public buff_t
 
     // Remove all secondary buffs, but only if expiry was explicitly triggered.
     // This prevents removal of T21 4pc buffs if regular RtB buffs drop.
-    // Also drop all buffs, if SnD is selected.
     if ( remaining_duration > timespan_t::zero() )
       expire_secondary_buffs();
   }
@@ -7479,7 +7470,7 @@ void rogue_t::init_action_list()
       else
         cds -> add_action( racial_actions[i] + ",if=stealthed.rogue" );
     }
-    cds -> add_action( this, "Symbols of Death", "if=!talent.death_from_above.enabled&((time>10&energy.deficit>=40-stealthed.all*30)|(time<10&dot.nightblade.ticking))" );
+    cds -> add_action( this, "Symbols of Death", "if=!talent.death_from_above.enabled" );
     cds -> add_action( this, "Symbols of Death", "if=(talent.death_from_above.enabled&cooldown.death_from_above.remains<=1&(dot.nightblade.remains>=cooldown.death_from_above.remains+3|target.time_to_die-dot.nightblade.remains<=6)&(time>=3|set_bonus.tier20_4pc|equipped.the_first_of_the_dead))|target.time_to_die-remains<=10" );
     cds -> add_talent( this, "Marked for Death", "target_if=min:target.time_to_die,if=target.time_to_die<combo_points.deficit" );
     cds -> add_talent( this, "Marked for Death", "if=raid_event.adds.in>40&!stealthed.all&combo_points.deficit>=cp_max_spend" );
@@ -7586,6 +7577,25 @@ action_t* rogue_t::create_action( const std::string& name,
   if ( name == "swap_weapon"         ) return new weapon_swap_t        ( this, options_str );
 
   return player_t::create_action( name, options_str );
+}
+
+// rogue_t::create_improved_snd_expression ==============================
+
+expr_t* rogue_t::create_improved_snd_expression()
+{
+  return make_fn_expr( "improved", [ this ]() {
+    // The SnD buff value is a modifier for the talent effect percentage. Is it >1, our SnD is improved.
+    return buffs.slice_and_dice -> up() && buffs.slice_and_dice -> value() > 1.0;
+  } );
+}
+
+// rogue_t::create_rtb_buff_t21_expression ==============================
+
+expr_t* rogue_t::create_rtb_buff_t21_expression( const buff_t* rtb_buff )
+{
+  return make_fn_expr( "t21", [ this, rtb_buff ]() {
+    return rtb_buff -> check() && rtb_buff -> remains() != buffs.roll_the_bones -> remains();
+  } );
 }
 
 // rogue_t::create_expression ===============================================
@@ -7853,6 +7863,35 @@ expr_t* rogue_t::create_expression( action_t* a, const std::string& name_str )
       if (sim -> debug) sim -> out_debug.printf( "Shadow techniques return value is: %.3f", return_value.total_seconds() );
     return return_value;
     } );
+  }
+
+  if ( util::str_compare_ci( name_str, "buff.slice_and_dice.improved" ) )
+  {
+    return create_improved_snd_expression();
+  }
+  if ( util::str_compare_ci( name_str, "buff.broadsides.t21" ) )
+  {
+    return create_rtb_buff_t21_expression( buffs.broadsides );
+  }
+  if ( util::str_compare_ci( name_str, "buff.buried_treasure.t21" ) )
+  {
+    return create_rtb_buff_t21_expression( buffs.buried_treasure );
+  }
+  if ( util::str_compare_ci( name_str, "buff.grand_melee.t21" ) )
+  {
+    return create_rtb_buff_t21_expression( buffs.grand_melee );
+  }
+  if ( util::str_compare_ci( name_str, "buff.jolly_roger.t21" ) )
+  {
+    return create_rtb_buff_t21_expression( buffs.jolly_roger );
+  }
+  if ( util::str_compare_ci( name_str, "buff.shark_infested_waters.t21" ) )
+  {
+    return create_rtb_buff_t21_expression( buffs.shark_infested_waters );
+  }
+  if ( util::str_compare_ci( name_str, "buff.true_bearing.t21" ) )
+  {
+    return create_rtb_buff_t21_expression( buffs.true_bearing );
   }
 
   return player_t::create_expression( a, name_str );
@@ -8356,8 +8395,9 @@ void rogue_t::create_buffs()
                                   .default_value( find_spell( 193538 ) -> effectN( 1 ).percent() )
                                   .chance( talent.alacrity -> ok() );
   buffs.death_from_above        = buff_creator_t( this, "death_from_above", spell.death_from_above )
-                                  // Note: Duration is hardcoded to 1.475s to match the current model and then let it trackable in the APL
-                                  .duration( timespan_t::from_seconds( 1.475 ) )
+                                  // Note: Duration is set to 1.475s (+/- gauss RNG) on action execution in order to match the current model
+                                  // and then let it be trackable in the APL. The driver will also expire this buff when the finisher is scheduled.
+                                  //.duration( timespan_t::from_seconds( 1.475 ) )
                                   .quiet( true );
   buffs.subterfuge              = new buffs::subterfuge_t( this );
   // Assassination

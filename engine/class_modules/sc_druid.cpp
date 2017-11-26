@@ -568,6 +568,7 @@ public:
     const spell_data_t* ironfur_2;
 
     // Resto
+    const spell_data_t* restoration;
     const spell_data_t* yseras_gift; // Restoration Affinity
     const spell_data_t* moonkin_form_affinity;
   } spec;
@@ -738,6 +739,11 @@ public:
     // NYI
     artifact_power_t bloody_paws;
     artifact_power_t roar_of_the_crowd;
+
+    // Restoration
+    artifact_power_t grace_of_the_cenarion_circle;
+    artifact_power_t persistence;
+
   } artifact;
 
   struct legendary_t
@@ -1464,6 +1470,8 @@ public:
   bool hasted_gcd;
   bool balance_damage;
   bool balance_damage_periodic;
+  bool resto_damage;
+  bool resto_damage_periodic;
   double gore_chance;
   bool triggers_galactic_guardian;
 
@@ -1475,6 +1483,8 @@ public:
     hasted_gcd( ab::data().affected_by( player -> spec.druid -> effectN( 4 ) ) ),
     balance_damage( ab::data().affected_by( player -> spec.balance -> effectN( 1 ) ) ),
     balance_damage_periodic( ab::data().affected_by( player -> spec.balance -> effectN( 2 ) ) ),
+    resto_damage( ab::data().affected_by( player -> spec.restoration -> effectN(8) ) ),
+    resto_damage_periodic( ab::data().affected_by( player -> spec.restoration -> effectN(9) ) ),
     gore_chance( player -> spec.gore -> proc_chance() ), triggers_galactic_guardian( true )
   {
     ab::may_crit      = true;
@@ -1488,6 +1498,12 @@ public:
       ab::spell_power_mod.direct *= 1.0 + player -> spec.balance -> effectN( 1 ).percent();
     if ( balance_damage_periodic )
       ab::spell_power_mod.tick *= 1.0 + player -> spec.balance -> effectN( 2 ).percent();
+
+    if (resto_damage)
+      ab::base_dd_multiplier *= 1.0 + player->spec.restoration->effectN(8).percent();
+    if (resto_damage_periodic)
+      ab::base_td_multiplier *= 1.0 + player->spec.restoration->effectN(9).percent();
+
   }
 
   druid_t* p()
@@ -1830,7 +1846,7 @@ public:
                       const spell_data_t* s = spell_data_t::nil() ) :
     ab( n, player, s ),
     cat_form_gcd( ab::data().affected_by( player -> spec.cat_form -> effectN( 4 ) ) )
-  {}
+  { }
 
   virtual timespan_t gcd() const override
   {
@@ -2158,6 +2174,11 @@ struct moonfire_t : public druid_spell_t
       dot_duration       += p -> spec.balance -> effectN( 3 ).time_value();
       base_dd_multiplier *= 1.0 + p -> spec.guardian -> effectN( 8 ).percent();
 
+      if ( p -> artifact.persistence )
+      {
+        dot_duration += p -> artifact.persistence.time_value();
+      }
+
       /* June 2016: This hotfix is negated if you shift into Moonkin Form (ever),
         so only apply it if the druid does not have balance affinity. */
       if ( ! p -> talent.balance_affinity -> ok() )
@@ -2225,8 +2246,7 @@ struct moonfire_t : public druid_spell_t
       {
         p() -> resource_gain( RESOURCE_RAGE, p() -> buff.galactic_guardian -> value(), p() -> gain.galactic_guardian );
         p() -> buff.galactic_guardian -> expire();
-      }
-      trigger_wax_and_wane();
+      }      
     }
 
     size_t available_targets( std::vector< player_t* >& tl ) const override
@@ -2297,6 +2317,8 @@ struct moonfire_t : public druid_spell_t
       target_cache.is_valid = false;
 
       druid_spell_t::execute();
+
+      trigger_wax_and_wane();
 
       if ( p() -> artifact.circadian_invocation.rank() )
       {
@@ -3638,8 +3660,8 @@ struct bloody_gash_t : public cat_attack_t
    bloody_gash_t(druid_t* p) :
       cat_attack_t("bloody_gash", p, p -> find_spell(252750) )
    {
-      background = dual = proc = may_crit = true;
-      may_miss = may_dodge = may_parry = false;
+      background = dual = proc = true;
+      may_miss = may_dodge = may_parry = may_crit = false;
       may_block = true;  
    }
 
@@ -5872,6 +5894,11 @@ struct sunfire_t : public druid_spell_t
       stellar_empowerment = true;
       base_multiplier *= 1.0 + p -> artifact.sunfire_burns.percent();
       radius += p -> artifact.sunblind.value();
+
+      if ( p -> artifact.persistence )
+      {
+        dot_duration += p -> artifact.persistence.time_value();
+      }
     }
 
     double action_multiplier() const override
@@ -7002,7 +7029,8 @@ void druid_t::init_spells()
   spec.ironfur_2                  = find_specialization_spell( 231070 );
 
   // Restoration
-  spec.moonkin_form_affinity = find_spell(197625);
+  spec.moonkin_form_affinity      = find_spell(197625);
+  spec.restoration                = find_specialization_spell("Restoration Druid");
   
   // Talents ================================================================
 
@@ -7192,7 +7220,9 @@ void druid_t::init_spells()
   artifact.pawsitive_outlook            = find_artifact_spell( "Pawsitive Outlook" );
   artifact.fortitude_of_the_cenarion_circle = find_artifact_spell("Fortitude of the Cenarion Circle");
 
-
+  // Restoration
+  artifact.grace_of_the_cenarion_circle = find_artifact_spell("Grace of the Cenarion Circle");
+  artifact.persistence = find_artifact_spell("Persistence");
 
   // Active Actions =========================================================
 
@@ -7678,6 +7708,11 @@ void druid_t::apl_precombat()
     precombat -> add_action( this, "Cat Form" );
     precombat -> add_action( this, "Prowl" );
   }
+  else if ( specialization() == DRUID_RESTORATION && role == ROLE_ATTACK )
+  {
+    precombat -> add_action("cat_form");
+    precombat -> add_action("prowl");
+  }
   else if ( primary_role() == ROLE_TANK )
   {
     precombat -> add_action( this, "Bear Form" );
@@ -7687,10 +7722,10 @@ void druid_t::apl_precombat()
     precombat -> add_action( this, "Moonkin Form" );
     precombat -> add_action( "blessing_of_elune" );
   }
-  else if (specialization() == DRUID_RESTORATION && (primary_role() == ROLE_DPS || primary_role() == ROLE_SPELL))
-  {
-    precombat->add_action(this, "moonkin_form_affinity");
-  }
+  //else if (specialization() == DRUID_RESTORATION && (primary_role() == ROLE_DPS || primary_role() == ROLE_SPELL))
+  //{
+  //  precombat->add_action(this, "moonkin_form_affinity");
+  //}
 
   // Snapshot stats
   precombat -> add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
@@ -8035,6 +8070,8 @@ void druid_t::apl_balance()
       default_list->add_action("use_item,name=charm_of_the_rising_tide,if=cooldown.incarnation.remains>30|cooldown.celestial_alignment.remains>60");
   if (items[SLOT_TRINKET_1].name_str == "horn_of_valor" || items[SLOT_TRINKET_2].name_str == "horn_of_valor")
       default_list->add_action("use_item,name=horn_of_valor,if=cooldown.incarnation.remains>30|cooldown.celestial_alignment.remains>60");
+  if (items[SLOT_TRINKET_1].name_str == "vitality_resonator" || items[SLOT_TRINKET_2].name_str == "vitality_resonator")
+      default_list->add_action("use_item,name=vitality_resonator,if=(cooldown.incarnation.remains>45&!buff.incarnation.up)|buff.incarnation.remains<16|cooldown.celestial_alignment.remains>60");
   default_list -> add_action( "call_action_list,name=fury_of_elune,if=talent.fury_of_elune.enabled&cooldown.fury_of_elune.remains<target.time_to_die" );
   default_list -> add_action( "call_action_list,name=ed,if=equipped.the_emerald_dreamcatcher&active_enemies<=1" );
   default_list -> add_talent( this, "Astral Communion", "if=astral_power.deficit>=79" );
@@ -8048,7 +8085,7 @@ void druid_t::apl_balance()
   ST -> add_talent( this, "Stellar Flare", "target_if=refreshable,if=target.time_to_die>10");
   ST -> add_action( this, "Moonfire", "if=((talent.natures_balance.enabled&remains<3)|remains<6.6)&astral_power.deficit>7&target.time_to_die>8");
   ST -> add_action( this, "Sunfire", "if=((talent.natures_balance.enabled&remains<3)|remains<5.4)&astral_power.deficit>7&target.time_to_die>8");
-  ST -> add_action( this, "Starfall", "if=buff.oneths_overconfidence.up&(!buff.astral_acceleration.up|buff.astral_acceleration.remains>5|astral_power.deficit<44)");
+  ST -> add_action( this, "Starfall", "if=buff.oneths_overconfidence.react&(!buff.astral_acceleration.up|buff.astral_acceleration.remains>5|astral_power.deficit<44)");
   ST -> add_action( this, "Solar Wrath", "if=buff.solar_empowerment.stack=3");
   ST -> add_action( this, "Lunar Strike", "if=buff.lunar_empowerment.stack=3");
   ST -> add_action( this, "Starsurge", "if=astral_power.deficit<44|(buff.celestial_alignment.up|buff.incarnation.up|buff.astral_acceleration.remains>5|(set_bonus.tier21_4pc&!buff.solar_solstice.up))|(gcd.max*(astral_power%40))>target.time_to_die");
@@ -8065,14 +8102,14 @@ void druid_t::apl_balance()
   AoE -> add_action( this, "Sunfire", "target_if=refreshable,if=astral_power.deficit>7&target.time_to_die>4");
   AoE -> add_action( this, "Moonfire", "target_if=refreshable,if=astral_power.deficit>7&target.time_to_die>4");
   AoE -> add_talent( this, "Force of Nature");
-  AoE -> add_action( this, "starsurge", "if=buff.oneths_intuition.up&(!buff.astral_acceleration.up|buff.astral_acceleration.remains>5|astral_power.deficit<44)");
-  AoE -> add_action( this, "New Moon", "if=astral_power.deficit>14&!(buff.celestial_alignment.up|buff.incarnation.up)");
+  AoE -> add_action( this, "starsurge", "if=buff.oneths_intuition.react&(!buff.astral_acceleration.up|buff.astral_acceleration.remains>5|astral_power.deficit<44)");
+  AoE -> add_action( this, "New Moon", "if=astral_power.deficit>14&(!(buff.celestial_alignment.up|buff.incarnation.up)|(charges=2&recharge_time<5)|charges=3)");
   AoE -> add_action( this, "Half Moon", "if=astral_power.deficit>24");
   AoE -> add_action( this, "Full Moon", "if=astral_power.deficit>44");
   AoE -> add_action( this, "Lunar Strike", "if=buff.warrior_of_elune.up");
   AoE -> add_action( this, "Solar Wrath", "if=buff.solar_empowerment.up");
   AoE -> add_action( this, "Lunar Strike", "if=buff.lunar_empowerment.up");
-  AoE -> add_action(this, "Moonfire", "if=equipped.lady_and_the_child&talent.soul_of_the_forest.enabled&active_enemies<5&spell_haste>0.4&!(buff.celestial_alignment.up|buff.incarnation.up)");
+  AoE -> add_action( this, "Moonfire", "if=equipped.lady_and_the_child&talent.soul_of_the_forest.enabled&(active_enemies<3|(active_enemies<4&!set_bonus.tier20_4pc)|(equipped.radiant_moonlight&active_enemies<7&!set_bonus.tier20_4pc))&spell_haste>0.4&!buff.celestial_alignment.up&(!buff.incarnation.up|active_enemies>3)");
   AoE -> add_action( this, "Lunar Strike", "if=spell_targets.lunar_strike>=4|spell_haste<0.45");
   AoE -> add_action( this, "Solar Wrath");
 
@@ -8106,7 +8143,7 @@ void druid_t::apl_balance()
   ED -> add_action( this, "Moonfire", "if=((talent.natures_balance.enabled&remains<3)|(remains<6.6&!talent.natures_balance.enabled))&(buff.the_emerald_dreamcatcher.remains>gcd.max|!buff.the_emerald_dreamcatcher.up)");
   ED -> add_action( this, "Sunfire", "if=((talent.natures_balance.enabled&remains<3)|(remains<5.4&!talent.natures_balance.enabled))&(buff.the_emerald_dreamcatcher.remains>gcd.max|!buff.the_emerald_dreamcatcher.up)");
   ED -> add_talent( this, "Force of Nature", "if=buff.the_emerald_dreamcatcher.remains>execute_time");
-  ED -> add_action( this, "Starfall", "if=buff.oneths_overconfidence.up&buff.the_emerald_dreamcatcher.remains>execute_time");
+  ED -> add_action( this, "Starfall", "if=buff.oneths_overconfidence.react&buff.the_emerald_dreamcatcher.remains>execute_time");
   ED -> add_action( this, "New Moon", "if=astral_power.deficit>=10&buff.the_emerald_dreamcatcher.remains>execute_time&astral_power>=16");
   ED -> add_action( this, "Half Moon", "if=astral_power.deficit>=20&buff.the_emerald_dreamcatcher.remains>execute_time&astral_power>=6");
   ED -> add_action( this, "Full Moon", "if=astral_power.deficit>=40&buff.the_emerald_dreamcatcher.remains>execute_time");
@@ -8161,8 +8198,8 @@ void druid_t::apl_guardian()
 void druid_t::apl_restoration()
 {
   action_priority_list_t* default_list    = get_action_priority_list( "default" );
-  action_priority_list_t* HEAL = get_action_priority_list("heal");
-  action_priority_list_t* DPS = get_action_priority_list("dps"); //Base DPS APL - Guardian affinity
+  action_priority_list_t* heal = get_action_priority_list("heal");
+  action_priority_list_t* dps = get_action_priority_list("dps"); //Base DPS APL - Guardian affinity
   // action_priority_list_t* BAFF = get_action_priority_list("baff"); //Balance affinity
   // action_priority_list_t* FAFF = get_action_priority_list("faff"); //Feral affinity
 
@@ -8174,17 +8211,37 @@ void druid_t::apl_restoration()
   for ( size_t i = 0; i < item_actions.size(); i++ )
     default_list -> add_action( item_actions[i] );
   
-  default_list -> add_action("call_action_list,name=dps,if=role.spell");
-  default_list -> add_action("call_action_list,name=dps,if=role.attack");
-  default_list -> add_action("call_action_list,name=heal,if=role.heal");
-  
-  HEAL -> add_action( this, "Healing Touch", "if=buff.clearcasting.up" );
-  HEAL -> add_action( this, "Rejuvenation", "if=remains<=duration*0.3" );
-  HEAL -> add_action( this, "Lifebloom", "if=debuff.lifebloom.down" );
-  HEAL -> add_action( this, "Swiftmend" );
-  HEAL -> add_action( this, "Healing Touch" );
+  default_list -> add_action("rake,if=buff.shadowmeld.up|buff.prowl.up");
+  default_list->add_action("auto_attack");
+  default_list->add_action("moonfire,if=refreshable|(prev_gcd.1.sunfire&remains<duration*0.5)");
+  default_list->add_action("sunfire,if=refreshable|(prev_gcd.1.moonfire&remains<duration*0.5)");
+  default_list->add_action("cat_form,if=!buff.cat_form.up&energy>50");
+  default_list->add_action("rip,if=refreshable&combo_points=5");
+  default_list->add_action("ferocious_bite,max_energy=1,if=combo_points=5&energy.time_to_max<2");
+  default_list->add_action("rake,if=refreshable");
+  default_list->add_action("swipe_cat,if=spell_targets.swipe_cat>=2");
+  default_list->add_action("shred");
+  default_list->add_action("solar_wrath");
 
-  DPS -> add_action(this, "Moonfire", "if=remains<6.6");
+  //default_list -> add_action("swap_action_list,name=dps,if=role.attack");
+  //default_list->add_action("call_action_list,name=dps");
+  //default_list -> add_action("call_action_list,name=heal,if=role.heal");
+  
+  //heal -> add_action( this, "Healing Touch", "if=buff.clearcasting.up" );
+  //heal -> add_action( this, "Rejuvenation", "if=remains<=duration*0.3" );
+  //heal -> add_action( this, "Lifebloom", "if=debuff.lifebloom.down" );
+  //heal -> add_action( this, "Swiftmend" );
+  //heal -> add_action( this, "Healing Touch" );
+
+  //dps -> add_action(this, "Moonfire", "if=refreshable");
+  //dps -> add_action(this, "Sunfire", "if=refreshable");
+  //dps -> add_action(this, "Cat Form");
+  //dps -> add_action(this, "Rip", "if=refreshable");
+  //dps -> add_action(this, "Rake", "if=refreshable");
+  //dps -> add_action(this, "Shred");
+  //dps -> add_action(this, "Bear Form");
+  //dps -> add_action ("swipe_bear");
+
 }
 
 // druid_t::init_scaling ====================================================
@@ -8335,13 +8392,13 @@ void druid_t::init_action_list()
 {
 #ifdef NDEBUG // Only restrict on release builds.
   // Restoration isn't fully supported atm
-  if ( specialization() == DRUID_RESTORATION )
+  if ( specialization() == DRUID_RESTORATION & role != ROLE_ATTACK)
   {
-    //if ( ! quiet )
-    //  sim -> errorf( "Druid restoration healing for player %s is not currently supported.", name() );
+    if ( ! quiet )
+      sim -> errorf( "Druid restoration healing for player %s is not currently supported.", name() );
 
-   // quiet = true;
-   // return;
+    quiet = true;
+    return;
   }
 #endif
   if ( ! action_list_str.empty() )
@@ -8599,11 +8656,14 @@ double druid_t::composite_player_multiplier( school_e school ) const
   if ( buff.bear_form -> check() && ( dbc::is_school( school, SCHOOL_ARCANE ) || dbc::is_school( school, SCHOOL_NATURE ) ) )
     m *= 1.0 + legendary.fury_of_nature;
 
+
+
   m *= 1.0 + artifact.fangs_of_the_first.percent();
   m *= 1.0 + artifact.ferocity_of_the_cenarion_circle.percent();
   m *= 1.0 + artifact.fortitude_of_the_cenarion_circle.data().effectN( 1 ).percent();
   m *= 1.0 + artifact.goldrinns_fury.percent();
   m *= 1.0 + artifact.radiance_of_the_cenarion_circle.data().effectN( 1 ).percent();
+  m *= 1.0 + artifact.grace_of_the_cenarion_circle.data().effectN(1).percent();
 
   return m;
 }
@@ -9995,6 +10055,7 @@ struct chatoyant_signet_t : public scoped_actor_callback_t<druid_t>
   void manipulate( druid_t* p, const special_effect_t& e ) override
   {
     p -> resources.base[ RESOURCE_ENERGY ] += e.driver() -> effectN( 1 ).resource( RESOURCE_ENERGY );
+    p -> base_energy_regen_per_second *= ( 1.0 + e.driver() -> effectN( 2 ).percent( ) );
   }
 };
 

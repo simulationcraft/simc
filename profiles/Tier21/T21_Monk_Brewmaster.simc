@@ -1,0 +1,83 @@
+monk="T21_Monk_Brewmaster"
+spec=brewmaster
+level=110
+race=pandaren
+role=tank
+position=front
+talents=2122222
+artifact=52:0:0:0:0:1277:1:1278:4:1279:4:1280:4:1281:4:1282:4:1283:4:1284:4:1285:4:1286:4:1287:1:1288:1:1289:1:1290:1:1291:1:1292:1:1293:1:1374:1:1541:4:1542:1:1543:1:1544:24:1642:1
+crucible=1739:1780:1286/1739:1780:1286/1739:1780:1286
+
+# Default consumables
+potion=old_war
+flask=seventh_demon
+food=fishbrul_special
+augmentation=defiled
+
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
+
+# Executed before combat begins. Accepts non-harmful actions only.
+actions.precombat=flask
+actions.precombat+=/food
+actions.precombat+=/augmentation
+# Snapshot raid buffed stats before combat begins and pre-potting is done.
+actions.precombat+=/snapshot_stats
+actions.precombat+=/potion
+actions.precombat+=/dampen_harm
+actions.precombat+=/chi_burst
+actions.precombat+=/chi_wave
+
+# Executed every time the actor is available.
+actions=auto_attack
+actions+=/greater_gift_of_the_ox
+actions+=/gift_of_the_ox
+actions+=/dampen_harm,if=incoming_damage_1500ms&buff.fortifying_brew.down
+actions+=/fortifying_brew,if=incoming_damage_1500ms&(buff.dampen_harm.down|buff.diffuse_magic.down)
+actions+=/call_action_list,name=st
+
+actions.st=potion
+actions.st+=/blood_fury
+actions.st+=/berserking
+actions.st+=/exploding_keg
+actions.st+=/invoke_niuzao_the_black_ox,if=target.time_to_die>45
+actions.st+=/ironskin_brew,if=buff.blackout_combo.down&cooldown.brews.charges>=1
+actions.st+=/black_ox_brew,if=(energy+(energy.regen*(cooldown.keg_smash.remains)))<40&buff.blackout_combo.down&cooldown.keg_smash.up
+actions.st+=/arcane_torrent,if=energy<31
+actions.st+=/tiger_palm,if=buff.blackout_combo.up
+actions.st+=/blackout_strike,if=cooldown.keg_smash.remains>0
+actions.st+=/keg_smash
+actions.st+=/breath_of_fire,if=buff.bloodlust.down&buff.blackout_combo.down|(buff.bloodlust.up&buff.blackout_combo.down&dot.breath_of_fire_dot.remains<=0)
+actions.st+=/rushing_jade_wind
+actions.st+=/tiger_palm,if=!talent.blackout_combo.enabled&cooldown.keg_smash.remains>=gcd&(energy+(energy.regen*(cooldown.keg_smash.remains)))>=55
+
+head=douli_of_chiji,id=152145,bonus_id=3612/1502
+neck=vulcanarcore_pendant,id=151965,bonus_id=3612/1502,enchant=mark_of_the_hidden_satyr
+shoulders=stormstouts_last_gasp,id=151788,bonus_id=3630
+back=cloak_of_chiji,id=152143,bonus_id=3612/1502,enchant=binding_of_agility
+chest=harness_of_oppressing_dark,id=151980,bonus_id=3612/1502
+wrists=bracers_of_wanton_morality,id=152414,bonus_id=3612/1502
+hands=grips_of_chiji,id=152144,bonus_id=3612/1502
+waist=portal_keepers_cincture,id=151990,bonus_id=3612/1502
+legs=leggings_of_chiji,id=152146,bonus_id=3612/1502
+feet=lifebearing_footpads,id=151981,bonus_id=3612/1502
+finger1=sullied_seal_of_the_pantheon,id=151972,bonus_id=3612/1502,enchant=binding_of_mastery
+finger2=band_of_the_sargerite_smith,id=152064,bonus_id=3612/1502,enchant=binding_of_mastery
+trinket1=golganneths_vitality,id=154174,bonus_id=4213
+trinket2=archimondes_hatred_reborn,id=144249,bonus_id=3630
+main_hand=fu_zan_the_wanderers_companion,id=128938,bonus_id=732,gem_id=152052/152058/152047,relic_id=3612:1502/3612:1502/3612:1502
+
+# Gear Summary
+# gear_ilvl=970.67
+# gear_agility=44025
+# gear_stamina=59945
+# gear_crit_rating=9769
+# gear_haste_rating=4849
+# gear_mastery_rating=9768
+# gear_versatility_rating=7956
+# gear_armor=2970
+# set_bonus=tier21_2pc=1
+# set_bonus=tier21_4pc=1

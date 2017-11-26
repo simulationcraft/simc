@@ -301,6 +301,7 @@ public:
     buff_t* chain_reaction;
     buff_t* chilled_to_the_core;
     buff_t* freezing_rain;
+    buff_t* rule_of_threes;
     buff_t* time_and_space;
     buff_t* warmth_of_the_phoenix;
 
@@ -438,6 +439,7 @@ public:
     bool ignition_active;
 
     int flurry_bolt_count;
+    int arcane_missile_refresh;
   } state;
 
   // Talents
@@ -1143,18 +1145,15 @@ struct erosion_t : public buff_t
 
     virtual void execute() override
     {
+      debuff -> decay_event = nullptr;
       debuff -> decrement();
 
       // Always update the parent debuff's reference to the decay event, so that it
       // can be cancelled upon a new application of the debuff
       if ( debuff -> check() > 0 )
       {
-        debuff->decay_event = make_event<erosion_event_t>(
-            sim(), *( debuff->source ), debuff, data );
-      }
-      else
-      {
-        debuff -> decay_event = nullptr;
+        debuff -> decay_event = make_event<erosion_event_t>(
+            sim(), *debuff -> source, debuff, data );
       }
     }
   };
@@ -1192,7 +1191,6 @@ struct erosion_t : public buff_t
   virtual void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
   {
     buff_t::expire_override( expiration_stacks, remaining_duration );
-
     event_t::cancel( decay_event );
   }
 
@@ -2769,19 +2767,23 @@ struct arcane_missiles_tick_t : public arcane_mage_spell_t
 
 struct am_state_t : public mage_spell_state_t
 {
-  bool rule_of_threes;
+  double extra_tick_time_reduction;
 
   am_state_t( action_t* action, player_t* target ) :
-    mage_spell_state_t( action, target ), rule_of_threes( false )
+    mage_spell_state_t( action, target ),
+    extra_tick_time_reduction( 1.0 )
   { }
 
   virtual void initialize() override
-  { mage_spell_state_t::initialize(); rule_of_threes = false; }
+  {
+    mage_spell_state_t::initialize();
+    extra_tick_time_reduction = 1.0;
+  }
 
   virtual std::ostringstream& debug_str( std::ostringstream& s ) override
   {
     mage_spell_state_t::debug_str( s )
-      << " rule_of_threes=" << rule_of_threes;
+      << " extra_tick_time_reduction=" << extra_tick_time_reduction;
     return s;
   }
 
@@ -2789,15 +2791,12 @@ struct am_state_t : public mage_spell_state_t
   {
     mage_spell_state_t::copy_state( other );
 
-    rule_of_threes = debug_cast<const am_state_t*>( other ) -> rule_of_threes;
+    extra_tick_time_reduction = debug_cast<const am_state_t*>( other ) -> extra_tick_time_reduction;
   }
 };
 
 struct arcane_missiles_t : public arcane_mage_spell_t
 {
-  double rule_of_threes_ticks;
-  double rule_of_threes_ratio;
-
   arcane_missiles_t( mage_t* p, const std::string& options_str ) :
     arcane_mage_spell_t( "arcane_missiles", p,
                          p -> find_specialization_spell( "Arcane Missiles" ) )
@@ -2816,11 +2815,6 @@ struct arcane_missiles_t : public arcane_mage_spell_t
 
     base_multiplier *= 1.0 + p -> artifact.aegwynns_fury.percent();
     base_crit += p -> artifact.aegwynns_intensity.percent();
-
-    // Not including the first, instant tick.
-    rule_of_threes_ticks = dot_duration / base_tick_time +
-      p -> artifact.rule_of_threes.data().effectN( 2 ).base_value();
-    rule_of_threes_ratio = ( dot_duration / base_tick_time ) / rule_of_threes_ticks;
   }
 
   virtual double action_multiplier() const override
@@ -2841,51 +2835,68 @@ struct arcane_missiles_t : public arcane_mage_spell_t
   virtual action_state_t* new_state() override
   { return new am_state_t( this, target ); }
 
-  // Roll (and snapshot) Rule of Threes here, it affects the whole AM channel.
+  // We need to snapshot any tick time reduction effect here so that it correctly affects the whole
+  // channel.
   virtual void snapshot_state( action_state_t* state, dmg_e rt ) override
   {
     arcane_mage_spell_t::snapshot_state( state, rt );
 
-    if ( rng().roll( p() -> artifact.rule_of_threes.data().effectN( 1 ).percent() / 10.0 ) )
-    {
-      debug_cast<am_state_t*>( state ) -> rule_of_threes = true;
-    }
+    debug_cast<am_state_t*>( state ) -> extra_tick_time_reduction *= 1.0 + p() -> buffs.rule_of_threes -> check_value();
   }
 
-  // If Rule of Threes is used, return the channel duration in terms of number
-  // of ticks, so we prevent weird issues with rounding on duration
-  virtual timespan_t composite_dot_duration( const action_state_t* state ) const override
+  virtual timespan_t composite_dot_duration( const action_state_t* s ) const override
   {
-    auto s = debug_cast<const am_state_t*>( state );
+    // AM channel duration is a bit fuzzy, it will go above or below the standard 2 s
+    // to make sure it has the correct number of ticks.
 
-    if ( s -> rule_of_threes )
-    {
-      return tick_time( state ) * rule_of_threes_ticks;
-    }
-    else
-    {
-      return arcane_mage_spell_t::composite_dot_duration( state );
-    }
+    timespan_t full_duration = dot_duration * s -> haste;
+    timespan_t tick_duration = tick_time( s );
+
+    double ticks = std::round( full_duration / tick_duration );
+
+    return ticks * tick_duration;
   }
 
-  // Adjust tick time on Rule of Threes
-  virtual timespan_t tick_time( const action_state_t* state ) const override
+  virtual timespan_t tick_time( const action_state_t* s ) const override
   {
-    auto s = debug_cast<const am_state_t*>( state );
+    return debug_cast<const am_state_t*>( s ) -> extra_tick_time_reduction * arcane_mage_spell_t::tick_time( s );
+  }
 
-    if ( s -> rule_of_threes )
-    {
-      return base_tick_time * rule_of_threes_ratio * state -> haste;
-    }
-    else
-    {
-      return arcane_mage_spell_t::tick_time( state );
-    }
+  virtual double last_tick_factor( const dot_t*, const timespan_t&, const timespan_t& ) const override
+  {
+    // AM always does full damage, even on "partial" ticks.
+    return 1.0;
+  }
+
+  timespan_t calculate_dot_refresh_duration( const dot_t* dot, timespan_t triggered_duration ) const override
+  {
+    // 30% refresh rule apparently works with AM as well!
+    return triggered_duration + std::min( triggered_duration * 0.3, dot -> remains() );
   }
 
   virtual void execute() override
   {
+    dot_t* dot = get_dot( target );
+    if ( dot -> is_ticking() )
+    {
+      // Refresh due to chaining, last_tick is not happening so we need to trigger AC.
+      trigger_arcane_charge();
+      p() -> state.arcane_missile_refresh++;
+    }
+    else
+    {
+      // Fresh AM channel.
+      p() -> state.arcane_missile_refresh = 0;
+    }
+
     p() -> benefits.arcane_charge.arcane_missiles -> update();
+
+    // Rule of Threes handling seems to be skipped on the first refresh.
+    if ( ! ( p() -> bugs && p() -> state.arcane_missile_refresh == 1 ) )
+    {
+      p() -> buffs.rule_of_threes -> expire();
+      p() -> buffs.rule_of_threes -> trigger();
+    }
 
     arcane_mage_spell_t::execute();
 
@@ -2907,11 +2918,11 @@ struct arcane_missiles_t : public arcane_mage_spell_t
     p() -> buffs.arcane_missiles -> decrement();
   }
 
-  virtual void last_tick ( dot_t * d ) override
+  virtual void last_tick( dot_t* d ) override
   {
     arcane_mage_spell_t::last_tick( d );
-
     trigger_arcane_charge();
+    p() -> buffs.rule_of_threes -> expire();
   }
 
   virtual bool ready() override
@@ -3182,7 +3193,12 @@ struct charged_up_t : public arcane_mage_spell_t
     arcane_mage_spell_t::execute();
 
     trigger_arcane_charge( 4 );
-    p() -> buffs.quick_thinker -> trigger();
+
+    // TODO: Figure out the exact chance of triggering T21 4pc.
+    // It's definitely more than 10%.
+    for ( int i = 0; i < 4; i++ )
+      if ( p() -> buffs.quick_thinker -> trigger() )
+        break;
   }
 };
 
@@ -4537,6 +4553,7 @@ struct ice_lance_t : public frost_mage_spell_t
                                p -> artifact.its_cold_outside.data().effectN( 2 ).percent();
     }
 
+    // TODO: Cleave distance for SI seems to be 8 + hitbox size.
     if ( p -> talents.splitting_ice -> ok() )
     {
       base_multiplier *= 1.0 + p -> talents.splitting_ice
@@ -6356,13 +6373,14 @@ struct icicle_event_t : public event_t
 
   virtual void execute() override
   {
+    mage -> icicle_event = nullptr;
+
     // If the target of the icicle is dead, stop the chain
     if ( target -> is_sleeping() )
     {
       if ( mage -> sim -> debug )
         mage -> sim -> out_debug.printf( "%s icicle use on %s (sleeping target), stopping",
             mage -> name(), target -> name() );
-      mage -> icicle_event = nullptr;
       return;
     }
 
@@ -6381,8 +6399,6 @@ struct icicle_event_t : public event_t
         mage -> sim -> out_debug.printf( "%s icicle use on %s (chained), damage=%f, total=%u",
                                mage -> name(), target -> name(), new_damage, as<unsigned>( mage -> icicles.size() ) );
     }
-    else
-      mage -> icicle_event = nullptr;
   }
 };
 
@@ -6416,6 +6432,7 @@ struct ignite_spread_event_t : public event_t
 
   virtual void execute() override
   {
+    mage -> ignite_spread_event = nullptr;
     mage -> procs.ignite_spread -> occur();
     if ( mage -> sim -> log )
     {
@@ -6466,7 +6483,7 @@ struct ignite_spread_event_t : public event_t
       active_ignites.pop_back();
       double source_bank = ignite_bank(source);
 
-      if ( !candidates.empty() )
+      if ( ! candidates.empty() )
       {
         // Skip candidates that have equal ignite bank size to the source
         int index = as<int>( candidates.size() ) - 1;
@@ -7251,6 +7268,10 @@ void mage_t::create_buffs()
                                   .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
                                   .default_value( find_spell( 195446 ) -> effectN( 1 ).percent() );
   buffs.freezing_rain         = buff_creator_t( this, "freezing_rain", find_spell( 240555 ) );
+  buffs.rule_of_threes        = buff_creator_t( this, "rule_of_threes", find_spell( 187292 ) )
+                                  .chance( artifact.rule_of_threes.data().effectN( 1 ).percent() / 10.0 )
+                                  .default_value( find_spell( 187292 ) -> effectN( 1 ).percent() )
+                                  .quiet( true );
   buffs.time_and_space        = buff_creator_t( this, "time_and_space", find_spell( 240692 ) );
   buffs.warmth_of_the_phoenix = stat_buff_creator_t( this, "warmth_of_the_phoenix", find_spell( 240671 ) )
                                   .add_stat( STAT_CRIT_RATING, find_spell( 240671 ) -> effectN( 1 ).base_value() )
@@ -7667,7 +7688,7 @@ void mage_t::apl_arcane()
   variables    -> add_action( "variable,name=time_until_burn,op=reset,if=target.time_to_die<variable.average_burn_length", "Boss is gonna die soon. All the above conditions don't really matter. We're just gonna burn our mana until combat ends." );
 
   build -> add_talent( this, "Arcane Orb" );
-  build -> add_action( this, "Arcane Missiles", "if=active_enemies<3&(variable.arcane_missiles_procs=buff.arcane_missiles.max_stack|(variable.arcane_missiles_procs&mana.pct<=50&buff.arcane_charge.stack=3))", "Use Arcane Missiles at max stacks to avoid munching a proc. Alternatively, we can cast at 3 stacks of Arcane Charge to conserve mana." );
+  build -> add_action( this, "Arcane Missiles", "if=active_enemies<3&(variable.arcane_missiles_procs=buff.arcane_missiles.max_stack|(variable.arcane_missiles_procs&mana.pct<=50&buff.arcane_charge.stack=3)),chain=1", "Use Arcane Missiles at max stacks to avoid munching a proc. Alternatively, we can cast at 3 stacks of Arcane Charge to conserve mana." );
   build -> add_action( this, "Arcane Explosion", "if=active_enemies>1" );
   build -> add_action( this, "Arcane Blast" );
 
@@ -7692,10 +7713,10 @@ void mage_t::apl_arcane()
   burn  -> add_talent( this, "Charged Up", "if=buff.arcane_charge.stack<buff.arcane_charge.max_stack", "Use Charged Up to regain Arcane Charges after dumping to refresh 2pt21 buff." );
   burn  -> add_talent( this, "Arcane Orb" );
   burn  -> add_action( this, "Arcane Barrage", "if=active_enemies>4&equipped.mantle_of_the_first_kirin_tor&buff.arcane_charge.stack=buff.arcane_charge.max_stack", "Arcane Barrage has a good chance of launching an Arcane Orb at max Arcane Charge stacks." );
-  burn  -> add_action( this, "Arcane Missiles", "if=variable.arcane_missiles_procs=buff.arcane_missiles.max_stack&active_enemies<3", "Arcane Missiles are good, but not when there's multiple targets up." );
+  burn  -> add_action( this, "Arcane Missiles", "if=variable.arcane_missiles_procs=buff.arcane_missiles.max_stack&active_enemies<3,chain=1", "Arcane Missiles are good, but not when there's multiple targets up." );
   burn  -> add_action( this, "Arcane Blast", "if=buff.presence_of_mind.up", "Get PoM back on cooldown as soon as possible." );
   burn  -> add_action( this, "Arcane Explosion", "if=active_enemies>1" );
-  burn  -> add_action( this, "Arcane Missiles", "if=variable.arcane_missiles_procs" );
+  burn  -> add_action( this, "Arcane Missiles", "if=variable.arcane_missiles_procs>1,chain=1" );
   burn  -> add_action( this, "Arcane Blast" );
   burn  -> add_action( "variable,name=average_burn_length,op=set,value=(variable.average_burn_length*variable.total_burns-variable.average_burn_length+burn_phase_duration)%variable.total_burns", "Now that we're done burning, we can update the average_burn_length with the length of this burn." );
   burn  -> add_action( this, "Evocation", "interrupt_if=ticks=2|mana.pct>=85,interrupt_immediate=1", "That last tick of Evocation is a waste; it's better for us to get back to casting." );
@@ -7705,12 +7726,12 @@ void mage_t::apl_arcane()
   conserve -> add_action( "strict_sequence,name=miniburn,if=talent.rune_of_power.enabled&set_bonus.tier20_4pc&variable.time_until_burn>30:rune_of_power:arcane_barrage:presence_of_mind" );
   conserve -> add_talent( this, "Rune of Power", "if=full_recharge_time<=execute_time|prev_gcd.1.mark_of_aluneth", "Use if we're about to cap on stacks, or we just used MoA." );
   conserve -> add_action( "strict_sequence,name=abarr_cu_combo,if=talent.charged_up.enabled&cooldown.charged_up.recharge_time<variable.time_until_burn:arcane_barrage:charged_up", "We want Charged Up for our burn phase to refresh 2pt21 buff, but if we have time to let it recharge we can use it during conserve." );
-  conserve -> add_action( this, "Arcane Missiles", "if=variable.arcane_missiles_procs=buff.arcane_missiles.max_stack&active_enemies<3", "Arcane Missiles are good, but not when there's multiple targets up." );
+  conserve -> add_action( this, "Arcane Missiles", "if=variable.arcane_missiles_procs=buff.arcane_missiles.max_stack&active_enemies<3,chain=1", "Arcane Missiles are good, but not when there's multiple targets up." );
   conserve -> add_talent( this, "Supernova" );
   conserve -> add_talent( this, "Nether Tempest", "if=refreshable|!ticking", "Use during pandemic refresh window or if the dot is missing." );
   conserve -> add_action( this, "Arcane Explosion", "if=active_enemies>1&(mana.pct>=70-(10*equipped.mystic_kilt_of_the_rune_master))", "AoE until about 70% mana. We can go a little further with kilt, down to 60% mana." );
   conserve -> add_action( this, "Arcane Blast", "if=mana.pct>=90|buff.rhonins_assaulting_armwraps.up|(buff.rune_of_power.remains>=cast_time&equipped.mystic_kilt_of_the_rune_master)", "Use Arcane Blast if we have the mana for it or a proc from legendary wrists. With the Kilt we can cast freely." );
-  conserve -> add_action( this, "Arcane Missiles", "if=variable.arcane_missiles_procs" );
+  conserve -> add_action( this, "Arcane Missiles", "if=variable.arcane_missiles_procs,chain=1" );
   conserve -> add_action( this, "Arcane Barrage" );
   conserve -> add_action( this, "Arcane Explosion", "if=active_enemies>1", "The following two lines are here in case Arcane Barrage is on cooldown." );
   conserve -> add_action( this, "Arcane Blast" );

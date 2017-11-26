@@ -88,7 +88,7 @@ actions.maintain+=/garrote,cycle_targets=1,if=(!talent.subterfuge.enabled|!(cool
 actions.maintain+=/garrote,if=set_bonus.tier20_4pc&talent.exsanguinate.enabled&prev_gcd.1.rupture&cooldown.exsanguinate.remains<1&(!cooldown.vanish.up|time>12)
 
 head=cavalier_hat_of_the_dashing_scoundrel,id=152163,bonus_id=3612/1502
-neck=chain_of_the_unmaker,id=152283,bonus_id=3612/1502,enchant=mark_of_the_trained_soldier
+neck=vulcanarcore_pendant,id=151965,bonus_id=3612/1502,enchant=mark_of_the_trained_soldier
 shoulders=fanged_slayers_shoulderpads,id=147174,bonus_id=1512/3563
 back=cloak_of_the_dashing_scoundrel,id=152161,bonus_id=3612/1502,enchant=binding_of_agility
 chest=vest_of_the_dashing_scoundrel,id=152160,bonus_id=3612/1502
@@ -105,13 +105,13 @@ main_hand=the_kingslayers,id=128870,bonus_id=741,gem_id=152054/155855/152092,rel
 off_hand=the_kingslayers,id=128869
 
 # Gear Summary
-# gear_ilvl=969.13
+# gear_ilvl=968.50
 # gear_agility=37767
-# gear_stamina=58727
-# gear_crit_rating=10909
-# gear_haste_rating=2953
+# gear_stamina=58415
+# gear_crit_rating=9891
+# gear_haste_rating=1415
 # gear_mastery_rating=10986
-# gear_versatility_rating=6184
+# gear_versatility_rating=8476
 # gear_armor=2933
 # set_bonus=tier20_2pc=1
 # set_bonus=tier21_2pc=1

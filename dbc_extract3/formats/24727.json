@@ -253,6 +253,11 @@
     { "data_type": "b", "field": "index" },
     { "data_type": "b", "field": "trigger_type" }
   ],
+  "ItemLimitCategory": [
+    { "data_type": "S", "field": "name" },
+    { "data_type": "b", "field": "quantity" },
+    { "data_type": "b", "field": "flags" }
+  ],
   "ItemNameDescription": [
     { "data_type": "S", "field": "desc", "formats": { "cpp": "%-30s" } },
     { "data_type": "I", "field": "flags"                               }

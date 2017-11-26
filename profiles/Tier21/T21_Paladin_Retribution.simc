@@ -6,7 +6,7 @@ role=attack
 position=back
 talents=1302002
 artifact=2:0:0:0:0:40:1:41:4:42:4:43:4:44:4:47:4:49:1:50:4:51:4:52:4:53:4:54:1:350:1:351:1:352:1:353:1:1118:1:1275:1:1561:4:1562:1:1563:1:1564:24:1647:1
-crucible=1739:1780:53/1739:1780:41/1739:1780:41
+crucible=1739:1780:53/1739:1780:53/1739:1780:53
 
 # This default action priority list is automatically created based on your character.
 # It is a attempt to provide you with a action list that is both simple and practicable,
@@ -86,15 +86,15 @@ finger1=sullied_seal_of_the_pantheon,id=151972,bonus_id=3612/1502,enchant_id=542
 finger2=soul_of_the_highlord,id=151644,bonus_id=3630,gem_id=151584,enchant_id=5429
 trinket1=seeping_scourgewing,id=151964,bonus_id=3612/1502
 trinket2=amanthuls_vision,id=154172,bonus_id=4213
-main_hand=ashbringer,id=120978,bonus_id=737,gem_id=152043/152038/152043,relic_id=3612:1502/3612:1502/3612:1502
+main_hand=ashbringer,id=120978,bonus_id=737,gem_id=155851/152038/155851,relic_id=3612:1512/3612:1502/3612:1512
 
 # Gear Summary
-# gear_ilvl=972.00
-# gear_strength=33598
-# gear_stamina=61777
-# gear_crit_rating=9720
+# gear_ilvl=972.40
+# gear_strength=33886
+# gear_stamina=62209
+# gear_crit_rating=9747
 # gear_haste_rating=10037
-# gear_mastery_rating=12213
+# gear_mastery_rating=12239
 # gear_versatility_rating=6391
 # gear_armor=5244
 # set_bonus=tier21_2pc=1

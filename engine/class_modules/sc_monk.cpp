@@ -283,6 +283,7 @@ public:
     gain_t* energy_refund;
     gain_t* energizing_elixir_chi;
     gain_t* energizing_elixir_energy;
+    gain_t* focus_of_xuen;
     gain_t* fortuitous_spheres;
     gain_t* gift_of_the_ox;
     gain_t* healing_elixir;
@@ -296,7 +297,6 @@ public:
     gain_t* effuse;
     gain_t* spirit_of_the_crane;
     gain_t* tier17_2pc_healer;
-    gain_t* tier21_4pc_dps;
     gain_t* tiger_palm;
   } gain;
 
@@ -614,6 +614,7 @@ public:
     const spell_data_t* cyclone_strikes;
     const spell_data_t* dizzying_kicks;
     const spell_data_t* fists_of_fury_tick;
+    const spell_data_t* focus_of_xuen;
     const spell_data_t* gale_burst;
     const spell_data_t* hit_combo;
     const spell_data_t* mark_of_the_crane;
@@ -2201,6 +2202,8 @@ struct monk_action_t: public Base
   bool brewmaster_damage_increase_dot_two;
   bool brewmaster_damage_increase_two;
   bool brewmaster_damage_increase_dot_three;
+  bool mistweaver_damage_increase;
+  bool mistweaver_damage_increase_dot;
   bool windwalker_damage_increase;
   bool windwalker_damage_increase_two;
   bool windwalker_damage_increase_dot;
@@ -2223,6 +2226,8 @@ public:
     brewmaster_damage_increase_dot_two( ab::data().affected_by( player -> spec.brewmaster_monk -> effectN( 5 ) ) ),
     brewmaster_damage_increase_two( ab::data().affected_by( player -> spec.brewmaster_monk -> effectN( 6 ) ) ),
     brewmaster_damage_increase_dot_three( ab::data().affected_by( player -> spec.brewmaster_monk -> effectN( 5 ) ) ),
+    mistweaver_damage_increase( ab::data().affected_by( player -> spec.mistweaver_monk ->effectN( 1 ) ) ),
+    mistweaver_damage_increase_dot( ab::data().affected_by( player -> spec.mistweaver_monk ->effectN( 2 ) ) ),
     windwalker_damage_increase( ab::data().affected_by( player -> spec.windwalker_monk -> effectN( 1 ) ) ),
     windwalker_damage_increase_two( ab::data().affected_by( player -> spec.windwalker_monk -> effectN( 6 ) ) ),
     windwalker_damage_increase_dot( ab::data().affected_by( player -> spec.windwalker_monk -> effectN( 2 ) ) ),
@@ -2253,17 +2258,20 @@ public:
       }
       case MONK_MISTWEAVER:
       {
+        if ( mistweaver_damage_increase )
+          ab::base_dd_multiplier *= 1.0 + player -> spec.mistweaver_monk -> effectN( 1 ).percent();
+        if ( mistweaver_damage_increase_dot )
+          ab::base_td_multiplier *= 1.0 + player -> spec.mistweaver_monk -> effectN( 2 ).percent();
+        
         // Hasted Cooldown
-        ab::cooldown -> hasted = ( ab::data().affected_by( player -> spec.mistweaver_monk -> effectN( 5 ) )
+        ab::cooldown -> hasted = ( ab::data().affected_by( player -> spec.mistweaver_monk -> effectN( 6 ) )
                                   || ab::data().affected_by( player -> passives.aura_monk -> effectN( 1 ) ) );
         break;
       }
       case MONK_WINDWALKER:
       {
         if ( windwalker_damage_increase )
-        {
           ab::base_dd_multiplier *= 1.0 + player -> spec.windwalker_monk -> effectN( 1 ).percent();
-        }
         if ( windwalker_damage_increase_two )
           ab::base_dd_multiplier *= 1.0 + player -> spec.windwalker_monk -> effectN( 6 ).percent();
 
@@ -2946,7 +2954,7 @@ struct tiger_palm_t: public monk_melee_attack_t
     if ( p() -> artifact.tiger_claws.rank() )
       am *= 1 + p() -> artifact.tiger_claws.percent();
 
-    am *= 1 + p() -> spec.mistweaver_monk -> effectN( 11 ).percent();
+    am *= 1 + p() -> spec.mistweaver_monk -> effectN( 13 ).percent();
 
     if ( p() -> specialization() == MONK_BREWMASTER )
     {
@@ -3264,7 +3272,7 @@ struct rising_sun_kick_t: public monk_melee_attack_t
   {
     parse_options( options_str );
 
-    cooldown -> duration += p -> spec.mistweaver_monk -> effectN( 8 ).time_value();
+    cooldown -> duration += p -> spec.mistweaver_monk -> effectN( 10 ).time_value();
 
     if ( p -> sets -> has_set_bonus( MONK_WINDWALKER, T19, B2) )
       cooldown -> duration += p -> sets -> set( MONK_WINDWALKER, T19, B2 ) -> effectN( 1 ).time_value();
@@ -3309,6 +3317,8 @@ struct rising_sun_kick_t: public monk_melee_attack_t
     }
 
     am *= 1 + p() -> spec.windwalker_monk -> effectN( 1 ).percent();
+
+    am *= 1 + p() -> spec.mistweaver_monk ->effectN( 11 ).percent();
 
     return am;
   }
@@ -3461,7 +3471,7 @@ struct blackout_kick_totm_proc : public monk_melee_attack_t
   {
     double am = monk_melee_attack_t::action_multiplier();
 
-    am *= 1 + p() -> spec.mistweaver_monk -> effectN( 10 ).percent();
+    am *= 1 + p() -> spec.mistweaver_monk -> effectN( 12 ).percent();
 
     return am;
   }
@@ -3557,7 +3567,7 @@ struct blackout_kick_t: public monk_melee_attack_t
       }
       case MONK_MISTWEAVER:
       {
-        am *= 1 + p() -> spec.mistweaver_monk -> effectN( 10 ).percent();
+        am *= 1 + p() -> spec.mistweaver_monk -> effectN( 12 ).percent();
         break;
       }
       case MONK_WINDWALKER:
@@ -3573,8 +3583,8 @@ struct blackout_kick_t: public monk_melee_attack_t
           am *= 1.0 + sef_mult;
         }
 
-        if ( p() -> sets -> has_set_bonus( MONK_WINDWALKER, T21, B2 ) && p() -> buff.bok_proc -> up() )
-          am *= 1 + p() -> sets -> set( MONK_WINDWALKER, T21, B2) -> effectN( 1 ).percent();
+        if ( p() -> sets -> has_set_bonus( MONK_WINDWALKER, T21, B4 ) && p() -> buff.bok_proc -> up() )
+          am *= 1 + p() -> sets -> set( MONK_WINDWALKER, T21, B4) -> effectN( 1 ).percent();
         break;
       }
       default: break;
@@ -3591,8 +3601,9 @@ struct blackout_kick_t: public monk_melee_attack_t
       p() -> buff.bok_proc -> expire();
       p() -> gain.bok_proc -> add( RESOURCE_CHI, base_costs[RESOURCE_CHI] );
 
-      if ( p() -> sets -> has_set_bonus( MONK_WINDWALKER, T21, B4 ) && rng().roll( p() -> sets -> set( MONK_WINDWALKER, T21, B4 ) -> effectN( 1 ).percent() ) )
-        p() -> resource_gain( RESOURCE_CHI, p() -> sets -> set( MONK_WINDWALKER, T21, B4 ) -> effectN(2).base_value(), p() -> gain.tier21_4pc_dps, this );
+      if ( p() -> sets -> has_set_bonus( MONK_WINDWALKER, T21, B2 ) )
+        // use p() -> passives.focus_of_xuen -> effectN( 1 ).base_value() once spell pull is done again.
+        p() -> resource_gain( RESOURCE_CHI, p() -> sets -> set( MONK_WINDWALKER, T21, B2 ) -> effectN( 2 ).base_value(), p() -> gain.focus_of_xuen );
     }
 
     // Windwalker Tier 18 (WoD 6.2) trinket effect is in use, adjust Rising Sun Kick proc chance based on spell data
@@ -3701,7 +3712,7 @@ struct blackout_strike_t: public monk_melee_attack_t
 
     // Mistweavers cannot learn this spell. However the effect to adjust this spell is in the database.
     // Just being a completionist about this.
-    am *= 1 + p() -> spec.mistweaver_monk -> effectN( 10 ).percent();
+    am *= 1 + p() -> spec.mistweaver_monk -> effectN( 12 ).percent();
 
     return am;
   }
@@ -3924,7 +3935,7 @@ struct spinning_crane_kick_t: public monk_melee_attack_t
       am *= 1.0 + sef_mult;
     }
 
-    am *= 1 + p() -> spec.mistweaver_monk -> effectN( 12 ).percent();
+    am *= 1 + p() -> spec.mistweaver_monk -> effectN( 14 ).percent();
 
     return am;
   }
@@ -4442,7 +4453,7 @@ struct melee_t: public monk_melee_attack_t
     if ( player -> main_hand_weapon.group() == WEAPON_1H )
     {
       if ( player -> specialization() == MONK_MISTWEAVER )
-        base_multiplier *= 1.0 + player -> spec.mistweaver_monk -> effectN( 3 ).percent();
+        base_multiplier *= 1.0 + player -> spec.mistweaver_monk -> effectN( 5 ).percent();
       else
         base_hit -= 0.19;
     }
@@ -5452,7 +5463,7 @@ struct crackling_jade_lightning_t: public monk_spell_t
   {
     double am = monk_spell_t::action_multiplier();
 
-    am *= 1 + p() -> spec.mistweaver_monk -> effectN( 13 ).percent();
+    am *= 1 + p() -> spec.mistweaver_monk -> effectN( 15 ).percent();
 
     am *= 1 + p() -> spec.brewmaster_monk -> effectN( 2 ).percent();
 
@@ -8351,6 +8362,7 @@ void monk_t::init_spells()
   passives.cyclone_strikes                  = find_spell( 220358 );
   passives.dizzying_kicks                   = find_spell( 196723 );
   passives.fists_of_fury_tick               = find_spell( 117418 );
+  passives.focus_of_xuen                    = find_spell( 252768 );
   passives.gale_burst                       = find_spell( 195403 );
   passives.hit_combo                        = find_spell( 196741 );
   passives.mark_of_the_crane                = find_spell( 228287 );
@@ -8693,26 +8705,26 @@ void monk_t::init_gains()
   base_t::init_gains();
 
   gain.black_ox_brew_energy     = get_gain( "black_ox_brew_energy" );
-  gain.chi_refund               = get_gain( "chi_refund" );
-  gain.power_strikes            = get_gain( "power_strikes" );
   gain.bok_proc                 = get_gain( "blackout_kick_proc" );
+  gain.chi_refund               = get_gain( "chi_refund" );
   gain.crackling_jade_lightning = get_gain( "crackling_jade_lightning" );
+  gain.effuse                   = get_gain( "effuse" );
   gain.energizing_elixir_energy = get_gain( "energizing_elixir_energy" );
   gain.energizing_elixir_chi    = get_gain( "energizing_elixir_chi" );
   gain.energy_refund            = get_gain( "energy_refund" );
+  gain.focus_of_xuen            = get_gain( "focus_of_xuen" );
+  gain.gift_of_the_ox           = get_gain( "gift_of_the_ox" );
   gain.keg_smash                = get_gain( "keg_smash" );
   gain.mana_tea                 = get_gain( "mana_tea" );
+  gain.power_strikes            = get_gain( "power_strikes" );
   gain.renewing_mist            = get_gain( "renewing_mist" );
+  gain.rushing_jade_wind        = get_gain( "rushing_jade_wind" );
   gain.serenity                 = get_gain( "serenity" );
   gain.soothing_mist            = get_gain( "soothing_mist" );
   gain.spinning_crane_kick      = get_gain( "spinning_crane_kick" );
   gain.spirit_of_the_crane      = get_gain( "spirit_of_the_crane" );
-  gain.rushing_jade_wind        = get_gain( "rushing_jade_wind" );
-  gain.effuse                   = get_gain( "effuse" );
   gain.tier17_2pc_healer        = get_gain( "tier17_2pc_healer" );
-  gain.tier21_4pc_dps           = get_gain( "tier21_4pc_dps" );
   gain.tiger_palm               = get_gain( "tiger_palm" );
-  gain.gift_of_the_ox           = get_gain( "gift_of_the_ox" );
 }
 
 // monk_t::init_procs =======================================================
@@ -9390,7 +9402,7 @@ role_e monk_t::primary_role() const
     return ROLE_TANK;
 
   if ( specialization() == MONK_MISTWEAVER )
-    return ROLE_HYBRID;//To prevent spawning healing_target, as there is no support for healing.
+    return ROLE_ATTACK;//To prevent spawning healing_target, as there is no support for healing.
 
   if ( specialization() == MONK_WINDWALKER )
     return ROLE_DPS;
@@ -9528,8 +9540,8 @@ void monk_t::assess_damage(school_e school,
       if ( legendary.anvil_hardened_wristwraps )
         cooldown.brewmaster_active_mitigation -> adjust( -1 * timespan_t::from_seconds( legendary.anvil_hardened_wristwraps -> effectN( 1 ).base_value() / 10 ) );
 
-      if ( sets -> has_set_bonus( MONK_BREWMASTER, T21, B4 ) && rng().roll( sets -> set( MONK_BREWMASTER, T21, B4 ) -> proc_chance() ) )
-       cooldown.breath_of_fire -> reset( true, true );
+      if ( sets -> has_set_bonus( MONK_BREWMASTER, T21, B4 )  )
+       cooldown.breath_of_fire -> adjust( -1 * timespan_t::from_seconds( sets -> set( MONK_BREWMASTER, T21, B4 ) -> effectN( 1 ).base_value() ) );
     }
     if ( s -> result == RESULT_MISS )
     {
@@ -10144,7 +10156,7 @@ void monk_t::apl_combat_windwalker()
         cd -> add_action( "use_item,name=" + items[i].name_str + ",if=(buff.serenity.up&!equipped.specter_of_betrayal)|(equipped.specter_of_betrayal&(time<5|cooldown.serenity.remains<=8))|!talent.serenity.enabled|target.time_to_die<=cooldown.serenity.remains" );
       else if ( items[i].name_str == "specter_of_betrayal" )
         cd -> add_action( "use_item,name=" + items[i].name_str + ",if=(cooldown.serenity.remains>10|buff.serenity.up)|!talent.serenity.enabled" );
-      else if ( ( items[i].name_str != "draught_of_souls" ) || ( items[i].name_str != "archimondes_hatred_reborn" ) )
+      else if ( ( items[i].name_str != "draught_of_souls" ) || ( items[i].name_str != "forgefiends_fabricator" ) || ( items[i].name_str != "archimondes_hatred_reborn" ) )
         cd -> add_action( "use_item,name=" + items[i].name_str );
     }
   }
@@ -10173,6 +10185,8 @@ void monk_t::apl_combat_windwalker()
          cd -> add_action( "use_item,name=" + items[i].name_str + ",if=!talent.serenity.enabled&!buff.storm_earth_and_fire.up&energy.time_to_max>3" );
       }
     }
+    if ( items[i].name_str == "forgefiends_fabricator"  )
+      cd -> add_action( "use_item,name=" + items[i].name_str + ",if=buff.serenity.remains<1|(!talent.serenity.enabled&debuff.touch_of_death.up)" );
   }
 
   // Storm, Earth, and Fire
@@ -10281,28 +10295,23 @@ void monk_t::apl_combat_mistweaver()
   }
 
 
-  if ( sim -> allow_potions )
-  {
-    if ( true_level == 100 )
-      def -> add_action( "potion,name=draenic_intellect,if=buff.bloodlust.react|target.time_to_die<=60" );
-    else if ( true_level >= 85 )
-      def -> add_action( "potion,name=jade_serpent_potion,if=buff.bloodlust.react|target.time_to_die<=60" );
-  }
+  
+  def -> add_action( "potion" );
 
-  def -> add_action( "run_action_list,name=aoe,if=active_enemies>=3" );
-  def -> add_action( "call_action_list,name=st,if=active_enemies<3" );
+  def -> add_action( "run_action_list,name=aoe,if=active_enemies>=4" );
+  def -> add_action( "call_action_list,name=st,if=active_enemies<4" );
 
-  st -> add_action( this, "Rising Sun Kick", "if=buff.teachings_of_the_monastery.up" );
-  st -> add_action( this, "Blackout Kick", "if=buff.teachings_of_the_monastery.up" );
+  st -> add_action( this, "Rising Sun Kick" );
+  st -> add_action( this, "Blackout Kick", "if=buff.teachings_of_the_monastery.stack=1&cooldown.rising_sun_kick.remains<12" );
   st -> add_talent( this, "Chi Wave" );
   st -> add_talent( this, "Chi Burst" );
-  st -> add_action( this, "Tiger Palm", "if=buff.teachings_of_the_monastery.down" );
+  st -> add_action( this, "Tiger Palm", "if=buff.teachings_of_the_monastery.stack<3|buff.teachings_of_the_monastery.remains<2" );
 
   aoe -> add_action( this, "Spinning Crane Kick" );
-  aoe -> add_talent( this, "Refreshing Jade Wind" );
+  aoe -> add_talent( this, "Chi Wave" );
   aoe -> add_talent( this, "Chi Burst" );
-  aoe -> add_action( this, "Blackout Kick" );
-  aoe -> add_action( this, "Tiger Palm", "if=talent.rushing_jade_wind.enabled" );
+//  aoe -> add_action( this, "Blackout Kick", "if=buff.teachings_of_the_monastery.stack=3&cooldown.rising_sun_kick.down" );
+//  aoe -> add_action( this, "Tiger Palm", "if=buff.teachings_of_the_monastery.stack<3|buff.teachings_of_the_monastery.remains<2" );
 }
 
 // monk_t::init_actions =====================================================
@@ -10311,7 +10320,7 @@ void monk_t::init_action_list()
 {
 #ifdef NDEBUG // Only restrict on release builds.
   // Mistweaver isn't supported atm
-  if ( specialization() == MONK_MISTWEAVER )
+  if ( specialization() == MONK_MISTWEAVER & role != ROLE_ATTACK )
   {
     if ( ! quiet )
       sim -> errorf( "Monk mistweaver healing for player %s is not currently supported.", name() );

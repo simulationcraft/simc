@@ -4024,6 +4024,7 @@ struct player_t : public actor_t
   auto_dispose< std::vector<action_priority_list_t*> > action_priority_list;
   std::vector<action_t*> precombat_action_list;
   action_priority_list_t* active_action_list;
+  action_priority_list_t* default_action_list;
   action_priority_list_t* active_off_gcd_list;
   action_priority_list_t* restore_action_list;
   std::unordered_map<std::string, std::string> alist_map;
