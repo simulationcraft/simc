@@ -7683,7 +7683,7 @@ void mage_t::apl_arcane()
   variables    -> add_action( "variable,name=time_until_burn,op=reset,if=target.time_to_die<variable.average_burn_length", "Boss is gonna die soon. All the above conditions don't really matter. We're just gonna burn our mana until combat ends." );
 
   build -> add_talent( this, "Arcane Orb" );
-  build -> add_action( this, "Arcane Missiles", "if=active_enemies<3&(variable.arcane_missiles_procs=buff.arcane_missiles.max_stack|(variable.arcane_missiles_procs&mana.pct<=50&buff.arcane_charge.stack=3))", "Use Arcane Missiles at max stacks to avoid munching a proc. Alternatively, we can cast at 3 stacks of Arcane Charge to conserve mana." );
+  build -> add_action( this, "Arcane Missiles", "if=active_enemies<3&(variable.arcane_missiles_procs=buff.arcane_missiles.max_stack|(variable.arcane_missiles_procs&mana.pct<=50&buff.arcane_charge.stack=3)),chain=1", "Use Arcane Missiles at max stacks to avoid munching a proc. Alternatively, we can cast at 3 stacks of Arcane Charge to conserve mana." );
   build -> add_action( this, "Arcane Explosion", "if=active_enemies>1" );
   build -> add_action( this, "Arcane Blast" );
 
@@ -7708,10 +7708,10 @@ void mage_t::apl_arcane()
   burn  -> add_talent( this, "Charged Up", "if=buff.arcane_charge.stack<buff.arcane_charge.max_stack", "Use Charged Up to regain Arcane Charges after dumping to refresh 2pt21 buff." );
   burn  -> add_talent( this, "Arcane Orb" );
   burn  -> add_action( this, "Arcane Barrage", "if=active_enemies>4&equipped.mantle_of_the_first_kirin_tor&buff.arcane_charge.stack=buff.arcane_charge.max_stack", "Arcane Barrage has a good chance of launching an Arcane Orb at max Arcane Charge stacks." );
-  burn  -> add_action( this, "Arcane Missiles", "if=variable.arcane_missiles_procs=buff.arcane_missiles.max_stack&active_enemies<3", "Arcane Missiles are good, but not when there's multiple targets up." );
+  burn  -> add_action( this, "Arcane Missiles", "if=variable.arcane_missiles_procs=buff.arcane_missiles.max_stack&active_enemies<3,chain=1", "Arcane Missiles are good, but not when there's multiple targets up." );
   burn  -> add_action( this, "Arcane Blast", "if=buff.presence_of_mind.up", "Get PoM back on cooldown as soon as possible." );
   burn  -> add_action( this, "Arcane Explosion", "if=active_enemies>1" );
-  burn  -> add_action( this, "Arcane Missiles", "if=variable.arcane_missiles_procs" );
+  burn  -> add_action( this, "Arcane Missiles", "if=variable.arcane_missiles_procs>1,chain=1" );
   burn  -> add_action( this, "Arcane Blast" );
   burn  -> add_action( "variable,name=average_burn_length,op=set,value=(variable.average_burn_length*variable.total_burns-variable.average_burn_length+burn_phase_duration)%variable.total_burns", "Now that we're done burning, we can update the average_burn_length with the length of this burn." );
   burn  -> add_action( this, "Evocation", "interrupt_if=ticks=2|mana.pct>=85,interrupt_immediate=1", "That last tick of Evocation is a waste; it's better for us to get back to casting." );
@@ -7721,12 +7721,12 @@ void mage_t::apl_arcane()
   conserve -> add_action( "strict_sequence,name=miniburn,if=talent.rune_of_power.enabled&set_bonus.tier20_4pc&variable.time_until_burn>30:rune_of_power:arcane_barrage:presence_of_mind" );
   conserve -> add_talent( this, "Rune of Power", "if=full_recharge_time<=execute_time|prev_gcd.1.mark_of_aluneth", "Use if we're about to cap on stacks, or we just used MoA." );
   conserve -> add_action( "strict_sequence,name=abarr_cu_combo,if=talent.charged_up.enabled&cooldown.charged_up.recharge_time<variable.time_until_burn:arcane_barrage:charged_up", "We want Charged Up for our burn phase to refresh 2pt21 buff, but if we have time to let it recharge we can use it during conserve." );
-  conserve -> add_action( this, "Arcane Missiles", "if=variable.arcane_missiles_procs=buff.arcane_missiles.max_stack&active_enemies<3", "Arcane Missiles are good, but not when there's multiple targets up." );
+  conserve -> add_action( this, "Arcane Missiles", "if=variable.arcane_missiles_procs=buff.arcane_missiles.max_stack&active_enemies<3,chain=1", "Arcane Missiles are good, but not when there's multiple targets up." );
   conserve -> add_talent( this, "Supernova" );
   conserve -> add_talent( this, "Nether Tempest", "if=refreshable|!ticking", "Use during pandemic refresh window or if the dot is missing." );
   conserve -> add_action( this, "Arcane Explosion", "if=active_enemies>1&(mana.pct>=70-(10*equipped.mystic_kilt_of_the_rune_master))", "AoE until about 70% mana. We can go a little further with kilt, down to 60% mana." );
   conserve -> add_action( this, "Arcane Blast", "if=mana.pct>=90|buff.rhonins_assaulting_armwraps.up|(buff.rune_of_power.remains>=cast_time&equipped.mystic_kilt_of_the_rune_master)", "Use Arcane Blast if we have the mana for it or a proc from legendary wrists. With the Kilt we can cast freely." );
-  conserve -> add_action( this, "Arcane Missiles", "if=variable.arcane_missiles_procs" );
+  conserve -> add_action( this, "Arcane Missiles", "if=variable.arcane_missiles_procs,chain=1" );
   conserve -> add_action( this, "Arcane Barrage" );
   conserve -> add_action( this, "Arcane Explosion", "if=active_enemies>1", "The following two lines are here in case Arcane Barrage is on cooldown." );
   conserve -> add_action( this, "Arcane Blast" );
