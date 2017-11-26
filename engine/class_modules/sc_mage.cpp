@@ -3193,7 +3193,12 @@ struct charged_up_t : public arcane_mage_spell_t
     arcane_mage_spell_t::execute();
 
     trigger_arcane_charge( 4 );
-    p() -> buffs.quick_thinker -> trigger();
+
+    // TODO: Figure out the exact chance of triggering T21 4pc.
+    // It's definitely more than 10%.
+    for ( int i = 0; i < 4; i++ )
+      if ( p() -> buffs.quick_thinker -> trigger() )
+        break;
   }
 };
 
