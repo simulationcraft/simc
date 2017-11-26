@@ -780,6 +780,10 @@ struct rogue_t : public player_t
 
   bool poisoned_enemy( player_t* target, bool deadly_fade = false ) const;
 
+  // Custom class expressions
+  expr_t* create_improved_snd_expression();
+  expr_t* create_rtb_buff_t21_expression( const buff_t* rtb_buff );
+
   void trigger_auto_attack( const action_state_t* );
   void trigger_seal_fate( const action_state_t* );
   void trigger_main_gauche( const action_state_t*, double = 0 );
@@ -1340,8 +1344,6 @@ struct rogue_attack_t : public melee_attack_t
   { return 0.0; }
 
   expr_t* create_nightblade_finality_expression();
-  expr_t* create_improved_snd_expression();
-  expr_t* create_rtb_buff_t21_expression( const buff_t* rtb_buff );
   expr_t* create_expression( const std::string& name_str ) override;
 };
 
@@ -4637,7 +4639,7 @@ struct slice_and_dice_t : public rogue_attack_t
   {
     if ( util::str_compare_ci( name_str, "improved" ) )
     {
-      return create_improved_snd_expression();
+      return p() -> create_improved_snd_expression();
     }
 
     return rogue_attack_t::create_expression( name_str );
@@ -5307,25 +5309,6 @@ expr_t* actions::rogue_attack_t::create_nightblade_finality_expression()
   } );
 }
 
-// rogue_attack_t::create_improved_snd_expression ==============================
-
-expr_t* actions::rogue_attack_t::create_improved_snd_expression()
-{
-  return make_fn_expr( "improved", [ this ]() {
-    // The SnD buff value is a modifier for the talent effect percentage. Is it >1, our SnD is improved.
-    return p() -> buffs.slice_and_dice -> up() && p() -> buffs.slice_and_dice -> value() > 1.0;
-  } );
-}
-
-// rogue_attack_t::create_rtb_buff_t21_expression ==============================
-
-expr_t* actions::rogue_attack_t::create_rtb_buff_t21_expression( const buff_t* rtb_buff )
-{
-  return make_fn_expr( "t21", [ this, rtb_buff ]() {
-    return rtb_buff -> check() && rtb_buff -> remains() != p() -> buffs.roll_the_bones -> remains();
-  } );
-}
-
 // rogue_attack_t::create_expression =========================================
 
 expr_t* actions::rogue_attack_t::create_expression( const std::string& name_str )
@@ -5344,34 +5327,6 @@ expr_t* actions::rogue_attack_t::create_expression( const std::string& name_str 
   else if ( util::str_compare_ci( name_str, "dot.nightblade.finality" ) )
   {
     return create_nightblade_finality_expression();
-  }
-  else if ( util::str_compare_ci( name_str, "buff.slice_and_dice.improved" ) )
-  {
-    return create_improved_snd_expression();
-  }
-  else if ( util::str_compare_ci( name_str, "buff.broadsides.t21" ) )
-  {
-    return create_rtb_buff_t21_expression( p() -> buffs.broadsides );
-  }
-  else if ( util::str_compare_ci( name_str, "buff.buried_treasure.t21" ) )
-  {
-    return create_rtb_buff_t21_expression( p() -> buffs.buried_treasure );
-  }
-  else if ( util::str_compare_ci( name_str, "buff.grand_melee.t21" ) )
-  {
-    return create_rtb_buff_t21_expression( p() -> buffs.grand_melee );
-  }
-  else if ( util::str_compare_ci( name_str, "buff.jolly_roger.t21" ) )
-  {
-    return create_rtb_buff_t21_expression( p() -> buffs.jolly_roger );
-  }
-  else if ( util::str_compare_ci( name_str, "buff.shark_infested_waters.t21" ) )
-  {
-    return create_rtb_buff_t21_expression( p() -> buffs.shark_infested_waters );
-  }
-  else if ( util::str_compare_ci( name_str, "buff.true_bearing.t21" ) )
-  {
-    return create_rtb_buff_t21_expression( p() -> buffs.true_bearing );
   }
 
   return melee_attack_t::create_expression( name_str );
@@ -7624,6 +7579,25 @@ action_t* rogue_t::create_action( const std::string& name,
   return player_t::create_action( name, options_str );
 }
 
+// rogue_t::create_improved_snd_expression ==============================
+
+expr_t* rogue_t::create_improved_snd_expression()
+{
+  return make_fn_expr( "improved", [ this ]() {
+    // The SnD buff value is a modifier for the talent effect percentage. Is it >1, our SnD is improved.
+    return buffs.slice_and_dice -> up() && buffs.slice_and_dice -> value() > 1.0;
+  } );
+}
+
+// rogue_t::create_rtb_buff_t21_expression ==============================
+
+expr_t* rogue_t::create_rtb_buff_t21_expression( const buff_t* rtb_buff )
+{
+  return make_fn_expr( "t21", [ this, rtb_buff ]() {
+    return rtb_buff -> check() && rtb_buff -> remains() != buffs.roll_the_bones -> remains();
+  } );
+}
+
 // rogue_t::create_expression ===============================================
 
 expr_t* rogue_t::create_expression( action_t* a, const std::string& name_str )
@@ -7889,6 +7863,35 @@ expr_t* rogue_t::create_expression( action_t* a, const std::string& name_str )
       if (sim -> debug) sim -> out_debug.printf( "Shadow techniques return value is: %.3f", return_value.total_seconds() );
     return return_value;
     } );
+  }
+
+  if ( util::str_compare_ci( name_str, "buff.slice_and_dice.improved" ) )
+  {
+    return create_improved_snd_expression();
+  }
+  if ( util::str_compare_ci( name_str, "buff.broadsides.t21" ) )
+  {
+    return create_rtb_buff_t21_expression( buffs.broadsides );
+  }
+  if ( util::str_compare_ci( name_str, "buff.buried_treasure.t21" ) )
+  {
+    return create_rtb_buff_t21_expression( buffs.buried_treasure );
+  }
+  if ( util::str_compare_ci( name_str, "buff.grand_melee.t21" ) )
+  {
+    return create_rtb_buff_t21_expression( buffs.grand_melee );
+  }
+  if ( util::str_compare_ci( name_str, "buff.jolly_roger.t21" ) )
+  {
+    return create_rtb_buff_t21_expression( buffs.jolly_roger );
+  }
+  if ( util::str_compare_ci( name_str, "buff.shark_infested_waters.t21" ) )
+  {
+    return create_rtb_buff_t21_expression( buffs.shark_infested_waters );
+  }
+  if ( util::str_compare_ci( name_str, "buff.true_bearing.t21" ) )
+  {
+    return create_rtb_buff_t21_expression( buffs.true_bearing );
   }
 
   return player_t::create_expression( a, name_str );
