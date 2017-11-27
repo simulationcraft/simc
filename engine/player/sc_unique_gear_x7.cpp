@@ -1819,6 +1819,8 @@ struct norgannons_command_t : public dbc_proc_callback_t
 
 void item::norgannons_prowess( special_effect_t& effect )
 {
+  effect.proc_flags_ = PF_SPELL | PF_AOE_SPELL | PF_PERIODIC;
+
   // Pre-create the base trinket buff; we will use it as the "mark" buff for the pantheon state
   // system
   effect.custom_buff = effect.create_buff();
