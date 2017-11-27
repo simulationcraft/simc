@@ -1703,7 +1703,7 @@ struct sim_t : private sc_thread_t
       lavish_feast_as_dps( true ), specter_of_betrayal_overlap( 1.0 ),
       pantheon_trinket_interval( timespan_t::from_seconds( 1.0 ) ),
       pantheon_trinket_interval_stddev( 0 ),
-      archimondes_hatred_reborn_damage( 1 )
+      archimondes_hatred_reborn_damage( 1.0 )
     { }
   } expansion_opts;
 
