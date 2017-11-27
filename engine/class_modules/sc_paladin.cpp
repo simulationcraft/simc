@@ -5075,17 +5075,21 @@ void paladin_t::generate_action_prio_list_prot()
     // no need for off/def pot options - Draenic Armor gives more AP than Draenic STR,
     // and Mountains potion is pathetic at L90
 	if (true_level > 100) {
-		  potion_type = "unbending_potion,if=!talent.seraphim.enabled";
-		  potion_type = "old_war,if=(role.attack|talent.seraphim.enabled)&active_enemies<3";
-		  potion_type = "prolonged_power,if=(role.attack|talent.seraphim.enabled)&active_enemies>=3";
+		precombat->add_action("potion,name=unbending_potion,if=!talent.seraphim.enabled");
+		precombat->add_action("potion,name=old_war,if=(role.attack|talent.seraphim.enabled)&active_enemies<3");
+		precombat->add_action("potion,name=prolonged_power,if=(role.attack|talent.seraphim.enabled)&active_enemies>=3");
 	  }
-    else if ( true_level > 90 )
-      potion_type = "draenic_strength";
-    else if ( true_level >= 80 )
-      potion_type = "mogu_power";
+    else if ( true_level > 90 ){
+		potion_type = "draenic_strength";
+		precombat->add_action("potion,name=" + potion_type);
+	}
+	else if (true_level >= 80) {
+		potion_type = "mogu_power";
+		precombat->add_action("potion,name=" + potion_type);
+	}
 
-    if ( potion_type.length() > 0 )
-      precombat -> add_action( "potion,name=" + potion_type );
+ 
+      
   }
 
   ///////////////////////
