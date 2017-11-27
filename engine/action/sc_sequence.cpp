@@ -223,6 +223,8 @@ void strict_sequence_t::schedule_execute( action_state_t* state )
 {
   assert( ( current_action == 0 && ! player -> strict_sequence ) ||
           ( current_action < sub_actions.size() && player -> strict_sequence ) );
+  // Check that we're not discarding the state since we cannot give it to queue_execute.
+  assert( ! state );
 
   if ( current_action == 0 )
     player -> strict_sequence = this;
@@ -247,7 +249,7 @@ void strict_sequence_t::schedule_execute( action_state_t* state )
       return;
     }
 
-    sub_actions[ current_action++ ] -> schedule_execute( state );
+    sub_actions[ current_action++ ] -> queue_execute( false );
     scheduled = true;
   }
   else
@@ -272,7 +274,7 @@ void strict_sequence_t::schedule_execute( action_state_t* state )
                        player -> name(), seq_name_str.c_str(), current_action, sub_actions[ current_action ] -> name() );
 
       player -> sequence_add( sub_actions[ current_action ], sub_actions[ current_action ] -> target, sim -> current_time() );
-      sub_actions[ current_action++ ] -> schedule_execute( state );
+      sub_actions[ current_action++ ] -> queue_execute( false );
       scheduled = true;
     }
   }
