@@ -1485,7 +1485,7 @@ void buff_t::expire( timespan_t delay )
 void buff_t::predict()
 {
   // Guarantee that may_react() will return true if the buff is present.
-  fill( stack_react_time.begin(), stack_react_time.begin() + current_stack + 1, timespan_t::min() );
+  std::fill( stack_react_time.begin(), stack_react_time.begin() + current_stack + 1, timespan_t::min() );
 }
 
 // buff_t::aura_gain ========================================================
