@@ -1819,7 +1819,7 @@ struct norgannons_command_t : public dbc_proc_callback_t
 
 void item::norgannons_prowess( special_effect_t& effect )
 {
-  effect.proc_flags_ = PF_SPELL | PF_AOE_SPELL | PF_PERIODIC;
+  effect.proc_flags_ = effect.driver() -> proc_flags() | PF_AOE_SPELL;
 
   // Pre-create the base trinket buff; we will use it as the "mark" buff for the pantheon state
   // system
@@ -1906,7 +1906,7 @@ struct personnel_decimator_driver_t : public dbc_proc_callback_t
 
 void item::prototype_personnel_decimator( special_effect_t& effect )
 {
-  effect.proc_flags_ = PF_RANGED | PF_RANGED_ABILITY | PF_SPELL | PF_AOE_SPELL | PF_PERIODIC;
+  effect.proc_flags_ = effect.driver() -> proc_flags() | PF_AOE_SPELL;
   effect.execute_action = create_proc_action<personnel_decimator_t>( "personnel_decimator", effect );
 
   new personnel_decimator_driver_t( effect );
@@ -1939,7 +1939,7 @@ struct injector_proc_cb_t : public dbc_proc_callback_t
 
 void item::acrid_catalyst_injector( special_effect_t& effect )
 {
-  effect.proc_flags_ = PF_SPELL | PF_AOE_SPELL | PF_PERIODIC;
+  effect.proc_flags_ = effect.driver() -> proc_flags() | PF_AOE_SPELL;
   effect.proc_flags2_ = PF2_CRIT;
 
   auto p = effect.player;
@@ -2171,7 +2171,7 @@ struct shadow_blades_buff_t : public buff_t
 
 void item::sheath_of_asara( special_effect_t& effect )
 {
-  effect.proc_flags_ = PF_RANGED | PF_RANGED_ABILITY | PF_SPELL | PF_AOE_SPELL | PF_PERIODIC;
+  effect.proc_flags_ = effect.driver() -> proc_flags() | PF_AOE_SPELL;
   effect.custom_buff = new shadow_blades_buff_t( effect );
   new dbc_proc_callback_t( effect.item, effect );
 }
