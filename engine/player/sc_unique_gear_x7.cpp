@@ -4608,7 +4608,7 @@ struct archimondes_hatred_reborn_shield_t : public absorb_buff_t
     // AHR deals damage based on the amount of damage absorbed by the shield
     // But the damage taken models for tanking aren't realistic at the moment
     // It's better to let the user chose how much of the shield is consumed on each use
-    double absorbed_damage_ratio = spell_effect.player -> sim -> expansion_opts.archimondes_hatred_reborn_damage / 100;
+    double absorbed_damage_ratio = spell_effect.player -> sim -> expansion_opts.archimondes_hatred_reborn_damage;
     if ( absorbed_damage_ratio < 0 )
       absorbed_damage_ratio = 0;
     else if ( absorbed_damage_ratio > 1)
