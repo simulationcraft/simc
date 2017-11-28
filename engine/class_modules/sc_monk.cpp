@@ -8606,7 +8606,7 @@ void monk_t::create_buffs()
     .default_value( artifact.light_on_your_feet_mw.rank() ? artifact.light_on_your_feet_mw.percent() : 0 );
 
   buff.refreshing_jade_wind = buff_creator_t( this, "refreshing_jade_wind", talent.refreshing_jade_wind )
-    .default_value( talent.refreshing_jade_wind -> effectN( 2 ).percent() )
+    .default_value( talent.refreshing_jade_wind -> effectN( 1 ).trigger() -> effectN( 1 ).percent() )
     .refresh_behavior( BUFF_REFRESH_PANDEMIC );
 
   buff.spinning_crane_kick = buff_creator_t( this, "spinning_crane_kick", spec.spinning_crane_kick )
