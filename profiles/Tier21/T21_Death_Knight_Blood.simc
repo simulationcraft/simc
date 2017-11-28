@@ -35,9 +35,10 @@ actions+=/arcane_torrent,if=runic_power.deficit>20
 actions+=/blood_fury
 actions+=/berserking,if=buff.dancing_rune_weapon.up
 actions+=/use_items
+actions+=/use_item,name=archimondes_hatred_reborn,if=buff.vampiric_blood.up
 actions+=/potion,if=buff.dancing_rune_weapon.up
 actions+=/dancing_rune_weapon,if=(!talent.blooddrinker.enabled|!cooldown.blooddrinker.ready)&!cooldown.death_and_decay.ready
-actions+=/vampiric_blood
+actions+=/vampiric_blood,if=!equipped.archimondes_hatred_reborn|cooldown.trinket.ready
 actions+=/call_action_list,name=standard
 
 actions.standard=death_strike,if=runic_power.deficit<10

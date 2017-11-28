@@ -8606,7 +8606,7 @@ void monk_t::create_buffs()
     .default_value( artifact.light_on_your_feet_mw.rank() ? artifact.light_on_your_feet_mw.percent() : 0 );
 
   buff.refreshing_jade_wind = buff_creator_t( this, "refreshing_jade_wind", talent.refreshing_jade_wind )
-    .default_value( talent.refreshing_jade_wind -> effectN( 2 ).percent() )
+    .default_value( talent.refreshing_jade_wind -> effectN( 1 ).trigger() -> effectN( 1 ).percent() )
     .refresh_behavior( BUFF_REFRESH_PANDEMIC );
 
   buff.spinning_crane_kick = buff_creator_t( this, "spinning_crane_kick", spec.spinning_crane_kick )
@@ -10056,8 +10056,7 @@ void monk_t::apl_combat_brewmaster()
   {
     if ( items[i].has_special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE ) )
     {
-      if ( items[i].name_str != "archimondes_hatred_reborn" )
-        def -> add_action( "use_item,name=" + items[i].name_str ); //+ ",if=incoming_damage_1500ms&(buff.dampen_harm.down|buff.diffuse_magic.down)&buff.fortifying_brew.down" );
+      def -> add_action( "use_item,name=" + items[i].name_str ); //+ ",if=incoming_damage_1500ms&(buff.dampen_harm.down|buff.diffuse_magic.down)&buff.fortifying_brew.down" );
     }
   }
 

@@ -140,6 +140,7 @@ namespace item
 
   // Legendary
   void aggramars_stride( special_effect_t& );
+  void archimondes_hatred_reborn( special_effect_t& );
   void kiljadens_burning_wish( special_effect_t& );
   void norgannons_foresight( special_effect_t& );
 
@@ -1818,6 +1819,8 @@ struct norgannons_command_t : public dbc_proc_callback_t
 
 void item::norgannons_prowess( special_effect_t& effect )
 {
+  effect.proc_flags_ = effect.driver() -> proc_flags() | PF_AOE_SPELL;
+
   // Pre-create the base trinket buff; we will use it as the "mark" buff for the pantheon state
   // system
   effect.custom_buff = effect.create_buff();
@@ -1903,7 +1906,7 @@ struct personnel_decimator_driver_t : public dbc_proc_callback_t
 
 void item::prototype_personnel_decimator( special_effect_t& effect )
 {
-  effect.proc_flags_ = PF_RANGED | PF_RANGED_ABILITY | PF_SPELL | PF_AOE_SPELL | PF_PERIODIC;
+  effect.proc_flags_ = effect.driver() -> proc_flags() | PF_AOE_SPELL;
   effect.execute_action = create_proc_action<personnel_decimator_t>( "personnel_decimator", effect );
 
   new personnel_decimator_driver_t( effect );
@@ -1936,7 +1939,7 @@ struct injector_proc_cb_t : public dbc_proc_callback_t
 
 void item::acrid_catalyst_injector( special_effect_t& effect )
 {
-  effect.proc_flags_ = PF_SPELL | PF_AOE_SPELL | PF_PERIODIC;
+  effect.proc_flags_ = effect.driver() -> proc_flags() | PF_AOE_SPELL;
   effect.proc_flags2_ = PF2_CRIT;
 
   auto p = effect.player;
@@ -2168,7 +2171,7 @@ struct shadow_blades_buff_t : public buff_t
 
 void item::sheath_of_asara( special_effect_t& effect )
 {
-  effect.proc_flags_ = PF_RANGED | PF_RANGED_ABILITY | PF_SPELL | PF_AOE_SPELL | PF_PERIODIC;
+  effect.proc_flags_ = effect.driver() -> proc_flags() | PF_AOE_SPELL;
   effect.custom_buff = new shadow_blades_buff_t( effect );
   new dbc_proc_callback_t( effect.item, effect );
 }
@@ -4581,6 +4584,62 @@ void item::kiljadens_burning_wish( special_effect_t& effect )
 {
   effect.execute_action = new kiljaedens_burning_wish_t( effect );
 }
+
+// Archimonde's Hatred Reborn
+
+struct archimondes_hatred_reborn_shield_t : public absorb_buff_t
+{
+  action_t* explosion;
+  special_effect_t& spell_effect;
+
+  archimondes_hatred_reborn_shield_t( special_effect_t& effect, action_t* a ) :
+    absorb_buff_t( absorb_buff_creator_t( effect.player, "archimondes_hatred_reborn", effect.driver(), effect.item ) ),
+    spell_effect( effect ),
+    explosion( a )
+  {
+    explosion -> snapshot_flags &= STATE_NO_MULTIPLIER;
+  }
+
+  void start( int stacks, double value = DEFAULT_VALUE(), timespan_t duration = timespan_t::min() ) override
+  {
+    // The shield is based on the player's max health
+    double shield_amount = spell_effect.player -> resources.max[ RESOURCE_HEALTH ] * spell_effect.driver() -> effectN( 1 ).percent();
+
+    absorb_buff_t::start( stacks, shield_amount, duration );
+
+    // AHR deals damage based on the amount of damage absorbed by the shield
+    // But the damage taken models for tanking aren't realistic at the moment
+    // It's better to let the user chose how much of the shield is consumed on each use
+    double absorbed_damage_ratio = spell_effect.player -> sim -> expansion_opts.archimondes_hatred_reborn_damage;
+    if ( absorbed_damage_ratio < 0 )
+      absorbed_damage_ratio = 0;
+    else if ( absorbed_damage_ratio > 1)
+      absorbed_damage_ratio = 1;
+
+    double explosion_damage = shield_amount * spell_effect.driver() -> effectN( 2 ).percent() * absorbed_damage_ratio;
+
+    explosion -> base_dd_min = explosion -> base_dd_max = explosion_damage;
+  }
+
+  void expire_override( int stacks, timespan_t remaining ) override
+  {
+    absorb_buff_t::expire_override( stacks, remaining );
+
+    explosion -> schedule_execute();
+  }
+};
+
+void item::archimondes_hatred_reborn( special_effect_t& effect )
+{
+  effect.trigger_spell_id = 235188;
+
+  effect.custom_buff = new archimondes_hatred_reborn_shield_t( effect, effect.create_action() );
+
+  // Reset trigger_spell_id so it does not create an execute action.
+  effect.trigger_spell_id = 0;
+}
+
+
 // Nature's Call ============================================================
 
 // Helper class so we can handle all of the procs as 1 object.
@@ -6614,6 +6673,7 @@ void unique_gear::register_special_effects_x7()
   /* Legendaries */
   register_special_effect( 207692, cinidaria_the_symbiote_t() );
   register_special_effect( 207438, item::aggramars_stride );
+  register_special_effect( 235169, item::archimondes_hatred_reborn );
   register_special_effect( 235991, item::kiljadens_burning_wish );
   register_special_effect( 236373, item::norgannons_foresight );
 

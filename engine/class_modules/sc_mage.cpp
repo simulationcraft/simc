@@ -1829,7 +1829,7 @@ struct fire_mage_spell_t : public mage_spell_t
 
     if ( result_is_hit( s -> result ) )
     {
-      if ( triggers_ignite && p() -> ignite )
+      if ( triggers_ignite )
       {
         trigger_ignite( s );
       }
@@ -1958,17 +1958,29 @@ struct fire_mage_spell_t : public mage_spell_t
   virtual double composite_ignite_multiplier( const action_state_t* /* s */ ) const
   { return 1.0; }
 
-  void trigger_ignite( action_state_t* s )
+  void trigger_ignite( action_state_t* state )
   {
-    double amount = s -> result_total * p() -> cache.mastery_value();
+    if ( ! p() -> spec.ignite -> ok() )
+      return;
+
+    if ( ! result_is_hit( state -> result ) )
+      return;
+
+    double m = state -> target_da_multiplier;
+    if ( m <= 0.0 )
+      return;
+
+    double amount = state -> result_total / m * p() -> cache.mastery_value();
+    if ( amount <= 0.0 )
+      return;
 
     // TODO: Use client data from hot streak
-    amount *= composite_ignite_multiplier( s );
+    amount *= composite_ignite_multiplier( state );
     amount *= 1.0 + p() -> artifact.everburning_consumption.percent();
 
-    bool ignite_exists = p() -> ignite -> get_dot( s -> target ) -> is_ticking();
+    bool ignite_exists = p() -> ignite -> get_dot( state -> target ) -> is_ticking();
 
-    residual_action::trigger( p() -> ignite, s -> target, amount );
+    residual_action::trigger( p() -> ignite, state -> target, amount );
 
     if ( !ignite_exists )
     {
@@ -2114,15 +2126,13 @@ struct frost_mage_spell_t : public mage_spell_t
     if ( ! result_is_hit( state -> result ) )
       return;
 
-    double m = state -> target_da_multiplier;
-
     // Do not create zero damage Icicles (e.g. due to invulnerability events).
-    if ( m == 0.0 )
+    double m = state -> target_da_multiplier;
+    if ( m <= 0.0 )
       return;
 
     double amount = state -> result_total / m * p() -> cache.mastery_value();
-
-    if ( amount == 0.0 )
+    if ( amount <= 0.0 )
       return;
 
     if ( p() -> artifact.black_ice.rank() && rng().roll( 0.2 ) )
@@ -2362,6 +2372,14 @@ struct ignite_t : public residual_action_t
     {
       phoenix_reborn = new phoenix_reborn_t( p );
     }
+  }
+
+  virtual void init() override
+  {
+    residual_action_t::init();
+
+    snapshot_flags |= STATE_TGT_MUL_TA;
+    update_flags |= STATE_TGT_MUL_TA;
   }
 
   virtual void tick( dot_t* dot ) override

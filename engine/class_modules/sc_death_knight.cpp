@@ -6779,7 +6779,6 @@ struct vampiric_blood_t : public death_knight_spell_t
 
     harmful = false;
     base_dd_min = base_dd_max = 0;
-    base_multiplier    *= 1.0 + p -> artifact.vampiric_fangs.percent();
   }
 
   void execute() override
@@ -6976,7 +6975,7 @@ struct vampiric_blood_buff_t : public health_pct_increase_buff_t<buff_t, buff_cr
   vampiric_blood_buff_t( death_knight_t* p ) :
     super( buff_creator_t( p, "vampiric_blood", p -> spec.vampiric_blood ).cd( timespan_t::zero() ) )
   {
-    delta = data().effectN( 2 ).percent();
+    delta = data().effectN( 2 ).percent() + p -> artifact.vampiric_fangs.percent();
   }
 };
 
@@ -8156,11 +8155,12 @@ void death_knight_t::default_apl_blood()
 
   // On-use items
   def -> add_action( "use_items" );
+  def -> add_action( "use_item,name=archimondes_hatred_reborn,if=buff.vampiric_blood.up" );
 
   // Cooldowns
   def -> add_action( "potion,if=buff.dancing_rune_weapon.up" );
   def -> add_action( this, "Dancing Rune Weapon", "if=(!talent.blooddrinker.enabled|!cooldown.blooddrinker.ready)&!cooldown.death_and_decay.ready" );
-  def -> add_action( this, "Vampiric Blood" );
+  def -> add_action( this, "Vampiric Blood", "if=!equipped.archimondes_hatred_reborn|cooldown.trinket.ready" );
   def -> add_action( "call_action_list,name=standard" );
 
   // Single Target Rotation
@@ -8419,9 +8419,9 @@ void death_knight_t::default_apl_unholy()
   def -> add_action( this, "Mind Freeze" );
   
   // Ogcd cooldowns
-  def -> add_action( "arcane_torrent,if=runic_power.deficit>20", "Racials, Items, and other ogcds" );
-  def -> add_action( "blood_fury" );
-  def -> add_action( "berserking" );
+  def -> add_action( "arcane_torrent,if=runic_power.deficit>20&(pet.valkyr_battlemaiden.active|!talent.dark_arbiter.enabled)", "Racials, Items, and other ogcds" );
+  def -> add_action( "blood_fury,if=pet.valkyr_battlemaiden.active|!talent.dark_arbiter.enabled" );
+  def -> add_action( "berserking,if=pet.valkyr_battlemaiden.active|!talent.dark_arbiter.enabled" );
   def -> add_action( "use_items" );
   def -> add_action( "use_item,name=feloiled_infernal_machine,"
                   "if=pet.valkyr_battlemaiden.active|!talent.dark_arbiter.enabled" );
@@ -8575,10 +8575,10 @@ void death_knight_t::create_buffs()
   buffs.bone_shield         = haste_buff_creator_t( this, "bone_shield", spell.bone_shield )
                               .default_value( 1.0 / ( 1.0 + spell.bone_shield -> effectN( 4 ).percent() ) )
                               .stack_change_callback( talent.foul_bulwark -> ok() ? [ this ]( buff_t*, int old_stacks, int new_stacks ) {
-                                double old = old_stacks * talent.foul_bulwark -> effectN( 1 ).percent();
-                                double new_ = new_stacks * talent.foul_bulwark -> effectN( 1 ).percent();
-                                resources.initial_multiplier[ RESOURCE_HEALTH ] /= 1.0 + old;
-                                resources.initial_multiplier[ RESOURCE_HEALTH ] *= 1.0 + new_;
+                                double old_buff = old_stacks * talent.foul_bulwark -> effectN( 1 ).percent();
+                                double new_buff = new_stacks * talent.foul_bulwark -> effectN( 1 ).percent();
+                                resources.initial_multiplier[ RESOURCE_HEALTH ] /= 1.0 + old_buff;
+                                resources.initial_multiplier[ RESOURCE_HEALTH ] *= 1.0 + new_buff;
                                 recalculate_resource_max( RESOURCE_HEALTH );
                               } : buff_stack_change_callback_t() );
   buffs.crimson_scourge     = buff_creator_t( this, "crimson_scourge", find_spell( 81141 ) )
@@ -8889,7 +8889,7 @@ void death_knight_t::reset()
 void death_knight_t::assess_heal( school_e school, dmg_e t, action_state_t* s )
 {
   if ( buffs.vampiric_blood -> up() )
-    s -> result_total *= 1.0 + buffs.vampiric_blood -> data().effectN( 1 ).percent();
+    s -> result_total *= 1.0 + buffs.vampiric_blood -> data().effectN( 1 ).percent() + artifact.vampiric_fangs.percent();
 
   player_t::assess_heal( school, t, s );
 }

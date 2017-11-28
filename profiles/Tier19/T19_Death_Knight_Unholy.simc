@@ -34,9 +34,9 @@ actions.precombat+=/blighted_rune_weapon
 actions=auto_attack
 actions+=/mind_freeze
 # Racials, Items, and other ogcds
-actions+=/arcane_torrent,if=runic_power.deficit>20
-actions+=/blood_fury
-actions+=/berserking
+actions+=/arcane_torrent,if=runic_power.deficit>20&(pet.valkyr_battlemaiden.active|!talent.dark_arbiter.enabled)
+actions+=/blood_fury,if=pet.valkyr_battlemaiden.active|!talent.dark_arbiter.enabled
+actions+=/berserking,if=pet.valkyr_battlemaiden.active|!talent.dark_arbiter.enabled
 actions+=/use_items
 actions+=/use_item,name=feloiled_infernal_machine,if=pet.valkyr_battlemaiden.active|!talent.dark_arbiter.enabled
 actions+=/use_item,name=ring_of_collapsing_futures,if=(buff.temptation.stack=0&target.time_to_die>60)|target.time_to_die<60
