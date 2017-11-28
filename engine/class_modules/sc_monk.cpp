@@ -10056,8 +10056,7 @@ void monk_t::apl_combat_brewmaster()
   {
     if ( items[i].has_special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE ) )
     {
-      if ( items[i].name_str != "archimondes_hatred_reborn" )
-        def -> add_action( "use_item,name=" + items[i].name_str ); //+ ",if=incoming_damage_1500ms&(buff.dampen_harm.down|buff.diffuse_magic.down)&buff.fortifying_brew.down" );
+      def -> add_action( "use_item,name=" + items[i].name_str ); //+ ",if=incoming_damage_1500ms&(buff.dampen_harm.down|buff.diffuse_magic.down)&buff.fortifying_brew.down" );
     }
   }
 
