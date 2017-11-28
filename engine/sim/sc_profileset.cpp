@@ -422,8 +422,10 @@ bool profilesets_t::iterate( sim_t* parent )
 
     // Optional override ouput data
     if ( parent -> profileset_output_data.front() != "" ) {
+      set -> output_data ( profile_output_data_t() );
+      const auto parent_player = parent -> player_no_pet_list.data().front();
       range::for_each( parent -> profileset_output_data, [ & ]( std::string option ) {
-        save_output_data( set, player, option );
+        save_output_data( set, parent_player, player, option );
       } );
     }
 
@@ -482,16 +484,6 @@ void profilesets_t::output( const sim_t& sim, js::JsonOutput& root ) const
 
     obj[ "iterations" ] = as<uint64_t>( result.iterations() );
 
-    // Optional override ouput data
-    if ( sim.profileset_output_data.front() != "" ) {
-      // TODO: Use fetch_output_data to display only the saved ones
-      obj[ "race" ] = profileset -> race();
-      obj[ "talents" ] = profileset -> talents();
-      obj[ "artifact" ] = profileset -> artifact();
-      obj[ "crucible" ] = profileset -> crucible();
-      // obj[ "gear" ] = profileset -> gear();
-    }
-
     if ( profileset -> results() > 1 )
     {
       auto results2 = obj[ "additional_metrics" ].make_array();
@@ -513,6 +505,14 @@ void profilesets_t::output( const sim_t& sim, js::JsonOutput& root ) const
           obj2[ "third_quartile" ] = result.third_quartile();
         }
       }
+    }
+
+    // Optional override ouput data
+    if ( sim.profileset_output_data.front() != "" ) {
+      const auto& output_data = profileset -> output_data();
+      // TODO: Create the overrides object only if there is at least one override registered
+      auto ovr = obj[ "overrides" ];
+      fetch_output_data( output_data, ovr);
     }
   } );
 }
@@ -757,38 +757,122 @@ statistical_data_t metric_data( const player_t* player, scale_metric_e metric )
   }
 }
 
-void save_output_data( std::unique_ptr<profile_set_t>& profileset, const player_t* player, std::string option )
+void save_output_data( std::unique_ptr<profile_set_t>& profileset, const player_t* parent_player, const player_t* player, std::string option )
 {
   // TODO: Make an enum to proper use a switch instead of if/else
   if ( option == "race") {
-    profileset -> race( player -> race_str );
-  } else if ( option == "talents" ) {
-    profileset -> talents( player -> talents_str );
-  } else if ( option == "artifact" ) {
-    profileset -> artifact( player -> artifact -> encode() );
-  } else if ( option == "crucible" ) {
-    profileset -> crucible( player -> artifact -> encode_crucible() );
-  } else if ( option == "gear" ) {
-    auto& items = player -> items;
-    std::map<std::string, std::map<std::string, unsigned>> saved_gear;
-    for ( size_t i = 0; i < items.size(); i++ )
+    if ( parent_player -> race != player -> race )
     {
-      auto& item = items[ i ];
-
-      std::map<std::string, unsigned> slot;
-      slot[ "item_id" ] = item.parsed.data.id;
-      slot[ "item_level" ] = item.parsed.item_level;
-      // slot[ "bonus_id" ] = item.parsed.bonus_id;
-
-      saved_gear[ item.slot_name() ] = slot;
+      profileset -> output_data().race( player -> race );
     }
-    profileset -> gear( saved_gear );
+  } else if ( option == "talents" ) {
+    if ( parent_player -> talents_str != player -> talents_str ) {
+      std::vector<talent_data_t*> saved_talents;
+      for ( auto talent_row = 0; talent_row < MAX_TALENT_ROWS; talent_row++ )
+      {
+        const auto& talent_col = player -> talent_points.choice( talent_row );
+        if ( talent_col == -1 )
+        {
+          continue;
+        }
+
+        auto* talent_data = talent_data_t::find( player -> type, talent_row, talent_col, player -> specialization(), player -> dbc.ptr );
+        if ( talent_data == nullptr )
+        {
+          continue;
+        }
+
+        const auto& p_talent_col = parent_player -> talent_points.choice( talent_row );
+        auto* p_talent_data = talent_data_t::find( parent_player -> type, talent_row, talent_col, parent_player -> specialization(), parent_player -> dbc.ptr );
+        if ( p_talent_col == -1 || p_talent_data == nullptr || p_talent_col != talent_col )
+        {
+          saved_talents.push_back( talent_data );
+        }
+      }
+      if ( saved_talents.size() > 0 )
+      {
+        profileset -> output_data().talents( saved_talents );
+      }
+    }
+  } else if ( option == "artifact" ) {
+    if ( parent_player -> artifact -> encode() != player -> artifact -> encode() )
+    {
+      profileset -> output_data().artifact( player -> artifact -> encode() );
+    }
+  } else if ( option == "crucible" ) {
+    if ( parent_player -> artifact -> encode_crucible() != player -> artifact -> encode_crucible() )
+    {
+      profileset -> output_data().crucible( player -> artifact -> encode_crucible() );
+    }
+  } else if ( option == "gear" ) {
+    const auto& parent_items = parent_player -> items;
+    const auto& items = player -> items;
+    std::vector<profile_output_data_item_t> saved_gear;
+    for ( slot_e slot = SLOT_MIN; slot < SLOT_MAX; slot++ )
+    {
+      const auto& item = items[ slot ];
+      if ( ! item.active() || ! item.has_stats() )
+      {
+        continue;
+      }
+      const auto& parent_item = parent_items[ slot ];
+      if ( parent_item.parsed.data.id != item.parsed.data.id) {
+        auto saved_item = profile_output_data_item_t();
+        saved_item.slot_name( item.slot_name() );
+        saved_item.item_id( item.parsed.data.id );
+        saved_item.item_level( item.item_level() );
+        // saved_item.bonus_id( item.bonus_id );
+
+        saved_gear.push_back( saved_item );
+      }
+    }
+    if ( saved_gear.size() > 0 )
+    {
+      profileset -> output_data().gear( saved_gear );
+    }
   }
 }
 
-void fetch_output_data( const std::unique_ptr<profile_set_t>& profileset )
+void fetch_output_data( const profile_output_data_t output_data, js::JsonOutput& ovr )
 {
-  // TODO: iterate over all saved output data then return all of them as an object
+  // TODO: Fix race output
+  if ( true )
+  {
+    ovr[ "race" ] = util::race_type_string( output_data.race() );
+  }
+  if ( ! output_data.talents().empty() )
+  {
+    const auto& talents = output_data.talents();
+    auto ovr_talents = ovr[ "talents" ].make_array();
+    for ( size_t i = 0; i < talents.size(); i++ )
+    {
+      const auto& talent = talents[ i ];
+      auto ovr_talent = ovr_talents.add();
+      ovr_talent[ "tier"     ] = talent -> row();
+      ovr_talent[ "id"       ] = talent -> id();
+      ovr_talent[ "spell_id" ] = talent -> spell_id();
+      ovr_talent[ "name"     ] = talent -> name_cstr();
+    }
+  }
+  if ( ! output_data.artifact().empty() )
+  {
+    ovr[ "artifact" ] = output_data.artifact();
+  }
+  if ( ! output_data.crucible().empty() )
+  {
+    ovr[ "crucible" ] = output_data.crucible();
+  }
+  if ( output_data.gear().size() > 0 ) {
+    const auto& gear = output_data.gear();
+    auto ovr_gear = ovr[ "gear" ];
+    for ( size_t i = 0; i < gear.size(); i++ )
+    {
+      const auto& item = gear[ i ];
+      auto ovr_slot = ovr_gear[ item.slot_name() ];
+      ovr_slot[ "item_id"    ] = item.item_id();
+      ovr_slot[ "item_level" ] = item.item_level();
+    }
+  }
 }
 
 } /* Namespace profileset ends */
