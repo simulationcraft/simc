@@ -8155,11 +8155,12 @@ void death_knight_t::default_apl_blood()
 
   // On-use items
   def -> add_action( "use_items" );
+  def -> add_action( "use_item,name=archimondes_hatred_reborn,if=buff.vampiric_blood.up" );
 
   // Cooldowns
   def -> add_action( "potion,if=buff.dancing_rune_weapon.up" );
   def -> add_action( this, "Dancing Rune Weapon", "if=(!talent.blooddrinker.enabled|!cooldown.blooddrinker.ready)&!cooldown.death_and_decay.ready" );
-  def -> add_action( this, "Vampiric Blood" );
+  def -> add_action( this, "Vampiric Blood", "if=!equipped.archimondes_hatred_reborn|cooldown.trinket.ready" );
   def -> add_action( "call_action_list,name=standard" );
 
   // Single Target Rotation
