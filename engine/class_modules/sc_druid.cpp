@@ -8097,7 +8097,7 @@ void druid_t::apl_balance()
   ST -> add_action( this, "Lunar Strike", "if=buff.lunar_empowerment.up");
   ST -> add_action( this, "Solar Wrath");
   
-  AoE -> add_action( this, "Starfall", "if=debuff.stellar_empowerment.remains<gcd.max*2|astral_power.deficit<22.5|((buff.celestial_alignment.remains>8|buff.incarnation.remains>8))|target.time_to_die<8");
+  AoE -> add_action( this, "Starfall", "if=debuff.stellar_empowerment.remains<gcd.max*2|astral_power.deficit<22.5|(buff.celestial_alignment.remains>8|buff.incarnation.remains>8)|target.time_to_die<8");
   AoE -> add_talent( this, "Stellar Flare", "target_if=refreshable,if=target.time_to_die>10");
   AoE -> add_action( this, "Sunfire", "target_if=refreshable,if=astral_power.deficit>7&target.time_to_die>4");
   AoE -> add_action( this, "Moonfire", "target_if=refreshable,if=astral_power.deficit>7&target.time_to_die>4");

@@ -49,7 +49,7 @@ actions+=/celestial_alignment,if=astral_power>=40
 actions+=/call_action_list,name=AoE,if=(spell_targets.starfall>=2&talent.stellar_drift.enabled)|spell_targets.starfall>=3
 actions+=/call_action_list,name=single_target
 
-actions.AoE=starfall,if=debuff.stellar_empowerment.remains<gcd.max*2|astral_power.deficit<22.5|((buff.celestial_alignment.remains>8|buff.incarnation.remains>8))|target.time_to_die<8
+actions.AoE=starfall,if=debuff.stellar_empowerment.remains<gcd.max*2|astral_power.deficit<22.5|(buff.celestial_alignment.remains>8|buff.incarnation.remains>8)|target.time_to_die<8
 actions.AoE+=/stellar_flare,target_if=refreshable,if=target.time_to_die>10
 actions.AoE+=/sunfire,target_if=refreshable,if=astral_power.deficit>7&target.time_to_die>4
 actions.AoE+=/moonfire,target_if=refreshable,if=astral_power.deficit>7&target.time_to_die>4

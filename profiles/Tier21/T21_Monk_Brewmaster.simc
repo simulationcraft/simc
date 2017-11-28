@@ -37,6 +37,7 @@ actions+=/greater_gift_of_the_ox
 actions+=/gift_of_the_ox
 actions+=/dampen_harm,if=incoming_damage_1500ms&buff.fortifying_brew.down
 actions+=/fortifying_brew,if=incoming_damage_1500ms&(buff.dampen_harm.down|buff.diffuse_magic.down)
+actions+=/use_item,name=archimondes_hatred_reborn
 actions+=/call_action_list,name=st
 
 actions.st=potion

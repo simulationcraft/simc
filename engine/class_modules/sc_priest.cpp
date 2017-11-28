@@ -4835,33 +4835,36 @@ void priest_t::apl_precombat()
                          "pre-potting is done." );
 
   // do all kinds of calculation here to reduce CPU time
-  precombat->add_action(
-      "variable,name=haste_eval,op=set,value=(raw_haste_pct-0.3)*(10+10*equipped."
-	  "mangazas_madness+5*talent.fortress_of_the_mind.enabled)" );
-  precombat->add_action( "variable,name=haste_eval,op=max,value=0" );
-  precombat->add_action( 
-	  "variable,name=erupt_eval,op=set,value=26+1*talent.fortress_of_the_mind.enabled-"
-	  "4*talent.Sanlayn.enabled-3*talent.Shadowy_insight.enabled+variable.haste_eval*1.5" );
-  precombat->add_action(
-      "variable,name=cd_time,op=set,value=(12+(2-2*talent.mindbender.enabled*set_"
-      "bonus.tier20_4pc)*set_bonus.tier19_2pc+(1-3*talent.mindbender.enabled*set_"
-      "bonus.tier20_4pc)*equipped.mangazas_madness+(6+5*talent.mindbender.enabled)"
-      "*set_bonus.tier20_4pc+2*artifact.lash_of_insanity.rank)" );
-  precombat->add_action(
-      "variable,name=dot_swp_dpgcd,op=set,value=36.5*1.2*(1+0.06*artifact.to_the_pain.rank)"
-      "*(1+0.2+stat.mastery_rating%16000)*0.75" );
-  precombat->add_action(
-      "variable,name=dot_vt_dpgcd,op=set,value=68*1.2*(1+0.2*talent.sanlayn.enabled)*(1+0.05*artifact.touch_of_"
-      "darkness.rank)"
-      "*(1+0.2+stat.mastery_rating%16000)*0.5" );
-  precombat->add_action( "variable,name=sear_dpgcd,op=set,value=120*1.2*(1+0.05*artifact.void_corruption.rank)" );
-  precombat->add_action(
-      "variable,name=s2msetup_time,op=set,value=(0.8*(83+(20+20*talent.fortress_of_the_mind"
-      ".enabled)*set_bonus.tier20_4pc-(5*talent.sanlayn.enabled)+((33-13*set_bonus.tier20_4pc)*"
-      "talent.reaper_of_souls.enabled)+set_bonus.tier19_2pc*4+8*equipped.mangazas_madness+(raw_haste_"
-      "pct*10*(1+0.7*set_bonus.tier20_4pc))*(2+(0.8*set_bonus.tier19_2pc)+(1*talent.reaper_of_souls."
-      "enabled)+(2*artifact.mass_hysteria.rank)-(1*talent.sanlayn.enabled)))),if=talent.surrender_to_madness.enabled" );
-  precombat->add_action( "potion" );
+  if (specialization() == PRIEST_SHADOW)
+  {
+	  precombat->add_action(
+		  "variable,name=haste_eval,op=set,value=(raw_haste_pct-0.3)*(10+10*equipped."
+		  "mangazas_madness+5*talent.fortress_of_the_mind.enabled)");
+	  precombat->add_action("variable,name=haste_eval,op=max,value=0");
+	  precombat->add_action(
+		  "variable,name=erupt_eval,op=set,value=26+1*talent.fortress_of_the_mind.enabled-"
+		  "4*talent.Sanlayn.enabled-3*talent.Shadowy_insight.enabled+variable.haste_eval*1.5");
+	  precombat->add_action(
+		  "variable,name=cd_time,op=set,value=(12+(2-2*talent.mindbender.enabled*set_"
+		  "bonus.tier20_4pc)*set_bonus.tier19_2pc+(1-3*talent.mindbender.enabled*set_"
+		  "bonus.tier20_4pc)*equipped.mangazas_madness+(6+5*talent.mindbender.enabled)"
+		  "*set_bonus.tier20_4pc+2*artifact.lash_of_insanity.rank)");
+	  precombat->add_action(
+		  "variable,name=dot_swp_dpgcd,op=set,value=36.5*1.2*(1+0.06*artifact.to_the_pain.rank)"
+		  "*(1+0.2+stat.mastery_rating%16000)*0.75");
+	  precombat->add_action(
+		  "variable,name=dot_vt_dpgcd,op=set,value=68*1.2*(1+0.2*talent.sanlayn.enabled)*(1+0.05*artifact.touch_of_"
+		  "darkness.rank)"
+		  "*(1+0.2+stat.mastery_rating%16000)*0.5");
+	  precombat->add_action("variable,name=sear_dpgcd,op=set,value=120*1.2*(1+0.05*artifact.void_corruption.rank)");
+	  precombat->add_action(
+		  "variable,name=s2msetup_time,op=set,value=(0.8*(83+(20+20*talent.fortress_of_the_mind"
+		  ".enabled)*set_bonus.tier20_4pc-(5*talent.sanlayn.enabled)+((33-13*set_bonus.tier20_4pc)*"
+		  "talent.reaper_of_souls.enabled)+set_bonus.tier19_2pc*4+8*equipped.mangazas_madness+(raw_haste_"
+		  "pct*10*(1+0.7*set_bonus.tier20_4pc))*(2+(0.8*set_bonus.tier19_2pc)+(1*talent.reaper_of_souls."
+		  "enabled)+(2*artifact.mass_hysteria.rank)-(1*talent.sanlayn.enabled)))),if=talent.surrender_to_madness.enabled");
+	  precombat->add_action("potion");
+  }
 
   // Precast
   switch ( specialization() )

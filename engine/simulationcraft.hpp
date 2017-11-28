@@ -1695,13 +1695,15 @@ struct sim_t : private sc_thread_t
     std::string         pantheon_trinket_users;
     timespan_t          pantheon_trinket_interval;
     double              pantheon_trinket_interval_stddev;
+    double              archimondes_hatred_reborn_damage;
 
     expansion_opt_t() :
       infernal_cinders_users( 1 ), engine_of_eradication_orbs( 4 ),
       void_stalkers_contract_targets( -1 ),
       lavish_feast_as_dps( true ), specter_of_betrayal_overlap( 1.0 ),
       pantheon_trinket_interval( timespan_t::from_seconds( 1.0 ) ),
-      pantheon_trinket_interval_stddev( 0 )
+      pantheon_trinket_interval_stddev( 0 ),
+      archimondes_hatred_reborn_damage( 1.0 )
     { }
   } expansion_opts;
 
@@ -1912,6 +1914,7 @@ struct sim_t : private sc_thread_t
   opts::map_list_t profileset_map;
   profileset::profilesets_t profilesets;
   std::vector<scale_metric_e> profileset_metric;
+  std::vector<std::string> profileset_output_data;
   bool profileset_enabled;
 
   sim_t( sim_t* parent = nullptr, int thread_index = 0 );
