@@ -369,7 +369,7 @@ bool profilesets_t::iterate( sim_t* parent )
       }
     }
 
-    const auto& set = m_profilesets[ m_work_index++ ];
+    auto& set = m_profilesets[ m_work_index++ ];
 
     m_control_lock.unlock();
 
@@ -419,6 +419,13 @@ bool profilesets_t::iterate( sim_t* parent )
         .stddev( data.std_dev )
         .iterations( progress.current_iterations );
     } );
+
+    // Optional override ouput data
+    if ( parent -> profileset_output_data.front() != "" ) {
+      range::for_each( parent -> profileset_output_data, [ & ]( std::string option ) {
+        save_output_data( set, player, option );
+      } );
+    }
 
     delete profile_sim;
   }
@@ -474,6 +481,16 @@ void profilesets_t::output( const sim_t& sim, js::JsonOutput& root ) const
     }
 
     obj[ "iterations" ] = as<uint64_t>( result.iterations() );
+
+    // Optional override ouput data
+    if ( sim.profileset_output_data.front() != "" ) {
+      // TODO: Use fetch_output_data to display only the saved ones
+      obj[ "race" ] = profileset -> race();
+      obj[ "talents" ] = profileset -> talents();
+      obj[ "artifact" ] = profileset -> artifact();
+      obj[ "crucible" ] = profileset -> crucible();
+      // obj[ "gear" ] = profileset -> gear();
+    }
 
     if ( profileset -> results() > 1 )
     {
@@ -683,6 +700,19 @@ void create_options( sim_t* sim )
 
     return true;
   } ) );
+  sim -> add_option( opt_func( "profileset_output_data", []( sim_t*             sim,
+                                                        const std::string&,
+                                                        const std::string& value ) {
+    sim -> profileset_output_data.clear();
+
+    auto split = util::string_split( value, "/:," );
+    for ( const auto& v : split )
+    {
+      sim -> profileset_output_data.push_back( v );
+    }
+
+    return true;
+  } ) );
 }
 
 statistical_data_t collect( const extended_sample_data_t& c )
@@ -725,6 +755,40 @@ statistical_data_t metric_data( const player_t* player, scale_metric_e metric )
     }
     default:                     return { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 };
   }
+}
+
+void save_output_data( std::unique_ptr<profile_set_t>& profileset, const player_t* player, std::string option )
+{
+  // TODO: Make an enum to proper use a switch instead of if/else
+  if ( option == "race") {
+    profileset -> race( player -> race_str );
+  } else if ( option == "talents" ) {
+    profileset -> talents( player -> talents_str );
+  } else if ( option == "artifact" ) {
+    profileset -> artifact( player -> artifact -> encode() );
+  } else if ( option == "crucible" ) {
+    profileset -> crucible( player -> artifact -> encode_crucible() );
+  } else if ( option == "gear" ) {
+    auto& items = player -> items;
+    std::map<std::string, std::map<std::string, unsigned>> saved_gear;
+    for ( size_t i = 0; i < items.size(); i++ )
+    {
+      auto& item = items[ i ];
+
+      std::map<std::string, unsigned> slot;
+      slot[ "item_id" ] = item.parsed.data.id;
+      slot[ "item_level" ] = item.parsed.item_level;
+      // slot[ "bonus_id" ] = item.parsed.bonus_id;
+
+      saved_gear[ item.slot_name() ] = slot;
+    }
+    profileset -> gear( saved_gear );
+  }
+}
+
+void fetch_output_data( const std::unique_ptr<profile_set_t>& profileset )
+{
+  // TODO: iterate over all saved output data then return all of them as an object
 }
 
 } /* Namespace profileset ends */

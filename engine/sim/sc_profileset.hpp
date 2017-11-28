@@ -114,8 +114,15 @@ class profile_set_t
   std::vector<profile_result_t> m_results;
   bool                          m_has_output;
 
+  // Optional override ouput data
+  std::string                                               m_race;
+  std::string                                               m_talents;
+  std::string                                               m_artifact;
+  std::string                                               m_crucible;
+  std::map<std::string, std::map<std::string, unsigned> > m_gear;
+
 public:
-  profile_set_t( const std::string& name, sim_control_t* opts, bool has_ouput );
+  profile_set_t( const std::string& name, sim_control_t* opts, bool has_output );
 
   ~profile_set_t();
 
@@ -133,6 +140,37 @@ public:
 
   bool has_output() const
   { return m_has_output; }
+
+  // Optional override ouput data
+  std::string race() const
+  { return m_race; }
+
+  profile_set_t& race( std::string v )
+  { m_race = v; return *this; }
+
+  std::string talents() const
+  { return m_talents; }
+
+  profile_set_t& talents( std::string v )
+  { m_talents = v; return *this; }
+
+  std::string artifact() const
+  { return m_artifact; }
+
+  profile_set_t& artifact( std::string v )
+  { m_artifact = v; return *this; }
+
+  std::string crucible() const
+  { return m_crucible; }
+
+  profile_set_t& crucible( std::string v )
+  { m_crucible = v; return *this; }
+
+  std::map<std::string, std::map<std::string, unsigned> > gear()
+  { return m_gear; }
+
+  profile_set_t& gear( std::map<std::string, std::map<std::string, unsigned>> v )
+  { m_gear = v; return *this; }
 };
 
 
@@ -210,6 +248,8 @@ void create_options( sim_t* sim );
 
 statistical_data_t collect( const extended_sample_data_t& c );
 statistical_data_t metric_data( const player_t* player, scale_metric_e metric );
+void save_output_data( std::unique_ptr<profile_set_t>& profileset, const player_t* player, std::string option );
+void fetch_output_data( const std::unique_ptr<profile_set_t>& profileset );
 
 } /* Namespace profileset ends */
 
