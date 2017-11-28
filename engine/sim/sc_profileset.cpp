@@ -835,8 +835,7 @@ void save_output_data( std::unique_ptr<profile_set_t>& profileset, const player_
 
 void fetch_output_data( const profile_output_data_t output_data, js::JsonOutput& ovr )
 {
-  // TODO: Fix race output
-  if ( true )
+  if ( output_data.race() != RACE_NONE )
   {
     ovr[ "race" ] = util::race_type_string( output_data.race() );
   }

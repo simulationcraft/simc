@@ -120,7 +120,7 @@ class profile_output_data_item_t
   std::array<unsigned, MAX_GEM_SLOTS>              m_relic_bonus_ilevel;
 
 public:
-  profile_output_data_item_t()
+  profile_output_data_item_t() : m_slot_name( nullptr ), m_item_id( 0 ), m_item_level( 0 ), m_enchant_id( 0 )
   { }
 
   const char* slot_name() const
@@ -187,7 +187,7 @@ class profile_output_data_t
   std::vector<profile_output_data_item_t> m_gear;
 
 public:
-  profile_output_data_t()
+  profile_output_data_t() : m_race ( RACE_NONE )
   { }
 
   race_e race() const
