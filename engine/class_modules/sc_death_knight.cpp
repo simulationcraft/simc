@@ -8419,9 +8419,9 @@ void death_knight_t::default_apl_unholy()
   def -> add_action( this, "Mind Freeze" );
   
   // Ogcd cooldowns
-  def -> add_action( "arcane_torrent,if=runic_power.deficit>20", "Racials, Items, and other ogcds" );
-  def -> add_action( "blood_fury" );
-  def -> add_action( "berserking" );
+  def -> add_action( "arcane_torrent,if=runic_power.deficit>20&(pet.valkyr_battlemaiden.active|!talent.dark_arbiter.enabled)", "Racials, Items, and other ogcds" );
+  def -> add_action( "blood_fury,if=pet.valkyr_battlemaiden.active|!talent.dark_arbiter.enabled" );
+  def -> add_action( "berserking,if=pet.valkyr_battlemaiden.active|!talent.dark_arbiter.enabled" );
   def -> add_action( "use_items" );
   def -> add_action( "use_item,name=feloiled_infernal_machine,"
                   "if=pet.valkyr_battlemaiden.active|!talent.dark_arbiter.enabled" );
