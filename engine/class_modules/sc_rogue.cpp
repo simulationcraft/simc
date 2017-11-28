@@ -7394,7 +7394,7 @@ void rogue_t::init_action_list()
     cds -> add_action( this, "Sprint", "if=!talent.death_from_above.enabled&equipped.thraxis_tricksy_treads&!variable.ss_useable" );
     cds -> add_action( "darkflight,if=equipped.thraxis_tricksy_treads&!variable.ss_useable&buff.sprint.down" );
     cds -> add_action( this, "Curse of the Dreadblades", "if=combo_points.deficit>=4&(buff.true_bearing.up|buff.adrenaline_rush.up|time_to_die<20)" );
-    
+
     // Finishers
     action_priority_list_t* finish = get_action_priority_list( "finish", "Finishers" );
     finish -> add_action( this, "Between the Eyes", "if=equipped.greenskins_waterlogged_wristcuffs&!buff.greenskins_waterlogged_wristcuffs.up", "BTE in mantle used to be DPS neutral but is a loss due to t21" );
