@@ -29,7 +29,7 @@ save=T21_Death_Knight_Frost.simc
 
 deathknight="T21_Death_Knight_Unholy"
 level=110
-race=blood_elf
+race=troll
 role=dps
 talents=3211011
 spec=unholy
