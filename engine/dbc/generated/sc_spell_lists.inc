@@ -946,7 +946,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       116670, // Vivify
            0,
     },
-    // Windwalker tree, 18 abilities
+    // Windwalker tree, 19 abilities
     {
       116768, // Blackout Kick!
       211432, // Combo Master
@@ -956,6 +956,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       116694, // Effuse
       113656, // Fists of Fury
       101545, // Flying Serpent Kick
+      252768, // Focus of Xuen
       213114, // Hidden Master's Forbidden Touch
       228287, // Mark of the Crane
       240672, // Master of Combinations

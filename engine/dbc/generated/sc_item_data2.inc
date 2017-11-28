@@ -26472,7 +26472,7 @@ static struct item_upgrade_t __upgrade_rule_data[] = {
   {   0,   0,    0,  0 },
 };
 
-#define ITEM_BONUS_TREE_SIZE (544)
+#define ITEM_BONUS_TREE_SIZE (545)
 
 // Item bonus trees, wow build 25549
 static struct item_bonus_tree_entry_t __item_bonus_tree_data[ITEM_BONUS_TREE_SIZE] = {
@@ -27019,6 +27019,7 @@ static struct item_bonus_tree_entry_t __item_bonus_tree_data[ITEM_BONUS_TREE_SIZ
   { 2669,  639, 43,    0,    0 },
   { 2968,  869,  0,    0, 3983 },
   { 3041,  929,  0,    0, 4213 },
+  { 4177,  608,  0,    0, 3630 },
   {    0,    0,  0,    0,    0 },
 };
 
@@ -30666,7 +30667,7 @@ static struct item_bonus_entry_t __item_bonus_data[ITEM_BONUS_SIZE] = {
   { 5578, 3569,  1,      3,      0,  0 },
   { 5582, 3570,  1,     60,      0,  0 },
   { 5583, 3570,  9,     13,      0,  1 },
-  { 5584, 3571,  1,     60,      0,  0 },
+  { 5584, 3571,  1,     90,      0,  0 },
   { 5585, 3572, 14,    860,      0,  0 },
   { 5586, 3573,  4,  13320,      5,  0 },
   { 5587, 3574,  4,  13321,      7,  0 },
@@ -30823,7 +30824,7 @@ static struct item_bonus_entry_t __item_bonus_data[ITEM_BONUS_SIZE] = {
   { 6273, 3995,  1,     50,      0,  0 },
   { 6274, 3996,  1,     55,      0,  0 },
   { 6275, 3997,  1,     60,      0,  0 },
-  { 6499, 4213,  1,     60,      0,  0 },
+  { 6499, 4213,  1,     90,      0,  0 },
   { 6500, 4213,  9,     13,      0,  1 },
   {    0,    0,  0,      0,      0,  0 },
 };
@@ -56229,7 +56230,7 @@ static struct item_bonus_node_entry_t __item_bonus_map_data[ITEM_BONUS_MAP_SIZE]
   { 80619, 151306,  463 },
   { 80622, 151635,  463 },
   { 80625, 151634,  463 },
-  { 80630, 152626,  628 },
+  { 80630, 152626,  677 },
   { 83659, 153544,  663 },
   { 83660, 153544,  660 },
   { 84469, 153691,  367 },
