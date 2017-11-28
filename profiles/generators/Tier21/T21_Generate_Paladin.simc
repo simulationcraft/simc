@@ -55,14 +55,14 @@ off_hand=truthguard,id=128866,gem_id=152043/152048/155846,relic_id=3612:1502/361
 
 save=T21_Paladin_Protection.simc
 
-Paladin="T21_Paladin_Protection_DPS"
+paladin="T21_Paladin_Protection_DPS"
 level=110
 race=blood_elf
 role=tank
 talents=2112132
 spec=protection
-artifact=49:0:0:0:0:1120:1:1121:4:1122:4:1123:4:1124:4:1125:4:1126:4:1127:4:1128:4:1129:4:1130:1:1131:1:1132:1:1133:1:1134:1:1135:1:1343:1:1378:1:1557:4:1558:1:1559:1:1560:25:1646:1
-cr1ucible=1739:3:1778:3:1126:1:1121:2
+artifact=49:0:0:0:0:1120:1:1121:4:1122:4:1123:4:1124:4:1125:4:1126:4:1127:4:1128:4:1129:4:1130:1:1131:1:1132:1:1133:1:1134:1:1135:1:1343:1:1378:1:1557:4:1558:1:1559:1:1560:24:1646:1
+crucible=1739:3:1778:3:1126:1:1121:2
 
 head=titansubjugators_visage,id=152014,bonus_id=3612/1502
 neck=chain_of_the_unmaker,id=152283,bonus_id=3612/1502,enchant=mark_of_the_hidden_satyr
@@ -71,8 +71,8 @@ back=radiant_lightbringer_cape,id=147158,bonus_id=3563/1512,enchant=binding_of_s
 chest=lights_vanguard_breastplate,id=152148,bonus_id=3612/1502
 wrist=varimathras_shattered_manacles,id=152281,bonus_id=3612/1502
 hands=radiant_lightbringer_gauntlets,id=147159,bonus_id=3563/1512
-waist=grond_father_girdle,id=152022,bonus_id=3612/1502
-legs=tyelca-ferren_marcuss_stature,id=137070,bonus_id=3630
+waist=grondfather_girdle,id=152022,bonus_id=3612/1502
+legs=tyelca_ferren_marcuss_stature,id=137070,bonus_id=3630
 feet=doomwalker_warboots,id=152009,bonus_id=3612/1502
 finger1=zealous_tormentors_ring,id=152284,bonus_id=3612/1502,enchant=binding_of_critical_strike
 finger2=seal_of_the_portalmaster,id=152063,bonus_id=3612/1502,enchant=binding_of_critical_strike
