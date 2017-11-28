@@ -58,7 +58,7 @@ save=T21_Mage_Arcane.simc
 
 mage="T21_Mage_Fire"
 level=110
-race=troll
+race=dwarf
 role=spell
 position=back
 talents=1022021
