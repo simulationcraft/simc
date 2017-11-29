@@ -19,6 +19,7 @@ struct sim_t;
 struct sim_control_t;
 struct player_t;
 class extended_sample_data_t;
+struct talent_data_t;
 
 namespace js {
 struct JsonOutput;
@@ -123,6 +124,10 @@ public:
   profile_output_data_item_t() : m_slot_name( nullptr ), m_item_id( 0 ), m_item_level( 0 ), m_enchant_id( 0 )
   { }
 
+  profile_output_data_item_t( const char* slot_str, unsigned id, unsigned item_level ) :
+    m_slot_name( slot_str ), m_item_id( id ), m_item_level( item_level )
+  { }
+
   const char* slot_name() const
   { return m_slot_name; }
 
@@ -141,10 +146,10 @@ public:
   profile_output_data_item_t& item_level( unsigned v )
   { m_item_level = v; return *this; }
 
-  std::vector<int> bonus_id() const
+  const std::vector<int>& bonus_id() const
   { return m_bonus_id; }
 
-  profile_output_data_item_t& bonus_id( std::vector<int> v )
+  profile_output_data_item_t& bonus_id( const std::vector<int>& v )
   { m_bonus_id = v; return *this; }
 
   unsigned enchant_id() const
@@ -153,28 +158,28 @@ public:
   profile_output_data_item_t& enchant_id( unsigned v )
   { m_enchant_id = v; return *this; }
 
-  std::array<int, MAX_GEM_SLOTS> gem_id() const
+  const std::array<int, MAX_GEM_SLOTS>& gem_id() const
   { return m_gem_id; }
 
-  profile_output_data_item_t& gem_id( std::array<int, MAX_GEM_SLOTS> v )
+  profile_output_data_item_t& gem_id( const std::array<int, MAX_GEM_SLOTS>& v )
   { m_gem_id = v; return *this; }
 
-  std::array<std::vector<unsigned>, MAX_GEM_SLOTS> relic_data()
+  const std::array<std::vector<unsigned>, MAX_GEM_SLOTS>& relic_data() const
   { return m_relic_data; }
 
-  profile_output_data_item_t& relic_data( std::array<std::vector<unsigned>, MAX_GEM_SLOTS> v )
+  profile_output_data_item_t& relic_data( const std::array<std::vector<unsigned>, MAX_GEM_SLOTS>& v )
   { m_relic_data = v; return *this; }
 
-  std::array<unsigned, MAX_GEM_SLOTS> relic_ilevel() const
+  const std::array<unsigned, MAX_GEM_SLOTS>& relic_ilevel() const
   { return m_relic_ilevel; }
 
-  profile_output_data_item_t& relic_ilevel( std::array<unsigned, MAX_GEM_SLOTS> v )
+  profile_output_data_item_t& relic_ilevel( const std::array<unsigned, MAX_GEM_SLOTS>& v )
   { m_relic_ilevel = v; return *this; }
 
-  std::array<unsigned, MAX_GEM_SLOTS> relic_bonus_ilevel() const
+  const std::array<unsigned, MAX_GEM_SLOTS>& relic_bonus_ilevel() const
   { return m_relic_bonus_ilevel; }
 
-  profile_output_data_item_t& relic_bonus_ilevel( std::array<unsigned, MAX_GEM_SLOTS> v )
+  profile_output_data_item_t& relic_bonus_ilevel( const std::array<unsigned, MAX_GEM_SLOTS>& v )
   { m_relic_bonus_ilevel = v; return *this; }
 };
 
@@ -196,38 +201,38 @@ public:
   profile_output_data_t& race( race_e v )
   { m_race = v; return *this; }
 
-  std::vector<talent_data_t*> talents() const
+  const std::vector<talent_data_t*>& talents() const
   { return m_talents; }
 
-  profile_output_data_t& talents( std::vector<talent_data_t*> v )
+  profile_output_data_t& talents( const std::vector<talent_data_t*>& v )
   { m_talents = v; return *this; }
 
-  std::string artifact() const
+  const std::string& artifact() const
   { return m_artifact; }
 
-  profile_output_data_t& artifact( std::string v )
+  profile_output_data_t& artifact( const std::string& v )
   { m_artifact = v; return *this; }
 
-  std::string crucible() const
+  const std::string& crucible() const
   { return m_crucible; }
 
-  profile_output_data_t& crucible( std::string v )
+  profile_output_data_t& crucible( const std::string& v )
   { m_crucible = v; return *this; }
 
-  std::vector<profile_output_data_item_t> gear() const
+  const std::vector<profile_output_data_item_t>& gear() const
   { return m_gear; }
 
-  profile_output_data_t& gear( std::vector<profile_output_data_item_t> v )
+  profile_output_data_t& gear( const std::vector<profile_output_data_item_t>& v )
   { m_gear = v; return *this; }
 };
 
 class profile_set_t
 {
-  std::string                   m_name;
-  sim_control_t*                m_options;
-  bool                          m_has_output;
-  std::vector<profile_result_t> m_results;
-  profile_output_data_t         m_output_data;
+  std::string                            m_name;
+  sim_control_t*                         m_options;
+  bool                                   m_has_output;
+  std::vector<profile_result_t>          m_results;
+  std::unique_ptr<profile_output_data_t> m_output_data;
 
 public:
   profile_set_t( const std::string& name, sim_control_t* opts, bool has_output );
@@ -250,10 +255,14 @@ public:
   { return m_results.size(); }
 
   profile_output_data_t& output_data()
-  { return m_output_data; }
+  {
+    if ( ! m_output_data )
+    {
+      m_output_data = std::unique_ptr<profile_output_data_t>( new profile_output_data_t() );
+    }
 
-  profile_set_t& output_data( profile_output_data_t& v )
-  { m_output_data = v; return *this; }
+    return *m_output_data;
+  }
 };
 
 

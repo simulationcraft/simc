@@ -139,7 +139,7 @@ sim_control_t* profilesets_t::create_sim_options( const sim_control_t*          
 }
 
 profile_set_t::profile_set_t( const std::string& name, sim_control_t* opts, bool has_output ) :
-  m_name( name ), m_options( opts ), m_has_output( has_output )
+  m_name( name ), m_options( opts ), m_has_output( has_output ), m_output_data( nullptr )
 {
 }
 
@@ -421,10 +421,9 @@ bool profilesets_t::iterate( sim_t* parent )
     } );
 
     // Optional override ouput data
-    if ( parent -> profileset_output_data.front() != "" ) {
-      set -> output_data ( profile_output_data_t() );
+    if ( ! parent -> profileset_output_data.empty() ) {
       const auto parent_player = parent -> player_no_pet_list.data().front();
-      range::for_each( parent -> profileset_output_data, [ & ]( std::string option ) {
+      range::for_each( parent -> profileset_output_data, [ & ]( const std::string& option ) {
         save_output_data( set, parent_player, player, option );
       } );
     }
@@ -816,12 +815,12 @@ void save_output_data( std::unique_ptr<profile_set_t>& profileset, const player_
         continue;
       }
       const auto& parent_item = parent_items[ slot ];
-      if ( parent_item.parsed.data.id != item.parsed.data.id) {
-        auto saved_item = profile_output_data_item_t();
-        saved_item.slot_name( item.slot_name() );
-        saved_item.item_id( item.parsed.data.id );
-        saved_item.item_level( item.item_level() );
-        // saved_item.bonus_id( item.bonus_id );
+      if ( parent_item.parsed.data.id != item.parsed.data.id ) {
+        profile_output_data_item_t saved_item {
+          item.slot_name(), item.parsed.data.id, item.item_level()
+        };
+
+        // saved_item.bonus_id( item.parsed.bonus_id );
 
         saved_gear.push_back( saved_item );
       }
