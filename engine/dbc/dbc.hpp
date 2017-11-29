@@ -299,8 +299,8 @@ namespace hotfix
 
     bool valid() const override
     {
-      return orig_value_ != -std::numeric_limits<double>::max() &&
-             util::round( orig_value_, 5 ) != util::round( dbc_value_, 5 );
+      return orig_value_ == -std::numeric_limits<double>::max() ||
+             util::round( orig_value_, 5 ) == util::round( dbc_value_, 5 );
     }
 
     virtual void apply() override
