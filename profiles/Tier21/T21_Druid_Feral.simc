@@ -115,7 +115,7 @@ legs=bearmantle_legguards,id=152128,bonus_id=3612/1502
 feet=vicious_flamepaws,id=151983,bonus_id=3612/1502
 finger1=sullied_seal_of_the_pantheon,id=151972,bonus_id=3612/1502,enchant=binding_of_versatility
 finger2=soul_of_the_archdruid,id=151636,bonus_id=3630,gem_id=130247,enchant=binding_of_versatility
-trinket1=golganneths_vitality,id=154174,bonus_id=4213
+trinket1=golganneths_vitality,id=154174,bonus_id=3997
 trinket2=seeping_scourgewing,id=151964,bonus_id=3612/1502
 main_hand=fangs_of_ashamane,id=128860,bonus_id=723,gem_id=155847/152041/155854/0,relic_id=3612:1512/3612:1502/3612:1512/0
 off_hand=fangs_of_ashamane,id=128859,gem_id=0/0/0/0,relic_id=0/0

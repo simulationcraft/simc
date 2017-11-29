@@ -52,7 +52,7 @@ chest=vest_of_waning_life,id=151982,bonus_id=3612/1502
 wrists=sinuous_kerapteron_bindings,id=152087,bonus_id=3612/1502
 waist=belt_of_fractured_sanity,id=151991,bonus_id=3612/1502
 neck=vulcanarcore_pendant,id=151965,bonus_id=3612/1502,enchant=mark_of_the_trained_soldier
-trinket1=golganneths_vitality,id=154174,bonus_id=4213
+trinket1=golganneths_vitality,id=154174,bonus_id=3997
 trinket2=seeping_scourgewing,id=151964,bonus_id=3612/1502
 
 save=T21_Druid_Feral.simc

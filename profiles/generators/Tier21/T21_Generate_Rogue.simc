@@ -21,7 +21,7 @@ feet=vicious_flamepaws,id=151983,bonus_id=3612/1502
 finger1=band_of_the_sargerite_smith,id=152064,bonus_id=3612/1502,enchant=binding_of_mastery
 finger2=sullied_seal_of_the_pantheon,id=151972,bonus_id=3612/1502,enchant=binding_of_mastery
 trinket1=shadowsinged_fang,id=151968,bonus_id=3612/1502
-trinket2=golganneths_vitality,id=154174,bonus_id=4213
+trinket2=golganneths_vitality,id=154174,bonus_id=3997
 main_hand=the_kingslayers,id=128870,bonus_id=741,gem_id=152055/152293/152092,relic_id=3612:1502/3612:1502/3612:1502
 off_hand=the_kingslayers,id=128869
 
@@ -51,7 +51,7 @@ feet=duskwalkers_footpads,id=137030,bonus_id=3630
 finger1=band_of_the_sargerite_smith,id=152064,bonus_id=3612/1502,enchant=binding_of_critical_strike
 finger2=sullied_seal_of_the_pantheon,id=151972,bonus_id=3612/1502,enchant=binding_of_critical_strike
 trinket1=shadowsinged_fang,id=151968,bonus_id=3612/1502
-trinket2=golganneths_vitality,id=154174,bonus_id=4213
+trinket2=golganneths_vitality,id=154174,bonus_id=3997
 main_hand=the_kingslayers,id=128870,bonus_id=741,gem_id=152054/155855/152092,relic_id=3612:1502/3612:1512/3612:1502
 off_hand=the_kingslayers,id=128869
 
@@ -82,7 +82,7 @@ feet=depraved_machinists_footpads,id=152412,bonus_id=3612/1502
 finger1=zealous_tormentors_ring,id=152284,bonus_id=3612/1502,enchant=binding_of_haste
 finger2=seal_of_the_portalmaster,id=152063,bonus_id=3612/1502,enchant=binding_of_haste
 trinket1=convergence_of_fates,id=140806,bonus_id=3518/1502
-trinket2=golganneths_vitality,id=154174,bonus_id=4213
+trinket2=golganneths_vitality,id=154174,bonus_id=3997
 main_hand=the_dreadblades,id=128872,bonus_id=742,gem_id=152028/155855/155853,relic_id=3612:1502/3612:1512/3612:1512
 off_hand=the_dreadblades,id=134552
 
@@ -113,7 +113,7 @@ feet=vicious_flamepaws,id=151983,bonus_id=3612/1502
 finger1=insignia_of_ravenholdt,id=137049,bonus_id=3630,gem_id=151585,enchant=binding_of_versatility
 finger2=sullied_seal_of_the_pantheon,id=151972,bonus_id=3612/1502,enchant=binding_of_versatility
 trinket1=gorshalachs_legacy,id=152093,bonus_id=3612/1502
-trinket2=golganneths_vitality,id=154174,bonus_id=4213
+trinket2=golganneths_vitality,id=154174,bonus_id=3997
 main_hand=the_dreadblades,id=128872,bonus_id=742,gem_id=152028/155855/155853,relic_id=3612:1502/3612:1512/3612:1512
 off_hand=the_dreadblades,id=134552
 
@@ -143,7 +143,7 @@ feet=lifebearing_footpads,id=151981,bonus_id=3612/1502
 finger1=insignia_of_ravenholdt,id=137049,bonus_id=3630,gem_id=151580,enchant=binding_of_critical_strike
 finger2=band_of_the_sargerite_smith,id=152064,bonus_id=3612/1502,enchant=binding_of_critical_strike
 trinket1=seeping_scourgewing,id=151964,bonus_id=3612/1502
-trinket2=golganneths_vitality,id=154174,bonus_id=4213
+trinket2=golganneths_vitality,id=154174,bonus_id=3997
 main_hand=fangs_of_the_devourer,id=128476,bonus_id=743,gem_id=155848/152057/155848,relic_id=3612:1512/3612:1502/3612:1512
 off_hand=fangs_of_the_devourer,id=128479
 
@@ -173,7 +173,7 @@ feet=lifebearing_footpads,id=151981,bonus_id=3612/1502
 finger1=insignia_of_ravenholdt,id=137049,bonus_id=3630,gem_id=151580,enchant=binding_of_critical_strike
 finger2=soul_of_the_shadowblade,id=150936,bonus_id=3630,gem_id=151580,enchant=binding_of_critical_strike
 trinket1=seeping_scourgewing,id=151964,bonus_id=3612/1502
-trinket2=golganneths_vitality,id=154174,bonus_id=4213
+trinket2=golganneths_vitality,id=154174,bonus_id=3997
 main_hand=fangs_of_the_devourer,id=128476,bonus_id=743,gem_id=155848/152057/155848,relic_id=3612:1512/3612:1502/3612:1512
 off_hand=fangs_of_the_devourer,id=128479
 

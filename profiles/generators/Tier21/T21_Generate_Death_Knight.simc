@@ -48,7 +48,7 @@ legs=dreadwake_legplates,id=152116,bonus_id=3612/1502
 feet=burning_coven_sabatons,id=152010,bonus_id=3612/1502
 finger1=loop_of_the_lifebinder,id=152688,bonus_id=3612/1502,enchant=binding_of_mastery
 finger2=sullied_seal_of_the_pantheon,id=151972,bonus_id=3612/1502,enchant=binding_of_haste
-trinket1=khazgoroths_courage,id=154176,bonus_id=4213
+trinket1=khazgoroths_courage,id=154176,bonus_id=3997
 trinket2=seeping_scourgewing,id=151964,bonus_id=3612/1502
 main_hand=apocalypse,id=128403,gem_id=155849/152056/155847,relic_id=3612:1512/3612:1502/3612:1512,enchant=rune_of_the_fallen_crusader
 
@@ -77,7 +77,7 @@ legs=dreadwake_legplates,id=152116,bonus_id=3612/1502
 feet=doomwalker_warboots,id=152009,bonus_id=3612/1502
 finger1=zealous_tormentors_ring,id=152284,bonus_id=3612/1502,enchant=binding_of_haste
 finger2=band_of_the_sargerite_smith,id=152064,bonus_id=3612/1502,enchant=binding_of_haste
-trinket1=aggramars_conviction,id=154173,bonus_id=4213
+trinket1=aggramars_conviction,id=154173,bonus_id=3997
 trinket2=astral_alchemist_stone,id=151607,bonus_id=3609/601/3608
 main_hand=maw_of_the_damned,id=128402,enchant=rune_of_the_fallen_crusader,gem_id=155847/155855/155852,relic_id=3612:1512/3612:1512/3612:1512
 

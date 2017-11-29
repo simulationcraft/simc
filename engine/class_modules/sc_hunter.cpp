@@ -6611,10 +6611,10 @@ void hunter_t::apl_surv()
   fillers -> add_talent( this, "A Murder Of Crows", "if=refreshable|!ticking" );
   fillers -> add_talent( this, "Caltrops", "if=refreshable|!ticking" );
   fillers -> add_action( this, "Explosive Trap" );
-  fillers -> add_talent( this, "Butchery", "if=variable.frizzosEquipped&dot.lacerate.refreshable&(focus+40>(50-((cooldown.flanking_strike.remains%gcd)*(focus.regen*gcd))))" );
-  fillers -> add_action( this, "Carve", "if=variable.frizzosEquipped&dot.lacerate.refreshable&(focus+40>(50-((cooldown.flanking_strike.remains%gcd)*(focus.regen*gcd))))" );
+  fillers -> add_talent( this, "Butchery", "if=variable.frizzosEquipped&dot.lacerate.refreshable&(focus>((50+40)-((cooldown.flanking_strike.remains%gcd)*(focus.regen*gcd))))" );
+  fillers -> add_action( this, "Carve", "if=variable.frizzosEquipped&dot.lacerate.refreshable&(focus>((50+40)-((cooldown.flanking_strike.remains%gcd)*(focus.regen*gcd))))" );
   fillers -> add_action( this, "Flanking Strike" );
-  fillers -> add_action( this, "Raptor Strike", "if=(variable.mokTalented&buff.moknathal_tactics.remains<gcd*4)|(focus>((25-focus.regen*gcd)+55))" );
+  fillers -> add_action( this, "Raptor Strike", "if=(variable.mokTalented&buff.moknathal_tactics.remains<gcd*4)|(focus>((75-focus.regen*gcd)))" );
 
   //Bite Trigger Call List
   biteTrigger -> add_action(this, "Lacerate", "if=remains<14&set_bonus.tier20_4pc&cooldown.mongoose_bite.remains<gcd*3" );
@@ -6625,7 +6625,7 @@ void hunter_t::apl_surv()
   bitePhase -> add_action( this, "Flanking Strike", "if=buff.mongoose_fury.remains>(gcd*(cooldown.mongoose_bite.charges+1))" );
   bitePhase -> add_action( this, "Mongoose Bite", "if=buff.mongoose_fury.up" );
   bitePhase -> add_action( this, "Fury of the Eagle", "if=(!variable.mokTalented|(buff.moknathal_tactics.remains>(gcd*(8%3))))&!buff.aspect_of_the_eagle.up,interrupt_immediate=1,interrupt_if=cooldown.mongoose_bite.charges=3|(ticks_remain<=1&buff.moknathal_tactics.remains<0.7)" );
-  bitePhase -> add_action( this, "Lacerate", "if=dot.lacerate.refreshable&(focus+35>(45-((cooldown.flanking_strike.remains%gcd)*(focus.regen*gcd))))" );
+  bitePhase -> add_action( this, "Lacerate", "if=dot.lacerate.refreshable&(focus>((50+35)-((cooldown.flanking_strike.remains%gcd)*(focus.regen*gcd))))" );
   bitePhase -> add_action( this, "Raptor Strike", "if=buff.t21_2p_exposed_flank.up" );
   bitePhase -> add_talent( this, "Spitting Cobra" );
   bitePhase -> add_talent( this, "Dragonsfire Grenade" );
