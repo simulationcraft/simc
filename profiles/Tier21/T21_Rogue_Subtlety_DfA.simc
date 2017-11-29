@@ -4,7 +4,7 @@ level=110
 race=dwarf
 role=attack
 position=back
-talents=3110013
+talents=1310013
 artifact=17:0:0:0:0:851:1:852:4:853:4:854:4:855:4:856:4:857:4:858:4:859:4:860:4:861:1:862:1:863:1:864:1:865:1:866:1:1349:1:1386:1:1585:4:1586:1:1587:1:1588:24:1653:1
 crucible=1739:1780:858/1739:1780:858/1739:1780:858
 
@@ -47,7 +47,7 @@ actions+=/nightblade,if=target.time_to_die>6&remains<gcd.max&combo_points>=4-(ti
 actions+=/call_action_list,name=stealth_als,if=talent.dark_shadow.enabled&combo_points.deficit>=2+buff.shadow_blades.up&(dot.nightblade.remains>4+talent.subterfuge.enabled|cooldown.shadow_dance.charges_fractional>=1.9&(!equipped.denial_of_the_halfgiants|time>10))
 actions+=/call_action_list,name=stealth_als,if=!talent.dark_shadow.enabled&(combo_points.deficit>=2+buff.shadow_blades.up|cooldown.shadow_dance.charges_fractional>=1.9+talent.enveloping_shadows.enabled)
 actions+=/call_action_list,name=finish,if=combo_points>=5+3*(buff.the_first_of_the_dead.up&talent.anticipation.enabled)+(talent.deeper_stratagem.enabled&!buff.shadow_blades.up&(mantle_duration=0|set_bonus.tier20_4pc)&(!buff.the_first_of_the_dead.up|variable.dsh_dfa))|(combo_points>=4&combo_points.deficit<=2&spell_targets.shuriken_storm>=3&spell_targets.shuriken_storm<=4)|(target.time_to_die<=1&combo_points>=3)
-actions+=/call_action_list,name=finish,if=variable.dsh_dfa&cooldown.symbols_of_death.remains<=1&combo_points>=2&equipped.the_first_of_the_dead&spell_targets.shuriken_storm<2
+actions+=/call_action_list,name=finish,if=variable.dsh_dfa&buff.the_first_of_the_dead.remains>1&combo_points>=3&spell_targets.shuriken_storm<2
 actions+=/wait,sec=time_to_sht.4,if=combo_points=5&time_to_sht.4<=1&energy.deficit>=30
 actions+=/wait,sec=time_to_sht.5,if=combo_points=5&time_to_sht.5<=1&energy.deficit>=30
 actions+=/call_action_list,name=build,if=energy.deficit<=variable.stealth_threshold
@@ -69,7 +69,7 @@ actions.cds+=/marked_for_death,if=raid_event.adds.in>40&!stealthed.all&combo_poi
 actions.cds+=/shadow_blades,if=(time>10&combo_points.deficit>=2+stealthed.all-equipped.mantle_of_the_master_assassin)|(time<10&(!talent.marked_for_death.enabled|combo_points.deficit>=3|dot.nightblade.ticking))
 actions.cds+=/goremaws_bite,if=!stealthed.all&cooldown.shadow_dance.charges_fractional<=variable.shd_fractional&((combo_points.deficit>=4-(time<10)*2&energy.deficit>50+talent.vigor.enabled*25-(time>=10)*15)|(combo_points.deficit>=1&target.time_to_die<8))
 actions.cds+=/pool_resource,for_next=1,extra_amount=55-talent.shadow_focus.enabled*10
-actions.cds+=/vanish,if=energy>=55-talent.shadow_focus.enabled*10&variable.dsh_dfa&(!equipped.mantle_of_the_master_assassin|buff.symbols_of_death.up)&cooldown.shadow_dance.charges_fractional<=variable.shd_fractional&!buff.shadow_dance.up&!buff.stealth.up&mantle_duration=0&(dot.nightblade.remains>=cooldown.death_from_above.remains+6|target.time_to_die-dot.nightblade.remains<=6)&cooldown.death_from_above.remains<=1|target.time_to_die<=7
+actions.cds+=/vanish,if=energy>=55-talent.shadow_focus.enabled*10&variable.dsh_dfa&(!equipped.mantle_of_the_master_assassin|buff.symbols_of_death.up)&cooldown.shadow_dance.charges_fractional<=variable.shd_fractional&!buff.shadow_dance.up&!buff.stealth.up&mantle_duration=0&(dot.nightblade.remains>=cooldown.death_from_above.remains+6&!(buff.the_first_of_the_dead.remains>1&combo_points>=5)|target.time_to_die-dot.nightblade.remains<=6)&cooldown.death_from_above.remains<=1|target.time_to_die<=7
 actions.cds+=/shadow_dance,if=!buff.shadow_dance.up&target.time_to_die<=4+talent.subterfuge.enabled
 
 # Finishers
@@ -103,30 +103,29 @@ actions.stealthed+=/shadowstrike
 
 head=cavalier_hat_of_the_dashing_scoundrel,id=152163,bonus_id=3612/1502
 neck=vulcanarcore_pendant,id=151965,bonus_id=3612/1502,enchant=mark_of_the_trained_soldier
-shoulders=shoulderpads_of_the_dashing_scoundrel,id=152165,bonus_id=3612/1502
+shoulders=mantle_of_the_master_assassin,id=144236,bonus_id=3630
 back=cloak_of_the_dashing_scoundrel,id=152161,bonus_id=3612/1502,enchant=binding_of_agility
-chest=fanged_slayers_chestguard,id=147169,bonus_id=1512/3563
+chest=vest_of_the_dashing_scoundrel,id=152160,bonus_id=3612/1502
 wrists=fiendish_logisticians_wristwraps,id=151992,bonus_id=3612/1502
-hands=fanged_slayers_handguards,id=147171,bonus_id=1512/3563
+hands=the_first_of_the_dead,id=151818,bonus_id=3630
 waist=belt_of_fractured_sanity,id=151991,bonus_id=3612/1502
 legs=pants_of_the_dashing_scoundrel,id=152164,bonus_id=3612/1502
 feet=lifebearing_footpads,id=151981,bonus_id=3612/1502
-finger1=insignia_of_ravenholdt,id=137049,bonus_id=3630,gem_id=151580,enchant=binding_of_critical_strike
-finger2=soul_of_the_shadowblade,id=150936,bonus_id=3630,gem_id=151580,enchant=binding_of_critical_strike
+finger1=sullied_seal_of_the_pantheon,id=151972,bonus_id=3612/1502,enchant=binding_of_critical_strike
+finger2=band_of_the_sargerite_smith,id=152064,bonus_id=3612/1502,enchant=binding_of_critical_strike
 trinket1=seeping_scourgewing,id=151964,bonus_id=3612/1502
 trinket2=golganneths_vitality,id=154174,bonus_id=3997
 main_hand=fangs_of_the_devourer,id=128476,bonus_id=743,gem_id=155848/152057/155848,relic_id=3612:1512/3612:1502/3612:1512
 off_hand=fangs_of_the_devourer,id=128479
 
 # Gear Summary
-# gear_ilvl=968.25
-# gear_agility=35412
-# gear_stamina=57463
-# gear_crit_rating=15428
-# gear_haste_rating=4226
-# gear_mastery_rating=5459
-# gear_versatility_rating=7427
-# gear_armor=2847
-# set_bonus=tier20_2pc=1
+# gear_ilvl=972.63
+# gear_agility=39603
+# gear_stamina=61170
+# gear_crit_rating=11689
+# gear_haste_rating=1054
+# gear_mastery_rating=11380
+# gear_versatility_rating=8537
+# gear_armor=3013
 # set_bonus=tier21_2pc=1
 # set_bonus=tier21_4pc=1
