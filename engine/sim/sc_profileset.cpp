@@ -507,7 +507,7 @@ void profilesets_t::output( const sim_t& sim, js::JsonOutput& root ) const
     }
 
     // Optional override ouput data
-    if ( sim.profileset_output_data.front() != "" ) {
+    if ( ! sim.profileset_output_data.empty() ) {
       const auto& output_data = profileset -> output_data();
       // TODO: Create the overrides object only if there is at least one override registered
       auto ovr = obj[ "overrides" ];
