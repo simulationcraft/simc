@@ -310,27 +310,14 @@ struct hotfix_sorter_t
   }
 };
 
-bool hotfix::register_hotfix( const std::string& group,
-                              const std::string& tag,
-                              const std::string& note,
-                              unsigned           flags )
-{
-  if ( std::find_if( hotfixes_.begin(), hotfixes_.end(), hotfix_comparator_t( tag, note ) ) !=
-       hotfixes_.end() )
-  {
-    return false;
-  }
-
-  hotfixes_.push_back( new hotfix_entry_t( group, tag, note, flags ) );
-
-  return true;
-}
-
 void hotfix::apply()
 {
   for ( size_t i = 0; i < hotfixes_.size(); ++i )
   {
-    hotfixes_[ i ] -> apply();
+    if ( hotfixes_[ i ] -> valid() )
+    {
+      hotfixes_[ i ] -> apply();
+    }
   }
 }
 
@@ -576,8 +563,7 @@ void spell_hotfix_entry_t::apply_hotfix( bool ptr )
   // Record original DBC value before overwriting it
   dbc_value_ = s -> get_field( field_name_ );
 
-  if ( orig_value_ != -std::numeric_limits<double>::max() &&
-       util::round( orig_value_, 5 ) != util::round( dbc_value_, 5 ) )
+  if ( ! valid() )
   {
     std::cerr << "[" << tag_ << "]: " << ( ptr ? "PTR-" : "" ) << "Hotfix \"" << note_ << "\" for spell \"" << s -> name_cstr() <<
                  "\" does not match verification value.";
@@ -585,6 +571,7 @@ void spell_hotfix_entry_t::apply_hotfix( bool ptr )
     std::cerr << ", DBC: " << util::round( dbc_value_, 5 );
     std::cerr << ", Verify: " << util::round( orig_value_, 5 );
     std::cerr << std::endl;
+    return;
   }
 
   do_hotfix( this, s );
@@ -602,8 +589,7 @@ void effect_hotfix_entry_t::apply_hotfix( bool ptr )
   if ( !e ) { return; }
 
   dbc_value_ = e -> get_field( field_name_ );
-  if ( orig_value_ != -std::numeric_limits<double>::max() &&
-       util::round( orig_value_, 5 ) != util::round( dbc_value_, 5 ) )
+  if ( ! valid() )
   {
     std::cerr << "[" << tag_ << "]: " << ( ptr ? "PTR-" : "" ) << "Hotfix \"" << note_ << "\" for spell \"" << s -> name_cstr() <<
                  "\" effect #" << ( e -> index() + 1 ) << " does not match verification value.";
@@ -611,6 +597,7 @@ void effect_hotfix_entry_t::apply_hotfix( bool ptr )
     std::cerr << ", DBC: " << std::setprecision( 5 ) << util::round( dbc_value_, 5 );
     std::cerr << ", Verify: " << std::setprecision( 5 ) << util::round( orig_value_, 5 );
     std::cerr << std::endl;
+    return;
   }
 
   do_hotfix( this, e );
@@ -628,8 +615,7 @@ void power_hotfix_entry_t::apply_hotfix( bool ptr )
   if ( !p ) { return; }
 
   dbc_value_ = p -> get_field( field_name_ );
-  if ( orig_value_ != -std::numeric_limits<double>::max() &&
-       util::round( orig_value_, 5 ) != util::round( dbc_value_, 5 ) )
+  if ( ! valid() )
   {
     std::cerr << "[" << tag_ << "]: " << ( ptr ? "PTR-" : "" ) << "Hotfix \"" << note_
       << "\" for spell power " << p -> id() << " (spell " << s -> name_cstr() << ") does not match verification value.";
@@ -637,6 +623,7 @@ void power_hotfix_entry_t::apply_hotfix( bool ptr )
     std::cerr << ", DBC: " << std::setprecision( 5 ) << util::round( dbc_value_, 5 );
     std::cerr << ", Verify: " << std::setprecision( 5 ) << util::round( orig_value_, 5 );
     std::cerr << std::endl;
+    return;
   }
 
   do_hotfix( this, p );

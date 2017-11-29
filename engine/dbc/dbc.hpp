@@ -270,6 +270,8 @@ namespace hotfix
 
     virtual ~hotfix_entry_t() { }
 
+    virtual bool valid() const = 0;
+
     virtual void apply() { }
     virtual std::string to_str() const;
   };
@@ -294,6 +296,12 @@ namespace hotfix
       id_( id ), field_name_(), operation_( HOTFIX_NONE ), modifier_( 0 ),
       orig_value_( -std::numeric_limits<double>::max() ), dbc_value_( 0 ), hotfix_value_( 0 )
     { }
+
+    bool valid() const override
+    {
+      return orig_value_ != -std::numeric_limits<double>::max() &&
+             util::round( orig_value_, 5 ) != util::round( dbc_value_, 5 );
+    }
 
     virtual void apply() override
     {
@@ -362,7 +370,6 @@ namespace hotfix
     void apply_hotfix( bool ptr ) override;
   };
 
-  bool register_hotfix( const std::string&, const std::string&, const std::string&, unsigned = HOTFIX_FLAG_DEFAULT );
   spell_hotfix_entry_t& register_spell( const std::string&, const std::string&, const std::string&, unsigned, unsigned = hotfix::HOTFIX_FLAG_DEFAULT );
   effect_hotfix_entry_t& register_effect( const std::string&, const std::string&, const std::string&, unsigned, unsigned = hotfix::HOTFIX_FLAG_DEFAULT );
   power_hotfix_entry_t& register_power( const std::string&, const std::string&, const std::string&, unsigned, unsigned = hotfix::HOTFIX_FLAG_DEFAULT );
