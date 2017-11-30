@@ -8678,8 +8678,8 @@ double druid_t::composite_player_target_multiplier( player_t* target, school_e s
   if ( dbc::is_school( school, SCHOOL_ARCANE ) &&
        ( dbc::is_school( school, SCHOOL_NATURE ) || dbc::is_school( school, SCHOOL_ASTRAL ) ) )
   {
-    m *= 1.0 + td -> debuff.circadian_invocation_arcane -> stack_value()
-             + td -> debuff.circadian_invocation_nature -> stack_value();
+      m *= 1.0 + td->debuff.circadian_invocation_arcane->stack_value();
+      m *= 1.0 + td->debuff.circadian_invocation_nature->stack_value();
   }
   else if ( dbc::is_school( school, SCHOOL_ARCANE ) )
   {
