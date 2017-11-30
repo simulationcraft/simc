@@ -2928,22 +2928,23 @@ struct agony_t: public warlock_spell_t
       }
     }
 
-    if ( p() -> sets -> has_set_bonus( WARLOCK_AFFLICTION, T21, B2 ) )
+    if ( rng().roll( p()->sets->set( WARLOCK_AFFLICTION, T21, B2 )->proc_chance() ) )
     {
-      if ( rng().roll( p() -> sets -> set( WARLOCK_AFFLICTION, T21, B2 ) -> proc_chance() ) )
+      // Okay, we got a proc
+      warlock_td_t* target_data = td( d->state->target );
+      for ( int i = 0; i < MAX_UAS; i++ )
       {
-        // Okay, we got a proc
-        warlock_td_t* target_data = td( d -> state -> target );
-        for ( int i = 0; i < MAX_UAS; i++ ) {
-          if ( target_data -> dots_unstable_affliction[i] -> is_ticking() ) {
-            target_data -> dots_unstable_affliction[i] -> extend_duration(
-              timespan_t::from_millis( p() -> sets -> set( WARLOCK_AFFLICTION, T21, B2 ) -> effectN( 1 ).base_value() ),
-              true
-            );
-          }
+        auto current_ua = target_data->dots_unstable_affliction[i];
+
+        if ( current_ua->is_ticking() )
+        {
+          timespan_t tick_time = current_ua->current_action->tick_time( current_ua->state );
+          double added_duration_multiplier = std::ceil( p()->sets->set( WARLOCK_AFFLICTION, T21, B2 )->effectN( 1 ).time_value() / tick_time );
+
+          current_ua->extend_duration( tick_time * added_duration_multiplier, true );
         }
-        p() -> procs.affliction_t21_2pc -> occur();
       }
+      p()->procs.affliction_t21_2pc->occur();
     }
 
     warlock_spell_t::tick( d );
