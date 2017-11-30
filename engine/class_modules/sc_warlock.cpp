@@ -3013,6 +3013,8 @@ struct unstable_affliction_t: public warlock_spell_t
     {
       warlock_spell_t::init();
 
+      update_flags &= ~STATE_HASTE;
+
       if ( p() -> affliction_trinket )
       {
         const spell_data_t* data = p() -> affliction_trinket -> driver();
