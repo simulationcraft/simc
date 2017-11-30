@@ -5614,7 +5614,7 @@ struct priest_module_t final : public module_t
   }
   void register_hotfixes() const override
   {
-    
+    /** November 28th 2017 hotfixes
      hotfix::register_effect( "Priest", "2017-11-22", "Void Eruption Damage increased by 700%", 343748 )
        .field( "sp_coefficient" )
        .operation( hotfix::HOTFIX_SET )
@@ -5656,7 +5656,7 @@ struct priest_module_t final : public module_t
        .operation( hotfix::HOTFIX_SET )
        .modifier( 0.3649 )
        .verification_value( 0.38 );
-     
+     **/
   }
 
   void combat_begin( sim_t* ) const override
