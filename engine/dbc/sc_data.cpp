@@ -312,13 +312,7 @@ struct hotfix_sorter_t
 
 void hotfix::apply()
 {
-  for ( size_t i = 0; i < hotfixes_.size(); ++i )
-  {
-    if ( hotfixes_[ i ] -> valid() )
-    {
-      hotfixes_[ i ] -> apply();
-    }
-  }
+  range::for_each( hotfixes_, []( hotfix_entry_t* entry ) { entry -> apply(); } );
 }
 
 // Return a hotfixed spell if available, otherwise return the original dbc-based spell
