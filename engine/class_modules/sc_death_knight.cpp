@@ -815,6 +815,7 @@ public:
     proc_t* ready_rune;
     proc_t* km_natural_expiration;
     proc_t* t19_2pc_unholy;
+    proc_t* shattering_strikes;
   } procs;
 
   // Legendaries
@@ -5460,6 +5461,7 @@ struct frost_strike_t : public death_knight_melee_attack_t
     {
       tdata -> debuff.razorice -> expire();
       shattered = true;
+      p() -> procs.shattering_strikes -> occur();
     }
         
     if ( result_is_hit( execute_state -> result ) )
@@ -8768,6 +8770,7 @@ void death_knight_t::init_procs()
   procs.runic_empowerment_wasted = get_proc( "Wasted Runic Empowerment"     );
   procs.oblit_killing_machine    = get_proc( "Killing Machine: Obliterate"  );
   procs.fs_killing_machine       = get_proc( "Killing Machine: Frostscythe" );
+  procs.shattering_strikes       = get_proc( "Shattering Strikes"           );
 
   procs.ready_rune               = get_proc( "Rune ready" );
 
