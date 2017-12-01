@@ -1924,14 +1924,6 @@ struct dt_pet_t : public base_ghoul_pet_t
       m *= 1.0 + owner -> sets -> set( DEATH_KNIGHT_UNHOLY, T18, B2 ) -> effectN( 1 ).percent();
     }
 
-    if ( o() -> buffs.dark_transformation -> up() )
-    {
-      double dtb = o() -> buffs.dark_transformation -> data().effectN( 1 ).percent();
-
-      dtb += o() -> sets -> set( DEATH_KNIGHT_UNHOLY, T17, B2 ) -> effectN( 2 ).percent();
-
-      m *= 1.0 + dtb;
-    }
 
     return m;
   }
@@ -4895,24 +4887,6 @@ struct blood_shield_buff_t : public absorb_buff_t
                    .school( SCHOOL_PHYSICAL )
                    .source( player -> get_stats( "blood_shield" ) ) )
   { }
-
-  // Clamp shield value so that if T17 4PC is used, we have at least 5% of
-  // current max health of absorb left, if Vampiric Blood is up
-  void absorb_used( double ) override
-  {
-    death_knight_t* p = debug_cast<death_knight_t*>( player );
-    if ( p -> sets -> has_set_bonus( DEATH_KNIGHT_BLOOD, T17, B4 ) && p -> buffs.vampiric_blood -> up() )
-    {
-      double min_absorb = p -> resources.max[ RESOURCE_HEALTH ] *
-                          p -> sets -> set( DEATH_KNIGHT_BLOOD, T17, B4 ) -> effectN( 1 ).percent();
-
-      if ( sim -> debug )
-        sim -> out_debug.printf( "%s blood_shield absorb clamped to %f", player -> name(), min_absorb );
-
-      if ( current_value < min_absorb )
-        current_value = min_absorb;
-    }
-  }
 };
 
 struct death_strike_offhand_t : public death_knight_melee_attack_t
@@ -6156,13 +6130,6 @@ struct pillar_of_frost_t : public death_knight_spell_t
     parse_options( options_str );
 
     harmful = false;
-
-    if ( p -> sets -> has_set_bonus( DEATH_KNIGHT_FROST, T17, B2 ) )
-    {
-      energize_type = ENERGIZE_ON_CAST;
-      energize_amount = p -> sets -> set( DEATH_KNIGHT_FROST, T17, B2 ) -> effectN( 1 ).trigger() -> effectN( 2 ).resource( RESOURCE_RUNIC_POWER );
-      energize_resource = RESOURCE_RUNIC_POWER;
-    }
   }
 
   void execute() override
