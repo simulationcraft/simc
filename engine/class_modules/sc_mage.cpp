@@ -1307,21 +1307,18 @@ struct incanters_flow_t : public buff_t
 
   virtual void bump( int stacks, double value ) override
   {
-    int before_stack = current_stack;
-    buff_t::bump( stacks, value );
-    // Reverse direction if max stacks achieved before bump
-    if ( before_stack == current_stack )
+    if ( check() == max_stack() )
       reverse = true;
+    else
+      buff_t::bump( stacks, value );
   }
 
   virtual void decrement( int stacks, double value ) override
   {
-    // This buff will never fade; reverse direction at 1 stack.
-    // Buff uptime reporting _should_ work ok with this solution
-    if ( current_stack > 1 )
-      buff_t::decrement( stacks, value );
-    else
+    if ( check() == 1 )
       reverse = false;
+    else
+      buff_t::decrement( stacks, value );
   }
 };
 
