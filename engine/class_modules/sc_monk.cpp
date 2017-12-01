@@ -3602,8 +3602,7 @@ struct blackout_kick_t: public monk_melee_attack_t
       p() -> gain.bok_proc -> add( RESOURCE_CHI, base_costs[RESOURCE_CHI] );
 
       if ( p() -> sets -> has_set_bonus( MONK_WINDWALKER, T21, B2 ) )
-        // use p() -> passives.focus_of_xuen -> effectN( 1 ).base_value() once spell pull is done again.
-        p() -> resource_gain( RESOURCE_CHI, p() -> sets -> set( MONK_WINDWALKER, T21, B2 ) -> effectN( 2 ).base_value(), p() -> gain.focus_of_xuen );
+        p() -> resource_gain( RESOURCE_CHI, p() -> passives.focus_of_xuen -> effectN( 1 ).base_value(), p() -> gain.focus_of_xuen );
     }
 
     // Windwalker Tier 18 (WoD 6.2) trinket effect is in use, adjust Rising Sun Kick proc chance based on spell data
