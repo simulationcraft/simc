@@ -6868,7 +6868,8 @@ void add_havoc_use_items( demon_hunter_t* p, action_priority_list_t* apl )
     auto effect = p -> items[ i ].special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE );
     if ( effect && effect -> source != SPECIAL_EFFECT_SOURCE_ADDON )
     {
-      std::string line = std::string( "use_item,slot=" ) + p -> items[ i ].slot_name();
+      std::string line = std::string( "use_item,name=" ) + p -> items[ i ].name_str;
+
       if ( util::str_compare_ci( p -> items[ i ].name_str,
                                  "tiny_oozeling_in_a_jar" ) )
       {
@@ -6890,6 +6891,10 @@ void add_havoc_use_items( demon_hunter_t* p, action_priority_list_t* apl )
       else if (util::str_compare_ci(p->items[i].name_str, "umbral_moonglaives"))
       {
         line += ",if=(active_enemies>desired_targets)|(raid_event.adds.in>90&(buff.chaos_blades.up|target.time_to_die<cooldown.chaos_blades.remains))";
+      }
+      else if (util::str_compare_ci(p->items[i].name_str, "forgefiends_fabricator"))
+      {
+        line += ",if=(active_enemies>desired_targets)|(raid_event.adds.in>20&((buff.chaos_blades.up&buff.chaos_blades.remains<2)|(debuff.nemesis.up&debuff.nemesis.remains<2)))|target.time_to_die<2";
       }
       else if (util::str_compare_ci(p->items[i].name_str, "bloodstained_handkerchief"))
       {
