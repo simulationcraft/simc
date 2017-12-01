@@ -6870,8 +6870,7 @@ void add_havoc_use_items( demon_hunter_t* p, action_priority_list_t* apl )
     {
       std::string line = std::string( "use_item,name=" ) + p -> items[ i ].name_str;
 
-      if ( util::str_compare_ci( p -> items[ i ].name_str,
-                                 "tiny_oozeling_in_a_jar" ) )
+      if (util::str_compare_ci( p -> items[ i ].name_str, "tiny_oozeling_in_a_jar" ))
       {
         line += ",if=buff.congealing_goo.react=6|(buff.chaos_blades.up&buff.chaos_blades.remains<5&"
           "cooldown.chaos_blades.remains&buff.congealing_goo.up)";
@@ -6970,7 +6969,7 @@ void demon_hunter_t::apl_havoc()
     "(!talent.master_of_the_glaive.enabled|!talent.momentum.enabled|buff.momentum.up)&"
     "(spell_targets>=3|raid_event.adds.in>recharge_time+cooldown)");
   demonic->add_talent(this, "Felblade", "if=fury.deficit>=30&(fury<40|buff.metamorphosis.down)");
-  demonic->add_action(this, "Eye Beam", "if=spell_targets.eye_beam_tick>desired_targets|!buff.metamorphosis.extended_by_demonic|(set_bonus.tier21_4pc&buff.metamorphosis.remains>8)");
+  demonic->add_action(this, "Eye Beam", "if=spell_targets.eye_beam_tick>desired_targets|!buff.metamorphosis.extended_by_demonic|(set_bonus.tier21_4pc&buff.metamorphosis.remains>16)");
   demonic->add_action(this, spec.annihilation, "annihilation", 
     "if=(!talent.momentum.enabled|buff.momentum.up|fury.deficit<30+buff.prepared.up*8|buff.metamorphosis.remains<5)&"
     "!variable.pooling_for_blade_dance");
