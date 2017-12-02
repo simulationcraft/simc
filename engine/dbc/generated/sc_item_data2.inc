@@ -26472,7 +26472,7 @@ static struct item_upgrade_t __upgrade_rule_data[] = {
   {   0,   0,    0,  0 },
 };
 
-#define ITEM_BONUS_TREE_SIZE (545)
+#define ITEM_BONUS_TREE_SIZE (546)
 
 // Item bonus trees, wow build 25549
 static struct item_bonus_tree_entry_t __item_bonus_tree_data[ITEM_BONUS_TREE_SIZE] = {
@@ -27015,6 +27015,7 @@ static struct item_bonus_tree_entry_t __item_bonus_tree_data[ITEM_BONUS_TREE_SIZ
   { 2663,  620, 43,    0, 3573 },
   { 2664,  632, 42,    0,    0 },
   { 2665,  633, 42,    0, 3573 },
+  { 2666,  677,  0,    0, 3630 },
   { 2668,  638, 43,    0,    0 },
   { 2669,  639, 43,    0,    0 },
   { 2968,  869,  0,    0, 3983 },
