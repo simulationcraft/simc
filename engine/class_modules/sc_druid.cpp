@@ -1969,7 +1969,9 @@ public:
   virtual bool consume_cost_per_tick( const dot_t& dot ) override
   {
     bool ab = ab::consume_cost_per_tick( dot );
-    trigger_impeccable_fel_essence();
+    if (ab::consume_per_tick_) {
+        trigger_impeccable_fel_essence();
+    }
     return ab;
   }
 
