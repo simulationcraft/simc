@@ -1869,8 +1869,6 @@ struct fire_mage_spell_t : public mage_spell_t
       if ( p -> buffs.hot_streak -> check() )
       {
         p -> procs.hot_streak_spell_crit_wasted -> occur();
-        if ( guaranteed )
-          p -> buffs.hot_streak -> predict();
       }
       else
       {
