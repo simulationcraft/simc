@@ -4598,6 +4598,7 @@ struct archimondes_hatred_reborn_shield_t : public absorb_buff_t
     explosion( a )
   {
     explosion -> snapshot_flags &= STATE_NO_MULTIPLIER;
+    explosion -> split_aoe_damage = true;
   }
 
   void start( int stacks, double value = DEFAULT_VALUE(), timespan_t duration = timespan_t::min() ) override
