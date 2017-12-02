@@ -1924,6 +1924,10 @@ struct dt_pet_t : public base_ghoul_pet_t
       m *= 1.0 + owner -> sets -> set( DEATH_KNIGHT_UNHOLY, T18, B2 ) -> effectN( 1 ).percent();
     }
 
+    if ( o() -> buffs.dark_transformation -> up() )
+    {
+      m *= 1.0 + o() -> buffs.dark_transformation -> data().effectN( 1 ).percent();
+    }
 
     return m;
   }
