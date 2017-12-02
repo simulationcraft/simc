@@ -719,6 +719,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=37246)    : School Damage (2): nature
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.75000 | Target: Enemy (6)
+                   Hotfixed: Chain Multiplier (0 -> 1)
 Description      : Casts a bolt of lightning at the target for $s1 Nature damage.
 
 Name             : Chain Lightning Overload (id=45297) [Spell Family (11)] 
@@ -735,7 +736,8 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=37247)    : School Damage (2): nature
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.50000 | Chain Multiplier: 0 | Chain Targets: 3 | Target: Enemy (6)
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.50000 | Chain Multiplier: 1 | Chain Targets: 3 | Target: Enemy (6)
+                   Hotfixed: Chain Multiplier (0 -> 1)
 Description      : Hurls a lightning bolt at the enemy, dealing $s1 Nature damage and then jumping to additional nearby enemies.  Affects $x1 total targets.
 
 Name             : Earthgrab Totem (id=51485) [Spell Family (11)] 
@@ -1536,6 +1538,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=68090)    : School Damage (2): fire
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 2.75000 | Target: Enemy (6)
+                   Hotfixed: Chain Multiplier (0 -> 1)
 #2 (id=287602)   : Energize Power (30)
                    Base Value: 9 | Scaled Value: 9 | Misc Value: maelstrom | Target: Self (1)
 Description      : You hurl molten lava at the target, dealing $s1 Fire damage. If your Flame Shock is on the target, Lava Burst will deal a critical strike.
@@ -2410,6 +2413,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=140233)   : School Damage (2): elemental
                    Base Value: 0 | Scaled Value: 0 (avg=3.18, dl=0.15) | SP Coefficient: 7.25000 | Target: Enemy (6)
+                   Hotfixed: Chain Multiplier (0 -> 1)
 Description      : $@spelldesc117014
 
 Name             : Block (id=123831) [Passive, Hidden] 
@@ -6316,6 +6320,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=326661)   : School Damage (2): frost
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 9.00000 | Target: Enemy (6)
+                   Hotfixed: Chain Multiplier (0 -> 1)
 #2 (id=326662)   : Energize Power (30)
                    Base Value: 18 | Scaled Value: 18 | Misc Value: maelstrom | Target: Self (1)
 Description      : Hurls frigid ice at the target, dealing $s1 Frost damage.

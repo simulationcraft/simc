@@ -3984,6 +3984,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Unknown(25)
 #2 (id=288085)   : School Damage (2): shadowflame
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.30000 | Radius: 0 - 8 yards | Target: Unknown(63) -> AOE enemy (instant) (16)
+                   Hotfixed: Chain Multiplier (0 -> 1)
 Description      : $@spelldesc196277
 
 Name             : Hand of Doom (id=196283) [Spell Family (5), Passive] 

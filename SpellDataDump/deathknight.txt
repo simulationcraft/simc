@@ -897,11 +897,13 @@ Attributes       : ....x... ........ ..x..... ........   ........ ..x..... x....
 Effects          :
 #1 (id=43590)    : Apply Aura (6) | Modify Total Stat% (137)
                    Base Value: 20 | Scaled Value: 20 | Misc Value 2: 0x1 | Target: Self (1)
+                   Hotfixed: Chain Multiplier (0 -> 1)
 #2 (id=43591)    : Apply Aura (6) | Unknown(147)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1887 | Target: Self (1)
 #3 (id=337680)   : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x10 | Target: Self (1)
                    Affected School(s): Frost
+                   Hotfixed: Chain Multiplier (0 -> 1)
 Description      : The power of Frost increases your Strength by $s1%, and grants immunity to external movement effects such as knockbacks. Lasts $d.
 Tooltip          : Strength increased by $w1%.
 

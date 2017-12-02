@@ -1775,7 +1775,7 @@ bonus_id={ 3567 }, base_ilevel={ 810 }, quality={ epic }
 bonus_id={ 3568 }, base_ilevel={ 810 }, quality={ epic }
 bonus_id={ 3569 }, ilevel_adjust={ 3 }
 bonus_id={ 3570 }, ilevel_adjust={ 60 }
-bonus_id={ 3571 }, ilevel_adjust={ 60 }
+bonus_id={ 3571 }, ilevel_adjust={ 90 }
 bonus_id={ 3572 }, base_ilevel={ 860 }
 bonus_id={ 3575 }, base_ilevel={ 855 }, desc={ Mythic }, quality={ epic }
 bonus_id={ 3576 }, base_ilevel={ 855 }, desc={ Heroic }, quality={ rare }
@@ -1840,4 +1840,4 @@ bonus_id={ 3994 }, ilevel_adjust={ 45 }
 bonus_id={ 3995 }, ilevel_adjust={ 50 }
 bonus_id={ 3996 }, ilevel_adjust={ 55 }
 bonus_id={ 3997 }, ilevel_adjust={ 60 }
-bonus_id={ 4213 }, ilevel_adjust={ 60 }
+bonus_id={ 4213 }, ilevel_adjust={ 90 }
