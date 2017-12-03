@@ -193,14 +193,24 @@ class WDC1StringSegmentParser(WDC1SegmentParser):
     def __init__(self, record_parser, columns):
         super().__init__(record_parser, columns)
 
+        self.string_size = 0
+
     # Size of the inline string, needs to be computed in association with the parse call
     def size(self):
-        return 0
+        return self.string_size
 
     # Returns the offset into the file, where the string begins, much like what
     # the normal string block fields do
-    def __call__(self, offset, record_size):
-        return (0,)
+    def __call__(self, id, offset, bytes_left):
+        # Find first \x00 byte
+        pos = self.data.find(b'\x00', offset, offset + bytes_left)
+        self.string_size = (pos - offset) + 1
+
+        # Inline strings with first character 0 denotes disabled field
+        if self.data[offset] == 0:
+            return (0,)
+        else:
+            return (offset,)
 
 class WDC1ExtendedColumnValue:
     def __init__(self, column):
@@ -625,27 +635,35 @@ class WDC1Parser(LegionWDBParser):
         # Contains the base record data
         self.data_offset = self.parse_offset
 
+        block_offset = self.data_offset
+
         if self.has_offset_map():
             # String block follows immediately after the base data block
-            self.string_block_offset = self.offset_map_offset + (self.last_id - self.first_id + 1) * 6
+            self.string_block_offset = 0
+            running_offset = self.offset_map_offset + (self.last_id - self.first_id + 1) * 6
         else:
             # String block follows immediately after the base data block
             self.string_block_offset = self.data_offset + self.record_size * self.records
+            running_offset = self.string_block_offset + self.string_block_size
 
         # Next, ID block follows immmediately after string block
-        self.id_block_offset = self.string_block_offset + self.string_block_size
+        self.id_block_offset = running_offset
+        running_offset = self.id_block_offset + self.id_block_size
 
         # Next, extended column information block
-        self.column_info_block_offset = self.id_block_offset + self.id_block_size
+        self.column_info_block_offset = running_offset
+        running_offset = self.column_info_block_offset + self.column_info_block_size
 
         # Followed by the column-specific data block
-        self.column_data_block_offset = self.column_info_block_offset + self.column_info_block_size
+        self.column_data_block_offset = running_offset
+        running_offset = self.column_data_block_offset + self.column_data_block_size
 
         # Then, the sparse block
-        self.sparse_block_offset = self.column_data_block_offset + self.column_data_block_size
+        self.sparse_block_offset = running_offset
+        running_offset = self.sparse_block_offset + self.sparse_block_size
 
         # And finally, the "foreign key" block for the whole file
-        self.key_block_offset = self.sparse_block_offset + self.sparse_block_size
+        self.key_block_offset = running_offset
 
         return True
 
