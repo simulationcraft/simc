@@ -520,7 +520,9 @@ class DBCParserBase:
         field_offset = 0
         self.field_data = []
         for t in types:
-            if t in ['I', 'i', 'f', 'S']:
+            if t in ['Q', 'q']:
+                self.field_data.append((field_offset, 8, 1))
+            elif t in ['I', 'i', 'f', 'S']:
                 self.field_data.append((field_offset, 4, 1))
             elif t in ['H', 'h']:
                 self.field_data.append((field_offset, 2, 1))
@@ -677,7 +679,7 @@ class LegionWDBParser(DBCParserBase):
         return self.clone_segment_size // _CLONE.size
 
     def n_records(self):
-        if self.id_block_offset:
+        if self.has_id_block():
             return len(self.id_table)
         else:
             return self.records
@@ -706,7 +708,7 @@ class LegionWDBParser(DBCParserBase):
         return _ITEMRECORD.size
 
     def build_id_table(self):
-        if self.id_block_offset == 0:
+        if not self.has_id_block():
             return
 
         idtable = []

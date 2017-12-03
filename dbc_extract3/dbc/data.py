@@ -5,7 +5,7 @@ import dbc.fmt
 _FORMATDB = None
 
 class RawDBCRecord:
-    __slots__ = ( '_id', '_d', '_dbcp', '_flags' )
+    __slots__ = ( '_id', '_d', '_dbcp', '_flags', '_key' )
 
     def dbc_name(self):
         return self.__class__.__name__.replace('_', '-')
@@ -13,12 +13,16 @@ class RawDBCRecord:
     def is_hotfixed(self):
         return self._flags != 0
 
-    def __init__(self, parser, dbc_id, data):
+    def __init__(self, parser, dbc_id, data, key = None):
         self._dbcp = parser
 
         self._id = dbc_id
         self._d = data
         self._flags = 0
+        if key != None:
+            self._key = key
+        else:
+            self._key = -1
 
         if not self._d:
             self._d = (0,) * len(self._fi)
@@ -36,6 +40,9 @@ class RawDBCRecord:
 
         for i in range(0, len(self._d)):
             s.append('f%d=%d' % (i + 1, self._d[i]))
+
+        if self.key > 0:
+            s.append('id_parent=%u' % self._key)
 
         return ' '.join(s)
 
@@ -245,6 +252,10 @@ class DBCRecord(RawDBCRecord):
                 s.append('%s=%d' % (field, self._d[i]))
             else:
                 s.append('%s=%u' % (field, self._d[i]))
+
+        if self._key > 0:
+            s.append('id_parent=%u' % self._key)
+
         return ' '.join(s)
 
     def csv(self, delim = ',', header = False):
@@ -270,6 +281,9 @@ class DBCRecord(RawDBCRecord):
                 s += '%d%c' % (self._d[i], delim)
             else:
                 s += '%u%c' % (self._d[i], delim)
+
+        if self._key > 0:
+            s += '%u%c' % (self._key, delim)
 
         if len(s) > 0:
             s = s[0:-1]
@@ -428,7 +442,7 @@ def initialize_data_model(options, obj):
         dbc.data.Spell.link('artifact_power', dbc.data.ArtifactPowerRank)
         dbc.data.Spell.link('label', dbc.data.SpellLabel)
 
-    if 'SpellEffect' in dir(obj):
+    if 'SpellEffect' in dir(obj) and options.build < 25600:
         dbc.data.SpellEffect.link('scaling', dbc.data.SpellEffectScaling)
 
     if 'SpellItemEnchantment' in dir(obj):

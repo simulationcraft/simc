@@ -1,6 +1,6 @@
 import os, logging, sys
 
-import dbc
+import dbc, dbc.wdc1
 
 _PARSERS = {
     b'WDBC': None,
@@ -11,7 +11,8 @@ _PARSERS = {
     b'WCH5': dbc.parser.LegionWCHParser,
     b'WCH6': dbc.parser.LegionWCHParser,
     b'WCH7': dbc.parser.WCH7Parser,
-    b'WCH8': dbc.parser.WCH7Parser
+    b'WCH8': dbc.parser.WCH7Parser,
+    b'WDC1': dbc.wdc1.WDC1Parser
 }
 
 class DBCacheIterator:
@@ -66,11 +67,15 @@ class DBCFileIterator:
         if self._record == self._n_records:
             raise StopIteration
 
+        key_id = -1
+        if self._parser.magic == b'WDC1':
+            key_id = self._parser.key(self._record)
+
         dbc_id, offset, size = self._parser.get_record_info(self._record)
         data = self._parser.get_record(offset, size)
         self._record += 1
 
-        return self._decorator(self._parser, dbc_id, data)
+        return self._decorator(self._parser, dbc_id, data, key_id)
 
 class DBCFile:
     def __init__(self, options, filename, wdb_file = None):

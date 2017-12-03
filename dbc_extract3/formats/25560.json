@@ -13,10 +13,10 @@
     { "data_type": "I", "field": "unk_1" },
     { "data_type": "h", "field": "f5" },
     { "data_type": "h", "field": "id_spec", "formats": { "cpp": "%3u" } },
-    { "data_type": "B", "field": "f6" },
     { "data_type": "B", "field": "f7" },
     { "data_type": "B", "field": "f8" },
-    { "data_type": "I", "field": "f9" }
+    { "data_type": "B", "field": "f9" },
+    { "data_type": "I", "field": "f10" }
   ],
   "ArtifactPower": [
     { "data_type": "f", "field": "coord", "elements": 2 },
@@ -34,15 +34,14 @@
   "ArtifactPowerRank": [
     { "data_type": "I", "field": "id_spell", "formats": { "cpp": "%6u" } },
     { "data_type": "f", "field": "value", "formats": { "cpp": "%10.3f" } },
-    { "data_type": "H", "field": "id_power", "formats": { "cpp": "%5u" } },
     { "data_type": "H", "field": "f5" },
     { "data_type": "B", "field": "index", "formats": { "cpp": "%2u" } }
   ],
   "ChrSpecialization": [
-    { "data_type": "I", "field": "id_mastery", "elements": 2, "formats": { "cpp": "%-2u" } },
     { "data_type": "S", "field": "unk_4",      "formats": { } },
     { "data_type": "S", "field": "name",       "formats": { "cpp": "%25s" } },
     { "data_type": "S", "field": "desc",       "formats": { } },
+    { "data_type": "I", "field": "id_mastery", "elements": 2, "formats": { "cpp": "%-2u" } },
     { "data_type": "B", "field": "class_id",   "formats": { "cpp": "%-2u" } },
     { "data_type": "B", "field": "index",      "formats": { "cpp": "%-2u" } },
     { "data_type": "B", "field": "f9",         "formats": { } },
@@ -54,14 +53,14 @@
     { "data_type": "H", "field": "unk_3",      "formats": { } }
   ],
   "Creature": [
-    { "data_type": "I", "field": "id", "elements": 3 },
-    { "data_type": "I", "field": "unk_1" },
-    { "data_type": "I", "field": "unk_2", "elements": 4 },
-    { "data_type": "f", "field": "unk_3", "elements": 4 },
     { "data_type": "S", "field": "name" },
     { "data_type": "S", "field": "unk_4" },
     { "data_type": "S", "field": "title" },
     { "data_type": "S", "field": "unk_5" },
+    { "data_type": "I", "field": "id", "elements": 3 },
+    { "data_type": "I", "field": "unk_1" },
+    { "data_type": "I", "field": "unk_2", "elements": 4 },
+    { "data_type": "f", "field": "unk_3", "elements": 4 },
     { "data_type": "B", "field": "id_creature" },
     { "data_type": "B", "field": "unk_6" },
     { "data_type": "B", "field": "unk_7" },
@@ -74,9 +73,9 @@
     { "data_type": "B", "field": "mechanic" },
     { "data_type": "B", "field": "effectsAllowed" },
     { "data_type": "B", "field": "effect" },
-    { "data_type": "B", "field": "statesAllowed" },
-    { "data_type": "B", "field": "state", "elements": 8 },
-    { "data_type": "H", "field": "flags", "elements": 16 }
+    { "data_type": "I", "field": "statesAllowed" },
+    { "data_type": "I", "field": "state", "elements": 8 },
+    { "data_type": "I", "field": "flags", "elements": 16 }
   ],
   "CreatureType": [
     { "data_type": "S", "field": "name" },
@@ -86,10 +85,6 @@
     { "data_type": "f", "field": "val", "elements": 2, "formats": { "cpp": "%10.5f" } },
     { "data_type": "H", "field": "id_distribution", "formats": { "cpp": "%4u"    } },
     { "data_type": "B", "field": "curve_index",     "formats": { "cpp": "%2u"    } }
-  ],
-  "FileDataComplete": [
-    { "data_type": "S", "field": "path" },
-    { "data_type": "S", "field": "file_name" }
   ],
   "GemProperties": [
     { "data_type": "I", "field": "color",      "formats": { "cpp": "%#.8x" } },
@@ -113,6 +108,13 @@
     { "data_type": "B", "field": "unk_3" }
   ],
   "ItemSparse": [
+    { "data_type": "Q", "field": "race_mask" },
+    { "data_type": "S", "field": "name" },
+    { "data_type": "S", "field": "pad0" },
+    { "data_type": "S", "field": "pad1" },
+    { "data_type": "S", "field": "pad2" },
+    { "data_type": "S", "field": "desc" },
+
     { "data_type": "I", "field": "flags", "elements": 4, "format": { "cpp": "%#.8x" } },
     { "data_type": "f", "field": "unk_1" },
     { "data_type": "f", "field": "unk_2" },
@@ -120,7 +122,6 @@
     { "data_type": "i", "field": "unk_3" },
     { "data_type": "I", "field": "buy_price" },
     { "data_type": "I", "field": "sell_price" },
-    { "data_type": "I", "field": "race_mask" },
     { "data_type": "I", "field": "req_spell" },
 
     { "data_type": "i", "field": "max_count" },
@@ -130,12 +131,6 @@
     { "data_type": "f", "field": "stat_socket_mul", "elements": 10 },
 
     { "data_type": "f", "field": "ranged_mod_range" },
-
-    { "data_type": "S", "field": "name" },
-    { "data_type": "S", "field": "pad0" },
-    { "data_type": "S", "field": "pad1" },
-    { "data_type": "S", "field": "pad2" },
-    { "data_type": "S", "field": "desc" },
 
     { "data_type": "I", "field": "bag_family" },
     { "data_type": "f", "field": "item_damage_modifier" },
@@ -209,20 +204,18 @@
     { "data_type": "H", "field": "ilevel", "formats": { "cpp": "%4u"   } }
   ],
   "ItemBonus": [
-    { "data_type": "i", "field": "val", "elements": 2, "formats": { "cpp": "%6u" } },
+    { "data_type": "i", "field": "val", "elements": 3, "formats": { "cpp": "%6u" } },
     { "data_type": "H", "field": "id_node", "formats": { "cpp": "%4u" } },
     { "data_type": "B", "field": "type",    "formats": { "cpp": "%2u" } },
     { "data_type": "B", "field": "index",   "formats": { "cpp": "%2u" } }
   ],
   "ItemBonusTreeNode": [
-    { "data_type": "H", "field": "id_tree",  "formats": { "cpp": "%4u" } },
     { "data_type": "H", "field": "id_child", "formats": { "cpp": "%4u" } },
     { "data_type": "H", "field": "id_node",  "formats": { "cpp": "%4u" } },
     { "data_type": "H", "field": "unk"                                   },
     { "data_type": "B", "field": "index",    "formats": { "cpp": "%2u" } }
   ],
   "ItemChildEquipment": [
-    { "data_type": "I", "field": "id_item",  "formats": { "cpp": "%6u" } },
     { "data_type": "I", "field": "id_child", "formats": { "cpp": "%6u" } },
     { "data_type": "B", "field": "unk_1" }
   ],
@@ -243,7 +236,6 @@
     { "data_type": "H", "field": "ilevel", "formats": { "cpp": "%4u"   } }
   ],
   "ItemEffect": [
-    { "data_type": "I", "field": "id_item" },
     { "data_type": "I", "field": "id_spell" },
     { "data_type": "i", "field": "cooldown_duration" },
     { "data_type": "i", "field": "cooldown_group_duration" },
@@ -267,22 +259,6 @@
     { "data_type": "H", "field": "id_property", "elements": 5, "formats": { "cpp": "%5u"  } },
     { "data_type": "H", "field": "property_pct", "elements": 5, "formats": { "cpp": "%5u"  } }
   ],
-  "ItemSearchName": [
-    { "data_type": "S", "field": "f1" },
-    { "data_type": "I", "field": "f2" },
-    { "data_type": "I", "field": "f3" },
-    { "data_type": "I", "field": "f4" },
-    { "data_type": "I", "field": "f5" },
-    { "data_type": "I", "field": "f6" },
-    { "data_type": "I", "field": "f7" },
-    { "data_type": "H", "field": "f8" },
-    { "data_type": "H", "field": "f9" },
-    { "data_type": "H", "field": "f10"},
-    { "data_type": "b", "field": "f11"},
-    { "data_type": "b", "field": "f12"},
-    { "data_type": "b", "field": "f13"},
-    { "data_type": "b", "field": "f14"}
-  ],
   "ItemSet": [
     { "data_type": "S", "field": "name" },
     { "data_type": "I", "field": "id_item", "elements": 17 },
@@ -292,7 +268,6 @@
   ],
   "ItemSetSpell": [
     { "data_type": "I", "field": "id_spell" },
-    { "data_type": "H", "field": "id_item_set" },
     { "data_type": "H", "field": "id_spec" },
     { "data_type": "B", "field": "n_req_items" }
   ],
@@ -304,7 +279,6 @@
     { "data_type": "B", "field": "upgrade_ilevel",  "formats": { "cpp": "%2u" } }
   ],
   "ItemXBonusTree": [
-    { "data_type": "I", "field": "id_item", "formats": { "cpp": "%6u" } },
     { "data_type": "H", "field": "id_tree", "formats": { "cpp": "%4u" } }
   ],
   "JournalEncounterItem": [
@@ -346,24 +320,25 @@
     { "data_type": "B", "field": "max_level", "formats": { "cpp": "%3u" } }
   ],
   "SkillLineAbility": [
+    { "data_type": "Q", "field": "mask_race" },
+    { "data_type": "I", "field": "id" },
     { "data_type": "I", "field": "id_spell" },
-    { "data_type": "I", "field": "mask_race" },
     { "data_type": "I", "field": "id_replace" },
     { "data_type": "H", "field": "id_skill" },
-    { "data_type": "H", "field": "req_skill_level" },
     { "data_type": "H", "field": "max_learn_skill" },
-    { "data_type": "H", "field": "unk_1" },
+    { "data_type": "H", "field": "unk_7" },
     { "data_type": "H", "field": "index" },
     { "data_type": "H", "field": "id_filter" },
-    { "data_type": "b", "field": "unk_2" },
-    { "data_type": "b", "field": "reward_skill_points" },
-    { "data_type": "b", "field": "unk_3" },
-    { "data_type": "H", "field": "mask_class" }
+    { "data_type": "B", "field": "reward_skill_points" },
+    { "data_type": "I", "field": "mask_class" },
+    { "data_type": "I", "field": "req_skill_level" },
+    { "data_type": "I", "field": "unk_13" },
+    { "data_type": "I", "field": "unk_14" }
   ],
   "SpecializationSpells": [
+    { "data_type": "I", "field": "unk_1" },
     { "data_type": "I", "field": "spell_id" },
     { "data_type": "I", "field": "replace_spell_id" },
-    { "data_type": "I", "field": "unk_1" },
     { "data_type": "H", "field": "spec_id" },
     { "data_type": "B", "field": "unk_2" },
     { "data_type": "H", "field": "id"  }
@@ -372,13 +347,9 @@
     { "data_type": "S", "field": "name",        "formats": { "cpp": "%-36s" } },
     { "data_type": "S", "field": "rank"                                       },
     { "data_type": "S", "field": "desc"                                       },
-    { "data_type": "S", "field": "tt"                                         },
-    { "data_type": "I", "field": "id_misc"                                    },
-    { "data_type": "I", "field": "id"                                         },
-    { "data_type": "H", "field": "id_desc_var", "block": true                 }
+    { "data_type": "S", "field": "tt"                                         }
   ],
   "SpellAuraOptions": [
-    { "data_type": "I", "field": "id_spell" },
     { "data_type": "i", "field": "proc_charges" },
     { "data_type": "I", "field": "proc_flags" },
     { "data_type": "I", "field": "internal_cooldown" },
@@ -393,7 +364,6 @@
     { "data_type": "h", "field": "cast_time_per_level" }
   ],
   "SpellCategories": [
-    { "data_type": "I", "field": "id_spell" },
     { "data_type": "H", "field": "cooldown_category", "formats": { "cpp": "%4u" } },
     { "data_type": "H", "field": "start_recovery_category" },
     { "data_type": "H", "field": "charge_category", "formats": { "cpp": "%4u" } },
@@ -418,7 +388,6 @@
     { "data_type": "H", "field": "modal_next_spell" }
   ],
   "SpellCooldowns": [
-    { "data_type": "I", "field": "id_spell" },
     { "data_type": "I", "field": "category_cooldown" },
     { "data_type": "I", "field": "cooldown" },
     { "data_type": "I", "field": "gcd_cooldown" },
@@ -430,19 +399,13 @@
   "SpellDuration": [
     { "data_type": "i", "field": "duration_1" },
     { "data_type": "i", "field": "duration_2" },
-    { "data_type": "h", "field": "duration_3" }
+    { "data_type": "i", "field": "duration_3" }
   ],
   "SpellEffect": [
-    { "data_type": "I", "field": "class_mask", "elements": 4 },
-    { "data_type": "I", "field": "id", "formats": { "cpp": "%6u" } },
-    { "data_type": "I", "field": "id_spell", "formats": { "cpp": "%6u" } },
     { "data_type": "B", "field": "type", "formats": { "cpp": "%3u" } },
-    { "data_type": "H", "field": "sub_type", "formats": { "cpp": "%3u" } },
     { "data_type": "i", "field": "base_value" },
     { "data_type": "B", "field": "index", "formats": { "cpp": "%2u" } },
-    { "data_type": "i", "field": "misc_value", "elements": 2 },
-    { "data_type": "B", "field": "id_radius", "elements": 2 },
-    { "data_type": "B", "field": "implicit_target", "elements": 2 },
+    { "data_type": "H", "field": "sub_type", "formats": { "cpp": "%3u" } },
 
     { "data_type": "I", "field": "unk_3", "block": true },
     { "data_type": "f", "field": "val_mul", "block": true },
@@ -459,13 +422,15 @@
     { "data_type": "f", "field": "unk_1", "block": true },
     { "data_type": "I", "field": "unk_2", "block": true },
     { "data_type": "f", "field": "ap_coefficient", "block": true },
-    { "data_type": "f", "field": "pvp_coefficient", "block": true }
-  ],
-  "SpellEffectScaling": [
+    { "data_type": "f", "field": "pvp_coefficient", "block": true },
     { "data_type": "f", "field": "average" },
     { "data_type": "f", "field": "delta" },
     { "data_type": "f", "field": "bonus" },
-    { "data_type": "I", "field": "id_effect" }
+    { "data_type": "f", "field": "unk_24" },
+    { "data_type": "I", "field": "class_mask", "elements": 4 },
+    { "data_type": "i", "field": "misc_value", "elements": 2 },
+    { "data_type": "B", "field": "id_radius", "elements": 2 },
+    { "data_type": "B", "field": "implicit_target", "elements": 2 }
   ],
   "SpellEquippedItems": [
     { "data_type": "I", "field": "id_spell" },
@@ -473,12 +438,9 @@
     { "data_type": "I", "field": "mask_sub_class" },
     { "data_type": "B", "field": "item_class" }
   ],
-  "SpellIcon": [
-    { "data_type": "S", "field": "icon" }
-  ],
   "SpellItemEnchantment": [
-    { "data_type": "I", "field": "id_property", "elements": 3, "formats": { "cpp": "%6u" } },
     { "data_type": "S", "field": "desc", "formats": { "cpp": "%-35s" } },
+    { "data_type": "I", "field": "id_property", "elements": 3, "formats": { "cpp": "%6u" } },
     { "data_type": "f", "field": "coeff", "elements": 3, "formats": { "cpp": "%7.4f" } },
     { "data_type": "I", "field": "unk_7" },
     { "data_type": "I", "field": "unk_8" },
@@ -498,11 +460,9 @@
     { "data_type": "H", "field": "unk_5" }
   ],
   "SpellLabel": [
-    { "data_type": "I", "field": "id_spell", "formats": { "cpp": "%6u" } },
     { "data_type": "h", "field": "label", "formats": { "cpp": "%4d" } }
   ],
   "SpellLevels": [
-    { "data_type": "I", "field": "id_spell" },
     { "data_type": "H", "field": "base_level" },
     { "data_type": "H", "field": "max_level" },
     { "data_type": "H", "field": "spell_level" },
@@ -513,18 +473,18 @@
     { "data_type": "I", "field": "mechanic", "formats": { "cpp": "%2u" } }
   ],
   "SpellMisc": [
-    { "data_type": "I", "field": "flags", "elements": 14 },
-    { "data_type": "f", "field": "proj_speed" },
-    { "data_type": "I", "field": "unk_1" },
     { "data_type": "H", "field": "id_cast_time" },
     { "data_type": "H", "field": "id_duration" },
     { "data_type": "H", "field": "id_range" },
     { "data_type": "B", "field": "school" },
     { "data_type": "I", "field": "id_icon" },
-    { "data_type": "I", "field": "id_active_icon" }
+    { "data_type": "f", "field": "proj_speed" },
+    { "data_type": "I", "field": "id_active_icon" },
+    { "data_type": "I", "field": "unk_1" },
+    { "data_type": "I", "field": "unk_2" },
+    { "data_type": "I", "field": "flags", "elements": 14 }
   ],
   "SpellPower": [
-    { "data_type": "I", "field": "id_spell",            "formats": { "cpp": "%7u" } },
     { "data_type": "i", "field": "cost",                "formats": { "cpp": "%4u" } },
     { "data_type": "f", "field": "pct_cost",            "formats": { "cpp": "%7.3f" } },
     { "data_type": "f", "field": "pct_cost_per_second", "formats": { "cpp": "%7.3f" } },
@@ -539,14 +499,6 @@
     { "data_type": "H", "field": "unk_3" },
     { "data_type": "H", "field": "unk_4" }
   ],
-  "SpellProceduralEffect": [
-    { "data_type": "I", "field": "id" },
-    { "data_type": "I", "field": "unk_2" },
-    { "data_type": "f", "field": "unk_3" },
-    { "data_type": "f", "field": "unk_4" },
-    { "data_type": "f", "field": "unk_5" },
-    { "data_type": "I", "field": "unk_6" }
-  ],
   "SpellProcsPerMinute": [
     { "data_type": "f", "field": "ppm" },
     { "data_type": "B", "field": "unk_1" }
@@ -554,8 +506,8 @@
   "SpellProcsPerMinuteMod": [
     { "data_type": "f", "field": "coefficient" },
     { "data_type": "h", "field": "id_chr_spec" },
-    { "data_type": "h", "field": "id_ppm" },
-    { "data_type": "b", "field": "unk_1" }
+    { "data_type": "b", "field": "unk_1" },
+    { "data_type": "I", "field": "id_ppm" }
   ],
   "SpellRadius": [
     { "data_type": "f", "field": "radius_1" },
@@ -564,10 +516,10 @@
     { "data_type": "f", "field": "radius_3" }
   ],
   "SpellRange": [
-    { "data_type": "f", "field": "min_range", "elements": 2 },
-    { "data_type": "f", "field": "max_range", "elements": 2 },
     { "data_type": "S", "field": "display_name" },
     { "data_type": "S", "field": "display_name_short" },
+    { "data_type": "f", "field": "min_range", "elements": 2 },
+    { "data_type": "f", "field": "max_range", "elements": 2 },
     { "data_type": "B", "field": "flag" }
   ],
   "SpellScaling": [
@@ -584,9 +536,9 @@
     { "data_type": "B", "field": "unk" }
   ],
   "Talent": [
+    { "data_type": "S", "field": "desc"                                    },
     { "data_type": "I", "field": "id_spell",   "formats": { "cpp": "%7u" } },
     { "data_type": "I", "field": "id_replace", "formats": { "cpp": "%7u" } },
-    { "data_type": "S", "field": "desc"                                    },
     { "data_type": "H", "field": "spec_id",    "formats": { "cpp": "%3u" } },
     { "data_type": "B", "field": "row",        "formats": { "cpp": "%3u" } },
     { "data_type": "B", "field": "col",        "formats": { "cpp": "%3u" } },
