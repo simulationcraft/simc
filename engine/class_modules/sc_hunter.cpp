@@ -6590,7 +6590,7 @@ void hunter_t::apl_surv()
   CDs -> add_action( "arcane_torrent,if=focus<=30" );
   CDs -> add_action( "berserking,if=buff.aspect_of_the_eagle.up" );
   CDs -> add_action( "blood_fury,if=buff.aspect_of_the_eagle.up" );
-  CDs -> add_action( "potion,if=buff.aspect_of_the_eagle.up&(buff.berserking.up|buff.blood_fury.up)" );
+  CDs -> add_action( "potion,if=buff.aspect_of_the_eagle.up&(buff.berserking.up|buff.blood_fury.up|!race.troll&!race.orc)" );
   CDs -> add_talent( this, "Snake Hunter", "if=cooldown.mongoose_bite.charges=0&buff.mongoose_fury.remains>3*gcd&(cooldown.aspect_of_the_eagle.remains>5&!buff.aspect_of_the_eagle.up)" );
   CDs -> add_action( this, "Aspect of the Eagle", "if=buff.mongoose_fury.up&(cooldown.mongoose_bite.charges=0|buff.mongoose_fury.remains<11)" );
 

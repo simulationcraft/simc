@@ -49,7 +49,7 @@ actions+=/call_action_list,name=bitePhase,if=buff.mongoose_fury.up
 actions.CDs=arcane_torrent,if=focus<=30
 actions.CDs+=/berserking,if=buff.aspect_of_the_eagle.up
 actions.CDs+=/blood_fury,if=buff.aspect_of_the_eagle.up
-actions.CDs+=/potion,if=buff.aspect_of_the_eagle.up&(buff.berserking.up|buff.blood_fury.up)
+actions.CDs+=/potion,if=buff.aspect_of_the_eagle.up&(buff.berserking.up|buff.blood_fury.up|!race.troll&!race.orc)
 actions.CDs+=/snake_hunter,if=cooldown.mongoose_bite.charges=0&buff.mongoose_fury.remains>3*gcd&(cooldown.aspect_of_the_eagle.remains>5&!buff.aspect_of_the_eagle.up)
 actions.CDs+=/aspect_of_the_eagle,if=buff.mongoose_fury.up&(cooldown.mongoose_bite.charges=0|buff.mongoose_fury.remains<11)
 
