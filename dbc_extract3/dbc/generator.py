@@ -804,10 +804,10 @@ class ItemDataGenerator(DataGenerator):
             return False
 
         # Reverse map various things to Spell records so we can easily generate output
-        link(self._spelleffect_db, 'id_spell', self._spell_db, 'add_effect')
+        link(self._spelleffect_db, self._options.build < 25600 and 'id_spell' or 'id_parent', self._spell_db, 'add_effect')
 
         # Various Item-related data model linkages
-        link(self._itemeffect_db, 'id_item', self._options.build < 23436 and self._item_sparse_db or self._itemsparse_db, 'spells')
+        link(self._itemeffect_db, self._options.build < 25600 and 'id_item' or 'id_parent', self._options.build < 23436 and self._item_sparse_db or self._itemsparse_db, 'spells')
         link(self._journalencounteritem_db, 'id_item', self._options.build < 23436 and self._item_sparse_db or self._itemsparse_db, 'journal')
 
         return True
@@ -1844,25 +1844,26 @@ class SpellDataGenerator(DataGenerator):
             self._data_store.link('ItemEffect', 'id_item', self._options.build < 23436 and 'Item-sparse' or 'ItemSparse', 'spells')
         else:
             # Reverse map various things to Spell records so we can easily generate output
-            link(self._spelleffect_db, 'id_spell', self._spell_db, 'add_effect')
-            link(self._spellpower_db, 'id_spell', self._spell_db, 'power')
-            link(self._spellcategories_db, 'id_spell', self._spell_db, 'categories')
+            link(self._spelleffect_db, self._options.build < 25600 and 'id_spell' or 'id_parent', self._spell_db, 'add_effect')
+            link(self._spellpower_db, self._options.build < 25600 and 'id_spell' or 'id_parent', self._spell_db, 'power')
+            link(self._spellcategories_db, self._options.build < 25600 and 'id_spell' or 'id_parent', self._spell_db, 'categories')
             link(self._spellscaling_db, 'id_spell', self._spell_db, 'scaling')
-            link(self._spelllevels_db, 'id_spell', self._spell_db, 'level')
-            link(self._spellcooldowns_db, 'id_spell', self._spell_db, 'cooldown')
-            link(self._spellauraoptions_db, 'id_spell', self._spell_db, 'aura_option')
+            link(self._spelllevels_db, self._options.build < 25600 and 'id_spell' or 'id_parent', self._spell_db, 'level')
+            link(self._spellcooldowns_db, self._options.build < 25600 and 'id_spell' or 'id_parent', self._spell_db, 'cooldown')
+            link(self._spellauraoptions_db, self._optoins.build < 25600 and 'id_spell' or 'id_parent', self._spell_db, 'aura_option')
             link(self._spellequippeditems_db, 'id_spell', self._spell_db, 'equipped_item')
             link(self._spellclassoptions_db, 'id_spell', self._spell_db, 'class_option')
             link(self._spellshapeshift_db, 'id_spell', self._spell_db, 'shapeshift')
             link(self._artifactpowerrank_db, 'id_spell', self._spell_db, 'artifact_power')
-            link(self._spelllabel_db, 'id_spell', self._spell_db, 'label');
+            link(self._spelllabel_db, self._options.build < 25600 and 'id_spell' or 'id_parent', self._spell_db, 'label');
 
             # Effect data model linkage
-            link(self._spelleffectscaling_db, 'id_effect', self._spelleffect_db, 'scaling')
+            if self._options.build < 25600:
+                link(self._spelleffectscaling_db, 'id_effect', self._spelleffect_db, 'scaling')
 
             # Various Item-related data model linkages
-            link(self._itemeffect_db, 'id_item', self._options.build < 23436 and self._item_sparse_db or self._itemsparse_db, 'spells')
-            link(self._itemsetspell_db, 'id_item_set', self._itemset_db, 'bonus')
+            link(self._itemeffect_db, self._options.build < 25600 and 'id_item' or 'id_parent', self._options.build < 23436 and self._item_sparse_db or self._itemsparse_db, 'spells')
+            link(self._itemsetspell_db, self._options.build < 25600 and 'id_item_set' or 'id_parent', self._itemset_db, 'bonus')
 
         return True
 
@@ -3806,7 +3807,7 @@ class SpellItemEnchantmentGenerator(RandomSuffixGenerator):
         if not RandomSuffixGenerator.initialize(self):
             return False
 
-        link(self._spelleffect_db, 'id_spell', self._spell_db, 'add_effect')
+        link(self._spelleffect_db, self._options.build < 25600 and 'id_spell' or 'id_parent', self._spell_db, 'add_effect')
         # Map spell ids to spellitemenchantments, as there's no direct
         # link between them, and 5.4+, we need/want to scale enchants properly
         link(self._spell_db, self.filter_linked_spells, self._spellitemenchantment_db, 'spells')
