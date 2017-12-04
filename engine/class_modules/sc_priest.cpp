@@ -5657,6 +5657,31 @@ struct priest_module_t final : public module_t
        .modifier( 0.3649 )
        .verification_value( 0.38 );
      **/
+	  
+	  hotfix::register_effect("Priest", "2017-12-04", "Shadow Priest damage increased by 3%", 191068)
+		  .field("base_value")
+		  .operation(hotfix::HOTFIX_SET)
+		  .modifier(23.0)
+		  .verification_value(20.0);
+
+	  hotfix::register_effect("Priest", "2017-12-04", "Shadow Priest damage increased by 3%", 179717)
+		  .field("base_value")
+		  .operation(hotfix::HOTFIX_SET)
+		  .modifier(23.0)
+		  .verification_value(20.0);
+
+	  hotfix::register_effect("Priest", "2017-12-04", "Vampiric Touch damage reduced by 12%.", 25010)
+		  .field("sp_coefficient")
+		  .operation(hotfix::HOTFIX_SET)
+		  .modifier(0.599)
+		  .verification_value(0.6816);
+
+	  hotfix::register_effect("Priest", "2017-12-04", "Shadow Word: Pain damage reduced by 12%.", 254257)
+		  .field("sp_coefficient")
+		  .operation(hotfix::HOTFIX_SET)
+		  .modifier(0.32)
+		  .verification_value(0.365);
+
   }
 
   void combat_begin( sim_t* ) const override
