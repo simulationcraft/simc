@@ -461,6 +461,26 @@ size_t pantheon_state_t::buff_type( const buff_t* actor_buff ) const
   }
 }
 
+void pantheon_state_t::reset()
+{
+  range::for_each( pantheon_state, []( std::vector<pantheon_buff_state_t>& states ) {
+    states.clear();
+  } );
+
+  // We need to reset the RPPM objects manually with single_actor_batch=1, because the first defined
+  // actor is only active on the first actor simulation.
+  if ( player -> sim -> single_actor_batch )
+  {
+    range::for_each( rppm_objs, []( const std::vector<real_ppm_t*>& rppms ) {
+      range::for_each( rppms, []( real_ppm_t* obj ) { obj -> reset(); } );
+    } );
+  }
+
+  attempt_event = nullptr;
+  proxy_state_only = true;
+}
+
+
 const std::vector<unsigned> pantheon_state_t::drivers {
   256817, // Mark of Aman'thul
   256819, // Mark of Golganneth

@@ -81,15 +81,7 @@ struct pantheon_state_t
   void start();
 
   // Reset state to initial values
-  void reset()
-  {
-    range::for_each( pantheon_state, []( std::vector<pantheon_buff_state_t>& states ) {
-      states.clear();
-    } );
-
-    attempt_event = nullptr;
-    proxy_state_only = true;
-  }
+  void reset();
 
   // Does the raid (including real actors and proxy ones) have pantheon empowerment capability?
   bool has_pantheon_capability() const;
