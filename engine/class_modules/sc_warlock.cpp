@@ -8617,6 +8617,31 @@ struct warlock_module_t: public module_t
       .modifier( 0.96 )
       .verification_value( 0.966 );
 
+    hotfix::register_effect( "Warlock", "2017-12-04", "Unstable Affliction damage reduced by 4%", 352671 )
+      .field( "sp_coefficient" )
+      .operation( hotfix::HOTFIX_MUL )
+      .modifier( 0.96 )
+      .verification_value( 0.966 );
+
+    hotfix::register_effect( "Warlock", "2017-12-04", "Unstable Affliction damage reduced by 4%", 352672 )
+      .field( "sp_coefficient" )
+      .operation( hotfix::HOTFIX_MUL )
+      .modifier( 0.96 )
+      .verification_value( 0.966 );
+
+    hotfix::register_effect( "Warlock", "2017-12-04", "Unstable Affliction damage reduced by 4%", 352673 )
+      .field( "sp_coefficient" )
+      .operation( hotfix::HOTFIX_MUL )
+      .modifier( 0.96 )
+      .verification_value( 0.966 );
+
+    hotfix::register_effect( "Warlock", "2017-12-04", "Unstable Affliction damage reduced by 4%", 352674 )
+      .field( "sp_coefficient" )
+      .operation( hotfix::HOTFIX_MUL )
+      .modifier( 0.96 )
+      .verification_value( 0.966 );
+
+
     //hotfix::register_effect( "Warlock", "2016-09-23", "Drain Life damage increased by 10%", 271 )
     //  .field( "sp_coefficient" )
     //  .operation( hotfix::HOTFIX_MUL )
