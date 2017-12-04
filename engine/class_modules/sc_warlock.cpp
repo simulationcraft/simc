@@ -8581,6 +8581,41 @@ struct warlock_module_t: public module_t
 
   virtual void register_hotfixes() const override
   {
+    hotfix::register_effect( "Warlock", "2017-12-04", "Diabolic Raiment 4-piece – Spending a Soul Shard now has a chance to grant you 10% Haste (was 15%).", 367884 )
+      .field( "base_value" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 10 )
+      .verification_value( 15 );
+
+    hotfix::register_effect( "Warlock", "2017-12-04", "Grim Inquisitor’s Regalia 4-piece – Unstable Affliction and Seed of Corruption now increase the damage targets take from your Agony and Corruption by 15% (was 10%).", 473114 )
+      .field( "base_value" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 15 )
+      .verification_value( 10 );
+
+    hotfix::register_effect( "Warlock", "2017-12-04", "Grim Inquisitor’s Regalia 4-piece – Demonic Empowerment now causes your Dreadstalkers to immediately cast another Dreadbite with 75% increased damage (was 50%).", 471461 )
+      .field( "base_value" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 75 )
+      .verification_value( 50 );
+
+    hotfix::register_effect( "Warlock", "2017-12-04", "Corruption damage reduced by 4%.", 198369 )
+      .field( "sp_coefficient" )
+      .operation( hotfix::HOTFIX_MUL )
+      .modifier( 0.94 )
+      .verification_value( 0.3345 );
+
+    hotfix::register_effect( "Warlock", "2017-12-04", "Agony damage reduced by 4%.", 374 )
+      .field( "sp_coefficient" )
+      .operation( hotfix::HOTFIX_MUL )
+      .modifier( 0.94 )
+      .verification_value( 0.03770 );
+
+    hotfix::register_effect( "Warlock", "2017-12-04", "Unstable Affliction damage reduced by 4%", 352664 )
+      .field( "sp_coefficient" )
+      .operation( hotfix::HOTFIX_MUL )
+      .modifier( 0.96 )
+      .verification_value( 0.966 );
 
     //hotfix::register_effect( "Warlock", "2016-09-23", "Drain Life damage increased by 10%", 271 )
     //  .field( "sp_coefficient" )
@@ -8593,24 +8628,6 @@ struct warlock_module_t: public module_t
     //  .operation( hotfix::HOTFIX_MUL )
     //  .modifier( 1.10 )
     //  .verification_value( 0.52 );
-
-    //hotfix::register_effect( "Warlock", "2017-06-26", "Corruption damage reduced by 5%.", 198369 )
-    //  .field( "sp_coefficient" )
-    //  .operation( hotfix::HOTFIX_MUL )
-    //  .modifier( 0.95 )
-    //  .verification_value( 0.363 );
-
-    //hotfix::register_effect( "Warlock", "2017-06-26", "Agony damage reduced by 5%.", 374 )
-    //  .field( "sp_coefficient" )
-    //  .operation( hotfix::HOTFIX_MUL )
-    //  .modifier( 0.95 )
-    //  .verification_value( 0.03970 );
-
-    //hotfix::register_effect( "Warlock", "2016-09-23", "Unstable Affliction damage increased by 15%", 303066 )
-    //  .field( "sp_coefficient" )
-    //  .operation( hotfix::HOTFIX_MUL )
-    //  .modifier( 1.15 )
-    //  .verification_value( 0.8 );
 
     //hotfix::register_effect( "Warlock", "2016-09-23", "Seed of Corruption damage increased by 15%", 16922 )
     //  .field( "sp_coefficient" )
