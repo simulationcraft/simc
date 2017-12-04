@@ -7445,7 +7445,7 @@ void druid_t::create_buffs()
   buff.astral_acceleration   = haste_buff_creator_t(this, "astral_acceleration", find_spell(242232))
                                  .cd(timespan_t::zero())
                                  .default_value(find_spell(242232)->effectN(1).percent())
-                                 .max_stack(5)
+                                 .max_stack(find_spell(242232)->max_stacks())
                                  .refresh_behavior(BUFF_REFRESH_DISABLED);
                                 //.duration( timespan_t::from_seconds( 20.0 ) );
   buff.solar_solstice = buff_creator_t(this, "solar_solstice", find_spell(252767))
