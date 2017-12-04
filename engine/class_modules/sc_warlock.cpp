@@ -8603,7 +8603,7 @@ struct warlock_module_t: public module_t
       .field( "sp_coefficient" )
       .operation( hotfix::HOTFIX_MUL )
       .modifier( 0.94 )
-      .verification_value( 0.3345 );
+      .verification_value( 0.345 );
 
     hotfix::register_effect( "Warlock", "2017-12-04", "Agony damage reduced by 4%.", 374 )
       .field( "sp_coefficient" )
