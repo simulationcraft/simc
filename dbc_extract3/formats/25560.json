@@ -294,7 +294,6 @@
     { "data_type": "S", "field": "name" }
   ],
   "MinorTalent": [
-    { "data_type": "i", "field": "id_spell" },
     { "data_type": "h", "field": "id_spec" },
     { "data_type": "b", "field": "index" }
   ],
@@ -534,6 +533,10 @@
     { "data_type": "I", "field": "flags_not", "elements": 2 },
     { "data_type": "I", "field": "flags", "elements": 2, "formats": { "cpp": "%#.8x" } },
     { "data_type": "B", "field": "unk" }
+  ],
+  "SpellXDescriptionVariables": [
+    { "data_type": "I", "field": "id_spell" },
+    { "data_type": "I", "field": "id_desc_var" }
   ],
   "Talent": [
     { "data_type": "S", "field": "desc"                                    },

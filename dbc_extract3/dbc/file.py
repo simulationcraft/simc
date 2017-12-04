@@ -169,9 +169,9 @@ class DBCFile:
 
         return True
 
-    def decorate(self, data):
+    def decorate(self, data, key_id = -1):
         # Output data based on data parser + class, we are sure we have those things at this point
-        return self.data_class(self.parser, *data)
+        return self.data_class(self.parser, *data, key_id = -1)
 
     def find(self, id_):
         record_data = self.parser.find(id_)

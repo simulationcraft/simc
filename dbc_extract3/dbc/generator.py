@@ -1808,9 +1808,12 @@ class SpellDataGenerator(DataGenerator):
                 'SpellAuraOptions', 'SpellRadius', 'GlyphProperties', 'Item',
                 'SpellCastTimes', 'ItemSet', 'SpellDescriptionVariables', 'SpellItemEnchantment',
                 'SpellEquippedItems', 'SpecializationSpells', 'ChrSpecialization',
-                'SpellEffectScaling', 'SpellMisc', 'SpellProcsPerMinute', 'ItemSetSpell',
+                'SpellMisc', 'SpellProcsPerMinute', 'ItemSetSpell',
                 'ItemEffect', 'MinorTalent', 'ArtifactPowerRank', 'ArtifactPower', 'Artifact',
                 'SpellShapeshift', 'SpellMechanic', 'SpellLabel' ]
+
+        if self._options.build < 25600:
+            self._dbc.append('SpellEffectScaling')
 
         if self._options.build < 23436:
             self._dbc.append('Item-sparse')
@@ -1850,7 +1853,7 @@ class SpellDataGenerator(DataGenerator):
             link(self._spellscaling_db, 'id_spell', self._spell_db, 'scaling')
             link(self._spelllevels_db, self._options.build < 25600 and 'id_spell' or 'id_parent', self._spell_db, 'level')
             link(self._spellcooldowns_db, self._options.build < 25600 and 'id_spell' or 'id_parent', self._spell_db, 'cooldown')
-            link(self._spellauraoptions_db, self._optoins.build < 25600 and 'id_spell' or 'id_parent', self._spell_db, 'aura_option')
+            link(self._spellauraoptions_db, self._options.build < 25600 and 'id_spell' or 'id_parent', self._spell_db, 'aura_option')
             link(self._spellequippeditems_db, 'id_spell', self._spell_db, 'equipped_item')
             link(self._spellclassoptions_db, 'id_spell', self._spell_db, 'class_option')
             link(self._spellshapeshift_db, 'id_spell', self._spell_db, 'shapeshift')
@@ -2663,8 +2666,12 @@ class SpellDataGenerator(DataGenerator):
             hotfix_data += hfd
 
             # 7, 8, 9
-            fields += effect.get_link('scaling').field('average', 'delta', 'bonus')
-            f, hfd = effect.get_link('scaling').get_hotfix_info(('average', 6), ('delta', 7), ('bonus', 8))
+            if self._options.build < 25600:
+                fields += effect.get_link('scaling').field('average', 'delta', 'bonus')
+                f, hfd = effect.get_link('scaling').get_hotfix_info(('average', 6), ('delta', 7), ('bonus', 8))
+            else:
+                fields += effect.field('average', 'delta', 'bonus')
+                f, hfd = effect.get_hotfix_info(('average', 6), ('delta', 7), ('bonus', 8))
             hotfix_flags |= f
             hotfix_data += hfd
             # 10, 11, 12

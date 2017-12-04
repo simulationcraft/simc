@@ -674,7 +674,7 @@ class WDC1Parser(LegionWDBParser):
         else:
             formats = None
 
-        if len(formats) != self.n_fields():
+        if formats and len(formats) != self.n_fields():
             logging.error('%s: Data format mismatch, record has %u fields, format file %u',
                 self.full_name(), self.n_fields(), len(formats))
             return False

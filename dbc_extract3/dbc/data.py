@@ -55,7 +55,7 @@ class DBCRecord(RawDBCRecord):
     @classmethod
     def default(cls, *args):
         if not cls.__d:
-            cls.__d = cls(None, 0, None)
+            cls.__d = cls(None, 0, None, -1)
 
         # Ugly++ but it will have to do
         for i in range(0, len(args), 2):
@@ -292,8 +292,8 @@ class DBCRecord(RawDBCRecord):
 class Spell(DBCRecord):
     __slots__ = ( '_effects', 'max_effect_index' )
 
-    def __init__(self, dbc_parser, dbc_id, data):
-        DBCRecord.__init__(self, dbc_parser, dbc_id, data)
+    def __init__(self, dbc_parser, dbc_id, data, key_id):
+        DBCRecord.__init__(self, dbc_parser, dbc_id, data, key_id)
 
         self._effects = []
         self.max_effect_index = -1

@@ -2,6 +2,7 @@ DBFilesClient\Achievement.db2
 DBFilesClient\Achievement_Category.db2
 DBFilesClient\AdventureJournal.db2
 DBFilesClient\AdventureMapPOI.db2
+DBFilesClient\AlliedRaceRacialAbility.db2
 DBFilesClient\AnimKit.db2
 DBFilesClient\AnimKitBoneSet.db2
 DBFilesClient\AnimKitBoneSetAlias.db2
@@ -39,6 +40,7 @@ DBFilesClient\AuctionHouse.db2
 DBFilesClient\BackgroundColor.db2
 DBFilesClient\BankBagSlotPrices.db2
 DBFilesClient\BannedAddOns.db2
+DBFilesClient\BannedAddons.db2
 DBFilesClient\BarberShopStyle.db2
 DBFilesClient\BattlePetAbility.db2
 DBFilesClient\BattlePetAbilityEffect.db2
@@ -46,6 +48,7 @@ DBFilesClient\BattlePetAbilityState.db2
 DBFilesClient\BattlePetAbilityTurn.db2
 DBFilesClient\BattlePetBreedQuality.db2
 DBFilesClient\BattlePetBreedState.db2
+DBFilesClient\BattlePetDisplayOverride.db2
 DBFilesClient\BattlePetEffectProperties.db2
 DBFilesClient\BattlePetNPCTeamMember.db2
 DBFilesClient\BattlePetSpecies.db2
@@ -82,6 +85,7 @@ DBFilesClient\CharacterFaceBoneSet.db2
 DBFilesClient\CharacterFacialHairStyles.db2
 DBFilesClient\CharacterLoadout.db2
 DBFilesClient\CharacterLoadoutItem.db2
+DBFilesClient\CharacterServiceInfo.db2
 DBFilesClient\Chat.db2
 DBFilesClient\ChatChannels.db2
 DBFilesClient\ChatProfanity.db2
@@ -302,13 +306,19 @@ DBFilesClient\JournalEncounterCreature.db2
 DBFilesClient\JournalEncounterItem.db2
 DBFilesClient\JournalEncounterSection.db2
 DBFilesClient\JournalEncounterXDifficulty.db2
+DBFilesClient\JournalEncounterXMapLoc.db2
 DBFilesClient\JournalInstance.db2
 DBFilesClient\JournalItemXDifficulty.db2
 DBFilesClient\JournalSectionXDifficulty.db2
 DBFilesClient\JournalTier.db2
 DBFilesClient\JournalTierXInstance.db2
 DBFilesClient\KeyChain.db2
+DBFilesClient\Keychain.db2
 DBFilesClient\KeystoneAffix.db2
+DBFilesClient\LFGDungeonExpansion.db2
+DBFilesClient\LFGDungeonGroup.db2
+DBFilesClient\LFGDungeons.db2
+DBFilesClient\LFGRoleRequirement.db2
 DBFilesClient\LanguageWords.db2
 DBFilesClient\Languages.db2
 DBFilesClient\LfgDungeonExpansion.db2
@@ -344,6 +354,7 @@ DBFilesClient\MapCelestialBody.db2
 DBFilesClient\MapChallengeMode.db2
 DBFilesClient\MapDifficulty.db2
 DBFilesClient\MapDifficultyXCondition.db2
+DBFilesClient\MapLoadingScreen.db2
 DBFilesClient\MarketingPromotionsXLocale.db2
 DBFilesClient\Material.db2
 DBFilesClient\MinorTalent.db2
@@ -360,6 +371,7 @@ DBFilesClient\Movement.db2
 DBFilesClient\Movie.db2
 DBFilesClient\MovieFileData.db2
 DBFilesClient\MovieVariation.db2
+DBFilesClient\NPCModelItemSlotDisplayInfo.db2
 DBFilesClient\NPCSounds.db2
 DBFilesClient\NameGen.db2
 DBFilesClient\NamesProfanity.db2
@@ -373,6 +385,9 @@ DBFilesClient\ObjectEffectPackage.db2
 DBFilesClient\ObjectEffectPackageElem.db2
 DBFilesClient\OutlineEffect.db2
 DBFilesClient\OverrideSpellData.db2
+DBFilesClient\PVPBracketTypes.db2
+DBFilesClient\PVPDifficulty.db2
+DBFilesClient\PVPItem.db2
 DBFilesClient\PageText.db2
 DBFilesClient\PageTextMaterial.db2
 DBFilesClient\PaperDollItemFrame.db2
@@ -419,6 +434,7 @@ DBFilesClient\QuestXGroupActivity.db2
 DBFilesClient\QuestXP.db2
 DBFilesClient\RacialMounts.db2
 DBFilesClient\RandPropPoints.db2
+DBFilesClient\RelicSlotTierRequirement.db2
 DBFilesClient\RelicTalent.db2
 DBFilesClient\ResearchBranch.db2
 DBFilesClient\ResearchField.db2
@@ -430,11 +446,13 @@ DBFilesClient\RewardPackXCurrencyType.db2
 DBFilesClient\RewardPackXItem.db2
 DBFilesClient\RibbonQuality.db2
 DBFilesClient\RulesetItemUpgrade.db2
+DBFilesClient\SDReplacementModel.db2
 DBFilesClient\ScalingStatDistribution.db2
 DBFilesClient\Scenario.db2
 DBFilesClient\ScenarioEventEntry.db2
 DBFilesClient\ScenarioStep.db2
 DBFilesClient\SceneScript.db2
+DBFilesClient\SceneScriptGlobalText.db2
 DBFilesClient\SceneScriptPackage.db2
 DBFilesClient\SceneScriptPackageMember.db2
 DBFilesClient\ScheduledInterval.db2
@@ -455,6 +473,7 @@ DBFilesClient\SoundBus.db2
 DBFilesClient\SoundBusOverride.db2
 DBFilesClient\SoundEmitterPillPoints.db2
 DBFilesClient\SoundEmitters.db2
+DBFilesClient\SoundEnvelope.db2
 DBFilesClient\SoundFilter.db2
 DBFilesClient\SoundFilterElem.db2
 DBFilesClient\SoundKit.db2
@@ -530,7 +549,9 @@ DBFilesClient\SpellVisualKitAreaModel.db2
 DBFilesClient\SpellVisualKitEffect.db2
 DBFilesClient\SpellVisualKitModelAttach.db2
 DBFilesClient\SpellVisualMissile.db2
+DBFilesClient\SpellXDescriptionVariables.db2
 DBFilesClient\SpellXSpellVisual.db2
+DBFilesClient\StartupFiles.db2
 DBFilesClient\Startup_Strings.db2
 DBFilesClient\Stationery.db2
 DBFilesClient\StringLookups.db2
@@ -562,6 +583,8 @@ DBFilesClient\Treasure.db2
 DBFilesClient\Trophy.db2
 DBFilesClient\TrophyInstance.db2
 DBFilesClient\TrophyType.db2
+DBFilesClient\UIExpansionDisplayInfo.db2
+DBFilesClient\UIExpansionDisplayInfoIcon.db2
 DBFilesClient\UiCamFbackTransmogChrRace.db2
 DBFilesClient\UiCamFbackTransmogWeapon.db2
 DBFilesClient\UiCamera.db2
@@ -616,6 +639,7 @@ DBFilesClient\ZoneIntroMusicTable.db2
 DBFilesClient\ZoneLight.db2
 DBFilesClient\ZoneLightPoint.db2
 DBFilesClient\ZoneMusic.db2
+DBFilesClient\ZoneStory.db2
 GameTablesServer\AvoidanceDiminishing.txt
 GameTablesServer\ChanceToDodge.txt
 GameTablesServer\ChanceToDodgeBase.txt
