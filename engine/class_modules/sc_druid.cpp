@@ -10444,6 +10444,17 @@ struct druid_module_t : public module_t
       .verification_value( 1.9 );
       */
 
+    hotfix::register_spell("Druid", "2017-12-04", "Starsurge and Starfall now increase your Haste by 2% (was 3%), stacking up to 4 times (was 5) #1", 242232)
+            .field("max_stack")
+            .operation(hotfix::HOTFIX_SET)
+            .modifier(4)
+            .verification_value(5);
+
+    hotfix::register_effect("Druid", "2017-12-04", "Starsurge and Starfall now increase your Haste by 2% (was 3%), stacking up to 4 times (was 5) #2", 367815)
+            .field("base_value")
+            .operation(hotfix::HOTFIX_SET)
+            .modifier(2)
+            .verification_value(3);
   }
 
   virtual void combat_begin( sim_t* ) const override {}
