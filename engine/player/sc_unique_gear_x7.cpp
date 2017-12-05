@@ -133,12 +133,12 @@ namespace item
   void gorshalach_legacy( special_effect_t&            );
   void forgefiends_fabricator( special_effect_t&       );
   void forgefiends_fabricator_detonate(special_effect_t&);
-  
+  void diimas_glacial_aegis( special_effect_t&         );
+
   // TODO
   // Aggramar's conviction full health heal ?
   // Eye of f'harg / shatug interaction
   // Smoldering Titanguard
-  // Diima's Glacial Aegis
   // Riftworld Codex
 
   // 7.2.0 Dungeon
@@ -2466,6 +2466,19 @@ void item::forgefiends_fabricator_detonate( special_effect_t& effect )
   effect.execute_action = new fire_mines_detonator_t( effect );
 }
 
+// Diima's Glacial Aegis
+
+struct chilling_nova_t : public proc_spell_t
+{
+  chilling_nova_t( special_effect_t& effect ) :
+    proc_spell_t( "chilling_nova", effect.player, effect.driver(), effect.item )
+  { }
+};
+
+void item::diimas_glacial_aegis( special_effect_t& effect )
+{
+  effect.execute_action = new chilling_nova_t( effect );
+}
 
 // Toe Knee's Promise ======================================================
 
@@ -6663,6 +6676,7 @@ void unique_gear::register_special_effects_x7()
   register_special_effect( 253326, item::gorshalach_legacy         );
   register_special_effect( 253310, item::forgefiends_fabricator    );
   register_special_effect( 253322, item::forgefiends_fabricator_detonate  );
+  register_special_effect( 251940, item::diimas_glacial_aegis      );
 
   /* Legion 7.2.0 Dungeon */
   register_special_effect( 238498, item::dreadstone_of_endless_shadows );
