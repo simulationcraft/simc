@@ -1616,8 +1616,8 @@ struct bladestorm_t: public warrior_attack_t
     {
       bladestorm_oh -> execute();
     }
-    // Hotfix as of 2014-12-05: 3 -> 2 ticks with an additional MS. Assume ticks 0 and 3.
-    if ( mortal_strike && (d -> current_tick == 0 || d -> current_tick == 3 ) )
+    // Hotfix as of 2014-12-05: 3 -> 2 ticks with an additional MS. Seems to be ticks 1 and 3 (zero-indexed).
+    if ( mortal_strike && (d -> current_tick == 1 || d -> current_tick == 3 ) )
     {
       auto t = select_random_target();
 
@@ -3395,8 +3395,8 @@ struct ravager_t: public warrior_attack_t
     ravager -> execute();
   // the 4pc occurs on the first and 4th tick
   // if (mortal_strike && (d->current_tick == 1 || d->current_tick == 4))
-  // As of 2017-12-05, this was hotfixed to only one tick total. Assume first one.
-  if (mortal_strike && d -> current_tick == 1)
+  // As of 2017-12-05, this was hotfixed to only one tick total. Seems to be third one.
+  if (mortal_strike && d -> current_tick == 3)
     {
       auto t = select_random_target();
 
