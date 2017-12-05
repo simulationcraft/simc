@@ -8611,31 +8611,31 @@ struct warlock_module_t: public module_t
       .modifier( 0.94 )
       .verification_value( 0.03770 );
 
-    hotfix::register_effect( "Warlock", "2017-12-04", "Unstable Affliction damage reduced by 4%", 352664 )
+    hotfix::register_effect( "Warlock", "2017-12-04", "Unstable Affliction 1 damage reduced by 4%", 352664 )
       .field( "sp_coefficient" )
       .operation( hotfix::HOTFIX_MUL )
       .modifier( 0.96 )
       .verification_value( 0.966 );
 
-    hotfix::register_effect( "Warlock", "2017-12-04", "Unstable Affliction damage reduced by 4%", 352671 )
+    hotfix::register_effect( "Warlock", "2017-12-04", "Unstable Affliction 2 damage reduced by 4%", 352671 )
       .field( "sp_coefficient" )
       .operation( hotfix::HOTFIX_MUL )
       .modifier( 0.96 )
       .verification_value( 0.966 );
 
-    hotfix::register_effect( "Warlock", "2017-12-04", "Unstable Affliction damage reduced by 4%", 352672 )
+    hotfix::register_effect( "Warlock", "2017-12-04", "Unstable Affliction 3 damage reduced by 4%", 352672 )
       .field( "sp_coefficient" )
       .operation( hotfix::HOTFIX_MUL )
       .modifier( 0.96 )
       .verification_value( 0.966 );
 
-    hotfix::register_effect( "Warlock", "2017-12-04", "Unstable Affliction damage reduced by 4%", 352673 )
+    hotfix::register_effect( "Warlock", "2017-12-04", "Unstable Affliction 4 damage reduced by 4%", 352673 )
       .field( "sp_coefficient" )
       .operation( hotfix::HOTFIX_MUL )
       .modifier( 0.96 )
       .verification_value( 0.966 );
 
-    hotfix::register_effect( "Warlock", "2017-12-04", "Unstable Affliction damage reduced by 4%", 352674 )
+    hotfix::register_effect( "Warlock", "2017-12-04", "Unstable Affliction 5 damage reduced by 4%", 352674 )
       .field( "sp_coefficient" )
       .operation( hotfix::HOTFIX_MUL )
       .modifier( 0.96 )
