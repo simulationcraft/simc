@@ -7078,17 +7078,6 @@ struct warrior_module_t: public module_t
 
   virtual void register_hotfixes() const override
   {
-    hotfix::register_effect("Warrior", "2017-12-04", "The amount of bonus Mortal Strike damage events has been reduced to 2 during Bladestorm (was 3)", 367891)
-            .field("base_value")
-            .operation(hotfix::HOTFIX_SET)
-            .modifier(20)
-            .verification_value(30);
-
-    hotfix::register_effect("Warrior", "2017-12-04", "The amount of bonus Mortal Strike damage events has been reduced to 1 during Ravager (was 2)", 367892)
-            .field("base_value")
-            .operation(hotfix::HOTFIX_SET)
-            .modifier(10)
-            .verification_value(20);
   }
 
   virtual void init( player_t* ) const override {}

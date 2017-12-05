@@ -9345,29 +9345,6 @@ struct rogue_module_t : public module_t
 
   void register_hotfixes() const override
   {
-    hotfix::register_effect("Rogue", "2017-12-04", "All Outlaw damage abilities increased by 4% #1", 179720)
-            .field("base_value")
-            .operation(hotfix::HOTFIX_SET)
-            .modifier(10.0)
-            .verification_value(6.0);
-
-    hotfix::register_effect("Rogue", "2017-12-04", "All Outlaw damage abilities increased by 4% #2", 191056)
-            .field("base_value")
-            .operation(hotfix::HOTFIX_SET)
-            .modifier(10.0)
-            .verification_value(6.0);
-
-    hotfix::register_spell("Rogue", "2017-12-04", " Backstab and Shadowstrike now have a 4% chance (was 3%) to grant  Shadow Gestures", 251788)
-            .field("proc_chance")
-            .operation(hotfix::HOTFIX_SET)
-            .modifier(4)
-            .verification_value(3);
-
-    hotfix::register_effect("Rogue", "2017-12-04", "Your Deadly or Wound Poison critical strike now generate 3 Energy (was 2 Energy)", 472101)
-            .field("base_value")
-            .operation(hotfix::HOTFIX_SET)
-            .modifier(3)
-            .verification_value(2);
   }
 
   virtual void init( player_t* ) const override {}

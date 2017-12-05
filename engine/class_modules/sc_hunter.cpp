@@ -7155,17 +7155,6 @@ struct hunter_module_t: public module_t
 
   void register_hotfixes() const override
   {
-    hotfix::register_effect("Hunter", "2017-12-04", "Kill Command now reduces the cooldown of Aspect of the Wild by 2.5 seconds (was 1.5 seconds)", 471340)
-            .field("base_value")
-            .operation(hotfix::HOTFIX_SET)
-            .modifier(2500)
-            .verification_value(1500);
-
-    hotfix::register_effect("Hunter", "2017-12-04", "Marked Shot now has a 50% chance (was 30%) to fire an extra Marked shot at up to 3 additional targets", 471337)
-            .field("base_value")
-            .operation(hotfix::HOTFIX_SET)
-            .modifier(50)
-            .verification_value(30);
   }
 
   void combat_begin( sim_t* ) const override {}
