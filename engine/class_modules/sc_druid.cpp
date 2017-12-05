@@ -8084,8 +8084,8 @@ void druid_t::apl_balance()
   
   ST -> add_talent( this, "Force of Nature");
   ST -> add_talent( this, "Stellar Flare", "target_if=refreshable,if=target.time_to_die>10");
-  ST -> add_action( this, "Moonfire", "if=((talent.natures_balance.enabled&remains<3)|remains<6.6)&astral_power.deficit>7&target.time_to_die>8");
-  ST -> add_action( this, "Sunfire", "if=((talent.natures_balance.enabled&remains<3)|remains<5.4)&astral_power.deficit>7&target.time_to_die>8");
+  ST -> add_action( this, "Moonfire", "target_if=refreshable,if=((talent.natures_balance.enabled&remains<3)|remains<6.6)&astral_power.deficit>7&target.time_to_die>8");
+  ST -> add_action( this, "Sunfire", "target_if=refreshable,if=((talent.natures_balance.enabled&remains<3)|remains<5.4)&astral_power.deficit>7&target.time_to_die>8");
   ST -> add_action( this, "Starfall", "if=buff.oneths_overconfidence.react&(!buff.astral_acceleration.up|buff.astral_acceleration.remains>5|astral_power.deficit<44)");
   ST -> add_action( this, "Solar Wrath", "if=buff.solar_empowerment.stack=3");
   ST -> add_action( this, "Lunar Strike", "if=buff.lunar_empowerment.stack=3");
