@@ -8599,13 +8599,13 @@ struct warlock_module_t: public module_t
       .modifier( 75 )
       .verification_value( 50 );
 
-    hotfix::register_effect( "Warlock", "2017-12-04", "Corruption damage reduced by 4%.", 198369 )
+    hotfix::register_effect( "Warlock", "2017-12-04", "Corruption damage reduced by 6%.", 198369 )
       .field( "sp_coefficient" )
       .operation( hotfix::HOTFIX_MUL )
       .modifier( 0.94 )
       .verification_value( 0.345 );
 
-    hotfix::register_effect( "Warlock", "2017-12-04", "Agony damage reduced by 4%.", 374 )
+    hotfix::register_effect( "Warlock", "2017-12-04", "Agony damage reduced by 6%.", 374 )
       .field( "sp_coefficient" )
       .operation( hotfix::HOTFIX_MUL )
       .modifier( 0.94 )
