@@ -112,11 +112,18 @@ namespace item
   void specter_of_betrayal( special_effect_t&          );
   void cradle_of_anguish( special_effect_t&            );
 
+  // TODO
+  // Feverish Carapace
+  // Shifting Cosmic Sliver
+  // Leviathan's Hunger
+  // RGM ?
+
   // 7.3.2 Raid
   void amanthuls_vision( special_effect_t&             );
   void golganneths_vitality( special_effect_t&         );
   void khazgoroths_courage( special_effect_t&          );
   void norgannons_prowess( special_effect_t&           );
+  void aggramars_conviction( special_effect_t&         );
   void prototype_personnel_decimator( special_effect_t& );
   void acrid_catalyst_injector( special_effect_t&      );
   void vitality_resonator( special_effect_t&           );
@@ -126,6 +133,13 @@ namespace item
   void gorshalach_legacy( special_effect_t&            );
   void forgefiends_fabricator( special_effect_t&       );
   void forgefiends_fabricator_detonate(special_effect_t&);
+  
+  // TODO
+  // Aggramar's conviction full health heal ?
+  // Eye of f'harg / shatug interaction
+  // Smoldering Titanguard
+  // Diima's Glacial Aegis
+  // Riftworld Codex
 
   // 7.2.0 Dungeon
   void dreadstone_of_endless_shadows( special_effect_t& );
@@ -1854,6 +1868,29 @@ void item::norgannons_prowess( special_effect_t& effect )
   } );
 
   secondary_cb -> buff = empower_buff;
+}
+
+// Aggramar's Conviction
+
+void item::aggramars_conviction( special_effect_t& effect )
+{
+  // Create the buff beforehand so we can register it as a pantheon marker buff to the pantheon
+  // state system
+  effect.custom_buff = effect.create_buff();
+
+  new pantheon_proc_callback_t( effect, effect.custom_buff );
+
+  // Empower effect
+  auto empower_spell = effect.player -> find_spell( 256831 );
+  auto empower_amount = empower_spell -> effectN( 1 ).average( effect.item );
+  // TODO : check if the max health increase is affected by % health mods or added after.
+  // Currently assumes that the health increase is affected by % health increase effects
+  stat_buff_t* empower_buff = stat_buff_creator_t( effect.player, "aggramars_fortitude", empower_spell, effect.item )
+    .add_stat( STAT_MAX_HEALTH, empower_amount );
+
+  effect.player -> sim -> expansion_data.pantheon_proxy -> register_pantheon_effect( effect.custom_buff, [ empower_buff ]() {
+    empower_buff -> trigger();
+  } );
 }
 
 // Prototype Personnel Decimator ===========================================
@@ -6622,6 +6659,7 @@ void unique_gear::register_special_effects_x7()
   register_special_effect( 256819, item::golganneths_vitality      );
   register_special_effect( 256825, item::khazgoroths_courage       );
   register_special_effect( 256827, item::norgannons_prowess        );
+  register_special_effect( 256815, item::aggramars_conviction      );
   register_special_effect( 253242, item::prototype_personnel_decimator );
   register_special_effect( 253259, item::acrid_catalyst_injector   );
   register_special_effect( 253258, item::vitality_resonator        );
