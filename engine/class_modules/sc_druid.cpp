@@ -3268,6 +3268,18 @@ struct ferocious_bite_t : public cat_attack_t
     return cat_attack_t::ready();
   }
 
+  double cost() const override
+  {
+    double c = cat_attack_t::cost();
+
+    if ( p() -> buff.apex_predator -> check() )
+    {
+      c *= (1 - p() -> buff.apex_predator -> data().effectN(1).percent() );
+    }
+
+    return c;
+  }
+
   void execute() override
   {
     // Berserk does affect the additional energy consumption.
@@ -3339,6 +3351,12 @@ struct ferocious_bite_t : public cat_attack_t
   double action_multiplier() const override
   {
     double am = cat_attack_t::action_multiplier();
+
+    if ( p() -> buff.apex_predator -> up() )
+    {
+      am *= 2.0;
+      return am;
+    }
 
     am *= p() -> resources.current[ RESOURCE_COMBO_POINT ]
       / p() -> resources.max[ RESOURCE_COMBO_POINT ];
@@ -3644,7 +3662,7 @@ struct rip_t : public cat_attack_t
      trigger_wildshapers_clutch(d->state);
 
      trigger_bloody_gash(d->target, d->state->result_total);
-    p() -> buff.apex_predator -> trigger();
+     p() -> buff.apex_predator -> trigger();
 
   }
 
@@ -6036,6 +6054,7 @@ struct prowl_t : public druid_spell_t
     autoshift = form_mask = CAT_FORM;
 
     trigger_gcd = timespan_t::zero();
+    use_off_gcd = true;
     harmful = false;
     ignore_false_positive = true;
   }
@@ -8393,7 +8412,7 @@ void druid_t::init_action_list()
 {
 #ifdef NDEBUG // Only restrict on release builds.
   // Restoration isn't fully supported atm
-  if ( specialization() == DRUID_RESTORATION & role != ROLE_ATTACK)
+  if ( specialization() == DRUID_RESTORATION && role != ROLE_ATTACK)
   {
     if ( ! quiet )
       sim -> errorf( "Druid restoration healing for player %s is not currently supported.", name() );
