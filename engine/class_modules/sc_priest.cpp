@@ -5614,28 +5614,27 @@ struct priest_module_t final : public module_t
   }
   void register_hotfixes() const override
   {
-    /** December 5th 2017 hotfixes
-      */
+    /** December 5th 2017 hotfixes **/
 	  
-	  hotfix::register_effect("Priest", "2017-12-04", "Shadow Priest damage increased by 3%", 191068)
+	  hotfix::register_effect("Priest", "2017-12-05", "Shadow Priest damage increased by 3%", 191068)
 		  .field("base_value")
 		  .operation(hotfix::HOTFIX_SET)
 		  .modifier(23.0)
 		  .verification_value(20.0);
 
-	  hotfix::register_effect("Priest", "2017-12-04", "Shadow Priest damage increased by 3%", 179717)
+	  hotfix::register_effect("Priest", "2017-12-05", "Shadow Priest damage increased by 3%", 179717)
 		  .field("base_value")
 		  .operation(hotfix::HOTFIX_SET)
 		  .modifier(23.0)
 		  .verification_value(20.0);
 
-	  hotfix::register_effect("Priest", "2017-12-04", "Vampiric Touch damage reduced by 12%.", 25010)
+	  hotfix::register_effect("Priest", "2017-12-05", "Vampiric Touch damage reduced by 15%.", 25010)
 		  .field("sp_coefficient")
 		  .operation(hotfix::HOTFIX_SET)
 		  .modifier(0.579)
 		  .verification_value(0.6816);
 
-	  hotfix::register_effect("Priest", "2017-12-04", "Shadow Word: Pain damage reduced by 12%.", 254257)
+	  hotfix::register_effect("Priest", "2017-12-05", "Shadow Word: Pain damage reduced by 15%.", 254257)
 		  .field("sp_coefficient")
 		  .operation(hotfix::HOTFIX_SET)
 		  .modifier(0.31)

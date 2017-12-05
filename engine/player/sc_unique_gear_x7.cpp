@@ -112,11 +112,18 @@ namespace item
   void specter_of_betrayal( special_effect_t&          );
   void cradle_of_anguish( special_effect_t&            );
 
+  // TODO
+  // Feverish Carapace
+  // Shifting Cosmic Sliver
+  // Leviathan's Hunger
+  // Recompiled Guardian Module ? (defensive only)
+
   // 7.3.2 Raid
   void amanthuls_vision( special_effect_t&             );
   void golganneths_vitality( special_effect_t&         );
   void khazgoroths_courage( special_effect_t&          );
   void norgannons_prowess( special_effect_t&           );
+  void aggramars_conviction( special_effect_t&         );
   void prototype_personnel_decimator( special_effect_t& );
   void acrid_catalyst_injector( special_effect_t&      );
   void vitality_resonator( special_effect_t&           );
@@ -126,6 +133,13 @@ namespace item
   void gorshalach_legacy( special_effect_t&            );
   void forgefiends_fabricator( special_effect_t&       );
   void forgefiends_fabricator_detonate(special_effect_t&);
+  void diimas_glacial_aegis( special_effect_t&         );
+
+  // TODO
+  // Aggramar's conviction full health heal ?
+  // Eye of f'harg / shatug interaction
+  // Smoldering Titanguard
+  // Riftworld Codex
 
   // 7.2.0 Dungeon
   void dreadstone_of_endless_shadows( special_effect_t& );
@@ -1856,6 +1870,29 @@ void item::norgannons_prowess( special_effect_t& effect )
   secondary_cb -> buff = empower_buff;
 }
 
+// Aggramar's Conviction
+
+void item::aggramars_conviction( special_effect_t& effect )
+{
+  // Create the buff beforehand so we can register it as a pantheon marker buff to the pantheon
+  // state system
+  effect.custom_buff = effect.create_buff();
+
+  new pantheon_proc_callback_t( effect, effect.custom_buff );
+
+  // Empower effect
+  auto empower_spell = effect.player -> find_spell( 256831 );
+  auto empower_amount = empower_spell -> effectN( 1 ).average( effect.item );
+  // TODO : check if the max health increase is affected by % health mods or added after.
+  // Currently assumes that the health increase is affected by % health increase effects
+  stat_buff_t* empower_buff = stat_buff_creator_t( effect.player, "aggramars_fortitude", empower_spell, effect.item )
+    .add_stat( STAT_MAX_HEALTH, empower_amount );
+
+  effect.player -> sim -> expansion_data.pantheon_proxy -> register_pantheon_effect( effect.custom_buff, [ empower_buff ]() {
+    empower_buff -> trigger();
+  } );
+}
+
 // Prototype Personnel Decimator ===========================================
 
 struct personnel_decimator_t : public proc_spell_t
@@ -2429,6 +2466,19 @@ void item::forgefiends_fabricator_detonate( special_effect_t& effect )
   effect.execute_action = new fire_mines_detonator_t( effect );
 }
 
+// Diima's Glacial Aegis
+
+struct chilling_nova_t : public proc_spell_t
+{
+  chilling_nova_t( special_effect_t& effect ) :
+    proc_spell_t( "chilling_nova", effect.player, effect.driver(), effect.item )
+  { }
+};
+
+void item::diimas_glacial_aegis( special_effect_t& effect )
+{
+  effect.execute_action = new chilling_nova_t( effect );
+}
 
 // Toe Knee's Promise ======================================================
 
@@ -2509,38 +2559,36 @@ struct majordomos_dinner_bell_t : proc_spell_t
 
   void execute() override
   {
-    // The way this works, despite the tooltip, is that the buff matches your current food buff
-    // If you don't have a food buff, it is random
+    // The way this works, despite the tooltip, is that the buff matches your current food buff on tank specs ONLY
+    
+    int selected_buff = -1;
 
-    // 5/18/2017 - Reports are that this was hotfixed on PTR to always be random
-
-    // CHECK IF STILL TRUE - 6/9/2017
-    /*
-    if( player->consumables.food && !maybe_ptr(player->dbc.ptr) )
+    if ( player -> consumables.food && player -> role == ROLE_TANK )
     {
-      const stat_buff_t* food_buff = dynamic_cast<stat_buff_t*>(player->consumables.food);
-      if (food_buff && food_buff->stats.size() > 0)
+      const stat_buff_t* food_buff = dynamic_cast<stat_buff_t*>( player -> consumables.food );
+      if ( food_buff && food_buff -> stats.size() > 0 )
       {
-        const stat_e food_stat = food_buff->stats.front().stat;
-        const auto it = range::find_if(buffs, [food_stat](const stat_buff_t* buff) {
-          if (buff->stats.size() > 0)
-            return buff->stats.front().stat == food_stat;
+        const stat_e food_stat = food_buff -> stats.front().stat;
+        // Check if the food buff matches one of the trinket's stat buffs
+        const auto index_buffs = range::find_if(buffs, [food_stat](const stat_buff_t* buff) {
+          if ( buff -> stats.size() > 0 )
+            return buff -> stats.front().stat == food_stat;
           else
             return false;
         });
 
-        if (it != buffs.end())
+        if ( index_buffs != buffs.end())
         {
-          (*it)->trigger();
+          ( *index_buffs ) -> trigger();
           return;
         }
       }
     }
-    */
+    
+    // If you don't have a secondary stat food buff, or aren't on a tank specialization the buff will be random
+    selected_buff = (int) ( player -> sim -> rng().real() * buffs.size() );
 
-    // We didn't find a matching food buff, so pick randomly
-    const int selected_buff = (int)(player->sim->rng().real() * buffs.size());
-    buffs[selected_buff]->trigger();
+    buffs[selected_buff] -> trigger();
   }
 };
 
@@ -6622,6 +6670,7 @@ void unique_gear::register_special_effects_x7()
   register_special_effect( 256819, item::golganneths_vitality      );
   register_special_effect( 256825, item::khazgoroths_courage       );
   register_special_effect( 256827, item::norgannons_prowess        );
+  register_special_effect( 256815, item::aggramars_conviction      );
   register_special_effect( 253242, item::prototype_personnel_decimator );
   register_special_effect( 253259, item::acrid_catalyst_injector   );
   register_special_effect( 253258, item::vitality_resonator        );
@@ -6631,6 +6680,7 @@ void unique_gear::register_special_effects_x7()
   register_special_effect( 253326, item::gorshalach_legacy         );
   register_special_effect( 253310, item::forgefiends_fabricator    );
   register_special_effect( 253322, item::forgefiends_fabricator_detonate  );
+  register_special_effect( 251940, item::diimas_glacial_aegis      );
 
   /* Legion 7.2.0 Dungeon */
   register_special_effect( 238498, item::dreadstone_of_endless_shadows );

@@ -1616,7 +1616,8 @@ struct bladestorm_t: public warrior_attack_t
     {
       bladestorm_oh -> execute();
     }
-    if ( mortal_strike && d -> ticks_left() % 2 != 0)
+    // Hotfix as of 2014-12-05: 3 -> 2 ticks with an additional MS. Assume ticks 0 and 3.
+    if ( mortal_strike && (d -> current_tick == 0 || d -> current_tick == 3 ) )
     {
       auto t = select_random_target();
 
@@ -3393,7 +3394,9 @@ struct ravager_t: public warrior_attack_t
     warrior_attack_t::tick( d );
     ravager -> execute();
   // the 4pc occurs on the first and 4th tick
-  if (mortal_strike && (d->current_tick == 1 || d->current_tick == 4))
+  // if (mortal_strike && (d->current_tick == 1 || d->current_tick == 4))
+  // As of 2017-12-05, this was hotfixed to only one tick total. Assume first one.
+  if (mortal_strike && d -> current_tick == 1)
     {
       auto t = select_random_target();
 
@@ -7075,6 +7078,17 @@ struct warrior_module_t: public module_t
 
   virtual void register_hotfixes() const override
   {
+    hotfix::register_effect("Warrior", "2017-12-04", "The amount of bonus Mortal Strike damage events has been reduced to 2 during Bladestorm (was 3)", 367891)
+            .field("base_value")
+            .operation(hotfix::HOTFIX_SET)
+            .modifier(20)
+            .verification_value(30);
+
+    hotfix::register_effect("Warrior", "2017-12-04", "The amount of bonus Mortal Strike damage events has been reduced to 1 during Ravager (was 2)", 367892)
+            .field("base_value")
+            .operation(hotfix::HOTFIX_SET)
+            .modifier(10)
+            .verification_value(20);
   }
 
   virtual void init( player_t* ) const override {}

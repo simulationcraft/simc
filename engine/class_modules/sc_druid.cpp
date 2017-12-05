@@ -7445,7 +7445,6 @@ void druid_t::create_buffs()
   buff.astral_acceleration   = haste_buff_creator_t(this, "astral_acceleration", find_spell(242232))
                                  .cd(timespan_t::zero())
                                  .default_value(find_spell(242232)->effectN(1).percent())
-                                 .max_stack(5)
                                  .refresh_behavior(BUFF_REFRESH_DISABLED);
                                 //.duration( timespan_t::from_seconds( 20.0 ) );
   buff.solar_solstice = buff_creator_t(this, "solar_solstice", find_spell(252767))
@@ -8085,8 +8084,8 @@ void druid_t::apl_balance()
   
   ST -> add_talent( this, "Force of Nature");
   ST -> add_talent( this, "Stellar Flare", "target_if=refreshable,if=target.time_to_die>10");
-  ST -> add_action( this, "Moonfire", "if=((talent.natures_balance.enabled&remains<3)|remains<6.6)&astral_power.deficit>7&target.time_to_die>8");
-  ST -> add_action( this, "Sunfire", "if=((talent.natures_balance.enabled&remains<3)|remains<5.4)&astral_power.deficit>7&target.time_to_die>8");
+  ST -> add_action( this, "Moonfire", "target_if=refreshable,if=((talent.natures_balance.enabled&remains<3)|remains<6.6)&astral_power.deficit>7&target.time_to_die>8");
+  ST -> add_action( this, "Sunfire", "target_if=refreshable,if=((talent.natures_balance.enabled&remains<3)|remains<5.4)&astral_power.deficit>7&target.time_to_die>8");
   ST -> add_action( this, "Starfall", "if=buff.oneths_overconfidence.react&(!buff.astral_acceleration.up|buff.astral_acceleration.remains>5|astral_power.deficit<44)");
   ST -> add_action( this, "Solar Wrath", "if=buff.solar_empowerment.stack=3");
   ST -> add_action( this, "Lunar Strike", "if=buff.lunar_empowerment.stack=3");
@@ -10444,6 +10443,17 @@ struct druid_module_t : public module_t
       .verification_value( 1.9 );
       */
 
+    hotfix::register_spell("Druid", "2017-12-04", "Starsurge and Starfall now increase your Haste by 2% (was 3%), stacking up to 4 times (was 5) #1", 242232)
+            .field("max_stack")
+            .operation(hotfix::HOTFIX_SET)
+            .modifier(4)
+            .verification_value(5);
+
+    hotfix::register_effect("Druid", "2017-12-04", "Starsurge and Starfall now increase your Haste by 2% (was 3%), stacking up to 4 times (was 5) #2", 367815)
+            .field("base_value")
+            .operation(hotfix::HOTFIX_SET)
+            .modifier(2)
+            .verification_value(3);
   }
 
   virtual void combat_begin( sim_t* ) const override {}
