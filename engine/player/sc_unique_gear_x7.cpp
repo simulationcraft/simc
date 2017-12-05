@@ -2569,20 +2569,24 @@ struct majordomos_dinner_bell_t : proc_spell_t
       if ( food_buff && food_buff -> stats.size() > 0 )
       {
         const stat_e food_stat = food_buff -> stats.front().stat;
-        // Majordomo's only works with secondary stats
-        if ( food_stat == STAT_CRIT_RATING ||
-             food_stat == STAT_HASTE_RATING || 
-             food_stat == STAT_MASTERY_RATING ||
-             food_stat == STAT_VERSATILITY_RATING
-            )
-          // Ugly but it turns the food stat into the right buff
-          selected_buff = food_stat - 28;
+        // Check if the food buff matches one of the trinket's stat buffs
+        const auto index_buffs = range::find_if(buffs, [food_stat](const stat_buff_t* buff) {
+          if ( buff -> stats.size() > 0 )
+            return buff -> stats.front().stat == food_stat;
+          else
+            return false;
+        });
+
+        if ( index_buffs != buffs.end())
+        {
+          ( *index_buffs ) -> trigger();
+          return;
+        }
       }
     }
+    
     // If you don't have a secondary stat food buff, or aren't on a tank specialization the buff will be random
-
-    if ( selected_buff == -1 )
-      selected_buff = (int) ( player -> sim -> rng().real() * buffs.size() );
+    selected_buff = (int) ( player -> sim -> rng().real() * buffs.size() );
 
     buffs[selected_buff] -> trigger();
   }
