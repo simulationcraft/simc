@@ -3292,6 +3292,7 @@ struct corruption_t: public warlock_spell_t
     dot_duration = data().effectN( 1 ).trigger() -> duration();
     spell_power_mod.tick = data().effectN( 1 ).trigger() -> effectN( 1 ).sp_coeff();
     base_tick_time = data().effectN( 1 ).trigger() -> effectN( 1 ).period();
+    base_multiplier *= 1.0 + p->spec.affliction->effectN( 2 ).percent();
 
     if ( p -> talents.absolute_corruption -> ok() )
     {
@@ -5452,6 +5453,15 @@ struct drain_soul_t: public warlock_spell_t
     cc += p() -> artifact.winnowing.percent() * ( p() -> buffs.deadwind_harvester -> check() ? 2.0 : 1.0 );
 
     return cc;
+  }
+
+  double composite_crit_damage_bonus_multiplier() const override
+  {
+    double cd = warlock_spell_t::composite_crit_damage_bonus_multiplier();
+
+    cd *= 1.0 + p()->artifact.perdition.percent() * ( p()->buffs.deadwind_harvester->check() ? 2.0 : 1.0 );
+
+    return cd;
   }
 
   virtual void tick( dot_t* d ) override
