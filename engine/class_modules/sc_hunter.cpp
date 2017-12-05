@@ -424,6 +424,7 @@ public:
   player_t* last_true_aim_target;
 
   bool clear_next_hunters_mark;
+  bool convergence_equipped;
 
   hunter_t( sim_t* sim, const std::string& name, race_e r = RACE_NONE ):
     player_t( sim, HUNTER, name, r ),
@@ -440,7 +441,8 @@ public:
     specs( specs_t() ),
     mastery( mastery_spells_t() ),
     last_true_aim_target( nullptr ),
-    clear_next_hunters_mark( true )
+    clear_next_hunters_mark( true ),
+    convergence_equipped( false )
   {
     // Cooldowns
     cooldowns.bestial_wrath   = get_cooldown( "bestial_wrath" );
@@ -490,6 +492,7 @@ public:
   void      init_base_stats() override;
   void      create_buffs() override;
   bool      init_special_effects() override;
+  bool      init_items() override;
   void      init_gains() override;
   void      init_position() override;
   void      init_procs() override;
@@ -4956,6 +4959,7 @@ struct kill_command_t: public hunter_spell_t
     if ( p() -> sets -> has_set_bonus( HUNTER_BEAST_MASTERY, T21, B4 ) )
     {
       auto reduction = p() -> sets -> set( HUNTER_BEAST_MASTERY, T21, B4 ) -> effectN( 1 ).time_value();
+      reduction *= p() -> convergence_equipped ? 0.5 : 1;
       p() -> cooldowns.aspect_of_the_wild -> adjust( - reduction );
     }
   }
@@ -6170,6 +6174,18 @@ bool hunter_t::init_special_effects()
   }
 
   return ret;
+}
+
+
+// hunter_t::init_items ===================================================
+
+bool hunter_t::init_items()
+{
+    bool ret = player_t::init_items();
+
+    convergence_equipped = find_item( 140806 );
+
+    return ret;
 }
 
 // hunter_t::init_gains =====================================================
