@@ -8591,65 +8591,65 @@ struct warlock_module_t: public module_t
 
   virtual void register_hotfixes() const override
   {
-    hotfix::register_effect( "Warlock", "2017-12-04", "Diabolic Raiment 4-piece – Spending a Soul Shard now has a chance to grant you 10% Haste (was 15%).", 367884 )
-      .field( "base_value" )
-      .operation( hotfix::HOTFIX_SET )
-      .modifier( 10 )
-      .verification_value( 15 );
+    //hotfix::register_effect( "Warlock", "2017-12-04", "Diabolic Raiment 4-piece – Spending a Soul Shard now has a chance to grant you 10% Haste (was 15%).", 367884 )
+    //  .field( "base_value" )
+    //  .operation( hotfix::HOTFIX_SET )
+    //  .modifier( 10 )
+    //  .verification_value( 15 );
 
-    hotfix::register_effect( "Warlock", "2017-12-04", "Grim Inquisitor’s Regalia 4-piece – Unstable Affliction and Seed of Corruption now increase the damage targets take from your Agony and Corruption by 15% (was 10%).", 473114 )
-      .field( "base_value" )
-      .operation( hotfix::HOTFIX_SET )
-      .modifier( 15 )
-      .verification_value( 10 );
+    //hotfix::register_effect( "Warlock", "2017-12-04", "Grim Inquisitor’s Regalia 4-piece – Unstable Affliction and Seed of Corruption now increase the damage targets take from your Agony and Corruption by 15% (was 10%).", 473114 )
+    //  .field( "base_value" )
+    //  .operation( hotfix::HOTFIX_SET )
+    //  .modifier( 15 )
+    //  .verification_value( 10 );
 
-    hotfix::register_effect( "Warlock", "2017-12-04", "Grim Inquisitor’s Regalia 4-piece – Demonic Empowerment now causes your Dreadstalkers to immediately cast another Dreadbite with 75% increased damage (was 50%).", 471461 )
-      .field( "base_value" )
-      .operation( hotfix::HOTFIX_SET )
-      .modifier( 75 )
-      .verification_value( 50 );
+    //hotfix::register_effect( "Warlock", "2017-12-04", "Grim Inquisitor’s Regalia 4-piece – Demonic Empowerment now causes your Dreadstalkers to immediately cast another Dreadbite with 75% increased damage (was 50%).", 471461 )
+    //  .field( "base_value" )
+    //  .operation( hotfix::HOTFIX_SET )
+    //  .modifier( 75 )
+    //  .verification_value( 50 );
 
-    hotfix::register_effect( "Warlock", "2017-12-04", "Corruption damage reduced by 6%.", 198369 )
-      .field( "sp_coefficient" )
-      .operation( hotfix::HOTFIX_MUL )
-      .modifier( 0.94 )
-      .verification_value( 0.345 );
+    //hotfix::register_effect( "Warlock", "2017-12-04", "Corruption damage reduced by 6%.", 198369 )
+    //  .field( "sp_coefficient" )
+    //  .operation( hotfix::HOTFIX_MUL )
+    //  .modifier( 0.94 )
+    //  .verification_value( 0.345 );
 
-    hotfix::register_effect( "Warlock", "2017-12-04", "Agony damage reduced by 6%.", 374 )
-      .field( "sp_coefficient" )
-      .operation( hotfix::HOTFIX_MUL )
-      .modifier( 0.94 )
-      .verification_value( 0.03770 );
+    //hotfix::register_effect( "Warlock", "2017-12-04", "Agony damage reduced by 6%.", 374 )
+    //  .field( "sp_coefficient" )
+    //  .operation( hotfix::HOTFIX_MUL )
+    //  .modifier( 0.94 )
+    //  .verification_value( 0.03770 );
 
-    hotfix::register_effect( "Warlock", "2017-12-04", "Unstable Affliction 1 damage reduced by 4%", 352664 )
-      .field( "sp_coefficient" )
-      .operation( hotfix::HOTFIX_MUL )
-      .modifier( 0.96 )
-      .verification_value( 0.966 );
+    //hotfix::register_effect( "Warlock", "2017-12-04", "Unstable Affliction 1 damage reduced by 4%", 352664 )
+    //  .field( "sp_coefficient" )
+    //  .operation( hotfix::HOTFIX_MUL )
+    //  .modifier( 0.96 )
+    //  .verification_value( 0.966 );
 
-    hotfix::register_effect( "Warlock", "2017-12-04", "Unstable Affliction 2 damage reduced by 4%", 352671 )
-      .field( "sp_coefficient" )
-      .operation( hotfix::HOTFIX_MUL )
-      .modifier( 0.96 )
-      .verification_value( 0.966 );
+    //hotfix::register_effect( "Warlock", "2017-12-04", "Unstable Affliction 2 damage reduced by 4%", 352671 )
+    //  .field( "sp_coefficient" )
+    //  .operation( hotfix::HOTFIX_MUL )
+    //  .modifier( 0.96 )
+    //  .verification_value( 0.966 );
 
-    hotfix::register_effect( "Warlock", "2017-12-04", "Unstable Affliction 3 damage reduced by 4%", 352672 )
-      .field( "sp_coefficient" )
-      .operation( hotfix::HOTFIX_MUL )
-      .modifier( 0.96 )
-      .verification_value( 0.966 );
+    //hotfix::register_effect( "Warlock", "2017-12-04", "Unstable Affliction 3 damage reduced by 4%", 352672 )
+    //  .field( "sp_coefficient" )
+    //  .operation( hotfix::HOTFIX_MUL )
+    //  .modifier( 0.96 )
+    //  .verification_value( 0.966 );
 
-    hotfix::register_effect( "Warlock", "2017-12-04", "Unstable Affliction 4 damage reduced by 4%", 352673 )
-      .field( "sp_coefficient" )
-      .operation( hotfix::HOTFIX_MUL )
-      .modifier( 0.96 )
-      .verification_value( 0.966 );
+    //hotfix::register_effect( "Warlock", "2017-12-04", "Unstable Affliction 4 damage reduced by 4%", 352673 )
+    //  .field( "sp_coefficient" )
+    //  .operation( hotfix::HOTFIX_MUL )
+    //  .modifier( 0.96 )
+    //  .verification_value( 0.966 );
 
-    hotfix::register_effect( "Warlock", "2017-12-04", "Unstable Affliction 5 damage reduced by 4%", 352674 )
-      .field( "sp_coefficient" )
-      .operation( hotfix::HOTFIX_MUL )
-      .modifier( 0.96 )
-      .verification_value( 0.966 );
+    //hotfix::register_effect( "Warlock", "2017-12-04", "Unstable Affliction 5 damage reduced by 4%", 352674 )
+    //  .field( "sp_coefficient" )
+    //  .operation( hotfix::HOTFIX_MUL )
+    //  .modifier( 0.96 )
+    //  .verification_value( 0.966 );
 
 
     //hotfix::register_effect( "Warlock", "2016-09-23", "Drain Life damage increased by 10%", 271 )
