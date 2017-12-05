@@ -116,7 +116,7 @@ namespace item
   // Feverish Carapace
   // Shifting Cosmic Sliver
   // Leviathan's Hunger
-  // RGM ?
+  // Recompiled Guardian Module ? (defensive only)
 
   // 7.3.2 Raid
   void amanthuls_vision( special_effect_t&             );
@@ -2546,38 +2546,32 @@ struct majordomos_dinner_bell_t : proc_spell_t
 
   void execute() override
   {
-    // The way this works, despite the tooltip, is that the buff matches your current food buff
-    // If you don't have a food buff, it is random
+    // The way this works, despite the tooltip, is that the buff matches your current food buff on tank specs ONLY
+    
+    int selected_buff = -1;
 
-    // 5/18/2017 - Reports are that this was hotfixed on PTR to always be random
-
-    // CHECK IF STILL TRUE - 6/9/2017
-    /*
-    if( player->consumables.food && !maybe_ptr(player->dbc.ptr) )
+    if ( player -> consumables.food && player -> role == ROLE_TANK )
     {
-      const stat_buff_t* food_buff = dynamic_cast<stat_buff_t*>(player->consumables.food);
-      if (food_buff && food_buff->stats.size() > 0)
+      const stat_buff_t* food_buff = dynamic_cast<stat_buff_t*>( player -> consumables.food );
+      if ( food_buff && food_buff -> stats.size() > 0 )
       {
-        const stat_e food_stat = food_buff->stats.front().stat;
-        const auto it = range::find_if(buffs, [food_stat](const stat_buff_t* buff) {
-          if (buff->stats.size() > 0)
-            return buff->stats.front().stat == food_stat;
-          else
-            return false;
-        });
-
-        if (it != buffs.end())
-        {
-          (*it)->trigger();
-          return;
-        }
+        const stat_e food_stat = food_buff -> stats.front().stat;
+        // Majordomo's only works with secondary stats
+        if ( food_stat == STAT_CRIT_RATING ||
+             food_stat == STAT_HASTE_RATING || 
+             food_stat == STAT_MASTERY_RATING ||
+             food_stat == STAT_VERSATILITY_RATING
+            )
+          // Ugly but it turns the food stat into the right buff
+          selected_buff = food_stat - 28;
       }
     }
-    */
+    // If you don't have a secondary stat food buff, or aren't on a tank specialization the buff will be random
 
-    // We didn't find a matching food buff, so pick randomly
-    const int selected_buff = (int)(player->sim->rng().real() * buffs.size());
-    buffs[selected_buff]->trigger();
+    if ( selected_buff == -1 )
+      selected_buff = (int) ( player -> sim -> rng().real() * buffs.size() );
+
+    buffs[selected_buff] -> trigger();
   }
 };
 
