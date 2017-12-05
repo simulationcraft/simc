@@ -1441,12 +1441,13 @@ Description      : Step through the shadows to appear behind your target and gai
 Tooltip          : Movement speed increased by $s2%.
 
 Name             : Cheated Death (id=45181) 
+Hotfixed         : Attributes
 Class            : Rogue
 School           : Holy
 Range            : 50000 yards
 Duration         : 360 seconds
 Attributes       : ........ ........ .......x x.xx.x..   .....x.. ..x..... ........ ........ 
-                 : x.x..... ......x. ...x.... ........   ........ ........ ........ ....x... 
+                 : x.x..... ......x. ...x.... ........   ........ ........ ....x... ....x... 
                  : .......x ........ ...x.... ........   ...x.... ........ .xx..... ........ 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : .....x.. ........ ........ ........   ........ ........ ........ ........ 
@@ -2526,11 +2527,13 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=179720)   : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
-                   Base Value: 6 | Scaled Value: 6 | Target: Self (1)
+                   Base Value: 10 | Scaled Value: 10 | Target: Self (1)
                    Affected Spells: Run Through (2098), Ambush (8676), Killing Spree (57841), Killing Spree Off-Hand (57842), Main Gauche (86392), Death from Above (152150), Pistol Shot (185763), Cannonball Barrage (185779), Saber Slash (193315), Ghostly Strike (196937), Riposte (199753), Between the Eyes (199804), Greed (202822), Greed (202823), Blunderbuss (202895)
+                   Hotfixed: Base Value (6 -> 10), Chain Multiplier (0 -> 1)
 #2 (id=191056)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Damage (22)
-                   Base Value: 6 | Scaled Value: 6 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 10 | Scaled Value: 10 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Run Through (2098), Ambush (8676), Killing Spree (57841), Killing Spree Off-Hand (57842), Main Gauche (86392), Death from Above (152150), Pistol Shot (185763), Cannonball Barrage (185779), Saber Slash (193315), Ghostly Strike (196937), Riposte (199753), Between the Eyes (199804), Greed (202822), Greed (202823), Blunderbuss (202895)
+                   Hotfixed: Base Value (6 -> 10), Chain Multiplier (0 -> 1)
 #3 (id=191057)   : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
                    Base Value: 30 | Scaled Value: 30 | Target: Self (1)
                    Affected Spells: Death from Above (152150)
