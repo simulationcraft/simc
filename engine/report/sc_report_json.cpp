@@ -669,11 +669,12 @@ js::sc_js_t to_json( const player_collected_data_t::buffed_stats_t& bs )
 
 void to_json( JsonOutput root,
               const std::vector<player_collected_data_t::action_sequence_data_t*>& asd,
-              const std::vector<resource_e>& relevant_resources )
+              const std::vector<resource_e>& relevant_resources,
+              const sim_t& sim )
 {
   root.make_array();
 
-  range::for_each( asd, [ &root, &relevant_resources ]( const player_collected_data_t::action_sequence_data_t* entry ) {
+  range::for_each( asd, [ &root, &relevant_resources, &sim ]( const player_collected_data_t::action_sequence_data_t* entry ) {
     auto json = root.add();
 
     json[ "time" ] = entry -> time;
@@ -691,11 +692,27 @@ void to_json( JsonOutput root,
     {
       auto buffs = json[ "buffs" ];
       buffs.make_array();
-      range::for_each( entry -> buff_list, [ &buffs ]( const std::pair<buff_t*, int> data ) {
+      range::for_each( entry -> buff_list, [ &buffs, &sim ]( const std::pair< buff_t*, std::vector<double> > data ) {
         auto entry = buffs.add();
 
         entry[ "name" ] = data.first -> name();
-        entry[ "stacks" ] = data.second;
+        entry[ "stacks" ] = data.second[0];
+        if ( sim.json_full_states )
+        {
+          entry[ "remains" ] = data.second[1];
+        }
+      } );
+    }
+    if ( sim.json_full_states && entry -> cooldown_list.size() > 0 )
+    {
+      auto cooldowns = json[ "cooldowns" ];
+      cooldowns.make_array();
+      range::for_each( entry -> cooldown_list, [ &cooldowns, &sim ]( const std::pair< cooldown_t*, std::vector<double>  > data ) {
+        auto entry = cooldowns.add();
+
+        entry[ "name" ] = data.first -> name();
+        entry[ "stacks" ] = data.second[ 0 ];
+        entry[ "remains" ] = data.second[ 1 ];
       } );
     }
 
@@ -861,12 +878,12 @@ void collected_data_to_json( JsonOutput root, const player_t& p )
 
     if ( ! cd.action_sequence_precombat.empty() )
     {
-      to_json( root[ "action_sequence_precombat" ], cd.action_sequence_precombat, relevant_resources );
+      to_json( root[ "action_sequence_precombat" ], cd.action_sequence_precombat, relevant_resources, sim );
     }
 
     if ( ! cd.action_sequence.empty() )
     {
-      to_json( root[ "action_sequence" ], cd.action_sequence, relevant_resources );
+      to_json( root[ "action_sequence" ], cd.action_sequence, relevant_resources, sim );
     }
 
     to_json( root[ "buffed_stats" ], cd.buffed_stats_snapshot, relevant_resources );
@@ -1831,6 +1848,10 @@ void print_json( sim_t& sim )
     // Print JSON report
     try
     {
+      if( sim.json_full_states )
+      {
+        std::cout << "\nReport will be generated with full state for each action.\n";
+      }
       Timer t( "JSON-New report" );
       if ( ! sim.profileset_enabled )
       {

@@ -1779,6 +1779,7 @@ struct sim_t : private sc_thread_t
   int separate_stats_by_actions;
   int report_raid_summary;
   int buff_uptime_timeline;
+  int json_full_states;
   int decorated_tooltips;
 
   int allow_potions;
@@ -3520,7 +3521,8 @@ struct player_collected_data_t
     const player_t* target;
     const timespan_t time;
     timespan_t wait_time;
-    std::vector<std::pair<buff_t*, int> > buff_list;
+    std::vector< std::pair< buff_t*, std::vector<double> > > buff_list;
+    std::vector< std::pair< cooldown_t*, std::vector<double> > > cooldown_list;
     std::array<double, RESOURCE_MAX> resource_snapshot;
     std::array<double, RESOURCE_MAX> resource_max_snapshot;
 

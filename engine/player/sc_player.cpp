@@ -11062,8 +11062,29 @@ player_collected_data_t::action_sequence_data_t::action_sequence_data_t( const a
   for ( size_t i = 0; i < p -> buff_list.size(); ++i )
   {
     buff_t* b = p -> buff_list[ i ];
-    if ( b -> check() && ! b -> quiet && ! b -> constant )
-      buff_list.push_back( std::make_pair( b, b -> check() ) );
+    if( b -> check() && !b -> quiet && !b -> constant )
+    {
+      std::vector<double> buff_args;
+      buff_args.push_back( b -> check() );
+      if( p -> sim -> json_full_states ) {
+        buff_args.push_back( b -> remains().total_seconds() );
+      }
+      buff_list.push_back( std::make_pair( b, buff_args ) );
+    }
+  }
+
+  if ( p -> sim -> json_full_states ) {
+    for ( size_t i = 0; i < p -> cooldown_list.size(); ++i )
+    {
+      cooldown_t* c = p -> cooldown_list[ i ];
+      if ( c -> down() )
+      {
+        std::vector<double> cooldown_args;
+        cooldown_args.push_back( c -> charges );
+        cooldown_args.push_back( c -> remains().total_seconds() );
+        cooldown_list.push_back( std::make_pair( c, cooldown_args ) );
+      }
+    }
   }
 
   range::fill( resource_snapshot, -1 );
@@ -11085,8 +11106,29 @@ player_collected_data_t::action_sequence_data_t::action_sequence_data_t( const t
   for ( size_t i = 0; i < p -> buff_list.size(); ++i )
   {
     buff_t* b = p -> buff_list[ i ];
-    if ( b -> check() && ! b -> quiet && ! b -> constant )
-      buff_list.push_back( std::make_pair( b, b -> check() ) );
+    if( b -> check() && !b -> quiet && !b -> constant )
+    {
+      std::vector<double> buff_args;
+      buff_args.push_back( b -> check() );
+      if( p -> sim -> json_full_states ) {
+        buff_args.push_back( b -> remains().total_seconds() );
+      }
+      buff_list.push_back( std::make_pair( b, buff_args ) );
+    }
+
+    if ( p -> sim -> json_full_states ) {
+      for ( size_t i = 0; i < p -> cooldown_list.size(); ++i )
+      {
+        cooldown_t* c = p -> cooldown_list[ i ];
+        if ( c -> down() )
+        {
+          std::vector<double> cooldown_args;
+          cooldown_args.push_back( c -> charges );
+          cooldown_args.push_back( c -> remains().total_seconds() );
+          cooldown_list.push_back( std::make_pair( c, cooldown_args ) );
+        }
+      }
+    }
   }
 
   range::fill( resource_snapshot, -1 );

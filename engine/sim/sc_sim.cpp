@@ -3163,6 +3163,7 @@ void sim_t::create_options()
   add_option( opt_bool( "save_raid_summary", save_raid_summary ) );
   add_option( opt_bool( "save_gear_comments", save_gear_comments ) );
   add_option( opt_bool( "buff_uptime_timeline", buff_uptime_timeline ) );
+  add_option( opt_bool( "json_full_states", json_full_states ) );
   // Bloodlust
   add_option( opt_int( "bloodlust_percent", bloodlust_percent ) );
   add_option( opt_timespan( "bloodlust_time", bloodlust_time ) );
