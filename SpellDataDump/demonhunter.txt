@@ -2465,12 +2465,13 @@ Description      : Sustaining fatal damage instead transforms you to Metamorphos
 This effect may only occur every $209261d.
 
 Name             : Uncontained Fel (id=209261) [Spell Family (107)] 
+Hotfixed         : Attributes
 Class            : Demon Hunter
 School           : Physical
 Range            : 50000 yards
 Duration         : 480 seconds
 Attributes       : ........ ........ ........ ..xx.x..   ........ ..x..... ........ ........ 
-                 : ..x..... ........ ........ ........   ........ ........ ........ ....x.x. 
+                 : ..x..... ........ ........ ........   ........ ........ ....x... ....x.x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
