@@ -5614,7 +5614,7 @@ struct priest_module_t final : public module_t
   }
   void register_hotfixes() const override
   {
-    /** December 5th 2017 hotfixes **/
+    /** December 5th 2017 hotfixes 
 	  
 	  hotfix::register_effect("Priest", "2017-12-05", "Shadow Priest damage increased by 3%", 191068)
 		  .field("base_value")
@@ -5639,7 +5639,7 @@ struct priest_module_t final : public module_t
 		  .operation(hotfix::HOTFIX_SET)
 		  .modifier(0.31)
 		  .verification_value(0.365);
-
+**/
   }
 
   void combat_begin( sim_t* ) const override
