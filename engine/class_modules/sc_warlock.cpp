@@ -3292,6 +3292,7 @@ struct corruption_t: public warlock_spell_t
     dot_duration = data().effectN( 1 ).trigger() -> duration();
     spell_power_mod.tick = data().effectN( 1 ).trigger() -> effectN( 1 ).sp_coeff();
     base_tick_time = data().effectN( 1 ).trigger() -> effectN( 1 ).period();
+    base_multiplier *= 1.0 + p->spec.affliction->effectN( 2 ).percent();
 
     if ( p -> talents.absolute_corruption -> ok() )
     {
@@ -5454,6 +5455,15 @@ struct drain_soul_t: public warlock_spell_t
     return cc;
   }
 
+  double composite_crit_damage_bonus_multiplier() const override
+  {
+    double cd = warlock_spell_t::composite_crit_damage_bonus_multiplier();
+
+    cd *= 1.0 + p()->artifact.perdition.percent() * ( p()->buffs.deadwind_harvester->check() ? 2.0 : 1.0 );
+
+    return cd;
+  }
+
   virtual void tick( dot_t* d ) override
   {
     if ( p() -> sets->has_set_bonus( WARLOCK_AFFLICTION, T18, B2 ) )
@@ -7258,7 +7268,7 @@ void warlock_t::apl_affliction()
   haunt->add_action( "summon_infernal,if=talent.grimoire_of_supremacy.enabled&spell_targets.summon_infernal>1&equipped.132379&!cooldown.sindorei_spite_icd.remains" );
   haunt->add_action( "berserking,if=prev_gcd.1.unstable_affliction|buff.soul_harvest.remains>=10" );
   haunt->add_action( "blood_fury" );
-  haunt->add_action( "soul_harvest,if=buff.soul_harvest.remains<=8&buff.active_uas.stack>=1" );
+  haunt->add_action( "soul_harvest,if=buff.soul_harvest.remains<=8&buff.active_uas.stack>=1&(raid_event.adds.in>20|active_enemies>1|!raid_event.adds.exists)" );
   for ( const std::string& item_action : get_item_actions() )
   {
     haunt->add_action( item_action );
@@ -7311,7 +7321,7 @@ void warlock_t::apl_affliction()
   writhe->add_action( "summon_infernal,if=talent.grimoire_of_supremacy.enabled&spell_targets.summon_infernal>1&equipped.132379&!cooldown.sindorei_spite_icd.remains" );
   writhe->add_action( "berserking,if=prev_gcd.1.unstable_affliction|buff.soul_harvest.remains>=10" );
   writhe->add_action( "blood_fury" );
-  writhe->add_action( "soul_harvest,if=sim.target=target&buff.soul_harvest.remains<=8&(buff.active_uas.stack>=2|active_enemies>3)&(!talent.deaths_embrace.enabled|time_to_die>120|time_to_die<30)" );
+  writhe->add_action( "soul_harvest,if=sim.target=target&buff.soul_harvest.remains<=8&(raid_event.adds.in>20|active_enemies>1|!raid_event.adds.exists)&(buff.active_uas.stack>=2|active_enemies>3)&(!talent.deaths_embrace.enabled|time_to_die>120|time_to_die<30)" );
   for ( const std::string& item_action : get_item_actions() )
   {
     writhe->add_action( item_action );
@@ -8581,6 +8591,66 @@ struct warlock_module_t: public module_t
 
   virtual void register_hotfixes() const override
   {
+    //hotfix::register_effect( "Warlock", "2017-12-04", "Diabolic Raiment 4-piece – Spending a Soul Shard now has a chance to grant you 10% Haste (was 15%).", 367884 )
+    //  .field( "base_value" )
+    //  .operation( hotfix::HOTFIX_SET )
+    //  .modifier( 10 )
+    //  .verification_value( 15 );
+
+    //hotfix::register_effect( "Warlock", "2017-12-04", "Grim Inquisitor’s Regalia 4-piece – Unstable Affliction and Seed of Corruption now increase the damage targets take from your Agony and Corruption by 15% (was 10%).", 473114 )
+    //  .field( "base_value" )
+    //  .operation( hotfix::HOTFIX_SET )
+    //  .modifier( 15 )
+    //  .verification_value( 10 );
+
+    //hotfix::register_effect( "Warlock", "2017-12-04", "Grim Inquisitor’s Regalia 4-piece – Demonic Empowerment now causes your Dreadstalkers to immediately cast another Dreadbite with 75% increased damage (was 50%).", 471461 )
+    //  .field( "base_value" )
+    //  .operation( hotfix::HOTFIX_SET )
+    //  .modifier( 75 )
+    //  .verification_value( 50 );
+
+    //hotfix::register_effect( "Warlock", "2017-12-04", "Corruption damage reduced by 6%.", 198369 )
+    //  .field( "sp_coefficient" )
+    //  .operation( hotfix::HOTFIX_MUL )
+    //  .modifier( 0.94 )
+    //  .verification_value( 0.345 );
+
+    //hotfix::register_effect( "Warlock", "2017-12-04", "Agony damage reduced by 6%.", 374 )
+    //  .field( "sp_coefficient" )
+    //  .operation( hotfix::HOTFIX_MUL )
+    //  .modifier( 0.94 )
+    //  .verification_value( 0.03770 );
+
+    //hotfix::register_effect( "Warlock", "2017-12-04", "Unstable Affliction 1 damage reduced by 4%", 352664 )
+    //  .field( "sp_coefficient" )
+    //  .operation( hotfix::HOTFIX_MUL )
+    //  .modifier( 0.96 )
+    //  .verification_value( 0.966 );
+
+    //hotfix::register_effect( "Warlock", "2017-12-04", "Unstable Affliction 2 damage reduced by 4%", 352671 )
+    //  .field( "sp_coefficient" )
+    //  .operation( hotfix::HOTFIX_MUL )
+    //  .modifier( 0.96 )
+    //  .verification_value( 0.966 );
+
+    //hotfix::register_effect( "Warlock", "2017-12-04", "Unstable Affliction 3 damage reduced by 4%", 352672 )
+    //  .field( "sp_coefficient" )
+    //  .operation( hotfix::HOTFIX_MUL )
+    //  .modifier( 0.96 )
+    //  .verification_value( 0.966 );
+
+    //hotfix::register_effect( "Warlock", "2017-12-04", "Unstable Affliction 4 damage reduced by 4%", 352673 )
+    //  .field( "sp_coefficient" )
+    //  .operation( hotfix::HOTFIX_MUL )
+    //  .modifier( 0.96 )
+    //  .verification_value( 0.966 );
+
+    //hotfix::register_effect( "Warlock", "2017-12-04", "Unstable Affliction 5 damage reduced by 4%", 352674 )
+    //  .field( "sp_coefficient" )
+    //  .operation( hotfix::HOTFIX_MUL )
+    //  .modifier( 0.96 )
+    //  .verification_value( 0.966 );
+
 
     //hotfix::register_effect( "Warlock", "2016-09-23", "Drain Life damage increased by 10%", 271 )
     //  .field( "sp_coefficient" )
@@ -8593,24 +8663,6 @@ struct warlock_module_t: public module_t
     //  .operation( hotfix::HOTFIX_MUL )
     //  .modifier( 1.10 )
     //  .verification_value( 0.52 );
-
-    //hotfix::register_effect( "Warlock", "2017-06-26", "Corruption damage reduced by 5%.", 198369 )
-    //  .field( "sp_coefficient" )
-    //  .operation( hotfix::HOTFIX_MUL )
-    //  .modifier( 0.95 )
-    //  .verification_value( 0.363 );
-
-    //hotfix::register_effect( "Warlock", "2017-06-26", "Agony damage reduced by 5%.", 374 )
-    //  .field( "sp_coefficient" )
-    //  .operation( hotfix::HOTFIX_MUL )
-    //  .modifier( 0.95 )
-    //  .verification_value( 0.03970 );
-
-    //hotfix::register_effect( "Warlock", "2016-09-23", "Unstable Affliction damage increased by 15%", 303066 )
-    //  .field( "sp_coefficient" )
-    //  .operation( hotfix::HOTFIX_MUL )
-    //  .modifier( 1.15 )
-    //  .verification_value( 0.8 );
 
     //hotfix::register_effect( "Warlock", "2016-09-23", "Seed of Corruption damage increased by 15%", 16922 )
     //  .field( "sp_coefficient" )

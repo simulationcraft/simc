@@ -3268,6 +3268,18 @@ struct ferocious_bite_t : public cat_attack_t
     return cat_attack_t::ready();
   }
 
+  double cost() const override
+  {
+    double c = cat_attack_t::cost();
+
+    if ( p() -> buff.apex_predator -> check() )
+    {
+      c *= (1 - p() -> buff.apex_predator -> data().effectN(1).percent() );
+    }
+
+    return c;
+  }
+
   void execute() override
   {
     // Berserk does affect the additional energy consumption.
@@ -3339,6 +3351,12 @@ struct ferocious_bite_t : public cat_attack_t
   double action_multiplier() const override
   {
     double am = cat_attack_t::action_multiplier();
+
+    if ( p() -> buff.apex_predator -> up() )
+    {
+      am *= 2.0;
+      return am;
+    }
 
     am *= p() -> resources.current[ RESOURCE_COMBO_POINT ]
       / p() -> resources.max[ RESOURCE_COMBO_POINT ];
@@ -3644,7 +3662,7 @@ struct rip_t : public cat_attack_t
      trigger_wildshapers_clutch(d->state);
 
      trigger_bloody_gash(d->target, d->state->result_total);
-    p() -> buff.apex_predator -> trigger();
+     p() -> buff.apex_predator -> trigger();
 
   }
 
@@ -6036,6 +6054,7 @@ struct prowl_t : public druid_spell_t
     autoshift = form_mask = CAT_FORM;
 
     trigger_gcd = timespan_t::zero();
+    use_off_gcd = true;
     harmful = false;
     ignore_false_positive = true;
   }
@@ -7445,7 +7464,6 @@ void druid_t::create_buffs()
   buff.astral_acceleration   = haste_buff_creator_t(this, "astral_acceleration", find_spell(242232))
                                  .cd(timespan_t::zero())
                                  .default_value(find_spell(242232)->effectN(1).percent())
-                                 .max_stack(5)
                                  .refresh_behavior(BUFF_REFRESH_DISABLED);
                                 //.duration( timespan_t::from_seconds( 20.0 ) );
   buff.solar_solstice = buff_creator_t(this, "solar_solstice", find_spell(252767))
@@ -7829,7 +7847,7 @@ void druid_t::apl_feral()
    st->add_action("ferocious_bite,target_if=dot.rip.ticking&dot.rip.remains<3&target.time_to_die>10&(target.health.pct<25|talent.sabertooth.enabled)");
    st->add_action("regrowth,if=combo_points=5&buff.predatory_swiftness.up&talent.bloodtalons.enabled&buff.bloodtalons.down&(!buff.incarnation.up|dot.rip.remains<8)");
    st->add_action("regrowth,if=combo_points>3&talent.bloodtalons.enabled&buff.predatory_swiftness.up&buff.apex_predator.up&buff.incarnation.down");
-   st->add_action("ferocious_bite,if=buff.apex_predator.up");
+   st->add_action("ferocious_bite,if=buff.apex_predator.up&((combo_points>4&(buff.incarnation.up|talent.moment_of_clarity.enabled))|(talent.bloodtalons.enabled&buff.bloodtalons.up&combo_points>3))");
    st->add_action("run_action_list,name=st_finishers,if=combo_points>4");
    st->add_action("run_action_list,name=st_generators");
 
@@ -8085,8 +8103,8 @@ void druid_t::apl_balance()
   
   ST -> add_talent( this, "Force of Nature");
   ST -> add_talent( this, "Stellar Flare", "target_if=refreshable,if=target.time_to_die>10");
-  ST -> add_action( this, "Moonfire", "if=((talent.natures_balance.enabled&remains<3)|remains<6.6)&astral_power.deficit>7&target.time_to_die>8");
-  ST -> add_action( this, "Sunfire", "if=((talent.natures_balance.enabled&remains<3)|remains<5.4)&astral_power.deficit>7&target.time_to_die>8");
+  ST -> add_action( this, "Moonfire", "target_if=refreshable,if=((talent.natures_balance.enabled&remains<3)|remains<6.6)&astral_power.deficit>7&target.time_to_die>8");
+  ST -> add_action( this, "Sunfire", "target_if=refreshable,if=((talent.natures_balance.enabled&remains<3)|remains<5.4)&astral_power.deficit>7&target.time_to_die>8");
   ST -> add_action( this, "Starfall", "if=buff.oneths_overconfidence.react&(!buff.astral_acceleration.up|buff.astral_acceleration.remains>5|astral_power.deficit<44)");
   ST -> add_action( this, "Solar Wrath", "if=buff.solar_empowerment.stack=3");
   ST -> add_action( this, "Lunar Strike", "if=buff.lunar_empowerment.stack=3");
@@ -8394,7 +8412,7 @@ void druid_t::init_action_list()
 {
 #ifdef NDEBUG // Only restrict on release builds.
   // Restoration isn't fully supported atm
-  if ( specialization() == DRUID_RESTORATION & role != ROLE_ATTACK)
+  if ( specialization() == DRUID_RESTORATION && role != ROLE_ATTACK)
   {
     if ( ! quiet )
       sim -> errorf( "Druid restoration healing for player %s is not currently supported.", name() );
@@ -10443,7 +10461,6 @@ struct druid_module_t : public module_t
       .modifier( 1.05 )
       .verification_value( 1.9 );
       */
-
   }
 
   virtual void combat_begin( sim_t* ) const override {}

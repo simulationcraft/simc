@@ -5614,49 +5614,32 @@ struct priest_module_t final : public module_t
   }
   void register_hotfixes() const override
   {
-    /** November 28th 2017 hotfixes
-     hotfix::register_effect( "Priest", "2017-11-22", "Void Eruption Damage increased by 700%", 343748 )
-       .field( "sp_coefficient" )
-       .operation( hotfix::HOTFIX_SET )
-       .modifier( 12.0 )
-       .verification_value( 1.5 );
+    /** December 5th 2017 hotfixes 
+	  
+	  hotfix::register_effect("Priest", "2017-12-05", "Shadow Priest damage increased by 3%", 191068)
+		  .field("base_value")
+		  .operation(hotfix::HOTFIX_SET)
+		  .modifier(23.0)
+		  .verification_value(20.0);
 
-     hotfix::register_effect( "Priest", "2017-11-22", "Shadowcrash Insanity increased to 20.", 303254 )
-       .field( "base_value" )
-       .operation( hotfix::HOTFIX_SET )
-       .modifier( 2000 )
-       .verification_value( 1500 );
+	  hotfix::register_effect("Priest", "2017-12-05", "Shadow Priest damage increased by 3%", 179717)
+		  .field("base_value")
+		  .operation(hotfix::HOTFIX_SET)
+		  .modifier(23.0)
+		  .verification_value(20.0);
 
-     hotfix::register_spell( "Priest", "2017-11-22", "Shadowcrash Cooldown Reduced to 20s.", 205385 )
-       .field( "cooldown" )
-       .operation( hotfix::HOTFIX_SET )
-       .modifier( 20000.0 )
-       .verification_value( 30000.0 );
+	  hotfix::register_effect("Priest", "2017-12-05", "Vampiric Touch damage reduced by 15%.", 25010)
+		  .field("sp_coefficient")
+		  .operation(hotfix::HOTFIX_SET)
+		  .modifier(0.579)
+		  .verification_value(0.6816);
 
-     hotfix::register_effect( "Priest", "2017-11-22", "Mind Sear damage increased by 50%.", 359434 )
-       .field( "sp_coefficient" )
-       .operation( hotfix::HOTFIX_SET )
-       .modifier( 0.6 )
-       .verification_value( 0.4 );
-
-     hotfix::register_effect( "Priest", "2017-11-22", "Heart of the Void reduced to 75%.", 465097 )
-       .field( "base_value" )
-       .operation( hotfix::HOTFIX_SET )
-       .modifier( 75 )
-       .verification_value( 300 );
-
-     hotfix::register_effect( "Priest", "2017-11-22", "Vampiric Touch damage reduced by 4%.", 25010 )
-       .field( "sp_coefficient" )
-       .operation( hotfix::HOTFIX_SET )
-       .modifier( 0.6816 )
-       .verification_value( 0.71 );
-
-     hotfix::register_effect( "Priest", "2017-11-22", "Shadow Word: Pain damage reduced by 4%.", 254257 )
-       .field( "sp_coefficient" )
-       .operation( hotfix::HOTFIX_SET )
-       .modifier( 0.3649 )
-       .verification_value( 0.38 );
-     **/
+	  hotfix::register_effect("Priest", "2017-12-05", "Shadow Word: Pain damage reduced by 15%.", 254257)
+		  .field("sp_coefficient")
+		  .operation(hotfix::HOTFIX_SET)
+		  .modifier(0.31)
+		  .verification_value(0.365);
+**/
   }
 
   void combat_begin( sim_t* ) const override

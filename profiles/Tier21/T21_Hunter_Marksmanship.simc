@@ -112,13 +112,13 @@ actions.targetdie+=/marked_shot
 actions.targetdie+=/arcane_shot
 actions.targetdie+=/sidewinders
 
-head=wildstalker_helmet,id=147142,bonus_id=1512/3563
+head=serpentstalker_helmet,id=152133,bonus_id=3612/1502
 neck=chain_of_the_unmaker,id=152283,bonus_id=3612/1502,enchant=mark_of_the_trained_soldier
 shoulders=serpentstalker_mantle,id=152135,bonus_id=3612/1502
-back=wildstalker_cape,id=147140,bonus_id=1512/3563,enchant=binding_of_agility
+back=wildstalker_cape,id=147140,bonus_id=1512/3563,enchant_id=5435
 chest=wildstalker_chestguard,id=147139,bonus_id=1512/3563
-wrists=scalding_shatterguards,id=152280,bonus_id=3612/1502
-hands=wildstalker_gauntlets,id=147141,bonus_id=1512/3563
+wrists=wristguards_of_ominous_forging,id=152089,bonus_id=3612/1502
+hands=serpentstalker_grips,id=152132,bonus_id=3612/1502
 waist=depraved_tacticians_waistguard,id=152006,bonus_id=3612/1502
 legs=serpentstalker_legguards,id=152134,bonus_id=3612/1502
 feet=ullrs_feather_snowshoes,id=137033,bonus_id=3630
@@ -129,15 +129,15 @@ trinket2=tarnished_sentinel_medallion,id=147017,bonus_id=1512/3563
 main_hand=thasdorah_legacy_of_the_windrunners,id=128826,gem_id=155853/155847/152291,relic_id=3612:1512/3612:1512/3612:1502
 
 # Gear Summary
-# gear_ilvl=961.73
-# gear_agility=30773
-# gear_stamina=57537
-# gear_crit_rating=11724
-# gear_haste_rating=7210
-# gear_mastery_rating=14446
-# gear_versatility_rating=4134
-# gear_armor=3451
+# gear_ilvl=965.73
+# gear_agility=32392
+# gear_stamina=59966
+# gear_crit_rating=11220
+# gear_haste_rating=8657
+# gear_mastery_rating=13606
+# gear_versatility_rating=4415
+# gear_armor=3526
 # set_bonus=tier20_2pc=1
-# set_bonus=tier20_4pc=1
 # set_bonus=tier21_2pc=1
+# set_bonus=tier21_4pc=1
 summon_pet=cat
