@@ -134,11 +134,11 @@ namespace item
   void forgefiends_fabricator( special_effect_t&       );
   void forgefiends_fabricator_detonate(special_effect_t&);
   void diimas_glacial_aegis( special_effect_t&         );
+  void smoldering_titanguard( special_effect_t&        );
 
   // TODO
   // Aggramar's conviction full health heal ?
   // Eye of f'harg / shatug interaction
-  // Smoldering Titanguard
   // Riftworld Codex
 
   // 7.2.0 Dungeon
@@ -2478,6 +2478,72 @@ struct chilling_nova_t : public proc_spell_t
 void item::diimas_glacial_aegis( special_effect_t& effect )
 {
   effect.execute_action = new chilling_nova_t( effect );
+}
+
+// Smoldering Titanguard
+
+
+struct wave_of_flame_t : public proc_spell_t
+{
+  wave_of_flame_t( special_effect_t& effect ) :
+    proc_spell_t( "wave_of_flame", effect.player, effect.player -> find_spell( 251948 ), effect.item )
+  {
+    aoe = -1;
+  }
+};
+
+struct bulwark_of_flame_t : public absorb_buff_t
+{
+  action_t* explosion;
+
+  bulwark_of_flame_t( special_effect_t& effect ) :
+    absorb_buff_t( absorb_buff_creator_t( effect.player, "bulwark_of_flame", effect.driver(), effect.item ) ),
+    explosion( new wave_of_flame_t( effect ) )
+  { }
+
+  void expire_override( int stacks, timespan_t remaining ) override
+  {
+    absorb_buff_t::expire_override( stacks, remaining );
+
+    explosion -> schedule_execute();
+
+    // Due to the client not allowing the ability queue here, we have to wait
+    // the amount of lag + how often the key is spammed until the next ability is used.
+    // Modeling this as 2 * lag for now. Might increase to 3 * lag after looking at logs of people using the trinket.
+    timespan_t time = ( player -> world_lag_override ? player -> world_lag : sim -> world_lag ) * 2.0;
+    player -> schedule_ready( time );
+
+  }
+};
+
+struct smoldering_titanguard_driver_t : public proc_spell_t
+{
+  const absorb_buff_t* bulwark_of_flame;
+
+  smoldering_titanguard_driver_t( special_effect_t& effect ) :
+    proc_spell_t( "bulwark_of_flame", effect.player, effect.driver(), effect.item ),
+    bulwark_of_flame( new bulwark_of_flame_t( effect ) )
+  {
+    channeled = true;
+    interrupt_auto_attack = false;
+    cooldown -> duration = timespan_t::zero();
+  }
+
+  double composite_haste() const override
+  { return 1.0; } // Not hasted.
+
+  void execute() override
+  {
+    // Use_item_t (that executes this action) will trigger a player-ready event after execution.
+    // Since this action is a "background channel", we'll need to cancel the player ready event to
+    // prevent the player from picking something to do while channeling.
+    event_t::cancel( player -> readying );
+  }
+};
+
+void item::smoldering_titanguard( special_effect_t& effect )
+{
+  effect.execute_action = new smoldering_titanguard_driver_t( effect );
 }
 
 // Toe Knee's Promise ======================================================
@@ -6681,6 +6747,7 @@ void unique_gear::register_special_effects_x7()
   register_special_effect( 253310, item::forgefiends_fabricator    );
   register_special_effect( 253322, item::forgefiends_fabricator_detonate  );
   register_special_effect( 251940, item::diimas_glacial_aegis      );
+  register_special_effect( 251946, item::smoldering_titanguard     );
 
   /* Legion 7.2.0 Dungeon */
   register_special_effect( 238498, item::dreadstone_of_endless_shadows );
