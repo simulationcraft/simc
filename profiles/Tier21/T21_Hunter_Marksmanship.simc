@@ -129,15 +129,15 @@ trinket2=tarnished_sentinel_medallion,id=147017,bonus_id=1512/3563
 main_hand=thasdorah_legacy_of_the_windrunners,id=128826,gem_id=155853/155847/152291,relic_id=3612:1512/3612:1512/3612:1502
 
 # Gear Summary
-# gear_ilvl=961.73
-# gear_agility=30773
-# gear_stamina=57537
-# gear_crit_rating=11724
-# gear_haste_rating=7210
-# gear_mastery_rating=14446
-# gear_versatility_rating=4134
-# gear_armor=3451
+# gear_ilvl=965.73
+# gear_agility=32392
+# gear_stamina=59966
+# gear_crit_rating=11220
+# gear_haste_rating=8657
+# gear_mastery_rating=13606
+# gear_versatility_rating=4415
+# gear_armor=3526
 # set_bonus=tier20_2pc=1
-# set_bonus=tier20_4pc=1
 # set_bonus=tier21_2pc=1
+# set_bonus=tier21_4pc=1
 summon_pet=cat

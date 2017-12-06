@@ -114,8 +114,8 @@ actions.fury_of_elune+=/solar_wrath
 
 actions.single_target=force_of_nature
 actions.single_target+=/stellar_flare,target_if=refreshable,if=target.time_to_die>10
-actions.single_target+=/moonfire,if=((talent.natures_balance.enabled&remains<3)|remains<6.6)&astral_power.deficit>7&target.time_to_die>8
-actions.single_target+=/sunfire,if=((talent.natures_balance.enabled&remains<3)|remains<5.4)&astral_power.deficit>7&target.time_to_die>8
+actions.single_target+=/moonfire,target_if=refreshable,if=((talent.natures_balance.enabled&remains<3)|remains<6.6)&astral_power.deficit>7&target.time_to_die>8
+actions.single_target+=/sunfire,target_if=refreshable,if=((talent.natures_balance.enabled&remains<3)|remains<5.4)&astral_power.deficit>7&target.time_to_die>8
 actions.single_target+=/starfall,if=buff.oneths_overconfidence.react&(!buff.astral_acceleration.up|buff.astral_acceleration.remains>5|astral_power.deficit<44)
 actions.single_target+=/solar_wrath,if=buff.solar_empowerment.stack=3
 actions.single_target+=/lunar_strike,if=buff.lunar_empowerment.stack=3

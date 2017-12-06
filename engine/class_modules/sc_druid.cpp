@@ -7847,7 +7847,7 @@ void druid_t::apl_feral()
    st->add_action("ferocious_bite,target_if=dot.rip.ticking&dot.rip.remains<3&target.time_to_die>10&(target.health.pct<25|talent.sabertooth.enabled)");
    st->add_action("regrowth,if=combo_points=5&buff.predatory_swiftness.up&talent.bloodtalons.enabled&buff.bloodtalons.down&(!buff.incarnation.up|dot.rip.remains<8)");
    st->add_action("regrowth,if=combo_points>3&talent.bloodtalons.enabled&buff.predatory_swiftness.up&buff.apex_predator.up&buff.incarnation.down");
-   st->add_action("ferocious_bite,if=buff.apex_predator.up");
+   st->add_action("ferocious_bite,if=buff.apex_predator.up&((combo_points>4&(buff.incarnation.up|talent.moment_of_clarity.enabled))|(talent.bloodtalons.enabled&buff.bloodtalons.up&combo_points>3))");
    st->add_action("run_action_list,name=st_finishers,if=combo_points>4");
    st->add_action("run_action_list,name=st_generators");
 
