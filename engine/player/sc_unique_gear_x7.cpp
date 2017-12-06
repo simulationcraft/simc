@@ -2509,7 +2509,8 @@ struct bulwark_of_flame_t : public absorb_buff_t
 
     // Due to the client not allowing the ability queue here, we have to wait
     // the amount of lag + how often the key is spammed until the next ability is used.
-    // Modeling this as 2 * lag for now. Might increase to 3 * lag after looking at logs of people using the trinket.
+    // Modeling this as 2 * lag for now. Might increase to 3 * lag after looking at logs of people using the trinket
+    // (same as Draught of Souls)
     timespan_t time = ( player -> world_lag_override ? player -> world_lag : sim -> world_lag ) * 2.0;
     player -> schedule_ready( time );
 
@@ -2538,6 +2539,8 @@ struct smoldering_titanguard_driver_t : public proc_spell_t
     // Since this action is a "background channel", we'll need to cancel the player ready event to
     // prevent the player from picking something to do while channeling.
     event_t::cancel( player -> readying );
+
+    // The player readiness is reactivated when the absorb buff expires, which is after 3s or when the shield is consumed
   }
 };
 
