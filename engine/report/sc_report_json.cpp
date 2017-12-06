@@ -703,6 +703,8 @@ void to_json( JsonOutput root,
         }
       } );
     }
+
+    // Writing cooldown and debuffs data if asking for json full states
     if ( sim.json_full_states && entry -> cooldown_list.size() > 0 )
     {
       auto cooldowns = json[ "cooldowns" ];
@@ -715,6 +717,7 @@ void to_json( JsonOutput root,
         entry[ "remains" ] = data.second[ 1 ];
       } );
     }
+
     if ( sim.json_full_states && entry -> target_list.size() > 0 )
     {
       auto targets = json[ "targets" ];

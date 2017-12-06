@@ -11073,6 +11073,7 @@ player_collected_data_t::action_sequence_data_t::action_sequence_data_t( const a
     }
   }
 
+  // Adding cooldown and debuffs snapshots if asking for json full states
   if ( p -> sim -> json_full_states ) {
     for ( size_t i = 0; i < p -> cooldown_list.size(); ++i )
     {
@@ -11133,6 +11134,7 @@ player_collected_data_t::action_sequence_data_t::action_sequence_data_t( const t
     }
   }
 
+  // Adding cooldown and debuffs snapshots if asking for json full states
   if ( p -> sim -> json_full_states ) {
     for ( size_t i = 0; i < p -> cooldown_list.size(); ++i )
     {
