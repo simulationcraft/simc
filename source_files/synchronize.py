@@ -170,6 +170,19 @@ def create_vs_str(entries, gui=False):
     prepare += "\n</Project>"
     return prepare
 
+def create_cmake_str(engine, engine_main, gui):
+    engine_source = [*engine, *engine_main]
+    engine_cpp_files = [fullpath for file_type, fullpath, dirname, corename, ending in engine_source if file_type == "SOURCES"]
+    output = \
+"""cmake_minimum_required (VERSION 3.1)
+project (simc)
+include_directories("engine")
+set (CMAKE_CXX_STANDARD 11)
+set(THREADS_PREFER_PTHREAD_FLAG ON)
+find_package(Threads REQUIRED)
+add_executable(simc {})
+target_link_libraries(simc Threads::Threads)""".format(" ".join(engine_cpp_files))
+    return output
 
 def replace(entries, separator, repl):
     r = []
@@ -187,8 +200,6 @@ def sort_by_name(entries):
 def create_file(file_type, build_systems):
     try:
         result = parse_qt("QT_" + file_type + ".pri")
-        # print result
-        sort_by_name(result)
         if "make" in build_systems:
             write_to_file(file_type + "_make", create_make_str(result))
         if "VS" in build_systems:
@@ -201,12 +212,18 @@ def create_file(file_type, build_systems):
         logging.error("Could not synchronize '{}' files: {}".format(file_type, e))
         logging.debug(traceback.format_exc())
 
+def create_cmake():
+    engine = parse_qt("QT_engine.pri")
+    engine_main = parse_qt("QT_engine_main.pri")
+    gui = parse_qt("QT_gui.pri")
+    write_to_file("../CMakeLists.txt", create_cmake_str(engine, engine_main, gui))
 
 def main():
     logging.basicConfig(level=logging.DEBUG)
     create_file("engine", ["make", "VS", "QT"])
     create_file("engine_main", ["make", "VS", "QT"])
     create_file("gui", ["QT", "VS_GUI"])  # TODO: finish mocing part of VS_GUI
+    create_cmake()
     logging.info("Done")
 
 
