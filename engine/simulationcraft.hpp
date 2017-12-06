@@ -3523,6 +3523,7 @@ struct player_collected_data_t
     timespan_t wait_time;
     std::vector< std::pair< buff_t*, std::vector<double> > > buff_list;
     std::vector< std::pair< cooldown_t*, std::vector<double> > > cooldown_list;
+    std::vector< std::pair<player_t*, std::vector< std::pair< buff_t*, std::vector<double> > > > > target_list;
     std::array<double, RESOURCE_MAX> resource_snapshot;
     std::array<double, RESOURCE_MAX> resource_max_snapshot;
 

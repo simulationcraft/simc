@@ -11085,6 +11085,22 @@ player_collected_data_t::action_sequence_data_t::action_sequence_data_t( const a
         cooldown_list.push_back( std::make_pair( c, cooldown_args ) );
       }
     }
+    for ( player_t* current_target : p -> sim -> target_list )
+    {
+      std::vector< std::pair< buff_t*, std::vector<double> > > debuff_list;
+      for ( size_t i = 0; i < current_target -> buff_list.size(); ++i )
+      {
+        buff_t* d = current_target -> buff_list[ i ];
+        if ( d -> check() && !d -> quiet && !d -> constant )
+        {
+          std::vector<double> debuff_args;
+          debuff_args.push_back( d -> check() );
+          debuff_args.push_back( d -> remains().total_seconds() );
+          debuff_list.push_back( std::make_pair( d, debuff_args ) );
+        }
+      }
+      target_list.push_back( std::make_pair( current_target, debuff_list ) );
+    }
   }
 
   range::fill( resource_snapshot, -1 );
@@ -11115,19 +11131,35 @@ player_collected_data_t::action_sequence_data_t::action_sequence_data_t( const t
       }
       buff_list.push_back( std::make_pair( b, buff_args ) );
     }
+  }
 
-    if ( p -> sim -> json_full_states ) {
-      for ( size_t i = 0; i < p -> cooldown_list.size(); ++i )
+  if ( p -> sim -> json_full_states ) {
+    for ( size_t i = 0; i < p -> cooldown_list.size(); ++i )
+    {
+      cooldown_t* c = p -> cooldown_list[ i ];
+      if ( c -> down() )
       {
-        cooldown_t* c = p -> cooldown_list[ i ];
-        if ( c -> down() )
+        std::vector<double> cooldown_args;
+        cooldown_args.push_back( c -> charges );
+        cooldown_args.push_back( c -> remains().total_seconds() );
+        cooldown_list.push_back( std::make_pair( c, cooldown_args ) );
+      }
+    }
+    for ( player_t* current_target : p -> sim -> target_list )
+    {
+      std::vector< std::pair< buff_t*, std::vector<double> > > debuff_list;
+      for ( size_t i = 0; i < current_target -> buff_list.size(); ++i )
+      {
+        buff_t* d = current_target -> buff_list[ i ];
+        if ( d -> check() && !d -> quiet && !d -> constant )
         {
-          std::vector<double> cooldown_args;
-          cooldown_args.push_back( c -> charges );
-          cooldown_args.push_back( c -> remains().total_seconds() );
-          cooldown_list.push_back( std::make_pair( c, cooldown_args ) );
+          std::vector<double> debuff_args;
+          debuff_args.push_back( d -> check() );
+          debuff_args.push_back( d -> remains().total_seconds() );
+          debuff_list.push_back( std::make_pair( d, debuff_args ) );
         }
       }
+      target_list.push_back( std::make_pair( current_target, debuff_list ) );
     }
   }
 
