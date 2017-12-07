@@ -4,7 +4,7 @@ level=110
 race=troll
 role=attack
 position=back
-talents=3133123
+talents=3132123
 artifact=41:0:0:0:0:899:1:900:1:901:1:902:1:903:1:904:1:905:4:906:4:907:4:908:4:909:4:910:4:911:4:912:4:913:4:930:1:1351:1:1388:1:1593:4:1594:1:1595:1:1596:24:1687:1
 crucible=1739:1771:910/1739:1771:910/1739:1771:910
 
@@ -78,17 +78,18 @@ actions.core+=/crash_lightning,if=!buff.crash_lightning.up&active_enemies>=2
 actions.core+=/windsong
 actions.core+=/crash_lightning,if=active_enemies>=8|(active_enemies>=6&talent.crashing_storm.enabled)
 actions.core+=/windstrike
+actions.core+=/rockbiter,if=buff.force_of_the_mountain.up&charges_fractional>1.7&active_enemies<=4
 actions.core+=/stormstrike,if=buff.stormbringer.up&variable.furyCheck25
 actions.core+=/crash_lightning,if=active_enemies>=4|(active_enemies>=2&talent.crashing_storm.enabled)
 actions.core+=/rockbiter,if=buff.force_of_the_mountain.up
 actions.core+=/lightning_bolt,if=talent.overcharge.enabled&variable.furyCheck45&maelstrom>=40
+actions.core+=/lava_lash,if=(maelstrom>=50&variable.OCPool70&variable.furyCheck80&debuff.exposed_elements.up&debuff.lashing_flames.stack>90)|(buff.hot_hand.react&((variable.akainuEquipped&buff.frostbrand.up)|(!variable.akainuEquipped)))
 actions.core+=/stormstrike,if=(!talent.overcharge.enabled&variable.furyCheck45)|(talent.overcharge.enabled&variable.furyCheck80)
 actions.core+=/frostbrand,if=variable.akainuAS
-actions.core+=/lava_lash,if=buff.hot_hand.react&((variable.akainuEquipped&buff.frostbrand.up)|!variable.akainuEquipped)
 actions.core+=/sundering,if=active_enemies>=3
 actions.core+=/crash_lightning,if=active_enemies>=3|variable.LightningCrashNotUp|variable.alphaWolfCheck
 
-actions.filler=rockbiter,if=maelstrom<120
+actions.filler=rockbiter,if=maelstrom<120&charges_fractional>1.7
 actions.filler+=/flametongue,if=buff.flametongue.remains<4.8
 actions.filler+=/crash_lightning,if=(talent.crashing_storm.enabled|active_enemies>=2)&debuff.earthen_spike.up&maelstrom>=40&variable.OCPool60
 actions.filler+=/frostbrand,if=talent.hailstorm.enabled&buff.frostbrand.remains<4.8&maelstrom>40
@@ -114,16 +115,16 @@ feet=greatboots_of_the_searing_tempest,id=152684,bonus_id=3612/1502
 finger1=eye_of_the_twisting_nether,id=137050,bonus_id=3630,gem_id=151583,enchant=binding_of_haste
 finger2=loop_of_the_lifebinder,id=152688,bonus_id=3612/1502,enchant=binding_of_haste
 trinket1=golganneths_vitality,id=154174,bonus_id=3997
-trinket2=cradle_of_anguish,id=147010,bonus_id=3563/1512
+trinket2=shadowsinged_fang,id=151968,bonus_id=3612/1502
 main_hand=doomhammer,id=128819,gem_id=155849/155855/155853,relic_id=3612:1512/3612:1512/3612:1512
 off_hand=fury_of_the_stonemother,id=128873
 
 # Gear Summary
-# gear_ilvl=971.13
+# gear_ilvl=973.00
 # gear_agility=38816
 # gear_stamina=61124
 # gear_crit_rating=3527
-# gear_haste_rating=15723
+# gear_haste_rating=14403
 # gear_mastery_rating=11815
 # gear_versatility_rating=1782
 # gear_armor=3609

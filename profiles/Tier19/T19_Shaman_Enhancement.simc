@@ -77,17 +77,18 @@ actions.core+=/crash_lightning,if=!buff.crash_lightning.up&active_enemies>=2
 actions.core+=/windsong
 actions.core+=/crash_lightning,if=active_enemies>=8|(active_enemies>=6&talent.crashing_storm.enabled)
 actions.core+=/windstrike
+actions.core+=/rockbiter,if=buff.force_of_the_mountain.up&charges_fractional>1.7&active_enemies<=4
 actions.core+=/stormstrike,if=buff.stormbringer.up&variable.furyCheck25
 actions.core+=/crash_lightning,if=active_enemies>=4|(active_enemies>=2&talent.crashing_storm.enabled)
 actions.core+=/rockbiter,if=buff.force_of_the_mountain.up
 actions.core+=/lightning_bolt,if=talent.overcharge.enabled&variable.furyCheck45&maelstrom>=40
+actions.core+=/lava_lash,if=(maelstrom>=50&variable.OCPool70&variable.furyCheck80&debuff.exposed_elements.up&debuff.lashing_flames.stack>90)|(buff.hot_hand.react&((variable.akainuEquipped&buff.frostbrand.up)|(!variable.akainuEquipped)))
 actions.core+=/stormstrike,if=(!talent.overcharge.enabled&variable.furyCheck45)|(talent.overcharge.enabled&variable.furyCheck80)
 actions.core+=/frostbrand,if=variable.akainuAS
-actions.core+=/lava_lash,if=buff.hot_hand.react&((variable.akainuEquipped&buff.frostbrand.up)|!variable.akainuEquipped)
 actions.core+=/sundering,if=active_enemies>=3
 actions.core+=/crash_lightning,if=active_enemies>=3|variable.LightningCrashNotUp|variable.alphaWolfCheck
 
-actions.filler=rockbiter,if=maelstrom<120
+actions.filler=rockbiter,if=maelstrom<120&charges_fractional>1.7
 actions.filler+=/flametongue,if=buff.flametongue.remains<4.8
 actions.filler+=/crash_lightning,if=(talent.crashing_storm.enabled|active_enemies>=2)&debuff.earthen_spike.up&maelstrom>=40&variable.OCPool60
 actions.filler+=/frostbrand,if=talent.hailstorm.enabled&buff.frostbrand.remains<4.8&maelstrom>40
@@ -119,7 +120,7 @@ off_hand=fury_of_the_stonemother,id=128873
 
 # Gear Summary
 # gear_ilvl=912.88
-# gear_agility=24455
+# gear_agility=24795
 # gear_stamina=35283
 # gear_crit_rating=2603
 # gear_haste_rating=8595
