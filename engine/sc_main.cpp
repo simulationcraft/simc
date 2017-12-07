@@ -8,7 +8,7 @@
 #include <locale>
 
 #ifdef SC_SIGACTION
-#include <signal.h>
+#include <csignal>
 #endif
 
 namespace { // anonymous namespace ==========================================
@@ -99,13 +99,14 @@ static sim_signal_handler_t handler;
 
 bool need_to_save_profiles( sim_t* sim )
 {
-  if ( sim -> save_profiles ) return true;
+  if ( sim -> save_profiles ) { return true;
+}
 
-  for ( size_t i = 0; i < sim -> player_list.size(); ++i )
+  for ( auto& player : sim -> player_list )
   {
-    player_t* p = sim -> player_list[ i ];
-    if ( ! p -> report_information.save_str.empty() )
+    if ( ! player -> report_information.save_str.empty() ) {
       return true;
+}
   }
 
   return false;
@@ -124,13 +125,15 @@ std::string get_cache_directory()
   if ( ! env )
   {
     env = getenv( "HOME" );
-    if ( env )
+    if ( env ) {
       s = std::string( env ) + "/.cache";
-    else
+    } else {
       s = "/tmp"; // back out
+}
   }
-  else
+  else {
     s = std::string( env );
+}
 #endif
 #ifdef _WIN32
   env = getenv( "TMP" );
@@ -244,7 +247,8 @@ int sim_t::main( const std::vector<std::string>& args )
     return 1;
   }
 
-  if ( canceled ) return 1;
+  if ( canceled ) { return 1;
+}
 
   std::cout << std::endl;
 

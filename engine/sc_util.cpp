@@ -873,9 +873,9 @@ resource_e util::translate_power_type( power_e pt )
 
 // weapon_type_string =======================================================
 
-const char* util::weapon_type_string( weapon_e weapon )
+const char* util::weapon_type_string( weapon_e type )
 {
-  switch ( weapon )
+  switch ( type )
   {
     case WEAPON_NONE:      return "none";
     case WEAPON_DAGGER:    return "dagger";
@@ -927,9 +927,9 @@ const char* util::weapon_subclass_string( int subclass )
 
 // weapon_class_string ======================================================
 
-const char* util::weapon_class_string( int it )
+const char* util::weapon_class_string( int weapon_class )
 {
-  switch ( it )
+  switch ( weapon_class )
   {
     case INVTYPE_WEAPON:
       return "One Hand";
@@ -982,9 +982,9 @@ const char* util::slot_type_string( slot_e slot )
 }
 
 /// Slots with matching type of armour (cloth/leather/mail/plate)
-bool util::is_match_slot( slot_e s )
+bool util::is_match_slot( slot_e slot )
 {
-  switch ( s )
+  switch ( slot )
   {
     case SLOT_HEAD:
     case SLOT_SHOULDERS:
@@ -1606,48 +1606,48 @@ scale_metric_e util::parse_scale_metric( const std::string& name )
 
 // parse_origin =============================================================
 
-bool util::parse_origin( std::string& region_str,
-                         std::string& server_str,
-                         std::string& name_str,
-                         const std::string& origin_str )
+bool util::parse_origin( std::string& region,
+                         std::string& server,
+                         std::string& name,
+                         const std::string& origin )
 {
-  auto tokens = string_split( origin_str, "/:.?&=" );
+  auto tokens = string_split( origin, "/:.?&=" );
 
-  if ( origin_str.find( ".battle.net" ) != std::string::npos )
+  if ( origin.find( ".battle.net" ) != std::string::npos )
   {
     if ( tokens.size() < 2 || tokens[ 0 ] != "http" || tokens[ 1 ].empty() )
       return false;
-    region_str = tokens[ 1 ];
+    region = tokens[ 1 ];
 
     std::vector<std::string>::const_iterator pos = range::find( tokens, "character" );
     if ( pos == tokens.end() || ++pos == tokens.end() || pos -> empty() )
       return false;
-    server_str = *pos;
+    server = *pos;
 
     if ( ++pos == tokens.end() || pos -> empty() )
       return false;
-    name_str = *pos;
+    name = *pos;
 
     return true;
   }
 
-  if ( origin_str.find( ".battlenet.com." ) != std::string::npos )
+  if ( origin.find( ".battlenet.com." ) != std::string::npos )
   {
     std::vector<std::string>::const_iterator pos = range::find( tokens, "battlenet" );
     if ( pos == tokens.end() || ++pos == tokens.end() || *pos != "com" )
       return false;
     if ( ++pos == tokens.end() || pos -> empty() )
       return false;
-    region_str = *pos;
+    region = *pos;
 
     pos = range::find( tokens, "character" );
     if ( pos == tokens.end() || ++pos == tokens.end() || pos -> empty() )
       return false;
-    server_str = *pos;
+    server = *pos;
 
     if ( ++pos == tokens.end() || pos -> empty() )
       return false;
-    name_str = *pos;
+    name = *pos;
 
     return true;
   }
@@ -1697,9 +1697,9 @@ int util::class_id( player_e type )
 
 // race_id ==================================================================
 
-unsigned util::race_id( race_e r )
+unsigned util::race_id( race_e race )
 {
-  switch ( r )
+  switch ( race )
   {
     case RACE_NIGHT_ELF: return 4;
     case RACE_HUMAN: return 1;
@@ -1722,9 +1722,9 @@ unsigned util::race_id( race_e r )
 
 // race_mask ================================================================
 
-unsigned util::race_mask( race_e r )
+unsigned util::race_mask( race_e race )
 {
-  uint32_t id = race_id( r );
+  uint32_t id = race_id( race );
 
   if ( id > 0 )
     return ( 1 << ( id - 1 ) );
@@ -1734,23 +1734,23 @@ unsigned util::race_mask( race_e r )
 
 // pet_class_type ===========================================================
 
-player_e util::pet_class_type( pet_e c )
+player_e util::pet_class_type( pet_e type )
 {
   player_e p = WARRIOR;
 
-  if ( c <= PET_HUNTER )
+  if ( type <= PET_HUNTER )
   {
     p = WARRIOR;
   }
-  else if ( c == PET_GHOUL )
+  else if ( type == PET_GHOUL )
   {
     p = ROGUE;
   }
-  else if ( c == PET_FELGUARD )
+  else if ( type == PET_FELGUARD )
   {
     p = WARRIOR;
   }
-  else if ( c <= PET_WARLOCK )
+  else if ( type <= PET_WARLOCK )
   {
     p = WARLOCK;
   }
@@ -1760,13 +1760,13 @@ player_e util::pet_class_type( pet_e c )
 
 // pet_mask =================================================================
 
-unsigned util::pet_mask( pet_e p )
+unsigned util::pet_mask( pet_e type )
 {
-  if ( p <= PET_FEROCITY_TYPE )
+  if ( type <= PET_FEROCITY_TYPE )
     return 0x1;
-  if ( p <= PET_TENACITY_TYPE )
+  if ( type <= PET_TENACITY_TYPE )
     return 0x2;
-  if ( p <= PET_CUNNING_TYPE )
+  if ( type <= PET_CUNNING_TYPE )
     return 0x4;
 
   return 0x0;
@@ -1774,9 +1774,9 @@ unsigned util::pet_mask( pet_e p )
 
 // pet_id ===================================================================
 
-unsigned util::pet_id( pet_e p )
+unsigned util::pet_id( pet_e type )
 {
-  uint32_t mask = pet_mask( p );
+  uint32_t mask = pet_mask( type );
 
   switch ( mask )
   {
@@ -1959,9 +1959,9 @@ stat_e util::translate_rating_mod( unsigned ratings )
 
 // translate_weapon_subclass ================================================
 
-weapon_e util::translate_weapon_subclass( int id )
+weapon_e util::translate_weapon_subclass( int weapon_subclass )
 {
-  switch ( id )
+  switch ( weapon_subclass )
   {
     case ITEM_SUBCLASS_WEAPON_AXE:          return WEAPON_AXE;
     case ITEM_SUBCLASS_WEAPON_AXE2:         return WEAPON_AXE_2H;
@@ -2861,12 +2861,12 @@ bool util::is_number( const std::string& s )
 
 // fuzzy_stats ==============================================================
 
-void util::fuzzy_stats( std::string&       encoding_str,
-                        const std::string& description_str )
+void util::fuzzy_stats( std::string&       encoding,
+                        const std::string& description )
 {
-  if ( description_str.empty() ) return;
+  if ( description.empty() ) return;
 
-  std::string buffer = description_str;
+  std::string buffer = description;
   util::tokenize( buffer );
 
   if ( is_proc_description( buffer ) )
@@ -2874,37 +2874,37 @@ void util::fuzzy_stats( std::string&       encoding_str,
 
   std::vector<std::string> splits = util::string_split( buffer, "_." );
 
-  stat_search( encoding_str, splits, STAT_ALL,  "all stats" );
-  stat_search( encoding_str, splits, STAT_ALL,  "to all stats" );
+  stat_search( encoding, splits, STAT_ALL,  "all stats" );
+  stat_search( encoding, splits, STAT_ALL,  "to all stats" );
 
-  stat_search( encoding_str, splits, STAT_STRENGTH,  "strength" );
-  stat_search( encoding_str, splits, STAT_AGILITY,   "agility" );
-  stat_search( encoding_str, splits, STAT_STAMINA,   "stamina" );
-  stat_search( encoding_str, splits, STAT_INTELLECT, "intellect" );
-  stat_search( encoding_str, splits, STAT_SPIRIT,    "spirit" );
+  stat_search( encoding, splits, STAT_STRENGTH,  "strength" );
+  stat_search( encoding, splits, STAT_AGILITY,   "agility" );
+  stat_search( encoding, splits, STAT_STAMINA,   "stamina" );
+  stat_search( encoding, splits, STAT_INTELLECT, "intellect" );
+  stat_search( encoding, splits, STAT_SPIRIT,    "spirit" );
 
-  stat_search( encoding_str, splits, STAT_SPELL_POWER, "spell power" );
+  stat_search( encoding, splits, STAT_SPELL_POWER, "spell power" );
 
-  stat_search( encoding_str, splits, STAT_ATTACK_POWER,     "attack power" );
-  stat_search( encoding_str, splits, STAT_EXPERTISE_RATING, "expertise rating" );
+  stat_search( encoding, splits, STAT_ATTACK_POWER,     "attack power" );
+  stat_search( encoding, splits, STAT_EXPERTISE_RATING, "expertise rating" );
 
-  stat_search( encoding_str, splits, STAT_HASTE_RATING,     "haste" );
-  stat_search( encoding_str, splits, STAT_HASTE_RATING,     "haste rating" );
-  stat_search( encoding_str, splits, STAT_HIT_RATING,       "ranged hit rating" );
-  stat_search( encoding_str, splits, STAT_HIT_RATING,       "hit rating" );
-  stat_search( encoding_str, splits, STAT_HIT_RATING,       "hit" );
-  stat_search( encoding_str, splits, STAT_CRIT_RATING,      "ranged critical strike" );
-  stat_search( encoding_str, splits, STAT_CRIT_RATING,      "critical strike rating" );
-  stat_search( encoding_str, splits, STAT_CRIT_RATING,      "critical strike" );
-  stat_search( encoding_str, splits, STAT_CRIT_RATING,      "crit rating" );
-  stat_search( encoding_str, splits, STAT_CRIT_RATING,      "crit" );
-  stat_search( encoding_str, splits, STAT_MASTERY_RATING,   "mastery rating" );
-  stat_search( encoding_str, splits, STAT_MASTERY_RATING,   "mastery" );
+  stat_search( encoding, splits, STAT_HASTE_RATING,     "haste" );
+  stat_search( encoding, splits, STAT_HASTE_RATING,     "haste rating" );
+  stat_search( encoding, splits, STAT_HIT_RATING,       "ranged hit rating" );
+  stat_search( encoding, splits, STAT_HIT_RATING,       "hit rating" );
+  stat_search( encoding, splits, STAT_HIT_RATING,       "hit" );
+  stat_search( encoding, splits, STAT_CRIT_RATING,      "ranged critical strike" );
+  stat_search( encoding, splits, STAT_CRIT_RATING,      "critical strike rating" );
+  stat_search( encoding, splits, STAT_CRIT_RATING,      "critical strike" );
+  stat_search( encoding, splits, STAT_CRIT_RATING,      "crit rating" );
+  stat_search( encoding, splits, STAT_CRIT_RATING,      "crit" );
+  stat_search( encoding, splits, STAT_MASTERY_RATING,   "mastery rating" );
+  stat_search( encoding, splits, STAT_MASTERY_RATING,   "mastery" );
 
-  stat_search( encoding_str, splits, STAT_DODGE_RATING,     "dodge rating" );
-  stat_search( encoding_str, splits, STAT_PARRY_RATING,     "parry rating" );
-  stat_search( encoding_str, splits, STAT_BLOCK_RATING,     "block rating" );
-  stat_search( encoding_str, splits, STAT_BONUS_ARMOR,      "bonus armor rating" );
+  stat_search( encoding, splits, STAT_DODGE_RATING,     "dodge rating" );
+  stat_search( encoding, splits, STAT_PARRY_RATING,     "parry rating" );
+  stat_search( encoding, splits, STAT_BLOCK_RATING,     "block rating" );
+  stat_search( encoding, splits, STAT_BONUS_ARMOR,      "bonus armor rating" );
   // WOD-TODO: hybrid primary stats?
 }
 
@@ -3004,11 +3004,11 @@ double crit_multiplier( meta_gem_e gem )
 
 // stream_printf ============================================================
 
-std::ostream& stream_printf( std::ostream& stream, const char* fmt, ... )
+std::ostream& stream_printf( std::ostream& stream, const char* format, ... )
 {
   va_list fmtargs;
-  va_start( fmtargs, fmt );
-  stream << str::format( fmt, fmtargs );
+  va_start( fmtargs, format );
+  stream << str::format( format, fmtargs );
   va_end( fmtargs );
   return stream;
 }
