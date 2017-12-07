@@ -4544,7 +4544,14 @@ void player_t::schedule_ready( timespan_t delta_time,
   {
     // Record the last ability use time for cast_react
     cast_delay_occurred = readying -> occurs();
-    cast_delay_reaction = rng().gauss( brain_lag, brain_lag_stddev );
+    if ( !is_pet())
+    {
+      cast_delay_reaction = rng().gauss( brain_lag, brain_lag_stddev );
+    }
+    else
+    {
+      cast_delay_reaction = timespan_t::zero();
+    }
     if ( sim -> debug )
     {
       sim -> out_debug.printf( "%s %s schedule_ready(): cast_finishes=%f cast_delay=%f",
@@ -5942,7 +5949,8 @@ void player_t::assess_heal( school_e, dmg_e, action_state_t* s )
     // health_changes and timeline_healing_taken record everything, accounting for overheal and so on
     collected_data.timeline_healing_taken.add( sim -> current_time(), - ( s -> result_amount ) );
     collected_data.health_changes.timeline.add( sim -> current_time(), - ( s -> result_amount ) );
-    collected_data.health_changes.timeline_normalized.add( sim -> current_time(), - ( s -> result_amount ) / resources.max[ RESOURCE_HEALTH ] );
+    double normalized = resources.max[ RESOURCE_HEALTH ] ? - ( s -> result_amount ) / resources.max[ RESOURCE_HEALTH ] : 0.0;
+    collected_data.health_changes.timeline_normalized.add(sim -> current_time(), normalized);
 
     // health_changes_tmi ignores external healing - use result_total to count player overhealing as effective healing
     if (  s -> action -> player == this || is_my_pet( s -> action -> player ) )

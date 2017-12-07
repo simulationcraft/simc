@@ -3976,7 +3976,7 @@ struct player_t : public actor_t
     }
 
     double pct( resource_e rt ) const
-    { return current[ rt ] / max[ rt ]; }
+    { return max[ rt ] ? current[ rt ] / max[ rt ] : 0.0; }
 
     bool is_infinite( resource_e rt ) const
     { return infinite_resource[ rt ] != 0; }

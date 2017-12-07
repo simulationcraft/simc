@@ -657,7 +657,7 @@ double rng_t::range( double min, double max )
  */
 double rng_t::gauss( double mean, double stddev, bool truncate_low_end )
 {
-
+  assert(stddev >= 0 && "Calling gauss with negative stddev");
   
   double z;
 

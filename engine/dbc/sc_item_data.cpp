@@ -1493,6 +1493,8 @@ static std::pair<std::pair<int, double>, std::pair<int, double> > get_bonus_id_s
       assert( data );
       std::pair<const curve_point_t*, const curve_point_t*> curve_data_min = dbc.curve_point( data -> curve_id, data -> min_level );
       std::pair<const curve_point_t*, const curve_point_t*> curve_data_max = dbc.curve_point( data -> curve_id, data -> max_level );
+      assert(curve_data_min.first);
+      assert(curve_data_max.first);
 
       return std::pair<std::pair<int, double>, std::pair<int, double> >(
           std::pair<int, double>( data -> min_level, curve_data_min.first -> val2 ),
