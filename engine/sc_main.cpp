@@ -44,7 +44,7 @@ struct sim_signal_handler_t
       {
         global_sim -> cancel();
       }
-      else if ( global_sim -> profileset_map.size() > 0 )
+      else if ( ! global_sim -> profileset_map.empty() )
       {
         global_sim -> cancel();
       }
@@ -93,7 +93,7 @@ struct sim_signal_handler_t
 
 sim_t* sim_signal_handler_t::global_sim = nullptr;
 
-static sim_signal_handler_t handler;
+sim_signal_handler_t handler;
 
 // need_to_save_profiles ====================================================
 
@@ -316,7 +316,7 @@ int main( int argc, char** argv )
 #endif
 
   sim_t sim;
-  handler.global_sim = &sim;
+  sim_signal_handler_t::global_sim = &sim;
 
   return sim.main( io::utf8_args( argc, argv ) );
 }

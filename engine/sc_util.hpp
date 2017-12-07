@@ -51,7 +51,7 @@ const char* amount_type_string        ( dmg_e type );
 const char* school_type_string        ( school_e school );
 const char* armor_type_string         ( int type );
 const char* armor_type_string         ( item_subclass_armor type );
-const char* cache_type_string         ( cache_e type );
+const char* cache_type_string         ( cache_e );
 const char* proc_type_string          ( proc_types type );
 const char* proc_type2_string         ( proc_types2 type );
 const char* special_effect_string     ( special_effect_e type );

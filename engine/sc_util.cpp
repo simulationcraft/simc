@@ -204,8 +204,8 @@ bool util::str_compare_ci( const std::string& l,
 {
   if ( l.size() != r.size() )
     return false;
-  else
-    return std::equal( l.begin(), l.end(), r.begin(), pred_ci );
+
+  return std::equal( l.begin(), l.end(), r.begin(), pred_ci );
 }
 
 // str_prefix_ci ============================================================
@@ -215,8 +215,8 @@ bool util::str_prefix_ci( const std::string& str,
 {
   if ( str.size() < prefix.size() )
     return false;
-  else
-    return std::equal( prefix.begin(), prefix.end(), str.begin(), pred_ci );
+
+  return std::equal( prefix.begin(), prefix.end(), str.begin(), pred_ci );
 }
 
 // str_in_str_ci ============================================================
@@ -2082,7 +2082,7 @@ std::vector<std::string> util::string_split( const std::string& str, const std::
 
   std::string::size_type cut_pt, start = 0;
 
-  while ( ( cut_pt = str.find_first_of( delim, start ) ) != str.npos )
+  while ( ( cut_pt = str.find_first_of( delim, start ) ) != std::string::npos )
   {
     if ( cut_pt > start ) // Found something, push to the vector
       results.push_back( str.substr( start, cut_pt - start ) );
@@ -2112,7 +2112,7 @@ std::vector<std::string> util::string_split_allow_quotes( std::string str, const
   static const std::string in_quote = "\"";
   const std::string* search = &not_in_quote;
 
-  while ( ( cut_pt = str.find_first_of( *search, start ) ) != str.npos )
+  while ( ( cut_pt = str.find_first_of( *search, start ) ) != std::string::npos )
   {
     if ( str[ cut_pt ] == '"' )
     {
@@ -2141,7 +2141,7 @@ std::vector<std::string> util::string_split_allow_quotes( std::string str, const
 void util::replace_all( std::string& s, const std::string& from, const std::string& to )
 {
   std::string::size_type pos;
-  if ( ( pos = s.find( from ) ) != s.npos )
+  if ( ( pos = s.find( from ) ) != std::string::npos )
   {
     std::string::size_type from_length = from.length();
     std::string::size_type to_len = to.length();
@@ -2150,7 +2150,7 @@ void util::replace_all( std::string& s, const std::string& from, const std::stri
       s.replace( pos, from_length, to );
       pos += to_len;
     }
-    while ( ( pos = s.find( from, pos ) ) != s.npos );
+    while ( ( pos = s.find( from, pos ) ) != std::string::npos );
   }
 }
 
@@ -2160,13 +2160,13 @@ void util::erase_all( std::string& s, const std::string& from )
 {
   std::string::size_type pos;
 
-  if ( ( pos = s.find( from ) ) != s.npos )
+  if ( ( pos = s.find( from ) ) != std::string::npos )
   {
     do
     {
       s.erase( pos, from.length() );
     }
-    while ( ( pos = s.find( from ) ) != s.npos );
+    while ( ( pos = s.find( from ) ) != std::string::npos );
   }
 }
 
@@ -2277,7 +2277,7 @@ size_t util::string_split( const std::string& str,
 void util::string_strip_quotes( std::string& str )
 {
   std::string::size_type pos = str.find( '"' );
-  if ( pos == str.npos ) return;
+  if ( pos == std::string::npos ) return;
 
   std::string::iterator dst = str.begin() + pos, src = dst;
   while ( ++src != str.end() )
@@ -2304,8 +2304,8 @@ std::string util::to_string( double f )
 {
   if ( std::abs( f - static_cast<int>( f ) ) < 0.001 )
     return to_string( static_cast<int>( f ) );
-  else
-    return to_string( f, 3 );
+
+  return to_string( f, 3 );
 }
 
 // to_unsigned ==============================================================
@@ -2942,38 +2942,38 @@ namespace util {
  * partial specialization optimization for 32-bit numbers
  */
 template<>
-int numDigits( int32_t x )
+int numDigits( int32_t number )
 {
-  if ( x == std::numeric_limits<int32_t>::min() ) return 10 + 1;
-  if ( x < 0 ) return numDigits( -x ) + 1;
+  if ( number == std::numeric_limits<int32_t>::min() ) return 10 + 1;
+  if ( number < 0 ) return numDigits( -number ) + 1;
 
-  if ( x >= 10000 )
+  if ( number >= 10000 )
   {
-    if ( x >= 10000000 )
+    if ( number >= 10000000 )
     {
-      if ( x >= 100000000 )
+      if ( number >= 100000000 )
       {
-        if ( x >= 1000000000 )
+        if ( number >= 1000000000 )
           return 10;
         return 9;
       }
       return 8;
     }
-    if ( x >= 100000 )
+    if ( number >= 100000 )
     {
-      if ( x >= 1000000 )
+      if ( number >= 1000000 )
         return 7;
       return 6;
     }
     return 5;
   }
-  if ( x >= 100 )
+  if ( number >= 100 )
   {
-    if ( x >= 1000 )
+    if ( number >= 1000 )
       return 4;
     return 3;
   }
-  if ( x >= 10 )
+  if ( number >= 10 )
     return 2;
   return 1;
 }
