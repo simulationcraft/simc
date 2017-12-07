@@ -2240,38 +2240,6 @@ int util::parse_item_quality( const std::string& quality )
   return i;
 }
 
-// string_split =============================================================
-
-size_t util::string_split( const std::string& str,
-                           const char*        delim,
-                           const char*        format, ... )
-{
-  std::vector<std::string> str_splits = string_split( str,    delim );
-  std::vector<std::string> format_splits = string_split( format, " " );
-
-  if ( str_splits.size() == format_splits.size() )
-  {
-    va_list vap;
-    va_start( vap, format );
-
-    for ( size_t i = 0; i < str_splits.size(); i++ )
-    {
-      std::string& f = format_splits[ i ];
-      const char*  s =    str_splits[ i ].c_str();
-
-      if      ( f == "i" ) *( va_arg( vap, int*    ) ) = atoi( s );
-      else if ( f == "f" ) *( va_arg( vap, double* ) ) = atof( s );
-      else if ( f == "d" ) *( va_arg( vap, double* ) ) = atof( s );
-      else if ( f == "S" ) *( va_arg( vap, std::string* ) ) = s;
-      else assert( 0 );
-    }
-
-    va_end( vap );
-  }
-
-  return str_splits.size();
-}
-
 // string_strip_quotes ======================================================
 
 void util::string_strip_quotes( std::string& str )

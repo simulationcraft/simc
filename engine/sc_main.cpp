@@ -86,8 +86,6 @@ struct sim_signal_handler_t
 struct sim_signal_handler_t
 {
   static sim_t* global_sim;
-
-  sim_signal_handler_t() {}
 };
 #endif
 

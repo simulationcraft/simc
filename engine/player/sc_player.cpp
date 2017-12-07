@@ -1601,25 +1601,41 @@ void player_t::init_professions()
 
   std::vector<std::string> splits = util::string_split( professions_str, ",/" );
 
-  for ( unsigned int i = 0; i < splits.size(); ++i )
+  for (auto& split : splits)
   {
     std::string prof_name;
     int prof_value = 0;
 
-    if ( 2 != util::string_split( splits[ i ], "=", "S i", &prof_name, &prof_value ) )
+    auto subsplit = util::string_split(split, "=");
+    if (subsplit.size() == 2)
     {
-      prof_name  = splits[ i ];
+      prof_name = subsplit[0];
+      try
+      {
+        prof_value = std::stoi(subsplit[1]);
+      }
+      catch (const std::exception& e)
+      {
+        std::stringstream s;
+        s << "Could not parse profession value for profession '" << prof_name
+            << "' with value '" << subsplit[1] << "': " << e.what();
+        throw std::invalid_argument(s.str());
+      }
+    }
+    else
+    {
+      prof_name = split;
       prof_value = true_level > 85 ? 600 : 525;
     }
 
-    int prof_type = util::parse_profession_type( prof_name );
-    if ( prof_type == PROFESSION_NONE )
-    {
-      sim -> errorf( "Invalid profession encoding: %s\n", professions_str.c_str() );
+    auto prof_type = util::parse_profession_type(prof_name);
+    if (prof_type == PROFESSION_NONE) {
+      sim->errorf("Invalid profession encoding: %s\n",
+          professions_str.c_str());
       return;
     }
 
-    profession[ prof_type ] = prof_value;
+    profession[prof_type] = prof_value;
   }
 }
 

@@ -126,7 +126,6 @@ double crit_multiplier( meta_gem_e gem );
 
 std::vector<std::string> string_split( const std::string& str, const std::string& delim );
 std::vector<std::string> string_split_allow_quotes( std::string str, const char* delim );
-size_t string_split( const std::string& str, const char* delim, const char* format, ... );
 void string_strip_quotes( std::string& str );
 void replace_all( std::string& s, const std::string&, const std::string& );
 void erase_all( std::string& s, const std::string& from );
