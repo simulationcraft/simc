@@ -724,6 +724,7 @@ timespan_t buff_t::tick_time() const
   switch ( tick_time_behavior )
   {
     case BUFF_TICK_TIME_HASTED:
+      assert(player);
       return buff_period * player -> cache.spell_speed();
     case BUFF_TICK_TIME_CUSTOM:
       assert( tick_time_callback );
@@ -2306,6 +2307,10 @@ void absorb_buff_t::expire_override( int expiration_stacks, timespan_t remaining
 {
   buff_t::expire_override( expiration_stacks, remaining_duration );
 
+  if ( !player)
+  {
+    return;
+  }
   auto it = range::find( player -> absorb_buff_list, this );
   if ( it != player -> absorb_buff_list.end() )
     player -> absorb_buff_list.erase( it );

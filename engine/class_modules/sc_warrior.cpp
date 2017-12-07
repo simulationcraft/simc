@@ -2664,7 +2664,7 @@ struct impending_victory_t: public warrior_attack_t
 {
   impending_victory_heal_t* impending_victory_heal;
   impending_victory_t( warrior_t* p, const std::string& options_str ):
-    warrior_attack_t( "impending_victory", p, 0 ),
+    warrior_attack_t( "impending_victory", p ),
     impending_victory_heal( nullptr )
   {
     parse_options( options_str );

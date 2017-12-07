@@ -7581,7 +7581,6 @@ struct proc_action_t : public T_ACTION
     this -> cooldown = e.player -> get_cooldown( e.cooldown_name() );
 
     __initialize();
-
     override_data( e );
   }
 
@@ -7593,7 +7592,7 @@ struct proc_action_t : public T_ACTION
     __initialize();
   }
 
-  virtual void override_data( const special_effect_t& e );
+  void override_data( const special_effect_t& e );
 };
 
 // Base proc spells used by the generic special effect initialization
@@ -7629,7 +7628,9 @@ struct proc_attack_t : public proc_action_t<attack_t>
 
   proc_attack_t( const special_effect_t& e ) :
     super( e )
-  { }
+  {
+    override_data(e);
+  }
 
   proc_attack_t( const std::string& token, player_t* p, const spell_data_t* s, const item_t* i = nullptr ) :
     super( token, p, s, i )

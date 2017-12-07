@@ -8218,8 +8218,8 @@ void druid_t::apl_guardian()
 void druid_t::apl_restoration()
 {
   action_priority_list_t* default_list    = get_action_priority_list( "default" );
-  action_priority_list_t* heal = get_action_priority_list("heal");
-  action_priority_list_t* dps = get_action_priority_list("dps"); //Base DPS APL - Guardian affinity
+  //action_priority_list_t* heal = get_action_priority_list("heal");
+  //action_priority_list_t* dps = get_action_priority_list("dps"); //Base DPS APL - Guardian affinity
   // action_priority_list_t* BAFF = get_action_priority_list("baff"); //Balance affinity
   // action_priority_list_t* FAFF = get_action_priority_list("faff"); //Feral affinity
 
@@ -10331,6 +10331,7 @@ struct oakhearts_puny_quods_buff_t : public class_buff_cb_t<druid_t>
       .default_value( e.driver() -> effectN( 1 ).trigger()
         -> effectN( 2 ).resource( RESOURCE_RAGE ) )
       .tick_callback( []( buff_t* b, int, const timespan_t& ) {
+      assert(b -> player);
       b -> player -> resource_gain( RESOURCE_RAGE,
         b -> default_value,
         debug_cast<druid_t*>( b -> player ) -> gain.oakhearts_puny_quods ); } );

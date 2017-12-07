@@ -632,8 +632,6 @@ void proc_action_t<T_ACTION>::override_data( const special_effect_t& e )
 
 void proc_attack_t::override_data( const special_effect_t& e )
 {
-  super::override_data( e );
-
   if ( ( e.override_result_es_mask & RESULT_DODGE_MASK ) )
   {
     this -> may_dodge = e.result_es_mask & RESULT_DODGE_MASK;

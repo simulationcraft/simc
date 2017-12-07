@@ -2571,7 +2571,7 @@ public:
                 {
                     double soul_conduit_rng = pl->talents.soul_conduit->effectN( 1 ).percent() + pl->spec.destruction->effectN( 4 ).percent();
 
-                    double last_res_cost = pl->last_foreground_action->last_resource_cost;
+                    // double last_res_cost = pl->last_foreground_action->last_resource_cost;
 
                     for ( int i = 0; i < shards_used; i++ )
                     {
@@ -2585,8 +2585,7 @@ public:
                 }
               };
 
-              demo_sc_event *evnt;
-              evnt = make_event<demo_sc_event>( *p()->sim, p(), last_resource_cost);
+              make_event<demo_sc_event>( *p()->sim, p(), last_resource_cost);
 
 
           }
@@ -3717,8 +3716,7 @@ struct demonic_empowerment_t: public warlock_spell_t
           }
         };
 
-        pt_delay_event *evnt;
-        evnt = make_event<pt_delay_event>( *p()->sim, p());
+        make_event<pt_delay_event>( *p()->sim, p());
 
 
 //        p() -> resource_gain( RESOURCE_SOUL_SHARD, 1, p() -> gains.power_trip );
@@ -4261,9 +4259,8 @@ struct duplicate_chaos_bolt_t : public warlock_spell_t
 
     if ( p()->sets->has_set_bonus( WARLOCK_DESTRUCTION, T21, B4 ) )
     {
-      double amount = s->result_amount;
-
-      amount *= p()->find_spell( 251855 )->effectN( 1 ).percent();
+      // double amount = s->result_amount;
+      // amount *= p()->find_spell( 251855 )->effectN( 1 ).percent();
 
       residual_action::trigger( flames_of_argus, s->target, s->result_amount * p()->sets->set( WARLOCK_DESTRUCTION, T21, B4 )->effectN( 1 ).percent() );
     }
@@ -4374,9 +4371,8 @@ struct chaos_bolt_t: public warlock_spell_t
     }
     if ( p()->sets->has_set_bonus( WARLOCK_DESTRUCTION, T21, B4 ) )
     {
-      double amount = s->result_amount;
-
-      amount *= p()->find_spell( 251855 )->effectN( 1 ).percent();
+      // double amount = s->result_amount;
+      // amount *= p()->find_spell( 251855 )->effectN( 1 ).percent();
 
       residual_action::trigger( flames_of_argus, s->target, s->result_amount * p()->sets->set( WARLOCK_DESTRUCTION, T21, B4 )->effectN( 1 ).percent() );
     }

@@ -5751,9 +5751,13 @@ struct stagger_self_damage_t : public residual_action::residual_periodic_action_
     if ( d -> is_ticking() )
     {
       if ( d -> tick_event )
+      {
         d -> tick_event -> reschedule( d -> tick_event -> remains() + seconds );
-      if ( d -> end_event )
-        d -> end_event -> reschedule( d -> tick_event -> remains() + seconds );
+        if ( d -> end_event )
+        {
+          d -> end_event -> reschedule( d -> tick_event -> remains() );
+        }
+      }
     }
   }
 
@@ -5966,12 +5970,12 @@ struct purifying_brew_t: public monk_spell_t
 
     double stagger_pct = p() -> current_stagger_tick_dmg_percent();
 
-    double purifying_brew_percent = p() -> spec.purifying_brew -> effectN( 1 ).percent();
-    if ( p() -> talent.elusive_dance -> ok() )
-      purifying_brew_percent += p() -> talent.elusive_dance -> effectN( 2 ).percent();
-
-    if ( p() -> artifact.staggering_around.rank() )
-      purifying_brew_percent += p() -> artifact.staggering_around.percent();
+//    double purifying_brew_percent = p() -> spec.purifying_brew -> effectN( 1 ).percent();
+//    if ( p() -> talent.elusive_dance -> ok() )
+//      purifying_brew_percent += p() -> talent.elusive_dance -> effectN( 2 ).percent();
+//
+//    if ( p() -> artifact.staggering_around.rank() )
+//      purifying_brew_percent += p() -> artifact.staggering_around.percent();
 
     //double stagger_dmg = p() -> partial_clear_stagger( purifying_brew_percent );
 
