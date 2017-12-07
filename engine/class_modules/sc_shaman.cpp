@@ -7845,18 +7845,19 @@ void shaman_t::init_action_list_enhancement()
   core -> add_talent( this, "Windsong" );
   core -> add_action( this, "Crash Lightning", "if=active_enemies>=8|(active_enemies>=6&talent.crashing_storm.enabled)" );
   core -> add_action( this, "Windstrike" );
+  core -> add_action( this, "Rockbiter" , "if=buff.force_of_the_mountain.up&charges_fractional>1.7&active_enemies<=4" );
   core -> add_action( this, "Stormstrike", "if=buff.stormbringer.up&variable.furyCheck25" );
   core -> add_action( this, "Crash Lightning", "if=active_enemies>=4|(active_enemies>=2&talent.crashing_storm.enabled)" );
   core -> add_action( this, "Rockbiter" , "if=buff.force_of_the_mountain.up" );
   core -> add_action( this, "Lightning Bolt", "if=talent.overcharge.enabled&variable.furyCheck45&maelstrom>=40" );
+  core -> add_action( this, "Lava Lash", "if=(maelstrom>=50&variable.OCPool70&variable.furyCheck80&debuff.exposed_elements.up&debuff.lashing_flames.stack>90)|(buff.hot_hand.react&((variable.akainuEquipped&buff.frostbrand.up)|(!variable.akainuEquipped)))" );
   core -> add_action( this, "Stormstrike", "if=(!talent.overcharge.enabled&variable.furyCheck45)|(talent.overcharge.enabled&variable.furyCheck80)" );
   core -> add_action( this, "Frostbrand", "if=variable.akainuAS" );
-  core -> add_action( this, "Lava Lash", "if=buff.hot_hand.react&((variable.akainuEquipped&buff.frostbrand.up)|!variable.akainuEquipped)" );
   core -> add_talent( this, "Sundering", "if=active_enemies>=3" );
   core -> add_action( this, "Crash Lightning", "if=active_enemies>=3|variable.LightningCrashNotUp|variable.alphaWolfCheck" );
 
   
-  filler -> add_action( this, "Rockbiter", "if=maelstrom<120" );
+  filler -> add_action( this, "Rockbiter", "if=maelstrom<120&charges_fractional>1.7" );
   filler -> add_action( this, "Flametongue", "if=buff.flametongue.remains<4.8" );
   filler -> add_action( this, "Crash Lightning", "if=(talent.crashing_storm.enabled|active_enemies>=2)&debuff.earthen_spike.up&maelstrom>=40&variable.OCPool60" );
   filler -> add_action( this, "Frostbrand", "if=talent.hailstorm.enabled&buff.frostbrand.remains<4.8&maelstrom>40" );
