@@ -7554,6 +7554,7 @@ struct proc_action_t : public T_ACTION
 {
   using super = T_ACTION;
   using base_action_t = proc_action_t<T_ACTION>;
+  const special_effect_t* effect;
 
   void __initialize()
   {
@@ -7575,24 +7576,35 @@ struct proc_action_t : public T_ACTION
   }
 
   proc_action_t( const special_effect_t& e ) :
-    super( e.name(), e.player, e.trigger() )
+    super( e.name(), e.player, e.trigger() ),
+    effect(&e)
   {
     this -> item = e.item;
     this -> cooldown = e.player -> get_cooldown( e.cooldown_name() );
 
     __initialize();
-    override_data( e );
+  }
+
+  void init() override
+  {
+    super::init();
+    if ( effect )
+    {
+
+      override_data( *effect );
+    }
   }
 
   proc_action_t( const std::string& token, player_t* p, const spell_data_t* s, const item_t* i = nullptr ) :
-    super( token, p, s )
+    super( token, p, s ),
+    effect(nullptr)
   {
     this -> item = i;
 
     __initialize();
   }
 
-  void override_data( const special_effect_t& e );
+  virtual void override_data( const special_effect_t& e );
 };
 
 // Base proc spells used by the generic special effect initialization
@@ -7629,14 +7641,13 @@ struct proc_attack_t : public proc_action_t<attack_t>
   proc_attack_t( const special_effect_t& e ) :
     super( e )
   {
-    override_data(e);
   }
 
   proc_attack_t( const std::string& token, player_t* p, const spell_data_t* s, const item_t* i = nullptr ) :
     super( token, p, s, i )
   { }
 
-  void override_data( const special_effect_t& e );
+  void override_data( const special_effect_t& e ) override;
 };
 
 struct proc_resource_t : public proc_action_t<spell_t>
