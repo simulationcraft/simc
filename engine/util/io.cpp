@@ -27,7 +27,7 @@ std::wstring widen( const char* first, const char* last )
     utf8::utf8to16( first, last, std::back_inserter( result ) );
   else
   {
-    assert( sizeof( wchar_t ) == 4 );
+    static_assert( sizeof( wchar_t ) == 4, "" );
     utf8::utf8to32( first, last, std::back_inserter( result ) );
   }
 

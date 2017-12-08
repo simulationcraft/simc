@@ -38,13 +38,13 @@ struct rogue_attack_state_t;
 struct residual_damage_state_t;
 struct rogue_poison_t;
 struct rogue_attack_t;
-struct rogue_poison_buff_t;
 struct melee_t;
 struct shadow_blade_t;
 }
 
 namespace buffs
 {
+struct rogue_poison_buff_t;
 struct marked_for_death_debuff_t;
 }
 

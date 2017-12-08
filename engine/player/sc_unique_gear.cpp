@@ -13,7 +13,7 @@ namespace { // UNNAMED NAMESPACE
 
 // Prefix/Suffix map to allow shorthand consumable names, when searching for the item (for potion
 // action).
-static std::map<item_subclass_consumable, std::pair<std::vector<std::string>, std::vector<std::string>>> __consumable_substrings = {
+std::map<item_subclass_consumable, std::pair<std::vector<std::string>, std::vector<std::string>>> __consumable_substrings = {
   { ITEM_SUBCLASS_POTION, { { "potion_of_the_", "potion_of_", "potion_" }, { "_potion" } } },
   { ITEM_SUBCLASS_FLASK,  { { "flask_of_the_", "flask_of_", "flask_" }, { "_flask" } } }
 };
@@ -1221,7 +1221,7 @@ void set_bonus::t18_lfr_4pc_clothcaster( special_effect_t& effect )
   new dbc_proc_callback_t( effect.player, effect );
 }
 
-static void fel_winds_callback( buff_t* buff, int ct, const timespan_t& )
+void fel_winds_callback( buff_t* buff, int ct, const timespan_t& )
 {
   double old_mas = buff -> player -> cache.attack_speed();
   // .. aand force recomputation of attack speed so reschedule_auto_attack will see the new value.
@@ -3004,7 +3004,7 @@ struct hammering_blows_driver_cb_t : public dbc_proc_callback_t
 };
 
 // Secondary initialization for the stack-gain driver for insatiable hunger
-static void insatiable_hunger_2( special_effect_t& effect )
+void insatiable_hunger_2( special_effect_t& effect )
 {
   effect.proc_chance_ = 1.0;
   effect.custom_buff = buff_t::find( effect.player, "hammering_blows" );
@@ -3329,7 +3329,7 @@ void item::soul_capacitor( special_effect_t& effect )
 }
 
 
-const std::string BLADEMASTER_PET_NAME = "mirror_image_(trinket)";
+const char* BLADEMASTER_PET_NAME = "mirror_image_(trinket)";
 
 struct felstorm_tick_t : public melee_attack_t
 {
@@ -3789,7 +3789,7 @@ void unique_gear::init( player_t* p )
 
 // Figure out if a given generic buff (associated with a trinket/item) is a
 // stat buff of the correct type
-static bool buff_has_stat( const buff_t* buff, stat_e stat )
+bool buff_has_stat( const buff_t* buff, stat_e stat )
 {
   if ( ! buff )
     return false;
@@ -4110,7 +4110,7 @@ bool cmp_dbitem( const special_effect_db_item_t& elem, unsigned id )
 { return elem.spell_id < id; }
 }
 
-static unique_gear::special_effect_set_t do_find_special_effect_db_item(
+unique_gear::special_effect_set_t do_find_special_effect_db_item(
     const std::vector<special_effect_db_item_t>& db, unsigned spell_id )
 {
   special_effect_set_t entries;
@@ -4148,7 +4148,7 @@ static unique_gear::special_effect_set_t do_find_special_effect_db_item(
   return entries;
 }
 
-static special_effect_set_t find_fallback_effect_db_item( unsigned spell_id )
+special_effect_set_t find_fallback_effect_db_item( unsigned spell_id )
 { return do_find_special_effect_db_item( __fallback_effect_db, spell_id ); }
 
 special_effect_set_t unique_gear::find_special_effect_db_item( unsigned spell_id )

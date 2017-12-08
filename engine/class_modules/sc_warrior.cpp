@@ -4352,7 +4352,7 @@ struct battle_cry_t: public warrior_spell_t
 
     if ( p -> talents.reckless_abandon -> ok() )
     {
-      energize_amount = p -> talents.reckless_abandon -> effectN( 2 ).base_value() / 10;
+      energize_amount = p -> talents.reckless_abandon -> effectN( 2 ).base_value() / 10.0;
       energize_type = ENERGIZE_ON_CAST;
       energize_resource = RESOURCE_RAGE;
     }

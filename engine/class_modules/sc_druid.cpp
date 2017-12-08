@@ -1568,7 +1568,9 @@ public:
       else if ( autoshift )
         p() -> shapeshift( ( form_e ) autoshift );
       else
-        assert( "Action executed in wrong form with no valid form to shift to!" );
+      {
+        assert( false && "Action executed in wrong form with no valid form to shift to!" );
+      }
     }
 
     ab::schedule_execute( s );
@@ -4385,7 +4387,7 @@ struct cenarion_ward_t : public druid_heal_t
   {
     if ( target != p() )
     {
-      assert( "Cenarion Ward will not trigger on other players!" );
+      assert( false && "Cenarion Ward will not trigger on other players!" );
       return false;
     }
 
@@ -5517,7 +5519,9 @@ struct incarnation_t : public druid_spell_t
       spec_buff = p -> buff.incarnation_tree;
       break;
     default:
-      assert( "Actor attempted to create incarnation action with no specialization." );
+    {
+      assert( false && "Actor attempted to create incarnation action with no specialization." );
+    }
     }
 
     harmful = false;
@@ -9051,7 +9055,9 @@ expr_t* druid_t::create_expression( action_t* a, const std::string& name_str )
         else if ( util::str_compare_ci( name_str, "full_moon" ) )
           stage = 2;
         else
-          assert( "Bad name_str passed to moon_stage_expr_t" );
+        {
+          assert( false && "Bad name_str passed to moon_stage_expr_t" );
+        }
       }
 
       virtual double evaluate() override
