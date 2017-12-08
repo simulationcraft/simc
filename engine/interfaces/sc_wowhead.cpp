@@ -302,6 +302,14 @@ bool wowhead::download_item_data( item_t&            item,
                           fieldname, item.slot_name(), error_str.c_str() );
     return false;
   }
+  catch( const std::exception& e )
+  {
+    if ( caching != cache::ONLY )
+      item.sim -> errorf( "Wowhead (%s): Player %s unable to parse item '%u' in slot '%s': %s\n",
+                          source_desc_str( source ).c_str(), item.player -> name(), item.parsed.data.id,
+                          item.slot_name(), e.what() );
+    return false;
+  }
 
   return true;
 }

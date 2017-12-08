@@ -514,7 +514,7 @@ bool xml_node_t::get_value( int&               value,
   xml_parm_t* parm = node -> get_parm( key );
   if ( ! parm ) return false;
 
-  value = atoi( parm -> value_str.c_str() );
+  value = std::stoi( parm -> value_str.c_str() );
 
   return true;
 }
@@ -532,7 +532,7 @@ bool xml_node_t::get_value( double&            value,
   xml_parm_t* parm = node -> get_parm( key );
   if ( ! parm ) return false;
 
-  value = atof( parm -> value_str.c_str() );
+  value = std::stod( parm -> value_str.c_str() );
 
   return true;
 }
@@ -822,7 +822,7 @@ bool sc_xml_t::get_value( double& value, const std::string& path )
   if ( key == "." )
   {
     assert( node.root -> type() == node_element );
-    value = atof( node.root -> value() );
+    value = std::stod( node.root -> value() );
     ret = true;
   }
   else if ( util::str_compare_ci( key, "cdata" ) )
@@ -831,7 +831,7 @@ bool sc_xml_t::get_value( double& value, const std::string& path )
     {
       if ( n -> type() == node_cdata )
       {
-        value = atof( n -> value() );
+        value = std::stod( n -> value() );
         ret = true;
         break;
       }
@@ -844,7 +844,7 @@ bool sc_xml_t::get_value( double& value, const std::string& path )
     {
       return ret;
     }
-    value = atof( attr -> value() );
+    value = std::stod( attr -> value() );
     ret = true;
   }
 
