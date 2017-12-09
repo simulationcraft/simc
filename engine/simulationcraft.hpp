@@ -6925,19 +6925,25 @@ struct dbc_proc_callback_t : public action_callback_t
     action_callback_t( i.player ), item( i ), effect( e ), cooldown( nullptr ),
     rppm( nullptr ), proc_chance( 0 ), ppm( 0 ),
     proc_buff( nullptr ), proc_action( nullptr ), weapon( nullptr )
-  { }
+  {
+    assert( e.proc_flags() != 0 );
+  }
 
   dbc_proc_callback_t( const item_t* i, const special_effect_t& e ) :
     action_callback_t( i -> player ), item( *i ), effect( e ), cooldown( nullptr ),
     rppm( nullptr ), proc_chance( 0 ), ppm( 0 ),
     proc_buff( nullptr ), proc_action( nullptr ), weapon( nullptr )
-  { }
+  {
+    assert( e.proc_flags() != 0 );
+  }
 
   dbc_proc_callback_t( player_t* p, const special_effect_t& e ) :
     action_callback_t( p ), item( default_item_ ), effect( e ), cooldown( nullptr ),
     rppm( nullptr ), proc_chance( 0 ), ppm( 0 ),
     proc_buff( nullptr ), proc_action( nullptr ), weapon( nullptr )
-  { }
+  {
+    assert( e.proc_flags() != 0 );
+  }
 
   virtual void initialize() override;
 
