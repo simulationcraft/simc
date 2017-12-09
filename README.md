@@ -1,4 +1,4 @@
-# [SimulationCraft](http://www.simulationcraft.org/) [![Build Status](https://travis-ci.org/simulationcraft/simc.svg)](https://travis-ci.org/simulationcraft/simc) [![Build status](https://ci.appveyor.com/api/projects/status/4e7fxyik4cuu4gxf?svg=true)](https://ci.appveyor.com/project/scamille/simc)
+# [SimulationCraft](http://www.simulationcraft.org/) [![Build Status](https://travis-ci.org/simulationcraft/simc.svg)](https://travis-ci.org/simulationcraft/simc) [![Build status](https://ci.appveyor.com/api/projects/status/4e7fxyik4cuu4gxf?svg=true)](https://ci.appveyor.com/project/scamille/simc) [![Coverage Status](https://coveralls.io/repos/github/simulationcraft/simc/badge.svg?branch=legion-dev)](https://coveralls.io/github/simulationcraft/simc?branch=legion-dev)
 ## Overview
 
 SimulationCraft is a tool to explore combat mechanics in the popular MMO RPG World of Warcraft (tm).
