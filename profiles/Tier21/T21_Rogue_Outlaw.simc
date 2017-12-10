@@ -90,13 +90,13 @@ actions.stealth+=/ambush,if=variable.ambush_condition
 actions.stealth+=/vanish,if=(variable.ambush_condition|equipped.mantle_of_the_master_assassin&!variable.rtb_reroll&!variable.ss_useable)&mantle_duration=0
 actions.stealth+=/shadowmeld,if=variable.ambush_condition
 
-head=headdress_of_living_brambles,id=152681,bonus_id=3612/1502
-neck=vulcanarcore_pendant,id=151965,bonus_id=3612/1502,enchant=mark_of_the_hidden_satyr
+head=cavalier_hat_of_the_dashing_scoundrel,id=152163,bonus_id=3612/1502
+neck=chain_of_the_unmaker,id=152283,bonus_id=3612/1502,enchant=mark_of_the_hidden_satyr
 shoulders=mantle_of_the_master_assassin,id=144236,bonus_id=3630
 back=cloak_of_the_dashing_scoundrel,id=152161,bonus_id=3612/1502,enchant=binding_of_agility
 chest=vest_of_the_dashing_scoundrel,id=152160,bonus_id=3612/1502
 wrists=greenskins_waterlogged_wristcuffs,id=137099,bonus_id=3630
-hands=gloves_of_the_dashing_scoundrel,id=152162,bonus_id=3612/1502
+hands=grips_of_hungering_shadows,id=152086,bonus_id=3612/1502
 waist=deathenveloping_cincture,id=151986,bonus_id=3612/1502
 legs=pants_of_the_dashing_scoundrel,id=152164,bonus_id=3612/1502
 feet=depraved_machinists_footpads,id=152412,bonus_id=3612/1502
@@ -104,17 +104,17 @@ finger1=zealous_tormentors_ring,id=152284,bonus_id=3612/1502,enchant=binding_of_
 finger2=seal_of_the_portalmaster,id=152063,bonus_id=3612/1502,enchant=binding_of_haste
 trinket1=convergence_of_fates,id=140806,bonus_id=3518/1502
 trinket2=golganneths_vitality,id=154174,bonus_id=3997
-main_hand=the_dreadblades,id=128872,bonus_id=742,gem_id=152028/155855/155853,relic_id=3612:1502/3612:1512/3612:1512
+main_hand=the_dreadblades,id=128872,bonus_id=742,gem_id=155847/155855/155853,relic_id=3612:1512/3612:1512/3612:1512
 off_hand=the_dreadblades,id=134552
 
 # Gear Summary
-# gear_ilvl=969.19
-# gear_agility=42260
-# gear_stamina=60792
-# gear_crit_rating=8563
-# gear_haste_rating=9362
-# gear_mastery_rating=5242
-# gear_versatility_rating=7150
+# gear_ilvl=970.19
+# gear_agility=42388
+# gear_stamina=61296
+# gear_crit_rating=9948
+# gear_haste_rating=9636
+# gear_mastery_rating=5252
+# gear_versatility_rating=5766
 # gear_armor=3008
 # set_bonus=tier21_2pc=1
 # set_bonus=tier21_4pc=1

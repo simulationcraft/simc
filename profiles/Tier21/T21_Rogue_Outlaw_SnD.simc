@@ -6,7 +6,7 @@ role=attack
 position=back
 talents=1310021
 artifact=44:0:0:0:0:1052:1:1053:1:1054:1:1055:1:1056:1:1057:1:1058:1:1059:4:1060:4:1061:4:1062:4:1063:4:1064:4:1065:4:1066:4:1067:4:1348:1:1385:1:1581:4:1582:1:1583:1:1584:24:1652:1
-crucible=1739:1780:1064/1739:1780:1067/1739:1780:1067
+crucible=1739:1780:1062/1739:1780:1061/1739:1780:1061
 
 # Default consumables
 potion=prolonged_power
@@ -90,31 +90,31 @@ actions.stealth+=/ambush,if=variable.ambush_condition
 actions.stealth+=/vanish,if=(variable.ambush_condition|equipped.mantle_of_the_master_assassin&!variable.rtb_reroll&!variable.ss_useable)&mantle_duration=0
 actions.stealth+=/shadowmeld,if=variable.ambush_condition
 
-head=headdress_of_living_brambles,id=152681,bonus_id=3612/1502
+head=cavalier_hat_of_the_dashing_scoundrel,id=152163,bonus_id=3612/1502
 neck=vulcanarcore_pendant,id=151965,bonus_id=3612/1502,enchant=mark_of_the_hidden_satyr
 shoulders=mantle_of_the_master_assassin,id=144236,bonus_id=3630
 back=cloak_of_the_dashing_scoundrel,id=152161,bonus_id=3612/1502,enchant=binding_of_agility
 chest=vest_of_the_dashing_scoundrel,id=152160,bonus_id=3612/1502
 wrists=bracers_of_wanton_morality,id=152414,bonus_id=3612/1502
-hands=gloves_of_the_dashing_scoundrel,id=152162,bonus_id=3612/1502
+hands=grips_of_hungering_shadows,id=152086,bonus_id=3612/1502
 waist=deathenveloping_cincture,id=151986,bonus_id=3612/1502
 legs=pants_of_the_dashing_scoundrel,id=152164,bonus_id=3612/1502
 feet=vicious_flamepaws,id=151983,bonus_id=3612/1502
 finger1=insignia_of_ravenholdt,id=137049,bonus_id=3630,gem_id=151585,enchant=binding_of_versatility
-finger2=sullied_seal_of_the_pantheon,id=151972,bonus_id=3612/1502,enchant=binding_of_versatility
-trinket1=gorshalachs_legacy,id=152093,bonus_id=3612/1502
+finger2=seal_of_the_portalmaster,id=152063,bonus_id=3612/1502,enchant=binding_of_versatility
+trinket1=nightblooming_frond,id=140802,bonus_id=3518/1502
 trinket2=golganneths_vitality,id=154174,bonus_id=3997
-main_hand=the_dreadblades,id=128872,bonus_id=742,gem_id=152028/155855/155853,relic_id=3612:1502/3612:1512/3612:1512
+main_hand=the_dreadblades,id=128872,bonus_id=742,gem_id=152295/155855/155853,relic_id=3612:1502/3612:1512/3612:1512
 off_hand=the_dreadblades,id=134552
 
 # Gear Summary
-# gear_ilvl=973.25
-# gear_agility=38594
-# gear_stamina=61104
-# gear_crit_rating=8953
-# gear_haste_rating=7470
-# gear_mastery_rating=8691
-# gear_versatility_rating=8115
+# gear_ilvl=969.19
+# gear_agility=40756
+# gear_stamina=60792
+# gear_crit_rating=9308
+# gear_haste_rating=6297
+# gear_mastery_rating=6128
+# gear_versatility_rating=9755
 # gear_armor=2979
 # set_bonus=tier21_2pc=1
 # set_bonus=tier21_4pc=1
