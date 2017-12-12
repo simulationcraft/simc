@@ -3950,7 +3950,10 @@ struct thrash_cat_t : public cat_attack_t
       dot_duration *= 1.0 + p -> talent.jagged_wounds -> effectN( 2 ).percent();
 
       base_multiplier *= 1.0 + p -> artifact.thrashing_claws.rank() * p -> artifact.thrashing_claws.data().effectN(1).percent();
-
+      if ( p -> sets -> has_set_bonus( DRUID_FERAL, T19, B2 ) )
+      {
+        base_multiplier *= 1.0 + p -> find_spell(211140) -> effectN(1).percent();
+      }
     }
 
     // Shadow Thrash uses "legacy" refresh, carrying over no more than 1 tick.
@@ -3984,12 +3987,14 @@ struct thrash_cat_t : public cat_attack_t
 
     trigger_tier17_2pc = p -> sets -> has_set_bonus( DRUID_FERAL, T17, B2 );
 
+    // For some reason this is in a different spell
+    energize_amount = p -> find_spell( 211141 ) -> effectN(1).base_value();
+    energize_resource = RESOURCE_COMBO_POINT;
+    energize_type = ENERGIZE_ON_HIT;
+
     if ( p -> sets -> has_set_bonus( DRUID_FERAL, T19, B2 ) )
     {
-      // No value in spell data.
-      energize_amount = 1;
-      energize_resource = RESOURCE_COMBO_POINT;
-      energize_type = ENERGIZE_ON_HIT;
+      base_multiplier *= 1.0 + p -> find_spell( 211140 ) -> effectN(1).percent();
     }
 
     if ( p -> artifact.shadow_thrash.rank() )
