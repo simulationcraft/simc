@@ -4636,10 +4636,16 @@ struct  keg_smash_stave_off_t: public monk_melee_attack_t
 
   virtual void execute() override
   {
-    monk_melee_attack_t::execute();
-
     // Reduces the remaining cooldown on your Brews by 4 sec.
     brew_cooldown_reduction( p() -> spec.keg_smash -> effectN( 4 ).base_value() );
+
+    // Stave Off can proc off of itself
+    // 4% chance for double proc
+    // 0.8% chance for triple proc
+    if ( rng().roll(p() -> artifact.stave_off.percent() ) )
+      execute();
+
+    monk_melee_attack_t::execute();
   }
 };
 
