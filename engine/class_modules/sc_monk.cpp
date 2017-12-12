@@ -436,6 +436,8 @@ public:
 
     // Windwalker
     const spell_data_t* afterlife;
+    const spell_data_t* blackout_kick_2;
+    const spell_data_t* blackout_kick_3;
     const spell_data_t* combat_conditioning; // Possibly will get removed
     const spell_data_t* combo_breaker;
     const spell_data_t* cyclone_strikes;
@@ -3525,6 +3527,10 @@ struct blackout_kick_t: public monk_melee_attack_t
       }
       case MONK_WINDWALKER:
       {
+        if ( p -> spec.blackout_kick_2 )
+          base_costs[RESOURCE_CHI] -= p -> spec.blackout_kick_2 -> effectN( 1 ).base_value(); // Reduce base from 3 chi to 2
+        if ( p -> spec.blackout_kick_3 )
+          base_costs[RESOURCE_CHI] -= p -> spec.blackout_kick_3 -> effectN( 1 ).base_value(); // Reduce base from 2 chi to 1
         rsk_proc = new rising_sun_kick_proc_t( p );
         break;
       }
@@ -4576,8 +4582,10 @@ struct auto_attack_t: public monk_melee_attack_t
 // ==========================================================================
 struct  keg_smash_stave_off_t: public monk_melee_attack_t
 {
+  int stave_off_proc;
   keg_smash_stave_off_t( monk_t& p ):
-    monk_melee_attack_t( "keg_smash_stave_off", &p, p.spec.keg_smash )
+    monk_melee_attack_t( "keg_smash_stave_off", &p, p.spec.keg_smash ),
+    stave_off_proc( 0 )
   {
     aoe = -1;
     background = dual = true;
@@ -4636,16 +4644,20 @@ struct  keg_smash_stave_off_t: public monk_melee_attack_t
 
   virtual void execute() override
   {
+    stave_off_proc++;
+
     // Reduces the remaining cooldown on your Brews by 4 sec.
     brew_cooldown_reduction( p() -> spec.keg_smash -> effectN( 4 ).base_value() );
 
     // Stave Off can proc off of itself
     // 4% chance for double proc
-    // 0.8% chance for triple proc
-    if ( rng().roll(p() -> artifact.stave_off.percent() ) )
+    // Caps at 2 procs
+    if ( stave_off_proc < 2 && rng().roll(p() -> artifact.stave_off.percent() ) )
       execute();
 
     monk_melee_attack_t::execute();
+
+    stave_off_proc = 0;
   }
 };
 
@@ -8247,6 +8259,8 @@ void monk_t::init_spells()
   // Specialization spells ====================================
   // Multi-Specialization & Class Spells
   spec.blackout_kick                 = find_class_spell( "Blackout Kick" );
+  spec.blackout_kick_2               = find_specialization_spell( 261916 );
+  spec.blackout_kick_3               = find_specialization_spell( 261917 );
   spec.crackling_jade_lightning      = find_class_spell( "Crackling Jade Lightning" );
   spec.critical_strikes              = find_specialization_spell( "Critical Strikes" );
   spec.effuse                        = find_specialization_spell( "Effuse" );
