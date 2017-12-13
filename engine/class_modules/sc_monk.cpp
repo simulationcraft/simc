@@ -3528,9 +3528,11 @@ struct blackout_kick_t: public monk_melee_attack_t
       case MONK_WINDWALKER:
       {
         if ( p -> spec.blackout_kick_2 )
-          base_costs[RESOURCE_CHI] -= p -> spec.blackout_kick_2 -> effectN( 1 ).base_value(); // Reduce base from 3 chi to 2
+          // Saved as -1
+          base_costs[RESOURCE_CHI] += p -> spec.blackout_kick_2 -> effectN( 1 ).base_value(); // Reduce base from 3 chi to 2
         if ( p -> spec.blackout_kick_3 )
-          base_costs[RESOURCE_CHI] -= p -> spec.blackout_kick_3 -> effectN( 1 ).base_value(); // Reduce base from 2 chi to 1
+          // Saved as -1
+          base_costs[RESOURCE_CHI] += p -> spec.blackout_kick_3 -> effectN( 1 ).base_value(); // Reduce base from 2 chi to 1
         rsk_proc = new rising_sun_kick_proc_t( p );
         break;
       }
