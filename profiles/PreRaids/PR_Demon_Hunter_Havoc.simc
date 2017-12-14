@@ -56,10 +56,10 @@ actions.cooldown+=/nemesis,target_if=min:target.time_to_die,if=raid_event.adds.e
 actions.cooldown+=/nemesis,if=!raid_event.adds.exists&(buff.chaos_blades.up|buff.metamorphosis.up|cooldown.metamorphosis.adjusted_remains<20|target.time_to_die<=60)
 actions.cooldown+=/chaos_blades,if=buff.metamorphosis.up|cooldown.metamorphosis.adjusted_remains>60|target.time_to_die<=duration
 actions.cooldown+=/use_item,name=faulty_countermeasure,if=buff.chaos_blades.up|!talent.chaos_blades.enabled
-actions.cooldown+=/potion,if=buff.metamorphosis.remains>25|target.time_to_die<30
+actions.cooldown+=/potion,if=buff.metamorphosis.remains>25|target.time_to_die<60
 
 # Specific APL for the Blind Fury+Demonic Appetite+Demonic build
-actions.demonic=pick_up_fragment,if=fury.deficit>=35&(cooldown.eye_beam.remains>5|buff.metamorphosis.up)
+actions.demonic=pick_up_fragment,if=fury.deficit>=35&(cooldown.eye_beam.remains>5|(buff.metamorphosis.up&cooldown.metamorphosis.ready))
 # Vengeful Retreat backwards through the target to minimize downtime.
 actions.demonic+=/vengeful_retreat,if=(talent.prepared.enabled|talent.momentum.enabled)&buff.prepared.down&buff.momentum.down
 # Fel Rush for Momentum.
@@ -75,7 +75,7 @@ actions.demonic+=/eye_beam,if=spell_targets.eye_beam_tick>desired_targets|!buff.
 actions.demonic+=/annihilation,if=(!talent.momentum.enabled|buff.momentum.up|fury.deficit<30+buff.prepared.up*8|buff.metamorphosis.remains<5)&!variable.pooling_for_blade_dance
 actions.demonic+=/throw_glaive,if=talent.bloodlet.enabled&(!talent.master_of_the_glaive.enabled|!talent.momentum.enabled|buff.momentum.up)&raid_event.adds.in>recharge_time+cooldown
 actions.demonic+=/chaos_strike,if=(!talent.momentum.enabled|buff.momentum.up|fury.deficit<30+buff.prepared.up*8)&!variable.pooling_for_chaos_strike&!variable.pooling_for_meta&!variable.pooling_for_blade_dance
-actions.demonic+=/fel_rush,if=!talent.momentum.enabled&!cooldown.eye_beam.ready&(buff.metamorphosis.down|talent.demon_blades.enabled)&(charges=2|(raid_event.movement.in>10&raid_event.adds.in>10))
+actions.demonic+=/fel_rush,if=!talent.momentum.enabled&!talent.demonic_appetite.enabled&!cooldown.eye_beam.ready&(buff.metamorphosis.down|talent.demon_blades.enabled)&(charges=2|(raid_event.movement.in>10&raid_event.adds.in>10))
 actions.demonic+=/demons_bite
 actions.demonic+=/throw_glaive,if=buff.out_of_range.up|!talent.bloodlet.enabled
 actions.demonic+=/fel_rush,if=movement.distance>15|(buff.out_of_range.up&!talent.momentum.enabled)

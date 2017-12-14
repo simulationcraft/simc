@@ -3904,7 +3904,7 @@ struct chaos_cleave_t : public demon_hunter_attack_t
     aoe = -1;
     weapon = &p->main_hand_weapon;
     weapon_multiplier = 0;
-    radius = 8;
+    radius = 5;
     range = -1.0;
     school = SCHOOL_CHAOS;
   }
@@ -6889,7 +6889,7 @@ void add_havoc_use_items( demon_hunter_t* p, action_priority_list_t* apl )
       }
       else if (util::str_compare_ci(p->items[i].name_str, "umbral_moonglaives"))
       {
-        line += ",if=(active_enemies>desired_targets)|(raid_event.adds.in>90&(buff.chaos_blades.up|target.time_to_die<cooldown.chaos_blades.remains))";
+        line += ",if=(active_enemies>desired_targets)|(raid_event.adds.in>90&(!talent.chaos_blades.enabled|buff.chaos_blades.up|target.time_to_die<cooldown.chaos_blades.remains))";
       }
       else if (util::str_compare_ci(p->items[i].name_str, "forgefiends_fabricator"))
       {
@@ -6952,7 +6952,7 @@ void demon_hunter_t::apl_havoc()
   def->add_action("run_action_list,name=normal");
 
   action_priority_list_t* demonic = get_action_priority_list("demonic", "Specific APL for the Blind Fury+Demonic Appetite+Demonic build");
-  demonic->add_action("pick_up_fragment,if=fury.deficit>=35&(cooldown.eye_beam.remains>5|buff.metamorphosis.up)");
+  demonic->add_action("pick_up_fragment,if=fury.deficit>=35&(cooldown.eye_beam.remains>5|(buff.metamorphosis.up&cooldown.metamorphosis.ready))");
   demonic->add_action(this, "Vengeful Retreat", "if=(talent.prepared.enabled|talent.momentum.enabled)&buff.prepared.down&buff.momentum.down",
     "Vengeful Retreat backwards through the target to minimize downtime.");
   demonic->add_action(this, "Fel Rush", "if=(talent.momentum.enabled|talent.fel_mastery.enabled)&"
@@ -6969,7 +6969,8 @@ void demon_hunter_t::apl_havoc()
     "(!talent.master_of_the_glaive.enabled|!talent.momentum.enabled|buff.momentum.up)&"
     "(spell_targets>=3|raid_event.adds.in>recharge_time+cooldown)");
   demonic->add_talent(this, "Felblade", "if=fury.deficit>=30&(fury<40|buff.metamorphosis.down)");
-  demonic->add_action(this, "Eye Beam", "if=spell_targets.eye_beam_tick>desired_targets|!buff.metamorphosis.extended_by_demonic|(set_bonus.tier21_4pc&buff.metamorphosis.remains>16)");
+  demonic->add_action(this, "Eye Beam", "if=spell_targets.eye_beam_tick>desired_targets|!buff.metamorphosis.extended_by_demonic|"
+    "(set_bonus.tier21_4pc&buff.metamorphosis.remains>16)");
   demonic->add_action(this, spec.annihilation, "annihilation", 
     "if=(!talent.momentum.enabled|buff.momentum.up|fury.deficit<30+buff.prepared.up*8|buff.metamorphosis.remains<5)&"
     "!variable.pooling_for_blade_dance");
@@ -6977,8 +6978,8 @@ void demon_hunter_t::apl_havoc()
     "(!talent.master_of_the_glaive.enabled|!talent.momentum.enabled|buff.momentum.up)&raid_event.adds.in>recharge_time+cooldown");
   demonic->add_action(this, "Chaos Strike", "if=(!talent.momentum.enabled|buff.momentum.up|fury.deficit<30+buff.prepared.up*8)&"
     "!variable.pooling_for_chaos_strike&!variable.pooling_for_meta&!variable.pooling_for_blade_dance");
-  demonic->add_action(this, "Fel Rush", "if=!talent.momentum.enabled&!cooldown.eye_beam.ready&(buff.metamorphosis.down|talent.demon_blades.enabled)&"
-    "(charges=2|(raid_event.movement.in>10&raid_event.adds.in>10))");
+  demonic->add_action(this, "Fel Rush", "if=!talent.momentum.enabled&!talent.demonic_appetite.enabled&!cooldown.eye_beam.ready&"
+    "(buff.metamorphosis.down|talent.demon_blades.enabled)&(charges=2|(raid_event.movement.in>10&raid_event.adds.in>10))");
   demonic->add_action(this, "Demon's Bite");
   demonic->add_action(this, "Throw Glaive", "if=buff.out_of_range.up|!talent.bloodlet.enabled");
   demonic->add_action(this, "Fel Rush", "if=movement.distance>15|(buff.out_of_range.up&!talent.momentum.enabled)");
@@ -7042,7 +7043,7 @@ void demon_hunter_t::apl_havoc()
   
   add_havoc_use_items(this, cd);
 
-  cd->add_action("potion,if=buff.metamorphosis.remains>25|target.time_to_die<30");
+  cd->add_action("potion,if=buff.metamorphosis.remains>25|target.time_to_die<60");
 }
 
 // demon_hunter_t::apl_vengeance ============================================
