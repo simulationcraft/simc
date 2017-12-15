@@ -3397,6 +3397,8 @@ struct lunar_inspiration_t : public cat_attack_t
     snapshots_tf = true;
     hasted_ticks = true;
     energize_type = ENERGIZE_ON_HIT;
+
+    hasted_gcd = true;
   }
 
   void init() override
