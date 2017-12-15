@@ -1005,6 +1005,7 @@ shaman_td_t::shaman_td_t( player_t* target, shaman_t* p ) :
                           } );
   debuff.storm_tempests = buff_creator_t( *this, "storm_tempests", p -> find_spell( 214265 ) )
                           .refresh_behavior( BUFF_REFRESH_DURATION )
+                          .tick_behavior( BUFF_TICK_REFRESH )
                           .tick_callback( [ p ]( buff_t* b, int, timespan_t ) {
                             p -> action.storm_tempests -> set_target( b -> player );
                             p -> action.storm_tempests -> execute();
