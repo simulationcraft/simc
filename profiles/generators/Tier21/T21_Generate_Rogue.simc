@@ -12,9 +12,9 @@ head=cavalier_hat_of_the_dashing_scoundrel,id=152163,bonus_id=3612/1502
 neck=collar_of_nullflame,id=151973,bonus_id=3612/1502,enchant=mark_of_the_trained_soldier
 shoulder=mantle_of_the_master_assassin,id=144236,bonus_id=3630
 back=cloak_of_the_dashing_scoundrel,id=152161,bonus_id=3612/1502,enchant=binding_of_agility
-chest=vest_of_the_dashing_scoundrel,id=152160,bonus_id=3612/1502
+chest=vest_of_waning_life,id=151982,bonus_id=3612/1502
 wrist=zoldyck_family_training_shackles,id=137098,bonus_id=3630
-hands=lurid_grips_of_the_obscene,id=151984,bonus_id=3612/1502
+hands=gloves_of_the_dashing_scoundrel,id=152162,bonus_id=3612/1502
 waist=portal_keepers_cincture,id=151990,bonus_id=3612/1502
 legs=pants_of_the_dashing_scoundrel,id=152164,bonus_id=3612/1502
 feet=vicious_flamepaws,id=151983,bonus_id=3612/1502
