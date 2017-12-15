@@ -6845,7 +6845,7 @@ void demon_hunter_t::apl_precombat()
 
   if (specialization() == DEMON_HUNTER_HAVOC)
   {
-    pre->add_action(this, "Metamorphosis", "if=!(talent.demon_reborn.enabled&talent.demonic.enabled)");
+    pre->add_action(this, "Metamorphosis", "if=!(talent.demon_reborn.enabled&(talent.demonic.enabled|set_bonus.tier21_4pc))");
   }
 }
 
@@ -6948,11 +6948,11 @@ void demon_hunter_t::apl_havoc()
   // Cooldown List
   def->add_action(this, "Consume Magic");
   def->add_action("call_action_list,name=cooldown,if=gcd.remains=0");
+  def->add_action("pick_up_fragment,if=fury.deficit>=35&((cooldown.eye_beam.remains>5|!talent.blind_fury.enabled&!set_bonus.tier21_4pc)|(buff.metamorphosis.up&!set_bonus.tier21_4pc))");
   def->add_action("run_action_list,name=demonic,if=talent.demonic.enabled");
   def->add_action("run_action_list,name=normal");
 
   action_priority_list_t* demonic = get_action_priority_list("demonic", "Specific APL for the Blind Fury+Demonic Appetite+Demonic build");
-  demonic->add_action("pick_up_fragment,if=fury.deficit>=35&(cooldown.eye_beam.remains>5|(buff.metamorphosis.up&cooldown.metamorphosis.ready))");
   demonic->add_action(this, "Vengeful Retreat", "if=(talent.prepared.enabled|talent.momentum.enabled)&buff.prepared.down&buff.momentum.down",
     "Vengeful Retreat backwards through the target to minimize downtime.");
   demonic->add_action(this, "Fel Rush", "if=(talent.momentum.enabled|talent.fel_mastery.enabled)&"
@@ -6987,7 +6987,6 @@ void demon_hunter_t::apl_havoc()
 
   // Start Main Actions
   action_priority_list_t* normal = get_action_priority_list("normal", "General APL for Non-Demonic Builds");
-  normal->add_action("pick_up_fragment,if=talent.demonic_appetite.enabled&fury.deficit>=35");
   normal->add_action(this, "Vengeful Retreat", "if=(talent.prepared.enabled|talent.momentum.enabled)&buff.prepared.down&buff.momentum.down",
     "Vengeful Retreat backwards through the target to minimize downtime.");
   normal->add_action(this, "Fel Rush", "if=(talent.momentum.enabled|talent.fel_mastery.enabled)&"
@@ -7009,8 +7008,8 @@ void demon_hunter_t::apl_havoc()
     "(!talent.master_of_the_glaive.enabled|!talent.momentum.enabled|buff.momentum.up)&"
     "(spell_targets>=3|raid_event.adds.in>recharge_time+cooldown)");
   normal->add_talent(this, "Felblade", "if=fury.deficit>=30+buff.prepared.up*8");
-  normal->add_action(this, "Eye Beam", "if=spell_targets.eye_beam_tick>desired_targets|(spell_targets.eye_beam_tick>=3&raid_event.adds.in>cooldown)"
-    "|(talent.blind_fury.enabled&fury.deficit>=35)|set_bonus.tier21_2pc");
+  normal->add_action(this, "Eye Beam", "if=spell_targets.eye_beam_tick>desired_targets|buff.havoc_t21_4pc.remains<2&"
+    "((spell_targets.eye_beam_tick>=3&raid_event.adds.in>cooldown)|(talent.blind_fury.enabled&fury.deficit>=35)|set_bonus.tier21_2pc)");
   normal->add_action(this, spec.annihilation, "annihilation", "if=(talent.demon_blades.enabled|"
     "!talent.momentum.enabled|buff.momentum.up|fury.deficit<30+buff.prepared.up*8|"
     "buff.metamorphosis.remains<5)&!variable.pooling_for_blade_dance");
@@ -7022,11 +7021,10 @@ void demon_hunter_t::apl_havoc()
     "!variable.pooling_for_chaos_strike&!variable.pooling_for_meta&!variable.pooling_for_blade_dance");
   normal->add_action(this, "Fel Rush", "if=!talent.momentum.enabled&raid_event.movement.in>charges*10&(talent.demon_blades.enabled|buff.metamorphosis.down)");
   normal->add_action(this, "Demon's Bite");
-  normal->add_action(this, "Throw Glaive", "if=buff.out_of_range.up");
   normal->add_talent(this, "Felblade", "if=movement.distance>15|buff.out_of_range.up");
   normal->add_action(this, "Fel Rush", "if=movement.distance>15|(buff.out_of_range.up&!talent.momentum.enabled)");
   normal->add_action(this, "Vengeful Retreat", "if=movement.distance>15");
-  normal->add_action(this, "Throw Glaive", "if=!talent.bloodlet.enabled");
+  normal->add_action(this, "Throw Glaive", "if=!talent.bloodlet.enabled&talent.demon_blades.enabled");
 
   // Cooldown List
   action_priority_list_t* cd = get_action_priority_list("cooldown");
