@@ -1004,6 +1004,7 @@ shaman_td_t::shaman_td_t( player_t* target, shaman_t* p ) :
                             }
                           } );
   debuff.storm_tempests = buff_creator_t( *this, "storm_tempests", p -> find_spell( 214265 ) )
+                          .refresh_behavior( BUFF_REFRESH_DURATION )
                           .tick_callback( [ p ]( buff_t* b, int, timespan_t ) {
                             p -> action.storm_tempests -> set_target( b -> player );
                             p -> action.storm_tempests -> execute();
@@ -2899,6 +2900,18 @@ struct stormstrike_attack_t : public shaman_attack_t
 
     stormflurry = false;
   }
+
+  void impact( action_state_t* state ) override
+  {
+    shaman_attack_t::impact( state );
+
+    if ( result_is_hit( state -> result ) && p() -> action.storm_tempests )
+    {
+      // Nowadays Storm Tempests immediately zaps the target
+      p() -> action.storm_tempests -> set_target( state -> target );
+      p() -> action.storm_tempests -> execute();
+    }
+  }
 };
 
 struct windstrike_attack_t : public stormstrike_attack_t
@@ -3536,9 +3549,30 @@ struct stormstrike_base_t : public shaman_attack_t
 
       p() -> buff.t20_4pc_enhancement -> trigger( 1 );
 
-      if ( p() -> action.storm_tempests )
+      // Trigger Storm Tempests debuff here. Technically in-game does it twice (both damage strikes
+      // trigger it), but it is easier to model the odd refreshing behavior if it's only triggered
+      // once in simulationcraft.
+      if ( result_is_hit( execute_state -> result ) && p() -> action.storm_tempests )
       {
-        td( execute_state -> target ) -> debuff.storm_tempests -> trigger();
+        shaman_td_t* tdata = td( execute_state -> target );
+
+        timespan_t duration = tdata -> debuff.storm_tempests -> data().duration();
+
+        // First application of the debuff seems to be about 17 seconds long, refreshes about 16.
+        // It's seemingly never the client-data advertised 15 seconds.
+        if ( p() -> bugs )
+        {
+          if ( ! tdata -> debuff.storm_tempests -> check() )
+          {
+            duration += timespan_t::from_seconds( 2 );
+          }
+          else
+          {
+            duration += timespan_t::from_seconds( 1 );
+          }
+        }
+
+        tdata -> debuff.storm_tempests -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, duration );
       }
 
       if ( ! stormflurry && p() -> buff.crash_lightning -> up() )
