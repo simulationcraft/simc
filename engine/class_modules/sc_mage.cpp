@@ -162,7 +162,7 @@ struct cooldown_waste_data_t
   bool may_add( timespan_t cd_override = timespan_t::min() ) const
   {
     return ( cd -> duration > timespan_t::zero() || cd_override > timespan_t::zero() )
-        && ( cd -> charges == 1 && cd -> up() || cd -> charges >= 2 && cd -> current_charge == cd -> charges );
+        && ( ( cd -> charges == 1 && cd -> up() ) || ( cd -> charges >= 2 && cd -> current_charge == cd -> charges ) );
   }
 
   void add( timespan_t cd_override = timespan_t::min(), timespan_t time_to_execute = timespan_t::zero() )
