@@ -5146,6 +5146,15 @@ struct flying_serpent_kick_t: public monk_melee_attack_t
     return monk_melee_attack_t::ready();
   }
 
+    virtual double action_multiplier() const override
+  {
+    double am = monk_melee_attack_t::action_multiplier();
+
+    am *= 1 + p() -> spec.windwalker_monk -> effectN( 1 ).percent();
+
+    return am;
+  }
+
   void execute() override
   {
     if ( p() -> current.distance_to_move >= 0  )
