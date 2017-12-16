@@ -167,9 +167,6 @@ struct cooldown_waste_data_t
 
   void merge( const cooldown_waste_data_t& other )
   {
-    assert( normal.simple == other.normal.simple );
-    assert( cumulative.simple == other.cumulative.simple );
-
     normal.merge( other.normal );
     cumulative.merge( other.cumulative );
   }
