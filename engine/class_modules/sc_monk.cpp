@@ -9566,7 +9566,8 @@ void monk_t::assess_damage(school_e school,
         cooldown.brewmaster_active_mitigation -> adjust( -1 * timespan_t::from_seconds( legendary.anvil_hardened_wristwraps -> effectN( 1 ).base_value() / 10 ) );
 
       if ( sets -> has_set_bonus( MONK_BREWMASTER, T21, B4 )  )
-       cooldown.breath_of_fire -> adjust( -1 * timespan_t::from_seconds( sets -> set( MONK_BREWMASTER, T21, B4 ) -> effectN( 1 ).base_value() ) );
+        // Value is 
+       cooldown.breath_of_fire -> adjust( -1 * timespan_t::from_seconds( sets -> set( MONK_BREWMASTER, T21, B4 ) -> effectN( 1 ).base_value() / 10 ) );
     }
     if ( s -> result == RESULT_MISS )
     {
