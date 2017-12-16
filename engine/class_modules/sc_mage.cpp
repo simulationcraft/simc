@@ -146,23 +146,39 @@ struct buff_stack_benefit_t
 
 struct cooldown_waste_data_t
 {
-  std::string name_str;
+  cooldown_t* cd;
   double buffer;
 
   extended_sample_data_t normal;
   extended_sample_data_t cumulative;
 
-  cooldown_waste_data_t( const std::string& name, bool simple = true ) :
-    name_str( name ),
+  cooldown_waste_data_t( cooldown_t* cooldown, bool simple = true ) :
+    cd( cooldown ),
     buffer( 0.0 ),
-    normal( name + " waste", simple ),
-    cumulative( name + " cumulative waste", simple )
+    normal( cd -> name_str + " cooldown waste", simple ),
+    cumulative( cd -> name_str + " cooldown cumulative waste", simple )
   { }
 
-  void add( double v )
+  bool may_add( timespan_t cd_override = timespan_t::min() ) const
   {
-    normal.add( v );
-    buffer += v;
+    return ( cd -> duration > timespan_t::zero() || cd_override > timespan_t::zero() )
+        && ( cd -> charges == 1 && cd -> up() || cd -> charges >= 2 && cd -> current_charge == cd -> charges );
+  }
+
+  void add( timespan_t cd_override = timespan_t::min(), timespan_t time_to_execute = timespan_t::zero() )
+  {
+    if ( may_add( cd_override ) )
+    {
+      double wasted = ( cd -> sim.current_time() - cd -> last_charged ).total_seconds();
+      if ( cd -> charges == 1 )
+      {
+        // Waste caused by execute time is unavoidable for single charge spells,
+        // don't count it.
+        wasted -= time_to_execute.total_seconds();
+      }
+      normal.add( wasted );
+      buffer += wasted;
+    }
   }
 
   void merge( const cooldown_waste_data_t& other )
@@ -184,6 +200,9 @@ struct cooldown_waste_data_t
 
   void datacollection_end()
   {
+    if ( may_add() )
+      buffer += ( cd -> sim.current_time() - cd -> last_charged ).total_seconds();
+
     cumulative.add( buffer );
     buffer = 0.0;
   }
@@ -702,15 +721,15 @@ public:
     return td;
   }
 
-  cooldown_waste_data_t* get_cd_waste_data( const std::string& name )
+  cooldown_waste_data_t* get_cooldown_waste_data( cooldown_t* cd )
   {
     for ( auto cdw : cooldown_waste_data_list )
     {
-      if ( cdw -> name_str == name )
+      if ( cdw -> cd -> name_str == cd -> name_str )
         return cdw;
     }
 
-    auto cdw = new cooldown_waste_data_t( name );
+    auto cdw = new cooldown_waste_data_t( cd );
     cooldown_waste_data_list.push_back( cdw );
     return cdw;
   }
@@ -1592,7 +1611,7 @@ public:
     }
     if ( track_cd_waste )
     {
-      cd_waste = p() -> get_cd_waste_data( name_str );
+      cd_waste = p() -> get_cooldown_waste_data( cooldown );
     }
   }
 
@@ -1664,20 +1683,8 @@ public:
 
   virtual void update_ready( timespan_t cd ) override
   {
-    if ( cd_waste
-      && ( cd > timespan_t::zero() || cooldown -> duration > timespan_t::zero() )
-      && ( cooldown -> charges == 1 && cooldown -> up()
-        || cooldown -> charges >= 2 && cooldown -> current_charge == cooldown -> charges ) )
-    {
-      timespan_t wasted = sim -> current_time() - cooldown -> last_charged;
-      if ( cooldown -> charges == 1 )
-      {
-        // Waste caused by execute time is unavoidable for single charge spells,
-        // don't count it.
-        wasted -= time_to_execute;
-      }
-      cd_waste -> add( wasted.total_seconds() );
-    }
+    if ( cd_waste )
+      cd_waste -> add( cd, time_to_execute );
 
     spell_t::update_ready( cd );
   }
@@ -8866,7 +8873,7 @@ public:
       if ( data -> normal.count() == 0 )
         continue;
 
-      std::string name = data -> name_str;
+      std::string name = data -> cd -> name_str;
       if ( action_t* a = p.find_action( name ) )
       {
         name = report::action_decorator_t( a ).decorate();
