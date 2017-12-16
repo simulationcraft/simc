@@ -73,7 +73,6 @@ enum combo_strikes_e {
   CS_RUSHING_JADE_WIND,
   CS_WHIRLING_DRAGON_PUNCH,
   CS_STRIKE_OF_THE_WINDLORD,
-  CS_FLYING_SERPENT_KICK,
   CS_ATTACK_MAX,
 
   // Spells begin here
