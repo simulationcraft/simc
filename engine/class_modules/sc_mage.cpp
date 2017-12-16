@@ -8067,7 +8067,7 @@ double mage_t::composite_player_critical_damage_multiplier( const action_state_t
     m *= 1.0 + artifact.burning_gaze.percent();
   }
 
-  if ( ! dbc::is_school( s -> action -> get_school(), SCHOOL_PHYSICAL ) )
+  if ( s -> action -> get_school() != SCHOOL_PHYSICAL )
   {
     m *= 1.0 + buffs.pyretic_incantation -> check_stack_value();
   }
