@@ -6969,8 +6969,8 @@ void demon_hunter_t::apl_havoc()
     "(!talent.master_of_the_glaive.enabled|!talent.momentum.enabled|buff.momentum.up)&"
     "(spell_targets>=3|raid_event.adds.in>recharge_time+cooldown)");
   demonic->add_talent(this, "Felblade", "if=fury.deficit>=30&(fury<40|buff.metamorphosis.down)");
-  demonic->add_action(this, "Eye Beam", "if=spell_targets.eye_beam_tick>desired_targets|!buff.metamorphosis.extended_by_demonic|"
-    "(set_bonus.tier21_4pc&buff.metamorphosis.remains>16)");
+  demonic->add_action(this, "Eye Beam", "if=spell_targets.eye_beam_tick>desired_targets|(!talent.blind_fury.enabled|fury.deficit>=70)&"
+    "(!buff.metamorphosis.extended_by_demonic|(set_bonus.tier21_4pc&buff.metamorphosis.remains>16))");
   demonic->add_action(this, spec.annihilation, "annihilation", 
     "if=(!talent.momentum.enabled|buff.momentum.up|fury.deficit<30+buff.prepared.up*8|buff.metamorphosis.remains<5)&"
     "!variable.pooling_for_blade_dance");
@@ -7009,7 +7009,7 @@ void demon_hunter_t::apl_havoc()
     "(spell_targets>=3|raid_event.adds.in>recharge_time+cooldown)");
   normal->add_talent(this, "Felblade", "if=fury.deficit>=30+buff.prepared.up*8");
   normal->add_action(this, "Eye Beam", "if=spell_targets.eye_beam_tick>desired_targets|buff.havoc_t21_4pc.remains<2&"
-    "((spell_targets.eye_beam_tick>=3&raid_event.adds.in>cooldown)|(talent.blind_fury.enabled&fury.deficit>=35)|set_bonus.tier21_2pc)");
+    "(!talent.blind_fury.enabled|fury.deficit>=70)&((spell_targets.eye_beam_tick>=3&raid_event.adds.in>cooldown)|talent.blind_fury.enabled|set_bonus.tier21_2pc)");
   normal->add_action(this, spec.annihilation, "annihilation", "if=(talent.demon_blades.enabled|"
     "!talent.momentum.enabled|buff.momentum.up|fury.deficit<30+buff.prepared.up*8|"
     "buff.metamorphosis.remains<5)&!variable.pooling_for_blade_dance");
@@ -7031,7 +7031,7 @@ void demon_hunter_t::apl_havoc()
   cd->add_action(this, "Metamorphosis", "if=!(talent.demonic.enabled|"
     "variable.pooling_for_meta|variable.waiting_for_nemesis|variable.waiting_for_chaos_blades)|target.time_to_die<25",
     "Use Metamorphosis when we are done pooling Fury and when we are not waiting for other cooldowns to sync.");
-  cd->add_action(this, "Metamorphosis", "if=talent.demonic.enabled&buff.metamorphosis.up&fury<40");
+  cd->add_action(this, "Metamorphosis", "if=talent.demonic.enabled&buff.metamorphosis.up");
   cd->add_talent(this, "Nemesis", "target_if=min:target.time_to_die,if=raid_event.adds.exists&"
     "debuff.nemesis.down&(active_enemies>desired_targets|raid_event.adds.in>60)",
     "If adds are present, use Nemesis on the lowest HP add in order to get the Nemesis buff for AoE");
