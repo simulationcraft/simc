@@ -73,6 +73,7 @@ enum combo_strikes_e {
   CS_RUSHING_JADE_WIND,
   CS_WHIRLING_DRAGON_PUNCH,
   CS_STRIKE_OF_THE_WINDLORD,
+  CS_FLYING_SERPENT_KICK,
   CS_ATTACK_MAX,
 
   // Spells begin here
@@ -141,6 +142,7 @@ public:
   struct buffs_t
   {
     buff_t* mark_of_the_crane;
+    buff_t* flying_serpent_kick;
     buff_t* gale_burst;
     buff_t* keg_smash;
     buff_t* storm_earth_and_fire;
@@ -250,6 +252,7 @@ public:
     buff_t* combo_master;
     buff_t* combo_strikes;
     buff_t* dizzying_kicks;
+    buff_t* flying_serpent_kick_movement;
     buff_t* forceful_winds;
     buff_t* hit_combo;
     buff_t* light_on_your_feet;
@@ -546,6 +549,7 @@ public:
     cooldown_t* breath_of_fire;
     cooldown_t* desperate_measure;
     cooldown_t* fists_of_fury;
+    cooldown_t* flying_serpent_kick;
     cooldown_t* fortifying_brew;
     cooldown_t* healing_elixir;
     cooldown_t* keg_smash;
@@ -616,6 +620,7 @@ public:
     const spell_data_t* cyclone_strikes;
     const spell_data_t* dizzying_kicks;
     const spell_data_t* fists_of_fury_tick;
+    const spell_data_t* flying_serpent_kick_damage;
     const spell_data_t* focus_of_xuen;
     const spell_data_t* gale_burst;
     const spell_data_t* hit_combo;
@@ -5105,6 +5110,74 @@ struct paralysis_t: public monk_melee_attack_t
     p() -> trigger_sephuzs_secret( execute_state, MECHANIC_INCAPACITATE );
   }
 };
+
+// ==========================================================================
+// Flying Serpent Kick
+// ==========================================================================
+
+struct flying_serpent_kick_t: public monk_melee_attack_t
+{
+  const spell_data_t* fsk_damage;
+  bool first_charge;
+  double movement_speed_increase;
+  flying_serpent_kick_t( monk_t* p, const std::string& options_str ):
+    monk_melee_attack_t( "flying_serpent_kick", p, p -> spec.flying_serpent_kick ),
+    fsk_damage( p -> passives.flying_serpent_kick_damage ),
+    first_charge( true ), movement_speed_increase( p -> spec.flying_serpent_kick -> effectN( 1 ).percent() )
+  {
+    parse_options( options_str );
+    ignore_false_positive = true;
+    movement_directionality = MOVEMENT_OMNI;
+    attack_power_mod.direct = fsk_damage -> effectN ( 1 ). ap_coeff();
+    p -> cooldown.flying_serpent_kick = cooldown;
+  }
+
+  void reset() override
+  {
+    action_t::reset();
+    first_charge = true;
+  }
+
+  bool ready() override
+  {
+    if ( first_charge ) // Assumes that we fsk into combat, instead of setting initial distance to 20 yards.
+      return monk_melee_attack_t::ready();
+
+    return monk_melee_attack_t::ready();
+  }
+
+  void execute() override
+  {
+    if ( p() -> current.distance_to_move >= 0  )
+    {
+      p() -> buff.flying_serpent_kick_movement -> trigger( 1, movement_speed_increase, 1, timespan_t::from_seconds(
+        p() -> current.distance_to_move / ( p() -> base_movement_speed * ( 1 + p() -> passive_movement_modifier() + movement_speed_increase ) ) ) );
+      p() -> current.moving_away = 0;
+    }
+
+     // Trigger Combo Strikes
+    // registers even on a miss
+    combo_strikes_trigger( CS_FLYING_SERPENT_KICK );
+
+    monk_melee_attack_t::execute();
+
+    if ( p() -> legendary.sephuzs_secret != spell_data_t::not_found() && execute_state -> target -> type == ENEMY_ADD )
+    {
+      p() -> buff.sephuzs_secret -> trigger();
+    }
+    if ( first_charge )
+    {
+      first_charge = !first_charge;
+    }
+  }
+
+  void impact( action_state_t* state ) override
+  {
+    monk_melee_attack_t::impact( state );
+
+    td( state -> target ) -> debuff.flying_serpent_kick -> trigger();
+  }
+};
 } // END melee_attacks NAMESPACE
 
 namespace spells {
@@ -7794,7 +7867,8 @@ monk( *p )
   {
     debuff.mark_of_the_crane = buff_creator_t( *this, "mark_of_the_crane", p -> passives.mark_of_the_crane )
       .default_value( p -> passives.cyclone_strikes -> effectN( 1 ).percent() );
-
+    debuff.flying_serpent_kick = buff_creator_t ( *this, "flying_serpent_kick", p -> passives.flying_serpent_kick_damage )
+      .default_value( p -> passives.flying_serpent_kick_damage-> effectN( 2 ).percent() );
     debuff.gale_burst = buff_creator_t( *this, "gale_burst", p -> passives.gale_burst )
       .default_value( 0 )
       .quiet( true );
@@ -7861,6 +7935,7 @@ action_t* monk_t::create_action( const std::string& name,
   if ( name == "thunder_focus_tea" ) return new         thunder_focus_tea_t( *this, options_str );
   // Windwalker
   if ( name == "fists_of_fury" ) return new             fists_of_fury_t( this, options_str );
+  if ( name == "flying_serpent_kick" ) return new       flying_serpent_kick_t( this, options_str );
   if ( name == "touch_of_karma" ) return new            touch_of_karma_t( this, options_str );
   if ( name == "touch_of_death" ) return new            touch_of_death_t( this, options_str );
   if ( name == "storm_earth_and_fire" ) return new      storm_earth_and_fire_t( this, options_str );
@@ -8387,6 +8462,7 @@ void monk_t::init_spells()
   passives.cyclone_strikes                  = find_spell( 220358 );
   passives.dizzying_kicks                   = find_spell( 196723 );
   passives.fists_of_fury_tick               = find_spell( 117418 );
+  passives.flying_serpent_kick_damage       = find_spell( 123586 );
   passives.focus_of_xuen                    = find_spell( 252768 );
   passives.gale_burst                       = find_spell( 195403 );
   passives.hit_combo                        = find_spell( 196741 );
@@ -8678,6 +8754,8 @@ void monk_t::create_buffs()
     .duration( timespan_t::from_minutes( 60 ) )
     .quiet( true ) // In-game does not show this buff but I would like to use it for background stuff
     .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+
+  buff.flying_serpent_kick_movement = buff_creator_t( this, "flying_serpent_kick_movement" ); // find_spell( 115057 )
 
   buff.forceful_winds = buff_creator_t( this, "forceful_winds", passives.tier17_4pc_melee )
     .default_value( passives.tier17_4pc_melee -> effectN( 1 ).percent() )

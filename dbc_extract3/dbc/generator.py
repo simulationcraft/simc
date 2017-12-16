@@ -1515,16 +1515,17 @@ class SpellDataGenerator(DataGenerator):
           ( 167732, 0 ), # Tier 17 2-piece Healer Buff
           ( 228649, 2 ), # Teachings of the Monastery - Blackout Proc
           # Windwalker
+          ( 115057, 3 ), # Flying Serpent Kick Movement spell
           ( 116768, 3 ), # Combo Breaker: Blackout Kick
           ( 121283, 0 ), # Chi Sphere from Power Strikes
-          ( 228287, 3 ), # Spinning Crane Kick's Mark of the Crane debuff
-          ( 220358, 3 ), # Cyclone Strikes info; TODO: remove this line once 7.2.5 releases
           ( 125174, 3 ), # Touch of Karma redirect buff
           ( 195651, 3 ), # Crosswinds Artifact trait trigger spell
           ( 196061, 3 ), # Crosswinds Artifact trait damage spell
+          ( 211432, 3 ), # Tier 19 4-piece DPS Buff
+          ( 220358, 3 ), # Cyclone Strikes info; TODO: remove this line once 7.2.5 releases
+          ( 228287, 3 ), # Spinning Crane Kick's Mark of the Crane debuff
           ( 240672, 3 ), # Master of Combinations Artifact trait buff
           ( 242387, 3 ), # Thunderfist Artifact trait buff
-          ( 211432, 3 ), # Tier 19 4-piece DPS Buff
           ( 252768, 3 ), # Tier 21 2-piece DPS effect
           # Legendary
           ( 213114, 3 ), # Hidden Master's Forbidden Touch buff
