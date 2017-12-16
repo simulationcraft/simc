@@ -144,6 +144,54 @@ struct buff_stack_benefit_t
   }
 };
 
+struct cooldown_waste_data_t
+{
+  std::string name_str;
+  double buffer;
+
+  extended_sample_data_t normal;
+  extended_sample_data_t cumulative;
+
+  cooldown_waste_data_t( const std::string& name, bool simple = true ) :
+    name_str( name ),
+    buffer( 0.0 ),
+    normal( name + " waste", simple ),
+    cumulative( name + " cumulative waste", simple )
+  { }
+
+  void add( double v )
+  {
+    normal.add( v );
+    buffer += v;
+  }
+
+  void merge( const cooldown_waste_data_t& other )
+  {
+    assert( normal.simple == other.normal.simple );
+    assert( cumulative.simple == other.cumulative.simple );
+
+    normal.merge( other.normal );
+    cumulative.merge( other.cumulative );
+  }
+
+  void analyze()
+  {
+    normal.analyze();
+    cumulative.analyze();
+  }
+
+  void datacollection_begin()
+  {
+    buffer = 0.0;
+  }
+
+  void datacollection_end()
+  {
+    cumulative.add( buffer );
+    buffer = 0.0;
+  }
+};
+
 struct cooldown_reduction_data_t
 {
   cooldown_t* cd;
@@ -218,6 +266,9 @@ public:
   timespan_t firestarter_time;
   int blessing_of_wisdom_count;
   bool allow_shimmer_lance;
+
+  // Data collection
+  auto_dispose<std::vector<cooldown_waste_data_t*> > cooldown_waste_data_list;
 
   // Cached actions
   struct actions_t
@@ -639,6 +690,8 @@ public:
   virtual void        copy_from( player_t* ) override;
   virtual void        merge( player_t& ) override;
   virtual void        analyze( sim_t& ) override;
+  virtual void        datacollection_begin() override;
+  virtual void        datacollection_end() override;
 
   target_specific_t<mage_td_t> target_data;
 
@@ -650,6 +703,19 @@ public:
       td = new mage_td_t( target, const_cast<mage_t*>(this) );
     }
     return td;
+  }
+
+  cooldown_waste_data_t* get_cd_waste_data( const std::string& name )
+  {
+    for ( auto cdw : cooldown_waste_data_list )
+    {
+      if ( cdw -> name_str == name )
+        return cdw;
+    }
+
+    auto cdw = new cooldown_waste_data_t( name );
+    cooldown_waste_data_list.push_back( cdw );
+    return cdw;
   }
 
   // Public mage functions:
@@ -1481,18 +1547,25 @@ struct mage_spell_t : public spell_t
 
   bool triggers_arcane_missiles;
   proc_t* proc_am;
+
+  bool track_cd_waste;
+  cooldown_waste_data_t* cd_waste;
 public:
 
   mage_spell_t( const std::string& n, mage_t* p,
                 const spell_data_t* s = spell_data_t::nil() ) :
     spell_t( n, p, s ),
     affected_by( affected_by_t() ),
-    triggers_arcane_missiles( true )
+    triggers_arcane_missiles( true ),
+    proc_am( nullptr ),
+    track_cd_waste( false ),
+    cd_waste( nullptr )
   {
     may_crit      = true;
     tick_may_crit = true;
     weapon_multiplier = 0.0;
     affected_by.ice_floes = data().affected_by( p -> talents.ice_floes -> effectN( 1 ) );
+    track_cd_waste = data().cooldown() > timespan_t::zero() || data().charge_cooldown() > timespan_t::zero();
   }
 
   virtual void init() override
@@ -1519,6 +1592,10 @@ public:
     if ( ! harmful || background )
     {
       triggers_arcane_missiles = false;
+    }
+    if ( track_cd_waste )
+    {
+      cd_waste = p() -> get_cd_waste_data( name_str );
     }
   }
 
@@ -1586,6 +1663,26 @@ public:
     }
 
     return c;
+  }
+
+  virtual void update_ready( timespan_t cd ) override
+  {
+    if ( cd_waste
+      && ( cd > timespan_t::zero() || cooldown -> duration > timespan_t::zero() )
+      && ( cooldown -> charges == 1 && cooldown -> up()
+        || cooldown -> charges >= 2 && cooldown -> current_charge == cooldown -> charges ) )
+    {
+      timespan_t wasted = sim -> current_time() - cooldown -> last_charged;
+      if ( cooldown -> charges == 1 )
+      {
+        // Waste caused by execute time is unavoidable for single charge spells,
+        // don't count it.
+        wasted -= time_to_execute;
+      }
+      cd_waste -> add( wasted.total_seconds() );
+    }
+
+    spell_t::update_ready( cd );
   }
 
   virtual bool usable_moving() const override
@@ -5864,6 +5961,7 @@ struct summon_water_elemental_t : public frost_mage_spell_t
     ignore_false_positive = true;
     // TODO: Why is this not on GCD?
     trigger_gcd = timespan_t::zero();
+    track_cd_waste = false;
   }
 
   virtual void execute() override
@@ -5909,6 +6007,7 @@ struct summon_arcane_familiar_t : public arcane_mage_spell_t
     harmful = false;
     ignore_false_positive = true;
     trigger_gcd = timespan_t::zero();
+    track_cd_waste = false;
   }
 
   virtual void execute() override
@@ -6889,6 +6988,11 @@ void mage_t::merge( player_t& other )
 
   mage_t& mage = dynamic_cast<mage_t&>( other );
 
+  for ( size_t i = 0; i < cooldown_waste_data_list.size(); i++ )
+  {
+    cooldown_waste_data_list[ i ] -> merge( *mage.cooldown_waste_data_list[ i ] );
+  }
+
   switch ( specialization() )
   {
     case MAGE_ARCANE:
@@ -6917,6 +7021,8 @@ void mage_t::analyze( sim_t& s )
 {
   player_t::analyze( s );
 
+  range::for_each( cooldown_waste_data_list, std::mem_fn( &cooldown_waste_data_t::analyze ) );
+
   switch ( specialization() )
   {
     case MAGE_ARCANE:
@@ -6937,6 +7043,24 @@ void mage_t::analyze( sim_t& s )
     default:
       break;
   }
+}
+
+// mage_t::datacollection_begin ===============================================
+
+void mage_t::datacollection_begin()
+{
+  player_t::datacollection_begin();
+
+  range::for_each( cooldown_waste_data_list, std::mem_fn( &cooldown_waste_data_t::datacollection_begin ) );
+}
+
+// mage_t::datacollection_end =================================================
+
+void mage_t::datacollection_end()
+{
+  player_t::datacollection_end();
+
+  range::for_each( cooldown_waste_data_list, std::mem_fn( &cooldown_waste_data_t::datacollection_end ) );
 }
 
 // mage_t::create_pets ========================================================
@@ -8713,6 +8837,65 @@ public:
       p( player )
   { }
 
+  void html_customsection_cd_waste( report::sc_html_stream& os )
+  {
+    if ( p.cooldown_waste_data_list.empty() )
+      return;
+
+    os << "<div class=\"player-section custom_section\">\n"
+       << "<h3 class=\"toggle open\">Cooldown waste</h3>\n"
+       << "<div class=\"toggle-content\">\n";
+
+    os << "<table class=\"sc\" style=\"margin-top: 5px;\">\n"
+       << "<tr>\n"
+       << "<th></th>\n"
+       << "<th colspan=\"3\">Seconds per Execute</th>\n"
+       << "<th colspan=\"3\">Seconds per Iteration</th>\n"
+       << "</tr>\n"
+       << "<tr>\n"
+       << "<th>Ability</th>\n"
+       << "<th>Average</th>\n"
+       << "<th>Minimum</th>\n"
+       << "<th>Maximum</th>\n"
+       << "<th>Average</th>\n"
+       << "<th>Minimum</th>\n"
+       << "<th>Maximum</th>\n"
+       << "</tr>\n";
+
+    size_t row = 0;
+    for ( size_t i = 0; i < p.cooldown_waste_data_list.size(); i++ )
+    {
+      const cooldown_waste_data_t* data = p.cooldown_waste_data_list[ i ];
+      if ( data -> normal.count() == 0 )
+        continue;
+
+      std::string name = data -> name_str;
+      if ( action_t* a = p.find_action( name ) )
+      {
+        name = report::action_decorator_t( a ).decorate();
+      }
+
+      std::string row_class;
+      if ( ++row & 1 )
+        row_class = " class=\"odd\"";
+
+      os.format( "<tr%s>", row_class.c_str() );
+      os << "<td class=\"left\">" << name << "</td>";
+      os.format( "<td class=\"right\">%.3f</td>", data -> normal.mean() );
+      os.format( "<td class=\"right\">%.3f</td>", data -> normal.min() );
+      os.format( "<td class=\"right\">%.3f</td>", data -> normal.max() );
+      os.format( "<td class=\"right\">%.3f</td>", data -> cumulative.mean() );
+      os.format( "<td class=\"right\">%.3f</td>", data -> cumulative.min() );
+      os.format( "<td class=\"right\">%.3f</td>", data -> cumulative.max() );
+      os << "</tr>\n";
+    }
+
+    os << "</table>\n";
+
+    os << "</div>\n"
+       << "</div>\n";
+  }
+
   void html_customsection_burn_phases( report::sc_html_stream& os )
   {
     os << "<div class=\"player-section custom_section\">\n"
@@ -8815,6 +8998,8 @@ public:
   {
     if ( p.sim -> report_details == 0 )
       return;
+
+    html_customsection_cd_waste( os );
 
     switch ( p.specialization() )
     {
