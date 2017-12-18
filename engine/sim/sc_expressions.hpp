@@ -47,7 +47,9 @@ enum token_e
   TOK_ABS,
   TOK_SPELL_LIST,
   TOK_FLOOR,
-  TOK_CEIL
+  TOK_CEIL,
+  TOK_MAX,
+  TOK_MIN
 };
 
 struct expr_token_t
