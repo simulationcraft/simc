@@ -5127,7 +5127,8 @@ struct flying_serpent_kick_t: public monk_melee_attack_t
     parse_options( options_str );
     ignore_false_positive = true;
     movement_directionality = MOVEMENT_OMNI;
-    attack_power_mod.direct = fsk_damage -> effectN ( 1 ). ap_coeff();
+    attack_power_mod.direct = fsk_damage -> effectN( 1 ).ap_coeff();
+    aoe = -1;
     p -> cooldown.flying_serpent_kick = cooldown;
   }
 
