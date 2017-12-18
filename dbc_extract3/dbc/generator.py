@@ -3139,7 +3139,10 @@ class SpellListGenerator(SpellDataGenerator):
         if not SpellDataGenerator.spell_state(self, spell, None):
             return False
 
-        misc = spell.get_link('misc')
+        if self._options.build < 25600:
+            misc = self._spellmisc_db[spell.id_misc]
+        else:
+            misc = spell.get_link('misc')
         # Skip passive spells
         if misc.flags_1 & 0x40:
             logging.debug("Spell id %u (%s) marked as passive", spell.id, spell.name)
