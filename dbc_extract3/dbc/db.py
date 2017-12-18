@@ -3,13 +3,17 @@ import os, logging
 import dbc
 
 class DBCDB(dict):
-    def __init__(self, obj = None):
+    def __init__(self, obj = None, parser = None):
         dict.__init__(self)
         self.__obj = obj
+        self.__parser = parser
+
+    def parser(self):
+        return self.__parser
 
     def __missing__(self, key):
         if self.__obj:
-            return self.__obj.default()
+            return self.__obj.default(self.__parser)
         else:
             raise KeyError
 

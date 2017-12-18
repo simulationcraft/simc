@@ -55,6 +55,9 @@ class DBCacheParser:
             self.file_name_ = normalized_path
             logging.debug('DBCache.bin file found at %s', self.file_name_)
 
+    def has_key_block(self):
+        return False
+
     def get_string(self, offset):
         if offset == 0:
             return None
@@ -219,6 +222,10 @@ class DBCParserBase:
         n_digits = int(math.log10(self.last_id) + 1)
         self.id_format_str = '%%%uu' % n_digits
         return self.id_format_str
+
+    # Format of the foreign key, can be automatically deduced from the magnitude of the data
+    def key_format(self):
+        return '%u'
 
     def use_inline_strings(self):
         return False
@@ -674,6 +681,9 @@ class LegionWDBParser(DBCParserBase):
 
     def has_id_block(self):
         return (self.flags & X_ID_BLOCK) == X_ID_BLOCK
+
+    def has_key_block(self):
+        return False
 
     def n_cloned_records(self):
         return self.clone_segment_size // _CLONE.size

@@ -505,8 +505,7 @@
   "SpellProcsPerMinuteMod": [
     { "data_type": "f", "field": "coefficient" },
     { "data_type": "h", "field": "id_chr_spec" },
-    { "data_type": "b", "field": "unk_1" },
-    { "data_type": "I", "field": "id_ppm" }
+    { "data_type": "b", "field": "unk_1" }
   ],
   "SpellRadius": [
     { "data_type": "f", "field": "radius_1" },

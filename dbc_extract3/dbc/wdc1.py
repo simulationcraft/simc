@@ -570,6 +570,10 @@ class WDC1Parser(LegionWDBParser):
     def __init__(self, options, fname):
         super().__init__(options, fname)
 
+        # Lazy-computed key format for the foreign key values
+        self.__key_format = None
+        self.__key_high = -1
+
         # New fields
         self.n_columns = 0
         self.packed_data_offset = 0
@@ -608,6 +612,17 @@ class WDC1Parser(LegionWDBParser):
             return -1
 
         return self.key_block[record_id]
+
+    def key_format(self):
+        if self.key_block_size == 0:
+            return super().key_format()
+
+        if self.__key_format:
+            return self.__key_format
+
+        n_digits = int(math.log10(self.__key_high) + 1)
+        self.__key_format = '%%%uu' % n_digits
+        return self.__key_format
 
     def sparse_data_offset(self, column, id_):
         return self.sparse_blocks[column.index()].get(id_, -1)
@@ -774,6 +789,9 @@ class WDC1Parser(LegionWDBParser):
         for index in range(0, self.records):
             value, record_id = unpacker.unpack_from(self.data, offset + index * unpacker.size)
             self.key_block[record_id] = value
+
+            if value > self.__key_high:
+                self.__key_high = value
 
         logging.debug('%s parsed %u keys', self.full_name(), self.records)
 

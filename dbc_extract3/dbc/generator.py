@@ -365,7 +365,7 @@ class DataGenerator(object):
                     return False
 
                 if '_%s_db' % dbcf.name() not in dir(self):
-                    setattr(self, '_%s_db' % dbcf.name(), dbc.db.DBCDB(dbcf.record_class()))
+                    setattr(self, '_%s_db' % dbcf.name(), dbc.db.DBCDB(dbcf.record_class(), dbcf.parser))
 
                 dbase = getattr(self, '_%s_db' % dbcf.name())
 
@@ -415,12 +415,13 @@ class RealPPMModifierGenerator(DataGenerator):
             #if data.id_chr_spec not in self._specmap.keys() or data.id_chr_spec == 0:
             #    continue
 
+            ppm_id = self._options.build < 25600 and data.id_ppm or data.id_parent
             spell_id = 0
             for aopts_id, aopts_data in self._spellauraoptions_db.items():
-                if aopts_data.id_ppm != data.id_ppm:
+                if aopts_data.id_ppm != ppm_id:
                     continue
 
-                spell_id = aopts_data.id_spell
+                spell_id = self._options.build < 25600 and aopts_data.id_spell or aopts_data.id_parent
                 if spell_id == 0:
                     continue
 
@@ -1230,7 +1231,7 @@ class SpellDataGenerator(DataGenerator):
          191259,
          # 7.1.5 Entwined Elemental Foci buffs
          225729, 225730,
-		 # 7.1.5 Archimonde's Hatred Reborn damage spell 
+         # 7.1.5 Archimonde's Hatred Reborn damage spell 
          235188,
          # 7.2.0 Dreadstone of Endless Shadows stat buffs
          238499, 238500, 238501,
@@ -1263,7 +1264,7 @@ class SpellDataGenerator(DataGenerator):
             ( 218835, 0 ),
             ( 218834, 0 ),
             ( 218822, 0 ),
-			( 209493, 0 ),
+            ( 209493, 0 ),
             ( 242952, 0 ),
             ( 242953, 0 ),
         ),
@@ -1377,7 +1378,7 @@ class SpellDataGenerator(DataGenerator):
           ( 212333, 5 ),    # Cleaver for Sludge Belcher
           ( 212332, 5 ),    # Smash for Sludge Belcher
           ( 212338, 5 ),    # Vile Gas for Sludge Belcher
-		  ( 212337, 5 ),	# Powerful Smash for Sludge Belcher
+          ( 212337, 5 ),	# Powerful Smash for Sludge Belcher
           ( 198715, 5 ),    # Val'kyr Strike for Dark Arbiter
           ( 211947, 0 ),    # Shadow Empowerment for Dark Arbiter
           ( 81141, 0 ),     # Crimson Scourge buff
@@ -1488,10 +1489,10 @@ class SpellDataGenerator(DataGenerator):
           ( 215276, 3 ),
           ( 187385, 3 ),
           ( 205260, 0 ),        # Soul effigy damage
-		  ( 233496, 0 ),
-		  ( 233497, 0 ),
-		  ( 233498, 0 ),
-		  ( 233499, 0 ),
+          ( 233496, 0 ),
+          ( 233497, 0 ),
+          ( 233498, 0 ),
+          ( 233499, 0 ),
           ( 213229, 0 ),
           ( 243050, 0 ),        # Fire Rift
           ( 242922, 0 ),        # Jaws of Shadow
@@ -1823,6 +1824,9 @@ class SpellDataGenerator(DataGenerator):
         if self._options.build >= 24651:
             self._dbc.append('RelicTalent')
 
+        if self._options.build >= 25600:
+            self._dbc.append('SpellXDescriptionVariables')
+
     def initialize(self):
         if not super().initialize():
             return False
@@ -1858,7 +1862,11 @@ class SpellDataGenerator(DataGenerator):
             link(self._spellclassoptions_db, 'id_spell', self._spell_db, 'class_option')
             link(self._spellshapeshift_db, 'id_spell', self._spell_db, 'shapeshift')
             link(self._artifactpowerrank_db, 'id_spell', self._spell_db, 'artifact_power')
-            link(self._spelllabel_db, self._options.build < 25600 and 'id_spell' or 'id_parent', self._spell_db, 'label');
+            link(self._spelllabel_db, self._options.build < 25600 and 'id_spell' or 'id_parent', self._spell_db, 'label')
+            if self._options.build >= 25600:
+                link(self._spellmisc_db, 'id_parent', self._spell_db, 'misc')
+                link(self._spellxdescriptionvariables_db, 'id_spell', self._spell_db, 'desc_var_link')
+                link(self._spelldescriptionvariables_db, 'id', self._spellxdescriptionvariables_db, 'desc')
 
             # Effect data model linkage
             if self._options.build < 25600:
@@ -2003,9 +2011,14 @@ class SpellDataGenerator(DataGenerator):
 
         spell_refs = re.findall(SpellDataGenerator._spell_ref_rx, spell.desc or '')
         spell_refs += re.findall(SpellDataGenerator._spell_ref_rx, spell.tt or '')
-        desc_var = spell.id_desc_var
-        if desc_var > 0:
-            data = self._spelldescriptionvariables_db[desc_var]
+        if self._options.build < 25600:
+            desc_var = spell.id_desc_var
+            if desc_var > 0:
+                data = self._spelldescriptionvariables_db[desc_var]
+                if data.id > 0:
+                    spell_refs += re.findall(SpellDataGenerator._spell_ref_rx, data.desc)
+        else:
+            data= spell.get_link('desc_var_link').get_link('desc')
             if data.id > 0:
                 spell_refs += re.findall(SpellDataGenerator._spell_ref_rx, data.desc)
         spell_refs = list(set(spell_refs))
@@ -2047,7 +2060,10 @@ class SpellDataGenerator(DataGenerator):
 
         # Get all perks
         for perk_id, perk_data in self._minortalent_db.items():
-            spell_id = perk_data.id_spell
+            if self._options.build < 25600:
+                spell_id = perk_data.id_spell
+            else:
+                spell_id = perk_data.id_parent
             if spell_id == 0:
                 continue
 
@@ -2257,7 +2273,8 @@ class SpellDataGenerator(DataGenerator):
 
         # Relevant set bonuses
         for id, set_spell_data in self._itemsetspell_db.items():
-            if not SetBonusListGenerator.is_extract_set_bonus(set_spell_data.id_item_set)[0]:
+            set_id = self._options.build < 25600 and set_spell_data.id_item_set or set_spell_data.id_parent
+            if not SetBonusListGenerator.is_extract_set_bonus(set_id)[0]:
                 continue
 
             self.process_spell(set_spell_data.id_spell, ids, 0, 0)
@@ -2398,7 +2415,10 @@ class SpellDataGenerator(DataGenerator):
                 if power.is_hotfixed():
                     hotfix_flags |= SPELL_POWER_HOTFIX_PRESENT
 
-            misc = self._spellmisc_db[spell.id_misc]
+            if self._options.build < 25600:
+                misc = self._spellmisc_db[spell.id_misc]
+            else:
+                misc = spell.get_link('misc')
 
             if index % 20 == 0:
               self._out.write('//{ Name                                ,     Id,             Hotfix,PrjSp,  Sch, Class,  Race,Sca,MSL,SpLv,MxL,MinRange,MaxRange,Cooldown,  GCD,Chg, ChrgCd, Cat,  Duration,  RCost, RPG,Stac, PCh,PCr, ProcFlags,EqpCl, EqpInvType,EqpSubclass,CastMn,CastMx,Div,       Scaling,SLv, RplcId, {      Attr1,      Attr2,      Attr3,      Attr4,      Attr5,      Attr6,      Attr7,      Attr8,      Attr9,     Attr10,     Attr11,     Attr12 }, {     Flags1,     Flags2,     Flags3,     Flags4 }, Family, Description, Tooltip, Description Variable, Icon, ActiveIcon, Effect1, Effect2, Effect3 },\n')
@@ -2574,12 +2594,8 @@ class SpellDataGenerator(DataGenerator):
             # be gone!
             # 41
             power_rank = spell.get_link('artifact_power')
-            power = self._artifactpower_db[power_rank.id_power]
-            artifact = self._artifact_db[power.id_artifact]
-            if power.id != 0:
-                fields += spell.get_link('artifact_power').field('id_power')
-            else:
-                fields += self._artifactpowerrank_db[0].field('id_power')
+            power = self._artifactpower_db[self._options.build < 25600 and power_rank.id_power or power_rank.id_parent]
+            fields += power.field('id')
 
             # 42, 43
             fields += spell.field('desc', 'tt')
@@ -2587,14 +2603,22 @@ class SpellDataGenerator(DataGenerator):
             hotfix_flags |= f
             hotfix_data += hfd
             # 43
-            desc_var = self._spelldescriptionvariables_db.get(spell.id_desc_var)
-            if desc_var:
+            if self._options.build < 25600:
+                desc_var = self._spelldescriptionvariables_db[spell.id_desc_var]
+            else:
+                desc_var = spell.get_link('desc_var_link').get_link('desc')
+
+            if desc_var.id:
                 fields += desc_var.field('desc')
                 f, hfd = desc_var.get_hotfix_info(('desc', 43))
                 hotfix_flags |= f
                 hotfix_data += hfd
             else:
-                f, hfd = spell.get_hotfix_info(('id_desc_var', 43))
+                if self._options.build < 25600:
+                    f, hfd = spell.get_hotfix_info(('id_desc_var', 43))
+                else:
+                    link = spell.get_link('desc_var_link')
+                    f, hfd = link.get_hotfix_info(('id_desc_var', 43))
                 hotfix_flags |= f
                 hotfix_data += hfd
                 fields += [ u'0' ]
@@ -2654,8 +2678,8 @@ class SpellDataGenerator(DataGenerator):
             # 2
             fields += [ '%#.8x' % 0 ]
             # 3, 4
-            fields += effect.field('id_spell', 'index')
-            f, hfd = effect.get_hotfix_info(('id_spell', 2), ('index', 3))
+            fields += effect.field(self._options.build < 25600 and 'id_spell' or 'id_parent', 'index')
+            f, hfd = effect.get_hotfix_info(('index', 3))
             hotfix_flags |= f
             hotfix_data += hfd
 
@@ -2770,8 +2794,8 @@ class SpellDataGenerator(DataGenerator):
             hotfix_flags = 0
             hotfix_data = []
             # 1 2 3
-            fields = power.field('id', 'id_spell', 'aura_id')
-            f, hfd = power.get_hotfix_info(('id_spell', 1), ('aura_id', 2))
+            fields = power.field('id', self._options.build < 25600 and 'id_spell' or 'id_parent', 'aura_id')
+            f, hfd = power.get_hotfix_info(('aura_id', 2))
             hotfix_flags |= f
             hotfix_data += hfd
             # 4
@@ -2820,7 +2844,7 @@ class SpellDataGenerator(DataGenerator):
         self._out.write('static struct spelllabel_data_t __%s_data[] = {\n' % ( self.format_str( "spelllabel" ) ))
 
         for label in labels + [ self._spelllabel_db[0] ]:
-            self._out.write('  { %s },\n' % (', '.join(label.field('id', 'id_spell', 'label'))))
+            self._out.write('  { %s },\n' % (', '.join(label.field('id', self._options.build < 25600 and 'id_spell' or 'id_parent', 'label'))))
 
         self._out.write('};\n\n')
 
@@ -3115,7 +3139,7 @@ class SpellListGenerator(SpellDataGenerator):
         if not SpellDataGenerator.spell_state(self, spell, None):
             return False
 
-        misc = self._spellmisc_db[spell.id_misc]
+        misc = spell.get_link('misc')
         # Skip passive spells
         if misc.flags_1 & 0x40:
             logging.debug("Spell id %u (%s) marked as passive", spell.id, spell.name)
@@ -3620,11 +3644,12 @@ class SetBonusListGenerator(DataGenerator):
     def filter(self):
         data = []
         for id, set_spell_data in self._itemsetspell_db.items():
-            is_set_bonus, set_index = SetBonusListGenerator.is_extract_set_bonus(set_spell_data.id_item_set)
+            set_id = self._options.build < 25600 and set_spell_data.id_item_set or set_spell_data.id_parent
+            is_set_bonus, set_index = SetBonusListGenerator.is_extract_set_bonus(set_id)
             if not is_set_bonus:
                 continue
 
-            item_set = self._itemset_db[set_spell_data.id_item_set]
+            item_set = self._itemset_db[set_id]
             if not item_set.id:
                 continue
 
@@ -3698,7 +3723,8 @@ class SetBonusListGenerator(DataGenerator):
                 self._out.write('  // %-44s,      OptName, EnumID, SetID, Tier, Bns, Cls, Spec,  Spell, Items\n' % 'Set bonus name')
 
             item_set_spell = self._itemsetspell_db[entry['set_bonus_id']]
-            item_set = self._itemset_db[item_set_spell.id_item_set]
+            set_id = self._options.build < 25600 and item_set_spell.id_item_set or item_set_spell.id_parent
+            item_set = self._itemset_db[set_id]
             map_entry = self.set_bonus_map[entry['index']]
 
             item_set_str = ""
@@ -3716,7 +3742,7 @@ class SetBonusListGenerator(DataGenerator):
                 '"%s"' % item_set.name.replace('"', '\\"'),
                 '"%s"' % map_entry['name'].replace('"', '\\"'),
                 entry['index'],
-                item_set_spell.id_item_set,
+                set_id,
                 map_entry['tier'],
                 entry['bonus'],
                 entry['class'],
@@ -4047,7 +4073,7 @@ class ItemBonusDataGenerator(DataGenerator):
         for key in sorted(self._itembonustreenode_db.keys()) + [0,]:
             data = self._itembonustreenode_db[key]
 
-            fields = data.field('id', 'id_tree', 'index', 'id_child', 'id_node')
+            fields = data.field('id', self._options.build < 25600 and 'id_tree' or 'id_parent', 'index', 'id_child', 'id_node')
             self._out.write('  { %s },\n' % (', '.join(fields)))
 
         self._out.write('};\n\n')
@@ -4085,7 +4111,7 @@ class ItemBonusDataGenerator(DataGenerator):
 
         for key in sorted(self._itemxbonustree_db.keys()) + [0,]:
             data = self._itemxbonustree_db[key]
-            fields = data.field('id', 'id_item', 'id_tree')
+            fields = data.field('id', self._options.build < 25600 and 'id_item' or 'id_parent', 'id_tree')
             self._out.write('  { %s },\n' % (', '.join(fields)))
 
         self._out.write('};\n\n')
@@ -4195,7 +4221,7 @@ class ItemChildEquipmentGenerator(DataGenerator):
         for key in sorted(self._itemchildequipment_db.keys()) + [0,]:
             data = self._itemchildequipment_db[key]
 
-            fields = data.field( 'id', 'id_item', 'id_child' )
+            fields = data.field( 'id', self._options.build < 25600 and 'id_item' or 'id_parent', 'id_child' )
             self._out.write('  { %s },\n' % (', '.join(fields)))
 
         self._out.write('};\n\n')
@@ -4236,7 +4262,7 @@ class ArtifactDataGenerator(DataGenerator):
                 ids[0][data.id_power] = { 'data': power_data, 'ranks': [] }
 
         for id, data in self._artifactpowerrank_db.items():
-            power_id = data.id_power
+            power_id = self._options.build < 25600 and data.id_power or data.id_parent
             power = self._artifactpower_db[power_id]
             if power.id == 0:
                 continue
@@ -4293,7 +4319,7 @@ class ArtifactDataGenerator(DataGenerator):
         self._out.write('static struct artifact_power_data_t __%s_data[%s_SIZE] = {\n' % (data_str, data_str.upper()))
 
         ranks = []
-        for power in sorted(powers, key = lambda v: (v['data'].id_artifact, v['data'].id)) + [{ 'data': dbc.data.ArtifactPower.default(), 'ranks': [] }]:
+        for power in sorted(powers, key = lambda v: (v['data'].id_artifact, v['data'].id)) + [{ 'data': dbc.data.ArtifactPower.default(self._artifactpower_db.parser()), 'ranks': [] }]:
             fields = power['data'].field('id', 'id_artifact', 'type', 'index', 'max_rank')
             if len(power['ranks']) > 0:
                 spell = self._spell_db[power['ranks'][0].id_spell]
@@ -4321,9 +4347,9 @@ class ArtifactDataGenerator(DataGenerator):
         self._out.write('static struct artifact_power_rank_t __%s_data[%s_SIZE] = {\n' % (data_str, data_str.upper()))
 
         hotfix_data = {}
-        for rank in sorted(ranks, key = lambda v: (v.id_power, v.index)) + [dbc.data.ArtifactPowerRank.default()]:
-            fields = rank.field('id', 'id_power', 'index', 'id_spell', 'value')
-            f, hfd = rank.get_hotfix_info(('id_power', 1), ('index', 2), ('id_spell', 3), ('value', 4))
+        for rank in sorted(ranks, key = lambda v: (self._options.build < 25600 and v.id_power or v.id_parent, v.index)) + [dbc.data.ArtifactPowerRank.default(self._artifactpowerrank_db.parser())]:
+            fields = rank.field('id', self._options.build < 25600 and 'id_power' or 'id_parent', 'index', 'id_spell', 'value')
+            f, hfd = rank.get_hotfix_info(('index', 2), ('id_spell', 3), ('value', 4))
             fields += [ '%#.8x' % f, '0' ]
             if f > 0:
                 hotfix_data[rank.id] = hfd

@@ -35,7 +35,7 @@ class DBCacheIterator:
         data = self._parser.get_record(self._wdb_parser, offset, size)
         self._record += 1
 
-        return self._data_class(self._parser, dbc_id, data)
+        return self._data_class(self._parser, dbc_id, data, 0)
 
 class DBCache:
     def __init__(self, options):
