@@ -658,8 +658,9 @@ struct rogue_t : public player_t
   // Options
   int initial_combo_points;
   int ssw_refund_offset;
-  bool rogue_optimize_expressions = true;
-  bool rogue_ready_trigger = true;
+  bool fok_rotation;
+  bool rogue_optimize_expressions;
+  bool rogue_ready_trigger;
 
   rogue_t( sim_t* sim, const std::string& name, race_e r = RACE_NIGHT_ELF ) :
     player_t( sim, ROGUE, name, r ),
@@ -693,7 +694,10 @@ struct rogue_t : public player_t
     prng( prng_t() ),
     legendary( legendary_t() ),
     initial_combo_points( 0 ),
-    ssw_refund_offset( 0 )
+    ssw_refund_offset( 0 ),
+    fok_rotation( false ),
+    rogue_optimize_expressions( true ),
+    rogue_ready_trigger( true )
   {
     // Cooldowns
     cooldowns.adrenaline_rush          = get_cooldown( "adrenaline_rush"          );
@@ -7258,10 +7262,11 @@ void rogue_t::init_action_list()
     build -> add_talent( this, "Hemorrhage", "if=refreshable" );
     build -> add_talent( this, "Hemorrhage", "cycle_targets=1,if=refreshable&dot.rupture.ticking&spell_targets.fan_of_knives<2+equipped.insignia_of_ravenholdt" );
     build -> add_action( this, "Fan of Knives", "if=spell_targets>=2+equipped.insignia_of_ravenholdt|buff.the_dreadlords_deceit.stack>=29" );
+    build -> add_action( this, "Fan of Knives", "if=fok_rotation" );
       // We want to apply poison on the unit that have the most bleeds on and that meet the condition for Venomous Wound (and also for T19 dmg bonus).
       // This would be done with target_if=max:bleeds but it seems to be bugged atm
-    build -> add_action( this, "Mutilate", "cycle_targets=1,if=dot.deadly_poison_dot.refreshable" );
-    build -> add_action( this, "Mutilate" );
+    build -> add_action( this, "Mutilate", "cycle_targets=1,if=!fok_rotation&dot.deadly_poison_dot.refreshable" );
+    build -> add_action( this, "Mutilate", "if=!fok_rotation" );
 
     // Cooldowns
     action_priority_list_t* cds = get_action_priority_list( "cds", "Cooldowns" );
@@ -7693,6 +7698,10 @@ expr_t* rogue_t::create_expression( action_t* a, const std::string& name_str )
   else if ( util::str_compare_ci(name_str, "ssw_refund_offset") )
   {
     return make_ref_expr(name_str, ssw_refund_offset);
+  }
+  else if ( util::str_compare_ci(name_str, "fok_rotation") )
+  {
+    return make_ref_expr(name_str, fok_rotation);
   }
 
 
@@ -8649,6 +8658,7 @@ void rogue_t::create_options()
   add_option( opt_func( "fixed_rtb", parse_fixed_rtb ) );
   add_option( opt_func( "fixed_rtb_odds", parse_fixed_rtb_odds ) );
   add_option( opt_int( "ssw_refund_offset", ssw_refund_offset ) );
+  add_option( opt_bool( "fok_rotation", fok_rotation ) );
   add_option( opt_bool( "rogue_optimize_expressions", rogue_optimize_expressions ) );
   add_option( opt_bool( "rogue_ready_trigger", rogue_ready_trigger ) );
 
@@ -8681,6 +8691,11 @@ void rogue_t::copy_from( player_t* source )
   if ( rogue -> ssw_refund_offset != 0 )
   {
     ssw_refund_offset = rogue -> ssw_refund_offset;
+  }
+
+  if ( rogue -> fok_rotation != false )
+  {
+    fok_rotation = rogue -> fok_rotation;
   }
 
   fixed_rtb = rogue -> fixed_rtb;
