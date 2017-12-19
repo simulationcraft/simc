@@ -1619,10 +1619,16 @@ struct poison_knives_t : public rogue_attack_t
     rogue_attack_t( "poison_knives", p, p -> find_spell( 192380 ) )
   {
     background = true;
-    may_crit = callbacks = may_miss = false;
+    may_crit = true;
+    callbacks = may_miss = false;
   }
 
-  double composite_target_multiplier( player_t* target ) const override
+  // As of 2017-12-19 we tried to re-evauluate the modifiers on Poison Knives.
+  // - Can crit
+  // - Seems to double dip on versatility
+  // - Does not seem to double dip on target multipliers (Zoldyck quite sure, not 100% sure about Surge of Toxins)
+
+  /*double composite_target_multiplier( player_t* target ) const override
   {
     double m = rogue_attack_t::composite_target_multiplier( target );
 
@@ -1637,13 +1643,14 @@ struct poison_knives_t : public rogue_attack_t
     }
 
     return m;
-  }
+  }*/
 
   void init() override
   {
     rogue_attack_t::init();
 
-    snapshot_flags = update_flags = STATE_TGT_MUL_DA;
+    //snapshot_flags = update_flags = STATE_TGT_MUL_DA;
+    snapshot_flags = update_flags = STATE_CRIT | STATE_TGT_CRIT | STATE_VERSATILITY;
   }
 };
 
@@ -6525,10 +6532,11 @@ void rogue_t::trigger_poison_knives( const action_state_t* state )
       td -> dots.deadly_poison -> current_stack() );
 
   double tick_base_damage = td -> dots.deadly_poison -> state -> result_raw;
+  
   // Poison knives double dips into some multipliers
-
   // .. then, apparently the Master Alchemist talent
-  tick_base_damage *= 1.0 + artifact.master_alchemist.percent();
+  // UPDATE 2017-12-19: Does not seem to double dip on Master Alchemist anymore.
+  //tick_base_damage *= 1.0 + artifact.master_alchemist.percent();
 
   // Target multipliers get applied on execute, they also work
 
