@@ -4890,6 +4890,7 @@ struct blood_shield_buff_t : public absorb_buff_t
 {
   blood_shield_buff_t( death_knight_t* player ) :
     absorb_buff_t( absorb_buff_creator_t( player, "blood_shield", player -> spell.blood_shield )
+                   .add_invalidate( CACHE_LEECH )
                    .school( SCHOOL_PHYSICAL )
                    .source( player -> get_stats( "blood_shield" ) ) )
   { }
@@ -8682,7 +8683,8 @@ void death_knight_t::create_buffs()
 	  .trigger_spell( talent.hungering_rune_weapon );
   
   buffs.vampiric_aura = buff_creator_t( this, "vampiric_aura" )
-    .spell( spell.vampiric_aura );
+    .spell( spell.vampiric_aura )
+    .add_invalidate( CACHE_LEECH );
   buffs.t20_2pc_unholy = buff_creator_t( this, "master_of_ghouls" )
     .spell( find_spell( 246995 ) )
     .trigger_spell( sets -> set( DEATH_KNIGHT_UNHOLY, T20, B2 ) )
