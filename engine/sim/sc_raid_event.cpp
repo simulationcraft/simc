@@ -833,7 +833,8 @@ struct damage_taken_debuff_event_t : public raid_event_t
 
       if ( sim -> log ) sim -> out_log.printf( "%s gains %d stacks of damage_taken debuff.", p -> name(), amount );
 
-      p -> debuffs.damage_taken -> trigger( amount );
+      if ( p -> debuffs.damage_taken )
+        p -> debuffs.damage_taken -> trigger( amount );
 
     }
   }
@@ -860,7 +861,8 @@ struct damage_done_buff_event_t : public raid_event_t
   {
     for ( auto p : affected_players )
     {
-      p -> buffs.damage_done -> increment( 1, multiplier );
+      if ( p -> buffs.damage_done )
+        p -> buffs.damage_done -> increment( 1, multiplier );
     }
   }
 
