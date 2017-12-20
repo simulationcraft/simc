@@ -1271,6 +1271,7 @@ struct storm_earth_and_fire_pet_t : public pet_t
     virtual bool ready() override
     {
       if ( player -> is_moving() ) return false;
+      if ( target -> is_sleeping() ) return false;
 
       return ( player -> main_hand_attack -> execute_event == nullptr ); // not swinging
     }
@@ -2001,6 +2002,7 @@ private:
     virtual bool ready() override
     {
       if ( player -> is_moving() ) return false;
+      if ( target -> is_sleeping() ) return false;
 
       return ( player -> main_hand_attack -> execute_event == nullptr ); // not swinging
     }
@@ -2150,6 +2152,7 @@ private:
     virtual bool ready() override
     {
       if ( player -> is_moving() ) return false;
+      if ( target -> is_sleeping() ) return false;
 
       return ( player -> main_hand_attack -> execute_event == nullptr ); // not swinging
     }
@@ -4595,6 +4598,9 @@ struct auto_attack_t: public monk_melee_attack_t
   bool ready() override
   {
     if ( p() -> current.distance_to_move > 5 )
+      return false;
+
+    if ( target -> is_sleeping() )
       return false;
 
     return( p() -> main_hand_attack -> execute_event == nullptr ); // not swinging
