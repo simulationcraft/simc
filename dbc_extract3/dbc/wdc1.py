@@ -82,7 +82,6 @@ class WDC1SegmentParser:
         # Index for the id column inside the segment, if it exists
         self.id_index = -1
         self.parser = self.columns[0].parser()
-        self.data = self.parser.data
 
     # Size of the data segment.
     # Note, this is the size of the actual record data segment in bytes, not
@@ -100,9 +99,10 @@ class WDC1SegmentParser:
 
     # Parse columns out, return a tuple
     # id: dbc id (as in, the record's id column value)
-    # offset: byte offset to the beginning of the segment
+    # data: (full) data buffer to unpack value from
+    # offset: absolute byte offset to the beginning of the segment in data
     # bytes_left: bytes left in the record
-    def __call__(self, id, offset, bytes_left):
+    def __call__(self, id, data, offset, bytes_left):
         raise NotImplementedError
 
 # Parse a block of data from a record using the python struct module
@@ -127,8 +127,8 @@ class WDC1StructSegmentParser(WDC1SegmentParser):
     def size(self):
         return self.unpacker.size
 
-    def __call__(self, id, offset, bytes_left):
-        unpacked_data = self.unpacker.unpack_from(self.data, offset)
+    def __call__(self, id, data, offset, bytes_left):
+        unpacked_data = self.unpacker.unpack_from(data, offset)
 
         if self.id_index > -1:
             self.record_parser.set_record_id(unpacked_data[self.id_index])
@@ -158,15 +158,15 @@ class WDC1PackedBitSegmentParser(WDC1SegmentParser):
     # single WDC1PackedBitSegmentParser. Should be a safe assumption, they seem
     # to be always inserted at the end of the DB2 file in a continuous segment.
     def size(self):
-        return math.ceil(sum([ c.ext_data().bit_size() for c in self.columns ]) / 8)
+        return math.ceil(sum([c.ext_data().bit_size() for c in self.columns]) / 8)
 
-    def __call__(self, id, offset, bytes_left):
+    def __call__(self, id, data, offset, bytes_left):
         barr = bitarray(endian = 'little')
 
         # Read enough bytes to the bitarray from the segment
-        barr.frombytes(self.data[offset:offset + self.size()])
+        barr.frombytes(data[offset:offset + self.size()])
 
-        data = ()
+        parsed_data = ()
         bit_offset = 0
         for idx in range(0, len(self.columns)):
             column = self.columns[idx]
@@ -175,7 +175,7 @@ class WDC1PackedBitSegmentParser(WDC1SegmentParser):
 
             raw_value = barr[bit_offset:bit_offset + size].tobytes()
 
-            data += decoder(id, raw_value)
+            parsed_data += decoder(id, data, raw_value)
 
             bit_offset += size
 
@@ -187,7 +187,7 @@ class WDC1PackedBitSegmentParser(WDC1SegmentParser):
                 id = data[-1]
                 self.record_parser.set_record_id(id)
 
-        return data
+        return parsed_data
 
 class WDC1StringSegmentParser(WDC1SegmentParser):
     def __init__(self, record_parser, columns):
@@ -201,22 +201,26 @@ class WDC1StringSegmentParser(WDC1SegmentParser):
 
     # Returns the offset into the file, where the string begins, much like what
     # the normal string block fields do
-    def __call__(self, id, offset, bytes_left):
+    def __call__(self, id, data, offset, bytes_left):
         # Find first \x00 byte
-        pos = self.data.find(b'\x00', offset, offset + bytes_left)
+        pos = data.find(b'\x00', offset, offset + bytes_left)
         self.string_size = (pos - offset) + 1
 
         # Inline strings with first character 0 denotes disabled field
-        if self.data[offset] == 0:
+        if data[offset] == 0:
             return (0,)
         else:
             return (offset,)
 
+# Bit-packed column generic class, how data is parsed depends on the meta type
+# (column struct type)
 class WDC1ExtendedColumnValue:
     def __init__(self, column):
         self.column = column
-        self.data = column.parser().data
         self.unpacker = Struct('<' + column.struct_type())
+
+    def __call__(self, id, data, bytes_):
+        raise NotImplementedError
 
 class WDC1BitPackedValue(WDC1ExtendedColumnValue):
     def __init__(self, column):
@@ -226,7 +230,7 @@ class WDC1BitPackedValue(WDC1ExtendedColumnValue):
         for idx in range(0, self.column.ext_data().bit_size()):
             self.mask |= (1 << idx)
 
-    def __call__(self, id_, bytes_):
+    def __call__(self, id_, data, bytes_):
         value = int.from_bytes(bytes_, byteorder = 'little')
 
         if self.column.is_signed():
@@ -257,26 +261,26 @@ class WDC1ColumnDataValue(WDC1ExtendedColumnValue):
         logging.debug('%s column data for %s at base offset %d',
             self.column.parser().full_name(), self.column, self.base_offset)
 
-    def __call__(self, id_, bytes_):
+    def __call__(self, id_, data, bytes_):
         # Convert the bytes to a proper int value (our relative id into the column data block).
         ptr_ = int.from_bytes(bytes_, byteorder = 'little')
 
         # Value is the {ptr_}th value in the block
         value_offset = self.base_offset + ptr_ * 4
 
-        return self.unpacker.unpack_from(self.data, value_offset)
+        return self.unpacker.unpack_from(data, value_offset)
 
 class WDC1SparseDataValue(WDC1ExtendedColumnValue):
     # Bytes are not needed for sparse data, sparse blocks are directly indexed
     # with the id column of the record
-    def __call__(self, id_, bytes_):
+    def __call__(self, id_, data, bytes_):
         # Value is the id_th value in the block
         value_offset = self.column.parser().sparse_data_offset(self.column, id_)
         if value_offset == -1:
             return (0,)
 
         # Return the value
-        return self.unpacker.unpack_from(self.data, value_offset)
+        return self.unpacker.unpack_from(data, value_offset)
 
 class WDC1ArrayDataValue(WDC1ColumnDataValue):
     def __init__(self, column):
@@ -290,7 +294,7 @@ class WDC1ArrayDataValue(WDC1ColumnDataValue):
         # TODO: if element_bit_size is < 32, should we mask out bits? Do the
         # files even indicate what the element size is (cell size?)
 
-    def __call__(self, id_, bytes_):
+    def __call__(self, id_, data, bytes_):
         # Convert the bytes to a proper int value (our id into the block)
         ptr_ = int.from_bytes(bytes_, byteorder = 'little')
 
@@ -301,7 +305,7 @@ class WDC1ArrayDataValue(WDC1ColumnDataValue):
                 self.column.parser().full_name(), value_offset, self.base_offset + self.column.ext_data().block_size())
             raise IndexError
 
-        return self.unpacker.unpack_from(self.data, value_offset)
+        return self.unpacker.unpack_from(data, value_offset)
 
 # Iterator to spit out values from the record block
 class WDC1RecordParser:
@@ -380,7 +384,7 @@ class WDC1RecordParser:
             segment_offset = base_offset + record_offset
             bytes_left = self.__parser.record_size - record_offset
 
-            data += decoder(self.__dbc_id, segment_offset, bytes_left)
+            data += decoder(self.__dbc_id, self.__data, segment_offset, bytes_left)
 
             record_offset += decoder.size()
 
@@ -393,16 +397,16 @@ class WDC1RecordParser:
         # Byte offset into current record, incremented after each segment parser
         record_offset = 0
 
-        data = ()
+        parsed_data = ()
         for decoder in self.__decoders:
             segment_offset = offset + record_offset
             bytes_left = size - record_offset
 
-            data += decoder(self.__dbc_id, segment_offset, bytes_left)
+            parsed_data += decoder(self.__dbc_id, data, segment_offset, bytes_left)
 
             record_offset += decoder.size()
 
-        return data
+        return parsed_data
 
     # Called from the segment parsers to set the id of the record for the rest
     # of the parsing process

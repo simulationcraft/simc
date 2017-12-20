@@ -138,6 +138,9 @@ class DBCacheParser:
                 'offset': self.parse_offset
             }
 
+            logging.debug('header: { magic=%s, unk_1=%u, unk_2=%u, length=%u, sig=%u, record_id=%u, unk_3=%u }, entry: { %s }',
+                magic, unk_1, unk_2, length, sig, record_id, unk_3, 'record_id=%(record_id)u, unk_1=%(unk_1)u, unk_2=%(unk_2)u, unk_3=%(unk_3)u, length=%(length)u, offset=%(offset)u' % entry)
+
             if sig not in self.entries:
                 self.entries[sig] = []
 
@@ -155,6 +158,7 @@ class DBCacheParser:
         header_unpack = struct.Struct('4sii32s')
 
         self.magic, self.unk_1, self.build, self.unk_u256 = header_unpack.unpack_from(self.data)
+        logging.debug('magic=%s, unk_1=%u, build=%u', self.magic, self.unk_1, self.build)
 
         if not self.is_magic():
             logging.error('DBCache.bin: Invalid data file format %s', self.magic.decode('utf-8'))

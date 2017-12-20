@@ -484,7 +484,7 @@
     { "data_type": "I", "field": "flags", "elements": 14 }
   ],
   "SpellPower": [
-    { "data_type": "i", "field": "cost",                "formats": { "cpp": "%4u" } },
+    { "data_type": "i", "field": "cost",                "formats": { "cpp": "%5u" } },
     { "data_type": "f", "field": "pct_cost",            "formats": { "cpp": "%7.3f" } },
     { "data_type": "f", "field": "pct_cost_per_second", "formats": { "cpp": "%7.3f" } },
     { "data_type": "I", "field": "aura_id",             "formats": { "cpp": "%7u" } },
