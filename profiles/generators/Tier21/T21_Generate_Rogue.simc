@@ -27,6 +27,37 @@ off_hand=the_kingslayers,id=128869
 
 save=T21_Rogue_Assassination.simc
 
+rogue="T21_Rogue_Assassination_FoK"
+level=110
+race=human
+role=attack
+position=back
+talents=1230111
+artifact=43:0:0:0:0:323:4:324:4:325:4:326:4:327:4:328:4:329:4:330:4:331:4:332:1:333:1:334:1:335:1:337:1:346:1:347:1:1276:1:1384:1:1577:4:1578:1:1579:1:1580:24:1651:1
+crucible=1739:1771:331/1739:1771:331/1739:1771:331
+spec=assassination
+
+head=cavalier_hat_of_the_dashing_scoundrel,id=152163,bonus_id=3612/1502
+neck=collar_of_nullflame,id=151973,bonus_id=3612/1502,enchant=mark_of_the_trained_soldier
+shoulder=mantle_of_the_master_assassin,id=144236,bonus_id=3630
+back=cloak_of_the_dashing_scoundrel,id=152161,bonus_id=3612/1502,enchant=binding_of_agility
+chest=vest_of_waning_life,id=151982,bonus_id=3612/1502
+wrist=zoldyck_family_training_shackles,id=137098,bonus_id=3630
+hands=gloves_of_the_dashing_scoundrel,id=152162,bonus_id=3612/1502
+waist=portal_keepers_cincture,id=151990,bonus_id=3612/1502
+legs=pants_of_the_dashing_scoundrel,id=152164,bonus_id=3612/1502
+feet=vicious_flamepaws,id=151983,bonus_id=3612/1502
+finger1=band_of_the_sargerite_smith,id=152064,bonus_id=3612/1502,enchant=binding_of_mastery
+finger2=sullied_seal_of_the_pantheon,id=151972,bonus_id=3612/1502,enchant=binding_of_mastery
+trinket1=shadowsinged_fang,id=151968,bonus_id=3612/1502
+trinket2=golganneths_vitality,id=154174,bonus_id=3997
+main_hand=the_kingslayers,id=128870,bonus_id=741,gem_id=152055/152049/152295,relic_id=3612:1502/3612:1502/3612:1502
+off_hand=the_kingslayers,id=128869
+
+fok_rotation=1
+
+save=T21_Rogue_Assassination_FoK.simc
+
 
 rogue="T21_Rogue_Assassination_Exsg"
 level=110

@@ -8758,6 +8758,15 @@ std::string rogue_t::create_profile( save_e stype )
     }
   }
 
+  if ( stype == SAVE_ALL )
+  {
+    if ( fok_rotation )
+    {
+      profile_str += "fok_rotation=1";
+      profile_str += term;
+    }
+  }
+
   return profile_str;
 }
 
