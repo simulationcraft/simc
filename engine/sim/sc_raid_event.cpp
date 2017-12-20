@@ -870,7 +870,8 @@ struct damage_done_buff_event_t : public raid_event_t
   {
     for ( auto p : affected_players )
     {
-      p -> buffs.damage_done -> decrement();
+      if ( p -> buffs.damage_done )
+        p -> buffs.damage_done -> decrement();
     }
   }
 };
