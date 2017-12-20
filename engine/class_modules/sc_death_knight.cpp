@@ -4221,9 +4221,10 @@ struct bloodworms_t : public death_knight_spell_t
 {
   bloodworms_t( death_knight_t* p, const std::string& options_str ) :
     death_knight_spell_t( "bloodworms", p, p -> talent.bloodworms )
-    {
-    parse_options( options_str );
-  }
+   {
+      background = true;
+      parse_options( options_str );
+   }
 };
 
 // Bonestorm ================================================================
@@ -4716,6 +4717,7 @@ struct t21_death_coil_t : public death_knight_spell_t
     unholy_vigor( p -> spell.unholy_vigor ), 
     coils_of_devastation ( cod )
   {
+    background = true;
     parse_options( options_str );
 
     attack_power_mod.direct = p -> spell.death_coil_damage -> effectN( 1 ).ap_coeff();
