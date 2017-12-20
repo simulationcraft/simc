@@ -1311,6 +1311,16 @@ struct storm_earth_and_fire_pet_t : public pet_t
       sef_melee_attack_t( "blackout_kick", player, player -> o() -> spec.blackout_kick )
     { }
 
+    double composite_persistent_multiplier( const action_state_t* action_state ) const override
+    {
+      double pm = sef_melee_attack_t::composite_persistent_multiplier( action_state );
+
+      if ( o() -> sets -> has_set_bonus( MONK_WINDWALKER, T21, B4 ) && p() -> buff.bok_proc_sef -> up() )
+        pm *= 1 + o() -> sets -> set( MONK_WINDWALKER, T21, B4) -> effectN( 1 ).percent();
+
+      return pm;
+    }
+
     void impact( action_state_t* state ) override
     {
       sef_melee_attack_t::impact( state );
@@ -1321,6 +1331,9 @@ struct storm_earth_and_fire_pet_t : public pet_t
 
         if ( o() -> artifact.transfer_the_power.rank() && o() -> buff.transfer_the_power -> up() )
           p() -> buff.transfer_the_power_sef -> trigger();
+
+        if ( p() -> buff.bok_proc_sef -> up() )
+          p() -> buff.bok_proc_sef -> expire();
       }
     }
    };
@@ -1741,6 +1754,7 @@ public:
   bool sticky_target; // When enabled, SEF pets will stick to the target they have
   struct buffs_t
   {
+    buff_t* bok_proc_sef;
     buff_t* hit_combo_sef;
     buff_t* transfer_the_power_sef;
     buff_t* pressure_point_sef;
@@ -1847,6 +1861,9 @@ public:
 
     o() -> buff.storm_earth_and_fire -> trigger();
 
+    if ( o() -> buff.bok_proc -> up() )
+      buff.bok_proc_sef -> trigger( 1, buff_t::DEFAULT_VALUE(), 1 , o() -> buff.bok_proc -> remains() );
+
     if ( o() -> buff.hit_combo -> up() )
       buff.hit_combo_sef -> trigger( o() -> buff.hit_combo -> stack() );
 
@@ -1864,6 +1881,8 @@ public:
   void create_buffs() override
   {
     pet_t::create_buffs();
+
+    buff.bok_proc_sef = buff_creator_t( this, "bok_proc_sef", o() -> passives.bok_proc );
 
     buff.hit_combo_sef = buff_creator_t( this, "hit_combo_sef", o() -> passives.hit_combo )
                     .default_value( o() -> passives.hit_combo -> effectN( 1 ).percent() )
@@ -3026,7 +3045,15 @@ struct tiger_palm_t: public monk_melee_attack_t
 
       // Combo Breaker calculation
       if ( p() -> buff.bok_proc -> trigger() )
+      {
         p() -> proc.bok_proc -> occur();
+        
+        if ( p() -> buff.storm_earth_and_fire -> up() )
+        {
+          p() -> pet.sef[ SEF_FIRE ] -> buff.bok_proc_sef -> trigger();
+          p() -> pet.sef[ SEF_EARTH ] -> buff.bok_proc_sef -> trigger();
+        }
+      }
 
       if ( p() -> buff.masterful_strikes -> up() )
         p() -> buff.masterful_strikes -> decrement();
