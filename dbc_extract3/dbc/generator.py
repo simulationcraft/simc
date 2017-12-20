@@ -977,7 +977,7 @@ class ItemDataGenerator(DataGenerator):
                 continue
 
             if(index % 20 == 0):
-                self._out.write('//{    Id, Name                                                   ,     Flags1,     Flags2, Type,Level,ReqL,ReqSk, RSkL,Qua,Inv,Cla,SCl,Bnd, Delay, DmgRange, Modifier,  ClassMask,   RaceMask, { ST1, ST2, ST3, ST4, ST5, ST6, ST7, ST8, ST9, ST10}, {  SV1,  SV2,  SV3,  SV4,  SV5,  SV6,  SV7,  SV8,  SV9, SV10 }, {  SId1,  SId2,  SId3,  SId4,  SId5 }, {Soc1,Soc2,Soc3 }, GemP,IdSBon,IdSet,IdSuf },\n')
+                self._out.write('//{    Id, Name                                                   ,     Flags1,     Flags2, Type,Level,ReqL,ReqSk, RSkL,Qua,Inv,Cla,SCl,Bnd, Delay, DmgRange, Modifier,  RaceMask, ClassMask, { ST1, ST2, ST3, ST4, ST5, ST6, ST7, ST8, ST9, ST10}, {  SV1,  SV2,  SV3,  SV4,  SV5,  SV6,  SV7,  SV8,  SV9, SV10 }, {  SId1,  SId2,  SId3,  SId4,  SId5 }, {Soc1,Soc2,Soc3 }, GemP,IdSBon,IdSet,IdSuf },\n')
 
             fields = item.field('id', 'name')
             fields += item.field('flags_1', 'flags_2')
@@ -2442,8 +2442,8 @@ class SpellDataGenerator(DataGenerator):
 
             # Hack in the combined class from the id_tuples dict
             # 6, 7
-            fields += [ u'%#.3x' % ids.get(id, { 'mask_class' : 0, 'mask_race': 0 })['mask_class'] ]
-            fields += [ u'%#.3x' % ids.get(id, { 'mask_class' : 0, 'mask_race': 0 })['mask_race'] ]
+            fields += [ u'%#.8x' % ids.get(id, { 'mask_class' : 0, 'mask_race': 0 })['mask_class'] ]
+            fields += [ u'%#.16x' % ids.get(id, { 'mask_class' : 0, 'mask_race': 0 })['mask_race'] ]
             assert len(fields) == 7
 
             # Set the scaling index for the spell

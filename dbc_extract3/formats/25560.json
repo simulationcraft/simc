@@ -108,14 +108,14 @@
     { "data_type": "B", "field": "unk_3" }
   ],
   "ItemSparse": [
-    { "data_type": "Q", "field": "race_mask" },
+    { "data_type": "Q", "field": "race_mask", "formats": { "cpp": "%#.16x" } },
     { "data_type": "S", "field": "name" },
     { "data_type": "S", "field": "pad0" },
     { "data_type": "S", "field": "pad1" },
     { "data_type": "S", "field": "pad2" },
     { "data_type": "S", "field": "desc" },
 
-    { "data_type": "I", "field": "flags", "elements": 4, "format": { "cpp": "%#.8x" } },
+    { "data_type": "I", "field": "flags", "elements": 4, "formats": { "cpp": "%#.8x" } },
     { "data_type": "f", "field": "unk_1" },
     { "data_type": "f", "field": "unk_2" },
 
@@ -137,7 +137,7 @@
     { "data_type": "I", "field": "duration" },
     { "data_type": "f", "field": "dmg_range" },
 
-    { "data_type": "H", "field": "class_mask" },
+    { "data_type": "H", "field": "class_mask", "formats": { "cpp": "%#.8x" } },
     { "data_type": "H", "field": "ilevel" },
     { "data_type": "H", "field": "req_skill" },
     { "data_type": "H", "field": "req_skill_rank" },
@@ -319,7 +319,7 @@
     { "data_type": "B", "field": "max_level", "formats": { "cpp": "%3u" } }
   ],
   "SkillLineAbility": [
-    { "data_type": "Q", "field": "mask_race" },
+    { "data_type": "Q", "field": "mask_race", "formats": { "cpp": "%#.16x" } },
     { "data_type": "I", "field": "id" },
     { "data_type": "I", "field": "id_spell" },
     { "data_type": "I", "field": "id_replace" },
@@ -329,7 +329,7 @@
     { "data_type": "H", "field": "index" },
     { "data_type": "H", "field": "id_filter" },
     { "data_type": "B", "field": "reward_skill_points" },
-    { "data_type": "I", "field": "mask_class" },
+    { "data_type": "I", "field": "mask_class", "formats": { "cpp": "%#.8x" } },
     { "data_type": "I", "field": "req_skill_level" },
     { "data_type": "I", "field": "unk_13" },
     { "data_type": "I", "field": "unk_14" }

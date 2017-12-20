@@ -31,7 +31,7 @@ struct item_t;
 
 const unsigned NUM_SPELL_FLAGS = 12;
 const unsigned NUM_CLASS_FAMILY_FLAGS = 4;
-#define SC_USE_PTR 0
+#define SC_USE_PTR 1
 
 struct stat_data_t
 {
@@ -820,7 +820,7 @@ public:
   double      _prj_speed;          // 4 Projectile Speed
   unsigned    _school;             // 5 Spell school mask
   unsigned    _class_mask;         // 6 Class mask for spell
-  unsigned    _race_mask;          // 7 Racial mask for the spell
+  uint64_t    _race_mask;          // 7 Racial mask for the spell
   int         _scaling_type;       // 8 Array index for gtSpellScaling.dbc. -1 means the first non-class-specific sub array, and so on, 0 disabled
   int         _max_scaling_level;  // 9 Max scaling level(?), 0 == no restrictions, otherwise min( player_level, max_scaling_level )
   // SpellLevels.dbc
