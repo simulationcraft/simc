@@ -1,11 +1,12 @@
-deathknight="PR_Death_Knight_Frost"
+deathknight="T21_Death_Knight_Frost_RA"
 spec=frost
 level=110
 race=blood_elf
 role=attack
 position=back
-talents=3120032
-artifact=12:0:0:0:0:108:3:109:3:110:3:113:3:119:1:120:1:122:1:123:1:1090:3:1332:1
+talents=3210031
+artifact=12:0:0:0:0:108:4:109:4:110:4:111:4:113:4:114:4:115:4:117:4:119:1:120:1:122:1:123:1:124:1:1090:4:1091:1:1092:1:1332:1:1360:1:1485:4:1486:1:1487:1:1488:24:1628:1
+crucible=1739:3:1774:3:110:2:113:1
 
 # Default consumables
 potion=prolonged_power
@@ -129,30 +130,31 @@ actions.standard+=/frost_strike,if=!(runic_power<50&talent.obliteration.enabled&
 actions.standard+=/obliterate,if=!talent.gathering_storm.enabled|talent.icy_talons.enabled
 actions.standard+=/empower_rune_weapon,if=!talent.breath_of_sindragosa.enabled|target.time_to_die<cooldown.breath_of_sindragosa.remains
 
-head=crown_of_ash,id=137526,bonus_id=1492/1826
-neck=raven_filigree_pendant,id=134499,bonus_id=1492/1826,enchant=mark_of_the_claw
-shoulders=frozen_pendulum_shoulderguards,id=134518,bonus_id=1492/1826
-back=goldscar_pelt,id=133639,bonus_id=1492/1826,enchant=binding_of_strength
-chest=inferno_breastplate,id=134503,bonus_id=1492/1826
-wrists=deepfurrow_bracers,id=137337,bonus_id=1492/1826
-hands=battleborne_sentinel_gauntlets,id=133628,bonus_id=1492/1826
-waist=coralplate_girdle,id=134225,bonus_id=1502/3573
-legs=wracksoul_legplates,id=121280,bonus_id=1502/3573
-feet=saltladen_stompers,id=137334,bonus_id=1492/1826
-finger1=jeweled_signet_of_melandrus,id=134542,bonus_id=1492/1826,enchant=binding_of_critical_strike
-finger2=gnawed_thumb_ring,id=134526,bonus_id=1492/1826,enchant=binding_of_critical_strike
-trinket1=faulty_countermeasure,id=137539,bonus_id=1492/1826
-trinket2=chaos_talisman,id=137459,bonus_id=1492/1826
-main_hand=blades_of_the_fallen_prince,id=128292,gem_id=137308/137399/137340,relic_id=1492:1727/1492:1727/1492:1727,enchant=rune_of_razorice
+head=dreadwake_helm,id=152115,bonus_id=3612/1502
+neck=chain_of_the_unmaker,id=152283,bonus_id=3612/1502,enchant=mark_of_the_claw
+shoulders=dreadwake_pauldrons,id=152117,bonus_id=3612/1502
+back=dreadwake_greatcloak,id=152113,bonus_id=3612/1502,enchant=binding_of_strength
+chest=cold_heart,id=151796,bonus_id=3630
+wrists=toravons_whiteout_bindings,id=132458,bonus_id=3630
+hands=dreadwake_gauntlets,id=152114,bonus_id=3612/1502
+waist=nathrezim_battle_girdle,id=152020,bonus_id=3612/1502
+legs=cosmosculling_legplates,id=152016,bonus_id=3612/1502
+feet=doomwalker_warboots,id=152009,bonus_id=3612/1502
+finger1=zealous_tormentors_ring,id=152284,bonus_id=3612/1502,enchant=binding_of_haste
+finger2=seal_of_the_portalmaster,id=152063,bonus_id=3612/1502,enchant=binding_of_haste
+trinket1=amanthuls_vision,id=154172,bonus_id=4213
+trinket2=cradle_of_anguish,id=147010,bonus_id=3563/1512
+main_hand=blades_of_the_fallen_prince,id=128292,gem_id=155850/155852/155850,relic_id=3612:1512/3612:1512/3612:1512,enchant=rune_of_razorice
 off_hand=blades_of_the_fallen_prince,id=128293,enchant=rune_of_the_fallen_crusader
 
 # Gear Summary
-# gear_ilvl=843.75
-# gear_strength=10445
-# gear_stamina=18512
-# gear_crit_rating=7968
-# gear_haste_rating=5977
-# gear_mastery_rating=2955
-# gear_versatility_rating=2165
-# gear_armor=3965
-# set_bonus=tier19p_plate_2pc=1
+# gear_ilvl=971.75
+# gear_strength=34970
+# gear_stamina=62079
+# gear_crit_rating=11649
+# gear_haste_rating=12811
+# gear_mastery_rating=8558
+# gear_versatility_rating=4726
+# gear_armor=5331
+# set_bonus=tier21_2pc=1
+# set_bonus=tier21_4pc=1
