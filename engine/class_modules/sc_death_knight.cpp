@@ -3213,7 +3213,7 @@ void death_knight_melee_attack_t::trigger_freezing_death (const action_state_t* 
   }
  
   // A single proc deals damage 3 times
-  p() -> active_spells.freezing_death -> set_target( execute_state -> target );
+  p() -> active_spells.freezing_death -> set_target( state -> target );
   p() -> active_spells.freezing_death -> execute();
   p() -> active_spells.freezing_death -> execute();
   p() -> active_spells.freezing_death -> execute();
@@ -3272,7 +3272,7 @@ void death_knight_spell_t::trigger_freezing_death (const action_state_t* state )
   }
 
   // A single proc deals damage 3 times for some reason
-  p() -> active_spells.freezing_death -> set_target( execute_state -> target );
+  p() -> active_spells.freezing_death -> set_target( state -> target );
   p() -> active_spells.freezing_death -> execute();
   p() -> active_spells.freezing_death -> execute();
   p() -> active_spells.freezing_death -> execute();
@@ -4877,7 +4877,7 @@ struct death_coil_t : public death_knight_spell_t
     {
       if ( rng().roll( p() -> sets -> set( DEATH_KNIGHT_UNHOLY, T21, B4 ) -> proc_chance() ) ) 
       {
-        t21_death_coil -> set_target( execute_state -> target );
+        t21_death_coil -> set_target( state -> target );
         t21_death_coil -> execute();
       }
     } 
