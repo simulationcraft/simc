@@ -8337,9 +8337,10 @@ void death_knight_t::default_apl_frost()
 
   // Cold Heart conditionals
   cold_heart -> add_action( this, "Chains of Ice", "if=buff.cold_heart.stack=20&buff.unholy_strength.react&cooldown.pillar_of_frost.remains>6", "Cold heart conditions" );
+  cold_heart -> add_action( this, "Chains of Ice", "if=buff.cold_heart.stack>=16&(cooldown.obliteration.ready&talent.obliteration.enabled)&buff.pillar_of_frost.up" );
   cold_heart -> add_action( this, "Chains of Ice", "if=buff.pillar_of_frost.up&buff.pillar_of_frost.remains<gcd&(buff.cold_heart.stack>=11|(buff.cold_heart.stack>=10&set_bonus.tier20_4pc))" );
-  cold_heart -> add_action( this, "Chains of Ice", "if=buff.cold_heart.stack>16&buff.unholy_strength.react&buff.unholy_strength.remains<gcd&cooldown.pillar_of_frost.remains>6" );
-  cold_heart -> add_action( this, "Chains of Ice", "if=buff.cold_heart.stack>12&buff.unholy_strength.react&talent.shattering_strikes.enabled" );
+  cold_heart -> add_action( this, "Chains of Ice", "if=buff.cold_heart.stack>=17&buff.unholy_strength.react&buff.unholy_strength.remains<gcd&cooldown.pillar_of_frost.remains>6" );
+  cold_heart -> add_action( this, "Chains of Ice", "if=buff.cold_heart.stack>=13&buff.unholy_strength.react&talent.shattering_strikes.enabled" );
   cold_heart -> add_action( this, "Chains of Ice", "if=buff.cold_heart.stack>=4&target.time_to_die<=gcd" );
 
   // Obliteration rotation
