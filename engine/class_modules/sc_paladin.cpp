@@ -3390,7 +3390,7 @@ struct auto_melee_attack_t : public paladin_melee_attack_t
     if ( potential_target && potential_target != p() -> main_hand_attack -> target )
       p() -> main_hand_attack -> target = potential_target;
 
-    if ( potential_target == nullptr )
+    if ( p() -> main_hand_attack -> target -> is_sleeping() && potential_target == nullptr )
     {
       return false;
     }
