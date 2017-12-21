@@ -1883,7 +1883,8 @@ public:
   {
     pet_t::create_buffs();
 
-    buff.bok_proc_sef = buff_creator_t( this, "bok_proc_sef", o() -> passives.bok_proc );
+    buff.bok_proc_sef = buff_creator_t( this, "bok_proc_sef", o() -> passives.bok_proc )
+                    .quiet( true ); // In-game does not show this buff but I would like to use it for background stuff;
 
     buff.hit_combo_sef = buff_creator_t( this, "hit_combo_sef", o() -> passives.hit_combo )
                     .default_value( o() -> passives.hit_combo -> effectN( 1 ).percent() )
