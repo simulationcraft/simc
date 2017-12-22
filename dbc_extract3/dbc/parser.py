@@ -2,6 +2,8 @@ import os, io, struct, sys, logging, math, re, binascii
 
 import dbc.fmt
 
+from dbc import DBCRecordInfo, DBCRecordData
+
 _BASE_HEADER = struct.Struct('<IIII')
 _DB_HEADER_1 = struct.Struct('<III')
 _DB_HEADER_2 = struct.Struct('<IIIHH')
@@ -74,14 +76,14 @@ class DBCacheParser:
         sig = wdb_parser.table_hash
 
         if sig not in self.entries:
-            return -1, 0
+            return DBCRecordInfo(-1, record_id, 0, 0)
 
         if record_id >= len(self.entries[sig]):
-            return -1, 0
+            return DBCRecordInfo(-1, record_id, 0, 0)
 
         dbc_id = wdb_parser.has_id_block() and self.entries[sig][record_id]['record_id'] or -1
-        return dbc_id, self.entries[sig][record_id]['offset'], \
-                self.entries[sig][record_id]['length']
+        return DBCRecordInfo(dbc_id, record_id, self.entries[sig][record_id]['offset'], \
+                self.entries[sig][record_id]['length'])
 
     def get_record(self, dbc_id, offset, size, wdb_parser):
         sig = wdb_parser.table_hash
@@ -618,24 +620,29 @@ class DBCParserBase:
                 dbc_id &= 0x00FFFFFF
 
             if dbc_id == id_:
-                return id_, self.data_offset + self.record_size * record_id, self.record_size
+                return DBCRecordINfo(id_, record_id, self.data_offset + self.record_size * record_id, self.record_size)
 
-        return -1, 0, 0
+        return DBCRecordInfo(id_, -1, 0, 0)
 
     # Returns dbc_id (always 0 for base), record offset into file
     def get_record_info(self, record_id):
-        return -1, self.data_offset + record_id * self.record_size, self.record_size
+        return DBCRecordInfo(-1, record_id, self.data_offset + record_id * self.record_size, self.record_size)
 
     def get_record(self, dbc_id, offset, size):
         return self.record_parser(dbc_id, self.data, offset, size)
 
     def find(self, id_):
-        dbc_id, record_offset, record_size = self.find_record_offset(id_)
+        _, record_id, record_offset, record_size = self.find_record_offset(id_)
 
         if record_offset > 0:
-            return dbc_id, self.record_parser(id_, self.data, record_offset, record_size)
+            if self.has_key_block():
+                key_id = self.key(record_id)
+            else:
+                key_id = 0
+
+            return DBCRecordData(id_, key_id, self.record_parser(id_, self.data, record_offset, record_size))
         else:
-            return 0, tuple()
+            return DBCRecordData(id_, key_id, tuple())
 
 # Proxy string unpacker for inlined strings. The size of the most recent parse
 # operation is stored in the size variable
@@ -675,7 +682,10 @@ class LegionWDBParser(DBCParserBase):
         self.clone_block_offset = 0
         self.offset_map_offset = 0
 
+        # Record information in a sparse record row-based table
         self.id_table = []
+        # Record information in a sparse dbc id (record id) based table
+        self.dbc_id_table = []
 
     def use_inline_strings(self):
         return self.has_offset_map()
@@ -708,10 +718,10 @@ class LegionWDBParser(DBCParserBase):
 
     def find_record_offset(self, id_):
         if self.has_id_block():
-            for record_id in range(0, self.n_records()):
-                if self.id_table[record_id][0] == id_:
-                    return self.id_table[record_id]
-            return -1, 0, 0
+            if id_ < len(self.dbc_id_table) and self.dbc_id_table[id_]:
+                return self.dbc_id_table[id_]
+            else:
+                return DBCRecordInfo(id_, -1, 0, 0)
         else:
             return super().find_record_offset(id_)
 
@@ -726,6 +736,7 @@ class LegionWDBParser(DBCParserBase):
             return
 
         idtable = []
+        recordtable = [ None ] * (self.last_id + 1)
         indexdict = {}
 
         # Process ID block
@@ -746,7 +757,9 @@ class LegionWDBParser(DBCParserBase):
             else:
                 data_offset = self.data_offset + record_id * self.record_size
 
-            idtable.append((dbc_id, data_offset, size))
+            record_info = DBCRecordInfo(dbc_id, record_id, data_offset, size)
+            idtable.append(record_info)
+            recordtable[dbc_id] = record_info
             indexdict[dbc_id] = (data_offset, size)
             record_id += 1
 
@@ -757,11 +770,21 @@ class LegionWDBParser(DBCParserBase):
             if source_id not in indexdict:
                 continue
 
-            idtable.append((target_id, indexdict[source_id][0], indexdict[source_id][1]))
+            source = indexdict[source_id]
+            record_info = DBCRecordInfo(target_id, record_id, source.record_offset, source.record_size)
+            idtable.append(source)
+            recordtable[target_id] = record_info
+
+            record_id += 1
 
         self.id_table = idtable
-        # If we have an idtable, just index directly to it
-        self.get_record_info = lambda record_id: self.id_table[record_id]
+        self.dbc_id_table = recordtable
+
+    def get_record_info(self, id_):
+        if self.has_id_block():
+            return self.id_table[id_]
+        else:
+            return super().get_record_info(id_)
 
     def open(self):
         if not super().open():
@@ -1170,18 +1193,17 @@ class LegionWCHParser(LegionWDBParser):
             while record_id < self.records:
                 ofs_offset_map_entry = self.offset_map_offset + record_id * _WCH_ITEMRECORD.size
                 dbc_id, data_offset, size = _WCH_ITEMRECORD.unpack_from(self.data, ofs_offset_map_entry)
-                self.id_table.append((dbc_id, data_offset, size))
+                record_info = DBCRecordInfo(dbc_id, record_id, data_offset, size)
+                self.id_table.append(record_info)
                 record_id += 1
         elif self.has_id_block():
             unpacker = struct.Struct('%dI' % self.records)
             for dbc_id in unpacker.unpack_from(self.data, self.id_block_offset):
                 size = self.record_size
                 data_offset = self.data_offset + record_id * self.record_size
-                self.id_table.append((dbc_id, data_offset, size))
+                record_info = DBCRecordInfo(dbc_id, record_id, data_offset, size)
+                self.id_table.append(record_info)
                 record_id += 1
-
-        # If we have an idtable, just index directly to it
-        self.get_record_info = lambda record_id: self.id_table[record_id]
 
     def is_wch(self):
         return True

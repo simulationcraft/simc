@@ -31,7 +31,7 @@ class DBCacheIterator:
         if self._record == self._records:
             raise StopIteration
 
-        dbc_id, offset, size = self._parser.get_record_info(self._wdb_parser, self._record)
+        dbc_id, record_id, offset, size = self._parser.get_record_info(self._wdb_parser, self._record)
         data = self._parser.get_record(dbc_id, offset, size, self._wdb_parser)
         self._record += 1
 
@@ -71,7 +71,7 @@ class DBCFileIterator:
         if self._parser.magic == b'WDC1':
             key_id = self._parser.key(self._record)
 
-        dbc_id, offset, size = self._parser.get_record_info(self._record)
+        dbc_id, record_id, offset, size = self._parser.get_record_info(self._record)
         data = self._parser.get_record(dbc_id, offset, size)
         self._record += 1
 
@@ -169,14 +169,14 @@ class DBCFile:
 
         return True
 
-    def decorate(self, data, key_id = -1):
+    def decorate(self, data):
         # Output data based on data parser + class, we are sure we have those things at this point
-        return self.data_class(self.parser, *data, key_id)
+        return self.data_class(self.parser, data.dbc_id, data.record_data, data.parent_id)
 
     def find(self, id_):
-        record_data = self.parser.find(id_)
-        if len(record_data[1]) > 0:
-            return self.decorate(record_data)
+        data = self.parser.find(id_)
+        if data.valid():
+            return self.decorate(data)
         else:
             return 'Record with DBC id %u not found' % id_
 
