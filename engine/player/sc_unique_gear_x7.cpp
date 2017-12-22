@@ -2512,8 +2512,14 @@ struct bulwark_of_flame_t : public absorb_buff_t
     // Modeling this as 2 * lag for now. Might increase to 3 * lag after looking at logs of people using the trinket
     // (same as Draught of Souls)
     timespan_t time = ( player -> world_lag_override ? player -> world_lag : sim -> world_lag ) * 2.0;
-    player -> schedule_ready( time );
-
+    if ( ! player -> readying )
+    {
+      player -> schedule_ready( time );
+    }
+    else if ( player -> readying -> remains() < time )
+    {
+      player -> readying -> reschedule( time );
+    }
   }
 };
 
