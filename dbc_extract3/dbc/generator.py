@@ -2832,7 +2832,8 @@ class SpellDataGenerator(DataGenerator):
             if label_data.label not in included_labels:
                 continue
 
-            if label_data.id_spell not in id_keys:
+            spell_id = self._options.build < 25600 and label_data.id_spell or label_data.id_parent
+            if spell_id not in id_keys:
                 continue
 
             labels.append(label_data)

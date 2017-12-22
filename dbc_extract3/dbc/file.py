@@ -32,7 +32,7 @@ class DBCacheIterator:
             raise StopIteration
 
         dbc_id, offset, size = self._parser.get_record_info(self._wdb_parser, self._record)
-        data = self._parser.get_record(self._wdb_parser, offset, size)
+        data = self._parser.get_record(dbc_id, offset, size, self._wdb_parser)
         self._record += 1
 
         return self._data_class(self._parser, dbc_id, data, 0)
@@ -72,7 +72,7 @@ class DBCFileIterator:
             key_id = self._parser.key(self._record)
 
         dbc_id, offset, size = self._parser.get_record_info(self._record)
-        data = self._parser.get_record(offset, size)
+        data = self._parser.get_record(dbc_id, offset, size)
         self._record += 1
 
         return self._decorator(self._parser, dbc_id, data, key_id)
@@ -171,7 +171,7 @@ class DBCFile:
 
     def decorate(self, data, key_id = -1):
         # Output data based on data parser + class, we are sure we have those things at this point
-        return self.data_class(self.parser, *data, key_id = -1)
+        return self.data_class(self.parser, *data, key_id)
 
     def find(self, id_):
         record_data = self.parser.find(id_)

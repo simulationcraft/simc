@@ -25,10 +25,10 @@ class Field:
                 outfmt = u'%f'
             elif self.data_type == 'S':
                 outfmt = u'%s'
-#            elif self.data_type == 'Q':
-#                outfmt = u'%uLLU'
-#            elif self.data_type == 'q':
-#                outfmt = u'%dLLD'
+            elif self.data_type == 'Q':
+                outfmt = u'%uLLU'
+            elif self.data_type == 'q':
+                outfmt = u'%dLLD'
             else:
                 outfmt = u'%u'
 

@@ -83,7 +83,7 @@ class DBCacheParser:
         return dbc_id, self.entries[sig][record_id]['offset'], \
                 self.entries[sig][record_id]['length']
 
-    def get_record(self, wdb_parser, offset, size):
+    def get_record(self, dbc_id, offset, size, wdb_parser):
         sig = wdb_parser.table_hash
 
         if sig not in self.entries:
@@ -95,7 +95,7 @@ class DBCacheParser:
             else:
                 self.parsers[sig] = wdb_parser.create_formatted_parser(True)
 
-        return self.parsers[sig](self.data, offset, size)
+        return self.parsers[sig](dbc_id, self.data, offset, size)
 
     def n_entries(self, wdb_parser):
         sig = wdb_parser.table_hash
@@ -377,9 +377,9 @@ class DBCParserBase:
         # One parser unpackers don't need to go through a function, can just do
         # the parsing in one go through a lambda function. Multi-parsers require state to be kept.
         if len(unpackers) == 1:
-            return lambda data, ro, rs: unpackers[0][1].unpack_from(data, ro)
+            return lambda dbc_id, data, ro, rs: unpackers[0][1].unpack_from(data, ro)
         else:
-            return lambda data, ro, rs: _do_parse(unpackers, data, ro, rs)
+            return lambda dbc_id, data, ro, rs: _do_parse(unpackers, data, ro, rs)
 
 
     # Sanitize data, blizzard started using dynamic width ints in WDB5, so
@@ -456,9 +456,9 @@ class DBCParserBase:
         # One parser unpackers don't need to go through a function, can just do
         # the parsing in one go through a lambda function. Multi-parsers require state to be kept.
         if len(unpackers) == 1:
-            return lambda data, ro, rs: list(unpackers[0][1].unpack_from(data, ro))
+            return lambda dbc_id, data, ro, rs: list(unpackers[0][1].unpack_from(data, ro))
         else:
-            return lambda data, ro, rs: _do_parse(unpackers, data, ro, rs)
+            return lambda dbc_id, data, ro, rs: _do_parse(unpackers, data, ro, rs)
 
     def n_expanded_fields(self):
         return sum([ fd[2] for fd in self.field_data ])
@@ -618,7 +618,7 @@ class DBCParserBase:
                 dbc_id &= 0x00FFFFFF
 
             if dbc_id == id_:
-                return -1, self.data_offset + self.record_size * record_id, self.record_size
+                return id_, self.data_offset + self.record_size * record_id, self.record_size
 
         return -1, 0, 0
 
@@ -626,14 +626,14 @@ class DBCParserBase:
     def get_record_info(self, record_id):
         return -1, self.data_offset + record_id * self.record_size, self.record_size
 
-    def get_record(self, offset, size):
-        return self.record_parser(self.data, offset, size)
+    def get_record(self, dbc_id, offset, size):
+        return self.record_parser(dbc_id, self.data, offset, size)
 
     def find(self, id_):
         dbc_id, record_offset, record_size = self.find_record_offset(id_)
 
         if record_offset > 0:
-            return dbc_id, self.record_parser(self.data, record_offset, record_size)
+            return dbc_id, self.record_parser(id_, self.data, record_offset, record_size)
         else:
             return 0, tuple()
 
@@ -966,8 +966,8 @@ class WDB6RecordParser:
 
             self.id_index += self.fields[i].elements
 
-    def __call__(self, file_data, offset, size):
-        data = self.record_parser(file_data, offset, size)
+    def __call__(self, dbc_id, file_data, offset, size):
+        data = self.record_parser(dbc_id, file_data, offset, size)
         idx = 0
         for i in range(0, len(self.fields)):
             value = self.parser.get_field_value(i, data[self.id_index])
@@ -1238,9 +1238,9 @@ class LegionWCHParser(LegionWDBParser):
             self.full_name(),
             ', '.join(['%s (len=%d, offset=%d)' % (u.format.decode('utf-8'), u.size, o) for _, u, o in self.unpackers]))
         if len(self.unpackers) == 1:
-            self.record_parser = lambda ro, rs: self.unpackers[0][1].unpack_from(self.data, ro)
+            self.record_parser = lambda id_, rd, ro, rs: self.unpackers[0][1].unpack_from(rd, ro)
         else:
-            self.record_parser = self.__do_parse
+            self.record_parser = lambda id_, rd, ro, rs: _do_parse(self.unpackers, rd, ro, rs)
 
         return True
 

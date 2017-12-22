@@ -373,8 +373,12 @@ class WDC1RecordParser:
         # Base offset into the record start
         base_offset = self.__base_offset + self.__record_id * self.__record_size
 
+        if self.__parser.has_id_block():
+            self.__dbc_id, _, _ = self.__parser.get_record_info(self.__record_id)
+        else:
+            self.__dbc_id = -1
+
         self.__record_id += 1
-        self.__dbc_id = -1
 
         # Byte offset into current record, incremented after each segment parser
         record_offset = 0
@@ -391,9 +395,7 @@ class WDC1RecordParser:
         return data
 
     # Support old interface as well as the new iterator-based one
-    def __call__(self, data, offset, size):
-        self.__dbc_id = -1
-
+    def __call__(self, dbc_id, data, offset, size):
         # Byte offset into current record, incremented after each segment parser
         record_offset = 0
 
@@ -402,7 +404,7 @@ class WDC1RecordParser:
             segment_offset = offset + record_offset
             bytes_left = size - record_offset
 
-            parsed_data += decoder(self.__dbc_id, data, segment_offset, bytes_left)
+            parsed_data += decoder(dbc_id, data, segment_offset, bytes_left)
 
             record_offset += decoder.size()
 
