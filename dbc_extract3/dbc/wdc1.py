@@ -184,7 +184,7 @@ class WDC1PackedBitSegmentParser(WDC1SegmentParser):
             # really happen as bit-packed columns are all handled currently in
             # a single segment)
             if idx == self.id_index:
-                id = data[-1]
+                id = parsed_data[-1]
                 self.record_parser.set_record_id(id)
 
         return parsed_data
