@@ -26,12 +26,13 @@ Effects          :
 Description      : Stab the target, causing ${$sw2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target.
 
 |cFFFFFFFFAwards $s3 combo $lpoint:points;.|r
+Variables        : $mult=${($max(0,$min($pl-10,10))*11+260)/370}
 
 Name             : Kidney Shot (id=408) [Spell Family (8)] 
 Class            : Assassination Subtlety Rogue
 School           : Physical
 Resource         : 25 Energy (3) (id=46)
-Resource         : 1 Combo Points (4) (id=10591)
+Resource         : 1 - 5 Combo Points (4) (id=10591)
 Spell Level      : 34
 Range            : 5 yards
 GCD              : 1 seconds
@@ -412,7 +413,7 @@ Name             : Rupture (id=1943) [Spell Family (8)]
 Class            : Assassination Rogue
 School           : Physical
 Resource         : 25 Energy (3) (id=145)
-Resource         : 1 Combo Points (4) (id=10589)
+Resource         : 1 - 5 Combo Points (4) (id=10589)
 Spell Level      : 20
 Range            : 5 yards
 GCD              : 1 seconds
@@ -504,7 +505,7 @@ Name             : Run Through (id=2098) [Spell Family (8)]
 Class            : Outlaw Rogue
 School           : Physical
 Resource         : 35 Energy (3) (id=158)
-Resource         : 1 Combo Points (4) (id=10581)
+Resource         : 1 - 5 Combo Points (4) (id=10581)
 Spell Level      : 10
 Range            : 5 yards
 GCD              : 1 seconds
@@ -667,7 +668,7 @@ Name             : Slice and Dice (id=5171) [Spell Family (8)]
 Class            : Rogue
 School           : Physical
 Resource         : 25 Energy (3) (id=226)
-Resource         : 1 Combo Points (4) (id=11434)
+Resource         : 1 - 5 Combo Points (4) (id=11434)
 Spell Level      : 14
 Range            : 100 yards
 GCD              : 1 seconds
@@ -1318,7 +1319,7 @@ Replaces         : Eviscerate (id=196819)
 Class            : Assassination Rogue
 School           : Nature
 Resource         : 35 Energy (3) (id=1350)
-Resource         : 1 Combo Points (4) (id=10585)
+Resource         : 1 - 5 Combo Points (4) (id=10585)
 Spell Level      : 36
 Range            : 5 yards
 GCD              : 1 seconds
@@ -1355,7 +1356,8 @@ Description      : Finishing move that drives your poisoned blades in deep, deal
    5 points: ${$m1*5} damage, 6 sec$?s193531[
    6 points: ${$m1*6} damage, 7 sec][]
 Tooltip          : Poison application chance increased by $s2%.
-Variables        : $percent=$?s56216[${$m1*(1+$56216m1/100)}][${$m1}]
+Variables        : $mult2=$?s84601[${1.17*(1+$@versadmg)}][${1.00*(1+$@versadmg)}]
+$mult=?s76803[${($76803m1/100+1)*$<mult2>}][${$<mult2>}]
 
 Name             : Interrupt (id=32747) 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Mage, Warlock, Monk, Demon Hunter
@@ -1783,7 +1785,7 @@ Description      : Activates your true form, increasing current movement speed b
 Tooltip          : True form activated, movement speed increased by an additional $s1%.
 
 Name             : Mastery: Potent Poisons (id=76803) [Spell Family (8), Passive] 
-Class            : Assassination Hunter, Rogue
+Class            : Assassination Rogue
 School           : Physical
 Spell Level      : 78
 Attributes       : ......x. x....... ........ ........   ........ ........ ........ ........ 
@@ -1829,7 +1831,7 @@ Effects          :
 Description      : Your main-hand attacks have a ${$m1}.1% chance to trigger an attack with your off-hand that deals $86392sw2 Physical damage.
 
 Name             : Mastery: Executioner (id=76808) [Spell Family (8), Passive] 
-Class            : Subtlety Hunter, Rogue
+Class            : Subtlety Rogue
 School           : Physical
 Spell Level      : 78
 Attributes       : ......x. x....... ........ ........   ........ ........ ........ ........ 
@@ -1968,7 +1970,7 @@ Effects          :
 Description      : Gives a chance to parry enemy melee attacks.
 
 Name             : Assassin's Resolve (id=84601) [Spell Family (8), Passive] 
-Class            : Assassination Hunter, Rogue
+Class            : Assassination Rogue
 School           : Physical
 Spell Level      : 10
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
@@ -2731,7 +2733,7 @@ Name             : Death from Above (id=152150) [Spell Family (8)]
 Class            : Rogue
 School           : Physical
 Resource         : 25 Energy (3) (id=9050)
-Resource         : 1 Combo Points (4) (id=10584)
+Resource         : 1 - 5 Combo Points (4) (id=10584)
 Range            : 15 yards
 GCD              : 2 seconds
 Duration         : 1 seconds
@@ -3198,8 +3200,7 @@ Effects          :
 Description      : When Fan of Knives strikes targets poisoned with your Deadly Poison, Deadly Poison instantly deals $s1% of its remaining damage.$?s200802[
 
 Increases the effect of Agonizing Poison's damage bonus by ${$m2/$<agonizingratio>}.1%][]
-Variables        : $ebon=$?s51160[${1.6}][${1.0}]
-$damage=${($PL*0.368+$AP*0.086)*$<ebon>}
+Variables        : $agonizingratio = ${2}
 
 Name             : Poison Knives (id=192380) [Spell Family (8)] 
 Class            : Rogue
@@ -3331,13 +3332,13 @@ Description      : Viciously slash an enemy, causing ${$sw1*$<mult>} Physical da
 Saber Slash has a $s5% chance to strike an additional time, making your next Pistol Shot free.
 
 |cFFFFFFFFAwards $s2 combo $lpoint:points; each time it strikes.|r
-Variables        : $damagePri=${$sw3*2}
+Variables        : $mult=${($max(0,$min($pl-10,10))*8+195)/275}
 
 Name             : Roll the Bones (id=193316) [Spell Family (8)] 
 Class            : Outlaw Rogue
 School           : Physical
 Resource         : 25 Energy (3) (id=10439)
-Resource         : 1 Combo Points (4) (id=11404)
+Resource         : 1 - 5 Combo Points (4) (id=11404)
 Spell Level      : 40
 Range            : 100 yards
 GCD              : 1 seconds
@@ -3623,7 +3624,7 @@ Name             : Nightblade (id=195452) [Spell Family (8)]
 Class            : Subtlety Rogue
 School           : Shadow
 Resource         : 25 Energy (3) (id=10522)
-Resource         : 1 Combo Points (4) (id=10590)
+Resource         : 1 - 5 Combo Points (4) (id=10590)
 Spell Level      : 20
 Range            : 5 yards
 GCD              : 1 seconds
@@ -3718,7 +3719,7 @@ Name             : Eviscerate (id=196819) [Spell Family (8)]
 Class            : Assassination Subtlety Rogue
 School           : Physical
 Resource         : 35 Energy (3) (id=10594)
-Resource         : 1 Combo Points (4) (id=10595)
+Resource         : 1 - 5 Combo Points (4) (id=10595)
 Spell Level      : 3
 Range            : 5 yards
 GCD              : 1 seconds
@@ -3976,7 +3977,7 @@ Name             : Finality: Eviscerate (id=197393) [Spell Family (8)]
 Class            : Rogue
 School           : Physical
 Resource         : 35 Energy (3) (id=10683)
-Resource         : 1 Combo Points (4) (id=10684)
+Resource         : 1 - 5 Combo Points (4) (id=10684)
 Spell Level      : 3
 Range            : 5 yards
 GCD              : 1 seconds
@@ -3998,12 +3999,13 @@ Description      : Finishing move that disembowels the target, causing damage pe
    4 points: ${$<mult>*$m1*4} damage
    5 points: ${$<mult>*$m1*5} damage$?s193531[
    6 points: ${$<mult>*$m1*6} damage][]
+Variables        : $mult=${(1+$@versadmg)}
 
 Name             : Finality: Nightblade (id=197395) [Spell Family (8)] 
 Class            : Rogue
 School           : Shadow
 Resource         : 25 Energy (3) (id=10685)
-Resource         : 1 Combo Points (4) (id=10686)
+Resource         : 1 - 5 Combo Points (4) (id=10686)
 Spell Level      : 46
 Range            : 5 yards
 GCD              : 1 seconds
@@ -4031,6 +4033,9 @@ Description      : Finishing move that infects the target with shadowy energy, d
    5 points: ${$<bonus>*$m1*16/2} over 16 sec$?s193531[
    6 points: ${$<bonus>*$m1*18/2} over 18 sec][]
 Tooltip          : Suffering $w1 Shadow damage every $t1 sec and snared by attacks.
+Variables        : $resolve=$?s84601[${1.17}][${1}]
+$deeper=$?s193531[${1.1}][${1}]
+$bonus=${$<resolve>*(1+$@versadmg)*$<deeper>}/1.1
 
 Name             : Finality: Eviscerate (id=197496) [Spell Family (8)] 
 Class            : Rogue
@@ -4269,7 +4274,7 @@ Name             : Between the Eyes (id=199804) [Spell Family (8)]
 Class            : Outlaw Rogue
 School           : Physical
 Resource         : 35 Energy (3) (id=10767)
-Resource         : 1 Combo Points (4) (id=10768)
+Resource         : 1 - 5 Combo Points (4) (id=10768)
 Spell Level      : 20
 Range            : 20 yards
 GCD              : 1 seconds
@@ -4395,7 +4400,7 @@ Effects          :
 Description      : Nightblade now decreases the target's movement speed by an additional $s1%.
 
 Name             : Agonizing Poison (id=200802) [Spell Family (8)] 
-Class            : Hunter, Rogue
+Class            : Rogue
 School           : Physical
 Spell Level      : 10
 Cast Time        : 1.5 seconds
@@ -4420,7 +4425,7 @@ Damage bonus increased by Mastery: Potent Poisons.
 Tooltip          : Each strike has a chance of causing the target to take ${$200803s1}.1% increased damage from your abilities for $200803d.
 
 Name             : Agonizing Poison (id=200803) [Spell Family (8)] 
-Class            : Hunter, Rogue
+Class            : Rogue
 School           : Nature
 Spell Level      : 10
 Range            : 100 yards

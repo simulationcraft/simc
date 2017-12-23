@@ -31,30 +31,6 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
 Description      : Damage dealt by pets increased by $s1%.
 
-Name             : Ice Lance (id=30455) [Scaling Spell (5), Spell Family (3)] 
-Replaces         : Fire Blast (id=108853)
-Class            : Frost Mage, Demon Hunter
-School           : Frost
-Resource         : 1% Base Mana (0) (id=6406)
-Spell Level      : 10
-Range            : 40 yards
-GCD              : 1.5 seconds
-Velocity         : 47 yards/sec
-Affecting spells : Shatter (12982 effect#1), Splitting Ice (56377 effect#1), Let It Go (195322 effect#1), Chain Reaction (195418 effect#1), Lonely Winter (205024 effect#1), Magtheridon's Might (214404 effect#1), Norgannon's Foresight (236380 effect#1), Arctic Blast (253257 effect#1)
-Triggered by     : Fingers of Frost (44544)
-Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=20036)    : Server Side Script (77)
-                   Base Value: 1 | Scaled Value: 0 (avg=1, dl=0.1) | Chain Multiplier: 0.5 | Chain Targets: 1 | Target: Enemy (6)
-Description      : Quickly fling a shard of ice at the target, dealing $228598s1 Frost damage$?s56377[, and ${$228598s1*$56377m2/100} Frost damage to a second nearby target][].
-
-Ice Lance damage is tripled against frozen targets.
-
 Name             : Interrupt (id=32747) 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Mage, Warlock, Monk, Demon Hunter
 Race             : Blood Elf
@@ -74,83 +50,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
 Description      : Interrupts casting for $d.
 Tooltip          : Interrupted.
-
-Name             : Fingers of Frost (id=44544) [Spell Family (3)] 
-Class            : Mage, Demon Hunter
-School           : Frost
-Range            : 100 yards
-Duration         : 15 seconds
-Stacks           : 2 maximum
-Proc Chance      : 101%
-Affecting spells : Item - Mage T18 Frost 4P Bonus (185971 effect#2), Icy Hand (220817 effect#1), Norgannon's Foresight (236380 effect#1)
-Triggered by     : Lady Vashj's Grasp (208147)
-Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ........ 
-                 : ..x..... ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ .......x ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=36475)    : Apply Aura (6) | Unknown(262)
-                   Base Value: 2 | Scaled Value: 2 | Misc Value: 126 | Target: Self (1)
-#2 (id=154771)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-#3 (id=164986)   : Apply Aura (6) | Unknown(408)
-                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 30455 | Target: Self (1)
-#4 (id=196961)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 1 | Scaled Value: 1 | Target: Self (1)
-Description      : $@spelldesc112965
-Tooltip          : Your next Ice Lance deals damage as if the target were frozen.
-
-Name             : Splitting Ice (id=56377) [Spell Family (3), Passive] 
-Class            : Mage, Demon Hunter
-School           : Frost
-Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ .......x ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Passive (6)
-Effects          :
-#1 (id=49437)    : Apply Aura (6) | Add Flat Modifier (107): Spell Targets (17)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 17 | Target: Self (1)
-                   Affected Spells: Ice Lance (30455), Icicle (148022), Glacial Spike (199786)
-#2 (id=136440)   : Dummy (3)
-                   Base Value: 80 | Scaled Value: 80
-#3 (id=341171)   : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
-                   Base Value: 5 | Scaled Value: 5 | Target: Self (1)
-                   Affected Spells: Ice Lance (30455), Ice Lance (228598)
-Description      : Your Ice Lance and Icicles now deal $s3% increased damage, and hit a second nearby target for $s2% of their damage.$?s199786[
-
-Your Glacial Spike also hits a second nearby target for $s2% of its damage.][]
-
-Name             : Fingers of Frost (id=112965) [Spell Family (3), Passive] 
-Class            : Frost Mage, Demon Hunter
-School           : Physical
-Spell Level      : 24
-Affecting spells : Frozen Touch (205030 effect#1), Norgannon's Foresight (236380 effect#1)
-Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Passive (6)
-Effects          :
-#1 (id=125628)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 12 | Scaled Value: 12 | Target: Self (1)
-#2 (id=129889)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0
-#3 (id=133111)   : Dummy (3)
-                   Base Value: 10 | Scaled Value: 10
-#4 (id=163932)   : Dummy (3)
-                   Base Value: 25 | Scaled Value: 25
-Description      : Frostbolt and Frozen Orb damage have a $s1% chance to grant a charge of Fingers of Frost.
-
-Fingers of Frost causes your next Ice Lance to deal damage as if the target were frozen.
-
-Maximum $44544s1 charges.
 
 Name             : Glide (id=131347) [Spell Family (107)] 
 Class            : Demon Hunter
@@ -512,7 +411,7 @@ Attributes       : ......x. x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=268563)   : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.50000 | Target: Self (1)
-                   Affected Spells: Chaos Strike (162794), Chaos Nova (179057), Fel Rush (192611), Chaos Strike (199547), Metamorphosis (200166), Annihilation (201427), Annihilation (201428), Fury of the Illidari (201628), Fury of the Illidari (201789), Inner Demons (202388), Anguish (202446), Fel Barrage (211052), Chaos Blades (211796), Chaos Blades (211797), Fel Eruption (211881), Chaos Strike (222031), Fel Eruption (225102), Annihilation (227518), Metamorphosis (247121)
+                   Affected Spells: Chaos Strike (162794), Chaos Nova (179057), Fel Rush (192611), Eye Beam (198030), Chaos Strike (199547), Metamorphosis (200166), Annihilation (201427), Annihilation (201428), Fury of the Illidari (201628), Fury of the Illidari (201789), Inner Demons (202388), Anguish (202446), Fel Barrage (211052), Chaos Blades (211796), Chaos Blades (211797), Fel Eruption (211881), Chaos Strike (222031), Fel Eruption (225102), Annihilation (227518), Metamorphosis (247121)
 #2 (id=294810)   : Apply Aura (6) | Unknown(129)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Target: Self (1)
 Description      : Increases your Chaos damage by $s1% and your movement speed by $s2%.
@@ -664,6 +563,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value 2: 0x8 | Target: Self (1)
 Description      : Strike $?a206416[your primary target for $<firstbloodDmg> Physical damage, ][]all nearby enemies for $<baseDmg> Physical damage, and increase your chance to dodge by $s2% for $d.
 Tooltip          : Dodge chance increased by $s2%.
+Variables        : $baseDmg=${3*$199552sw2+$200685sw2} 
+$firstbloodDmg=${(3*$199552sw2+$200685sw2)*(100+$206416s1)/100}
 
 Name             : Spectral Sight (id=188501) [Spell Family (107)] 
 Class            : Demon Hunter
@@ -973,6 +874,24 @@ Effects          :
 #4 (id=355950)   : Apply Aura (6) | Modify Power Regeneration (85)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 17 | Target: Self (1)
 Description      : Blasts all enemies directly in front of you for $<dmg> Chaos damage. Eye Beam always critically strikes.
+Variables        : $dmg=$?a203550[${$198030m1*15}][${$198030m1*10}]
+
+Name             : Eye Beam (id=198030) [Spell Family (107)] 
+Class            : Demon Hunter
+School           : Chromatic
+Range            : 50000 yards
+Affecting spells : Mastery: Demonic Presence (185164 effect#1), Chaos Vision (201456 effect#1), Blind Fury (203550 effect#1), Havoc Demon Hunter (212612 effect#1), Soul Flame of Insight (226334 effect#1), Wide Eyes (238045 effect#1), Item - Demon Hunter T21 Havoc 2P Bonus (251767 effect#1)
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ .x...... ........ ......x. 
+                 : ........ ........ ........ ........   ........ ........ ........ ..x..... 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ .x..x... ........ ........   ........ ........ ....x... ........ 
+                 : ........ x....... ........ ........   ........ ........ ........ ........ 
+                 : Not a proc (105), Requires line of sight (186)
+Effects          :
+#1 (id=291051)   : School Damage (2): chromatic
+                   Base Value: 1 | Scaled Value: 1 (avg=0, dl=0.1) | AP Coefficient: 0.55000 | Radius: 20 yards | Target: Unknown(129)
+Description      : $@spelldesc198013
 
 Name             : Blur (id=198589) [Spell Family (107)] 
 Class            : Demon Hunter
@@ -1078,32 +997,6 @@ Effects          :
 #2 (id=293657)   : Weapon Damage% (31)
                    Base Value: 96 | Scaled Value: 0.96 | Radius: 0 - 8 yards | Target: At Caster (22) -> AOE enemy (15)
 Description      : $@spelldesc188499
-
-Name             : Glacial Spike (id=199786) [Spell Family (3)] 
-Class            : Mage, Demon Hunter
-School           : Frost
-Resource         : 1% Base Mana (0) (id=10766)
-Range            : 40 yards
-Cast Time        : 3 seconds
-GCD              : 1.5 seconds
-Velocity         : 40 yards/sec
-Affecting spells : Shatter (12982 effect#1), Splitting Ice (56377 effect#1), Ice Floes (108839 effect#1), Norgannon's Foresight (236380 effect#1)
-Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=294013)   : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0 | Chain Multiplier: 0.8 | Chain Targets: 1 | Target: Enemy (6)
-Description      : Conjures a massive spike of ice, and merges your current Icicles into it. It impales your target, dealing $228600s1 damage plus the damage stored in your Icicles, and freezes the target in place for $228600d. Damage may interrupt the freeze effect.
-
-Requires 5 Icicles to cast.
-
-|cFFFFFFFFPassive:|r
-Ice Lance no longer launches Icicles.
-Tooltip          : Frozen in place.
 
 Name             : Metamorphosis (id=200166) [Spell Family (107)] 
 Class            : Demon Hunter
@@ -1500,13 +1393,13 @@ Attributes       : ......x. x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=300253)   : Apply Aura (6) | Add Percent Modifier (108): Spell Duration (1)
                    Base Value: 50 | Scaled Value: 50 | Misc Value: 1 | Target: Self (1)
-                   Affected Spells: Eye Beam (198013)
+                   Affected Spells: Eye Beam (198013), Eye Beam (198030)
 #2 (id=300254)   : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost (14)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 14 | Target: Self (1)
-                   Affected Spells: Eye Beam (198013)
+                   Affected Spells: Eye Beam (198013), Eye Beam (198030)
 #3 (id=355951)   : Apply Aura (6) | Dummy (4)
                    Base Value: 175 | Scaled Value: 175 | Misc Value: 32 | Target: Self (1)
-                   Affected Spells: Eye Beam (198013)
+                   Affected Spells: Eye Beam (198013), Eye Beam (198030)
 Description      : Eye Beam generates ${$s3/5} Fury every sec. and its duration is increased by $s1%.
 
 Name             : Prepared (id=203551) [Spell Family (107), Passive] 
@@ -2071,12 +1964,8 @@ Effects          :
                    Base Value: -20 | Scaled Value: -20 | Misc Value: 14 | Target: Self (1)
                    Affected Spells: Blade Dance (188499), Blade Dance (199552), Blade Dance (200685), Death Sweep (210152), Death Sweep (210153), Death Sweep (210155)
 Description      : Reduces the Fury cost of Blade Dance by $s2 and increases its damage to $<firstbloodDmg> against the first target struck.
-Variables        : $masteryMod=${$cond($gt($pl,79),1,0)}
-$masteryPoints=${$44544m4/100}
-$masteryMult=${(1+$<masteryMod>*$<masteryPoints>)}
-$fingersMult=${(2.00*$<masteryMult>)}
-
-
+Variables        : $baseDmg=${3*$199552sw2+$200685sw2} 
+$firstbloodDmg=${(3*$199552sw2+$200685sw2)*(100+$206416s1)/100}
 
 Name             : Bloodlet (id=206473) [Spell Family (107), Passive] 
 Class            : Demon Hunter
@@ -3024,10 +2913,10 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=315235)   : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
                    Base Value: 14 | Scaled Value: 14 | Target: Self (1)
-                   Affected Spells: Demon's Bite (162243), Chaos Nova (179057), Throw Glaive (185123), Fel Rush (192611), Vengeful Retreat (198813), Chaos Strike (199547), Blade Dance (199552), Metamorphosis (200166), Blade Dance (200685), Annihilation (201428), Fury of the Illidari (201628), Fury of the Illidari (201789), Inner Demons (202388), Anguish (202446), Demon Blades (203796), Death Sweep (210153), Death Sweep (210155), Fel Barrage (211052), Felblade (213243), Chaos Strike (222031), Fel Eruption (225102), Annihilation (227518)
+                   Affected Spells: Demon's Bite (162243), Chaos Nova (179057), Throw Glaive (185123), Fel Rush (192611), Eye Beam (198030), Vengeful Retreat (198813), Chaos Strike (199547), Blade Dance (199552), Metamorphosis (200166), Blade Dance (200685), Annihilation (201428), Fury of the Illidari (201628), Fury of the Illidari (201789), Inner Demons (202388), Anguish (202446), Demon Blades (203796), Death Sweep (210153), Death Sweep (210155), Fel Barrage (211052), Felblade (213243), Chaos Strike (222031), Fel Eruption (225102), Annihilation (227518)
 #2 (id=315236)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Damage (22)
                    Base Value: 14 | Scaled Value: 14 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Demon's Bite (162243), Chaos Nova (179057), Throw Glaive (185123), Fel Rush (192611), Vengeful Retreat (198813), Chaos Strike (199547), Blade Dance (199552), Metamorphosis (200166), Blade Dance (200685), Annihilation (201428), Fury of the Illidari (201628), Fury of the Illidari (201789), Inner Demons (202388), Anguish (202446), Demon Blades (203796), Death Sweep (210153), Death Sweep (210155), Fel Barrage (211052), Felblade (213243), Chaos Strike (222031), Fel Eruption (225102), Annihilation (227518)
+                   Affected Spells: Demon's Bite (162243), Chaos Nova (179057), Throw Glaive (185123), Fel Rush (192611), Eye Beam (198030), Vengeful Retreat (198813), Chaos Strike (199547), Blade Dance (199552), Metamorphosis (200166), Blade Dance (200685), Annihilation (201428), Fury of the Illidari (201628), Fury of the Illidari (201789), Inner Demons (202388), Anguish (202446), Demon Blades (203796), Death Sweep (210153), Death Sweep (210155), Fel Barrage (211052), Felblade (213243), Chaos Strike (222031), Fel Eruption (225102), Annihilation (227518)
 #3 (id=315237)   : Apply Aura (6) | Hasted Global Cooldown (417)
                    Base Value: 100 | Scaled Value: 100 | SP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Demon's Bite (162243), Chaos Strike (162794), Immolation Aura (178740), Chaos Nova (179057), Throw Glaive (185123), Blade Dance (188499), Metamorphosis (191427), Annihilation (201427), Fury of the Illidari (201467), Sigil of Silence (202137), Sigil of Chains (202138), Shear (203782), Demon Blades (203796), Throw Glaive (204157), Sigil of Flame (204596), Soul Carver (207407), Sigil of Misery (207684), Fracture (209795), Death Sweep (210152), Fel Eruption (211881), Felblade (213241), Soul Carver (214743), Soul Cleave (228477), Felblade (232893), Sever (235964), Spirit Bomb (247454)
@@ -3036,6 +2925,7 @@ Effects          :
                    Affected Spells: Immolation Aura (178740), Throw Glaive (185123), Blade Dance (188499), Shear (203782), Throw Glaive (204157), Death Sweep (210152), Felblade (213241), Felblade (232893), Sever (235964)
 #5 (id=315239)   : Apply Aura (6) | Add Flat Modifier (107): Spell Critical Chance (7)
                    Base Value: 200 | Scaled Value: 200 | Misc Value: 7 | Target: Self (1)
+                   Affected Spells: Eye Beam (198030)
 #6 (id=315240)   : Apply Aura (6) | Hasted Cooldown Duration (Category) (457)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1612 | Target: Self (1)
                    Affected Spells (Category): Throw Glaive (185123)
@@ -3687,7 +3577,7 @@ Name             : Soul Cleave (id=228477) [Spell Family (107)]
 Replaces         : Chaos Strike (id=162794)
 Class            : Vengeance Demon Hunter
 School           : Physical
-Resource         : 25 Unknown(18) (id=11545)
+Resource         : 25 - 50 Unknown(18) (id=11545)
 Spell Level      : 1
 Range            : 5 yards
 GCD              : 1.5 seconds
@@ -3710,7 +3600,8 @@ Effects          :
 Description      : Viciously strike all enemies in front of you for up to $<cleaveDamage> Physical damage and heal yourself for up to $<cleaveHeal>, based on Pain spent.
 
 Consumes all Soul Fragments within $s1 yds.
-Variables        : $mana=$?s112858|s123099[${$55453m2*0.2}][${$55453m2}]
+Variables        : $cleaveDamage=${2.0*$228478sw1}
+$cleaveHeal=${2.0*$AP*7.26*$s4/1000}
 
 Name             : Soul Cleave (id=228478) [Spell Family (107)] 
 Class            : Demon Hunter
@@ -3731,51 +3622,6 @@ Effects          :
 #2 (id=344033)   : Weapon Damage% (31)
                    Base Value: 340 | Scaled Value: 3.4 | Radius: 8 yards | Target: Cone Front (104)
 Description      : $@spelldesc228477
-
-Name             : Ice Lance (id=228598) [Scaling Spell (5), Spell Family (3)] 
-Class            : Mage, Demon Hunter
-School           : Frost
-Spell Level      : 5
-Range            : 100 yards
-GCD              : 1.5 seconds
-Affecting spells : Shatter (12982 effect#1), Splitting Ice (56377 effect#3), Frost Mage (137020 effect#1), Let It Go (195322 effect#1), Chain Reaction (195418 effect#1), Lonely Winter (205024 effect#1), Magtheridon's Might (214404 effect#1), Norgannon's Foresight (236380 effect#1), Arctic Blast (253257 effect#1)
-Attributes       : ........ ........ x.x....x x..x....   .....x.. ........ ........ ........ 
-                 : ..x..... ......x. ...x.... ........   ........ .x...... ........ ......x. 
-                 : .......x ........ ........ ........   ...x.... ........ .xx..... ........ 
-                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
-                 : .....x.. ........ ........ ........   ........ ...x.... ....x... ........ 
-                 : ........ ........ ......x. ........   ........ ........ ........ ..x..... 
-                 : Does not break stealth (37), Not a proc (105)
-Effects          :
-#1 (id=344285)   : School Damage (2): frost
-                   Base Value: 1 | Scaled Value: 0 (avg=1, dl=0.1) | SP Coefficient: 1.40400 | Chain Multiplier: 0.8 | Chain Targets: 1 | Target: Enemy (6)
-#2 (id=344286)   : Dummy (3)
-                   Base Value: 100 | Scaled Value: 100
-Description      : $@spelldesc30455
-
-Name             : Glacial Spike (id=228600) [Spell Family (3)] 
-Class            : Mage, Demon Hunter
-School           : Frost
-Range            : 100 yards
-Duration         : 4 seconds
-Proc Chance      : 100%
-Proc Flags       : ...x.x.x .x...x.. .x.x.... .......x 
-                 : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Hostile Spell Taken, Hostile Spell Taken, Periodic Taken
-Affecting spells : Shatter (12982 effect#1), Ice Floes (108839 effect#1), Frost Mage (137020 effect#1), Norgannon's Foresight (236380 effect#1)
-Attributes       : ........ ........ .......x x..x....   .....x.. ........ ........ ........ 
-                 : ..x..... ......x. ...x.... ........   ........ .x...... ........ ........ 
-                 : .......x ........ ........ ........   ...x.... ........ .xx..... ........ 
-                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
-                 : .....x.. ........ ........ ........   ........ ...x.... ....x... ........ 
-                 : ........ ........ ......x. ........   ........ ........ ........ ..x..... 
-                 : Does not break stealth (37), Not a proc (105)
-Effects          :
-#1 (id=344289)   : School Damage (2): frost
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 17.55000 | Target: Enemy (6)
-#2 (id=344290)   : Apply Aura (6) | Unknown(455)
-                   Base Value: 0 | Scaled Value: 0 | Mechanic: Unknown(58) | Target: Enemy (6)
-Description      : $@spelldesc199786
-Tooltip          : Frozen in place.
 
 Name             : Vengeful Retreat (id=232709) [Hidden] 
 Class            : Demon Hunter

@@ -55,8 +55,10 @@ Effects          :
 #1 (id=8994)     : School Damage (2): physical
                    Base Value: 1 | Scaled Value: 0 (avg=0.114, dl=0.35) | Target: Enemy (6)
 Description      : Bite the enemy, causing ${$<damage>} damage.  Deals $62762s2% more damage and costs $62762s1% more Focus when your pet has 50 or more Focus.
-Variables        : $impurity=$?s49638[${1.20}][${1}]
-$glyph=$?s58629[${1.2}][${1}]
+Variables        : $ce=$?s152244[${1.7}][${1.5}]
+$spiked=$?s53184[${1.1}][${1.0}]
+$blink=$?s130392[${1.5}][${1.0}]
+$damage=${$<ce>*$<spiked>*$<blink>*($RAP*0.333)*(1+$@versadmg)}
 
 Name             : Blood Fury (Racial) (id=20572) [Scaling Spell (-1)] 
 Class            : Warrior, Hunter, Rogue, Death Knight
@@ -416,6 +418,10 @@ Effects          :
 #1 (id=39752)    : Dummy (3)
                    Base Value: 167 | Scaled Value: 0 (avg=3) | Target: Enemy (6)
 Description      : Fires a blast of unholy energy at the target, causing $47632s1 Shadow damage to an enemy$?s137007[ and restoring $196263s1 Energy to your ][]$?s137007&?s207313[abomination]?s137007[ghoul][].
+Variables        : $mastery=$?s55090[${((100+$77515m1)/100)}][${1.00}]
+$blood=$?a48263[${1.2}][${1.0}]
+$damage=${(0.80*1.1*$AP)*$<mastery>*$<blood>}
+$healing=${(0.80*1.1*$AP)*5}
 
 Name             : Empower Rune Weapon (id=47568) [Spell Family (15)] 
 Class            : Frost Death Knight
@@ -1032,6 +1038,26 @@ Effects          :
 #2 (id=312640)   : Energize Power (30)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: runic_power | Target: Self (1)
 Description      : Corrupts the ground targeted by the Death Knight, causing Shadow damage every sec that targets remain in the area for $43265d.
+
+Name             : Spiked Collar (id=53184) [Spell Family (9), Passive] 
+Class            : Ferocity Tenacity Cunning Hunter, Death Knight Pet
+School           : Physical
+Range            : 5 yards
+Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6)
+Effects          :
+#1 (id=45820)    : Apply Aura (6) | Dummy (4)
+                   Base Value: 10 | Scaled Value: 10 | Target: Self (1)
+#2 (id=140043)   : Apply Aura (6) | Modify Ranged and Melee Attack Speed% (342)
+                   Base Value: 10 | Scaled Value: 10 | Target: Self (1)
+#3 (id=140044)   : Apply Aura (6) | Modify Critical Strike% (290)
+                   Base Value: 10 | Scaled Value: 10 | Target: Self (1)
+Description      : Increases the damage done by your pet's Basic Attacks by $s1%, and increases your pet's attack speed by $s2%, and increases your pet's critical strike chance by $s3%.
 
 Name             : Rune of Razorice (id=53343) [Hidden] 
 Class            : Death Knight
@@ -2394,6 +2420,31 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Unknown(63)
 Description      : Cause a target corpse to explode in a shower of gore. Does not affect mechanical or elemental corpses.
 
+Name             : Blink Strikes (id=130392) [Spell Family (9), Passive] 
+Class            : Hunter, Death Knight
+School           : Physical
+Spell Level      : 1
+Range            : 100 yards
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ .......x ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6)
+Effects          :
+#1 (id=167609)   : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
+                   Base Value: 100 | Scaled Value: 100 | Target: Self (1)
+                   Affected Spells: Claw (16827), Bite (17253), Smack (49966), Talon Slash (242735)
+#2 (id=191547)   : Dummy (3)
+                   Base Value: 30 | Scaled Value: 30 | Target: Self (1)
+#3 (id=191721)   : Apply Aura (6) | Add Flat Modifier (107): Spell Range (5)
+                   Base Value: 25 | Scaled Value: 25 | Misc Value: 5 | Target: Self (1)
+                   Affected Spells: Claw (16827), Bite (17253), Smack (49966), Talon Slash (242735)
+#4 (id=337955)   : Dummy (3)
+                   Base Value: 20 | Scaled Value: 20 | Target: Self (1)
+Description      : Your pet's Basic Attack deals $s1% increased damage, can now be used from $s2 yards away, and will instantly teleport your pet behind its target. Your pet can teleport only once per $s4 sec.
+
 Name             : Soul Reaper (id=130736) [Spell Family (15)] 
 Class            : Death Knight
 School           : Shadow
@@ -2840,10 +2891,33 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1074
 Description      : $@spelldesc146652
 
+Name             : Adaptation (id=152244) [Passive] 
+Class            : Hunter, Death Knight, Shaman
+School           : Physical
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ .......x ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6)
+Effects          :
+#1 (id=210781)   : Apply Aura (6) | Unknown(451)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+Description      : Increases the effect of your pet's Combat Experience to $156843m2% increased damage. Your pet now gains the following abilities, regardless of its active spec:
+|cFFFFFFFF
+Spiked Collar
+Roar of Sacrifice
+Cornered
+Boar's Speed
+Last Stand
+Blood of the Rhino
+Great Stamina|r
+
 Name             : Breath of Sindragosa (id=152279) [Spell Family (15)] 
 Class            : Death Knight
 School           : Physical
-Resource         : 0 Runic Power (6) (id=9067)
+Resource         : 0 Runic Power (6) and 15 Runic Power (6) per tick (id=9067)
 Duration         : Aura (infinite)
 Cooldown         : 120 seconds
 Attributes       : ........ ........ ........ ........   ........ .x...... ........ ........ 
@@ -2958,6 +3032,25 @@ Effects          :
 #2 (id=322756)   : Dummy (3)
                    Base Value: 66 | Scaled Value: 66
 Description      : $@spelldesc152280
+
+Name             : Combat Experience (id=156843) [Spell Family (9), Passive] 
+Class            : Hunter, Death Knight, Shaman
+School           : Physical
+Spell Level      : 1
+Attributes       : ....x.x. x....... ..x..... ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ .......x ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6)
+Effects          :
+#1 (id=218485)   : Apply Aura (6) | Unknown(214)
+                   Base Value: 2000 | Scaled Value: 2000 | Target: Self (1)
+#2 (id=218486)   : Apply Aura (6) | Modify Damage Done% (79)
+                   Base Value: 70 | Scaled Value: 70 | Misc Value: 0x7f | Target: Self (1)
+                   Affected School(s): All
+Description      : Increases all damage done by your pet by $s2%.
 
 Name             : Riposte (id=161797) [Spell Family (15), Passive] 
 Class            : Blood Death Knight
@@ -3570,7 +3663,7 @@ Tooltip          : Taking $s1% reduced damage.
 Name             : Bonestorm (id=194844) [Spell Family (15)] 
 Class            : Death Knight
 School           : Shadow
-Resource         : 10 Runic Power (6) (id=10533)
+Resource         : 10 - 100 Runic Power (6) (id=10533)
 GCD              : 1.5 seconds
 Duration         : 1 seconds
 Cooldown         : 60 seconds

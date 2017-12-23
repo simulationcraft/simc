@@ -81,7 +81,7 @@ Description      : Heals all allies within $a2 yards for ${5*$157982s1} over $d.
 Tooltip          : Healing all allies within $a1 yards for $157982s1 every $t1 sec.
 
 Name             : Cat Form (Shapeshift) (id=768) [Spell Family (7)] 
-Class            : Hunter, Druid
+Class            : Druid
 School           : Physical
 Spell Level      : 8
 GCD              : 1.5 seconds
@@ -133,6 +133,14 @@ Description      : Heals the target for $o1 over $d.$?s33891[
 
 |C0033AA11Tree of Life: Healing increased by $5420s5% and Mana cost reduced by $5420s4%.|R][]
 Tooltip          : Heals $w1 damage every $t1 seconds.
+Variables        : $mult=${1}
+$mstrshape=$?s48411[${1+0.01*$48411m1}][${1}]
+$gotem1=$?s51179[${1+0.01*$51179m1}][${1}]
+$gotem2=$?s51180[${1+0.01*$51180m1}][${$<gotem1>}]
+$gotem3=$?s51181[${1+0.01*$51181m1}][${$<gotem2>}]
+$tol=$?a5420[${1+0.01+$5420m1}][${1}]
+$gift=$?s87305[${1.25}][${1}]
+$bloom=${$<gift>*$<genesis3>*$<mstrshape>*$<gotem3>*$<tol>}
 
 Name             : Travel Form (Shapeshift) (id=783) [Spell Family (7)] 
 Class            : Druid
@@ -162,7 +170,7 @@ Name             : Rip (id=1079) [Spell Family (7)]
 Class            : Feral Druid
 School           : Physical
 Resource         : 30 Energy (3) (id=113)
-Resource         : 1 Combo Points (4) (id=10588)
+Resource         : 1 - 5 Combo Points (4) (id=10588)
 Spell Level      : 20
 Range            : 5 yards
 GCD              : 1 seconds
@@ -191,6 +199,7 @@ Description      : Finishing move that causes Bleed damage over $d. Damage incre
    4 points: ${$floor(4*$<rip>*12)} damage
    5 points: ${$floor(5*$<rip>*12)} damage
 Tooltip          : Bleeding for $w1 damage every $t1 sec.
+Variables        : $rip=${$s1}
 
 Name             : Bear Form Passive (id=1178) [Spell Family (7), Passive] 
 Class            : Druid
@@ -466,6 +475,7 @@ Description      : Shred the target, causing ${$sw1*$<mult>} Physical damage to 
 While stealthed, Shred deals $m4% increased damage, and has double the chance to critically strike.][]
 
 |cFFFFFFFFAwards $s2 combo $lpoint:points;.|r
+Variables        : $mult=${($min($pl-1,19)*18+353)/695}
 
 Name             : Travel Form (Passive) (Passive) (id=5419) [Spell Family (7), Passive] 
 Class            : Druid
@@ -486,7 +496,7 @@ Effects          :
                    Affected Spells: Wild Charge (102401)
 
 Name             : Incarnation: Tree of Life (Passive) (id=5420) [Spell Family (7), Passive, Hidden] 
-Class            : Shaman, Druid
+Class            : Druid
 School           : Physical
 Stance Mask      : 0x00000002
 Attributes       : ......xx x....... ........ ........   ........ ........ ........ ........ 
@@ -685,6 +695,14 @@ Description      : Heals a friendly target for $s1 and another ${$o2*$<mult>} ov
 
 |C0033AA11Tree of Life: Instant cast.|R][]
 Tooltip          : Heals $w2 every $t2 seconds.
+Variables        : $mult=${1}
+$mstrshape=$?s48411[${1+0.01*$48411m1}][${1}]
+$gotem1=$?s51179[${1+0.01*$51179m1}][${1}]
+$gotem2=$?s51180[${1+0.01*$51180m1}][${$<gotem1>}]
+$gotem3=$?s51181[${1+0.01*$51181m1}][${$<gotem2>}]
+$tol=$?a5420[${1+0.01+$5420m1}][${1}]
+$gift=$?s87305[${1.25}][${1}]
+$bloom=${$<gift>*$<genesis3>*$<mstrshape>*$<gotem3>*$<tol>}
 
 Name             : Omen of Clarity (id=16864) [Spell Family (7), Passive] 
 Class            : Feral Druid
@@ -947,7 +965,7 @@ Name             : Ferocious Bite (id=22568) [Spell Family (7)]
 Class            : Feral Druid
 School           : Physical
 Resource         : 25 Energy (3) (id=939)
-Resource         : 1 Combo Points (4) (id=10587)
+Resource         : 1 - 5 Combo Points (4) (id=10587)
 Spell Level      : 10
 Range            : 5 yards
 GCD              : 1 seconds
@@ -978,7 +996,7 @@ Name             : Maim (id=22570) [Scaling Spell (3), Spell Family (7)]
 Class            : Feral Druid
 School           : Physical
 Resource         : 35 Energy (3) (id=940)
-Resource         : 1 Combo Points (4) (id=9773)
+Resource         : 1 - 5 Combo Points (4) (id=9773)
 Spell Level      : 63
 Range            : 5 yards
 GCD              : 1 seconds
@@ -1009,7 +1027,7 @@ Description      : Finishing move that causes Physical damage and stuns the targ
    4 points: $168880sw3 damage, 4 sec
    5 points: $168881sw3 damage, 5 sec
 Tooltip          : Stunned.
-Variables        : $mult=$?s16859[${1.10}]?s16858[${1.05}][${1.00}]
+Variables        : $mult=$?p61252[${4}][${2}]
 
 Name             : Barkskin (id=22812) [Spell Family (7)] 
 Class            : Balance Guardian Restoration Druid
@@ -1403,7 +1421,7 @@ Name             : Savage Roar (id=52610) [Spell Family (7)]
 Class            : Druid
 School           : Physical
 Resource         : 40 Energy (3) (id=2413)
-Resource         : 1 Combo Points (4) (id=11447)
+Resource         : 1 - 5 Combo Points (4) (id=11447)
 Spell Level      : 1
 Range            : 100 yards
 GCD              : 1 seconds
@@ -1488,6 +1506,22 @@ Effects          :
                    Base Value: -50 | Scaled Value: -50 | Mechanic: Unknown(88) | Target: Enemy (6)
 Description      : $@spelldesc48484
 Tooltip          : Movement speed slowed by $s1%.
+
+Name             : Maim Damage (id=61252) [Spell Family (7), Passive, Hidden] 
+Class            : Druid
+School           : Physical
+Attributes       : ....x.xx x....... ........ ........   ...x...x ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ..x..... 
+                 : ........ ........ ........ ........   ........ ........ x....... ........ 
+                 : Passive (6), Hidden (7)
+Effects          :
+#1 (id=55085)    : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
+                   Base Value: 100 | Scaled Value: 100 | Target: Self (1)
+                   Affected Spells: Maim (22570), Maim (168877), Maim (168878), Maim (168879), Maim (168880), Maim (168881)
+Description      : Increases the damage done by Maim by $s1%.
 
 Name             : Survival Instincts (id=61336) [Spell Family (7)] 
 Class            : Feral Guardian Druid
@@ -2681,7 +2715,7 @@ Effects          :
 Description      : Your healing over time from Lifebloom has a $h% chance to cause a Clearcasting state, making your next $?a155577[${$155577m1+1} Regrowths][Regrowth] cost no mana.
 
 Name             : Cat Form (Passive) (id=113636) [Spell Family (7), Passive, Hidden] 
-Class            : Hunter, Druid
+Class            : Druid
 School           : Nature
 Stance Mask      : 0x00000001
 Attributes       : ....x.xx ........ ........ ........   ........ ..x..... ........ ........ 
@@ -4172,11 +4206,7 @@ Effects          :
 #3 (id=239197)   : Weapon Damage% (31)
                    Base Value: 140 | Scaled Value: 1.4 | Target: Enemy (6)
 Tooltip          : Stunned.
-Variables        : $mult1=$?s87336[${1.25}][${1.0}]
-$mult2=$?s122098[${1.25*$<mult1>}][${$<mult1>}]
-$mending=${(1+($SP*0.666))*$pctH*$<mult2>}
-
-
+Variables        : $mult=$?p61252[${4}][${2}]
 
 Name             : Maim (id=168878) [Scaling Spell (3), Spell Family (7)] 
 Class            : Druid
@@ -4205,7 +4235,7 @@ Effects          :
 #3 (id=239200)   : Weapon Damage% (31)
                    Base Value: 280 | Scaled Value: 2.8 | Target: Enemy (6)
 Tooltip          : Stunned.
-Variables        : $damage=${($RAP*0.724)+$m1}
+Variables        : $mult=$?p61252[${4}][${2}]
 
 Name             : Maim (id=168879) [Scaling Spell (3), Spell Family (7)] 
 Class            : Druid
@@ -4234,7 +4264,7 @@ Effects          :
 #3 (id=239203)   : Weapon Damage% (31)
                    Base Value: 420 | Scaled Value: 4.2 | Target: Enemy (6)
 Tooltip          : Stunned.
-Variables        : $damage=${($RAP*0.0483)+$m1}
+Variables        : $mult=$?p61252[${4}][${2}]
 
 Name             : Maim (id=168880) [Scaling Spell (3), Spell Family (7)] 
 Class            : Druid
@@ -4263,6 +4293,7 @@ Effects          :
 #3 (id=239206)   : Weapon Damage% (31)
                    Base Value: 560 | Scaled Value: 5.6 | Target: Enemy (6)
 Tooltip          : Stunned.
+Variables        : $mult=$?p61252[${4}][${2}]
 
 Name             : Maim (id=168881) [Scaling Spell (3), Spell Family (7)] 
 Class            : Druid
@@ -4291,9 +4322,7 @@ Effects          :
 #3 (id=239209)   : Weapon Damage% (31)
                    Base Value: 700 | Scaled Value: 7 | Target: Enemy (6)
 Tooltip          : Stunned.
-Variables        : $inner1=$?s33597[${30}][${15}]
-$inner2=$?s33599[${45}][${$<inner1>}]
-$innervate=${$<inner2>}
+Variables        : $mult=$?p61252[${4}][${2}]
 
 Name             : Glyph of the Sun (Balance) (id=171803) [Spell Family (7), Passive, Hidden] 
 Class            : Druid
@@ -5646,7 +5675,7 @@ Description      : Deals $m1 Arcane damage to the target and empowers Half Moon 
 Name             : Fury of Elune (id=202770) [Spell Family (7)] 
 Class            : Druid
 School           : Astral
-Resource         : 6 Eclipse (8) (id=10868)
+Resource         : 6 Eclipse (8) and 12 Eclipse (8) per tick (id=10868)
 Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : Aura (infinite)
@@ -6275,6 +6304,7 @@ Effects          :
                    Base Value: 6 | Scaled Value: 6 | Target: Enemy (6)
 Description      : $@spelldesc210702
 Tooltip          : Suffering $w1 Shadow damage every $t1 sec.
+Variables        : $rip=${$s1}
 
 Name             : Gore (id=210706) [Spell Family (7), Passive] 
 Class            : Guardian Druid

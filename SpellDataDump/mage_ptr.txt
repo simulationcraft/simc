@@ -95,6 +95,15 @@ Effects          :
                    Base Value: 1 | Scaled Value: 0 (avg=0.381) | SP Coefficient: 1.80000 | Radius: 12 yards | Target: Cone Front (104)
 Description      : Targets in a cone in front of you take $s1 Frost damage and have movement slowed by $212792m1% for $212792d.
 Tooltip          : Movement slowed by $s1%.
+Variables        : $arctic1=$?s31674[${1.01}][${1}]
+$arctic2=$?s31675[${1.02}][${$<arctic1>}]
+$arctic3=$?s31676[${1.03}][${$<arctic2>}]
+$arctic4=$?s31677[${1.04}][${$<arctic3>}]
+$arctic5=$?s31678[${1.05}][${$<arctic4>}]
+$piercing1=$?s11151[${1.02}][${1}]
+$piercing2=$?s12952[${1.04}][${$<piercing1>}]
+$piercing3=$?s12953[${1.06}][${$<piercing2>}]
+$mult=${$<arctic5>*$<piercing3>}
 
 Name             : Frost Nova (id=122) [Spell Family (3)] 
 Class            : Mage
@@ -122,6 +131,15 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 12 yards | Mechanic: Unknown(58) | Target: At Caster (22) -> AOE enemy (15)
 Description      : Blasts enemies within $A1 yds of you for $122s1 Frost damage and freezes them in place for $122d. Damage may interrupt the freeze effect.
 Tooltip          : Frozen in place.
+Variables        : $arctic1=$?s31674[${1.01}][${1}]
+$arctic2=$?s31675[${1.02}][${$<arctic1>}]
+$arctic3=$?s31676[${1.03}][${$<arctic2>}]
+$arctic4=$?s31677[${1.04}][${$<arctic3>}]
+$arctic5=$?s31678[${1.05}][${$<arctic4>}]
+$piercing1=$?s11151[${1.02}][${1}]
+$piercing2=$?s12952[${1.04}][${$<piercing1>}]
+$piercing3=$?s12953[${1.06}][${$<piercing2>}]
+$mult=${$<arctic5>*$<piercing3>}
 
 Name             : Fireball (id=133) [Spell Family (3)] 
 Class            : Fire Mage
@@ -719,7 +737,7 @@ Mana cost increased by $36032s5% per Arcane Charge.
 
 Name             : Ice Lance (id=30455) [Scaling Spell (5), Spell Family (3)] 
 Replaces         : Fire Blast (id=108853)
-Class            : Frost Mage, Demon Hunter
+Class            : Frost Mage
 School           : Frost
 Resource         : 1% Base Mana (0) (id=6406)
 Spell Level      : 10
@@ -740,6 +758,12 @@ Effects          :
 Description      : Quickly fling a shard of ice at the target, dealing $228598s1 Frost damage$?s56377[, and ${$228598s1*$56377m2/100} Frost damage to a second nearby target][].
 
 Ice Lance damage is tripled against frozen targets.
+Variables        : $masteryMod=${$cond($gt($pl,79),1,0)}
+$masteryPoints=${$44544m4/100}
+$masteryMult=${(1+$<masteryMod>*$<masteryPoints>)}
+$fingersMult=${(2.00*$<masteryMult>)}
+
+
 
 Name             : Slow (id=31589) [Spell Family (3)] 
 Class            : Arcane Mage
@@ -1085,7 +1109,7 @@ Effects          :
 Description      : $@spelldesc44457
 
 Name             : Fingers of Frost (id=44544) [Spell Family (3)] 
-Class            : Mage, Demon Hunter
+Class            : Mage
 School           : Frost
 Range            : 100 yards
 Duration         : 15 seconds
@@ -1230,7 +1254,7 @@ Effects          :
 Description      : Creates $s2 copies of you nearby, which cast spells and attack your enemies. Lasts $55342d.
 
 Name             : Splitting Ice (id=56377) [Spell Family (3), Passive] 
-Class            : Mage, Demon Hunter
+Class            : Mage
 School           : Frost
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2034,7 +2058,7 @@ Description      : Places a Frost Bomb on the target for $d. Limit 1 target. You
 Tooltip          : The Mage's Ice Lances that hit the target while frozen will cause the Frost Bomb to release a wave of freezing ice that deals $113092s1 Frost damage to the target, $113092s2 Frost damage to all other enemies within $113092A2 yards.
 
 Name             : Fingers of Frost (id=112965) [Spell Family (3), Passive] 
-Class            : Frost Mage, Demon Hunter
+Class            : Frost Mage
 School           : Physical
 Spell Level      : 24
 Affecting spells : Frozen Touch (205030 effect#1), Norgannon's Foresight (236380 effect#1)
@@ -3542,6 +3566,15 @@ Effects          :
 #1 (id=278848)   : School Damage (2): frost
                    Base Value: 1 | Scaled Value: 0 (avg=0.323, dl=0.1) | SP Coefficient: 0.57915 | Radius: 0 - 8 yards | Target: Unknown(87) -> AOE enemy (instant) (16)
 Description      : $@spelldesc190356
+Variables        : $arctic1=$?s31674[${1.01}][${1}]
+$arctic2=$?s31675[${1.02}][${$<arctic1>}]
+$arctic3=$?s31676[${1.03}][${$<arctic2>}]
+$arctic4=$?s31677[${1.04}][${$<arctic3>}]
+$arctic5=$?s31678[${1.05}][${$<arctic4>}]
+$piercing1=$?s11151[${1.02}][${1}]
+$piercing2=$?s12952[${1.04}][${$<piercing1>}]
+$piercing3=$?s12953[${1.06}][${$<piercing2>}]
+$mult=${$<arctic5>*$<piercing3>}
 
 Name             : Arcane Charge (id=190427) [Spell Family (3), Passive] 
 Class            : Arcane Mage
@@ -3885,7 +3918,7 @@ Effects          :
 Description      : Throws a spread of 6 cinders that travel in an arc, each dealing $198928s1 Fire damage to enemies it hits. Damage increased by $s1% if the target is affected by your Ignite.
 
 Name             : Glacial Spike (id=199786) [Spell Family (3)] 
-Class            : Mage, Demon Hunter
+Class            : Mage
 School           : Frost
 Resource         : 1% Base Mana (0) (id=10766)
 Range            : 40 yards
@@ -4967,7 +5000,7 @@ Effects          :
 Description      : $@spelldesc116
 
 Name             : Ice Lance (id=228598) [Scaling Spell (5), Spell Family (3)] 
-Class            : Mage, Demon Hunter
+Class            : Mage
 School           : Frost
 Spell Level      : 5
 Range            : 100 yards
@@ -5006,7 +5039,7 @@ Effects          :
 Description      : $@spelldesc214634
 
 Name             : Glacial Spike (id=228600) [Spell Family (3)] 
-Class            : Mage, Demon Hunter
+Class            : Mage
 School           : Frost
 Range            : 100 yards
 Duration         : 4 seconds

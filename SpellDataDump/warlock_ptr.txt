@@ -71,6 +71,7 @@ Effects          :
 Description      : Burns the enemy, causing $s1 Fire damage immediately and an additional $157736o1 Fire damage over $157736d.
 
 |cFFFFFFFFPeriodic damage generates 1 Soul Shard Fragment and has a $s2% chance to generate an additional 1 on critical strikes.|r
+Variables        : $mastery=$?s77220[${((100+$77220m3)/100)}][${1.00}]
 
 Name             : Doom (id=603) [Spell Family (5)] 
 Class            : Demonology Warlock
@@ -407,6 +408,8 @@ Description      : Deals $s1 Fire damage to a target.$?a231795[
 Damage increased by $231795s1% if you have Immolated the target.][]
 
 |cFF777777(Right-Click to toggle)|r
+Variables        : $mult=$?s56248[${1.20}][${1.00}]
+$damage=${(($SP*0.50)*0.657)+$M1}
 
 Name             : Consuming Shadows (Basic Attack) (id=3716) [Spell Family (57)] 
 Class            : Warlock
@@ -1706,7 +1709,7 @@ Effects          :
 Description      : Demonic Empowerment also increases the damage of your demons by ${$m1}.1%.
 
 Name             : Mastery: Chaotic Energies (id=77220) [Spell Family (5), Passive] 
-Class            : Destruction Paladin, Warlock
+Class            : Destruction Warlock
 School           : Physical
 Spell Level      : 78
 Attributes       : ......x. x....... ........ ........   ........ ........ ........ ........ 
@@ -2112,7 +2115,7 @@ Immune to interrupt and silence effects.
 Name             : Hand of Gul'dan (id=105174) [Spell Family (5)] 
 Class            : Demonology Shaman, Warlock
 School           : Shadowflame
-Resource         : 1 Soul Shard (7) (id=4987)
+Resource         : 1 - 4 Soul Shard (7) (id=4987)
 Spell Level      : 10
 Range            : 40 yards
 Cast Time        : 1.5 seconds
@@ -2757,8 +2760,7 @@ Effects          :
 #3 (id=283496)   : Energize Power% (137)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : Unleashes a devastating blast of chaos, dealing a critical strike for ${2*$s1} Chaos damage. Damage is further increased by your critical strike chance.
-Variables        : $base=${$m1+$SPFR*0.87}
-$absorb=$?s63095[${$<base>*1.3}][${$<base>}]
+Variables        : $masteryMod=${$cond($gt($pl,79),1,0)}
 
 Name             : Soul Shards (id=117198) [Passive, Hidden] 
 Class            : Warlock
@@ -3241,6 +3243,7 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.72150 | Chain Multiplier: 0 | Chain Targets: 1 | Target: Enemy (6)
 Description      : $@spelldesc348
 Tooltip          : Suffering $w1 Fire damage every $t1 sec.
+Variables        : $mastery=$?s77220[${((100+$77220m3)/100)}][${1.00}]
 
 Name             : Warlock (id=157903) [Passive, Hidden] 
 Class            : Warlock
@@ -4711,6 +4714,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : $@spelldesc213014
 Tooltip          : Deals Shadow damage every $t2 sec.
+Variables        : $masteryMod=${$cond($gt($pl,79),1,0)}
 
 Name             : Chaos Tear (id=215276) [Spell Family (107)] 
 Class            : Warlock

@@ -27,6 +27,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Friend (21)
 Description      : Shields an ally for $d, absorbing $<shield> damage, and preventing damage from delaying spellcasting.
 Tooltip          : Absorbs $w1 damage.
+Variables        : $shield=${(($SP*5.5)+$m1)*(1+$@versadmg)}
 
 Name             : Renew (id=139) [Spell Family (6)] 
 Class            : Holy Priest
@@ -119,8 +120,7 @@ Effects          :
 #1 (id=236)      : School Damage (2): holy
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.60000 | Target: Enemy (6)
 Description      : Smites an enemy for $s1 Holy damage$?s231682[ and absorbs the next $<shield> damage dealt by the enemy]?s231687[ and has a $231687s1% chance to reset the cooldown of Holy Fire][].
-Variables        : $base=${1+0.5*$AP}
-$damage=$?a2457[${1+0.5*$AP*1.1}][${$<base>}]
+Variables        : $shield=${($SPS*$231682s1/100)*(1+$@versadmg)}
 
 Name             : Fade (id=586) [Spell Family (6)] 
 Class            : Priest
@@ -831,6 +831,11 @@ Effects          :
 #1 (id=22870)    : Dummy (3)
                    Base Value: 5 | Scaled Value: 5 | Target: Unknown(57)
 Description      : Places a ward on a party or raid member that heals them for $33110s1 the next time they take damage, and then jumps to another party or raid member within $155793a1 yds. Jumps up to $s1 times and lasts $41635d after each jump.
+Variables        : $mult1=$?s87336[${1.25}][${1.0}]
+$mult2=$?s122098[${1.25*$<mult1>}][${$<mult1>}]
+$mending=${(1+($SP*0.666))*$pctH*$<mult2>}
+
+
 
 Name             : Prayer of Mending (id=33110) [Spell Family (6)] 
 Class            : Priest
@@ -2727,6 +2732,9 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 127 | Target: Friend (21)
 Description      : Shields the target with a protective ward for $d, absorbing ${$SP*9*(1+$@versadmg)} damage.
 Tooltip          : Absorbs $w1 damage.
+Variables        : $masteryMod=${$cond($gt($pl,79),1,0)}
+$mastery=$?s47540[${1.3*((100+$<masteryMod>*$77484m1)/100)}][${1.0}]
+
 
 Name             : Auspicious Spirits (id=155271) [Spell Family (6), Passive] 
 Class            : Priest
@@ -4564,6 +4572,7 @@ Effects          :
 #1 (id=349526)   : Apply Aura (6) | Dummy (4)
                    Base Value: 225 | Scaled Value: 225 | Misc Value: 12 | Target: Self (1)
 Description      : Smite absorbs the next $<shield> damage dealt by the enemy.
+Variables        : $shield=${($SPS*$231682s1/100)*(1+$@versadmg)}
 
 Name             : Holy Fire (Rank 2) (id=231687) [Spell Family (6), Passive] 
 Class            : Holy Priest
