@@ -771,8 +771,8 @@ class LegionWDBParser(DBCParserBase):
                 continue
 
             source = indexdict[source_id]
-            record_info = DBCRecordInfo(target_id, record_id, source.record_offset, source.record_size)
-            idtable.append(source)
+            record_info = DBCRecordInfo(target_id, record_id, source[0], source[1])
+            idtable.append(record_info)
             recordtable[target_id] = record_info
 
             record_id += 1
