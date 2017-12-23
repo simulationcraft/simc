@@ -923,7 +923,7 @@ public:
   int initial_stacks() const
   { return _proc_charges; }
 
-  uint32_t race_mask() const
+  uint64_t race_mask() const
   { return _race_mask; }
 
   uint32_t level() const
@@ -1010,7 +1010,7 @@ public:
 
   bool is_race( race_e r ) const
   {
-    unsigned mask = util::race_mask( r );
+    uint64_t mask = util::race_mask( r );
     return ( _race_mask & mask ) == mask;
   }
 

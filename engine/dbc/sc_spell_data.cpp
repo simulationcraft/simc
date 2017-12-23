@@ -145,7 +145,12 @@ const std::string _race_strings[] =
   "worgen",
   "",
   "",
-  "pandaren"
+  "pandaren",
+  "",
+  "nightborne",
+  "highmountain_tauren",
+  "void_elf",
+  "lightforged_tauren"
 };
 
 const std::string _pet_class_strings[] =
