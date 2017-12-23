@@ -217,7 +217,6 @@ class WDC1StringSegmentParser(WDC1SegmentParser):
 class WDC1ExtendedColumnValue:
     def __init__(self, column):
         self.column = column
-        self.unpacker = Struct('<' + column.struct_type())
 
     def __call__(self, id, data, bytes_):
         raise NotImplementedError
@@ -247,6 +246,8 @@ class WDC1ColumnDataValue(WDC1ExtendedColumnValue):
     def __init__(self, column):
         super().__init__(column)
 
+        self.unpacker = Struct('<' + column.struct_type())
+
         # We need to compute the column data offset for this column
         column_data_offset = 0
         for column_idx in range(0, self.column.parser().n_fields()):
@@ -271,6 +272,11 @@ class WDC1ColumnDataValue(WDC1ExtendedColumnValue):
         return self.unpacker.unpack_from(data, value_offset)
 
 class WDC1SparseDataValue(WDC1ExtendedColumnValue):
+    def __init__(self, column):
+        super().__init__(column)
+
+        self.unpacker = Struct('<' + column.struct_type())
+
     # Bytes are not needed for sparse data, sparse blocks are directly indexed
     # with the id column of the record
     def __call__(self, id_, data, bytes_):
@@ -285,6 +291,8 @@ class WDC1SparseDataValue(WDC1ExtendedColumnValue):
 class WDC1ArrayDataValue(WDC1ColumnDataValue):
     def __init__(self, column):
         super().__init__(column)
+
+        self.unpacker = Struct('<' + column.struct_type())
 
         self.__array_size = 4 * self.column.ext_data().elements()
 
@@ -480,6 +488,8 @@ class WDC1Column:
     def bit_size(self):
         if self.__size_type in [0, 8, 16, 24, -32]:
             return (32 - self.__size_type)
+        elif self.__ext.block_type() in [COLUMN_TYPE_SPARSE, COLUMN_TYPE_INDEXED, COLUMN_TYPE_ARRAY]:
+            return 32
         else:
             return self.__ext.bit_size()
 
@@ -636,6 +646,9 @@ class WDC1Parser(LegionWDBParser):
     # TODO: Some validation can, and should be done
     def validate_format(self):
         return True
+
+    def create_raw_parser(self):
+        return WDC1RecordParser(self)
 
     def create_formatted_parser(self, use_inline_strings):
         formats = self.fmt.objs(self.class_name(), True)
@@ -801,6 +814,9 @@ class WDC1Parser(LegionWDBParser):
 
         logging.debug('%s parsed %u keys', self.full_name(), self.records)
 
+        return True
+
+    def raw_outputtable(self):
         return True
 
     def has_key_block(self):

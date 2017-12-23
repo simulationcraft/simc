@@ -642,7 +642,7 @@ class DBCParserBase:
 
             return DBCRecordData(id_, key_id, self.record_parser(id_, self.data, record_offset, record_size))
         else:
-            return DBCRecordData(id_, key_id, tuple())
+            return DBCRecordData(id_, 0, tuple())
 
 # Proxy string unpacker for inlined strings. The size of the most recent parse
 # operation is stored in the size variable
