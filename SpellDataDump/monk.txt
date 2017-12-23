@@ -652,6 +652,32 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 2 | Target: Self (1)
 Description      : Reduces all damage taken from players or their pets by ${$m1/-100}%.
 
+Name             : Flying Serpent Kick (id=115057) [Spell Family (53)] 
+Class            : Monk
+School           : Physical
+Spell Level      : 1
+Duration         : 0.2 seconds
+Attributes       : ........ x....... x....... ........   ...x...x ........ ........ ....x... 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : x....... ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=128686)   : Apply Aura (6) | Periodic Trigger Spell (23)
+                   Base Value: 1 | Scaled Value: 1 | Target: Self (1)
+Description      : Land yourself, dealing $123586m1 damage to all enemies within $123586A1 yards, and slowing them by $123586s2% for $123586d.
+Variables        : $stnc=$?a103985[${1.05*(1+$@versadmg)}][${1.0*(1+$@versadmg)}]
+$dwm=$?a108561|a115697[${1}][${0.857143}]
+$offm=$?a108561|a115697[${0}][${1}]
+
+$offlow=$?s121278[${$mwb/2/$mws}][${$owb/2/$ows}]
+$offhigh=$?s121278[${$MWB/2/$mws}][${$OWB/2/$ows}]
+
+$low=${$<stnc>*($<dwm>*(($mwb)/($MWS)+$<offm>*$<offlow>)+$AP/3.5-1)}
+$high=${$<stnc>*($<dwm>*(($MWB)/($MWS)+$<offm>*$<offhigh>)+$AP/3.5+1)}
+
+
 Name             : Stagger (id=115069) [Spell Family (53), Passive] 
 Class            : Brewmaster Monk
 School           : Physical
