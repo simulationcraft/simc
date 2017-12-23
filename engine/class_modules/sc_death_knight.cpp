@@ -4705,8 +4705,8 @@ struct coils_of_devastation_t
 
 // Unholy T21 4P
 // Procs some mechanics of Death Coil but not all of them
-// Replicates unholy vigor, scourge of the worlds, shadow infusion, T21 2P and Death March and now (2017-12-23) T21 4P (can proc off itself)
-// Doesn't replicate DA Empowerment or Runic Corruption
+// Replicates unholy vigor, scourge of the worlds, shadow infusion, T21 2P, Death March and now (2017-12-23) T21 4P (can proc off itself) and Runic Corruption
+// Doesn't replicate DA Empowerment
 struct t21_death_coil_t : public death_knight_spell_t
 {
   const spell_data_t* unholy_vigor;
@@ -4739,6 +4739,9 @@ struct t21_death_coil_t : public death_knight_spell_t
     if ( result_is_hit( execute_state -> result ) )
     {
       td( execute_state -> target ) -> debuff.scourge_of_worlds -> trigger();
+
+      // 2017-12-23 : looks like the bonus coil can also proc runic corruption
+      p() -> trigger_runic_corruption( base_costs[ RESOURCE_RUNIC_POWER ] );
     }
 
     if ( p() -> talent.shadow_infusion -> ok() && ! p() -> buffs.dark_transformation -> up() )
