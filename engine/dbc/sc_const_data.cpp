@@ -1418,7 +1418,11 @@ unsigned dbc_t::race_ability_size() const
 
 unsigned dbc_t::race_ability_tree_size() const
 {
+#if SC_USE_PTR
+  return ptr ? ptr_MAX_RACE : MAX_RACE;
+#else
   return MAX_RACE;
+#endif
 }
 
 unsigned dbc_t::specialization_ability_size() const

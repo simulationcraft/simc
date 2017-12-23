@@ -2517,10 +2517,10 @@ static unsigned __ptr_class_mastery_ability_data[MAX_CLASS][MAX_SPECS_PER_CLASS]
     },
   },
 };
-#define PTR_RACE_ABILITY_SIZE (4)
+#define PTR_RACE_ABILITY_SIZE (5)
 
 #ifndef ptr_MAX_RACE
-#define ptr_MAX_RACE (28)
+#define ptr_MAX_RACE (31)
 #endif
 
 // Racial abilities, wow build 25692
@@ -2645,6 +2645,7 @@ static unsigned __ptr_race_ability_data[ptr_MAX_RACE][ptr_MAX_CLASS][PTR_RACE_AB
       20596, // Frost Resistance
       59224, // Might of the Mountain
       20594, // Stoneform
+          0,
     },
     {     0, },
     {     0, },
@@ -2667,6 +2668,7 @@ static unsigned __ptr_race_ability_data[ptr_MAX_RACE][ptr_MAX_CLASS][PTR_RACE_AB
       20582, // Quickness
       58984, // Shadowmeld
       154748, // Touch of Elune
+          0,
     },
     {     0, },
     {     0, },
@@ -2697,6 +2699,7 @@ static unsigned __ptr_race_ability_data[ptr_MAX_RACE][ptr_MAX_CLASS][PTR_RACE_AB
       20579, // Shadow Resistance
        5227, // Touch of the Grave
        7744, // Will of the Forsaken
+          0,
     },
     {     0, },
     {     0, },
@@ -2719,6 +2722,7 @@ static unsigned __ptr_race_ability_data[ptr_MAX_RACE][ptr_MAX_CLASS][PTR_RACE_AB
       20550, // Endurance
       20551, // Nature Resistance
       20549, // War Stomp
+          0,
     },
     {     0, },
     {     0, },
@@ -2804,6 +2808,7 @@ static unsigned __ptr_race_ability_data[ptr_MAX_RACE][ptr_MAX_CLASS][PTR_RACE_AB
       26297, // Berserking
       58943, // Da Voodoo Shuffle
       20555, // Regeneration
+          0,
     },
     {     0, },
     {     0, },
@@ -3113,6 +3118,7 @@ static unsigned __ptr_race_ability_data[ptr_MAX_RACE][ptr_MAX_CLASS][PTR_RACE_AB
       94293, // Altered Form
       68992, // Darkflight
       68975, // Viciousness
+          0,
     },
     // Racial abilities for Paladin class
     {
@@ -3120,6 +3126,7 @@ static unsigned __ptr_race_ability_data[ptr_MAX_RACE][ptr_MAX_CLASS][PTR_RACE_AB
       94293, // Altered Form
       68992, // Darkflight
       68975, // Viciousness
+          0,
     },
     // Racial abilities for Hunter class
     {
@@ -3127,6 +3134,7 @@ static unsigned __ptr_race_ability_data[ptr_MAX_RACE][ptr_MAX_CLASS][PTR_RACE_AB
       94293, // Altered Form
       68992, // Darkflight
       68975, // Viciousness
+          0,
     },
     // Racial abilities for Rogue class
     {
@@ -3134,6 +3142,7 @@ static unsigned __ptr_race_ability_data[ptr_MAX_RACE][ptr_MAX_CLASS][PTR_RACE_AB
       94293, // Altered Form
       68992, // Darkflight
       68975, // Viciousness
+          0,
     },
     // Racial abilities for Priest class
     {
@@ -3141,6 +3150,7 @@ static unsigned __ptr_race_ability_data[ptr_MAX_RACE][ptr_MAX_CLASS][PTR_RACE_AB
       94293, // Altered Form
       68992, // Darkflight
       68975, // Viciousness
+          0,
     },
     // Racial abilities for Death Knight class
     {
@@ -3148,6 +3158,7 @@ static unsigned __ptr_race_ability_data[ptr_MAX_RACE][ptr_MAX_CLASS][PTR_RACE_AB
       94293, // Altered Form
       68992, // Darkflight
       68975, // Viciousness
+          0,
     },
     // Racial abilities for Shaman class
     {
@@ -3155,6 +3166,7 @@ static unsigned __ptr_race_ability_data[ptr_MAX_RACE][ptr_MAX_CLASS][PTR_RACE_AB
       94293, // Altered Form
       68992, // Darkflight
       68975, // Viciousness
+          0,
     },
     // Racial abilities for Mage class
     {
@@ -3162,6 +3174,7 @@ static unsigned __ptr_race_ability_data[ptr_MAX_RACE][ptr_MAX_CLASS][PTR_RACE_AB
       94293, // Altered Form
       68992, // Darkflight
       68975, // Viciousness
+          0,
     },
     // Racial abilities for Warlock class
     {
@@ -3169,6 +3182,7 @@ static unsigned __ptr_race_ability_data[ptr_MAX_RACE][ptr_MAX_CLASS][PTR_RACE_AB
       94293, // Altered Form
       68992, // Darkflight
       68975, // Viciousness
+          0,
     },
     {     0, },
     // Racial abilities for Druid class
@@ -3177,6 +3191,7 @@ static unsigned __ptr_race_ability_data[ptr_MAX_RACE][ptr_MAX_CLASS][PTR_RACE_AB
       94293, // Altered Form
       68992, // Darkflight
       68975, // Viciousness
+          0,
     },
     {     0, },
   },
@@ -3195,7 +3210,6 @@ static unsigned __ptr_race_ability_data[ptr_MAX_RACE][ptr_MAX_CLASS][PTR_RACE_AB
     {     0, },
     {     0, },
   },
-  // Racial abilities for Pandaren
   {
     {     0, },
     {     0, },
@@ -3213,23 +3227,14 @@ static unsigned __ptr_race_ability_data[ptr_MAX_RACE][ptr_MAX_CLASS][PTR_RACE_AB
   },
   // Racial abilities for Pandaren
   {
-    {     0, },
-    {     0, },
-    {     0, },
-    {     0, },
-    {     0, },
-    {     0, },
-    {     0, },
-    {     0, },
-    {     0, },
-    {     0, },
-    {     0, },
-    {     0, },
-    {     0, },
-  },
-  // Racial abilities for Pandaren
-  {
-    {     0, },
+    // Generic racial abilities
+    {
+      107076, // Bouncy
+      107072, // Epicurean
+      107074, // Inner Peace
+      107079, // Quaking Palm
+          0,
+    },
     {     0, },
     {     0, },
     {     0, },
@@ -3257,6 +3262,175 @@ static unsigned __ptr_race_ability_data[ptr_MAX_RACE][ptr_MAX_CLASS][PTR_RACE_AB
     {     0, },
     {     0, },
     {     0, },
+  },
+  // Racial abilities for Nightborne
+  {
+    // Generic racial abilities
+    {
+      255665, // Arcane Affinity
+      255661, // Cantrips
+      260364, // Force Shield
+      255664, // Magical Resistance
+          0,
+    },
+    {     0, },
+    {     0, },
+    {     0, },
+    {     0, },
+    {     0, },
+    {     0, },
+    {     0, },
+    {     0, },
+    {     0, },
+    {     0, },
+    {     0, },
+    {     0, },
+  },
+  // Racial abilities for Highmountain Tauren
+  {
+    // Generic racial abilities
+    {
+      255654, // Bull Rush
+      255658, // Mountaineer
+      255655, // Pride of Ironhorn
+      255659, // Rugged Tenacity
+      255656, // Waste Not, Want Not
+    },
+    {     0, },
+    {     0, },
+    {     0, },
+    {     0, },
+    {     0, },
+    {     0, },
+    {     0, },
+    {     0, },
+    {     0, },
+    {     0, },
+    {     0, },
+    {     0, },
+  },
+  // Racial abilities for Void Elf
+  {
+    // Generic racial abilities
+    {
+      255668, // Chill of Night
+      255669, // Entropic Embrace
+      255667, // Ethereal Connection
+      255670, // Preternatural Calm
+      256948, // Spatial Rift
+    },
+    {     0, },
+    {     0, },
+    {     0, },
+    {     0, },
+    {     0, },
+    {     0, },
+    {     0, },
+    {     0, },
+    {     0, },
+    {     0, },
+    {     0, },
+    {     0, },
+  },
+  // Racial abilities for Lightforged Draenei
+  {
+    {     0, },
+    // Racial abilities for Warrior class
+    {
+      255653, // Demonbane
+      259930, // Forge of Light
+      255651, // Holy Resistance
+      255647, // Light's Judgment
+      255652, // Light's Reckoning
+    },
+    // Racial abilities for Paladin class
+    {
+      255653, // Demonbane
+      259930, // Forge of Light
+      255651, // Holy Resistance
+      255647, // Light's Judgment
+      255652, // Light's Reckoning
+    },
+    // Racial abilities for Hunter class
+    {
+      255653, // Demonbane
+      259930, // Forge of Light
+      255651, // Holy Resistance
+      255647, // Light's Judgment
+      255652, // Light's Reckoning
+    },
+    // Racial abilities for Rogue class
+    {
+      255653, // Demonbane
+      259930, // Forge of Light
+      255651, // Holy Resistance
+      255647, // Light's Judgment
+      255652, // Light's Reckoning
+    },
+    // Racial abilities for Priest class
+    {
+      255653, // Demonbane
+      259930, // Forge of Light
+      255651, // Holy Resistance
+      255647, // Light's Judgment
+      255652, // Light's Reckoning
+    },
+    // Racial abilities for Death Knight class
+    {
+      255653, // Demonbane
+      259930, // Forge of Light
+      255651, // Holy Resistance
+      255647, // Light's Judgment
+      255652, // Light's Reckoning
+    },
+    // Racial abilities for Shaman class
+    {
+      255653, // Demonbane
+      259930, // Forge of Light
+      255651, // Holy Resistance
+      255647, // Light's Judgment
+      255652, // Light's Reckoning
+    },
+    // Racial abilities for Mage class
+    {
+      255653, // Demonbane
+      259930, // Forge of Light
+      255651, // Holy Resistance
+      255647, // Light's Judgment
+      255652, // Light's Reckoning
+    },
+    // Racial abilities for Warlock class
+    {
+      255653, // Demonbane
+      259930, // Forge of Light
+      255651, // Holy Resistance
+      255647, // Light's Judgment
+      255652, // Light's Reckoning
+    },
+    // Racial abilities for Monk class
+    {
+      255653, // Demonbane
+      259930, // Forge of Light
+      255651, // Holy Resistance
+      255647, // Light's Judgment
+      255652, // Light's Reckoning
+    },
+    // Racial abilities for Druid class
+    {
+      255653, // Demonbane
+      259930, // Forge of Light
+      255651, // Holy Resistance
+      255647, // Light's Judgment
+      255652, // Light's Reckoning
+    },
+    // Racial abilities for Demon Hunter class
+    {
+      255653, // Demonbane
+      259930, // Forge of Light
+      255651, // Holy Resistance
+      255647, // Light's Judgment
+      255652, // Light's Reckoning
+    },
   },
 };
 #define PTR_SET_BONUS_DATA_SIZE (688)

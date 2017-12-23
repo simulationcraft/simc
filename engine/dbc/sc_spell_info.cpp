@@ -322,25 +322,24 @@ const struct { const char* name; player_e pt; } _class_map[] =
   { nullptr, PLAYER_NONE },
 };
 
-const char * _race_strings[] =
-{
-  "Human",
-  "Orc",
-  "Dwarf",
-  "Night Elf",
-  "Undead",
-  "Tauren",
-  "Gnome",
-  "Troll",
-  "Goblin",
-  "Blood Elf",
-  "Draenei",
-  nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr,
-  "Worgen",
-  "Pandaren",
-  "Pandaren (Alliance)",
-  "Pandaren (Horde)",
-  nullptr
+const std::unordered_map<unsigned, std::string> _race_map {
+  {  0, "Human"     },
+  {  1, "Orc"       },
+  {  2, "Dwarf"     },
+  {  3, "Night Elf" },
+  {  4, "Undead"    },
+  {  5, "Tauren"    },
+  {  6, "Gnome"     },
+  {  7, "Troll"     },
+  {  8, "Goblin"    },
+  {  9, "Blood Elf" },
+  { 10, "Draenei"   },
+  { 21, "Worgen"    },
+  { 24, "Pandaren"  },
+  { 26, "Nightborne" },
+  { 27, "Highmountain Tauren" },
+  { 28, "Void Elf"            },
+  { 29, "Lightforged Draenei" },
 };
 
 static const std::unordered_map<unsigned, const std::string> _targeting_strings = {
@@ -1082,13 +1081,22 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
   if ( spell -> race_mask() )
   {
     s << "Race             : ";
-    for ( unsigned int i = 0; i < 24; i++ )
+
+    for ( unsigned int i = 0; i < sizeof( spell -> race_mask() ) * 8; i++ )
     {
-      if ( ( spell -> race_mask() & ( 1 << i ) ) && _race_strings[ i ] )
-        s << _race_strings[ i ] << ", ";
+      uint64_t mask = ( 1 << i );
+      if ( ( spell -> race_mask() & mask ) && _race_map.find( i ) != _race_map.end() )
+      {
+        auto it = _race_map.find( i );
+        if ( it != _race_map.end() )
+        {
+          s << it -> second << ", ";
+        }
+      }
     }
 
     s.seekp( -2, std::ios_base::cur );
+    s << " (0x" << std::hex << spell -> race_mask() << std::dec << ")";
     s << std::endl;
   }
 
@@ -1882,14 +1890,18 @@ void spell_info::to_xml( const dbc_t& dbc, const spell_data_t* spell, xml_node_t
 
   if ( spell -> race_mask() )
   {
-    for ( unsigned int i = 0; i < 24; i++ )
+    for ( unsigned int i = 0; i < sizeof( spell -> race_mask() ) * 8; i++ )
     {
-      if ( ( spell -> race_mask() & ( 1 << i ) ) && _race_strings[ i ] )
+      uint64_t mask = ( 1 << i );
+      if ( ( spell -> race_mask() & mask ) )
       {
-        assert( i < sizeof_array(_race_strings) );
-        xml_node_t* race_node = node -> add_child( "race" );
-        race_node -> add_parm( "id", i );
-        race_node -> add_parm( "name", _race_strings[ i ] );
+        auto it = _race_map.find( i );
+        if ( it != _race_map.end() )
+        {
+          xml_node_t* race_node = node -> add_child( "race" );
+          race_node -> add_parm( "id", i );
+          race_node -> add_parm( "name", it -> second );
+        }
       }
     }
   }
