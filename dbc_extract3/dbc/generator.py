@@ -1866,7 +1866,6 @@ class SpellDataGenerator(DataGenerator):
             if self._options.build >= 25600:
                 link(self._spellmisc_db, 'id_parent', self._spell_db, 'misc')
                 link(self._spellxdescriptionvariables_db, 'id_spell', self._spell_db, 'desc_var_link')
-                link(self._spelldescriptionvariables_db, 'id', self._spellxdescriptionvariables_db, 'desc')
 
             # Effect data model linkage
             if self._options.build < 25600:
@@ -2018,7 +2017,8 @@ class SpellDataGenerator(DataGenerator):
                 if data.id > 0:
                     spell_refs += re.findall(SpellDataGenerator._spell_ref_rx, data.desc)
         else:
-            data= spell.get_link('desc_var_link').get_link('desc')
+            link = spell.get_link('desc_var_link')
+            data = self._spelldescriptionvariables_db[link.id_desc_var]
             if data.id > 0:
                 spell_refs += re.findall(SpellDataGenerator._spell_ref_rx, data.desc)
         spell_refs = list(set(spell_refs))
@@ -2606,7 +2606,8 @@ class SpellDataGenerator(DataGenerator):
             if self._options.build < 25600:
                 desc_var = self._spelldescriptionvariables_db[spell.id_desc_var]
             else:
-                desc_var = spell.get_link('desc_var_link').get_link('desc')
+                link = spell.get_link('desc_var_link')
+                desc_var = self._spelldescriptionvariables_db[link.id_desc_var]
 
             if desc_var.id:
                 fields += desc_var.field('desc')

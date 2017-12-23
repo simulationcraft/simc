@@ -466,6 +466,3 @@ def initialize_data_model(options, obj):
         elif 'ItemSparse' in dir(obj):
             dbc.data.GemProperties.link('item', dbc.data.ItemSparse)
 
-    if 'SpellXDescriptionVariables' in dir(obj):
-        dbc.data.SpellXDescriptionVariables.link('desc', dbc.data.SpellDescriptionVariables)
-
