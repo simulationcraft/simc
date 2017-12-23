@@ -1,4 +1,4 @@
-SimulationCraft 730-03 for World of Warcraft 7.3.2 PTR (wow build 25163)
+SimulationCraft 730-03 for World of Warcraft 7.3.5 PTR (wow build 25692)
 
 Name             : Mend Pet (id=136) [Scaling Spell (4), Spell Family (9)] 
 Class            : Hunter
@@ -20,7 +20,6 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5 | Target: Active Pet (5)
 Description      : Heals your pet for $?s56833[${$<total>+$56833m4}][$<total>]% of its total health over $d.$?s19573[  Each time Mend Pet heals your pet, it has a $19573s1% chance to cleanse $24406s1 Curse, Disease, Magic, or Poison effect.][]
 Tooltip          : Heals $w1% of the pets health every $t1 sec.
-Variables        : $total=${$m1*5}
 
 Name             : Dual Wield (Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
@@ -36,6 +35,34 @@ Effects          :
 #1 (id=263)      : Dual Wield (40)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : Allows one-hand and off-hand weapons to be equipped in the off-hand.
+
+Name             : Cat Form (Shapeshift) (id=768) [Spell Family (7)] 
+Class            : Hunter, Druid
+School           : Physical
+Spell Level      : 8
+GCD              : 1.5 seconds
+Duration         : Aura (infinite)
+Proc Chance      : 101%
+Affecting spells : Metamorphosis Rune (23724 effect#1), Cheaper Druid Shapeshifting (38314 effect#1), Druid (137009 effect#4), Lucidity (137247 effect#1)
+Attributes       : ....x... ........ ..x..... ........   ........ ..x..... x....... ........ 
+                 : ........ x....... ........ ........   ........ .x...... ........ ........ 
+                 : ........ ........ .....x.. ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Not a proc (105)
+Effects          :
+#1 (id=306)      : Apply Aura (6) | Shapeshift (36)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 1 | Misc Value 2: 0x7 | Target: Self (1)
+#2 (id=307)      : Apply Aura (6) | Mechanic Immunity (77)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 17 | Target: Self (1)
+#3 (id=308)      : Apply Aura (6) | Unknown(344)
+                   Base Value: 100 | Scaled Value: 100 | SP Coefficient: 1.00000 | Target: Self (1)
+Description      : Shapeshift into Cat Form, increasing movement speed by $113636s1%, granting protection from Polymorph effects, and reducing falling damage.
+
+The act of shapeshifting frees you from movement impairing effects.
+Tooltip          : Immune to Polymorph effects.
+Movement speed increased by $113636s1% and falling damage reduced.
 
 Name             : Disengage (id=781) [Spell Family (9)] 
 Class            : Beast Mastery Marksmanship Hunter
@@ -474,10 +501,6 @@ Effects          :
 #1 (id=8519)     : School Damage (2): physical
                    Base Value: 1 | Scaled Value: 0 (avg=0.114, dl=0.35) | Target: Enemy (6)
 Description      : Claw the enemy, causing ${$<damage>} damage.  Deals $62762s2% more damage and costs $62762s1% more Focus when your pet has 50 or more Focus.
-Variables        : $ce=$?s152244[${1.7}][${1.5}]
-$spiked=$?s53184[${1.1}][${1.0}]
-$blink=$?s130392[${1.5}][${1.0}]
-$damage=${$<ce>*$<spiked>*$<blink>*($RAP*0.333)*(1+$@versadmg)}
 
 Name             : Bite (Basic Attack) (id=17253) [Scaling Spell (4), Spell Family (9)] 
 Class            : Hunter, Death Knight
@@ -499,10 +522,8 @@ Effects          :
 #1 (id=8994)     : School Damage (2): physical
                    Base Value: 1 | Scaled Value: 0 (avg=0.114, dl=0.35) | Target: Enemy (6)
 Description      : Bite the enemy, causing ${$<damage>} damage.  Deals $62762s2% more damage and costs $62762s1% more Focus when your pet has 50 or more Focus.
-Variables        : $ce=$?s152244[${1.7}][${1.5}]
-$spiked=$?s53184[${1.1}][${1.0}]
-$blink=$?s130392[${1.5}][${1.0}]
-$damage=${$<ce>*$<spiked>*$<blink>*($RAP*0.333)*(1+$@versadmg)}
+Variables        : $impurity=$?s49638[${1.20}][${1}]
+$glyph=$?s58629[${1.2}][${1}]
 
 Name             : Wyvern Sting (id=19386) [Spell Family (9)] 
 Class            : Hunter
@@ -564,7 +585,6 @@ Effects          :
 Description      : A powerful aimed shot that deals ${$sw1*$<mult>} Physical damage.  Damage increased by $s3% against a target you have not yet damaged.  $?!s19434&c1[
 
 Replaces Cobra Shot.][]
-Variables        : $mult=${($max(0,$min($pl-10,10))*8+130)/210}
 
 Name             : Bestial Wrath (id=19574) [Spell Family (9)] 
 Class            : Beast Mastery Hunter
@@ -769,7 +789,7 @@ Effects          :
                    Base Value: 3 | Scaled Value: 2242.68 (avg=1.32) | Points Per Level: 4 | Target: Self (1)
 #2 (id=11565)    : Apply Aura (6) | Modify Ranged Attack Power (124)
                    Base Value: 3 | Scaled Value: 2242.68 (avg=1.32) | Points Per Level: 4 | Target: Self (1)
-Description      : Increases attack power by $s1. Lasts $d.
+Description      : Increases attack power by $s1 for $d.
 Tooltip          : Attack power increased by $s1.
 
 Name             : Combat Experience (id=20782) [Spell Family (9), Passive] 
@@ -925,7 +945,7 @@ Description      : Interrupts casting for $d.
 Tooltip          : Interrupted.
 
 Name             : Kill Command (id=34026) [Scaling Spell (4), Spell Family (9)] 
-Class            : Beast Mastery Hunter
+Class            : Beast Mastery Hunter, Monk
 School           : Physical
 Resource         : 30 Focus (2) (id=1470)
 Spell Level      : 10
@@ -948,10 +968,6 @@ Effects          :
 #3 (id=374658)   : Dummy (3)
                    Base Value: 40 | Scaled Value: 40 | Target: Self (1)
 Description      : Give the command to kill, causing your pet to savagely deal $<damage> Physical damage to its target. $s3 yd range.
-Variables        : $bmMastery=$?s76657[${1+0.01*$76657m1}][${1}]
-$lowNerf=${0.5+$min($pl,20)*0.025}
-$damage=${1.5*($83381m1+($RAP*3.6))*$<bmMastery>*$<lowNerf>*(1+$@versadmg)}
-
 
 Name             : Misdirection (id=34477) [Spell Family (9)] 
 Class            : Beast Mastery Marksmanship Hunter
@@ -1032,10 +1048,8 @@ Effects          :
 #1 (id=42080)    : School Damage (2): physical
                    Base Value: 1 | Scaled Value: 0 (avg=0.114, dl=0.35) | Target: Enemy (6)
 Description      : Smack the enemy, causing ${$<damage>} damage.  Deals $62762s2% more damage and costs $62762s1% more Focus when your pet has 50 or more Focus.
-Variables        : $ce=$?s152244[${1.7}][${1.5}]
-$spiked=$?s53184[${1.1}][${1.0}]
-$blink=$?s130392[${1.5}][${1.0}]
-$damage=${$<ce>*$<spiked>*$<blink>*($RAP*0.333)*(1+$@versadmg)}
+Variables        : $mult2=$?s84601[${1.17*(1+$@versadmg)}][${1.00*(1+$@versadmg)}]
+$mult=?s76803[${($76803m1/100+1)*$<mult2>}][${$<mult2>}]
 
 Name             : Ankle Crack (Special Ability) (id=50433) [Scaling Spell (4), Spell Family (9)] 
 Class            : Hunter
@@ -1097,7 +1111,7 @@ Description      : Your pet charges an enemy, immobilizing the target and adds m
 Tooltip          : Immobilized.
 
 Name             : Spiked Collar (id=53184) [Spell Family (9), Passive] 
-Class            : Ferocity Tenacity Cunning Hunter, Death Knight Pet
+Class            : Ferocity Tenacity Cunning Paladin, Hunter Pet
 School           : Physical
 Range            : 5 yards
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
@@ -1620,8 +1634,7 @@ Effects          :
 #1 (id=58103)    : School Damage (2): nature
                    Base Value: 1 | Scaled Value: 1 | Radius: 0 - 8 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
 Description      : Shakes the ground with thundering force, doing ${$<damage>} Nature damage to all enemies within $A1 yards. This ability causes a moderate amount of additional threat.
-Variables        : $ce=$?s152244[${1.85}][${1.5}]
-$damage=${$<ce>*($RAP*0.250)}
+Variables        : $innerfire=$?s55686[${90}][${60}]
 
 Name             : Viciousness (Racial Passive) (id=68975) [Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Druid
@@ -1680,7 +1693,7 @@ Description      : Activates your true form, increasing current movement speed b
 Tooltip          : True form activated, movement speed increased by an additional $s1%.
 
 Name             : Mastery: Master of Beasts (id=76657) [Spell Family (9), Passive] 
-Class            : Beast Mastery Hunter
+Class            : Beast Mastery Hunter, Monk
 School           : Physical
 Spell Level      : 78
 Attributes       : ......x. x....... ........ ........   ........ ........ ........ ........ 
@@ -1699,6 +1712,51 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.25000 | Target: Self (1)
                    Affected Spells: A Murder of Crows (131894), A Murder of Crows (131900), Stampede (201594), A Murder of Crows (206505)
 Description      : Increases the damage done by your pets by $s1%.
+
+Name             : Mastery: Potent Poisons (id=76803) [Spell Family (8), Passive] 
+Class            : Assassination Hunter, Rogue
+School           : Physical
+Spell Level      : 78
+Attributes       : ......x. x....... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ .....x..   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6)
+Effects          :
+#1 (id=68022)    : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 4.00000 | Target: Self (1)
+                   Affected Spells: Deadly Poison (2818), Deadly Poison (2823), Crippling Poison (3408), Crippling Poison (3409), Wound Poison (8679), Wound Poison (8680), Venomhide Poison (14795), Spore Cloud (32643), Envenom (32645), Deadly Poison (113780), Poison Bomb (192660), Kingsbane (192759), Kingsbane (192760), Agonizing Poison (200803), Curse of the Dreadblades (202665), Kingsbane (222062), Toxic Blade (245388)
+#2 (id=68023)    : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Damage (22)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 4.00000 | Misc Value: 22 | Target: Self (1)
+                   Affected Spells: Deadly Poison (2818), Deadly Poison (2823), Crippling Poison (3408), Crippling Poison (3409), Wound Poison (8679), Wound Poison (8680), Venomhide Poison (14795), Spore Cloud (32643), Deadly Poison (113780), Kingsbane (192759), Kingsbane (192760), Agonizing Poison (200803), Curse of the Dreadblades (202665), Kingsbane (222062), Toxic Blade (245388)
+#3 (id=92122)    : Apply Aura (6) | Dummy (4)
+                   Base Value: 350 | Scaled Value: 350 | Target: Self (1)
+#4 (id=322527)   : Apply Aura (6) | Add Percent Modifier (108): Spell Effect 1 (3)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.00000 | Misc Value: 3 | Target: Self (1)
+                   Affected Spells: Agonizing Poison (200803)
+Description      : Increases the damage done by your poisons by $s1%$?s200802[ and the effect of Agonizing Poison by $s4%][].
+
+Name             : Mastery: Executioner (id=76808) [Spell Family (8), Passive] 
+Class            : Subtlety Hunter, Rogue
+School           : Physical
+Spell Level      : 78
+Attributes       : ......x. x....... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ .....x..   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6)
+Effects          :
+#1 (id=68029)    : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.76000 | Target: Self (1)
+                   Affected Spells: Rupture (1943), Envenom (32645), Death from Above (152150), Weaponmaster (193536), Nightblade (195452), Eviscerate (196819), Finality: Eviscerate (197393), Finality: Nightblade (197395)
+#2 (id=87762)    : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Damage (22)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.76000 | Misc Value: 22 | Target: Self (1)
+                   Affected Spells: Rupture (1943), Envenom (32645), Weaponmaster (193536), Nightblade (195452), Eviscerate (196819), Finality: Eviscerate (197393), Finality: Nightblade (197395)
+Description      : Increases the damage done by your finishing moves by ${$76808m1}.1%.
 
 Name             : Arcane Torrent (Racial) (id=80483) 
 Class            : Hunter
@@ -1818,22 +1876,24 @@ Effects          :
                    Base Value: 4 | Scaled Value: 4 | Target: Unknown(32)
 Description      : Summons your fifth pet to you.
 
-Name             : Kill Command (id=83381) [Scaling Spell (4), Spell Family (9)] 
-Class            : Hunter
+Name             : Assassin's Resolve (id=84601) [Spell Family (8), Passive] 
+Class            : Assassination Hunter, Rogue
 School           : Physical
-Spell Level      : 1
-Range            : 100 yards
-Affecting spells : Hunter (137014 effect#2), Aspect of the Wild (193530 effect#3), Pack Leader (197080 effect#1), Roar of the Seven Lions (207318 effect#1), Bestial Rage (246116 effect#1), Item - Hunter T21 Beast Mastery 2P Bonus (251755 effect#1)
-Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ......x. 
+Spell Level      : 10
+Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ .......x ........ ........   ........ ........ x....... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6)
 Effects          :
-#1 (id=83776)    : School Damage (2): physical
-                   Base Value: 1 | Scaled Value: 0 (avg=0.9) | Target: Enemy (6)
-Description      : $@spelldesc34026
+#1 (id=85447)    : Apply Aura (6) | Increase Energy (35)
+                   Base Value: 20 | Scaled Value: 20 | SP Coefficient: 1.00000 | Misc Value: 3 | Target: Self (1)
+#2 (id=85448)    : Apply Aura (6) | Modify Damage Done% (79)
+                   Base Value: 17 | Scaled Value: 17 | Misc Value: 0x7f | Target: Self (1)
+                   Affected School(s): All
+Description      : Your maximum Energy is increased by $s1 and your damage is increased by $s2%.
 
 Name             : Mail Specialization (Passive) (id=86538) [Passive, Hidden] 
 Class            : Hunter
@@ -1964,7 +2024,7 @@ Tooltip          : Heals $w2 every $t2 sec for $d.
 Name             : Froststorm Breath (Exotic Ability) (id=92380) [Scaling Spell (4), Spell Family (9)] 
 Class            : Hunter
 School           : Froststorm
-Resource         : 10 Focus (2) and 5 Focus (2) per tick (id=4257)
+Resource         : 10 Focus (2) (id=4257)
 Spell Level      : 20
 Duration         : 8 seconds
 Attributes       : ........ ........ x....... ........   ..x...xx ..x..... .x...... ........ 
@@ -1979,8 +2039,6 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | Trigger Spell: 95725 | Target: Self (1)
 Description      : The Chimera channels a frozen breath attack, causing $<damage> Froststorm damage every $92380T1 sec for $92380d to all enemies within $95725a1 yards.
 Tooltip          : Causing Froststorm damage to all targets within $95725A1 yards.
-Variables        : $damage=${($95725m1+($RAP)*0.144)*(1+$@versadmg)}
-$aps=${$RAP}
 
 Name             : Hunter Pet Exotic Marker (DND) (id=93273) [Passive, Hidden] 
 Class            : Hunter
@@ -2031,7 +2089,7 @@ Description      : Allows you to give commands to control your pet.
 Name             : Burrow Attack (Exotic Ability) (id=93433) [Scaling Spell (4), Spell Family (9)] 
 Class            : Hunter
 School           : Nature
-Resource         : 10 Focus (2) and 5 Focus (2) per tick (id=4304)
+Resource         : 10 Focus (2) (id=4304)
 Spell Level      : 20
 Duration         : 8 seconds
 Cooldown         : 14 seconds
@@ -2047,8 +2105,6 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | Trigger Spell: 95714 | Target: Self (1)
 Description      : The Worm burrows into the earth and shakes the ground above, dealing $<damage> Nature damage over $d.
 Tooltip          : Burrowed into the ground, dealing damage to enemies above.
-Variables        : $bmMastery=$?s76657[${1+0.01*$76657m1}][${1}]
-$damage= ${($95714m1+(($RAP*0.60)*0.096))*8*(1+$@versadmg)*$<bmMastery>}
 
 Name             : Rest (Bonus Ability) (id=94019) [Spell Family (9)] 
 Class            : Hunter
@@ -2119,8 +2175,6 @@ Effects          :
 #1 (id=101379)   : School Damage (2): nature
                    Base Value: 1 | Scaled Value: 0 (avg=0.074) | Radius: 0 - 10 yards | Target: Custom (18) -> AOE enemy (instant) (16)
 Description      : The Worm burrows into the earth, shaking the ground above dealing $<damage> Nature damage over $93433d.
-Variables        : $bmMastery=$?s76657[${1+0.01*$76657m1}][${1}]
-$damage= ${($95714m1+(($RAP*0.60)*0.096))*8*(1+$@versadmg)*$<bmMastery>}
 
 Name             : Froststorm Breath (Exotic Ability) (id=95725) [Scaling Spell (4), Spell Family (9)] 
 Class            : Hunter
@@ -2207,6 +2261,21 @@ Effects          :
 #1 (id=120764)   : Direct Heal% (136)
                    Base Value: 30 | Scaled Value: 30 | Target: Self (1)
 Description      : Heals you for $s1%$?a231546&!a155228[ and your pet for $128594s1%][] of maximum health.
+
+Name             : Cat Form (Passive) (id=113636) [Spell Family (7), Passive, Hidden] 
+Class            : Hunter, Druid
+School           : Nature
+Stance Mask      : 0x00000001
+Attributes       : ....x.xx ........ ........ ........   ........ ..x..... ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6), Hidden (7)
+Effects          :
+#1 (id=126594)   : Apply Aura (6) | Unknown(129)
+                   Base Value: 30 | Scaled Value: 30 | Misc Value: 9 | Target: Self (1)
 
 Name             : Mortal Wounds (id=115804) 
 Class            : Warrior, Hunter, Monk
@@ -2357,7 +2426,7 @@ Description      : $@spelldesc109215
 Tooltip          : Increased movement speed by $s1%.
 
 Name             : Barrage (id=120360) [Spell Family (9)] 
-Class            : Hunter
+Class            : Paladin, Hunter
 School           : Physical
 Resource         : 60 Focus (2) (id=6464)
 Spell Level      : 1
@@ -2378,10 +2447,13 @@ Effects          :
 #1 (id=139839)   : Apply Aura (6) | Periodic Trigger Spell (23): Barrage every 0.2 seconds
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 120361 | Target: Self (1)
 Description      : Rapidly fires a spray of shots for $120360d, dealing an average of $<damageSec> Physical damage to all enemies in front of you. Usable while moving.
-Variables        : $damageSec=${$120361sw2*10}
+Variables        : $mult1=$?s16261[${1.05}][${1.00}]
+$mult2=$?s16290[${1.10}][${$<mult1>}]
+$bonus=$?s51881[${1.15}][${$<mult2>}]
+
 
 Name             : Barrage (id=120361) [Spell Family (9)] 
-Class            : Hunter
+Class            : Paladin, Hunter
 School           : Physical
 Spell Level      : 1
 Range            : 50 yards
@@ -2537,7 +2609,7 @@ Effects          :
 Description      : $@spelldesc109304
 
 Name             : Blink Strikes (id=130392) [Spell Family (9), Passive] 
-Class            : Hunter, Death Knight
+Class            : Paladin, Hunter
 School           : Physical
 Spell Level      : 1
 Range            : 100 yards
@@ -2896,7 +2968,7 @@ Effects          :
                    Base Value: 3 | Scaled Value: 3 | Target: Self (1)
 #5 (id=191133)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 300 (Label) | Target: Self (1)
-                   Affected Spells (Label): Insidious Corruption (243941), Spectral Bolt (242571), Spectral Blast (246442), Legion Bombardment (253248), Prototype Personnel Decimator (255629), Legion Bombardment (255713), Legion Bombardment (255724)
+                   Affected Spells (Label): Insidious Corruption (243941), Spectral Bolt (242571), Spectral Blast (246442), Legion Bombardment (253248), Prototype Personnel Decimator (255629), Legion Bombardment (255713), Legion Bombardment (255724), Legion Bombardment (257376)
 #6 (id=260877)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #7 (id=260878)   : Apply Aura (6) | Dummy (4)
@@ -2975,29 +3047,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Mechanic: Unknown(227) | Target: Enemy (6)
 Description      : Interrupts spellcasting, preventing any spell in that school from being cast for $d.
 
-Name             : Adaptation (id=152244) [Passive] 
-Class            : Hunter, Death Knight, Shaman
-School           : Physical
-Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ .......x ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Passive (6)
-Effects          :
-#1 (id=210781)   : Apply Aura (6) | Unknown(451)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-Description      : Increases the effect of your pet's Combat Experience to $156843m2% increased damage. Your pet now gains the following abilities, regardless of its active spec:
-|cFFFFFFFF
-Spiked Collar
-Roar of Sacrifice
-Cornered
-Boar's Speed
-Last Stand
-Blood of the Rhino
-Great Stamina|r
-
 Name             : Lone Wolf (id=155228) [Spell Family (9), Passive] 
 Class            : Hunter
 School           : Physical
@@ -3014,25 +3063,6 @@ Effects          :
                    Base Value: 18 | Scaled Value: 18 | Misc Value: 0x7f | Target: Self (1)
                    Affected School(s): All
 Description      : Increases your damage by $s1%, but you can no longer use Call Pet.
-
-Name             : Combat Experience (id=156843) [Spell Family (9), Passive] 
-Class            : Hunter, Death Knight, Shaman
-School           : Physical
-Spell Level      : 1
-Attributes       : ....x.x. x....... ..x..... ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ .......x ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Passive (6)
-Effects          :
-#1 (id=218485)   : Apply Aura (6) | Unknown(214)
-                   Base Value: 2000 | Scaled Value: 2000 | Target: Self (1)
-#2 (id=218486)   : Apply Aura (6) | Modify Damage Done% (79)
-                   Base Value: 70 | Scaled Value: 70 | Misc Value: 0x7f | Target: Self (1)
-                   Affected School(s): All
-Description      : Increases all damage done by your pet by $s2%.
 
 Name             : Critical Strikes (Passive) (id=157443) [Passive] 
 Class            : Hunter
@@ -3612,7 +3642,6 @@ Effects          :
 Description      : A quick shot that causes ${$sw2*$<mult>} Arcane damage.
 
 |cFFFFFFFFGenerates $187675s1 Focus.|r
-Variables        : $mult=${($max(0,$min($pl-10,10))*5+80)/130}
 
 Name             : Hunter's Mark (id=185365) [Spell Family (9)] 
 Class            : Hunter
@@ -4515,7 +4544,6 @@ Effects          :
 #2 (id=283802)   : Weapon Damage% (31)
                    Base Value: 540 | Scaled Value: 5.4 | Target: Enemy (6)
 Description      : A quick shot causing ${$sw2*$<mult>} Physical damage.
-Variables        : $mult=${($min($pl-1,19)*12+112)/340}
 
 Name             : Mastery: Sniper Training (Mastery) (id=193468) [Spell Family (9), Passive] 
 Class            : Marksmanship Hunter
@@ -4944,7 +4972,7 @@ Tooltip          : Movement speed reduced by $s1%.
 Name             : Piercing Shot (id=198670) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
-Resource         : 20 - 100 Focus (2) (id=10749)
+Resource         : 20 Focus (2) (id=10749)
 Range            : 40 yards
 GCD              : 1.5 seconds
 Cooldown         : 30 seconds
@@ -5300,6 +5328,54 @@ Effects          :
 Description      : Switch to your Primary Talent Specialization.
 Tooltip          : Switch to your Primary Talent Specialization.
 
+Name             : Agonizing Poison (id=200802) [Spell Family (8)] 
+Class            : Hunter, Rogue
+School           : Physical
+Spell Level      : 10
+Cast Time        : 1.5 seconds
+Duration         : 3600 seconds
+Proc Chance      : 30%
+Proc Flags       : ..x.x... x....... ........ ........ 
+                 : White Melee, Yellow Melee, Yellow Ranged
+Affecting spells : Envenom (32645 effect#2), 
+Attributes       : ....x... ........ ........ ........   .....x.. ........ .x...... ........ 
+                 : ........ ........ ........ ........   ........ ........ ...xx... ........ 
+                 : ........ ........ .....x.. ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Does not break stealth (37)
+Effects          :
+#1 (id=295686)   : Apply Aura (6) | Proc Trigger Spell (42): Agonizing Poison
+                   Base Value: 1 | Scaled Value: 1 | Trigger Spell: 200803 | Target: Self (1)
+Description      : Coats your weapons with a Lethal Poison that lasts for $d. Each strike has a $h% chance to poison the enemy for $200803d, increasing all damage taken from your abilities by ${$200803s1}.1%, stacking up to $200803u times.
+
+Damage bonus increased by Mastery: Potent Poisons.
+Tooltip          : Each strike has a chance of causing the target to take ${$200803s1}.1% increased damage from your abilities for $200803d.
+
+Name             : Agonizing Poison (id=200803) [Spell Family (8)] 
+Class            : Hunter, Rogue
+School           : Nature
+Spell Level      : 10
+Range            : 100 yards
+Duration         : 12 seconds
+Stacks           : 5 maximum
+Proc Chance      : 101%
+Affecting spells : Improved Poisons (14117 effect#1), Venomous Totem (23726 effect#2), Mastery: Potent Poisons (76803 effect#1), Assassination Rogue (137037 effect#5), Master Alchemist (192318 effect#1), Poison Knives (192376 effect#2), Surge of Toxins (192425 effect#1), Master Poisoner (196864 effect#1), Toxic Blade (245389 effect#1), Virulent Poisons (252277 effect#1)
+Triggered by     : Agonizing Poison (200802)
+Attributes       : ........ ........ .....x.. ........   ...x.x.x ........ .x...... ........ 
+                 : ..x..... ........ ........ x.......   .......x ........ ........ ......x. 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ .x..xx.. ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Cannot dodge/parry/block (21), Does not break stealth (37)
+Effects          :
+#1 (id=295687)   : Apply Aura (6) | Unknown(270)
+                   Base Value: 4 | Scaled Value: 4 | Misc Value: 127 | Target: Enemy (6)
+Description      : $@spelldesc200802
+Tooltip          : Taking $w1% increased damage from the poisoning Rogue's abilities.
+
 Name             : Mortal Wounds (id=201075) [Spell Family (9), Passive] 
 Class            : Hunter
 School           : Physical
@@ -5529,10 +5605,7 @@ Description      : A coordinated attack on the target, where you deal ${$sw1*$<m
 If the target is attacking you, your pet's attack will deal $s3% increased damage and $s4% increased threat. Otherwise, your attack will deal $s3% increased damage.$?s191334&s237327[
 
 Flanking strike has double the normal chance to trigger Hunting Companion.][]
-Variables        : $lowNerf=${$min($pl,20)*0.05}
-$damage=${1.6*(($AP*4.2))*(1+$@versadmg)*$<lowNerf>}
-$mult=${($max(0,$min($pl-10,10))*7+130)/200}
-
+Variables        : $weaponmult=$?a768[${0.5}][${1.0}]
 
 Name             : Fury of the Eagle (id=203413) [Spell Family (9)] 
 Class            : Hunter
@@ -5830,10 +5903,6 @@ Effects          :
 #2 (id=328701)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : Discharge a massive jolt of electricity from |cFFFFCC99Titanstrike|r into all your pets$?s217200[][ and Dire Beasts], causing them to deal up to ${$RAP*1.15*0.5*$<bmMastery>} Nature damage to their target every $207094t sec. for $207094d.$?s217200[ Also causes your next Dire Frenzy to deal $218635s1 additional Nature damage on each of the 5 Dire Frenzy attacks.][]
-Variables        : $bmMastery=$?s76657[${1+0.01*$76657m1}][${1}]
-$lowNerf=${0.5+$min($pl,20)*0.025}
-$damage=${1.5*($83381m1+($RAP*3.6))*$<bmMastery>*$<lowNerf>*(1+$@versadmg)}
-
 
 Name             : Titan's Thunder (id=207081) [Spell Family (9), Passive, Hidden] 
 Class            : Hunter
@@ -6056,7 +6125,7 @@ Description      : $@spelldesc2643
 Name             : Piercing Shot (id=213678) [Scaling Spell (4), Spell Family (9)] 
 Class            : Hunter
 School           : Physical
-Resource         : 20 - 100 Focus (2) (id=11207)
+Resource         : 20 Focus (2) (id=11207)
 Range            : 40 yards
 GCD              : 1.5 seconds
 Velocity         : 100 yards/sec
@@ -6530,10 +6599,7 @@ Effects          :
 #1 (id=368573)   : School Damage (2): physical
                    Base Value: 1 | Scaled Value: 0 (avg=0.114, dl=0.35) | Target: Enemy (6)
 Description      : Slash the enemy, dealing ${$<damage>} Physical damage. 
-Variables        : $ce=$?s152244[${1.7}][${1.5}]
-$spiked=$?s53184[${1.1}][${1.0}]
-$blink=$?s130392[${1.5}][${1.0}]
-$damage=${$<ce>*$<spiked>*$<blink>*($RAP*0.333)*(1+$@versadmg)}
+Variables        : $mult=$?s76808[${((100+$76808m1))/100*(1+$@versadmg)}]$?s84601[${1.10*(1+$@versadmg)}][${1.00*(1+$@versadmg)}]
 
 Name             : Deathstrike Venom (id=243120) [Spell Family (9)] 
 Class            : Hunter
@@ -6628,5 +6694,135 @@ Effects          :
 #2 (id=477480)   : Unknown(170)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : Unlock powers at the Vindicaar's Matrix Core to use while on Argus. 
+
+Name             : Light's Judgment (Racial) (id=255647) [Scaling Spell (-6)] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+Race             
+School           : Holy
+Max Scaling Level: 120
+Range            : 40 yards
+GCD              : 1.5 seconds
+Velocity         : 3 yards/sec
+Cooldown         : 150 seconds
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ....x... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=477694)   : Trigger Missiles (32)
+                   Base Value: 0 | Scaled Value: 465816 (avg=0.4) | Trigger Spell: 256893 | Radius: 0 - 5 yards | Target: Enemy (6)
+Description      : Call down a strike of Holy energy, dealing $s1 Holy damage to enemies within $A1 yards after 3 sec.
+
+Name             : Holy Resistance (Racial Passive) (id=255651) [Passive] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+Race             
+School           : Holy
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6)
+Effects          :
+#1 (id=477698)   : Apply Aura (6) | Unknown(87)
+                   Base Value: -1 | Scaled Value: -1 | Misc Value: 0x2 | Target: Self (1)
+Description      : Reduces Holy damage taken by ${$s1/-1}%.
+
+Name             : Light's Reckoning (Racial Passive) (id=255652) [Passive] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+Race             
+School           : Physical
+Attributes       : ......x. ........ .......x ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ....x... ........ 
+                 : .......x ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6)
+Effects          :
+#1 (id=477699)   : Apply Aura (6) | Unknown(468)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 1 | Trigger Spell: 256896 | Target: Self (1)
+Description      : When you die the Light avenges you, dealing $256896s1 Holy Damage to enemies within 8 yards and healing allies for $256896s2.
+
+Name             : Demonbane (Racial Passive) (id=255653) [Passive] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+Race             
+School           : Physical
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6)
+Effects          :
+#1 (id=477700)   : Apply Aura (6) | Unknown(447)
+                   Base Value: 20 | Scaled Value: 20 | Misc Value: 4 | Target: Self (1)
+Description      : Experience gains from killing Demons increased by $s1%.
+
+Name             : Light's Judgment (Racial) (id=256893) [Scaling Spell (-6)] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+Race             
+School           : Holy
+Max Scaling Level: 120
+Range            : 40 yards
+GCD              : 1.5 seconds
+Cooldown         : 150 seconds
+Triggered by     : Light's Judgment (255647)
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=479673)   : School Damage (2): holy
+                   Base Value: 0 | Scaled Value: 465816 (avg=0.4) | Radius: 0 - 5 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
+Description      : Call down a strike of Holy energy, dealing $s1 Holy damage to enemies within $A1 yards.
+
+Name             : Light's Reckoning (Racial Passive) (id=256896) [Scaling Spell (-6)] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+Race             
+School           : Holy
+Max Scaling Level: 120
+Range            : 40 yards
+Triggered by     : Light's Reckoning (255652)
+Attributes       : ........ ........ .......x ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=479676)   : School Damage (2): holy
+                   Base Value: 0 | Scaled Value: 465816 (avg=0.4) | Radius: 0 - 5 yards | Target: Custom (18) -> AOE enemy (instant) (16)
+#2 (id=479677)   : Direct Heal (10)
+                   Base Value: 100000 | Scaled Value: 465816 (avg=0.4) | Radius: 0 - 8 yards | Target: Custom (18) -> AOE friendly (31)
+Description      : Deals $s1 Holy Damage to enemies within $A1.
+
+Heals $s2 to allies within $A1. 
+
+Name             : Forge of Light (Racial) (id=259930) 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+Race             
+School           : Holy
+Cast Time        : 2 seconds
+Duration         : 120 seconds
+Cooldown         : 300 seconds
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ .....x.. 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=484807)   : Unknown(171)
+                   Base Value: 10 | Scaled Value: 10 | Misc Value: 280498 | Radius: 0 - 3 yards | Target: Custom (18) -> Unknown(78)
+Description      : Summon a Forge of Light, enabling Blacksmithing. 
+
+Blacksmithing skill increased by $s1.
 
 

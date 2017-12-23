@@ -1,4 +1,4 @@
-SimulationCraft 730-03 for World of Warcraft 7.3.2 PTR (wow build 25163)
+SimulationCraft 730-03 for World of Warcraft 7.3.5 PTR (wow build 25692)
 
 Name             : Incapacitating Roar (id=99) [Spell Family (7)] 
 Class            : Guardian Druid
@@ -81,7 +81,7 @@ Description      : Heals all allies within $a2 yards for ${5*$157982s1} over $d.
 Tooltip          : Healing all allies within $a1 yards for $157982s1 every $t1 sec.
 
 Name             : Cat Form (Shapeshift) (id=768) [Spell Family (7)] 
-Class            : Druid
+Class            : Hunter, Druid
 School           : Physical
 Spell Level      : 8
 GCD              : 1.5 seconds
@@ -133,14 +133,6 @@ Description      : Heals the target for $o1 over $d.$?s33891[
 
 |C0033AA11Tree of Life: Healing increased by $5420s5% and Mana cost reduced by $5420s4%.|R][]
 Tooltip          : Heals $w1 damage every $t1 seconds.
-Variables        : $mult=${1}
-$mstrshape=$?s48411[${1+0.01*$48411m1}][${1}]
-$gotem1=$?s51179[${1+0.01*$51179m1}][${1}]
-$gotem2=$?s51180[${1+0.01*$51180m1}][${$<gotem1>}]
-$gotem3=$?s51181[${1+0.01*$51181m1}][${$<gotem2>}]
-$tol=$?a5420[${1+0.01+$5420m1}][${1}]
-$gift=$?s87305[${1.25}][${1}]
-$bloom=${$<gift>*$<genesis3>*$<mstrshape>*$<gotem3>*$<tol>}
 
 Name             : Travel Form (Shapeshift) (id=783) [Spell Family (7)] 
 Class            : Druid
@@ -170,7 +162,7 @@ Name             : Rip (id=1079) [Spell Family (7)]
 Class            : Feral Druid
 School           : Physical
 Resource         : 30 Energy (3) (id=113)
-Resource         : 1 - 5 Combo Points (4) (id=10588)
+Resource         : 1 Combo Points (4) (id=10588)
 Spell Level      : 20
 Range            : 5 yards
 GCD              : 1 seconds
@@ -199,7 +191,6 @@ Description      : Finishing move that causes Bleed damage over $d. Damage incre
    4 points: ${$floor(4*$<rip>*12)} damage
    5 points: ${$floor(5*$<rip>*12)} damage
 Tooltip          : Bleeding for $w1 damage every $t1 sec.
-Variables        : $rip=${$s1}
 
 Name             : Bear Form Passive (id=1178) [Spell Family (7), Passive] 
 Class            : Druid
@@ -475,7 +466,6 @@ Description      : Shred the target, causing ${$sw1*$<mult>} Physical damage to 
 While stealthed, Shred deals $m4% increased damage, and has double the chance to critically strike.][]
 
 |cFFFFFFFFAwards $s2 combo $lpoint:points;.|r
-Variables        : $mult=${($min($pl-1,19)*18+353)/695}
 
 Name             : Travel Form (Passive) (Passive) (id=5419) [Spell Family (7), Passive] 
 Class            : Druid
@@ -496,7 +486,7 @@ Effects          :
                    Affected Spells: Wild Charge (102401)
 
 Name             : Incarnation: Tree of Life (Passive) (id=5420) [Spell Family (7), Passive, Hidden] 
-Class            : Druid
+Class            : Shaman, Druid
 School           : Physical
 Stance Mask      : 0x00000002
 Attributes       : ......xx x....... ........ ........   ........ ........ ........ ........ 
@@ -695,14 +685,6 @@ Description      : Heals a friendly target for $s1 and another ${$o2*$<mult>} ov
 
 |C0033AA11Tree of Life: Instant cast.|R][]
 Tooltip          : Heals $w2 every $t2 seconds.
-Variables        : $mult=${1}
-$mstrshape=$?s48411[${1+0.01*$48411m1}][${1}]
-$gotem1=$?s51179[${1+0.01*$51179m1}][${1}]
-$gotem2=$?s51180[${1+0.01*$51180m1}][${$<gotem1>}]
-$gotem3=$?s51181[${1+0.01*$51181m1}][${$<gotem2>}]
-$tol=$?a5420[${1+0.01+$5420m1}][${1}]
-$gift=$?s87305[${1.25}][${1}]
-$bloom=${$<gift>*$<genesis3>*$<mstrshape>*$<gotem3>*$<tol>}
 
 Name             : Omen of Clarity (id=16864) [Spell Family (7), Passive] 
 Class            : Feral Druid
@@ -965,7 +947,7 @@ Name             : Ferocious Bite (id=22568) [Spell Family (7)]
 Class            : Feral Druid
 School           : Physical
 Resource         : 25 Energy (3) (id=939)
-Resource         : 1 - 5 Combo Points (4) (id=10587)
+Resource         : 1 Combo Points (4) (id=10587)
 Spell Level      : 10
 Range            : 5 yards
 GCD              : 1 seconds
@@ -996,7 +978,7 @@ Name             : Maim (id=22570) [Scaling Spell (3), Spell Family (7)]
 Class            : Feral Druid
 School           : Physical
 Resource         : 35 Energy (3) (id=940)
-Resource         : 1 - 5 Combo Points (4) (id=9773)
+Resource         : 1 Combo Points (4) (id=9773)
 Spell Level      : 63
 Range            : 5 yards
 GCD              : 1 seconds
@@ -1027,7 +1009,7 @@ Description      : Finishing move that causes Physical damage and stuns the targ
    4 points: $168880sw3 damage, 4 sec
    5 points: $168881sw3 damage, 5 sec
 Tooltip          : Stunned.
-Variables        : $mult=$?p61252[${4}][${2}]
+Variables        : $mult=$?s16859[${1.10}]?s16858[${1.05}][${1.00}]
 
 Name             : Barkskin (id=22812) [Spell Family (7)] 
 Class            : Balance Guardian Restoration Druid
@@ -1421,7 +1403,7 @@ Name             : Savage Roar (id=52610) [Spell Family (7)]
 Class            : Druid
 School           : Physical
 Resource         : 40 Energy (3) (id=2413)
-Resource         : 1 - 5 Combo Points (4) (id=11447)
+Resource         : 1 Combo Points (4) (id=11447)
 Spell Level      : 1
 Range            : 100 yards
 GCD              : 1 seconds
@@ -1506,22 +1488,6 @@ Effects          :
                    Base Value: -50 | Scaled Value: -50 | Mechanic: Unknown(88) | Target: Enemy (6)
 Description      : $@spelldesc48484
 Tooltip          : Movement speed slowed by $s1%.
-
-Name             : Maim Damage (id=61252) [Spell Family (7), Passive, Hidden] 
-Class            : Druid
-School           : Physical
-Attributes       : ....x.xx x....... ........ ........   ...x...x ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ..x..... 
-                 : ........ ........ ........ ........   ........ ........ x....... ........ 
-                 : Passive (6), Hidden (7)
-Effects          :
-#1 (id=55085)    : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
-                   Base Value: 100 | Scaled Value: 100 | Target: Self (1)
-                   Affected Spells: Maim (22570), Maim (168877), Maim (168878), Maim (168879), Maim (168880), Maim (168881)
-Description      : Increases the damage done by Maim by $s1%.
 
 Name             : Survival Instincts (id=61336) [Spell Family (7)] 
 Class            : Feral Guardian Druid
@@ -2144,7 +2110,7 @@ Attributes       : ........ ........ ........ ........   ........ ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=110963)   : Leap (29)
-                   Base Value: 0 | Scaled Value: 0 | Radius: 0 - 20 yards | Target: Self (1) -> Unknown(47)
+                   Base Value: 0 | Scaled Value: 0 | Radius: 0 - 20 yards | Target: Self (1) -> Unknown(55)
 #2 (id=111079)   : Trigger Spell (64): Displacer Beast
                    Base Value: 5 | Scaled Value: 5 | Trigger Spell: 137452 | Target: Self (1)
 Description      : Teleports you up to $A1 yards forward, activating Cat Form and increasing your movement speed by $137452s2% for $137452d.
@@ -2715,7 +2681,7 @@ Effects          :
 Description      : Your healing over time from Lifebloom has a $h% chance to cause a Clearcasting state, making your next $?a155577[${$155577m1+1} Regrowths][Regrowth] cost no mana.
 
 Name             : Cat Form (Passive) (id=113636) [Spell Family (7), Passive, Hidden] 
-Class            : Druid
+Class            : Hunter, Druid
 School           : Nature
 Stance Mask      : 0x00000001
 Attributes       : ....x.xx ........ ........ ........   ........ ..x..... ........ ........ 
@@ -3168,7 +3134,7 @@ Effects          :
                    Affected Spells (Label): Cleansing Matrix (242619), Fruitful Machinations (242623), Guiding Hand (242622), Infusion of Light (242621), Felshield (253277), Tarratus Keystone (253282), Refreshing Agony (253284), L'ura's Word (250781), Tarratus Keystone (255924), Refreshing Agony (255981), Highfather's Timekeeping (253288), Felshield (253278), Highfather's Timekeeping (255932), Emerald Blossom (257442), Verdant Embrace (257444)
 #17 (id=351088)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 300 (Label) | Target: Self (1)
-                   Affected Spells (Label): Insidious Corruption (243941), Spectral Bolt (242571), Spectral Blast (246442), Legion Bombardment (253248), Prototype Personnel Decimator (255629), Legion Bombardment (255713), Legion Bombardment (255724)
+                   Affected Spells (Label): Insidious Corruption (243941), Spectral Bolt (242571), Spectral Blast (246442), Legion Bombardment (253248), Prototype Personnel Decimator (255629), Legion Bombardment (255713), Legion Bombardment (255724), Legion Bombardment (257376)
 #18 (id=368361)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 333 (Label) | Target: Self (1)
                    Affected Spells (Label): Void Slash (251034), Isolated Strike (255609), Fire Mines (253321), Ravaging Storm (257286)
@@ -3222,7 +3188,7 @@ Effects          :
                    Affected Spells (Label): Cleansing Matrix (242619), Fruitful Machinations (242623), Guiding Hand (242622), Infusion of Light (242621), Felshield (253277), Tarratus Keystone (253282), Refreshing Agony (253284), L'ura's Word (250781), Tarratus Keystone (255924), Refreshing Agony (255981), Highfather's Timekeeping (253288), Felshield (253278), Highfather's Timekeeping (255932), Emerald Blossom (257442), Verdant Embrace (257444)
 #12 (id=260773)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 300 (Label) | Target: Self (1)
-                   Affected Spells (Label): Insidious Corruption (243941), Spectral Bolt (242571), Spectral Blast (246442), Legion Bombardment (253248), Prototype Personnel Decimator (255629), Legion Bombardment (255713), Legion Bombardment (255724)
+                   Affected Spells (Label): Insidious Corruption (243941), Spectral Bolt (242571), Spectral Blast (246442), Legion Bombardment (253248), Prototype Personnel Decimator (255629), Legion Bombardment (255713), Legion Bombardment (255724), Legion Bombardment (257376)
 #13 (id=260774)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #14 (id=260775)   : Apply Aura (6) | Dummy (4)
@@ -3277,7 +3243,7 @@ Effects          :
                    Affected Spells (Label): Orb of Destruction (229700), Void Tendril (250834)
 #14 (id=260755)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 300 (Label) | Target: Self (1)
-                   Affected Spells (Label): Insidious Corruption (243941), Spectral Bolt (242571), Spectral Blast (246442), Legion Bombardment (253248), Prototype Personnel Decimator (255629), Legion Bombardment (255713), Legion Bombardment (255724)
+                   Affected Spells (Label): Insidious Corruption (243941), Spectral Bolt (242571), Spectral Blast (246442), Legion Bombardment (253248), Prototype Personnel Decimator (255629), Legion Bombardment (255713), Legion Bombardment (255724), Legion Bombardment (257376)
 #15 (id=260756)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 333 (Label) | Target: Self (1)
                    Affected Spells (Label): Void Slash (251034), Isolated Strike (255609), Fire Mines (253321), Ravaging Storm (257286)
@@ -3451,7 +3417,7 @@ Class            : Restoration Druid
 School           : Nature
 Spell Level      : 34
 Range            : 100 yards
-Affecting spells : Bear Form (5487 effect#8), Incarnation: King of the Jungle (102543 effect#1), Berserk (106951 effect#1), Astral Influence (197524 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Awakened (253434 effect#1)
+Affecting spells : Bear Form (5487 effect#8), Incarnation: King of the Jungle (102543 effect#1), Berserk (106951 effect#1), Astral Influence (197524 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), 
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3468,7 +3434,7 @@ Name             : Ysera's Gift (id=145109) [Spell Family (7)]
 Class            : Druid
 School           : Nature
 Spell Level      : 1
-Affecting spells : Bear Form (5487 effect#8), Incarnation: King of the Jungle (102543 effect#1), Berserk (106951 effect#1), Astral Influence (197524 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Awakened (253434 effect#1)
+Affecting spells : Bear Form (5487 effect#8), Incarnation: King of the Jungle (102543 effect#1), Berserk (106951 effect#1), Astral Influence (197524 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), 
 Attributes       : ........ ........ ........ x..x....   .....x.. ..x..... ........ ........ 
                  : ........ ......x. ........ ....xx..   ........ ........ x....... ......x. 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -3486,7 +3452,7 @@ Class            : Druid
 School           : Nature
 Spell Level      : 1
 Range            : 30 yards
-Affecting spells : Bear Form (5487 effect#8), Incarnation: King of the Jungle (102543 effect#1), Berserk (106951 effect#1), Astral Influence (197524 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Awakened (253434 effect#1)
+Affecting spells : Bear Form (5487 effect#8), Incarnation: King of the Jungle (102543 effect#1), Berserk (106951 effect#1), Astral Influence (197524 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), 
 Attributes       : ........ ........ ........ x..x....   .....x.. ..x..... ...x.... ........ 
                  : ........ ......x. ........ ....xx..   ........ ........ x....... ......x. 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -4206,7 +4172,11 @@ Effects          :
 #3 (id=239197)   : Weapon Damage% (31)
                    Base Value: 140 | Scaled Value: 1.4 | Target: Enemy (6)
 Tooltip          : Stunned.
-Variables        : $mult=$?p61252[${4}][${2}]
+Variables        : $mult1=$?s87336[${1.25}][${1.0}]
+$mult2=$?s122098[${1.25*$<mult1>}][${$<mult1>}]
+$mending=${(1+($SP*0.666))*$pctH*$<mult2>}
+
+
 
 Name             : Maim (id=168878) [Scaling Spell (3), Spell Family (7)] 
 Class            : Druid
@@ -4235,7 +4205,7 @@ Effects          :
 #3 (id=239200)   : Weapon Damage% (31)
                    Base Value: 280 | Scaled Value: 2.8 | Target: Enemy (6)
 Tooltip          : Stunned.
-Variables        : $mult=$?p61252[${4}][${2}]
+Variables        : $damage=${($RAP*0.724)+$m1}
 
 Name             : Maim (id=168879) [Scaling Spell (3), Spell Family (7)] 
 Class            : Druid
@@ -4264,7 +4234,7 @@ Effects          :
 #3 (id=239203)   : Weapon Damage% (31)
                    Base Value: 420 | Scaled Value: 4.2 | Target: Enemy (6)
 Tooltip          : Stunned.
-Variables        : $mult=$?p61252[${4}][${2}]
+Variables        : $damage=${($RAP*0.0483)+$m1}
 
 Name             : Maim (id=168880) [Scaling Spell (3), Spell Family (7)] 
 Class            : Druid
@@ -4293,7 +4263,6 @@ Effects          :
 #3 (id=239206)   : Weapon Damage% (31)
                    Base Value: 560 | Scaled Value: 5.6 | Target: Enemy (6)
 Tooltip          : Stunned.
-Variables        : $mult=$?p61252[${4}][${2}]
 
 Name             : Maim (id=168881) [Scaling Spell (3), Spell Family (7)] 
 Class            : Druid
@@ -4322,7 +4291,9 @@ Effects          :
 #3 (id=239209)   : Weapon Damage% (31)
                    Base Value: 700 | Scaled Value: 7 | Target: Enemy (6)
 Tooltip          : Stunned.
-Variables        : $mult=$?p61252[${4}][${2}]
+Variables        : $inner1=$?s33597[${30}][${15}]
+$inner2=$?s33599[${45}][${$<inner1>}]
+$innervate=${$<inner2>}
 
 Name             : Glyph of the Sun (Balance) (id=171803) [Spell Family (7), Passive, Hidden] 
 Class            : Druid
@@ -4591,7 +4562,7 @@ Effects          :
                    Affected Spells: Rejuvenation (774), Rip (1079), Rake (1822), Solar Wrath (5176), Healing Touch (5185), Shred (5221), Maul (6807), Moonfire (8921), Regrowth (8936), Swiftmend (18562), Ferocious Bite (22568), Maim (22570), Lifebloom (33763), Lifebloom (33778), Mangle (33917), Wild Growth (48438), Thrash (77758), Starsurge (78674), Pulverize (80313), Efflorescence (81269), Sunfire (93402), Cenarion Ward (102352), Germination (155675), Rake (155722), Tranquility (157982), Pulverize (158792), Moonfire (164812), Sunfire (164815), Maim (168877), Maim (168878), Maim (168879), Maim (168880), Maim (168881), Nature's Essence (189800), Dreamwalker (189853), Solar Wrath (190984), Starfall (191034), Starfall (191037), Thrash (192090), Lunar Strike (194153), Starsurge (197626), Lunar Strike (197628), Solar Wrath (197629), Sunfire (197630), Cultivation (200389), Brutal Slash (202028), Enraged Mangle (202085), Spring Blossoms (207386), Ashamane's Rip (210705), Swipe (213771), Mark of Shifting (224392), Echoing Stars (226104), Enraged Maul (236716)
 #3 (id=301093)   : Apply Aura (6) | Unknown(343)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
-                   Affected Spells: Rejuvenation (774), Rip (1079), Rake (1822), Solar Wrath (5176), Healing Touch (5185), Shred (5221), Maul (6807), Moonfire (8921), Regrowth (8936), Swiftmend (18562), Ferocious Bite (22568), Maim (22570), Lifebloom (33763), Lifebloom (33778), Mangle (33917), Wild Growth (48438), Thrash (77758), Starsurge (78674), Pulverize (80313), Efflorescence (81269), Sunfire (93402), Cenarion Ward (102352), Germination (155675), Rake (155722), Tranquility (157982), Pulverize (158792), Moonfire (164812), Sunfire (164815), Maim (168877), Maim (168878), Maim (168879), Maim (168880), Maim (168881), Nature's Essence (189800), Dreamwalker (189853), Solar Wrath (190984), Starfall (191034), Starfall (191037), Thrash (192090), Lunar Strike (194153), Starsurge (197626), Lunar Strike (197628), Solar Wrath (197629), Sunfire (197630), Cultivation (200389), Brutal Slash (202028), Enraged Mangle (202085), Spring Blossoms (207386), Ashamane's Rip (210705), Swipe (213771), Mark of Shifting (224392), Echoing Stars (226104), Enraged Maul (236716)
+                   Affected Spells: Rejuvenation (774), Rip (1079), Rake (1822), Solar Wrath (5176), Healing Touch (5185), Shred (5221), Maul (6807), Moonfire (8921), Regrowth (8936), Swiftmend (18562), Ferocious Bite (22568), Maim (22570), Lifebloom (33763), Lifebloom (33778), Mangle (33917), Wild Growth (48438), Thrash (77758), Starsurge (78674), Pulverize (80313), Efflorescence (81269), Sunfire (93402), Cenarion Ward (102352), Germination (155675), Rake (155722), Tranquility (157982), Pulverize (158792), Moonfire (164812), Sunfire (164815), Maim (168877), Maim (168878), Maim (168879), Maim (168880), Maim (168881), Nature's Essence (189800), Dreamwalker (189853), Solar Wrath (190984), Starfall (191034), Starfall (191037), Thrash (192090), Lunar Strike (194153), Starsurge (197626), Lunar Strike (197628), Solar Wrath (197629), Sunfire (197630), Cultivation (200389), Brutal Slash (202028), Enraged Mangle (202085), Spring Blossoms (207386), Ashamane's Rip (210705), Swipe (213771), Mark of Shifting (224392), Echoing Stars (226104), Enraged Maul (236716), Dreamer (253432)
 Description      : $@spelldesc77758
 Tooltip          : Suffering $w1 damage every $t1 sec.
 
@@ -5675,7 +5646,7 @@ Description      : Deals $m1 Arcane damage to the target and empowers Half Moon 
 Name             : Fury of Elune (id=202770) [Spell Family (7)] 
 Class            : Druid
 School           : Astral
-Resource         : 6 Eclipse (8) and 12 Eclipse (8) per tick (id=10868)
+Resource         : 6 Eclipse (8) (id=10868)
 Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : Aura (infinite)
@@ -6086,7 +6057,7 @@ Attributes       : ........ ........ x.x..... ........   ........ ........ .....
 Effects          :
 #1 (id=308116)   : Apply Aura (6) | Add Percent Modifier (108): Unknown 2 (19)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 19 | Target: Self (1)
-                   Affected Spells: Rejuvenation (774), Regrowth (8936), Lifebloom (33763), Wild Growth (48438), Cenarion Ward (102351), Cenarion Ward (102352)
+                   Affected Spells: Rejuvenation (774), Regrowth (8936), Lifebloom (33763), Wild Growth (48438), Cenarion Ward (102351), Cenarion Ward (102352), Dreamer (253432)
 #2 (id=325987)   : Apply Aura (6) | Periodic Trigger Spell (23): Essence of G'Hanir every 0.25 seconds
                    Base Value: -50 | Scaled Value: -50 | Trigger Spell: 218889 | Target: Self (1)
                    Affected Spells: Rejuvenation (774), Regrowth (8936), Lifebloom (33763), Wild Growth (48438), Cenarion Ward (102351), Cenarion Ward (102352)
@@ -6304,7 +6275,6 @@ Effects          :
                    Base Value: 6 | Scaled Value: 6 | Target: Enemy (6)
 Description      : $@spelldesc210702
 Tooltip          : Suffering $w1 Shadow damage every $t1 sec.
-Variables        : $rip=${$s1}
 
 Name             : Gore (id=210706) [Spell Family (7), Passive] 
 Class            : Guardian Druid
@@ -7101,6 +7071,24 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : Unlock powers at the Vindicaar's Matrix Core to use while on Argus. 
 
+Name             : Item - Druid  T21 Feral 2P Bonus (id=251789) [Spell Family (7), Passive, Hidden] 
+Class            : Druid
+School           : Physical
+Proc Chance      : 10%
+Proc Flags       : ........ ........ ..x..... ........ 
+                 : Periodic
+Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ x....... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ x....... ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6), Hidden (7)
+Effects          :
+#1 (id=471380)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+Description      : When Rip deals damage, there is a $h% chance for it to deal damage again.
+
 Name             : Jungle Stalker (Talent, Shapeshift) (id=252071) [Spell Family (7)] 
 Class            : Druid
 School           : Physical
@@ -7123,6 +7111,25 @@ Effects          :
 Description      : $@spelldesc102543
 Tooltip          : Allows the use of Prowl even while in combat.
 
+Name             : Bloody Gash (id=252750) [Spell Family (7)] 
+Class            : Druid
+School           : Physical
+Range            : 100 yards
+Proc Chance      : 30%
+Proc Flags       : ........ ........ ..x..... ........ 
+                 : Periodic
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ..x..... x....... ........ .....x..   ........ ........ ........ ........ 
+                 : .......x ........ x....... ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ .....x..   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ....x... ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Cannot crit (93), Disable player multipliers (221)
+Effects          :
+#1 (id=472787)   : School Damage (2): physical
+                   Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
+Description      : $@spelldesc251789
+
 Name             : Vindicaar Matrix Crystal (id=255529) [Hidden] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Worgen, Pandaren, Pandaren (Alliance)
@@ -7141,5 +7148,135 @@ Effects          :
 #2 (id=477480)   : Unknown(170)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : Unlock powers at the Vindicaar's Matrix Core to use while on Argus. 
+
+Name             : Light's Judgment (Racial) (id=255647) [Scaling Spell (-6)] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+Race             
+School           : Holy
+Max Scaling Level: 120
+Range            : 40 yards
+GCD              : 1.5 seconds
+Velocity         : 3 yards/sec
+Cooldown         : 150 seconds
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ....x... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=477694)   : Trigger Missiles (32)
+                   Base Value: 0 | Scaled Value: 465816 (avg=0.4) | Trigger Spell: 256893 | Radius: 0 - 5 yards | Target: Enemy (6)
+Description      : Call down a strike of Holy energy, dealing $s1 Holy damage to enemies within $A1 yards after 3 sec.
+
+Name             : Holy Resistance (Racial Passive) (id=255651) [Passive] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+Race             
+School           : Holy
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6)
+Effects          :
+#1 (id=477698)   : Apply Aura (6) | Unknown(87)
+                   Base Value: -1 | Scaled Value: -1 | Misc Value: 0x2 | Target: Self (1)
+Description      : Reduces Holy damage taken by ${$s1/-1}%.
+
+Name             : Light's Reckoning (Racial Passive) (id=255652) [Passive] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+Race             
+School           : Physical
+Attributes       : ......x. ........ .......x ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ....x... ........ 
+                 : .......x ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6)
+Effects          :
+#1 (id=477699)   : Apply Aura (6) | Unknown(468)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 1 | Trigger Spell: 256896 | Target: Self (1)
+Description      : When you die the Light avenges you, dealing $256896s1 Holy Damage to enemies within 8 yards and healing allies for $256896s2.
+
+Name             : Demonbane (Racial Passive) (id=255653) [Passive] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+Race             
+School           : Physical
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6)
+Effects          :
+#1 (id=477700)   : Apply Aura (6) | Unknown(447)
+                   Base Value: 20 | Scaled Value: 20 | Misc Value: 4 | Target: Self (1)
+Description      : Experience gains from killing Demons increased by $s1%.
+
+Name             : Light's Judgment (Racial) (id=256893) [Scaling Spell (-6)] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+Race             
+School           : Holy
+Max Scaling Level: 120
+Range            : 40 yards
+GCD              : 1.5 seconds
+Cooldown         : 150 seconds
+Triggered by     : Light's Judgment (255647)
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=479673)   : School Damage (2): holy
+                   Base Value: 0 | Scaled Value: 465816 (avg=0.4) | Radius: 0 - 5 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
+Description      : Call down a strike of Holy energy, dealing $s1 Holy damage to enemies within $A1 yards.
+
+Name             : Light's Reckoning (Racial Passive) (id=256896) [Scaling Spell (-6)] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+Race             
+School           : Holy
+Max Scaling Level: 120
+Range            : 40 yards
+Triggered by     : Light's Reckoning (255652)
+Attributes       : ........ ........ .......x ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=479676)   : School Damage (2): holy
+                   Base Value: 0 | Scaled Value: 465816 (avg=0.4) | Radius: 0 - 5 yards | Target: Custom (18) -> AOE enemy (instant) (16)
+#2 (id=479677)   : Direct Heal (10)
+                   Base Value: 100000 | Scaled Value: 465816 (avg=0.4) | Radius: 0 - 8 yards | Target: Custom (18) -> AOE friendly (31)
+Description      : Deals $s1 Holy Damage to enemies within $A1.
+
+Heals $s2 to allies within $A1. 
+
+Name             : Forge of Light (Racial) (id=259930) 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+Race             
+School           : Holy
+Cast Time        : 2 seconds
+Duration         : 120 seconds
+Cooldown         : 300 seconds
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ .....x.. 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=484807)   : Unknown(171)
+                   Base Value: 10 | Scaled Value: 10 | Misc Value: 280498 | Radius: 0 - 3 yards | Target: Custom (18) -> Unknown(78)
+Description      : Summon a Forge of Light, enabling Blacksmithing. 
+
+Blacksmithing skill increased by $s1.
 
 

@@ -1,4 +1,4 @@
-SimulationCraft 730-03 for World of Warcraft 7.3.2 PTR (wow build 25163)
+SimulationCraft 730-03 for World of Warcraft 7.3.5 PTR (wow build 25692)
 
 Name             : Defensive Stance (id=71) [Spell Family (4), Passive, Hidden] 
 Class            : Protection Warrior
@@ -223,7 +223,7 @@ Range            : 5 yards
 GCD              : 1.5 seconds
 Stacks           : 2 maximum
 Proc Chance      : 101%
-Affecting spells : Battle Cry (1719 effect#4), Warrior (137047 effect#2), Arms Warrior (137049 effect#2), Item - Warrior T18 Arms 4P Bonus (185804 effect#1), Dauntless (202297 effect#1), Crushing Blows (209472 effect#1), Weighted Blade (253383 effect#1), 
+Affecting spells : Battle Cry (1719 effect#4), Warrior (137047 effect#2), Arms Warrior (137049 effect#2), Item - Warrior T18 Arms 4P Bonus (185804 effect#1), Dauntless (202297 effect#1), Crushing Blows (209472 effect#1), Weighted Blade (253383 effect#1), Slam (261901 effect#1)
 Attributes       : ....x... ........ x.x..... ..x.....   ........ .x...... ........ ...x.... 
                  : ........ ........ .x...... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -232,9 +232,9 @@ Attributes       : ....x... ........ x.x..... ..x.....   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=462)      : Normalized Weapon Damage (121)
-                   Base Value: 1 | Scaled Value: 1 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
 #2 (id=119511)   : Weapon Damage% (31)
-                   Base Value: 305 | Scaled Value: 3.05 | Target: Enemy (6)
+                   Base Value: 190 | Scaled Value: 1.9 | Target: Enemy (6)
 Description      : Slams an opponent, causing $sw2 Physical damage.
 
 Name             : Whirlwind (id=1680) [Spell Family (4)] 
@@ -523,8 +523,7 @@ Effects          :
 #2 (id=475719)   : Unknown(254)
                    Base Value: 5 | Scaled Value: 5 | Misc Value: 17 | Target: Unknown(87)
 Description      : Leap through the air toward a target location, slamming down with destructive force to deal $52174s1 Physical damage to all enemies within $52174a1 yards$?s23922[, and resetting the remaining cooldown on Taunt][].
-Variables        : $base=${1+0.5*$AP}
-$damage=$?a2457[${1+0.5*$AP*1.1}][${$<base>}]
+Variables        : $mult=${(1+$@versadmg)}
 
 Name             : Pummel (id=6552) [Spell Family (4)] 
 Class            : Warrior
@@ -646,7 +645,7 @@ GCD              : 1.5 seconds
 Charges          : 1 (6 seconds cooldown)
 Category         : 971: Warrior (137047 effect#5)
 Proc Chance      : 101%
-Affecting spells : Battle Cry (1719 effect#4), Warrior (137047 effect#2), Arms Warrior (137049 effect#2), Item - Warrior T17 Arms 4P Bonus (165336 effect#1), Vicious Strike (165638 effect#1), Sweeping Strikes (202161 effect#1), Dauntless (202297 effect#1), Archavon's Heavy Hand (205144 effect#1), Focused Rage (207982 effect#1), Thoradin's Might (209480 effect#1), Precise Strikes (209493 effect#1), Shattered Defenses (209706 effect#1), Executioner's Precision (242188 effect#1), Shattered Defenses (248625 effect#1)
+Affecting spells : Battle Cry (1719 effect#4), Warrior (137047 effect#2), Arms Warrior (137049 effect#2), Item - Warrior T17 Arms 4P Bonus (165336 effect#1), Vicious Strike (165638 effect#1), Sweeping Strikes (202161 effect#1), Dauntless (202297 effect#1), Archavon's Heavy Hand (205144 effect#1), Focused Rage (207982 effect#1), Thoradin's Might (209480 effect#1), Precise Strikes (209493 effect#1), Shattered Defenses (209706 effect#1), Executioner's Precision (242188 effect#1), Shattered Defenses (248625 effect#1), Mortal Strike (261900 effect#1)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ..xx.... 
                  : ........ ....x... ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ....x... ........ ........ 
@@ -659,11 +658,20 @@ Effects          :
 #2 (id=5275)     : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Chain Multiplier: 0 | Chain Targets: 1 | Target: Enemy (6)
 #3 (id=99581)    : Weapon Damage% (31)
-                   Base Value: 439 | Scaled Value: 4.39 | Chain Multiplier: 0 | Chain Targets: 1 | Target: Enemy (6)
+                   Base Value: 274 | Scaled Value: 2.74 | Chain Multiplier: 0 | Chain Targets: 1 | Target: Enemy (6)
 #4 (id=156241)   : Energize Power (30)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: rage | Target: Self (1)
-Description      : A vicious strike that deals ${$sw3*$<mult>} Physical damage and reduces the effectiveness of healing on the target for $115804d.
-Variables        : $mult=${($max(0,$min($pl-5,15))*8+207)/327}
+Description      : A vicious strike that deals $sw3 Physical damage and reduces the effectiveness of healing on the target for $115804d.
+Variables        : $stnc=$?a115070[${1.05*(1+$@versadmg)}][${1.0*(1+$@versadmg)}]
+$dwm=$?a108561|a115697[${1}][${0.857143}]
+$offm=$?a108561|a115697[${0}][${1}]
+
+$offlow=$?s121278[${$mwb/2/$mws}][${$owb/2/$ows}]
+$offhigh=$?s121278[${$MWB/2/$mws}][${$OWB/2/$ows}]
+$realap=$?s121278[${$SP}][${$AP}]
+
+$low=${$<stnc>*($<dwm>*(($mwb)/($MWS)+$<offm>*$<offlow>)+$<realap>/3.5-1)}
+$high=${$<stnc>*($<dwm>*(($MWB)/($MWS)+$<offm>*$<offhigh>)+$<realap>/3.5+1)}
 
 Name             : Piercing Howl (id=12323) [Spell Family (4)] 
 Class            : Fury Warrior
@@ -783,7 +791,7 @@ Effects          :
 #3 (id=349776)   : Dummy (3)
                    Base Value: 30 | Scaled Value: 30 | Target: Self (1)
 Description      : A direct strike, dealing ${$sw1*$<mult>} Physical damage.
-Variables        : $mult=${($max(0,$min($pl-12,8))*8.5+241)/309}
+Variables        : $dmg=${$m1+$SPS*1.000}
 
 Name             : Blood Fury (Racial) (id=20572) [Scaling Spell (-1)] 
 Class            : Warrior, Hunter, Rogue, Death Knight
@@ -804,7 +812,7 @@ Effects          :
                    Base Value: 3 | Scaled Value: 2242.68 (avg=1.32) | Points Per Level: 4 | Target: Self (1)
 #2 (id=11565)    : Apply Aura (6) | Modify Ranged Attack Power (124)
                    Base Value: 3 | Scaled Value: 2242.68 (avg=1.32) | Points Per Level: 4 | Target: Self (1)
-Description      : Increases attack power by $s1. Lasts $d.
+Description      : Increases attack power by $s1 for $d.
 Tooltip          : Attack power increased by $s1.
 
 Name             : Command (Racial Passive) (id=21563) [Spell Family (9), Passive] 
@@ -851,7 +859,7 @@ Effects          :
 Description      : Assault the target in a bloodthirsty craze, dealing ${$sw2*$<mult>} Physical damage and restoring $117313s1% of your health.
 
 |cFFFFFFFFGenerates ${$m3/10} Rage.|r
-Variables        : $mult=${($max(0,$min($pl-10,10))*8+137)/217}
+Variables        : $amount=${$max(($AP-2*$AGI)*2.2,$STA*$m3/100)*0.4}
 
 Name             : Spell Reflection (id=23920) [Spell Family (4)] 
 Class            : Protection Warrior
@@ -1061,8 +1069,6 @@ Effects          :
 Description      : Strikes the target, causing $?s12712[${1.2*$m2}][$m2] damage and healing you for $<rush>% of your maximum health.
 
 Only usable within $32216d after you kill an enemy that yields experience or honor.
-Variables        : $rush=$?s58382[${$118779m1*1.5}][${$118779m1}]
-$impending=$?s58382[${$118340m1*1.0}][${$118340m1}]
 
 Name             : Whirlwind Off-Hand (id=44949) [Spell Family (4)] 
 Class            : Warrior
@@ -1535,7 +1541,6 @@ Effects          :
 Description      : A mighty blow with both weapons that deals a total of ${($96103sw2+$85384sw2)*$<mult>} Physical damage.$?a215573[][ Only usable while Enraged.]
 
 |cFFFFFFFFGenerates ${$m2/10} Rage.|r
-Variables        : $mult=${($max(0,$min($pl-13,7))*4+118)/146}
 
 Name             : Raging Blow (id=85384) [Spell Family (4)] 
 Class            : Warrior
@@ -1557,7 +1562,6 @@ Effects          :
 #2 (id=86556)    : Weapon Damage% (31)
                    Base Value: 165 | Scaled Value: 1.65 | Chain Multiplier: 0 | Chain Targets: 1 | Target: Enemy (6)
 Description      : $@spelldesc85288
-Variables        : $mult=${($max(0,$min($pl-13,7))*4+118)/146}
 
 Name             : Meat Cleaver (id=85739) [Spell Family (4)] 
 Class            : Warrior
@@ -1577,7 +1581,7 @@ Attributes       : ....x... ........ ........ ........   ........ ..x..... .....
 Effects          :
 #1 (id=87073)    : Apply Aura (6) | Add Flat Modifier (107): Spell Targets (17)
                    Base Value: 4 | Scaled Value: 4 | Misc Value: 17 | Target: Self (1)
-                   Affected Spells: Bloodthirst (23881), Rampage (184367), Rampage (184707), Rampage (184709), Rampage (201363), Rampage (201364), Rampage (218617)
+                   Affected Spells: Bloodthirst (23881)
 #2 (id=333347)   : Apply Aura (6) | Dummy (4)
                    Base Value: 3 | Scaled Value: 3 | Misc Value: 17 | Target: Self (1)
                    Affected Spells: Bloodthirst (23881)
@@ -1705,7 +1709,6 @@ Effects          :
 #2 (id=101984)   : Weapon Damage% (31)
                    Base Value: 165 | Scaled Value: 1.65 | Chain Multiplier: 0 | Chain Targets: 1 | Target: Enemy (6)
 Description      : $@spelldesc85288
-Variables        : $mult=${($max(0,$min($pl-13,7))*4+118)/146}
 
 Name             : Commanding Shout (id=97462) [Spell Family (4)] 
 Class            : Arms Fury Warrior
@@ -1768,7 +1771,6 @@ Effects          :
 #3 (id=107866)   : Weapon Damage% (31)
                    Base Value: 307 | Scaled Value: 3.07 | Target: Enemy (6)
 Description      : Aggressively strike with your off-hand weapon for ${$sw3*$<mult>} Physical damage.$?a231824[ Increases your Bloodthirst critical strike chance by $206333s1% until it next deals a critical strike, stacking up to $206333u times.][]
-Variables        : $mult=${($max(0,$min($pl-10,10))*10+171)/271}
 
 Name             : Double Time (id=103827) [Spell Family (4), Passive] 
 Class            : Warrior
@@ -1803,6 +1805,34 @@ Effects          :
 #1 (id=113014)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1 | Target: Self (1)
 Description      : $?s198304[Intercept][Charge] now deals $7922s1 damage to all enemies within $7922A1 yds of the target, and stuns them for $237744d.
+
+Name             : Stance of the Fierce Tiger (Stance) (id=103985) [Spell Family (53), Passive, Hidden] 
+Class            : Windwalker Warrior, Monk
+School           : Physical
+Spell Level      : 1
+Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6), Hidden (7)
+Effects          :
+#1 (id=113230)   : Apply Aura (6) | Dummy (4)
+                   Base Value: -100 | Scaled Value: -100 | Misc Value: 11 | Target: Self (1)
+#2 (id=128726)   : Apply Aura (6) | Unknown(312)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 115 | Target: Self (1)
+#3 (id=138797)   : Apply Aura (6) | Modify Damage Done% (79)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f | Target: Self (1)
+                   Affected School(s): All
+#4 (id=157390)   : Dummy (3)
+                   Base Value: 10 | Scaled Value: 10 | Radius: 10 yards | Target: Self (1)
+#5 (id=179535)   : Apply Aura (6) | Add Flat Modifier (107): Spell Global Cooldown (21)
+                   Base Value: -500 | Scaled Value: -500 | Misc Value: 21 | Target: Self (1)
+                   Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (101546), Transcendence (101643), Rising Sun Kick (107428), Expel Harm (115072), Paralysis (115078), Touch of Death (115080), Chi Wave (115098), Detox (115450), Disable (116095), Tiger's Lust (116841), Ring of Peace (116844), Rushing Jade Wind (116847), Crackling Jade Lightning (117952), Leg Sweep (119381), Transcendence: Transfer (119996), Chi Burst (123986), Zen Pulse (124081), Moderate Stagger (124274), Chi Burst (130654), Chi Burst (148135), Rushing Jade Wind (148187), Rising Sun Kick (185099), Zen Pulse (198487), Song of Chi-Ji (198898), Blackout Strike (205523), Detox (218164), Blackout Kick (228649)
+#6 (id=214834)   : Apply Aura (6) | Increase Energy (35)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 12 | Target: Self (1)
+Description      : Increases all damage dealt by $s3%.
 
 Name             : Charge (id=105771) [Spell Family (4)] 
 Class            : Warrior
@@ -2381,7 +2411,7 @@ Effects          :
                    Affected Spells (Label): Cleansing Matrix (242619), Fruitful Machinations (242623), Guiding Hand (242622), Infusion of Light (242621), Felshield (253277), Tarratus Keystone (253282), Refreshing Agony (253284), L'ura's Word (250781), Tarratus Keystone (255924), Refreshing Agony (255981), Highfather's Timekeeping (253288), Felshield (253278), Highfather's Timekeeping (255932), Emerald Blossom (257442), Verdant Embrace (257444)
 #8 (id=260731)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 300 (Label) | Target: Self (1)
-                   Affected Spells (Label): Insidious Corruption (243941), Spectral Bolt (242571), Spectral Blast (246442), Legion Bombardment (253248), Prototype Personnel Decimator (255629), Legion Bombardment (255713), Legion Bombardment (255724)
+                   Affected Spells (Label): Insidious Corruption (243941), Spectral Bolt (242571), Spectral Blast (246442), Legion Bombardment (253248), Prototype Personnel Decimator (255629), Legion Bombardment (255713), Legion Bombardment (255724), Legion Bombardment (257376)
 #9 (id=260732)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #10 (id=260733)   : Apply Aura (6) | Dummy (4)
@@ -2856,7 +2886,10 @@ Effects          :
 Description      : Attempts to finish off a foe, causing $sw2 Physical damage, and consuming up to $<extraCost> additional Rage to deal up to ${$sw2*$m4/10} additional damage. Only usable on enemies that have less than 20% health.
 
 If your foe survives, $s5% of the Rage spent is refunded.
-Variables        : $extraCost==$?s202297&?a227266&?a1719[${$m4*((100+$202297s2)/100)*((100+$227266s1)/100)}]?s202297[${$m4*((100+$202297s2)/100)}]?a227266&?a1719[${$m4*((100+$227266s1)/100)}][${$m4}]
+Variables        : $dmgMult=$?a103985[${1.05}][${1.0}]
+$healMult=$?a115070[${1.2}][${1.0}]
+$damage=${$<dmgMult>*$AP*0.867*(1+$@versadmg)}
+$healing=${$<healMult>*$AP*0.867*(1+$@versadmg)}
 
 Name             : Execute Off-Hand (id=163558) [Spell Family (4)] 
 Class            : Warrior
@@ -2994,7 +3027,7 @@ Spell Level      : 12
 Range            : 5 yards
 GCD              : 2 seconds
 Cooldown         : 1.5 seconds
-Affecting spells : Meat Cleaver (85739 effect#1), Warrior (137047 effect#2), Fury Warrior (137050 effect#1), Unstoppable (200853 effect#1), Reckless Abandon (202751 effect#3), Carnage (202922 effect#1), Massacre (206316 effect#1), Outrage (253385 effect#1)
+Affecting spells : Warrior (137047 effect#2), Fury Warrior (137050 effect#1), Unstoppable (200853 effect#1), Reckless Abandon (202751 effect#3), Carnage (202922 effect#1), Massacre (206316 effect#1), Outrage (253385 effect#1)
 Attributes       : ........ ........ ..x..... ........   ........ .xx..... ........ ........ 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3007,7 +3040,7 @@ Effects          :
 #2 (id=267215)   : Dummy (3)
                    Base Value: 2 | Scaled Value: 2 | Target: Enemy (6)
 #3 (id=267216)   : Trigger Spell (64): Rampage
-                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 218617 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 100 | Trigger Spell: 218617 | Target: Enemy (6)
 #4 (id=268060)   : Trigger Spell (64): Rampage
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 300 | Trigger Spell: 184707 | Target: Enemy (6)
 #5 (id=268061)   : Trigger Spell (64): Rampage
@@ -3024,7 +3057,7 @@ School           : Physical
 Spell Level      : 1
 Range            : 8 yards
 Proc Chance      : 101%
-Affecting spells : Meat Cleaver (85739 effect#1), Warrior (137047 effect#2), Fury Warrior (137050 effect#1), Unstoppable (200853 effect#1), Carnage (202922 effect#1), Massacre (206316 effect#1), Outrage (253385 effect#1)
+Affecting spells : Warrior (137047 effect#2), Fury Warrior (137050 effect#1), Unstoppable (200853 effect#1), Carnage (202922 effect#1), Massacre (206316 effect#1), Outrage (253385 effect#1)
 Triggered by     : Rampage (184367)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ....x... ........ ........   ........ ........ ........ x....... 
@@ -3045,7 +3078,7 @@ School           : Physical
 Spell Level      : 1
 Range            : 8 yards
 Proc Chance      : 101%
-Affecting spells : Meat Cleaver (85739 effect#1), Warrior (137047 effect#2), Fury Warrior (137050 effect#1), Unstoppable (200853 effect#1), Carnage (202922 effect#1), Massacre (206316 effect#1), Outrage (253385 effect#1)
+Affecting spells : Warrior (137047 effect#2), Fury Warrior (137050 effect#1), Unstoppable (200853 effect#1), Carnage (202922 effect#1), Massacre (206316 effect#1), Outrage (253385 effect#1)
 Triggered by     : Rampage (184367)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ........ 
                  : ........ ....x... ........ ........   ........ .xx..... ........ ........ 
@@ -3151,7 +3184,7 @@ Causes your next Bloodthirst or Rampage to strike up to $85739s1 additional targ
 Name             : Ignore Pain (id=190456) [Spell Family (4)] 
 Class            : Protection Warrior
 School           : Physical
-Resource         : 20 - 60 Rage (1) (id=10534)
+Resource         : 20 Rage (1) (id=10534)
 Spell Level      : 40
 Range            : 5 yards
 Duration         : 15 seconds
@@ -3437,7 +3470,7 @@ School           : Physical
 Spell Level      : 1
 Range            : 8 yards
 Proc Chance      : 101%
-Affecting spells : Meat Cleaver (85739 effect#1), Warrior (137047 effect#2), Fury Warrior (137050 effect#1), Unstoppable (200853 effect#1), Carnage (202922 effect#1), Massacre (206316 effect#1), Outrage (253385 effect#1)
+Affecting spells : Warrior (137047 effect#2), Fury Warrior (137050 effect#1), Unstoppable (200853 effect#1), Carnage (202922 effect#1), Massacre (206316 effect#1), Outrage (253385 effect#1)
 Triggered by     : Rampage (184367)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ........ 
                  : ........ ....x... ........ ........   ........ .xx..... ........ ........ 
@@ -3459,7 +3492,7 @@ School           : Physical
 Spell Level      : 1
 Range            : 8 yards
 Proc Chance      : 101%
-Affecting spells : Meat Cleaver (85739 effect#1), Warrior (137047 effect#2), Fury Warrior (137050 effect#1), Unstoppable (200853 effect#1), Carnage (202922 effect#1), Massacre (206316 effect#1), Outrage (253385 effect#1)
+Affecting spells : Warrior (137047 effect#2), Fury Warrior (137050 effect#1), Unstoppable (200853 effect#1), Carnage (202922 effect#1), Massacre (206316 effect#1), Outrage (253385 effect#1)
 Triggered by     : Rampage (184367)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ....x... ........ ........   ........ ........ ........ x....... 
@@ -4745,7 +4778,7 @@ School           : Physical
 Spell Level      : 1
 Range            : 8 yards
 Proc Chance      : 101%
-Affecting spells : Meat Cleaver (85739 effect#1), Warrior (137047 effect#2), Fury Warrior (137050 effect#1), Unstoppable (200853 effect#1), Carnage (202922 effect#1), Massacre (206316 effect#1), Outrage (253385 effect#1)
+Affecting spells : Warrior (137047 effect#2), Fury Warrior (137050 effect#1), Unstoppable (200853 effect#1), Carnage (202922 effect#1), Massacre (206316 effect#1), Outrage (253385 effect#1)
 Triggered by     : Rampage (184367)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ........ 
                  : ........ ....x... ........ ........   ........ .xx..... ........ ........ 
@@ -5210,7 +5243,6 @@ Effects          :
 #2 (id=357212)   : Dummy (3)
                    Base Value: 30 | Scaled Value: 30
 Description      : Your auto attacks deal an additional ${$236282sw1*$<mult>} Physical damage, generate ${$236282s3/10} Rage, and have a $s2% chance to reset the remaining cooldown on Shield Slam.
-Variables        : $mult=${($max(0,$min($pl-12,8))*8.5+241)/309}
 
 Name             : Devastator (id=236282) [Spell Family (4)] 
 Class            : Warrior
@@ -5406,5 +5438,169 @@ Effects          :
 #2 (id=477480)   : Unknown(170)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : Unlock powers at the Vindicaar's Matrix Core to use while on Argus. 
+
+Name             : Light's Judgment (Racial) (id=255647) [Scaling Spell (-6)] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+Race             
+School           : Holy
+Max Scaling Level: 120
+Range            : 40 yards
+GCD              : 1.5 seconds
+Velocity         : 3 yards/sec
+Cooldown         : 150 seconds
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ....x... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=477694)   : Trigger Missiles (32)
+                   Base Value: 0 | Scaled Value: 465816 (avg=0.4) | Trigger Spell: 256893 | Radius: 0 - 5 yards | Target: Enemy (6)
+Description      : Call down a strike of Holy energy, dealing $s1 Holy damage to enemies within $A1 yards after 3 sec.
+
+Name             : Holy Resistance (Racial Passive) (id=255651) [Passive] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+Race             
+School           : Holy
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6)
+Effects          :
+#1 (id=477698)   : Apply Aura (6) | Unknown(87)
+                   Base Value: -1 | Scaled Value: -1 | Misc Value: 0x2 | Target: Self (1)
+Description      : Reduces Holy damage taken by ${$s1/-1}%.
+
+Name             : Light's Reckoning (Racial Passive) (id=255652) [Passive] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+Race             
+School           : Physical
+Attributes       : ......x. ........ .......x ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ....x... ........ 
+                 : .......x ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6)
+Effects          :
+#1 (id=477699)   : Apply Aura (6) | Unknown(468)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 1 | Trigger Spell: 256896 | Target: Self (1)
+Description      : When you die the Light avenges you, dealing $256896s1 Holy Damage to enemies within 8 yards and healing allies for $256896s2.
+
+Name             : Demonbane (Racial Passive) (id=255653) [Passive] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+Race             
+School           : Physical
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6)
+Effects          :
+#1 (id=477700)   : Apply Aura (6) | Unknown(447)
+                   Base Value: 20 | Scaled Value: 20 | Misc Value: 4 | Target: Self (1)
+Description      : Experience gains from killing Demons increased by $s1%.
+
+Name             : Light's Judgment (Racial) (id=256893) [Scaling Spell (-6)] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+Race             
+School           : Holy
+Max Scaling Level: 120
+Range            : 40 yards
+GCD              : 1.5 seconds
+Cooldown         : 150 seconds
+Triggered by     : Light's Judgment (255647)
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=479673)   : School Damage (2): holy
+                   Base Value: 0 | Scaled Value: 465816 (avg=0.4) | Radius: 0 - 5 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
+Description      : Call down a strike of Holy energy, dealing $s1 Holy damage to enemies within $A1 yards.
+
+Name             : Light's Reckoning (Racial Passive) (id=256896) [Scaling Spell (-6)] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+Race             
+School           : Holy
+Max Scaling Level: 120
+Range            : 40 yards
+Triggered by     : Light's Reckoning (255652)
+Attributes       : ........ ........ .......x ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=479676)   : School Damage (2): holy
+                   Base Value: 0 | Scaled Value: 465816 (avg=0.4) | Radius: 0 - 5 yards | Target: Custom (18) -> AOE enemy (instant) (16)
+#2 (id=479677)   : Direct Heal (10)
+                   Base Value: 100000 | Scaled Value: 465816 (avg=0.4) | Radius: 0 - 8 yards | Target: Custom (18) -> AOE friendly (31)
+Description      : Deals $s1 Holy Damage to enemies within $A1.
+
+Heals $s2 to allies within $A1. 
+
+Name             : Forge of Light (Racial) (id=259930) 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+Race             
+School           : Holy
+Cast Time        : 2 seconds
+Duration         : 120 seconds
+Cooldown         : 300 seconds
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ .....x.. 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=484807)   : Unknown(171)
+                   Base Value: 10 | Scaled Value: 10 | Misc Value: 280498 | Radius: 0 - 3 yards | Target: Custom (18) -> Unknown(78)
+Description      : Summon a Forge of Light, enabling Blacksmithing. 
+
+Blacksmithing skill increased by $s1.
+
+Name             : Mortal Strike (Rank 2) (id=261900) [Spell Family (4), Passive] 
+Class            : Arms Warrior
+School           : Physical
+Spell Level      : 38
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ x....... ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6)
+Effects          :
+#1 (id=487995)   : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
+                   Base Value: 60 | Scaled Value: 60 | Target: Self (1)
+                   Affected Spells: Mortal Strike (12294)
+Description      : Mortal Strike's damage is increased by $s1%.
+
+Name             : Slam (Rank 2) (id=261901) [Spell Family (4), Passive] 
+Class            : Arms Warrior
+School           : Physical
+Spell Level      : 44
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ x....... ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6)
+Effects          :
+#1 (id=487996)   : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
+                   Base Value: 60 | Scaled Value: 60 | Target: Self (1)
+                   Affected Spells: Slam (1464)
+Description      : Slam's damage is increased by $s1%.
 
 
