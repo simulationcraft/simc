@@ -278,7 +278,7 @@ class DBCRecord(RawDBCRecord):
             else:
                 s += '%u%c' % (self._d[i], delim)
 
-        if self.dbcp_.has_key_block():
+        if self._dbcp.has_key_block():
             s += '%u%c' % (self._key, delim)
 
         if len(s) > 0:

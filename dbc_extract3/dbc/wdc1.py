@@ -816,6 +816,9 @@ class WDC1Parser(LegionWDBParser):
 
         return True
 
+    def build_field_data(self):
+        return True
+
     def raw_outputtable(self):
         return True
 

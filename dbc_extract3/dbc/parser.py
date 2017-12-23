@@ -620,7 +620,7 @@ class DBCParserBase:
                 dbc_id &= 0x00FFFFFF
 
             if dbc_id == id_:
-                return DBCRecordINfo(id_, record_id, self.data_offset + self.record_size * record_id, self.record_size)
+                return DBCRecordInfo(id_, record_id, self.data_offset + self.record_size * record_id, self.record_size)
 
         return DBCRecordInfo(id_, -1, 0, 0)
 
