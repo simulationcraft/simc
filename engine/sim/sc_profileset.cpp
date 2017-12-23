@@ -340,6 +340,20 @@ void profilesets_t::set_state( state new_state )
   m_mutex.unlock();
 }
 
+std::string profilesets_t::current_profileset_name()
+{
+  if ( is_done() || m_work_index == 0 )
+  {
+    return std::string();
+  }
+
+  m_control_lock.lock();
+  std::string profileset_name = m_profilesets[ m_work_index - 1 ] -> name();
+  m_control_lock.unlock();
+
+  return profileset_name;
+}
+
 bool profilesets_t::iterate( sim_t* parent )
 {
   if ( parent -> profileset_map.size() == 0 )

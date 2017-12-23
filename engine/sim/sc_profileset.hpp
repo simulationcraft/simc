@@ -317,6 +317,8 @@ public:
   size_t n_profilesets() const
   { return m_profilesets.size(); }
 
+  std::string current_profileset_name();
+
   bool parse( sim_t* );
   void initialize( sim_t* );
   void cancel();

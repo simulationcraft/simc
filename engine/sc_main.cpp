@@ -26,8 +26,13 @@ struct sim_signal_handler_t
     std::cerr << "sim_signal_handler: " << name
               << "! Iteration=" << global_sim -> current_iteration
               << " Seed=" << global_sim -> seed
-              << " TargetHealth=" << global_sim -> target -> resources.initial[ RESOURCE_HEALTH ]
-              << std::endl;
+              << " TargetHealth=" << global_sim -> target -> resources.initial[ RESOURCE_HEALTH ];
+    auto profileset = global_sim -> profilesets.current_profileset_name();
+    if ( ! profileset.empty() )
+    {
+      std::cerr << " ProfileSet=" << profileset;
+    }
+    std::cerr << std::endl;
     fflush( stderr );
   }
 
