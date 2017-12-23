@@ -4705,8 +4705,8 @@ struct coils_of_devastation_t
 
 // Unholy T21 4P
 // Procs some mechanics of Death Coil but not all of them
-// Replicates unholy vigor, scourge of the worlds, shadow infusion, T21 2P and Death March
-// Doesn't replicate DA Empowerment, T21 4P ( = doesn't proc off itself), Runic Corruption
+// Replicates unholy vigor, scourge of the worlds, shadow infusion, T21 2P and Death March and now (2017-12-23) T21 4P (can proc off itself)
+// Doesn't replicate DA Empowerment or Runic Corruption
 struct t21_death_coil_t : public death_knight_spell_t
 {
   const spell_data_t* unholy_vigor;
@@ -4773,6 +4773,16 @@ struct t21_death_coil_t : public death_knight_spell_t
     {
       residual_action::trigger( coils_of_devastation, state -> target,
         state -> result_amount * p() -> sets -> set( DEATH_KNIGHT_UNHOLY, T21, B2 ) -> effectN( 1 ).percent() );
+    }
+
+    // 2017-12-23 : the bonus death coil can now proc off itself
+    if ( p() -> sets -> has_set_bonus( DEATH_KNIGHT_UNHOLY, T21, B4 ) && result_is_hit( state -> result ) )
+    {
+      if ( rng().roll( p() -> sets -> set( DEATH_KNIGHT_UNHOLY, T21, B4 ) -> proc_chance() ) ) 
+      {
+        this -> set_target( state -> target );
+        this -> execute();
+      }
     }
   }
 };
@@ -9958,6 +9968,12 @@ struct death_knight_module_t : public module_t {
 
   void register_hotfixes() const override
   {
+    hotfix::register_spell( "Death Knight", "2017-12-23", "Dreadwake Armor 4-piece set bonus can now proc from its own bonus. Proc chance reduced to 16% (was 20%).", 251872 )
+      .field( "proc_chance" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 16 )
+      .verification_value( 20 );
+
     /*
     hotfix::register_effect( "Death Knight", "2017-01-10", "Portal to the Underworld damage increased by 33%.", 325047 )
       .field( "ap_coefficient" )
