@@ -575,7 +575,7 @@ class DBCParserBase:
 
         # Figure out the position of the id column. This may be none if WDB4/5
         # and id_block_offset > 0
-        if not self.options.raw:
+        if not self.options.raw and self.field_data:
             for idx in range(0, len(self.data_format)):
                 if self.data_format[idx].base_name() == 'id':
                     self.id_data = self.field_data[idx]
@@ -603,6 +603,9 @@ class DBCParserBase:
         return self.data[self.string_block_offset + offset:end_offset].decode('utf-8')
 
     def find_record_offset(self, id_):
+        if not self.id_data:
+            return DBCRecordInfo(id_, -1, 0, 0)
+
         unpacker = None
         if self.id_data[1] == 1:
             unpacker = _BYTE
