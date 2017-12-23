@@ -342,12 +342,13 @@ void profilesets_t::set_state( state new_state )
 
 std::string profilesets_t::current_profileset_name()
 {
+  m_control_lock.lock();
   if ( is_done() || m_work_index == 0 )
   {
+    m_control_lock.unlock();
     return std::string();
   }
 
-  m_control_lock.lock();
   std::string profileset_name = m_profilesets[ m_work_index - 1 ] -> name();
   m_control_lock.unlock();
 
