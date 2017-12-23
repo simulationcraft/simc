@@ -7270,11 +7270,11 @@ void rogue_t::init_action_list()
     build -> add_talent( this, "Hemorrhage", "if=refreshable" );
     build -> add_talent( this, "Hemorrhage", "cycle_targets=1,if=refreshable&dot.rupture.ticking&spell_targets.fan_of_knives<2+equipped.insignia_of_ravenholdt" );
     build -> add_action( this, "Fan of Knives", "if=spell_targets>=2+equipped.insignia_of_ravenholdt|buff.the_dreadlords_deceit.stack>=29" );
-    build -> add_action( this, "Fan of Knives", "if=fok_rotation" );
+    build -> add_action( this, "Fan of Knives", "if=fok_rotation&(artifact.poison_knives.rank>=5|equipped.zoldyck_family_training_shackles&target.health.pct<30)" );
       // We want to apply poison on the unit that have the most bleeds on and that meet the condition for Venomous Wound (and also for T19 dmg bonus).
       // This would be done with target_if=max:bleeds but it seems to be bugged atm
-    build -> add_action( this, "Mutilate", "cycle_targets=1,if=!fok_rotation&dot.deadly_poison_dot.refreshable" );
-    build -> add_action( this, "Mutilate", "if=!fok_rotation" );
+    build -> add_action( this, "Mutilate", "cycle_targets=1,if=dot.deadly_poison_dot.refreshable" );
+    build -> add_action( this, "Mutilate" );
 
     // Cooldowns
     action_priority_list_t* cds = get_action_priority_list( "cds", "Cooldowns" );

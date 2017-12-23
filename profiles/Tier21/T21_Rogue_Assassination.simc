@@ -44,9 +44,9 @@ actions+=/call_action_list,name=build,if=combo_points.deficit>1|energy.deficit<=
 actions.build=hemorrhage,if=refreshable
 actions.build+=/hemorrhage,cycle_targets=1,if=refreshable&dot.rupture.ticking&spell_targets.fan_of_knives<2+equipped.insignia_of_ravenholdt
 actions.build+=/fan_of_knives,if=spell_targets>=2+equipped.insignia_of_ravenholdt|buff.the_dreadlords_deceit.stack>=29
-actions.build+=/fan_of_knives,if=fok_rotation
-actions.build+=/mutilate,cycle_targets=1,if=!fok_rotation&dot.deadly_poison_dot.refreshable
-actions.build+=/mutilate,if=!fok_rotation
+actions.build+=/fan_of_knives,if=fok_rotation&(artifact.poison_knives.rank>=5|equipped.zoldyck_family_training_shackles&target.health.pct<30)
+actions.build+=/mutilate,cycle_targets=1,if=dot.deadly_poison_dot.refreshable
+actions.build+=/mutilate
 
 # Cooldowns
 actions.cds=potion,if=buff.bloodlust.react|target.time_to_die<=60|debuff.vendetta.up&cooldown.vanish.remains<5
