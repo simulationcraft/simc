@@ -27,7 +27,7 @@ void insert_data( highchart::bar_chart_t&   chart,
   }
 
   entry.set( "name", name );
-  entry.set( "reldiff",  (data.median / baseline_median - 1.0) * 100);
+  entry.set( "reldiff", baseline_median > 0 ? (data.median / baseline_median - 1.0) * 100 : 0);
   entry.set( "y", util::round( data.median ) );
 
   chart.add( "series.0.data", entry );
