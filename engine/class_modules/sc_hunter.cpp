@@ -6442,9 +6442,10 @@ void hunter_t::apl_mm()
   default_list -> add_action( this, "Counter Shot", "if=target.debuff.casting.react" );
 
   // Item Actions
-  default_list -> add_action( special_use_item_action( "tarnished_sentinel_medallion", "if=((variable.trueshot_remains_guess<6|variable.trueshot_remains_guess>30)&(target.time_to_die>cooldown+duration))|target.time_to_die<25|buff.bullseye.react=30" ) );
-  default_list -> add_action( special_use_item_action( "tome_of_unraveling_sanity", "if=((cooldown.trueshot.remains<13|cooldown.trueshot.remains>30)&(target.time_to_die>cooldown+duration*2))|target.time_to_die<26|buff.bullseye.react=30" ) );
-  default_list -> add_action( special_use_item_action( "kiljaedens_burning_wish", "if=cooldown.trueshot.remains>20" ) );
+  default_list -> add_action( special_use_item_action( "tarnished_sentinel_medallion", "if=((variable.trueshot_remains_guess<6|variable.trueshot_remains_guess>45)&(target.time_to_die>cooldown+duration))|target.time_to_die<25|buff.bullseye.react=30" ) );
+  default_list -> add_action( special_use_item_action( "tome_of_unraveling_sanity", "if=((variable.trueshot_remains_guess<13|variable.trueshot_remains_guess>60)&(target.time_to_die>cooldown+duration*2))|target.time_to_die<26|buff.bullseye.react=30" ) );
+  default_list -> add_action( special_use_item_action( "kiljaedens_burning_wish", "if=variable.trueshot_remains_guess>45" ) );
+  default_list -> add_action( special_use_item_action( "terminus_signaling_beacon", "if=variable.trueshot_remains_guess>30" ) );
   default_list -> add_action( "use_items" );
 
   // Always keep Volley up if talented

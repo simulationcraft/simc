@@ -33,7 +33,6 @@ actions.precombat+=/windburst
 # Executed every time the actor is available.
 actions=auto_shot
 actions+=/counter_shot,if=target.debuff.casting.react
-actions+=/use_item,name=tarnished_sentinel_medallion,if=((variable.trueshot_remains_guess<6|variable.trueshot_remains_guess>30)&(target.time_to_die>cooldown+duration))|target.time_to_die<25|buff.bullseye.react=30
 actions+=/use_items
 actions+=/volley,toggle=on
 # Start being conservative with focus if expecting a Piercing Shot at the end of the current Vulnerable debuff. The expression lowest_vuln_within.<range> is used to check the lowest Vulnerable debuff duration on all enemies within the specified range from the target.
@@ -126,16 +125,16 @@ feet=ullrs_feather_snowshoes,id=137033,bonus_id=3630
 finger1=soul_of_the_huntmaster,id=151641,bonus_id=3630,gem_id=151584,enchant=binding_of_mastery
 finger2=sullied_seal_of_the_pantheon,id=151972,bonus_id=3612/1502,enchant=binding_of_mastery
 trinket1=amanthuls_vision,id=154172,bonus_id=4213
-trinket2=tarnished_sentinel_medallion,id=147017,bonus_id=1512/3563
+trinket2=shadowsinged_fang,id=151968,bonus_id=3612/1502
 main_hand=thasdorah_legacy_of_the_windrunners,id=128826,gem_id=155853/155847/152291,relic_id=3612:1512/3612:1512/3612:1502
 
 # Gear Summary
-# gear_ilvl=965.73
+# gear_ilvl=967.73
 # gear_agility=32392
 # gear_stamina=59966
 # gear_crit_rating=11220
 # gear_haste_rating=8657
-# gear_mastery_rating=13606
+# gear_mastery_rating=12286
 # gear_versatility_rating=4415
 # gear_armor=3526
 # set_bonus=tier20_2pc=1

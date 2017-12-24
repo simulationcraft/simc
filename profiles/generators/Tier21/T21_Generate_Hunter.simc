@@ -78,7 +78,7 @@ feet=ullrs_feather_snowshoes,id=137033,bonus_id=3630
 finger1=soul_of_the_huntmaster,id=151641,bonus_id=3630,gem_id=151584,enchant=binding_of_mastery
 finger2=sullied_seal_of_the_pantheon,id=151972,bonus_id=3612/1502,enchant=binding_of_mastery
 trinket1=amanthuls_vision,id=154172,bonus_id=4213
-trinket2=tarnished_sentinel_medallion,id=147017,bonus_id=1512/3563
+trinket2=shadowsinged_fang,id=151968,bonus_id=3612/1502
 main_hand=thasdorah_legacy_of_the_windrunners,id=128826,gem_id=155853/155847/152291,relic_id=3612:1512/3612:1512/3612:1502
 
 save=T21_Hunter_Marksmanship.simc
