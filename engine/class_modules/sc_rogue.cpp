@@ -3019,6 +3019,11 @@ struct fan_of_knives_t: public rogue_attack_t
     energize_type     = ENERGIZE_ON_HIT;
     energize_resource = RESOURCE_COMBO_POINT;
     energize_amount   = data().effectN( 2 ).base_value();
+
+    if ( p -> artifact.poison_knives.rank() )
+    {
+      add_child( p -> poison_knives );
+    }
   }
 
   bool procs_insignia_of_ravenholdt() const override
