@@ -33,7 +33,7 @@ actions.precombat+=/windburst
 # Executed every time the actor is available.
 actions=auto_shot
 actions+=/counter_shot,if=target.debuff.casting.react
-actions+=/use_item,name=tarnished_sentinel_medallion,if=((variable.trueshot_remains_guess<6|variable.trueshot_remains_guess>45)&(target.time_to_die>cooldown+duration))|target.time_to_die<25|buff.bullseye.react=30
+actions+=/use_item,name=tarnished_sentinel_medallion,if=((cooldown.trueshot.remains_guess<6|cooldown.trueshot.remains_guess>45)&(target.time_to_die>cooldown+duration))|target.time_to_die<25|buff.bullseye.react=30
 actions+=/use_items
 actions+=/volley,toggle=on
 # Start being conservative with focus if expecting a Piercing Shot at the end of the current Vulnerable debuff. The expression lowest_vuln_within.<range> is used to check the lowest Vulnerable debuff duration on all enemies within the specified range from the target.
@@ -46,11 +46,7 @@ actions.cooldowns=arcane_torrent,if=focus.deficit>=30&(!talent.sidewinders.enabl
 actions.cooldowns+=/berserking,if=buff.trueshot.up
 actions.cooldowns+=/blood_fury,if=buff.trueshot.up
 actions.cooldowns+=/potion,if=(buff.trueshot.react&buff.bloodlust.react)|buff.bullseye.react=30|((consumable.prolonged_power&target.time_to_die<62)|target.time_to_die<31)
-# Estimate the real Trueshot cooldown based on the reduction since the last usage. After a short period of being on cooldown it will have a pretty accurate estimation that can be used for lining up trinkets or other cooldowns.
-actions.cooldowns+=/variable,name=trueshot_reduction,op=set,value=(time-last_trueshot)%(cooldown.trueshot.duration-cooldown.trueshot.remains),if=cooldown.trueshot.remains
-actions.cooldowns+=/variable,name=trueshot_cooldown_guess,op=set,value=cooldown.trueshot.duration*variable.trueshot_reduction,if=cooldown.trueshot.remains
-actions.cooldowns+=/variable,name=trueshot_remains_guess,op=set,value=cooldown.trueshot.remains*variable.trueshot_reduction,if=cooldown.trueshot.remains
-actions.cooldowns+=/trueshot,if=time=0|buff.bloodlust.up|(target.time_to_die>(variable.trueshot_cooldown_guess+duration))|buff.bullseye.react=30|target.time_to_die<16
+actions.cooldowns+=/trueshot,if=time=0|buff.bloodlust.up|(target.time_to_die>(cooldown.trueshot.duration_guess+duration))|buff.bullseye.react=30|target.time_to_die<16
 
 # Prevent wasting a Marking Targets proc if the Hunter's Mark debuff could be overwritten by an active Sentinel before we can use Marked Shot. The expression action.sentinel.marks_next_gcd is used to determine if an active Sentinel will mark the targets in its area within the next gcd.
 actions.non_patient_sniper=variable,name=waiting_for_sentinel,value=talent.sentinel.enabled&(buff.marking_targets.up|buff.trueshot.up)&action.sentinel.marks_next_gcd

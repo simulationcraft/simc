@@ -422,7 +422,6 @@ public:
   } artifacts;
 
   player_t* last_true_aim_target;
-  timespan_t last_trueshot;
   bool clear_next_hunters_mark;
 
   hunter_t( sim_t* sim, const std::string& name, race_e r = RACE_NONE ) :
@@ -440,8 +439,7 @@ public:
     specs( specs_t() ),
     mastery( mastery_spells_t() ),
     last_true_aim_target( nullptr ),
-    clear_next_hunters_mark( true ),
-    last_trueshot( timespan_t::from_millis( 0 ) )
+    clear_next_hunters_mark( true )
   {
     // Cooldowns
     cooldowns.bestial_wrath   = get_cooldown( "bestial_wrath" );
@@ -5177,7 +5175,6 @@ struct trueshot_t: public hunter_spell_t
   {
     hunter_spell_t::execute();
 
-    p() -> last_trueshot = sim -> current_time();
     p() -> buffs.trueshot -> trigger();
 
     if ( p() -> artifacts.rapid_killing.rank() )
@@ -5615,8 +5612,8 @@ expr_t* hunter_t::create_expression( action_t* a, const std::string& expression_
       action_t* action;
       int radius;
 
-      lowest_piercing_vuln_expr_t( action_t* p , int r ) :
-        expr_t( "lowest_vuln_within" ), action( p ), radius( r )
+      lowest_piercing_vuln_expr_t( action_t* a, int r ) :
+        expr_t( "lowest_vuln_within" ), action( a ), radius( r )
       {}
 
       double evaluate() override
@@ -5635,10 +5632,63 @@ expr_t* hunter_t::create_expression( action_t* a, const std::string& expression_
     };
     return new lowest_piercing_vuln_expr_t( a, util::str_to_num<int>( splits[ 1 ] ) );
   }
-  else if ( splits[ 0 ] == "last_trueshot" )
+  else if ( splits[ 0 ] == "cooldown" && splits[ 1 ] == "trueshot" )
   {
-    return make_ref_expr( expression_str, last_trueshot );
-  };
+    hunter_t* hunter = static_cast<hunter_t*>( a -> player );
+
+    if ( splits[ 2 ] == "remains_guess" )
+    {
+      struct trueshot_remains_guess_t : public expr_t
+      {
+        hunter_t* hunter;
+
+        trueshot_remains_guess_t( hunter_t* h, const std::string& str ) :
+          expr_t( str ), hunter( h )
+        { }
+
+        double evaluate() override
+        {
+          cooldown_t* trueshot_cd = hunter -> cooldowns.trueshot;
+
+          if ( trueshot_cd -> remains() == trueshot_cd -> duration )
+            return trueshot_cd -> duration.total_seconds();
+
+          if ( trueshot_cd -> up() )
+            return timespan_t::zero().total_seconds();
+
+          double reduction = (hunter -> sim -> current_time() - trueshot_cd -> last_start) / (trueshot_cd -> duration - trueshot_cd -> remains());
+          return trueshot_cd -> remains().total_seconds() * reduction;
+        }
+      };
+      return new trueshot_remains_guess_t( hunter, expression_str );
+    }
+    else if ( splits[ 2 ] == "duration_guess" )
+    {
+      struct trueshot_duration_guess_t : public expr_t
+      {
+        hunter_t* hunter;
+
+        trueshot_duration_guess_t( hunter_t* h, const std::string& str ) :
+          expr_t( str ), hunter( h )
+        { }
+
+        double evaluate() override
+        {
+          cooldown_t* trueshot_cd = hunter -> cooldowns.trueshot;
+
+          if ( trueshot_cd -> last_charged == timespan_t::zero() || trueshot_cd -> remains() == trueshot_cd -> duration )
+            return trueshot_cd -> duration.total_seconds();
+
+          if ( trueshot_cd -> up() )
+            return ( trueshot_cd -> last_charged - trueshot_cd -> last_start ).total_seconds();
+
+          double reduction = ( hunter -> sim -> current_time() - trueshot_cd -> last_start ) / ( trueshot_cd -> duration - trueshot_cd -> remains() );
+          return trueshot_cd -> duration.total_seconds() * reduction;
+        }
+      };
+      return new trueshot_duration_guess_t( hunter, expression_str );
+    }
+  }
 
   return player_t::create_expression( a, expression_str );
 }
@@ -6442,10 +6492,10 @@ void hunter_t::apl_mm()
   default_list -> add_action( this, "Counter Shot", "if=target.debuff.casting.react" );
 
   // Item Actions
-  default_list -> add_action( special_use_item_action( "tarnished_sentinel_medallion", "if=((variable.trueshot_remains_guess<6|variable.trueshot_remains_guess>45)&(target.time_to_die>cooldown+duration))|target.time_to_die<25|buff.bullseye.react=30" ) );
-  default_list -> add_action( special_use_item_action( "tome_of_unraveling_sanity", "if=((variable.trueshot_remains_guess<13|variable.trueshot_remains_guess>60)&(target.time_to_die>cooldown+duration*2))|target.time_to_die<26|buff.bullseye.react=30" ) );
-  default_list -> add_action( special_use_item_action( "kiljaedens_burning_wish", "if=variable.trueshot_remains_guess>45" ) );
-  default_list -> add_action( special_use_item_action( "terminus_signaling_beacon", "if=variable.trueshot_remains_guess>30" ) );
+  default_list -> add_action( special_use_item_action( "tarnished_sentinel_medallion", "if=((cooldown.trueshot.remains_guess<6|cooldown.trueshot.remains_guess>45)&(target.time_to_die>cooldown+duration))|target.time_to_die<25|buff.bullseye.react=30" ) );
+  default_list -> add_action( special_use_item_action( "tome_of_unraveling_sanity", "if=((cooldown.trueshot.remains_guess<13|cooldown.trueshot.remains_guess>60)&(target.time_to_die>cooldown+duration*2))|target.time_to_die<26|buff.bullseye.react=30" ) );
+  default_list -> add_action( special_use_item_action( "kiljaedens_burning_wish", "if=cooldown.trueshot.remains_guess>45" ) );
+  default_list -> add_action( special_use_item_action( "terminus_signaling_beacon", "if=cooldown.trueshot.remains_guess>30" ) );
   default_list -> add_action( "use_items" );
 
   // Always keep Volley up if talented
@@ -6467,14 +6517,9 @@ void hunter_t::apl_mm()
 
   // In-combat potion
   cooldowns -> add_action( "potion,if=(buff.trueshot.react&buff.bloodlust.react)|buff.bullseye.react=30|((consumable.prolonged_power&target.time_to_die<62)|target.time_to_die<31)" );
+
   // Trueshot
-
-  cooldowns -> add_action( "variable,name=trueshot_reduction,op=set,value=(time-last_trueshot)%(cooldown.trueshot.duration-cooldown.trueshot.remains),if=cooldown.trueshot.remains",
-                           "Estimate the real Trueshot cooldown based on the reduction since the last usage. After a short period of being on cooldown it will have a pretty accurate estimation that can be used for lining up trinkets or other cooldowns." );
-
-  cooldowns -> add_action( "variable,name=trueshot_cooldown_guess,op=set,value=cooldown.trueshot.duration*variable.trueshot_reduction,if=cooldown.trueshot.remains" );
-  cooldowns -> add_action( "variable,name=trueshot_remains_guess,op=set,value=cooldown.trueshot.remains*variable.trueshot_reduction,if=cooldown.trueshot.remains" );
-  cooldowns -> add_action( this, "Trueshot", "if=time=0|buff.bloodlust.up|(target.time_to_die>(variable.trueshot_cooldown_guess+duration))|buff.bullseye.react=30|target.time_to_die<16" );
+  cooldowns -> add_action( this, "Trueshot", "if=time=0|buff.bloodlust.up|(target.time_to_die>(cooldown.trueshot.duration_guess+duration))|buff.bullseye.react=30|target.time_to_die<16" );
 
   // Generic APL
   non_patient_sniper -> add_action( "variable,name=waiting_for_sentinel,value=talent.sentinel.enabled&(buff.marking_targets.up|buff.trueshot.up)&action.sentinel.marks_next_gcd",
