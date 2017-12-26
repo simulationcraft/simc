@@ -2516,7 +2516,7 @@ static unsigned __class_mastery_ability_data[MAX_CLASS][MAX_SPECS_PER_CLASS][CLA
 #define RACE_ABILITY_SIZE (4)
 
 #ifndef MAX_RACE
-#define MAX_RACE (28)
+#define MAX_RACE (31)
 #endif
 
 // Racial abilities, wow build 25549
@@ -3191,7 +3191,6 @@ static unsigned __race_ability_data[MAX_RACE][MAX_CLASS][RACE_ABILITY_SIZE] = {
     {     0, },
     {     0, },
   },
-  // Racial abilities for Pandaren
   {
     {     0, },
     {     0, },
@@ -3209,7 +3208,13 @@ static unsigned __race_ability_data[MAX_RACE][MAX_CLASS][RACE_ABILITY_SIZE] = {
   },
   // Racial abilities for Pandaren
   {
-    {     0, },
+    // Generic racial abilities
+    {
+      107076, // Bouncy
+      107072, // Epicurean
+      107074, // Inner Peace
+      107079, // Quaking Palm
+    },
     {     0, },
     {     0, },
     {     0, },
@@ -3223,7 +3228,6 @@ static unsigned __race_ability_data[MAX_RACE][MAX_CLASS][RACE_ABILITY_SIZE] = {
     {     0, },
     {     0, },
   },
-  // Racial abilities for Pandaren
   {
     {     0, },
     {     0, },
@@ -3239,6 +3243,55 @@ static unsigned __race_ability_data[MAX_RACE][MAX_CLASS][RACE_ABILITY_SIZE] = {
     {     0, },
     {     0, },
   },
+  // Racial abilities for Nightborne
+  {
+    {     0, },
+    {     0, },
+    {     0, },
+    {     0, },
+    {     0, },
+    {     0, },
+    {     0, },
+    {     0, },
+    {     0, },
+    {     0, },
+    {     0, },
+    {     0, },
+    {     0, },
+  },
+  // Racial abilities for Highmountain Tauren
+  {
+    {     0, },
+    {     0, },
+    {     0, },
+    {     0, },
+    {     0, },
+    {     0, },
+    {     0, },
+    {     0, },
+    {     0, },
+    {     0, },
+    {     0, },
+    {     0, },
+    {     0, },
+  },
+  // Racial abilities for Void Elf
+  {
+    {     0, },
+    {     0, },
+    {     0, },
+    {     0, },
+    {     0, },
+    {     0, },
+    {     0, },
+    {     0, },
+    {     0, },
+    {     0, },
+    {     0, },
+    {     0, },
+    {     0, },
+  },
+  // Racial abilities for Lightforged Draenei
   {
     {     0, },
     {     0, },
