@@ -499,7 +499,7 @@ public:
 
     proc_t* controlled_burn; // Tracking Controlled Burn talent
 
-    proc_t* winters_chill_applied;
+    proc_t* brain_freeze_flurry;
     proc_t* fingers_of_frost_wasted;
   } procs;
 
@@ -4257,10 +4257,14 @@ struct flurry_t : public frost_mage_spell_t
   {
     frost_mage_spell_t::execute();
 
-    p() -> state.brain_freeze_active = p() -> buffs.brain_freeze -> up();
+    bool brain_freeze = p() -> buffs.brain_freeze -> up();
+    p() -> state.brain_freeze_active = brain_freeze;
     p() -> buffs.brain_freeze -> expire();
     p() -> state.flurry_bolt_count = 0;
     p() -> buffs.zannesu_journey -> trigger();
+
+    if ( brain_freeze )
+      p() -> procs.brain_freeze_flurry -> occur();
   }
 
   virtual void impact( action_state_t* s ) override
@@ -6824,9 +6828,7 @@ mage_td_t::mage_td_t( player_t* target, mage_t* mage ) :
   debuffs.water_jet         = buff_creator_t( *this, "water_jet", mage -> find_spell( 135029 ) )
                                 .cd( timespan_t::zero() );
   debuffs.winters_chill     = buff_creator_t( *this, "winters_chill", mage -> find_spell( 228358 ) )
-                                .chance( mage -> spec.brain_freeze_2 -> ok() ? 1.0 : 0.0 )
-                                .stack_change_callback( [ mage ] ( buff_t*, int, int cur )
-                                  { if ( cur == 1 ) mage -> procs.winters_chill_applied -> occur(); } );
+                                .chance( mage -> spec.brain_freeze_2 -> ok() ? 1.0 : 0.0 );
 }
 
 mage_t::mage_t( sim_t* sim, const std::string& name, race_e r ) :
@@ -7602,7 +7604,7 @@ void mage_t::init_procs()
     case MAGE_ARCANE:
       break;
     case MAGE_FROST:
-      procs.winters_chill_applied   = get_proc( "Winter's Chill applied" );
+      procs.brain_freeze_flurry     = get_proc( "Brain Freeze Flurries cast" );
       procs.fingers_of_frost_wasted = get_proc( "Fingers of Frost wasted due to Winter's Chill" );
       break;
     case MAGE_FIRE:
@@ -9154,7 +9156,7 @@ public:
        << "<th>Other effects</th>\n"
        << "</tr>\n";
 
-    double wc = p.procs.winters_chill_applied -> count.pretty_mean();
+    double bff = p.procs.brain_freeze_flurry -> count.pretty_mean();
 
     size_t row = 0;
     for ( size_t i = 0; i < p.proc_source_list.size(); i++ )
@@ -9179,7 +9181,7 @@ public:
 
       os.format( "<tr%s>", row_class.c_str() );
 
-      auto format_cell = [ wc, &os ] ( double mean, bool wc_util )
+      auto format_cell = [ bff, &os ] ( double mean, bool wc_util )
       {
         std::string format_str;
         format_str += "<td class=\"right\">";
@@ -9189,7 +9191,7 @@ public:
           format_str += " (%.1f%%)";
         format_str += "</td>";
 
-        os.format( format_str.c_str(), mean, wc ? 100.0 * mean / wc : 0.0 );
+        os.format( format_str.c_str(), mean, bff ? 100.0 * mean / bff : 0.0 );
       };
 
       assert( data -> procs.size() == actions::mage_spell_t::FROZEN_MAX );
