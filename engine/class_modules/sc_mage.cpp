@@ -144,7 +144,7 @@ struct buff_stack_benefit_t
   }
 };
 
-struct cooldown_waste_data_t
+struct cooldown_waste_data_t : private noncopyable
 {
   cooldown_t* cd;
   double buffer;
@@ -255,6 +255,61 @@ struct cooldown_reduction_data_t
   }
 };
 
+struct proc_source_t : private noncopyable
+{
+  const std::string name_str;
+  auto_dispose<std::vector<proc_t*> > procs;
+
+  proc_source_t( sim_t& sim, const std::string& name, size_t count ) :
+    name_str( name )
+  {
+    for ( size_t i = 0; i < count; i++ )
+    {
+      procs.push_back( new proc_t( sim, name_str + " " + util::to_string( i ) ) );
+    }
+  }
+
+  void occur( size_t index )
+  {
+    assert( index < procs.size() );
+    procs[ index ] -> occur();
+  }
+
+  const proc_t& get( size_t index ) const
+  {
+    assert( index < procs.size() );
+    return *procs[ index ];
+  }
+
+  bool active() const
+  {
+    return range::find_if( procs, [] ( proc_t* p ) { return p -> count.sum() > 0.0; } ) != procs.end();
+  }
+
+  void reset()
+  {
+    range::for_each( procs, std::mem_fn( &proc_t::reset ) );
+  }
+
+  void merge( const proc_source_t& other )
+  {
+    for ( size_t i = 0; i < procs.size(); i++ )
+    {
+      procs[ i ] -> merge( *other.procs[ i ] );
+    }
+  }
+
+  void datacollection_begin()
+  {
+    range::for_each( procs, std::mem_fn( &proc_t::datacollection_begin ) );
+  }
+
+  void datacollection_end()
+  {
+    range::for_each( procs, std::mem_fn( &proc_t::datacollection_end ) );
+  }
+};
+
 struct mage_t : public player_t
 {
 public:
@@ -285,6 +340,7 @@ public:
 
   // Data collection
   auto_dispose<std::vector<cooldown_waste_data_t*> > cooldown_waste_data_list;
+  auto_dispose<std::vector<proc_source_t*> > proc_source_list;
 
   // Cached actions
   struct actions_t
@@ -443,10 +499,8 @@ public:
 
     proc_t* controlled_burn; // Tracking Controlled Burn talent
 
+    proc_t* winters_chill_applied;
     proc_t* fingers_of_frost_wasted;
-    proc_t* iv_extension_fingers_of_frost;
-    proc_t* iv_extension_winters_chill;
-    proc_t* iv_extension_other;
   } procs;
 
   // Sample data
@@ -732,6 +786,21 @@ public:
     auto cdw = new cooldown_waste_data_t( cd );
     cooldown_waste_data_list.push_back( cdw );
     return cdw;
+  }
+
+  proc_source_t* get_proc_source( const std::string& name, size_t count )
+  {
+    for ( auto ps : proc_source_list )
+    {
+      if ( ps -> name_str == name )
+      {
+        return ps;
+      }
+    }
+
+    auto ps = new proc_source_t( *sim, name, count );
+    proc_source_list.push_back( ps );
+    return ps;
   }
 
   // Public mage functions:
@@ -1542,11 +1611,19 @@ struct mage_spell_t : public spell_t
 {
   static const snapshot_state_e STATE_FROZEN = STATE_TGT_USER_1;
 
-  enum frozen_source_t
+  enum frozen_type_t
   {
-    FROZEN_WINTERS_CHILL    = 0x01,
-    FROZEN_ROOT             = 0x02,
-    FROZEN_FINGERS_OF_FROST = 0x04
+    FROZEN_WINTERS_CHILL = 0,
+    FROZEN_ROOT,
+    FROZEN_FINGERS_OF_FROST,
+    FROZEN_MAX
+  };
+
+  enum frozen_flag_t
+  {
+    FF_WINTERS_CHILL    = 1 << FROZEN_WINTERS_CHILL,
+    FF_ROOT             = 1 << FROZEN_ROOT,
+    FF_FINGERS_OF_FROST = 1 << FROZEN_FINGERS_OF_FROST
   };
 
   struct affected_by_t
@@ -1609,14 +1686,15 @@ public:
     {
       triggers_arcane_missiles = false;
     }
-    if ( track_cd_waste )
-    {
-      cd_waste = p() -> get_cooldown_waste_data( cooldown );
-    }
   }
 
   virtual bool init_finished() override
   {
+    if ( track_cd_waste && sim -> report_details != 0 )
+    {
+      cd_waste = p() -> get_cooldown_waste_data( cooldown );
+    }
+
     if ( p() -> specialization() == MAGE_ARCANE
       && triggers_arcane_missiles )
     {
@@ -1650,10 +1728,10 @@ public:
     unsigned source = 0u;
 
     if ( td -> debuffs.winters_chill -> check() )
-      source |= FROZEN_WINTERS_CHILL;
+      source |= FF_WINTERS_CHILL;
 
     if ( td -> debuffs.frozen -> check() )
-      source |= FROZEN_ROOT;
+      source |= FF_ROOT;
 
     return source;
   }
@@ -2134,6 +2212,9 @@ struct frost_mage_spell_t : public mage_spell_t
 
   proc_t* proc_fof;
 
+  bool track_shatter;
+  proc_source_t* shatter_source;
+
   unsigned impact_flags;
 
   frost_mage_spell_t( const std::string& n, mage_t* p,
@@ -2141,6 +2222,9 @@ struct frost_mage_spell_t : public mage_spell_t
     : mage_spell_t( n, p, s ),
       chills( false ),
       calculate_on_impact( false ),
+      proc_fof( nullptr ),
+      track_shatter( false ),
+      shatter_source( nullptr ),
       impact_flags( 0u )
   {
     affected_by.frost_mage = true;
@@ -2155,6 +2239,16 @@ struct frost_mage_spell_t : public mage_spell_t
     {
       std::swap( snapshot_flags, impact_flags );
     }
+  }
+
+  virtual bool init_finished() override
+  {
+    if ( track_shatter && sim -> report_details != 0 )
+    {
+      shatter_source = p() -> get_proc_source( "Shatter/" + name_str, FROZEN_MAX );
+    }
+
+    return mage_spell_t::init_finished();
   }
 
   struct brain_freeze_delay_event_t : public event_t
@@ -2297,6 +2391,26 @@ struct frost_mage_spell_t : public mage_spell_t
   virtual result_e calculate_impact_result( action_state_t* s ) const
   { return mage_spell_t::calculate_result( s ); }
 
+  void record_shatter_source( const action_state_t* s, proc_source_t* source = nullptr )
+  {
+    unsigned frozen = debug_cast<const mage_spell_state_t*>( s ) -> frozen;
+
+    if ( ! frozen )
+      return;
+
+    if ( ! source )
+      source = shatter_source;
+
+    assert( source );
+
+    if ( frozen & FF_WINTERS_CHILL )
+      source -> occur( FROZEN_WINTERS_CHILL );
+    else if ( frozen & ~FF_FINGERS_OF_FROST )
+      source -> occur( FROZEN_ROOT );
+    else
+      source -> occur( FROZEN_FINGERS_OF_FROST );
+  }
+
   virtual void impact( action_state_t* s ) override
   {
     if ( calculate_on_impact )
@@ -2309,6 +2423,11 @@ struct frost_mage_spell_t : public mage_spell_t
     }
 
     mage_spell_t::impact( s );
+
+    if ( result_is_hit( s -> result ) && shatter_source )
+    {
+      record_shatter_source( s );
+    }
 
     if ( result_is_hit( s -> result ) && chills && p() -> talents.bone_chilling -> ok() )
     {
@@ -3650,6 +3769,7 @@ struct ebonbolt_t : public frost_mage_spell_t
       glacial_eruption_delay = 1000 * p -> artifact.glacial_eruption.data().effectN( 1 ).time_value();
       add_child( glacial_eruption );
     }
+    track_shatter = true;
   }
 
   virtual void execute() override
@@ -4246,6 +4366,7 @@ struct frostbolt_t : public frost_mage_spell_t
     base_crit += p -> artifact.shattering_bolts.percent();
     chills = true;
     calculate_on_impact = true;
+    track_shatter = true;
   }
 
   virtual bool init_finished() override
@@ -4507,6 +4628,7 @@ struct glacial_spike_t : public frost_mage_spell_t
                                -> effectN( 2 ).percent();
     }
     calculate_on_impact = true;
+    track_shatter = true;
   }
 
   virtual bool ready() override
@@ -4655,8 +4777,11 @@ struct ice_lance_state_t : public mage_spell_state_t
 
 struct ice_lance_t : public frost_mage_spell_t
 {
+  proc_source_t* extension_source;
+
   ice_lance_t( mage_t* p, const std::string& options_str ) :
-    frost_mage_spell_t( "ice_lance", p, p -> find_specialization_spell( "Ice Lance" ) )
+    frost_mage_spell_t( "ice_lance", p, p -> find_specialization_spell( "Ice Lance" ) ),
+    extension_source( nullptr )
   {
     parse_options( options_str );
     parse_effect_data( p -> find_spell( 228598 ) -> effectN( 1 ) );
@@ -4678,6 +4803,17 @@ struct ice_lance_t : public frost_mage_spell_t
     }
     crit_bonus_multiplier *= 1.0 + p -> artifact.let_it_go.percent();
     calculate_on_impact = true;
+    track_shatter = true;
+  }
+
+  virtual bool init_finished() override
+  {
+    if ( p() -> talents.thermal_void -> ok() && sim -> report_details != 0 )
+    {
+      extension_source = p() -> get_proc_source( "Shatter/Thermal Void extension", FROZEN_MAX );
+    }
+
+    return frost_mage_spell_t::init_finished();
   }
 
   virtual action_state_t* new_state() override
@@ -4702,12 +4838,12 @@ struct ice_lance_t : public frost_mage_spell_t
     if ( p() -> bugs )
     {
       if ( p() -> state.fingers_of_frost_active )
-        source |= FROZEN_FINGERS_OF_FROST;
+        source |= FF_FINGERS_OF_FROST;
     }
     else
     {
       if ( debug_cast<const ice_lance_state_t*>( s ) -> fingers_of_frost )
-        source |= FROZEN_FINGERS_OF_FROST;
+        source |= FF_FINGERS_OF_FROST;
     }
 
     return source;
@@ -4771,16 +4907,14 @@ struct ice_lance_t : public frost_mage_spell_t
 
         p() -> buffs.icy_veins -> extend_duration( p(), tv_extension );
 
-        if ( frozen & FROZEN_WINTERS_CHILL )
-          p() -> procs.iv_extension_winters_chill -> occur();
-        else if ( frozen & ~FROZEN_FINGERS_OF_FROST )
-          p() -> procs.iv_extension_other -> occur();
-        else
-          p() -> procs.iv_extension_fingers_of_frost -> occur();
+        if ( extension_source )
+        {
+          record_shatter_source( s, extension_source );
+        }
       }
 
-      if ( frozen &  FROZEN_FINGERS_OF_FROST
-        && frozen & ~FROZEN_FINGERS_OF_FROST )
+      if ( frozen &  FF_FINGERS_OF_FROST
+        && frozen & ~FF_FINGERS_OF_FROST )
       {
         p() -> procs.fingers_of_frost_wasted -> occur();
       }
@@ -5012,7 +5146,7 @@ living_bomb_explosion_t::
   background = true;
   if ( parent_lb -> casted )
   {
-    child_lb = new living_bomb_t( p, std::string( "" ), false );
+    child_lb = new living_bomb_t( p, "", false );
     child_lb -> background = true;
   }
 }
@@ -6690,7 +6824,9 @@ mage_td_t::mage_td_t( player_t* target, mage_t* mage ) :
   debuffs.water_jet         = buff_creator_t( *this, "water_jet", mage -> find_spell( 135029 ) )
                                 .cd( timespan_t::zero() );
   debuffs.winters_chill     = buff_creator_t( *this, "winters_chill", mage -> find_spell( 228358 ) )
-                                .chance( mage -> spec.brain_freeze_2 -> ok() ? 1.0 : 0.0 );
+                                .chance( mage -> spec.brain_freeze_2 -> ok() ? 1.0 : 0.0 )
+                                .stack_change_callback( [ mage ] ( buff_t*, int, int cur )
+                                  { if ( cur == 1 ) mage -> procs.winters_chill_applied -> occur(); } );
 }
 
 mage_t::mage_t( sim_t* sim, const std::string& name, race_e r ) :
@@ -6997,6 +7133,11 @@ void mage_t::merge( player_t& other )
     cooldown_waste_data_list[ i ] -> merge( *mage.cooldown_waste_data_list[ i ] );
   }
 
+  for ( size_t i = 0; i < proc_source_list.size(); i++ )
+  {
+    proc_source_list[ i ] -> merge( *mage.proc_source_list[ i ] );
+  }
+
   switch ( specialization() )
   {
     case MAGE_ARCANE:
@@ -7056,6 +7197,7 @@ void mage_t::datacollection_begin()
   player_t::datacollection_begin();
 
   range::for_each( cooldown_waste_data_list, std::mem_fn( &cooldown_waste_data_t::datacollection_begin ) );
+  range::for_each( proc_source_list, std::mem_fn( &proc_source_t::datacollection_begin ) );
 }
 
 // mage_t::datacollection_end =================================================
@@ -7065,6 +7207,7 @@ void mage_t::datacollection_end()
   player_t::datacollection_end();
 
   range::for_each( cooldown_waste_data_list, std::mem_fn( &cooldown_waste_data_t::datacollection_end ) );
+  range::for_each( proc_source_list, std::mem_fn( &proc_source_t::datacollection_end ) );
 }
 
 // mage_t::create_pets ========================================================
@@ -7459,14 +7602,8 @@ void mage_t::init_procs()
     case MAGE_ARCANE:
       break;
     case MAGE_FROST:
+      procs.winters_chill_applied   = get_proc( "Winter's Chill applied" );
       procs.fingers_of_frost_wasted = get_proc( "Fingers of Frost wasted due to Winter's Chill" );
-
-      if ( talents.thermal_void -> ok() )
-      {
-        procs.iv_extension_fingers_of_frost = get_proc( "Icy Veins extension from Fingers of Frost" );
-        procs.iv_extension_winters_chill    = get_proc( "Icy Veins extension from Winter's Chill" );
-        procs.iv_extension_other            = get_proc( "Icy Veins extension from other sources" );
-      }
       break;
     case MAGE_FIRE:
       procs.heating_up_generated         = get_proc( "Heating Up generated" );
@@ -8398,6 +8535,8 @@ void mage_t::reset()
   last_bomb_target = nullptr;
   ground_aoe_expiration.clear();
   burn_phase.reset();
+
+  range::for_each( proc_source_list, std::mem_fn( &proc_source_t::reset ) );
 }
 
 // mage_t::stun =============================================================
@@ -8998,6 +9137,76 @@ public:
        << "</div>\n";
   }
 
+  void html_customsection_shatter( report::sc_html_stream& os )
+  {
+    if ( p.proc_source_list.empty() )
+      return;
+
+    os << "<div class=\"player-section custom_section\">\n"
+       << "<h3 class=\"toggle open\">Shatter</h3>\n"
+       << "<div class=\"toggle-content\">\n";
+
+    os << "<table class=\"sc\" style=\"margin-top: 5px;\">\n"
+       << "<tr>\n"
+       << "<th>Ability</th>\n"
+       << "<th>Winter's Chill (utilization)</th>\n"
+       << "<th>Fingers of Frost</th>\n"
+       << "<th>Other effects</th>\n"
+       << "</tr>\n";
+
+    double wc = p.procs.winters_chill_applied -> count.pretty_mean();
+
+    size_t row = 0;
+    for ( size_t i = 0; i < p.proc_source_list.size(); i++ )
+    {
+      const proc_source_t* data = p.proc_source_list[ i ];
+      if ( ! data -> active() )
+        continue;
+
+      const std::vector<std::string> splits = util::string_split( data -> name_str, "/" );
+      if ( splits.size() != 2 || splits[ 0 ] != "Shatter" )
+        continue;
+
+      std::string name = splits[ 1 ];
+      if ( action_t* a = p.find_action( name ) )
+      {
+        name = report::action_decorator_t( a ).decorate();
+      }
+
+      std::string row_class;
+      if ( ++row & 1 )
+        row_class = " class=\"odd\"";
+
+      os.format( "<tr%s>", row_class.c_str() );
+
+      auto format_cell = [ wc, &os ] ( double mean, bool wc_util )
+      {
+        std::string format_str;
+        format_str += "<td class=\"right\">";
+        if ( mean > 0.0 )
+          format_str += "%.1f";
+        if ( mean > 0.0 && wc_util )
+          format_str += " (%.1f%%)";
+        format_str += "</td>";
+
+        os.format( format_str.c_str(), mean, wc ? 100.0 * mean / wc : 0.0 );
+      };
+
+      assert( data -> procs.size() == actions::mage_spell_t::FROZEN_MAX );
+
+      os << "<td class=\"left\">" << name << "</td>";
+      format_cell( data -> get( actions::mage_spell_t::FROZEN_WINTERS_CHILL ).count.pretty_mean(), true );
+      format_cell( data -> get( actions::mage_spell_t::FROZEN_FINGERS_OF_FROST ).count.pretty_mean(), false );
+      format_cell( data -> get( actions::mage_spell_t::FROZEN_ROOT ).count.pretty_mean(), false );
+      os << "</tr>\n";
+    }
+
+    os << "</table>\n";
+
+    os << "</div>\n"
+       << "</div>\n";
+  }
+
   virtual void html_customsection( report::sc_html_stream& os ) override
   {
     if ( p.sim -> report_details == 0 )
@@ -9015,6 +9224,8 @@ public:
         break;
 
       case MAGE_FROST:
+        html_customsection_shatter( os );
+
         if ( p.talents.thermal_void -> ok() )
         {
           html_customsection_icy_veins( os );
