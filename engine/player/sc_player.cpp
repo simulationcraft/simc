@@ -4649,6 +4649,8 @@ void player_t::demise()
   if ( current.sleeping )
     return;
 
+  current.sleeping = true;
+
   if ( sim -> log )
     sim -> out_log.printf( "%s demises.. Spawn Index=%u", name(), actor_spawn_index );
 
@@ -4708,8 +4710,6 @@ void player_t::demise()
     sim -> active_allies--;
     sim -> player_non_sleeping_list.find_and_erase_unordered( this );
   }
-
-  current.sleeping = true;
 }
 
 // player_t::interrupt ======================================================
