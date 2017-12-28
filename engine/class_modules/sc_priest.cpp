@@ -5161,9 +5161,10 @@ void priest_t::apl_shadow()
       "25&(cooldown.void_bolt.up|cooldown.void_torrent.up|cooldown.shadow_word_"
       "death.up|buff.shadowy_insight.up)&target.time_to_die<=variable.s2mcheck-"
       "(buff.insanity_drain_stacks.value)" );
-  vf->add_action( this, "Silence", "if=equipped.sephuzs_secret&(target.is_add|target.debuff.casting."
-      "react)&cooldown.buff_sephuzs_secret.up&!buff.sephuzs_secret.up"
-      "&buff.insanity_drain_stacks.value>10,cycle_targets=1" );
+  if ( !priest_suppress_sephuz )
+    vf->add_action( this, "Silence", "if=equipped.sephuzs_secret&(target.is_add|target.debuff.casting."
+        "react)&cooldown.buff_sephuzs_secret.up&!buff.sephuzs_secret.up"
+        "&buff.insanity_drain_stacks.value>10,cycle_targets=1" );
   vf->add_action( this, "Void Bolt" );
   vf->add_action( this, "Shadow Word: Death", "if=equipped.zeks_exterminatus&equipped."
       "mangazas_madness&buff.zeks_exterminatus.react" );
@@ -5171,9 +5172,10 @@ void priest_t::apl_shadow()
     vf->add_action(
         "arcane_torrent,if=buff.insanity_drain_stacks.value>=20&(insanity-"
         "(current_insanity_drain*gcd.max)+15)<100" );
-  vf->add_talent( this, "Mind Bomb", "if=equipped.sephuzs_secret&target.is_add&cooldown.buff_sephuzs_"
-      "secret.remains<1&!buff.sephuzs_secret.up&buff.insanity_drain_stacks.value>10"
-      ",cycle_targets=1" );
+  if ( !priest_suppress_sephuz )
+    vf->add_talent( this, "Mind Bomb", "if=equipped.sephuzs_secret&target.is_add&cooldown.buff_sephuzs_"
+        "secret.remains<1&!buff.sephuzs_secret.up&buff.insanity_drain_stacks.value>10"
+        ",cycle_targets=1" );
   vf->add_talent( this, "Shadow Crash", "if=talent.shadow_crash.enabled" );
   vf->add_action( this, "Void Torrent", "if=dot.shadow_word_pain.remains>5.5&dot.vampiric_touch.remains"
       ">5.5&(!talent.surrender_to_madness.enabled|(talent.surrender_to_madness."
