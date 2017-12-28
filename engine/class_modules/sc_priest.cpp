@@ -5086,12 +5086,12 @@ void priest_t::apl_shadow()
   main->add_action( this, "Shadow Word: Pain" );
 
   // Surrender to Madness APL
-  if ( !p.options.priest_ignore_healing )
+  if ( !options.priest_suppress_sephuz )
     s2m->add_action(this, "Silence", "if=equipped.sephuzs_secret&(target.is_add|target.debuff.casting."
         "react)&cooldown.buff_sephuzs_secret.up&!buff.sephuzs_secret.up"
         ",cycle_targets=1" );
   s2m->add_action( this, "Void Bolt", "if=buff.insanity_drain_stacks.value<6&set_bonus.tier19_4pc" );
-  if ( !p.options.priest_ignore_healing )
+  if ( !options.priest_suppress_sephuz )
     s2m->add_talent( this, "Mind Bomb", "if=equipped.sephuzs_secret&target.is_add&cooldown.buff_sephuzs_"
         "secret.remains<1&!buff.sephuzs_secret.up,cycle_targets=1" );
   s2m->add_talent( this, "Shadow Crash", "if=talent.shadow_crash.enabled" );
@@ -5163,7 +5163,7 @@ void priest_t::apl_shadow()
       "25&(cooldown.void_bolt.up|cooldown.void_torrent.up|cooldown.shadow_word_"
       "death.up|buff.shadowy_insight.up)&target.time_to_die<=variable.s2mcheck-"
       "(buff.insanity_drain_stacks.value)" );
-  if ( !p.options.priest_ignore_healing )
+  if ( !options.priest_suppress_sephuz )
     vf->add_action( this, "Silence", "if=equipped.sephuzs_secret&(target.is_add|target.debuff.casting."
         "react)&cooldown.buff_sephuzs_secret.up&!buff.sephuzs_secret.up"
         "&buff.insanity_drain_stacks.value>10,cycle_targets=1" );
@@ -5174,7 +5174,7 @@ void priest_t::apl_shadow()
     vf->add_action(
         "arcane_torrent,if=buff.insanity_drain_stacks.value>=20&(insanity-"
         "(current_insanity_drain*gcd.max)+15)<100" );
-  if ( !p.options.priest_ignore_healing )
+  if ( !options.priest_suppress_sephuz )
     vf->add_talent( this, "Mind Bomb", "if=equipped.sephuzs_secret&target.is_add&cooldown.buff_sephuzs_"
         "secret.remains<1&!buff.sephuzs_secret.up&buff.insanity_drain_stacks.value>10"
         ",cycle_targets=1" );
