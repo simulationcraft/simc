@@ -34,6 +34,7 @@ actions.precombat+=/marked_for_death,if=raid_event.adds.in>40
 actions=variable,name=energy_regen_combined,value=energy.regen+poisoned_bleeds*(7+talent.venom_rush.enabled*3)%2
 actions+=/variable,name=energy_time_to_max_combined,value=energy.deficit%variable.energy_regen_combined
 actions+=/variable,name=use_fok_rotation,value=fok_rotation&(artifact.poison_knives.rank>=5|equipped.zoldyck_family_training_shackles&target.health.pct<30)
+actions+=/poisoned_knife,if=bugs&talent.nightstalker.enabled&stealthed.rogue&!dot.deadly_poison.ticking
 actions+=/call_action_list,name=cds
 actions+=/run_action_list,name=aoe,if=spell_targets.fan_of_knives>(3-variable.use_fok_rotation)
 actions+=/call_action_list,name=maintain
