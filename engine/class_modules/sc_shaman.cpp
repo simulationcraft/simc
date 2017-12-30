@@ -7830,6 +7830,7 @@ void shaman_t::init_action_list_enhancement()
   def -> add_action( "variable,name=OCPool60,value=(!talent.overcharge.enabled|(talent.overcharge.enabled&maelstrom>60))" );
   def -> add_action( "variable,name=heartEquipped,value=(equipped.151819)" );
   def -> add_action( "variable,name=akainuEquipped,value=(equipped.137084)" );
+  def -> add_action( "variable,name=tempestEquipped,value=(equipped.137103)" );
   def -> add_action( "variable,name=akainuAS,value=(variable.akainuEquipped&buff.hot_hand.react&!buff.frostbrand.up)" );
   def -> add_action( "variable,name=LightningCrashNotUp,value=(!buff.lightning_crash.up&set_bonus.tier20_2pc)" );
   def -> add_action( "variable,name=alphaWolfCheck,value=((pet.frost_wolf.buff.alpha_wolf.remains<2&pet.fiery_wolf.buff.alpha_wolf.remains<2&pet.lightning_wolf.buff.alpha_wolf.remains<2)&feral_spirit.remains>4)" );
@@ -7853,6 +7854,8 @@ void shaman_t::init_action_list_enhancement()
 
   asc -> add_talent( this, "Earthen Spike" );
   asc -> add_action( this, "Doom Winds", "if=cooldown.strike.up" );
+  asc -> add_action( this, "Crash Lightning", "if=!buff.crash_lightning.up&active_enemies>=2");
+  asc -> add_action( this, "Windstrike", "target_if=!debuff.storm_tempests.up&variable.tempestEquipped");
   asc -> add_action( this, "Windstrike");
 
 
@@ -7881,6 +7884,7 @@ void shaman_t::init_action_list_enhancement()
   core -> add_action( this, "Crash Lightning", "if=active_enemies>=8|(active_enemies>=6&talent.crashing_storm.enabled)" );
   core -> add_action( this, "Windstrike" );
   core -> add_action( this, "Rockbiter" , "if=buff.force_of_the_mountain.up&charges_fractional>1.7&active_enemies<=4" );
+  core -> add_action( this, "Stormstrike", "target_if=!debuff.storm_tempests.up&variable.tempestEquipped" );
   core -> add_action( this, "Stormstrike", "if=buff.stormbringer.up&variable.furyCheck25" );
   core -> add_action( this, "Crash Lightning", "if=active_enemies>=4|(active_enemies>=2&talent.crashing_storm.enabled)" );
   core -> add_action( this, "Rockbiter" , "if=buff.force_of_the_mountain.up" );
