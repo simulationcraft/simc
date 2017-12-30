@@ -1,4 +1,4 @@
-SimulationCraft 730-03 for World of Warcraft 7.3.5 PTR (wow build 25692)
+SimulationCraft 730-03 for World of Warcraft 7.3.5 PTR (wow build 25753)
 
 Name             : Defensive Stance (id=71) [Spell Family (4), Passive, Hidden] 
 Class            : Protection Warrior
@@ -410,6 +410,7 @@ Tooltip          : Disoriented.
 Name             : Revenge Trigger (id=5301) [Passive, Hidden] 
 Class            : Protection Warrior
 School           : Physical
+Spell Level      : 22
 Internal Cooldown: 3 seconds
 Proc Chance      : 100%
 Proc Flags       : ...x.x.x .x...... ........ ........ 
@@ -1584,7 +1585,7 @@ Effects          :
 #3 (id=349763)   : Apply Aura (6) | Dummy (4)
                    Base Value: 50 | Scaled Value: 50 | Misc Value: 17 | Target: Self (1)
                    Affected Spells: Bloodthirst (23881)
-Description      : Causes your next Bloodthirst or Rampage to strike up to $85739s1 additional targets for $s2% damage.
+Description      : Causes your next Bloodthirst or Rampage to strike up to $s1 additional targets for $s3% damage.
 Tooltip          : Your next Bloodthirst or Rampage strikes up to $w1 additional targets for $w3% damage.
 
 Name             : Plate Specialization (id=86101) [Passive, Hidden] 
@@ -4442,7 +4443,7 @@ Description      : Stomp the ground, causing a ring of corrupted spikes to erupt
 Name             : Rampage! (id=209694) [Spell Family (4), Passive, Hidden] 
 Class            : Fury Warrior
 School           : Physical
-Spell Level      : 1
+Spell Level      : 12
 Proc Chance      : 100%
 Proc Flags       : ....x... ........ ........ ........ 
                  : Yellow Melee
@@ -5457,7 +5458,7 @@ Attributes       : ......x. ........ .......x ........   ........ ........ .....
 Effects          :
 #1 (id=477699)   : Apply Aura (6) | Unknown(468)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1 | Trigger Spell: 256896 | Target: Self (1)
-Description      : When you die the Light avenges you, dealing $256896s1 Holy Damage to enemies within 8 yards and healing allies for $256896s2.
+Description      : Erupt with Light upon death. Deals $256896s1 Holy damage to enemies within 8 yards and heals allies for $256896s2.
 
 Name             : Demonbane (Racial Passive) (id=255653) [Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
@@ -5516,26 +5517,6 @@ Effects          :
 Description      : Deals $s1 Holy Damage to enemies within $A1.
 
 Heals $s2 to allies within $A1. 
-
-Name             : Forge of Light (Racial) (id=259930) 
-Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
-Race             : Lightforged Draenei (0x20000000)
-School           : Holy
-Cast Time        : 2 seconds
-Duration         : 120 seconds
-Cooldown         : 300 seconds
-Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ .....x.. 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=484807)   : Unknown(171)
-                   Base Value: 10 | Scaled Value: 10 | Misc Value: 280498 | Radius: 0 - 3 yards | Target: Custom (18) -> Unknown(78)
-Description      : Summon a Forge of Light, enabling Blacksmithing. 
-
-Blacksmithing skill increased by $s1.
 
 Name             : Mortal Strike (Rank 2) (id=261900) [Spell Family (4), Passive] 
 Class            : Arms Warrior

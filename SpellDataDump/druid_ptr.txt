@@ -1,4 +1,4 @@
-SimulationCraft 730-03 for World of Warcraft 7.3.5 PTR (wow build 25692)
+SimulationCraft 730-03 for World of Warcraft 7.3.5 PTR (wow build 25753)
 
 Name             : Incapacitating Roar (id=99) [Spell Family (7)] 
 Class            : Guardian Druid
@@ -6540,7 +6540,7 @@ Proc Chance      : 100%
 Proc Flags       : ........ ........ x....... ........ 
                  : Hostile Spell
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
@@ -7229,7 +7229,7 @@ Attributes       : ......x. ........ .......x ........   ........ ........ .....
 Effects          :
 #1 (id=477699)   : Apply Aura (6) | Unknown(468)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1 | Trigger Spell: 256896 | Target: Self (1)
-Description      : When you die the Light avenges you, dealing $256896s1 Holy Damage to enemies within 8 yards and healing allies for $256896s2.
+Description      : Erupt with Light upon death. Deals $256896s1 Holy damage to enemies within 8 yards and heals allies for $256896s2.
 
 Name             : Demonbane (Racial Passive) (id=255653) [Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
@@ -7288,25 +7288,5 @@ Effects          :
 Description      : Deals $s1 Holy Damage to enemies within $A1.
 
 Heals $s2 to allies within $A1. 
-
-Name             : Forge of Light (Racial) (id=259930) 
-Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
-Race             : Lightforged Draenei (0x20000000)
-School           : Holy
-Cast Time        : 2 seconds
-Duration         : 120 seconds
-Cooldown         : 300 seconds
-Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ .....x.. 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=484807)   : Unknown(171)
-                   Base Value: 10 | Scaled Value: 10 | Misc Value: 280498 | Radius: 0 - 3 yards | Target: Custom (18) -> Unknown(78)
-Description      : Summon a Forge of Light, enabling Blacksmithing. 
-
-Blacksmithing skill increased by $s1.
 
 
