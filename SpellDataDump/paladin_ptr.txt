@@ -327,7 +327,7 @@ Description      : Triggers a burst of Light on the target, dealing $25912s1 Hol
 
 Name             : Expansive Mind (Racial Passive) (id=20591) [Passive] 
 Class            : Paladin, Priest, Shaman, Mage, Warlock, Monk
-Race             : Gnome
+Race             : Gnome (0x40)
 School           : Physical
 Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -343,7 +343,7 @@ Description      : Maximum mana increased by $s1%.
 
 Name             : Command (Racial Passive) (id=21563) [Spell Family (9), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
-Race             : Orc
+Race             : Orc (0x2)
 School           : Physical
 Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -462,7 +462,7 @@ Tooltip          : Damage every $t1 $lsecond:seconds;.
 
 Name             : Gift of the Naaru (Racial) (id=28880) [Spell Family (4)] 
 Class            : Warrior, Paladin, Hunter, Priest, Death Knight, Shaman, Mage, Monk
-Race             : Draenei
+Race             : Draenei (0x400)
 School           : Holy
 Spell Level      : 1
 Range            : 40 yards
@@ -642,7 +642,7 @@ Tooltip          : Mounted speed increased by $w1%.  This does not stack with ot
 
 Name             : Interrupt (id=32747) 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Mage, Warlock, Monk, Demon Hunter
-Race             : Blood Elf
+Race             : Blood Elf (0x200)
 School           : Physical
 Spell Level      : 10
 Range            : 100 yards
@@ -1012,7 +1012,7 @@ Description      : $@spelldesc57954
 
 Name             : Gift of the Naaru (Racial) (id=59542) [Spell Family (10)] 
 Class            : Paladin
-Race             : Draenei
+Race             : Draenei (0x400)
 School           : Holy
 Spell Level      : 1
 Range            : 40 yards
@@ -1079,7 +1079,7 @@ Description      : Heals Paladin back to a percentage of maximum health.
 
 Name             : Viciousness (Racial Passive) (id=68975) [Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Druid
-Race             : Worgen
+Race             : Worgen (0x200000)
 School           : Physical
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1096,7 +1096,7 @@ Tooltip          : Critical strike chance increased by $s1%.
 
 Name             : Aberration (Racial Passive) (id=68976) [Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Druid
-Race             : Worgen
+Race             : Worgen (0x200000)
 School           : Physical
 Spell Level      : 1
 Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
@@ -1114,7 +1114,7 @@ Tooltip          : Reduces Shadow and Nature damage taken by $s1%.
 
 Name             : Darkflight (Racial) (id=68992) 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Druid
-Race             : Worgen
+Race             : Worgen (0x200000)
 School           : Physical
 Duration         : 10 seconds
 Cooldown         : 120 seconds
@@ -1493,7 +1493,7 @@ Description      : Casting a targeted heal on any target, except yourself, also 
 
 Name             : Altered Form (Racial Passive) (id=94293) [Passive, Hidden] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Druid
-Race             : Worgen
+Race             : Worgen (0x200000)
 School           : Physical
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1610,7 +1610,7 @@ Description      : Reduces the cooldown of your Divine Shield, Divine Protection
 
 Name             : Light's Hammer (id=114158) [Spell Family (10)] 
 Class            : Paladin
-Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Worgen, Pandaren, Pandaren (Alliance)
+Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei (0xffffffffffffffff)
 School           : Holy
 Resource         : 28% Base Mana (0) (id=11150)
 Range            : 40 yards
@@ -1659,7 +1659,7 @@ Replaces Word of Glory.
 
 Name             : Holy Prism (id=114165) [Spell Family (10)] 
 Class            : Paladin
-Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Worgen, Pandaren, Pandaren (Alliance)
+Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei (0xffffffffffffffff)
 School           : Holy
 Resource         : 17% Base Mana (0) (id=9441) w/ Holy Paladin (id=137029)
 Spell Level      : 1
@@ -1684,7 +1684,7 @@ A friendly target is healed for $114871s1 and radiates $114871s2 Holy damage to 
 
 Name             : Holy Prism (id=114852) [Spell Family (10)] 
 Class            : Paladin
-Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Worgen, Pandaren, Pandaren (Alliance)
+Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei (0xffffffffffffffff)
 School           : Holy
 Spell Level      : 1
 Range            : 40 yards
@@ -1710,7 +1710,7 @@ Description      : $@spelldesc114165
 
 Name             : Holy Prism (id=114871) [Scaling Spell (7), Spell Family (10)] 
 Class            : Paladin
-Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Worgen, Pandaren, Pandaren (Alliance)
+Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei (0xffffffffffffffff)
 School           : Holy
 Spell Level      : 1
 Range            : 40 yards
@@ -1736,7 +1736,7 @@ Description      : $@spelldesc114165
 
 Name             : Light's Hammer (id=114918) [Spell Family (10)] 
 Class            : Paladin
-Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Worgen, Pandaren, Pandaren (Alliance)
+Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei (0xffffffffffffffff)
 School           : Nature
 Spell Level      : 1
 Duration         : 14 seconds
@@ -1753,7 +1753,7 @@ Tooltip          : Heals $114919s2 and damages $114919s1 every $114919t1 seconds
 
 Name             : Arcing Light (id=114919) [Spell Family (10)] 
 Class            : Paladin
-Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Worgen, Pandaren, Pandaren (Alliance)
+Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei (0xffffffffffffffff)
 School           : Holy
 Spell Level      : 1
 Range            : 100 yards
@@ -1826,7 +1826,7 @@ Effects          :
 
 Name             : Arcing Light (id=119952) [Scaling Spell (7), Spell Family (10)] 
 Class            : Paladin
-Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Worgen, Pandaren, Pandaren (Alliance)
+Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei (0xffffffffffffffff)
 School           : Holy
 Spell Level      : 1
 Range            : 100 yards
@@ -1864,7 +1864,7 @@ Tooltip          : Pondering the nature of the Light.
 
 Name             : Light's Hammer (Talent) (id=122773) [Spell Family (10)] 
 Class            : Paladin
-Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Worgen, Pandaren, Pandaren (Alliance)
+Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei (0xffffffffffffffff)
 School           : Physical
 Range            : 50000 yards
 Duration         : 15.5 seconds
@@ -1979,7 +1979,7 @@ Effects          :
 
 Name             : Retribution Paladin (id=137027) [Spell Family (10), Passive, Hidden] 
 Class            : Retribution Paladin
-Race             : Blood Elf
+Race             : Blood Elf (0x200)
 School           : Physical
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2099,7 +2099,7 @@ Effects          :
 
 Name             : Holy Paladin (id=137029) [Spell Family (10), Passive, Hidden] 
 Class            : Holy Paladin
-Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Worgen, Pandaren, Pandaren (Alliance)
+Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei (0xffffffffffffffff)
 School           : Physical
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2331,7 +2331,7 @@ Tooltip          : Haste, Critical Strike, Mastery, and Versatility increased by
 
 Name             : Arcane Torrent (Racial) (id=155145) 
 Class            : Paladin
-Race             : Blood Elf
+Race             : Blood Elf (0x200)
 School           : Arcane
 Duration         : 2 seconds
 Cooldown         : 90 seconds
@@ -2455,7 +2455,7 @@ Description      : You gain Parry equal to $s1% of your Critical Strike from gea
 
 Name             : Jailer's Judgment (id=162056) [Spell Family (6)] 
 Class            : Paladin
-Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Worgen, Pandaren, Pandaren (Alliance)
+Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei (0xffffffffffffffff)
 School           : Holy
 Spell Level      : 1
 Range            : 15 yards
@@ -2533,7 +2533,7 @@ Effects          :
 
 Name             : Ashes to Ashes (id=179546) [Spell Family (10), Passive] 
 Class            : Paladin
-Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Worgen, Pandaren, Pandaren (Alliance)
+Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei (0xffffffffffffffff)
 School           : Physical
 Range            : 100 yards
 Artifact Power   : Id: 353, Index: 3, Max Rank: 1, Type: 1
@@ -3199,7 +3199,7 @@ Tooltip          : $@spellaura53563
 
 Name             : Power of the Silver Hand (id=200474) [Spell Family (10), Passive] 
 Class            : Paladin
-Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Worgen, Pandaren, Pandaren (Alliance)
+Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei (0xffffffffffffffff)
 School           : Physical
 Range            : 100 yards
 Proc Chance      : 101%
@@ -3221,7 +3221,7 @@ Description      : Holy Light and Flash of Light have a chance to unlock the pow
 
 Name             : Tyr's Deliverance (Artifact) (id=200652) [Spell Family (10)] 
 Class            : Paladin
-Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Worgen, Pandaren, Pandaren (Alliance)
+Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei (0xffffffffffffffff)
 School           : Holy
 Range            : 100 yards
 Cast Time        : 2 seconds
@@ -3246,7 +3246,7 @@ Tooltip          : Healing an injured ally for $200654s1 every $t sec.
 
 Name             : Tyr's Deliverance (id=200653) [Spell Family (10), Hidden] 
 Class            : Paladin
-Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Worgen, Pandaren, Pandaren (Alliance)
+Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei (0xffffffffffffffff)
 School           : Physical
 Range            : 100 yards
 Affecting spells : Rule of Law (214202 effect#2), Tyr's Munificence (238060 effect#1), Sacred Dawn (243174 effect#1)
@@ -3265,7 +3265,7 @@ Description      : $@spelldesc200474
 
 Name             : Tyr's Deliverance (id=200654) [Spell Family (10)] 
 Class            : Paladin
-Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Worgen, Pandaren, Pandaren (Alliance)
+Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei (0xffffffffffffffff)
 School           : Holy
 Range            : 100 yards
 Duration         : 10 seconds
@@ -3288,7 +3288,7 @@ Tooltip          : Healing received from Holy Light and Flash of light increased
 
 Name             : Power of the Silver Hand (id=200656) [Spell Family (10)] 
 Class            : Paladin
-Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Worgen, Pandaren, Pandaren (Alliance)
+Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei (0xffffffffffffffff)
 School           : Holy
 Range            : 100 yards
 Duration         : 10 seconds
@@ -3311,7 +3311,7 @@ Tooltip          : $s1% of all effective healing done will be added onto your ne
 
 Name             : Activating Specialization (id=200749) [Hidden] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
-Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Worgen, Pandaren, Pandaren (Alliance)
+Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei (0xffffffffffffffff)
 School           : Physical
 Range            : 50000 yards
 Cast Time        : 5 seconds
@@ -3846,7 +3846,7 @@ Tooltip          : Damage every $t1 $lsecond:seconds;.
 
 Name             : Wake of Ashes (Artifact) (id=205273) [Spell Family (10)] 
 Class            : Paladin
-Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Worgen, Pandaren, Pandaren (Alliance)
+Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei (0xffffffffffffffff)
 School           : Holyfire
 GCD              : 1.5 seconds
 Duration         : 6 seconds
@@ -3879,7 +3879,7 @@ $?$w3!=0[Suffering $s3 Radiant damage every $t3 sec.][]
 
 Name             : Wake of Ashes (id=205290) [Spell Family (10)] 
 Class            : Paladin
-Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Worgen, Pandaren, Pandaren (Alliance)
+Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei (0xffffffffffffffff)
 School           : Holy
 Range            : 100 yards
 Duration         : 6 seconds
@@ -4314,7 +4314,7 @@ Tooltip          : Chains to an additonal nearby target per stack.
 
 Name             : Wake of Ashes (id=218001) [Spell Family (10)] 
 Class            : Paladin
-Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Worgen, Pandaren, Pandaren (Alliance)
+Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei (0xffffffffffffffff)
 School           : Holy
 Range            : 100 yards
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4919,7 +4919,7 @@ Tooltip          : Damage of $?s198034[Divine Hammer][Blade of Justice] increase
 
 Name             : Vindicaar Matrix Crystal (id=251463) 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
-Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Worgen, Pandaren, Pandaren (Alliance)
+Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei (0xffffffffffffffff)
 School           : Physical
 GCD              : 1.5 seconds
 Triggered by     : Vindicaar Matrix Crystal (255529)
@@ -4936,7 +4936,7 @@ Description      : Unlock powers at the Vindicaar's Matrix Core to use while on 
 
 Name             : Vindicaar Matrix Crystal (id=255529) [Hidden] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
-Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Worgen, Pandaren, Pandaren (Alliance)
+Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei (0xffffffffffffffff)
 School           : Physical
 Triggered by     : Activating Specialization (200749)
 Attributes       : .......x x....... .......x x..x.x..   ...x.x.x ..x..... ........ ........ 
@@ -4955,7 +4955,7 @@ Description      : Unlock powers at the Vindicaar's Matrix Core to use while on 
 
 Name             : Light's Judgment (Racial) (id=255647) [Scaling Spell (-6)] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
-Race             
+Race             : Lightforged Draenei (0x20000000)
 School           : Holy
 Max Scaling Level: 120
 Range            : 40 yards
@@ -4975,7 +4975,7 @@ Description      : Call down a strike of Holy energy, dealing $s1 Holy damage to
 
 Name             : Holy Resistance (Racial Passive) (id=255651) [Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
-Race             
+Race             : Lightforged Draenei (0x20000000)
 School           : Holy
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4991,7 +4991,7 @@ Description      : Reduces Holy damage taken by ${$s1/-1}%.
 
 Name             : Light's Reckoning (Racial Passive) (id=255652) [Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
-Race             
+Race             : Lightforged Draenei (0x20000000)
 School           : Physical
 Attributes       : ......x. ........ .......x ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ....x... ........ 
@@ -5007,7 +5007,7 @@ Description      : When you die the Light avenges you, dealing $256896s1 Holy Da
 
 Name             : Demonbane (Racial Passive) (id=255653) [Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
-Race             
+Race             : Lightforged Draenei (0x20000000)
 School           : Physical
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5023,7 +5023,7 @@ Description      : Experience gains from killing Demons increased by $s1%.
 
 Name             : Light's Judgment (Racial) (id=256893) [Scaling Spell (-6)] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
-Race             
+Race             : Lightforged Draenei (0x20000000)
 School           : Holy
 Max Scaling Level: 120
 Range            : 40 yards
@@ -5043,7 +5043,7 @@ Description      : Call down a strike of Holy energy, dealing $s1 Holy damage to
 
 Name             : Light's Reckoning (Racial Passive) (id=256896) [Scaling Spell (-6)] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
-Race             
+Race             : Lightforged Draenei (0x20000000)
 School           : Holy
 Max Scaling Level: 120
 Range            : 40 yards
@@ -5065,7 +5065,7 @@ Heals $s2 to allies within $A1.
 
 Name             : Forge of Light (Racial) (id=259930) 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
-Race             
+Race             : Lightforged Draenei (0x20000000)
 School           : Holy
 Cast Time        : 2 seconds
 Duration         : 120 seconds
