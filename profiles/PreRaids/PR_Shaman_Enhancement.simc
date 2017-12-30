@@ -39,6 +39,7 @@ actions+=/variable,name=OCPool70,value=(!talent.overcharge.enabled|(talent.overc
 actions+=/variable,name=OCPool60,value=(!talent.overcharge.enabled|(talent.overcharge.enabled&maelstrom>60))
 actions+=/variable,name=heartEquipped,value=(equipped.151819)
 actions+=/variable,name=akainuEquipped,value=(equipped.137084)
+actions+=/variable,name=tempestEquipped,value=(equipped.137103)
 actions+=/variable,name=akainuAS,value=(variable.akainuEquipped&buff.hot_hand.react&!buff.frostbrand.up)
 actions+=/variable,name=LightningCrashNotUp,value=(!buff.lightning_crash.up&set_bonus.tier20_2pc)
 actions+=/variable,name=alphaWolfCheck,value=((pet.frost_wolf.buff.alpha_wolf.remains<2&pet.fiery_wolf.buff.alpha_wolf.remains<2&pet.lightning_wolf.buff.alpha_wolf.remains<2)&feral_spirit.remains>4)
@@ -53,6 +54,8 @@ actions+=/call_action_list,name=filler
 
 actions.asc=earthen_spike
 actions.asc+=/doom_winds,if=cooldown.strike.up
+actions.asc+=/crash_lightning,if=!buff.crash_lightning.up&active_enemies>=2
+actions.asc+=/windstrike,target_if=!debuff.storm_tempests.up&variable.tempestEquipped
 actions.asc+=/windstrike
 
 actions.buffs=rockbiter,if=talent.landslide.enabled&!buff.landslide.up
@@ -78,6 +81,7 @@ actions.core+=/windsong
 actions.core+=/crash_lightning,if=active_enemies>=8|(active_enemies>=6&talent.crashing_storm.enabled)
 actions.core+=/windstrike
 actions.core+=/rockbiter,if=buff.force_of_the_mountain.up&charges_fractional>1.7&active_enemies<=4
+actions.core+=/stormstrike,target_if=!debuff.storm_tempests.up&variable.tempestEquipped
 actions.core+=/stormstrike,if=buff.stormbringer.up&variable.furyCheck25
 actions.core+=/crash_lightning,if=active_enemies>=4|(active_enemies>=2&talent.crashing_storm.enabled)
 actions.core+=/rockbiter,if=buff.force_of_the_mountain.up
@@ -96,7 +100,7 @@ actions.filler+=/frostbrand,if=variable.akainuEquipped&!buff.frostbrand.up&maels
 actions.filler+=/sundering
 actions.filler+=/lava_lash,if=maelstrom>=50&variable.OCPool70&variable.furyCheck80
 actions.filler+=/rockbiter
-actions.filler+=/crash_lightning,if=(maelstrom>=65|talent.crashing_storm.enabled|active_enemies>=2)&variable.OCPool60&variable.furyCheck45
+actions.filler+=/crash_lightning,if=(maelstrom>=45|talent.crashing_storm.enabled|active_enemies>=2)
 actions.filler+=/flametongue
 
 actions.opener=rockbiter,if=maelstrom<15&time<gcd
