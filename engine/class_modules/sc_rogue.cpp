@@ -2005,6 +2005,15 @@ struct deadly_poison_t : public rogue_poison_t
       base_multiplier *= 1.0 + p -> talent.master_poisoner -> effectN( 1 ).percent();
     }
 
+    timespan_t calculate_dot_refresh_duration(const dot_t* dot, timespan_t /* triggered_duration */) const override
+    {
+      // 12/29/2017 - Deadly Poison uses an older style of refresh, adding the origial duration worth of ticks up to 50% more than the base number of ticks
+      //              Deadly Poison shouldn't have partial ticks, so we just add the amount of time relative to how many additional ticks we want to add
+      const int additional_ticks = data().duration() / dot->time_to_tick;
+      const int max_ticks = additional_ticks * 1.5;
+      return dot->remains() + std::min(max_ticks - dot->ticks_left(), additional_ticks) * dot->time_to_tick;
+    }
+
     void impact( action_state_t* state ) override
     {
       if ( ! p() -> poisoned_enemy( state -> target ) && result_is_hit( state -> result ) )
@@ -3060,9 +3069,10 @@ struct fan_of_knives_t: public rogue_attack_t
 
   void impact( action_state_t* state ) override
   {
-    rogue_attack_t::impact( state );
+    // 12/29/2017 - Poison Knives is evaluated before the poison proc in rogue_attack_t::impact()
+    p()->trigger_poison_knives(state);
 
-    p() -> trigger_poison_knives( state );
+    rogue_attack_t::impact( state );
   }
 };
 
@@ -6539,35 +6549,24 @@ void rogue_t::trigger_poison_knives( const action_state_t* state )
     return;
   }
 
-  unsigned ticks_left = td -> dots.deadly_poison -> ticks_left();
-  timespan_t tick_time = td -> dots.deadly_poison -> current_action -> tick_time( td -> dots.deadly_poison -> state );
-  double partial_tick = 0;
-  if ( ticks_left > 1 && ticks_left * tick_time > td -> dots.deadly_poison -> remains() )
-  {
-    partial_tick = ( td -> dots.deadly_poison -> remains() - ( ticks_left - 1 ) * tick_time ) / tick_time;
-  }
-
   // Recompute tick damage with current stats
   td -> dots.deadly_poison -> current_action -> calculate_tick_amount( td -> dots.deadly_poison -> state,
       td -> dots.deadly_poison -> current_stack() );
 
-  double tick_base_damage = td -> dots.deadly_poison -> state -> result_raw;
-  
-  // Poison knives double dips into some multipliers
-  // .. then, apparently the Master Alchemist talent
-  // UPDATE 2017-12-19: Does not seem to double dip on Master Alchemist anymore.
-  //tick_base_damage *= 1.0 + artifact.master_alchemist.percent();
+  // 12/29/2017 - After fixing the Deadly Poison refresh mechanics in SimC and in-game testing, this only uses whole ticks remaining
+  //              This can be seen in logs that multiple FoK casts between one tick of Deadly Poison have the same damage amounts
+  //              NOTE: Various in-game tests have shown that Poison Knives damage in the open world is much lower than in dungeons
+  //                    It is not recommended to try to confirm Poison Knives damage on training dummies due to this!
+  const double tick_base_damage = td -> dots.deadly_poison -> state -> result_raw;
+  const unsigned ticks_left = td->dots.deadly_poison->ticks_left();
+  const double total_damage = ticks_left * tick_base_damage * artifact.poison_knives.percent();
 
-  // Target multipliers get applied on execute, they also work
-
-  double total_damage = ( partial_tick + ticks_left ) * tick_base_damage * artifact.poison_knives.percent();
   if ( sim -> debug )
   {
-    sim -> out_debug.printf( "%s poison_knives dot_remains=%.3f duration=%.3f ticks_left=%u partial=%.3f amount=%.3f total=%.3f",
+    sim -> out_debug.printf( "%s poison_knives dot_remains=%.3f duration=%.3f ticks_left=%u amount=%.3f total=%.3f",
       name(), td -> dots.deadly_poison -> remains().total_seconds(),
       td -> dots.deadly_poison -> duration().total_seconds(),
-      td -> dots.deadly_poison -> ticks_left(), partial_tick, tick_base_damage,
-      total_damage );
+      td -> dots.deadly_poison -> ticks_left(), tick_base_damage, total_damage );
   }
 
   poison_knives -> base_dd_min = poison_knives -> base_dd_max = total_damage;
