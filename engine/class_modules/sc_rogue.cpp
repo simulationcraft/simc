@@ -7281,7 +7281,7 @@ void rogue_t::init_action_list()
     def -> add_action( "variable,name=energy_regen_combined,value=energy.regen+poisoned_bleeds*(7+talent.venom_rush.enabled*3)%2" );
     def -> add_action( "variable,name=energy_time_to_max_combined,value=energy.deficit%variable.energy_regen_combined" );
     def -> add_action( "variable,name=use_fok_rotation,value=fok_rotation&(artifact.poison_knives.rank>=5|equipped.zoldyck_family_training_shackles&target.health.pct<30)" );
-    def -> add_action( this, "Poisoned Knife", "if=bugs&talent.nightstalker.enabled&stealthed.rogue&!dot.deadly_poison.ticking" );
+    def -> add_action( this, "Poisoned Knife", "if=bugs&talent.nightstalker.enabled&stealthed.rogue&!dot.deadly_poison_dot.ticking" );
     def -> add_action( "call_action_list,name=cds" );
     def -> add_action( "run_action_list,name=aoe,if=spell_targets.fan_of_knives>(3-variable.use_fok_rotation)" );
     def -> add_action( "call_action_list,name=maintain" );
