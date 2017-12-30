@@ -5123,36 +5123,28 @@ struct living_bomb_explosion_t : public fire_mage_spell_t
 {
   living_bomb_t* child_lb;
 
-  living_bomb_explosion_t( mage_t* p, living_bomb_t* parent_lb );
+  living_bomb_explosion_t( mage_t* p, bool create_dot );
   virtual resource_e current_resource() const override;
   void impact( action_state_t* s ) override;
 };
 
 struct living_bomb_t : public fire_mage_spell_t
 {
-  bool casted;
   living_bomb_explosion_t* explosion;
 
-  living_bomb_t( mage_t* p, const std::string& options_str, bool _casted );
-  virtual timespan_t composite_dot_duration( const action_state_t* s )
-    const override;
+  living_bomb_t( mage_t* p, const std::string& options_str, bool casted );
+  virtual timespan_t composite_dot_duration( const action_state_t* s ) const override;
   virtual void last_tick( dot_t* d ) override;
   virtual void init() override;
 };
 
-living_bomb_explosion_t::
-  living_bomb_explosion_t( mage_t* p, living_bomb_t* parent_lb ) :
-    fire_mage_spell_t( "living_bomb_explosion", p, p -> find_spell( 44461 ) ),
-    child_lb( nullptr )
+living_bomb_explosion_t::living_bomb_explosion_t( mage_t* p, bool create_dot ) :
+  fire_mage_spell_t( "living_bomb_explosion", p, p -> find_spell( 44461 ) ),
+  child_lb( create_dot ? new living_bomb_t( p, "", false ) : nullptr )
 {
   aoe = -1;
   radius = 10;
   background = true;
-  if ( parent_lb -> casted )
-  {
-    child_lb = new living_bomb_t( p, "", false );
-    child_lb -> background = true;
-  }
 }
 
 resource_e living_bomb_explosion_t::current_resource() const
@@ -5173,16 +5165,14 @@ void living_bomb_explosion_t::impact( action_state_t* s )
     }
 
     child_lb -> set_target( s -> target );
-    child_lb -> base_costs[ RESOURCE_MANA ] = 0;
     child_lb -> execute();
   }
 }
 
 living_bomb_t::living_bomb_t( mage_t* p, const std::string& options_str,
-                              bool _casted = true ) :
+                              bool casted = true ) :
   fire_mage_spell_t( "living_bomb", p, p -> talents.living_bomb ),
-  casted( _casted ),
-  explosion( new living_bomb_explosion_t( p, this ) )
+  explosion( new living_bomb_explosion_t( p, casted ) )
 {
   parse_options( options_str );
   // Why in Azeroth would they put DOT spell data in a separate spell??
@@ -5196,6 +5186,12 @@ living_bomb_t::living_bomb_t( mage_t* p, const std::string& options_str,
   cooldown -> hasted = true;
   hasted_ticks       = true;
   add_child( explosion );
+
+  if ( ! casted )
+  {
+    background = true;
+    base_costs[ RESOURCE_MANA ] = 0;
+  }
 }
 
 timespan_t living_bomb_t::composite_dot_duration( const action_state_t* s ) const
@@ -5215,7 +5211,6 @@ void living_bomb_t::last_tick( dot_t* d )
 void living_bomb_t::init()
 {
   fire_mage_spell_t::init();
-
   update_flags &= ~STATE_HASTE;
 }
 
