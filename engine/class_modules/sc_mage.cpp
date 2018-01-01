@@ -144,78 +144,14 @@ struct buff_stack_benefit_t
   }
 };
 
-struct cooldown_waste_data_t : private noncopyable
-{
-  cooldown_t* cd;
-  double buffer;
-
-  extended_sample_data_t normal;
-  extended_sample_data_t cumulative;
-
-  cooldown_waste_data_t( cooldown_t* cooldown, bool simple = true ) :
-    cd( cooldown ),
-    buffer( 0.0 ),
-    normal( cd -> name_str + " cooldown waste", simple ),
-    cumulative( cd -> name_str + " cooldown cumulative waste", simple )
-  { }
-
-  bool may_add( timespan_t cd_override = timespan_t::min() ) const
-  {
-    return ( cd -> duration > timespan_t::zero() || cd_override > timespan_t::zero() )
-        && ( ( cd -> charges == 1 && cd -> up() ) || ( cd -> charges >= 2 && cd -> current_charge == cd -> charges ) );
-  }
-
-  void add( timespan_t cd_override = timespan_t::min(), timespan_t time_to_execute = timespan_t::zero() )
-  {
-    if ( may_add( cd_override ) )
-    {
-      double wasted = ( cd -> sim.current_time() - cd -> last_charged ).total_seconds();
-      if ( cd -> charges == 1 )
-      {
-        // Waste caused by execute time is unavoidable for single charge spells,
-        // don't count it.
-        wasted -= time_to_execute.total_seconds();
-      }
-      normal.add( wasted );
-      buffer += wasted;
-    }
-  }
-
-  void merge( const cooldown_waste_data_t& other )
-  {
-    normal.merge( other.normal );
-    cumulative.merge( other.cumulative );
-  }
-
-  void analyze()
-  {
-    normal.analyze();
-    cumulative.analyze();
-  }
-
-  void datacollection_begin()
-  {
-    buffer = 0.0;
-  }
-
-  void datacollection_end()
-  {
-    if ( may_add() )
-      buffer += ( cd -> sim.current_time() - cd -> last_charged ).total_seconds();
-
-    cumulative.add( buffer );
-    buffer = 0.0;
-  }
-};
-
 struct cooldown_reduction_data_t
 {
-  cooldown_t* cd;
+  const cooldown_t* cd;
 
   luxurious_sample_data_t* effective;
   luxurious_sample_data_t* wasted;
 
-  cooldown_reduction_data_t( cooldown_t* cooldown, const std::string& name ) :
+  cooldown_reduction_data_t( const cooldown_t* cooldown, const std::string& name ) :
     cd( cooldown )
   {
     player_t* p = cd -> player;
@@ -252,6 +188,75 @@ struct cooldown_reduction_data_t
 
     double wasted_sec = reduction_sec - effective_sec;
     wasted -> add( wasted_sec );
+  }
+};
+
+struct cooldown_waste_data_t : private noncopyable
+{
+  const cooldown_t* cd;
+  double buffer;
+
+  extended_sample_data_t normal;
+  extended_sample_data_t cumulative;
+
+  cooldown_waste_data_t( const cooldown_t* cooldown, bool simple = true ) :
+    cd( cooldown ),
+    buffer( 0.0 ),
+    normal( cd -> name_str + " cooldown waste", simple ),
+    cumulative( cd -> name_str + " cooldown cumulative waste", simple )
+  { }
+
+  bool may_add( timespan_t cd_override = timespan_t::min() ) const
+  {
+    return ( cd -> duration > timespan_t::zero() || cd_override > timespan_t::zero() )
+        && ( ( cd -> charges == 1 && cd -> up() ) || ( cd -> charges >= 2 && cd -> current_charge == cd -> charges ) );
+  }
+
+  void add( timespan_t cd_override = timespan_t::min(), timespan_t time_to_execute = timespan_t::zero() )
+  {
+    if ( may_add( cd_override ) )
+    {
+      double wasted = ( cd -> sim.current_time() - cd -> last_charged ).total_seconds();
+      if ( cd -> charges == 1 )
+      {
+        // Waste caused by execute time is unavoidable for single charge spells,
+        // don't count it.
+        wasted -= time_to_execute.total_seconds();
+      }
+      normal.add( wasted );
+      buffer += wasted;
+    }
+  }
+
+  bool active() const
+  {
+    return normal.count() > 0 && cumulative.sum() > 0;
+  }
+
+  void merge( const cooldown_waste_data_t& other )
+  {
+    normal.merge( other.normal );
+    cumulative.merge( other.cumulative );
+  }
+
+  void analyze()
+  {
+    normal.analyze();
+    cumulative.analyze();
+  }
+
+  void datacollection_begin()
+  {
+    buffer = 0.0;
+  }
+
+  void datacollection_end()
+  {
+    if ( may_add() )
+      buffer += ( cd -> sim.current_time() - cd -> last_charged ).total_seconds();
+
+    cumulative.add( buffer );
+    buffer = 0.0;
   }
 };
 
@@ -9003,10 +9008,9 @@ public:
        << "</tr>\n";
 
     size_t row = 0;
-    for ( size_t i = 0; i < p.cooldown_waste_data_list.size(); i++ )
+    for ( const cooldown_waste_data_t* data : p.cooldown_waste_data_list )
     {
-      const cooldown_waste_data_t* data = p.cooldown_waste_data_list[ i ];
-      if ( data -> normal.count() == 0 )
+      if ( ! data -> active() )
         continue;
 
       std::string name = data -> cd -> name_str;
@@ -9154,9 +9158,8 @@ public:
     double bff = p.procs.brain_freeze_flurry -> count.pretty_mean();
 
     size_t row = 0;
-    for ( size_t i = 0; i < p.proc_source_list.size(); i++ )
+    for ( const proc_source_t* data : p.proc_source_list )
     {
-      const proc_source_t* data = p.proc_source_list[ i ];
       if ( ! data -> active() )
         continue;
 
