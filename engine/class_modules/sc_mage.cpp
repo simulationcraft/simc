@@ -1008,9 +1008,8 @@ struct water_jet_t : public water_elemental_spell_t
   {
     water_elemental_spell_t::impact( s );
 
-    timespan_t duration = composite_dot_duration( s );
     o() -> get_target_data( s -> target )
-        -> debuffs.water_jet -> trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, duration );
+        -> debuffs.water_jet -> trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, composite_dot_duration( s ) );
   }
 
   virtual void last_tick( dot_t* d ) override
@@ -1616,7 +1615,7 @@ struct mage_spell_t : public spell_t
 {
   static const snapshot_state_e STATE_FROZEN = STATE_TGT_USER_1;
 
-  enum frozen_type_t
+  enum frozen_type_e
   {
     FROZEN_WINTERS_CHILL = 0,
     FROZEN_ROOT,
@@ -1624,7 +1623,7 @@ struct mage_spell_t : public spell_t
     FROZEN_MAX
   };
 
-  enum frozen_flag_t
+  enum frozen_flag_e
   {
     FF_WINTERS_CHILL    = 1 << FROZEN_WINTERS_CHILL,
     FF_ROOT             = 1 << FROZEN_ROOT,
@@ -1996,12 +1995,10 @@ struct fire_mage_spell_t : public mage_spell_t
   // Use only after schedule_execute, which sets time_to_execute.
   bool benefits_from_hot_streak( bool benefit_tracking = false ) const
   {
-    if ( benefit_tracking )
-      p() -> buffs.hot_streak -> up();
-
     // In-game, only instant cast Pyroblast and Flamestrike benefit from (and
     // consume) Hot Streak.
-    return time_to_execute == timespan_t::zero() && p() -> buffs.hot_streak -> check();
+    return ( benefit_tracking ? p() -> buffs.hot_streak -> up() : p() -> buffs.hot_streak -> check() )
+        && time_to_execute == timespan_t::zero();
   }
 
   virtual void impact( action_state_t* s ) override
@@ -8770,7 +8767,7 @@ expr_t* mage_t::create_expression( action_t* a, const std::string& name_str )
   // Firestarter expressions ==================================================
   if ( splits.size() == 2 && util::str_compare_ci( splits[0], "firestarter" ) )
   {
-    enum expr_type_t
+    enum expr_type_e
     {
       FIRESTARTER_ACTIVE,
       FIRESTARTER_REMAINS
@@ -8779,9 +8776,9 @@ expr_t* mage_t::create_expression( action_t* a, const std::string& name_str )
     struct firestarter_expr_t : public mage_expr_t
     {
       action_t* a;
-      expr_type_t type;
+      expr_type_e type;
 
-      firestarter_expr_t( mage_t& m, const std::string& name, action_t* a, expr_type_t type ) :
+      firestarter_expr_t( mage_t& m, const std::string& name, action_t* a, expr_type_e type ) :
         mage_expr_t( name, m ), a( a ), type( type )
       { }
 
