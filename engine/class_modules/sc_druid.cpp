@@ -3136,6 +3136,7 @@ struct ashamanes_rip_t : public cat_attack_t
   virtual void execute() override
   {
     assert( td( target ) -> dots.rip -> is_ticking() );
+    if ( target -> is_sleeping() ) return;
 
     cat_attack_t::execute();
   }
@@ -5012,6 +5013,8 @@ struct auto_attack_t : public melee_attack_t
   virtual bool ready() override
   {
     if ( player -> is_moving() )
+      return false;
+    if ( target -> is_sleeping() )
       return false;
 
     if ( ! player -> main_hand_attack )
