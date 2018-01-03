@@ -4,7 +4,7 @@ level=110
 race=human
 role=attack
 position=back
-talents=1130111
+talents=1230111
 artifact=43:0:0:0:0:323:4:324:4:325:4:326:4:327:4:328:4:329:4:330:4:331:4:332:1:333:1:334:1:335:1:337:1:346:1:347:1:1276:1:1384:1:1577:4:1578:1:1579:1:1580:24:1651:1
 crucible=1739:1771:331/1739:1771:331/1739:1771:331
 
@@ -35,7 +35,6 @@ actions.precombat+=/marked_for_death,if=raid_event.adds.in>40
 actions=variable,name=energy_regen_combined,value=energy.regen+poisoned_bleeds*(7+talent.venom_rush.enabled*3)%2
 actions+=/variable,name=energy_time_to_max_combined,value=energy.deficit%variable.energy_regen_combined
 actions+=/variable,name=use_fok_rotation,value=fok_rotation&(dot.deadly_poison_dot.pmultiplier>1|artifact.poison_knives.rank>=5|equipped.zoldyck_family_training_shackles&target.health.pct<30)
-actions+=/poisoned_knife,if=bugs&talent.nightstalker.enabled&stealthed.rogue&!dot.deadly_poison_dot.ticking
 actions+=/call_action_list,name=cds
 actions+=/run_action_list,name=aoe,if=spell_targets.fan_of_knives>(3-variable.use_fok_rotation)
 actions+=/call_action_list,name=maintain
