@@ -7322,9 +7322,9 @@ void druid_t::init_base_stats()
   resources.base[ RESOURCE_COMBO_POINT  ] = 5;
   resources.base[ RESOURCE_ASTRAL_POWER ] = 100
       + sets -> set( DRUID_BALANCE, T20, B2 ) -> effectN( 1 ).resource( RESOURCE_ASTRAL_POWER );
-  resources.base[ RESOURCE_ENERGY       ] = 100
-      + sets -> set( DRUID_FERAL, T18, B2 ) -> effectN( 2 ).resource( RESOURCE_ENERGY )
-      + talent.moment_of_clarity -> effectN( 3 ).percent();
+  resources.base[RESOURCE_ENERGY] = 100
+      + sets->set(DRUID_FERAL, T18, B2)->effectN(2).resource(RESOURCE_ENERGY)
+      + talent.moment_of_clarity->effectN(3).resource(RESOURCE_ENERGY);
 
   resources.active_resource[ RESOURCE_ASTRAL_POWER ] = specialization() == DRUID_BALANCE;
   resources.active_resource[ RESOURCE_HEALTH       ] = primary_role() == ROLE_TANK || talent.guardian_affinity -> ok();
