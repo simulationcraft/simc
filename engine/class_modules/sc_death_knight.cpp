@@ -3019,7 +3019,7 @@ void death_knight_melee_attack_t::execute()
 {
   base_t::execute();
 
-  if ( ! result_is_hit( execute_state -> result ) && last_resource_cost > 0 )
+  if ( hit_any_target && ! result_is_hit( execute_state -> result ) && last_resource_cost > 0 )
     p() -> resource_gain( RESOURCE_RUNIC_POWER, last_resource_cost * RUNIC_POWER_REFUND, p() -> gains.power_refund );
   trigger_crystalline_swords( execute_state );
 }
