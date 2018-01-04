@@ -5631,13 +5631,19 @@ struct crackling_jade_lightning_t: public monk_spell_t
     if ( player -> main_hand_attack )
     {
       player -> main_hand_attack -> cancel();
-      player -> main_hand_attack -> schedule_execute();
+      if ( ! player -> main_hand_attack -> target -> is_sleeping() )
+      {
+        player -> main_hand_attack -> schedule_execute();
+      }
     }
 
     if ( player -> off_hand_attack )
     {
       player -> off_hand_attack -> cancel();
-      player -> off_hand_attack -> schedule_execute();
+      if ( ! player -> off_hand_attack -> target -> is_sleeping() )
+      {
+        player -> off_hand_attack -> schedule_execute();
+      }
     }
   }
 };

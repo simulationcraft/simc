@@ -786,7 +786,7 @@ public:
       return;
     }
 
-    if ( ab::execute_state && ab::result_is_hit( ab::execute_state -> result ) )
+    if ( ab::hit_any_target && ab::result_is_hit( ab::execute_state -> result ) )
     {
         if( p() -> o() -> talents.grimoire_of_synergy -> ok())
         {
@@ -2483,7 +2483,7 @@ public:
   {
     spell_t::execute();
 
-    if ( result_is_hit( execute_state -> result ) && p() -> talents.grimoire_of_synergy -> ok() )
+    if ( hit_any_target && result_is_hit( execute_state -> result ) && p() -> talents.grimoire_of_synergy -> ok() )
     {
       pets::warlock_pet_t* my_pet = static_cast<pets::warlock_pet_t*>( p() -> warlock_pet_list.active ); //get active pet
       if ( my_pet != nullptr )
@@ -2492,7 +2492,7 @@ public:
         if ( procced ) my_pet -> buffs.demonic_synergy -> trigger();
       }
     }
-    if ( result_is_hit( execute_state -> result ) && p() -> talents.grimoire_of_sacrifice -> ok() && p() -> buffs.demonic_power -> up() )
+    if ( hit_any_target && result_is_hit( execute_state -> result ) && p() -> talents.grimoire_of_sacrifice -> ok() && p() -> buffs.demonic_power -> up() )
     {
       bool procced = p() -> demonic_power_rppm -> trigger();
       if ( procced )
@@ -4793,9 +4793,9 @@ struct demonwrath_tick_t: public warlock_spell_t
       if ( rng().roll( p() -> artifact.thalkiels_discord.data().proc_chance() ) )
       {
         make_event<ground_aoe_event_t>( *sim, p(), ground_aoe_params_t()
-          .target( execute_state -> target )
-          .x( execute_state -> target->x_position )
-          .y( execute_state -> target->y_position )
+          .target( s -> target )
+          .x( s -> target->x_position )
+          .y( s -> target->y_position )
           .pulse_time( timespan_t::from_millis( 1500 ) )
           .duration( p() -> find_spell( 211729 ) -> duration() )
           .start_time( sim -> current_time() )
