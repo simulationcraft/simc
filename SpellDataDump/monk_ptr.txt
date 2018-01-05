@@ -293,7 +293,7 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | Target: Enemy (6)
 #4 (id=368223)   : Dummy (3)
                    Base Value: 5 | Scaled Value: 5 | Target: Enemy (6)
-Description      : Attack with the palm of your hand, dealing $s1 damage.$?a137025[
+Description      : Attack with the palm of your hand, dealing $s1 damage.$?a137384[
 
 Tiger Palm has an $137384m1% chance to make your next Blackout Kick cost no Chi.][]$?a137023[
 
@@ -505,7 +505,7 @@ Range            : 5 yards
 GCD              : 1.5 seconds
 Charges          : 1 (10 seconds cooldown)
 Category         : 1518: Monk (137022 effect#2)
-Affecting spells : Stance of the Fierce Tiger (103985 effect#5), Stagger (115069 effect#11), Monk (137022 effect#1), Mistweaver Monk (137024 effect#6), Windwalker Monk (137025 effect#6), Storm, Earth, and Fire (137639 effect#1), Serenity (152173 effect#1), Rising Winds (195263 effect#1), Pressure Point (247255 effect#1)
+Affecting spells : Stance of the Fierce Tiger (103985 effect#5), Stagger (115069 effect#11), Monk (137022 effect#1), Mistweaver Monk (137024 effect#6), Windwalker Monk (137025 effect#6), Storm, Earth, and Fire (137639 effect#1), Serenity (152173 effect#1), Rising Winds (195263 effect#1), Pressure Point (247255 effect#1), Rising Sun Kick (262840 effect#1)
 Attributes       : ....x... ........ ........ ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3679,7 +3679,7 @@ Class            : Monk
 School           : Physical
 Spell Level      : 56
 Range            : 5 yards
-Affecting spells : Stance of the Fierce Tiger (103985 effect#5), Stagger (115069 effect#11), Monk (137022 effect#1), Mistweaver Monk (137024 effect#6), Windwalker Monk (137025 effect#1), Storm, Earth, and Fire (137639 effect#1), Serenity (152173 effect#1), Extend Life (185158 effect#2), Rising Winds (195263 effect#1), Pressure Point (247255 effect#1)
+Affecting spells : Stance of the Fierce Tiger (103985 effect#5), Stagger (115069 effect#11), Monk (137022 effect#1), Mistweaver Monk (137024 effect#6), Windwalker Monk (137025 effect#1), Storm, Earth, and Fire (137639 effect#1), Serenity (152173 effect#1), Extend Life (185158 effect#2), Rising Winds (195263 effect#1), Pressure Point (247255 effect#1), Rising Sun Kick (262840 effect#1)
 Triggered by     : Rising Sun Kick (107428)
 Attributes       : ....x... ........ ........ ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3689,7 +3689,7 @@ Attributes       : ....x... ........ ........ ........   ........ .x...... .....
                  : ........ ........ ........ ........   ....x... ........ ........ ........ 
 Effects          :
 #1 (id=268390)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 11.10200 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 6.53000 | Target: Enemy (6)
 Description      : $@spelldesc107428
 
 Name             : Hunting Companion (id=191335) [Spell Family (9)] 
@@ -5414,8 +5414,9 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=477694)   : Trigger Missiles (32)
-                   Base Value: 0 | Scaled Value: 465816 (avg=0.4) | Trigger Spell: 256893 | Radius: 0 - 5 yards | Target: Enemy (6)
-Description      : Call down a strike of Holy energy, dealing $s1 Holy damage to enemies within $A1 yards after 3 sec.
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 256893 | Radius: 0 - 5 yards | Target: Enemy (6)
+Description      : Call down a strike of Holy energy, dealing $<damage> Holy damage to enemies within $A1 yards after 3 sec.
+Variables        : $damage=$?$SP>$AP[${$SP*4}][${$AP*5}]
 
 Name             : Holy Resistance (Racial Passive) (id=255651) [Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
@@ -5482,8 +5483,9 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=479673)   : School Damage (2): holy
-                   Base Value: 0 | Scaled Value: 465816 (avg=0.4) | Radius: 0 - 5 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
-Description      : Call down a strike of Holy energy, dealing $s1 Holy damage to enemies within $A1 yards.
+                   Base Value: 0 | Scaled Value: 0 | Radius: 0 - 5 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
+Description      : Call down a strike of Holy energy, dealing $<damage> Holy damage to enemies within $A1 yards.
+Variables        : $damage=$?$SP>$AP[${$SP*4}][${$AP*5}]
 
 Name             : Light's Reckoning (Racial Passive) (id=256896) [Scaling Spell (-6)] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
@@ -5540,5 +5542,23 @@ Effects          :
                    Base Value: -1 | Scaled Value: -1 | Misc Value: 14 | Target: Self (1)
                    Affected Spells: Blackout Kick (100784), Blackout Strike (205523), Blackout Kick (228649)
 Description      : Blackout Kick costs $s1 fewer Chi.
+
+Name             : Rising Sun Kick (Rank 2) (id=262840) [Spell Family (53), Passive] 
+Class            : Mistweaver Windwalker Monk
+School           : Frost
+Spell Level      : 36
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ x....... ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6)
+Effects          :
+#1 (id=624336)   : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
+                   Base Value: 70 | Scaled Value: 70 | Target: Self (1)
+                   Affected Spells: Rising Sun Kick (107428), Rising Sun Kick (185099)
+Description      : Rising Sun Kick deals $s1% increased damage.
+
 
 

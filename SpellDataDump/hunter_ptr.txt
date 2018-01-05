@@ -3868,7 +3868,7 @@ Resource         : 25 Focus (2) (id=10353)
 Spell Level      : 10 (max 20)
 Range            : 5 yards
 GCD              : 1.5 seconds
-Affecting spells : Hunter (137014 effect#3), Survival Hunter (137017 effect#1), Raptor's Cry (203638 effect#1), Unseen Predator's Cloak (248212 effect#1), Exposed Flank (252094 effect#1), In for the Kill (252095 effect#1)
+Affecting spells : Hunter (137014 effect#3), Survival Hunter (137017 effect#1), Raptor's Cry (203638 effect#1), Unseen Predator's Cloak (248212 effect#1), Exposed Flank (252094 effect#1), In for the Kill (252095 effect#1), Raptor Strike (262839 effect#1)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3877,7 +3877,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=271205)   : Weapon Damage% (31)
-                   Base Value: 360 | Scaled Value: 3.6 | Target: Enemy (6)
+                   Base Value: 257 | Scaled Value: 2.57 | Target: Enemy (6)
 #2 (id=286017)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
 Description      : A vicious slash dealing $sw1 Physical damage.
@@ -4496,12 +4496,12 @@ Description      : Tosses a hatchet at an enemy, dealing $s1 Physical damage.
 Name             : Cobra Shot (id=193455) [Spell Family (9)] 
 Class            : Beast Mastery Marksmanship Hunter
 School           : Physical
-Resource         : 40 Focus (2) (id=10443)
+Resource         : 50 Focus (2) (id=10443)
 Spell Level      : 1
 Range            : 40 yards
 GCD              : 1.5 seconds
 Velocity         : 45 yards/sec
-Affecting spells : Freezing Trap (3355 effect#2), Hunter (137014 effect#3), Beast Mastery Hunter (137015 effect#1), Guide: Sharpshooting (178549 effect#2), Aspect of the Wild (193530 effect#3), Spitting Cobras (197140 effect#1), Roar of the Seven Lions (207318 effect#1), Slithering Serpents (238051 effect#1), Bestial Rage (246116 effect#1)
+Affecting spells : Freezing Trap (3355 effect#2), Hunter (137014 effect#3), Beast Mastery Hunter (137015 effect#1), Guide: Sharpshooting (178549 effect#2), Aspect of the Wild (193530 effect#3), Spitting Cobras (197140 effect#1), Roar of the Seven Lions (207318 effect#1), Slithering Serpents (238051 effect#1), Bestial Rage (246116 effect#1), Cobra Shot (262837 effect#1), Cobra Shot (262838 effect#1)
 Attributes       : .x...... ........ x....... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ .x...... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
@@ -4513,8 +4513,8 @@ Effects          :
 #1 (id=283801)   : Normalized Weapon Damage (121)
                    Base Value: 1 | Scaled Value: 1 | Target: Enemy (6)
 #2 (id=283802)   : Weapon Damage% (31)
-                   Base Value: 540 | Scaled Value: 5.4 | Target: Enemy (6)
-Description      : A quick shot causing ${$sw2*$<mult>} Physical damage.
+                   Base Value: 270 | Scaled Value: 2.7 | Target: Enemy (6)
+Description      : A quick shot causing $sw2 Physical damage.
 Variables        : $mult=${($min($pl-1,19)*12+112)/340}
 
 Name             : Mastery: Sniper Training (Mastery) (id=193468) [Spell Family (9), Passive] 
@@ -6646,8 +6646,9 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=477694)   : Trigger Missiles (32)
-                   Base Value: 0 | Scaled Value: 465816 (avg=0.4) | Trigger Spell: 256893 | Radius: 0 - 5 yards | Target: Enemy (6)
-Description      : Call down a strike of Holy energy, dealing $s1 Holy damage to enemies within $A1 yards after 3 sec.
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 256893 | Radius: 0 - 5 yards | Target: Enemy (6)
+Description      : Call down a strike of Holy energy, dealing $<damage> Holy damage to enemies within $A1 yards after 3 sec.
+Variables        : $damage=$?$SP>$AP[${$SP*4}][${$AP*5}]
 
 Name             : Holy Resistance (Racial Passive) (id=255651) [Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
@@ -6714,8 +6715,9 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=479673)   : School Damage (2): holy
-                   Base Value: 0 | Scaled Value: 465816 (avg=0.4) | Radius: 0 - 5 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
-Description      : Call down a strike of Holy energy, dealing $s1 Holy damage to enemies within $A1 yards.
+                   Base Value: 0 | Scaled Value: 0 | Radius: 0 - 5 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
+Description      : Call down a strike of Holy energy, dealing $<damage> Holy damage to enemies within $A1 yards.
+Variables        : $damage=$?$SP>$AP[${$SP*4}][${$AP*5}]
 
 Name             : Light's Reckoning (Racial Passive) (id=256896) [Scaling Spell (-6)] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
@@ -6738,5 +6740,56 @@ Effects          :
 Description      : Deals $s1 Holy Damage to enemies within $A1.
 
 Heals $s2 to allies within $A1. 
+
+Name             : Cobra Shot (Rank 2) (id=262837) [Spell Family (9), Passive] 
+Class            : Beast Mastery Hunter
+School           : Nature
+Spell Level      : 3
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ x....... ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6)
+Effects          :
+#1 (id=624333)   : Apply Aura (6) | Add Flat Modifier (107): Spell Resource Cost (14)
+                   Base Value: -10 | Scaled Value: -10 | Misc Value: 14 | Target: Self (1)
+                   Affected Spells: Cobra Shot (193455)
+Description      : Cobra Shot's cost is reduced by $s1.
+
+Name             : Cobra Shot (Rank 3) (id=262838) [Spell Family (9), Passive] 
+Class            : Beast Mastery Hunter
+School           : Nature
+Spell Level      : 52
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ x....... ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6)
+Effects          :
+#1 (id=624334)   : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
+                   Base Value: 100 | Scaled Value: 100 | Target: Self (1)
+                   Affected Spells: Cobra Shot (193455)
+Description      : Cobra Shot deals $s1% increased damage.
+
+Name             : Raptor Strike (Rank 2) (id=262839) [Spell Family (9), Passive] 
+Class            : Survival Hunter
+School           : Nature
+Spell Level      : 52
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ x....... ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6)
+Effects          :
+#1 (id=624335)   : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
+                   Base Value: 40 | Scaled Value: 40 | Target: Self (1)
+                   Affected Spells: Raptor Strike (186270)
+Description      : Raptor Strike deals $s1% increased damage.
 
 

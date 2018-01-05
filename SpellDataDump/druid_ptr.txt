@@ -316,7 +316,7 @@ Effects          :
 #2 (id=117068)   : Apply Aura (6) | Dummy (4)
                    Base Value: 6000 | Scaled Value: 6000 | Misc Value: 11 | Target: Self (1)
 #3 (id=117091)   : Apply Aura (6) | Unknown(332)
-                   Base Value: 49376 | Scaled Value: 49376 | Target: Self (1)
+                   Base Value: 49376 | Scaled Value: 49376 | Misc Value 2: 0x3 | Target: Self (1)
                    Affected Spells: Wild Charge (102401)
 #4 (id=162558)   : Apply Aura (6) | Add Flat Modifier (107): Spell Global Cooldown (21)
                    Base Value: -500 | Scaled Value: -500 | Misc Value: 21 | Target: Self (1)
@@ -942,7 +942,7 @@ Effects          :
 #1 (id=12001)    : Apply Aura (6) | Threat (10)
                    Base Value: 900 | Scaled Value: 900 | Misc Value: 127 | Target: Self (1)
 #2 (id=12002)    : Apply Aura (6) | Unknown(332)
-                   Base Value: 16979 | Scaled Value: 16979 | Target: Self (1)
+                   Base Value: 16979 | Scaled Value: 16979 | Misc Value 2: 0x3 | Target: Self (1)
                    Affected Spells: Wild Charge (102401)
 
 Name             : Command (Racial Passive) (id=21563) [Spell Family (9), Passive] 
@@ -1116,7 +1116,7 @@ Effects          :
 #6 (id=232246)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #7 (id=281598)   : Apply Aura (6) | Unknown(332)
-                   Base Value: 102383 | Scaled Value: 102383 | Target: Self (1)
+                   Base Value: 102383 | Scaled Value: 102383 | Misc Value 2: 0x3 | Target: Self (1)
                    Affected Spells: Wild Charge (102401)
 #8 (id=290490)   : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 10 | Scaled Value: 10 | Misc Value: 0x48 | Target: Self (1)
@@ -7196,8 +7196,9 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=477694)   : Trigger Missiles (32)
-                   Base Value: 0 | Scaled Value: 465816 (avg=0.4) | Trigger Spell: 256893 | Radius: 0 - 5 yards | Target: Enemy (6)
-Description      : Call down a strike of Holy energy, dealing $s1 Holy damage to enemies within $A1 yards after 3 sec.
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 256893 | Radius: 0 - 5 yards | Target: Enemy (6)
+Description      : Call down a strike of Holy energy, dealing $<damage> Holy damage to enemies within $A1 yards after 3 sec.
+Variables        : $damage=$?$SP>$AP[${$SP*4}][${$AP*5}]
 
 Name             : Holy Resistance (Racial Passive) (id=255651) [Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
@@ -7264,8 +7265,9 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=479673)   : School Damage (2): holy
-                   Base Value: 0 | Scaled Value: 465816 (avg=0.4) | Radius: 0 - 5 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
-Description      : Call down a strike of Holy energy, dealing $s1 Holy damage to enemies within $A1 yards.
+                   Base Value: 0 | Scaled Value: 0 | Radius: 0 - 5 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
+Description      : Call down a strike of Holy energy, dealing $<damage> Holy damage to enemies within $A1 yards.
+Variables        : $damage=$?$SP>$AP[${$SP*4}][${$AP*5}]
 
 Name             : Light's Reckoning (Racial Passive) (id=256896) [Scaling Spell (-6)] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
