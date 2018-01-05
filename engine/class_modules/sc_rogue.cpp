@@ -1649,8 +1649,7 @@ struct poison_knives_t : public rogue_attack_t
   {
     rogue_attack_t::init();
 
-    //snapshot_flags = update_flags = STATE_TGT_MUL_DA;
-    snapshot_flags = update_flags = STATE_CRIT | STATE_TGT_CRIT | STATE_VERSATILITY;
+    snapshot_flags = update_flags = STATE_CRIT | STATE_TGT_CRIT;
   }
 };
 
@@ -3882,7 +3881,7 @@ struct mutilate_strike_t : public rogue_attack_t
       c += toxic_mutilator_crit_chance;
     }
 
-    c += p() -> artifact.balanced_blades.percent();
+    c += p() -> artifact.balanced_blades.rank() * p() -> artifact.balanced_blades.data().effectN( 1 ).percent();
 
     return c;
   }
