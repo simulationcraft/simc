@@ -393,6 +393,7 @@ public:
     const spell_data_t* paralysis;
     const spell_data_t* provoke;
     const spell_data_t* rising_sun_kick;
+    const spell_data_t* rising_sun_kick_2;
     const spell_data_t* roll;
     const spell_data_t* spinning_crane_kick;
     const spell_data_t* spear_hand_strike;
@@ -3048,6 +3049,7 @@ struct tiger_palm_t: public monk_melee_attack_t
       }
 
       // Combo Breaker calculation
+      // TODO add Level 42 minimum
       if ( p() -> buff.bok_proc -> trigger() )
       {
         p() -> proc.bok_proc -> occur();
@@ -3163,6 +3165,9 @@ struct rising_sun_kick_proc_t : public monk_melee_attack_t
   double action_multiplier() const override
   {
     double am = monk_melee_attack_t::action_multiplier();
+
+    if ( p() -> spec.rising_sun_kick_2 )
+      am *= 1 + p() -> spec.rising_sun_kick_2 -> effectN( 1 ).percent();
 
     if ( p() -> artifact.rising_winds.rank() )
       am *= 1 + p() -> artifact.rising_winds.percent();
@@ -3341,6 +3346,9 @@ struct rising_sun_kick_t: public monk_melee_attack_t
   double action_multiplier() const override
   {
     double am = monk_melee_attack_t::action_multiplier();
+
+    if ( p() -> spec.rising_sun_kick_2 )
+      am *= 1 + p() -> spec.rising_sun_kick_2 -> effectN( 1 ).percent();
 
     if ( p() -> artifact.rising_winds.rank() )
       am *= 1 + p() -> artifact.rising_winds.percent();
@@ -8397,6 +8405,7 @@ void monk_t::init_spells()
   spec.provoke                       = find_class_spell( "Provoke" );
   spec.resuscitate                   = find_class_spell( "Resuscitate" );
   spec.rising_sun_kick               = find_specialization_spell( "Rising Sun Kick" );
+  spec.rising_sun_kick_2             = find_specialization_spell( 262840 );
   spec.roll                          = find_class_spell( "Roll" );
   spec.spear_hand_strike             = find_specialization_spell( "Spear Hand Strike" );
   spec.spinning_crane_kick           = find_specialization_spell( "Spinning Crane Kick" );
