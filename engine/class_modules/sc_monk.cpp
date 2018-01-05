@@ -3049,8 +3049,7 @@ struct tiger_palm_t: public monk_melee_attack_t
       }
 
       // Combo Breaker calculation
-      // TODO add Level 42 minimum
-      if ( p() -> buff.bok_proc -> trigger() )
+      if ( p() -> spec.combo_breaker && p() -> buff.bok_proc -> trigger() )
       {
         p() -> proc.bok_proc -> occur();
         
@@ -3107,7 +3106,7 @@ struct tiger_palm_t: public monk_melee_attack_t
     monk_melee_attack_t::impact( s );
 
     // Apply Mark of the Crane
-    if ( p() -> specialization() == MONK_WINDWALKER && result_is_hit( s -> result ) )
+    if ( p() -> specialization() == MONK_WINDWALKER && result_is_hit( s -> result ) && p() -> spec.spinning_crane_kick )
       p() -> trigger_mark_of_the_crane( s );
   }
 };
