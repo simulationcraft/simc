@@ -1247,6 +1247,8 @@ class SpellDataGenerator(DataGenerator):
          255672,
          # 7.3.0 Forgefiend's Fabricator
          253322, 256025, 
+		 # 7.3.0 Riftworld Codex buffs and damage component
+		 252545, 251938, 256415, 252550
          # 7.3.2 Norgannon pantheon "random school" nukes
          257243, 257532, 257241, 257242, 257534, 257533,
         ),
