@@ -10368,7 +10368,7 @@ void monk_t::apl_combat_windwalker()
   serenity -> add_action( this, "Tiger Palm", "target_if=min:debuff.mark_of_the_crane.remains,if=!prev_gcd.1.tiger_palm&energy=energy.max&chi<1&!buff.serenity.up" );
   serenity -> add_action( "call_action_list,name=cd" );
   serenity -> add_talent( this, "Serenity" );
-  serenity -> add_action( this, "Rising Sun Kick", "target_if=min:debuff.mark_of_the_crane.remains,if=active_enemies<3");
+  serenity -> add_action( this, "Rising Sun Kick", "target_if=min:debuff.mark_of_the_crane.remains,if=active_enemies<3" );
   serenity -> add_action( this, "Strike of the Windlord" );
   serenity -> add_action( this, "Blackout Kick", "target_if=min:debuff.mark_of_the_crane.remains,if=(!prev_gcd.1.blackout_kick)&(prev_gcd.1.strike_of_the_windlord|prev_gcd.1.fists_of_fury)&active_enemies<2" );
   serenity -> add_action( this, "Fists of Fury", "if=((equipped.drinking_horn_cover&buff.pressure_point.remains<=2&set_bonus.tier20_4pc)&(cooldown.rising_sun_kick.remains>1|active_enemies>1)),interrupt=1" );
@@ -10381,7 +10381,7 @@ void monk_t::apl_combat_windwalker()
   serenity -> add_action( this, "Blackout Kick", "target_if=min:debuff.mark_of_the_crane.remains,if=!prev_gcd.1.blackout_kick" );
 
   // Serenity Opener
-  serenity_opener -> add_action( this, "Tiger Palm", "target_if=min:debuff.mark_of_the_crane.remains,if=!prev_gcd.1.tiger_palm&energy=energy.max&chi<1&!buff.serenity.up&cooldown.fists_of_fury.remains<=0");
+  serenity_opener -> add_action( this, "Tiger Palm", "target_if=min:debuff.mark_of_the_crane.remains,if=!prev_gcd.1.tiger_palm&energy=energy.max&chi<1&!buff.serenity.up&cooldown.fists_of_fury.remains<=0" );
 
   // Serenity Opener Racials
   for ( size_t i = 0; i < racial_actions.size(); i++ )
@@ -10396,7 +10396,7 @@ void monk_t::apl_combat_windwalker()
   serenity_opener -> add_action( this, "Blackout Kick", "target_if=min:debuff.mark_of_the_crane.remains,if=(!prev_gcd.1.blackout_kick)&(prev_gcd.1.strike_of_the_windlord)" );
   serenity_opener -> add_action( this, "Fists of Fury", "if=cooldown.rising_sun_kick.remains>1|buff.serenity.down,interrupt=1" );
   serenity_opener -> add_action( this, "Blackout Kick", "target_if=min:debuff.mark_of_the_crane.remains,if=buff.serenity.down&chi<=2&cooldown.serenity.remains<=0&prev_gcd.1.tiger_palm" );
-  serenity_opener -> add_action( this, "Tiger Palm", "target_if=min:debuff.mark_of_the_crane.remains,if=chi=1");
+  serenity_opener -> add_action( this, "Tiger Palm", "target_if=min:debuff.mark_of_the_crane.remains,if=chi=1" );
 
   // Single Target
   st -> add_action( "call_action_list,name=cd" );
