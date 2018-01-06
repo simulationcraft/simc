@@ -9391,6 +9391,31 @@ struct rogue_module_t : public module_t
 
   void register_hotfixes() const override
   {
+    hotfix::register_effect( "Rogue", "2018-01-06", "Mutilate damage increased by 20%", 99543 )
+      .field( "base_value" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 432 )
+      .verification_value( 360 );
+    hotfix::register_effect( "Rogue", "2018-01-06", "Mutilate damage increased by 20%", 99544 )
+      .field( "base_value" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 432 )
+      .verification_value( 360 );
+    hotfix::register_effect( "Rogue", "2018-01-06", "Balanced Blades (Artifact trait) bonus increased to 4% per point (was 2% per point).", 282142 )
+      .field( "base_value" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 4 )
+      .verification_value( 2 );
+    hotfix::register_effect( "Rogue", "2018-01-06", "Poison Knives (Artifact trait) reduced to 3% per point (was 4% per point).", 282211 )
+      .field( "base_value" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 3 )
+      .verification_value( 4 );
+    hotfix::register_effect( "Rogue", "2018-01-06", "Deadly Poison triggered instant damage increased by 15%.", 126788 )
+      .field( "ap_coefficient" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 0.25415 )
+      .verification_value( 0.221 );
   }
 
   virtual void init( player_t* ) const override {}
