@@ -26,9 +26,10 @@ actions.precombat+=/food
 actions.precombat+=/augmentation
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
-actions.precombat+=/potion
 actions.precombat+=/totem_mastery
-actions.precombat+=/stormkeeper
+actions.precombat+=/fire_elemental
+actions.precombat+=/potion
+actions.precombat+=/elemental_blast
 
 # Executed every time the actor is available.
 # Bloodlust casting behavior mirrors the simulator settings for proxy bloodlust. See options 'bloodlust_percent', and 'bloodlust_time'. 
@@ -68,18 +69,20 @@ actions.aoe+=/flame_shock,moving=1,target_if=refreshable
 actions.single_asc=ascendance,if=dot.flame_shock.remains>buff.ascendance.duration&(time>=60|buff.bloodlust.up)&cooldown.lava_burst.remains>0&!buff.stormkeeper.up
 actions.single_asc+=/flame_shock,if=!ticking|dot.flame_shock.remains<=gcd
 actions.single_asc+=/flame_shock,if=maelstrom>=20&remains<=buff.ascendance.duration&cooldown.ascendance.remains+buff.ascendance.duration<=duration
-actions.single_asc+=/earthquake,if=buff.echoes_of_the_great_sundering.up&!buff.ascendance.up
 # Keep your EB always on Cooldown.
 actions.single_asc+=/elemental_blast
+# Use your shoulders proc outside of Ascendance and only if at least one of the following is true: you have T21_2 buff, shoulder buff duration is shorter than 3 seconds or you have greater than or equal 117 Maelstrom.
+actions.single_asc+=/earthquake,if=buff.echoes_of_the_great_sundering.up&!buff.ascendance.up&(buff.earthen_strength.up|buff.echoes_of_the_great_sundering.duration<=3|maelstrom>=117)
 actions.single_asc+=/earth_shock,if=maelstrom>=117|!artifact.swelling_maelstrom.enabled&maelstrom>=92
-# Keep SK for large or soon add waves.
-actions.single_asc+=/stormkeeper,if=raid_event.adds.count<3|raid_event.adds.in>50
+# Keep SK for large or soon add waves. Don't cast SK during Ascendance.
+actions.single_asc+=/stormkeeper,if=(raid_event.adds.count<3|raid_event.adds.in>50)&time>5&!buff.ascendance.up
 actions.single_asc+=/liquid_magma_totem,if=raid_event.adds.count<3|raid_event.adds.in>50
 actions.single_asc+=/lightning_bolt,if=buff.power_of_the_maelstrom.up&buff.stormkeeper.up&spell_targets.chain_lightning<3
 actions.single_asc+=/lava_burst,if=dot.flame_shock.remains>cast_time&(cooldown_react|buff.ascendance.up)
 actions.single_asc+=/flame_shock,if=maelstrom>=20&buff.elemental_focus.up,target_if=refreshable
-# If you equipped Smoldering Heart, Deceivers Blood Pact and skilled Aftershock, you essentially gamble for procs.
-actions.single_asc+=/earth_shock,if=maelstrom>=111|!artifact.swelling_maelstrom.enabled&maelstrom>=86|equipped.smoldering_heart&equipped.the_deceivers_blood_pact&maelstrom>70&talent.aftershock.enabled
+actions.single_asc+=/earthquake,if=buff.echoes_of_the_great_sundering.up&(maelstrom>=111|!artifact.swelling_maelstrom.enabled&maelstrom>=86|equipped.the_deceivers_blood_pact&maelstrom>85&talent.aftershock.enabled)
+# If you talented for Aftershock, equipped Deceivers Blood Pact and either Smoldering Heart or Echoes of the Great Sundering, you essentially gamble for procs.
+actions.single_asc+=/earth_shock,if=maelstrom>=111|!artifact.swelling_maelstrom.enabled&maelstrom>=86|equipped.the_deceivers_blood_pact&talent.aftershock.enabled&(maelstrom>85&equipped.echoes_of_the_great_sundering|maelstrom>70&equipped.smoldering_heart)
 actions.single_asc+=/totem_mastery,if=buff.resonance_totem.remains<10|(buff.resonance_totem.remains<(buff.ascendance.duration+cooldown.ascendance.remains)&cooldown.ascendance.remains<15)
 actions.single_asc+=/lava_beam,if=active_enemies>1&spell_targets.lava_beam>1
 actions.single_asc+=/lightning_bolt,if=buff.power_of_the_maelstrom.up&spell_targets.chain_lightning<3
@@ -91,24 +94,25 @@ actions.single_asc+=/flame_shock,moving=1,if=movement.distance>6
 
 # Single Target Action Priority List for Ice Fury Spec
 actions.single_if=flame_shock,if=!ticking|dot.flame_shock.remains<=gcd
-# The check for Ascendance is needed thanks to the legendary gloves.
-actions.single_if+=/earthquake,if=buff.echoes_of_the_great_sundering.up&!buff.ascendance.up
 # Keep your EB always on Cooldown.
 actions.single_if+=/elemental_blast
+# Use your shoulders proc outside of Ascendance and only if at least one of the following is true: you have T21_2 buff, shoulder buff duration is shorter than 3 seconds or you have greater than or equal 117 Maelstrom.
+actions.single_if+=/earthquake,if=buff.echoes_of_the_great_sundering.up&!buff.ascendance.up&(buff.earthen_strength.up|buff.echoes_of_the_great_sundering.duration<=3|maelstrom>=117)
 actions.single_if+=/earth_shock,if=(maelstrom>=111|!artifact.swelling_maelstrom.enabled&maelstrom>=92)&buff.earthen_strength.up
 actions.single_if+=/frost_shock,if=buff.icefury.up&maelstrom>=20&!buff.ascendance.up&buff.earthen_strength.up
 actions.single_if+=/earth_shock,if=maelstrom>=117|!artifact.swelling_maelstrom.enabled&maelstrom>=92
 # Keep SK for large or soon spawning add waves.
-actions.single_if+=/stormkeeper,if=raid_event.adds.count<3|raid_event.adds.in>50
+actions.single_if+=/stormkeeper,if=(raid_event.adds.count<3|raid_event.adds.in>50)&!buff.ascendance.up
 actions.single_if+=/icefury,if=(raid_event.movement.in<5|maelstrom<=101&artifact.swelling_maelstrom.enabled|!artifact.swelling_maelstrom.enabled&maelstrom<=76)&!buff.ascendance.up
 actions.single_if+=/liquid_magma_totem,if=raid_event.adds.count<3|raid_event.adds.in>50
 actions.single_if+=/lightning_bolt,if=buff.power_of_the_maelstrom.up&buff.stormkeeper.up&spell_targets.chain_lightning<3
 actions.single_if+=/lava_burst,if=dot.flame_shock.remains>cast_time&cooldown_react
 actions.single_if+=/frost_shock,if=buff.icefury.up&((maelstrom>=20&raid_event.movement.in>buff.icefury.remains)|buff.icefury.remains<(1.5*spell_haste*buff.icefury.stack+1))
 actions.single_if+=/flame_shock,if=maelstrom>=20&buff.elemental_focus.up,target_if=refreshable
+actions.single_if+=/earthquake,if=buff.echoes_of_the_great_sundering.up&(maelstrom>=111|!artifact.swelling_maelstrom.enabled&maelstrom>=86|equipped.the_deceivers_blood_pact&maelstrom>85&talent.aftershock.enabled)
 actions.single_if+=/frost_shock,moving=1,if=buff.icefury.up
-# If you equipped Smoldering Heart, Deceivers Blood Pact and skilled Aftershock, you essentially gamble for procs.
-actions.single_if+=/earth_shock,if=maelstrom>=111|!artifact.swelling_maelstrom.enabled&maelstrom>=86|equipped.smoldering_heart&equipped.the_deceivers_blood_pact&maelstrom>70&talent.aftershock.enabled&buff.earthen_strength.up
+# If you talented for Aftershock, equipped Deceivers Blood Pact and either Smoldering Heart or Echoes of the Great Sundering, you essentially gamble for procs.
+actions.single_if+=/earth_shock,if=maelstrom>=111|!artifact.swelling_maelstrom.enabled&maelstrom>=86|equipped.the_deceivers_blood_pact&talent.aftershock.enabled&(maelstrom>85&equipped.echoes_of_the_great_sundering|maelstrom>70&equipped.smoldering_heart)
 actions.single_if+=/totem_mastery,if=buff.resonance_totem.remains<10
 actions.single_if+=/lightning_bolt,if=buff.power_of_the_maelstrom.up&spell_targets.chain_lightning<3
 actions.single_if+=/chain_lightning,if=active_enemies>1&spell_targets.chain_lightning>1
@@ -119,18 +123,19 @@ actions.single_if+=/flame_shock,moving=1,if=movement.distance>6
 
 # Single Target Action Priority List for Lightning Rod Spec
 actions.single_lr=flame_shock,if=!ticking|dot.flame_shock.remains<=gcd
-# The check for Ascendance is needed thanks to the legendary gloves.
-actions.single_lr+=/earthquake,if=buff.echoes_of_the_great_sundering.up&!buff.ascendance.up
 # Keep your EB always on Cooldown.
 actions.single_lr+=/elemental_blast
+# Use your shoulders proc outside of Ascendance and only if at least one of the following is true: you have T21_2 buff, shoulder buff duration is shorter than 3 seconds or you have greater than or equal 117 Maelstrom.
+actions.single_lr+=/earthquake,if=buff.echoes_of_the_great_sundering.up&!buff.ascendance.up&(buff.earthen_strength.up|buff.echoes_of_the_great_sundering.duration<=3|maelstrom>=117)
 actions.single_lr+=/earth_shock,if=maelstrom>=117|!artifact.swelling_maelstrom.enabled&maelstrom>=92
 # Keep SK for large or soon add waves.
-actions.single_lr+=/stormkeeper,if=raid_event.adds.count<3|raid_event.adds.in>50
+actions.single_lr+=/stormkeeper,if=(raid_event.adds.count<3|raid_event.adds.in>50)&!buff.ascendance.up
 actions.single_lr+=/liquid_magma_totem,if=raid_event.adds.count<3|raid_event.adds.in>50
 actions.single_lr+=/lava_burst,if=dot.flame_shock.remains>cast_time&cooldown_react
 actions.single_lr+=/flame_shock,if=maelstrom>=20&buff.elemental_focus.up,target_if=refreshable
-# If you equipped Smoldering Heart, Deceivers Blood Pact and skilled Aftershock, you essentially gamble for procs.
-actions.single_lr+=/earth_shock,if=maelstrom>=111|!artifact.swelling_maelstrom.enabled&maelstrom>=86|equipped.smoldering_heart&equipped.the_deceivers_blood_pact&maelstrom>70&talent.aftershock.enabled
+actions.single_lr+=/earthquake,if=buff.echoes_of_the_great_sundering.up&(maelstrom>=111|!artifact.swelling_maelstrom.enabled&maelstrom>=86|equipped.the_deceivers_blood_pact&maelstrom>85&talent.aftershock.enabled)
+# If you talented for Aftershock, equipped Deceivers Blood Pact and either Smoldering Heart or Echoes of the Great Sundering, you essentially gamble for procs.
+actions.single_lr+=/earth_shock,if=maelstrom>=111|!artifact.swelling_maelstrom.enabled&maelstrom>=86|equipped.the_deceivers_blood_pact&talent.aftershock.enabled&(maelstrom>85&equipped.echoes_of_the_great_sundering|maelstrom>70&equipped.smoldering_heart)
 actions.single_lr+=/totem_mastery,if=buff.resonance_totem.remains<10|(buff.resonance_totem.remains<(buff.ascendance.duration+cooldown.ascendance.remains)&cooldown.ascendance.remains<15)
 actions.single_lr+=/lightning_bolt,if=buff.power_of_the_maelstrom.up&spell_targets.chain_lightning<3,target_if=debuff.lightning_rod.down
 actions.single_lr+=/lightning_bolt,if=buff.power_of_the_maelstrom.up&spell_targets.chain_lightning<3
