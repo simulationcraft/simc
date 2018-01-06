@@ -9391,12 +9391,12 @@ struct rogue_module_t : public module_t
 
   void register_hotfixes() const override
   {
-    hotfix::register_effect( "Rogue", "2018-01-06", "Mutilate (OH) damage increased by 20%", 99543 )
+    hotfix::register_effect( "Rogue", "2018-01-06", "Mutilate (MH) damage increased by 20%", 99543 )
       .field( "base_value" )
       .operation( hotfix::HOTFIX_SET )
       .modifier( 432 )
       .verification_value( 360 );
-    hotfix::register_effect( "Rogue", "2018-01-06", "Mutilate (MH) damage increased by 20%", 99544 )
+    hotfix::register_effect( "Rogue", "2018-01-06", "Mutilate (OH) damage increased by 20%", 99544 )
       .field( "base_value" )
       .operation( hotfix::HOTFIX_SET )
       .modifier( 432 )
