@@ -10142,10 +10142,9 @@ void monk_t::apl_pre_brewmaster()
 
   pre -> add_action( "potion" );
 
-  pre -> add_talent( this, "Diffuse Magic" );
-  pre -> add_talent( this, "Dampen Harm" );
   pre -> add_talent( this, "Chi Burst" );
   pre -> add_talent( this, "Chi Wave" );
+
 }
 
 // Windwalker Pre-Combat Action Priority List ==========================
@@ -10156,10 +10155,8 @@ void monk_t::apl_pre_windwalker()
 
   // Flask
   pre -> add_action( "flask" );
-
   // Food
   pre -> add_action( "food" );
-
   // Rune
   pre -> add_action( "augmentation" );
 
@@ -10167,7 +10164,6 @@ void monk_t::apl_pre_windwalker()
   pre -> add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
 
   pre -> add_action( "potion" );
-
   pre -> add_talent( this, "Chi Burst" );
   pre -> add_talent( this, "Chi Wave" );
 }
@@ -10224,9 +10220,9 @@ void monk_t::apl_combat_brewmaster()
   }
   def -> add_action( this, "Exploding Keg" );
   def -> add_talent( this, "Invoke Niuzao, the Black Ox", "if=target.time_to_die>45" );
-  def -> add_action( this, "Purifying Brew", "if=stagger.heavy" );
-  def -> add_action( this, "Ironskin Brew", "if=buff.blackout_combo.down&cooldown.brews.charges_fractional>=1.9+talent.light_brewing.enabled&buff.ironskin_brew.remains<=buff.ironskin_brew.duration*3" );
-  def -> add_talent( this, "Black Ox Brew", "if=incoming_damage_1500ms&stagger.moderate&cooldown.brews.charges_fractional<=0.8" );
+  def -> add_action( this, "Purifying Brew", "if=stagger.heavy|(stagger.moderate&cooldown.brews.charges_fractional>=cooldown.brews.max_charges-0.5&buff.ironskin_brew.remains>=buff.ironskin_brew.duration*2.5)" );
+  def -> add_action( this, "Ironskin Brew", "if=buff.blackout_combo.down&cooldown.brews.charges_fractional>=cooldown.brews.max_charges-0.1-(1+buff.ironskin_brew.remains<=buff.ironskin_brew.duration*0.5)&buff.ironskin_brew.remains<=buff.ironskin_brew.duration*2", "About charge management, by default while tanking (always true on SimC) we lower it by 1 and up to 1.5 if we are tanking with less than half of Ironskin base duration up." );
+  def -> add_talent( this, "Black Ox Brew", "if=incoming_damage_1500ms&stagger.heavy&cooldown.brews.charges_fractional<=0.75" );
   def -> add_talent( this, "Black Ox Brew", "if=(energy+(energy.regen*(cooldown.keg_smash.remains)))<40&buff.blackout_combo.down&cooldown.keg_smash.up" );
   for ( size_t i = 0; i < racial_actions.size(); i++ )
   {
