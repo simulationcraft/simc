@@ -10202,66 +10202,45 @@ void monk_t::apl_combat_brewmaster()
 {
   std::vector<std::string> racial_actions = get_racial_actions();
   action_priority_list_t* def = get_action_priority_list( "default" );
-  action_priority_list_t* st = get_action_priority_list( "st" );
-//  action_priority_list_t* aoe = get_action_priority_list( "aoe" );
 
   def -> add_action( "auto_attack" );
-
   def -> add_action( "greater_gift_of_the_ox" );
   def -> add_action( this, "Gift of the Ox" );
-//  def -> add_talent( this, "Healing Elixir", "if=incoming_damage_1500ms" );
   def -> add_talent( this, "Dampen Harm", "if=incoming_damage_1500ms&buff.fortifying_brew.down" );
   def -> add_action( this, "Fortifying Brew", "if=incoming_damage_1500ms&(buff.dampen_harm.down|buff.diffuse_magic.down)" );
-
   int num_items = (int)items.size();
   for ( int i = 0; i < num_items; i++ )
   {
     if ( items[i].has_special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE ) )
     {
-      def -> add_action( "use_item,name=" + items[i].name_str ); //+ ",if=incoming_damage_1500ms&(buff.dampen_harm.down|buff.diffuse_magic.down)&buff.fortifying_brew.down" );
+      def -> add_action( "use_item,name=" + items[i].name_str );
     }
   }
-
-  def -> add_action( "call_action_list,name=st" ); //,if=active_enemies<3" );
-//  def -> add_action( "call_action_list,name=aoe,if=active_enemies>=3" );
-
-//  st -> add_action( this, "Purifying Brew", "if=stagger.heavy" );
-//  st -> add_action( this, "Purifying Brew", "if=stagger.moderate" );
-  st -> add_action( "potion" );
-
+  def -> add_action( "potion" );
   for ( size_t i = 0; i < racial_actions.size(); i++ )
   {
     if ( racial_actions[i] != "arcane_torrent" )
-      st -> add_action( racial_actions[i] );
+      def -> add_action( racial_actions[i] );
   }
-  st -> add_action( this, "Exploding Keg" );
-  st -> add_talent( this, "Invoke Niuzao, the Black Ox", "if=target.time_to_die>45" );
-  st -> add_action( this, "Ironskin Brew", "if=buff.blackout_combo.down&cooldown.brews.charges>=1" );
-  st -> add_talent( this, "Black Ox Brew", "if=(energy+(energy.regen*(cooldown.keg_smash.remains)))<40&buff.blackout_combo.down&cooldown.keg_smash.up" );
+  def -> add_action( this, "Exploding Keg" );
+  def -> add_talent( this, "Invoke Niuzao, the Black Ox", "if=target.time_to_die>45" );
+  def -> add_action( this, "Purifying Brew", "if=stagger.heavy" );
+  def -> add_action( this, "Ironskin Brew", "if=buff.blackout_combo.down&cooldown.brews.charges_fractional>=1.9+talent.light_brewing.enabled&buff.ironskin_brew.remains<=buff.ironskin_brew.duration*3" );
+  def -> add_talent( this, "Black Ox Brew", "if=incoming_damage_1500ms&stagger.moderate&cooldown.brews.charges_fractional<=0.8" );
+  def -> add_talent( this, "Black Ox Brew", "if=(energy+(energy.regen*(cooldown.keg_smash.remains)))<40&buff.blackout_combo.down&cooldown.keg_smash.up" );
   for ( size_t i = 0; i < racial_actions.size(); i++ )
   {
     if ( racial_actions[i] == "arcane_torrent" )
-      st -> add_action( racial_actions[i] + ",if=energy<31" );
+      def -> add_action( racial_actions[i] + ",if=energy<31" );
   }
-  st -> add_action( this, "Tiger Palm", "if=buff.blackout_combo.up" );
-  st -> add_action( this, "Blackout Strike", "if=cooldown.keg_smash.remains>0" );
-  st -> add_action( this, "Keg Smash" );
-  st -> add_action( this, "Breath of Fire", "if=buff.bloodlust.down&buff.blackout_combo.down|(buff.bloodlust.up&buff.blackout_combo.down&dot.breath_of_fire_dot.remains<=0)");
-  st -> add_talent( this, "Rushing Jade Wind" );
-  st -> add_action( this, "Tiger Palm", "if=!talent.blackout_combo.enabled&cooldown.keg_smash.remains>=gcd&(energy+(energy.regen*(cooldown.keg_smash.remains)))>=55" );
-
-
-/*  aoe -> add_action( this, "Purifying Brew", "if=stagger.heavy" );
-  aoe -> add_action( this, "Purifying Brew", "if=buff.serenity.up" );
-  aoe -> add_action( this, "Purifying Brew", "if=stagger.moderate" );
-  aoe -> add_talent( this, "Black Ox Brew" );
-  aoe -> add_action( this, "Keg Smash" );
-  aoe -> add_action( this, "Breath of Fire", "if=debuff.keg_smash.up" );  
-  aoe -> add_talent( this, "Rushing Jade Wind" );
-  aoe -> add_talent( this, "Chi Burst", "if=energy.time_to_max>2&buff.serenity.down" );
-  aoe -> add_talent( this, "Chi Wave", "if=energy.time_to_max>2&buff.serenity.down" );
-  aoe -> add_action( this, "Tiger Palm", "if=cooldown.keg_smash.remains>=gcd&(energy+(energy.regen*(cooldown.keg_smash.remains)))>=80" );
-*/
+  def -> add_action( this, "Tiger Palm", "if=buff.blackout_combo.up" );
+  def -> add_action( this, "Blackout Strike", "if=cooldown.keg_smash.remains>0" );
+  def -> add_action( this, "Keg Smash" );
+  def -> add_action( this, "Breath of Fire", "if=(buff.bloodlust.down&buff.blackout_combo.down)|(buff.bloodlust.up&buff.blackout_combo.down&dot.breath_of_fire_dot.remains<=0)");
+  def -> add_talent( this, "Rushing Jade Wind" );
+  def -> add_talent( this, "Chi Burst" );
+  def -> add_talent( this, "Chi Wave" );
+  def -> add_action( this, "Tiger Palm", "if=!talent.blackout_combo.enabled&cooldown.keg_smash.remains>=gcd&(energy+(energy.regen*(cooldown.keg_smash.remains)))>=55" );
 }
 
 // Windwalker Combat Action Priority List ===============================
