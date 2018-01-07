@@ -3595,7 +3595,12 @@ void action_t::add_child( action_t* child )
     // instead of the player.
     child->range = range;
   }
-  stats -> add_child( child -> stats );
+  // Check for this so we don't create a circular reference in cases where the child action is already set up to use 
+  // the same stats object as the parent action.
+  if (this->stats != child->stats)
+  {
+    stats->add_child(child->stats);
+  }
 }
 
 bool action_t::has_movement_directionality() const

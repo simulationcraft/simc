@@ -2349,6 +2349,12 @@ struct moonfire_t : public druid_spell_t
     damage = new moonfire_damage_t( player );
     damage -> stats = stats;
 
+    add_child(damage);
+    if (player->active.galactic_guardian)
+    {
+      add_child(player->active.galactic_guardian);
+    }
+
     if ( player -> spec.astral_power -> ok() )
     {
       energize_resource = RESOURCE_ASTRAL_POWER;
@@ -5975,7 +5981,6 @@ struct sunfire_t : public druid_spell_t
 
       return adm;
     }
-
   };
 
   sunfire_damage_t* damage;
@@ -5986,6 +5991,8 @@ struct sunfire_t : public druid_spell_t
     may_miss = false;
     damage = new sunfire_damage_t( player );
     damage -> stats = stats;
+
+    add_child(damage);
 
     if ( player -> spec.astral_power -> ok() )
     {
