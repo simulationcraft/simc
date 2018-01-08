@@ -7708,8 +7708,9 @@ void shaman_t::init_action_list_elemental()
   aoe -> add_talent( this, "Liquid Magma Totem" );
   aoe -> add_action( this, "Flame Shock", "if=spell_targets.chain_lightning<4&maelstrom>=20,target_if=refreshable" );
   aoe -> add_action( this, "Earthquake" );
-  aoe -> add_action( this, "Lava Burst", "if=dot.flame_shock.remains>cast_time&buff.lava_surge.up&!talent.lightning_rod.enabled&spell_targets.chain_lightning<4" );
-  aoe -> add_talent( this, "Elemental Blast", "if=!talent.lightning_rod.enabled&spell_targets.chain_lightning<5|talent.lightning_rod.enabled&spell_targets.chain_lightning<4" );
+  aoe -> add_action( this, "Lava Burst", "if=dot.flame_shock.remains>cast_time&buff.lava_surge.up&!talent.lightning_rod.enabled&spell_targets.chain_lightning<4", "Only cast Lava Burst on three targets if it is an instant." );
+  aoe -> add_talent( this, "Elemental Blast", "if=!talent.lightning_rod.enabled&spell_targets.chain_lightning<4", "If you talented for Lightning Rod casting Elemental Blast at 3 or more targets was found to either be equal or worse than not casting it alltogether. Even though the main target damage suffers quite heavily from this." );
+  aoe -> add_action( this, "Lava Beam", "target_if=debuff.lightning_rod.down" );
   aoe -> add_action( this, "Lava Beam" );
   aoe -> add_action( this, "Chain Lightning", "target_if=debuff.lightning_rod.down" );
   aoe -> add_action( this, "Chain Lightning" );
@@ -7719,7 +7720,7 @@ void shaman_t::init_action_list_elemental()
   // Single target - Lightning Rod
   single_lr -> add_action( this, "Flame Shock", "if=!ticking|dot.flame_shock.remains<=gcd" );
   single_lr -> add_talent( this, "Elemental Blast", "", "Keep your EB always on Cooldown." );
-  single_lr -> add_action( this, "Earthquake", "if=buff.echoes_of_the_great_sundering.up&!buff.ascendance.up&(buff.earthen_strength.up|buff.echoes_of_the_great_sundering.duration<=3|maelstrom>=117)", "Use your shoulders proc outside of Ascendance and only if at least one of the following is true: you have T21_2 buff, shoulder buff duration is shorter than 3 seconds or you have greater than or equal 117 Maelstrom." );
+  single_lr -> add_action( this, "Earthquake", "if=buff.echoes_of_the_great_sundering.up&!buff.ascendance.up&(buff.earthen_strength.up|buff.echoes_of_the_great_sundering.duration<=3|maelstrom>=117)|!buff.ascendance.up&buff.earthen_strength.up&spell_targets.earthquake>1", "Use your shoulders proc outside of Ascendance and only if at least one of the following is true: you have T21_2 buff, shoulder buff duration is shorter than 3 seconds or you have greater than or equal 117 Maelstrom. Use EQ at two targets. But be aware that you're going to deal significantly less damage to your primary target." );
   single_lr -> add_action( this, "Earth Shock", "if=maelstrom>=117|!artifact.swelling_maelstrom.enabled&maelstrom>=92" );
   single_lr -> add_action( this, "Stormkeeper", "if=(raid_event.adds.count<3|raid_event.adds.in>50)&!buff.ascendance.up", "Keep SK for large or soon add waves." );
   single_lr -> add_talent( this, "Liquid Magma Totem", "if=raid_event.adds.count<3|raid_event.adds.in>50" );
@@ -7741,7 +7742,7 @@ void shaman_t::init_action_list_elemental()
   // Single target - Ice Fury
   single_if -> add_action( this, "Flame Shock", "if=!ticking|dot.flame_shock.remains<=gcd" );
   single_if -> add_talent( this, "Elemental Blast", "", "Keep your EB always on Cooldown." );
-  single_if -> add_action( this, "Earthquake", "if=buff.echoes_of_the_great_sundering.up&!buff.ascendance.up&(buff.earthen_strength.up|buff.echoes_of_the_great_sundering.duration<=3|maelstrom>=117)", "Use your shoulders proc outside of Ascendance and only if at least one of the following is true: you have T21_2 buff, shoulder buff duration is shorter than 3 seconds or you have greater than or equal 117 Maelstrom." );
+  single_if -> add_action( this, "Earthquake", "if=buff.echoes_of_the_great_sundering.up&!buff.ascendance.up&(buff.earthen_strength.up|buff.echoes_of_the_great_sundering.duration<=3|maelstrom>=117)|!buff.ascendance.up&buff.earthen_strength.up&spell_targets.earthquake>1", "Use your shoulders proc outside of Ascendance and only if at least one of the following is true: you have T21_2 buff, shoulder buff duration is shorter than 3 seconds or you have greater than or equal 117 Maelstrom. Use EQ at two targets. But be aware that you're going to deal significantly less damage to your primary target." );
   single_if -> add_action( this, "Earth Shock", "if=(maelstrom>=111|!artifact.swelling_maelstrom.enabled&maelstrom>=92)&buff.earthen_strength.up" );
   single_if -> add_action( this, "Frost Shock", "if=buff.icefury.up&maelstrom>=20&!buff.ascendance.up&buff.earthen_strength.up" );
   single_if -> add_action( this, "Earth Shock", "if=maelstrom>=117|!artifact.swelling_maelstrom.enabled&maelstrom>=92" );
@@ -7768,7 +7769,7 @@ void shaman_t::init_action_list_elemental()
   single_asc -> add_action( this, "Flame Shock", "if=!ticking|dot.flame_shock.remains<=gcd" );
   single_asc -> add_action( this, "Flame Shock", "if=maelstrom>=20&remains<=buff.ascendance.duration&cooldown.ascendance.remains+buff.ascendance.duration<=duration" );
   single_asc -> add_talent( this, "Elemental Blast", "", "Keep your EB always on Cooldown." );
-  single_asc -> add_action( this, "Earthquake", "if=buff.echoes_of_the_great_sundering.up&!buff.ascendance.up&(buff.earthen_strength.up|buff.echoes_of_the_great_sundering.duration<=3|maelstrom>=117)", "Use your shoulders proc outside of Ascendance and only if at least one of the following is true: you have T21_2 buff, shoulder buff duration is shorter than 3 seconds or you have greater than or equal 117 Maelstrom." );
+  single_asc -> add_action( this, "Earthquake", "if=buff.echoes_of_the_great_sundering.up&!buff.ascendance.up&(buff.earthen_strength.up|buff.echoes_of_the_great_sundering.duration<=3|maelstrom>=117)|!buff.ascendance.up&buff.earthen_strength.up&spell_targets.earthquake>1", "Use your shoulders proc outside of Ascendance and only if at least one of the following is true: you have T21_2 buff, shoulder buff duration is shorter than 3 seconds or you have greater than or equal 117 Maelstrom. Use EQ at two targets. But be aware that you're going to deal significantly less damage to your primary target." );
   single_asc -> add_action( this, "Earth Shock", "if=maelstrom>=117|!artifact.swelling_maelstrom.enabled&maelstrom>=92" );
   single_asc -> add_action( this, "Stormkeeper", "if=(raid_event.adds.count<3|raid_event.adds.in>50)&time>5&!buff.ascendance.up", "Keep SK for large or soon add waves. Don't cast SK during Ascendance." );
   single_asc -> add_talent( this, "Liquid Magma Totem", "if=raid_event.adds.count<3|raid_event.adds.in>50" );
