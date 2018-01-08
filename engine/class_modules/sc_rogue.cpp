@@ -858,12 +858,12 @@ namespace actions { // namespace actions
 
 static void break_stealth( rogue_t* p )
 {
-  // As of 12/29/2017: Stealth effects remains for 100-200ms after we break it
+  // Expiry delayed by 1ms in order to have it processed on the next tick. This seems to be what the server does.
   if ( p -> buffs.stealth -> check() )
-    p -> buffs.stealth -> expire( timespan_t::from_millis( 150 ) );
+    p -> buffs.stealth -> expire( timespan_t::from_millis( 1 ) );
 
   if ( p -> buffs.vanish -> check() )
-    p -> buffs.vanish -> expire( timespan_t::from_millis( 150 ) );
+    p -> buffs.vanish -> expire( timespan_t::from_millis( 1 ) );
 }
 
 // ==========================================================================
