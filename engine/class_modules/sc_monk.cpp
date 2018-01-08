@@ -10715,7 +10715,7 @@ expr_t* monk_t::create_expression( action_t* a, const std::string& name_str )
     {
       monk_t& player;
       sck_stack_expr_t( monk_t& p ) :
-        expr_t( "sck count" ),
+        expr_t( "sck_count" ),
         player( p )
       { }
 
