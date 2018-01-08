@@ -57,8 +57,11 @@ actions.aoe+=/ascendance
 actions.aoe+=/liquid_magma_totem
 actions.aoe+=/flame_shock,if=spell_targets.chain_lightning<4&maelstrom>=20,target_if=refreshable
 actions.aoe+=/earthquake
+# Only cast Lava Burst on three targets if it is an instant.
 actions.aoe+=/lava_burst,if=dot.flame_shock.remains>cast_time&buff.lava_surge.up&!talent.lightning_rod.enabled&spell_targets.chain_lightning<4
-actions.aoe+=/elemental_blast,if=!talent.lightning_rod.enabled&spell_targets.chain_lightning<5|talent.lightning_rod.enabled&spell_targets.chain_lightning<4
+# If you talented for Lightning Rod casting Elemental Blast at 3 or more targets was found to either be equal or worse than not casting it alltogether. Even though the main target damage suffers quite heavily from this.
+actions.aoe+=/elemental_blast,if=!talent.lightning_rod.enabled&spell_targets.chain_lightning<4
+actions.aoe+=/lava_beam,target_if=debuff.lightning_rod.down
 actions.aoe+=/lava_beam
 actions.aoe+=/chain_lightning,target_if=debuff.lightning_rod.down
 actions.aoe+=/chain_lightning
@@ -71,8 +74,8 @@ actions.single_asc+=/flame_shock,if=!ticking|dot.flame_shock.remains<=gcd
 actions.single_asc+=/flame_shock,if=maelstrom>=20&remains<=buff.ascendance.duration&cooldown.ascendance.remains+buff.ascendance.duration<=duration
 # Keep your EB always on Cooldown.
 actions.single_asc+=/elemental_blast
-# Use your shoulders proc outside of Ascendance and only if at least one of the following is true: you have T21_2 buff, shoulder buff duration is shorter than 3 seconds or you have greater than or equal 117 Maelstrom.
-actions.single_asc+=/earthquake,if=buff.echoes_of_the_great_sundering.up&!buff.ascendance.up&(buff.earthen_strength.up|buff.echoes_of_the_great_sundering.duration<=3|maelstrom>=117)
+# Use your shoulders proc outside of Ascendance and only if at least one of the following is true: you have T21_2 buff, shoulder buff duration is shorter than 3 seconds or you have greater than or equal 117 Maelstrom. Use EQ at two targets. But be aware that you're going to deal significantly less damage to your primary target.
+actions.single_asc+=/earthquake,if=buff.echoes_of_the_great_sundering.up&!buff.ascendance.up&(buff.earthen_strength.up|buff.echoes_of_the_great_sundering.duration<=3|maelstrom>=117)|!buff.ascendance.up&buff.earthen_strength.up&spell_targets.earthquake>1
 actions.single_asc+=/earth_shock,if=maelstrom>=117|!artifact.swelling_maelstrom.enabled&maelstrom>=92
 # Keep SK for large or soon add waves. Don't cast SK during Ascendance.
 actions.single_asc+=/stormkeeper,if=(raid_event.adds.count<3|raid_event.adds.in>50)&time>5&!buff.ascendance.up
@@ -96,8 +99,8 @@ actions.single_asc+=/flame_shock,moving=1,if=movement.distance>6
 actions.single_if=flame_shock,if=!ticking|dot.flame_shock.remains<=gcd
 # Keep your EB always on Cooldown.
 actions.single_if+=/elemental_blast
-# Use your shoulders proc outside of Ascendance and only if at least one of the following is true: you have T21_2 buff, shoulder buff duration is shorter than 3 seconds or you have greater than or equal 117 Maelstrom.
-actions.single_if+=/earthquake,if=buff.echoes_of_the_great_sundering.up&!buff.ascendance.up&(buff.earthen_strength.up|buff.echoes_of_the_great_sundering.duration<=3|maelstrom>=117)
+# Use your shoulders proc outside of Ascendance and only if at least one of the following is true: you have T21_2 buff, shoulder buff duration is shorter than 3 seconds or you have greater than or equal 117 Maelstrom. Use EQ at two targets. But be aware that you're going to deal significantly less damage to your primary target.
+actions.single_if+=/earthquake,if=buff.echoes_of_the_great_sundering.up&!buff.ascendance.up&(buff.earthen_strength.up|buff.echoes_of_the_great_sundering.duration<=3|maelstrom>=117)|!buff.ascendance.up&buff.earthen_strength.up&spell_targets.earthquake>1
 actions.single_if+=/earth_shock,if=(maelstrom>=111|!artifact.swelling_maelstrom.enabled&maelstrom>=92)&buff.earthen_strength.up
 actions.single_if+=/frost_shock,if=buff.icefury.up&maelstrom>=20&!buff.ascendance.up&buff.earthen_strength.up
 actions.single_if+=/earth_shock,if=maelstrom>=117|!artifact.swelling_maelstrom.enabled&maelstrom>=92
@@ -125,8 +128,8 @@ actions.single_if+=/flame_shock,moving=1,if=movement.distance>6
 actions.single_lr=flame_shock,if=!ticking|dot.flame_shock.remains<=gcd
 # Keep your EB always on Cooldown.
 actions.single_lr+=/elemental_blast
-# Use your shoulders proc outside of Ascendance and only if at least one of the following is true: you have T21_2 buff, shoulder buff duration is shorter than 3 seconds or you have greater than or equal 117 Maelstrom.
-actions.single_lr+=/earthquake,if=buff.echoes_of_the_great_sundering.up&!buff.ascendance.up&(buff.earthen_strength.up|buff.echoes_of_the_great_sundering.duration<=3|maelstrom>=117)
+# Use your shoulders proc outside of Ascendance and only if at least one of the following is true: you have T21_2 buff, shoulder buff duration is shorter than 3 seconds or you have greater than or equal 117 Maelstrom. Use EQ at two targets. But be aware that you're going to deal significantly less damage to your primary target.
+actions.single_lr+=/earthquake,if=buff.echoes_of_the_great_sundering.up&!buff.ascendance.up&(buff.earthen_strength.up|buff.echoes_of_the_great_sundering.duration<=3|maelstrom>=117)|!buff.ascendance.up&buff.earthen_strength.up&spell_targets.earthquake>1
 actions.single_lr+=/earth_shock,if=maelstrom>=117|!artifact.swelling_maelstrom.enabled&maelstrom>=92
 # Keep SK for large or soon add waves.
 actions.single_lr+=/stormkeeper,if=(raid_event.adds.count<3|raid_event.adds.in>50)&!buff.ascendance.up
