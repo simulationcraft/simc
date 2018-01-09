@@ -3072,7 +3072,12 @@ struct warbreaker_t: public warrior_attack_t
 
     p() -> buff.shattered_defenses -> trigger();
     p() -> buff.precise_strikes -> trigger();
-  p() -> buff.in_for_the_kill -> trigger();
+
+    if ( hit_any_target )
+    {
+      p() -> buff.in_for_the_kill -> trigger();
+      p() -> buff.war_veteran -> trigger();
+    }
   }
 
   void impact( action_state_t* s ) override
