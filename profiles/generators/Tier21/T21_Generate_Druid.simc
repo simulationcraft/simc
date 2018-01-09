@@ -76,7 +76,7 @@ hands=grips_of_hungering_shadows,id=152086,bonus_id=1502/3610
 legs=breach_blocker_legguards,id=151987,bonus_id=1502/3610
 finger1=sullied_seal_of_the_pantheon,id=151972,bonus_id=3612/1502,enchant=binding_of_versatility
 finger2=seal_of_the_portalmaster,id=152063,bonus_id=1502/3610,enchant=binding_of_versatility
-main_hand=claws_of_ursoc,id=128821,bonus_id=724,gem_id=155847/152041/155854/0,relic_id=3612:1512/3612:1502/3612:1512/0
+main_hand=claws_of_ursoc,id=128821,bonus_id=724,gem_id=152037/147081/152051/0,relic_id=3612:1512/3612:1512/3612:1512/0
 off_hand=claws_of_ursoc,id=128822,gem_id=0/0/0/0,relic_id=0/0
 feet=depraved_machinists_footpads,id=152412,bonus_id=1502/3610
 chest=bearmantle_harness,id=152124,bonus_id=1502/3610
