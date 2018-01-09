@@ -1604,5 +1604,7 @@ std::vector<std::string> report::item_decorator_t::parms() const
     params.push_back( "bonusIDs=" + bonus_str.str() );
   }
 
+  params.push_back( "itemLevelOverride=" + util::to_string( m_item -> item_level() ) );
+
   return params;
 }
