@@ -5994,10 +5994,8 @@ struct roll_the_bones_t : public buff_t
   {
     buff_t::expire_override( expiration_stacks, remaining_duration );
 
-    // Remove all secondary buffs, but only if expiry was explicitly triggered.
-    // This prevents removal of T21 4pc buffs if regular RtB buffs drop.
-    if ( remaining_duration > timespan_t::zero() )
-      expire_secondary_buffs();
+    // Remove all secondary buffs when regular RtB expires. (see https://github.com/Ravenholdt-TC/Rogue/issues/84)
+    expire_secondary_buffs();
   }
 };
 
