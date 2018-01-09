@@ -2200,7 +2200,7 @@ Attributes       : ........ ........ .....x.. ........   ...x...x ........ .....
                  : Cannot dodge/parry/block (21)
 Effects          :
 #1 (id=126788)   : School Damage (2): nature
-                   Base Value: -1 | Scaled Value: 0 | Value Range: 1 | AP Coefficient: 0.25415 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.25415 | Target: Enemy (6)
 Description      : Poisoned weapons have a chance to deal $s1 Nature damage to a target already affected by Deadly Poison.
 
 Name             : Shuriken Toss (id=114014) [Scaling Spell (9), Spell Family (8)] 
@@ -3183,7 +3183,7 @@ Description      : Your Dispatch deals $186182m1% additional damage as Nature da
 Name             : Poison Knives (id=192376) [Spell Family (8), Passive] 
 Class            : Rogue
 School           : Physical
-Artifact Power   : Id: 331, Index: 10, Max Rank: 8, Type: 32, Values: [ 4, 8, 12, 16, 20, 24, 28, 32 ]
+Artifact Power   : Id: 331, Index: 10, Max Rank: 8, Type: 32, Values: [ 3, 6, 9, 12, 15, 18, 21, 24 ]
 Attributes       : ......x. ........ ........ .......x   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5277,7 +5277,7 @@ Effects          :
 #1 (id=477694)   : Trigger Missiles (32)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 256893 | Radius: 0 - 5 yards | Target: Enemy (6)
 Description      : Call down a strike of Holy energy, dealing $<damage> Holy damage to enemies within $A1 yards after 3 sec.
-Variables        : $damage=$?$SP>$AP[${$SP*4}][${$AP*5}]
+Variables        : $damage=${$cond($gt($SP,$AP),$SP*4,$AP*5)}
 
 Name             : Holy Resistance (Racial Passive) (id=255651) [Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
@@ -5307,8 +5307,8 @@ Attributes       : ......x. ........ .......x ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6)
 Effects          :
-#1 (id=477699)   : Apply Aura (6) | Unknown(468)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 1 | Trigger Spell: 256896 | Target: Self (1)
+#1 (id=477699)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 256896 | Target: Self (1)
 Description      : Erupt with Light upon death. Deals $256896s1 Holy damage to enemies within 8 yards and heals allies for $256896s2.
 
 Name             : Demonbane (Racial Passive) (id=255653) [Passive] 
@@ -5346,7 +5346,7 @@ Effects          :
 #1 (id=479673)   : School Damage (2): holy
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 5 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
 Description      : Call down a strike of Holy energy, dealing $<damage> Holy damage to enemies within $A1 yards.
-Variables        : $damage=$?$SP>$AP[${$SP*4}][${$AP*5}]
+Variables        : $damage=${$cond($gt($SP,$AP),$SP*4,$AP*5)}
 
 Name             : Light's Reckoning (Racial Passive) (id=256896) [Scaling Spell (-6)] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter

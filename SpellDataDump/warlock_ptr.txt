@@ -5466,7 +5466,7 @@ Effects          :
 #1 (id=477694)   : Trigger Missiles (32)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 256893 | Radius: 0 - 5 yards | Target: Enemy (6)
 Description      : Call down a strike of Holy energy, dealing $<damage> Holy damage to enemies within $A1 yards after 3 sec.
-Variables        : $damage=$?$SP>$AP[${$SP*4}][${$AP*5}]
+Variables        : $damage=${$cond($gt($SP,$AP),$SP*4,$AP*5)}
 
 Name             : Holy Resistance (Racial Passive) (id=255651) [Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
@@ -5496,8 +5496,8 @@ Attributes       : ......x. ........ .......x ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6)
 Effects          :
-#1 (id=477699)   : Apply Aura (6) | Unknown(468)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 1 | Trigger Spell: 256896 | Target: Self (1)
+#1 (id=477699)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 256896 | Target: Self (1)
 Description      : Erupt with Light upon death. Deals $256896s1 Holy damage to enemies within 8 yards and heals allies for $256896s2.
 
 Name             : Demonbane (Racial Passive) (id=255653) [Passive] 
@@ -5535,7 +5535,7 @@ Effects          :
 #1 (id=479673)   : School Damage (2): holy
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 5 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
 Description      : Call down a strike of Holy energy, dealing $<damage> Holy damage to enemies within $A1 yards.
-Variables        : $damage=$?$SP>$AP[${$SP*4}][${$AP*5}]
+Variables        : $damage=${$cond($gt($SP,$AP),$SP*4,$AP*5)}
 
 Name             : Light's Reckoning (Racial Passive) (id=256896) [Scaling Spell (-6)] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
