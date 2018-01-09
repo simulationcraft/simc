@@ -51,8 +51,6 @@ struct pantheon_state_t
   std::vector<std::vector<real_ppm_t*>> rppm_objs;
   // Base trinket effects, bucketed by type
   std::vector<std::vector<pantheon_buff_state_t>> pantheon_state;
-  // Current state (in pantheon_state above) is proxy only?
-  bool                                  proxy_state_only;
   // Real pantheon trinket buffs per type
   std::vector<std::vector<buff_t*>>     actor_buffs;
   // Proxy buff attempt ticker

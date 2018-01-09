@@ -40,7 +40,7 @@ void initialize_pantheon( player_t* proxy_player )
 }
 
 pantheon_state_t::pantheon_state_t( player_t* player ) :
-  player( player ), proxy_state_only( true ), attempt_event( nullptr )
+  player( player ), attempt_event( nullptr )
 {
   rppm_objs.resize( drivers.size() );
   actor_buffs.resize( drivers.size() );
@@ -237,8 +237,6 @@ void pantheon_state_t::trigger_pantheon_buff( buff_t* actor_buff )
     pantheon_state[ slot ].push_back( { actor_buff, nullptr, timespan_t::min() } );
   }
 
-  proxy_state_only = false;
-
   // Clean up state before trying to figure out if there's empowerment to trigger
   cleanup_state();
 
@@ -281,7 +279,7 @@ bool pantheon_state_t::empowerment_state() const
 }
 
 // Trigger the empowerment buffs for all real actors and clear the empowerment state. Note that if
-// there are no real actors with base trinket buffs up (proxy_state_only), nothing is triggered.
+// there are no real actors with base trinket buffs up, nothing is triggered.
 void pantheon_state_t::trigger_empowerment()
 {
   if ( player -> sim -> debug )
@@ -290,36 +288,36 @@ void pantheon_state_t::trigger_empowerment()
     debug();
   }
 
-  if ( ! proxy_state_only )
-  {
-    range::for_each( pantheon_state, [ this ]( std::vector<pantheon_buff_state_t>& states ) {
-      range::for_each( states, [ this ]( const pantheon_buff_state_t& state ) {
-        if ( state.actor_buff )
-        {
-          auto it = cbmap.find( state.actor_buff );
-          if ( it != cbmap.end() )
-          {
-            it -> second();
-          }
-        }
-      } );
-
-      states.clear();
-    } );
-  }
-  else
-  {
-    if ( player -> sim -> debug )
+  range::for_each( pantheon_state[ O_WILDCARD_TRINKET ], [ this ]( const pantheon_buff_state_t& state ) {
+    if ( state.actor_buff )
     {
-      player -> sim -> out_debug.printf( "Pantheon state: Only proxy buffs up" );
+      auto it = cbmap.find( state.actor_buff );
+      if ( it != cbmap.end() )
+      {
+        it -> second();
+      }
+    }
+  } );
+
+  pantheon_state[ O_WILDCARD_TRINKET ].clear();
+
+  range::for_each( pantheon_state, [ this ]( std::vector<pantheon_buff_state_t>& states ) {
+    if ( states.size() == 0 )
+      return;
+
+    auto random_it = states.begin() + static_cast<int>( player -> rng().range( 0, as<double>( states.size() ) ) );
+    if ( random_it -> actor_buff )
+    {
+      auto it = cbmap.find( random_it -> actor_buff );
+      if ( it != cbmap.end() )
+      {
+        it -> second();
+      }
     }
 
-    range::for_each( pantheon_state, []( std::vector<pantheon_buff_state_t>& states ) {
-      states.clear();
-    } );
-  }
+    states.erase( random_it );
+  } );
 
-  proxy_state_only = true;
   debug();
 }
 
@@ -477,7 +475,6 @@ void pantheon_state_t::reset()
   }
 
   attempt_event = nullptr;
-  proxy_state_only = true;
 }
 
 
