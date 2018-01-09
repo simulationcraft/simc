@@ -57,3 +57,33 @@ trinket2=seeping_scourgewing,id=151964,bonus_id=3612/1502
 
 save=T21_Druid_Feral.simc
 
+druid="T21_Druid_Guardian"
+spec=guardian
+level=110
+race=night_elf
+timeofday=day
+role=tank
+position=front
+talents=1112321
+artifact=57:0:0:0:0:948:4:949:4:950:4:951:4:952:4:953:4:954:4:955:4:956:4:957:1:958:1:959:1:960:1:961:1:962:1:979:1:1334:1:1366:1:1509:4:1510:1:1511:1:1512:24:1634:1
+crucible=1739:3:1780:3:956:3
+
+head=kraken_hide_helm,id=133618,bonus_id=1612/1826
+neck=vulcanarcore_pendant,id=151965,bonus_id=3612/1502,enchant=mark_of_the_hidden_satyr
+shoulder=lady_and_the_child,id=144295,bonus_id=1811/3630
+back=fury_of_nature,id=151802,bonus_id=3459/3630,enchant=binding_of_agility
+hands=grips_of_hungering_shadows,id=152086,bonus_id=1502/3610
+legs=breach_blocker_legguards,id=151987,bonus_id=1502/3610
+finger1=sullied_seal_of_the_pantheon,id=151972,bonus_id=3612/1502,enchant=binding_of_versatility
+finger2=seal_of_the_portalmaster,id=152063,bonus_id=1502/3610,enchant=binding_of_versatility
+main_hand=claws_of_ursoc,id=128821,bonus_id=724,gem_id=152037/147081/152051/0,relic_id=3612:1512/3612:1512/3612:1512/0
+off_hand=claws_of_ursoc,id=128822,gem_id=0/0/0/0,relic_id=0/0
+feet=depraved_machinists_footpads,id=152412,bonus_id=1502/3610
+chest=bearmantle_harness,id=152124,bonus_id=1502/3610
+wrists=bracers_of_wanton_morality,id=152414,bonus_id=1502/3610
+
+waist=belt_of_fractured_sanity,id=151991,bonus_id=3612/1502
+trinket1=golganneths_vitality,id=154174,bonus_id=3997
+trinket2=bloodthirsty_instinct,id=139329,bonus_id=1582/1807
+
+save=T21_Druid_Guardian.simc
