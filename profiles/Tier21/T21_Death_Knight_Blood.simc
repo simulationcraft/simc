@@ -4,7 +4,7 @@ level=110
 race=blood_elf
 role=tank
 position=front
-talents=3112031
+talents=3112033
 artifact=15:0:0:0:0:272:4:273:4:274:4:275:4:276:4:277:4:278:4:279:4:280:4:281:1:282:1:283:1:284:1:285:1:286:1:289:1:1331:1:1359:1:1481:4:1482:1:1483:1:1484:24:1627:1
 crucible=1739:3:1778:3:275:3
 
@@ -39,6 +39,7 @@ actions+=/use_item,name=archimondes_hatred_reborn,if=buff.vampiric_blood.up
 actions+=/potion,if=buff.dancing_rune_weapon.up
 actions+=/dancing_rune_weapon,if=(!talent.blooddrinker.enabled|!cooldown.blooddrinker.ready)&!cooldown.death_and_decay.ready
 actions+=/vampiric_blood,if=!equipped.archimondes_hatred_reborn|cooldown.trinket.ready
+actions+=/tombstone,if=buff.bone_shield.stack>=7
 actions+=/call_action_list,name=standard
 
 actions.standard=death_strike,if=runic_power.deficit<10
