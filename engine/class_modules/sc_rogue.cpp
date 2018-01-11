@@ -7261,9 +7261,8 @@ void rogue_t::init_action_list()
   {
     def -> add_action( "variable,name=energy_regen_combined,value=energy.regen+poisoned_bleeds*(7+talent.venom_rush.enabled*3)%2" );
     def -> add_action( "variable,name=energy_time_to_max_combined,value=energy.deficit%variable.energy_regen_combined" );
-    def -> add_action( "variable,name=use_fok_rotation,value=fok_rotation&(dot.deadly_poison_dot.pmultiplier>1|artifact.poison_knives.rank>=5|equipped.zoldyck_family_training_shackles&target.health.pct<30)" );
     def -> add_action( "call_action_list,name=cds" );
-    def -> add_action( "run_action_list,name=aoe,if=spell_targets.fan_of_knives>(3-variable.use_fok_rotation)" );
+    def -> add_action( "run_action_list,name=aoe,if=spell_targets.fan_of_knives>2" );
     def -> add_action( "call_action_list,name=maintain" );
     def -> add_action( "call_action_list,name=finish,if=(!talent.exsanguinate.enabled|cooldown.exsanguinate.remains>2)&(!dot.rupture.refreshable|(dot.rupture.exsanguinated&dot.rupture.remains>=3.5)|target.time_to_die-dot.rupture.remains<=6)&active_dot.rupture>=spell_targets.rupture", "The 'active_dot.rupture>=spell_targets.rupture' means that we don't want to envenom as long as we can multi-rupture (i.e. units that don't have rupture yet)." );
     def -> add_action( "call_action_list,name=build,if=combo_points.deficit>1|energy.deficit<=25+variable.energy_regen_combined" );
@@ -7272,8 +7271,8 @@ void rogue_t::init_action_list()
     action_priority_list_t* build = get_action_priority_list( "build", "Builders" );
     build -> add_talent( this, "Hemorrhage", "if=refreshable" );
     build -> add_talent( this, "Hemorrhage", "cycle_targets=1,if=refreshable&dot.rupture.ticking&spell_targets.fan_of_knives<2+equipped.insignia_of_ravenholdt" );
-    build -> add_action( this, "Fan of Knives", "if=spell_targets>=2+equipped.insignia_of_ravenholdt|buff.the_dreadlords_deceit.stack>=29" );
-    build -> add_action( this, "Fan of Knives", "if=variable.use_fok_rotation" );
+    build -> add_action( this, "Fan of Knives", "if=spell_targets>1+equipped.insignia_of_ravenholdt|buff.the_dreadlords_deceit.stack>=29" );
+    build -> add_action( this, "Fan of Knives", "if=fok_rotation" );
       // We want to apply poison on the unit that have the most bleeds on and that meet the condition for Venomous Wound (and also for T19 dmg bonus).
       // This would be done with target_if=max:bleeds but it seems to be bugged atm
     build -> add_action( this, "Mutilate", "cycle_targets=1,if=dot.deadly_poison_dot.refreshable" );
@@ -7333,7 +7332,6 @@ void rogue_t::init_action_list()
     maintain -> add_action( this, "Garrote", "cycle_targets=1,if=talent.subterfuge.enabled&stealthed.rogue&combo_points.deficit>=1&set_bonus.tier20_4pc&((dot.garrote.remains<=13&!debuff.toxic_blade.up)|pmultiplier<=1)&!exsanguinated" );
     maintain -> add_action( this, "Garrote", "cycle_targets=1,if=talent.subterfuge.enabled&stealthed.rogue&combo_points.deficit>=1&!set_bonus.tier20_4pc&refreshable&(!exsanguinated|remains<=tick_time*2)&target.time_to_die-remains>2" );
     maintain -> add_action( this, "Garrote", "cycle_targets=1,if=talent.subterfuge.enabled&stealthed.rogue&combo_points.deficit>=1&!set_bonus.tier20_4pc&remains<=10&pmultiplier<=1&!exsanguinated&target.time_to_die-remains>2" );
-    maintain -> add_action( this, "Envenom", "if=!buff.envenom.up&combo_points>=cp_max_spend&spell_targets.fan_of_knives>(2-variable.use_fok_rotation)" );
     maintain -> add_action( this, "Rupture", "if=!talent.exsanguinate.enabled&combo_points>=3&!ticking&mantle_duration<=0.2&target.time_to_die>6" );
     maintain -> add_action( this, "Rupture", "if=talent.exsanguinate.enabled&((combo_points>=cp_max_spend&cooldown.exsanguinate.remains<1)|(!ticking&(time>10|combo_points>=2+artifact.urge_to_kill.enabled)))" );
     maintain -> add_action( this, "Rupture", "cycle_targets=1,if=combo_points>=4&refreshable&(pmultiplier<=1|remains<=tick_time)&(!exsanguinated|remains<=tick_time*2)&target.time_to_die-remains>6" );
@@ -7723,7 +7721,6 @@ expr_t* rogue_t::create_expression( action_t* a, const std::string& name_str )
   {
     return make_ref_expr(name_str, fok_rotation);
   }
-
 
   // Split expressions
 
