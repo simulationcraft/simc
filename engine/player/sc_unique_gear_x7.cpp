@@ -113,10 +113,9 @@ namespace item
   void cradle_of_anguish( special_effect_t&            );
 
   // TODO
-  // Feverish Carapace
+  // Feverish Carapace damage reflect mechanic
   // Shifting Cosmic Sliver
-  // Leviathan's Hunger
-  // Recompiled Guardian Module ? (defensive only)
+  // Purely defensive stuff
 
   // 7.3.2 Raid
   void amanthuls_vision( special_effect_t&             );
@@ -135,12 +134,12 @@ namespace item
   void forgefiends_fabricator_detonate(special_effect_t&);
   void diimas_glacial_aegis( special_effect_t&         );
   void smoldering_titanguard( special_effect_t&        );
+  void riftworld_codex( special_effect_t&              );
 
   // TODO
-  // Aggramar's conviction full health heal ?
   // Eye of f'harg / shatug interaction
-  // Riftworld Codex
-
+  // Purely defensive stuff
+  
   // 7.2.0 Dungeon
   void dreadstone_of_endless_shadows( special_effect_t& );
 
@@ -157,7 +156,6 @@ namespace item
   void archimondes_hatred_reborn( special_effect_t& );
   void kiljadens_burning_wish( special_effect_t& );
   void norgannons_foresight( special_effect_t& );
-
 
 
 
@@ -2554,6 +2552,68 @@ void item::smoldering_titanguard( special_effect_t& effect )
 {
   effect.execute_action = new smoldering_titanguard_driver_t( effect );
 }
+
+// Riftworld Codex
+
+struct flames_of_ruvaraad_damage_t : public proc_spell_t
+{
+  flames_of_ruvaraad_damage_t( const special_effect_t& effect ) :
+    proc_spell_t( "flames_of_ruvaraad", effect.player, effect.player -> find_spell( 252550 ), effect.item )
+  {}
+};
+
+struct riftworld_codex_callback_t : public dbc_proc_callback_t
+{
+  std::vector<buff_t*> buffs;
+
+  riftworld_codex_callback_t( const special_effect_t& effect, std::vector<buff_t*> b ) :
+    dbc_proc_callback_t( effect.item, effect ), buffs( b )
+  {}
+
+  void execute( action_t* /* a */, action_state_t* /* call_data */ ) override
+  {
+    // Codex prefers to proc inactive buffs over active ones.
+    // Make a vector with only the inactive buffs.
+    std::vector<buff_t*> inactive_buffs;
+
+    for ( unsigned i = 0; i < buffs.size(); i++ )
+    {
+      if ( ! buffs[ i ] -> check() )
+      {
+        inactive_buffs.push_back( buffs[ i ] );
+      }
+    }
+
+    // If the vector is empty, we can roll any of the buffs.
+    if ( inactive_buffs.empty() )
+    {
+      inactive_buffs = buffs;
+    }
+
+    // Roll it!
+    int roll = ( int ) ( listener -> sim -> rng().real() * inactive_buffs.size() );
+    inactive_buffs[ roll ] -> trigger();
+  }
+};
+
+
+void item::riftworld_codex( special_effect_t& effect )
+{
+  std::vector<buff_t*> buffs;
+
+  action_t* damage = new flames_of_ruvaraad_damage_t( effect );
+
+  buffs = {
+    absorb_buff_creator_t( effect.player, "light_of_absolarn", effect.player -> find_spell( 252545 ), effect.item ),
+    buff_creator_t( effect.player, "winds_of_kareth", effect.player -> find_spell( 251938 ), effect.item ),
+    buff_creator_t( effect.player, "flames_of_ruvaraad", effect.player -> find_spell( 256415 ), effect.item )
+      .tick_callback( [ damage ] ( buff_t*, int, const timespan_t& ) {
+        damage -> schedule_execute();
+      } )
+  };
+
+  new riftworld_codex_callback_t( effect, buffs );
+};
 
 // Toe Knee's Promise ======================================================
 
@@ -6757,6 +6817,7 @@ void unique_gear::register_special_effects_x7()
   register_special_effect( 253322, item::forgefiends_fabricator_detonate  );
   register_special_effect( 251940, item::diimas_glacial_aegis      );
   register_special_effect( 251946, item::smoldering_titanguard     );
+  register_special_effect( 251925, item::riftworld_codex           );
 
   /* Legion 7.2.0 Dungeon */
   register_special_effect( 238498, item::dreadstone_of_endless_shadows );
