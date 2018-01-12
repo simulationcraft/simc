@@ -3881,7 +3881,7 @@ struct mutilate_strike_t : public rogue_attack_t
       c += toxic_mutilator_crit_chance;
     }
 
-    c += p() -> artifact.balanced_blades.rank() * p() -> artifact.balanced_blades.data().effectN( 1 ).percent();
+    c += p() -> artifact.balanced_blades.percent();
 
     return c;
   }
@@ -6541,7 +6541,7 @@ void rogue_t::trigger_poison_knives( const action_state_t* state )
   //                    It is not recommended to try to confirm Poison Knives damage on training dummies due to this!
   const double tick_base_damage = td -> dots.deadly_poison -> state -> result_raw;
   const unsigned ticks_left = td->dots.deadly_poison->ticks_left();
-  const double total_damage = ticks_left * tick_base_damage * artifact.poison_knives.rank() * artifact.poison_knives.data().effectN( 1 ).percent();
+  const double total_damage = ticks_left * tick_base_damage * artifact.poison_knives.percent();
 
   if ( sim -> debug )
   {
