@@ -10511,24 +10511,6 @@ struct druid_module_t : public module_t
       .modifier( 1.05 )
       .verification_value( 1.9 );
       */
-
-    hotfix::register_effect( "Druid", "2018-01-06", "Wax and Wane (Artifact trait) damage bonus per stack reduced to 6% (was 25%).", 363663 )
-      .field( "base_value" )
-      .operation( hotfix::HOTFIX_SET )
-      .modifier( 6 )
-      .verification_value( 25 );
-
-    hotfix::register_effect( "Druid", "2018-01-06", "Lunar Strike damage increased by 8%.", 284976 )
-      .field( "sp_coefficient" )
-      .operation( hotfix::HOTFIX_SET )
-      .modifier( 3.18989 )
-      .verification_value( 2.95360 );
-
-    hotfix::register_effect( "Druid", "2018-01-06", "Solar Wrath damage increased by 8%.", 280098 )
-      .field( "sp_coefficient" )
-      .operation( hotfix::HOTFIX_SET )
-      .modifier( 2.24640 )
-      .verification_value( 2.08000 );
   }
 
   virtual void combat_begin( sim_t* ) const override {}
