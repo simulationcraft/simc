@@ -760,7 +760,8 @@ Effects          :
 #1 (id=1920)     : Normalized Weapon Damage (121)
                    Base Value: 1 | Scaled Value: 1 | Target: Enemy (6)
 #2 (id=99543)    : Weapon Damage% (31)
-                   Base Value: 360 | Scaled Value: 3.6 | Target: Enemy (6)
+                   Base Value: 432 | Scaled Value: 4.32 | Target: Enemy (6)
+                   Hotfixed: Base Value (360 -> 432), Chain Multiplier (0 -> 1)
 Description      : Instantly attacks for $sw2 Physical damage. Awards 2 combo points.
 
 Name             : Sap (id=6770) [Spell Family (8)] 
@@ -1221,7 +1222,8 @@ Effects          :
 #1 (id=17065)    : Normalized Weapon Damage (121)
                    Base Value: 1 | Scaled Value: 0 (avg=0.25) | Target: Enemy (6)
 #2 (id=99544)    : Weapon Damage% (31)
-                   Base Value: 360 | Scaled Value: 3.6 | Target: Enemy (6)
+                   Base Value: 432 | Scaled Value: 4.32 | Target: Enemy (6)
+                   Hotfixed: Base Value (360 -> 432), Chain Multiplier (0 -> 1)
 Description      : Instantly attacks for $sw2 Physical damage. Awards 2 combo points.
 
 Name             : Fleet Footed (Passive) (id=31209) [Spell Family (8), Passive] 
@@ -2200,7 +2202,8 @@ Attributes       : ........ ........ .....x.. ........   ...x...x ........ .....
                  : Cannot dodge/parry/block (21)
 Effects          :
 #1 (id=126788)   : School Damage (2): nature
-                   Base Value: -1 | Scaled Value: 0 | Value Range: 1 | AP Coefficient: 0.22100 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.25415 | Target: Enemy (6)
+                   Hotfixed: AP Coefficient (0.221 -> 0.25415), Base Value (-1 -> 0), Chain Multiplier (0 -> 1), Die Sides (1 -> 0)
 Description      : Poisoned weapons have a chance to deal $s1 Nature damage to a target already affected by Deadly Poison.
 
 Name             : Shuriken Toss (id=114014) [Scaling Spell (9), Spell Family (8)] 
@@ -3185,7 +3188,8 @@ Description      : Your Dispatch deals $186182m1% additional damage as Nature da
 Name             : Poison Knives (id=192376) [Spell Family (8), Passive] 
 Class            : Rogue
 School           : Physical
-Artifact Power   : Id: 331, Index: 10, Max Rank: 8, Type: 32, Values: [ 4, 8, 12, 16, 20, 24, 28, 32 ]
+Artifact Power   : Id: 331, Index: 10, Max Rank: 8, Type: 32, Values: [ 3, 6, 9, 12, 15, 18, 21, 24 ]
+                 : Hotfixes: Rank 1: Value (4 -> 3), Rank 2: Value (8 -> 6), Rank 3: Value (12 -> 9), Rank 4: Value (16 -> 12), Rank 5: Value (20 -> 15), Rank 6: Value (24 -> 18), Rank 7: Value (28 -> 21), Rank 8: Value (32 -> 24)
 Attributes       : ......x. ........ ........ .......x   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 

@@ -4483,7 +4483,8 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=280098)   : School Damage (2): nature
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 2.08000 | Target: Enemy (6)
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 2.25000 | Target: Enemy (6)
+                   Hotfixed: SP Coefficient (2.08 -> 2.25), Chain Multiplier (0 -> 1)
 #2 (id=280099)   : Energize Power (30)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: astral_power | Target: Self (1)
 Description      : Hurl a ball of solar energy at the target, dealing $s1 Nature damage.$?a197911[
@@ -4637,7 +4638,8 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=284976)   : School Damage (2): arcane
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.95360 | Radius: 0 - 5 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 3.19000 | Radius: 0 - 5 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
+                   Hotfixed: SP Coefficient (2.9536 -> 3.19), Chain Multiplier (0 -> 1)
 #2 (id=284977)   : Energize Power (30)
                    Base Value: 120 | Scaled Value: 120 | Misc Value: astral_power | Target: Self (1)
 #3 (id=295015)   : Dummy (3)
