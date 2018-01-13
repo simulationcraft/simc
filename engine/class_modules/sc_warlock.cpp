@@ -517,6 +517,7 @@ public:
 
   int initial_soul_shards;
   bool allow_sephuz;
+  bool deaths_embrace_fixed_time;
   double reap_souls_modifier;
   std::string default_pet;
 
@@ -693,6 +694,7 @@ namespace pets {
     bool is_demonbolt_enabled = true;
     bool is_lord_of_flames = false;
     bool t21_4pc_reset = false;
+    bool is_warlock_pet = true;
     int bites_executed = 0;
     int dreadbite_executes = 0;
 
@@ -6220,6 +6222,7 @@ warlock_t::warlock_t( sim_t* sim, const std::string& name, race_e r ):
     spells( spells_t() ),
     initial_soul_shards( 3 ),
     allow_sephuz( false ),
+    deaths_embrace_fixed_time( true ),
     default_pet( "" ),
     shard_react( timespan_t::zero() ),
     affliction_trinket( nullptr ),
@@ -7525,6 +7528,26 @@ void warlock_t::init_resources( bool force )
 
 void warlock_t::combat_begin()
 {
+  if ( !sim -> fixed_time )
+  {
+    if ( deaths_embrace_fixed_time )
+    {
+      for ( size_t i = 0; i < sim -> player_list.size(); ++i )
+      {
+        player_t* p = sim -> player_list[i];
+        if ( p -> specialization() != WARLOCK_AFFLICTION && p -> type != PLAYER_PET )
+        {
+          deaths_embrace_fixed_time = false;
+          break;
+        }
+      }
+      if ( deaths_embrace_fixed_time )
+      {
+        sim -> fixed_time = true;
+        sim -> errorf( "To fix issues with the target exploding <20% range due to execute, fixed_time=1 has been enabled. This gives similar results to execute's usage in a raid sim, without taking an eternity to simulate. To disable this option, add deaths_embrace_fixed_time=0 to your sim." );
+      }
+    }
+  }
   player_t::combat_begin();
 }
 
@@ -7569,6 +7592,7 @@ void warlock_t::create_options()
   add_option( opt_int( "soul_shards", initial_soul_shards ) );
   add_option( opt_string( "default_pet", default_pet ) );
   add_option( opt_bool( "allow_sephuz", allow_sephuz ) );
+  add_option( opt_bool( "deaths_embrace_fixed_time", deaths_embrace_fixed_time ) );
 }
 
 std::string warlock_t::create_profile( save_e stype )
@@ -7594,6 +7618,7 @@ void warlock_t::copy_from( player_t* source )
   initial_soul_shards = p -> initial_soul_shards;
   allow_sephuz = p -> allow_sephuz;
   default_pet = p -> default_pet;
+  deaths_embrace_fixed_time = p->deaths_embrace_fixed_time;
 }
 
 // warlock_t::convert_hybrid_stat ==============================================
