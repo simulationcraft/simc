@@ -10223,20 +10223,21 @@ void monk_t::apl_combat_brewmaster()
   def -> add_action( this, "Purifying Brew", "if=stagger.heavy|(stagger.moderate&cooldown.brews.charges_fractional>=cooldown.brews.max_charges-0.5&buff.ironskin_brew.remains>=buff.ironskin_brew.duration*2.5)" );
   def -> add_action( this, "Ironskin Brew", "if=buff.blackout_combo.down&cooldown.brews.charges_fractional>=cooldown.brews.max_charges-0.1-(1+buff.ironskin_brew.remains<=buff.ironskin_brew.duration*0.5)&buff.ironskin_brew.remains<=buff.ironskin_brew.duration*2", "About charge management, by default while tanking (always true on SimC) we lower it by 1 and up to 1.5 if we are tanking with less than half of Ironskin base duration up." );
   def -> add_talent( this, "Black Ox Brew", "if=incoming_damage_1500ms&stagger.heavy&cooldown.brews.charges_fractional<=0.75" );
-  def -> add_talent( this, "Black Ox Brew", "if=(energy+(energy.regen*(cooldown.keg_smash.remains)))<40&buff.blackout_combo.down&cooldown.keg_smash.up" );
+  def -> add_talent( this, "Black Ox Brew", "if=(energy+(energy.regen*cooldown.keg_smash.remains))<40&buff.blackout_combo.down&cooldown.keg_smash.up" );
   for ( size_t i = 0; i < racial_actions.size(); i++ )
   {
     if ( racial_actions[i] == "arcane_torrent" )
       def -> add_action( racial_actions[i] + ",if=energy<31" );
   }
+  def -> add_action( this, "Keg Smash", "if=spell_targets>=3" );
   def -> add_action( this, "Tiger Palm", "if=buff.blackout_combo.up" );
-  def -> add_action( this, "Blackout Strike", "if=cooldown.keg_smash.remains>0" );
   def -> add_action( this, "Keg Smash" );
-  def -> add_action( this, "Breath of Fire", "if=(buff.bloodlust.down&buff.blackout_combo.down)|(buff.bloodlust.up&buff.blackout_combo.down&dot.breath_of_fire_dot.remains<=0)");
+  def -> add_action( this, "Blackout Strike" );
+  def -> add_action( this, "Breath of Fire", "if=buff.blackout_combo.down&(buff.bloodlust.down|(buff.bloodlust.up&&dot.breath_of_fire_dot.refreshable))");
   def -> add_talent( this, "Rushing Jade Wind" );
   def -> add_talent( this, "Chi Burst" );
   def -> add_talent( this, "Chi Wave" );
-  def -> add_action( this, "Tiger Palm", "if=!talent.blackout_combo.enabled&cooldown.keg_smash.remains>=gcd&(energy+(energy.regen*(cooldown.keg_smash.remains)))>=55" );
+  def -> add_action( this, "Tiger Palm", "if=!talent.blackout_combo.enabled&cooldown.keg_smash.remains>gcd&(energy+(energy.regen*(cooldown.keg_smash.remains+gcd)))>=55" );
 }
 
 // Windwalker Combat Action Priority List ===============================
