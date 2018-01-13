@@ -46,16 +46,17 @@ actions+=/purifying_brew,if=stagger.heavy|(stagger.moderate&cooldown.brews.charg
 # About charge management, by default while tanking (always true on SimC) we lower it by 1 and up to 1.5 if we are tanking with less than half of Ironskin base duration up.
 actions+=/ironskin_brew,if=buff.blackout_combo.down&cooldown.brews.charges_fractional>=cooldown.brews.max_charges-0.1-(1+buff.ironskin_brew.remains<=buff.ironskin_brew.duration*0.5)&buff.ironskin_brew.remains<=buff.ironskin_brew.duration*2
 actions+=/black_ox_brew,if=incoming_damage_1500ms&stagger.heavy&cooldown.brews.charges_fractional<=0.75
-actions+=/black_ox_brew,if=(energy+(energy.regen*(cooldown.keg_smash.remains)))<40&buff.blackout_combo.down&cooldown.keg_smash.up
+actions+=/black_ox_brew,if=(energy+(energy.regen*cooldown.keg_smash.remains))<40&buff.blackout_combo.down&cooldown.keg_smash.up
 actions+=/arcane_torrent,if=energy<31
+actions+=/keg_smash,if=spell_targets>=3
 actions+=/tiger_palm,if=buff.blackout_combo.up
-actions+=/blackout_strike,if=cooldown.keg_smash.remains>0
 actions+=/keg_smash
-actions+=/breath_of_fire,if=(buff.bloodlust.down&buff.blackout_combo.down)|(buff.bloodlust.up&buff.blackout_combo.down&dot.breath_of_fire_dot.remains<=0)
+actions+=/blackout_strike
+actions+=/breath_of_fire,if=buff.blackout_combo.down&(buff.bloodlust.down|(buff.bloodlust.up&&dot.breath_of_fire_dot.refreshable))
 actions+=/rushing_jade_wind
 actions+=/chi_burst
 actions+=/chi_wave
-actions+=/tiger_palm,if=!talent.blackout_combo.enabled&cooldown.keg_smash.remains>=gcd&(energy+(energy.regen*(cooldown.keg_smash.remains)))>=55
+actions+=/tiger_palm,if=!talent.blackout_combo.enabled&cooldown.keg_smash.remains>gcd&(energy+(energy.regen*(cooldown.keg_smash.remains+gcd)))>=55
 
 head=douli_of_chiji,id=152145,bonus_id=3612/1502
 neck=vulcanarcore_pendant,id=151965,bonus_id=3612/1502,enchant=mark_of_the_hidden_satyr
