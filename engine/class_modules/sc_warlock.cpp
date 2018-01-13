@@ -1340,8 +1340,8 @@ struct doom_bolt_t: public warlock_pet_spell_t
     if ( p -> o() -> talents.grimoire_of_supremacy -> ok() )
       base_multiplier *= 1.0 + p -> o() -> artifact.impish_incineration.data().effectN( 2 ).percent();
 
-    if ( p -> o() -> talents.grimoire_of_supremacy -> ok() ) //FIXME spelldata?
-      base_multiplier *= 0.8;
+    if ( p -> o() -> talents.grimoire_of_supremacy -> ok() )
+      base_multiplier *= 1.0 + p -> find_spell( 152107 ) -> effectN( 6 ).percent();
   }
 
   virtual double action_multiplier() const override
