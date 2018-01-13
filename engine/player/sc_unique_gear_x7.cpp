@@ -6049,8 +6049,16 @@ void consumable::lemon_herb_filet( special_effect_t& effect )
 {
   double value = effect.driver() -> effectN( 1 ).percent();
 
+  race_e race = effect.player -> race;
+  if ( race == RACE_PANDAREN
+    || race == RACE_PANDAREN_ALLIANCE
+    || race == RACE_PANDAREN_HORDE )
+  {
+    value *= 2.0;
+  }
+
   buff_t* dmf_well_fed = buff_creator_t( effect.player, "lemon_herb_filet", effect.driver() )
-    .default_value( effect.player -> race == race_e::RACE_PANDAREN ? 2 * value : value )
+    .default_value( value )
     .add_invalidate( CACHE_VERSATILITY );
 
   effect.custom_buff = dmf_well_fed;
