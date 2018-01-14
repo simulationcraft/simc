@@ -133,6 +133,14 @@ ifneq (${SANITIZE},)
   OPTS += -fsanitize=address
 endif
 
+ifneq (${LLVM_PGO_GENERATE},)
+  OPTS += -fprofile-instr-generate
+endif
+
+ifneq (${LLVM_PGO_USE},)
+  OPTS += -fprofile-instr-use=${LLVM_PGO_USE}
+endif
+
 ifneq (${SC_DEFAULT_APIKEY},)
   CPP_FLAGS += -DSC_DEFAULT_APIKEY=\"${SC_DEFAULT_APIKEY}\"
 endif
