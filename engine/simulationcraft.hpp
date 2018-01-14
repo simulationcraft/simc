@@ -5378,6 +5378,9 @@ public:
   /// What type of damage this spell does.
   school_e school;
 
+  /// What base school components this spell has
+  std::vector<school_e> base_schools;
+
   /// Spell id if available, 0 otherwise
   unsigned id;
 
@@ -6048,15 +6051,55 @@ public:
   { return player -> cache.attack_power(); }
 
   virtual double composite_spell_power() const
-  { return player -> cache.spell_power( get_school() ); }
+  {
+    double spell_power = 0;
+    double tmp;
+
+    for ( auto base_school : base_schools )
+    {
+      tmp = player -> cache.spell_power( base_school );
+      if ( tmp > spell_power ) spell_power = tmp;
+    }
+
+    // If this is a multi-school spell, also invoke spell power for the full school to retain
+    // backwards compatibility with some class modules.
+    if ( base_schools.size() > 1 )
+    {
+      tmp = player -> cache.spell_power( get_school() );
+      if ( tmp > spell_power ) spell_power = tmp;
+    }
+
+    return spell_power;
+  }
 
   virtual double composite_target_crit_chance( player_t* /* target */ ) const
   { return 0.0; }
 
   virtual double composite_target_multiplier( player_t* target ) const
   {
-    return target->composite_player_vulnerability( get_school() ) *
-           player->composite_player_target_multiplier( target, get_school() );
+    double target_vulnerability = 0.0;
+    double target_multiplier = 0.0;
+    double tmp;
+
+    for ( auto base_school : base_schools )
+    {
+      tmp = target -> composite_player_vulnerability( base_school );
+      if ( tmp > target_vulnerability ) target_vulnerability = tmp;
+      tmp = player -> composite_player_target_multiplier( target, base_school );
+      if ( tmp > target_multiplier ) target_multiplier = tmp;
+    }
+
+    // If this is a multi-school spell, also invoke target-based multipliers for the full school to
+    // retain backwards compatibility with some class modules.
+    if ( base_schools.size() > 1 )
+    {
+      tmp = target -> composite_player_vulnerability( get_school() );
+      if ( tmp > target_vulnerability ) target_vulnerability = tmp;
+      tmp = player -> composite_player_target_multiplier( target, get_school() );
+      if ( tmp > target_multiplier ) target_multiplier = tmp;
+    }
+
+    return target_vulnerability * target_multiplier;
   }
 
   virtual double composite_versatility( const action_state_t* ) const
@@ -6079,24 +6122,89 @@ public:
   virtual double composite_target_ta_multiplier( player_t* target ) const
   { return composite_target_multiplier( target ); }
 
-  virtual double composite_da_multiplier( const action_state_t* s ) const
+  virtual double composite_da_multiplier( const action_state_t* /* s */ ) const
   {
-    return action_multiplier() * action_da_multiplier() *
-           player -> cache.player_multiplier( s -> action -> get_school() ) *
-           player -> composite_player_dd_multiplier( s -> action -> get_school() , this );
+    double base_multiplier = action_multiplier();
+    double direct_multiplier = action_da_multiplier();
+    double player_school_multiplier = 0.0;
+    double player_direct_school_multiplier = 0.0;
+    double tmp;
+
+    for ( auto base_school : base_schools )
+    {
+      tmp = player -> cache.player_multiplier( base_school );
+      if ( tmp > player_school_multiplier ) player_school_multiplier = tmp;
+      tmp = player -> composite_player_dd_multiplier( base_school, this );
+      if ( tmp > player_direct_school_multiplier ) player_direct_school_multiplier = tmp;
+    }
+
+    // If this is a multi-school spell, also invoke multipliers for the full school to retain
+    // backwards compatibility with some class modules.
+    if ( base_schools.size() > 1 )
+    {
+      tmp = player -> cache.player_multiplier( get_school() );
+      if ( tmp > player_school_multiplier ) player_school_multiplier = tmp;
+      tmp = player -> composite_player_dd_multiplier( get_school(), this );
+      if ( tmp > player_direct_school_multiplier ) player_direct_school_multiplier = tmp;
+    }
+
+    return base_multiplier * direct_multiplier *
+           player_school_multiplier * player_direct_school_multiplier;
   }
 
   /// Normal ticking modifiers that are updated every tick
-  virtual double composite_ta_multiplier( const action_state_t* s ) const
+  virtual double composite_ta_multiplier( const action_state_t* /* s */ ) const
   {
-    return action_multiplier() * action_ta_multiplier() *
-           player -> cache.player_multiplier( s -> action -> get_school() ) *
-           player -> composite_player_td_multiplier( s -> action -> get_school() , this );
+    double base_multiplier = action_multiplier();
+    double tick_multiplier = action_ta_multiplier();
+    double player_school_multiplier = 0.0;
+    double player_tick_school_multiplier = 0.0;
+    double tmp;
+
+    for ( auto base_school : base_schools )
+    {
+      tmp = player -> cache.player_multiplier( base_school );
+      if ( tmp > player_school_multiplier ) player_school_multiplier = tmp;
+      tmp = player -> composite_player_td_multiplier( base_school, this );
+      if ( tmp > player_tick_school_multiplier ) player_tick_school_multiplier = tmp;
+    }
+
+    // If this is a multi-school spell, also invoke multipliers for the full school to retain
+    // backwards compatibility with some class modules.
+    if ( base_schools.size() > 1 )
+    {
+      tmp = player -> cache.player_multiplier( get_school() );
+      if ( tmp > player_school_multiplier ) player_school_multiplier = tmp;
+      tmp = player -> composite_player_td_multiplier( get_school(), this );
+      if ( tmp > player_tick_school_multiplier ) player_tick_school_multiplier = tmp;
+    }
+
+    return base_multiplier * tick_multiplier *
+           player_school_multiplier * player_tick_school_multiplier;
   }
 
   /// Persistent modifiers that are snapshot at the start of the spell cast
   virtual double composite_persistent_multiplier( const action_state_t* ) const
-  { return player -> composite_persistent_multiplier( get_school() ); }
+  {
+    double multiplier = 0.0;
+    double tmp;
+
+    for ( auto base_school : base_schools )
+    {
+      tmp = player -> composite_persistent_multiplier( base_school );
+      if ( tmp > multiplier ) multiplier = tmp;
+    }
+
+    // If this is a multi-school spell, also invoke persistent multiplier for the full school to
+    // retain backwards compatibility with some class modules.
+    if ( base_schools.size() > 1 )
+    {
+      tmp = player -> composite_persistent_multiplier( get_school() );
+      if ( tmp > multiplier ) multiplier = tmp;
+    }
+
+    return multiplier;
+  }
 
   /**
    * @brief Generic aoe multiplier for the action.

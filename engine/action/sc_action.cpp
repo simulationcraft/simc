@@ -2183,6 +2183,17 @@ void action_t::init()
   // Setup default target in init
   default_target = target;
 
+  // Decompose school into base types. Note that if get_school() is overridden (e.g., to dynamically
+  // alter spell school), then base_schools must be manually updated, to cover the dynamic case.
+  for ( school_e target_school = SCHOOL_ARCANE, action_school = get_school();
+        target_school < SCHOOL_MAX_PRIMARY; ++target_school )
+  {
+    if ( dbc::is_school( action_school, target_school ) )
+    {
+      base_schools.push_back( target_school );
+    }
+  }
+
   // Make sure background is set for triggered actions.
   // Leads to double-readying of the player otherwise.
   assert( ( !execute_action || execute_action->background ) &&

@@ -8879,7 +8879,19 @@ expr_t* player_t::create_expression( action_t* a,
     return expr_t::create_constant( "self", actor_index );
   if ( expression_str == "multiplier" )
   {
-    return make_fn_expr(expression_str, [this, &a]{ return cache.player_multiplier( a -> get_school() ); });
+    return make_fn_expr( expression_str, [this, &a]{
+      double multiplier = 0.0;
+      for ( auto base_school : a -> base_schools )
+      {
+        double v = cache.player_multiplier( base_school );
+        if ( v > multiplier )
+        {
+          multiplier = v;
+        }
+      }
+
+      return multiplier;
+    });
   }
   if ( expression_str == "in_combat" )
     return make_ref_expr( "in_combat", in_combat );
