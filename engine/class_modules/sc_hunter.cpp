@@ -2930,8 +2930,10 @@ struct cobra_shot_t: public hunter_ranged_attack_t
   {
     parse_options( options_str );
 
+    base_multiplier *= 1.0 + p() -> find_spell( 262838 ) -> effectN( 1 ).percent(); // Cobra Shot (Rank 3)
     base_multiplier *= 1.0 + p() -> artifacts.spitting_cobras.percent();
 
+    base_costs[ RESOURCE_FOCUS ] += player -> find_spell( 262837 ) -> effectN( 1 ).base_value(); // Cobra Shot (Rank 2)
     if ( player -> artifacts.slithering_serpents.rank() )
       base_costs[ RESOURCE_FOCUS ] += player -> artifacts.slithering_serpents.value();
   }
@@ -4351,6 +4353,7 @@ struct raptor_strike_t: public hunter_melee_attack_t
   {
     parse_options( options_str );
 
+    base_multiplier *= 1.0 + p -> find_spell( 262839 ) -> effectN( 1 ).percent(); // Raptor Strike (Rank 2)
     base_multiplier *= 1.0 + p -> artifacts.raptors_cry.percent();
 
     if ( p -> talents.serpent_sting -> ok() )
