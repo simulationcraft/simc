@@ -1,7 +1,7 @@
 deathknight="T21_Death_Knight_Frost"
 spec=frost
 level=110
-race=blood_elf
+race=human
 role=attack
 position=back
 talents=1210031
@@ -30,7 +30,7 @@ save=T21_Death_Knight_Frost.simc
 deathknight="T21_Death_Knight_Frost_RA"
 spec=frost
 level=110
-race=blood_elf
+race=human
 role=attack
 position=back
 talents=3210031
