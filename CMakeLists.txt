@@ -1,8 +1,13 @@
+# Projects Settings   
 cmake_minimum_required (VERSION 3.1)
-project (simc)
-include_directories("engine")
+project(simc)
+
+
 set (CMAKE_CXX_STANDARD 11)
-set(THREADS_PREFER_PTHREAD_FLAG ON)
-find_package(Threads REQUIRED)
-add_executable(simc engine/util/xml.cpp engine/util/str.cpp engine/util/stopwatch.cpp engine/util/rng.cpp engine/util/io.cpp engine/util/concurrency.cpp engine/sim/x7_pantheon.cpp engine/sim/sc_sim.cpp engine/sim/sc_scaling.cpp engine/sim/sc_reforge_plot.cpp engine/sim/sc_raid_event.cpp engine/sim/sc_progress_bar.cpp engine/sim/sc_profileset.cpp engine/sim/sc_plot.cpp engine/sim/sc_option.cpp engine/sim/sc_gear_stats.cpp engine/sim/sc_expressions.cpp engine/sim/sc_event.cpp engine/sim/sc_core_sim.cpp engine/sim/sc_cooldown.cpp engine/report/sc_report_xml.cpp engine/report/sc_report_text.cpp engine/report/sc_report_json.cpp engine/report/sc_report_html_sim.cpp engine/report/sc_report_html_player.cpp engine/report/sc_report.cpp engine/report/sc_highchart.cpp engine/report/sc_gear_weights.cpp engine/report/sc_color.cpp engine/report/sc_chart.cpp engine/player/sc_unique_gear_x7.cpp engine/player/sc_unique_gear.cpp engine/player/sc_set_bonus.cpp engine/player/sc_proc.cpp engine/player/sc_player.cpp engine/player/sc_pet.cpp engine/player/sc_item.cpp engine/player/sc_enchant.cpp engine/player/sc_consumable.cpp engine/player/artifact_data.cpp engine/interfaces/sc_wowhead.cpp engine/interfaces/sc_js.cpp engine/interfaces/sc_http.cpp engine/interfaces/sc_bcp_api.cpp engine/dbc/sc_spell_info.cpp engine/dbc/sc_spell_data.cpp engine/dbc/sc_item_data_import_ptr.cpp engine/dbc/sc_item_data_import_noptr.cpp engine/dbc/sc_item_data.cpp engine/dbc/sc_data.cpp engine/dbc/sc_const_data.cpp engine/class_modules/sc_warrior.cpp engine/class_modules/sc_warlock.cpp engine/class_modules/sc_shaman.cpp engine/class_modules/sc_rogue.cpp engine/class_modules/sc_priest.cpp engine/class_modules/sc_paladin.cpp engine/class_modules/sc_monk.cpp engine/class_modules/sc_mage.cpp engine/class_modules/sc_hunter.cpp engine/class_modules/sc_enemy.cpp engine/class_modules/sc_druid.cpp engine/class_modules/sc_demon_hunter.cpp engine/class_modules/sc_death_knight.cpp engine/buff/sc_buff.cpp engine/action/sc_stats.cpp engine/action/sc_spell.cpp engine/action/sc_sequence.cpp engine/action/sc_dot.cpp engine/action/sc_distance_targeting.cpp engine/action/sc_attack.cpp engine/action/sc_action_state.cpp engine/action/sc_action.cpp engine/sc_util.cpp engine/sc_main.cpp)
-target_link_libraries(simc Threads::Threads)
+
+add_subdirectory(engine)
+add_subdirectory(qt)
+
+# 'simc' command line interface target
+add_executable(simc engine/sc_main.cpp)
+target_link_libraries(simc engine)

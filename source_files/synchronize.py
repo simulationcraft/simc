@@ -11,6 +11,7 @@ import os
 import logging
 import traceback
 import logging
+import pathlib
 
 
 def parse_qt(filename):
@@ -170,18 +171,42 @@ def create_vs_str(entries, gui=False):
     prepare += "\n</Project>"
     return prepare
 
-def create_cmake_str(engine, engine_main, gui):
-    engine_source = [*engine, *engine_main]
+def create_engine_cmake_str(engine):
+    engine_source = [*engine]
     engine_cpp_files = [fullpath for file_type, fullpath, dirname, corename, ending in engine_source if file_type == "SOURCES"]
+    engine_cpp_files = [pathlib.Path(f) for f in engine_cpp_files]
+    engine_cpp_files = ["/".join(p.parts[1:]) for p in engine_cpp_files]
+    # print(engine_cpp_files)
     output = \
-"""cmake_minimum_required (VERSION 3.1)
-project (simc)
-include_directories("engine")
+"""project(engine)
 set (CMAKE_CXX_STANDARD 11)
 set(THREADS_PREFER_PTHREAD_FLAG ON)
 find_package(Threads REQUIRED)
-add_executable(simc {})
-target_link_libraries(simc Threads::Threads)""".format(" ".join(engine_cpp_files))
+add_library(engine {})
+target_link_libraries(engine Threads::Threads)
+target_include_directories(engine PUBLIC ./)""".format(" ".join(engine_cpp_files))
+    return output
+
+def create_gui_cmake_str(gui):
+    engine_source = [*gui]
+    engine_cpp_files = [fullpath for file_type, fullpath, dirname, corename, ending in engine_source if file_type == "SOURCES" or file_type == "HEADERS"]
+    engine_cpp_files = [pathlib.Path(f) for f in engine_cpp_files]
+    engine_cpp_files = ["/".join(p.parts[1:]) for p in engine_cpp_files]
+    # print(engine_cpp_files)
+    output = \
+"""project(engine)
+set (CMAKE_CXX_STANDARD 11)
+set(THREADS_PREFER_PTHREAD_FLAG ON)
+find_package(Threads REQUIRED)
+find_package(Qt5 COMPONENTS Core Gui WebKit WebKitWidgets)
+set(CMAKE_AUTOMOC ON)
+set(CMAKE_INCLUDE_CURRENT_DIR ON)
+add_executable(SimulationCraft {})
+target_compile_definitions(SimulationCraft PRIVATE SC_USE_WEBKIT)
+target_link_libraries(SimulationCraft engine Qt5::Core Qt5::Gui Qt5::WebKit Qt5::WebKitWidgets)
+target_include_directories(SimulationCraft PUBLIC ../engine/)
+qt5_use_modules(SimulationCraft Widgets)
+""".format(" ".join(engine_cpp_files))
     return output
 
 def replace(entries, separator, repl):
@@ -214,16 +239,16 @@ def create_file(file_type, build_systems):
 
 def create_cmake():
     engine = parse_qt("QT_engine.pri")
-    engine_main = parse_qt("QT_engine_main.pri")
     gui = parse_qt("QT_gui.pri")
-    write_to_file("../CMakeLists.txt", create_cmake_str(engine, engine_main, gui))
+    write_to_file("../engine/CMakeLists.txt", create_engine_cmake_str(engine))
+    write_to_file("../qt/CMakeLists.txt", create_gui_cmake_str(gui))
 
 def main():
     logging.basicConfig(level=logging.DEBUG)
     create_file("engine", ["make", "VS", "QT"])
     create_file("engine_main", ["make", "VS", "QT"])
     create_file("gui", ["QT", "VS_GUI"])  # TODO: finish mocing part of VS_GUI
-    create_cmake()
+    # create_cmake()
     logging.info("Done")
 
 
