@@ -7280,6 +7280,9 @@ struct chi_wave_t: public monk_spell_t
     add_child( damage );
     tick_zero = true;
     radius = player -> find_spell( 132466 ) -> effectN( 2 ).base_value();
+    // Forcing the minimum GCD to 750 milliseconds for all 3 specs
+    min_gcd = timespan_t::from_millis( 750 );
+    gcd_haste = HASTE_SPELL;
   }
 
   virtual void execute() override
@@ -7323,7 +7326,6 @@ struct chi_burst_heal_t: public monk_heal_t
     background = true;
     target = p();
     aoe = -1;
-    attack_power_mod.direct = 4.125; // Hard code 06/21/16
   }
 
   double action_multiplier() const override
@@ -7353,7 +7355,6 @@ struct chi_burst_damage_t: public monk_spell_t
   {
     background = true;
     aoe = -1;
-    attack_power_mod.direct = 4.125; // Hard code 06/21/16
   }
 
   double composite_persistent_multiplier( const action_state_t* action_state ) const override
@@ -7400,6 +7401,9 @@ struct chi_burst_t: public monk_spell_t
     heal = new chi_burst_heal_t( *player );
     damage = new chi_burst_damage_t( *player );
     interrupt_auto_attack = false;
+    // Forcing the minimum GCD to 750 milliseconds for all 3 specs
+    min_gcd = timespan_t::from_millis( 750 );
+    gcd_haste = HASTE_SPELL;
   }
 
   virtual bool ready() override
