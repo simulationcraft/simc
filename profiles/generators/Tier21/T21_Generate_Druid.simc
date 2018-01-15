@@ -73,7 +73,7 @@ neck=vulcanarcore_pendant,id=151965,bonus_id=3612/1502,enchant=mark_of_the_hidde
 shoulder=lady_and_the_child,id=144295,bonus_id=1811/3630
 back=fury_of_nature,id=151802,bonus_id=3459/3630,enchant=binding_of_agility
 hands=grips_of_hungering_shadows,id=152086,bonus_id=1502/3610
-legs=breach_blocker_legguards,id=151987,bonus_id=1502/3610
+legs=breachblocker_legguards,id=151987,bonus_id=1502/3610
 finger1=sullied_seal_of_the_pantheon,id=151972,bonus_id=3612/1502,enchant=binding_of_versatility
 finger2=seal_of_the_portalmaster,id=152063,bonus_id=1502/3610,enchant=binding_of_versatility
 main_hand=claws_of_ursoc,id=128821,bonus_id=724,gem_id=152037/147081/152051/0,relic_id=3612:1512/3612:1512/3612:1512/0
