@@ -1986,6 +1986,10 @@ struct sim_t : private sc_thread_t
     if ( average_range ) return ( min + max ) / 2.0;
     return rng().range( min, max );
   }
+
+  // Thread id of this sim_t object
+  std::thread::id thread_id() const
+  { return sc_thread_t::thread_id(); }
 private:
   void do_pause();
   void print_spell_query();

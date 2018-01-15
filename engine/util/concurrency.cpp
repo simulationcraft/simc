@@ -49,6 +49,9 @@ public:
   t()
   { }
 
+  std::thread::id id() const
+  { return t -> get_id(); }
+
   void launch( sc_thread_t* thr)
   {
     t = std::unique_ptr<std::thread>( new std::thread( &sc_thread_t::native_t::execute, thr ) );
@@ -107,6 +110,11 @@ void sc_thread_t::launch()
 void sc_thread_t::join()
 {
   native_handle -> join();
+}
+
+std::thread::id sc_thread_t::thread_id() const
+{
+  return native_handle -> id();
 }
 
 /**

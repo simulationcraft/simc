@@ -23,16 +23,43 @@ struct sim_signal_handler_t
   static void report( int signal )
   {
     const char* name = strsignal( signal );
-    std::cerr << "sim_signal_handler: " << name
-              << "! Iteration=" << global_sim -> current_iteration
-              << " Seed=" << global_sim -> seed
-              << " TargetHealth=" << global_sim -> target -> resources.initial[ RESOURCE_HEALTH ];
+    const sim_t* crashing_child = nullptr;
+    if ( signal == SIGSEGV )
+    {
+      for ( auto child : global_sim -> children )
+      {
+        if ( std::this_thread::get_id() == child ->  thread_id() )
+        {
+          crashing_child = child;
+          break;
+        }
+      }
+    }
+
+    std::cerr << "sim_signal_handler: " << name << "!"
+              << std::fixed;
+    if ( crashing_child )
+    {
+      std::cerr << " Thread=" << crashing_child -> thread_index
+                << " Iteration=" << crashing_child -> current_iteration
+                << " Seed=" << crashing_child -> seed << " (" << ( crashing_child -> seed + crashing_child -> thread_index ) << ")"
+                << " TargetHealth=" << crashing_child -> target -> resources.initial[ RESOURCE_HEALTH ];
+    }
+    else
+    {
+      std::cerr << " Iteration=" << global_sim -> current_iteration
+                << " Seed=" << global_sim -> seed
+                << std::fixed
+                << " TargetHealth=" << global_sim -> target -> resources.initial[ RESOURCE_HEALTH ];
+    }
+
     auto profileset = global_sim -> profilesets.current_profileset_name();
     if ( ! profileset.empty() )
     {
       std::cerr << " ProfileSet=" << profileset;
     }
     std::cerr << std::endl;
+    std::cerr << std::defaultfloat;
     fflush( stderr );
   }
 
