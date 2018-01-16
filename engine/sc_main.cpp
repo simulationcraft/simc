@@ -36,8 +36,7 @@ struct sim_signal_handler_t
       }
     }
 
-    std::cerr << "sim_signal_handler: " << name << "!"
-              << std::fixed;
+    std::cerr << "sim_signal_handler: " << name << "!";
     if ( crashing_child )
     {
       std::cerr << " Thread=" << crashing_child -> thread_index
@@ -49,7 +48,6 @@ struct sim_signal_handler_t
     {
       std::cerr << " Iteration=" << global_sim -> current_iteration
                 << " Seed=" << global_sim -> seed
-                << std::fixed
                 << " TargetHealth=" << global_sim -> target -> resources.initial[ RESOURCE_HEALTH ];
     }
 
@@ -59,7 +57,6 @@ struct sim_signal_handler_t
       std::cerr << " ProfileSet=" << profileset;
     }
     std::cerr << std::endl;
-    std::cerr << std::defaultfloat;
     fflush( stderr );
   }
 
