@@ -2563,9 +2563,7 @@ public:
     if ( p() -> buff.serenity -> up() && ab::data().affected_by( p() -> talent.serenity -> effectN( 4 ) ) )
     {
       if ( maybe_ptr( p() -> dbc.ptr ) )
-      {
         cd *= ( 1 / ( 1 + p() -> talent.serenity -> effectN( 4 ).percent() ) ); // saved as 100
-      }
       else
         cd *= 1 + p() -> talent.serenity -> effectN( 4 ).percent(); // saved as -50
     }
@@ -3348,10 +3346,7 @@ struct rising_sun_kick_t: public monk_melee_attack_t
     double am = monk_melee_attack_t::action_multiplier();
 
     if ( p() -> spec.rising_sun_kick_2 )
-    {
-      double r = p() -> spec.rising_sun_kick_2 -> effectN( 1 ).percent();
-      am *= 1 + r;
-    }
+      am *= 1 + p() -> spec.rising_sun_kick_2 -> effectN( 1 ).percent();
 
     if ( p() -> artifact.rising_winds.rank() )
       am *= 1 + p() -> artifact.rising_winds.percent();
@@ -3588,8 +3583,6 @@ struct blackout_kick_t: public monk_melee_attack_t
       default:
         break;
     }
-
-
     sef_ability = SEF_BLACKOUT_KICK;
   }
 
@@ -3915,7 +3908,6 @@ struct rushing_jade_wind_t : public monk_melee_attack_t
 
     if ( p() -> buff.serenity -> up() )
       p() -> gain.serenity -> add( RESOURCE_CHI, base_costs[RESOURCE_CHI] );
-
   }
 
   void execute() override
@@ -4026,7 +4018,6 @@ struct spinning_crane_kick_t: public monk_melee_attack_t
 
     if ( p() -> buff.serenity -> up() )
       p() -> gain.serenity -> add( RESOURCE_CHI, base_costs[RESOURCE_CHI] );
-
   }
 
   void execute() override
@@ -4492,7 +4483,6 @@ struct strike_of_the_windlord_t: public monk_melee_attack_t
 
     if ( p() -> buff.serenity -> up() )
       p() -> gain.serenity -> add( RESOURCE_CHI, base_costs[RESOURCE_CHI] );
-
   }
 
   void execute() override
@@ -11305,7 +11295,7 @@ struct monk_module_t: public module_t
       .modifier( -5000 )
       .verification_value( -3000 );*/
   }
-  
+
   virtual void init( player_t* p ) const override
   {
     p -> buffs.windwalking_movement_aura = buff_creator_t( p, "windwalking_movement_aura",
