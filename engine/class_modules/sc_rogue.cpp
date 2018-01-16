@@ -999,6 +999,12 @@ struct rogue_attack_t : public melee_attack_t
     {
       base_multiplier *= 1.0 + p -> spec.subtlety_rogue -> effectN( 2 ).percent();
     }
+
+    // Outlaw third effect (DfA mod)
+    if ( data().affected_by( p -> spec.outlaw_rogue -> effectN( 3 ) ) )
+    {
+      base_multiplier *= 1.0 + p -> spec.outlaw_rogue -> effectN( 3 ).percent();
+    }
   }
 
   void init() override
