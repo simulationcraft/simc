@@ -1796,23 +1796,6 @@ struct insignia_of_ravenholdt_attack_t : public rogue_attack_t
     {
       // Hidden Passive (Additive, it's +15% on the primary effect)
       m += p() -> spec.assassination_rogue -> effectN( 3 ).percent();
-
-      // It seems that Insignia ignores only Vendetta modifier
-      // See: https://github.com/simulationcraft/simc/issues/3435
-      rogue_td_t* tdata = td( target );
-      if ( tdata -> debuffs.vendetta -> up() )
-      {
-        m /= 1.0 + tdata -> debuffs.vendetta -> value();
-      }
-    }
-    else if ( p() ->specialization() == ROGUE_SUBTLETY )
-    {
-      // Insignia ignores Nightblade debuff modifier
-      rogue_td_t* tdata = td( target );
-      if ( tdata -> dots.nightblade -> is_ticking() )
-      {
-        m /= 1.0 + tdata -> dots.nightblade -> current_action -> data().effectN( 6 ).percent();
-      }
     }
 
     return m;
@@ -1824,6 +1807,11 @@ struct insignia_of_ravenholdt_attack_t : public rogue_attack_t
     return 1.0;
   }
 
+  double composite_persistent_multiplier(const action_state_t* ) const override
+  {
+    // 1/15/2018 - Does not double-dip from Nightstalker bonus
+    return 1.0;
+  }
 };
 
 // As of 04/08/2017 it acts like an Ignite (i.e. remaining damage are added).
@@ -3272,6 +3260,11 @@ struct goremaws_bite_strike_t : public rogue_attack_t
     weapon = w;
   }
 
+  bool procs_insignia_of_ravenholdt() const override
+  {
+    // 1/15/2018 - Confirmed both Goremaw's Bite strikes proc Insignia hits in-game
+    return true;
+  }
 };
 
 struct goremaws_bite_t:  public rogue_attack_t
@@ -3455,6 +3448,12 @@ struct kingsbane_strike_t : public rogue_attack_t
   {
     // As of 7.2.5 2017-07-17, Kingsbane hits do not proc poisons, but do increase the debuff stacks.
     return false;
+  }
+
+  bool procs_insignia_of_ravenholdt() const override
+  {
+    // 1/15/2018 - Confirmed both Kingsbane strikes proc Insignia hits in-game
+    return true;
   }
 
   void impact( action_state_t* state ) override
@@ -4628,8 +4627,7 @@ struct shuriken_toss_t : public rogue_attack_t
     rogue_attack_t( "shuriken_toss", p, p -> find_specialization_spell( "Shuriken Toss" ), options_str )
   { }
 
-  bool procs_insignia_of_ravenholdt() const override
-  { return false; }
+  // 1/15/2018 - Confirmed Shuriken Toss procs Insignia hits in-game, although Poisoned Knife does not
 };
 
 // Slice and Dice ===========================================================
@@ -6787,6 +6785,12 @@ void rogue_t::trigger_insignia_of_ravenholdt( action_state_t* state )
   {
     amount /= 1.0 + state -> action -> total_crit_bonus( state );
   }
+
+  // 1/15/2018 - Insignia only uses base damage and no target multipliers affect it.
+  // This was previously handled by reversing the Nightblade and Vendetta in insignia_of_ravenholdt_attack_t
+  // However, after testing this also appears to apply to Toxic Blade (w/ Kingsbane) and Ghostly Strike as well.
+  // As such, we can just reverse the entire target multiplier when we snapshot the damage.
+  amount /= state -> target_da_multiplier;
 
   if ( state -> action -> get_school() == SCHOOL_PHYSICAL )
   {
