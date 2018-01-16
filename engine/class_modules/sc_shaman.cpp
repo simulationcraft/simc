@@ -3644,8 +3644,11 @@ struct stormstrike_t : public stormstrike_base_t
 
   void execute() override
   {
-    // Proc unleash doom before the actual damage strikes, they already benefit from the buff
-    p() -> buff.unleash_doom -> trigger();
+    if ( ! stormflurry )
+    {
+      // Proc unleash doom before the actual damage strikes, they already benefit from the buff
+      p() -> buff.unleash_doom -> trigger();
+    }
 
     stormstrike_base_t::execute();
   }
@@ -3714,8 +3717,11 @@ struct windstrike_t : public stormstrike_base_t
 
   void execute() override
   {
-    // Proc unleash doom before the actual damage strikes, they already benefit from the buff
-    p() -> buff.unleash_doom -> trigger();
+    if ( ! stormflurry )
+    {
+      // Proc unleash doom before the actual damage strikes, they already benefit from the buff
+      p() -> buff.unleash_doom -> trigger();
+    }
 
     stormstrike_base_t::execute();
   }
