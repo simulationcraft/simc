@@ -2538,16 +2538,18 @@ public:
 
   virtual double cost_reduction() const
   {
+    double c = 0.0;
+    
     if ( p() -> buff.mana_tea -> up() && ab::data().affected_by( p() -> talent.mana_tea -> effectN( 1 ) ) )
-      return p() -> buff.mana_tea -> value(); // saved as -50%
+      c += p() -> buff.mana_tea -> value(); // saved as -50%
 
-    if ( p() -> buff.serenity -> up() && ab::data().affected_by( p() -> talent.serenity -> effectN( 1 ) ) )
-      return p() -> talent.serenity -> effectN( 1 ).percent(); // Saved as -100
+    else if ( p() -> buff.serenity -> up() && ab::data().affected_by( p() -> talent.serenity -> effectN( 1 ) ) )
+      c += p() -> talent.serenity -> effectN( 1 ).percent(); // Saved as -100
 
-    if ( p() -> buff.bok_proc -> up() && ab::data().affected_by( p() -> passives.bok_proc -> effectN( 1 ) ) )
-      return p() -> passives.bok_proc -> effectN ( 1 ).percent(); // Saved as -100
+    else if ( p() -> buff.bok_proc -> up() && ab::data().affected_by( p() -> passives.bok_proc -> effectN( 1 ) ) )
+      c += p() -> passives.bok_proc -> effectN ( 1 ).percent(); // Saved as -100
 
-    return 0;
+    return c;
   }
 
   virtual void update_ready( timespan_t cd_duration = timespan_t::min() ) override
