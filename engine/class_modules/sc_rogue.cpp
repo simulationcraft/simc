@@ -2809,19 +2809,25 @@ struct cannonball_barrage_damage_t : public rogue_attack_t
   cannonball_barrage_damage_t( rogue_t* p ) :
     rogue_attack_t( "cannonball_barrage_damage", p, p -> find_spell( 185779 ) )
   {
+    aoe = -1;
     background = true;
   }
 
-  double target_armor( player_t* ) const override
-  { return 0; }
+  timespan_t travel_time() const override
+  {
+    // 01/16/2018 - Spell data has 0.6y/s velocity but because the projectiles spawn above the target, this doesn't matter much
+    //              Logs show it as about a 1s delay before the first tick.
+    return timespan_t::from_seconds(1);
+  }
 };
 
-// TODO: Velocity is fubard in spell data, probably
 struct cannonball_barrage_t : public rogue_attack_t
 {
   cannonball_barrage_t( rogue_t* p, const std::string& options_str ) :
     rogue_attack_t( "cannonball_barrage", p, p -> talent.cannonball_barrage, options_str )
   {
+    may_miss = may_glance = may_block = may_dodge = may_parry = may_crit = false;
+    dot_duration = base_tick_time * 6; // 01/16/2018 - Manually adjust to avoid partial last tick due to the 330ms tick time with 2s duration
     tick_action = new cannonball_barrage_damage_t( p );
   }
 };
