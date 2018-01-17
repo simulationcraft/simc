@@ -3848,6 +3848,10 @@ struct rushing_jade_wind_t : public monk_melee_attack_t
     spell_power_mod.direct = 0.0;
     cooldown -> duration = p -> talent.rushing_jade_wind -> cooldown();
     cooldown -> hasted = true;
+    
+    // Forcing the minimum GCD to 750 milliseconds
+    min_gcd = timespan_t::from_millis( 750 );
+    gcd_haste = HASTE_ATTACK;
 
     dot_duration *= 1 + p -> spec.brewmaster_monk -> effectN( 12 ).percent();
     dot_behavior = DOT_REFRESH; // Spell uses Pandemic Mechanics.
@@ -5437,6 +5441,9 @@ struct xuen_spell_t: public summon_pet_t
     trigger_gcd = timespan_t::zero();
     harmful = false;
     summoning_duration = data().duration();
+    // Forcing the minimum GCD to 750 milliseconds
+    min_gcd = timespan_t::from_millis( 750 );
+    gcd_haste = HASTE_SPELL;
   }
 };
 
