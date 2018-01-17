@@ -314,6 +314,24 @@ bool dbc::valid_gem_color( unsigned color )
   }
 }
 
+double dbc::stat_data_to_attribute(const stat_data_t& s, attribute_e a) {
+  switch (a) {
+  case ATTR_STRENGTH:
+    return s.strength;
+  case ATTR_AGILITY:
+    return s.agility;
+  case ATTR_STAMINA:
+    return s.stamina;
+  case ATTR_INTELLECT:
+    return s.intellect;
+  case ATTR_SPIRIT:
+    return s.spirit;
+  default:
+    assert(false);
+  }
+  return 0.0;
+}
+
 std::vector< const spell_data_t* > dbc_t::effect_affects_spells( unsigned family, const spelleffect_data_t* effect ) const
 {
   std::vector< const spell_data_t* > affected_spells;

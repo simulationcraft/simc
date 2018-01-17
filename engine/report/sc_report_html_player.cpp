@@ -1062,6 +1062,10 @@ void print_html_stats( report::sc_html_stream& os, const player_t& p )
        << "<table class=\"sc\">\n"
        << "<tr>\n"
        << "<th></th>\n"
+       << "<th><a href=\"#help-stats-level\" "
+          "class=\"help\">Level Bonus (" << p.level() << ")</a></th>\n"
+       << "<th><a href=\"#help-stats-race\" "
+          "class=\"help\">Race Bonus (" << util::race_type_string(p.race) << ")</a></th>\n"
        << "<th><a href=\"#help-stats-raid-buffed\" "
           "class=\"help\">Raid-Buffed</a></th>\n"
        << "<th><a href=\"#help-stats-unbuffed\" "
@@ -1077,9 +1081,13 @@ void print_html_stats( report::sc_html_stream& os, const player_t& p )
           "<th class=\"left\">%s</th>\n"
           "<td class=\"right\">%.0f</td>\n"
           "<td class=\"right\">%.0f</td>\n"
+          "<td class=\"right\">%.0f</td>\n"
+          "<td class=\"right\">%.0f</td>\n"
           "<td class=\"right\">%.0f",
           ( j % 2 == 1 ) ? " class=\"odd\"" : "",
           util::inverse_tokenize( util::attribute_type_string( i ) ).c_str(),
+          util::floor( dbc::stat_data_to_attribute(p.dbc.attribute_base( p.type, p.level() ), i ) ),
+          util::floor( dbc::stat_data_to_attribute(p.dbc.race_base( p.race ), i ) ),
           util::floor( buffed_stats.attribute[ i ] ),
           util::floor( p.get_attribute( i ) ),
           util::floor( p.total_gear.attribute[ i ] ) );
@@ -1097,6 +1105,8 @@ void print_html_stats( report::sc_html_stream& os, const player_t& p )
         os.format(
             "<tr%s>\n"
             "<th class=\"left\">%s</th>\n"
+            "<td class=\"right\"></td>\n"
+            "<td class=\"right\"></td>\n"
             "<td class=\"right\">%.0f</td>\n"
             "<td class=\"right\">%.0f</td>\n"
             "<td class=\"right\">%.0f</td>\n"
@@ -1111,6 +1121,8 @@ void print_html_stats( report::sc_html_stream& os, const player_t& p )
       os.format(
           "<tr%s>\n"
           "<th class=\"left\">Spell Power</th>\n"
+          "<td class=\"right\"></td>\n"
+          "<td class=\"right\"></td>\n"
           "<td class=\"right\">%.0f</td>\n"
           "<td class=\"right\">%.0f</td>\n"
           "<td class=\"right\">%.0f</td>\n"
@@ -1126,6 +1138,8 @@ void print_html_stats( report::sc_html_stream& os, const player_t& p )
       os.format(
           "<tr%s>\n"
           "<th class=\"left\">Crit</th>\n"
+          "<td class=\"right\"></td>\n"
+          "<td class=\"right\"></td>\n"
           "<td class=\"right\">%.2f%%</td>\n"
           "<td class=\"right\">%.2f%%</td>\n"
           "<td class=\"right\">%.0f</td>\n"
@@ -1141,6 +1155,8 @@ void print_html_stats( report::sc_html_stream& os, const player_t& p )
       os.format(
           "<tr%s>\n"
           "<th class=\"left\">Melee Crit</th>\n"
+          "<td class=\"right\"></td>\n"
+          "<td class=\"right\"></td>\n"
           "<td class=\"right\">%.2f%%</td>\n"
           "<td class=\"right\">%.2f%%</td>\n"
           "<td class=\"right\">%.0f</td>\n"
@@ -1153,6 +1169,8 @@ void print_html_stats( report::sc_html_stream& os, const player_t& p )
       os.format(
           "<tr%s>\n"
           "<th class=\"left\">Spell Crit</th>\n"
+          "<td class=\"right\"></td>\n"
+          "<td class=\"right\"></td>\n"
           "<td class=\"right\">%.2f%%</td>\n"
           "<td class=\"right\">%.2f%%</td>\n"
           "<td class=\"right\">%.0f</td>\n"
@@ -1168,6 +1186,8 @@ void print_html_stats( report::sc_html_stream& os, const player_t& p )
       os.format(
           "<tr%s>\n"
           "<th class=\"left\">Haste</th>\n"
+          "<td class=\"right\"></td>\n"
+          "<td class=\"right\"></td>\n"
           "<td class=\"right\">%.2f%%</td>\n"
           "<td class=\"right\">%.2f%%</td>\n"
           "<td class=\"right\">%.0f</td>\n"
@@ -1185,6 +1205,8 @@ void print_html_stats( report::sc_html_stream& os, const player_t& p )
       os.format(
           "<tr%s>\n"
           "<th class=\"left\">Melee Haste</th>\n"
+          "<td class=\"right\"></td>\n"
+          "<td class=\"right\"></td>\n"
           "<td class=\"right\">%.2f%%</td>\n"
           "<td class=\"right\">%.2f%%</td>\n"
           "<td class=\"right\">%.0f</td>\n"
@@ -1197,6 +1219,8 @@ void print_html_stats( report::sc_html_stream& os, const player_t& p )
       os.format(
           "<tr%s>\n"
           "<th class=\"left\">Spell Haste</th>\n"
+          "<td class=\"right\"></td>\n"
+          "<td class=\"right\"></td>\n"
           "<td class=\"right\">%.2f%%</td>\n"
           "<td class=\"right\">%.2f%%</td>\n"
           "<td class=\"right\">%.0f</td>\n"
@@ -1212,6 +1236,8 @@ void print_html_stats( report::sc_html_stream& os, const player_t& p )
       os.format(
           "<tr%s>\n"
           "<th class=\"left\">Spell Speed</th>\n"
+          "<td class=\"right\"></td>\n"
+          "<td class=\"right\"></td>\n"
           "<td class=\"right\">%.2f%%</td>\n"
           "<td class=\"right\">%.2f%%</td>\n"
           "<td class=\"right\">%.0f</td>\n"
@@ -1227,6 +1253,8 @@ void print_html_stats( report::sc_html_stream& os, const player_t& p )
       os.format(
           "<tr%s>\n"
           "<th class=\"left\">Swing Speed</th>\n"
+          "<td class=\"right\"></td>\n"
+          "<td class=\"right\"></td>\n"
           "<td class=\"right\">%.2f%%</td>\n"
           "<td class=\"right\">%.2f%%</td>\n"
           "<td class=\"right\">%.0f</td>\n"
@@ -1240,6 +1268,8 @@ void print_html_stats( report::sc_html_stream& os, const player_t& p )
     os.format(
         "<tr%s>\n"
         "<th class=\"left\">Damage / Heal Versatility</th>\n"
+        "<td class=\"right\"></td>\n"
+        "<td class=\"right\"></td>\n"
         "<td class=\"right\">%.2f%%</td>\n"
         "<td class=\"right\">%.2f%%</td>\n"
         "<td class=\"right\">%.0f</td>\n"
@@ -1254,6 +1284,8 @@ void print_html_stats( report::sc_html_stream& os, const player_t& p )
       os.format(
           "<tr%s>\n"
           "<th class=\"left\">Mitigation Versatility</th>\n"
+          "<td class=\"right\"></td>\n"
+          "<td class=\"right\"></td>\n"
           "<td class=\"right\">%.2f%%</td>\n"
           "<td class=\"right\">%.2f%%</td>\n"
           "<td class=\"right\">%.0f</td>\n"
@@ -1269,6 +1301,8 @@ void print_html_stats( report::sc_html_stream& os, const player_t& p )
       os.format(
           "<tr%s>\n"
           "<th class=\"left\">ManaReg per Second</th>\n"
+          "<td class=\"right\"></td>\n"
+          "<td class=\"right\"></td>\n"
           "<td class=\"right\">%.0f</td>\n"
           "<td class=\"right\">%.0f</td>\n"
           "<td class=\"right\">0</td>\n"
@@ -1282,6 +1316,8 @@ void print_html_stats( report::sc_html_stream& os, const player_t& p )
       os.format(
           "<tr%s>\n"
           "<th class=\"left\">Attack Power</th>\n"
+          "<td class=\"right\"></td>\n"
+          "<td class=\"right\"></td>\n"
           "<td class=\"right\">%.0f</td>\n"
           "<td class=\"right\">%.0f</td>\n"
           "<td class=\"right\">%.0f</td>\n"
@@ -1295,6 +1331,8 @@ void print_html_stats( report::sc_html_stream& os, const player_t& p )
     os.format(
         "<tr%s>\n"
         "<th class=\"left\">Mastery</th>\n"
+        "<td class=\"right\"></td>\n"
+        "<td class=\"right\"></td>\n"
         "<td class=\"right\">%.2f%%</td>\n"
         "<td class=\"right\">%.2f%%</td>\n"
         "<td class=\"right\">%.0f</td>\n"
@@ -1310,6 +1348,8 @@ void print_html_stats( report::sc_html_stream& os, const player_t& p )
         os.format(
             "<tr%s>\n"
             "<th class=\"left\">Expertise</th>\n"
+            "<td class=\"right\"></td>\n"
+            "<td class=\"right\"></td>\n"
             "<td class=\"right\">%.2f%% / %.2f%%</td>\n"
             "<td class=\"right\">%.2f%% / %.2f%% </td>\n"
             "<td class=\"right\">%.0f </td>\n"
@@ -1327,6 +1367,8 @@ void print_html_stats( report::sc_html_stream& os, const player_t& p )
         os.format(
             "<tr%s>\n"
             "<th class=\"left\">Expertise</th>\n"
+            "<td class=\"right\"></td>\n"
+            "<td class=\"right\"></td>\n"
             "<td class=\"right\">%.2f%%</td>\n"
             "<td class=\"right\">%.2f%% </td>\n"
             "<td class=\"right\">%.0f </td>\n"
@@ -1341,6 +1383,8 @@ void print_html_stats( report::sc_html_stream& os, const player_t& p )
     os.format(
         "<tr%s>\n"
         "<th class=\"left\">Armor</th>\n"
+        "<td class=\"right\"></td>\n"
+        "<td class=\"right\"></td>\n"
         "<td class=\"right\">%.0f</td>\n"
         "<td class=\"right\">%.0f</td>\n"
         "<td class=\"right\">%.0f</td>\n"
@@ -1353,6 +1397,8 @@ void print_html_stats( report::sc_html_stream& os, const player_t& p )
       os.format(
           "<tr%s>\n"
           "<th class=\"left\">Bonus Armor</th>\n"
+          "<td class=\"right\"></td>\n"
+          "<td class=\"right\"></td>\n"
           "<td class=\"right\">%.0f</td>\n"
           "<td class=\"right\">%.0f</td>\n"
           "<td class=\"right\">%.0f</td>\n"
@@ -1366,6 +1412,8 @@ void print_html_stats( report::sc_html_stream& os, const player_t& p )
       os.format(
           "<tr%s>\n"
           "<th class=\"left\">Run Speed</th>\n"
+          "<td class=\"right\"></td>\n"
+          "<td class=\"right\"></td>\n"
           "<td class=\"right\">%.0f</td>\n"
           "<td class=\"right\">%.0f</td>\n"
           "<td class=\"right\">%.0f</td>\n"
@@ -1379,6 +1427,8 @@ void print_html_stats( report::sc_html_stream& os, const player_t& p )
       os.format(
           "<tr%s>\n"
           "<th class=\"left\">Leech</th>\n"
+          "<td class=\"right\"></td>\n"
+          "<td class=\"right\"></td>\n"
           "<td class=\"right\">%.2f%%</td>\n"
           "<td class=\"right\">%.2f%%</td>\n"
           "<td class=\"right\">%.0f</td>\n"
@@ -1394,6 +1444,8 @@ void print_html_stats( report::sc_html_stream& os, const player_t& p )
         os.format(
             "<tr%s>\n"
             "<th class=\"left\">Avoidance</th>\n"
+            "<td class=\"right\"></td>\n"
+            "<td class=\"right\"></td>\n"
             "<td class=\"right\">%.0f</td>\n"
             "<td class=\"right\">%.0f</td>\n"
             "<td class=\"right\">%.0f</td>\n"
@@ -1405,6 +1457,8 @@ void print_html_stats( report::sc_html_stream& os, const player_t& p )
       os.format(
           "<tr%s>\n"
           "<th class=\"left\">Tank-Miss</th>\n"
+          "<td class=\"right\"></td>\n"
+          "<td class=\"right\"></td>\n"
           "<td class=\"right\">%.2f%%</td>\n"
           "<td class=\"right\">%.2f%%</td>\n"
           "<td class=\"right\">%.0f</td>\n"
@@ -1425,6 +1479,8 @@ void print_html_stats( report::sc_html_stream& os, const player_t& p )
       os.format(
           "<tr%s>\n"
           "<th class=\"left\">Tank-Parry</th>\n"
+          "<td class=\"right\"></td>\n"
+          "<td class=\"right\"></td>\n"
           "<td class=\"right\">%.2f%%</td>\n"
           "<td class=\"right\">%.2f%%</td>\n"
           "<td class=\"right\">%.0f</td>\n"
@@ -1435,6 +1491,8 @@ void print_html_stats( report::sc_html_stream& os, const player_t& p )
       os.format(
           "<tr%s>\n"
           "<th class=\"left\">Tank-Block</th>\n"
+          "<td class=\"right\"></td>\n"
+          "<td class=\"right\"></td>\n"
           "<td class=\"right\">%.2f%%</td>\n"
           "<td class=\"right\">%.2f%%</td>\n"
           "<td class=\"right\">%.0f</td>\n"
@@ -1445,6 +1503,8 @@ void print_html_stats( report::sc_html_stream& os, const player_t& p )
       os.format(
           "<tr%s>\n"
           "<th class=\"left\">Tank-Crit</th>\n"
+          "<td class=\"right\"></td>\n"
+          "<td class=\"right\"></td>\n"
           "<td class=\"right\">%.2f%%</td>\n"
           "<td class=\"right\">%.2f%%</td>\n"
           "<td class=\"right\">%.0f</td>\n"

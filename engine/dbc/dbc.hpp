@@ -92,6 +92,7 @@ specialization_e translate_spec_str   ( player_e ptype, const std::string& spec_
 std::string specialization_string     ( specialization_e spec );
 double fmt_value( double v, effect_type_t type, effect_subtype_t sub_type );
 bool valid_gem_color( unsigned color );
+double stat_data_to_attribute( const stat_data_t&, attribute_e);
 
 const char* item_name_description( unsigned, bool ptr );
 
