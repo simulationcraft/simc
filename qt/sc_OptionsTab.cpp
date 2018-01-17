@@ -1092,7 +1092,8 @@ QString SC_OptionsTab::getReportlDestination() const
 
 QString SC_OptionsTab::mergeOptions()
 {
-  QString options = "### Begin GUI options ###\n";
+  QString options = "";
+  options += "### Begin GUI options ###\n";
   QString spell_query = mainWindow -> cmdLine -> commandLineText();
   if ( spell_query.startsWith( "spell_query" ) )
   {
