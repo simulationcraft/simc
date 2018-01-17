@@ -7912,7 +7912,7 @@ void shaman_t::init_action_list_enhancement()
   filler -> add_action( this, "Frostbrand", "if=talent.hailstorm.enabled&buff.frostbrand.remains<4.8&maelstrom>40" );
   filler -> add_action( this, "Frostbrand", "if=variable.akainuEquipped&!buff.frostbrand.up&maelstrom>=75" );
   filler -> add_talent( this, "Sundering" );
-  filler -> add_action( this, "Lava Lash", "if=maelstrom>=50&variable.OCPool70&variable.furyCheck80" );
+  filler -> add_action( this, "Lava Lash", "if=maelstrom>=50&variable.OCPool70&variable.furyCheck70" );
   filler -> add_action( this, "Rockbiter" );
   filler -> add_action( this, "Crash Lightning", "if=(maelstrom>=45|talent.crashing_storm.enabled|active_enemies>=2)" );
   filler -> add_action( this, "Flametongue" );
