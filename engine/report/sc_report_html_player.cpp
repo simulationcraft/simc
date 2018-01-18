@@ -1086,7 +1086,7 @@ void print_html_stats( report::sc_html_stream& os, const player_t& p )
           "<td class=\"right\">%.0f",
           ( j % 2 == 1 ) ? " class=\"odd\"" : "",
           util::inverse_tokenize( util::attribute_type_string( i ) ).c_str(),
-          util::floor( dbc::stat_data_to_attribute(p.dbc.attribute_base( p.type, p.level() ), i ) ),
+          ( ! p.is_enemy() && ! p.is_pet() ) ? util::floor( dbc::stat_data_to_attribute(p.dbc.attribute_base( p.type, p.level() ), i ) ) : 0,
           util::floor( dbc::stat_data_to_attribute(p.dbc.race_base( p.race ), i ) ),
           util::floor( buffed_stats.attribute[ i ] ),
           util::floor( p.get_attribute( i ) ),
