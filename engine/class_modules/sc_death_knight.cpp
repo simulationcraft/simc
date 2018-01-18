@@ -6569,6 +6569,9 @@ struct breath_of_sindragosa_t : public death_knight_spell_t
     tick_action = new breath_of_sindragosa_tick_t( p, this );
     school = tick_action -> school;
 
+    // Add the spec's aura damage modifier because it's not taken into account when applied to the ticking damage
+    base_multiplier *= 1.0 + p -> spec.frost_death_knight -> effectN( 1 ).percent();
+
     for ( size_t idx = 1; idx <= data().power_count(); idx++ )
     {
       const spellpower_data_t& power = data().powerN( idx );
