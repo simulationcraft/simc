@@ -2938,12 +2938,7 @@ struct agony_t: public warlock_spell_t
         auto current_ua = target_data->dots_unstable_affliction[i];
 
         if ( current_ua->is_ticking() )
-        {
-          timespan_t tick_time = current_ua->current_action->tick_time( current_ua->state );
-          double added_duration_multiplier = std::ceil( p()->sets->set( WARLOCK_AFFLICTION, T21, B2 )->effectN( 1 ).time_value() / tick_time );
-
-          current_ua->extend_duration( tick_time * added_duration_multiplier, true );
-        }
+          current_ua->extend_duration( p()->sets->set( WARLOCK_AFFLICTION, T21, B2 )->effectN( 1 ).time_value(), true );
       }
       p()->procs.affliction_t21_2pc->occur();
     }
