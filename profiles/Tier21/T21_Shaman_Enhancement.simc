@@ -99,7 +99,7 @@ actions.filler+=/crash_lightning,if=(talent.crashing_storm.enabled|active_enemie
 actions.filler+=/frostbrand,if=talent.hailstorm.enabled&buff.frostbrand.remains<4.8&maelstrom>40
 actions.filler+=/frostbrand,if=variable.akainuEquipped&!buff.frostbrand.up&maelstrom>=75
 actions.filler+=/sundering
-actions.filler+=/lava_lash,if=maelstrom>=50&variable.OCPool70&variable.furyCheck80
+actions.filler+=/lava_lash,if=maelstrom>=50&variable.OCPool70&variable.furyCheck70
 actions.filler+=/rockbiter
 actions.filler+=/crash_lightning,if=(maelstrom>=45|talent.crashing_storm.enabled|active_enemies>=2)
 actions.filler+=/flametongue
