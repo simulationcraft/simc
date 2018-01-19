@@ -148,6 +148,12 @@ sim_control_t* profile_set_t::options() const
   return m_options;
 }
 
+void profile_set_t::cleanup_options()
+{
+  delete m_options;
+  m_options = nullptr;
+}
+
 profile_set_t::~profile_set_t()
 {
   delete m_options;
@@ -442,6 +448,8 @@ bool profilesets_t::iterate( sim_t* parent )
         save_output_data( set, parent_player, player, option );
       } );
     }
+
+    set -> cleanup_options();
 
     delete profile_sim;
   }

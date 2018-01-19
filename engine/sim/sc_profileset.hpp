@@ -239,6 +239,8 @@ public:
 
   ~profile_set_t();
 
+  void cleanup_options();
+
   const std::string& name() const
   { return m_name; }
 
