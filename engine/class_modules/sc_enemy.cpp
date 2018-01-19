@@ -21,7 +21,8 @@ enum tank_dummy_e
 enum tmi_boss_e
 {
   TMI_NONE = 0,
-  TMI_T19L, TMI_T19N, TMI_T19H, TMI_T19M, TMI_MAX
+  // TODO : Add more T21 profiles
+  TMI_T19L, TMI_T19N, TMI_T19H, TMI_T19M, TMI_T21, TMI_MAX
 };
 
 
@@ -999,6 +1000,8 @@ struct tmi_enemy_t : public enemy_t
       return TMI_T19H;
     if ( util::str_in_str_ci( tmi_string, "T19M" ) )
       return TMI_T19M;
+    if ( util::str_in_str_ci( tmi_string, "T21" ) )
+      return TMI_T21;
 
     if ( ! tmi_string.empty() && sim -> debug )
       sim -> out_debug.printf( "Unknown TMI string input provided: %s", tmi_string.c_str() );
@@ -1031,14 +1034,17 @@ struct tmi_enemy_t : public enemy_t
   std::string generate_action_list() override
   {
     // Bosses are (roughly) standardized based on content level. dot damage is 2/15 of melee damage (0.1333 multiplier)
+    // TODO : add more T21 profiles (N/H/M) and replace estimated damage with actual damage.
     std::string als = "";
     const int num_bosses = TMI_MAX;
     assert( tmi_boss_enum < TMI_MAX );
-    int aa_damage[ num_bosses ] = { 0, // L       N       H       M
-                                        3000000, 4600000, 6200000, 8000000// T18 -- L-H values are estimates
+    int aa_damage[ num_bosses ] = { 0, // L       N       H       M        T21
+                                        3000000, 4600000, 6200000, 8000000, 12000000// T18 -- L-H values are estimates
                                   };
 
     als += "/auto_attack,damage=" + util::to_string( aa_damage[ tmi_boss_enum ] ) + ",attack_speed=1.5,aoe_tanks=1";
+    als += "/spell_nuke,damage=" + util::to_string( aa_damage[ tmi_boss_enum ] * 1.5 ) + ",cooldown=90";
+    als += "/melee_nuke,damage=" + util::to_string( aa_damage[ tmi_boss_enum ] * 2 ) + ",cooldown=60";
     als += "/spell_dot,damage=" + util::to_string( aa_damage[ tmi_boss_enum ] * 2 / 15 ) + ",tick_time=2,dot_duration=30,aoe_tanks=1,if=!ticking";
 
     return als;
