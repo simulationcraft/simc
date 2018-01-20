@@ -1651,8 +1651,7 @@ public:
       p() -> active.galactic_guardian -> snapshot_state( gg_s, DMG_DIRECT );
       p() -> active.galactic_guardian -> schedule_execute( gg_s );
 
-      // Trigger buff
-      p() -> buff.galactic_guardian -> trigger();
+      // Buff is triggered in galactic_guardian_damage_t::execute()
     }
   }
 
@@ -2212,15 +2211,24 @@ struct moonfire_t : public druid_spell_t
       return td( t ) -> dots.moonfire;
     }
 
+    virtual double composite_target_da_multiplier( player_t* t ) const override
+    {
+      double tdm = druid_spell_t::composite_target_da_multiplier( t );
+      
+      // IN-GAME BUG (Jan 20 2018): Lady and the Child Galactic Guardian procs benefit from both the DD modifier and the rage gain.
+      if ( ( benefits_from_galactic_guardian || ( p() -> bugs && t != target ) )
+        && p() -> buff.galactic_guardian -> check() )
+      {
+        // Galactic Guardian 7.1 Damage Buff
+        tdm *= 1.0 + galactic_guardian_dd_multiplier;
+      }
+
+      return tdm;
+    }
+
     virtual double action_da_multiplier() const override
     {
       double adm = druid_spell_t::action_da_multiplier();
-
-      if ( benefits_from_galactic_guardian && p()->buff.galactic_guardian->check() )
-      {
-        // Galactic Guardian 7.1 Damage Buff
-        adm *= 1.0 + galactic_guardian_dd_multiplier;
-      }
 
       adm *= 1.0 + p() -> buff.wax_and_wane -> stack_value();
 
@@ -2246,10 +2254,15 @@ struct moonfire_t : public druid_spell_t
       druid_spell_t::impact( s );
 
       // The buff needs to be handled with the damage handler since 7.1 since it impacts Moonfire DD
-      if ( benefits_from_galactic_guardian && result_is_hit( s -> result ) && p() -> buff.galactic_guardian -> check() )
+      // IN-GAME BUG (Jan 20 2018): Lady and the Child Galactic Guardian procs benefit from both the DD modifier and the rage gain.
+      if ( ( benefits_from_galactic_guardian || ( p() -> bugs && s -> chain_target > 0 ) )
+        && result_is_hit( s -> result ) && p() -> buff.galactic_guardian -> check() )
       {
         p() -> resource_gain( RESOURCE_RAGE, p() -> buff.galactic_guardian -> value(), p() -> gain.galactic_guardian );
-        p() -> buff.galactic_guardian -> expire();
+
+        // buff is not consumed when bug occurs
+        if ( benefits_from_galactic_guardian )
+          p() -> buff.galactic_guardian -> expire();
       }      
     }
 
@@ -2337,6 +2350,13 @@ struct moonfire_t : public druid_spell_t
       moonfire_damage_t( p, "galactic_guardian" )
     {
       benefits_from_galactic_guardian = false;
+    }
+
+    virtual void execute() override
+    {
+      moonfire_damage_t::execute();
+
+      p() -> buff.galactic_guardian -> trigger();
     }
   };
 
