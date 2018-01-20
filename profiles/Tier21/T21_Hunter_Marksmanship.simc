@@ -32,7 +32,7 @@ actions.precombat+=/windburst
 
 # Executed every time the actor is available.
 actions=auto_shot
-actions+=/counter_shot,if=target.debuff.casting.react
+actions+=/counter_shot,if=equipped.sephuzs_secret&target.debuff.casting.react&cooldown.buff_sephuzs_secret.up&!buff.sephuzs_secret.up
 actions+=/use_items
 actions+=/volley,toggle=on
 # Start being conservative with focus if expecting a Piercing Shot at the end of the current Vulnerable debuff. The expression lowest_vuln_within.<range> is used to check the lowest Vulnerable debuff duration on all enemies within the specified range from the target.

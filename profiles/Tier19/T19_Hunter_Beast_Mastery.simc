@@ -30,7 +30,7 @@ actions.precombat+=/potion
 
 # Executed every time the actor is available.
 actions=auto_shot
-actions+=/counter_shot,if=target.debuff.casting.react
+actions+=/counter_shot,if=equipped.sephuzs_secret&target.debuff.casting.react&cooldown.buff_sephuzs_secret.up&!buff.sephuzs_secret.up
 actions+=/use_items
 actions+=/arcane_torrent,if=focus.deficit>=30
 actions+=/berserking,if=buff.bestial_wrath.remains>7&(!set_bonus.tier20_2pc|buff.bestial_wrath.remains<11)

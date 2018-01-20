@@ -6435,7 +6435,7 @@ void hunter_t::apl_bm()
   action_priority_list_t* default_list = get_action_priority_list( "default" );
 
   default_list -> add_action( "auto_shot" );
-  default_list -> add_action( this, "Counter Shot", "if=target.debuff.casting.react" );
+  default_list -> add_action( this, "Counter Shot", "if=equipped.sephuzs_secret&target.debuff.casting.react&cooldown.buff_sephuzs_secret.up&!buff.sephuzs_secret.up" );
 
   // Item Actions
   default_list -> add_action( "use_items" );
@@ -6492,7 +6492,7 @@ void hunter_t::apl_mm()
     precombat -> add_action( this, "Windburst" );
 
   default_list -> add_action( "auto_shot" );
-  default_list -> add_action( this, "Counter Shot", "if=target.debuff.casting.react" );
+  default_list -> add_action( this, "Counter Shot", "if=equipped.sephuzs_secret&target.debuff.casting.react&cooldown.buff_sephuzs_secret.up&!buff.sephuzs_secret.up" );
 
   // Item Actions
   default_list -> add_action( special_use_item_action( "tarnished_sentinel_medallion", "if=((cooldown.trueshot.remains_guess<6|cooldown.trueshot.remains_guess>45)&(target.time_to_die>cooldown+duration))|target.time_to_die<25|buff.bullseye.react=30" ) );
@@ -6631,7 +6631,7 @@ void hunter_t::apl_surv()
 
   //Default
   default_list -> add_action( "use_items" );
-  default_list -> add_action( this, "Muzzle", "if=target.debuff.casting.react" );
+  default_list -> add_action( this, "Muzzle", "if=equipped.sephuzs_secret&target.debuff.casting.react&cooldown.buff_sephuzs_secret.up&!buff.sephuzs_secret.up" );
   default_list -> add_action( "auto_attack" );
   default_list -> add_action( "call_action_list,name=mokMaintain,if=variable.mokTalented" );
   default_list -> add_action( "call_action_list,name=CDs" );

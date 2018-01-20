@@ -36,7 +36,7 @@ actions.precombat+=/harpoon
 actions=variable,name=frizzosEquipped,value=(equipped.137043)
 actions+=/variable,name=mokTalented,value=(talent.way_of_the_moknathal.enabled)
 actions+=/use_items
-actions+=/muzzle,if=target.debuff.casting.react
+actions+=/muzzle,if=equipped.sephuzs_secret&target.debuff.casting.react&cooldown.buff_sephuzs_secret.up&!buff.sephuzs_secret.up
 actions+=/auto_attack
 actions+=/call_action_list,name=mokMaintain,if=variable.mokTalented
 actions+=/call_action_list,name=CDs
