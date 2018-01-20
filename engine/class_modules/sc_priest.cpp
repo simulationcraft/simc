@@ -398,6 +398,7 @@ public:
     bool priest_fixed_time      = true;
     bool priest_ignore_healing  = false;  // Remove Healing calculation codes
     bool priest_suppress_sephuz = false;  // Sephuz's Secret won't proc if set true
+	int priest_set_voidform_duration = 0; // Voidform will always have this duration
   } options;
 
   priest_t( sim_t* sim, const std::string& name, race_e r );
@@ -722,12 +723,19 @@ public:
       }
 
       // All drained, cancel voidform. TODO: Can this really even happen?
-      if ( actor.resources.current[ RESOURCE_INSANITY ] == 0 )
+      if ( actor.resources.current[ RESOURCE_INSANITY ] == 0 && actor.options.priest_set_voidform_duration == 0 )
       {
         event_t::cancel( end );
         actor.buffs.voidform->expire();
         return;
       }
+	  else if(actor.options.priest_set_voidform_duration > 0 && actor.options.priest_set_voidform_duration < actor.buffs.voidform->stack())
+	  {
+		  event_t::cancel(end);
+		  actor.buffs.voidform->expire();
+		  actor.resources.current[RESOURCE_INSANITY] = 0;
+		  return;
+	  }
 
       timespan_t seconds_left =
           drain_per_second ? timespan_t::from_seconds( actor.resources.current[ RESOURCE_INSANITY ] / drain_per_second )
@@ -5533,6 +5541,7 @@ void priest_t::create_options()
   add_option( opt_bool( "priest_fixed_time", options.priest_fixed_time ) );
   add_option( opt_bool( "priest_ignore_healing", options.priest_ignore_healing ) );
   add_option( opt_bool( "priest_suppress_sephuz", options.priest_suppress_sephuz ) );
+  add_option( opt_int( "priest_set_voidform_duration", options.priest_set_voidform_duration));
 }
 
 std::string priest_t::create_profile( save_e type )
