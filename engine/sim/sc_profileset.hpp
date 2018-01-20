@@ -27,6 +27,8 @@ struct JsonOutput;
 
 namespace profileset
 {
+class profilesets_t;
+
 struct statistical_data_t
 {
   double min, first_quartile, median, mean, third_quartile, max, std_dev;
@@ -267,9 +269,36 @@ public:
   }
 };
 
+class worker_t
+{
+  bool           m_done;
+  sim_t*         m_parent;
+  profilesets_t* m_master;
+
+  sim_t*         m_sim;
+  profile_set_t* m_profileset;
+  std::thread*   m_thread;
+
+public:
+  worker_t( profilesets_t*, sim_t*, profile_set_t* );
+  ~worker_t();
+
+  const std::thread& thread() const;
+  std::thread& thread();
+  void execute();
+
+  bool is_done() const
+  { return m_done == true; }
+};
 
 class profilesets_t
 {
+  enum simulation_mode
+  {
+    SEQUENTIAL = 0,
+    PARALLEL
+  };
+
   enum state
   {
     STARTED,            // Initial state
@@ -283,15 +312,25 @@ class profilesets_t
 
   static const size_t MAX_CHART_ENTRIES = 500;
 
-  state                          m_state;
-  profileset_vector_t            m_profilesets;
-  std::unique_ptr<sim_control_t> m_original;
-  int64_t                        m_insert_index;
-  size_t                         m_work_index;
-  std::mutex                     m_mutex;
-  std::unique_lock<std::mutex>   m_control_lock;
-  std::condition_variable        m_control;
-  std::thread                    m_thread;
+  state                                  m_state;
+  simulation_mode                        m_mode;
+  profileset_vector_t                    m_profilesets;
+  std::unique_ptr<sim_control_t>         m_original;
+  int64_t                                m_insert_index;
+  size_t                                 m_work_index;
+  std::mutex                             m_mutex;
+  std::unique_lock<std::mutex>           m_control_lock;
+  std::condition_variable                m_control;
+  std::thread                            m_thread;
+
+  // Parallel profileset worker information
+  size_t                                 m_max_workers;
+  std::vector<std::unique_ptr<worker_t>> m_current_work;
+
+  // Parallel profileset worker control
+  std::mutex                             m_work_mutex;
+  std::unique_lock<std::mutex>           m_work_lock;
+  std::condition_variable                m_work;
 
   bool validate( sim_t* sim );
 
@@ -302,10 +341,17 @@ class profilesets_t
 
   void set_state( state new_state );
 
+  size_t n_workers() const;
+  void generate_work( sim_t*, std::unique_ptr<profile_set_t>& );
+  void cleanup_work();
+  void finalize_work();
+
   sim_control_t* create_sim_options( const sim_control_t*, const std::vector<std::string>& opts );
 public:
-  profilesets_t() : m_state( STARTED ), m_original( nullptr ), m_insert_index( -1 ),
-    m_work_index( 0 ), m_control_lock( m_mutex, std::defer_lock )
+  profilesets_t() : m_state( STARTED ), m_mode( SEQUENTIAL ),
+    m_original( nullptr ), m_insert_index( -1 ),
+    m_work_index( 0 ), m_control_lock( m_mutex, std::defer_lock ),
+    m_max_workers( 0 ), m_work_lock( m_work_mutex, std::defer_lock )
   { }
 
   ~profilesets_t()
@@ -314,10 +360,14 @@ public:
     {
       m_thread.join();
     }
+
+    range::for_each( m_current_work, []( std::unique_ptr<worker_t>& worker ) { worker -> thread().join(); } );
   }
 
   size_t n_profilesets() const
   { return m_profilesets.size(); }
+
+  void notify_worker();
 
   std::string current_profileset_name();
 
@@ -338,6 +388,12 @@ public:
 
   bool is_done() const
   { return m_state == DONE; }
+
+  bool is_sequential() const
+  { return m_mode == SEQUENTIAL; }
+
+  bool is_parallel() const
+  { return m_mode == PARALLEL; }
 };
 
 void create_options( sim_t* sim );

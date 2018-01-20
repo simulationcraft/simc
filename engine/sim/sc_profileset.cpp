@@ -9,7 +9,66 @@
 #include "sc_profileset.hpp"
 
 namespace profileset
-{ 
+{
+// Deallocating profile_sim is the responsibility of the caller (i.e., profileset driver or
+// worker_t)
+void simulate_profileset( sim_t* parent, profile_set_t& set, sim_t*& profile_sim )
+{
+  auto original_opts = parent -> control;
+
+  parent -> control = set.options();
+
+  profile_sim = new sim_t( parent );
+
+  // Reset random seed for the profileset sims
+  profile_sim -> seed = 0;
+  profile_sim -> profileset_enabled = true;
+  profile_sim -> report_details = 0;
+  profile_sim -> progress_bar.set_base( "Profileset" );
+  profile_sim -> progress_bar.set_phase( set.name() );
+  if ( parent -> profileset_work_threads > 0 )
+  {
+    profile_sim -> threads = parent -> profileset_work_threads;
+  }
+
+  parent -> control = original_opts;
+
+  auto ret = profile_sim -> execute();
+  if ( ret )
+  {
+    profile_sim -> progress_bar.restart();
+
+    if ( set.has_output() )
+    {
+      report::print_suite( profile_sim );
+    }
+  }
+
+  if ( ret == false || profile_sim -> is_canceled() )
+  {
+    return;
+  }
+
+  const auto player = profile_sim -> player_no_pet_list.data().front();
+  auto progress = profile_sim -> progress( nullptr, 0 );
+
+  range::for_each( parent -> profileset_metric, [ & ]( scale_metric_e metric ) {
+    auto data = metric_data( player, metric );
+
+    set.result( metric )
+      .min( data.min )
+      .first_quartile( data.first_quartile )
+      .median( data.median )
+      .mean( data.mean )
+      .third_quartile( data.third_quartile )
+      .max( data.max )
+      .stddev( data.std_dev )
+      .iterations( progress.current_iterations );
+  } );
+
+  set.cleanup_options();
+}
+
 void insert_data( highchart::bar_chart_t&   chart,
                   const std::string&        name,
                   const color::rgb&         c,
@@ -203,6 +262,127 @@ profile_result_t& profile_set_t::result( scale_metric_e metric )
   return m_results.back();
 }
 
+worker_t::worker_t( profilesets_t* master, sim_t* p, profile_set_t* ps ) :
+  m_done( false ), m_parent( p ), m_master( master ), m_sim( nullptr ), m_profileset( ps ),
+  m_thread( nullptr )
+{
+  m_thread = new std::thread( std::bind( &worker_t::execute, this ) );
+}
+
+worker_t::~worker_t()
+{
+  // Deconstruct myself
+  delete m_sim;
+  delete m_thread;
+}
+
+std::thread& worker_t::thread()
+{
+  return *m_thread;
+}
+
+const std::thread& worker_t::thread() const
+{
+  return *m_thread;
+}
+
+void worker_t::execute()
+{
+  simulate_profileset( m_parent, *m_profileset, m_sim );
+
+  m_done = true;
+
+  m_master -> notify_worker();
+}
+
+// Count the number of running workers
+size_t profilesets_t::n_workers() const
+{
+  return range::count_if( m_current_work, []( const std::unique_ptr<worker_t>& worker ) {
+    return ! worker -> is_done();
+  } );
+}
+
+// Note, we must own the work mutex here.
+void profilesets_t::cleanup_work()
+{
+  assert( m_work_lock.owns_lock() );
+
+  auto it = m_current_work.begin();
+
+  while ( it != m_current_work.end() )
+  {
+    if ( ( *it ) -> is_done() )
+    {
+      ( *it ) -> thread().join();
+
+      it = m_current_work.erase( it );
+    }
+    else
+    {
+      ++it;
+    }
+  }
+}
+
+// Wait until we have all the work done
+void profilesets_t::finalize_work()
+{
+  // Nothing to finalize for sequential profileset model
+  if ( m_mode == SEQUENTIAL )
+  {
+    return;
+  }
+
+  while ( m_current_work.size() > 0 )
+  {
+    assert( ! m_work_lock.owns_lock() );
+
+    m_work_lock.lock();
+
+    // If we still have active workers around, wait for them to signal their finish
+    // TODO: Potential race? (wait vs notify_worker() called from thread)
+    if ( n_workers() > 0 )
+    {
+      m_work.wait( m_work_lock );
+    }
+
+    // Aand clean up finished sims
+    cleanup_work();
+
+    m_work_lock.unlock();
+  }
+}
+
+void profilesets_t::generate_work( sim_t* parent, std::unique_ptr<profile_set_t>& ptr_set )
+{
+  if ( m_mode == SEQUENTIAL )
+  {
+    sim_t* profile_sim = nullptr;
+    simulate_profileset( parent, *ptr_set.get(), profile_sim );
+    delete profile_sim;
+  }
+  // Parallel processing
+  else
+  {
+    m_work_lock.lock();
+
+    while ( ! is_done() && m_max_workers - n_workers() == 0 )
+    {
+      m_work.wait( m_work_lock );
+    }
+
+    if ( ! is_done() )
+    {
+      cleanup_work();
+
+      m_current_work.push_back( std::unique_ptr<worker_t>( new worker_t { this, parent, ptr_set.get() } ) );
+    }
+
+    m_work_lock.unlock();
+  }
+}
+
 bool profilesets_t::validate( sim_t* ps_sim )
 {
   if ( ps_sim -> player_no_pet_list.size() > 1 )
@@ -317,6 +497,26 @@ void profilesets_t::initialize( sim_t* sim )
     return;
   }
 
+  // Figure out how many workers can we have by looking at how many threads we have, and how many
+  // worker threads the user wants
+  if ( sim -> profileset_work_threads > 0 )
+  {
+    size_t workers = as<size_t>( sim -> threads / sim -> profileset_work_threads );
+    if ( workers == 0 )
+    {
+      sim -> errorf( "More worker threads defined than simulator threads, reverting to sequential behavior" );
+      sim -> profileset_work_threads = 0;
+    }
+
+    m_max_workers = workers;
+  }
+
+  // Go parallel mode if we have any workers .. including one
+  if ( m_max_workers > 0 )
+  {
+    m_mode = PARALLEL;
+  }
+
   m_profilesets.reserve( sim -> profileset_map.size() + 1 );
 
   m_thread = std::thread([ this, sim ]() {
@@ -394,71 +594,23 @@ bool profilesets_t::iterate( sim_t* parent )
 
     m_control_lock.unlock();
 
-    parent -> control = set -> options();
-
-    auto profile_sim = new sim_t( parent );
-
-    // Reset random seed for the profileset sims
-    profile_sim -> seed = 0;
-    profile_sim -> profileset_enabled = true;
-    profile_sim -> report_details = 0;
-    profile_sim -> progress_bar.set_base( "Profileset" );
-    profile_sim -> progress_bar.set_phase( set -> name() );
-
-    auto ret = profile_sim -> execute();
-    if ( ret )
-    {
-      profile_sim -> progress_bar.restart();
-
-      if ( set -> has_output() )
-      {
-        report::print_suite( profile_sim );
-      }
-    }
-
-    if ( ret == false || profile_sim -> is_canceled() )
-    {
-      parent -> control = original_opts;
-      set_state( DONE );
-      delete profile_sim;
-      return false;
-    }
-
-    const auto player = profile_sim -> player_no_pet_list.data().front();
-    auto progress = profile_sim -> progress( nullptr, 0 );
-
-    range::for_each( parent -> profileset_metric, [ & ]( scale_metric_e metric ) {
-      auto data = metric_data( player, metric );
-
-      set -> result( metric )
-        .min( data.min )
-        .first_quartile( data.first_quartile )
-        .median( data.median )
-        .mean( data.mean )
-        .third_quartile( data.third_quartile )
-        .max( data.max )
-        .stddev( data.std_dev )
-        .iterations( progress.current_iterations );
-    } );
-
-    // Optional override ouput data
-    if ( ! parent -> profileset_output_data.empty() ) {
-      const auto parent_player = parent -> player_no_pet_list.data().front();
-      range::for_each( parent -> profileset_output_data, [ & ]( const std::string& option ) {
-        save_output_data( set, parent_player, player, option );
-      } );
-    }
-
-    set -> cleanup_options();
-
-    delete profile_sim;
+    generate_work( parent, set );
   }
+
+  // Wait until the tail-end of the parallel work has been done. Non-parallel processing mode will
+  // not need to finalize any work (all work has been done by the loop above)
+  finalize_work();
 
   parent -> control = original_opts;
 
   set_state( DONE );
 
   return true;
+}
+
+void profilesets_t::notify_worker()
+{
+  m_work.notify_one();
 }
 
 int profilesets_t::max_name_length() const
@@ -735,6 +887,8 @@ void create_options( sim_t* sim )
 
     return true;
   } ) );
+
+  sim -> add_option( opt_int( "profileset_work_threads", sim -> profileset_work_threads ) );
 }
 
 statistical_data_t collect( const extended_sample_data_t& c )
