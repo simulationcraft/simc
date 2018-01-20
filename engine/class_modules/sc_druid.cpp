@@ -8221,7 +8221,7 @@ void druid_t::apl_guardian()
   default_list -> add_action( "auto_attack" );
   default_list -> add_action( "call_action_list,name=cooldowns" );
 
-  default_list -> add_action( this, "Maul", "if=active_enemies<6&(rage.deficit<8|cooldown.thrash_bear.remains>gcd&rage.deficit<20)" );
+  default_list -> add_action( this, "Maul", "if=cooldown.thrash_bear.remains>gcd&active_enemies>1&active_enemies<6|active_enemies=1&rage.deficit<8" );
   default_list -> add_talent( this, "Pulverize", "if=cooldown.thrash_bear.remains<2&dot.thrash_bear.stack=dot.thrash_bear.max_stacks" );
   default_list -> add_action( this, "Moonfire", "if=!talent.galactic_guardian.enabled&(!dot.moonfire.ticking|(buff.incarnation.up&dot.moonfire.refreshable))&active_enemies=1" );
   default_list -> add_action( "thrash_bear,if=((buff.incarnation.up&(dot.thrash_bear.refreshable|(equipped.luffa_wrappings|artifact.jagged_claws.rank>4)))|dot.thrash_bear.stack<dot.thrash_bear.max_stacks|(equipped.luffa_wrappings&artifact.jagged_claws.rank>5))&!talent.soul_of_the_forest.enabled|active_enemies>1" );
@@ -8240,7 +8240,8 @@ void druid_t::apl_guardian()
   for (size_t i = 0; i < racial_actions.size(); i++)
     cooldowns -> add_action( racial_actions[i], "if=buff.rage_of_the_sleeper.up" );
 
-  cooldowns -> add_action( this, "Rage of the Sleeper", "if=(talent.rend_and_tear.enabled&dot.thrash_bear.stack=dot.thrash_bear.max_stacks)|!talent.rend_and_tear.enabled" );
+  cooldowns -> add_action( this, "Rage of the Sleeper" );
+  cooldowns -> add_action( "incarnation" );
   cooldowns -> add_action( this, "Barkskin", "if=talent.brambles.enabled&(buff.rage_of_the_sleeper.up|talent.survival_of_the_fittest.enabled)" );
   cooldowns -> add_action( "proc_sephuz,if=cooldown.thrash_bear.remains=0" );
   cooldowns -> add_action( "use_items,if=cooldown.rage_of_the_sleeper.remains>12|buff.rage_of_the_sleeper.up|target.time_to_die<22" );
