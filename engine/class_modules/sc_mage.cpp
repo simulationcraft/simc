@@ -561,7 +561,6 @@ public:
   {
     bool brain_freeze_active;
     bool fingers_of_frost_active;
-    bool hot_streak_active;
     bool ignition_active;
 
     int flurry_bolt_count;
@@ -4064,7 +4063,6 @@ struct flamestrike_t : public fire_mage_spell_t
   virtual void execute() override
   {
     bool hot_streak = benefits_from_hot_streak( true );
-    p() -> state.hot_streak_active = hot_streak;
 
     fire_mage_spell_t::execute();
 
@@ -4138,14 +4136,7 @@ struct flamestrike_t : public fire_mage_spell_t
 
   virtual double composite_ignite_multiplier( const action_state_t* s ) const override
   {
-    if ( p() -> bugs )
-    {
-      return p() -> state.hot_streak_active ? 2.0 : 1.0;
-    }
-    else
-    {
-      return debug_cast<const ignite_spell_state_t*>( s ) -> hot_streak ? 2.0 : 1.0;
-    }
+    return debug_cast<const ignite_spell_state_t*>( s ) -> hot_streak ? 2.0 : 1.0;
   }
 
   virtual double action_multiplier() const override
@@ -5753,7 +5744,6 @@ struct pyroblast_t : public fire_mage_spell_t
   virtual void execute() override
   {
     bool hot_streak = benefits_from_hot_streak( true );
-    p() -> state.hot_streak_active = hot_streak;
 
     fire_mage_spell_t::execute();
 
@@ -5834,14 +5824,7 @@ struct pyroblast_t : public fire_mage_spell_t
 
   virtual double composite_ignite_multiplier( const action_state_t* s ) const override
   {
-    if ( p() -> bugs )
-    {
-      return p() -> state.hot_streak_active ? 2.0 : 1.0;
-    }
-    else
-    {
-      return debug_cast<const ignite_spell_state_t*>( s ) -> hot_streak ? 2.0 : 1.0;
-    }
+    return debug_cast<const ignite_spell_state_t*>( s ) -> hot_streak ? 2.0 : 1.0;
   }
 
   virtual double composite_target_crit_chance( player_t* target ) const override
