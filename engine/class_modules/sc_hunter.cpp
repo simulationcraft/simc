@@ -1853,7 +1853,6 @@ struct titans_thunder_t: public hunter_pet_action_t < hunter_pet_t, spell_t >
     titans_thunder_tick_t( hunter_pet_t* p ):
       base_t( "titans_thunder_tick", p, p -> find_spell( 207097 ) )
     {
-      aoe = -1;
       background = true;
       may_crit = true;
     }
