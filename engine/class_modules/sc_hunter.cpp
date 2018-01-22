@@ -1858,16 +1858,36 @@ struct titans_thunder_t: public hunter_pet_action_t < hunter_pet_t, spell_t >
     }
   };
 
+  buff_t* buff;
+
   titans_thunder_t( hunter_pet_t* p ):
     base_t( "titans_thunder", p, p -> find_spell( 207068 ) )
   {
-    attack_power_mod.tick = p -> find_spell( 207097 ) -> effectN( 1 ).ap_coeff();
-    base_tick_time = timespan_t::from_seconds( 1.0 );
-    dot_duration = data().duration();
-    hasted_ticks = false;
-    school = SCHOOL_NATURE;
-    tick_zero = false;
+    background = true;
+    callbacks = false;
+    harmful = may_hit = false;
+
     tick_action = new titans_thunder_tick_t( p );
+
+    buff = buff_t::find( p, "titans_thunder" );
+    if ( !buff )
+    {
+      buff = buff_creator_t( p, "titans_thunder", p -> find_spell( 207094 ) )
+        .quiet( true )
+        .tick_zero( false )
+        .tick_callback( [ this ]( buff_t*, int, const timespan_t& tick_time ) {
+                          player_t* target = this -> p() -> target;
+                          tick_action -> set_target( target );
+                          tick_action -> execute();
+                          stats -> add_tick( tick_time, target );
+                        } );
+    }
+  }
+
+  void execute() override
+  {
+    base_t::execute();
+    buff -> trigger();
   }
 };
 
