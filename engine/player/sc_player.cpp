@@ -86,7 +86,7 @@ struct touch_of_the_grave_spell_t : public spell_t
   {
     background = may_crit = true;
     base_dd_min = base_dd_max = 0;
-    attack_power_mod.direct = 1.0;
+    attack_power_mod.direct = 1.25;
     spell_power_mod.direct = 1.0;
   }
 
