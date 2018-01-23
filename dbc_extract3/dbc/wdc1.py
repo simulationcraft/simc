@@ -107,14 +107,21 @@ class WDC1SegmentParser:
 
 # Parse a block of data from a record using the python struct module
 class WDC1StructSegmentParser(WDC1SegmentParser):
-    def __init__(self, record_parser, columns):
+    def __init__(self, record_parser, columns, expanded_data = False):
         super().__init__(record_parser, columns)
 
         total_columns = 0
 
         fmt = '<'
         for column in self.columns:
-            fmt += column.elements() * column.struct_type()
+            column_type = column.struct_type()
+            if expanded_data:
+                if column.is_signed():
+                    column_type = 'i'
+                elif not column.is_float():
+                    column_type = 'I'
+
+            fmt += column.elements() * column_type
 
             if not self.parser.has_id_block() and column.index() == self.parser.id_index:
                 self.id_index = total_columns
@@ -315,78 +322,42 @@ class WDC1ArrayDataValue(WDC1ColumnDataValue):
 
         return self.unpacker.unpack_from(data, value_offset)
 
-# Iterator to spit out values from the record block
-class WDC1RecordParser:
-    def __init__(self, parser):
-        self.__parser = parser
+class RecordParser:
+    def __init__(self, parser, cache = False):
+        self._parser = parser
 
         # Record segment decoders
-        self.__decoder = []
+        self._decoder = []
 
         # Iterator state
-        self.__record_id = 0
+        self._record_id = 0
         self.__dbc_id = -1
 
-        self.__id_index = parser.id_block_size == 0 and parser.id_index or -1
-        self.__n_records = parser.records
-        self.__base_offset = parser.data_offset
-        self.__record_size = parser.record_size
-        self.__data = parser.data
+        self._cache = cache
 
-        if not self.__build_decoder():
-            raise NotImplementedError
+        self._n_records = parser.records
+        self._base_offset = parser.data_offset
+        self._record_size = parser.record_size
+        self._data = parser.data
 
-    # Build a decoder for the base data record
-    def __build_decoder(self):
-        struct_columns = []
-        bitpack_columns = []
-
-        decoders = []
-
-        for column_idx in range(0, self.parser().n_fields()):
-            column = self.parser().column(column_idx)
-
-            if column.is_string() and self.parser().has_offset_map():
-                if len(struct_columns) > 0:
-                    decoders.append(WDC1StructSegmentParser(self, struct_columns))
-                    struct_columns = []
-
-                decoders.append(WDC1StringSegmentParser(self, column))
-
-            # Presume that bitpack is a continious segment that runs to the end of the record
-            elif column.size_type() == WDC1_SPECIAL_COLUMN:
-                bitpack_columns.append(column)
-            else:
-                struct_columns.append(column)
-
-        # Build decoders when all columns are looped in
-        if len(struct_columns) > 0:
-            decoders.append(WDC1StructSegmentParser(self, struct_columns))
-
-        # Presume the record ends with a bit-packed set of columns
-        if len(bitpack_columns) > 0:
-            decoders.append(WDC1PackedBitSegmentParser(self, bitpack_columns))
-
-        self.__decoders = decoders
-
-        return True
+        self.build_decoder()
 
     def __iter__(self):
         return self
 
     def __next__(self):
-        if self.__record_id == self.__n_records:
+        if self._record_id == self._n_records:
             raise StopIteration
 
         # Base offset into the record start
-        base_offset = self.__base_offset + self.__record_id * self.__record_size
+        base_offset = self._base_offset + self._record_id * self._record_size
 
         if self.__parser.has_id_block():
-            self.__dbc_id, _, _ = self.__parser.get_record_info(self.__record_id)
+            self.__dbc_id, _, _ = self._parser.get_record_info(self._record_id)
         else:
             self.__dbc_id = -1
 
-        self.__record_id += 1
+        self._record_id += 1
 
         # Byte offset into current record, incremented after each segment parser
         record_offset = 0
@@ -408,7 +379,7 @@ class WDC1RecordParser:
         record_offset = 0
 
         parsed_data = ()
-        for decoder in self.__decoders:
+        for decoder in self._decoders:
             segment_offset = offset + record_offset
             bytes_left = size - record_offset
 
@@ -424,10 +395,89 @@ class WDC1RecordParser:
         self.__dbc_id = id_
 
     def __str__(self):
-        return ', '.join([ str(decoder) for decoder in self.__decoders ])
+        return ', '.join([ str(decoder) for decoder in self._decoders ])
 
     def parser(self):
-        return self.__parser
+        return self._parser
+
+# A specialized parser that considers all record fields to be expanded to 4 bytes
+class ExpandedRecordParser(RecordParser):
+    def build_decoder(self):
+        columns = []
+        decoders = []
+
+        # Expanded parser always has the id column at the start, if the actual
+        # db2 file has an id block
+        if self.parser().has_id_block():
+            columns.append(WDC1ProxyColumn(self.parser(), None, 0, 0, 0))
+
+        # Then, iterate over the columns. Regardless of what sort of colun type
+        # the original file has, expanded data is always normal struct form, 4
+        # (or 8?) bytes per field
+        for column_idx in range(0, self.parser().n_fields()):
+            column = self.parser().column(column_idx)
+
+            # Hotfixed columns always have inlined strings
+            if column.is_string() and (self.parser().has_offset_map() or self._cache):
+                if len(columns) > 0:
+                    decoders.append(WDC1StructSegmentParser(self, columns, expanded_data = True))
+                    columns = []
+
+                decoders.append(WDC1StringSegmentParser(self, column))
+
+            # Presume that bitpack is a continious segment that runs to the end of the record
+            else:
+                columns.append(column)
+
+        # Aand expanded parser also has the key block value at the end, if the real db2 file has it
+        if self.parser().has_key_block():
+            columns.append(WDC1ProxyColumn(self.parser(), None, 0, 0, 0))
+
+        # Build decoders when all columns are looped in
+        if len(columns) > 0:
+            decoders.append(WDC1StructSegmentParser(self, columns, expanded_data = True))
+
+        self._decoders = decoders
+
+# Iterator to spit out values from the record block
+class WDC1RecordParser(RecordParser):
+    # Build a decoder for the base data record
+    def build_decoder(self):
+        struct_columns = []
+        bitpack_columns = []
+
+        decoders = []
+
+        for column_idx in range(0, self.parser().n_fields()):
+            column = self.parser().column(column_idx)
+
+            # Hotfixed columns always have inlined strings
+            if column.is_string() and (self.parser().has_offset_map() or self._cache):
+                if len(struct_columns) > 0:
+                    decoders.append(WDC1StructSegmentParser(self, struct_columns))
+                    struct_columns = []
+
+                decoders.append(WDC1StringSegmentParser(self, column))
+
+            # Presume that bitpack is a continious segment that runs to the end of the record
+            elif column.size_type() == WDC1_SPECIAL_COLUMN:
+                # Bit-packed data (special columns) seem to be expanded for cache files
+                if self._cache:
+                    struct_columns.append(column)
+                else:
+                    bitpack_columns.append(column)
+            else:
+                struct_columns.append(column)
+
+        # Build decoders when all columns are looped in
+        if len(struct_columns) > 0:
+            decoders.append(WDC1StructSegmentParser(self, struct_columns))
+
+        # Presume the record ends with a bit-packed set of columns
+        if len(bitpack_columns) > 0:
+            decoders.append(WDC1PackedBitSegmentParser(self, bitpack_columns))
+
+        self._decoders = decoders
 
 class WDC1ExtendedColumn:
     def __init__(self, column, data):
@@ -580,6 +630,49 @@ class WDC1Column:
             self.ext_data().block_type() != 0 and (', info=' + str(self.ext_data())) or ''
         )
 
+# A faked colum representing a 32-bit value in the record. Used in association
+# with expanded parsers, where the record id and the potential key block id
+# (parent id) is included in the record data.
+class WDC1ProxyColumn(WDC1Column):
+    def bit_size(self):
+        return 32
+
+    def elements(self):
+        return 1
+
+    def size_type(self):
+        return 0
+
+    def size(self):
+        return 32
+
+    def offset(self):
+        return 0
+
+    def format(self):
+        return None
+
+    def is_float(self):
+        return False
+
+    def is_signed(self):
+        return False
+
+    def is_string(self):
+        return False
+
+    def struct_type(self):
+        return 'I'
+
+    def short_type(self):
+        return 'uint:32'
+
+    def __str__(self):
+        return 'Column[ idx={}, offset={}, size={}, elements={} ]'.format(
+            self.__index, self.__offset, self.bit_size(), self.elements()
+        )
+
+
 class WDC1Parser(LegionWDBParser):
     def is_magic(self): return self.magic == b'WDC1'
 
@@ -629,7 +722,9 @@ class WDC1Parser(LegionWDBParser):
 
         return self.key_block[record_id]
 
-    def key_format(self):
+    # Note, wdb_name is ignored, as WDC1 parsers are always bound to a single
+    # wdb file (e.g., Spell.db2)
+    def key_format(self, wdb_name = None):
         if self.key_block_size == 0:
             return super().key_format()
 
@@ -650,7 +745,7 @@ class WDC1Parser(LegionWDBParser):
     def create_raw_parser(self):
         return WDC1RecordParser(self)
 
-    def create_formatted_parser(self, use_inline_strings):
+    def create_formatted_parser(self, inline_strings = False, cache_parser = False, expanded_parser = False):
         formats = self.fmt.objs(self.class_name(), True)
 
         if len(formats) != self.n_fields():
@@ -658,7 +753,11 @@ class WDC1Parser(LegionWDBParser):
                 self.full_name(), len(formats), self.n_fields())
             return None
 
-        parser = WDC1RecordParser(self)
+        if expanded_parser:
+            parser = ExpandedRecordParser(self)
+        else:
+            parser = WDC1RecordParser(self, cache = cache_parser)
+
         logging.debug('Unpacking plan for %s: %s', self.full_name(), parser)
 
         return parser

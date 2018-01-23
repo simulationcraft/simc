@@ -41,7 +41,7 @@ class RawDBCRecord:
         for i in range(0, len(self._d)):
             s.append('f%d=%d' % (i + 1, self._d[i]))
 
-        if self._dbcp.has_key_block():
+        if self._key > 0:
             s.append('id_parent=%u' % self._key)
 
         return ' '.join(s)
@@ -189,8 +189,8 @@ class DBCRecord(RawDBCRecord):
                 if field == 'id' and self._id > -1:
                     f.append(_FORMATDB.id_format(self.dbc_name()) % self._id)
                     continue
-                elif self._dbcp.has_key_block() and field == 'id_parent':
-                    f.append(self._dbcp.key_format() % self._key)
+                elif field == 'id_parent':
+                    f.append(self._dbcp.key_format(self.__class__.__name__) % self._key)
                     continue
                 else:
                     field_idx = self._cd[field]
@@ -249,7 +249,7 @@ class DBCRecord(RawDBCRecord):
             else:
                 s.append('%s=%u' % (field, self._d[i]))
 
-        if self._dbcp.has_key_block():
+        if self._key > 0:
             s.append('id_parent=%u' % self._key)
 
         return ' '.join(s)

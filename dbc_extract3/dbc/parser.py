@@ -39,8 +39,6 @@ def _do_parse(unpackers, data, record_offset, record_size):
     return full_data
 
 class DBCacheParser:
-    __expanded_parsers__ = [ 'SpellEffect', 'Spell' ]
-
     def is_magic(self): return self.magic == b'XFTH'
 
     def __init__(self, options):
@@ -51,14 +49,32 @@ class DBCacheParser:
         self.entries = {}
         self.parsers = {}
 
+        # Key block format storage, required so we can associate data classes
+        # with a specific key format; DBCache.bin will potentially contain
+        # multiple different entries for WDB files that have different key
+        # blocks.
+        self.key_formats = {}
+
         # See that file exists already
         normalized_path = os.path.abspath(os.path.join(options.cache_dir, 'DBCache.bin'))
         if os.access(normalized_path, os.R_OK):
             self.file_name_ = normalized_path
             logging.debug('DBCache.bin file found at %s', self.file_name_)
 
+    def __insert_key_format(self, wdb_parser):
+        if wdb_parser.class_name() in self.key_formats:
+            return
+
+        self.key_formats[wdb_parser.class_name()] = wdb_parser.key_format()
+
     def has_key_block(self):
         return False
+
+    def key_format(self, wdb_name = None):
+        if not wdb_name:
+            return '%u'
+
+        return self.key_formats[wdb_name]
 
     def get_string(self, offset):
         if offset == 0:
@@ -92,10 +108,11 @@ class DBCacheParser:
             return None
 
         if sig not in self.parsers:
-            if wdb_parser.class_name() in DBCacheParser.__expanded_parsers__:
-                self.parsers[sig] = wdb_parser.create_expanded_parser(True)
-            else:
-                self.parsers[sig] = wdb_parser.create_formatted_parser(True)
+            self.__insert_key_format(wdb_parser)
+            self.parsers[sig] = wdb_parser.create_formatted_parser(
+                    inline_strings  = True,
+                    cache_parser    = True,
+                    expanded_parser = wdb_parser.class_name() in dbc.EXPANDED_HOTFIX_RECORDS)
 
         return self.parsers[sig](dbc_id, self.data, offset, size)
 
@@ -229,8 +246,13 @@ class DBCParserBase:
         self.id_format_str = '%%%uu' % n_digits
         return self.id_format_str
 
-    # Format of the foreign key, can be automatically deduced from the magnitude of the data
-    def key_format(self):
+    # Format of the foreign key, can be automatically deduced from the
+    # magnitude of the data. The optional parameter wdb_name is required for
+    # the WDB cache parser, since a single cache file can contain entries for
+    # multiplier wdb files. The data mode, when outputting the formatted
+    # version of the key (i.e., in the field method) will pass its class name
+    # to the key_format method.
+    def key_format(self, wdb_name = None):
         return '%u'
 
     def use_inline_strings(self):
@@ -240,7 +262,7 @@ class DBCParserBase:
         if self.options.raw:
             self.record_parser = self.create_raw_parser()
         else:
-            self.record_parser = self.create_formatted_parser(self.use_inline_strings())
+            self.record_parser = self.create_formatted_parser(inline_strings = self.use_inline_strings())
 
         if self.record_parser == None:
             return False
@@ -387,7 +409,7 @@ class DBCParserBase:
     # Sanitize data, blizzard started using dynamic width ints in WDB5, so
     # 3-byte ints have to be expanded to 4 bytes to parse them properly (with
     # struct module)
-    def create_formatted_parser(self, inline_strings):
+    def create_formatted_parser(self, inline_strings = False, cache_parser = False):
         field_idx = 0
         format_str = '<'
         unpackers = []

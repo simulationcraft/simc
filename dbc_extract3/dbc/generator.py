@@ -60,6 +60,8 @@ def apply_hotfixes(opts, cache, dbc_parser, database):
                 else:
                     logging.debug('%s ADD: %s',
                         dbc_parser.file_name(), record)
+            elif opts.debug and not hotfix_data:
+                logging.debug('Identical data for %s', record)
 
             if hotfix_data:
                 record._flags = hotfix_data
