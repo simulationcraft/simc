@@ -1872,17 +1872,17 @@ struct titans_thunder_t: public hunter_pet_action_t < hunter_pet_t, spell_t >
     buff = buff_t::find( p, "titans_thunder" );
     if ( !buff )
     {
-      auto melee_action = p -> find_action( "melee" );
-
       buff = buff_creator_t( p, "titans_thunder", p -> find_spell( 207094 ) )
         .quiet( true )
         .tick_zero( false )
-        .tick_callback( [ this, melee_action ]( buff_t*, int, const timespan_t& tick_time ) {
-                          if ( melee_action )
+        .tick_callback( [ this ]( buff_t*, int, const timespan_t& tick_time ) {
+                          auto melee_action = player -> main_hand_attack;
+                          auto target = melee_action ? melee_action -> target : nullptr;
+                          if ( target )
                           {
-                            tick_action -> set_target( melee_action -> target );
+                            tick_action -> set_target( target );
                             tick_action -> execute();
-                            stats -> add_tick( tick_time, melee_action -> target );
+                            stats -> add_tick( tick_time, target );
                           }
                         } );
     }
