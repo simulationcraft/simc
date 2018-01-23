@@ -100,20 +100,20 @@ hands=radiant_lightbringer_gauntlets,id=147159,bonus_id=3563/1512
 waist=grondfather_girdle,id=152022,bonus_id=3612/1502
 legs=tyelca_ferren_marcuss_stature,id=137070,bonus_id=3630
 feet=doomwalker_warboots,id=152009,bonus_id=3612/1502
-finger1=zealous_tormentors_ring,id=152284,bonus_id=3612/1502,enchant=binding_of_critical_strike
-finger2=seal_of_the_portalmaster,id=152063,bonus_id=3612/1502,enchant=binding_of_critical_strike
-trinket1=aggramars_conviction,id=154173,bonus_id=3997
-trinket2=astral_alchemist_stone,id=151607,bonus_id=3609/601/3608
+finger1=zealous_tormentors_ring,id=152284,bonus_id=3612/1502,enchant=binding_of_haste
+finger2=seal_of_the_portalmaster,id=152063,bonus_id=3612/1502,enchant=binding_of_haste
+trinket1=amanthuls_vision,id=154172,bonus_id=4213
+trinket2=eye_of_command,id=142167,bonus_id=3536/3528
 main_hand=oathseeker,id=128867
 off_hand=truthguard,id=128866,bonus_id=736,gem_id=155851/152293/152024,relic_id=3612:1512/3612:1502/3612:1502
 
 # Gear Summary
-# gear_ilvl=966.94
-# gear_strength=39382
+# gear_ilvl=965.38
+# gear_strength=36408
 # gear_stamina=60838
-# gear_crit_rating=11209
-# gear_haste_rating=11640
-# gear_mastery_rating=3145
-# gear_versatility_rating=6016
+# gear_crit_rating=12239
+# gear_haste_rating=13470
+# gear_mastery_rating=4575
+# gear_versatility_rating=6101
 # gear_armor=5273
 # set_bonus=tier20_2pc=1
