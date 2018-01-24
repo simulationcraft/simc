@@ -1,4 +1,4 @@
-SimulationCraft 730-03 for World of Warcraft 7.3.2 Live (wow build 25383)
+SimulationCraft 735-01 for World of Warcraft 7.3.5 Live (wow build 25901)
 
 Name             : Defensive Stance (id=71) [Spell Family (4), Passive, Hidden] 
 Class            : Protection Warrior
@@ -223,7 +223,7 @@ Range            : 5 yards
 GCD              : 1.5 seconds
 Stacks           : 2 maximum
 Proc Chance      : 101%
-Affecting spells : Battle Cry (1719 effect#4), Warrior (137047 effect#2), Arms Warrior (137049 effect#2), Item - Warrior T18 Arms 4P Bonus (185804 effect#1), Dauntless (202297 effect#1), Crushing Blows (209472 effect#1), Weighted Blade (253383 effect#1), 
+Affecting spells : Battle Cry (1719 effect#4), Warrior (137047 effect#2), Arms Warrior (137049 effect#2), Item - Warrior T18 Arms 4P Bonus (185804 effect#1), Dauntless (202297 effect#1), Crushing Blows (209472 effect#1), Weighted Blade (253383 effect#1), Slam (261901 effect#1)
 Attributes       : ....x... ........ x.x..... ..x.....   ........ .x...... ........ ...x.... 
                  : ........ ........ .x...... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -232,9 +232,9 @@ Attributes       : ....x... ........ x.x..... ..x.....   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=462)      : Normalized Weapon Damage (121)
-                   Base Value: 1 | Scaled Value: 1 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
 #2 (id=119511)   : Weapon Damage% (31)
-                   Base Value: 305 | Scaled Value: 3.05 | Target: Enemy (6)
+                   Base Value: 190 | Scaled Value: 1.9 | Target: Enemy (6)
 Description      : Slams an opponent, causing $sw2 Physical damage.
 
 Name             : Whirlwind (id=1680) [Spell Family (4)] 
@@ -410,6 +410,7 @@ Tooltip          : Disoriented.
 Name             : Revenge Trigger (id=5301) [Passive, Hidden] 
 Class            : Protection Warrior
 School           : Physical
+Spell Level      : 22
 Internal Cooldown: 3 seconds
 Proc Chance      : 100%
 Proc Flags       : ...x.x.x .x...... ........ ........ 
@@ -646,7 +647,7 @@ GCD              : 1.5 seconds
 Charges          : 1 (6 seconds cooldown)
 Category         : 971: Warrior (137047 effect#5)
 Proc Chance      : 101%
-Affecting spells : Battle Cry (1719 effect#4), Warrior (137047 effect#2), Arms Warrior (137049 effect#2), Item - Warrior T17 Arms 4P Bonus (165336 effect#1), Vicious Strike (165638 effect#1), Sweeping Strikes (202161 effect#1), Dauntless (202297 effect#1), Archavon's Heavy Hand (205144 effect#1), Focused Rage (207982 effect#1), Thoradin's Might (209480 effect#1), Precise Strikes (209493 effect#1), Shattered Defenses (209706 effect#1), Executioner's Precision (242188 effect#1), Shattered Defenses (248625 effect#1)
+Affecting spells : Battle Cry (1719 effect#4), Warrior (137047 effect#2), Arms Warrior (137049 effect#2), Item - Warrior T17 Arms 4P Bonus (165336 effect#1), Vicious Strike (165638 effect#1), Sweeping Strikes (202161 effect#1), Dauntless (202297 effect#1), Archavon's Heavy Hand (205144 effect#1), Focused Rage (207982 effect#1), Thoradin's Might (209480 effect#1), Precise Strikes (209493 effect#1), Shattered Defenses (209706 effect#1), Executioner's Precision (242188 effect#1), Shattered Defenses (248625 effect#1), Mortal Strike (261900 effect#1)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ..xx.... 
                  : ........ ....x... ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ....x... ........ ........ 
@@ -659,10 +660,10 @@ Effects          :
 #2 (id=5275)     : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Chain Multiplier: 0 | Chain Targets: 1 | Target: Enemy (6)
 #3 (id=99581)    : Weapon Damage% (31)
-                   Base Value: 439 | Scaled Value: 4.39 | Chain Multiplier: 0 | Chain Targets: 1 | Target: Enemy (6)
+                   Base Value: 274 | Scaled Value: 2.74 | Chain Multiplier: 0 | Chain Targets: 1 | Target: Enemy (6)
 #4 (id=156241)   : Energize Power (30)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: rage | Target: Self (1)
-Description      : A vicious strike that deals ${$sw3*$<mult>} Physical damage and reduces the effectiveness of healing on the target for $115804d.
+Description      : A vicious strike that deals $sw3 Physical damage and reduces the effectiveness of healing on the target for $115804d.
 Variables        : $mult=${($max(0,$min($pl-5,15))*8+207)/327}
 
 Name             : Piercing Howl (id=12323) [Spell Family (4)] 
@@ -804,7 +805,7 @@ Effects          :
                    Base Value: 3 | Scaled Value: 2242.68 (avg=1.32) | Points Per Level: 4 | Target: Self (1)
 #2 (id=11565)    : Apply Aura (6) | Modify Ranged Attack Power (124)
                    Base Value: 3 | Scaled Value: 2242.68 (avg=1.32) | Points Per Level: 4 | Target: Self (1)
-Description      : Increases attack power by $s1. Lasts $d.
+Description      : Increases attack power by $s1 for $d.
 Tooltip          : Attack power increased by $s1.
 
 Name             : Command (Racial Passive) (id=21563) [Spell Family (9), Passive] 
@@ -1578,14 +1579,13 @@ Effects          :
 #1 (id=87073)    : Apply Aura (6) | Add Flat Modifier (107): Spell Targets (17)
                    Base Value: 4 | Scaled Value: 4 | Misc Value: 17 | Target: Self (1)
                    Affected Spells: Bloodthirst (23881)
-                   Hotfixed: Affects Spells, Chain Multiplier (0 -> 1)
 #2 (id=333347)   : Apply Aura (6) | Dummy (4)
                    Base Value: 3 | Scaled Value: 3 | Misc Value: 17 | Target: Self (1)
                    Affected Spells: Bloodthirst (23881)
 #3 (id=349763)   : Apply Aura (6) | Dummy (4)
                    Base Value: 50 | Scaled Value: 50 | Misc Value: 17 | Target: Self (1)
                    Affected Spells: Bloodthirst (23881)
-Description      : Causes your next Bloodthirst or Rampage to strike up to $85739s1 additional targets for $s2% damage.
+Description      : Causes your next Bloodthirst or Rampage to strike up to $s1 additional targets for $s3% damage.
 Tooltip          : Your next Bloodthirst or Rampage strikes up to $w1 additional targets for $w3% damage.
 
 Name             : Plate Specialization (id=86101) [Passive, Hidden] 
@@ -2431,10 +2431,10 @@ Effects          :
                    Affected Spells: Victory Rush (34428), Shockwave (46968), Storm Bolt (107570), Shockwave (132168), Storm Bolt (132169), Impending Victory (202168)
 #5 (id=191019)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 248 (Label) | Target: Self (1)
-                   Affected Spells (Label): Fel-Crazed Rage (225777), Colossal Slam (232044), Dread Torrent (246464), Ceaseless Toxin (242497), Umbral Glaive Storm (242556), Shattering Umbral Glaives (242557), Infernal Cinders (242218), Golganneth's Thunderous Wrath (257430), Shadow Strike (253324), Worldforger's Flame (257244), Gorshalach's Legacy (255673), Gorshalach's Legacy (253329)
+                   Affected Spells (Label): Fel-Crazed Rage (225777), Colossal Slam (232044), Dread Torrent (246464), Ceaseless Toxin (242497), Umbral Glaive Storm (242556), Shattering Umbral Glaives (242557), Infernal Cinders (242218), Shadow Strike (253324), Worldforger's Flame (257244), Gorshalach's Legacy (255673), Gorshalach's Legacy (253329)
 #6 (id=261027)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Periodic Damage (22)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 22 | Misc Value 2: 248 (Label) | Target: Self (1)
-                   Affected Spells (Label): Fel-Crazed Rage (225777), Colossal Slam (232044), Dread Torrent (246464), Ceaseless Toxin (242497), Umbral Glaive Storm (242556), Shattering Umbral Glaives (242557), Infernal Cinders (242218), Golganneth's Thunderous Wrath (257430), Shadow Strike (253324), Worldforger's Flame (257244), Gorshalach's Legacy (255673), Gorshalach's Legacy (253329)
+                   Affected Spells (Label): Fel-Crazed Rage (225777), Colossal Slam (232044), Dread Torrent (246464), Ceaseless Toxin (242497), Umbral Glaive Storm (242556), Shattering Umbral Glaives (242557), Infernal Cinders (242218), Shadow Strike (253324), Worldforger's Flame (257244), Gorshalach's Legacy (255673), Gorshalach's Legacy (253329)
 #7 (id=261028)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -40 | Scaled Value: -40 | Misc Value: 3 | Misc Value 2: 276 (Label) | Target: Self (1)
                    Affected Spells (Label): Xavaric's Magnum Opus (207472)
@@ -2449,7 +2449,7 @@ Effects          :
                    Affected Spells (Label): Rethu's Incessant Courage (242597)
 #11 (id=261032)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 333 (Label) | Target: Self (1)
-                   Affected Spells (Label): Void Slash (251034), Isolated Strike (255609), Fire Mines (253321), Ravaging Storm (257286)
+                   Affected Spells (Label): Void Slash (251034), Isolated Strike (255609), Fire Mines (253321), Ravaging Storm (257286), Golganneth's Thunderous Wrath (257430)
 #12 (id=261033)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #13 (id=261034)   : Apply Aura (6) | Dummy (4)
@@ -2988,7 +2988,6 @@ Description      : Reduces damage taken by $s1%, and Bloodthirst restores an add
 Tooltip          : Damage taken reduced by $s1%. Bloodthirst restores an additional $s2% health.
 
 Name             : Rampage (id=184367) [Spell Family (4)] 
-Hotfixed         : Affecting Spells
 Class            : Fury Warrior
 School           : Physical
 Resource         : 85 Rage (1) (id=10117)
@@ -3010,7 +3009,6 @@ Effects          :
                    Base Value: 2 | Scaled Value: 2 | Target: Enemy (6)
 #3 (id=267216)   : Trigger Spell (64): Rampage
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 100 | Trigger Spell: 218617 | Target: Enemy (6)
-                   Hotfixed: Misc Value (0 -> 100), Chain Multiplier (0 -> 1)
 #4 (id=268060)   : Trigger Spell (64): Rampage
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 300 | Trigger Spell: 184707 | Target: Enemy (6)
 #5 (id=268061)   : Trigger Spell (64): Rampage
@@ -3415,7 +3413,7 @@ Description      : $@spelldesc184783
 
 Name             : Activating Specialization (id=200749) [Hidden] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
-Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei (0xffffffff)
+Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei (0xffffffffffffffff)
 School           : Physical
 Range            : 50000 yards
 Cast Time        : 5 seconds
@@ -4445,7 +4443,7 @@ Description      : Stomp the ground, causing a ring of corrupted spikes to erupt
 Name             : Rampage! (id=209694) [Spell Family (4), Passive, Hidden] 
 Class            : Fury Warrior
 School           : Physical
-Spell Level      : 1
+Spell Level      : 12
 Proc Chance      : 100%
 Proc Flags       : ....x... ........ ........ ........ 
                  : Yellow Melee
@@ -5376,7 +5374,7 @@ Tooltip          : Haste increased by $s1%.
 
 Name             : Vindicaar Matrix Crystal (id=251463) 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
-Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei (0xffffffff)
+Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei (0xffffffffffffffff)
 School           : Physical
 GCD              : 1.5 seconds
 Triggered by     : Vindicaar Matrix Crystal (255529)
@@ -5393,7 +5391,7 @@ Description      : Unlock powers at the Vindicaar's Matrix Core to use while on 
 
 Name             : Vindicaar Matrix Crystal (id=255529) [Hidden] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
-Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei (0xffffffff)
+Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei (0xffffffffffffffff)
 School           : Physical
 Triggered by     : Activating Specialization (200749)
 Attributes       : .......x x....... .......x x..x.x..   ...x.x.x ..x..... ........ ........ 
@@ -5409,5 +5407,150 @@ Effects          :
 #2 (id=477480)   : Unknown(170)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : Unlock powers at the Vindicaar's Matrix Core to use while on Argus. 
+
+Name             : Light's Judgment (Racial) (id=255647) [Scaling Spell (-6)] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+Race             : Lightforged Draenei (0x20000000)
+School           : Holy
+Max Scaling Level: 120
+Range            : 40 yards
+GCD              : 1.5 seconds
+Velocity         : 3 yards/sec
+Cooldown         : 150 seconds
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ....x... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=477694)   : Trigger Missiles (32)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 256893 | Radius: 0 - 5 yards | Target: Enemy (6)
+Description      : Call down a strike of Holy energy, dealing $<damage> Holy damage to enemies within $A1 yards after 3 sec.
+Variables        : $damage=${$cond($gt($SP,$AP),$SP*5,$AP*6.25)}
+
+Name             : Holy Resistance (Racial Passive) (id=255651) [Passive] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+Race             : Lightforged Draenei (0x20000000)
+School           : Holy
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6)
+Effects          :
+#1 (id=477698)   : Apply Aura (6) | Unknown(87)
+                   Base Value: -1 | Scaled Value: -1 | Misc Value: 0x2 | Target: Self (1)
+Description      : Reduces Holy damage taken by ${$s1/-1}%.
+
+Name             : Light's Reckoning (Racial Passive) (id=255652) [Passive] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+Race             : Lightforged Draenei (0x20000000)
+School           : Physical
+Attributes       : ......x. ........ .......x ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ....x... ........ 
+                 : .......x ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6)
+Effects          :
+#1 (id=477699)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 256896 | Target: Self (1)
+Description      : Erupt with Light upon death. Deals $256896s1 Holy damage to enemies within 8 yards and heals allies for $256896s2.
+
+Name             : Demonbane (Racial Passive) (id=255653) [Passive] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+Race             : Lightforged Draenei (0x20000000)
+School           : Physical
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6)
+Effects          :
+#1 (id=477700)   : Apply Aura (6) | Unknown(447)
+                   Base Value: 20 | Scaled Value: 20 | Misc Value: 4 | Target: Self (1)
+Description      : Experience gains from killing Demons increased by $s1%.
+
+Name             : Light's Judgment (Racial) (id=256893) [Scaling Spell (-6)] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+Race             : Lightforged Draenei (0x20000000)
+School           : Holy
+Max Scaling Level: 120
+Range            : 40 yards
+GCD              : 1.5 seconds
+Cooldown         : 150 seconds
+Triggered by     : Light's Judgment (255647)
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=479673)   : School Damage (2): holy
+                   Base Value: 0 | Scaled Value: 0 | Radius: 0 - 5 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
+Description      : Call down a strike of Holy energy, dealing $<damage> Holy damage to enemies within $A1 yards.
+Variables        : $damage=${$cond($gt($SP,$AP),$SP*5,$AP*6.25)}
+
+Name             : Light's Reckoning (Racial Passive) (id=256896) [Scaling Spell (-6)] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+Race             : Lightforged Draenei (0x20000000)
+School           : None
+Max Scaling Level: 120
+Triggered by     : Light's Reckoning (255652)
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=479676)   : School Damage (2): none
+                   Base Value: 0 | Scaled Value: 465816 (avg=0.4) | Radius: 0 - 5 yards | Target: Custom (18) -> AOE enemy (instant) (16)
+#2 (id=479677)   : Direct Heal (10)
+                   Base Value: 100000 | Scaled Value: 465816 (avg=0.4) | Radius: 0 - 8 yards | Target: Custom (18) -> AOE friendly (31)
+Description      : Deals $s1 Holy Damage to enemies within $A1.
+
+Heals $s2 to allies within $A1. 
+
+Name             : Mortal Strike (Rank 2) (id=261900) [Spell Family (4), Passive] 
+Class            : Arms Warrior
+School           : Physical
+Spell Level      : 38
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ x....... ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6)
+Effects          :
+#1 (id=487995)   : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
+                   Base Value: 60 | Scaled Value: 60 | Target: Self (1)
+                   Affected Spells: Mortal Strike (12294)
+Description      : Mortal Strike's damage is increased by $s1%.
+
+Name             : Slam (Rank 2) (id=261901) [Spell Family (4), Passive] 
+Class            : Arms Warrior
+School           : Physical
+Spell Level      : 44
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ x....... ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6)
+Effects          :
+#1 (id=487996)   : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
+                   Base Value: 60 | Scaled Value: 60 | Target: Self (1)
+                   Affected Spells: Slam (1464)
+Description      : Slam's damage is increased by $s1%.
 
 
