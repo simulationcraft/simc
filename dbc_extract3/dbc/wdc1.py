@@ -10,7 +10,7 @@ from dbc.parser import LegionWDBParser, _DB_HEADER_1, _DB_HEADER_2
 _WDC1_HEADER = Struct('<IIIIIIIII')
 _WDC1_KEY_HEADER = Struct('<III')
 
-_WDC1_COLUMN_INFO = Struct('<hhIIIII')
+_WDC1_COLUMN_INFO = Struct('<HHIIIII')
 
 _WDC1_COLUMN_DATA = Struct('<I')
 
@@ -152,8 +152,8 @@ class WDC1PackedBitSegmentParser(WDC1SegmentParser):
         for column in self.columns:
             decoder = get_decoder(column)
             if not decoder:
-                logging.error('%s could not create column decoder for %s',
-                    self.full_name(), column)
+                logging.error('%s could not create column decoder for block type %s',
+                    record_parser.parser().full_name(), column)
                 raise NotImplementedError
 
             self.decoders.append(decoder)
@@ -382,6 +382,13 @@ class RecordParser:
         for decoder in self._decoders:
             segment_offset = offset + record_offset
             bytes_left = size - record_offset
+
+            # We need to be able to support WDC1 files where the id is given as
+            # a static column, instead of just an id block. In this case, the
+            # dbc_id passed to the old-style iteration will be -1, as the data
+            # table holding record offsets and such do not know what the ID is.
+            if self.__dbc_id > -1:
+                dbc_id = self.__dbc_id
 
             parsed_data += decoder(dbc_id, data, segment_offset, bytes_left)
 
@@ -783,6 +790,10 @@ class WDC1Parser(LegionWDBParser):
         self.id_block_offset = running_offset
         running_offset = self.id_block_offset + self.id_block_size
 
+        # Then, a possible clone block offset
+        self.clone_block_offset = running_offset
+        running_offset = self.clone_block_offset + self.clone_segment_size
+
         # Next, extended column information block
         self.column_info_block_offset = running_offset
         running_offset = self.column_info_block_offset + self.column_info_block_size
@@ -920,6 +931,9 @@ class WDC1Parser(LegionWDBParser):
 
     def raw_outputtable(self):
         return True
+
+    def has_clone_block(self):
+        return self.clone_segment_size > 0
 
     def has_key_block(self):
         return self.key_block_size > 0

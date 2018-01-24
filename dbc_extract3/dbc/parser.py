@@ -67,6 +67,9 @@ class DBCacheParser:
 
         self.key_formats[wdb_parser.class_name()] = wdb_parser.key_format()
 
+    def has_clone_block(self):
+        return False
+
     def has_key_block(self):
         return False
 
