@@ -2563,12 +2563,7 @@ public:
 
     // Update the cooldown while Serenity is active
     if ( p() -> buff.serenity -> up() && ab::data().affected_by( p() -> talent.serenity -> effectN( 4 ) ) )
-    {
-      if ( maybe_ptr( p() -> dbc.ptr ) )
         cd *= ( 1 / ( 1 + p() -> talent.serenity -> effectN( 4 ).percent() ) ); // saved as 100
-      else
-        cd *= 1 + p() -> talent.serenity -> effectN( 4 ).percent(); // saved as -50
-    }
     ab::update_ready( cd );
   }
   
