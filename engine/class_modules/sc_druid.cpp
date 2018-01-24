@@ -7766,7 +7766,7 @@ void druid_t::apl_precombat()
   // Guardian: rotational control variables
   if ( specialization() == DRUID_GUARDIAN )
   {
-     precombat->add_action( "variable,name=latc_or_fon_equipped,value=equipped.lady_and_the_child|equipped.fury_of_nature" );
+    precombat -> add_action( "variable,name=thrash_over_mangle,value=equipped.luffa_wrappings|artifact.jagged_claws.rank>5" );
   }
 
   // Forms
@@ -8234,35 +8234,52 @@ void druid_t::apl_guardian()
 {
   action_priority_list_t* default_list    = get_action_priority_list( "default" );
   action_priority_list_t* cooldowns       = get_action_priority_list( "cooldowns" );
+  action_priority_list_t* st              = get_action_priority_list( "st" );
+  action_priority_list_t* aoe             = get_action_priority_list( "aoe" );
 
   std::vector<std::string> item_actions   = get_item_actions();
   std::vector<std::string> racial_actions = get_racial_actions();
 
   default_list -> add_action( "auto_attack" );
   default_list -> add_action( "call_action_list,name=cooldowns" );
+  default_list -> add_action( "call_action_list,name=st,if=active_enemies=1" );
+  default_list -> add_action( "call_action_list,name=aoe,if=active_enemies>1" );
 
-  default_list -> add_action( this, "Maul", "if=cooldown.thrash_bear.remains>gcd&active_enemies>1&active_enemies<6|active_enemies=1&rage.deficit<8" );
-  default_list -> add_talent( this, "Pulverize", "if=cooldown.thrash_bear.remains<2&dot.thrash_bear.stack=dot.thrash_bear.max_stacks" );
-  default_list -> add_action( this, "Moonfire", "if=!talent.galactic_guardian.enabled&(!dot.moonfire.ticking|(buff.incarnation.up&dot.moonfire.refreshable))&active_enemies=1" );
-  default_list -> add_action( "thrash_bear,if=((buff.incarnation.up&(dot.thrash_bear.refreshable|(equipped.luffa_wrappings|artifact.jagged_claws.rank>4)))|dot.thrash_bear.stack<dot.thrash_bear.max_stacks|(equipped.luffa_wrappings&artifact.jagged_claws.rank>5))&!talent.soul_of_the_forest.enabled|active_enemies>1" );
-  default_list -> add_action( this, "Mangle", "if=active_enemies<4" );
-  default_list -> add_action( "thrash_bear" );
-  default_list -> add_action( this, "Moonfire", "target_if=buff.galactic_guardian.up&(((!variable.latc_or_fon_equipped&active_enemies<4)|(variable.latc_or_fon_equipped&active_enemies<5))|dot.moonfire.refreshable&(!variable.latc_or_fon_equipped&active_enemies<5)|(variable.latc_or_fon_equipped&active_enemies<6))" );
-  default_list -> add_action( this, "Moonfire", "target_if=dot.moonfire.refreshable&!talent.galactic_guardian.enabled" );
-  default_list -> add_action( this, "Maul", "if=active_enemies<6&(cooldown.rage_of_the_sleeper.remains>10|buff.rage_of_the_sleeper.up)" );
-  default_list -> add_action( this, "Moonfire", "target_if=dot.moonfire.refreshable&active_enemies<3" );
-  default_list -> add_action( "swipe_bear" );
+  st -> add_action( this, "Maul", "if=rage.deficit<8" );
+  st -> add_action( this, "Moonfire", "if=buff.incarnation.up&dot.moonfire.refreshable|!dot.moonfire.ticking" );
+  st -> add_talent( this, "Pulverize", "if=cooldown.thrash_bear.remains<2*gcd&dot.thrash_bear.stack=dot.thrash_bear.max_stacks" );
+  st -> add_action( "thrash_bear,if=variable.thrash_over_mangle|talent.rend_and_tear.enabled&dot.thrash_bear.stack<dot.thrash_bear.max_stacks" );
+  st -> add_action( this, "Mangle" );
+  st -> add_action( "thrash_bear" );
+  st -> add_action( this, "Moonfire", "if=buff.galactic_guardian.up|(!talent.galactic_guardian.enabled&dot.moonfire.refreshable)" );
+  st -> add_action( this, "Maul" );
+  st -> add_action( this, "Moonfire", "if=dot.moonfire.refreshable&talent.galactic_guardian.enabled&!equipped.lady_and_the_child" );
+  st -> add_action( "swipe_bear" );
 
-  cooldowns -> add_action( this, "Bristling Fur", "if=!buff.rage_of_the_sleeper.up" );
+  aoe -> add_action( this, "Moonfire", "target_if=buff.galactic_guardian.up&equipped.lady_and_the_child&cooldown.thrash_bear.remains<2*gcd&buff.galactic_guardian.remains<2*gcd&(active_enemies<4|equipped.fury_of_nature&active_enemies<5)" );
+  aoe -> add_talent( this, "Pulverize", "target_if=cooldown.thrash_bear.remains<2*gcd&dot.thrash_bear.stack=dot.thrash_bear.max_stacks" );
+  aoe -> add_action( this, "Mangle", "if=buff.incarnation.up&!variable.thrash_over_mangle&active_enemies<4" );
+  aoe -> add_action( "thrash_bear" );
+  aoe -> add_action( this, "Moonfire", "target_if=buff.galactic_guardian.up&equipped.lady_and_the_child&buff.galactic_guardian.remains<gcd&(active_enemies<4|equipped.fury_of_nature&active_enemies<5)" );
+  aoe -> add_action( this, "Maul", "if=rage.deficit<8&(!talent.incarnation.enabled&active_enemies<4|talent.incarnation.enabled&active_enemies<6)" );
+  aoe -> add_action( this, "Mangle", "if=!talent.galactic_guardian.enabled&active_enemies<5|talent.galactic_guardian.enabled&active_enemies<4" );
+  aoe -> add_action( this, "Moonfire", "target_if=!talent.galactic_guardian.enabled&dot.moonfire.refreshable&(!equipped.fury_of_nature&active_enemies<8|equipped.fury_of_nature&active_enemies<11)|buff.galactic_guardian.up&!equipped.lady_and_the_child&active_enemies<3" );
+  aoe -> add_action( this, "Maul", "if=!talent.incarnation.enabled&active_enemies<5|talent.incarnation.enabled&active_enemies<6" );
+  aoe -> add_action( this, "Moonfire", "target_if=!equipped.lady_and_the_child&dot.moonfire.refreshable&active_enemies<3" );
+  aoe -> add_action( "swipe_bear" );
+
+
+  cooldowns -> add_action( this, "Rage of the Sleeper" );
 
   if ( sim -> allow_potions )
     cooldowns -> add_action( "potion,if=buff.rage_of_the_sleeper.up" );
   for (size_t i = 0; i < racial_actions.size(); i++)
     cooldowns -> add_action( racial_actions[i], "if=buff.rage_of_the_sleeper.up" );
 
-  cooldowns -> add_action( this, "Rage of the Sleeper" );
+  cooldowns -> add_talent( this, "Lunar Beam", "if=buff.rage_of_the_sleeper.up" );
   cooldowns -> add_action( "incarnation" );
   cooldowns -> add_action( this, "Barkskin", "if=talent.brambles.enabled&(buff.rage_of_the_sleeper.up|talent.survival_of_the_fittest.enabled)" );
+  cooldowns -> add_action( this, "Bristling Fur", "if=!buff.rage_of_the_sleeper.up" );
   cooldowns -> add_action( "proc_sephuz,if=cooldown.thrash_bear.remains=0" );
   cooldowns -> add_action( "use_items,if=cooldown.rage_of_the_sleeper.remains>12|buff.rage_of_the_sleeper.up|target.time_to_die<22" );
 
