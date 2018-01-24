@@ -1746,6 +1746,19 @@ struct golganneths_thunderous_wrath_t : public pantheon_aa_proc_base_t
   golganneths_thunderous_wrath_t( const special_effect_t& effect ) :
     pantheon_aa_proc_base_t( "golganneths_thunderous_wrath", effect, effect.player -> find_spell( 257430 ) )
   { }
+
+  // Having Golganneth's in the ranged hunter specs' 50% label modifier was probably a mistake that was apparently fixed with the patch. Hack it until spell data is in.
+  double action_multiplier() const override
+  {
+    double m = pantheon_aa_proc_base_t::action_multiplier();
+
+    if ( proc_spell_t::action_multiplier() == 0.5 && ( player -> specialization() == HUNTER_BEAST_MASTERY || player -> specialization() == HUNTER_MARKSMANSHIP ) )
+    {
+      m *= 2;
+    }
+
+    return m;
+  }
 };
 
 void item::golganneths_vitality( special_effect_t& effect )
