@@ -7860,7 +7860,7 @@ struct serenity_buff_t: public monk_buff_t < buff_t > {
     add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
     add_invalidate( CACHE_PLAYER_HEAL_MULTIPLIER );
 
-    percent_adjust = s -> effectN( 4 ).percent(); // saved as -50%
+    percent_adjust = -1 * ( 1 / ( 1 + s -> effectN( 4 ).percent() ) ); // saved as 100%
   }
 
   // Used on trigger to reduce all cooldowns
