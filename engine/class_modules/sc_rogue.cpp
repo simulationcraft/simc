@@ -925,6 +925,7 @@ struct rogue_attack_t : public melee_attack_t
     bool alacrity;
     bool adrenaline_rush_gcd;
     bool lesser_adrenaline_rush_gcd;
+    bool broadsides;
     bool t21_2pc_assassination;
   } affected_by;
 
@@ -974,36 +975,64 @@ struct rogue_attack_t : public melee_attack_t
       }
     }
 
-    // FIXME: Apply "spec aura"
-    // The Assassination aura is special since some spells are flagged 2 times.
-    if ( data().affected_by( p -> spec.assassination_rogue -> effectN( 1 ) ) &&
-         ! data().affected_by( p -> spec.assassination_rogue -> effectN( 2 ) ) )
+    // Assassination Class Passive
+    if (data().affected_by(p->spec.assassination_rogue->effectN(1)))
     {
-      base_multiplier *= 1.0 + p -> spec.assassination_rogue -> effectN( 1 ).percent();
+      base_dd_multiplier *= 1.0 + p->spec.assassination_rogue->effectN(1).percent();
     }
-    if ( data().affected_by( p -> spec.assassination_rogue -> effectN( 2 ) ) )
+    if (data().affected_by(p->spec.assassination_rogue->effectN(2)))
     {
-      base_multiplier *= 1.0 + p -> spec.assassination_rogue -> effectN( 2 ).percent();
-    }
-    if ( data().affected_by( p -> spec.outlaw_rogue -> effectN( 1 ) ) )
-    {
-      base_multiplier *= 1.0 + p -> spec.outlaw_rogue -> effectN( 1 ).percent();
-    }
-    // The Subtlety aura is special since some spells are flagged 2 times.
-    if ( data().affected_by( p -> spec.subtlety_rogue -> effectN( 1 ) ) &&
-         ! data().affected_by( p -> spec.subtlety_rogue -> effectN( 2 ) ) )
-    {
-      base_multiplier *= 1.0 + p -> spec.subtlety_rogue -> effectN( 1 ).percent();
-    }
-    if ( data().affected_by( p -> spec.subtlety_rogue -> effectN( 2 ) ) )
-    {
-      base_multiplier *= 1.0 + p -> spec.subtlety_rogue -> effectN( 2 ).percent();
+      base_td_multiplier *= 1.0 + p->spec.assassination_rogue->effectN(2).percent();
     }
 
-    // Outlaw third effect (DfA mod)
-    if ( data().affected_by( p -> spec.outlaw_rogue -> effectN( 3 ) ) )
+    // Outlaw Class Passive
+    if (data().affected_by(p->spec.outlaw_rogue->effectN(1)))
     {
-      base_multiplier *= 1.0 + p -> spec.outlaw_rogue -> effectN( 3 ).percent();
+      base_dd_multiplier *= 1.0 + p->spec.outlaw_rogue->effectN(1).percent();
+    }
+    if (data().affected_by(p->spec.outlaw_rogue->effectN(2)))
+    {
+      base_td_multiplier *= 1.0 + p->spec.outlaw_rogue->effectN(2).percent();
+    }
+    if (data().affected_by(p->spec.outlaw_rogue->effectN(3))) // DfA-Specific Modifier
+    {
+      base_dd_multiplier *= 1.0 + p->spec.outlaw_rogue->effectN(3).percent();
+    }
+
+    // Subtlety Class Passive
+    if (data().affected_by(p->spec.subtlety_rogue->effectN(1)))
+    {
+      base_dd_multiplier *= 1.0 + p->spec.subtlety_rogue->effectN(1).percent();
+    }
+    if (data().affected_by(p->spec.subtlety_rogue->effectN(2)))
+    {
+      base_td_multiplier *= 1.0 + p->spec.subtlety_rogue->effectN(2).percent();
+    }
+    
+    // Deeper Stratagem
+    if (p->talent.deeper_stratagem->ok())
+    {
+      if (data().affected_by(p->talent.deeper_stratagem->effectN(4)))
+      {
+        base_dd_multiplier *= 1.0 + p->talent.deeper_stratagem->effectN(4).percent();
+      }
+      if (data().affected_by(p->talent.deeper_stratagem->effectN(5)))
+      {
+        base_td_multiplier *= 1.0 + p->talent.deeper_stratagem->effectN(5).percent();
+      }
+    }
+
+    // Master Poisoner
+    if (p->talent.master_poisoner->ok())
+    {
+      if (data().affected_by(p->talent.master_poisoner->effectN(1)))
+      {
+        base_dd_multiplier *= 1.0 + p->talent.master_poisoner->effectN(1).percent();
+      }
+      if (data().affected_by(p->talent.master_poisoner->effectN(2)))
+      {
+        base_td_multiplier *= 1.0 + p->talent.master_poisoner->effectN(2).percent();
+      }
     }
   }
 
@@ -1036,6 +1065,7 @@ struct rogue_attack_t : public melee_attack_t
     affected_by.alacrity = base_costs[ RESOURCE_COMBO_POINT ] > 0;
     affected_by.adrenaline_rush_gcd = data().affected_by( p() -> buffs.adrenaline_rush -> data().effectN( 3 ) );
     affected_by.lesser_adrenaline_rush_gcd = data().affected_by( p() -> buffs.t20_4pc_outlaw -> data().effectN( 3 ) );
+    affected_by.broadsides = data().affected_by(p()->buffs.broadsides->data().effectN(4));
     affected_by.t21_2pc_assassination = data().affected_by( p() -> sets -> set( ROGUE_ASSASSINATION, T21, B2 ) -> effectN( 1 ).trigger() -> effectN( 1 ) );
   }
 
@@ -1312,14 +1342,7 @@ struct rogue_attack_t : public melee_attack_t
   {
     double m = melee_attack_t::action_multiplier();
 
-    if ( base_costs[ RESOURCE_COMBO_POINT ] > 0 && harmful &&
-         ( weapon_multiplier > 0 || attack_power_mod.direct > 0 || attack_power_mod.tick > 0 ) )
-    {
-      m *= 1.0 + p() -> talent.deeper_stratagem -> effectN( 4 ).percent();
-    }
-
-    if ( p() -> buffs.broadsides -> up() &&
-         data().affected_by( p() -> buffs.broadsides -> data().effectN( 4 ) ))
+    if (affected_by.broadsides && p() -> buffs.broadsides -> up())
     {
       m *= 1.0 + p() -> buffs.broadsides -> data().effectN( 4 ).percent();
     }
@@ -1698,7 +1721,6 @@ struct poison_bomb_t : public rogue_attack_t
   {
     background = true;
     aoe = -1;
-    base_multiplier *= 1.0 + p -> talent.master_poisoner -> effectN( 1 ).percent();
   }
 
   double action_multiplier() const override
@@ -1962,7 +1984,6 @@ struct deadly_poison_t : public rogue_poison_t
       rogue_poison_t( "deadly_poison_instant", p, p -> find_spell( 113780 ) )
     {
       harmful = true;
-      base_multiplier *= 1.0 + p -> talent.master_poisoner -> effectN( 1 ).percent();
     }
 
     double composite_target_multiplier( player_t* target ) const override
@@ -1995,7 +2016,6 @@ struct deadly_poison_t : public rogue_poison_t
     {
       may_crit       = false;
       harmful        = true;
-      base_multiplier *= 1.0 + p -> talent.master_poisoner -> effectN( 1 ).percent();
     }
 
     timespan_t calculate_dot_refresh_duration(const dot_t* dot, timespan_t /* triggered_duration */) const override
@@ -2102,7 +2122,6 @@ struct wound_poison_t : public rogue_poison_t
       rogue_poison_t( "wound_poison", p, p -> find_specialization_spell( "Wound Poison" ) -> effectN( 1 ).trigger() )
     {
       harmful          = true;
-      base_multiplier *= 1.0 + p -> talent.master_poisoner -> effectN( 1 ).percent();
     }
 
     double composite_target_multiplier( player_t* target ) const override
@@ -3453,7 +3472,6 @@ struct kingsbane_strike_t : public rogue_attack_t
   {
     background = true;
     weapon = w;
-    base_multiplier *= 1.0 + p -> talent.master_poisoner -> effectN( 1 ).percent();
   }
 
   bool procs_poison() const override
@@ -3521,7 +3539,6 @@ struct kingsbane_t : public rogue_attack_t
   {
     add_child( mh );
     add_child( oh );
-    base_multiplier *= 1.0 + p -> talent.master_poisoner -> effectN( 1 ).percent();
   }
 
   double action_multiplier() const override
@@ -4835,12 +4852,12 @@ struct vendetta_t : public rogue_attack_t
 
     td -> debuffs.vendetta -> trigger();
 
-    if ( p() -> artifact.urge_to_kill.rank() )
+    if (p()->artifact.urge_to_kill.rank())
     {
-      p() -> resource_gain( RESOURCE_ENERGY,
-                            p() -> artifact.urge_to_kill.data().effectN( 1 ).trigger() -> effectN( 1 ).resource( RESOURCE_ENERGY ),
-                            p() -> gains.urge_to_kill, this );
-    p() -> buffs.urge_to_kill -> trigger();
+      p()->resource_gain(RESOURCE_ENERGY,
+        p()->artifact.urge_to_kill.data().effectN(1).trigger()->effectN(1).resource(RESOURCE_ENERGY),
+        p()->gains.urge_to_kill, this);
+      p()->buffs.urge_to_kill->trigger();
     }
 
     if ( p() -> from_the_shadows_ )
@@ -7127,9 +7144,9 @@ double rogue_t::composite_player_multiplier( school_e school ) const
   {
     m *= 1.0 + spec.assassins_resolve -> effectN( 2 ).percent();
   }
-  if ( buffs.elaborate_planning -> up() )
+  if (buffs.elaborate_planning->up())
   {
-    m *= buffs.elaborate_planning -> check_value();
+    m *= buffs.elaborate_planning->value();
   }
 
   // Outlaw
