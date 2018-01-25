@@ -5439,7 +5439,8 @@ struct flame_shock_t : public shaman_spell_t
     {
       resource_current = RESOURCE_MAELSTROM;
       secondary_costs[ RESOURCE_MAELSTROM ] = player -> spec.flame_shock_2 -> effectN( 1 ).base_value();
-      cooldown -> duration = timespan_t::zero(); // TODO: A mystery 6 second cooldown appeared out of nowhere
+      // flame_shock_2 got a second effect with 7.3.5, which is the CD reduction as a -100 (percent)
+      cooldown -> duration *= 1.0 + player -> spec.flame_shock_2 -> effectN( 2 ).percent();
 
       duration_per_maelstrom = dot_duration / secondary_costs[ RESOURCE_MAELSTROM ];
     }
@@ -7713,6 +7714,8 @@ void shaman_t::init_action_list_elemental()
   aoe -> add_talent( this, "Ascendance" );
   aoe -> add_talent( this, "Liquid Magma Totem" );
   aoe -> add_action( this, "Flame Shock", "if=spell_targets.chain_lightning<4&maelstrom>=20,target_if=refreshable" );
+  // This line is possible, but would probably only confuse people as it is heavily stat dependant (have more than 10k mastery...which you normally don't want on aoe anyway).
+  //aoe -> add_action( this, "Earth Shock", "if=equipped.echoes_of_the_great_sundering&equipped.deceivers_blood_pact&maelstrom>=107&talent.lightning_rod.enabled" );
   aoe -> add_action( this, "Earthquake" );
   aoe -> add_action( this, "Lava Burst", "if=dot.flame_shock.remains>cast_time&buff.lava_surge.up&!talent.lightning_rod.enabled&spell_targets.chain_lightning<4", "Only cast Lava Burst on three targets if it is an instant." );
   aoe -> add_talent( this, "Elemental Blast", "if=!talent.lightning_rod.enabled&spell_targets.chain_lightning<4", "If you talented for Lightning Rod casting Elemental Blast at 3 or more targets was found to either be equal or worse than not casting it alltogether. Even though the main target damage suffers quite heavily from this." );
@@ -7726,17 +7729,19 @@ void shaman_t::init_action_list_elemental()
   // Single target - Lightning Rod
   single_lr -> add_action( this, "Flame Shock", "if=!ticking|dot.flame_shock.remains<=gcd" );
   single_lr -> add_talent( this, "Elemental Blast", "", "Keep your EB always on Cooldown." );
-  single_lr -> add_action( this, "Earthquake", "if=buff.echoes_of_the_great_sundering.up&!buff.ascendance.up&(buff.earthen_strength.up|buff.echoes_of_the_great_sundering.duration<=3|maelstrom>=117)|!buff.ascendance.up&buff.earthen_strength.up&spell_targets.earthquake>1", "Use your shoulders proc outside of Ascendance and only if at least one of the following is true: you have T21_2 buff, shoulder buff duration is shorter than 3 seconds or you have greater than or equal 117 Maelstrom. Use EQ at two targets. But be aware that you're going to deal significantly less damage to your primary target." );
-  single_lr -> add_action( this, "Earth Shock", "if=maelstrom>=117|!artifact.swelling_maelstrom.enabled&maelstrom>=92" );
+  single_lr -> add_action( this, "Earthquake", "if=buff.echoes_of_the_great_sundering.up&(buff.earthen_strength.up|buff.echoes_of_the_great_sundering.duration<=3|maelstrom>=117)|(buff.earthen_strength.up|maelstrom>=104)&spell_targets.earthquake>1&!equipped.echoes_of_the_great_sundering", "Use your shoulders proc outside of Ascendance and only if at least one of the following is true: you have T21_2 buff, shoulder buff duration is shorter than 3 seconds or you have greater than or equal 117 Maelstrom. Use EQ at two targets. But be aware that you're going to deal significantly less damage to your primary target." );
+  single_lr -> add_action( this, "Earth Shock", "if=(maelstrom>=117|!artifact.swelling_maelstrom.enabled&maelstrom>=92)&(spell_targets.earthquake=1|equipped.echoes_of_the_great_sundering)" );
   single_lr -> add_action( this, "Stormkeeper", "if=(raid_event.adds.count<3|raid_event.adds.in>50)&!buff.ascendance.up", "Keep SK for large or soon add waves." );
   single_lr -> add_talent( this, "Liquid Magma Totem", "if=raid_event.adds.count<3|raid_event.adds.in>50" );
   single_lr -> add_action( this, "Lava Burst", "if=dot.flame_shock.remains>cast_time&cooldown_react" );
   single_lr -> add_action( this, "Flame Shock", "if=maelstrom>=20&buff.elemental_focus.up,target_if=refreshable" );
   single_lr -> add_action( this, "Earthquake", "if=buff.echoes_of_the_great_sundering.up&(maelstrom>=111|!artifact.swelling_maelstrom.enabled&maelstrom>=86|equipped.the_deceivers_blood_pact&maelstrom>85&talent.aftershock.enabled)" );
-  single_lr -> add_action( this, "Earth Shock", "if=maelstrom>=111|!artifact.swelling_maelstrom.enabled&maelstrom>=86|equipped.the_deceivers_blood_pact&talent.aftershock.enabled&(maelstrom>85&equipped.echoes_of_the_great_sundering|maelstrom>70&equipped.smoldering_heart)", "If you talented for Aftershock, equipped Deceivers Blood Pact and either Smoldering Heart or Echoes of the Great Sundering, you essentially gamble for procs." );
+  single_lr -> add_action( this, "Earth Shock", "if=(spell_targets.earthquake=1|equipped.echoes_of_the_great_sundering)&(maelstrom>=111|!artifact.swelling_maelstrom.enabled&maelstrom>=86|equipped.the_deceivers_blood_pact&talent.aftershock.enabled&(maelstrom>85&equipped.echoes_of_the_great_sundering|maelstrom>70&equipped.smoldering_heart))", "If you talented for Aftershock, equipped Deceivers Blood Pact and either Smoldering Heart or Echoes of the Great Sundering, you essentially gamble for procs." );
   single_lr -> add_talent( this, "Totem Mastery", "if=buff.resonance_totem.remains<10|(buff.resonance_totem.remains<(buff.ascendance.duration+cooldown.ascendance.remains)&cooldown.ascendance.remains<15)" );
   single_lr -> add_action( this, "Lightning Bolt", "if=buff.power_of_the_maelstrom.up&spell_targets.chain_lightning<3,target_if=debuff.lightning_rod.down" );
   single_lr -> add_action( this, "Lightning Bolt", "if=buff.power_of_the_maelstrom.up&spell_targets.chain_lightning<3" );
+  single_lr -> add_action( this, "Lava Beam", "if=active_enemies>1&spell_targets.lava_beam>1,target_if=debuff.lightning_rod.down" );
+  single_lr -> add_action( this, "Lava Beam", "if=active_enemies>1&spell_targets.lava_beam>1" );
   single_lr -> add_action( this, "Chain Lightning", "if=active_enemies>1&spell_targets.chain_lightning>1,target_if=debuff.lightning_rod.down" );
   single_lr -> add_action( this, "Chain Lightning", "if=active_enemies>1&spell_targets.chain_lightning>1" );
   single_lr -> add_action( this, "Lightning Bolt", "target_if=debuff.lightning_rod.down" );
@@ -7748,10 +7753,10 @@ void shaman_t::init_action_list_elemental()
   // Single target - Ice Fury
   single_if -> add_action( this, "Flame Shock", "if=!ticking|dot.flame_shock.remains<=gcd" );
   single_if -> add_talent( this, "Elemental Blast", "", "Keep your EB always on Cooldown." );
-  single_if -> add_action( this, "Earthquake", "if=buff.echoes_of_the_great_sundering.up&!buff.ascendance.up&(buff.earthen_strength.up|buff.echoes_of_the_great_sundering.duration<=3|maelstrom>=117)|!buff.ascendance.up&buff.earthen_strength.up&spell_targets.earthquake>1", "Use your shoulders proc outside of Ascendance and only if at least one of the following is true: you have T21_2 buff, shoulder buff duration is shorter than 3 seconds or you have greater than or equal 117 Maelstrom. Use EQ at two targets. But be aware that you're going to deal significantly less damage to your primary target." );
-  single_if -> add_action( this, "Earth Shock", "if=(maelstrom>=111|!artifact.swelling_maelstrom.enabled&maelstrom>=92)&buff.earthen_strength.up" );
+  single_if -> add_action( this, "Earthquake", "if=buff.echoes_of_the_great_sundering.up&(buff.earthen_strength.up|buff.echoes_of_the_great_sundering.duration<=3|maelstrom>=117)|(buff.earthen_strength.up|maelstrom>=104)&spell_targets.earthquake>1&!equipped.echoes_of_the_great_sundering", "Use your shoulders proc outside of Ascendance and only if at least one of the following is true: you have T21_2 buff, shoulder buff duration is shorter than 3 seconds or you have greater than or equal 117 Maelstrom. Use EQ at two targets. But be aware that you're going to deal significantly less damage to your primary target." );
+  single_if -> add_action( this, "Earth Shock", "if=(maelstrom>=111|!artifact.swelling_maelstrom.enabled&maelstrom>=92)&(spell_targets.earthquake=1|equipped.echoes_of_the_great_sundering)&buff.earthen_strength.up" );
   single_if -> add_action( this, "Frost Shock", "if=buff.icefury.up&maelstrom>=20&!buff.ascendance.up&buff.earthen_strength.up" );
-  single_if -> add_action( this, "Earth Shock", "if=maelstrom>=117|!artifact.swelling_maelstrom.enabled&maelstrom>=92" );
+  single_if -> add_action( this, "Earth Shock", "if=(maelstrom>=117|!artifact.swelling_maelstrom.enabled&maelstrom>=92)&(spell_targets.earthquake=1|equipped.echoes_of_the_great_sundering)" );
   single_if -> add_action( this, "Stormkeeper", "if=(raid_event.adds.count<3|raid_event.adds.in>50)&!buff.ascendance.up", "Keep SK for large or soon spawning add waves." );
   single_if -> add_talent( this, "Icefury", "if=(raid_event.movement.in<5|maelstrom<=101&artifact.swelling_maelstrom.enabled|!artifact.swelling_maelstrom.enabled&maelstrom<=76)&!buff.ascendance.up" );
   single_if -> add_talent( this, "Liquid Magma Totem", "if=raid_event.adds.count<3|raid_event.adds.in>50" );
@@ -7761,9 +7766,10 @@ void shaman_t::init_action_list_elemental()
   single_if -> add_action( this, "Flame Shock", "if=maelstrom>=20&buff.elemental_focus.up,target_if=refreshable" );
   single_if -> add_action( this, "Earthquake", "if=buff.echoes_of_the_great_sundering.up&(maelstrom>=111|!artifact.swelling_maelstrom.enabled&maelstrom>=86|equipped.the_deceivers_blood_pact&maelstrom>85&talent.aftershock.enabled)" );
   single_if -> add_action( this, "Frost Shock", "moving=1,if=buff.icefury.up" );
-  single_if -> add_action( this, "Earth Shock", "if=maelstrom>=111|!artifact.swelling_maelstrom.enabled&maelstrom>=86|equipped.the_deceivers_blood_pact&talent.aftershock.enabled&(maelstrom>85&equipped.echoes_of_the_great_sundering|maelstrom>70&equipped.smoldering_heart)", "If you talented for Aftershock, equipped Deceivers Blood Pact and either Smoldering Heart or Echoes of the Great Sundering, you essentially gamble for procs." );
+  single_if -> add_action( this, "Earth Shock", "if=(spell_targets.earthquake=1|equipped.echoes_of_the_great_sundering)&(maelstrom>=111|!artifact.swelling_maelstrom.enabled&maelstrom>=86|equipped.the_deceivers_blood_pact&talent.aftershock.enabled&(maelstrom>85&equipped.echoes_of_the_great_sundering|maelstrom>70&equipped.smoldering_heart))", "If you talented for Aftershock, equipped Deceivers Blood Pact and either Smoldering Heart or Echoes of the Great Sundering, you essentially gamble for procs." );
   single_if -> add_talent( this, "Totem Mastery", "if=buff.resonance_totem.remains<10" );
   single_if -> add_action( this, "Lightning Bolt", "if=buff.power_of_the_maelstrom.up&spell_targets.chain_lightning<3" );
+  single_if -> add_action( this, "Lava Beam", "if=active_enemies>1&spell_targets.lava_beam>1" );
   single_if -> add_action( this, "Chain Lightning", "if=active_enemies>1&spell_targets.chain_lightning>1" );
   single_if -> add_action( this, "Lightning Bolt" );
   single_if -> add_action( this, "Flame Shock", "moving=1,target_if=refreshable" );
@@ -7775,15 +7781,15 @@ void shaman_t::init_action_list_elemental()
   single_asc -> add_action( this, "Flame Shock", "if=!ticking|dot.flame_shock.remains<=gcd" );
   single_asc -> add_action( this, "Flame Shock", "if=maelstrom>=20&remains<=buff.ascendance.duration&cooldown.ascendance.remains+buff.ascendance.duration<=duration" );
   single_asc -> add_talent( this, "Elemental Blast", "", "Keep your EB always on Cooldown." );
-  single_asc -> add_action( this, "Earthquake", "if=buff.echoes_of_the_great_sundering.up&!buff.ascendance.up&(buff.earthen_strength.up|buff.echoes_of_the_great_sundering.duration<=3|maelstrom>=117)|!buff.ascendance.up&buff.earthen_strength.up&spell_targets.earthquake>1", "Use your shoulders proc outside of Ascendance and only if at least one of the following is true: you have T21_2 buff, shoulder buff duration is shorter than 3 seconds or you have greater than or equal 117 Maelstrom. Use EQ at two targets. But be aware that you're going to deal significantly less damage to your primary target." );
-  single_asc -> add_action( this, "Earth Shock", "if=maelstrom>=117|!artifact.swelling_maelstrom.enabled&maelstrom>=92" );
+  single_asc -> add_action( this, "Earthquake", "if=buff.echoes_of_the_great_sundering.up&(buff.earthen_strength.up|buff.echoes_of_the_great_sundering.duration<=3|maelstrom>=117)|(buff.earthen_strength.up|maelstrom>=104)&spell_targets.earthquake>1&!equipped.echoes_of_the_great_sundering", "Use your shoulders proc outside of Ascendance and only if at least one of the following is true: you have T21_2 buff, shoulder buff duration is shorter than 3 seconds or you have greater than or equal 117 Maelstrom. Use EQ at two targets. But be aware that you're going to deal significantly less damage to your primary target." );
+  single_asc -> add_action( this, "Earth Shock", "if=(maelstrom>=117|!artifact.swelling_maelstrom.enabled&maelstrom>=92)&(spell_targets.earthquake=1|equipped.echoes_of_the_great_sundering)" );
   single_asc -> add_action( this, "Stormkeeper", "if=(raid_event.adds.count<3|raid_event.adds.in>50)&time>5&!buff.ascendance.up", "Keep SK for large or soon add waves. Don't cast SK during Ascendance." );
   single_asc -> add_talent( this, "Liquid Magma Totem", "if=raid_event.adds.count<3|raid_event.adds.in>50" );
   single_asc -> add_action( this, "Lightning Bolt", "if=buff.power_of_the_maelstrom.up&buff.stormkeeper.up&spell_targets.chain_lightning<3" );
   single_asc -> add_action( this, "Lava Burst", "if=dot.flame_shock.remains>cast_time&(cooldown_react|buff.ascendance.up)" );
   single_asc -> add_action( this, "Flame Shock", "if=maelstrom>=20&buff.elemental_focus.up,target_if=refreshable" );
   single_asc -> add_action( this, "Earthquake", "if=buff.echoes_of_the_great_sundering.up&(maelstrom>=111|!artifact.swelling_maelstrom.enabled&maelstrom>=86|equipped.the_deceivers_blood_pact&maelstrom>85&talent.aftershock.enabled)" );
-  single_asc -> add_action( this, "Earth Shock", "if=maelstrom>=111|!artifact.swelling_maelstrom.enabled&maelstrom>=86|equipped.the_deceivers_blood_pact&talent.aftershock.enabled&(maelstrom>85&equipped.echoes_of_the_great_sundering|maelstrom>70&equipped.smoldering_heart)", "If you talented for Aftershock, equipped Deceivers Blood Pact and either Smoldering Heart or Echoes of the Great Sundering, you essentially gamble for procs." );
+  single_asc -> add_action( this, "Earth Shock", "if=(spell_targets.earthquake=1|equipped.echoes_of_the_great_sundering)&(maelstrom>=111|!artifact.swelling_maelstrom.enabled&maelstrom>=86|equipped.the_deceivers_blood_pact&talent.aftershock.enabled&(maelstrom>85&equipped.echoes_of_the_great_sundering|maelstrom>70&equipped.smoldering_heart))", "If you talented for Aftershock, equipped Deceivers Blood Pact and either Smoldering Heart or Echoes of the Great Sundering, you essentially gamble for procs." );
   single_asc -> add_talent( this, "Totem Mastery", "if=buff.resonance_totem.remains<10|(buff.resonance_totem.remains<(buff.ascendance.duration+cooldown.ascendance.remains)&cooldown.ascendance.remains<15)" );
   single_asc -> add_action( this, "Lava Beam", "if=active_enemies>1&spell_targets.lava_beam>1" );
   single_asc -> add_action( this, "Lightning Bolt", "if=buff.power_of_the_maelstrom.up&spell_targets.chain_lightning<3" );
