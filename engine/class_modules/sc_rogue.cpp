@@ -1201,6 +1201,7 @@ struct rogue_attack_t : public melee_attack_t
   void   consume_resource() override;
   bool   ready() override;
   void   impact( action_state_t* state ) override;
+  void   schedule_travel( action_state_t* state ) override;
   void   tick( dot_t* d ) override;
 
   double attack_direct_power_coefficient( const action_state_t* s ) const override
@@ -2359,9 +2360,6 @@ void rogue_attack_t::impact( action_state_t* state )
   p() -> trigger_surge_of_toxins( state );
   p() -> trigger_insignia_of_ravenholdt( state );
 
-  if ( energize_type != ENERGIZE_NONE && energize_resource == RESOURCE_COMBO_POINT )
-    p() -> trigger_seal_fate( state );
-
   if ( result_is_hit( state -> result ) )
   {
     if ( procs_poison() && p() -> active_lethal_poison )
@@ -2463,6 +2461,16 @@ void rogue_attack_t::execute()
   }
 
   p() -> trigger_deepening_shadows( execute_state );
+}
+
+// rogue_attack_t::schedule_travel ==========================================
+
+void rogue_attack_t::schedule_travel( action_state_t* state )
+{
+  melee_attack_t::schedule_travel( state );
+
+  if ( energize_type != ENERGIZE_NONE && energize_resource == RESOURCE_COMBO_POINT )
+    p() -> trigger_seal_fate( state );
 }
 
 // rogue_attack_t::ready() ==================================================
@@ -3041,7 +3049,6 @@ struct fan_of_knives_t: public rogue_attack_t
     rogue_attack_t( "fan_of_knives", p, p -> find_specialization_spell( "Fan of Knives" ), options_str )
   {
     aoe = -1;
-    // Note: Seal Fate procs seems to happen on cast already, but I think we can avoid reworking generation just for this since these CP on impact should be sufficient.
     energize_type     = ENERGIZE_ON_HIT;
     energize_resource = RESOURCE_COMBO_POINT;
     energize_amount   = data().effectN( 2 ).base_value();
