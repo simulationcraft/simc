@@ -1924,6 +1924,10 @@ struct rogue_poison_t : public rogue_attack_t
     if ( ! result )
       return;
 
+    // Proc Sinister Circulation on successful application of our lethal poison
+    if ( this == p() -> active_lethal_poison )
+      p() -> trigger_sinister_circulation( source_state );
+
     target = source_state -> target;
     execute();
   }
@@ -2361,11 +2365,7 @@ void rogue_attack_t::impact( action_state_t* state )
   if ( result_is_hit( state -> result ) )
   {
     if ( procs_poison() && p() -> active_lethal_poison )
-    {
       p() -> active_lethal_poison -> trigger( state );
-
-      p() -> trigger_sinister_circulation( state );
-    }
 
     if ( procs_poison() && p() -> active_nonlethal_poison )
       p() -> active_nonlethal_poison -> trigger( state );
