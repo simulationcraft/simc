@@ -3040,9 +3040,8 @@ struct fan_of_knives_t: public rogue_attack_t
   fan_of_knives_t( rogue_t* p, const std::string& options_str ):
     rogue_attack_t( "fan_of_knives", p, p -> find_specialization_spell( "Fan of Knives" ), options_str )
   {
-    weapon = &( player -> main_hand_weapon );
-    weapon_multiplier = 0;
     aoe = -1;
+    // Note: Seal Fate procs seems to happen on cast already, but I think we can avoid reworking generation just for this since these CP on impact should be sufficient.
     energize_type     = ENERGIZE_ON_HIT;
     energize_resource = RESOURCE_COMBO_POINT;
     energize_amount   = data().effectN( 2 ).base_value();
@@ -3070,12 +3069,23 @@ struct fan_of_knives_t: public rogue_attack_t
     return m;
   }
 
-  void impact( action_state_t* state ) override
+  void schedule_travel( action_state_t* state ) override
   {
-    // 12/29/2017 - Poison Knives is evaluated before the poison proc in rogue_attack_t::impact()
-    p()->trigger_poison_knives(state);
+    rogue_attack_t::schedule_travel( state );
 
-    rogue_attack_t::impact( state );
+    if ( result_is_hit( state -> result ) )
+    {
+      // 2018-01-25: Poison Knives is evaluated as soon as FoK is cast
+      p() -> trigger_poison_knives( state );
+
+      // 2018-01-25: Poisons are applied on cast as well
+      // Note: Usual application on impact will not happen because this attack has no weapon assigned
+      if ( p() -> active_lethal_poison )
+        p() -> active_lethal_poison -> trigger( state );
+
+      if ( p() -> active_nonlethal_poison )
+        p() -> active_nonlethal_poison -> trigger( state );
+    }
   }
 };
 
