@@ -198,7 +198,7 @@ struct rogue_t : public player_t
   action_t* shadow_nova;
   action_t* second_shuriken;
   action_t* poison_knives;
-  action_t* from_the_shadows_;
+  action_t* from_the_shadows_driver;
   action_t* poison_bomb;
   action_t* greed;
   action_t* soul_rip; // Akaari
@@ -675,7 +675,7 @@ struct rogue_t : public player_t
     shadow_nova( nullptr ),
     second_shuriken( nullptr ),
     poison_knives( nullptr ),
-    from_the_shadows_( nullptr ),
+    from_the_shadows_driver( nullptr ),
     poison_bomb( nullptr ),
     greed( nullptr ),
     soul_rip( nullptr ),
@@ -1127,7 +1127,6 @@ struct rogue_attack_t : public melee_attack_t
     return t;
   }
 
-
   bool stealthed()
   {
     return p() -> buffs.vanish -> check() || p() -> buffs.stealth -> check() || player -> buffs.shadowmeld -> check();
@@ -1178,6 +1177,12 @@ struct rogue_attack_t : public melee_attack_t
 
   virtual double proc_chance_main_gauche() const
   { return p() -> cache.mastery_value(); }
+
+  // Generic rules for snapshotting the Nightstalker pmultiplier, default to DoTs only
+  virtual bool snapshots_nightstalker() const
+  { 
+    return dot_duration > timespan_t::zero() && base_tick_time > timespan_t::zero();
+  }
 
   action_state_t* new_state() override
   { return new rogue_attack_state_t( this, target ); }
@@ -1328,12 +1333,11 @@ struct rogue_attack_t : public melee_attack_t
   {
     double m = melee_attack_t::composite_persistent_multiplier( state );
 
-    if ( p() -> talent.nightstalker -> ok() &&
-      ( p() -> buffs.stealth -> check() || p() -> buffs.shadow_dance -> check() ||
-         p() -> buffs.vanish -> check() ) )
+    // Apply Nightstalker as a Persistent Multiplier for things that snapshot
+    if (p()->talent.nightstalker->ok() && snapshots_nightstalker() &&
+      (p()->buffs.stealth->check() || p()->buffs.shadow_dance->check() || p()->buffs.vanish->check()))
     {
-      m *= 1.0 + ( p() -> talent.nightstalker -> effectN( 2 ).percent() +
-                   p() -> spec.subtlety_rogue -> effectN( 4 ).percent() );
+      m *= 1.0 + (p()->talent.nightstalker->effectN(2).percent() + p()->spec.subtlety_rogue->effectN(4).percent());
     }
 
     return m;
@@ -1346,6 +1350,13 @@ struct rogue_attack_t : public melee_attack_t
     if (affected_by.broadsides && p() -> buffs.broadsides -> up())
     {
       m *= 1.0 + p() -> buffs.broadsides -> data().effectN( 4 ).percent();
+    }
+
+    // Apply Nightstalker as an Action Multiplier for things that don't snapshot
+    if (p()->talent.nightstalker->ok() && !snapshots_nightstalker() &&
+      (p()->buffs.stealth->check() || p()->buffs.shadow_dance->check() || p()->buffs.vanish->check()))
+    {
+      m *= 1.0 + (p()->talent.nightstalker->effectN(2).percent() + p()->spec.subtlety_rogue->effectN(4).percent());
     }
 
     return m;
@@ -1689,7 +1700,7 @@ struct from_the_shadows_damage_t : public rogue_attack_t
     rogue_attack_t( "from_the_shadows", p, p -> find_spell( 192434 ) )
   {
     background = true;
-    callbacks = false;
+    callbacks = may_miss = may_dodge = may_parry = may_block = false;
   }
 };
 
@@ -1702,14 +1713,20 @@ struct from_the_shadows_driver_t : public rogue_attack_t
     damage( new from_the_shadows_damage_t( p ) )
   {
     background = quiet = true;
-    callbacks = may_miss = may_crit = false;
+    callbacks = may_miss = may_dodge = may_parry = may_block = may_crit = false;
+  }
+
+  bool snapshots_nightstalker() const override
+  {
+    // 1/25/2018 - From the Shadows DoT does not snapshot Nightstalker
+    return false;
   }
 
   void tick( dot_t* d ) override
   {
     rogue_attack_t::tick( d );
 
-    damage -> target = d -> target;
+    damage -> set_target( d -> target );
     damage -> execute();
     damage -> execute();
   }
@@ -1722,6 +1739,7 @@ struct poison_bomb_t : public rogue_attack_t
   {
     background = true;
     aoe = -1;
+    may_miss = may_dodge = may_parry = may_block = false;
   }
 
   double action_multiplier() const override
@@ -3558,6 +3576,12 @@ struct kingsbane_t : public rogue_attack_t
     add_child( oh );
   }
 
+  bool snapshots_nightstalker() const override 
+  {
+    // 1/25/2018 - Kingsbane DoT does not snapshot Nightstalker
+    return false;
+  }
+
   double action_multiplier() const override
   {
     double m = rogue_attack_t::action_multiplier();
@@ -4877,10 +4901,10 @@ struct vendetta_t : public rogue_attack_t
       p()->buffs.urge_to_kill->trigger();
     }
 
-    if ( p() -> from_the_shadows_ )
+    if ( p() -> from_the_shadows_driver )
     {
-      p() -> from_the_shadows_ -> target = execute_state -> target;
-      p() -> from_the_shadows_ -> schedule_execute();
+      p() -> from_the_shadows_driver -> set_target( execute_state -> target );
+      p() -> from_the_shadows_driver -> schedule_execute();
     }
   }
 };
@@ -7373,7 +7397,7 @@ void rogue_t::init_action_list()
 
     // Kingsbane
     action_priority_list_t* kb = get_action_priority_list( "kb", "Kingsbane" );
-    kb -> add_action( this, "Kingsbane", "if=talent.nightstalker.enabled|(!stealthed.rogue&time>2)", 
+    kb -> add_action( this, "Kingsbane", "if=!stealthed.rogue&(!talent.toxic_blade.enabled|!cooldown.toxic_blade.ready)", 
       "Sinister Circulation makes it worth to cast Kingsbane on CD except specific cases w/o Nighstalker (if stealthed or as the first opener GCD.)" );
 
     // Maintain
@@ -8246,7 +8270,7 @@ void rogue_t::init_spells()
 
   if ( artifact.from_the_shadows.rank() )
   {
-    from_the_shadows_ = new actions::from_the_shadows_driver_t( this );
+    from_the_shadows_driver = new actions::from_the_shadows_driver_t( this );
   }
 
   if ( artifact.bag_of_tricks.rank() )
@@ -9100,7 +9124,9 @@ double rogue_t::passive_movement_modifier() const
   ms += talent.hit_and_run -> effectN( 1 ).percent();
 
   if ( buffs.stealth -> up() || buffs.shadow_dance -> up() ) // Check if nightstalker is temporary or passive.
+  {
     ms += talent.nightstalker -> effectN( 1 ).percent();
+  }
 
   if ( legendary.sephuzs_secret )
   {

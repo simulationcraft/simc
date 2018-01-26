@@ -80,7 +80,7 @@ actions.finish+=/envenom,if=talent.elaborate_planning.enabled&combo_points>=3+!t
 
 # Kingsbane
 # Sinister Circulation makes it worth to cast Kingsbane on CD except specific cases w/o Nighstalker (if stealthed or as the first opener GCD.)
-actions.kb=kingsbane,if=talent.nightstalker.enabled|(!stealthed.rogue&time>2)
+actions.kb=kingsbane,if=!stealthed.rogue&(!talent.toxic_blade.enabled|!cooldown.toxic_blade.ready)
 
 # Maintain
 actions.maintain=rupture,if=talent.nightstalker.enabled&stealthed.rogue&!set_bonus.tier21_2pc&(!equipped.mantle_of_the_master_assassin|!set_bonus.tier19_4pc)&(talent.exsanguinate.enabled|target.time_to_die-remains>4)
