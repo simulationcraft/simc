@@ -1,4 +1,4 @@
-SimulationCraft 735-01 for World of Warcraft 7.3.5 Live (wow build 25901)
+SimulationCraft 801-01 for World of Warcraft 8.0.1 bfa-BETA (wow build 25902)
 
 Name             : Incapacitating Roar (id=99) [Spell Family (7)] 
 Class            : Guardian Druid
@@ -101,8 +101,8 @@ Effects          :
 #2 (id=307)      : Apply Aura (6) | Mechanic Immunity (77)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 17 | Target: Self (1)
 #3 (id=308)      : Apply Aura (6) | Unknown(344)
-                   Base Value: 100 | Scaled Value: 100 | SP Coefficient: 1.00000 | Target: Self (1)
-Description      : Shapeshift into Cat Form, increasing movement speed by $113636s1%, granting protection from Polymorph effects, and reducing falling damage.
+                   Base Value: 40 | Scaled Value: 40 | SP Coefficient: 0.25000 | Target: Self (1)
+Description      : Shapeshift into Cat Form, increasing auto-attack damage by $s3%, movement speed by $113636s1%, granting protection from Polymorph effects, and reducing falling damage.
 
 The act of shapeshifting frees you from movement impairing effects.
 Tooltip          : Immune to Polymorph effects.
@@ -126,7 +126,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : Periodic effect affected by haste (173)
 Effects          :
 #1 (id=311)      : Apply Aura (6) | Periodic Heal (8): every 3 seconds
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.60000 | Target: Friend (21)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.15000 | Target: Friend (21)
 #2 (id=227841)   : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1 | Target: Friend (21)
 Description      : Heals the target for $o1 over $d.$?s33891[
@@ -177,16 +177,17 @@ GCD              : 1 seconds
 Duration         : 24 seconds
 Stance Mask      : 0x00000001
 Mechanic         : Bleed
-Affecting spells : Mastery: Razor Claws (77493 effect#1), Incarnation: King of the Jungle (102543 effect#1), Berserk (106951 effect#1), Feral Druid (137011 effect#1), Restoration Druid (137012 effect#8), Soul of the Forest (158476 effect#3), Bloodletting (165699 effect#1), Thrash (192090 effect#2), Feral Affinity (197490 effect#6), Astral Influence (197524 effect#1), Jagged Wounds (202032 effect#1), Feral Affinity (202155 effect#6), Feral Affinity (202157 effect#6), Razor Fangs (210570 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ashamane's Frenzy (210723 effect#4), Item - Druid T20 Feral 4P Bonus (242235 effect#1), 
+Affecting spells : Tiger's Fury (5217 effect#1), Savage Roar (62071 effect#1), Mastery: Razor Claws (77493 effect#1), Incarnation: King of the Jungle (102543 effect#1), Berserk (106951 effect#1), Feral Druid (137011 effect#1), Restoration Druid (137012 effect#8), Soul of the Forest (158476 effect#3), Bloodletting (165699 effect#1), Thrash (192090 effect#2), Feral Affinity (197490 effect#6), Astral Influence (197524 effect#1), Jagged Wounds (202032 effect#1), Feral Affinity (202155 effect#6), Feral Affinity (202157 effect#6), Razor Fangs (210570 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ashamane's Frenzy (210723 effect#4), Item - Druid T20 Feral 4P Bonus (242235 effect#1), 
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ....x... ........   ........ ........ ........ ........ 
+                 : ........ ........ ....x... ........   ........ .....x.. ........ ........ 
                  : ........ ........ .......x ........   ........ ........ ........ ........ 
                  : ........ .x..x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Periodic effect affected by haste (173)
 Effects          :
 #1 (id=390)      : Apply Aura (6) | Periodic Damage (3): physical every 2 seconds
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.19520 | Mechanic: Bleed | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.03465 | Mechanic: Bleed | Target: Enemy (6)
 #2 (id=117625)   : Apply Aura (6) | Dummy (4)
                    Base Value: 2 | Scaled Value: 2 | Target: Enemy (6)
 #3 (id=117626)   : Dummy (3)
@@ -234,7 +235,7 @@ Range            : 5 yards
 GCD              : 1 seconds
 Stance Mask      : 0x00000001
 Mechanic         : Bleed
-Affecting spells : Mastery: Razor Claws (77493 effect#1), Incarnation: King of the Jungle (102543 effect#1), Prowl (102547 effect#5), Berserk (106951 effect#1), Feral Druid (137011 effect#1), Restoration Druid (137012 effect#8), Bloodletting (165699 effect#1), Thrash (192090 effect#2), Feral Affinity (197490 effect#5), Astral Influence (197524 effect#1), Jagged Wounds (202032 effect#1), Feral Affinity (202155 effect#5), Feral Affinity (202157 effect#5), Tear the Flesh (210593 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ashamane's Frenzy (210723 effect#4)
+Affecting spells : Tiger's Fury (5217 effect#1), Savage Roar (62071 effect#1), Mastery: Razor Claws (77493 effect#1), Incarnation: King of the Jungle (102543 effect#1), Prowl (102547 effect#5), Berserk (106951 effect#1), Feral Druid (137011 effect#1), Restoration Druid (137012 effect#8), Bloodletting (165699 effect#1), Thrash (192090 effect#2), Feral Affinity (197490 effect#5), Astral Influence (197524 effect#1), Jagged Wounds (202032 effect#1), Feral Affinity (202155 effect#5), Feral Affinity (202157 effect#5), Tear the Flesh (210593 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ashamane's Frenzy (210723 effect#4)
 Attributes       : ....x... ........ ..x..... ........   ........ ........ ........ ..xx.... 
                  : ........ ........ ....x... ........   ........ ........ ........ ........ 
                  : ........ ........ ....x... ........   ........ ........ ........ ........ 
@@ -243,7 +244,7 @@ Attributes       : ....x... ........ ..x..... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=559)      : School Damage (2): physical
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 1.11264 | Target: Enemy (6)
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.23365 | Target: Enemy (6)
 #2 (id=560)      : Energize Power (30)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: combo_points | Target: Self (1)
 #3 (id=561)      : Trigger Spell (64): Rake
@@ -260,10 +261,10 @@ Name             : Dash (id=1850) [Spell Family (7)]
 Class            : Druid
 School           : Physical
 Spell Level      : 8
-Duration         : 15 seconds
-Cooldown         : 180 seconds
+Duration         : 10 seconds
+Cooldown         : 120 seconds
 Category         : 44
-Category Cooldown: 180 seconds
+Category Cooldown: 120 seconds
 Attributes       : ....x... ........ ..x..... ........   .....x.. ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -273,14 +274,40 @@ Attributes       : ....x... ........ ..x..... ........   .....x.. ..x..... .....
                  : Does not break stealth (37)
 Effects          :
 #1 (id=571)      : Apply Aura (6) | Increase Speed% (31)
-                   Base Value: 70 | Scaled Value: 70 | Target: Self (1)
+                   Base Value: 60 | Scaled Value: 60 | Target: Self (1)
 Description      : Activates Cat Form and increases movement speed by $s1% while in Cat Form for $d.
 Tooltip          : Increased movement speed by $s1% while in Cat Form.
+
+Name             : Hibernate (id=2637) [Spell Family (7)] 
+Class            : Druid
+School           : Nature
+Resource         : 6.5% Base Mana (0) (id=173)
+Spell Level      : 66
+Range            : 30 yards
+Cast Time        : 1.5 seconds
+GCD              : 1.5 seconds
+Duration         : 40 seconds
+Proc Chance      : 101%
+Stance Mask      : 0x40000002
+Mechanic         : Unknown(81)
+Affecting spells : Astral Influence (197524 effect#1), Ekowraith, Creator of Worlds (210667 effect#1)
+Attributes       : ........ ........ x...x... ......x.   ........ ..x..... ..x..... ........ 
+                 : ........ ........ ...x.... ........   x....... ........ ........ ........ 
+                 : ........ ........ ........ ........   .....x.. ........ ........ ........ 
+                 : ........ ........ .......x .x......   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Stop attacks (20)
+Effects          :
+#1 (id=794)      : Apply Aura (6) | Stun (12)
+                   Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
+Description      : Forces the enemy target to sleep for up to $d.  Any damage will awaken the target.  Only one target can be forced to hibernate at a time.  Only works on Beasts and Dragonkin.
+Tooltip          : Asleep.
 
 Name             : Remove Corruption (id=2782) [Spell Family (7)] 
 Class            : Balance Feral Guardian Druid
 School           : Arcane
-Resource         : 13% Base Mana (0) (id=11322)
+Resource         : 6.5% Base Mana (0) (id=11322)
 Spell Level      : 22
 Range            : 40 yards
 GCD              : 1.5 seconds
@@ -298,6 +325,25 @@ Effects          :
 #2 (id=846)      : Dispel (38)
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 4 | Target: Friend (21)
 Description      : Nullifies corrupting effects on the friendly target, removing all Curse and Poison effects.
+
+Name             : Soothe (id=2908) [Spell Family (7)] 
+Class            : Druid
+School           : Nature
+Resource         : 5.6% Base Mana (0) (id=186)
+Spell Level      : 60
+Range            : 40 yards
+GCD              : 1.5 seconds
+Stance Mask      : 0x40000002
+Attributes       : ........ ........ x....... ........   ........ ........ .x...... ........ 
+                 : ........ ........ ...x.... ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=878)      : Dispel (38)
+                   Base Value: 100 | Scaled Value: 100 | Misc Value: 9 | Target: Enemy (6)
+Description      : Soothes the target, dispelling all enrage effects.
 
 Name             : Cat Form (id=3025) [Spell Family (7), Passive, Hidden] 
 Class            : Druid
@@ -342,7 +388,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=1837)     : School Damage (2): nature
-                   Base Value: 1 | Scaled Value: 0 (avg=2.676, dl=0.25) | SP Coefficient: 2.31000 | Target: Enemy (6)
+                   Base Value: 1 | Scaled Value: 0 (avg=2.676, dl=0.25) | SP Coefficient: 0.57750 | Target: Enemy (6)
 Description      : Causes $s1 Nature damage to the target.
 
 Name             : Healing Touch (id=5185) [Spell Family (7)] 
@@ -362,7 +408,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=1839)     : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 4.50000 | Target: Friend (21)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.12500 | Target: Friend (21)
 Description      : Heals a friendly target for $s1$?s54825[ and reduces your remaining cooldown on Nature's Swiftness by $54825m1 sec][].
 
 Name             : Mighty Bash (id=5211) [Spell Family (7)] 
@@ -436,11 +482,17 @@ Attributes       : ....x... ........ ..x..... ........   .....x.. ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Does not break stealth (37)
 Effects          :
-#1 (id=1854)     : Apply Aura (6) | Modify Damage Done% (79)
-                   Base Value: 15 | Scaled Value: 15 | Misc Value: 0x7f | Target: Self (1)
-                   Affected School(s): All
+#1 (id=1854)     : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
+                   Base Value: 15 | Scaled Value: 15 | Target: Self (1)
+                   Affected Spells: Rip (1079), Rake (1822), Shred (5221), Ferocious Bite (22568), Maim (22570), Swipe (106785), Thrash (106830), Moonfire (155625), Rake (155722), Moonfire (164812), Maim (168877), Maim (168878), Maim (168879), Maim (168880), Maim (168881), Brutal Slash (202028), Shadow Thrash (210687), Ashamane's Rip (210705), Ashamane's Frenzy (210723)
 #2 (id=117350)   : Energize Power (30)
                    Base Value: 20 | Scaled Value: 20 | Misc Value: energy | Target: Self (1)
+#3 (id=479758)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Damage (22)
+                   Base Value: 15 | Scaled Value: 15 | Misc Value: 22 | Target: Self (1)
+                   Affected Spells: Rip (1079), Rake (1822), Shred (5221), Ferocious Bite (22568), Maim (22570), Swipe (106785), Thrash (106830), Moonfire (155625), Rake (155722), Moonfire (164812), Maim (168877), Maim (168878), Maim (168879), Maim (168880), Maim (168881), Brutal Slash (202028), Shadow Thrash (210687), Ashamane's Rip (210705), Ashamane's Frenzy (210723)
+#4 (id=479881)   : Apply Aura (6) | Unknown(344)
+                   Base Value: 15 | Scaled Value: 15 | Target: Self (1)
+                   Affected Spells: Rip (1079), Rake (1822), Shred (5221), Ferocious Bite (22568), Maim (22570), Swipe (106785), Thrash (106830), Moonfire (155625), Rake (155722), Moonfire (164812), Maim (168877), Maim (168878), Maim (168879), Maim (168880), Maim (168881), Brutal Slash (202028), Shadow Thrash (210687), Ashamane's Rip (210705), Ashamane's Frenzy (210723)
 Description      : Instantly restores $s2 Energy, and increases the damage of all your attacks by $s1% for their full duration. Lasts $d.
 Tooltip          : Attacks deal $s1% additional damage for their full duration.
 
@@ -452,7 +504,7 @@ Spell Level      : 10
 Range            : 5 yards
 GCD              : 1 seconds
 Stance Mask      : 0x00000001
-Affecting spells : Incarnation: King of the Jungle (102543 effect#1), Berserk (106951 effect#1), Clearcasting (135700 effect#1), Feral Druid (137011 effect#1), Restoration Druid (137012 effect#8), Bloodtalons (145152 effect#1), Thrash (192090 effect#2), Feral Affinity (197490 effect#5), Astral Influence (197524 effect#1), Feral Affinity (202155 effect#5), Feral Affinity (202157 effect#5), Feral Power (210571 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ashamane's Frenzy (210723 effect#4), Shredder Fangs (214736 effect#1)
+Affecting spells : Tiger's Fury (5217 effect#1), Savage Roar (62071 effect#1), Incarnation: King of the Jungle (102543 effect#1), Berserk (106951 effect#1), Clearcasting (135700 effect#1), Feral Druid (137011 effect#1), Restoration Druid (137012 effect#8), Bloodtalons (145152 effect#1), Thrash (192090 effect#2), Feral Affinity (197490 effect#5), Astral Influence (197524 effect#1), Feral Affinity (202155 effect#5), Feral Affinity (202157 effect#5), Feral Power (210571 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ashamane's Frenzy (210723 effect#4), Shredder Fangs (214736 effect#1)
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ..xx.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -461,11 +513,11 @@ Attributes       : ....x... ........ ..x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=1859)     : Weapon Damage (58)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
 #2 (id=1860)     : Energize Power (30)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: combo_points | Target: Self (1)
 #3 (id=1861)     : Weapon Damage% (31)
-                   Base Value: 847 | Scaled Value: 8.47 | Target: Enemy (6)
+                   Base Value: 287 | Scaled Value: 2.87 | Target: Enemy (6)
 #4 (id=348398)   : Dummy (3)
                    Base Value: 50 | Scaled Value: 50 | Target: Enemy (6)
 #5 (id=348788)   : Dummy (3)
@@ -564,7 +616,7 @@ Effects          :
 #2 (id=1967)     : Apply Aura (6) | Unknown(197)
                    Base Value: -6 | Scaled Value: -6 | Misc Value: 127 | Target: Self (1)
 #3 (id=81812)    : Apply Aura (6) | Modify Base Resistance (142)
-                   Base Value: 200 | Scaled Value: 200 | Misc Value: 1 | Target: Self (1)
+                   Base Value: 220 | Scaled Value: 220 | Misc Value: 1 | Target: Self (1)
 #4 (id=222311)   : Apply Aura (6) | Unknown(275)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
                    Affected Spells: Healing Touch (5185)
@@ -639,7 +691,7 @@ Effects          :
 #1 (id=2456)     : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
 #2 (id=2457)     : Weapon Damage% (31)
-                   Base Value: 750 | Scaled Value: 7.5 | Target: Enemy (6)
+                   Base Value: 255 | Scaled Value: 2.55 | Target: Enemy (6)
 Description      : Maul the target for $sw2 Physical damage.
 
 Name             : Moonfire (Lunar) (id=8921) [Spell Family (7)] 
@@ -650,7 +702,7 @@ Spell Level      : 3
 Range            : 40 yards
 GCD              : 1.5 seconds
 Stance Mask      : 0x40000012
-Affecting spells : Guardian Druid (137010 effect#1), Balance Druid (137013 effect#3), Lucidity (137247 effect#1), Lunar Inspiration (155627 effect#1), Persistence (186396 effect#1), Thrash (192090 effect#2), Astral Influence (197524 effect#1), Feral Overrides Passive (197692 effect#1), Astral Power (197911 effect#3), Twin Moonfire (200818 effect#2), Twilight Glow (202386 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ashamane's Frenzy (210723 effect#4), Galactic Guardian (213708 effect#1), Wax and Wane (239952 effect#1), Solar Solstice (252767 effect#1), 
+Affecting spells : Guardian Druid (137010 effect#8), Balance Druid (137013 effect#3), Lucidity (137247 effect#1), Lunar Inspiration (155627 effect#1), Persistence (186396 effect#1), Thrash (192090 effect#2), Astral Influence (197524 effect#1), Feral Overrides Passive (197692 effect#1), Astral Power (197911 effect#3), Twin Moonfire (200818 effect#2), Twilight Glow (202386 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ashamane's Frenzy (210723 effect#4), Galactic Guardian (213708 effect#1), Wax and Wane (239952 effect#1), Solar Solstice (252767 effect#1), 
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .....x.. ........ ........ 
@@ -688,9 +740,9 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : Periodic effect affected by haste (173)
 Effects          :
 #1 (id=3728)     : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 3.50000 | Target: Friend (21)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.87500 | Target: Friend (21)
 #2 (id=3729)     : Apply Aura (6) | Periodic Heal (8): every 2 seconds
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.10000 | Target: Friend (21)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.02500 | Target: Friend (21)
 Description      : Heals a friendly target for $s1 and another ${$o2*$<mult>} over $d.$?s231032[ Regrowth's initial heal has a $231032s1% increased chance for a critical effect.][]$?s24858|s197625[ Usable while in Moonkin Form.][]$?s33891[
 
 |C0033AA11Tree of Life: Instant cast.|R][]
@@ -722,7 +774,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=8554)     : Apply Aura (6) | Proc Trigger Spell (42): Clearcasting
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Trigger Spell: 135700 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.25000 | Trigger Spell: 135700 | Target: Self (1)
 Description      : Your auto attacks have a chance to cause a Clearcasting state, making your next Shred, Thrash, or $?s202028[Brutal Slash][Swipe] cost no Energy.
 
 Name             : Clearcasting (id=16870) [Spell Family (7)] 
@@ -785,7 +837,7 @@ Attributes       : ....x.x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=8636)     : Apply Aura (6) | Unknown(154)
-                   Base Value: 15 | Scaled Value: 15 | SP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 15 | Scaled Value: 15 | SP Coefficient: 0.25000 | Target: Self (1)
 Description      : Reduces the chance enemies have to detect you while Prowl is active.
 
 Name             : Primal Fury (id=16953) 
@@ -826,7 +878,7 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=8658)     : Apply Aura (6) | Dummy (4)
-                   Base Value: 50 | Scaled Value: 50 | SP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 50 | Scaled Value: 50 | SP Coefficient: 0.25000 | Target: Self (1)
 #2 (id=8659)     : Apply Aura (6) | Dummy (4)
                    Base Value: 80 | Scaled Value: 80 | Target: Self (1)
 #3 (id=8660)     : Apply Aura (6) | Dummy (4)
@@ -845,7 +897,7 @@ Attributes       : ........ ........ ........ ........   ........ ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=8739)     : Energize Power (30)
-                   Base Value: 200 | Scaled Value: 200 | SP Coefficient: 1.00000 | Misc Value: rage | Target: Self (1)
+                   Base Value: 200 | Scaled Value: 200 | SP Coefficient: 0.25000 | Misc Value: rage | Target: Self (1)
 #2 (id=8740)     : Apply Aura (6) | Unknown(94)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : You gain ${$m1/10} Rage upon shapeshifting into Bear Form.
@@ -869,7 +921,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=10065)    : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 7.70000 | Target: Friend (21)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.92500 | Target: Friend (21)
 Description      : Instantly heals a friendly target for $s1.
 
 Name             : Rebirth (id=20484) [Spell Family (7)] 
@@ -891,7 +943,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .x...
                  : ........ .....x.. ........ ........   ........ ........ ........ ........ 
 Effects          :
 #2 (id=101567)   : Dummy (3)
-                   Base Value: 60 | Scaled Value: 60
+                   Base Value: 100 | Scaled Value: 100
 Description      : Returns the spirit to the body, restoring a dead target to life with $s2% health and $s1% mana. Castable in combat. Usable in all shapeshift forms.
 
 Name             : Feline Grace (id=20719) [Passive, Hidden] 
@@ -908,7 +960,7 @@ Attributes       : ....x.xx ........ ..x..... ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=11702)    : Apply Aura (6) | Unknown(144)
-                   Base Value: 17 | Scaled Value: 17 | SP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 17 | Scaled Value: 17 | SP Coefficient: 0.25000 | Target: Self (1)
 Description      : Reduces damage from falling$?s114295[][ while in Cat Form].
 
 Name             : Elusiveness (Racial Passive) (id=21009) [Passive] 
@@ -970,7 +1022,7 @@ Spell Level      : 10
 Range            : 5 yards
 GCD              : 1 seconds
 Stance Mask      : 0x00000001
-Affecting spells : Incarnation: King of the Jungle (102543 effect#1), Berserk (106951 effect#1), Feral Druid (137011 effect#1), Restoration Druid (137012 effect#8), Bloodtalons (145152 effect#1), Soul of the Forest (158476 effect#2), Thrash (192090 effect#2), Feral Affinity (197490 effect#4), Astral Influence (197524 effect#1), Sabertooth (202031 effect#1), Feral Affinity (202155 effect#4), Feral Affinity (202157 effect#4), Powerful Bite (210575 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ashamane's Frenzy (210723 effect#4), Apex Predator (252752 effect#1), 
+Affecting spells : Tiger's Fury (5217 effect#1), Savage Roar (62071 effect#1), Incarnation: King of the Jungle (102543 effect#1), Berserk (106951 effect#1), Feral Druid (137011 effect#1), Restoration Druid (137012 effect#8), Bloodtalons (145152 effect#1), Soul of the Forest (158476 effect#2), Thrash (192090 effect#2), Feral Affinity (197490 effect#4), Astral Influence (197524 effect#1), Sabertooth (202031 effect#1), Feral Affinity (202155 effect#4), Feral Affinity (202157 effect#4), Powerful Bite (210575 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ashamane's Frenzy (210723 effect#4), Apex Predator (252752 effect#1), 
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ..xx.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -979,7 +1031,7 @@ Attributes       : ....x... ........ ..x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=12790)    : School Damage (2): physical
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 6.00000 | Target: Enemy (6)
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 1.26000 | Target: Enemy (6)
 #2 (id=12791)    : Power Burn (62)
                    Base Value: 25 | Scaled Value: 25 | Misc Value: 3 | Target: Self (1)
 Description      : Finishing move that causes Physical damage per combo point and consumes up to $?a106951[${25*$106951s1/-100}.1]?a102543[${25*$102543s1/-100}.1][25] additional Energy to increase damage by up to 100%.
@@ -1004,7 +1056,7 @@ Cooldown         : 10 seconds
 Category         : 33
 Category Cooldown: 10 seconds
 Stance Mask      : 0x00000001
-Affecting spells : Maim Damage (61252 effect#1), Incarnation: King of the Jungle (102543 effect#1), Berserk (106951 effect#1), Feral Druid (137011 effect#1), Bloodtalons (145152 effect#1), Soul of the Forest (158476 effect#2), Thrash (192090 effect#2), Astral Influence (197524 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ashamane's Frenzy (210723 effect#4), Fiery Red Maimers (212875 effect#2), Fiery Red Maimers (236757 effect#2), 
+Affecting spells : Tiger's Fury (5217 effect#1), Maim Damage (61252 effect#1), Savage Roar (62071 effect#1), Incarnation: King of the Jungle (102543 effect#1), Berserk (106951 effect#1), Feral Druid (137011 effect#1), Bloodtalons (145152 effect#1), Soul of the Forest (158476 effect#2), Thrash (192090 effect#2), Astral Influence (197524 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ashamane's Frenzy (210723 effect#4), Fiery Red Maimers (212875 effect#2), Fiery Red Maimers (236757 effect#2), 
 Attributes       : ....x... ........ ..x..... ........   ........ ........ ..x..... ...x.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ .......x ........   ........ ........ ........ ........ 
@@ -1063,29 +1115,23 @@ Class            : Guardian Druid
 School           : Physical
 Resource         : 10 Rage (1) (id=10734)
 Spell Level      : 40
-Duration         : 3 seconds
+Duration         : 5 seconds
 Cooldown         : 1 seconds
-Charges          : 2 (24 seconds cooldown)
+Charges          : 2 (36 seconds cooldown)
 Category         : 1568: Druid (137009 effect#2)
 Stance Mask      : 0x00000010
-Affecting spells : Druid (137009 effect#3), Ironfur (192081 effect#3), Wildflesh (200400 effect#1), Natural Defenses (211160 effect#1), Guardian of Elune (213680 effect#2)
+Affecting spells : Druid (137009 effect#3), Wildflesh (200400 effect#1), Natural Defenses (211160 effect#1), Guardian of Elune (213680 effect#2)
 Attributes       : ....x... ........ ..x..... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ......x. ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=13048)    : Apply Aura (6) | Periodic Heal (8): every 0.5 seconds
-                   Base Value: 1 | Scaled Value: 1 | Target: Self (1)
-#2 (id=124626)   : Dummy (3)
-                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
-#3 (id=287357)   : Dummy (3)
+#1 (id=13048)    : Apply Aura (6) | Periodic Heal% (20): every 1 seconds
                    Base Value: 5 | Scaled Value: 5 | Target: Self (1)
-#4 (id=287358)   : Dummy (3)
-                   Base Value: 5 | Scaled Value: 5 | Target: Self (1)
-Description      : Heals you for $s2% of all damage taken in the last $s3 sec over $d, minimum $s4% of maximum health.
-Tooltip          : Healing every $t1 sec.
+Description      : Heals you for $o1% of maximum health over $d.
+Tooltip          : Healing $w1% of maximum health every $t1 sec.
 
 Name             : Moonkin Form (id=24858) [Spell Family (7)] 
 Class            : Balance Druid
@@ -1108,7 +1154,7 @@ Effects          :
 #2 (id=15080)    : Apply Aura (6) | Shapeshift (36)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 31 | Misc Value 2: 0x7 | Target: Self (1)
 #3 (id=197236)   : Apply Aura (6) | Modify Base Resistance (142)
-                   Base Value: 200 | Scaled Value: 200 | Misc Value: 1 | Target: Self (1)
+                   Base Value: 125 | Scaled Value: 125 | Misc Value: 1 | Target: Self (1)
 #4 (id=223345)   : Apply Aura (6) | Unknown(133)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #5 (id=232245)   : Apply Aura (6) | Dummy (4)
@@ -1118,17 +1164,20 @@ Effects          :
 #7 (id=281598)   : Apply Aura (6) | Unknown(332)
                    Base Value: 102383 | Scaled Value: 102383 | Misc Value 2: 0x3 | Target: Self (1)
                    Affected Spells: Wild Charge (102401)
-#8 (id=290490)   : Apply Aura (6) | Modify Damage Done% (79)
-                   Base Value: 10 | Scaled Value: 10 | Misc Value: 0x48 | Target: Self (1)
-                   Affected School(s): Nature, Arcane
-#9 (id=353641)   : Apply Aura (6) | Modify Attacker Melee Crit Chance (187)
+#8 (id=290490)   : Apply Aura (6) | Modify Attacker Melee Crit Chance (187)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-Description      : Shapeshift into $?s114301[Astral Form][Moonkin Form], increasing your Arcane and Nature damage by $s8% and your armor by $m3%, and granting protection from Polymorph effects.$?a231042[
+#9 (id=353641)   : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
+                   Base Value: 10 | Scaled Value: 10 | Target: Self (1)
+                   Affected Spells: Starsurge (78674), Moonfire (164812), Sunfire (164815), Solar Wrath (190984), Starfall (191037), Lunar Strike (194153), Stellar Flare (202347), Shooting Stars (202497), New Moon (202767), Half Moon (202768), Full Moon (202771), Goldrinn's Fang (203001), Fury of Elune (211545), Echoing Stars (226104)
+#10 (id=479759)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Damage (22)
+                   Base Value: 10 | Scaled Value: 10 | Misc Value: 22 | Target: Self (1)
+                   Affected Spells: Starsurge (78674), Moonfire (164812), Sunfire (164815), Solar Wrath (190984), Starfall (191037), Lunar Strike (194153), Stellar Flare (202347), Shooting Stars (202497), New Moon (202767), Half Moon (202768), Full Moon (202771), Goldrinn's Fang (203001), Fury of Elune (211545), Echoing Stars (226104)
+Description      : Shapeshift into $?s114301[Astral Form][Moonkin Form], increasing the damage of your Druid spells by $s9% and your armor by $m3%, and granting protection from Polymorph effects.$?a231042[
 
 While in this form, single-target attacks against you have a $h% chance make your next Lunar Strike instant.][]
 
 The act of shapeshifting frees you from movement impairing effects.
-Tooltip          : Arcane and Nature damage done increased by $s8%.
+Tooltip          : Spell damage increased by $s9%.
 Immune to Polymorph effects.$?$w3>0[
 Armor increased by $w3%.][]
 
@@ -1174,7 +1223,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : Periodic effect affected by haste (173)
 Effects          :
 #1 (id=23639)    : Apply Aura (6) | Periodic Heal (8): every 1 seconds
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.25000 | Target: Friend (21)
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.06250 | Target: Friend (21)
 Description      : Heals the target for $o1 over $d. When Lifebloom expires or is dispelled, the target is instantly healed for $33778s1. Limit 1.
 Tooltip          : Healing $w1 every second.
 Blooms for additional healing when effect expires or is dispelled.
@@ -1194,7 +1243,7 @@ Attributes       : ........ ........ ........ x..x....   .....x.. ..x..... .....
                  : Does not break stealth (37), Disable player procs (112)
 Effects          :
 #1 (id=23653)    : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.50000 | Target: Friend (21)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.62500 | Target: Friend (21)
 Description      : $@spelldesc33763
 
 Name             : Nurturing Instinct (id=33873) [Spell Family (7), Passive] 
@@ -1260,13 +1309,13 @@ Attributes       : ....x... ........ ..x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=23847)    : Weapon Damage (58)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.25000 | Target: Enemy (6)
 #2 (id=216150)   : Weapon Damage% (31)
-                   Base Value: 387 | Scaled Value: 3.87 | Target: Enemy (6)
+                   Base Value: 131 | Scaled Value: 1.31 | Target: Enemy (6)
 #3 (id=281797)   : Dummy (3)
                    Base Value: 20 | Scaled Value: 20 | Target: Enemy (6)
 #4 (id=290296)   : Energize Power (30)
-                   Base Value: 50 | Scaled Value: 50 | Misc Value: rage | Target: Self (1)
+                   Base Value: 80 | Scaled Value: 80 | Misc Value: rage | Target: Self (1)
 Description      : Mangle the target for $sw2 Physical damage.$?a231064[ Deals $s3% additional damage against bleeding targets.][]
 
 |cFFFFFFFFGenerates ${$m4/10} Rage.|r
@@ -1306,7 +1355,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : Periodic effect affected by haste (173)
 Effects          :
 #1 (id=40640)    : Apply Aura (6) | Periodic Heal (8): every 1 seconds
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.34000 | Radius: 0 - 30 yards | Target: Unknown(63) -> AOE friendly (31)
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.08500 | Radius: 0 - 30 yards | Target: Unknown(63) -> AOE friendly (31)
 #2 (id=40641)    : Apply Aura (6) | Dummy (4)
                    Base Value: 20 | Scaled Value: 20 | Radius: 0 - 30 yards | Target: Unknown(87) -> AOE friendly (31)
 #3 (id=40642)    : None (0)
@@ -1332,7 +1381,7 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=40659)    : Apply Aura (6) | Proc Trigger Spell (42): Infected Wounds
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Trigger Spell: 58180 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.25000 | Trigger Spell: 58180 | Target: Self (1)
 Description      : Rake causes an Infected Wound in the target, reducing the target's movement speed by $58180s1% for $58180d.
 
 Name             : Living Seed (id=48500) [Spell Family (7), Passive] 
@@ -1420,7 +1469,7 @@ Tooltip          : Damage taken reduced by $w1%.
 Name             : Savage Roar (id=52610) [Spell Family (7)] 
 Class            : Druid
 School           : Physical
-Resource         : 40 Energy (3) (id=2413)
+Resource         : 30 Energy (3) (id=2413)
 Resource         : 1 - 5 Combo Points (4) (id=11447)
 Spell Level      : 1
 Range            : 100 yards
@@ -1436,19 +1485,19 @@ Attributes       : ....x... ........ ..x..... .....x..   .....x.. ..x..... .....
                  : Does not break stealth (37)
 Effects          :
 #1 (id=45151)    : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.25000 | Target: Self (1)
 #2 (id=45152)    : Apply Aura (6) | Dummy (4)
                    Base Value: 15 | Scaled Value: 15 | Target: Self (1)
 #3 (id=159999)   : Apply Aura (6) | Periodic Dummy (226): every 2 seconds
                    Base Value: 15 | Scaled Value: 15 | Target: Self (1)
-Description      : Finishing move that grants $62071s1% increased damage while in Cat Form. Lasts longer per combo point:
+Description      : Finishing move that increases damage by $62071s1% while in Cat Form. Lasts longer per combo point:
 
    1 point  : 12 seconds
    2 points: 18 seconds
    3 points: 24 seconds
    4 points: 30 seconds
    5 points: 36 seconds
-Tooltip          : Damage done increased by $w2% while in Cat Form.
+Tooltip          : Damage increased $w2% while in Cat Form.
 
 Name             : The Orca (id=54872) 
 Class            : Druid
@@ -1503,7 +1552,7 @@ Attributes       : ........ ........ ........ ........   ...x...x ........ .x...
                  : Disable target procs (113)
 Effects          :
 #1 (id=51495)    : Apply Aura (6) | Decrease Movement Speed% (33)
-                   Base Value: -50 | Scaled Value: -50 | Mechanic: Unknown(88) | Target: Enemy (6)
+                   Base Value: -20 | Scaled Value: -20 | Mechanic: Unknown(88) | Target: Enemy (6)
 Description      : $@spelldesc48484
 Tooltip          : Movement speed slowed by $s1%.
 
@@ -1583,11 +1632,17 @@ Attributes       : ....x..x x....... ..x..... .....x..   .....x.. ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Hidden (7), Does not break stealth (37)
 Effects          :
-#1 (id=56034)    : Apply Aura (6) | Modify Damage Done% (79)
-                   Base Value: 15 | Scaled Value: 15 | Misc Value: 0x7f | Target: Self (1)
-                   Affected School(s): All
+#1 (id=56034)    : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
+                   Base Value: 15 | Scaled Value: 15 | Target: Self (1)
+                   Affected Spells: Rip (1079), Rake (1822), Shred (5221), Ferocious Bite (22568), Maim (22570), Swipe (106785), Thrash (106830), Moonfire (155625), Rake (155722), Moonfire (164812), Maim (168877), Maim (168878), Maim (168879), Maim (168880), Maim (168881), Brutal Slash (202028), Shadow Thrash (210687), Ashamane's Rip (210705), Ashamane's Frenzy (210723)
+#2 (id=479760)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Damage (22)
+                   Base Value: 15 | Scaled Value: 15 | Misc Value: 22 | Target: Self (1)
+                   Affected Spells: Rip (1079), Rake (1822), Shred (5221), Ferocious Bite (22568), Maim (22570), Swipe (106785), Thrash (106830), Moonfire (155625), Rake (155722), Moonfire (164812), Maim (168877), Maim (168878), Maim (168879), Maim (168880), Maim (168881), Brutal Slash (202028), Shadow Thrash (210687), Ashamane's Rip (210705), Ashamane's Frenzy (210723)
+#3 (id=479882)   : Apply Aura (6) | Unknown(344)
+                   Base Value: 15 | Scaled Value: 15 | Target: Self (1)
+                   Affected Spells: Rip (1079), Rake (1822), Shred (5221), Ferocious Bite (22568), Maim (22570), Swipe (106785), Thrash (106830), Moonfire (155625), Rake (155722), Moonfire (164812), Maim (168877), Maim (168878), Maim (168879), Maim (168880), Maim (168881), Brutal Slash (202028), Shadow Thrash (210687), Ashamane's Rip (210705), Ashamane's Frenzy (210723)
 Description      : $@spelldesc52610
-Tooltip          : Damage done increased by $w1%.
+Tooltip          : Damage increased $w1%.
 
 Name             : Viciousness (Racial Passive) (id=68975) [Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Druid
@@ -1690,7 +1745,7 @@ Effects          :
 #2 (id=90627)    : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 1 (3)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.25000 | Misc Value: 3 | Target: Self (1)
                    Affected Spells: Solar Empowerment (164545), Lunar Empowerment (164547), Stellar Empowerment (197637)
-Description      : Increases Starfall and Starsurge damage, and the effect of Lunar, Solar, and Stellar Empowerments by an additional $s1%.
+Description      : Increases Starfall and Starsurge damage, and the effect of Lunar, Solar, and Stellar Empowerments by an additional ${$s1}.1%.
 
 Name             : Mastery: Razor Claws (id=77493) [Spell Family (7), Passive] 
 Class            : Feral Druid
@@ -1712,7 +1767,7 @@ Effects          :
                    Affected Spells: Rip (1079), Rake (1822), Thrash (106830), Rake (155722), Shadow Thrash (210687), Ashamane's Rip (210705), Ashamane's Frenzy (210722), Ashamane's Frenzy (210723)
 #3 (id=133796)   : Apply Aura (6) | Dummy (4)
                    Base Value: 200 | Scaled Value: 200 | Target: Self (1)
-Description      : Increases the damage done by your Cat Form bleed abilities by $s1%.
+Description      : Increases the damage done by your Cat Form bleed abilities by ${$s1}.1%.
 
 Name             : Mastery: Harmony (id=77495) [Spell Family (7), Passive] 
 Class            : Restoration Druid
@@ -1728,7 +1783,7 @@ Attributes       : ......x. x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=68119)    : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.60000 | Target: Self (1)
-Description      : Your healing is increased by $s1% for each of your Restoration heal over time effects on the target.
+Description      : Your healing is increased by ${$s1}.1% for each of your Restoration heal over time effects on the target.
 
 Name             : Thrash (Feral, Guardian) (id=77758) [Spell Family (7)] 
 Class            : Druid
@@ -1749,9 +1804,9 @@ Attributes       : ....x... ........ ..x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=68168)    : School Damage (2): physical
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.55300 | Radius: 0 - 8 yards | Mechanic: Bleed | Target: At Caster (22) -> AOE enemy (15)
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.07980 | Radius: 0 - 8 yards | Mechanic: Bleed | Target: At Caster (22) -> AOE enemy (15)
 #2 (id=312099)   : Energize Power (30)
-                   Base Value: 40 | Scaled Value: 40 | Misc Value: rage | Target: Self (1)
+                   Base Value: 50 | Scaled Value: 50 | Misc Value: rage | Target: Self (1)
 Description      : Strikes all nearby enemies, dealing $s1 Bleed damage and an additional $192090o1 Bleed damage over $192090d. When applied from Bear Form, this effect can stack up to $192090u times.
 
 |cFFFFFFFFGenerates ${$m2/10} Rage.|r
@@ -1765,7 +1820,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Velocity         : 45 yards/sec
 Stance Mask      : 0x40000000
-Affecting spells : Mastery: Starlight (77492 effect#1), Restoration Druid (137012 effect#8), Balance Druid (137013 effect#1), Lucidity (137247 effect#1), Thrash (192090 effect#2), Astral Influence (197524 effect#1), Scythe of the Stars (202433 effect#1), Oneth's Intuition (209406 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), The Emerald Dreamcatcher (224706 effect#1), Item - Druid T20 Balance 2P Bonus (242231 effect#2), Item - Druid  T21 Balance 2P Bonus (251803 effect#2)
+Affecting spells : Moonkin Form (24858 effect#9), Mastery: Starlight (77492 effect#1), Incarnation: Chosen of Elune (102560 effect#1), Restoration Druid (137012 effect#8), Balance Druid (137013 effect#1), Lucidity (137247 effect#1), Thrash (192090 effect#2), Celestial Alignment (194223 effect#1), Astral Influence (197524 effect#1), Scythe of the Stars (202433 effect#1), Oneth's Intuition (209406 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), The Emerald Dreamcatcher (224706 effect#1), Item - Druid T20 Balance 2P Bonus (242231 effect#2), Item - Druid  T21 Balance 2P Bonus (251803 effect#2)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1774,15 +1829,14 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=68268)    : School Damage (2): astral
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 5.20000 | Target: Enemy (6)
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.50000 | Target: Enemy (6)
 #2 (id=289864)   : Trigger Spell (64): Lunar Empowerment
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 164547 | Target: Self (1)
 #3 (id=289865)   : Trigger Spell (64): Solar Empowerment
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 164545 | Target: Self (1)
 Description      : Launch a surge of stellar energies at the target, dealing $78674s1 Astral damage.
 
-Also grants you Lunar and Solar Empowerments, which increase the damage of your next Lunar Strike and Solar Wrath by $164547s1%, respectively.$?a231021[ You can accumulate up to $164547u of each Empowerment.][]
-
+Also grants you Lunar and Solar Empowerments, which increase the damage of your next Lunar Strike and Solar Wrath by $164547s1%, respectively.$?a231021[ You can accumulate up to $164547u of each Empowerment.][]
 
 Name             : Solar Beam (id=78675) [Spell Family (7)] 
 Class            : Balance Druid
@@ -1819,7 +1873,7 @@ Spell Level      : 1
 Range            : 5 yards
 GCD              : 1.5 seconds
 Stance Mask      : 0x00000010
-Affecting spells : Druid (137009 effect#4), Thrash (192090 effect#2), Astral Influence (197524 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), 
+Affecting spells : Druid (137009 effect#4), Guardian Druid (137010 effect#1), Thrash (192090 effect#2), Astral Influence (197524 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), 
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1828,7 +1882,7 @@ Attributes       : ....x... ........ ..x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=68522)    : Weapon Damage% (31)
-                   Base Value: 850 | Scaled Value: 8.5 | Target: Enemy (6)
+                   Base Value: 289 | Scaled Value: 2.89 | Target: Enemy (6)
 #2 (id=68523)    : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
 #3 (id=327035)   : Dummy (3)
@@ -1915,7 +1969,7 @@ Attributes       : ........ ........ ........ x..x....   .....x.. ........ .....
                  : Does not break stealth (37)
 Effects          :
 #1 (id=68693)    : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.56445 | Radius: 0 - 10 yards | Target: Unknown(87) -> AOE friendly (31)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.14111 | Radius: 0 - 10 yards | Target: Unknown(87) -> AOE friendly (31)
 Description      : Restores $s1 health to three injured allies within $A1 yards of the initial target every $81262t1 sec for $81262d.
 
 Name             : Leather Specialization (id=86093) [Spell Family (7), Passive] 
@@ -1931,11 +1985,11 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=87555)    : Apply Aura (6) | Modify Total Stat% (137)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Misc Value 2: 0x2 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.25000 | Misc Value 2: 0x2 | Target: Self (1)
 #2 (id=158298)   : Apply Aura (6) | Modify Total Stat% (137)
-                   Base Value: 5 | Scaled Value: 5 | SP Coefficient: 1.00000 | Misc Value 2: 0x8 | Target: Self (1)
+                   Base Value: 5 | Scaled Value: 5 | SP Coefficient: 0.25000 | Misc Value 2: 0x8 | Target: Self (1)
 #3 (id=158302)   : Apply Aura (6) | Modify Total Stat% (137)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Misc Value 2: 0x4 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.25000 | Misc Value 2: 0x4 | Target: Self (1)
 Description      : Increases your Intellect by $s2% while wearing only Leather armor.
 
 Name             : Leather Specialization (id=86096) [Spell Family (7), Passive] 
@@ -1952,11 +2006,11 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=87558)    : Apply Aura (6) | Modify Total Stat% (137)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Misc Value 2: 0x2 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.25000 | Misc Value 2: 0x2 | Target: Self (1)
 #2 (id=158299)   : Apply Aura (6) | Modify Total Stat% (137)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Misc Value 2: 0x8 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.25000 | Misc Value 2: 0x8 | Target: Self (1)
 #3 (id=158301)   : Apply Aura (6) | Modify Total Stat% (137)
-                   Base Value: 5 | Scaled Value: 5 | SP Coefficient: 1.00000 | Misc Value 2: 0x4 | Target: Self (1)
+                   Base Value: 5 | Scaled Value: 5 | SP Coefficient: 0.25000 | Misc Value 2: 0x4 | Target: Self (1)
 Description      : Increases your Stamina in Bear Form by $s3% while wearing only Leather armor.
 
 Name             : Leather Specialization (id=86097) [Spell Family (7), Passive] 
@@ -1972,11 +2026,11 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=87559)    : Apply Aura (6) | Modify Total Stat% (137)
-                   Base Value: 5 | Scaled Value: 5 | SP Coefficient: 1.00000 | Misc Value 2: 0x2 | Target: Self (1)
+                   Base Value: 5 | Scaled Value: 5 | SP Coefficient: 0.25000 | Misc Value 2: 0x2 | Target: Self (1)
 #2 (id=158303)   : Apply Aura (6) | Modify Total Stat% (137)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Misc Value 2: 0x8 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.25000 | Misc Value 2: 0x8 | Target: Self (1)
 #3 (id=158304)   : Apply Aura (6) | Modify Total Stat% (137)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Misc Value 2: 0x4 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.25000 | Misc Value 2: 0x4 | Target: Self (1)
 Description      : Increases your Agility by $s1% while wearing only Leather armor.
 
 Name             : Leather Specialization (id=86104) [Spell Family (7), Passive] 
@@ -1992,17 +2046,17 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=87566)    : Apply Aura (6) | Modify Total Stat% (137)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Misc Value 2: 0x2 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.25000 | Misc Value 2: 0x2 | Target: Self (1)
 #2 (id=158306)   : Apply Aura (6) | Modify Total Stat% (137)
-                   Base Value: 5 | Scaled Value: 5 | SP Coefficient: 1.00000 | Misc Value 2: 0x8 | Target: Self (1)
+                   Base Value: 5 | Scaled Value: 5 | SP Coefficient: 0.25000 | Misc Value 2: 0x8 | Target: Self (1)
 #3 (id=158307)   : Apply Aura (6) | Modify Total Stat% (137)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Misc Value 2: 0x4 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.25000 | Misc Value 2: 0x4 | Target: Self (1)
 Description      : Increases your Intellect by $s2% while wearing only Leather armor.
 
 Name             : Nature's Cure (id=88423) [Spell Family (7)] 
 Class            : Restoration Druid
 School           : Nature
-Resource         : 13% Base Mana (0) (id=5074)
+Resource         : 6.5% Base Mana (0) (id=5074)
 Spell Level      : 22
 Range            : 40 yards
 GCD              : 1.5 seconds
@@ -2129,27 +2183,6 @@ Effects          :
 Description      : You summon a beam of solar light over the enemy target's location, interrupting the enemy target and silencing all enemy targets under the beam while it is active. Solar Beam lasts for $78675d.
 Tooltip          : Interrupted.
 
-Name             : Displacer Beast (id=102280) [Spell Family (7)] 
-Class            : Druid
-School           : Arcane
-Spell Level      : 1
-GCD              : 1.5 seconds
-Cooldown         : 30 seconds
-Affecting spells : Lucidity (137247 effect#1), Astral Influence (197524 effect#3), Ekowraith, Creator of Worlds (210667 effect#7)
-Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ......x. ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ .....x.. ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=110963)   : Leap (29)
-                   Base Value: 0 | Scaled Value: 0 | Radius: 0 - 20 yards | Target: Self (1) -> Unknown(55)
-#2 (id=111079)   : Trigger Spell (64): Displacer Beast
-                   Base Value: 5 | Scaled Value: 5 | Trigger Spell: 137452 | Target: Self (1)
-Description      : Teleports you up to $A1 yards forward, activating Cat Form and increasing your movement speed by $137452s2% for $137452d.
-Tooltip          : Displaced.
-
 Name             : Ironbark (id=102342) [Spell Family (7)] 
 Class            : Restoration Druid
 School           : Nature
@@ -2196,7 +2229,7 @@ Attributes       : ....x... ...x.... x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=111086)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 100 | Scaled Value: 100 | SP Coefficient: 1.00000 | Trigger Spell: 102352 | Target: Friend (21)
+                   Base Value: 100 | Scaled Value: 100 | SP Coefficient: 0.25000 | Trigger Spell: 102352 | Target: Friend (21)
 Description      : Protects a friendly target for $d. Any damage taken will consume the ward and heal the target for $102352o1 over $102352d.
 Tooltip          : Taking damage will grant $102352m1 healing every $102352t sec for $102352d.
 
@@ -2217,7 +2250,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Periodic effect affected by haste (173)
 Effects          :
 #1 (id=111087)   : Apply Aura (6) | Periodic Heal (8): every 2 seconds
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.20000 | Target: Friend (21)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.55000 | Target: Friend (21)
 Description      : Heals the target for $m1 every $t1 sec for $d.
 Tooltip          : Heals $w1 damage every $t1 seconds.
 
@@ -2290,10 +2323,10 @@ Attributes       : ....x... ........ ..x..... ........   .....x.. ..x..... x....
                  : Does not break stealth (37)
 Effects          :
 #1 (id=111355)   : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost (14)
-                   Base Value: -50 | Scaled Value: -50 | SP Coefficient: 1.00000 | Misc Value: 14 | Target: Self (1)
+                   Base Value: -50 | Scaled Value: -50 | SP Coefficient: 0.25000 | Misc Value: 14 | Target: Self (1)
                    Affected Spells: Rip (1079), Rake (1822), Shred (5221), Ferocious Bite (22568), Maim (22570), Savage Roar (52610), Thrash (77758), Skull Bash (93985), Swipe (106785), Thrash (106830), Skull Bash (106839), Ysera's Gift (145108), Ysera's Gift (145109), Ysera's Gift (145110), Moonfire (155625), Rake (155722), Maim (168877), Maim (168878), Maim (168879), Maim (168880), Maim (168881), Brutal Slash (202028), Ashamane's Rip (210705)
 #2 (id=310506)   : Apply Aura (6) | Unknown(418)
-                   Base Value: 50 | Scaled Value: 50 | SP Coefficient: 1.00000 | Misc Value: 3 | Target: Self (1)
+                   Base Value: 50 | Scaled Value: 50 | SP Coefficient: 0.25000 | Misc Value: 3 | Target: Self (1)
                    Affected Spells: Rake (1822), Shred (5221), Maim (22570), Savage Roar (52610), Thrash (77758), Skull Bash (93985), Swipe (106785), Thrash (106830), Skull Bash (106839), Ysera's Gift (145108), Ysera's Gift (145109), Ysera's Gift (145110), Rake (155722), Maim (168877), Maim (168878), Maim (168879), Maim (168880), Maim (168881), Fury of Elune (202770), Touch of the Moon (203018), Fury of Elune (211545)
 #3 (id=471804)   : Trigger Spell (64): Jungle Stalker
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 252071 | Target: Self (1)
@@ -2364,10 +2397,10 @@ Effects          :
                    Base Value: -6500 | Scaled Value: -6500 | Misc Value: 11 | Target: Self (1)
                    Affected Spells: Growl (6795)
 #4 (id=300948)   : Apply Aura (6) | Add Flat Modifier (107): Spell Targets (17)
-                   Base Value: 3 | Scaled Value: 3 | SP Coefficient: 1.00000 | Misc Value: 17 | Target: Self (1)
+                   Base Value: 3 | Scaled Value: 3 | SP Coefficient: 0.25000 | Misc Value: 17 | Target: Self (1)
                    Affected Spells: Mangle (33917), Enraged Mangle (202085)
 #5 (id=357666)   : Apply Aura (6) | Modify Base Resistance (142)
-                   Base Value: 15 | Scaled Value: 15 | SP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
+                   Base Value: 15 | Scaled Value: 15 | SP Coefficient: 0.25000 | Misc Value: 1 | Target: Self (1)
                    Affected Spells: Mangle (33917), Enraged Mangle (202085)
 Description      : An improved Bear Form that reduces the cooldown on all melee damage abilities and Growl to 1.5 sec, causes Mangle to hit up to $s4 targets, and increases armor by $s5%.
 
@@ -2391,14 +2424,17 @@ Attributes       : ....x... ........ ..x..... ........   ........ ..x..... x....
                  : ........ ........ ........ ........   ........ ........ ......x. ........ 
                  : ........ .....x.. ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=111387)   : Apply Aura (6) | Modify Damage Done% (79)
-                   Base Value: 35 | Scaled Value: 35 | Misc Value: 0x7e | Target: Self (1)
-                   Affected School(s): Holy, Fire, Nature, Frost, Shadow, Arcane
+#1 (id=111387)   : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
+                   Base Value: 35 | Scaled Value: 35 | Target: Self (1)
+                   Affected Spells: Starsurge (78674), Moonfire (164812), Sunfire (164815), Solar Wrath (190984), Starfall (191037), Lunar Strike (194153), Stellar Flare (202347), Shooting Stars (202497), New Moon (202767), Half Moon (202768), Full Moon (202771), Goldrinn's Fang (203001), Fury of Elune (211545), Echoing Stars (226104)
 #2 (id=310508)   : Apply Aura (6) | Add Percent Modifier (108): Spell Effect 2 (12)
                    Base Value: 50 | Scaled Value: 50 | Misc Value: 12 | Target: Self (1)
                    Affected Spells: Solar Wrath (5176), Solar Wrath (190984), Lunar Strike (194153), Lunar Strike (197628), Solar Wrath (197629)
 #3 (id=310509)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0
+#4 (id=479761)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Damage (22)
+                   Base Value: 35 | Scaled Value: 35 | Misc Value: 22 | Target: Self (1)
+                   Affected Spells: Starsurge (78674), Moonfire (164812), Sunfire (164815), Solar Wrath (190984), Starfall (191037), Lunar Strike (194153), Stellar Flare (202347), Shooting Stars (202497), New Moon (202767), Half Moon (202768), Full Moon (202771), Goldrinn's Fang (203001), Fury of Elune (211545), Echoing Stars (226104)
 Description      : An improved Moonkin Form that increases the damage of all your spells by $s1% and causes your Lunar Strike and Solar Wrath to generate $s2% additional Astral Power.
 
 Lasts $d. You may shapeshift in and out of this improved Moonkin Form for its duration.
@@ -2506,7 +2542,7 @@ Spell Level      : 32
 Range            : 8 yards
 GCD              : 1 seconds
 Stance Mask      : 0x00000001
-Affecting spells : Incarnation: King of the Jungle (102543 effect#1), Berserk (106951 effect#1), Clearcasting (135700 effect#1), Feral Druid (137011 effect#1), Restoration Druid (137012 effect#8), Bloodtalons (145152 effect#1), Feral Affinity (197490 effect#3), Astral Influence (197524 effect#1), Feral Affinity (202155 effect#3), Feral Affinity (202157 effect#3), Sharpened Claws (210637 effect#1), Scent of Blood (210664 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ashamane's Frenzy (210723 effect#4)
+Affecting spells : Tiger's Fury (5217 effect#1), Savage Roar (62071 effect#1), Incarnation: King of the Jungle (102543 effect#1), Berserk (106951 effect#1), Clearcasting (135700 effect#1), Feral Druid (137011 effect#1), Restoration Druid (137012 effect#8), Bloodtalons (145152 effect#1), Feral Affinity (197490 effect#3), Astral Influence (197524 effect#1), Feral Affinity (202155 effect#3), Feral Affinity (202157 effect#3), Sharpened Claws (210637 effect#1), Scent of Blood (210664 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ashamane's Frenzy (210723 effect#4)
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .......x ........ ........ 
@@ -2519,7 +2555,7 @@ Effects          :
 #2 (id=222211)   : Dummy (3)
                    Base Value: 20 | Scaled Value: 20 | Radius: 0 - 8 yards | Target: At Caster (22) -> AOE enemy (15)
 #3 (id=222212)   : Weapon Damage% (31)
-                   Base Value: 610 | Scaled Value: 6.1 | Radius: 0 - 8 yards | Target: At Caster (22) -> AOE enemy (15)
+                   Base Value: 164 | Scaled Value: 1.64 | Radius: 0 - 8 yards | Target: At Caster (22) -> AOE enemy (15)
 Description      : Swipe nearby enemies, inflicting $sw3 Physical damage.$?a231283[ Deals $s2% increased damage against bleeding targets.][]
 
 |cFFFFFFFFAwards $s1 combo $lpoint:points;.|r
@@ -2534,18 +2570,19 @@ GCD              : 1 seconds
 Duration         : 15 seconds
 Stance Mask      : 0x00000001
 Mechanic         : Bleed
-Affecting spells : Mastery: Razor Claws (77493 effect#1), Incarnation: King of the Jungle (102543 effect#1), Incarnation: Guardian of Ursoc (102558 effect#1), Berserk (106951 effect#1), Clearcasting (135700 effect#1), Guardian Druid (137010 effect#1), Feral Druid (137011 effect#1), Restoration Druid (137012 effect#8), Bloodletting (165699 effect#1), Astral Influence (197524 effect#1), Jagged Claws (200409 effect#1), Jagged Wounds (202032 effect#1), Luffa Wrappings (208681 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ashamane's Frenzy (210723 effect#4), Item - Druid T19 Feral 2P Bonus (211140 effect#1), Thrashing Claws (238048 effect#1), 
+Affecting spells : Tiger's Fury (5217 effect#1), Savage Roar (62071 effect#1), Mastery: Razor Claws (77493 effect#1), Incarnation: King of the Jungle (102543 effect#1), Incarnation: Guardian of Ursoc (102558 effect#1), Berserk (106951 effect#1), Clearcasting (135700 effect#1), Feral Druid (137011 effect#1), Restoration Druid (137012 effect#8), Bloodletting (165699 effect#1), Astral Influence (197524 effect#1), Jagged Claws (200409 effect#1), Jagged Wounds (202032 effect#1), Luffa Wrappings (208681 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ashamane's Frenzy (210723 effect#4), Item - Druid T19 Feral 2P Bonus (211140 effect#1), Thrashing Claws (238048 effect#1), 
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ .......x ........ ........   ........ .......x ........ ........ 
+                 : ........ .......x ........ ........   ........ .....x.x ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .x..x... ........ ........   ........ ........ ......x. ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Periodic effect affected by haste (173)
 Effects          :
 #1 (id=117262)   : School Damage (2): physical
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.00000 | AP Coefficient: 0.50020 | Radius: 0 - 8 yards | Mechanic: Bleed | Target: At Caster (22) -> AOE enemy (15)
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.08400 | Radius: 0 - 8 yards | Mechanic: Bleed | Target: At Caster (22) -> AOE enemy (15)
 #2 (id=117263)   : Apply Aura (6) | Periodic Damage (3): physical every 3 seconds
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.35624 | Radius: 0 - 8 yards | Mechanic: Bleed | Target: At Caster (22) -> AOE enemy (15)
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.05040 | Radius: 0 - 8 yards | Mechanic: Bleed | Target: At Caster (22) -> AOE enemy (15)
 Description      : Strikes all nearby enemies, dealing $m1 Bleed damage and an additional $o2 Bleed damage over $d.
 
 |cFFFFFFFFAwards $211141s1 combo $lpoint:points;.|r
@@ -2611,7 +2648,7 @@ Attributes       : ....x... ........ ..x..... ........   .....x.. ..x..... .x...
                  : Does not break stealth (37)
 Effects          :
 #1 (id=117391)   : Apply Aura (6) | Increase Speed% (31)
-                   Base Value: 60 | Scaled Value: 60 | Radius: 0 - 10 yards | Target: At Caster (22) -> AOE friendly (30)
+                   Base Value: 60 | Scaled Value: 60 | Radius: 0 - 15 yards | Target: At Caster (22) -> AOE friendly (30)
 Description      : Lets loose a wild roar, increasing the movement speed of all friendly players within $A1 yards by $s1% for $d.$?s114222[][
 
 Using this ability outside of Bear Form or Cat Form activates Bear Form.]
@@ -2635,13 +2672,13 @@ Attributes       : ....x... ........ ........ ........   .....x.. ..x..... .x...
                  : Does not break stealth (37)
 Effects          :
 #1 (id=117476)   : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost (14)
-                   Base Value: -50 | Scaled Value: -50 | SP Coefficient: 1.00000 | Misc Value: 14 | Target: Self (1)
+                   Base Value: -50 | Scaled Value: -50 | SP Coefficient: 0.25000 | Misc Value: 14 | Target: Self (1)
                    Affected Spells: Rip (1079), Rake (1822), Shred (5221), Ferocious Bite (22568), Maim (22570), Savage Roar (52610), Thrash (77758), Skull Bash (93985), Swipe (106785), Thrash (106830), Skull Bash (106839), Ysera's Gift (145108), Ysera's Gift (145109), Ysera's Gift (145110), Moonfire (155625), Rake (155722), Maim (168877), Maim (168878), Maim (168879), Maim (168880), Maim (168881), Brutal Slash (202028), Ashamane's Rip (210705)
 #2 (id=219222)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Misc Value: 3 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.25000 | Misc Value: 3 | Target: Self (1)
                    Affected Spells: Rake (1822), Shred (5221), Maim (22570), Savage Roar (52610), Thrash (77758), Skull Bash (93985), Swipe (106785), Thrash (106830), Skull Bash (106839), Ysera's Gift (145108), Ysera's Gift (145109), Ysera's Gift (145110), Rake (155722), Maim (168877), Maim (168878), Maim (168879), Maim (168880), Maim (168881), Fury of Elune (202770), Touch of the Moon (203018), Fury of Elune (211545)
 #3 (id=219223)   : Apply Aura (6) | Unknown(418)
-                   Base Value: 50 | Scaled Value: 50 | SP Coefficient: 1.00000 | Misc Value: 3 | Target: Self (1)
+                   Base Value: 50 | Scaled Value: 50 | SP Coefficient: 0.25000 | Misc Value: 3 | Target: Self (1)
                    Affected Spells: Rake (1822), Shred (5221), Maim (22570), Savage Roar (52610), Thrash (77758), Skull Bash (93985), Swipe (106785), Thrash (106830), Skull Bash (106839), Ysera's Gift (145108), Ysera's Gift (145109), Ysera's Gift (145110), Rake (155722), Maim (168877), Maim (168878), Maim (168879), Maim (168880), Maim (168881), Fury of Elune (202770), Touch of the Moon (203018), Fury of Elune (211545)
 Description      : Reduces the cost of all Cat Form abilities by $s1% and increases maximum Energy by $s3 for $d. Requires Cat Form.
 Tooltip          : Reduces the cost of all Cat Form abilities by $s1% and increases maximum Energy by $s3.
@@ -2692,7 +2729,7 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=119368)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 100 | Scaled Value: 100 | SP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
+                   Base Value: 100 | Scaled Value: 100 | SP Coefficient: 0.25000 | Misc Value: 1 | Target: Self (1)
 Description      : Grants $s1% of your Intellect as Agility when you shapeshift into Bear Form or Cat Form.
 
 Name             : Omen of Clarity (id=113043) [Spell Family (7), Passive] 
@@ -2711,7 +2748,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=125741)   : Apply Aura (6) | Proc Trigger Spell (42): Clearcasting
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Trigger Spell: 16870 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.25000 | Trigger Spell: 16870 | Target: Self (1)
 Description      : Your healing over time from Lifebloom has a $h% chance to cause a Clearcasting state, making your next $?a155577[${$155577m1+1} Regrowths][Regrowth] cost no mana.
 
 Name             : Cat Form (Passive) (id=113636) [Spell Family (7), Passive, Hidden] 
@@ -2766,7 +2803,7 @@ Attributes       : ........ ........ ........ ...x....   ........ ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=127235)   : Apply Aura (6) | Add Percent Modifier (108): Spell Cast Time (10)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Misc Value: 10 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.25000 | Misc Value: 10 | Target: Self (1)
                    Affected Spells: Healing Touch (5185)
 #2 (id=228019)   : Apply Aura (6) | Dummy (4)
                    Base Value: 200 | Scaled Value: 200 | Target: Self (1)
@@ -2875,9 +2912,9 @@ Attributes       : ........ ........ ..x..... ........   ........ ........ .x...
                  : ........ .....x.. ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=158318)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Misc Value: 127 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.25000 | Misc Value: 127 | Target: Self (1)
 #2 (id=158319)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Misc Value: 127 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.25000 | Misc Value: 127 | Target: Self (1)
 #3 (id=158320)   : Apply Aura (6) | Periodic Dummy (226): every 0.25 seconds
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
 #4 (id=215347)   : Apply Aura (6) | Dummy (4)
@@ -2932,7 +2969,7 @@ Attributes       : ....x.x. ........ ..x..... ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=159971)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 17 | Scaled Value: 17 | SP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 17 | Scaled Value: 17 | SP Coefficient: 0.25000 | Target: Self (1)
 Description      : Reduces damage from falling$?s114295[][ while in Cat Form].
 
 Name             : Charm Woodland Creature (id=127757) 
@@ -3000,7 +3037,7 @@ Attributes       : ....x.x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=170089)   : Apply Aura (6) | Unknown(129)
-                   Base Value: 15 | Scaled Value: 15 | SP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 15 | Scaled Value: 15 | SP Coefficient: 0.25000 | Target: Self (1)
 Description      : Increases your movement speed by $s1%.
 
 Name             : Visual Effect: Tree of Life (id=132213) [Hidden] 
@@ -3094,10 +3131,10 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1568 | Target: Self (1)
                    Affected Spells (Category): Frenzied Regeneration (22842)
 #3 (id=191163)   : Apply Aura (6) | Hasted Cooldown Duration (416)
-                   Base Value: 100 | Scaled Value: 100 | SP Coefficient: 1.00000 | Misc Value: 11 | Target: Self (1)
+                   Base Value: 100 | Scaled Value: 100 | SP Coefficient: 0.25000 | Misc Value: 11 | Target: Self (1)
                    Affected Spells: Maul (6807), Frenzied Regeneration (22842), Mangle (33917), Thrash (77758), Thrash (192090), Enraged Mangle (202085), Swipe (213771), Enraged Maul (236716)
 #4 (id=191164)   : Apply Aura (6) | Hasted Global Cooldown (417)
-                   Base Value: 100 | Scaled Value: 100 | SP Coefficient: 1.00000 | Misc Value: 11 | Target: Self (1)
+                   Base Value: 100 | Scaled Value: 100 | SP Coefficient: 0.25000 | Misc Value: 11 | Target: Self (1)
                    Affected Spells: Incapacitating Roar (99), Cat Form (768), Travel Form (783), Mighty Bash (5211), Bear Form (5487), Maul (6807), Moonkin Form (24858), Incarnation: Tree of Life (33891), Mangle (33917), Thrash (77758), Pulverize (80313), Skull Bash (93985), Cenarion Ward (102351), Cenarion Ward (102352), Incarnation: King of the Jungle (102543), Incarnation: Guardian of Ursoc (102558), Incarnation: Chosen of Elune (102560), Skull Bash (106839), Pulverize (158792), Flight Form (165962), Thrash (192090), Moonkin Form (197625), Enraged Mangle (202085), Stag Form (210053), Swipe (213771), Enraged Maul (236716), Intimidating Roar (236748), Jungle Stalker (252071)
 #5 (id=191165)   : Apply Aura (6) | Unknown(379)
                    Base Value: 220 | Scaled Value: 220 | Target: Self (1)
@@ -3121,10 +3158,10 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=179693)   : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
                    Base Value: 4 | Scaled Value: 4 | Target: Self (1)
-                   Affected Spells: Maul (6807), Moonfire (8921), Mangle (33917), Thrash (77758), Thrash (106830), Moonfire (164812), Enraged Mangle (202085), Swipe (213771), Enraged Maul (236716)
+                   Affected Spells: Maul (6807), Mangle (33917), Thrash (77758), Pulverize (80313), Moonfire (164812), Thrash (192090), Brambles (203958), Lunar Beam (204069), Brambles (213709), Swipe (213771)
 #2 (id=191158)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Damage (22)
                    Base Value: 4 | Scaled Value: 4 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Moonfire (8921), Thrash (77758), Moonfire (164812)
+                   Affected Spells: Maul (6807), Mangle (33917), Thrash (77758), Pulverize (80313), Moonfire (164812), Thrash (192090), Brambles (203958), Lunar Beam (204069), Brambles (213709), Swipe (213771)
 #3 (id=191159)   : Apply Aura (6) | Add Percent Modifier (108): Spell Cooldown (11)
                    Base Value: 50 | Scaled Value: 50 | Misc Value: 11 | Target: Self (1)
                    Affected Spells: Barkskin (22812)
@@ -3148,33 +3185,36 @@ Effects          :
 #10 (id=260761)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Damage (22)
                    Base Value: 8 | Scaled Value: 8 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Moonfire (8921), Moonfire (164812)
-#11 (id=260762)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
+#11 (id=260762)   : Apply Aura (6) | Add Flat Modifier (107): Spell Tick Time (8)
+                   Base Value: -2 | Scaled Value: -2 | Misc Value: 8 | Target: Self (1)
+                   Affected Spells: Astral Influence (197524), Power of the Archdruid (213121)
+#12 (id=260763)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 248 (Label) | Target: Self (1)
                    Affected Spells (Label): Fel-Crazed Rage (225777), Colossal Slam (232044), Dread Torrent (246464), Ceaseless Toxin (242497), Umbral Glaive Storm (242556), Shattering Umbral Glaives (242557), Infernal Cinders (242218), Shadow Strike (253324), Worldforger's Flame (257244), Gorshalach's Legacy (255673), Gorshalach's Legacy (253329)
-#12 (id=260763)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Periodic Damage (22)
+#13 (id=260764)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Periodic Damage (22)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 22 | Misc Value 2: 248 (Label) | Target: Self (1)
                    Affected Spells (Label): Fel-Crazed Rage (225777), Colossal Slam (232044), Dread Torrent (246464), Ceaseless Toxin (242497), Umbral Glaive Storm (242556), Shattering Umbral Glaives (242557), Infernal Cinders (242218), Shadow Strike (253324), Worldforger's Flame (257244), Gorshalach's Legacy (255673), Gorshalach's Legacy (253329)
-#13 (id=260764)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
+#14 (id=260765)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 249 (Label) | Target: Self (1)
                    Affected Spells (Label): Orb of Destruction (229700), Void Tendril (250834)
-#14 (id=260765)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
+#15 (id=260766)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -40 | Scaled Value: -40 | Misc Value: 3 | Misc Value 2: 276 (Label) | Target: Self (1)
                    Affected Spells (Label): Xavaric's Magnum Opus (207472)
-#15 (id=260766)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
+#16 (id=351087)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 289 (Label) | Target: Self (1)
                    Affected Spells (Label): Rethu's Incessant Courage (242597)
-#16 (id=351087)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
+#17 (id=351088)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 298 (Label) | Target: Self (1)
                    Affected Spells (Label): Cleansing Matrix (242619), Fruitful Machinations (242623), Guiding Hand (242622), Infusion of Light (242621), Felshield (253277), Tarratus Keystone (253282), Refreshing Agony (253284), L'ura's Word (250781), Tarratus Keystone (255924), Refreshing Agony (255981), Highfather's Timekeeping (253288), Felshield (253278), Highfather's Timekeeping (255932), Emerald Blossom (257442), Verdant Embrace (257444)
-#17 (id=351088)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
+#18 (id=368361)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 300 (Label) | Target: Self (1)
                    Affected Spells (Label): Insidious Corruption (243941), Spectral Bolt (242571), Spectral Blast (246442), Legion Bombardment (253248), Prototype Personnel Decimator (255629), Legion Bombardment (255713), Legion Bombardment (255724), Legion Bombardment (257376)
-#18 (id=368361)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
+#19 (id=474886)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 333 (Label) | Target: Self (1)
                    Affected Spells (Label): Void Slash (251034), Isolated Strike (255609), Fire Mines (253321), Ravaging Storm (257286), Golganneth's Thunderous Wrath (257430)
-#19 (id=474886)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #20 (id=477116)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+#21 (id=481806)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 
 Name             : Feral Druid (id=137011) [Spell Family (7), Passive, Hidden] 
@@ -3211,21 +3251,24 @@ Effects          :
 #8 (id=260769)   : Apply Aura (6) | Add Flat Modifier (107): Spell Tick Time (8)
                    Base Value: 50 | Scaled Value: 50 | Misc Value: 8 | Target: Self (1)
                    Affected Spells: Luffa Wrappings (208681)
-#9 (id=260770)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
+#9 (id=260770)   : Apply Aura (6) | Add Flat Modifier (107): Spell Tick Time (8)
+                   Base Value: -2 | Scaled Value: -2 | Misc Value: 8 | Target: Self (1)
+                   Affected Spells: Astral Influence (197524), Power of the Archdruid (213121)
+#10 (id=260771)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 247 (Label) | Target: Self (1)
                    Affected Spells (Label): Infernal Contract (225140), Living Carapace (225033), Sands of Time (225124), Vampiric Aura (225130), Wailing Souls (242609), Unending Hunger (242536), Chilling Nova (251940), Bulwark of Flame (251946), Hammer-Forged (251952), Pool of Pure Void (250766), Wave of Flame (251948)
-#10 (id=260771)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
+#11 (id=260772)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 249 (Label) | Target: Self (1)
                    Affected Spells (Label): Orb of Destruction (229700), Void Tendril (250834)
-#11 (id=260772)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
+#12 (id=260773)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 298 (Label) | Target: Self (1)
                    Affected Spells (Label): Cleansing Matrix (242619), Fruitful Machinations (242623), Guiding Hand (242622), Infusion of Light (242621), Felshield (253277), Tarratus Keystone (253282), Refreshing Agony (253284), L'ura's Word (250781), Tarratus Keystone (255924), Refreshing Agony (255981), Highfather's Timekeeping (253288), Felshield (253278), Highfather's Timekeeping (255932), Emerald Blossom (257442), Verdant Embrace (257444)
-#12 (id=260773)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
+#13 (id=260774)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 300 (Label) | Target: Self (1)
                    Affected Spells (Label): Insidious Corruption (243941), Spectral Bolt (242571), Spectral Blast (246442), Legion Bombardment (253248), Prototype Personnel Decimator (255629), Legion Bombardment (255713), Legion Bombardment (255724), Legion Bombardment (257376)
-#13 (id=260774)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #14 (id=260775)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+#15 (id=481807)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 
 Name             : Restoration Druid (id=137012) [Spell Family (7), Passive, Hidden] 
@@ -3358,25 +3401,6 @@ Effects          :
 #23 (id=477119)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 
-Name             : Displacer Beast (id=137452) [Spell Family (7)] 
-Class            : Druid
-School           : Physical
-Spell Level      : 1
-Duration         : 2 seconds
-Triggered by     : Displacer Beast (102280)
-Attributes       : ....x... ........ ..x..... ........   .....x.. ..x..... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   .x...... ........ ........ ........ 
-                 : Does not break stealth (37)
-Effects          :
-#1 (id=180428)   : Apply Aura (6) | Increase Speed% (31)
-                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
-Description      : $@spelldesc102280
-Tooltip          : Increased movement speed by $s1%.
-
 Name             : Charged Bolt (id=137542) 
 Class            : Druid
 School           : Nature
@@ -3462,7 +3486,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=195304)   : Apply Aura (6) | Periodic Dummy (226): every 5 seconds
                    Base Value: 3 | Scaled Value: 3 | Target: Self (1)
-Description      : Heals you for $?a137010[${$s1/2}.1%][$s1%] of your maximum health every $t sec. If you are at full health, a injured party or raid member will be healed instead.
+Description      : Heals you for $?a137010[${$s1/2}.1%][$s1%] of your maximum health every $t1 sec. If you are at full health, a injured party or raid member will be healed instead.
 
 Name             : Ysera's Gift (id=145109) [Spell Family (7)] 
 Class            : Druid
@@ -3632,7 +3656,7 @@ Range            : 40 yards
 GCD              : 1 seconds
 Duration         : 14 seconds
 Stance Mask      : 0x00000001
-Affecting spells : Incarnation: King of the Jungle (102543 effect#1), Berserk (106951 effect#1), Feral Druid (137011 effect#1), Astral Influence (197524 effect#1), Twin Moonfire (200818 effect#2), Ekowraith, Creator of Worlds (210667 effect#1), Ashamane's Frenzy (210723 effect#4)
+Affecting spells : Tiger's Fury (5217 effect#1), Savage Roar (62071 effect#1), Incarnation: King of the Jungle (102543 effect#1), Berserk (106951 effect#1), Feral Druid (137011 effect#1), Astral Influence (197524 effect#1), Twin Moonfire (200818 effect#2), Ekowraith, Creator of Worlds (210667 effect#1), Ashamane's Frenzy (210723 effect#4)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ..x..... 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .....x.. ........ ........ 
@@ -3642,9 +3666,9 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : Periodic effect affected by haste (173)
 Effects          :
 #1 (id=216287)   : Apply Aura (6) | Periodic Damage (3): arcane every 2 seconds
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 1.06750 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.22418 | Target: Enemy (6)
 #2 (id=216288)   : School Damage (2): arcane
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 1.37250 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.28823 | Target: Enemy (6)
 #3 (id=216290)   : Energize Power (30)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: combo_points | Target: Self (1)
 Description      : A quick beam of lunar light burns the enemy for $s2 Arcane damage and then an additional $o1 Arcane damage over $d.
@@ -3709,18 +3733,18 @@ Range            : 100 yards
 Duration         : 15 seconds
 Stance Mask      : 0x00000001
 Mechanic         : Bleed
-Affecting spells : Mastery: Razor Claws (77493 effect#1), Incarnation: King of the Jungle (102543 effect#1), Prowl (102547 effect#5), Berserk (106951 effect#1), Feral Druid (137011 effect#1), Restoration Druid (137012 effect#8), Bloodletting (165699 effect#1), Thrash (192090 effect#2), Feral Affinity (197490 effect#5), Astral Influence (197524 effect#1), Jagged Wounds (202032 effect#1), Feral Affinity (202155 effect#5), Feral Affinity (202157 effect#5), Tear the Flesh (210593 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ashamane's Frenzy (210723 effect#4)
+Affecting spells : Tiger's Fury (5217 effect#1), Savage Roar (62071 effect#1), Mastery: Razor Claws (77493 effect#1), Incarnation: King of the Jungle (102543 effect#1), Prowl (102547 effect#5), Berserk (106951 effect#1), Feral Druid (137011 effect#1), Restoration Druid (137012 effect#8), Bloodletting (165699 effect#1), Thrash (192090 effect#2), Feral Affinity (197490 effect#5), Astral Influence (197524 effect#1), Jagged Wounds (202032 effect#1), Feral Affinity (202155 effect#5), Feral Affinity (202157 effect#5), Tear the Flesh (210593 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ashamane's Frenzy (210723 effect#4)
 Triggered by     : Rake (1822)
 Attributes       : ....x... ........ ..x..x.. ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ........ ..x..... ......x. 
-                 : ........ ........ ....x... ........   ........ ........ ........ ........ 
+                 : ........ ........ ....x... ........   ........ .....x.. ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .x..x... ........ .x......   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Cannot dodge/parry/block (21)
+                 : Cannot dodge/parry/block (21), Periodic effect affected by haste (173)
 Effects          :
 #1 (id=216427)   : Apply Aura (6) | Periodic Damage (3): physical every 3 seconds
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 1.11264 | Target: Enemy (6)
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.19950 | Target: Enemy (6)
 Description      : $@spelldesc1822
 Tooltip          : Bleeding for $w1 damage every $t1 seconds.
 
@@ -3743,9 +3767,9 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.50000 | Target: Self (1)
 #2 (id=345062)   : Apply Aura (6) | Modify Absorb% Done (422)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.50000 | Target: Self (1)
-Description      : Increases your maximum health and healing received by $s1%.
+Description      : Increases your maximum health and healing received by ${$s1}.1%.
 
-Also increases your attack power by $159195s1%.
+Also increases your attack power by ${$159195s1}.1%.
 
 Name             : Bristling Fur (id=155835) 
 Class            : Druid
@@ -3801,7 +3825,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Not a proc (105)
 Effects          :
 #1 (id=220365)   : Direct Heal (10)
-                   Base Value: 1 | Scaled Value: 0 (avg=8.255) | SP Coefficient: 1.80000 | Radius: 0 - 40 yards | Target: At Caster (22) -> AOE friendly (30)
+                   Base Value: 1 | Scaled Value: 0 (avg=8.255) | SP Coefficient: 0.45000 | Radius: 0 - 40 yards | Target: At Caster (22) -> AOE friendly (30)
 Description      : $@spelldesc740
 
 Name             : Soul of the Forest (id=158476) [Spell Family (7), Passive] 
@@ -4091,7 +4115,7 @@ Spell Level      : 3
 Range            : 100 yards
 Duration         : 16 seconds
 Stance Mask      : 0x40000013
-Affecting spells : Guardian Druid (137010 effect#1), Feral Druid (137011 effect#1), Restoration Druid (137012 effect#8), Balance Druid (137013 effect#1), Lucidity (137247 effect#1), Lunar Inspiration (155627 effect#1), Persistence (186396 effect#1), Thrash (192090 effect#2), Astral Influence (197524 effect#1), Feral Overrides Passive (197692 effect#1), Twin Moonfire (200818 effect#2), Twilight Glow (202386 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ashamane's Frenzy (210723 effect#4), Scintillating Moonlight (238049 effect#1), Wax and Wane (239952 effect#1), Solar Solstice (252767 effect#1), 
+Affecting spells : Tiger's Fury (5217 effect#1), Moonkin Form (24858 effect#9), Savage Roar (62071 effect#1), Incarnation: Chosen of Elune (102560 effect#1), Guardian Druid (137010 effect#1), Feral Druid (137011 effect#1), Restoration Druid (137012 effect#8), Balance Druid (137013 effect#1), Lucidity (137247 effect#1), Lunar Inspiration (155627 effect#1), Persistence (186396 effect#1), Thrash (192090 effect#2), Celestial Alignment (194223 effect#1), Astral Influence (197524 effect#1), Feral Overrides Passive (197692 effect#1), Twin Moonfire (200818 effect#2), Twilight Glow (202386 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ashamane's Frenzy (210723 effect#4), Scintillating Moonlight (238049 effect#1), Wax and Wane (239952 effect#1), Solar Solstice (252767 effect#1), 
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ .x...... ..x..... ......x. 
                  : ........ ........ ........ ........   ........ .....x.. ........ ........ 
@@ -4101,9 +4125,9 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Not a proc (105), Periodic effect affected by haste (173)
 Effects          :
 #1 (id=232409)   : School Damage (2): arcane
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.14400 | Target: Enemy (6)
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.22500 | Target: Enemy (6)
 #2 (id=232410)   : Apply Aura (6) | Periodic Damage (3): arcane every 2 seconds
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.57200 | Target: Enemy (6)
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.11250 | Target: Enemy (6)
 #3 (id=363033)   : Apply Aura (6) | Unknown(269)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 127 | Target: Enemy (6)
 Description      : $@spelldesc8921
@@ -4116,7 +4140,7 @@ Spell Level      : 16
 Range            : 100 yards
 Duration         : 12 seconds
 Stance Mask      : 0x40000002
-Affecting spells : Restoration Druid (137012 effect#8), Balance Druid (137013 effect#1), Lucidity (137247 effect#1), Persistence (186396 effect#1), Thrash (192090 effect#2), Astral Influence (197524 effect#1), Astral Power (197911 effect#3), Sunfire Burns (202466 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Sunblind (213682 effect#1), Wax and Wane (239952 effect#1), Solar Solstice (252767 effect#1), 
+Affecting spells : Moonkin Form (24858 effect#9), Incarnation: Chosen of Elune (102560 effect#1), Restoration Druid (137012 effect#8), Balance Druid (137013 effect#1), Lucidity (137247 effect#1), Persistence (186396 effect#1), Thrash (192090 effect#2), Celestial Alignment (194223 effect#1), Astral Influence (197524 effect#1), Astral Power (197911 effect#3), Sunfire Burns (202466 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Sunblind (213682 effect#1), Wax and Wane (239952 effect#1), Solar Solstice (252767 effect#1), 
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ .x...... ..x..... ......x. 
                  : ........ ........ ........ ........   ........ .....x.. ........ ........ 
@@ -4126,9 +4150,9 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : Not a proc (105), Periodic effect affected by haste (173)
 Effects          :
 #1 (id=232416)   : School Damage (2): nature
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.14400 | Target: Enemy (6)
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.22500 | Target: Enemy (6)
 #2 (id=232417)   : Apply Aura (6) | Periodic Damage (3): nature every 2 seconds
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.57200 | Radius: 0 - 5 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.11250 | Radius: 0 - 5 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
 Description      : $@spelldesc93402
 Tooltip          : Suffering $w2 Nature damage every $t2 seconds.
 
@@ -4190,7 +4214,7 @@ Cooldown         : 10 seconds
 Category         : 33
 Category Cooldown: 10 seconds
 Stance Mask      : 0x00000001
-Affecting spells : Maim Damage (61252 effect#1), Incarnation: King of the Jungle (102543 effect#1), Berserk (106951 effect#1), Feral Druid (137011 effect#1), Bloodtalons (145152 effect#1), Soul of the Forest (158476 effect#2), Thrash (192090 effect#2), Astral Influence (197524 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ashamane's Frenzy (210723 effect#4), Fiery Red Maimers (212875 effect#2), Fiery Red Maimers (236757 effect#2), 
+Affecting spells : Tiger's Fury (5217 effect#1), Maim Damage (61252 effect#1), Savage Roar (62071 effect#1), Incarnation: King of the Jungle (102543 effect#1), Berserk (106951 effect#1), Feral Druid (137011 effect#1), Bloodtalons (145152 effect#1), Soul of the Forest (158476 effect#2), Thrash (192090 effect#2), Astral Influence (197524 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ashamane's Frenzy (210723 effect#4), Fiery Red Maimers (212875 effect#2), Fiery Red Maimers (236757 effect#2), 
 Attributes       : ....x... ........ ..x..... ........   ........ ........ ..x..... ...x.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ .......x ........   ........ ........ ........ ........ 
@@ -4204,7 +4228,7 @@ Effects          :
 #2 (id=239196)   : Apply Aura (6) | Stun (12)
                    Base Value: 0 | Scaled Value: 0 | Mechanic: Unknown(95) | Target: Enemy (6)
 #3 (id=239197)   : Weapon Damage% (31)
-                   Base Value: 140 | Scaled Value: 1.4 | Target: Enemy (6)
+                   Base Value: 47 | Scaled Value: 0.47 | Target: Enemy (6)
 Tooltip          : Stunned.
 Variables        : $mult=$?p61252[${4}][${2}]
 
@@ -4219,7 +4243,7 @@ Cooldown         : 10 seconds
 Category         : 33
 Category Cooldown: 10 seconds
 Stance Mask      : 0x00000001
-Affecting spells : Maim Damage (61252 effect#1), Incarnation: King of the Jungle (102543 effect#1), Berserk (106951 effect#1), Feral Druid (137011 effect#1), Bloodtalons (145152 effect#1), Soul of the Forest (158476 effect#2), Thrash (192090 effect#2), Astral Influence (197524 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ashamane's Frenzy (210723 effect#4), Fiery Red Maimers (212875 effect#2), Fiery Red Maimers (236757 effect#2), 
+Affecting spells : Tiger's Fury (5217 effect#1), Maim Damage (61252 effect#1), Savage Roar (62071 effect#1), Incarnation: King of the Jungle (102543 effect#1), Berserk (106951 effect#1), Feral Druid (137011 effect#1), Bloodtalons (145152 effect#1), Soul of the Forest (158476 effect#2), Thrash (192090 effect#2), Astral Influence (197524 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ashamane's Frenzy (210723 effect#4), Fiery Red Maimers (212875 effect#2), Fiery Red Maimers (236757 effect#2), 
 Attributes       : ....x... ........ ..x..... ........   ........ ........ ..x..... ...x.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ .......x ........   ........ ........ ........ ........ 
@@ -4233,7 +4257,7 @@ Effects          :
 #2 (id=239199)   : Apply Aura (6) | Stun (12)
                    Base Value: 0 | Scaled Value: 0 | Mechanic: Unknown(95) | Target: Enemy (6)
 #3 (id=239200)   : Weapon Damage% (31)
-                   Base Value: 280 | Scaled Value: 2.8 | Target: Enemy (6)
+                   Base Value: 95 | Scaled Value: 0.95 | Target: Enemy (6)
 Tooltip          : Stunned.
 Variables        : $mult=$?p61252[${4}][${2}]
 
@@ -4248,7 +4272,7 @@ Cooldown         : 10 seconds
 Category         : 33
 Category Cooldown: 10 seconds
 Stance Mask      : 0x00000001
-Affecting spells : Maim Damage (61252 effect#1), Incarnation: King of the Jungle (102543 effect#1), Berserk (106951 effect#1), Feral Druid (137011 effect#1), Bloodtalons (145152 effect#1), Soul of the Forest (158476 effect#2), Thrash (192090 effect#2), Astral Influence (197524 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ashamane's Frenzy (210723 effect#4), Fiery Red Maimers (212875 effect#2), Fiery Red Maimers (236757 effect#2), 
+Affecting spells : Tiger's Fury (5217 effect#1), Maim Damage (61252 effect#1), Savage Roar (62071 effect#1), Incarnation: King of the Jungle (102543 effect#1), Berserk (106951 effect#1), Feral Druid (137011 effect#1), Bloodtalons (145152 effect#1), Soul of the Forest (158476 effect#2), Thrash (192090 effect#2), Astral Influence (197524 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ashamane's Frenzy (210723 effect#4), Fiery Red Maimers (212875 effect#2), Fiery Red Maimers (236757 effect#2), 
 Attributes       : ....x... ........ ..x..... ........   ........ ........ ..x..... ...x.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ .......x ........   ........ ........ ........ ........ 
@@ -4262,7 +4286,7 @@ Effects          :
 #2 (id=239202)   : Apply Aura (6) | Stun (12)
                    Base Value: 0 | Scaled Value: 0 | Mechanic: Unknown(95) | Target: Enemy (6)
 #3 (id=239203)   : Weapon Damage% (31)
-                   Base Value: 420 | Scaled Value: 4.2 | Target: Enemy (6)
+                   Base Value: 142 | Scaled Value: 1.42 | Target: Enemy (6)
 Tooltip          : Stunned.
 Variables        : $mult=$?p61252[${4}][${2}]
 
@@ -4277,7 +4301,7 @@ Cooldown         : 10 seconds
 Category         : 33
 Category Cooldown: 10 seconds
 Stance Mask      : 0x00000001
-Affecting spells : Maim Damage (61252 effect#1), Incarnation: King of the Jungle (102543 effect#1), Berserk (106951 effect#1), Feral Druid (137011 effect#1), Bloodtalons (145152 effect#1), Soul of the Forest (158476 effect#2), Thrash (192090 effect#2), Astral Influence (197524 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ashamane's Frenzy (210723 effect#4), Fiery Red Maimers (212875 effect#2), Fiery Red Maimers (236757 effect#2), 
+Affecting spells : Tiger's Fury (5217 effect#1), Maim Damage (61252 effect#1), Savage Roar (62071 effect#1), Incarnation: King of the Jungle (102543 effect#1), Berserk (106951 effect#1), Feral Druid (137011 effect#1), Bloodtalons (145152 effect#1), Soul of the Forest (158476 effect#2), Thrash (192090 effect#2), Astral Influence (197524 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ashamane's Frenzy (210723 effect#4), Fiery Red Maimers (212875 effect#2), Fiery Red Maimers (236757 effect#2), 
 Attributes       : ....x... ........ ..x..... ........   ........ ........ ..x..... ...x.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ .......x ........   ........ ........ ........ ........ 
@@ -4291,7 +4315,7 @@ Effects          :
 #2 (id=239205)   : Apply Aura (6) | Stun (12)
                    Base Value: 0 | Scaled Value: 0 | Mechanic: Unknown(95) | Target: Enemy (6)
 #3 (id=239206)   : Weapon Damage% (31)
-                   Base Value: 560 | Scaled Value: 5.6 | Target: Enemy (6)
+                   Base Value: 190 | Scaled Value: 1.9 | Target: Enemy (6)
 Tooltip          : Stunned.
 Variables        : $mult=$?p61252[${4}][${2}]
 
@@ -4306,7 +4330,7 @@ Cooldown         : 10 seconds
 Category         : 33
 Category Cooldown: 10 seconds
 Stance Mask      : 0x00000001
-Affecting spells : Maim Damage (61252 effect#1), Incarnation: King of the Jungle (102543 effect#1), Berserk (106951 effect#1), Feral Druid (137011 effect#1), Bloodtalons (145152 effect#1), Soul of the Forest (158476 effect#2), Thrash (192090 effect#2), Astral Influence (197524 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ashamane's Frenzy (210723 effect#4), Fiery Red Maimers (212875 effect#2), Fiery Red Maimers (236757 effect#2), 
+Affecting spells : Tiger's Fury (5217 effect#1), Maim Damage (61252 effect#1), Savage Roar (62071 effect#1), Incarnation: King of the Jungle (102543 effect#1), Berserk (106951 effect#1), Feral Druid (137011 effect#1), Bloodtalons (145152 effect#1), Soul of the Forest (158476 effect#2), Thrash (192090 effect#2), Astral Influence (197524 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ashamane's Frenzy (210723 effect#4), Fiery Red Maimers (212875 effect#2), Fiery Red Maimers (236757 effect#2), 
 Attributes       : ....x... ........ ..x..... ........   ........ ........ ..x..... ...x.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ .......x ........   ........ ........ ........ ........ 
@@ -4320,7 +4344,7 @@ Effects          :
 #2 (id=239208)   : Apply Aura (6) | Stun (12)
                    Base Value: 0 | Scaled Value: 0 | Mechanic: Unknown(95) | Target: Enemy (6)
 #3 (id=239209)   : Weapon Damage% (31)
-                   Base Value: 700 | Scaled Value: 7 | Target: Enemy (6)
+                   Base Value: 238 | Scaled Value: 2.38 | Target: Enemy (6)
 Tooltip          : Stunned.
 Variables        : $mult=$?p61252[${4}][${2}]
 
@@ -4386,7 +4410,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=268012)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 100 | Scaled Value: 69.50439 (avg=0.040909) | Misc Value: 127 | Target: Self (1)
+                   Base Value: 100 | Scaled Value: 3.149993 (avg=0.040909) | Misc Value: 127 | Target: Self (1)
 #2 (id=268108)   : Apply Aura (6) | Dummy (4)
                    Base Value: 90 | Scaled Value: 90 | Misc Value: 127 | Target: Self (1)
 #3 (id=268109)   : Apply Aura (6) | Absorb Damage (69)
@@ -4444,7 +4468,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ .......x ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=274309)   : School Damage (2): astral
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.60315 | Target: Enemy (6)
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.15079 | Target: Enemy (6)
 Description      : $@spelldesc187875
 
 Name             : Fey Moonwing (id=188083) 
@@ -4473,7 +4497,7 @@ Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Velocity         : 20 yards/sec
 Stance Mask      : 0x40000000
-Affecting spells : Incarnation: Chosen of Elune (102560 effect#2), Restoration Druid (137012 effect#8), Balance Druid (137013 effect#1), Lucidity (137247 effect#1), Solar Empowerment (164545 effect#1), Lunar Empowerment (164547 effect#3), Item - Druid T17 Balance 2P Bonus (165433 effect#1), Celestial Fury (180719 effect#2), Thrash (192090 effect#2), Celestial Alignment (194223 effect#3), Astral Influence (197524 effect#1), Astral Power (197911 effect#2), Solar Stabbing (202426 effect#1), Blessing of Elune (202737 effect#1), Promise of Elune, the Moon Goddess (208283 effect#2), Ekowraith, Creator of Worlds (210667 effect#1), Solar Empowerment (211089 effect#1), Skywrath (214514 effect#1)
+Affecting spells : Moonkin Form (24858 effect#9), Incarnation: Chosen of Elune (102560 effect#1), Restoration Druid (137012 effect#8), Balance Druid (137013 effect#1), Lucidity (137247 effect#1), Solar Empowerment (164545 effect#1), Lunar Empowerment (164547 effect#3), Item - Druid T17 Balance 2P Bonus (165433 effect#1), Celestial Fury (180719 effect#2), Thrash (192090 effect#2), Celestial Alignment (194223 effect#1), Astral Influence (197524 effect#1), Astral Power (197911 effect#2), Solar Stabbing (202426 effect#1), Blessing of Elune (202737 effect#1), Promise of Elune, the Moon Goddess (208283 effect#2), Ekowraith, Creator of Worlds (210667 effect#1), Solar Empowerment (211089 effect#1), Skywrath (214514 effect#1)
 Triggered by     : Solar Empowerment (164545)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
@@ -4483,7 +4507,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=280098)   : School Damage (2): nature
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 2.25000 | Target: Enemy (6)
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.60000 | Target: Enemy (6)
 #2 (id=280099)   : Energize Power (30)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: astral_power | Target: Self (1)
 Description      : Hurl a ball of solar energy at the target, dealing $s1 Nature damage.$?a197911[
@@ -4516,8 +4540,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : Calls down waves of falling stars at the targeted area, dealing ${9*$191037m1} Astral damage over $191034d.$?a231049[
 
-Also applies Stellar Empowerment to each target, which increases periodic damage taken from your Moonfire and Sunfire by $197637s1%.][]
-
+Also applies Stellar Empowerment to each target, which increases periodic damage taken from your Moonfire and Sunfire by $197637s1%.][]
 Tooltip          : Calling down falling stars at the targeted area.
 
 Name             : Starfall (id=191037) [Scaling Spell (3), Spell Family (7)] 
@@ -4526,7 +4549,7 @@ School           : Astral
 Spell Level      : 76
 Range            : 50000 yards
 Velocity         : 0.8 yards/sec
-Affecting spells : Mastery: Starlight (77492 effect#1), Soul of the Forest (114107 effect#2), Balance Druid (137013 effect#1), Lucidity (137247 effect#1), Thrash (192090 effect#2), Astral Influence (197524 effect#1), Stellar Drift (202354 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Light of the Evening Star (238047 effect#1), Item - Druid  T21 Balance 2P Bonus (251803 effect#1)
+Affecting spells : Moonkin Form (24858 effect#9), Mastery: Starlight (77492 effect#1), Incarnation: Chosen of Elune (102560 effect#1), Soul of the Forest (114107 effect#2), Balance Druid (137013 effect#1), Lucidity (137247 effect#1), Thrash (192090 effect#2), Celestial Alignment (194223 effect#1), Astral Influence (197524 effect#1), Stellar Drift (202354 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Light of the Evening Star (238047 effect#1), Item - Druid  T21 Balance 2P Bonus (251803 effect#1)
 Attributes       : ........ ........ .......x x..x....   .....x.x ........ ........ ........ 
                  : ..x..... ......x. ...x.... ......x.   x....... .x...... ....x... .x....x. 
                  : .......x .......x ........ ........   ...x.... .......x .xx..... ..x..... 
@@ -4536,7 +4559,7 @@ Attributes       : ........ ........ .......x x..x....   .....x.x ........ .....
                  : Does not break stealth (37), Not a proc (105), Requires line of sight (186)
 Effects          :
 #1 (id=280158)   : School Damage (2): astral
-                   Base Value: 1 | Scaled Value: 0 (avg=0.58, dl=0.15) | SP Coefficient: 0.45760 | Target: Enemy (6)
+                   Base Value: 1 | Scaled Value: 0 (avg=0.58, dl=0.15) | SP Coefficient: 0.09250 | Target: Enemy (6)
 Description      : $@spelldesc191034
 
 Name             : Ironfur (id=192081) [Spell Family (7)] 
@@ -4544,7 +4567,7 @@ Class            : Guardian Druid
 School           : Nature
 Resource         : 45 Rage (1) (id=10391)
 Spell Level      : 20
-Duration         : 6 seconds
+Duration         : 7 seconds
 Cooldown         : 0.5 seconds
 Stacks           : 1 maximum
 Proc Chance      : 101%
@@ -4557,14 +4580,11 @@ Attributes       : ........ ........ ........ ........   ........ ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=281770)   : Apply Aura (6) | Modify Base Resistance (142)
-                   Base Value: 65 | Scaled Value: 65 | Misc Value: 1 | Target: Self (1)
-#2 (id=321076)   : Apply Aura (6) | Unknown(118)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 127 | Target: Self (1)
-#3 (id=321077)   : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost (14)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 14 | Target: Self (1)
-                   Affected Spells: Frenzied Regeneration (22842)
-Description      : Increases armor by $s1% for $d.$?a231070[ Multiple uses of this ability may overlap.][]
+#1 (id=281770)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 40 | Scaled Value: 40 | Misc Value: 1 | Target: Self (1)
+#2 (id=321076)   : Apply Aura (6) | Unknown(83)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 1 | Target: Self (1)
+Description      : Increases armor by $s1% of your Agility for $d.$?a231070[ Multiple uses of this ability may overlap.][]
 Tooltip          : Armor increased by $s1%.
 
 Name             : Thrash (id=192090) [Spell Family (7)] 
@@ -4575,23 +4595,23 @@ Range            : 100 yards
 Duration         : 15 seconds
 Stacks           : 3 maximum
 Proc Chance      : 101%
-Affecting spells : Incarnation: Guardian of Ursoc (102558 effect#1), Druid (137009 effect#3), Restoration Druid (137012 effect#8), Astral Influence (197524 effect#1), Jagged Claws (200409 effect#1), Rend and Tear (204053 effect#2), Elize's Everlasting Encasement (208342 effect#1), Luffa Wrappings (208681 effect#3), Ekowraith, Creator of Worlds (210667 effect#1), Ashamane's Frenzy (210723 effect#4), Thrashing Claws (238048 effect#2)
+Affecting spells : Incarnation: Guardian of Ursoc (102558 effect#1), Druid (137009 effect#3), Guardian Druid (137010 effect#1), Restoration Druid (137012 effect#8), Astral Influence (197524 effect#1), Jagged Claws (200409 effect#1), Rend and Tear (204053 effect#2), Elize's Everlasting Encasement (208342 effect#1), Luffa Wrappings (208681 effect#3), Ekowraith, Creator of Worlds (210667 effect#1), Ashamane's Frenzy (210723 effect#4), Thrashing Claws (238048 effect#2)
 Attributes       : ....x... ........ .....x.. ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   .......x ........ ..x..... ......x. 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ .....x.. ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .x..x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Cannot dodge/parry/block (21)
+                 : Cannot dodge/parry/block (21), Periodic effect affected by haste (173)
 Effects          :
 #1 (id=281782)   : Apply Aura (6) | Periodic Damage (3): physical every 3 seconds
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.12100 | Mechanic: Bleed | Target: Enemy (6)
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.01080 | Mechanic: Bleed | Target: Enemy (6)
 #2 (id=301092)   : Apply Aura (6) | Unknown(271)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
                    Affected Spells: Rejuvenation (774), Rip (1079), Rake (1822), Solar Wrath (5176), Healing Touch (5185), Shred (5221), Maul (6807), Moonfire (8921), Regrowth (8936), Swiftmend (18562), Ferocious Bite (22568), Maim (22570), Lifebloom (33763), Lifebloom (33778), Mangle (33917), Wild Growth (48438), Thrash (77758), Starsurge (78674), Pulverize (80313), Efflorescence (81269), Sunfire (93402), Cenarion Ward (102352), Germination (155675), Rake (155722), Tranquility (157982), Pulverize (158792), Moonfire (164812), Sunfire (164815), Maim (168877), Maim (168878), Maim (168879), Maim (168880), Maim (168881), Nature's Essence (189800), Dreamwalker (189853), Solar Wrath (190984), Starfall (191034), Starfall (191037), Thrash (192090), Lunar Strike (194153), Starsurge (197626), Lunar Strike (197628), Solar Wrath (197629), Sunfire (197630), Cultivation (200389), Brutal Slash (202028), Enraged Mangle (202085), Spring Blossoms (207386), Ashamane's Rip (210705), Swipe (213771), Mark of Shifting (224392), Echoing Stars (226104), Enraged Maul (236716)
 #3 (id=301093)   : Apply Aura (6) | Unknown(343)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
-                   Affected Spells: Rejuvenation (774), Rip (1079), Rake (1822), Solar Wrath (5176), Healing Touch (5185), Shred (5221), Maul (6807), Moonfire (8921), Regrowth (8936), Swiftmend (18562), Ferocious Bite (22568), Maim (22570), Lifebloom (33763), Lifebloom (33778), Mangle (33917), Wild Growth (48438), Thrash (77758), Starsurge (78674), Pulverize (80313), Efflorescence (81269), Sunfire (93402), Cenarion Ward (102352), Germination (155675), Rake (155722), Tranquility (157982), Pulverize (158792), Moonfire (164812), Sunfire (164815), Maim (168877), Maim (168878), Maim (168879), Maim (168880), Maim (168881), Nature's Essence (189800), Dreamwalker (189853), Solar Wrath (190984), Starfall (191034), Starfall (191037), Thrash (192090), Lunar Strike (194153), Starsurge (197626), Lunar Strike (197628), Solar Wrath (197629), Sunfire (197630), Cultivation (200389), Brutal Slash (202028), Enraged Mangle (202085), Spring Blossoms (207386), Ashamane's Rip (210705), Swipe (213771), Mark of Shifting (224392), Echoing Stars (226104), Enraged Maul (236716), Dreamer (253432)
+                   Affected Spells: Rejuvenation (774), Rip (1079), Rake (1822), Solar Wrath (5176), Healing Touch (5185), Shred (5221), Maul (6807), Moonfire (8921), Regrowth (8936), Swiftmend (18562), Ferocious Bite (22568), Maim (22570), Lifebloom (33763), Lifebloom (33778), Mangle (33917), Wild Growth (48438), Thrash (77758), Starsurge (78674), Pulverize (80313), Efflorescence (81269), Sunfire (93402), Cenarion Ward (102352), Germination (155675), Rake (155722), Tranquility (157982), Pulverize (158792), Moonfire (164812), Sunfire (164815), Maim (168877), Maim (168878), Maim (168879), Maim (168880), Maim (168881), Nature's Essence (189800), Dreamwalker (189853), Solar Wrath (190984), Starfall (191034), Starfall (191037), Thrash (192090), Lunar Strike (194153), Starsurge (197626), Lunar Strike (197628), Solar Wrath (197629), Sunfire (197630), Cultivation (200389), Brutal Slash (202028), Enraged Mangle (202085), Spring Blossoms (207386), Ashamane's Rip (210705), Swipe (213771), Mark of Shifting (224392), Echoing Stars (226104), Enraged Maul (236716)
 Description      : $@spelldesc77758
 Tooltip          : Suffering $w1 damage every $t1 sec.
 
@@ -4627,7 +4647,7 @@ Range            : 40 yards
 Cast Time        : 2.5 seconds
 GCD              : 1.5 seconds
 Stance Mask      : 0x40000002
-Affecting spells : Incarnation: Chosen of Elune (102560 effect#2), Restoration Druid (137012 effect#8), Balance Druid (137013 effect#1), Lucidity (137247 effect#1), Lunar Empowerment (164547 effect#1), Item - Druid T17 Balance 2P Bonus (165433 effect#2), Celestial Fury (180719 effect#1), Thrash (192090 effect#2), Celestial Alignment (194223 effect#3), Astral Influence (197524 effect#1), Dark Side of the Moon (202384 effect#1), Warrior of Elune (202425 effect#1), Blessing of Elune (202737 effect#1), Promise of Elune, the Moon Goddess (208283 effect#2), Ekowraith, Creator of Worlds (210667 effect#1), Skywrath (214514 effect#1)
+Affecting spells : Moonkin Form (24858 effect#9), Incarnation: Chosen of Elune (102560 effect#1), Restoration Druid (137012 effect#8), Balance Druid (137013 effect#1), Lucidity (137247 effect#1), Lunar Empowerment (164547 effect#1), Item - Druid T17 Balance 2P Bonus (165433 effect#2), Celestial Fury (180719 effect#1), Thrash (192090 effect#2), Celestial Alignment (194223 effect#1), Astral Influence (197524 effect#1), Dark Side of the Moon (202384 effect#1), Warrior of Elune (202425 effect#1), Blessing of Elune (202737 effect#1), Promise of Elune, the Moon Goddess (208283 effect#2), Ekowraith, Creator of Worlds (210667 effect#1), Skywrath (214514 effect#1)
 Triggered by     : Lunar Empowerment (164547)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
@@ -4637,11 +4657,11 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=284976)   : School Damage (2): arcane
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 3.19000 | Radius: 0 - 5 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.85000 | Radius: 0 - 5 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
 #2 (id=284977)   : Energize Power (30)
                    Base Value: 120 | Scaled Value: 120 | Misc Value: astral_power | Target: Self (1)
 #3 (id=295015)   : Dummy (3)
-                   Base Value: 35 | Scaled Value: 35 | Radius: 0 - 5 yards | Target: Enemy (6)
+                   Base Value: 25 | Scaled Value: 25 | Radius: 0 - 5 yards | Target: Enemy (6)
 #4 (id=298448)   : Server Side Script (77)
                    Base Value: 20 | Scaled Value: 20 | Radius: 0 - 5 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
 Description      : Call down a strike of lunar energy, causing $s1 Arcane damage to the target, and ${$m1*$m3/100} Arcane damage to all other enemies within $A1 yards.
@@ -4661,14 +4681,17 @@ Attributes       : ........ ........ ........ ........   ........ ..x..... .....
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ .....x.. ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=285082)   : Apply Aura (6) | Modify Damage Done% (79)
-                   Base Value: 30 | Scaled Value: 30 | Misc Value: 0x7e | Target: Self (1)
-                   Affected School(s): Holy, Fire, Nature, Frost, Shadow, Arcane
+#1 (id=285082)   : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
+                   Base Value: 30 | Scaled Value: 30 | Target: Self (1)
+                   Affected Spells: Starsurge (78674), Moonfire (164812), Sunfire (164815), Solar Wrath (190984), Starfall (191037), Lunar Strike (194153), Stellar Flare (202347), Shooting Stars (202497), New Moon (202767), Half Moon (202768), Full Moon (202771), Goldrinn's Fang (203001), Fury of Elune (211545), Echoing Stars (226104)
 #2 (id=285083)   : Apply Aura (6) | Dummy (4)
                    Base Value: 30 | Scaled Value: 30 | Misc Value: 22 | Target: Self (1)
 #3 (id=285088)   : Apply Aura (6) | Add Percent Modifier (108): Spell Effect 2 (12)
                    Base Value: 50 | Scaled Value: 50 | Misc Value: 12 | Target: Self (1)
                    Affected Spells: Solar Wrath (5176), Solar Wrath (190984), Lunar Strike (194153), Lunar Strike (197628), Solar Wrath (197629)
+#4 (id=479762)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Damage (22)
+                   Base Value: 30 | Scaled Value: 30 | Misc Value: 22 | Target: Self (1)
+                   Affected Spells: Starsurge (78674), Moonfire (164812), Sunfire (164815), Solar Wrath (190984), Starfall (191037), Lunar Strike (194153), Stellar Flare (202347), Shooting Stars (202497), New Moon (202767), Half Moon (202768), Full Moon (202771), Goldrinn's Fang (203001), Fury of Elune (211545), Echoing Stars (226104)
 Description      : Celestial bodies align, increasing the damage of all your spells by $s1%, and increasing the Astral Power generated by Lunar Strike and Solar Wrath by $s3%. Lasts $d.
 Tooltip          : Spell damage increased by $s1%.
 
@@ -4849,6 +4872,7 @@ Name             : Astral Influence (id=197524) [Spell Family (7), Passive]
 Class            : Balance Druid
 School           : Astral
 Spell Level      : 34
+Affecting spells : Guardian Druid (137010 effect#11), Feral Druid (137011 effect#9)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4859,16 +4883,16 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=290202)   : Apply Aura (6) | Add Flat Modifier (107): Spell Range (5)
                    Base Value: 5 | Scaled Value: 5 | Misc Value: 5 | Target: Self (1)
-                   Affected Spells: Entangling Roots (339), Tranquility (740), Rejuvenation (774), Rip (1079), Rake (1822), Remove Corruption (2782), Solar Wrath (5176), Healing Touch (5185), Mighty Bash (5211), Shred (5221), Growl (6795), Maul (6807), Moonfire (8921), Regrowth (8936), Swiftmend (18562), Rebirth (20484), Ferocious Bite (22568), Maim (22570), Innervate (29166), Lifebloom (33763), Lifebloom (33778), Mangle (33917), Wild Growth (48438), Typhoon (61391), Thrash (77758), Starsurge (78674), Solar Beam (78675), Pulverize (80313), Nature's Cure (88423), Sunfire (93402), Skull Bash (93985), Ironbark (102342), Cenarion Ward (102351), Cenarion Ward (102352), Mass Entanglement (102359), Wild Charge (102401), Ursol's Vortex (102793), Swipe (106785), Thrash (106830), Skull Bash (106839), Typhoon (132469), Ysera's Gift (145108), Ysera's Gift (145109), Ysera's Gift (145110), Efflorescence (145205), Moonfire (155625), Rake (155722), Pulverize (158792), Moonfire (164812), Sunfire (164815), Maim (168877), Maim (168878), Maim (168879), Maim (168880), Maim (168881), Solar Wrath (190984), Starfall (191034), Starfall (191037), Thrash (192090), Lunar Strike (194153), Starsurge (197626), Lunar Strike (197628), Solar Wrath (197629), Sunfire (197630), Brutal Slash (202028), Enraged Mangle (202085), Stellar Flare (202347), New Moon (202767), Half Moon (202768), Fury of Elune (202770), Full Moon (202771), Lunar Beam (204069), Force of Nature (205636), Shadow Thrash (210687), Ashamane's Rip (210705), Ashamane's Frenzy (210722), Ashamane's Frenzy (210723), Fury of Elune (211545), Revitalize (212040), Brambles (213709), Swipe (213764), Swipe (213771), Echoing Stars (226104), Enraged Maul (236716), Force of Nature (248280)
+                   Affected Spells: Entangling Roots (339), Tranquility (740), Rejuvenation (774), Rip (1079), Rake (1822), Hibernate (2637), Remove Corruption (2782), Solar Wrath (5176), Healing Touch (5185), Mighty Bash (5211), Shred (5221), Growl (6795), Maul (6807), Moonfire (8921), Regrowth (8936), Swiftmend (18562), Rebirth (20484), Ferocious Bite (22568), Maim (22570), Innervate (29166), Lifebloom (33763), Lifebloom (33778), Mangle (33917), Wild Growth (48438), Typhoon (61391), Thrash (77758), Starsurge (78674), Solar Beam (78675), Pulverize (80313), Nature's Cure (88423), Sunfire (93402), Skull Bash (93985), Ironbark (102342), Cenarion Ward (102351), Cenarion Ward (102352), Mass Entanglement (102359), Wild Charge (102401), Ursol's Vortex (102793), Swipe (106785), Thrash (106830), Skull Bash (106839), Typhoon (132469), Ysera's Gift (145108), Ysera's Gift (145109), Ysera's Gift (145110), Efflorescence (145205), Moonfire (155625), Rake (155722), Pulverize (158792), Moonfire (164812), Sunfire (164815), Maim (168877), Maim (168878), Maim (168879), Maim (168880), Maim (168881), Solar Wrath (190984), Starfall (191034), Starfall (191037), Thrash (192090), Lunar Strike (194153), Starsurge (197626), Lunar Strike (197628), Solar Wrath (197629), Sunfire (197630), Brutal Slash (202028), Enraged Mangle (202085), Stellar Flare (202347), New Moon (202767), Half Moon (202768), Fury of Elune (202770), Full Moon (202771), Lunar Beam (204069), Force of Nature (205636), Shadow Thrash (210687), Ashamane's Rip (210705), Ashamane's Frenzy (210722), Ashamane's Frenzy (210723), Fury of Elune (211545), Revitalize (212040), Brambles (213709), Swipe (213764), Swipe (213771), Echoing Stars (226104), Enraged Maul (236716), Force of Nature (248280)
 #2 (id=314659)   : Apply Aura (6) | Unknown(153)
                    Base Value: 5 | Scaled Value: 5 | Target: Self (1)
                    Affected Spells: Entangling Roots (339), Tranquility (740), Rejuvenation (774), Rip (1079), Rake (1822), Remove Corruption (2782), Solar Wrath (5176), Healing Touch (5185), Mighty Bash (5211), Shred (5221), Growl (6795), Maul (6807), Moonfire (8921), Regrowth (8936), Swiftmend (18562), Rebirth (20484), Ferocious Bite (22568), Maim (22570), Lifebloom (33763), Lifebloom (33778), Mangle (33917), Wild Growth (48438), Typhoon (61391), Thrash (77758), Starsurge (78674), Solar Beam (78675), Pulverize (80313), Nature's Cure (88423), Sunfire (93402), Skull Bash (93985), Ironbark (102342), Cenarion Ward (102351), Cenarion Ward (102352), Mass Entanglement (102359), Wild Charge (102401), Swipe (106785), Thrash (106830), Skull Bash (106839), Typhoon (132469), Ysera's Gift (145108), Ysera's Gift (145109), Ysera's Gift (145110), Efflorescence (145205), Moonfire (155625), Rake (155722), Pulverize (158792), Moonfire (164812), Sunfire (164815), Maim (168877), Maim (168878), Maim (168879), Maim (168880), Maim (168881), Solar Wrath (190984), Starfall (191034), Starfall (191037), Thrash (192090), Lunar Strike (194153), Starsurge (197626), Lunar Strike (197628), Solar Wrath (197629), Sunfire (197630), Enraged Mangle (202085), Stellar Flare (202347), Shooting Stars (202497), New Moon (202767), Half Moon (202768), Fury of Elune (202770), Full Moon (202771), Goldrinn's Fang (203001), Touch of the Moon (203018), Lunar Beam (204069), Force of Nature (205636), Essence of G'Hanir (208253), Ashamane's Rip (210705), Fury of Elune (211545), Revitalize (212040), Brambles (213709), Swipe (213764), Swipe (213771), Echoing Stars (226104), Enraged Maul (236716), Force of Nature (248280)
 #3 (id=317501)   : Apply Aura (6) | Add Flat Modifier (107): Spell Radius (6)
                    Base Value: 5 | Scaled Value: 5 | Misc Value: 6 | Target: Self (1)
-                   Affected Spells: Incapacitating Roar (99), Tranquility (740), Typhoon (61391), Thrash (77758), Displacer Beast (102280), Swipe (106785), Thrash (106830), Stampeding Roar (106898), Typhoon (132469), Ysera's Gift (145108), Ysera's Gift (145109), Ysera's Gift (145110), Tranquility (157982), Brutal Slash (202028), Lunar Beam (204069), Shadow Thrash (210687), Power of the Archdruid (213121), Brambles (213709), Swipe (213771), Intimidating Roar (236748)
+                   Affected Spells: Incapacitating Roar (99), Tranquility (740), Typhoon (61391), Thrash (77758), Swipe (106785), Thrash (106830), Stampeding Roar (106898), Typhoon (132469), Ysera's Gift (145108), Ysera's Gift (145109), Ysera's Gift (145110), Tranquility (157982), Brutal Slash (202028), Lunar Beam (204069), Shadow Thrash (210687), Brambles (213709), Swipe (213771), Intimidating Roar (236748)
 #4 (id=340874)   : Apply Aura (6) | Unknown(188)
                    Base Value: 5 | Scaled Value: 5 | Target: Self (1)
-                   Affected Spells: Incapacitating Roar (99), Tranquility (740), Typhoon (61391), Thrash (77758), Displacer Beast (102280), Swipe (106785), Thrash (106830), Typhoon (132469), Tranquility (157982), Brutal Slash (202028), Lunar Beam (204069), Shadow Thrash (210687), Brambles (213709), Swipe (213771), Intimidating Roar (236748)
+                   Affected Spells: Incapacitating Roar (99), Tranquility (740), Typhoon (61391), Thrash (77758), Swipe (106785), Thrash (106830), Typhoon (132469), Tranquility (157982), Brutal Slash (202028), Lunar Beam (204069), Shadow Thrash (210687), Brambles (213709), Swipe (213771), Intimidating Roar (236748)
 Description      : Increases the range of all of your abilities by $s1 yards.
 
 Name             : Moonkin Form (id=197625) [Spell Family (7)] 
@@ -4925,7 +4949,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=290376)   : School Damage (2): astral
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 5.00000 | Target: Enemy (6)
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.25000 | Target: Enemy (6)
 #2 (id=290377)   : Trigger Spell (64): Lunar Empowerment
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 164547 | Target: Self (1)
 #3 (id=290378)   : Trigger Spell (64): Solar Empowerment
@@ -4951,7 +4975,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=290380)   : School Damage (2): arcane
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 3.50000 | Radius: 0 - 5 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.87500 | Radius: 0 - 5 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
 #2 (id=353245)   : Dummy (3)
                    Base Value: 35 | Scaled Value: 35 | Target: Enemy (6)
 Description      : Call down a strike of lunar energy, causing $s1 Arcane damage to the target, and ${$m1*$m2/100} Arcane damage to all other enemies within $A1 yards.
@@ -4974,7 +4998,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=290381)   : School Damage (2): nature
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.20000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.55000 | Target: Enemy (6)
 Description      : Causes $s1 Nature damage to the target.
 
 Name             : Sunfire (Solar) (id=197630) [Scaling Spell (3), Spell Family (7)] 
@@ -5131,7 +5155,7 @@ Attributes       : ........ ........ ..x..... x..x....   ........ ..x..... .....
                  : Periodic effect affected by haste (173)
 Effects          :
 #1 (id=295007)   : Apply Aura (6) | Periodic Heal (8): every 3 seconds
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.60000 | Target: Friend (21)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.15000 | Target: Friend (21)
 Description      : $@spelldesc200390
 Tooltip          : Heals $w1 damage every $t1 seconds.
 
@@ -5236,14 +5260,14 @@ Description      : Your melee abilities in Cat Form have a $s1% increased critic
 Name             : Brutal Slash (id=202028) [Spell Family (7)] 
 Class            : Druid
 School           : Physical
-Resource         : 20 Energy (3) (id=10829)
+Resource         : 30 Energy (3) (id=10829)
 Spell Level      : 1
 Range            : 8 yards
 GCD              : 1 seconds
-Charges          : 3 (12 seconds cooldown)
+Charges          : 3 (10 seconds cooldown)
 Category         : 1581: Druid (137009 effect#1)
 Stance Mask      : 0x00000001
-Affecting spells : Incarnation: King of the Jungle (102543 effect#1), Berserk (106951 effect#1), Clearcasting (135700 effect#1), Feral Druid (137011 effect#1), Bloodtalons (145152 effect#1), Thrash (192090 effect#2), Astral Influence (197524 effect#1), Sharpened Claws (210637 effect#1), Scent of Blood (210664 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ashamane's Frenzy (210723 effect#4)
+Affecting spells : Tiger's Fury (5217 effect#1), Savage Roar (62071 effect#1), Incarnation: King of the Jungle (102543 effect#1), Berserk (106951 effect#1), Clearcasting (135700 effect#1), Feral Druid (137011 effect#1), Bloodtalons (145152 effect#1), Thrash (192090 effect#2), Astral Influence (197524 effect#1), Sharpened Claws (210637 effect#1), Scent of Blood (210664 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ashamane's Frenzy (210723 effect#4)
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .......x ........ ........ 
@@ -5256,7 +5280,7 @@ Effects          :
 #2 (id=297727)   : Dummy (3)
                    Base Value: 3 | Scaled Value: 3 | Radius: 0 - 8 yards | Target: At Caster (22) -> AOE enemy (15)
 #3 (id=297728)   : Weapon Damage% (31)
-                   Base Value: 2470 | Scaled Value: 24.7 | Radius: 0 - 8 yards | Target: At Caster (22) -> AOE enemy (15)
+                   Base Value: 408 | Scaled Value: 4.08 | Radius: 0 - 8 yards | Target: At Caster (22) -> AOE enemy (15)
 Description      : Strikes all nearby enemies with a massive slash, inflicting $sw3 Physical damage.
 
 |cFFFFFFFFAwards $s1 combo $lpoint:points;.|r
@@ -5290,12 +5314,12 @@ Attributes       : ....x.x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=297732)   : Apply Aura (6) | Add Percent Modifier (108): Unknown 2 (19)
-                   Base Value: -20 | Scaled Value: -20 | SP Coefficient: 1.00000 | Misc Value: 19 | Target: Self (1)
+                   Base Value: -20 | Scaled Value: -20 | Misc Value: 19 | Target: Self (1)
                    Affected Spells: Rip (1079), Rake (1822), Thrash (106830), Rake (155722), Shadow Thrash (210687), Ashamane's Rip (210705)
 #2 (id=297777)   : Apply Aura (6) | Add Percent Modifier (108): Spell Duration (1)
-                   Base Value: -20 | Scaled Value: -20 | SP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
+                   Base Value: -20 | Scaled Value: -20 | Misc Value: 1 | Target: Self (1)
                    Affected Spells: Rip (1079), Rake (1822), Thrash (106830), Rake (155722), Shadow Thrash (210687), Ashamane's Rip (210705)
-Description      : Your Rip, Rake, and Thrash abilities deal the same damage as normal, but in $s1% less time.
+Description      : Your Rip, Rake, and Thrash abilities deal their full damage $s1% faster.
 
 Name             : Elune's Guidance (id=202060) [Spell Family (8)] 
 Class            : Druid
@@ -5447,7 +5471,7 @@ Range            : 40 yards
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Duration         : 24 seconds
-Affecting spells : Balance Druid (137013 effect#1), Lucidity (137247 effect#1), Astral Influence (197524 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), 
+Affecting spells : Moonkin Form (24858 effect#9), Incarnation: Chosen of Elune (102560 effect#1), Balance Druid (137013 effect#1), Lucidity (137247 effect#1), Celestial Alignment (194223 effect#1), Astral Influence (197524 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), 
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .....x.. ........ ........ 
@@ -5457,9 +5481,9 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : Periodic effect affected by haste (173)
 Effects          :
 #1 (id=298295)   : School Damage (2): astral
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 2.60000 | Target: Enemy (6)
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.52500 | Target: Enemy (6)
 #2 (id=298296)   : Apply Aura (6) | Periodic Damage (3): astral every 2 seconds
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.83200 | Target: Enemy (6)
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.17500 | Target: Enemy (6)
 Description      : Burns the target for $s1 Astral  damage, and then an additional $o2 damage over $d.
 
 Stellar Flare benefits from Starfall's Stellar Empowerment.
@@ -5566,7 +5590,7 @@ School           : Astral
 Spell Level      : 1
 Range            : 50000 yards
 Velocity         : 0.8 yards/sec
-Affecting spells : Balance Druid (137013 effect#1), Lucidity (137247 effect#1), Astral Influence (197524 effect#2), Ekowraith, Creator of Worlds (210667 effect#1), 
+Affecting spells : Moonkin Form (24858 effect#9), Incarnation: Chosen of Elune (102560 effect#1), Balance Druid (137013 effect#1), Lucidity (137247 effect#1), Celestial Alignment (194223 effect#1), Astral Influence (197524 effect#2), Ekowraith, Creator of Worlds (210667 effect#1), 
 Attributes       : ........ ........ ........ ...x....   .......x ..x..... ........ ........ 
                  : ..x..... ........ ......x. ........   x....... .x...... ......x. .x....x. 
                  : ....x... .......x ........ ........   ........ ........ ........ ..x..... 
@@ -5576,7 +5600,7 @@ Attributes       : ........ ........ ........ ...x....   .......x ..x..... .....
                  : Not a proc (105), Requires line of sight (186)
 Effects          :
 #1 (id=298525)   : School Damage (2): astral
-                   Base Value: 1 | Scaled Value: 0 (avg=0.58, dl=0.15) | SP Coefficient: 0.57200 | Target: Enemy (6)
+                   Base Value: 1 | Scaled Value: 0 (avg=0.58, dl=0.15) | SP Coefficient: 0.11250 | Target: Enemy (6)
 #2 (id=298537)   : Energize Power (30)
                    Base Value: 40 | Scaled Value: 40 | Misc Value: astral_power | Target: Self (1)
 Description      : $@spelldesc202342
@@ -5626,7 +5650,7 @@ Velocity         : 20 yards/sec
 Charges          : 3 (15 seconds cooldown)
 Category         : 1584
 Artifact Power   : Id: 1049, Max Rank: 1, Type: 18
-Affecting spells : Balance Druid (137013 effect#1), Lucidity (137247 effect#1), Astral Influence (197524 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), 
+Affecting spells : Moonkin Form (24858 effect#9), Incarnation: Chosen of Elune (102560 effect#1), Balance Druid (137013 effect#1), Lucidity (137247 effect#1), Celestial Alignment (194223 effect#1), Astral Influence (197524 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), 
 Triggered by     : Push Active Ability to Bar (225865)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5636,7 +5660,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=298964)   : School Damage (2): arcane
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 4.68000 | Target: Enemy (6)
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.17000 | Target: Enemy (6)
 #2 (id=299003)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #3 (id=321942)   : Energize Power (30)
@@ -5654,7 +5678,7 @@ GCD              : 1.5 seconds
 Velocity         : 20 yards/sec
 Charges          : 3 (15 seconds cooldown)
 Category         : 1584
-Affecting spells : Balance Druid (137013 effect#1), Lucidity (137247 effect#1), Astral Influence (197524 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), 
+Affecting spells : Moonkin Form (24858 effect#9), Incarnation: Chosen of Elune (102560 effect#1), Balance Druid (137013 effect#1), Lucidity (137247 effect#1), Celestial Alignment (194223 effect#1), Astral Influence (197524 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), 
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5663,7 +5687,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=298965)   : School Damage (2): arcane
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 9.36000 | Target: Enemy (6)
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 2.34000 | Target: Enemy (6)
 #2 (id=299004)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #3 (id=321940)   : Energize Power (30)
@@ -5711,7 +5735,7 @@ GCD              : 1.5 seconds
 Velocity         : 0.9 yards/sec
 Charges          : 3 (15 seconds cooldown)
 Category         : 1584
-Affecting spells : Balance Druid (137013 effect#1), Lucidity (137247 effect#1), Astral Influence (197524 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), 
+Affecting spells : Moonkin Form (24858 effect#9), Incarnation: Chosen of Elune (102560 effect#1), Balance Druid (137013 effect#1), Lucidity (137247 effect#1), Celestial Alignment (194223 effect#1), Astral Influence (197524 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), 
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5720,7 +5744,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ .......x   ........ ........ ........ ........ 
 Effects          :
 #1 (id=298969)   : School Damage (2): arcane
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 18.72000 | Radius: 0 - 8 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 4.68000 | Radius: 0 - 8 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
 #2 (id=298970)   : Energize Power (30)
                    Base Value: 400 | Scaled Value: 400 | Misc Value: astral_power | Target: Self (1)
 #3 (id=299005)   : Dummy (3)
@@ -5738,7 +5762,7 @@ Class            : Druid
 School           : Arcane
 Range            : 60 yards
 Velocity         : 20 yards/sec
-Affecting spells : Balance Druid (137013 effect#1), Lucidity (137247 effect#1), Astral Influence (197524 effect#2), Ekowraith, Creator of Worlds (210667 effect#1), 
+Affecting spells : Moonkin Form (24858 effect#9), Incarnation: Chosen of Elune (102560 effect#1), Balance Druid (137013 effect#1), Lucidity (137247 effect#1), Celestial Alignment (194223 effect#1), Astral Influence (197524 effect#2), Ekowraith, Creator of Worlds (210667 effect#1), 
 Triggered by     : Power of Goldrinn (202996)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5748,7 +5772,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=299322)   : School Damage (2): arcane
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 4.16000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.04000 | Target: Enemy (6)
 Description      : Deals $m1 Arcane damage.
 Tooltip          : Deals $m1 Arcane damage.
 
@@ -5765,7 +5789,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=300960)   : Apply Aura (6) | Absorb Damage (69)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 127 | Target: Self (1)
-Description      : Sharp brambles protect you, absorbing and reflecting up to ${$AP*0.24} damage from each attack.$?s22812[
+Description      : Sharp brambles protect you, absorbing and reflecting up to ${$AP*0.2} damage from each attack.$?s22812[
 
 While Barkskin is active, the brambles also deal $213709s1 Nature damage to all nearby enemies every $22812t5 sec.][]
 
@@ -5773,8 +5797,9 @@ Name             : Brambles (id=203958) [Spell Family (7)]
 Class            : Druid
 School           : Nature
 Range            : 100 yards
+Affecting spells : Guardian Druid (137010 effect#1), 
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5900,7 +5925,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=301047)   : Apply Aura (6) | Add Percent Modifier (108): Spell Radius (6)
-                   Base Value: 200 | Scaled Value: 200 | Misc Value: 6 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 6 | Target: Self (1)
                    Affected Spells: Stampeding Roar (106898)
 #2 (id=301048)   : Apply Aura (6) | Add Percent Modifier (108): Spell Radius (6)
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 6 | Target: Self (1)
@@ -5908,7 +5933,7 @@ Effects          :
 #3 (id=334111)   : Apply Aura (6) | Add Percent Modifier (108): Spell Cooldown (11)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 11 | Target: Self (1)
                    Affected Spells: Stampeding Roar (106898)
-Description      : Increases the radius of Stampeding Roar by $s1%, the radius of Incapacitating Roar by $s2%, and reduces the cooldown of Stampeding Roar by $s3%.
+Description      : Increases the radius of Incapacitating Roar by $s2% and reduces the cooldown of Stampeding Roar by $s3%.
 
 Name             : Rend and Tear (id=204053) [Spell Family (7), Passive] 
 Class            : Druid
@@ -5954,7 +5979,7 @@ Class            : Druid
 School           : Arcane
 Spell Level      : 1
 Range            : 100 yards
-Affecting spells : Astral Influence (197524 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), 
+Affecting spells : Guardian Druid (137010 effect#1), Astral Influence (197524 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), 
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ .x...... ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5964,9 +5989,9 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Not a proc (105)
 Effects          :
 #1 (id=301153)   : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 3.00000 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.63000 | Target: Self (1)
 #2 (id=301154)   : School Damage (2): arcane
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.90000 | Radius: 0 - 5 yards | Target: Unknown(87) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.13650 | Radius: 0 - 5 yards | Target: Unknown(87) -> AOE enemy (instant) (16)
 Description      : $@spelldesc204066
 
 Name             : Force of Nature (Talent) (id=205636) [Spell Family (7)] 
@@ -6008,7 +6033,7 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=306700)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Misc Value: 7 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.25000 | Misc Value: 7 | Target: Self (1)
 Description      : For each Rejuvenation you have active, the cast time of Healing Touch is reduced by $207640s1%, and the critical effect chance of Regrowth is increased by $207640s2%.
 
 Name             : Spring Blossoms (id=207385) [Spell Family (7), Passive, Hidden] 
@@ -6024,7 +6049,7 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=306705)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Misc Value: 7 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.25000 | Misc Value: 7 | Target: Self (1)
 Description      : Each target healed by Efflorescence is healed for an additional $207386o1 over $207386d.
 
 Name             : Spring Blossoms (id=207386) [Spell Family (7)] 
@@ -6041,7 +6066,7 @@ Attributes       : ........ ........ ..x..... x..x....   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=306707)   : Apply Aura (6) | Periodic Heal (8): every 2 seconds
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.20000 | Target: Friend (21)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.05000 | Target: Friend (21)
 Description      : $@spelldesc207385
 Tooltip          : Heals $w1 damage every $t1 seconds.
 
@@ -6086,7 +6111,7 @@ Attributes       : ........ ........ x.x..... ........   ........ ........ .....
 Effects          :
 #1 (id=308116)   : Apply Aura (6) | Add Percent Modifier (108): Unknown 2 (19)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 19 | Target: Self (1)
-                   Affected Spells: Rejuvenation (774), Regrowth (8936), Lifebloom (33763), Wild Growth (48438), Cenarion Ward (102351), Cenarion Ward (102352), Dreamer (253432)
+                   Affected Spells: Rejuvenation (774), Regrowth (8936), Lifebloom (33763), Wild Growth (48438), Cenarion Ward (102351), Cenarion Ward (102352)
 #2 (id=325987)   : Apply Aura (6) | Periodic Trigger Spell (23): Essence of G'Hanir every 0.25 seconds
                    Base Value: -50 | Scaled Value: -50 | Trigger Spell: 218889 | Target: Self (1)
                    Affected Spells: Rejuvenation (774), Regrowth (8936), Lifebloom (33763), Wild Growth (48438), Cenarion Ward (102351), Cenarion Ward (102352)
@@ -6288,7 +6313,7 @@ School           : Shadow
 Spell Level      : 22
 Range            : 100 yards
 Duration         : 24 seconds
-Affecting spells : Mastery: Razor Claws (77493 effect#1), Incarnation: King of the Jungle (102543 effect#1), Berserk (106951 effect#1), Feral Druid (137011 effect#1), Restoration Druid (137012 effect#8), Soul of the Forest (158476 effect#3), Bloodletting (165699 effect#1), Thrash (192090 effect#2), Feral Affinity (197490 effect#6), Astral Influence (197524 effect#1), Jagged Wounds (202032 effect#1), Feral Affinity (202155 effect#6), Feral Affinity (202157 effect#6), Razor Fangs (210570 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ashamane's Frenzy (210723 effect#4), Item - Druid T20 Feral 4P Bonus (242235 effect#1), 
+Affecting spells : Tiger's Fury (5217 effect#1), Savage Roar (62071 effect#1), Mastery: Razor Claws (77493 effect#1), Incarnation: King of the Jungle (102543 effect#1), Berserk (106951 effect#1), Feral Druid (137011 effect#1), Restoration Druid (137012 effect#8), Soul of the Forest (158476 effect#3), Bloodletting (165699 effect#1), Thrash (192090 effect#2), Feral Affinity (197490 effect#6), Astral Influence (197524 effect#1), Jagged Wounds (202032 effect#1), Feral Affinity (202155 effect#6), Feral Affinity (202157 effect#6), Razor Fangs (210570 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ashamane's Frenzy (210723 effect#4), Item - Druid T20 Feral 4P Bonus (242235 effect#1), 
 Attributes       : ....x... ........ ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ....x... ........   ........ ........ ........ ........ 
@@ -6297,7 +6322,7 @@ Attributes       : ....x... ........ ..x..... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=312119)   : Apply Aura (6) | Periodic Damage (3): shadow every 2 seconds
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.19520 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.04099 | Target: Enemy (6)
 #2 (id=312120)   : Dummy (3)
                    Base Value: 2 | Scaled Value: 2 | Target: Enemy (6)
 #3 (id=312121)   : Dummy (3)
@@ -6360,7 +6385,7 @@ Class            : Druid
 School           : Physical
 Range            : 5 yards
 Duration         : 6 seconds
-Affecting spells : Mastery: Razor Claws (77493 effect#1), Feral Druid (137011 effect#1), Lucidity (137247 effect#1), Astral Influence (197524 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Bloodletter's Frailty (238120 effect#1)
+Affecting spells : Tiger's Fury (5217 effect#1), Savage Roar (62071 effect#1), Mastery: Razor Claws (77493 effect#1), Feral Druid (137011 effect#1), Lucidity (137247 effect#1), Astral Influence (197524 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Bloodletter's Frailty (238120 effect#1)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6369,11 +6394,11 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ......x. ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=312147)   : School Damage (2): physical
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.24400 | Target: Enemy (6)
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.05124 | Target: Enemy (6)
 #2 (id=312148)   : Apply Aura (6) | Periodic Damage (3): physical every 2 seconds
                    Base Value: 1 | Scaled Value: 1 | Mechanic: Bleed | Target: Enemy (6)
 #3 (id=335909)   : Apply Aura (6) | Periodic Damage (3): physical every 2 seconds
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.24400 | Mechanic: Bleed
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.05124 | Mechanic: Bleed
 #4 (id=364769)   : Apply Aura (6) | Unknown(271)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
                    Affected Spells: Rip (1079), Rake (1822), Shred (5221), Moonfire (8921), Ferocious Bite (22568), Maim (22570), Thrash (77758), Swipe (106785), Thrash (106830), Moonfire (155625), Rake (155722), Moonfire (164812), Maim (168877), Maim (168878), Maim (168879), Maim (168880), Maim (168881), Thrash (192090), Brutal Slash (202028), Shadow Thrash (210687), Ashamane's Rip (210705), Ashamane's Frenzy (210722), Ashamane's Frenzy (210723), Swipe (213771)
@@ -6438,7 +6463,7 @@ Name             : Fury of Elune (id=211545) [Spell Family (7)]
 Class            : Druid
 School           : Astral
 Range            : 100 yards
-Affecting spells : Incarnation: King of the Jungle (102543 effect#2), Berserk (106951 effect#2), Balance Druid (137013 effect#1), Lucidity (137247 effect#1), Astral Influence (197524 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), 
+Affecting spells : Moonkin Form (24858 effect#9), Incarnation: King of the Jungle (102543 effect#2), Incarnation: Chosen of Elune (102560 effect#1), Berserk (106951 effect#2), Balance Druid (137013 effect#1), Lucidity (137247 effect#1), Celestial Alignment (194223 effect#1), Astral Influence (197524 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), 
 Attributes       : ........ ........ x....... x..x....   .....x.. ........ ........ ........ 
                  : ........ ......x. ...x.... ......x.   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ...x.... ........ .xx..... ........ 
@@ -6448,7 +6473,7 @@ Attributes       : ........ ........ x....... x..x....   .....x.. ........ .....
                  : Does not break stealth (37)
 Effects          :
 #1 (id=313366)   : School Damage (2): astral
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.76800 | Radius: 0 - 3 yards | Target: Unknown(87) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.44200 | Radius: 0 - 3 yards | Target: Unknown(87) -> AOE enemy (instant) (16)
 Description      : $@spelldesc202770
 
 Name             : Fury of Elune (id=211547) [Spell Family (7)] 
@@ -6561,7 +6586,7 @@ Name             : Brambles (id=213709) [Spell Family (7)]
 Class            : Druid
 School           : Nature
 Range            : 100 yards
-Affecting spells : Astral Influence (197524 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), 
+Affecting spells : Guardian Druid (137010 effect#1), Astral Influence (197524 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), 
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6570,7 +6595,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=317117)   : School Damage (2): nature
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.21600 | Radius: 0 - 8 yards | Target: Custom (18) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.03360 | Radius: 0 - 8 yards | Target: Custom (18) -> AOE enemy (instant) (16)
 Description      : $@spelldesc203953
 
 Name             : Swipe (id=213764) [Spell Family (7)] 
@@ -6614,7 +6639,7 @@ Effects          :
 #2 (id=317224)   : Dummy (3)
                    Base Value: 20 | Scaled Value: 20 | Radius: 0 - 8 yards | Target: At Caster (22) -> AOE enemy (15)
 #3 (id=317225)   : Weapon Damage% (31)
-                   Base Value: 146 | Scaled Value: 1.46 | Radius: 0 - 8 yards | Target: At Caster (22) -> AOE enemy (15)
+                   Base Value: 34 | Scaled Value: 0.34 | Radius: 0 - 8 yards | Target: At Caster (22) -> AOE enemy (15)
 Description      : Swipe nearby enemies, inflicting $sw3 Physical damage.
 
 Name             : Protection of Ashamane (id=214274) [Spell Family (7), Hidden] 
@@ -6689,7 +6714,7 @@ Attributes       : ........ ........ ..x..... x..x....   ........ ..x..... .....
                  : Cannot crit (93), Disable target procs (113)
 Effects          :
 #1 (id=326922)   : School Damage (2): nature
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 2.25000 | Target: Enemy (6)
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.47250 | Target: Enemy (6)
 Description      : Deals $s1 Nature damage.
 
 Name             : Nature's Guardian (id=227034) [Spell Family (7)] 
@@ -7007,12 +7032,12 @@ Effects          :
                    Base Value: 30 | Scaled Value: 30 | Misc Value: 3 | Target: Self (1)
                    Affected Spells: Omen of Clarity (16864), Clearcasting (16870), Clearcasting (135700)
 #4 (id=356853)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 3 (23)
-                   Base Value: 20 | Scaled Value: 20 | Misc Value: 23 | Target: Self (1)
+                   Base Value: 15 | Scaled Value: 15 | Misc Value: 23 | Target: Self (1)
                    Affected Spells: Omen of Clarity (16864), Clearcasting (16870), Clearcasting (135700)
 #5 (id=476584)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 4 (32)
-                   Base Value: 20 | Scaled Value: 20 | Misc Value: 32 | Target: Self (1)
+                   Base Value: 15 | Scaled Value: 15 | Misc Value: 32 | Target: Self (1)
                    Affected Spells: Omen of Clarity (16864), Clearcasting (16870), Clearcasting (135700)
-Description      : Omen of Clarity now triggers $s2% more often, stacks up to ${$s135700u+$s1} times and increases the damage of your next Shred, Thrash, or $?s202028[Brutal Slash][Swipe] by $s4%.
+Description      : Omen of Clarity now triggers $s2% more often, stacks up to ${$s135700u+$s1} times, and increases the damage of your next Shred, Thrash, or $?s202028[Brutal Slash][Swipe] by $s4%.
 
 Your maximum Energy is increased by $s3.
 
@@ -7024,7 +7049,7 @@ Spell Level      : 10
 Range            : 5 yards
 GCD              : 1.5 seconds
 Stance Mask      : 0x00000010
-Affecting spells : Incarnation: Guardian of Ursoc (102558 effect#2), Druid (137009 effect#3), Guardian Druid (137010 effect#1), Bloodtalons (145152 effect#1), Item - Druid T17 Guardian 2P Bonus (165410 effect#1), Thrash (192090 effect#2), Astral Influence (197524 effect#1), Mauler (208762 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), 
+Affecting spells : Incarnation: Guardian of Ursoc (102558 effect#2), Druid (137009 effect#3), Bloodtalons (145152 effect#1), Item - Druid T17 Guardian 2P Bonus (165410 effect#1), Thrash (192090 effect#2), Astral Influence (197524 effect#1), Mauler (208762 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), 
 Attributes       : ....x... ........ ........ ........   ........ .x...... ........ ...x.... 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7035,7 +7060,7 @@ Effects          :
 #1 (id=358072)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
 #2 (id=358073)   : Weapon Damage% (31)
-                   Base Value: 500 | Scaled Value: 5 | Target: Enemy (6)
+                   Base Value: 170 | Scaled Value: 1.7 | Target: Enemy (6)
 Description      : Maul the target for $sw2 Physical damage.
 
 Name             : Intimidating Roar (id=236748) [Spell Family (7)] 
@@ -7140,6 +7165,28 @@ Effects          :
                    Affected Spells: Prowl (5215), Prowl (102547)
 Description      : $@spelldesc102543
 Tooltip          : Allows the use of Prowl even while in combat.
+
+Name             : Tiger Dash (id=252216) [Spell Family (7)] 
+Class            : Druid
+School           : Physical
+Duration         : 4 seconds
+Cooldown         : 45 seconds
+Category         : 44
+Category Cooldown: 45 seconds
+Attributes       : ....x... ........ ..x..... ........   .....x.. ..x..... ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Does not break stealth (37)
+Effects          :
+#1 (id=472011)   : Apply Aura (6) | Increase Speed% (31)
+                   Base Value: 200 | Scaled Value: 200 | Target: Self (1)
+#2 (id=472015)   : Apply Aura (6) | Periodic Dummy (226): every 0.5 seconds
+                   Base Value: 25 | Scaled Value: 25 | Target: Self (1)
+Description      : Activates Cat Form and increases movement speed by $s1%, reducing gradually over $d.
+Tooltip          : Increased movement speed by $s1% while in Cat Form, reducing gradually over time.
 
 Name             : Bloody Gash (id=252750) [Spell Family (7)] 
 Class            : Druid
@@ -7272,20 +7319,22 @@ Variables        : $damage=${$cond($gt($SP,$AP),$SP*5,$AP*6.25)}
 Name             : Light's Reckoning (Racial Passive) (id=256896) [Scaling Spell (-6)] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 Race             : Lightforged Draenei (0x20000000)
-School           : None
+School           : Holy
 Max Scaling Level: 120
+Range            : 40 yards
 Triggered by     : Light's Reckoning (255652)
-Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+Attributes       : ........ ........ .......x ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ .....x..   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ x....... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Disable player multipliers (221)
 Effects          :
-#1 (id=479676)   : School Damage (2): none
-                   Base Value: 0 | Scaled Value: 465816 (avg=0.4) | Radius: 0 - 5 yards | Target: Custom (18) -> AOE enemy (instant) (16)
+#1 (id=479676)   : School Damage (2): holy
+                   Base Value: 0 | Scaled Value: 5150.263 (avg=0.4) | Radius: 0 - 5 yards | Target: Custom (18) -> AOE enemy (instant) (16)
 #2 (id=479677)   : Direct Heal (10)
-                   Base Value: 100000 | Scaled Value: 465816 (avg=0.4) | Radius: 0 - 8 yards | Target: Custom (18) -> AOE friendly (31)
+                   Base Value: 100000 | Scaled Value: 5150.263 (avg=0.4) | Radius: 0 - 8 yards | Target: Custom (18) -> AOE friendly (31)
 Description      : Deals $s1 Holy Damage to enemies within $A1.
 
 Heals $s2 to allies within $A1. 
