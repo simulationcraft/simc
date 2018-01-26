@@ -1161,7 +1161,7 @@ struct fiend_melee_t : public priest_pet_melee_t
               ( amount * ( 1.0 + p().o().talents.surrender_to_madness->effectN( 1 ).percent() ) ) - amount,
               p().o().gains.insanity_surrender_to_madness );
         }
-			p().o().resource_gain(RESOURCE_INSANITY, amount, p().gains.fiend);
+			p().o().insanity.gain(amount, p().gains.fiend);
       }
       else
       {
@@ -3352,6 +3352,7 @@ struct void_bolt_t final : public priest_spell_t
 
 struct void_eruption_t final : public priest_spell_t
 {
+  propagate_const<shadow_word_pain_t*> child_swp;
   propagate_const<action_t*> void_bolt;
 
   void_eruption_t( priest_t& p, const std::string& options_str )
@@ -3359,6 +3360,11 @@ struct void_eruption_t final : public priest_spell_t
   {
     parse_options( options_str );
     base_costs[ RESOURCE_INSANITY ] = 0.0;
+	if (priest.talents.dark_void->ok())
+	{
+		child_swp = new shadow_word_pain_t(priest, std::string(""), false);
+		child_swp->background = true;
+	}
 
     may_miss          = false;
     aoe               = 1;
@@ -3366,7 +3372,7 @@ struct void_eruption_t final : public priest_spell_t
     radius            = 10.0;
     school            = SCHOOL_SHADOW;
     cooldown          = priest.cooldowns.void_bolt;
-    base_execute_time = p.find_spell( 228260 )->cast_time( p.true_level );
+    base_execute_time = p.find_spell( 228260 )->cast_time( p.true_level ) * (1.0 + p.talents.legacy_of_the_void->effectN(3).percent());
   }
 
   double spell_direct_power_coefficient( const action_state_t* ) const override
@@ -3411,6 +3417,18 @@ struct void_eruption_t final : public priest_spell_t
       }
     }
   }
+
+  void impact(action_state_t* s) override
+  {
+	  priest_spell_t::impact(s);
+	  priest_spell_t::impact(s);
+
+	  if (priest.talents.dark_void->ok())
+	  {
+		  child_swp->target = s->target;
+		  child_swp->execute();
+	  }
+  }
   // TODO: Healing part of HotV
   double composite_da_multiplier( const action_state_t* state ) const override
   {
@@ -3427,7 +3445,7 @@ struct void_eruption_t final : public priest_spell_t
   bool ready() override
   {
     if ( !priest.buffs.voidform->check() &&
-         ( priest.resources.current[ RESOURCE_INSANITY ] >= priest.resources.max[ RESOURCE_INSANITY ] ||
+         ( priest.resources.current[ RESOURCE_INSANITY ] >= priest.find_spell(185916)->effectN(4).base_value() ||
            ( priest.talents.legacy_of_the_void->ok() &&
              ( priest.resources.current[ RESOURCE_INSANITY ] >=
                priest.resources.max[ RESOURCE_INSANITY ] +
