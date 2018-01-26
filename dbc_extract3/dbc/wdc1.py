@@ -818,15 +818,10 @@ class WDC1Parser(LegionWDBParser):
         else:
             formats = None
 
-        if formats and len(formats) != self.n_fields():
-            logging.error('%s: Data format mismatch, record has %u fields, format file %u',
-                self.full_name(), self.n_fields(), len(formats))
-            return False
-
         for idx in range(0, self.n_fields()):
             size_type, offset = _COLUMN_INFO.unpack_from(self.data, self.parse_offset)
 
-            self.column_info.append(WDC1Column(self, formats and formats[idx] or None, idx, size_type, offset))
+            self.column_info.append(WDC1Column(self, (formats and len(formats) > idx) and formats[idx] or None, idx, size_type, offset))
 
             self.parse_offset += _COLUMN_INFO.size
 
