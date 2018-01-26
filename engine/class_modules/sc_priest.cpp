@@ -1162,7 +1162,6 @@ struct fiend_melee_t : public priest_pet_melee_t
               p().o().gains.insanity_surrender_to_madness );
         }
 			p().o().resource_gain(RESOURCE_INSANITY, amount, p().gains.fiend);
-			p().o().insanity.gain(amount, p().gains.fiend);
       }
       else
       {
