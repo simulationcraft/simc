@@ -641,7 +641,7 @@ bool download_item_data( item_t& item, cache::behavior_e caching )
         if ( ! stat.HasMember( "amount" ) ) throw( "bonus stat amount" );
 
         item.parsed.data.stat_type_e[ i ] = stat[ "stat" ].GetInt();
-        item.parsed.data.stat_val[ i ] =  stat[ "amount" ].GetInt();
+        item.parsed.stat_val[ i ]         = stat[ "amount" ].GetInt();
 
         if ( js.HasMember( "weaponInfo" ) && 
              ( item.parsed.data.stat_type_e[ i ] == ITEM_MOD_INTELLECT ||

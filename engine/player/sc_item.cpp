@@ -163,7 +163,7 @@ std::string item_t::item_stats_str() const
   else if ( item_database::armor_value( *this ) )
     s << item_database::armor_value( *this ) << " Armor, ";
 
-  for ( size_t i = 0; i < sizeof_array( parsed.data.stat_val ); i++ )
+  for ( size_t i = 0; i < sizeof_array( parsed.data.stat_type_e ); i++ )
   {
     if ( parsed.data.stat_type_e[ i ] <= 0 )
       continue;
@@ -453,7 +453,7 @@ std::string item_t::to_string() const
 
 bool item_t::has_item_stat( stat_e stat ) const
 {
-  for ( size_t i = 0; i < sizeof_array( parsed.data.stat_val ); i++ )
+  for ( size_t i = 0; i < sizeof_array( parsed.data.stat_type_e ); i++ )
   {
     if ( util::translate_item_mod( parsed.data.stat_type_e[ i ] ) == stat )
       return true;
@@ -532,7 +532,7 @@ stat_e item_t::stat( size_t idx ) const
 
 int item_t::stat_value( size_t idx ) const
 {
-  if ( idx >= sizeof_array( parsed.data.stat_val ) - 1 )
+  if ( idx >= sizeof_array( parsed.data.stat_type_e ) - 1 )
     return -1;
 
   return item_database::scaled_stat( *this, player -> dbc, idx, item_level() );
@@ -1175,7 +1175,7 @@ std::string item_t::encoded_stats() const
     if ( parsed.data.stat_type_e[ i ] < 0 )
       continue;
 
-    std::string stat_str = item_database::stat_to_str( parsed.data.stat_type_e[ i ], parsed.data.stat_val[ i ] );
+    std::string stat_str = item_database::stat_to_str( parsed.data.stat_type_e[ i ], stat_value( i ) );
     if ( ! stat_str.empty() ) stats.push_back( stat_str );
   }
 
@@ -1445,14 +1445,14 @@ bool item_t::decode_stats()
     // First, clear any stats in current data
     parsed.armor = 0;
     range::fill( parsed.data.stat_type_e, -1 );
-    range::fill( parsed.data.stat_val, 0 );
     range::fill( parsed.data.stat_alloc, 0 );
+    range::fill( parsed.stat_val, 0 );
 
     std::vector<item_database::token_t> tokens;
     size_t num_tokens = item_database::parse_tokens( tokens, option_stats_str );
     size_t stat = 0;
 
-    for ( size_t i = 0; i < num_tokens && stat < sizeof_array( parsed.data.stat_val ); i++ )
+    for ( size_t i = 0; i < num_tokens && stat < sizeof_array( parsed.stat_val ); i++ )
     {
       stat_e s = util::parse_stat_type( tokens[ i ].name );
       if ( s == STAT_NONE )
@@ -1465,7 +1465,7 @@ bool item_t::decode_stats()
       if ( s != STAT_ARMOR )
       {
         parsed.data.stat_type_e[ stat ] = util::translate_stat( s );
-        parsed.data.stat_val[ stat ] = static_cast<int>( tokens[ i ].value );
+        parsed.stat_val[ stat ] = static_cast<int>( tokens[ i ].value );
         stat++;
       }
       else
@@ -1483,7 +1483,7 @@ bool item_t::decode_stats()
     }
   }
 
-  for ( size_t i = 0; i < sizeof_array( parsed.data.stat_val ); i++ )
+  for ( size_t i = 0; i < sizeof_array( parsed.data.stat_type_e ); i++ )
   {
     stat_e s = stat( i );
     if ( s == STAT_NONE ) continue;
@@ -1587,7 +1587,7 @@ bool item_t::decode_random_suffix()
       bool has_stat = false;
       size_t free_idx = 0;
 
-      for ( size_t k = 0; k < sizeof_array( parsed.data.stat_val ); k++ )
+      for ( size_t k = 0; k < sizeof_array( parsed.data.stat_type_e ); k++ )
       {
         if ( parsed.data.stat_type_e[ k ] == ( int ) enchant_data.ench_prop[ j ] )
           has_stat = true;

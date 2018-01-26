@@ -931,11 +931,11 @@ double item_database::approx_scale_coefficient( unsigned current_ilevel, unsigne
 int item_database::scaled_stat( const item_t& item, const dbc_t& dbc, size_t idx, unsigned new_ilevel )
 {
   // Safeguard against array overflow, should never happen in any case
-  if ( idx >= sizeof_array( item.parsed.data.stat_val ) - 1 )
+  if ( idx >= sizeof_array( item.parsed.data.stat_type_e ) - 1 )
     return -1;
 
   if ( item.parsed.data.level == 0 )
-    return item.parsed.data.stat_val[ idx ];
+    return item.parsed.stat_val[ idx ];
 
   //if ( item.level == ( int ) new_ilevel )
   //  return item.stat_val[ idx ];
@@ -986,7 +986,7 @@ int item_database::scaled_stat( const item_t& item, const dbc_t& dbc, size_t idx
   // TODO(?): Should we warn the user that we are using an approximation of
   // the upgraded stats, and that certain stats may be off by one?
   else
-    return static_cast<int>( floor( item.parsed.data.stat_val[ idx ] * approx_scale_coefficient( item.parsed.data.level, new_ilevel ) ) );
+    return static_cast<int>( floor( item.parsed.stat_val[ idx ] * approx_scale_coefficient( item.parsed.data.level, new_ilevel ) ) );
 }
 
 // item_database_t::initialize_item_sources =================================

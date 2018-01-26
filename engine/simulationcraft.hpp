@@ -5,12 +5,12 @@
 #ifndef SIMULATIONCRAFT_H
 #define SIMULATIONCRAFT_H
 
-#define SC_MAJOR_VERSION "735"
+#define SC_MAJOR_VERSION "801"
 #define SC_MINOR_VERSION "01"
 #define SC_VERSION ( SC_MAJOR_VERSION "-" SC_MINOR_VERSION )
-#define SC_BETA 0
+#define SC_BETA 1
 #if SC_BETA
-#define SC_BETA_STR "legion"
+#define SC_BETA_STR "bfa"
 #endif
 #define SC_USE_STAT_CACHE
 
@@ -2708,6 +2708,7 @@ struct item_t
     unsigned                                         enchant_id;
     unsigned                                         addon_id;
     int                                              armor;
+    std::array<int, MAX_ITEM_STAT>                   stat_val;
     std::array<int, MAX_GEM_SLOTS>                   gem_id;
     std::array<int, MAX_GEM_SLOTS>                   gem_color;
     std::vector<int>                                 bonus_id;
@@ -2731,7 +2732,8 @@ struct item_t
       armor( 0 ), data(), initial_cd( timespan_t::zero() ), drop_level( 0 )
     {
       range::fill( data.stat_type_e, -1 );
-      range::fill( data.stat_val, 0 );
+      range::fill( data.stat_alloc, 0 );
+      range::fill( stat_val, 0 );
       range::fill( gem_id, 0 );
       range::fill( bonus_id, 0 );
       range::fill( gem_color, SOCKET_COLOR_NONE );

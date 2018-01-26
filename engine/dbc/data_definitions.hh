@@ -230,7 +230,6 @@ struct item_data_t {
   uint64_t race_mask;
   unsigned class_mask;
   int      stat_type_e[MAX_ITEM_STAT];       // item_mod_type
-  int      stat_val[MAX_ITEM_STAT];
   int      stat_alloc[MAX_ITEM_STAT];
   double   stat_socket_mul[MAX_ITEM_STAT];
   int      trigger_spell[MAX_ITEM_EFFECT];      // item_spell_trigger_type

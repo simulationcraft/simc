@@ -218,7 +218,7 @@ bool wowhead::download_item_data( item_t&            item,
       }
 
       item.parsed.data.stat_type_e[ n ] = util::translate_stat( type );
-      item.parsed.data.stat_val[ n ] = i -> value.GetInt();
+      item.parsed.stat_val[ n ] = i -> value.GetInt();
       n++;
 
       // Soo, weapons need a flag to indicate caster weapon for correct DPS calculation.
@@ -228,11 +228,11 @@ bool wowhead::download_item_data( item_t&            item,
            item.parsed.data.stat_type_e[ n - 1 ] == ITEM_MOD_SPELL_POWER ) )
         item.parsed.data.flags_2 |= ITEM_FLAG2_CASTER_WEAPON;
     }
-    
+
     int n_sockets = 0;
     if ( jsonequip.HasMember( "nsockets" ) )
       n_sockets = jsonequip[ "nsockets" ].GetUint();
-    
+
     assert( n_sockets <= static_cast< int >( sizeof_array( item.parsed.data.socket_color ) ) );
     for ( int i = 0; i < n_sockets; i++ )
     {
