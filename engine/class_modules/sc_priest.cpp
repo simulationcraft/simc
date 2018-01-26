@@ -305,7 +305,7 @@ public:
     propagate_const<gain_t*> insanity_mind_flay;
     propagate_const<gain_t*> insanity_mind_sear;
     propagate_const<gain_t*> insanity_mind_spike;
-    propagate_const<gain_t*> insanity_mindbender;
+    propagate_const<gain_t*> insanity_pet;
     propagate_const<gain_t*> insanity_power_infusion;
     propagate_const<gain_t*> insanity_shadow_crash;
     propagate_const<gain_t*> insanity_shadow_word_death;
@@ -574,7 +574,7 @@ public:
       : end( nullptr ),
         last_drained( timespan_t::zero() ),
         actor( a ),
-        base_drain_per_sec( a.find_spell( 194249 )->effectN( 2 ).base_value() / -500.0 ),
+        base_drain_per_sec( a.find_spell( 194249 )->effectN( 3 ).base_value() / -500.0 ),
         stack_drain_multiplier( 2 / 3.0 ),  // Hardcoded Patch 7.1.5 (2016-12-02)
         base_drain_multiplier( 1.0 )
     {
@@ -948,6 +948,7 @@ struct base_fiend_pet_t : public priest_pet_t
   }
 
   virtual double mana_return_percent() const = 0;
+  virtual double insanity_gain() const = 0;
 
   void init_action_list() override;
 
@@ -962,14 +963,15 @@ struct base_fiend_pet_t : public priest_pet_t
   {
     priest_pet_t::init_gains();
 
+	if (o().specialization() == PRIEST_SHADOW)
+	{
+		gains.fiend = o().gains.insanity_pet;
+	}
+	else
+	{
     switch ( pet_type )
     {
       case PET_MINDBENDER:
-        if ( o().specialization() == PRIEST_SHADOW )
-        {
-          gains.fiend = o().gains.insanity_mindbender;
-        }
-        else
         {
           gains.fiend = o().gains.mindbender;
         }
@@ -979,6 +981,7 @@ struct base_fiend_pet_t : public priest_pet_t
         break;
     }
   }
+}
 
   void init_resources( bool force ) override
   {
@@ -1031,14 +1034,20 @@ struct shadowfiend_pet_t final : public base_fiend_pet_t
   {
     return 0.0;
   }
+  double insanity_gain() const override
+  {
+	  return o().find_spell(262485)->effectN(1).resource(RESOURCE_INSANITY);
+  }
 };
+
+
 
 struct mindbender_pet_t final : public base_fiend_pet_t
 {
   const spell_data_t* mindbender_spell;
 
   mindbender_pet_t( sim_t* sim, priest_t& owner, const std::string& name = "mindbender" )
-    : base_fiend_pet_t( sim, owner, PET_MINDBENDER, name ), mindbender_spell( owner.find_talent_spell( "Mindbender" ) )
+    : base_fiend_pet_t( sim, owner, PET_MINDBENDER, name ), mindbender_spell( owner.find_spell(123051) )
   {
     direct_power_mod = 1.5;  // Verified 2016-06-02 -- Twintop
 
@@ -1049,8 +1058,12 @@ struct mindbender_pet_t final : public base_fiend_pet_t
 
   double mana_return_percent() const override
   {
-    double m = mindbender_spell->effectN( 2 ).percent();
+    double m = mindbender_spell->effectN( 1 ).percent();
     return m / 100;
+  }
+  double insanity_gain() const override
+  {
+	return o().find_spell(200010)->effectN(1).resource(RESOURCE_INSANITY);
   }
 };
 
@@ -1135,20 +1148,21 @@ struct fiend_melee_t : public priest_pet_melee_t
     if ( result_is_hit( s->result ) )
     {
       if ( p().o().specialization() == PRIEST_SHADOW )
-      {
-		double amount = p().o().talents.mindbender->effectN(3).base_value();
-		p().o().insanity.gain(amount, p().gains.fiend);
-		if (!p().o().buffs.surrender_to_madness_death->up())
+	  {
+		double amount = p().insanity_gain();
+		if (p().o().buffs.surrender_to_madness_death->up())
 		{
-			p().o().resource_gain( RESOURCE_INSANITY, 0.0 ); // generation with debuff is zero N1gh7h4wk 2018/01/26
+			amount = 0.0; // generation with debuff is zero N1gh7h4wk 2018/01/26
 		}
-        else if ( p().o().buffs.surrender_to_madness->up() )
+        if ( p().o().buffs.surrender_to_madness->up() )
         {
           p().o().resource_gain(
               RESOURCE_INSANITY,
               ( amount * ( 1.0 + p().o().talents.surrender_to_madness->effectN( 1 ).percent() ) ) - amount,
               p().o().gains.insanity_surrender_to_madness );
         }
+			p().o().resource_gain(RESOURCE_INSANITY, amount, p().gains.fiend);
+			p().o().insanity.gain(amount, p().gains.fiend);
       }
       else
       {
@@ -3379,12 +3393,13 @@ struct void_eruption_t final : public priest_spell_t
     {
       priest.buffs.void_vb->trigger();
     }
+	/*
     else
     {
       priest.cooldowns.void_bolt->start( void_bolt );
       priest.cooldowns.void_bolt->adjust( -timespan_t::from_millis( 1000 * ( 3.0 * priest.composite_spell_speed() ) ),
                                           true );
-    }
+    } */
 
     if ( priest.active_items.mother_shahrazs_seduction )
     {
@@ -3786,19 +3801,6 @@ struct voidform_t final : public priest_buff_t<haste_buff_t>
       priest.buffs.overwhelming_darkness->expire();
     }
 
-    if ( priest.buffs.surrender_to_madness->check() )
-    {
-      make_event( sim, [this]() {
-        if ( sim->log )
-        {
-          sim->out_log.printf( "%s %s: Surrender to Madness kills you. You die. Horribly.", priest.name(), name() );
-        }
-        priest.demise();
-        priest.arise();
-        priest.buffs.surrender_to_madness_death->trigger();
-      } );
-    }
-
     base_t::expire_override( expiration_stacks, remaining_duration );
   }
 };
@@ -3810,12 +3812,6 @@ struct surrender_to_madness_t final : public priest_buff_t<buff_t>
   {
   }
 
-  void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
-  {
-    base_t::expire_override( expiration_stacks, remaining_duration );
-
-    priest.buffs.voidform->expire();
-  }
 };
 
 struct lingering_insanity_t final : public priest_buff_t<haste_buff_t>
@@ -4144,7 +4140,7 @@ void priest_t::create_gains()
   gains.insanity_mind_flay               = get_gain( "Insanity Gained from Mind Flay" );
   gains.insanity_mind_sear               = get_gain( "Insanity Gained from Mind Sear" );
   gains.insanity_mind_spike              = get_gain( "Insanity Gained from Mind Spike" );
-  gains.insanity_mindbender              = get_gain( "Insanity Gained from Mindbender" );
+  gains.insanity_pet					 = get_gain( "Insanity Gained from Pet" );
   gains.insanity_power_infusion          = get_gain( "Insanity Gained from Power Infusion" );
   gains.insanity_shadow_crash            = get_gain( "Insanity Gained from Shadow Crash" );
   gains.insanity_shadow_word_death       = get_gain( "Insanity Gained from Shadow Word: Death" );
@@ -4178,8 +4174,6 @@ void priest_t::create_procs()
   procs.serendipity_overflow    = get_proc( "Serendipity lost to overflow (Non-Tier 17 4pc)" );
   procs.t17_4pc_holy            = get_proc( "Tier17 4pc Serendipity" );
   procs.t17_4pc_holy_overflow   = get_proc( "Tier17 4pc Serendipity lost to overflow" );
-  procs.void_eruption_has_dots = get_proc( "Void Eruption casted when a target with DoTs was up" );
-  procs.void_eruption_no_dots   = get_proc( "Void Eruption casted when a target with no DoTs was up" );
   
   procs.void_tendril = get_proc( "Void Tendril spawned from Call to the Void" );
 
@@ -4315,7 +4309,7 @@ double priest_t::composite_spell_haste() const
 
   if ( buffs.voidform->check() )
   {
-    h /= 1.0 + ( buffs.voidform->check() ) * 0.05; // hardcode because idk how to do properly for now N1gh7h4wk 2018/01/26
+    h /= 1.0 + ( buffs.voidform->check() ) * 0.005; // hardcode because idk how to do properly for now N1gh7h4wk 2018/01/26
   }
 
   if ( buffs.sephuzs_secret->check() )
