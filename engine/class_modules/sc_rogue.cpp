@@ -1201,6 +1201,7 @@ struct rogue_attack_t : public melee_attack_t
   void   consume_resource() override;
   bool   ready() override;
   void   impact( action_state_t* state ) override;
+  void   schedule_travel( action_state_t* state ) override;
   void   tick( dot_t* d ) override;
 
   double attack_direct_power_coefficient( const action_state_t* s ) const override
@@ -2359,9 +2360,6 @@ void rogue_attack_t::impact( action_state_t* state )
   p() -> trigger_surge_of_toxins( state );
   p() -> trigger_insignia_of_ravenholdt( state );
 
-  if ( energize_type != ENERGIZE_NONE && energize_resource == RESOURCE_COMBO_POINT )
-    p() -> trigger_seal_fate( state );
-
   if ( result_is_hit( state -> result ) )
   {
     if ( procs_poison() && p() -> active_lethal_poison )
@@ -2463,6 +2461,16 @@ void rogue_attack_t::execute()
   }
 
   p() -> trigger_deepening_shadows( execute_state );
+}
+
+// rogue_attack_t::schedule_travel ==========================================
+
+void rogue_attack_t::schedule_travel( action_state_t* state )
+{
+  melee_attack_t::schedule_travel( state );
+
+  if ( energize_type != ENERGIZE_NONE && energize_resource == RESOURCE_COMBO_POINT )
+    p() -> trigger_seal_fate( state );
 }
 
 // rogue_attack_t::ready() ==================================================
@@ -3040,8 +3048,6 @@ struct fan_of_knives_t: public rogue_attack_t
   fan_of_knives_t( rogue_t* p, const std::string& options_str ):
     rogue_attack_t( "fan_of_knives", p, p -> find_specialization_spell( "Fan of Knives" ), options_str )
   {
-    weapon = &( player -> main_hand_weapon );
-    weapon_multiplier = 0;
     aoe = -1;
     energize_type     = ENERGIZE_ON_HIT;
     energize_resource = RESOURCE_COMBO_POINT;
@@ -3070,12 +3076,23 @@ struct fan_of_knives_t: public rogue_attack_t
     return m;
   }
 
-  void impact( action_state_t* state ) override
+  void schedule_travel( action_state_t* state ) override
   {
-    // 12/29/2017 - Poison Knives is evaluated before the poison proc in rogue_attack_t::impact()
-    p()->trigger_poison_knives(state);
+    rogue_attack_t::schedule_travel( state );
 
-    rogue_attack_t::impact( state );
+    if ( result_is_hit( state -> result ) )
+    {
+      // 2018-01-25: Poison Knives is evaluated as soon as FoK is cast
+      p() -> trigger_poison_knives( state );
+
+      // 2018-01-25: Poisons are applied on cast as well
+      // Note: Usual application on impact will not happen because this attack has no weapon assigned
+      if ( p() -> active_lethal_poison )
+        p() -> active_lethal_poison -> trigger( state );
+
+      if ( p() -> active_nonlethal_poison )
+        p() -> active_nonlethal_poison -> trigger( state );
+    }
   }
 };
 
