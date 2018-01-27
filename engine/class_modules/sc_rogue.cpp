@@ -8039,7 +8039,7 @@ void rogue_t::init_spells()
   spec.eviscerate           = find_specialization_spell( "Eviscerate" );
   spec.eviscerate_2         = find_specialization_spell( 231716 );
   spec.shadowstrike         = find_specialization_spell( "Shadowstrike" );
-  spec.shadowstrike_2       = find_specialization_spell( 245623 );
+  spec.shadowstrike_2       = find_spell( 245623 );
   spec.shuriken_combo       = find_specialization_spell( "Shuriken Combo" );
 
   // Masteries
