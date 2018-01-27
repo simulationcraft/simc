@@ -3149,7 +3149,6 @@ struct vampiric_touch_t final : public priest_spell_t
     }
     energize_type = ENERGIZE_NONE;  // disable resource generation from spell data
 
-    spell_power_mod.tick *= 1.0 + p.talents.sanlayn->effectN( 1 ).percent();
 
     if ( p.artifact.touch_of_darkness.rank() )
     {
@@ -3479,7 +3478,7 @@ struct void_eruption_t final : public priest_spell_t
          ( priest.resources.current[ RESOURCE_INSANITY ] >= priest.find_spell(185916)->effectN(4).base_value() ||
            ( priest.talents.legacy_of_the_void->ok() &&
              ( priest.resources.current[ RESOURCE_INSANITY ] >=
-               priest.resources.max[ RESOURCE_INSANITY ] +
+				 priest.find_spell(185916)->effectN(4).base_value() +
                    priest.talents.legacy_of_the_void->effectN( 2 ).base_value() ) ) ) )
     {
       return priest_spell_t::ready();
