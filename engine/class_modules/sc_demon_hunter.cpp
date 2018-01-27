@@ -6701,8 +6701,6 @@ void demon_hunter_t::invalidate_cache( cache_e c )
     case CACHE_MASTERY:
       if ( mastery_spell.demonic_presence -> ok() )
         invalidate_cache( CACHE_RUN_SPEED );
-      if ( buff.chaos_blades -> check() )
-        invalidate_cache( CACHE_PLAYER_DAMAGE_MULTIPLIER );
       break;
     case CACHE_CRIT_CHANCE:
       if ( spec.riposte -> ok() )

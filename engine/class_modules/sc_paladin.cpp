@@ -1930,6 +1930,8 @@ struct execution_sentence_t : public paladin_spell_t
   {
     double base_cost = paladin_spell_t::cost();
     int discounts = 0;
+    if ( p() -> buffs.divine_purpose -> up() )
+      discounts = base_cost;
     if ( p() -> buffs.the_fires_of_justice -> up() && base_cost > discounts )
       discounts++;
     if ( p() -> buffs.ret_t21_4p -> up() && base_cost > discounts )
@@ -1964,6 +1966,15 @@ struct execution_sentence_t : public paladin_spell_t
     {
       int num_stacks = (int)base_cost();
       p() -> buffs.crusade -> trigger( num_stacks );
+    }
+
+    if ( p() -> talents.divine_purpose -> ok() )
+    {
+      bool success = p() -> buffs.divine_purpose -> trigger( 1,
+        p() -> buffs.divine_purpose -> default_value,
+        p() -> spells.divine_purpose_ret -> proc_chance() );
+      if ( success )
+        p() -> procs.divine_purpose -> occur();
     }
   }
 

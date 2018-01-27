@@ -653,6 +653,7 @@ struct rogue_t : public player_t
     const spell_data_t* the_empty_crown;
     const spell_data_t* the_first_of_the_dead;
     const spell_data_t* sephuzs_secret;
+    const spell_data_t* thraxis_tricksy_treads;
   } legendary;
 
   // Options
@@ -976,62 +977,62 @@ struct rogue_attack_t : public melee_attack_t
     }
 
     // Assassination Class Passive
-    if (data().affected_by(p->spec.assassination_rogue->effectN(1)))
+    if ( data().affected_by( p->spec.assassination_rogue->effectN( 1 ) ) )
     {
-      base_dd_multiplier *= 1.0 + p->spec.assassination_rogue->effectN(1).percent();
+      base_dd_multiplier *= 1.0 + p->spec.assassination_rogue->effectN( 1 ).percent();
     }
-    if (data().affected_by(p->spec.assassination_rogue->effectN(2)))
+    if ( data().affected_by( p->spec.assassination_rogue->effectN( 2 ) ) )
     {
-      base_td_multiplier *= 1.0 + p->spec.assassination_rogue->effectN(2).percent();
+      base_td_multiplier *= 1.0 + p->spec.assassination_rogue->effectN( 2 ).percent();
     }
 
     // Outlaw Class Passive
-    if (data().affected_by(p->spec.outlaw_rogue->effectN(1)))
+    if ( data().affected_by( p->spec.outlaw_rogue->effectN( 1 ) ) )
     {
-      base_dd_multiplier *= 1.0 + p->spec.outlaw_rogue->effectN(1).percent();
+      base_dd_multiplier *= 1.0 + p->spec.outlaw_rogue->effectN( 1 ).percent();
     }
-    if (data().affected_by(p->spec.outlaw_rogue->effectN(2)))
+    if ( data().affected_by( p->spec.outlaw_rogue->effectN( 2 ) ) )
     {
-      base_td_multiplier *= 1.0 + p->spec.outlaw_rogue->effectN(2).percent();
+      base_td_multiplier *= 1.0 + p->spec.outlaw_rogue->effectN( 2 ).percent();
     }
-    if (data().affected_by(p->spec.outlaw_rogue->effectN(3))) // DfA-Specific Modifier
+    if ( data().affected_by( p->spec.outlaw_rogue->effectN( 3 ) ) ) // DfA-Specific Modifier
     {
-      base_dd_multiplier *= 1.0 + p->spec.outlaw_rogue->effectN(3).percent();
+      base_dd_multiplier *= 1.0 + p->spec.outlaw_rogue->effectN( 3 ).percent();
     }
 
     // Subtlety Class Passive
-    if (data().affected_by(p->spec.subtlety_rogue->effectN(1)))
+    if ( data().affected_by( p->spec.subtlety_rogue->effectN( 1 ) ) )
     {
-      base_dd_multiplier *= 1.0 + p->spec.subtlety_rogue->effectN(1).percent();
+      base_dd_multiplier *= 1.0 + p->spec.subtlety_rogue->effectN( 1 ).percent();
     }
-    if (data().affected_by(p->spec.subtlety_rogue->effectN(2)))
+    if ( data().affected_by( p->spec.subtlety_rogue->effectN( 2 ) ) )
     {
-      base_td_multiplier *= 1.0 + p->spec.subtlety_rogue->effectN(2).percent();
+      base_td_multiplier *= 1.0 + p->spec.subtlety_rogue->effectN( 2 ).percent();
     }
-    
+
     // Deeper Stratagem
-    if (p->talent.deeper_stratagem->ok())
+    if ( p->talent.deeper_stratagem->ok() )
     {
-      if (data().affected_by(p->talent.deeper_stratagem->effectN(4)))
+      if ( data().affected_by( p->talent.deeper_stratagem->effectN( 4 ) ) )
       {
-        base_dd_multiplier *= 1.0 + p->talent.deeper_stratagem->effectN(4).percent();
+        base_dd_multiplier *= 1.0 + p->talent.deeper_stratagem->effectN( 4 ).percent();
       }
-      if (data().affected_by(p->talent.deeper_stratagem->effectN(5)))
+      if ( data().affected_by( p->talent.deeper_stratagem->effectN( 5 ) ) )
       {
-        base_td_multiplier *= 1.0 + p->talent.deeper_stratagem->effectN(5).percent();
+        base_td_multiplier *= 1.0 + p->talent.deeper_stratagem->effectN( 5 ).percent();
       }
     }
 
     // Master Poisoner
-    if (p->talent.master_poisoner->ok())
+    if ( p->talent.master_poisoner->ok() )
     {
-      if (data().affected_by(p->talent.master_poisoner->effectN(1)))
+      if ( data().affected_by( p->talent.master_poisoner->effectN( 1 ) ) )
       {
-        base_dd_multiplier *= 1.0 + p->talent.master_poisoner->effectN(1).percent();
+        base_dd_multiplier *= 1.0 + p->talent.master_poisoner->effectN( 1 ).percent();
       }
-      if (data().affected_by(p->talent.master_poisoner->effectN(2)))
+      if ( data().affected_by( p->talent.master_poisoner->effectN( 2 ) ) )
       {
-        base_td_multiplier *= 1.0 + p->talent.master_poisoner->effectN(2).percent();
+        base_td_multiplier *= 1.0 + p->talent.master_poisoner->effectN( 2 ).percent();
       }
     }
   }
@@ -1066,7 +1067,7 @@ struct rogue_attack_t : public melee_attack_t
     affected_by.adrenaline_rush_gcd = data().affected_by( p() -> buffs.adrenaline_rush -> data().effectN( 3 ) );
     affected_by.lesser_adrenaline_rush_gcd = data().affected_by( p() -> buffs.t20_4pc_outlaw -> data().effectN( 3 ) );
     affected_by.broadsides = data().affected_by(p()->buffs.broadsides->data().effectN(4));
-    affected_by.t21_2pc_assassination = data().affected_by( p() -> sets -> set( ROGUE_ASSASSINATION, T21, B2 ) -> effectN( 1 ).trigger() -> effectN( 1 ) );
+    affected_by.t21_2pc_assassination = data().affected_by( p()->sets->set( ROGUE_ASSASSINATION, T21, B2 )->effectN( 1 ).trigger()->effectN( 1 ) );
   }
 
   bool init_finished() override
@@ -1112,14 +1113,12 @@ struct rogue_attack_t : public melee_attack_t
   {
     timespan_t t = melee_attack_t::gcd();
 
-    if ( affected_by.adrenaline_rush_gcd &&
-         t != timespan_t::zero() && p() -> buffs.adrenaline_rush -> check() )
+    if ( affected_by.adrenaline_rush_gcd && t != timespan_t::zero() && p() -> buffs.adrenaline_rush -> check() )
     {
       t += p() -> buffs.adrenaline_rush -> data().effectN( 3 ).time_value();
     }
 
-    if ( affected_by.lesser_adrenaline_rush_gcd &&
-         t != timespan_t::zero() && p() -> buffs.t20_4pc_outlaw -> check() )
+    if ( affected_by.lesser_adrenaline_rush_gcd && t != timespan_t::zero() && p() -> buffs.t20_4pc_outlaw -> check() )
     {
       t += p() -> buffs.t20_4pc_outlaw -> data().effectN( 3 ).time_value();
     }
@@ -1276,8 +1275,15 @@ struct rogue_attack_t : public melee_attack_t
   {
     double m = melee_attack_t::composite_da_multiplier( state );
 
-    if ( base_costs[ RESOURCE_COMBO_POINT ] && p() -> mastery.executioner -> ok() )
-      m *= 1.0 + p() -> cache.mastery_value();
+    if ( p()->mastery.executioner->ok() && data().affected_by( p()->mastery.executioner->effectN( 1 ) ) )
+    {
+      m *= 1.0 + p()->cache.mastery_value();
+    }
+
+    if ( p()->mastery.potent_poisons->ok() && data().affected_by( p()->mastery.potent_poisons->effectN( 1 ) ) )
+    {
+      m *= 1.0 + p()->cache.mastery_value();
+    }
 
     return m;
   }
@@ -1286,8 +1292,15 @@ struct rogue_attack_t : public melee_attack_t
   {
     double m = melee_attack_t::composite_ta_multiplier( state );
 
-    if ( base_costs[ RESOURCE_COMBO_POINT ] && p() -> mastery.executioner -> ok() )
-      m *= 1.0 + p() -> cache.mastery_value();
+    if ( p()->mastery.executioner->ok() && data().affected_by( p()->mastery.executioner->effectN( 2 ) ) )
+    {
+      m *= 1.0 + p()->cache.mastery_value();
+    }
+
+    if ( p()->mastery.potent_poisons->ok() && data().affected_by( p()->mastery.potent_poisons->effectN( 2 ) ) )
+    {
+      m *= 1.0 + p()->cache.mastery_value();
+    }
 
     return m;
   }
@@ -1334,10 +1347,10 @@ struct rogue_attack_t : public melee_attack_t
     double m = melee_attack_t::composite_persistent_multiplier( state );
 
     // Apply Nightstalker as a Persistent Multiplier for things that snapshot
-    if (p()->talent.nightstalker->ok() && snapshots_nightstalker() &&
-      (p()->buffs.stealth->check() || p()->buffs.shadow_dance->check() || p()->buffs.vanish->check()))
+    if ( p()->talent.nightstalker->ok() && snapshots_nightstalker() &&
+      ( p()->buffs.stealth->check() || p()->buffs.shadow_dance->check() || p()->buffs.vanish->check() ) )
     {
-      m *= 1.0 + (p()->talent.nightstalker->effectN(2).percent() + p()->spec.subtlety_rogue->effectN(4).percent());
+      m *= 1.0 + ( p()->talent.nightstalker->effectN( 2 ).percent() + p()->spec.subtlety_rogue->effectN( 4 ).percent() );
     }
 
     return m;
@@ -1353,10 +1366,10 @@ struct rogue_attack_t : public melee_attack_t
     }
 
     // Apply Nightstalker as an Action Multiplier for things that don't snapshot
-    if (p()->talent.nightstalker->ok() && !snapshots_nightstalker() &&
-      (p()->buffs.stealth->check() || p()->buffs.shadow_dance->check() || p()->buffs.vanish->check()))
+    if ( p()->talent.nightstalker->ok() && !snapshots_nightstalker() &&
+      ( p()->buffs.stealth->check() || p()->buffs.shadow_dance->check() || p()->buffs.vanish->check() ) )
     {
-      m *= 1.0 + (p()->talent.nightstalker->effectN(2).percent() + p()->spec.subtlety_rogue->effectN(4).percent());
+      m *= 1.0 + ( p()->talent.nightstalker->effectN( 2 ).percent() + p()->spec.subtlety_rogue->effectN( 4 ).percent() );
     }
 
     return m;
@@ -1459,7 +1472,7 @@ struct main_gauche_t : public rogue_attack_t
     special         = true;
     background      = true;
     may_crit        = true;
-    proc = true; // it's proc; therefore it cannot trigger main_gauche for chain-procs
+    proc            = true; // it's proc; therefore it cannot trigger main_gauche for chain-procs
 
     base_multiplier *= 1.0 + p -> artifact.fortunes_strike.percent();
   }
@@ -1477,12 +1490,12 @@ struct blade_flurry_attack_t : public rogue_attack_t
     rogue_attack_t( "blade_flurry_attack", p, p -> find_spell( 22482 ) )
   {
     may_miss = may_crit = proc = callbacks = may_dodge = may_parry = may_block = false;
-    background = true;
-    aoe = -1;
-    weapon = &p -> main_hand_weapon;
+    background        = true;
+    aoe               = -1;
+    weapon            = &p -> main_hand_weapon;
     weapon_multiplier = 0;
-    radius = 5;
-    range = -1.0;
+    radius            = 5;
+    range             = -1.0;
 
     snapshot_flags |= STATE_MUL_DA;
   }
@@ -1573,8 +1586,11 @@ struct weaponmaster_strike_t : public rogue_attack_t
   double target_armor( player_t* ) const override
   { return 0; }
 
-  double calculate_direct_amount( action_state_t* ) const override
-  { return base_dd_min; }
+  double calculate_direct_amount( action_state_t* state ) const override
+  { 
+    state->result_raw = state->result_total = base_dd_min;
+    return base_dd_min;
+  }
 };
 
 struct second_shuriken_t : public rogue_attack_t
@@ -1664,28 +1680,6 @@ struct poison_knives_t : public rogue_attack_t
     callbacks = may_miss = false;
   }
 
-  // As of 2017-12-19 we tried to re-evauluate the modifiers on Poison Knives.
-  // - Can crit
-  // - Seems to double dip on versatility
-  // - Does not seem to double dip on target multipliers (Zoldyck quite sure, not 100% sure about Surge of Toxins)
-
-  /*double composite_target_multiplier( player_t* target ) const override
-  {
-    double m = rogue_attack_t::composite_target_multiplier( target );
-
-    m *= 1.0 + td( target ) -> debuffs.surge_of_toxins -> stack_value();
-
-    if ( p() -> legendary.zoldyck_family_training_shackles )
-    {
-      if ( target -> health_percentage() < p() -> legendary.zoldyck_family_training_shackles -> effectN( 2 ).base_value() )
-      {
-        m *= 1.0 + p() -> legendary.zoldyck_family_training_shackles -> effectN( 1 ).percent();
-      }
-    }
-
-    return m;
-  }*/
-
   void init() override
   {
     rogue_attack_t::init();
@@ -1740,19 +1734,6 @@ struct poison_bomb_t : public rogue_attack_t
     background = true;
     aoe = -1;
     may_miss = may_dodge = may_parry = may_block = false;
-  }
-
-  double action_multiplier() const override
-  {
-    double m = rogue_attack_t::action_multiplier();
-
-    // Scale on Mastery since 09-24 Hotfix
-    if ( p() -> mastery.potent_poisons -> ok() )
-    {
-      m *= 1.0 + p() -> cache.mastery_value();
-    }
-
-    return m;
   }
 
   double composite_target_multiplier( player_t* target ) const override
@@ -1955,9 +1936,6 @@ struct rogue_poison_t : public rogue_attack_t
   {
     double m = rogue_attack_t::action_da_multiplier();
 
-    if ( p() -> mastery.potent_poisons -> ok() )
-      m *= 1.0 + p() -> cache.mastery_value();
-
     m *= 1.0 + p() -> artifact.master_alchemist.percent();
 
     return m;
@@ -1966,9 +1944,6 @@ struct rogue_poison_t : public rogue_attack_t
   double action_ta_multiplier() const override
   {
     double m = rogue_attack_t::action_ta_multiplier();
-
-    if ( p() -> mastery.potent_poisons -> ok() )
-      m *= 1.0 + p() -> cache.mastery_value();
 
     m *= 1.0 + p() -> artifact.master_alchemist.percent();
 
@@ -2047,7 +2022,7 @@ struct deadly_poison_t : public rogue_poison_t
       //              Deadly Poison shouldn't have partial ticks, so we just add the amount of time relative to how many additional ticks we want to add
       const int additional_ticks = data().duration() / dot->time_to_tick;
       const int max_ticks = additional_ticks * 1.5;
-      return dot->remains() + std::min(max_ticks - dot->ticks_left(), additional_ticks) * dot->time_to_tick;
+      return dot->remains() + std::min( max_ticks - dot->ticks_left(), additional_ticks ) * dot->time_to_tick;
     }
 
     void impact( action_state_t* state ) override
@@ -2171,7 +2146,9 @@ struct wound_poison_t : public rogue_poison_t
         td( state -> target ) -> debuffs.wound_poison -> trigger();
 
         if ( ! sim -> overrides.mortal_wounds && state -> target -> debuffs.mortal_wounds )
+        {
           state -> target -> debuffs.mortal_wounds -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, data().duration() );
+        }
 
         if ( td( state -> target ) -> dots.kingsbane -> is_ticking() )
         {
@@ -2937,16 +2914,6 @@ struct envenom_t : public rogue_attack_t
     return m;
   }
 
-  double action_da_multiplier() const override
-  {
-    double m = rogue_attack_t::action_da_multiplier();
-
-    if ( p() -> mastery.potent_poisons -> ok() )
-      m *= 1.0 + p() -> cache.mastery_value();
-
-    return m;
-  }
-
   double cost() const override
   {
     double c = rogue_attack_t::cost();
@@ -3532,18 +3499,6 @@ struct kingsbane_strike_t : public rogue_attack_t
     }
   }
 
-  double action_multiplier() const override
-  {
-    double m = rogue_attack_t::action_multiplier();
-
-    if ( p() -> mastery.potent_poisons -> ok() )
-    {
-      m *= 1.0 + p() -> cache.mastery_value();
-    }
-
-    return m;
-  }
-
   double composite_target_multiplier( player_t* target ) const override
   {
     double m = rogue_attack_t::composite_target_multiplier( target );
@@ -3580,18 +3535,6 @@ struct kingsbane_t : public rogue_attack_t
   {
     // 1/25/2018 - Kingsbane DoT does not snapshot Nightstalker
     return false;
-  }
-
-  double action_multiplier() const override
-  {
-    double m = rogue_attack_t::action_multiplier();
-
-    if ( p() -> mastery.potent_poisons -> ok() )
-    {
-      m *= 1.0 + p() -> cache.mastery_value();
-    }
-
-    return m;
   }
 
   double composite_target_multiplier( player_t* target ) const override
@@ -3813,11 +3756,8 @@ struct pistol_shot_t : public shot_base_t
 
 struct run_through_t: public rogue_attack_t
 {
-  double ttt_multiplier; // 7.0 legendary Thraxi's Tricksy Treads multiplier
-
   run_through_t( rogue_t* p, const std::string& options_str ) :
-    rogue_attack_t( "run_through", p, p -> find_specialization_spell( "Run Through" ), options_str ),
-    ttt_multiplier( 0 )
+    rogue_attack_t( "run_through", p, p -> find_specialization_spell( "Run Through" ), options_str )
   {
     weapon = &( player -> main_hand_weapon );
     weapon_multiplier = 0;
@@ -3836,10 +3776,10 @@ struct run_through_t: public rogue_attack_t
     if ( p() -> buffs.death_from_above -> up() )
       m *= 1.0 + p() -> buffs.death_from_above -> data().effectN( 2 ).percent();
 
-    if ( ttt_multiplier > 0 )
+    if ( p() -> legendary.thraxis_tricksy_treads )
     {
-      double movement_speed = p() -> passive_movement_modifier() + p() -> temporary_movement_modifier();
-      m *= 1.0 + movement_speed * ttt_multiplier;
+      const double increased_speed = ( p() -> cache.run_speed() / p() -> base_movement_speed ) - 1.0;
+      m *= 1.0 + increased_speed * p() -> legendary.thraxis_tricksy_treads -> effectN( 1 ).percent();
     }
 
     if ( p() -> buffs.t21_2pc_outlaw -> up() )
@@ -4810,18 +4750,6 @@ struct toxic_blade_t : public rogue_attack_t
     rogue_attack_t( "toxic_blade", p, p -> talent.toxic_blade, options_str )
   {
     requires_weapon = WEAPON_DAGGER;
-  }
-
-  double action_multiplier() const override
-  {
-    double m = rogue_attack_t::action_multiplier();
-
-    if ( p() -> mastery.potent_poisons -> ok() )
-    {
-      m *= 1.0 + p() -> cache.mastery_value();
-    }
-
-    return m;
   }
 
   void impact( action_state_t* s ) override
@@ -7185,6 +7113,7 @@ double rogue_t::composite_player_multiplier( school_e school ) const
   {
     m *= 1.0 + spec.assassins_resolve -> effectN( 2 ).percent();
   }
+
   if (buffs.elaborate_planning->up())
   {
     m *= buffs.elaborate_planning->value();
@@ -7201,12 +7130,15 @@ double rogue_t::composite_player_multiplier( school_e school ) const
   {
     m *= buffs.symbols_of_death -> check_value();
   }
+
   if ( talent.dark_shadow -> ok() && buffs.shadow_dance -> up() )
   {
     m *= 1.0 + talent.dark_shadow -> effectN( 1 ).percent();
   }
+
   m *= 1.0 + buffs.master_of_subtlety -> stack_value();
   m *= 1.0 + buffs.master_of_subtlety_aura -> stack_value();
+  
   if ( artifact.shadow_fangs.rank() &&
        ( dbc::is_school( school, SCHOOL_PHYSICAL ) ||
          dbc::is_school( school, SCHOOL_SHADOW) ) )
@@ -7339,7 +7271,7 @@ void rogue_t::init_action_list()
     def -> add_action( "run_action_list,name=aoe,if=spell_targets.fan_of_knives>2" );
     def -> add_action( "call_action_list,name=maintain" );
     def -> add_action( "call_action_list,name=finish,if=(!talent.exsanguinate.enabled|cooldown.exsanguinate.remains>2)&(!dot.rupture.refreshable|(dot.rupture.exsanguinated&dot.rupture.remains>=3.5)|target.time_to_die-dot.rupture.remains<=6)&active_dot.rupture>=spell_targets.rupture", "The 'active_dot.rupture>=spell_targets.rupture' means that we don't want to envenom as long as we can multi-rupture (i.e. units that don't have rupture yet)." );
-    def -> add_action( "call_action_list,name=build,if=combo_points.deficit>1|energy.deficit<=25+variable.energy_regen_combined" );
+    def -> add_action( "call_action_list,name=build,if=combo_points.deficit>1+talent.anticipation.enabled*2|energy.deficit<=25+variable.energy_regen_combined" );
 
     // Builders
     action_priority_list_t* build = get_action_priority_list( "build", "Builders" );
@@ -7392,7 +7324,9 @@ void rogue_t::init_action_list()
     // Finishers
     action_priority_list_t* finish = get_action_priority_list( "finish", "Finishers" );
     finish -> add_talent( this, "Death from Above", "if=combo_points>=5" );
-    finish -> add_action( this, "Envenom", "if=(combo_points>=cp_max_spend|!talent.anticipation.enabled&combo_points>=4+(talent.deeper_stratagem.enabled&!set_bonus.tier19_4pc))&(debuff.vendetta.up|mantle_duration>=0.2|debuff.surge_of_toxins.remains<0.2|energy.deficit<=25+variable.energy_regen_combined)" );
+    finish -> add_action( this, "Envenom", "if=talent.anticipation.enabled&combo_points>=5&((debuff.toxic_blade.up&buff.virulent_poisons.remains<2)|mantle_duration>=0.2|buff.virulent_poisons.remains<0.2|energy.deficit<=25+variable.energy_regen_combined)" );
+    finish -> add_action( this, "Envenom", "if=talent.anticipation.enabled&combo_points>=4&!buff.virulent_poisons.up" );
+    finish -> add_action( this, "Envenom", "if=!talent.anticipation.enabled&combo_points>=4+(talent.deeper_stratagem.enabled&!set_bonus.tier19_4pc)&(debuff.vendetta.up|debuff.toxic_blade.up|mantle_duration>=0.2|debuff.surge_of_toxins.remains<0.2|energy.deficit<=25+variable.energy_regen_combined)" );
     finish -> add_action( this, "Envenom", "if=talent.elaborate_planning.enabled&combo_points>=3+!talent.exsanguinate.enabled&buff.elaborate_planning.remains<0.2" );
 
     // Kingsbane
@@ -7825,12 +7759,12 @@ expr_t* rogue_t::create_expression( action_t* a, const std::string& name_str )
   }
   // dot.(garrote|internal_bleeding|rupture).exsanguinated
   else if ( split.size() == 3 && util::str_compare_ci( split[ 2 ], "exsanguinated" ) &&
-       ( util::str_compare_ci( split[ 1 ], "garrote" ) ||
-         util::str_compare_ci( split[ 1 ], "internal_bleeding" ) ||
-         util::str_compare_ci( split[ 1 ], "rupture" ) ) )
+    ( util::str_compare_ci( split[ 1 ], "garrote" ) ||
+      util::str_compare_ci( split[ 1 ], "internal_bleeding" ) ||
+      util::str_compare_ci( split[ 1 ], "rupture" ) ) )
   {
     action_t* action = find_action( split[ 1 ] );
-    if ( ! action )
+    if ( !action )
     {
       return expr_t::create_constant( "exsanguinated_expr", 0 );
     }
@@ -7884,11 +7818,11 @@ expr_t* rogue_t::create_expression( action_t* a, const std::string& name_str )
       return make_fn_expr( split[ 0 ], [ type, rtb_buffs, list_values ]() {
         for ( size_t i = 0, end = list_values.size(); i < end; ++i )
         {
-          if  ( type == RTB_ANY && rtb_buffs[ list_values[ i ] ] -> check() )
+          if ( type == RTB_ANY && rtb_buffs[ list_values[ i ] ]->check() )
           {
             return 1;
           }
-          else if ( type == RTB_ALL && ! rtb_buffs[ list_values[ i ] ] -> check() )
+          else if ( type == RTB_ALL && !rtb_buffs[ list_values[ i ] ]->check() )
           {
             return 0;
           }
@@ -7905,40 +7839,49 @@ expr_t* rogue_t::create_expression( action_t* a, const std::string& name_str )
     return make_fn_expr( split[ 0 ], [ this, split ]() {
       timespan_t return_value = timespan_t::from_seconds( 0.0 );
       unsigned attack_x = strtoul( split[ 1 ].c_str(), nullptr, 0 );
-      if ( main_hand_attack && attack_x > shadow_techniques && attack_x <= 5 ) {
+      if ( main_hand_attack && attack_x > shadow_techniques && attack_x <= 5 )
+      {
         unsigned remaining_aa = attack_x - shadow_techniques;
-        if (sim -> debug) sim -> out_debug.printf( "Inside the shadowtechniques handler, attack_x = %u, remaining_aa = %u", attack_x, remaining_aa );
+        if ( sim->debug ) sim->out_debug.printf( "Inside the shadowtechniques handler, attack_x = %u, remaining_aa = %u", attack_x, remaining_aa );
 
-        timespan_t mh_swing_time = main_hand_attack -> execute_time();
-        if (sim -> debug) {
-          sim -> out_debug.printf( "mh_swing_time, %.3f", mh_swing_time.total_seconds() );
+        timespan_t mh_swing_time = main_hand_attack->execute_time();
+        if ( sim->debug )
+        {
+          sim->out_debug.printf( "mh_swing_time, %.3f", mh_swing_time.total_seconds() );
         }
         timespan_t mh_next_swing = timespan_t::from_seconds( 0.0 );
-        if ( main_hand_attack -> execute_event == nullptr ) {
+        if ( main_hand_attack->execute_event == nullptr )
+        {
           mh_next_swing = mh_swing_time;
-        } else {
-          mh_next_swing = main_hand_attack -> execute_event -> remains();
         }
-        if (sim -> debug) sim -> out_debug.printf( "Main hand next_swing in: %.3f", mh_next_swing.total_seconds() );
+        else
+        {
+          mh_next_swing = main_hand_attack->execute_event->remains();
+        }
+        if ( sim->debug ) sim->out_debug.printf( "Main hand next_swing in: %.3f", mh_next_swing.total_seconds() );
 
         timespan_t oh_swing_time = timespan_t::from_seconds( 0.0 );
         timespan_t oh_next_swing = timespan_t::from_seconds( 0.0 );
         if ( off_hand_attack )
         {
-          oh_swing_time = off_hand_attack -> execute_time();
-          if (sim -> debug) {
-            sim -> out_debug.printf( "oh_swing_time:%.3f", oh_swing_time.total_seconds() );
+          oh_swing_time = off_hand_attack->execute_time();
+          if ( sim->debug )
+          {
+            sim->out_debug.printf( "oh_swing_time:%.3f", oh_swing_time.total_seconds() );
           }
-          if ( off_hand_attack -> execute_event == nullptr ) {
+          if ( off_hand_attack->execute_event == nullptr )
+          {
             oh_next_swing = oh_swing_time;
-          } else {
-            oh_next_swing = off_hand_attack -> execute_event -> remains();
           }
-          if (sim -> debug) sim -> out_debug.printf( "Off hand next_swing in: %.3f", oh_next_swing.total_seconds() );
+          else
+          {
+            oh_next_swing = off_hand_attack->execute_event->remains();
+          }
+          if ( sim->debug ) sim->out_debug.printf( "Off hand next_swing in: %.3f", oh_next_swing.total_seconds() );
         }
         else
         {
-          if (sim -> debug) sim -> out_debug.printf( "Off hand attack not found, using only main hand timers" );
+          if ( sim->debug ) sim->out_debug.printf( "Off hand attack not found, using only main hand timers" );
         }
 
         // Store upcoming attack timers and sort
@@ -7952,18 +7895,24 @@ expr_t* rogue_t::create_expression( action_t* a, const std::string& name_str )
         }
         std::sort( attacks.begin(), attacks.end() );
         return_value = attacks.at( remaining_aa - 1 );
-      } else if ( main_hand_attack == nullptr ) {
-        return_value = timespan_t::from_seconds( 0.0 );
-        if (sim -> debug) sim -> out_debug.printf( "Main hand attack is required but was not found" );
-      } else if ( attack_x > 5 ) {
-        return_value = timespan_t::from_seconds( 0.0 );
-        if (sim -> debug) sim -> out_debug.printf( "Invalid value %u for attack_x (must be 5 or less)", attack_x );
-      } else {
-        return_value = timespan_t::from_seconds( 0.0 );
-        if (sim -> debug) sim -> out_debug.printf( "attack_x value %u is not greater than shadow techniques count %u, returning %.3f", attack_x, shadow_techniques, return_value.total_seconds() );
       }
-      if (sim -> debug) sim -> out_debug.printf( "Shadow techniques return value is: %.3f", return_value.total_seconds() );
-    return return_value;
+      else if ( main_hand_attack == nullptr )
+      {
+        return_value = timespan_t::from_seconds( 0.0 );
+        if ( sim->debug ) sim->out_debug.printf( "Main hand attack is required but was not found" );
+      }
+      else if ( attack_x > 5 )
+      {
+        return_value = timespan_t::from_seconds( 0.0 );
+        if ( sim->debug ) sim->out_debug.printf( "Invalid value %u for attack_x (must be 5 or less)", attack_x );
+      }
+      else
+      {
+        return_value = timespan_t::from_seconds( 0.0 );
+        if ( sim->debug ) sim->out_debug.printf( "attack_x value %u is not greater than shadow techniques count %u, returning %.3f", attack_x, shadow_techniques, return_value.total_seconds() );
+      }
+      if ( sim->debug ) sim->out_debug.printf( "Shadow techniques return value is: %.3f", return_value.total_seconds() );
+      return return_value;
     } );
   }
 
@@ -8440,7 +8389,8 @@ void rogue_t::create_buffs()
   buffs.shadowstep            = buff_creator_t( this, "shadowstep", spec.shadowstep )
                                 .cd( timespan_t::zero() );
   buffs.sprint                = buff_creator_t( this, "sprint", spell.sprint )
-                                .cd( timespan_t::zero() );
+                                .cd( timespan_t::zero() )
+                                .add_invalidate( CACHE_RUN_SPEED );
   buffs.stealth               = new buffs::stealth_t( this );
   buffs.vanish                = new buffs::vanish_t( this );
   // Assassination
@@ -8454,11 +8404,13 @@ void rogue_t::create_buffs()
                                 .cd( timespan_t::zero() );
   buffs.opportunity           = buff_creator_t( this, "opportunity", find_spell( 195627 ) );
   // Roll the bones buffs
-  buffs.broadsides            = buff_creator_t( this, "broadsides", find_spell( 193356 ) );
+  buffs.broadsides            = buff_creator_t( this, "broadsides", find_spell( 193356 ) )
+                                .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   buffs.buried_treasure       = buff_creator_t( this, "buried_treasure", find_spell( 199600 ) )
                                 .default_value( find_spell( 199600 ) -> effectN( 1 ).percent() );
   buffs.grand_melee           = haste_buff_creator_t( this, "grand_melee", find_spell( 193358 ) )
                                 .add_invalidate( CACHE_ATTACK_SPEED )
+                                .add_invalidate( CACHE_LEECH )
                                 .default_value( 1.0 / ( 1.0 + find_spell( 193358 ) -> effectN( 1 ).percent() ) );
   buffs.jolly_roger           = buff_creator_t( this, "jolly_roger", find_spell( 199603 ) )
                                 .default_value( find_spell( 199603 ) -> effectN( 1 ).percent() );
@@ -9308,13 +9260,13 @@ struct duskwalker_footpads_t : public unique_gear::scoped_actor_callback_t<rogue
   { rogue -> legendary.duskwalker_footpads = e.driver(); }
 };
 
-struct thraxis_tricksy_treads_t : public unique_gear::scoped_action_callback_t<actions::run_through_t>
+struct thraxis_tricksy_treads_t : public unique_gear::scoped_actor_callback_t<rogue_t>
 {
-  thraxis_tricksy_treads_t() : super( ROGUE, "run_through" )
+  thraxis_tricksy_treads_t() : super( ROGUE )
   { }
-
-  void manipulate( actions::run_through_t* action, const special_effect_t& e ) override
-  { action -> ttt_multiplier = e.driver() -> effectN( 1 ).percent(); }
+  
+  void manipulate( rogue_t* rogue, const special_effect_t& e ) override
+  { rogue -> legendary.thraxis_tricksy_treads = e.driver(); }
 };
 
 struct denial_of_the_halfgiants_t : public unique_gear::scoped_actor_callback_t<rogue_t>

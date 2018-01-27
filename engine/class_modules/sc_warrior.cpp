@@ -293,6 +293,7 @@ public:
     const spell_data_t* intercept;
     const spell_data_t* last_stand;
     const spell_data_t* mortal_strike;
+    const spell_data_t* mortal_strike_2;
     const spell_data_t* piercing_howl;
     const spell_data_t* protection; // Weird spec passive that increases damage of bladestorm/execute.
     const spell_data_t* raging_blow;
@@ -304,6 +305,7 @@ public:
     const spell_data_t* shield_slam;
     const spell_data_t* shield_wall;
     const spell_data_t* slam;
+    const spell_data_t* slam_2;
     const spell_data_t* tactician;
     const spell_data_t* thunder_clap;
     const spell_data_t* titans_grip;
@@ -1473,6 +1475,9 @@ struct mortal_strike_t : public warrior_attack_t
     am *= 1.0 + p() -> buff.focused_rage -> stack_value();
     am *= 1.0 + p() -> buff.executioners_precision -> stack_value();
 
+    if ( p() -> spec.mortal_strike_2 )
+      am *= 1.0 + p() -> spec.mortal_strike_2 -> effectN( 1 ).percent();
+
     return am;
   }
 
@@ -2241,6 +2246,7 @@ struct execute_arms_t: public warrior_attack_t
     weapon = &( p -> main_hand_weapon );
 
     base_crit += p -> artifact.deathblow.percent();
+    // TODO use spell data rather than magic number 40
     max_rage = p -> talents.dauntless -> ok() ? 40 * ( 1 + p -> talents.dauntless -> effectN( 1 ).percent() ) : 40;
     if ( p -> talents.sweeping_strikes -> ok() )
     {
@@ -3640,6 +3646,9 @@ struct slam_t: public warrior_attack_t
 
     am *= 1.0 + p() -> buff.weighted_blade -> stack_value();
 
+    if ( p() -> spec.slam_2 )
+      am *= 1.0 + p() -> spec.slam_2 -> effectN( 1 ).percent();
+
     return am;
   }
 
@@ -4735,6 +4744,7 @@ void warrior_t::init_spells()
   spec.intercept                = find_specialization_spell( "Intercept" );
   spec.last_stand               = find_specialization_spell( "Last Stand" );
   spec.mortal_strike            = find_specialization_spell( "Mortal Strike" );
+  spec.mortal_strike_2          = find_specialization_spell( 261900 );
   spec.piercing_howl            = find_specialization_spell( "Piercing Howl" );
   spec.protection               = find_specialization_spell( "Protection" );
   spec.raging_blow              = find_specialization_spell( "Raging Blow" );
@@ -4747,6 +4757,7 @@ void warrior_t::init_spells()
   spec.shield_slam              = find_specialization_spell( "Shield Slam" );
   spec.shield_wall              = find_specialization_spell( "Shield Wall" );
   spec.slam                     = find_specialization_spell( "Slam" );
+  spec.slam_2                   = find_specialization_spell( 261901 );
   spec.spell_reflection         = find_specialization_spell( "Spell Reflection" );
   spec.tactician                = find_specialization_spell( "Tactician" );
   spec.thunder_clap             = find_specialization_spell( "Thunder Clap" );
