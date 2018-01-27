@@ -1387,6 +1387,18 @@ block_result_e action_t::calculate_block_result( action_state_t* s ) const
   if ( sim -> debug )
     sim -> out_debug.printf( "%s result for %s is %s", player -> name(), name(), util::block_result_type_string( block_result ) );
 
+  // 1/27/2018 -- Logs indicate that yellow weapon damage attacks cannot crit if they are blocked.
+  //              White damage and yellow AP abilities all appear to be able to crit + block at the same time.
+  if ( player -> bugs )
+  {
+    if ( block_result != BLOCK_RESULT_UNBLOCKED && s -> result == RESULT_CRIT && special && weapon && weapon_multiplier > 0 )
+    {
+      s -> result = RESULT_HIT;
+      if ( sim -> debug )
+        sim -> out_debug.printf( "%s result for %s is changed from %s to %s", player -> name(), name(), util::result_type_string( RESULT_CRIT ), util::result_type_string( RESULT_HIT ) );
+    }
+  }
+
   return block_result;
 }
 
