@@ -1836,6 +1836,7 @@ public:
 
     if ( priest.sets->has_set_bonus( PRIEST_SHADOW, T21, B2 ) )
       crit_bonus_multiplier *= 1.0 + priest.sets->set( PRIEST_SHADOW, T21, B2 )->effectN( 1 ).percent();
+	background = ( priest.talents.shadow_word_void->ok() );
   }
 
   void init() override
@@ -3858,7 +3859,10 @@ struct surrender_to_madness_t final : public priest_buff_t<buff_t>
     : base_t( p, buff_creator_t( &p, "surrender_to_madness", p.talents.surrender_to_madness ) )
   {
   }
-
+  void expire_override(int stacks, timespan_t remaining_duration) override
+  {
+	  priest.buffs.surrender_to_madness_death->trigger();
+  }
 };
 
 struct lingering_insanity_t final : public priest_buff_t<haste_buff_t>
@@ -3877,7 +3881,7 @@ struct lingering_insanity_t final : public priest_buff_t<haste_buff_t>
               ),
       hidden_lingering_insanity( 0 )
   {
-    hidden_lingering_insanity = p.find_spell( 199849 )->effectN( 1 ).base_value();
+    hidden_lingering_insanity = 2.0 * p.find_spell( 199849 )->effectN( 1 ).base_value(); // hardcoded: decrements by 1% aka 2 "VF-Stacks" per second N1gh7h4wk 2018/01/27
   }
 
   void decrement( int, double ) override
@@ -4869,7 +4873,7 @@ void priest_t::create_buffs()
 
   buffs.surrender_to_madness_death = buff_creator_t( this, "surrender_to_madness_death", talents.surrender_to_madness )
                                          .chance( 1.0 )
-                                         .duration( timespan_t::zero() )
+                                         .duration( timespan_t::from_seconds( 30 ))
                                          .default_value( 0.0 );
 
   buffs.sphere_of_insanity = buff_creator_t( this, "sphere_of_insanity", find_spell( 194182 ) )
