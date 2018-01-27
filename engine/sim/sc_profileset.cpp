@@ -19,10 +19,9 @@ std::string format_time( double seconds, bool milliseconds = true )
     return "0s";
   }
   // For milliseconds, just use a quick format
-  else if ( seconds < 0 )
+  else if ( seconds < 1 )
   {
     s << static_cast<int>( 1000 * seconds ) << "ms";
-    return s.str();
   }
   // Otherwise, do the whole thing
   else
@@ -74,12 +73,6 @@ std::string format_time( double seconds, bool milliseconds = true )
 // worker_t)
 void simulate_profileset( sim_t* parent, profile_set_t& set, sim_t*& profile_sim )
 {
-  auto original_opts = parent -> control;
-
-  parent -> control = set.options();
-
-  profile_sim = new sim_t( parent );
-
   // Reset random seed for the profileset sims
   profile_sim -> seed = 0;
   profile_sim -> profileset_enabled = true;
@@ -96,8 +89,6 @@ void simulate_profileset( sim_t* parent, profile_set_t& set, sim_t*& profile_sim
     profile_sim -> progress_bar.set_base( "Profileset" );
     profile_sim -> progress_bar.set_phase( set.name() );
   }
-
-  parent -> control = original_opts;
 
   auto ret = profile_sim -> execute();
   if ( ret )
@@ -369,11 +360,35 @@ sim_t* worker_t::sim() const
 
 void worker_t::execute()
 {
+  // Parallel profileset simulation creation must be exclusive, otherwise we have a data race in
+  // m_parent -> control
+  m_master -> lock_worker();
+
+  auto original_opts = m_parent -> control;
+
+  m_parent -> control = m_profileset -> options();
+
+  m_sim = new sim_t( m_parent );
+
+  m_parent -> control = original_opts;
+
+  m_master -> unlock_worker();
+
   simulate_profileset( m_parent, *m_profileset, m_sim );
 
   m_done = true;
 
   m_master -> notify_worker();
+}
+
+void profilesets_t::lock_worker()
+{
+  m_work_mutex.lock();
+}
+
+void profilesets_t::unlock_worker()
+{
+  m_work_mutex.unlock();
 }
 
 // Count the number of running workers
@@ -444,8 +459,16 @@ void profilesets_t::generate_work( sim_t* parent, std::unique_ptr<profile_set_t>
 {
   if ( m_mode == SEQUENTIAL )
   {
-    sim_t* profile_sim = nullptr;
+    auto original_opts = parent -> control;
+
+    parent -> control = ptr_set -> options();
+
+    sim_t* profile_sim = new sim_t( parent );
+
+    parent -> control = original_opts;
+
     simulate_profileset( parent, *ptr_set.get(), profile_sim );
+
     delete profile_sim;
   }
   // Parallel processing
