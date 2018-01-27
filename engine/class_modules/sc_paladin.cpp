@@ -57,7 +57,6 @@ namespace buffs {
                   struct sephuzs_secret_buff_t;
                   struct holy_avenger_buff_t;
                   struct ardent_defender_buff_t;
-                  struct wings_of_liberty_driver_t;
                   struct liadrins_fury_unleashed_t;
                   struct forbearance_t;
                   struct shield_of_vengeance_buff_t;
@@ -106,8 +105,6 @@ public:
   action_t* active_sotr;
   heal_t*   active_protector_of_the_innocent;
 
-  const special_effect_t* retribution_trinket;
-  player_t* last_retribution_trinket_target;
   const special_effect_t* whisper_of_the_nathrezim;
   const special_effect_t* liadrins_fury_unleashed;
   const special_effect_t* justice_gaze;
@@ -120,7 +117,7 @@ public:
   const special_effect_t* heathcliffs_immortality;
   const special_effect_t* pillars_of_inmost_light;
   const spell_data_t* sephuz;
-    const spell_data_t* topless_tower;
+  const spell_data_t* topless_tower;
 
   struct active_actions_t
   {
@@ -165,10 +162,6 @@ public:
     buff_t* scarlet_inquisitors_expurgation;
 
     // Set Bonuses
-    buff_t* vindicators_fury;     // WoD Ret PVP 4-piece
-    buff_t* wings_of_liberty;     // Most roleplay name. T18 4P Ret bonus
-    buffs::wings_of_liberty_driver_t* wings_of_liberty_driver;
-    buff_t* retribution_trinket; // 6.2 Spec-Specific Trinket
     buff_t* sacred_judgment;
     buff_t* ret_t21_4p;
 
@@ -460,8 +453,6 @@ public:
     fixed_holy_wrath_health_pct( -1.0 ),
     fake_sov( true )
   {
-    last_retribution_trinket_target = nullptr;
-    retribution_trinket = nullptr;
     whisper_of_the_nathrezim = nullptr;
     liadrins_fury_unleashed = nullptr;
     chain_of_thrayn = nullptr;
@@ -474,7 +465,7 @@ public:
     gift_of_the_golden_valkyr = nullptr;
     heathcliffs_immortality = nullptr;
     sephuz = nullptr;
-      topless_tower = nullptr;
+    topless_tower = nullptr;
     active_beacon_of_light             = nullptr;
     active_enlightened_judgments       = nullptr;
     active_shield_of_vengeance_proc    = nullptr;
@@ -600,7 +591,6 @@ public:
 
 
   void    update_forbearance_recharge_multipliers() const;
-  virtual bool has_t18_class_trinket() const override;
   void    generate_action_prio_list_prot();
   void    generate_action_prio_list_ret();
   void    generate_action_prio_list_holy();
@@ -631,27 +621,6 @@ public:
 // containing ones that require action_t definitions to function properly.
 
 namespace buffs {
-  struct wings_of_liberty_driver_t: public buff_t
-  {
-    wings_of_liberty_driver_t( player_t* p ):
-      buff_t( buff_creator_t( p, "wings_of_liberty_driver", p -> find_spell( 185655 ) )
-      .chance( p -> sets -> has_set_bonus( PALADIN_RETRIBUTION, T18, B4 ) )
-      .quiet( true )
-      .tick_callback( [ p ]( buff_t*, int, const timespan_t& ) {
-        paladin_t* paladin = debug_cast<paladin_t*>( p );
-        paladin -> buffs.wings_of_liberty -> trigger( 1 );
-      } ) )
-    { }
-
-    void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
-    {
-      buff_t::expire_override( expiration_stacks, remaining_duration );
-
-      paladin_t* p = static_cast<paladin_t*>( player );
-      p -> buffs.wings_of_liberty -> expire(); // Force the damage buff to fade.
-    }
-  };
-
   struct liadrins_fury_unleashed_t : public buff_t
   {
     liadrins_fury_unleashed_t( player_t* p ):
@@ -994,23 +963,12 @@ public:
 
   void execute() override
   {
-    double c = ( this -> current_resource() == RESOURCE_HOLY_POWER ) ? this -> cost() : -1.0;
-
     ab::execute();
-
-    // if the ability uses Holy Power, handle Divine Purpose and other freebie effects
-    if ( c >= 0 )
-    {
-      // trigger WoD Ret PvP 4-P
-      p() -> buffs.vindicators_fury -> trigger( 1, c > 0 ? c : 3 );
-    }
 
     // Handle benefit tracking
     if ( this -> harmful )
     {
       p() -> buffs.avenging_wrath -> up();
-      p() -> buffs.wings_of_liberty -> up();
-      p() -> buffs.retribution_trinket -> up();
     }
   }
 
@@ -1429,11 +1387,6 @@ struct crusade_t : public paladin_heal_t
     paladin_heal_t::execute();
 
     p() -> buffs.crusade -> trigger();
-    if ( p() -> sets -> has_set_bonus( PALADIN_RETRIBUTION, T18, B4 ) )
-    {
-      p() -> buffs.wings_of_liberty -> trigger( 1 ); // We have to trigger a stack here.
-      p() -> buffs.wings_of_liberty_driver -> trigger();
-    }
 
     if ( p() -> liadrins_fury_unleashed )
     {
@@ -1481,12 +1434,6 @@ struct avenging_wrath_t : public paladin_spell_t
     paladin_spell_t::execute();
 
     p() -> buffs.avenging_wrath -> trigger();
-    if ( p() -> sets -> has_set_bonus( PALADIN_RETRIBUTION, T18, B4 ) )
-    {
-      p() -> buffs.wings_of_liberty -> trigger( 1 ); // We have to trigger a stack here.
-      p() -> buffs.wings_of_liberty_driver -> trigger();
-    }
-
     if ( p() -> liadrins_fury_unleashed )
     {
       p() -> buffs.liadrins_fury_unleashed -> trigger();
@@ -3139,26 +3086,6 @@ struct paladin_melee_attack_t: public paladin_action_t < melee_attack_t >
     special = true;
     weapon = &( p -> main_hand_weapon );
   }
-
-  void retribution_trinket_trigger()
-  {
-    if ( ! p() -> retribution_trinket )
-      return;
-
-    if ( ! ( p() -> last_retribution_trinket_target // Target check
-          && p() -> last_retribution_trinket_target == execute_state -> target ) )
-    {
-      // Wrong target, expire stacks and set new target.
-      if ( p() -> last_retribution_trinket_target )
-      {
-        p() -> procs.focus_of_vengeance_reset -> occur();
-        p() -> buffs.retribution_trinket -> expire();
-      }
-      p() -> last_retribution_trinket_target = execute_state -> target;
-    }
-
-    p() -> buffs.retribution_trinket -> trigger();
-  }
 };
 
 struct holy_power_generator_t : public paladin_melee_attack_t
@@ -3433,12 +3360,6 @@ struct crusader_strike_t : public holy_power_generator_t
     background = ( p -> talents.zeal -> ok() );
   }
 
-  void execute() override
-  {
-    holy_power_generator_t::execute();
-    retribution_trinket_trigger();
-  }
-
   void impact( action_state_t* s ) override
   {
     holy_power_generator_t::impact( s );
@@ -3512,11 +3433,7 @@ struct zeal_t : public holy_power_generator_t
   void execute() override
   {
     holy_power_generator_t::execute();
-    if ( ! ( p() -> bugs ) )
-      retribution_trinket_trigger();
 
-    // Special things that happen when Zeal connects
-    // Apply Zeal stacks
     p() -> buffs.zeal -> trigger();
   }
 };
@@ -3908,8 +3825,6 @@ struct hammer_of_the_righteous_t : public paladin_melee_attack_t
   void execute() override
   {
     paladin_melee_attack_t::execute();
-
-    retribution_trinket_trigger();
 
     // Special things that happen when HotR connects
     if ( result_is_hit( execute_state -> result ) )
@@ -4853,7 +4768,6 @@ void paladin_t::reset()
   player_t::reset();
 
   active_consecrations.clear();
-  last_retribution_trinket_target = nullptr;
   last_extra_regen = timespan_t::zero();
   last_jol_proc = timespan_t::zero();
 }
@@ -4879,12 +4793,6 @@ void paladin_t::init_gains()
   gains.hp_t19_4p                   = get_gain( "t19_4p" );
   gains.hp_t20_2p                   = get_gain( "t20_2p" );
   gains.hp_justice_gaze             = get_gain( "justice_gaze" );
-
-  if ( ! retribution_trinket )
-  {
-    buffs.retribution_trinket = buff_creator_t( this, "focus_of_vengeance" )
-      .chance( 0 );
-  }
 }
 
 // paladin_t::init_procs ====================================================
@@ -4998,27 +4906,6 @@ void paladin_t::create_buffs()
 
   // Tier Bonuses
   buffs.ret_t21_4p             = buff_creator_t( this, "hidden_retribution_t21_4p", find_spell( 253806 ) );
-  buffs.vindicators_fury       = buff_creator_t( this, "vindicators_fury", find_spell( 165903 ) )
-                                 .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
-                                 .add_invalidate( CACHE_PLAYER_HEAL_MULTIPLIER )
-                                 .chance( sets -> has_set_bonus( PALADIN_RETRIBUTION, PVP, B4 ) )
-                                 .duration( timespan_t::from_seconds( 4 ) );
-  buffs.wings_of_liberty       = buff_creator_t( this, "wings_of_liberty", find_spell( 185655 ) -> effectN( 1 ).trigger() )
-                                 .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
-                                 .default_value( find_spell( 185655 ) -> effectN( 1 ).trigger() -> effectN( 1 ).percent() )
-                                 .chance( sets -> has_set_bonus( PALADIN_RETRIBUTION, T18, B4 ) );
-  buffs.wings_of_liberty_driver = new buffs::wings_of_liberty_driver_t( this );
-}
-
-// paladin_t::has_t18_class_trinket ==============================================
-
-bool paladin_t::has_t18_class_trinket() const
-{
-  if ( specialization() == PALADIN_RETRIBUTION )
-  {
-    return retribution_trinket != nullptr;
-  }
-  return false;
 }
 
 // ==========================================================================
@@ -6197,15 +6084,6 @@ double paladin_t::composite_player_multiplier( school_e school ) const
     m *= aw_multiplier;
   }
 
-  m *= 1.0 + buffs.wings_of_liberty -> current_stack * buffs.wings_of_liberty -> current_value;
-
-  if ( retribution_trinket )
-    m *= 1.0 + buffs.retribution_trinket -> current_stack * buffs.retribution_trinket -> current_value;
-
-  // WoD Ret PvP 4-piece buffs everything
-  if ( buffs.vindicators_fury -> check() )
-    m *= 1.0 + buffs.vindicators_fury -> value() * buffs.vindicators_fury -> data().effectN( 1 ).percent();
-
   // Last Defender
   if ( talents.last_defender -> ok() )
   {
@@ -6220,7 +6098,6 @@ double paladin_t::composite_player_multiplier( school_e school ) const
   m *= 1.0 + artifact.ferocity_of_the_silver_hand.percent();
   m *= 1.0 + artifact.bulwark_of_the_silver_hand.percent();
   m *= 1.0 + artifact.light_of_the_silver_hand.percent();
-
 
   if ( school == SCHOOL_HOLY )
     m *= 1.0 + artifact.truthguards_light.percent();
@@ -6270,10 +6147,6 @@ double paladin_t::composite_player_heal_multiplier( const action_state_t* s ) co
       m *= 1.0 + spells.chain_of_thrayn -> effectN( 2 ).percent();
     }
   }
-
-  // WoD Ret PvP 4-piece buffs everything
-  if ( buffs.vindicators_fury -> check() )
-    m *= 1.0 + buffs.vindicators_fury -> value() * buffs.vindicators_fury -> data().effectN( 2 ).percent();
 
   return m;
 }
@@ -6928,20 +6801,6 @@ static void do_trinket_init( paladin_t*                player,
   ptr = &( effect );
 }
 
-static void retribution_trinket( special_effect_t& effect )
-{
-  paladin_t* s = debug_cast<paladin_t*>( effect.player );
-  do_trinket_init( s, PALADIN_RETRIBUTION, s -> retribution_trinket, effect );
-
-  if ( s -> retribution_trinket )
-  {
-    const spell_data_t* buff_spell = s -> retribution_trinket -> driver() -> effectN( 1 ).trigger();
-    s -> buffs.retribution_trinket = buff_creator_t( s, "focus_of_vengeance", buff_spell )
-      .default_value( buff_spell -> effectN( 1 ).average( s -> retribution_trinket -> item ) / 100.0 )
-      .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
-  }
-}
-
 // Legiondaries
 static void whisper_of_the_nathrezim( special_effect_t& effect )
 {
@@ -7053,7 +6912,6 @@ struct paladin_module_t : public module_t
 
   virtual void static_init() const override
   {
-    unique_gear::register_special_effect( 184911, retribution_trinket );
     unique_gear::register_special_effect( 207633, whisper_of_the_nathrezim );
     unique_gear::register_special_effect( 208408, liadrins_fury_unleashed );
     unique_gear::register_special_effect( 206338, chain_of_thrayn );
@@ -7066,7 +6924,7 @@ struct paladin_module_t : public module_t
 	unique_gear::register_special_effect( 248102, pillars_of_inmost_light);
     unique_gear::register_special_effect( 208051, sephuzs_secret_enabler_t() );
     unique_gear::register_special_effect( 248103, scarlet_inquisitors_expurgation );
-      unique_gear::register_special_effect( 248033, topless_tower_t() );
+    unique_gear::register_special_effect( 248033, topless_tower_t() );
   }
 
   virtual void init( player_t* p ) const override
