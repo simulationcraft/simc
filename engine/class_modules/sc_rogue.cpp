@@ -763,7 +763,6 @@ struct rogue_t : public player_t
   role_e    primary_role() const override  { return ROLE_ATTACK; }
   stat_e    convert_hybrid_stat( stat_e s ) const override;
   stat_e    primary_stat() const override { return STAT_AGILITY; }
-  void      invalidate_cache(cache_e c) override;
 
   // Default consumables
   std::string default_potion() const override;
@@ -1276,7 +1275,7 @@ struct rogue_attack_t : public melee_attack_t
   {
     double m = melee_attack_t::composite_da_multiplier( state );
 
-    if ( base_costs[ RESOURCE_COMBO_POINT ] && p()->mastery.executioner->ok() )
+    if ( p()->mastery.executioner->ok() && data().affected_by( p()->mastery.executioner->effectN( 1 ) ) )
     {
       m *= 1.0 + p()->cache.mastery_value();
     }
@@ -1293,7 +1292,7 @@ struct rogue_attack_t : public melee_attack_t
   {
     double m = melee_attack_t::composite_ta_multiplier( state );
 
-    if ( base_costs[ RESOURCE_COMBO_POINT ] && p()->mastery.executioner->ok() )
+    if ( p()->mastery.executioner->ok() && data().affected_by( p()->mastery.executioner->effectN( 2 ) ) )
     {
       m *= 1.0 + p()->cache.mastery_value();
     }
@@ -1587,8 +1586,11 @@ struct weaponmaster_strike_t : public rogue_attack_t
   double target_armor( player_t* ) const override
   { return 0; }
 
-  double calculate_direct_amount( action_state_t* ) const override
-  { return base_dd_min; }
+  double calculate_direct_amount( action_state_t* state ) const override
+  { 
+    state->result_raw = state->result_total = base_dd_min;
+    return base_dd_min;
+  }
 };
 
 struct second_shuriken_t : public rogue_attack_t
@@ -6958,22 +6960,6 @@ rogue_td_t::rogue_td_t( player_t* target, rogue_t* source ) :
 // Rogue Character Definition
 // ==========================================================================
 
-void rogue_t::invalidate_cache(cache_e c)
-{
-  player_t::invalidate_cache(c);
-
-  switch (c)
-  {
-    case CACHE_MASTERY:
-      if (mastery.potent_poisons->ok() || mastery.executioner->ok())
-        invalidate_cache(CACHE_PLAYER_DAMAGE_MULTIPLIER);
-      break;
-    case CACHE_RUN_SPEED:
-      if (legendary.thraxis_tricksy_treads)
-        invalidate_cache(CACHE_PLAYER_DAMAGE_MULTIPLIER);
-  }
-}
-
 // rogue_t::composite_attack_speed ==========================================
 
 double rogue_t::composite_melee_speed() const
@@ -7127,6 +7113,7 @@ double rogue_t::composite_player_multiplier( school_e school ) const
   {
     m *= 1.0 + spec.assassins_resolve -> effectN( 2 ).percent();
   }
+
   if (buffs.elaborate_planning->up())
   {
     m *= buffs.elaborate_planning->value();
@@ -7143,12 +7130,15 @@ double rogue_t::composite_player_multiplier( school_e school ) const
   {
     m *= buffs.symbols_of_death -> check_value();
   }
+
   if ( talent.dark_shadow -> ok() && buffs.shadow_dance -> up() )
   {
     m *= 1.0 + talent.dark_shadow -> effectN( 1 ).percent();
   }
+
   m *= 1.0 + buffs.master_of_subtlety -> stack_value();
   m *= 1.0 + buffs.master_of_subtlety_aura -> stack_value();
+  
   if ( artifact.shadow_fangs.rank() &&
        ( dbc::is_school( school, SCHOOL_PHYSICAL ) ||
          dbc::is_school( school, SCHOOL_SHADOW) ) )
