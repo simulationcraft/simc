@@ -10,6 +10,66 @@
 
 namespace profileset
 {
+std::string format_time( double seconds, bool milliseconds = true )
+{
+  std::stringstream s;
+
+  if ( seconds == 0 )
+  {
+    return "0s";
+  }
+  // For milliseconds, just use a quick format
+  else if ( seconds < 0 )
+  {
+    s << static_cast<int>( 1000 * seconds ) << "ms";
+    return s.str();
+  }
+  // Otherwise, do the whole thing
+  else
+  {
+    int days = 0, hours = 0, minutes = 0;
+
+    double remainder = seconds;
+
+    if ( remainder >= 86400 )
+    {
+      days = static_cast<int>(remainder / 86400);
+      remainder -= days * 86400;
+    }
+
+    if ( remainder >= 3600 )
+    {
+      hours = static_cast<int>(remainder / 3600);
+      remainder -= hours * 3600;
+    }
+
+    if ( remainder >= 60 )
+    {
+      minutes = static_cast<int>(remainder / 60);
+      remainder -= minutes * 60;
+    }
+
+    if ( days > 0 )
+    {
+      s << days << "d, ";
+    }
+
+    if ( hours > 0 )
+    {
+      s << hours << "h, ";
+    }
+
+    if ( minutes > 0 )
+    {
+      s << minutes << "m, ";
+    }
+
+    s << util::round( remainder, milliseconds ? 3 : 0 ) << "s";
+  }
+
+  return s.str();
+}
+
 // Deallocating profile_sim is the responsibility of the caller (i.e., profileset driver or
 // worker_t)
 void simulate_profileset( sim_t* parent, profile_set_t& set, sim_t*& profile_sim )
@@ -24,11 +84,17 @@ void simulate_profileset( sim_t* parent, profile_set_t& set, sim_t*& profile_sim
   profile_sim -> seed = 0;
   profile_sim -> profileset_enabled = true;
   profile_sim -> report_details = 0;
-  profile_sim -> progress_bar.set_base( "Profileset" );
-  profile_sim -> progress_bar.set_phase( set.name() );
   if ( parent -> profileset_work_threads > 0 )
   {
     profile_sim -> threads = parent -> profileset_work_threads;
+    // Disable reporting on parallel sims, instead, rely on parallel sims finishing to report
+    // progress. For normal profileset simming we can rely on the normal progressbar updates
+    profile_sim -> report_progress = false;
+  }
+  else
+  {
+    profile_sim -> progress_bar.set_base( "Profileset" );
+    profile_sim -> progress_bar.set_phase( set.name() );
   }
 
   parent -> control = original_opts;
@@ -126,6 +192,16 @@ bool in_player_scope( const option_tuple_t& opt )
   return range::find_if( player_scope_opts, [ &opt ]( const std::string& name ) {
     return util::str_compare_ci( opt.name, name );
   } ) != player_scope_opts.end();
+}
+
+size_t profilesets_t::done_profilesets() const
+{
+  if ( m_work_index <= n_workers() )
+  {
+    return 0;
+  }
+
+  return m_work_index - n_workers();
 }
 
 sim_control_t* profilesets_t::create_sim_options( const sim_control_t*            original,
@@ -286,6 +362,11 @@ const std::thread& worker_t::thread() const
   return *m_thread;
 }
 
+sim_t* worker_t::sim() const
+{
+  return m_sim;
+}
+
 void worker_t::execute()
 {
   simulate_profileset( m_parent, *m_profileset, m_sim );
@@ -315,6 +396,11 @@ void profilesets_t::cleanup_work()
     if ( ( *it ) -> is_done() )
     {
       ( *it ) -> thread().join();
+
+      auto sim = ( *it ) -> sim();
+
+      // Pure iterative time
+      m_total_elapsed += sim -> elapsed_time;
 
       it = m_current_work.erase( it );
     }
@@ -375,6 +461,9 @@ void profilesets_t::generate_work( sim_t* parent, std::unique_ptr<profile_set_t>
     if ( ! is_done() )
     {
       cleanup_work();
+
+      // Output profileset progressbar whenever we finish anything
+      output_progressbar( parent );
 
       m_current_work.push_back( std::unique_ptr<worker_t>( new worker_t { this, parent, ptr_set.get() } ) );
     }
@@ -570,6 +659,8 @@ bool profilesets_t::iterate( sim_t* parent )
 
   auto original_opts = parent -> control;
 
+  m_start_time = util::wall_time();
+
   while ( ! is_done() )
   {
     m_control_lock.lock();
@@ -625,6 +716,58 @@ int profilesets_t::max_name_length() const
   } );
 
   return as<int>(len);
+}
+
+void profilesets_t::output_progressbar( const sim_t* parent ) const
+{
+  std::stringstream s;
+
+  s << "Profilesets (" << m_max_workers << "*" << parent -> profileset_work_threads << "): ";
+
+  auto done = done_profilesets();
+  auto pct = done / as<double>( m_profilesets.size() );
+
+  s << done << "/" << m_profilesets.size() << " ";
+
+  std::string status = "[";
+  status.insert( 1, parent -> progress_bar.steps, '.' );
+  status += "]";
+
+  int length = static_cast<int>( parent -> progress_bar.steps * pct + 0.5 );
+  for ( int i = 1; i < length + 1; ++i )
+  {
+    status[ i ] = '=';
+  }
+
+  if ( length > 0 )
+  {
+    status[ length ] = '>';
+  }
+
+  s << status;
+
+  auto average_per_sim = m_total_elapsed / as<double>( done );
+  auto elapsed = util::wall_time() - m_start_time;
+  auto work_left = m_profilesets.size() - done;
+  auto time_left = ( work_left / m_max_workers ) * average_per_sim;
+
+  // Average time per done simulation
+  s << " avg=" << format_time( average_per_sim );
+
+  // Elapsed time
+  s << " done=" << format_time( elapsed, false );
+
+  // Estimated time left, based on average time per done simulation, elapsed time, and the number of
+  // workers
+  s << " left=" << format_time( time_left, false );
+
+  // Cleanups
+  s << "     ";
+
+  s << '\r';
+
+  std::cout << s.str();
+  fflush( stdout );
 }
 
 void profilesets_t::output( const sim_t& sim, js::JsonOutput& root ) const

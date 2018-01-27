@@ -289,6 +289,8 @@ public:
 
   bool is_done() const
   { return m_done == true; }
+
+  sim_t* sim() const;
 };
 
 class profilesets_t
@@ -332,12 +334,18 @@ class profilesets_t
   std::unique_lock<std::mutex>           m_work_lock;
   std::condition_variable                m_work;
 
+  // Parallel profileset stats collection
+  double                                 m_start_time;
+  double                                 m_total_elapsed;
+
   bool validate( sim_t* sim );
 
   int max_name_length() const;
 
   bool generate_chart( const sim_t& sim, io::ofstream& out ) const;
   void generate_sorted_profilesets( std::vector<const profile_set_t*>& out ) const;
+
+  void output_progressbar( const sim_t* ) const;
 
   void set_state( state new_state );
 
@@ -351,7 +359,8 @@ public:
   profilesets_t() : m_state( STARTED ), m_mode( SEQUENTIAL ),
     m_original( nullptr ), m_insert_index( -1 ),
     m_work_index( 0 ), m_control_lock( m_mutex, std::defer_lock ),
-    m_max_workers( 0 ), m_work_lock( m_work_mutex, std::defer_lock )
+    m_max_workers( 0 ), m_work_lock( m_work_mutex, std::defer_lock ),
+    m_start_time( 0 ), m_total_elapsed( 0 )
   { }
 
   ~profilesets_t()
@@ -366,6 +375,8 @@ public:
 
   size_t n_profilesets() const
   { return m_profilesets.size(); }
+
+  size_t done_profilesets() const;
 
   void notify_worker();
 
