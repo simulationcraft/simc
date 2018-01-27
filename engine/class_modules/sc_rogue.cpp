@@ -978,62 +978,62 @@ struct rogue_attack_t : public melee_attack_t
     }
 
     // Assassination Class Passive
-    if (data().affected_by(p->spec.assassination_rogue->effectN(1)))
+    if ( data().affected_by( p->spec.assassination_rogue->effectN( 1 ) ) )
     {
-      base_dd_multiplier *= 1.0 + p->spec.assassination_rogue->effectN(1).percent();
+      base_dd_multiplier *= 1.0 + p->spec.assassination_rogue->effectN( 1 ).percent();
     }
-    if (data().affected_by(p->spec.assassination_rogue->effectN(2)))
+    if ( data().affected_by( p->spec.assassination_rogue->effectN( 2 ) ) )
     {
-      base_td_multiplier *= 1.0 + p->spec.assassination_rogue->effectN(2).percent();
+      base_td_multiplier *= 1.0 + p->spec.assassination_rogue->effectN( 2 ).percent();
     }
 
     // Outlaw Class Passive
-    if (data().affected_by(p->spec.outlaw_rogue->effectN(1)))
+    if ( data().affected_by( p->spec.outlaw_rogue->effectN( 1 ) ) )
     {
-      base_dd_multiplier *= 1.0 + p->spec.outlaw_rogue->effectN(1).percent();
+      base_dd_multiplier *= 1.0 + p->spec.outlaw_rogue->effectN( 1 ).percent();
     }
-    if (data().affected_by(p->spec.outlaw_rogue->effectN(2)))
+    if ( data().affected_by( p->spec.outlaw_rogue->effectN( 2 ) ) )
     {
-      base_td_multiplier *= 1.0 + p->spec.outlaw_rogue->effectN(2).percent();
+      base_td_multiplier *= 1.0 + p->spec.outlaw_rogue->effectN( 2 ).percent();
     }
-    if (data().affected_by(p->spec.outlaw_rogue->effectN(3))) // DfA-Specific Modifier
+    if ( data().affected_by( p->spec.outlaw_rogue->effectN( 3 ) ) ) // DfA-Specific Modifier
     {
-      base_dd_multiplier *= 1.0 + p->spec.outlaw_rogue->effectN(3).percent();
+      base_dd_multiplier *= 1.0 + p->spec.outlaw_rogue->effectN( 3 ).percent();
     }
 
     // Subtlety Class Passive
-    if (data().affected_by(p->spec.subtlety_rogue->effectN(1)))
+    if ( data().affected_by( p->spec.subtlety_rogue->effectN( 1 ) ) )
     {
-      base_dd_multiplier *= 1.0 + p->spec.subtlety_rogue->effectN(1).percent();
+      base_dd_multiplier *= 1.0 + p->spec.subtlety_rogue->effectN( 1 ).percent();
     }
-    if (data().affected_by(p->spec.subtlety_rogue->effectN(2)))
+    if ( data().affected_by( p->spec.subtlety_rogue->effectN( 2 ) ) )
     {
-      base_td_multiplier *= 1.0 + p->spec.subtlety_rogue->effectN(2).percent();
+      base_td_multiplier *= 1.0 + p->spec.subtlety_rogue->effectN( 2 ).percent();
     }
-    
+
     // Deeper Stratagem
-    if (p->talent.deeper_stratagem->ok())
+    if ( p->talent.deeper_stratagem->ok() )
     {
-      if (data().affected_by(p->talent.deeper_stratagem->effectN(4)))
+      if ( data().affected_by( p->talent.deeper_stratagem->effectN( 4 ) ) )
       {
-        base_dd_multiplier *= 1.0 + p->talent.deeper_stratagem->effectN(4).percent();
+        base_dd_multiplier *= 1.0 + p->talent.deeper_stratagem->effectN( 4 ).percent();
       }
-      if (data().affected_by(p->talent.deeper_stratagem->effectN(5)))
+      if ( data().affected_by( p->talent.deeper_stratagem->effectN( 5 ) ) )
       {
-        base_td_multiplier *= 1.0 + p->talent.deeper_stratagem->effectN(5).percent();
+        base_td_multiplier *= 1.0 + p->talent.deeper_stratagem->effectN( 5 ).percent();
       }
     }
 
     // Master Poisoner
-    if (p->talent.master_poisoner->ok())
+    if ( p->talent.master_poisoner->ok() )
     {
-      if (data().affected_by(p->talent.master_poisoner->effectN(1)))
+      if ( data().affected_by( p->talent.master_poisoner->effectN( 1 ) ) )
       {
-        base_dd_multiplier *= 1.0 + p->talent.master_poisoner->effectN(1).percent();
+        base_dd_multiplier *= 1.0 + p->talent.master_poisoner->effectN( 1 ).percent();
       }
-      if (data().affected_by(p->talent.master_poisoner->effectN(2)))
+      if ( data().affected_by( p->talent.master_poisoner->effectN( 2 ) ) )
       {
-        base_td_multiplier *= 1.0 + p->talent.master_poisoner->effectN(2).percent();
+        base_td_multiplier *= 1.0 + p->talent.master_poisoner->effectN( 2 ).percent();
       }
     }
   }
@@ -1068,7 +1068,7 @@ struct rogue_attack_t : public melee_attack_t
     affected_by.adrenaline_rush_gcd = data().affected_by( p() -> buffs.adrenaline_rush -> data().effectN( 3 ) );
     affected_by.lesser_adrenaline_rush_gcd = data().affected_by( p() -> buffs.t20_4pc_outlaw -> data().effectN( 3 ) );
     affected_by.broadsides = data().affected_by(p()->buffs.broadsides->data().effectN(4));
-    affected_by.t21_2pc_assassination = data().affected_by( p() -> sets -> set( ROGUE_ASSASSINATION, T21, B2 ) -> effectN( 1 ).trigger() -> effectN( 1 ) );
+    affected_by.t21_2pc_assassination = data().affected_by( p()->sets->set( ROGUE_ASSASSINATION, T21, B2 )->effectN( 1 ).trigger()->effectN( 1 ) );
   }
 
   bool init_finished() override
@@ -1114,14 +1114,12 @@ struct rogue_attack_t : public melee_attack_t
   {
     timespan_t t = melee_attack_t::gcd();
 
-    if ( affected_by.adrenaline_rush_gcd &&
-         t != timespan_t::zero() && p() -> buffs.adrenaline_rush -> check() )
+    if ( affected_by.adrenaline_rush_gcd && t != timespan_t::zero() && p() -> buffs.adrenaline_rush -> check() )
     {
       t += p() -> buffs.adrenaline_rush -> data().effectN( 3 ).time_value();
     }
 
-    if ( affected_by.lesser_adrenaline_rush_gcd &&
-         t != timespan_t::zero() && p() -> buffs.t20_4pc_outlaw -> check() )
+    if ( affected_by.lesser_adrenaline_rush_gcd && t != timespan_t::zero() && p() -> buffs.t20_4pc_outlaw -> check() )
     {
       t += p() -> buffs.t20_4pc_outlaw -> data().effectN( 3 ).time_value();
     }
@@ -1278,10 +1276,12 @@ struct rogue_attack_t : public melee_attack_t
   {
     double m = melee_attack_t::composite_da_multiplier( state );
 
-    if ( base_costs[ RESOURCE_COMBO_POINT ] && p() -> mastery.executioner -> ok() )
-      m *= 1.0 + p() -> cache.mastery_value();
+    if ( base_costs[ RESOURCE_COMBO_POINT ] && p()->mastery.executioner->ok() )
+    {
+      m *= 1.0 + p()->cache.mastery_value();
+    }
 
-    if (p()->mastery.potent_poisons->ok() && data().affected_by(p()->mastery.potent_poisons->effectN(1)))
+    if ( p()->mastery.potent_poisons->ok() && data().affected_by( p()->mastery.potent_poisons->effectN( 1 ) ) )
     {
       m *= 1.0 + p()->cache.mastery_value();
     }
@@ -1293,10 +1293,12 @@ struct rogue_attack_t : public melee_attack_t
   {
     double m = melee_attack_t::composite_ta_multiplier( state );
 
-    if ( base_costs[ RESOURCE_COMBO_POINT ] && p() -> mastery.executioner -> ok() )
-      m *= 1.0 + p() -> cache.mastery_value();
+    if ( base_costs[ RESOURCE_COMBO_POINT ] && p()->mastery.executioner->ok() )
+    {
+      m *= 1.0 + p()->cache.mastery_value();
+    }
 
-    if (p()->mastery.potent_poisons->ok() && data().affected_by(p()->mastery.potent_poisons->effectN(2)))
+    if ( p()->mastery.potent_poisons->ok() && data().affected_by( p()->mastery.potent_poisons->effectN( 2 ) ) )
     {
       m *= 1.0 + p()->cache.mastery_value();
     }
@@ -1346,10 +1348,10 @@ struct rogue_attack_t : public melee_attack_t
     double m = melee_attack_t::composite_persistent_multiplier( state );
 
     // Apply Nightstalker as a Persistent Multiplier for things that snapshot
-    if (p()->talent.nightstalker->ok() && snapshots_nightstalker() &&
-      (p()->buffs.stealth->check() || p()->buffs.shadow_dance->check() || p()->buffs.vanish->check()))
+    if ( p()->talent.nightstalker->ok() && snapshots_nightstalker() &&
+      ( p()->buffs.stealth->check() || p()->buffs.shadow_dance->check() || p()->buffs.vanish->check() ) )
     {
-      m *= 1.0 + (p()->talent.nightstalker->effectN(2).percent() + p()->spec.subtlety_rogue->effectN(4).percent());
+      m *= 1.0 + ( p()->talent.nightstalker->effectN( 2 ).percent() + p()->spec.subtlety_rogue->effectN( 4 ).percent() );
     }
 
     return m;
@@ -1365,10 +1367,10 @@ struct rogue_attack_t : public melee_attack_t
     }
 
     // Apply Nightstalker as an Action Multiplier for things that don't snapshot
-    if (p()->talent.nightstalker->ok() && !snapshots_nightstalker() &&
-      (p()->buffs.stealth->check() || p()->buffs.shadow_dance->check() || p()->buffs.vanish->check()))
+    if ( p()->talent.nightstalker->ok() && !snapshots_nightstalker() &&
+      ( p()->buffs.stealth->check() || p()->buffs.shadow_dance->check() || p()->buffs.vanish->check() ) )
     {
-      m *= 1.0 + (p()->talent.nightstalker->effectN(2).percent() + p()->spec.subtlety_rogue->effectN(4).percent());
+      m *= 1.0 + ( p()->talent.nightstalker->effectN( 2 ).percent() + p()->spec.subtlety_rogue->effectN( 4 ).percent() );
     }
 
     return m;
@@ -1471,7 +1473,7 @@ struct main_gauche_t : public rogue_attack_t
     special         = true;
     background      = true;
     may_crit        = true;
-    proc = true; // it's proc; therefore it cannot trigger main_gauche for chain-procs
+    proc            = true; // it's proc; therefore it cannot trigger main_gauche for chain-procs
 
     base_multiplier *= 1.0 + p -> artifact.fortunes_strike.percent();
   }
@@ -1489,12 +1491,12 @@ struct blade_flurry_attack_t : public rogue_attack_t
     rogue_attack_t( "blade_flurry_attack", p, p -> find_spell( 22482 ) )
   {
     may_miss = may_crit = proc = callbacks = may_dodge = may_parry = may_block = false;
-    background = true;
-    aoe = -1;
-    weapon = &p -> main_hand_weapon;
+    background        = true;
+    aoe               = -1;
+    weapon            = &p -> main_hand_weapon;
     weapon_multiplier = 0;
-    radius = 5;
-    range = -1.0;
+    radius            = 5;
+    range             = -1.0;
 
     snapshot_flags |= STATE_MUL_DA;
   }
@@ -1675,28 +1677,6 @@ struct poison_knives_t : public rogue_attack_t
     may_crit = true;
     callbacks = may_miss = false;
   }
-
-  // As of 2017-12-19 we tried to re-evauluate the modifiers on Poison Knives.
-  // - Can crit
-  // - Seems to double dip on versatility
-  // - Does not seem to double dip on target multipliers (Zoldyck quite sure, not 100% sure about Surge of Toxins)
-
-  /*double composite_target_multiplier( player_t* target ) const override
-  {
-    double m = rogue_attack_t::composite_target_multiplier( target );
-
-    m *= 1.0 + td( target ) -> debuffs.surge_of_toxins -> stack_value();
-
-    if ( p() -> legendary.zoldyck_family_training_shackles )
-    {
-      if ( target -> health_percentage() < p() -> legendary.zoldyck_family_training_shackles -> effectN( 2 ).base_value() )
-      {
-        m *= 1.0 + p() -> legendary.zoldyck_family_training_shackles -> effectN( 1 ).percent();
-      }
-    }
-
-    return m;
-  }*/
 
   void init() override
   {
@@ -2040,7 +2020,7 @@ struct deadly_poison_t : public rogue_poison_t
       //              Deadly Poison shouldn't have partial ticks, so we just add the amount of time relative to how many additional ticks we want to add
       const int additional_ticks = data().duration() / dot->time_to_tick;
       const int max_ticks = additional_ticks * 1.5;
-      return dot->remains() + std::min(max_ticks - dot->ticks_left(), additional_ticks) * dot->time_to_tick;
+      return dot->remains() + std::min( max_ticks - dot->ticks_left(), additional_ticks ) * dot->time_to_tick;
     }
 
     void impact( action_state_t* state ) override
@@ -2164,7 +2144,9 @@ struct wound_poison_t : public rogue_poison_t
         td( state -> target ) -> debuffs.wound_poison -> trigger();
 
         if ( ! sim -> overrides.mortal_wounds && state -> target -> debuffs.mortal_wounds )
+        {
           state -> target -> debuffs.mortal_wounds -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, data().duration() );
+        }
 
         if ( td( state -> target ) -> dots.kingsbane -> is_ticking() )
         {
@@ -7787,12 +7769,12 @@ expr_t* rogue_t::create_expression( action_t* a, const std::string& name_str )
   }
   // dot.(garrote|internal_bleeding|rupture).exsanguinated
   else if ( split.size() == 3 && util::str_compare_ci( split[ 2 ], "exsanguinated" ) &&
-       ( util::str_compare_ci( split[ 1 ], "garrote" ) ||
-         util::str_compare_ci( split[ 1 ], "internal_bleeding" ) ||
-         util::str_compare_ci( split[ 1 ], "rupture" ) ) )
+    ( util::str_compare_ci( split[ 1 ], "garrote" ) ||
+      util::str_compare_ci( split[ 1 ], "internal_bleeding" ) ||
+      util::str_compare_ci( split[ 1 ], "rupture" ) ) )
   {
     action_t* action = find_action( split[ 1 ] );
-    if ( ! action )
+    if ( !action )
     {
       return expr_t::create_constant( "exsanguinated_expr", 0 );
     }
@@ -7846,11 +7828,11 @@ expr_t* rogue_t::create_expression( action_t* a, const std::string& name_str )
       return make_fn_expr( split[ 0 ], [ type, rtb_buffs, list_values ]() {
         for ( size_t i = 0, end = list_values.size(); i < end; ++i )
         {
-          if  ( type == RTB_ANY && rtb_buffs[ list_values[ i ] ] -> check() )
+          if ( type == RTB_ANY && rtb_buffs[ list_values[ i ] ]->check() )
           {
             return 1;
           }
-          else if ( type == RTB_ALL && ! rtb_buffs[ list_values[ i ] ] -> check() )
+          else if ( type == RTB_ALL && !rtb_buffs[ list_values[ i ] ]->check() )
           {
             return 0;
           }
@@ -7867,40 +7849,49 @@ expr_t* rogue_t::create_expression( action_t* a, const std::string& name_str )
     return make_fn_expr( split[ 0 ], [ this, split ]() {
       timespan_t return_value = timespan_t::from_seconds( 0.0 );
       unsigned attack_x = strtoul( split[ 1 ].c_str(), nullptr, 0 );
-      if ( main_hand_attack && attack_x > shadow_techniques && attack_x <= 5 ) {
+      if ( main_hand_attack && attack_x > shadow_techniques && attack_x <= 5 )
+      {
         unsigned remaining_aa = attack_x - shadow_techniques;
-        if (sim -> debug) sim -> out_debug.printf( "Inside the shadowtechniques handler, attack_x = %u, remaining_aa = %u", attack_x, remaining_aa );
+        if ( sim->debug ) sim->out_debug.printf( "Inside the shadowtechniques handler, attack_x = %u, remaining_aa = %u", attack_x, remaining_aa );
 
-        timespan_t mh_swing_time = main_hand_attack -> execute_time();
-        if (sim -> debug) {
-          sim -> out_debug.printf( "mh_swing_time, %.3f", mh_swing_time.total_seconds() );
+        timespan_t mh_swing_time = main_hand_attack->execute_time();
+        if ( sim->debug )
+        {
+          sim->out_debug.printf( "mh_swing_time, %.3f", mh_swing_time.total_seconds() );
         }
         timespan_t mh_next_swing = timespan_t::from_seconds( 0.0 );
-        if ( main_hand_attack -> execute_event == nullptr ) {
+        if ( main_hand_attack->execute_event == nullptr )
+        {
           mh_next_swing = mh_swing_time;
-        } else {
-          mh_next_swing = main_hand_attack -> execute_event -> remains();
         }
-        if (sim -> debug) sim -> out_debug.printf( "Main hand next_swing in: %.3f", mh_next_swing.total_seconds() );
+        else
+        {
+          mh_next_swing = main_hand_attack->execute_event->remains();
+        }
+        if ( sim->debug ) sim->out_debug.printf( "Main hand next_swing in: %.3f", mh_next_swing.total_seconds() );
 
         timespan_t oh_swing_time = timespan_t::from_seconds( 0.0 );
         timespan_t oh_next_swing = timespan_t::from_seconds( 0.0 );
         if ( off_hand_attack )
         {
-          oh_swing_time = off_hand_attack -> execute_time();
-          if (sim -> debug) {
-            sim -> out_debug.printf( "oh_swing_time:%.3f", oh_swing_time.total_seconds() );
+          oh_swing_time = off_hand_attack->execute_time();
+          if ( sim->debug )
+          {
+            sim->out_debug.printf( "oh_swing_time:%.3f", oh_swing_time.total_seconds() );
           }
-          if ( off_hand_attack -> execute_event == nullptr ) {
+          if ( off_hand_attack->execute_event == nullptr )
+          {
             oh_next_swing = oh_swing_time;
-          } else {
-            oh_next_swing = off_hand_attack -> execute_event -> remains();
           }
-          if (sim -> debug) sim -> out_debug.printf( "Off hand next_swing in: %.3f", oh_next_swing.total_seconds() );
+          else
+          {
+            oh_next_swing = off_hand_attack->execute_event->remains();
+          }
+          if ( sim->debug ) sim->out_debug.printf( "Off hand next_swing in: %.3f", oh_next_swing.total_seconds() );
         }
         else
         {
-          if (sim -> debug) sim -> out_debug.printf( "Off hand attack not found, using only main hand timers" );
+          if ( sim->debug ) sim->out_debug.printf( "Off hand attack not found, using only main hand timers" );
         }
 
         // Store upcoming attack timers and sort
@@ -7914,18 +7905,24 @@ expr_t* rogue_t::create_expression( action_t* a, const std::string& name_str )
         }
         std::sort( attacks.begin(), attacks.end() );
         return_value = attacks.at( remaining_aa - 1 );
-      } else if ( main_hand_attack == nullptr ) {
-        return_value = timespan_t::from_seconds( 0.0 );
-        if (sim -> debug) sim -> out_debug.printf( "Main hand attack is required but was not found" );
-      } else if ( attack_x > 5 ) {
-        return_value = timespan_t::from_seconds( 0.0 );
-        if (sim -> debug) sim -> out_debug.printf( "Invalid value %u for attack_x (must be 5 or less)", attack_x );
-      } else {
-        return_value = timespan_t::from_seconds( 0.0 );
-        if (sim -> debug) sim -> out_debug.printf( "attack_x value %u is not greater than shadow techniques count %u, returning %.3f", attack_x, shadow_techniques, return_value.total_seconds() );
       }
-      if (sim -> debug) sim -> out_debug.printf( "Shadow techniques return value is: %.3f", return_value.total_seconds() );
-    return return_value;
+      else if ( main_hand_attack == nullptr )
+      {
+        return_value = timespan_t::from_seconds( 0.0 );
+        if ( sim->debug ) sim->out_debug.printf( "Main hand attack is required but was not found" );
+      }
+      else if ( attack_x > 5 )
+      {
+        return_value = timespan_t::from_seconds( 0.0 );
+        if ( sim->debug ) sim->out_debug.printf( "Invalid value %u for attack_x (must be 5 or less)", attack_x );
+      }
+      else
+      {
+        return_value = timespan_t::from_seconds( 0.0 );
+        if ( sim->debug ) sim->out_debug.printf( "attack_x value %u is not greater than shadow techniques count %u, returning %.3f", attack_x, shadow_techniques, return_value.total_seconds() );
+      }
+      if ( sim->debug ) sim->out_debug.printf( "Shadow techniques return value is: %.3f", return_value.total_seconds() );
+      return return_value;
     } );
   }
 
