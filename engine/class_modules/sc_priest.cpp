@@ -1947,12 +1947,13 @@ public:
 
 struct shadow_word_void_t final : public priest_spell_t
 {
+	// TODO: Make sure that this replaces Mind Blast somehow
 private:
 	double insanity_gain;
 
 public:
 shadow_word_void_t(priest_t& player, const std::string& options_str)
-	: priest_spell_t("shadow_word_void", player, player.find_class_spell("Shadow Word: Void"))
+	: priest_spell_t("shadow_word_void", player, player.find_talent_spell("Shadow Word: Void"))
 {
 	parse_options(options_str);
 	is_mind_spell = true;
@@ -1977,9 +1978,9 @@ void init() override
 {
 	if (priest.active_items.mangazas_madness && priest.cooldowns.mind_blast->charges == 1)
 	{
-		priest.cooldowns.mind_blast->charges += priest.active_items.mangazas_madness->driver()->effectN(1).base_value();
+		priest.cooldowns.shadow_word_void->charges += priest.active_items.mangazas_madness->driver()->effectN(1).base_value();
 	}
-	priest.cooldowns.mind_blast->hasted = true;
+	priest.cooldowns.shadow_word_void->hasted = true;
 
 	priest_spell_t::init();
 }
@@ -2082,62 +2083,95 @@ void update_ready(timespan_t cd_duration) override
 
 struct mind_sear_tick_t final : public priest_spell_t
 {
-  propagate_const<player_t*> source_target;
-  double insanity_gain;
+	double insanity_gain;
 
-  mind_sear_tick_t( priest_t& p )
-    : priest_spell_t( "mind_sear_tick", p, p.find_spell( 234702 ) ), source_target( nullptr )
-  {
-    may_crit                    = true;
-    background                  = true;
-    proc                        = false;
-    callbacks                   = true;
-    may_miss                    = false;
-    aoe                         = -1;
-    is_sphere_of_insanity_spell = false;
-    is_mind_spell               = true;
-    range                       = 8.0;
-    trigger_gcd                 = timespan_t::zero();
-    school                      = SCHOOL_SHADOW;
-    spell_power_mod.direct      = p.find_spell( 237388 )->effectN( 1 ).sp_coeff();
-    insanity_gain               = p.find_spell( 208232 )->effectN( 1 ).percent();
-  }
+	// TODO: Mind Sear is missing damage information in spell data
+	mind_sear_tick_t(priest_t& p, const spell_data_t* mind_sear)
+		: priest_spell_t("mind_sear_tick", p, mind_sear->effectN(1).trigger()),
+		insanity_gain(1.0)  // TODO: Missing from spell data - hardcoded for now
+	{
+		background = true;
+		dual = true;
+		aoe = -1;
+		callbacks = false;
+		direct_tick = true;
+		use_off_gcd = true;
+		energize_type =
+			ENERGIZE_NONE;  // disable resource generation from spell data
+	}
 
-  size_t available_targets( std::vector<player_t*>& tl ) const override
-  {
-    priest_spell_t::available_targets( tl );
+	void impact(action_state_t* s) override
+	{
+		priest_spell_t::impact(s);
 
-    // Does not hit the main target
-    auto it = range::find( tl, target );
-    if ( it != tl.end() )
-    {
-      tl.erase( it );
-    }
+		if (result_is_hit(s->result))
+		{
+			priest.generate_insanity(insanity_gain, priest.gains.insanity_mind_sear, s->action);
+		}
+	}
+};
 
-    return tl.size();
-  }
+struct mind_sear_t final : public priest_spell_t 
+	//TODO: VALIDATE WITH INGAME BEHAVIOUR TO CHECK IF THIS WORKS LIKE FLAY NOW
+{
+	mind_sear_t(priest_t& p, const std::string& options_str)
+		: priest_spell_t("mind_sear", p,
+			p.find_specialization_spell(("Mind Sear")))
+	{
+		parse_options(options_str);
+		channeled = true;
+		may_crit = false;
+		hasted_ticks = false;
+		dynamic_tick_action = true;
+		tick_zero = false;
+		is_mind_spell = true;
 
-  // Trigger aoe damage
-  void trigger( player_t* target )
-  {
-    source_target = target;
+		if (p.artifact.void_corruption.rank())
+		{
+			base_multiplier *= 1.0 + p.artifact.void_corruption.percent();
+		}
 
-    if ( priest.sim->debug )
-    {
-      priest.sim->out_debug << priest.name() << " triggered Mind Sear Damage.";
-    }
-    schedule_execute();
-  }
+		tick_action = new mind_sear_tick_t(p, p.find_class_spell("Mind Sear") );
+	}
 
-  void impact( action_state_t* state ) override
-  {
-    priest_spell_t::impact( state );
 
-    if ( result_is_hit( state->result ) )
-    {
-      priest.generate_insanity( insanity_gain, priest.gains.insanity_mind_sear, state->action );
-    }
-  }
+	void tick(dot_t* d) override
+	{
+		priest_spell_t::tick(d);
+
+	}
+
+	void last_tick(dot_t* d) override
+	{
+		if (d->current_tick == d->num_ticks)
+		{
+			priest.buffs.mind_sear_on_hit_reset->expire();
+		}
+
+		priest_spell_t::last_tick(d);
+	}
+
+
+	void impact(action_state_t* s) override
+	{
+		// Mind Sear does on-hit damage only when there is a GCD of another ability
+		// between it, so chaining Mind Sears doesn't allow for the on-hit to happen
+		// again.
+		if (priest.buffs.mind_sear_on_hit_reset->check() == 0)
+		{
+			priest.buffs.mind_sear_on_hit_reset->trigger(2, 1, 1,
+				tick_time(s) * 6);
+			tick_zero = true;
+		}
+		else
+		{
+			priest.buffs.mind_sear_on_hit_reset->trigger(1);
+			tick_zero = false;
+		}
+
+		priest_spell_t::impact(s);
+
+	}
 };
 
 struct new_void_tendril_mind_flay_t final : public priest_spell_t
@@ -2204,11 +2238,7 @@ struct mind_flay_t final : public priest_spell_t
     is_sphere_of_insanity_spell = true;
     energize_type               = ENERGIZE_NONE;  // disable resource generation from spell data
 
-    if ( p.find_spell( 234702 )->ok() )
-    {
-      priest.active_spells.mind_sear_tick = new mind_sear_tick_t( p );
-      add_child( priest.active_spells.mind_sear_tick );
-    }
+
     priest.active_spells.void_tendril = new new_void_tendril_mind_flay_t( p );
     add_child( priest.active_spells.void_tendril );
 
@@ -4524,6 +4554,8 @@ action_t* priest_t::create_action( const std::string& name, const std::string& o
     return new mind_blast_t( *this, options_str );
   if ( name == "mind_flay" )
     return new mind_flay_t( *this, options_str );
+  if (name == "mind_sear")
+	return new mind_sear_t( *this, options_str);
   if ( name == "shadowform" )
     return new shadowform_t( *this, options_str );
   if ( name == "shadow_crash" )
