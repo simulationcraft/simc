@@ -8103,7 +8103,6 @@ void mage_t::apl_frost()
   default_list -> add_action( mage_t::get_special_use_items( "mrrgrias_favor" ) );
   default_list -> add_action( mage_t::get_special_use_items( "pharameres_forbidden_grimoire" ) );
   default_list -> add_action( mage_t::get_special_use_items( "kiljaedens_burning_wish" ) );
-  default_list -> add_action( "call_action_list,name=movement,moving=1" );
   default_list -> add_action( "call_action_list,name=cooldowns" );
   default_list -> add_action( "call_action_list,name=aoe,if=active_enemies>=3" );
   default_list -> add_action( "call_action_list,name=single" );
@@ -8153,6 +8152,7 @@ void mage_t::apl_frost()
     "Glacial Spike is generally used as it is available, unless we have T20 2pc. In that case, Glacial Spike is delayed when "
     "Frozen Mass is happening soon (in less than 10 s)." );
   single -> add_action( this, "Frostbolt" );
+  single -> add_action( "call_action_list,name=movement" );
   single -> add_action( this, "Blizzard", "",
     "While on the move, use instant Blizzard if available." );
   single -> add_action( this, "Ice Lance", "",
@@ -8172,6 +8172,7 @@ void mage_t::apl_frost()
   aoe -> add_action( this, "Ebonbolt" );
   aoe -> add_talent( this, "Glacial Spike" );
   aoe -> add_action( this, "Frostbolt" );
+  aoe -> add_action( "call_action_list,name=movement" );
   aoe -> add_action( this, "Cone of Cold" );
   aoe -> add_action( this, "Ice Lance" );
 
@@ -8191,7 +8192,7 @@ void mage_t::apl_frost()
   }
 
   movement -> add_action( this, "Blink", "if=movement.distance>10" );
-  movement -> add_talent( this, "Ice Floes", "if=buff.ice_floes.down&!buff.fingers_of_frost.react" );
+  movement -> add_talent( this, "Ice Floes", "if=buff.ice_floes.down" );
 }
 
 // Default Action List ========================================================
