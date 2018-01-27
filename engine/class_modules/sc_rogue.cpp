@@ -653,6 +653,7 @@ struct rogue_t : public player_t
     const spell_data_t* the_empty_crown;
     const spell_data_t* the_first_of_the_dead;
     const spell_data_t* sephuzs_secret;
+    const spell_data_t* thraxis_tricksy_treads;
   } legendary;
 
   // Options
@@ -762,6 +763,7 @@ struct rogue_t : public player_t
   role_e    primary_role() const override  { return ROLE_ATTACK; }
   stat_e    convert_hybrid_stat( stat_e s ) const override;
   stat_e    primary_stat() const override { return STAT_AGILITY; }
+  void      invalidate_cache(cache_e c) override;
 
   // Default consumables
   std::string default_potion() const override;
@@ -1279,6 +1281,11 @@ struct rogue_attack_t : public melee_attack_t
     if ( base_costs[ RESOURCE_COMBO_POINT ] && p() -> mastery.executioner -> ok() )
       m *= 1.0 + p() -> cache.mastery_value();
 
+    if (p()->mastery.potent_poisons->ok() && data().affected_by(p()->mastery.potent_poisons->effectN(1)))
+    {
+      m *= 1.0 + p()->cache.mastery_value();
+    }
+
     return m;
   }
 
@@ -1288,6 +1295,11 @@ struct rogue_attack_t : public melee_attack_t
 
     if ( base_costs[ RESOURCE_COMBO_POINT ] && p() -> mastery.executioner -> ok() )
       m *= 1.0 + p() -> cache.mastery_value();
+
+    if (p()->mastery.potent_poisons->ok() && data().affected_by(p()->mastery.potent_poisons->effectN(2)))
+    {
+      m *= 1.0 + p()->cache.mastery_value();
+    }
 
     return m;
   }
@@ -1742,19 +1754,6 @@ struct poison_bomb_t : public rogue_attack_t
     may_miss = may_dodge = may_parry = may_block = false;
   }
 
-  double action_multiplier() const override
-  {
-    double m = rogue_attack_t::action_multiplier();
-
-    // Scale on Mastery since 09-24 Hotfix
-    if ( p() -> mastery.potent_poisons -> ok() )
-    {
-      m *= 1.0 + p() -> cache.mastery_value();
-    }
-
-    return m;
-  }
-
   double composite_target_multiplier( player_t* target ) const override
   {
     double m = rogue_attack_t::composite_target_multiplier( target );
@@ -1955,9 +1954,6 @@ struct rogue_poison_t : public rogue_attack_t
   {
     double m = rogue_attack_t::action_da_multiplier();
 
-    if ( p() -> mastery.potent_poisons -> ok() )
-      m *= 1.0 + p() -> cache.mastery_value();
-
     m *= 1.0 + p() -> artifact.master_alchemist.percent();
 
     return m;
@@ -1966,9 +1962,6 @@ struct rogue_poison_t : public rogue_attack_t
   double action_ta_multiplier() const override
   {
     double m = rogue_attack_t::action_ta_multiplier();
-
-    if ( p() -> mastery.potent_poisons -> ok() )
-      m *= 1.0 + p() -> cache.mastery_value();
 
     m *= 1.0 + p() -> artifact.master_alchemist.percent();
 
@@ -2937,16 +2930,6 @@ struct envenom_t : public rogue_attack_t
     return m;
   }
 
-  double action_da_multiplier() const override
-  {
-    double m = rogue_attack_t::action_da_multiplier();
-
-    if ( p() -> mastery.potent_poisons -> ok() )
-      m *= 1.0 + p() -> cache.mastery_value();
-
-    return m;
-  }
-
   double cost() const override
   {
     double c = rogue_attack_t::cost();
@@ -3532,18 +3515,6 @@ struct kingsbane_strike_t : public rogue_attack_t
     }
   }
 
-  double action_multiplier() const override
-  {
-    double m = rogue_attack_t::action_multiplier();
-
-    if ( p() -> mastery.potent_poisons -> ok() )
-    {
-      m *= 1.0 + p() -> cache.mastery_value();
-    }
-
-    return m;
-  }
-
   double composite_target_multiplier( player_t* target ) const override
   {
     double m = rogue_attack_t::composite_target_multiplier( target );
@@ -3580,18 +3551,6 @@ struct kingsbane_t : public rogue_attack_t
   {
     // 1/25/2018 - Kingsbane DoT does not snapshot Nightstalker
     return false;
-  }
-
-  double action_multiplier() const override
-  {
-    double m = rogue_attack_t::action_multiplier();
-
-    if ( p() -> mastery.potent_poisons -> ok() )
-    {
-      m *= 1.0 + p() -> cache.mastery_value();
-    }
-
-    return m;
   }
 
   double composite_target_multiplier( player_t* target ) const override
@@ -3813,11 +3772,8 @@ struct pistol_shot_t : public shot_base_t
 
 struct run_through_t: public rogue_attack_t
 {
-  double ttt_multiplier; // 7.0 legendary Thraxi's Tricksy Treads multiplier
-
   run_through_t( rogue_t* p, const std::string& options_str ) :
-    rogue_attack_t( "run_through", p, p -> find_specialization_spell( "Run Through" ), options_str ),
-    ttt_multiplier( 0 )
+    rogue_attack_t( "run_through", p, p -> find_specialization_spell( "Run Through" ), options_str )
   {
     weapon = &( player -> main_hand_weapon );
     weapon_multiplier = 0;
@@ -3836,10 +3792,10 @@ struct run_through_t: public rogue_attack_t
     if ( p() -> buffs.death_from_above -> up() )
       m *= 1.0 + p() -> buffs.death_from_above -> data().effectN( 2 ).percent();
 
-    if ( ttt_multiplier > 0 )
+    if ( p() -> legendary.thraxis_tricksy_treads )
     {
-      double movement_speed = p() -> passive_movement_modifier() + p() -> temporary_movement_modifier();
-      m *= 1.0 + movement_speed * ttt_multiplier;
+      const double increased_speed = ( p() -> cache.run_speed() / p() -> base_movement_speed ) - 1.0;
+      m *= 1.0 + increased_speed * p() -> legendary.thraxis_tricksy_treads -> effectN( 1 ).percent();
     }
 
     if ( p() -> buffs.t21_2pc_outlaw -> up() )
@@ -4810,18 +4766,6 @@ struct toxic_blade_t : public rogue_attack_t
     rogue_attack_t( "toxic_blade", p, p -> talent.toxic_blade, options_str )
   {
     requires_weapon = WEAPON_DAGGER;
-  }
-
-  double action_multiplier() const override
-  {
-    double m = rogue_attack_t::action_multiplier();
-
-    if ( p() -> mastery.potent_poisons -> ok() )
-    {
-      m *= 1.0 + p() -> cache.mastery_value();
-    }
-
-    return m;
   }
 
   void impact( action_state_t* s ) override
@@ -7032,6 +6976,22 @@ rogue_td_t::rogue_td_t( player_t* target, rogue_t* source ) :
 // Rogue Character Definition
 // ==========================================================================
 
+void rogue_t::invalidate_cache(cache_e c)
+{
+  player_t::invalidate_cache(c);
+
+  switch (c)
+  {
+    case CACHE_MASTERY:
+      if (mastery.potent_poisons->ok() || mastery.executioner->ok())
+        invalidate_cache(CACHE_PLAYER_DAMAGE_MULTIPLIER);
+      break;
+    case CACHE_RUN_SPEED:
+      if (legendary.thraxis_tricksy_treads)
+        invalidate_cache(CACHE_PLAYER_DAMAGE_MULTIPLIER);
+  }
+}
+
 // rogue_t::composite_attack_speed ==========================================
 
 double rogue_t::composite_melee_speed() const
@@ -8440,7 +8400,8 @@ void rogue_t::create_buffs()
   buffs.shadowstep            = buff_creator_t( this, "shadowstep", spec.shadowstep )
                                 .cd( timespan_t::zero() );
   buffs.sprint                = buff_creator_t( this, "sprint", spell.sprint )
-                                .cd( timespan_t::zero() );
+                                .cd( timespan_t::zero() )
+                                .add_invalidate( CACHE_RUN_SPEED );
   buffs.stealth               = new buffs::stealth_t( this );
   buffs.vanish                = new buffs::vanish_t( this );
   // Assassination
@@ -8454,11 +8415,13 @@ void rogue_t::create_buffs()
                                 .cd( timespan_t::zero() );
   buffs.opportunity           = buff_creator_t( this, "opportunity", find_spell( 195627 ) );
   // Roll the bones buffs
-  buffs.broadsides            = buff_creator_t( this, "broadsides", find_spell( 193356 ) );
+  buffs.broadsides            = buff_creator_t( this, "broadsides", find_spell( 193356 ) )
+                                .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   buffs.buried_treasure       = buff_creator_t( this, "buried_treasure", find_spell( 199600 ) )
                                 .default_value( find_spell( 199600 ) -> effectN( 1 ).percent() );
   buffs.grand_melee           = haste_buff_creator_t( this, "grand_melee", find_spell( 193358 ) )
                                 .add_invalidate( CACHE_ATTACK_SPEED )
+                                .add_invalidate( CACHE_LEECH )
                                 .default_value( 1.0 / ( 1.0 + find_spell( 193358 ) -> effectN( 1 ).percent() ) );
   buffs.jolly_roger           = buff_creator_t( this, "jolly_roger", find_spell( 199603 ) )
                                 .default_value( find_spell( 199603 ) -> effectN( 1 ).percent() );
@@ -9308,13 +9271,13 @@ struct duskwalker_footpads_t : public unique_gear::scoped_actor_callback_t<rogue
   { rogue -> legendary.duskwalker_footpads = e.driver(); }
 };
 
-struct thraxis_tricksy_treads_t : public unique_gear::scoped_action_callback_t<actions::run_through_t>
+struct thraxis_tricksy_treads_t : public unique_gear::scoped_actor_callback_t<rogue_t>
 {
-  thraxis_tricksy_treads_t() : super( ROGUE, "run_through" )
+  thraxis_tricksy_treads_t() : super( ROGUE )
   { }
-
-  void manipulate( actions::run_through_t* action, const special_effect_t& e ) override
-  { action -> ttt_multiplier = e.driver() -> effectN( 1 ).percent(); }
+  
+  void manipulate( rogue_t* rogue, const special_effect_t& e ) override
+  { rogue -> legendary.thraxis_tricksy_treads = e.driver(); }
 };
 
 struct denial_of_the_halfgiants_t : public unique_gear::scoped_actor_callback_t<rogue_t>
