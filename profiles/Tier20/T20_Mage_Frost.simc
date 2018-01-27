@@ -36,7 +36,6 @@ actions=counterspell
 actions+=/ice_lance,if=!buff.fingers_of_frost.react&prev_gcd.1.flurry
 # Time Warp is used right at the start. If the actor has Shard of the Exodar, try to synchronize the second Time Warp with Icy Veins. If the target is about to die, use Time Warp regardless.
 actions+=/time_warp,if=buff.bloodlust.down&(buff.exhaustion.down|equipped.shard_of_the_exodar)&(cooldown.icy_veins.remains<1|target.time_to_die<50)
-actions+=/call_action_list,name=movement,moving=1
 actions+=/call_action_list,name=cooldowns
 actions+=/call_action_list,name=aoe,if=active_enemies>=3
 actions+=/call_action_list,name=single
@@ -54,6 +53,7 @@ actions.aoe+=/ice_lance,if=buff.fingers_of_frost.react
 actions.aoe+=/ebonbolt
 actions.aoe+=/glacial_spike
 actions.aoe+=/frostbolt
+actions.aoe+=/call_action_list,name=movement
 actions.aoe+=/cone_of_cold
 actions.aoe+=/ice_lance
 
@@ -68,7 +68,7 @@ actions.cooldowns+=/berserking
 actions.cooldowns+=/arcane_torrent
 
 actions.movement=blink,if=movement.distance>10
-actions.movement+=/ice_floes,if=buff.ice_floes.down&!buff.fingers_of_frost.react
+actions.movement+=/ice_floes,if=buff.ice_floes.down
 
 # In some circumstances, it is possible for both Ice Lance and Ice Nova to benefit from a single Winter's Chill.
 actions.single=ice_nova,if=debuff.winters_chill.up
@@ -95,6 +95,7 @@ actions.single+=/frostbolt,if=buff.frozen_mass.remains>execute_time+action.glaci
 # Glacial Spike is generally used as it is available, unless we have T20 2pc. In that case, Glacial Spike is delayed when Frozen Mass is happening soon (in less than 10 s).
 actions.single+=/glacial_spike,if=cooldown.frozen_orb.remains>10|!set_bonus.tier20_2pc
 actions.single+=/frostbolt
+actions.single+=/call_action_list,name=movement
 # While on the move, use instant Blizzard if available.
 actions.single+=/blizzard
 # Otherwise just use Ice Lance to do at least some damage.
