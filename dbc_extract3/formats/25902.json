@@ -324,6 +324,7 @@
     { "data_type": "b", "field": "unk_5" },
     { "data_type": "b", "field": "unk_6" },
     { "data_type": "I", "field": "id_icon" },
+    { "data_type": "I", "field": "unk_7" },
     { "data_type": "B", "field": "unk_8" }
   ],
   "SkillLineAbility": [
