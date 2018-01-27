@@ -35,9 +35,7 @@ namespace pets {
 }
 
 namespace runeforge {
-  // TODO: set up rune forges
-  void razorice_attack( special_effect_t& );
-  void razorice_debuff( special_effect_t& );
+  // Note, razorice uses a different method of initialization than the other runeforges
   void fallen_crusader( special_effect_t& );
   void stoneskin_gargoyle( special_effect_t& );
 }
@@ -517,6 +515,9 @@ public:
     action_t* freezing_death;
     action_t* t20_blood;
     action_t* t21_4pc_blood;
+
+    action_t* razorice_mh;
+    action_t* razorice_oh;
   } active_spells;
 
   // Gains
@@ -2943,10 +2944,11 @@ struct death_knight_melee_attack_t : public death_knight_action_t<melee_attack_t
     }
   }
 
-  virtual void   consume_resource() override;
-  virtual void   execute() override;
-  virtual void   impact( action_state_t* state ) override;
-  virtual bool   ready() override;
+  void consume_resource() override;
+  void execute() override;
+  void schedule_travel( action_state_t* state ) override;
+  void impact( action_state_t* state ) override;
+  bool ready() override;
 
   void consume_killing_machine( const action_state_t* state, proc_t* proc ) const;
   void trigger_icecap( const action_state_t* state ) const;
@@ -2954,6 +2956,7 @@ struct death_knight_melee_attack_t : public death_knight_action_t<melee_attack_t
   void trigger_crystalline_swords( const action_state_t* state ) const;
   void trigger_necrobomb( const action_state_t* state ) const;
   void trigger_freezing_death( const action_state_t* state ) const;
+  void trigger_razorice( const action_state_t* state ) const;
 };
 
 // ==========================================================================
@@ -3023,6 +3026,20 @@ void death_knight_melee_attack_t::execute()
     p() -> resource_gain( RESOURCE_RUNIC_POWER, last_resource_cost * RUNIC_POWER_REFUND, p() -> gains.power_refund );
   trigger_crystalline_swords( execute_state );
 }
+
+// death_knight_melee_attack_t::schedule_travel() ===========================
+
+void death_knight_melee_attack_t::schedule_travel( action_state_t* state )
+{
+  base_t::schedule_travel( state );
+
+  // Razorice has to be triggered in schedule_travel because simc core lacks support for per-target,
+  // on execute callbacks (per target callbacks in core are handled on impact, i.e., after travel
+  // time). Schedule_travel is guaranteed to be called per-target on execute, so we can hook into it
+  // to deliver that behavior for Razorice as a special case.
+  trigger_razorice( state );
+}
+
 
 // death_knight_melee_attack_t::impact() ====================================
 
@@ -3220,6 +3237,53 @@ void death_knight_melee_attack_t::trigger_freezing_death (const action_state_t* 
 
 }
 
+// death_knight_spell_t::trigger_razorice ===================================
+
+void death_knight_melee_attack_t::trigger_razorice( const action_state_t* state ) const
+{
+  if ( state -> result_amount <= 0 || ! callbacks )
+  {
+    return;
+  }
+
+  // Weapon slot check, if the "melee attack" has no weapon defined, presume an implicit main hand
+  // weapon
+  action_t* razorice_attack = nullptr;
+
+  if ( state -> action -> weapon )
+  {
+    if ( state -> action -> weapon -> slot == SLOT_MAIN_HAND && p() -> active_spells.razorice_mh )
+    {
+      razorice_attack = p() -> active_spells.razorice_mh;
+    }
+    else if ( state -> action -> weapon -> slot == SLOT_OFF_HAND && p() -> active_spells.razorice_oh )
+    {
+      razorice_attack = p() -> active_spells.razorice_oh;
+    }
+  }
+  // No weapon defined in the action, presume an implicit main hand weapon, requiring that the
+  // razorice runeforge is applied to the main hand weapon on the actor
+  else
+  {
+    if ( p() -> active_spells.razorice_mh )
+    {
+      razorice_attack = p() -> active_spells.razorice_mh;
+    }
+  }
+
+  if ( ! razorice_attack )
+  {
+    return;
+  }
+
+
+  razorice_attack -> set_target( state -> target );
+  razorice_attack -> execute();
+
+  td( state -> target ) -> debuff.razorice -> trigger();
+}
+
+
 // ==========================================================================
 // Death Knight Spell Methods
 // ==========================================================================
@@ -3281,6 +3345,35 @@ void death_knight_spell_t::trigger_freezing_death (const action_state_t* state )
 // ==========================================================================
 // Death Knight Secondary Abilities
 // ==========================================================================
+
+// Razorice Attack ==========================================================
+
+struct razorice_attack_t : public death_knight_melee_attack_t
+{
+  razorice_attack_t( death_knight_t* player, const std::string& name ) :
+    death_knight_melee_attack_t( name, player, player -> find_spell( 50401 ) )
+  {
+    school      = SCHOOL_FROST;
+    may_miss    = callbacks = false;
+    background  = proc = true;
+    base_multiplier *= 1.0 + player -> artifact.bad_to_the_bone.percent();
+
+    // Note, razorice always attacks with the main hand weapon, regardless of which hand it is used
+    // in
+    weapon = &( player -> main_hand_weapon );
+  }
+
+  // No double dipping to Frost Vulnerability
+  double composite_target_multiplier( player_t* t ) const override
+  {
+    double m = death_knight_melee_attack_t::composite_target_multiplier( t );
+
+    m /= 1.0 + td( t ) -> debuff.razorice -> check() *
+          td( t ) -> debuff.razorice -> data().effectN( 1 ).percent();
+
+    return m;
+  }
+};
 
 // Crystalline Swords =======================================================
 
@@ -7095,66 +7188,6 @@ struct hungering_rune_weapon_buff_t : public buff_t
 
 } // UNNAMED NAMESPACE
 
-// Runeforges ==============================================================
-
-void runeforge::razorice_attack( special_effect_t& effect )
-{
-  struct razorice_attack_t : public death_knight_melee_attack_t
-  {
-    razorice_attack_t( death_knight_t* player, const std::string& name ) :
-      death_knight_melee_attack_t( name, player, player -> find_spell( 50401 ) )
-    {
-      school      = SCHOOL_FROST;
-      may_miss    = callbacks = false;
-      background  = proc = true;
-      base_multiplier *= 1.0 + player -> artifact.bad_to_the_bone.percent();
-
-      weapon = &( player -> main_hand_weapon );
-    }
-
-    // No double dipping to Frost Vulnerability
-    double composite_target_multiplier( player_t* t ) const override
-    {
-      double m = death_knight_melee_attack_t::composite_target_multiplier( t );
-
-      m /= 1.0 + td( t ) -> debuff.razorice -> check() *
-            td( t ) -> debuff.razorice -> data().effectN( 1 ).percent();
-
-      return m;
-    }
-  };
-
-  effect.proc_flags_ = PF_MELEE | PF_MELEE_ABILITY | PF_AOE_SPELL;
-  effect.proc_flags2_ = PF2_ALL_HIT;
-  effect.execute_action = new razorice_attack_t( debug_cast<death_knight_t*>( effect.item -> player ), effect.name() );
-  effect.proc_chance_ = 1.0;
-  effect.weapon_proc = true;
-  new dbc_proc_callback_t( effect.item, effect );
-}
-
-void runeforge::razorice_debuff( special_effect_t& effect )
-{
-  struct razorice_callback_t : public dbc_proc_callback_t
-  {
-    razorice_callback_t( const special_effect_t& effect ) :
-     dbc_proc_callback_t( effect.item, effect )
-    { }
-
-    void execute( action_t* a, action_state_t* state ) override
-    {
-      debug_cast< death_knight_t* >( a -> player ) -> get_target_data( state -> target ) -> debuff.razorice -> trigger();
-      if ( a -> sim -> current_time() < timespan_t::from_seconds( 0.01 ) )
-        debug_cast< death_knight_t* >( a -> player ) -> get_target_data( state -> target ) -> debuff.razorice -> constant = false;
-    }
-  };
-
-  effect.proc_flags_ = PF_MELEE | PF_MELEE_ABILITY | PF_AOE_SPELL;
-  effect.proc_flags2_ = PF2_ALL_HIT;
-  effect.weapon_proc = true;
-
-  new razorice_callback_t( effect );
-}
-
 void runeforge::fallen_crusader( special_effect_t& effect )
 {
   // Fallen Crusader buff is shared between mh/oh
@@ -9637,6 +9670,26 @@ private:
 
 // DEATH_KNIGHT MODULE INTERFACE ============================================
 
+// We can infer razorice enablement from just one of the associated spells
+struct razorice_attack_cb_t : public scoped_actor_callback_t<death_knight_t>
+{
+  razorice_attack_cb_t() : super( DEATH_KNIGHT )
+  { }
+
+  // Create the razorice actions based on handedness
+  void manipulate( death_knight_t* p, const special_effect_t& e ) override
+  {
+    if ( e.item -> slot == SLOT_MAIN_HAND )
+    {
+      p -> active_spells.razorice_mh = new razorice_attack_t( p, e.name() );
+    }
+    else if ( e.item -> slot == SLOT_OFF_HAND )
+    {
+      p -> active_spells.razorice_oh = new razorice_attack_t( p, e.name() );
+    }
+  }
+};
+
 struct reapers_harvest_frost_t : public scoped_action_callback_t<obliterate_strike_t>
 {
   reapers_harvest_frost_t( const std::string& n ) : super( DEATH_KNIGHT, n )
@@ -9940,8 +9993,7 @@ struct death_knight_module_t : public module_t {
 
   void static_init() const override
   {
-    unique_gear::register_special_effect(  50401, runeforge::razorice_attack );
-    unique_gear::register_special_effect(  51714, runeforge::razorice_debuff );
+    unique_gear::register_special_effect(  50401, razorice_attack_cb_t() );
     unique_gear::register_special_effect( 166441, runeforge::fallen_crusader );
     unique_gear::register_special_effect(  62157, runeforge::stoneskin_gargoyle );
     unique_gear::register_special_effect( 184898, reapers_harvest_frost_t( "obliterate_mh" ) );
