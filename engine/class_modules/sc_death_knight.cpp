@@ -13,9 +13,8 @@
 // - Heart Strike looks like it deals slightly too much damage
 // - Dancing Rune Weapon damage isn't completely accurate, could be AP inheritance ?
 // - Blood Feast
-// - Archimonde's Hatred Reborn when
 // Frost
-// - Implement Inexorable Assault ? maybe ? somehow ?
+// - Implement Inexorable Assault
 
 #include "simulationcraft.hpp"
 
@@ -427,9 +426,6 @@ public:
     buff_t* gathering_storm;
     buff_t* icebound_fortitude;
     buff_t* killing_machine;
-    haste_buff_t* t18_4pc_frost_haste;
-    buff_t* t18_4pc_frost_crit;
-    haste_buff_t* t18_4pc_unholy;
     buff_t* obliteration;
     buff_t* pillar_of_frost;
     buff_t* rime;
@@ -1873,14 +1869,11 @@ struct dt_pet_t : public base_ghoul_pet_t
     cooldown_t* gnaw_smash; // shared cd between gnaw/smash and their DT'd counterparts
   } cooldown;
 
-  // Unholy T18 4pc buff
-  buff_t* crazed_monstrosity;
-
   // Unholy Vigor gain object
   gain_t* unholy_vigor;
 
   dt_pet_t( death_knight_t* owner, const std::string& name ) :
-    base_ghoul_pet_t( owner, name, false ), crazed_monstrosity( nullptr ),
+    base_ghoul_pet_t( owner, name, false ),
     unholy_vigor( get_gain( "Unholy Vigor" ) )
   {
     cooldown.gnaw_smash = get_cooldown( "gnaw_smash" );
@@ -1890,40 +1883,9 @@ struct dt_pet_t : public base_ghoul_pet_t
   attack_t* create_auto_attack() override
   { return new dt_pet_auto_attack_t< dt_pet_t >( this ); }
 
-  void create_buffs() override
-  {
-    base_ghoul_pet_t::create_buffs();
-
-    crazed_monstrosity = buff_creator_t( this, "crazed_monstrosity", find_spell( 187970 ) )
-                         .duration( find_spell( 187981 ) -> duration() ) // Grab duration from the player's spell
-                         .chance( owner -> sets -> has_set_bonus( DEATH_KNIGHT_UNHOLY, T18, B4 ) );
-  }
-
-  double composite_melee_speed() const override
-  {
-    double s = base_ghoul_pet_t::composite_melee_speed();
-
-    if ( crazed_monstrosity -> up() )
-    {
-      s *= 1.0 / ( 1.0 + crazed_monstrosity -> data().effectN( 3 ).percent() );
-    }
-
-    return s;
-  }
-
   double composite_player_multiplier( school_e school ) const override
   {
     double m = base_ghoul_pet_t::composite_player_multiplier( school );
-
-    if ( crazed_monstrosity -> up() )
-    {
-      m *= 1.0 + crazed_monstrosity -> data().effectN( 2 ).percent();
-    }
-
-    if ( owner -> sets -> has_set_bonus( DEATH_KNIGHT_UNHOLY, T18, B2 ) )
-    {
-      m *= 1.0 + owner -> sets -> set( DEATH_KNIGHT_UNHOLY, T18, B2 ) -> effectN( 1 ).percent();
-    }
 
     if ( o() -> buffs.dark_transformation -> up() )
     {
@@ -3074,13 +3036,8 @@ void death_knight_melee_attack_t::consume_killing_machine( const action_state_t*
     proc -> occur();
   }
 
-  if ( ! p() -> sets -> has_set_bonus( DEATH_KNIGHT_FROST, T18, B4 ) ||
-       ( p() -> sets -> has_set_bonus( DEATH_KNIGHT_FROST, T18, B4 ) &&
-         ! p() -> rng().roll( player -> sets -> set( DEATH_KNIGHT_FROST, T18, B4 ) -> effectN( 1 ).percent() ) ) )
-  {
-    killing_machine_consumed = p() -> buffs.killing_machine -> check() > 0;
-    p() -> buffs.killing_machine -> decrement();
-  }
+  killing_machine_consumed = p() -> buffs.killing_machine -> check() > 0;
+  p() -> buffs.killing_machine -> decrement();
 
   if ( killing_machine_consumed &&
        rng().roll( p() -> talent.murderous_efficiency -> effectN( 1 ).percent() ) )
@@ -3417,28 +3374,6 @@ struct avalanche_t : public death_knight_spell_t
   {
     aoe = -1;
     background = true;
-  }
-};
-
-// Wandering Plague =========================================================
-
-struct wandering_plague_t : public death_knight_spell_t
-{
-  wandering_plague_t( death_knight_t* p, const item_t* i ) :
-    death_knight_spell_t( "wandering_plague", p, p -> find_spell( 184899 ) )
-  {
-    background = split_aoe_damage = true;
-    callbacks = may_miss = may_crit = false;
-    item = i;
-
-    aoe = -1;
-  }
-
-  void init() override
-  {
-    death_knight_spell_t::init();
-
-    snapshot_flags = update_flags = 0;
   }
 };
 
@@ -4054,13 +3989,10 @@ struct virulent_plague_explosion_t : public death_knight_spell_t
 struct virulent_plague_t : public disease_t
 {
   virulent_plague_explosion_t* explosion;
-  wandering_plague_t* wandering_plague;
-  double wandering_plague_proc_chance;
 
   virulent_plague_t( death_knight_t* p ) :
     disease_t( p, "virulent_plague", 191587 ),
-    explosion( new virulent_plague_explosion_t( p ) ),
-    wandering_plague( nullptr ), wandering_plague_proc_chance( 0 )
+    explosion( new virulent_plague_explosion_t( p ) )
   {
     base_tick_time *= 1.0 + p -> talent.ebon_fever -> effectN( 1 ).percent();
     dot_duration *= 1.0 + p -> talent.ebon_fever -> effectN( 2 ).percent();
@@ -4078,15 +4010,6 @@ struct virulent_plague_t : public disease_t
     {
       explosion -> set_target( dot -> target );
       explosion -> schedule_execute();
-    }
-
-    // Target cache does not need invalidation, since all the targets will take equal damage
-    if ( dot -> state -> result_amount > 0 && rng().roll( wandering_plague_proc_chance ) )
-    {
-      wandering_plague -> base_dd_min = dot -> state -> result_amount;
-      wandering_plague -> base_dd_max = dot -> state -> result_amount;
-      wandering_plague -> set_target( dot -> target );
-      wandering_plague -> execute();
     }
   }
 };
@@ -4528,9 +4451,7 @@ struct dark_transformation_t : public death_knight_spell_t
     death_knight_spell_t::execute();
 
     p() -> buffs.dark_transformation -> trigger();
-    p() -> buffs.t18_4pc_unholy -> trigger();
-    p() -> pets.ghoul_pet -> crazed_monstrosity -> trigger();
-
+   
     trigger_taktheritrixs_command();
   }
 
@@ -5149,8 +5070,6 @@ struct death_strike_t : public death_knight_melee_attack_t
     may_parry = false;
     base_multiplier *= 1.0 + p -> spec.blood_death_knight -> effectN( 3 ).percent();
     
-    base_costs[ RESOURCE_RUNIC_POWER ] += p -> sets -> set( DEATH_KNIGHT_BLOOD, T18, B4 ) -> effectN( 1 ).resource( RESOURCE_RUNIC_POWER );
-
     weapon = &( p -> main_hand_weapon );
   }
 
@@ -5504,12 +5423,6 @@ struct frost_strike_strike_t : public death_knight_melee_attack_t
     
     // TODO: Both hands, or just main hand?
     trigger_icecap( execute_state );
-
-    // TODO: Both hands, or just main hand?
-    if ( execute_state -> result == RESULT_CRIT )
-    {
-      p() -> buffs.t18_4pc_frost_crit -> trigger();
-    }
   }
 
   void execute() override
@@ -5868,33 +5781,12 @@ struct mark_of_blood_t : public death_knight_spell_t
 
 // Marrowrend ===============================================================
 
-struct unholy_coil_t : public death_knight_heal_t
-{
-  unholy_coil_t( death_knight_t* p, const item_t* i ) :
-    death_knight_heal_t( "unholy_coil", p, p -> find_spell( 184968 ) )
-  {
-    background = true;
-    may_crit = callbacks = false;
-    target = p;
-    item = i;
-  }
-
-  void init() override
-  {
-    death_knight_heal_t::init();
-
-    snapshot_flags = update_flags = 0;
-  }
-};
 
 struct marrowrend_t : public death_knight_melee_attack_t
 {
-  unholy_coil_t* unholy_coil;
-  double unholy_coil_coeff;
 
   marrowrend_t( death_knight_t* p, const std::string& options_str ) :
-    death_knight_melee_attack_t( "marrowrend", p, p -> spec.marrowrend ),
-    unholy_coil( nullptr ), unholy_coil_coeff( 0 )
+    death_knight_melee_attack_t( "marrowrend", p, p -> spec.marrowrend )
   {
     parse_options( options_str );
 
@@ -5937,12 +5829,6 @@ struct marrowrend_t : public death_knight_melee_attack_t
 
     
     p() -> buffs.bone_shield -> trigger( amount );
-
-    if ( execute_state -> result_amount > 0 && unholy_coil )
-    {
-      unholy_coil -> base_dd_min = unholy_coil -> base_dd_max = execute_state -> result_amount * unholy_coil_coeff;
-      unholy_coil -> execute();
-    }
   }
 };
 
@@ -5979,51 +5865,13 @@ struct mind_freeze_t : public death_knight_spell_t
 
 // Obliterate ===============================================================
 
-struct frozen_obliteration_t : public death_knight_melee_attack_t
-{
-  double coeff;
-
-  frozen_obliteration_t( death_knight_t* p, const std::string& name, double coeff ) :
-    death_knight_melee_attack_t( name, p, p -> find_spell( 184982 ) ),
-    coeff( coeff )
-  {
-    background = special = true;
-    callbacks = false;
-    may_crit = false;
-  }
-
-  void init() override
-  {
-    death_knight_melee_attack_t::init();
-
-    snapshot_flags = update_flags = 0;
-  }
-
-  void proxy_execute( const action_state_t* source_state )
-  {
-    double m = coeff;
-    set_target( source_state -> target );
-
-    // Mastery has to be special cased here, since no other multipliers seem to work
-    if ( p() -> mastery.frozen_heart -> ok() )
-      m *= 1.0 + p() -> cache.mastery_value();
-
-    base_dd_min = base_dd_max = source_state -> result_amount * m;
-
-    execute();
-  }
-};
-
 struct obliterate_strike_t : public death_knight_melee_attack_t
 {
-  frozen_obliteration_t* fo;
-
   obliterate_strike_t( death_knight_t*     p,
                             const std::string&  name,
                             weapon_t*           w,
                             const spell_data_t* s ) :
-    death_knight_melee_attack_t( name, p, s ),
-    fo( nullptr )
+    death_knight_melee_attack_t( name, p, s )
   {
     background = special = true;
     may_miss = false;
@@ -6058,17 +5906,7 @@ struct obliterate_strike_t : public death_knight_melee_attack_t
   {
     death_knight_melee_attack_t::execute();
 
-    if ( result_is_hit( execute_state -> result ) && fo )
-    {
-      fo -> proxy_execute( execute_state );
-    }
-
     trigger_icecap( execute_state );
-
-    if ( execute_state -> result == RESULT_CRIT )
-    {
-      p() -> buffs.t18_4pc_frost_haste -> trigger();
-    }
   }
 };
 
@@ -7829,11 +7667,6 @@ double death_knight_t::composite_melee_haste() const
     haste *= buffs.bone_shield -> value();
   }
 
-  if ( buffs.t18_4pc_frost_haste -> up() )
-  {
-    haste *= buffs.t18_4pc_frost_haste -> check_value();
-  }
-
   if ( legendary.sephuzs_secret )
   {
     haste *= 1.0 / ( 1.0 + legendary.sephuzs_secret -> effectN( 3 ).percent() );
@@ -8704,17 +8537,6 @@ void death_knight_t::create_buffs()
   buffs.soul_reaper = haste_buff_creator_t( this, "soul_reaper_haste", talent.soul_reaper -> effectN( 2 ).trigger() )
     .default_value( talent.soul_reaper -> effectN( 2 ).trigger() -> effectN( 1 ).percent() )
     .trigger_spell( talent.soul_reaper );
-  buffs.t18_4pc_frost_haste = haste_buff_creator_t( this, "obliteration_t18", find_spell( 187893 ) )
-    .add_invalidate( CACHE_ATTACK_HASTE )
-    .default_value( 1.0 / ( 1.0 + find_spell( 187893 ) -> effectN( 1 ).percent() ) )
-    .trigger_spell( sets -> set( DEATH_KNIGHT_FROST, T18, B2 ) );
-  buffs.t18_4pc_frost_crit = buff_creator_t( this, "frozen_wake", find_spell( 187894 ) )
-    .default_value( find_spell( 187894 ) -> effectN( 1 ).percent() )
-    .trigger_spell( sets -> set( DEATH_KNIGHT_FROST, T18, B2 ) );
-  buffs.t18_4pc_unholy = haste_buff_creator_t( this, "crazed_monstrosity", find_spell( 187981 ) )
-    .chance( sets -> has_set_bonus( DEATH_KNIGHT_UNHOLY, T18, B4 ) )
-    .add_invalidate( CACHE_ATTACK_SPEED )
-    .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   buffs.antimagic_barrier = new antimagic_barrier_buff_t( this );
   buffs.tombstone = absorb_buff_creator_t( this, "tombstone", talent.tombstone )
     .cd( timespan_t::zero() ); // Handled by the action
@@ -9183,11 +9005,6 @@ double death_knight_t::composite_player_multiplier( school_e school ) const
     m *= 1.0 + artifact.sanguinary_affinity.percent();
   }
 
-  if ( buffs.t18_4pc_unholy -> up() )
-  {
-    m *= 1.0 + buffs.t18_4pc_unholy -> data().effectN( 2 ).percent();
-  }
-
   m *= 1.0 + buffs.t20_2pc_unholy -> stack_value();
 
   return m;
@@ -9276,8 +9093,6 @@ double death_knight_t::composite_player_critical_damage_multiplier( const action
 {
   double m = player_t::composite_player_critical_damage_multiplier( s );
 
-  m *= 1.0 + buffs.t18_4pc_frost_crit -> stack_value();
-
   return m;
 }
 
@@ -9316,11 +9131,6 @@ double death_knight_t::composite_melee_speed() const
   }
 
   haste *= 1.0 / ( 1.0 + artifact.blades_of_frost.percent() );
-
-  if ( buffs.t18_4pc_unholy -> up() )
-  {
-    haste *= 1.0 / ( 1.0 + buffs.t18_4pc_unholy -> data().effectN( 1 ).percent() );
-  }
 
   return haste;
 }
@@ -9690,59 +9500,6 @@ struct razorice_attack_cb_t : public scoped_actor_callback_t<death_knight_t>
   }
 };
 
-struct reapers_harvest_frost_t : public scoped_action_callback_t<obliterate_strike_t>
-{
-  reapers_harvest_frost_t( const std::string& n ) : super( DEATH_KNIGHT, n )
-  { }
-
-  void manipulate( obliterate_strike_t* action, const special_effect_t& e ) override
-  {
-    action_t* parent = action -> player -> find_action( "obliterate" );
-    double coeff = e.driver() -> effectN( 1 ).average( e.item ) / 100.0;
-    std::string n = "frozen_obliteration";
-    if ( action -> weapon == &( action -> player -> off_hand_weapon ) )
-    {
-      n += "_oh";
-    }
-
-    action -> fo = new frozen_obliteration_t( action -> p(), n, coeff );
-    if ( parent )
-    {
-      parent -> add_child( action -> fo );
-    }
-  }
-};
-
-struct reapers_harvest_unholy_t : public scoped_action_callback_t<virulent_plague_t>
-{
-  reapers_harvest_unholy_t() : super( DEATH_KNIGHT, "virulent_plague" )
-  { }
-
-  void manipulate( virulent_plague_t* action, const special_effect_t& e ) override
-  {
-    double chance = e.driver() -> effectN( 1 ).average( e.item ) / 100.0;
-
-    action -> wandering_plague = new wandering_plague_t( action -> p(), e.item );
-    action -> wandering_plague_proc_chance = chance;
-    action -> add_child( action -> wandering_plague );
-  }
-};
-
-struct reapers_harvest_blood_t : public scoped_action_callback_t<marrowrend_t>
-{
-  reapers_harvest_blood_t() : super( DEATH_KNIGHT, "marrowrend" )
-  { }
-
-  void manipulate( marrowrend_t* action, const special_effect_t& e ) override
-  {
-    double coeff = e.driver() -> effectN( 1 ).average( e.item ) / 100.0;
-
-    action -> base_multiplier *= 1.0 + e.driver() -> effectN( 2 ).average( e.item ) / 100.0;
-    action -> unholy_coil_coeff = coeff;
-    action -> unholy_coil = new unholy_coil_t( action -> p(), e.item );
-  }
-};
-
 struct toravons_bindings_t : public scoped_actor_callback_t<death_knight_t>
 {
   toravons_bindings_t() : super( DEATH_KNIGHT )
@@ -9996,10 +9753,6 @@ struct death_knight_module_t : public module_t {
     unique_gear::register_special_effect(  50401, razorice_attack_cb_t() );
     unique_gear::register_special_effect( 166441, runeforge::fallen_crusader );
     unique_gear::register_special_effect(  62157, runeforge::stoneskin_gargoyle );
-    unique_gear::register_special_effect( 184898, reapers_harvest_frost_t( "obliterate_mh" ) );
-    unique_gear::register_special_effect( 184898, reapers_harvest_frost_t( "obliterate_offhand" ) );
-    unique_gear::register_special_effect( 184983, reapers_harvest_unholy_t() );
-    unique_gear::register_special_effect( 184897, reapers_harvest_blood_t()  );
     unique_gear::register_special_effect( 215068, taktheritrixs_shoulderpads_t() );
     unique_gear::register_special_effect( 205658, toravons_bindings_t() );
     unique_gear::register_special_effect( 208713, the_instructors_fourth_lesson_t() );
