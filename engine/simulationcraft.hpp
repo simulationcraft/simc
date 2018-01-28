@@ -1917,6 +1917,7 @@ struct sim_t : private sc_thread_t
   std::vector<scale_metric_e> profileset_metric;
   std::vector<std::string> profileset_output_data;
   bool profileset_enabled;
+  int profileset_work_threads;
 
   sim_t( sim_t* parent = nullptr, int thread_index = 0 );
   virtual ~sim_t();

@@ -25,7 +25,7 @@ augmentation=defiled
 actions.precombat=flask
 actions.precombat+=/food
 actions.precombat+=/augmentation
-actions.precombat+=/variable,name=latc_or_fon_equipped,value=equipped.lady_and_the_child|equipped.fury_of_nature
+actions.precombat+=/variable,name=thrash_over_mangle,value=equipped.luffa_wrappings|artifact.jagged_claws.rank>5
 actions.precombat+=/bear_form
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
@@ -34,30 +34,45 @@ actions.precombat+=/potion
 # Executed every time the actor is available.
 actions=auto_attack
 actions+=/call_action_list,name=cooldowns
-actions+=/maul,if=cooldown.thrash_bear.remains>gcd&active_enemies>1&active_enemies<6|active_enemies=1&rage.deficit<8
-actions+=/pulverize,if=cooldown.thrash_bear.remains<2&dot.thrash_bear.stack=dot.thrash_bear.max_stacks
-actions+=/moonfire,if=!talent.galactic_guardian.enabled&(!dot.moonfire.ticking|(buff.incarnation.up&dot.moonfire.refreshable))&active_enemies=1
-actions+=/thrash_bear,if=((buff.incarnation.up&(dot.thrash_bear.refreshable|(equipped.luffa_wrappings|artifact.jagged_claws.rank>4)))|dot.thrash_bear.stack<dot.thrash_bear.max_stacks|(equipped.luffa_wrappings&artifact.jagged_claws.rank>5))&!talent.soul_of_the_forest.enabled|active_enemies>1
-actions+=/mangle,if=active_enemies<4
-actions+=/thrash_bear
-actions+=/moonfire,target_if=buff.galactic_guardian.up&(((!variable.latc_or_fon_equipped&active_enemies<4)|(variable.latc_or_fon_equipped&active_enemies<5))|dot.moonfire.refreshable&(!variable.latc_or_fon_equipped&active_enemies<5)|(variable.latc_or_fon_equipped&active_enemies<6))
-actions+=/moonfire,target_if=dot.moonfire.refreshable&!talent.galactic_guardian.enabled
-actions+=/maul,if=active_enemies<6&(cooldown.rage_of_the_sleeper.remains>10|buff.rage_of_the_sleeper.up)
-actions+=/moonfire,target_if=dot.moonfire.refreshable&active_enemies<3
-actions+=/swipe_bear
+actions+=/call_action_list,name=st,if=active_enemies=1
+actions+=/call_action_list,name=aoe,if=active_enemies>1
 
-actions.cooldowns=potion,if=buff.rage_of_the_sleeper.up
+actions.aoe=moonfire,target_if=buff.galactic_guardian.up&equipped.lady_and_the_child&cooldown.thrash_bear.remains<2*gcd&buff.galactic_guardian.remains<2*gcd&(active_enemies<4|equipped.fury_of_nature&active_enemies<5)
+actions.aoe+=/pulverize,target_if=cooldown.thrash_bear.remains<2*gcd&dot.thrash_bear.stack=dot.thrash_bear.max_stacks
+actions.aoe+=/mangle,if=buff.incarnation.up&!variable.thrash_over_mangle&active_enemies<4
+actions.aoe+=/thrash_bear
+actions.aoe+=/moonfire,target_if=buff.galactic_guardian.up&equipped.lady_and_the_child&buff.galactic_guardian.remains<gcd&(active_enemies<4|equipped.fury_of_nature&active_enemies<5)
+actions.aoe+=/maul,if=rage.deficit<8&(!talent.incarnation.enabled&active_enemies<4|talent.incarnation.enabled&active_enemies<6)
+actions.aoe+=/mangle,if=!talent.galactic_guardian.enabled&active_enemies<5|talent.galactic_guardian.enabled&active_enemies<4
+actions.aoe+=/moonfire,target_if=!talent.galactic_guardian.enabled&dot.moonfire.refreshable&(!equipped.fury_of_nature&active_enemies<8|equipped.fury_of_nature&active_enemies<11)|buff.galactic_guardian.up&!equipped.lady_and_the_child&active_enemies<3
+actions.aoe+=/maul,if=!talent.incarnation.enabled&active_enemies<5|talent.incarnation.enabled&active_enemies<6
+actions.aoe+=/moonfire,target_if=!equipped.lady_and_the_child&dot.moonfire.refreshable&active_enemies<3
+actions.aoe+=/swipe_bear
+
+actions.cooldowns=rage_of_the_sleeper
+actions.cooldowns+=/potion,if=buff.rage_of_the_sleeper.up
 # if=buff.rage_of_the_sleeper.up
 actions.cooldowns+=/blood_fury
 # if=buff.rage_of_the_sleeper.up
 actions.cooldowns+=/berserking
 # if=buff.rage_of_the_sleeper.up
 actions.cooldowns+=/arcane_torrent
-actions.cooldowns+=/rage_of_the_sleeper
+actions.cooldowns+=/lunar_beam,if=buff.rage_of_the_sleeper.up
 actions.cooldowns+=/incarnation
 actions.cooldowns+=/barkskin,if=talent.brambles.enabled&(buff.rage_of_the_sleeper.up|talent.survival_of_the_fittest.enabled)
 actions.cooldowns+=/proc_sephuz,if=cooldown.thrash_bear.remains=0
 actions.cooldowns+=/use_items,if=cooldown.rage_of_the_sleeper.remains>12|buff.rage_of_the_sleeper.up|target.time_to_die<22
+
+actions.st=maul,if=rage.deficit<8
+actions.st+=/moonfire,if=buff.incarnation.up&dot.moonfire.refreshable|!dot.moonfire.ticking
+actions.st+=/pulverize,if=cooldown.thrash_bear.remains<2*gcd&dot.thrash_bear.stack=dot.thrash_bear.max_stacks
+actions.st+=/thrash_bear,if=variable.thrash_over_mangle|talent.rend_and_tear.enabled&dot.thrash_bear.stack<dot.thrash_bear.max_stacks
+actions.st+=/mangle
+actions.st+=/thrash_bear
+actions.st+=/moonfire,if=buff.galactic_guardian.up|(!talent.galactic_guardian.enabled&dot.moonfire.refreshable)
+actions.st+=/maul
+actions.st+=/moonfire,if=dot.moonfire.refreshable&talent.galactic_guardian.enabled&!equipped.lady_and_the_child
+actions.st+=/swipe_bear
 
 head=kraken_hide_helm,id=133618,bonus_id=1612/1826
 neck=vulcanarcore_pendant,id=151965,bonus_id=3612/1502,enchant=mark_of_the_hidden_satyr

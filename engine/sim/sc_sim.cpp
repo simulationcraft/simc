@@ -1437,7 +1437,8 @@ sim_t::sim_t( sim_t* p, int index ) :
   display_bonus_ids( false ),
   profileset_metric( { SCALE_METRIC_DPS } ),
   profileset_output_data(),
-  profileset_enabled( false )
+  profileset_enabled( false ),
+  profileset_work_threads( 0 )
 {
   item_db_sources.assign( std::begin( default_item_db_sources ),
                           std::end( default_item_db_sources ) );
@@ -1559,7 +1560,10 @@ void sim_t::cancel()
     relative -> cancel();
   }
 
-  profilesets.cancel();
+  if ( ! parent )
+  {
+    profilesets.cancel();
+  }
 }
 
 // sim_t::interrupt =========================================================
