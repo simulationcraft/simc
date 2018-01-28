@@ -2020,8 +2020,8 @@ struct deadly_poison_t : public rogue_poison_t
     {
       // 12/29/2017 - Deadly Poison uses an older style of refresh, adding the origial duration worth of ticks up to 50% more than the base number of ticks
       //              Deadly Poison shouldn't have partial ticks, so we just add the amount of time relative to how many additional ticks we want to add
-      const int additional_ticks = data().duration() / dot->time_to_tick;
-      const int max_ticks = additional_ticks * 1.5;
+      const int additional_ticks = (int)(data().duration() / dot->time_to_tick);
+      const int max_ticks = (int)(additional_ticks * 1.5);
       return dot->remains() + std::min( max_ticks - dot->ticks_left(), additional_ticks ) * dot->time_to_tick;
     }
 
@@ -2743,7 +2743,7 @@ struct backstab_t : public rogue_attack_t
 
     if ( p() -> buffs.the_first_of_the_dead -> up() )
     {
-      p() -> trigger_combo_point_gain( p() -> buffs.the_first_of_the_dead -> data().effectN( 2 ).resource( RESOURCE_COMBO_POINT ),
+      p() -> trigger_combo_point_gain( (int)p() -> buffs.the_first_of_the_dead -> data().effectN( 2 ).resource( RESOURCE_COMBO_POINT ),
                                        p() -> gains.the_first_of_the_dead, this );
     }
 
@@ -3274,7 +3274,7 @@ struct gloomblade_t : public rogue_attack_t
 
     if ( p() -> buffs.the_first_of_the_dead -> up() )
     {
-      p() -> trigger_combo_point_gain( p() -> buffs.the_first_of_the_dead -> data().effectN( 2 ).resource( RESOURCE_COMBO_POINT ),
+      p() -> trigger_combo_point_gain( (int)p() -> buffs.the_first_of_the_dead -> data().effectN( 2 ).resource( RESOURCE_COMBO_POINT ),
                                        p() -> gains.the_first_of_the_dead, this );
     }
 
@@ -4502,8 +4502,8 @@ struct shadowstrike_t : public rogue_attack_t
 
     if ( p() -> buffs.the_first_of_the_dead -> up() )
     {
-      p() -> trigger_combo_point_gain( p() -> buffs.the_first_of_the_dead -> data().effectN( 1 ).resource( RESOURCE_COMBO_POINT ),
-                                        p() -> gains.the_first_of_the_dead, this );
+      p() -> trigger_combo_point_gain( (int)p() -> buffs.the_first_of_the_dead -> data().effectN( 1 ).resource( RESOURCE_COMBO_POINT ),
+                                       p() -> gains.the_first_of_the_dead, this );
     }
 
     if ( shadow_satyrs_walk )
@@ -4617,7 +4617,7 @@ struct shuriken_storm_t: public rogue_attack_t
 
     if ( p() -> spec.shuriken_combo -> ok() && execute_state -> n_targets > 1 )
     {
-      p() -> buffs.focused_shurikens -> trigger(execute_state -> n_targets - 1);
+      p() -> buffs.focused_shurikens -> trigger((int)(execute_state -> n_targets) - 1);
     }
   }
 
@@ -5880,7 +5880,7 @@ struct roll_the_bones_t : public buff_t
       std::vector<unsigned> pool = { 0, 1, 2, 3, 4, 5 };
       for ( size_t i = 0; i < num_buffs; i++ )
       {
-        unsigned buff = rng().range( 0, pool.size() );
+        unsigned buff = (unsigned)rng().range( 0, (double)pool.size() );
         auto buff_idx = pool[ buff ];
         rolled.push_back( buffs[ buff_idx ] );
         pool.erase( pool.begin() + buff );
@@ -5932,7 +5932,7 @@ struct roll_the_bones_t : public buff_t
     }
     if ( inactive_buffs.empty() )
       return;
-    unsigned add_idx = rng().range( 0, inactive_buffs.size() );
+    unsigned add_idx = (unsigned)rng().range( 0, (double)inactive_buffs.size() );
     inactive_buffs[ add_idx ] -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, duration );
   }
 
@@ -6168,10 +6168,8 @@ void rogue_t::trigger_poison_bomb( const action_state_t* state )
     return;
   }
 
-  actions::rogue_attack_t* attack = cast_attack( state -> action );
-  const actions::rogue_attack_state_t* s = attack -> cast_state( state );
-
   // They put 25 as value in spell data and divide it by 10 later, it's due to the int restriction.
+  const actions::rogue_attack_state_t* s = cast_attack( state -> action ) -> cast_state( state );
   if ( rng().roll( artifact.bag_of_tricks.percent() / 10 * s -> cp ) )
   {
     make_event<ground_aoe_event_t>( *sim, this, ground_aoe_params_t()
@@ -6230,9 +6228,8 @@ void rogue_t::trigger_venomous_wounds_death( player_t* target )
   }
 
   // TODO: Exact formula?
-  unsigned full_ticks_remaining = td -> dots.rupture -> remains() / td -> dots.rupture -> current_action -> base_tick_time;
-  int replenish = spec.venomous_wounds -> effectN( 2 ).base_value() +
-                  talent.venom_rush -> effectN( 1 ).base_value();
+  unsigned full_ticks_remaining = (unsigned)(td -> dots.rupture -> remains() / td -> dots.rupture -> current_action -> base_tick_time);
+  int replenish = spec.venomous_wounds -> effectN( 2 ).base_value() + talent.venom_rush -> effectN( 1 ).base_value();
 
   if ( sim -> debug )
   {
@@ -6299,7 +6296,7 @@ void rogue_t::trigger_ruthlessness_cp( const action_state_t* state )
     return;
 
   double cp_chance = spec.ruthlessness -> effectN( 1 ).pp_combo_points() * s -> cp / 100.0;
-  double cp_gain = 0;
+  int cp_gain = 0;
   if ( cp_chance > 1 )
   {
     cp_gain += 1;
@@ -6375,7 +6372,7 @@ void rogue_t::trigger_shadow_techniques( const action_state_t* state )
   if ( ++shadow_techniques == 5 || ( shadow_techniques == 4 && rng().roll( 0.5 ) ) )
   {
     if (sim -> debug) sim -> out_debug.printf( "Shadow techniques proc'd at %d", shadow_techniques);
-    double cp = 1;
+    int cp = 1;
     if ( rng().roll( artifact.fortunes_bite.percent() ) )
     {
       cp++;
@@ -6721,7 +6718,7 @@ void rogue_t::spend_combo_points( const action_state_t* state )
   if ( ! state -> action -> result_is_hit( state -> result ) )
     return;
 
-  double max_spend = std::min( resources.current[ RESOURCE_COMBO_POINT ], consume_cp_max() );
+  int max_spend = (int)std::min( resources.current[ RESOURCE_COMBO_POINT ], consume_cp_max() );
 
   if ( legendary.denial_of_the_halfgiants && buffs.shadow_blades -> up() )
   {
@@ -6735,7 +6732,7 @@ void rogue_t::spend_combo_points( const action_state_t* state )
   if ( sets -> has_set_bonus( ROGUE_SUBTLETY, T21, B2 ) )
   {
     timespan_t v = timespan_t::from_seconds( sets -> set( ROGUE_SUBTLETY, T21, B2 ) -> effectN( 1 ).base_value() / 10.0 );
-    v *= - max_spend;
+    v *= -max_spend;
     cooldowns.symbols_of_death -> adjust( v, false );
   }
 
@@ -7268,21 +7265,11 @@ void rogue_t::init_action_list()
     def -> add_action( "variable,name=energy_regen_combined,value=energy.regen+poisoned_bleeds*(7+talent.venom_rush.enabled*3)%2" );
     def -> add_action( "variable,name=energy_time_to_max_combined,value=energy.deficit%variable.energy_regen_combined" );
     def -> add_action( "call_action_list,name=cds" );
+    def -> add_action( "run_action_list,name=stealthed,if=stealthed.rogue" );
     def -> add_action( "run_action_list,name=aoe,if=spell_targets.fan_of_knives>2" );
     def -> add_action( "call_action_list,name=maintain" );
     def -> add_action( "call_action_list,name=finish,if=(!talent.exsanguinate.enabled|cooldown.exsanguinate.remains>2)&(!dot.rupture.refreshable|(dot.rupture.exsanguinated&dot.rupture.remains>=3.5)|target.time_to_die-dot.rupture.remains<=6)&active_dot.rupture>=spell_targets.rupture", "The 'active_dot.rupture>=spell_targets.rupture' means that we don't want to envenom as long as we can multi-rupture (i.e. units that don't have rupture yet)." );
     def -> add_action( "call_action_list,name=build,if=combo_points.deficit>1+talent.anticipation.enabled*2|energy.deficit<=25+variable.energy_regen_combined" );
-
-    // Builders
-    action_priority_list_t* build = get_action_priority_list( "build", "Builders" );
-    build -> add_talent( this, "Hemorrhage", "if=refreshable" );
-    build -> add_talent( this, "Hemorrhage", "cycle_targets=1,if=refreshable&dot.rupture.ticking&spell_targets.fan_of_knives<2+equipped.insignia_of_ravenholdt" );
-    build -> add_action( this, "Fan of Knives", "if=spell_targets>1+equipped.insignia_of_ravenholdt|buff.the_dreadlords_deceit.stack>=29" );
-    build -> add_action( this, "Fan of Knives", "if=combo_points>=3+talent.deeper_stratagem.enabled&artifact.poison_knives.rank>=5|fok_rotation" );
-      // We want to apply poison on the unit that have the most bleeds on and that meet the condition for Venomous Wound (and also for T19 dmg bonus).
-      // This would be done with target_if=max:bleeds but it seems to be bugged atm
-    build -> add_action( this, "Mutilate", "cycle_targets=1,if=dot.deadly_poison_dot.refreshable" );
-    build -> add_action( this, "Mutilate" );
 
     // Cooldowns
     action_priority_list_t* cds = get_action_priority_list( "cds", "Cooldowns" );
@@ -7314,12 +7301,45 @@ void rogue_t::init_action_list()
     cds -> add_action( this, "Vendetta", "if=!talent.exsanguinate.enabled|dot.rupture.ticking" );
     cds -> add_talent( this, "Exsanguinate", "if=!set_bonus.tier20_4pc&(prev_gcd.1.rupture&dot.rupture.remains>4+4*cp_max_spend&!stealthed.rogue|dot.garrote.pmultiplier>1&!cooldown.vanish.up&buff.subterfuge.up)" );
     cds -> add_talent( this, "Exsanguinate", "if=set_bonus.tier20_4pc&dot.garrote.remains>20&dot.rupture.remains>4+4*cp_max_spend" );
-    cds -> add_action( this, "Vanish", "if=talent.nightstalker.enabled&combo_points>=cp_max_spend&!talent.exsanguinate.enabled&mantle_duration=0&((equipped.mantle_of_the_master_assassin&set_bonus.tier19_4pc)|((!equipped.mantle_of_the_master_assassin|!set_bonus.tier19_4pc)&debuff.vendetta.up))", "Nightstalker w/o Exsanguinate: Vanish Envenom if Mantle & T19_4PC or T21_2PC, else Vanish Rupture" );
-    cds -> add_action( this, "Vanish", "if=talent.nightstalker.enabled&combo_points>=cp_max_spend&talent.exsanguinate.enabled&cooldown.exsanguinate.remains<1&(dot.rupture.ticking|time>10)" );
+    cds -> add_action( this, "Vanish", "if=talent.nightstalker.enabled&!talent.exsanguinate.enabled&combo_points>=cp_max_spend&mantle_duration=0&debuff.vendetta.up" );
+    cds -> add_action( this, "Vanish", "if=talent.nightstalker.enabled&talent.exsanguinate.enabled&combo_points>=cp_max_spend&mantle_duration=0&cooldown.exsanguinate.remains<1" );
     cds -> add_action( this, "Vanish", "if=talent.subterfuge.enabled&equipped.mantle_of_the_master_assassin&(debuff.vendetta.up|target.time_to_die<10)&mantle_duration=0" );
     cds -> add_action( this, "Vanish", "if=talent.subterfuge.enabled&!equipped.mantle_of_the_master_assassin&!stealthed.rogue&dot.garrote.refreshable&((spell_targets.fan_of_knives<=3&combo_points.deficit>=1+spell_targets.fan_of_knives)|(spell_targets.fan_of_knives>=4&combo_points.deficit>=4))" );
     cds -> add_action( this, "Vanish", "if=talent.shadow_focus.enabled&variable.energy_time_to_max_combined>=2&combo_points.deficit>=4" );
     cds -> add_talent( this, "Toxic Blade", "if=combo_points.deficit>=1+(mantle_duration>=0.2)&dot.rupture.remains>8&cooldown.vendetta.remains>10" );
+    cds -> add_action( this, "Kingsbane", "if=combo_points.deficit>=1+(mantle_duration>=0.2)&!stealthed.rogue&(!cooldown.toxic_blade.ready|!talent.toxic_blade.enabled&buff.envenom.up)" );
+    
+    // Builders
+    action_priority_list_t* build = get_action_priority_list( "build", "Builders" );
+    build -> add_talent( this, "Hemorrhage", "if=refreshable" );
+    build -> add_talent( this, "Hemorrhage", "cycle_targets=1,if=refreshable&dot.rupture.ticking&spell_targets.fan_of_knives<2+equipped.insignia_of_ravenholdt" );
+    build -> add_action( this, "Fan of Knives", "if=spell_targets>1+equipped.insignia_of_ravenholdt|buff.the_dreadlords_deceit.stack>=29" );
+    build -> add_action( this, "Fan of Knives", "if=combo_points>=3+talent.deeper_stratagem.enabled&artifact.poison_knives.rank>=5|fok_rotation" );
+    // We want to apply poison on the unit that have the most bleeds on and that meet the condition for Venomous Wound (and also for T19 dmg bonus).
+    // This would be done with target_if=max:bleeds but it seems to be bugged atm
+    build -> add_action( this, "Mutilate", "cycle_targets=1,if=dot.deadly_poison_dot.refreshable" );
+    build -> add_action( this, "Mutilate" );
+
+    // Stealth
+    action_priority_list_t* stealthed = get_action_priority_list( "stealthed", "Stealthed" );
+    stealthed->add_action( this, "Mutilate", "if=talent.shadow_focus.enabled&dot.garrote.ticking" );
+    stealthed->add_action( this, "Garrote", "cycle_targets=1,if=talent.subterfuge.enabled&combo_points.deficit>=1&set_bonus.tier20_4pc&((dot.garrote.remains<=13&!debuff.toxic_blade.up)|pmultiplier<=1)&!exsanguinated" );
+    stealthed->add_action( this, "Garrote", "cycle_targets=1,if=talent.subterfuge.enabled&combo_points.deficit>=1&!set_bonus.tier20_4pc&refreshable&(!exsanguinated|remains<=tick_time*2)&target.time_to_die-remains>2" );
+    stealthed->add_action( this, "Garrote", "cycle_targets=1,if=talent.subterfuge.enabled&combo_points.deficit>=1&!set_bonus.tier20_4pc&remains<=10&pmultiplier<=1&!exsanguinated&target.time_to_die-remains>2" );
+    stealthed->add_action( this, "Rupture", "cycle_targets=1,if=combo_points>=4&refreshable&(pmultiplier<=1|remains<=tick_time)&(!exsanguinated|remains<=tick_time*2)&target.time_to_die-remains>6" );
+    stealthed->add_action( this, "Rupture", "if=talent.exsanguinate.enabled&talent.nightstalker.enabled&target.time_to_die-remains>6" );
+    stealthed->add_action( this, "Envenom", "if=combo_points>=cp_max_spend" );
+    stealthed->add_action( this, "Garrote", "if=!talent.subterfuge.enabled&target.time_to_die-remains>4" );
+    stealthed->add_action( this, "Mutilate" );
+
+    // Maintain
+    action_priority_list_t* maintain = get_action_priority_list( "maintain", "Maintain" );
+    maintain -> add_action( this, "Rupture", "if=talent.exsanguinate.enabled&((combo_points>=cp_max_spend&cooldown.exsanguinate.remains<1)|(!ticking&(time>10|combo_points>=2+artifact.urge_to_kill.enabled)))" );
+    maintain -> add_action( this, "Rupture", "cycle_targets=1,if=combo_points>=4&refreshable&(pmultiplier<=1|remains<=tick_time)&(!exsanguinated|remains<=tick_time*2)&target.time_to_die-remains>6" );
+    maintain -> add_action( "pool_resource,for_next=1" );
+    maintain -> add_action( this, "Garrote", "cycle_targets=1,if=(!talent.subterfuge.enabled|!(cooldown.vanish.up&cooldown.vendetta.remains<=4))&combo_points.deficit>=1&refreshable&(pmultiplier<=1|remains<=tick_time)&(!exsanguinated|remains<=tick_time*2)&target.time_to_die-remains>4" );
+    maintain -> add_action( this, "Garrote", "if=set_bonus.tier20_4pc&talent.exsanguinate.enabled&prev_gcd.1.rupture&cooldown.exsanguinate.remains<1&(!cooldown.vanish.up|time>12)" );
+    maintain -> add_action( this, "Rupture", "if=!talent.exsanguinate.enabled&combo_points>=3&!ticking&mantle_duration=0&target.time_to_die>6" );
 
     // Finishers
     action_priority_list_t* finish = get_action_priority_list( "finish", "Finishers" );
@@ -7329,29 +7349,11 @@ void rogue_t::init_action_list()
     finish -> add_action( this, "Envenom", "if=!talent.anticipation.enabled&combo_points>=4+(talent.deeper_stratagem.enabled&!set_bonus.tier19_4pc)&(debuff.vendetta.up|debuff.toxic_blade.up|mantle_duration>=0.2|debuff.surge_of_toxins.remains<0.2|energy.deficit<=25+variable.energy_regen_combined)" );
     finish -> add_action( this, "Envenom", "if=talent.elaborate_planning.enabled&combo_points>=3+!talent.exsanguinate.enabled&buff.elaborate_planning.remains<0.2" );
 
-    // Kingsbane
-    action_priority_list_t* kb = get_action_priority_list( "kb", "Kingsbane" );
-    kb -> add_action( this, "Kingsbane", "if=!stealthed.rogue&(!talent.toxic_blade.enabled|!cooldown.toxic_blade.ready)", 
-      "Sinister Circulation makes it worth to cast Kingsbane on CD except specific cases w/o Nighstalker (if stealthed or as the first opener GCD.)" );
-
-    // Maintain
-    action_priority_list_t* maintain = get_action_priority_list( "maintain", "Maintain" );
-    maintain -> add_action( this, "Rupture", "if=talent.nightstalker.enabled&stealthed.rogue&!set_bonus.tier21_2pc&(!equipped.mantle_of_the_master_assassin|!set_bonus.tier19_4pc)&(talent.exsanguinate.enabled|target.time_to_die-remains>4)" );
-    maintain -> add_action( this, "Garrote", "cycle_targets=1,if=talent.subterfuge.enabled&stealthed.rogue&combo_points.deficit>=1&set_bonus.tier20_4pc&((dot.garrote.remains<=13&!debuff.toxic_blade.up)|pmultiplier<=1)&!exsanguinated" );
-    maintain -> add_action( this, "Garrote", "cycle_targets=1,if=talent.subterfuge.enabled&stealthed.rogue&combo_points.deficit>=1&!set_bonus.tier20_4pc&refreshable&(!exsanguinated|remains<=tick_time*2)&target.time_to_die-remains>2" );
-    maintain -> add_action( this, "Garrote", "cycle_targets=1,if=talent.subterfuge.enabled&stealthed.rogue&combo_points.deficit>=1&!set_bonus.tier20_4pc&remains<=10&pmultiplier<=1&!exsanguinated&target.time_to_die-remains>2" );
-    maintain -> add_action( this, "Rupture", "if=talent.exsanguinate.enabled&((combo_points>=cp_max_spend&cooldown.exsanguinate.remains<1)|(!ticking&(time>10|combo_points>=2+artifact.urge_to_kill.enabled)))" );
-    maintain -> add_action( this, "Rupture", "cycle_targets=1,if=combo_points>=4&refreshable&(pmultiplier<=1|remains<=tick_time)&(!exsanguinated|remains<=tick_time*2)&target.time_to_die-remains>6" );
-    maintain -> add_action( "call_action_list,name=kb,if=combo_points.deficit>=1+(mantle_duration>=0.2)&(!talent.exsanguinate.enabled|!cooldown.exanguinate.up|time>9)" );
-    maintain -> add_action( "pool_resource,for_next=1" );
-    maintain -> add_action( this, "Garrote", "cycle_targets=1,if=(!talent.subterfuge.enabled|!(cooldown.vanish.up&cooldown.vendetta.remains<=4))&combo_points.deficit>=1&refreshable&(pmultiplier<=1|remains<=tick_time)&(!exsanguinated|remains<=tick_time*2)&target.time_to_die-remains>4" );
-    maintain -> add_action( this, "Garrote", "if=set_bonus.tier20_4pc&talent.exsanguinate.enabled&prev_gcd.1.rupture&cooldown.exsanguinate.remains<1&(!cooldown.vanish.up|time>12)" );
-    maintain -> add_action( this, "Rupture", "if=!talent.exsanguinate.enabled&combo_points>=3&!ticking&mantle_duration=0&target.time_to_die>6" );
+    
 
     // AoE Rotation
     action_priority_list_t* aoe = get_action_priority_list( "aoe", "AoE" );
     aoe -> add_action( this, "Envenom", "if=!buff.envenom.up&combo_points>=cp_max_spend" );
-    aoe -> add_action( "call_action_list,name=kb,if=combo_points.deficit>=1+(mantle_duration>=0.2)&(!talent.exsanguinate.enabled|!cooldown.exanguinate.up|time>9)" );
     aoe -> add_action( this, "Rupture", "cycle_targets=1,if=combo_points>=cp_max_spend&refreshable&(pmultiplier<=1|remains<=tick_time)&(!exsanguinated|remains<=tick_time*2)&target.time_to_die-remains>4" );
     aoe -> add_action( this, "Envenom", "if=combo_points>=cp_max_spend" );
     aoe -> add_action( this, "Fan of Knives" );
@@ -8580,11 +8582,11 @@ void rogue_t::create_buffs()
   buffs.finality_eviscerate       = buff_creator_t( this, "finality_eviscerate", find_spell( 197496 ) )
                                     .trigger_spell( artifact.finality )
                                     .default_value( find_spell( 197496 ) -> effectN( 1 ).percent() / COMBO_POINT_MAX )
-                                    .max_stack( consume_cp_max() );
+                                    .max_stack( (int)consume_cp_max() );
   buffs.finality_nightblade       = buff_creator_t( this, "finality_nightblade", find_spell( 197498 ) )
                                     .trigger_spell( artifact.finality )
                                     .default_value( find_spell( 197498 ) -> effectN( 1 ).percent() / COMBO_POINT_MAX )
-                                    .max_stack( consume_cp_max() );
+                                    .max_stack( (int)consume_cp_max() );
 }
 
 // rogue_t::create_options ==================================================
