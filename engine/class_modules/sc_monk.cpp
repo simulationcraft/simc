@@ -193,11 +193,6 @@ public:
   combo_strikes_e t19_melee_4_piece_container_3;
 
   double weapon_power_mod;
-  // Tier 18 (WoD 6.2) trinket effects
-  const special_effect_t* eluding_movements;
-  const special_effect_t* soothing_breeze;
-  const special_effect_t* furious_sun;
-
   // Legion Artifact effects
   const special_effect_t* fu_zan_the_wanderers_companion;
   const special_effect_t* sheilun_staff_of_the_mists;
@@ -233,12 +228,9 @@ public:
     // Mistweaver
     absorb_buff_t* life_cocoon;
     buff_t* channeling_soothing_mist;
-    buff_t* chi_jis_guidance;
-    buff_t* extend_life;
     buff_t* lifecycles_enveloping_mist;
     buff_t* lifecycles_vivify;
     buff_t* mana_tea;
-    buff_t* mistweaving;
     buff_t* refreshing_jade_wind;
     buff_t* the_mists_of_sheilun;
     buff_t* teachings_of_the_monastery;
@@ -252,11 +244,9 @@ public:
     buff_t* combo_strikes;
     buff_t* dizzying_kicks;
     buff_t* flying_serpent_kick_movement;
-    buff_t* forceful_winds;
     buff_t* hit_combo;
     buff_t* light_on_your_feet;
     buff_t* master_of_combinations;
-    buff_t* masterful_strikes;
     buff_t* power_strikes;
     buff_t* spinning_crane_kick;
     buff_t* storm_earth_and_fire;
@@ -298,7 +288,6 @@ public:
     gain_t* rushing_jade_wind;
     gain_t* effuse;
     gain_t* spirit_of_the_crane;
-    gain_t* tier17_2pc_healer;
     gain_t* tiger_palm;
   } gain;
 
@@ -307,7 +296,6 @@ public:
     proc_t* bok_proc;
     proc_t* eye_of_the_tiger;
     proc_t* mana_tea;
-    proc_t* tier17_4pc_heal;
   } proc;
 
   struct talents_t
@@ -589,7 +577,6 @@ public:
     const spell_data_t* special_delivery;
     const spell_data_t* stagger_self_damage;
     const spell_data_t* stomp;
-    const spell_data_t* tier17_2pc_tank;
 
     // Mistweaver
     const spell_data_t* blessings_of_yulon;
@@ -606,9 +593,6 @@ public:
     const spell_data_t* the_mists_of_sheilun_heal;
     const spell_data_t* uplifting_trance;
     const spell_data_t* zen_pulse_heal;
-    const spell_data_t* tier17_2pc_heal;
-    const spell_data_t* tier17_4pc_heal;
-    const spell_data_t* tier18_2pc_heal;
 
     // Windwalker
     const spell_data_t* chi_orbit;
@@ -632,8 +616,6 @@ public:
     const spell_data_t* touch_of_karma_buff;
     const spell_data_t* touch_of_karma_tick;
     const spell_data_t* whirling_dragon_punch_tick;
-    const spell_data_t* tier17_4pc_melee;
-    const spell_data_t* tier18_2pc_melee;
     const spell_data_t* tier19_4pc_melee;
 
     // Legendaries
@@ -709,9 +691,6 @@ public:
       t19_melee_4_piece_container_2( CS_NONE ),
       t19_melee_4_piece_container_3( CS_NONE ),
       weapon_power_mod(),
-      eluding_movements( nullptr ),
-      soothing_breeze( nullptr ),
-      furious_sun( nullptr ),
       fu_zan_the_wanderers_companion( nullptr ),
       sheilun_staff_of_the_mists( nullptr ),
       fists_of_the_heavens( nullptr ),
@@ -845,7 +824,6 @@ public:
   virtual void      invalidate_cache( cache_e ) override;
   virtual void      init_action_list() override;
   void              activate() override;
-  virtual bool      has_t18_class_trinket() const override;
   virtual expr_t*   create_expression( action_t* a, const std::string& name_str ) override;
   virtual monk_td_t* get_target_data( player_t* target ) const override
   {
@@ -2773,9 +2751,6 @@ struct monk_heal_t: public monk_action_t < heal_t >
 
       if ( p() -> buff.life_cocoon -> up() )
         am *= 1.0 + p() -> spec.life_cocoon -> effectN( 2 ).percent();
-
-      if ( p() -> buff.extend_life -> up() )
-        am *= 1.0 + p() -> buff.extend_life -> value();
     }
 
     return am;
@@ -3055,10 +3030,6 @@ struct tiger_palm_t: public monk_melee_attack_t
           p() -> pet.sef[ SEF_EARTH ] -> buff.bok_proc_sef -> trigger();
         }
       }
-
-      if ( p() -> buff.masterful_strikes -> up() )
-        p() -> buff.masterful_strikes -> decrement();
-
       break;
     }
     case MONK_BREWMASTER:
@@ -3111,123 +3082,9 @@ struct tiger_palm_t: public monk_melee_attack_t
 // Rising Sun Kick
 // ==========================================================================
 
-// Rising Sun Kick T18 Windwalker Trinket Proc ==============================
-struct rising_sun_kick_proc_t : public monk_melee_attack_t
-{
-  rising_sun_kick_proc_t( monk_t* p ) :
-    monk_melee_attack_t( "rising_sun_kick_trinket", p, p -> spec.rising_sun_kick -> effectN( 1 ).trigger() )
-  {
-    sef_ability = SEF_RISING_SUN_KICK_TRINKET;
-
-    cooldown -> duration = timespan_t::zero();
-    background = dual = true;
-    mh = &( player -> main_hand_weapon );
-    oh = &( player -> off_hand_weapon );
-    trigger_gcd = timespan_t::zero();
-  }
-
-  bool init_finished() override
-  {
-    bool ret = monk_melee_attack_t::init_finished();
-    action_t* rsk = player -> find_action( "rising_sun_kick" );
-    if ( rsk )
-    {
-      base_multiplier = rsk -> base_multiplier;
-      spell_power_mod.direct = rsk -> spell_power_mod.direct;
-
-      rsk -> add_child( this );
-    }
-
-    return ret;
-  }
-
-  // Force 250 milliseconds for the animation, but not delay the overall GCD
-  timespan_t execute_time() const override
-  {
-    return timespan_t::from_millis( 250 );
-  }
-
-  double composite_persistent_multiplier( const action_state_t* action_state ) const override
-  {
-    double pm = monk_melee_attack_t::composite_persistent_multiplier( action_state );
-
-    if ( p() -> buff.combo_strikes -> up() )
-      pm *= 1 + p() -> cache.mastery_value();
-
-    return pm;
-  }
-
-  double action_multiplier() const override
-  {
-    double am = monk_melee_attack_t::action_multiplier();
-
-    if ( p() -> spec.rising_sun_kick_2 )
-      am *= 1 + p() -> spec.rising_sun_kick_2 -> effectN( 1 ).percent();
-
-    if ( p() -> artifact.rising_winds.rank() )
-      am *= 1 + p() -> artifact.rising_winds.percent();
-
-    if ( p() -> buff.storm_earth_and_fire -> up() )
-    {
-      double sef_mult = p() -> spec.storm_earth_and_fire -> effectN( 1 ).percent();
-      if ( p() -> artifact.spiritual_focus.rank() )
-        sef_mult += p() -> artifact.spiritual_focus.data().effectN( 1 ).percent();
-      am *= 1.0 + sef_mult;
-    }
-
-    am *= 1 + p() -> spec.windwalker_monk -> effectN( 1 ).percent();
-
-    return am;
-  }
-
-  virtual double cost() const override
-  {
-    return 0;
-  }
-
-  virtual void execute() override
-  {
-    // Trigger Combo Strikes
-    // registers even on a miss
-    combo_strikes_trigger( CS_RISING_SUN_KICK_TRINKET );
-
-    monk_melee_attack_t::execute();
-
-    if ( result_is_miss( execute_state -> result ) )
-      return;
-
-    // Activate A'Buraq's Trait
-    if ( p() -> artifact.transfer_the_power.rank() )
-      p() -> buff.transfer_the_power -> trigger();
-
-    // TODO: This is a possible bug where it is removing a stack before adding 2 stacks
-    if ( p() -> buff.masterful_strikes -> up() )
-      p() -> buff.masterful_strikes -> decrement();
-
-    if ( p() -> sets -> has_set_bonus( MONK_WINDWALKER, T18, B2 ) )
-      p() -> buff.masterful_strikes -> trigger( ( int ) p() -> sets -> set( MONK_WINDWALKER,T18, B2 ) -> effect_count() );
-  }
-
-  virtual void impact( action_state_t* s ) override
-  {
-    monk_melee_attack_t::impact( s );
-
-    if ( result_is_hit( s -> result ) )
-    {
-      // Apply Mortal Wonds
-      if ( p() -> spec.combat_conditioning && s -> target -> debuffs.mortal_wounds )
-        s -> target -> debuffs.mortal_wounds -> trigger();
-
-      if ( p() -> spec.spinning_crane_kick )
-        p() -> trigger_mark_of_the_crane( s );
-    }
-  }
-};
-
 // Rising Sun Kick Tornado Kick Windwalker Artifact Trait ==================
 struct rising_sun_kick_tornado_kick_t : public monk_melee_attack_t
 {
-
   rising_sun_kick_tornado_kick_t( monk_t* p ) :
     monk_melee_attack_t( "rising_sun_kick_tornado_kick", p, p -> spec.rising_sun_kick -> effectN( 1 ).trigger() )
   {
@@ -3299,12 +3156,10 @@ struct rising_sun_kick_tornado_kick_t : public monk_melee_attack_t
 // Rising Sun Kick Baseline ability =======================================
 struct rising_sun_kick_t: public monk_melee_attack_t
 {
-  rising_sun_kick_proc_t* rsk_proc;
   rising_sun_kick_tornado_kick_t* rsk_tornado_kick;
 
   rising_sun_kick_t( monk_t* p, const std::string& options_str ):
     monk_melee_attack_t( "rising_sun_kick", p, p -> spec.rising_sun_kick ),
-    rsk_proc( new rising_sun_kick_proc_t( p ) ),
     rsk_tornado_kick( new rising_sun_kick_tornado_kick_t( p ) )
   {
     parse_options( options_str );
@@ -3323,9 +3178,6 @@ struct rising_sun_kick_t: public monk_melee_attack_t
 
     if ( p -> artifact.tornado_kicks.rank() )
       add_child( rsk_tornado_kick );
-
-    if ( p -> specialization() == MONK_WINDWALKER )
-      add_child( rsk_proc );
   }
 
   double composite_persistent_multiplier( const action_state_t* action_state ) const override
@@ -3379,17 +3231,6 @@ struct rising_sun_kick_t: public monk_melee_attack_t
 
     if ( p() -> buff.serenity -> up() )
       p() -> gain.serenity -> add( RESOURCE_CHI, base_costs[RESOURCE_CHI] );
-
-    // Windwalker Tier 18 (WoD 6.2) trinket effect is in use, adjust Rising Sun Kick proc chance based on spell data
-    // of the special effect.
-    // Not usable at level 110
-    if ( p() -> furious_sun && p() -> level() < 110 )
-    {
-      double proc_chance = p() -> furious_sun -> driver() -> effectN( 1 ).average( p() -> furious_sun -> item ) / 100.0;
-
-      if ( rng().roll( proc_chance ) )
-        rsk_proc -> execute();
-    }
   }
 
   virtual void execute() override
@@ -3416,13 +3257,6 @@ struct rising_sun_kick_t: public monk_melee_attack_t
         // Activate A'Buraq's Trait
         if ( p() -> artifact.transfer_the_power.rank() )
           p() -> buff.transfer_the_power -> trigger();
-
-        // TODO: This is a possible bug where it is removing a stack before adding 2 stacks
-        if ( p() -> buff.masterful_strikes -> up() )
-          p() -> buff.masterful_strikes -> decrement();
-
-        if ( p() -> sets -> has_set_bonus( MONK_WINDWALKER, T18, B2 ) )
-          p() -> buff.masterful_strikes -> trigger( ( int ) p() -> sets -> set( MONK_WINDWALKER,T18, B2 ) -> effect_count() );
         break;
       }
       default: break;
@@ -3547,7 +3381,6 @@ struct blackout_kick_totm_proc : public monk_melee_attack_t
 // Blackout Kick Baseline ability =======================================
 struct blackout_kick_t: public monk_melee_attack_t
 {
-  rising_sun_kick_proc_t* rsk_proc;
   blackout_kick_totm_proc* bok_totm_proc;
 
   blackout_kick_t( monk_t* p, const std::string& options_str ):
@@ -3574,7 +3407,6 @@ struct blackout_kick_t: public monk_melee_attack_t
         if ( p -> spec.blackout_kick_3 )
           // Saved as -1
           base_costs[RESOURCE_CHI] += p -> spec.blackout_kick_3 -> effectN( 1 ).base_value(); // Reduce base from 2 chi to 1
-        rsk_proc = new rising_sun_kick_proc_t( p );
         break;
       }
       default:
@@ -3666,17 +3498,6 @@ struct blackout_kick_t: public monk_melee_attack_t
       if ( p() -> sets -> has_set_bonus( MONK_WINDWALKER, T21, B2 ) )
         p() -> resource_gain( RESOURCE_CHI, p() -> passives.focus_of_xuen -> effectN( 1 ).base_value(), p() -> gain.focus_of_xuen );
     }
-
-    // Windwalker Tier 18 (WoD 6.2) trinket effect is in use, adjust Rising Sun Kick proc chance based on spell data
-    // of the special effect.
-    // Not usable at level 110
-    if ( p() -> furious_sun && p() -> level() < 110 )
-    {
-      double proc_chance = p() -> furious_sun -> driver() -> effectN( 1 ).average( p() -> furious_sun -> item ) / 100.0;
-
-      if ( rng().roll( proc_chance ) )
-        rsk_proc -> execute();
-    }
   }
 
   void execute() override
@@ -3700,9 +3521,6 @@ struct blackout_kick_t: public monk_melee_attack_t
       }
       case MONK_WINDWALKER:
       {
-        if ( p() -> buff.masterful_strikes -> up() )
-          p() -> buff.masterful_strikes -> decrement();
-
         if ( p() -> artifact.transfer_the_power.rank() )
           p() -> buff.transfer_the_power -> trigger();
         break;
@@ -3929,9 +3747,6 @@ struct rushing_jade_wind_t : public monk_melee_attack_t
 
     p() -> rjw_trigger_mark_of_the_crane();
 
-    if ( p() -> buff.masterful_strikes -> up() )
-       p() -> buff.masterful_strikes -> decrement();
-
     if ( p() -> artifact.transfer_the_power.rank() )
       p() -> buff.transfer_the_power -> trigger();
   }
@@ -4033,14 +3848,6 @@ struct spinning_crane_kick_t: public monk_melee_attack_t
         buff_t::DEFAULT_VALUE(),
         1.0,
         composite_dot_duration( execute_state ) );
-  }
-
-  virtual void last_tick( dot_t* dot ) override
-  {
-    monk_melee_attack_t::last_tick( dot );
-
-    if ( p() -> buff.masterful_strikes -> up() )
-      p() -> buff.masterful_strikes -> decrement();
   }
 };
 
@@ -4148,7 +3955,6 @@ struct fists_of_fury_tick_t: public monk_melee_attack_t
 
 struct fists_of_fury_t: public monk_melee_attack_t
 {
-  rising_sun_kick_proc_t* rsk_proc;
   crosswinds_t* crosswinds;
 
   fists_of_fury_t( monk_t* p, const std::string& options_str ):
@@ -4171,8 +3977,6 @@ struct fists_of_fury_t: public monk_melee_attack_t
     spell_power_mod.tick = 0.0;
 
     tick_action = new fists_of_fury_tick_t( p, "fists_of_fury_tick" );
-
-    rsk_proc = new rising_sun_kick_proc_t( p );
 
     if ( p -> artifact.crosswinds.rank() )
       add_child( crosswinds );
@@ -4246,9 +4050,6 @@ struct fists_of_fury_t: public monk_melee_attack_t
 
     if ( p() -> artifact.crosswinds.rank() )
       crosswinds -> execute();
-
-    if ( p() -> sets -> has_set_bonus( MONK_WINDWALKER, T18, B4 ) )
-      p() -> buff.masterful_strikes -> trigger( ( int ) p() -> sets -> set( MONK_WINDWALKER,T18, B4 ) -> effect_count() - 1 );
   }
 
   virtual void last_tick( dot_t* dot ) override
@@ -4261,17 +4062,6 @@ struct fists_of_fury_t: public monk_melee_attack_t
 
     if ( p() -> sets -> has_set_bonus( MONK_WINDWALKER, T20, B4 ) )
       p() -> buff.pressure_point -> trigger();
-
-    // Windwalker Tier 18 (WoD 6.2) trinket effect is in use, adjust Rising Sun Kick proc chance based on spell data
-    // of the special effect.
-    // Not usable at level 110
-    if ( p() -> furious_sun && p() -> level() < 110 )
-    {
-      double proc_chance = p() -> furious_sun -> driver() -> effectN( 1 ).average( p() -> furious_sun -> item ) / 100.0;
-
-      if ( rng().roll( proc_chance ) )
-        rsk_proc -> execute();
-    }
   }
 };
 
@@ -6198,10 +5988,6 @@ struct purifying_brew_t: public monk_spell_t
         p() -> buff.elusive_dance -> trigger( 3 );
       }
 //      p() -> sample_datas.heavy_stagger_total_damage -> add( stagger_dmg );
-
-      // When clearing Moderate Stagger with Purifying Brew, you generate 1 stack of Elusive Brawler.
-      if ( p() -> sets -> has_set_bonus( MONK_BREWMASTER, T17, B4 ) )
-        p() -> buff.elusive_brawler -> trigger( p() -> sets -> set( MONK_BREWMASTER, T17, B4) -> effectN( 1 ).base_value() );
     }
     else if ( stagger_pct > p() -> moderate_stagger_threshold )
     {
@@ -6213,10 +5999,6 @@ struct purifying_brew_t: public monk_spell_t
         p() -> buff.elusive_dance -> trigger( 2 );
       }
 //      p() -> sample_datas.moderate_stagger_total_damage -> add( stagger_dmg );
-
-      // When clearing Moderate Stagger with Purifying Brew, you generate 1 stack of Elusive Brawler.
-      if ( p() -> sets -> has_set_bonus( MONK_BREWMASTER, T17, B4 ) )
-        p() -> buff.elusive_brawler -> trigger( p() -> sets -> set( MONK_BREWMASTER, T17, B4) -> effectN( 1 ).base_value() );
     }
     else
     {
@@ -6471,20 +6253,11 @@ struct soothing_mist_t: public monk_heal_t
     p() -> buff.channeling_soothing_mist -> trigger();
   }
 
-  virtual void tick( dot_t* d ) override
-  {
-    monk_heal_t::tick( d );
-
-    if ( p() -> sets -> has_set_bonus ( MONK_MISTWEAVER, T17, B2 ) )
-      p() -> buff.mistweaving -> trigger();
-  }
-
   virtual void last_tick( dot_t* d ) override
   {
     monk_heal_t::last_tick( d );
 
     p() -> buff.channeling_soothing_mist -> expire();
-    p() -> buff.mistweaving -> expire();
   }
 };
 
@@ -6610,12 +6383,6 @@ struct effuse_t: public monk_heal_t
     
     mastery -> execute();
   }
-
-  virtual void impact( action_state_t* s ) override
-  {
-    if ( p() -> sets -> has_set_bonus( MONK_MISTWEAVER, T17, B4 ) && s -> result == RESULT_CRIT )
-      p() -> buff.chi_jis_guidance -> trigger();
-  }
 };
 
 // ==========================================================================
@@ -6704,40 +6471,10 @@ struct enveloping_mist_t: public monk_heal_t
 Bouncing only happens when overhealing, so not going to bother with bouncing
 */
 
-struct extend_life_t: public monk_heal_t
-{
-  extend_life_t( monk_t& p ):
-    monk_heal_t( "extend_life", p, p.passives.tier18_2pc_heal )
-  {
-    background = dual = true;
-    dot_duration = timespan_t::zero();
-  }
-
-  virtual bool ready() override
-  {
-    return p() -> specialization() == MONK_MISTWEAVER;
-  }
-
-  virtual double cost() const override
-  {
-    return 0;
-  }
-
-  virtual void execute() override
-  {
-    monk_heal_t::execute();
-
-    p() -> buff.extend_life -> trigger();
-  }
-
-};
-
 // Renewing Mist Dancing Mist Mistweaver Artifact Traits ====================
 struct renewing_mist_dancing_mist_t: public monk_heal_t
 {
   gust_of_mists_t* mastery;
-  extend_life_t* tier18_2pc;
-
   renewing_mist_dancing_mist_t( monk_t& p ):
     monk_heal_t( "renewing_mist_dancing_mist", p, p.spec.renewing_mist )
   {
@@ -6747,9 +6484,6 @@ struct renewing_mist_dancing_mist_t: public monk_heal_t
 
     if ( p.artifact.extended_healing.rank() )
       dot_duration += p.artifact.extended_healing.time_value();
-
-    if ( p.sets -> has_set_bonus( MONK_MISTWEAVER, T18, B2 ) )
-      tier18_2pc = new extend_life_t( p ); 
 
     mastery = new gust_of_mists_t( p );
   }
@@ -6763,9 +6497,6 @@ struct renewing_mist_dancing_mist_t: public monk_heal_t
   {
     monk_heal_t::execute();
 
-    if ( p() -> sets -> has_set_bonus( MONK_MISTWEAVER, T18, B4 ) )
-      tier18_2pc -> execute();
-
     mastery -> execute();
   }
 };
@@ -6776,7 +6507,6 @@ struct renewing_mist_t: public monk_heal_t
   the_mists_of_sheilun_buff_t* artifact;
   renewing_mist_dancing_mist_t* rem;
   gust_of_mists_t* mastery;
-  extend_life_t* tier18_2pc;
 
   renewing_mist_t( monk_t& p, const std::string& options_str ):
     monk_heal_t( "renewing_mist", p, p.spec.renewing_mist )
@@ -6794,20 +6524,7 @@ struct renewing_mist_t: public monk_heal_t
     if ( p.artifact.dancing_mists.rank() )
       rem = new renewing_mist_dancing_mist_t( p );
 
-    if ( p.sets -> has_set_bonus( MONK_MISTWEAVER, T18, B4 ) )
-      tier18_2pc = new extend_life_t( p );
-
     mastery = new gust_of_mists_t( p );
-  }
-
-  virtual double cost() const override
-  {
-    double c = monk_heal_t::cost();
-
-    if ( p() -> buff.chi_jis_guidance -> check() )
-      c *= 1 + p() -> buff.chi_jis_guidance -> value(); // Saved as -50%
-
-    return c;
   }
 
   void update_ready( timespan_t ) override
@@ -6823,9 +6540,6 @@ struct renewing_mist_t: public monk_heal_t
   virtual void execute() override
   {
     monk_heal_t::execute();
-
-    if ( p() -> sets -> has_set_bonus( MONK_MISTWEAVER, T18, B2 ) )
-      tier18_2pc -> execute();
 
     mastery -> execute();
 
@@ -8552,7 +8266,6 @@ void monk_t::init_spells()
   passives.special_delivery                 = find_spell( 196733 );
   passives.stagger_self_damage              = find_spell( 124255 );
   passives.stomp                            = find_spell( 227291 );
-  passives.tier17_2pc_tank                  = find_spell( 165356 );
 
   // Mistweaver
   passives.totm_bok_proc                    = find_spell( 228649 );
@@ -8569,9 +8282,6 @@ void monk_t::init_spells()
   passives.the_mists_of_sheilun_heal        = find_spell( 199894 );
   passives.uplifting_trance                 = find_spell( 197206 );
   passives.zen_pulse_heal                   = find_spell( 198487 );
-  passives.tier17_2pc_heal                  = find_spell( 167732 );
-  passives.tier17_4pc_heal                  = find_spell( 167717 );
-  passives.tier18_2pc_heal                  = find_spell( 185158 ); // Extend Life
 
   // Windwalker
   passives.chi_orbit                        = find_spell( 196748 );
@@ -8595,8 +8305,6 @@ void monk_t::init_spells()
   passives.touch_of_karma_buff              = find_spell( 125174 );
   passives.touch_of_karma_tick              = find_spell( 124280 );
   passives.whirling_dragon_punch_tick       = find_spell( 158221 );
-  passives.tier17_4pc_melee                 = find_spell( 166603 );
-  passives.tier18_2pc_melee                 = find_spell( 216172 );
   passives.tier19_4pc_melee                 = find_spell( 211432 );
 
   // Legendaries
@@ -8674,7 +8382,6 @@ void monk_t::init_base_stats()
       base_gcd += spec.stance_of_the_fierce_tiger -> effectN( 5 ).time_value(); // Saved as -500 milliseconds
       base.attack_power_per_agility = 1.0;
       resources.base[RESOURCE_ENERGY] = 100;
-      resources.base[RESOURCE_ENERGY] += sets -> set(MONK_WINDWALKER, T18, B4) -> effectN( 2 ).base_value();
       resources.base[RESOURCE_MANA] = 0;
       resources.base[RESOURCE_CHI] = 4;
       resources.base[RESOURCE_CHI] += spec.stance_of_the_fierce_tiger -> effectN( 6 ).base_value();
@@ -8846,18 +8553,6 @@ void monk_t::create_buffs()
       + ( sets -> has_set_bonus( MONK_MISTWEAVER, T19, B2 ) ? sets -> set( MONK_MISTWEAVER, T19, B2 ) -> effectN( 1 ).percent() : 0 ) )
     .default_value( passives.uplifting_trance -> effectN( 1 ).percent() );
 
-  buff.mistweaving = buff_creator_t(this, "mistweaving", passives.tier17_2pc_heal )
-    .default_value( passives.tier17_2pc_heal -> effectN( 1 ).percent() )
-    .max_stack( 7 )
-    .add_invalidate( CACHE_CRIT_CHANCE )
-    .add_invalidate( CACHE_SPELL_CRIT_CHANCE );
-
-  buff.chi_jis_guidance = buff_creator_t( this, "chi_jis_guidance", passives.tier17_4pc_heal )
-    .default_value( passives.tier17_4pc_heal -> effectN( 1 ).percent() );
-
-  buff.extend_life = buff_creator_t( this, "extend_life", passives.tier18_2pc_heal )
-    .default_value( passives.tier18_2pc_heal -> effectN( 2 ).percent() );
-
   // Windwalker
   buff.chi_orbit = buff_creator_t( this, "chi_orbit", talent.chi_orbit )
     .default_value( passives.chi_orbit -> effectN( 1 ).ap_coeff() )
@@ -8878,21 +8573,12 @@ void monk_t::create_buffs()
 
   buff.flying_serpent_kick_movement = buff_creator_t( this, "flying_serpent_kick_movement" ); // find_spell( 115057 )
 
-  buff.forceful_winds = buff_creator_t( this, "forceful_winds", passives.tier17_4pc_melee )
-    .default_value( passives.tier17_4pc_melee -> effectN( 1 ).percent() )
-    .add_invalidate( CACHE_CRIT_CHANCE )
-    .add_invalidate( CACHE_SPELL_CRIT_CHANCE );
-
   buff.hit_combo = buff_creator_t( this, "hit_combo", passives.hit_combo )
     .default_value( passives.hit_combo -> effectN( 1 ).percent() )
     .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
   buff.master_of_combinations = stat_buff_creator_t( this, "master_of_combinations", passives.master_of_combinations )
     .rppm_freq( 3 );
-
-  buff.masterful_strikes = buff_creator_t( this, "masterful_strikes", passives.tier18_2pc_melee )
-    .default_value( passives.tier18_2pc_melee -> effectN( 1 ).base_value() )
-    .add_invalidate( CACHE_MASTERY );
 
   buff.serenity = new buffs::serenity_buff_t( *this, "serenity", talent.serenity );
 
@@ -8947,7 +8633,6 @@ void monk_t::init_gains()
   gain.soothing_mist            = get_gain( "soothing_mist" );
   gain.spinning_crane_kick      = get_gain( "spinning_crane_kick" );
   gain.spirit_of_the_crane      = get_gain( "spirit_of_the_crane" );
-  gain.tier17_2pc_healer        = get_gain( "tier17_2pc_healer" );
   gain.tiger_palm               = get_gain( "tiger_palm" );
 }
 
@@ -8960,7 +8645,6 @@ void monk_t::init_procs()
   proc.bok_proc                   = get_proc( "bok_proc" );
   proc.eye_of_the_tiger           = get_proc( "eye_of_the_tiger" );
   proc.mana_tea                   = get_proc( "mana_tea" );
-  proc.tier17_4pc_heal            = get_proc( "tier17_2pc_heal" );
 }
 
 // monk_t::init_rng =======================================================
@@ -8981,19 +8665,6 @@ void monk_t::init_resources( bool force )
     recalculate_resource_max( RESOURCE_HEALTH );
     resources.initial[ RESOURCE_HEALTH ] = resources.current[ RESOURCE_HEALTH ]
       = resources.max[ RESOURCE_HEALTH ];
-  }
-}
-
-// druid_t::has_t18_class_trinket ===========================================
-
-bool monk_t::has_t18_class_trinket() const
-{
-  switch ( specialization() )
-  {
-    case MONK_BREWMASTER:   return eluding_movements != nullptr;
-    case MONK_MISTWEAVER:   return soothing_breeze != nullptr;
-    case MONK_WINDWALKER:   return furious_sun != nullptr;
-    default:                return false;
   }
 }
 
@@ -9278,9 +8949,6 @@ double monk_t::composite_melee_crit_chance() const
 
   crit += spec.critical_strikes -> effectN( 1 ).percent();
 
-  if ( buff.mistweaving -> check() )
-    crit += buff.mistweaving -> stack_value();
-
   if ( buff.gifted_student -> check() )
     crit += buff.gifted_student -> value();
 
@@ -9292,9 +8960,6 @@ double monk_t::composite_melee_crit_chance() const
 double monk_t::composite_melee_crit_chance_multiplier() const
 {
   double crit = player_t::composite_melee_crit_chance_multiplier();
-
-  if ( buff.forceful_winds -> check() )
-    crit += buff.forceful_winds -> value();
 
   return crit;
 }
@@ -9315,9 +8980,6 @@ double monk_t::composite_spell_crit_chance() const
 double monk_t::composite_spell_crit_chance_multiplier() const
 {
   double crit = player_t::composite_spell_crit_chance_multiplier();
-
-  if ( buff.forceful_winds -> check() )
-    crit += buff.forceful_winds -> value();
 
   return crit;
 }
@@ -9386,9 +9048,6 @@ double monk_t::composite_player_heal_multiplier( const action_state_t* s ) const
       ser_mult += artifact.spiritual_focus.data().effectN( 6 ).percent();
     m *= 1+ ser_mult;
   }
-
-  if ( artifact.mistweaving.rank() )
-    m *= 1.0 + artifact.mistweaving.percent();
 
   return m;
 }
@@ -9479,9 +9138,6 @@ double monk_t::composite_crit_avoidance() const
 double monk_t::composite_mastery() const
 {
   double m = player_t::composite_mastery();
-
-  if ( buff.masterful_strikes -> up() )
-    m += buff.masterful_strikes -> value();
 
   return m;
 }
@@ -9754,9 +9410,6 @@ void monk_t::assess_damage(school_e school,
     {
       if ( buff.elusive_brawler -> up() )
         buff.elusive_brawler -> expire();
-
-      if ( sets -> has_set_bonus( MONK_BREWMASTER, T17, B2 ) )
-        resource_gain( RESOURCE_ENERGY, passives.tier17_2pc_tank -> effectN( 1 ).base_value(), gain.energy_refund );
 
       if ( artifact.gifted_student.rank() )
         buff.gifted_student -> trigger();
@@ -10926,25 +10579,6 @@ static void do_trinket_init( monk_t*                  player,
   ptr = &( effect );
 }
 
-// 6.2 Monk Trinket Effects -----------------------------------------------------
-static void eluding_movements( special_effect_t& effect )
-{
-  monk_t* monk = debug_cast<monk_t*>( effect.player );
-  do_trinket_init( monk, MONK_BREWMASTER, monk -> eluding_movements, effect );
-}
-
-static void soothing_breeze( special_effect_t& effect )
-{
-  monk_t* monk = debug_cast<monk_t*>( effect.player );
-  do_trinket_init( monk, MONK_MISTWEAVER, monk -> soothing_breeze, effect );
-}
-
-static void furious_sun( special_effect_t& effect )
-{
-  monk_t* monk = debug_cast<monk_t*>( effect.player );
-  do_trinket_init( monk, MONK_WINDWALKER, monk -> furious_sun, effect );
-}
-
 // Legion Artifact Effects --------------------------------------------------------
 
 // Brewmaster Legion Artifact
@@ -11237,11 +10871,6 @@ struct monk_module_t: public module_t
 
   virtual void static_init() const override
   {
-    // WoD's Archemonde Trinkets
-    unique_gear::register_special_effect( 184906, eluding_movements );
-    unique_gear::register_special_effect( 184907, soothing_breeze );
-    unique_gear::register_special_effect( 184908, furious_sun );
-
     // Legion Artifacts
     unique_gear::register_special_effect( 214854, fists_of_the_heavens );
     unique_gear::register_special_effect( 214483, sheilun_staff_of_the_mists );

@@ -1516,7 +1516,6 @@ class SpellDataGenerator(DataGenerator):
           ( 227679, 1 ), # Face Palm
           ( 227291, 1 ), # Niuzao pet Stomp
           # Mistweaver
-          ( 167732, 0 ), # Tier 17 2-piece Healer Buff
           ( 228649, 2 ), # Teachings of the Monastery - Blackout Proc
           # Windwalker
           ( 115057, 3 ), # Flying Serpent Kick Movement spell
@@ -1526,7 +1525,7 @@ class SpellDataGenerator(DataGenerator):
           ( 195651, 3 ), # Crosswinds Artifact trait trigger spell
           ( 196061, 3 ), # Crosswinds Artifact trait damage spell
           ( 211432, 3 ), # Tier 19 4-piece DPS Buff
-          ( 220358, 3 ), # Cyclone Strikes info; TODO: remove this line once 7.2.5 releases
+          ( 220358, 3 ), # Cyclone Strikes info
           ( 228287, 3 ), # Spinning Crane Kick's Mark of the Crane debuff
           ( 240672, 3 ), # Master of Combinations Artifact trait buff
           ( 242387, 3 ), # Thunderfist Artifact trait buff
