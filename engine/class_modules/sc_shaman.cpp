@@ -5855,19 +5855,12 @@ struct shaman_totem_pet_t : public pet_t
   shaman_t* o()
   { return debug_cast< shaman_t* >( owner ); }
 
+  /*
+  //  Code to make a totem double dip on player multipliers.
+  //  As of 7.3.5 this is no longer needed for Liquid Magma Totem (Elemental)
   virtual double composite_player_multiplier( school_e school ) const override
-  {
-    double m = owner -> cache.player_multiplier( school );
-
-    // Shaman offensive totems double-dip on the legendary AOE ring damage buff, but do not
-    // contribute to explosion damage.
-    if ( owner -> buffs.legendary_aoe_ring && owner -> buffs.legendary_aoe_ring -> up() )
-    {
-      m *= 1.0 + owner -> buffs.legendary_aoe_ring -> default_value;
-    }
-
-    return m;
-  }
+  { return owner -> cache.player_multiplier( school ); }
+  //*/
 
   virtual double composite_spell_hit() const override
   { return owner -> cache.spell_hit(); }
@@ -8346,11 +8339,14 @@ double shaman_t::composite_player_pet_damage_multiplier( const action_state_t* s
 {
   double m = player_t::composite_player_pet_damage_multiplier( s );
 
+  // elemental buffs
   m *= 1.0 + artifact.stormkeepers_power.percent();
   m *= 1.0 + artifact.power_of_the_earthen_ring.percent();
+  m *= 1.0 + spec.elemental_shaman -> effectN( 3 ).percent();
+
+  // enhancement buffs
   m *= 1.0 + artifact.earthshattering_blows.percent();
   m *= 1.0 + artifact.might_of_the_earthen_ring.percent();
-  m *= 1.0 + spec.elemental_shaman -> effectN( 3 ).percent();
   m *= 1.0 + spec.enhancement_shaman -> effectN( 3 ).percent();
 
   auto school = s -> action -> get_school();
