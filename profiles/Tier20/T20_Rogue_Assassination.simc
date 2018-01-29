@@ -50,7 +50,10 @@ actions.aoe+=/fan_of_knives
 # Builders
 actions.build=hemorrhage,if=refreshable
 actions.build+=/hemorrhage,cycle_targets=1,if=refreshable&dot.rupture.ticking&spell_targets.fan_of_knives<2+equipped.insignia_of_ravenholdt
-actions.build+=/fan_of_knives,if=spell_targets>1+equipped.insignia_of_ravenholdt|buff.the_dreadlords_deceit.stack>=29
+actions.build+=/fan_of_knives,if=buff.the_dreadlords_deceit.stack>=29
+# Mutilate is worth using over FoK for Exsanguinate builds in some 2T scenarios.
+actions.build+=/mutilate,if=talent.exsanguinate.enabled&(debuff.vendetta.up|combo_points<=2)
+actions.build+=/fan_of_knives,if=spell_targets>1+equipped.insignia_of_ravenholdt
 actions.build+=/fan_of_knives,if=combo_points>=3+talent.deeper_stratagem.enabled&artifact.poison_knives.rank>=5|fok_rotation
 actions.build+=/mutilate,cycle_targets=1,if=dot.deadly_poison_dot.refreshable
 actions.build+=/mutilate
