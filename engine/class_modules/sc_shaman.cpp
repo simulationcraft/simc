@@ -7907,7 +7907,6 @@ void shaman_t::init_action_list_enhancement()
   core -> add_action( this, "Lightning Bolt", "if=variable.overcharge&debuff.exposed_elements.up" );
   core -> add_action( this, "Crash Lightning", "if=active_enemies>=4|(active_enemies>=2&talent.crashing_storm.enabled)" );
   core -> add_action( this, "Rockbiter" , "if=buff.force_of_the_mountain.up" );
-  core -> add_action( this, "Lightning Bolt", "if=talent.overcharge.enabled&variable.furyCheck45&maelstrom>=40" );
   core -> add_action( this, "Lava Lash", "if=(buff.hot_hand.react&((variable.akainuEquipped&buff.frostbrand.up)|(!variable.akainuEquipped)))" );
   core -> add_action( this, "Lava Lash", "if=(maelstrom>=50&variable.OCPool70&variable.furyCheck80&debuff.exposed_elements.up&debuff.lashing_flames.stack>90)" );
   core -> add_action( this, "Lightning Bolt", "if=variable.overcharge" );
@@ -8350,6 +8349,7 @@ double shaman_t::composite_player_pet_damage_multiplier( const action_state_t* s
   m *= 1.0 + artifact.stormkeepers_power.percent();
   m *= 1.0 + artifact.power_of_the_earthen_ring.percent();
   m *= 1.0 + artifact.earthshattering_blows.percent();
+  m *= 1.0 + artifact.might_of_the_earthen_ring.percent();
   m *= 1.0 + spec.elemental_shaman -> effectN( 3 ).percent();
   m *= 1.0 + spec.enhancement_shaman -> effectN( 3 ).percent();
 

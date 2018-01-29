@@ -89,7 +89,6 @@ actions.core+=/stormstrike,if=buff.stormbringer.up&variable.furyCheck25
 actions.core+=/lightning_bolt,if=variable.overcharge&debuff.exposed_elements.up
 actions.core+=/crash_lightning,if=active_enemies>=4|(active_enemies>=2&talent.crashing_storm.enabled)
 actions.core+=/rockbiter,if=buff.force_of_the_mountain.up
-actions.core+=/lightning_bolt,if=talent.overcharge.enabled&variable.furyCheck45&maelstrom>=40
 actions.core+=/lava_lash,if=(buff.hot_hand.react&((variable.akainuEquipped&buff.frostbrand.up)|(!variable.akainuEquipped)))
 actions.core+=/lava_lash,if=(maelstrom>=50&variable.OCPool70&variable.furyCheck80&debuff.exposed_elements.up&debuff.lashing_flames.stack>90)
 actions.core+=/lightning_bolt,if=variable.overcharge
