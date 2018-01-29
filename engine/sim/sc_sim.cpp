@@ -1323,7 +1323,7 @@ struct compare_name
 
 // sim_t::sim_t =============================================================
 
-sim_t::sim_t( sim_t* p, int index ) :
+sim_t::sim_t() :
   event_mgr( this ),
   out_std( *this, &std::cout, sim_ostream_t::no_close() ),
   out_log( *this, &std::cout, sim_ostream_t::no_close() ),
@@ -1342,7 +1342,7 @@ sim_t::sim_t( sim_t* p, int index ) :
   analyze_number( 0 ),
   cleanup_threads( false ),
   control( nullptr ),
-  parent( p ),
+  parent( nullptr ),
   initialized( false ),
   target( nullptr ),
   heal_target( nullptr ),
@@ -1425,7 +1425,7 @@ sim_t::sim_t( sim_t* p, int index ) :
   enable_dps_healing( false ),
   scaling_normalized( 1.0 ),
   // Multi-Threading
-  threads( 0 ), thread_index( index ), process_priority( computer_process::BELOW_NORMAL ),
+  threads( 0 ), thread_index( 0 ), process_priority( computer_process::BELOW_NORMAL ),
   work_queue( new work_queue_t() ),
   spell_query(), spell_query_level( MAX_LEVEL ),
   pause_mutex( nullptr ),
@@ -1450,28 +1450,60 @@ sim_t::sim_t( sim_t* p, int index ) :
   create_options();
 
   profileset::create_options( this );
+}
 
-  if ( parent )
-  {
-    // Inherit setup
-    setup( parent -> control );
+sim_t::sim_t( sim_t* p, int index ) : sim_t()
+{
+  assert( p );
 
-    // Inherit 'scaling' settings from parent because these are set outside of the config file
-    assert( parent -> scaling );
-    scaling -> scale_stat  = parent -> scaling -> scale_stat;
-    scaling -> scale_value = parent -> scaling -> scale_value;
+  parent = p;
+  thread_index = index;
 
-    // Inherit reporting directives from parent
-    report_progress = parent -> report_progress;
+  // Inherit setup
+  setup( parent -> control );
 
-    // Inherit 'plot' settings from parent because are set outside of the config file
-    enchant = parent -> enchant;
+  // Inherit 'scaling' settings from parent because these are set outside of the config file
+  assert( parent -> scaling );
+  scaling -> scale_stat  = parent -> scaling -> scale_stat;
+  scaling -> scale_value = parent -> scaling -> scale_value;
 
-    // While we inherit the parent seed, it may get overwritten in sim_t::init
-    seed = parent -> seed;
+  // Inherit reporting directives from parent
+  report_progress = parent -> report_progress;
 
-    parent -> add_relative( this );
-  }
+  // Inherit 'plot' settings from parent because are set outside of the config file
+  enchant = parent -> enchant;
+
+  // While we inherit the parent seed, it may get overwritten in sim_t::init
+  seed = parent -> seed;
+
+  parent -> add_relative( this );
+}
+
+sim_t::sim_t( sim_t* p, int index, sim_control_t* control ) : sim_t()
+{
+  assert( p && control );
+
+  parent = p;
+  thread_index = index;
+
+  // Use specialized control for setup
+  setup( control );
+
+  // Inherit 'scaling' settings from parent because these are set outside of the config file
+  assert( parent -> scaling );
+  scaling -> scale_stat  = parent -> scaling -> scale_stat;
+  scaling -> scale_value = parent -> scaling -> scale_value;
+
+  // Inherit reporting directives from parent
+  report_progress = parent -> report_progress;
+
+  // Inherit 'plot' settings from parent because are set outside of the config file
+  enchant = parent -> enchant;
+
+  // While we inherit the parent seed, it may get overwritten in sim_t::init
+  seed = parent -> seed;
+
+  parent -> add_relative( this );
 }
 
 // sim_t::~sim_t ============================================================

@@ -360,35 +360,13 @@ sim_t* worker_t::sim() const
 
 void worker_t::execute()
 {
-  // Parallel profileset simulation creation must be exclusive, otherwise we have a data race in
-  // m_parent -> control
-  m_master -> lock_worker();
-
-  auto original_opts = m_parent -> control;
-
-  m_parent -> control = m_profileset -> options();
-
-  m_sim = new sim_t( m_parent );
-
-  m_parent -> control = original_opts;
-
-  m_master -> unlock_worker();
+  m_sim = new sim_t( m_parent, 0, m_profileset -> options() );
 
   simulate_profileset( m_parent, *m_profileset, m_sim );
 
   m_done = true;
 
   m_master -> notify_worker();
-}
-
-void profilesets_t::lock_worker()
-{
-  m_work_mutex.lock();
-}
-
-void profilesets_t::unlock_worker()
-{
-  m_work_mutex.unlock();
 }
 
 // Count the number of running workers
@@ -715,6 +693,9 @@ bool profilesets_t::iterate( sim_t* parent )
   // not need to finalize any work (all work has been done by the loop above)
   finalize_work();
 
+  // Output profileset progressbar whenever we finish anything
+  output_progressbar( parent );
+
   parent -> control = original_opts;
 
   set_state( DONE );
@@ -743,6 +724,11 @@ int profilesets_t::max_name_length() const
 
 void profilesets_t::output_progressbar( const sim_t* parent ) const
 {
+  if ( m_max_workers == 0 )
+  {
+    return;
+  }
+
   std::stringstream s;
 
   s << "Profilesets (" << m_max_workers << "*" << parent -> profileset_work_threads << "): ";

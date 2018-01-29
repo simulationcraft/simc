@@ -378,10 +378,7 @@ public:
 
   size_t done_profilesets() const;
 
-  // Worker related signaling and synchronization methods. Called from the parallel profileset
-  // threads.
-  void lock_worker();
-  void unlock_worker();
+  // Worker sim finished
   void notify_worker();
 
   std::string current_profileset_name();

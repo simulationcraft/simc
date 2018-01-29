@@ -1919,7 +1919,9 @@ struct sim_t : private sc_thread_t
   bool profileset_enabled;
   int profileset_work_threads;
 
-  sim_t( sim_t* parent = nullptr, int thread_index = 0 );
+  sim_t();
+  sim_t( sim_t* parent, int thread_index = 0 );
+  sim_t( sim_t* parent, int thread_index, sim_control_t* control );
   virtual ~sim_t();
 
   virtual void run() override;
