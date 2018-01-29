@@ -1438,7 +1438,8 @@ sim_t::sim_t() :
   profileset_metric( { SCALE_METRIC_DPS } ),
   profileset_output_data(),
   profileset_enabled( false ),
-  profileset_work_threads( 0 )
+  profileset_work_threads( 0 ),
+  profileset_init_threads( 1 )
 {
   item_db_sources.assign( std::begin( default_item_db_sources ),
                           std::end( default_item_db_sources ) );

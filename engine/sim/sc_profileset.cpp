@@ -338,7 +338,6 @@ worker_t::worker_t( profilesets_t* master, sim_t* p, profile_set_t* ps ) :
 
 worker_t::~worker_t()
 {
-  // Deconstruct myself
   delete m_sim;
   delete m_thread;
 }
@@ -477,39 +476,18 @@ bool profilesets_t::validate( sim_t* ps_sim )
 {
   if ( ps_sim -> player_no_pet_list.size() > 1 )
   {
-    ps_sim -> errorf( "Profileset simulations must have only one actor" );
+    ps_sim -> errorf( "Profileset simulations must have only one actor in the baseline sim" );
     return false;
   }
 
   return true;
 }
 
+// Ensure profileset options are valid, and also perform basic simulator initialization for the
+// profileset to ensure that we can launch it when the time comes
 bool profilesets_t::parse( sim_t* sim )
 {
-  if ( sim -> profileset_map.size() == 0 )
-  {
-    set_state( DONE );
-    return true;
-  }
-
-  if ( ! validate( sim ) )
-  {
-    set_state( DONE );
-    return false;
-  }
-
-  set_state( INITIALIZING );
-
-  // Generate a copy of the original control, and remove any and all profileset. options from it
-  m_original = std::unique_ptr<sim_control_t>( new sim_control_t() );
-
-  // Copy non-profileset. options to use as a base option setup for each profileset
-  range::copy_if( sim -> control -> options, std::back_inserter( m_original -> options ),
-    []( const option_tuple_t& opt ) {
-    return ! util::str_in_str_ci( opt.name, "profileset." );
-  } );
-
-  for ( auto it = sim -> profileset_map.begin(); it != sim -> profileset_map.end(); ++it )
+  while ( true )
   {
     if ( sim -> canceled )
     {
@@ -517,14 +495,29 @@ bool profilesets_t::parse( sim_t* sim )
       return false;
     }
 
-    auto control = create_sim_options( m_original.get(), it -> second );
+    m_mutex.lock();
+
+    if ( m_init_index == sim -> profileset_map.cend() )
+    {
+      m_mutex.unlock();
+      break;
+    }
+
+    const auto& profileset_name = m_init_index -> first;
+    const auto& profileset_opts = m_init_index -> second;
+
+    ++m_init_index;
+
+    m_mutex.unlock();
+
+    auto control = create_sim_options( m_original.get(), profileset_opts );
     if ( control == nullptr )
     {
       set_state( DONE );
       return false;
     }
 
-    auto has_output_opts = range::find_if( it -> second, []( const std::string& opt ) {
+    auto has_output_opts = range::find_if( profileset_opts, []( const std::string& opt ) {
       auto name_end = opt.find( "=" );
       if ( name_end == std::string::npos )
       {
@@ -537,14 +530,11 @@ bool profilesets_t::parse( sim_t* sim )
              util::str_compare_ci( name, "html" ) ||
              util::str_compare_ci( name, "xml" ) ||
              util::str_compare_ci( name, "json2" );
-    } ) != it -> second.end();
-
-    //sim -> control = control;
+    } ) != profileset_opts.end();
 
     // Test that profileset options are OK, up to the simulation initialization
     try
     {
-      //auto test_sim = new sim_t( sim );
       auto test_sim = new sim_t();
       test_sim -> profileset_enabled = true;
 
@@ -552,7 +542,6 @@ bool profilesets_t::parse( sim_t* sim )
       auto ret = test_sim -> init();
       if ( ! ret || ! validate( test_sim ) )
       {
-        //sim -> control = original_control;
         delete test_sim;
         set_state( DONE );
         return false;
@@ -562,7 +551,7 @@ bool profilesets_t::parse( sim_t* sim )
     }
     catch ( const std::exception& e )
     {
-      std::cerr <<  "ERROR! Profileset '" << it -> first << "' Setup failure: "
+      std::cerr <<  "ERROR! Profileset '" << profileset_name << "' Setup failure: "
                 << e.what() << std::endl;
       set_state( DONE );
       return false;
@@ -570,9 +559,9 @@ bool profilesets_t::parse( sim_t* sim )
 
     m_mutex.lock();
     m_profilesets.push_back( std::unique_ptr<profile_set_t>(
-        new profile_set_t( it -> first, control, has_output_opts ) ) );
-    m_mutex.unlock();
+        new profile_set_t( profileset_name, control, has_output_opts ) ) );
     m_control.notify_one();
+    m_mutex.unlock();
   }
 
   set_state( RUNNING );
@@ -584,6 +573,24 @@ void profilesets_t::initialize( sim_t* sim )
 {
   if ( sim -> profileset_enabled || sim -> parent || sim -> thread_index > 0 )
   {
+    return;
+  }
+
+  if ( sim -> profileset_map.size() == 0 )
+  {
+    set_state( DONE );
+    return;
+  }
+
+  if ( ! validate( sim ) )
+  {
+    set_state( DONE );
+    return;
+  }
+
+  if ( sim -> profileset_init_threads < 1 )
+  {
+    sim -> errorf( "No profileset init threads given, profilesets cannot continue" );
     return;
   }
 
@@ -609,19 +616,41 @@ void profilesets_t::initialize( sim_t* sim )
 
   m_profilesets.reserve( sim -> profileset_map.size() + 1 );
 
-  m_thread = std::thread([ this, sim ]() {
-    if ( ! parse( sim ) )
-    {
-      sim -> cancel();
-    }
+  // Generate a copy of the original control, and remove any and all profileset. options from it
+  m_original = std::unique_ptr<sim_control_t>( new sim_control_t() );
+
+  // Copy non-profileset. options to use as a base option setup for each profileset
+  range::copy_if( sim -> control -> options, std::back_inserter( m_original -> options ),
+    []( const option_tuple_t& opt ) {
+    return ! util::str_in_str_ci( opt.name, "profileset." );
   } );
+
+  // Spawn initialization threads, and start parsing through the profilesets
+  set_state( INITIALIZING );
+
+  m_init_index = sim -> profileset_map.cbegin();
+
+  for ( int i = 0; i < sim -> profileset_init_threads; ++i )
+  {
+    m_thread.push_back( std::thread([ this, sim ]() {
+      if ( ! parse( sim ) )
+      {
+        sim -> cancel();
+      }
+    } ) );
+  }
 }
 
 void profilesets_t::cancel()
 {
-  if ( ! is_done() && m_thread.joinable() )
+  if ( ! is_done() )
   {
-    m_thread.join();
+    range::for_each( m_thread, []( std::thread& thread ) {
+      if ( thread.joinable() )
+      {
+        thread.join();
+      }
+    } );
   }
 
   set_state( DONE );
@@ -1041,6 +1070,7 @@ void create_options( sim_t* sim )
   } ) );
 
   sim -> add_option( opt_int( "profileset_work_threads", sim -> profileset_work_threads ) );
+  sim -> add_option( opt_int( "profileset_init_threads", sim -> profileset_init_threads ) );
 }
 
 statistical_data_t collect( const extended_sample_data_t& c )

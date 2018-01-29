@@ -11,6 +11,7 @@
 #include <mutex>
 #include <condition_variable>
 
+#include "sc_option.hpp"
 #include "util/generic.hpp"
 #include "util/io.hpp"
 #include "sc_enums.hpp"
@@ -323,7 +324,10 @@ class profilesets_t
   std::mutex                             m_mutex;
   std::unique_lock<std::mutex>           m_control_lock;
   std::condition_variable                m_control;
-  std::thread                            m_thread;
+  std::vector<std::thread>               m_thread;
+
+  // Shared iterator for threaded init workers
+  opts::map_list_t::const_iterator       m_init_index;
 
   // Parallel profileset worker information
   size_t                                 m_max_workers;
@@ -365,10 +369,12 @@ public:
 
   ~profilesets_t()
   {
-    if ( m_thread.joinable() )
-    {
-      m_thread.join();
-    }
+    range::for_each( m_thread, []( std::thread& thread ) {
+      if ( thread.joinable() )
+      {
+        thread.join();
+      }
+    } );
 
     range::for_each( m_current_work, []( std::unique_ptr<worker_t>& worker ) { worker -> thread().join(); } );
   }
