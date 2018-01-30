@@ -16,7 +16,6 @@
 // Elemental
 // - Verification
 // - Path of Flame spread mechanism (would be good to generalize this "nearby" spreading)
-// - At what point does Greater Lightning Elemental start aoeing?
 // Enhancement
 // T20
 // 2p - Does the triggering crash hit benefit from the buff?
@@ -2626,8 +2625,8 @@ struct greater_lightning_elemental_t : public shaman_pet_t
 {
   struct lightning_blast_t : public pet_spell_t<greater_lightning_elemental_t>
   {
-    lightning_blast_t( greater_lightning_elemental_t* p ) :
-      super( p, "lightning_blast", p -> find_spell( 191726 ) )
+    lightning_blast_t( greater_lightning_elemental_t* p, const std::string& options ) :
+      super( p, "lightning_blast", p -> find_spell( 191726 ), options )
     {
       ability_lag        = timespan_t::from_millis( 300 );
       ability_lag_stddev = timespan_t::from_millis( 25 );
@@ -2636,8 +2635,8 @@ struct greater_lightning_elemental_t : public shaman_pet_t
 
   struct chain_lightning_t : public pet_spell_t<greater_lightning_elemental_t>
   {
-    chain_lightning_t( greater_lightning_elemental_t* p ) :
-      super( p, "chain_lightning", p -> find_spell( 191732 ) )
+    chain_lightning_t( greater_lightning_elemental_t* p, const std::string& options) :
+      super( p, "chain_lightning", p -> find_spell( 191732 ), options )
     {
       if ( data().effectN( 1 ).chain_multiplier() != 0 )
       {
@@ -2656,8 +2655,8 @@ struct greater_lightning_elemental_t : public shaman_pet_t
 
   action_t* create_action( const std::string& name, const std::string& options_str ) override
   {
-    if ( name == "lightning_blast" ) return new lightning_blast_t( this );
-    if ( name == "chain_lightning" ) return new chain_lightning_t( this );
+    if ( name == "lightning_blast" ) return new lightning_blast_t( this, options_str );
+    if ( name == "chain_lightning" ) return new chain_lightning_t( this, options_str );
 
     return shaman_pet_t::create_action( name, options_str );
   }
@@ -2667,8 +2666,9 @@ struct greater_lightning_elemental_t : public shaman_pet_t
     shaman_pet_t::create_default_apl();
 
     action_priority_list_t* def = get_action_priority_list( "default" );
+
+    def -> add_action( "chain_lightning,if=spell_targets.chain_lightning>1" );
     def -> add_action( "lightning_blast" );
-    def -> add_action( "chain_lightning", "if=spell_targets.chain_lightning>1" );
   }
 };
 
