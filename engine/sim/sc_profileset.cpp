@@ -1232,4 +1232,27 @@ void fetch_output_data( const profile_output_data_t output_data, js::JsonOutput&
   }
 }
 
+sim_control_t* filter_control( const sim_control_t* control )
+{
+  if ( control == nullptr )
+  {
+    return nullptr;
+  }
+
+  auto clone = new sim_control_t();
+
+  for ( size_t i = 0, end = control -> options.size(); i < end; ++i )
+  {
+    auto pos = control -> options[ i ].name.find( "profileset" );
+    if ( pos != 0 )
+    {
+      clone -> options.add( control -> options[ i ].scope,
+                            control -> options[ i ].name,
+                            control -> options[ i ].value );
+    }
+  }
+
+  return clone;
+}
+
 } /* Namespace profileset ends */

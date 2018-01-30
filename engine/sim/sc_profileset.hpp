@@ -421,6 +421,9 @@ statistical_data_t metric_data( const player_t* player, scale_metric_e metric );
 void save_output_data( std::unique_ptr<profile_set_t>& profileset, const player_t* parent_player, const player_t* player, std::string option );
 void fetch_output_data( const profile_output_data_t output_data, js::JsonOutput& ovr );
 
+// Filter non-profilest options into a new control object, caller is responsible for deleting the
+// newly created control object.
+sim_control_t* filter_control( const sim_control_t* );
 } /* Namespace profileset ends */
 
 #endif /* SC_PROFILESET_HH */

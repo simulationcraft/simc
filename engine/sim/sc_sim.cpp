@@ -2850,9 +2850,23 @@ void sim_t::partition()
 
   int num_children = threads - 1;
 
+  sim_control_t* child_control = nullptr;
+  // Filter out profileset-related options from the child sim control, since they are not going to
+  // use them anyhow. This significantly speeds up child creation in situations where the input
+  // profile is a very large set of profileset sims.
+  if ( profileset_map.size() > 0 )
+  {
+    child_control = profileset::filter_control( control );
+  }
+  else
+  {
+    child_control = control;
+  }
+
   for ( int i = 0; i < num_children; i++ )
   {
-    auto  child = new sim_t( this, i + 1 );
+    auto  child = new sim_t( this, i + 1, child_control );
+
     assert( child );
     children.push_back( child );
 
@@ -2878,6 +2892,13 @@ void sim_t::partition()
 
   for ( auto & child : children )
     child -> launch();
+
+  // Safe to do for now, since control is only referenced by sim_t::setup, which is called in the
+  // sim_t constructor.
+  if ( profileset_map.size() > 0 )
+  {
+    delete child_control;
+  }
 }
 
 // sim_t::execute ===========================================================
