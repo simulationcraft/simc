@@ -1851,6 +1851,10 @@ static stat_data_t __gt_race_stats[] =
   {   0, -2,  1, -1,  2 }, // Pandaren
   {   0, -2,  1, -1,  2 }, // Pandaren - Alliance
   {   0, -2,  1, -1,  2 }, // Pandaren - Horde
+  {  -4,  4,  0,  0,  0 }, // Nightborne
+  {  -1, -2,  1, -2,  0 }, // Highmountain Tauren
+  {  -3,  2,  0,  3,  2 }, // Void Elf
+  {   1, -3,  0,  0,  2 }, // Lightforged Draenei
 };
 
 // Avoidance diminishing returns information

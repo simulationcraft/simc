@@ -1,12 +1,12 @@
-deathknight="T21_Death_Knight_Frost"
+deathknight="T21_Death_Knight_Frost_BoS"
 spec=frost
 level=110
-race=human
+race=blood_elf
 role=attack
 position=back
-talents=1210031
+talents=3330032
 artifact=12:0:0:0:0:108:4:109:4:110:4:111:4:113:4:114:4:115:4:117:4:119:1:120:1:122:1:123:1:124:1:1090:4:1091:1:1092:1:1332:1:1360:1:1485:4:1486:1:1487:1:1488:24:1628:1
-crucible=1739:3:1774:3:110:2:113:1
+crucible=1739:3:1770:3:110:2:113:1
 
 # Default consumables
 potion=prolonged_power
@@ -139,22 +139,22 @@ wrists=toravons_whiteout_bindings,id=132458,bonus_id=3630
 hands=nascent_deathbringers_clutches,id=152686,bonus_id=3612/1502
 waist=koltiras_newfound_will,id=132366,bonus_id=3630
 legs=cosmosculling_legplates,id=152016,bonus_id=3612/1502
-feet=doomwalker_warboots,id=152009,bonus_id=3612/1502
-finger1=zealous_tormentors_ring,id=152284,bonus_id=3612/1502,enchant=binding_of_haste
-finger2=seal_of_the_portalmaster,id=152063,bonus_id=3612/1502,enchant=binding_of_haste
+feet=eredar_warcouncil_sabatons,id=152011,bonus_id=3612/1502
+finger1=zealous_tormentors_ring,id=152284,bonus_id=3612/1502
+finger2=sullied_seal_of_the_pantheon,id=151972,bonus_id=3612/1502
 trinket1=amanthuls_vision,id=154172,bonus_id=4213
 trinket2=shadowsinged_fang,id=151968,bonus_id=3612/1502
 main_hand=blades_of_the_fallen_prince,id=128292,gem_id=155850/155852/155850,relic_id=3612:1512/3612:1512/3612:1512,enchant=rune_of_razorice
 off_hand=blades_of_the_fallen_prince,id=128293,enchant=rune_of_the_fallen_crusader
 
 # Gear Summary
-# gear_ilvl=974.25
+# gear_ilvl=974.88
 # gear_strength=34819
-# gear_stamina=61853
-# gear_crit_rating=12166
-# gear_haste_rating=11741
-# gear_mastery_rating=6570
-# gear_versatility_rating=5922
+# gear_stamina=62165
+# gear_crit_rating=11224
+# gear_haste_rating=9164
+# gear_mastery_rating=10108
+# gear_versatility_rating=5766
 # gear_armor=5307
 # set_bonus=tier21_2pc=1
 # set_bonus=tier21_4pc=1

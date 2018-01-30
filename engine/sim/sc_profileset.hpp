@@ -11,6 +11,7 @@
 #include <mutex>
 #include <condition_variable>
 
+#include "sc_option.hpp"
 #include "util/generic.hpp"
 #include "util/io.hpp"
 #include "sc_enums.hpp"
@@ -323,7 +324,10 @@ class profilesets_t
   std::mutex                             m_mutex;
   std::unique_lock<std::mutex>           m_control_lock;
   std::condition_variable                m_control;
-  std::thread                            m_thread;
+  std::vector<std::thread>               m_thread;
+
+  // Shared iterator for threaded init workers
+  opts::map_list_t::const_iterator       m_init_index;
 
   // Parallel profileset worker information
   size_t                                 m_max_workers;
@@ -365,10 +369,12 @@ public:
 
   ~profilesets_t()
   {
-    if ( m_thread.joinable() )
-    {
-      m_thread.join();
-    }
+    range::for_each( m_thread, []( std::thread& thread ) {
+      if ( thread.joinable() )
+      {
+        thread.join();
+      }
+    } );
 
     range::for_each( m_current_work, []( std::unique_ptr<worker_t>& worker ) { worker -> thread().join(); } );
   }
@@ -378,10 +384,7 @@ public:
 
   size_t done_profilesets() const;
 
-  // Worker related signaling and synchronization methods. Called from the parallel profileset
-  // threads.
-  void lock_worker();
-  void unlock_worker();
+  // Worker sim finished
   void notify_worker();
 
   std::string current_profileset_name();
@@ -418,6 +421,9 @@ statistical_data_t metric_data( const player_t* player, scale_metric_e metric );
 void save_output_data( std::unique_ptr<profile_set_t>& profileset, const player_t* parent_player, const player_t* player, std::string option );
 void fetch_output_data( const profile_output_data_t output_data, js::JsonOutput& ovr );
 
+// Filter non-profilest options into a new control object, caller is responsible for deleting the
+// newly created control object.
+sim_control_t* filter_control( const sim_control_t* );
 } /* Namespace profileset ends */
 
 #endif /* SC_PROFILESET_HH */

@@ -1323,7 +1323,7 @@ struct compare_name
 
 // sim_t::sim_t =============================================================
 
-sim_t::sim_t( sim_t* p, int index ) :
+sim_t::sim_t() :
   event_mgr( this ),
   out_std( *this, &std::cout, sim_ostream_t::no_close() ),
   out_log( *this, &std::cout, sim_ostream_t::no_close() ),
@@ -1342,7 +1342,7 @@ sim_t::sim_t( sim_t* p, int index ) :
   analyze_number( 0 ),
   cleanup_threads( false ),
   control( nullptr ),
-  parent( p ),
+  parent( nullptr ),
   initialized( false ),
   target( nullptr ),
   heal_target( nullptr ),
@@ -1425,7 +1425,7 @@ sim_t::sim_t( sim_t* p, int index ) :
   enable_dps_healing( false ),
   scaling_normalized( 1.0 ),
   // Multi-Threading
-  threads( 0 ), thread_index( index ), process_priority( computer_process::BELOW_NORMAL ),
+  threads( 0 ), thread_index( 0 ), process_priority( computer_process::BELOW_NORMAL ),
   work_queue( new work_queue_t() ),
   spell_query(), spell_query_level( MAX_LEVEL ),
   pause_mutex( nullptr ),
@@ -1438,7 +1438,8 @@ sim_t::sim_t( sim_t* p, int index ) :
   profileset_metric( { SCALE_METRIC_DPS } ),
   profileset_output_data(),
   profileset_enabled( false ),
-  profileset_work_threads( 0 )
+  profileset_work_threads( 0 ),
+  profileset_init_threads( 1 )
 {
   item_db_sources.assign( std::begin( default_item_db_sources ),
                           std::end( default_item_db_sources ) );
@@ -1450,28 +1451,60 @@ sim_t::sim_t( sim_t* p, int index ) :
   create_options();
 
   profileset::create_options( this );
+}
 
-  if ( parent )
-  {
-    // Inherit setup
-    setup( parent -> control );
+sim_t::sim_t( sim_t* p, int index ) : sim_t()
+{
+  assert( p );
 
-    // Inherit 'scaling' settings from parent because these are set outside of the config file
-    assert( parent -> scaling );
-    scaling -> scale_stat  = parent -> scaling -> scale_stat;
-    scaling -> scale_value = parent -> scaling -> scale_value;
+  parent = p;
+  thread_index = index;
 
-    // Inherit reporting directives from parent
-    report_progress = parent -> report_progress;
+  // Inherit setup
+  setup( parent -> control );
 
-    // Inherit 'plot' settings from parent because are set outside of the config file
-    enchant = parent -> enchant;
+  // Inherit 'scaling' settings from parent because these are set outside of the config file
+  assert( parent -> scaling );
+  scaling -> scale_stat  = parent -> scaling -> scale_stat;
+  scaling -> scale_value = parent -> scaling -> scale_value;
 
-    // While we inherit the parent seed, it may get overwritten in sim_t::init
-    seed = parent -> seed;
+  // Inherit reporting directives from parent
+  report_progress = parent -> report_progress;
 
-    parent -> add_relative( this );
-  }
+  // Inherit 'plot' settings from parent because are set outside of the config file
+  enchant = parent -> enchant;
+
+  // While we inherit the parent seed, it may get overwritten in sim_t::init
+  seed = parent -> seed;
+
+  parent -> add_relative( this );
+}
+
+sim_t::sim_t( sim_t* p, int index, sim_control_t* control ) : sim_t()
+{
+  assert( p && control );
+
+  parent = p;
+  thread_index = index;
+
+  // Use specialized control for setup
+  setup( control );
+
+  // Inherit 'scaling' settings from parent because these are set outside of the config file
+  assert( parent -> scaling );
+  scaling -> scale_stat  = parent -> scaling -> scale_stat;
+  scaling -> scale_value = parent -> scaling -> scale_value;
+
+  // Inherit reporting directives from parent
+  report_progress = parent -> report_progress;
+
+  // Inherit 'plot' settings from parent because are set outside of the config file
+  enchant = parent -> enchant;
+
+  // While we inherit the parent seed, it may get overwritten in sim_t::init
+  seed = parent -> seed;
+
+  parent -> add_relative( this );
 }
 
 // sim_t::~sim_t ============================================================
@@ -2817,9 +2850,23 @@ void sim_t::partition()
 
   int num_children = threads - 1;
 
+  sim_control_t* child_control = nullptr;
+  // Filter out profileset-related options from the child sim control, since they are not going to
+  // use them anyhow. This significantly speeds up child creation in situations where the input
+  // profile is a very large set of profileset sims.
+  if ( profileset_map.size() > 0 )
+  {
+    child_control = profileset::filter_control( control );
+  }
+  else
+  {
+    child_control = control;
+  }
+
   for ( int i = 0; i < num_children; i++ )
   {
-    auto  child = new sim_t( this, i + 1 );
+    auto  child = new sim_t( this, i + 1, child_control );
+
     assert( child );
     children.push_back( child );
 
@@ -2845,6 +2892,13 @@ void sim_t::partition()
 
   for ( auto & child : children )
     child -> launch();
+
+  // Safe to do for now, since control is only referenced by sim_t::setup, which is called in the
+  // sim_t constructor.
+  if ( profileset_map.size() > 0 )
+  {
+    delete child_control;
+  }
 }
 
 // sim_t::execute ===========================================================

@@ -16,7 +16,6 @@
 // Elemental
 // - Verification
 // - Path of Flame spread mechanism (would be good to generalize this "nearby" spreading)
-// - At what point does Greater Lightning Elemental start aoeing?
 // Enhancement
 // T20
 // 2p - Does the triggering crash hit benefit from the buff?
@@ -2626,8 +2625,8 @@ struct greater_lightning_elemental_t : public shaman_pet_t
 {
   struct lightning_blast_t : public pet_spell_t<greater_lightning_elemental_t>
   {
-    lightning_blast_t( greater_lightning_elemental_t* p ) :
-      super( p, "lightning_blast", p -> find_spell( 191726 ) )
+    lightning_blast_t( greater_lightning_elemental_t* p, const std::string& options ) :
+      super( p, "lightning_blast", p -> find_spell( 191726 ), options )
     {
       ability_lag        = timespan_t::from_millis( 300 );
       ability_lag_stddev = timespan_t::from_millis( 25 );
@@ -2636,8 +2635,8 @@ struct greater_lightning_elemental_t : public shaman_pet_t
 
   struct chain_lightning_t : public pet_spell_t<greater_lightning_elemental_t>
   {
-    chain_lightning_t( greater_lightning_elemental_t* p ) :
-      super( p, "chain_lightning", p -> find_spell( 191732 ) )
+    chain_lightning_t( greater_lightning_elemental_t* p, const std::string& options) :
+      super( p, "chain_lightning", p -> find_spell( 191732 ), options )
     {
       if ( data().effectN( 1 ).chain_multiplier() != 0 )
       {
@@ -2656,8 +2655,8 @@ struct greater_lightning_elemental_t : public shaman_pet_t
 
   action_t* create_action( const std::string& name, const std::string& options_str ) override
   {
-    if ( name == "lightning_blast" ) return new lightning_blast_t( this );
-    if ( name == "chain_lightning" ) return new chain_lightning_t( this );
+    if ( name == "lightning_blast" ) return new lightning_blast_t( this, options_str );
+    if ( name == "chain_lightning" ) return new chain_lightning_t( this, options_str );
 
     return shaman_pet_t::create_action( name, options_str );
   }
@@ -2667,8 +2666,9 @@ struct greater_lightning_elemental_t : public shaman_pet_t
     shaman_pet_t::create_default_apl();
 
     action_priority_list_t* def = get_action_priority_list( "default" );
+
+    def -> add_action( "chain_lightning,if=spell_targets.chain_lightning>1" );
     def -> add_action( "lightning_blast" );
-    def -> add_action( "chain_lightning", "if=spell_targets.chain_lightning>1" );
   }
 };
 
@@ -5855,19 +5855,12 @@ struct shaman_totem_pet_t : public pet_t
   shaman_t* o()
   { return debug_cast< shaman_t* >( owner ); }
 
+  /*
+  //  Code to make a totem double dip on player multipliers.
+  //  As of 7.3.5 this is no longer needed for Liquid Magma Totem (Elemental)
   virtual double composite_player_multiplier( school_e school ) const override
-  {
-    double m = owner -> cache.player_multiplier( school );
-
-    // Shaman offensive totems double-dip on the legendary AOE ring damage buff, but do not
-    // contribute to explosion damage.
-    if ( owner -> buffs.legendary_aoe_ring && owner -> buffs.legendary_aoe_ring -> up() )
-    {
-      m *= 1.0 + owner -> buffs.legendary_aoe_ring -> default_value;
-    }
-
-    return m;
-  }
+  { return owner -> cache.player_multiplier( school ); }
+  //*/
 
   virtual double composite_spell_hit() const override
   { return owner -> cache.spell_hit(); }
@@ -7907,7 +7900,6 @@ void shaman_t::init_action_list_enhancement()
   core -> add_action( this, "Lightning Bolt", "if=variable.overcharge&debuff.exposed_elements.up" );
   core -> add_action( this, "Crash Lightning", "if=active_enemies>=4|(active_enemies>=2&talent.crashing_storm.enabled)" );
   core -> add_action( this, "Rockbiter" , "if=buff.force_of_the_mountain.up" );
-  core -> add_action( this, "Lightning Bolt", "if=talent.overcharge.enabled&variable.furyCheck45&maelstrom>=40" );
   core -> add_action( this, "Lava Lash", "if=(buff.hot_hand.react&((variable.akainuEquipped&buff.frostbrand.up)|(!variable.akainuEquipped)))" );
   core -> add_action( this, "Lava Lash", "if=(maelstrom>=50&variable.OCPool70&variable.furyCheck80&debuff.exposed_elements.up&debuff.lashing_flames.stack>90)" );
   core -> add_action( this, "Lightning Bolt", "if=variable.overcharge" );
@@ -8347,10 +8339,14 @@ double shaman_t::composite_player_pet_damage_multiplier( const action_state_t* s
 {
   double m = player_t::composite_player_pet_damage_multiplier( s );
 
+  // elemental buffs
   m *= 1.0 + artifact.stormkeepers_power.percent();
   m *= 1.0 + artifact.power_of_the_earthen_ring.percent();
-  m *= 1.0 + artifact.earthshattering_blows.percent();
   m *= 1.0 + spec.elemental_shaman -> effectN( 3 ).percent();
+
+  // enhancement buffs
+  m *= 1.0 + artifact.earthshattering_blows.percent();
+  m *= 1.0 + artifact.might_of_the_earthen_ring.percent();
   m *= 1.0 + spec.enhancement_shaman -> effectN( 3 ).percent();
 
   auto school = s -> action -> get_school();
