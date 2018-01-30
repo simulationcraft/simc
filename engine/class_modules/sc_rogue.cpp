@@ -3295,6 +3295,14 @@ struct goremaws_bite_strike_t : public rogue_attack_t
     weapon = w;
   }
 
+  void init() override
+  {
+    rogue_attack_t::init();
+
+    // 1/29/2018 - Weaponmaster procs a full second hit (MH + OH), so disallow strikes from triggering it individually
+    affected_by.weaponmaster = false;
+  }
+
   bool procs_insignia_of_ravenholdt() const override
   {
     // 1/15/2018 - Confirmed both Goremaw's Bite strikes proc Insignia hits in-game
@@ -3327,27 +3335,39 @@ struct goremaws_bite_t:  public rogue_attack_t
     rogue_attack_t::init();
 
     affected_by.shadow_blades = data().effectN( 4 ).trigger() -> affected_by( p() -> spec.shadow_blades -> effectN( 5 ) );
+
+    // 1/29/2018 - Weaponmaster procs a full second hit (MH + OH), so allow it to trigger from the driver even though it deals no damage
+    affected_by.weaponmaster = true;
   }
 
   void execute() override
   {
     rogue_attack_t::execute();
 
-    mh -> set_target( target );
-    mh -> schedule_execute();
+    // 1/29/2018 - Weaponmaster procs do refresh the energy gain buff, which allows it to gain 1 extra tick via pandemic
+    p() -> buffs.goremaws_bite -> trigger();
 
-    oh -> set_target( target );
-    oh -> schedule_execute();
-
-    if ( secondary_trigger != TRIGGER_WEAPONMASTER ) // As of 04/08/2017 it doesn't trigger the buff on the weaponmaster proc.
+    // 1/29/2018 - Weaponmaster procs don't trigger Feeding Frenzy (max stack of 3 on the buff)
+    if ( secondary_trigger != TRIGGER_WEAPONMASTER )
     {
-      p() -> buffs.goremaws_bite -> trigger();
-
       if ( p() -> artifact.feeding_frenzy.rank() )
       {
-        p() -> buffs.feeding_frenzy -> trigger( 3 ); // Note: Hardcoded to 3, nothing in spell data
+        p() -> buffs.feeding_frenzy -> trigger( p() -> buffs.feeding_frenzy -> data().initial_stacks() );
       }
     }
+  }
+
+  void impact( action_state_t* state ) override
+  {
+    rogue_attack_t::impact( state );
+
+    mh -> set_target( state->target );
+    mh -> execute();
+
+    // 1/29/2018 - Goremaw's Bite OH Strike can proc Weaponmaster
+    p() -> trigger_weaponmaster( state );
+    oh -> set_target( state->target );
+    oh -> execute();
   }
 };
 
@@ -4333,13 +4353,6 @@ struct shadow_blade_t : public rogue_attack_t
     background = true;
     may_glance = false;
     base_execute_time = w -> swing_time;
-  }
-
-  void init() override
-  {
-    rogue_attack_t::init();
-
-    affected_by.weaponmaster = true;
   }
 };
 
@@ -6395,8 +6408,7 @@ void rogue_t::trigger_weaponmaster( const action_state_t* s )
   }
 
   actions::rogue_attack_t* attack = cast_attack( s -> action );
-  if ( ! s -> action -> result_is_hit( s -> result ) || s -> result_amount <= 0 ||
-       ! attack -> affected_by.weaponmaster )
+  if ( ! s -> action -> result_is_hit( s -> result ) || ! attack -> affected_by.weaponmaster )
   {
     return;
   }
@@ -6412,6 +6424,13 @@ void rogue_t::trigger_weaponmaster( const action_state_t* s )
   }
 
   procs.weaponmaster -> occur();
+  cooldowns.weaponmaster -> start( talent.weaponmaster -> internal_cooldown() );
+
+  if ( sim -> debug )
+  {
+    sim -> out_debug.printf( "%s procs weaponmaster for %s", name(), s -> action -> name() );
+  }
+
   // Direct damage re-computes on execute
   if ( s -> result_type == DMG_DIRECT )
   {
@@ -6425,8 +6444,6 @@ void rogue_t::trigger_weaponmaster( const action_state_t* s )
     weaponmaster_dot_strike -> set_target( s -> target );
     weaponmaster_dot_strike -> schedule_execute();
   }
-
-  cooldowns.weaponmaster -> start( talent.weaponmaster -> internal_cooldown() );
 }
 
 void rogue_t::trigger_energetic_stabbing( const action_state_t* s )
@@ -8560,6 +8577,7 @@ void rogue_t::create_buffs()
                                     .tick_callback( [ this ]( buff_t* b, int, const timespan_t& ) {
                                       resource_gain( RESOURCE_ENERGY, b -> data().effectN( 2 ).resource( RESOURCE_ENERGY ), gains.goremaws_bite );
                                     } );
+  
   // Minors
   buffs.urge_to_kill              = buff_creator_t( this, "urge_to_kill", artifact.urge_to_kill.data().effectN( 1 ).trigger() )
                                     .tick_callback( [ this ]( buff_t* b, int, const timespan_t& ) {
