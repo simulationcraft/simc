@@ -928,6 +928,7 @@ struct rogue_attack_t : public melee_attack_t
     bool lesser_adrenaline_rush_gcd;
     bool broadsides;
     bool t21_2pc_assassination;
+    bool hemorrhage;
   } affected_by;
 
   rogue_attack_t( const std::string& token, rogue_t* p,
@@ -1066,8 +1067,9 @@ struct rogue_attack_t : public melee_attack_t
     affected_by.alacrity = base_costs[ RESOURCE_COMBO_POINT ] > 0;
     affected_by.adrenaline_rush_gcd = data().affected_by( p() -> buffs.adrenaline_rush -> data().effectN( 3 ) );
     affected_by.lesser_adrenaline_rush_gcd = data().affected_by( p() -> buffs.t20_4pc_outlaw -> data().effectN( 3 ) );
-    affected_by.broadsides = data().affected_by(p()->buffs.broadsides->data().effectN(4));
+    affected_by.broadsides = data().affected_by( p() -> buffs.broadsides -> data().effectN( 4 ) );
     affected_by.t21_2pc_assassination = data().affected_by( p()->sets->set( ROGUE_ASSASSINATION, T21, B2 )->effectN( 1 ).trigger()->effectN( 1 ) );
+    affected_by.hemorrhage = data().affected_by( p() -> talent.hemorrhage -> effectN( 4 ) );
   }
 
   bool init_finished() override
@@ -1334,7 +1336,7 @@ struct rogue_attack_t : public melee_attack_t
     double m = melee_attack_t::composite_target_ta_multiplier( target );
 
     rogue_td_t* tdata = td( target );
-    if ( dbc::is_school( school, SCHOOL_PHYSICAL ) && tdata -> debuffs.hemorrhage -> up() )
+    if ( affected_by.hemorrhage && tdata -> debuffs.hemorrhage -> up() )
     {
       m *= tdata -> debuffs.hemorrhage -> check_value();
     }
@@ -1440,7 +1442,7 @@ struct secondary_ability_trigger_t : public event_t
     // current CP amount.
     else
     {
-      auto s = attack -> get_state();
+      action_state_t* s = attack -> get_state();
       s -> target = target;
       attack -> snapshot_state( s, attack -> amount_type( s ) );
       actions::rogue_attack_t::cast_state( s ) -> cp = cp;
@@ -1791,7 +1793,7 @@ struct greed_t : public rogue_attack_t
 
     if ( oh )
     {
-      oh -> target = execute_state -> target;
+      oh -> set_target( execute_state -> target );
       oh -> schedule_execute();
     }
   }
@@ -1928,7 +1930,7 @@ struct rogue_poison_t : public rogue_attack_t
     if ( this == p() -> active_lethal_poison )
       p() -> trigger_sinister_circulation( source_state );
 
-    target = source_state -> target;
+    set_target( source_state -> target );
     execute();
   }
 
@@ -2094,11 +2096,11 @@ struct deadly_poison_t : public rogue_poison_t
 
     if ( result_is_hit( state -> result ) )
     {
-      proc_dot -> target = state -> target;
+      proc_dot -> set_target( state -> target );
       proc_dot -> execute();
       if ( is_up )
       {
-        proc_instant -> target = state -> target;
+        proc_instant -> set_target( state -> target );
         proc_instant -> execute();
       }
 
@@ -2175,7 +2177,7 @@ struct wound_poison_t : public rogue_poison_t
   {
     rogue_poison_t::impact( state );
 
-    proc_dd -> target = state -> target;
+    proc_dd -> set_target( state -> target );
     proc_dd -> execute();
   }
 };
@@ -2212,7 +2214,7 @@ struct crippling_poison_t : public rogue_poison_t
   {
     rogue_poison_t::impact( state );
 
-    proc -> target = state -> target;
+    proc -> set_target( state -> target );
     proc -> execute();
   }
 };
@@ -2249,7 +2251,7 @@ struct leeching_poison_t : public rogue_poison_t
   {
     rogue_poison_t::impact( state );
 
-    proc -> target = state -> target;
+    proc -> set_target( state -> target );
     proc -> execute();
   }
 };
@@ -3331,10 +3333,10 @@ struct goremaws_bite_t:  public rogue_attack_t
   {
     rogue_attack_t::execute();
 
-    mh -> target = target;
+    mh -> set_target( target );
     mh -> schedule_execute();
 
-    oh -> target = target;
+    oh -> set_target( target );
     oh -> schedule_execute();
 
     if ( secondary_trigger != TRIGGER_WEAPONMASTER ) // As of 04/08/2017 it doesn't trigger the buff on the weaponmaster proc.
@@ -3570,10 +3572,10 @@ struct kingsbane_t : public rogue_attack_t
   {
     rogue_attack_t::impact( state );
 
-    mh -> target = state -> target;
+    mh -> set_target( state -> target );
     mh -> execute();
 
-    oh -> target = state -> target;
+    oh -> set_target( state -> target );
     // Note: As of 04/08/2017, Kingsbane OH Strike can proc Seal Fate (like Mutilate)
     p() -> trigger_seal_fate( state );
     oh -> execute();
@@ -3742,7 +3744,7 @@ struct pistol_shot_t : public shot_base_t
   {
     if ( p() -> buffs.blunderbuss -> up() )
     {
-      blunderbuss -> target = target;
+      blunderbuss -> set_target( target );
       blunderbuss -> execute();
     }
     else
@@ -3806,7 +3808,7 @@ struct run_through_t: public rogue_attack_t
 
     if ( rng().roll( p() -> artifact.greed.data().proc_chance() ) )
     {
-      p() -> greed -> target = execute_state -> target;
+      p() -> greed -> set_target( execute_state -> target );
       p() -> greed -> schedule_execute();
     }
 
@@ -3944,10 +3946,10 @@ struct mutilate_t : public rogue_attack_t
 
     if ( result_is_hit( execute_state -> result ) )
     {
-      mh_strike -> target = execute_state -> target;
+      mh_strike -> set_target( execute_state -> target );
       mh_strike -> execute();
 
-      oh_strike -> target = execute_state -> target;
+      oh_strike -> set_target( execute_state -> target );
       oh_strike -> execute();
     }
   }
@@ -4226,7 +4228,7 @@ struct saber_slash_t : public rogue_attack_t
 
     void execute() override
     {
-      spell -> target = target;
+      spell -> set_target( target );
       spell -> execute();
       spell -> saberslash_proc_event = nullptr;
 
@@ -4459,7 +4461,7 @@ struct shadowstrike_t : public rogue_attack_t
 
     void execute() override
     {
-      rogue -> soul_rip -> target = target;
+      rogue -> soul_rip -> set_target( target );
       rogue -> soul_rip -> schedule_execute();
     }
   };
@@ -6120,7 +6122,7 @@ void rogue_t::trigger_main_gauche( const action_state_t* state, double chance )
   if ( ! rng().roll( chance ) )
     return;
 
-  active_main_gauche -> target = state -> target;
+  active_main_gauche -> set_target( state -> target );
   active_main_gauche -> schedule_execute();
 }
 
@@ -6261,14 +6263,10 @@ void rogue_t::trigger_blade_flurry( const action_state_t* state )
   if ( state -> action -> n_targets() != 0 )
     return;
 
-  // Invalidate target cache if target changes
-  if ( active_blade_flurry -> target != state -> target )
-    active_blade_flurry -> target_cache.is_valid = false;
-  active_blade_flurry -> target = state -> target;
-
   // Note, unmitigated damage
   active_blade_flurry -> base_dd_min = state -> result_total;
   active_blade_flurry -> base_dd_max = state -> result_total;
+  active_blade_flurry -> set_target( state->target );
   active_blade_flurry -> execute();
 }
 
@@ -6424,7 +6422,7 @@ void rogue_t::trigger_weaponmaster( const action_state_t* s )
   else
   {
     weaponmaster_dot_strike -> base_dd_min = weaponmaster_dot_strike -> base_dd_max = s -> result_amount;
-    weaponmaster_dot_strike -> target = s -> target;
+    weaponmaster_dot_strike -> set_target( s -> target );
     weaponmaster_dot_strike -> schedule_execute();
   }
 
@@ -6545,7 +6543,7 @@ void rogue_t::trigger_poison_knives( const action_state_t* state )
   }
 
   poison_knives -> base_dd_min = poison_knives -> base_dd_max = total_damage;
-  poison_knives -> target = state -> target;
+  poison_knives -> set_target( state -> target );
   poison_knives -> execute();
 }
 
@@ -8463,9 +8461,8 @@ void rogue_t::create_buffs()
                                   .default_value( 1.0 + talent.elaborate_planning -> effectN( 1 ).trigger() -> effectN( 1 ).percent() )
                                   .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   // Outlaw
-  // Killing spree buff has only 2 sec duration, main spell has 3, check.
   buffs.killing_spree           = buff_creator_t( this, "killing_spree", talent.killing_spree )
-                                  .duration( talent.killing_spree -> duration() + timespan_t::from_seconds( 0.001 ) );
+                                  .duration( talent.killing_spree -> duration() );
   buffs.slice_and_dice          = buff_creator_t( this, "slice_and_dice", talent.slice_and_dice )
                                   .period( timespan_t::zero() )
                                   .refresh_behavior( BUFF_REFRESH_PANDEMIC )
