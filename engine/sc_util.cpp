@@ -317,28 +317,32 @@ const char* util::race_type_string( race_e type )
 {
   switch ( type )
   {
-    case RACE_NONE:      return "none";
-    case RACE_BEAST:     return "beast";
-    case RACE_BLOOD_ELF: return "blood_elf";
-    case RACE_DEMON:     return "demon";
-    case RACE_DRAENEI:   return "draenei";
-    case RACE_DRAGONKIN: return "dragonkin";
-    case RACE_DWARF:     return "dwarf";
-    case RACE_GIANT:     return "giant";
-    case RACE_GNOME:     return "gnome";
-    case RACE_HUMAN:     return "human";
-    case RACE_HUMANOID:  return "humanoid";
-    case RACE_NIGHT_ELF: return "night_elf";
-    case RACE_ORC:       return "orc";
-    case RACE_TAUREN:    return "tauren";
-    case RACE_TROLL:     return "troll";
-    case RACE_UNDEAD:    return "undead";
-    case RACE_GOBLIN:    return "goblin";
-    case RACE_WORGEN:    return "worgen";
-    case RACE_PANDAREN:  return "pandaren";
+    case RACE_NONE:               return "none";
+    case RACE_BEAST:              return "beast";
+    case RACE_BLOOD_ELF:          return "blood_elf";
+    case RACE_DEMON:              return "demon";
+    case RACE_DRAENEI:            return "draenei";
+    case RACE_DRAGONKIN:          return "dragonkin";
+    case RACE_DWARF:              return "dwarf";
+    case RACE_GIANT:              return "giant";
+    case RACE_GNOME:              return "gnome";
+    case RACE_HUMAN:              return "human";
+    case RACE_HUMANOID:           return "humanoid";
+    case RACE_NIGHT_ELF:          return "night_elf";
+    case RACE_ORC:                return "orc";
+    case RACE_TAUREN:             return "tauren";
+    case RACE_TROLL:              return "troll";
+    case RACE_UNDEAD:             return "undead";
+    case RACE_GOBLIN:             return "goblin";
+    case RACE_WORGEN:             return "worgen";
+    case RACE_PANDAREN:           return "pandaren";
     case RACE_PANDAREN_ALLIANCE:  return "pandaren_alliance";
-    case RACE_PANDAREN_HORDE:  return "pandaren_horde";
-    default:             return "unknown";
+    case RACE_PANDAREN_HORDE:     return "pandaren_horde";
+    case RACE_VOIDELF:            return "voidelf";
+    case RACE_HIGHMOUNTAINTAUREN: return "highmountaintauren";
+    case RACE_LIGHTFORGEDDRAENEI: return "lightforgeddraenei";
+    case RACE_NIGHTBORNE:         return "nightborne";
+    default:                      return "unknown";
   }
 }
 
@@ -1716,6 +1720,10 @@ unsigned util::race_id( race_e race )
     case RACE_PANDAREN: return 24;
     case RACE_PANDAREN_ALLIANCE: return 25;
     case RACE_PANDAREN_HORDE: return 26;
+    case RACE_NIGHTBORNE: return 27;
+    case RACE_HIGHMOUNTAINTAUREN: return 28;
+    case RACE_VOIDELF: return 29;
+    case RACE_LIGHTFORGEDDRAENEI: return 30;
     default: return 0;
   }
 }
@@ -1831,6 +1839,10 @@ race_e util::translate_race_id( int rid )
     case 24: return RACE_PANDAREN;
     case 25: return RACE_PANDAREN_ALLIANCE;
     case 26: return RACE_PANDAREN_HORDE;
+    case 27: return RACE_NIGHTBORNE;
+    case 28: return RACE_HIGHMOUNTAINTAUREN;
+    case 29: return RACE_VOIDELF;
+    case 30: return RACE_LIGHTFORGEDDRAENEI;
   }
 
   return RACE_NONE;
