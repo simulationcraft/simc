@@ -4256,7 +4256,7 @@ struct player_t : public actor_t
     const spell_data_t* brawn;
     const spell_data_t* endurance;
     const spell_data_t* viciousness;
-    const spell_data_t* arcane_affinity;
+    const spell_data_t* magical_affinity;
     const spell_data_t* mountaineer;
   } racials;
 

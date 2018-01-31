@@ -1975,23 +1975,8 @@ void player_t::init_spells()
   racials.brawn                   = find_racial_spell( "Brawn" );
   racials.endurance               = find_racial_spell( "Endurance" );
   racials.viciousness             = find_racial_spell( "Viciousness" );
-  // TODO(mserrano): why isn't find_racial_spell working for these?
-  if ( race == RACE_NIGHTBORNE )
-  {
-    racials.arcane_affinity         = find_spell( 255665 );
-  }
-  else
-  {
-    racials.arcane_affinity         = spell_data_t::not_found();
-  }
-  if ( race == RACE_HIGHMOUNTAINTAUREN )
-  {
-    racials.mountaineer             = find_spell( 255658 );
-  }
-  else
-  {
-    racials.mountaineer             = spell_data_t::not_found();
-  }
+  racials.magical_affinity        = find_racial_spell( "Magical Affinity" );
+  racials.mountaineer             = find_racial_spell( "Mountaineer" );
 
   if ( ! is_enemy() )
   {
@@ -3408,8 +3393,8 @@ double player_t::composite_player_multiplier( school_e  school  ) const
     m *= 1.0 + buffs.damage_done -> check_stack_value();
   }
 
-  // TODO(mserrano): confirm that this is multiplicative
-  m *= 1.0 + racials.arcane_affinity -> effectN( 1 ).percent();
+  if ( school != SCHOOL_PHYSICAL )
+    m *= 1.0 + racials.magical_affinity -> effectN( 1 ).percent();
 
   return m;
 }
