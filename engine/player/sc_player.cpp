@@ -6781,7 +6781,7 @@ struct lights_judgment_t : public racial_spell_t
     lights_judgment_damage_t( player_t* p ) :
       spell_t( "lights_judgment_damage", p, p -> find_spell( 256893 ) )
     {
-      background = true;
+      background = may_crit = true;
       aoe = -1;
     }
 
