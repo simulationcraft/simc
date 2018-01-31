@@ -3593,7 +3593,6 @@ double player_t::composite_rating_multiplier( rating_e rating ) const
     case RATING_HEAL_VERSATILITY:
     case RATING_MITIGATION_VERSATILITY:
       v *= 1.0 + racials.the_human_spirit -> effectN( 1 ).percent();
-      v *= 1.0 + racials.mountaineer -> effectN( 1 ).percent();
       break;
     default:
       break;
@@ -3630,7 +3629,9 @@ double player_t::composite_rating( rating_e rating ) const
     case RATING_DAMAGE_VERSATILITY:
     case RATING_HEAL_VERSATILITY:
     case RATING_MITIGATION_VERSATILITY:
-      v = current.stats.versatility_rating; break;
+      v = current.stats.versatility_rating;
+      v += racials.mountaineer -> effectN( 2 ).average( this );
+      break;
     case RATING_EXPERTISE:
       v = current.stats.expertise_rating; break;
     case RATING_DODGE:
@@ -6800,7 +6801,7 @@ struct lights_judgment_t : public racial_spell_t
       auto sp = composite_spell_power() * player -> composite_spell_power_multiplier();
 
       // Hardcoded into the tooltip
-      return ap >= sp ? 6.25 : 0.0;
+      return ap >= sp ? 16.0 : 0.0;
     }
 
     double spell_direct_power_coefficient( const action_state_t* ) const override
@@ -6809,7 +6810,7 @@ struct lights_judgment_t : public racial_spell_t
       auto sp = composite_spell_power() * player -> composite_spell_power_multiplier();
 
       // Hardcoded into the tooltip
-      return sp > ap ? 5.0 : 0.0;
+      return sp > ap ? 12.0 : 0.0;
     }
   };
 
