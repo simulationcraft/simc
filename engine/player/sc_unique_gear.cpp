@@ -3885,6 +3885,11 @@ void unique_gear::initialize_racial_effects( player_t* player )
   unsigned rid = util::race_id( player -> race );
   unsigned cid = util::class_id( player -> type );
 
+  if ( rid == 0 )
+  {
+    return;
+  }
+
   // Iterate over all race spells for the player
   for ( unsigned n = 0; n < player -> dbc.race_ability_size(); ++n )
   {
