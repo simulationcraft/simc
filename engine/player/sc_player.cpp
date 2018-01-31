@@ -1713,7 +1713,7 @@ std::string player_t::init_use_racial_actions( const std::string& append )
       buffer += "/arcane_torrent";
       race_action_found = true;
       break;
-    case RACE_LIGHTFORGEDDRAENEI:
+    case RACE_LIGHTFORGED_DRAENEI:
       buffer += "/lights_judgment";
       race_action_found = true;
     default: break;
