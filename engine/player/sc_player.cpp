@@ -1975,8 +1975,23 @@ void player_t::init_spells()
   racials.brawn                   = find_racial_spell( "Brawn" );
   racials.endurance               = find_racial_spell( "Endurance" );
   racials.viciousness             = find_racial_spell( "Viciousness" );
-  racials.arcane_affinity         = find_racial_spell( "Arcane Affinity", RACE_NIGHTBORNE );
-  racials.mountaineer             = find_racial_spell( "Mountaineer" );
+  // TODO(mserrano): why isn't find_racial_spell working for these?
+  if ( race == RACE_NIGHTBORNE )
+  {
+    racials.arcane_affinity         = find_spell( 255665 );
+  }
+  else
+  {
+    racials.arcane_affinity         = spell_data_t::not_found();
+  }
+  if ( race == RACE_HIGHMOUNTAINTAUREN )
+  {
+    racials.mountaineer             = find_spell( 255658 );
+  }
+  else
+  {
+    racials.mountaineer             = spell_data_t::not_found();
+  }
 
   if ( ! is_enemy() )
   {
