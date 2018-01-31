@@ -1975,6 +1975,8 @@ void player_t::init_spells()
   racials.brawn                   = find_racial_spell( "Brawn" );
   racials.endurance               = find_racial_spell( "Endurance" );
   racials.viciousness             = find_racial_spell( "Viciousness" );
+  racials.arcane_affinity         = find_racial_spell( "Arcane Affinity", RACE_NIGHTBORNE );
+  racials.mountaineer             = find_racial_spell( "Mountaineer" );
 
   if ( ! is_enemy() )
   {
@@ -3282,6 +3284,8 @@ double player_t::composite_damage_versatility() const
     cdv += buffs.dmf_well_fed -> check_value();
   }
 
+  cdv += racials.mountaineer -> effectN( 1 ).base_value(); // TODO(mserrano): is this correct?
+
   return cdv;
 }
 
@@ -3390,6 +3394,9 @@ double player_t::composite_player_multiplier( school_e  school  ) const
   {
     m *= 1.0 + buffs.damage_done -> check_stack_value();
   }
+
+  // TODO(mserrano): confirm that this is multiplicative
+  m *= 1.0 + racials.arcane_affinity -> effectN( 1 ).percent();
 
   return m;
 }

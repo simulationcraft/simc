@@ -4256,6 +4256,8 @@ struct player_t : public actor_t
     const spell_data_t* brawn;
     const spell_data_t* endurance;
     const spell_data_t* viciousness;
+    const spell_data_t* arcane_affinity;
+    const spell_data_t* mountaineer;
   } racials;
 
   struct passives_t
@@ -4381,7 +4383,7 @@ struct player_t : public actor_t
   virtual double composite_dodge() const;
   virtual double composite_parry() const;
   virtual double composite_block() const;
-          double composite_block_dr( double extra_block ) const;
+  double composite_block_dr( double extra_block ) const;
   virtual double composite_block_reduction() const;
   virtual double composite_crit_block() const;
   virtual double composite_crit_avoidance() const;
