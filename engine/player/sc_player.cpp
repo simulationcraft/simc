@@ -3299,8 +3299,6 @@ double player_t::composite_damage_versatility() const
     cdv += buffs.dmf_well_fed -> check_value();
   }
 
-  cdv += racials.mountaineer -> effectN( 1 ).base_value(); // TODO(mserrano): is this correct?
-
   return cdv;
 }
 
@@ -3647,6 +3645,7 @@ double player_t::composite_rating_multiplier( rating_e rating ) const
     case RATING_HEAL_VERSATILITY:
     case RATING_MITIGATION_VERSATILITY:
       v *= 1.0 + racials.the_human_spirit -> effectN( 1 ).percent();
+      v *= 1.0 + racials.mountaineer -> effectN( 1 ).percent();
       break;
     default:
       break;
