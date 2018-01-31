@@ -79,38 +79,6 @@ struct resource_threshold_event_t : public event_t
   }
 };
 
-struct touch_of_the_grave_spell_t : public spell_t
-{
-  touch_of_the_grave_spell_t( player_t* p, const spell_data_t* spell ) :
-    spell_t( "touch_of_the_grave", p, spell )
-  {
-    background = may_crit = true;
-    base_dd_min = base_dd_max = 0;
-    attack_power_mod.direct = 1.25;
-    spell_power_mod.direct = 1.0;
-  }
-
-  double attack_direct_power_coefficient( const action_state_t* ) const override
-  {
-    if ( composite_attack_power() >= composite_spell_power() )
-    {
-      return attack_power_mod.direct;
-    }
-
-    return 0;
-  }
-
-  double spell_direct_power_coefficient( const action_state_t* ) const override
-  {
-    if ( composite_spell_power() > composite_attack_power() )
-    {
-      return spell_power_mod.direct;
-    }
-
-    return 0;
-  }
-};
-
 // Execute Pet Action =======================================================
 
 struct execute_pet_action_t : public action_t
@@ -1476,16 +1444,6 @@ bool player_t::create_special_effects()
   if ( sim -> debug )
     sim -> out_debug.printf( "Creating special effects for player (%s)", name() );
 
-  const spell_data_t* totg = find_racial_spell( "Touch of the Grave" );
-  if ( totg -> ok() )
-  {
-    special_effect_t* effect = new special_effect_t( this );
-    effect -> type = SPECIAL_EFFECT_EQUIP;
-    effect -> spell_id = totg -> id();
-    effect -> execute_action = new touch_of_the_grave_spell_t( this, totg -> effectN( 1 ).trigger() );
-    special_effects.push_back( effect );
-  }
-
   // Initialize the buff and callback for the 7.2 "infinite" artifact power
   expansion::legion::initialize_concordance( *this );
 
@@ -1521,6 +1479,7 @@ bool player_t::create_special_effects()
     special_effects.push_back( new special_effect_t( effect ) );
   }
 
+  unique_gear::initialize_racial_effects( this );
   unique_gear::initialize_artifact_powers( this );
 
   // Once all special effects are first-phase initialized, do a pass to first-phase initialize any
