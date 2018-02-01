@@ -1799,7 +1799,7 @@ public:
     // Blizzard (190356) always consumes Ice Floes charge, even when it's instant.
     if ( affected_by.ice_floes
       && p() -> talents.ice_floes -> ok()
-      && ( time_to_execute > timespan_t::zero() || p() -> bugs && id == 190356 )
+      && ( time_to_execute > timespan_t::zero() || ( p() -> bugs && id == 190356 ) )
       && p() -> buffs.ice_floes -> up() )
     {
       p() -> buffs.ice_floes -> decrement();
