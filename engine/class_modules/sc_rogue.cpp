@@ -248,7 +248,7 @@ struct rogue_t : public player_t
     buff_t* shark_infested_waters;
     buff_t* true_bearing;
     // Subtlety
-    buff_t* focused_shurikens;
+    buff_t* shuriken_combo;
     buff_t* shadow_blades;
     buff_t* shadow_dance;
     buff_t* symbols_of_death;
@@ -2970,7 +2970,7 @@ struct eviscerate_t : public rogue_attack_t
 
     m *= 1.0 + p() -> buffs.finality_eviscerate -> stack_value();
 
-    m *= 1.0 + p() -> buffs.focused_shurikens -> check_stack_value();
+    m *= 1.0 + p() -> buffs.shuriken_combo -> check_stack_value();
 
     return m;
   }
@@ -3005,9 +3005,9 @@ struct eviscerate_t : public rogue_attack_t
       p() -> buffs.feeding_frenzy -> decrement();
     }
 
-    if ( p() -> buffs.focused_shurikens -> up() )
+    if ( p() -> buffs.shuriken_combo -> up() )
     {
-      p() -> buffs.focused_shurikens -> expire();
+      p() -> buffs.shuriken_combo -> expire();
     }
   }
 };
@@ -4632,7 +4632,7 @@ struct shuriken_storm_t: public rogue_attack_t
 
     if ( p() -> spec.shuriken_combo -> ok() && execute_state -> n_targets > 1 )
     {
-      p() -> buffs.focused_shurikens -> trigger((int)(execute_state -> n_targets) - 1);
+      p() -> buffs.shuriken_combo -> trigger((int)(execute_state -> n_targets) - 1);
     }
   }
 
@@ -8444,7 +8444,7 @@ void rogue_t::create_buffs()
                                 .refresh_behavior( BUFF_REFRESH_PANDEMIC );
   buffs.roll_the_bones        = new buffs::roll_the_bones_t( this, rtb_creator );
   // Subtlety
-  buffs.focused_shurikens     = buff_creator_t( this, "focused_shurikens", find_spell( 245640 ) )
+  buffs.shuriken_combo        = buff_creator_t( this, "shuriken_combo", find_spell( 245640 ) )
                                 .default_value( find_spell( 245640 ) -> effectN( 1 ).percent() );
   buffs.shadow_blades         = new buffs::shadow_blades_t( this );
   buffs.shadow_dance          = new buffs::shadow_dance_t( this );
