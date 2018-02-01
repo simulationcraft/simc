@@ -6826,6 +6826,8 @@ struct lights_judgment_t : public racial_spell_t
     {
       damage = new lights_judgment_damage_t( p );
     }
+
+    add_child( damage );
   }
 
   // Missile travels for 3 seconds according to tooltip
