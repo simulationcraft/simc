@@ -368,7 +368,7 @@ race_e util::parse_race_type( const std::string &name )
 
   // TODO: Remove these once people had time to update their simc addons.
   if ( name == "voidelf" )            return RACE_VOID_ELF;
-  if ( name == "lightforgedraenei" )  return RACE_LIGHTFORGED_DRAENEI;
+  if ( name == "lightforgeddraenei" ) return RACE_LIGHTFORGED_DRAENEI;
   if ( name == "highmountaintauren" ) return RACE_HIGHMOUNTAIN_TAUREN;
 
   return parse_enum<race_e, RACE_NONE, RACE_MAX, race_type_string>( name );
