@@ -68,6 +68,8 @@ actions.burn+=/arcane_power
 actions.burn+=/blood_fury
 actions.burn+=/berserking
 actions.burn+=/arcane_torrent
+actions.burn+=/lights_judgment
+actions.burn+=/arcane_pulse
 # For Troll/Orc, it's best to sync potion with their racial buffs.
 actions.burn+=/potion,if=buff.arcane_power.up&(buff.berserking.up|buff.blood_fury.up|!(race.troll|race.orc))
 # Pops any on-use items, e.g., Tarnished Sentinel Medallion.

@@ -31,9 +31,13 @@ actions+=/use_item,name=apocalypse_drive
 actions+=/blood_fury
 actions+=/berserking
 actions+=/arcane_torrent
+actions+=/lights_judgment
+actions+=/arcane_pulse
 actions+=/blood_fury
 actions+=/berserking
 actions+=/arcane_torrent
+actions+=/lights_judgment
+actions+=/arcane_pulse
 actions+=/call_action_list,name=prot
 
 # This is a high-DPS (but low-survivability) configuration.
@@ -43,6 +47,8 @@ actions.max_dps+=/use_item,name=apocalypse_drive
 actions.max_dps+=/blood_fury
 actions.max_dps+=/berserking
 actions.max_dps+=/arcane_torrent
+actions.max_dps+=/lights_judgment
+actions.max_dps+=/arcane_pulse
 
 # This is a high-survivability (but low-DPS) configuration.
 # Invoke by adding "actions+=/run_action_list,name=max_survival" to the beginning of the default APL.
@@ -51,6 +57,8 @@ actions.max_survival+=/use_item,name=apocalypse_drive
 actions.max_survival+=/blood_fury
 actions.max_survival+=/berserking
 actions.max_survival+=/arcane_torrent
+actions.max_survival+=/lights_judgment
+actions.max_survival+=/arcane_pulse
 
 actions.prot=shield_of_the_righteous,if=!talent.seraphim.enabled&(action.shield_of_the_righteous.charges>2)&!(debuff.eye_of_tyr.up&buff.aegis_of_light.up&buff.ardent_defender.up&buff.guardian_of_ancient_kings.up&buff.divine_shield.up&buff.potion.up)
 actions.prot+=/bastion_of_light,if=!talent.seraphim.enabled&talent.bastion_of_light.enabled&action.shield_of_the_righteous.charges<1

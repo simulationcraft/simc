@@ -66,6 +66,8 @@ actions.cooldowns+=/use_items
 actions.cooldowns+=/blood_fury
 actions.cooldowns+=/berserking
 actions.cooldowns+=/arcane_torrent
+actions.cooldowns+=/lights_judgment
+actions.cooldowns+=/arcane_pulse
 
 actions.movement=blink,if=movement.distance>10
 actions.movement+=/ice_floes,if=buff.ice_floes.down
