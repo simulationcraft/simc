@@ -7525,7 +7525,7 @@ void rogue_t::init_action_list()
     for ( size_t i = 0; i < racial_actions.size(); i++ )
     {
       if ( racial_actions[i] == "arcane_torrent" )
-        cds -> add_action( racial_actions[i] + ",if=stealthed.rogue&energy.deficit>70" );
+        cds -> add_action( racial_actions[i] + ",if=energy.deficit>70" );
       else if ( racial_actions[i] == "arcane_pulse" )
         continue; // Manually added
       else
