@@ -7285,6 +7285,7 @@ void rogue_t::init_action_list()
     def -> add_action( "call_action_list,name=maintain" );
     def -> add_action( "call_action_list,name=finish,if=(!talent.exsanguinate.enabled|cooldown.exsanguinate.remains>2)" );
     def -> add_action( "call_action_list,name=build,if=combo_points.deficit>1+talent.anticipation.enabled*2|energy.deficit<=25+variable.energy_regen_combined" );
+    def -> add_action( "arcane_pulse");
 
     // Cooldowns
     action_priority_list_t* cds = get_action_priority_list( "cds", "Cooldowns" );
@@ -7309,6 +7310,8 @@ void rogue_t::init_action_list()
     {
       if ( racial_actions[i] == "arcane_torrent" )
         cds -> add_action( racial_actions[i] + ",if=dot.kingsbane.ticking&!buff.envenom.up&energy.deficit>=15+variable.energy_regen_combined*gcd.remains*1.1" );
+      else if ( racial_actions[i] == "arcane_pulse" )
+        continue; // Manually added
       else
         cds -> add_action( racial_actions[i] + ",if=debuff.vendetta.up" );
     }
@@ -7402,6 +7405,7 @@ void rogue_t::init_action_list()
     def -> add_action( "call_action_list,name=build" );
     def -> add_action( "call_action_list,name=finish,if=!variable.ss_useable" );
     def -> add_action( this, "Gouge", "if=talent.dirty_tricks.enabled&combo_points.deficit>=1", "Gouge is used as a CP Generator while nothing else is available and you have Dirty Tricks talent. It's unlikely that you'll be able to do this optimally in-game since it requires to move in front of the target, but it's here so you can quantifiy its value." );
+    def -> add_action( "arcane_pulse" );
 
     // Builders
     action_priority_list_t* build = get_action_priority_list( "build", "Builders" );
@@ -7435,6 +7439,8 @@ void rogue_t::init_action_list()
     {
       if ( racial_actions[i] == "arcane_torrent" )
         cds -> add_action( racial_actions[i] + ",if=energy.deficit>40" );
+      else if ( racial_actions[i] == "arcane_pulse" )
+        continue; // Manually added
       else
         cds -> add_action( racial_actions[i] );
     }
@@ -7481,6 +7487,7 @@ void rogue_t::init_action_list()
     def -> add_action( "call_action_list,name=finish,if=variable.dsh_dfa&equipped.the_first_of_the_dead&dot.nightblade.remains<=(cooldown.symbols_of_death.remains+10)&cooldown.symbols_of_death.remains<=2&combo_points>=2" );
     def -> add_action( "wait,sec=time_to_sht.5,if=combo_points=5&time_to_sht.5<=1&energy.deficit>=30&!buff.shadow_blades.up" );
     def -> add_action( "call_action_list,name=build,if=energy.deficit<=variable.stealth_threshold" );
+    def -> add_action( "arcane_pulse");
 
     // Builders
     action_priority_list_t* build = get_action_priority_list( "build", "Builders" );
@@ -7519,6 +7526,8 @@ void rogue_t::init_action_list()
     {
       if ( racial_actions[i] == "arcane_torrent" )
         cds -> add_action( racial_actions[i] + ",if=stealthed.rogue&energy.deficit>70" );
+      else if ( racial_actions[i] == "arcane_pulse" )
+        continue; // Manually added
       else
         cds -> add_action( racial_actions[i] + ",if=stealthed.rogue" );
     }
