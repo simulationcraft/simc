@@ -1716,9 +1716,7 @@ std::string player_t::init_use_racial_actions( const std::string& append )
     case RACE_LIGHTFORGED_DRAENEI:
       buffer += "/lights_judgment";
       race_action_found = true;
-    case RACE_NIGHTBORNE:
-      buffer += "/arcane_pulse";
-      race_action_found = true;
+      break;
     default: break;
   }
 
@@ -1738,7 +1736,6 @@ std::vector<std::string> player_t::get_racial_actions()
   actions.push_back( "berserking" );
   actions.push_back( "arcane_torrent" );
   actions.push_back( "lights_judgment" );
-  actions.push_back( "arcane_pulse" );
 
   return actions;
 }

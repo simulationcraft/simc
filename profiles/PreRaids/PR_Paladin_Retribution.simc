@@ -34,7 +34,6 @@ actions.cooldowns+=/blood_fury
 actions.cooldowns+=/berserking
 actions.cooldowns+=/arcane_torrent,if=(buff.crusade.up|buff.avenging_wrath.up)&holy_power=2&(cooldown.blade_of_justice.remains>gcd|cooldown.divine_hammer.remains>gcd)
 actions.cooldowns+=/lights_judgment
-actions.cooldowns+=/arcane_pulse
 actions.cooldowns+=/holy_wrath
 actions.cooldowns+=/shield_of_vengeance
 actions.cooldowns+=/avenging_wrath
@@ -70,7 +69,6 @@ actions.opener=blood_fury
 actions.opener+=/berserking
 actions.opener+=/arcane_torrent,if=!set_bonus.tier20_2pc
 actions.opener+=/lights_judgment
-actions.opener+=/arcane_pulse
 actions.opener+=/judgment
 actions.opener+=/blade_of_justice,if=equipped.137048|race.blood_elf|!cooldown.wake_of_ashes.up
 actions.opener+=/divine_hammer,if=equipped.137048|race.blood_elf|!cooldown.wake_of_ashes.up

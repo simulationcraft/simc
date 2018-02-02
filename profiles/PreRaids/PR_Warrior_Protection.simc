@@ -28,7 +28,6 @@ actions+=/blood_fury
 actions+=/berserking
 actions+=/arcane_torrent
 actions+=/lights_judgment
-actions+=/arcane_pulse
 actions+=/call_action_list,name=prot
 
 actions.prot=potion,name=old_war,if=target.time_to_die<25
