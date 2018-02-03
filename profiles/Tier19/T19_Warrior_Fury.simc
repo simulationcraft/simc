@@ -92,6 +92,7 @@ actions.single_target+=/execute,if=buff.stone_heart.react&((talent.inner_rage.en
 actions.single_target+=/bloodthirst
 actions.single_target+=/furious_slash,if=set_bonus.tier19_2pc&!talent.inner_rage.enabled
 actions.single_target+=/whirlwind,if=buff.wrecking_ball.react&buff.enrage.up
+actions.single_target+=/whirlwind,if=!buff.meat_cleaver.up&spell_targets.whirlwind=2
 actions.single_target+=/raging_blow
 actions.single_target+=/furious_slash
 
