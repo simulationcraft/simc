@@ -1613,7 +1613,7 @@ double warlock_pet_t::composite_player_multiplier( school_e school ) const
 
   if ( o() -> specialization() == WARLOCK_AFFLICTION )
   {
-    m *= 1.0 + o() -> artifact.soulstealer.percent() * ( o() -> buffs.deadwind_harvester -> check() ? 2.0 : 1.0 );
+    m *= 1.0 + o() -> artifact.soulstealer.percent();
     m *= 1.0 + o() -> artifact.degradation_of_the_black_harvest.percent();
   }
 
@@ -6314,7 +6314,7 @@ double warlock_t::composite_player_multiplier( school_e school ) const
 
   if ( specialization() == WARLOCK_AFFLICTION )
   {
-    m *= 1.0 + artifact.soulstealer.percent() * ( buffs.deadwind_harvester -> check() ? 2.0 : 1.0 );
+    m *= 1.0 + artifact.soulstealer.percent();
     m *= 1.0 + artifact.degradation_of_the_black_harvest.percent();
   }
 
