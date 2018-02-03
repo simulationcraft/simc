@@ -7491,7 +7491,7 @@ void rogue_t::init_action_list()
 
     // Builders
     action_priority_list_t* build = get_action_priority_list( "build", "Builders" );
-    build -> add_action( this, "Shuriken Storm", "if=spell_targets.shuriken_storm>=2+buff.the_first_of_the_dead.up" );
+    build -> add_action( this, "Shuriken Storm", "if=spell_targets.shuriken_storm>=2+(buff.the_first_of_the_dead.up|buff.symbols_of_death.up|buff.master_of_subtlety.up)" );
     build -> add_talent( this, "Gloomblade" );
     build -> add_action( this, "Backstab" );
 
@@ -7545,7 +7545,7 @@ void rogue_t::init_action_list()
     action_priority_list_t* finish = get_action_priority_list( "finish", "Finishers" );
       // It is not worth to override a normal nightblade for a finality one outside of pandemic threshold, it is worth to wait the end of the finality to refresh it unless you already got the finality buff.
     finish -> add_action( this, "Nightblade", "if=(!talent.dark_shadow.enabled|!buff.shadow_dance.up)&target.time_to_die-remains>6&(mantle_duration=0|remains<=mantle_duration)&((refreshable&(!finality|buff.finality_nightblade.up|variable.dsh_dfa))|remains<tick_time*2)&(spell_targets.shuriken_storm<4&!variable.dsh_dfa|!buff.symbols_of_death.up)" );
-    finish -> add_action( this, "Nightblade", "cycle_targets=1,if=(!talent.death_from_above.enabled|set_bonus.tier19_2pc)&(!talent.dark_shadow.enabled|!buff.shadow_dance.up)&target.time_to_die-remains>12&mantle_duration=0&((refreshable&(!finality|buff.finality_nightblade.up|variable.dsh_dfa))|remains<tick_time*2)&(spell_targets.shuriken_storm<4&!variable.dsh_dfa|!buff.symbols_of_death.up)" );
+    finish -> add_action( this, "Nightblade", "cycle_targets=1,if=(!talent.dark_shadow.enabled|!buff.shadow_dance.up)&target.time_to_die-remains>12&mantle_duration=0&((refreshable&(!finality|buff.finality_nightblade.up|variable.dsh_dfa))|remains<tick_time*2)&(spell_targets.shuriken_storm<4&!variable.dsh_dfa|!buff.symbols_of_death.up)" );
     finish -> add_action( this, "Nightblade", "if=remains<cooldown.symbols_of_death.remains+10&cooldown.symbols_of_death.remains<=5+(combo_points=6)&target.time_to_die-remains>cooldown.symbols_of_death.remains+5" );
     finish -> add_talent( this, "Death from Above", "if=!talent.dark_shadow.enabled|(!buff.shadow_dance.up|spell_targets>=4)&(buff.symbols_of_death.up|cooldown.symbols_of_death.remains>=10+set_bonus.tier20_4pc*5)&buff.the_first_of_the_dead.remains<1&(buff.finality_eviscerate.up|spell_targets.shuriken_storm<4)" );
     finish -> add_action( this, "Eviscerate" );
