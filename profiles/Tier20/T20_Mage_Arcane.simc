@@ -62,13 +62,13 @@ actions.burn+=/stop_burn_phase,if=prev_gcd.1.evocation&cooldown.evocation.charge
 actions.burn+=/nether_tempest,if=refreshable|!ticking
 actions.burn+=/mark_of_aluneth
 actions.burn+=/mirror_image
+actions.burn+=/lights_judgment,if=buff.arcane_power.down
 # Prevents using RoP at super low mana.
 actions.burn+=/rune_of_power,if=mana.pct>30|(buff.arcane_power.up|cooldown.arcane_power.up)
 actions.burn+=/arcane_power
 actions.burn+=/blood_fury
 actions.burn+=/berserking
 actions.burn+=/arcane_torrent
-actions.burn+=/lights_judgment
 # For Troll/Orc, it's best to sync potion with their racial buffs.
 actions.burn+=/potion,if=buff.arcane_power.up&(buff.berserking.up|buff.blood_fury.up|!(race.troll|race.orc))
 # Pops any on-use items, e.g., Tarnished Sentinel Medallion.

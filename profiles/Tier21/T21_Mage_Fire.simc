@@ -47,14 +47,14 @@ actions.active_talents+=/cinderstorm,if=cooldown.combustion.remains<cast_time&(b
 actions.active_talents+=/dragons_breath,if=equipped.132863|(talent.alexstraszas_fury.enabled&!buff.hot_streak.react)
 actions.active_talents+=/living_bomb,if=active_enemies>1&buff.combustion.down
 
-actions.combustion_phase=rune_of_power,if=buff.combustion.down
+actions.combustion_phase=lights_judgment,if=buff.combustion.down
+actions.combustion_phase+=/rune_of_power,if=buff.combustion.down
 actions.combustion_phase+=/call_action_list,name=active_talents
 actions.combustion_phase+=/combustion
 actions.combustion_phase+=/potion
 actions.combustion_phase+=/blood_fury
 actions.combustion_phase+=/berserking
 actions.combustion_phase+=/arcane_torrent
-actions.combustion_phase+=/lights_judgment
 actions.combustion_phase+=/use_items
 actions.combustion_phase+=/flamestrike,if=(talent.flame_patch.enabled&active_enemies>2|active_enemies>4)&buff.hot_streak.react
 actions.combustion_phase+=/pyroblast,if=buff.kaelthas_ultimate_ability.react&buff.combustion.remains>execute_time
