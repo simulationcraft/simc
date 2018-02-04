@@ -42,7 +42,7 @@ CONFIG(openssl) {
   }
 }
 
-contains(QMAKE_CXX, clang++)|contains(QMAKE_CXX, g++) {
+contains(QMAKE_CXX, .+/clang\+\+)|contains(QMAKE_CXX, .+/g\+\+) {
   QMAKE_CXXFLAGS += -Wextra
   QMAKE_CXXFLAGS_RELEASE -= -O2
   QMAKE_CXXFLAGS_RELEASE += -O3 -ffast-math -fomit-frame-pointer -Os -fPIE
@@ -59,7 +59,7 @@ unix|macx {
 }
 
 macx {
-  contains(QMAKE_CXX, clang++) {
+  contains(QMAKE_CXX, .+/clang\+\+) {
     QMAKE_CXXFLAGS += -Wno-inconsistent-missing-override
   }
   LIBS += -framework Security
