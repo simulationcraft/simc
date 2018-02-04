@@ -7947,11 +7947,15 @@ void mage_t::apl_arcane()
   burn  -> add_talent( this, "Nether Tempest", "if=refreshable|!ticking", "Use during pandemic refresh window or if the dot is missing." );
   burn  -> add_action( this, "Mark of Aluneth" );
   burn  -> add_talent( this, "Mirror Image" );
+  burn  -> add_action( "lights_judgment,if=buff.arcane_power.down" );
   burn  -> add_talent( this, "Rune of Power", "if=mana.pct>30|(buff.arcane_power.up|cooldown.arcane_power.up)", "Prevents using RoP at super low mana." );
   burn  -> add_action( this, "Arcane Power" );
 
   for( size_t i = 0; i < racial_actions.size(); i++ )
   {
+    if ( racial_actions[ i ] == "lights_judgment" )
+      continue;  // Handled manually.
+
     burn -> add_action( racial_actions[i] );
   }
 
@@ -8016,13 +8020,17 @@ void mage_t::apl_fire()
   default_list -> add_action( "call_action_list,name=rop_phase,if=buff.rune_of_power.up&buff.combustion.down" );
   default_list -> add_action( "call_action_list,name=standard_rotation" );
 
+  combustion_phase -> add_action( "lights_judgment,if=buff.combustion.down" );
   combustion_phase -> add_talent( this, "Rune of Power", "if=buff.combustion.down" );
   combustion_phase -> add_action( "call_action_list,name=active_talents" );
   combustion_phase -> add_action( this, "Combustion" );
   combustion_phase -> add_action( "potion" );
 
-  for( size_t i = 0; i < racial_actions.size(); i++ )
+  for ( size_t i = 0; i < racial_actions.size(); i++ )
   {
+    if ( racial_actions[ i ] == "lights_judgment" )
+      continue;  // Handled manually.
+
     combustion_phase -> add_action( racial_actions[i] );
   }
 
