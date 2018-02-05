@@ -79,38 +79,6 @@ struct resource_threshold_event_t : public event_t
   }
 };
 
-struct touch_of_the_grave_spell_t : public spell_t
-{
-  touch_of_the_grave_spell_t( player_t* p, const spell_data_t* spell ) :
-    spell_t( "touch_of_the_grave", p, spell )
-  {
-    background = may_crit = true;
-    base_dd_min = base_dd_max = 0;
-    attack_power_mod.direct = 1.25;
-    spell_power_mod.direct = 1.0;
-  }
-
-  double attack_direct_power_coefficient( const action_state_t* ) const override
-  {
-    if ( composite_attack_power() >= composite_spell_power() )
-    {
-      return attack_power_mod.direct;
-    }
-
-    return 0;
-  }
-
-  double spell_direct_power_coefficient( const action_state_t* ) const override
-  {
-    if ( composite_spell_power() > composite_attack_power() )
-    {
-      return spell_power_mod.direct;
-    }
-
-    return 0;
-  }
-};
-
 // Execute Pet Action =======================================================
 
 struct execute_pet_action_t : public action_t
@@ -1476,16 +1444,6 @@ bool player_t::create_special_effects()
   if ( sim -> debug )
     sim -> out_debug.printf( "Creating special effects for player (%s)", name() );
 
-  const spell_data_t* totg = find_racial_spell( "Touch of the Grave" );
-  if ( totg -> ok() )
-  {
-    special_effect_t* effect = new special_effect_t( this );
-    effect -> type = SPECIAL_EFFECT_EQUIP;
-    effect -> spell_id = totg -> id();
-    effect -> execute_action = new touch_of_the_grave_spell_t( this, totg -> effectN( 1 ).trigger() );
-    special_effects.push_back( effect );
-  }
-
   // Initialize the buff and callback for the 7.2 "infinite" artifact power
   expansion::legion::initialize_concordance( *this );
 
@@ -1521,6 +1479,7 @@ bool player_t::create_special_effects()
     special_effects.push_back( new special_effect_t( effect ) );
   }
 
+  unique_gear::initialize_racial_effects( this );
   unique_gear::initialize_artifact_powers( this );
 
   // Once all special effects are first-phase initialized, do a pass to first-phase initialize any
@@ -1754,9 +1713,10 @@ std::string player_t::init_use_racial_actions( const std::string& append )
       buffer += "/arcane_torrent";
       race_action_found = true;
       break;
-    case RACE_LIGHTFORGEDDRAENEI:
+    case RACE_LIGHTFORGED_DRAENEI:
       buffer += "/lights_judgment";
       race_action_found = true;
+      break;
     default: break;
   }
 
@@ -3634,7 +3594,6 @@ double player_t::composite_rating_multiplier( rating_e rating ) const
     case RATING_HEAL_VERSATILITY:
     case RATING_MITIGATION_VERSATILITY:
       v *= 1.0 + racials.the_human_spirit -> effectN( 1 ).percent();
-      v *= 1.0 + racials.mountaineer -> effectN( 1 ).percent();
       break;
     default:
       break;
@@ -3671,7 +3630,9 @@ double player_t::composite_rating( rating_e rating ) const
     case RATING_DAMAGE_VERSATILITY:
     case RATING_HEAL_VERSATILITY:
     case RATING_MITIGATION_VERSATILITY:
-      v = current.stats.versatility_rating; break;
+      v = current.stats.versatility_rating;
+      v += racials.mountaineer -> effectN( 2 ).average( this );
+      break;
     case RATING_EXPERTISE:
       v = current.stats.expertise_rating; break;
     case RATING_DODGE:
@@ -6822,7 +6783,7 @@ struct lights_judgment_t : public racial_spell_t
     lights_judgment_damage_t( player_t* p ) :
       spell_t( "lights_judgment_damage", p, p -> find_spell( 256893 ) )
     {
-      background = true;
+      background = may_crit = true;
       aoe = -1;
     }
 
@@ -6841,7 +6802,7 @@ struct lights_judgment_t : public racial_spell_t
       auto sp = composite_spell_power() * player -> composite_spell_power_multiplier();
 
       // Hardcoded into the tooltip
-      return ap >= sp ? 6.25 : 0.0;
+      return ap >= sp ? 16.0 : 0.0;
     }
 
     double spell_direct_power_coefficient( const action_state_t* ) const override
@@ -6850,7 +6811,7 @@ struct lights_judgment_t : public racial_spell_t
       auto sp = composite_spell_power() * player -> composite_spell_power_multiplier();
 
       // Hardcoded into the tooltip
-      return sp > ap ? 5.0 : 0.0;
+      return sp > ap ? 12.0 : 0.0;
     }
   };
 
@@ -6866,6 +6827,8 @@ struct lights_judgment_t : public racial_spell_t
     {
       damage = new lights_judgment_damage_t( p );
     }
+
+    add_child( damage );
   }
 
   // Missile travels for 3 seconds according to tooltip
@@ -6878,6 +6841,42 @@ struct lights_judgment_t : public racial_spell_t
 
     damage -> set_target( state -> target );
     damage -> execute();
+  }
+};
+
+// Arcane Pulse =============================================================
+
+struct arcane_pulse_t : public racial_spell_t
+{
+  arcane_pulse_t( player_t* p, const std::string& options_str ) :
+    racial_spell_t( p, "arcane_pulse", p -> find_racial_spell( "Arcane Pulse" ), options_str )
+  {
+    may_crit = true;
+    aoe = -1;
+  }
+
+  void init() override
+  {
+    spell_t::init();
+    snapshot_flags |= STATE_AP | STATE_SP | STATE_CRIT;
+  }
+
+  double attack_direct_power_coefficient( const action_state_t* ) const override
+  {
+    auto ap = composite_attack_power() * player -> composite_attack_power_multiplier();
+    auto sp = composite_spell_power() * player -> composite_spell_power_multiplier();
+
+    // Hardcoded into the tooltip
+    return ap >= sp ? 2.0 : 0.0;
+  }
+
+  double spell_direct_power_coefficient( const action_state_t* ) const override
+  {
+    auto ap = composite_attack_power() * player -> composite_attack_power_multiplier();
+    auto sp = composite_spell_power() * player -> composite_spell_power_multiplier();
+
+    // Hardcoded into the tooltip
+    return sp > ap ? 0.75 : 0.0;
   }
 };
 
@@ -7968,6 +7967,7 @@ struct pool_resource_t : public action_t
 action_t* player_t::create_action( const std::string& name,
                                    const std::string& options_str )
 {
+  if ( name == "arcane_pulse"       ) return new       arcane_pulse_t( this, options_str );
   if ( name == "arcane_torrent"     ) return new     arcane_torrent_t( this, options_str );
   if ( name == "berserking"         ) return new         berserking_t( this, options_str );
   if ( name == "blood_fury"         ) return new         blood_fury_t( this, options_str );

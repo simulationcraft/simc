@@ -7026,6 +7026,8 @@ void demon_hunter_t::apl_havoc()
 
   // Cooldown List
   action_priority_list_t* cd = get_action_priority_list("cooldown");
+  cd->add_action("arcane_torrent,if=!talent.demonic.enabled&fury.deficit>=15");
+  cd->add_action("arcane_torrent,if=talent.demonic.enabled&fury.deficit>=15&buff.metamorphosis.up");
   cd->add_action(this, "Metamorphosis", "if=!(talent.demonic.enabled|"
     "variable.pooling_for_meta|variable.waiting_for_nemesis|variable.waiting_for_chaos_blades)|target.time_to_die<25",
     "Use Metamorphosis when we are done pooling Fury and when we are not waiting for other cooldowns to sync.");
@@ -7036,6 +7038,7 @@ void demon_hunter_t::apl_havoc()
   cd->add_talent(this, "Nemesis", "if=!raid_event.adds.exists&"
     "(buff.chaos_blades.up|buff.metamorphosis.up|cooldown.metamorphosis.adjusted_remains<20|target.time_to_die<=60)");
   cd->add_talent(this, "Chaos Blades", "if=buff.metamorphosis.up|cooldown.metamorphosis.adjusted_remains>60|target.time_to_die<=duration");
+
   
   add_havoc_use_items(this, cd);
 

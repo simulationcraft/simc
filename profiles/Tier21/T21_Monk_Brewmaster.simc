@@ -40,6 +40,7 @@ actions+=/use_item,name=archimondes_hatred_reborn
 actions+=/potion
 actions+=/blood_fury
 actions+=/berserking
+actions+=/lights_judgment
 actions+=/exploding_keg
 actions+=/invoke_niuzao_the_black_ox,if=target.time_to_die>45
 actions+=/purifying_brew,if=stagger.heavy|(stagger.moderate&cooldown.brews.charges_fractional>=cooldown.brews.max_charges-0.5&buff.ironskin_brew.remains>=buff.ironskin_brew.duration*2.5)

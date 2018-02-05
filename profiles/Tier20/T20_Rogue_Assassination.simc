@@ -40,6 +40,7 @@ actions+=/run_action_list,name=aoe,if=spell_targets.fan_of_knives>2
 actions+=/call_action_list,name=maintain
 actions+=/call_action_list,name=finish,if=(!talent.exsanguinate.enabled|cooldown.exsanguinate.remains>2)
 actions+=/call_action_list,name=build,if=combo_points.deficit>1+talent.anticipation.enabled*2|energy.deficit<=25+variable.energy_regen_combined
+actions+=/arcane_pulse
 
 # AoE
 actions.aoe=envenom,if=!buff.envenom.up&combo_points>=cp_max_spend
@@ -64,6 +65,7 @@ actions.cds+=/use_item,name=specter_of_betrayal
 actions.cds+=/blood_fury,if=debuff.vendetta.up
 actions.cds+=/berserking,if=debuff.vendetta.up
 actions.cds+=/arcane_torrent,if=dot.kingsbane.ticking&!buff.envenom.up&energy.deficit>=15+variable.energy_regen_combined*gcd.remains*1.1
+actions.cds+=/lights_judgment,if=debuff.vendetta.up
 actions.cds+=/marked_for_death,target_if=min:target.time_to_die,if=target.time_to_die<combo_points.deficit*1.5|(raid_event.adds.in>40&combo_points.deficit>=cp_max_spend)
 actions.cds+=/vendetta,if=!talent.exsanguinate.enabled|dot.rupture.ticking
 actions.cds+=/exsanguinate,if=!set_bonus.tier20_4pc&(prev_gcd.1.rupture&dot.rupture.remains>4+4*cp_max_spend&!stealthed.rogue|dot.garrote.pmultiplier>1&!cooldown.vanish.up&buff.subterfuge.up)

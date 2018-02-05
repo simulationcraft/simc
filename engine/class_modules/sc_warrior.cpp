@@ -5252,6 +5252,7 @@ void warrior_t::apl_fury()
   single_target -> add_action( this, "Bloodthirst" );
   single_target -> add_action( this, "Furious Slash", "if=set_bonus.tier19_2pc&!talent.inner_rage.enabled" );
   single_target -> add_action( this, "Whirlwind", "if=buff.wrecking_ball.react&buff.enrage.up" );
+  single_target -> add_action( this, "Whirlwind", "if=!buff.meat_cleaver.up&spell_targets.whirlwind=2" );
   single_target -> add_action( this, "Raging Blow" );
   single_target -> add_action( this, "Furious Slash" );
 

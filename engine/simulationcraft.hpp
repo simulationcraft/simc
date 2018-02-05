@@ -4129,6 +4129,7 @@ struct player_t : public actor_t
     buff_t* damage_done;
     buff_t* darkflight;
     buff_t* devotion_aura;
+    buff_t* entropic_embrace;
     buff_t* exhaustion;
     buff_t* guardian_spirit;
     buff_t* blessing_of_sacrifice;
@@ -7595,6 +7596,9 @@ void initialize_special_effect_2( special_effect_t* effect );
 
 // Initialize generic Artifact traits
 void initialize_artifact_powers( player_t* );
+
+// Initialize special effects related to various race spells
+void initialize_racial_effects( player_t* );
 
 const item_data_t* find_consumable( const dbc_t& dbc, const std::string& name, item_subclass_consumable type );
 const item_data_t* find_item_by_spell( const dbc_t& dbc, unsigned spell_id );

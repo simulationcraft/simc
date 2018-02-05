@@ -6049,10 +6049,7 @@ void consumable::lemon_herb_filet( special_effect_t& effect )
 {
   double value = effect.driver() -> effectN( 1 ).percent();
 
-  race_e race = effect.player -> race;
-  if ( race == RACE_PANDAREN
-    || race == RACE_PANDAREN_ALLIANCE
-    || race == RACE_PANDAREN_HORDE )
+  if ( is_pandaren( effect.player -> race ) )
   {
     value *= 2.0;
   }

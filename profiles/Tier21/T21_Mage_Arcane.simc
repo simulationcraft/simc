@@ -62,6 +62,7 @@ actions.burn+=/stop_burn_phase,if=prev_gcd.1.evocation&cooldown.evocation.charge
 actions.burn+=/nether_tempest,if=refreshable|!ticking
 actions.burn+=/mark_of_aluneth
 actions.burn+=/mirror_image
+actions.burn+=/lights_judgment,if=buff.arcane_power.down
 # Prevents using RoP at super low mana.
 actions.burn+=/rune_of_power,if=mana.pct>30|(buff.arcane_power.up|cooldown.arcane_power.up)
 actions.burn+=/arcane_power
