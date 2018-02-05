@@ -7792,8 +7792,8 @@ expr_t* warlock_t::create_expression( action_t* a, const std::string& name_str )
               double t = 0;
               for(auto& pet : player.pet_list)
               {
-                  pets::warlock_pet_t *lock_pet = static_cast<pets::warlock_pet_t*> ( pet );
-                  if(lock_pet != NULL)
+                  pets::warlock_pet_t *lock_pet = dynamic_cast<pets::warlock_pet_t*> ( pet );
+                  if(lock_pet != nullptr)
                   {
                       if(lock_pet->is_grimoire_of_service)
                       {
@@ -7823,8 +7823,8 @@ expr_t* warlock_t::create_expression( action_t* a, const std::string& name_str )
         double t = 0;
         for ( auto& pet : player.pet_list )
         {
-          pets::warlock_pet_t *lock_pet = static_cast<pets::warlock_pet_t*> ( pet );
-          if ( lock_pet != NULL )
+          pets::warlock_pet_t *lock_pet = dynamic_cast<pets::warlock_pet_t*> ( pet );
+          if ( lock_pet != nullptr )
           {
             if ( !lock_pet->is_sleeping() )
             {
@@ -7963,8 +7963,8 @@ expr_t* warlock_t::create_expression( action_t* a, const std::string& name_str )
               double t = 0;
               for(auto& pet : player.pet_list)
               {
-                  pets::warlock_pet_t *lock_pet = static_cast<pets::warlock_pet_t*> ( pet );
-                  if(lock_pet != NULL)
+                  pets::warlock_pet_t *lock_pet = dynamic_cast<pets::warlock_pet_t*> ( pet );
+                  if(lock_pet != nullptr)
                   {
                       if(lock_pet->is_grimoire_of_service)
                       {
@@ -8120,8 +8120,8 @@ expr_t* warlock_t::create_expression( action_t* a, const std::string& name_str )
               double t = 500000;
               for(auto& pet : player.pet_list)
               {
-                  pets::warlock_pet_t *lock_pet = static_cast<pets::warlock_pet_t*> ( pet );
-                  if(lock_pet != NULL)
+                  pets::warlock_pet_t *lock_pet = dynamic_cast<pets::warlock_pet_t*> ( pet );
+                  if(lock_pet != nullptr)
                   {
                       if(lock_pet->is_grimoire_of_service)
                       {
@@ -8290,8 +8290,8 @@ expr_t* warlock_t::create_expression( action_t* a, const std::string& name_str )
               double t = -1;
               for(auto& pet : player.pet_list)
               {
-                  pets::warlock_pet_t *lock_pet = static_cast<pets::warlock_pet_t*> ( pet );
-                  if(lock_pet != NULL)
+                  pets::warlock_pet_t *lock_pet = dynamic_cast<pets::warlock_pet_t*> ( pet );
+                  if(lock_pet != nullptr)
                   {
                       if(lock_pet->is_grimoire_of_service)
                       {
