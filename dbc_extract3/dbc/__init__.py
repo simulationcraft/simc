@@ -10,7 +10,7 @@ import collections
 # end of the record.
 EXPANDED_HOTFIX_RECORDS = [ 'SpellEffect' ]
 
-DBCRecordInfo = collections.namedtuple('DBCRecordInfo', [ 'dbc_id', 'record_id', 'record_offset', 'record_size' ])
+DBCRecordInfo = collections.namedtuple('DBCRecordInfo', [ 'dbc_id', 'record_id', 'record_offset', 'record_size', 'parent_id' ])
 
 class DBCRecordData(collections.namedtuple('DBCRecordData', [ 'dbc_id', 'parent_id', 'record_data' ])):
     __slots__ = ()
