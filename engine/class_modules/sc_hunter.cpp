@@ -7263,19 +7263,19 @@ struct hunter_module_t: public module_t
 
   void register_hotfixes() const override
   {
-    hotfix::register_effect( "Hunter", "2018-02-06", "Beast Mastery: All damage increased by 2.5%.", 179698 )
+    hotfix::register_effect( "Hunter", "2018-02-06", "Beast Mastery: All damage increased by 2.5%. #1", 179698 )
       .field( "base_value" )
       .operation( hotfix::HOTFIX_SET )
       .modifier( 15 )
       .verification_value( 12 );
 
-    hotfix::register_effect( "Hunter", "2018-02-06", "Beast Mastery: All damage increased by 2.5%.", 191138 )
+    hotfix::register_effect( "Hunter", "2018-02-06", "Beast Mastery: All damage increased by 2.5%. #2", 191138 )
       .field( "base_value" )
       .operation( hotfix::HOTFIX_SET )
       .modifier( 15 )
       .verification_value( 12 );
 
-    hotfix::register_effect( "Hunter", "2018-02-06", "Beast Mastery: All damage increased by 2.5%.", 191139 )
+    hotfix::register_effect( "Hunter", "2018-02-06", "Beast Mastery: All damage increased by 2.5%. #3", 191139 )
       .field( "base_value" )
       .operation( hotfix::HOTFIX_SET )
       .modifier( 15 )
