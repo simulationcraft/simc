@@ -2505,6 +2505,14 @@ struct bulwark_of_flame_t : public absorb_buff_t
 
     explosion -> schedule_execute();
 
+    // Ensure there is no double-player-ready event created if the player is channeling something
+    // while this ability is being used. This is technically a bug, but for now the workaround is to
+    // not crash the sim.
+    if ( player -> channeling )
+    {
+      return;
+    }
+
     // Due to the client not allowing the ability queue here, we have to wait
     // the amount of lag + how often the key is spammed until the next ability is used.
     // Modeling this as 2 * lag for now. Might increase to 3 * lag after looking at logs of people using the trinket

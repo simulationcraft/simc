@@ -177,6 +177,7 @@ public:
   // Cooldowns
   struct cooldowns_t
   {
+    cooldown_t* sidewinders;
     cooldown_t* bestial_wrath;
     cooldown_t* trueshot;
     cooldown_t* dire_beast;
@@ -442,6 +443,7 @@ public:
     clear_next_hunters_mark( true )
   {
     // Cooldowns
+    cooldowns.sidewinders     = get_cooldown( "sidewinders" );
     cooldowns.bestial_wrath   = get_cooldown( "bestial_wrath" );
     cooldowns.trueshot        = get_cooldown( "trueshot" );
     cooldowns.dire_beast      = get_cooldown( "dire_beast" );
@@ -3242,7 +3244,7 @@ struct legacy_of_the_windrunners_t: aimed_shot_base_t
 
 // Aimed Shot =========================================================================
 
-struct aimed_shot_t: public aimed_shot_base_t
+struct aimed_shot_t : public aimed_shot_base_t
 {
   benefit_t* aimed_in_careful_aim;
   benefit_t* aimed_in_critical_aimed;
@@ -3251,7 +3253,7 @@ struct aimed_shot_t: public aimed_shot_base_t
   vulnerability_stats_t vulnerability_stats;
   bool lock_and_loaded;
 
-  aimed_shot_t( hunter_t* p, const std::string& options_str ):
+  aimed_shot_t( hunter_t* p, const std::string& options_str ) :
     aimed_shot_base_t( "aimed_shot", p, p -> find_specialization_spell( "Aimed Shot" ) ),
     aimed_in_careful_aim( p -> get_benefit( "aimed_in_careful_aim" ) ),
     aimed_in_critical_aimed( p -> get_benefit( "aimed_in_critical_aimed" ) ),
@@ -3366,7 +3368,38 @@ struct aimed_shot_t: public aimed_shot_base_t
     return false;
   }
 
-  void try_t20_2p_mm() override {}
+  void try_t20_2p_mm() override { }
+
+  double casts_in_vulnerable() const
+  {
+    double remaining_time = p() -> get_target_data( target ) -> debuffs.vulnerable -> remains().total_seconds();
+
+    if ( p() -> talents.sidewinders -> ok() ) {
+      cooldown_t* sw_cd = p() -> cooldowns.sidewinders;
+
+      if ( sw_cd -> recharge_event )
+        remaining_time = std::min( sw_cd -> current_charge_remains().total_seconds() + ( sw_cd -> charges - sw_cd -> current_charge - 1 ) * sw_cd -> duration.total_seconds(), remaining_time );
+      else
+        return 0;
+    }
+    
+    int by_time = remaining_time / execute_time().total_seconds();
+    if ( by_time == 0 )
+      return 0;
+
+    int by_focus = p() -> resources.current[ RESOURCE_FOCUS ] / cost();
+    by_focus = by_focus + ( fmod( p() -> resources.current[ RESOURCE_FOCUS ], cost() ) + by_focus * cast_regen() ) / cost();
+
+    return std::min( by_time, by_focus );
+  }
+
+  expr_t* create_expression( const std::string& expression_str ) override
+  {
+    if ( expression_str == "vuln_casts" )
+      return make_mem_fn_expr( expression_str, *this, &aimed_shot_t::casts_in_vulnerable );
+
+    return aimed_shot_base_t::create_expression( expression_str );
+  }
 };
 
 // Arcane Shot Attack ================================================================
@@ -6579,13 +6612,8 @@ void hunter_t::apl_mm()
                                 "condition=talent.sidewinders.enabled&cooldown.sidewinders.full_recharge_time<debuff.vulnerability.remains",
                                 "Sidewinders charges could cap sooner than the Vulnerable debuff ends, so clip the current window to the recharge time if it will." );
 
-  patient_sniper -> add_action( "variable,name=vuln_aim_casts,op=set,value=floor(variable.vuln_window%action.aimed_shot.execute_time)",
-                                "Determine the number of Aimed Shot casts that are possible according to available focus and remaining Vulnerable duration." );
 
-  patient_sniper -> add_action( "variable,name=vuln_aim_casts,op=set,"
-                                "value=floor((focus+action.aimed_shot.cast_regen*(variable.vuln_aim_casts-1))%action.aimed_shot.cost),"
-                                "if=variable.vuln_aim_casts>0&variable.vuln_aim_casts>floor((focus+action.aimed_shot.cast_regen*(variable.vuln_aim_casts-1))%action.aimed_shot.cost)" );
-
+  patient_sniper -> add_action( "variable,name=vuln_aim_casts,op=set,value=action.aimed_shot.vuln_casts" );
   patient_sniper -> add_action( "variable,name=can_gcd,value=variable.vuln_window<action.aimed_shot.cast_time|variable.vuln_window>variable.vuln_aim_casts*action.aimed_shot.execute_time+gcd.max+0.1" );
 
   patient_sniper -> add_action( "call_action_list,name=targetdie,if=target.time_to_die<variable.vuln_window&spell_targets.multishot=1" );

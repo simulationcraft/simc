@@ -4,7 +4,7 @@
 #ifndef MAX_CLASS
 #define MAX_CLASS (13)
 #endif
-// Class based active abilities, wow build 25901
+// Class based active abilities, wow build 25961
 static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SIZE] = {
   {
     {
@@ -1171,7 +1171,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
 };
 #define TREE_SPECIALIZATION_SIZE (36)
 
-// Talent tree specialization abilities, wow build 25901
+// Talent tree specialization abilities, wow build 25961
 static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZATION_SIZE] = {
   // Specialization abilities for Hunter pets
   {
@@ -2291,7 +2291,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
 };
 #define CLASS_MASTERY_ABILITY_SIZE (1)
 
-// Class mastery abilities, wow build 25901
+// Class mastery abilities, wow build 25961
 static unsigned __class_mastery_ability_data[MAX_CLASS][MAX_SPECS_PER_CLASS][CLASS_MASTERY_ABILITY_SIZE] = {
   {
     {
@@ -2530,7 +2530,7 @@ static unsigned __class_mastery_ability_data[MAX_CLASS][MAX_SPECS_PER_CLASS][CLA
 #define MAX_RACE (31)
 #endif
 
-// Racial abilities, wow build 25901
+// Racial abilities, wow build 25961
 static unsigned __race_ability_data[MAX_RACE][MAX_CLASS][RACE_ABILITY_SIZE] = {
   {
     {     0, },
@@ -3442,7 +3442,7 @@ static unsigned __race_ability_data[MAX_RACE][MAX_CLASS][RACE_ABILITY_SIZE] = {
 };
 #define SET_BONUS_DATA_SIZE (688)
 
-// Set bonus data, wow build 25901
+// Set bonus data, wow build 25961
 static item_set_bonus_t __set_bonus_data[SET_BONUS_DATA_SIZE] = {
   // Set bonus name                              ,      OptName, EnumID, SetID, Tier, Bns, Cls, Spec,  Spell, Items
   { "Gladiator's Battlegear"                     ,        "pvp",      0,  1230,    0,   2,   1,   71, 165636, { 127055, 127081, 127092, 127103, 127114,  0 } },
@@ -4163,7 +4163,7 @@ static item_set_bonus_t __set_bonus_data[SET_BONUS_DATA_SIZE] = {
 };
 #define RPPMMOD_SIZE (785)
 
-// 785 RPPM Modifiers, wow build level 25901
+// 785 RPPM Modifiers, wow build level 25961
 static struct rppm_modifier_t __rppmmodifier_data[] = {
   {  17495,    4,  1,  1.0000 },
   {  27656,    4,  1,  1.0000 },
@@ -4954,7 +4954,7 @@ static struct rppm_modifier_t __rppmmodifier_data[] = {
 };
 #define ARTIFACT_SIZE (41)
 
-// Artifact base data, wow build 25901
+// Artifact base data, wow build 25961
 static struct artifact_t __artifact_data[ARTIFACT_SIZE] = {
   {  2,  70 },
   {  3, 577 },
@@ -5001,7 +5001,7 @@ static struct artifact_t __artifact_data[ARTIFACT_SIZE] = {
 
 #define ARTIFACT_POWER_SIZE (908)
 
-// Artifact power data, wow build 25901
+// Artifact power data, wow build 25961
 static struct artifact_power_data_t __artifact_power_data[ARTIFACT_POWER_SIZE] = {
   { 1739,   0,  64,  0,   3, 250879, "Netherlight Fortification"          }, // Netherlight Fortification (id=250879, n_ranks=3)
   { 1770,   0,  64,  0,   3, 252088, "Light Speed"                        }, // Light Speed (id=252088, n_ranks=3)
@@ -5363,7 +5363,7 @@ static struct artifact_power_data_t __artifact_power_data[ARTIFACT_POWER_SIZE] =
   {  920,  39,  32,  9,   3, 199158, "Perdition"                          }, // Perdition (id=199158, n_ranks=8)
   {  921,  39,  32, 10,   3, 199163, "Shadowy Incantations"               }, // Shadowy Incantations (id=199163, n_ranks=8)
   {  922,  39,  32, 11,   3, 199212, "Shadows of the Flesh"               }, // Shadows of the Flesh (id=199212, n_ranks=8)
-  {  923,  39,  32, 12,   3, 199214, "Long Dark Night of the Soul"        }, // Long Dark Night of the Soul (id=199214, n_ranks=8)
+  {  923,  39,  32, 12,   3,      0, 0                                    },
   {  924,  39,   0,  0,   1, 199220, "Sweet Souls"                        }, // Sweet Souls (id=199220, n_ranks=1)
   {  925,  39,   0,  0,   1, 199257, "Fatal Echoes"                       }, // Fatal Echoes (id=199257, n_ranks=1)
   {  926,  39,   0,  0,   1, 199282, "Compounding Horror"                 }, // Compounding Horror (id=199282, n_ranks=1)
@@ -5912,9 +5912,9 @@ static struct artifact_power_data_t __artifact_power_data[ARTIFACT_POWER_SIZE] =
   { 1253,  80,   2,  0,   1, 179546, "Ashes to Ashes"                     }, // Ashes to Ashes (id=179546, n_ranks=1)
   {    0,   0,   0,  0,   0,      0, 0                                    },
 };
-#define ARTIFACT_POWER_RANK_SIZE (7746)
+#define ARTIFACT_POWER_RANK_SIZE (7738)
 
-// Artifact power rank data, wow build 25901
+// Artifact power rank data, wow build 25961
 static struct artifact_power_rank_t __artifact_power_rank_data[ARTIFACT_POWER_RANK_SIZE] = {
   {  2316,   40,  0, 205273,      0.000, 0x00000000, 0 },
   {  2317,   41,  0, 186941,      8.000, 0x00000000, 0 },
@@ -7524,14 +7524,6 @@ static struct artifact_power_rank_t __artifact_power_rank_data[ARTIFACT_POWER_RA
   {  4321,  922,  5, 199212,      6.000, 0x00000000, 0 },
   {  7268,  922,  6, 199212,      7.000, 0x00000000, 0 },
   {  7269,  922,  7, 199212,      8.000, 0x00000000, 0 },
-  {  4322,  923,  0, 199214,     10.000, 0x00000000, 0 },
-  {  4323,  923,  1, 199214,     20.000, 0x00000000, 0 },
-  {  4324,  923,  2, 199214,     30.000, 0x00000000, 0 },
-  {  4325,  923,  3, 199214,     40.000, 0x00000000, 0 },
-  {  4326,  923,  4, 199214,     50.000, 0x00000000, 0 },
-  {  4327,  923,  5, 199214,     60.000, 0x00000000, 0 },
-  {  7270,  923,  6, 199214,     70.000, 0x00000000, 0 },
-  {  7271,  923,  7, 199214,     80.000, 0x00000000, 0 },
   {  4328,  924,  0, 199220,      0.000, 0x00000000, 0 },
   {  4329,  925,  0, 199257,      0.000, 0x00000000, 0 },
   {  4330,  926,  0, 199282,      0.000, 0x00000000, 0 },
@@ -13665,7 +13657,7 @@ static struct artifact_power_rank_t __artifact_power_rank_data[ARTIFACT_POWER_RA
 };
 #define ARTIFACT_POWER_RANK_HOTFIX_SIZE (0)
 
-// 0 artifact_power_rank hotfix entries, wow build level 25901
+// 0 artifact_power_rank hotfix entries, wow build level 25961
 static hotfix::client_hotfix_entry_t __artifact_power_rank_hotfix_data[] = {
   {      0,  0, 0, 0 },
 };

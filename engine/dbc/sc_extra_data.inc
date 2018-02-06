@@ -1826,16 +1826,16 @@ static stat_data_t __gt_race_stats[] =
   // Str Agi Sta Int Spi
   {   0,  0,  0,  0,  0 }, // No Race
   {   0,  0,  0,  0,  0 }, // Human
-  {   3, -3,  1, -3,  2 }, // Orc
-  {   5, -4,  1, -1, -1 }, // Dwarf
+  {   3, -3,  1, -1,  0 }, // Orc
+  {   2, -2,  1, -1,  0 }, // Dwarf
   {  -4,  4,  0,  0,  0 }, // Night Elf
-  {  -1, -2,  0, -2,  5 }, // Undead
-  {  -1, -2,  1, -2,  0 }, // Tauren
-  {  -5,  2,  0,  3,  0 }, // Gnome
-  {   1,  2,  0, -4,  1 }, // Troll
-  {  -3,  2,  0,  3, -2 }, // Goblin
-  {  -3,  2,  0,  3,  2 }, // Blood Elf
-  {   1, -3,  0,  0,  2 }, // Draenei
+  {   2, -1,  1, -2,  0 }, // Undead
+  {   2, -2,  2, -2,  0 }, // Tauren
+  {  -3,  1, -1,  3,  0 }, // Gnome
+  {   1,  2,  0, -3,  0 }, // Troll
+  {  -3,  1, -1,  3,  0 }, // Goblin
+  {  -3,  1,  0,  2,  0 }, // Blood Elf
+  {   1, -3,  2,  0,  0 }, // Draenei
   {   0,  0,  0,  0,  0 }, // Fel Orc
   {   0,  0,  0,  0,  0 }, // Naga
   {   0,  0,  0,  0,  0 }, // Broken
@@ -1846,15 +1846,15 @@ static stat_data_t __gt_race_stats[] =
   {   0,  0,  0,  0,  0 }, // Tanuka
   {   0,  0,  0,  0,  0 }, // Skeleton
   {   0,  0,  0,  0,  0 }, // Ice Troll
-  {   3,  2,  0, -4, -1 }, // Worgen
+  {   2,  1,  0, -3,  0 }, // Worgen
   {   0,  0,  0,  0,  0 }, // Gilnean
-  {   0, -2,  1, -1,  2 }, // Pandaren
-  {   0, -2,  1, -1,  2 }, // Pandaren - Alliance
-  {   0, -2,  1, -1,  2 }, // Pandaren - Horde
-  {  -4,  4,  0,  0,  0 }, // Nightborne
-  {  -1, -2,  1, -2,  0 }, // Highmountain Tauren
-  {  -3,  2,  0,  3,  2 }, // Void Elf
-  {   1, -3,  0,  0,  2 }, // Lightforged Draenei
+  {   0, -2,  2,  0,  0 }, // Pandaren
+  {   0, -2,  2,  0,  0 }, // Pandaren - Alliance
+  {   0, -2,  2,  0,  0 }, // Pandaren - Horde
+  {   0, -1,  1,  3,  0 }, // Nightborne
+  {   1, -2,  2, -1,  0 }, // Highmountain Tauren
+  {  -3,  1,  0,  2,  0 }, // Void Elf
+  {  -2,  1, -1,  2,  0 }, // Lightforged Draenei
 };
 
 // Avoidance diminishing returns information
