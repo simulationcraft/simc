@@ -7263,29 +7263,6 @@ struct hunter_module_t: public module_t
 
   void register_hotfixes() const override
   {
-    hotfix::register_effect( "Hunter", "2018-02-06", "Beast Mastery: All damage increased by 2.5%. #1", 179698 )
-      .field( "base_value" )
-      .operation( hotfix::HOTFIX_SET )
-      .modifier( 15 )
-      .verification_value( 12 );
-
-    hotfix::register_effect( "Hunter", "2018-02-06", "Beast Mastery: All damage increased by 2.5%. #2", 191138 )
-      .field( "base_value" )
-      .operation( hotfix::HOTFIX_SET )
-      .modifier( 15 )
-      .verification_value( 12 );
-
-    hotfix::register_effect( "Hunter", "2018-02-06", "Beast Mastery: All damage increased by 2.5%. #3", 191139 )
-      .field( "base_value" )
-      .operation( hotfix::HOTFIX_SET )
-      .modifier( 15 )
-      .verification_value( 12 );
-
-    hotfix::register_effect( "Hunter", "2018-02-06", "Serpentstalker Guise 4-piece bonus now causes Kill Command to reduce the cooldown of Aspect of the Wild by 3 seconds (was 2.5 seconds).", 471340 )
-      .field( "base_value" )
-      .operation( hotfix::HOTFIX_SET )
-      .modifier( 3000 )
-      .verification_value( 2500 );
   }
 
   void combat_begin( sim_t* ) const override {}

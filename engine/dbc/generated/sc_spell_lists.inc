@@ -5363,7 +5363,7 @@ static struct artifact_power_data_t __artifact_power_data[ARTIFACT_POWER_SIZE] =
   {  920,  39,  32,  9,   3, 199158, "Perdition"                          }, // Perdition (id=199158, n_ranks=8)
   {  921,  39,  32, 10,   3, 199163, "Shadowy Incantations"               }, // Shadowy Incantations (id=199163, n_ranks=8)
   {  922,  39,  32, 11,   3, 199212, "Shadows of the Flesh"               }, // Shadows of the Flesh (id=199212, n_ranks=8)
-  {  923,  39,  32, 12,   3, 199214, "Long Dark Night of the Soul"        }, // Long Dark Night of the Soul (id=199214, n_ranks=8)
+  {  923,  39,  32, 12,   3,      0, 0                                    },
   {  924,  39,   0,  0,   1, 199220, "Sweet Souls"                        }, // Sweet Souls (id=199220, n_ranks=1)
   {  925,  39,   0,  0,   1, 199257, "Fatal Echoes"                       }, // Fatal Echoes (id=199257, n_ranks=1)
   {  926,  39,   0,  0,   1, 199282, "Compounding Horror"                 }, // Compounding Horror (id=199282, n_ranks=1)
@@ -5912,7 +5912,7 @@ static struct artifact_power_data_t __artifact_power_data[ARTIFACT_POWER_SIZE] =
   { 1253,  80,   2,  0,   1, 179546, "Ashes to Ashes"                     }, // Ashes to Ashes (id=179546, n_ranks=1)
   {    0,   0,   0,  0,   0,      0, 0                                    },
 };
-#define ARTIFACT_POWER_RANK_SIZE (7746)
+#define ARTIFACT_POWER_RANK_SIZE (7738)
 
 // Artifact power rank data, wow build 25961
 static struct artifact_power_rank_t __artifact_power_rank_data[ARTIFACT_POWER_RANK_SIZE] = {
@@ -7524,14 +7524,6 @@ static struct artifact_power_rank_t __artifact_power_rank_data[ARTIFACT_POWER_RA
   {  4321,  922,  5, 199212,      6.000, 0x00000000, 0 },
   {  7268,  922,  6, 199212,      7.000, 0x00000000, 0 },
   {  7269,  922,  7, 199212,      8.000, 0x00000000, 0 },
-  {  4322,  923,  0, 199214,     10.000, 0x00000000, 0 },
-  {  4323,  923,  1, 199214,     20.000, 0x00000000, 0 },
-  {  4324,  923,  2, 199214,     30.000, 0x00000000, 0 },
-  {  4325,  923,  3, 199214,     40.000, 0x00000000, 0 },
-  {  4326,  923,  4, 199214,     50.000, 0x00000000, 0 },
-  {  4327,  923,  5, 199214,     60.000, 0x00000000, 0 },
-  {  7270,  923,  6, 199214,     70.000, 0x00000000, 0 },
-  {  7271,  923,  7, 199214,     80.000, 0x00000000, 0 },
   {  4328,  924,  0, 199220,      0.000, 0x00000000, 0 },
   {  4329,  925,  0, 199257,      0.000, 0x00000000, 0 },
   {  4330,  926,  0, 199282,      0.000, 0x00000000, 0 },

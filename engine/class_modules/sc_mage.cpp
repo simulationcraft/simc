@@ -9629,12 +9629,6 @@ public:
       .operation( hotfix::HOTFIX_SET )
       .modifier( 47.0 )
       .verification_value( 50.0 );
-
-    hotfix::register_effect( "Mage", "2018-02-06", "Fire Mage: All damage increased by 3%.", 179702 )
-      .field( "base_value" )
-      .operation( hotfix::HOTFIX_SET )
-      .modifier( 12 )
-      .verification_value( 9 );
   }
 
   virtual bool valid() const override { return true; }
