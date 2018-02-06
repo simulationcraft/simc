@@ -31,8 +31,7 @@ class DBCacheIterator:
         if self._record == self._records:
             raise StopIteration
 
-        key_id = 0
-        dbc_id, record_id, offset, size = self._parser.get_record_info(self._wdb_parser, self._record)
+        dbc_id, record_id, offset, size, key_id = self._parser.get_record_info(self._wdb_parser, self._record)
         data = self._parser.get_record(dbc_id, offset, size, self._wdb_parser)
 
         # If the cache entry is for a WDB file that is expanded, we need to
@@ -95,11 +94,10 @@ class DBCFileIterator:
         if self._record == self._n_records:
             raise StopIteration
 
-        key_id = 0
-        if self._parser.magic == b'WDC1':
+        dbc_id, record_id, offset, size, key_id = self._parser.get_record_info(self._record)
+        if self._parser.has_key_block() and key_id == 0:
             key_id = self._parser.key(self._record)
 
-        dbc_id, record_id, offset, size = self._parser.get_record_info(self._record)
         data = self._parser.get_record(dbc_id, offset, size)
         self._record += 1
 

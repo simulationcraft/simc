@@ -95,14 +95,20 @@ class DBCacheParser:
         sig = wdb_parser.table_hash
 
         if sig not in self.entries:
-            return DBCRecordInfo(-1, record_id, 0, 0)
+            return DBCRecordInfo(-1, record_id, 0, 0, 0)
 
         if record_id >= len(self.entries[sig]):
-            return DBCRecordInfo(-1, record_id, 0, 0)
+            return DBCRecordInfo(-1, record_id, 0, 0, 0)
 
-        dbc_id = wdb_parser.has_id_block() and self.entries[sig][record_id]['record_id'] or -1
+        dbc_id = self.entries[sig][record_id]['record_id']
+        key_id = 0
+        if wdb_parser.has_key_block() and wdb_parser.has_id_block() and dbc_id < len(wdb_parser.dbc_id_table):
+            real_record_info = wdb_parser.dbc_id_table[dbc_id]
+            if real_record_info:
+                key_id = real_record_info.parent_id
+
         return DBCRecordInfo(dbc_id, record_id, self.entries[sig][record_id]['offset'], \
-                self.entries[sig][record_id]['length'])
+                self.entries[sig][record_id]['length'], key_id)
 
     def get_record(self, dbc_id, offset, size, wdb_parser):
         sig = wdb_parser.table_hash
@@ -629,7 +635,7 @@ class DBCParserBase:
 
     def find_record_offset(self, id_):
         if not self.id_data:
-            return DBCRecordInfo(id_, -1, 0, 0)
+            return DBCRecordInfo(id_, -1, 0, 0, 0)
 
         unpacker = None
         if self.id_data[1] == 1:
@@ -648,26 +654,21 @@ class DBCParserBase:
                 dbc_id &= 0x00FFFFFF
 
             if dbc_id == id_:
-                return DBCRecordInfo(id_, record_id, self.data_offset + self.record_size * record_id, self.record_size)
+                return DBCRecordInfo(id_, record_id, self.data_offset + self.record_size * record_id, self.record_size, 0)
 
-        return DBCRecordInfo(id_, -1, 0, 0)
+        return DBCRecordInfo(id_, -1, 0, 0, 0)
 
     # Returns dbc_id (always 0 for base), record offset into file
     def get_record_info(self, record_id):
-        return DBCRecordInfo(-1, record_id, self.data_offset + record_id * self.record_size, self.record_size)
+        return DBCRecordInfo(-1, record_id, self.data_offset + record_id * self.record_size, self.record_size, 0)
 
     def get_record(self, dbc_id, offset, size):
         return self.record_parser(dbc_id, self.data, offset, size)
 
     def find(self, id_):
-        _, record_id, record_offset, record_size = self.find_record_offset(id_)
+        _, record_id, record_offset, record_size, key_id = self.find_record_offset(id_)
 
         if record_offset > 0:
-            if self.has_key_block():
-                key_id = self.key(record_id)
-            else:
-                key_id = 0
-
             return DBCRecordData(id_, key_id, self.record_parser(id_, self.data, record_offset, record_size))
         else:
             return DBCRecordData(id_, 0, tuple())
@@ -749,7 +750,7 @@ class LegionWDBParser(DBCParserBase):
             if id_ < len(self.dbc_id_table) and self.dbc_id_table[id_]:
                 return self.dbc_id_table[id_]
             else:
-                return DBCRecordInfo(id_, -1, 0, 0)
+                return DBCRecordInfo(id_, -1, 0, 0, 0)
         else:
             return super().find_record_offset(id_)
 
@@ -785,10 +786,21 @@ class LegionWDBParser(DBCParserBase):
             else:
                 data_offset = self.data_offset + record_id * self.record_size
 
-            record_info = DBCRecordInfo(dbc_id, record_id, data_offset, size)
+            # If the db2 file has a key block, we need to grab the key at this
+            # point from the block, to record it into the data we have. Storing
+            # the information now associates with the correct dbc id, since the
+            # key block is record index based, not dbc id based.
+            if self.has_key_block():
+                key_id, _ = _CLONE.unpack_from(self.data, self.key_block_offset + 12 + _CLONE.size * record_id)
+            else:
+                key_id = 0
+
+            record_info = DBCRecordInfo(dbc_id, record_id, data_offset, size, key_id)
             idtable.append(record_info)
             recordtable[dbc_id] = record_info
-            indexdict[dbc_id] = (data_offset, size)
+            # Key id needs to be recorded here as well, so that a possible
+            # clone block can also clone the key id
+            indexdict[dbc_id] = (data_offset, size, key_id)
             record_id += 1
 
         # Process clones
@@ -799,7 +811,7 @@ class LegionWDBParser(DBCParserBase):
                 continue
 
             source = indexdict[source_id]
-            record_info = DBCRecordInfo(target_id, record_id, source[0], source[1])
+            record_info = DBCRecordInfo(target_id, record_id, source[0], source[1], source[2])
             idtable.append(record_info)
             recordtable[target_id] = record_info
 
