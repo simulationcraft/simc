@@ -166,10 +166,10 @@ Description      : Throws a fiery ball that causes $s1 Fire damage.
 Name             : Arcane Explosion (id=1449) [Spell Family (3)] 
 Class            : Arcane Mage
 School           : Arcane
-Resource         : 2% Base Mana (0) (id=123)
+Resource         : 12% Base Mana (0) (id=123)
 Spell Level      : 18
 GCD              : 1.5 seconds
-Affecting spells : Arcane Power (12042 effect#1), Arcane Charge (36032 effect#1), Rune of Power (116014 effect#1), Incanter's Flow (116267 effect#1), Fire Mage (137019 effect#1), Frost Mage (137020 effect#1), Arcane Mage (137021 effect#1), Crackling Energy (187310 effect#1), Arcane Purification (187313 effect#1), Combustion (190319 effect#1), Bone Chilling (205766 effect#1), Erosion (210134 effect#1), Norgannon's Foresight (236380 effect#1), Crackling Energy (246224 effect#1), 
+Affecting spells : Arcane Power (12042 effect#1), Rune of Power (116014 effect#1), Incanter's Flow (116267 effect#1), Fire Mage (137019 effect#1), Frost Mage (137020 effect#1), Arcane Mage (137021 effect#1), Crackling Energy (187310 effect#1), Arcane Purification (187313 effect#1), Combustion (190319 effect#1), Bone Chilling (205766 effect#1), Erosion (210134 effect#1), Norgannon's Foresight (236380 effect#1), Crackling Energy (246224 effect#1), 
 Attributes       : ........ ........ x....... ........   ...x...x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -178,7 +178,7 @@ Attributes       : ........ ........ x....... ........   ...x...x ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=457)      : School Damage (2): arcane
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.13500 | Radius: 0 - 10 yards | Target: At Caster (22) -> AOE enemy (15)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.60000 | Radius: 0 - 10 yards | Target: At Caster (22) -> AOE enemy (15)
 #2 (id=281175)   : Energize Power (30)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: none | Target: Self (1)
 Description      : Causes an explosion of magic around the caster, dealing $s1 Arcane damage to all enemies within $A1 yards.
@@ -192,7 +192,7 @@ Mana cost increased by $36032s5% per Arcane Charge.
 Name             : Arcane Intellect (id=1459) [Spell Family (3)] 
 Class            : Mage
 School           : Arcane
-Resource         : 1% Base Mana (0) (id=124)
+Resource         : 4% Base Mana (0) (id=124)
 Spell Level      : 58
 Range            : 30 yards
 GCD              : 1.5 seconds
@@ -205,11 +205,11 @@ Attributes       : ........ ........ x....... ........   ........ ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=459)      : Apply Aura (6) | Modify Total Stat% (137)
-                   Base Value: 5 | Scaled Value: 5 | Misc Value 2: 0x8 | Radius: 100 yards | Target: Unknown(118)
+                   Base Value: 10 | Scaled Value: 10 | Misc Value 2: 0x8 | Radius: 100 yards | Target: Unknown(118)
 Description      : Infuses the target with brilliance, increasing their Intellect by $s1% for $d.  
 
 If target is in your party or raid, all party and raid members will be affected.
-Tooltip          : Intellect increaed by $w1%
+Tooltip          : Intellect increased by $w1%.
 
 Name             : Incanter's Flow (id=1463) [Spell Family (3), Passive] 
 Class            : Mage
@@ -376,7 +376,7 @@ School           : Arcane
 Spell Level      : 14
 Range            : 60 yards
 Velocity         : 50 yards/sec
-Affecting spells : Arcane Power (12042 effect#1), Arcane Charge (36032 effect#2), Rune of Power (116014 effect#1), Incanter's Flow (116267 effect#1), Fire Mage (137019 effect#1), Frost Mage (137020 effect#1), Arcane Mage (137021 effect#1), Arcane Focus (171375 effect#1), Aegwynn's Fury (187287 effect#1), Combustion (190319 effect#1), Bone Chilling (205766 effect#1), Erosion (210134 effect#1), Norgannon's Foresight (236380 effect#1), Aegwynn's Intensity (238054 effect#1), Crackling Energy (246224 effect#1), 
+Affecting spells : Arcane Power (12042 effect#1), Rune of Power (116014 effect#1), Incanter's Flow (116267 effect#1), Fire Mage (137019 effect#1), Frost Mage (137020 effect#1), Arcane Mage (137021 effect#1), Arcane Focus (171375 effect#1), Aegwynn's Fury (187287 effect#1), Combustion (190319 effect#1), Bone Chilling (205766 effect#1), Erosion (210134 effect#1), Norgannon's Foresight (236380 effect#1), Aegwynn's Intensity (238054 effect#1), Crackling Energy (246224 effect#1), 
 Triggered by     : Arcane Missiles (5143)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ .x...... ........ ......x. 
@@ -724,7 +724,7 @@ School           : Arcane
 Resource         : 2.75% Base Mana (0) (id=1204)
 Spell Level      : 10
 Range            : 40 yards
-Cast Time        : 2.5 seconds
+Cast Time        : 2.25 seconds
 GCD              : 1.5 seconds
 Affecting spells : Arcane Power (12042 effect#1), Icy Veins (12472 effect#2), Arcane Charge (36032 effect#1), Ice Floes (108839 effect#1), Rune of Power (116014 effect#1), Incanter's Flow (116267 effect#1), Fire Mage (137019 effect#1), Frost Mage (137020 effect#1), Arcane Mage (137021 effect#1), Arcane Affinity (166871 effect#1), Arcane Focus (171375 effect#1), Blasting Rod (187258 effect#1), Combustion (190319 effect#1), Ice Form (198144 effect#2), Presence of Mind (205025 effect#1), Bone Chilling (205766 effect#1), Rhonin's Assaulting Armwraps (208081 effect#1), Erosion (210134 effect#1), Norgannon's Foresight (236380 effect#1), Crackling Energy (246224 effect#1), 
 Attributes       : ........ ........ ..x..... ........   ........ ........ ........ ........ 
@@ -740,9 +740,7 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | Misc Value: none | Target: Self (1)
 Description      : Blasts the target with energy, dealing $30451s1 Arcane damage.
 
-Damage increased by $36032s1% per Arcane Charge.
-
-Mana cost increased by $36032s5% per Arcane Charge.
+Each Arcane Charge increases damage by $36032s1% and mana cost by $36032s5%, and reduces cast time by $36032s4%.
 
 |cFFFFFFFFGenerates 1 Arcane Charge|r
 
@@ -983,19 +981,19 @@ Attributes       : ........ x....... ..x..... ..x..x..   ........ ..x..... .....
 Effects          :
 #1 (id=26313)    : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
                    Base Value: 60 | Scaled Value: 60 | Target: Self (1)
-                   Affected Spells: Arcane Explosion (1449), Arcane Blast (30451), Arcane Barrage (44425), Time and Space (240689)
+                   Affected Spells: Arcane Blast (30451)
 #2 (id=26314)    : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-                   Affected Spells: Arcane Missiles (7268)
+                   Base Value: 30 | Scaled Value: 30 | Target: Self (1)
+                   Affected Spells: Arcane Barrage (44425)
 #3 (id=127870)   : Apply Aura (6) | Add Flat Modifier (107): Spell Targets (17)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 17 | Target: Self (1)
                    Affected Spells: Arcane Barrage (44425)
 #4 (id=186532)   : Apply Aura (6) | Add Percent Modifier (108): Spell Cast Time (10)
-                   Base Value: -10 | Scaled Value: -10 | Misc Value: 10 | Target: Self (1)
+                   Base Value: -8 | Scaled Value: -8 | Misc Value: 10 | Target: Self (1)
                    Affected Spells: Arcane Blast (30451)
 #5 (id=219758)   : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost (14)
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 14 | Target: Self (1)
-                   Affected Spells: Arcane Explosion (1449), Arcane Blast (30451), Time and Space (240689)
+                   Affected Spells: Arcane Blast (30451)
 #6 (id=357921)   : Apply Aura (6) | Add Percent Modifier (108): Spell Global Cooldown (21)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 21 | Target: Self (1)
                    Affected Spells: Arcane Blast (30451)
@@ -1030,10 +1028,10 @@ Spell Level      : 10
 Range            : 40 yards
 GCD              : 1.5 seconds
 Velocity         : 24 yards/sec
-Cooldown         : 4.5 seconds
+Cooldown         : 3 seconds
 Category         : 1189
-Category Cooldown: 4.5 seconds
-Affecting spells : Arcane Power (12042 effect#1), Arcane Charge (36032 effect#1), Rune of Power (116014 effect#1), Incanter's Flow (116267 effect#1), Mage (137018 effect#1), Fire Mage (137019 effect#1), Frost Mage (137020 effect#1), Arcane Mage (137021 effect#1), Torrential Barrage (187304 effect#1), Combustion (190319 effect#1), Bone Chilling (205766 effect#1), Erosion (210134 effect#1), Norgannon's Foresight (236380 effect#1), Crackling Energy (246224 effect#1), 
+Category Cooldown: 3 seconds
+Affecting spells : Arcane Power (12042 effect#1), Arcane Charge (36032 effect#2), Rune of Power (116014 effect#1), Incanter's Flow (116267 effect#1), Mage (137018 effect#1), Fire Mage (137019 effect#1), Frost Mage (137020 effect#1), Arcane Mage (137021 effect#1), Torrential Barrage (187304 effect#1), Combustion (190319 effect#1), Bone Chilling (205766 effect#1), Erosion (210134 effect#1), Norgannon's Foresight (236380 effect#1), Crackling Energy (246224 effect#1), 
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1042,14 +1040,14 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=36330)    : School Damage (2): arcane
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.40000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.80000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
 #2 (id=157070)   : Dummy (3)
                    Base Value: 40 | Scaled Value: 40
 #3 (id=331544)   : Dummy (3)
                    Base Value: 10 | Scaled Value: 10
 Description      : Launches bolts of arcane energy at the enemy target, causing $s1 Arcane damage. 
 
-Damage increased by $36032s1% per Arcane Charge.$?a231564[
+Each Arcane Charge increases damage by $36032s2%.$?a231564[
 
 Hits $36032s3 additional $Ltarget:targets; within $s3 yds per Arcane Charge for $s2% damage.][]
 
@@ -1638,7 +1636,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=68492)    : Apply Aura (6) | Dummy (4)
                    Base Value: 250 | Scaled Value: 250 | Target: Self (1)
-Description      : For each 1% of your maximum mana you spend, you have a ${$s1/100}.1% chance to gain Clearcasting, making your next Arcane Missiles cost no mana.
+Description      : For each 1% of your maximum mana you spend, you have a ${$s1/100}.1% chance to gain Clearcasting, making your next Arcane Missiles or Arcane Explosion cost no mana.
 
 Name             : Time Warp (id=80353) [Spell Family (3)] 
 Class            : Mage
@@ -3592,7 +3590,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.60000 | Misc Value: 3 | Target: Self (1)
                    Affected Spells: Arcane Charge (36032)
 #3 (id=313335)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 12 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.30000 | Misc Value: 12 | Target: Self (1)
                    Affected Spells: Arcane Charge (36032)
 #4 (id=357922)   : Apply Aura (6) | Unknown(379)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.20000 | Target: Self (1)
@@ -5137,7 +5135,7 @@ Effects          :
                    Affected Spells: Critical Mass (117216)
 Description      : Critical Mass increases your Critical Strike stat from all sources by $s1%.
 
-Name             : Temporal Flux (id=234302) [Spell Family (3), Passive] 
+Name             : Temporal Flux [NYI] (id=234302) [Spell Family (3), Passive] 
 Class            : Mage
 School           : Arcane
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -5490,7 +5488,7 @@ Class            : Mage
 School           : Arcane
 Spell Level      : 1
 Range            : 100 yards
-Affecting spells : Arcane Power (12042 effect#1), Arcane Charge (36032 effect#1), Rune of Power (116014 effect#1), Incanter's Flow (116267 effect#1), Fire Mage (137019 effect#1), Frost Mage (137020 effect#1), Arcane Mage (137021 effect#1), Crackling Energy (187310 effect#1), Arcane Purification (187313 effect#1), Combustion (190319 effect#1), Bone Chilling (205766 effect#1), Erosion (210134 effect#1), Norgannon's Foresight (236380 effect#1), Crackling Energy (246224 effect#1), 
+Affecting spells : Arcane Power (12042 effect#1), Rune of Power (116014 effect#1), Incanter's Flow (116267 effect#1), Fire Mage (137019 effect#1), Frost Mage (137020 effect#1), Arcane Mage (137021 effect#1), Crackling Energy (187310 effect#1), Arcane Purification (187313 effect#1), Combustion (190319 effect#1), Bone Chilling (205766 effect#1), Erosion (210134 effect#1), Norgannon's Foresight (236380 effect#1), Crackling Energy (246224 effect#1), 
 Attributes       : ........ ........ x....... ........   ...x...x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5759,7 +5757,7 @@ Effects          :
 #1 (id=477694)   : Trigger Missiles (32)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 256893 | Radius: 0 - 5 yards | Target: Enemy (6)
 Description      : Call down a strike of Holy energy, dealing $<damage> Holy damage to enemies within $A1 yards after 3 sec.
-Variables        : $damage=${$cond($gt($SP,$AP),$SP*5,$AP*6.25)}
+Variables        : $damage=${$cond($gt($SP,$AP),$SP*3,$AP*3)*$pctD*(1+$@versadmg)}
 
 Name             : Holy Resistance (Racial Passive) (id=255651) [Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
@@ -5828,7 +5826,7 @@ Effects          :
 #1 (id=479673)   : School Damage (2): holy
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 5 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
 Description      : Call down a strike of Holy energy, dealing $<damage> Holy damage to enemies within $A1 yards.
-Variables        : $damage=${$cond($gt($SP,$AP),$SP*5,$AP*6.25)}
+Variables        : $damage=${$cond($gt($SP,$AP),$SP*3,$AP*3)*$pctD*(1+$@versadmg)}
 
 Name             : Light's Reckoning (Racial Passive) (id=256896) [Scaling Spell (-6)] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
@@ -5947,7 +5945,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : $@spelldesc264351
 
-Name             : Rule of Threes (NYI) (id=264354) [Spell Family (3), Passive] 
+Name             : Rule of Threes (id=264354) [Spell Family (3), Passive] 
 Class            : Mage
 School           : Physical
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -5959,9 +5957,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=707713)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 333 | Scaled Value: 333 | Target: Self (1)
-#2 (id=707714)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 3 | Scaled Value: 3 | Target: Self (1)
-Description      : When you gain your third Arcane Charge, your next spell costs no mana.
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+Description      : When you gain your third Arcane Charge, the cost of your next Arcane Blast or Arcane Missiles is reduced by $s1%.
 
 

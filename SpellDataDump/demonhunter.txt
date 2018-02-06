@@ -2008,7 +2008,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=305361)   : Apply Aura (6) | Add Flat Modifier (107): Spell Cooldown (11)
-                   Base Value: -10000 | Scaled Value: -10000 | Misc Value: 11 | Target: Self (1)
+                   Base Value: -5000 | Scaled Value: -5000 | Misc Value: 11 | Target: Self (1)
                    Affected Spells: Vengeful Retreat (198793), Vengeful Retreat (198813)
 Description      : Fel Rush increases your damage done by $208628s1% for $208628d.
 
@@ -2036,11 +2036,12 @@ Description      : Removes the Fury cost of Chaos Nova and reduces its cooldown 
 Name             : Demonic Appetite (id=206478) [Spell Family (107), Passive] 
 Class            : Demon Hunter
 School           : Physical
-Proc Chance      : 25%
+Proc Chance      : 101%
+Real PPM         : 6 (Haste multiplier)
 Proc Flags       : ....x... ........ ........ ........ 
                  : Yellow Melee
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ..x..... 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2049,7 +2050,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=305363)   : Apply Aura (6) | Proc Trigger Spell (42)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-Description      : Chaos Strike has a $h% chance to spawn a Lesser Soul Fragment, and consuming any Soul Fragment grants $210041s1 Fury.
+Description      : Chaos Strike has a chance to spawn a Lesser Soul Fragment, and consuming any Soul Fragment grants $210041s1 Fury.
 
 Name             : Nemesis (id=206491) [Spell Family (107)] 
 Class            : Demon Hunter
@@ -3033,9 +3034,9 @@ Effects          :
 #2 (id=316325)   : Weapon Damage% (31)
                    Base Value: 190 | Scaled Value: 1.9 | Target: Enemy (6)
 #3 (id=316326)   : Energize Power (30)
-                   Base Value: 200 | Scaled Value: 200 | Misc Value: pain | Target: Self (1)
+                   Base Value: 300 | Scaled Value: 300 | Misc Value: pain | Target: Self (1)
 #4 (id=316327)   : Energize Power (30)
-                   Base Value: 30 | Scaled Value: 30 | Misc Value: fury | Target: Self (1)
+                   Base Value: 50 | Scaled Value: 50 | Misc Value: fury | Target: Self (1)
 Description      : $@spelldesc213241
 
 Name             : Master of the Glaive (id=213405) [Spell Family (107)] 
@@ -3147,9 +3148,9 @@ School           : Shadow
 Range            : 20 yards
 GCD              : 1.5 seconds
 Duration         : 60 seconds
-Cooldown         : 15 seconds
+Cooldown         : 60 seconds
 Category         : 33
-Category Cooldown: 15 seconds
+Category Cooldown: 60 seconds
 Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
 Mechanic         : Unknown(255)
@@ -3533,7 +3534,9 @@ Description      : Charge to your target and deal $213243sw2 Fire damage.
 
 $?s203513[Shear has a chance to reset the cooldown of Felblade.
 
-|cFFFFFFFFGenerates ${$213243s3/10} Pain.|r][Demon's Bite has a chance to reset the cooldown of Felblade.
+|cFFFFFFFFGenerates ${$213243s3/10} Pain.|r]?a203555[Demon Blades has a chance to reset the cooldown of Felblade.
+
+|cFFFFFFFFGenerates $213243s4 Fury.|r][Demon's Bite has a chance to reset the cooldown of Felblade.
 
 |cFFFFFFFFGenerates $213243s4 Fury.|r]
 
@@ -3565,7 +3568,7 @@ Name             : Felblade (id=236167) [Spell Family (107), Passive, Hidden]
 Class            : Demon Hunter
 School           : Physical
 Proc Chance      : 101%
-Real PPM         : 4.5 (Haste multiplier)
+Real PPM         : 2 (Haste multiplier)
 Proc Flags       : ....x... ....x... ........ ........ 
                  : Yellow Melee, AOE Hostile Spell
 Attributes       : ......xx x....... ........ ........   ........ ........ ........ ........ 
@@ -3717,7 +3720,6 @@ Effects          :
 Description      : Unlock powers at the Vindicaar's Matrix Core to use while on Argus. 
 
 Name             : Light's Judgment (Racial) (id=255647) [Scaling Spell (-6)] 
-Hotfixed         : Variables
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 Race             : Lightforged Draenei (0x20000000)
 School           : Holy
@@ -3736,7 +3738,7 @@ Effects          :
 #1 (id=477694)   : Trigger Missiles (32)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 256893 | Radius: 0 - 5 yards | Target: Enemy (6)
 Description      : Call down a strike of Holy energy, dealing $<damage> Holy damage to enemies within $A1 yards after 3 sec.
-Variables        : $damage=${$cond($gt($SP,$AP),$SP*12.0,$AP*16)*$pctD*(1+$@versadmg)}
+Variables        : $damage=${$cond($gt($SP,$AP),$SP*3,$AP*3)*$pctD*(1+$@versadmg)}
 
 Name             : Holy Resistance (Racial Passive) (id=255651) [Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
@@ -3787,7 +3789,6 @@ Effects          :
 Description      : Experience gains from killing Demons increased by $s1%.
 
 Name             : Light's Judgment (Racial) (id=256893) [Scaling Spell (-6)] 
-Hotfixed         : Variables
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 Race             : Lightforged Draenei (0x20000000)
 School           : Holy
@@ -3805,9 +3806,8 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=479673)   : School Damage (2): holy
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 5 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
-                   Hotfixed: Chain Multiplier (0 -> 1)
 Description      : Call down a strike of Holy energy, dealing $<damage> Holy damage to enemies within $A1 yards.
-Variables        : $damage=${$cond($gt($SP,$AP),$SP*12.0,$AP*16)*$pctD*(1+$@versadmg)}
+Variables        : $damage=${$cond($gt($SP,$AP),$SP*3,$AP*3)*$pctD*(1+$@versadmg)}
 
 Name             : Light's Reckoning (Racial Passive) (id=256896) [Scaling Spell (-6)] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
@@ -3857,16 +3857,16 @@ Effects          :
 Description      : Slash an enemy for $sw2 Physical damage, and increase the damage your Chaos Strike deals to them by $s3% for $d.
 Tooltip          : The Demon Hunter's Chaos Strike deals $s3% additional damage.
 
-Name             : Insatiable Hunger (id=258876) [Spell Family (107), Passive] 
+Name             : Insatiable Hunger (id=258876) [Spell Family (107), Passive, Hidden] 
 Class            : Demon Hunter
 School           : Physical
-Attributes       : ......x. x....... ........ ........   ........ ........ ........ ........ 
+Attributes       : ......xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Passive (6)
+                 : Passive (6), Hidden (7)
 Effects          :
 #1 (id=483101)   : Apply Aura (6) | Dummy (4)
                    Base Value: 10 | Scaled Value: 10 | Target: Self (1)
@@ -3927,10 +3927,8 @@ Name             : Immolation Aura (id=258920) [Spell Family (107)]
 Class            : Demon Hunter
 School           : Fire
 GCD              : 1.5 seconds
-Duration         : 6 seconds
-Cooldown         : 15 seconds
-Category         : 1676
-Category Cooldown: 15 seconds
+Duration         : 10 seconds
+Cooldown         : 30 seconds
 Affecting spells : Metamorphosis (162264 effect#6), Aura of Pain (207347 effect#1), Agonizing Flames (207548 effect#1), Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#4), 
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3981,7 +3979,7 @@ Effects          :
 #1 (id=483172)   : School Damage (2): fire
                    Base Value: 0 | Scaled Value: 0 (avg=1, dl=0.15) | AP Coefficient: 0.11760 | Radius: 0 - 8 yards | Target: At Caster (22) -> AOE enemy (15)
 #2 (id=483173)   : Energize Power (30)
-                   Base Value: 5 | Scaled Value: 5 | Misc Value: fury | Target: Self (1)
+                   Base Value: 7 | Scaled Value: 7 | Misc Value: fury | Target: Self (1)
 Description      : $@spelldesc258920
 
 Name             : Fel Barrage (id=258925) [Spell Family (107)] 

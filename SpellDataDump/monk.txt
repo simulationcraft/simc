@@ -97,7 +97,7 @@ Attributes       : ....x.xx x....... ..x..... ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=10792)    : Apply Aura (6) | Unknown(133)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.25000 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Target: Self (1)
 Tooltip          : Max Health increased by $s1%.
 
 Name             : Expansive Mind (Racial Passive) (id=20591) [Passive] 
@@ -487,7 +487,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 115 | Target: Self (1)
 #3 (id=138797)   : Apply Aura (6) | Add Flat Modifier (107): Spell Global Cooldown (21)
                    Base Value: -500 | Scaled Value: -500 | Misc Value: 21 | Target: Self (1)
-                   Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (101546), Transcendence (101643), Rising Sun Kick (107428), Expel Harm (115072), Paralysis (115078), Touch of Death (115080), Chi Wave (115098), Detox (115450), Disable (116095), Tiger's Lust (116841), Ring of Peace (116844), Rushing Jade Wind (116847), Crackling Jade Lightning (117952), Leg Sweep (119381), Transcendence: Transfer (119996), Chi Burst (123986), Zen Pulse (124081), Moderate Stagger (124274), Chi Burst (130654), Chi Burst (148135), Rushing Jade Wind (148187), Rising Sun Kick (185099), Zen Pulse (198487), Song of Chi-Ji (198898), Blackout Strike (205523), Detox (218164), Blackout Kick (228649), Rushing Jade Wind (261715), Leg Sweep [TBD] (264348)
+                   Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (101546), Transcendence (101643), Rising Sun Kick (107428), Expel Harm (115072), Paralysis (115078), Touch of Death (115080), Chi Wave (115098), Detox (115450), Disable (116095), Tiger's Lust (116841), Ring of Peace (116844), Rushing Jade Wind (116847), Crackling Jade Lightning (117952), Leg Sweep (119381), Transcendence: Transfer (119996), Chi Burst (123986), Zen Pulse (124081), Moderate Stagger (124274), Chi Burst (130654), Chi Burst (148135), Rushing Jade Wind (148187), Rising Sun Kick (185099), Zen Pulse (198487), Song of Chi-Ji (198898), Blackout Strike (205523), Detox (218164), Blackout Kick (228649), Rushing Jade Wind (261715)
 #4 (id=157390)   : Apply Aura (6) | Increase Energy (35)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 12 | Target: Self (1)
 Description      : Increases all damage dealt by $s3%.
@@ -714,7 +714,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 3 | Target: Self (1)
 #11 (id=218370)   : Apply Aura (6) | Add Flat Modifier (107): Spell Global Cooldown (21)
                    Base Value: -500 | Scaled Value: -500 | Misc Value: 21 | Target: Self (1)
-                   Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (101546), Transcendence (101643), Rising Sun Kick (107428), Expel Harm (115072), Paralysis (115078), Touch of Death (115080), Chi Wave (115098), Detox (115450), Disable (116095), Tiger's Lust (116841), Ring of Peace (116844), Rushing Jade Wind (116847), Crackling Jade Lightning (117952), Leg Sweep (119381), Transcendence: Transfer (119996), Chi Burst (123986), Zen Pulse (124081), Moderate Stagger (124274), Chi Burst (130654), Chi Burst (148135), Rushing Jade Wind (148187), Rising Sun Kick (185099), Zen Pulse (198487), Song of Chi-Ji (198898), Blackout Strike (205523), Detox (218164), Blackout Kick (228649), Rushing Jade Wind (261715), Leg Sweep [TBD] (264348)
+                   Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (101546), Transcendence (101643), Rising Sun Kick (107428), Expel Harm (115072), Paralysis (115078), Touch of Death (115080), Chi Wave (115098), Detox (115450), Disable (116095), Tiger's Lust (116841), Ring of Peace (116844), Rushing Jade Wind (116847), Crackling Jade Lightning (117952), Leg Sweep (119381), Transcendence: Transfer (119996), Chi Burst (123986), Zen Pulse (124081), Moderate Stagger (124274), Chi Burst (130654), Chi Burst (148135), Rushing Jade Wind (148187), Rising Sun Kick (185099), Zen Pulse (198487), Song of Chi-Ji (198898), Blackout Strike (205523), Detox (218164), Blackout Kick (228649), Rushing Jade Wind (261715)
 #12 (id=235531)   : Apply Aura (6) | Modify Expertise% (240)
                    Base Value: 3 | Scaled Value: 3 | Target: Self (1)
 #13 (id=255479)   : Dummy (3)
@@ -758,9 +758,9 @@ Spell Level      : 25
 Range            : 20 yards
 GCD              : 1.5 seconds
 Duration         : 60 seconds
-Cooldown         : 15 seconds
+Cooldown         : 60 seconds
 Category         : 33
-Category Cooldown: 15 seconds
+Category Cooldown: 60 seconds
 Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
 Mechanic         : Unknown(110)
@@ -1735,7 +1735,7 @@ GCD              : 1.5 seconds
 Duration         : 3 seconds
 Cooldown         : 60 seconds
 Mechanic         : Unknown(95)
-Affecting spells : Stance of the Fierce Tiger (103985 effect#3), Stagger (115069 effect#11), Mistweaver Monk (137024 effect#6), Leg Sweep [TBD] (264348 effect#1)
+Affecting spells : Stance of the Fierce Tiger (103985 effect#3), Stagger (115069 effect#11), Mistweaver Monk (137024 effect#6), Tiger Tail Sweep (264348 effect#1), 
 Attributes       : ....x... ........ ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3129,7 +3129,7 @@ Effects          :
                    Base Value: 30 | Scaled Value: 30 | Misc Value: 8 | Target: Self (1)
 #6 (id=260827)   : Apply Aura (6) | Hasted Global Cooldown (417)
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 917504 | Target: Self (1)
-                   Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (101546), Transcendence (101643), Rising Sun Kick (107428), Paralysis (115078), Touch of Death (115080), Disable (116095), Rushing Jade Wind (116847), Leg Sweep (119381), Transcendence: Transfer (119996), Rising Sun Kick (185099), Refreshing Jade Wind (196725), Blackout Strike (205523), Blackout Kick (228649), Rushing Jade Wind (261715), Leg Sweep [TBD] (264348)
+                   Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (101546), Transcendence (101643), Rising Sun Kick (107428), Paralysis (115078), Touch of Death (115080), Disable (116095), Rushing Jade Wind (116847), Leg Sweep (119381), Transcendence: Transfer (119996), Rising Sun Kick (185099), Refreshing Jade Wind (196725), Blackout Strike (205523), Blackout Kick (228649), Rushing Jade Wind (261715)
 #7 (id=260828)   : Apply Aura (6) | Hasted Cooldown Duration (416)
                    Base Value: 100 | Scaled Value: 100 | Target: Self (1)
                    Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (101546), Blackout Strike (205523), Blackout Kick (228649)
@@ -3559,21 +3559,6 @@ Effects          :
 #1 (id=229488)   : Threat (63)
                    Base Value: 1 | Scaled Value: 1 | Radius: 0 - 30 yards | Target: Custom (18) -> AOE enemy (instant) (16)
 
-Name             : Item - Monk T17 Mistweaver 2P Bonus (id=165404) [Spell Family (53), Passive, Hidden] 
-Class            : Monk
-School           : Physical
-Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ x....... ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ x....... ........ 
-                 : Passive (6), Hidden (7)
-Effects          :
-#1 (id=233448)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 5 | Scaled Value: 5 | Misc Value: 17 | Target: Self (1)
-Description      : Every time your Soothing Mist heals a target your critical strike chance is increased by $167732s1%.
-
 Name             : Windwalking (id=166646) [Spell Family (53)] 
 Class            : Monk
 School           : Physical
@@ -3592,26 +3577,6 @@ Effects          :
 #1 (id=235496)   : Apply Aura (6) | Increase Speed% (31)
                    Base Value: 10 | Scaled Value: 10 | Target: Friend (21)
 Tooltip          : Movement speed increased by $s1%.
-
-Name             : Mistweaving (id=167732) 
-Class            : Monk
-School           : Physical
-Spell Level      : 36
-Duration         : 10 seconds
-Cooldown         : 6 seconds
-Stacks           : 8 maximum
-Proc Chance      : 101%
-Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ..x..... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=237364)   : Apply Aura (6) | Modify Spell Crit% (57)
-                   Base Value: 5 | Scaled Value: 5 | Target: Self (1)
-Description      : $@spelldesc165404
-Tooltip          : Critical strike chance increased by $s1%.
 
 Name             : Disabling Technique (id=175697) 
 Class            : Monk
@@ -5291,7 +5256,6 @@ Effects          :
 Description      : Unlock powers at the Vindicaar's Matrix Core to use while on Argus. 
 
 Name             : Light's Judgment (Racial) (id=255647) [Scaling Spell (-6)] 
-Hotfixed         : Variables
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 Race             : Lightforged Draenei (0x20000000)
 School           : Holy
@@ -5310,7 +5274,7 @@ Effects          :
 #1 (id=477694)   : Trigger Missiles (32)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 256893 | Radius: 0 - 5 yards | Target: Enemy (6)
 Description      : Call down a strike of Holy energy, dealing $<damage> Holy damage to enemies within $A1 yards after 3 sec.
-Variables        : $damage=${$cond($gt($SP,$AP),$SP*12.0,$AP*16)*$pctD*(1+$@versadmg)}
+Variables        : $damage=${$cond($gt($SP,$AP),$SP*3,$AP*3)*$pctD*(1+$@versadmg)}
 
 Name             : Holy Resistance (Racial Passive) (id=255651) [Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
@@ -5361,7 +5325,6 @@ Effects          :
 Description      : Experience gains from killing Demons increased by $s1%.
 
 Name             : Light's Judgment (Racial) (id=256893) [Scaling Spell (-6)] 
-Hotfixed         : Variables
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 Race             : Lightforged Draenei (0x20000000)
 School           : Holy
@@ -5379,9 +5342,8 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=479673)   : School Damage (2): holy
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 5 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
-                   Hotfixed: Chain Multiplier (0 -> 1)
 Description      : Call down a strike of Holy energy, dealing $<damage> Holy damage to enemies within $A1 yards.
-Variables        : $damage=${$cond($gt($SP,$AP),$SP*12.0,$AP*16)*$pctD*(1+$@versadmg)}
+Variables        : $damage=${$cond($gt($SP,$AP),$SP*3,$AP*3)*$pctD*(1+$@versadmg)}
 
 Name             : Light's Reckoning (Racial Passive) (id=256896) [Scaling Spell (-6)] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
@@ -5667,11 +5629,9 @@ Effects          :
 Description      : Rising Sun Kick deals $s1% increased damage.
 
 
-Name             : Leg Sweep [TBD] (id=264348) [Spell Family (53), Passive] 
+Name             : Tiger Tail Sweep (id=264348) [Spell Family (53), Passive] 
 Class            : Monk
 School           : Physical
-Spell Level      : 52
-Affecting spells : Stance of the Fierce Tiger (103985 effect#3), Stagger (115069 effect#11), Mistweaver Monk (137024 effect#6)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -5680,9 +5640,12 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6)
 Effects          :
-#1 (id=707705)   : Apply Aura (6) | Add Flat Modifier (107): Spell Cooldown (11)
-                   Base Value: -15000 | Scaled Value: -15000 | Misc Value: 11 | Target: Self (1)
-                   Affected Spells: Leg Sweep (119381), Leg Sweep [TBD] (264348)
-Description      : The cooldown of Leg Sweep is reduced by ${$s1/-1000} sec.
+#1 (id=707705)   : Apply Aura (6) | Add Flat Modifier (107): Spell Radius (6)
+                   Base Value: 2 | Scaled Value: 2 | Misc Value: 6 | Target: Self (1)
+                   Affected Spells: Leg Sweep (119381)
+#2 (id=709600)   : Apply Aura (6) | Add Flat Modifier (107): Spell Cooldown (11)
+                   Base Value: -10000 | Scaled Value: -10000 | Misc Value: 11 | Target: Self (1)
+                   Affected Spells: Leg Sweep (119381)
+Description      : Increases the range of Leg Sweep by $s1 yds and reduces its cooldown by ${$s2/-1000} sec.
 
 
