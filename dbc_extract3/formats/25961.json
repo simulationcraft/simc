@@ -342,8 +342,7 @@
     { "data_type": "I", "field": "mask_class", "formats": { "cpp": "%#.8x" } },
     { "data_type": "I", "field": "req_skill_level" },
     { "data_type": "I", "field": "unk_13" },
-    { "data_type": "I", "field": "unk_14" },
-    { "data_type": "I", "field": "unk_15" }
+    { "data_type": "I", "field": "unk_14" }
   ],
   "SpecializationSpells": [
     { "data_type": "I", "field": "unk_1" },
