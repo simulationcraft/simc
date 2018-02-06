@@ -3647,7 +3647,7 @@ struct entropic_embrace_damage_t : public spell_t
   {
     spell_t::init();
 
-    snapshot_flags = update_flags = 0;
+    snapshot_flags = update_flags = STATE_TGT_MUL_DA | STATE_TGT_MUL_TA;
   }
 };
 

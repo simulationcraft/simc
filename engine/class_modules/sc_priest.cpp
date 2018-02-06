@@ -5374,6 +5374,8 @@ void priest_t::apl_shadow()
   vf->add_action( this, "Shadow Word: Pain", "if=active_enemies>1&!talent.misery.enabled&!ticking&((1+0.02"
       "*buff.voidform.stack)*variable.dot_swp_dpgcd*target.time_to_die%(gcd.max*(118"
       "+variable.sear_dpgcd*(active_enemies-1))))>1,cycle_targets=1" );
+  if (race == RACE_LIGHTFORGED_DRAENEI)
+	  vf->add_action( "lights_judgment,if=buff.voidform.stack<10");
   vf->add_action( this, "Mind Flay", "chain=1,interrupt_immediate=1,interrupt_if=ticks>=2&(action."
       "void_"
       "bolt.usable|(current_insanity_drain*gcd.max>insanity&(insanity-(current_"

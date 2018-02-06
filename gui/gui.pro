@@ -49,7 +49,7 @@ macx {
   QMAKE_INFO_PLIST  = ../qt/Simulationcraft.plist
   DEFINES          += SIMC_NO_AUTOUPDATE
 
-  contains(QMAKE_CXX, clang++) {
+  contains(QMAKE_CXX, .+/clang\+\+) {
     QMAKE_CXXFLAGS += -Wno-inconsistent-missing-override
   }
 

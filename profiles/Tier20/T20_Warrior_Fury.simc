@@ -44,6 +44,7 @@ actions+=/bloodbath,if=buff.battle_cry.up|(target.time_to_die<14)|(cooldown.batt
 actions+=/blood_fury,if=buff.battle_cry.up
 actions+=/berserking,if=(buff.battle_cry.up&(buff.avatar.up|!talent.avatar.enabled))|(buff.battle_cry.up&target.time_to_die<40)
 actions+=/arcane_torrent,if=rage<rage.max-40
+actions+=/lights_judgment,if=buff.battle_cry.up
 actions+=/run_action_list,name=cooldowns,if=buff.battle_cry.up&spell_targets.whirlwind=1
 actions+=/run_action_list,name=three_targets,if=target.health.pct>20&(spell_targets.whirlwind=3|spell_targets.whirlwind=4)
 actions+=/run_action_list,name=aoe,if=spell_targets.whirlwind>4
@@ -91,6 +92,7 @@ actions.single_target+=/execute,if=buff.stone_heart.react&((talent.inner_rage.en
 actions.single_target+=/bloodthirst
 actions.single_target+=/furious_slash,if=set_bonus.tier19_2pc&!talent.inner_rage.enabled
 actions.single_target+=/whirlwind,if=buff.wrecking_ball.react&buff.enrage.up
+actions.single_target+=/whirlwind,if=!buff.meat_cleaver.up&spell_targets.whirlwind=2
 actions.single_target+=/raging_blow
 actions.single_target+=/furious_slash
 

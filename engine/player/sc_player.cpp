@@ -1716,6 +1716,7 @@ std::string player_t::init_use_racial_actions( const std::string& append )
     case RACE_LIGHTFORGED_DRAENEI:
       buffer += "/lights_judgment";
       race_action_found = true;
+      break;
     default: break;
   }
 
@@ -6843,6 +6844,42 @@ struct lights_judgment_t : public racial_spell_t
   }
 };
 
+// Arcane Pulse =============================================================
+
+struct arcane_pulse_t : public racial_spell_t
+{
+  arcane_pulse_t( player_t* p, const std::string& options_str ) :
+    racial_spell_t( p, "arcane_pulse", p -> find_racial_spell( "Arcane Pulse" ), options_str )
+  {
+    may_crit = true;
+    aoe = -1;
+  }
+
+  void init() override
+  {
+    spell_t::init();
+    snapshot_flags |= STATE_AP | STATE_SP | STATE_CRIT;
+  }
+
+  double attack_direct_power_coefficient( const action_state_t* ) const override
+  {
+    auto ap = composite_attack_power() * player -> composite_attack_power_multiplier();
+    auto sp = composite_spell_power() * player -> composite_spell_power_multiplier();
+
+    // Hardcoded into the tooltip
+    return ap >= sp ? 2.0 : 0.0;
+  }
+
+  double spell_direct_power_coefficient( const action_state_t* ) const override
+  {
+    auto ap = composite_attack_power() * player -> composite_attack_power_multiplier();
+    auto sp = composite_spell_power() * player -> composite_spell_power_multiplier();
+
+    // Hardcoded into the tooltip
+    return sp > ap ? 0.75 : 0.0;
+  }
+};
+
 
 // Restart Sequence Action ==================================================
 
@@ -7930,6 +7967,7 @@ struct pool_resource_t : public action_t
 action_t* player_t::create_action( const std::string& name,
                                    const std::string& options_str )
 {
+  if ( name == "arcane_pulse"       ) return new       arcane_pulse_t( this, options_str );
   if ( name == "arcane_torrent"     ) return new     arcane_torrent_t( this, options_str );
   if ( name == "berserking"         ) return new         berserking_t( this, options_str );
   if ( name == "blood_fury"         ) return new         blood_fury_t( this, options_str );

@@ -1613,7 +1613,7 @@ double warlock_pet_t::composite_player_multiplier( school_e school ) const
 
   if ( o() -> specialization() == WARLOCK_AFFLICTION )
   {
-    m *= 1.0 + o() -> artifact.soulstealer.percent() * ( o() -> buffs.deadwind_harvester -> check() ? 2.0 : 1.0 );
+    m *= 1.0 + o() -> artifact.soulstealer.percent();
     m *= 1.0 + o() -> artifact.degradation_of_the_black_harvest.percent();
   }
 
@@ -6314,7 +6314,7 @@ double warlock_t::composite_player_multiplier( school_e school ) const
 
   if ( specialization() == WARLOCK_AFFLICTION )
   {
-    m *= 1.0 + artifact.soulstealer.percent() * ( buffs.deadwind_harvester -> check() ? 2.0 : 1.0 );
+    m *= 1.0 + artifact.soulstealer.percent();
     m *= 1.0 + artifact.degradation_of_the_black_harvest.percent();
   }
 
@@ -7057,7 +7057,7 @@ void warlock_t::init_rng()
   demonic_power_rppm = get_rppm( "demonic_power", find_spell( 196099 ) );
   grimoire_of_synergy = get_rppm( "grimoire_of_synergy", talents.grimoire_of_synergy );
   grimoire_of_synergy_pet = get_rppm( "grimoire_of_synergy_pet", talents.grimoire_of_synergy );
-  tormented_souls_rppm = get_rppm( "tormented_souls", 5.0 ); // The only official post claimed 4.5 rppm but hours of logs suggest it's actually 5 rppm.
+  tormented_souls_rppm = get_rppm( "tormented_souls", 4.5 );
 }
 
 void warlock_t::init_gains()
@@ -7792,8 +7792,8 @@ expr_t* warlock_t::create_expression( action_t* a, const std::string& name_str )
               double t = 0;
               for(auto& pet : player.pet_list)
               {
-                  pets::warlock_pet_t *lock_pet = static_cast<pets::warlock_pet_t*> ( pet );
-                  if(lock_pet != NULL)
+                  pets::warlock_pet_t *lock_pet = dynamic_cast<pets::warlock_pet_t*> ( pet );
+                  if(lock_pet != nullptr)
                   {
                       if(lock_pet->is_grimoire_of_service)
                       {
@@ -7823,8 +7823,8 @@ expr_t* warlock_t::create_expression( action_t* a, const std::string& name_str )
         double t = 0;
         for ( auto& pet : player.pet_list )
         {
-          pets::warlock_pet_t *lock_pet = static_cast<pets::warlock_pet_t*> ( pet );
-          if ( lock_pet != NULL )
+          pets::warlock_pet_t *lock_pet = dynamic_cast<pets::warlock_pet_t*> ( pet );
+          if ( lock_pet != nullptr )
           {
             if ( !lock_pet->is_sleeping() )
             {
@@ -7963,8 +7963,8 @@ expr_t* warlock_t::create_expression( action_t* a, const std::string& name_str )
               double t = 0;
               for(auto& pet : player.pet_list)
               {
-                  pets::warlock_pet_t *lock_pet = static_cast<pets::warlock_pet_t*> ( pet );
-                  if(lock_pet != NULL)
+                  pets::warlock_pet_t *lock_pet = dynamic_cast<pets::warlock_pet_t*> ( pet );
+                  if(lock_pet != nullptr)
                   {
                       if(lock_pet->is_grimoire_of_service)
                       {
@@ -8120,8 +8120,8 @@ expr_t* warlock_t::create_expression( action_t* a, const std::string& name_str )
               double t = 500000;
               for(auto& pet : player.pet_list)
               {
-                  pets::warlock_pet_t *lock_pet = static_cast<pets::warlock_pet_t*> ( pet );
-                  if(lock_pet != NULL)
+                  pets::warlock_pet_t *lock_pet = dynamic_cast<pets::warlock_pet_t*> ( pet );
+                  if(lock_pet != nullptr)
                   {
                       if(lock_pet->is_grimoire_of_service)
                       {
@@ -8290,8 +8290,8 @@ expr_t* warlock_t::create_expression( action_t* a, const std::string& name_str )
               double t = -1;
               for(auto& pet : player.pet_list)
               {
-                  pets::warlock_pet_t *lock_pet = static_cast<pets::warlock_pet_t*> ( pet );
-                  if(lock_pet != NULL)
+                  pets::warlock_pet_t *lock_pet = dynamic_cast<pets::warlock_pet_t*> ( pet );
+                  if(lock_pet != nullptr)
                   {
                       if(lock_pet->is_grimoire_of_service)
                       {
@@ -8617,17 +8617,17 @@ struct warlock_module_t: public module_t
     //  .modifier( 75 )
     //  .verification_value( 50 );
 
-    //hotfix::register_effect( "Warlock", "2017-12-04", "Corruption damage reduced by 6%.", 198369 )
-    //  .field( "sp_coefficient" )
-    //  .operation( hotfix::HOTFIX_MUL )
-    //  .modifier( 0.94 )
-    //  .verification_value( 0.345 );
+    hotfix::register_effect( "Warlock", "2018-02-05", "Corruption damage reduced by 6%.", 198369 )
+      .field( "sp_coefficient" )
+      .operation( hotfix::HOTFIX_MUL )
+      .modifier( 0.94 )
+      .verification_value( 0.324 );
 
-    //hotfix::register_effect( "Warlock", "2017-12-04", "Agony damage reduced by 6%.", 374 )
-    //  .field( "sp_coefficient" )
-    //  .operation( hotfix::HOTFIX_MUL )
-    //  .modifier( 0.94 )
-    //  .verification_value( 0.03770 );
+    hotfix::register_effect( "Warlock", "2018-02-05", "Agony damage reduced by 6%.", 374 )
+      .field( "sp_coefficient" )
+      .operation( hotfix::HOTFIX_MUL )
+      .modifier( 0.94 )
+      .verification_value( 0.03540 );
 
     //hotfix::register_effect( "Warlock", "2017-12-04", "Unstable Affliction 1 damage reduced by 4%", 352664 )
     //  .field( "sp_coefficient" )
