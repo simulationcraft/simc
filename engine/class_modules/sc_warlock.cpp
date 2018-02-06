@@ -227,7 +227,7 @@ public:
   {
     // Affliction
     artifact_power_t reap_souls;
-    artifact_power_t crystaline_shadows;
+    artifact_power_t crystalline_shadows;
     artifact_power_t seeds_of_doom;
     artifact_power_t fatal_echoes;
     artifact_power_t shadows_of_the_flesh;
@@ -240,10 +240,9 @@ public:
     artifact_power_t wrath_of_consumption;
     artifact_power_t hideous_corruption;
     artifact_power_t shadowy_incantations;
-    artifact_power_t soul_flames;
+    artifact_power_t soul_flame;
     artifact_power_t long_dark_night_of_the_soul;
     artifact_power_t compounding_horror;
-    artifact_power_t soulharvester;
     artifact_power_t soulstealer;
     artifact_power_t degradation_of_the_black_harvest;
     artifact_power_t winnowing;
@@ -6332,7 +6331,7 @@ double warlock_t::composite_player_multiplier( school_e school ) const
 
   if ( specialization() == WARLOCK_AFFLICTION && ( dbc::is_school( school, SCHOOL_SHADOW ) ) )
   {
-    m *= 1.0 + artifact.crystaline_shadows.percent() * ( buffs.deadwind_harvester -> check() ? 2.0 : 1.0 );
+    m *= 1.0 + artifact.crystalline_shadows.percent() * ( buffs.deadwind_harvester -> check() ? 2.0 : 1.0 );
     m *= 1.0 + artifact.shadowy_incantations.percent() * ( buffs.deadwind_harvester -> check() ? 2.0 : 1.0 );
   }
 
@@ -6741,7 +6740,7 @@ void warlock_t::init_spells()
   talents.cataclysm              = find_talent_spell( "Cataclysm" );
 
   talents.hand_of_doom           = find_talent_spell( "Hand of Doom" );
-  talents.power_trip			       = find_talent_spell( "Power Trip" );
+  talents.power_trip             = find_talent_spell( "Power Trip" );
 
   talents.soul_harvest           = find_talent_spell( "Soul Harvest" );
 
@@ -6767,7 +6766,7 @@ void warlock_t::init_spells()
 
   // Artifacts
   artifact.reap_souls = find_artifact_spell( "Reap Souls" );
-  artifact.crystaline_shadows = find_artifact_spell( "Crystaline Shadows" );
+  artifact.crystalline_shadows = find_artifact_spell( "Crystalline Shadows" );
   artifact.seeds_of_doom = find_artifact_spell( "Seeds of Doom" );
   artifact.fatal_echoes = find_artifact_spell( "Fatal Echoes" );
   artifact.shadows_of_the_flesh = find_artifact_spell( "Shadows of the Flesh" );
@@ -6780,10 +6779,9 @@ void warlock_t::init_spells()
   artifact.wrath_of_consumption = find_artifact_spell( "Wrath of Consumption" );
   artifact.hideous_corruption = find_artifact_spell( "Hideous Corruption" );
   artifact.shadowy_incantations = find_artifact_spell( "Shadowy Incantations" );
-  artifact.soul_flames = find_artifact_spell( "Soul Flames" );
+  artifact.soul_flame = find_artifact_spell( "Soul Flame" );
   artifact.long_dark_night_of_the_soul = find_artifact_spell( "Long Dark Night of the Soul" );
   artifact.compounding_horror = find_artifact_spell( "Compounding Horror" );
-  artifact.soulharvester = find_artifact_spell( "Soulharvester" );
   artifact.soulstealer = find_artifact_spell( "Soulstealer" );
   artifact.degradation_of_the_black_harvest = find_artifact_spell( "Degradation of the Black Harvest" );
   artifact.winnowing = find_artifact_spell( "Winnowing" );
