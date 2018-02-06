@@ -552,6 +552,8 @@ class WDC1Column:
 
     def elements(self):
         bit_size_ = self.bit_size()
+        if not self.__ext:
+            return 1
 
         field_width_ = self.ext_data().bit_size()
         elements_ = self.ext_data().elements()
@@ -620,10 +622,11 @@ class WDC1Column:
 
         elements = 1
         extra_type = ''
-        if self.ext_data().block_type() == COLUMN_TYPE_SPARSE:
-            extra_type = 's'
-        elif self.ext_data().block_type == COLUMN_TYPE_INDEXED:
-            extra_type = 'i'
+        if self.__ext:
+            if self.ext_data().block_type() == COLUMN_TYPE_SPARSE:
+                extra_type = 's'
+            elif self.ext_data().block_type == COLUMN_TYPE_INDEXED:
+                extra_type = 'i'
 
 
         return '{}:{}{}'.format(
