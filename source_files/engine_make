@@ -19,6 +19,7 @@ SRC += \
     sim$(PATHSEP)sc_expressions.hpp \
     report$(PATHSEP)sc_report.hpp \
     player$(PATHSEP)artifact_data.hpp \
+    dbc$(PATHSEP)sc_spell_info.hpp \
     dbc$(PATHSEP)specialization.hpp \
     dbc$(PATHSEP)dbc.hpp \
     simulationcraft.hpp \

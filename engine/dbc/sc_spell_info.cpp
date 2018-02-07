@@ -3,6 +3,7 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 
+#include "sc_spell_info.hpp"
 #include "simulationcraft.hpp"
 
 namespace {
