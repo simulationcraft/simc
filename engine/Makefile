@@ -188,6 +188,7 @@ include ../source_files/engine_main_make
 
 ifneq (,${GIT})
   OPTS += -DSC_GIT_REV="\"$(shell ${GIT} rev-parse --short HEAD)\""
+  OPTS += -DSC_GIT_BRANCH="\"$(shell ${GIT} rev-parse --abbrev-ref HEAD)\""
 endif
 
 SRC_H   := $(filter %.h, $(SRC)) $(filter %.hh, $(SRC)) $(filter %.hpp, $(SRC)) $(filter %.inc, $(SRC))

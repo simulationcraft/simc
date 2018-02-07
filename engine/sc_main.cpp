@@ -252,8 +252,8 @@ int sim_t::main( const std::vector<std::string>& args )
   util::printf("SimulationCraft %s for World of Warcraft %s %s (wow build %s)\n",
       SC_VERSION, dbc.wow_version(), dbc.wow_ptr_status(), util::to_string(dbc.build_level()).c_str());
 #else
-  util::printf("SimulationCraft %s for World of Warcraft %s %s (wow build %s, git build %s)\n",
-      SC_VERSION, dbc.wow_version(), dbc.wow_ptr_status(), util::to_string(dbc.build_level()).c_str(), SC_GIT_REV);
+  util::printf("SimulationCraft %s for World of Warcraft %s %s (wow build %s, git build %s %s)\n",
+      SC_VERSION, dbc.wow_version(), dbc.wow_ptr_status(), util::to_string(dbc.build_level()).c_str(), SC_GIT_BRANCH, SC_GIT_REV);
 #endif
 
   if ( display_hotfixes )
