@@ -494,7 +494,7 @@ public:
 
 			  if (buffs.surrender_to_madness->check() && buffs.power_infusion->check())
 			  {
-				  double total_amount = amount * (1.0 + buffs.power_infusion->data().effectN(3).percent()) *
+				  double total_amount = amount * (1.0 + buffs.power_infusion->data().effectN(2).percent()) *
 					  (1.0 + talents.surrender_to_madness->effectN(1).percent());
 
 				  amount_from_surrender_to_madness = amount * talents.surrender_to_madness->effectN(1).percent();
@@ -514,7 +514,7 @@ public:
 			  else if (buffs.power_infusion->check())
 			  {
 				  amount_from_power_infusion =
-					  (amount * (1.0 + buffs.power_infusion->data().effectN(3).percent())) - amount;
+					  (amount * (1.0 + buffs.power_infusion->data().effectN(2).percent())) - amount;
 			  }
 
 			  insanity.gain(amount, g, action);
@@ -1022,7 +1022,7 @@ struct shadowfiend_pet_t final : public base_fiend_pet_t
   shadowfiend_pet_t( sim_t* sim, priest_t& owner, const std::string& name = "shadowfiend" )
     : base_fiend_pet_t( sim, owner, PET_SHADOWFIEND, name )
   {
-    direct_power_mod = 1.875;  // Verified 2016-06-02 -- Twintop
+    direct_power_mod = 0.6;  // According to Sephuz 2018-02-07 -- N1gh7h4wk hardcoded
 
     main_hand_weapon.min_dmg = owner.dbc.spell_scaling( owner.type, owner.level() ) * 2;
     main_hand_weapon.max_dmg = owner.dbc.spell_scaling( owner.type, owner.level() ) * 2;
@@ -1049,7 +1049,7 @@ struct mindbender_pet_t final : public base_fiend_pet_t
   mindbender_pet_t( sim_t* sim, priest_t& owner, const std::string& name = "mindbender" )
     : base_fiend_pet_t( sim, owner, PET_MINDBENDER, name ), mindbender_spell( owner.find_spell(123051) )
   {
-    direct_power_mod = 1.5;  // Verified 2016-06-02 -- Twintop
+    direct_power_mod = 0.65;  // According to Sephuz 2018-02-07 -- N1gh7h4wk hardcoded
 
     main_hand_weapon.min_dmg = owner.dbc.spell_scaling( owner.type, owner.level() ) * 2;
     main_hand_weapon.max_dmg = owner.dbc.spell_scaling( owner.type, owner.level() ) * 2;
@@ -1318,7 +1318,7 @@ public:
   {
     double c = ab::cost();
 
-    if ( priest.buffs.power_infusion->check() )
+    if ( priest.buffs.power_infusion->check() && priest.specialization() != PRIEST_SHADOW )
     {
       c *= 1.0 + priest.buffs.power_infusion->data().effectN( 2 ).percent();
       c = std::floor( c );
@@ -4444,7 +4444,7 @@ double priest_t::composite_player_multiplier( school_e school ) const
     if ( specs.voidform->ok() && buffs.voidform->check() )
     {
       double voidform_multiplier =
-          1.1; // hardcoded, since it appears to not be in spelldata so far
+          0.1; // hardcoded, since it appears to not be in spelldata so far
       if ( active_items.zenkaram_iridis_anadem )
       {
         voidform_multiplier += buffs.iridis_empowerment->data().effectN( 2 ).percent();
@@ -5542,51 +5542,6 @@ void priest_t::init_action_list()
 
 void priest_t::combat_begin()
 {
-  if ( !sim->fixed_time )
-  {
-    if ( options.priest_fixed_time && talents.surrender_to_madness->ok() )
-    {
-      // Check if there are any players in the sim other than shadow priests with Surrender to Madness
-      bool found_non_stm_players =
-          ( sim->player_list.end() != range::find_if( sim->player_list, []( const player_t* p ) {
-              if ( p->role == ROLE_NONE )
-              {
-                return false;
-              }
-              else if ( p->specialization() != PRIEST_SHADOW )
-              {
-                return true;
-              }
-              else
-              {
-                const priest_t* priest = debug_cast<const priest_t*>( p );
-                if ( !priest->talents.surrender_to_madness->ok() )
-                {
-                  return true;
-                }
-              }
-              return false;
-            } ) );
-
-      if ( !found_non_stm_players )
-      {
-        // We have a simulation only with STM shadows priests, so change it to fixed time simulation.
-        sim->fixed_time = true;
-        sim->errorf(
-            "Due to Shadow Priest deaths during Surrender to Madness, fixed "
-            "time has been enabled in this simulation." );
-        sim->errorf(
-            "This allows sims with only Shadow Priests to give useful "
-            "feedback, as otherwise the sim would continue" );
-        sim->errorf(
-            "on for 300+ seconds "
-            "and reduce the target's health in the next iteration by "
-            "significantly more than it should." );
-        sim->errorf( "To disable this option, add priest_fixed_time=0 to your sim." );
-      }
-    }
-  }
-
   player_t::combat_begin();
 }
 
