@@ -3,9 +3,9 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 
-#include "dbc/sc_spell_info.hpp"
-#include "sc_report.hpp"
 #include "simulationcraft.hpp"
+#include "sc_report.hpp"
+#include "dbc/sc_spell_info.hpp"
 
 // ==========================================================================
 // Report

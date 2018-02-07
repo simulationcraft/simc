@@ -3,8 +3,8 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 
-#include "sc_spell_info.hpp"
 #include "simulationcraft.hpp"
+#include "sc_spell_info.hpp"
 
 namespace {
 struct proc_map_t
