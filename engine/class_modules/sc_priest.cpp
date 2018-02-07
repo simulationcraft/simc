@@ -4217,7 +4217,7 @@ namespace
     if (buffs.voidform->check())
     {
       h /= 1.0 + (buffs.voidform->check() *
-        find_spell(228264)->effectN(2).base_value() / 10.0);
+        find_spell(228264)->effectN(2).percent() / 10.0);
     }
 
     if (buffs.sephuzs_secret->check())
@@ -4251,7 +4251,7 @@ namespace
     if (buffs.voidform->check())
     {
       h /= 1.0 + (buffs.voidform->check() *
-        find_spell(228264)->effectN(2).base_value() / 10.0);
+        find_spell(228264)->effectN(2).percent() / 10.0);
     }
 
     return h;
