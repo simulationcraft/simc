@@ -430,7 +430,6 @@ namespace
     void init_rng() override;
     priest_td_t* get_target_data(player_t* target) const override;
     expr_t* create_expression(action_t* a, const std::string& name_str) override;
-    bool has_t18_class_trinket() const override;
     void trigger_sephuzs_secret(const action_state_t* state, spell_mechanic mechanic, double proc_chance = -1.0);
     void trigger_call_to_the_void(const dot_t* d);
 
