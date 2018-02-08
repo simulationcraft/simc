@@ -103,6 +103,8 @@ const item_bonus_entry_t* item_bonus_entries( bool ptr );
 std::size_t n_item_bonuses( bool ptr );
 std::string bonus_ids_str( dbc_t& );
 
+double item_level_squish( unsigned source_ilevel, bool ptr );
+
 // Filtered data access
 const item_data_t* find_consumable( item_subclass_consumable type, bool ptr, const std::function<bool(const item_data_t*)>& finder );
 

@@ -507,7 +507,7 @@ unsigned item_t::item_level() const
   if ( sim -> scale_to_itemlevel > 0 && sim -> scale_itemlevel_down_only )
     return std::min( (unsigned) sim -> scale_to_itemlevel, ilvl );
 
-  return ilvl;
+  return dbc::item_level_squish( ilvl, player -> dbc.ptr );
 }
 
 unsigned item_t::base_item_level() const

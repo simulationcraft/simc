@@ -976,6 +976,31 @@ std::vector<const spell_data_t*> dbc::class_passives( const player_t* p )
   return spells;
 }
 
+double dbc::item_level_squish( unsigned source_ilevel, bool ptr )
+{
+  if ( source_ilevel == 0 )
+  {
+    return 1;
+  }
+
+#if SC_USE_PTR == 1
+  if ( ptr )
+  {
+    assert( sizeof_array( __ptr_item_level_squish ) > source_ilevel );
+    return __ptr_item_level_squish[ source_ilevel ];
+  }
+  else
+  {
+    assert( sizeof_array( __item_level_squish ) > source_ilevel );
+    return __item_level_squish[ source_ilevel ];
+  }
+#else
+  ( void ) ptr;
+  assert( sizeof_array( __item_level_squish ) > source_ilevel );
+  return __item_level_squish[ source_ilevel ];
+#endif
+}
+
 uint32_t dbc_t::replaced_id( uint32_t id_spell ) const
 {
   auto it = replaced_ids.find( id_spell );
