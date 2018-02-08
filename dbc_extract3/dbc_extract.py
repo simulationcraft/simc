@@ -438,6 +438,14 @@ elif options.type == 'scale':
             options.max_ilevel, options.build),
         'values': combat_rating_values,
         'max_rows': options.max_ilevel
+    }, {
+        'file': 'ItemLevelSquish.txt',
+        'key': 0,
+        'comment': '// Item level translation for item level 1 - %d, wow build %d\n' % (
+            options.max_ilevel, options.build),
+        'values': [ 1 ],
+        'max_rows': options.max_ilevel,
+        'simple_reader': True
     }])
     if not g.initialize():
         sys.exit(1)
@@ -456,3 +464,15 @@ elif options.type == 'scale':
 
     g.generate()
 
+    g = dbc.generator.CSVDataGenerator(options, {
+        'file': 'AzeriteLevelToItemLevel.txt',
+        'key': 'Azerite Level',
+        'comment': '// Azerite level to item level 1 - %d, wow build %d\n' % (
+            300, options.build),
+        'values': [ 'Item Level' ],
+        'max_rows': 300
+    })
+    if not g.initialize():
+        sys.exit(1)
+
+    g.generate()
