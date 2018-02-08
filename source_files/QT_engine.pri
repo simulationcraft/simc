@@ -19,6 +19,7 @@
  HEADERS += engine/sim/sc_expressions.hpp
  HEADERS += engine/report/sc_report.hpp
  HEADERS += engine/player/artifact_data.hpp
+ HEADERS += engine/dbc/sc_spell_info.hpp
  HEADERS += engine/dbc/specialization.hpp
  HEADERS += engine/dbc/dbc.hpp
  PRECOMPILED_HEADER += engine/simulationcraft.hpp

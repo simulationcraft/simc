@@ -2,36 +2,6 @@
 # To change the list of source files, update the QT_ files and run synchronize.py
 
 SRC += \
-    util$(PATHSEP)xml.hpp \
-    util$(PATHSEP)timeline.hpp \
-    util$(PATHSEP)str.hpp \
-    util$(PATHSEP)stopwatch.hpp \
-    util$(PATHSEP)sc_resourcepaths.hpp \
-    util$(PATHSEP)sample_data.hpp \
-    util$(PATHSEP)rng.hpp \
-    util$(PATHSEP)io.hpp \
-    util$(PATHSEP)generic.hpp \
-    util$(PATHSEP)concurrency.hpp \
-    util$(PATHSEP)cache.hpp \
-    sim$(PATHSEP)x7_pantheon.hpp \
-    sim$(PATHSEP)sc_profileset.hpp \
-    sim$(PATHSEP)sc_option.hpp \
-    sim$(PATHSEP)sc_expressions.hpp \
-    report$(PATHSEP)sc_report.hpp \
-    player$(PATHSEP)artifact_data.hpp \
-    dbc$(PATHSEP)specialization.hpp \
-    dbc$(PATHSEP)dbc.hpp \
-    simulationcraft.hpp \
-    sc_util.hpp \
-    sc_timespan.hpp \
-    sc_enums.hpp \
-    config.hpp \
-    dbc$(PATHSEP)data_enums.hh \
-    dbc$(PATHSEP)data_definitions.hh \
-    util$(PATHSEP)utf8$(PATHSEP)unchecked.h \
-    util$(PATHSEP)utf8$(PATHSEP)core.h \
-    util$(PATHSEP)utf8$(PATHSEP)checked.h \
-    util$(PATHSEP)utf8.h \
     util$(PATHSEP)xml.cpp \
     util$(PATHSEP)str.cpp \
     util$(PATHSEP)stopwatch.cpp \

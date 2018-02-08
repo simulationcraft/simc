@@ -250,20 +250,6 @@ struct artifact_power_t
   { return rank_; }
 };
 
-// Spell information struct, holding static functions to output spell data in a human readable form
-
-namespace spell_info
-{
-std::string to_str( const dbc_t& dbc, const spell_data_t* spell, int level = MAX_LEVEL );
-void        to_xml( const dbc_t& dbc, const spell_data_t* spell, xml_node_t* parent, int level = MAX_LEVEL );
-//static std::string to_str( sim_t* sim, uint32_t spell_id, int level = MAX_LEVEL );
-std::string talent_to_str( const dbc_t& dbc, const talent_data_t* talent, int level = MAX_LEVEL );
-std::string set_bonus_to_str( const dbc_t& dbc, const item_set_bonus_t* set_bonus, int level = MAX_LEVEL );
-void        talent_to_xml( const dbc_t& dbc, const talent_data_t* talent, xml_node_t* parent, int level = MAX_LEVEL );
-void        set_bonus_to_xml( const dbc_t& dbc, const item_set_bonus_t* talent, xml_node_t* parent, int level = MAX_LEVEL );
-std::ostringstream& effect_to_str( const dbc_t& dbc, const spell_data_t* spell, const spelleffect_data_t* effect, std::ostringstream& s, int level = MAX_LEVEL );
-void                effect_to_xml( const dbc_t& dbc, const spell_data_t* spell, const spelleffect_data_t* effect, xml_node_t*    parent, int level = MAX_LEVEL );
-}
 
 /* Luxurious sample data container with automatic merge/analyze,
  * intended to be used in class modules for custom reporting.
