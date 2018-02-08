@@ -448,7 +448,7 @@ elif options.type == 'scale':
         'file': 'ArmorMitigationByLvl.txt',
         'comment': '// Enemy armor mitigation constants (K-value) for level 1 - %d, wow build %d\n' % (
             options.level + 3, options.build),
-        'values': [ 'Mitigation' ],
+        'values': [ 'Constant' ],
         'max_rows': options.level + 3
     })
     if not g.initialize():
