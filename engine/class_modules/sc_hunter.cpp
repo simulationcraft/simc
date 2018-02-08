@@ -50,7 +50,6 @@ namespace pets
 {
 struct hunter_main_pet_t;
 struct hunter_secondary_pet_t;
-struct hati_t;
 struct dire_critter_t;
 }
 
@@ -97,7 +96,6 @@ public:
   struct pets_t
   {
     std::array< pets::dire_critter_t*, DIRE_BEASTS_MAX >  dire_beasts;
-    pets::hati_t* hati;
     pet_t* spitting_cobra;
     std::array< pet_t*, 2 > dark_minions;
     // the theoretical limit is ( 6 / .75 - 1 ) * 4 = 28 snakes up at the same time
@@ -357,10 +355,8 @@ public:
   struct artifact_spells_t
   {
     // Beast Mastery
-    artifact_power_t hatis_bond;
     artifact_power_t beast_master;
     artifact_power_t titans_thunder;
-    artifact_power_t master_of_beasts;
     artifact_power_t surge_of_the_stormgod;
     artifact_power_t spitting_cobras;
     artifact_power_t jaws_of_thunder;
@@ -1360,7 +1356,7 @@ public:
 };
 
 // ==========================================================================
-// Secondary pets: Dire Beast, Hati, Black Arrow
+// Secondary pets: Dire Beast, Black Arrow
 // ==========================================================================
 
 template <typename Pet>
@@ -1521,90 +1517,6 @@ struct dire_critter_t: public hunter_secondary_pet_t
       make_buff( this, "bestial_wrath", find_spell( 211183 ) )
         -> set_default_value( find_spell( 211183 ) -> effectN( 1 ).percent() )
         -> add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
-  }
-};
-
-// ==========================================================================
-// Hati
-// ==========================================================================
-
-struct hati_t: public hunter_secondary_pet_t
-{
-  struct hati_melee_t : public secondary_pet_melee_t<hati_t>
-  {
-    hati_melee_t( hati_t* p ):
-      base_t( "hati_melee", p )
-    {}
-
-    void execute() override
-    {
-      base_t::execute();
-
-      if ( p() -> active.thunderslash && o() -> buffs.aspect_of_the_wild -> check() )
-        p() -> active.thunderslash -> execute();
-    }
-  };
-
-  struct actives_t
-  {
-    action_t* beast_cleave;
-    action_t* jaws_of_thunder;
-    action_t* kill_command;
-    action_t* titans_thunder;
-    action_t* thunderslash;
-  } active;
-
-  struct buffs_t
-  {
-    buff_t* beast_cleave;
-    buff_t* bestial_wrath;
-  } buffs;
-
-  hati_t( hunter_t* owner ):
-    hunter_secondary_pet_t( owner, std::string( "hati" ) ),
-    active( actives_t() )
-  {
-    owner_coeff.ap_from_ap = 0.6 * 1.6;
-  }
-
-  void init_base_stats() override
-  {
-    hunter_secondary_pet_t::init_base_stats();
-
-    main_hand_attack = new hati_melee_t( this );
-  }
-
-  void init_spells() override;
-
-  void create_buffs() override
-  {
-    hunter_secondary_pet_t::create_buffs();
-
-    // Bestial Wrath
-    buffs.bestial_wrath =
-      buff_creator_t( this, "bestial_wrath", o() -> specs.bestial_wrath )
-        .activated( true )
-        .cd( timespan_t::zero() )
-        .default_value( o() -> specs.bestial_wrath -> effectN( 1 ).percent() +
-                        o() -> talents.bestial_fury -> effectN( 1 ).percent() +
-                        o() -> artifacts.unleash_the_beast.percent() )
-        .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
-
-    // Beast Cleave
-    buffs.beast_cleave =
-      buff_creator_t( this, "beast_cleave", find_spell( 118455 ) )
-        .activated( true )
-        .default_value( beast_cleave_value() );
-  }
-
-  double composite_player_multiplier( school_e school ) const override
-  {
-    double m = hunter_secondary_pet_t::composite_player_multiplier( school );
-
-    if ( buffs.bestial_wrath -> up() )
-      m *= 1.0 + buffs.bestial_wrath -> check_value();
-
-    return m;
   }
 };
 
@@ -2059,12 +1971,6 @@ static void trigger_beast_cleave( action_state_t* s )
   const double cleave = s -> result_total * p -> buffs.beast_cleave -> check_value();
 
   execute( p -> active.beast_cleave, s -> target, cleave );
-
-  if ( p -> o() -> pets.hati && p -> o() -> artifacts.master_of_beasts.rank() )
-  {
-    // Hotfix in game for Hati, no spelldata for it though. 2016-09-05
-    execute( p -> o() -> pets.hati -> active.beast_cleave, s -> target, cleave * .75 );
-  }
 }
 
 // Pet Melee ================================================================
@@ -2440,27 +2346,6 @@ void dire_critter_t::init_spells()
   }
 }
 
-void hati_t::init_spells() 
-{
-  hunter_secondary_pet_t::init_spells();
-
-  if ( o() -> artifacts.master_of_beasts.rank() )
-  {
-    active.kill_command = new actions::kill_command_t( this );
-    active.kill_command -> base_multiplier *= 0.5;
-    active.beast_cleave = new actions::beast_cleave_attack_t( this );
-  }
-
-  if ( o() -> artifacts.titans_thunder.rank() )
-    active.titans_thunder = new actions::titans_thunder_t( this );
-
-  if ( o() -> artifacts.jaws_of_thunder.rank() )
-    active.jaws_of_thunder = new actions::jaws_of_thunder_t( this );
-
-  if ( o() -> artifacts.thunderslash.rank() )
-    active.thunderslash = new actions::thunderslash_t( this );
-}
-
 } // end namespace pets
 
 // T20 BM 2pc trigger
@@ -2475,8 +2360,6 @@ void trigger_t20_2pc_bm( hunter_t* p )
     // we don't have to invalidate the caches for pets as they don't use the stat cache in the first place
     if ( p -> active.pet )
       p -> active.pet -> buffs.bestial_wrath -> current_value += value;
-    if ( p -> pets.hati )
-      p -> pets.hati -> buffs.bestial_wrath -> current_value += value;
 
     if ( p -> sim -> debug )
     {
@@ -2824,8 +2707,6 @@ struct multi_shot_t: public hunter_ranged_attack_t
     if ( pet && p() -> specs.beast_cleave -> ok() )
     {
       pet -> buffs.beast_cleave -> trigger();
-      if ( p() -> artifacts.master_of_beasts.rank() )
-        p() -> pets.hati -> buffs.beast_cleave -> trigger();
     }
     if ( result_is_hit( execute_state -> result ) )
     {
@@ -2851,8 +2732,6 @@ struct multi_shot_t: public hunter_ranged_attack_t
     if ( p() -> artifacts.surge_of_the_stormgod.rank() && rng().roll( p() -> artifacts.surge_of_the_stormgod.data().proc_chance() ) )
     {
       if ( p() -> active.pet )
-        p() -> active.surge_of_the_stormgod -> execute();
-      if ( p() -> pets.hati )
         p() -> active.surge_of_the_stormgod -> execute();
     }
 
@@ -3012,9 +2891,6 @@ struct cobra_shot_t: public hunter_ranged_attack_t
     if ( p() -> talents.way_of_the_cobra -> ok() )
     {
       int active_pets = 1;
-
-      if ( p() -> pets.hati )
-        active_pets++;
 
       if ( ! p() -> talents.dire_frenzy -> ok() )
       {
@@ -4740,9 +4616,6 @@ struct summon_pet_t: public hunter_spell_t
     pet -> type = PLAYER_PET;
     pet -> summon();
 
-    if ( p() -> pets.hati )
-      p() -> pets.hati -> summon();
-
     if ( p() -> main_hand_attack ) p() -> main_hand_attack -> cancel();
   }
 
@@ -4937,9 +4810,6 @@ struct bestial_wrath_t: public hunter_spell_t
     p() -> buffs.bestial_wrath  -> trigger();
     p() -> active.pet -> buffs.bestial_wrath -> trigger();
 
-    if ( p() -> artifacts.master_of_beasts.rank() )
-      p() -> pets.hati -> buffs.bestial_wrath -> trigger();
-
     if ( p() -> sets -> has_set_bonus( HUNTER_BEAST_MASTERY, T20, B4 ) )
       p() -> buffs.t20_4p_bestial_rage -> trigger();
 
@@ -5000,12 +4870,6 @@ struct kill_command_t: public hunter_spell_t
     {
       p() -> active.pet -> active.kill_command -> set_target( execute_state -> target );
       p() -> active.pet -> active.kill_command -> execute();
-    }
-
-    if ( p() -> artifacts.master_of_beasts.rank() )
-    {
-      p() -> pets.hati -> active.kill_command -> set_target( execute_state -> target );
-      p() -> pets.hati -> active.kill_command -> execute();
     }
 
     if ( p() -> sets -> has_set_bonus( HUNTER_BEAST_MASTERY, T20, B2 ) )
@@ -5119,7 +4983,6 @@ struct titans_thunder_t: public hunter_spell_t
     }
 
     p() -> active.pet -> active.titans_thunder -> execute();
-    p() -> pets.hati -> active.titans_thunder -> execute();
   }
 
   bool init_finished() override
@@ -5848,9 +5711,6 @@ void hunter_t::create_pets()
       pets.dire_beasts[ i ] = new pets::dire_critter_t( this  );
   }
 
-  if ( artifacts.hatis_bond.rank() )
-    pets.hati = new pets::hati_t( this );
-
   if ( talents.black_arrow -> ok() )
   {
     pets.dark_minions[ 0 ] = new pets::dark_minion_t( this );
@@ -5982,10 +5842,8 @@ void hunter_t::init_spells()
 
 
   // Artifact spells
-  artifacts.hatis_bond               = find_artifact_spell( "Hati's Bond" );
   artifacts.titans_thunder           = find_artifact_spell( "Titan's Thunder" );
   artifacts.beast_master             = find_artifact_spell( "Beast Master" );
-  artifacts.master_of_beasts         = find_artifact_spell( "Master of Beasts" );
   artifacts.surge_of_the_stormgod    = find_artifact_spell( "Surge of the Stormgod" );
   artifacts.spitting_cobras          = find_artifact_spell( "Spitting Cobras" );
   artifacts.jaws_of_thunder          = find_artifact_spell( "Jaws of Thunder" );
