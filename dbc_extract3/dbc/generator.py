@@ -1479,6 +1479,8 @@ class SpellDataGenerator(DataGenerator):
           ( 205473, 0 ),                            # Icicles buff
           ( 253257, 0 ),                            # Frost T21 4P Arctic Blast
           ( 187292, 0 ),                            # Ro3 buff (?)
+          ( 264352, 0 ),                            # Mana Adept
+          ( 263725, 0 ),                            # Clearcasting buff
         ),
 
         # Warlock:

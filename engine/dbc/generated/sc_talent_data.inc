@@ -146,7 +146,7 @@ static struct talent_data_t __talent_data[] = {
   { "Thermal Void"                      , 21632, 0x00, 0x0080,  64,   0,   6,  155149,       0,  0 },
   { "Meteor"                            , 21633, 0x00, 0x0080,  63,   2,   6,  153561,       0,  0 },
   { "Comet Storm"                       , 21634, 0x00, 0x0080,  64,   2,   6,  153595,       0,  0 },
-  { "Cosmic Ripple"                     , 21636, 0x00, 0x0010, 257,   0,   6,  243241,       0,  0 },
+  { "Cosmic Ripple"                     , 21636, 0x00, 0x0010, 257,   0,   6,  238136,       0,  0 },
   { "Legacy of the Void"                , 21637, 0x00, 0x0010, 258,   0,   6,  193225,       0,  0 },
   { "Apotheosis"                        , 21644, 0x00, 0x0010, 257,   1,   6,  200183,       0,  0 },
 //{ Name                                ,    Id, Flgs,  Class, Spc, Col, Row, SpellID, ReplcID, S1 },
