@@ -54,6 +54,9 @@ To change the list of source files, update the QT_ files and run synchronize.py
 		<ClCompile Include="..\engine\util\concurrency.cpp">
 			<PrecompiledHeader>NotUsing</PrecompiledHeader>
 		</ClCompile>
+		<ClCompile Include="..\engine\util\git_info.cpp">
+			<PrecompiledHeader>NotUsing</PrecompiledHeader>
+		</ClCompile>
 		<ClCompile Include="..\engine\sim\x7_pantheon.cpp">
 			
 		</ClCompile>
