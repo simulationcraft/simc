@@ -2909,11 +2909,8 @@ struct arcane_blast_t : public arcane_mage_spell_t
 
     timespan_t t = arcane_mage_spell_t::execute_time();
 
-    if ( p() -> talents.temporal_flux -> ok() )
-    {
-      t *=  1.0 + p() -> buffs.arcane_charge -> check() *
-                  p() -> talents.temporal_flux -> effectN( 1 ).percent();
-    }
+    t *=  1.0 + p() -> buffs.arcane_charge -> check() *
+                p() -> spec.arcane_charge -> effectN( 4 ).percent();
 
     return t;
   }
