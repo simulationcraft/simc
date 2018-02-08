@@ -14,6 +14,7 @@
 #include "sc_WelcomeTab.hpp"
 #include "sc_AddonImportTab.hpp"
 #include "util/sc_mainwindowcommandline.hpp"
+#include "util/git_info.hpp"
 #ifdef SC_PAPERDOLL
 #include "sc_PaperDoll.hpp"
 #endif
@@ -797,13 +798,18 @@ void SC_MainWindow::startSim()
 
   QString tab_name = std::get<0>( value );
   auto simc_gui_profile = std::get<1>( value );
-#if ! defined( SC_GIT_REV )
-  auto simc_version = QString("### SimulationCraft %1 for World of Warcraft %2 %3 (wow build %4) ###\n\n").
-      arg(SC_VERSION).arg(sim->dbc.wow_version()).arg(sim->dbc.wow_ptr_status()).arg(sim->dbc.build_level());
-#else
-  auto simc_version = QString("### SimulationCraft %1 for World of Warcraft %2 %3 (wow build %4, git build %5) ###\n\n").
-          arg(SC_VERSION).arg(sim->dbc.wow_version()).arg(sim->dbc.wow_ptr_status()).arg(sim->dbc.build_level()).arg(SC_GIT_REV);
-#endif
+  QString simc_version;
+  if ( !git_info::available())
+  {
+    simc_version = QString("### SimulationCraft %1 for World of Warcraft %2 %3 (wow build %4) ###\n\n").
+        arg(SC_VERSION).arg(sim->dbc.wow_version()).arg(sim->dbc.wow_ptr_status()).arg(sim->dbc.build_level());
+  }
+  else
+  {
+    simc_version = QString("### SimulationCraft %1 for World of Warcraft %2 %3 (wow build %4, git build %5 %6) ###\n\n").
+            arg(SC_VERSION).arg(sim->dbc.wow_version()).arg(sim->dbc.wow_ptr_status()).arg(sim->dbc.build_level()).
+            arg(git_info::branch()).arg(git_info::revision());
+  }
   simc_gui_profile = simc_version + simc_gui_profile;
   QByteArray utf8_profile = simc_gui_profile.toUtf8();
   QFile file( AppDataDir + QDir::separator() + "simc_gui.simc" );

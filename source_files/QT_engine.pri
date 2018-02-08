@@ -40,6 +40,7 @@
  SOURCES += engine/util/rng.cpp
  SOURCES += engine/util/io.cpp
  SOURCES += engine/util/concurrency.cpp
+ SOURCES += engine/util/git_info.cpp
  SOURCES += engine/sim/x7_pantheon.cpp
  SOURCES += engine/sim/sc_sim.cpp
  SOURCES += engine/sim/sc_scaling.cpp

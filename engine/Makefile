@@ -238,15 +238,9 @@ $(OBJ_DIR)$(PATHSEP)%.$(OBJ_EXT): %.cpp $(SRC_H)
 	-@echo [$(MODULE)] Compiling $(notdir $<)
 	$(CXX) $(CPP_FLAGS) $(OPTS) -S $< -o $@
 
-# Force regeneration of sc_main.o on every recompilation to potntially get the
+# Force regeneration of git_info.o on every recompilation to potntially get the
 # changed GIT shorthash into the binary
-sc_main.o: .FORCE
-
-report/sc_report_html_sim.o: .FORCE
-
-report/sc_report_json.o: .FORCE
-
-report/sc_report_xml.o: .FORCE
+util/git_info.o: .FORCE
 
 # cleanup targets
 mostlyclean:
