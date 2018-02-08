@@ -387,7 +387,6 @@ public:
     {
       buff_stack_benefit_t* arcane_barrage;
       buff_stack_benefit_t* arcane_blast;
-      buff_stack_benefit_t* arcane_explosion;
       buff_stack_benefit_t* nether_tempest;
     } arcane_charge;
 
@@ -2897,14 +2896,11 @@ struct arcane_explosion_t : public arcane_mage_spell_t
 
   virtual void execute() override
   {
-    p() -> benefits.arcane_charge.arcane_explosion -> update();
-
     arcane_mage_spell_t::execute();
 
-    p() -> buffs.arcane_charge -> up();
-
-    if ( hit_any_target )
+    if ( hit_any_target || p() -> bugs )
     {
+      // TODO: Grants AC even when it doesn't hit anything, could be a bug.
       trigger_arcane_charge();
     }
 
@@ -2923,25 +2919,6 @@ struct arcane_explosion_t : public arcane_mage_spell_t
 
       p() -> buffs.time_and_space -> trigger();
     }
-  }
-
-  virtual double cost() const override
-  {
-    double c = arcane_mage_spell_t::cost();
-
-    c *= 1.0 +  p() -> buffs.arcane_charge -> check() *
-                p() -> spec.arcane_charge -> effectN( 5 ).percent();
-
-    return c;
-  }
-
-  virtual double action_multiplier() const override
-  {
-    double am = arcane_mage_spell_t::action_multiplier();
-
-    am *= arcane_charge_damage_bonus();
-
-    return am;
   }
 };
 
@@ -3015,15 +2992,6 @@ struct arcane_missiles_t : public arcane_mage_spell_t
 
     base_multiplier *= 1.0 + p -> artifact.aegwynns_fury.percent();
     base_crit += p -> artifact.aegwynns_intensity.percent();
-  }
-
-  virtual double action_multiplier() const override
-  {
-    double am = arcane_mage_spell_t::action_multiplier();
-
-    am *= arcane_charge_damage_bonus( true );
-
-    return am;
   }
 
   // Flag Arcane Missiles as direct damage for triggering effects
@@ -6781,7 +6749,6 @@ mage_t::~mage_t()
 {
   delete benefits.arcane_charge.arcane_barrage;
   delete benefits.arcane_charge.arcane_blast;
-  delete benefits.arcane_charge.arcane_explosion;
   delete benefits.arcane_charge.nether_tempest;
   delete benefits.chain_reaction;
   delete benefits.magtheridons_might;
@@ -7533,8 +7500,6 @@ void mage_t::init_benefits()
       new buff_stack_benefit_t( buffs.arcane_charge, "Arcane Barrage" );
     benefits.arcane_charge.arcane_blast =
       new buff_stack_benefit_t( buffs.arcane_charge, "Arcane Blast" );
-    benefits.arcane_charge.arcane_explosion =
-      new buff_stack_benefit_t( buffs.arcane_charge, "Arcane Explosion" );
     if ( talents.nether_tempest -> ok() )
     {
       benefits.arcane_charge.nether_tempest =
