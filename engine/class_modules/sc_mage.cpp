@@ -38,7 +38,6 @@ struct mage_t;
 
 namespace buffs {
   struct touch_of_the_magi_t;
-  struct arcane_missiles_t;
 }
 
 namespace pets {
@@ -389,7 +388,6 @@ public:
       buff_stack_benefit_t* arcane_barrage;
       buff_stack_benefit_t* arcane_blast;
       buff_stack_benefit_t* arcane_explosion;
-      buff_stack_benefit_t* arcane_missiles;
       buff_stack_benefit_t* nether_tempest;
     } arcane_charge;
 
@@ -405,7 +403,6 @@ public:
     // Arcane
     buff_t* arcane_charge;
     buff_t* arcane_familiar;
-    buffs::arcane_missiles_t* arcane_missiles;
     buff_t* arcane_power;
     buff_t* chrono_shift;
     buff_t* crackling_energy; // T20 2pc Arcane
@@ -1341,45 +1338,6 @@ struct cinder_impact_event_t : public event_t
 }
 
 namespace buffs {
-// Arcane Missiles Buff =======================================================
-struct arcane_missiles_t : public buff_t
-{
-  arcane_missiles_t( mage_t* p ) :
-    buff_t( buff_creator_t( p, "arcane_missiles", p -> find_spell( 79683 ) ) )
-  {
-    default_chance = p -> find_spell( 79684 ) -> effectN( 1 ).percent();
-  }
-
-  double proc_chance() const
-  {
-    double am_proc_chance = default_chance;
-
-    mage_t* p = static_cast<mage_t*>( player );
-
-    if ( p -> talents.words_of_power -> ok() )
-    {
-      double mult = p -> resources.pct( RESOURCE_MANA ) /
-                    p -> talents.words_of_power -> effectN( 2 ).percent();
-      am_proc_chance += mult * p -> talents.words_of_power -> effectN( 1 ).percent();
-    }
-
-    am_proc_chance += p -> artifact.ethereal_sensitivity.percent();
-    am_proc_chance += p -> sets -> set( MAGE_ARCANE, T19, B2 ) -> effectN( 1 ).percent();
-
-    return am_proc_chance;
-  }
-
-  virtual bool trigger( int stacks, double value,
-                        double chance, timespan_t duration ) override
-  {
-    if ( chance < 0 )
-    {
-      chance = proc_chance();
-    }
-    return buff_t::trigger( stacks, value, chance, duration );
-  }
-};
-
 struct erosion_t : public buff_t
 {
   // Erosion debuff =============================================================
@@ -1733,9 +1691,6 @@ struct mage_spell_t : public mage_spell_base_t
     FF_FINGERS_OF_FROST = 1 << FROZEN_FINGERS_OF_FROST
   };
 
-  bool triggers_arcane_missiles;
-  proc_t* proc_am;
-
   bool track_cd_waste;
   cooldown_waste_data_t* cd_waste;
 public:
@@ -1743,8 +1698,6 @@ public:
   mage_spell_t( const std::string& n, mage_t* p,
                 const spell_data_t* s = spell_data_t::nil() ) :
     mage_spell_base_t( n, p, s, p ),
-    triggers_arcane_missiles( true ),
-    proc_am( nullptr ),
     track_cd_waste( false ),
     cd_waste( nullptr )
   {
@@ -1761,10 +1714,6 @@ public:
       snapshot_flags |= STATE_FROZEN;
       update_flags   |= STATE_FROZEN;
     }
-    if ( ! harmful || background )
-    {
-      triggers_arcane_missiles = false;
-    }
   }
 
   virtual bool init_finished() override
@@ -1772,12 +1721,6 @@ public:
     if ( track_cd_waste && sim -> report_details != 0 )
     {
       cd_waste = p() -> get_cooldown_waste_data( cooldown );
-    }
-
-    if ( p() -> specialization() == MAGE_ARCANE
-      && triggers_arcane_missiles )
-    {
-      proc_am = p() -> get_proc( std::string( "Arcane Missiles! from " ) + data().name_cstr() );
     }
 
     return mage_spell_base_t::init_finished();
@@ -1856,25 +1799,6 @@ public:
     return mage_spell_base_t::usable_moving();
   }
 
-  // You can thank Frost Nova for why this isn't in arcane_mage_spell_t instead
-  void trigger_am( double chance = -1.0, int stacks = 1, proc_t* source = nullptr )
-  {
-    if ( ! source )
-      source = proc_am;
-
-    if ( p() -> buffs.arcane_missiles -> trigger( stacks, buff_t::DEFAULT_VALUE(), chance, timespan_t::min() ) )
-    {
-      if ( ! source )
-      {
-        assert( false );
-        return;
-      }
-
-      for ( int i = 0; i < stacks; i++ )
-        source -> occur();
-    }
-  }
-
   virtual void execute() override
   {
     mage_spell_base_t::execute();
@@ -1889,11 +1813,6 @@ public:
       && p() -> buffs.ice_floes -> up() )
     {
       p() -> buffs.ice_floes -> decrement();
-    }
-
-    if ( p() -> specialization() == MAGE_ARCANE && hit_any_target && triggers_arcane_missiles )
-    {
-      trigger_am();
     }
   }
 
@@ -2836,19 +2755,12 @@ struct arcane_blast_t : public arcane_mage_spell_t
     arcane_mage_spell_t( "arcane_blast", p, p -> find_specialization_spell( "Arcane Blast" ) )
   {
     parse_options( options_str );
-    triggers_arcane_missiles = false; // Disable default AM proc logic.
     base_multiplier *= 1.0 + p -> artifact.blasting_rod.percent();
 
     if ( p -> specialization() == MAGE_ARCANE && p -> action.unstable_magic_explosion )
     {
       add_child( p -> action.unstable_magic_explosion );
     }
-  }
-
-  virtual bool init_finished() override
-  {
-    proc_am = p() -> get_proc( std::string( "Arcane Missiles! from " ) + data().name_cstr() );
-    return arcane_mage_spell_t::init_finished();
   }
 
   virtual double cost() const override
@@ -2878,7 +2790,6 @@ struct arcane_blast_t : public arcane_mage_spell_t
 
     if ( hit_any_target )
     {
-      trigger_am( p() -> buffs.arcane_missiles -> proc_chance() * 2.0 );
       trigger_arcane_charge();
     }
 
@@ -3093,7 +3004,6 @@ struct arcane_missiles_t : public arcane_mage_spell_t
   {
     parse_options( options_str );
     may_miss = false;
-    triggers_arcane_missiles = false;
     triggers_erosion = false;
     dot_duration      = data().duration();
     base_tick_time    = data().effectN( 2 ).period();
@@ -3169,8 +3079,6 @@ struct arcane_missiles_t : public arcane_mage_spell_t
     dot_t* dot = get_dot( target );
     if ( dot -> is_ticking() )
     {
-      // Refresh due to chaining, last_tick is not happening so we need to trigger AC.
-      trigger_arcane_charge();
       p() -> state.arcane_missile_refresh++;
     }
     else
@@ -3178,8 +3086,6 @@ struct arcane_missiles_t : public arcane_mage_spell_t
       // Fresh AM channel.
       p() -> state.arcane_missile_refresh = 0;
     }
-
-    p() -> benefits.arcane_charge.arcane_missiles -> update();
 
     // Rule of Threes handling seems to be skipped on the first refresh.
     if ( ! ( p() -> bugs && p() -> state.arcane_missile_refresh == 1 ) )
@@ -3204,23 +3110,12 @@ struct arcane_missiles_t : public arcane_mage_spell_t
     }
 
     p() -> buffs.quick_thinker -> trigger();
-
-    p() -> buffs.arcane_missiles -> decrement();
   }
 
   virtual void last_tick( dot_t* d ) override
   {
     arcane_mage_spell_t::last_tick( d );
-    trigger_arcane_charge();
     p() -> buffs.rule_of_threes -> expire();
-  }
-
-  virtual bool ready() override
-  {
-    if ( ! p() -> buffs.arcane_missiles -> check() )
-      return false;
-
-    return arcane_mage_spell_t::ready();
   }
 
   virtual bool usable_moving() const override
@@ -3244,12 +3139,6 @@ struct arcane_orb_bolt_t : public arcane_mage_spell_t
     background = true;
   }
 
-  virtual bool init_finished() override
-  {
-    proc_am = p() -> get_proc( "Arcane Missiles! from Arcane Orb Impact" );
-    return arcane_mage_spell_t::init_finished();
-  }
-
   virtual void impact( action_state_t* s ) override
   {
     arcane_mage_spell_t::impact( s );
@@ -3257,8 +3146,6 @@ struct arcane_orb_bolt_t : public arcane_mage_spell_t
     if ( result_is_hit( s -> result ) )
     {
       trigger_arcane_charge();
-      trigger_am();
-
       p() -> buffs.quick_thinker -> trigger();
     }
   }
@@ -3278,8 +3165,6 @@ struct arcane_orb_t : public arcane_mage_spell_t
     may_miss = false;
     may_crit = false;
     triggers_erosion = false;
-    // Needs to be handled manually to account for the legendary shoulders.
-    triggers_arcane_missiles = false;
 
     if ( legendary )
     {
@@ -3290,16 +3175,9 @@ struct arcane_orb_t : public arcane_mage_spell_t
     add_child( orb_bolt );
   }
 
-  virtual bool init_finished() override
-  {
-    proc_am = p() -> get_proc( std::string( "Arcane Missiles! from " ) + data().name_cstr() );
-    return arcane_mage_spell_t::init_finished();
-  }
-
   virtual void execute() override
   {
     arcane_mage_spell_t::execute();
-    trigger_am();
     trigger_arcane_charge();
   }
 
@@ -3736,7 +3614,6 @@ struct counterspell_t : public mage_spell_t
     parse_options( options_str );
     may_miss = may_crit = false;
     ignore_false_positive = true;
-    triggers_arcane_missiles = false;
   }
 
   virtual void execute() override
@@ -5587,30 +5464,13 @@ struct nether_tempest_t : public arcane_mage_spell_t
     nether_tempest_aoe( new nether_tempest_aoe_t( p ) )
   {
     parse_options( options_str );
-    // Disable default AM proc logic due to early refresh proc behavior
-    triggers_arcane_missiles = false;
 
     add_child( nether_tempest_aoe );
-  }
-
-  virtual bool init_finished() override
-  {
-    proc_am = p() -> get_proc( std::string( "Arcane Missiles! from " ) + data().name_cstr() );
-    return arcane_mage_spell_t::init_finished();
   }
 
   virtual void execute() override
   {
     p() -> benefits.arcane_charge.nether_tempest -> update();
-
-    double am_proc_chance =  p() -> buffs.arcane_missiles -> proc_chance();
-    timespan_t nt_remains = td( target ) -> dots.nether_tempest -> remains();
-
-    if ( nt_remains > data().duration() * 0.3 )
-    {
-      double elapsed = std::min( 1.0, nt_remains / data().duration() );
-      am_proc_chance *= 1.0 - elapsed;
-    }
 
     arcane_mage_spell_t::execute();
 
@@ -5622,7 +5482,6 @@ struct nether_tempest_t : public arcane_mage_spell_t
         td( p() -> last_bomb_target ) -> dots.nether_tempest -> cancel();
       }
 
-      trigger_am( am_proc_chance );
       p() -> last_bomb_target = execute_state -> target;
     }
   }
@@ -6084,7 +5943,6 @@ struct slow_t : public arcane_mage_spell_t
   {
     parse_options( options_str );
     ignore_false_positive = true;
-    triggers_arcane_missiles = false;
     triggers_erosion = false;
   }
 
@@ -6103,8 +5961,6 @@ struct slow_t : public arcane_mage_spell_t
 
 struct supernova_t : public arcane_mage_spell_t
 {
-  proc_t* proc_am_sn_aoe;
-
   supernova_t( mage_t* p, const std::string& options_str ) :
     arcane_mage_spell_t( "supernova", p, p -> talents.supernova )
   {
@@ -6115,24 +5971,6 @@ struct supernova_t : public arcane_mage_spell_t
     double sn_mult = 1.0 + p -> talents.supernova -> effectN( 1 ).percent();
     base_multiplier *= sn_mult;
     base_aoe_multiplier = 1.0 / sn_mult;
-  }
-
-  virtual bool init_finished() override
-  {
-    proc_am_sn_aoe = p() -> get_proc( "Arcane Missiles! from Supernova AOE" );
-    return arcane_mage_spell_t::init_finished();
-  }
-
-  virtual void execute() override
-  {
-    arcane_mage_spell_t::execute();
-
-    if ( hit_any_target && num_targets_hit > 1 )
-    {
-      // Supernova AOE effect causes secondary trigger chance for AM.
-      // As of build 25881, 2018-01-22.
-      trigger_am( -1.0, 1, proc_am_sn_aoe );
-    }
   }
 };
 
@@ -6944,7 +6782,6 @@ mage_t::~mage_t()
   delete benefits.arcane_charge.arcane_barrage;
   delete benefits.arcane_charge.arcane_blast;
   delete benefits.arcane_charge.arcane_explosion;
-  delete benefits.arcane_charge.arcane_missiles;
   delete benefits.arcane_charge.nether_tempest;
   delete benefits.chain_reaction;
   delete benefits.magtheridons_might;
@@ -7482,7 +7319,6 @@ void mage_t::create_buffs()
                                     } )
                                   .stack_change_callback( [ this ] ( buff_t*, int, int )
                                     { recalculate_resource_max( RESOURCE_MANA ); } );
-  buffs.arcane_missiles       = new buffs::arcane_missiles_t( this );
   buffs.arcane_power          = buff_creator_t( this, "arcane_power", find_spell( 12042 ) )
                                   .default_value( find_spell( 12042 ) -> effectN( 1 ).percent()
                                                 + talents.overpowered -> effectN( 1 ).percent() );
@@ -7699,8 +7535,6 @@ void mage_t::init_benefits()
       new buff_stack_benefit_t( buffs.arcane_charge, "Arcane Blast" );
     benefits.arcane_charge.arcane_explosion =
       new buff_stack_benefit_t( buffs.arcane_charge, "Arcane Explosion" );
-    benefits.arcane_charge.arcane_missiles =
-      new buff_stack_benefit_t( buffs.arcane_charge, "Arcane Missiles" );
     if ( talents.nether_tempest -> ok() )
     {
       benefits.arcane_charge.nether_tempest =
