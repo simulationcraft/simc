@@ -11,6 +11,30 @@ namespace { // UNNAMED NAMESPACE
 // Mage
 // ==========================================================================
 
+// BfA TODO:
+// - Arcane Power, Rune of Power, Incater's Flow, Combustion, Bone Chilling,
+//   Arcane T20 2pc no longer global damage mods (they still have pet damage
+//   mod, double check), MAKE SURE they work correctly with pet spells
+//
+// - Spec passives + Erosion apply to all mage spells (shouldn't be too
+//   relevant)
+//
+// - Arcane Charge changes + Clearcasting, mastery + ABar change, AM doesn't
+//   generate AC, baseline Temporal Flux
+//
+// - New Arcane talents (Rule of Threes, Mana Adept, NYI in last row)
+//
+// - Mana regen up to 2.0% max mana/sec
+//
+// - Arcane Intellect (probably gonna be simc wide)
+//
+// - add PF as a talent (splash seems to trigger HU/HS, double check)
+//
+// - double check coef changes
+//
+// - Clearcasting + extra mana from mastery (shouldn't reduce proc chance,
+//   hopefully)
+
 // Forward declarations
 struct mage_t;
 
@@ -825,6 +849,116 @@ public:
   std::string       default_rune() const override;
 };
 
+// Common spell base for mage and mage pet spells.
+struct mage_spell_base_t : public spell_t
+{
+  struct affected_by_t
+  {
+    // Permanent damage increase.
+    bool arcane_mage;
+    bool fire_mage;
+    bool frost_mage;
+
+    // Temporary damage increase.
+    bool arcane_power;
+    bool bone_chilling;
+    bool crackling_energy;
+    bool incanters_flow;
+    bool rune_of_power;
+
+    // Misc
+    bool combustion;
+    bool erosion;
+    bool ice_floes;
+    bool shatter;
+
+    affected_by_t() :
+      arcane_mage( true ),
+      fire_mage( true ),
+      frost_mage( true ),
+      arcane_power( true ),
+      bone_chilling( true ),
+      crackling_energy( true ),
+      incanters_flow( true ),
+      rune_of_power( true ),
+      combustion( true ),
+      erosion( true ),
+      ice_floes( false ),
+      shatter( false )
+    { }
+  } affected_by;
+
+  // Mage player or owner for pet spells.
+  mage_t* mage;
+
+  mage_spell_base_t( const std::string& n, player_t* p, const spell_data_t* s, mage_t* m ) :
+    spell_t( n, p, s ),
+    affected_by(),
+    mage( m )
+  {
+    may_crit = tick_may_crit = true;
+    weapon_multiplier = 0.0;
+  }
+
+  virtual void init() override
+  {
+    spell_t::init();
+
+    if ( affected_by.arcane_mage )
+      base_multiplier *= 1.0 + mage -> spec.arcane_mage -> effectN( 1 ).percent();
+
+    if ( affected_by.fire_mage )
+      base_multiplier *= 1.0 + mage -> spec.fire_mage -> effectN( 1 ).percent();
+
+    if ( affected_by.frost_mage )
+      base_multiplier *= 1.0 + mage -> spec.frost_mage -> effectN( 1 ).percent();
+  }
+
+  virtual double action_multiplier() const override
+  {
+    double m = spell_t::action_multiplier();
+
+    if ( affected_by.arcane_power )
+      m *= 1.0 + mage -> buffs.arcane_power -> check_value();
+
+    if ( affected_by.bone_chilling )
+      m *= 1.0 + mage -> buffs.bone_chilling -> check_stack_value();
+
+    if ( affected_by.crackling_energy )
+      m *= 1.0 + mage -> buffs.crackling_energy -> check_value();
+
+    if ( affected_by.incanters_flow )
+      m *= 1.0 + mage -> buffs.incanters_flow -> check_stack_value();
+
+    if ( affected_by.rune_of_power )
+      m *= 1.0 + mage -> buffs.rune_of_power -> check_value();
+
+    return m;
+  }
+
+  double composite_crit_chance() const override
+  {
+    double c = spell_t::composite_crit_chance();
+
+    if ( affected_by.combustion )
+      c += mage -> buffs.combustion -> check_value();
+
+    return c;
+  }
+
+  virtual double composite_target_multiplier( player_t* target ) const override
+  {
+    double tm = spell_t::composite_target_multiplier( target );
+
+    if ( affected_by.erosion && mage -> target_data[ target ] )
+    {
+      tm *= 1.0 + mage -> target_data[ target ] -> debuffs.erosion -> check_stack_value();
+    }
+
+    return tm;
+  }
+};
+
 namespace pets
 {
 struct mage_pet_t : public pet_t
@@ -845,12 +979,15 @@ struct mage_pet_t : public pet_t
   }
 };
 
-struct mage_pet_spell_t : public spell_t
+struct mage_pet_spell_t : public mage_spell_base_t
 {
   mage_pet_spell_t( const std::string& n, mage_pet_t* p, const spell_data_t* s )
-    : spell_t( n, p, s )
+    : mage_spell_base_t( n, p, s, p -> o() )
   {
-    may_crit = tick_may_crit = true;
+    if ( p -> o() -> bugs )
+    {
+      affected_by.erosion = false;
+    }
   }
 
   mage_t* o()
@@ -899,9 +1036,7 @@ struct water_elemental_spell_t : public mage_pet_spell_t
 {
   water_elemental_spell_t( const std::string& n, mage_pet_t* p, const spell_data_t* s )
     : mage_pet_spell_t( n, p, s )
-  {
-    base_multiplier *= 1.0 + o() -> spec.frost_mage -> effectN( 1 ).percent();
-  }
+  { }
 
   virtual double action_multiplier() const override
   {
@@ -1128,7 +1263,6 @@ struct arcane_blast_t : public mirror_image_spell_t
     : mirror_image_spell_t( "arcane_blast", p, p -> find_pet_spell( "Arcane Blast" ) )
   {
     parse_options( options_str );
-    base_multiplier *= 1.0 + o() -> spec.arcane_mage -> effectN( 1 ).percent();
   }
 
   virtual void execute() override
@@ -1146,21 +1280,6 @@ struct arcane_blast_t : public mirror_image_spell_t
 
     return am;
   }
-
-  virtual double composite_target_multiplier( player_t* target ) const override
-  {
-    double tm = mirror_image_spell_t::composite_target_multiplier( target );
-
-    // Arcane Blast (88084) should work with Erosion, according to the spell data.
-    // Does not work in game, as of build 25881, 2018-01-22.
-    if ( ! o() -> bugs )
-    {
-      mage_td_t* tdata = o() -> get_target_data( target );
-      tm *= 1.0 + tdata -> debuffs.erosion -> check_stack_value();
-    }
-
-    return tm;
-  }
 };
 
 struct fireball_t : public mirror_image_spell_t
@@ -1169,7 +1288,6 @@ struct fireball_t : public mirror_image_spell_t
     : mirror_image_spell_t( "fireball", p, p -> find_pet_spell( "Fireball" ) )
   {
     parse_options( options_str );
-    base_multiplier *= 1.0 + o() -> spec.fire_mage -> effectN( 1 ).percent();
   }
 };
 
@@ -1179,7 +1297,6 @@ struct frostbolt_t : public mirror_image_spell_t
     : mirror_image_spell_t( "frostbolt", p, p -> find_pet_spell( "Frostbolt" ) )
   {
     parse_options( options_str );
-    base_multiplier *= 1.0 + o() -> spec.frost_mage -> effectN( 1 ).percent();
   }
 };
 
@@ -1456,7 +1573,6 @@ struct incanters_flow_t : public buff_t
     set_period( p -> talents.incanters_flow -> effectN( 1 ).period() ); // Period is in the talent
     set_tick_behavior( BUFF_TICK_CLIP );
     set_default_value( data().effectN( 1 ).percent() );
-    add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   }
 
   virtual void bump( int stacks, double value ) override
@@ -1600,7 +1716,7 @@ struct mage_spell_state_t : public action_state_t
   }
 };
 
-struct mage_spell_t : public spell_t
+struct mage_spell_t : public mage_spell_base_t
 {
   static const snapshot_state_e STATE_FROZEN = STATE_TGT_USER_1;
 
@@ -1619,18 +1735,6 @@ struct mage_spell_t : public spell_t
     FF_FINGERS_OF_FROST = 1 << FROZEN_FINGERS_OF_FROST
   };
 
-  struct affected_by_t
-  {
-    bool arcane_mage;
-    bool fire_mage;
-    bool frost_mage;
-
-    bool erosion;
-    bool shatter;
-
-    bool ice_floes;
-  } affected_by;
-
   bool triggers_arcane_missiles;
   proc_t* proc_am;
 
@@ -1640,36 +1744,20 @@ public:
 
   mage_spell_t( const std::string& n, mage_t* p,
                 const spell_data_t* s = spell_data_t::nil() ) :
-    spell_t( n, p, s ),
-    affected_by( affected_by_t() ),
+    mage_spell_base_t( n, p, s, p ),
     triggers_arcane_missiles( true ),
     proc_am( nullptr ),
     track_cd_waste( false ),
     cd_waste( nullptr )
   {
-    may_crit      = true;
-    tick_may_crit = true;
-    weapon_multiplier = 0.0;
     affected_by.ice_floes = data().affected_by( p -> talents.ice_floes -> effectN( 1 ) );
     track_cd_waste = data().cooldown() > timespan_t::zero() || data().charge_cooldown() > timespan_t::zero();
   }
 
   virtual void init() override
   {
-    spell_t::init();
+    mage_spell_base_t::init();
 
-    if ( affected_by.arcane_mage )
-    {
-      base_multiplier *= 1.0 + p() -> spec.arcane_mage -> effectN( 1 ).percent();
-    }
-    if ( affected_by.fire_mage )
-    {
-      base_multiplier *= 1.0 + p() -> spec.fire_mage -> effectN( 1 ).percent();
-    }
-    if ( affected_by.frost_mage )
-    {
-      base_multiplier *= 1.0 + p() -> spec.frost_mage -> effectN( 1 ).percent();
-    }
     if ( harmful && affected_by.shatter && p() -> spec.shatter -> ok() )
     {
       snapshot_flags |= STATE_FROZEN;
@@ -1694,7 +1782,7 @@ public:
       proc_am = p() -> get_proc( std::string( "Arcane Missiles! from " ) + data().name_cstr() );
     }
 
-    return spell_t::init_finished();
+    return mage_spell_base_t::init_finished();
   }
 
   mage_t* p()
@@ -1736,12 +1824,12 @@ public:
       debug_cast<mage_spell_state_t*>( s ) -> frozen = frozen( s );
     }
 
-    spell_t::snapshot_internal( s, flags, rt );
+    mage_spell_base_t::snapshot_internal( s, flags, rt );
   }
 
   virtual double cost() const override
   {
-    double c = spell_t::cost();
+    double c = mage_spell_base_t::cost();
 
     if ( p() -> buffs.arcane_power -> check() )
     {
@@ -1757,7 +1845,7 @@ public:
     if ( cd_waste )
       cd_waste -> add( cd, time_to_execute );
 
-    spell_t::update_ready( cd );
+    mage_spell_base_t::update_ready( cd );
   }
 
   virtual bool usable_moving() const override
@@ -1767,7 +1855,7 @@ public:
       return true;
     }
 
-    return spell_t::usable_moving();
+    return mage_spell_base_t::usable_moving();
   }
 
   // You can thank Frost Nova for why this isn't in arcane_mage_spell_t instead
@@ -1791,7 +1879,7 @@ public:
 
   virtual void execute() override
   {
-    spell_t::execute();
+    mage_spell_base_t::execute();
 
     if ( background )
       return;
@@ -1812,18 +1900,6 @@ public:
   }
 
   void trigger_unstable_magic( action_state_t* state );
-
-  virtual double composite_target_multiplier( player_t* target ) const override
-  {
-    double tm = spell_t::composite_target_multiplier( target );
-
-    if ( affected_by.erosion )
-    {
-      tm *= 1.0 + td( target ) -> debuffs.erosion -> check_stack_value();
-    }
-
-    return tm;
-  }
 
   // Helper methods for 7.2.5 fire shoulders and frost head.
   void trigger_legendary_effect( buff_t* tracking_buff, buff_t* primed_buff, action_t* action, player_t* target )
@@ -1865,16 +1941,13 @@ struct arcane_mage_spell_t : public mage_spell_t
                        const spell_data_t* s = spell_data_t::nil() ) :
     mage_spell_t( n, p, s ),
     triggers_erosion( true )
-  {
-    affected_by.arcane_mage = true;
-    affected_by.erosion = true;
-  }
+  { }
 
   virtual void init() override
   {
     mage_spell_t::init();
 
-    if ( !harmful )
+    if ( ! harmful )
     {
       triggers_erosion = false;
     }
@@ -1978,9 +2051,7 @@ struct fire_mage_spell_t : public mage_spell_t
     triggers_pyretic_incantation( false ),
     triggers_hot_streak( false ),
     triggers_ignite( false )
-  {
-    affected_by.fire_mage = true;
-  }
+  { }
 
   // Use only after schedule_execute, which sets time_to_execute.
   bool benefits_from_hot_streak( bool benefit_tracking = false ) const
@@ -2219,7 +2290,6 @@ struct frost_mage_spell_t : public mage_spell_t
       shatter_source( nullptr ),
       impact_flags( 0u )
   {
-    affected_by.frost_mage = true;
     affected_by.shatter = true;
   }
 
@@ -5219,7 +5289,18 @@ struct mark_of_aluneth_explosion_t : public arcane_mage_spell_t
     // As of build 25881, 2018-01-22.
     if ( p -> bugs )
     {
+      // Spelldata says it's not affected by anything.
       affected_by.arcane_mage = false;
+      affected_by.fire_mage = false;
+      affected_by.frost_mage = false;
+
+      affected_by.arcane_power = false;
+      affected_by.bone_chilling = false;
+      affected_by.crackling_energy = false;
+      affected_by.incanters_flow = false;
+      affected_by.rune_of_power = false;
+
+      affected_by.combustion = false;
       affected_by.erosion = false;
     }
 
@@ -7408,15 +7489,13 @@ void mage_t::create_buffs()
   buffs.arcane_missiles       = new buffs::arcane_missiles_t( this );
   buffs.arcane_power          = buff_creator_t( this, "arcane_power", find_spell( 12042 ) )
                                   .default_value( find_spell( 12042 ) -> effectN( 1 ).percent()
-                                                + talents.overpowered -> effectN( 1 ).percent() )
-                                  .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+                                                + talents.overpowered -> effectN( 1 ).percent() );
   buffs.arcane_power -> buff_duration += artifact.aegwynns_imperative.time_value();
 
   buffs.chrono_shift          = buff_creator_t( this, "chrono_shift", find_spell( 236298 ) )
                                   .default_value( find_spell( 236298 ) -> effectN( 1 ).percent() )
                                   .add_invalidate( CACHE_RUN_SPEED );
   buffs.crackling_energy      = buff_creator_t( this, "crackling_energy", find_spell( 246224 ) )
-                                  .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
                                   .default_value( find_spell( 246224 ) -> effectN( 1 ).percent() );
 
   buffs.expanding_mind        = buff_creator_t( this, "expanding_mind", find_spell( 253262 ) )
@@ -7433,7 +7512,6 @@ void mage_t::create_buffs()
   buffs.combustion             = buff_creator_t( this, "combustion", find_spell( 190319 ) )
                                    .cd( timespan_t::zero() )
                                    .add_invalidate( CACHE_MASTERY )
-                                   .add_invalidate( CACHE_CRIT_CHANCE )
                                    .default_value( find_spell( 190319 ) -> effectN( 1 ).percent() );
   buffs.combustion -> buff_duration += artifact.preignited.time_value();
   buffs.combustion -> buff_duration += sets -> set( MAGE_FIRE, T21, B2 ) -> effectN( 1 ).time_value();
@@ -7470,8 +7548,7 @@ void mage_t::create_buffs()
                                    .chance( sets -> has_set_bonus( MAGE_FROST, T21, B4 ) ? 1.0 : 0.0 );
   buffs.brain_freeze           = new buffs::brain_freeze_buff_t( this );
   buffs.bone_chilling          = buff_creator_t( this, "bone_chilling", find_spell( 205766 ) )
-                                   .default_value( talents.bone_chilling -> effectN( 1 ).percent() / 10 )
-                                   .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+                                   .default_value( talents.bone_chilling -> effectN( 1 ).percent() / 10 );
   buffs.fingers_of_frost       = buff_creator_t( this, "fingers_of_frost", find_spell( 44544 ) )
                                    .max_stack( find_spell( 44544 ) -> max_stacks() +
                                                artifact.icy_hand.rank() );
@@ -7513,8 +7590,7 @@ void mage_t::create_buffs()
   buffs.incanters_flow         = new buffs::incanters_flow_t( this );
   buffs.rune_of_power          = buff_creator_t( this, "rune_of_power", find_spell( 116014 ) )
                                    .duration( find_spell( 116011 ) -> duration() )
-                                   .default_value( find_spell( 116014 ) -> effectN( 1 ).percent() )
-                                   .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+                                   .default_value( find_spell( 116014 ) -> effectN( 1 ).percent() );
 
   // Artifact
   buffs.chain_reaction        = buff_creator_t( this, "chain_reaction", find_spell( 195418 ) )
@@ -8329,8 +8405,11 @@ double mage_t::composite_player_pet_damage_multiplier( const action_state_t* s )
 {
   double m = player_t::composite_player_pet_damage_multiplier( s );
 
-  m *= 1.0 + buffs.rune_of_power -> check_value();
-  m *= 1.0 + buffs.incanters_flow -> check_stack_value();
+  if ( bugs )
+  {
+    m *= 1.0 + buffs.rune_of_power -> check_value();
+    m *= 1.0 + buffs.incanters_flow -> check_stack_value();
+  }
 
   m *= 1.0 + artifact.ancient_power.percent();
   m *= 1.0 + artifact.intensity_of_the_tirisgarde.data().effectN( 3 ).percent();
@@ -8349,14 +8428,6 @@ double mage_t::composite_player_pet_damage_multiplier( const action_state_t* s )
 double mage_t::composite_player_multiplier( school_e school ) const
 {
   double m = player_t::composite_player_multiplier( school );
-
-  m *= 1.0 + buffs.rune_of_power -> check_value();
-  m *= 1.0 + buffs.incanters_flow -> check_stack_value();
-
-  if ( school != SCHOOL_PHYSICAL )
-  {
-    m *= 1.0 + buffs.arcane_power -> check_value();
-  }
 
   if ( dbc::is_school( school, SCHOOL_ARCANE ) )
   {
@@ -8384,11 +8455,6 @@ double mage_t::composite_player_multiplier( school_e school ) const
 
   if ( dbc::is_school( school, SCHOOL_FROST ) )
   {
-    m *= 1.0 + buffs.bone_chilling -> check_stack_value();
-  }
-
-  if ( dbc::is_school( school, SCHOOL_FROST ) )
-  {
     m *= 1.0 + artifact.spellborne.percent();
   }
 
@@ -8400,7 +8466,6 @@ double mage_t::composite_player_multiplier( school_e school ) const
     m *= 1.0 + buffs.chilled_to_the_core -> check_value();
   }
 
-  m *= 1.0 + buffs.crackling_energy -> check_value();
   m *= 1.0 + buffs.expanding_mind -> check_value();
 
   return m;
@@ -8439,8 +8504,6 @@ double mage_t::composite_spell_crit_rating() const
 double mage_t::composite_spell_crit_chance() const
 {
   double c = player_t::composite_spell_crit_chance();
-
-  c += buffs.combustion -> check_value();
 
   if ( spec.critical_mass -> ok() )
   {
