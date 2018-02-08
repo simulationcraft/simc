@@ -1,4 +1,4 @@
-call py -3 casc_extract.py -m batch --cdn -o wow
+call py -3 casc_extract.py -m batch --cdn --beta -o wow
 cd wow
 dir /b /a:D /O:-D>hi.txt
 set /p wowdir=<hi.txt

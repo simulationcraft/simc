@@ -27,8 +27,8 @@ parser.add_argument("-f",            dest = "format",
                     help = "DBC Format file")
 parser.add_argument("--delim",       dest = "delim",        default = ',',
                     help = "Delimiter for -t csv")
-parser.add_argument("-l", "--level", dest = "level",        default = 110, type = int,
-                    help = "Scaling values up to level [115]")
+parser.add_argument("-l", "--level", dest = "level",        default = 120, type = int,
+                    help = "Scaling values up to level [125]")
 parser.add_argument("-b", "--build", dest = "build",        default = 0, type = int,
                     help = "World of Warcraft build number")
 parser.add_argument("--prefix",      dest = "prefix",       default = '',
@@ -58,8 +58,8 @@ if options.build == 0 and options.type != 'header':
 if options.min_ilevel < 0 or options.max_ilevel > 1300:
     parser.error('--min/max-ilevel range is 0..1300')
 
-if options.level % 5 != 0 or options.level > 115:
-    parser.error('-l must be given as a multiple of 5 and be smaller than 100')
+if options.level % 5 != 0 or options.level > 125:
+    parser.error('-l must be given as a multiple of 5 and be smaller than 125')
 
 if options.type == 'view' and len(options.args) == 0:
     parser.error('View requires a DBC file name and an optional ID number')
