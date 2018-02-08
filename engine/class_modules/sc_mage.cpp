@@ -1871,8 +1871,10 @@ struct arcane_mage_spell_t : public mage_spell_t
 
   double savant_damage_bonus() const
   {
+    // TODO: Arcane Charge effect 2 and Savant effect 3 have the relevant into for Arcane Barrage,
+    // but the mastery snapshot bug makes it awkward to use (we can only store one in buff's value).
     return p() -> spec.arcane_charge -> effectN( 1 ).percent() +
-      p() -> cache.mastery() * p() -> spec.savant -> effectN( 2 ).mastery_value();
+           p() -> cache.mastery() * p() -> spec.savant -> effectN( 2 ).mastery_value();
   }
 
   void trigger_arcane_charge( int stacks = 1 )
@@ -1896,14 +1898,13 @@ struct arcane_mage_spell_t : public mage_spell_t
     }
   }
 
-  double arcane_charge_damage_bonus( bool amplification = false ) const
+  double arcane_charge_damage_bonus( bool arcane_barrage = false ) const
   {
-    double per_ac_bonus =
-      p() -> bugs ? p() -> buffs.arcane_charge -> check_value() : savant_damage_bonus();
+    double per_ac_bonus = p() -> bugs ? p() -> buffs.arcane_charge -> check_value() : savant_damage_bonus();
 
-    if ( p() -> talents.amplification -> ok() && amplification )
+    if ( arcane_barrage )
     {
-      per_ac_bonus += p() -> talents.amplification -> effectN( 1 ).percent();
+      per_ac_bonus *= 0.5;
     }
 
     return 1.0 + p() -> buffs.arcane_charge -> check() * per_ac_bonus;
@@ -2733,7 +2734,7 @@ struct arcane_barrage_t : public arcane_mage_spell_t
   {
     double am = arcane_mage_spell_t::action_multiplier();
 
-    am *= arcane_charge_damage_bonus();
+    am *= arcane_charge_damage_bonus( true );
 
     if ( p() -> talents.resonance -> ok() )
     {
@@ -2861,15 +2862,6 @@ struct time_and_space_t : public arcane_mage_spell_t
 
     base_multiplier *= 1.0 + p -> artifact.arcane_purification.percent();
     radius += p -> artifact.crackling_energy.data().effectN( 1 ).base_value();
-  }
-
-  virtual double action_multiplier() const override
-  {
-    double am = arcane_mage_spell_t::action_multiplier();
-
-    am *= arcane_charge_damage_bonus();
-
-    return am;
   }
 };
 
