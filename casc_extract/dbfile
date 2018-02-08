@@ -505,6 +505,7 @@ DBFilesClient\SpellDescriptionVariables.db2
 DBFilesClient\SpellDispelType.db2
 DBFilesClient\SpellDuration.db2
 DBFilesClient\SpellEffect.db2
+DBFilesClient\SpellEffectAutoDescription.db2
 DBFilesClient\SpellEffectEmission.db2
 DBFilesClient\SpellEffectGroupSize.db2
 DBFilesClient\SpellEffectScaling.db2
@@ -640,6 +641,12 @@ DBFilesClient\ZoneLight.db2
 DBFilesClient\ZoneLightPoint.db2
 DBFilesClient\ZoneMusic.db2
 DBFilesClient\ZoneStory.db2
+DBFilesClient\AzeriteItemMilestonePower.db2
+DBFilesClient\AzeritePower.db2
+DBFilesClient\AzeritePowerSetMember.db2
+DBFilesClient\AzeriteTierUnlock.db2
+DBFilesClient\AzeriteEmpoweredItem.db2
+DBFilesClient\AzeriteItem.db2
 GameTablesServer\AvoidanceDiminishing.txt
 GameTablesServer\ChanceToDodge.txt
 GameTablesServer\ChanceToDodgeBase.txt
@@ -695,3 +702,8 @@ GameTables\SpellScaling.txt
 GameTables\artifactLevelXP.txt
 GameTables\battlePetXP.txt
 GameTables\xp.txt
+GameTables\ItemLevelSquish.txt
+GameTables\AzeriteLevelToItemLevel.txt
+GameTables\AzeriteBaseExperiencePerLevel.txt
+GameTables\AzeriteKnowledgeMultiplier.txt
+
