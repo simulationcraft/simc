@@ -180,6 +180,8 @@ class CSVDataGenerator(object):
 
             segments = self.values(dbc)
             segment_formats = self.value_formats(dbc)
+            simple_reader = self._csv_options.get(dbc, {}).get('simple_reader', False)
+
             for segment_idx in range(0, len(segments)):
                 # Last entry is the fixed data
                 if len(segments) > 1 and segment_idx < len(segments) and segments[segment_idx] != None:
@@ -193,8 +195,17 @@ class CSVDataGenerator(object):
                 name = segments[segment_idx]
 
                 for row in data:
+                    # Simple csv reader skips the first row header
+                    if simple_reader and row == data[0]:
+                        continue
+
                     level = int(row[self.key(dbc)])
-                    self._out.write('%s,\t' % (fmt % row.get(name, 0)))
+                    # Simple reader rows come as tuples
+                    if simple_reader:
+                        self._out.write('%s,\t' % (fmt % row[name]))
+                    else:
+                        self._out.write('%s,\t' % (fmt % row.get(name, 0)))
+
                     if level % 5 == 0:
                         self._out.write('// %4u\n' % level)
                         if level < max_rows - 1:
@@ -265,7 +276,10 @@ class CSVDataGenerator(object):
 
         for i in self._dbc:
             v = os.path.abspath(os.path.join(self._options.path, i))
-            dbcp = csv.DictReader(open(v, 'r'), delimiter = '\t')
+            if self._csv_options.get(i, {}).get('simple_reader', False):
+                dbcp = csv.reader(open(v, 'r'), delimiter = '\t')
+            else:
+                dbcp = csv.DictReader(open(v, 'r'), delimiter = '\t')
 
             if self.dbname(i) not in dir(self):
                 setattr(self, self.dbname(i), dbcp)
