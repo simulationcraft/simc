@@ -57,6 +57,7 @@ echo "Generating ${OUTPATH}/sc_spell_lists${PTR:+_ptr}.inc"
 ./dbc_extract.py -p $DBCINPUT -b $BUILD $PTR --cache "${CACHE}" -t set_list2              -a $OUTPATH/sc_spell_lists${PTR:+_ptr}.inc
 ./dbc_extract.py -p $DBCINPUT -b $BUILD $PTR --cache "${CACHE}" -t rppm_coeff             -a $OUTPATH/sc_spell_lists${PTR:+_ptr}.inc
 ./dbc_extract.py -p $DBCINPUT -b $BUILD $PTR --cache "${CACHE}" -t artifact               -a $OUTPATH/sc_spell_lists${PTR:+_ptr}.inc
+./dbc_extract.py -p $DBCINPUT -b $BUILD $PTR --cache "${CACHE}" -t azerite                -a $OUTPATH/sc_spell_lists${PTR:+_ptr}.inc
 
 echo "Generating ${OUTPATH}/sc_item_data${PTR:+_ptr}.inc"
 ./dbc_extract.py -p $DBCINPUT -b $BUILD $PTR --cache "${CACHE}" -t item                   -o $OUTPATH/sc_item_data${PTR:+_ptr}.inc

@@ -1145,6 +1145,7 @@ enum expr_data_e
   DATA_MASTERY_SPELL,
   DATA_SPECIALIZATION_SPELL,
   DATA_ARTIFACT_SPELL,
+  DATA_AZERITE_SPELL,
 };
 
 struct spell_data_expr_t

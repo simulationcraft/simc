@@ -18,7 +18,7 @@ parser.add_argument("-t", "--type", dest = "type",
                               'item_ench', 'weapon_damage', 'item', 'item_armor', 'gem_properties',
                               'random_suffix_groups', 'spec_enum', 'spec_list', 'item_upgrade',
                               'rppm_coeff', 'set_list2', 'item_bonus', 'item_scaling',
-                              'item_name_desc', 'artifact', 'bench', 'item_child' ])
+                              'item_name_desc', 'artifact', 'bench', 'item_child', 'azerite' ])
 parser.add_argument("-o",            dest = "output")
 parser.add_argument("-a",            dest = "append")
 parser.add_argument("--raw",         dest = "raw",          default = False, action = "store_true")
@@ -283,6 +283,12 @@ elif options.type == 'artifact':
     ids = g.filter()
 
     g.generate(ids)
+elif options.type == 'azerite':
+    g = dbc.generator.AzeriteDataGenerator(options)
+    if not g.initialize():
+        sys.exit(1)
+
+    g.generate()
 elif options.type == 'header':
     dbcs = [ ]
     for fn in options.args:

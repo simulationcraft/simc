@@ -1838,7 +1838,7 @@ class SpellDataGenerator(DataGenerator):
                 'SpellEquippedItems', 'SpecializationSpells', 'ChrSpecialization',
                 'SpellMisc', 'SpellProcsPerMinute', 'ItemSetSpell',
                 'ItemEffect', 'MinorTalent', 'ArtifactPowerRank', 'ArtifactPower', 'Artifact',
-                'SpellShapeshift', 'SpellMechanic', 'SpellLabel' ]
+                'SpellShapeshift', 'SpellMechanic', 'SpellLabel', 'AzeritePower' ]
 
         if self._options.build < 25600:
             self._dbc.append('SpellEffectScaling')
@@ -2353,6 +2353,14 @@ class SpellDataGenerator(DataGenerator):
 
         # Artifact spells
         for _, data in self._artifactpowerrank_db.items():
+            spell_id = data.id_spell
+            spell = self._spell_db[spell_id]
+            if spell.id != spell_id:
+                continue
+
+            self.process_spell(spell_id, ids, 0, 0)
+
+        for _, data in self._azeritepower_db.items():
             spell_id = data.id_spell
             spell = self._spell_db[spell_id]
             if spell.id != spell_id:
@@ -4257,6 +4265,35 @@ class ItemChildEquipmentGenerator(DataGenerator):
             self._out.write('  { %s },\n' % (', '.join(fields)))
 
         self._out.write('};\n\n')
+
+class AzeriteDataGenerator(DataGenerator):
+    def __init__(self, options, data_store = None):
+        super().__init__(options, data_store)
+
+        self._dbc = [ 'AzeritePower' ]
+
+    def generate(self, ids = None):
+        data_str = "%sazerite_power%s" % (
+            self._options.prefix and ('%s_' % self._options.prefix) or '',
+            self._options.suffix and ('_%s' % self._options.suffix) or '',
+        )
+
+        data = [ x for x in self._azeritepower_db.values() ]
+
+        # Ensure id-based sort
+        data.sort(key = lambda v : v.id)
+
+        self._out.write('// Azerite powers, wow build %d\n' % ( self._options.build ))
+
+        self._out.write('static constexpr std::array<const azerite_power_t, %d> __%s_data { {\n' % (
+            len(data), data_str))
+
+        for entry in data:
+            fields = entry.field('id', 'id_spell')
+
+            self._out.write('  { %s },\n' % ', '.join(fields))
+
+        self._out.write('} };\n')
 
 class ArtifactDataGenerator(DataGenerator):
     def __init__(self, options, data_store = None):

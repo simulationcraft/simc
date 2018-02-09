@@ -178,6 +178,7 @@ const expr_data_map_t expr_map[] =
   { "mastery", DATA_MASTERY_SPELL },
   { "spec_spell", DATA_SPECIALIZATION_SPELL },
   { "artifact", DATA_ARTIFACT_SPELL },
+  { "azerite", DATA_AZERITE_SPELL },
 };
 
 expr_data_e parse_data_type( const std::string& name )
@@ -383,6 +384,18 @@ struct spell_list_expr_t : public spell_data_expr_t
         }
         break;
       }
+      case DATA_AZERITE_SPELL:
+      {
+        for ( const auto& p : azerite_power_t::data( sim -> dbc.ptr ) )
+        {
+          if ( range::find( result_spell_list, p.spell_id ) == result_spell_list.end() )
+          {
+            result_spell_list.push_back( p.spell_id );
+          }
+        }
+        break;
+      }
+
 
       default:
         return expression::TOK_UNKNOWN;

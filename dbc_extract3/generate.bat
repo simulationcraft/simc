@@ -38,6 +38,7 @@ py -3  %RUNFILE% -p %INPATH% -b %BUILD% --cache %CACHEDIR% %PTR%  -t racial_list
 py -3  %RUNFILE% -p %INPATH% -b %BUILD% --cache %CACHEDIR% %PTR%  -t set_list2              -a %OUTPATH%\sc_spell_lists%PTREXT%.inc
 py -3  %RUNFILE% -p %INPATH% -b %BUILD% --cache %CACHEDIR% %PTR%  -t rppm_coeff             -a %OUTPATH%\sc_spell_lists%PTREXT%.inc
 py -3  %RUNFILE% -p %INPATH% -b %BUILD% --cache %CACHEDIR% %PTR%  -t artifact               -a %OUTPATH%\sc_spell_lists%PTREXT%.inc
+py -3  %RUNFILE% -p %INPATH% -b %BUILD% --cache %CACHEDIR% %PTR%  -t azerite                -a %OUTPATH%\sc_spell_lists%PTREXT%.inc
 py -3  %RUNFILE% -p %INPATH% -b %BUILD% --cache %CACHEDIR% %PTR%  -t item                   -o %OUTPATH%/sc_item_data%PTREXT%.inc
 py -3  %RUNFILE% -p %INPATH% -b %BUILD% --cache %CACHEDIR% %PTR%  -t random_property_points -o %OUTPATH%/sc_item_data%PTREXT%2.inc
 py -3  %RUNFILE% -p %INPATH% -b %BUILD% --cache %CACHEDIR% %PTR%  -t random_suffix          -a %OUTPATH%/sc_item_data%PTREXT%2.inc
