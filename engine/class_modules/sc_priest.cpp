@@ -3279,7 +3279,7 @@ namespace
           }
 
           may_miss = false;
-          aoe = 1;
+          aoe = -1;
           range = 40.0;
           radius = 10.0;
           school = SCHOOL_SHADOW;
