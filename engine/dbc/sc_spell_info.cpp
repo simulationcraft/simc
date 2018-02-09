@@ -4,6 +4,7 @@
 // ==========================================================================
 
 #include "simulationcraft.hpp"
+#include "sc_spell_info.hpp"
 
 namespace {
 struct proc_map_t

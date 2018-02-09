@@ -6,6 +6,7 @@
 #include "sc_report.hpp"
 #include "interfaces/sc_js.hpp"
 #include "simulationcraft.hpp"
+#include "util/git_info.hpp"
 
 #include "util/rapidjson/filewritestream.h"
 #include "util/rapidjson/document.h"
@@ -1770,9 +1771,11 @@ js::sc_js_t get_root( const sim_t& sim )
 {
   js::sc_js_t root;
   root.set( "version", SC_VERSION );
-#if defined( SC_GIT_REV )
-  root.set( "git_rev", SC_GIT_REV );
-#endif
+  if ( git_info::available())
+  {
+    root.set( "git_branch", git_info::branch() );
+    root.set( "git_rev", git_info::revision() );
+  }
   root.set( "ptr_enabled", SC_USE_PTR );
   root.set( "beta_enabled", SC_BETA );
   root.set( "build_date", __DATE__ );
@@ -1794,9 +1797,11 @@ void print_json2_pretty( FILE* o, const sim_t& sim )
   root[ "beta_enabled" ] = SC_BETA;
   root[ "build_date" ] = __DATE__;
   root[ "build_time" ] = __TIME__;
-#if defined( SC_GIT_REV )
-  root[ "git_revision" ] = SC_GIT_REV;
-#endif
+  if ( git_info::available())
+  {
+    root[ "git_revision" ] = git_info::revision();
+    root[ "git_branch" ] = git_info::branch();
+  }
 
   to_json( root[ "sim" ], sim );
 

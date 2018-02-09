@@ -64,7 +64,7 @@ def create_make_str(entries):
     prepare = header("Makefile")
     prepare += "SRC += \\"
     for file_type, fullpath in modified_input:
-        if file_type in ("SOURCES", "HEADERS"):
+        if file_type in ("SOURCES"): #, "HEADERS"):
             prepare += "\n    " + fullpath + " \\"
     return prepare
 
