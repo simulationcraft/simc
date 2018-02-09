@@ -80,7 +80,6 @@ namespace
       propagate_const<buff_t*> dispersion;
       propagate_const<buff_t*> insanity_drain_stacks;
       propagate_const<buff_t*> lingering_insanity;
-      propagate_const<buff_t*> mind_sear_on_hit_reset;
       propagate_const<buff_t*> shadowform;
       propagate_const<buff_t*> shadowform_state;  // Dummy buff to track whether player entered Shadowform initially
       propagate_const<buff_t*> shadowy_insight;
@@ -1399,10 +1398,6 @@ namespace
       {
         double save_health_percentage = s->target->health_percentage();
 
-        if (priest.buffs.mind_sear_on_hit_reset->check() == 2)
-        {
-          priest.buffs.mind_sear_on_hit_reset->decrement();
-        }
 
         base_t::impact(s);
 
@@ -2024,7 +2019,7 @@ namespace
         // TODO: Mind Sear is missing damage information in spell data
         mind_sear_tick_t(priest_t& p, const spell_data_t* mind_sear)
           : priest_spell_t("mind_sear_tick", p, mind_sear->effectN(1).trigger()),
-          insanity_gain(p.find_spell(208232)->effectN(1).percent())  // TODO: Missing from spell data - hardcoded for now
+          insanity_gain(p.find_spell(208232)->effectN(1).percent())  
         {
           background = true;
           dual = true;
@@ -2047,7 +2042,7 @@ namespace
       };
 
       struct mind_sear_t final : public priest_spell_t
-        //TODO: VALIDATE WITH INGAME BEHAVIOUR TO CHECK IF THIS WORKS LIKE FLAY NOW
+
       {
         mind_sear_t(priest_t& p, const std::string& options_str)
           : priest_spell_t("mind_sear", p,
@@ -2075,34 +2070,10 @@ namespace
 
         }
 
-        void last_tick(dot_t* d) override
-        {
-          if (d->current_tick == d->num_ticks)
-          {
-            priest.buffs.mind_sear_on_hit_reset->expire();
-          }
-
-          priest_spell_t::last_tick(d);
-        }
 
 
         void impact(action_state_t* s) override
         {
-          // Mind Sear does on-hit damage only when there is a GCD of another ability
-          // between it, so chaining Mind Sears doesn't allow for the on-hit to happen
-          // again.
-          if (priest.buffs.mind_sear_on_hit_reset->check() == 0)
-          {
-            priest.buffs.mind_sear_on_hit_reset->trigger(2, 1, 1,
-              tick_time(s) * 6);
-            tick_zero = true;
-          }
-          else
-          {
-            priest.buffs.mind_sear_on_hit_reset->trigger(1);
-            tick_zero = false;
-          }
-
           priest_spell_t::impact(s);
 
         }
@@ -4743,9 +4714,6 @@ namespace
 
     buffs.vampiric_embrace = make_buff(this, "vampiric_embrace", find_class_spell("Vampiric Embrace"));
 
-    buffs.mind_sear_on_hit_reset =
-      make_buff(this, "mind_sear_on_hit_reset")->set_duration(timespan_t::from_seconds(5.0));
-    buffs.mind_sear_on_hit_reset->set_max_stack(2U);
 
     buffs.dispersion = make_buff(this, "dispersion", find_class_spell("Dispersion"));
 
