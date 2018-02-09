@@ -404,6 +404,7 @@ public:
     buff_t* arcane_familiar;
     buff_t* arcane_power;
     buff_t* chrono_shift;
+    buff_t* clearcasting;
     buff_t* crackling_energy; // T20 2pc Arcane
     buff_t* presence_of_mind;
     buff_t* expanding_mind;   // T21 2pc Arcane
@@ -549,6 +550,7 @@ public:
     const spell_data_t* arcane_barrage_2;
     const spell_data_t* arcane_charge;
     const spell_data_t* arcane_mage;
+    const spell_data_t* clearcasting;
     const spell_data_t* evocation_2;
     const spell_data_t* savant;
 
@@ -861,6 +863,7 @@ struct mage_spell_base_t : public spell_t
     bool rune_of_power;
 
     // Misc
+    bool clearcasting;
     bool combustion;
     bool erosion;
     bool ice_floes;
@@ -875,6 +878,7 @@ struct mage_spell_base_t : public spell_t
       crackling_energy( true ),
       incanters_flow( true ),
       rune_of_power( true ),
+      clearcasting( false ),
       combustion( true ),
       erosion( true ),
       ice_floes( false ),
@@ -1771,6 +1775,11 @@ public:
   {
     double c = mage_spell_base_t::cost();
 
+    if ( affected_by.clearcasting )
+    {
+      c *= 1.0 + p() -> buffs.clearcasting -> check_value();
+    }
+
     if ( p() -> buffs.arcane_power -> check() )
     {
       c *= 1.0 + p() -> buffs.arcane_power -> data().effectN( 2 ).percent()
@@ -1778,6 +1787,31 @@ public:
     }
 
     return c;
+  }
+
+  virtual void consume_resource() override
+  {
+    mage_spell_base_t::consume_resource();
+
+    if ( ! harmful || current_resource() != RESOURCE_MANA || ! p() -> spec.clearcasting -> ok() )
+    {
+      return;
+    }
+
+    if ( affected_by.clearcasting )
+    {
+      p() -> buffs.clearcasting -> expire();
+      // TODO: Track mana "gains" from Clearcasting.
+    }
+
+    // TODO: Right now it uses max mana including mastery and other effects, probably makes more sense if
+    // it used base mana (might be a bug).
+    double mana_pct_consumed = last_resource_cost / p() -> resources.max[ RESOURCE_MANA ];
+    double cc_proc_chance = mana_pct_consumed * p() -> spec.clearcasting -> effectN( 1 ).percent();
+
+    p() -> buffs.clearcasting -> trigger( 1, buff_t::DEFAULT_VALUE(), cc_proc_chance );
+
+    // TODO: Arcane Explosion consumes its own CC proc. Check.
   }
 
   virtual void update_ready( timespan_t cd ) override
@@ -2879,6 +2913,8 @@ struct arcane_explosion_t : public arcane_mage_spell_t
     base_multiplier *= 1.0 + p -> artifact.arcane_purification.percent();
     radius += p -> artifact.crackling_energy.data().effectN( 1 ).base_value();
 
+    affected_by.clearcasting = true;
+
     if ( p -> artifact.time_and_space.rank() )
     {
       time_and_space = new time_and_space_t( p );
@@ -2981,6 +3017,8 @@ struct arcane_missiles_t : public arcane_mage_spell_t
     hasted_ticks      = false;
     dynamic_tick_action = true;
     tick_action = new arcane_missiles_tick_t( p );
+
+    affected_by.clearcasting = true;
 
     base_multiplier *= 1.0 + p -> artifact.aegwynns_fury.percent();
     base_crit += p -> artifact.aegwynns_intensity.percent();
@@ -7213,6 +7251,7 @@ void mage_t::init_spells()
   spec.arcane_barrage_2      = find_specialization_spell( 231564 );
   spec.arcane_charge         = find_spell( 36032 );
   spec.arcane_mage           = find_specialization_spell( 137021 );
+  spec.clearcasting          = find_specialization_spell( "Clearcasting" );
   spec.evocation_2           = find_specialization_spell( 231565 );
 
   spec.critical_mass         = find_specialization_spell( "Critical Mass"    );
@@ -7286,6 +7325,8 @@ void mage_t::create_buffs()
   buffs.chrono_shift          = buff_creator_t( this, "chrono_shift", find_spell( 236298 ) )
                                   .default_value( find_spell( 236298 ) -> effectN( 1 ).percent() )
                                   .add_invalidate( CACHE_RUN_SPEED );
+  buffs.clearcasting          = buff_creator_t( this, "clearcasting", find_spell( 263725 ) )
+                                  .default_value( find_spell( 263725 ) -> effectN( 1 ).percent() );
   buffs.crackling_energy      = buff_creator_t( this, "crackling_energy", find_spell( 246224 ) )
                                   .default_value( find_spell( 246224 ) -> effectN( 1 ).percent() );
 
