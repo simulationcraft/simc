@@ -1227,7 +1227,7 @@ void enemy_t::init_defense()
     // a wild equation appears. It's super effective.
     switch ( level() )
     {
-      case 90: a = 445; break;
+      case 90: a = 794; break; // checked
       case 91: a = 504; break;
       case 92: a = 571; break;
       case 93: a = 646; break;
@@ -1237,20 +1237,30 @@ void enemy_t::init_defense()
       case 97: a = 1059; break;
       case 98: a = 1199; break;
       case 99: a = 1357; break;
-      case 100: a = 1536; break;
-      case 101: a = 2313; break;
-      case 102: a = 2388; break;
-      case 103: a = 2467; break;
-      case 104: a = 2550; break;
-      case 105: a = 2638; break;
-      case 106: a = 2729; break;
-      case 107: a = 2826; break;
-      case 108: a = 2927; break;
-      case 109: a = 3035; break;
-      case 110: a = 2500; break;
-      case 111: a = 2590; break;
-      case 112: a = 2678; break;
-      case 113: a = 2766; break;
+      case 100: a = 925; break; //checked
+      case 101: a = 958; break;
+      case 102: a = 990; break; // checked
+      case 103: a = 1025; break; // checked
+      case 104: a = 1027; break;
+      case 105: a = 1029; break;
+      case 106: a = 1031; break;
+      case 107: a = 1032; break;
+      case 108: a = 1033; break; // checked
+      case 109: a = 1053; break; // checked
+      case 110: a = 1074; break; // checked
+      case 111: a = 1363; break; // checked
+      case 112: a = 1436; break; // checked
+      case 113: a = 1515; break; // checked
+      case 114: a = 2766; break;
+      case 115: a = 2766; break;
+      case 116: a = 2766; break;
+      case 117: a = 2766; break;
+      case 118: a = 2766; break;
+      case 119: a = 2766; break;
+      case 120: a = 2766; break;
+      case 121: a = 2766; break;
+      case 122: a = 2766; break;
+      case 123: a = 3326; break; // checked
       default: a = std::floor(0.006464588162215 * std::exp(0.123782410252464 * level()) + 0.5); break;
     }
   }
