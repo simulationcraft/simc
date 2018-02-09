@@ -6,7 +6,7 @@ osx_image: xcode8.3
 
 branches:
   only:
-    - legion-dev
+    - bfa-dev
 
 sudo: false
 # Enable Trusty (Ubuntu 14.04 LTS)
