@@ -224,6 +224,7 @@ public:
     gain_t* booming_voice;
     gain_t* thunder_clap;
     gain_t* pulse_of_battle;
+    gain_t* protection_t20_2p;
 
     // Legendarys
     gain_t* ceannar_rage;
@@ -4201,6 +4202,14 @@ struct berserker_rage_t: public warrior_spell_t
     {
       p() -> enrage();
     }
+
+    if ( p -> sets -> has_set_bonus( WARRIOR_PROTECTION, T20, B2 ) )
+    {
+     
+      p() -> resource_gain( RESOURCE_RAGE,
+                            p() -> sets -> set( WARRIOR_PROTECTION, T20, B2 ) -> effectN( 1 ).trigger() -> effectN( 1 ).resource( RESOURCE_RAGE ),
+                            p() -> gain.protection_t20_2p );
+    }
   }
 };
 
@@ -5627,6 +5636,23 @@ struct debuff_demo_shout_t: public warrior_buff_t < buff_t >
   }
 };
 
+// Protection T20 2P buff that generates rage over time
+
+struct protection_rage_t: public warrior_buff_t < buff_t >
+{
+  protection_rage_t( warrior_t& p, const std::string&n, const spell_data_t*s ):
+    base_t( p, buff_creator_t( &p, n, s )
+      .tick_callback( [ this, p ]( buff_t* b, int, const timespan_t& ) {
+        p() -> resource_gain( RESOURCE_RAGE,
+                              p() -> sets -> set( WARRIOR_PROTECTION, T20, B2 ) -> effectN( 1 ).trigger() -> effectN( 2 ).resource( RESOURCE_RAGE ),
+                              p() -> gain.protection_t20_2p );
+  } ) )
+  {
+    // The initial tick generates 20 rage and is done in Berserker's Rage execute
+    tick_zero = false;
+  }
+};
+
 // That legendary crap ring ===========================================================
 
 struct sephuzs_secret_buff_t: public haste_buff_t
@@ -5939,6 +5965,7 @@ void warrior_t::init_gains()
   gain.booming_voice = get_gain( "booming_voice" );
   gain.thunder_clap = get_gain( "thunder_clap" );
   gain.pulse_of_battle = get_gain( "pulse_of_battle" );
+  gain.protection_t20_2p = get_gain( "t20_2p" );
 
   gain.ceannar_rage = get_gain( "ceannar_rage" );
   gain.valarjar_berserking = get_gain( "valarjar_berserking" );
