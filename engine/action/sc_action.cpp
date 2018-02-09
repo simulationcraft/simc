@@ -2586,17 +2586,15 @@ expr_t* action_t::create_expression( const std::string& name_str )
   {
     struct new_tick_time_expr_t : public action_expr_t
     {
-      action_state_t* state;
-
-      new_tick_time_expr_t( action_t& a ) : action_expr_t( "new_tick_time", a ), state( a.get_state() ) {}
+      new_tick_time_expr_t( action_t& a ) : action_expr_t( "new_tick_time", a ) {}
       virtual double evaluate() override
       {
+        action_state_t* state = action.get_state();
         action.snapshot_state( state, DMG_OVER_TIME );
-        return action.tick_time( state ).total_seconds();
+        double result = action.tick_time( state ).total_seconds();
+        action_state_t::release( state );
+        return result;
       }
-
-      ~new_tick_time_expr_t()
-      { action_state_t::release( state ); }
     };
     return new new_tick_time_expr_t( *this );
   }
