@@ -57,21 +57,18 @@ notifications:
 
 install:
   # Build SimulationCraft
-  - if [ "$TRAVIS_OS_NAME" == "linux" ]; then make CXX=g++-4.8 DEBUG=1 -C engine -j 2; fi
+  - if [ "$TRAVIS_OS_NAME" == "linux" ]; then make CXX=g++-5.3 DEBUG=1 -C engine -j 2; fi
   - if [ "$TRAVIS_OS_NAME" == "osx"   ]; then make DEBUG=1 SANITIZE=1 -C engine -j 2; fi
 
 script:
   # Test SimulationCraft.
-  - cd tests
-  - ./run.sh classes.bats
-  - ./run.sh enemies.bats
-  - cd ..
+  #- cd tests
+  #- ./run.sh classes.bats
+  #- ./run.sh enemies.bats
+  #- cd ..
 
   # Valgrind a raid profile with Linux
-  - if [ "$TRAVIS_OS_NAME" == "linux" ]; then valgrind --show-reachable=yes --leak-check=summary ./engine/simc PR_Raid.simc iterations=5 threads=1 output=/dev/null cleanup_threads=1; fi
-  - if [ "$TRAVIS_OS_NAME" == "linux" ]; then valgrind --show-reachable=yes --leak-check=summary ./engine/simc PR_Raid.simc iterations=5 threads=1 fight_style=HelterSkelter output=/dev/null cleanup_threads=1; fi
-  - if [ "$TRAVIS_OS_NAME" == "linux" ]; then valgrind --show-reachable=yes --leak-check=summary ./engine/simc PR_Raid.simc iterations=5 threads=1 fight_style=HecticAddCleave output=/dev/null cleanup_threads=1; fi
-  - if [ "$TRAVIS_OS_NAME" == "linux" ]; then valgrind --show-reachable=yes --leak-check=summary ./engine/simc PR_Raid.simc iterations=5 threads=1 fight_style=BeastLord output=/dev/null cleanup_threads=1; fi
-
-after_success:
-    - coveralls
+  #- if [ "$TRAVIS_OS_NAME" == "linux" ]; then valgrind --show-reachable=yes --leak-check=summary ./engine/simc PR_Raid.simc iterations=5 threads=1 output=/dev/null cleanup_threads=1; fi
+  #- if [ "$TRAVIS_OS_NAME" == "linux" ]; then valgrind --show-reachable=yes --leak-check=summary ./engine/simc PR_Raid.simc iterations=5 threads=1 fight_style=HelterSkelter output=/dev/null cleanup_threads=1; fi
+  #- if [ "$TRAVIS_OS_NAME" == "linux" ]; then valgrind --show-reachable=yes --leak-check=summary ./engine/simc PR_Raid.simc iterations=5 threads=1 fight_style=HecticAddCleave output=/dev/null cleanup_threads=1; fi
+  #- if [ "$TRAVIS_OS_NAME" == "linux" ]; then valgrind --show-reachable=yes --leak-check=summary ./engine/simc PR_Raid.simc iterations=5 threads=1 fight_style=BeastLord output=/dev/null cleanup_threads=1; fi
