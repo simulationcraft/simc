@@ -3590,6 +3590,11 @@ struct shield_slam_t: public warrior_attack_t
       p() -> resource_gain( RESOURCE_RAGE, rage_gain * ( 1.0 + ( p() -> buff.demoralizing_shout -> check() ? p() -> artifact.might_of_the_vrykul.percent() : 0 ) ), p() -> gain.shield_slam );
     }
     p() -> buff.bindings_of_kakushan -> expire();
+
+    if ( p() -> sets -> has_set_bonus( WARRIOR_PROTECTION, T20, B4 ) )
+    {
+      p() -> cooldown.berserker_rage -> adjust( timespan_t::from_seconds( -0.1 * p() -> sets -> set( WARRIOR_PROTECTION, T20, B4) -> effectN( 1 ).base_value() ), false );
+    }
   }
 
   bool ready() override
