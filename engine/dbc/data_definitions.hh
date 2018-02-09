@@ -5,7 +5,6 @@
 #include "data_enums.hh"
 #include "specialization.hpp"
 #include <cstddef>
-#include <functional>
 
 #include "util/array_view.hpp"
 
@@ -24,8 +23,6 @@ struct talent_data_t;
 
 struct azerite_power_t
 {
-  using fn_t = std::function<void(const azerite_power_t&)>;
-
   unsigned id;
   unsigned spell_id;
 
