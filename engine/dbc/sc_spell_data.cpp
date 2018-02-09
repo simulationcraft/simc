@@ -161,11 +161,13 @@ const std::string _pet_class_strings[] =
   "tenacity",
 };
 
-const struct expr_data_map_t
+struct expr_data_map_t
 {
   std::string name;
   expr_data_e type;
-} map[] =
+};
+
+const expr_data_map_t expr_map[] =
 {
   { "spell", DATA_SPELL },
   { "talent", DATA_TALENT },
@@ -180,10 +182,10 @@ const struct expr_data_map_t
 
 expr_data_e parse_data_type( const std::string& name )
 {
-  for ( int i = 0; i < static_cast<int>( sizeof_array( map ) ); ++i )
+  for ( auto& entry : expr_map )
   {
-    if ( util::str_compare_ci( map[ i ].name, name ) )
-      return map[ i ].type;
+    if ( util::str_compare_ci( entry.name, name ) )
+      return entry.type;
   }
 
   return ( expr_data_e ) - 1;
@@ -193,7 +195,7 @@ unsigned class_str_to_mask( const std::string& str )
 {
   int cls_id = -1;
 
-  for ( unsigned int i = 0; i < sizeof( _class_strings ) / sizeof( std::string ); i++ )
+  for ( unsigned int i = 0; i < sizeof_array(_class_strings); ++i )
   {
     if ( _class_strings[ i ].empty() )
       continue;
@@ -212,7 +214,7 @@ uint64_t race_str_to_mask( const std::string& str )
 {
   int race_id = -1;
 
-  for ( unsigned int i = 0; i < sizeof( _race_strings ) / sizeof( std::string ); i++ )
+  for ( unsigned int i = 0; i < sizeof_array( _race_strings ); ++i )
   {
     if ( _race_strings[ i ].empty() )
       continue;
@@ -512,20 +514,20 @@ struct spell_data_filter_expr_t : public spell_list_expr_t
     if ( type == DATA_TALENT )
     {
       fields = _talent_data_fields;
-      fsize  = sizeof( _talent_data_fields );
+      fsize  = sizeof_array( _talent_data_fields );
     }
     else if ( effect_query || type == DATA_EFFECT )
     {
       fields = _effect_data_fields;
-      fsize  = sizeof( _effect_data_fields );
+      fsize  = sizeof_array( _effect_data_fields );
     }
     else
     {
       fields = _spell_data_fields;
-      fsize  = sizeof( _spell_data_fields );
+      fsize  = sizeof_array( _spell_data_fields );
     }
 
-    for ( size_t i = 0, end = fsize / sizeof( sdata_field_t ); i < end; ++i )
+    for ( size_t i = 0, end = fsize; i < end; ++i )
     {
       if ( util::str_compare_ci( f_name, fields[ i ].name ) )
       {
@@ -628,15 +630,15 @@ struct spell_data_filter_expr_t : public spell_list_expr_t
 
   void build_list( std::vector<uint32_t>& res, const spell_data_expr_t& other, expression::token_e t ) const
   {
-    for ( auto i = result_spell_list.begin(); i != result_spell_list.end(); ++i )
+    for ( const auto& result_spell : result_spell_list )
     {
       // Don't bother comparing if this spell id is already in the result set.
-      if ( range::find( res, *i ) != res.end() )
+      if ( range::find( res, result_spell ) != res.end() )
         continue;
 
       if ( effect_query )
       {
-        const spell_data_t& spell = *sim -> dbc.spell( *i );
+        const spell_data_t& spell = *sim -> dbc.spell( result_spell );
 
         // Compare against every spell effect
         for ( size_t j = 0; j < spell.effect_count(); j++ )
@@ -646,7 +648,7 @@ struct spell_data_filter_expr_t : public spell_list_expr_t
           if ( effect.id() > 0 && sim -> dbc.effect( effect.id() ) &&
                compare( reinterpret_cast<const char*>( &effect ), other, t ) )
           {
-            res.push_back( *i );
+            res.push_back( result_spell );
             break;
           }
         }
@@ -655,13 +657,13 @@ struct spell_data_filter_expr_t : public spell_list_expr_t
       {
         const char* p_data;
         if ( data_type == DATA_TALENT )
-          p_data = reinterpret_cast<const char*>( sim -> dbc.talent( *i ) );
+          p_data = reinterpret_cast<const char*>( sim -> dbc.talent( result_spell ) );
         else if ( data_type == DATA_EFFECT )
-          p_data = reinterpret_cast<const char*>( sim -> dbc.effect( *i ) );
+          p_data = reinterpret_cast<const char*>( sim -> dbc.effect( result_spell ) );
         else
-          p_data = reinterpret_cast<const char*>( sim -> dbc.spell( *i ) );
+          p_data = reinterpret_cast<const char*>( sim -> dbc.spell( result_spell ) );
         if ( p_data && compare( p_data, other, t ) )
-          res.push_back( *i );
+          res.push_back( result_spell );
       }
     }
   }
@@ -836,25 +838,25 @@ struct spell_class_expr_t : public spell_list_expr_t
     else
       return res;
 
-    for ( std::vector<uint32_t>::const_iterator i = result_spell_list.begin(); i != result_spell_list.end(); ++i )
+    for ( const auto& result_spell : result_spell_list )
     {
       if ( data_type == DATA_TALENT )
       {
-        if ( ! sim -> dbc.talent( *i ) )
+        if ( ! sim -> dbc.talent( result_spell ) )
           continue;
 
-        if ( sim -> dbc.talent( *i ) -> mask_class() & class_mask )
-          res.push_back( *i );
+        if ( sim -> dbc.talent( result_spell ) -> mask_class() & class_mask )
+          res.push_back( result_spell );
       }
       else
       {
-        const spell_data_t* spell = sim -> dbc.spell( *i );
+        const spell_data_t* spell = sim -> dbc.spell( result_spell );
 
         if ( ! spell )
           continue;
 
         if ( spell -> class_mask() & class_mask )
-          res.push_back( *i );
+          res.push_back( result_spell );
       }
     }
 
@@ -872,24 +874,24 @@ struct spell_class_expr_t : public spell_list_expr_t
     else
       return res;
 
-    for ( std::vector<uint32_t>::const_iterator i = result_spell_list.begin(); i != result_spell_list.end(); ++i )
+    for ( const auto& result_spell : result_spell_list )
     {
       if ( data_type == DATA_TALENT )
       {
-        if ( ! sim -> dbc.talent( *i ) )
+        if ( ! sim -> dbc.talent( result_spell ) )
           continue;
 
-        if ( ( sim -> dbc.talent( *i ) -> mask_class() & class_mask ) == 0 )
-          res.push_back( *i );
+        if ( ( sim -> dbc.talent( result_spell ) -> mask_class() & class_mask ) == 0 )
+          res.push_back( result_spell );
       }
       else
       {
-        const spell_data_t* spell = sim -> dbc.spell( *i );
+        const spell_data_t* spell = sim -> dbc.spell( result_spell );
         if ( ! spell )
           continue;
 
         if ( ( spell -> class_mask() & class_mask ) == 0 )
-          res.push_back( *i );
+          res.push_back( result_spell );
       }
     }
 
@@ -916,15 +918,15 @@ struct spell_race_expr_t : public spell_list_expr_t
     else
       return res;
 
-    for ( std::vector<uint32_t>::const_iterator i = result_spell_list.begin(); i != result_spell_list.end(); ++i )
+    for ( const auto& result_spell : result_spell_list )
     {
-      const spell_data_t* spell = sim -> dbc.spell( *i );
+      const spell_data_t* spell = sim -> dbc.spell( result_spell );
 
       if ( ! spell )
         continue;
 
       if ( spell -> race_mask() & race_mask )
-        res.push_back( *i );
+        res.push_back( result_spell );
     }
 
     return res;
@@ -945,14 +947,14 @@ struct spell_race_expr_t : public spell_list_expr_t
     else
       return res;
 
-    for ( std::vector<uint32_t>::const_iterator i = result_spell_list.begin(); i != result_spell_list.end(); ++i )
+    for ( const auto& result_spell : result_spell_list )
     {
-      const spell_data_t* spell = sim -> dbc.spell( *i );
+      const spell_data_t* spell = sim -> dbc.spell( result_spell );
       if ( ! spell )
         continue;
 
       if ( ( spell -> class_mask() & class_mask ) == 0 )
-        res.push_back( *i );
+        res.push_back( result_spell );
     }
 
     return res;
@@ -980,15 +982,15 @@ struct spell_attribute_expr_t : public spell_list_expr_t
 
     assert( attridx < NUM_SPELL_FLAGS && flagidx < 32 );
 
-    for ( std::vector<uint32_t>::const_iterator i = result_spell_list.begin(); i != result_spell_list.end(); ++i )
+    for ( const auto& result_spell : result_spell_list )
     {
-      const spell_data_t* spell = sim -> dbc.spell( *i );
+      const spell_data_t* spell = sim -> dbc.spell( result_spell );
 
       if ( ! spell )
         continue;
 
       if ( spell -> attribute( attridx ) & ( 1 << flagidx ) )
-        res.push_back( *i );
+        res.push_back( result_spell );
     }
 
     return res;
@@ -1010,15 +1012,15 @@ struct spell_school_expr_t : public spell_list_expr_t
     else
       return res;
 
-    for ( std::vector<uint32_t>::const_iterator i = result_spell_list.begin(); i != result_spell_list.end(); ++i )
+    for ( const auto& result_spell : result_spell_list )
     {
-      const spell_data_t* spell = sim -> dbc.spell( *i );
+      const spell_data_t* spell = sim -> dbc.spell( result_spell );
 
       if ( ! spell )
         continue;
 
       if ( ( spell -> school_mask() & school_mask ) == school_mask )
-        res.push_back( *i );
+        res.push_back( result_spell );
     }
 
     return res;
@@ -1035,15 +1037,15 @@ struct spell_school_expr_t : public spell_list_expr_t
     else
       return res;
 
-    for ( std::vector<uint32_t>::const_iterator i = result_spell_list.begin(); i != result_spell_list.end(); ++i )
+    for ( const auto& result_spell : result_spell_list )
     {
-      const spell_data_t* spell = sim -> dbc.spell( *i );
+      const spell_data_t* spell = sim -> dbc.spell( result_spell );
 
       if ( ! spell )
         continue;
 
       if ( ( spell -> school_mask() & school_mask ) == 0 )
-        res.push_back( *i );
+        res.push_back( result_spell );
     }
 
     return res;
@@ -1055,11 +1057,8 @@ spell_data_expr_t* build_expression_tree( sim_t* sim,
 {
   auto_dispose< std::vector<spell_data_expr_t*> > stack;
 
-  size_t num_tokens = tokens.size();
-  for ( size_t i = 0; i < num_tokens; i++ )
+  for ( auto& t : tokens )
   {
-    const expression::expr_token_t& t = tokens[ i ];
-
     if ( t.type == expression::TOK_NUM )
       stack.push_back( new spell_data_expr_t( sim, t.label, atof( t.label.c_str() ) ) );
     else if ( t.type == expression::TOK_STR )
@@ -1142,20 +1141,20 @@ spell_data_expr_t* spell_data_expr_t::create_spell_expression( sim_t* sim, const
   if ( data_type == DATA_TALENT )
   {
     fields = _talent_data_fields;
-    fsize  = sizeof( _talent_data_fields );
+    fsize  = sizeof_array( _talent_data_fields );
   }
   else if ( effect_query || data_type == DATA_EFFECT )
   {
     fields = _effect_data_fields;
-    fsize  = sizeof( _effect_data_fields );
+    fsize  = sizeof_array( _effect_data_fields );
   }
   else
   {
     fields = _spell_data_fields;
-    fsize  = sizeof( _spell_data_fields );
+    fsize  = sizeof_array( _spell_data_fields );
   }
 
-  for ( unsigned int i = 0; i < fsize / sizeof( sdata_field_t ); i++ )
+  for ( unsigned int i = 0; i < fsize; i++ )
   {
     if ( ! fields[ i ].name.empty() && util::str_compare_ci( splits[ 1 ], fields[ i ].name ) )
     {
