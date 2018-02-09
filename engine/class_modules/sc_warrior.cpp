@@ -159,6 +159,7 @@ public:
     buff_t* vengeance_ignore_pain;
     buff_t* wrecking_ball;
     buff_t* scales_of_earth;
+    buff_t* protection_rage;
 
     buff_t* raging_thirst;
     buff_t* t20_fury_4p;
@@ -4203,12 +4204,12 @@ struct berserker_rage_t: public warrior_spell_t
       p() -> enrage();
     }
 
-    if ( p -> sets -> has_set_bonus( WARRIOR_PROTECTION, T20, B2 ) )
+    if ( p() -> sets -> has_set_bonus( WARRIOR_PROTECTION, T20, B2 ) )
     {
-     
       p() -> resource_gain( RESOURCE_RAGE,
                             p() -> sets -> set( WARRIOR_PROTECTION, T20, B2 ) -> effectN( 1 ).trigger() -> effectN( 1 ).resource( RESOURCE_RAGE ),
                             p() -> gain.protection_t20_2p );
+      p() -> buff.protection_rage -> trigger();
     }
   }
 };
@@ -5642,10 +5643,10 @@ struct protection_rage_t: public warrior_buff_t < buff_t >
 {
   protection_rage_t( warrior_t& p, const std::string&n, const spell_data_t*s ):
     base_t( p, buff_creator_t( &p, n, s )
-      .tick_callback( [ this, p ]( buff_t* b, int, const timespan_t& ) {
-        p() -> resource_gain( RESOURCE_RAGE,
-                              p() -> sets -> set( WARRIOR_PROTECTION, T20, B2 ) -> effectN( 1 ).trigger() -> effectN( 2 ).resource( RESOURCE_RAGE ),
-                              p() -> gain.protection_t20_2p );
+      .tick_callback( [ this, &p ]( buff_t* b, int, const timespan_t& ) {
+        p.resource_gain( RESOURCE_RAGE,
+                         p.sets -> set( WARRIOR_PROTECTION, T20, B2 ) -> effectN( 1 ).trigger() -> effectN( 2 ).resource( RESOURCE_RAGE ),
+                         p.gain.protection_t20_2p );
   } ) )
   {
     // The initial tick generates 20 rage and is done in Berserker's Rage execute
@@ -5925,6 +5926,8 @@ void warrior_t::create_buffs()
   buff.outrage = buff_creator_t ( this, "outrage", sets -> set( WARRIOR_FURY, T21, B4) -> effectN( 1 ).trigger() )
     .default_value( sets -> set( WARRIOR_FURY, T21, B4) -> effectN( 1 ).trigger() -> effectN( 1 ).percent() )
     .chance( sets -> has_set_bonus( WARRIOR_FURY, T21, B4) );
+
+  buff.protection_rage = new protection_rage_t( *this, "protection_rage", find_spell( 242303 ) );
 }
 
 // warrior_t::init_scaling ==================================================
