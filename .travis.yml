@@ -27,7 +27,7 @@ addons:
       - sourceline: 'ppa:duggan/bats'
     packages:
       - valgrind
-      - g++-5.3
+      - g++-4.8
       - bats
 
 #env:
@@ -57,15 +57,15 @@ notifications:
 
 install:
   # Build SimulationCraft
-  - if [ "$TRAVIS_OS_NAME" == "linux" ]; then make CXX=g++-5.3 DEBUG=1 -C engine -j 2; fi
+  - if [ "$TRAVIS_OS_NAME" == "linux" ]; then make CXX=g++-4.8 DEBUG=1 -C engine -j 2; fi
   - if [ "$TRAVIS_OS_NAME" == "osx"   ]; then make DEBUG=1 SANITIZE=1 -C engine -j 2; fi
 
-#script:
+script:
   # Test SimulationCraft.
-  #- cd tests
+  - cd tests
   #- ./run.sh classes.bats
   #- ./run.sh enemies.bats
-  #- cd ..
+  - cd ..
 
   # Valgrind a raid profile with Linux
   #- if [ "$TRAVIS_OS_NAME" == "linux" ]; then valgrind --show-reachable=yes --leak-check=summary ./engine/simc PR_Raid.simc iterations=5 threads=1 output=/dev/null cleanup_threads=1; fi
