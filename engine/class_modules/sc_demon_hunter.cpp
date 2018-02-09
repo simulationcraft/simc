@@ -919,9 +919,9 @@ public:
     ab::tick_may_crit = true;
 
     // These are functionally the same but are reported differently in some conditions
-    if ( school == SCHOOL_CHROMATIC )
+    if ( ab::school == SCHOOL_CHROMATIC )
     {
-      school = SCHOOL_CHAOS;
+      ab::school = SCHOOL_CHAOS;
     }
 
     if ( p->specialization() == DEMON_HUNTER_HAVOC )
@@ -5066,27 +5066,27 @@ void add_havoc_use_items( demon_hunter_t* p, action_priority_list_t* apl )
 
 void demon_hunter_t::apl_havoc()
 {
-  action_priority_list_t* default = get_action_priority_list( "default" );
-  default->add_action( "auto_attack" );
-  default->add_action( "pick_up_fragment" );
-  default->add_action( this, "Consume Magic" );
-  default->add_talent( this, "Nemesis" );
-  default->add_action( this, "Metamorphosis" );
-  default->add_action( this, "Vengeful Retreat" );
-  default->add_action( this, "Fel Rush" );
-  default->add_talent( this, "Fel Barrage" );
-  default->add_talent( this, "Dark Slash" );
-  default->add_action( this, "Throw Glaive" );
-  default->add_talent( this, "Felblade" );
-  default->add_talent( this, "Immolation Aura" );
-  default->add_action( this, spec.death_sweep, "death_sweep" );
-  default->add_talent( this, "Fel Eruption" );
-  default->add_action( this, "Blade Dance" );
-  default->add_action( this, "Eye Beam" );
-  default->add_action( this, spec.annihilation, "annihilation" );
-  default->add_action( this, "Chaos Strike" );
-  default->add_action( this, "Demon's Bite" );
-  default->add_action( "potion" );
+  action_priority_list_t* def = get_action_priority_list( "default" );
+  def->add_action( "auto_attack" );
+  def->add_action( "pick_up_fragment" );
+  def->add_action( this, "Consume Magic" );
+  def->add_talent( this, "Nemesis" );
+  def->add_action( this, "Metamorphosis" );
+  def->add_action( this, "Vengeful Retreat" );
+  def->add_action( this, "Fel Rush" );
+  def->add_talent( this, "Fel Barrage" );
+  def->add_talent( this, "Dark Slash" );
+  def->add_action( this, "Throw Glaive" );
+  def->add_talent( this, "Felblade" );
+  def->add_talent( this, "Immolation Aura" );
+  def->add_action( this, spec.death_sweep, "death_sweep" );
+  def->add_talent( this, "Fel Eruption" );
+  def->add_action( this, "Blade Dance" );
+  def->add_action( this, "Eye Beam" );
+  def->add_action( this, spec.annihilation, "annihilation" );
+  def->add_action( this, "Chaos Strike" );
+  def->add_action( this, "Demon's Bite" );
+  def->add_action( "potion" );
 }
 
 // demon_hunter_t::apl_vengeance ============================================
