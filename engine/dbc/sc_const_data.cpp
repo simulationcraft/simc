@@ -3136,7 +3136,7 @@ const azerite_power_t& azerite_power_t::nil()
   return __default;
 }
 
-arv::array_view<const azerite_power_t> azerite_power_t::data( bool ptr )
+arv::array_view<azerite_power_t> azerite_power_t::data( bool ptr )
 {
 #if SC_USE_PTR == 1
   const auto& data = ptr ? __ptr_azerite_power_data : __azerite_power_data;

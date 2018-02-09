@@ -4285,7 +4285,7 @@ class AzeriteDataGenerator(DataGenerator):
 
         self._out.write('// Azerite powers, wow build %d\n' % ( self._options.build ))
 
-        self._out.write('static constexpr std::array<const azerite_power_t, %d> __%s_data { {\n' % (
+        self._out.write('static constexpr std::array<azerite_power_t, %d> __%s_data { {\n' % (
             len(data), data_str))
 
         for entry in data:

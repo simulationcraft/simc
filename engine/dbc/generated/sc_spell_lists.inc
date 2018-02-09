@@ -13770,7 +13770,7 @@ static hotfix::client_hotfix_entry_t __artifact_power_rank_hotfix_data[] = {
 };
 
 // Azerite powers, wow build 25976
-static constexpr std::array<const azerite_power_t, 40> __azerite_power_data { {
+static constexpr std::array<azerite_power_t, 40> __azerite_power_data { {
   {  1,  55564 },
   {  2, 261582 },
   {  3,  24219 },

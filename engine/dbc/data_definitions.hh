@@ -28,7 +28,7 @@ struct azerite_power_t
 
   static const azerite_power_t& find( unsigned id, bool ptr = false );
   static const azerite_power_t& nil();
-  static arv::array_view<const azerite_power_t> data( bool ptr = false );
+  static arv::array_view<azerite_power_t> data( bool ptr = false );
 };
 
 struct item_child_equipment_t
