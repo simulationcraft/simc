@@ -918,12 +918,6 @@ public:
     ab::may_crit = true;
     ab::tick_may_crit = true;
 
-    // These are functionally the same but are reported differently in some conditions
-    if ( ab::school == SCHOOL_CHROMATIC )
-    {
-      ab::school = SCHOOL_CHAOS;
-    }
-
     if ( p->specialization() == DEMON_HUNTER_HAVOC )
     {
       // Class Damage Multiplier
