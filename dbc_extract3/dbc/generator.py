@@ -1378,6 +1378,7 @@ class SpellDataGenerator(DataGenerator):
           ( 187292, 0 ),                            # Ro3 buff (?)
           ( 264352, 0 ),                            # Mana Adept
           ( 263725, 0 ),                            # Clearcasting buff
+          ( 264774, 0 ),                            # Ro3 buff (talent)
         ),
 
         # Warlock:
