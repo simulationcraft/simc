@@ -142,7 +142,7 @@ public:
   timespan_t sigil_of_flame_activates; // When sigil of flame will next activate.
 
   // Buffs
-  struct
+  struct buffs_t
   {
     // General
     buff_t* demon_soul;
@@ -169,7 +169,7 @@ public:
   } buff;
 
   // Talents
-  struct
+  struct talents_t
   {
     // Havoc
     const spell_data_t* blind_fury;
@@ -231,7 +231,7 @@ public:
   } talent;
 
   // Specialization Spells
-  struct
+  struct specializations_t
   {
     // General
     const spell_data_t* demon_hunter;
@@ -270,14 +270,14 @@ public:
   } spec;
 
   // Mastery Spells
-  struct
+  struct mastery_t
   {
     const spell_data_t* demonic_presence;  // Havoc
     const spell_data_t* fel_blood;         // Vengeance
-  } mastery_spell;
+  } mastery;
 
   // Cooldowns
-  struct
+  struct cooldowns_t
   {
     // General
     cooldown_t* consume_magic;
@@ -312,7 +312,7 @@ public:
   } cooldown;
 
   // Gains
-  struct
+  struct gains_t
   {
     // General
     gain_t* miss_refund;
@@ -329,12 +329,12 @@ public:
   } gain;
 
   // Benefits
-  struct
+  struct benefits_t
   {
   } benefits;
 
   // Procs
-  struct
+  struct procs_t
   {
     // General
     proc_t* delayed_aa_range;
@@ -372,7 +372,7 @@ public:
   } shuffled_rngs;
 
   // Special
-  struct
+  struct actives_t
   {
     // General
     heal_t* consume_soul_greater;
@@ -388,7 +388,7 @@ public:
   } active;
 
   // Pets
-  struct
+  struct pets_t
   {
   } pets;
 
@@ -903,7 +903,7 @@ public:
                           const spell_data_t* s = spell_data_t::nil(),
                           const std::string& o = std::string() )
     : ab( n, p, s ),
-    demonic_presence( ab::data().affected_by( p->mastery_spell.demonic_presence->effectN( 1 ) ) ),
+    demonic_presence( ab::data().affected_by( p->mastery.demonic_presence->effectN( 1 ) ) ),
     hasted_gcd( false ),
     may_extend_fiery_brand( false ),
     affected_by_blade_turning( false ),
@@ -2531,7 +2531,7 @@ namespace attacks
       LOST_CONTACT_RANGE,
     };
 
-    struct
+    struct status_t
     {
       status_e main_hand, off_hand;
     } status;
@@ -3947,7 +3947,7 @@ demon_hunter_t::demon_hunter_t(sim_t* sim, const std::string& name, race_e r)
   buff(),
   talent(),
   spec(),
-  mastery_spell(),
+  mastery(),
   cooldown(),
   gain(),
   benefits(),
@@ -4625,8 +4625,8 @@ void demon_hunter_t::init_spells()
 
   // Masteries ==============================================================
 
-  mastery_spell.demonic_presence = find_mastery_spell( DEMON_HUNTER_HAVOC );
-  mastery_spell.fel_blood        = find_mastery_spell( DEMON_HUNTER_VENGEANCE );
+  mastery.demonic_presence    = find_mastery_spell( DEMON_HUNTER_HAVOC );
+  mastery.fel_blood           = find_mastery_spell( DEMON_HUNTER_VENGEANCE );
 
   // Talents ================================================================
 
@@ -4725,7 +4725,7 @@ void demon_hunter_t::invalidate_cache( cache_e c )
   switch ( c )
   {
     case CACHE_MASTERY:
-      if ( mastery_spell.demonic_presence -> ok() )
+      if ( mastery.demonic_presence -> ok() )
         invalidate_cache( CACHE_RUN_SPEED );
       break;
     case CACHE_CRIT_CHANCE:
@@ -5030,7 +5030,7 @@ double demon_hunter_t::composite_attack_power_multiplier() const
 {
   double ap = player_t::composite_attack_power_multiplier();
 
-  ap *= 1.0 + cache.mastery() * mastery_spell.fel_blood -> effectN( 2 ).mastery_value();
+  ap *= 1.0 + cache.mastery() * mastery.fel_blood -> effectN( 2 ).mastery_value();
 
   return ap;
 }
@@ -5285,10 +5285,9 @@ double demon_hunter_t::passive_movement_modifier() const
 {
   double ms = player_t::passive_movement_modifier();
 
-  if ( mastery_spell.demonic_presence -> ok() )
+  if ( mastery.demonic_presence -> ok() )
   {
-    ms += cache.mastery() *
-          mastery_spell.demonic_presence -> effectN( 2 ).mastery_value();
+    ms += cache.mastery() * mastery.demonic_presence -> effectN( 2 ).mastery_value();
   }
 
   return ms;
