@@ -521,7 +521,7 @@ struct rogue_t : public player_t
   struct masteries_t
   {
     // Assassination
-    const spell_data_t* potent_poisons;
+    const spell_data_t* potent_assassin;
     // Outlaw
     const spell_data_t* main_gauche;
     // Subtlety
@@ -1282,7 +1282,7 @@ struct rogue_attack_t : public melee_attack_t
       m *= 1.0 + p()->cache.mastery_value();
     }
 
-    if ( p()->mastery.potent_poisons->ok() && data().affected_by( p()->mastery.potent_poisons->effectN( 1 ) ) )
+    if ( p()->mastery.potent_assassin->ok() && data().affected_by( p()->mastery.potent_assassin->effectN( 1 ) ) )
     {
       m *= 1.0 + p()->cache.mastery_value();
     }
@@ -1299,7 +1299,7 @@ struct rogue_attack_t : public melee_attack_t
       m *= 1.0 + p()->cache.mastery_value();
     }
 
-    if ( p()->mastery.potent_poisons->ok() && data().affected_by( p()->mastery.potent_poisons->effectN( 2 ) ) )
+    if ( p()->mastery.potent_assassin->ok() && data().affected_by( p()->mastery.potent_assassin->effectN( 2 ) ) )
     {
       m *= 1.0 + p()->cache.mastery_value();
     }
@@ -8071,7 +8071,7 @@ void rogue_t::init_spells()
   spec.shuriken_combo       = find_specialization_spell( "Shuriken Combo" );
 
   // Masteries
-  mastery.potent_poisons    = find_mastery_spell( ROGUE_ASSASSINATION );
+  mastery.potent_assassin   = find_mastery_spell( ROGUE_ASSASSINATION );
   mastery.main_gauche       = find_mastery_spell( ROGUE_OUTLAW );
   mastery.executioner       = find_mastery_spell( ROGUE_SUBTLETY );
 
