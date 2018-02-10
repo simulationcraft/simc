@@ -2017,6 +2017,7 @@ struct deadly_poison_t : public rogue_poison_t
     {
       may_crit       = false;
       harmful        = true;
+      hasted_ticks   = true;
     }
 
     timespan_t calculate_dot_refresh_duration(const dot_t* dot, timespan_t /* triggered_duration */) const override
