@@ -1299,8 +1299,7 @@ struct soul_barrier_t : public demon_hunter_action_t<absorb_t>
     soul_coefficient = data().effectN( 2 ).ap_coeff();
   }
 
-  double attack_direct_power_coefficient(
-    const action_state_t* s ) const override
+  double attack_direct_power_coefficient( const action_state_t* s ) const override
   {
     double c =
       demon_hunter_action_t<absorb_t>::attack_direct_power_coefficient( s );
@@ -1540,69 +1539,38 @@ struct eye_beam_t : public demon_hunter_spell_t
     eye_beam_tick_t( demon_hunter_t* p )
       : demon_hunter_spell_t( "eye_beam_tick", p, p -> find_spell( 198030 ) )
     {
-      aoe  = -1;
       dual = background = true;
-
-      base_crit += p->spec.havoc->effectN(3).percent();
+      aoe = -1;
     }
 
-    dmg_e amount_type( const action_state_t*, bool ) const override
+    virtual double composite_target_multiplier( player_t* target ) const override
     {
-      return DMG_OVER_TIME;
-    }  // TOCHECK
+      double m = demon_hunter_spell_t::composite_target_multiplier( target );
 
-    virtual double composite_da_multiplier( const action_state_t* s ) const override
-    {
-      double dm = demon_hunter_spell_t::composite_da_multiplier( s );
-
-      if ( s->chain_target == 0 )
+      if ( target == this->target )
       {
-        dm *= 1.0 + p()->spec.eye_beam->effectN( 3 ).percent();
+        // TODO: Check actual value, logs seem to indicate only +50% rather than +100% even though spell data says +100%
+        m *= 1.0 + p()->spec.eye_beam->effectN( 3 ).percent();
       }
 
-      return dm;
-    }
-
-    virtual double composite_ta_multiplier( const action_state_t* s ) const override
-    {
-      double tm = demon_hunter_spell_t::composite_ta_multiplier( s );
-
-      if ( s->chain_target == 0 )
-      {
-        tm *= 1.0 + p()->spec.eye_beam->effectN( 3 ).percent();
-      }
-
-      return tm;
+      return m;
     }
   };
 
-  eye_beam_tick_t* beam;
-
   eye_beam_t( demon_hunter_t* p, const std::string& options_str )
-    : demon_hunter_spell_t( "eye_beam", p, p -> spec.eye_beam,
-                            options_str ),
-      beam( new eye_beam_tick_t( p ) )
+    : demon_hunter_spell_t( "eye_beam", p, p -> spec.eye_beam, options_str )
   {
     may_miss = may_crit = false;
-    harmful     = false;  // Disables bleeding on the target.
-    channeled   = true;
-    beam -> stats = stats;
+    channeled = true;
 
     dot_duration *= 1.0 + p -> talent.blind_fury -> effectN( 1 ).percent();
-  }
-
-  // Don't record data for this action.
-  void record_data( action_state_t* s ) override
-  {
-    ( void )s;
-    assert( s -> result_amount == 0.0 );
-  }
-
-  void tick( dot_t* d ) override
-  {
-    demon_hunter_spell_t::tick( d );
-
-    beam -> schedule_execute();
+    base_crit += p->spec.havoc->effectN( 3 ).percent();
+    
+    tick_action = p->find_action( "eye_beam_tick" );
+    if ( !tick_action )
+    {
+      tick_action = new eye_beam_tick_t( p );
+    }
   }
 
   void execute() override
@@ -3277,6 +3245,7 @@ struct felblade_t : public demon_hunter_attack_t
       // Clear energize and then manually pick which effect to parse.
       energize_type = ENERGIZE_NONE;
       parse_effect_data( data().effectN( p -> specialization() == DEMON_HUNTER_HAVOC ? 4 : 3 ) );
+      gain = p->get_gain( "felblade" );
 
       // Damage penalty for Vengeance DH
       base_multiplier *= 1.0 + p -> spec.vengeance -> effectN( 5 ).percent();
@@ -3289,19 +3258,13 @@ struct felblade_t : public demon_hunter_attack_t
     : demon_hunter_attack_t( "felblade", p, p -> talent.felblade, options_str )
   {
     may_crit = may_block = false;
-    damage        = new felblade_damage_t( p );
-    damage -> stats = stats;
+    
+    damage = new felblade_damage_t( p );
+    damage->stats = stats;
 
     movement_directionality = MOVEMENT_TOWARDS;
 
     // Add damage modifiers in felblade_damage_t, not here.
-  }
-
-  // Don't record data for this action.
-  void record_data( action_state_t* s ) override
-  {
-    ( void )s;
-    assert( s -> result_amount == 0.0 );
   }
 
   void execute() override
@@ -3331,7 +3294,7 @@ struct fel_rush_t : public demon_hunter_attack_t
       aoe  = -1;
       dual = background = true;
 
-      base_multiplier *= 1.0 + p -> talent.fel_mastery -> effectN( 2 ).percent();
+      base_multiplier *= 1.0 + p -> talent.fel_mastery -> effectN( 1 ).percent();
     }
   };
 
@@ -3364,13 +3327,6 @@ struct fel_rush_t : public demon_hunter_attack_t
     // Add damage modifiers in fel_rush_damage_t, not here.
   }
 
-  // Don't record data for this action.
-  void record_data( action_state_t* s ) override
-  {
-    ( void )s;
-    assert( s -> result_amount == 0.0 );
-  }
-
   timespan_t gcd() const override
   {
     timespan_t g = demon_hunter_attack_t::gcd();
@@ -3387,10 +3343,10 @@ struct fel_rush_t : public demon_hunter_attack_t
     demon_hunter_attack_t::execute();
 
     // Does not benefit from momentum, so snapshot damage now.
-    action_state_t* s = damage -> get_state();
-    s -> target = target;
-    damage -> snapshot_state( s, DMG_DIRECT );
-    damage -> schedule_execute( s );
+    damage->set_target( target );
+    action_state_t* s = damage->get_state();
+    damage->snapshot_state( s, DMG_DIRECT );
+    damage->schedule_execute( s );
 
     // Fel Rush and VR shared a 1 second GCD when one or the other is triggered
     p() -> cooldown.movement_shared -> start( timespan_t::from_seconds( 1.0 ) );
