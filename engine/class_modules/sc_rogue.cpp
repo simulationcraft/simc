@@ -1537,6 +1537,7 @@ struct internal_bleeding_t : public rogue_attack_t
     rogue_attack_t( "internal_bleeding", p, p -> find_spell( 154953 ) )
   {
     background = true;
+    hasted_ticks = true;
     // Need to fake this here so it uses the correct AP coefficient
     base_costs[ RESOURCE_COMBO_POINT ] = 1;
   }
@@ -3107,6 +3108,7 @@ struct garrote_t : public rogue_attack_t
   {
     base_multiplier *= 1.0 + p -> artifact.strangler.percent();
     may_crit = false;
+    hasted_ticks = true;
 
     if ( p -> sets -> has_set_bonus( ROGUE_ASSASSINATION, T20, B2 ) ) {
       base_costs[ RESOURCE_ENERGY ] += p -> sets -> set( ROGUE_ASSASSINATION, T20, B2 ) -> effectN( 2 ).base_value();
@@ -4008,6 +4010,7 @@ struct nightblade_t : public rogue_attack_t
     rogue_attack_t( "nightblade", p, p -> find_specialization_spell( "Nightblade" ), options_str )
   {
     may_crit = false;
+    hasted_ticks = true;
     base_multiplier *= 1.0 + p -> artifact.demons_kiss.percent();
     if ( p -> talent.weaponmaster -> ok() )
     {
@@ -4144,6 +4147,7 @@ struct rupture_t : public rogue_attack_t
     rogue_attack_t( "rupture", p, p -> find_specialization_spell( "Rupture" ), options_str )
   {
     may_crit = false;
+    hasted_ticks = true;
     base_multiplier *= 1.0 + p -> artifact.gushing_wound.percent();
     base_crit += p -> artifact.serrated_edge.percent();
   }
