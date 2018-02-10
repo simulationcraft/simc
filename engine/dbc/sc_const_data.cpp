@@ -3114,12 +3114,12 @@ const azerite_power_t& azerite_power_t::find( unsigned id, bool ptr )
   const auto& data = __azerite_power_data;
 #endif
 
-  auto it = std::lower_bound( data.begin(), data.end(), id,
+  auto it = std::lower_bound( data.cbegin(), data.cend(), id,
       []( const azerite_power_t& l, unsigned id ) {
         return l.id < id;
       } );
 
-  if ( it != data.end() && it -> id == id )
+  if ( it != data.cend() && it -> id == id )
   {
     return *it;
   }
