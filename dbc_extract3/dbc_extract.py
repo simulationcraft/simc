@@ -1,24 +1,23 @@
 #!/usr/bin/env python3
 
-import argparse, sys, os, glob, re, datetime, signal, logging
-import dbc.generator, dbc.db, dbc.parser, dbc.file, dbc.config
+import argparse, sys, os, glob, logging, importlib
 
+from dbc.data import initialize_data_model
+from dbc.db import DataStore
+from dbc.file import DBCFile
+from dbc.generator import CSVDataGenerator, DataGenerator
+from dbc.config import Config
 
 logging.basicConfig(level = logging.INFO,
-        datefmt = '%H:%M:%S',
+        datefmt = '%Y-%m-%d %H:%M:%S',
         format = '[%(asctime)s] %(levelname)s: %(message)s')
 
 parser = argparse.ArgumentParser(usage= "%(prog)s [-otlbp] [ARGS]")
 parser.add_argument("-t", "--type", dest = "type", 
                   help    = "Processing type [spell]", metavar = "TYPE", 
-                  default = "spell", action = "store",
-                  choices = [ 'batchoutput', 'spell', 'class_list', 'talent', 'scale', 'view', 'csv',
-                              'header', 'spec_spell_list', 'mastery_list', 'racial_list',
-                              'class_flags', 'random_property_points', 'random_suffix',
-                              'item_ench', 'weapon_damage', 'item', 'item_armor', 'gem_properties',
-                              'random_suffix_groups', 'spec_enum', 'spec_list', 'item_upgrade',
-                              'rppm_coeff', 'set_list2', 'item_bonus', 'item_scaling',
-                              'item_name_desc', 'artifact', 'bench', 'item_child', 'azerite' ])
+                  default = "output", action = "store",
+                  choices = [ 'output', 'scale', 'view', 'csv', 'header',
+                              'class_flags', 'generator' ])
 parser.add_argument("-o",            dest = "output")
 parser.add_argument("-a",            dest = "append")
 parser.add_argument("--raw",         dest = "raw",          default = False, action = "store_true")
@@ -41,12 +40,10 @@ parser.add_argument("--max-ilvl",    dest = "max_ilevel",   default = 1300, type
                     help = "Maximum inclusive ilevel for item-related extraction")
 parser.add_argument("--scale-ilvl",  dest = "scale_ilevel", default = 1300, type = int,
                     help = "Maximum inclusive ilevel for game table related extraction")
-parser.add_argument("--as",          dest = "as_dbc",       default = '',
-                    help = "Treat given DBC file as this option" )
 parser.add_argument("-p", "--path",  dest = "path",         default = '.',
                     help = "DBC input directory [cwd]")
 parser.add_argument("--cache",       dest = "cache_dir",    default = '',
-                    help = "World of Warcraft Cache directory.")
+                    help = "World of Warcraft Cache directory (location of DBCache.bin).")
 parser.add_argument("--wdbfile",     dest = "wdb_file",     default = '',
                     help = "Path to WDB file to determine attributes when using 'view' type on adb files")
 parser.add_argument("args", metavar = "ARGS", type = str, nargs = argparse.REMAINDER)
@@ -72,215 +69,44 @@ if options.debug:
 
 # Initialize the base model for dbc.data, creating the relevant classes for all patch levels
 # up to options.build
-dbc.data.initialize_data_model(options, dbc.data)
+initialize_data_model(options)
 
-if options.type == 'batchoutput':
-    config = dbc.config.Config(options)
+if options.type == 'output':
+    if len(options.args) < 1:
+        logging.error('Output type requires an output configuration file')
+        sys.exit(1)
+
+    config = Config(options)
     if not config.open():
         sys.exit(1)
 
     config.generate()
-
-if options.type == 'spell':
-    _start = datetime.datetime.now()
-    g = dbc.generator.SpellDataGenerator(options)
-    if not g.initialize():
+elif options.type == 'generator':
+    if len(options.args) < 1:
+        logging.error('Generator type is required')
         sys.exit(1)
-    ids = g.filter()
 
-    g.generate(ids)
-    #sys.stderr.write('done, %s\n' % (datetime.datetime.now() - _start))
-    #input()
-elif options.type == 'class_list':
-    g = dbc.generator.SpellListGenerator(options)
-    if not g.initialize():
+    try:
+        generators = importlib.import_module('dbc.generator')
+        generator = getattr(generators, options.args[0])
+    except:
+        logging.error('Unable to import %s', options.args[0])
         sys.exit(1)
-    ids = g.filter()
 
-    g.generate(ids)
+    db = DataStore(options)
+    obj = generator(options, db)
+
+    if not obj.initialize():
+        sys.exit(1)
+
+    ids = obj.filter()
+
+    obj.generate(ids)
 elif options.type == 'class_flags':
     g = dbc.generator.ClassFlagGenerator(options)
     if not g.initialize():
         sys.exit(1)
-    ids = g.filter(args[0])
-
-    g.generate(ids)
-elif options.type == 'racial_list':
-    g = dbc.generator.RacialSpellGenerator(options)
-    if not g.initialize():
-        sys.exit(1)
-    ids = g.filter()
-
-    g.generate(ids)
-elif options.type == 'mastery_list':
-    g = dbc.generator.MasteryAbilityGenerator(options)
-    if not g.initialize():
-        sys.exit(1)
-    ids = g.filter()
-    
-    g.generate(ids)
-elif options.type == 'spec_spell_list':
-    g = dbc.generator.SpecializationSpellGenerator(options)
-    if not g.initialize():
-        sys.exit(1)
-    ids = g.filter()
-    
-    g.generate(ids)
-elif options.type == 'random_property_points':
-    g = dbc.generator.RandomPropertyPointsGenerator(options)
-    if not g.initialize():
-        sys.exit(1)
-    ids = g.filter()
-    
-    g.generate(ids)
-elif options.type == 'random_suffix':
-    g = dbc.generator.RandomSuffixGenerator(options)
-    if not g.initialize():
-        sys.exit(1)
-    ids = g.filter()
-    
-    g.generate(ids)
-elif options.type == 'random_suffix_groups':
-    g = dbc.generator.RandomSuffixGroupGenerator(options)
-    if not g.initialize():
-        sys.exit(1)
-    ids = g.filter()
-
-    g.generate(ids)
-elif options.type == 'item':
-    g = dbc.generator.ItemDataGenerator(options)
-    if not g.initialize():
-        sys.exit(1)
-    ids = g.filter()
-    
-    g.generate(ids)
-elif options.type == 'item_upgrade':
-    g = dbc.generator.RulesetItemUpgradeGenerator(options)
-    if not g.initialize():
-        sys.exit(1)
-    ids = g.filter()
-    g.generate(ids)
-
-    if options.output:
-        options.append = options.output
-        options.output = None
-
-    g = dbc.generator.ItemUpgradeDataGenerator(options)
-    if not g.initialize():
-        sys.exit(1)
-    g.generate()
-elif options.type == 'item_ench':
-    g = dbc.generator.SpellItemEnchantmentGenerator(options)
-    if not g.initialize():
-        sys.exit(1)
-    ids = g.filter()
-    
-    g.generate(ids)
-elif options.type == 'weapon_damage':
-    g = dbc.generator.WeaponDamageDataGenerator(options)
-    if not g.initialize():
-        sys.exit(1)
-    ids = g.filter()
-    
-    g.generate(ids)
-elif options.type == 'item_armor':
-    g = dbc.generator.ArmorValueDataGenerator(options)
-    if not g.initialize():
-        sys.exit(1)
-    ids = g.filter()
-
-    g.generate(ids)
-    if options.output:
-        options.append = options.output
-        options.output = None
-
-    g = dbc.generator.ArmorSlotDataGenerator(options)
-    if not g.initialize():
-        sys.exit(1)
-    ids = g.filter()
-    
-    g.generate(ids)
-elif options.type == 'gem_properties':
-    g = dbc.generator.GemPropertyDataGenerator(options)
-    if not g.initialize():
-        sys.exit(1)
-    ids = g.filter()
-    
-    g.generate(ids)
-elif options.type == 'glyph_list':
-    g = dbc.generator.GlyphListGenerator(options)
-    if not g.initialize():
-        sys.exit(1)
-    ids = g.filter()
-    
-    g.generate(ids)
-elif options.type == 'glyph_property_list':
-    g = dbc.generator.GlyphPropertyGenerator(options)
-    if not g.initialize():
-        sys.exit(1)
-    ids = g.filter()
-    
-    g.generate(ids)
-elif options.type == 'spec_enum':
-    g = dbc.generator.SpecializationEnumGenerator(options)
-    if not g.initialize():
-        sys.exit(1)
-    ids = g.filter()
-
-    g.generate(ids)
-elif options.type == 'rppm_coeff':
-    g = dbc.generator.RealPPMModifierGenerator(options)
-    if not g.initialize():
-        sys.exit(1)
-
-    g.generate()
-elif options.type == 'spec_list':
-    g = dbc.generator.SpecializationListGenerator(options)
-    if not g.initialize():
-        sys.exit(1)
-    ids = g.filter()
-    
-    g.generate(ids)
-elif options.type == 'set_list2':
-    g = dbc.generator.SetBonusListGenerator(options)
-    if not g.initialize():
-        sys.exit(1)
-    ids = g.filter()
-    
-    g.generate(ids)
-elif options.type == 'item_bonus':
-    g = dbc.generator.ItemBonusDataGenerator(options)
-    if not g.initialize():
-        sys.exit(1)
-    ids = g.filter()
-
-    g.generate(ids)
-elif options.type == 'item_scaling':
-    g = dbc.generator.ScalingStatDataGenerator(options)
-    if not g.initialize():
-        sys.exit(1)
-    ids = g.filter()
-
-    g.generate(ids)
-elif options.type == 'item_name_desc':
-    g = dbc.generator.ItemNameDescriptionDataGenerator(options)
-    if not g.initialize():
-        sys.exit(1)
-    ids = g.filter()
-
-    g.generate(ids)
-elif options.type == 'item_child':
-    g = dbc.generator.ItemChildEquipmentGenerator(options)
-    if not g.initialize():
-        sys.exit(1)
-    ids = g.filter()
-
-    g.generate(ids)
-elif options.type == 'artifact':
-    g = dbc.generator.ArtifactDataGenerator(options)
-    if not g.initialize():
-        sys.exit(1)
-    ids = g.filter()
+    ids = g.filter(options.args[0])
 
     g.generate(ids)
 elif options.type == 'azerite':
@@ -294,38 +120,20 @@ elif options.type == 'header':
     for fn in options.args:
         for i in glob.glob(fn):
             dbcs.append(i)
-            
+
     for i in dbcs:
-        dbc_file = dbc.parser.DBCParser(options, i)
-        if not dbc_file.open_dbc():
+        dbc_file = DBCFile(options, i)
+        if not dbc_file.open():
             continue
 
         sys.stdout.write('%s\n' % dbc_file)
-elif options.type == 'talent':
-    g = dbc.generator.TalentDataGenerator(options)
-    if not g.initialize():
-        sys.exit(1)
-    ids = g.filter()
-    
-    g.generate(ids)
-elif options.type == 'bench':
-    path = os.path.abspath(os.path.join(options.path, options.args[0]))
-    dbc_file = dbc.file.DBCFile(options, path)
-    if not dbc_file.open():
-        sys.exit(1)
-
-    x = {}
-    logging.debug(dbc_file)
-    for record in dbc_file:
-        #x[record.id] = record
-        pass
 elif options.type == 'view':
     path = os.path.abspath(os.path.join(options.path, options.args[0]))
     id = 0
     if len(options.args) > 1:
         id = int(options.args[1])
 
-    dbc_file = dbc.file.DBCFile(options, path)
+    dbc_file = DBCFile(options, path)
     if not dbc_file.open():
         sys.exit(1)
 
@@ -349,7 +157,7 @@ elif options.type == 'csv':
     if len(options.args) > 1:
         id = int(options.args[1])
 
-    dbc_file = dbc.file.DBCFile(options, path)
+    dbc_file = DBCFile(options, path)
     if not dbc_file.open():
         sys.exit(1)
 
@@ -374,7 +182,7 @@ elif options.type == 'csv':
                 print('No record for DBC ID %d found', id)
 
 elif options.type == 'scale':
-    g = dbc.generator.CSVDataGenerator(options, {
+    g = CSVDataGenerator(options, {
         'file': 'HpPerSta.txt',
         'comment': '// Hit points per stamina for level 1 - %d, wow build %d\n' % (
             options.level, options.build),
@@ -389,27 +197,27 @@ elif options.type == 'scale':
         options.append = options.output
         options.output = None
 
-    g = dbc.generator.CSVDataGenerator(options, {
+    g = CSVDataGenerator(options, {
         'file': 'SpellScaling.txt',
         'comment': '// Spell scaling multipliers for levels 1 - %d, wow build %d\n' % (
             options.level, options.build),
-        'values': dbc.generator.DataGenerator._class_names + [ 'Item', 'Consumable', 'Gem1', 'Gem2', 'Gem3', 'Health' ]
+        'values': DataGenerator._class_names + [ 'Item', 'Consumable', 'Gem1', 'Gem2', 'Gem3', 'Health' ]
     })
     if not g.initialize():
         sys.exit(1)
     g.generate()
 
-    g = dbc.generator.CSVDataGenerator(options, {
+    g = CSVDataGenerator(options, {
         'file': 'BaseMp.txt',
         'comment': '// Base mana points for levels 1 - %d, wow build %d\n' % (
             options.level, options.build),
-        'values': dbc.generator.DataGenerator._class_names
+        'values': DataGenerator._class_names
     })
     if not g.initialize():
         sys.exit(1)
     g.generate()
 
-    g = dbc.generator.CSVDataGenerator(options, {
+    g = CSVDataGenerator(options, {
         'file': 'CombatRatings.txt',
         'comment': '// Combat rating values for level 1 - %d, wow build %d\n' % (
             options.level, options.build),
@@ -430,7 +238,7 @@ elif options.type == 'scale':
     if options.build >= 23038:
         combat_rating_values = [ 'Armor Multiplier', 'Weapon Multiplier', 'Trinket Multiplier', 'Jewelry Multiplier' ]
 
-    g = dbc.generator.CSVDataGenerator(options, [ {
+    g = CSVDataGenerator(options, [ {
         'file': 'ItemSocketCostPerLevel.txt',
         'key': '5.0 Level',
         'comment': '// Item socket costs for item levels 1 - %d, wow build %d\n' % (
@@ -458,7 +266,7 @@ elif options.type == 'scale':
 
     g.generate()
 
-    g = dbc.generator.CSVDataGenerator(options, {
+    g = CSVDataGenerator(options, {
         'file': 'ArmorMitigationByLvl.txt',
         'comment': '// Enemy armor mitigation constants (K-value) for level 1 - %d, wow build %d\n' % (
             options.level + 3, options.build),
@@ -470,7 +278,7 @@ elif options.type == 'scale':
 
     g.generate()
 
-    g = dbc.generator.CSVDataGenerator(options, {
+    g = CSVDataGenerator(options, {
         'file': 'AzeriteLevelToItemLevel.txt',
         'key': 'Azerite Level',
         'comment': '// Azerite level to item level 1 - %d, wow build %d\n' % (

@@ -125,7 +125,6 @@ class DBFormat(object):
                         'data-format': [],
                         'data-fields': [],
                         'cpp'        : [],
-                        'id-format'  : '%u',
                         'obj'        : []
                     }
 
@@ -165,12 +164,6 @@ class DBFormat(object):
 
         return v
 
-    def set_id_format(self, file_name, formatstr):
-        if file_name not in self.data:
-            raise Exception('Unable to find data format for %s' % file_name)
-
-        self.data[file_name]['id-format'] = formatstr
-
     def formats(self, file_name, include_all = False):
         if file_name not in self.data:
             raise Exception('Unable to find data format for %s' % file_name)
@@ -203,10 +196,3 @@ class DBFormat(object):
                 v += obj.field_names()
 
         return v
-
-    def id_format(self, file_name):
-        if file_name not in self.data:
-            raise Exception('Unable to find data format for %s' % file_name)
-
-        return self.data[file_name]['id-format']
-

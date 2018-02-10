@@ -82,7 +82,7 @@ class DBCFileIterator:
     def __init__(self, f):
         self._file = f
         self._parser = f.parser
-        self._decorator = f.record_class()
+        self._decorator = f.record_class
 
         self._record = 0
         self._n_records = self._parser.n_records()
@@ -167,20 +167,16 @@ class DBCFile:
     def class_name(self):
         return os.path.basename(self.file_name).split('.')[0]
 
-    def record_class(self):
-        return self.data_class
-
-    def searchable(self):
-        return self.parser.searchable()
-
-    def open(self):
-        if not self.parser.open():
-            return False
+    def record_class(self, *args):
+        if self.data_class:
+            if len(args) > 0:
+                return self.data_class(*args)
+            else:
+                return self.data_class
 
         try:
             if not self.options.raw:
                 self.data_class = getattr(dbc.data, self.class_name().replace('-', '_'))
-
             else:
                 if self.parser.raw_outputtable():
                     self.data_class = dbc.data.RawDBCRecord
@@ -193,11 +189,23 @@ class DBCFile:
                 logging.error("Unable to determine data format for %s, aborting ...", self.class_name())
                 return False
 
+        if len(args) > 0:
+            return self.data_class(*args)
+        else:
+            return self.data_class
+
+    def searchable(self):
+        return self.parser.searchable()
+
+    def open(self):
+        if not self.parser.open():
+            return False
+
         return True
 
     def decorate(self, data):
         # Output data based on data parser + class, we are sure we have those things at this point
-        return self.data_class(self.parser, data.dbc_id, data.record_data, data.parent_id)
+        return self.record_class(self.parser, data.dbc_id, data.record_data, data.parent_id)
 
     def find(self, id_):
         data = self.parser.find(id_)

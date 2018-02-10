@@ -187,7 +187,7 @@ class DBCRecord(RawDBCRecord):
             field_idx = 0
             try:
                 if field == 'id' and self._id > -1:
-                    f.append(_FORMATDB.id_format(self.dbc_name()) % self._id)
+                    f.append(self._dbcp.id_format(self.__class__.__name__) % self._id)
                     continue
                 elif field == 'id_parent':
                     f.append(self._dbcp.key_format(self.__class__.__name__) % self._key)
@@ -215,7 +215,7 @@ class DBCRecord(RawDBCRecord):
             else:
                 fmt = self._ff[field_idx]
                 if field == 'id':
-                    fmt = _FORMATDB.id_format(self.dbc_name())
+                    fmt = self._dbcp.id_format(self.__class__.__name__)
                 f.append(fmt % self._d[field_idx])
 
         return f
@@ -400,19 +400,27 @@ class Meta(type):
         namespace['__slots__'] = ()
         return super(Meta, mcl).__new__(mcl, name, bases, namespace)
 
-def initialize_data_model(options, obj):
+def requires_data_model(options):
+    return options.type in ['view', 'output', 'generator', 'class_flags']
+
+def initialize_data_model(options):
+    if not requires_data_model(options):
+        return
+
     global _FORMATDB
     _FORMATDB = dbc.fmt.DBFormat(options)
+
+    this_module = sys.modules[__name__]
 
     for dbc_file_name, data_fo in _FORMATDB.data.items():
         class_name = '%s' % dbc_file_name.split('.')[0].replace('-', '_')
 
         # Add class to the data model if it does not exist. Inherit automatically from DBCRecord
-        if class_name not in dir(obj):
+        if class_name not in dir(this_module):
             new_class = types.new_class(class_name, bases = (DBCRecord,), kwds = { 'metaclass': Meta })
-            setattr(obj, class_name, new_class)
+            setattr(this_module, class_name, new_class)
 
-        cls = getattr(obj, class_name)
+        cls = getattr(this_module, class_name)
 
         # Setup data field names (_fi), data field types (_fo), and data field formats for output
         # (_ff)
@@ -428,44 +436,44 @@ def initialize_data_model(options, obj):
 
             cls._cd[cls._fi[fidx]] = fidx
 
-    if 'Spell' in dir(obj):
-        dbc.data.Spell.link('level', dbc.data.SpellLevels)
-        dbc.data.Spell.link('power', dbc.data.SpellPower)
-        dbc.data.Spell.link('categories', dbc.data.SpellCategories)
-        dbc.data.Spell.link('cooldown', dbc.data.SpellCooldowns)
-        dbc.data.Spell.link('aura_option', dbc.data.SpellAuraOptions)
-        dbc.data.Spell.link('equipped_item', dbc.data.SpellEquippedItems)
-        dbc.data.Spell.link('class_option', dbc.data.SpellClassOptions)
-        dbc.data.Spell.link('shapeshift', dbc.data.SpellShapeshift)
-        dbc.data.Spell.link('scaling', dbc.data.SpellScaling)
-        dbc.data.Spell.link('artifact_power', dbc.data.ArtifactPowerRank)
-        dbc.data.Spell.link('label', dbc.data.SpellLabel)
-        dbc.data.Spell.link('misc', dbc.data.SpellMisc)
+    if 'Spell' in dir(this_module):
+        Spell.link('level', SpellLevels)
+        Spell.link('power', SpellPower)
+        Spell.link('categories', SpellCategories)
+        Spell.link('cooldown', SpellCooldowns)
+        Spell.link('aura_option', SpellAuraOptions)
+        Spell.link('equipped_item', SpellEquippedItems)
+        Spell.link('class_option', SpellClassOptions)
+        Spell.link('shapeshift', SpellShapeshift)
+        Spell.link('scaling', SpellScaling)
+        Spell.link('artifact_power', ArtifactPowerRank)
+        Spell.link('label', SpellLabel)
+        Spell.link('misc', SpellMisc)
 
         if options.build >= 25600:
-            dbc.data.Spell.link('desc_var_link', dbc.data.SpellXDescriptionVariables)
+            Spell.link('desc_var_link', SpellXDescriptionVariables)
 
-    if 'SpellEffect' in dir(obj) and options.build < 25600:
-        dbc.data.SpellEffect.link('scaling', dbc.data.SpellEffectScaling)
+    if 'SpellEffect' in dir(this_module) and options.build < 25600:
+        SpellEffect.link('scaling', SpellEffectScaling)
 
-    if 'SpellItemEnchantment' in dir(obj):
-        dbc.data.SpellItemEnchantment.link('spells', dbc.data.Spell)
-        dbc.data.SpellItemEnchantment.link('gem_property', dbc.data.GemProperties)
+    if 'SpellItemEnchantment' in dir(this_module):
+        SpellItemEnchantment.link('spells', Spell)
+        SpellItemEnchantment.link('gem_property', GemProperties)
 
-    if 'Item_sparse' in dir(obj):
-        dbc.data.Item_sparse.link('spells', dbc.data.ItemEffect)
-        dbc.data.Item_sparse.link('journal', dbc.data.JournalEncounterItem)
+    if 'Item_sparse' in dir(this_module):
+        Item_sparse.link('spells', ItemEffect)
+        Item_sparse.link('journal', JournalEncounterItem)
 
-    if 'ItemSparse' in dir(obj):
-        dbc.data.ItemSparse.link('spells', dbc.data.ItemEffect)
-        dbc.data.ItemSparse.link('journal', dbc.data.JournalEncounterItem)
+    if 'ItemSparse' in dir(this_module):
+        ItemSparse.link('spells', ItemEffect)
+        ItemSparse.link('journal', JournalEncounterItem)
 
-    if 'ItemSet' in dir(obj):
-        dbc.data.ItemSet.link('bonus', dbc.data.ItemSetSpell)
+    if 'ItemSet' in dir(this_module):
+        ItemSet.link('bonus', ItemSetSpell)
 
-    if 'GemProperties' in dir(obj):
-        if 'Item_sparse' in dir(obj):
-            dbc.data.GemProperties.link('item', dbc.data.Item_sparse)
-        elif 'ItemSparse' in dir(obj):
-            dbc.data.GemProperties.link('item', dbc.data.ItemSparse)
+    if 'GemProperties' in dir(this_module):
+        if 'Item_sparse' in dir(this_module):
+            GemProperties.link('item', Item_sparse)
+        elif 'ItemSparse' in dir(this_module):
+            GemProperties.link('item', ItemSparse)
 

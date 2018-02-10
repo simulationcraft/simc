@@ -1,9 +1,12 @@
-import logging, math, collections
-
+import logging, math, collections, sys
 
 from struct import Struct
 
-from bitarray import bitarray
+try:
+    from bitarray import bitarray
+except ModuleNotFoundError as error:
+    print('ERROR: dbc_extract.py requires the python bitarray (https://pypi.python.org/pypi/bitarray) package to function', file = sys.stderr)
+    sys.exit(1)
 
 from dbc.parser import LegionWDBParser, _DB_HEADER_1, _DB_HEADER_2
 

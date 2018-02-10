@@ -55,11 +55,20 @@ class DBCacheParser:
         # blocks.
         self.key_formats = {}
 
+        # Ditto for id formats
+        self.id_formats = {}
+
         # See that file exists already
         normalized_path = os.path.abspath(os.path.join(options.cache_dir, 'DBCache.bin'))
         if os.access(normalized_path, os.R_OK):
             self.file_name_ = normalized_path
             logging.debug('DBCache.bin file found at %s', self.file_name_)
+
+    def __insert_id_format(self, wdb_parser):
+        if wdb_parser.class_name() in self.id_formats:
+            return
+
+        self.id_formats[wdb_parser.class_name()] = wdb_parser.key_format()
 
     def __insert_key_format(self, wdb_parser):
         if wdb_parser.class_name() in self.key_formats:
@@ -72,6 +81,12 @@ class DBCacheParser:
 
     def has_key_block(self):
         return False
+
+    def id_format(self, wdb_name = None):
+        if not wdb_name:
+            return '%u'
+
+        return self.id_formats[wdb_name]
 
     def key_format(self, wdb_name = None):
         if not wdb_name:
@@ -118,6 +133,7 @@ class DBCacheParser:
 
         if sig not in self.parsers:
             self.__insert_key_format(wdb_parser)
+            self.__insert_id_format(wdb_parser)
             self.parsers[sig] = wdb_parser.create_formatted_parser(
                     inline_strings  = True,
                     cache_parser    = True,
@@ -241,7 +257,7 @@ class DBCParserBase:
     def is_wch(self):
         return False
 
-    def id_format(self):
+    def id_format(self, wdb_name = None):
         if self.id_format_str:
             return self.id_format_str
 
@@ -614,11 +630,6 @@ class DBCParserBase:
 
         # After headers begins data, always
         self.data_offset = self.parse_offset
-
-        # If this is an actual WDB file (or WCH file with -t view), setup the
-        # correct id format to the formatter
-        if not self.options.raw and (not self.is_wch() or self.options.type == 'view'):
-            dbc.data._FORMATDB.set_id_format(self.class_name(), self.id_format())
 
         return True
 
