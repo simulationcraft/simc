@@ -3375,7 +3375,7 @@ double player_t::composite_player_td_multiplier( school_e /* school */,  const a
   return 1.0;
 }
 
-double player_t::composite_player_target_multiplier( player_t* target, school_e school ) const
+double player_t::composite_player_target_multiplier( player_t* target, school_e /* school */ ) const
 {
   double m = 1.0;
 
@@ -3387,9 +3387,6 @@ double player_t::composite_player_target_multiplier( player_t* target, school_e 
     // stat buffs.
     m *= 1.0 + buffs.demon_damage_buff -> data().effectN( 2 ).percent();
   }
-
-  if ( dbc::is_school( school, SCHOOL_PHYSICAL ) )
-    m *= 1.0 + target -> debuffs.expose_armor -> value();
 
   return m;
 }
@@ -3663,7 +3660,7 @@ double player_t::composite_rating( rating_e rating ) const
 
 // player_t::composite_player_vulnerability =================================
 
-double player_t::composite_player_vulnerability( school_e /* school */ ) const
+double player_t::composite_player_vulnerability( school_e school ) const
 {
   double m = debuffs.invulnerable && debuffs.invulnerable -> check() ? 0.0 : 1.0;
 
@@ -3673,6 +3670,9 @@ double player_t::composite_player_vulnerability( school_e /* school */ ) const
   // 1% damage taken per stack, arbitrary because this buff is completely fabricated!
   if ( debuffs.damage_taken && debuffs.damage_taken -> check() )
     m *= 1.0 + debuffs.damage_taken -> current_stack * 0.01;
+
+  if ( dbc::is_school( school, SCHOOL_PHYSICAL ) )
+    m *= 1.0 + target -> debuffs.expose_armor -> value();
 
   return m;
 }
