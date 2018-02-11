@@ -3388,7 +3388,7 @@ double player_t::composite_player_target_multiplier( player_t* target, school_e 
     m *= 1.0 + buffs.demon_damage_buff -> data().effectN( 2 ).percent();
   }
 
-  if ( target -> debuffs.expose_armor -> up() && dbc::is_school( school, SCHOOL_PHYSICAL ) )
+  if ( dbc::is_school( school, SCHOOL_PHYSICAL ) )
     m *= 1.0 + target -> debuffs.expose_armor -> value();
 
   return m;
