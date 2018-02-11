@@ -5483,6 +5483,11 @@ struct full_moon_t : public druid_spell_t
     }
   }
 
+  timespan_t travel_time() const override
+  {
+      return timespan_t::from_millis(900); //this has a set travel time since it spawns on the target
+  }
+
   bool ready() override
   {
     if ( ! p() -> artifact.new_moon.rank() )
