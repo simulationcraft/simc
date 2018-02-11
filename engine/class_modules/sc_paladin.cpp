@@ -210,7 +210,7 @@ public:
     cooldown_t* hand_of_the_protector;   // Righteous Protector (prot) / Saruin
     cooldown_t* judgment;         // Grand Crusader + Crusader's Judgment
     cooldown_t* guardian_of_ancient_kings; // legen chest
-	cooldown_t* eye_of_tyr; // legen shoulders
+    cooldown_t* eye_of_tyr; // legen shoulders
     cooldown_t* holy_shock; // Holy Shock for Crusader's Might && DP
     cooldown_t* light_of_dawn; // Light of Dawn for DP
 
@@ -260,7 +260,7 @@ public:
     proc_t* the_fires_of_justice;
     proc_t* tfoj_set_bonus;
     proc_t* blade_of_wrath;
-      proc_t* topless_tower;
+    proc_t* topless_tower;
   } procs;
     
     struct shuffled_rngs_t
@@ -279,7 +279,7 @@ public:
     const spell_data_t* divine_purpose_holy;
     const spell_data_t* liadrins_fury_unleashed;
     const spell_data_t* justice_gaze;
-	const spell_data_t* pillars_of_inmost_light;
+    const spell_data_t* pillars_of_inmost_light;
     const spell_data_t* chain_of_thrayn;
     const spell_data_t* ashes_to_dust;
     const spell_data_t* ferren_marcuss_strength;
@@ -413,8 +413,8 @@ public:
     artifact_power_t light_of_the_titans;
     artifact_power_t tyrs_enforcer;
     artifact_power_t unrelenting_light;
-	artifact_power_t holy_aegis;
-	artifact_power_t bulwark_of_the_silver_hand;
+    artifact_power_t holy_aegis;
+    artifact_power_t bulwark_of_the_silver_hand;
 
       
       // Holy
@@ -460,7 +460,7 @@ public:
     scarlet_inquisitors_expurgation = nullptr;
     justice_gaze = nullptr;
     ferren_marcuss_strength = nullptr;
-	pillars_of_inmost_light = nullptr;
+    pillars_of_inmost_light = nullptr;
     saruans_resolve = nullptr;
     gift_of_the_golden_valkyr = nullptr;
     heathcliffs_immortality = nullptr;
@@ -487,7 +487,7 @@ public:
     cooldowns.blade_of_justice        = get_cooldown( "blade_of_justice" );
     cooldowns.blade_of_wrath          = get_cooldown( "blade_of_wrath" );
     cooldowns.divine_hammer           = get_cooldown( "divine_hammer" );
-	cooldowns.eye_of_tyr			  = get_cooldown( "eye_of_tyr");
+    cooldowns.eye_of_tyr              = get_cooldown( "eye_of_tyr");
     cooldowns.holy_shock              = get_cooldown( "holy_shock");
     cooldowns.light_of_dawn           = get_cooldown( "light_of_dawn");
 
@@ -2871,7 +2871,7 @@ struct seraphim_t : public paladin_spell_t
 struct eye_of_tyr_t : public paladin_spell_t
 {
   eye_of_tyr_t( paladin_t* p, const std::string& options_str )
-	  : paladin_spell_t("eye_of_tyr", p, p->find_spell(209202))
+    : paladin_spell_t( "eye_of_tyr", p, p -> find_spell( 209202 ) )
   {
     parse_options( options_str );
 
@@ -2882,37 +2882,35 @@ struct eye_of_tyr_t : public paladin_spell_t
 
   void init() override
   {
-	  paladin_spell_t::init();
-
-	  if (p()->pillars_of_inmost_light){
-		  base_multiplier *= 1.0 + p()->spells.pillars_of_inmost_light->effectN(1).percent();
-	  }
-
+    paladin_spell_t::init();
+    if ( p() -> pillars_of_inmost_light ) {
+      base_multiplier *= 1.0 + p() -> spells.pillars_of_inmost_light -> effectN( 1 ).percent();
+    }
   }
 
   bool ready() override
   {
-	  if (!player->artifact->enabled())
-	  {
-		  return false;
-	  }
+    if (!player->artifact->enabled())
+    {
+      return false;
+    }
 
-	  if (p()->artifact.eye_of_tyr.rank() == 0)
-	  {
-		  return false;
-	  }
+    if (p()->artifact.eye_of_tyr.rank() == 0)
+    {
+      return false;
+    }
 
-	  return paladin_spell_t::ready();
+    return paladin_spell_t::ready();
   }
 
   virtual void execute() override
   {
-	  paladin_spell_t::execute();
+    paladin_spell_t::execute();
 
-	  if (p()->pillars_of_inmost_light)
-	  {
-		  p()->cooldowns.eye_of_tyr->ready += (p()->cooldowns.eye_of_tyr->duration * (p()->spells.pillars_of_inmost_light->effectN(2).percent()));
-	  }
+    if ( p() -> pillars_of_inmost_light )
+    {
+      p() -> cooldowns.eye_of_tyr -> ready += (p() -> cooldowns.eye_of_tyr -> duration * (p() -> spells.pillars_of_inmost_light -> effectN( 2 ).percent()));
+    }
   }
 
 
@@ -4977,22 +4975,19 @@ void paladin_t::generate_action_prio_list_prot()
   {
     // no need for off/def pot options - Draenic Armor gives more AP than Draenic STR,
     // and Mountains potion is pathetic at L90
-	if (true_level > 100) {
-		precombat->add_action("potion,name=unbending_potion,if=!talent.seraphim.enabled");
-		precombat->add_action("potion,name=old_war,if=(role.attack|talent.seraphim.enabled)&active_enemies<3");
-		precombat->add_action("potion,name=prolonged_power,if=(role.attack|talent.seraphim.enabled)&active_enemies>=3");
-	  }
+    if (true_level > 100) {
+      precombat->add_action("potion,name=unbending_potion,if=!talent.seraphim.enabled");
+      precombat->add_action("potion,name=old_war,if=(role.attack|talent.seraphim.enabled)&active_enemies<3");
+      precombat->add_action("potion,name=prolonged_power,if=(role.attack|talent.seraphim.enabled)&active_enemies>=3");
+    }
     else if ( true_level > 90 ){
-		potion_type = "draenic_strength";
-		precombat->add_action("potion,name=" + potion_type);
-	}
-	else if (true_level >= 80) {
-		potion_type = "mogu_power";
-		precombat->add_action("potion,name=" + potion_type);
-	}
-
- 
-      
+      potion_type = "draenic_strength";
+      precombat->add_action("potion,name=" + potion_type);
+    }
+    else if (true_level >= 80) {
+      potion_type = "mogu_power";
+      precombat->add_action("potion,name=" + potion_type);
+    }
   }
 
   ///////////////////////
@@ -5069,7 +5064,7 @@ void paladin_t::generate_action_prio_list_prot()
     if (level() > 100)
     {
       prot->add_action("potion,name=old_war,if=buff.avenging_wrath.up&talent.seraphim.enabled&active_enemies<3");
-	  prot->add_action("potion,name=prolonged_power,if=buff.avenging_wrath.up&talent.seraphim.enabled&active_enemies>=3");
+      prot->add_action("potion,name=prolonged_power,if=buff.avenging_wrath.up&talent.seraphim.enabled&active_enemies>=3");
       prot->add_action("potion,name=unbending_potion,if=!talent.seraphim.enabled");
     }
     if (true_level > 90)
@@ -5111,15 +5106,6 @@ void paladin_t::generate_action_prio_list_prot()
   prot->add_action(this, "Eye Of Tyr", "if=talent.seraphim.enabled&!equipped.151812");
   prot->add_talent(this, "Blessed Hammer", "if=talent.seraphim.enabled");
   prot->add_action(this, "Hammer of the Righteous", "if=talent.seraphim.enabled");
-
-
-
-  //dps-aoe
-  //prot_aoe->add_action(this, "Avenger's Shield");
-  //prot_aoe->add_talent(this, "Blessed Hammer");
-  //prot_aoe->add_action(this, "Judgment");
-  //prot_aoe->add_action(this, "Consecration");
-  //prot_aoe->add_action(this, "Hammer of the Righteous");
 }
 
 
@@ -5688,7 +5674,7 @@ void paladin_t::init_spells()
   artifact.light_of_the_titans     = find_artifact_spell( "Light of the Titans" );
   artifact.tyrs_enforcer           = find_artifact_spell( "Tyr's Enforcer" );
   artifact.unrelenting_light       = find_artifact_spell( "Unrelenting Light" );
-  artifact.holy_aegis			   = find_artifact_spell("Holy Aegis");
+  artifact.holy_aegis              = find_artifact_spell("Holy Aegis");
   artifact.bulwark_of_the_silver_hand = find_artifact_spell("Bulwark of the Silver Hand");
     
     artifact.light_of_the_silver_hand = find_artifact_spell( "Light of the Silver Hand");
@@ -5701,15 +5687,15 @@ void paladin_t::init_spells()
   spells.divine_purpose_holy           = find_spell( 197646 );
   spells.liadrins_fury_unleashed       = find_spell( 208408 );
   spells.justice_gaze                  = find_spell( 211557 );
-  spells.pillars_of_inmost_light	   = find_spell( 248102 );
+  spells.pillars_of_inmost_light       = find_spell( 248102 );
   spells.chain_of_thrayn               = find_spell( 206338 );
   spells.ashes_to_dust                 = find_spell( 236106 );
-  spells.ferren_marcuss_strength  = find_spell( 207614 );
-  spells.saruans_resolve = find_spell(234653);
-  spells.gift_of_the_golden_valkyr = find_spell(207628);
-  spells.heathcliffs_immortality = find_spell(207599);
+  spells.ferren_marcuss_strength       = find_spell( 207614 );
+  spells.saruans_resolve               = find_spell( 234653 );
+  spells.gift_of_the_golden_valkyr     = find_spell( 207628 );
+  spells.heathcliffs_immortality       = find_spell( 207599 );
   spells.consecration_bonus            = find_spell( 188370 );
-  spells.blessing_of_the_ashbringer = find_spell( 242981 );
+  spells.blessing_of_the_ashbringer    = find_spell( 242981 );
 
   // Masteries
   passives.divine_bulwark         = find_mastery_spell( PALADIN_PROTECTION );
@@ -5720,14 +5706,14 @@ void paladin_t::init_spells()
   switch ( specialization() )
   {
     case PALADIN_HOLY:
-    spec.judgment_2 = find_specialization_spell( 231644 );
+      spec.judgment_2 = find_specialization_spell( 231644 );
     case PALADIN_PROTECTION:
-    spec.judgment_2 = find_specialization_spell( 231657 );
+      spec.judgment_2 = find_specialization_spell( 231657 );
     case PALADIN_RETRIBUTION:
-    spec.judgment_2 = find_specialization_spell( 231661 );
-    spec.judgment_3 = find_specialization_spell( 231663 );
+      spec.judgment_2 = find_specialization_spell( 231661 );
+      spec.judgment_3 = find_specialization_spell( 231663 );
     default:
-    break;
+      break;
   }
 
   spec.retribution_paladin = find_specialization_spell( "Retribution Paladin" );
@@ -6847,8 +6833,8 @@ static void ferren_marcuss_strength(special_effect_t& effect)
 
 static void pillars_of_inmost_light(special_effect_t& effect)
 {
-	paladin_t* s = debug_cast<paladin_t*>(effect.player);
-	do_trinket_init(s, PALADIN_PROTECTION, s->pillars_of_inmost_light, effect);
+  paladin_t* s = debug_cast<paladin_t*>(effect.player);
+  do_trinket_init(s, PALADIN_PROTECTION, s->pillars_of_inmost_light, effect);
 }
 
 static void saruans_resolve(special_effect_t& effect)
@@ -6926,13 +6912,13 @@ struct paladin_module_t : public module_t
     unique_gear::register_special_effect( 207633, whisper_of_the_nathrezim );
     unique_gear::register_special_effect( 208408, liadrins_fury_unleashed );
     unique_gear::register_special_effect( 206338, chain_of_thrayn );
-    unique_gear::register_special_effect( 207614, ferren_marcuss_strength);
-    unique_gear::register_special_effect( 234653, saruans_resolve);
-    unique_gear::register_special_effect( 207628, gift_of_the_golden_valkyr);
-    unique_gear::register_special_effect( 207599, heathcliffs_immortality);
+    unique_gear::register_special_effect( 207614, ferren_marcuss_strength );
+    unique_gear::register_special_effect( 234653, saruans_resolve );
+    unique_gear::register_special_effect( 207628, gift_of_the_golden_valkyr );
+    unique_gear::register_special_effect( 207599, heathcliffs_immortality );
     unique_gear::register_special_effect( 236106, ashes_to_dust );
     unique_gear::register_special_effect( 211557, justice_gaze );
-	unique_gear::register_special_effect( 248102, pillars_of_inmost_light);
+    unique_gear::register_special_effect( 248102, pillars_of_inmost_light );
     unique_gear::register_special_effect( 208051, sephuzs_secret_enabler_t() );
     unique_gear::register_special_effect( 248103, scarlet_inquisitors_expurgation );
     unique_gear::register_special_effect( 248033, topless_tower_t() );
