@@ -1,3 +1,4 @@
+#include "simulationcraft.hpp"
 #include "sc_paladin.hpp"
 
 namespace paladin {
