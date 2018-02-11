@@ -2274,7 +2274,10 @@ struct backstab_t : public rogue_attack_t
 
   void execute() override
   {
+    school = p() -> buffs.shadow_blades -> up() ? SCHOOL_SHADOW : SCHOOL_PHYSICAL;
+
     rogue_attack_t::execute();
+
     if ( p() -> buffs.the_first_of_the_dead -> up() )
     {
       p() -> trigger_combo_point_gain( (int)p() -> buffs.the_first_of_the_dead -> data().effectN( 2 ).resource( RESOURCE_COMBO_POINT ),
@@ -2741,6 +2744,16 @@ struct gloomblade_t : public rogue_attack_t
   {
     requires_weapon = WEAPON_DAGGER;
     weapon = &( p -> main_hand_weapon );
+  }
+
+  double action_multiplier() const override
+  {
+    double m = rogue_attack_t::action_multiplier();
+
+    if ( p() -> buffs.shadow_blades -> up() )
+      m *= 1.0 + p() -> buffs.shadow_blades -> data().effectN( 5 ).percent();
+
+    return m;
   }
 
   void execute() override
@@ -3536,6 +3549,8 @@ struct shadowstrike_t : public rogue_attack_t
 
   void execute() override
   {
+    school = p() -> buffs.shadow_blades -> up() ? SCHOOL_SHADOW : SCHOOL_PHYSICAL;
+
     rogue_attack_t::execute();
 
     if ( result_is_hit( execute_state -> result ) && rng().roll( p() -> sets -> set( ROGUE_SUBTLETY, T19, B4 ) -> proc_chance() ) )
