@@ -2678,6 +2678,11 @@ void player_t::create_buffs()
   buffs.stunned        = buff_creator_t( this, "stunned" ).max_stack( 1 );
   debuffs.casting      = buff_creator_t( this, "casting" ).max_stack( 1 ).quiet( 1 );
 
+  // BfA Raid Damage Modifier Debuffs
+  debuffs.expose_armor = buff_creator_t( this, "expose_armor", find_spell( 113746 ) )
+                         .default_value( find_spell( 113746 ) -> effectN( 1 ).percent() )
+                         .cd( timespan_t::from_seconds( 5 ) ); // Seems to have a 5s ICD
+
   // .. for players
   if ( ! is_enemy() )
   {
@@ -3370,7 +3375,7 @@ double player_t::composite_player_td_multiplier( school_e /* school */,  const a
   return 1.0;
 }
 
-double player_t::composite_player_target_multiplier( player_t* target, school_e /* school */ ) const
+double player_t::composite_player_target_multiplier( player_t* target, school_e school ) const
 {
   double m = 1.0;
 
@@ -3382,6 +3387,9 @@ double player_t::composite_player_target_multiplier( player_t* target, school_e 
     // stat buffs.
     m *= 1.0 + buffs.demon_damage_buff -> data().effectN( 2 ).percent();
   }
+
+  if ( target -> debuffs.expose_armor -> up() && dbc::is_school( school, SCHOOL_PHYSICAL ) )
+    m *= 1.0 + target -> debuffs.expose_armor -> value();
 
   return m;
 }

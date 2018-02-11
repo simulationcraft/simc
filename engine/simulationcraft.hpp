@@ -4197,6 +4197,9 @@ struct player_t : public actor_t
 
     // WoD debuffs
     buff_t* mortal_wounds;
+
+    // BfA Raid Damage Modifier Debuffs
+    buff_t* expose_armor; // Rogue
   } debuffs;
 
   struct gains_t

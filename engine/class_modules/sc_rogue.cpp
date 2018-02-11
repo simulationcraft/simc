@@ -391,6 +391,7 @@ struct rogue_t : public player_t
     const spell_data_t* insignia_of_ravenholdt;
     const spell_data_t* master_assassins_initiative;
     const spell_data_t* master_assassins_initiative_2;
+    const spell_data_t* expose_armor;
   } spell;
 
   // Talents
@@ -651,6 +652,7 @@ struct rogue_t : public player_t
   void trigger_t21_4pc_assassination( const action_state_t* state );
   void trigger_t21_4pc_outlaw( const action_state_t* state );
   void trigger_t21_4pc_subtlety( const action_state_t* state );
+  void trigger_expose_armor( const action_state_t* state );
 
   // On-death trigger for Venomous Wounds energy replenish
   void trigger_venomous_wounds_death( player_t* );
@@ -1914,6 +1916,7 @@ void rogue_attack_t::impact( action_state_t* state )
   p() -> trigger_shadow_techniques( state );
   p() -> trigger_weaponmaster( state );
   p() -> trigger_insignia_of_ravenholdt( state );
+  p() -> trigger_expose_armor( state );
 
   if ( result_is_hit( state -> result ) )
   {
@@ -2063,6 +2066,7 @@ void rogue_attack_t::tick( dot_t* d )
   melee_attack_t::tick( d );
 
   p() -> trigger_weaponmaster( d -> state );
+  p() -> trigger_expose_armor( d -> state );
 }
 
 // Melee Attack =============================================================
@@ -5645,6 +5649,12 @@ void rogue_t::trigger_t21_4pc_subtlety( const action_state_t* state )
   }
 }
 
+void rogue_t::trigger_expose_armor( const action_state_t* state )
+{
+  if ( state -> action -> result_is_hit( state -> result ) && spell.expose_armor -> ok() && state -> result_amount > 0.0 )
+    state -> target -> debuffs.expose_armor -> trigger();
+}
+
 // ==========================================================================
 // Rogue Targetdata Definitions
 // ==========================================================================
@@ -6742,6 +6752,7 @@ void rogue_t::init_spells()
   spell.insignia_of_ravenholdt        = find_spell( 209041 );
   spell.master_assassins_initiative   = find_spell( 235022 );
   spell.master_assassins_initiative_2 = find_spell( 235027 );
+  spell.expose_armor                  = find_spell( 8647 );
 
   // Talents
   talent.deeper_stratagem   = find_talent_spell( "Deeper Stratagem" );
