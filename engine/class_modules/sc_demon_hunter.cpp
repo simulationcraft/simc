@@ -1319,8 +1319,6 @@ struct soul_cleave_heal_t : public demon_hunter_heal_t
     // This action is free; the parent pays the cost.
     base_costs.fill( 0 );
     secondary_costs.fill( 0 );
-    attack_power_mod.direct = 7.26; // From tooltip.
-    base_dd_min = base_dd_max = 0.0;
 
     if (p->talent.feast_of_souls->ok() && !feast_of_souls)
     {
@@ -3191,6 +3189,7 @@ struct fracture_t : public demon_hunter_attack_t
   void impact( action_state_t* s ) override
   {
     demon_hunter_attack_t::impact( s );
+    trigger_felblade( s );
 
     if ( result_is_hit( s -> result ) )
     {
@@ -3295,6 +3294,11 @@ struct sever_t : public demon_hunter_attack_t
 
   bool ready() override
   {
+    if ( p()->talent.fracture->ok() )
+    {
+      return false;
+    }
+
     if (!p()->buff.metamorphosis->check())
     {
       return false;
@@ -3327,49 +3331,34 @@ struct soul_cleave_t : public demon_hunter_attack_t
       damage(new soul_cleave_damage_t("soul_cleave_damage", p, data().effectN(2).trigger()))
   {
     may_miss = may_dodge = may_parry = may_block = may_crit = false;
-    attack_power_mod.direct = 0;  // This parent action deals no damage;
-    base_dd_min = base_dd_max = 0;
+    attack_power_mod.direct = 0;  // This parent action deals no damage, parsed data is for the heal
 
     damage->stats = stats;
     
     // Add damage modifiers in soul_cleave_damage_t, not here.
   }
 
-  double cost() const override
-  {
-    // Consume pain between min and max cost.
-    resource_e cr = current_resource();
-    return clamp( p() -> resources.current[ cr ], base_costs[ cr ], base_cost() );
-  }
-
-  // Don't record data for this action.
-  void record_data( action_state_t* s ) override
-  {
-    ( void )s;
-    assert( s -> result_amount == 0.0 );
-  }
-
   void execute() override
   {
     demon_hunter_attack_t::execute();
 
-    double pain_multiplier = last_resource_cost / base_costs[ current_resource() ];
+    heal->set_target( player );
+    heal->schedule_execute();
+    damage->set_target( target );
+    damage->schedule_execute();
 
-    // Heal
-    action_state_t* heal_state = heal->get_state();
-    heal->set_target(player);
-    heal->snapshot_state(heal_state, HEAL_DIRECT);
-    heal_state->da_multiplier *= pain_multiplier;
-    heal->schedule_execute(heal_state);
+    // Soul fragments consumed are capped for Soul Cleave
+    p()->consume_soul_fragments( SOUL_FRAGMENT_ALL, true, data().effectN( 3 ).base_value() );
+  }
 
-    // Damage
-    action_state_t* damage_state = damage->get_state();
-    damage->set_target(execute_state->target);
-    damage->snapshot_state(damage_state, DMG_DIRECT);
-    damage_state->da_multiplier *= pain_multiplier;
-    damage->schedule_execute(damage_state);
+  bool ready() override
+  {
+    if ( p()->talent.spirit_bomb->ok() )
+    {
+      return false;
+    }
 
-    const int fragments_consumed = p()->consume_soul_fragments();
+    return demon_hunter_attack_t::ready();
   }
 };
 
@@ -4371,14 +4360,15 @@ void demon_hunter_t::init_rng()
   // RPPM objects
 
   // General
-  if (specialization() == DEMON_HUNTER_HAVOC)
+  if ( specialization() == DEMON_HUNTER_HAVOC )
   {
-    rppm.felblade = get_rppm("felblade", find_spell(236167));
-    rppm.demonic_appetite = get_rppm("demonic_appetite ", talent.demonic_appetite);
+    rppm.felblade = get_rppm( "felblade", find_spell( 236167 ) );
+    rppm.demonic_appetite = get_rppm( "demonic_appetite ", talent.demonic_appetite );
   }
   else // DEMON_HUNTER_VENGEANCE
   {
-    rppm.felblade = get_rppm("felblade", find_spell(203557));
+    rppm.felblade = get_rppm( "felblade", find_spell( 203557 ) );
+    rppm.gluttony = get_rppm( "gluttony", talent.gluttony );
   }
 
   player_t::init_rng();
