@@ -61,6 +61,8 @@ public:
   } debuffs;
 
   demon_hunter_td_t( player_t* target, demon_hunter_t& p );
+
+  void target_demise();
 };
 
 const unsigned MAX_SOUL_FRAGMENTS = 5;
@@ -235,7 +237,7 @@ public:
     // General
     const spell_data_t* demon_hunter;
     const spell_data_t* consume_magic;
-    const spell_data_t* consume_soul;
+    const spell_data_t* consume_soul_greater;
     const spell_data_t* consume_soul_lesser;
     const spell_data_t* critical_strikes;
     const spell_data_t* leather_specialization;
@@ -338,7 +340,7 @@ public:
     // General
     proc_t* delayed_aa_range;
     proc_t* delayed_aa_channel;
-    proc_t* soul_fragment;
+    proc_t* soul_fragment_greater;
     proc_t* soul_fragment_lesser;
 
     // Havoc
@@ -636,8 +638,8 @@ struct soul_fragment_t
 
     timespan_t travel_time() const
     {
-      double distance = frag -> get_distance( frag -> dh );
-      double velocity = frag -> dh -> spec.consume_soul -> missile_speed();
+      double distance = frag->get_distance( frag->dh );
+      double velocity = frag->dh->spec.consume_soul_greater->missile_speed();
       return timespan_t::from_seconds( distance / velocity );
     }
 
@@ -750,18 +752,18 @@ struct soul_fragment_t
 
     if ( heal )
     {
-      action_t* a = type == SOUL_FRAGMENT_GREATER ? 
+      action_t* consume_action = type == SOUL_FRAGMENT_GREATER ? 
         dh -> active.consume_soul_greater : dh -> active.consume_soul_lesser;
 
       if ( instant )
       {
-        a->execute();
+        consume_action->execute();
       }
       else
       {
-        double velocity = dh->spec.consume_soul->missile_speed();
+        double velocity = dh->spec.consume_soul_greater->missile_speed();
         timespan_t delay = timespan_t::from_seconds( get_distance( dh ) / velocity );
-        make_event<delayed_execute_event_t>( *dh->sim, dh, a, dh, delay );
+        make_event<delayed_execute_event_t>( *dh->sim, dh, consume_action, dh, delay );
       }
     }
 
@@ -1227,18 +1229,55 @@ struct consume_soul_t : public demon_hunter_heal_t
     }
   };
 
-  soul_fragment_e type;
+  const soul_fragment_e type;
+  const spell_data_t* vengeance_heal;
+  timespan_t vengeance_heal_interval;
 
   consume_soul_t( demon_hunter_t* p, const std::string& n, const spell_data_t* s, soul_fragment_e t )
     : demon_hunter_heal_t( n, p, s ), 
-    type( t )
+    type( t ),
+    vengeance_heal( p->find_specialization_spell( 203783 ) ),
+    vengeance_heal_interval( timespan_t::from_seconds( vengeance_heal->effectN( 4 ).base_value() ) )
   {
+    may_miss = may_crit = false;
     background = true;
 
     if (p->talent.demonic_appetite->ok())
     {
       execute_action = new demonic_appetite_t(p);
     }
+  }
+
+  double calculate_heal( const action_state_t* s ) const
+  {
+    if ( p()->specialization() == DEMON_HUNTER_HAVOC )
+    {
+      // Havoc always heals for the same percentage of HP, regardless of the soul type consumed
+      return player->resources.max[ RESOURCE_HEALTH ] * data().effectN( 1 ).percent();
+    }
+    else
+    {
+      if ( type == SOUL_FRAGMENT_LESSER )
+      {
+        // Vengeance-Specific Healing Logic
+        // This is not in the heal data and they use SpellId 203783 to control the healing parameters
+        return std::max( player->resources.max[ RESOURCE_HEALTH ] * vengeance_heal->effectN( 3 ).percent(),
+                         player->compute_incoming_damage( vengeance_heal_interval ) * vengeance_heal->effectN( 2 ).percent() );
+      }
+      // SOUL_FRAGMENT_GREATER for Vengeance uses AP mod calculations
+    }
+
+    return 0.0;
+  }
+
+  double base_da_min( const action_state_t* s ) const override
+  {
+    return calculate_heal( s );
+  }
+
+  double base_da_max( const action_state_t* s ) const override
+  {
+    return calculate_heal( s );
   }
 };
 
@@ -2174,12 +2213,12 @@ struct pick_up_fragment_t : public demon_hunter_spell_t
     void execute() override
     {
       // Evaluate if_expr to make sure the actor still wants to consume.
-    if (frag && frag->active() && (!expr || expr->eval()) && dh->active.consume_soul_greater)
+      if ( frag && frag->active() && ( !expr || expr->eval() ) && dh->active.consume_soul_greater )
       {
-        frag -> consume( true, true );
+        frag->consume( true, true );
       }
 
-      dh -> soul_fragment_pick_up = nullptr;
+      dh->soul_fragment_pick_up = nullptr;
     }
   };
 
@@ -3727,6 +3766,19 @@ demon_hunter_td_t::demon_hunter_td_t( player_t* target, demon_hunter_t& p )
     debuffs.frailty = make_buff(target, "frailty", p.find_spell(247456))
       ->set_default_value(p.find_spell(247456)->effectN(1).percent());
   }
+
+  // TODO: Make an option to register this for testing M+/dungeon scenarios
+  // target->callbacks_on_demise.push_back( std::bind( &demon_hunter_td_t::target_demise, this ) );
+}
+
+void demon_hunter_td_t::target_demise()
+{
+  // Don't pollute results at the end-of-iteration deaths of everyone
+  if ( source->sim->event_mgr.canceled )
+    return;
+
+  demon_hunter_t* p = static_cast<demon_hunter_t*>( source );
+  p->spawn_soul_fragment( SOUL_FRAGMENT_GREATER );
 }
 
 // ==========================================================================
@@ -4313,16 +4365,16 @@ void demon_hunter_t::init_procs()
   base_t::init_procs();
 
   // General
-  proc.delayed_aa_range     = get_proc( "delayed_swing__out_of_range" );
-  proc.delayed_aa_channel   = get_proc( "delayed_swing__channeling" );
-  proc.soul_fragment        = get_proc( "soul_fragment" );
-  proc.soul_fragment_lesser = get_proc( "soul_fragment_lesser" );
-  proc.felblade_reset       = get_proc( "felblade_reset" );
+  proc.delayed_aa_range       = get_proc( "delayed_swing__out_of_range" );
+  proc.delayed_aa_channel     = get_proc( "delayed_swing__channeling" );
+  proc.soul_fragment_greater  = get_proc( "soul_fragment_greater" );
+  proc.soul_fragment_lesser   = get_proc( "soul_fragment_lesser" );
+  proc.felblade_reset         = get_proc( "felblade_reset" );
 
   // Havoc
-  proc.demon_blades_wasted  = get_proc( "demon_blades_wasted" );
-  proc.demonic_appetite     = get_proc( "demonic_appetite" );
-  proc.demons_bite_in_meta  = get_proc( "demons_bite_in_meta" );
+  proc.demon_blades_wasted    = get_proc( "demon_blades_wasted" );
+  proc.demonic_appetite       = get_proc( "demonic_appetite" );
+  proc.demons_bite_in_meta    = get_proc( "demons_bite_in_meta" );
 
   // Vengeance
   proc.gluttony               = get_proc( "gluttony" );
@@ -4387,8 +4439,10 @@ void demon_hunter_t::init_spells()
   // General
   spec.demon_hunter           = find_class_spell( "Demon Hunter" );
   spec.consume_magic          = find_class_spell( "Consume Magic" );
-  spec.consume_soul           = find_spell( 210042 );
-  spec.consume_soul_lesser    = find_spell( 203794 );
+  spec.consume_soul_greater   = specialization() == DEMON_HUNTER_HAVOC ? 
+                                  find_spell( 178963 ) : find_spell( 210042 );
+  spec.consume_soul_lesser    = specialization() == DEMON_HUNTER_HAVOC ? 
+                                  find_spell( 178963 ) : find_spell( 203794 );
   spec.critical_strikes       = find_spell( 221351 );  // not a class spell
   spec.leather_specialization = specialization() == DEMON_HUNTER_HAVOC ? 
                                   find_spell( 178976 ) : find_spell( 226359 );
@@ -4498,7 +4552,7 @@ void demon_hunter_t::init_spells()
   using namespace actions::heals;
 
   active.consume_soul_greater 
-    = new consume_soul_t(this, "consume_soul", spec.consume_soul, SOUL_FRAGMENT_GREATER);
+    = new consume_soul_t(this, "consume_soul_greater", spec.consume_soul_greater, SOUL_FRAGMENT_GREATER);
   active.consume_soul_lesser 
     = new consume_soul_t(this, "consume_soul_lesser", spec.consume_soul_lesser, SOUL_FRAGMENT_LESSER);
 
@@ -5476,7 +5530,7 @@ void demon_hunter_t::activate_soul_fragment(soul_fragment_t* frag)
 
 void demon_hunter_t::spawn_soul_fragment( soul_fragment_e type, unsigned n )
 {
-  proc_t* soul_proc = type == SOUL_FRAGMENT_GREATER ? proc.soul_fragment : proc.soul_fragment_lesser;
+  proc_t* soul_proc = type == SOUL_FRAGMENT_GREATER ? proc.soul_fragment_greater : proc.soul_fragment_lesser;
   for (unsigned i = 0; i < n; i++)
   {
     soul_fragments.push_back(new soul_fragment_t(this, type));
