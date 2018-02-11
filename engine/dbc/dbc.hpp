@@ -686,6 +686,9 @@ public:
     }
   }
 
+  school_e school_type() const
+  { return dbc::get_school_type( as<uint32_t>( misc_value1() ) ); }
+
   double mastery_value() const
   { return _sp_coeff * ( 1 / 100.0 ); }
 

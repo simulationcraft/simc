@@ -244,6 +244,7 @@ public:
     const spell_data_t* metamorphosis;
     const spell_data_t* metamorphosis_buff;
     const spell_data_t* soul_fragment;
+    const spell_data_t* chaos_brand;
 
     // Havoc
     const spell_data_t* havoc;
@@ -1060,10 +1061,13 @@ public:
     if ( ab::result_is_hit( s->result ) )
     {
       accumulate_spirit_bomb( s );
+      trigger_chaos_brand( s );
 
-      // Benefit tracking
       if ( s->result_amount > 0 )
       {
+        
+
+        // Benefit tracking
         track_benefits( s );
       }
     }
@@ -1147,6 +1151,24 @@ public:
     {
       p()->proc.felblade_reset->occur();
       p()->cooldown.felblade->reset( true );
+    }
+  }
+
+  void trigger_chaos_brand( action_state_t* s )
+  {
+    if ( ab::result_is_miss( s->result ) )
+    {
+      return;
+    }
+
+    if ( s->result_amount == 0.0 )
+    {
+      return;
+    }
+
+    if ( s->target->debuffs.chaos_brand && p()->spec.chaos_brand->ok() )
+    {
+      s->target->debuffs.chaos_brand->trigger();
     }
   }
 
@@ -3090,7 +3112,7 @@ struct felblade_t : public demon_hunter_attack_t
 
     if ( hit_any_target )
     {
-      damage->set_target(execute_state->target);
+      damage->set_target( execute_state->target );
       damage->execute();
     }
 
@@ -4449,9 +4471,10 @@ void demon_hunter_t::init_spells()
   spec.metamorphosis          = find_class_spell("Metamorphosis");
   spec.metamorphosis_buff     = specialization() == DEMON_HUNTER_HAVOC ?
                                   find_spell( 162264 ) : find_spell( 187827 );
-  spec.soul_fragment          = find_spell(204255);
+  spec.soul_fragment          = find_spell( 204255 );
   spec.immolation_aura        = specialization() == DEMON_HUNTER_HAVOC ? 
                                   find_talent_spell( "Immolation Aura" ) : find_specialization_spell( "Immolation Aura" );
+  spec.chaos_brand            = find_spell( 255260 );
 
   // Havoc
   spec.havoc                = find_specialization_spell( "Havoc Demon Hunter" );

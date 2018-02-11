@@ -4200,6 +4200,7 @@ struct player_t : public actor_t
 
     // BfA Raid Damage Modifier Debuffs
     buff_t* expose_armor; // Rogue
+    buff_t* chaos_brand;  // Demon Hunter
   } debuffs;
 
   struct gains_t
