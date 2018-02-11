@@ -3413,6 +3413,16 @@ struct vengeful_retreat_t : public demon_hunter_attack_t
       background = dual = true;
       aoe = -1;
     }
+
+    void execute() override
+    {
+      demon_hunter_attack_t::execute();
+
+      if ( hit_any_target )
+      {
+        p()->buff.prepared->trigger();
+      }
+    }
   };
 
   vengeful_retreat_damage_t* damage;
@@ -3423,7 +3433,7 @@ struct vengeful_retreat_t : public demon_hunter_attack_t
     may_miss = may_dodge = may_parry = may_crit = may_block = false;
     // use_off_gcd = true;
 
-    damage = new vengeful_retreat_damage_t(p);
+    damage = new vengeful_retreat_damage_t( p );
     damage->stats = stats;
 
     base_teleport_distance = VENGEFUL_RETREAT_DISTANCE;
@@ -3435,26 +3445,16 @@ struct vengeful_retreat_t : public demon_hunter_attack_t
     // Add damage modifiers in vengeful_retreat_damage_t, not here.
   }
 
-  // Don't record data for this action.
-  void record_data( action_state_t* s ) override
-  {
-    ( void )s;
-    assert( s -> result_amount == 0.0 );
-  }
-
   void execute() override
   {
     demon_hunter_attack_t::execute();
 
+    damage->set_target( target );
+    damage->execute();
+
     // Fel Rush and VR shared a 1 second GCD when one or the other is triggered
     p()->cooldown.movement_shared->start(timespan_t::from_seconds(1.0));
-
     p()->buff.vengeful_retreat_move->trigger();
-
-    if (hit_any_target)
-    {
-      p()->buff.prepared->trigger();
-    }
   }
 
   bool ready() override
