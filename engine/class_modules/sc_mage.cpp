@@ -32,6 +32,9 @@ namespace { // UNNAMED NAMESPACE
 //
 // - Clearcasting + extra mana from mastery (shouldn't reduce proc chance,
 //   hopefully)
+//
+// - Glacial Spike seems to be double dipping on the updated damage mod effects
+//   (Rune of Power, etc).
 
 // Forward declarations
 struct mage_t;
