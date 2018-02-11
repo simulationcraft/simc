@@ -210,19 +210,12 @@ public:
     // Brewmaster
     buff_t* bladed_armor;
     buff_t* blackout_combo;
-    buff_t* brew_stache;
-    buff_t* dragonfire_brew;
     buff_t* elusive_brawler;
     buff_t* elusive_dance;
-    buff_t* exploding_keg;
-    buff_t* fortification;
     buff_t* fortifying_brew;
     buff_t* gift_of_the_ox;
-    buff_t* gifted_student;
-    buff_t* greater_gift_of_the_ox;
     buff_t* ironskin_brew;
     buff_t* keg_smash_talent;
-    buff_t* swift_as_a_coursing_river;
     buff_t* zen_meditation;
 
     // Mistweaver
@@ -447,30 +440,6 @@ public:
   // Artifact
   struct artifact_spell_data_t
   {
-    // Brewmaster Artifact
-    artifact_power_t hot_blooded;
-    artifact_power_t brew_stache;
-    artifact_power_t dark_side_of_the_moon;
-    artifact_power_t dragonfire_brew;
-    artifact_power_t draught_of_darkness;
-    artifact_power_t endurance_of_the_broken_temple;
-    artifact_power_t face_palm;
-    artifact_power_t exploding_keg;
-    artifact_power_t fortification;
-    artifact_power_t gifted_student;
-    artifact_power_t healthy_appetite;
-    artifact_power_t full_keg;
-    artifact_power_t obsidian_fists;
-    artifact_power_t obstinate_determination;
-    artifact_power_t overflow;
-    artifact_power_t potent_kick;
-    artifact_power_t quick_sip;
-    artifact_power_t smashed;
-    artifact_power_t staggering_around;
-    artifact_power_t stave_off;
-    artifact_power_t swift_as_a_coursing_river;
-    artifact_power_t wanderers_hardiness;
-
     // Mistweaver Artifact
     artifact_power_t blessings_of_yulon;
     artifact_power_t celestial_breath;
@@ -565,13 +534,10 @@ public:
     // Brewmaster
     const spell_data_t* breath_of_fire_dot;
     const spell_data_t* celestial_fortune;
-    const spell_data_t* dragonfire_brew_damage;
     const spell_data_t* elusive_brawler;
     const spell_data_t* elusive_dance;
-    const spell_data_t* face_palm;
     const spell_data_t* gift_of_the_ox_heal;
     const spell_data_t* gift_of_the_ox_summon;
-    const spell_data_t* greater_gift_of_the_ox_heal;
     const spell_data_t* ironskin_brew;
     const spell_data_t* keg_smash_buff;
     const spell_data_t* special_delivery;
@@ -2963,12 +2929,6 @@ struct tiger_palm_t: public monk_melee_attack_t
 
       am *= 1 + p() -> spec.brewmaster_monk -> effectN( 6 ).percent();
 
-      if ( p() -> artifact.face_palm.rank() )
-      {
-        if ( rng().roll( p() -> artifact.face_palm.percent() ) )
-          am *= p() -> passives.face_palm -> effectN( 1 ).percent();
-      }
-
       if ( p() -> buff.blackout_combo -> up() )
         am *= 1 + p() -> buff.blackout_combo -> data().effectN( 1 ).percent();
     }
@@ -3044,12 +3004,6 @@ struct tiger_palm_t: public monk_melee_attack_t
 
     // Reduces the remaining cooldown on your Brews by 1 sec
       double time_reduction = p() -> spec.tiger_palm -> effectN( 3 ).base_value();
-
-      if ( p() -> artifact.face_palm.rank() )
-      {
-        if ( rng().roll( p() -> artifact.face_palm.percent() ) )
-          time_reduction += p() -> passives.face_palm -> effectN( 2 ).base_value();
-      }
 
       // 4 pieces (Brewmaster) : Tiger Palm reduces the remaining cooldown on your brews by an additional 1 sec.
       if ( p() -> sets -> has_set_bonus( MONK_BREWMASTER, T19, B4 ) )
@@ -3566,26 +3520,11 @@ struct blackout_strike_t: public monk_melee_attack_t
     oh = &( player -> off_hand_weapon );
     spell_power_mod.direct = 0.0;
     cooldown -> duration = data().cooldown();
-
-    switch ( p -> specialization() )
-    {
-      case MONK_BREWMASTER:
-      {
-        if ( p -> artifact.obsidian_fists.rank() )
-          base_crit += p -> artifact.obsidian_fists.percent();
-
-        break;
-      }
-      default: break;
-    }
   }
 
   virtual double action_multiplier() const override
   {
     double am = monk_melee_attack_t::action_multiplier();
-
-    if ( p() -> artifact.draught_of_darkness.rank() )
-      am *= 1 + p() -> artifact.draught_of_darkness.percent();
 
     am *= 1 + p() -> spec.brewmaster_monk -> effectN( 1 ).percent();
 
@@ -4473,94 +4412,10 @@ struct auto_attack_t: public monk_melee_attack_t
 // ==========================================================================
 // Keg Smash
 // ==========================================================================
-struct  keg_smash_stave_off_t: public monk_melee_attack_t
-{
-  int stave_off_proc;
-  keg_smash_stave_off_t( monk_t& p ):
-    monk_melee_attack_t( "keg_smash_stave_off", &p, p.spec.keg_smash ),
-    stave_off_proc( 0 )
-  {
-    aoe = -1;
-    background = dual = true;
-    
-    attack_power_mod.direct = p.spec.keg_smash -> effectN( 2  ).ap_coeff();
-    radius = p.spec.keg_smash -> effectN( 2 ).radius();
-
-    if ( p.artifact.smashed.rank() )
-      range += p.artifact.smashed.value();
-
-    mh = &( player -> main_hand_weapon );
-    oh = &( player -> off_hand_weapon );
-    cooldown -> duration = timespan_t::zero();
-  }
-
-  // Force 250 milliseconds for the animation, but not delay the overall GCD
-  timespan_t execute_time() const override
-  {
-    return timespan_t::from_millis( 250 );
-  }
-
-  virtual bool ready() override
-  {
-    if ( p() -> artifact.stave_off.rank() )
-      return monk_melee_attack_t::ready();
-
-    return false;
-  }
-
-  virtual double action_multiplier() const override
-  {
-    double am = monk_melee_attack_t::action_multiplier();
-
-    am *= 1 + p() -> spec.brewmaster_monk -> effectN( 1 ).percent();
-
-    if ( p() -> artifact.full_keg.rank() )
-      am *= 1 + p() -> artifact.full_keg.percent();
-    
-    if ( p() -> legendary.stormstouts_last_gasp && p() -> level() < 120 )
-      am *= 1 + p() -> legendary.stormstouts_last_gasp -> effectN( 2 ).percent();
-
-    return am;
-  }
-
-  virtual double cost() const override
-  {
-    return 0;
-  }
-
-  virtual void impact( action_state_t* s ) override
-  {
-    monk_melee_attack_t::impact( s );
-
-    td( s -> target ) -> debuff.keg_smash -> trigger();
-  }
-
-  virtual void execute() override
-  {
-    stave_off_proc++;
-
-    // Reduces the remaining cooldown on your Brews by 4 sec.
-    brew_cooldown_reduction( p() -> spec.keg_smash -> effectN( 4 ).base_value() );
-
-    // Stave Off can proc off of itself
-    // 4% chance for double proc
-    // Caps at 2 procs
-    if ( stave_off_proc < 2 && rng().roll(p() -> artifact.stave_off.percent() ) )
-      execute();
-
-    monk_melee_attack_t::execute();
-
-    stave_off_proc = 0;
-  }
-};
-
-
 struct keg_smash_t: public monk_melee_attack_t
 {
-  keg_smash_stave_off_t* stave_off;
   keg_smash_t( monk_t& p, const std::string& options_str ):
-    monk_melee_attack_t( "keg_smash", &p, p.spec.keg_smash ),
-    stave_off( new keg_smash_stave_off_t( p ) )
+    monk_melee_attack_t( "keg_smash", &p, p.spec.keg_smash )
   {
     parse_options( options_str );
 
@@ -4568,9 +4423,6 @@ struct keg_smash_t: public monk_melee_attack_t
     
     attack_power_mod.direct = p.spec.keg_smash -> effectN( 2 ).ap_coeff();
     radius = p.spec.keg_smash -> effectN( 2 ).radius();
-
-    if ( p.artifact.smashed.rank() )
-      range += p.artifact.smashed.value();
 
     mh = &( player -> main_hand_weapon );
     oh = &( player -> off_hand_weapon );
@@ -4581,9 +4433,6 @@ struct keg_smash_t: public monk_melee_attack_t
     // Keg Smash does not appear to be picking up the baseline Trigger GCD reduction
     // Forcing the trigger GCD to 1 second.
     trigger_gcd = timespan_t::from_seconds( 1 );
-
-    if ( p.artifact.stave_off.rank() )
-      add_child( stave_off );
   }
 
   virtual bool ready() override
@@ -4600,9 +4449,6 @@ struct keg_smash_t: public monk_melee_attack_t
     double am = monk_melee_attack_t::action_multiplier();
 
     am *= 1 + p() -> spec.brewmaster_monk -> effectN( 1 ).percent();
-
-    if ( p() -> artifact.full_keg.rank() )
-      am *= 1 + p() -> artifact.full_keg.percent();
 
     if ( p() -> legendary.stormstouts_last_gasp && p() -> level() < 120 )
       am *= 1 + p() -> legendary.stormstouts_last_gasp -> effectN( 2 ).percent();
@@ -4639,39 +4485,6 @@ struct keg_smash_t: public monk_melee_attack_t
     }
 
     brew_cooldown_reduction( time_reduction );
-
-    if ( p() -> artifact.stave_off.rank() )
-    {
-      if ( rng().roll( p() -> artifact.stave_off.percent() ) )
-        stave_off -> execute();
-    }
-  }
-};
-
-// ==========================================================================
-// Exploding Keg
-// ==========================================================================
-
-struct exploding_keg_t: public monk_melee_attack_t
-{
-
-  exploding_keg_t( monk_t& p, const std::string& options_str ):
-    monk_melee_attack_t( "exploding_keg", &p, p.artifact.exploding_keg )
-  {
-    parse_options( options_str );
-
-    aoe = -1;
-    trigger_gcd = timespan_t::from_seconds( 1 );
-
-    mh = &( player -> main_hand_weapon );
-    oh = &( player -> off_hand_weapon );
-  }
-
-  virtual void impact( action_state_t* s ) override
-  {
-    monk_melee_attack_t::impact( s );
-
-    p() -> buff.exploding_keg -> trigger();
   }
 };
 
@@ -5550,44 +5363,6 @@ struct chi_orbit_t: public monk_spell_t
 // Breath of Fire
 // ==========================================================================
 
-struct dragonfire_brew : public monk_spell_t
-{
-  struct dragonfire_brew_tick : public monk_spell_t
-  {
-    dragonfire_brew_tick( monk_t& p ) :
-      monk_spell_t( "dragonfire_brew_tick", &p, p.passives.dragonfire_brew_damage )
-    {
-      background = true;
-      tick_may_crit = may_crit = true;
-      hasted_ticks = false;
-      aoe = -1;
-    }
-  };
-
-  dragonfire_brew( monk_t& p ) :
-    monk_spell_t( "dragonfire_brew", &p, p.artifact.dragonfire_brew )
-  {
-    background = true;
-    tick_may_crit = may_crit = true;
-    hasted_ticks = false;
-    // Placeholder stuff to get things working
-    dot_duration = timespan_t::from_seconds( 3 ); // Hard code the duration to 3 seconds
-    base_tick_time = dot_duration / 2; // Hard code the base tick time of 1.5 seconds.
-    tick_zero = hasted_ticks = false;
-
-    tick_action = new dragonfire_brew_tick( p );
-  }
-
-  double action_multiplier() const override
-  {
-    double am = monk_spell_t::action_multiplier();
-
-    am *= 1 + p() -> spec.brewmaster_monk -> effectN( 1 ).percent();
-
-    return am;
-  }
-};
-
 struct breath_of_fire_t: public monk_spell_t
 {
   struct periodic_t: public monk_spell_t
@@ -5599,8 +5374,6 @@ struct breath_of_fire_t: public monk_spell_t
       tick_may_crit = may_crit = true;
       hasted_ticks = false;
 
-      if ( p.artifact.dragonfire_brew.rank() )
-        dot_duration *= 1 + p.artifact.dragonfire_brew.data().effectN( 2 ).percent();
     }
 
     double action_multiplier() const override
@@ -5609,26 +5382,20 @@ struct breath_of_fire_t: public monk_spell_t
 
       am *= 1 + p() -> spec.brewmaster_monk -> effectN( 2 ).percent();
 
-      if ( p() -> artifact.hot_blooded.rank() )
-        am *= 1 + p() -> artifact.hot_blooded.data().effectN( 1 ).percent();
-
       return am;
     }
   };
 
-  dragonfire_brew* dragonfire;
   periodic_t* dot_action;
 
   breath_of_fire_t( monk_t& p, const std::string& options_str ):
     monk_spell_t( "breath_of_fire", &p, p.spec.breath_of_fire ),
-    dragonfire( new dragonfire_brew( p ) ),
     dot_action( new periodic_t( p ) )
   {
     parse_options( options_str );
     
     trigger_gcd = timespan_t::from_seconds( 1 );
 
-    add_child( dragonfire );
     add_child( dot_action );
   }
 
@@ -5653,14 +5420,6 @@ struct breath_of_fire_t: public monk_spell_t
     }
 
     monk_spell_t::update_ready( cd );
-  }
-
- virtual void execute() override
-  {
-    monk_spell_t::execute();
-
-    if ( p() -> artifact.dragonfire_brew.rank() )
-      dragonfire -> execute();
   }
 
  virtual void impact( action_state_t* s ) override
@@ -5706,15 +5465,6 @@ struct fortifying_brew_t: public monk_spell_t
     monk_spell_t::execute();
 
     p() -> buff.fortifying_brew -> trigger();
-
-    if ( p() -> artifact.swift_as_a_coursing_river.rank() )
-      p() -> buff.swift_as_a_coursing_river -> trigger();
-
-    if ( p() -> artifact.brew_stache.rank() )
-      p() -> buff.brew_stache -> trigger();
-
-    if ( p() -> artifact.fortification.rank() )
-      p() -> buff.fortification -> trigger();
   }
 };
 
@@ -5904,27 +5654,8 @@ struct ironskin_brew_t : public monk_spell_t
       p() -> buff.blackout_combo -> expire();
     }
 
-    if ( p() -> artifact.swift_as_a_coursing_river.rank() )
-      p() -> buff.swift_as_a_coursing_river -> trigger();
-
-    if ( p() -> artifact.brew_stache.rank() )
-      p() -> buff.brew_stache -> trigger();
-
-    if ( p() -> artifact.quick_sip.rank() )
-      p() -> partial_clear_stagger( p() -> artifact.quick_sip.data().effectN( 2 ).percent() );
-
     if ( p() -> sets -> has_set_bonus( MONK_BREWMASTER, T20, B2 ) )
-    {
-      if ( p() -> artifact.overflow.rank() )
-      { 
-        if ( rng().roll( p() -> artifact.overflow.percent() ) )
-          p() -> buff.greater_gift_of_the_ox -> trigger();
-        else
-          p() -> buff.gift_of_the_ox -> trigger();
-      }
-      else
-        p() -> buff.gift_of_the_ox -> trigger();
-    }
+      p() -> buff.gift_of_the_ox -> trigger();
   }
 };
 
@@ -5975,8 +5706,6 @@ struct purifying_brew_t: public monk_spell_t
 //    if ( p() -> talent.elusive_dance -> ok() )
 //      purifying_brew_percent += p() -> talent.elusive_dance -> effectN( 2 ).percent();
 //
-//    if ( p() -> artifact.staggering_around.rank() )
-//      purifying_brew_percent += p() -> artifact.staggering_around.percent();
 
     //double stagger_dmg = p() -> partial_clear_stagger( purifying_brew_percent );
 
@@ -6029,33 +5758,14 @@ struct purifying_brew_t: public monk_spell_t
         delivery -> execute();
     }
 
-    if ( p() -> artifact.swift_as_a_coursing_river.rank() )
-      p() -> buff.swift_as_a_coursing_river -> trigger();
-
-    if ( p() -> artifact.brew_stache.rank() )
-      p() -> buff.brew_stache -> trigger();
-
     if ( p() -> buff.blackout_combo -> up() )
     {
       p() -> buff.elusive_brawler -> trigger(1);
       p() -> buff.blackout_combo -> expire();
     }
 
-    if ( p() -> artifact.quick_sip.rank() )
-      p() -> buff.ironskin_brew -> trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, timespan_t::from_seconds( p() -> artifact.quick_sip.data().effectN( 3 ).base_value() ) );
-
     if ( p() -> sets -> has_set_bonus( MONK_BREWMASTER, T20, B2 ) )
-    {
-      if ( p() -> artifact.overflow.rank() )
-      { 
-        if ( rng().roll( p() -> artifact.overflow.percent() ) )
-          p() -> buff.greater_gift_of_the_ox -> trigger();
-        else
-          p() -> buff.gift_of_the_ox -> trigger();
-      }
-      else
-        p() -> buff.gift_of_the_ox -> trigger();
-    }
+      p() -> buff.gift_of_the_ox -> trigger();
   }
 };
 
@@ -6832,59 +6542,8 @@ struct gift_of_the_ox_t: public monk_heal_t
 
     p() -> buff.gift_of_the_ox -> decrement();
 
-    if ( p() -> artifact.gifted_student.rank() )
-      p() -> buff.gifted_student -> trigger();
-
     if ( p() -> sets -> has_set_bonus( MONK_BREWMASTER, T20, B4 ) )
       p() -> partial_clear_stagger( p() -> sets -> set( MONK_BREWMASTER, T20, B4 ) -> effectN( 1 ).percent() );
-  }
-};
-
-// ==========================================================================
-// Greater Gift of the Ox
-// ==========================================================================
-
-struct greater_gift_of_the_ox_t: public monk_heal_t
-{
-  greater_gift_of_the_ox_t( monk_t& p, const std::string& options_str ):
-    monk_heal_t( "greater_gift_of_the_ox", p, p.passives.greater_gift_of_the_ox_heal )
-  {
-    parse_options( options_str );
-    harmful = false;
-    background = true;
-    target = &p;
-    trigger_gcd = timespan_t::zero();
-  }
-
-  virtual bool ready() override
-  {
-    if ( p() -> specialization() != MONK_BREWMASTER )
-      return false;
-
-    return p() -> buff.greater_gift_of_the_ox -> up();
-  }
-
-  double action_multiplier() const override
-  {
-    double am = monk_heal_t::action_multiplier();
-
-    if ( p() -> artifact.gifted_student.rank() )
-      am *= 1 + p() -> artifact.gifted_student.percent();
-
-    return am;
-  }
-
-  virtual void execute() override
-  {
-    monk_heal_t::execute();
-
-    p() -> buff.greater_gift_of_the_ox -> decrement();
-
-    if ( p() -> artifact.gifted_student.rank() )
-      p() -> buff.gifted_student -> trigger();
-
-    if ( p() -> sets -> has_set_bonus( MONK_BREWMASTER, T20, B4 ) )
-      p() -> partial_clear_stagger( p() -> sets -> set( MONK_BREWMASTER,T20, B4 ) -> effectN( 1 ).percent() );
   }
 };
 
@@ -7751,10 +7410,8 @@ action_t* monk_t::create_action( const std::string& name,
   // Brewmaster
   if ( name == "blackout_strike" ) return new           blackout_strike_t( this, options_str );
   if ( name == "breath_of_fire" ) return new            breath_of_fire_t( *this, options_str );
-  if ( name == "exploding_keg" ) return new             exploding_keg_t( *this, options_str );
   if ( name == "fortifying_brew" ) return new           fortifying_brew_t( *this, options_str );
   if ( name == "gift_of_the_ox" ) return new            gift_of_the_ox_t( *this, options_str );
-  if ( name == "greater_gift_of_the_ox" ) return new    greater_gift_of_the_ox_t( *this, options_str );
   if ( name == "invoke_niuzao" ) return new             niuzao_spell_t( this, options_str );
   if ( name == "invoke_niuzao_the_black_ox" ) return new niuzao_spell_t( this, options_str );
   if ( name == "ironskin_brew" ) return new             ironskin_brew_t( *this, options_str );
@@ -8099,30 +7756,6 @@ void monk_t::init_spells()
   talent.rising_thunder              = find_talent_spell ("Rising Thunder");
   
   // Artifact spells ========================================
-  // Brewmater
-  artifact.hot_blooded                    = find_artifact_spell( "Hot Blooded" );
-  artifact.brew_stache                    = find_artifact_spell( "Brew-Stache" );
-  artifact.dark_side_of_the_moon          = find_artifact_spell( "Dark Side of the Moon" );
-  artifact.dragonfire_brew                = find_artifact_spell( "Dragonfire Brew" );
-  artifact.draught_of_darkness            = find_artifact_spell( "Draught of Darkness" );
-  artifact.endurance_of_the_broken_temple = find_artifact_spell( "Endurance of the Broken Temple" );
-  artifact.face_palm                      = find_artifact_spell( "Face Palm" );
-  artifact.exploding_keg                  = find_artifact_spell( "Exploding Keg" );
-  artifact.fortification                  = find_artifact_spell( "Fortification" );
-  artifact.full_keg                       = find_artifact_spell( "Full Keg" );
-  artifact.gifted_student                 = find_artifact_spell( "Gifted Student" );
-  artifact.healthy_appetite               = find_artifact_spell( "Healthy Appetite" );
-  artifact.obsidian_fists                 = find_artifact_spell( "Obsidian Fists" );
-  artifact.obstinate_determination        = find_artifact_spell( "Obstinate Determination" );
-  artifact.overflow                       = find_artifact_spell( "Overflow" );
-  artifact.potent_kick                    = find_artifact_spell( "Potent Kick" );
-  artifact.quick_sip                      = find_artifact_spell( "Quick Sip" );
-  artifact.smashed                        = find_artifact_spell( "Smashed" );
-  artifact.staggering_around              = find_artifact_spell( "Staggering Around" );
-  artifact.stave_off                      = find_artifact_spell( "Stave Off" );
-  artifact.swift_as_a_coursing_river      = find_artifact_spell( "Swift as a Coursing River" );
-  artifact.wanderers_hardiness            = find_artifact_spell( "Wanderer's Hardiness" );
-
   // Mistweaver
   artifact.blessings_of_yulon         = find_artifact_spell( "Blessings of Yu'lon" );
   artifact.celestial_breath           = find_artifact_spell( "Celestial Breath" );
@@ -8257,15 +7890,12 @@ void monk_t::init_spells()
   // Brewmaster
   passives.breath_of_fire_dot               = find_spell( 123725 );
   passives.celestial_fortune                = find_spell( 216521 );
-  passives.dragonfire_brew_damage           = find_spell( 227681 ); 
   passives.elusive_brawler                  = find_spell( 195630 );
   passives.elusive_dance                    = find_spell( 196739 );
   passives.gift_of_the_ox_heal              = find_spell( 124507 );
   passives.gift_of_the_ox_summon            = find_spell( 124503 );
-  passives.greater_gift_of_the_ox_heal      = find_spell( 214416 );
   passives.ironskin_brew                    = find_spell( 215479 );
   passives.keg_smash_buff                   = find_spell( 196720 );
-  passives.face_palm                        = find_spell( 227679 );
   passives.special_delivery                 = find_spell( 196733 );
   passives.stagger_self_damage              = find_spell( 124255 );
   passives.stomp                            = find_spell( 227291 );
@@ -8473,10 +8103,6 @@ void monk_t::create_buffs()
 
   buff.blackout_combo = buff_creator_t( this, "blackout_combo", talent.blackout_combo -> effectN( 5 ).trigger() );
 
-  buff.brew_stache = buff_creator_t( this, "brew_stache", artifact.brew_stache.data().effectN( 1 ).trigger() )
-    .default_value( artifact.brew_stache.data().effectN( 1 ).trigger() -> effectN( 1 ).percent() )
-    .add_invalidate( CACHE_DODGE );
-
   buff.elusive_brawler = buff_creator_t( this, "elusive_brawler", mastery.elusive_brawler -> effectN( 3 ).trigger() )
     .add_invalidate( CACHE_DODGE );
 
@@ -8485,17 +8111,9 @@ void monk_t::create_buffs()
     .max_stack( 3 ) // Cap of 15%
     .add_invalidate( CACHE_DODGE );
 
-  buff.exploding_keg = buff_creator_t( this, "exploding_keg", artifact.exploding_keg )
-    .default_value( artifact.exploding_keg.data().effectN( 2 ).percent() );
-
-  buff.fortification = buff_creator_t( this, "fortification", artifact.fortification.data().effectN( 1 ).trigger() )
-    .default_value( artifact.fortification.data().effectN( 1 ).trigger() -> effectN( 1 ).percent() )
-    .add_invalidate( CACHE_DODGE );
-
   buff.ironskin_brew = buff_creator_t(this, "ironskin_brew", passives.ironskin_brew )
     .default_value( passives.ironskin_brew -> effectN( 1 ).percent() 
       + ( sets -> has_set_bonus( MONK_BREWMASTER, T19, B2 ) ? sets -> set( MONK_BREWMASTER, T19, B2 ) -> effectN( 1 ).percent() : 0 ) )
-    .duration( passives.ironskin_brew -> duration() + ( artifact.potent_kick.rank() ? timespan_t::from_seconds( artifact.potent_kick.value() ) : timespan_t::zero() ) )
     .refresh_behavior( BUFF_REFRESH_EXTEND );
 
   buff.keg_smash_talent = buff_creator_t( this, "keg_smash", talent.gift_of_the_mists -> effectN( 1 ).trigger() )
@@ -8505,18 +8123,6 @@ void monk_t::create_buffs()
     .duration( passives.gift_of_the_ox_summon -> duration() )
     .refresh_behavior( BUFF_REFRESH_NONE )
     .max_stack( 99 );
-
-  buff.gifted_student = buff_creator_t( this, "gifted_student", artifact.gifted_student.data().effectN( 1 ).trigger() )
-    .default_value( artifact.gifted_student.rank() ? artifact.gifted_student.percent() : 0 )
-    .add_invalidate( CACHE_CRIT_CHANCE );
-
-  buff.greater_gift_of_the_ox = buff_creator_t( this, "greater_gift_of_the_ox" , passives.gift_of_the_ox_summon )
-    .duration( passives.gift_of_the_ox_summon -> duration() )
-    .refresh_behavior( BUFF_REFRESH_NONE )
-    .max_stack( 99 );
-
-  buff.swift_as_a_coursing_river = buff_creator_t( this, "swift_as_a_coursing_river", artifact.swift_as_a_coursing_river.data().effectN( 1 ).trigger() )
-    .default_value( artifact.swift_as_a_coursing_river.data().effectN( 1 ).trigger() -> effectN( 1 ).percent() );
 
   // Mistweaver
   buff.channeling_soothing_mist = buff_creator_t( this, "channeling_soothing_mist", passives.soothing_mist_heal );
@@ -8663,12 +8269,6 @@ void monk_t::init_resources( bool force )
 {
   player_t::init_resources( force );
 
-  if ( artifact.healthy_appetite.rank() )
-  {
-    recalculate_resource_max( RESOURCE_HEALTH );
-    resources.initial[ RESOURCE_HEALTH ] = resources.current[ RESOURCE_HEALTH ]
-      = resources.max[ RESOURCE_HEALTH ];
-  }
 }
 
 // monk_t::reset ============================================================
@@ -8730,10 +8330,6 @@ void monk_t::recalculate_resource_max( resource_e r )
 {
   player_t::recalculate_resource_max( r );
 
-  if ( r == RESOURCE_HEALTH )
-  {
-    resources.max[ RESOURCE_HEALTH ] *= 1.0 + artifact.healthy_appetite.percent();
-  }
 }
 
 // monk_t::create_storm_earth_and_fire_target_list ====================================
@@ -8952,9 +8548,6 @@ double monk_t::composite_melee_crit_chance() const
 
   crit += spec.critical_strikes -> effectN( 1 ).percent();
 
-  if ( buff.gifted_student -> check() )
-    crit += buff.gifted_student -> value();
-
   return crit;
 }
 
@@ -9012,9 +8605,6 @@ double monk_t::composite_player_multiplier( school_e school ) const
   if ( artifact.ferocity_of_the_broken_temple.rank() )
     m *= 1.0 + artifact.ferocity_of_the_broken_temple.percent();
 
-  if ( artifact.endurance_of_the_broken_temple.rank() )
-    m *= 1.0 + artifact.endurance_of_the_broken_temple.data().effectN( 1 ).percent();
-
   return m;
 }
 
@@ -9030,9 +8620,6 @@ double monk_t::composite_attribute_multiplier( attribute_e attr ) const
 
     if ( artifact.ferocity_of_the_broken_temple.rank() )
       cam *= 1.0 + artifact.ferocity_of_the_broken_temple.data().effectN( 2 ).percent();
-
-    if ( artifact.endurance_of_the_broken_temple.rank() )
-      cam *= 1.0 + artifact.endurance_of_the_broken_temple.data().effectN( 3 ).percent();
   }
 
   return cam;
@@ -9107,17 +8694,11 @@ double monk_t::composite_dodge() const
 {
   double d = player_t::composite_dodge();
 
-  if ( buff.brew_stache -> up() )
-    d += buff.brew_stache -> value();
-
   if ( buff.elusive_brawler -> up() )
     d += buff.elusive_brawler -> current_stack * cache.mastery_value();
 
   if ( buff.elusive_dance -> up() )
     d += buff.elusive_dance -> stack_value();
-
-  if ( buff.fortification -> up() )
-    d += buff.fortification -> value();
 
   if ( artifact.light_on_your_feet_ww.rank() )
     d += artifact.light_on_your_feet_ww.percent();
@@ -9173,12 +8754,6 @@ double monk_t::composite_armor_multiplier() const
   double a = player_t::composite_armor_multiplier();
 
   a *= 1 + spec.brewmasters_balance -> effectN( 1 ).percent();
-
-  if ( artifact.wanderers_hardiness.rank() )
-    a *= 1 + artifact.wanderers_hardiness.percent();
-
-  if ( artifact.endurance_of_the_broken_temple.rank() )
-    a *= 1 + artifact.endurance_of_the_broken_temple.data().effectN( 2 ).percent();
 
   return a;
 }
@@ -9414,9 +8989,6 @@ void monk_t::assess_damage(school_e school,
       if ( buff.elusive_brawler -> up() )
         buff.elusive_brawler -> expire();
 
-      if ( artifact.gifted_student.rank() )
-        buff.gifted_student -> trigger();
-
       if ( legendary.anvil_hardened_wristwraps && level() < 120 )
         cooldown.brewmaster_active_mitigation -> adjust( -1 * timespan_t::from_seconds( legendary.anvil_hardened_wristwraps -> effectN( 1 ).base_value() / 10 ) );
 
@@ -9499,15 +9071,6 @@ void monk_t::target_mitigation( school_e school,
   {
     case MONK_BREWMASTER:
     {
-      if ( buff.exploding_keg -> up() ) 
-        s -> result_amount *= 1.0 + buff.exploding_keg -> value();
-
-      if ( artifact.hot_blooded.rank() )
-      {
-        if ( monk_t::get_target_data( s -> target ) -> dots.breath_of_fire -> is_ticking() )
-          s -> result_amount *= 1.0 - artifact.hot_blooded.data().effectN( 2 ).percent();
-      }
-      
       // Passive sources (Sturdy Ox)
       if ( school != SCHOOL_PHYSICAL )
         // TODO: Magical Damage reduction (currently set to zero, but effect is still in place)
@@ -9541,22 +9104,6 @@ void monk_t::target_mitigation( school_e school,
 
   if ( specialization() == MONK_BREWMASTER )
   {
-    // Obstinate Determination is a separate roll to the normal GotO chance to proc.
-    if ( artifact.obstinate_determination.rank() && s -> result_amount > 0 
-      && resources.pct(RESOURCE_HEALTH) > artifact.obstinate_determination.percent() 
-      && health_percent_after_the_hit <= artifact.obstinate_determination.percent() )
-    {
-      if ( artifact.overflow.rank() )
-      { 
-        if ( rng().roll( artifact.overflow.percent() ) )
-          buff.greater_gift_of_the_ox -> trigger();
-        else
-          buff.gift_of_the_ox -> trigger();
-      }
-      else
-        buff.gift_of_the_ox -> trigger();
-    }
-
     // Gift of the Ox is no longer a random chance, under the hood. When you are hit, it increments a counter by (DamageTakenBeforeAbsorbsOrStagger / MaxHealth).
     // It now drops an orb whenever that reaches 1.0, and decrements it by 1.0. The tooltip still says ‘chance’, to keep it understandable.
     // Gift of the Mists multiplies that counter increment by (2 - (HealthBeforeDamage - DamageTakenBeforeAbsorbsOrStagger) / MaxHealth);
@@ -9570,14 +9117,6 @@ void monk_t::target_mitigation( school_e school,
 
     if ( gift_of_the_ox_proc_chance > 1.0 )
     {
-      if ( artifact.overflow.rank() )
-      { 
-        if ( rng().roll( artifact.overflow.percent() ) )
-          buff.greater_gift_of_the_ox -> trigger();
-        else
-          buff.gift_of_the_ox -> trigger();
-      }
-      else
         buff.gift_of_the_ox -> trigger();
 
       gift_of_the_ox_proc_chance -= 1.0;
@@ -9644,8 +9183,7 @@ void monk_t::assess_heal( school_e school, dmg_e dmg_type, action_state_t* s )
 {
   // Celestial Fortune procs a heal every now and again
 /*  if ( s -> action -> id != passives.healing_elixir -> id() 
-    || s -> action -> id != passives.gift_of_the_ox_heal -> id()
-    || s -> action -> id != passives.greater_gift_of_the_ox_heal -> id() )
+    || s -> action -> id != passives.gift_of_the_ox_heal -> id() )
   {
   */
 //    if ( spec.celestial_fortune -> ok() )
@@ -9919,7 +9457,6 @@ void monk_t::apl_combat_brewmaster()
   action_priority_list_t* def = get_action_priority_list( "default" );
 
   def -> add_action( "auto_attack" );
-  def -> add_action( "greater_gift_of_the_ox" );
   def -> add_action( this, "Gift of the Ox" );
   def -> add_talent( this, "Dampen Harm", "if=incoming_damage_1500ms&buff.fortifying_brew.down" );
   def -> add_action( this, "Fortifying Brew", "if=incoming_damage_1500ms&(buff.dampen_harm.down|buff.diffuse_magic.down)" );
