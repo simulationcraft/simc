@@ -496,17 +496,16 @@ struct delayed_execute_event_t : public event_t
 {
   action_t* action;
   player_t* target;
-  const std::string event_name;
 
   delayed_execute_event_t( demon_hunter_t* p, action_t* a, player_t* t, timespan_t delay )
-    : event_t( *p -> sim, delay ), action( a ), target( t ), event_name( "Delayed Execute: " + a->name_str )
+    : event_t( *p -> sim, delay ), action( a ), target( t )
   {
     assert( action->background );
   }
 
   const char* name() const override
   {
-    return event_name.c_str();
+    return action->name();
   }
 
   void execute() override
@@ -514,7 +513,7 @@ struct delayed_execute_event_t : public event_t
     if ( !target->is_sleeping() )
     {
       action->set_target( target );
-      action->schedule_execute();
+      action->execute();
     }
   }
 };
@@ -756,15 +755,13 @@ struct soul_fragment_t
 
       if ( instant )
       {
-        a -> schedule_execute();
+        a->execute();
       }
       else
       {
-        // FIXME: There's probably a more elegant travel time solution than this.
-        double velocity = dh -> spec.consume_soul -> missile_speed();
+        double velocity = dh->spec.consume_soul->missile_speed();
         timespan_t delay = timespan_t::from_seconds( get_distance( dh ) / velocity );
-
-        make_event<delayed_execute_event_t>( *dh -> sim, dh, a, dh, delay );
+        make_event<delayed_execute_event_t>( *dh->sim, dh, a, dh, delay );
       }
     }
 
@@ -1333,7 +1330,7 @@ struct soul_cleave_heal_t : public demon_hunter_heal_t
 
     if (p()->talent.feast_of_souls->ok())
     {
-      feast_of_souls->schedule_execute();
+      feast_of_souls->execute();
     }
   }
 };
@@ -1620,8 +1617,8 @@ struct fel_devastation_t : public demon_hunter_spell_t
     demon_hunter_spell_t::tick( d );
 
     // Heal happens first.
-    heal -> schedule_execute();
-    damage -> schedule_execute();
+    heal -> execute();
+    damage -> execute();
   }
 };
 
@@ -1973,7 +1970,7 @@ struct infernal_strike_t : public demon_hunter_spell_t
     demon_hunter_spell_t::impact( s );
 
     damage->set_target(s->target);
-    damage->schedule_execute();
+    damage->execute();
   }
 
   dot_t* get_dot( player_t* t ) override
@@ -2034,11 +2031,10 @@ struct immolation_aura_t : public demon_hunter_spell_t
     }
   };
 
-  immolation_aura_damage_t* initial;
+  immolation_aura_damage_t* initial_damage;
 
   immolation_aura_t( demon_hunter_t* p, const std::string& options_str )
-    : demon_hunter_spell_t( "immolation_aura", p, p -> spec.immolation_aura,
-                            options_str )
+    : demon_hunter_spell_t( "immolation_aura", p, p -> spec.immolation_aura, options_str )
   {
     may_miss = may_crit = false;
     dot_duration = timespan_t::zero(); 
@@ -2049,27 +2045,20 @@ struct immolation_aura_t : public demon_hunter_spell_t
       add_child( p->active.immolation_aura );
     }
 
-    initial = new immolation_aura_damage_t( p, data().effectN( 2 ).trigger() );
-    initial->initial = true;
-    initial->stats = stats;
+    initial_damage = new immolation_aura_damage_t( p, data().effectN( 2 ).trigger() );
+    initial_damage->initial = true;
+    initial_damage->stats = stats;
 
     // Add damage modifiers in immolation_aura_damage_t, not here.
   }
 
-  // Don't record data for this action.
-  void record_data( action_state_t* s ) override
-  {
-    ( void )s;
-    assert( s -> result_amount == 0.0 );
-  }
-
   void execute() override
   {
-    p() -> buff.immolation_aura -> trigger();
+    p()->buff.immolation_aura->trigger();
 
     demon_hunter_spell_t::execute();
 
-    initial -> schedule_execute();
+    initial_damage->execute();
   }
 };
 
@@ -2124,7 +2113,7 @@ struct metamorphosis_t : public demon_hunter_spell_t
     {
       if (damage)
       {
-        damage->schedule_execute();
+        damage->execute();
       }
 
       // Buff is gained at the start of the leap.
@@ -2517,7 +2506,7 @@ namespace attacks
         return;
 
       p()->active.demon_blades->set_target( s->target );
-      p()->active.demon_blades->schedule_execute();
+      p()->active.demon_blades->execute();
     }
 
     void impact( action_state_t* s ) override
@@ -2878,7 +2867,7 @@ struct chaos_strike_base_t : public demon_hunter_attack_t
     // Create Strike Events
     for ( size_t i = 0; i < attacks.size(); i++ )
     {
-      make_event<delayed_execute_event_t>( *sim, p(), attacks[i], target, attacks[i]->delay );
+      make_event<delayed_execute_event_t>( *sim, p(), attacks[ i ], target, attacks[ i ]->delay );
     }
 
     // Metamorphosis benefit
@@ -2990,8 +2979,7 @@ struct demon_blades_t : public demon_hunter_attack_t
   demon_blades_t( demon_hunter_t* p )
     : demon_hunter_attack_t( "demon_blades", p, p -> find_spell( 203796 ) )
   {
-    background           = true;
-
+    background = true;
     energize_die_sides = data().effectN(3).die_sides();
   }
 
@@ -3064,7 +3052,7 @@ struct felblade_t : public demon_hunter_attack_t
     if ( hit_any_target )
     {
       damage->set_target(execute_state->target);
-      damage->schedule_execute();
+      damage->execute();
     }
 
     // Cancel all other movement
@@ -3195,8 +3183,8 @@ struct fracture_t : public demon_hunter_attack_t
     {
       mh->set_target( s->target );
       oh->set_target( s->target );
-      mh->schedule_execute();
-      oh->schedule_execute();
+      mh->execute();
+      oh->execute();
 
       p() -> spawn_soul_fragment( SOUL_FRAGMENT_LESSER, 2 );
     }
@@ -3343,9 +3331,9 @@ struct soul_cleave_t : public demon_hunter_attack_t
     demon_hunter_attack_t::execute();
 
     heal->set_target( player );
-    heal->schedule_execute();
+    heal->execute();
     damage->set_target( target );
-    damage->schedule_execute();
+    damage->execute();
 
     // Soul fragments consumed are capped for Soul Cleave
     p()->consume_soul_fragments( SOUL_FRAGMENT_ALL, true, data().effectN( 3 ).base_value() );
@@ -3700,11 +3688,11 @@ struct spirit_bomb_event_t : public event_t
 
     if ( dh -> spirit_bomb_accumulator > 0 )
     {
-      action_t* a    = dh -> active.spirit_bomb_heal;
-      a -> base_dd_min = a -> base_dd_max = dh -> spirit_bomb_accumulator;
-      a -> schedule_execute();
+      action_t* a = dh->active.spirit_bomb_heal;
+      a->base_dd_min = a->base_dd_max = dh->spirit_bomb_accumulator;
+      a->execute();
 
-      dh -> spirit_bomb_accumulator = 0.0;
+      dh->spirit_bomb_accumulator = 0.0;
     }
 
     dh -> spirit_bomb_driver = make_event<spirit_bomb_event_t>( sim(), dh );
@@ -3925,7 +3913,7 @@ void demon_hunter_t::create_buffs()
     buff.immolation_aura =
       buff_creator_t( this, "immolation_aura", spec.immolation_aura )
       .tick_callback( [ this ]( buff_t*, int, const timespan_t& ) {
-        active.immolation_aura->schedule_execute();
+        active.immolation_aura->execute();
       } )
       .cd( timespan_t::zero() );
   }
@@ -3934,7 +3922,7 @@ void demon_hunter_t::create_buffs()
     buff.immolation_aura =
       buff_creator_t( this, "immolation_aura", spec.immolation_aura )
       .tick_callback( [ this ]( buff_t*, int, const timespan_t& ) {
-        active.immolation_aura->schedule_execute();
+        active.immolation_aura->execute();
       } )
       .default_value( talent.agonizing_flames->effectN( 2 ).percent() )
       .add_invalidate( CACHE_RUN_SPEED )
@@ -4730,30 +4718,21 @@ void demon_hunter_t::apl_vengeance()
     }
   }
 
-  def -> add_talent( this, "Demonic Infusion", "if=cooldown.demon_spikes.charges=0&pain.deficit>60" );
-  def -> add_action( this, "Fiery Brand", "if=buff.demon_spikes.down&buff.metamorphosis.down" );
-  def -> add_action( this, "Demon Spikes", "if=charges=2|buff.demon_spikes.down&!dot.fiery_brand.ticking&buff.metamorphosis.down" );
-  def -> add_action( this, "Empower Wards", "if=debuff.casting.up" );
-  def -> add_action( this, "Infernal Strike", "if=!sigil_placed&!in_flight&remains-travel_time-delay<0.3*duration&"
-    "dot.fiery_brand.ticking" );
-  def -> add_action( this, "Infernal Strike", "if=!sigil_placed&!in_flight&remains-travel_time-delay<0.3*duration&"
-    "((max_charges-charges_fractional)*recharge_time<cooldown.fiery_brand.remains+5)&"
-    "(cooldown.sigil_of_flame.remains>7|charges=2)" );
-  def -> add_talent( this, "Spirit Bomb", "if=soul_fragments=5|debuff.frailty.down" );
-  def -> add_action( this, "Immolation Aura", "if=pain<=80" );
-  def -> add_talent( this, "Felblade", "if=pain<=70" );
-  def -> add_talent( this, "Soul Barrier" );
-  def -> add_action( this, "Soul Cleave", "if=soul_fragments=5" );
-  def -> add_action( this, "Metamorphosis", "if=buff.demon_spikes.down&!dot.fiery_brand.ticking&"
-    "buff.metamorphosis.down&incoming_damage_5s>health.max*0.70" );
-  def -> add_talent( this, "Fel Devastation", "if=incoming_damage_5s>health.max*0.70" );
-  def -> add_action( this, "Soul Cleave", "if=incoming_damage_5s>=health.max*0.70" );
-  def -> add_talent( this, "Fel Eruption" );
-  def -> add_action( this, "Sigil of Flame", "if=remains-delay<=0.3*duration" );
-  def -> add_talent( this, "Fracture", "if=pain>=80&soul_fragments<4&incoming_damage_4s<=health.max*0.20" );
-  def -> add_action( this, "Soul Cleave", "if=pain>=80" );
-  def -> add_action( this, spec.sever, "sever" );
-  def -> add_action( this, "Shear" );
+  def->add_action( this, "Metamorphosis" );
+  def->add_action( this, "Fiery Brand" );
+  def->add_action( this, "Demon Spikes" );
+  def->add_action( this, "Empower Wards" );
+  def->add_action( this, "Infernal Strike" );
+  def->add_talent( this, "Spirit Bomb" );
+  def->add_action( this, "Immolation Aura" );
+  def->add_talent( this, "Felblade" );
+  def->add_talent( this, "Soul Barrier" );
+  def->add_talent( this, "Fel Devastation" );
+  def->add_action( this, "Soul Cleave" );
+  def->add_action( this, "Sigil of Flame" );
+  def->add_talent( this, "Fracture" );
+  def->add_action( this, spec.sever, "sever" );
+  def->add_action( this, "Shear" );
 }
 
 // demon_hunter_t::create_cooldowns =========================================
