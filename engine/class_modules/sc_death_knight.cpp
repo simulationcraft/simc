@@ -5708,6 +5708,7 @@ struct howling_blast_aoe_t : public death_knight_spell_t
     parse_options( options_str );
 
     aoe                 = -1;
+    background = true;
 
     base_multiplier    *= 1.0 + p -> talent.freezing_fog -> effectN( 1 ).percent();
     base_multiplier    *= 1.0 + p -> artifact.blast_radius.percent();
