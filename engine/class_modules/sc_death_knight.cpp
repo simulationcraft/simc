@@ -4440,7 +4440,7 @@ struct dancing_rune_weapon_buff_t : public buff_t
   {
     buff_t::expire_override( expiration_stacks, remaining_duration );
 
-    // Triggers rune Master for blood T21 4P
+    // Triggers Rune Master buff if T21 4P is equipped
     if ( p -> sets -> has_set_bonus( DEATH_KNIGHT_BLOOD, T21, B4 ) )
     {
       p -> buffs.t21_4p_blood -> trigger();
@@ -5700,15 +5700,74 @@ struct horn_of_winter_t : public death_knight_spell_t
 
 // Howling Blast ============================================================
 
-struct howling_blast_t : public death_knight_spell_t
+struct howling_blast_aoe_t : public death_knight_spell_t
 {
-  howling_blast_t( death_knight_t* p, const std::string& options_str ) :
-    death_knight_spell_t( "howling_blast", p, p -> find_specialization_spell( "Howling Blast" ) )
+  howling_blast_aoe_t( death_knight_t* p, const std::string& options_str ) :
+    death_knight_spell_t( "howling_blast_aoe", p, p -> find_spell( 237680 ) )
   {
     parse_options( options_str );
 
     aoe                 = -1;
-    base_aoe_multiplier = data().effectN( 1 ).percent();
+
+    base_multiplier    *= 1.0 + p -> talent.freezing_fog -> effectN( 1 ).percent();
+    base_multiplier    *= 1.0 + p -> artifact.blast_radius.percent();
+
+    // T21 2P bonus : damage increase to Howling Blast, Frostscythe and Obliterate
+    if ( p -> sets -> has_set_bonus( DEATH_KNIGHT_FROST, T21, B2 ) )
+    {
+      base_multiplier *= ( 1.0 + p -> sets -> set( DEATH_KNIGHT_FROST, T21, B2 ) -> effectN( 1 ).percent() );
+    }
+  }
+
+  double action_multiplier() const override
+  {
+    double m = death_knight_spell_t::action_multiplier();
+
+    if ( p() -> buffs.rime -> up() )
+    {
+      m *= 1.0 + p() -> buffs.rime -> data().effectN( 2 ).percent();
+    }
+
+    return m;
+  }
+
+  size_t available_targets( std::vector< player_t* >& tl ) const override
+  {
+    death_knight_spell_t::available_targets( tl );
+
+    // Does not hit the main target
+    auto it = range::find( tl, target );
+    if ( it != tl.end() )
+    {
+      tl.erase( it );
+    }
+
+    return tl.size();
+  }
+
+  double composite_target_multiplier( player_t* target ) const override
+  {
+    double m = death_knight_spell_t::composite_target_multiplier( target );
+
+    m *= 1.0 + td( target ) -> debuff.perseverance_of_the_ebon_martyr -> check_value();
+
+    return m;
+  }
+};
+
+struct howling_blast_t : public death_knight_spell_t
+{
+  howling_blast_aoe_t* aoe_damage;
+
+  howling_blast_t( death_knight_t* p, const std::string& options_str ) :
+    death_knight_spell_t( "howling_blast", p, p -> find_specialization_spell( "Howling Blast" ) ),
+    aoe_damage( new howling_blast_aoe_t( p, options_str ) )
+  {
+    parse_options( options_str );
+
+    aoe = 1;
+    add_child( aoe_damage );
+
     base_multiplier    *= 1.0 + p -> talent.freezing_fog -> effectN( 1 ).percent();
     base_multiplier    *= 1.0 + p -> artifact.blast_radius.percent();
     
@@ -5782,7 +5841,10 @@ struct howling_blast_t : public death_knight_spell_t
     {
       p() -> buffs.killing_machine -> execute();
     }
-    
+   
+    aoe_damage -> set_target( execute_state -> target );
+    aoe_damage -> execute();
+
     p() -> buffs.rime -> decrement();
   }
 
@@ -5898,7 +5960,7 @@ struct marrowrend_t : public death_knight_melee_attack_t
   {
     parse_options( options_str );
 
-    base_multiplier    *= 1.0 + p -> artifact.bonebreaker.percent();
+    base_multiplier *= 1.0 + p -> artifact.bonebreaker.percent();
 
     weapon = &( p -> main_hand_weapon );
   }
@@ -8833,8 +8895,8 @@ double death_knight_t::bone_shield_handler( const action_state_t* state ) const
     if ( sets -> has_set_bonus( DEATH_KNIGHT_BLOOD, T21, B2 ) )
     {
       cooldown.dancing_rune_weapon -> adjust( timespan_t::from_millis( sets -> set( DEATH_KNIGHT_BLOOD, T21, B2) -> effectN( 1 ).base_value() ), false );
-      cooldown.blood_tap -> adjust( timespan_t::from_seconds( -2.0 ), false );
     }
+    cooldown.blood_tap -> adjust( timespan_t::from_seconds( -2.0 ), false );
 
     cooldown.bone_shield_icd -> start();
   }
@@ -8855,8 +8917,8 @@ double death_knight_t::bone_shield_handler( const action_state_t* state ) const
     if ( sets -> has_set_bonus( DEATH_KNIGHT_BLOOD, T21, B2 ) )
     {
       cooldown.dancing_rune_weapon -> adjust( timespan_t::from_millis( sets -> set( DEATH_KNIGHT_BLOOD, T21, B2) -> effectN( 1 ).base_value() ), false );
-      cooldown.blood_tap -> adjust( timespan_t::from_seconds( -2.0 ), false );
     }
+    cooldown.blood_tap -> adjust( timespan_t::from_seconds( -2.0 ), false );
   }
 
   absorbed = absorb_pct * state -> result_amount;
