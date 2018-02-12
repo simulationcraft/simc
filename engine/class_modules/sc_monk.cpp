@@ -2770,6 +2770,9 @@ struct tiger_palm_t: public monk_melee_attack_t
     if ( p() -> buff.storm_earth_and_fire -> up() )
       am *= 1.0 + p() -> spec.storm_earth_and_fire -> effectN( 1 ).percent();
 
+    if ( p() -> buff.power_strikes -> up() )
+      am *= 1.0 + p() -> talent.power_strikes -> effectN( 2 ).percent();
+
     return am;
   }
 
@@ -2818,6 +2821,9 @@ struct tiger_palm_t: public monk_melee_attack_t
           p() -> pet.sef[ SEF_FIRE ] -> buff.bok_proc_sef -> trigger();
           p() -> pet.sef[ SEF_EARTH ] -> buff.bok_proc_sef -> trigger();
         }
+
+        if ( p() -> talent.combo_breaker )
+          p() -> cooldown.rising_sun_kick -> reset( true );
       }
       break;
     }
@@ -3230,6 +3236,8 @@ struct blackout_kick_t: public monk_melee_attack_t
 
         if ( p() -> sets -> has_set_bonus( MONK_WINDWALKER, T21, B4 ) && p() -> buff.bok_proc -> up() )
           am *= 1 + p() -> sets -> set( MONK_WINDWALKER, T21, B4) -> effectN( 1 ).percent();
+
+        am *= 1 + p() -> spec.windwalker_monk -> effectN( 12 ).percent();
         break;
       }
       default: break;
@@ -3272,6 +3280,12 @@ struct blackout_kick_t: public monk_melee_attack_t
       {
         if ( rng().roll( p() -> spec.teachings_of_the_monastery -> effectN( 1 ).percent() ) )
           p() -> cooldown.rising_sun_kick -> reset( true );
+        break;
+      }
+      case MONK_WINDWALKER:
+      {
+        p() -> cooldown.rising_sun_kick -> adjust ( -1 * p() -> spec.blackout_kick -> effectN( 2 ).time_value() );
+        p() -> cooldown.fists_of_fury -> adjust ( -1 * p() -> spec.blackout_kick -> effectN( 2 ).time_value() );
         break;
       }
       default: break;
@@ -3799,7 +3813,7 @@ struct fist_of_the_white_tiger_off_hand_t: public monk_melee_attack_t
   {
     monk_melee_attack_t::impact( s );
 
-//    p() -> gain.fist_of_the_white_tiger -> add( RESOURCE_CHI, data().effectN( 1 ).base_value() );
+//    p() -> resource_gain( RESOURCE_CHI, data().effectN( 1 ).base_value(), p() -> gain.fist_of_the_white_tiger );
   }
 
 };
@@ -6973,6 +6987,7 @@ void monk_t::init_base_stats()
       base_gcd += spec.stance_of_the_fierce_tiger -> effectN( 5 ).time_value(); // Saved as -500 milliseconds
       base.attack_power_per_agility = 1.0;
       resources.base[RESOURCE_ENERGY] = 100;
+      resources.base[RESOURCE_ENERGY] += talent.ascension -> effectN( 3 ).base_value();
       resources.base[RESOURCE_MANA] = 0;
       resources.base[RESOURCE_CHI] = 4;
       resources.base[RESOURCE_CHI] += spec.stance_of_the_fierce_tiger -> effectN( 6 ).base_value();
