@@ -502,7 +502,6 @@ public:
     proc_t* ignite_new_spread; // Spread to new target
     proc_t* ignite_overwrite;  // Spread to target with existing ignite
 
-    proc_t* controlled_burn; // Tracking Controlled Burn talent
 
     proc_t* brain_freeze_flurry;
     proc_t* fingers_of_frost_wasted;
@@ -599,7 +598,6 @@ public:
     const spell_data_t* resonance;
     const spell_data_t* alexstraszas_fury;
     const spell_data_t* flame_on;
-    const spell_data_t* controlled_burn;
     const spell_data_t* ice_nova;
     const spell_data_t* frozen_touch;
     const spell_data_t* splitting_ice;
@@ -1924,22 +1922,10 @@ struct fire_mage_spell_t : public mage_spell_t
             1, buff_t::DEFAULT_VALUE(), -1.0,
             p -> buffs.heating_up -> buff_duration * p -> cache.spell_speed() );
           if ( guaranteed )
-            p -> buffs.heating_up -> predict();
-
-          // Controlled Burn HU -> HS conversion
-          if ( p -> talents.controlled_burn -> ok() &&
-               rng().roll ( p -> talents.controlled_burn
-                              -> effectN( 1 ).percent() ) )
           {
-            p -> procs.controlled_burn -> occur();
-            p -> buffs.heating_up -> expire();
-            p -> buffs.hot_streak -> trigger();
-            if ( p -> sets -> has_set_bonus( MAGE_FIRE, T19, B4 ) &&
-                  rng().roll( p -> sets -> set( MAGE_FIRE, T19, B4 ) -> effectN( 1 ).percent() ) )
-            {
-              p -> buffs.streaking -> trigger();
-            }
+            p -> buffs.heating_up -> predict();
           }
+
         }
       }
     }
@@ -6347,7 +6333,6 @@ void mage_t::init_spells()
   talents.resonance          = find_talent_spell( "Resonance"          );
   talents.alexstraszas_fury  = find_talent_spell( "Alexstrasza's Fury" );
   talents.flame_on           = find_talent_spell( "Flame On"           );
-  talents.controlled_burn    = find_talent_spell( "Controlled Burn"    );
   talents.ice_nova           = find_talent_spell( "Ice Nova"           );
   talents.frozen_touch       = find_talent_spell( "Frozen Touch"       );
   talents.splitting_ice      = find_talent_spell( "Splitting Ice"      );
@@ -6600,7 +6585,6 @@ void mage_t::init_procs()
       procs.ignite_spread     = get_proc( "Ignites spread" );
       procs.ignite_new_spread = get_proc( "Ignites spread to new targets" );
       procs.ignite_overwrite  = get_proc( "Ignites spread to target with existing ignite" );
-      procs.controlled_burn   = get_proc(" Controlled Burn HU -> HS Conversion ");
       break;
     default:
       // This shouldn't happen
