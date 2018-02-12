@@ -242,13 +242,20 @@ void pet_t::create_options()
 
 void pet_t::create_buffs()
 {
-  if ( sim -> debug )
-    sim -> out_debug.printf( "Creating Auras, Buffs, and Debuffs for player (%s)", name() );
+  if ( is_enemy() )
+  {
+    player_t::create_buffs();
+  }
+  else
+  {
+    if ( sim -> debug )
+      sim -> out_debug.printf( "Creating Auras, Buffs, and Debuffs for player (%s)", name() );
 
-  buffs.stunned = buff_creator_t( this, "stunned" ).max_stack( 1 );
-  buffs.movement = buff_creator_t( this, "movement" );
+    buffs.stunned = buff_creator_t( this, "stunned" ).max_stack( 1 );
+    buffs.movement = buff_creator_t( this, "movement" );
 
-  debuffs.casting = buff_creator_t( this, "casting" ).max_stack( 1 ).quiet( 1 );
+    debuffs.casting = buff_creator_t( this, "casting" ).max_stack( 1 ).quiet( 1 );
+  }
 }
 
 // pet_t::assess_damage =====================================================

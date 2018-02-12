@@ -903,6 +903,11 @@ bool dbc::is_school( school_e s, school_e s2 )
   return ( get_school_mask( s ) & mask2 ) == mask2;
 }
 
+bool dbc::has_common_school( school_e s1, school_e s2 )
+{
+  return ( get_school_mask( s1 ) & get_school_mask( s2 ) ) != 0;
+}
+
 std::vector<const spell_data_t*> dbc::class_passives( const player_t* p )
 {
   struct entry_t
