@@ -761,7 +761,6 @@ struct mage_spell_base_t : public spell_t
     bool rune_of_power;
 
     // Misc
-    bool clearcasting;
     bool combustion;
     bool erosion;
     bool ice_floes;
@@ -776,7 +775,6 @@ struct mage_spell_base_t : public spell_t
       crackling_energy( true ),
       incanters_flow( true ),
       rune_of_power( true ),
-      clearcasting( false ),
       combustion( true ),
       erosion( true ),
       ice_floes( false ),
@@ -1618,11 +1616,6 @@ public:
   {
     double c = mage_spell_base_t::cost();
 
-    if ( affected_by.clearcasting )
-    {
-      c *= 1.0 + p() -> buffs.clearcasting -> check_value();
-    }
-
     if ( p() -> buffs.arcane_power -> check() )
     {
       c *= 1.0 + p() -> buffs.arcane_power -> data().effectN( 2 ).percent()
@@ -1639,12 +1632,6 @@ public:
     if ( ! harmful || current_resource() != RESOURCE_MANA || ! p() -> spec.clearcasting -> ok() )
     {
       return;
-    }
-
-    if ( affected_by.clearcasting )
-    {
-      p() -> buffs.clearcasting -> expire();
-      // TODO: Track mana "gains" from Clearcasting.
     }
 
     // TODO: Right now it uses max mana including mastery and other effects, probably makes more sense if
@@ -2516,11 +2503,14 @@ struct arcane_blast_t : public arcane_mage_spell_t
   {
     double c = arcane_mage_spell_t::cost();
 
-    c *= 1.0 +  p() -> buffs.arcane_charge -> check() *
-                p() -> spec.arcane_charge -> effectN( 5 ).percent();
+    c *= 1.0 + p() -> buffs.arcane_charge -> check() *
+               p() -> spec.arcane_charge -> effectN( 5 ).percent();
+
+
+    c *= 1.0 + p() -> buffs.rule_of_threes -> check_value();
 
     //TODO: Find a work-around to remove hardcoding
-    if ( p() -> buffs.rhonins_assaulting_armwraps -> check() || p() -> buffs.rule_of_threes -> check() )
+    if ( p() -> buffs.rhonins_assaulting_armwraps -> check() )
     {
       c = 0;
     }
@@ -2535,11 +2525,23 @@ struct arcane_blast_t : public arcane_mage_spell_t
 
     p() -> buffs.rhonins_assaulting_armwraps -> expire();
 
+    if ( last_resource_cost == 0 )
+    {
+      p() -> buffs.rule_of_threes -> expire();
+    }
+
     p() -> buffs.arcane_charge -> up();
 
     if ( hit_any_target )
     {
       trigger_arcane_charge();
+
+      // Behavior assumes only builders ( AE/AB ) will trigger. If CU ends up triggering, will need to change.
+      // For now, only AB seems to trigger it.
+      if ( p() -> talents.rule_of_threes -> ok() && p() -> buffs.arcane_charge -> check() == 3 )
+      {
+        p() -> buffs.rule_of_threes -> trigger();
+      }
     }
 
     if ( p() -> buffs.presence_of_mind -> up() )
@@ -2547,20 +2549,6 @@ struct arcane_blast_t : public arcane_mage_spell_t
       p() -> buffs.presence_of_mind -> decrement();
     }
 
-    // Behavior assumes only builders ( AE/AB ) will trigger. If CU ends up triggering, will need to change.
-    // For now, only AB seems to trigger it.
-    if ( p() -> talents.rule_of_threes -> ok() )
-    {
-        if ( p()-> buffs.arcane_charge->current_stack == 3 )
-        {
-            p() -> buffs.rule_of_threes -> trigger();
-        }
-        else if ( p() -> buffs.rule_of_threes -> up() &&
-                  p() -> buffs.arcane_charge -> current_stack == 4 )
-        {
-            p() -> buffs.rule_of_threes -> expire();
-        }
-    }
     p() -> buffs.t19_oh_buff -> trigger();
     p() -> buffs.quick_thinker -> trigger();
 
@@ -2612,13 +2600,25 @@ struct arcane_explosion_t : public arcane_mage_spell_t
   {
     parse_options( options_str );
     aoe = -1;
+  }
 
-    affected_by.clearcasting = true;
+  virtual double cost() const override
+  {
+    double c = arcane_mage_spell_t::cost();
+
+    c *= 1.0 + p() -> buffs.clearcasting -> check_value();
+
+    return c;
   }
 
   virtual void execute() override
   {
     arcane_mage_spell_t::execute();
+
+    if ( last_resource_cost == 0 )
+    {
+      p() -> buffs.clearcasting -> expire();
+    }
 
     if ( hit_any_target || p() -> bugs )
     {
@@ -2720,8 +2720,6 @@ struct arcane_missiles_t : public arcane_mage_spell_t
     hasted_ticks      = false;
     dynamic_tick_action = true;
     tick_action = new arcane_missiles_tick_t( p );
-
-    affected_by.clearcasting = true;
   }
 
   // Flag Arcane Missiles as direct damage for triggering effects
@@ -2772,11 +2770,33 @@ struct arcane_missiles_t : public arcane_mage_spell_t
     return triggered_duration + std::min( triggered_duration * 0.3, dot -> remains() );
   }
 
+  virtual double cost() const override
+  {
+    double c = arcane_mage_spell_t::cost();
+
+    c *= 1.0 + p() -> buffs.rule_of_threes -> check_value();
+    c *= 1.0 + p() -> buffs.clearcasting -> check_value();
+
+    return c;
+  }
+
   virtual void execute() override
   {
     arcane_mage_spell_t::execute();
 
     p() -> buffs.rhonins_assaulting_armwraps -> trigger();
+
+    if ( last_resource_cost == 0 )
+    {
+      if ( p() -> buffs.clearcasting -> check() )
+      {
+        p() -> buffs.clearcasting -> expire();
+      }
+      else
+      {
+        p() -> buffs.rule_of_threes -> expire();
+      }
+    }
 
     if ( p() -> sets -> has_set_bonus( MAGE_ARCANE, T19, B4 ) )
     {
@@ -6059,7 +6079,7 @@ action_t* mage_t::create_action( const std::string& name,
   if ( name == "fire_blast"             ) return new             fire_blast_t( this, options_str );
   if ( name == "living_bomb"            ) return new            living_bomb_t( this, options_str );
   if ( name == "meteor"                 ) return new                 meteor_t( this, options_str );
-  if ( name == "phoenix_flames"         ) return new        phoenix_flames_t( this, options_str );
+  if ( name == "phoenix_flames"         ) return new         phoenix_flames_t( this, options_str );
   if ( name == "pyroblast"              ) return new              pyroblast_t( this, options_str );
   if ( name == "scorch"                 ) return new                 scorch_t( this, options_str );
 
@@ -6466,7 +6486,8 @@ void mage_t::create_buffs()
   buffs.quick_thinker         = haste_buff_creator_t( this, "quick_thinker", find_spell( 253299 ) )
                                   .default_value( find_spell( 253299 ) -> effectN( 1 ).percent() )
                                   .chance( sets -> set( MAGE_ARCANE, T21, B4 ) -> proc_chance() );
-  buffs.rule_of_threes        = buff_creator_t( this, "rule_of_threes", find_spell( 264774 ) );
+  buffs.rule_of_threes        = buff_creator_t( this, "rule_of_threes", find_spell( 264774 ) )
+                                  .default_value( find_spell( 264774 ) -> effectN( 1 ).percent() );
   
   // Fire
   buffs.combustion             = buff_creator_t( this, "combustion", find_spell( 190319 ) )
