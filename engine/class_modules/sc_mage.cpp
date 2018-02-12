@@ -2547,7 +2547,7 @@ struct arcane_blast_t : public arcane_mage_spell_t
       p() -> buffs.presence_of_mind -> decrement();
     }
 
-    // Behavior assumes only builers ( AE/AB ) will trigger. If CU ends up triggering, will need to change.
+    // Behavior assumes only builders ( AE/AB ) will trigger. If CU ends up triggering, will need to change.
     // For now, only AB seems to trigger it.
     if ( p() -> talents.rule_of_threes -> ok() )
     {
