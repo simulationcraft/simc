@@ -236,6 +236,7 @@ struct rogue_t : public player_t
     buff_t* elaborate_planning;
     buff_t* dispatch;
     buff_t* master_assassin;
+    buff_t* master_assassin_aura;
     // Outlaw
     buff_t* killing_spree;
     buff_t* loaded_dice;
@@ -346,6 +347,7 @@ struct rogue_t : public player_t
     const spell_data_t* seal_fate;
     const spell_data_t* venomous_wounds;
     const spell_data_t* vendetta;
+    const spell_data_t* master_assassin;
     const spell_data_t* garrote;
     const spell_data_t* garrote_2;
 
@@ -4616,9 +4618,10 @@ struct stealth_like_buff_t : public buff_t
                               rogue -> gains.master_of_shadows );
     }
 
-    if ( rogue -> talent.master_assassin -> ok() )
+    if ( rogue->talent.master_assassin->ok() )
     {
-        rogue -> buffs.master_assassin -> trigger();
+        rogue->buffs.master_assassin->expire();
+        rogue->buffs.master_assassin_aura->trigger();
     }
 
     if ( procs_mantle_of_the_master_assassin &&
@@ -4638,6 +4641,12 @@ struct stealth_like_buff_t : public buff_t
     {
       rogue -> buffs.mantle_of_the_master_assassin_aura -> expire();
       rogue -> buffs.mantle_of_the_master_assassin -> trigger();
+    }
+
+    if ( rogue->talent.master_assassin->ok() )
+    {
+      rogue->buffs.master_assassin_aura->expire();
+      rogue->buffs.master_assassin->trigger();
     }
   }
 };
@@ -4665,9 +4674,10 @@ struct stealth_t : public stealth_like_buff_t
       rogue -> buffs.master_of_shadows -> trigger();
     }
 
-    if ( rogue -> talent.master_assassin -> ok() )
+    if ( rogue->talent.master_assassin->ok() )
     {
-        rogue -> buffs.master_assassin->trigger();
+        rogue->buffs.master_assassin->expire();
+        rogue->buffs.master_assassin_aura->trigger();
     }
 
     if ( procs_mantle_of_the_master_assassin &&
@@ -5813,6 +5823,8 @@ double rogue_t::composite_melee_crit_chance() const
 
   crit += buffs.mantle_of_the_master_assassin_aura -> stack_value(); // 7.1.5 Legendary
 
+  crit += buffs.master_assassin_aura->stack_value();
+  
   crit += buffs.master_assassin -> stack_value();
 
   crit += buffs.t20_2pc_outlaw -> stack_value();
@@ -6758,6 +6770,7 @@ void rogue_t::init_spells()
   spec.seal_fate            = find_specialization_spell( "Seal Fate" );
   spec.venomous_wounds      = find_specialization_spell( "Venomous Wounds" );
   spec.vendetta             = find_specialization_spell( "Vendetta" );
+  spec.master_assassin      = find_spell(256735);
   spec.garrote              = find_specialization_spell( "Garrote" );
   spec.garrote_2            = find_specialization_spell( 231719 );
 
@@ -7101,9 +7114,13 @@ void rogue_t::create_buffs()
                                   .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   buffs.dispatch                = buff_creator_t( this, "dispatch", talent.dispatch )
                                   .duration( timespan_t::from_seconds( 10.0 ) ); // I see no buff spell in spell data yet, hardcode for now.
+  buffs.master_assassin_aura    = buff_creator_t(this, "master_assassin", talent.master_assassin)
+                                    .default_value( spec.master_assassin->effectN( 1 ).percent() )
+                                    .duration( sim->max_time/2 )
+                                    .add_invalidate(CACHE_CRIT_CHANCE);
   buffs.master_assassin         = buff_creator_t( this, "master_assassin", talent.master_assassin )
-                                    .default_value( find_spell( 256735 ) -> effectN( 1 ).percent() )
-                                    .duration( timespan_t::from_seconds( find_spell( 255989 ) -> effectN( 1 ).base_value() ) )
+                                    .default_value( spec.master_assassin->effectN( 1 ).percent() )
+                                    .duration( timespan_t::from_seconds( talent.master_assassin->effectN( 1 ).base_value() ) )
                                     .add_invalidate( CACHE_CRIT_CHANCE );
   // Outlaw
   buffs.killing_spree           = buff_creator_t( this, "killing_spree", talent.killing_spree )
