@@ -26,8 +26,6 @@ namespace { // UNNAMED NAMESPACE
 //
 // - Arcane Intellect (probably gonna be simc wide)
 //
-// - add PF as a talent (splash seems to trigger HU/HS, double check)
-//
 // - double check coef changes
 //
 // - Clearcasting + extra mana from mastery (shouldn't reduce proc chance,
@@ -569,7 +567,6 @@ public:
   {
     // Tier 15
     const spell_data_t* arcane_familiar;
-    const spell_data_t* amplification;
     const spell_data_t* words_of_power;
     const spell_data_t* pyromaniac;
     const spell_data_t* conflagration;
@@ -6308,7 +6305,6 @@ void mage_t::init_spells()
   // Talents
   // Tier 15
   talents.arcane_familiar    = find_talent_spell( "Arcane Familiar"    );
-  talents.amplification      = find_talent_spell( "Amplification"      );
   talents.words_of_power     = find_talent_spell( "Words of Power"     );
   talents.pyromaniac         = find_talent_spell( "Pyromaniac"         );
   talents.conflagration      = find_talent_spell( "Conflagration"      );
