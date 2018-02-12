@@ -1664,6 +1664,8 @@ struct sim_t : private sc_thread_t
     int arcane_intellect;
 
     // Debuff overrides
+    int chaos_brand;
+    int expose_armor;
     int mortal_wounds;
     int bleeding;
 
@@ -4207,8 +4209,8 @@ struct player_t : public actor_t
     buff_t* mortal_wounds;
 
     // BfA Raid Damage Modifier Debuffs
-    buff_t* expose_armor; // Rogue
     buff_t* chaos_brand;  // Demon Hunter
+    buff_t* expose_armor; // Rogue
   } debuffs;
 
   struct gains_t

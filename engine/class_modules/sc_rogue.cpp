@@ -5681,8 +5681,13 @@ void rogue_t::trigger_t21_4pc_subtlety( const action_state_t* state )
 
 void rogue_t::trigger_expose_armor( const action_state_t* state )
 {
-  if ( state -> action -> result_is_hit( state -> result ) && spell.expose_armor -> ok() && state -> result_amount > 0.0 )
+  if ( ! sim -> overrides.expose_armor
+    && state -> action -> result_is_hit( state -> result )
+    && spell.expose_armor -> ok()
+    && state -> result_amount > 0.0 )
+  {
     state -> target -> debuffs.expose_armor -> trigger();
+  }
 }
 
 // ==========================================================================
