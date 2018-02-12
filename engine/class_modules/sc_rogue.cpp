@@ -235,6 +235,7 @@ struct rogue_t : public player_t
     // Assassination
     buff_t* elaborate_planning;
     buff_t* dispatch;
+    buff_t* master_assassin;
     // Outlaw
     buff_t* killing_spree;
     buff_t* loaded_dice;
@@ -306,7 +307,7 @@ struct rogue_t : public player_t
     gain_t* energy_refund;
     gain_t* master_of_shadows;
     gain_t* venomous_wounds;
-	gain_t* venom_rush;
+    gain_t* venom_rush;
     gain_t* venomous_wounds_death;
     gain_t* vitality;
     gain_t* relentless_strikes;
@@ -435,6 +436,7 @@ struct rogue_t : public player_t
 
     // Tier 2 - Level 30
     const spell_data_t* hit_and_run;
+    const spell_data_t* master_assassin;
 
     // Tier 4 - Level 60
     const spell_data_t* thuggee;
@@ -3191,11 +3193,12 @@ struct mutilate_t : public rogue_attack_t
       oh_strike -> set_target( execute_state -> target );
       oh_strike -> execute();
 
-	  if (p() -> talent.venom_rush->ok() && p() -> get_target_data(execute_state -> target) -> poisoned()) {
-		  p() -> resource_gain(RESOURCE_ENERGY,
-			  p() -> talent.venom_rush -> effectN(1).base_value(),
-			  p() -> gains.venom_rush);
-	  }
+      if ( p() -> talent.venom_rush->ok() && p() -> get_target_data( execute_state -> target ) -> poisoned() )
+	  {
+          p() -> resource_gain( RESOURCE_ENERGY,
+              p() -> talent.venom_rush -> effectN(1).base_value(),
+              p() -> gains.venom_rush );
+      }
     }
   }
 };
@@ -4613,6 +4616,11 @@ struct stealth_like_buff_t : public buff_t
                               rogue -> gains.master_of_shadows );
     }
 
+    if ( rogue -> talent.master_assassin -> ok() )
+    {
+        rogue -> buffs.master_assassin -> trigger();
+    }
+
     if ( procs_mantle_of_the_master_assassin &&
          rogue -> legendary.mantle_of_the_master_assassin )
     {
@@ -4655,6 +4663,11 @@ struct stealth_t : public stealth_like_buff_t
       ( !rogue -> bugs || !rogue -> buffs.vanish -> check() ) )
     {
       rogue -> buffs.master_of_shadows -> trigger();
+    }
+
+    if ( rogue -> talent.master_assassin -> ok() )
+    {
+        rogue -> buffs.master_assassin->trigger();
     }
 
     if ( procs_mantle_of_the_master_assassin &&
@@ -5795,6 +5808,8 @@ double rogue_t::composite_melee_crit_chance() const
 
   crit += buffs.mantle_of_the_master_assassin_aura -> stack_value(); // 7.1.5 Legendary
 
+  crit += buffs.master_assassin -> stack_value();
+
   crit += buffs.t20_2pc_outlaw -> stack_value();
 
   return crit;
@@ -6801,6 +6816,7 @@ void rogue_t::init_spells()
   talent.nightstalker       = find_talent_spell( "Nightstalker" );
   talent.subterfuge         = find_talent_spell( "Subterfuge" );
   talent.shadow_focus       = find_talent_spell( "Shadow Focus" );
+  talent.master_assassin    = find_talent_spell( "Master Assassin" );
 
   talent.master_poisoner    = find_talent_spell( "Master Poisoner" );
   talent.elaborate_planning = find_talent_spell( "Elaborate Planning" );
@@ -7080,6 +7096,10 @@ void rogue_t::create_buffs()
                                   .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   buffs.dispatch                = buff_creator_t( this, "dispatch", talent.dispatch )
                                   .duration( timespan_t::from_seconds( 10.0 ) ); // I see no buff spell in spell data yet, hardcode for now.
+  buffs.master_assassin         = buff_creator_t( this, "master_assassin", talent.master_assassin )
+                                    .default_value( find_spell( 256735 ) -> effectN( 1 ).percent() )
+                                    .duration( timespan_t::from_seconds( find_spell( 255989 ) -> effectN( 1 ).base_value() ) )
+                                    .add_invalidate( CACHE_CRIT_CHANCE );
   // Outlaw
   buffs.killing_spree           = buff_creator_t( this, "killing_spree", talent.killing_spree )
                                   .duration( talent.killing_spree -> duration() );
