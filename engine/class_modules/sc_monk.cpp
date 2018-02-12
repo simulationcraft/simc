@@ -225,7 +225,6 @@ public:
     buff_t* lifecycles_vivify;
     buff_t* mana_tea;
     buff_t* refreshing_jade_wind;
-    buff_t* the_mists_of_sheilun;
     buff_t* teachings_of_the_monastery;
     buff_t* thunder_focus_tea;
     buff_t* uplifting_trance;
@@ -440,29 +439,6 @@ public:
   // Artifact
   struct artifact_spell_data_t
   {
-    // Mistweaver Artifact
-    artifact_power_t blessings_of_yulon;
-    artifact_power_t celestial_breath;
-    artifact_power_t coalescing_mists;
-    artifact_power_t dancing_mists;
-    artifact_power_t effusive_mists;
-    artifact_power_t essence_of_the_mists;
-    artifact_power_t extended_healing;
-    artifact_power_t infusion_of_life;
-    artifact_power_t light_on_your_feet_mw;
-    artifact_power_t mists_of_life;
-    artifact_power_t mists_of_wisdom;
-    artifact_power_t mistweaving;
-    artifact_power_t protection_of_shaohao;
-    artifact_power_t sheiluns_gift;
-    artifact_power_t shroud_of_mist;
-    artifact_power_t soothing_remedies;
-    artifact_power_t spirit_tether;
-    artifact_power_t tendrils_of_revival;
-    artifact_power_t the_mists_of_sheilun;
-    artifact_power_t way_of_the_mistweaver;
-    artifact_power_t whispers_of_shaohao;
-
     // Windwalker Artifact
     artifact_power_t crosswinds;
     artifact_power_t dark_skies;
@@ -545,18 +521,14 @@ public:
     const spell_data_t* stomp;
 
     // Mistweaver
-    const spell_data_t* blessings_of_yulon;
-    const spell_data_t* celestial_breath_heal;
     const spell_data_t* lifecycles_enveloping_mist;
     const spell_data_t* lifecycles_vivify;
     const spell_data_t* renewing_mist_heal;
-    const spell_data_t* shaohaos_mists_of_wisdom;
     const spell_data_t* soothing_mist_heal;
     const spell_data_t* soothing_mist_statue;
     const spell_data_t* spirit_of_the_crane;
     const spell_data_t* teachings_of_the_monastery_buff;
     const spell_data_t* totm_bok_proc;
-    const spell_data_t* the_mists_of_sheilun_heal;
     const spell_data_t* uplifting_trance;
     const spell_data_t* zen_pulse_heal;
 
@@ -2725,12 +2697,6 @@ struct monk_heal_t: public monk_action_t < heal_t >
   double action_ta_multiplier() const override
   {
     double atm = base_t::action_ta_multiplier();
-
-    if ( p() -> specialization() == MONK_MISTWEAVER )
-    {
-      if ( p() -> buff.the_mists_of_sheilun -> up() )
-        atm *= 1.0 + p() -> buff.the_mists_of_sheilun -> value();
-    }
 
     return atm;
   }
@@ -5810,42 +5776,8 @@ struct mana_tea_t: public monk_spell_t
 // Thunder Focus Tea
 // ==========================================================================
 
-struct celestial_breath_heal_t : public monk_heal_t
-{
-  celestial_breath_heal_t( monk_t& p ) :
-    monk_heal_t( "celestial_breath_heal", p, p.passives.celestial_breath_heal )
-  {
-    background = dual = true;
-    may_miss = false;
-    aoe = p.artifact.celestial_breath.data().effectN( 1 ).base_value();
-  }
-};
-
-struct celestial_breath_t : public monk_spell_t
-{
-  celestial_breath_heal_t* heal;
-
-  celestial_breath_t( monk_t& p ) :
-    monk_spell_t( "celestial_breath", &p, p.artifact.celestial_breath.data().effectN( 1 ).trigger() )
-  {
-    background = dual = true;
-    may_miss = false;
-    radius = p.passives.celestial_breath_heal -> effectN( 1 ).radius();
-
-    heal = new celestial_breath_heal_t( p );
-  }
-
-  void tick( dot_t* d ) override
-  {
-    monk_spell_t::tick( d );
-
-    heal -> execute();
-  }
-};
-
 struct thunder_focus_tea_t : public monk_spell_t
 {
-  celestial_breath_t* breath;
 
   thunder_focus_tea_t( monk_t& p, const std::string& options_str ):
     monk_spell_t( "Thunder_focus_tea", &p, p.spec.thunder_focus_tea )
@@ -5854,9 +5786,6 @@ struct thunder_focus_tea_t : public monk_spell_t
 
     harmful = false;
     trigger_gcd = timespan_t::zero();
-
-    if ( p.artifact.celestial_breath.rank() )
-      breath = new celestial_breath_t( p );
   }
 
   void execute() override
@@ -5870,9 +5799,6 @@ struct thunder_focus_tea_t : public monk_spell_t
       if ( p() -> cooldown.healing_elixir -> up() )
         p() -> active_actions.healing_elixir -> execute();
     }
-
-    if ( p() -> artifact.celestial_breath.rank() )
-      breath -> execute();
   }
 };
 
@@ -5949,16 +5875,6 @@ struct soothing_mist_t: public monk_heal_t
     return monk_heal_t::ready();
   }
 
-  double action_multiplier() const override
-  {
-    double am = monk_heal_t::action_multiplier();
-
-    if ( p() -> artifact.soothing_remedies.rank() )
-      am *= 1 + p() -> artifact.soothing_remedies.percent();
-
-    return am;
-  }
-
   virtual void impact( action_state_t* s ) override
   {
     monk_heal_t::impact( s );
@@ -5971,41 +5887,6 @@ struct soothing_mist_t: public monk_heal_t
     monk_heal_t::last_tick( d );
 
     p() -> buff.channeling_soothing_mist -> expire();
-  }
-};
-
-// ==========================================================================
-// The Mists of Sheilun
-// ==========================================================================
-
-struct the_mists_of_sheilun_heal_t: public monk_heal_t
-{
-  the_mists_of_sheilun_heal_t( monk_t& p ):
-    monk_heal_t( "the_mists_of_sheilun", p, p.passives.the_mists_of_sheilun_heal )
-  {
-    background = dual = true;
-    aoe = -1;
-  }
-};
-
-// The Mists of Sheilun Buff ==========================================================
-struct the_mists_of_sheilun_buff_t : public buff_t
-{
-  the_mists_of_sheilun_heal_t* heal;
-
-  the_mists_of_sheilun_buff_t( monk_t* p ) :
-    buff_t( buff_creator_t( p, "the_mists_of_sheilun", p -> sheilun_staff_of_the_mists -> driver() -> effectN( 1 ).trigger() )
-      .chance( p -> sheilun_staff_of_the_mists -> driver() -> effectN( 1 ).percent() )
-      .default_value( p -> sheilun_staff_of_the_mists -> driver() -> effectN( 1 ).trigger() -> effectN( 1 ).percent() ) )
-  { 
-    heal = new the_mists_of_sheilun_heal_t( *p );
-  }
-
-  virtual void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
-  {
-    buff_t::expire_override( expiration_stacks, remaining_duration );
-
-    heal -> execute();
   }
 };
 
@@ -6045,16 +5926,12 @@ struct gust_of_mists_t: public monk_heal_t
 
 struct effuse_t: public monk_heal_t
 {
-  the_mists_of_sheilun_buff_t* artifact;
   gust_of_mists_t* mastery;
 
   effuse_t( monk_t& p, const std::string& options_str ):
     monk_heal_t( "effuse", p, p.spec.effuse )
   {
     parse_options( options_str );
-
-    if ( p.sheilun_staff_of_the_mists )
-      artifact = new the_mists_of_sheilun_buff_t( &p );
 
     mastery = new gust_of_mists_t( p );
 
@@ -6073,9 +5950,6 @@ struct effuse_t: public monk_heal_t
       {
         if ( p() -> buff.thunder_focus_tea -> up() )
           am *= 1 + p() -> spec.thunder_focus_tea -> effectN( 2 ).percent(); // saved as 200
-
-        if ( p() -> artifact.coalescing_mists.rank() )
-          am *= 1 + p() -> artifact.coalescing_mists.percent();
       }
 
     return am;
@@ -6087,9 +5961,6 @@ struct effuse_t: public monk_heal_t
 
     if ( p() -> buff.thunder_focus_tea -> up() )
       p() -> buff.thunder_focus_tea -> decrement();
-
-    if ( p() -> sheilun_staff_of_the_mists )
-      artifact -> trigger();
 
     if ( p() -> sets -> has_set_bonus( p() -> specialization(), T19OH, B8 ) )
       p() -> buff.tier19_oh_8pc -> trigger();
@@ -6104,7 +5975,6 @@ struct effuse_t: public monk_heal_t
 
 struct enveloping_mist_t: public monk_heal_t
 {
-  the_mists_of_sheilun_buff_t* artifact;
   gust_of_mists_t* mastery;
 
   enveloping_mist_t( monk_t& p, const std::string& options_str ):
@@ -6118,25 +5988,9 @@ struct enveloping_mist_t: public monk_heal_t
     if ( p.talent.mist_wrap )
       dot_duration += p.talent.mist_wrap -> effectN( 1 ).time_value();
 
-    if ( p.sheilun_staff_of_the_mists )
-      artifact = new the_mists_of_sheilun_buff_t( &p );
-
     mastery = new gust_of_mists_t( p );
 
     p.internal_id = internal_id;
-  }
-
-  double action_multiplier() const override
-  {
-    double am = monk_heal_t::action_multiplier();
-
-    if ( p() -> artifact.mists_of_wisdom.rank() )
-      am *= 1 + p() -> artifact.mists_of_wisdom.percent();
-
-    if ( p() -> artifact.way_of_the_mistweaver.rank() )
-      am *= 1 + p() -> artifact.way_of_the_mistweaver.percent();
-
-    return am;
   }
 
   virtual double cost() const override
@@ -6170,9 +6024,6 @@ struct enveloping_mist_t: public monk_heal_t
       p() -> buff.lifecycles_vivify -> trigger();
     }
 
-    if ( p() -> sheilun_staff_of_the_mists )
-      artifact -> trigger();
-
     mastery -> execute();
   }
 };
@@ -6195,9 +6046,6 @@ struct renewing_mist_dancing_mist_t: public monk_heal_t
     may_crit = may_miss = false;
     dot_duration = p.passives.renewing_mist_heal -> duration();
 
-    if ( p.artifact.extended_healing.rank() )
-      dot_duration += p.artifact.extended_healing.time_value();
-
     mastery = new gust_of_mists_t( p );
   }
 
@@ -6217,7 +6065,6 @@ struct renewing_mist_dancing_mist_t: public monk_heal_t
 // Base Renewing Mist Heal ================================================
 struct renewing_mist_t: public monk_heal_t
 {
-  the_mists_of_sheilun_buff_t* artifact;
   renewing_mist_dancing_mist_t* rem;
   gust_of_mists_t* mastery;
 
@@ -6227,15 +6074,6 @@ struct renewing_mist_t: public monk_heal_t
     parse_options( options_str );
     may_crit = may_miss = false;
     dot_duration = p.passives.renewing_mist_heal -> duration();
-
-    if ( p.sheilun_staff_of_the_mists )
-      artifact = new the_mists_of_sheilun_buff_t( &p );
-
-    if ( p.artifact.extended_healing.rank() )
-      dot_duration += p.artifact.extended_healing.time_value();
-
-    if ( p.artifact.dancing_mists.rank() )
-      rem = new renewing_mist_dancing_mist_t( p );
 
     mastery = new gust_of_mists_t( p );
   }
@@ -6258,15 +6096,6 @@ struct renewing_mist_t: public monk_heal_t
 
     if ( p() -> buff.thunder_focus_tea -> up() )
       p() -> buff.thunder_focus_tea -> decrement();
-
-    if ( p() -> sheilun_staff_of_the_mists )
-      artifact -> trigger();
-
-    if ( p() -> artifact.dancing_mists.rank() )
-    {
-      if ( rng().roll( p() -> artifact.dancing_mists.data().effectN( 1 ).percent() ) )
-          rem -> execute();
-    }
   }
 
   void tick( dot_t* d ) override
@@ -6284,7 +6113,6 @@ struct renewing_mist_t: public monk_heal_t
 
 struct vivify_t: public monk_heal_t
 {
-  the_mists_of_sheilun_buff_t* artifact;
   gust_of_mists_t* mastery;
 
   vivify_t( monk_t& p, const std::string& options_str ):
@@ -6295,9 +6123,6 @@ struct vivify_t: public monk_heal_t
     // 1 for the primary target, plus the value of the effect
     aoe = 1 + data().effectN( 1 ).base_value();
     spell_power_mod.direct = data().effectN( 2 ).sp_coeff();
-
-    if ( p.sheilun_staff_of_the_mists )
-      artifact = new the_mists_of_sheilun_buff_t( &p );
 
     mastery = new gust_of_mists_t( p );
 
@@ -6310,9 +6135,6 @@ struct vivify_t: public monk_heal_t
 
     if ( p() -> buff.uplifting_trance -> up() )
       am *= 1 + p() -> buff.uplifting_trance -> value();
-
-    if ( p() -> artifact.infusion_of_life.rank() )
-      am *= 1 + p() -> artifact.infusion_of_life.percent();
 
     return am;
   }
@@ -6345,9 +6167,6 @@ struct vivify_t: public monk_heal_t
 
       p() -> buff.lifecycles_enveloping_mist -> trigger();
     }
-
-    if ( p() -> sheilun_staff_of_the_mists )
-      artifact -> trigger();
 
     if ( p() -> buff.uplifting_trance -> up() )
       p() -> buff.uplifting_trance -> expire();
@@ -6383,15 +6202,11 @@ struct essence_font_t: public monk_spell_t
       if ( p() -> buff.refreshing_jade_wind -> up() )
         am *= 1 + p() -> buff.refreshing_jade_wind -> value();
 
-      if ( p() -> artifact.essence_of_the_mists.rank() )
-        am *= 1 + p() -> artifact.essence_of_the_mists.percent();
-
       return am;
     }
   };
 
   essence_font_heal_t* heal;
-  the_mists_of_sheilun_buff_t* artifact;
 
   essence_font_t( monk_t* p, const std::string& options_str ) :
     monk_spell_t( "essence_font", p, p -> spec.essence_font ),
@@ -6405,25 +6220,6 @@ struct essence_font_t: public monk_spell_t
     base_tick_time = data().effectN( 1 ).base_value() * data().effectN(1).period();
 
     add_child( heal );
-
-    if ( p -> sheilun_staff_of_the_mists )
-      artifact = new the_mists_of_sheilun_buff_t( p );
-  }
-
-  virtual void execute() override
-  {
-    monk_spell_t::execute();
-
-    if ( p() -> sheilun_staff_of_the_mists )
-      artifact -> trigger();
-  }
-
-  virtual void last_tick( dot_t* d ) override
-  {
-    monk_spell_t::last_tick( d );
-
-    if ( p() -> artifact.light_on_your_feet_mw.rank() )
-      p() -> buff.light_on_your_feet -> trigger();
   }
 };
 
@@ -6431,21 +6227,8 @@ struct essence_font_t: public monk_spell_t
 // Revival
 // ==========================================================================
 
-struct blessings_of_yulon_t: public monk_heal_t
-{
-  blessings_of_yulon_t( monk_t& p ):
-    monk_heal_t( "blessings_of_yulon", p, p.passives.blessings_of_yulon )
-  {
-    background = dual = false;
-    may_miss = may_crit = false;
-  }
-};
-
 struct revival_t: public monk_heal_t
 {
-  the_mists_of_sheilun_buff_t* artifact;
-  blessings_of_yulon_t* yulon;
-
   revival_t( monk_t& p, const std::string& options_str ):
     monk_heal_t( "revival", p, p.spec.revival )
   {
@@ -6454,61 +6237,8 @@ struct revival_t: public monk_heal_t
     may_miss = false;
     aoe = -1;
 
-    if ( p.sheilun_staff_of_the_mists )
-      artifact = new the_mists_of_sheilun_buff_t( &p );
-
-    if ( p.artifact.blessings_of_yulon.rank() )
-      yulon = new blessings_of_yulon_t( p );
-
     if ( sim -> pvp_crit )
       base_multiplier *= 2; // 08/03/2016
-  }
-
-  virtual void execute() override
-  {
-    monk_heal_t::execute();
-
-    if ( p() -> sheilun_staff_of_the_mists )
-      artifact -> trigger();
-  }
-
-  virtual void impact( action_state_t* s ) override
-  {
-    monk_heal_t::impact( s );
-
-    if ( p() -> artifact.blessings_of_yulon.rank() )
-    {
-      double percent = p() -> artifact.blessings_of_yulon.percent();
-      yulon -> base_dd_min = s -> result_amount * percent;
-      yulon -> base_dd_max = s -> result_amount * percent;
-      yulon -> execute();
-    }
-  }
-};
-
-// ==========================================================================
-// Sheilun's Gift
-// ==========================================================================
-
-struct sheiluns_gift_t: public monk_heal_t
-{
-  the_mists_of_sheilun_buff_t* artifact;
-
-  sheiluns_gift_t( monk_t& p, const std::string& options_str ):
-    monk_heal_t( "sheiluns_gift", p, &p.artifact.sheiluns_gift.data() )
-  {
-    parse_options( options_str );
-
-    may_miss = false;
-
-    artifact = new the_mists_of_sheilun_buff_t( &p );
-  }
-
-  virtual void execute() override
-  {
-    monk_heal_t::execute();
-
-    artifact -> trigger();
   }
 };
 
@@ -6975,70 +6705,8 @@ struct monk_absorb_t: public monk_action_t < absorb_t >
 // ==========================================================================
 // Life Cocoon
 // ==========================================================================
-// TODO: Double check if the Enveloping Mists and Renewing Mists from Mists
-// of life proc the mastery or not.
-
-// Enveloping Mist Mists of Life Mistweaver Artifact Trait =======================
-struct enveloping_mist_mists_of_life_t: public monk_heal_t
-{
-  enveloping_mist_mists_of_life_t( monk_t& p ):
-    monk_heal_t( "enveloping_mist_mists_of_life", p, p.spec.enveloping_mist )
-  {
-    background = dual = true;
-    may_miss = false;
-
-    dot_duration = p.spec.enveloping_mist -> duration();
-    if ( p.talent.mist_wrap )
-      dot_duration += timespan_t::from_seconds( p.talent.mist_wrap -> effectN( 1 ).base_value() );
-  }
-
-  double action_multiplier() const override
-  {
-    double am = monk_heal_t::action_multiplier();
-
-    if ( p() -> artifact.mists_of_wisdom.rank() )
-      am *= 1 + p() -> artifact.mists_of_wisdom.percent();
-
-    if ( p() -> artifact.way_of_the_mistweaver.rank() )
-      am *= 1 + p() -> artifact.way_of_the_mistweaver.percent();
-
-    return am;
-  }
-
-  virtual double cost() const override
-  {
-    return 0;
-  }
-};
-
-// Renewing Mist Mists of Life Mistweaver Artifact Traits ===================
-struct renewing_mist_mists_of_life_t: public monk_heal_t
-{
-  renewing_mist_mists_of_life_t( monk_t& p ):
-    monk_heal_t( "renewing_mist_dancing_mist", p, p.spec.renewing_mist )
-  {
-    background = dual = true;
-    may_crit = may_miss = false;
-    dot_duration = p.passives.renewing_mist_heal -> duration();
-
-    if ( p.artifact.extended_healing.rank() )
-      dot_duration += p.artifact.extended_healing.time_value();
-
-    if ( p.artifact.extended_healing.rank() )
-      dot_duration += p.artifact.extended_healing.time_value();
-  }
-
-  virtual double cost() const override
-  {
-    return 0;
-  }
-};
-
 struct life_cocoon_t: public monk_absorb_t
 {
-  renewing_mist_mists_of_life_t* rem;
-  enveloping_mist_mists_of_life_t* em;
-
   life_cocoon_t( monk_t& p, const std::string& options_str ):
     monk_absorb_t( "life_cocoon", p, p.spec.life_cocoon )
   {
@@ -7046,34 +6714,12 @@ struct life_cocoon_t: public monk_absorb_t
     harmful = may_crit = false;
     cooldown -> duration = data().charge_cooldown();
     spell_power_mod.direct = 31.164; // Hard Code 2015-Dec-29
-
-    if ( p.artifact.mists_of_life.rank() )
-    {
-      rem = new renewing_mist_mists_of_life_t( p );
-      em = new enveloping_mist_mists_of_life_t( p );
-    }
-  }
-
-  double action_multiplier() const override
-  {
-    double am = monk_absorb_t::action_multiplier();
-
-    if ( p() -> artifact.protection_of_shaohao.rank() )
-      am *= 1 + p() -> artifact.protection_of_shaohao.percent();
-
-    return am;
   }
 
   virtual void impact( action_state_t* s ) override
   {
     p() -> buff.life_cocoon -> trigger( 1, s -> result_amount );
     stats -> add_result( 0.0, s -> result_amount, ABSORB, s -> result, s -> block_result, s -> target );
-
-    if ( p() -> artifact.mists_of_life.rank() )
-    {
-      rem -> execute();
-      em -> execute();
-    }
   }
 };
 } // end namespace absorbs
@@ -7450,7 +7096,6 @@ action_t* monk_t::create_action( const std::string& name,
   if ( name == "whirling_dragon_punch" ) return new     whirling_dragon_punch_t( this, options_str );
   if ( name == "serenity" ) return new                  serenity_t( this, options_str );
   // Artifacts
-  if ( name == "sheiluns_gift" ) return new             sheiluns_gift_t( *this, options_str );
   if ( name == "strike_of_the_windlord" ) return new    strike_of_the_windlord_t( this, options_str );
   return base_t::create_action( name, options_str );
 }
@@ -7756,29 +7401,6 @@ void monk_t::init_spells()
   talent.rising_thunder              = find_talent_spell ("Rising Thunder");
   
   // Artifact spells ========================================
-  // Mistweaver
-  artifact.blessings_of_yulon         = find_artifact_spell( "Blessings of Yu'lon" );
-  artifact.celestial_breath           = find_artifact_spell( "Celestial Breath" );
-  artifact.coalescing_mists           = find_artifact_spell( "Coalescing Mists" );
-  artifact.dancing_mists              = find_artifact_spell( "Dancing Mists" );
-  artifact.effusive_mists             = find_artifact_spell( "Effusive Mists" );
-  artifact.essence_of_the_mists       = find_artifact_spell( "Essence of the Mists" );
-  artifact.extended_healing           = find_artifact_spell( "Extended Healing" );
-  artifact.infusion_of_life           = find_artifact_spell( "Infusion of Life" );
-  artifact.light_on_your_feet_mw      = find_artifact_spell( "Light on Your Feet" );
-  artifact.mists_of_life              = find_artifact_spell( "Mists of Life" );
-  artifact.mists_of_wisdom            = find_artifact_spell( "Mists of Wisdom" );
-  artifact.mistweaving                = find_artifact_spell( "Mistweaving" );
-  artifact.protection_of_shaohao      = find_artifact_spell( "Protection of Shaohao" );
-  artifact.sheiluns_gift              = find_artifact_spell( "Sheilun's Gift" );
-  artifact.shroud_of_mist             = find_artifact_spell( "Shroud of Mist" );
-  artifact.soothing_remedies          = find_artifact_spell( "Soothing Remedies" );
-  artifact.spirit_tether              = find_artifact_spell( "Spirit Tether" );
-  artifact.tendrils_of_revival        = find_artifact_spell( "Tendrils of Revival" );
-  artifact.the_mists_of_sheilun       = find_artifact_spell( "The Mists of Sheilun" );
-  artifact.way_of_the_mistweaver      = find_artifact_spell( "Way of the Mistweaver" );
-  artifact.whispers_of_shaohao        = find_artifact_spell( "Whispers of Shaohao" );
-
   // Windwalker
   artifact.crosswinds                    = find_artifact_spell( "Crosswinds" );
   artifact.dark_skies                    = find_artifact_spell( "Dark Skies" );
@@ -7902,17 +7524,13 @@ void monk_t::init_spells()
 
   // Mistweaver
   passives.totm_bok_proc                    = find_spell( 228649 );
-  passives.blessings_of_yulon               = find_spell( 199671 );
-  passives.celestial_breath_heal            = find_spell( 199565 ); // artifact.celestial_breath.data().effectN( 1 ).trigger() -> effectN( 1 ).trigger()
   passives.lifecycles_enveloping_mist       = find_spell( 197919 );
   passives.lifecycles_vivify                = find_spell( 197916 );
   passives.renewing_mist_heal               = find_spell( 119611 );
-  passives.shaohaos_mists_of_wisdom         = find_spell( 199877 ); // artifact.shaohaos_mists_of_wisdom.data().effectN( 1 ).trigger() -> effectN( 2 ).trigger()
   passives.soothing_mist_heal               = find_spell( 115175 );
   passives.soothing_mist_statue             = find_spell( 198533 );
   passives.spirit_of_the_crane              = find_spell( 210803 );
   passives.teachings_of_the_monastery_buff  = find_spell( 202090 );
-  passives.the_mists_of_sheilun_heal        = find_spell( 199894 );
   passives.uplifting_trance                 = find_spell( 197206 );
   passives.zen_pulse_heal                   = find_spell( 198487 );
 
@@ -8139,9 +7757,6 @@ void monk_t::create_buffs()
 
   buff.lifecycles_vivify = buff_creator_t( this, "lifecycles_vivify", passives.lifecycles_vivify )
     .default_value( passives.lifecycles_vivify -> effectN( 1 ).percent() );
-
-  buff.light_on_your_feet = buff_creator_t( this, "light_on_your_feet", find_spell( 199407 ) )
-    .default_value( artifact.light_on_your_feet_mw.rank() ? artifact.light_on_your_feet_mw.percent() : 0 );
 
   buff.refreshing_jade_wind = buff_creator_t( this, "refreshing_jade_wind", talent.refreshing_jade_wind )
     .default_value( talent.refreshing_jade_wind -> effectN( 1 ).trigger() -> effectN( 1 ).percent() )
@@ -9075,12 +8690,6 @@ void monk_t::target_mitigation( school_e school,
       if ( school != SCHOOL_PHYSICAL )
         // TODO: Magical Damage reduction (currently set to zero, but effect is still in place)
         s -> result_amount *= 1.0 + spec.stagger -> effectN( 5 ).percent();
-      break;
-    }
-    case MONK_MISTWEAVER:
-    {
-      if ( artifact.shroud_of_mist.rank() )
-        s -> result_amount *= 1.0 + artifact.shroud_of_mist.value();
       break;
     }
     default: break;
