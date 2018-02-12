@@ -4473,6 +4473,25 @@ struct black_ox_brew_t: public monk_spell_t
 };
 
 // ==========================================================================
+// Roll
+// ==========================================================================
+
+struct roll_t: public monk_spell_t
+{
+  roll_t( monk_t* player, const std::string& options_str ):
+    monk_spell_t( "roll", player, ( player -> talent.chi_torpedo ? spell_data_t::nil() : player -> spec.roll ) )
+  {
+    parse_options( options_str );
+
+    if ( player -> talent.celerity )
+    {
+      cooldown -> duration += player -> talent.celerity -> effectN( 1 ).time_value();
+      cooldown -> charges += player -> talent.celerity -> effectN( 2 ).base_value();
+    }
+  }
+};
+
+// ==========================================================================
 // Chi Torpedo
 // ==========================================================================
 
@@ -4482,6 +4501,12 @@ struct chi_torpedo_t: public monk_spell_t
     monk_spell_t( "chi_torpedo", player, player -> talent.chi_torpedo )
   {
     parse_options( options_str );
+
+    if ( player -> talent.celerity )
+    {
+      cooldown -> duration += player -> talent.celerity -> effectN( 1 ).time_value();
+      cooldown -> charges += player -> talent.celerity -> effectN( 2 ).base_value();
+    }
   }
 };
 
@@ -6449,6 +6474,7 @@ action_t* monk_t::create_action( const std::string& name,
   if ( name == "leg_sweep" ) return new                 leg_sweep_t( this, options_str );
   if ( name == "paralysis" ) return new                 paralysis_t( this, options_str );
   if ( name == "rising_sun_kick" ) return new           rising_sun_kick_t( this, options_str );
+  if ( name == "roll" ) return new                      roll_t( this, options_str );
   if ( name == "spear_hand_strike" ) return new         spear_hand_strike_t( this, options_str );
   if ( name == "spinning_crane_kick" ) return new       spinning_crane_kick_t( this, options_str );
   if ( name == "vivify" ) return new                    vivify_t( *this, options_str );
