@@ -2675,18 +2675,17 @@ struct arcane_missiles_tick_t : public arcane_mage_spell_t
 
 struct am_state_t : public mage_spell_state_t
 {
-  // TODO: Reuse this for Mana Adept
-  double extra_tick_time_reduction;
+  timespan_t extra_tick_time_reduction;
 
   am_state_t( action_t* action, player_t* target ) :
     mage_spell_state_t( action, target ),
-    extra_tick_time_reduction( 1.0 )
+    extra_tick_time_reduction()
   { }
 
   virtual void initialize() override
   {
     mage_spell_state_t::initialize();
-    extra_tick_time_reduction = 1.0;
+    extra_tick_time_reduction = timespan_t::zero();
   }
 
   virtual std::ostringstream& debug_str( std::ostringstream& s ) override
@@ -2706,6 +2705,8 @@ struct am_state_t : public mage_spell_state_t
 
 struct arcane_missiles_t : public arcane_mage_spell_t
 {
+  timespan_t mana_adept_reduction;
+
   arcane_missiles_t( mage_t* p, const std::string& options_str ) :
     arcane_mage_spell_t( "arcane_missiles", p,
                          p -> find_specialization_spell( "Arcane Missiles" ) )
@@ -2720,6 +2721,11 @@ struct arcane_missiles_t : public arcane_mage_spell_t
     hasted_ticks      = false;
     dynamic_tick_action = true;
     tick_action = new arcane_missiles_tick_t( p );
+
+    if ( p -> talents.mana_adept -> ok() )
+    {
+      mana_adept_reduction = p -> talents.mana_adept -> effectN( 1 ).trigger() -> effectN( 1 ).time_value();
+    }
   }
 
   // Flag Arcane Missiles as direct damage for triggering effects
@@ -2737,7 +2743,11 @@ struct arcane_missiles_t : public arcane_mage_spell_t
   {
     arcane_mage_spell_t::snapshot_state( state, rt );
 
-    // TODO: Snapshot Mana Adept here
+    if ( p() -> talents.mana_adept -> ok()
+      && p() -> resources.pct( RESOURCE_MANA ) > p() -> talents.mana_adept -> effectN( 1 ).percent() )
+    {
+      debug_cast<am_state_t*>( state ) -> extra_tick_time_reduction = mana_adept_reduction;
+    }
   }
 
   virtual timespan_t composite_dot_duration( const action_state_t* s ) const override
@@ -2755,7 +2765,12 @@ struct arcane_missiles_t : public arcane_mage_spell_t
 
   virtual timespan_t tick_time( const action_state_t* s ) const override
   {
-    return debug_cast<const am_state_t*>( s ) -> extra_tick_time_reduction * arcane_mage_spell_t::tick_time( s );
+    timespan_t t = base_tick_time;
+
+    t += debug_cast<const am_state_t*>( s ) -> extra_tick_time_reduction;
+    t *= s -> haste;
+
+    return t;
   }
 
   virtual double last_tick_factor( const dot_t*, const timespan_t&, const timespan_t& ) const override
