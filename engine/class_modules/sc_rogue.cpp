@@ -2415,17 +2415,28 @@ struct dispatch_t: public rogue_attack_t
 
   bool ready() override
   {
-    if ( target -> health_percentage() >= data().effectN( 4 ).percent() && ! p() -> buffs.dispatch -> up() )
+    if ( ! p() -> buffs.dispatch -> check() && target -> health_percentage() >= data().effectN( 4 ).percent() )
       return false;
 
     return rogue_attack_t::ready();
+  }
+
+  double cost() const override
+  {
+    double c = rogue_attack_t::cost();
+
+    if ( p() -> buffs.dispatch -> check() )
+      c = 0;
+
+    return c;
   }
 
   void execute() override
   {
     rogue_attack_t::execute();
 
-    p() -> buffs.dispatch -> expire();
+    if ( p() -> buffs.dispatch -> up() )
+      p() -> buffs.dispatch -> expire();
   }
 };
 
