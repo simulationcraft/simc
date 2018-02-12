@@ -400,6 +400,7 @@ public:
     buff_t* presence_of_mind;
     buff_t* expanding_mind;   // T21 2pc Arcane
     buff_t* quick_thinker;    // T21 4pc Arcane
+    buff_t* rule_of_threes;
 
     // Fire
     buff_t* combustion;
@@ -566,6 +567,8 @@ public:
   struct talents_list_t
   {
     // Tier 15
+    const spell_data_t* rule_of_threes;
+    const spell_data_t* mana_adept;
     const spell_data_t* arcane_familiar;
     const spell_data_t* pyromaniac;
     const spell_data_t* conflagration;
@@ -2517,7 +2520,7 @@ struct arcane_blast_t : public arcane_mage_spell_t
                 p() -> spec.arcane_charge -> effectN( 5 ).percent();
 
     //TODO: Find a work-around to remove hardcoding
-    if ( p() -> buffs.rhonins_assaulting_armwraps -> check() )
+    if ( p() -> buffs.rhonins_assaulting_armwraps -> check() || p() -> buffs.rule_of_threes -> check() )
     {
       c = 0;
     }
@@ -2544,8 +2547,23 @@ struct arcane_blast_t : public arcane_mage_spell_t
       p() -> buffs.presence_of_mind -> decrement();
     }
 
+    // Behavior assumes only builers ( AE/AB ) will trigger. If CU ends up triggering, will need to change.
+    // For now, only AB seems to trigger it.
+    if ( p() -> talents.rule_of_threes -> ok() )
+    {
+        if ( p()-> buffs.arcane_charge->current_stack == 3 )
+        {
+            p() -> buffs.rule_of_threes -> trigger();
+        }
+        else if ( p() -> buffs.rule_of_threes -> up() &&
+                  p() -> buffs.arcane_charge -> current_stack == 4 )
+        {
+            p() -> buffs.rule_of_threes -> expire();
+        }
+    }
     p() -> buffs.t19_oh_buff -> trigger();
     p() -> buffs.quick_thinker -> trigger();
+
   }
 
   virtual double action_multiplier() const override
@@ -6303,6 +6321,8 @@ void mage_t::init_spells()
 
   // Talents
   // Tier 15
+  talents.rule_of_threes     = find_talent_spell( "Rule of Threes"     );
+  talents.mana_adept         = find_talent_spell( "Mana Adept"         );
   talents.arcane_familiar    = find_talent_spell( "Arcane Familiar"    );
   talents.pyromaniac         = find_talent_spell( "Pyromaniac"         );
   talents.conflagration      = find_talent_spell( "Conflagration"      );
@@ -6446,7 +6466,8 @@ void mage_t::create_buffs()
   buffs.quick_thinker         = haste_buff_creator_t( this, "quick_thinker", find_spell( 253299 ) )
                                   .default_value( find_spell( 253299 ) -> effectN( 1 ).percent() )
                                   .chance( sets -> set( MAGE_ARCANE, T21, B4 ) -> proc_chance() );
-
+  buffs.rule_of_threes        = buff_creator_t( this, "rule_of_threes", find_spell( 264774 ) );
+  
   // Fire
   buffs.combustion             = buff_creator_t( this, "combustion", find_spell( 190319 ) )
                                    .cd( timespan_t::zero() )
