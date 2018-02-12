@@ -2753,6 +2753,14 @@ void player_t::create_buffs()
     debuffs.flying       = buff_creator_t( this, "flying" ).max_stack( 1 );
     debuffs.mortal_wounds= buff_creator_t( this, "mortal_wounds", find_spell( 115804 ) )
                            .default_value( std::fabs( find_spell( 115804 ) -> effectN( 1 ).percent() ) );
+
+    // BfA Raid Damage Modifier Debuffs
+    debuffs.expose_armor = buff_creator_t( this, "expose_armor", find_spell( 113746 ) )
+                           .default_value( find_spell( 113746 ) -> effectN( 1 ).percent() )
+                           .cd( timespan_t::from_seconds( 5 ) ); // Seems to have a 5s ICD
+
+    debuffs.chaos_brand = buff_creator_t( this, "chaos_brand", find_spell( 1490 ) )
+                          .default_value( find_spell( 1490 )->effectN( 1 ).percent() );
   }
 
   // .. for players, but only if there's a "damage taken" raid event
@@ -3539,6 +3547,8 @@ double player_t::composite_attribute_multiplier( attribute_e attr ) const
         m *= 1.0 + buffs.archmages_greater_incandescence_int -> data().effectN( 1 ).percent();
       if ( buffs.archmages_incandescence_int -> check() )
         m *= 1.0 + buffs.archmages_incandescence_int -> data().effectN( 1 ).percent();
+      if ( sim -> auras.arcane_intellect -> check() )
+        m *= 1.0 + sim -> auras.arcane_intellect -> value();
       break;
     case ATTR_SPIRIT:
       if ( buffs.amplification )
@@ -3655,7 +3665,7 @@ double player_t::composite_rating( rating_e rating ) const
 
 // player_t::composite_player_vulnerability =================================
 
-double player_t::composite_player_vulnerability( school_e /* school */ ) const
+double player_t::composite_player_vulnerability( school_e school ) const
 {
   double m = debuffs.invulnerable && debuffs.invulnerable -> check() ? 0.0 : 1.0;
 
@@ -3665,6 +3675,12 @@ double player_t::composite_player_vulnerability( school_e /* school */ ) const
   // 1% damage taken per stack, arbitrary because this buff is completely fabricated!
   if ( debuffs.damage_taken && debuffs.damage_taken -> check() )
     m *= 1.0 + debuffs.damage_taken -> current_stack * 0.01;
+
+  if ( debuffs.expose_armor && dbc::is_school( debuffs.expose_armor->data().effectN( 1 ).school_type(), school ) )
+    m *= 1.0 + debuffs.expose_armor -> value();
+
+  if ( debuffs.chaos_brand && dbc::is_school( debuffs.chaos_brand->data().effectN( 1 ).school_type(), school ) )
+    m *= 1.0 + debuffs.chaos_brand -> value();
 
   return m;
 }

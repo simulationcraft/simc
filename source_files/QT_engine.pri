@@ -34,6 +34,7 @@
  HEADERS += engine/util/utf8/core.h
  HEADERS += engine/util/utf8/checked.h
  HEADERS += engine/util/utf8.h
+ HEADERS += engine/class_modules/paladin/sc_paladin.hpp
  SOURCES += engine/util/xml.cpp
  SOURCES += engine/util/str.cpp
  SOURCES += engine/util/stopwatch.cpp
@@ -91,7 +92,8 @@
  SOURCES += engine/class_modules/sc_shaman.cpp
  SOURCES += engine/class_modules/sc_rogue.cpp
  SOURCES += engine/class_modules/sc_priest.cpp
- SOURCES += engine/class_modules/sc_paladin.cpp
+ SOURCES += engine/class_modules/paladin/sc_paladin.cpp
+ SOURCES += engine/class_modules/paladin/sc_paladin_retribution.cpp
  SOURCES += engine/class_modules/sc_monk.cpp
  SOURCES += engine/class_modules/sc_mage.cpp
  SOURCES += engine/class_modules/sc_hunter.cpp

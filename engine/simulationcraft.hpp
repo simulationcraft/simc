@@ -1145,6 +1145,7 @@ enum expr_data_e
   DATA_MASTERY_SPELL,
   DATA_SPECIALIZATION_SPELL,
   DATA_ARTIFACT_SPELL,
+  DATA_AZERITE_SPELL,
 };
 
 struct spell_data_expr_t
@@ -1659,6 +1660,9 @@ struct sim_t : private sc_thread_t
   // Buffs and Debuffs Overrides
   struct overrides_t
   {
+    // Buff overrides
+    int arcane_intellect;
+
     // Debuff overrides
     int mortal_wounds;
     int bleeding;
@@ -1667,6 +1671,11 @@ struct sim_t : private sc_thread_t
     int    bloodlust;
     std::vector<uint64_t> target_health;
   } overrides;
+
+  struct auras_t
+  {
+    buff_t* arcane_intellect;
+  } auras;
 
   // Expansion specific custom parameters. Defaults in the constructor.
   struct expansion_opt_t
@@ -4196,6 +4205,10 @@ struct player_t : public actor_t
 
     // WoD debuffs
     buff_t* mortal_wounds;
+
+    // BfA Raid Damage Modifier Debuffs
+    buff_t* expose_armor; // Rogue
+    buff_t* chaos_brand;  // Demon Hunter
   } debuffs;
 
   struct gains_t

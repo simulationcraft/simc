@@ -41,6 +41,10 @@ class Config:
             logging.error('No "output_base" defined in general section')
             return False
 
+        if not os.access(self.base_output_path, os.W_OK):
+            logging.error('Cannot output to "%s", directory not writable', self.base_output_path)
+            return False
+
         try:
             self.base_module = importlib.import_module(self.base_module_path)
         except:

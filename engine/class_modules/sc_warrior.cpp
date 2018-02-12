@@ -159,6 +159,7 @@ public:
     buff_t* vengeance_ignore_pain;
     buff_t* wrecking_ball;
     buff_t* scales_of_earth;
+    buff_t* protection_rage;
 
     buff_t* raging_thirst;
     buff_t* t20_fury_4p;
@@ -224,6 +225,7 @@ public:
     gain_t* booming_voice;
     gain_t* thunder_clap;
     gain_t* pulse_of_battle;
+    gain_t* protection_t20_2p;
 
     // Legendarys
     gain_t* ceannar_rage;
@@ -3588,6 +3590,11 @@ struct shield_slam_t: public warrior_attack_t
       p() -> resource_gain( RESOURCE_RAGE, rage_gain * ( 1.0 + ( p() -> buff.demoralizing_shout -> check() ? p() -> artifact.might_of_the_vrykul.percent() : 0 ) ), p() -> gain.shield_slam );
     }
     p() -> buff.bindings_of_kakushan -> expire();
+
+    if ( p() -> sets -> has_set_bonus( WARRIOR_PROTECTION, T20, B4 ) )
+    {
+      p() -> cooldown.berserker_rage -> adjust( timespan_t::from_seconds( -0.1 * p() -> sets -> set( WARRIOR_PROTECTION, T20, B4) -> effectN( 1 ).base_value() ), false );
+    }
   }
 
   bool ready() override
@@ -4200,6 +4207,14 @@ struct berserker_rage_t: public warrior_spell_t
     if ( p() -> talents.outburst -> ok() )
     {
       p() -> enrage();
+    }
+
+    if ( p() -> sets -> has_set_bonus( WARRIOR_PROTECTION, T20, B2 ) )
+    {
+      p() -> resource_gain( RESOURCE_RAGE,
+                            p() -> sets -> set( WARRIOR_PROTECTION, T20, B2 ) -> effectN( 1 ).trigger() -> effectN( 1 ).resource( RESOURCE_RAGE ),
+                            p() -> gain.protection_t20_2p );
+      p() -> buff.protection_rage -> trigger();
     }
   }
 };
@@ -5627,6 +5642,23 @@ struct debuff_demo_shout_t: public warrior_buff_t < buff_t >
   }
 };
 
+// Protection T20 2P buff that generates rage over time
+
+struct protection_rage_t: public warrior_buff_t < buff_t >
+{
+  protection_rage_t( warrior_t& p, const std::string&n, const spell_data_t*s ):
+    base_t( p, buff_creator_t( &p, n, s )
+      .tick_callback( [ this, &p ]( buff_t* b, int, const timespan_t& ) {
+        p.resource_gain( RESOURCE_RAGE,
+                         p.sets -> set( WARRIOR_PROTECTION, T20, B2 ) -> effectN( 1 ).trigger() -> effectN( 2 ).resource( RESOURCE_RAGE ),
+                         p.gain.protection_t20_2p );
+  } ) )
+  {
+    // The initial tick generates 20 rage and is done in Berserker's Rage execute
+    tick_zero = false;
+  }
+};
+
 // That legendary crap ring ===========================================================
 
 struct sephuzs_secret_buff_t: public haste_buff_t
@@ -5899,6 +5931,8 @@ void warrior_t::create_buffs()
   buff.outrage = buff_creator_t ( this, "outrage", sets -> set( WARRIOR_FURY, T21, B4) -> effectN( 1 ).trigger() )
     .default_value( sets -> set( WARRIOR_FURY, T21, B4) -> effectN( 1 ).trigger() -> effectN( 1 ).percent() )
     .chance( sets -> has_set_bonus( WARRIOR_FURY, T21, B4) );
+
+  buff.protection_rage = new protection_rage_t( *this, "protection_rage", find_spell( 242303 ) );
 }
 
 // warrior_t::init_scaling ==================================================
@@ -5939,6 +5973,7 @@ void warrior_t::init_gains()
   gain.booming_voice = get_gain( "booming_voice" );
   gain.thunder_clap = get_gain( "thunder_clap" );
   gain.pulse_of_battle = get_gain( "pulse_of_battle" );
+  gain.protection_t20_2p = get_gain( "t20_2p" );
 
   gain.ceannar_rage = get_gain( "ceannar_rage" );
   gain.valarjar_berserking = get_gain( "valarjar_berserking" );

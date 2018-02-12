@@ -11,11 +11,6 @@ SPELL_HOTFIX_MAP_NEW  = 0xFFFFFFFFFFFFFFFF
 EFFECT_HOTFIX_MAP_NEW = 0xFFFFFFFF
 POWER_HOTFIX_MAP_NEW  = 0xFFFFFFFF
 
-# Client does not get certain hotfix data, so we need to blacklist specific
-# fields in specific DB2 files to not hotfix themselves
-HOTFIX_FIELD_BLACKLIST = {
-}
-
 def escape_string(tmpstr):
     tmpstr = tmpstr.replace("\\", "\\\\")
     tmpstr = tmpstr.replace("\"", "\\\"")
@@ -23,54 +18,6 @@ def escape_string(tmpstr):
     tmpstr = tmpstr.replace("\r", "\\r")
 
     return tmpstr
-
-def hotfix_fields(orig, hotfix):
-    if orig.id != hotfix.id:
-        hotfix.add_hotfix(-1, orig)
-        return -1
-
-    hotfix_fields = 0
-    for idx in range(0, len(orig._fo)):
-        fmt = orig._fo[idx]
-        name = orig._fi[idx]
-        if 'S' in fmt and orig._dbcp.get_string(orig._d[idx]) != hotfix._dbcp.get_string(hotfix._d[idx]):
-            # Blacklist check
-            if name not in HOTFIX_FIELD_BLACKLIST.get(orig.dbc_name(), []):
-                hotfix_fields |= (1 << idx)
-                hotfix.add_hotfix(orig._fi[idx], orig)
-        elif 'S' not in fmt and orig._d[idx] != hotfix._d[idx]:
-            # Blacklist check
-            if name not in HOTFIX_FIELD_BLACKLIST.get(orig.dbc_name(), []):
-                hotfix_fields |= (1 << idx)
-                hotfix.add_hotfix(orig._fi[idx], orig)
-
-    return hotfix_fields
-
-def apply_hotfixes(opts, cache, dbc_parser, database):
-    for record in cache.entries(dbc_parser):
-        try:
-            hotfix_data = hotfix_fields(database[record.id], record)
-            # Add some additional information for debugging purposes
-            if opts.debug and hotfix_data:
-                if database[record.id].id == record.id:
-                    logging.debug('%s REPLACE OLD: %s',
-                        dbc_parser.file_name(), database[record.id])
-                    logging.debug('%s REPLACE NEW: %s',
-                        dbc_parser.file_name(), record)
-                else:
-                    logging.debug('%s ADD: %s',
-                        dbc_parser.file_name(), record)
-            elif opts.debug and not hotfix_data:
-                logging.debug('Identical data for %s', record)
-
-            if hotfix_data:
-                record._flags = hotfix_data
-                database[record.id] = record
-        except Exception as e:
-            logging.error('Error while parsing %s: record=%s, error=%s',
-                dbc_parser.class_name(), record, e)
-            traceback.print_exc()
-            sys.exit(1)
 
 def output_hotfixes(generator, data_str, hotfix_data):
     generator._out.write('#define %s%s_HOTFIX%s_SIZE (%d)\n\n' % (
@@ -123,23 +70,6 @@ def output_hotfixes(generator, data_str, hotfix_data):
             ))
 
     generator._out.write('};\n\n')
-
-# Generic linker
-def link(source_db, source_key, target_db, target_attr):
-    for id_, data in source_db.items():
-        v = 0
-        if isinstance(source_key, str):
-            v = getattr(data, source_key, 0)
-        elif isinstance(source_key, types.FunctionType) or isinstance(source_key, types.MethodType):
-            v = source_key(source_db, data, target_db, target_attr)
-        if v == 0:
-            continue
-
-        target = target_db[v]
-        if target.id != v:
-            continue
-
-        target.add_link(target_attr, data)
 
 class CSVDataGenerator(object):
     def __init__(self, options, csvs):
@@ -294,7 +224,7 @@ class DataGenerator(object):
     _pet_names   = [ None, 'Ferocity', 'Tenacity', None, 'Cunning' ]
     _pet_masks   = [ None, 0x1,        0x2,        None, 0x4       ]
 
-    def __init__(self, options, data_store = None):
+    def __init__(self, options, data_store):
         self._options = options
         self._data_store = data_store
         self._out = None
@@ -316,21 +246,6 @@ class DataGenerator(object):
 
             self._race_map[DataGenerator._race_names[i]] = i
             self._race_map[1 << (i - 1)] = i
-
-        #print self._class_map, self._race_map
-        if self._options.output:
-            self._out = pathlib.Path(self._options.output).open('w', encoding="utf-8")
-            if not self._out.writable():
-                print('Unable to write to file "%s"' % self._options.output)
-                return False
-        elif self._options.append:
-            self._out = pathlib.Path(self._options.append).open('a', encoding="utf-8")
-            if not self._out.writable():
-                print('Unable to write to file "%s"' % self._options.append)
-                return False
-        else:
-            self._out = sys.stdout
-
 
     def format_str(self, string):
         return '%s%s%s' % (
@@ -365,36 +280,21 @@ class DataGenerator(object):
             self._out.close()
 
     def initialize(self):
-        cache = dbc.file.DBCache(self._options)
-        if not cache.open():
+        if self._options.output:
+            self._out = pathlib.Path(self._options.output).open('w', encoding = "utf-8")
+        elif self._options.append:
+            self._out = pathlib.Path(self._options.append).open('a', encoding = "utf-8")
+        else:
+            self._out = sys.stdout
+
+        if not self._out.writable():
+            logging.error('Unable to write to file "%s"', self._options.append)
             return False
 
         for i in self._dbc:
-            dbcf = None
-            if self._data_store:
-                dbase = self._data_store.get(i)
-                if '_%s_db' % self.attrib_name(i) not in dir(self):
-                    setattr(self, '_%s_db' % self.attrib_name(i), dbase)
-            else:
-                dbcf = dbc.file.DBCFile(self._options, self.file_path(i))
-                if not dbcf.open():
-                    return False
-
-                if '_%s_db' % dbcf.name() not in dir(self):
-                    setattr(self, '_%s_db' % dbcf.name(), dbc.db.DBCDB(dbcf.record_class(), dbcf.parser))
-
-                dbase = getattr(self, '_%s_db' % dbcf.name())
-
-                for record in dbcf:
-                    try:
-                        dbase[record.id] = record
-                    except:
-                        print('breakage', record, dbcf)
-                        print(dbcf, record, type(record), record._fi)
-                        sys.exit(1)
-
-                logging.debug('Hotfixing %s ...', dbcf.file_name)
-                apply_hotfixes(self._options, cache, dbcf.parser, dbase)
+            dbase = self._data_store.get(i)
+            if '_%s_db' % self.attrib_name(i) not in dir(self):
+                setattr(self, '_%s_db' % self.attrib_name(i), dbase)
 
         return True
 
@@ -405,7 +305,7 @@ class DataGenerator(object):
         return ''
 
 class RealPPMModifierGenerator(DataGenerator):
-    def __init__(self, options, data_store = None):
+    def __init__(self, options, data_store):
         super().__init__(options, data_store)
 
         self._dbc = [ 'ChrSpecialization', 'SpellProcsPerMinute', 'SpellProcsPerMinuteMod', 'SpellAuraOptions' ]
@@ -460,7 +360,7 @@ class RealPPMModifierGenerator(DataGenerator):
         self._out.write('};\n')
 
 class SpecializationEnumGenerator(DataGenerator):
-    def __init__(self, options, data_store = None):
+    def __init__(self, options, data_store):
         self._dbc = [ 'ChrSpecialization' ]
 
         super().__init__(options, data_store)
@@ -569,7 +469,7 @@ class SpecializationEnumGenerator(DataGenerator):
         self._out.write('} // namespace specdata\n')
 
 class SpecializationListGenerator(DataGenerator):
-    def __init__(self, options, data_store = None):
+    def __init__(self, options, data_store):
         self._dbc = [ 'ChrSpecialization' ]
 
         super().__init__(options, data_store)
@@ -653,7 +553,7 @@ class SpecializationListGenerator(DataGenerator):
         self._out.write('};\n\n')
 
 class TalentDataGenerator(DataGenerator):
-    def __init__(self, options, data_store = None):
+    def __init__(self, options, data_store):
         super().__init__(options, data_store)
 
         self._dbc = [ 'Spell', 'Talent', 'ChrSpecialization' ]
@@ -718,7 +618,7 @@ class TalentDataGenerator(DataGenerator):
         self._out.write('};')
 
 class RulesetItemUpgradeGenerator(DataGenerator):
-    def __init__(self, options, data_store = None):
+    def __init__(self, options, data_store):
         self._dbc = [ 'RulesetItemUpgrade' ]
 
         super().__init__(options, data_store)
@@ -741,7 +641,7 @@ class RulesetItemUpgradeGenerator(DataGenerator):
         self._out.write('};\n\n')
 
 class ItemUpgradeDataGenerator(DataGenerator):
-    def __init__(self, options, data_store = None):
+    def __init__(self, options, data_store):
         self._dbc = [ 'ItemUpgrade' ]
 
         super().__init__(options, data_store)
@@ -807,7 +707,7 @@ class ItemDataGenerator(DataGenerator):
         "Heroic Warforged"     : 0x12,
     }
 
-    def __init__(self, options, data_store = None):
+    def __init__(self, options, data_store):
         self._dbc = [ 'Item', 'ItemEffect', 'SpellEffect', 'Spell', 'JournalEncounterItem', 'ItemNameDescription' ]
         if options.build < 23436:
             self._dbc.append('Item-sparse')
@@ -820,12 +720,9 @@ class ItemDataGenerator(DataGenerator):
         if not DataGenerator.initialize(self):
             return False
 
-        # Reverse map various things to Spell records so we can easily generate output
-        link(self._spelleffect_db, self._options.build < 25600 and 'id_spell' or 'id_parent', self._spell_db, 'add_effect')
-
-        # Various Item-related data model linkages
-        link(self._itemeffect_db, self._options.build < 25600 and 'id_item' or 'id_parent', self._options.build < 23436 and self._item_sparse_db or self._itemsparse_db, 'spells')
-        link(self._journalencounteritem_db, 'id_item', self._options.build < 23436 and self._item_sparse_db or self._itemsparse_db, 'journal')
+        self._data_store.link('SpellEffect',        self._options.build < 25600 and 'id_spell' or 'id_parent', 'Spell', 'add_effect' )
+        self._data_store.link('ItemEffect', self._options.build < 25600 and 'id_item' or 'id_parent', self._options.build < 23436 and 'Item-sparse' or 'ItemSparse', 'spells')
+        self._data_store.link('JournalEncounterItem', 'id_item', self._options.build < 23436 and 'Item-sparse' or 'ItemSparse', 'journal')
 
         return True
 
@@ -1481,6 +1378,7 @@ class SpellDataGenerator(DataGenerator):
           ( 187292, 0 ),                            # Ro3 buff (?)
           ( 264352, 0 ),                            # Mana Adept
           ( 263725, 0 ),                            # Clearcasting buff
+          ( 264774, 0 ),                            # Ro3 buff (talent)
         ),
 
         # Warlock:
@@ -1827,7 +1725,7 @@ class SpellDataGenerator(DataGenerator):
         'demonhunter': 107,
     }
 
-    def __init__(self, options, data_store = None):
+    def __init__(self, options, data_store):
         super().__init__(options, data_store)
 
         self._dbc = [ 'Spell', 'SpellEffect', 'SpellScaling', 'SpellCooldowns', 'SpellRange',
@@ -1838,7 +1736,7 @@ class SpellDataGenerator(DataGenerator):
                 'SpellEquippedItems', 'SpecializationSpells', 'ChrSpecialization',
                 'SpellMisc', 'SpellProcsPerMinute', 'ItemSetSpell',
                 'ItemEffect', 'MinorTalent', 'ArtifactPowerRank', 'ArtifactPower', 'Artifact',
-                'SpellShapeshift', 'SpellMechanic', 'SpellLabel' ]
+                'SpellShapeshift', 'SpellMechanic', 'SpellLabel', 'AzeritePower' ]
 
         if self._options.build < 25600:
             self._dbc.append('SpellEffectScaling')
@@ -1858,50 +1756,30 @@ class SpellDataGenerator(DataGenerator):
         if not super().initialize():
             return False
 
-        if self._data_store:
-            self._data_store.link('SpellEffect',        'id_spell', 'Spell', 'add_effect'   )
-            self._data_store.link('SpellPower',         'id_spell', 'Spell', 'power'        )
-            self._data_store.link('SpellCategories',    'id_spell', 'Spell', 'categories'   )
-            self._data_store.link('SpellScaling',       'id_spell', 'Spell', 'scaling'      )
-            self._data_store.link('SpellLevels',        'id_spell', 'Spell', 'level'        )
-            self._data_store.link('SpellCooldowns',     'id_spell', 'Spell', 'cooldown'     )
-            self._data_store.link('SpellAuraOptions',   'id_spell', 'Spell', 'aura_option'  )
-            self._data_store.link('SpellEquippedItems', 'id_spell', 'Spell', 'equipped_item')
-            self._data_store.link('SpellClassOptions',  'id_spell', 'Spell', 'class_option' )
-            self._data_store.link('SpellShapeshift',    'id_spell', 'Spell', 'shapeshift'   )
-            self._data_store.link('ArtifactPowerRank',  'id_spell', 'Spell', 'artifact_power')
+        self._data_store.link('SpellEffect',        self._options.build < 25600 and 'id_spell' or 'id_parent', 'Spell', 'add_effect' )
+        self._data_store.link('SpellPower',         self._options.build < 25600 and 'id_spell' or 'id_parent', 'Spell', 'power'      )
+        self._data_store.link('SpellCategories',    self._options.build < 25600 and 'id_spell' or 'id_parent', 'Spell', 'categories' )
+        self._data_store.link('SpellLevels',        self._options.build < 25600 and 'id_spell' or 'id_parent', 'Spell', 'level'      )
+        self._data_store.link('SpellCooldowns',     self._options.build < 25600 and 'id_spell' or 'id_parent', 'Spell', 'cooldown'   )
+        self._data_store.link('SpellAuraOptions',   self._options.build < 25600 and 'id_spell' or 'id_parent', 'Spell', 'aura_option')
+        self._data_store.link('SpellLabel',         self._options.build < 25600 and 'id_spell' or 'id_parent', 'Spell', 'label'      )
 
+        self._data_store.link('SpellScaling',       'id_spell', 'Spell', 'scaling'       )
+        self._data_store.link('SpellEquippedItems', 'id_spell', 'Spell', 'equipped_item' )
+        self._data_store.link('SpellClassOptions',  'id_spell', 'Spell', 'class_option'  )
+        self._data_store.link('SpellShapeshift',    'id_spell', 'Spell', 'shapeshift'    )
+        self._data_store.link('ArtifactPowerRank',  'id_spell', 'Spell', 'artifact_power')
+
+        if self._options.build >= 25600:
+            self._data_store.link('SpellMisc',                  'id_parent', 'Spell', 'misc'         )
+            self._data_store.link('SpellXDescriptionVariables', 'id_spell',  'Spell', 'desc_var_link')
+
+        if self._options.build < 25600:
             self._data_store.link('SpellEffectScaling', 'id_effect', 'SpellEffect', 'scaling')
 
-            self._data_store.link('ItemSetSpell', 'id_item_set', 'ItemSet', 'bonus')
+        self._data_store.link('ItemSetSpell', 'id_item_set', 'ItemSet', 'bonus')
 
-            self._data_store.link('ItemEffect', 'id_item', self._options.build < 23436 and 'Item-sparse' or 'ItemSparse', 'spells')
-        else:
-            # Reverse map various things to Spell records so we can easily generate output
-            link(self._spelleffect_db, self._options.build < 25600 and 'id_spell' or 'id_parent', self._spell_db, 'add_effect')
-            link(self._spellpower_db, self._options.build < 25600 and 'id_spell' or 'id_parent', self._spell_db, 'power')
-            link(self._spellcategories_db, self._options.build < 25600 and 'id_spell' or 'id_parent', self._spell_db, 'categories')
-            link(self._spellscaling_db, 'id_spell', self._spell_db, 'scaling')
-            link(self._spelllevels_db, self._options.build < 25600 and 'id_spell' or 'id_parent', self._spell_db, 'level')
-            link(self._spellcooldowns_db, self._options.build < 25600 and 'id_spell' or 'id_parent', self._spell_db, 'cooldown')
-            link(self._spellauraoptions_db, self._options.build < 25600 and 'id_spell' or 'id_parent', self._spell_db, 'aura_option')
-            link(self._spellequippeditems_db, 'id_spell', self._spell_db, 'equipped_item')
-            link(self._spellclassoptions_db, 'id_spell', self._spell_db, 'class_option')
-            link(self._spellshapeshift_db, 'id_spell', self._spell_db, 'shapeshift')
-            link(self._artifactpowerrank_db, 'id_spell', self._spell_db, 'artifact_power')
-            link(self._spelllabel_db, self._options.build < 25600 and 'id_spell' or 'id_parent', self._spell_db, 'label')
-            if self._options.build >= 25600:
-                link(self._spellmisc_db, 'id_parent', self._spell_db, 'misc')
-                link(self._spellxdescriptionvariables_db, 'id_spell', self._spell_db, 'desc_var_link')
-
-            # Effect data model linkage
-            if self._options.build < 25600:
-                link(self._spelleffectscaling_db, 'id_effect', self._spelleffect_db, 'scaling')
-
-            # Various Item-related data model linkages
-            link(self._itemeffect_db, self._options.build < 25600 and 'id_item' or 'id_parent', self._options.build < 23436 and self._item_sparse_db or self._itemsparse_db, 'spells')
-            link(self._itemsetspell_db, self._options.build < 25600 and 'id_item_set' or 'id_parent', self._itemset_db, 'bonus')
-
+        self._data_store.link('ItemEffect', self._options.build < 25600 and 'id_item' or 'id_parent', self._options.build < 23436 and 'Item-sparse' or 'ItemSparse', 'spells')
         return True
 
     def class_mask_by_skill(self, skill):
@@ -2353,6 +2231,14 @@ class SpellDataGenerator(DataGenerator):
 
         # Artifact spells
         for _, data in self._artifactpowerrank_db.items():
+            spell_id = data.id_spell
+            spell = self._spell_db[spell_id]
+            if spell.id != spell_id:
+                continue
+
+            self.process_spell(spell_id, ids, 0, 0)
+
+        for _, data in self._azeritepower_db.items():
             spell_id = data.id_spell
             spell = self._spell_db[spell_id]
             if spell.id != spell_id:
@@ -2885,7 +2771,7 @@ class SpellDataGenerator(DataGenerator):
         return ''
 
 class MasteryAbilityGenerator(DataGenerator):
-    def __init__(self, options, data_store = None):
+    def __init__(self, options, data_store):
         super().__init__(options, data_store)
 
         self._dbc = [ 'Spell', 'ChrSpecialization', 'SpellMisc' ]
@@ -2966,7 +2852,7 @@ class MasteryAbilityGenerator(DataGenerator):
         self._out.write('};\n')
 
 class RacialSpellGenerator(SpellDataGenerator):
-    def __init__(self, options, data_store = None):
+    def __init__(self, options, data_store):
         super().__init__(options, data_store)
 
         SpellDataGenerator._class_categories = []
@@ -3086,7 +2972,7 @@ class RacialSpellGenerator(SpellDataGenerator):
         self._out.write('};\n')
 
 class SpecializationSpellGenerator(DataGenerator):
-    def __init__(self, options, data_store = None):
+    def __init__(self, options, data_store):
         self._dbc = [ 'Spell', 'SpecializationSpells', 'ChrSpecialization' ]
 
         super().__init__(options, data_store)
@@ -3656,7 +3542,7 @@ class SetBonusListGenerator(DataGenerator):
         }
     ]
 
-    def __init__(self, options, data_store = None):
+    def __init__(self, options, data_store):
         self._dbc = [ 'ItemSet', 'ItemSetSpell', 'Spell', 'ChrSpecialization' ]
         if options.build < 23436:
             self._dbc.append('Item-sparse')
@@ -3786,7 +3672,7 @@ class SetBonusListGenerator(DataGenerator):
         self._out.write('};\n')
 
 class RandomSuffixGenerator(DataGenerator):
-    def __init__(self, options, data_store = None):
+    def __init__(self, options, data_store):
         self._dbc = [ 'ItemRandomSuffix', 'SpellItemEnchantment' ]
 
         super().__init__(options, data_store)
@@ -3850,7 +3736,7 @@ class RandomSuffixGenerator(DataGenerator):
         self._out.write('};\n')
 
 class SpellItemEnchantmentGenerator(RandomSuffixGenerator):
-    def __init__(self, options, data_store = None):
+    def __init__(self, options, data_store):
         RandomSuffixGenerator.__init__(self, options, data_store)
 
         self._dbc += ['Spell', 'SpellEffect', 'GemProperties']
@@ -3872,16 +3758,17 @@ class SpellItemEnchantmentGenerator(RandomSuffixGenerator):
         if not RandomSuffixGenerator.initialize(self):
             return False
 
-        link(self._spelleffect_db, self._options.build < 25600 and 'id_spell' or 'id_parent', self._spell_db, 'add_effect')
+        self._data_store.link('SpellEffect',        self._options.build < 25600 and 'id_spell' or 'id_parent', 'Spell', 'add_effect' )
+
         # Map spell ids to spellitemenchantments, as there's no direct
         # link between them, and 5.4+, we need/want to scale enchants properly
-        link(self._spell_db, self.filter_linked_spells, self._spellitemenchantment_db, 'spells')
+        self._data_store.link('Spell', self.filter_linked_spells, 'SpellItemEnchantment', 'spells')
 
         # Map items to gem properties
-        link(self._options.build < 23436 and self._item_sparse_db or self._itemsparse_db, 'gem_props', self._gemproperties_db, 'item')
+        self._data_store.link(self._options.build < 23436 and 'Item-Sparse' or 'ItemSparse', 'gem_props', 'GemProperties', 'item')
 
         # Map gem properties to enchants
-        link(self._gemproperties_db, 'id_enchant', self._spellitemenchantment_db, 'gem_property')
+        self._data_store.link('GemProperties', 'id_enchant', 'SpellItemEnchantment', 'gem_property')
 
         return True
 
@@ -3916,7 +3803,7 @@ class SpellItemEnchantmentGenerator(RandomSuffixGenerator):
         self._out.write('};\n')
 
 class RandomPropertyPointsGenerator(DataGenerator):
-    def __init__(self, options, data_store = None):
+    def __init__(self, options, data_store):
         self._dbc = [ 'RandPropPoints' ]
 
         super().__init__(options, data_store)
@@ -3957,7 +3844,7 @@ class RandomPropertyPointsGenerator(DataGenerator):
         self._out.write('};\n')
 
 class WeaponDamageDataGenerator(DataGenerator):
-    def __init__(self, options, data_store = None):
+    def __init__(self, options, data_store):
         self._dbc = [ 'ItemDamageOneHand', 'ItemDamageOneHandCaster',
                       'ItemDamageTwoHand', 'ItemDamageTwoHandCaster',  ]
 
@@ -3991,7 +3878,7 @@ class WeaponDamageDataGenerator(DataGenerator):
             self._out.write('};\n\n')
 
 class ArmorValueDataGenerator(DataGenerator):
-    def __init__(self, options, data_store = None):
+    def __init__(self, options, data_store):
         self._dbc = [ 'ItemArmorQuality', 'ItemArmorShield', 'ItemArmorTotal' ]
         super().__init__(options, data_store)
 
@@ -4030,7 +3917,7 @@ class ArmorValueDataGenerator(DataGenerator):
             self._out.write('};\n\n')
 
 class ArmorSlotDataGenerator(DataGenerator):
-    def __init__(self, options, data_store = None):
+    def __init__(self, options, data_store):
         self._dbc = [ 'ArmorLocation' ]
         super().__init__(options, data_store)
 
@@ -4054,7 +3941,7 @@ class ArmorSlotDataGenerator(DataGenerator):
         self._out.write('};\n\n')
 
 class GemPropertyDataGenerator(DataGenerator):
-    def __init__(self, options, data_store = None):
+    def __init__(self, options, data_store):
         self._dbc = [ 'GemProperties' ]
         super().__init__(options, data_store)
 
@@ -4084,7 +3971,7 @@ class GemPropertyDataGenerator(DataGenerator):
         self._out.write('};\n\n')
 
 class ItemBonusDataGenerator(DataGenerator):
-    def __init__(self, options, data_store = None):
+    def __init__(self, options, data_store):
         self._dbc = [ 'ItemBonus', 'ItemBonusTreeNode', 'ItemXBonusTree' ]
         super().__init__(options, data_store)
 
@@ -4162,7 +4049,7 @@ def curve_point_sort(a, b):
             return 0
 
 class ScalingStatDataGenerator(DataGenerator):
-    def __init__(self, options, data_store = None):
+    def __init__(self, options, data_store):
         self._dbc = [ 'ScalingStatDistribution', 'CurvePoint' ]
         super().__init__(options, data_store)
 
@@ -4209,7 +4096,7 @@ class ScalingStatDataGenerator(DataGenerator):
         self._out.write('};\n\n')
 
 class ItemNameDescriptionDataGenerator(DataGenerator):
-    def __init__(self, options, data_store = None):
+    def __init__(self, options, data_store):
         self._dbc = [ 'ItemNameDescription' ]
         super().__init__(options, data_store)
 
@@ -4234,7 +4121,7 @@ class ItemNameDescriptionDataGenerator(DataGenerator):
         self._out.write('};\n\n')
 
 class ItemChildEquipmentGenerator(DataGenerator):
-    def __init__(self, options, data_store = None):
+    def __init__(self, options, data_store):
         self._dbc = [ 'ItemChildEquipment' ]
         super().__init__(options, data_store)
 
@@ -4258,8 +4145,37 @@ class ItemChildEquipmentGenerator(DataGenerator):
 
         self._out.write('};\n\n')
 
-class ArtifactDataGenerator(DataGenerator):
+class AzeriteDataGenerator(DataGenerator):
     def __init__(self, options, data_store = None):
+        super().__init__(options, data_store)
+
+        self._dbc = [ 'AzeritePower' ]
+
+    def generate(self, ids = None):
+        data_str = "%sazerite_power%s" % (
+            self._options.prefix and ('%s_' % self._options.prefix) or '',
+            self._options.suffix and ('_%s' % self._options.suffix) or '',
+        )
+
+        data = [ x for x in self._azeritepower_db.values() ]
+
+        # Ensure id-based sort
+        data.sort(key = lambda v : v.id)
+
+        self._out.write('// Azerite powers, wow build %d\n' % ( self._options.build ))
+
+        self._out.write('static constexpr std::array<azerite_power_t, %d> __%s_data { {\n' % (
+            len(data), data_str))
+
+        for entry in data:
+            fields = entry.field('id', 'id_spell')
+
+            self._out.write('  { %s },\n' % ', '.join(fields))
+
+        self._out.write('} };\n')
+
+class ArtifactDataGenerator(DataGenerator):
+    def __init__(self, options, data_store):
         self._dbc = [ 'Artifact', 'ArtifactPower', 'ArtifactPowerRank', 'Spell' ]
 
         if options.build >= 24651:
@@ -4379,14 +4295,20 @@ class ArtifactDataGenerator(DataGenerator):
         self._out.write('static struct artifact_power_rank_t __%s_data[%s_SIZE] = {\n' % (data_str, data_str.upper()))
 
         hotfix_data = {}
-        for rank in sorted(ranks, key = lambda v: (self._options.build < 25600 and v.id_power or v.id_parent, v.index)) + [dbc.data.ArtifactPowerRank.default(self._artifactpowerrank_db.parser())]:
+        for rank in sorted(ranks, key = lambda v: (self._options.build < 25600 and v.id_power or v.id_parent, v.index)) + [self._artifactpowerrank_db.default()]:
             fields = rank.field('id', self._options.build < 25600 and 'id_power' or 'id_parent', 'index', 'id_spell', 'value')
             f, hfd = rank.get_hotfix_info(('index', 2), ('id_spell', 3), ('value', 4))
             fields += [ '%#.8x' % f, '0' ]
             if f > 0:
                 hotfix_data[rank.id] = hfd
 
-            self._out.write('  { %s },\n' % (', '.join(fields)))
+            try:
+                self._out.write('  { %s },\n' % (', '.join(fields)))
+            except Exception as e:
+                print(rank, self._options.build < 25600 and 'id_power' or 'id_parent')
+                print(rank._dbcp, rank._dbcp.has_key_block())
+                print(fields, e)
+                sys.exit(1)
 
         self._out.write('};\n')
 

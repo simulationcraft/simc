@@ -172,7 +172,7 @@ def create_vs_str(entries, gui=False):
     return prepare
 
 def create_engine_cmake_str(engine):
-    engine_source = [*engine]
+    engine_source = list(engine)
     engine_cpp_files = [fullpath for file_type, fullpath, dirname, corename, ending in engine_source if file_type == "SOURCES"]
     engine_cpp_files = [pathlib.Path(f) for f in engine_cpp_files]
     engine_cpp_files = ["/".join(p.parts[1:]) for p in engine_cpp_files]
@@ -188,7 +188,7 @@ target_include_directories(engine PUBLIC ./)""".format(" ".join(engine_cpp_files
     return output
 
 def create_gui_cmake_str(gui):
-    engine_source = [*gui]
+    engine_source = list(gui)
     engine_cpp_files = [fullpath for file_type, fullpath, dirname, corename, ending in engine_source if file_type == "SOURCES" or file_type == "HEADERS"]
     engine_cpp_files = [pathlib.Path(f) for f in engine_cpp_files]
     engine_cpp_files = ["/".join(p.parts[1:]) for p in engine_cpp_files]

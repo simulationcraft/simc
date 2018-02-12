@@ -59,8 +59,8 @@
 // ==========================================================================
 // Compiler Minimal Limits
 // ==========================================================================
-#if defined( SC_VS ) && SC_VS < 12
-#  error "Visual Studio 11 ( 2012 ) or lower not supported"
+#if defined( SC_VS ) && SC_VS < 13
+#  error "Visual Studio 12 ( 2013 ) or lower not supported"
 #endif
 
 // Last updated 2017-11-07: Support gcc4.8 with full C++11 support for now
@@ -72,6 +72,7 @@
 #if defined( SC_GCC ) && SC_GCC < 40800
 #  error "g++ below version 4.8 not supported"
 #endif
+
 
 // ==========================================================================
 // Compiler Workarounds
