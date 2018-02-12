@@ -2781,32 +2781,6 @@ struct gloomblade_t : public rogue_attack_t
   }
 };
 
-// Goremaw's Bite ===========================================================
-
-struct goremaws_bite_strike_t : public rogue_attack_t
-{
-  goremaws_bite_strike_t( rogue_t* p, const std::string& name, const spell_data_t* spell, weapon_t* w ) :
-    rogue_attack_t( name, p, spell )
-  {
-    background = true;
-    weapon = w;
-  }
-
-  void init() override
-  {
-    rogue_attack_t::init();
-
-    // 1/29/2018 - Weaponmaster procs a full second hit (MH + OH), so disallow strikes from triggering it individually
-    affected_by.weaponmaster = false;
-  }
-
-  bool procs_insignia_of_ravenholdt() const override
-  {
-    // 1/15/2018 - Confirmed both Goremaw's Bite strikes proc Insignia hits in-game
-    return true;
-  }
-};
-
 // Kick =====================================================================
 
 struct kick_t : public rogue_attack_t
