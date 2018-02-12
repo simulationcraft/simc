@@ -2821,6 +2821,8 @@ struct agony_t: public warlock_spell_t
   {
     double m = warlock_spell_t::action_multiplier();
 
+	m *= 1.0 + p() -> spec.affliction -> effectN( 5 ).percent();
+
     if ( p() -> mastery_spells.potent_afflictions -> ok() )
       m *= 1.0 + p() -> cache.mastery_value();
 
@@ -3319,6 +3321,8 @@ struct corruption_t: public warlock_spell_t
   virtual double action_multiplier() const override
   {
     double m = warlock_spell_t::action_multiplier();
+
+	m *= 1.0 + p() -> spec.affliction -> effectN( 5 ).percent();
 
     if ( p() -> mastery_spells.potent_afflictions -> ok() )
       m *= 1.0 + p() -> cache.mastery_value();
@@ -8617,17 +8621,17 @@ struct warlock_module_t: public module_t
     //  .modifier( 75 )
     //  .verification_value( 50 );
 
-    hotfix::register_effect( "Warlock", "2018-02-05", "Corruption damage reduced by 6%.", 198369 )
-      .field( "sp_coefficient" )
-      .operation( hotfix::HOTFIX_MUL )
-      .modifier( 0.94 )
-      .verification_value( 0.324 );
+    //hotfix::register_effect( "Warlock", "2018-02-05", "Corruption damage reduced by 6%.", 198369 )
+    //  .field( "sp_coefficient" )
+    //  .operation( hotfix::HOTFIX_MUL )
+    //  .modifier( 0.94 )
+    //  .verification_value( 0.324 );
 
-    hotfix::register_effect( "Warlock", "2018-02-05", "Agony damage reduced by 6%.", 374 )
-      .field( "sp_coefficient" )
-      .operation( hotfix::HOTFIX_MUL )
-      .modifier( 0.94 )
-      .verification_value( 0.03540 );
+    //hotfix::register_effect( "Warlock", "2018-02-05", "Agony damage reduced by 6%.", 374 )
+    //  .field( "sp_coefficient" )
+    //  .operation( hotfix::HOTFIX_MUL )
+    //  .modifier( 0.94 )
+    //  .verification_value( 0.03540 );
 
     //hotfix::register_effect( "Warlock", "2017-12-04", "Unstable Affliction 1 damage reduced by 4%", 352664 )
     //  .field( "sp_coefficient" )
