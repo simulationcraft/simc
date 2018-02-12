@@ -31,6 +31,8 @@ static const size_t ARTIFICIAL_DAMAGE_EFFECT_INDEX = 2U;
 static const size_t ARTIFICIAL_STAMINA_EFFECT_INDEX = 2U;
 // Base point increase for Artificial Damage & Stamina traits
 static const unsigned BASE_TRAIT_INCREASE = 6U;
+// Artificial Damage trait threshold for diminishing returns
+static const unsigned ARTIFICIAL_DAMAGE_CUTOFF_TRAIT = 75U;
 // Artificial Stamina trait threshold for diminishing returns
 static const unsigned ARTIFICIAL_STAMINA_CUTOFF_TRAIT = 52U;
 // Max trait rank
@@ -174,9 +176,16 @@ public:
       return 0.0;
     }
 
-    return m_artificial_damage -> effectN( ARTIFICIAL_DAMAGE_EFFECT_INDEX ).percent()
-           * .01
-           * ( purchased_points() + BASE_TRAIT_INCREASE );
+    auto full_effect =  m_artificial_damage -> effectN( ARTIFICIAL_DAMAGE_EFFECT_INDEX ).percent()
+                        * 0.01;
+
+    // After 75th point, Artificial Damage is 50 times less effective ( 0.5% -> 0.01% increase per trait )
+    auto reduced_effect = full_effect * 0.02;
+
+    auto full_points = std::min( ARTIFICIAL_DAMAGE_CUTOFF_TRAIT, purchased_points() );
+    auto reduced_points = purchased_points() - full_points;
+                        
+    return full_effect * ( full_points + BASE_TRAIT_INCREASE ) + reduced_effect * reduced_points;
   }
 
   // The stamina multiplier for the Artificial Stamina trait

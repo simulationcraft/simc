@@ -2596,7 +2596,7 @@ expr_t* action_t::create_expression( const std::string& name_str )
       }
 
       ~new_tick_time_expr_t()
-      { action_state_t::release( state ); }
+      { delete state; }
     };
     return new new_tick_time_expr_t( *this );
   }
