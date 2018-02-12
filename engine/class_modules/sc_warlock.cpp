@@ -227,7 +227,7 @@ public:
   {
     // Affliction
     artifact_power_t reap_souls;
-    artifact_power_t crystaline_shadows;
+    artifact_power_t crystalline_shadows;
     artifact_power_t seeds_of_doom;
     artifact_power_t fatal_echoes;
     artifact_power_t shadows_of_the_flesh;
@@ -6332,7 +6332,7 @@ double warlock_t::composite_player_multiplier( school_e school ) const
 
   if ( specialization() == WARLOCK_AFFLICTION && ( dbc::is_school( school, SCHOOL_SHADOW ) ) )
   {
-    m *= 1.0 + artifact.crystaline_shadows.percent() * ( buffs.deadwind_harvester -> check() ? 2.0 : 1.0 );
+    m *= 1.0 + artifact.crystalline_shadows.percent() * ( buffs.deadwind_harvester -> check() ? 2.0 : 1.0 );
     m *= 1.0 + artifact.shadowy_incantations.percent() * ( buffs.deadwind_harvester -> check() ? 2.0 : 1.0 );
   }
 
@@ -6767,7 +6767,7 @@ void warlock_t::init_spells()
 
   // Artifacts
   artifact.reap_souls = find_artifact_spell( "Reap Souls" );
-  artifact.crystaline_shadows = find_artifact_spell( "Crystaline Shadows" );
+  artifact.crystalline_shadows = find_artifact_spell( "Crystalline Shadows" );
   artifact.seeds_of_doom = find_artifact_spell( "Seeds of Doom" );
   artifact.fatal_echoes = find_artifact_spell( "Fatal Echoes" );
   artifact.shadows_of_the_flesh = find_artifact_spell( "Shadows of the Flesh" );
