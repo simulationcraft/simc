@@ -225,12 +225,13 @@ public:
     buff_t* flying_serpent_kick_movement;
     buff_t* hit_combo;
     buff_t* power_strikes;
+    buff_t* pressure_point;
     buff_t* spinning_crane_kick;
     buff_t* storm_earth_and_fire;
     buff_t* serenity;
     buff_t* touch_of_karma;
+    buff_t* wind_strikes;
     buff_t* windwalking_driver;
-    buff_t* pressure_point;
 
     // Legendaries
     buff_t* hidden_masters_forbidden_touch;
@@ -510,6 +511,7 @@ public:
     const spell_data_t* touch_of_karma_buff;
     const spell_data_t* touch_of_karma_tick;
     const spell_data_t* whirling_dragon_punch_tick;
+    const spell_data_t* wind_strikes_dmg;
     const spell_data_t* tier19_4pc_melee;
 
     // Legendaries
@@ -2713,15 +2715,36 @@ struct eye_of_the_tiger_dmg_tick_t: public monk_spell_t
   }
 };
 
+// Wind Strikes ==============================================================
+struct wind_strikes_t : public monk_melee_attack_t
+{
+  wind_strikes_t( monk_t* player, const std::string& name ) :
+    monk_melee_attack_t( name, player, player -> passives.wind_strikes_dmg )
+  {
+    background = true;
+    may_crit = true;
+  }
+
+  virtual void execute() override
+  {
+    monk_melee_attack_t::execute();
+
+    p() -> buff.wind_strikes -> decrement();
+  }
+};
+
 // Tiger Palm base ability ===================================================
 struct tiger_palm_t: public monk_melee_attack_t
 {
   heal_t* eye_of_the_tiger_heal;
   spell_t* eye_of_the_tiger_damage;
+  monk_melee_attack_t* wind_strikes;
+
   tiger_palm_t( monk_t* p, const std::string& options_str ):
     monk_melee_attack_t( "tiger_palm", p, p -> spec.tiger_palm ),
     eye_of_the_tiger_heal( new eye_of_the_tiger_heal_tick_t( *p, "eye_of_the_tiger_heal" ) ),
-    eye_of_the_tiger_damage( new eye_of_the_tiger_dmg_tick_t( p, "eye_of_the_tiger_damage" ) )
+    eye_of_the_tiger_damage( new eye_of_the_tiger_dmg_tick_t( p, "eye_of_the_tiger_damage" ) ),
+    wind_strikes( new wind_strikes_t( p, "wind_strikes" ) )
   {
     parse_options( options_str );
     sef_ability = SEF_TIGER_PALM;
@@ -2730,6 +2753,7 @@ struct tiger_palm_t: public monk_melee_attack_t
 
     add_child( eye_of_the_tiger_damage );
     add_child( eye_of_the_tiger_heal );
+    add_child( wind_strikes );
 
     if ( p -> specialization() == MONK_BREWMASTER )
       base_costs[RESOURCE_ENERGY] *= 1 + p -> spec.stagger -> effectN( 15 ).percent(); // -50% for Brewmasters
@@ -2825,6 +2849,9 @@ struct tiger_palm_t: public monk_melee_attack_t
 
         if ( p() -> talent.combo_breaker )
           p() -> cooldown.rising_sun_kick -> reset( true );
+
+        if ( p() -> buff.wind_strikes -> up() )
+          wind_strikes -> execute();
       }
       break;
     }
@@ -3691,6 +3718,9 @@ struct fists_of_fury_t: public monk_melee_attack_t
 
     if ( p() -> sets -> has_set_bonus( MONK_WINDWALKER, T20, B4 ) )
       p() -> buff.pressure_point -> trigger();
+
+    if ( p() -> talent.wind_strikes )
+      p() -> buff.wind_strikes -> trigger( p() -> buff.wind_strikes -> max_stack() );
   }
 };
 
@@ -6952,6 +6982,7 @@ void monk_t::init_spells()
   passives.touch_of_karma_buff              = find_spell( 125174 );
   passives.touch_of_karma_tick              = find_spell( 124280 );
   passives.whirling_dragon_punch_tick       = find_spell( 158221 );
+  passives.wind_strikes_dmg                 = find_spell( 262117 );
   passives.tier19_4pc_melee                 = find_spell( 211432 );
 
   // Legendaries
@@ -7196,6 +7227,8 @@ void monk_t::create_buffs()
                        .refresh_behavior( BUFF_REFRESH_NONE );
 
   buff.touch_of_karma = new buffs::touch_of_karma_buff_t( *this, "touch_of_karma", passives.touch_of_karma_buff );
+
+  buff.wind_strikes = buff_creator_t( this, "wind_strikes", talent.wind_strikes -> effectN( 1 ).trigger() );
 
   buff.windwalking_driver = new buffs::windwalking_driver_t( *this, "windwalking_aura_driver", find_spell( 166646 ) );
 
