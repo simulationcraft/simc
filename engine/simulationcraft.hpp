@@ -1660,6 +1660,9 @@ struct sim_t : private sc_thread_t
   // Buffs and Debuffs Overrides
   struct overrides_t
   {
+    // Buff overrides
+    int arcane_intellect;
+
     // Debuff overrides
     int mortal_wounds;
     int bleeding;
@@ -1668,6 +1671,11 @@ struct sim_t : private sc_thread_t
     int    bloodlust;
     std::vector<uint64_t> target_health;
   } overrides;
+
+  struct auras_t
+  {
+    buff_t* arcane_intellect;
+  } auras;
 
   // Expansion specific custom parameters. Defaults in the constructor.
   struct expansion_opt_t

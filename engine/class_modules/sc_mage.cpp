@@ -2629,6 +2629,26 @@ struct arcane_explosion_t : public arcane_mage_spell_t
   }
 };
 
+// Arcane Intellect Spell ===================================================
+
+struct arcane_intellect_t : public mage_spell_t
+{
+  arcane_intellect_t( mage_t* p, const std::string& options_str ) :
+    mage_spell_t( "arcane_intellect", p, p -> find_class_spell( "Arcane Intellect" ) )
+  {
+    parse_options( options_str );
+    harmful = false;
+    ignore_false_positive = true;
+
+    background = sim -> overrides.arcane_intellect != 0;
+  }
+
+  virtual void execute() override
+  {
+    if ( ! sim -> overrides.arcane_intellect )
+      sim -> auras.arcane_intellect -> trigger();
+  }
+};
 
 // Arcane Missiles Spell ====================================================
 
@@ -6061,6 +6081,7 @@ action_t* mage_t::create_action( const std::string& name,
   if ( name == "water_jet"              ) return new              water_jet_t( this, options_str );
 
   // Shared spells
+  if ( name == "arcane_intellect"       ) return new       arcane_intellect_t( this, options_str );
   if ( name == "blink" )
   {
     if ( talents.shimmer -> ok() )

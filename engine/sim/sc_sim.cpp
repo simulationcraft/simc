@@ -1741,6 +1741,8 @@ void sim_t::combat_begin()
   for ( auto& target : target_list )
     target -> combat_begin();
 
+  if ( overrides.arcane_intellect ) auras.arcane_intellect -> override_buff();
+
   for ( size_t i = 0; i < target_list.size(); ++i )
   {
     player_t* t = target_list[ i ];
@@ -2443,6 +2445,10 @@ bool sim_t::init()
     }
   }
 
+  auras.arcane_intellect = buff_creator_t( this, "arcane_intellect", dbc::find_spell( this, 1459 ) )
+                           .default_value( dbc::find_spell( this, 1459 ) -> effectN( 1 ).percent() )
+                           .add_invalidate( CACHE_INTELLECT );
+
   // Find Already defined target, otherwise create a new one.
   if ( debug )
     out_debug << "Creating Enemies.";
@@ -2964,6 +2970,8 @@ void sim_t::use_optimal_buffs_and_debuffs( int value )
 {
   optimal_raid = value;
 
+  overrides.arcane_intellect        = optimal_raid;
+
   overrides.mortal_wounds           = optimal_raid;
   overrides.bleeding                = optimal_raid;
 
@@ -3182,6 +3190,7 @@ void sim_t::create_options()
   add_option( opt_bool( "progressbar_type", progressbar_type ) );
   // Raid buff overrides
   add_option( opt_func( "optimal_raid", parse_optimal_raid ) );
+  add_option( opt_int( "override.arcane_intellect", overrides.arcane_intellect ) );
   add_option( opt_int( "override.mortal_wounds", overrides.mortal_wounds ) );
   add_option( opt_int( "override.bleeding", overrides.bleeding ) );
   add_option( opt_func( "override.spell_data", parse_override_spell_data ) );
