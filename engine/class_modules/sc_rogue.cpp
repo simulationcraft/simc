@@ -373,7 +373,7 @@ struct rogue_t : public player_t
   // Spell Data
   struct spells_t
   {
-    const spell_data_t* bag_of_tricks_driver;
+    const spell_data_t* poison_bomb_driver;
     const spell_data_t* critical_strikes;
     const spell_data_t* death_from_above;
     const spell_data_t* fan_of_knives;
@@ -441,6 +441,7 @@ struct rogue_t : public player_t
     const spell_data_t* dirty_tricks;
 
     // Tier 6 - Level 90
+    const spell_data_t* venom_rush;
     const spell_data_t* toxic_blade;
     const spell_data_t* exsanguinate;
 
@@ -452,7 +453,7 @@ struct rogue_t : public player_t
     const spell_data_t* dark_shadow;
 
     // Tier 7 - Level 100
-    const spell_data_t* venom_rush;
+    const spell_data_t* poison_bomb;
 
     const spell_data_t* loaded_dice;
     const spell_data_t* slice_and_dice;
@@ -1383,7 +1384,7 @@ struct weaponmaster_strike_t : public rogue_attack_t
 struct poison_bomb_t : public rogue_attack_t
 {
   poison_bomb_t( rogue_t* p ) :
-    rogue_attack_t( "poison_bomb", p, p -> find_spell( 192660 ) )
+    rogue_attack_t( "poison_bomb", p, p -> find_spell( 255546 ) )
   {
     background = true;
     aoe = -1;
@@ -5087,20 +5088,12 @@ void rogue_t::trigger_energy_refund( const action_state_t* state )
 
 void rogue_t::trigger_poison_bomb( const action_state_t* state )
 {
-  // TODO: Update for BfA
-  /*if ( ! artifact.bag_of_tricks.rank() )
-  {
+  if ( ! talent.poison_bomb -> ok() || ! state -> action -> result_is_hit( state -> result ) )
     return;
-  }
-
-  if ( ! state -> action -> result_is_hit( state -> result ) )
-  {
-    return;
-  }
 
   // They put 25 as value in spell data and divide it by 10 later, it's due to the int restriction.
   const actions::rogue_attack_state_t* s = cast_attack( state -> action ) -> cast_state( state );
-  if ( rng().roll( artifact.bag_of_tricks.percent() / 10 * s -> cp ) )
+  if ( rng().roll( talent.poison_bomb -> effectN( 1 ).percent() / 10 * s -> cp ) )
   {
     make_event<ground_aoe_event_t>( *sim, this, ground_aoe_params_t()
                                     .target( state -> target )
@@ -5108,10 +5101,10 @@ void rogue_t::trigger_poison_bomb( const action_state_t* state )
                                     .y( state -> target -> y_position)
                                     //FIXME Hotfix 09-24: Hardcoded to 500ms, not found in spell data, still the case as of 04/08/2017.
                                     .pulse_time( timespan_t::from_seconds( 0.5 ) )
-                                    .duration( spell.bag_of_tricks_driver -> duration() )
+                                    .duration( spell.poison_bomb_driver -> duration() )
                                     .start_time( sim -> current_time() )
                                     .action( poison_bomb ));
-  }*/
+  }
 }
 
 void rogue_t::trigger_venomous_wounds( const action_state_t* state )
@@ -6753,7 +6746,7 @@ void rogue_t::init_spells()
   mastery.executioner       = find_mastery_spell( ROGUE_SUBTLETY );
 
   // Misc spells
-  spell.bag_of_tricks_driver          = find_spell( 192661 );
+  spell.poison_bomb_driver            = find_spell( 255545 );
   spell.critical_strikes              = find_spell( 157442 );
   spell.death_from_above              = find_spell( 163786 );
   spell.fan_of_knives                 = find_class_spell( "Fan of Knives" );
@@ -6791,10 +6784,11 @@ void rogue_t::init_spells()
   talent.thuggee            = find_talent_spell( "Thuggee" );
   talent.internal_bleeding  = find_talent_spell( "Internal Bleeding" );
 
+  talent.venom_rush         = find_talent_spell( "Venom Rush" );
   talent.toxic_blade        = find_talent_spell( "Toxic Blade" );
   talent.exsanguinate       = find_talent_spell( "Exsanguinate" );
 
-  talent.venom_rush         = find_talent_spell( "Venom Rush" );
+  talent.poison_bomb        = find_talent_spell( "Poison Bomb" );
 
   talent.ghostly_strike     = find_talent_spell( "Ghostly Strike" );
   talent.swordmaster        = find_talent_spell( "Swordmaster" );
@@ -6837,11 +6831,10 @@ void rogue_t::init_spells()
     weaponmaster_dot_strike = new actions::weaponmaster_strike_t( this );
   }
 
-  // TODO: Update for BfA
-  /*if ( artifact.bag_of_tricks.rank() )
+  if ( talent.poison_bomb -> ok() )
   {
     poison_bomb = new actions::poison_bomb_t( this );
-  }*/
+  }
 
   if ( sets -> has_set_bonus( ROGUE_ASSASSINATION, T19, B2 ) )
   {
