@@ -598,6 +598,7 @@ public:
     const spell_data_t* resonance;
     const spell_data_t* alexstraszas_fury;
     const spell_data_t* flame_on;
+    const spell_data_t* phoenix_flames;
     const spell_data_t* ice_nova;
     const spell_data_t* frozen_touch;
     const spell_data_t* splitting_ice;
@@ -4780,17 +4781,17 @@ struct nether_tempest_t : public arcane_mage_spell_t
 };
 
 
-// Phoenixs Flames Spell ======================================================
+// Phoenix Flames Spell ======================================================
 
-struct phoenixs_flames_splash_t : public fire_mage_spell_t
+struct phoenix_flames_splash_t : public fire_mage_spell_t
 {
-  phoenixs_flames_splash_t( mage_t* p ) :
-    fire_mage_spell_t( "phoenixs_flames_splash", p, spell_data_t::nil() ) // TODO: Reuse for the new talent
+  phoenix_flames_splash_t( mage_t* p ) :
+    fire_mage_spell_t( "phoenix_flames_splash", p, p -> find_spell( 257542 ) )
   {
     aoe = -1;
     background = true;
     triggers_ignite = true;
-    // Phoenixs Flames always crits
+    // Phoenix Flames always crits
     base_crit = 1.0;
   }
 
@@ -4809,7 +4810,7 @@ struct phoenixs_flames_splash_t : public fire_mage_spell_t
   {
     double am = fire_mage_spell_t::action_multiplier();
 
-    // Phoenix's Flames splash deal 25% less damage compared to the
+    // Phoenix Flames splash deal 25% less damage compared to the
     // spell data/tooltip values. As of build 25881, 2018-01-221.
     if ( p() -> bugs )
       am *= 0.75;
@@ -4818,26 +4819,26 @@ struct phoenixs_flames_splash_t : public fire_mage_spell_t
   }
 };
 
-struct phoenixs_flames_t : public fire_mage_spell_t
+struct phoenix_flames_t : public fire_mage_spell_t
 {
-  phoenixs_flames_splash_t* phoenixs_flames_splash;
+  phoenix_flames_splash_t* phoenix_flames_splash;
 
   bool pyrotex_ignition_cloth;
   timespan_t pyrotex_ignition_cloth_reduction;
 
-  phoenixs_flames_t( mage_t* p, const std::string& options_str ) :
-    fire_mage_spell_t( "phoenixs_flames", p, spell_data_t::nil() ), // TODO: Reuse for the new talent
-    phoenixs_flames_splash( new phoenixs_flames_splash_t( p ) ),
+  phoenix_flames_t( mage_t* p, const std::string& options_str ) :
+    fire_mage_spell_t( "phoenix_flames", p, p -> talents.phoenix_flames ),
+    phoenix_flames_splash( new phoenix_flames_splash_t( p ) ),
     pyrotex_ignition_cloth( false ),
     pyrotex_ignition_cloth_reduction( timespan_t::zero() )
   {
     parse_options( options_str );
-    // Phoenix's Flames always crits
+    // Phoenix Flames always crits
     base_crit = 1.0;
 
     triggers_hot_streak = true;
     triggers_ignite = true;
-    add_child( phoenixs_flames_splash );
+    add_child( phoenix_flames_splash );
   }
 
   virtual void execute() override
@@ -4857,8 +4858,8 @@ struct phoenixs_flames_t : public fire_mage_spell_t
 
     if ( result_is_hit( s -> result ) )
     {
-      phoenixs_flames_splash -> set_target( s -> target );
-      phoenixs_flames_splash -> execute();
+      phoenix_flames_splash -> set_target( s -> target );
+      phoenix_flames_splash -> execute();
     }
   }
 
@@ -6044,7 +6045,7 @@ action_t* mage_t::create_action( const std::string& name,
   if ( name == "fire_blast"             ) return new             fire_blast_t( this, options_str );
   if ( name == "living_bomb"            ) return new            living_bomb_t( this, options_str );
   if ( name == "meteor"                 ) return new                 meteor_t( this, options_str );
-  if ( name == "phoenixs_flames"        ) return new        phoenixs_flames_t( this, options_str );
+  if ( name == "phoenix_flames"         ) return new        phoenix_flames_t( this, options_str );
   if ( name == "pyroblast"              ) return new              pyroblast_t( this, options_str );
   if ( name == "scorch"                 ) return new                 scorch_t( this, options_str );
 
@@ -6333,6 +6334,7 @@ void mage_t::init_spells()
   talents.resonance          = find_talent_spell( "Resonance"          );
   talents.alexstraszas_fury  = find_talent_spell( "Alexstrasza's Fury" );
   talents.flame_on           = find_talent_spell( "Flame On"           );
+  talents.phoenix_flames     = find_talent_spell( "Phoenix Flames"     );
   talents.ice_nova           = find_talent_spell( "Ice Nova"           );
   talents.frozen_touch       = find_talent_spell( "Frozen Touch"       );
   talents.splitting_ice      = find_talent_spell( "Splitting Ice"      );
@@ -6997,9 +6999,9 @@ void mage_t::apl_fire()
   combustion_phase -> add_action( this, "Pyroblast", "if=buff.kaelthas_ultimate_ability.react&buff.combustion.remains>execute_time" );
   combustion_phase -> add_action( this, "Pyroblast", "if=buff.hot_streak.react" );
   combustion_phase -> add_action( this, "Fire Blast", "if=buff.heating_up.react" );
-  combustion_phase -> add_action( this, "Phoenix's Flames" );
+  combustion_phase -> add_action( this, "Phoenix Flames" );
   combustion_phase -> add_action( this, "Scorch", "if=buff.combustion.remains>cast_time" );
-  combustion_phase -> add_action( this, "Dragon's Breath", "if=!buff.hot_streak.react&action.fire_blast.charges<1&action.phoenixs_flames.charges<1" );
+  combustion_phase -> add_action( this, "Dragon's Breath", "if=!buff.hot_streak.react&action.fire_blast.charges<1&action.phoenix_flames.charges<1" );
   combustion_phase -> add_action( this, "Scorch", "if=target.health.pct<=30&equipped.132454");
 
   rop_phase        -> add_talent( this, "Rune of Power" );
@@ -7008,15 +7010,15 @@ void mage_t::apl_fire()
   rop_phase        -> add_action( "call_action_list,name=active_talents" );
   rop_phase        -> add_action( this, "Pyroblast", "if=buff.kaelthas_ultimate_ability.react&execute_time<buff.kaelthas_ultimate_ability.remains&buff.rune_of_power.remains>cast_time" );
   rop_phase        -> add_action( this, "Fire Blast", "if=!prev_off_gcd.fire_blast&buff.heating_up.react&firestarter.active&charges_fractional>1.7" );
-  rop_phase        -> add_action( this, "Phoenix's Flames", "if=!prev_gcd.1.phoenixs_flames&charges_fractional>2.7&firestarter.active" );
+  rop_phase        -> add_action( this, "Phoenix Flames", "if=!prev_gcd.1.phoenix_flames&charges_fractional>2.7&firestarter.active" );
   rop_phase        -> add_action( this, "Fire Blast", "if=!prev_off_gcd.fire_blast&!firestarter.active" );
-  rop_phase        -> add_action( this, "Phoenix's Flames", "if=!prev_gcd.1.phoenixs_flames" );
+  rop_phase        -> add_action( this, "Phoenix Flames", "if=!prev_gcd.1.phoenix_flames" );
   rop_phase        -> add_action( this, "Scorch", "if=target.health.pct<=30&equipped.132454" );
   rop_phase        -> add_action( this, "Dragon's Breath", "if=active_enemies>2" );
   rop_phase        -> add_action( this, "Flamestrike", "if=(talent.flame_patch.enabled&active_enemies>2)|active_enemies>5" );
   rop_phase        -> add_action( this, "Fireball" );
 
-  active_talents   -> add_talent( this, "Blast Wave", "if=(buff.combustion.down)|(buff.combustion.up&action.fire_blast.charges<1&action.phoenixs_flames.charges<1)" );
+  active_talents   -> add_talent( this, "Blast Wave", "if=(buff.combustion.down)|(buff.combustion.up&action.fire_blast.charges<1&action.phoenix_flames.charges<1)" );
   active_talents   -> add_talent( this, "Meteor", "if=cooldown.combustion.remains>40|(cooldown.combustion.remains>target.time_to_die)|buff.rune_of_power.up|firestarter.active" );
   active_talents   -> add_talent( this, "Cinderstorm", "if=cooldown.combustion.remains<cast_time&(buff.rune_of_power.up|!talent.rune_of_power.enabled)|cooldown.combustion.remains>10*spell_haste&!buff.combustion.up" );
   active_talents   -> add_action( this, "Dragon's Breath", "if=equipped.132863|(talent.alexstraszas_fury.enabled&!buff.hot_streak.react)" );
@@ -7025,16 +7027,16 @@ void mage_t::apl_fire()
   standard    -> add_action( this, "Flamestrike", "if=((talent.flame_patch.enabled&active_enemies>1)|active_enemies>3)&buff.hot_streak.react" );
   standard    -> add_action( this, "Pyroblast", "if=buff.hot_streak.react&buff.hot_streak.remains<action.fireball.execute_time" );
   standard    -> add_action( this, "Pyroblast", "if=buff.hot_streak.react&firestarter.active&!talent.rune_of_power.enabled" );
-  standard    -> add_action( this, "Phoenix's Flames", "if=charges_fractional>2.7&active_enemies>2" );
+  standard    -> add_action( this, "Phoenix Flames", "if=charges_fractional>2.7&active_enemies>2" );
   standard    -> add_action( this, "Pyroblast", "if=buff.hot_streak.react&(!prev_gcd.1.pyroblast|action.pyroblast.in_flight)" );
   standard    -> add_action( this, "Pyroblast", "if=buff.hot_streak.react&target.health.pct<=30&equipped.132454" );
   standard    -> add_action( this, "Pyroblast", "if=buff.kaelthas_ultimate_ability.react&execute_time<buff.kaelthas_ultimate_ability.remains" );
   standard    -> add_action( "call_action_list,name=active_talents" );
   standard    -> add_action( this, "Fire Blast", "if=!talent.kindling.enabled&buff.heating_up.react&(!talent.rune_of_power.enabled|charges_fractional>1.4|cooldown.combustion.remains<40)&(3-charges_fractional)*(12*spell_haste)<cooldown.combustion.remains+3|target.time_to_die<4" );
   standard    -> add_action( this, "Fire Blast", "if=talent.kindling.enabled&buff.heating_up.react&(!talent.rune_of_power.enabled|charges_fractional>1.5|cooldown.combustion.remains<40)&(3-charges_fractional)*(18*spell_haste)<cooldown.combustion.remains+3|target.time_to_die<4" );
-  standard    -> add_action( this, "Phoenix's Flames", "if=(buff.combustion.up|buff.rune_of_power.up|buff.incanters_flow.stack>3|talent.mirror_image.enabled)&artifact.phoenix_reborn.enabled&(4-charges_fractional)*13<cooldown.combustion.remains+5|target.time_to_die<10" );
-  standard    -> add_action( this, "Phoenix's Flames", "if=(buff.combustion.up|buff.rune_of_power.up)&(4-charges_fractional)*30<cooldown.combustion.remains+5" );
-  standard    -> add_action( this, "Phoenix's Flames", "if=charges_fractional>2.5&cooldown.combustion.remains>23" );
+  standard    -> add_action( this, "Phoenix Flames", "if=(buff.combustion.up|buff.rune_of_power.up|buff.incanters_flow.stack>3|talent.mirror_image.enabled)&(4-charges_fractional)*13<cooldown.combustion.remains+5|target.time_to_die<10" );
+  standard    -> add_action( this, "Phoenix Flames", "if=(buff.combustion.up|buff.rune_of_power.up)&(4-charges_fractional)*30<cooldown.combustion.remains+5" );
+  standard    -> add_action( this, "Phoenix Flames", "if=charges_fractional>2.5&cooldown.combustion.remains>23" );
   standard    -> add_action( this, "Flamestrike", "if=(talent.flame_patch.enabled&active_enemies>3)|active_enemies>5" );
   standard    -> add_action( this, "Scorch", "if=target.health.pct<=30&equipped.132454" );
   standard    -> add_action( this, "Fireball" );
@@ -8321,12 +8323,12 @@ struct marquee_bindings_of_the_sun_king_t : public class_buff_cb_t<mage_t, buff_
   }
 };
 
-struct pyrotex_ignition_cloth_t : public scoped_action_callback_t<phoenixs_flames_t>
+struct pyrotex_ignition_cloth_t : public scoped_action_callback_t<phoenix_flames_t>
 {
-  pyrotex_ignition_cloth_t() : super( MAGE_FIRE, "phoenixs_flames" )
+  pyrotex_ignition_cloth_t() : super( MAGE_FIRE, "phoenix_flames" )
   { }
 
-  virtual void manipulate( phoenixs_flames_t* action, const special_effect_t& e ) override
+  virtual void manipulate( phoenix_flames_t* action, const special_effect_t& e ) override
   {
     action -> pyrotex_ignition_cloth = true;
     action -> pyrotex_ignition_cloth_reduction = e.driver() -> effectN( 1 ).time_value();
