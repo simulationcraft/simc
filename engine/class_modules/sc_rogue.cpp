@@ -234,6 +234,7 @@ struct rogue_t : public player_t
     buff_t* subterfuge;
     // Assassination
     buff_t* elaborate_planning;
+    buff_t* dispatch;
     // Outlaw
     buff_t* killing_spree;
     buff_t* loaded_dice;
@@ -421,6 +422,7 @@ struct rogue_t : public player_t
     // Tier 1 - Level 15
     const spell_data_t* master_poisoner;
     const spell_data_t* elaborate_planning;
+    const spell_data_t* dispatch;
 
     const spell_data_t* ghostly_strike;
     const spell_data_t* swordmaster;
@@ -2401,6 +2403,32 @@ struct cannonball_barrage_t : public rogue_attack_t
   }
 };
 
+// Dispatch =================================================================
+
+struct dispatch_t: public rogue_attack_t
+{
+  dispatch_t( rogue_t* p, const std::string& options_str ) :
+    rogue_attack_t( "dispatch", p, p -> talent.dispatch, options_str )
+  {
+    weapon = &( p -> main_hand_weapon );
+  }
+
+  bool ready() override
+  {
+    if ( target -> health_percentage() >= data().effectN( 4 ).percent() && ! p() -> buffs.dispatch -> up() )
+      return false;
+
+    return rogue_attack_t::ready();
+  }
+
+  void execute() override
+  {
+    rogue_attack_t::execute();
+
+    p() -> buffs.dispatch -> expire();
+  }
+};
+
 // Envenom ==================================================================
 
 struct envenom_t : public rogue_attack_t
@@ -3142,6 +3170,9 @@ struct mutilate_t : public rogue_attack_t
 
     if ( result_is_hit( execute_state -> result ) )
     {
+      if ( p() -> talent.dispatch -> ok() && rng().roll( p() -> talent.dispatch -> effectN( 5 ).percent() ) )
+        p() -> buffs.dispatch -> trigger();
+
       mh_strike -> set_target( execute_state -> target );
       mh_strike -> execute();
 
@@ -6002,6 +6033,7 @@ void rogue_t::init_action_list()
     
     // Builders
     action_priority_list_t* build = get_action_priority_list( "build", "Builders" );
+    build -> add_talent( this, "Dispatch" );
     build -> add_action( this, "Fan of Knives", "if=buff.the_dreadlords_deceit.stack>=29" );
     build -> add_action( this, "Mutilate", "if=talent.exsanguinate.enabled&(debuff.vendetta.up|combo_points<=2)", "Mutilate is worth using over FoK for Exsanguinate builds in some 2T scenarios." );
     build -> add_action( this, "Fan of Knives", "if=spell_targets>1+equipped.insignia_of_ravenholdt" );
@@ -6258,6 +6290,7 @@ action_t* rogue_t::create_action( const std::string& name,
   if ( name == "blade_flurry"        ) return new blade_flurry_t       ( this, options_str );
   if ( name == "cannonball_barrage"  ) return new cannonball_barrage_t ( this, options_str );
   if ( name == "death_from_above"    ) return new death_from_above_t   ( this, options_str );
+  if ( name == "dispatch"            ) return new dispatch_t           ( this, options_str );
   if ( name == "envenom"             ) return new envenom_t            ( this, options_str );
   if ( name == "eviscerate"          ) return new eviscerate_t         ( this, options_str );
   if ( name == "exsanguinate"        ) return new exsanguinate_t       ( this, options_str );
@@ -6754,6 +6787,7 @@ void rogue_t::init_spells()
 
   talent.master_poisoner    = find_talent_spell( "Master Poisoner" );
   talent.elaborate_planning = find_talent_spell( "Elaborate Planning" );
+  talent.dispatch           = find_talent_spell( "Dispatch" );
 
   talent.thuggee            = find_talent_spell( "Thuggee" );
   talent.internal_bleeding  = find_talent_spell( "Internal Bleeding" );
@@ -7026,6 +7060,8 @@ void rogue_t::create_buffs()
   buffs.elaborate_planning      = buff_creator_t( this, "elaborate_planning", talent.elaborate_planning -> effectN( 1 ).trigger() )
                                   .default_value( 1.0 + talent.elaborate_planning -> effectN( 1 ).trigger() -> effectN( 1 ).percent() )
                                   .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+  buffs.dispatch                = buff_creator_t( this, "dispatch", talent.dispatch )
+                                  .duration( timespan_t::from_seconds( 10.0 ) ); // I see no buff spell in spell data yet, hardcode for now.
   // Outlaw
   buffs.killing_spree           = buff_creator_t( this, "killing_spree", talent.killing_spree )
                                   .duration( talent.killing_spree -> duration() );
