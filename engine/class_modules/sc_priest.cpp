@@ -2037,7 +2037,6 @@ struct mind_flay_t final : public priest_spell_t
     may_crit                    = false;
     channeled                   = true;
     hasted_ticks                = false;
-    use_off_gcd                 = true;
     is_mind_spell               = true;
     is_sphere_of_insanity_spell = true;
     energize_type               = ENERGIZE_NONE;  // disable resource generation from spell data
@@ -3158,7 +3157,6 @@ struct void_bolt_t final : public priest_spell_t
       rank2( player.find_specialization_spell( 231688 ) )
   {
     parse_options( options_str );
-    use_off_gcd                 = true;
     is_sphere_of_insanity_spell = true;
     energize_type               = ENERGIZE_NONE;  // disable resource generation from spell data.
 
@@ -3357,7 +3355,6 @@ struct void_torrent_t final : public priest_spell_t
 
     may_crit      = false;
     channeled     = true;
-    use_off_gcd   = true;
     is_mind_spell = false;
     tick_zero     = true;
 
