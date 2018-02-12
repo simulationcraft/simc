@@ -111,11 +111,10 @@ struct rogue_td_t : public actor_target_data_t
     buff_t* ghostly_strike;
     buff_t* garrote; // Hidden proxy buff for garrote to get Thuggee working easily(ish)
     buff_t* toxic_blade;
+    buff_t* find_weakness;
   } debuffs;
 
   rogue_td_t( player_t* target, rogue_t* source );
-
-  
 
   bool lethal_poisoned() const
   {
@@ -428,6 +427,7 @@ struct rogue_t : public player_t
     const spell_data_t* quick_draw;
 
     const spell_data_t* weaponmaster;
+    const spell_data_t* find_weakness;
     const spell_data_t* gloomblade;
 
     // Tier 2 - Level 30
@@ -1166,6 +1166,13 @@ struct rogue_attack_t : public melee_attack_t
     }
 
     return m;
+  }
+
+  double target_armor( player_t* target ) const override
+  {
+    double a = melee_attack_t::target_armor( target );
+    a *= 1.0 - td( target ) -> debuffs.find_weakness -> value();
+    return a;
   }
 
   timespan_t tick_time( const action_state_t* state ) const override
@@ -3590,6 +3597,14 @@ struct shadowstrike_t : public rogue_attack_t
     p() -> trigger_t21_4pc_subtlety( execute_state );
   }
 
+  void impact( action_state_t* state ) override
+  {
+    rogue_attack_t::impact( state );
+
+    if ( p() -> talent.find_weakness ->ok() )
+      td( state -> target ) -> debuffs.find_weakness -> trigger();
+  }
+
   double action_multiplier() const override
   {
     double m = rogue_attack_t::action_multiplier();
@@ -5686,9 +5701,11 @@ rogue_td_t::rogue_td_t( player_t* target, rogue_t* source ) :
     .default_value( vd -> effectN( 1 ).percent() );
   debuffs.toxic_blade = buff_creator_t( *this, "toxic_blade", source -> talent.toxic_blade -> effectN( 4 ).trigger() )
     .default_value( source -> talent.toxic_blade -> effectN( 4 ).trigger() -> effectN( 1 ).percent() );
-
   debuffs.ghostly_strike = buff_creator_t( *this, "ghostly_strike", source -> talent.ghostly_strike )
     .default_value( source -> talent.ghostly_strike -> effectN( 5 ).percent() );
+  const spell_data_t* fw_debuff = source -> talent.find_weakness -> effectN( 1 ).trigger();
+  debuffs.find_weakness = buff_creator_t( *this, "find_weakness", fw_debuff )
+    .default_value( fw_debuff -> effectN( 1 ).percent() );
 
   // Register on-demise callback for assassination to perform Venomous Wounds energy replenish on
   // death.
@@ -6792,6 +6809,7 @@ void rogue_t::init_spells()
   talent.slice_and_dice     = find_talent_spell( "Slice and Dice" );
 
   talent.weaponmaster       = find_talent_spell( "Weaponmaster" );
+  talent.find_weakness      = find_talent_spell( "Find Weakness" );
   talent.gloomblade         = find_talent_spell( "Gloomblade" );
 
   talent.premeditation      = find_talent_spell( "Premeditation" );
