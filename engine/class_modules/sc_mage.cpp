@@ -2645,6 +2645,8 @@ struct arcane_intellect_t : public mage_spell_t
 
   virtual void execute() override
   {
+    mage_spell_t::execute();
+
     if ( ! sim -> overrides.arcane_intellect )
       sim -> auras.arcane_intellect -> trigger();
   }
