@@ -861,81 +861,11 @@ struct shield_of_vengeance_t : public paladin_absorb_t
 struct wake_of_ashes_t : public paladin_spell_t
 {
   wake_of_ashes_t( paladin_t* p, const std::string& options_str )
-    : paladin_spell_t( "wake_of_ashes", p, p -> find_spell( 205273 ) )
+    : paladin_spell_t( "wake_of_ashes", p, p -> find_talent_spell( "Wake of Ashes" ) )
   {
     parse_options( options_str );
-
-    may_crit = true;
-    aoe = -1;
-    hasted_ticks = false;
-    tick_may_crit = true;
-
-    if ( p -> artifact.ashes_to_ashes.rank() )
-    {
-      energize_type = ENERGIZE_ON_HIT;
-      energize_resource = RESOURCE_HOLY_POWER;
-      energize_amount = p -> find_spell( 218001 ) -> effectN( 1 ).resource( RESOURCE_HOLY_POWER );
-    }
-    else
-    {
-      attack_power_mod.tick = 0;
-      dot_duration = timespan_t::zero();
-    }
-  }
-
-  bool ready() override
-  {
-    if ( ! player -> artifact->enabled() )
-    {
-      return false;
-    }
-
-    if ( p() -> artifact.wake_of_ashes.rank() == 0 )
-    {
-      return false;
-    }
-
-    return paladin_spell_t::ready();
-  }
-};
-
-// Holy Wrath (Retribution) ===================================================
-
-struct holy_wrath_t : public paladin_spell_t
-{
-  holy_wrath_t( paladin_t* p, const std::string& options_str )
-    : paladin_spell_t( "holy_wrath", p, p -> find_talent_spell( "Holy Wrath" ) )
-  {
-    parse_options( options_str );
-
-    aoe = data().effectN( 2 ).base_value();
-
-    if ( ! ( p -> talents.holy_wrath -> ok() ) )
+    if ( ! ( p -> talents.wake_of_ashes -> ok() ) )
       background = true;
-  }
-
-  double calculate_direct_amount( action_state_t* state ) const override
-  {
-    double base_amount = 0;
-    if ( p() -> fixed_holy_wrath_health_pct > 0 )
-      base_amount = p() -> max_health() * ( 100 - p() -> fixed_holy_wrath_health_pct ) / 100.0;
-    else
-      base_amount = p() -> max_health() - p() -> current_health();
-    double amount = base_amount * data().effectN( 3 ).percent();
-
-    state -> result_total = amount;
-    return amount;
-  }
-
-  bool ready() override
-  {
-    if ( p() -> fixed_holy_wrath_health_pct > 0 && p() -> fixed_holy_wrath_health_pct < 100 )
-      return paladin_spell_t::ready();
-
-    if ( player -> current_health() >= player -> max_health() )
-      return false;
-
-    return paladin_spell_t::ready();
   }
 };
 
@@ -949,7 +879,6 @@ action_t* paladin_t::create_action_retribution( const std::string& name, const s
   if ( name == "divine_storm"              ) return new divine_storm_t             ( this, options_str );
   if ( name == "execution_sentence"        ) return new execution_sentence_t       ( this, options_str );
   if ( name == "templars_verdict"          ) return new templars_verdict_t         ( this, options_str );
-  if ( name == "holy_wrath"                ) return new holy_wrath_t               ( this, options_str );
   if ( name == "wake_of_ashes"             ) return new wake_of_ashes_t            ( this, options_str );
   if ( name == "justicars_vengeance"       ) return new justicars_vengeance_t      ( this, options_str );
   if ( name == "shield_of_vengeance"       ) return new shield_of_vengeance_t      ( this, options_str );
@@ -1015,7 +944,7 @@ void paladin_t::init_spells_retribution()
   talents.divine_purpose             = find_talent_spell( "Divine Purpose" ); // TODO: fix this
   talents.crusade                    = find_spell( 231895 );
   talents.crusade_talent             = find_talent_spell( "Crusade" );
-  talents.holy_wrath                 = find_talent_spell( "Holy Wrath" );
+  talents.wake_of_ashes              = find_talent_spell( "Wake of Ashes" );
 
   // artifact
   artifact.wake_of_ashes                = find_artifact_spell( "Wake of Ashes" );
@@ -1268,7 +1197,7 @@ void paladin_t::generate_action_prio_list_ret()
   finishers -> add_action( this, "Templar's Verdict", "if=debuff.judgment.up&(!talent.crusade.enabled|cooldown.crusade.remains>gcd*2)&(!talent.execution_sentence.enabled|cooldown.execution_sentence.remains>gcd)" );
 
   generators -> add_action( "variable,name=ds_castable,value=spell_targets.divine_storm>=2|(buff.scarlet_inquisitors_expurgation.stack>=29&(equipped.144358&(dot.wake_of_ashes.ticking&time>10|dot.wake_of_ashes.remains<gcd))|(buff.scarlet_inquisitors_expurgation.stack>=29&(buff.avenging_wrath.up|buff.crusade.up&buff.crusade.stack>=15|cooldown.crusade.remains>15&!buff.crusade.up)|cooldown.avenging_wrath.remains>15)&!equipped.144358)" );
-  generators -> add_action( "call_action_list,name=finishers,if=(buff.crusade.up&buff.crusade.stack<15|buff.liadrins_fury_unleashed.up)|(artifact.ashes_to_ashes.enabled&cooldown.wake_of_ashes.remains<gcd*2)" );
+  generators -> add_action( "call_action_list,name=finishers,if=(buff.crusade.up&buff.crusade.stack<15|buff.liadrins_fury_unleashed.up)|(talent.wake_of_ashes.enabled&cooldown.wake_of_ashes.remains<gcd*2)" );
   generators -> add_action( "call_action_list,name=finishers,if=talent.execution_sentence.enabled&(cooldown.judgment.remains<gcd*4.25|debuff.judgment.remains>gcd*4.25)&cooldown.execution_sentence.up|buff.whisper_of_the_nathrezim.up&buff.whisper_of_the_nathrezim.remains<gcd*1.5" );
   generators -> add_action( this, "Judgment", "if=dot.execution_sentence.ticking&dot.execution_sentence.remains<gcd*2&debuff.judgment.remains<gcd*2|set_bonus.tier21_4pc" );
   generators -> add_action( this, "Blade of Justice", "if=holy_power<=2&(set_bonus.tier20_2pc|set_bonus.tier20_4pc)" );

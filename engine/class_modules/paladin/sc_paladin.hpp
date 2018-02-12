@@ -316,7 +316,7 @@ public:
     const spell_data_t* divine_purpose;
     const spell_data_t* crusade;
     const spell_data_t* crusade_talent;
-    const spell_data_t* holy_wrath;
+    const spell_data_t* wake_of_ashes;
   } talents;
 
   struct artifact_spell_data_t
@@ -383,7 +383,6 @@ public:
 
   timespan_t last_jol_proc;
 
-  double fixed_holy_wrath_health_pct;
   bool fake_sov;
 
   paladin_t( sim_t* sim, const std::string& name, race_e r = RACE_TAUREN );

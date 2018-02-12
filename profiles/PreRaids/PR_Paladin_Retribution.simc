@@ -34,7 +34,6 @@ actions.cooldowns+=/blood_fury
 actions.cooldowns+=/berserking
 actions.cooldowns+=/arcane_torrent,if=(buff.crusade.up|buff.avenging_wrath.up)&holy_power=2&(cooldown.blade_of_justice.remains>gcd|cooldown.divine_hammer.remains>gcd)
 actions.cooldowns+=/lights_judgment
-actions.cooldowns+=/holy_wrath
 actions.cooldowns+=/shield_of_vengeance
 actions.cooldowns+=/avenging_wrath
 actions.cooldowns+=/crusade,if=holy_power>=3|((equipped.137048|race.blood_elf)&holy_power>=2)
@@ -47,7 +46,7 @@ actions.finishers+=/templars_verdict,if=debuff.judgment.up&buff.divine_purpose.r
 actions.finishers+=/templars_verdict,if=debuff.judgment.up&(!talent.crusade.enabled|cooldown.crusade.remains>gcd*2)&(!talent.execution_sentence.enabled|cooldown.execution_sentence.remains>gcd)
 
 actions.generators=variable,name=ds_castable,value=spell_targets.divine_storm>=2|(buff.scarlet_inquisitors_expurgation.stack>=29&(equipped.144358&(dot.wake_of_ashes.ticking&time>10|dot.wake_of_ashes.remains<gcd))|(buff.scarlet_inquisitors_expurgation.stack>=29&(buff.avenging_wrath.up|buff.crusade.up&buff.crusade.stack>=15|cooldown.crusade.remains>15&!buff.crusade.up)|cooldown.avenging_wrath.remains>15)&!equipped.144358)
-actions.generators+=/call_action_list,name=finishers,if=(buff.crusade.up&buff.crusade.stack<15|buff.liadrins_fury_unleashed.up)|(artifact.ashes_to_ashes.enabled&cooldown.wake_of_ashes.remains<gcd*2)
+actions.generators+=/call_action_list,name=finishers,if=(buff.crusade.up&buff.crusade.stack<15|buff.liadrins_fury_unleashed.up)|(talent.wake_of_ashes.enabled&cooldown.wake_of_ashes.remains<gcd*2)
 actions.generators+=/call_action_list,name=finishers,if=talent.execution_sentence.enabled&(cooldown.judgment.remains<gcd*4.25|debuff.judgment.remains>gcd*4.25)&cooldown.execution_sentence.up|buff.whisper_of_the_nathrezim.up&buff.whisper_of_the_nathrezim.remains<gcd*1.5
 actions.generators+=/judgment,if=dot.execution_sentence.ticking&dot.execution_sentence.remains<gcd*2&debuff.judgment.remains<gcd*2|set_bonus.tier21_4pc
 actions.generators+=/blade_of_justice,if=holy_power<=2&(set_bonus.tier20_2pc|set_bonus.tier20_4pc)
@@ -91,12 +90,12 @@ trinket2=memento_of_angerboda,id=133644,bonus_id=1727/1492
 main_hand=ashbringer,id=120978,bonus_id=737,gem_id=136717/137316/136717,relic_id=3412/3412/3412
 
 # Gear Summary
-# gear_ilvl=864.20
-# gear_strength=14765
-# gear_stamina=24048
-# gear_crit_rating=8834
-# gear_haste_rating=8582
-# gear_mastery_rating=816
-# gear_versatility_rating=2210
-# gear_armor=4194
+# gear_ilvl=174.67
+# gear_strength=433
+# gear_stamina=690
+# gear_crit_rating=357
+# gear_haste_rating=351
+# gear_mastery_rating=34
+# gear_versatility_rating=87
+# gear_armor=1060
 # set_bonus=tier19p_plate_2pc=1

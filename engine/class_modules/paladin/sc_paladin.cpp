@@ -66,7 +66,6 @@ paladin_t::paladin_t( sim_t* sim, const std::string& name, race_e r ) :
   extra_regen_period( timespan_t::from_seconds( 0.0 ) ),
   extra_regen_percent( 0.0 ),
   last_jol_proc( timespan_t::from_seconds( 0.0 ) ),
-  fixed_holy_wrath_health_pct( -1.0 ),
   fake_sov( true )
 {
   whisper_of_the_nathrezim            = nullptr;
@@ -4466,7 +4465,6 @@ void paladin_t::assess_heal( school_e school, dmg_e dmg_type, action_state_t* s 
 void paladin_t::create_options()
 {
   // TODO: figure out a better solution for this.
-  add_option( opt_float( "paladin_fixed_holy_wrath_health_pct", fixed_holy_wrath_health_pct ) );
   add_option( opt_bool( "paladin_fake_sov", fake_sov ) );
   player_t::create_options();
 }
@@ -4479,7 +4477,6 @@ void paladin_t::copy_from( player_t* source )
 
   paladin_t* p = debug_cast<paladin_t*>( source );
 
-  fixed_holy_wrath_health_pct = p -> fixed_holy_wrath_health_pct;
   fake_sov = p -> fake_sov;
 }
 
