@@ -306,6 +306,7 @@ struct rogue_t : public player_t
     gain_t* energy_refund;
     gain_t* master_of_shadows;
     gain_t* venomous_wounds;
+	gain_t* venom_rush;
     gain_t* venomous_wounds_death;
     gain_t* vitality;
     gain_t* relentless_strikes;
@@ -3189,6 +3190,12 @@ struct mutilate_t : public rogue_attack_t
 
       oh_strike -> set_target( execute_state -> target );
       oh_strike -> execute();
+
+	  if (p() -> talent.venom_rush->ok() && p() -> get_target_data(execute_state -> target) -> poisoned()) {
+		  p() -> resource_gain(RESOURCE_ENERGY,
+			  p() -> talent.venom_rush -> effectN(1).base_value(),
+			  p() -> gains.venom_rush);
+	  }
     }
   }
 };
@@ -5140,8 +5147,7 @@ void rogue_t::trigger_venomous_wounds( const action_state_t* state )
     return;
 
   resource_gain( RESOURCE_ENERGY,
-                 spec.venomous_wounds -> effectN( 2 ).base_value() +
-                 talent.venom_rush -> effectN( 1 ).base_value(),
+                 spec.venomous_wounds -> effectN( 2 ).base_value(),
                  gains.venomous_wounds );
 }
 
@@ -5168,7 +5174,7 @@ void rogue_t::trigger_venomous_wounds_death( player_t* target )
 
   // TODO: Exact formula?
   unsigned full_ticks_remaining = (unsigned)(td -> dots.rupture -> remains() / td -> dots.rupture -> current_action -> base_tick_time);
-  int replenish = spec.venomous_wounds -> effectN( 2 ).base_value() + talent.venom_rush -> effectN( 1 ).base_value();
+  int replenish = spec.venomous_wounds -> effectN( 2 ).base_value();
 
   if ( sim -> debug )
   {
@@ -5994,7 +6000,7 @@ void rogue_t::init_action_list()
 
   if ( specialization() == ROGUE_ASSASSINATION )
   {
-    def -> add_action( "variable,name=energy_regen_combined,value=energy.regen+poisoned_bleeds*(7+talent.venom_rush.enabled*3)%2" );
+    def -> add_action( "variable,name=energy_regen_combined,value=energy.regen+poisoned_bleeds*(7)%2" );
     def -> add_action( "variable,name=energy_time_to_max_combined,value=energy.deficit%variable.energy_regen_combined" );
     def -> add_action( "call_action_list,name=cds" );
     def -> add_action( "run_action_list,name=stealthed,if=stealthed.rogue" );
@@ -6872,6 +6878,7 @@ void rogue_t::init_gains()
   gains.energy_refund            = get_gain( "Energy Refund"            );
   gains.seal_fate                = get_gain( "Seal Fate"                );
   gains.venomous_wounds          = get_gain( "Venomous Vim"             );
+  gains.venom_rush               = get_gain("Venom Rush");
   gains.venomous_wounds_death    = get_gain( "Venomous Vim (death)"     );
   gains.quick_draw               = get_gain( "Quick Draw"               );
   gains.broadsides               = get_gain( "Broadsides"               );
