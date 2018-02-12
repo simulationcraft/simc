@@ -246,6 +246,7 @@ public:
     gain_t* chi_refund;
     gain_t* power_strikes;
     gain_t* bok_proc;
+    gain_t* chi_burst;
     gain_t* crackling_jade_lightning;
     gain_t* energy_refund;
     gain_t* energizing_elixir_chi;
@@ -6028,6 +6029,15 @@ struct chi_burst_t: public monk_spell_t
     heal -> execute();
     damage -> execute();
   }
+
+  void impact( action_state_t* s ) override
+  {
+    monk_spell_t::impact( s );
+
+//    if ( p() -> specialization() == MONK_WINDWALKER )
+      // TODO: Hard code the 1 chi for now until the effect gets put in.
+//      p() -> resource_gain( RESOURCE_CHI, 1, p() -> gain.chi_burst );
+  }
 };
 
 // ==========================================================================
@@ -7180,6 +7190,7 @@ void monk_t::init_gains()
   gain.black_ox_brew_energy     = get_gain( "black_ox_brew_energy" );
   gain.bok_proc                 = get_gain( "blackout_kick_proc" );
   gain.chi_refund               = get_gain( "chi_refund" );
+  gain.chi_burst                = get_gain( "chi_burst" );
   gain.crackling_jade_lightning = get_gain( "crackling_jade_lightning" );
   gain.effuse                   = get_gain( "effuse" );
   gain.energizing_elixir_energy = get_gain( "energizing_elixir_energy" );
