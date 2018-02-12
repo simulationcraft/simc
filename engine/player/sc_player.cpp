@@ -8623,6 +8623,8 @@ const spell_data_t* player_t::find_talent_spell( const std::string& n,
     for ( int i = 0; i < MAX_TALENT_COLS; i++ )
     {
       auto td = talent_data_t::find( type, j, i, s, dbc.ptr );
+      if ( ! td )
+        continue;
       auto spell = dbc::find_spell( this, td -> spell_id() );
 
       // Loop through all our classes talents, and check if their spell's id match the one we maped to the given talent name
