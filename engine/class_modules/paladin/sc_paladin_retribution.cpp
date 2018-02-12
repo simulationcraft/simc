@@ -125,6 +125,22 @@ void holy_power_consumer_t::execute()
   }
 }
 
+void holy_power_generator_t::execute()
+{
+  paladin_melee_attack_t::execute();
+
+  if ( p() -> sets -> has_set_bonus( PALADIN_RETRIBUTION, T19, B4 ) )
+  {
+    // for some reason this is the same spell as the talent
+    // leftover nonsense from when this was Conviction?
+    if ( p() -> rng().roll( p() -> sets -> set( PALADIN_RETRIBUTION, T19, B4 ) -> proc_chance() ) )
+    {
+      p() -> resource_gain( RESOURCE_HOLY_POWER, 1, p() -> gains.hp_t19_4p );
+      p() -> procs.tfoj_set_bonus -> occur();
+    }
+  }
+}
+
 // Custom events
 struct whisper_of_the_nathrezim_event_t : public event_t
 {
