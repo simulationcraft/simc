@@ -431,6 +431,12 @@ public:
 
   } artifact;
 
+  // Default consumables
+  std::string default_potion() const override;
+  std::string default_flask() const override;
+  std::string default_food() const override;
+  std::string default_rune() const override;
+
   player_t* beacon_target;
 
   timespan_t last_extra_regen;
@@ -5262,35 +5268,15 @@ void paladin_t::generate_action_prio_list_ret()
   }
 
   // Food
-  if ( sim -> allow_food && level() >= 80 )
-  {
-    std::string food_action = "food,type=";
-    if ( level() > 100 )
-      food_action += "azshari_salad";
-    else if ( level() > 90 )
-      food_action += "sleeper_sushi";
-    else
-      food_action += ( level() > 85 ) ? "black_pepper_ribs_and_shrimp" : "beer_basted_crocolisk";
+  precombat -> add_action( "food" );
 
-    precombat -> add_action( food_action );
-  }
-
-  if ( true_level > 100 )
-    precombat -> add_action( "augmentation,type=defiled" );
+  precombat -> add_action( "augmentation" );
 
   // Snapshot stats
   precombat -> add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
 
-  // Pre-potting
-  if ( sim -> allow_potions && true_level >= 80 )
-  {
-    if ( true_level > 100 )
-      precombat -> add_action( "potion,name=old_war" );
-    else if ( true_level > 90 )
-      precombat -> add_action( "potion,name=draenic_strength" );
-    else
-      precombat -> add_action( ( true_level > 85 ) ? "potion,name=mogu_power" : "potion,name=golemblood" );
-  }
+  // Pre-Potion
+  precombat -> add_action( "potion" );
 
   ///////////////////////
   // Action Priority List
@@ -5612,6 +5598,118 @@ void paladin_t::init_assessors()
       }
     );
   }
+}
+
+// paladin_t::default_potion ================================================
+
+std::string paladin_t::default_potion() const
+{
+  std::string retribution_pot = (true_level > 100) ? "old_war" :
+                                (true_level >= 90) ? "draenic_strength" :
+                                (true_level >= 85) ? "mogu_power" :
+                                (true_level >= 80) ? "golemblood" :
+                                "disabled";
+
+  // TODO
+  std::string protection_pot = (true_level > 100) ? "" :
+                               (true_level >= 90) ? "" :
+                               (true_level >= 85) ? "" :
+                               (true_level >= 80) ? "" :
+                               "disabled";
+
+  // TODO
+  std::string holy_pot = (true_level > 100) ? "" :
+                         (true_level >= 90) ? "" :
+                         (true_level >= 85) ? "" :
+                         (true_level >= 80) ? "" :
+                         "disabled";
+
+  switch ( specialization() )
+  {
+    case PALADIN_RETRIBUTION:
+      return retribution_pot;
+    case PALADIN_PROTECTION:
+      return protection_pot;
+    case PALADIN_HOLY:
+      return holy_pot;
+    default:
+      return "disabled";
+  }
+}
+
+std::string paladin_t::default_food() const
+{
+  std::string retribution_food = (true_level > 100) ? "azshari_salad" :
+                                 (true_level >= 90) ? "sleeper_sushi" :
+                                 (true_level >= 85) ? "black_pepper_ribs_and_shrimp" :
+                                 (true_level >= 80) ? "beer_basted_crocolisk" :
+                                 "disabled";
+
+  // TODO
+  std::string protection_food = (true_level > 100) ? "" :
+                                (true_level >= 90) ? "" :
+                                (true_level >= 85) ? "" :
+                                (true_level >= 80) ? "" :
+                                "disabled";
+
+  // TODO
+  std::string holy_food = (true_level > 100) ? "" :
+                          (true_level >= 90) ? "" :
+                          (true_level >= 85) ? "" :
+                          (true_level >= 80) ? "" :
+                          "disabled";
+
+  switch ( specialization() )
+  {
+    case PALADIN_RETRIBUTION:
+      return retribution_food;
+    case PALADIN_PROTECTION:
+      return protection_food;
+    case PALADIN_HOLY:
+      return holy_food;
+    default:
+      return "disabled";
+  }
+}
+
+std::string paladin_t::default_flask() const
+{
+  std::string retribution_flask = (true_level > 100) ? "flask_of_the_countless_armies" :
+                                  (true_level >= 90) ? "greater_draenic_strength_flask" :
+                                  (true_level >= 85) ? "winters_bite" :
+                                  (true_level >= 80) ? "titanic_strength" :
+                                  "disabled";
+
+  // TODO
+  std::string protection_flask = (true_level > 100) ? "" :
+                                 (true_level >= 90) ? "" :
+                                 (true_level >= 85) ? "" :
+                                 (true_level >= 80) ? "" :
+                                 "disabled";
+
+  // TODO
+  std::string holy_flask = (true_level > 100) ? "" :
+                           (true_level >= 90) ? "" :
+                           (true_level >= 85) ? "" :
+                           (true_level >= 80) ? "" :
+                           "disabled";
+
+  switch ( specialization() )
+  {
+    case PALADIN_RETRIBUTION:
+      return retribution_flask;
+    case PALADIN_PROTECTION:
+      return protection_flask;
+    case PALADIN_HOLY:
+      return holy_flask;
+    default:
+      return "disabled";
+  }
+}
+
+std::string paladin_t::default_rune() const
+{
+  return "disabled";
 }
 
 // paladin_t::init_actions ==================================================
