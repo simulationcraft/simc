@@ -2620,12 +2620,6 @@ struct arcane_explosion_t : public arcane_mage_spell_t
       p() -> buffs.clearcasting -> expire();
     }
 
-    if ( hit_any_target || p() -> bugs )
-    {
-      // TODO: Grants AC even when it doesn't hit anything, could be a bug.
-      trigger_arcane_charge();
-    }
-
     p() -> buffs.quick_thinker -> trigger();
   }
 };
