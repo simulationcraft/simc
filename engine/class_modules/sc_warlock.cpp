@@ -2440,6 +2440,11 @@ public:
       base_dd_multiplier *= 1.0 + p() -> spec.affliction -> effectN( 1 ).percent();
     if ( affliction_dot_increase )
       base_td_multiplier *= 1.0 + p() -> spec.affliction -> effectN( 2 ).percent();
+    // 6% agony and corruption nerf hotfix: 06/02/2018
+    if (data().affected_by(p()->spec.affliction->effectN(5)))
+        base_dd_multiplier *= 1.0 + p()->spec.affliction->effectN(5).percent();
+    if (data().affected_by(p()->spec.affliction->effectN(6)))
+        base_td_multiplier *= 1.0 + p()->spec.affliction->effectN(6).percent();
   }
 
   int n_targets() const override
@@ -8617,17 +8622,17 @@ struct warlock_module_t: public module_t
     //  .modifier( 75 )
     //  .verification_value( 50 );
 
-    hotfix::register_effect( "Warlock", "2018-02-05", "Corruption damage reduced by 6%.", 198369 )
-      .field( "sp_coefficient" )
-      .operation( hotfix::HOTFIX_MUL )
-      .modifier( 0.94 )
-      .verification_value( 0.324 );
+    //hotfix::register_effect( "Warlock", "2018-02-05", "Corruption damage reduced by 6%.", 198369 )
+    //  .field( "sp_coefficient" )
+    //  .operation( hotfix::HOTFIX_MUL )
+    //  .modifier( 0.94 )
+    // .verification_value( 0.324 );
 
-    hotfix::register_effect( "Warlock", "2018-02-05", "Agony damage reduced by 6%.", 374 )
-      .field( "sp_coefficient" )
-      .operation( hotfix::HOTFIX_MUL )
-      .modifier( 0.94 )
-      .verification_value( 0.03540 );
+    //hotfix::register_effect( "Warlock", "2018-02-05", "Agony damage reduced by 6%.", 374 )
+    //  .field( "sp_coefficient" )
+    //  .operation( hotfix::HOTFIX_MUL )
+    //  .modifier( 0.94 )
+    //  .verification_value( 0.03540 );
 
     //hotfix::register_effect( "Warlock", "2017-12-04", "Unstable Affliction 1 damage reduced by 4%", 352664 )
     //  .field( "sp_coefficient" )
