@@ -2755,12 +2755,12 @@ void player_t::create_buffs()
                            .default_value( std::fabs( find_spell( 115804 ) -> effectN( 1 ).percent() ) );
 
     // BfA Raid Damage Modifier Debuffs
+    debuffs.chaos_brand  = buff_creator_t( this, "chaos_brand", find_spell( 1490 ) )
+                           .default_value( find_spell( 1490 ) -> effectN( 1 ).percent() )
+                           .cd( timespan_t::from_seconds( 5.0 ) );
     debuffs.expose_armor = buff_creator_t( this, "expose_armor", find_spell( 113746 ) )
                            .default_value( find_spell( 113746 ) -> effectN( 1 ).percent() )
-                           .cd( timespan_t::from_seconds( 5 ) ); // Seems to have a 5s ICD
-
-    debuffs.chaos_brand = buff_creator_t( this, "chaos_brand", find_spell( 1490 ) )
-                          .default_value( find_spell( 1490 )->effectN( 1 ).percent() );
+                           .cd( timespan_t::from_seconds( 5.0 ) );
   }
 
   // .. for players, but only if there's a "damage taken" raid event
@@ -3676,10 +3676,10 @@ double player_t::composite_player_vulnerability( school_e school ) const
   if ( debuffs.damage_taken && debuffs.damage_taken -> check() )
     m *= 1.0 + debuffs.damage_taken -> current_stack * 0.01;
 
-  if ( debuffs.expose_armor && dbc::is_school( debuffs.expose_armor->data().effectN( 1 ).school_type(), school ) )
+  if ( debuffs.expose_armor && dbc::has_common_school( debuffs.expose_armor -> data().effectN( 1 ).school_type(), school ) )
     m *= 1.0 + debuffs.expose_armor -> value();
 
-  if ( debuffs.chaos_brand && dbc::is_school( debuffs.chaos_brand->data().effectN( 1 ).school_type(), school ) )
+  if ( debuffs.chaos_brand && dbc::has_common_school( debuffs.chaos_brand -> data().effectN( 1 ).school_type(), school ) )
     m *= 1.0 + debuffs.chaos_brand -> value();
 
   return m;
@@ -4587,6 +4587,11 @@ void player_t::arise()
     range::for_each( sim -> player_non_sleeping_list, [ this ]( player_t* p ) {
       p -> acquire_target( ACTOR_ARISE, this );
     } );
+
+    if ( sim -> overrides.chaos_brand   && debuffs.chaos_brand   ) debuffs.chaos_brand   -> override_buff();
+    if ( sim -> overrides.expose_armor  && debuffs.expose_armor  ) debuffs.expose_armor  -> override_buff();
+    if ( sim -> overrides.bleeding      && debuffs.bleeding      ) debuffs.bleeding      -> override_buff( 1, 1.0 );
+    if ( sim -> overrides.mortal_wounds && debuffs.mortal_wounds ) debuffs.mortal_wounds -> override_buff();
   }
   else
   {
@@ -8618,6 +8623,8 @@ const spell_data_t* player_t::find_talent_spell( const std::string& n,
     for ( int i = 0; i < MAX_TALENT_COLS; i++ )
     {
       auto td = talent_data_t::find( type, j, i, s, dbc.ptr );
+      if ( ! td )
+        continue;
       auto spell = dbc::find_spell( this, td -> spell_id() );
 
       // Loop through all our classes talents, and check if their spell's id match the one we maped to the given talent name

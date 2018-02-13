@@ -903,6 +903,11 @@ bool dbc::is_school( school_e s, school_e s2 )
   return ( get_school_mask( s ) & mask2 ) == mask2;
 }
 
+bool dbc::has_common_school( school_e s1, school_e s2 )
+{
+  return ( get_school_mask( s1 ) & get_school_mask( s2 ) ) != 0;
+}
+
 std::vector<const spell_data_t*> dbc::class_passives( const player_t* p )
 {
   struct entry_t
@@ -986,18 +991,18 @@ double dbc::item_level_squish( unsigned source_ilevel, bool ptr )
 #if SC_USE_PTR == 1
   if ( ptr )
   {
-    assert( sizeof_array( __ptr_item_level_squish ) > source_ilevel );
-    return __ptr_item_level_squish[ source_ilevel ];
+    assert( sizeof_array( __ptr_item_level_squish ) >= source_ilevel );
+    return __ptr_item_level_squish[ source_ilevel - 1 ];
   }
   else
   {
-    assert( sizeof_array( __item_level_squish ) > source_ilevel );
-    return __item_level_squish[ source_ilevel ];
+    assert( sizeof_array( __item_level_squish ) >= source_ilevel );
+    return __item_level_squish[ source_ilevel - 1 ];
   }
 #else
   ( void ) ptr;
-  assert( sizeof_array( __item_level_squish ) > source_ilevel );
-  return __item_level_squish[ source_ilevel ];
+  assert( sizeof_array( __item_level_squish ) >= source_ilevel );
+  return __item_level_squish[ source_ilevel - 1 ];
 #endif
 }
 

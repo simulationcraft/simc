@@ -1156,6 +1156,11 @@ public:
 
   void trigger_chaos_brand( action_state_t* s )
   {
+    if ( ab::sim->overrides.chaos_brand )
+    {
+      return;
+    }
+
     if ( ab::result_is_miss( s->result ) )
     {
       return;

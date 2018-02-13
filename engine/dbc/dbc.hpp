@@ -65,10 +65,11 @@ void init();
 void init_item_data();
 void de_init();
 
-// Utily functions
+// Utility functions
 uint32_t get_school_mask( school_e s );
 school_e get_school_type( uint32_t school_id );
 bool is_school( school_e s, school_e s2 );
+bool has_common_school( school_e s1, school_e s2 );
 unsigned specialization_max_per_class();
 specialization_e spec_by_idx( const player_e c, unsigned idx );
 

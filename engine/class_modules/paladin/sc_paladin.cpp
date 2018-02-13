@@ -2706,6 +2706,10 @@ paladin_td_t::paladin_td_t( player_t* target, paladin_t* paladin ) :
 
 action_t* paladin_t::create_action( const std::string& name, const std::string& options_str )
 {
+  action_t* ret_action = create_action_retribution( name, options_str );
+  if ( ret_action )
+    return ret_action;
+
   if ( name == "auto_attack"               ) return new auto_melee_attack_t        ( this, options_str );
   if ( name == "aegis_of_light"            ) return new aegis_of_light_t           ( this, options_str );
   if ( name == "ardent_defender"           ) return new ardent_defender_t          ( this, options_str );
@@ -2743,10 +2747,6 @@ action_t* paladin_t::create_action( const std::string& name, const std::string& 
   if ( name == "holy_light"                ) return new holy_light_t               ( this, options_str );
   if ( name == "flash_of_light"            ) return new flash_of_light_t           ( this, options_str );
   if ( name == "lay_on_hands"              ) return new lay_on_hands_t             ( this, options_str );
-
-  action_t* ret_action = create_action_retribution( name, options_str );
-  if ( ret_action )
-    return ret_action;
 
   return player_t::create_action( name, options_str );
 }

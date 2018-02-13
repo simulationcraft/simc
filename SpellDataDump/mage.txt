@@ -180,14 +180,8 @@ Effects          :
 #1 (id=457)      : School Damage (2): arcane
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.60000 | Radius: 0 - 10 yards | Target: At Caster (22) -> AOE enemy (15)
 #2 (id=281175)   : Energize Power (30)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: none | Target: Self (1)
-Description      : Causes an explosion of magic around the caster, dealing $s1 Arcane damage to all enemies within $A1 yards.
-
-Damage increased by $36032s1% per Arcane Charge.
-
-Mana cost increased by $36032s5% per Arcane Charge.
-
-|cFFFFFFFFGenerates 1 Arcane Charge if any targets are hit.|r
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: none | Target: Self (1)
+Description      : Causes an explosion of magic around the caster, dealing $s1 Arcane damage to all enemies within $A1 yards.
 
 Name             : Arcane Intellect (id=1459) [Spell Family (3)] 
 Class            : Mage
@@ -350,7 +344,7 @@ Spell Level      : 12
 Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 3 seconds
-Affecting spells : Icy Veins (12472 effect#2), Ice Floes (108839 effect#1), Arcane Instability (166872 effect#1), Arcane Focus (171375 effect#1), Rule of Threes (187292 effect#1), Ice Form (198144 effect#2), Norgannon's Foresight (236380 effect#1), Slipstream (236457 effect#1), Clearcasting (263725 effect#1), Mana Adept (264352 effect#1)
+Affecting spells : Icy Veins (12472 effect#2), Ice Floes (108839 effect#1), Arcane Instability (166872 effect#1), Arcane Focus (171375 effect#1), Rule of Threes (187292 effect#1), Ice Form (198144 effect#2), Norgannon's Foresight (236380 effect#1), Slipstream (236457 effect#1), Clearcasting (263725 effect#1), Mana Adept (264352 effect#1), Rule of Threes (264774 effect#1)
 Attributes       : ........ x....... x....... .....x..   ..x....x ..x...x. ........ ..x.xx.. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ...x....   ........ .....x.. ........ ........ 
@@ -726,7 +720,7 @@ Spell Level      : 10
 Range            : 40 yards
 Cast Time        : 2.25 seconds
 GCD              : 1.5 seconds
-Affecting spells : Arcane Power (12042 effect#1), Icy Veins (12472 effect#2), Arcane Charge (36032 effect#1), Ice Floes (108839 effect#1), Rune of Power (116014 effect#1), Incanter's Flow (116267 effect#1), Fire Mage (137019 effect#1), Frost Mage (137020 effect#1), Arcane Mage (137021 effect#1), Arcane Affinity (166871 effect#1), Arcane Focus (171375 effect#1), Blasting Rod (187258 effect#1), Combustion (190319 effect#1), Ice Form (198144 effect#2), Presence of Mind (205025 effect#1), Bone Chilling (205766 effect#1), Rhonin's Assaulting Armwraps (208081 effect#1), Erosion (210134 effect#1), Norgannon's Foresight (236380 effect#1), Crackling Energy (246224 effect#1), 
+Affecting spells : Arcane Power (12042 effect#1), Icy Veins (12472 effect#2), Arcane Charge (36032 effect#1), Ice Floes (108839 effect#1), Rune of Power (116014 effect#1), Incanter's Flow (116267 effect#1), Fire Mage (137019 effect#1), Frost Mage (137020 effect#1), Arcane Mage (137021 effect#1), Arcane Affinity (166871 effect#1), Arcane Focus (171375 effect#1), Blasting Rod (187258 effect#1), Combustion (190319 effect#1), Ice Form (198144 effect#2), Presence of Mind (205025 effect#1), Bone Chilling (205766 effect#1), Rhonin's Assaulting Armwraps (208081 effect#1), Erosion (210134 effect#1), Norgannon's Foresight (236380 effect#1), Crackling Energy (246224 effect#1), Rule of Threes (264774 effect#1)
 Attributes       : ........ ........ ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1531,7 +1525,10 @@ Effects          :
                    Base Value: -75 | Scaled Value: -75 | Misc Value: 127 | Target: Self (1)
 #3 (id=372340)   : Apply Aura (6) | Modify Attacker Melee Crit Chance (187)
                    Base Value: -6 | Scaled Value: -6 | Target: Self (1)
-Description      : Reduces the damage your pet takes from creature area of effect attacks by an additional $s1%.
+#4 (id=710726)   : Apply Aura (6) | Unknown(152)
+                   Base Value: -6 | Scaled Value: -6 | Target: Self (1)
+Description      : Reduces the damage your pet takes from area of effect attacks by an additional $s1%.
+Reduces the range at which enemies detect your pet.
 
 Name             : Viciousness (Racial Passive) (id=68975) [Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Druid
@@ -1563,7 +1560,7 @@ Attributes       : ....x.x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6)
 Effects          :
-#1 (id=71772)    : Apply Aura (6) | Unknown(87)
+#1 (id=71772)    : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: -1 | Scaled Value: -1 | Misc Value: 0x28 | Target: Self (1)
 Description      : Reduces Shadow and Nature damage taken by $s1%.
 Tooltip          : Reduces Shadow and Nature damage taken by $s1%.
@@ -2129,7 +2126,7 @@ Attributes       : ........ ........ ........ ........   ........ ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=126901)   : Apply Aura (6) | Unknown(87)
+#1 (id=126901)   : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: -60 | Scaled Value: -60 | Misc Value: 0x7f | Target: Self (1)
 Description      : $@spelldesc110959
 Tooltip          : Damage taken is reduced by $s1%.
@@ -2480,10 +2477,10 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=179702)   : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
-                   Base Value: 9 | Scaled Value: 9 | Target: Self (1)
+                   Base Value: 12 | Scaled Value: 12 | Target: Self (1)
                    Affected Spells: Cone of Cold (120), Frost Nova (122), Fireball (133), Arcane Explosion (1449), Flamestrike (2120), Scorch (2948), Arcane Missiles (7268), Pyroblast (11366), Arcane Blast (30451), Dragon's Breath (31661), Waterbolt (31707), Arcane Barrage (44425), Living Bomb (44461), Frostbolt (59638), Frozen Orb (84721), Fireball (88082), Arcane Blast (88084), Fire Blast (108853), Frost Bomb (113092), Nether Tempest (114923), Nether Tempest (114954), Water Jet (135029), Meteor (153564), Comet Storm (153596), Arcane Orb (153640), Meteor Burn (155158), Supernova (157980), Blast Wave (157981), Ice Nova (157997), Blizzard (190357), Aftershocks (194432), Phoenix's Flames (194466), Blast Furnace (194522), Cinderstorm (198928), Ray of Frost (205021), Conflagration Flare Up (205345), Flame Patch (205472), Arcane Rebound (210817), Mark of Aluneth (211088), Phoenix Reborn (215775), Living Bomb (217694), Phoenix's Flames (224637), Arcane Assault (225119), Conflagration (226757), Flurry (228354), Frostbolt (228597), Ice Lance (228598), Ebonbolt (228599), Glacial Spike (228600), Frost Nova (235235), Blazing Barrier (235314), Time and Space (240689), Glacial Eruption (242851), Phoenix Flames (257541), Phoenix Flames (257542)
 #2 (id=191125)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Damage (22)
-                   Base Value: 9 | Scaled Value: 9 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 12 | Scaled Value: 12 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Cone of Cold (120), Frost Nova (122), Fireball (133), Arcane Explosion (1449), Flamestrike (2120), Scorch (2948), Arcane Missiles (7268), Pyroblast (11366), Arcane Blast (30451), Dragon's Breath (31661), Waterbolt (31707), Arcane Barrage (44425), Living Bomb (44461), Frostbolt (59638), Frozen Orb (84721), Fireball (88082), Arcane Blast (88084), Fire Blast (108853), Frost Bomb (113092), Nether Tempest (114923), Nether Tempest (114954), Water Jet (135029), Meteor (153564), Comet Storm (153596), Arcane Orb (153640), Meteor Burn (155158), Supernova (157980), Blast Wave (157981), Ice Nova (157997), Blizzard (190357), Aftershocks (194432), Phoenix's Flames (194466), Blast Furnace (194522), Cinderstorm (198928), Ray of Frost (205021), Conflagration Flare Up (205345), Flame Patch (205472), Arcane Rebound (210817), Mark of Aluneth (211088), Phoenix Reborn (215775), Living Bomb (217694), Phoenix's Flames (224637), Arcane Assault (225119), Conflagration (226757), Flurry (228354), Frostbolt (228597), Ice Lance (228598), Ebonbolt (228599), Glacial Spike (228600), Frost Nova (235235), Blazing Barrier (235314), Time and Space (240689), Glacial Eruption (242851), Phoenix Flames (257541), Phoenix Flames (257542)
 #3 (id=191126)   : Apply Aura (6) | Dummy (4)
                    Base Value: 15 | Scaled Value: 15 | Misc Value: 22 | Target: Self (1)
@@ -2981,7 +2978,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6)
 Effects          :
-#1 (id=215514)   : Apply Aura (6) | Unknown(87)
+#1 (id=215514)   : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: 30 | Scaled Value: 30 | Misc Value: 0x7f | Target: Self (1)
 #2 (id=256210)   : Apply Aura (6) | Periodic Dummy (226): every 1 seconds
                    Base Value: -200 | Scaled Value: -200 | Target: Self (1)
@@ -5224,7 +5221,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 127 | Target: Self (1)
 #2 (id=355675)   : Apply Aura (6) | Proc Trigger Spell (42): Blazing Barrier
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 235314 | Target: Self (1)
-#3 (id=355719)   : Apply Aura (6) | Unknown(87)
+#3 (id=355719)   : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x1 | Target: Self (1)
 Description      : Shields you for $d, absorbing $<shield> damage$?s194315[ and reducing Physical damage taken by $s3%][]. Melee attacks against you cause the attacker to take $235314s1 Fire damage.
 Tooltip          : Absorbs $w1 damage. Melee attackers take $235314s1 Fire damage.
@@ -5289,7 +5286,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 127 | Target: Self (1)
 #2 (id=355845)   : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 127 | Target: Self (1)
-#3 (id=355846)   : Apply Aura (6) | Unknown(87)
+#3 (id=355846)   : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: -15 | Scaled Value: -15 | Value Multiplier: 1 | Misc Value: 0x7e | Target: Self (1)
 #4 (id=355854)   : Apply Aura (6) | Unknown(245)
                    Base Value: -25 | Scaled Value: -25 | Misc Value: 1 | Target: Self (1)
@@ -5771,7 +5768,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6)
 Effects          :
-#1 (id=477698)   : Apply Aura (6) | Unknown(87)
+#1 (id=477698)   : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: -1 | Scaled Value: -1 | Misc Value: 0x2 | Target: Self (1)
 Description      : Reduces Holy damage taken by ${$s1/-1}%.
 
@@ -5981,5 +5978,26 @@ Effects          :
 #1 (id=707713)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : When you gain your third Arcane Charge, the cost of your next Arcane Blast or Arcane Missiles is reduced by $s1%.
+
+Name             : Rule of Threes (id=264774) [Spell Family (3)] 
+Class            : Mage
+School           : Physical
+Duration         : 15 seconds
+Stacks           : 1 initial, 1 maximum
+Proc Chance      : 100%
+Proc Flags       : ........ ........ x....... ........ 
+                 : Hostile Spell
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=708537)   : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost (14)
+                   Base Value: -100 | Scaled Value: -100 | Misc Value: 14 | Target: Self (1)
+                   Affected Spells: Arcane Missiles (5143), Arcane Blast (30451)
+Description      : $@spelldesc264354
+Tooltip          : The cost of your next Arcane Blast or Arcane Missiles is reduced by $s1%.
 
 

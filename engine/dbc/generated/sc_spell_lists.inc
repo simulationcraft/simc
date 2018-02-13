@@ -4,7 +4,7 @@
 #ifndef MAX_CLASS
 #define MAX_CLASS (13)
 #endif
-// Class based active abilities, wow build 25976
+// Class based active abilities, wow build 26032
 static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SIZE] = {
   {
     {
@@ -236,7 +236,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
        19801, // Tranquilizing Shot
            0,
     },
-    // Marksmanship tree, 13 abilities
+    // Marksmanship tree, 14 abilities
     {
        19434, // Aimed Shot
       186387, // Bursting Shot
@@ -251,11 +251,13 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
        56641, // Steady Shot
       187698, // Tar Trap
        19801, // Tranquilizing Shot
+      193526, // Trueshot
            0,
     },
-    // Survival tree, 12 abilities
+    // Survival tree, 13 abilities
     {
-      260217, // Aspect of the Eagle
+      186289, // Aspect of the Eagle
+      266779, // Coordinated Assault
       109304, // Exhilaration
       187650, // Freezing Trap
       190925, // Harpoon
@@ -612,13 +614,12 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
   },
   // Class active abilities for Shaman
   {
-    // General tree, 19 abilities
+    // General tree, 18 abilities
     {
       114911, // Ancestral Guidance
       108271, // Astral Shift
         2825, // Bloodlust
       192058, // Capacitor Totem
-      216965, // Disabling Totem
       204945, // Doom Winds (Artifact)
         2484, // Earthbind Totem
         2645, // Ghost Wolf
@@ -697,9 +698,9 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
        36213, // Angered Earth
       157348, // Call Lightning
        57984, // Fire Blast
-      117588, // Fire Nova
       118337, // Harden Skin
       118297, // Immolate
+      117588, // Meteor
       118345, // Pulverize
       157331, // Wind Gust
            0,
@@ -847,15 +848,15 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
     // Demonology tree, 11 abilities
     {
       104316, // Call Dreadstalkers
-      193396, // Demonic Empowerment
-      193440, // Demonwrath
-         603, // Doom
+      265187, // Demon Commander
       234153, // Drain Life
       111898, // Grimoire: Felguard (Summon)
       105174, // Hand of Gul'dan
+      265339, // Imp Swarm
          686, // Shadow Bolt
        30283, // Shadowfury
       196606, // Shadowy Inspiration
+      264178, // Soulfire
        30146, // Summon Felguard (Summon)
            0,
     },
@@ -957,13 +958,14 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       115176, // Zen Meditation
            0,
     },
-    // Mistweaver tree, 14 abilities
+    // Mistweaver tree, 15 abilities
     {
       228649, // Blackout Kick
       115450, // Detox
       116694, // Effuse
       124682, // Enveloping Mist
       191837, // Essence Font
+      243435, // Fortifying Brew
       119381, // Leg Sweep
       116849, // Life Cocoon
       212051, // Reawaken
@@ -1010,7 +1012,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
   },
   // Class active abilities for Druid
   {
-    // General tree, 29 abilities
+    // General tree, 28 abilities
     {
       210722, // Ashamane's Frenzy (Artifact)
       210723, // Ashamane's Frenzy
@@ -1038,7 +1040,6 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
         2908, // Soothe
       210053, // Stag Form (Shapeshift)
       164815, // Sunfire (Solar)
-      157982, // Tranquility
          783, // Travel Form (Shapeshift)
       114282, // Treant Form (Shapeshift)
            0,
@@ -1204,7 +1205,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
 };
 #define TREE_SPECIALIZATION_SIZE (36)
 
-// Talent tree specialization abilities, wow build 25976
+// Talent tree specialization abilities, wow build 26032
 static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZATION_SIZE] = {
   // Specialization abilities for Hunter pets
   {
@@ -1478,6 +1479,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
       186387, // Bursting Shot
       162697, // Stat Negation Aura - Agility DPS
       193468, // Mastery: Sniper Training (Mastery)
+      193526, // Trueshot
          781, // Disengage
       212658, // Hunting Party
       231549, // Disengage (Rank 2)
@@ -1489,7 +1491,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
       257044, // Rapid Fire
       257620, // Multi-Shot
        56641, // Steady Shot
-      257621, // Bombardment
+      257621, // Trick Shots
       155228, // Lone Wolf
            0,
     },
@@ -1505,19 +1507,19 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
       162697, // Stat Negation Aura - Agility DPS
       195645, // Wing Clip
       109304, // Exhilaration
-      231555, // Aspect of the Eagle (Rank 2)
       231550, // Harpoon (Rank 2)
       231546, // Exhilaration (Rank 2)
       259489, // Kill Command
       259495, // Wildfire Bomb
       259491, // Serpent Sting
-      260217, // Aspect of the Eagle
          781, // Disengage
       262839, // Raptor Strike (Rank 2)
       263135, // Mastery: Spirit Bond
       263183, // Disengage (Rank 2)
       263186, // Kill Command (Rank 2)
        34477, // Misdirection
+      266779, // Coordinated Assault
+      186289, // Aspect of the Eagle
            0,
     },
     {
@@ -2010,15 +2012,16 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
        30146, // Summon Felguard (Summon)
       137044, // Demonology Warlock
       162699, // Stat Negation Aura - Intellect DPS
-         603, // Doom
       104316, // Call Dreadstalkers
-      193396, // Demonic Empowerment
-      193440, // Demonwrath
       108415, // Soul Link
          686, // Shadow Bolt
       231811, // Soulstone (Rank 2)
       234153, // Drain Life
        30283, // Shadowfury
+      265339, // Imp Swarm
+      264178, // Soulfire
+      267102, // Molten Core
+      265187, // Demon Commander
            0,
     },
     // Specialization abilities for Destruction
@@ -2039,6 +2042,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
       234153, // Drain Life
         1122, // Summon Infernal (Guardian)
        30283, // Shadowfury
+      196406, // Backdraft
            0,
     },
     {
@@ -2099,6 +2103,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
       231876, // Thunder Focus Tea (Rank 2)
       262840, // Rising Sun Kick (Rank 2)
       119381, // Leg Sweep
+      243435, // Fortifying Brew
            0,
     },
     // Specialization abilities for Windwalker
@@ -2320,7 +2325,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
 };
 #define CLASS_MASTERY_ABILITY_SIZE (1)
 
-// Class mastery abilities, wow build 25976
+// Class mastery abilities, wow build 26032
 static unsigned __class_mastery_ability_data[MAX_CLASS][MAX_SPECS_PER_CLASS][CLASS_MASTERY_ABILITY_SIZE] = {
   {
     {
@@ -2559,7 +2564,7 @@ static unsigned __class_mastery_ability_data[MAX_CLASS][MAX_SPECS_PER_CLASS][CLA
 #define MAX_RACE (31)
 #endif
 
-// Racial abilities, wow build 25976
+// Racial abilities, wow build 26032
 static unsigned __race_ability_data[MAX_RACE][MAX_CLASS][RACE_ABILITY_SIZE] = {
   {
     {     0, },
@@ -3471,7 +3476,7 @@ static unsigned __race_ability_data[MAX_RACE][MAX_CLASS][RACE_ABILITY_SIZE] = {
 };
 #define SET_BONUS_DATA_SIZE (688)
 
-// Set bonus data, wow build 25976
+// Set bonus data, wow build 26032
 static item_set_bonus_t __set_bonus_data[SET_BONUS_DATA_SIZE] = {
   // Set bonus name                              ,      OptName, EnumID, SetID, Tier, Bns, Cls, Spec,  Spell, Items
   { "Gladiator's Battlegear"                     ,        "pvp",      0,  1230,    0,   2,   1,   71, 165636, { 127055, 127081, 127092, 127103, 127114,  0 } },
@@ -4192,7 +4197,7 @@ static item_set_bonus_t __set_bonus_data[SET_BONUS_DATA_SIZE] = {
 };
 #define RPPMMOD_SIZE (855)
 
-// 855 RPPM Modifiers, wow build level 25976
+// 855 RPPM Modifiers, wow build level 26032
 static struct rppm_modifier_t __rppmmodifier_data[] = {
   {  17495,    4,  1,  1.0000 },
   {  27656,    4,  1,  1.0000 },
@@ -5002,7 +5007,6 @@ static struct rppm_modifier_t __rppmmodifier_data[] = {
   { 262507,   66,  4, -0.5000 },
   { 262507,   73,  4, -0.5000 },
   { 262507,    4,  1,  1.0000 },
-  { 262514,    4,  1,  1.0000 },
   { 265000,    4,  1,  1.0000 },
   { 265003,    4,  1,  1.0000 },
   { 265025,    4,  1,  1.0000 },
@@ -5049,11 +5053,12 @@ static struct rppm_modifier_t __rppmmodifier_data[] = {
   { 265419,    4,  1,  1.0000 },
   { 265421,    4,  1,  1.0000 },
   { 265950,    4,  1,  1.0000 },
+  { 267177,    4,  1,  1.0000 },
   {      0,    0,  0,  0.0000 },
 };
 #define ARTIFACT_SIZE (41)
 
-// Artifact base data, wow build 25976
+// Artifact base data, wow build 26032
 static struct artifact_t __artifact_data[ARTIFACT_SIZE] = {
   {  2,  70 },
   {  3, 577 },
@@ -5100,7 +5105,7 @@ static struct artifact_t __artifact_data[ARTIFACT_SIZE] = {
 
 #define ARTIFACT_POWER_SIZE (908)
 
-// Artifact power data, wow build 25976
+// Artifact power data, wow build 26032
 static struct artifact_power_data_t __artifact_power_data[ARTIFACT_POWER_SIZE] = {
   { 1739,   0,  64,  0,   3, 250879, "Netherlight Fortification"          }, // Netherlight Fortification (id=250879, n_ranks=3)
   { 1770,   0,  64,  0,   3, 252088, "Light Speed"                        }, // Light Speed (id=252088, n_ranks=3)
@@ -6013,7 +6018,7 @@ static struct artifact_power_data_t __artifact_power_data[ARTIFACT_POWER_SIZE] =
 };
 #define ARTIFACT_POWER_RANK_SIZE (7746)
 
-// Artifact power rank data, wow build 25976
+// Artifact power rank data, wow build 26032
 static struct artifact_power_rank_t __artifact_power_rank_data[ARTIFACT_POWER_RANK_SIZE] = {
   {  2316,   40,  0, 205273,      0.000, 0x00000000, 0 },
   {  2317,   41,  0, 186941,      8.000, 0x00000000, 0 },
@@ -7623,14 +7628,14 @@ static struct artifact_power_rank_t __artifact_power_rank_data[ARTIFACT_POWER_RA
   {  4321,  922,  5, 199212,      6.000, 0x00000000, 0 },
   {  7268,  922,  6, 199212,      7.000, 0x00000000, 0 },
   {  7269,  922,  7, 199212,      8.000, 0x00000000, 0 },
-  {  4322,  923,  0, 199214,     10.000, 0x00000000, 0 },
-  {  4323,  923,  1, 199214,     20.000, 0x00000000, 0 },
-  {  4324,  923,  2, 199214,     30.000, 0x00000000, 0 },
-  {  4325,  923,  3, 199214,     40.000, 0x00000000, 0 },
-  {  4326,  923,  4, 199214,     50.000, 0x00000000, 0 },
-  {  4327,  923,  5, 199214,     60.000, 0x00000000, 0 },
-  {  7270,  923,  6, 199214,     70.000, 0x00000000, 0 },
-  {  7271,  923,  7, 199214,     80.000, 0x00000000, 0 },
+  {  4322,  923,  0, 199214,      3.000, 0x00000000, 0 },
+  {  4323,  923,  1, 199214,      6.000, 0x00000000, 0 },
+  {  4324,  923,  2, 199214,      9.000, 0x00000000, 0 },
+  {  4325,  923,  3, 199214,     12.000, 0x00000000, 0 },
+  {  4326,  923,  4, 199214,     15.000, 0x00000000, 0 },
+  {  4327,  923,  5, 199214,     18.000, 0x00000000, 0 },
+  {  7270,  923,  6, 199214,     21.000, 0x00000000, 0 },
+  {  7271,  923,  7, 199214,     24.000, 0x00000000, 0 },
   {  4328,  924,  0, 199220,      0.000, 0x00000000, 0 },
   {  4329,  925,  0, 199257,      0.000, 0x00000000, 0 },
   {  4330,  926,  0, 199282,      0.000, 0x00000000, 0 },
@@ -13764,12 +13769,12 @@ static struct artifact_power_rank_t __artifact_power_rank_data[ARTIFACT_POWER_RA
 };
 #define ARTIFACT_POWER_RANK_HOTFIX_SIZE (0)
 
-// 0 artifact_power_rank hotfix entries, wow build level 25976
+// 0 artifact_power_rank hotfix entries, wow build level 26032
 static hotfix::client_hotfix_entry_t __artifact_power_rank_hotfix_data[] = {
   {      0,  0, 0, 0 },
 };
 
-// Azerite powers, wow build 25976
+// Azerite powers, wow build 26032
 static constexpr std::array<azerite_power_t, 40> __azerite_power_data { {
   {  1,  55564 },
   {  2, 261582 },
@@ -13799,7 +13804,7 @@ static constexpr std::array<azerite_power_t, 40> __azerite_power_data { {
   { 27, 263814 },
   { 28, 263821 },
   { 29, 263818 },
-  { 30, 264108 },
+  { 30, 266180 },
   { 31, 264109 },
   { 32, 264113 },
   { 33, 264121 },
