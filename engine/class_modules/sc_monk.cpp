@@ -7783,9 +7783,13 @@ double monk_t::temporary_movement_modifier() const
   double active = player_t::temporary_movement_modifier();
 
   if ( buff.sephuzs_secret -> up() )
-  {
     active = std::max( buff.sephuzs_secret -> data().effectN( 1 ).percent(), active );
-  }
+
+  if ( buff.chi_torpedo -> up() )
+    active = std::max( buff.chi_torpedo -> stack_value(), active );
+
+  if ( buff.flying_serpent_kick_movement -> up() )
+    active = std::max( buff.flying_serpent_kick_movement -> value(), active );
 
   return active;
 }
@@ -7799,9 +7803,7 @@ double monk_t::passive_movement_modifier() const
   // 7.2 Sephuz's Secret passive movement speed. If the item is missing, default_chance will be set
   // to 0 (by the fallback buff creator).
   if ( legendary.sephuzs_secret && level() < 120 )
-  {
     ms += legendary.sephuzs_secret -> effectN( 2 ).percent();
-  }
 
   return ms;
 }
