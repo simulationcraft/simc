@@ -111,7 +111,7 @@ Attributes       : ....x... ........ ........ .....x..   ........ ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=15977)    : Apply Aura (6) | Unknown(87)
+#1 (id=15977)    : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: -50 | Scaled Value: -50 | SP Coefficient: 0.25000 | Misc Value: 0x7f | Target: Self (1)
 Description      : The Turtle partially withdraws into its shell, reducing damage taken by $s1% for $d.
 Tooltip          : Damage reduced by $s1%.
@@ -464,7 +464,7 @@ Attributes       : ........ ........ ..x..... ........   ........ .x...... .....
                  : Not a proc (105)
 Effects          :
 #1 (id=39872)    : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.46746 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.36462 | Target: Enemy (6)
 Description      : Fire a blast of unholy energy, causing Shadow damage to an enemy target or healing a friendly Undead target.
 
 Name             : Veteran of the Third War (id=48263) [Spell Family (15), Passive] 
@@ -544,7 +544,7 @@ Effects          :
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 126 | Mechanic: Unknown(227) | Target: Self (1)
 #2 (id=40864)    : Apply Aura (6) | Unknown(267)
                    Base Value: 30 | Scaled Value: 30 | Misc Value: 126 | Target: Self (1)
-#3 (id=306615)   : Apply Aura (6) | Unknown(87)
+#3 (id=306615)   : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7e | Target: Self (1)
 Description      : Surrounds you in an Anti-Magic Shell for $d, absorbing up to $<shield> magic damage and preventing application of harmful magical effects.$?s207188[][ Damage absorbed generates Runic Power.]
 Tooltip          : Absorbing up to $w1 magic damage.
@@ -572,7 +572,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 12 | Target: Self (1)
 #2 (id=40964)    : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-#3 (id=40965)    : Apply Aura (6) | Unknown(87)
+#3 (id=40965)    : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: -20 | Scaled Value: -20 | Misc Value: 0x7f | Target: Self (1)
 #4 (id=276635)   : Apply Aura (6) | Unknown(283)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -675,7 +675,7 @@ Attributes       : ........ ........ ..x..... ........   ...x...x .x...... .....
                  : ........ ........ ........ .......x   ........ ........ ........ ........ 
 Effects          :
 #1 (id=41295)    : School Damage (2): frost
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.17220 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.13432 | Target: Enemy (6)
 Description      : Blast the target with a frigid wind, dealing $s1 $?s204088[Frost damage and applying Frost Fever to the target.][Frost damage to that foe, and $237680s1 Frost damage to all other enemies within 10 yards, infecting all targets with Frost Fever.]
 
 |Tinterface\icons\spell_deathknight_frostfever.blp:24|t |cFFFFFFFFFrost Fever|r
@@ -762,17 +762,17 @@ Attributes       : ....x... ........ ..x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=42113)    : Normalized Weapon Damage (121)
+#1 (id=42113)    : Dummy (3)
                    Base Value: 1 | Scaled Value: 1 | Target: Enemy (6)
-#2 (id=42114)    : Weapon Damage% (31)
-                   Base Value: 96 | Scaled Value: 0.96 | Target: Enemy (6)
+#2 (id=42114)    : School Damage (2): physical
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.59520 | Target: Enemy (6)
 #3 (id=287354)   : Dummy (3)
                    Base Value: 30 | Scaled Value: 30 | Target: Enemy (6)
 #4 (id=331353)   : Dummy (3)
                    Base Value: 5 | Scaled Value: 5 | Target: Enemy (6)
 #5 (id=331354)   : Dummy (3)
                    Base Value: 10 | Scaled Value: 10 | Target: Enemy (6)
-Description      : Focuses dark power into a strike$?s49143[ with both weapons, that deals a total of ${$sw1+$66188sw1}][ that deals $sw1] Physical damage and heals you for $s3% of all damage taken in the last $s4 sec, minimum $m5% of maximum health.
+Description      : Focuses dark power into a strike$?s49143[ with both weapons, that deals a total of ${$s1+$66188sw1}][ that deals $s1] Physical damage and heals you for $s3% of all damage taken in the last $s4 sec, minimum $m5% of maximum health.
 
 Name             : Razorice (id=50401) [Spell Family (15)] 
 Class            : Death Knight
@@ -787,8 +787,8 @@ Attributes       : ....x... .....x.. ..x..x.. ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Cannot dodge/parry/block (21), Disable player procs (112), Disable weapon procs (151)
 Effects          :
-#1 (id=42604)    : Weapon Damage% (31)
-                   Base Value: 3 | Scaled Value: 0.03 | Target: Enemy (6)
+#1 (id=42604)    : School Damage (2): frost
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.01350 | Target: Enemy (6)
 Description      : $@spelldesc53343
 
 Name             : Arcane Torrent (Racial) (id=50613) 
@@ -828,7 +828,7 @@ Attributes       : ........ ........ ..x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=43101)    : School Damage (2): shadow
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.63000 | Radius: 0 - 10 yards | Target: Custom (18) -> AOE enemy (instant) (16)
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.49140 | Radius: 0 - 10 yards | Target: Custom (18) -> AOE enemy (instant) (16)
 Description      : Deals $s1 Shadow damage$?s212744[ to all enemies within $A1 yds.][ and infects all enemies within $A1 yds with Blood Plague.
 
 |Tinterface\icons\spell_deathknight_bloodplague.blp:24|t |cFFFFFFFFBlood Plague|r
@@ -1017,7 +1017,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=44400)    : School Damage (2): shadowstorm
-                   Base Value: 1 | Scaled Value: 0 (avg=0.5, dl=0.15) | Value Multiplier: 1 | AP Coefficient: 0.29400 | Target: Enemy (6)
+                   Base Value: 1 | Scaled Value: 0 (avg=0.5, dl=0.15) | Value Multiplier: 1 | AP Coefficient: 0.22932 | Target: Enemy (6)
 Description      : Inflicts Plague (Nature and Shadow) damage to an enemy.
 
 Name             : On a Pale Horse (id=51986) [Spell Family (15), Passive] 
@@ -1052,7 +1052,7 @@ Attributes       : ........ ........ ........ x..x....   ...x.x.x ........ .....
                  : Does not break stealth (37), Requires line of sight (186)
 Effects          :
 #1 (id=44653)    : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 (avg=0.041) | AP Coefficient: 0.04620 | Radius: 0 - 8 yards | Target: Unknown(87) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 (avg=0.041) | AP Coefficient: 0.03604 | Radius: 0 - 8 yards | Target: Unknown(87) -> AOE enemy (instant) (16)
 #2 (id=312640)   : Energize Power (30)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: runic_power | Target: Self (1)
 Description      : Corrupts the ground targeted by the Death Knight, causing Shadow damage every sec that targets remain in the area for $43265d.
@@ -1155,9 +1155,9 @@ Attributes       : ....x... ........ ........ ..x.....   ........ ........ .....
                  : Disable weapon procs (151)
 Effects          :
 #1 (id=47999)    : Apply Aura (6) | Periodic Health Leech (53)
-                   Base Value: 0 | Scaled Value: 0 (avg=0.158) | Value Multiplier: 1 | AP Coefficient: 0.07980 | Target: Unknown(25)
+                   Base Value: 0 | Scaled Value: 0 (avg=0.158) | Value Multiplier: 1 | AP Coefficient: 0.06224 | Target: Unknown(25)
 #2 (id=48000)    : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.06636 | Target: Unknown(25)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.05176 | Target: Unknown(25)
 Description      : A shadowy disease that drains $o1 health from the target over $d.  
 Tooltip          : Draining $w1 health from the target every $t1 sec.
 
@@ -1179,13 +1179,13 @@ Attributes       : ....x... ........ ..x..... ........   ........ .x...... .....
 Effects          :
 #1 (id=48018)    : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
-#2 (id=48019)    : Normalized Weapon Damage (121)
+#2 (id=48019)    : Dummy (3)
                    Base Value: 1 | Scaled Value: 1 | Radius: 0 - 8 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
-#3 (id=48020)    : Weapon Damage% (31)
-                   Base Value: 44 | Scaled Value: 0.44 | Radius: 0 - 8 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
+#3 (id=48020)    : School Damage (2): physical
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.27280 | Radius: 0 - 8 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
 #4 (id=324718)   : Trigger Spell (64): Scourge Strike
                    Base Value: 25 | Scaled Value: 25 | Trigger Spell: 70890 | Target: Enemy (6)
-Description      : An unholy strike that deals $sw3 Physical damage and $70890sw2 Shadow damage, and causes 1 Festering Wound to burst.
+Description      : An unholy strike that deals $s3 Physical damage and $70890sw2 Shadow damage, and causes 1 Festering Wound to burst.
 
 Name             : Frost Fever (id=55095) [Scaling Spell (1), Spell Family (15)] 
 Class            : Death Knight
@@ -1204,7 +1204,7 @@ Attributes       : ....x... ........ ........ ..x.....   ........ ........ .....
                  : Disable weapon procs (151)
 Effects          :
 #1 (id=48025)    : Apply Aura (6) | Periodic Damage (3): frost every 3 seconds
-                   Base Value: 0 | Scaled Value: 0 (avg=0.133) | AP Coefficient: 0.11550 | Misc Value: 127 | Target: Unknown(25)
+                   Base Value: 0 | Scaled Value: 0 (avg=0.133) | AP Coefficient: 0.09009 | Misc Value: 127 | Target: Unknown(25)
 Description      : A disease that deals ${8*$s1} Frost damage over $d and has a chance to grant the Death Knight ${$195617m1/10} Runic Power each time it deals damage.
 Tooltip          : Suffering $w1 Frost damage every $t1 sec.
 
@@ -1485,7 +1485,10 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 5 | Target: Self (1)
 #4 (id=203787)   : Apply Aura (6) | Mechanic Immunity (77)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 24 | Target: Self (1)
-Description      : Reduces the damage your summoned ghoul takes from creature area of effect attacks.
+#5 (id=710727)   : Apply Aura (6) | Unknown(152)
+                   Base Value: -6 | Scaled Value: -6 | Target: Self (1)
+Description      : Reduces the damage your summoned ghoul takes from creature area of effect attacks  by an additional $s1%.
+Reduces the range at which enemies detect your pet.
 
 Name             : Stoneskin Gargoyle (id=62157) [Passive, Hidden] 
 Class            : Death Knight
@@ -1577,10 +1580,10 @@ Attributes       : ....x... ........ ..x..x.. ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Cannot dodge/parry/block (21)
 Effects          :
-#1 (id=60359)    : Normalized Weapon Damage (121)
+#1 (id=60359)    : Dummy (3)
                    Base Value: 1 | Scaled Value: 0 (avg=0.2) | Target: Enemy (6)
-#2 (id=60360)    : Weapon Damage% (31)
-                   Base Value: 85 | Scaled Value: 0.85 | Target: Enemy (6)
+#2 (id=60360)    : School Damage (2): physical
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.38250 | Target: Enemy (6)
 Description      : $@spelldesc49998
 
 Name             : Frost Strike Off-Hand (id=66196) [Scaling Spell (1), Spell Family (15)] 
@@ -1597,11 +1600,11 @@ Attributes       : ....x... ........ ..x..x.. ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Cannot dodge/parry/block (21)
 Effects          :
-#1 (id=60368)    : Normalized Weapon Damage (121)
+#1 (id=60368)    : Dummy (3)
                    Base Value: 1 | Scaled Value: 1 | Target: Enemy (6)
-#2 (id=60369)    : Weapon Damage% (31)
-                   Base Value: 95 | Scaled Value: 0.95 | Target: Enemy (6)
-Description      : Instantly strike the enemy with your off-hand weapon, causing $sw2 Frost damage.
+#2 (id=60369)    : School Damage (2): frost
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.42750 | Target: Enemy (6)
+Description      : Instantly strike the enemy with your off-hand weapon, causing $s2 Frost damage.
 
 Name             : Obliterate Off-Hand (id=66198) [Scaling Spell (1), Spell Family (15)] 
 Class            : Death Knight
@@ -1617,10 +1620,10 @@ Attributes       : ....x... ........ ..x..x.. ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Cannot dodge/parry/block (21)
 Effects          :
-#1 (id=60372)    : Normalized Weapon Damage (121)
+#1 (id=60372)    : Dummy (3)
                    Base Value: 1 | Scaled Value: 1 | Target: Enemy (6)
-#2 (id=60373)    : Weapon Damage% (31)
-                   Base Value: 155 | Scaled Value: 1.55 | Target: Enemy (6)
+#2 (id=60373)    : School Damage (2): physical
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.69750 | Target: Enemy (6)
 Description      : $@spelldesc49020
 
 Name             : Viciousness (Racial Passive) (id=68975) [Passive] 
@@ -1653,7 +1656,7 @@ Attributes       : ....x.x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6)
 Effects          :
-#1 (id=71772)    : Apply Aura (6) | Unknown(87)
+#1 (id=71772)    : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: -1 | Scaled Value: -1 | Misc Value: 0x28 | Target: Self (1)
 Description      : Reduces Shadow and Nature damage taken by $s1%.
 Tooltip          : Reduces Shadow and Nature damage taken by $s1%.
@@ -1697,9 +1700,9 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=64510)    : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
-#2 (id=214692)   : Weapon Damage% (31)
-                   Base Value: 23 | Scaled Value: 0.23 | Radius: 0 - 8 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
-#3 (id=347757)   : Normalized Weapon Damage (121)
+#2 (id=214692)   : School Damage (2): shadow
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.14260 | Radius: 0 - 8 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
+#3 (id=347757)   : Dummy (3)
                    Base Value: 1 | Scaled Value: 1 | Target: Enemy (6)
 Description      : $@spelldesc55090
 
@@ -1799,7 +1802,7 @@ Attributes       : ........ ........ ........ ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=68141)    : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.10500 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.08190 | Target: Enemy (6)
 Description      : Deals $s1 Shadow damage and surrounds the target in a miasma lasting for $196782d that causes the target and all nearby enemies to be infected with Virulent Plague.
 
 
@@ -1952,7 +1955,7 @@ Effects          :
 #1 (id=87374)    : Dummy (3)
                    Base Value: 1 | Scaled Value: 0 (avg=0.433) | Target: Enemy (6)
 #2 (id=87375)    : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.29600 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.01088 | Target: Enemy (6)
 #3 (id=333923)   : Dummy (3)
                    Base Value: 1 | Scaled Value: 2 - 4 | Value Range: 3 | Target: Enemy (6)
 Description      : Deals $s2 Physical damage and infects the target with $m3 to $M3 Festering Wounds.
@@ -2022,8 +2025,8 @@ Attributes       : ....x... ........ ..x..... ........   ........ .x...... .x...
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=95511)    : Weapon Damage% (31)
-                   Base Value: 42 | Scaled Value: 0.42 | Target: Enemy (6)
+#1 (id=95511)    : School Damage (2): physical
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.14280 | Target: Enemy (6)
 Description      : Claw the enemy, dealing $s1% of normal melee damage.
 
 Name             : Sweeping Claws (id=91778) 
@@ -2043,8 +2046,8 @@ Attributes       : ....x... ........ ..x..... ........   ........ .x...... .x...
 Effects          :
 #1 (id=95513)    : Dummy (3)
                    Base Value: 80 | Scaled Value: 80 | Target: Enemy (6)
-#2 (id=341774)   : Weapon Damage% (31)
-                   Base Value: 27 | Scaled Value: 0.27 | Radius: 8 yards | Target: Cone Front (104)
+#2 (id=341774)   : School Damage (2): shadow
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.09180 | Radius: 8 yards | Target: Cone Front (104)
 Description      : Rakes an enemy with deformed claws, dealing $91778s1% of normal damage as Shadow to the target and nearby enemies.
 
 Name             : Monstrous Blow (id=91797) [Spell Family (15)] 
@@ -2064,8 +2067,8 @@ Attributes       : ....x... ........ ..x..... ........   ........ .x...... .x...
 Effects          :
 #1 (id=95537)    : Apply Aura (6) | Stun (12)
                    Base Value: 0 | Scaled Value: 0 | Mechanic: Unknown(95) | Target: Enemy (6)
-#2 (id=95538)    : Weapon Damage% (31)
-                   Base Value: 42 | Scaled Value: 0.42 | Target: Enemy (6)
+#2 (id=95538)    : School Damage (2): physical
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.14280 | Target: Enemy (6)
 Description      : Strike an enemy with a smashing attack, dealing $s2% of normal melee damage and stunning for $d.
 Tooltip          : Stunned.
 
@@ -2086,8 +2089,8 @@ Attributes       : ....x... ........ ..x..... ........   ........ .x...... .x...
 Effects          :
 #1 (id=95541)    : Apply Aura (6) | Stun (12)
                    Base Value: 0 | Scaled Value: 0 | Mechanic: Unknown(95) | Target: Enemy (6)
-#2 (id=95595)    : Weapon Damage% (31)
-                   Base Value: 4 | Scaled Value: 0.04 | Target: Enemy (6)
+#2 (id=95595)    : School Damage (2): physical
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.01360 | Target: Enemy (6)
 Description      : Bite and tear at a target's limbs, stunning it for $d and dealing damage.
 Tooltip          : Stunned.
 
@@ -2177,7 +2180,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ ..x..... .x...
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=95586)    : Apply Aura (6) | Unknown(87)
+#1 (id=95586)    : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 0x7f | Target: Self (1)
 #2 (id=95587)    : None (0)
                    Base Value: -50 | Scaled Value: -50
@@ -2201,7 +2204,7 @@ Attributes       : ....x... ........ x.x..... ........   ..x...x. ..x..... .x...
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Channeled (34), Channeled (38)
 Effects          :
-#1 (id=95588)    : Apply Aura (6) | Unknown(87)
+#1 (id=95588)    : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 0x7f | Target: Self (1)
 Description      : Go into a defensive crouch, reducing all damage taken by $91838s1% but preventing other actions for $91838d.
 Tooltip          : Damage taken reduced by $s1%.
@@ -2859,9 +2862,10 @@ Description      : Your Raise Dead spell summons a skeleton instead of a ghoul.
 
 $?s207313 [Disabled while talented into Sludge Belcher.][]
 
-Name             : Frozen Power (id=147620) [Spell Family (15)] 
+Name             : Frozen Power (id=147620) [Scaling Spell (-1), Spell Family (15)] 
 Class            : Death Knight
 School           : Frost
+Max Scaling Level: 85
 Proc Chance      : 101%
 Triggered by     : Item - Death Knight T16 DPS 4P Bonus (Hidden) (144909)
 Attributes       : ........ ........ ..x..... x..x....   .....x.. ........ ........ ........ 
@@ -2873,7 +2877,7 @@ Attributes       : ........ ........ ..x..... x..x....   .....x.. ........ .....
                  : Does not break stealth (37)
 Effects          :
 #1 (id=200387)   : School Damage (2): frost
-                   Base Value: 500 | Scaled Value: 500 | AP Coefficient: 0.16000 | Target: Enemy (6)
+                   Base Value: 500 | Scaled Value: 461.5385 (avg=9.615385) | AP Coefficient: 0.16000 | Target: Enemy (6)
 Description      : $@spelldesc144907
 
 Name             : Skeleton (id=147963) 
@@ -3012,7 +3016,7 @@ Effects          :
 #1 (id=215544)   : Dummy (3)
                    Base Value: 10 | Scaled Value: 10 | Radius: 12 yards | Target: Cone Front (104)
 #2 (id=215545)   : School Damage (2): shadowfrost
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.66360 | Radius: 12 yards | Target: Cone Front (104)
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.51761 | Radius: 12 yards | Target: Cone Front (104)
 Description      : $@spelldesc152279
 
 Name             : Defile (id=156000) [Spell Family (15)] 
@@ -3028,7 +3032,7 @@ Attributes       : ........ ........ ........ ........   ...x...x ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=216887)   : School Damage (2): shadowfrost
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.11760 | Target: Enemy (6)
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.09173 | Target: Enemy (6)
 #2 (id=322756)   : Dummy (3)
                    Base Value: 66 | Scaled Value: 66
 Description      : $@spelldesc152280
@@ -3135,9 +3139,9 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ x....... ........ 
                  : Disable weapon procs (151)
 Effects          :
-#1 (id=233749)   : Weapon Damage% (31)
-                   Base Value: 10 | Scaled Value: 0.1 | Target: Enemy (6)
-#2 (id=256687)   : Normalized Weapon Damage (121)
+#1 (id=233749)   : School Damage (2): frost
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.04500 | Target: Enemy (6)
+#2 (id=256687)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
 Description      : $@spelldesc165568
 
@@ -3241,9 +3245,9 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ x....... ........ 
                  : Disable weapon procs (151)
 Effects          :
-#1 (id=256848)   : Weapon Damage% (31)
-                   Base Value: 10 | Scaled Value: 0.1 | Target: Enemy (6)
-#2 (id=256849)   : Normalized Weapon Damage (121)
+#1 (id=256848)   : School Damage (2): frost
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.04500 | Target: Enemy (6)
+#2 (id=256849)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
 Description      : $@spelldesc165568
 
@@ -3360,7 +3364,7 @@ Effects          :
                    Base Value: 3 | Scaled Value: 3 | Misc Value: 17 | Target: Self (1)
                    Affected Spells: Heart Strike (206930)
 Description      : $@spelldesc43265
-Tooltip          : $?s206930[Heart Strike will hit up to ${$m4+2} targets.][Scourge Strike will hit all enemies near the target.]
+Tooltip          : $?s206930[Heart Strike will hit up to ${$m3+2} targets.][Scourge Strike will hit all enemies near the target.]
 
 Name             : Crystalline Swords (id=189186) [Spell Family (15), Passive] 
 Class            : Death Knight
@@ -3441,7 +3445,7 @@ Attributes       : ....x... ........ ........ ..x.....   ........ ........ .....
                  : Disable weapon procs (151)
 Effects          :
 #1 (id=281049)   : Apply Aura (6) | Periodic Damage (3): shadow every 3 seconds
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.09450 | Misc Value: 127 | Target: Unknown(25)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.07371 | Misc Value: 127 | Target: Unknown(25)
 #2 (id=288070)   : Dummy (3)
                    Base Value: 30 | Scaled Value: 30
 Description      : A disease that deals ${7*$s1} Shadow damage over $d. It erupts when the infected target dies, dealing $191685s1 Shadow damage divided among nearby enemies, and has a $s2% chance to erupt each time it deals damage.
@@ -3461,7 +3465,7 @@ Attributes       : ........ ........ x....... ........   ...x...x ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=281173)   : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.22260 | Radius: 0 - 8 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.17363 | Radius: 0 - 8 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
 Description      : $@spelldesc191587
 
 Name             : Famine (id=191727) 
@@ -3580,7 +3584,7 @@ Attributes       : ....x... ........ ........ ........   ........ ........ .....
                  : Disable weapon procs (151)
 Effects          :
 #1 (id=285232)   : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 (avg=0.133) | AP Coefficient: 0.22260 | Target: Unknown(25)
+                   Base Value: 0 | Scaled Value: 0 (avg=0.133) | AP Coefficient: 0.17363 | Target: Unknown(25)
 #2 (id=338558)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Unknown(25)
 Description      : $@spelldesc194310
@@ -3622,7 +3626,7 @@ Attributes       : ....x... ........ ........ ........   ........ ........ .....
                  : x....... ........ ........ ........   ........ ........ ........ ........ 
                  : Disable weapon procs (151)
 Effects          :
-#1 (id=285811)   : Apply Aura (6) | Unknown(87)
+#1 (id=285811)   : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: -40 | Scaled Value: -40 | Misc Value: 0x7f | Target: Self (1)
 Description      : Consume a Rune to reduce all damage taken by $s1% for $d.
 Tooltip          : Taking $s1% reduced damage.
@@ -3848,13 +3852,13 @@ Attributes       : ....x... ........ ..x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=286507)   : Normalized Weapon Damage (121)
+#1 (id=286507)   : Dummy (3)
                    Base Value: 1 | Scaled Value: 1 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
-#2 (id=286508)   : Weapon Damage% (31)
-                   Base Value: 107 | Scaled Value: 1.07 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
+#2 (id=286508)   : School Damage (2): physical
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.48150 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
 #3 (id=286519)   : Dummy (3)
                    Base Value: 3 | Scaled Value: 3 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
-Description      : Smash the target, dealing $sw2 Physical damage and generating $s3 charges of Bone Shield.
+Description      : Smash the target, dealing $s2 Physical damage and generating $s3 charges of Bone Shield.
 
 |Tinterface\icons\ability_deathknight_boneshield.blp:24|t |cFFFFFFFFBone Shield|r
 $@spelldesc195181
@@ -3877,7 +3881,7 @@ Attributes       : ........ ........ ..x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=286689)   : School Damage (2): shadow
-                   Base Value: 1 | Scaled Value: 0 (avg=0.3, dl=0.083) | AP Coefficient: 0.18900 | Target: Enemy (6)
+                   Base Value: 1 | Scaled Value: 0 (avg=0.3, dl=0.083) | AP Coefficient: 0.14742 | Target: Enemy (6)
 #2 (id=293371)   : Trigger Missiles (32)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 55078 | Target: Enemy (6)
 Description      : Reach out with necrotic tendrils, dealing $s1 Shadow damage and applying Blood Plague to your target.
@@ -3967,7 +3971,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=287339)   : School Damage (2): frost
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.06720 | Radius: 0 - 8 yards | Target: Custom (18) -> AOE enemy (instant) (16)
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.05242 | Radius: 0 - 8 yards | Target: Custom (18) -> AOE enemy (instant) (16)
 Description      : $@spelldesc194909
 
 Name             : Festering Wound (id=195757) [Spell Family (15)] 
@@ -4017,7 +4021,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Not a proc (105)
 Effects          :
 #1 (id=287633)   : School Damage (2): frost
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.78750 | Radius: 0 - 1.5 yards | Target: Unknown(87) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.61425 | Radius: 0 - 1.5 yards | Target: Unknown(87) -> AOE enemy (instant) (16)
 Description      : Summon glacial spikes from the ground that advance forward, damaging enemies near their eruption point for $s1 frost damage.
 
 Name             : Unholy Vigor (id=196263) [Scaling Spell (1)] 
@@ -4067,7 +4071,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=288467)   : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.19530 | Radius: 0 - 8 yards | Target: At Caster (22) -> AOE enemy (15)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.15233 | Radius: 0 - 8 yards | Target: At Caster (22) -> AOE enemy (15)
 Description      : $@spelldesc194844
 
 Name             : Bonestorm (id=196545) [Spell Family (15)] 
@@ -4126,7 +4130,7 @@ Attributes       : ........ ........ ........ ..xx....   ........ ........ .....
                  : Not a proc (105)
 Effects          :
 #1 (id=288891)   : School Damage (2): frost
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.06090 | Radius: 0 - 8 yards | Target: At Caster (22) -> AOE enemy (15)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.04750 | Radius: 0 - 8 yards | Target: At Caster (22) -> AOE enemy (15)
 Description      : $@spelldesc196770
 
 Name             : Outbreak (id=196782) [Spell Family (15)] 
@@ -4214,7 +4218,7 @@ Attributes       : ........ ........ ..x..... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=292108)   : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.46200 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.36036 | Target: Enemy (6)
 Description      : Inflicts Shadow damage to an enemy.
 
 Name             : Shadow Infusion (id=198943) [Spell Family (15), Passive] 
@@ -4443,17 +4447,17 @@ Attributes       : ....x... ........ ..x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=306039)   : Normalized Weapon Damage (121)
+#1 (id=306039)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 (avg=0.756) | Chain Multiplier: 1 | Chain Targets: 2 | Target: Enemy (6)
-#2 (id=306040)   : Weapon Damage% (31)
-                   Base Value: 69 | Scaled Value: 0.69 | Chain Multiplier: 1 | Chain Targets: 2 | Target: Enemy (6)
+#2 (id=306040)   : School Damage (2): physical
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.31050 | Chain Multiplier: 1 | Chain Targets: 2 | Target: Enemy (6)
 #3 (id=306041)   : Dummy (3)
                    Base Value: 5 | Scaled Value: 5
 #4 (id=312174)   : Dummy (3)
                    Base Value: 3 | Scaled Value: 3
 #5 (id=321496)   : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -20 | Scaled Value: -20 | Chain Multiplier: 1 | Mechanic: Unknown(88) | Chain Targets: 2 | Target: Enemy (6)
-Description      : Instantly strike the target and 1 other nearby enemy, causing $sw2 Physical damage, and reducing enemies' movement speed by $s5% for $d.
+Description      : Instantly strike the target and 1 other nearby enemy, causing $s2 Physical damage, and reducing enemies' movement speed by $s5% for $d.
 
 |cFFFFFFFFGenerates $?s221536[${$s3+$221536s1}][$s3] bonus Runic Power$?s221536[, plus ${$210738s1/10} Runic Power per additional enemy struck][].|r
 Tooltip          : Movement speed reduced by $s5%.
@@ -4478,7 +4482,7 @@ Attributes       : ........ ........ x....... ........   ..x..... ......x. .....
                  : Channeled (34), Periodic effect affected by haste (173)
 Effects          :
 #1 (id=306042)   : Apply Aura (6) | Periodic Health Leech (53)
-                   Base Value: 0 | Scaled Value: 0 | Value Multiplier: 1 | AP Coefficient: 0.56700 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | Value Multiplier: 1 | AP Coefficient: 0.44226 | Target: Enemy (6)
 Description      : Drains $o1 health from the target over $d.
 
 You can move, parry, dodge, and use defensive abilities while channeling this ability.
@@ -4822,7 +4826,7 @@ Attributes       : ........ ........ ........ ........   ...x...x ........ .....
                  : Not a proc (105)
 Effects          :
 #1 (id=306367)   : School Damage (2): frost
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.10500 | Radius: 0 - 8 yards | Target: Custom (18) -> AOE enemy (instant) (16)
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.08190 | Radius: 0 - 8 yards | Target: Custom (18) -> AOE enemy (instant) (16)
 Description      : $@spelldesc207142
 
 Name             : Abomination's Might (id=207161) [Spell Family (15), Passive] 
@@ -4977,15 +4981,15 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=306491)   : Normalized Weapon Damage (121)
+#1 (id=306491)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Radius: 8 yards | Target: Cone Front (104)
-#2 (id=306492)   : Weapon Damage% (31)
-                   Base Value: 36 | Scaled Value: 0.36 | Radius: 8 yards | Target: Cone Front (104)
+#2 (id=306492)   : School Damage (2): frost
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.16200 | Radius: 8 yards | Target: Cone Front (104)
 #3 (id=330163)   : Dummy (3)
                    Base Value: 4 | Scaled Value: 4 | Radius: 8 yards | Target: Cone Front (104)
 #4 (id=345076)   : Energize Power (30)
                    Base Value: 100 | Scaled Value: 100 | Misc Value: runic_power | Target: Self (1)
-Description      : A sweeping attack that strikes all enemies in front of you for $sw1 Frost damage. This attack benefits from Killing Machine. Critical strikes with Frostscythe deal $s3 times normal damage.
+Description      : A sweeping attack that strikes all enemies in front of you for $s2 Frost damage. This attack benefits from Killing Machine. Critical strikes with Frostscythe deal $s3 times normal damage.
 
 Name             : Obliteration (id=207256) [Spell Family (15)] 
 Class            : Death Knight
@@ -5028,10 +5032,10 @@ Attributes       : .x...... ........ x....... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Ranged Ability (1)
 Effects          :
-#1 (id=306527)   : Normalized Weapon Damage (121)
+#1 (id=306527)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 8 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
-#2 (id=306528)   : Weapon Damage% (31)
-                   Base Value: 78 | Scaled Value: 0.78 | Radius: 0 - 8 yards | Target: [AOE enemy (instant) (16)]
+#2 (id=306528)   : School Damage (2): physical
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.26520 | Radius: 0 - 8 yards | Target: [AOE enemy (instant) (16)]
 Description      : Fires a spray of arrows, hitting your current target and all enemies within $A2 yards for Physical damage.
 
 Name             : Bursting Sores (id=207264) [Spell Family (15), Passive] 
@@ -5067,7 +5071,7 @@ Attributes       : ....x... ........ ........ ........   ........ ........ .....
                  : Disable weapon procs (151)
 Effects          :
 #1 (id=306540)   : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.18900 | Radius: 0 - 8 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.14742 | Radius: 0 - 8 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
 #2 (id=338561)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
 Description      : $@spelldesc207264
@@ -5181,11 +5185,11 @@ Attributes       : ....x... ........ ..x..... ........   ........ .x...... .....
 Effects          :
 #1 (id=306601)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
-#2 (id=324719)   : Weapon Damage% (31)
-                   Base Value: 56 | Scaled Value: 0.56 | Radius: 0 - 8 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
-#3 (id=350135)   : Normalized Weapon Damage (121)
+#2 (id=324719)   : School Damage (2): shadow
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.34720 | Radius: 0 - 8 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
+#3 (id=350135)   : Dummy (3)
                    Base Value: 1 | Scaled Value: 1 | Radius: 0 - 8 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
-Description      : Deals $sw2 Shadow damage and causes 1 Festering Wound to burst.
+Description      : Deals $s2 Shadow damage and causes 1 Festering Wound to burst.
 
 Name             : Sludge Belcher (id=207313) [Spell Family (15), Passive] 
 Class            : Death Knight
@@ -5468,8 +5472,8 @@ Attributes       : ....x... ........ ..x..... ........   ........ .x...... .x...
 Effects          :
 #1 (id=314797)   : Apply Aura (6) | Stun (12)
                    Base Value: 0 | Scaled Value: 0 | Mechanic: Unknown(95) | Target: Enemy (6)
-#2 (id=314798)   : Weapon Damage% (31)
-                   Base Value: 4 | Scaled Value: 0.04 | Target: Enemy (6)
+#2 (id=314798)   : School Damage (2): physical
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.01360 | Target: Enemy (6)
 Description      : $@spelldesc212336
 Tooltip          : Stunned.
 
@@ -5508,8 +5512,8 @@ Attributes       : ....x... ........ ..x..... ........   ........ .x...... .x...
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=314801)   : Weapon Damage% (31)
-                   Base Value: 42 | Scaled Value: 0.42 | Target: Enemy (6)
+#1 (id=314801)   : School Damage (2): physical
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.14280 | Target: Enemy (6)
 Description      : $@spelldesc212333
 
 Name             : Smash (id=212336) [Spell Family (15)] 
@@ -5549,8 +5553,8 @@ Attributes       : ....x... ........ ..x..... ........   ........ .x...... .x...
 Effects          :
 #1 (id=314803)   : Apply Aura (6) | Stun (12)
                    Base Value: 0 | Scaled Value: 0 | Mechanic: Unknown(95) | Target: Enemy (6)
-#2 (id=314804)   : Weapon Damage% (31)
-                   Base Value: 42 | Scaled Value: 0.42 | Target: Enemy (6)
+#2 (id=314804)   : School Damage (2): physical
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.14280 | Target: Enemy (6)
 Description      : $@spelldesc212336
 Tooltip          : Stunned.
 
@@ -5569,8 +5573,8 @@ Attributes       : ....x... ........ ..x..... ........   ........ .x...... .x...
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=314805)   : Weapon Damage% (31)
-                   Base Value: 17 | Scaled Value: 0.17 | Radius: 0 - 10 yards | Target: Custom (18) -> AOE enemy (instant) (16)
+#1 (id=314805)   : School Damage (2): shadow
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.05780 | Radius: 0 - 10 yards | Target: Custom (18) -> AOE enemy (instant) (16)
 Description      : $@spelldesc212333
 
 Name             : Dark Arbiter (id=212412) [Spell Family (15), Hidden] 
@@ -5609,8 +5613,8 @@ Attributes       : .x..x... ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=314938)   : Dummy (3)
                    Base Value: 85 | Scaled Value: 85 | Target: Enemy (6)
-#2 (id=348187)   : Weapon Damage% (31)
-                   Base Value: 25 | Scaled Value: 0.25 | Radius: 0 - 8 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
+#2 (id=348187)   : School Damage (2): physical
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.08500 | Radius: 0 - 8 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
 Description      : A shot that causes Physical damage.
 
 Name             : Wraith Walk (id=212552) [Spell Family (15)] 
@@ -5633,7 +5637,7 @@ Effects          :
                    Base Value: 70 | Scaled Value: 70 | Target: Self (1)
 #2 (id=315118)   : Apply Aura (6) | Unknown(305)
                    Base Value: 170 | Scaled Value: 170 | Value Multiplier: 1 | Target: Self (1)
-#3 (id=315121)   : Apply Aura (6) | Unknown(87)
+#3 (id=315121)   : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f | Target: Self (1)
 #4 (id=315362)   : Trigger Spell (64): Wraith Walk
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 212654 | Target: Self (1)
@@ -5679,7 +5683,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=315517)   : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.21000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.16380 | Target: Enemy (6)
 Description      : $@spelldesc207317
 
 Name             : Lingering Apparition (id=212763) [Spell Family (15), Passive] 
@@ -5742,7 +5746,7 @@ Effects          :
 #1 (id=321210)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
 #2 (id=328301)   : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.04410 | Radius: 0 - 8 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.03440 | Radius: 0 - 8 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
 Description      : $@spelldesc207317
 
 Name             : Necrosis (id=216974) [Spell Family (15)] 
@@ -6008,10 +6012,10 @@ Attributes       : ....x... ........ ..x..x.. ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Cannot dodge/parry/block (21)
 Effects          :
-#1 (id=331344)   : Normalized Weapon Damage (121)
+#1 (id=331344)   : Dummy (3)
                    Base Value: 1 | Scaled Value: 1 | Target: Enemy (6)
-#2 (id=331345)   : Weapon Damage% (31)
-                   Base Value: 155 | Scaled Value: 1.55 | Target: Enemy (6)
+#2 (id=331345)   : School Damage (2): physical
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.69750 | Target: Enemy (6)
 Description      : $@spelldesc49020
 
 
@@ -6029,11 +6033,11 @@ Attributes       : ....x... ........ ..x..x.. ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Cannot dodge/parry/block (21)
 Effects          :
-#1 (id=331347)   : Normalized Weapon Damage (121)
+#1 (id=331347)   : Dummy (3)
                    Base Value: 1 | Scaled Value: 1 | Target: Enemy (6)
-#2 (id=331348)   : Weapon Damage% (31)
-                   Base Value: 95 | Scaled Value: 0.95 | Target: Enemy (6)
-Description      : Instantly strike the enemy with your off-hand weapon, causing $sw2 Frost damage.
+#2 (id=331348)   : School Damage (2): frost
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.42750 | Target: Enemy (6)
+Description      : Instantly strike the enemy with your off-hand weapon, causing $s2 Frost damage.
 
 Name             : Consumption (id=224685) [Spell Family (15)] 
 Class            : Death Knight
@@ -6066,7 +6070,7 @@ Attributes       : ........ ........ ........ ........   ...x...x .x...... .....
                  : ........ ........ ........ .......x   ........ ........ ........ ........ 
 Effects          :
 #1 (id=360154)   : School Damage (2): frost
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.08610 | Radius: 0 - 10 yards | Target: Unknown(87) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.06716 | Radius: 0 - 10 yards | Target: Unknown(87) -> AOE enemy (instant) (16)
 Description      : $@spelldesc49184
 
 Name             : Heart of Ice (id=246426) [Scaling Spell (1), Passive] 
@@ -6136,8 +6140,8 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=474078)   : Weapon Damage% (31)
-                   Base Value: 35 | Scaled Value: 0.35 | Target: Unknown(25)
+#1 (id=474078)   : School Damage (2): frost
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.15750 | Target: Unknown(25)
 Description      : $@spelldesc251875
 
 Name             : Inexorable Assault (id=253593) [Spell Family (15), Passive] 
@@ -6189,7 +6193,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=474101)   : School Damage (2): frost
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.21000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.16380 | Target: Enemy (6)
 Description      : $@spelldesc253593
 
 Name             : Rapid Decomposition (id=255203) [Spell Family (15)] 
@@ -6258,7 +6262,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6)
 Effects          :
-#1 (id=477698)   : Apply Aura (6) | Unknown(87)
+#1 (id=477698)   : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: -1 | Scaled Value: -1 | Misc Value: 0x2 | Target: Self (1)
 Description      : Reduces Holy damage taken by ${$s1/-1}%.
 

@@ -15,15 +15,15 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=30)       : Normalized Weapon Damage (121)
+#1 (id=30)       : Dummy (3)
                    Base Value: 1 | Scaled Value: 1 | Target: Enemy (6)
-#2 (id=31)       : Weapon Damage% (31)
-                   Base Value: 170 | Scaled Value: 1.7 | Target: Enemy (6)
+#2 (id=31)       : School Damage (2): physical
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.52700 | Target: Enemy (6)
 #3 (id=32)       : Energize Power (30)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: combo_points | Target: Self (1)
 #4 (id=297239)   : Dummy (3)
                    Base Value: 20 | Scaled Value: 20 | Target: Enemy (6)
-Description      : Stab the target, causing ${$sw2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target.
+Description      : Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target.
 
 |cFFFFFFFFAwards $s3 combo $lpoint:points;.|r
 Variables        : $mult=${($max(0,$min($pl-10,10))*11+260)/370}
@@ -96,7 +96,7 @@ Attributes       : ....x... ........ x.x..x.. ........   ........ .x...... .....
                  : Cannot dodge/parry/block (21), Periodic effect affected by haste (173)
 Effects          :
 #1 (id=280)      : Apply Aura (6) | Periodic Damage (3): physical every 2 seconds
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.10500 | Mechanic: Bleed | Target: Enemy (6)
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.08190 | Mechanic: Bleed | Target: Enemy (6)
 #2 (id=281)      : Dummy (3)
                    Base Value: 50 | Scaled Value: 50 | Target: Enemy (6)
 #3 (id=282)      : Energize Power (30)
@@ -213,13 +213,13 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=535)      : Normalized Weapon Damage (121)
+#1 (id=535)      : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.25000 | Target: Enemy (6)
 #2 (id=536)      : Energize Power (30)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: combo_points | Target: Self (1)
-#3 (id=101522)   : Weapon Damage% (31)
-                   Base Value: 90 | Scaled Value: 2.42 | Points Per Level: 8 | Target: Enemy (6)
-Description      : An instant strike that causes $sw3 Physical damage.
+#3 (id=101522)   : School Damage (2): physical
+                   Base Value: 0 | Scaled Value: 152 | Points Per Level: 8 | AP Coefficient: 0.27900 | Target: Enemy (6)
+Description      : An instant strike that causes $s3 Physical damage.
 
 |cFFFFFFFFAwards $s2 combo $lpoint:points;.|r
 
@@ -421,7 +421,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : Periodic effect affected by haste (173)
 Effects          :
 #1 (id=586)      : Apply Aura (6) | Periodic Damage (3): physical every 2 seconds
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.17850 | Mechanic: Bleed | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.13923 | Mechanic: Bleed | Target: Enemy (6)
 #2 (id=239409)   : Apply Aura (6) | Periodic Dummy (226): every 2 seconds
                    Base Value: 1 | Scaled Value: 1 | Mechanic: Bleed | Target: Enemy (6)
 #3 (id=293833)   : Trigger Spell (64): Rupture
@@ -459,7 +459,7 @@ Attributes       : ....x... ........ x.x..... ........   .....x.. ........ .....
 Effects          :
 #1 (id=595)      : Apply Aura (6) | Unknown(229)
                    Base Value: -40 | Scaled Value: -40 | Misc Value: 127 | Target: Self (1)
-#2 (id=127075)   : Apply Aura (6) | Unknown(87)
+#2 (id=127075)   : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f | Target: Self (1)
 Description      : Performs an evasive maneuver, reducing damage taken from area-of-effect attacks by $s1% $?s79008[and all other damage taken by $s2% ][]for $d.
 Tooltip          : Damage taken from area-of-effect attacks reduced by $s1%$?$w2!=0[ and all other damage taken reduced by $w2%.
@@ -512,7 +512,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : Not a proc (105)
 Effects          :
 #1 (id=622)      : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.38766 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.30238 | Target: Enemy (6)
 Description      : Lunging finishing move that causes damage per combo point and has increased range:
    1 point  : ${$m1*1} damage
    2 points: ${$m1*2} damage
@@ -539,7 +539,7 @@ Attributes       : ........ ........ .....x.. ........   ...x.x.x ........ .x...
                  : Cannot dodge/parry/block (21), Does not break stealth (37), Periodic effect affected by haste (173)
 Effects          :
 #1 (id=853)      : Apply Aura (6) | Periodic Damage (3): nature every 2 seconds
-                   Base Value: 6 | Scaled Value: 0 (avg=0.6) | AP Coefficient: 0.07350 | Target: Enemy (6)
+                   Base Value: 6 | Scaled Value: 0 (avg=0.6) | AP Coefficient: 0.05733 | Target: Enemy (6)
 Description      : $@spelldesc2823
 Tooltip          : Suffering $w1 Nature damage every $t1 seconds.
 
@@ -750,11 +750,11 @@ Attributes       : ....x... ........ x.x..... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Not a proc (105)
 Effects          :
-#1 (id=1920)     : Normalized Weapon Damage (121)
+#1 (id=1920)     : Dummy (3)
                    Base Value: 1 | Scaled Value: 1 | Target: Enemy (6)
-#2 (id=99543)    : Weapon Damage% (31)
-                   Base Value: 122 | Scaled Value: 1.22 | Target: Enemy (6)
-Description      : Instantly attacks for $sw2 Physical damage. Awards 2 combo points.
+#2 (id=99543)    : School Damage (2): physical
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.37820 | Target: Enemy (6)
+Description      : Instantly attacks for $s2 Physical damage. Awards 2 combo points.
 
 Name             : Sap (id=6770) [Spell Family (8)] 
 Class            : Assassination Outlaw Subtlety Rogue
@@ -821,13 +821,13 @@ Attributes       : ....x... ........ x.x..x.. ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Cannot dodge/parry/block (21)
 Effects          :
-#1 (id=3612)     : Normalized Weapon Damage (121)
+#1 (id=3612)     : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.25000 | Target: Enemy (6)
-#2 (id=3613)     : Weapon Damage% (31)
-                   Base Value: 272 | Scaled Value: 2.72 | SP Coefficient: 0.25000 | Target: Enemy (6)
+#2 (id=3613)     : School Damage (2): physical
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.25000 | AP Coefficient: 1.22400 | Target: Enemy (6)
 #3 (id=3614)     : Energize Power (30)
                    Base Value: 2 | Scaled Value: 2 | Misc Value: combo_points | Target: Self (1)
-Description      : Ambush the target, causing $sw2 Physical damage.
+Description      : Ambush the target, causing $s2 Physical damage.
 
 |cFFFFFFFFAwards $s3 combo $lpoint:points;.|r
 
@@ -871,9 +871,9 @@ Attributes       : ........ ........ .....x.. ........   ...x...x ........ .....
                  : Cannot dodge/parry/block (21)
 Effects          :
 #1 (id=3617)     : School Damage (2): nature
-                   Base Value: 12 | Scaled Value: 0 (avg=0.417, dl=0.28) | Value Range: 5 | AP Coefficient: 0.02730 | Target: Enemy (6)
+                   Base Value: 12 | Scaled Value: 0 (avg=0.417, dl=0.28) | Value Range: 5 | AP Coefficient: 0.02129 | Target: Enemy (6)
 #2 (id=133966)   : Apply Aura (6) | Unknown(118)
-                   Base Value: -25 | Scaled Value: -25 | AP Coefficient: 0.05040 | Misc Value: 127 | Target: Enemy (6)
+                   Base Value: -25 | Scaled Value: -25 | AP Coefficient: 0.03931 | Misc Value: 127 | Target: Enemy (6)
 Description      : Coats a weapon with poison that lasts for 1 hour.
 Each strike has a $8679h% chance of poisoning the enemy, which instantly inflicts $8680s1 Nature damage and reduces the effect of healing received for $d.
 Tooltip          : Healing effects reduced by $w2%.
@@ -1187,11 +1187,11 @@ Attributes       : ....x... ........ x.x..... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Not a proc (105)
 Effects          :
-#1 (id=17065)    : Normalized Weapon Damage (121)
+#1 (id=17065)    : Dummy (3)
                    Base Value: 1 | Scaled Value: 0 (avg=0.25) | Target: Enemy (6)
-#2 (id=99544)    : Weapon Damage% (31)
-                   Base Value: 122 | Scaled Value: 1.22 | Target: Enemy (6)
-Description      : Instantly attacks for $sw2 Physical damage. Awards 2 combo points.
+#2 (id=99544)    : School Damage (2): physical
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.37820 | Target: Enemy (6)
+Description      : Instantly attacks for $s2 Physical damage. Awards 2 combo points.
 
 Name             : Fleet Footed (Passive) (id=31209) [Spell Family (8), Passive] 
 Class            : Rogue
@@ -1244,7 +1244,7 @@ Effects          :
                    Base Value: -200 | Scaled Value: -200 | Misc Value: 126 | Target: Self (1)
 #2 (id=20792)    : Trigger Spell (64): (35729)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 35729 | Target: Self (1)
-#3 (id=20793)    : Apply Aura (6) | Unknown(87)
+#3 (id=20793)    : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x1 | Target: Self (1)
 Description      : Provides a moment of magic immunity, instantly removing all harmful spell effects. The cloak lingers, $?s63269[reducing physical damage taken by $63269s1% and ][]causing you to resist harmful spells for $d.
 Tooltip          : Resisting all harmful spells.$?$w3!=0[
@@ -1282,7 +1282,7 @@ Effects          :
 #2 (id=479892)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Damage (22)
                    Base Value: 10 | Scaled Value: 10 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Backstab (53), Garrote (703), Mutilate (1329), Sinister Strike (1752), Rupture (1943), Run Through (2098), Deadly Poison (2818), Mutilate (5374), Ambush (8676), Wound Poison (8680), Mutilate Off-Hand (27576), Envenom (32645), Fan of Knives (51723), Killing Spree (57841), Killing Spree Off-Hand (57842), Main Gauche (86392), Shuriken Toss (114014), Shadow Blade (121473), Shadow Blade Off-hand (121474), Death from Above (152150), Internal Bleeding (154953), Backstab (173458), Shadowstrike (185438), Poisoned Knife (185565), Pistol Shot (185763), Cannonball Barrage (185779), From the Shadows (192434), Poison Bomb (192660), Kingsbane (192759), Kingsbane (192760), Saber Slash (193315), Nightblade (195452), Eviscerate (196819), Ghostly Strike (196937), Finality: Eviscerate (197393), Second Shuriken (197611), Shadow Nova (197800), Shuriken Storm (197835), Riposte (199753), Between the Eyes (199804), Gloomblade (200758), Greed (202822), Greed (202823), Blunderbuss (202895), Goremaw's Bite (209783), Goremaw's Bite (209784), Soul Rip (220893), Kingsbane (222062), Toxic Blade (245388), Toxic Blade (245389), Poison Bomb (255544), Poison Bomb (255546)
-#3 (id=479893)   : Apply Aura (6) | Unknown(344)
+#3 (id=479893)   : Apply Aura (6) | Modify Auto Attack Damage Done% (344)
                    Base Value: 10 | Scaled Value: 10 | Target: Self (1)
 Description      : $@spelldesc31223
 Tooltip          : Damage dealt increased by $w1%.
@@ -1307,7 +1307,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : Not a proc (105)
 Effects          :
 #1 (id=22420)    : School Damage (2): nature
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.15750 | Target: Enemy (6)
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.12285 | Target: Enemy (6)
 #2 (id=22421)    : Apply Aura (6) | Add Flat Modifier (107): Spell Proc Chance (18)
                    Base Value: 30 | Scaled Value: 30 | Misc Value: 18 | Target: Self (1)
                    Affected Spells: Deadly Poison (2823), Crippling Poison (3408), Wound Poison (8679), Leeching Poison (108211), Agonizing Poison (200802)
@@ -1513,7 +1513,7 @@ Attributes       : ....x... ........ x....... ........   ....x... .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=44107)    : School Damage (2): physical
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.26250 | Radius: 0 - 10 yards | Target: At Caster (22) -> AOE enemy (15)
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.20475 | Radius: 0 - 10 yards | Target: At Caster (22) -> AOE enemy (15)
 #2 (id=150470)   : Dummy (3)
                    Base Value: 1 | Scaled Value: 1 | Radius: 0 - 10 yards | Target: At Caster (22) -> AOE enemy (15)
 Description      : Sprays knives at all targets within $A1 yards, dealing $s1 Physical damage and applying your active poisons at their normal rate.
@@ -1552,12 +1552,12 @@ Attributes       : ....x... ........ x.x..x.. ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Cannot dodge/parry/block (21), Not a proc (105)
 Effects          :
-#1 (id=51139)    : Normalized Weapon Damage (121)
+#1 (id=51139)    : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
 #2 (id=51140)    : Trigger Spell (64): Killing Spree Off-Hand
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 57842 | Target: Enemy (6)
-#3 (id=211058)   : Weapon Damage% (31)
-                   Base Value: 136 | Scaled Value: 1.36 | Target: Enemy (6)
+#3 (id=211058)   : School Damage (2): physical
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.61200 | Target: Enemy (6)
 Description      : $@spelldesc51690
 
 Name             : Killing Spree Off-Hand (id=57842) [Spell Family (8)] 
@@ -1575,10 +1575,10 @@ Attributes       : ....x... ........ x.x..x.. ........   ....x... ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Cannot dodge/parry/block (21), Not a proc (105)
 Effects          :
-#1 (id=51141)    : Normalized Weapon Damage (121)
+#1 (id=51141)    : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.25000 | Target: Enemy (6)
-#2 (id=211071)   : Weapon Damage% (31)
-                   Base Value: 136 | Scaled Value: 1.36 | Target: Enemy (6)
+#2 (id=211071)   : School Damage (2): physical
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.61200 | Target: Enemy (6)
 Description      : $@spelldesc51690
 
 Name             : Tricks of the Trade (id=57934) [Spell Family (8)] 
@@ -1724,7 +1724,7 @@ Attributes       : ....x.x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6)
 Effects          :
-#1 (id=71772)    : Apply Aura (6) | Unknown(87)
+#1 (id=71772)    : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: -1 | Scaled Value: -1 | Misc Value: 0x28 | Target: Self (1)
 Description      : Reduces Shadow and Nature damage taken by $s1%.
 Tooltip          : Reduces Shadow and Nature damage taken by $s1%.
@@ -1966,10 +1966,10 @@ Attributes       : ....x... ........ ..x..... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Not a proc (105)
 Effects          :
-#1 (id=87938)    : Normalized Weapon Damage (121)
+#1 (id=87938)    : Dummy (3)
                    Base Value: 1 | Scaled Value: 1 | Target: Enemy (6)
-#2 (id=295577)   : Weapon Damage% (31)
-                   Base Value: 71 | Scaled Value: 0.71 | Target: Enemy (6)
+#2 (id=295577)   : School Damage (2): physical
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.31950 | Target: Enemy (6)
 Description      : A vicious attack that deals $86392sw2 Physical damage with your off-hand.
 
 Name             : Find Weakness (id=91021) [Spell Family (8)] 
@@ -2131,17 +2131,17 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=123503)   : Normalized Weapon Damage (121)
+#1 (id=123503)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
-#2 (id=123504)   : Weapon Damage% (31)
-                   Base Value: 240 | Scaled Value: 2.4 | Target: Enemy (6)
+#2 (id=123504)   : School Damage (2): physical
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.74400 | Target: Enemy (6)
 #3 (id=123505)   : Energize Power (30)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: combo_points | Target: Self (1)
 #4 (id=485675)   : Dummy (3)
                    Base Value: 30 | Scaled Value: 30 | Target: Self (1)
 #5 (id=709929)   : Dummy (3)
                    Base Value: 35 | Scaled Value: 35 | Target: Self (1)
-Description      : Exploits the vulnerability of foes with less than $s4% health, causing $sw2 Physical damage to the target. 
+Description      : Exploits the vulnerability of foes with less than $s4% health, causing $s2 Physical damage to the target. 
 
 Mutilate has a $s5% chance to make your next Dispatch free and usable on any target, regardless of their health.
 
@@ -2205,14 +2205,14 @@ Class            : Rogue
 School           : Physical
 Range            : 50000 yards
 Duration         : 60 seconds
-Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+Attributes       : ........ ........ ........ ........   ........ ...x.... ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ........ ......x. 
                  : x....... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ....x... ........ ........   ...x.... ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=126739)   : Apply Aura (6) | Unknown(87)
+#1 (id=126739)   : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: 5 | Scaled Value: 5 | Misc Value: 0x1 | Target: Enemy (6)
 Description      : $@spelldesc8647
 Tooltip          : Physical damage taken increased by $w1%.
@@ -2232,7 +2232,7 @@ Attributes       : ........ ........ .....x.. ........   ...x...x ........ .....
                  : Cannot dodge/parry/block (21)
 Effects          :
 #1 (id=126788)   : School Damage (2): nature
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.06300 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.04914 | Target: Enemy (6)
 Description      : Poisoned weapons have a chance to deal $s1 Nature damage to a target already affected by Deadly Poison.
 
 Name             : Shuriken Toss (id=114014) [Scaling Spell (9), Spell Family (8)] 
@@ -2252,9 +2252,9 @@ Attributes       : ........ ........ ........ ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=127100)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (avg=2) | AP Coefficient: 0.25200 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (avg=2) | AP Coefficient: 0.19656 | Target: Enemy (6)
 #2 (id=330872)   : Energize Power (30)
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.25200 | Misc Value: combo_points | Target: Self (1)
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.19656 | Misc Value: combo_points | Target: Self (1)
 #3 (id=344591)   : Dummy (3)
                    Base Value: 200 | Scaled Value: 200 | Target: Self (1)
 Description      : Throws a shuriken at an enemy target for $s1 Physical damage.
@@ -2375,7 +2375,7 @@ Attributes       : ....x... ........ ..x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=150471)   : School Damage (2): physical
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.21000 | Radius: 0 - 10 yards | Target: At Caster (22) -> AOE enemy (15)
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.16380 | Radius: 0 - 10 yards | Target: At Caster (22) -> AOE enemy (15)
 Description      : Finishing move that slashes at all enemies within $A1 yards, dealing $s1 Physical damage and causing victims to bleed for additional damage over $122233d:
    1 point  : ${$122233s1*$122233d/$122233t1*1} damage
    2 points: ${$122233s1*$122233d/$122233t1*2} damage
@@ -2433,8 +2433,8 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ .x......   ........ ........ ........ ........ 
                  : Not a proc (105)
 Effects          :
-#1 (id=150592)   : Weapon Damage% (31)
-                   Base Value: 34 | Scaled Value: 0.34 | Target: Enemy (6)
+#1 (id=150592)   : School Damage (2): shadow
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.10540 | Target: Enemy (6)
 Description      : Strike with dark energy, dealing Shadow damage equal to $s1% weapon damage.
 
 Name             : Shadow Blade Off-hand (id=121474) [Spell Family (8)] 
@@ -2450,8 +2450,8 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ .x......   ........ ........ ........ ........ 
                  : Not a proc (105)
 Effects          :
-#1 (id=150593)   : Weapon Damage% (31)
-                   Base Value: 34 | Scaled Value: 0.34 | Target: Enemy (6)
+#1 (id=150593)   : School Damage (2): shadow
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.10540 | Target: Enemy (6)
 Description      : Strike with dark energy, dealing Shadow damage equal to $s1% weapon damage.
 
 Name             : Crimson Tempest (id=122233) [Spell Family (8)] 
@@ -2470,7 +2470,7 @@ Attributes       : ....x... ........ ..x..... ........   .....x.. ........ .....
                  : Does not break stealth (37), Periodic effect affected by haste (173)
 Effects          :
 #1 (id=153760)   : Apply Aura (6) | Periodic Damage (3): physical every 2 seconds
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.03570 | Mechanic: Bleed | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.02785 | Mechanic: Bleed | Target: Enemy (6)
 Description      : $@spelldesc121411
 Tooltip          : Suffering $w1 damage every $t1 sec.
 
@@ -2818,7 +2818,7 @@ Effects          :
 #1 (id=210639)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
 #2 (id=217580)   : School Damage (2): physical
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.73500 | Radius: 0 - 8 yards | Target: Custom (18) -> AOE enemy (instant) (16)
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.57330 | Radius: 0 - 8 yards | Target: Custom (18) -> AOE enemy (instant) (16)
 #3 (id=217591)   : Dummy (3)
                    Base Value: 2 | Scaled Value: 2 | Target: Self (1)
 #4 (id=217594)   : Apply Aura (6) | Unknown(288)
@@ -2894,7 +2894,7 @@ Attributes       : ....x... ........ ........ ........   ........ ........ .....
                  : Periodic effect affected by haste (173)
 Effects          :
 #1 (id=215087)   : Apply Aura (6) | Periodic Damage (3): physical every 2 seconds
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.04000 | Mechanic: Bleed | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.03120 | Mechanic: Bleed | Target: Enemy (6)
 Description      : $@spelldesc154904
 Tooltip          : Suffering $w1 damage every $t1 sec.
 
@@ -2994,13 +2994,13 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=246973)   : Normalized Weapon Damage (121)
+#1 (id=246973)   : Dummy (3)
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.25000 | Target: Enemy (6)
-#2 (id=246974)   : Weapon Damage% (31)
-                   Base Value: 125 | Scaled Value: 1.25 | SP Coefficient: 0.25000 | Target: Enemy (6)
+#2 (id=246974)   : School Damage (2): physical
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.25000 | AP Coefficient: 0.38750 | Target: Enemy (6)
 #3 (id=246975)   : Energize Power (30)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: combo_points | Target: Self (1)
-Description      : Stab the target, causing $sw2 Physical damage. Awards $s3 combo $lpoint:points;.
+Description      : Stab the target, causing $s2 Physical damage. Awards $s3 combo $lpoint:points;.
 
 Name             : Crimson Vial (id=185311) [Scaling Spell (8), Spell Family (8)] 
 Class            : Rogue
@@ -3042,7 +3042,7 @@ Attributes       : ........ ........ ..x..... ...x...x   ....x... ..x..... .....
 Effects          :
 #1 (id=269037)   : Apply Aura (6) | Unknown(103)
                    Base Value: -10000000 | Scaled Value: -1e+07 | SP Coefficient: 0.25000 | Target: Self (1)
-#2 (id=317950)   : Apply Aura (6) | Unknown(344)
+#2 (id=317950)   : Apply Aura (6) | Modify Auto Attack Damage Done% (344)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #3 (id=334762)   : Apply Aura (6) | Periodic Heal% (20): every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -3094,13 +3094,13 @@ Attributes       : ....x... ........ x.x..x.. ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Cannot dodge/parry/block (21)
 Effects          :
-#1 (id=269259)   : Normalized Weapon Damage (121)
+#1 (id=269259)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
-#2 (id=269260)   : Weapon Damage% (31)
-                   Base Value: 289 | Scaled Value: 2.89 | Target: Enemy (6)
+#2 (id=269260)   : School Damage (2): physical
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.89590 | Target: Enemy (6)
 #3 (id=269261)   : Energize Power (30)
                    Base Value: 2 | Scaled Value: 2 | Misc Value: combo_points | Target: Self (1)
-Description      : Strike the target, dealing $sw2 Physical damage.$?a231718[
+Description      : Strike the target, dealing $s2 Physical damage.$?a231718[
 
 While Stealth is active, you strike through the shadows and appear behind your target up to ${5+$245623s1} yds away, dealing $245623s2% additional damage.][]
 
@@ -3123,9 +3123,9 @@ Attributes       : ........ ........ ........ ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=269456)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (avg=2) | AP Coefficient: 0.12600 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (avg=2) | AP Coefficient: 0.09828 | Target: Enemy (6)
 #2 (id=269457)   : Energize Power (30)
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.25200 | Misc Value: combo_points | Target: Self (1)
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.19656 | Misc Value: combo_points | Target: Self (1)
 Description      : Throws a poison-coated knife, dealing $s1 damage and applying your active Lethal and Non-Lethal Poisons.
 
 |cFFFFFFFFAwards $s2 combo $lpoint:points;.|r
@@ -3147,9 +3147,9 @@ Attributes       : ........ ........ ..x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=269972)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (avg=2) | AP Coefficient: 0.45045 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (avg=2) | AP Coefficient: 0.35135 | Target: Enemy (6)
 #2 (id=269973)   : Energize Power (30)
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.25200 | Misc Value: combo_points | Target: Self (1)
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.19656 | Misc Value: combo_points | Target: Self (1)
 #3 (id=269974)   : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -50 | Scaled Value: -50 | Mechanic: Unknown(88) | Target: Enemy (6)
 #4 (id=316548)   : Apply Aura (6) | Dummy (4)
@@ -3218,7 +3218,7 @@ Attributes       : ........ ........ ........ x..x....   ...x.x.x ........ .....
                  : Does not break stealth (37), Not a proc (105)
 Effects          :
 #1 (id=270001)   : School Damage (2): physical
-                   Base Value: 1 | Scaled Value: 1 (avg=0, dl=0.4) | AP Coefficient: 0.33600 | Radius: 3 - 9 yards | Target: Unknown(91) -> AOE enemy (instant) (16)
+                   Base Value: 1 | Scaled Value: 1 (avg=0, dl=0.4) | AP Coefficient: 0.26208 | Radius: 3 - 9 yards | Target: Unknown(91) -> AOE enemy (instant) (16)
 Description      : $@spelldesc185767
 Tooltip          : $@spellaura185767
 
@@ -3357,15 +3357,15 @@ Attributes       : ....x... ........ x.x..... .......x   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Cannot cancel aura (31), Not a proc (105)
 Effects          :
-#1 (id=283619)   : Normalized Weapon Damage (121)
+#1 (id=283619)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
 #2 (id=283620)   : Energize Power (30)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: combo_points | Target: Self (1)
-#3 (id=283621)   : Weapon Damage% (31)
-                   Base Value: 129 | Scaled Value: 1.29 | Target: Enemy (6)
+#3 (id=283621)   : School Damage (2): physical
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.58050 | Target: Enemy (6)
 #4 (id=283622)   : Dummy (3)
                    Base Value: 35 | Scaled Value: 35 | Target: Self (1)
-Description      : Viciously slash an enemy, causing ${$sw1*$<mult>} Physical damage.
+Description      : Viciously slash an enemy, causing ${$s1*$<mult>} Physical damage.
 
 Saber Slash has a $s4% chance to strike an additional time, making your next Pistol Shot free.
 
@@ -3659,7 +3659,7 @@ Effects          :
 #2 (id=479907)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Damage (22)
                    Base Value: 12 | Scaled Value: 12 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Backstab (53), Garrote (703), Mutilate (1329), Sinister Strike (1752), Rupture (1943), Run Through (2098), Deadly Poison (2818), Mutilate (5374), Ambush (8676), Wound Poison (8680), Mutilate Off-Hand (27576), Envenom (32645), Fan of Knives (51723), Killing Spree (57841), Killing Spree Off-Hand (57842), Main Gauche (86392), Shuriken Toss (114014), Shadow Blade (121473), Shadow Blade Off-hand (121474), Death from Above (152150), Internal Bleeding (154953), Backstab (173458), Shadowstrike (185438), Poisoned Knife (185565), Pistol Shot (185763), Cannonball Barrage (185779), From the Shadows (192434), Poison Bomb (192660), Kingsbane (192759), Kingsbane (192760), Saber Slash (193315), Nightblade (195452), Eviscerate (196819), Ghostly Strike (196937), Finality: Eviscerate (197393), Second Shuriken (197611), Shadow Nova (197800), Shuriken Storm (197835), Riposte (199753), Between the Eyes (199804), Gloomblade (200758), Greed (202822), Greed (202823), Blunderbuss (202895), Goremaw's Bite (209783), Goremaw's Bite (209784), Soul Rip (220893), Kingsbane (222062), Toxic Blade (245388), Toxic Blade (245389), Poison Bomb (255544), Poison Bomb (255546)
-#3 (id=479908)   : Apply Aura (6) | Unknown(344)
+#3 (id=479908)   : Apply Aura (6) | Modify Auto Attack Damage Done% (344)
                    Base Value: 12 | Scaled Value: 12 | Target: Self (1)
                    Affected Spells: Backstab (53), Garrote (703), Mutilate (1329), Sinister Strike (1752), Rupture (1943), Run Through (2098), Deadly Poison (2818), Mutilate (5374), Ambush (8676), Wound Poison (8680), Mutilate Off-Hand (27576), Envenom (32645), Fan of Knives (51723), Killing Spree (57841), Killing Spree Off-Hand (57842), Main Gauche (86392), Shuriken Toss (114014), Shadow Blade (121473), Shadow Blade Off-hand (121474), Death from Above (152150), Internal Bleeding (154953), Backstab (173458), Shadowstrike (185438), Poisoned Knife (185565), Pistol Shot (185763), Cannonball Barrage (185779), From the Shadows (192434), Poison Bomb (192660), Kingsbane (192759), Kingsbane (192760), Saber Slash (193315), Nightblade (195452), Eviscerate (196819), Ghostly Strike (196937), Finality: Eviscerate (197393), Second Shuriken (197611), Shadow Nova (197800), Shuriken Storm (197835), Riposte (199753), Between the Eyes (199804), Gloomblade (200758), Greed (202822), Greed (202823), Blunderbuss (202895), Goremaw's Bite (209783), Goremaw's Bite (209784), Soul Rip (220893), Kingsbane (222062), Toxic Blade (245388), Toxic Blade (245389), Poison Bomb (255544), Poison Bomb (255546)
 Description      : Increases damage done by $s1% for $d.
@@ -3688,7 +3688,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : Periodic effect affected by haste (173)
 Effects          :
 #1 (id=286896)   : Apply Aura (6) | Periodic Damage (3): shadow every 2 seconds
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.16170 | Target: Enemy (6)
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.12613 | Target: Enemy (6)
 #2 (id=286897)   : Apply Aura (6) | Periodic Dummy (226): every 2 seconds
                    Base Value: 1 | Scaled Value: 1 | Mechanic: Bleed | Target: Enemy (6)
 #3 (id=331338)   : Trigger Spell (64): Nightblade
@@ -3780,7 +3780,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : Not a proc (105)
 Effects          :
 #1 (id=288959)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.20607 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.16074 | Target: Enemy (6)
 Description      : Finishing move that disembowels the target, causing damage per combo point.
    1 point  : ${$m1*1} damage
    2 points: ${$m1*2} damage
@@ -3938,9 +3938,9 @@ Attributes       : ....x... ........ x.x..... .......x   ........ .x...... .....
 Effects          :
 #1 (id=289165)   : Energize Power (30)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: combo_points | Target: Self (1)
-#2 (id=289166)   : Weapon Damage% (31)
-                   Base Value: 85 | Scaled Value: 0.85 | Target: Enemy (6)
-#3 (id=289167)   : Normalized Weapon Damage (121)
+#2 (id=289166)   : School Damage (2): physical
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.38250 | Target: Enemy (6)
+#3 (id=289167)   : Dummy (3)
                    Base Value: 1 | Scaled Value: 1 | Target: Enemy (6)
 #4 (id=289168)   : Apply Aura (6) | Dummy (4)
                    Base Value: 10 | Scaled Value: 10 | Target: Enemy (6)
@@ -3948,7 +3948,7 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | Misc Value: 127 | Target: Enemy (6)
 #6 (id=297629)   : Apply Aura (6) | Periodic Dummy (226): every 3 seconds
                    Base Value: 10 | Scaled Value: 10 | Target: Enemy (6)
-Description      : Strikes an enemy with your cursed weapon, dealing $sw2 Physical damage and causing the target to take $s5% increased damage from your abilities for $d.
+Description      : Strikes an enemy with your cursed weapon, dealing $s2 Physical damage and causing the target to take $s5% increased damage from your abilities for $d.
 
 |cFFFFFFFFAwards $s1 combo $lpoint:points;.|r
 Tooltip          : Taking $s5% increased damage from the Rogue's abilities.
@@ -4153,9 +4153,9 @@ Attributes       : ....x... ........ x....... ........   ....x... .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=290720)   : School Damage (2): physical
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.20160 | Radius: 0 - 10 yards | Target: At Caster (22) -> AOE enemy (15)
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.15725 | Radius: 0 - 10 yards | Target: At Caster (22) -> AOE enemy (15)
 #2 (id=290721)   : Dummy (3)
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.07350 | Radius: 0 - 10 yards | Target: At Caster (22) -> AOE enemy (15)
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.05733 | Radius: 0 - 10 yards | Target: At Caster (22) -> AOE enemy (15)
 #3 (id=344592)   : Dummy (3)
                    Base Value: 100 | Scaled Value: 100 | Radius: 0 - 10 yards | Target: At Caster (22) -> AOE enemy (15)
 Description      : Sprays shurikens at all targets within $A1 yards, dealing $s1 Physical damage.
@@ -4254,11 +4254,11 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Not a proc (105)
 Effects          :
-#1 (id=293970)   : Normalized Weapon Damage (121)
+#1 (id=293970)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.25000 | Target: Enemy (6)
-#2 (id=293971)   : Weapon Damage% (31)
-                   Base Value: 44 | Scaled Value: 0.44 | Target: Enemy (6)
-Description      : An instant strike that causes $sw3 Physical damage.
+#2 (id=293971)   : School Damage (2): physical
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.19800 | Target: Enemy (6)
+Description      : An instant strike that causes $s3 Physical damage.
 
 Name             : Riposte (id=199754) [Spell Family (8)] 
 Class            : Outlaw Rogue
@@ -4304,7 +4304,7 @@ Attributes       : ....x... ........ x.....x. ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=294039)   : School Damage (2): physical
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.23205 | Target: Enemy (6)
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.18100 | Target: Enemy (6)
 #2 (id=294040)   : Apply Aura (6) | Stun (12)
                    Base Value: 70 | Scaled Value: 70 | Mechanic: Unknown(95) | Target: Enemy (6)
 #3 (id=344382)   : Apply Aura (6) | Dummy (4)
@@ -4370,13 +4370,13 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=295616)   : Normalized Weapon Damage (121)
+#1 (id=295616)   : Dummy (3)
                    Base Value: 1 | Scaled Value: 1 | Target: Enemy (6)
-#2 (id=295617)   : Weapon Damage% (31)
-                   Base Value: 195 | Scaled Value: 1.95 | Target: Enemy (6)
+#2 (id=295617)   : School Damage (2): shadow
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.60450 | Target: Enemy (6)
 #3 (id=295618)   : Energize Power (30)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: combo_points | Target: Self (1)
-Description      : Punctures your target with your shadow-infused blade for $sw2 Shadow damage, bypassing armor.
+Description      : Punctures your target with your shadow-infused blade for $s2 Shadow damage, bypassing armor.
 
 |cFFFFFFFFAwards $s3 combo $lpoint:points;.|r
 
@@ -4817,7 +4817,7 @@ Effects          :
 #2 (id=466105)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Damage (22)
                    Base Value: 15 | Scaled Value: 15 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Backstab (53), Garrote (703), Mutilate (1329), Sinister Strike (1752), Rupture (1943), Run Through (2098), Deadly Poison (2818), Mutilate (5374), Ambush (8676), Wound Poison (8680), Mutilate Off-Hand (27576), Envenom (32645), Fan of Knives (51723), Killing Spree (57841), Killing Spree Off-Hand (57842), Main Gauche (86392), Shuriken Toss (114014), Shadow Blade (121473), Shadow Blade Off-hand (121474), Death from Above (152150), Internal Bleeding (154953), Backstab (173458), Shadowstrike (185438), Poisoned Knife (185565), Pistol Shot (185763), Cannonball Barrage (185779), From the Shadows (192434), Poison Bomb (192660), Kingsbane (192759), Kingsbane (192760), Saber Slash (193315), Nightblade (195452), Eviscerate (196819), Ghostly Strike (196937), Finality: Eviscerate (197393), Second Shuriken (197611), Shadow Nova (197800), Shuriken Storm (197835), Riposte (199753), Between the Eyes (199804), Gloomblade (200758), Greed (202822), Greed (202823), Blunderbuss (202895), Goremaw's Bite (209783), Goremaw's Bite (209784), Soul Rip (220893), Kingsbane (222062), Toxic Blade (245388), Toxic Blade (245389), Poison Bomb (255544), Poison Bomb (255546)
-#3 (id=466120)   : Apply Aura (6) | Unknown(344)
+#3 (id=466120)   : Apply Aura (6) | Modify Auto Attack Damage Done% (344)
                    Base Value: 15 | Scaled Value: 15 | Target: Self (1)
 #4 (id=479903)   : Apply Aura (6) | Periodic Energize Power (24): every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 3 | Target: Self (1)
@@ -5097,15 +5097,15 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=373276)   : Normalized Weapon Damage (121)
+#1 (id=373276)   : Dummy (3)
                    Base Value: 1 | Scaled Value: 1 | Target: Enemy (6)
-#2 (id=373277)   : Weapon Damage% (31)
-                   Base Value: 272 | Scaled Value: 2.72 | Target: Enemy (6)
+#2 (id=373277)   : School Damage (2): nature
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.84320 | Target: Enemy (6)
 #3 (id=373278)   : Energize Power (30)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: combo_points | Target: Self (1)
 #4 (id=373280)   : Trigger Spell (64): Toxic Blade
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 245389 | Target: Enemy (6)
-Description      : Stab your enemy with a toxic poisoned blade, dealing $sw2 Nature damage.
+Description      : Stab your enemy with a toxic poisoned blade, dealing $s2 Nature damage.
 
 The damage of your poisons against the target is increased by $245389s1% for $245389d.
 
@@ -5359,7 +5359,7 @@ Attributes       : ........ ........ ..x..... x..x....   .....x.. ........ .....
                  : Does not break stealth (37), Requires line of sight (186)
 Effects          :
 #1 (id=477505)   : School Damage (2): nature
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.12600 | Radius: 0 - 6 yards | Target: Unknown(87) -> AOE enemy (instant) (16)
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.09828 | Radius: 0 - 6 yards | Target: Unknown(87) -> AOE enemy (instant) (16)
 Description      : $@spelldesc255544
 
 Name             : Light's Judgment (Racial) (id=255647) [Scaling Spell (-6)] 
@@ -5395,7 +5395,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6)
 Effects          :
-#1 (id=477698)   : Apply Aura (6) | Unknown(87)
+#1 (id=477698)   : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: -1 | Scaled Value: -1 | Misc Value: 0x2 | Target: Self (1)
 Description      : Reduces Holy damage taken by ${$s1/-1}%.
 
@@ -5444,7 +5444,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ....x... ........ ........   ...x.... ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=478131)   : Apply Aura (6) | Unknown(87)
+#1 (id=478131)   : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: 10 | Scaled Value: 10 | Misc Value: 0x7f | Target: Enemy (6)
 Description      : $@spelldesc131511
 Tooltip          : Damage taken increased by $s1%.

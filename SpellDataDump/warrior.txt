@@ -19,7 +19,7 @@ Attributes       : ....x.x. ........ x.x..... x..x.x.x   ........ ..x..... .x...
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6), Cannot cancel aura (31)
 Effects          :
-#1 (id=43)       : Apply Aura (6) | Unknown(87)
+#1 (id=43)       : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: -10 | Scaled Value: -10 | Misc Value: 0x7f | Target: Self (1)
 #2 (id=217521)   : Apply Aura (6) | Dummy (4)
                    Base Value: 3 | Scaled Value: 3 | Target: Self (1)
@@ -132,13 +132,13 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .x...
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Periodic effect affected by haste (173)
 Effects          :
-#1 (id=310)      : Normalized Weapon Damage (121)
+#1 (id=310)      : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
-#2 (id=357783)   : Weapon Damage% (31)
-                   Base Value: 48 | Scaled Value: 0.48 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
+#2 (id=357783)   : School Damage (2): physical
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.29760 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
 #3 (id=374148)   : Apply Aura (6) | Periodic Damage (3): physical every 2 seconds
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.26000 | Chain Multiplier: 1 | Mechanic: Bleed | Chain Targets: 1 | Target: Enemy (6)
-Description      : Wounds the target, causing $sw2 Physical damage instantly and an additional $o3 Bleed damage over $d.
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.20280 | Chain Multiplier: 1 | Mechanic: Bleed | Chain Targets: 1 | Target: Enemy (6)
+Description      : Wounds the target, causing $s2 Physical damage instantly and an additional $o3 Bleed damage over $d.
 Tooltip          : Bleeding for $w3 damage every $t3 sec.
 
 Name             : Cleave (id=845) [Spell Family (4)] 
@@ -156,11 +156,11 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=357)      : Weapon Damage% (31)
-                   Base Value: 100 | Scaled Value: 1 | Radius: 8 yards | Target: Cone Front (104)
-#2 (id=129888)   : Normalized Weapon Damage (121)
+#1 (id=357)      : School Damage (2): physical
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.62000 | Radius: 8 yards | Target: Cone Front (104)
+#2 (id=129888)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Radius: 8 yards | Target: Cone Front (104)
-Description      : Strikes all enemies in front of you with a sweeping attack for $sw1 Physical damage, inflicting Deep Wounds.
+Description      : Strikes all enemies in front of you with a sweeping attack for $s1 Physical damage, inflicting Deep Wounds.
 
 Name             : Shield Wall (id=871) [Spell Family (4)] 
 Class            : Protection Warrior
@@ -176,7 +176,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ ..x..... .....
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ .....x.. ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=364)      : Apply Aura (6) | Unknown(87)
+#1 (id=364)      : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: -40 | Scaled Value: -40 | Misc Value: 0x7f | Target: Self (1)
 Description      : Reduces all damage you take by $s1% for $d.
 Tooltip          : All damage taken reduced by $w1%.
@@ -229,11 +229,11 @@ Attributes       : ....x... ........ x....... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ .......x   ........ ........ ........ ........ 
 Effects          :
-#1 (id=462)      : Normalized Weapon Damage (121)
+#1 (id=462)      : Dummy (3)
                    Base Value: 1 | Scaled Value: 1 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
-#2 (id=119511)   : Weapon Damage% (31)
-                   Base Value: 115 | Scaled Value: 1.15 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
-Description      : Slams an opponent, causing $sw2 Physical damage.
+#2 (id=119511)   : School Damage (2): physical
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.71300 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
+Description      : Slams an opponent, causing $s2 Physical damage.
 
 Name             : Whirlwind (id=1680) [Spell Family (4)] 
 Class            : Arms Warrior
@@ -277,11 +277,11 @@ Attributes       : ........ ........ x.x..... ........   ...x...x .x...... .....
 Effects          :
 #1 (id=523)      : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -50 | Scaled Value: -50 | Mechanic: Unknown(88) | Target: Enemy (6)
-#2 (id=236708)   : Normalized Weapon Damage (121)
+#2 (id=236708)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
-#3 (id=236709)   : Weapon Damage% (31)
-                   Base Value: 35 | Scaled Value: 0.35 | Target: Enemy (6)
-Description      : Maims the enemy for $sw3 Physical damage, reducing movement speed by $s1% for $d.
+#3 (id=236709)   : School Damage (2): physical
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.21700 | Target: Enemy (6)
+Description      : Maims the enemy for $s3 Physical damage, reducing movement speed by $s1% for $d.
 Tooltip          : Movement slowed by $s1%.
 
 Name             : Recklessness (id=1719) [Spell Family (4)] 
@@ -324,7 +324,7 @@ Spell Level      : 20
 Cooldown         : 1 seconds
 Charges          : 1 (13 seconds cooldown)
 Category         : 1385: Warrior (137047 effect#3)
-Affecting spells : Bladestorm (46924 effect#3), Vengeance: Ignore Pain (202574 effect#1), Neltharion's Fury (203524 effect#4), Bladestorm (222634 effect#3), Bladestorm (227847 effect#3)
+Affecting spells : Bladestorm (46924 effect#3), Vengeance: Shield Block (202574 effect#1), Neltharion's Fury (203524 effect#4), Bladestorm (222634 effect#3), Bladestorm (227847 effect#3)
 Attributes       : ....x... ........ x.x..... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   .x...... ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -446,11 +446,11 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=1900)     : Normalized Weapon Damage (121)
+#1 (id=1900)     : Dummy (3)
                    Base Value: 1 | Scaled Value: 1 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
-#2 (id=229536)   : Weapon Damage% (31)
-                   Base Value: 136 | Scaled Value: 1.36 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
-Description      : Attempt to finish off a wounded foe, causing ${$sw2+$163558sw2} Physical damage. Only usable on enemies that have less than 20% health.
+#2 (id=229536)   : School Damage (2): physical
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.84320 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
+Description      : Attempt to finish off a wounded foe, causing ${$s2+$163558sw2} Physical damage. Only usable on enemies that have less than 20% health.
 
 Name             : Thunder Clap (id=6343) [Spell Family (4)] 
 Class            : Protection Warrior
@@ -470,7 +470,7 @@ Attributes       : ....x... ........ x.x..x.. ........   ...x...x .x...... .....
                  : Cannot dodge/parry/block (21)
 Effects          :
 #1 (id=2203)     : School Damage (2): physical
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.50400 | Radius: 0 - 8 yards | Target: At Caster (22) -> AOE enemy (15)
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.39312 | Radius: 0 - 8 yards | Target: At Caster (22) -> AOE enemy (15)
 #2 (id=236564)   : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -20 | Scaled Value: -20 | Radius: 0 - 8 yards | Mechanic: Unknown(88) | Target: At Caster (22) -> AOE enemy (15)
 #3 (id=357188)   : Dummy (3)
@@ -544,7 +544,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=2316)     : School Damage (2): physical
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.58800 | Radius: 8 yards | Target: Cone Front (104)
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.45864 | Radius: 8 yards | Target: Cone Front (104)
 Description      : Swing in a wide arc, dealing $s1 damage to all enemies in front of you.
 
 Your successful dodges and parries cause your next Revenge to become free.
@@ -563,10 +563,10 @@ Attributes       : ....x... ........ x.x..... ........   ........ ..x..... .....
                  : ........ x...x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=2384)     : Apply Aura (6) | Modify Total Stat% (137)
-                   Base Value: 10 | Scaled Value: 10 | Misc Value 2: 0x3 | Radius: 100 yards | Target: Raid Members (56)
-Description      : Increases the Strength and Agility of all raid and party members within $a1 yards by $s1% for $d.
-Tooltip          : Strength and Agility increased by $w1%.
+#1 (id=2384)     : Apply Aura (6) | Modify Attack Power% (166)
+                   Base Value: 10 | Scaled Value: 10 | Radius: 100 yards | Target: Raid Members (56)
+Description      : Increases the attack power of all raid and party members within $a1 yards by $s1% for $d.
+Tooltip          : Attack power increased by $w1%.
 
 Name             : Overpower (id=7384) [Spell Family (4)] 
 Class            : Arms Warrior
@@ -577,6 +577,7 @@ GCD              : 1.5 seconds
 Duration         : 8 seconds
 Charges          : 1 (12 seconds cooldown)
 Category         : 1680
+Stacks           : 2 maximum
 Proc Chance      : 100%
 Proc Flags       : ....x... ........ ........ ........ 
                  : Yellow Melee
@@ -589,16 +590,16 @@ Attributes       : ....x... ........ x.x..x.. ........   ........ .x...... .....
                  : ........ ........ ........ .......x   ........ ........ ........ ........ 
                  : Cannot dodge/parry/block (21)
 Effects          :
-#1 (id=2780)     : Normalized Weapon Damage (121)
+#1 (id=2780)     : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
-#2 (id=126946)   : Weapon Damage% (31)
-                   Base Value: 80 | Scaled Value: 0.8 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
+#2 (id=126946)   : School Damage (2): physical
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.49600 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
 #3 (id=164582)   : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
-                   Base Value: 30 | Scaled Value: 30 | Target: Self (1)
+                   Base Value: 20 | Scaled Value: 20 | Target: Self (1)
                    Affected Spells: Execute (5308), Mortal Strike (12294), Execute (260798)
-Description      : Overpower the enemy, critically striking them for ${$sw2*2} Physical damage. Cannot be blocked, dodged, or parried.
+Description      : Overpower the enemy, critically striking them for ${$s2*2} Physical damage. Cannot be blocked, dodged, or parried.
 
-Increases the damage of your next Mortal Strike or Execute by $s3%.
+Increases the damage of your next Mortal Strike or Execute by $s3%, stacking up to $u times.
 Tooltip          : Your next Mortal Strike or Execute will deal $w3% increased damage.
 
 Name             : Warbringer (id=7922) [Spell Family (4)] 
@@ -618,7 +619,7 @@ Attributes       : ....x... ........ x.x..x.. ........   ...x...x .x...... .....
                  : Cannot dodge/parry/block (21), Requires line of sight (186)
 Effects          :
 #1 (id=3164)     : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.22680 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.17690 | Target: Enemy (6)
 Description      : $@spelldesc198758
 Tooltip          : Knocked down.
 
@@ -661,11 +662,11 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
 Effects          :
 #1 (id=5274)     : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
-#2 (id=5275)     : Normalized Weapon Damage (121)
+#2 (id=5275)     : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
-#3 (id=99581)    : Weapon Damage% (31)
-                   Base Value: 180 | Scaled Value: 1.8 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
-Description      : A vicious strike that deals $sw3 Physical damage and reduces the effectiveness of healing on the target by $115804s1% for $115804d.
+#3 (id=99581)    : School Damage (2): physical
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.11600 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
+Description      : A vicious strike that deals $s3 Physical damage and reduces the effectiveness of healing on the target by $115804s1% for $115804d.
 Variables        : $mult=${($max(0,$min($pl-5,15))*8+207)/327}
 
 Name             : Piercing Howl (id=12323) [Spell Family (4)] 
@@ -779,13 +780,13 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=102316)   : Weapon Damage% (31)
-                   Base Value: 94 | Scaled Value: 0.94 | Target: Enemy (6)
-#2 (id=11313)    : Normalized Weapon Damage (121)
+#1 (id=102316)   : School Damage (2): physical
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.42300 | Target: Enemy (6)
+#2 (id=11313)    : Dummy (3)
                    Base Value: 1 | Scaled Value: 1 | Target: Enemy (6)
 #3 (id=349776)   : Dummy (3)
                    Base Value: 30 | Scaled Value: 30 | Target: Self (1)
-Description      : A direct strike, dealing ${$sw1*$<mult>} Physical damage.
+Description      : A direct strike, dealing ${$s1*$<mult>} Physical damage.
 Variables        : $mult=${($max(0,$min($pl-12,8))*8.5+241)/309}
 
 Name             : Blood Fury (Racial) (id=20572) [Scaling Spell (-1)] 
@@ -843,15 +844,15 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ .......x   ........ ........ ........ ........ 
 Effects          :
-#1 (id=14120)    : Normalized Weapon Damage (121)
+#1 (id=14120)    : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
-#2 (id=134421)   : Weapon Damage% (31)
-                   Base Value: 89 | Scaled Value: 0.89 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
+#2 (id=134421)   : School Damage (2): physical
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.55180 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
 #3 (id=156242)   : Energize Power (30)
                    Base Value: 100 | Scaled Value: 100 | Misc Value: rage | Target: Self (1)
 #4 (id=226744)   : Dummy (3)
                    Base Value: 25 | Scaled Value: 25 | Target: Enemy (6)
-Description      : Assault the target in a bloodthirsty craze, dealing ${$sw2*$<mult>} Physical damage and restoring $117313s1% of your health.
+Description      : Assault the target in a bloodthirsty craze, dealing ${$s2*$<mult>} Physical damage and restoring $117313s1% of your health.
 
 |cFFFFFFFFGenerates ${$m3/10} Rage.|r
 Variables        : $mult=${($max(0,$min($pl-10,10))*8+137)/217}
@@ -878,7 +879,7 @@ Attributes       : ....x... ........ x.x..... ...x....   ........ ..x..... .....
 Effects          :
 #1 (id=14130)    : Apply Aura (6) | Spell Reflection (28)
                    Base Value: 100 | Scaled Value: 100 | Value Multiplier: 1 | Target: Self (1)
-#2 (id=280400)   : Apply Aura (6) | Unknown(87)
+#2 (id=280400)   : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: -30 | Scaled Value: -30 | Misc Value: 0x7e | Target: Self (1)
 Description      : Raise your shield, reflecting spells cast on you and reducing magical damage you take by $s2%. $?a188672[Lasts $d.][Lasts $d or until a spell is reflected.]
 Tooltip          : $?a188672[Reflecting all spells cast on you.][Reflects a spell cast on you.]
@@ -900,7 +901,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=14132)    : School Damage (2): physical
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 1.03488 | Target: Enemy (6)
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.80721 | Target: Enemy (6)
 #2 (id=155551)   : Dispel (38)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1 | Target: Enemy (6)
 #3 (id=290322)   : Energize Power (30)
@@ -951,7 +952,7 @@ Attributes       : ....x.xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=19302)    : Apply Aura (6) | Proc Trigger Spell (42): Sudden Death
-                   Base Value: 30 | Scaled Value: 30 | Trigger Spell: 52437 | Target: Self (1)
+                   Base Value: 40 | Scaled Value: 40 | Trigger Spell: 52437 | Target: Self (1)
 Description      : Your damaging melee abilities have a chance to make your next Execute cost no Rage, be usable on any target regardless of their health, and deal damage as if you spent $s1 Rage.
 
 Name             : Second Wind (id=29838) [Spell Family (4), Passive] 
@@ -1047,7 +1048,7 @@ Effects          :
 #1 (id=24417)    : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
 #2 (id=171742)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (avg=1) | AP Coefficient: 0.42000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (avg=1) | AP Coefficient: 0.32760 | Target: Enemy (6)
 Description      : Strikes the target, causing $?s12712[${1.2*$m2}][$m2] damage and healing you for $<rush>% of your maximum health.
 
 Only usable within $32216d after you kill an enemy that yields experience or honor.
@@ -1068,10 +1069,10 @@ Attributes       : ....x... ........ x.x..... ........   ....x... .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Not a proc (105)
 Effects          :
-#1 (id=36871)    : Normalized Weapon Damage (121)
+#1 (id=36871)    : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.25000 | Radius: 0 - 8 yards | Target: Custom (18) -> AOE enemy (instant) (16)
-#2 (id=36872)    : Weapon Damage% (31)
-                   Base Value: 12 | Scaled Value: 0.12 | Radius: 0 - 8 yards | Target: Custom (18) -> AOE enemy (instant) (16)
+#2 (id=36872)    : School Damage (2): physical
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.07440 | Radius: 0 - 8 yards | Target: Custom (18) -> AOE enemy (instant) (16)
 Description      : $@spelldesc190411
 
 Name             : Titan's Grip (id=46917) [Spell Family (4), Passive] 
@@ -1143,7 +1144,7 @@ Effects          :
 #1 (id=39125)    : Dummy (3)
                    Base Value: 3 | Scaled Value: 3 | Radius: 10 yards | Target: Cone Front (104)
 #2 (id=39126)    : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.09975 | Radius: 10 yards | Target: Cone Front (104)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.07780 | Radius: 10 yards | Target: Cone Front (104)
 #3 (id=39127)    : Dummy (3)
                    Base Value: 75 | Scaled Value: 75
 #4 (id=179869)   : Server Side Script (77)
@@ -1165,13 +1166,13 @@ Attributes       : ....x... ........ x.x..... ........   ....x... .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Not a proc (105)
 Effects          :
-#1 (id=42845)    : Normalized Weapon Damage (121)
+#1 (id=42845)    : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.25000 | Radius: 0 - 8 yards | Target: At Caster (22) -> AOE enemy (15)
-#2 (id=42846)    : Weapon Damage% (31)
-                   Base Value: 70 | Scaled Value: 0.7 | Radius: 0 - 8 yards | Target: At Caster (22) -> AOE enemy (15)
+#2 (id=42846)    : School Damage (2): physical
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.43400 | Radius: 0 - 8 yards | Target: At Caster (22) -> AOE enemy (15)
 #3 (id=42847)    : Trigger Spell (64): Bladestorm Off-Hand
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 95738 | Target: At Caster (22)
-Description      : You become a whirling storm of destructive force, striking all nearby targets with your main hand weapon for $sw2 Physical damage.
+Description      : You become a whirling storm of destructive force, striking all nearby targets with your main hand weapon for $s2 Physical damage.
 
 Name             : Heroic Leap (id=52174) [Spell Family (4)] 
 Class            : Warrior
@@ -1188,7 +1189,7 @@ Attributes       : ....x... ........ x.x..x.. ........   ........ ........ .....
                  : Cannot dodge/parry/block (21), Not a proc (105), Requires line of sight (186)
 Effects          :
 #1 (id=44600)    : School Damage (2): physical
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.13104 | Radius: 8 yards | Target: AOE enemy (instant) (16)
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.10221 | Radius: 8 yards | Target: AOE enemy (instant) (16)
 Description      : $@spelldesc6544
 
 Name             : Sudden Death (id=52437) [Spell Family (4)] 
@@ -1235,11 +1236,11 @@ Attributes       : ....x... ........ x.x..x.. ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Cannot dodge/parry/block (21)
 Effects          :
-#1 (id=51036)    : Normalized Weapon Damage (121)
+#1 (id=51036)    : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
-#2 (id=229599)   : Weapon Damage% (31)
-                   Base Value: 17 | Scaled Value: 0.17 | Target: Enemy (6)
-Description      : Throws your weapon at the enemy, causing $sw2 Physical damage. Generates high threat.
+#2 (id=229599)   : School Damage (2): physical
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.10540 | Target: Enemy (6)
+Description      : Throws your weapon at the enemy, causing $s2 Physical damage. Generates high threat.
 
 Name             : Glyph of Gushing Wound (Protection) (id=58099) [Spell Family (4), Passive, Hidden] 
 Class            : Warrior
@@ -1394,7 +1395,7 @@ Attributes       : ....x.x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6)
 Effects          :
-#1 (id=71772)    : Apply Aura (6) | Unknown(87)
+#1 (id=71772)    : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: -1 | Scaled Value: -1 | Misc Value: 0x28 | Target: Self (1)
 Description      : Reduces Shadow and Nature damage taken by $s1%.
 Tooltip          : Reduces Shadow and Nature damage taken by $s1%.
@@ -1529,10 +1530,10 @@ Attributes       : ....x... ........ x.x..... ........   ....x... ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Not a proc (105)
 Effects          :
-#1 (id=86555)    : Normalized Weapon Damage (121)
+#1 (id=86555)    : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.25000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
-#2 (id=86556)    : Weapon Damage% (31)
-                   Base Value: 56 | Scaled Value: 0.56 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
+#2 (id=86556)    : School Damage (2): physical
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.34720 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
 Description      : $@spelldesc85288
 Variables        : $mult=${($max(0,$min($pl-13,7))*4+118)/146}
 
@@ -1655,11 +1656,11 @@ Attributes       : ....x... ........ x.x..... ........   ....x... .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=101423)   : Normalized Weapon Damage (121)
+#1 (id=101423)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.25000 | Radius: 0 - 8 yards | Target: At Caster (22) -> AOE enemy (15)
-#2 (id=101424)   : Weapon Damage% (31)
-                   Base Value: 42 | Scaled Value: 0.42 | Radius: 0 - 8 yards | Target: At Caster (22) -> AOE enemy (15)
-Description      : You become a whirling storm of destructive force, striking all nearby targets with your off-hand weapon for $sw2 Physical damage.
+#2 (id=101424)   : School Damage (2): physical
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.26040 | Radius: 0 - 8 yards | Target: At Caster (22) -> AOE enemy (15)
+Description      : You become a whirling storm of destructive force, striking all nearby targets with your off-hand weapon for $s2 Physical damage.
 
 Name             : Raging Blow (id=96103) [Spell Family (4)] 
 Class            : Warrior
@@ -1676,10 +1677,10 @@ Attributes       : ....x... ........ x.x..... ........   ....x... ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Not a proc (105)
 Effects          :
-#1 (id=101983)   : Normalized Weapon Damage (121)
+#1 (id=101983)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
-#2 (id=101984)   : Weapon Damage% (31)
-                   Base Value: 56 | Scaled Value: 0.56 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
+#2 (id=101984)   : School Damage (2): physical
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.34720 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
 Description      : $@spelldesc85288
 Variables        : $mult=${($max(0,$min($pl-13,7))*4+118)/146}
 
@@ -1739,11 +1740,11 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
 Effects          :
 #1 (id=107864)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
-#2 (id=107865)   : Normalized Weapon Damage (121)
+#2 (id=107865)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
-#3 (id=107866)   : Weapon Damage% (31)
-                   Base Value: 104 | Scaled Value: 1.04 | Target: Enemy (6)
-Description      : Aggressively strike with your off-hand weapon for ${$sw3*$<mult>} Physical damage.$?a231824[ Increases your Bloodthirst critical strike chance by $206333s1% until it next deals a critical strike, stacking up to $206333u times.][]
+#3 (id=107866)   : School Damage (2): physical
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.64480 | Target: Enemy (6)
+Description      : Aggressively strike with your off-hand weapon for ${$s3*$<mult>} Physical damage.$?a231824[ Increases your Bloodthirst critical strike chance by $206333s1% until it next deals a critical strike, stacking up to $206333u times.][]
 Variables        : $mult=${($max(0,$min($pl-10,10))*10+171)/271}
 
 Name             : Double Time (id=103827) [Spell Family (4), Passive] 
@@ -1817,7 +1818,7 @@ Attributes       : ....x... ........ ..x..x.. ........   ........ .x...... .....
                  : Cannot dodge/parry/block (21)
 Effects          :
 #1 (id=118383)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.21000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.16380 | Target: Enemy (6)
 #2 (id=125715)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
 Description      : Hurls your weapon at an enemy, causing $s1 Physical damage and stunning for $132169d.
@@ -1916,7 +1917,7 @@ Attributes       : ....x... ........ ..x..x.. ........   ........ ........ .....
                  : Cannot dodge/parry/block (21), Periodic effect affected by haste (173)
 Effects          :
 #1 (id=129821)   : Apply Aura (6) | Periodic Damage (3): physical every 3 seconds
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.15000 | Mechanic: Bleed | Target: Enemy (6)
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.11700 | Mechanic: Bleed | Target: Enemy (6)
 Description      : $@spelldesc115768
 Tooltip          : Bleeding for $w1 every $t1 sec.
 
@@ -2078,7 +2079,7 @@ Attributes       : ....x... ........ x.x..x.. ........   ........ ........ .....
                  : Cannot dodge/parry/block (21)
 Effects          :
 #1 (id=134153)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.28350 | Radius: 0 - 8 yards | Target: At Caster (22) -> AOE enemy (15)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.22113 | Radius: 0 - 8 yards | Target: At Caster (22) -> AOE enemy (15)
 #2 (id=297932)   : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 15 | Scaled Value: 15 | Misc Value: 0x7f | Target: Self (1)
                    Affected School(s): All
@@ -2101,7 +2102,7 @@ Attributes       : ....x... ........ x.x..... ........   ....x... ..x..... .....
 Effects          :
 #1 (id=134224)   : Apply Aura (6) | Modify Parry% (47)
                    Base Value: 100 | Scaled Value: 100 | SP Coefficient: 0.25000 | Target: Self (1)
-#2 (id=134225)   : Apply Aura (6) | Unknown(87)
+#2 (id=134225)   : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: -30 | Scaled Value: -30 | SP Coefficient: 0.25000 | Misc Value: 0x7f | Target: Self (1)
 #3 (id=225727)   : Apply Aura (6) | Unknown(197)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.25000 | Target: Self (1)
@@ -2231,7 +2232,7 @@ Effects          :
 #1 (id=160971)   : Dummy (3)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
 #2 (id=362434)   : School Damage (2): physical
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.14700 | Target: Enemy (6)
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.11466 | Target: Enemy (6)
 Description      : $@spelldesc100
 
 Name             : Shockwave (id=132168) [Spell Family (4)] 
@@ -2293,7 +2294,7 @@ Effects          :
 #2 (id=171377)   : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
                    Base Value: 30 | Scaled Value: 30 | Target: Self (1)
                    Affected Spells: Shield Slam (23922)
-#3 (id=268763)   : Apply Aura (6) | Unknown(87)
+#3 (id=268763)   : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7e | Target: Self (1)
                    Affected Spells: Shield Slam (23922)
 Description      : $@spelldesc2565
@@ -2390,7 +2391,7 @@ Effects          :
                    Affected Spells: Ravager (152277), Ravager (156287), Ravager (227744), Ravager (228920)
 #8 (id=261029)   : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
                    Base Value: -10 | Scaled Value: -10 | Target: Self (1)
-                   Affected Spells: Victory Rush (34428), Impending Victory (202168)
+                   Affected Spells: Victory Rush (34428)
 #9 (id=261030)   : Apply Aura (6) | Modify Attacker Melee Crit Chance (187)
                    Base Value: -6 | Scaled Value: -6 | Target: Self (1)
 #10 (id=261031)   : Apply Aura (6) | Modify Expertise% (240)
@@ -2400,25 +2401,25 @@ Effects          :
                    Affected Spells: Victory Rush (118779)
 #12 (id=261033)   : Apply Aura (6) | Modify Block% (51)
                    Base Value: 15 | Scaled Value: 15 | Misc Value: 11 | Target: Self (1)
-#13 (id=261034)   : Apply Aura (6) | Unknown(463)
+#13 (id=261034)   : Apply Aura (6) | Unknown(150)
+                   Base Value: 5 | Scaled Value: 5 | Target: Self (1)
+#14 (id=261035)   : Apply Aura (6) | Unknown(463)
                    Base Value: 100 | Scaled Value: 100 | Target: Self (1)
-#14 (id=261035)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Periodic Damage (22)
+#15 (id=261036)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Periodic Damage (22)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 22 | Misc Value 2: 248 (Label) | Target: Self (1)
                    Affected Spells (Label): Fel-Crazed Rage (225777), Colossal Slam (232044), Dread Torrent (246464), Ceaseless Toxin (242497), Umbral Glaive Storm (242556), Shattering Umbral Glaives (242557), Infernal Cinders (242218), Shadow Strike (253324), Worldforger's Flame (257244), Gorshalach's Legacy (255673), Gorshalach's Legacy (253329)
-#15 (id=261036)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
+#16 (id=362031)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 289 (Label) | Target: Self (1)
                    Affected Spells (Label): Rethu's Incessant Courage (242597)
-#16 (id=362031)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
+#17 (id=368363)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 333 (Label) | Target: Self (1)
                    Affected Spells (Label): Void Slash (251034), Isolated Strike (255609), Fire Mines (253321), Ravaging Storm (257286), Golganneth's Thunderous Wrath (257430)
-#17 (id=368363)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
+#18 (id=474888)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -40 | Scaled Value: -40 | Misc Value: 3 | Misc Value 2: 276 (Label) | Target: Self (1)
                    Affected Spells (Label): Xavaric's Magnum Opus (207472)
-#18 (id=474888)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
+#19 (id=477129)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 248 (Label) | Target: Self (1)
                    Affected Spells (Label): Fel-Crazed Rage (225777), Colossal Slam (232044), Dread Torrent (246464), Ceaseless Toxin (242497), Umbral Glaive Storm (242556), Shattering Umbral Glaives (242557), Infernal Cinders (242218), Shadow Strike (253324), Worldforger's Flame (257244), Gorshalach's Legacy (255673), Gorshalach's Legacy (253329)
-#19 (id=477129)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #20 (id=485707)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #21 (id=485710)   : Apply Aura (6) | Dummy (4)
@@ -2727,7 +2728,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Requires line of sight (186)
 Effects          :
 #1 (id=217505)   : School Damage (2): physical
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.56700 | Radius: 0 - 8 yards | Target: Unknown(87) -> AOE enemy (instant) (16)
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.44226 | Radius: 0 - 8 yards | Target: Unknown(87) -> AOE enemy (instant) (16)
 Description      : $@spelldesc152277
 
 Name             : Stat Negation Aura - Strength DPS (id=162698) [Passive, Hidden] 
@@ -2802,10 +2803,10 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=230085)   : Normalized Weapon Damage (121)
+#1 (id=230085)   : Dummy (3)
                    Base Value: 1 | Scaled Value: 1 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
-#2 (id=230086)   : Weapon Damage% (31)
-                   Base Value: 136 | Scaled Value: 1.36 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
+#2 (id=230086)   : School Damage (2): physical
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.84320 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
 Description      : $@spelldesc5308
 
 Name             : Colossus Smash (id=167105) [Spell Family (4)] 
@@ -2823,11 +2824,11 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=236210)   : Normalized Weapon Damage (121)
+#1 (id=236210)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
-#2 (id=236211)   : Weapon Damage% (31)
-                   Base Value: 210 | Scaled Value: 2.1 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
-Description      : Smashes the enemy's armor, dealing $sw1 Physical damage, and increasing damage you deal to them by $208086s1% for $208086d.
+#2 (id=236211)   : School Damage (2): physical
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.30200 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
+Description      : Smashes the enemy's armor, dealing $s1 Physical damage, and increasing damage you deal to them by $208086s1% for $208086d.
 
 Name             : Enrage (id=184361) [Spell Family (4), Passive] 
 Class            : Fury Warrior
@@ -2852,7 +2853,7 @@ Name             : Enrage (id=184362) [Spell Family (4)]
 Class            : Warrior
 School           : Physical
 Spell Level      : 1
-Duration         : 4 seconds
+Duration         : 6 seconds
 Mechanic         : Unknown(262)
 Affecting spells : Warpaint (208154 effect#2), Item - Warrior T19 Fury 4P Bonus (212158 effect#1)
 Triggered by     : Item - Warrior T17 Fury 2P Bonus (165337), Enrage (184361), Trial by Combat (218826)
@@ -2866,7 +2867,7 @@ Attributes       : ........ ........ ........ x......x   ........ ..x..... .....
 Effects          :
 #1 (id=267206)   : Apply Aura (6) | Modify Ranged and Melee Attack Speed% (342)
                    Base Value: 50 | Scaled Value: 50 | Target: Self (1)
-#2 (id=267207)   : Apply Aura (6) | Unknown(87)
+#2 (id=267207)   : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: 20 | Scaled Value: 20 | Misc Value: 0x7f | Target: Self (1)
 Description      : $@spelldesc184361
 Tooltip          : Attack speed increased by $s1% and damage taken increased by $s2%.
@@ -2886,7 +2887,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ .......x x....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Cannot crit (93), Disable player procs (112)
 Effects          :
-#1 (id=267211)   : Apply Aura (6) | Unknown(87)
+#1 (id=267211)   : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: -30 | Scaled Value: -30 | Misc Value: 0x7f | Target: Self (1)
 #2 (id=304657)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 1 (3)
                    Base Value: 20 | Scaled Value: 20 | Misc Value: 3 | Target: Self (1)
@@ -2941,10 +2942,10 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ .......x   ........ ........ ........ ........ 
 Effects          :
-#1 (id=267757)   : Normalized Weapon Damage (121)
+#1 (id=267757)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
-#2 (id=267758)   : Weapon Damage% (31)
-                   Base Value: 58 | Scaled Value: 0.58 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
+#2 (id=267758)   : School Damage (2): physical
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.35960 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
 Description      : $@spelldesc184367
 
 Name             : Rampage (id=184709) [Spell Family (4)] 
@@ -2963,10 +2964,10 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : ........ ........ ........ .......x   ........ ........ ........ ........ 
                  : Not a proc (105)
 Effects          :
-#1 (id=267761)   : Normalized Weapon Damage (121)
+#1 (id=267761)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
-#2 (id=267762)   : Weapon Damage% (31)
-                   Base Value: 38 | Scaled Value: 0.38 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
+#2 (id=267762)   : School Damage (2): physical
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.23560 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
 Description      : $@spelldesc184367
 
 Name             : Tactician (id=184783) [Spell Family (4), Passive] 
@@ -2986,7 +2987,7 @@ Attributes       : ....x.x. ........ ..x..... ........   ........ ........ .....
 Effects          :
 #1 (id=267878)   : Apply Aura (6) | Proc Trigger Spell (42)
                    Base Value: 75 | Scaled Value: 75 | Target: Self (1)
-Description      : You have a ${$s1/100}.2% chance per Rage spent on damaging abilities to reset the remaining cooldown on Overpower and Mortal Strike.
+Description      : You have a ${$s1/100}.2% chance per Rage spent on damaging abilities to reset the remaining cooldown on Overpower.
 
 Name             : Reflective Plating (id=188672) [Spell Family (4), Passive] 
 Class            : Warrior
@@ -3052,7 +3053,7 @@ Attributes       : ....x... ........ ..x..... x..x...x   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Cannot cancel aura (31)
 Effects          :
-#1 (id=290496)   : Apply Aura (6) | Unknown(87)
+#1 (id=290496)   : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: -20 | Scaled Value: -20 | Misc Value: 0x7f | Target: Self (1)
 #2 (id=290497)   : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: -10 | Scaled Value: -10 | Misc Value: 0x7f | Target: Self (1)
@@ -3205,10 +3206,10 @@ Attributes       : ....x... ........ x.x..... ........   ....x... .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Not a proc (105)
 Effects          :
-#1 (id=293808)   : Normalized Weapon Damage (121)
+#1 (id=293808)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.25000 | Radius: 0 - 8 yards | Target: Custom (18) -> AOE enemy (instant) (16)
-#2 (id=293809)   : Weapon Damage% (31)
-                   Base Value: 24 | Scaled Value: 0.24 | Radius: 0 - 8 yards | Target: Custom (18) -> AOE enemy (instant) (16)
+#2 (id=293809)   : School Damage (2): physical
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.14880 | Radius: 0 - 8 yards | Target: Custom (18) -> AOE enemy (instant) (16)
 Description      : $@spelldesc1680
 
 Name             : Whirlwind (id=199667) [Spell Family (4)] 
@@ -3225,10 +3226,10 @@ Attributes       : ....x... ........ x.x..... ........   ....x... .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Not a proc (105)
 Effects          :
-#1 (id=293819)   : Normalized Weapon Damage (121)
+#1 (id=293819)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.25000 | Radius: 0 - 8 yards | Target: Custom (18) -> AOE enemy (instant) (16)
-#2 (id=293820)   : Weapon Damage% (31)
-                   Base Value: 12 | Scaled Value: 0.12 | Radius: 0 - 8 yards | Target: Custom (18) -> AOE enemy (instant) (16)
+#2 (id=293820)   : School Damage (2): physical
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.07440 | Radius: 0 - 8 yards | Target: Custom (18) -> AOE enemy (instant) (16)
 Description      : $@spelldesc190411
 
 Name             : Whirlwind (id=199850) [Spell Family (4)] 
@@ -3244,10 +3245,10 @@ Attributes       : ....x... ........ x.x..... ........   ....x... .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=294125)   : Normalized Weapon Damage (121)
+#1 (id=294125)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.25000 | Radius: 0 - 8 yards | Target: Custom (18) -> AOE enemy (instant) (16)
-#2 (id=294126)   : Weapon Damage% (31)
-                   Base Value: 24 | Scaled Value: 0.24 | Radius: 0 - 8 yards | Target: Custom (18) -> AOE enemy (instant) (16)
+#2 (id=294126)   : School Damage (2): physical
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.14880 | Radius: 0 - 8 yards | Target: Custom (18) -> AOE enemy (instant) (16)
 Description      : $@spelldesc1680
 
 Name             : Activating Specialization (id=200749) [Hidden] 
@@ -3287,10 +3288,10 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : ........ ........ ........ .......x   ........ ........ ........ ........ 
                  : Not a proc (105)
 Effects          :
-#1 (id=296642)   : Normalized Weapon Damage (121)
+#1 (id=296642)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
-#2 (id=296643)   : Weapon Damage% (31)
-                   Base Value: 68 | Scaled Value: 0.68 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
+#2 (id=296643)   : School Damage (2): physical
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.42160 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
 Description      : $@spelldesc184367
 
 Name             : Rampage (id=201364) [Spell Family (4)] 
@@ -3308,10 +3309,10 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ .......x   ........ ........ ........ ........ 
 Effects          :
-#1 (id=296644)   : Normalized Weapon Damage (121)
+#1 (id=296644)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
-#2 (id=296645)   : Weapon Damage% (31)
-                   Base Value: 117 | Scaled Value: 1.17 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
+#2 (id=296645)   : School Damage (2): physical
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.72540 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
 Description      : $@spelldesc184367
 
 Name             : Indomitable (id=202095) [Spell Family (4), Passive] 
@@ -3428,7 +3429,7 @@ Effects          :
 #1 (id=297955)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
 #2 (id=297956)   : School Damage (2): physical
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.50400 | Target: Enemy (6)
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.39312 | Target: Enemy (6)
 Description      : Instantly attack the target, causing $s2 damage and healing you for $202166s1% of your maximum health.
 
 Killing an enemy that yields experience or honor resets the cooldown of Impending Victory.
@@ -3646,7 +3647,7 @@ Effects          :
 Description      : $@spelldesc202572
 Tooltip          : Rage cost of Revenge reduced by $s1%.
 
-Name             : Vengeance: Ignore Pain (id=202574) [Spell Family (4)] 
+Name             : Vengeance: Shield Block (id=202574) [Spell Family (4)] 
 Class            : Warrior
 School           : Physical
 Duration         : 15 seconds
@@ -3801,10 +3802,10 @@ Attributes       : ........ ........ ..x..... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=299592)   : Normalized Weapon Damage (121)
+#1 (id=299592)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
-#2 (id=299593)   : Weapon Damage% (31)
-                   Base Value: 100 | Scaled Value: 1 | Target: Enemy (6)
+#2 (id=299593)   : School Damage (2): physical
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.62000 | Target: Enemy (6)
 #3 (id=464698)   : Energize Power (30)
                    Base Value: 50 | Scaled Value: 50 | Misc Value: rage | Target: Self (1)
 Description      : $@spelldesc203179
@@ -4282,7 +4283,7 @@ Attributes       : ....x... ........ x.x..... ...x....   ........ ..x..... .....
 Effects          :
 #1 (id=317491)   : Apply Aura (6) | Spell Reflection (28)
                    Base Value: 100 | Scaled Value: 100 | Value Multiplier: 1 | Misc Value: 4 | Radius: 20 yards | Target: Raid Members (56)
-#2 (id=371150)   : Apply Aura (6) | Unknown(87)
+#2 (id=371150)   : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: -30 | Scaled Value: -30 | Misc Value: 0x7e | Radius: 20 yards | Target: Raid Members (56)
 Description      : Reflects all spells cast on you and on all party and raid members within $a1 yards, and reduces magical damage taken by $s2% for $d.
 Tooltip          : Reflects all spells cast on you.
@@ -4511,10 +4512,10 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : ........ ........ ........ .......x   ........ ........ ........ ........ 
                  : Not a proc (105)
 Effects          :
-#1 (id=325560)   : Normalized Weapon Damage (121)
+#1 (id=325560)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
-#2 (id=325561)   : Weapon Damage% (31)
-                   Base Value: 19 | Scaled Value: 0.19 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
+#2 (id=325561)   : School Damage (2): physical
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.11780 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
 Description      : $@spelldesc184367
 
 Name             : Gaze of the Val'kyr (id=218822) [Spell Family (4), Hidden] 
@@ -4970,9 +4971,9 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=357208)   : Weapon Damage% (31)
-                   Base Value: 94 | Scaled Value: 0.94 | Target: Enemy (6)
-#2 (id=357209)   : Normalized Weapon Damage (121)
+#1 (id=357208)   : School Damage (2): physical
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.42300 | Target: Enemy (6)
+#2 (id=357209)   : Dummy (3)
                    Base Value: 1 | Scaled Value: 1 | Target: Enemy (6)
 #3 (id=357211)   : Energize Power (30)
                    Base Value: 20 | Scaled Value: 20 | Misc Value: rage | Target: Self (1)
@@ -5143,7 +5144,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6)
 Effects          :
-#1 (id=477698)   : Apply Aura (6) | Unknown(87)
+#1 (id=477698)   : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: -1 | Scaled Value: -1 | Misc Value: 0x2 | Target: Self (1)
 Description      : Reduces Holy damage taken by ${$s1/-1}%.
 
@@ -5256,13 +5257,13 @@ School           : Physical
 Spell Level      : 40
 Duration         : 4 seconds
 Cooldown         : 12 seconds
-Affecting spells : Shield Mastery (184927 effect#2), Indomitable (202095 effect#2), Never Surrender (202561 effect#1), Vengeance: Ignore Pain (202574 effect#2), Dragon Skin (203225 effect#1), Neltharion's Fury (203524 effect#4), Dragon Scales (203581 effect#1)
+Affecting spells : Shield Mastery (184927 effect#2), Indomitable (202095 effect#2), Never Surrender (202561 effect#1), Vengeance: Shield Block (202574 effect#2), Dragon Skin (203225 effect#1), Neltharion's Fury (203524 effect#4), Dragon Scales (203581 effect#1)
 Attributes       : ....x... ........ ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ..xx.... ....x... 
+                 : ........ ........ ........ ....x...   ........ ........ ..xx.... ....x... 
 Effects          :
 #1 (id=481703)   : Apply Aura (6) | Absorb Damage (69)
                    Base Value: 50000000 | Scaled Value: 5e+07 | Misc Value: 127 | Target: Self (1)
@@ -5286,13 +5287,13 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=485944)   : Weapon Damage% (31)
-                   Base Value: 140 | Scaled Value: 1.4 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
-#2 (id=485945)   : Normalized Weapon Damage (121)
+#1 (id=485944)   : School Damage (2): physical
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.86800 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
+#2 (id=485945)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
 #3 (id=485946)   : Energize Power (30)
                    Base Value: 300 | Scaled Value: 300 | Misc Value: rage | Target: Self (1)
-Description      : Bash an enemy's skull, dealing $sw1 Physical damage.
+Description      : Bash an enemy's skull, dealing $s1 Physical damage.
 
 |cFFFFFFFFGenerates ${$s3/10} Rage.|r
 
@@ -5333,10 +5334,10 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : ........ ........ ........ .......x   ........ ........ ........ ........ 
                  : Not a proc (105)
 Effects          :
-#1 (id=486196)   : Normalized Weapon Damage (121)
+#1 (id=486196)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
-#2 (id=486197)   : Weapon Damage% (31)
-                   Base Value: 65 | Scaled Value: 0.65 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
+#2 (id=486197)   : School Damage (2): physical
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.40300 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
 Description      : $@spelldesc163201
 Variables        : $extraCost==$?s202297&?a227266&?a1719[${$m4*((100+$202297s2)/100)*((100+$227266s1)/100)}]?s202297[${$m4*((100+$202297s2)/100)}]?a227266&?a1719[${$m4*((100+$227266s1)/100)}][${$m4}]
 $damage=${4.0*$260798sw2}
@@ -5402,7 +5403,7 @@ Attributes       : ....x... ........ ..x..x.. ........   ........ ........ .....
                  : Cannot dodge/parry/block (21)
 Effects          :
 #1 (id=623125)   : Apply Aura (6) | Periodic Damage (3): physical every 1 seconds
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.20000 | Mechanic: Bleed | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.15600 | Mechanic: Bleed | Target: Enemy (6)
 Description      : $@spelldesc262111
 Tooltip          : Bleeding for $w1 every $t1 sec.
 
@@ -5410,7 +5411,7 @@ Name             : Executioner's Precision (id=262128) [Spell Family (4)]
 Class            : Warrior
 School           : Physical
 Range            : 100 yards
-Duration         : 30 seconds
+Duration         : 12 seconds
 Stacks           : 2 maximum
 Proc Chance      : 100%
 Proc Flags       : .....x.. ........ ........ ........ 
@@ -5484,11 +5485,11 @@ Attributes       : ....x... ........ ..x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Requires line of sight (186)
 Effects          :
-#1 (id=623203)   : Weapon Damage% (31)
-                   Base Value: 250 | Scaled Value: 2.5 | Radius: 0 - 8 yards | Target: At Caster (22) -> AOE enemy (15)
-#2 (id=623204)   : Normalized Weapon Damage (121)
+#1 (id=623203)   : School Damage (2): physical
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.55000 | Radius: 0 - 8 yards | Target: At Caster (22) -> AOE enemy (15)
+#2 (id=623204)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 8 yards | Target: At Caster (22) -> AOE enemy (15)
-Description      : Smash the ground and shatter the armor of all enemies within $A1 yds, dealing $sw1 Physical damage and increasing damage you deal to them by $208086s1% for $208086d.
+Description      : Smash the ground and shatter the armor of all enemies within $A1 yds, dealing $s1 Physical damage and increasing damage you deal to them by $208086s1% for $208086d.
 
 Name             : Unbridled Wrath (id=262226) [Spell Family (4), Passive, Hidden] 
 Class            : Warrior
@@ -5566,7 +5567,7 @@ Description      : Your auto attacks generate $s2% more Rage. Killing an enemy i
 Name             : War Machine (id=262232) [Spell Family (4)] 
 Class            : Warrior
 School           : Physical
-Duration         : 15 seconds
+Duration         : 8 seconds
 Triggered by     : War Machine (262231)
 Attributes       : ........ ........ ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ xx...... ........ 
@@ -5601,20 +5602,5 @@ Effects          :
 #1 (id=623404)   : Apply Aura (6) | Proc Trigger Spell (42): Deep Wounds
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 262115 | Target: Self (1)
 Description      : Mortal Strike and Execute inflict Deep Wounds, causing $262115o1 Bleed damage over $262115d.
-
-Name             : Coming Soon (id=264186) [Spell Family (4), Passive, Hidden] 
-Class            : Warrior
-School           : Physical
-Attributes       : ......xx x....... ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ .......x ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Passive (6), Hidden (7)
-Effects          :
-#1 (id=707430)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-Description      : This talent is not yet implemented.
 
 

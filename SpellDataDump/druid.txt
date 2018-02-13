@@ -102,7 +102,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1 | Misc Value 2: 0x7 | Target: Self (1)
 #2 (id=307)      : Apply Aura (6) | Mechanic Immunity (77)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 17 | Target: Self (1)
-#3 (id=308)      : Apply Aura (6) | Unknown(344)
+#3 (id=308)      : Apply Aura (6) | Modify Auto Attack Damage Done% (344)
                    Base Value: 40 | Scaled Value: 40 | SP Coefficient: 0.25000 | Target: Self (1)
 Description      : Shapeshift into Cat Form, increasing auto-attack damage by $s3%, movement speed by $113636s1%, granting protection from Polymorph effects, and reducing falling damage.
 
@@ -189,7 +189,7 @@ Attributes       : ....x... ........ ..x..... ........   ........ .x...... .....
                  : Periodic effect affected by haste (173)
 Effects          :
 #1 (id=390)      : Apply Aura (6) | Periodic Damage (3): physical every 2 seconds
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.03465 | Mechanic: Bleed | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.02703 | Mechanic: Bleed | Target: Enemy (6)
 #2 (id=117625)   : Apply Aura (6) | Dummy (4)
                    Base Value: 2 | Scaled Value: 2 | Target: Enemy (6)
 #3 (id=117626)   : Dummy (3)
@@ -246,7 +246,7 @@ Attributes       : ....x... ........ ..x..... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=559)      : School Damage (2): physical
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.23365 | Target: Enemy (6)
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.18225 | Target: Enemy (6)
 #2 (id=560)      : Energize Power (30)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: combo_points | Target: Self (1)
 #3 (id=561)      : Trigger Spell (64): Rake
@@ -472,7 +472,7 @@ Effects          :
 #3 (id=479758)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Damage (22)
                    Base Value: 15 | Scaled Value: 15 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Rip (1079), Rake (1822), Shred (5221), Ferocious Bite (22568), Maim (22570), Swipe (106785), Thrash (106830), Moonfire (155625), Rake (155722), Moonfire (164812), Maim (168877), Maim (168878), Maim (168879), Maim (168880), Maim (168881), Brutal Slash (202028), Shadow Thrash (210687), Ashamane's Rip (210705), Ashamane's Frenzy (210723)
-#4 (id=479881)   : Apply Aura (6) | Unknown(344)
+#4 (id=479881)   : Apply Aura (6) | Modify Auto Attack Damage Done% (344)
                    Base Value: 15 | Scaled Value: 15 | Target: Self (1)
                    Affected Spells: Rip (1079), Rake (1822), Shred (5221), Ferocious Bite (22568), Maim (22570), Swipe (106785), Thrash (106830), Moonfire (155625), Rake (155722), Moonfire (164812), Maim (168877), Maim (168878), Maim (168879), Maim (168880), Maim (168881), Brutal Slash (202028), Shadow Thrash (210687), Ashamane's Rip (210705), Ashamane's Frenzy (210723)
 Description      : Instantly restores $s2 Energy, and increases the damage of all your attacks by $s1% for their full duration. Lasts $d.
@@ -498,13 +498,13 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
 #2 (id=1860)     : Energize Power (30)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: combo_points | Target: Self (1)
-#3 (id=1861)     : Weapon Damage% (31)
-                   Base Value: 287 | Scaled Value: 2.87 | Target: Enemy (6)
+#3 (id=1861)     : School Damage (2): physical
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.48790 | Target: Enemy (6)
 #4 (id=348398)   : Dummy (3)
                    Base Value: 50 | Scaled Value: 50 | Target: Enemy (6)
 #5 (id=348788)   : Dummy (3)
                    Base Value: 20 | Scaled Value: 20 | Target: Enemy (6)
-Description      : Shred the target, causing ${$sw1*$<mult>} Physical damage to the target.$?a231063[ Deals $s5% increased damage against bleeding targets.][]$?a231057[
+Description      : Shred the target, causing ${$s1*$<mult>} Physical damage to the target.$?a231063[ Deals $s5% increased damage against bleeding targets.][]$?a231057[
 
 While stealthed, Shred deals $m4% increased damage, and has double the chance to critically strike.][]
 
@@ -669,11 +669,11 @@ Attributes       : ....x... ........ ........ ........   ........ .x...... .....
                  : ........ ........ ........ .x......   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=2456)     : Normalized Weapon Damage (121)
+#1 (id=2456)     : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
-#2 (id=2457)     : Weapon Damage% (31)
-                   Base Value: 255 | Scaled Value: 2.55 | Target: Enemy (6)
-Description      : Maul the target for $sw2 Physical damage.
+#2 (id=2457)     : School Damage (2): physical
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.09650 | Target: Enemy (6)
+Description      : Maul the target for $s2 Physical damage.
 
 Name             : Moonfire (Lunar) (id=8921) [Spell Family (7)] 
 Class            : Druid
@@ -800,7 +800,7 @@ Attributes       : ....x.x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6)
 Effects          :
-#1 (id=138419)   : Apply Aura (6) | Unknown(87)
+#1 (id=138419)   : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: -6 | Scaled Value: -6 | Misc Value: 0x7f | Target: Self (1)
 Description      : Reduces all damage taken by $s1%.
 
@@ -1012,7 +1012,7 @@ Attributes       : ....x... ........ ..x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=12790)    : School Damage (2): physical
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 1.26000 | Target: Enemy (6)
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.98280 | Target: Enemy (6)
 #2 (id=12791)    : Power Burn (62)
                    Base Value: 25 | Scaled Value: 25 | Misc Value: 3 | Target: Self (1)
 Description      : Finishing move that causes Physical damage per combo point and consumes up to $?a106951[${25*$106951s1/-100}.1]?a102543[${25*$102543s1/-100}.1][25] additional Energy to increase damage by up to 100%.
@@ -1050,7 +1050,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
 #2 (id=12793)    : Weapon Damage (58)
                    Base Value: 0 | Scaled Value: 0 (avg=0.075) | Bonus Value: 0 (0.179) | Radius: 0 - 5 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
-#3 (id=315748)   : Weapon Damage% (31)
+#3 (id=315748)   : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 | Points Per Combo Point: 140 | Radius: 0 - 5 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
 Description      : Finishing move that causes Physical damage and stuns the target. Damage and duration increased per combo point:
 
@@ -1078,7 +1078,7 @@ Attributes       : ........ ........ ........ ........   ........ ..x..... .....
 Effects          :
 #1 (id=13023)    : Apply Aura (6) | Dummy (4)
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 127 | Misc Value 2: 0xf | Target: Self (1)
-#2 (id=13024)    : Apply Aura (6) | Unknown(87)
+#2 (id=13024)    : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: -20 | Scaled Value: -20 | Misc Value: 0x7f | Target: Self (1)
 #3 (id=13025)    : Apply Aura (6) | Unknown(232)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 26 | Target: Self (1)
@@ -1204,7 +1204,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : Periodic effect affected by haste (173)
 Effects          :
 #1 (id=23639)    : Apply Aura (6) | Periodic Heal (8): every 1 seconds
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.06250 | Target: Friend (21)
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.08000 | Target: Friend (21)
 Description      : Heals the target for $o1 over $d. When Lifebloom expires or is dispelled, the target is instantly healed for $33778s1. Limit 1.
 Tooltip          : Healing $w1 every second.
 Blooms for additional healing when effect expires or is dispelled.
@@ -1224,7 +1224,7 @@ Attributes       : ........ ........ ........ x..x....   .....x.. ..x..... .....
                  : Does not break stealth (37), Disable player procs (112)
 Effects          :
 #1 (id=23653)    : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.62500 | Target: Friend (21)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.80000 | Target: Friend (21)
 Description      : $@spelldesc33763
 
 Name             : Nurturing Instinct (id=33873) [Spell Family (7), Passive] 
@@ -1240,8 +1240,8 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=23786)    : Apply Aura (6) | Override Spell Power per Attack Power% (366)
-                   Base Value: 120 | Scaled Value: 120 | Target: Self (1)
-Description      : Increases your spell power by $s1% of your Agility.
+                   Base Value: 100 | Scaled Value: 100 | Target: Self (1)
+Description      : Increases your spell power by $s1% of your attack power.
 
 Name             : Incarnation: Tree of Life (Talent, Shapeshift) (id=33891) [Spell Family (7)] 
 Class            : Druid
@@ -1291,13 +1291,13 @@ Attributes       : ....x... ........ ..x..... ........   ........ .x...... .....
 Effects          :
 #1 (id=23847)    : Weapon Damage (58)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.25000 | Target: Enemy (6)
-#2 (id=216150)   : Weapon Damage% (31)
-                   Base Value: 131 | Scaled Value: 1.31 | Target: Enemy (6)
+#2 (id=216150)   : School Damage (2): physical
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.56330 | Target: Enemy (6)
 #3 (id=281797)   : Dummy (3)
                    Base Value: 20 | Scaled Value: 20 | Target: Enemy (6)
 #4 (id=290296)   : Energize Power (30)
                    Base Value: 80 | Scaled Value: 80 | Misc Value: rage | Target: Self (1)
-Description      : Mangle the target for $sw2 Physical damage.$?a231064[ Deals $s3% additional damage against bleeding targets.][]
+Description      : Mangle the target for $s2 Physical damage.$?a231064[ Deals $s3% additional damage against bleeding targets.][]
 
 |cFFFFFFFFGenerates ${$m4/10} Rage.|r
 
@@ -1378,7 +1378,7 @@ Attributes       : .......x ........ ........ ........   ........ ..x....x .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Hidden (7)
 Effects          :
-#1 (id=42499)    : Apply Aura (6) | Unknown(87)
+#1 (id=42499)    : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 0x7f | Target: Self (1)
 #3 (id=42500)    : Dummy (3)
                    Base Value: 30 | Scaled Value: 30
@@ -1557,7 +1557,7 @@ Effects          :
 #2 (id=479760)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Damage (22)
                    Base Value: 15 | Scaled Value: 15 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Rip (1079), Rake (1822), Shred (5221), Ferocious Bite (22568), Maim (22570), Swipe (106785), Thrash (106830), Moonfire (155625), Rake (155722), Moonfire (164812), Maim (168877), Maim (168878), Maim (168879), Maim (168880), Maim (168881), Brutal Slash (202028), Shadow Thrash (210687), Ashamane's Rip (210705), Ashamane's Frenzy (210723)
-#3 (id=479882)   : Apply Aura (6) | Unknown(344)
+#3 (id=479882)   : Apply Aura (6) | Modify Auto Attack Damage Done% (344)
                    Base Value: 15 | Scaled Value: 15 | Target: Self (1)
                    Affected Spells: Rip (1079), Rake (1822), Shred (5221), Ferocious Bite (22568), Maim (22570), Swipe (106785), Thrash (106830), Moonfire (155625), Rake (155722), Moonfire (164812), Maim (168877), Maim (168878), Maim (168879), Maim (168880), Maim (168881), Brutal Slash (202028), Shadow Thrash (210687), Ashamane's Rip (210705), Ashamane's Frenzy (210723)
 Description      : $@spelldesc52610
@@ -1593,7 +1593,7 @@ Attributes       : ....x.x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6)
 Effects          :
-#1 (id=71772)    : Apply Aura (6) | Unknown(87)
+#1 (id=71772)    : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: -1 | Scaled Value: -1 | Misc Value: 0x28 | Target: Self (1)
 Description      : Reduces Shadow and Nature damage taken by $s1%.
 Tooltip          : Reduces Shadow and Nature damage taken by $s1%.
@@ -1723,7 +1723,7 @@ Attributes       : ....x... ........ ..x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=68168)    : School Damage (2): physical
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.07980 | Radius: 0 - 8 yards | Mechanic: Bleed | Target: At Caster (22) -> AOE enemy (15)
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.06224 | Radius: 0 - 8 yards | Mechanic: Bleed | Target: At Caster (22) -> AOE enemy (15)
 #2 (id=312099)   : Energize Power (30)
                    Base Value: 50 | Scaled Value: 50 | Misc Value: rage | Target: Self (1)
 Description      : Strikes all nearby enemies, dealing $s1 Bleed damage and an additional $192090o1 Bleed damage over $192090d. When applied from Bear Form, this effect can stack up to $192090u times.
@@ -1800,13 +1800,13 @@ Attributes       : ....x... ........ ..x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=68522)    : Weapon Damage% (31)
-                   Base Value: 289 | Scaled Value: 2.89 | Target: Enemy (6)
-#2 (id=68523)    : Normalized Weapon Damage (121)
+#1 (id=68522)    : School Damage (2): physical
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.24270 | Target: Enemy (6)
+#2 (id=68523)    : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
 #3 (id=327035)   : Dummy (3)
                    Base Value: 2 | Scaled Value: 2 | Target: Enemy (6)
-Description      : A devastating blow that consumes $s3 stacks of your Thrash on the target to deal $sw1 Physical damage, and reduces all damage you take by $158792s1% for $158792d.
+Description      : A devastating blow that consumes $s3 stacks of your Thrash on the target to deal $s1 Physical damage, and reduces all damage you take by $158792s1% for $158792d.
 
 Name             : Sabertooth (id=80863) [Spell Family (7)] 
 Class            : Druid
@@ -2117,7 +2117,7 @@ Attributes       : ........ ........ ........ ........   ........ ..x..... .....
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=111070)   : Apply Aura (6) | Unknown(87)
+#1 (id=111070)   : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: -20 | Scaled Value: -20 | Misc Value: 0x7f | Target: Friend (21)
 #2 (id=116796)   : Dummy (3)
                    Base Value: 12 | Scaled Value: 12 | Target: Friend (21)
@@ -2473,9 +2473,9 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
 #2 (id=222211)   : Dummy (3)
                    Base Value: 20 | Scaled Value: 20 | Radius: 0 - 8 yards | Target: At Caster (22) -> AOE enemy (15)
-#3 (id=222212)   : Weapon Damage% (31)
-                   Base Value: 164 | Scaled Value: 1.64 | Radius: 0 - 8 yards | Target: At Caster (22) -> AOE enemy (15)
-Description      : Swipe nearby enemies, inflicting $sw3 Physical damage.$?a231283[ Deals $s2% increased damage against bleeding targets.][]
+#3 (id=222212)   : School Damage (2): physical
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.27880 | Radius: 0 - 8 yards | Target: At Caster (22) -> AOE enemy (15)
+Description      : Swipe nearby enemies, inflicting $s3 Physical damage.$?a231283[ Deals $s2% increased damage against bleeding targets.][]
 
 |cFFFFFFFFAwards $s1 combo $lpoint:points;.|r
 
@@ -2499,9 +2499,9 @@ Attributes       : ....x... ........ ..x..... ........   ........ .x...... .....
                  : Periodic effect affected by haste (173)
 Effects          :
 #1 (id=117262)   : School Damage (2): physical
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.08400 | Radius: 0 - 8 yards | Mechanic: Bleed | Target: At Caster (22) -> AOE enemy (15)
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.06552 | Radius: 0 - 8 yards | Mechanic: Bleed | Target: At Caster (22) -> AOE enemy (15)
 #2 (id=117263)   : Apply Aura (6) | Periodic Damage (3): physical every 3 seconds
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.05040 | Radius: 0 - 8 yards | Mechanic: Bleed | Target: At Caster (22) -> AOE enemy (15)
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.03931 | Radius: 0 - 8 yards | Mechanic: Bleed | Target: At Caster (22) -> AOE enemy (15)
 Description      : Strikes all nearby enemies, dealing $m1 Bleed damage and an additional $o2 Bleed damage over $d.
 
 |cFFFFFFFFAwards $211141s1 combo $lpoint:points;.|r
@@ -3584,9 +3584,9 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : Periodic effect affected by haste (173)
 Effects          :
 #1 (id=216287)   : Apply Aura (6) | Periodic Damage (3): arcane every 2 seconds
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.22418 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.17486 | Target: Enemy (6)
 #2 (id=216288)   : School Damage (2): arcane
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.28823 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.22481 | Target: Enemy (6)
 #3 (id=216290)   : Energize Power (30)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: combo_points | Target: Self (1)
 Description      : A quick beam of lunar light burns the enemy for $s2 Arcane damage and then an additional $o1 Arcane damage over $d.
@@ -3662,7 +3662,7 @@ Attributes       : ....x... ........ ..x..x.. ........   ........ .x...... .....
                  : Cannot dodge/parry/block (21), Periodic effect affected by haste (173)
 Effects          :
 #1 (id=216427)   : Apply Aura (6) | Periodic Damage (3): physical every 3 seconds
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.19950 | Target: Enemy (6)
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.15561 | Target: Enemy (6)
 Description      : $@spelldesc1822
 Tooltip          : Bleeding for $w1 damage every $t1 seconds.
 
@@ -3737,7 +3737,7 @@ Affecting spells : Incarnation: Tree of Life (5420 effect#1), Nimble Healing Tou
 Triggered by     : Tranquility (740)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ .x...... ........ ......x. 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ .......x ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ....x... ........ x.......   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3818,7 +3818,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=222335)   : Apply Aura (6) | Unknown(87)
+#1 (id=222335)   : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: -9 | Scaled Value: -9 | Misc Value: 0x7f | Target: Self (1)
 #2 (id=258557)   : Apply Aura (6) | Periodic Dummy (226): every 2 seconds
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -4149,8 +4149,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 (avg=0.075) | Bonus Value: 0 (0.179) | Target: Enemy (6)
 #2 (id=239196)   : Apply Aura (6) | Stun (12)
                    Base Value: 0 | Scaled Value: 0 | Mechanic: Unknown(95) | Target: Enemy (6)
-#3 (id=239197)   : Weapon Damage% (31)
-                   Base Value: 47 | Scaled Value: 0.47 | Target: Enemy (6)
+#3 (id=239197)   : School Damage (2): physical
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.07990 | Target: Enemy (6)
 Tooltip          : Stunned.
 Variables        : $mult=$?p61252[${4}][${2}]
 
@@ -4178,8 +4178,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 (avg=0.075) | Bonus Value: 0 (0.179) | Target: Enemy (6)
 #2 (id=239199)   : Apply Aura (6) | Stun (12)
                    Base Value: 0 | Scaled Value: 0 | Mechanic: Unknown(95) | Target: Enemy (6)
-#3 (id=239200)   : Weapon Damage% (31)
-                   Base Value: 95 | Scaled Value: 0.95 | Target: Enemy (6)
+#3 (id=239200)   : School Damage (2): physical
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.16150 | Target: Enemy (6)
 Tooltip          : Stunned.
 Variables        : $mult=$?p61252[${4}][${2}]
 
@@ -4207,8 +4207,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 (avg=0.075) | Bonus Value: 0 (0.179) | Target: Enemy (6)
 #2 (id=239202)   : Apply Aura (6) | Stun (12)
                    Base Value: 0 | Scaled Value: 0 | Mechanic: Unknown(95) | Target: Enemy (6)
-#3 (id=239203)   : Weapon Damage% (31)
-                   Base Value: 142 | Scaled Value: 1.42 | Target: Enemy (6)
+#3 (id=239203)   : School Damage (2): physical
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.24140 | Target: Enemy (6)
 Tooltip          : Stunned.
 Variables        : $mult=$?p61252[${4}][${2}]
 
@@ -4236,8 +4236,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 (avg=0.075) | Bonus Value: 0 (0.179) | Target: Enemy (6)
 #2 (id=239205)   : Apply Aura (6) | Stun (12)
                    Base Value: 0 | Scaled Value: 0 | Mechanic: Unknown(95) | Target: Enemy (6)
-#3 (id=239206)   : Weapon Damage% (31)
-                   Base Value: 190 | Scaled Value: 1.9 | Target: Enemy (6)
+#3 (id=239206)   : School Damage (2): physical
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.32300 | Target: Enemy (6)
 Tooltip          : Stunned.
 Variables        : $mult=$?p61252[${4}][${2}]
 
@@ -4265,8 +4265,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 (avg=0.075) | Bonus Value: 0 (0.179) | Target: Enemy (6)
 #2 (id=239208)   : Apply Aura (6) | Stun (12)
                    Base Value: 0 | Scaled Value: 0 | Mechanic: Unknown(95) | Target: Enemy (6)
-#3 (id=239209)   : Weapon Damage% (31)
-                   Base Value: 238 | Scaled Value: 2.38 | Target: Enemy (6)
+#3 (id=239209)   : School Damage (2): physical
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.40460 | Target: Enemy (6)
 Tooltip          : Stunned.
 Variables        : $mult=$?p61252[${4}][${2}]
 
@@ -4352,7 +4352,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Cannot crit (93), Disable target procs (113)
 Effects          :
 #1 (id=269049)   : School Damage (2): nature
-                   Base Value: 1 | Scaled Value: 1 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
 Description      : $@spelldesc184878
 
 Name             : Item - Druid T18 Balance 2P Bonus (id=187875) [Spell Family (7), Passive, Hidden] 
@@ -4390,7 +4390,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ .......x ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=274309)   : School Damage (2): astral
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.15079 | Target: Enemy (6)
+                   Base Value: 1 | Scaled Value: 1 | Target: Enemy (6)
 Description      : $@spelldesc187875
 
 Name             : Fey Moonwing (id=188083) 
@@ -4503,7 +4503,7 @@ Attributes       : ........ ........ ........ ........   ........ ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=281770)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 40 | Scaled Value: 40 | Misc Value: 1 | Target: Self (1)
+                   Base Value: 35 | Scaled Value: 35 | Misc Value: 1 | Target: Self (1)
 #2 (id=321076)   : Apply Aura (6) | Unknown(83)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1 | Target: Self (1)
 Description      : Increases armor by $s1% of your Agility for $d.$?a231070[ Multiple uses of this ability may overlap.][]
@@ -4527,7 +4527,7 @@ Attributes       : ....x... ........ .....x.. ........   ........ .x...... .....
                  : Cannot dodge/parry/block (21), Periodic effect affected by haste (173)
 Effects          :
 #1 (id=281782)   : Apply Aura (6) | Periodic Damage (3): physical every 3 seconds
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.01080 | Mechanic: Bleed | Target: Enemy (6)
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.00842 | Mechanic: Bleed | Target: Enemy (6)
 #2 (id=301092)   : Apply Aura (6) | Unknown(271)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
                    Affected Spells: Rejuvenation (774), Rip (1079), Rake (1822), Solar Wrath (5176), Shred (5221), Maul (6807), Moonfire (8921), Regrowth (8936), Swiftmend (18562), Ferocious Bite (22568), Maim (22570), Lifebloom (33763), Lifebloom (33778), Mangle (33917), Wild Growth (48438), Thrash (77758), Starsurge (78674), Pulverize (80313), Efflorescence (81269), Sunfire (93402), Cenarion Ward (102352), Germination (155675), Rake (155722), Tranquility (157982), Pulverize (158792), Moonfire (164812), Sunfire (164815), Maim (168877), Maim (168878), Maim (168879), Maim (168880), Maim (168881), Nature's Essence (189800), Dreamwalker (189853), Solar Wrath (190984), Starfall (191034), Starfall (191037), Thrash (192090), Lunar Strike (194153), Starsurge (197626), Lunar Strike (197628), Solar Wrath (197629), Sunfire (197630), Cultivation (200389), Brutal Slash (202028), Enraged Mangle (202085), Spring Blossoms (207386), Ashamane's Rip (210705), Swipe (213771), Mark of Shifting (224392), Echoing Stars (226104), Enraged Maul (236716)
@@ -5207,9 +5207,9 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
 #2 (id=297727)   : Dummy (3)
                    Base Value: 3 | Scaled Value: 3 | Radius: 0 - 8 yards | Target: At Caster (22) -> AOE enemy (15)
-#3 (id=297728)   : Weapon Damage% (31)
-                   Base Value: 408 | Scaled Value: 4.08 | Radius: 0 - 8 yards | Target: At Caster (22) -> AOE enemy (15)
-Description      : Strikes all nearby enemies with a massive slash, inflicting $sw3 Physical damage.
+#3 (id=297728)   : School Damage (2): physical
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.69360 | Radius: 0 - 8 yards | Target: At Caster (22) -> AOE enemy (15)
+Description      : Strikes all nearby enemies with a massive slash, inflicting $s3 Physical damage.
 
 |cFFFFFFFFAwards $s1 combo $lpoint:points;.|r
 
@@ -5895,9 +5895,9 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Not a proc (105)
 Effects          :
 #1 (id=301153)   : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.63000 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.49140 | Target: Self (1)
 #2 (id=301154)   : School Damage (2): arcane
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.13650 | Radius: 0 - 5 yards | Target: Unknown(87) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.10647 | Radius: 0 - 5 yards | Target: Unknown(87) -> AOE enemy (instant) (16)
 Description      : $@spelldesc204066
 
 Name             : Force of Nature (Talent) (id=205636) [Spell Family (7)] 
@@ -6501,7 +6501,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=317117)   : School Damage (2): nature
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.03360 | Radius: 0 - 8 yards | Target: Custom (18) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.02621 | Radius: 0 - 8 yards | Target: Custom (18) -> AOE enemy (instant) (16)
 Description      : $@spelldesc203953
 
 Name             : Swipe (id=213764) [Spell Family (7)] 
@@ -6544,9 +6544,9 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
 #2 (id=317224)   : Dummy (3)
                    Base Value: 20 | Scaled Value: 20 | Radius: 0 - 8 yards | Target: At Caster (22) -> AOE enemy (15)
-#3 (id=317225)   : Weapon Damage% (31)
-                   Base Value: 34 | Scaled Value: 0.34 | Radius: 0 - 8 yards | Target: At Caster (22) -> AOE enemy (15)
-Description      : Swipe nearby enemies, inflicting $sw3 Physical damage.
+#3 (id=317225)   : School Damage (2): physical
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.14620 | Radius: 0 - 8 yards | Target: At Caster (22) -> AOE enemy (15)
+Description      : Swipe nearby enemies, inflicting $s3 Physical damage.
 
 Name             : Protection of Ashamane (id=214274) [Spell Family (7), Hidden] 
 Class            : Druid
@@ -6947,11 +6947,11 @@ Attributes       : ....x... ........ ........ ........   ........ .x...... .....
                  : ........ .....x.. ........ .x......   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=358072)   : Normalized Weapon Damage (121)
+#1 (id=358072)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
-#2 (id=358073)   : Weapon Damage% (31)
-                   Base Value: 170 | Scaled Value: 1.7 | Target: Enemy (6)
-Description      : Maul the target for $sw2 Physical damage.
+#2 (id=358073)   : School Damage (2): physical
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.28900 | Target: Enemy (6)
+Description      : Maul the target for $s2 Physical damage.
 
 Name             : Intimidating Roar (id=236748) [Spell Family (7)] 
 Class            : Druid
@@ -7149,7 +7149,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6)
 Effects          :
-#1 (id=477698)   : Apply Aura (6) | Unknown(87)
+#1 (id=477698)   : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: -1 | Scaled Value: -1 | Misc Value: 0x2 | Target: Self (1)
 Description      : Reduces Holy damage taken by ${$s1/-1}%.
 
