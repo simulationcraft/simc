@@ -52,7 +52,7 @@ actions+=/conflagrate,if=talent.roaring_blaze.enabled&(charges=2+set_bonus.tier1
 actions+=/conflagrate,if=talent.roaring_blaze.enabled&debuff.roaring_blaze.stack>0&dot.immolate.remains>dot.immolate.duration*0.3&(active_enemies=1|soul_shard<3)&soul_shard<5
 actions+=/conflagrate,if=!talent.roaring_blaze.enabled&buff.backdraft.stack<3&(charges=1+set_bonus.tier19_4pc&recharge_time<action.chaos_bolt.cast_time|charges=2+set_bonus.tier19_4pc)&soul_shard<5
 actions+=/life_tap,if=talent.empowered_life_tap.enabled&buff.empowered_life_tap.remains<=gcd
-actions+=/dimensional_rift,if=equipped.144369&!buff.lessons_of_spacetime.remains&((!talent.grimoire_of_supremacy.enabled&(!cooldown.summon_doomguard.remains|pet.doomguard.active|pet.infernal.active))|(talent.grimoire_of_service.enabled&(!cooldown.service_pet.remains|pet.service_imp.active))|(talent.soul_harvest.enabled&(!cooldown.soul_harvest.remains|buff.soul_harvest.remains)))
+actions+=/dimensional_rift,if=equipped.144369&!buff.lessons_of_spacetime.remains&(buff.soul_harvest.remains|pet.service_imp.active|!talent.grimoire_of_supremacy.enabled&(pet.doomguard.active|pet.infernal.active))
 actions+=/service_pet
 actions+=/summon_infernal,if=artifact.lord_of_flames.rank>0&!buff.lord_of_flames.remains
 actions+=/summon_doomguard,if=!talent.grimoire_of_supremacy.enabled&spell_targets.infernal_awakening<=2&(target.time_to_die>180|target.health.pct<=20|target.time_to_die<30)
