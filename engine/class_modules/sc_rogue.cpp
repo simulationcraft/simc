@@ -99,6 +99,7 @@ struct rogue_td_t : public actor_target_data_t
     dot_t* mutilated_flesh; // Assassination T19 2PC
     dot_t* nightblade;
     dot_t* rupture;
+    dot_t* crimson_tempest;
   } dots;
 
   struct debuffs_t
@@ -350,6 +351,7 @@ struct rogue_t : public player_t
     const spell_data_t* master_assassin;
     const spell_data_t* garrote;
     const spell_data_t* garrote_2;
+    const spell_data_t* crimson_tempest;
 
     // Outlaw
     const spell_data_t* blade_flurry;
@@ -461,6 +463,7 @@ struct rogue_t : public player_t
 
     // Tier 7 - Level 100
     const spell_data_t* poison_bomb;
+    const spell_data_t* crimson_tempest;
 
     const spell_data_t* loaded_dice;
     const spell_data_t* slice_and_dice;
@@ -2408,6 +2411,25 @@ struct cannonball_barrage_t : public rogue_attack_t
   }
 };
 
+// Crimson Tempest ==========================================================
+
+struct crimson_tempest_t : public rogue_attack_t
+{
+    crimson_tempest_t(rogue_t* p, const std::string& options_str) :
+        rogue_attack_t("crimson_tempest", p, p -> find_talent_spell("Crimson Tempest"), options_str)
+    {
+        aoe = -1;
+        dot_duration = p->spec.crimson_tempest->duration();
+        base_tick_time = p->spec.crimson_tempest->effectN( 1 ).period();
+        attack_power_mod.tick = p->spec.crimson_tempest->effectN( 1 ).ap_coeff();
+        
+    }
+
+    double calculate_tick_amount(action_state_t* s, double dmg_multiplier) const override {
+        return rogue_attack_t::calculate_tick_amount(s, dmg_multiplier * ( 1.0 + p()->cache.mastery_value() ) );
+    }
+};
+
 // Dispatch =================================================================
 
 struct dispatch_t: public rogue_attack_t
@@ -3196,7 +3218,7 @@ struct mutilate_t : public rogue_attack_t
       oh_strike -> execute();
 
       if ( p() -> talent.venom_rush->ok() && p() -> get_target_data( execute_state -> target ) -> poisoned() )
-	  {
+      {
           p() -> resource_gain( RESOURCE_ENERGY,
               p() -> talent.venom_rush -> effectN(1).base_value(),
               p() -> gains.venom_rush );
@@ -5728,6 +5750,7 @@ rogue_td_t::rogue_td_t( player_t* target, rogue_t* source ) :
   dots.internal_bleeding  = target -> get_dot( "internal_bleeding", source );
   dots.mutilated_flesh    = target -> get_dot( "mutilated_flesh", source );
   dots.rupture            = target -> get_dot( "rupture", source );
+  dots.crimson_tempest    = target -> get_dot("crimson_tempest", source);
 
   dots.nightblade         = target -> get_dot( "nightblade", source );
 
@@ -6338,6 +6361,7 @@ action_t* rogue_t::create_action( const std::string& name,
   if ( name == "between_the_eyes"    ) return new between_the_eyes_t   ( this, options_str );
   if ( name == "blade_flurry"        ) return new blade_flurry_t       ( this, options_str );
   if ( name == "cannonball_barrage"  ) return new cannonball_barrage_t ( this, options_str );
+  if (name == "crimson_tempest"      ) return new crimson_tempest_t    (this, options_str);
   if ( name == "death_from_above"    ) return new death_from_above_t   ( this, options_str );
   if ( name == "dispatch"            ) return new dispatch_t           ( this, options_str );
   if ( name == "envenom"             ) return new envenom_t            ( this, options_str );
@@ -6773,6 +6797,7 @@ void rogue_t::init_spells()
   spec.master_assassin      = find_spell(256735);
   spec.garrote              = find_specialization_spell( "Garrote" );
   spec.garrote_2            = find_specialization_spell( 231719 );
+  spec.crimson_tempest      = find_spell( 122233 );
 
   // Outlaw
   spec.blade_flurry         = find_specialization_spell( "Blade Flurry" );
@@ -6848,6 +6873,7 @@ void rogue_t::init_spells()
   talent.exsanguinate       = find_talent_spell( "Exsanguinate" );
 
   talent.poison_bomb        = find_talent_spell( "Poison Bomb" );
+  talent.crimson_tempest    = find_talent_spell( "Crimson Tempest" );
 
   talent.ghostly_strike     = find_talent_spell( "Ghostly Strike" );
   talent.swordmaster        = find_talent_spell( "Swordmaster" );
