@@ -7,6 +7,12 @@ position=front
 talents=2231223
 artifact=49:137548:136778:137547:0:1120:1:1121:3:1124:3:1125:1:1126:3:1128:6:1129:3:1133:1:1135:1:1343:1
 
+# Default consumables
+potion=unbending_potion
+flask=flask_of_ten_thousand_scars
+food=seedbattered_fish_plate
+augmentation=defiled
+
 # This default action priority list is automatically created based on your character.
 # It is a attempt to provide you with a action list that is both simple and practicable,
 # while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
@@ -14,15 +20,11 @@ artifact=49:137548:136778:137547:0:1120:1:1121:3:1124:3:1125:1:1126:3:1128:6:112
 # SimulationCraft is always looking for updates and improvements to the default action lists.
 
 # Executed before combat begins. Accepts non-harmful actions only.
-actions.precombat=flask,type=flask_of_ten_thousand_scars,if=!talent.seraphim.enabled
-actions.precombat+=/flask,type=flask_of_the_countless_armies,if=(role.attack|talent.seraphim.enabled)
-actions.precombat+=/food,type=seedbattered_fish_plate,if=!talent.seraphim.enabled
-actions.precombat+=/food,type=lavish_suramar_feast,if=(role.attack|talent.seraphim.enabled)
+actions.precombat=flask
+actions.precombat+=/food
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
-actions.precombat+=/potion,name=unbending_potion,if=!talent.seraphim.enabled
-actions.precombat+=/potion,name=old_war,if=(role.attack|talent.seraphim.enabled)&active_enemies<3
-actions.precombat+=/potion,name=prolonged_power,if=(role.attack|talent.seraphim.enabled)&active_enemies>=3
+actions.precombat+=/potion
 
 # Executed every time the actor is available.
 actions=auto_attack
