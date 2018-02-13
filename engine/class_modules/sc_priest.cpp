@@ -1820,6 +1820,17 @@ namespace
           return d;
         }
 
+        double action_multiplier() const override
+        {
+          double m = priest_spell_t::action_multiplier();
+
+          if (priest.mastery_spells.madness->ok())
+          {
+            m *= 1.0 + priest.cache.mastery_value();
+          }
+          return m;
+        }
+
         void impact(action_state_t* s) override
         {
           priest_spell_t::impact(s);
@@ -1953,6 +1964,17 @@ namespace
           }
 
           return d;
+        }
+
+        double action_multiplier() const override
+        {
+          double m = priest_spell_t::action_multiplier();
+
+          if (priest.mastery_spells.madness->ok())
+          {
+            m *= 1.0 + priest.cache.mastery_value();
+          }
+          return m;
         }
 
         void impact(action_state_t* s) override
@@ -2241,6 +2263,17 @@ namespace
           priest.trigger_call_to_the_void(d);
 
           priest.generate_insanity(insanity_gain, priest.gains.insanity_mind_flay, d->state->action);
+        }
+
+        double action_multiplier() const override
+        {
+          double m = priest_spell_t::action_multiplier();
+
+          if (priest.mastery_spells.madness->ok())
+          {
+            m *= 1.0 + priest.cache.mastery_value();
+          }
+          return m;
         }
 
         void impact(action_state_t* s) override
@@ -3298,6 +3331,16 @@ namespace
           void_bolt = player->find_action("void_bolt");
         }
 
+        double action_multiplier() const override
+        {
+          double m = priest_spell_t::action_multiplier();
+
+          if (priest.mastery_spells.madness->ok())
+          {
+            m *= 1.0 + priest.cache.mastery_value();
+          }
+          return m;
+        }
 
         void execute() override
         {
