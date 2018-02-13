@@ -3630,6 +3630,14 @@ struct fists_of_fury_tick_t: public monk_melee_attack_t
     dot_duration = timespan_t::zero();
     trigger_gcd = timespan_t::zero();
   }
+
+  double composite_aoe_multiplier( const action_state_t* state ) const override
+  {
+    if ( state -> target != target )
+      return p() -> spec.fists_of_fury -> effectN( 6 ).percent(); // Saved as 50
+
+    return 1.0;
+  }
 };
 
 struct fists_of_fury_t: public monk_melee_attack_t
