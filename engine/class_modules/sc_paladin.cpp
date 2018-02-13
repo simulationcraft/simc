@@ -5675,11 +5675,6 @@ void paladin_t::init_action_list()
           generate_action_prio_list_holy_dps();
         break;
       default:
-        if ( true_level > 80 )
-        {
-          action_list_str = "flask,type=draconic_mind/food,type=severed_sagefish_head";
-          action_list_str += "/potion,name=volcanic_potion,if=!in_combat|buff.bloodlust.react|target.time_to_die<=60";
-        }
         action_list_str += "/snapshot_stats";
         action_list_str += "/auto_attack";
         break;
