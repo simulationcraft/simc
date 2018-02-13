@@ -240,10 +240,9 @@ public:
     artifact_power_t wrath_of_consumption;
     artifact_power_t hideous_corruption;
     artifact_power_t shadowy_incantations;
-    artifact_power_t soul_flames;
+    artifact_power_t soul_flame;
     artifact_power_t long_dark_night_of_the_soul;
     artifact_power_t compounding_horror;
-    artifact_power_t soulharvester;
     artifact_power_t soulstealer;
     artifact_power_t degradation_of_the_black_harvest;
     artifact_power_t winnowing;
@@ -6746,7 +6745,7 @@ void warlock_t::init_spells()
   talents.cataclysm              = find_talent_spell( "Cataclysm" );
 
   talents.hand_of_doom           = find_talent_spell( "Hand of Doom" );
-  talents.power_trip			       = find_talent_spell( "Power Trip" );
+  talents.power_trip             = find_talent_spell( "Power Trip" );
 
   talents.soul_harvest           = find_talent_spell( "Soul Harvest" );
 
@@ -6785,10 +6784,9 @@ void warlock_t::init_spells()
   artifact.wrath_of_consumption = find_artifact_spell( "Wrath of Consumption" );
   artifact.hideous_corruption = find_artifact_spell( "Hideous Corruption" );
   artifact.shadowy_incantations = find_artifact_spell( "Shadowy Incantations" );
-  artifact.soul_flames = find_artifact_spell( "Soul Flames" );
+  artifact.soul_flame = find_artifact_spell( "Soul Flame" );
   artifact.long_dark_night_of_the_soul = find_artifact_spell( "Long Dark Night of the Soul" );
   artifact.compounding_horror = find_artifact_spell( "Compounding Horror" );
-  artifact.soulharvester = find_artifact_spell( "Soulharvester" );
   artifact.soulstealer = find_artifact_spell( "Soulstealer" );
   artifact.degradation_of_the_black_harvest = find_artifact_spell( "Degradation of the Black Harvest" );
   artifact.winnowing = find_artifact_spell( "Winnowing" );
