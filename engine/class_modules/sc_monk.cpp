@@ -4546,6 +4546,13 @@ struct chi_torpedo_t: public monk_spell_t
       cooldown -> charges += player -> talent.celerity -> effectN( 2 ).base_value();
     }
   }
+
+  void execute() override
+  {
+    monk_spell_t::execute();
+
+    p() -> buff.chi_torpedo -> trigger();
+  }
 };
 
 // ==========================================================================
