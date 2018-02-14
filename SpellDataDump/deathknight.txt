@@ -493,10 +493,10 @@ Effects          :
 #6 (id=139821)   : Apply Aura (6) | Add Percent Modifier (108): Spell Generated Threat (2)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 2 | Target: Self (1)
                    Affected Spells: Unholy Strength (53365), Death Siphon (116783)
-#7 (id=289402)   : Apply Aura (6) | Unknown(453)
+#7 (id=289402)   : Apply Aura (6) | Modify Recharge Time (453)
                    Base Value: -5000 | Scaled Value: -5000 | Misc Value: 1428 | Target: Self (1)
                    Affected Spells: Unholy Strength (53365), Death Siphon (116783)
-#8 (id=289403)   : Apply Aura (6) | Unknown(418)
+#8 (id=289403)   : Apply Aura (6) | Modify Max Resource (418)
                    Base Value: 150 | Scaled Value: 150 | Misc Value: 6 | Target: Self (1)
 Description      : Stamina increased by $s4% and Armor increased by $s2%.
 
@@ -513,11 +513,11 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=40421)    : Apply Aura (6) | Unknown(305)
+#1 (id=40421)    : Apply Aura (6) | Modify Min Speed% (305)
                    Base Value: 100 | Scaled Value: 100 | Value Multiplier: 1 | Target: Self (1)
 #2 (id=477160)   : Apply Aura (6) | Unknown(147)
                    Base Value: 0 | Scaled Value: 0 | Value Multiplier: 1 | Misc Value: 1887 | Target: Self (1)
-#3 (id=477161)   : Apply Aura (6) | Unknown(485)
+#3 (id=477161)   : Apply Aura (6) | Resist Forced Movement% (485)
                    Base Value: -80 | Scaled Value: -80 | Value Multiplier: 1 | Target: Self (1)
 Description      : For $d, you cannot be slowed below $s1% of normal speed, you resist forced movement effects by $s3%, and you are immune to external knockbacks.
 
@@ -574,7 +574,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #3 (id=40965)    : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: -20 | Scaled Value: -20 | Misc Value: 0x7f | Target: Self (1)
-#4 (id=276635)   : Apply Aura (6) | Unknown(283)
+#4 (id=276635)   : Apply Aura (6) | Modify Healing Taken% from Caster's Spells (283)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
                    Affected Spells: Death Strike (45470)
 Description      : Your blood freezes, granting immunity to Stun effects and reducing all damage you take by $s3% for $d.
@@ -956,7 +956,7 @@ Attributes       : ........ ........ ........ ........   ........ ..x..... .....
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=43775)    : Apply Aura (6) | Mod Power Regen (110)
+#1 (id=43775)    : Apply Aura (6) | Modify Power Regen (110)
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 5 | Target: Self (1)
 #2 (id=98767)    : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -995,7 +995,7 @@ Attributes       : ........ .....x.. ..x..... ........   ...x...x ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Disable player procs (112), Disable target procs (113), Disable weapon procs (151)
 Effects          :
-#1 (id=44095)    : Apply Aura (6) | Unknown(270)
+#1 (id=44095)    : Apply Aura (6) | Modify Damage Taken% from Caster (270)
                    Base Value: 3 | Scaled Value: 3 | Misc Value: 16 | Target: Enemy (6)
 #2 (id=205722)   : Apply Aura (6) | Periodic Dummy (226): every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 16 | Target: Enemy (6)
@@ -1032,7 +1032,7 @@ Attributes       : ....x.x. x....... ........ x.......   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6)
 Effects          :
-#1 (id=44430)    : Apply Aura (6) | Unknown(172)
+#1 (id=44430)    : Apply Aura (6) | Increase Mounted Speed% (172)
                    Base Value: 20 | Scaled Value: 20 | SP Coefficient: 0.25000 | Target: Self (1)
 #3 (id=44432)    : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 11 | Target: Self (1)
@@ -1223,7 +1223,7 @@ Attributes       : ....x... ........ ..x..... ........   ........ ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ....x... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=48161)    : Apply Aura (6) | Unknown(118)
+#1 (id=48161)    : Apply Aura (6) | Modify Healing Recevied% (118)
                    Base Value: 30 | Scaled Value: 30 | SP Coefficient: 0.25000 | Misc Value: 127 | Target: Self (1)
 #2 (id=48162)    : Apply Aura (6) | Increase Max Health (Stacking) (250)
                    Base Value: 30 | Scaled Value: 30 | Target: Self (1)
@@ -1479,13 +1479,13 @@ Attributes       : ....x.x. ........ x.x..... ...x....   .....x.. ........ .x...
 Effects          :
 #1 (id=56118)    : Apply Aura (6) | Unknown(310)
                    Base Value: -80 | Scaled Value: -80 | Misc Value: 127 | Target: Self (1)
-#2 (id=56119)    : Apply Aura (6) | Unknown(229)
+#2 (id=56119)    : Apply Aura (6) | Modify AoE Damage Taken% (229)
                    Base Value: -75 | Scaled Value: -75 | Misc Value: 127 | Target: Self (1)
 #3 (id=56120)    : Apply Aura (6) | Mechanic Immunity (77)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 5 | Target: Self (1)
 #4 (id=203787)   : Apply Aura (6) | Mechanic Immunity (77)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 24 | Target: Self (1)
-#5 (id=710727)   : Apply Aura (6) | Unknown(152)
+#5 (id=710727)   : Apply Aura (6) | Modify Aggro Distance (152)
                    Base Value: -6 | Scaled Value: -6 | Target: Self (1)
 Description      : Reduces the damage your summoned ghoul takes from creature area of effect attacks  by an additional $s1%.
 Reduces the range at which enemies detect your pet.
@@ -1561,7 +1561,7 @@ Effects          :
 #1 (id=57741)    : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 200 | Scaled Value: 200 | Misc Value: 0x7f | Target: Active Pet (5)
                    Affected School(s): All
-#3 (id=191768)   : Apply Aura (6) | Scale% (61)
+#3 (id=191768)   : Apply Aura (6) | Scale% (Stacking) (61)
                    Base Value: 0 | Scaled Value: 0 | Target: Active Pet (5)
 Description      : Transform your $?s207313[abomination]?s58640[geist][ghoul] into a powerful undead monstrosity for $d. The $?s207313[abomination]?s58640[geist][ghoul]'s abilities are empowered and take on new functions while the transformation is active.
 Tooltip          : $?$w2>0[Transformed into an undead monstrosity.][Gassy.]
@@ -2136,7 +2136,7 @@ Attributes       : ........ ........ ..x..... ........   ...x...x .x...... .....
 Effects          :
 #1 (id=95550)    : Interrupt Cast (68)
                    Base Value: 0 | Scaled Value: 0 | Mechanic: Unknown(227) | Target: Enemy (6)
-#2 (id=95551)    : Apply Aura (6) | Unknown(455)
+#2 (id=95551)    : Apply Aura (6) | Root (455)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.25000 | Mechanic: Unknown(58) | Target: Enemy (6)
 Description      : Charge an enemy, interrupting spellcasting and immobilizing them for $d.
 Tooltip          : Immobilized.
@@ -2382,7 +2382,7 @@ Attributes       : ........ ........ ........ ..x..x..   ........ ........ .....
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=132120)   : Apply Aura (6) | Unknown(301)
+#1 (id=132120)   : Apply Aura (6) | Absorb Healing (301)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 127 | Target: Self (1)
 #2 (id=159719)   : Apply Aura (6) | Unknown(260)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 936 | Target: Self (1)
@@ -2418,9 +2418,9 @@ Attributes       : ......xx x....... ........ ........   ........ ........ .....
                  : ........ ........ ........ x.......   ........ ........ ........ ........ 
                  : Passive (6), Hidden (7)
 Effects          :
-#1 (id=157275)   : Apply Aura (6) | Unknown(305)
+#1 (id=157275)   : Apply Aura (6) | Modify Min Speed% (305)
                    Base Value: 70 | Scaled Value: 70 | Value Multiplier: 1 | Target: Self (1)
-#2 (id=157276)   : Apply Aura (6) | Unknown(129)
+#2 (id=157276)   : Apply Aura (6) | Increase Movement Speed% (Stacking) (129)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 
 Name             : Corpse Explosion (id=127344) [Spell Family (15)] 
@@ -2664,7 +2664,7 @@ Effects          :
 #3 (id=191167)   : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
                    Base Value: 80 | Scaled Value: 80 | Target: Self (1)
                    Affected Spells: Death Strike (49998), Death Strike Off-Hand (66188), Consumption (205223)
-#4 (id=191168)   : Apply Aura (6) | Unknown(453)
+#4 (id=191168)   : Apply Aura (6) | Modify Recharge Time (453)
                    Base Value: -5000 | Scaled Value: -5000 | Misc Value: 1428 | Target: Self (1)
                    Affected Spells: Unholy Strength (53365), Death Siphon (116783)
 #5 (id=191169)   : Apply Aura (6) | Add Percent Modifier (108): Spell Cooldown (11)
@@ -2992,7 +2992,7 @@ Attributes       : ....x.x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6)
 Effects          :
-#1 (id=214757)   : Apply Aura (6) | Unknown(132)
+#1 (id=214757)   : Apply Aura (6) | Modify Max Resource% (132)
                    Base Value: 5 | Scaled Value: 5 | Misc Value: 6 | Misc Value 2: 0x8 | Target: Self (1)
 Description      : Maximum runic power increased by $s1%.
 
@@ -3482,7 +3482,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=281245)   : Apply Aura (6) | Unknown(269)
+#1 (id=281245)   : Apply Aura (6) | Modify Damage Done% to Caster (269)
                    Base Value: -5 | Scaled Value: -5 | Misc Value: 127 | Target: Enemy (6)
 Description      : Reduces damage dealt by $m1%.
 Tooltip          : Reduces damage dealt to the Death Knight by $m1%.
@@ -3539,7 +3539,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=281248)   : Apply Aura (6) | Unknown(270)
+#1 (id=281248)   : Apply Aura (6) | Modify Damage Taken% from Caster (270)
                    Base Value: 5 | Scaled Value: 5 | Misc Value: 127 | Target: Enemy (6)
 Description      : Increases damage taken by $m1%.
 Tooltip          : Increases damage taken from the Death Knight by $m1%.
@@ -3825,7 +3825,7 @@ Effects          :
                    Base Value: 50 | Scaled Value: 50 | Misc Value: 1 | Target: Self (1)
 #2 (id=293376)   : Apply Aura (6) | Unknown(408)
                    Base Value: 1 | Scaled Value: 1 | Trigger Spell: 195182 | Target: Self (1)
-#3 (id=306110)   : Apply Aura (6) | Unknown(133)
+#3 (id=306110)   : Apply Aura (6) | Modify Max Health% (133)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #4 (id=311785)   : Apply Aura (6) | Modify All Haste% (193)
                    Base Value: 10 | Scaled Value: 10 | Target: Self (1)
@@ -3948,7 +3948,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=287219)   : Apply Aura (6) | Proc Trigger Spell (42): Bloodworm
                    Base Value: 30 | Scaled Value: 30 | Trigger Spell: 196361 | Target: Self (1)
-#2 (id=306026)   : Apply Aura (6) | Unknown(468)
+#2 (id=306026)   : Apply Aura (6) | Trigger Spell Based on Health% (468)
                    Base Value: 50 | Scaled Value: 50 | Misc Value: 1 | Trigger Spell: 197531 | Target: Self (1)
 #3 (id=327477)   : Dummy (3)
                    Base Value: 15 | Scaled Value: 15
@@ -4923,7 +4923,7 @@ Attributes       : ....x... ........ ..x..... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Disable weapon procs (151)
 Effects          :
-#1 (id=306397)   : Apply Aura (6) | Unknown(455)
+#1 (id=306397)   : Apply Aura (6) | Root (455)
                    Base Value: 0 | Scaled Value: 0 | Mechanic: Unknown(95) | Target: Enemy (6)
 Description      : $@spelldesc207170
 Tooltip          : Rooted.
@@ -5635,13 +5635,13 @@ Attributes       : ....x... ........ x......x ........   ..x...x. ..x..... .....
 Effects          :
 #1 (id=315117)   : Apply Aura (6) | Increase Speed% (31)
                    Base Value: 70 | Scaled Value: 70 | Target: Self (1)
-#2 (id=315118)   : Apply Aura (6) | Unknown(305)
+#2 (id=315118)   : Apply Aura (6) | Modify Min Speed% (305)
                    Base Value: 170 | Scaled Value: 170 | Value Multiplier: 1 | Target: Self (1)
 #3 (id=315121)   : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f | Target: Self (1)
 #4 (id=315362)   : Trigger Spell (64): Wraith Walk
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 212654 | Target: Self (1)
-#5 (id=315371)   : Apply Aura (6) | Unknown(106)
+#5 (id=315371)   : Apply Aura (6) | Levitate (106)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #6 (id=334744)   : Apply Aura (6) | Unknown(91)
                    Base Value: -5 | Scaled Value: -5
@@ -5815,7 +5815,7 @@ Attributes       : ....x.x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=327512)   : Apply Aura (6) | Dummy (4)
                    Base Value: 5 | Scaled Value: 5 | Target: Self (1)
-#2 (id=330791)   : Apply Aura (6) | Unknown(418)
+#2 (id=330791)   : Apply Aura (6) | Modify Max Resource (418)
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 6 | Target: Self (1)
 Description      : While you have at least $s1 Bone Shield charges, the cost of Death Strike is reduced by ${$219788m1/-10} Runic Power.
 

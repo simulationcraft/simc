@@ -165,7 +165,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 11 | Target: Friend (21)
 #3 (id=293300)   : Apply Aura (6) | Increase Speed% (31)
                    Base Value: 0 | Scaled Value: 0 | Target: Friend (21)
-#4 (id=478105)   : Apply Aura (6) | Unknown(485)
+#4 (id=478105)   : Apply Aura (6) | Resist Forced Movement% (485)
                    Base Value: -100 | Scaled Value: -100 | Value Multiplier: 1 | Target: Self (1)
 Description      : Places a blessing on a party or raid member, granting immunity to movement impairing and forced movement effects $?s199325[and increasing movement speed by $199325m1% ][]for $d.
 Tooltip          : Immune to movement impairing effects. $?s199325[Movement speed increased by $199325m1%][]
@@ -216,7 +216,7 @@ Attributes       : ........ ........ x.x..... .......x   ........ ........ ...x.
                  : ........ ........ ........ ....x...   ........ ........ ..xx.... ....x... 
                  : Cannot cancel aura (31)
 Effects          :
-#1 (id=2515)     : Apply Aura (6) | Unknown(81)
+#1 (id=2515)     : Apply Aura (6) | Transfer Damage% (81)
                    Base Value: 30 | Scaled Value: 30 | Value Multiplier: 1 | Misc Value: 127 | Target: Unknown(57)
 #2 (id=2516)     : Apply Aura (6) | Absorb Damage (69)
                    Base Value: 50000000 | Scaled Value: 5e+07 | Misc Value: 127 | Target: Self (1)
@@ -334,7 +334,7 @@ Attributes       : ....x.x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6)
 Effects          :
-#1 (id=11588)    : Apply Aura (6) | Unknown(132)
+#1 (id=11588)    : Apply Aura (6) | Modify Max Resource% (132)
                    Base Value: 5 | Scaled Value: 5 | Misc Value 2: 0x8 | Target: Self (1)
 Description      : Maximum mana increased by $s1%.
 
@@ -542,7 +542,7 @@ Effects          :
 #5 (id=224222)   : Apply Aura (6) | Add Percent Modifier (108): Spell Cooldown (11)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 11 | Target: Self (1)
                    Affected Spells: Holy Shock (20473), Holy Shock (25912)
-#6 (id=479830)   : Apply Aura (6) | Scale% (61)
+#6 (id=479830)   : Apply Aura (6) | Scale% (Stacking) (61)
                    Base Value: 15 | Scaled Value: 15 | Target: Self (1)
 Description      : Imbues you with wrathful light, increasing healing done by $s1% and your critical strike chance by $s2%$?s53376[, and reduces the cooldown of Holy Shock by $53376s2%][], for $d.
 Tooltip          : Healing done increased by $w1%.
@@ -638,7 +638,7 @@ Attributes       : ......x. x....... x.x..... x..x....   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6)
 Effects          :
-#1 (id=21964)    : Apply Aura (6) | Unknown(172)
+#1 (id=21964)    : Apply Aura (6) | Increase Mounted Speed% (172)
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
 Description      : Increases your mounted speed by $s1%. This does not stack with other movement speed increasing effects.
 Tooltip          : Mounted speed increased by $w1%.  This does not stack with other movement speed increasing effects.
@@ -752,7 +752,7 @@ Effects          :
                    Base Value: 40 | Scaled Value: 40 | Trigger Spell: 53651 | Target: Friend (21)
 #2 (id=203905)   : Trigger Spell (64): Light's Beacon
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 53651 | Target: Self (1)
-#3 (id=219556)   : Apply Aura (6) | Unknown(283)
+#3 (id=219556)   : Apply Aura (6) | Modify Healing Taken% from Caster's Spells (283)
                    Base Value: 0 | Scaled Value: 0 | Target: Friend (21)
                    Affected Spells: Flash of Light (19750), Holy Shock (25914), Holy Light (82326), Light of Dawn (85222), Light of the Martyr (183998), Light of Dawn (225311)
 Description      : Places a Beacon of Light on a friendly target. Your heals on other party or raid members will also heal the Beacon of Light target for up to $53651s1% of the amount healed.$?a231642[ Your Flash of Light and Holy Light on the Beacon of Light target will also refund $88852s1% of their Mana cost.][]
@@ -798,7 +798,7 @@ Effects          :
                    Base Value: -6 | Scaled Value: -6 | Target: Self (1)
 #4 (id=134929)   : Apply Aura (6) | Modify Block% (51)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 11 | Target: Self (1)
-#5 (id=134930)   : Apply Aura (6) | Unknown(454)
+#5 (id=134930)   : Apply Aura (6) | Modify Recharge Time% (454)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 1663 | Target: Self (1)
 Description      : Increases your total Stamina by $s2% and your block chance by $s5%.
 
@@ -1387,7 +1387,7 @@ Attributes       : ........ ........ ........ .......x   ........ ..x..... .....
                  : ........ .....x.. ........ ........   ........ ........ ........ ........ 
                  : Cannot cancel aura (31)
 Effects          :
-#1 (id=88340)    : Apply Aura (6) | Unknown(56)
+#1 (id=88340)    : Apply Aura (6) | Change Model (56)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 46490 | Misc Value 2: 0x7 | Target: Self (1)
 #2 (id=100215)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -1784,7 +1784,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6)
 Effects          :
-#1 (id=129667)   : Apply Aura (6) | Unknown(418)
+#1 (id=129667)   : Apply Aura (6) | Modify Max Resource (418)
                    Base Value: 2 | Scaled Value: 2 | Misc Value: 9 | Target: Self (1)
 Description      : You may store an additional $s1 Holy Power beyond the maximum of 3. No ability ever consumes more than 3 Holy Power.
 
@@ -1930,7 +1930,7 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6), Hidden (7)
 Effects          :
-#1 (id=179710)   : Apply Aura (6) | Unknown(379)
+#1 (id=179710)   : Apply Aura (6) | Modify Mana Regen% (379)
                    Base Value: 220 | Scaled Value: 220 | Target: Self (1)
 #2 (id=191096)   : Apply Aura (6) | Hasted Cooldown Duration (416)
                    Base Value: 100 | Scaled Value: 100 | SP Coefficient: 0.25000 | Misc Value: 11 | Target: Self (1)
@@ -2066,7 +2066,7 @@ Effects          :
 #5 (id=191091)   : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
                    Base Value: -10 | Scaled Value: -10 | Target: Self (1)
                    Affected Spells: Consecration (26573), Consecration (81297), Consecration (205228)
-#6 (id=260917)   : Apply Aura (6) | Unknown(150)
+#6 (id=260917)   : Apply Aura (6) | Modify Block Effectiveness (150)
                    Base Value: 5 | Scaled Value: 5 | Target: Self (1)
 #7 (id=260918)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 248 (Label) | Target: Self (1)
@@ -2113,13 +2113,13 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6), Hidden (7)
 Effects          :
-#1 (id=179713)   : Apply Aura (6) | Unknown(178)
+#1 (id=179713)   : Apply Aura (6) | Modify Max Mana% (178)
                    Base Value: 400 | Scaled Value: 400 | Target: Self (1)
-#2 (id=191084)   : Apply Aura (6) | Unknown(379)
+#2 (id=191084)   : Apply Aura (6) | Modify Mana Regen% (379)
                    Base Value: 25 | Scaled Value: 25 | Target: Self (1)
-#3 (id=191085)   : Apply Aura (6) | Unknown(149)
+#3 (id=191085)   : Apply Aura (6) | Modify Casting Pushback (149)
                    Base Value: 70 | Scaled Value: 70 | Misc Value: 10 | Misc Value 2: 0x4 | Target: Self (1)
-#4 (id=191086)   : Apply Aura (6) | Unknown(404)
+#4 (id=191086)   : Apply Aura (6) | Override Attack Power per Spell Power% (404)
                    Base Value: 100 | Scaled Value: 100 | Target: Self (1)
 #5 (id=191087)   : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
                    Base Value: 0 | Scaled Value: 0
@@ -2399,7 +2399,7 @@ Effects          :
                    Base Value: 50 | Scaled Value: 50 | Trigger Spell: 53651 | Target: Friend (21)
 #2 (id=218584)   : Trigger Spell (64): Light's Beacon
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 53651 | Target: Self (1)
-#3 (id=219558)   : Apply Aura (6) | Unknown(283)
+#3 (id=219558)   : Apply Aura (6) | Modify Healing Taken% from Caster's Spells (283)
                    Base Value: 0 | Scaled Value: 0 | Target: Friend (21)
                    Affected Spells: Flash of Light (19750), Holy Shock (25914), Holy Light (82326), Light of Dawn (85222), Light of the Martyr (183998), Light of Dawn (225311)
 #4 (id=321087)   : Dummy (3)
@@ -2438,7 +2438,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6), Hidden (7)
 Effects          :
-#1 (id=219597)   : Apply Aura (6) | Unknown(150)
+#1 (id=219597)   : Apply Aura (6) | Modify Block Effectiveness (150)
                    Base Value: 10 | Scaled Value: 10 | Target: Self (1)
 Description      : Increases the amount blocked by your shield by an additional $s1%.
 
@@ -3027,7 +3027,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=289735)   : Apply Aura (6) | Unknown(271)
+#1 (id=289735)   : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
                    Affected Spells: Execution Sentence (213757), Justicar's Vengeance (215661), Divine Storm (224239), Templar's Verdict (224266)
 #2 (id=368486)   : Dummy (3)
@@ -3291,7 +3291,7 @@ Attributes       : ........ ........ ........ .......x   ........ ........ .....
 Effects          :
 #1 (id=295444)   : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.37500 | Target: Friend (21)
-#2 (id=334967)   : Apply Aura (6) | Unknown(283)
+#2 (id=334967)   : Apply Aura (6) | Modify Healing Taken% from Caster's Spells (283)
                    Base Value: 20 | Scaled Value: 20 | Target: Friend (21)
                    Affected Spells: Flash of Light (19750), Holy Light (82326)
 Description      : $@spelldesc200652
@@ -3382,7 +3382,7 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | Trigger Spell: 209785 | Target: Self (1)
 #2 (id=323063)   : Apply Aura (6) | Dummy (4)
                    Base Value: -1000 | Scaled Value: -1000 | Misc Value: 1627 | Target: Self (1)
-#3 (id=341689)   : Apply Aura (6) | Unknown(454)
+#3 (id=341689)   : Apply Aura (6) | Modify Recharge Time% (454)
                    Base Value: -17 | Scaled Value: -17 | Misc Value: 1627 | Target: Self (1)
 Description      : Reduces the cooldown of Crusader Strike by ${$m2/-1000}.1 sec and gives it a $h% chance to reduce the cost of your next Holy Power spender by $209785s1.
 
@@ -3433,7 +3433,7 @@ Attributes       : ........ ........ x.x..... ........   ........ ........ .....
                  : ........ x....... ........ ........   ........ ........ ........ ........ 
                  : ...x.... ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=300209)   : Apply Aura (6) | Unknown(21)
+#1 (id=300209)   : Apply Aura (6) | Periodic Power% Regen (21)
                    Base Value: 1 | Scaled Value: 1 | Target: Friend (21)
 #2 (id=310150)   : Apply Aura (6) | Periodic Heal% (20): every 2 seconds
                    Base Value: 1 | Scaled Value: 1 | Target: Friend (21)
@@ -3475,7 +3475,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6)
 Effects          :
-#1 (id=300630)   : Apply Aura (6) | Unknown(454)
+#1 (id=300630)   : Apply Aura (6) | Modify Recharge Time% (454)
                    Base Value: -67 | Scaled Value: -67 | Misc Value: 1570 | Target: Self (1)
 #2 (id=316627)   : Apply Aura (6) | Modify Cooldown Charge (411)
                    Base Value: -1 | Scaled Value: -1 | Misc Value: 1570 | Target: Self (1)
@@ -3726,7 +3726,7 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6)
 Effects          :
-#1 (id=301267)   : Apply Aura (6) | Unknown(454)
+#1 (id=301267)   : Apply Aura (6) | Modify Recharge Time% (454)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 1662 | Target: Self (1)
 #2 (id=301268)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 1 (3)
                    Base Value: -20 | Scaled Value: -20 | Misc Value: 3 | Target: Self (1)
@@ -3885,7 +3885,7 @@ Effects          :
                    Base Value: -50 | Scaled Value: -50 | Radius: 12 yards | Mechanic: Unknown(88) | Target: Cone Front (104)
 #3 (id=324546)   : Apply Aura (6) | Periodic Damage (3): holyfire every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.29400 | Radius: 12 yards | Target: Cone Front (104)
-#4 (id=356924)   : Apply Aura (6) | Unknown(270)
+#4 (id=356924)   : Apply Aura (6) | Modify Damage Taken% from Caster (270)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 127 | Radius: 12 yards | Target: Cone Front (104)
 Description      : Lash out with the |cFFFFCC99Ashbringer|r, dealing $sw1 Radiant damage$?a179546[, and an additional $o3 Radiant damage over $d,][] to all enemies within $a1 yd in front of you, and reducing movement speed by $s2% for $d.
 
@@ -3963,7 +3963,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=309632)   : Apply Aura (6) | Unknown(269)
+#1 (id=309632)   : Apply Aura (6) | Modify Damage Done% to Caster (269)
                    Base Value: -25 | Scaled Value: -25 | Misc Value: 127 | Radius: 0 - 8 yards | Target: At Caster (22) -> AOE enemy (15)
 #2 (id=309633)   : School Damage (2): holy
                    Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.56700 | Radius: 0 - 8 yards | Target: At Caster (22) -> AOE enemy (15)
@@ -4217,7 +4217,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=318089)   : Apply Aura (6) | Unknown(271)
+#1 (id=318089)   : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271)
                    Base Value: 30 | Scaled Value: 30 | Target: Enemy (6)
                    Affected Spells: Holy Shock (20473), Holy Shock (25912), Crusader Strike (35395)
 Description      : $@spelldesc20271
@@ -4353,7 +4353,7 @@ Attributes       : ........ ........ x.x..... ........   ........ ..x..... .x...
 Effects          :
 #1 (id=331128)   : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f | Target: Self (1)
-#2 (id=331129)   : Apply Aura (6) | Unknown(172)
+#2 (id=331129)   : Apply Aura (6) | Increase Mounted Speed% (172)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #4 (id=331131)   : Server Side Script (77)
                    Base Value: 100 | Scaled Value: 100 | Target: Self (1)
@@ -4513,7 +4513,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6)
 Effects          :
-#1 (id=341087)   : Apply Aura (6) | Unknown(133)
+#1 (id=341087)   : Apply Aura (6) | Modify Max Health% (133)
                    Base Value: 15 | Scaled Value: 15 | Target: Self (1)
 Description      : Your maximum health is increased by $s1%.
 

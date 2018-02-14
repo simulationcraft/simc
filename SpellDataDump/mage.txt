@@ -69,7 +69,7 @@ Attributes       : ........ ........ x...x... ......x.   ........ ..x..... ..x..
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Stop attacks (20)
 Effects          :
-#3 (id=327281)   : Apply Aura (6) | Scale% (61)
+#3 (id=327281)   : Apply Aura (6) | Scale% (Stacking) (61)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
 Description      : Transforms the enemy into a sheep, wandering around incapacitated for $d. While affected, the victim cannot take actions but will regenerate health very quickly. Damage will cancel the effect. Limit 1.
 
@@ -127,7 +127,7 @@ Attributes       : ........ ........ x....... ......x.   ...x...x ........ .....
 Effects          :
 #1 (id=83)       : School Damage (2): frost
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.04478 | Radius: 0 - 12 yards | Target: At Caster (22) -> AOE enemy (15)
-#2 (id=84)       : Apply Aura (6) | Unknown(455)
+#2 (id=84)       : Apply Aura (6) | Root (455)
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 12 yards | Mechanic: Unknown(58) | Target: At Caster (22) -> AOE enemy (15)
 Description      : Blasts enemies within $A1 yds of you for $122s1 Frost damage and freezes them in place for $122d. Damage may interrupt the freeze effect.
 Tooltip          : Frozen in place.
@@ -481,7 +481,7 @@ Attributes       : ........ ........ x....... ........   ......x. ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Channeled (38), Disable player procs (112), Periodic effect affected by haste (173)
 Effects          :
-#1 (id=5141)     : Apply Aura (6) | Unknown(21)
+#1 (id=5141)     : Apply Aura (6) | Periodic Power% Regen (21)
                    Base Value: 25 | Scaled Value: 25 | Target: Self (1)
 Description      : Returns ${4*$m1}% of your total mana over $d.
 Tooltip          : Gain $w1% of total mana every $t1 sec.
@@ -589,7 +589,7 @@ Attributes       : ....x.x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6)
 Effects          :
-#1 (id=11588)    : Apply Aura (6) | Unknown(132)
+#1 (id=11588)    : Apply Aura (6) | Modify Max Resource% (132)
                    Base Value: 5 | Scaled Value: 5 | Misc Value 2: 0x8 | Target: Self (1)
 Description      : Maximum mana increased by $s1%.
 
@@ -631,7 +631,7 @@ Attributes       : ........ ........ x...x... ......x.   ........ ..x..... ..x..
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Stop attacks (20)
 Effects          :
-#3 (id=327294)   : Apply Aura (6) | Scale% (61)
+#3 (id=327294)   : Apply Aura (6) | Scale% (Stacking) (61)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
 Description      : Transforms the enemy into a turtle, wandering around incapacitated for $d. While affected, the victim cannot take actions but will regenerate health very quickly. Damage will cancel the effect. Limit 1.
 
@@ -660,7 +660,7 @@ Attributes       : ........ ........ x...x... ......x.   ........ ..x..... ..x..
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Stop attacks (20)
 Effects          :
-#3 (id=327289)   : Apply Aura (6) | Scale% (61)
+#3 (id=327289)   : Apply Aura (6) | Scale% (Stacking) (61)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
 Description      : Transforms the enemy into a pig, wandering around incapacitated for $d. While affected, the victim cannot take actions but will regenerate health very quickly. Damage will cancel the effect. Limit 1.
 
@@ -925,7 +925,7 @@ Attributes       : ........ ........ x....... ......x.   ...x...x ........ .x...
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=23237)    : Apply Aura (6) | Unknown(455)
+#1 (id=23237)    : Apply Aura (6) | Root (455)
                    Base Value: 0 | Scaled Value: 0 | Radius: 8 yards | Mechanic: Unknown(58) | Target: AOE enemy (instant) (16)
 Description      : Blasts enemies in a $a1 yard radius with frost, freezing them in place for up to $d. Damage caused may interrupt the effect. $?s112965[
 
@@ -1248,7 +1248,7 @@ Attributes       : ........ ........ x....... .......x   ........ ..x..... .x...
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Cannot cancel aura (31)
 Effects          :
-#1 (id=48273)    : Apply Aura (6) | Unknown(103)
+#1 (id=48273)    : Apply Aura (6) | Temporary Thread Reduction (103)
                    Base Value: -90000000 | Scaled Value: -9e+07 | Target: Self (1)
 #2 (id=48274)    : Dummy (3)
                    Base Value: 3 | Scaled Value: 3 | Target: Self (1)
@@ -1413,7 +1413,7 @@ Attributes       : ........ ........ x...x... ......x.   ........ ..x..... ..x..
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Stop attacks (20)
 Effects          :
-#3 (id=327296)   : Apply Aura (6) | Scale% (61)
+#3 (id=327296)   : Apply Aura (6) | Scale% (Stacking) (61)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
 Description      : Transforms the enemy into a harmless serpent, wandering around incapacitated for $d. While affected, the victim cannot take actions but will regenerate health very quickly. Damage will cancel the effect. Limit 1.
 
@@ -1442,7 +1442,7 @@ Attributes       : ........ ........ x...x... ......x.   ........ ..x..... ..x..
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Stop attacks (20)
 Effects          :
-#3 (id=327291)   : Apply Aura (6) | Scale% (61)
+#3 (id=327291)   : Apply Aura (6) | Scale% (Stacking) (61)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
 Description      : Transforms the enemy into a harmless black cat, wandering around incapacitated for $d. While affected, the victim cannot take actions but will regenerate health very quickly. Damage will cancel the effect. Limit 1.
 
@@ -1471,7 +1471,7 @@ Attributes       : ........ ........ x...x... ......x.   ........ ..x..... ..x..
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Stop attacks (20)
 Effects          :
-#3 (id=327297)   : Apply Aura (6) | Scale% (61)
+#3 (id=327297)   : Apply Aura (6) | Scale% (Stacking) (61)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
 Description      : Transforms the enemy into a harmless rabbit, wandering around incapacitated for $d. While affected, the victim cannot take actions but will regenerate health very quickly. Damage will cancel the effect. Limit 1.
 
@@ -1500,7 +1500,7 @@ Attributes       : ........ ........ x...x... ......x.   ........ ..x..... ..x..
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Stop attacks (20)
 Effects          :
-#3 (id=327295)   : Apply Aura (6) | Scale% (61)
+#3 (id=327295)   : Apply Aura (6) | Scale% (Stacking) (61)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
 Description      : Transforms the enemy into a turkey, wandering around incapacitated for $d. While affected, the victim cannot take actions but will regenerate health very quickly. Damage will cancel the effect. Limit 1.
 
@@ -1521,11 +1521,11 @@ Attributes       : ....x.x. ........ x.x..... ...x....   .....x.. ........ .x...
 Effects          :
 #1 (id=59543)    : Apply Aura (6) | Unknown(310)
                    Base Value: -80 | Scaled Value: -80 | Misc Value: 127 | Target: Self (1)
-#2 (id=192584)   : Apply Aura (6) | Unknown(229)
+#2 (id=192584)   : Apply Aura (6) | Modify AoE Damage Taken% (229)
                    Base Value: -75 | Scaled Value: -75 | Misc Value: 127 | Target: Self (1)
 #3 (id=372340)   : Apply Aura (6) | Modify Attacker Melee Crit Chance (187)
                    Base Value: -6 | Scaled Value: -6 | Target: Self (1)
-#4 (id=710726)   : Apply Aura (6) | Unknown(152)
+#4 (id=710726)   : Apply Aura (6) | Modify Aggro Distance (152)
                    Base Value: -6 | Scaled Value: -6 | Target: Self (1)
 Description      : Reduces the damage your pet takes from area of effect attacks by an additional $s1%.
 Reduces the range at which enemies detect your pet.
@@ -1652,7 +1652,7 @@ Attributes       : ........ ........ x.x..... ........   ........ ........ .x...
 Effects          :
 #1 (id=68537)    : Apply Aura (6) | Modify All Haste% (193)
                    Base Value: 30 | Scaled Value: 30 | SP Coefficient: 0.25000 | Radius: 50000 yards | Target: Raid Members (56)
-#2 (id=88464)    : Apply Aura (6) | Scale% (61)
+#2 (id=88464)    : Apply Aura (6) | Scale% (Stacking) (61)
                    Base Value: 30 | Scaled Value: 30 | Radius: 50000 yards | Target: Raid Members (56)
 Description      : Warp the flow of time, increasing haste by $s1% for all party and raid members for $d.
 
@@ -1778,7 +1778,7 @@ Attributes       : ........ ........ ........ ..x.....   ........ ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Disable player procs (112), Disable weapon procs (151), Disable player multipliers (221)
 Effects          :
-#1 (id=88812)    : Apply Aura (6) | Unknown(89)
+#1 (id=88812)    : Apply Aura (6) | Periodic Max Health% Damage (89)
                    Base Value: 7 | Scaled Value: 7 | Target: Self (1)
 #2 (id=88814)    : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -1915,7 +1915,7 @@ Attributes       : ........ ........ x.x..... ........   ........ ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ....x... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=120042)   : Apply Aura (6) | Unknown(330)
+#1 (id=120042)   : Apply Aura (6) | Cast while Moving (Whitelist) (330)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
                    Affected Spells: Frostbolt (116), Polymorph (118), Fireball (133), Flamestrike (2120), Arcane Missiles (5143), Pyroblast (11366), Evocation (12051), Polymorph (28271), Polymorph (28272), Arcane Blast (30451), Summon Water Elemental (31687), Flurry (44614), Polymorph (61025), Polymorph (61305), Polymorph (61721), Polymorph (61780), Frost Bomb (112948), Ring of Frost (113724), Rune of Power (116011), Conjure Familiar (126578), Polymorph (126819), Polymorph (161353), Polymorph (161354), Polymorph (161355), Polymorph (161372), Conjure Refreshment (190336), Blizzard (190356), Aftershocks (194432), Cinderstorm (198928), Cinderstorm (198929), Glacial Spike (199786), Ebonbolt (214634), Mark of Aluneth (224968), Frostbolt (228597), Ebonbolt (228599), Glacial Spike (228600)
 #2 (id=340801)   : Dummy (3)
@@ -1941,7 +1941,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ ..x..... .....
 Effects          :
 #1 (id=120046)   : Apply Aura (6) | Increase Speed% (31)
                    Base Value: 150 | Scaled Value: 150 | Target: Self (1)
-#2 (id=120048)   : Apply Aura (6) | Unknown(305)
+#2 (id=120048)   : Apply Aura (6) | Modify Min Speed% (305)
                    Base Value: 250 | Scaled Value: 250 | Target: Self (1)
 Description      : Suppresses movement slowing effects and increases your movement speed by $s1% for $d.  Castable while another spell is in progress and unaffected by global cooldown.
 Tooltip          : $s1% increased movement speed and unaffected by movement speed slowing effects.
@@ -2310,7 +2310,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6), Hidden (7)
 Effects          :
-#1 (id=141251)   : Apply Aura (6) | Unknown(379)
+#1 (id=141251)   : Apply Aura (6) | Modify Mana Regen% (379)
                    Base Value: 100 | Scaled Value: 100 | Target: Self (1)
 Description      : Your mana regeneration is increased by $s1%.
 Tooltip          : Increases your mana regeneration by $s1%.
@@ -2337,7 +2337,7 @@ Attributes       : ........ ........ x...x... ......x.   ........ ..x..... ..x..
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Stop attacks (20)
 Effects          :
-#3 (id=327292)   : Apply Aura (6) | Scale% (61)
+#3 (id=327292)   : Apply Aura (6) | Scale% (Stacking) (61)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
 Description      : Transforms the enemy into a porcupine, wandering around incapacitated for $d. While affected, the victim cannot take actions but will regenerate health very quickly. Damage will cancel the effect. Limit 1.
 
@@ -2573,7 +2573,7 @@ Effects          :
 #2 (id=191116)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Damage (22)
                    Base Value: 3 | Scaled Value: 3 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Cone of Cold (120), Frost Nova (122), Fireball (133), Arcane Explosion (1449), Flamestrike (2120), Scorch (2948), Arcane Missiles (7268), Pyroblast (11366), Arcane Blast (30451), Dragon's Breath (31661), Waterbolt (31707), Arcane Barrage (44425), Living Bomb (44461), Frostbolt (59638), Frozen Orb (84721), Fireball (88082), Arcane Blast (88084), Fire Blast (108853), Frost Bomb (113092), Nether Tempest (114923), Nether Tempest (114954), Water Jet (135029), Meteor (153564), Comet Storm (153596), Arcane Orb (153640), Meteor Burn (155158), Supernova (157980), Blast Wave (157981), Ice Nova (157997), Blizzard (190357), Aftershocks (194432), Phoenix's Flames (194466), Blast Furnace (194522), Cinderstorm (198928), Ray of Frost (205021), Conflagration Flare Up (205345), Flame Patch (205472), Arcane Rebound (210817), Mark of Aluneth (211088), Phoenix Reborn (215775), Living Bomb (217694), Phoenix's Flames (224637), Arcane Assault (225119), Conflagration (226757), Flurry (228354), Frostbolt (228597), Ice Lance (228598), Ebonbolt (228599), Glacial Spike (228600), Frost Nova (235235), Blazing Barrier (235314), Time and Space (240689), Glacial Eruption (242851), Phoenix Flames (257541), Phoenix Flames (257542)
-#3 (id=191117)   : Apply Aura (6) | Mod Power Regen (110)
+#3 (id=191117)   : Apply Aura (6) | Modify Power Regen (110)
                    Base Value: 60 | Scaled Value: 0 | Points Per Level: -2 | Target: Self (1)
 #4 (id=191118)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -2649,7 +2649,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ ...x.
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6), Hidden (7)
 Effects          :
-#1 (id=198243)   : Unknown(174) | Scale% (61)
+#1 (id=198243)   : Unknown(174) | Scale% (Stacking) (61)
                    Base Value: -15 | Scaled Value: -15 | Misc Value: 11 | Radius: 100 yards | Target: Self (1)
 Description      : Reduces the size of your Water Elemental by $s1%.
 
@@ -2984,7 +2984,7 @@ Effects          :
                    Base Value: -200 | Scaled Value: -200 | Target: Self (1)
 #3 (id=256211)   : Apply Aura (6) | Unknown(402)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 161 | Target: Self (1)
-#4 (id=256217)   : Apply Aura (6) | Mod Power Regen (110)
+#4 (id=256217)   : Apply Aura (6) | Modify Power Regen (110)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 3 | Target: Self (1)
 Description      : $@spelldesc152087
 
@@ -3191,7 +3191,7 @@ Effects          :
                    Base Value: 100 | Scaled Value: 100 | Target: Unknown(25)
 #2 (id=220384)   : School Damage (2): frost
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.06250 | Radius: 0 - 8 yards | Target: Unknown(63) -> AOE enemy (instant) (16)
-#3 (id=220385)   : Apply Aura (6) | Unknown(455)
+#3 (id=220385)   : Apply Aura (6) | Root (455)
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 8 yards | Mechanic: Unknown(58) | Target: Unknown(63) -> AOE enemy (instant) (16)
 Description      : Causes a whirl of icy wind around the target enemy or ally, dealing $s2 Frost damage to all enemies within $A2 yards, and freezing them in place for $d. A primary enemy target will take $s1% increased damage.
 Tooltip          : Frozen.
@@ -3218,7 +3218,7 @@ Attributes       : ........ ........ x...x... ......x.   ........ ..x..... ..x..
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Stop attacks (20)
 Effects          :
-#3 (id=327288)   : Apply Aura (6) | Scale% (61)
+#3 (id=327288)   : Apply Aura (6) | Scale% (Stacking) (61)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
 Description      : Transforms the enemy into a polar bear cub, wandering around incapacitated for $d. While affected, the victim cannot take actions but will regenerate health very quickly. Damage will cancel the effect. Limit 1.
 
@@ -3247,7 +3247,7 @@ Attributes       : ........ ........ x...x... ......x.   ........ ..x..... ..x..
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Stop attacks (20)
 Effects          :
-#3 (id=327287)   : Apply Aura (6) | Scale% (61)
+#3 (id=327287)   : Apply Aura (6) | Scale% (Stacking) (61)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
 Description      : Transforms the enemy into a monkey, wandering around incapacitated for $d. While affected, the victim cannot take actions but will regenerate health very quickly. Damage will cancel the effect. Limit 1.
 
@@ -3276,7 +3276,7 @@ Attributes       : ........ ........ x...x... ......x.   ........ ..x..... ..x..
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Stop attacks (20)
 Effects          :
-#3 (id=327293)   : Apply Aura (6) | Scale% (61)
+#3 (id=327293)   : Apply Aura (6) | Scale% (Stacking) (61)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
 Description      : Transforms the enemy into a penguin, wandering around incapacitated for $d. While affected, the victim cannot take actions but will regenerate health very quickly. Damage will cancel the effect. Limit 1.
 
@@ -3305,7 +3305,7 @@ Attributes       : ........ ........ x...x... ......x.   ........ ..x..... ..x..
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Stop attacks (20)
 Effects          :
-#3 (id=327290)   : Apply Aura (6) | Scale% (61)
+#3 (id=327290)   : Apply Aura (6) | Scale% (Stacking) (61)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
 Description      : Transforms the enemy into a peacock, wandering around incapacitated for $d. While affected, the victim cannot take actions but will regenerate health very quickly. Damage will cancel the effect. Limit 1.
 
@@ -3581,7 +3581,7 @@ Attributes       : ......x. x....... ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6)
 Effects          :
-#1 (id=279639)   : Apply Aura (6) | Unknown(178)
+#1 (id=279639)   : Apply Aura (6) | Modify Max Mana% (178)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.20000 | Target: Self (1)
 #2 (id=279640)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 1 (3)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.60000 | Misc Value: 3 | Target: Self (1)
@@ -3589,7 +3589,7 @@ Effects          :
 #3 (id=313335)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.30000 | Misc Value: 12 | Target: Self (1)
                    Affected Spells: Arcane Charge (36032)
-#4 (id=357922)   : Apply Aura (6) | Unknown(379)
+#4 (id=357922)   : Apply Aura (6) | Modify Mana Regen% (379)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.20000 | Target: Self (1)
 Description      : Increases your Mana regeneration rate and maximum Mana by ${$m1}.1%.
 
@@ -4077,7 +4077,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=302656)   : Apply Aura (6) | Modify Cooldown Charge (411)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 1500 | Target: Self (1)
-#2 (id=354871)   : Apply Aura (6) | Unknown(454)
+#2 (id=354871)   : Apply Aura (6) | Modify Recharge Time% (454)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1500 | Target: Self (1)
 #3 (id=354874)   : Dummy (3)
                    Base Value: 2 | Scaled Value: 2
@@ -4368,7 +4368,7 @@ Attributes       : ........ ........ x.x..... ........   ........ ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ...x.... ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=311103)   : Apply Aura (6) | Unknown(178)
+#1 (id=311103)   : Apply Aura (6) | Modify Max Mana% (178)
                    Base Value: 10 | Scaled Value: 10 | Target: Self (1)
 Description      : $@spelldesc205022
 Tooltip          : Maximum mana increased by $s1%.
@@ -4389,7 +4389,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=311119)   : Apply Aura (6) | Unknown(271)
+#1 (id=311119)   : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271)
                    Base Value: 1 | Scaled Value: 1 | Target: Enemy (6)
                    Affected Spells: Cone of Cold (120), Frost Nova (122), Fireball (133), Arcane Explosion (1449), Flamestrike (2120), Scorch (2948), Arcane Missiles (7268), Pyroblast (11366), Arcane Blast (30451), Dragon's Breath (31661), Waterbolt (31707), Arcane Barrage (44425), Living Bomb (44461), Frostbolt (59638), Frozen Orb (84721), Fireball (88082), Arcane Blast (88084), Fire Blast (108853), Frost Bomb (113092), Nether Tempest (114923), Nether Tempest (114954), Water Jet (135029), Meteor (153564), Comet Storm (153596), Arcane Orb (153640), Meteor Burn (155158), Supernova (157980), Blast Wave (157981), Ice Nova (157997), Blizzard (190357), Aftershocks (194432), Phoenix's Flames (194466), Blast Furnace (194522), Cinderstorm (198928), Ray of Frost (205021), Conflagration Flare Up (205345), Flame Patch (205472), Arcane Rebound (210817), Mark of Aluneth (211088), Phoenix Reborn (215775), Living Bomb (217694), Phoenix's Flames (224637), Arcane Assault (225119), Conflagration (226757), Flurry (228354), Frostbolt (228597), Ice Lance (228598), Ebonbolt (228599), Glacial Spike (228600), Frost Nova (235235), Blazing Barrier (235314), Time and Space (240689), Glacial Eruption (242851), Phoenix Flames (257541), Phoenix Flames (257542)
 Description      : $@spelldesc205039
@@ -4563,7 +4563,7 @@ Attributes       : ........ ........ x....... ........   ........ ..x....x .....
 Effects          :
 #1 (id=315357)   : Leap (29)
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 20 yards | Target: Self (1) -> Unknown(55)
-#2 (id=315358)   : Apply Aura (6) | Unknown(377)
+#2 (id=315358)   : Apply Aura (6) | Cast while Moving (377)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : Teleports you $A1 yards forward, unless something is in the way. Unaffected by the global cooldown and castable while casting.
 Tooltip          : Shimmering.
@@ -4624,7 +4624,7 @@ Attributes       : ........ ........ x.x..... ........   ........ ..x..... .....
 Effects          :
 #1 (id=315637)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-#2 (id=315640)   : Apply Aura (6) | Unknown(377)
+#2 (id=315640)   : Apply Aura (6) | Cast while Moving (377)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : Teleports you back to where you last Blinked from. Resets the cooldown of Blink.
 
@@ -4951,7 +4951,7 @@ Attributes       : ........ ........ .......x x..x....   .....x.. ........ .....
 Effects          :
 #1 (id=344289)   : School Damage (2): frost
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 4.38750 | Target: Enemy (6)
-#2 (id=344290)   : Apply Aura (6) | Unknown(455)
+#2 (id=344290)   : Apply Aura (6) | Root (455)
                    Base Value: 0 | Scaled Value: 0 | Mechanic: Unknown(58) | Target: Enemy (6)
 Description      : $@spelldesc199786
 Tooltip          : Frozen in place.
@@ -5003,7 +5003,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6)
 Effects          :
-#1 (id=349283)   : Apply Aura (6) | Unknown(454)
+#1 (id=349283)   : Apply Aura (6) | Modify Recharge Time% (454)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 1671 | Target: Self (1)
 Description      : Evocation's cooldown is reduced by $s1%.
 
@@ -5288,7 +5288,7 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 127 | Target: Self (1)
 #3 (id=355846)   : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: -15 | Scaled Value: -15 | Value Multiplier: 1 | Misc Value: 0x7e | Target: Self (1)
-#4 (id=355854)   : Apply Aura (6) | Unknown(245)
+#4 (id=355854)   : Apply Aura (6) | Modify Debuff Duration% (245)
                    Base Value: -25 | Scaled Value: -25 | Misc Value: 1 | Target: Self (1)
 Description      : Shields you for $d, absorbing $<shield> damage, reducing magical damage taken by $s3%, and reducing the duration of all harmful Magic effects against you by $s4%.
 Tooltip          : Absorbs $w1 damage. Magical damage taken reduced by $s3%. Duration of all harmful Magic effects reduced by $w4%.
@@ -5384,7 +5384,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=356829)   : Apply Aura (6) | Unknown(129)
+#1 (id=356829)   : Apply Aura (6) | Increase Movement Speed% (Stacking) (129)
                    Base Value: 30 | Scaled Value: 30 | Target: Self (1)
 Description      : $@spelldesc236058
 Tooltip          : Movement speed increased by $s1%.
@@ -5402,7 +5402,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=357235)   : Apply Aura (6) | Unknown(129)
+#1 (id=357235)   : Apply Aura (6) | Increase Movement Speed% (Stacking) (129)
                    Base Value: 50 | Scaled Value: 50 | Target: Self (1)
 Description      : $@spelldesc236298
 Tooltip          : Movement speed increased by $s1%.
@@ -5437,7 +5437,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6)
 Effects          :
-#1 (id=357621)   : Apply Aura (6) | Unknown(330)
+#1 (id=357621)   : Apply Aura (6) | Cast while Moving (Whitelist) (330)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
                    Affected Spells: Arcane Missiles (5143), Evocation (12051)
 Description      : Arcane Missiles and Evocation may be channeled while moving.
@@ -5549,7 +5549,7 @@ Attributes       : ........ ........ ........ ........   ........ ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=367839)   : Apply Aura (6) | Unknown(163)
+#1 (id=367839)   : Apply Aura (6) | Modify Crit Damage Done% (163)
                    Base Value: 20 | Scaled Value: 20 | Misc Value: 127 | Target: Self (1)
 Description      : $@spelldesc242252
 Tooltip          : Critical strike damage increased by $s1%.

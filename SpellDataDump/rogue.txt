@@ -300,7 +300,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 30 | Misc Value 2: 0x2 | Target: Self (1)
 #2 (id=542)      : Apply Aura (6) | Dummy (4)
                    Base Value: 40 | Scaled Value: 565 | Points Per Level: 5 | Target: Self (1)
-#3 (id=543)      : Apply Aura (6) | Unknown(129)
+#3 (id=543)      : Apply Aura (6) | Increase Movement Speed% (Stacking) (129)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #4 (id=165804)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 127 | Target: Self (1)
@@ -397,7 +397,7 @@ Attributes       : ....x.xx ........ ..x..... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6), Hidden (7)
 Effects          :
-#1 (id=577)      : Apply Aura (6) | Unknown(144)
+#1 (id=577)      : Apply Aura (6) | Reduce Fall Damage (144)
                    Base Value: 17 | Scaled Value: 17 | SP Coefficient: 0.25000 | Target: Self (1)
 Description      : Reduces damage from falling.
 
@@ -457,7 +457,7 @@ Attributes       : ....x... ........ x.x..... ........   .....x.. ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Does not break stealth (37), Disable player procs (112)
 Effects          :
-#1 (id=595)      : Apply Aura (6) | Unknown(229)
+#1 (id=595)      : Apply Aura (6) | Modify AoE Damage Taken% (229)
                    Base Value: -40 | Scaled Value: -40 | Misc Value: 127 | Target: Self (1)
 #2 (id=127075)   : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f | Target: Self (1)
@@ -679,7 +679,7 @@ Effects          :
                    Base Value: 60 | Scaled Value: 60 | Target: Self (1)
 #2 (id=127877)   : Apply Aura (6) | Periodic Energize Power (24): every 2 seconds
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 3 | Target: Self (1)
-#3 (id=356567)   : Apply Aura (6) | Mod Power Regen (110)
+#3 (id=356567)   : Apply Aura (6) | Modify Power Regen (110)
                    Base Value: 15 | Scaled Value: 15 | SP Coefficient: 0.25000 | Misc Value: 3 | Target: Self (1)
 Description      : Finishing move that consumes combo points to increase attack speed by $s1% and Energy regeneration rate by $s3%. Lasts longer per combo point.
    1 point  : 12 seconds
@@ -872,7 +872,7 @@ Attributes       : ........ ........ .....x.. ........   ...x...x ........ .....
 Effects          :
 #1 (id=3617)     : School Damage (2): nature
                    Base Value: 12 | Scaled Value: 0 (avg=0.417, dl=0.28) | Value Range: 5 | AP Coefficient: 0.02129 | Target: Enemy (6)
-#2 (id=133966)   : Apply Aura (6) | Unknown(118)
+#2 (id=133966)   : Apply Aura (6) | Modify Healing Recevied% (118)
                    Base Value: -25 | Scaled Value: -25 | AP Coefficient: 0.03931 | Misc Value: 127 | Target: Enemy (6)
 Description      : Coats a weapon with poison that lasts for 1 hour.
 Each strike has a $8679h% chance of poisoning the enemy, which instantly inflicts $8680s1 Nature damage and reduces the effect of healing received for $d.
@@ -900,7 +900,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 30 | Misc Value 2: 0x2 | Target: Self (1)
 #2 (id=4767)     : Apply Aura (6) | Stealth (16)
                    Base Value: 1000 | Scaled Value: 1000 | Target: Self (1)
-#3 (id=4768)     : Apply Aura (6) | Unknown(129)
+#3 (id=4768)     : Apply Aura (6) | Increase Movement Speed% (Stacking) (129)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #4 (id=165805)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 127 | Target: Self (1)
@@ -926,7 +926,7 @@ Attributes       : ....x... ........ x....... ........   ........ ..x..... .....
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ .....x.. ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=6149)     : Apply Aura (6) | Mod Power Regen (110)
+#1 (id=6149)     : Apply Aura (6) | Modify Power Regen (110)
                    Base Value: 60 | Scaled Value: 60 | SP Coefficient: 0.25000 | Misc Value: 3 | Target: Self (1)
 #2 (id=85451)    : Apply Aura (6) | Modify Ranged and Melee Attack Speed% (342)
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
@@ -1075,7 +1075,7 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=7052)     : Apply Aura (6) | Increase Energy (35)
                    Base Value: 50 | Scaled Value: 50 | SP Coefficient: 0.25000 | Misc Value: 3 | Target: Self (1)
-#2 (id=295620)   : Apply Aura (6) | Mod Power Regen (110)
+#2 (id=295620)   : Apply Aura (6) | Modify Power Regen (110)
                    Base Value: 10 | Scaled Value: 10 | SP Coefficient: 0.25000 | Misc Value: 3 | Target: Self (1)
 Description      : Increases your maximum Energy by $s1 and your Energy regeneration by $s2%.
 
@@ -1205,7 +1205,7 @@ Attributes       : ......x. x....... ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6)
 Effects          :
-#1 (id=20768)    : Apply Aura (6) | Unknown(129)
+#1 (id=20768)    : Apply Aura (6) | Increase Movement Speed% (Stacking) (129)
                    Base Value: 15 | Scaled Value: 15 | Target: Self (1)
 Description      : Your movement speed is increased by $s1% and you take reduced falling damage.
 
@@ -1240,7 +1240,7 @@ Attributes       : ....x... ........ ..x..... ........   .....x.. ..x..... .x...
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Does not break stealth (37)
 Effects          :
-#1 (id=20791)    : Apply Aura (6) | Unknown(186)
+#1 (id=20791)    : Apply Aura (6) | Modify Attacker Spell Hit Chance (186)
                    Base Value: -200 | Scaled Value: -200 | Misc Value: 126 | Target: Self (1)
 #2 (id=20792)    : Trigger Spell (64): (35729)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 35729 | Target: Self (1)
@@ -1490,7 +1490,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
 #3 (id=44064)    : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Radius: 10 yards | Target: Custom (18) -> AOE enemy (instant) (16)
-#4 (id=221814)   : Apply Aura (6) | Unknown(263)
+#4 (id=221814)   : Apply Aura (6) | Disable Abilities (263)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : Teleport to an enemy within 10 yards, attacking 6 times over $d with both weapons for a total of ${$57841sw3*6+$57842sw3*6} Physical damage.
 
@@ -1658,7 +1658,7 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6), Hidden (7)
 Effects          :
-#1 (id=55169)    : Apply Aura (6) | Mod Power Regen (110)
+#1 (id=55169)    : Apply Aura (6) | Modify Power Regen (110)
                    Base Value: 20 | Scaled Value: 20 | Misc Value: 3 | Target: Self (1)
 Description      : Increases your Energy regeneration rate by $s1%.
 
@@ -1889,10 +1889,10 @@ Attributes       : ........ ........ ........ ........   .....x.. ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Does not break stealth (37)
 Effects          :
-#1 (id=68390)    : Apply Aura (6) | Unknown(271)
+#1 (id=68390)    : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271)
                    Base Value: 30 | Scaled Value: 30 | Target: Enemy (6)
                    Affected Spells: Backstab (53), Garrote (703), Mutilate (1329), Sinister Strike (1752), Rupture (1943), Run Through (2098), Deadly Poison (2818), Mutilate (5374), Ambush (8676), Wound Poison (8680), Mutilate Off-Hand (27576), Envenom (32645), Fan of Knives (51723), Killing Spree (57841), Killing Spree Off-Hand (57842), Main Gauche (86392), Shuriken Toss (114014), Shadow Blade (121473), Shadow Blade Off-hand (121474), Death from Above (152150), Internal Bleeding (154953), Backstab (173458), Shadowstrike (185438), Poisoned Knife (185565), Pistol Shot (185763), Cannonball Barrage (185779), From the Shadows (192434), Poison Bomb (192660), Kingsbane (192759), Kingsbane (192760), Saber Slash (193315), Nightblade (195452), Eviscerate (196819), Ghostly Strike (196937), Finality: Eviscerate (197393), Second Shuriken (197611), Shadow Nova (197800), Shuriken Storm (197835), Riposte (199753), Between the Eyes (199804), Gloomblade (200758), Greed (202822), Greed (202823), Blunderbuss (202895), Goremaw's Bite (209783), Goremaw's Bite (209784), Soul Rip (220893), Kingsbane (222062), Toxic Blade (245388), Toxic Blade (245389), Poison Bomb (255544), Poison Bomb (255546)
-#2 (id=68391)    : Apply Aura (6) | Unknown(343)
+#2 (id=68391)    : Apply Aura (6) | Modify Auto Attack Damage Taken% from Caster (343)
                    Base Value: 30 | Scaled Value: 30 | Target: Enemy (6)
 #3 (id=87043)    : Apply Aura (6) | Stalked (68)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
@@ -1986,7 +1986,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=94449)    : Apply Aura (6) | Unknown(345)
+#1 (id=94449)    : Apply Aura (6) | Ignore Armor% (345)
                    Base Value: 75 | Scaled Value: 75 | Target: Enemy (6)
 Description      : $@spelldesc91023
 Tooltip          : $w1% of armor is ignored by the attacking Rogue.
@@ -2095,7 +2095,7 @@ Attributes       : ....x... ........ ........ ........   .....x.. ........ .x...
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Does not break stealth (37)
 Effects          :
-#1 (id=119252)   : Apply Aura (6) | Unknown(443)
+#1 (id=119252)   : Apply Aura (6) | Modify Leech% (443)
                    Base Value: 10 | Scaled Value: 10 | Target: Self (1)
 Description      : Coats your weapons with a Poison that lasts for $d, granting you $s1% Leech.
 Tooltip          : Leech increased by $s1%.
@@ -2275,7 +2275,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6)
 Effects          :
-#1 (id=127101)   : Apply Aura (6) | Unknown(418)
+#1 (id=127101)   : Apply Aura (6) | Modify Max Resource (418)
                    Base Value: 5 | Scaled Value: 5 | Misc Value: 4 | Target: Self (1)
 Description      : You may have a maximum of ${5+$m1} combo points. Finishers still consume a maximum of 5 combo points.
 
@@ -2354,7 +2354,7 @@ Attributes       : ........ ........ ........ ...x.x..   .....x.. ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Does not break stealth (37), Disable player procs (112), Disable target procs (113)
 Effects          :
-#1 (id=150198)   : Apply Aura (6) | Unknown(247)
+#1 (id=150198)   : Apply Aura (6) | Copy Appearance (247)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 8 | Target: Unknown(25)
 Description      : Makes you look like someone else.
 Tooltip          : Copying another's appearance.
@@ -2823,7 +2823,7 @@ Effects          :
                    Base Value: 2 | Scaled Value: 2 | Target: Self (1)
 #4 (id=217594)   : Apply Aura (6) | Unknown(288)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-#5 (id=217868)   : Apply Aura (6) | Unknown(263)
+#5 (id=217868)   : Apply Aura (6) | Disable Abilities (263)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #6 (id=217869)   : Trigger Spell (64): (184963)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 184963 | Target: Self (1)
@@ -2858,7 +2858,7 @@ Attributes       : ....x.x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6)
 Effects          :
-#1 (id=214754)   : Apply Aura (6) | Unknown(132)
+#1 (id=214754)   : Apply Aura (6) | Modify Max Resource% (132)
                    Base Value: 5 | Scaled Value: 5 | Misc Value: 3 | Misc Value 2: 0x8 | Target: Self (1)
 Description      : Maximum energy increased by $s1%.
 
@@ -3040,7 +3040,7 @@ Attributes       : ........ ........ ..x..... ...x...x   ....x... ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Cannot cancel aura (31), Disable player procs (112), Disable target procs (113)
 Effects          :
-#1 (id=269037)   : Apply Aura (6) | Unknown(103)
+#1 (id=269037)   : Apply Aura (6) | Temporary Thread Reduction (103)
                    Base Value: -10000000 | Scaled Value: -1e+07 | SP Coefficient: 0.25000 | Target: Self (1)
 #2 (id=317950)   : Apply Aura (6) | Modify Auto Attack Damage Done% (344)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -3465,7 +3465,7 @@ Attributes       : ....x... ........ ..x..... .....x.x   .....x.. ..x..... .....
 Effects          :
 #1 (id=283682)   : Apply Aura (6) | Modify Melee Attack Speed% (319)
                    Base Value: 55 | Scaled Value: 55 | Target: Self (1)
-#2 (id=344594)   : Apply Aura (6) | Unknown(443)
+#2 (id=344594)   : Apply Aura (6) | Modify Leech% (443)
                    Base Value: 25 | Scaled Value: 25 | Target: Self (1)
 Description      : Increases your attack speed by $s1% and your Leech by $s2% for the duration of Roll the Bones.
 Tooltip          : Attack speed increased by $s1%.
@@ -3504,10 +3504,10 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6)
 Effects          :
-#1 (id=283924)   : Apply Aura (6) | Unknown(63)
+#1 (id=283924)   : Apply Aura (6) | Modify Max Cost (63)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 4 | Target: Self (1)
                    Affected Spells: Kidney Shot (408), Rupture (1943), Run Through (2098), Slice and Dice (5171), Envenom (32645), Death from Above (152150), Roll the Bones (193316), Weaponmaster (193536), Nightblade (195452), Eviscerate (196819), Finality: Eviscerate (197393), Finality: Nightblade (197395), Between the Eyes (199804)
-#2 (id=283925)   : Apply Aura (6) | Unknown(418)
+#2 (id=283925)   : Apply Aura (6) | Modify Max Resource (418)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 4 | Target: Self (1)
 #3 (id=297518)   : Apply Aura (6) | Dummy (4)
                    Base Value: 6 | Scaled Value: 6 | Misc Value: 4 | Target: Self (1)
@@ -3558,7 +3558,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6)
 Effects          :
-#1 (id=283933)   : Apply Aura (6) | Unknown(360)
+#1 (id=283933)   : Apply Aura (6) | Duplicate Ability (360)
                    Base Value: 6 | Scaled Value: 6 | Target: Self (1)
 Description      : Your abilities have a $h% chance to hit the target twice each time they deal damage.
 
@@ -3697,7 +3697,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 160 | Trigger Spell: 222018 | Target: Enemy (6)
 #5 (id=331340)   : Trigger Spell (64): Nightblade
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 500 | Trigger Spell: 222018 | Target: Enemy (6)
-#6 (id=374178)   : Apply Aura (6) | Unknown(271)
+#6 (id=374178)   : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271)
                    Base Value: 15 | Scaled Value: 15 | Target: Enemy (6)
                    Affected Spells: Backstab (53), Shuriken Toss (114014), Death from Above (152150), Backstab (173458), Shadowstrike (185438), Poisoned Knife (185565), Eviscerate (196819), Finality: Eviscerate (197393), Shuriken Storm (197835), Gloomblade (200758), Goremaw's Bite (209782), Goremaw's Bite (209783), Goremaw's Bite (209784)
 Description      : Finishing move that infects the target with shadowy energy, dealing Shadow damage over time and causing attacks against the target to reduce movement speed by $206760s1% for $206760d. Lasts longer per combo point.
@@ -3884,7 +3884,7 @@ Attributes       : ....x.x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6)
 Effects          :
-#1 (id=289145)   : Apply Aura (6) | Unknown(129)
+#1 (id=289145)   : Apply Aura (6) | Increase Movement Speed% (Stacking) (129)
                    Base Value: 15 | Scaled Value: 15 | SP Coefficient: 0.25000 | Target: Self (1)
 #2 (id=289146)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 4 (32)
                    Base Value: 50 | Scaled Value: 50 | SP Coefficient: 0.25000 | Misc Value: 32 | Target: Self (1)
@@ -3944,7 +3944,7 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | Target: Enemy (6)
 #4 (id=289168)   : Apply Aura (6) | Dummy (4)
                    Base Value: 10 | Scaled Value: 10 | Target: Enemy (6)
-#5 (id=289169)   : Apply Aura (6) | Unknown(270)
+#5 (id=289169)   : Apply Aura (6) | Modify Damage Taken% from Caster (270)
                    Base Value: 10 | Scaled Value: 10 | Misc Value: 127 | Target: Enemy (6)
 #6 (id=297629)   : Apply Aura (6) | Periodic Dummy (226): every 3 seconds
                    Base Value: 10 | Scaled Value: 10 | Target: Enemy (6)
@@ -4177,7 +4177,7 @@ Attributes       : ....x... ........ ..x..... .....x.x   .....x.. ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Cannot cancel aura (31), Does not break stealth (37)
 Effects          :
-#1 (id=293719)   : Apply Aura (6) | Mod Power Regen (110)
+#1 (id=293719)   : Apply Aura (6) | Modify Power Regen (110)
                    Base Value: 30 | Scaled Value: 30 | Misc Value: 3 | Target: Self (1)
 Description      : Your base Energy regeneration is increased by $s1% for the duration of Roll the Bones.
 Tooltip          : Increases Energy regeneration by $s1%.
@@ -4442,7 +4442,7 @@ Attributes       : ........ ........ .....x.. ........   ...x.x.x ........ .x...
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Cannot dodge/parry/block (21), Does not break stealth (37)
 Effects          :
-#1 (id=295687)   : Apply Aura (6) | Unknown(270)
+#1 (id=295687)   : Apply Aura (6) | Modify Damage Taken% from Caster (270)
                    Base Value: 4 | Scaled Value: 4 | Misc Value: 127 | Target: Enemy (6)
 Description      : $@spelldesc200802
 Tooltip          : Taking $w1% increased damage from the poisoning Rogue's abilities.
@@ -5126,7 +5126,7 @@ Attributes       : ....x... ........ ..x..... ..x....x   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Cannot cancel aura (31)
 Effects          :
-#1 (id=373279)   : Apply Aura (6) | Unknown(271)
+#1 (id=373279)   : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271)
                    Base Value: 30 | Scaled Value: 30 | Target: Enemy (6)
                    Affected Spells: Deadly Poison (2818), Deadly Poison (2823), Wound Poison (8679), Wound Poison (8680), Venomhide Poison (14795), Spore Cloud (32643), Envenom (32645), Deadly Poison (113780), From the Shadows (192434), Poison Bomb (192660), Kingsbane (192759), Kingsbane (192760), Agonizing Poison (200803), Curse of the Dreadblades (202665), Kingsbane (222062), Toxic Blade (245388), Poison Bomb (255546)
 Description      : $@spelldesc245388
@@ -5261,7 +5261,7 @@ Attributes       : ....x... ........ x....... ........   ........ ..x..... .....
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ .....x.. ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=375522)   : Apply Aura (6) | Mod Power Regen (110)
+#1 (id=375522)   : Apply Aura (6) | Modify Power Regen (110)
                    Base Value: 30 | Scaled Value: 30 | SP Coefficient: 0.25000 | Misc Value: 3 | Target: Self (1)
 #2 (id=375523)   : Apply Aura (6) | Modify Ranged and Melee Attack Speed% (342)
                    Base Value: 10 | Scaled Value: 10 | Target: Self (1)

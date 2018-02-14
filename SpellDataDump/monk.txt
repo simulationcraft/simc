@@ -96,7 +96,7 @@ Attributes       : ....x.xx x....... ..x..... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6), Hidden (7)
 Effects          :
-#1 (id=10792)    : Apply Aura (6) | Unknown(133)
+#1 (id=10792)    : Apply Aura (6) | Modify Max Health% (133)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Target: Self (1)
 Tooltip          : Max Health increased by $s1%.
 
@@ -112,7 +112,7 @@ Attributes       : ....x.x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6)
 Effects          :
-#1 (id=11588)    : Apply Aura (6) | Unknown(132)
+#1 (id=11588)    : Apply Aura (6) | Modify Max Resource% (132)
                    Base Value: 5 | Scaled Value: 5 | Misc Value 2: 0x8 | Target: Self (1)
 Description      : Maximum mana increased by $s1%.
 
@@ -266,11 +266,11 @@ Attributes       : ....x.x. ........ x.x..... ...x....   .....x.. ........ .x...
 Effects          :
 #1 (id=59543)    : Apply Aura (6) | Unknown(310)
                    Base Value: -80 | Scaled Value: -80 | Misc Value: 127 | Target: Self (1)
-#2 (id=192584)   : Apply Aura (6) | Unknown(229)
+#2 (id=192584)   : Apply Aura (6) | Modify AoE Damage Taken% (229)
                    Base Value: -75 | Scaled Value: -75 | Misc Value: 127 | Target: Self (1)
 #3 (id=372340)   : Apply Aura (6) | Modify Attacker Melee Crit Chance (187)
                    Base Value: -6 | Scaled Value: -6 | Target: Self (1)
-#4 (id=710726)   : Apply Aura (6) | Unknown(152)
+#4 (id=710726)   : Apply Aura (6) | Modify Aggro Distance (152)
                    Base Value: -6 | Scaled Value: -6 | Target: Self (1)
 Description      : Reduces the damage your pet takes from area of effect attacks by an additional $s1%.
 Reduces the range at which enemies detect your pet.
@@ -394,7 +394,7 @@ Effects          :
                    Affected Spells: Flying Serpent Kick (101545)
 #3 (id=140829)   : Apply Aura (6) | Pacify Silence (60)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-#5 (id=157598)   : Apply Aura (6) | Unknown(305)
+#5 (id=157598)   : Apply Aura (6) | Modify Min Speed% (305)
                    Base Value: 400 | Scaled Value: 400 | Target: Self (1)
 #6 (id=172321)   : Apply Aura (6) | Unknown(191)
                    Base Value: 36 | Scaled Value: 36 | Target: Self (1)
@@ -559,7 +559,7 @@ Attributes       : ......xx x....... x....... ........   ........ ........ .x...
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6), Hidden (7)
 Effects          :
-#1 (id=118279)   : Apply Aura (6) | Mod Power Regen (110)
+#1 (id=118279)   : Apply Aura (6) | Modify Power Regen (110)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 3 | Target: Self (1)
 #2 (id=118953)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -644,9 +644,9 @@ Attributes       : ....x... ........ x......x ........   .....x.. ..x..... .x...
 Effects          :
 #1 (id=128615)   : Apply Aura (6) | Unknown(373)
                    Base Value: 200 | Scaled Value: 200 | Target: Self (1)
-#2 (id=128616)   : Apply Aura (6) | Unknown(263)
+#2 (id=128616)   : Apply Aura (6) | Disable Abilities (263)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-#3 (id=132033)   : Apply Aura (6) | Unknown(305)
+#3 (id=132033)   : Apply Aura (6) | Modify Min Speed% (305)
                    Base Value: 300 | Scaled Value: 300 | Target: Self (1)
 #5 (id=157594)   : Apply Aura (6) | Unknown(191)
                    Base Value: 35 | Scaled Value: 35 | Target: Self (1)
@@ -709,7 +709,7 @@ Effects          :
                    Base Value: 50 | Scaled Value: 50 | Misc Value 2: 0x4 | Target: Self (1)
 #7 (id=153830)   : Apply Aura (6) | Threat (10)
                    Base Value: 900 | Scaled Value: 900 | Misc Value: 127 | Target: Self (1)
-#8 (id=157383)   : Apply Aura (6) | Unknown(197)
+#8 (id=157383)   : Apply Aura (6) | Modify Attacker Crit Chance (197)
                    Base Value: -6 | Scaled Value: -6 | Target: Self (1)
 #9 (id=157505)   : Dummy (3)
                    Base Value: 40 | Scaled Value: 40
@@ -869,7 +869,7 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6)
 Effects          :
-#1 (id=128868)   : Apply Aura (6) | Unknown(453)
+#1 (id=128868)   : Apply Aura (6) | Modify Recharge Time (453)
                    Base Value: -5000 | Scaled Value: -5000 | Misc Value: 1365 | Target: Self (1)
 #2 (id=135980)   : Apply Aura (6) | Modify Cooldown Charge (411)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 1365 | Target: Self (1)
@@ -918,7 +918,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #2 (id=128873)   : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: -60 | Scaled Value: -60 | Misc Value: 0x7f | Target: Self (1)
-#3 (id=135928)   : Apply Aura (6) | Unknown(106)
+#3 (id=135928)   : Apply Aura (6) | Levitate (106)
                    Base Value: 10 | Scaled Value: 10 | Target: Self (1)
 Description      : Reduces all damage taken by $s2% for $d. Moving, being hit by a melee attack, or taking another action will cancel this effect.
 Tooltip          : Damage taken reduced by $s2%.
@@ -1086,7 +1086,7 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=129188)   : Apply Aura (6) | Increase Energy (35)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 12 | Target: Self (1)
-#2 (id=177614)   : Apply Aura (6) | Mod Power Regen (110)
+#2 (id=177614)   : Apply Aura (6) | Modify Power Regen (110)
                    Base Value: 10 | Scaled Value: 10 | Misc Value: 3 | Target: Self (1)
 #3 (id=487650)   : Apply Aura (6) | Increase Energy (35)
                    Base Value: 20 | Scaled Value: 20 | Misc Value: 3 | Target: Self (1)
@@ -1184,7 +1184,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : ........ ....xx.. ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=129901)   : Apply Aura (6) | Unknown(118)
+#1 (id=129901)   : Apply Aura (6) | Modify Healing Recevied% (118)
                    Base Value: -25 | Scaled Value: -25 | Misc Value: 127 | Target: Enemy (6)
 Description      : Grievously wounds the target, reducing the effectiveness of any healing received for $115804d.
 Tooltip          : Healing effects received reduced by $w1%.
@@ -1414,7 +1414,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=131840)   : Apply Aura (6) | Unknown(455)
+#1 (id=131840)   : Apply Aura (6) | Root (455)
                    Base Value: 1 | Scaled Value: 1 | Mechanic: Unknown(58) | Target: Enemy (6)
 Description      : $@spelldesc116095
 Tooltip          : Rooted for $d.
@@ -1561,7 +1561,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=132060)   : Apply Aura (6) | Absorb Damage (69)
                    Base Value: 1 | Scaled Value: 0 (avg=73) | Misc Value: 127 | Target: Friend (21)
-#2 (id=139560)   : Apply Aura (6) | Unknown(259)
+#2 (id=139560)   : Apply Aura (6) | Modify Periodic Healing Recevied% (259)
                    Base Value: 50 | Scaled Value: 50 | Misc Value: 127 | Target: Friend (21)
 Description      : Encases the target in a cocoon of Chi energy for $d, absorbing $<shield> damage and increasing all healing over time received by $m2%.
 Tooltip          : Absorbing $w1 damage, and periodic healing received increased by $w2%.
@@ -1917,7 +1917,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #2 (id=153591)   : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: -20 | Scaled Value: -20 | Misc Value: 0x7f | Target: Self (1)
-#3 (id=153607)   : Apply Aura (6) | Scale% (61)
+#3 (id=153607)   : Apply Aura (6) | Scale% (Stacking) (61)
                    Base Value: 15 | Scaled Value: 15 | Target: Self (1)
 #4 (id=158673)   : Apply Aura (6) | Unknown(255)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 15 | Target: Self (1)
@@ -2203,7 +2203,7 @@ Attributes       : ....x... ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=156180)   : Apply Aura (6) | Periodic Damage (3): fire every 2 seconds
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.03276 | Target: Enemy (6)
-#2 (id=342380)   : Apply Aura (6) | Unknown(269)
+#2 (id=342380)   : Apply Aura (6) | Modify Damage Done% to Caster (269)
                    Base Value: -5 | Scaled Value: -5 | Misc Value: 127 | Target: Enemy (6)
 Description      : $@spelldesc115181
 Tooltip          : Burning for $w1 Fire damage ever $t1.  Dealing $w2% reduced damage to the Monk.
@@ -2535,7 +2535,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=157840)   : Apply Aura (6) | Periodic Heal (8): every 1 seconds
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.41250 | Target: Friend (21)
-#2 (id=290817)   : Apply Aura (6) | Unknown(283)
+#2 (id=290817)   : Apply Aura (6) | Modify Healing Taken% from Caster's Spells (283)
                    Base Value: 0 | Scaled Value: 0 | Target: Friend (21)
                    Affected Spells: Renewing Mist (115151), Soothing Mist (115175), Revival (115310), Vivify (116670), Effuse (116694), Renewing Mist (119611), Chi Burst (130654), Refreshing Jade Wind (162530), Essence Font (191840), Gust of Mists (191894), Zen Pulse (198487), Sheilun's Gift (205406), Soothing Mist (209525), Sheilun's Gift (214483)
 Description      : Wraps the target in healing mists, healing for $o1 over $d$?a231605[, and increasing healing received from your other spells by $m2%][].
@@ -3126,7 +3126,7 @@ Effects          :
                    Affected Spells: Soothing Mist (115175), Revival (115310), Vivify (116670), Effuse (116694), Renewing Mist (119611), Enveloping Mist (124682), Chi Burst (130654), Chi Wave (132463), Refreshing Jade Wind (162530), Essence Font (191840), Gust of Mists (191894), Zen Pulse (198487), Crane Heal (198756), Celestial Breath (199656), The Mists of Sheilun (199894), Sheilun's Gift (205406), Whispers of Shaohao (242400)
 #3 (id=191105)   : Apply Aura (6) | Unknown(312)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 117 | Target: Self (1)
-#4 (id=191106)   : Apply Aura (6) | Unknown(404)
+#4 (id=191106)   : Apply Aura (6) | Override Attack Power per Spell Power% (404)
                    Base Value: 100 | Scaled Value: 100 | Target: Self (1)
 #5 (id=191107)   : Apply Aura (6) | Add Flat Modifier (107): Spell Tick Time (8)
                    Base Value: 30 | Scaled Value: 30 | Misc Value: 8 | Target: Self (1)
@@ -3136,11 +3136,11 @@ Effects          :
 #7 (id=260828)   : Apply Aura (6) | Hasted Cooldown Duration (416)
                    Base Value: 100 | Scaled Value: 100 | Target: Self (1)
                    Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (101546), Blackout Strike (205523), Blackout Kick (228649)
-#8 (id=260829)   : Apply Aura (6) | Unknown(379)
+#8 (id=260829)   : Apply Aura (6) | Modify Mana Regen% (379)
                    Base Value: -20 | Scaled Value: -20 | Target: Self (1)
 #9 (id=260830)   : Apply Aura (6) | Unknown(179)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-#10 (id=260831)   : Apply Aura (6) | Unknown(453)
+#10 (id=260831)   : Apply Aura (6) | Modify Recharge Time (453)
                    Base Value: 2000 | Scaled Value: 2000 | Misc Value: 1518
                    Affected Spells: Rising Sun Kick (107428), Rising Sun Kick (185099)
 #11 (id=260832)   : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
@@ -3349,7 +3349,7 @@ Effects          :
                    Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (107270), Breath of Fire (115181), Fists of Fury (117418), Crackling Jade Lightning (117952), Keg Smash (121253), Flying Serpent Kick (123586), Zen Pulse (124081), Chi Wave (132467), Chi Burst (148135), Rushing Jade Wind (148187), Whirling Dragon Punch (158221), Rising Sun Kick (185099), Crosswinds (196061), Eye of the Tiger (196608), Special Delivery (196733), Strike of the Windlord (205414), Blackout Strike (205523), Strike of the Windlord (222029), Blackout Kick (228649), Thunderfist (242390)
 #3 (id=303756)   : Apply Aura (6) | Modify Healing% Done (136)
                    Base Value: 40 | Scaled Value: 40 | Misc Value: 127 | Target: Self (1)
-#4 (id=303757)   : Apply Aura (6) | Unknown(143)
+#4 (id=303757)   : Apply Aura (6) | Modify Cooldown Recharge Rate (143)
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 359 | Target: Self (1)
                    Affected Spells: Blackout Kick (100784), Spinning Crane Kick (101546), Rising Sun Kick (107428), Fists of Fury (113656), Rushing Jade Wind (116847), Fists of Fury (120086), Rushing Jade Wind (148187), Item - Monk T17 Windwalker2P Bonus (165403), Rising Sun Kick (185099), Strike of the Windlord (205320), Strike of the Windlord (205414), Blackout Strike (205523), Strike of the Windlord (222029), Blackout Kick (228649), Rushing Jade Wind (261715)
 #5 (id=330099)   : Apply Aura (6) | Unknown(148)
@@ -3406,7 +3406,7 @@ Attributes       : ....x.x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6)
 Effects          :
-#1 (id=214754)   : Apply Aura (6) | Unknown(132)
+#1 (id=214754)   : Apply Aura (6) | Modify Max Resource% (132)
                    Base Value: 5 | Scaled Value: 5 | Misc Value: 3 | Misc Value 2: 0x8 | Target: Self (1)
 Description      : Maximum energy increased by $s1%.
 
@@ -3877,7 +3877,7 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6)
 Effects          :
-#1 (id=288811)   : Apply Aura (6) | Unknown(453)
+#1 (id=288811)   : Apply Aura (6) | Modify Recharge Time (453)
                    Base Value: -3000 | Scaled Value: -3000 | Misc Value: 1562 | Target: Self (1)
 #2 (id=288812)   : Apply Aura (6) | Modify Cooldown Charge (411)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 1562 | Target: Self (1)
@@ -4198,7 +4198,7 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6)
 Effects          :
-#1 (id=290815)   : Apply Aura (6) | Unknown(330)
+#1 (id=290815)   : Apply Aura (6) | Cast while Moving (Whitelist) (330)
                    Base Value: 2 | Scaled Value: 2 | Target: Self (1)
                    Affected Spells: Soothing Mist (115175), Soothing Mist (209525)
 #2 (id=290816)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)
@@ -4524,7 +4524,7 @@ Attributes       : ........ ........ x....... ........   ..x...x. ........ .....
 Effects          :
 #1 (id=310090)   : Apply Aura (6) | Periodic Heal (8): every 0.5 seconds
                    Base Value: 1 | Scaled Value: 1 | Value Multiplier: 1 | SP Coefficient: 0.22500 | Chain Multiplier: 100 | Chain Targets: 1 | Target: Friend (21)
-#2 (id=352117)   : Apply Aura (6) | Unknown(330)
+#2 (id=352117)   : Apply Aura (6) | Cast while Moving (Whitelist) (330)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
                    Affected Spells: Effuse (116694), Enveloping Mist (124682)
 Description      : Heals the target for $o1 over $d.
@@ -5188,11 +5188,11 @@ Attributes       : ........ ........ ........ ........   ........ ..x..... .....
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ...x.... ........ ........ ........ 
 Effects          :
-#1 (id=369881)   : Apply Aura (6) | Unknown(133)
+#1 (id=369881)   : Apply Aura (6) | Modify Max Health% (133)
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
 #2 (id=369882)   : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: -20 | Scaled Value: -20 | Misc Value: 0x7f | Target: Self (1)
-#3 (id=369883)   : Apply Aura (6) | Scale% (61)
+#3 (id=369883)   : Apply Aura (6) | Scale% (Stacking) (61)
                    Base Value: 15 | Scaled Value: 15 | Target: Self (1)
 Description      : Turns your skin to stone, increasing your current and maximum health by $s1%, and reducing damage taken by $s2%.
 Tooltip          : Health increased by $w1%.

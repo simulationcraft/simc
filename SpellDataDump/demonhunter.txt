@@ -80,7 +80,7 @@ Attributes       : ........ ........ .......x x.......   .....x.. ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Does not break stealth (37), Not a proc (105), Disable player procs (112), Disable target procs (113), Disable weapon procs (151)
 Effects          :
-#2 (id=288193)   : Apply Aura (6) | Unknown(409)
+#2 (id=288193)   : Apply Aura (6) | Slow Fall (409)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : Reduces your falling speed.
 
@@ -128,7 +128,7 @@ Attributes       : ........ ........ ........ .......x   ........ ........ .....
 Effects          :
 #2 (id=227769)   : Apply Aura (6) | Increase Speed% (31)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-#3 (id=270147)   : Apply Aura (6) | Unknown(443)
+#3 (id=270147)   : Apply Aura (6) | Modify Leech% (443)
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
 #4 (id=271791)   : Apply Aura (6) | Unknown(332)
                    Base Value: 201427 | Scaled Value: 201427 | Target: Self (1)
@@ -252,7 +252,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 100 | Trigger Spell: 187727 | Target: Self (1)
 #3 (id=310313)   : Energize Power (30)
                    Base Value: 80 | Scaled Value: 80 | Misc Value: pain | Target: Self (1)
-#4 (id=313444)   : Apply Aura (6) | Unknown(129)
+#4 (id=313444)   : Apply Aura (6) | Increase Movement Speed% (Stacking) (129)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : Engulf yourself in flames, instantly causing $187727s1 Fire damage to enemies within $187727A1 yards and radiating $178741s1 Fire damage every sec.  Lasts $d.
 
@@ -436,7 +436,7 @@ Effects          :
 #1 (id=268563)   : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.50000 | Target: Self (1)
                    Affected Spells: Chaos Strike (162794), Chaos Nova (179057), Fel Rush (192611), Eye Beam (198030), Chaos Strike (199547), Metamorphosis (200166), Annihilation (201427), Annihilation (201428), Fury of the Illidari (201628), Fury of the Illidari (201789), Inner Demons (202388), Anguish (202446), Chaos Blades (211796), Fel Eruption (211881), Chaos Strike (222031), Fel Eruption (225102), Annihilation (227518), Metamorphosis (247121), Fel Barrage (258926)
-#2 (id=294810)   : Apply Aura (6) | Unknown(129)
+#2 (id=294810)   : Apply Aura (6) | Increase Movement Speed% (Stacking) (129)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.60000 | Target: Self (1)
 Description      : Increases your Chaos damage by ${$s1}.1% and your movement speed by ${$s2}.1%.
 
@@ -477,7 +477,7 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6), Hidden (7)
 Effects          :
-#1 (id=271491)   : Apply Aura (6) | Mod Power Regen (110)
+#1 (id=271491)   : Apply Aura (6) | Modify Power Regen (110)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 17 | Target: Self (1)
 
 Name             : Immolation Aura (id=187727) [Spell Family (107)] 
@@ -513,11 +513,11 @@ Attributes       : ....x... ........ ..x..... ........   ........ ........ .x...
                  : ........ ....x... ........ ........   ........ ........ ......x. ........ 
                  : ........ .....x.. ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=273949)   : Apply Aura (6) | Unknown(56)
+#1 (id=273949)   : Apply Aura (6) | Change Model (56)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.25000 | Misc Value: 104712 | Misc Value 2: 0x6 | Target: Self (1)
-#2 (id=273950)   : Apply Aura (6) | Unknown(133)
+#2 (id=273950)   : Apply Aura (6) | Modify Max Health% (133)
                    Base Value: 30 | Scaled Value: 30 | Target: Self (1)
-#3 (id=283617)   : Apply Aura (6) | Unknown(443)
+#3 (id=283617)   : Apply Aura (6) | Modify Leech% (443)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #4 (id=307168)   : Apply Aura (6) | Periodic Energize Power (24): every 1 seconds
                    Base Value: 70 | Scaled Value: 70 | Misc Value: 18 | Target: Self (1)
@@ -788,7 +788,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=288519)   : Apply Aura (6) | Unknown(40)
+#1 (id=288519)   : Apply Aura (6) | Damage Immunity (40)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 127 | Target: Self (1)
 #2 (id=303654)   : Apply Aura (6) | Pacify (25)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -877,7 +877,7 @@ Effects          :
                    Base Value: -200 | Scaled Value: -200 | Target: Self (1)
 #3 (id=291387)   : Apply Aura (6) | Dummy (4)
                    Base Value: 100 | Scaled Value: 100 | Target: Self (1)
-#4 (id=355950)   : Apply Aura (6) | Modify Power Regeneration (85)
+#4 (id=355950)   : Apply Aura (6) | Restore Power (85)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 17 | Target: Self (1)
 Description      : Blasts all enemies in front of you, dealing guaranteed critical strikes for a total of $<dmg> Chaos damage over $d. Your primary target takes $s3% increased damage.
 Variables        : $dmg=$?a203550[${$198030s1*15*2}][${$198030s1*10*2}]
@@ -1121,7 +1121,7 @@ Attributes       : .......x x....... ........ .....x..   ........ ..x..... .....
 Effects          :
 #1 (id=296804)   : Apply Aura (6) | School Immunity (39)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 127 | Target: Self (1)
-#2 (id=298926)   : Apply Aura (6) | Unknown(263)
+#2 (id=298926)   : Apply Aura (6) | Disable Abilities (263)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 
 Name             : Fury of the Illidari (Artifact) (id=201467) [Spell Family (107)] 
@@ -1329,7 +1329,7 @@ Attributes       : ........ x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=298834)   : Apply Aura (6) | Invisibility Detection (19)
                    Base Value: 1000 | Scaled Value: 1000 | Target: Self (1)
-#3 (id=298836)   : Apply Aura (6) | Unknown(228)
+#3 (id=298836)   : Apply Aura (6) | Stealth Detection (228)
                    Base Value: 1000 | Scaled Value: 1000 | Target: Self (1)
 
 Name             : Arcane Torrent (Racial) (id=202719) 
@@ -1493,7 +1493,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=300413)   : Apply Aura (6) | Modify Power Regeneration (85)
+#1 (id=300413)   : Apply Aura (6) | Restore Power (85)
                    Base Value: 50 | Scaled Value: 50 | Misc Value: 17 | Target: Self (1)
 Description      : $@spelldesc203551
 Tooltip          : Generating ${$m1/5} Fury every sec.
@@ -1909,7 +1909,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6)
 Effects          :
-#1 (id=302487)   : Apply Aura (6) | Unknown(443)
+#1 (id=302487)   : Apply Aura (6) | Modify Leech% (443)
                    Base Value: 10 | Scaled Value: 10 | Target: Self (1)
 #2 (id=483201)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 3 (23)
                    Base Value: 10 | Scaled Value: 10 | Misc Value: 23 | Target: Self (1)
@@ -1929,7 +1929,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6)
 Effects          :
-#1 (id=303317)   : Apply Aura (6) | Unknown(468)
+#1 (id=303317)   : Apply Aura (6) | Trigger Spell Based on Health% (468)
                    Base Value: 35 | Scaled Value: 35 | Misc Value: 1 | Trigger Spell: 205478 | Target: Self (1)
 #2 (id=303640)   : Apply Aura (6) | Dummy (4)
                    Base Value: 25 | Scaled Value: 25 | Target: Self (1)
@@ -2067,7 +2067,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ .......x ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=305378)   : Apply Aura (6) | Unknown(270)
+#1 (id=305378)   : Apply Aura (6) | Modify Damage Taken% from Caster (270)
                    Base Value: 25 | Scaled Value: 25 | Misc Value: 127 | Target: Enemy (6)
 Description      : Increases damage you inflict against the target by $s1% for $d. 
 
@@ -2152,7 +2152,7 @@ Effects          :
 #1 (id=306954)   : Apply Aura (6) | Add Flat Modifier (107): Spell Range (5)
                    Base Value: 10 | Scaled Value: 10 | Misc Value: 5
                    Affected Spells: Infernal Strike (189110), Infernal Strike (189112)
-#2 (id=306994)   : Apply Aura (6) | Unknown(453)
+#2 (id=306994)   : Apply Aura (6) | Modify Recharge Time (453)
                    Base Value: -8000 | Scaled Value: -8000 | Misc Value: 1553 | Target: Self (1)
                    Affected Spells: Infernal Strike (189110), Infernal Strike (189112)
 Description      : Infernal Strike's range is increased by $s1 yards, and its cooldown is reduced by ${$s2/-1000} sec.
@@ -2227,7 +2227,7 @@ Attributes       : ........ ........ ........ x..x....   ...x.x.x ........ .....
 Effects          :
 #1 (id=307160)   : Apply Aura (6) | Unknown(407)
                    Base Value: 0 | Scaled Value: 0 | Radius: 8 yards | Mechanic: Unknown(42) | Target: AOE enemy (instant) (16)
-#2 (id=307162)   : Apply Aura (6) | Unknown(455)
+#2 (id=307162)   : Apply Aura (6) | Root (455)
                    Base Value: 0 | Scaled Value: 0 | Radius: 8 yards | Target: AOE enemy (instant) (16)
 Description      : Disorient affected enemies for $d.
 Tooltip          : Disoriented.
@@ -2295,9 +2295,9 @@ Attributes       : ....x... ........ ........ ........   ........ ........ .....
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=307322)   : Apply Aura (6) | Unknown(269)
+#1 (id=307322)   : Apply Aura (6) | Modify Damage Done% to Caster (269)
                    Base Value: -40 | Scaled Value: -40 | Misc Value: 127 | Target: Enemy (6)
-#2 (id=707093)   : Apply Aura (6) | Unknown(271)
+#2 (id=707093)   : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
                    Affected Spells: Immolation Aura (178741), Immolation Aura (187727), Infernal Strike (189110), Infernal Strike (189112), Fiery Brand (204021), Sigil of Silence (204490), Sigil of Flame (204598), Sigil of Chains (204843), Sigil of Misery (207685), Fiery Brand (207744), Fiery Brand (207771), Fel Devastation (212105), Felblade (213241), Felblade (213243), Fel Eruption (225102), Felblade (232893), Spirit Bomb (247455), Immolation Aura (258921), Immolation Aura (258922)
 Description      : $@spelldesc204021
@@ -2319,9 +2319,9 @@ Attributes       : ....x... ........ ........ ........   ........ ........ .....
                  : ........ .x..x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=307364)   : Apply Aura (6) | Unknown(269)
+#1 (id=307364)   : Apply Aura (6) | Modify Damage Done% to Caster (269)
                    Base Value: -40 | Scaled Value: -40 | Misc Value: 127 | Target: Enemy (6)
-#2 (id=370871)   : Apply Aura (6) | Unknown(271)
+#2 (id=370871)   : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
                    Affected Spells: Immolation Aura (178741), Immolation Aura (187727), Infernal Strike (189110), Infernal Strike (189112), Fiery Brand (204021), Sigil of Silence (204490), Sigil of Flame (204598), Sigil of Chains (204843), Sigil of Misery (207685), Fiery Brand (207744), Fiery Brand (207771), Fel Devastation (212105), Felblade (213241), Felblade (213243), Fel Eruption (225102), Felblade (232893), Spirit Bomb (247455), Immolation Aura (258921), Immolation Aura (258922)
 #3 (id=707094)   : Apply Aura (6) | Periodic Damage (3): fire every 2 seconds
@@ -2340,7 +2340,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=308699)   : Apply Aura (6) | Unknown(168)
+#1 (id=308699)   : Apply Aura (6) | Modify Damage Done% vs Race (168)
                    Base Value: 25 | Scaled Value: 25 | Misc Value: 64 | Target: Self (1)
 Description      : Increases damage against Humanoids by $s1%.
 Tooltip          : Damage against Humanoids increased by $s1%.
@@ -2971,7 +2971,7 @@ Attributes       : ........ ........ ........ ..x.....   ........ ........ .....
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=315667)   : Apply Aura (6) | Unknown(270)
+#1 (id=315667)   : Apply Aura (6) | Modify Damage Taken% from Caster (270)
                    Base Value: 10 | Scaled Value: 10 | Misc Value: 4 | Target: Enemy (6)
 Description      : $@spelldesc212817
 Tooltip          : Fire damage taken increased by $w1%.
@@ -3179,7 +3179,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6)
 Effects          :
-#1 (id=324562)   : Apply Aura (6) | Unknown(443)
+#1 (id=324562)   : Apply Aura (6) | Modify Leech% (443)
                    Base Value: 5 | Scaled Value: 5 | Target: Self (1)
 #2 (id=706206)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 3 (23)
                    Base Value: 25 | Scaled Value: 25 | Misc Value: 23 | Target: Self (1)
@@ -3834,7 +3834,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
 #2 (id=483077)   : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.68850 | Target: Enemy (6)
-#3 (id=483078)   : Apply Aura (6) | Unknown(271)
+#3 (id=483078)   : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271)
                    Base Value: 40 | Scaled Value: 40 | Target: Enemy (6)
                    Affected Spells: Chaos Strike (199547), Annihilation (201428), Chaos Strike (222031), Annihilation (227518)
 Description      : Slash an enemy for $s2 Physical damage, and increase the damage your Chaos Strike deals to them by $s3% for $d.
@@ -3981,7 +3981,7 @@ Attributes       : ........ ........ ........ ........   ..x..... ........ .....
 Effects          :
 #1 (id=483178)   : Apply Aura (6) | Periodic Trigger Spell (23): Fel Barrage every 0.25 seconds
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 258926 | Target: Self (1)
-#2 (id=483179)   : Apply Aura (6) | Unknown(106)
+#2 (id=483179)   : Apply Aura (6) | Levitate (106)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : Unleash a torrent of Fel energy over $d, inflicting ${(($d/$t1)+1)*$258926s1} Chaos damage to all enemies within $258926A1 yds.
 Tooltip          : Unleashing Fel.

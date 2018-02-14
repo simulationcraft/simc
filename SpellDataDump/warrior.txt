@@ -201,10 +201,10 @@ Effects          :
 #2 (id=159300)   : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: -20 | Scaled Value: -20 | Misc Value: 0x7f | Radius: 0 - 10 yards | Target: At Caster (22) -> AOE enemy (15)
                    Affected School(s): All
-#3 (id=292881)   : Apply Aura (6) | Unknown(271)
+#3 (id=292881)   : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271)
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 10 yards | Target: At Caster (22) -> AOE enemy (15)
                    Affected Spells: Rend (772), Cleave (845), Slam (1464), Hamstring (1715), Execute (5308), Thunder Clap (6343), Revenge (6572), Overpower (7384), Warbringer (7922), Mortal Strike (12294), Devastate (20243), Bloodthirst (23881), Shield Slam (23922), Victory Rush (34428), Whirlwind Off-Hand (44949), Shockwave (46968), Bladestorm (50622), Heroic Leap (52174), Heroic Throw (57755), Raging Blow (85384), Bladestorm Off-Hand (95738), Raging Blow (96103), Furious Slash (100130), Storm Bolt (107570), Deep Wounds (115767), Dragon Roar (118000), Charge (126664), Ravager (156287), Execute Off-Hand (163558), Colossus Smash (167105), Rampage (184707), Rampage (184709), Whirlwind (199658), Whirlwind (199667), Whirlwind (199850), Rampage (201363), Rampage (201364), Impending Victory (202168), Opportunity Strikes (203178), Odyn's Fury (205546), Odyn's Fury (205547), Warbreaker (209577), Rampage (218617), Devastator (236282), Helya's Scorn (243223), Odyn's Glory (243228), Skullsplitter (260643), Execute (260798), Deep Wounds (262115), Warbreaker (262161)
-#4 (id=298857)   : Apply Aura (6) | Unknown(343)
+#4 (id=298857)   : Apply Aura (6) | Modify Auto Attack Damage Taken% from Caster (343)
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 10 yards | Target: At Caster (22) -> AOE enemy (15)
                    Affected Spells: Cleave (845), Whirlwind (1680), Thunder Clap (6343), Heroic Leap (6544), Revenge (6572), Overpower (7384), Devastate (20243), Shield Slam (23922), Whirlwind Off-Hand (44949), Bladestorm (46924), Bladestorm (50622), Heroic Leap (52174), Bladestorm Off-Hand (95738), Whirlwind (190411), Whirlwind (199658), Whirlwind (199667), Whirlwind (199850), Bladestorm (222634), Bladestorm (227847), Devastator (236282)
 #5 (id=298858)   : Energize Power (30)
@@ -374,11 +374,11 @@ Attributes       : ....x... ........ x.x..... ........   ...x...x ........ .....
 Effects          :
 #1 (id=1868)     : Apply Aura (6) | Unknown(407)
                    Base Value: 5 | Scaled Value: 5 | Target: Enemy (6)
-#2 (id=1869)     : Apply Aura (6) | Unknown(455)
+#2 (id=1869)     : Apply Aura (6) | Root (455)
                    Base Value: 5 | Scaled Value: 5 | Target: Enemy (6)
 #3 (id=1870)     : Apply Aura (6) | Unknown(407)
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 8 yards | Target: At Caster (22) -> AOE enemy (15)
-#4 (id=194839)   : Apply Aura (6) | Unknown(455)
+#4 (id=194839)   : Apply Aura (6) | Root (455)
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 8 yards | Target: At Caster (22) -> AOE enemy (15)
 #5 (id=200193)   : Apply Aura (6) | Unknown(191)
                    Base Value: 7 | Scaled Value: 7 | Target: Enemy (6)
@@ -726,7 +726,7 @@ Attributes       : ....x... ........ ..x..... ........   ........ ........ .x...
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ .....x.. ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=5787)     : Apply Aura (6) | Unknown(133)
+#1 (id=5787)     : Apply Aura (6) | Modify Max Health% (133)
                    Base Value: 30 | Scaled Value: 30 | Target: Self (1)
 Description      : Increases current and maximum health by $s1% for $d.
 Tooltip          : Maximum health increased by $s1%.
@@ -1089,7 +1089,7 @@ Attributes       : ......x. x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=39078)    : Titan Grip (155)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-#2 (id=39079)    : Apply Aura (6) | Unknown(133)
+#2 (id=39079)    : Apply Aura (6) | Modify Max Health% (133)
                    Base Value: 15 | Scaled Value: 15 | Target: Self (1)
 Description      : Allows you to dual-wield a pair of two-handed weapons, and increases your maximum health by $s2%.
 
@@ -1114,7 +1114,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 50622 | Target: Self (1)
 #2 (id=39083)    : Apply Aura (6) | Unknown(147)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1733 | Target: Self (1)
-#3 (id=39084)    : Apply Aura (6) | Unknown(263)
+#3 (id=39084)    : Apply Aura (6) | Disable Abilities (263)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
                    Affected Spells: Taunt (355), Shield Wall (871), Demoralizing Shout (1160), Shield Block (2565), Last Stand (12975), Berserker Rage (18499), Rallying Cry (97462), Rallying Cry (97463), Die by the Sword (118038), Demoralizing Shout (125565), Enraged Regeneration (184364), Defensive Stance (197690)
 Description      : Become an unstoppable storm of destructive force, striking all targets within $50622A1 yards $?s23881[with both weapons for ${7*($50622sw2+$95738sw2)} Physical damage][for ${7*$168969sw2} Physical damage] over $d.
@@ -1213,7 +1213,7 @@ Effects          :
 #2 (id=240564)   : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost (14)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 14 | Target: Self (1)
                    Affected Spells: Execute (5308), Execute (163201), Execute Off-Hand (163558), Execute (260798)
-#3 (id=623417)   : Apply Aura (6) | Unknown(63)
+#3 (id=623417)   : Apply Aura (6) | Modify Max Cost (63)
                    Base Value: -300 | Scaled Value: -300 | Misc Value: 1 | Target: Self (1)
                    Affected Spells: Execute (5308), Execute (163201), Execute Off-Hand (163558), Execute (260798)
 Description      : $@spelldesc29725
@@ -1474,7 +1474,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6)
 Effects          :
-#1 (id=68048)    : Apply Aura (6) | Unknown(253)
+#1 (id=68048)    : Apply Aura (6) | Modify Critical Block Chance (253)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.50000 | Misc Value: 8 | Target: Self (1)
 #2 (id=87946)    : Apply Aura (6) | Modify Block% (51)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.50000 | Target: Self (1)
@@ -1718,7 +1718,7 @@ Attributes       : ........ ........ ........ ........   ........ ..x..... .....
 Effects          :
 #1 (id=104015)   : Apply Aura (6) | Increase Health (34)
                    Base Value: 0 | Scaled Value: 0 | Target: Unknown(25)
-#2 (id=298239)   : Apply Aura (6) | Unknown(443)
+#2 (id=298239)   : Apply Aura (6) | Modify Leech% (443)
                    Base Value: 0 | Scaled Value: 0 | Target: Unknown(25)
 Description      : $@spelldesc97462
 Tooltip          : Health increased by $97462s1% of maximum.
@@ -1761,7 +1761,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=166913)   : Apply Aura (6) | Modify Cooldown Charge (411)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 1386 | Target: Self (1)
-#2 (id=320495)   : Apply Aura (6) | Unknown(453)
+#2 (id=320495)   : Apply Aura (6) | Modify Recharge Time (453)
                    Base Value: -3000 | Scaled Value: -3000 | Misc Value: 1386 | Target: Self (1)
 Description      : Increases the maximum number of charges on $?s198304[Intercept][Charge] by 1, and reduces its cooldown by ${$s2/-1000} sec.
 
@@ -1795,7 +1795,7 @@ Attributes       : ........ ........ ........ ........   ...x...x ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Requires line of sight (186)
 Effects          :
-#1 (id=115753)   : Apply Aura (6) | Unknown(455)
+#1 (id=115753)   : Apply Aura (6) | Root (455)
                    Base Value: 0 | Scaled Value: 0 | Chain Multiplier: 1 | Mechanic: Unknown(58) | Chain Targets: 1 | Target: Enemy (6)
 Description      : $@spelldesc100
 Tooltip          : Rooted.
@@ -1842,7 +1842,7 @@ Effects          :
                    Affected School(s): All
 #2 (id=118391)   : Server Side Script (77)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-#3 (id=118664)   : Apply Aura (6) | Scale% (61)
+#3 (id=118664)   : Apply Aura (6) | Scale% (Stacking) (61)
                    Base Value: 30 | Scaled Value: 30 | Target: Self (1)
 Description      : Transform into a colossus for $d, causing you to deal $s1% increased damage and removing all roots and snares.
 Tooltip          : Damage done increased by $s1%.
@@ -1956,7 +1956,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : ........ ....xx.. ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=129901)   : Apply Aura (6) | Unknown(118)
+#1 (id=129901)   : Apply Aura (6) | Modify Healing Recevied% (118)
                    Base Value: -25 | Scaled Value: -25 | Misc Value: 127 | Target: Enemy (6)
 Description      : Grievously wounds the target, reducing the effectiveness of any healing received for $115804d.
 Tooltip          : Healing effects received reduced by $w1%.
@@ -2104,7 +2104,7 @@ Effects          :
                    Base Value: 100 | Scaled Value: 100 | SP Coefficient: 0.25000 | Target: Self (1)
 #2 (id=134225)   : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: -30 | Scaled Value: -30 | SP Coefficient: 0.25000 | Misc Value: 0x7f | Target: Self (1)
-#3 (id=225727)   : Apply Aura (6) | Unknown(197)
+#3 (id=225727)   : Apply Aura (6) | Modify Attacker Crit Chance (197)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.25000 | Target: Self (1)
 Description      : Increases your parry chance by $s1% and reduces all damage you take by $s2% for $d.
 Tooltip          : Parry chance increased by $s1%.
@@ -2129,7 +2129,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
 Effects          :
 #1 (id=135435)   : Direct Heal% (136)
                    Base Value: 30 | Scaled Value: 30 | Target: Self (1)
-#2 (id=149902)   : Apply Aura (6) | Scale% (61)
+#2 (id=149902)   : Apply Aura (6) | Scale% (Stacking) (61)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : $@spelldesc34428
 
@@ -2379,7 +2379,7 @@ Effects          :
                    Affected Spells: Rend (772), Cleave (845), Slam (1464), Hamstring (1715), Execute (5308), Thunder Clap (6343), Revenge (6572), Overpower (7384), Warbringer (7922), Mortal Strike (12294), Devastate (20243), Bloodthirst (23881), Shield Slam (23922), Victory Rush (34428), Whirlwind Off-Hand (44949), Shockwave (46968), Bladestorm (50622), Heroic Leap (52174), Heroic Throw (57755), Raging Blow (85384), Bladestorm Off-Hand (95738), Raging Blow (96103), Furious Slash (100130), Storm Bolt (107570), Deep Wounds (115767), Dragon Roar (118000), Charge (126664), Ravager (156287), Execute Off-Hand (163558), Colossus Smash (167105), Rampage (184707), Rampage (184709), Whirlwind (199658), Whirlwind (199667), Whirlwind (199850), Rampage (201363), Rampage (201364), Impending Victory (202168), Opportunity Strikes (203178), Odyn's Fury (205546), Odyn's Fury (205547), Warbreaker (209577), Rampage (218617), Devastator (236282), Helya's Scorn (243223), Odyn's Glory (243228), Skullsplitter (260643), Execute (260798), Deep Wounds (262115), Warbreaker (262161)
 #3 (id=191017)   : Apply Aura (6) | Modify Cooldown Charge (411)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 1386 | Target: Self (1)
-#4 (id=191018)   : Apply Aura (6) | Unknown(453)
+#4 (id=191018)   : Apply Aura (6) | Modify Recharge Time (453)
                    Base Value: -5000 | Scaled Value: -5000 | Misc Value: 1386 | Target: Self (1)
 #5 (id=191019)   : Apply Aura (6) | Add Percent Modifier (108): Spell Cooldown (11)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 11 | Target: Self (1)
@@ -2401,7 +2401,7 @@ Effects          :
                    Affected Spells: Victory Rush (118779)
 #12 (id=261033)   : Apply Aura (6) | Modify Block% (51)
                    Base Value: 15 | Scaled Value: 15 | Misc Value: 11 | Target: Self (1)
-#13 (id=261034)   : Apply Aura (6) | Unknown(150)
+#13 (id=261034)   : Apply Aura (6) | Modify Block Effectiveness (150)
                    Base Value: 5 | Scaled Value: 5 | Target: Self (1)
 #14 (id=261035)   : Apply Aura (6) | Unknown(463)
                    Base Value: 100 | Scaled Value: 100 | Target: Self (1)
@@ -2710,7 +2710,7 @@ Attributes       : ....x.x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6)
 Effects          :
-#1 (id=214756)   : Apply Aura (6) | Unknown(132)
+#1 (id=214756)   : Apply Aura (6) | Modify Max Resource% (132)
                    Base Value: 5 | Scaled Value: 5 | Misc Value: 1 | Misc Value 2: 0x8 | Target: Self (1)
 Description      : Maximum rage increased by $s1%.
 
@@ -3156,7 +3156,7 @@ Attributes       : ....x... ........ x.x..x.. ........   ...x...x .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Cannot dodge/parry/block (21)
 Effects          :
-#1 (id=292904)   : Apply Aura (6) | Unknown(455)
+#1 (id=292904)   : Apply Aura (6) | Root (455)
                    Base Value: 1 | Scaled Value: 1 | Target: Enemy (6)
 Description      : $@spelldesc199045
 Tooltip          : Rooted.
@@ -3326,7 +3326,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6)
 Effects          :
-#1 (id=297836)   : Apply Aura (6) | Unknown(133)
+#1 (id=297836)   : Apply Aura (6) | Modify Max Health% (133)
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
 #2 (id=323852)   : Apply Aura (6) | Add Percent Modifier (108): Spell Effect 1 (3)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 3 | Target: Self (1)
@@ -3375,7 +3375,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6), Hidden (7)
 Effects          :
-#1 (id=297945)   : Apply Aura (6) | Unknown(453)
+#1 (id=297945)   : Apply Aura (6) | Modify Recharge Time (453)
                    Base Value: -15000 | Scaled Value: -15000 | Misc Value: 1211 | Target: Self (1)
 Description      : Reduces the cooldown on Heroic Leap by ${$m1/-1000} sec, and Heroic Leap now also increases your run speed by $202164s1% for $202164d.
 
@@ -3665,7 +3665,7 @@ Effects          :
 #1 (id=298649)   : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost (14)
                    Base Value: -33 | Scaled Value: -33 | Misc Value: 14 | Target: Self (1)
                    Affected Spells: Shield Block (2565)
-#2 (id=344800)   : Apply Aura (6) | Unknown(63)
+#2 (id=344800)   : Apply Aura (6) | Modify Max Cost (63)
                    Base Value: -140 | Scaled Value: -140 | Misc Value: 1 | Target: Self (1)
                    Affected Spells: Ignore Pain (258024)
 Description      : $@spelldesc202572
@@ -3865,9 +3865,9 @@ Effects          :
                    Base Value: 300 | Scaled Value: 300 | Target: Self (1)
 #2 (id=300182)   : Apply Aura (6) | Periodic Trigger Spell (23): Neltharion's Fury every 0.5 seconds
                    Base Value: 50 | Scaled Value: 50 | Trigger Spell: 203526 | Target: Self (1)
-#3 (id=300247)   : Apply Aura (6) | Unknown(253)
+#3 (id=300247)   : Apply Aura (6) | Modify Critical Block Chance (253)
                    Base Value: 100 | Scaled Value: 100 | Target: Self (1)
-#4 (id=312629)   : Apply Aura (6) | Unknown(263)
+#4 (id=312629)   : Apply Aura (6) | Disable Abilities (263)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
                    Affected Spells: Taunt (355), Shield Wall (871), Demoralizing Shout (1160), Shield Block (2565), Last Stand (12975), Spell Reflection (23920), Demoralizing Shout (125565), Ignore Pain (258024)
 Description      : Enter a defensive posture, critically blocking all attacks while a stream of shadowflame erupts from |cFFFFCC99Scale of the Earth-Warder|r, dealing ${6*$203526s1} Shadowflame over $d to all enemies in front of you. You can use defensive abilities while this is active.
@@ -4089,7 +4089,7 @@ Attributes       : ....x... ........ x.x..x.. ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Cannot dodge/parry/block (21), Disable player procs (112)
 Effects          :
-#1 (id=307841)   : Apply Aura (6) | Unknown(271)
+#1 (id=307841)   : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271)
                    Base Value: 30 | Scaled Value: 30 | Target: Enemy (6)
                    Affected Spells: Rend (772), Cleave (845), Slam (1464), Hamstring (1715), Execute (5308), Thunder Clap (6343), Revenge (6572), Overpower (7384), Warbringer (7922), Mortal Strike (12294), Devastate (20243), Bloodthirst (23881), Shield Slam (23922), Victory Rush (34428), Whirlwind Off-Hand (44949), Shockwave (46968), Bladestorm (50622), Heroic Leap (52174), Heroic Throw (57755), Raging Blow (85384), Bladestorm Off-Hand (95738), Raging Blow (96103), Furious Slash (100130), Storm Bolt (107570), Deep Wounds (115767), Dragon Roar (118000), Charge (126664), Ravager (156287), Execute Off-Hand (163558), Colossus Smash (167105), Rampage (184707), Rampage (184709), Whirlwind (199658), Whirlwind (199667), Whirlwind (199850), Rampage (201363), Rampage (201364), Impending Victory (202168), Opportunity Strikes (203178), Odyn's Fury (205546), Odyn's Fury (205547), Warbreaker (209577), Rampage (218617), Devastator (236282), Helya's Scorn (243223), Odyn's Glory (243228), Skullsplitter (260643), Execute (260798), Deep Wounds (262115), Warbreaker (262161)
 Description      : $@spelldesc167105
@@ -4688,7 +4688,7 @@ Attributes       : ........ ........ ........ ........   ........ ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=334376)   : Apply Aura (6) | Unknown(81)
+#1 (id=334376)   : Apply Aura (6) | Transfer Damage% (81)
                    Base Value: 30 | Scaled Value: 30 | Value Multiplier: 1 | Misc Value: 127 | Target: Friend (21)
 Description      : $@spelldesc223657
 Tooltip          : $s1% of damage taken is transferred to the Warrior.
@@ -4775,7 +4775,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 50622 | Target: Self (1)
 #2 (id=342670)   : Apply Aura (6) | Unknown(147)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1733 | Target: Self (1)
-#3 (id=342671)   : Apply Aura (6) | Unknown(263)
+#3 (id=342671)   : Apply Aura (6) | Disable Abilities (263)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
                    Affected Spells: Taunt (355), Shield Wall (871), Demoralizing Shout (1160), Shield Block (2565), Last Stand (12975), Berserker Rage (18499), Rallying Cry (97462), Rallying Cry (97463), Die by the Sword (118038), Demoralizing Shout (125565), Enraged Regeneration (184364), Defensive Stance (197690)
 Description      : Become an unstoppable storm of destructive force, striking all targets within $50622A1 yards $?s137050[with both weapons for ${7*($50622sw2+$95738sw2)} Physical damage][for ${7*$50622sw2} Physical damage] over $d.
@@ -5424,7 +5424,7 @@ Attributes       : ........ ........ ........ ..x.....   ........ ........ .....
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=623145)   : Apply Aura (6) | Unknown(271)
+#1 (id=623145)   : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271)
                    Base Value: 25 | Scaled Value: 25 | Target: Enemy (6)
                    Affected Spells: Mortal Strike (12294)
 Description      : $@spelldesc163201
@@ -5540,7 +5540,7 @@ Effects          :
 #1 (id=623308)   : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost (14)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 14 | Target: Self (1)
                    Affected Spells: Rend (772), Cleave (845), Slam (1464), Whirlwind (1680), Hamstring (1715), Execute (5308), Mortal Strike (12294), Improved Hamstring (24428), Whirlwind Off-Hand (44949), Execute (163201), Execute Off-Hand (163558), Colossus Smash (167105), Whirlwind (190411), Whirlwind (199658), Whirlwind (199667), Whirlwind (199850), Colossus Smash (208086), Execute (260798)
-#2 (id=623342)   : Apply Aura (6) | Unknown(63)
+#2 (id=623342)   : Apply Aura (6) | Modify Max Cost (63)
                    Base Value: -300 | Scaled Value: -300 | Misc Value: 1 | Target: Self (1)
                    Affected Spells: Execute (5308), Execute (163201), Execute Off-Hand (163558), Execute (260798)
 Description      : Reduces the Rage cost of your abilities by $s1% for $d.
