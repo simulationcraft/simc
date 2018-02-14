@@ -8,13 +8,19 @@ from dbc.file import DBCFile
 from dbc.generator import CSVDataGenerator, DataGenerator
 from dbc.config import Config
 
+try:
+    from bitarray import bitarray
+except Exception as error:
+    print('ERROR: %s, dbc_extract.py requires the Python bitarray (https://pypi.python.org/pypi/bitarray) package to function' % error, file = sys.stderr)
+    sys.exit(1)
+
 logging.basicConfig(level = logging.INFO,
         datefmt = '%Y-%m-%d %H:%M:%S',
         format = '[%(asctime)s] %(levelname)s: %(message)s')
 
 parser = argparse.ArgumentParser(usage= "%(prog)s [-otlbp] [ARGS]")
 parser.add_argument("-t", "--type", dest = "type", 
-                  help    = "Processing type [spell]", metavar = "TYPE", 
+                  help    = "Processing type [output]", metavar = "TYPE", 
                   default = "output", action = "store",
                   choices = [ 'output', 'scale', 'view', 'csv', 'header',
                               'class_flags', 'generator' ])
@@ -42,8 +48,9 @@ parser.add_argument("--scale-ilvl",  dest = "scale_ilevel", default = 1300, type
                     help = "Maximum inclusive ilevel for game table related extraction")
 parser.add_argument("-p", "--path",  dest = "path",         default = '.',
                     help = "DBC input directory [cwd]")
-parser.add_argument("--cache",       dest = "cache_dir",    default = '',
-                    help = "World of Warcraft Cache directory (location of DBCache.bin).")
+parser.add_argument("--hotfix",       dest = "hotfix_file",
+                    type = argparse.FileType('rb'),
+                    help = "Path to World of Warcraft DBCache.bin file.")
 parser.add_argument("--wdbfile",     dest = "wdb_file",     default = '',
                     help = "Path to WDB file to determine attributes when using 'view' type on adb files")
 parser.add_argument("args", metavar = "ARGS", type = str, nargs = argparse.REMAINDER)
@@ -109,12 +116,6 @@ elif options.type == 'class_flags':
     ids = g.filter(options.args[0])
 
     g.generate(ids)
-elif options.type == 'azerite':
-    g = dbc.generator.AzeriteDataGenerator(options)
-    if not g.initialize():
-        sys.exit(1)
-
-    g.generate()
 elif options.type == 'header':
     dbcs = [ ]
     for fn in options.args:
@@ -142,15 +143,12 @@ elif options.type == 'view':
         for record in dbc_file:
             sys.stdout.write('%s\n' % str(record))
     else:
-        if options.raw and not dbc_file.searchable():
-            logging.error('DBC file %s is not searchable in raw mode', path)
-            sys.exit(1)
+        record = dbc_file.find(id)
+        if record:
+            print(record)
         else:
-            record = dbc_file.find(id)
-            if record:
-                print(record)
-            else:
-                print('No record for DBC ID %d found', id)
+            print('No record for DBC ID {} found'.format(id))
+
 elif options.type == 'csv':
     path = os.path.abspath(os.path.join(options.path, options.args[0]))
     id = None

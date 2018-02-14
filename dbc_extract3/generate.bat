@@ -4,7 +4,7 @@ setlocal
 
 set OUTPATH=%~dp0..\engine\dbc\generated
 set RUNFILE=%~dp0\dbc_extract.py
-set CACHEDIR=%~dp0\cache\live
+set CACHEFILE=%~dp0\cache\live\DBCache.bin
 set BATCHFILE=%~dp0\live.conf
 
 set PTR=
@@ -12,7 +12,7 @@ set PTREXT=
 if not %1 == ptr goto next
 set PTR= --prefix=ptr
 set PTREXT=_ptr
-set CACHEDIR=%~dp0\cache\ptr
+set CACHEFILE=%~dp0\cache\ptr\DBCache.bin
 set BATCHFILE=%~dp0\ptr.conf
 shift
 
@@ -27,8 +27,8 @@ echo.
 goto usage
 :okay
 
-py -3 %RUNFILE% -p %INPATH%   -b %BUILD% --cache %CACHEDIR% %PTR% -t output %BATCHFILE%
-py -3 %RUNFILE% -p %GTINPATH% -b %BUILD%                    %PTR% -t scale  -o %OUTPATH%\sc_scale_data%PTREXT%.inc
+py -3 %RUNFILE% -p %INPATH%   -b %BUILD% --hotfix=%CACHEDIR% %PTR% -t output %BATCHFILE%
+py -3 %RUNFILE% -p %GTINPATH% -b %BUILD%                     %PTR% -t scale  -o %OUTPATH%\sc_scale_data%PTREXT%.inc
 
 echo Done!
 

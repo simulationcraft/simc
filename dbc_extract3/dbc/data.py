@@ -7,6 +7,34 @@ _FORMATDB = None
 class RawDBCRecord:
     __slots__ = ( '_id', '_d', '_dbcp', '_flags', '_key' )
 
+    _key_block = False
+    _id_block = False
+
+    _id_format = '%u'
+    _key_format = '%u'
+
+    _id_index = 0
+
+    @classmethod
+    def has_key_block(cls, state):
+        cls._key_block = state
+
+    @classmethod
+    def has_id_block(cls, state):
+        cls._id_block = state
+
+    @classmethod
+    def id_format(cls, format):
+        cls._id_format = format
+
+    @classmethod
+    def key_format(cls, format):
+        cls._key_format = format
+
+    @classmethod
+    def id_index(cls, index):
+        cls._id_index = index
+
     def dbc_name(self):
         return self.__class__.__name__.replace('_', '-')
 
@@ -25,7 +53,7 @@ class RawDBCRecord:
             self._d = (0,) * len(self._fi)
 
     def __getattr__(self, name):
-        if name == 'id' and self._id > -1:
+        if name == 'id' and self._id_block and self._id > -1:
             return self._id
         # Always return the parent id, even as 0 if the block does not exist in the db2 file
         elif name == 'id_parent':
@@ -35,13 +63,16 @@ class RawDBCRecord:
 
     def __str__(self):
         s = []
-        if self._id > -1:
+        if self._id_block:
             s.append('id=%u' % self._id)
 
         for i in range(0, len(self._d)):
-            s.append('f%d=%d' % (i + 1, self._d[i]))
+            if not self._id_block and self._id_index == i:
+                s.append('id=%d' % self._d[i])
+            else:
+                s.append('f%d=%d' % (i + 1, self._d[i]))
 
-        if self._key > 0:
+        if self._key_block:
             s.append('id_parent=%u' % self._key)
 
         return ' '.join(s)
@@ -186,11 +217,11 @@ class DBCRecord(RawDBCRecord):
         for field in args:
             field_idx = 0
             try:
-                if field == 'id' and self._id > -1:
-                    f.append(self._dbcp.id_format(self.__class__.__name__) % self._id)
+                if field == 'id' and self._id_block and self._id > -1:
+                    f.append(self._id_format % self._id)
                     continue
                 elif field == 'id_parent':
-                    f.append(self._dbcp.key_format(self.__class__.__name__) % self._key)
+                    f.append(self._key_format % self._key)
                     continue
                 else:
                     field_idx = self._cd[field]
@@ -215,18 +246,19 @@ class DBCRecord(RawDBCRecord):
             else:
                 fmt = self._ff[field_idx]
                 if field == 'id':
-                    fmt = self._dbcp.id_format(self.__class__.__name__)
+                    fmt = self._id_format
                 f.append(fmt % self._d[field_idx])
 
         return f
 
     def field_names(self, delim = ", "):
         fields = []
-        if self._id > -1:
+        if self._id_block:
             fields.append('id')
+
         fields += self._fi
 
-        if self._dbcp.has_key_block():
+        if self._key_block:
             fields.append('id_parent')
 
         return delim.join(fields)
@@ -234,7 +266,7 @@ class DBCRecord(RawDBCRecord):
     def __str__(self):
         s = []
 
-        if self._id > -1:
+        if self._id_block:
             s.append('id=%u' % self._id)
 
         for i in range(0, min(len(self._d), len(self._fi))):
@@ -252,14 +284,14 @@ class DBCRecord(RawDBCRecord):
             else:
                 s.append('%s=%u' % (field, self._d[i]))
 
-        if self._key > 0:
+        if self._key_block:
             s.append('id_parent=%u' % self._key)
 
         return ' '.join(s)
 
     def csv(self, delim = ',', header = False):
         s = ''
-        if self._id > -1:
+        if self._id_block:
             s += '%u%c' % (self._id, delim)
 
         for i in range(0, len(self._fi)):
@@ -281,7 +313,7 @@ class DBCRecord(RawDBCRecord):
             else:
                 s += '%u%c' % (self._d[i], delim)
 
-        if self._dbcp.has_key_block():
+        if self._key_block:
             s += '%u%c' % (self._key, delim)
 
         if len(s) > 0:

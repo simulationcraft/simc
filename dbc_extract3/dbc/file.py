@@ -1,21 +1,12 @@
-import os, logging, sys
+import os, logging, io
 
-import dbc, dbc.wdc1
+import dbc, dbc.wdc1, dbc.xfth
 
 _PARSERS = {
-    b'WDBC': None,
-    b'WDB2': None,
-    b'WDB4': dbc.parser.WDB4Parser,
-    b'WDB5': dbc.parser.WDB5Parser,
-    b'WDB6': dbc.parser.WDB6Parser,
-    b'WCH5': dbc.parser.LegionWCHParser,
-    b'WCH6': dbc.parser.LegionWCHParser,
-    b'WCH7': dbc.parser.WCH7Parser,
-    b'WCH8': dbc.parser.WCH7Parser,
     b'WDC1': dbc.wdc1.WDC1Parser
 }
 
-class DBCacheIterator:
+class HotfixIterator:
     def __init__(self, f, wdb_parser):
         self._data_class = getattr(dbc.data, wdb_parser.class_name().replace('-', '_'))
         self._parser = f.parser
@@ -31,7 +22,7 @@ class DBCacheIterator:
         if self._record == self._records:
             raise StopIteration
 
-        dbc_id, record_id, offset, size, key_id = self._parser.get_record_info(self._wdb_parser, self._record)
+        dbc_id, record_id, offset, size, key_id = self._parser.get_record_info(self._record, self._wdb_parser)
         data = self._parser.get_record(dbc_id, offset, size, self._wdb_parser)
 
         # If the cache entry is for a WDB file that is expanded, we need to
@@ -62,10 +53,10 @@ class DBCacheIterator:
 
         return self._data_class(self._parser, dbc_id, data, key_id)
 
-class DBCache:
+class HotfixFile:
     def __init__(self, options):
         self.options = options
-        self.parser = dbc.parser.DBCacheParser(options)
+        self.parser = dbc.xfth.XFTHParser(options)
 
     def open(self):
         if not self.parser.open():
@@ -76,11 +67,10 @@ class DBCache:
     # Hotfix cache has to be accessed with a specific WDB file parser to get
     # the record layout (and the correct hotfix entries).
     def entries(self, wdb_parser):
-        return DBCacheIterator(self, wdb_parser)
+        return HotfixIterator(self, wdb_parser)
 
 class DBCFileIterator:
     def __init__(self, f):
-        self._file = f
         self._parser = f.parser
         self._decorator = f.record_class
 
@@ -95,74 +85,17 @@ class DBCFileIterator:
             raise StopIteration
 
         dbc_id, record_id, offset, size, key_id = self._parser.get_record_info(self._record)
-        if self._parser.has_key_block() and key_id == 0:
-            key_id = self._parser.key(self._record)
-
         data = self._parser.get_record(dbc_id, offset, size)
+
         self._record += 1
 
         return self._decorator(self._parser, dbc_id, data, key_id)
 
 class DBCFile:
-    def __init__(self, options, filename, wdb_file = None):
-
+    def __init__(self, options, filename):
         self.data_class = None
-        self.magic = None
-
-        self.fmt = dbc.fmt.DBFormat(options)
-
         self.options = options
         self.file_name = filename
-
-        self.parser = self.__parser(filename, wdb_file)
-
-    def __parser(self, file_name, wdb_file = None):
-        f = None
-        # See that file exists already
-        normalized_path = os.path.abspath(file_name)
-        for i in ['', '.db2', '.dbc', '.adb']:
-            if os.access(normalized_path + i, os.R_OK):
-                f = open(normalized_path + i, 'rb')
-                break
-
-        if not f:
-            logging.error('Unable to find DBC file through %s', file_name)
-            sys.exit(1)
-
-        self.magic = f.read(4)
-        f.close()
-        parser = _PARSERS.get(self.magic, None)
-        if not parser:
-            return None
-
-        parser_obj = None
-
-        # WCH files need special handling. If we are viewing one, we beed to
-        # find a "template wdb file" for the wch file to be able to properly
-        # parse the entries
-        if b'WCH' in self.magic:
-            if wdb_file:
-                parser_obj = parser(self.options, wdb_file, file_name)
-            else:
-                if self.options.type == 'view' and not self.options.wdb_file:
-                    logging.error('Unable to parse WCH file %s without --wdbfile parameter',
-                            self.file_name)
-                    sys.exit(1)
-
-                logging.debug('Opening template wdb file %s', self.options.wdb_file)
-
-                wdb_parser = self.__parser(self.options.wdb_file)
-                if not wdb_parser.open():
-                    return None
-
-                parser_obj = parser(self.options, wdb_parser, file_name)
-        else:
-            parser_obj = parser(self.options, file_name)
-
-        return parser_obj
-
-    def name(self):
-        return os.path.basename(self.file_name).split('.')[0].replace('-', '_').lower()
 
     def class_name(self):
         return os.path.basename(self.file_name).split('.')[0]
@@ -178,41 +111,51 @@ class DBCFile:
             if not self.options.raw:
                 self.data_class = getattr(dbc.data, self.class_name().replace('-', '_'))
             else:
-                if self.parser.raw_outputtable():
-                    self.data_class = dbc.data.RawDBCRecord
-        except KeyError:
-            # WDB5 we can always display something
-            if self.wdb5():
                 self.data_class = dbc.data.RawDBCRecord
-            # Others, not so much
-            else:
-                logging.error("Unable to determine data format for %s, aborting ...", self.class_name())
-                return False
+        except KeyError:
+            logging.warn("Unable to determine data format for %s ...", self.class_name())
+            self.data_class = dbc.data.RawDBCRecord
 
         if len(args) > 0:
             return self.data_class(*args)
         else:
             return self.data_class
 
-    def searchable(self):
-        return self.parser.searchable()
-
     def open(self):
-        if not self.parser.open():
+        f = None
+        # See that file exists already
+        normalized_path = os.path.abspath(self.file_name)
+        real_path = None
+        for i in ['', '.db2']:
+            if os.access(normalized_path + i, os.R_OK):
+                real_path = normalized_path + i
+                break
+
+        if not real_path:
+            logging.error('Unable to find DBC file through %s', self.file_name)
             return False
 
-        return True
+        with io.open(real_path, 'rb') as f:
+            magic = f.read(4)
+            parser = _PARSERS.get(magic, None)
+            if not parser:
+                logging.error('No parser found for file format "%s"', magic.decode('utf-8'))
+                return False
 
-    def decorate(self, data):
-        # Output data based on data parser + class, we are sure we have those things at this point
-        return self.record_class(self.parser, data.dbc_id, data.record_data, data.parent_id)
+            self.parser = parser(self.options, self.file_name)
 
-    def find(self, id_):
-        data = self.parser.find(id_)
-        if data.valid():
-            return self.decorate(data)
+        return self.parser.open()
+
+    def find(self, dbc_id):
+        info = self.parser.get_dbc_info(dbc_id)
+        if info.dbc_id != dbc_id:
+            return None
+
+        data = self.parser.get_record(info.dbc_id, info.record_offset, info.record_size)
+        if len(data) > 0:
+            return self.record_class(self.parser, info.dbc_id, data, info.parent_id)
         else:
-            return 'Record with DBC id %u not found' % id_
+            return None
 
     def __iter__(self):
         return DBCFileIterator(self)

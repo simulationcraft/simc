@@ -33,9 +33,9 @@ GTINPUT=${INPUT_BASE}/${BUILD}/GameTables
 
 if [ ! -d ${INPUT} ]; then
   echo Error: Unable to find input files in ${INPUT}.
-  echo "Usage: generate.sh [ptr] <patch> <input_base> [cache]"
+  echo "Usage: generate.sh [ptr] <patch> <input_base> [hotfix_file]"
   exit 1
 fi
 
-./dbc_extract.py --cache "${CACHE}" -p $DBCINPUT -b $BUILD $PTR -t output ${BATCH_FILE}
-./dbc_extract.py --cache "${CACHE}" -p $GTINPUT  -b $BUILD $PTR -t scale  -o $OUTPATH/sc_scale_data${PTR:+_ptr}.inc
+./dbc_extract.py --hotfix="${CACHE}" -p $DBCINPUT -b $BUILD $PTR -t output ${BATCH_FILE}
+./dbc_extract.py                     -p $GTINPUT  -b $BUILD $PTR -t scale  -o $OUTPATH/sc_scale_data${PTR:+_ptr}.inc

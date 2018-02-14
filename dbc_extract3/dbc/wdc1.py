@@ -2,15 +2,17 @@ import logging, math, collections, sys
 
 from struct import Struct
 
-try:
-    from bitarray import bitarray
-except ModuleNotFoundError as error:
-    print('ERROR: dbc_extract.py requires the python bitarray (https://pypi.python.org/pypi/bitarray) package to function', file = sys.stderr)
-    sys.exit(1)
+from bitarray import bitarray
 
-from dbc.parser import LegionWDBParser, _DB_HEADER_1, _DB_HEADER_2
+from dbc import HeaderFieldInfo, DBCRecordInfo
 
-_WDC1_HEADER = Struct('<IIIIIIIII')
+from dbc.parser import DBCParserBase
+
+import dbc.data
+
+X_ID_BLOCK   = 0x04
+X_OFFSET_MAP = 0x01
+
 _WDC1_KEY_HEADER = Struct('<III')
 
 _WDC1_COLUMN_INFO = Struct('<HHIIIII')
@@ -18,6 +20,9 @@ _WDC1_COLUMN_INFO = Struct('<HHIIIII')
 _WDC1_COLUMN_DATA = Struct('<I')
 
 _COLUMN_INFO = Struct('<hh')
+_CLONE_INFO  = Struct('<II')
+
+_ITEMRECORD  = Struct('<IH')
 
 # Column size can be found from the separate column information block
 WDC1_SPECIAL_COLUMN = 32
@@ -36,6 +41,26 @@ COLUMN_TYPE_INDEXED = 3
 
 # Contents of the column is an array of values, array entries are 4 bytes each
 COLUMN_TYPE_ARRAY   = 4
+
+# Values from bitarray come as unsigned, transform to twos complement signed
+# value if the data format indicates a signed column
+def transform_sign(value, mask, bit_size):
+    if (value & (1 << bit_size - 1)) != 0:
+        return -((value ^ mask) + 1)
+    else:
+        return value
+
+def get_column_type_str(type):
+    if type == COLUMN_TYPE_BIT:
+        return 'bits'
+    elif type == COLUMN_TYPE_SPARSE:
+        return 'sparse'
+    elif type == COLUMN_TYPE_INDEXED:
+        return 'index'
+    elif type == COLUMN_TYPE_ARRAY:
+        return 'array'
+    else:
+        return 'unknown'
 
 def get_struct_type(is_float, is_signed, bit_size):
     if is_float:
@@ -228,30 +253,27 @@ class WDC1ExtendedColumnValue:
     def __init__(self, column):
         self.column = column
 
+        self.element_mask = 0
+        for bit in range(0, self.column.ext_data().element_bit_size()):
+            self.element_mask |= (1 << bit)
+
+        self.cell_mask = 0
+        for bit in range(0, self.column.ext_data().bit_size()):
+            self.cell_mask |= (1 << bit)
+
     def __call__(self, id, data, bytes_):
         raise NotImplementedError
 
 class WDC1BitPackedValue(WDC1ExtendedColumnValue):
-    def __init__(self, column):
-        super().__init__(column)
-
-        self.mask = 0
-        for idx in range(0, self.column.ext_data().bit_size()):
-            self.mask |= (1 << idx)
-
     def __call__(self, id_, data, bytes_):
         value = int.from_bytes(bytes_, byteorder = 'little')
 
         if self.column.is_signed():
-            is_negative = (value & (1 << self.column.ext_data().bit_size() - 1)) != 0
-            if is_negative:
-                value = -((value ^ self.mask) + 1)
+            value = transform_sign(value, self.element_mask, self.column.ext_data().element_bit_size())
 
         return (value,)
 
 # Gets a value from the data file's column data block
-#
-# TODO: Column block values are always 4 bytes?
 class WDC1ColumnDataValue(WDC1ExtendedColumnValue):
     def __init__(self, column):
         super().__init__(column)
@@ -260,7 +282,7 @@ class WDC1ColumnDataValue(WDC1ExtendedColumnValue):
 
         # We need to compute the column data offset for this column
         column_data_offset = 0
-        for column_idx in range(0, self.column.parser().n_fields()):
+        for column_idx in range(0, self.column.parser().fields):
             if column_idx == self.column.index():
                 break
 
@@ -274,7 +296,7 @@ class WDC1ColumnDataValue(WDC1ExtendedColumnValue):
 
     def __call__(self, id_, data, bytes_):
         # Convert the bytes to a proper int value (our relative id into the column data block).
-        ptr_ = int.from_bytes(bytes_, byteorder = 'little')
+        ptr_ = int.from_bytes(bytes_, byteorder = 'little') & self.cell_mask
 
         # Value is the {ptr_}th value in the block
         value_offset = self.base_offset + ptr_ * 4
@@ -295,26 +317,20 @@ class WDC1SparseDataValue(WDC1ExtendedColumnValue):
         if value_offset == -1:
             return (0,)
 
-        # Return the value
         return self.unpacker.unpack_from(data, value_offset)
 
 class WDC1ArrayDataValue(WDC1ColumnDataValue):
     def __init__(self, column):
         super().__init__(column)
 
-        self.unpacker = Struct('<' + column.struct_type())
-
         self.__array_size = 4 * self.column.ext_data().elements()
 
         struct_type = get_struct_type(column.is_float(), column.is_signed(), 32)
         self.unpacker = Struct('<{}{}'.format(column.ext_data().elements(), struct_type))
 
-        # TODO: if element_bit_size is < 32, should we mask out bits? Do the
-        # files even indicate what the element size is (cell size?)
-
     def __call__(self, id_, data, bytes_):
         # Convert the bytes to a proper int value (our id into the block)
-        ptr_ = int.from_bytes(bytes_, byteorder = 'little')
+        ptr_ = int.from_bytes(bytes_, byteorder = 'little') & self.cell_mask
 
         value_offset = self.base_offset + ptr_ * self.__array_size
 
@@ -326,7 +342,7 @@ class WDC1ArrayDataValue(WDC1ColumnDataValue):
         return self.unpacker.unpack_from(data, value_offset)
 
 class RecordParser:
-    def __init__(self, parser, cache = False):
+    def __init__(self, parser, hotfix = False):
         self._parser = parser
 
         # Record segment decoders
@@ -336,7 +352,8 @@ class RecordParser:
         self._record_id = 0
         self.__dbc_id = -1
 
-        self._cache = cache
+        # Records are sourced from a hotfix file, instead of the normal client data file
+        self._hotfix_parser = hotfix
 
         self._n_records = parser.records
         self._base_offset = parser.data_offset
@@ -355,10 +372,7 @@ class RecordParser:
         # Base offset into the record start
         base_offset = self._base_offset + self._record_id * self._record_size
 
-        if self.__parser.has_id_block():
-            self.__dbc_id, _, _ = self._parser.get_record_info(self._record_id)
-        else:
-            self.__dbc_id = -1
+        self.__dbc_id, _, _, _, _ = self._parser.get_record_info(self._record_id)
 
         self._record_id += 1
 
@@ -424,7 +438,7 @@ class ExpandedRecordParser(RecordParser):
         # Then, iterate over the columns. Regardless of what sort of colun type
         # the original file has, expanded data is always normal struct form, 4
         # (or 8?) bytes per field
-        for column_idx in range(0, self.parser().n_fields()):
+        for column_idx in range(0, self.parser().fields):
             column = self.parser().column(column_idx)
 
             # Hotfixed columns always have inlined strings
@@ -458,11 +472,11 @@ class WDC1RecordParser(RecordParser):
 
         decoders = []
 
-        for column_idx in range(0, self.parser().n_fields()):
+        for column_idx in range(0, self.parser().fields):
             column = self.parser().column(column_idx)
 
             # Hotfixed columns always have inlined strings
-            if column.is_string() and (self.parser().has_offset_map() or self._cache):
+            if column.is_string() and (self.parser().has_offset_map() or self._hotfix_parser):
                 if len(struct_columns) > 0:
                     decoders.append(WDC1StructSegmentParser(self, struct_columns))
                     struct_columns = []
@@ -472,7 +486,7 @@ class WDC1RecordParser(RecordParser):
             # Presume that bitpack is a continious segment that runs to the end of the record
             elif column.size_type() == WDC1_SPECIAL_COLUMN:
                 # Bit-packed data (special columns) seem to be expanded for cache files
-                if self._cache:
+                if self._hotfix_parser:
                     struct_columns.append(column)
                 else:
                     bitpack_columns.append(column)
@@ -524,8 +538,8 @@ class WDC1ExtendedColumn:
         return self.__pack_offset
 
     def __str__(self):
-        return 'Ext[ r_offset={}, size={}, b_size={}, b_type={}, p_offset={}, e_size={}, elements={} ]'.format(
-            self.__record_offset, self.__size, self.__block_size, self.__block_type, self.__pack_offset,
+        return 'Ext[ r_offset={}, type={} ({}), c_size={}, b_size={}, p_offset={}, e_size={}, elements={} ]'.format(
+            self.__record_offset, get_column_type_str(self.__block_type), self.__block_type, self.__size, self.__block_size, self.__pack_offset,
             self.__element_size, self.__elements
         )
 
@@ -564,7 +578,6 @@ class WDC1Column:
 
         if elements_ > 0:
             return elements_
-        # TODO: Can these special columns have more fields?
         elif type_ == COLUMN_TYPE_INDEXED:
             return 1
         elif type_ == COLUMN_TYPE_SPARSE:
@@ -586,6 +599,9 @@ class WDC1Column:
 
     def offset(self):
         return self.__offset
+
+    def bit_offset(self):
+        return self.__offset * 8
 
     def format(self):
         return self.__format
@@ -640,7 +656,7 @@ class WDC1Column:
     def __str__(self):
         return 'Column[ idx={}, offset={}, size={}, elements={}{} ]'.format(
             self.__index, self.__offset, self.bit_size(), self.elements(),
-            self.ext_data().block_type() != 0 and (', info=' + str(self.ext_data())) or ''
+            (self.ext_data() and self.ext_data().block_type() != 0) and (', info=' + str(self.ext_data())) or ''
         )
 
 # A faked colum representing a 32-bit value in the record. Used in association
@@ -686,15 +702,50 @@ class WDC1ProxyColumn(WDC1Column):
         )
 
 
-class WDC1Parser(LegionWDBParser):
+class WDC1Parser(DBCParserBase):
+    __WDC1_HEADER_FIELDS = [
+        HeaderFieldInfo('magic',                  '4s'),
+        HeaderFieldInfo('records',                'I' ),
+        HeaderFieldInfo('fields',                 'I' ),
+        HeaderFieldInfo('record_size',            'I' ),
+        HeaderFieldInfo('string_block_size',      'I' ),
+        HeaderFieldInfo('table_hash',             'I' ),
+        HeaderFieldInfo('layout_hash',            'I' ),
+        HeaderFieldInfo('first_id',               'I' ),
+        HeaderFieldInfo('last_id',                'I' ),
+        HeaderFieldInfo('locale',                 'I' ),
+        HeaderFieldInfo('clone_block_size',       'I' ),
+        HeaderFieldInfo('flags',                  'H' ),
+        HeaderFieldInfo('id_index',               'H' ),
+        HeaderFieldInfo('total_fields',           'I' ),
+        HeaderFieldInfo('packed_data_offset',     'I' ),
+        HeaderFieldInfo('wdc_unk1',               'I' ),
+        HeaderFieldInfo('offset_map_offset',      'I' ),
+        HeaderFieldInfo('id_block_size',          'I' ),
+        HeaderFieldInfo('column_info_block_size', 'I' ),
+        HeaderFieldInfo('sparse_block_size',      'I' ),
+        HeaderFieldInfo('column_data_block_size', 'I' ),
+        HeaderFieldInfo('key_block_size',         'I' )
+    ]
+
     def is_magic(self): return self.magic == b'WDC1'
 
     def __init__(self, options, fname):
         super().__init__(options, fname)
 
+        # Set heder format
+        self.header_format = self.__WDC1_HEADER_FIELDS
+        self.parse_offset = 0
+
         # Lazy-computed key format for the foreign key values
         self.__key_format = None
         self.__key_high = -1
+
+        # Id format
+        self.__id_format = None
+
+        # Record parser for the file
+        self.record_parser = None
 
         # New fields
         self.n_columns = 0
@@ -723,23 +774,62 @@ class WDC1Parser(LegionWDBParser):
         # Foreign key block data, just a bunch of ids (on a per record basis)
         self.key_block = []
 
-    def n_fields(self):
-        return self.n_columns
+    def get_string(self, offset):
+        if offset == 0:
+            return None
+
+        end_offset = self.data.find(b'\x00', self.string_block_offset + offset)
+
+        if end_offset == -1:
+            return None
+
+        return self.data[self.string_block_offset + offset:end_offset].decode('utf-8')
+
+    def get_record_info(self, record_id):
+        if record_id > len(self.id_table):
+            return DBCRecordInfo(-1, -1, 0, 0, 0)
+
+        record_info = self.id_table[record_id]
+        if record_info:
+            return record_info
+        else:
+            return DBCRecordInfo(-1, -1, 0, 0, 0)
+
+    def get_dbc_info(self, dbc_id):
+        if dbc_id > len(self.dbc_id_table):
+            return DBCRecordInfo(-1, -1, 0, 0, 0)
+
+        record_info = self.dbc_id_table[dbc_id]
+        if record_info:
+            return record_info
+        else:
+            return DBCRecordInfo(-1, -1, 0, 0, 0)
+
+    def get_record(self, dbc_id, offset, size):
+        return self.record_parser(dbc_id, self.data, offset, size)
 
     def column(self, idx):
         return self.column_info[idx]
 
-    def key(self, record_id):
-        if len(self.key_block) == 0:
-            return -1
+    def id_format(self):
+        if self.__id_format:
+            return self.__id_format
 
-        return self.key_block[record_id]
+        if self.last_id == 0:
+            return '%u'
+
+        # Adjust the size of the id formatter so we get consistent length
+        # id field where we use it, and don't have to guess on the length
+        # in the format file.
+        n_digits = int(math.log10(self.last_id) + 1)
+        self.__id_format = '%%%uu' % n_digits
+        return self.__id_format
 
     # Note, wdb_name is ignored, as WDC1 parsers are always bound to a single
     # wdb file (e.g., Spell.db2)
-    def key_format(self, wdb_name = None):
+    def key_format(self):
         if self.key_block_size == 0:
-            return super().key_format()
+            return '%u'
 
         if self.__key_format:
             return self.__key_format
@@ -751,44 +841,39 @@ class WDC1Parser(LegionWDBParser):
     def sparse_data_offset(self, column, id_):
         return self.sparse_blocks[column.index()].get(id_, -1)
 
-    # TODO: Some validation can, and should be done
-    def validate_format(self):
-        return True
-
     def create_raw_parser(self):
         return WDC1RecordParser(self)
 
-    def create_formatted_parser(self, inline_strings = False, cache_parser = False, expanded_parser = False):
+    def create_formatted_parser(self, hotfix_parser = False, expanded_parser = False):
         formats = self.fmt.objs(self.class_name(), True)
 
-        if len(formats) != self.n_fields():
+        if len(formats) != self.fields:
             logging.error('%s field count mismatch, format: %u, file: %u',
-                self.full_name(), len(formats), self.n_fields())
+                self.full_name(), len(formats), self.fields)
             return None
 
         if expanded_parser:
             parser = ExpandedRecordParser(self)
         else:
-            parser = WDC1RecordParser(self, cache = cache_parser)
+            parser = WDC1RecordParser(self, hotfix = hotfix_parser)
 
         logging.debug('Unpacking plan for %s: %s', self.full_name(), parser)
 
         return parser
 
     # Compute offset into the file, based on what blocks we have
-    def __compute_offsets(self):
-        # Offset immediately after the header (static + basic column info).
-        # Contains the base record data
+    def compute_block_offsets(self):
+        # Offset immediately after the header
         self.data_offset = self.parse_offset
-
-        block_offset = self.data_offset
 
         if self.has_offset_map():
             # String block follows immediately after the base data block
             self.string_block_offset = 0
             running_offset = self.offset_map_offset + (self.last_id - self.first_id + 1) * 6
         else:
-            # String block follows immediately after the base data block
+            # String block follows immediately after the base data block. All
+            # normal db2 files have a string block, if there's no strings in
+            # the file it'll just have two null bytes.
             self.string_block_offset = self.data_offset + self.record_size * self.records
             running_offset = self.string_block_offset + self.string_block_size
 
@@ -798,7 +883,7 @@ class WDC1Parser(LegionWDBParser):
 
         # Then, a possible clone block offset
         self.clone_block_offset = running_offset
-        running_offset = self.clone_block_offset + self.clone_segment_size
+        running_offset = self.clone_block_offset + self.clone_block_size
 
         # Next, extended column information block
         self.column_info_block_offset = running_offset
@@ -815,19 +900,26 @@ class WDC1Parser(LegionWDBParser):
         # And finally, the "foreign key" block for the whole file
         self.key_block_offset = running_offset
 
-        return True
+        logging.debug('Computed offsets, data=%d, strings=%d, ids=%d, ' +
+                      'clones=%d, column_infos=%d, column_datas=%d, sparse_datas=%d, ' +
+                      'keys=%d',
+            self.data_offset, self.string_block_offset, self.id_block_offset, self.clone_block_offset,
+            self.column_info_block_offset, self.column_data_block_offset, self.sparse_block_offset,
+            self.key_block_offset)
+
+        return self.key_block_offset + self.key_block_size
 
     # Parse column information (right after static header)
-    def __parse_basic_column_info(self):
+    def parse_basic_column_info(self):
         if not self.options.raw:
             formats = self.fmt.objs(self.class_name(), True)
         else:
             formats = None
 
-        for idx in range(0, self.n_fields()):
+        for idx in range(0, self.fields):
             size_type, offset = _COLUMN_INFO.unpack_from(self.data, self.parse_offset)
 
-            self.column_info.append(WDC1Column(self, (formats and len(formats) > idx) and formats[idx] or None, idx, size_type, offset))
+            self.column_info.append(WDC1Column(self, (formats and idx < len(formats)) and formats[idx] or None, idx, size_type, offset))
 
             self.parse_offset += _COLUMN_INFO.size
 
@@ -835,33 +927,146 @@ class WDC1Parser(LegionWDBParser):
 
         return True
 
-    # Parse extended column information to supplement the basic one, if it exists
-    def __parse_extended_column_info(self):
-        if self.column_info_block_size == 0:
-            return True
+    def parse_id_data(self):
+        if self.id_index >= len(self.column_info):
+            logging.error('Id index column %d is too large', self.id_index)
+            return False
 
-        if self.column_info_block_size != self.n_fields() * _WDC1_COLUMN_INFO.size:
-            log.error('Extended column info size mismatch, expected {}, got {}',
-                    self.n_fields() * _WDC1_COLUMN_INFO.size, self.column_info_block_size)
+        column = self.column_info[self.id_index]
+
+        logging.debug('Index for record in %s', column)
+
+        self.id_table = []
+        self.dbc_id_table = [ None ] * (self.last_id + 1)
+
+        # Offset where the bit data starts for the record where the ID field is in
+        record_offset = column.bit_offset()
+        # Start bit in the bitfield
+        start_offset = column.ext_data().record_offset() - record_offset
+        end_offset = start_offset + column.ext_data().bit_size()
+        bitfield_size = self.record_size - column.offset()
+        # Length of the id field in whole bytes
+        n_bytes = math.ceil((end_offset - start_offset) / 8)
+
+        for record_id in range(0, self.records):
+            record_start = self.data_offset + record_id * self.record_size
+            # Bitfield starts at this address always in each record
+            bitfield_start = record_start + column.offset()
+            barr = bitarray(endian = 'little')
+
+            # Read enough bytes to the bitarray from the segment
+            barr.frombytes(self.data[bitfield_start:bitfield_start + n_bytes])
+            field_data = barr[start_offset:end_offset].tobytes()
+            dbc_id = int.from_bytes(field_data, byteorder = 'little')
+
+            if self.has_key_block():
+                key_id, _ = _CLONE_INFO.unpack_from(self.data,
+                    self.key_block_offset + _WDC1_KEY_HEADER.size + _CLONE_INFO.size * record_id)
+            else:
+                key_id = 0
+
+            record_info = DBCRecordInfo(dbc_id, record_id, record_start, self.record_size, key_id)
+            self.id_table.append(record_info)
+            self.dbc_id_table[dbc_id] = record_info
+
+        logging.debug('Parsed id information')
+
+        return True
+
+    def parse_id_block(self):
+        self.id_table = []
+        self.dbc_id_table = [ None ] * (self.last_id + 1)
+
+        # Process ID block
+        unpacker = Struct('%dI' % self.records)
+        record_id = 0
+        for dbc_id in unpacker.unpack_from(self.data, self.id_block_offset):
+            data_offset = 0
+            size = self.record_size
+
+            # If there is an offset map, the correct data offset and record
+            # size needs to be fetched from the offset map. The offset map
+            # contains sparse entries (i.e., it has last_id-first_id entries,
+            # some of which are zeros if there is no dbc id for a given item.
+            if self.has_offset_map():
+                record_index = dbc_id - self.first_id
+                record_data_offset = self.offset_map_offset + record_index * _ITEMRECORD.size
+                data_offset, size = _ITEMRECORD.unpack_from(self.data, record_data_offset)
+            else:
+                data_offset = self.data_offset + record_id * self.record_size
+
+            # If the db2 file has a key block, we need to grab the key at this
+            # point from the block, to record it into the data we have. Storing
+            # the information now associates with the correct dbc id, since the
+            # key block is record index based, not dbc id based.
+            if self.has_key_block():
+                key_id, _ = _CLONE_INFO.unpack_from(self.data,
+                    self.key_block_offset + _WDC1_KEY_HEADER.size + _CLONE_INFO.size * record_id)
+            else:
+                key_id = 0
+
+            record_info = DBCRecordInfo(dbc_id, record_id, data_offset, size, key_id)
+            self.id_table.append(record_info)
+            self.dbc_id_table[dbc_id] = record_info
+
+            record_id += 1
+
+        logging.debug('Parsed id block')
+
+        return True
+
+    def parse_clone_block(self):
+        # Cloned internal record id starts directly after the main data(?)
+        record_id = len(self.id_table) + 1
+
+        # Process clones
+        for clone_id in range(0, self.clone_block_size // _CLONE_INFO.size):
+            clone_offset = self.clone_block_offset + clone_id * _CLONE_INFO.size
+            target_id, source_id = _CLONE_INFO.unpack_from(self.data, clone_offset)
+
+            source = self.dbc_id_table[source_id]
+            if not source:
+                logging.error('Unable to find source data with dbc_id %d for cloning', source_id)
+                return False
+
+            record_info = DBCRecordInfo(target_id, record_id, source.record_offset, source.record_size, source.parent_id)
+            self.id_table.append(record_info)
+
+            if target_id > self.last_id:
+                logging.error('Clone target id %d higher than last id %d', target_id, self.last_id)
+                return False
+
+            self.dbc_id_table[target_id] = record_info
+
+            record_id += 1
+
+        logging.debug('Parsed clone block')
+
+        return True
+
+    # Parse extended column information to supplement the basic one, if it exists
+    def parse_extended_column_info_block(self):
+        if self.column_info_block_size != self.fields * _WDC1_COLUMN_INFO.size:
+            logging.error('Extended column info size mismatch, expected {}, got {}',
+                    self.fields * _WDC1_COLUMN_INFO.size, self.column_info_block_size)
             return False
 
         offset = self.column_info_block_offset
-        for idx in range(0, self.n_fields()):
+        for idx in range(0, self.fields):
             data = _WDC1_COLUMN_INFO.unpack_from(self.data, offset)
 
             self.column_info[idx].ext_data(data)
 
             offset += _WDC1_COLUMN_INFO.size
 
+        logging.debug('Parsed extended column info block')
+
         return True
 
-    def __parse_sparse_blocks(self):
-        if not self.has_sparse_blocks():
-            return True
-
+    def parse_sparse_block(self):
         offset = self.sparse_block_offset
 
-        for column_idx in range(0, self.n_fields()):
+        for column_idx in range(0, self.fields):
             block = {}
             column = self.column(column_idx)
 
@@ -870,8 +1075,8 @@ class WDC1Parser(LegionWDBParser):
             # unpack call at the cost of increased memory
             if column.ext_data().block_type() == COLUMN_TYPE_SPARSE:
                 if column.ext_data().block_size() == 0 or column.ext_data().block_size() % 8 != 0:
-                    logging.error('%s unknown sparse block type for column %s',
-                        self.full_name(), column)
+                    logging.error('%s: Unknown sparse block type for column %s',
+                        self.class_name(), column)
                     return False
 
                 logging.debug('%s unpacking sparse block for %s at %d, %d entries',
@@ -890,12 +1095,11 @@ class WDC1Parser(LegionWDBParser):
 
             self.sparse_blocks.append(block)
 
+        logging.debug('Parsed sparse blocks')
+
         return True
 
-    def __parse_key_block(self):
-        if not self.has_key_block():
-            return True
-
+    def parse_key_block(self):
         if (self.key_block_size - _WDC1_KEY_HEADER.size) % 8 != 0:
             logging.error('%s invalid key block size, expected divisible by 8, got %u (%u)',
                 self.full_name(), self.key_block_size, self.key_block_size % 8)
@@ -927,91 +1131,144 @@ class WDC1Parser(LegionWDBParser):
 
         return True
 
-    def build_field_data(self):
-        return True
+    def has_offset_map(self):
+        return (self.flags & X_OFFSET_MAP) == X_OFFSET_MAP
 
-    def raw_outputtable(self):
-        return True
+    def has_string_block(self):
+        return self.string_block_size > 2
+
+    def has_id_block(self):
+        return (self.flags & X_ID_BLOCK) == X_ID_BLOCK
 
     def has_clone_block(self):
-        return self.clone_segment_size > 0
+        return self.clone_block_size > 0
+
+    def has_extended_column_info_block(self):
+        return self.column_info_block_size > 0
+
+    def has_sparse_block(self):
+        return self.sparse_block_size > 0
 
     def has_key_block(self):
         return self.key_block_size > 0
 
-    def has_sparse_blocks(self):
-        return self.sparse_block_size > 0
+    def n_records(self):
+        return len(self.id_table)
 
-    def has_id_block(self):
-        return self.id_block_size > 0
-
-    def has_offset_map(self):
-        return self.offset_map_offset > 0
-
-    def has_string_block(self):
-        return self.string_block_size > 2
+    def build_parser(self):
+        if self.options.raw:
+            self.record_parser = self.create_raw_parser()
+        else:
+            self.record_parser = self.create_formatted_parser()
 
     def parse_header(self):
         if not super().parse_header():
             return False
 
-        self.table_hash, self.layout_hash, self.first_id = _DB_HEADER_1.unpack_from(self.data, self.parse_offset)
-        self.parse_offset += _DB_HEADER_1.size
-
-        self.last_id, self.locale, self.clone_segment_size, self.flags, self.id_index = _DB_HEADER_2.unpack_from(self.data, self.parse_offset)
-        self.parse_offset += _DB_HEADER_2.size
-
-        self.n_columns, self.packed_data_offset, self.wdc1_unk3, self.offset_map_offset, \
-            self.id_block_size, self.column_info_block_size, self.sparse_block_size, self.column_data_block_size, \
-            self.key_block_size = _WDC1_HEADER.unpack_from(self.data, self.parse_offset)
-        self.parse_offset += _WDC1_HEADER.size
-
-        if not self.__parse_basic_column_info():
+        # Basic column information is included in all files
+        if not self.parse_basic_column_info():
             return False
-
-        if not self.__compute_offsets():
-            return False
-
-        if not self.__parse_extended_column_info():
-            return False
-
 
         return True
 
-    # Need to parse some other stuff too
+    def parse_blocks(self):
+        if self.has_id_block() and not self.parse_id_block():
+            return False
+
+        if self.has_clone_block() and not self.parse_clone_block():
+            return False
+
+        if self.has_extended_column_info_block() and not self.parse_extended_column_info_block():
+            return False
+
+        if self.has_sparse_block() and not self.parse_sparse_block():
+            return False
+
+        if self.has_key_block() and not self.parse_key_block():
+            return False
+
+        # If there is no ID block, generate a proxy ID block from actual record data
+        if not self.has_id_block() and not self.parse_id_data():
+            return False
+
+        return True
+
     def open(self):
         if not super().open():
             return False
 
-        if not self.__parse_sparse_blocks():
-            return False
+        self.build_parser()
 
-        if not self.__parse_key_block():
-            return False
+        # Setup some data class-wide variables
+        if self.options.raw:
+            data_class = dbc.data.RawDBCRecord
+        else:
+            data_class = getattr(dbc.data, self.class_name(), None)
+
+        if data_class:
+            # Enable specific features for the data classes upon opening the WDC1
+            # file. We can't set a class-wide parser here, as some of the data must
+            # come from other than the WDC1 file (i.e., the Hotfix file)
+            data_class.id_format(self.id_format())
+            if self.has_id_block():
+                data_class.has_id_block(True)
+            else:
+                data_class.id_index(self.id_index)
+
+            if self.has_key_block():
+                data_class.key_format(self.key_format())
+                data_class.has_key_block(True)
 
         return True
 
     def fields_str(self):
         fields = super().fields_str()
 
-        # Offset map offset is printed from LegionWDBParser
-        fields.append('layout_hash=%#.8x' % self.layout_hash)
-        fields.append('id_index=%u' % self.id_index)
-        fields.append('ob_packed_data=%u' % self.packed_data_offset)
-        fields.append('wdc1_unk3=%u' % self.wdc1_unk3)
-        fields.append('id_block_size=%u' % self.id_block_size)
-        fields.append('column_info_block_size=%u' % self.column_info_block_size)
-        fields.append('sparse_block_size=%u' % self.sparse_block_size)
-        fields.append('column_data_block_size=%u' % self.column_data_block_size)
-        fields.append('key_block_size=%u' % self.key_block_size)
+        fields.append('magic={}'.format(self.magic.decode('utf-8')))
+        fields.append('byte_size={}'.format(len(self.data)))
+
+        fields.append('records={} ({})'.format(self.records, self.n_records()))
+        fields.append('record_size={}'.format(self.record_size))
+        fields.append('fields={} ({})'.format(self.fields, self.total_fields))
+        fields.append('first_id={}'.format(self.first_id))
+        fields.append('last_id={}'.format(self.last_id))
+
+        fields.append('locale={:#010x}'.format(self.locale))
+        fields.append('table_hash={:#010x}'.format(self.table_hash))
+        fields.append('layout_hash={:#010x}'.format(self.layout_hash))
+
+        fields.append('flags={:#06x}'.format(self.flags))
+        fields.append('id_index={}'.format(self.id_index))
+
+        fields.append('string_block_size={}'.format(self.string_block_size))
+        fields.append('clone_block_size={}'.format(self.clone_block_size))
+        fields.append('id_block_size={}'.format(self.id_block_size))
+        fields.append('column_info_block_size={}'.format(self.column_info_block_size))
+        fields.append('column_data_block_size={}'.format(self.column_data_block_size))
+        fields.append('sparse_block_size={}'.format(self.sparse_block_size))
+        fields.append('key_block_size={}'.format(self.key_block_size))
+
+        fields.append('wdc1_unk1={}'.format(self.wdc1_unk3))
+        fields.append('ofs_record_packed_data={}'.format(self.packed_data_offset))
+
+        # Offsets to blocks
+        if not self.has_offset_map():       fields.append('ofs_data={}'.format(self.data_offset))
+        if self.string_block_size > 0:      fields.append('ofs_string_block={}'.format(self.string_block_offset))
+        if self.has_offset_map():           fields.append('ofs_offset_map={}'.format(self.offset_map_offset))
+        if self.has_id_block():             fields.append('ofs_id_block={}'.format(self.id_block_offset))
+        if self.clone_block_size > 0:       fields.append('ofs_clone_block={}'.format(self.clone_block_offset))
+        if self.column_info_block_size > 0: fields.append('ofs_column_info_block={}'.format(self.column_info_block_offset))
+        if self.column_data_block_size > 0: fields.append('ofs_column_data_block={}'.format(self.column_data_block_offset))
+        if self.sparse_block_size > 0:      fields.append('ofs_sparse_block={}'.format(self.sparse_block_offset))
+        if self.has_key_block():            fields.append('ofs_key_block={}'.format(self.key_block_offset))
 
         return fields
 
     def __str__(self):
         s = super().__str__()
 
-        s += '\n'
-
-        s += '\n'.join([ str(c) for c in self.column_info ])
+        if len(self.column_info):
+            s += '\n'
+            s += '\n'.join([ str(c) for c in self.column_info ])
 
         return s;

@@ -1,4 +1,4 @@
-import os, logging, types
+import os, logging, types, sys
 
 import dbc
 
@@ -28,10 +28,10 @@ class DataStore:
         self.options = options
         self.databases = {}
         self.initializers = {}
-
         self.cache = None
-        if options.cache_dir:
-            self.cache = dbc.file.DBCache(options)
+
+        if options.hotfix_file:
+            self.cache = dbc.file.HotfixFile(options)
             if not self.cache.open():
                 sys.exit(1)
 
