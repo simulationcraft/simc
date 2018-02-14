@@ -457,7 +457,6 @@ struct rogue_t : public player_t
     const spell_data_t* cannonball_barrage;
     const spell_data_t* killing_spree;
 
-    const spell_data_t* premeditation;
     const spell_data_t* enveloping_shadows;
     const spell_data_t* dark_shadow;
 
@@ -2243,16 +2242,6 @@ struct ambush_t : public rogue_attack_t
   bool procs_main_gauche() const override
   { return false; }
 
-  double action_multiplier() const override
-  {
-    double m = rogue_attack_t::action_multiplier();
-
-    if ( weapon -> type == WEAPON_DAGGER )
-      m *= 1.40;
-
-    return m;
-  }
-
   void execute() override
   {
     rogue_attack_t::execute();
@@ -3515,7 +3504,7 @@ struct shadow_blades_t : public rogue_attack_t
     if ( ! p -> shadow_blade_main_hand )
     {
       p -> shadow_blade_main_hand = new shadow_blade_t( "shadow_blade_mh",
-          p,data().effectN( 1 ).trigger(), &( p -> main_hand_weapon ) );
+          p, data().effectN( 1 ).trigger(), &( p -> main_hand_weapon ) );
       add_child( p -> shadow_blade_main_hand );
     }
 
@@ -3610,7 +3599,6 @@ struct shadowstrike_t : public rogue_attack_t
   {
     requires_weapon = WEAPON_DAGGER;
     requires_stealth = true;
-    energize_amount += p -> talent.premeditation -> effectN( 2 ).base_value();
   }
 
   void execute() override
@@ -3776,13 +3764,7 @@ struct slice_and_dice_t : public rogue_attack_t
 
     timespan_t snd_duration = ( cast_state( execute_state ) -> cp + 1 ) * p() -> buffs.slice_and_dice -> data().duration();
 
-    double snd_mod = 1.0;
-    if ( p() -> buffs.loaded_dice -> up() )
-    {
-      snd_mod *= 1.0 + p() -> buffs.loaded_dice -> data().effectN( 1 ).percent();
-      p() -> buffs.loaded_dice -> expire();
-    }
-
+    double snd_mod = 1.0; // Multiplier for the SnD effects. Was changed in Legion for Loaded Dice artifact trait.
     p() -> buffs.slice_and_dice -> trigger( 1, snd_mod, -1.0, snd_duration );
   }
 };
@@ -6896,7 +6878,6 @@ void rogue_t::init_spells()
   talent.find_weakness      = find_talent_spell( "Find Weakness" );
   talent.gloomblade         = find_talent_spell( "Gloomblade" );
 
-  talent.premeditation      = find_talent_spell( "Premeditation" );
   talent.enveloping_shadows = find_talent_spell( "Enveloping Shadows" );
   talent.dark_shadow        = find_talent_spell( "Dark Shadow" );
 
