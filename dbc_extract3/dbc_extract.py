@@ -54,7 +54,7 @@ parser.add_argument("-p", "--path",  dest = "path",         default = '.',
 parser.add_argument("--hotfix",      dest = "hotfix_file",
                     type = argparse.FileType('rb'),
                     help = "Path to World of Warcraft DBCache.bin file.")
-parser.add_argument("--fields",      dest = "fields",
+parser.add_argument("--fields",      dest = "fields", default = [],
                     type = parse_fields,
                     help = "Comma separated list of fields to output for -t view/csv")
 parser.add_argument("args", metavar = "ARGS", type = str, nargs = argparse.REMAINDER)
