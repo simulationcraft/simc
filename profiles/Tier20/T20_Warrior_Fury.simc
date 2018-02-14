@@ -8,6 +8,12 @@ talents=2333232
 artifact=35:0:0:0:0:980:1:981:1:982:1:984:1:985:1:986:1:987:1:988:4:989:4:990:4:991:4:992:4:993:4:994:4:995:4:996:4:1357:1:1394:1:1617:4:1618:1:1619:1:1620:24:1715:1
 crucible=1739:1780:995/1739:1780:990/1739:1780:990
 
+# Default consumables
+potion=old_war
+flask=flask_of_the_countless_armies
+food=nightborne_delicacy_platter
+augmentation=defiled
+
 # This default action priority list is automatically created based on your character.
 # It is a attempt to provide you with a action list that is both simple and practicable,
 # while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
@@ -15,12 +21,12 @@ crucible=1739:1780:995/1739:1780:990/1739:1780:990
 # SimulationCraft is always looking for updates and improvements to the default action lists.
 
 # Executed before combat begins. Accepts non-harmful actions only.
-actions.precombat=flask,type=countless_armies
-actions.precombat+=/food,type=nightborne_delicacy_platter
-actions.precombat+=/augmentation,type=defiled
+actions.precombat=flask
+actions.precombat+=/food
+actions.precombat+=/augmentation
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
-actions.precombat+=/potion,name=old_war
+actions.precombat+=/potion
 
 # Executed every time the actor is available.
 actions=auto_attack
@@ -28,7 +34,7 @@ actions+=/charge
 # This is mostly to prevent cooldowns from being accidentally used during movement.
 actions+=/run_action_list,name=movement,if=movement.distance>5
 actions+=/heroic_leap,if=(raid_event.movement.distance>25&raid_event.movement.in>45)|!raid_event.movement.exists
-actions+=/potion,name=old_war,if=buff.battle_cry.up&(buff.avatar.up|!talent.avatar.enabled)
+actions+=/potion,if=buff.battle_cry.up&(buff.avatar.up|!talent.avatar.enabled)
 actions+=/dragon_roar,if=(equipped.convergence_of_fates&cooldown.battle_cry.remains<2)|!equipped.convergence_of_fates&(!cooldown.battle_cry.remains<=10|cooldown.battle_cry.remains<2)|(talent.bloodbath.enabled&(cooldown.bloodbath.remains<1|buff.bloodbath.up))
 actions+=/rampage,if=cooldown.battle_cry.remains<1&cooldown.bloodbath.remains<1&target.health.pct>20
 actions+=/furious_slash,if=talent.frenzy.enabled&(buff.frenzy.stack<3|buff.frenzy.remains<3|(cooldown.battle_cry.remains<1&buff.frenzy.remains<9))
