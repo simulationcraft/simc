@@ -14,6 +14,9 @@ except Exception as error:
     print('ERROR: %s, dbc_extract.py requires the Python bitarray (https://pypi.python.org/pypi/bitarray) package to function' % error, file = sys.stderr)
     sys.exit(1)
 
+def parse_fields(value):
+    return [ x.strip() for x in value.split(',') ]
+
 logging.basicConfig(level = logging.INFO,
         datefmt = '%Y-%m-%d %H:%M:%S',
         format = '[%(asctime)s] %(levelname)s: %(message)s')
@@ -48,11 +51,12 @@ parser.add_argument("--scale-ilvl",  dest = "scale_ilevel", default = 1300, type
                     help = "Maximum inclusive ilevel for game table related extraction")
 parser.add_argument("-p", "--path",  dest = "path",         default = '.',
                     help = "DBC input directory [cwd]")
-parser.add_argument("--hotfix",       dest = "hotfix_file",
+parser.add_argument("--hotfix",      dest = "hotfix_file",
                     type = argparse.FileType('rb'),
                     help = "Path to World of Warcraft DBCache.bin file.")
-parser.add_argument("--wdbfile",     dest = "wdb_file",     default = '',
-                    help = "Path to WDB file to determine attributes when using 'view' type on adb files")
+parser.add_argument("--fields",      dest = "fields",
+                    type = parse_fields,
+                    help = "Comma separated list of fields to output for -t view/csv")
 parser.add_argument("args", metavar = "ARGS", type = str, nargs = argparse.REMAINDER)
 options = parser.parse_args()
 

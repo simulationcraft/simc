@@ -253,26 +253,37 @@ class DBCRecord(RawDBCRecord):
 
     def field_names(self, delim = ", "):
         fields = []
-        if self._id_block:
+        if self._id_block and self.__output_field('id'):
             fields.append('id')
 
-        fields += self._fi
+        for field in self._fi:
+            if self.__output_field(field):
+                fields.append(field)
 
-        if self._key_block:
+        if self._key_block and self.__output_field('id_parent'):
             fields.append('id_parent')
 
         return delim.join(fields)
 
+    def __output_field(self, field):
+        if len(self._dbcp.options.fields) == 0:
+            return True
+
+        return field in self._dbcp.options.fields
+
     def __str__(self):
         s = []
 
-        if self._id_block:
+        if self._id_block and self.__output_field('id'):
             s.append('id=%u' % self._id)
 
         for i in range(0, min(len(self._d), len(self._fi))):
             field = self._fi[i]
             type_ = self._fo[i]
             if not field or 'x' in type_:
+                continue
+
+            if not self.__output_field(field):
                 continue
 
             if type_ == 'S' and self._d[i] > 0:
@@ -284,14 +295,14 @@ class DBCRecord(RawDBCRecord):
             else:
                 s.append('%s=%u' % (field, self._d[i]))
 
-        if self._key_block:
+        if self._key_block and self.__output_field('id_parent'):
             s.append('id_parent=%u' % self._key)
 
         return ' '.join(s)
 
     def csv(self, delim = ',', header = False):
         s = ''
-        if self._id_block:
+        if self._id_block and self.__output_field('id'):
             s += '%u%c' % (self._id, delim)
 
         for i in range(0, len(self._fi)):
@@ -299,6 +310,9 @@ class DBCRecord(RawDBCRecord):
             fmt = self._ff[i]
             type_ = self._fo[i]
             if not field:
+                continue
+
+            if not self.__output_field(field):
                 continue
 
             if type_ == 'S':
@@ -313,7 +327,7 @@ class DBCRecord(RawDBCRecord):
             else:
                 s += '%u%c' % (self._d[i], delim)
 
-        if self._key_block:
+        if self._key_block and self.__output_field('id_parent'):
             s += '%u%c' % (self._key, delim)
 
         if len(s) > 0:
@@ -433,7 +447,7 @@ class Meta(type):
         return super(Meta, mcl).__new__(mcl, name, bases, namespace)
 
 def requires_data_model(options):
-    return options.type in ['view', 'output', 'generator', 'class_flags']
+    return options.type in ['csv', 'view', 'output', 'generator', 'class_flags']
 
 def initialize_data_model(options):
     if not requires_data_model(options):
