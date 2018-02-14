@@ -2417,10 +2417,10 @@ class SpellDataGenerator(DataGenerator):
             hotfix_data += hfd
             assert len(fields) == 20
             # 21, 22, 23, 24, 25
-            fields += spell.get_link('aura_option').field('stack_amount', 'proc_chance', 'proc_charges', 'proc_flags_1', 'internal_cooldown')
+            fields += spell.get_link('aura_option').field('stack_amount', 'proc_chance', 'proc_charges', 'proc_flags', 'internal_cooldown')
             f, hfd = spell.get_link('aura_option').get_hotfix_info(
                     ('stack_amount', 20), ('proc_chance', 21), ('proc_charges', 22),
-                    ('proc_flags_1', 23), ('internal_cooldown', 24))
+                    ('proc_flags', 23), ('internal_cooldown', 24))
             hotfix_flags |= f
             hotfix_data += hfd
             assert len(fields) == 25

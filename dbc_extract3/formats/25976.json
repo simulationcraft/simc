@@ -382,7 +382,7 @@
   ],
   "SpellAuraOptions": [
     { "data_type": "i", "field": "proc_charges" },
-    { "data_type": "I", "field": "proc_flags", "elements": 2 },
+    { "data_type": "I", "field": "proc_flags" },
     { "data_type": "I", "field": "internal_cooldown" },
     { "data_type": "h", "field": "stack_amount" },
     { "data_type": "h", "field": "id_ppm" },
