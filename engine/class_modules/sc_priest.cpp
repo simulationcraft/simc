@@ -1377,9 +1377,10 @@ namespace
     struct priest_spell_t : public priest_action_t<spell_t>
     {
       bool is_sphere_of_insanity_spell;
+      bool is_mastery_spell;
 
       priest_spell_t(const std::string& n, priest_t& player, const spell_data_t* s = spell_data_t::nil())
-        : base_t(n, player, s), is_sphere_of_insanity_spell(false)
+        : base_t(n, player, s), is_sphere_of_insanity_spell(false), is_mastery_spell(false)
       {
         weapon_multiplier = 0.0;
       }
@@ -1409,6 +1410,18 @@ namespace
             priest.buffs.twist_of_fate->trigger();
           }
         }
+      }
+
+      double action_multiplier() const override
+      {
+        double m = spell_t::action_multiplier();
+
+        if (is_mastery_spell && priest.mastery_spells.madness->ok())
+        {
+          m *= 1.0 + priest.cache.mastery_value();
+        }
+
+        return m;
       }
 
       void assess_damage(dmg_e type, action_state_t* s) override
@@ -1753,6 +1766,7 @@ namespace
         {
           parse_options(options_str);
           is_sphere_of_insanity_spell = true;
+          is_mastery_spell = true;
 
           insanity_gain = data().effectN(2).resource(RESOURCE_INSANITY);
           insanity_gain *= (1.0 + priest.talents.fortress_of_the_mind->effectN(2).percent());
@@ -1818,17 +1832,6 @@ namespace
           }
 
           return d;
-        }
-
-        double action_multiplier() const override
-        {
-          double m = priest_spell_t::action_multiplier();
-
-          if (priest.mastery_spells.madness->ok())
-          {
-            m *= 1.0 + priest.cache.mastery_value();
-          }
-          return m;
         }
 
         void impact(action_state_t* s) override
@@ -1900,6 +1903,7 @@ namespace
         {
           parse_options(options_str);
           is_sphere_of_insanity_spell = true;
+          is_mastery_spell = true;
 
           insanity_gain = data().effectN(2).resource(RESOURCE_INSANITY);
           insanity_gain *= (1.0 + priest.talents.fortress_of_the_mind->effectN(2).percent());
@@ -1966,17 +1970,6 @@ namespace
           return d;
         }
 
-        double action_multiplier() const override
-        {
-          double m = priest_spell_t::action_multiplier();
-
-          if (priest.mastery_spells.madness->ok())
-          {
-            m *= 1.0 + priest.cache.mastery_value();
-          }
-          return m;
-        }
-
         void impact(action_state_t* s) override
         {
           priest_spell_t::impact(s);
@@ -2041,7 +2034,7 @@ namespace
         // TODO: Mind Sear is missing damage information in spell data
         mind_sear_tick_t(priest_t& p, const spell_data_t* mind_sear)
           : priest_spell_t("mind_sear_tick", p, mind_sear->effectN(1).trigger()),
-          insanity_gain(p.find_spell(208232)->effectN(1).percent())  
+          insanity_gain(p.find_spell(208232)->effectN(1).percent())
         {
           background = true;
           dual = true;
@@ -2162,6 +2155,7 @@ namespace
           hasted_ticks = false;
           use_off_gcd = true;
           is_sphere_of_insanity_spell = true;
+          is_mastery_spell = true;
           energize_type = ENERGIZE_NONE;  // disable resource generation from spell data
 
 
@@ -2263,17 +2257,6 @@ namespace
           priest.trigger_call_to_the_void(d);
 
           priest.generate_insanity(insanity_gain, priest.gains.insanity_mind_flay, d->state->action);
-        }
-
-        double action_multiplier() const override
-        {
-          double m = priest_spell_t::action_multiplier();
-
-          if (priest.mastery_spells.madness->ok())
-          {
-            m *= 1.0 + priest.cache.mastery_value();
-          }
-          return m;
         }
 
         void impact(action_state_t* s) override
@@ -2706,6 +2689,7 @@ namespace
           casted = _casted;
           may_crit = true;
           tick_zero = false;
+          is_mastery_spell = true;
           if (!casted)
           {
             base_dd_max = 0.0;
@@ -2813,11 +2797,6 @@ namespace
         double action_multiplier() const override
         {
           double m = priest_spell_t::action_multiplier();
-
-          if (priest.mastery_spells.madness->ok())
-          {
-            m *= 1.0 + priest.cache.mastery_value();
-          }
 
           if (priest.artifact.mass_hysteria.rank())
           {
@@ -3056,7 +3035,10 @@ namespace
           parse_options(options_str);
           if (!ignore_healing)
             init_mental_fortitude();
+
           may_crit = false;
+          is_mastery_spell = true;
+
           if (priest.talents.misery->ok())
           {
             child_swp = new shadow_word_pain_t(priest, std::string(""), false);
@@ -3150,11 +3132,6 @@ namespace
         {
           double m = priest_spell_t::action_multiplier();
 
-          if (priest.mastery_spells.madness->ok())
-          {
-            m *= 1.0 + priest.cache.mastery_value();
-          }
-
           if (priest.artifact.mass_hysteria.rank())
           {
             m *= 1.0 + (priest.buffs.voidform->stack() * (priest.artifact.mass_hysteria.percent()));
@@ -3220,6 +3197,7 @@ namespace
           parse_options(options_str);
           use_off_gcd = true;
           is_sphere_of_insanity_spell = true;
+          is_mastery_spell = true;
           energize_type = ENERGIZE_NONE;  // disable resource generation from spell data.
 
           if (player.artifact.sinister_thoughts.rank())
@@ -3269,11 +3247,6 @@ namespace
         {
           double m = priest_spell_t::action_multiplier();
 
-          if (priest.mastery_spells.madness->ok())
-          {
-            m *= 1.0 + priest.cache.mastery_value();
-          }
-
           if (priest.buffs.anunds_last_breath->check())
           {
             m *= 1.0 + (priest.buffs.anunds_last_breath->data().effectN(1).percent() *
@@ -3312,6 +3285,7 @@ namespace
           }
 
           may_miss = false;
+          is_mastery_spell = true;
           aoe = -1;
           range = 40.0;
           radius = 10.0;
@@ -3329,17 +3303,6 @@ namespace
         {
           priest_spell_t::init();
           void_bolt = player->find_action("void_bolt");
-        }
-
-        double action_multiplier() const override
-        {
-          double m = priest_spell_t::action_multiplier();
-
-          if (priest.mastery_spells.madness->ok())
-          {
-            m *= 1.0 + priest.cache.mastery_value();
-          }
-          return m;
         }
 
         void execute() override
