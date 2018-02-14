@@ -431,6 +431,12 @@ public:
 
   } artifact;
 
+  // Default consumables
+  std::string default_potion() const override;
+  std::string default_flask() const override;
+  std::string default_food() const override;
+  std::string default_rune() const override;
+
   player_t* beacon_target;
 
   timespan_t last_extra_regen;
@@ -5044,69 +5050,16 @@ void paladin_t::generate_action_prio_list_prot()
   action_priority_list_t* precombat = get_action_priority_list( "precombat" );
 
   //Flask
-  if ( sim -> allow_flasks )
-  {
-    if (true_level > 100)
-    {
-      precombat->add_action("flask,type=flask_of_ten_thousand_scars,if=!talent.seraphim.enabled");
-      precombat->add_action("flask,type=flask_of_the_countless_armies,if=(role.attack|talent.seraphim.enabled)");
-    }
-    else if ( true_level > 90 )
-    {
-      precombat -> add_action( "flask,type=greater_draenic_stamina_flask" );
-      precombat -> add_action( "flask,type=greater_draenic_strength_flask,if=role.attack|using_apl.max_dps" );
-    }
-    else if ( true_level > 85 )
-      precombat -> add_action( "flask,type=earth" );
-    else if ( true_level >= 80 )
-      precombat -> add_action( "flask,type=steelskin" );
-  }
+  precombat -> add_action( "flask" );
 
   // Food
-  if ( sim -> allow_food )
-  {
-    if (level() > 100)
-    {
-      precombat->add_action("food,type=seedbattered_fish_plate,if=!talent.seraphim.enabled");
-      precombat->add_action("food,type=lavish_suramar_feast,if=(role.attack|talent.seraphim.enabled)");
-    }
-    else if ( level() > 90 )
-    {
-      precombat -> add_action( "food,type=whiptail_fillet" );
-      precombat -> add_action( "food,type=pickled_eel,if=role.attack|using_apl.max_dps" );
-    }
-    else if ( level() > 85 )
-      precombat -> add_action( "food,type=chun_tian_spring_rolls" );
-    else if ( level() >= 80 )
-      precombat -> add_action( "food,type=seafood_magnifique_feast" );
-  }
+  precombat -> add_action( "food" );
 
   // Snapshot stats
   precombat -> add_action( "snapshot_stats",  "Snapshot raid buffed stats before combat begins and pre-potting is done." );
 
   // Pre-potting
-  std::string potion_type = "";
-  if ( sim -> allow_potions )
-  {
-    // no need for off/def pot options - Draenic Armor gives more AP than Draenic STR,
-    // and Mountains potion is pathetic at L90
-	if (true_level > 100) {
-		precombat->add_action("potion,name=unbending_potion,if=!talent.seraphim.enabled");
-		precombat->add_action("potion,name=old_war,if=(role.attack|talent.seraphim.enabled)&active_enemies<3");
-		precombat->add_action("potion,name=prolonged_power,if=(role.attack|talent.seraphim.enabled)&active_enemies>=3");
-	  }
-    else if ( true_level > 90 ){
-		potion_type = "draenic_strength";
-		precombat->add_action("potion,name=" + potion_type);
-	}
-	else if (true_level >= 80) {
-		potion_type = "mogu_power";
-		precombat->add_action("potion,name=" + potion_type);
-	}
-
- 
-      
-  }
+  precombat -> add_action( "potion" );
 
   ///////////////////////
   // Action Priority List
@@ -5182,16 +5135,12 @@ void paladin_t::generate_action_prio_list_prot()
     if (level() > 100)
     {
       prot->add_action("potion,name=old_war,if=buff.avenging_wrath.up&talent.seraphim.enabled&active_enemies<3");
-	  prot->add_action("potion,name=prolonged_power,if=buff.avenging_wrath.up&talent.seraphim.enabled&active_enemies>=3");
+      prot->add_action("potion,name=prolonged_power,if=buff.avenging_wrath.up&talent.seraphim.enabled&active_enemies>=3");
       prot->add_action("potion,name=unbending_potion,if=!talent.seraphim.enabled");
-    }
-    if (true_level > 90)
-    {
-      prot->add_action("potion,name=draenic_strength,if=" + threshold + "&&!(debuff.eye_of_tyr.up|buff.aegis_of_light.up|buff.ardent_defender.up|buff.guardian_of_ancient_kings.up|buff.divine_shield.up|buff.potion.up)|target.time_to_die<=25");
     }
     else if (true_level >= 80)
     {
-      prot->add_action("potion,name=mountains,if=" + threshold + "&!(debuff.eye_of_tyr.up|buff.aegis_of_light.up|buff.ardent_defender.up|buff.guardian_of_ancient_kings.up|buff.divine_shield.up|buff.potion.up)|target.time_to_die<=25");
+      prot->add_action("potion,if=" + threshold + "&!(debuff.eye_of_tyr.up|buff.aegis_of_light.up|buff.ardent_defender.up|buff.guardian_of_ancient_kings.up|buff.divine_shield.up|buff.potion.up)|target.time_to_die<=25");
     }
   }
 
@@ -5246,51 +5195,19 @@ void paladin_t::generate_action_prio_list_ret()
   action_priority_list_t* precombat = get_action_priority_list( "precombat" );
 
   //Flask
-  if ( sim -> allow_flasks && true_level >= 80 )
-  {
-    std::string flask_action = "flask,type=";
-    if ( true_level > 100 )
-      flask_action += "flask_of_the_countless_armies";
-    else if ( true_level > 90 )
-      flask_action += "greater_draenic_strength_flask";
-    else if ( true_level > 85 )
-      flask_action += "winters_bite";
-    else
-      flask_action += "titanic_strength";
-
-    precombat -> add_action( flask_action );
-  }
+  precombat -> add_action( "flask" );
 
   // Food
-  if ( sim -> allow_food && level() >= 80 )
-  {
-    std::string food_action = "food,type=";
-    if ( level() > 100 )
-      food_action += "azshari_salad";
-    else if ( level() > 90 )
-      food_action += "sleeper_sushi";
-    else
-      food_action += ( level() > 85 ) ? "black_pepper_ribs_and_shrimp" : "beer_basted_crocolisk";
+  precombat -> add_action( "food" );
 
-    precombat -> add_action( food_action );
-  }
-
-  if ( true_level > 100 )
-    precombat -> add_action( "augmentation,type=defiled" );
+  // Augmentation
+  precombat -> add_action( "augmentation" );
 
   // Snapshot stats
   precombat -> add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
 
-  // Pre-potting
-  if ( sim -> allow_potions && true_level >= 80 )
-  {
-    if ( true_level > 100 )
-      precombat -> add_action( "potion,name=old_war" );
-    else if ( true_level > 90 )
-      precombat -> add_action( "potion,name=draenic_strength" );
-    else
-      precombat -> add_action( ( true_level > 85 ) ? "potion,name=mogu_power" : "potion,name=golemblood" );
-  }
+  // Pre-Potion
+  precombat -> add_action( "potion" );
 
   ///////////////////////
   // Action Priority List
@@ -5361,13 +5278,9 @@ void paladin_t::generate_action_prio_list_ret()
   if ( sim -> allow_potions )
   {
     if ( true_level > 100 )
-      cds -> add_action( "potion,name=old_war,if=(buff.bloodlust.react|buff.avenging_wrath.up|buff.crusade.up&buff.crusade.remains<25|target.time_to_die<=40)" );
-    else if ( true_level > 90 )
-      cds -> add_action( "potion,name=draenic_strength,if=(buff.bloodlust.react|buff.avenging_wrath.up|target.time_to_die<=40)" );
-    else if ( true_level > 85 )
-      cds -> add_action( "potion,name=mogu_power,if=(buff.bloodlust.react|buff.avenging_wrath.up|target.time_to_die<=40)" );
+      cds -> add_action( "potion,if=(buff.bloodlust.react|buff.avenging_wrath.up|buff.crusade.up&buff.crusade.remains<25|target.time_to_die<=40)" );
     else if ( true_level >= 80 )
-      cds -> add_action( "potion,name=golemblood,if=buff.bloodlust.react|buff.avenging_wrath.up|target.time_to_die<=40" );
+      cds -> add_action( "potion,if=(buff.bloodlust.react|buff.avenging_wrath.up|target.time_to_die<=40)" );
   }
 
   std::vector<std::string> racial_actions = get_racial_actions();
@@ -5430,67 +5343,47 @@ void paladin_t::generate_action_prio_list_holy_dps()
 {
   action_priority_list_t* precombat = get_action_priority_list( "precombat" );
 
-  if ( sim -> allow_flasks && true_level >= 80 )
-  {
-    std::string flask_action = "flask,type=";
-      if (true_level > 100) {
-          flask_action += "flask_of_the_whispered_pact";
-      }
-    else if ( true_level > 90 )
-      flask_action += "greater_draenic_intellect_flask";
-    else
-      flask_action += ( true_level > 85 ) ? "warm_sun" : "draconic_mind";
+  // Flask
+  precombat -> add_action( "flask" );
 
-    precombat -> add_action( flask_action );
-  }
+  // Food
+  precombat -> add_action( "food" );
 
-  if ( sim -> allow_food && level() >= 80 )
-  {
-    std::string food_action = "food,type=";
-      if (true_level > 100) {
-          food_action += "the_hungry_magister";
-      }
-      else if ( level() > 90 )
-      food_action += "pickled_eel";
-    else
-      food_action += ( level() > 85 ) ? "mogu_fish_stew" : "seafood_magnifique_feast";
-    precombat -> add_action( food_action );
-  }
-    
-    if ( true_level > 100 )
-        precombat -> add_action( "augmentation,type=defiled" );
-
+  // Augmentation
+  precombat -> add_action( "augmentation" );
 
   // Snapshot stats
   precombat -> add_action( "snapshot_stats",  "Snapshot raid buffed stats before combat begins and pre-potting is done." );
-  precombat -> add_action( "potion,name=old_war" );
+
+  // Pre-pot
+  precombat -> add_action( "potion" );
 
   // action priority list
-    action_priority_list_t* def = get_action_priority_list( "default" );
-    action_priority_list_t* cds = get_action_priority_list( "cooldowns" );
-    action_priority_list_t* priority = get_action_priority_list( "priority" );
+  action_priority_list_t* def = get_action_priority_list( "default" );
+  action_priority_list_t* cds = get_action_priority_list( "cooldowns" );
+  action_priority_list_t* priority = get_action_priority_list( "priority" );
 
   def -> add_action( "auto_attack" );
-    def -> add_action( "call_action_list,name=cooldowns");
-    def -> add_action( "call_action_list,name=priority");
+  def -> add_action( "call_action_list,name=cooldowns");
+  def -> add_action( "call_action_list,name=priority");
 
-    cds -> add_action("avenging_wrath");
-    if ( sim -> allow_potions )
-    {
-        cds -> add_action("potion,name=old_war,if=(buff.avenging_wrath.up)");
-    }
-    cds -> add_action("blood_fury,if=(buff.avenging_wrath.up)");
-    cds -> add_action("berserking,if=(buff.avenging_wrath.up)");
-    cds -> add_action("holy_avenger,if=(buff.avenging_wrath.up)");
-    cds -> add_action("use_items,if=(buff.avenging_wrath.up)");
+  cds -> add_action("avenging_wrath");
+  if ( sim -> allow_potions )
+  {
+      cds -> add_action("potion,if=(buff.avenging_wrath.up)");
+  }
+  cds -> add_action("blood_fury,if=(buff.avenging_wrath.up)");
+  cds -> add_action("berserking,if=(buff.avenging_wrath.up)");
+  cds -> add_action("holy_avenger,if=(buff.avenging_wrath.up)");
+  cds -> add_action("use_items,if=(buff.avenging_wrath.up)");
 
-    priority -> add_action("judgment");
-    priority -> add_action("holy_shock,damage=1");
-    priority -> add_action("crusader_strike");
-    priority -> add_action("holy_prism,target=self,if=active_enemies>=2");
-    priority -> add_action("holy_prism");
-    priority -> add_action("consecration");
-    priority -> add_action("light_of_dawn");
+  priority -> add_action("judgment");
+  priority -> add_action("holy_shock,damage=1");
+  priority -> add_action("crusader_strike");
+  priority -> add_action("holy_prism,target=self,if=active_enemies>=2");
+  priority -> add_action("holy_prism");
+  priority -> add_action("consecration");
+  priority -> add_action("light_of_dawn");
 }
 
 void paladin_t::generate_action_prio_list_holy()
@@ -5501,27 +5394,15 @@ void paladin_t::generate_action_prio_list_holy()
   action_priority_list_t* precombat = get_action_priority_list( "precombat" );
 
   //Flask
-  if ( sim -> allow_flasks && true_level >= 80 )
-  {
-    std::string flask_action = "flask,type=";
-    if ( true_level > 90 )
-      flask_action += "greater_draenic_intellect_flask";
-    else
-      flask_action += ( true_level > 85 ) ? "warm_sun" : "draconic_mind";
-
-    precombat -> add_action( flask_action );
-  }
+  precombat -> add_action( "flask" );
 
   // Food
-  if ( sim -> allow_food && level() >= 80 )
-  {
-    std::string food_action = "food,type=";
-    if ( level() > 90 )
-      food_action += "pickled_eel";
-    else
-      food_action += ( level() > 85 ) ? "mogu_fish_stew" : "seafood_magnifique_feast";
-    precombat -> add_action( food_action );
-  }
+  precombat -> add_action( "food" );
+
+  // Augmentation
+  precombat -> add_action( "augmentation" );
+
+
 
   precombat -> add_action( this, "Seal of Insight" );
   precombat -> add_action( this, "Beacon of Light" , "target=healing_target");
@@ -5530,6 +5411,9 @@ void paladin_t::generate_action_prio_list_holy()
 
   // Snapshot stats
   precombat -> add_action( "snapshot_stats",  "Snapshot raid buffed stats before combat begins and pre-potting is done." );
+
+  // Augmentation
+  precombat -> add_action( "potion" );
 
   // action priority list
   action_priority_list_t* def = get_action_priority_list( "default" );
@@ -5614,6 +5498,128 @@ void paladin_t::init_assessors()
   }
 }
 
+// paladin_t::default_potion ================================================
+
+std::string paladin_t::default_potion() const
+{
+  std::string retribution_pot = (true_level > 100) ? "old_war" :
+                                (true_level >= 90) ? "draenic_strength" :
+                                (true_level >= 85) ? "mogu_power" :
+                                (true_level >= 80) ? "golemblood" :
+                                "disabled";
+
+  bool dps = (primary_role() == ROLE_ATTACK) || (talents.seraphim -> ok());
+  std::string protection_pot = (true_level > 100) ? ( dps ? "prolonged_power" : "unbending_potion" ) :
+                               (true_level >= 90) ? "draenic_strength" :
+                               (true_level >= 85) ? "mogu_power" :
+                               (true_level >= 80) ? "mogu_power" :
+                               "disabled";
+
+  std::string holy_dps_pot = (true_level > 100) ? "old_war" :
+                             "disabled";
+
+  std::string holy_pot = "disabled";
+
+  switch ( specialization() )
+  {
+    case PALADIN_RETRIBUTION:
+      return retribution_pot;
+    case PALADIN_PROTECTION:
+      return protection_pot;
+    case PALADIN_HOLY:
+      return primary_role() == ROLE_ATTACK ? holy_dps_pot : holy_pot;
+    default:
+      return "disabled";
+  }
+}
+
+std::string paladin_t::default_food() const
+{
+  std::string retribution_food = (true_level > 100) ? "azshari_salad" :
+                                 (true_level >= 90) ? "sleeper_sushi" :
+                                 (true_level >= 85) ? "black_pepper_ribs_and_shrimp" :
+                                 (true_level >= 80) ? "beer_basted_crocolisk" :
+                                 "disabled";
+
+  bool dps = (primary_role() == ROLE_ATTACK) || (talents.seraphim -> ok());
+  std::string protection_food = (true_level > 100) ? ( dps ? "lavish_suramar_feast" : "seedbattered_fish_plate" ) :
+                                (true_level >= 90) ? ( dps ? "pickled_eel" : "whiptail_fillet" ) :
+                                (true_level >= 85) ? "chun_tian_spring_rolls" :
+                                (true_level >= 80) ? "seafood_magnifique_feast" :
+                                "disabled";
+
+  std::string holy_dps_food = (true_level > 100) ? "the_hungry_magister" :
+                              (true_level >= 90) ? "pickled_eel" :
+                              (true_level >= 85) ? "mogu_fish_stew" :
+                              (true_level >= 80) ? "seafood_magnifique_feast" :
+                              "disabled";
+
+  std::string holy_food = (true_level > 100) ? "lavish_suramar_feast" :
+                          (true_level >= 90) ? "pickled_eel" :
+                          (true_level >= 85) ? "mogu_fish_stew" :
+                          (true_level >= 80) ? "seafood_magnifique_feast" :
+                          "disabled";
+
+  switch ( specialization() )
+  {
+    case PALADIN_RETRIBUTION:
+      return retribution_food;
+    case PALADIN_PROTECTION:
+      return protection_food;
+    case PALADIN_HOLY:
+      return primary_role() == ROLE_ATTACK ? holy_dps_food : holy_food;
+    default:
+      return "disabled";
+  }
+}
+
+std::string paladin_t::default_flask() const
+{
+  std::string retribution_flask = (true_level > 100) ? "flask_of_the_countless_armies" :
+                                  (true_level >= 90) ? "greater_draenic_strength_flask" :
+                                  (true_level >= 85) ? "winters_bite" :
+                                  (true_level >= 80) ? "titanic_strength" :
+                                  "disabled";
+
+  bool dps = (primary_role() == ROLE_ATTACK) || (talents.seraphim -> ok());
+  std::string protection_flask = (true_level > 100) ? (dps ? "flask_of_the_countless_armies" : "flask_of_ten_thousand_scars") :
+                                 (true_level >= 90) ? (dps ? "greater_draenic_strength_flask" : "greater_draenic_stamina_flask") :
+                                 (true_level >= 85) ? "earth" :
+                                 (true_level >= 80) ? "steelskin" :
+                                 "disabled";
+
+  std::string holy_dps_flask = (true_level > 100) ? "flask_of_the_whispered_pact" :
+                               (true_level >= 90) ? "greater_draenic_intellect_flask" :
+                               (true_level >= 85) ? "warm_sun" :
+                               (true_level >= 80) ? "draconic_mind" :
+                               "disabled";
+
+  std::string holy_flask = (true_level > 100) ? "flask_of_the_whispered_pact" :
+                           (true_level >= 90) ? "greater_draenic_intellect_flask" :
+                           (true_level >= 85) ? "warm_sun" :
+                           (true_level >= 80) ? "draconic_mind" :
+                           "disabled";
+
+  switch ( specialization() )
+  {
+    case PALADIN_RETRIBUTION:
+      return retribution_flask;
+    case PALADIN_PROTECTION:
+      return protection_flask;
+    case PALADIN_HOLY:
+      return primary_role() == ROLE_ATTACK ? holy_dps_flask : holy_flask;
+    default:
+      return "disabled";
+  }
+}
+
+std::string paladin_t::default_rune() const
+{
+  return (true_level >= 110) ? "defiled" :
+         (true_level >= 100) ? "hyper" :
+         "disabled";
+}
+
 // paladin_t::init_actions ==================================================
 
 void paladin_t::init_action_list()
@@ -5661,11 +5667,6 @@ void paladin_t::init_action_list()
           generate_action_prio_list_holy_dps();
         break;
       default:
-        if ( true_level > 80 )
-        {
-          action_list_str = "flask,type=draconic_mind/food,type=severed_sagefish_head";
-          action_list_str += "/potion,name=volcanic_potion,if=!in_combat|buff.bloodlust.react|target.time_to_die<=60";
-        }
         action_list_str += "/snapshot_stats";
         action_list_str += "/auto_attack";
         break;

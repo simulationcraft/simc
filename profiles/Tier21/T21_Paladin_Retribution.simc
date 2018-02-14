@@ -8,6 +8,12 @@ talents=1302002
 artifact=2:0:0:0:0:40:1:41:4:42:4:43:4:44:4:47:4:49:1:50:4:51:4:52:4:53:4:54:1:350:1:351:1:352:1:353:1:1118:1:1275:1:1561:4:1562:1:1563:1:1564:24:1647:1
 crucible=1739:1780:53/1739:1780:53/1739:1780:53
 
+# Default consumables
+potion=old_war
+flask=flask_of_the_countless_armies
+food=azshari_salad
+augmentation=defiled
+
 # This default action priority list is automatically created based on your character.
 # It is a attempt to provide you with a action list that is both simple and practicable,
 # while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
@@ -15,12 +21,12 @@ crucible=1739:1780:53/1739:1780:53/1739:1780:53
 # SimulationCraft is always looking for updates and improvements to the default action lists.
 
 # Executed before combat begins. Accepts non-harmful actions only.
-actions.precombat=flask,type=flask_of_the_countless_armies
-actions.precombat+=/food,type=azshari_salad
-actions.precombat+=/augmentation,type=defiled
+actions.precombat=flask
+actions.precombat+=/food
+actions.precombat+=/augmentation
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
-actions.precombat+=/potion,name=old_war
+actions.precombat+=/potion
 
 # Executed every time the actor is available.
 actions=auto_attack
