@@ -1957,8 +1957,7 @@ double rogue_attack_t::cost() const
   if ( p() -> talent.shadow_focus -> ok() &&
     ( p() -> buffs.stealth -> check() || p() -> buffs.vanish -> check() || p() -> buffs.shadow_dance -> check() ) )
   {
-    c *= 1.0 + ( p() -> spell.shadow_focus -> effectN( 1 ).percent() +
-                 p() -> spec.subtlety_rogue -> effectN( 5 ).percent() );
+    c *= 1.0 + p() -> spell.shadow_focus -> effectN( 1 ).percent();
   }
 
   if ( c <= 0 )
@@ -3091,7 +3090,7 @@ struct marked_for_death_t : public rogue_attack_t
     may_miss = may_crit = harmful = callbacks = false;
     energize_type = ENERGIZE_ON_CAST;
     energize_amount += p -> talent.deeper_stratagem -> effectN( 6 ).base_value();
-    cooldown -> duration += timespan_t::from_millis( p -> spec.subtlety_rogue -> effectN( 7 ).base_value() );
+    cooldown -> duration += timespan_t::from_millis( p -> spec.subtlety_rogue -> effectN( 6 ).base_value() );
     cooldown -> duration += timespan_t::from_millis( p -> spec.assassination_rogue -> effectN( 4 ).base_value() );
   }
 
