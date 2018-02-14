@@ -1302,7 +1302,7 @@ struct blade_flurry_attack_t : public rogue_attack_t
 
   double composite_da_multiplier( const action_state_t* ) const override
   {
-    double multiplier = p() -> spec.blade_flurry -> effectN( 3 ).percent();
+    double multiplier = p() -> spec.blade_flurry -> effectN( 2 ).percent();
     if ( p() -> buffs.shivarran_symmetry -> check() )
     {
       multiplier += p() -> buffs.shivarran_symmetry -> data().effectN( 1 ).percent();
@@ -2353,20 +2353,10 @@ struct blade_flurry_t : public rogue_attack_t
   {
     rogue_attack_t::execute();
 
-    if ( ! p() -> buffs.blade_flurry -> check() )
+    p() -> buffs.blade_flurry -> trigger();
+    if ( shivarran_symmetry )
     {
-      p() -> buffs.blade_flurry -> trigger();
-      if ( shivarran_symmetry )
-      {
-        p() -> buffs.shivarran_symmetry -> trigger();
-      }
-    }
-    else
-    {
-      p() -> buffs.blade_flurry -> expire();
-      p() -> buffs.shivarran_symmetry -> expire();
-      // To be confirmed that turning Blade Flurry off removes also Shivarran
-      // Symmetry
+      p() -> buffs.shivarran_symmetry -> trigger();
     }
   }
 };
@@ -6172,8 +6162,7 @@ void rogue_t::init_action_list()
     // Blade Flurry
     action_priority_list_t* bf = get_action_priority_list( "bf", "Blade Flurry" );
       // Cancels Blade Flurry buff on CD to maximize Shiarran Symmetry effect
-    bf -> add_action( "cancel_buff,name=blade_flurry,if=spell_targets.blade_flurry<2&buff.blade_flurry.up" );
-    bf -> add_action( "cancel_buff,name=blade_flurry,if=equipped.shivarran_symmetry&cooldown.blade_flurry.up&buff.blade_flurry.up&spell_targets.blade_flurry>=2" );
+    bf -> add_action( "cancel_buff,name=blade_flurry,if=equipped.shivarran_symmetry&cooldown.blade_flurry.charges>=1&buff.blade_flurry.up&spell_targets.blade_flurry>=2" );
     bf -> add_action( this, "Blade Flurry", "if=spell_targets.blade_flurry>=2&!buff.blade_flurry.up" );
 
     // Cooldowns
@@ -7648,12 +7637,6 @@ void rogue_t::combat_begin()
 double rogue_t::energy_regen_per_second() const
 {
   double r = player_t::energy_regen_per_second();
-
-  if ( buffs.blade_flurry -> check() )
-  {
-    double penalty = spec.blade_flurry -> effectN( 1 ).percent();
-    r *= 1.0 + penalty;
-  }
 
   if ( buffs.buried_treasure -> up() )
   {
