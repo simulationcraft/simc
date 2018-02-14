@@ -499,6 +499,12 @@ public:
     artifact_power_t tactical_advance;
   } artifact;
 
+  // Default consumables
+  std::string default_potion() const override;
+  std::string default_flask() const override;
+  std::string default_food() const override;
+  std::string default_rune() const override;
+
   warrior_t( sim_t* sim, const std::string& name, race_e r = RACE_NIGHT_ELF ):
     player_t( sim, WARRIOR, name, r ),
     heroic_charge( nullptr ),
@@ -589,7 +595,7 @@ public:
   void      invalidate_cache( cache_e ) override;
   double    temporary_movement_modifier() const override;
 
-  void      default_apl_dps_precombat( const std::string& food, const std::string& potion );
+  void      default_apl_dps_precombat();
   void      apl_default();
   void      apl_fury();
   void      apl_arms();
@@ -5140,36 +5146,19 @@ void warrior_t::datacollection_end()
 
 // Pre-combat Action Priority List============================================
 
-void warrior_t::default_apl_dps_precombat( const std::string& food_name, const std::string& potion_name )
+void warrior_t::default_apl_dps_precombat()
 {
   action_priority_list_t* precombat = get_action_priority_list( "precombat" );
-  std::string flask_name = ( true_level > 100 ) ? "countless_armies" :
-    ( true_level >= 90 ) ? "greater_draenic_strength_flask" :
-    ( true_level >= 85 ) ? "winters_bite" :
-    ( true_level >= 80 ) ? "titanic_strength" :
-    "";
 
-  // Flask
-  if ( sim -> allow_flasks && true_level >= 80 )
-  {
-    precombat -> add_action( "flask,type=" + flask_name );
-  }
+  precombat -> add_action( "flask" );
 
-  // Food
-  if ( sim -> allow_food && true_level >= 80 )
-  {
-    precombat -> add_action( "food,type=" + food_name );
-  }
+  precombat -> add_action( "food" );
 
-  if ( true_level > 100 )
-    precombat -> add_action( "augmentation,type=defiled" );
+  precombat -> add_action( "augmentation" );
 
   precombat -> add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
 
-  if ( sim -> allow_potions && true_level >= 80 )
-  {
-    precombat -> add_action( "potion,name=" + potion_name );
-  }
+  precombat -> add_action( "potion" );
 }
 
 // Fury Warrior Action Priority List ========================================
@@ -5178,18 +5167,7 @@ void warrior_t::apl_fury()
 {
   std::vector<std::string> racial_actions = get_racial_actions();
 
-  std::string food_name = ( true_level > 100 ) ? "nightborne_delicacy_platter" :
-    ( true_level >  90 ) ? "buttered_sturgeon" :
-    ( true_level >= 85 ) ? "sea_mist_rice_noodles" :
-    ( true_level >= 80 ) ? "seafood_magnifique_feast" :
-    "";
-  std::string potion_name = ( true_level > 100 ) ? "old_war" :
-    ( true_level >= 90 ) ? "draenic_strength" :
-    ( true_level >= 85 ) ? "mogu_power" :
-    ( true_level >= 80 ) ? "golemblood_potion" :
-    "";
-
-  default_apl_dps_precombat( food_name, potion_name );
+  default_apl_dps_precombat();
 
   action_priority_list_t* default_list = get_action_priority_list( "default" );
   action_priority_list_t* movement = get_action_priority_list( "movement" );
@@ -5206,7 +5184,7 @@ void warrior_t::apl_fury()
 
   if ( sim -> allow_potions && true_level >= 80 )
   {
-    default_list -> add_action( "potion,name=" + potion_name + ",if=buff.battle_cry.up&(buff.avatar.up|!talent.avatar.enabled)" );
+    default_list -> add_action( "potion,if=buff.battle_cry.up&(buff.avatar.up|!talent.avatar.enabled)" );
   }
 
   default_list -> add_talent( this, "Dragon Roar", "if=(equipped.convergence_of_fates&cooldown.battle_cry.remains<2)|!equipped.convergence_of_fates&(!cooldown.battle_cry.remains<=10|cooldown.battle_cry.remains<2)|(talent.bloodbath.enabled&(cooldown.bloodbath.remains<1|buff.bloodbath.up))");
@@ -5322,18 +5300,7 @@ void warrior_t::apl_arms()
 {
   std::vector<std::string> racial_actions = get_racial_actions();
 
-  std::string food_name = ( true_level > 100 ) ? "nightborne_delicacy_platter" :
-    ( true_level >  90 ) ? "buttered_sturgeon" :
-    ( true_level >= 85 ) ? "sea_mist_rice_noodles" :
-    ( true_level >= 80 ) ? "seafood_magnifique_feast" :
-    "";
-  std::string potion_name = ( true_level > 100 ) ? "old_war" :
-    ( true_level >= 90 ) ? "draenic_strength" :
-    ( true_level >= 85 ) ? "mogu_power" :
-    ( true_level >= 80 ) ? "golemblood_potion" :
-    "";
-
-  default_apl_dps_precombat( food_name, potion_name );
+  default_apl_dps_precombat();
   action_priority_list_t* default_list = get_action_priority_list( "default" );
   action_priority_list_t* single_target = get_action_priority_list( "single" );
   action_priority_list_t* cleave = get_action_priority_list( "cleave" );
@@ -5345,7 +5312,7 @@ void warrior_t::apl_arms()
 
   if ( sim -> allow_potions && true_level >= 80 )
   {
-    default_list -> add_action( "potion,name=" + potion_name + ",if=(!talent.avatar.enabled|buff.avatar.up)&buff.battle_cry.up&debuff.colossus_smash.up|target.time_to_die<=26" );
+    default_list -> add_action( "potion,if=(!talent.avatar.enabled|buff.avatar.up)&buff.battle_cry.up&debuff.colossus_smash.up|target.time_to_die<=26" );
   }
 
   for ( size_t i = 0; i < racial_actions.size(); i++ )
@@ -5458,18 +5425,7 @@ void warrior_t::apl_prot()
 {
   std::vector<std::string> racial_actions = get_racial_actions();
 
-  std::string food_name = ( true_level > 100 ) ? "lavish_suramar_feast" :
-    ( true_level >  90 ) ? "buttered_sturgeon" :
-    ( true_level >= 85 ) ? "sea_mist_rice_noodles" :
-    ( true_level >= 80 ) ? "seafood_magnifique_feast" :
-    "";
-  std::string potion_name = ( true_level > 100 ) ? "old_war" :
-    ( true_level >= 90 ) ? "draenic_strength" :
-    ( true_level >= 85 ) ? "mogu_power" :
-    ( true_level >= 80 ) ? "golemblood_potion" :
-    "";
-
-  default_apl_dps_precombat( food_name, potion_name );
+  default_apl_dps_precombat();
 
   action_priority_list_t* default_list = get_action_priority_list( "default" );
   action_priority_list_t* prot = get_action_priority_list( "prot" );
@@ -5499,7 +5455,7 @@ void warrior_t::apl_prot()
 
   if ( sim -> allow_potions && true_level >= 80 )
   {
-    prot -> add_action( "potion,name=" + potion_name + ",if=target.time_to_die<25" );
+    prot -> add_action( "potion,if=target.time_to_die<25" );
   }
 
   prot -> add_action( this, "Battle Cry", "if=cooldown.shield_slam.remains=0" );
@@ -6009,6 +5965,96 @@ void warrior_t::init_resources( bool force )
 
   resources.current[RESOURCE_RAGE] = 0; // By default, simc sets all resources to full. However, Warriors cannot reliably start combat with more than 0 rage.
                                         // This will also ensure that the 20-35 rage from Charge is not overwritten.
+}
+
+// warrior_t::default_potion ================================================
+
+std::string warrior_t::default_potion() const
+{
+  std::string fury_pot = ( true_level > 100 ) ? "old_war" :
+                         ( true_level >= 90 ) ? "draenic_strength" :
+                         ( true_level >= 85 ) ? "mogu_power" :
+                         ( true_level >= 80 ) ? "golemblood_potion" :
+                         "disabled";
+
+  std::string arms_pot = ( true_level > 100 ) ? "old_war" :
+                         ( true_level >= 90 ) ? "draenic_strength" :
+                         ( true_level >= 85 ) ? "mogu_power" :
+                         ( true_level >= 80 ) ? "golemblood_potion" :
+                         "disabled";
+
+  std::string protection_pot = ( true_level > 100 ) ? "old_war" :
+                               ( true_level >= 90 ) ? "draenic_strength" :
+                               ( true_level >= 85 ) ? "mogu_power" :
+                               ( true_level >= 80 ) ? "golemblood_potion" :
+                               "disabled";
+
+  switch ( specialization() )
+  {
+    case WARRIOR_FURY:
+      return fury_pot;
+    case WARRIOR_ARMS:
+      return arms_pot;
+    case WARRIOR_PROTECTION:
+      return protection_pot;
+    default:
+      return "disabled";
+  }
+}
+
+// warrior_t::default_flask =================================================
+
+std::string warrior_t::default_flask() const
+{
+  return ( true_level > 100 ) ? "flask_of_the_countless_armies" :
+         ( true_level >= 90 ) ? "greater_draenic_strength_flask" :
+         ( true_level >= 85 ) ? "winters_bite" :
+         ( true_level >= 80 ) ? "titanic_strength" :
+         "disabled";
+}
+
+// warrior_t::default_food ==================================================
+
+std::string warrior_t::default_food() const
+{
+  std::string fury_food = ( true_level > 100 ) ? "nightborne_delicacy_platter" :
+                          ( true_level >  90 ) ? "buttered_sturgeon" :
+                          ( true_level >= 85 ) ? "sea_mist_rice_noodles" :
+                          ( true_level >= 80 ) ? "seafood_magnifique_feast" :
+                          "disabled";
+
+  std::string arms_food = ( true_level > 100 ) ? "nightborne_delicacy_platter" :
+                          ( true_level >  90 ) ? "buttered_sturgeon" :
+                          ( true_level >= 85 ) ? "sea_mist_rice_noodles" :
+                          ( true_level >= 80 ) ? "seafood_magnifique_feast" :
+                          "disabled";
+
+  std::string protection_food = ( true_level > 100 ) ? "lavish_suramar_feast" :
+                                ( true_level >  90 ) ? "buttered_sturgeon" :
+                                ( true_level >= 85 ) ? "sea_mist_rice_noodles" :
+                                ( true_level >= 80 ) ? "seafood_magnifique_feast" :
+                                "disabled";
+
+  switch ( specialization() )
+  {
+    case WARRIOR_FURY:
+      return fury_food;
+    case WARRIOR_ARMS:
+      return arms_food;
+    case WARRIOR_PROTECTION:
+      return protection_food;
+    default:
+      return "disabled";
+  }
+}
+
+// warrior_t::default_rune ==================================================
+
+std::string warrior_t::default_rune() const
+{
+  return (true_level >= 110) ? "defiled" :
+         (true_level >= 100) ? "hyper" :
+         "disabled";
 }
 
 // warrior_t::init_actions ==================================================
