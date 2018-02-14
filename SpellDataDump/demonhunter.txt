@@ -2152,7 +2152,7 @@ Effects          :
 #1 (id=306954)   : Apply Aura (6) | Add Flat Modifier (107): Spell Range (5)
                    Base Value: 10 | Scaled Value: 10 | Misc Value: 5
                    Affected Spells: Infernal Strike (189110), Infernal Strike (189112)
-#2 (id=306994)   : Apply Aura (6) | Modify Recharge Time (453)
+#2 (id=306994)   : Apply Aura (6) | Modify Recharge Time (Category) (453)
                    Base Value: -8000 | Scaled Value: -8000 | Misc Value: 1553 | Target: Self (1)
                    Affected Spells: Infernal Strike (189110), Infernal Strike (189112)
 Description      : Infernal Strike's range is increased by $s1 yards, and its cooldown is reduced by ${$s2/-1000} sec.

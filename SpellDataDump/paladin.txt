@@ -798,7 +798,7 @@ Effects          :
                    Base Value: -6 | Scaled Value: -6 | Target: Self (1)
 #4 (id=134929)   : Apply Aura (6) | Modify Block% (51)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 11 | Target: Self (1)
-#5 (id=134930)   : Apply Aura (6) | Modify Recharge Time% (454)
+#5 (id=134930)   : Apply Aura (6) | Modify Recharge Time% (Category) (454)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 1663 | Target: Self (1)
 Description      : Increases your total Stamina by $s2% and your block chance by $s5%.
 
@@ -3382,7 +3382,7 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | Trigger Spell: 209785 | Target: Self (1)
 #2 (id=323063)   : Apply Aura (6) | Dummy (4)
                    Base Value: -1000 | Scaled Value: -1000 | Misc Value: 1627 | Target: Self (1)
-#3 (id=341689)   : Apply Aura (6) | Modify Recharge Time% (454)
+#3 (id=341689)   : Apply Aura (6) | Modify Recharge Time% (Category) (454)
                    Base Value: -17 | Scaled Value: -17 | Misc Value: 1627 | Target: Self (1)
 Description      : Reduces the cooldown of Crusader Strike by ${$m2/-1000}.1 sec and gives it a $h% chance to reduce the cost of your next Holy Power spender by $209785s1.
 
@@ -3475,7 +3475,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6)
 Effects          :
-#1 (id=300630)   : Apply Aura (6) | Modify Recharge Time% (454)
+#1 (id=300630)   : Apply Aura (6) | Modify Recharge Time% (Category) (454)
                    Base Value: -67 | Scaled Value: -67 | Misc Value: 1570 | Target: Self (1)
 #2 (id=316627)   : Apply Aura (6) | Modify Cooldown Charge (411)
                    Base Value: -1 | Scaled Value: -1 | Misc Value: 1570 | Target: Self (1)
@@ -3726,7 +3726,7 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6)
 Effects          :
-#1 (id=301267)   : Apply Aura (6) | Modify Recharge Time% (454)
+#1 (id=301267)   : Apply Aura (6) | Modify Recharge Time% (Category) (454)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 1662 | Target: Self (1)
 #2 (id=301268)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 1 (3)
                    Base Value: -20 | Scaled Value: -20 | Misc Value: 3 | Target: Self (1)

@@ -2059,7 +2059,7 @@ Effects          :
 #2 (id=127166)   : Apply Aura (6) | Unknown(332)
                    Base Value: 114074 | Scaled Value: 114074 | Target: Self (1)
                    Affected Spells: Chain Lightning (421), Chain Lightning (188443)
-#3 (id=127189)   : Apply Aura (6) | Modify Recharge Time (453)
+#3 (id=127189)   : Apply Aura (6) | Modify Recharge Time (Category) (453)
                    Base Value: -8000 | Scaled Value: -8000 | Misc Value: 1536 | Target: Self (1)
                    Affected Spells: Lava Burst (51505)
 Description      : Transform into a Flame Ascendant for $d, replacing Chain Lightning with Lava Beam, removing the cooldown on Lava Burst, and increasing the damage of Lava Burst by an amount equal to your critical strike chance.
@@ -6398,7 +6398,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6)
 Effects          :
-#1 (id=374522)   : Apply Aura (6) | Modify Recharge Time% (454)
+#1 (id=374522)   : Apply Aura (6) | Modify Recharge Time% (Category) (454)
                    Base Value: -15 | Scaled Value: -15 | Misc Value: 1634 | Target: Self (1)
 #2 (id=376272)   : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)

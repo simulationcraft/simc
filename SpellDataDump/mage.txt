@@ -4077,7 +4077,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=302656)   : Apply Aura (6) | Modify Cooldown Charge (411)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 1500 | Target: Self (1)
-#2 (id=354871)   : Apply Aura (6) | Modify Recharge Time% (454)
+#2 (id=354871)   : Apply Aura (6) | Modify Recharge Time% (Category) (454)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1500 | Target: Self (1)
 #3 (id=354874)   : Dummy (3)
                    Base Value: 2 | Scaled Value: 2
@@ -5003,7 +5003,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6)
 Effects          :
-#1 (id=349283)   : Apply Aura (6) | Modify Recharge Time% (454)
+#1 (id=349283)   : Apply Aura (6) | Modify Recharge Time% (Category) (454)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 1671 | Target: Self (1)
 Description      : Evocation's cooldown is reduced by $s1%.
 

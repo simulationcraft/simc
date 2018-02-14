@@ -2421,7 +2421,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 11 | Target: Self (1)
 #5 (id=221432)   : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 1469 | Target: Self (1)
-#6 (id=222091)   : Apply Aura (6) | Modify Recharge Time (453)
+#6 (id=222091)   : Apply Aura (6) | Modify Recharge Time (Category) (453)
                    Base Value: -60000 | Scaled Value: -60000 | Misc Value: 1469 | Target: Self (1)
 
 Name             : Guardian Overrides Passive (Passive) (id=106734) [Spell Family (7), Passive, Hidden] 
@@ -2444,7 +2444,7 @@ Effects          :
                    Affected Spells: Incapacitating Roar (99), Intimidating Roar (236748)
 #4 (id=221433)   : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 1469 | Target: Self (1)
-#5 (id=222092)   : Apply Aura (6) | Modify Recharge Time (453)
+#5 (id=222092)   : Apply Aura (6) | Modify Recharge Time (Category) (453)
                    Base Value: -60000 | Scaled Value: -60000 | Misc Value: 1469 | Target: Self (1)
 #6 (id=249441)   : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
                    Base Value: 300 | Scaled Value: 300 | Target: Self (1)
@@ -3092,7 +3092,7 @@ Effects          :
 #6 (id=260757)   : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost (14)
                    Base Value: 20 | Scaled Value: 20 | Misc Value: 14 | Target: Self (1)
                    Affected Spells: Regrowth (8936)
-#7 (id=260758)   : Apply Aura (6) | Modify Recharge Time% (454)
+#7 (id=260758)   : Apply Aura (6) | Modify Recharge Time% (Category) (454)
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 1469 | Target: Self (1)
 #8 (id=260759)   : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
                    Base Value: -46 | Scaled Value: -46 | Target: Self (1)
@@ -5062,7 +5062,7 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6)
 Effects          :
-#1 (id=294998)   : Apply Aura (6) | Modify Recharge Time (453)
+#1 (id=294998)   : Apply Aura (6) | Modify Recharge Time (Category) (453)
                    Base Value: -3000 | Scaled Value: -3000 | Misc Value: 1576 | Target: Self (1)
 #2 (id=294999)   : Apply Aura (6) | Modify Cooldown Charge (411)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 1576 | Target: Self (1)
@@ -5800,7 +5800,7 @@ Effects          :
 #1 (id=300978)   : Apply Aura (6) | Add Percent Modifier (108): Spell Cooldown (11)
                    Base Value: -33 | Scaled Value: -33 | Misc Value: 11 | Target: Self (1)
                    Affected Spells: Barkskin (22812)
-#2 (id=301037)   : Apply Aura (6) | Modify Recharge Time% (454)
+#2 (id=301037)   : Apply Aura (6) | Modify Recharge Time% (Category) (454)
                    Base Value: -33 | Scaled Value: -33 | Misc Value: 1469 | Target: Self (1)
                    Affected Spells: Barkskin (22812)
 Description      : Reduces the cooldowns of Barkskin and Survival Instincts by $s1%.

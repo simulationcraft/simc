@@ -3304,7 +3304,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #5 (id=285142)   : Apply Aura (6) | Periodic Dummy (226): every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-#6 (id=286264)   : Apply Aura (6) | Modify Recharge Time (453)
+#6 (id=286264)   : Apply Aura (6) | Modify Recharge Time (Category) (453)
                    Base Value: -1500 | Scaled Value: -1500 | Misc Value: 1602 | Target: Self (1)
                    Affected Spells: Mind Blast (8092)
 #8 (id=290891)   : Apply Aura (6) | Modify Healing% Done (136)
@@ -3323,7 +3323,7 @@ Effects          :
                    Base Value: 194249 | Scaled Value: 194249 | Misc Value: 232698 | Target: Self (1)
 #14 (id=469640)   : Apply Aura (6) | Unknown(235)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-#15 (id=706295)   : Apply Aura (6) | Modify Recharge Time (453)
+#15 (id=706295)   : Apply Aura (6) | Modify Recharge Time (Category) (453)
                    Base Value: -1500 | Scaled Value: -1500 | Misc Value: 1590 | Target: Self (1)
                    Affected Spells: Mind Blast (8092)
 Description      : $@spelldesc228264

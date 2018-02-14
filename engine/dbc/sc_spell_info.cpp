@@ -706,7 +706,7 @@ static const std::unordered_map<unsigned, const std::string> _effect_subtype_str
   { 404, "Override Attack Power per Spell Power%"       },
   { 405, "Modify Combat Rating Multiplier"              },
   { 409, "Slow Fall"                                    },
-  { 411, "Modify Cooldown Charge"                       },
+  { 411, "Modify Cooldown Charge (Category)"            },
   { 416, "Hasted Cooldown Duration"                     },
   { 417, "Hasted Global Cooldown"                       },
   { 418, "Modify Max Resource"                          },

@@ -869,7 +869,7 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6)
 Effects          :
-#1 (id=128868)   : Apply Aura (6) | Modify Recharge Time (453)
+#1 (id=128868)   : Apply Aura (6) | Modify Recharge Time (Category) (453)
                    Base Value: -5000 | Scaled Value: -5000 | Misc Value: 1365 | Target: Self (1)
 #2 (id=135980)   : Apply Aura (6) | Modify Cooldown Charge (411)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 1365 | Target: Self (1)
@@ -3140,7 +3140,7 @@ Effects          :
                    Base Value: -20 | Scaled Value: -20 | Target: Self (1)
 #9 (id=260830)   : Apply Aura (6) | Unknown(179)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-#10 (id=260831)   : Apply Aura (6) | Modify Recharge Time (453)
+#10 (id=260831)   : Apply Aura (6) | Modify Recharge Time (Category) (453)
                    Base Value: 2000 | Scaled Value: 2000 | Misc Value: 1518
                    Affected Spells: Rising Sun Kick (107428), Rising Sun Kick (185099)
 #11 (id=260832)   : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
@@ -3877,7 +3877,7 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6)
 Effects          :
-#1 (id=288811)   : Apply Aura (6) | Modify Recharge Time (453)
+#1 (id=288811)   : Apply Aura (6) | Modify Recharge Time (Category) (453)
                    Base Value: -3000 | Scaled Value: -3000 | Misc Value: 1562 | Target: Self (1)
 #2 (id=288812)   : Apply Aura (6) | Modify Cooldown Charge (411)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 1562 | Target: Self (1)

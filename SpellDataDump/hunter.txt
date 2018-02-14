@@ -5168,7 +5168,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6)
 Effects          :
-#1 (id=349262)   : Apply Aura (6) | Modify Recharge Time (453)
+#1 (id=349262)   : Apply Aura (6) | Modify Recharge Time (Category) (453)
                    Base Value: -10000 | Scaled Value: -10000 | Misc Value: 1449 | Target: Self (1)
 Description      : Disengage's cooldown is reduced by ${$m1/-1000} sec.
 
@@ -6563,7 +6563,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6)
 Effects          :
-#1 (id=651881)   : Apply Aura (6) | Modify Recharge Time (453)
+#1 (id=651881)   : Apply Aura (6) | Modify Recharge Time (Category) (453)
                    Base Value: -10000 | Scaled Value: -10000 | Misc Value: 1449 | Target: Self (1)
 Description      : The cooldown of Disengage is reduced by ${$m1/-1000} sec.
 
