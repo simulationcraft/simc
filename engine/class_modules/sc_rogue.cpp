@@ -343,7 +343,6 @@ struct rogue_t : public player_t
     const spell_data_t* subtlety_rogue;
 
     // Assassination
-    const spell_data_t* assassins_resolve;
     const spell_data_t* improved_poisons;
     const spell_data_t* seal_fate;
     const spell_data_t* venomous_wounds;
@@ -5892,11 +5891,6 @@ double rogue_t::composite_player_multiplier( school_e school ) const
   double m = player_t::composite_player_multiplier( school );
 
   // Assassination
-  if ( main_hand_weapon.type == WEAPON_DAGGER && off_hand_weapon.type == WEAPON_DAGGER && spec.assassins_resolve -> ok() )
-  {
-    m *= 1.0 + spec.assassins_resolve -> effectN( 2 ).percent();
-  }
-
   if (buffs.elaborate_planning->up())
   {
     m *= buffs.elaborate_planning->value();
@@ -6720,8 +6714,7 @@ void rogue_t::init_base_stats()
   resources.base[ RESOURCE_ENERGY ] = 100;
   resources.base[ RESOURCE_ENERGY ] += talent.vigor -> effectN( 1 ).base_value();
 
-  if ( main_hand_weapon.type == WEAPON_DAGGER && off_hand_weapon.type == WEAPON_DAGGER )
-    resources.base[ RESOURCE_ENERGY ] += spec.assassins_resolve -> effectN( 1 ).base_value();
+  resources.base[ RESOURCE_ENERGY ] += spec.assassination_rogue -> effectN( 5 ).base_value();
 
   base_energy_regen_per_second = 10 * ( 1.0 + spec.vitality -> effectN( 1 ).percent() );
   base_energy_regen_per_second *= 1.0 + talent.vigor -> effectN( 2 ).percent();
@@ -6765,7 +6758,6 @@ void rogue_t::init_spells()
   spec.subtlety_rogue       = find_specialization_spell( "Subtlety Rogue" );
 
   // Assassination
-  spec.assassins_resolve    = find_specialization_spell( "Assassin's Resolve" );
   spec.improved_poisons     = find_specialization_spell( "Improved Poisons" );
   spec.seal_fate            = find_specialization_spell( "Seal Fate" );
   spec.venomous_wounds      = find_specialization_spell( "Venomous Wounds" );
