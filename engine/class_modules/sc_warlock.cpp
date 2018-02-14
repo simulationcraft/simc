@@ -2787,6 +2787,18 @@ public:
     //assert( false ); // Will only get here if there are no available imps
   }
 
+  void trigger_sephuzs_secret( const action_state_t* state, spell_mechanic mechanic )
+  {
+    if ( !p() -> legendary.sephuzs_secret )
+      return;
+
+    // trigger by default on interrupts and on adds/lower level stuff
+    if ( p() -> allow_sephuz || mechanic == MECHANIC_INTERRUPT || state -> target -> is_add() ||
+      ( state -> target -> level() < p() -> sim -> max_player_level + 3 ) )
+    {
+      p() -> buffs.sephuzs_secret -> trigger();
+    }
+  }
 };
 
 typedef residual_action::residual_periodic_action_t< warlock_spell_t > residual_action_t;
@@ -5944,6 +5956,54 @@ struct mortal_coil_t: public warlock_spell_t
   }
 };
 
+struct shadowfury_t: public warlock_spell_t
+{
+  shadowfury_t( warlock_t* p ):
+    warlock_spell_t( "shadowfury", p, p -> talents.shadowfury )
+  {
+  }
+
+  void execute() override
+  {
+    warlock_spell_t::execute();
+
+    if ( p() -> legendary.sephuzs_secret )
+    trigger_sephuzs_secret( execute_state, MECHANIC_STUN );
+  }
+};
+
+struct fear_t : public warlock_spell_t
+{
+  fear_t( warlock_t* p ) :
+    warlock_spell_t( p, "Fear" )
+  {
+  }
+
+  void execute() override
+  {
+    warlock_spell_t::execute();
+
+    if ( p() -> legendary.sephuzs_secret )
+      trigger_sephuzs_secret( execute_state, MECHANIC_DISORIENT );
+  }
+};
+
+struct howl_of_terror_t : public warlock_spell_t
+{
+  howl_of_terror_t( warlock_t* p ) :
+    warlock_spell_t( "howl_of_terror", p, p -> talents.howl_of_terror )
+  {
+  }
+
+  void execute() override
+  {
+    warlock_spell_t::execute();
+
+    if ( p() -> legendary.sephuzs_secret )
+      trigger_sephuzs_secret( execute_state, MECHANIC_DISORIENT );
+  }
+};
+
 struct channel_demonfire_tick_t : public warlock_spell_t
 {
   channel_demonfire_tick_t( warlock_t* p ):
@@ -6516,6 +6576,9 @@ action_t* warlock_t::create_action( const std::string& action_name,
   else if ( action_name == "incinerate"            ) a = new                        incinerate_t( this );
   else if ( action_name == "life_tap"              ) a = new                          life_tap_t( this );
   else if ( action_name == "mortal_coil"           ) a = new                       mortal_coil_t( this );
+  else if ( action_name == "shadowfury"            ) a = new                        shadowfury_t( this );
+  else if ( action_name == "fear"                  ) a = new                              fear_t( this );
+  else if ( action_name == "howl_of_terror"        ) a = new                    howl_of_terror_t( this );
   else if ( action_name == "shadow_bolt"           ) a = new                       shadow_bolt_t( this );
   else if ( action_name == "shadowburn"            ) a = new                        shadowburn_t( this );
   else if ( action_name == "unstable_affliction"   ) a = new               unstable_affliction_t( this );
