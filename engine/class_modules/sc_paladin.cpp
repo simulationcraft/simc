@@ -5135,16 +5135,12 @@ void paladin_t::generate_action_prio_list_prot()
     if (level() > 100)
     {
       prot->add_action("potion,name=old_war,if=buff.avenging_wrath.up&talent.seraphim.enabled&active_enemies<3");
-	  prot->add_action("potion,name=prolonged_power,if=buff.avenging_wrath.up&talent.seraphim.enabled&active_enemies>=3");
+      prot->add_action("potion,name=prolonged_power,if=buff.avenging_wrath.up&talent.seraphim.enabled&active_enemies>=3");
       prot->add_action("potion,name=unbending_potion,if=!talent.seraphim.enabled");
-    }
-    if (true_level > 90)
-    {
-      prot->add_action("potion,name=draenic_strength,if=" + threshold + "&&!(debuff.eye_of_tyr.up|buff.aegis_of_light.up|buff.ardent_defender.up|buff.guardian_of_ancient_kings.up|buff.divine_shield.up|buff.potion.up)|target.time_to_die<=25");
     }
     else if (true_level >= 80)
     {
-      prot->add_action("potion,name=mountains,if=" + threshold + "&!(debuff.eye_of_tyr.up|buff.aegis_of_light.up|buff.ardent_defender.up|buff.guardian_of_ancient_kings.up|buff.divine_shield.up|buff.potion.up)|target.time_to_die<=25");
+      prot->add_action("potion,if=" + threshold + "&!(debuff.eye_of_tyr.up|buff.aegis_of_light.up|buff.ardent_defender.up|buff.guardian_of_ancient_kings.up|buff.divine_shield.up|buff.potion.up)|target.time_to_die<=25");
     }
   }
 
@@ -5282,13 +5278,9 @@ void paladin_t::generate_action_prio_list_ret()
   if ( sim -> allow_potions )
   {
     if ( true_level > 100 )
-      cds -> add_action( "potion,name=old_war,if=(buff.bloodlust.react|buff.avenging_wrath.up|buff.crusade.up&buff.crusade.remains<25|target.time_to_die<=40)" );
-    else if ( true_level > 90 )
-      cds -> add_action( "potion,name=draenic_strength,if=(buff.bloodlust.react|buff.avenging_wrath.up|target.time_to_die<=40)" );
-    else if ( true_level > 85 )
-      cds -> add_action( "potion,name=mogu_power,if=(buff.bloodlust.react|buff.avenging_wrath.up|target.time_to_die<=40)" );
+      cds -> add_action( "potion,if=(buff.bloodlust.react|buff.avenging_wrath.up|buff.crusade.up&buff.crusade.remains<25|target.time_to_die<=40)" );
     else if ( true_level >= 80 )
-      cds -> add_action( "potion,name=golemblood,if=buff.bloodlust.react|buff.avenging_wrath.up|target.time_to_die<=40" );
+      cds -> add_action( "potion,if=(buff.bloodlust.react|buff.avenging_wrath.up|target.time_to_die<=40)" );
   }
 
   std::vector<std::string> racial_actions = get_racial_actions();
@@ -5367,31 +5359,31 @@ void paladin_t::generate_action_prio_list_holy_dps()
   precombat -> add_action( "potion" );
 
   // action priority list
-    action_priority_list_t* def = get_action_priority_list( "default" );
-    action_priority_list_t* cds = get_action_priority_list( "cooldowns" );
-    action_priority_list_t* priority = get_action_priority_list( "priority" );
+  action_priority_list_t* def = get_action_priority_list( "default" );
+  action_priority_list_t* cds = get_action_priority_list( "cooldowns" );
+  action_priority_list_t* priority = get_action_priority_list( "priority" );
 
   def -> add_action( "auto_attack" );
-    def -> add_action( "call_action_list,name=cooldowns");
-    def -> add_action( "call_action_list,name=priority");
+  def -> add_action( "call_action_list,name=cooldowns");
+  def -> add_action( "call_action_list,name=priority");
 
-    cds -> add_action("avenging_wrath");
-    if ( sim -> allow_potions )
-    {
-        cds -> add_action("potion,name=old_war,if=(buff.avenging_wrath.up)");
-    }
-    cds -> add_action("blood_fury,if=(buff.avenging_wrath.up)");
-    cds -> add_action("berserking,if=(buff.avenging_wrath.up)");
-    cds -> add_action("holy_avenger,if=(buff.avenging_wrath.up)");
-    cds -> add_action("use_items,if=(buff.avenging_wrath.up)");
+  cds -> add_action("avenging_wrath");
+  if ( sim -> allow_potions )
+  {
+      cds -> add_action("potion,if=(buff.avenging_wrath.up)");
+  }
+  cds -> add_action("blood_fury,if=(buff.avenging_wrath.up)");
+  cds -> add_action("berserking,if=(buff.avenging_wrath.up)");
+  cds -> add_action("holy_avenger,if=(buff.avenging_wrath.up)");
+  cds -> add_action("use_items,if=(buff.avenging_wrath.up)");
 
-    priority -> add_action("judgment");
-    priority -> add_action("holy_shock,damage=1");
-    priority -> add_action("crusader_strike");
-    priority -> add_action("holy_prism,target=self,if=active_enemies>=2");
-    priority -> add_action("holy_prism");
-    priority -> add_action("consecration");
-    priority -> add_action("light_of_dawn");
+  priority -> add_action("judgment");
+  priority -> add_action("holy_shock,damage=1");
+  priority -> add_action("crusader_strike");
+  priority -> add_action("holy_prism,target=self,if=active_enemies>=2");
+  priority -> add_action("holy_prism");
+  priority -> add_action("consecration");
+  priority -> add_action("light_of_dawn");
 }
 
 void paladin_t::generate_action_prio_list_holy()
