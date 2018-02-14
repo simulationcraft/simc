@@ -878,8 +878,9 @@ struct rogue_attack_t : public melee_attack_t
   {
     melee_attack_t::init();
 
-    // If the ability is a finisher, just disable weapon damage by default
-    if ( base_costs[ RESOURCE_COMBO_POINT ] > 0 )
+    // BfA has removed Weapon Damage scaling from all abilites except standard auto attacks. We will keep assigning weapons
+    // for handling things like procs_poison, Main Gauche, or Combat Potency, but disable Weapon multipliers, for now.
+    if ( special )
     {
       weapon_multiplier = 0;
       weapon_power_mod = 0;
@@ -3497,6 +3498,10 @@ struct shadow_blade_t : public rogue_attack_t
     background = true;
     may_glance = false;
     base_execute_time = w -> swing_time;
+
+    // As of 2018-02-14 BfA Alpha Build 26032, Shadow Blade also only scales with AP.
+    weapon_multiplier = 0;
+    weapon_power_mod = 0;
   }
 };
 
