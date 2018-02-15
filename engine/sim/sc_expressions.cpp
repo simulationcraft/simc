@@ -738,6 +738,8 @@ public:
         {
           return F<double>()( left, right->eval() );
         }
+        ~left_reduced_t()
+        { delete right; }
       };
       expr_t* reduced = new left_reduced_t(
           std::string( name() ) + "_left_reduced('" + left->name() + "')", op_,
@@ -763,6 +765,8 @@ public:
         {
           return F<double>()( left->eval(), right );
         }
+        ~right_reduced_t()
+        { delete left; }
       };
       expr_t* reduced = new right_reduced_t(
           std::string( name() ) + "_right_reduced('" + right->name() + "')",
