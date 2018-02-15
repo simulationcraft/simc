@@ -348,7 +348,7 @@ public:
     buff_t* spiritual_journey;
     haste_buff_t* sephuzs_secret;
 
-    // Totemic mastery
+    // Totem Mastery
     buff_t* resonance_totem;
     buff_t* storm_totem;
     buff_t* ember_totem;
@@ -382,7 +382,6 @@ public:
     gain_t* spirit_of_the_maelstrom;
     gain_t* resonance_totem;
     gain_t* wind_gust;
-    gain_t* the_deceivers_blood_pact;
   } gain;
 
   // Tracked Procs
@@ -5199,14 +5198,12 @@ struct earth_shock_overload_t : public elemental_overload_spell_t
 struct earth_shock_t : public shaman_spell_t
 {
   double base_coefficient;
-  double tdbp_proc_chance;  // 7.0 legendary The Deceiver's Blood Pact proc chance
 
   action_t* t21_4pc;
 
   earth_shock_t( shaman_t* player, const std::string& options_str )
     : shaman_spell_t( "earth_shock", player, player->find_specialization_spell( "Earth Shock" ), options_str ),
       base_coefficient( data().effectN( 1 ).sp_coeff() / base_cost() ),
-      tdbp_proc_chance( 0 ),
       t21_4pc( nullptr )
   {
     base_multiplier *= 1.0 + player->artifact.earthen_attunement.percent();
@@ -5236,11 +5233,6 @@ struct earth_shock_t : public shaman_spell_t
   void execute() override
   {
     shaman_spell_t::execute();
-
-    if ( rng().roll( tdbp_proc_chance ) )
-    {
-      p()->resource_gain( RESOURCE_MAELSTROM, last_resource_cost, p()->gain.the_deceivers_blood_pact, this );
-    }
 
     p()->buff.t21_2pc_elemental->expire();
   }
@@ -7243,14 +7235,13 @@ void shaman_t::init_gains()
 {
   player_t::init_gains();
 
-  gain.aftershock               = get_gain( "Aftershock" );
-  gain.ascendance               = get_gain( "Ascendance" );
-  gain.resurgence               = get_gain( "resurgence" );
-  gain.feral_spirit             = get_gain( "Feral Spirit" );
-  gain.spirit_of_the_maelstrom  = get_gain( "Spirit of the Maelstrom" );
-  gain.resonance_totem          = get_gain( "Resonance Totem" );
-  gain.wind_gust                = get_gain( "Wind Gust" );
-  gain.the_deceivers_blood_pact = get_gain( "The Deceiver's Blood Pact" );
+  gain.aftershock              = get_gain( "Aftershock" );
+  gain.ascendance              = get_gain( "Ascendance" );
+  gain.resurgence              = get_gain( "resurgence" );
+  gain.feral_spirit            = get_gain( "Feral Spirit" );
+  gain.spirit_of_the_maelstrom = get_gain( "Spirit of the Maelstrom" );
+  gain.resonance_totem         = get_gain( "Resonance Totem" );
+  gain.wind_gust               = get_gain( "Wind Gust" );
 }
 
 // shaman_t::init_procs =====================================================
@@ -7496,9 +7487,7 @@ void shaman_t::init_action_list_elemental()
   single_asc->add_action( this, "Flame Shock", "if=maelstrom>=20,target_if=refreshable" );
   single_asc->add_action(
       this, "Earth Shock",
-      "if=(spell_targets.earthquake=1)&(maelstrom>=111|!artifact.swelling_"
-      "maelstrom.enabled&maelstrom>=86|equipped.the_deceivers_blood_pact&talent.aftershock.enabled&(maelstrom>70&"
-      "equipped.smoldering_heart))",
+      "if=(spell_targets.earthquake=1)&(maelstrom>=111|!artifact.swelling_maelstrom.enabled&maelstrom>=86)",
       "If you talented for Aftershock, equipped Deceivers Blood Pact and either Smoldering Heart or Echoes of the "
       "Great Sundering, you essentially gamble for procs." );
   single_asc->add_talent( this, "Totem Mastery",
@@ -8665,18 +8654,6 @@ struct storm_tempests_t : public scoped_action_callback_t<stormstrike_base_t>
   }
 };
 
-struct the_deceivers_blood_pact_t : public scoped_action_callback_t<earth_shock_t>
-{
-  the_deceivers_blood_pact_t() : super( SHAMAN, "earth_shock" )
-  {
-  }
-
-  void manipulate( earth_shock_t* action, const special_effect_t& e ) override
-  {
-    action->tdbp_proc_chance = e.driver()->proc_chance();
-  }
-};
-
 struct spiritual_journey_t : public class_buff_cb_t<buff_t>
 {
   spiritual_journey_t() : super( SHAMAN, "spiritual_journey" )
@@ -8806,7 +8783,6 @@ struct shaman_module_t : public module_t
     register_special_effect( 208741, emalons_charged_core_buff_t(), true );
     register_special_effect( 224837, pristine_protoscale_girdle_t() );
     register_special_effect( 214260, storm_tempests_t( "stormstrike" ) );  // TODO: Windstrike?
-    register_special_effect( 214131, the_deceivers_blood_pact_t() );
     register_special_effect( 214147, spiritual_journey_t(), true );
     register_special_effect( 213359, akainus_absolute_justice_t() );
     register_special_effect( 208699, alakirs_acrimony_t<chained_base_t>( "chain_lightning" ) );
