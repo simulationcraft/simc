@@ -415,7 +415,6 @@ public:
     const spell_data_t* elemental_shaman;
     const spell_data_t* lava_burst_2;  // 7.1 Lava Burst autocrit with FS passive
     const spell_data_t* lava_surge;
-    const spell_data_t* spiritual_insight;
 
     // Enhancement
     const spell_data_t* critical_strikes;
@@ -6473,9 +6472,6 @@ void shaman_t::init_spells()
   spec.mail_specialization          = find_specialization_spell( "Mail Specialization" );
   constant.matching_gear_multiplier = spec.mail_specialization->effectN( 1 ).percent();
   spec.shaman                       = find_spell( 137038 );
-
-  // Elemental / Restoration
-  spec.spiritual_insight = find_specialization_spell( "Spiritual Insight" );
 
   // Elemental
   spec.chain_lightning_2 = find_specialization_spell( 231722 );
