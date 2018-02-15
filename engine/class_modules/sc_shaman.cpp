@@ -341,7 +341,6 @@ public:
     buff_t* t21_2pc_enhancement;
 
     // Legendary buffs
-    buff_t* echoes_of_the_great_sundering;
     buff_t* emalons_charged_core;
     buff_t* spiritual_journey;
     buff_t* eotn_fire;
@@ -5168,11 +5167,6 @@ struct earthquake_damage_t : public shaman_spell_t
   {
     double m = shaman_spell_t::composite_persistent_multiplier( state );
 
-    if ( p()->buff.echoes_of_the_great_sundering->up() )
-    {
-      m *= 1.0 + p()->buff.echoes_of_the_great_sundering->data().effectN( 2 ).percent();
-    }
-
     m *= 1.0 + p()->buff.t21_2pc_elemental->stack_value();
 
     return m;
@@ -5199,16 +5193,6 @@ struct earthquake_t : public shaman_spell_t
     add_child( rumble );
   }
 
-  double cost() const override
-  {
-    if ( p()->buff.echoes_of_the_great_sundering->check() )
-    {
-      return 0;
-    }
-
-    return shaman_spell_t::cost();
-  }
-
   void execute() override
   {
     shaman_spell_t::execute();
@@ -5216,10 +5200,6 @@ struct earthquake_t : public shaman_spell_t
     make_event<ground_aoe_event_t>(
         *sim, p(),
         ground_aoe_params_t().target( execute_state->target ).duration( data().duration() ).action( rumble ) );
-
-    // Note, needs to be decremented after ground_aoe_event_t is created so that the rumble gets the
-    // buff multiplier as persistent.
-    p()->buff.echoes_of_the_great_sundering->decrement();
 
     p()->buff.t21_2pc_elemental->expire();
   }
@@ -5256,15 +5236,13 @@ struct earth_shock_overload_t : public elemental_overload_spell_t
 struct earth_shock_t : public shaman_spell_t
 {
   double base_coefficient;
-  double eotgs_base_chance;  // 7.0 legendary Echoes of the Great Sundering proc chance
-  double tdbp_proc_chance;   // 7.0 legendary The Deceiver's Blood Pact proc chance
+  double tdbp_proc_chance;  // 7.0 legendary The Deceiver's Blood Pact proc chance
 
   action_t* t21_4pc;
 
   earth_shock_t( shaman_t* player, const std::string& options_str )
     : shaman_spell_t( "earth_shock", player, player->find_specialization_spell( "Earth Shock" ), options_str ),
       base_coefficient( data().effectN( 1 ).sp_coeff() / base_cost() ),
-      eotgs_base_chance( 0 ),
       tdbp_proc_chance( 0 ),
       t21_4pc( nullptr )
   {
@@ -5295,12 +5273,6 @@ struct earth_shock_t : public shaman_spell_t
   void execute() override
   {
     shaman_spell_t::execute();
-
-    if ( eotgs_base_chance > 0 )
-    {
-      p()->buff.echoes_of_the_great_sundering->trigger( 1, buff_t::DEFAULT_VALUE(),
-                                                        eotgs_base_chance * last_resource_cost );
-    }
 
     if ( rng().roll( tdbp_proc_chance ) )
     {
@@ -6607,7 +6579,7 @@ void shaman_t::init_spells()
 
   talent.lightning_surge_totem = find_talent_spell( "Lightning Surge Totem" );
 
-  talent.aftershock        = find_talent_spell( "Aftershock" );
+  talent.aftershock = find_talent_spell( "Aftershock" );
 
   talent.elemental_fusion    = find_talent_spell( "Elemental Fusion" );
   talent.primal_elementalist = find_talent_spell( "Primal Elementalist" );
@@ -7572,16 +7544,13 @@ void shaman_t::init_action_list_elemental()
                           "ascendance.duration<=duration" );
   single_asc->add_talent( this, "Elemental Blast", "", "Keep your EB always on Cooldown." );
   single_asc->add_action(
-      this, "Earthquake",
-      "if=buff.echoes_of_the_great_sundering.up&(buff.earthen_strength.up|buff.echoes_of_the_great_sundering.duration<="
-      "3|maelstrom>=117)|(buff.earthen_strength.up|maelstrom>=104)&spell_targets.earthquake>1&!equipped.echoes_of_the_"
-      "great_sundering",
+      this, "Earthquake", "if=(buff.earthen_strength.up|maelstrom>=104)&spell_targets.earthquake>1",
       "Use your shoulders proc outside of Ascendance and only if at least one of the following is true: you have T21_2 "
       "buff, shoulder buff duration is shorter than 3 seconds or you have greater than or equal 117 Maelstrom. Use EQ "
       "at two targets. But be aware that you're going to deal significantly less damage to your primary target." );
   single_asc->add_action( this, "Earth Shock",
                           "if=(maelstrom>=117|!artifact.swelling_maelstrom.enabled&maelstrom>=92)&(spell_targets."
-                          "earthquake=1|equipped.echoes_of_the_great_sundering)" );
+                          "earthquake=1)" );
   single_asc->add_action( this, "Stormkeeper",
                           "if=(raid_event.adds.count<3|raid_event.adds.in>50)&time>5&!buff.ascendance.up",
                           "Keep SK for large or soon add waves. Don't cast SK during Ascendance." );
@@ -7592,14 +7561,10 @@ void shaman_t::init_action_list_elemental()
                           "if=dot.flame_shock.remains>cast_time&(cooldown_react|buff.ascendance.up)" );
   single_asc->add_action( this, "Flame Shock", "if=maelstrom>=20,target_if=refreshable" );
   single_asc->add_action(
-      this, "Earthquake",
-      "if=buff.echoes_of_the_great_sundering.up&(maelstrom>=111|!artifact.swelling_maelstrom.enabled&maelstrom>=86|"
-      "equipped.the_deceivers_blood_pact&maelstrom>85&talent.aftershock.enabled)" );
-  single_asc->add_action(
       this, "Earth Shock",
-      "if=(spell_targets.earthquake=1|equipped.echoes_of_the_great_sundering)&(maelstrom>=111|!artifact.swelling_"
-      "maelstrom.enabled&maelstrom>=86|equipped.the_deceivers_blood_pact&talent.aftershock.enabled&(maelstrom>85&"
-      "equipped.echoes_of_the_great_sundering|maelstrom>70&equipped.smoldering_heart))",
+      "if=(spell_targets.earthquake=1)&(maelstrom>=111|!artifact.swelling_"
+      "maelstrom.enabled&maelstrom>=86|equipped.the_deceivers_blood_pact&talent.aftershock.enabled&(maelstrom>70&"
+      "equipped.smoldering_heart))",
       "If you talented for Aftershock, equipped Deceivers Blood Pact and either Smoldering Heart or Echoes of the "
       "Great Sundering, you essentially gamble for procs." );
   single_asc->add_talent( this, "Totem Mastery",
@@ -8700,35 +8665,6 @@ struct furious_winds_t : public scoped_action_callback_t<windfury_attack_t>
   }
 };
 
-struct echoes_of_the_great_sundering_t : public scoped_action_callback_t<earth_shock_t>
-{
-  echoes_of_the_great_sundering_t() : super( SHAMAN, "earth_shock" )
-  {
-  }
-
-  void manipulate( earth_shock_t* action, const special_effect_t& e ) override
-  {
-    action->eotgs_base_chance = e.driver()->effectN( 1 ).percent() / action->base_cost();
-  }
-};
-
-struct echoes_of_the_great_sundering_buff_t : public class_buff_cb_t<buff_t>
-{
-  echoes_of_the_great_sundering_buff_t() : super( SHAMAN, "echoes_of_the_great_sundering" )
-  {
-  }
-
-  buff_t*& buff_ptr( const special_effect_t& e ) override
-  {
-    return debug_cast<shaman_t*>( e.player )->buff.echoes_of_the_great_sundering;
-  }
-
-  buff_creator_t creator( const special_effect_t& e ) const override
-  {
-    return super::creator( e ).spell( e.player->find_spell( 208723 ) );
-  }
-};
-
 struct smoldering_heart_chance_t : public unique_gear::scoped_actor_callback_t<shaman_t>
 {
   smoldering_heart_chance_t() : super( SHAMAN )
@@ -8992,8 +8928,6 @@ struct shaman_module_t : public module_t
     register_special_effect( 184919, elemental_bellows_t() );
     register_special_effect( 184920, furious_winds_t( "windfury_attack" ) );
     register_special_effect( 184920, furious_winds_t( "windfury_attack_oh" ) );
-    register_special_effect( 208722, echoes_of_the_great_sundering_t() );
-    register_special_effect( 208722, echoes_of_the_great_sundering_buff_t(), true );
     register_special_effect( 208741, emalons_charged_core_t() );
     register_special_effect( 208741, emalons_charged_core_buff_t(), true );
     register_special_effect( 224837, pristine_protoscale_girdle_t() );
