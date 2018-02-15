@@ -303,7 +303,6 @@ public:
     buff_t* lava_surge;
     buff_t* liquid_magma;
     buff_t* lightning_shield;
-    buff_t* shamanistic_rage;
     buff_t* spirit_walk;
     buff_t* spiritwalkers_grace;
     buff_t* tidal_waves;
@@ -4954,24 +4953,6 @@ struct icefury_t : public shaman_spell_t
   }
 };
 
-// Shamanistic Rage Spell ===================================================
-
-struct shamanistic_rage_t : public shaman_spell_t
-{
-  shamanistic_rage_t( shaman_t* player, const std::string& options_str )
-    : shaman_spell_t( "shamanistic_rage", player, player->find_specialization_spell( "Shamanistic Rage" ), options_str )
-  {
-    harmful = may_crit = false;
-  }
-
-  void execute() override
-  {
-    shaman_spell_t::execute();
-
-    p()->buff.shamanistic_rage->trigger();
-  }
-};
-
 // Spirit Wolf Spell ========================================================
 
 struct feral_spirit_spell_t : public shaman_spell_t
@@ -6369,8 +6350,6 @@ action_t* shaman_t::create_action( const std::string& name, const std::string& o
     return new lightning_bolt_t( this, options_str );
   if ( name == "lightning_shield" )
     return new lightning_shield_t( this, options_str );
-  if ( name == "shamanistic_rage" )
-    return new shamanistic_rage_t( this, options_str );
   if ( name == "windstrike" )
     return new windstrike_t( this, options_str );
   if ( name == "feral_spirit" )
@@ -7378,8 +7357,7 @@ void shaman_t::create_buffs()
                         .chance( 1.0 );  // Proc chance is handled externally
   buff.lightning_shield = buff_creator_t( this, "lightning_shield", find_talent_spell( "Lightning Shield" ) )
                               .chance( talent.lightning_shield->ok() );
-  buff.shamanistic_rage = buff_creator_t( this, "shamanistic_rage", find_specialization_spell( "Shamanistic Rage" ) );
-  buff.spirit_walk      = buff_creator_t( this, "spirit_walk", find_specialization_spell( "Spirit Walk" ) );
+  buff.spirit_walk = buff_creator_t( this, "spirit_walk", find_specialization_spell( "Spirit Walk" ) );
   buff.spiritwalkers_grace =
       buff_creator_t( this, "spiritwalkers_grace", find_specialization_spell( "Spiritwalker's Grace" ) );
   buff.tidal_waves =
