@@ -300,6 +300,7 @@ public:
   {
     // shared between all three specs
     buff_t* ascendance;
+    buff_t* ghost_wolf;
 
     // Elemental, Restoration
     buff_t* echo_of_the_elements;
@@ -307,32 +308,29 @@ public:
 
     // Elemental
     buff_t* liquid_magma;
+    stat_buff_t* elemental_blast_crit;
+    stat_buff_t* elemental_blast_haste;
+    stat_buff_t* elemental_blast_mastery;
 
     // Enhancement
+    buff_t* crash_lightning;
+    buff_t* doom_winds;
+    buff_t* feral_spirit;
+    buff_t* flametongue;
+    buff_t* frostbrand;
+    buff_t* gathering_storms;
+    buff_t* landslide;
     buff_t* lightning_shield;
+    buff_t* stormbringer;
+    buff_t* unleash_doom;
+    haste_buff_t* windsong;
+    haste_buff_t* wind_strikes;
 
     // Restoration
     buff_t* spirit_walk;
     buff_t* spiritwalkers_grace;
     buff_t* tidal_waves;
-    buff_t* feral_spirit;
 
-    stat_buff_t* elemental_blast_crit;
-    stat_buff_t* elemental_blast_haste;
-    stat_buff_t* elemental_blast_mastery;
-
-    buff_t* flametongue;
-    buff_t* frostbrand;
-    buff_t* stormbringer;
-    buff_t* crash_lightning;
-    haste_buff_t* windsong;
-    buff_t* landslide;
-    buff_t* doom_winds;
-    buff_t* unleash_doom;
-    haste_buff_t* wind_strikes;
-    buff_t* gathering_storms;
-    buff_t* ghost_wolf;
-    buff_t* elemental_focus;
     buff_t* icefury;
     buff_t* hot_hand;
     haste_buff_t* elemental_mastery;
@@ -373,7 +371,6 @@ public:
   struct
   {
     cooldown_t* ascendance;
-    cooldown_t* elemental_focus;
     cooldown_t* fire_elemental;
     cooldown_t* feral_spirits;
     cooldown_t* lava_burst;
@@ -422,7 +419,6 @@ public:
 
     // Elemental
     const spell_data_t* chain_lightning_2;  // 7.1 Chain Lightning additional 2 targets passive
-    const spell_data_t* elemental_focus;
     const spell_data_t* elemental_fury;
     const spell_data_t* elemental_shaman;
     const spell_data_t* flame_shock_2;  // 7.1 Flame Shock duration extension passive
@@ -611,7 +607,6 @@ public:
 
     // Cooldowns
     cooldown.ascendance        = get_cooldown( "ascendance" );
-    cooldown.elemental_focus   = get_cooldown( "elemental_focus" );
     cooldown.fire_elemental    = get_cooldown( "fire_elemental" );
     cooldown.storm_elemental   = get_cooldown( "storm_elemental" );
     cooldown.feral_spirits     = get_cooldown( "feral_spirit" );
@@ -666,7 +661,6 @@ public:
   void trigger_t19_oh_8pc( const action_state_t* );
   void trigger_t20_2pc_elemental( const action_state_t* );
   void trigger_stormbringer( const action_state_t* state, double proc_chance = -1.0, proc_t* proc_obj = nullptr );
-  void trigger_elemental_focus( const action_state_t* state );
   void trigger_lightning_shield( const action_state_t* state );
   void trigger_earthen_rage( const action_state_t* state );
   void trigger_stormlash( const action_state_t* state );
@@ -1552,14 +1546,8 @@ private:
 public:
   typedef shaman_spell_base_t<Base> base_t;
 
-  bool affected_by_elemental_focus;
-
   shaman_spell_base_t( const std::string& n, shaman_t* player, const spell_data_t* s = spell_data_t::nil() )
-    : ab( n, player, s ),
-      // Spell data is extremely buggy here it seems, so default to true and disable on the things
-      // that are not affected (in terms of damage)
-      affected_by_elemental_focus(
-          true /* s -> affected_by( player -> buff.elemental_focus -> data().effectN( 1 ) ) */ )
+    : ab( n, player, s )
   {
   }
 
@@ -1567,22 +1555,12 @@ public:
   {
     double m = ab::composite_persistent_multiplier( state );
 
-    if ( affected_by_elemental_focus && ab::p()->buff.elemental_focus->up() )
-    {
-      m *= ab::p()->buff.elemental_focus->check_value();
-    }
-
     return m;
   }
 
   void execute() override
   {
     ab::execute();
-
-    if ( !ab::background && ab::execute_state->result_raw > 0 )
-    {
-      ab::p()->buff.elemental_focus->decrement();
-    }
 
     ab::p()->buff.spiritwalkers_grace->up();
 
@@ -1593,13 +1571,6 @@ public:
                               ab::last_resource_cost * ab::p()->talent.aftershock->effectN( 1 ).percent(),
                               ab::p()->gain.aftershock, nullptr );
     }
-  }
-
-  void impact( action_state_t* state ) override
-  {
-    ab::impact( state );
-
-    ab::p()->trigger_elemental_focus( state );
   }
 };
 
@@ -3150,9 +3121,8 @@ struct earthen_rage_spell_t : public shaman_spell_t
 {
   earthen_rage_spell_t( shaman_t* p ) : shaman_spell_t( "earthen_rage", p, p->find_spell( 170379 ) )
   {
-    background = proc           = true;
-    callbacks                   = false;
-    affected_by_elemental_focus = false;
+    background = proc = true;
+    callbacks         = false;
   }
 };
 
@@ -3200,8 +3170,7 @@ struct pristine_protoscale_girdle_dot_t : public shaman_spell_t
     background = tick_may_crit = true;
     callbacks = may_crit = false;
 
-    dot_max_stack               = data().max_stacks();
-    affected_by_elemental_focus = false;
+    dot_max_stack = data().max_stacks();
   }
 };
 
@@ -5207,8 +5176,6 @@ struct seismic_lightning_t : public shaman_spell_t
   {
     background = true;
     callbacks  = false;
-    // TODO: test whether lightning is affected by elemental focus
-    affected_by_elemental_focus = false;
   }
 };
 
@@ -5224,7 +5191,6 @@ struct earthquake_damage_t : public shaman_spell_t
     school                  = SCHOOL_PHYSICAL;
     spell_power_mod.direct  = 0.92;
     base_multiplier *= 1.0 + p()->artifact.the_ground_trembles.percent();
-    affected_by_elemental_focus = true;  // Needed to explicitly flag, since spell data lacks info
   }
 
   double target_armor( player_t* ) const override
@@ -5288,8 +5254,6 @@ struct earthquake_t : public shaman_spell_t
     // Note, needs to be decremented after ground_aoe_event_t is created so that the rumble gets the
     // buff multiplier as persistent.
     p()->buff.echoes_of_the_great_sundering->decrement();
-
-    p()->buff.elemental_focus->decrement();
 
     p()->buff.t21_2pc_elemental->expire();
   }
@@ -6661,7 +6625,6 @@ void shaman_t::init_spells()
 
   // Elemental
   spec.chain_lightning_2 = find_specialization_spell( 231722 );
-  spec.elemental_focus   = find_specialization_spell( "Elemental Focus" );
   spec.elemental_fury    = find_specialization_spell( "Elemental Fury" );
   spec.elemental_shaman  = find_specialization_spell( "Elemental Shaman" );
   spec.flame_shock_2     = find_specialization_spell( 232643 );
@@ -6977,32 +6940,6 @@ void shaman_t::trigger_hot_hand( const action_state_t* state )
 
   buff.hot_hand->trigger();
   attack->proc_hh->occur();
-}
-
-void shaman_t::trigger_elemental_focus( const action_state_t* state )
-{
-  if ( state->action->background || state->result_amount == 0 )
-  {
-    return;
-  }
-
-  if ( !spec.elemental_focus->ok() )
-  {
-    return;
-  }
-
-  if ( cooldown.elemental_focus->down() )
-  {
-    return;
-  }
-
-  if ( state->result != RESULT_CRIT )
-  {
-    return;
-  }
-
-  buff.elemental_focus->trigger( buff.elemental_focus->data().initial_stacks() );
-  cooldown.elemental_focus->start( spec.elemental_focus->internal_cooldown() );
 }
 
 void shaman_t::trigger_lightning_shield( const action_state_t* state )
@@ -7394,11 +7331,6 @@ void shaman_t::create_buffs()
                           else
                             buff.spiritual_journey->expire();
                         } );
-  buff.elemental_focus =
-      buff_creator_t( this, "elemental_focus", spec.elemental_focus->effectN( 1 ).trigger() )
-          .default_value( 1.0 + spec.elemental_focus->effectN( 1 ).trigger()->effectN( 1 ).percent() +
-                          sets->set( SHAMAN_ELEMENTAL, T19, B4 )->effectN( 1 ).percent() )
-          .activated( false );
   buff.stormkeeper =
       buff_creator_t( this, "stormkeeper", artifact.stormkeeper ).cd( timespan_t::zero() );  // Handled by the action
   buff.static_overload = buff_creator_t( this, "static_overload", find_spell( 191634 ) )
@@ -7733,7 +7665,7 @@ void shaman_t::init_action_list_elemental()
   single_if->add_action( this, "Frost Shock",
                          "if=buff.icefury.up&((maelstrom>=20&raid_event.movement.in>buff.icefury.remains)|buff.icefury."
                          "remains<(1.5*spell_haste*buff.icefury.stack+1))" );
-  single_if->add_action( this, "Flame Shock", "if=maelstrom>=20&buff.elemental_focus.up,target_if=refreshable" );
+  single_if->add_action( this, "Flame Shock", "if=maelstrom>=20,target_if=refreshable" );
   single_if->add_action(
       this, "Earthquake",
       "if=buff.echoes_of_the_great_sundering.up&(maelstrom>=111|!artifact.swelling_maelstrom.enabled&maelstrom>=86|"
@@ -7783,7 +7715,7 @@ void shaman_t::init_action_list_elemental()
                           "if=buff.power_of_the_maelstrom.up&buff.stormkeeper.up&spell_targets.chain_lightning<3" );
   single_asc->add_action( this, "Lava Burst",
                           "if=dot.flame_shock.remains>cast_time&(cooldown_react|buff.ascendance.up)" );
-  single_asc->add_action( this, "Flame Shock", "if=maelstrom>=20&buff.elemental_focus.up,target_if=refreshable" );
+  single_asc->add_action( this, "Flame Shock", "if=maelstrom>=20,target_if=refreshable" );
   single_asc->add_action(
       this, "Earthquake",
       "if=buff.echoes_of_the_great_sundering.up&(maelstrom>=111|!artifact.swelling_maelstrom.enabled&maelstrom>=86|"
