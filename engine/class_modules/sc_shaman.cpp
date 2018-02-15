@@ -9,6 +9,13 @@
 // Shaman
 // ==========================================================================
 
+// Battle for Azeroth TODO
+// 
+// Elemental
+// - Delete old legendaries
+// - Delete old spells
+// - Delete old talents
+
 // Legion TODO
 //
 // Generic
