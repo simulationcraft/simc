@@ -15,6 +15,7 @@
 // - Delete old legendaries
 // - Delete old spells
 // - Delete old talents
+// - Merge static overload into stormkeeper
 
 // Legion TODO
 //
@@ -308,6 +309,8 @@ public:
 
     // Elemental
     buff_t* liquid_magma;
+    buff_t* static_overload;
+    buff_t* stormkeeper;
     stat_buff_t* elemental_blast_crit;
     stat_buff_t* elemental_blast_haste;
     stat_buff_t* elemental_blast_mastery;
@@ -344,11 +347,6 @@ public:
     buff_t* emalons_charged_core;
     buff_t* spiritual_journey;
     haste_buff_t* sephuzs_secret;
-
-    // Artifact related buffs
-    buff_t* stormkeeper;
-    buff_t* static_overload;
-    buff_t* power_of_the_maelstrom;
 
     // Totemic mastery
     buff_t* resonance_totem;
@@ -512,7 +510,6 @@ public:
     artifact_power_t molten_blast;
     artifact_power_t elementalist;
     artifact_power_t firestorm;
-    artifact_power_t power_of_the_maelstrom;
     artifact_power_t fury_of_the_storms;
     artifact_power_t stormkeepers_power;
     artifact_power_t elemental_destabilization;
@@ -4627,8 +4624,6 @@ struct lava_burst_t : public shaman_spell_t
     p()->lava_surge_during_lvb = false;
     p()->cooldown.fire_elemental->adjust( p()->artifact.elementalist.time_value() );
     p()->cooldown.storm_elemental->adjust( p()->artifact.elementalist.time_value() );
-
-    p()->buff.power_of_the_maelstrom->trigger( p()->buff.power_of_the_maelstrom->max_stack() );
   }
 
   timespan_t execute_time() const override
@@ -4744,11 +4739,6 @@ struct lightning_bolt_t : public shaman_spell_t
     return chance;
   }
 
-  size_t n_overloads( const action_state_t* ) const override
-  {
-    return p()->buff.power_of_the_maelstrom->up();
-  }
-
   double spell_direct_power_coefficient( const action_state_t* /* state */ ) const override
   {
     return spell_power_mod.direct * ( 1.0 + m_overcharge * cost() );
@@ -4781,7 +4771,6 @@ struct lightning_bolt_t : public shaman_spell_t
     shaman_spell_t::execute();
 
     p()->buff.stormkeeper->decrement();
-    p()->buff.power_of_the_maelstrom->decrement();
     p()->buff.static_overload->decrement();
 
     // Additional check here for lightning bolt
@@ -6599,7 +6588,6 @@ void shaman_t::init_spells()
   artifact.molten_blast              = find_artifact_spell( "Molten Blast" );
   artifact.elementalist              = find_artifact_spell( "Elementalist" );
   artifact.firestorm                 = find_artifact_spell( "Firestorm" );
-  artifact.power_of_the_maelstrom    = find_artifact_spell( "Power of the Maelstrom" );
   artifact.fury_of_the_storms        = find_artifact_spell( "Fury of the Storms" );
   artifact.elemental_destabilization = find_artifact_spell( "Elemental Destabilization" );
   artifact.swelling_maelstrom        = find_artifact_spell( "Swelling Maelstrom" );
@@ -7193,9 +7181,6 @@ void shaman_t::create_buffs()
       buff_creator_t( this, "stormkeeper", artifact.stormkeeper ).cd( timespan_t::zero() );  // Handled by the action
   buff.static_overload = buff_creator_t( this, "static_overload", find_spell( 191634 ) )
                              .trigger_spell( &( artifact.static_overload.data() ) );
-  buff.power_of_the_maelstrom =
-      buff_creator_t( this, "power_of_the_maelstrom", artifact.power_of_the_maelstrom.data().effectN( 1 ).trigger() )
-          .trigger_spell( artifact.power_of_the_maelstrom );
 
   buff.resonance_totem =
       buff_creator_t( this, "resonance_totem", find_spell( 202192 ) )
@@ -7506,8 +7491,6 @@ void shaman_t::init_action_list_elemental()
                           "if=(raid_event.adds.count<3|raid_event.adds.in>50)&time>5&!buff.ascendance.up",
                           "Keep SK for large or soon add waves. Don't cast SK during Ascendance." );
   single_asc->add_talent( this, "Liquid Magma Totem", "if=raid_event.adds.count<3|raid_event.adds.in>50" );
-  single_asc->add_action( this, "Lightning Bolt",
-                          "if=buff.power_of_the_maelstrom.up&buff.stormkeeper.up&spell_targets.chain_lightning<3" );
   single_asc->add_action( this, "Lava Burst",
                           "if=dot.flame_shock.remains>cast_time&(cooldown_react|buff.ascendance.up)" );
   single_asc->add_action( this, "Flame Shock", "if=maelstrom>=20,target_if=refreshable" );
@@ -7522,7 +7505,6 @@ void shaman_t::init_action_list_elemental()
                           "if=buff.resonance_totem.remains<10|(buff.resonance_totem.remains<(buff.ascendance.duration+"
                           "cooldown.ascendance.remains)&cooldown.ascendance.remains<15)" );
   single_asc->add_action( this, "Lava Beam", "if=active_enemies>1&spell_targets.lava_beam>1" );
-  single_asc->add_action( this, "Lightning Bolt", "if=buff.power_of_the_maelstrom.up&spell_targets.chain_lightning<3" );
   single_asc->add_action( this, "Chain Lightning", "if=active_enemies>1&spell_targets.chain_lightning>1" );
   single_asc->add_action( this, "Lightning Bolt" );
   single_asc->add_action( this, "Flame Shock", "moving=1,target_if=refreshable" );
