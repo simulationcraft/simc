@@ -10,7 +10,7 @@
 // ==========================================================================
 
 // Battle for Azeroth TODO
-// 
+//
 // Elemental
 // - Delete old legendaries
 // - Delete old spells
@@ -40,7 +40,7 @@ namespace
   of attempts, in which it gives up and just returns the current best path.  I wouldn't be
   terribly surprised if Blizz did something like this in game.
 **/
-static std::vector< player_t* > __check_distance_targeting( const action_t* action, std::vector< player_t* >& tl )
+static std::vector<player_t*> __check_distance_targeting( const action_t* action, std::vector<player_t*>& tl )
 {
   sim_t* sim = action->sim;
   if ( !sim->distance_targeting_enabled )
@@ -55,23 +55,23 @@ static std::vector< player_t* > __check_distance_targeting( const action_t* acti
 
   player_t* last_chain;  // We have to track the last target that it hit.
   last_chain = target;
-  std::vector< player_t* >
+  std::vector<player_t*>
       best_so_far;  // Keeps track of the best chain path found so far, so we can use it if we give up.
-  std::vector< player_t* > current_attempt;
+  std::vector<player_t*> current_attempt;
   best_so_far.push_back( last_chain );
   current_attempt.push_back( last_chain );
 
   size_t num_targets  = sim->target_non_sleeping_list.size();
-  size_t max_attempts = static_cast< size_t >(
+  size_t max_attempts = static_cast<size_t>(
       std::min( ( num_targets - 1.0 ) * 2.0, 30.0 ) );  // With a lot of targets this can get pretty high. Cap it at 30.
   size_t local_attempts = 0, attempts = 0, chain_number = 1;
-  std::vector< player_t* > targets_left_to_try(
+  std::vector<player_t*> targets_left_to_try(
       sim->target_non_sleeping_list.data() );  // This list contains members of a vector that haven't been tried yet.
   auto position = std::find( targets_left_to_try.begin(), targets_left_to_try.end(), target );
   if ( position != targets_left_to_try.end() )
     targets_left_to_try.erase( position );
 
-  std::vector< player_t* > original_targets(
+  std::vector<player_t*> original_targets(
       targets_left_to_try );  // This is just so we don't have to constantly remove the original target.
 
   bool stop_trying = false;
@@ -85,8 +85,8 @@ static std::vector< player_t* > __check_distance_targeting( const action_t* acti
     while ( targets_left_to_try.size() > 0 && local_attempts < num_targets * 2 )
     {
       player_t* possibletarget;
-      size_t rng_target = static_cast< size_t >(
-          sim->rng().range( 0.0, ( static_cast< double >( targets_left_to_try.size() ) - 0.000001 ) ) );
+      size_t rng_target = static_cast<size_t>(
+          sim->rng().range( 0.0, ( static_cast<double>( targets_left_to_try.size() ) - 0.000001 ) ) );
       possibletarget = targets_left_to_try[ rng_target ];
 
       double distance_from_last_chain = last_chain->get_player_distance( *possibletarget );
@@ -106,7 +106,7 @@ static std::vector< player_t* > __check_distance_targeting( const action_t* acti
         local_attempts++;  // Only count failures towards the limit-cap.
       }
       // If we run out of targets to hit, or have hit 5 already. Break.
-      if ( static_cast< int >( current_attempt.size() ) == aoe || current_attempt.size() == num_targets )
+      if ( static_cast<int>( current_attempt.size() ) == aoe || current_attempt.size() == num_targets )
       {
         stop_trying = true;
         break;
@@ -124,13 +124,13 @@ static std::vector< player_t* > __check_distance_targeting( const action_t* acti
 
   if ( sim->log )
     sim->out_debug.printf( "%s Total attempts at finding path: %.3f - %.3f targets found - %s target is first chain",
-                           player->name(), static_cast< double >( attempts ),
-                           static_cast< double >( best_so_far.size() ), target->name() );
+                           player->name(), static_cast<double>( attempts ), static_cast<double>( best_so_far.size() ),
+                           target->name() );
   tl.swap( best_so_far );
   return tl;
 }
-typedef std::pair< std::string, simple_sample_data_with_min_max_t > data_t;
-typedef std::pair< std::string, simple_sample_data_t > simple_data_t;
+typedef std::pair<std::string, simple_sample_data_with_min_max_t> data_t;
+typedef std::pair<std::string, simple_sample_data_t> simple_data_t;
 
 struct shaman_t;
 
@@ -186,7 +186,7 @@ struct shaman_td_t : public actor_target_data_t
 
   shaman_t* actor() const
   {
-    return debug_cast< shaman_t* >( source );
+    return debug_cast<shaman_t*>( source );
   }
 };
 
@@ -246,8 +246,8 @@ struct shaman_t : public player_t
 public:
   // Misc
   bool lava_surge_during_lvb;
-  std::vector< counter_t* > counters;
-  std::vector< player_t* > lightning_rods;
+  std::vector<counter_t*> counters;
+  std::vector<player_t*> lightning_rods;
   int t18_4pc_elemental_counter;
 
   // Options
@@ -255,13 +255,13 @@ public:
   bool raptor_glyph;
 
   // Data collection for cooldown waste
-  auto_dispose< std::vector< data_t* > > cd_waste_exec, cd_waste_cumulative;
-  auto_dispose< std::vector< simple_data_t* > > cd_waste_iter;
+  auto_dispose<std::vector<data_t*> > cd_waste_exec, cd_waste_cumulative;
+  auto_dispose<std::vector<simple_data_t*> > cd_waste_iter;
 
   // Cached actions
   struct actions_t
   {
-    std::array< action_t*, 2 > unleash_doom;
+    std::array<action_t*, 2> unleash_doom;
     action_t* ancestral_awakening;
     action_t* lightning_strike;
     spell_t* electrocute;
@@ -283,14 +283,14 @@ public:
     pet_t* pet_earth_elemental;
     pet_t* pet_storm_elemental;
 
-    std::array< pet_t*, 2 > guardian_fire_elemental;
-    std::array< pet_t*, 2 > guardian_storm_elemental;
+    std::array<pet_t*, 2> guardian_fire_elemental;
+    std::array<pet_t*, 2> guardian_storm_elemental;
     pet_t* guardian_earth_elemental;
 
     pet_t* guardian_greater_lightning_elemental;
 
-    std::array< pet_t*, 2 > spirit_wolves;
-    std::array< pet_t*, 6 > doom_wolves;
+    std::array<pet_t*, 2> spirit_wolves;
+    std::array<pet_t*, 6> doom_wolves;
   } pet;
 
   const special_effect_t* furious_winds;
@@ -748,20 +748,20 @@ public:
   void datacollection_end() override;
   bool has_t18_class_trinket() const override;
 
-  target_specific_t< shaman_td_t > target_data;
+  target_specific_t<shaman_td_t> target_data;
 
   virtual shaman_td_t* get_target_data( player_t* target ) const override
   {
     shaman_td_t*& td = target_data[ target ];
     if ( !td )
     {
-      td = new shaman_td_t( target, const_cast< shaman_t* >( this ) );
+      td = new shaman_td_t( target, const_cast<shaman_t*>( this ) );
     }
     return td;
   }
 
-  template < typename T_CONTAINER, typename T_DATA >
-  T_CONTAINER* get_data_entry( const std::string& name, std::vector< T_DATA* >& entries )
+  template <typename T_CONTAINER, typename T_DATA>
+  T_CONTAINER* get_data_entry( const std::string& name, std::vector<T_DATA*>& entries )
   {
     for ( size_t i = 0; i < entries.size(); i++ )
     {
@@ -841,15 +841,15 @@ struct damage_pool_t
   // number of targets have a stormlash buff already
   event_t* expiration;
 
-  damage_pool_t( player_t* pl, double d, std::vector< damage_pool_t* >& p, const timespan_t& duration );
+  damage_pool_t( player_t* pl, double d, std::vector<damage_pool_t*>& p, const timespan_t& duration );
 };
 
 struct stormlash_expiration_t : public player_event_t
 {
-  std::vector< damage_pool_t* >& damage_pool;
+  std::vector<damage_pool_t*>& damage_pool;
   damage_pool_t* pool;
 
-  stormlash_expiration_t( player_t* pl, damage_pool_t* pool, std::vector< damage_pool_t* >& pools,
+  stormlash_expiration_t( player_t* pl, damage_pool_t* pool, std::vector<damage_pool_t*>& pools,
                           const timespan_t duration )
     : player_event_t( *pl, duration ), damage_pool( pools ), pool( pool )
   {
@@ -872,10 +872,10 @@ struct stormlash_expiration_t : public player_event_t
   }
 };
 
-damage_pool_t::damage_pool_t( player_t* pl, double d, std::vector< damage_pool_t* >& p, const timespan_t& duration )
+damage_pool_t::damage_pool_t( player_t* pl, double d, std::vector<damage_pool_t*>& p, const timespan_t& duration )
   : damage( d ), last_proc( pl->sim->current_time() )
 {
-  expiration = make_event< stormlash_expiration_t >( *pl->sim, pl, this, p, duration );
+  expiration = make_event<stormlash_expiration_t>( *pl->sim, pl, this, p, duration );
   p.push_back( this );
 }
 
@@ -883,7 +883,7 @@ struct stormlash_callback_t : public dbc_proc_callback_t
 {
   timespan_t buff_duration;
   double coefficient;
-  std::vector< damage_pool_t* > damage_pool;
+  std::vector<damage_pool_t*> damage_pool;
   size_t n_buffs;
 
   stormlash_spell_t* spell;
@@ -892,15 +892,15 @@ struct stormlash_callback_t : public dbc_proc_callback_t
     : dbc_proc_callback_t( p, effect ),
       buff_duration( p->find_spell( 195222 )->duration() ),
       coefficient( p->find_spell( 213307 )->effectN( 1 ).ap_coeff() ),
-      n_buffs( as< size_t >( shaman()->spec.stormlash->effectN( 1 ).base_value() +
-                             shaman()->talent.empowered_stormlash->effectN( 1 ).base_value() ) ),
+      n_buffs( as<size_t>( shaman()->spec.stormlash->effectN( 1 ).base_value() +
+                           shaman()->talent.empowered_stormlash->effectN( 1 ).base_value() ) ),
       spell( new stormlash_spell_t( p ) )
   {
   }
 
   shaman_t* shaman() const
   {
-    return debug_cast< shaman_t* >( listener );
+    return debug_cast<shaman_t*>( listener );
   }
 
   // Create n_buffs pools, roughly emulating n_buffs stormstrikes from the shaman going out to
@@ -919,7 +919,7 @@ struct stormlash_callback_t : public dbc_proc_callback_t
     // Apply Empowered Stormlash damage bonus
     pool *= 1.0 + shaman()->talent.empowered_stormlash->effectN( 2 ).percent();
 
-    int replace_buffs = static_cast< int >( ( damage_pool.size() + n_buffs ) - shaman()->stormlash_targets );
+    int replace_buffs = static_cast<int>( ( damage_pool.size() + n_buffs ) - shaman()->stormlash_targets );
     if ( replace_buffs < 0 )
     {
       replace_buffs = 0;
@@ -1060,7 +1060,7 @@ shaman_td_t::shaman_td_t( player_t* target, shaman_t* p ) : actor_target_data_t(
 // Shaman Action Base Template
 // ==========================================================================
 
-template < class Base >
+template <class Base>
 struct shaman_action_t : public Base
 {
 private:
@@ -1105,7 +1105,7 @@ public:
     for ( size_t i = 1; i <= ab::data().effect_count(); i++ )
     {
       const spelleffect_data_t& effect = ab::data().effectN( i );
-      if ( effect.type() != E_ENERGIZE || static_cast< power_e >( effect.misc_value1() ) != POWER_MAELSTROM )
+      if ( effect.type() != E_ENERGIZE || static_cast<power_e>( effect.misc_value1() ) != POWER_MAELSTROM )
       {
         continue;
       }
@@ -1143,11 +1143,11 @@ public:
     if ( track_cd_waste )
     {
       cd_wasted_exec =
-          p()->template get_data_entry< simple_sample_data_with_min_max_t, data_t >( ab::name_str, p()->cd_waste_exec );
-      cd_wasted_cumulative = p()->template get_data_entry< simple_sample_data_with_min_max_t, data_t >(
+          p()->template get_data_entry<simple_sample_data_with_min_max_t, data_t>( ab::name_str, p()->cd_waste_exec );
+      cd_wasted_cumulative = p()->template get_data_entry<simple_sample_data_with_min_max_t, data_t>(
           ab::name_str, p()->cd_waste_cumulative );
       cd_wasted_iter =
-          p()->template get_data_entry< simple_sample_data_t, simple_data_t >( ab::name_str, p()->cd_waste_iter );
+          p()->template get_data_entry<simple_sample_data_t, simple_data_t>( ab::name_str, p()->cd_waste_iter );
     }
 
     // Setup Hasted CD for Enhancement
@@ -1179,11 +1179,11 @@ public:
 
   shaman_t* p()
   {
-    return debug_cast< shaman_t* >( ab::player );
+    return debug_cast<shaman_t*>( ab::player );
   }
   const shaman_t* p() const
   {
-    return debug_cast< shaman_t* >( ab::player );
+    return debug_cast<shaman_t*>( ab::player );
   }
 
   shaman_td_t* td( player_t* t ) const
@@ -1282,7 +1282,7 @@ public:
     struct hprio_cd_min_remains_expr_t : public expr_t
     {
       action_t* action_;
-      std::vector< cooldown_t* > cd_;
+      std::vector<cooldown_t*> cd_;
 
       // TODO: Line_cd support
       hprio_cd_min_remains_expr_t( action_t* a ) : expr_t( "min_remains" ), action_( a )
@@ -1365,7 +1365,7 @@ public:
       return;
     }
 
-    size_t spell_idx = ab::rng().range( 0, static_cast< double >( p()->action.unleash_doom.size() ) );
+    size_t spell_idx = ab::rng().range( 0, static_cast<double>( p()->action.unleash_doom.size() ) );
     p()->action.unleash_doom[ spell_idx ]->set_target( state->target );
     p()->action.unleash_doom[ spell_idx ]->schedule_execute();
     proc_ud->occur();
@@ -1376,10 +1376,10 @@ public:
 // Shaman Attack
 // ==========================================================================
 
-struct shaman_attack_t : public shaman_action_t< melee_attack_t >
+struct shaman_attack_t : public shaman_action_t<melee_attack_t>
 {
 private:
-  typedef shaman_action_t< melee_attack_t > ab;
+  typedef shaman_action_t<melee_attack_t> ab;
 
 public:
   bool may_proc_windfury;
@@ -1568,14 +1568,14 @@ public:
 // Shaman Base Spell
 // ==========================================================================
 
-template < class Base >
-struct shaman_spell_base_t : public shaman_action_t< Base >
+template <class Base>
+struct shaman_spell_base_t : public shaman_action_t<Base>
 {
 private:
-  typedef shaman_action_t< Base > ab;
+  typedef shaman_action_t<Base> ab;
 
 public:
-  typedef shaman_spell_base_t< Base > base_t;
+  typedef shaman_spell_base_t<Base> base_t;
 
   bool affected_by_elemental_focus;
 
@@ -1632,7 +1632,7 @@ public:
 // Shaman Offensive Spell
 // ==========================================================================
 
-struct shaman_spell_t : public shaman_spell_base_t< spell_t >
+struct shaman_spell_t : public shaman_spell_base_t<spell_t>
 {
   action_t* overload;
 
@@ -1749,7 +1749,7 @@ public:
       overload->snapshot_state( s, DMG_DIRECT );
       s->target = source_state->target;
 
-      make_event< elemental_overload_event_t >( *sim, s );
+      make_event<elemental_overload_event_t>( *sim, s );
     }
   }
 
@@ -1775,7 +1775,7 @@ public:
 // Shaman Heal
 // ==========================================================================
 
-struct shaman_heal_t : public shaman_spell_base_t< heal_t >
+struct shaman_heal_t : public shaman_spell_base_t<heal_t>
 {
   double elw_proc_high, elw_proc_low, resurgence_gain;
 
@@ -1858,7 +1858,7 @@ struct shaman_heal_t : public shaman_spell_base_t< heal_t >
 namespace pet
 {
 // Simple helper to summon n (default 1) sleeping pet(s) from a container
-template < typename T >
+template <typename T>
 void summon( const T& container, const timespan_t& duration, size_t n = 1 )
 {
   size_t summoned = 0;
@@ -1895,7 +1895,7 @@ struct shaman_pet_t : public pet_t
 
   shaman_t* o() const
   {
-    return debug_cast< shaman_t* >( owner );
+    return debug_cast<shaman_t*>( owner );
   }
 
   virtual void create_default_apl()
@@ -1935,10 +1935,10 @@ struct shaman_pet_t : public pet_t
 // Base Shaman Pet Action
 // ==========================================================================
 
-template < typename T_PET, typename T_ACTION >
+template <typename T_PET, typename T_ACTION>
 struct pet_action_t : public T_ACTION
 {
-  typedef pet_action_t< T_PET, T_ACTION > super;
+  typedef pet_action_t<T_PET, T_ACTION> super;
 
   pet_action_t( T_PET* pet, const std::string& name, const spell_data_t* spell = spell_data_t::nil(),
                 const std::string& options = std::string() )
@@ -1953,7 +1953,7 @@ struct pet_action_t : public T_ACTION
 
   T_PET* p() const
   {
-    return debug_cast< T_PET* >( this->player );
+    return debug_cast<T_PET*>( this->player );
   }
 
   void init() override
@@ -1977,14 +1977,14 @@ struct pet_action_t : public T_ACTION
 // Base Shaman Pet Melee Attack
 // ==========================================================================
 
-template < typename T_PET >
-struct pet_melee_attack_t : public pet_action_t< T_PET, melee_attack_t >
+template <typename T_PET>
+struct pet_melee_attack_t : public pet_action_t<T_PET, melee_attack_t>
 {
-  typedef pet_melee_attack_t< T_PET > super;
+  typedef pet_melee_attack_t<T_PET> super;
 
   pet_melee_attack_t( T_PET* pet, const std::string& name, const spell_data_t* spell = spell_data_t::nil(),
                       const std::string& options = std::string() )
-    : pet_action_t< T_PET, melee_attack_t >( pet, name, spell, options )
+    : pet_action_t<T_PET, melee_attack_t>( pet, name, spell, options )
   {
     if ( this->school == SCHOOL_NONE )
       this->school = SCHOOL_PHYSICAL;
@@ -1997,7 +1997,7 @@ struct pet_melee_attack_t : public pet_action_t< T_PET, melee_attack_t >
 
   void init() override
   {
-    pet_action_t< T_PET, melee_attack_t >::init();
+    pet_action_t<T_PET, melee_attack_t>::init();
 
     if ( !this->special )
     {
@@ -2012,7 +2012,7 @@ struct pet_melee_attack_t : public pet_action_t< T_PET, melee_attack_t >
     if ( this->time_to_execute > timespan_t::zero() && this->player->executing )
       this->schedule_execute();
     else
-      pet_action_t< T_PET, melee_attack_t >::execute();
+      pet_action_t<T_PET, melee_attack_t>::execute();
   }
 };
 
@@ -2047,14 +2047,14 @@ struct auto_attack_t : public melee_attack_t
 // Base Shaman Pet Spell
 // ==========================================================================
 
-template < typename T_PET >
-struct pet_spell_t : public pet_action_t< T_PET, spell_t >
+template <typename T_PET>
+struct pet_spell_t : public pet_action_t<T_PET, spell_t>
 {
-  typedef pet_spell_t< T_PET > super;
+  typedef pet_spell_t<T_PET> super;
 
   pet_spell_t( T_PET* pet, const std::string& name, const spell_data_t* spell = spell_data_t::nil(),
                const std::string& options = std::string() )
-    : pet_action_t< T_PET, spell_t >( pet, name, spell, options )
+    : pet_action_t<T_PET, spell_t>( pet, name, spell, options )
   {
     this->parse_options( options );
   }
@@ -2110,28 +2110,28 @@ struct base_wolf_t : public shaman_pet_t
   }
 };
 
-template < typename T >
-struct wolf_base_attack_t : public pet_melee_attack_t< T >
+template <typename T>
+struct wolf_base_attack_t : public pet_melee_attack_t<T>
 {
-  using super = wolf_base_attack_t< T >;
+  using super = wolf_base_attack_t<T>;
 
   wolf_base_attack_t( T* wolf, const std::string& n, const spell_data_t* spell = spell_data_t::nil(),
                       const std::string& options_str = std::string() )
-    : pet_melee_attack_t< T >( wolf, n, spell )
+    : pet_melee_attack_t<T>( wolf, n, spell )
   {
     this->parse_options( options_str );
   }
 
   void execute() override
   {
-    pet_melee_attack_t< T >::execute();
+    pet_melee_attack_t<T>::execute();
 
     this->p()->o()->trigger_eye_of_twisting_nether( this->execute_state );
   }
 
   void tick( dot_t* d ) override
   {
-    pet_melee_attack_t< T >::tick( d );
+    pet_melee_attack_t<T>::tick( d );
 
     this->p()->o()->trigger_eye_of_twisting_nether( d->state );
   }
@@ -2139,14 +2139,14 @@ struct wolf_base_attack_t : public pet_melee_attack_t< T >
 
 struct spirit_wolf_t : public base_wolf_t
 {
-  struct windfury_t : public wolf_base_attack_t< spirit_wolf_t >
+  struct windfury_t : public wolf_base_attack_t<spirit_wolf_t>
   {
     windfury_t( spirit_wolf_t* player ) : super( player, "windfury_attack", player->find_spell( 170512 ) )
     {
     }
   };
 
-  struct fs_melee_t : public wolf_base_attack_t< spirit_wolf_t >
+  struct fs_melee_t : public wolf_base_attack_t<spirit_wolf_t>
   {
     windfury_t* wf;
     const spell_data_t *maelstrom, *wf_driver;
@@ -2194,10 +2194,10 @@ struct spirit_wolf_t : public base_wolf_t
   }
 };
 
-template < typename T >
-struct spirit_bomb_t : public wolf_base_attack_t< T >
+template <typename T>
+struct spirit_bomb_t : public wolf_base_attack_t<T>
 {
-  spirit_bomb_t( T* player ) : wolf_base_attack_t< T >( player, "spirit_bomb", player->find_spell( 198455 ) )
+  spirit_bomb_t( T* player ) : wolf_base_attack_t<T>( player, "spirit_bomb", player->find_spell( 198455 ) )
   {
     this->background = true;
     this->aoe        = -1;
@@ -2208,7 +2208,7 @@ bool spirit_wolf_t::create_actions()
 {
   if ( o()->artifact.alpha_wolf.rank() )
   {
-    alpha_wolf = new spirit_bomb_t< spirit_wolf_t >( this );
+    alpha_wolf = new spirit_bomb_t<spirit_wolf_t>( this );
   }
 
   return shaman_pet_t::create_actions();
@@ -2220,7 +2220,7 @@ bool spirit_wolf_t::create_actions()
 
 struct doom_wolf_base_t : public base_wolf_t
 {
-  struct dw_melee_t : public wolf_base_attack_t< doom_wolf_base_t >
+  struct dw_melee_t : public wolf_base_attack_t<doom_wolf_base_t>
   {
     const spell_data_t* maelstrom;
 
@@ -2269,7 +2269,7 @@ struct doom_wolf_base_t : public base_wolf_t
 
 struct frost_wolf_t : public doom_wolf_base_t
 {
-  struct frozen_bite_t : public wolf_base_attack_t< frost_wolf_t >
+  struct frozen_bite_t : public wolf_base_attack_t<frost_wolf_t>
   {
     frozen_bite_t( frost_wolf_t* player, const std::string& options )
       : super( player, "frozen_bite", player->find_spell( 224126 ), options )
@@ -2278,7 +2278,7 @@ struct frost_wolf_t : public doom_wolf_base_t
     }
   };
 
-  struct snowstorm_t : public wolf_base_attack_t< frost_wolf_t >
+  struct snowstorm_t : public wolf_base_attack_t<frost_wolf_t>
   {
     snowstorm_t( frost_wolf_t* player ) : super( player, "snowstorm", player->find_spell( 198483 ) )
     {
@@ -2301,7 +2301,7 @@ struct frost_wolf_t : public doom_wolf_base_t
       }
       else
       {
-        alpha_wolf = new spirit_bomb_t< frost_wolf_t >( this );
+        alpha_wolf = new spirit_bomb_t<frost_wolf_t>( this );
       }
     }
 
@@ -2328,7 +2328,7 @@ struct frost_wolf_t : public doom_wolf_base_t
 
 struct fire_wolf_t : public doom_wolf_base_t
 {
-  struct fiery_jaws_t : public wolf_base_attack_t< fire_wolf_t >
+  struct fiery_jaws_t : public wolf_base_attack_t<fire_wolf_t>
   {
     fiery_jaws_t( fire_wolf_t* player, const std::string& options )
       : super( player, "fiery_jaws", player->find_spell( 224125 ), options )
@@ -2337,7 +2337,7 @@ struct fire_wolf_t : public doom_wolf_base_t
     }
   };
 
-  struct fire_nova_t : public wolf_base_attack_t< fire_wolf_t >
+  struct fire_nova_t : public wolf_base_attack_t<fire_wolf_t>
   {
     fire_nova_t( fire_wolf_t* player ) : super( player, "fire_nova", player->find_spell( 198480 ) )
     {
@@ -2360,7 +2360,7 @@ struct fire_wolf_t : public doom_wolf_base_t
       }
       else
       {
-        alpha_wolf = new spirit_bomb_t< fire_wolf_t >( this );
+        alpha_wolf = new spirit_bomb_t<fire_wolf_t>( this );
       }
     }
 
@@ -2387,7 +2387,7 @@ struct fire_wolf_t : public doom_wolf_base_t
 
 struct lightning_wolf_t : public doom_wolf_base_t
 {
-  struct crackling_surge_t : public wolf_base_attack_t< lightning_wolf_t >
+  struct crackling_surge_t : public wolf_base_attack_t<lightning_wolf_t>
   {
     crackling_surge_t( lightning_wolf_t* player, const std::string& options )
       : super( player, "crackling_surge", player->find_spell( 224127 ), options )
@@ -2401,7 +2401,7 @@ struct lightning_wolf_t : public doom_wolf_base_t
     }
   };
 
-  struct thunder_bite_t : public wolf_base_attack_t< lightning_wolf_t >
+  struct thunder_bite_t : public wolf_base_attack_t<lightning_wolf_t>
   {
     thunder_bite_t( lightning_wolf_t* player ) : super( player, "thunder_bite", player->find_spell( 198485 ) )
     {
@@ -2447,7 +2447,7 @@ struct lightning_wolf_t : public doom_wolf_base_t
       }
       else
       {
-        alpha_wolf = new spirit_bomb_t< lightning_wolf_t >( this );
+        alpha_wolf = new spirit_bomb_t<lightning_wolf_t>( this );
       }
     }
 
@@ -2546,7 +2546,7 @@ struct primal_elemental_t : public shaman_pet_t
 
   attack_t* create_auto_attack() override
   {
-    auto attack        = new pet_melee_attack_t< primal_elemental_t >( this, "melee" );
+    auto attack        = new pet_melee_attack_t<primal_elemental_t>( this, "melee" );
     attack->background = true;
     attack->repeating  = true;
     attack->special    = false;
@@ -2575,7 +2575,7 @@ struct earth_elemental_t : public primal_elemental_t
 
 struct fire_elemental_t : public primal_elemental_t
 {
-  struct fire_nova_t : public pet_spell_t< fire_elemental_t >
+  struct fire_nova_t : public pet_spell_t<fire_elemental_t>
   {
     fire_nova_t( fire_elemental_t* player, const std::string& options )
       : super( player, "fire_nova", player->find_spell( 117588 ), options )
@@ -2584,7 +2584,7 @@ struct fire_elemental_t : public primal_elemental_t
     }
   };
 
-  struct fire_blast_t : public pet_spell_t< fire_elemental_t >
+  struct fire_blast_t : public pet_spell_t<fire_elemental_t>
   {
     fire_blast_t( fire_elemental_t* player, const std::string& options )
       : super( player, "fire_blast", player->find_spell( 57984 ), options )
@@ -2597,7 +2597,7 @@ struct fire_elemental_t : public primal_elemental_t
     }
   };
 
-  struct immolate_t : public pet_spell_t< fire_elemental_t >
+  struct immolate_t : public pet_spell_t<fire_elemental_t>
   {
     immolate_t( fire_elemental_t* player, const std::string& options )
       : super( player, "immolate", player->find_spell( 118297 ), options )
@@ -2649,7 +2649,7 @@ struct fire_elemental_t : public primal_elemental_t
 
 struct storm_elemental_t : public primal_elemental_t
 {
-  struct wind_gust_t : public pet_spell_t< storm_elemental_t >
+  struct wind_gust_t : public pet_spell_t<storm_elemental_t>
   {
     const spell_data_t* energize;
 
@@ -2667,7 +2667,7 @@ struct storm_elemental_t : public primal_elemental_t
     }
   };
 
-  struct call_lightning_t : public pet_spell_t< storm_elemental_t >
+  struct call_lightning_t : public pet_spell_t<storm_elemental_t>
   {
     call_lightning_t( storm_elemental_t* player, const std::string& options )
       : super( player, "call_lightning", player->find_spell( 157348 ), options )
@@ -2735,7 +2735,7 @@ struct storm_elemental_t : public primal_elemental_t
 
 struct greater_lightning_elemental_t : public shaman_pet_t
 {
-  struct lightning_blast_t : public pet_spell_t< greater_lightning_elemental_t >
+  struct lightning_blast_t : public pet_spell_t<greater_lightning_elemental_t>
   {
     lightning_blast_t( greater_lightning_elemental_t* p, const std::string& options )
       : super( p, "lightning_blast", p->find_spell( 191726 ), options )
@@ -2745,7 +2745,7 @@ struct greater_lightning_elemental_t : public shaman_pet_t
     }
   };
 
-  struct chain_lightning_t : public pet_spell_t< greater_lightning_elemental_t >
+  struct chain_lightning_t : public pet_spell_t<greater_lightning_elemental_t>
   {
     chain_lightning_t( greater_lightning_elemental_t* p, const std::string& options )
       : super( p, "chain_lightning", p->find_spell( 191732 ), options )
@@ -3066,8 +3066,8 @@ struct windlash_t : public shaman_attack_t
 
     if ( swing_timer_variance > 0 )
     {
-      timespan_t st = timespan_t::from_seconds( const_cast< windlash_t* >( this )->rng().gauss(
-          t.total_seconds(), t.total_seconds() * swing_timer_variance ) );
+      timespan_t st = timespan_t::from_seconds(
+          const_cast<windlash_t*>( this )->rng().gauss( t.total_seconds(), t.total_seconds() * swing_timer_variance ) );
       if ( sim->debug )
         sim->out_debug.printf( "Swing timer variance for %s, real_time=%.3f swing_timer=%.3f", name(),
                                t.total_seconds(), st.total_seconds() );
@@ -3269,7 +3269,7 @@ struct storm_tempests_zap_t : public melee_attack_t
     base_multiplier *= 1.0 + p->spec.enhancement_shaman->effectN( 1 ).percent();
   }
 
-  size_t available_targets( std::vector< player_t* >& tl ) const override
+  size_t available_targets( std::vector<player_t*>& tl ) const override
   {
     melee_attack_t::available_targets( tl );
 
@@ -3288,7 +3288,7 @@ struct storm_tempests_zap_t : public melee_attack_t
     if ( target_list().size() > 0 )
     {
       // Pick a random "nearby" target
-      size_t target_idx = static_cast< size_t >( rng().range( 0, target_list().size() ) );
+      size_t target_idx = static_cast<size_t>( rng().range( 0, target_list().size() ) );
       target            = target_list()[ target_idx ];
 
       melee_attack_t::execute();
@@ -3408,7 +3408,7 @@ struct melee_t : public shaman_attack_t
     if ( swing_timer_variance > 0 )
     {
       timespan_t st = timespan_t::from_seconds(
-          const_cast< melee_t* >( this )->rng().gauss( t.total_seconds(), t.total_seconds() * swing_timer_variance ) );
+          const_cast<melee_t*>( this )->rng().gauss( t.total_seconds(), t.total_seconds() * swing_timer_variance ) );
       if ( sim->debug )
         sim->out_debug.printf( "Swing timer variance for %s, real_time=%.3f swing_timer=%.3f", name(),
                                t.total_seconds(), st.total_seconds() );
@@ -4032,12 +4032,12 @@ struct crash_lightning_t : public shaman_attack_t
 
     if ( p()->talent.crashing_storm->ok() )
     {
-      make_event< ground_aoe_event_t >( *sim, p(),
-                                        ground_aoe_params_t()
-                                            .target( execute_state->target )
-                                            .duration( p()->find_spell( 205532 )->duration() )
-                                            .action( p()->action.crashing_storm ),
-                                        true );
+      make_event<ground_aoe_event_t>( *sim, p(),
+                                      ground_aoe_params_t()
+                                          .target( execute_state->target )
+                                          .duration( p()->find_spell( 205532 )->duration() )
+                                          .action( p()->action.crashing_storm ),
+                                      true );
     }
 
     p()->buff.t20_4pc_enhancement->expire();
@@ -4068,7 +4068,7 @@ struct crash_lightning_t : public shaman_attack_t
       if ( p()->pet.doom_wolves[ 0 ] )
       {
         range::for_each( p()->pet.doom_wolves, []( pet_t* pet ) {
-          pet::base_wolf_t* wolf = debug_cast< pet::doom_wolf_base_t* >( pet );
+          pet::base_wolf_t* wolf = debug_cast<pet::doom_wolf_base_t*>( pet );
           if ( !wolf->is_sleeping() )
           {
             wolf->trigger_alpha_wolf();
@@ -4081,7 +4081,7 @@ struct crash_lightning_t : public shaman_attack_t
       if ( p()->pet.spirit_wolves[ 0 ] )
       {
         range::for_each( p()->pet.spirit_wolves, []( pet_t* pet ) {
-          pet::base_wolf_t* wolf = debug_cast< pet::spirit_wolf_t* >( pet );
+          pet::base_wolf_t* wolf = debug_cast<pet::spirit_wolf_t*>( pet );
           if ( !wolf->is_sleeping() )
           {
             wolf->trigger_alpha_wolf();
@@ -4333,7 +4333,7 @@ struct chained_overload_base_t : public elemental_overload_spell_t
     return m;
   }
 
-  std::vector< player_t* > check_distance_targeting( std::vector< player_t* >& tl ) const override
+  std::vector<player_t*> check_distance_targeting( std::vector<player_t*>& tl ) const override
   {
     return __check_distance_targeting( this, tl );
   }
@@ -4437,7 +4437,7 @@ struct chained_base_t : public shaman_spell_t
     p()->trigger_lightning_rod_damage( state );
   }
 
-  std::vector< player_t* > check_distance_targeting( std::vector< player_t* >& tl ) const override
+  std::vector<player_t*> check_distance_targeting( std::vector<player_t*>& tl ) const override
   {
     return __check_distance_targeting( this, tl );
   }
@@ -4789,11 +4789,11 @@ struct lava_burst_t : public shaman_spell_t
 
       if ( rng().roll( p()->artifact.volcanic_inferno.data().proc_chance() ) )
       {
-        make_event< ground_aoe_event_t >( *sim, p(),
-                                          ground_aoe_params_t()
-                                              .target( state->target )
-                                              .duration( p()->find_spell( 199121 )->duration() )
-                                              .action( p()->action.volcanic_inferno ) );
+        make_event<ground_aoe_event_t>( *sim, p(),
+                                        ground_aoe_params_t()
+                                            .target( state->target )
+                                            .duration( p()->find_spell( 199121 )->duration() )
+                                            .action( p()->action.volcanic_inferno ) );
       }
 
       // Pristine Proto-Scale Girdle legendary
@@ -4978,7 +4978,7 @@ struct lightning_bolt_t : public shaman_spell_t
 
 void trigger_elemental_blast_proc( shaman_t* p )
 {
-  unsigned b = static_cast< unsigned >( p->rng().range( 0, 3 ) );
+  unsigned b = static_cast<unsigned>( p->rng().range( 0, 3 ) );
 
   if ( b == 0 )
     p->buff.elemental_blast_crit->trigger();
@@ -5122,7 +5122,7 @@ struct feral_spirit_spell_t : public shaman_spell_t
       size_t n = 2;
       while ( n )
       {
-        size_t idx = static_cast< size_t >( rng().range( 0, p()->pet.doom_wolves.size() ) );
+        size_t idx = static_cast<size_t>( rng().range( 0, p()->pet.doom_wolves.size() ) );
         if ( !p()->pet.doom_wolves[ idx ]->is_sleeping() )
         {
           continue;
@@ -5406,7 +5406,7 @@ struct earthquake_t : public shaman_spell_t
   {
     shaman_spell_t::execute();
 
-    make_event< ground_aoe_event_t >(
+    make_event<ground_aoe_event_t>(
         *sim, p(),
         ground_aoe_params_t().target( execute_state->target ).duration( data().duration() ).action( rumble ) );
 
@@ -5981,7 +5981,7 @@ struct shaman_totem_pet_t : public pet_t
 
   shaman_t* o()
   {
-    return debug_cast< shaman_t* >( owner );
+    return debug_cast<shaman_t*>( owner );
   }
 
   /*
@@ -6038,7 +6038,7 @@ struct shaman_totem_t : public shaman_spell_t
 
   bool init_finished() override
   {
-    totem_pet = debug_cast< shaman_totem_pet_t* >( player->find_pet( name() ) );
+    totem_pet = debug_cast<shaman_totem_pet_t*>( player->find_pet( name() ) );
 
     return shaman_spell_t::init_finished();
   }
@@ -6093,7 +6093,7 @@ struct totem_pulse_action_t : public spell_t
 
   shaman_t* o() const
   {
-    return debug_cast< shaman_t* >( player->cast_pet()->owner );
+    return debug_cast<shaman_t*>( player->cast_pet()->owner );
   }
 
   shaman_td_t* td( player_t* target ) const
@@ -6147,7 +6147,7 @@ struct totem_pulse_event_t : public event_t
     if ( totem->pulse_action )
       totem->pulse_action->execute();
 
-    totem->pulse_event = make_event< totem_pulse_event_t >( sim(), *totem, totem->pulse_amplitude );
+    totem->pulse_event = make_event<totem_pulse_event_t>( sim(), *totem, totem->pulse_amplitude );
   }
 };
 
@@ -6158,7 +6158,7 @@ void shaman_totem_pet_t::summon( timespan_t duration )
   if ( pulse_action )
   {
     pulse_action->pulse_multiplier = 1.0;
-    pulse_event                    = make_event< totem_pulse_event_t >( *sim, *this, pulse_amplitude );
+    pulse_event                    = make_event<totem_pulse_event_t>( *sim, *this, pulse_amplitude );
   }
 
   if ( summon_pet )
@@ -6172,7 +6172,7 @@ void shaman_totem_pet_t::dismiss( bool expired )
   {
     if ( pulse_event->remains() > timespan_t::zero() )
       pulse_action->pulse_multiplier =
-          pulse_event->remains() / debug_cast< totem_pulse_event_t* >( pulse_event )->real_amplitude;
+          pulse_event->remains() / debug_cast<totem_pulse_event_t*>( pulse_event )->real_amplitude;
     pulse_action->execute();
   }
 
@@ -6366,7 +6366,7 @@ void ascendance_buff_t::ascendance( attack_t* mh, attack_t* oh, timespan_t lvb_c
 
 inline bool ascendance_buff_t::trigger( int stacks, double value, double chance, timespan_t duration )
 {
-  shaman_t* p = debug_cast< shaman_t* >( player );
+  shaman_t* p = debug_cast<shaman_t*>( player );
 
   if ( player->specialization() == SHAMAN_ELEMENTAL && !lava_burst )
   {
@@ -6385,7 +6385,7 @@ inline bool ascendance_buff_t::trigger( int stacks, double value, double chance,
 
 inline void ascendance_buff_t::expire_override( int expiration_stacks, timespan_t remaining_duration )
 {
-  shaman_t* p = debug_cast< shaman_t* >( player );
+  shaman_t* p = debug_cast<shaman_t*>( player );
 
   timespan_t lvbcd;
   lvbcd = lava_burst ? lava_burst->data().charge_cooldown() : timespan_t::zero();
@@ -6652,7 +6652,7 @@ void shaman_t::create_pets()
 
 expr_t* shaman_t::create_expression( action_t* a, const std::string& name )
 {
-  std::vector< std::string > splits = util::string_split( name, "." );
+  std::vector<std::string> splits = util::string_split( name, "." );
 
   if ( util::str_compare_ci( splits[ 0 ], "feral_spirit" ) )
   {
@@ -6789,7 +6789,7 @@ void shaman_t::copy_from( player_t* source )
 {
   player_t::copy_from( source );
 
-  shaman_t* p = debug_cast< shaman_t* >( source );
+  shaman_t* p = debug_cast<shaman_t*>( source );
 
   stormlash_targets = p->stormlash_targets;
   raptor_glyph      = p->raptor_glyph;
@@ -7055,11 +7055,11 @@ void shaman_t::trigger_stormbringer( const action_state_t* state, double overrid
 
   if ( state->action->type == ACTION_ATTACK )
   {
-    attack = debug_cast< shaman_attack_t* >( state->action );
+    attack = debug_cast<shaman_attack_t*>( state->action );
   }
   else if ( state->action->type == ACTION_SPELL )
   {
-    spell = debug_cast< shaman_spell_t* >( state->action );
+    spell = debug_cast<shaman_spell_t*>( state->action );
   }
 
   if ( attack )
@@ -7113,8 +7113,8 @@ void shaman_t::trigger_stormbringer( const action_state_t* state, double overrid
 
 void shaman_t::trigger_hot_hand( const action_state_t* state )
 {
-  assert( debug_cast< shaman_attack_t* >( state->action ) != nullptr && "Hot Hand called on invalid action type" );
-  shaman_attack_t* attack = debug_cast< shaman_attack_t* >( state->action );
+  assert( debug_cast<shaman_attack_t*>( state->action ) != nullptr && "Hot Hand called on invalid action type" );
+  shaman_attack_t* attack = debug_cast<shaman_attack_t*>( state->action );
 
   if ( !attack->may_proc_hot_hand )
   {
@@ -7168,7 +7168,7 @@ void shaman_t::trigger_lightning_shield( const action_state_t* state )
     return;
   }
 
-  shaman_attack_t* attack = debug_cast< shaman_attack_t* >( state->action );
+  shaman_attack_t* attack = debug_cast<shaman_attack_t*>( state->action );
   if ( !attack->may_proc_lightning_shield )
   {
     return;
@@ -7197,7 +7197,7 @@ void shaman_t::trigger_earthen_rage( const action_state_t* state )
     return;
 
   // Molten earth does not trigger itself.
-  if ( state->action == debug_cast< earthen_rage_driver_t* >( action.earthen_rage )->nuke )
+  if ( state->action == debug_cast<earthen_rage_driver_t*>( action.earthen_rage )->nuke )
     return;
 
   action.earthen_rage->schedule_execute();
@@ -7236,7 +7236,7 @@ void shaman_t::trigger_doom_vortex( const action_state_t* state )
     return;
   }
 
-  make_event< ground_aoe_event_t >(
+  make_event<ground_aoe_event_t>(
       *sim, this,
       ground_aoe_params_t()
           .target( state->target )
@@ -7374,9 +7374,8 @@ void shaman_t::trigger_smoldering_heart( double cost )
 
 void shaman_t::trigger_windfury_weapon( const action_state_t* state )
 {
-  assert( debug_cast< shaman_attack_t* >( state->action ) != nullptr &&
-          "Windfury Weapon called on invalid action type" );
-  shaman_attack_t* attack = debug_cast< shaman_attack_t* >( state->action );
+  assert( debug_cast<shaman_attack_t*>( state->action ) != nullptr && "Windfury Weapon called on invalid action type" );
+  shaman_attack_t* attack = debug_cast<shaman_attack_t*>( state->action );
   if ( !attack->may_proc_windfury )
     return;
 
@@ -7498,9 +7497,9 @@ void shaman_t::trigger_t20_2pc_elemental( const action_state_t* )
 
 void shaman_t::trigger_flametongue_weapon( const action_state_t* state )
 {
-  assert( debug_cast< shaman_attack_t* >( state->action ) != nullptr &&
+  assert( debug_cast<shaman_attack_t*>( state->action ) != nullptr &&
           "Flametongue Weapon called on invalid action type" );
-  shaman_attack_t* attack = debug_cast< shaman_attack_t* >( state->action );
+  shaman_attack_t* attack = debug_cast<shaman_attack_t*>( state->action );
   if ( !attack->may_proc_flametongue )
     return;
 
@@ -7519,8 +7518,8 @@ void shaman_t::trigger_flametongue_weapon( const action_state_t* state )
 
 void shaman_t::trigger_hailstorm( const action_state_t* state )
 {
-  assert( debug_cast< shaman_attack_t* >( state->action ) != nullptr && "Hailstorm called on invalid action type" );
-  shaman_attack_t* attack = debug_cast< shaman_attack_t* >( state->action );
+  assert( debug_cast<shaman_attack_t*>( state->action ) != nullptr && "Hailstorm called on invalid action type" );
+  shaman_attack_t* attack = debug_cast<shaman_attack_t*>( state->action );
   if ( !attack->may_proc_frostbrand )
   {
     return;
@@ -7585,7 +7584,7 @@ void shaman_t::create_buffs()
                                } );
 
   buff.focus_of_the_elements = buff_creator_t( this, "focus_of_the_elements", find_spell( 167205 ) )
-                                   .chance( static_cast< double >( sets->has_set_bonus( SHAMAN_ELEMENTAL, T17, B2 ) ) );
+                                   .chance( static_cast<double>( sets->has_set_bonus( SHAMAN_ELEMENTAL, T17, B2 ) ) );
   buff.feral_spirit =
       buff_creator_t( this, "t17_4pc_melee", sets->set( SHAMAN_ENHANCEMENT, T17, B4 )->effectN( 1 ).trigger() )
           .cd( timespan_t::zero() );
@@ -7751,7 +7750,7 @@ bool shaman_t::init_special_effects()
   if ( spec.stormlash->ok() )
   {
     // shaman_t::create_buffs has been called before init_special_effects
-    stormlash_buff_t* stormlash_buff = static_cast< stormlash_buff_t* >( buff_t::find( this, "stormlash" ) );
+    stormlash_buff_t* stormlash_buff = static_cast<stormlash_buff_t*>( buff_t::find( this, "stormlash" ) );
 
     special_effect_t* effect = new special_effect_t( this );
     effect->type             = SPECIAL_EFFECT_EQUIP;
@@ -8740,7 +8739,7 @@ void shaman_t::merge( player_t& other )
 {
   player_t::merge( other );
 
-  const shaman_t& s = static_cast< shaman_t& >( other );
+  const shaman_t& s = static_cast<shaman_t&>( other );
 
   for ( size_t i = 0, end = counters.size(); i < end; i++ )
     counters[ i ]->merge( *s.counters[ i ] );
@@ -9172,7 +9171,7 @@ private:
 
 using namespace unique_gear;
 
-struct elemental_bellows_t : public scoped_action_callback_t< flame_shock_t >
+struct elemental_bellows_t : public scoped_action_callback_t<flame_shock_t>
 {
   elemental_bellows_t() : super( SHAMAN_ELEMENTAL, "flame_shock" )
   {
@@ -9185,7 +9184,7 @@ struct elemental_bellows_t : public scoped_action_callback_t< flame_shock_t >
   }
 };
 
-struct furious_winds_t : public scoped_action_callback_t< windfury_attack_t >
+struct furious_winds_t : public scoped_action_callback_t<windfury_attack_t>
 {
   furious_winds_t( const std::string& name_str ) : super( SHAMAN, name_str )
   {
@@ -9201,7 +9200,7 @@ struct furious_winds_t : public scoped_action_callback_t< windfury_attack_t >
   }
 };
 
-struct echoes_of_the_great_sundering_t : public scoped_action_callback_t< earth_shock_t >
+struct echoes_of_the_great_sundering_t : public scoped_action_callback_t<earth_shock_t>
 {
   echoes_of_the_great_sundering_t() : super( SHAMAN, "earth_shock" )
   {
@@ -9213,7 +9212,7 @@ struct echoes_of_the_great_sundering_t : public scoped_action_callback_t< earth_
   }
 };
 
-struct echoes_of_the_great_sundering_buff_t : public class_buff_cb_t< buff_t >
+struct echoes_of_the_great_sundering_buff_t : public class_buff_cb_t<buff_t>
 {
   echoes_of_the_great_sundering_buff_t() : super( SHAMAN, "echoes_of_the_great_sundering" )
   {
@@ -9221,7 +9220,7 @@ struct echoes_of_the_great_sundering_buff_t : public class_buff_cb_t< buff_t >
 
   buff_t*& buff_ptr( const special_effect_t& e ) override
   {
-    return debug_cast< shaman_t* >( e.player )->buff.echoes_of_the_great_sundering;
+    return debug_cast<shaman_t*>( e.player )->buff.echoes_of_the_great_sundering;
   }
 
   buff_creator_t creator( const special_effect_t& e ) const override
@@ -9230,7 +9229,7 @@ struct echoes_of_the_great_sundering_buff_t : public class_buff_cb_t< buff_t >
   }
 };
 
-struct smoldering_heart_chance_t : public unique_gear::scoped_actor_callback_t< shaman_t >
+struct smoldering_heart_chance_t : public unique_gear::scoped_actor_callback_t<shaman_t>
 {
   smoldering_heart_chance_t() : super( SHAMAN )
   {
@@ -9242,7 +9241,7 @@ struct smoldering_heart_chance_t : public unique_gear::scoped_actor_callback_t< 
   }
 };
 
-struct emalons_charged_core_t : public scoped_action_callback_t< crash_lightning_t >
+struct emalons_charged_core_t : public scoped_action_callback_t<crash_lightning_t>
 {
   emalons_charged_core_t() : super( SHAMAN, "crash_lightning" )
   {
@@ -9254,7 +9253,7 @@ struct emalons_charged_core_t : public scoped_action_callback_t< crash_lightning
   }
 };
 
-struct emalons_charged_core_buff_t : public class_buff_cb_t< buff_t >
+struct emalons_charged_core_buff_t : public class_buff_cb_t<buff_t>
 {
   emalons_charged_core_buff_t() : super( SHAMAN, "emalons_charged_core" )
   {
@@ -9262,7 +9261,7 @@ struct emalons_charged_core_buff_t : public class_buff_cb_t< buff_t >
 
   buff_t*& buff_ptr( const special_effect_t& e ) override
   {
-    return debug_cast< shaman_t* >( e.player )->buff.emalons_charged_core;
+    return debug_cast<shaman_t*>( e.player )->buff.emalons_charged_core;
   }
 
   buff_creator_t creator( const special_effect_t& e ) const override
@@ -9271,7 +9270,7 @@ struct emalons_charged_core_buff_t : public class_buff_cb_t< buff_t >
   }
 };
 
-struct pristine_protoscale_girdle_t : public scoped_action_callback_t< lava_burst_t >
+struct pristine_protoscale_girdle_t : public scoped_action_callback_t<lava_burst_t>
 {
   pristine_protoscale_girdle_t() : super( SHAMAN, "lava_burst" )
   {
@@ -9286,7 +9285,7 @@ struct pristine_protoscale_girdle_t : public scoped_action_callback_t< lava_burs
   }
 };
 
-struct storm_tempests_t : public scoped_action_callback_t< stormstrike_base_t >
+struct storm_tempests_t : public scoped_action_callback_t<stormstrike_base_t>
 {
   storm_tempests_t( const std::string& strike_str ) : super( SHAMAN, strike_str )
   {
@@ -9301,7 +9300,7 @@ struct storm_tempests_t : public scoped_action_callback_t< stormstrike_base_t >
   }
 };
 
-struct the_deceivers_blood_pact_t : public scoped_action_callback_t< earth_shock_t >
+struct the_deceivers_blood_pact_t : public scoped_action_callback_t<earth_shock_t>
 {
   the_deceivers_blood_pact_t() : super( SHAMAN, "earth_shock" )
   {
@@ -9313,7 +9312,7 @@ struct the_deceivers_blood_pact_t : public scoped_action_callback_t< earth_shock
   }
 };
 
-struct spiritual_journey_t : public class_buff_cb_t< buff_t >
+struct spiritual_journey_t : public class_buff_cb_t<buff_t>
 {
   spiritual_journey_t() : super( SHAMAN, "spiritual_journey" )
   {
@@ -9321,7 +9320,7 @@ struct spiritual_journey_t : public class_buff_cb_t< buff_t >
 
   buff_t*& buff_ptr( const special_effect_t& e ) override
   {
-    return debug_cast< shaman_t* >( e.player )->buff.spiritual_journey;
+    return debug_cast<shaman_t*>( e.player )->buff.spiritual_journey;
   }
 
   buff_creator_t creator( const special_effect_t& e ) const override
@@ -9334,7 +9333,7 @@ struct spiritual_journey_t : public class_buff_cb_t< buff_t >
   }
 };
 
-struct akainus_absolute_justice_t : public scoped_action_callback_t< lava_lash_t >
+struct akainus_absolute_justice_t : public scoped_action_callback_t<lava_lash_t>
 {
   akainus_absolute_justice_t() : super( SHAMAN, "lava_lash" )
   {
@@ -9346,10 +9345,10 @@ struct akainus_absolute_justice_t : public scoped_action_callback_t< lava_lash_t
   }
 };
 
-template < typename T >
-struct alakirs_acrimony_t : public scoped_action_callback_t< T >
+template <typename T>
+struct alakirs_acrimony_t : public scoped_action_callback_t<T>
 {
-  alakirs_acrimony_t( const std::string& action_str ) : scoped_action_callback_t< T >( SHAMAN, action_str )
+  alakirs_acrimony_t( const std::string& action_str ) : scoped_action_callback_t<T>( SHAMAN, action_str )
   {
   }
 
@@ -9359,7 +9358,7 @@ struct alakirs_acrimony_t : public scoped_action_callback_t< T >
   }
 };
 
-struct eotn_buff_base_t : public class_buff_cb_t< buff_t >
+struct eotn_buff_base_t : public class_buff_cb_t<buff_t>
 {
   unsigned sid;
 
@@ -9386,7 +9385,7 @@ struct eotn_buff_fire_t : public eotn_buff_base_t
 
   buff_t*& buff_ptr( const special_effect_t& e ) override
   {
-    return debug_cast< shaman_t* >( e.player )->buff.eotn_fire;
+    return debug_cast<shaman_t*>( e.player )->buff.eotn_fire;
   }
 };
 
@@ -9398,7 +9397,7 @@ struct eotn_buff_shock_t : public eotn_buff_base_t
 
   buff_t*& buff_ptr( const special_effect_t& e ) override
   {
-    return debug_cast< shaman_t* >( e.player )->buff.eotn_shock;
+    return debug_cast<shaman_t*>( e.player )->buff.eotn_shock;
   }
 };
 
@@ -9410,11 +9409,11 @@ struct eotn_buff_chill_t : public eotn_buff_base_t
 
   buff_t*& buff_ptr( const special_effect_t& e ) override
   {
-    return debug_cast< shaman_t* >( e.player )->buff.eotn_chill;
+    return debug_cast<shaman_t*>( e.player )->buff.eotn_chill;
   }
 };
 
-struct uncertain_reminder_t : public scoped_actor_callback_t< shaman_t >
+struct uncertain_reminder_t : public scoped_actor_callback_t<shaman_t>
 {
   uncertain_reminder_t() : scoped_actor_callback_t( SHAMAN )
   {
@@ -9430,7 +9429,7 @@ struct uncertain_reminder_t : public scoped_actor_callback_t< shaman_t >
   }
 };
 
-struct sephuzs_secret_enabler_t : public scoped_actor_callback_t< shaman_t >
+struct sephuzs_secret_enabler_t : public scoped_actor_callback_t<shaman_t>
 {
   sephuzs_secret_enabler_t() : scoped_actor_callback_t( SHAMAN )
   {
@@ -9442,7 +9441,7 @@ struct sephuzs_secret_enabler_t : public scoped_actor_callback_t< shaman_t >
   }
 };
 
-struct sephuzs_secret_t : public class_buff_cb_t< shaman_t, haste_buff_t, haste_buff_creator_t >
+struct sephuzs_secret_t : public class_buff_cb_t<shaman_t, haste_buff_t, haste_buff_creator_t>
 {
   sephuzs_secret_t() : super( SHAMAN, "sephuzs_secret" )
   {
@@ -9450,7 +9449,7 @@ struct sephuzs_secret_t : public class_buff_cb_t< shaman_t, haste_buff_t, haste_
 
   haste_buff_t*& buff_ptr( const special_effect_t& e ) override
   {
-    return debug_cast< shaman_t* >( e.player )->buff.sephuzs_secret;
+    return debug_cast<shaman_t*>( e.player )->buff.sephuzs_secret;
   }
 
   haste_buff_creator_t creator( const special_effect_t& e ) const override
@@ -9472,7 +9471,7 @@ struct shaman_module_t : public module_t
   player_t* create_player( sim_t* sim, const std::string& name, race_e r = RACE_NONE ) const override
   {
     auto p              = new shaman_t( sim, name, r );
-    p->report_extension = std::unique_ptr< player_report_extension_t >( new shaman_report_t( *p ) );
+    p->report_extension = std::unique_ptr<player_report_extension_t>( new shaman_report_t( *p ) );
     return p;
   }
 
@@ -9502,10 +9501,10 @@ struct shaman_module_t : public module_t
     register_special_effect( 214131, the_deceivers_blood_pact_t() );
     register_special_effect( 214147, spiritual_journey_t(), true );
     register_special_effect( 213359, akainus_absolute_justice_t() );
-    register_special_effect( 208699, alakirs_acrimony_t< chained_base_t >( "chain_lightning" ) );
-    register_special_effect( 208699, alakirs_acrimony_t< chained_base_t >( "lava_beam" ) );
-    register_special_effect( 208699, alakirs_acrimony_t< chained_overload_base_t >( "chain_lightning_overload" ) );
-    register_special_effect( 208699, alakirs_acrimony_t< chained_overload_base_t >( "lava_beam_overload" ) );
+    register_special_effect( 208699, alakirs_acrimony_t<chained_base_t>( "chain_lightning" ) );
+    register_special_effect( 208699, alakirs_acrimony_t<chained_base_t>( "lava_beam" ) );
+    register_special_effect( 208699, alakirs_acrimony_t<chained_overload_base_t>( "chain_lightning_overload" ) );
+    register_special_effect( 208699, alakirs_acrimony_t<chained_overload_base_t>( "lava_beam_overload" ) );
     register_special_effect( 207994, eotn_buff_fire_t(), true );
     register_special_effect( 207994, eotn_buff_shock_t(), true );
     register_special_effect( 207994, eotn_buff_chill_t(), true );
