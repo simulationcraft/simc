@@ -387,11 +387,13 @@ public:
   // Tracked Procs
   struct
   {
+    // Elemental, Restoration
     proc_t* lava_surge;
     proc_t* wasted_lava_surge;
-    proc_t* windfury;
-
     proc_t* surge_during_lvb;
+
+    // Enhancement
+    proc_t* windfury;
     proc_t* t19_4pc_enhancement;
   } proc;
 
@@ -411,8 +413,7 @@ public:
     const spell_data_t* chain_lightning_2;  // 7.1 Chain Lightning additional 2 targets passive
     const spell_data_t* elemental_fury;
     const spell_data_t* elemental_shaman;
-    const spell_data_t* flame_shock_2;  // 7.1 Flame Shock duration extension passive
-    const spell_data_t* lava_burst_2;   // 7.1 Lava Burst autocrit with FS passive
+    const spell_data_t* lava_burst_2;  // 7.1 Lava Burst autocrit with FS passive
     const spell_data_t* lava_surge;
     const spell_data_t* spiritual_insight;
 
@@ -5255,26 +5256,14 @@ struct earth_shock_t : public shaman_spell_t
 struct flame_shock_t : public shaman_spell_t
 {
   double duration_multiplier;  // Elemental Bellows
-  timespan_t duration_per_maelstrom;
 
   flame_shock_t( shaman_t* player, const std::string& options_str = std::string() )
     : shaman_spell_t( "flame_shock", player, player->find_specialization_spell( "Flame Shock" ), options_str ),
-      duration_multiplier( 1.0 ),
-      duration_per_maelstrom( timespan_t::zero() )
+      duration_multiplier( 1.0 )
   {
     tick_may_crit  = true;
     track_cd_waste = false;
     base_multiplier *= 1.0 + player->artifact.firestorm.percent();
-
-    if ( player->spec.flame_shock_2->ok() )
-    {
-      resource_current                      = RESOURCE_MAELSTROM;
-      secondary_costs[ RESOURCE_MAELSTROM ] = player->spec.flame_shock_2->effectN( 1 ).base_value();
-      // flame_shock_2 got a second effect with 7.3.5, which is the CD reduction as a -100 (percent)
-      cooldown->duration *= 1.0 + player->spec.flame_shock_2->effectN( 2 ).percent();
-
-      duration_per_maelstrom = dot_duration / secondary_costs[ RESOURCE_MAELSTROM ];
-    }
   }
 
   double composite_crit_chance() const override
@@ -5291,7 +5280,7 @@ struct flame_shock_t : public shaman_spell_t
 
   timespan_t composite_dot_duration( const action_state_t* ) const override
   {
-    return ( dot_duration + duration_per_maelstrom * cost() ) * duration_multiplier;
+    return dot_duration * duration_multiplier;
   }
 
   double action_ta_multiplier() const override
@@ -6492,7 +6481,6 @@ void shaman_t::init_spells()
   spec.chain_lightning_2 = find_specialization_spell( 231722 );
   spec.elemental_fury    = find_specialization_spell( "Elemental Fury" );
   spec.elemental_shaman  = find_specialization_spell( "Elemental Shaman" );
-  spec.flame_shock_2     = find_specialization_spell( 232643 );
   spec.lava_burst_2      = find_specialization_spell( 231721 );
   spec.lava_surge        = find_specialization_spell( "Lava Surge" );
 
