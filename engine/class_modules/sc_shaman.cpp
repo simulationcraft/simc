@@ -298,15 +298,23 @@ public:
   // Buffs
   struct
   {
+    // shared between all three specs
     buff_t* ascendance;
+
+    // Elemental, Restoration
     buff_t* echo_of_the_elements;
     buff_t* lava_surge;
+
+    // Elemental
     buff_t* liquid_magma;
+
+    // Enhancement
     buff_t* lightning_shield;
+
+    // Restoration
     buff_t* spirit_walk;
     buff_t* spiritwalkers_grace;
     buff_t* tidal_waves;
-    buff_t* focus_of_the_elements;
     buff_t* feral_spirit;
 
     stat_buff_t* elemental_blast_crit;
@@ -655,8 +663,6 @@ public:
   void trigger_windfury_weapon( const action_state_t* );
   void trigger_flametongue_weapon( const action_state_t* );
   void trigger_hailstorm( const action_state_t* );
-  void trigger_t17_2pc_elemental( int );
-  void trigger_t17_4pc_elemental( int );
   void trigger_t19_oh_8pc( const action_state_t* );
   void trigger_t20_2pc_elemental( const action_state_t* );
   void trigger_stormbringer( const action_state_t* state, double proc_chance = -1.0, proc_t* proc_obj = nullptr );
@@ -7238,31 +7244,6 @@ void shaman_t::trigger_windfury_weapon( const action_state_t* state )
   }
 }
 
-void shaman_t::trigger_t17_2pc_elemental( int stacks )
-{
-  if ( !sets->has_set_bonus( SHAMAN_ELEMENTAL, T17, B2 ) )
-    return;
-
-  buff.focus_of_the_elements->trigger( 1, sets->set( SHAMAN_ELEMENTAL, T17, B2 )->effectN( 1 ).percent() * stacks );
-}
-
-void shaman_t::trigger_t17_4pc_elemental( int stacks )
-{
-  if ( !sets->has_set_bonus( SHAMAN_ELEMENTAL, T17, B4 ) )
-    return;
-
-  if ( stacks < sets->set( SHAMAN_ELEMENTAL, T17, B4 )->effectN( 1 ).base_value() )
-    return;
-
-  if ( buff.lava_surge->check() )
-    proc.wasted_lava_surge->occur();
-
-  proc.lava_surge->occur();
-  buff.lava_surge->trigger();
-
-  cooldown.lava_burst->reset( false );
-}
-
 void shaman_t::trigger_t19_oh_8pc( const action_state_t* )
 {
   if ( !sets->has_set_bonus( SHAMAN_ELEMENTAL, T19OH, B8 ) && !sets->has_set_bonus( SHAMAN_ENHANCEMENT, T19OH, B8 ) )
@@ -7370,9 +7351,6 @@ void shaman_t::create_buffs()
       stat_buff_creator_t( this, "elemental_blast_haste", find_spell( 173183 ) ).max_stack( 1 );
   buff.elemental_blast_mastery =
       stat_buff_creator_t( this, "elemental_blast_mastery", find_spell( 173184 ) ).max_stack( 1 );
-
-  buff.focus_of_the_elements = buff_creator_t( this, "focus_of_the_elements", find_spell( 167205 ) )
-                                   .chance( static_cast<double>( sets->has_set_bonus( SHAMAN_ELEMENTAL, T17, B2 ) ) );
   buff.feral_spirit =
       buff_creator_t( this, "t17_4pc_melee", sets->set( SHAMAN_ENHANCEMENT, T17, B4 )->effectN( 1 ).trigger() )
           .cd( timespan_t::zero() );
