@@ -459,7 +459,6 @@ public:
     const spell_data_t* elemental_blast;
     const spell_data_t* echo_of_the_elements;
 
-    const spell_data_t* elemental_fusion;
     const spell_data_t* primal_elementalist;
 
     const spell_data_t* storm_elemental;
@@ -5300,7 +5299,6 @@ struct flame_shock_t : public shaman_spell_t
     shaman_spell_t::tick( d );
 
     double proc_chance = p()->spec.lava_surge->proc_chance();
-    proc_chance += p()->talent.elemental_fusion->effectN( 1 ).percent();
 
     if ( rng().roll( proc_chance ) )
     {
@@ -6531,7 +6529,6 @@ void shaman_t::init_spells()
 
   talent.aftershock = find_talent_spell( "Aftershock" );
 
-  talent.elemental_fusion    = find_talent_spell( "Elemental Fusion" );
   talent.primal_elementalist = find_talent_spell( "Primal Elementalist" );
   talent.elemental_blast     = find_talent_spell( "Elemental Blast" );
 
