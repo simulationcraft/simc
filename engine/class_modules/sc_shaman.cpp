@@ -5934,21 +5934,26 @@ struct liquid_magma_totem_t : public shaman_totem_pet_t
 
 struct capacitor_totem_pulse_t : public totem_pulse_action_t
 {
+  cooldown_t* totem_cooldown;
+
   capacitor_totem_pulse_t( shaman_totem_pet_t* totem )
     : totem_pulse_action_t( "static_charge", totem, totem->find_spell( 118905 ) )
   {
     aoe   = 1;
-    quiet = dual = true;
+    quiet = dual   = true;
+    totem_cooldown = totem->o()->get_cooldown( "capacitor_totem" );
   }
 
   virtual void execute() override
   {
     totem_pulse_action_t::execute();
-    if ( totem->o()->talent.static_charge )
+    if ( totem->o()->talent.static_charge->ok() )
     {
-      int cd_reduction =
-          -( num_targets_hit > 5 ? 5 : num_targets_hit ) * ( totem->find_spell( 118905 )->effectN( 1 ).base_value );
-      totem->find_cooldown( "Capacitor Totem" )->adjust( timespan_t::from_seconds( cd_reduction ) );
+      // This implementation assumes that every hit target counts. Ingame boss dummy testing showed that only
+      // stunned targets count. TODO: check every hit target for whether it is stunned, or not.
+      int cd_reduction = num_targets_hit * ( totem->o()->talent.static_charge->effectN( 1 ).base_value() );
+      cd_reduction     = -std::min( cd_reduction, totem->o()->talent.static_charge->effectN( 2 ).base_value() );
+      totem_cooldown->adjust( timespan_t::from_seconds( cd_reduction ) );
     }
   }
 };
@@ -6223,7 +6228,7 @@ action_t* shaman_t::create_action( const std::string& name, const std::string& o
     return new shaman_totem_t( "liquid_magma_totem", this, options_str, talent.liquid_magma_totem );
 
   if ( name == "capacitor_totem" )
-    return new shaman_totem_t( this, options_str );
+    return new shaman_totem_t( "capacitor_totem", this, options_str, find_spell( 192058 ) );
 
   return player_t::create_action( name, options_str );
 }
