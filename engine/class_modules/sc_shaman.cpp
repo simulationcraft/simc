@@ -365,9 +365,8 @@ public:
     cooldown_t* fire_elemental;
     cooldown_t* feral_spirits;
     cooldown_t* lava_burst;
-    cooldown_t* lava_lash;
     cooldown_t* storm_elemental;
-    cooldown_t* strike;
+    cooldown_t* strike;  // shared CD of Storm Strike and Windstrike
     cooldown_t* rockbiter;
     cooldown_t* t20_2pc_elemental;
   } cooldown;
@@ -411,9 +410,9 @@ public:
 
     // Elemental
     const spell_data_t* chain_lightning_2;  // 7.1 Chain Lightning additional 2 targets passive
-    const spell_data_t* elemental_fury;
-    const spell_data_t* elemental_shaman;
-    const spell_data_t* lava_burst_2;  // 7.1 Lava Burst autocrit with FS passive
+    const spell_data_t* elemental_fury;     // general crit multiplier
+    const spell_data_t* elemental_shaman;   // general spec multiplier
+    const spell_data_t* lava_burst_2;       // 7.1 Lava Burst autocrit with FS passive
     const spell_data_t* lava_surge;
 
     // Enhancement
@@ -450,10 +449,8 @@ public:
   struct
   {
     // Generic / Shared
-    const spell_data_t* ancestral_swiftness;
     const spell_data_t* ascendance;
-    const spell_data_t* gust_of_wind;
-    const spell_data_t* lightning_surge_totem;
+    const spell_data_t* static_charge;
 
     // Elemental
     const spell_data_t* path_of_flame;
@@ -478,6 +475,7 @@ public:
 
     const spell_data_t* feral_lunge;
 
+    const spell_data_t* ancestral_swiftness;
     const spell_data_t* lightning_shield;
     const spell_data_t* sundering;
 
@@ -491,6 +489,9 @@ public:
     const spell_data_t* earthen_spike;
     const spell_data_t* fury_of_air;
     const spell_data_t* empowered_stormlash;
+
+    // Restoration
+    const spell_data_t* gust_of_wind;
   } talent;
 
   // Artifact
@@ -598,7 +599,6 @@ public:
     cooldown.storm_elemental   = get_cooldown( "storm_elemental" );
     cooldown.feral_spirits     = get_cooldown( "feral_spirit" );
     cooldown.lava_burst        = get_cooldown( "lava_burst" );
-    cooldown.lava_lash         = get_cooldown( "lava_lash" );
     cooldown.strike            = get_cooldown( "strike" );
     cooldown.rockbiter         = get_cooldown( "rockbiter" );
     cooldown.t20_2pc_elemental = get_cooldown( "t20_2pc_elemental" );
@@ -5930,35 +5930,41 @@ struct liquid_magma_totem_t : public shaman_totem_pet_t
   }
 };
 
-// Lightning Surge Totem ====================================================
+// Capacitor Totem =========================================================
 
-struct lightning_surge_static_charge_t : public spell_t
+struct capacitor_totem_pulse_t : public totem_pulse_action_t
 {
-  lightning_surge_static_charge_t( shaman_totem_pet_t* p ) : spell_t( "static_charge", p, p->find_spell( 118905 ) )
+  capacitor_totem_pulse_t( shaman_totem_pet_t* totem )
+    : totem_pulse_action_t( "static_charge", totem, totem->find_spell( 118905 ) )
   {
-    aoe        = -1;
-    background = may_crit = true;
-    callbacks             = false;
+    aoe   = 1;
+    quiet = dual = true;
+  }
+
+  virtual void execute() override
+  {
+    totem_pulse_action_t::execute();
+    if ( totem->o()->talent.static_charge )
+    {
+      int cd_reduction =
+          -( num_targets_hit > 5 ? 5 : num_targets_hit ) * ( totem->find_spell( 118905 )->effectN( 1 ).base_value );
+      totem->find_cooldown( "Capacitor Totem" )->adjust( timespan_t::from_seconds( cd_reduction ) );
+    }
   }
 };
 
-struct lightning_surge_totem_t : public shaman_totem_pet_t
+struct capacitor_totem_t : public shaman_totem_pet_t
 {
-  lightning_surge_totem_t( shaman_t* owner ) : shaman_totem_pet_t( owner, "lightning_surge_totem" )
+  capacitor_totem_t( shaman_t* owner ) : shaman_totem_pet_t( owner, "capacitor_totem" )
   {
+    pulse_amplitude = owner->find_spell( 192058 )->duration();
   }
 
   void init_spells() override
   {
     shaman_totem_pet_t::init_spells();
-  }
 
-  void init_action_list() override
-  {
-    clear_action_priority_lists();
-    auto default_list = get_action_priority_list( "default" );
-
-    default_list->add_action( this, find_pet_spell( "Static Chage" ), "Static Chage" );
+    pulse_action = new capacitor_totem_pulse_t( this );
   }
 };
 
@@ -6214,9 +6220,10 @@ action_t* shaman_t::create_action( const std::string& name, const std::string& o
     return new riptide_t( this, options_str );
 
   if ( name == "liquid_magma_totem" )
-  {
     return new shaman_totem_t( "liquid_magma_totem", this, options_str, talent.liquid_magma_totem );
-  }
+
+  if ( name == "capacitor_totem" )
+    return new shaman_totem_t( this, options_str );
 
   return player_t::create_action( name, options_str );
 }
@@ -6254,6 +6261,8 @@ pet_t* shaman_t::create_pet( const std::string& pet_name, const std::string& /* 
     return new pet::earth_elemental_t( this, true );
   if ( pet_name == "liquid_magma_totem" )
     return new liquid_magma_totem_t( this );
+  if ( pet_name == "capacitor_totem" )
+    return new capacitor_totem_t( this );
 
   return nullptr;
 }
@@ -6306,6 +6315,11 @@ void shaman_t::create_pets()
   if ( talent.liquid_magma_totem->ok() && find_action( "liquid_magma_totem" ) )
   {
     create_pet( "liquid_magma_totem" );
+  }
+
+  if ( find_action( "capacitor_totem" ) )
+  {
+    create_pet( "capacitor_totem" );
   }
 
   if ( artifact.fury_of_the_storms.rank() && find_action( "stormkeeper" ) )
@@ -6507,16 +6521,13 @@ void shaman_t::init_spells()
   mastery.deep_healing       = find_mastery_spell( SHAMAN_RESTORATION );
 
   // Talents
-  talent.ancestral_swiftness = find_talent_spell( "Ancestral Swiftness" );
-  talent.gust_of_wind        = find_talent_spell( "Gust of Wind" );
-  talent.ascendance          = find_talent_spell( "Ascendance" );
+  talent.ascendance    = find_talent_spell( "Ascendance" );
+  talent.static_charge = find_talent_spell( "Static Charge" );
 
   // Elemental
   talent.path_of_flame = find_talent_spell( "Path of Flame" );
   talent.earthen_rage  = find_talent_spell( "Earthen Rage" );
   talent.totem_mastery = find_talent_spell( "Totem Mastery" );
-
-  talent.lightning_surge_totem = find_talent_spell( "Lightning Surge Totem" );
 
   talent.aftershock = find_talent_spell( "Aftershock" );
 
@@ -6535,8 +6546,9 @@ void shaman_t::init_spells()
 
   talent.feral_lunge = find_talent_spell( "Feral Lunge" );
 
-  talent.lightning_shield = find_talent_spell( "Lightning Shield" );
-  talent.hailstorm        = find_talent_spell( "Hailstorm" );
+  talent.ancestral_swiftness = find_talent_spell( "Ancestral Swiftness" );
+  talent.lightning_shield    = find_talent_spell( "Lightning Shield" );
+  talent.hailstorm           = find_talent_spell( "Hailstorm" );
 
   talent.tempest             = find_talent_spell( "Tempest" );
   talent.overcharge          = find_talent_spell( "Overcharge" );
@@ -6548,6 +6560,9 @@ void shaman_t::init_spells()
 
   talent.landslide     = find_talent_spell( "Landslide" );
   talent.earthen_spike = find_talent_spell( "Earthen Spike" );
+
+  // Restoration
+  talent.gust_of_wind = find_talent_spell( "Gust of Wind" );
 
   // Artifact
 
