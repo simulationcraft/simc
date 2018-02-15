@@ -522,7 +522,6 @@ public:
   struct
   {
     const spell_data_t* resurgence;
-    const spell_data_t* eruption;
     const spell_data_t* maelstrom_melee_gain;
   } spell;
 
@@ -6458,7 +6457,6 @@ void shaman_t::init_spells()
 
   // Misc spells
   spell.resurgence           = find_spell( 101033 );
-  spell.eruption             = find_spell( 168556 );
   spell.maelstrom_melee_gain = find_spell( 187890 );
 
   // Constants
