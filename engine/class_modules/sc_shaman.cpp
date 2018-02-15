@@ -600,9 +600,6 @@ public:
           case SHAMAN_ENHANCEMENT:
             return util::str_compare_ci( spell->name_cstr(), "Tempest" );
             break;
-          case SHAMAN_ELEMENTAL:
-            return util::str_compare_ci( spell->name_cstr(), "Echo of the Elements" );
-            break;
           default:
             return false;
         }
@@ -691,7 +688,6 @@ public:
 
   void datacollection_begin() override;
   void datacollection_end() override;
-  bool has_t18_class_trinket() const override;
 
   target_specific_t<shaman_td_t> target_data;
 
@@ -7988,20 +7984,6 @@ void shaman_t::datacollection_end()
   }
 
   player_t::datacollection_end();
-}
-
-// shaman_t::has_t18_class_trinket ==========================================
-
-bool shaman_t::has_t18_class_trinket() const
-{
-  switch ( specialization() )
-  {
-    case SHAMAN_ENHANCEMENT:
-    case SHAMAN_ELEMENTAL:
-      return items[ SLOT_TRINKET_1 ].parsed.data.id == 124521 || items[ SLOT_TRINKET_2 ].parsed.data.id == 124521;
-    default:
-      return false;
-  }
 }
 
 // shaman_t::primary_role ===================================================
