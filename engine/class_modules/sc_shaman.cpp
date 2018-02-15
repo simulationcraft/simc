@@ -319,6 +319,7 @@ public:
     buff_t* flametongue;
     buff_t* frostbrand;
     buff_t* gathering_storms;
+    buff_t* hot_hand;
     buff_t* landslide;
     buff_t* lightning_shield;
     buff_t* stormbringer;
@@ -330,9 +331,6 @@ public:
     buff_t* spirit_walk;
     buff_t* spiritwalkers_grace;
     buff_t* tidal_waves;
-
-    buff_t* hot_hand;
-    haste_buff_t* elemental_mastery;
 
     // Set bonuses
     stat_buff_t* t19_oh_8pc;
@@ -475,7 +473,6 @@ public:
     const spell_data_t* elemental_fusion;
     const spell_data_t* primal_elementalist;
 
-    const spell_data_t* elemental_mastery;
     const spell_data_t* storm_elemental;
     const spell_data_t* aftershock;
 
@@ -5228,26 +5225,6 @@ struct earthquake_t : public shaman_spell_t
   }
 };
 
-// Elemental Mastery Spell ==================================================
-
-struct elemental_mastery_t : public shaman_spell_t
-{
-  elemental_mastery_t( shaman_t* player, const std::string& options_str )
-    : shaman_spell_t( "elemental_mastery", player, player->talent.elemental_mastery, options_str )
-  {
-    harmful  = false;
-    may_crit = false;
-    may_miss = false;
-  }
-
-  virtual void execute() override
-  {
-    shaman_spell_t::execute();
-
-    p()->buff.elemental_mastery->trigger();
-  }
-};
-
 // ==========================================================================
 // Shaman Shock Spells
 // ==========================================================================
@@ -6255,8 +6232,6 @@ action_t* shaman_t::create_action( const std::string& name, const std::string& o
     return new earthquake_t( this, options_str );
   if ( name == "elemental_blast" )
     return new elemental_blast_t( this, options_str );
-  if ( name == "elemental_mastery" )
-    return new elemental_mastery_t( this, options_str );
   if ( name == "ghost_wolf" )
     return new ghost_wolf_t( this, options_str );
   if ( name == "feral_lunge" )
@@ -6633,7 +6608,6 @@ void shaman_t::init_spells()
   talent.lightning_surge_totem = find_talent_spell( "Lightning Surge Totem" );
 
   talent.aftershock        = find_talent_spell( "Aftershock" );
-  talent.elemental_mastery = find_talent_spell( "Elemental Mastery" );
 
   talent.elemental_fusion    = find_talent_spell( "Elemental Fusion" );
   talent.primal_elementalist = find_talent_spell( "Primal Elementalist" );
@@ -7331,9 +7305,6 @@ void shaman_t::create_buffs()
   buff.t19_oh_8pc = stat_buff_creator_t( this, "might_of_the_maelstrom",
                                          sets->set( specialization(), T19OH, B8 )->effectN( 1 ).trigger() )
                         .trigger_spell( sets->set( specialization(), T19OH, B8 ) );
-  buff.elemental_mastery = haste_buff_creator_t( this, "elemental_mastery", talent.elemental_mastery )
-                               .default_value( 1.0 / ( 1.0 + talent.elemental_mastery->effectN( 1 ).percent() ) )
-                               .cd( timespan_t::zero() );  // Handled by the action
   buff.t18_4pc_enhancement =
       buff_creator_t( this, "natures_reprisal", sets->set( SHAMAN_ENHANCEMENT, T18, B4 )->effectN( 1 ).trigger() )
           .trigger_spell( sets->set( SHAMAN_ENHANCEMENT, T18, B4 ) )
@@ -7934,11 +7905,6 @@ double shaman_t::composite_spell_haste() const
     h *= buff.tailwind_totem->check_value();
   }
 
-  if ( buff.elemental_mastery->up() )
-  {
-    h *= buff.elemental_mastery->check_value();
-  }
-
   if ( buff.sephuzs_secret->check() )
   {
     h *= 1.0 / ( 1.0 + buff.sephuzs_secret->stack_value() );
@@ -8033,11 +7999,6 @@ double shaman_t::composite_melee_haste() const
   if ( buff.tailwind_totem->up() )
   {
     h *= buff.tailwind_totem->check_value();
-  }
-
-  if ( buff.elemental_mastery->up() )
-  {
-    h *= buff.elemental_mastery->check_value();
   }
 
   if ( buff.sephuzs_secret->check() )
