@@ -228,7 +228,7 @@ SpaceInEmptyParentheses: false
 SpacesBeforeTrailingComments: 2
 
 # If true, spaces will be inserted after < and before > in template argument lists
-SpacesInAngles:  true
+SpacesInAngles:  false
 
 # If true, spaces are inserted inside container literals (e.g. ObjC and Javascript array and dict literals).
 SpacesInContainerLiterals: true
