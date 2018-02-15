@@ -281,8 +281,6 @@ public:
     std::array<pet_t*, 2> guardian_storm_elemental;
     pet_t* guardian_earth_elemental;
 
-    pet_t* guardian_greater_lightning_elemental;
-
     std::array<pet_t*, 2> spirit_wolves;
     std::array<pet_t*, 6> doom_wolves;
   } pet;
@@ -309,7 +307,6 @@ public:
 
     // Elemental
     buff_t* liquid_magma;
-    buff_t* static_overload;
     buff_t* stormkeeper;
     stat_buff_t* elemental_blast_crit;
     stat_buff_t* elemental_blast_haste;
@@ -465,6 +462,7 @@ public:
     const spell_data_t* aftershock;
 
     const spell_data_t* liquid_magma_totem;
+    const spell_data_t* stormkeeper;
 
     // Enhancement
     const spell_data_t* windsong;
@@ -495,25 +493,6 @@ public:
   // Artifact
   struct artifact_spell_data_t
   {
-    // Elemental
-    artifact_power_t stormkeeper;
-    artifact_power_t surge_of_power;
-    artifact_power_t call_the_thunder;
-    artifact_power_t earthen_attunement;
-    artifact_power_t the_ground_trembles;
-    artifact_power_t lava_imbued;
-    artifact_power_t static_overload;
-    artifact_power_t electric_discharge;
-    artifact_power_t master_of_the_elements;
-    artifact_power_t molten_blast;
-    artifact_power_t elementalist;
-    artifact_power_t firestorm;
-    artifact_power_t fury_of_the_storms;
-    artifact_power_t stormkeepers_power;
-    artifact_power_t elemental_destabilization;
-    artifact_power_t swelling_maelstrom;
-    artifact_power_t power_of_the_earthen_ring;
-
     // Enhancement
     artifact_power_t doom_winds;
     artifact_power_t unleash_doom;
@@ -545,7 +524,6 @@ public:
     const spell_data_t* resurgence;
     const spell_data_t* eruption;
     const spell_data_t* maelstrom_melee_gain;
-    const spell_data_t* fury_of_the_storms_driver;
   } spell;
 
   struct legendary_t
@@ -1570,8 +1548,7 @@ public:
 
     if ( data().affected_by( p->spec.elemental_fury->effectN( 1 ) ) )
     {
-      crit_bonus_multiplier *=
-          1.0 + p->spec.elemental_fury->effectN( 1 ).percent() + p->artifact.elemental_destabilization.percent();
+      crit_bonus_multiplier *= 1.0 + p->spec.elemental_fury->effectN( 1 ).percent();
     }
 
     if ( data().affected_by( player->sets->set( SHAMAN_ELEMENTAL, T19, B2 ) ) )
@@ -2637,62 +2614,6 @@ struct storm_elemental_t : public primal_elemental_t
   }
 };
 
-// ==========================================================================
-// Greater Lightning Elemental (Fury of the Storms Artifact Power)
-// ==========================================================================
-
-struct greater_lightning_elemental_t : public shaman_pet_t
-{
-  struct lightning_blast_t : public pet_spell_t<greater_lightning_elemental_t>
-  {
-    lightning_blast_t( greater_lightning_elemental_t* p, const std::string& options )
-      : super( p, "lightning_blast", p->find_spell( 191726 ), options )
-    {
-      ability_lag        = timespan_t::from_millis( 300 );
-      ability_lag_stddev = timespan_t::from_millis( 25 );
-    }
-  };
-
-  struct chain_lightning_t : public pet_spell_t<greater_lightning_elemental_t>
-  {
-    chain_lightning_t( greater_lightning_elemental_t* p, const std::string& options )
-      : super( p, "chain_lightning", p->find_spell( 191732 ), options )
-    {
-      if ( data().effectN( 1 ).chain_multiplier() != 0 )
-      {
-        chain_multiplier = data().effectN( 1 ).chain_multiplier();
-      }
-      ability_lag        = timespan_t::from_millis( 300 );
-      ability_lag_stddev = timespan_t::from_millis( 25 );
-    }
-  };
-
-  greater_lightning_elemental_t( shaman_t* owner ) : shaman_pet_t( owner, "greater_lightning_elemental", true, false )
-  {
-    owner_coeff.sp_from_sp = 1.0;
-  }
-
-  action_t* create_action( const std::string& name, const std::string& options_str ) override
-  {
-    if ( name == "lightning_blast" )
-      return new lightning_blast_t( this, options_str );
-    if ( name == "chain_lightning" )
-      return new chain_lightning_t( this, options_str );
-
-    return shaman_pet_t::create_action( name, options_str );
-  }
-
-  void create_default_apl() override
-  {
-    shaman_pet_t::create_default_apl();
-
-    action_priority_list_t* def = get_action_priority_list( "default" );
-
-    def->add_action( "chain_lightning,if=spell_targets.chain_lightning>1" );
-    def->add_action( "lightning_blast" );
-  }
-};
-
 }  // namespace pet
 
 // ==========================================================================
@@ -3188,7 +3109,6 @@ struct elemental_overload_spell_t : public shaman_spell_t
     background        = true;
     callbacks         = false;
 
-    base_multiplier *= 1.0 + p->artifact.master_of_the_elements.percent();
     base_multiplier *= p->mastery.elemental_overload->effectN( 2 ).percent();
   }
 };
@@ -4182,7 +4102,6 @@ struct chained_overload_base_t : public elemental_overload_spell_t
   chained_overload_base_t( shaman_t* p, const std::string& name, const spell_data_t* spell, double mg )
     : elemental_overload_spell_t( p, name, spell )
   {
-    base_multiplier *= 1.0 + p->artifact.electric_discharge.percent();
     if ( data().effectN( 1 ).chain_multiplier() != 0 )
     {
       chain_multiplier = data().effectN( 1 ).chain_multiplier();
@@ -4249,7 +4168,6 @@ struct chained_base_t : public shaman_spell_t
                   const std::string& options_str )
     : shaman_spell_t( name, player, spell, options_str )
   {
-    base_multiplier *= 1.0 + player->artifact.electric_discharge.percent();
     if ( data().effectN( 1 ).chain_multiplier() != 0 )
     {
       chain_multiplier = data().effectN( 1 ).chain_multiplier();
@@ -4285,7 +4203,7 @@ struct chained_base_t : public shaman_spell_t
 
   double overload_chance( const action_state_t* s ) const override
   {
-    if ( p()->buff.static_overload->check() )
+    if ( p()->buff.stormkeeper->check() )
     {
       return 1.0;
     }
@@ -4301,7 +4219,6 @@ struct chained_base_t : public shaman_spell_t
     shaman_spell_t::execute();
 
     p()->buff.stormkeeper->decrement();
-    p()->buff.static_overload->decrement();
   }
 
   std::vector<player_t*> check_distance_targeting( std::vector<player_t*>& tl ) const override
@@ -4380,9 +4297,6 @@ struct lava_burst_overload_t : public elemental_overload_spell_t
 {
   lava_burst_overload_t( shaman_t* p ) : elemental_overload_spell_t( p, "lava_burst_overload", p->find_spell( 77451 ) )
   {
-    base_multiplier *= 1.0 + p->artifact.lava_imbued.percent();
-    // TODO: Additive with Elemental Fury? Spell data claims same effect property, so probably ..
-    crit_bonus_multiplier += p->artifact.molten_blast.percent();
   }
 
   double action_multiplier() const override
@@ -4539,14 +4453,9 @@ struct flame_shock_spreader_t : public shaman_spell_t
 
 struct lava_burst_t : public shaman_spell_t
 {
-  flame_shock_spreader_t* spreader;
-
   lava_burst_t( shaman_t* player, const std::string& options_str )
     : shaman_spell_t( "lava_burst", player, player->find_specialization_spell( "Lava Burst" ), options_str )
   {
-    base_multiplier *= 1.0 + player->artifact.lava_imbued.percent();
-    crit_bonus_multiplier *= 1.0 + player->artifact.molten_blast.percent();
-
     // Manacost is only for resto
     base_costs[ RESOURCE_MANA ] = 0;
 
@@ -4616,8 +4525,6 @@ struct lava_burst_t : public shaman_spell_t
       p()->buff.lava_surge->expire();
 
     p()->lava_surge_during_lvb = false;
-    p()->cooldown.fire_elemental->adjust( p()->artifact.elementalist.time_value() );
-    p()->cooldown.storm_elemental->adjust( p()->artifact.elementalist.time_value() );
   }
 
   timespan_t execute_time() const override
@@ -4638,12 +4545,6 @@ struct lava_burst_t : public shaman_spell_t
     {
       p()->buff.t21_2pc_elemental->trigger();
 
-      if ( spreader && sim->target_non_sleeping_list.size() > 1 )
-      {
-        spreader->set_target( state->target );
-        spreader->execute();
-      }
-
       // Pristine Proto-Scale Girdle legendary
       if ( p()->action.ppsg )
       {
@@ -4661,7 +4562,6 @@ struct lightning_bolt_overload_t : public elemental_overload_spell_t
   lightning_bolt_overload_t( shaman_t* p )
     : elemental_overload_spell_t( p, "lightning_bolt_overload", p->find_spell( 45284 ) )
   {
-    base_multiplier *= 1.0 + p->artifact.surge_of_power.percent();
     maelstrom_gain = player->find_spell( 214816 )->effectN( 1 ).resource( RESOURCE_MAELSTROM );
   }
 
@@ -4686,8 +4586,6 @@ struct lightning_bolt_t : public shaman_spell_t
     : shaman_spell_t( "lightning_bolt", player, player->find_specialization_spell( "Lightning Bolt" ), options_str ),
       m_overcharge( 0 )
   {
-    base_multiplier *= 1.0 + player->artifact.surge_of_power.percent();
-
     if ( player->specialization() == SHAMAN_ELEMENTAL )
     {
       maelstrom_gain = player->find_spell( 214815 )->effectN( 1 ).resource( RESOURCE_MAELSTROM );
@@ -4725,7 +4623,7 @@ struct lightning_bolt_t : public shaman_spell_t
     double chance = shaman_spell_t::overload_chance( s );
     chance += p()->buff.storm_totem->value();
 
-    if ( p()->buff.static_overload->check() )
+    if ( p()->buff.stormkeeper->check() )
     {
       chance = 1.0;
     }
@@ -4765,7 +4663,6 @@ struct lightning_bolt_t : public shaman_spell_t
     shaman_spell_t::execute();
 
     p()->buff.stormkeeper->decrement();
-    p()->buff.static_overload->decrement();
 
     // Additional check here for lightning bolt
     if ( p()->talent.overcharge->ok() )
@@ -5112,7 +5009,6 @@ struct earthquake_damage_t : public shaman_spell_t
     ground_aoe = background = true;
     school                  = SCHOOL_PHYSICAL;
     spell_power_mod.direct  = 0.92;
-    base_multiplier *= 1.0 + p()->artifact.the_ground_trembles.percent();
   }
 
   double target_armor( player_t* ) const override
@@ -5182,12 +5078,6 @@ struct earth_shock_overload_t : public elemental_overload_spell_t
 
     snapshot_flags = update_flags = STATE_MUL_DA;
   }
-
-  double composite_da_multiplier( const action_state_t* /* state */ ) const override
-  {
-    return p()->mastery.elemental_overload->effectN( 2 ).percent() *
-           ( 1.0 + p()->artifact.master_of_the_elements.percent() );
-  }
 };
 
 struct earth_shock_t : public shaman_spell_t
@@ -5201,9 +5091,6 @@ struct earth_shock_t : public shaman_spell_t
       base_coefficient( data().effectN( 1 ).sp_coeff() / base_cost() ),
       t21_4pc( nullptr )
   {
-    base_multiplier *= 1.0 + player->artifact.earthen_attunement.percent();
-    secondary_costs[ RESOURCE_MAELSTROM ] += player->artifact.swelling_maelstrom.data().effectN( 1 ).base_value();
-
     if ( player->sets->has_set_bonus( SHAMAN_ELEMENTAL, T21, B4 ) )
     {
       t21_4pc = new earth_shock_overload_t( player );
@@ -5257,7 +5144,6 @@ struct flame_shock_t : public shaman_spell_t
   {
     tick_may_crit  = true;
     track_cd_waste = false;
-    base_multiplier *= 1.0 + player->artifact.firestorm.percent();
   }
 
   double composite_crit_chance() const override
@@ -5344,12 +5230,6 @@ struct frost_shock_overload_t : public elemental_overload_spell_t
     elemental_overload_spell_t::init();
 
     snapshot_flags = update_flags = STATE_MUL_DA;
-  }
-
-  double composite_da_multiplier( const action_state_t* /* state */ ) const override
-  {
-    return p()->mastery.elemental_overload->effectN( 2 ).percent() *
-           ( 1.0 + p()->artifact.master_of_the_elements.percent() );
   }
 };
 
@@ -5454,7 +5334,7 @@ struct ascendance_t : public shaman_spell_t
 struct stormkeeper_t : public shaman_spell_t
 {
   stormkeeper_t( shaman_t* player, const std::string& options_str )
-    : shaman_spell_t( "stormkeeper", player, player->artifact.stormkeeper, options_str )
+    : shaman_spell_t( "stormkeeper", player, player->talent.stormkeeper, options_str )
   {
     may_crit = harmful = false;
   }
@@ -5464,12 +5344,6 @@ struct stormkeeper_t : public shaman_spell_t
     shaman_spell_t::execute();
 
     p()->buff.stormkeeper->trigger( p()->buff.stormkeeper->data().initial_stacks() );
-    if ( p()->artifact.fury_of_the_storms.rank() )
-    {
-      p()->pet.guardian_greater_lightning_elemental->summon( p()->spell.fury_of_the_storms_driver->duration() );
-    }
-    // Trigger Static Overload 7.3 redesign
-    p()->buff.static_overload->trigger();
   }
 };
 
@@ -5771,8 +5645,7 @@ struct totem_pulse_action_t : public spell_t
     may_crit = harmful = background = true;
     callbacks                       = false;
 
-    crit_bonus_multiplier *= 1.0 + totem->o()->spec.elemental_fury->effectN( 1 ).percent() +
-                             totem->o()->artifact.elemental_destabilization.percent();
+    crit_bonus_multiplier *= 1.0 + totem->o()->spec.elemental_fury->effectN( 1 ).percent();
   }
 
   shaman_t* o() const
@@ -5880,8 +5753,7 @@ struct liquid_magma_globule_t : public spell_t
 
     if ( p->o()->spec.elemental_fury->ok() )
     {
-      crit_bonus_multiplier *= 1.0 + p->o()->spec.elemental_fury->effectN( 1 ).percent() +
-                               p->o()->artifact.elemental_destabilization.percent();
+      crit_bonus_multiplier *= 1.0 + p->o()->spec.elemental_fury->effectN( 1 ).percent();
     }
   }
 };
@@ -6321,11 +6193,6 @@ void shaman_t::create_pets()
     create_pet( "capacitor_totem" );
   }
 
-  if ( artifact.fury_of_the_storms.rank() && find_action( "stormkeeper" ) )
-  {
-    pet.guardian_greater_lightning_elemental = new pet::greater_lightning_elemental_t( this );
-  }
-
   if ( specialization() == SHAMAN_ENHANCEMENT && find_action( "feral_spirit" ) && !artifact.doom_wolves.rank() )
   {
     for ( size_t i = 0; i < pet.spirit_wolves.size(); i++ )
@@ -6536,6 +6403,8 @@ void shaman_t::init_spells()
   talent.storm_elemental      = find_talent_spell( "Storm Elemental" );
   talent.echo_of_the_elements = find_talent_spell( "Echo of the Elements" );
 
+  talent.stormkeeper = find_talent_spell( "Stormkeeper" );
+
   // Enhancement
   talent.windsong    = find_talent_spell( "Windsong" );
   talent.hot_hand    = find_talent_spell( "Hot Hand" );
@@ -6563,25 +6432,6 @@ void shaman_t::init_spells()
 
   // Artifact
 
-  // Elemental
-  artifact.stormkeeper               = find_artifact_spell( "Stormkeeper" );
-  artifact.surge_of_power            = find_artifact_spell( "Surge of Power" );
-  artifact.call_the_thunder          = find_artifact_spell( "Call the Thunder" );
-  artifact.earthen_attunement        = find_artifact_spell( "Earthen Attunement" );
-  artifact.the_ground_trembles       = find_artifact_spell( "The Ground Trembles" );
-  artifact.lava_imbued               = find_artifact_spell( "Lava Imbued" );
-  artifact.static_overload           = find_artifact_spell( "Static Overload" );
-  artifact.electric_discharge        = find_artifact_spell( "Electric Discharge" );
-  artifact.master_of_the_elements    = find_artifact_spell( "Master of the Elements" );
-  artifact.molten_blast              = find_artifact_spell( "Molten Blast" );
-  artifact.elementalist              = find_artifact_spell( "Elementalist" );
-  artifact.firestorm                 = find_artifact_spell( "Firestorm" );
-  artifact.fury_of_the_storms        = find_artifact_spell( "Fury of the Storms" );
-  artifact.elemental_destabilization = find_artifact_spell( "Elemental Destabilization" );
-  artifact.swelling_maelstrom        = find_artifact_spell( "Swelling Maelstrom" );
-  artifact.stormkeepers_power        = find_artifact_spell( "Stormkeeper's Power" );
-  artifact.power_of_the_earthen_ring = find_artifact_spell( "Power of the Earthen Ring" );
-
   // Enhancement
   artifact.doom_winds                 = find_artifact_spell( "Doom Winds" );
   artifact.unleash_doom               = find_artifact_spell( "Unleash Doom" );
@@ -6607,10 +6457,9 @@ void shaman_t::init_spells()
   artifact.lashing_flames            = find_artifact_spell( "Lashing Flames" );
 
   // Misc spells
-  spell.resurgence                = find_spell( 101033 );
-  spell.eruption                  = find_spell( 168556 );
-  spell.maelstrom_melee_gain      = find_spell( 187890 );
-  spell.fury_of_the_storms_driver = find_spell( 191716 );
+  spell.resurgence           = find_spell( 101033 );
+  spell.eruption             = find_spell( 168556 );
+  spell.maelstrom_melee_gain = find_spell( 187890 );
 
   // Constants
   constant.haste_ancestral_swiftness = 1.0 / ( 1.0 + talent.ancestral_swiftness->effectN( 1 ).percent() );
@@ -6633,10 +6482,6 @@ void shaman_t::init_base_stats()
 
   if ( specialization() == SHAMAN_ELEMENTAL || specialization() == SHAMAN_ENHANCEMENT )
     resources.base[ RESOURCE_MAELSTROM ] = 100;
-
-  // There is no check for spec.elemental yet...
-  if ( artifact.swelling_maelstrom.rank() )
-    resources.base[ RESOURCE_MAELSTROM ] += artifact.swelling_maelstrom.value();
 
   if ( spec.enhancement_shaman->ok() )
     resources.base[ RESOURCE_MAELSTROM ] += spec.enhancement_shaman->effectN( 7 ).base_value();
@@ -7166,9 +7011,7 @@ void shaman_t::create_buffs()
                             buff.spiritual_journey->expire();
                         } );
   buff.stormkeeper =
-      buff_creator_t( this, "stormkeeper", artifact.stormkeeper ).cd( timespan_t::zero() );  // Handled by the action
-  buff.static_overload = buff_creator_t( this, "static_overload", find_spell( 191634 ) )
-                             .trigger_spell( &( artifact.static_overload.data() ) );
+      buff_creator_t( this, "stormkeeper", talent.stormkeeper ).cd( timespan_t::zero() );  // Handled by the action
 
   buff.resonance_totem =
       buff_creator_t( this, "resonance_totem", find_spell( 202192 ) )
@@ -7472,7 +7315,7 @@ void shaman_t::init_action_list_elemental()
       "buff, shoulder buff duration is shorter than 3 seconds or you have greater than or equal 117 Maelstrom. Use EQ "
       "at two targets. But be aware that you're going to deal significantly less damage to your primary target." );
   single_asc->add_action( this, "Earth Shock",
-                          "if=(maelstrom>=117|!artifact.swelling_maelstrom.enabled&maelstrom>=92)&(spell_targets."
+                          "if=maelstrom>=92&(spell_targets."
                           "earthquake=1)" );
   single_asc->add_action( this, "Stormkeeper",
                           "if=(raid_event.adds.count<3|raid_event.adds.in>50)&time>5&!buff.ascendance.up",
@@ -7482,8 +7325,7 @@ void shaman_t::init_action_list_elemental()
                           "if=dot.flame_shock.remains>cast_time&(cooldown_react|buff.ascendance.up)" );
   single_asc->add_action( this, "Flame Shock", "if=maelstrom>=20,target_if=refreshable" );
   single_asc->add_action(
-      this, "Earth Shock",
-      "if=(spell_targets.earthquake=1)&(maelstrom>=111|!artifact.swelling_maelstrom.enabled&maelstrom>=86)",
+      this, "Earth Shock", "if=(spell_targets.earthquake=1)&maelstrom>=86",
       "If you talented for Aftershock, equipped Deceivers Blood Pact and either Smoldering Heart or Echoes of the "
       "Great Sundering, you essentially gamble for procs." );
   single_asc->add_talent( this, "Totem Mastery",
@@ -7964,7 +7806,6 @@ double shaman_t::composite_attribute_multiplier( attribute_e attribute ) const
       break;
     case ATTR_STAMINA:
       m *= 1.0 + artifact.might_of_the_earthen_ring.data().effectN( 2 ).percent();
-      m *= 1.0 + artifact.power_of_the_earthen_ring.data().effectN( 2 ).percent();
       break;
     default:
       break;
@@ -7979,8 +7820,6 @@ double shaman_t::composite_player_multiplier( school_e school ) const
 {
   double m = player_t::composite_player_multiplier( school );
 
-  m *= 1.0 + artifact.stormkeepers_power.percent();
-  m *= 1.0 + artifact.power_of_the_earthen_ring.percent();
   m *= 1.0 + artifact.earthshattering_blows.percent();
   m *= 1.0 + artifact.might_of_the_earthen_ring.percent();
 
@@ -7989,11 +7828,6 @@ double shaman_t::composite_player_multiplier( school_e school ) const
          dbc::is_school( school, SCHOOL_NATURE ) ) )
   {
     m *= 1.0 + cache.mastery_value();
-  }
-
-  if ( artifact.call_the_thunder.rank() > 0 && dbc::is_school( school, SCHOOL_NATURE ) )
-  {
-    m *= 1.0 + artifact.call_the_thunder.percent();
   }
 
   if ( buff.t18_4pc_enhancement->up() && dbc::is_school( school, SCHOOL_NATURE ) )
@@ -8041,8 +7875,6 @@ double shaman_t::composite_player_pet_damage_multiplier( const action_state_t* s
   double m = player_t::composite_player_pet_damage_multiplier( s );
 
   // elemental buffs
-  m *= 1.0 + artifact.stormkeepers_power.percent();
-  m *= 1.0 + artifact.power_of_the_earthen_ring.percent();
   m *= 1.0 + spec.elemental_shaman->effectN( 3 ).percent();
 
   // enhancement buffs
