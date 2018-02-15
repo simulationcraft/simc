@@ -12,10 +12,8 @@
 // Battle for Azeroth TODO
 //
 // Elemental
-// - Delete old legendaries
-// - Delete old spells
-// - Delete old talents
-// - Merge static overload into stormkeeper
+// - Update flame shock spreader for volcanic rage
+// continue reading code at line ~4200
 
 // Legion TODO
 //
@@ -4096,26 +4094,9 @@ struct chained_overload_base_t : public elemental_overload_spell_t
     return PROC1_SPELL;
   }
 
-  double action_multiplier() const override
-  {
-    double m = elemental_overload_spell_t::action_multiplier();
-
-    if ( p()->buff.stormkeeper->up() )
-    {
-      m *= 1.0 + p()->buff.stormkeeper->data().effectN( 1 ).percent();
-    }
-
-    return m;
-  }
-
   std::vector<player_t*> check_distance_targeting( std::vector<player_t*>& tl ) const override
   {
     return __check_distance_targeting( this, tl );
-  }
-
-  void impact( action_state_t* state ) override
-  {
-    elemental_overload_spell_t::impact( state );
   }
 };
 
@@ -4164,18 +4145,6 @@ struct chained_base_t : public shaman_spell_t
     return PROC1_SPELL;
   }
 
-  double action_multiplier() const override
-  {
-    double m = shaman_spell_t::action_multiplier();
-
-    if ( p()->buff.stormkeeper->up() )
-    {
-      m *= 1.0 + p()->buff.stormkeeper->data().effectN( 1 ).percent();
-    }
-
-    return m;
-  }
-
   double overload_chance( const action_state_t* s ) const override
   {
     if ( p()->buff.stormkeeper->check() )
@@ -4219,7 +4188,8 @@ struct chain_lightning_t : public chained_base_t
   {
     if ( p()->buff.stormkeeper->up() )
     {
-      return timespan_t::zero();
+      // stormkeeper has a -100 millisec% value as effect 1
+      return ( shaman_spell_t::execute_time() * ( 1 + p()->talent.stormkeeper->effectN( 1 ).percent ) );
     }
 
     return shaman_spell_t::execute_time();
@@ -4245,16 +4215,6 @@ struct lava_beam_t : public chained_base_t
       overload = new lava_beam_overload_t( player );
       add_child( overload );
     }
-  }
-
-  timespan_t execute_time() const override
-  {
-    if ( p()->buff.stormkeeper->up() )
-    {
-      return timespan_t::zero();
-    }
-
-    return shaman_spell_t::execute_time();
   }
 
   bool ready() override
@@ -4292,6 +4252,7 @@ struct lava_burst_overload_t : public elemental_overload_spell_t
 
     if ( p()->spec.lava_burst_2->ok() && td( target )->dot.flame_shock->is_ticking() )
     {
+      // hardcoded because Lava Burst 2 does not have a corresponding value
       m = 1.0;
     }
 
