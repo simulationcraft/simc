@@ -266,7 +266,6 @@ public:
     spell_t* earthen_rage;
     spell_t* crashing_storm;
     spell_t *doom_vortex_ll, *doom_vortex_lb;
-    action_t* ppsg;            // Pristine Proto-Scale Girdle legendary dot
     action_t* storm_tempests;  // Storm Tempests legendary damage spell
   } action;
 
@@ -1040,7 +1039,6 @@ public:
       ab::energize_type = ENERGIZE_NONE;  // disable resource generation from spell data.
     }
 
-    // changed hotfix order on ptr... FIXME double check when 7.3 draws near
     if ( ab::data().affected_by( player->spec.elemental_shaman->effectN( 1 ) ) )
     {
       ab::base_dd_multiplier *= 1.0 + player->spec.elemental_shaman->effectN( 1 ).percent();
@@ -1500,17 +1498,11 @@ public:
   {
   }
 
-  double composite_persistent_multiplier( const action_state_t* state ) const override
-  {
-    double m = ab::composite_persistent_multiplier( state );
-
-    return m;
-  }
-
   void execute() override
   {
     ab::execute();
 
+    // for benefit tracking purpose
     ab::p()->buff.spiritwalkers_grace->up();
 
     if ( ab::p()->talent.aftershock->ok() && ab::current_resource() == RESOURCE_MAELSTROM &&
@@ -3040,18 +3032,6 @@ struct earthen_rage_driver_t : public spell_t
   }
 };
 
-struct pristine_protoscale_girdle_dot_t : public shaman_spell_t
-{
-  pristine_protoscale_girdle_dot_t( shaman_t* p )
-    : shaman_spell_t( "pristine_protoscale_girdle", p, p->find_spell( 224852 ) )
-  {
-    background = tick_may_crit = true;
-    callbacks = may_crit = false;
-
-    dot_max_stack = data().max_stacks();
-  }
-};
-
 struct storm_tempests_zap_t : public melee_attack_t
 {
   storm_tempests_zap_t( shaman_t* p ) : melee_attack_t( "storm_tempests", p, p->find_spell( 214452 ) )
@@ -4539,13 +4519,6 @@ struct lava_burst_t : public shaman_spell_t
     if ( result_is_hit( state->result ) )
     {
       p()->buff.t21_2pc_elemental->trigger();
-
-      // Pristine Proto-Scale Girdle legendary
-      if ( p()->action.ppsg )
-      {
-        p()->action.ppsg->set_target( state->target );
-        p()->action.ppsg->schedule_execute();
-      }
     }
   }
 };
@@ -8432,21 +8405,6 @@ struct emalons_charged_core_buff_t : public class_buff_cb_t<buff_t>
   }
 };
 
-struct pristine_protoscale_girdle_t : public scoped_action_callback_t<lava_burst_t>
-{
-  pristine_protoscale_girdle_t() : super( SHAMAN, "lava_burst" )
-  {
-  }
-
-  void manipulate( lava_burst_t* action, const special_effect_t& ) override
-  {
-    if ( !action->p()->action.ppsg )
-    {
-      action->p()->action.ppsg = new pristine_protoscale_girdle_dot_t( action->p() );
-    }
-  }
-};
-
 struct storm_tempests_t : public scoped_action_callback_t<stormstrike_base_t>
 {
   storm_tempests_t( const std::string& strike_str ) : super( SHAMAN, strike_str )
@@ -8589,7 +8547,6 @@ struct shaman_module_t : public module_t
     register_special_effect( 184920, furious_winds_t( "windfury_attack_oh" ) );
     register_special_effect( 208741, emalons_charged_core_t() );
     register_special_effect( 208741, emalons_charged_core_buff_t(), true );
-    register_special_effect( 224837, pristine_protoscale_girdle_t() );
     register_special_effect( 214260, storm_tempests_t( "stormstrike" ) );  // TODO: Windstrike?
     register_special_effect( 214147, spiritual_journey_t(), true );
     register_special_effect( 213359, akainus_absolute_justice_t() );
