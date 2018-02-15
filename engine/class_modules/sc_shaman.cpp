@@ -343,9 +343,6 @@ public:
     // Legendary buffs
     buff_t* emalons_charged_core;
     buff_t* spiritual_journey;
-    buff_t* eotn_fire;
-    buff_t* eotn_shock;
-    buff_t* eotn_chill;
     haste_buff_t* sephuzs_secret;
 
     // Artifact related buffs
@@ -660,7 +657,6 @@ public:
   void trigger_stormlash( const action_state_t* state );
   void trigger_doom_vortex( const action_state_t* state );
   void trigger_hot_hand( const action_state_t* state );
-  void trigger_eye_of_twisting_nether( const action_state_t* state );
   void trigger_sephuzs_secret( const action_state_t* state, spell_mechanic mechanic, double proc_chance = -1.0 );
   void trigger_smoldering_heart( double cost );
 
@@ -1166,14 +1162,6 @@ public:
     ab::execute();
 
     trigger_maelstrom_gain( ab::execute_state );
-    p()->trigger_eye_of_twisting_nether( ab::execute_state );
-  }
-
-  void tick( dot_t* d ) override
-  {
-    ab::tick( d );
-
-    p()->trigger_eye_of_twisting_nether( d->state );
   }
 
   void impact( action_state_t* state ) override
@@ -2060,20 +2048,6 @@ struct wolf_base_attack_t : public pet_melee_attack_t<T>
     : pet_melee_attack_t<T>( wolf, n, spell )
   {
     this->parse_options( options_str );
-  }
-
-  void execute() override
-  {
-    pet_melee_attack_t<T>::execute();
-
-    this->p()->o()->trigger_eye_of_twisting_nether( this->execute_state );
-  }
-
-  void tick( dot_t* d ) override
-  {
-    pet_melee_attack_t<T>::tick( d );
-
-    this->p()->o()->trigger_eye_of_twisting_nether( d->state );
   }
 };
 
@@ -6937,29 +6911,6 @@ void shaman_t::trigger_doom_vortex( const action_state_t* state )
           .action( state->action->id == 187837 ? action.doom_vortex_lb : action.doom_vortex_ll ) );
 }
 
-void shaman_t::trigger_eye_of_twisting_nether( const action_state_t* state )
-{
-  if ( state->action->harmful && state->result_amount > 0 )
-  {
-    auto school = state->action->get_school();
-
-    if ( dbc::is_school( school, SCHOOL_FIRE ) )
-    {
-      buff.eotn_fire->trigger();
-    }
-
-    if ( dbc::is_school( school, SCHOOL_NATURE ) )
-    {
-      buff.eotn_shock->trigger();
-    }
-
-    if ( dbc::is_school( school, SCHOOL_FROST ) )
-    {
-      buff.eotn_chill->trigger();
-    }
-  }
-}
-
 void shaman_t::trigger_sephuzs_secret( const action_state_t* state, spell_mechanic mechanic,
                                        double override_proc_chance )
 {
@@ -8088,10 +8039,6 @@ double shaman_t::composite_player_multiplier( school_e school ) const
     m *= 1.0 + buff.emalons_charged_core->data().effectN( 1 ).percent();
   }
 
-  m *= 1.0 + buff.eotn_fire->stack_value();
-  m *= 1.0 + buff.eotn_shock->stack_value();
-  m *= 1.0 + buff.eotn_chill->stack_value();
-
   return m;
 }
 
@@ -8794,61 +8741,6 @@ struct alakirs_acrimony_t : public scoped_action_callback_t<T>
   }
 };
 
-struct eotn_buff_base_t : public class_buff_cb_t<buff_t>
-{
-  unsigned sid;
-
-  eotn_buff_base_t( const std::string& name_str, unsigned spell_id ) : super( SHAMAN, name_str ), sid( spell_id )
-  {
-  }
-
-  buff_creator_t creator( const special_effect_t& e ) const override
-  {
-    return super::creator( e )
-        .spell( e.player->find_spell( sid ) )
-        // PTR data changes the bonus to 1.5%, which is expressed as "15" in client spell data,
-        // instead of "2" (2%)
-        .default_value( e.player->find_spell( sid )->effectN( 1 ).percent() * ( .1 ) )
-        .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
-  }
-};
-
-struct eotn_buff_fire_t : public eotn_buff_base_t
-{
-  eotn_buff_fire_t() : eotn_buff_base_t( "fire_of_the_twisting_nether", 207995 )
-  {
-  }
-
-  buff_t*& buff_ptr( const special_effect_t& e ) override
-  {
-    return debug_cast<shaman_t*>( e.player )->buff.eotn_fire;
-  }
-};
-
-struct eotn_buff_shock_t : public eotn_buff_base_t
-{
-  eotn_buff_shock_t() : eotn_buff_base_t( "shock_of_the_twisting_nether", 207999 )
-  {
-  }
-
-  buff_t*& buff_ptr( const special_effect_t& e ) override
-  {
-    return debug_cast<shaman_t*>( e.player )->buff.eotn_shock;
-  }
-};
-
-struct eotn_buff_chill_t : public eotn_buff_base_t
-{
-  eotn_buff_chill_t() : eotn_buff_base_t( "chill_of_the_twisting_nether", 207998 )
-  {
-  }
-
-  buff_t*& buff_ptr( const special_effect_t& e ) override
-  {
-    return debug_cast<shaman_t*>( e.player )->buff.eotn_chill;
-  }
-};
-
 struct uncertain_reminder_t : public scoped_actor_callback_t<shaman_t>
 {
   uncertain_reminder_t() : scoped_actor_callback_t( SHAMAN )
@@ -8939,9 +8831,6 @@ struct shaman_module_t : public module_t
     register_special_effect( 208699, alakirs_acrimony_t<chained_base_t>( "lava_beam" ) );
     register_special_effect( 208699, alakirs_acrimony_t<chained_overload_base_t>( "chain_lightning_overload" ) );
     register_special_effect( 208699, alakirs_acrimony_t<chained_overload_base_t>( "lava_beam_overload" ) );
-    register_special_effect( 207994, eotn_buff_fire_t(), true );
-    register_special_effect( 207994, eotn_buff_shock_t(), true );
-    register_special_effect( 207994, eotn_buff_chill_t(), true );
     register_special_effect( 234814, uncertain_reminder_t() );
     register_special_effect( 208051, sephuzs_secret_enabler_t() );
     register_special_effect( 208051, sephuzs_secret_t(), true );
