@@ -1267,7 +1267,8 @@ class SpellDataGenerator(DataGenerator):
             ( 114908, 0, False ), 	# Spirit Shell absorb
             ( 190714, 3, False ), 	# Shadow Word: Death - Insanity gain
             ( 193473, 5 ),			# Void Tendril "Mind Flay"
-            ( 217676, 3 )			# Mind Spike Detonation
+            ( 217676, 3 ),			# Mind Spike Detonation
+            ( 194249, 3, False )    # Void Form extra data
         ),
 
         # Death Knight:
