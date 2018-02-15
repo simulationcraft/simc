@@ -7018,7 +7018,7 @@ void shaman_t::trigger_stormlash( const action_state_t* )
   }
 
   if ( ! buff.flametongue -> check() && ! buff.frostbrand -> check() &&
-       ! buff.crash_lightning -> check() )
+       ! buff.crash_lightning -> check() && ! buff.landslide -> check() )
   {
     return;
   }
