@@ -261,7 +261,6 @@ public:
     std::array<action_t*, 2> unleash_doom;
     action_t* ancestral_awakening;
     spell_t* electrocute;
-    spell_t* seismic_storm;
     spell_t* lightning_shield;
     spell_t* earthen_rage;
     spell_t* crashing_storm;
@@ -522,7 +521,6 @@ public:
     artifact_power_t power_of_the_maelstrom;
     artifact_power_t fury_of_the_storms;
     artifact_power_t stormkeepers_power;
-    artifact_power_t seismic_storm;
     artifact_power_t elemental_destabilization;
     artifact_power_t swelling_maelstrom;
     artifact_power_t power_of_the_earthen_ring;
@@ -5265,12 +5263,6 @@ struct earthquake_damage_t : public shaman_spell_t
   {
     shaman_spell_t::impact( state );
 
-    if ( rng().roll( p()->artifact.seismic_storm.data().proc_chance() ) )
-    {
-      p()->action.seismic_storm->set_target( state->target );
-      p()->action.seismic_storm->execute();
-    }
-
     // Knockdown is probably a stun internally
     p()->trigger_sephuzs_secret( state, MECHANIC_STUN, kb_chance );
   }
@@ -5286,10 +5278,6 @@ struct earthquake_t : public shaman_spell_t
   {
     dot_duration = timespan_t::zero();  // The periodic effect is handled by ground_aoe_event_t
     add_child( rumble );
-    if ( player->artifact.seismic_storm.rank() )
-    {
-      add_child( player->action.seismic_storm );
-    }
   }
 
   double cost() const override
@@ -6644,11 +6632,6 @@ bool shaman_t::create_actions()
     action.doom_vortex_lb = new ground_aoe_spell_t( this, "doom_vortex_lb", find_spell( 199116 ) );
   }
 
-  if ( artifact.seismic_storm.rank() )
-  {
-    action.seismic_storm = new seismic_lightning_t( this );
-  }
-
   if ( sets->has_set_bonus( SHAMAN_ENHANCEMENT, T18, B2 ) )
   {
     action.electrocute = new electrocute_t( this );
@@ -6791,7 +6774,6 @@ void shaman_t::init_spells()
   artifact.fury_of_the_storms        = find_artifact_spell( "Fury of the Storms" );
   artifact.elemental_destabilization = find_artifact_spell( "Elemental Destabilization" );
   artifact.swelling_maelstrom        = find_artifact_spell( "Swelling Maelstrom" );
-  artifact.seismic_storm             = find_artifact_spell( "Seismic Storm" );
   artifact.stormkeepers_power        = find_artifact_spell( "Stormkeeper's Power" );
   artifact.power_of_the_earthen_ring = find_artifact_spell( "Power of the Earthen Ring" );
 
