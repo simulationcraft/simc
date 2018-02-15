@@ -246,7 +246,6 @@ public:
   // Misc
   bool lava_surge_during_lvb;
   std::vector<counter_t*> counters;
-  int t18_4pc_elemental_counter;
 
   // Options
   unsigned stormlash_targets;
@@ -336,7 +335,6 @@ public:
 
     // Set bonuses
     stat_buff_t* t19_oh_8pc;
-    haste_buff_t* t18_4pc_elemental;
     buff_t* t18_4pc_enhancement;
     buff_t* t20_2pc_enhancement;
     buff_t* t20_4pc_enhancement;
@@ -392,7 +390,6 @@ public:
     gain_t* spirit_of_the_maelstrom;
     gain_t* resonance_totem;
     gain_t* wind_gust;
-    gain_t* t18_2pc_elemental;
     gain_t* the_deceivers_blood_pact;
   } gain;
 
@@ -591,7 +588,6 @@ public:
   shaman_t( sim_t* sim, const std::string& name, race_e r = RACE_TAUREN )
     : player_t( sim, SHAMAN, name, r ),
       lava_surge_during_lvb( false ),
-      t18_4pc_elemental_counter( 0 ),
       stormlash_targets( 17 ),  // Default to 2 tanks + 15 dps
       raptor_glyph( false ),
       action(),
@@ -667,7 +663,6 @@ public:
   void trigger_hailstorm( const action_state_t* );
   void trigger_t17_2pc_elemental( int );
   void trigger_t17_4pc_elemental( int );
-  void trigger_t18_4pc_elemental();
   void trigger_t19_oh_8pc( const action_state_t* );
   void trigger_t20_2pc_elemental( const action_state_t* );
   void trigger_stormbringer( const action_state_t* state, double proc_chance = -1.0, proc_t* proc_obj = nullptr );
@@ -4385,7 +4380,6 @@ struct chained_base_t : public shaman_spell_t
 
     p()->buff.stormkeeper->decrement();
     p()->buff.static_overload->decrement();
-    p()->trigger_t18_4pc_elemental();
   }
 
   std::vector<player_t*> check_distance_targeting( std::vector<player_t*>& tl ) const override
@@ -4883,7 +4877,6 @@ struct lightning_bolt_t : public shaman_spell_t
     }
 
     p()->trigger_t19_oh_8pc( execute_state );
-    p()->trigger_t18_4pc_elemental();
 
     if ( !p()->talent.overcharge->ok() && p()->specialization() == SHAMAN_ENHANCEMENT )
     {
@@ -5443,12 +5436,6 @@ struct earth_shock_t : public shaman_spell_t
   void execute() override
   {
     shaman_spell_t::execute();
-
-    if ( p()->sets->has_set_bonus( SHAMAN_ELEMENTAL, T18, B2 ) &&
-         rng().roll( p()->sets->set( SHAMAN_ELEMENTAL, T18, B2 )->effectN( 1 ).percent() ) )
-    {
-      p()->resource_gain( RESOURCE_MAELSTROM, last_resource_cost, p()->gain.t18_2pc_elemental, this );
-    }
 
     if ( eotgs_base_chance > 0 )
     {
@@ -7347,22 +7334,6 @@ void shaman_t::trigger_t17_4pc_elemental( int stacks )
   cooldown.lava_burst->reset( false );
 }
 
-void shaman_t::trigger_t18_4pc_elemental()
-{
-  if ( !sets->has_set_bonus( SHAMAN_ELEMENTAL, T18, B4 ) )
-  {
-    return;
-  }
-
-  if ( ++t18_4pc_elemental_counter < sets->set( SHAMAN_ELEMENTAL, T18, B4 )->effectN( 1 ).base_value() )
-  {
-    return;
-  }
-
-  buff.t18_4pc_elemental->trigger();
-  t18_4pc_elemental_counter = 0;
-}
-
 void shaman_t::trigger_t19_oh_8pc( const action_state_t* )
 {
   if ( !sets->has_set_bonus( SHAMAN_ELEMENTAL, T19OH, B8 ) && !sets->has_set_bonus( SHAMAN_ENHANCEMENT, T19OH, B8 ) )
@@ -7471,15 +7442,6 @@ void shaman_t::create_buffs()
       stat_buff_creator_t( this, "elemental_blast_haste", find_spell( 173183 ) ).max_stack( 1 );
   buff.elemental_blast_mastery =
       stat_buff_creator_t( this, "elemental_blast_mastery", find_spell( 173184 ) ).max_stack( 1 );
-  // TODO: How does this refresh?
-  buff.t18_4pc_elemental = haste_buff_creator_t( this, "lightning_vortex", find_spell( 189063 ) )
-                               .period( find_spell( 189063 )->effectN( 2 ).period() )
-                               .refresh_behavior( BUFF_REFRESH_DURATION )
-                               .chance( sets->has_set_bonus( SHAMAN_ELEMENTAL, T18, B4 ) )
-                               .default_value( find_spell( 189063 )->effectN( 1 ).percent() )
-                               .tick_callback( []( buff_t* b, int t, const timespan_t& ) {
-                                 b->current_value = ( t - b->current_tick ) * b->data().effectN( 2 ).percent();
-                               } );
 
   buff.focus_of_the_elements = buff_creator_t( this, "focus_of_the_elements", find_spell( 167205 ) )
                                    .chance( static_cast<double>( sets->has_set_bonus( SHAMAN_ELEMENTAL, T17, B2 ) ) );
@@ -7613,7 +7575,6 @@ void shaman_t::init_gains()
   gain.spirit_of_the_maelstrom  = get_gain( "Spirit of the Maelstrom" );
   gain.resonance_totem          = get_gain( "Resonance Totem" );
   gain.wind_gust                = get_gain( "Wind Gust" );
-  gain.t18_2pc_elemental        = get_gain( "Elemental T18 2PC" );
   gain.the_deceivers_blood_pact = get_gain( "The Deceiver's Blood Pact" );
 }
 
@@ -8226,8 +8187,6 @@ double shaman_t::composite_spell_haste() const
   if ( talent.ancestral_swiftness->ok() )
     h *= constant.haste_ancestral_swiftness;
 
-  h *= 1.0 / ( 1.0 + buff.t18_4pc_elemental->stack_value() );
-
   if ( buff.tailwind_totem->up() )
   {
     h *= buff.tailwind_totem->check_value();
@@ -8566,8 +8525,7 @@ void shaman_t::reset()
 {
   player_t::reset();
 
-  lava_surge_during_lvb     = false;
-  t18_4pc_elemental_counter = 0;
+  lava_surge_during_lvb = false;
   for ( auto& elem : counters )
     elem->reset();
 }
