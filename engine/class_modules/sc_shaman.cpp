@@ -260,9 +260,7 @@ public:
   {
     std::array<action_t*, 2> unleash_doom;
     action_t* ancestral_awakening;
-    action_t* lightning_strike;
     spell_t* electrocute;
-    action_t* volcanic_inferno;
     spell_t* seismic_storm;
     spell_t* lightning_shield;
     spell_t* earthen_rage;
@@ -515,7 +513,6 @@ public:
     artifact_power_t earthen_attunement;
     artifact_power_t the_ground_trembles;
     artifact_power_t lava_imbued;
-    artifact_power_t volcanic_inferno;
     artifact_power_t static_overload;
     artifact_power_t electric_discharge;
     artifact_power_t master_of_the_elements;
@@ -3136,15 +3133,6 @@ struct ground_aoe_spell_t : public spell_t
   }
 };
 
-struct volcanic_inferno_t : public ground_aoe_spell_t
-{
-  volcanic_inferno_t( shaman_t* p ) : ground_aoe_spell_t( p, "volcanic_inferno", p->find_spell( 205533 ) )
-  {
-    background = true;
-    aoe        = -1;
-  }
-};
-
 struct lightning_shield_damage_t : public shaman_spell_t
 {
   lightning_shield_damage_t( shaman_t* player )
@@ -4636,11 +4624,6 @@ struct lava_burst_t : public shaman_spell_t
       overload = new lava_burst_overload_t( player );
       add_child( overload );
     }
-
-    if ( player->artifact.volcanic_inferno.rank() )
-    {
-      add_child( player->action.volcanic_inferno );
-    }
   }
 
   void init() override
@@ -4730,15 +4713,6 @@ struct lava_burst_t : public shaman_spell_t
       {
         spreader->set_target( state->target );
         spreader->execute();
-      }
-
-      if ( rng().roll( p()->artifact.volcanic_inferno.data().proc_chance() ) )
-      {
-        make_event<ground_aoe_event_t>( *sim, p(),
-                                        ground_aoe_params_t()
-                                            .target( state->target )
-                                            .duration( p()->find_spell( 199121 )->duration() )
-                                            .action( p()->action.volcanic_inferno ) );
       }
 
       // Pristine Proto-Scale Girdle legendary
@@ -6670,11 +6644,6 @@ bool shaman_t::create_actions()
     action.doom_vortex_lb = new ground_aoe_spell_t( this, "doom_vortex_lb", find_spell( 199116 ) );
   }
 
-  if ( artifact.volcanic_inferno.rank() )
-  {
-    action.volcanic_inferno = new volcanic_inferno_t( this );
-  }
-
   if ( artifact.seismic_storm.rank() )
   {
     action.seismic_storm = new seismic_lightning_t( this );
@@ -6812,7 +6781,6 @@ void shaman_t::init_spells()
   artifact.earthen_attunement        = find_artifact_spell( "Earthen Attunement" );
   artifact.the_ground_trembles       = find_artifact_spell( "The Ground Trembles" );
   artifact.lava_imbued               = find_artifact_spell( "Lava Imbued" );
-  artifact.volcanic_inferno          = find_artifact_spell( "Volcanic Inferno" );
   artifact.static_overload           = find_artifact_spell( "Static Overload" );
   artifact.electric_discharge        = find_artifact_spell( "Electric Discharge" );
   artifact.master_of_the_elements    = find_artifact_spell( "Master of the Elements" );
