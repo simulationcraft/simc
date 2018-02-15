@@ -1527,9 +1527,6 @@ namespace
         {
           parse_options(options_str);
 
-          base_tick_time = timespan_t::from_seconds(1.0);
-          dot_duration = timespan_t::from_seconds(6.0);
-
           ignore_false_positive = true;
           channeled = true;
           harmful = false;
@@ -1554,14 +1551,10 @@ namespace
           priest.insanity.adjust_end_event();
         }
 
-        timespan_t composite_dot_duration(const action_state_t*) const override
-        {
-          return timespan_t::from_seconds(6.0);
-        }
-
         timespan_t tick_time(const action_state_t*) const override
         {
-          return timespan_t::from_seconds(1.0);
+          // Unhasted, even though it is a channeled spell.
+          return base_tick_time;
         }
 
         void last_tick(dot_t* d) override
