@@ -1821,6 +1821,18 @@ struct base_ghoul_pet_t : public death_knight_pet_t
              timespan_t::from_seconds( 0.1 )
            );
   }
+
+  double energy_regen_per_second() const override
+  {
+    double r = pet_t::energy_regen_per_second();
+
+    // Army of the dead and pet ghoul energy regen double dips with haste
+    // https://github.com/SimCMinMax/WoW-BugTracker/issues/108
+    if ( o() -> bugs )
+      r *= ( 1.0 / cache.attack_haste() );
+
+    return r;
+  }
 };
 
 // ==========================================================================

@@ -227,7 +227,7 @@ public:
   {
     // Affliction
     artifact_power_t reap_souls;
-    artifact_power_t crystaline_shadows;
+    artifact_power_t crystalline_shadows;
     artifact_power_t seeds_of_doom;
     artifact_power_t fatal_echoes;
     artifact_power_t shadows_of_the_flesh;
@@ -240,10 +240,9 @@ public:
     artifact_power_t wrath_of_consumption;
     artifact_power_t hideous_corruption;
     artifact_power_t shadowy_incantations;
-    artifact_power_t soul_flames;
+    artifact_power_t soul_flame;
     artifact_power_t long_dark_night_of_the_soul;
     artifact_power_t compounding_horror;
-    artifact_power_t soulharvester;
     artifact_power_t soulstealer;
     artifact_power_t degradation_of_the_black_harvest;
     artifact_power_t winnowing;
@@ -2788,6 +2787,18 @@ public:
     //assert( false ); // Will only get here if there are no available imps
   }
 
+  void trigger_sephuzs_secret( const action_state_t* state, spell_mechanic mechanic )
+  {
+    if ( !p() -> legendary.sephuzs_secret )
+      return;
+
+    // trigger by default on interrupts and on adds/lower level stuff
+    if ( p() -> allow_sephuz || mechanic == MECHANIC_INTERRUPT || state -> target -> is_add() ||
+      ( state -> target -> level() < p() -> sim -> max_player_level + 3 ) )
+    {
+      p() -> buffs.sephuzs_secret -> trigger();
+    }
+  }
 };
 
 typedef residual_action::residual_periodic_action_t< warlock_spell_t > residual_action_t;
@@ -5945,6 +5956,54 @@ struct mortal_coil_t: public warlock_spell_t
   }
 };
 
+struct shadowfury_t: public warlock_spell_t
+{
+  shadowfury_t( warlock_t* p ):
+    warlock_spell_t( "shadowfury", p, p -> talents.shadowfury )
+  {
+  }
+
+  void execute() override
+  {
+    warlock_spell_t::execute();
+
+    if ( p() -> legendary.sephuzs_secret )
+    trigger_sephuzs_secret( execute_state, MECHANIC_STUN );
+  }
+};
+
+struct fear_t : public warlock_spell_t
+{
+  fear_t( warlock_t* p ) :
+    warlock_spell_t( p, "Fear" )
+  {
+  }
+
+  void execute() override
+  {
+    warlock_spell_t::execute();
+
+    if ( p() -> legendary.sephuzs_secret )
+      trigger_sephuzs_secret( execute_state, MECHANIC_DISORIENT );
+  }
+};
+
+struct howl_of_terror_t : public warlock_spell_t
+{
+  howl_of_terror_t( warlock_t* p ) :
+    warlock_spell_t( "howl_of_terror", p, p -> talents.howl_of_terror )
+  {
+  }
+
+  void execute() override
+  {
+    warlock_spell_t::execute();
+
+    if ( p() -> legendary.sephuzs_secret )
+      trigger_sephuzs_secret( execute_state, MECHANIC_DISORIENT );
+  }
+};
+
 struct channel_demonfire_tick_t : public warlock_spell_t
 {
   channel_demonfire_tick_t( warlock_t* p ):
@@ -6337,7 +6396,7 @@ double warlock_t::composite_player_multiplier( school_e school ) const
 
   if ( specialization() == WARLOCK_AFFLICTION && ( dbc::is_school( school, SCHOOL_SHADOW ) ) )
   {
-    m *= 1.0 + artifact.crystaline_shadows.percent() * ( buffs.deadwind_harvester -> check() ? 2.0 : 1.0 );
+    m *= 1.0 + artifact.crystalline_shadows.percent() * ( buffs.deadwind_harvester -> check() ? 2.0 : 1.0 );
     m *= 1.0 + artifact.shadowy_incantations.percent() * ( buffs.deadwind_harvester -> check() ? 2.0 : 1.0 );
   }
 
@@ -6517,6 +6576,9 @@ action_t* warlock_t::create_action( const std::string& action_name,
   else if ( action_name == "incinerate"            ) a = new                        incinerate_t( this );
   else if ( action_name == "life_tap"              ) a = new                          life_tap_t( this );
   else if ( action_name == "mortal_coil"           ) a = new                       mortal_coil_t( this );
+  else if ( action_name == "shadowfury"            ) a = new                        shadowfury_t( this );
+  else if ( action_name == "fear"                  ) a = new                              fear_t( this );
+  else if ( action_name == "howl_of_terror"        ) a = new                    howl_of_terror_t( this );
   else if ( action_name == "shadow_bolt"           ) a = new                       shadow_bolt_t( this );
   else if ( action_name == "shadowburn"            ) a = new                        shadowburn_t( this );
   else if ( action_name == "unstable_affliction"   ) a = new               unstable_affliction_t( this );
@@ -6746,7 +6808,7 @@ void warlock_t::init_spells()
   talents.cataclysm              = find_talent_spell( "Cataclysm" );
 
   talents.hand_of_doom           = find_talent_spell( "Hand of Doom" );
-  talents.power_trip			       = find_talent_spell( "Power Trip" );
+  talents.power_trip             = find_talent_spell( "Power Trip" );
 
   talents.soul_harvest           = find_talent_spell( "Soul Harvest" );
 
@@ -6772,7 +6834,7 @@ void warlock_t::init_spells()
 
   // Artifacts
   artifact.reap_souls = find_artifact_spell( "Reap Souls" );
-  artifact.crystaline_shadows = find_artifact_spell( "Crystaline Shadows" );
+  artifact.crystalline_shadows = find_artifact_spell( "Crystalline Shadows" );
   artifact.seeds_of_doom = find_artifact_spell( "Seeds of Doom" );
   artifact.fatal_echoes = find_artifact_spell( "Fatal Echoes" );
   artifact.shadows_of_the_flesh = find_artifact_spell( "Shadows of the Flesh" );
@@ -6785,10 +6847,9 @@ void warlock_t::init_spells()
   artifact.wrath_of_consumption = find_artifact_spell( "Wrath of Consumption" );
   artifact.hideous_corruption = find_artifact_spell( "Hideous Corruption" );
   artifact.shadowy_incantations = find_artifact_spell( "Shadowy Incantations" );
-  artifact.soul_flames = find_artifact_spell( "Soul Flames" );
+  artifact.soul_flame = find_artifact_spell( "Soul Flame" );
   artifact.long_dark_night_of_the_soul = find_artifact_spell( "Long Dark Night of the Soul" );
   artifact.compounding_horror = find_artifact_spell( "Compounding Horror" );
-  artifact.soulharvester = find_artifact_spell( "Soulharvester" );
   artifact.soulstealer = find_artifact_spell( "Soulstealer" );
   artifact.degradation_of_the_black_harvest = find_artifact_spell( "Degradation of the Black Harvest" );
   artifact.winnowing = find_artifact_spell( "Winnowing" );
@@ -7455,14 +7516,14 @@ void warlock_t::apl_destruction()
   action_list_str += "/berserking";
   action_list_str += "/blood_fury";
   action_list_str += "/use_items";
-  action_list_str += "/potion,name=deadly_grace,if=(buff.soul_harvest.remains|trinket.proc.any.react|target.time_to_die<=45)";
+  action_list_str += "/potion,if=(buff.soul_harvest.remains|trinket.proc.any.react|target.time_to_die<=45)";
   action_list_str += "/shadowburn,if=soul_shard<4&buff.conflagration_of_chaos.remains<=action.chaos_bolt.cast_time";
   action_list_str += "/shadowburn,if=(charges=1+set_bonus.tier19_4pc&recharge_time<action.chaos_bolt.cast_time|charges=2+set_bonus.tier19_4pc)&soul_shard<5";
   add_action( "Conflagrate", "if=talent.roaring_blaze.enabled&(charges=2+set_bonus.tier19_4pc|(charges>=1+set_bonus.tier19_4pc&recharge_time<gcd)|target.time_to_die<24)" );
   add_action( "Conflagrate", "if=talent.roaring_blaze.enabled&debuff.roaring_blaze.stack>0&dot.immolate.remains>dot.immolate.duration*0.3&(active_enemies=1|soul_shard<3)&soul_shard<5" );
   add_action( "Conflagrate", "if=!talent.roaring_blaze.enabled&buff.backdraft.stack<3&(charges=1+set_bonus.tier19_4pc&recharge_time<action.chaos_bolt.cast_time|charges=2+set_bonus.tier19_4pc)&soul_shard<5" );
   action_list_str += "/life_tap,if=talent.empowered_life_tap.enabled&buff.empowered_life_tap.remains<=gcd";
-  add_action( "Dimensional Rift", "if=equipped.144369&!buff.lessons_of_spacetime.remains&((!talent.grimoire_of_supremacy.enabled&!cooldown.summon_doomguard.remains)|(talent.grimoire_of_service.enabled&!cooldown.service_pet.remains)|(talent.soul_harvest.enabled&!cooldown.soul_harvest.remains))");
+  add_action( "Dimensional Rift", "if=equipped.144369&!buff.lessons_of_spacetime.remains&(buff.soul_harvest.remains|pet.service_imp.active|!talent.grimoire_of_supremacy.enabled&(pet.doomguard.active|pet.infernal.active))");
   action_list_str += "/service_pet";
   add_action( "Summon Infernal", "if=artifact.lord_of_flames.rank>0&!buff.lord_of_flames.remains" );
   add_action( "Summon Doomguard", "if=!talent.grimoire_of_supremacy.enabled&spell_targets.infernal_awakening<=2&(target.time_to_die>180|target.health.pct<=20|target.time_to_die<30)" );

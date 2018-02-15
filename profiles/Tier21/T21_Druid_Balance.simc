@@ -27,7 +27,7 @@ actions.precombat+=/food
 actions.precombat+=/augmentation
 actions.precombat+=/moonkin_form
 actions.precombat+=/blessing_of_elune
-actions.precombat+=/variable,name=starfall_st,value=talent.soul_of_the_forest.enabled&equipped.radiant_moonlight
+actions.precombat+=/variable,name=starfall_st,value=talent.soul_of_the_forest.enabled&set_bonus.tier21_4pc
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
 actions.precombat+=/potion
