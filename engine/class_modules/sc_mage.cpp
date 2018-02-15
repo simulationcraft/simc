@@ -6833,6 +6833,7 @@ void mage_t::apl_precombat()
   precombat -> add_action( "flask" );
   precombat -> add_action( "food" );
   precombat -> add_action( "augmentation" );
+  precombat -> add_action( this, "Arcane Intellect" );
 
   // Water Elemental
   if ( specialization() == MAGE_FROST )
@@ -7123,7 +7124,7 @@ void mage_t::apl_frost()
   single -> add_talent( this, "Ice Nova", "if=debuff.winters_chill.up",
     "In some circumstances, it is possible for both Ice Lance and Ice Nova to benefit from a single Winter's Chill." );
   single -> add_action( this, "Frostbolt", "if=prev_off_gcd.water_jet" );
-  single -> add_action( "water_jet,if=prev_gcd.1.frostbolt&buff.fingers_of_frost.stack<3&!buff.brain_freeze.react",
+  single -> add_action( "water_jet,if=prev_gcd.1.frostbolt&buff.fingers_of_frost.stack<2&!buff.brain_freeze.react",
     "Basic Water Jet combo. Since Water Jet can only be used if the actor is not casting, we use it right after Frostbolt is executed. "
     "At the default distance, Frostbolt travels slightly over 1 s, giving Water Jet enough time to apply the DoT (Water Jet's cast time "
     "is 1 s, with haste scaling). The APL then forces another Frostbolt to guarantee getting both FoFs from the Water Jet. This works for "
@@ -7131,23 +7132,18 @@ void mage_t::apl_frost()
     "won't produce two FoFs." );
   single -> add_talent( this, "Ray of Frost", "if=buff.icy_veins.up|cooldown.icy_veins.remains>action.ray_of_frost.cooldown&buff.rune_of_power.down" );
   single -> add_action( this, "Flurry",
-    "if=prev_gcd.1.ebonbolt|buff.brain_freeze.react&(prev_gcd.1.glacial_spike|prev_gcd.1.frostbolt&(!talent.glacial_spike.enabled"
+    "if=buff.brain_freeze.react&(prev_gcd.1.glacial_spike|prev_gcd.1.frostbolt&(!talent.glacial_spike.enabled"
     "|buff.icicles.stack<=4|cooldown.frozen_orb.remains<=10&set_bonus.tier20_2pc))",
 
     "Winter's Chill from Flurry can apply to the spell cast right before (provided the travel time is long enough). This can be "
-    "exploited to a great effect with Ebonbolt, Glacial Spike (which deal a lot of damage by themselves) and Frostbolt (as a "
+    "exploited to a great effect with Glacial Spike (which deal a lot of damage by themselves) and Frostbolt (as a "
     "guaranteed way to proc Frozen Veins and Chain Reaction). When using Glacial Spike, it is worth saving a Brain Freeze proc "
     "when Glacial Spike is right around the corner (i.e. with 5 Icicles). However, when the actor also has T20 2pc, "
     "Glacial Spike is delayed to fit into Frozen Mass, so we do not want to sit on a Brain Freeze proc for too long in that case." );
-  single -> add_action( this, "Frozen Orb", "if=set_bonus.tier20_2pc&buff.fingers_of_frost.react<3",
+  single -> add_action( this, "Frozen Orb", "if=set_bonus.tier20_2pc&buff.fingers_of_frost.react<2",
     "With T20 2pc, Frozen Orb should be used as soon as it comes off CD." );
-  single -> add_action( this, "Blizzard", "if=cast_time=0&active_enemies>1&buff.fingers_of_frost.react<3",
-    "Freezing Rain Blizzard. While the normal Blizzard action is usually enough, right after Frozen Orb the actor will be "
-    "getting a lot of FoFs, which might delay Blizzard to the point where we miss out on Freezing Rain. Therefore, if we are "
-    "not at a risk of overcapping on FoF, use Blizzard before using Ice Lance." );
   single -> add_talent( this, "Frost Bomb", "if=debuff.frost_bomb.remains<action.ice_lance.travel_time&buff.fingers_of_frost.react" );
   single -> add_action( this, "Ice Lance", "if=buff.fingers_of_frost.react" );
-  single -> add_action( this, "Ebonbolt" );
   single -> add_action( this, "Frozen Orb" );
   single -> add_talent( this, "Ice Nova" );
   single -> add_talent( this, "Comet Storm" );
@@ -7166,23 +7162,18 @@ void mage_t::apl_frost()
     "Frozen Mass is happening soon (in less than 10 s)." );
   single -> add_action( this, "Frostbolt" );
   single -> add_action( "call_action_list,name=movement" );
-  single -> add_action( this, "Blizzard", "",
-    "While on the move, use instant Blizzard if available." );
   single -> add_action( this, "Ice Lance", "",
-    "Otherwise just use Ice Lance to do at least some damage." );
+    "Use Ice Lance to do at least some damage while moving." );
 
   aoe -> add_action( this, "Frostbolt", "if=prev_off_gcd.water_jet" );
-  aoe -> add_action( this, "Frozen Orb", "",
-    "Make sure Frozen Orb is used before Blizzard if both are available. This is a small gain with Freezing Rain "
-    "and on par without." );
   aoe -> add_action( this, "Blizzard" );
+  aoe -> add_action( this, "Frozen Orb" );
   aoe -> add_talent( this, "Comet Storm" );
   aoe -> add_talent( this, "Ice Nova" );
-  aoe -> add_action( "water_jet,if=prev_gcd.1.frostbolt&buff.fingers_of_frost.stack<3&!buff.brain_freeze.react" );
-  aoe -> add_action( this, "Flurry", "if=prev_gcd.1.ebonbolt|buff.brain_freeze.react&(prev_gcd.1.glacial_spike|prev_gcd.1.frostbolt)" );
+  aoe -> add_action( "water_jet,if=prev_gcd.1.frostbolt&buff.fingers_of_frost.stack<2&!buff.brain_freeze.react" );
+  aoe -> add_action( this, "Flurry", "if=buff.brain_freeze.react&(prev_gcd.1.glacial_spike|prev_gcd.1.frostbolt)" );
   aoe -> add_talent( this, "Frost Bomb", "if=debuff.frost_bomb.remains<action.ice_lance.travel_time&buff.fingers_of_frost.react" );
   aoe -> add_action( this, "Ice Lance", "if=buff.fingers_of_frost.react" );
-  aoe -> add_action( this, "Ebonbolt" );
   aoe -> add_talent( this, "Glacial Spike" );
   aoe -> add_action( this, "Frostbolt" );
   aoe -> add_action( "call_action_list,name=movement" );
@@ -7199,9 +7190,9 @@ void mage_t::apl_frost()
   cooldowns -> add_action( this, "Icy Veins" );
   cooldowns -> add_talent( this, "Mirror Image" );
   cooldowns -> add_action( "use_items" );
-  for( size_t i = 0; i < racial_actions.size(); i++ )
+  for ( size_t i = 0; i < racial_actions.size(); i++ )
   {
-    cooldowns -> add_action( racial_actions[i] );
+    cooldowns -> add_action( racial_actions[ i ] );
   }
 
   movement -> add_action( this, "Blink", "if=movement.distance>10" );
