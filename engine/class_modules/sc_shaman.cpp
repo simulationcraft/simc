@@ -453,7 +453,6 @@ public:
     const spell_data_t* static_charge;
 
     // Elemental
-    const spell_data_t* path_of_flame;
     const spell_data_t* earthen_rage;
     const spell_data_t* totem_mastery;
 
@@ -4383,7 +4382,6 @@ struct lava_burst_overload_t : public elemental_overload_spell_t
   lava_burst_overload_t( shaman_t* p ) : elemental_overload_spell_t( p, "lava_burst_overload", p->find_spell( 77451 ) )
   {
     base_multiplier *= 1.0 + p->artifact.lava_imbued.percent();
-    base_multiplier *= 1.0 + p->talent.path_of_flame->effectN( 1 ).percent();
     // TODO: Additive with Elemental Fury? Spell data claims same effect property, so probably ..
     crit_bonus_multiplier += p->artifact.molten_blast.percent();
   }
@@ -4451,7 +4449,7 @@ struct flame_shock_spreader_t : public shaman_spell_t
     if ( copy_target && sim->debug )
     {
       sim->out_debug.printf(
-          "%s path_of_flame spreads flame_shock from %s to shortest remaining target %s (remains=%.3f)", player->name(),
+          "%s volcanic_rage spreads flame_shock from %s to shortest remaining target %s (remains=%.3f)", player->name(),
           target->name(), copy_target->name(), min_remains.total_seconds() );
     }
 
@@ -4504,7 +4502,7 @@ struct flame_shock_spreader_t : public shaman_spell_t
 
     if ( copy_target && sim->debug )
     {
-      sim->out_debug.printf( "%s path_of_flame spreads flame_shock from %s to closest target %s (distance=%.3f)",
+      sim->out_debug.printf( "%s volcanic_rage spreads flame_shock from %s to closest target %s (distance=%.3f)",
                              player->name(), target->name(), copy_target->name(), min_distance );
     }
 
@@ -4545,11 +4543,9 @@ struct lava_burst_t : public shaman_spell_t
   flame_shock_spreader_t* spreader;
 
   lava_burst_t( shaman_t* player, const std::string& options_str )
-    : shaman_spell_t( "lava_burst", player, player->find_specialization_spell( "Lava Burst" ), options_str ),
-      spreader( player->talent.path_of_flame->ok() ? new flame_shock_spreader_t( player ) : nullptr )
+    : shaman_spell_t( "lava_burst", player, player->find_specialization_spell( "Lava Burst" ), options_str )
   {
     base_multiplier *= 1.0 + player->artifact.lava_imbued.percent();
-    base_multiplier *= 1.0 + player->talent.path_of_flame->effectN( 1 ).percent();
     crit_bonus_multiplier *= 1.0 + player->artifact.molten_blast.percent();
 
     // Manacost is only for resto
@@ -6530,7 +6526,6 @@ void shaman_t::init_spells()
   talent.static_charge = find_talent_spell( "Static Charge" );
 
   // Elemental
-  talent.path_of_flame = find_talent_spell( "Path of Flame" );
   talent.earthen_rage  = find_talent_spell( "Earthen Rage" );
   talent.totem_mastery = find_talent_spell( "Totem Mastery" );
 
