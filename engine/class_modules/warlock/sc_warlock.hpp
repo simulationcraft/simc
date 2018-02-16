@@ -5,37 +5,15 @@ namespace warlock {
     struct warlock_t;
 
     namespace pets {
-        struct wild_imp_pet_t;
-        struct t18_illidari_satyr_t;
-        struct t18_prince_malchezaar_t;
-        struct t18_vicious_hellhound_t;
-        struct chaos_tear_t;
-        struct dreadstalker_t;
-        struct infernal_t;
-        struct doomguard_t;
-        struct lord_of_flames_infernal_t;
-        struct darkglare_t;
-        struct thal_kiel_t;
-        namespace shadowy_tear {
-            struct shadowy_tear_t;
-        }
-        namespace flame_rift {
-            struct flame_rift_t;
-        }
-        namespace chaos_portal {
-            struct chaos_portal_t;
-        }
     }
 
     #define MAX_UAS 5
 
-    struct warlock_td_t : public actor_target_data_t
-    {
+    struct warlock_td_t : public actor_target_data_t {
         dot_t* dots_agony;
         dot_t* dots_corruption;
         dot_t* dots_doom;
         dot_t* dots_drain_life;
-        dot_t* dots_drain_soul;
         dot_t* dots_immolate;
         dot_t* dots_seed_of_corruption;
         dot_t* dots_shadowflame;
@@ -61,8 +39,7 @@ namespace warlock {
         warlock_t& warlock;
         warlock_td_t(player_t* target, warlock_t& p);
 
-        void reset()
-        {
+        void reset() {
             agony_stack = 1;
             soc_threshold = 0;
         }
@@ -75,57 +52,26 @@ namespace warlock {
     public:
         player_t * havoc_target;
         double agony_accumulator;
-        double demonwrath_accumulator;
-        int free_souls;
 
         // Active Pet
-        struct pets_t
-        {
+        struct pets_t {
             pet_t* active;
             pet_t* last;
-            static const int WILD_IMP_LIMIT = 40;
-            static const int T18_PET_LIMIT = 0;
-            static const int DREADSTALKER_LIMIT = 4;
-            static const int DIMENSIONAL_RIFT_LIMIT = 10;
-            static const int INFERNAL_LIMIT = 1;
-            static const int DOOMGUARD_LIMIT = 1;
-            static const int LORD_OF_FLAMES_INFERNAL_LIMIT = 3;
-            static const int DARKGLARE_LIMIT = 1;
-            std::array<pets::wild_imp_pet_t*, WILD_IMP_LIMIT> wild_imps;
-            std::array<pets::t18_illidari_satyr_t*, T18_PET_LIMIT> t18_illidari_satyr;
-            std::array<pets::t18_prince_malchezaar_t*, T18_PET_LIMIT> t18_prince_malchezaar;
-            std::array<pets::t18_vicious_hellhound_t*, T18_PET_LIMIT> t18_vicious_hellhound;
-            std::array<pets::shadowy_tear::shadowy_tear_t*, DIMENSIONAL_RIFT_LIMIT> shadowy_tear;
-            std::array<pets::flame_rift::flame_rift_t*, DIMENSIONAL_RIFT_LIMIT> flame_rift;
-            std::array<pets::chaos_tear_t*, DIMENSIONAL_RIFT_LIMIT> chaos_tear;
-            std::array<pets::chaos_portal::chaos_portal_t*, DIMENSIONAL_RIFT_LIMIT> chaos_portal;
-            std::array<pets::dreadstalker_t*, DREADSTALKER_LIMIT> dreadstalkers;
-            std::array<pets::infernal_t*, INFERNAL_LIMIT> infernal;
-            std::array<pets::doomguard_t*, DOOMGUARD_LIMIT> doomguard;
-            std::array<pets::lord_of_flames_infernal_t*, LORD_OF_FLAMES_INFERNAL_LIMIT> lord_of_flames_infernal;
-            std::array<pets::darkglare_t*, DARKGLARE_LIMIT> darkglare;
-
         } warlock_pet_list;
 
         std::vector<std::string> pet_name_list;
 
-        struct active_t
-        {
+        struct active_t {
             action_t* demonic_power_proc;
-            action_t* thalkiels_discord;
-            action_t* harvester_of_souls;
             action_t* cry_havoc;
-            action_t* rend_soul;
             action_t* tormented_agony;
             action_t* chaotic_flames;
             spell_t* rain_of_fire;
             spell_t* corruption;
-
         } active;
 
         // Talents
-        struct talents_t
-        {
+        struct talents_t {
             // AFF
             const spell_data_t* shadow_embrace;
             const spell_data_t* haunt;
@@ -154,8 +100,6 @@ namespace warlock {
             const spell_data_t* creeping_death;
             const spell_data_t* siphon_life;
             //
-            const spell_data_t* drain_soul;
-
             const spell_data_t* backdraft;
             const spell_data_t* fire_and_brimstone;
             const spell_data_t* shadowburn;
@@ -164,13 +108,10 @@ namespace warlock {
             const spell_data_t* shadowflame;
             const spell_data_t* demonic_calling;
 
-            const spell_data_t* contagion;
-
             const spell_data_t* reverse_entropy;
             const spell_data_t* roaring_blaze;
 
             const spell_data_t* impending_doom;
-            const spell_data_t* improved_dreadstalkers;
             const spell_data_t* implosion;
 
             const spell_data_t* howl_of_terror;
@@ -188,9 +129,6 @@ namespace warlock {
 
             const spell_data_t* wreak_havoc;
             const spell_data_t* channel_demonfire;
-
-            const spell_data_t* summon_darkglare;
-            const spell_data_t* demonbolt;
         } talents;
 
         struct legendary_t
@@ -229,19 +167,13 @@ namespace warlock {
         real_ppm_t* grimoire_of_synergy_pet; //pet ppm, i.e., if it procs, the pet will create a buff for the wl.
 
                                           // Cooldowns
-        struct cooldowns_t
-        {
-            cooldown_t* infernal;
-            cooldown_t* doomguard;
-            cooldown_t* dimensional_rift;
+        struct cooldowns_t {
             cooldown_t* haunt;
             cooldown_t* sindorei_spite_icd;
-            cooldown_t* call_dreadstalkers;
         } cooldowns;
 
         // Passives
-        struct specs_t
-        {
+        struct specs_t {
             // All Specs
             const spell_data_t* fel_armor;
             const spell_data_t* nethermancy;
@@ -259,7 +191,6 @@ namespace warlock {
             // Demonology only
             const spell_data_t* demonology;
             const spell_data_t* doom;
-            const spell_data_t* demonic_empowerment;
             const spell_data_t* wild_imps;
 
             // Destruction only
@@ -271,44 +202,25 @@ namespace warlock {
             const spell_data_t* unending_resolve_2;
             const spell_data_t* firebolt;
             const spell_data_t* firebolt_2;
-
-            // PTr
-            const spell_data_t* drain_soul;
         } spec;
 
         // Buffs
-        struct buffs_t
-        {
+        struct buffs_t  {
             buff_t* demonic_power;
             buff_t* soul_harvest;
 
             //affliction buffs
-            buff_t* shard_instability;
-            buff_t* instability;
-            buff_t* reap_souls;
-            haste_buff_t* misery;
-            buff_t* deadwind_harvester;
-            buff_t* tormented_souls;
-            buff_t* compounding_horror;
             buff_t* active_uas;
             buff_t* demonic_speed; // t20 4pc
-            buff_t* wrath_of_consumption;
 
             //demonology buffs
-            buff_t* tier18_2pc_demonology;
             buff_t* demonic_synergy;
-            buff_t* shadowy_inspiration;
-            buff_t* stolen_power_stacks;
-            buff_t* stolen_power;
-            buff_t* demonic_calling;
-            buff_t* t18_4pc_driver;
             buff_t* dreaded_haste; // t20 4pc
             buff_t* rage_of_guldan; // t21 2pc
 
-                                    //destruction_buffs
+            //destruction_buffs
             buff_t* backdraft;
             buff_t* conflagration_of_chaos;
-            buff_t* lord_of_flames;
             buff_t* embrace_chaos;
             buff_t* active_havoc;
 
@@ -322,9 +234,7 @@ namespace warlock {
         } buffs;
 
         // Gains
-        struct gains_t
-        {
-            gain_t* life_tap;
+        struct gains_t {
             gain_t* agony;
             gain_t* conflagrate;
             gain_t* shadowburn;
@@ -333,16 +243,13 @@ namespace warlock {
             gain_t* shadowburn_shard;
             gain_t* miss_refund;
             gain_t* seed_of_corruption;
-            gain_t* drain_soul;
             gain_t* unstable_affliction_refund;
             gain_t* power_trip;
             gain_t* shadow_bolt;
             gain_t* doom;
-            gain_t* demonwrath;
             gain_t* soul_conduit;
             gain_t* reverse_entropy;
             gain_t* soulsnatcher;
-            gain_t* t18_4pc_destruction;
             gain_t* t19_2pc_demonology;
             gain_t* recurrent_ritual;
             gain_t* feretory_of_souls;
@@ -355,47 +262,23 @@ namespace warlock {
         } gains;
 
         // Procs
-        struct procs_t
-        {
+        struct procs_t {
             proc_t* soul_conduit;
             proc_t* the_master_harvester;
             //aff
-            proc_t* fatal_echos;
-            proc_t* ua_tick_no_mg;
-            proc_t* ua_tick_mg;
             proc_t* affliction_t21_2pc;
             //demo
-            proc_t* impending_doom;
-            proc_t* improved_dreadstalkers;
-            proc_t* thalkiels_discord;
             proc_t* demonic_calling;
             proc_t* power_trip;
-            proc_t* stolen_power_stack;
-            proc_t* stolen_power_used;
-            proc_t* t18_demo_4p;
             proc_t* souls_consumed;
-            proc_t* the_expendables;
-            proc_t* wilfreds_dog;
-            proc_t* wilfreds_imp;
-            proc_t* wilfreds_darkglare;
             proc_t* one_shard_hog;
             proc_t* two_shard_hog;
             proc_t* three_shard_hog;
             proc_t* four_shard_hog;
-            proc_t* dreadstalker_debug;
-            proc_t* t18_illidari_satyr;
-            proc_t* t18_vicious_hellhound;
-            proc_t* t18_prince_malchezaar;
             proc_t* wild_imp;
             proc_t* fragment_wild_imp;
             proc_t* demonology_t20_2pc;
             //destro
-            proc_t* t18_4pc_destruction;
-            proc_t* shadowy_tear;
-            proc_t* flame_rift;
-            proc_t* chaos_tear;
-            proc_t* chaos_portal;
-            proc_t* dimension_ripper;
             proc_t* t19_2pc_chaos_bolts;
         } procs;
 

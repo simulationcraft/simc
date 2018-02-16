@@ -105,7 +105,7 @@ double warlock_pet_t::composite_player_multiplier( school_e school ) const
 {
   double m = pet_t::composite_player_multiplier( school );
 
-  m *= 1.0 + o() -> buffs.tier18_2pc_demonology -> stack_value();
+  m *= 1.0;
 
   if ( buffs.demonic_synergy -> up() )
     m *= 1.0 + buffs.demonic_synergy -> data().effectN( 1 ).percent();
@@ -308,7 +308,6 @@ warlock_t::warlock_t( sim_t* sim, const std::string& name, race_e r ):
   player_t( sim, WARLOCK, name, r ),
     havoc_target( nullptr ),
     agony_accumulator( 0 ),
-    free_souls( 3 ),
     warlock_pet_list( pets_t() ),
     active( active_t() ),
     talents( talents_t() ),
@@ -328,7 +327,6 @@ warlock_t::warlock_t( sim_t* sim, const std::string& name, race_e r ):
   {
     cooldowns.haunt = get_cooldown( "haunt" );
     cooldowns.sindorei_spite_icd = get_cooldown( "sindorei_spite_icd" );
-    cooldowns.call_dreadstalkers = get_cooldown( "call_dreadstalkers" );
 
     regen_type = REGEN_DYNAMIC;
     regen_caches[CACHE_HASTE] = true;
@@ -364,16 +362,11 @@ double warlock_t::composite_player_target_multiplier( player_t* target, school_e
   if ( td -> debuffs_haunt -> check() )
     m *= 1.0 + find_spell( 48181 ) -> effectN( 2 ).percent();
 
-  if ( talents.contagion -> ok() )
-  {
-    for ( int i = 0; i < MAX_UAS; i++ )
-    {
-      if ( td -> dots_unstable_affliction[i] -> is_ticking() )
-      {
-        m *= 1.0 + talents.contagion -> effectN( 1 ).percent();
+  for ( int i = 0; i < MAX_UAS; i++ ) {
+      if ( td -> dots_unstable_affliction[i] -> is_ticking() ) {
+        m *= 1.0 + find_spell( 30108 ) -> effectN( 3 ).percent();
         break;
       }
-    }
   }
 
   return m;
@@ -592,12 +585,9 @@ void warlock_t::init_spells()
   spec.destruction = find_specialization_spell( 137046 );
 
   // Specialization Spells
-  // PTR
-  spec.drain_soul             = find_specialization_spell( "Drain Soul" );
 
   spec.immolate               = find_specialization_spell( "Immolate" );
   spec.nightfall              = find_specialization_spell( "Nightfall" );
-  spec.demonic_empowerment    = find_specialization_spell( "Demonic Empowerment" );
   spec.wild_imps              = find_specialization_spell( "Wild Imps" );
   spec.shadow_bite            = find_specialization_spell( "Shadow Bite" );
   spec.shadow_bite_2          = find_specialization_spell( 231799 );
@@ -625,13 +615,10 @@ void warlock_t::init_spells()
   talents.shadowflame            = find_talent_spell( "Shadowflame" );
   talents.demonic_calling        = find_talent_spell( "Demonic Calling" );
 
-  talents.contagion              = find_talent_spell( "Contagion" );
-
   talents.reverse_entropy        = find_talent_spell( "Reverse Entropy" );
   talents.roaring_blaze          = find_talent_spell( "Roaring Blaze" );
 
   talents.impending_doom         = find_talent_spell( "Impending Doom" );
-  talents.improved_dreadstalkers = find_talent_spell( "Improved Dreadstalkers" );
   talents.implosion              = find_talent_spell( "Implosion" );
 
   talents.demon_skin             = find_talent_spell( "Soul Leech" );
@@ -660,9 +647,6 @@ void warlock_t::init_spells()
 
   talents.wreak_havoc            = find_talent_spell( "Wreak Havoc" );
   talents.channel_demonfire      = find_talent_spell( "Channel Demonfire" );
-
-  talents.summon_darkglare       = find_talent_spell( "Summon Darkglare" );
-  talents.demonbolt              = find_talent_spell( "Demonbolt" );
 
   talents.soul_conduit           = find_talent_spell( "Soul Conduit" );
 }
@@ -704,7 +688,12 @@ void warlock_t::create_buffs()
 {
   player_t::create_buffs();
 
-  create_buffs_affliction();
+  if ( specialization() == WARLOCK_AFFLICTION )
+      create_buffs_affliction();
+  if ( specialization() == WARLOCK_DEMONOLOGY )
+      create_buffs_demonology();
+  if ( specialization() == WARLOCK_DESTRUCTION )
+      create_buffs_destruction();
 
   buffs.demonic_power = buff_creator_t( this, "demonic_power", talents.grimoire_of_sacrifice -> effectN( 2 ).trigger() );
   buffs.soul_harvest = buff_creator_t( this, "soul_harvest", find_spell( 196098 ) )
@@ -743,8 +732,6 @@ void warlock_t::create_buffs()
   buffs.demonic_synergy = buff_creator_t( this, "demonic_synergy", find_spell( 171982 ) )
     .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
     .chance( 1 );
-  buffs.shadowy_inspiration = buff_creator_t( this, "shadowy_inspiration", find_spell( 196606 ) );
-  buffs.demonic_calling = buff_creator_t( this, "demonic_calling", talents.demonic_calling -> effectN( 1 ).trigger() );
   buffs.dreaded_haste = haste_buff_creator_t( this, "dreaded_haste", sets -> set( WARLOCK_DEMONOLOGY, T20, B4 ) -> effectN( 1 ).trigger() )
     .default_value( sets -> set( WARLOCK_DEMONOLOGY, T20, B4 ) -> effectN( 1 ).trigger() -> effectN( 1 ).percent() );
   buffs.rage_of_guldan = buff_creator_t(this, "rage_of_guldan", sets->set( WARLOCK_DEMONOLOGY, T21, B2 ) -> effectN( 1 ).trigger() )
@@ -774,11 +761,9 @@ void warlock_t::init_rng()
   grimoire_of_synergy_pet = get_rppm( "grimoire_of_synergy_pet", talents.grimoire_of_synergy );
 }
 
-void warlock_t::init_gains()
-{
+void warlock_t::init_gains() {
   player_t::init_gains();
 
-  gains.life_tap                    = get_gain( "life_tap" );
   gains.agony                       = get_gain( "agony" );
   gains.conflagrate                 = get_gain( "conflagrate" );
   gains.shadowburn                  = get_gain( "shadowburn" );
@@ -787,15 +772,12 @@ void warlock_t::init_gains()
   gains.shadowburn_shard            = get_gain( "shadowburn_shard" );
   gains.miss_refund                 = get_gain( "miss_refund" );
   gains.seed_of_corruption          = get_gain( "seed_of_corruption" );
-  gains.drain_soul                  = get_gain( "drain_soul" );
   gains.unstable_affliction_refund  = get_gain( "unstable_affliction_refund" );
   gains.shadow_bolt                 = get_gain( "shadow_bolt" );
   gains.soul_conduit                = get_gain( "soul_conduit" );
   gains.reverse_entropy             = get_gain( "reverse_entropy" );
   gains.soulsnatcher                = get_gain( "soulsnatcher" );
   gains.power_trip                  = get_gain( "power_trip" );
-  gains.t18_4pc_destruction         = get_gain( "t18_4pc_destruction" );
-  gains.demonwrath                  = get_gain( "demonwrath" );
   gains.t19_2pc_demonology          = get_gain( "t19_2pc_demonology" );
   gains.recurrent_ritual            = get_gain( "recurrent_ritual" );
   gains.feretory_of_souls           = get_gain( "feretory_of_souls" );
@@ -807,19 +789,13 @@ void warlock_t::init_gains()
   gains.destruction_t20_2pc         = get_gain( "destruction_t20_2pc" );
 }
 
-void warlock_t::init_procs()
-{
+void warlock_t::init_procs() {
   player_t::init_procs();
 
-  procs.t18_4pc_destruction = get_proc( "t18_4pc_destruction" );
-  procs.t18_prince_malchezaar = get_proc( "t18_prince_malchezaar" );
-  procs.t18_vicious_hellhound = get_proc( "t18_vicious_hellhound" );
-  procs.t18_illidari_satyr = get_proc( "t18_illidari_satyr" );
   procs.one_shard_hog = get_proc( "one_shard_hog" );
   procs.two_shard_hog = get_proc( "two_shard_hog" );
   procs.three_shard_hog = get_proc( "three_shard_hog" );
   procs.four_shard_hog = get_proc( "four_shard_hog" );
-  procs.impending_doom = get_proc( "impending_doom" );
   procs.demonic_calling = get_proc( "demonic_calling" );
   procs.power_trip = get_proc( "power_trip" );
   procs.soul_conduit = get_proc( "soul_conduit" );
@@ -953,8 +929,7 @@ void warlock_t::combat_begin()
   player_t::combat_begin();
 }
 
-void warlock_t::reset()
-{
+void warlock_t::reset() {
   player_t::reset();
 
   range::for_each( sim -> target_list, [ this ]( const player_t* t ) {
@@ -975,8 +950,6 @@ void warlock_t::reset()
   shard_react = timespan_t::zero();
   havoc_target = nullptr;
   agony_accumulator = rng().range( 0.0, 0.99 );
-  demonwrath_accumulator = 0.0;
-  free_souls = 3;
 }
 
 void warlock_t::create_options()
