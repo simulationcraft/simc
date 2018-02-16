@@ -3662,9 +3662,6 @@ struct freezing_death_t : public death_knight_melee_attack_t
     death_knight_melee_attack_t( "freezing_death", p, p -> find_spell( 253590 ) )
   {
     background = true;
-
-    // The damage scales with weapon damage and has a range without using normalized weapon damage
-    this -> sim -> average_range = 0;
   }
 };
 
