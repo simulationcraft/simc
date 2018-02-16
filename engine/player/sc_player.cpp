@@ -6107,7 +6107,7 @@ real_ppm_t* player_t::get_rppm( const std::string& name, const spell_data_t* dat
   return new_rppm;
 }
 
-real_ppm_t* player_t::get_rppm( const std::string& name, double freq, double mod, rppm_scale_e s )
+real_ppm_t* player_t::get_rppm( const std::string& name, double freq, double mod, unsigned s )
 {
   auto it = range::find_if( rppm_list, [ &name ]( const real_ppm_t* rppm ) {
     return util::str_compare_ci( rppm -> name(), name );
@@ -10234,10 +10234,14 @@ void player_t::copy_from( player_t* source )
   professions_str = source -> professions_str;
   source -> recreate_talent_str( TALENT_FORMAT_UNCHANGED );
   parse_talent_url( sim, "talents", source -> talents_str );
-  artifact -> set_artifact_str( source -> artifact -> encode() );
-  artifact -> set_crucible_str( source -> artifact -> encode_crucible() );
+  if ( artifact != nullptr )
+  {
+    artifact -> set_artifact_str( source -> artifact -> encode() );
+    artifact -> set_crucible_str( source -> artifact -> encode_crucible() );
+    artifact_overrides_str = source -> artifact_overrides_str;
+  }
+
   talent_overrides_str = source -> talent_overrides_str;
-  artifact_overrides_str = source -> artifact_overrides_str;
   action_list_str = source -> action_list_str;
   alist_map = source -> alist_map;
   use_apl = source -> use_apl;

@@ -30,8 +30,23 @@ struct warrior_td_t: public actor_target_data_t
   warrior_td_t( player_t* target, warrior_t& p );
 };
 
-typedef std::pair<std::string, simple_sample_data_with_min_max_t> data_t;
-typedef std::pair<std::string, simple_sample_data_t> simple_data_t;
+using data_t = std::pair<std::string, simple_sample_data_with_min_max_t>;
+using simple_data_t = std::pair<std::string, simple_sample_data_t>;
+
+template <typename T_CONTAINER, typename T_DATA>
+T_CONTAINER* get_data_entry( const std::string& name, std::vector<T_DATA*>& entries )
+{
+  for ( size_t i = 0; i < entries.size(); i++ )
+  {
+    if ( entries[i] -> first == name )
+    {
+      return &( entries[i] -> second );
+    }
+  }
+
+  entries.push_back( new T_DATA( name, T_CONTAINER() ) );
+  return &( entries.back() -> second );
+}
 
 struct counter_t
 {
@@ -87,7 +102,7 @@ public:
   bool non_dps_mechanics, warrior_fixed_time, frothing_may_trigger;
   double expected_max_health;
 
-  std::vector<counter_t*> counters;
+  auto_dispose<std::vector<counter_t*>> counters;
   auto_dispose< std::vector<data_t*> > cd_waste_exec, cd_waste_cumulative;
   auto_dispose< std::vector<simple_data_t*> > cd_waste_iter;
 
@@ -510,17 +525,17 @@ public:
     heroic_charge( nullptr ),
     rampage_driver( nullptr ),
     rampage_attacks( 0 ),
-    active( active_t() ),
-    buff( buffs_t() ),
-    cooldown( cooldowns_t() ),
-    gain( gains_t() ),
-    spell( spells_t() ),
-    mastery( mastery_t() ),
-    proc( procs_t() ),
-    spec( spec_t() ),
-    talents( talents_t() ),
-    legendary( legendary_t() ),
-    artifact( artifact_spell_data_t() )
+    active(),
+    buff(),
+    cooldown(),
+    gain(),
+    spell(),
+    mastery(),
+    proc(),
+    spec(),
+    talents(),
+    legendary(),
+    artifact()
   {
     non_dps_mechanics = false; // When set to false, disables stuff that isn't important, such as second wind, bloodthirst heal, etc.
     warrior_fixed_time = frothing_may_trigger = true; //Frothing only triggers on the first ability that pushes you to 100 rage, until rage is consumed and then it may trigger again.
@@ -550,7 +565,6 @@ public:
     } );
   }
 
-  virtual           ~warrior_t();
   // Character Definition
   void      init_spells() override;
   void      init_base_stats() override;
@@ -639,26 +653,7 @@ public:
       resource_gain( RESOURCE_RAGE, legendary.ceannar_charger -> effectN( 1 ).trigger() -> effectN( 1 ).resource( RESOURCE_RAGE ), gain.ceannar_rage );
     }
   }
-  template <typename T_CONTAINER, typename T_DATA>
-  T_CONTAINER* get_data_entry( const std::string& name, std::vector<T_DATA*>& entries )
-  {
-    for ( size_t i = 0; i < entries.size(); i++ )
-    {
-      if ( entries[i] -> first == name )
-      {
-        return &( entries[i] -> second );
-      }
-    }
-
-    entries.push_back( new T_DATA( name, T_CONTAINER() ) );
-    return &( entries.back() -> second );
-  }
 };
-
-warrior_t::~warrior_t()
-{
-  range::dispose( counters );
-}
 
 counter_t::counter_t( warrior_t* p ):
   sim( p -> sim ), value( 0 ), interval( 0 ), last( timespan_t::min() )
@@ -741,9 +736,9 @@ public:
 
     if ( track_cd_waste )
     {
-      cd_wasted_exec = p() -> template get_data_entry<simple_sample_data_with_min_max_t, data_t>( ab::name_str, p() -> cd_waste_exec );
-      cd_wasted_cumulative = p() -> template get_data_entry<simple_sample_data_with_min_max_t, data_t>( ab::name_str, p() -> cd_waste_cumulative );
-      cd_wasted_iter = p() -> template get_data_entry<simple_sample_data_t, simple_data_t>( ab::name_str, p() -> cd_waste_iter );
+      cd_wasted_exec = get_data_entry<simple_sample_data_with_min_max_t, data_t>( ab::name_str, p() -> cd_waste_exec );
+      cd_wasted_cumulative = get_data_entry<simple_sample_data_with_min_max_t, data_t>( ab::name_str, p() -> cd_waste_cumulative );
+      cd_wasted_iter = get_data_entry<simple_sample_data_t, simple_data_t>( ab::name_str, p() -> cd_waste_iter );
     }
     if ( sweeping_strikes )
     {
@@ -788,7 +783,7 @@ public:
     return ab::cost();
   }
 
-  virtual double cost() const override
+  double cost() const override
   {
     double c = ab::cost();
 
@@ -803,12 +798,12 @@ public:
     return c;
   }
 
-  virtual void execute() override
+  void execute() override
   {
     ab::execute();
   }
 
-  virtual bool ready() override
+  bool ready() override
   {
     if ( !ab::ready() )
     {
@@ -822,7 +817,7 @@ public:
     return true;
   }
 
-  virtual void update_ready( timespan_t cd ) override
+  void update_ready( timespan_t cd ) override
   {
     if ( cd_wasted_exec &&
       ( cd > timespan_t::zero() || ( cd <= timespan_t::zero() && ab::cooldown -> duration > timespan_t::zero() ) ) &&
@@ -852,7 +847,7 @@ public:
     return true;
   }
 
-  virtual void impact( action_state_t* s ) override
+  void impact( action_state_t* s ) override
   {
     ab::impact( s );
 
@@ -874,7 +869,7 @@ public:
     }
   }
 
-  virtual void tick( dot_t* d ) override
+  void tick( dot_t* d ) override
   {
     ab::tick( d );
 
@@ -896,7 +891,7 @@ public:
     }
   }
 
-  virtual void consume_resource() override
+  void consume_resource() override
   {
     if ( tactician_per_rage )
     {
@@ -1238,7 +1233,7 @@ struct melee_t: public warrior_attack_t
 
   double composite_hit() const override
   {
-    if ( p() -> artifact.focus_in_chaos.rank() && p() -> buff.enrage -> up() )
+    if ( p() -> artifact.focus_in_chaos.rank() && p() -> buff.enrage -> check() )
     {
       return 1.0;
     }
@@ -1405,9 +1400,9 @@ struct mortal_strike_t20_t : public warrior_attack_t
   {
     double am = warrior_attack_t::action_multiplier();
 
-    am *= 1.0 + p() -> buff.shattered_defenses -> stack_value();
-    am *= 1.0 + p() -> buff.focused_rage -> stack_value();
-    am *= 1.0 + p() -> buff.executioners_precision -> stack_value();
+    am *= 1.0 + p() -> buff.shattered_defenses -> check_stack_value();
+    am *= 1.0 + p() -> buff.focused_rage -> check_stack_value();
+    am *= 1.0 + p() -> buff.executioners_precision -> check_stack_value();
 
     return am;
   }
@@ -1479,9 +1474,9 @@ struct mortal_strike_t : public warrior_attack_t
   {
     double am = warrior_attack_t::action_multiplier();
 
-    am *= 1.0 + p() -> buff.shattered_defenses -> stack_value();
-    am *= 1.0 + p() -> buff.focused_rage -> stack_value();
-    am *= 1.0 + p() -> buff.executioners_precision -> stack_value();
+    am *= 1.0 + p() -> buff.shattered_defenses -> check_stack_value();
+    am *= 1.0 + p() -> buff.focused_rage -> check_stack_value();
+    am *= 1.0 + p() -> buff.executioners_precision -> check_stack_value();
 
     if ( p() -> spec.mortal_strike_2 )
       am *= 1.0 + p() -> spec.mortal_strike_2 -> effectN( 1 ).percent();
@@ -1664,8 +1659,8 @@ struct bloodthirst_heal_t: public warrior_heal_t
   {
     double am = warrior_heal_t::action_multiplier();
 
-    am *= 1.0 + p() -> buff.furious_charge -> value();
-    am *= 1.0 + p() -> buff.t20_fury_4p -> stack_value();
+    am *= 1.0 + p() -> buff.furious_charge -> check_value();
+    am *= 1.0 + p() -> buff.t20_fury_4p -> check_stack_value();
 
     return am;
   }
@@ -1705,7 +1700,7 @@ struct bloodthirst_t: public warrior_attack_t
   {
     double am = warrior_attack_t::action_multiplier();
 
-    am *= 1.0 + p() -> buff.t20_fury_4p -> stack_value();
+    am *= 1.0 + p() -> buff.t20_fury_4p -> check_stack_value();
 
     return am;
   }
@@ -1896,7 +1891,7 @@ struct charge_t: public warrior_attack_t
 // FIXME: Min range on bad dudes, no min range on good dudes.
 struct intercept_t: public warrior_attack_t
 {
-  double movement_speed_increase, min_range;
+  double movement_speed_increase;
   intercept_t( warrior_t* p, const std::string& options_str ):
     warrior_attack_t( "intercept", p, p -> spec.intercept ),
     movement_speed_increase( 5.0 )
@@ -2293,7 +2288,7 @@ struct execute_arms_t: public warrior_attack_t
       am *= 4.0 * ( std::min( temp_max_rage, p() -> resources.current[RESOURCE_RAGE] ) / temp_max_rage );
     }
 
-    am *= 1.0 + p() -> buff.shattered_defenses -> stack_value();
+    am *= 1.0 + p() -> buff.shattered_defenses -> check_stack_value();
 
     if ( execute_sweeping_strike )
       execute_sweeping_strike -> dmg_mult = am; // Sweeping strikes uses damage multiplier from this.
@@ -2413,7 +2408,7 @@ struct execute_off_hand_t: public warrior_attack_t
   {
     double am = warrior_attack_t::action_multiplier();
 
-    am *= 1.0 + p() -> buff.juggernaut -> stack_value();
+    am *= 1.0 + p() -> buff.juggernaut -> check_stack_value();
 
     return am;
   }
@@ -2448,7 +2443,7 @@ struct execute_t: public warrior_attack_t
   {
     double am = warrior_attack_t::action_multiplier();
 
-    am *= 1.0 + p() -> buff.juggernaut -> stack_value();
+    am *= 1.0 + p() -> buff.juggernaut -> check_stack_value();
 
     return am;
   }
@@ -2626,8 +2621,7 @@ struct heroic_leap_t: public warrior_attack_t
     warrior_attack_t::execute();
     if ( p() -> current.distance_to_move > 0 && !p() -> buff.heroic_leap_movement -> check() )
     {
-      double speed;
-      speed = std::min( p() -> current.distance_to_move, base_teleport_distance ) / ( p() -> base_movement_speed * ( 1 + p() -> passive_movement_modifier() ) ) / travel_time().total_seconds();
+      double speed = std::min( p() -> current.distance_to_move, base_teleport_distance ) / ( p() -> base_movement_speed * ( 1 + p() -> passive_movement_modifier() ) ) / travel_time().total_seconds();
       p() -> buff.heroic_leap_movement -> trigger( 1, speed, 1, travel_time() );
     }
   }
@@ -2916,7 +2910,7 @@ struct raging_blow_attack_t: public warrior_attack_t
   {
     double am = warrior_attack_t::action_multiplier();
 
-    am *= 1.0 + p() -> buff.raging_thirst -> value();
+    am *= 1.0 + p() -> buff.raging_thirst -> check_value();
 
     return am;
   }
@@ -6286,7 +6280,7 @@ double warrior_t::composite_player_target_multiplier( player_t* target, school_e
 
   warrior_td_t* td = get_target_data( target );
 
-  if ( td -> debuffs_colossus_smash -> up() )
+  if ( td -> debuffs_colossus_smash -> check() )
   {
     m *= 1.0 + ( td -> debuffs_colossus_smash -> value() + cache.mastery_value() );
   }
@@ -6924,6 +6918,8 @@ private:
   warrior_t& p;
 };
 
+namespace items {
+
 struct raging_fury_t: public unique_gear::scoped_action_callback_t<charge_t>
 {
   raging_fury_t(): super( WARRIOR, "charge" )
@@ -7148,6 +7144,30 @@ struct najentuss_vertebrae_t : public unique_gear::scoped_actor_callback_t<warri
   { warrior -> legendary.najentuss_vertebrae = e.driver(); }
 };
 
+void init()
+{
+  unique_gear::register_special_effect( 205144, archavons_heavy_hand_t() );
+  unique_gear::register_special_effect( 207841, bindings_of_kakushan_t(), true );
+  unique_gear::register_special_effect( 207845, kargaths_sacrificed_hands_t(), true );
+  unique_gear::register_special_effect( 215176, thundergods_vigor_t() ); //NYI
+  unique_gear::register_special_effect( 207779, ceannar_charger_t() );
+  unique_gear::register_special_effect( 207775, kazzalax_fujiedas_fury_t(), true );
+  unique_gear::register_special_effect( 215057, the_walls_fell_t() ); //NYI
+  unique_gear::register_special_effect( 215090, destiny_driver_t(), true );
+  unique_gear::register_special_effect( 207428, prydaz_xavarics_magnum_opus_t(), true ); //Not finished
+  unique_gear::register_special_effect( 208908, mannoroths_bloodletting_manacles_t() ); //NYI
+  unique_gear::register_special_effect( 215096, najentuss_vertebrae_t() );
+  unique_gear::register_special_effect( 207767, ayalas_stone_heart_t(), true );
+  unique_gear::register_special_effect( 208177, weight_of_the_earth_t() );
+  unique_gear::register_special_effect( 222266, raging_fury_t() );
+  unique_gear::register_special_effect( 222266, raging_fury2_t() );
+  unique_gear::register_special_effect( 208051, sephuzs_secret_t() );
+  unique_gear::register_special_effect( 248118, the_great_storms_eye_t(), true );
+  unique_gear::register_special_effect( 248120, valarjar_berserkers_t() );
+}
+
+} // items
+
 struct warrior_module_t: public module_t
 {
   warrior_module_t(): module_t( WARRIOR ) {}
@@ -7163,24 +7183,7 @@ struct warrior_module_t: public module_t
 
   virtual void static_init() const override
   {
-    unique_gear::register_special_effect( 205144, archavons_heavy_hand_t() );
-    unique_gear::register_special_effect( 207841, bindings_of_kakushan_t(), true );
-    unique_gear::register_special_effect( 207845, kargaths_sacrificed_hands_t(), true );
-    unique_gear::register_special_effect( 215176, thundergods_vigor_t() ); //NYI
-    unique_gear::register_special_effect( 207779, ceannar_charger_t() );
-    unique_gear::register_special_effect( 207775, kazzalax_fujiedas_fury_t(), true );
-    unique_gear::register_special_effect( 215057, the_walls_fell_t() ); //NYI
-    unique_gear::register_special_effect( 215090, destiny_driver_t(), true );
-    unique_gear::register_special_effect( 207428, prydaz_xavarics_magnum_opus_t(), true ); //Not finished
-    unique_gear::register_special_effect( 208908, mannoroths_bloodletting_manacles_t() ); //NYI
-    unique_gear::register_special_effect( 215096, najentuss_vertebrae_t() );
-    unique_gear::register_special_effect( 207767, ayalas_stone_heart_t(), true );
-    unique_gear::register_special_effect( 208177, weight_of_the_earth_t() );
-    unique_gear::register_special_effect( 222266, raging_fury_t() );
-    unique_gear::register_special_effect( 222266, raging_fury2_t() );
-    unique_gear::register_special_effect( 208051, sephuzs_secret_t() );
-    unique_gear::register_special_effect( 248118, the_great_storms_eye_t(), true );
-    unique_gear::register_special_effect( 248120, valarjar_berserkers_t() );
+    items::init();
   }
 
   virtual void register_hotfixes() const override
