@@ -738,8 +738,12 @@ namespace warlock {
             bool can_feretory;
 
             warlock_spell_t(warlock_t* p, const std::string& n) :
-                spell_t(n, p, p -> find_class_spell(n))
-            {
+                spell_t(n, p, p -> find_class_spell(n)) {
+                _init_warlock_spell_t();
+            }
+
+            warlock_spell_t(warlock_t* p, const std::string& n, specialization_e s) :
+                spell_t(n, p, p -> find_class_spell(n,s)) {
                 _init_warlock_spell_t();
             }
 

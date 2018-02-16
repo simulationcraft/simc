@@ -6,7 +6,7 @@ namespace warlock {
         struct shadow_bolt_t : public warlock_spell_t {
             cooldown_t* icd;
 
-            shadow_bolt_t(warlock_t* p, const std::string& options_str) : warlock_spell_t(p, "Shadow Bolt") {
+            shadow_bolt_t(warlock_t* p, const std::string& options_str) : warlock_spell_t(p, "Shadow Bolt", WARLOCK_DEMONOLOGY) {
                 parse_options(options_str);
                 energize_type = ENERGIZE_ON_CAST;
                 energize_resource = RESOURCE_SOUL_SHARD;

@@ -5,7 +5,11 @@ namespace warlock {
     #define MAX_UAS 5
     namespace actions {
         const int ua_spells[5] = { 233490, 233496, 233497, 233498, 233499 };
+        struct shadow_bolt_t : public warlock_spell_t {
+            shadow_bolt_t(warlock_t* p, const std::string& options_str) : warlock_spell_t(p, "Shadow Bolt", WARLOCK_AFFLICTION) {
 
+            }
+        };
         // Dots
         struct agony_t : public warlock_spell_t {
             int agony_action_id;
@@ -430,18 +434,14 @@ namespace warlock {
 
             virtual void execute() override {
                 warlock_spell_t::execute();
-
                 p()->buffs.soul_harvest->expire(); //Potentially bugged check when live
 
-                if (p()->specialization() == WARLOCK_AFFLICTION) {
-                    total_duration = base_duration + time_per_agony * p()->get_active_dots(agony_action_id);
-                    p()->buffs.soul_harvest->trigger(1, buff_t::DEFAULT_VALUE(), 1.0, std::min(total_duration, max_duration));
-                }
+                total_duration = base_duration + time_per_agony * p()->get_active_dots(agony_action_id);
+                p()->buffs.soul_harvest->trigger(1, buff_t::DEFAULT_VALUE(), 1.0, std::min(total_duration, max_duration));
             }
 
             virtual void init() override {
                 warlock_spell_t::init();
-
                 agony_action_id = p()->find_action_id("agony");
             }
         };
@@ -501,11 +501,14 @@ namespace warlock {
 
         if (action_name == "corruption") return new                     corruption_t(this, options_str);
         if (action_name == "agony") return new                          agony_t(this, options_str);
+        if (action_name == "unstable_affliction") return new            unstable_affliction_t(this, options_str);
+        if (action_name == "shadow_bolt") return new                    shadow_bolt_t(this, options_str);
+        // aoe
+        if (action_name == "seed_of_corruption") return new             seed_of_corruption_t(this, options_str);
+        // talents
         if (action_name == "haunt") return new                          haunt_t(this, options_str);
         if (action_name == "phantom_singularity") return new            phantom_singularity_t(this, options_str);
         if (action_name == "siphon_life") return new                    siphon_life_t(this, options_str);
-        if (action_name == "unstable_affliction") return new            unstable_affliction_t(this, options_str);
-        if (action_name == "seed_of_corruption") return new             seed_of_corruption_t(this, options_str);
         if (action_name == "soul_harvest") return new                   soul_harvest_t(this, options_str);
 
         return nullptr;
@@ -580,6 +583,10 @@ namespace warlock {
 
         default->add_action("agony,if=refreshable");
         default->add_action("corruption,if=refreshable");
+        default->add_action("soul_harvest,if=buff.active_uas.stack>0");
+        default->add_action("unstable_affliction,if=soul_shard=5");
+        default->add_action("unstable_affliction,if=(dot.unstable_affliction_1.ticking+dot.unstable_affliction_2.ticking+dot.unstable_affliction_3.ticking+dot.unstable_affliction_4.ticking+dot.unstable_affliction_5.ticking=0)|soul_shard>2");
+        default->add_action("shadow_bolt");
     }
 
     using namespace unique_gear;

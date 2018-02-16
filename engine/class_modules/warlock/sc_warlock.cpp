@@ -493,6 +493,20 @@ warlock_t::warlock_t( sim_t* sim, const std::string& name, race_e r ):
     } );
   }
 
+void warlock_t::invalidate_cache(cache_e c)
+{
+    player_t::invalidate_cache(c);
+
+    switch (c)
+    {
+    case CACHE_MASTERY:
+        if (mastery_spells.master_demonologist->ok())
+            player_t::invalidate_cache(CACHE_PLAYER_DAMAGE_MULTIPLIER);
+        break;
+    default: break;
+    }
+}
+
 double warlock_t::composite_player_target_multiplier( player_t* target, school_e school ) const
 {
   double m = player_t::composite_player_target_multiplier( target, school );
@@ -525,8 +539,7 @@ double warlock_t::composite_player_multiplier( school_e school ) const
   if ( buffs.soul_harvest -> check() )
     m *= 1.0 + buffs.soul_harvest -> stack_value();
 
-  if ( specialization() == WARLOCK_DESTRUCTION && dbc::is_school( school, SCHOOL_FIRE ) )
-  {
+  if ( specialization() == WARLOCK_DESTRUCTION && dbc::is_school( school, SCHOOL_FIRE ) ) {
     m *= 1.0 + buffs.alythesss_pyrogenics -> stack_value();
   }
 
@@ -534,20 +547,6 @@ double warlock_t::composite_player_multiplier( school_e school ) const
   m *= 1.0 + buffs.lessons_of_spacetime -> check_stack_value();
 
   return m;
-}
-
-void warlock_t::invalidate_cache( cache_e c )
-{
-  player_t::invalidate_cache( c );
-
-  switch ( c )
-  {
-  case CACHE_MASTERY:
-    if ( mastery_spells.master_demonologist -> ok() )
-      player_t::invalidate_cache( CACHE_PLAYER_DAMAGE_MULTIPLIER );
-    break;
-  default: break;
-  }
 }
 
 double warlock_t::composite_spell_crit_chance() const
@@ -679,6 +678,11 @@ action_t* warlock_t::create_action( const std::string& action_name,const std::st
       action_t* aff_action = create_action_affliction(action_name, options_str);
       if (aff_action)
           return aff_action;
+  }
+  if (specialization() == WARLOCK_DEMONOLOGY) {
+      action_t* demo_action = create_action_demonology(action_name, options_str);
+      if (demo_action)
+          return demo_action;
   }
   
   return player_t::create_action(action_name, options_str);
