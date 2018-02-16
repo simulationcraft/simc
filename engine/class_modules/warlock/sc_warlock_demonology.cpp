@@ -163,21 +163,6 @@ namespace warlock {
 
         return nullptr;
     }
-    pet_t* warlock_t::create_pet_demonology(const std::string& pet_name,const std::string& /* pet_type */) {
-        pet_t* p = find_pet(pet_name);
-
-        if (p) return p;
-
-        using namespace pets;
-        if (pet_name == "service_felhunter")    return new   felhunter::felhunter_pet_t(sim, this);
-        /*
-        if (pet_name == "service_felguard")     return new    felguard_pet_t(sim, this);
-        if (pet_name == "service_imp")          return new         imp_pet_t(sim, this);
-        if (pet_name == "service_succubus")     return new    succubus_pet_t(sim, this);
-        if (pet_name == "service_voidwalker")   return new  voidwalker_pet_t(sim, this
-        */
-        return nullptr;
-    }
     void warlock_t::create_buffs_demonology() {
 
     }

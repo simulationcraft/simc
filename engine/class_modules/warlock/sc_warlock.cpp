@@ -195,6 +195,7 @@ double warlock_pet_t::composite_spell_speed() const {
 
   return css;
 }
+
 namespace felhunter {
     struct shadow_bite_t : public warlock_pet_spell_t
     {
@@ -235,6 +236,87 @@ namespace felhunter {
         if (name == "shadow_bite") return new shadow_bite_t(this);
         return warlock_pet_t::create_action(name, options_str);
     };
+}
+namespace imp {
+    struct firebolt_t : public warlock_pet_spell_t
+    {
+        firebolt_t(warlock_pet_t* p) : warlock_pet_spell_t("Firebolt", p, p -> find_spell(3110)) {
+        }
+
+        virtual double action_multiplier() const override {
+            double m = warlock_pet_spell_t::action_multiplier();
+            m *= 1.0 + p()->o()->spec.destruction->effectN(3).percent();
+            return m;
+        }
+
+        virtual double composite_target_multiplier(player_t* target) const override {
+            double m = warlock_pet_spell_t::composite_target_multiplier(target);
+            warlock_td_t* td = this->td(target);
+            double immolate = 0;
+            double multiplier = p()->o()->spec.firebolt_2->effectN(1).percent();
+            if (td->dots_immolate->is_ticking())
+                immolate += multiplier;
+            m *= 1.0 + immolate;
+
+            return m;
+        }
+    };
+    imp_pet_t::imp_pet_t(sim_t* sim, warlock_t* owner, const std::string& name) :
+        warlock_pet_t(sim, owner, name, PET_IMP, name != "imp") {
+        action_list_str = "firebolt";
+    }
+    action_t* imp_pet_t::create_action(const std::string& name, const std::string& options_str) {
+        if (name == "firebolt") return new firebolt_t(this);
+        return warlock_pet_t::create_action(name, options_str);
+    }
+}
+namespace succubus {
+    struct lash_of_pain_t : public warlock_pet_spell_t {
+        lash_of_pain_t(warlock_pet_t* p) : warlock_pet_spell_t(p, "Lash of Pain") {
+        }
+    };
+    struct whiplash_t : public warlock_pet_spell_t {
+        whiplash_t(warlock_pet_t* p) : warlock_pet_spell_t(p, "Whiplash") {
+            aoe = -1;
+        }
+    };
+    succubus_pet_t::succubus_pet_t(sim_t* sim, warlock_t* owner, const std::string& name) :
+        warlock_pet_t(sim, owner, name, PET_SUCCUBUS, name != "succubus") {
+        action_list_str = "lash_of_pain";
+        owner_coeff.ap_from_sp = 0.5;
+        owner_coeff.ap_from_sp *= 1.2;
+    }
+    void succubus_pet_t::init_base_stats() {
+        warlock_pet_t::init_base_stats();
+
+        main_hand_weapon.swing_time = timespan_t::from_seconds(3.0);
+        melee_attack = new warlock_pet_melee_t(this);
+        if (!util::str_compare_ci(name_str, "service_succubus"))
+            special_action = new whiplash_t(this);
+    }
+    action_t* succubus_pet_t::create_action(const std::string& name, const std::string& options_str) {
+        if (name == "lash_of_pain") return new lash_of_pain_t(this);
+
+        return warlock_pet_t::create_action(name, options_str);
+    }
+}
+namespace voidwalker {
+    struct torment_t : public warlock_pet_spell_t {
+        torment_t(warlock_pet_t* p) : warlock_pet_spell_t(p, "Torment") { }
+    };
+    voidwalker_pet_t::voidwalker_pet_t(sim_t* sim, warlock_t* owner, const std::string& name) :
+        warlock_pet_t(sim, owner, name, PET_VOIDWALKER, name != "voidwalker") {
+        action_list_str = "torment";
+        owner_coeff.ap_from_sp *= 1.2; // PTR
+    }
+    void voidwalker_pet_t::init_base_stats() {
+        warlock_pet_t::init_base_stats();
+        melee_attack = new warlock_pet_melee_t(this);
+    }
+    action_t* voidwalker_pet_t::create_action(const std::string& name, const std::string& options_str) {
+        if (name == "torment") return new torment_t(this);
+        return warlock_pet_t::create_action(name, options_str);
+    }
 }
 
 } // end namespace pets
@@ -591,19 +673,19 @@ action_t* warlock_t::create_action( const std::string& action_name,const std::st
   if ( action_name == "summon_imp"            ) return new      summon_main_pet_t( "imp", this );
   if ( action_name == "summon_pet"            ) return new      summon_main_pet_t( default_pet, this );
 
-  if (action_name == "drain_life") return new                     drain_life_t(this, options_str);
+  if ( action_name == "drain_life"            ) return new      drain_life_t(this, options_str);
 
-  action_t* aff_action = create_action_affliction(action_name, options_str);
-  if (aff_action)
-      return aff_action;
+  if( specialization() == WARLOCK_AFFLICTION) {
+      action_t* aff_action = create_action_affliction(action_name, options_str);
+      if (aff_action)
+          return aff_action;
+  }
   
   return player_t::create_action(action_name, options_str);
 }
 
-bool warlock_t::create_actions()
-{
+bool warlock_t::create_actions() {
 	using namespace actions;
-
 	return player_t::create_actions();
 }
 
@@ -613,10 +695,16 @@ pet_t* warlock_t::create_pet( const std::string& pet_name, const std::string& /*
   using namespace pets;
 
   if (pet_name == "felhunter") return new             felhunter::felhunter_pet_t(sim, this);
+  if (pet_name == "imp") return new                   imp::imp_pet_t(sim, this);
+  if (pet_name == "succubus") return new              succubus::succubus_pet_t(sim, this);
+  if (pet_name == "voidwalker") return new            voidwalker::voidwalker_pet_t(sim, this);
   //if (pet_name == "felguard") return new            felguard_pet_t(sim, this);
-  //if (pet_name == "imp") return new                 imp_pet_t(sim, this);
-  //if (pet_name == "succubus") return new            succubus_pet_t(sim, this);
-  //if (pet_name == "voidwalker") return new          voidwalker_pet_t(sim, this);
+
+  if (pet_name == "service_felhunter") return new     felhunter::felhunter_pet_t(sim, this, pet_name);
+  if (pet_name == "service_imp") return new           imp::imp_pet_t(sim, this, pet_name);
+  if (pet_name == "service_succubus") return new      succubus::succubus_pet_t(sim, this, pet_name);
+  if (pet_name == "service_voidwalker") return new    voidwalker::voidwalker_pet_t(sim, this, pet_name);
+  //if (pet_name == "service_felguard") return new      felguard_pet_t(sim, this, pet_name);
 
   return nullptr;
 }

@@ -663,6 +663,27 @@ namespace warlock {
                 virtual action_t* create_action(const std::string& name, const std::string& options_str) override;
             };
         }
+        namespace imp {
+            struct imp_pet_t : public warlock_pet_t {
+                imp_pet_t(sim_t* sim, warlock_t* owner, const std::string& name = "imp");
+
+                virtual action_t* create_action(const std::string& name, const std::string& options_str) override;
+            };
+        }
+        namespace succubus {
+            struct succubus_pet_t : public warlock_pet_t {
+                succubus_pet_t(sim_t* sim, warlock_t* owner, const std::string& name = "succubus");
+                virtual void init_base_stats() override;
+                virtual action_t* create_action(const std::string& name, const std::string& options_str) override;
+            };
+        }
+        namespace voidwalker {
+            struct voidwalker_pet_t : public warlock_pet_t {
+                voidwalker_pet_t(sim_t* sim, warlock_t* owner, const std::string& name = "voidwalker");
+                virtual void init_base_stats() override;
+                virtual action_t* create_action(const std::string& name, const std::string& options_str) override;
+            };
+        }
     }
 
     namespace actions {
