@@ -33,6 +33,21 @@ struct warrior_td_t: public actor_target_data_t
 typedef std::pair<std::string, simple_sample_data_with_min_max_t> data_t;
 typedef std::pair<std::string, simple_sample_data_t> simple_data_t;
 
+template <typename T_CONTAINER, typename T_DATA>
+T_CONTAINER* get_data_entry( const std::string& name, std::vector<T_DATA*>& entries )
+{
+  for ( size_t i = 0; i < entries.size(); i++ )
+  {
+    if ( entries[i] -> first == name )
+    {
+      return &( entries[i] -> second );
+    }
+  }
+
+  entries.push_back( new T_DATA( name, T_CONTAINER() ) );
+  return &( entries.back() -> second );
+}
+
 struct counter_t
 {
   const sim_t* sim;
@@ -639,20 +654,6 @@ public:
       resource_gain( RESOURCE_RAGE, legendary.ceannar_charger -> effectN( 1 ).trigger() -> effectN( 1 ).resource( RESOURCE_RAGE ), gain.ceannar_rage );
     }
   }
-  template <typename T_CONTAINER, typename T_DATA>
-  T_CONTAINER* get_data_entry( const std::string& name, std::vector<T_DATA*>& entries )
-  {
-    for ( size_t i = 0; i < entries.size(); i++ )
-    {
-      if ( entries[i] -> first == name )
-      {
-        return &( entries[i] -> second );
-      }
-    }
-
-    entries.push_back( new T_DATA( name, T_CONTAINER() ) );
-    return &( entries.back() -> second );
-  }
 };
 
 warrior_t::~warrior_t()
@@ -741,9 +742,9 @@ public:
 
     if ( track_cd_waste )
     {
-      cd_wasted_exec = p() -> template get_data_entry<simple_sample_data_with_min_max_t, data_t>( ab::name_str, p() -> cd_waste_exec );
-      cd_wasted_cumulative = p() -> template get_data_entry<simple_sample_data_with_min_max_t, data_t>( ab::name_str, p() -> cd_waste_cumulative );
-      cd_wasted_iter = p() -> template get_data_entry<simple_sample_data_t, simple_data_t>( ab::name_str, p() -> cd_waste_iter );
+      cd_wasted_exec = get_data_entry<simple_sample_data_with_min_max_t, data_t>( ab::name_str, p() -> cd_waste_exec );
+      cd_wasted_cumulative = get_data_entry<simple_sample_data_with_min_max_t, data_t>( ab::name_str, p() -> cd_waste_cumulative );
+      cd_wasted_iter = get_data_entry<simple_sample_data_t, simple_data_t>( ab::name_str, p() -> cd_waste_iter );
     }
     if ( sweeping_strikes )
     {
