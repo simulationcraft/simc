@@ -18,6 +18,110 @@ namespace warlock {
             }
         };
 
+        struct doom_t : public warlock_spell_t {
+            doom_t(warlock_t* p, const std::string& options_str) : warlock_spell_t("doom", p, p -> talents.doom) {
+                parse_options(options_str);
+                may_crit = true;
+                hasted_ticks = true;
+            }
+
+            timespan_t composite_dot_duration(const action_state_t* s) const override {
+                timespan_t duration = warlock_spell_t::composite_dot_duration(s);
+                return duration * p()->cache.spell_haste();
+            }
+
+            virtual double action_multiplier()const override {
+                double m = warlock_spell_t::action_multiplier();
+                double pet_counter = 0.0;
+
+                return m;
+            }
+
+            virtual void tick(dot_t* d) override {
+                warlock_spell_t::tick(d);
+
+                if (d->state->result == RESULT_HIT || result_is_hit(d->state->result)) {
+                    if (p()->sets->has_set_bonus(WARLOCK_DEMONOLOGY, T19, B2) && rng().roll(p()->sets->set(WARLOCK_DEMONOLOGY, T19, B2)->effectN(1).percent()))
+                        p()->resource_gain(RESOURCE_SOUL_SHARD, 1, p()->gains.t19_2pc_demonology);
+                }
+            }
+        };
+
+        struct hand_of_guldan_t : public warlock_spell_t {
+            /*
+            struct trigger_imp_event_t : public player_event_t {
+                bool initiator;
+                int count;
+                trigger_imp_event_t(warlock_t* p, int c, bool init = false) :
+                    player_event_t(*p, timespan_t::from_millis(1)), initiator(init), count(c) {
+                    
+                }
+
+                virtual const char* name() const override {
+                    return  "trigger_imp";
+                }
+
+                virtual void execute() override {
+                    warlock_t* p = static_cast< warlock_t* >(player());
+                }
+            };
+            */
+
+            //trigger_imp_event_t* imp_event;
+            int shards_used;
+
+            hand_of_guldan_t(warlock_t* p, const std::string& options_str) : warlock_spell_t(p, "Hand of Gul'dan") {
+                parse_options(options_str);
+                aoe = -1;
+                shards_used = 0;
+
+                parse_effect_data(p->find_spell(86040)->effectN(1));
+            }
+
+            virtual timespan_t travel_time() const override {
+                return timespan_t::from_millis(700);
+            }
+
+            virtual bool ready() override {
+                bool r = warlock_spell_t::ready();
+                if (p()->resources.current[RESOURCE_SOUL_SHARD] == 0.0)
+                    r = false;
+
+                return r;
+            }
+
+            void consume_resource() override {
+                warlock_spell_t::consume_resource();
+
+                shards_used = last_resource_cost;
+
+                if (last_resource_cost == 1.0)
+                    p()->procs.one_shard_hog->occur();
+                if (last_resource_cost == 2.0)
+                    p()->procs.two_shard_hog->occur();
+                if (last_resource_cost == 3.0)
+                    p()->procs.three_shard_hog->occur();
+                if (last_resource_cost == 4.0)
+                    p()->procs.four_shard_hog->occur();
+            }
+
+            virtual void impact(action_state_t* s) override {
+                warlock_spell_t::impact(s);
+
+                if (result_is_hit(s->result)) {
+                    /*
+                    if (s->chain_target == 0)
+                        imp_event = make_event<trigger_imp_event_t>(*sim, p(), floor(shards_used), true);
+                    */
+                    if (p()->sets->has_set_bonus(WARLOCK_DEMONOLOGY, T21, B2)) {
+                        for (int i = 0; i < shards_used; i++) {
+                            p()->buffs.rage_of_guldan->trigger();
+                        }
+                    }
+                }
+            }
+        };
+
     } // end actions namespace
 
     namespace buffs {
@@ -28,7 +132,8 @@ namespace warlock {
     action_t* warlock_t::create_action_demonology(const std::string& action_name, const std::string& options_str) {
         using namespace actions;
 
-        if (action_name == "shadow_bolt") return new        shadow_bolt_t(this, options_str);
+        if (action_name == "shadow_bolt")   return new        shadow_bolt_t(this, options_str);
+        if (action_name == "doom")          return new        doom_t(this, options_str);
 
         return nullptr;
     }
@@ -36,7 +141,23 @@ namespace warlock {
 
     }
     void warlock_t::init_spells_demonology() {
-        
+        spec.demonology = find_specialization_spell(137044);
+        mastery_spells.master_demonologist = find_mastery_spell(WARLOCK_DEMONOLOGY);
+        // DEMO
+        talents.demonic_strength = find_talent_spell("Demonic Strength");
+        talents.demonic_calling = find_talent_spell("Demonic Calling");
+        talents.doom = find_talent_spell("Doom");
+        talents.riders = find_talent_spell("Riders");
+        talents.power_siphon = find_talent_spell("Power Siphon");
+        talents.summon_vilefiend = find_talent_spell("Summon Vilefiend");
+        talents.overloaded = find_talent_spell("Overloaded");
+        talents.demonic_strength = find_talent_spell("Demonic Strength");
+        talents.biliescourge_bombers = find_talent_spell("Biliescourge Bombers");
+        talents.grimoire_of_synergy = find_talent_spell("Grimoire of Synergy");
+        talents.demonic_consumption = find_talent_spell("Demonic Consumption");
+        talents.grimoire_of_service = find_talent_spell("Grimoire of Service");
+        talents.inner_demons = find_talent_spell("Inner Demons");
+        talents.nether_portal = find_talent_spell("Nether Portal");
     }
     void warlock_t::init_gains_demonology() {
 

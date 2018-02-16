@@ -271,29 +271,6 @@ namespace warlock {
                     p()->active.tormented_agony->schedule_execute();
             }
         };
-        struct drain_life_t : public warlock_spell_t {
-            drain_life_t(warlock_t* p, const std::string& options_str) : warlock_spell_t(p, "Drain Life") {
-                parse_options(options_str);
-                channeled = true;
-                hasted_ticks = false;
-                may_crit = false;
-            }
-
-            virtual bool ready() override  {
-                if (p()->specialization() == WARLOCK_AFFLICTION)
-                    return false;
-                return warlock_spell_t::ready();
-            }
-            virtual double action_multiplier() const override {
-                double m = warlock_spell_t::action_multiplier();
-                if (p()->specialization() == WARLOCK_AFFLICTION)
-                    m *= 1.0 + p()->find_spell(205183)->effectN(1).percent();
-                return m;
-            }
-            virtual void tick(dot_t* d) override {
-                warlock_spell_t::tick(d);
-            }
-        };
         // AOE
         struct seed_of_corruption_t : public warlock_spell_t {
             struct seed_of_corruption_aoe_t : public warlock_spell_t {
@@ -524,7 +501,6 @@ namespace warlock {
 
         if (action_name == "corruption") return new                     corruption_t(this, options_str);
         if (action_name == "agony") return new                          agony_t(this, options_str);
-        if (action_name == "drain_life") return new                     drain_life_t(this, options_str);
         if (action_name == "haunt") return new                          haunt_t(this, options_str);
         if (action_name == "phantom_singularity") return new            phantom_singularity_t(this, options_str);
         if (action_name == "siphon_life") return new                    siphon_life_t(this, options_str);
@@ -555,39 +531,21 @@ namespace warlock {
     void warlock_t::init_spells_affliction(){
         // General
         spec.affliction = find_specialization_spell(137043);
-
+        mastery_spells.potent_afflictions = find_mastery_spell(WARLOCK_AFFLICTION);
         // Specialization Spells
         spec.unstable_affliction = find_specialization_spell("Unstable Affliction");
         spec.agony = find_specialization_spell("Agony");
-        // Mastery
-        mastery_spells.potent_afflictions = find_mastery_spell(WARLOCK_AFFLICTION);
-
         // Talents
         talents.shadow_embrace = find_talent_spell("Shadow Embrace");
         talents.haunt = find_talent_spell("Haunt");
         talents.deathbolt = find_talent_spell("Deathbolt");
-
         talents.writhe_in_agony = find_talent_spell("Writhe in Agony");
         talents.absolute_corruption = find_talent_spell("Absolute Corruption");
         talents.deaths_embrace = find_talent_spell("Death's Embrace");
-
-        talents.demon_skin = find_talent_spell("Soul Leech");
-        talents.burning_rush = find_talent_spell("Burning Rush");
-        talents.dark_pact = find_talent_spell("Dark Pact");
-
         talents.sow_the_seeds = find_talent_spell("Sow the Seeds");
         talents.phantom_singularity = find_talent_spell("Phantom Singularity");
         talents.soul_harvest = find_talent_spell("Soul Harvest");
-
-        talents.darkfury = find_talent_spell("Darkfury");
-        talents.mortal_coil = find_talent_spell("Mortal Coil");
-        talents.demonic_circle = find_talent_spell("Demonic Circle");
-
         talents.nightfall = find_talent_spell("Nightfall");
-        talents.grimoire_of_sacrifice = find_talent_spell("Grimoire of Sacrifice");
-
-
-        talents.soul_conduit = find_talent_spell("Soul Conduit");
         talents.creeping_death = find_talent_spell("Creeping Death");
         talents.siphon_life = find_talent_spell("Siphon Life");
         // Tier

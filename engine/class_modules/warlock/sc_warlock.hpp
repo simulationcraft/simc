@@ -72,6 +72,19 @@ namespace warlock {
 
         // Talents
         struct talents_t {
+            // shared
+            // tier 45
+            const spell_data_t* demon_skin;
+            const spell_data_t* burning_rush;
+            const spell_data_t* dark_pact;
+            // tier 75
+            const spell_data_t* darkfury;
+            const spell_data_t* mortal_coil;
+            const spell_data_t* demonic_circle;
+            // tier 90
+            const spell_data_t* grimoire_of_sacrifice; // aff and destro
+            // tier 100
+            const spell_data_t* soul_conduit;
             // AFF
             const spell_data_t* shadow_embrace;
             const spell_data_t* haunt;
@@ -81,54 +94,51 @@ namespace warlock {
             const spell_data_t* absolute_corruption;
             const spell_data_t* deaths_embrace;
 
-            const spell_data_t* demon_skin;
-            const spell_data_t* burning_rush;
-            const spell_data_t* dark_pact;
-
             const spell_data_t* sow_the_seeds;
             const spell_data_t* phantom_singularity;
             const spell_data_t* soul_harvest;
 
-            const spell_data_t* darkfury;
-            const spell_data_t* mortal_coil;
-            const spell_data_t* demonic_circle;
-
             const spell_data_t* nightfall;
-            const spell_data_t* grimoire_of_sacrifice;
 
-            const spell_data_t* soul_conduit;
             const spell_data_t* creeping_death;
             const spell_data_t* siphon_life;
-            //
-            const spell_data_t* backdraft;
-            const spell_data_t* fire_and_brimstone;
-            const spell_data_t* shadowburn;
-
-            const spell_data_t* shadowy_inspiration;
-            const spell_data_t* shadowflame;
+            // DEMO
+            const spell_data_t* demonic_strength;
             const spell_data_t* demonic_calling;
+            const spell_data_t* doom;
+
+            const spell_data_t* riders;
+            const spell_data_t* power_siphon;
+            const spell_data_t* summon_vilefiend;
+
+            const spell_data_t* overloaded;
+            const spell_data_t* demonic_strength2;
+            const spell_data_t* biliescourge_bombers;
+
+            const spell_data_t* grimoire_of_synergy;
+            const spell_data_t* demonic_consumption;
+            const spell_data_t* grimoire_of_service;
+
+            const spell_data_t* inner_demons;
+            const spell_data_t* nether_portal;
+            // DESTRO
+            const spell_data_t* eradication;
+            const spell_data_t* flashover;
+            const spell_data_t* soul_fire;
 
             const spell_data_t* reverse_entropy;
-            const spell_data_t* roaring_blaze;
+            const spell_data_t* internal_combustion;
+            const spell_data_t* shadowburn;
 
-            const spell_data_t* impending_doom;
-            const spell_data_t* implosion;
-
-            const spell_data_t* howl_of_terror;
-            const spell_data_t* shadowfury;
-
-            const spell_data_t* hand_of_doom;
-            const spell_data_t* power_trip;
-
-            const spell_data_t* eradication;
+            const spell_data_t* fire_and_brimstone;
             const spell_data_t* cataclysm;
+            const spell_data_t* hellfire;
 
+            const spell_data_t* roaring_blaze;
             const spell_data_t* grimoire_of_supremacy;
-            const spell_data_t* grimoire_of_service;
-            const spell_data_t* grimoire_of_synergy;
 
-            const spell_data_t* wreak_havoc;
             const spell_data_t* channel_demonfire;
+            const spell_data_t* dark_soul;
         } talents;
 
         struct legendary_t

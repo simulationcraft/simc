@@ -209,7 +209,29 @@ void parse_spell_coefficient(action_t& a) {
 }
 // Spells
 namespace actions {
+    struct drain_life_t : public warlock_spell_t {
+        drain_life_t(warlock_t* p, const std::string& options_str) : warlock_spell_t(p, "Drain Life") {
+            parse_options(options_str);
+            channeled = true;
+            hasted_ticks = false;
+            may_crit = false;
+        }
 
+        virtual bool ready() override {
+            if (p()->specialization() == WARLOCK_AFFLICTION)
+                return false;
+            return warlock_spell_t::ready();
+        }
+        virtual double action_multiplier() const override {
+            double m = warlock_spell_t::action_multiplier();
+            if (p()->specialization() == WARLOCK_AFFLICTION)
+                m *= 1.0 + p()->find_spell(205183)->effectN(1).percent();
+            return m;
+        }
+        virtual void tick(dot_t* d) override {
+            warlock_spell_t::tick(d);
+        }
+    };
 } // end actions namespace
 
 namespace buffs
@@ -243,14 +265,12 @@ warlock( p )
   dots_doom = target -> get_dot( "doom", &p );
   dots_drain_life = target -> get_dot( "drain_life", &p );
   dots_immolate = target -> get_dot( "immolate", &p );
-  dots_shadowflame = target -> get_dot( "shadowflame", &p );
   dots_seed_of_corruption = target -> get_dot( "seed_of_corruption", &p );
   dots_phantom_singularity = target -> get_dot( "phantom_singularity", &p );
   dots_channel_demonfire = target -> get_dot( "channel_demonfire", &p );
 
   debuffs_haunt = buff_creator_t( *this, "haunt", source -> find_spell( 48181 ) )
     .refresh_behavior( BUFF_REFRESH_PANDEMIC );
-  debuffs_shadowflame = buff_creator_t( *this, "shadowflame", source -> find_spell( 205181 ) );
   debuffs_agony = buff_creator_t( *this, "agony", source -> find_spell( 980 ) )
     .refresh_behavior( BUFF_REFRESH_PANDEMIC )
     .max_stack( ( warlock.talents.writhe_in_agony -> ok() ? warlock.talents.writhe_in_agony -> effectN( 2 ).base_value() : 10 ) );
@@ -261,7 +281,6 @@ warlock( p )
   debuffs_jaws_of_shadow = buff_creator_t( *this, "jaws_of_shadow", source -> find_spell( 242922 ) );
   debuffs_tormented_agony = buff_creator_t( *this, "tormented_agony", source -> find_spell( 252938 ) );
   debuffs_chaotic_flames = buff_creator_t( *this, "chaotic_flames", source -> find_spell( 253092 ) );
-
 
   debuffs_havoc = new buffs::debuff_havoc_t( *this );
 
@@ -533,6 +552,8 @@ action_t* warlock_t::create_action( const std::string& action_name,const std::st
   if ( action_name == "summon_imp"            ) return new            summon_main_pet_t( "imp", this );
   if ( action_name == "summon_pet"            ) return new      summon_main_pet_t( default_pet, this );
 
+  if (action_name == "drain_life") return new                     drain_life_t(this, options_str);
+
   action_t* aff_action = create_action_affliction(action_name, options_str);
   if (aff_action)
       return aff_action;
@@ -547,8 +568,7 @@ bool warlock_t::create_actions()
 	return player_t::create_actions();
 }
 
-pet_t* warlock_t::create_pet( const std::string& pet_name,
-                              const std::string& /* pet_type */ )
+pet_t* warlock_t::create_pet( const std::string& pet_name, const std::string& /* pet_type */ )
 {
   pet_t* p = find_pet( pet_name );
 
@@ -571,88 +591,164 @@ void warlock_t::create_pets()
   }
 }
 
-void warlock_t::init_spells()
-{
+void warlock_t::create_buffs() {
+    player_t::create_buffs();
+
+    if (specialization() == WARLOCK_AFFLICTION)
+        create_buffs_affliction();
+    if (specialization() == WARLOCK_DEMONOLOGY)
+        create_buffs_demonology();
+    if (specialization() == WARLOCK_DESTRUCTION)
+        create_buffs_destruction();
+
+    buffs.demonic_power = buff_creator_t(this, "demonic_power", talents.grimoire_of_sacrifice->effectN(2).trigger());
+
+    //legendary buffs
+    buffs.stretens_insanity = buff_creator_t(this, "stretens_insanity", find_spell(208822))
+        .default_value(find_spell(208822)->effectN(1).percent())
+        .add_invalidate(CACHE_PLAYER_DAMAGE_MULTIPLIER)
+        .tick_behavior(BUFF_TICK_NONE);
+    buffs.lessons_of_spacetime = buff_creator_t(this, "lessons_of_spacetime", find_spell(236176))
+        .default_value(find_spell(236176)->effectN(1).percent())
+        .add_invalidate(CACHE_PLAYER_DAMAGE_MULTIPLIER)
+        .refresh_behavior(BUFF_REFRESH_DURATION)
+        .tick_behavior(BUFF_TICK_NONE);
+    buffs.sephuzs_secret =
+        haste_buff_creator_t(this, "sephuzs_secret", find_spell(208052))
+        .default_value(find_spell(208052)->effectN(2).percent())
+        .cd(find_spell(226262)->duration());
+    buffs.alythesss_pyrogenics = buff_creator_t(this, "alythesss_pyrogenics", find_spell(205675))
+        .default_value(find_spell(205675)->effectN(1).percent())
+        .refresh_behavior(BUFF_REFRESH_DURATION);
+    buffs.wakeners_loyalty = buff_creator_t(this, "wakeners_loyalty", find_spell(236200))
+        .add_invalidate(CACHE_PLAYER_DAMAGE_MULTIPLIER)
+        .default_value(find_spell(236200)->effectN(1).percent());
+
+    //demonology buffs
+    buffs.demonic_synergy = buff_creator_t(this, "demonic_synergy", find_spell(171982))
+        .add_invalidate(CACHE_PLAYER_DAMAGE_MULTIPLIER)
+        .chance(1);
+    buffs.dreaded_haste = haste_buff_creator_t(this, "dreaded_haste", sets->set(WARLOCK_DEMONOLOGY, T20, B4)->effectN(1).trigger())
+        .default_value(sets->set(WARLOCK_DEMONOLOGY, T20, B4)->effectN(1).trigger()->effectN(1).percent());
+    buffs.rage_of_guldan = buff_creator_t(this, "rage_of_guldan", sets->set(WARLOCK_DEMONOLOGY, T21, B2)->effectN(1).trigger())
+        .duration(find_spell(257926)->duration())
+        .max_stack(find_spell(257926)->max_stacks())
+        .default_value(find_spell(257926)->effectN(1).base_value())
+        .refresh_behavior(BUFF_REFRESH_DURATION);
+
+    //destruction buffs
+    buffs.backdraft = buff_creator_t(this, "backdraft", find_spell(117828));
+    buffs.embrace_chaos = buff_creator_t(this, "embrace_chaos", sets->set(WARLOCK_DESTRUCTION, T19, B2)->effectN(1).trigger())
+        .chance(sets->set(WARLOCK_DESTRUCTION, T19, B2)->proc_chance());
+    buffs.active_havoc = buff_creator_t(this, "active_havoc")
+        .tick_behavior(BUFF_TICK_NONE)
+        .refresh_behavior(BUFF_REFRESH_DURATION)
+        .duration(timespan_t::from_seconds(10));
+}
+
+void warlock_t::init_spells() {
   player_t::init_spells();
 
   warlock_t::init_spells_affliction();
+  warlock_t::init_spells_demonology();
+  warlock_t::init_spells_destruction();
 
   // General
-  spec.fel_armor   = find_spell( 104938 );
-  spec.nethermancy = find_spell( 86091 );
-  spec.affliction = find_specialization_spell( 137043 );
-  spec.demonology = find_specialization_spell( 137044 );
-  spec.destruction = find_specialization_spell( 137046 );
-
+  spec.fel_armor                        = find_spell( 104938 );
+  spec.nethermancy                      = find_spell( 86091 );
+  
   // Specialization Spells
-
-  spec.immolate               = find_specialization_spell( "Immolate" );
-  spec.nightfall              = find_specialization_spell( "Nightfall" );
-  spec.wild_imps              = find_specialization_spell( "Wild Imps" );
-  spec.shadow_bite            = find_specialization_spell( "Shadow Bite" );
-  spec.shadow_bite_2          = find_specialization_spell( 231799 );
-  spec.conflagrate            = find_specialization_spell( "Conflagrate" );
-  spec.conflagrate_2          = find_specialization_spell( 231793 );
-  spec.unending_resolve       = find_specialization_spell( "Unending Resolve" );
-  spec.unending_resolve_2     = find_specialization_spell( 231794 );
-  spec.firebolt               = find_specialization_spell( "Firebolt" );
-  spec.firebolt_2             = find_specialization_spell( 231795 );
-
-  // Removed terniary for compat.
-  spec.doom                   = find_spell( 603 );
-
-  // Mastery
-  mastery_spells.chaotic_energies    = find_mastery_spell( WARLOCK_DESTRUCTION );
-  mastery_spells.master_demonologist = find_mastery_spell( WARLOCK_DEMONOLOGY );
+  spec.immolate                         = find_specialization_spell( "Immolate" );
+  spec.nightfall                        = find_specialization_spell( "Nightfall" );
+  spec.wild_imps                        = find_specialization_spell( "Wild Imps" );
+  spec.shadow_bite                      = find_specialization_spell( "Shadow Bite" );
+  spec.shadow_bite_2                    = find_specialization_spell( 231799 );
+  spec.conflagrate                      = find_specialization_spell( "Conflagrate" );
+  spec.conflagrate_2                    = find_specialization_spell( 231793 );
+  spec.unending_resolve                 = find_specialization_spell( "Unending Resolve" );
+  spec.unending_resolve_2               = find_specialization_spell( 231794 );
+  spec.firebolt                         = find_specialization_spell( "Firebolt" );
+  spec.firebolt_2                       = find_specialization_spell( 231795 );
 
   // Talents
-
-  talents.backdraft              = find_talent_spell( "Backdraft" );
-  talents.fire_and_brimstone     = find_talent_spell( "Fire and Brimstone" );
-  talents.shadowburn             = find_talent_spell( "Shadowburn" );
-
-  talents.shadowy_inspiration    = find_talent_spell( "Shadowy Inspiration" );
-  talents.shadowflame            = find_talent_spell( "Shadowflame" );
-  talents.demonic_calling        = find_talent_spell( "Demonic Calling" );
-
-  talents.reverse_entropy        = find_talent_spell( "Reverse Entropy" );
-  talents.roaring_blaze          = find_talent_spell( "Roaring Blaze" );
-
-  talents.impending_doom         = find_talent_spell( "Impending Doom" );
-  talents.implosion              = find_talent_spell( "Implosion" );
-
-  talents.demon_skin             = find_talent_spell( "Soul Leech" );
-  talents.mortal_coil            = find_talent_spell( "Mortal Coil" );
-  talents.howl_of_terror         = find_talent_spell( "Howl of Terror" );
-  talents.shadowfury             = find_talent_spell( "Shadowfury" );
-
-  talents.eradication            = find_talent_spell( "Eradication" );
-  talents.cataclysm              = find_talent_spell( "Cataclysm" );
-
-  talents.hand_of_doom           = find_talent_spell( "Hand of Doom" );
-  talents.power_trip			 = find_talent_spell( "Power Trip" );
-
-  talents.soul_harvest           = find_talent_spell( "Soul Harvest" );
-
-  talents.demonic_circle         = find_talent_spell( "Demonic Circle" );
-  talents.burning_rush           = find_talent_spell( "Burning Rush" );
-  talents.dark_pact              = find_talent_spell( "Dark Pact" );
-
-  talents.grimoire_of_supremacy  = find_talent_spell( "Grimoire of Supremacy" );
-  talents.grimoire_of_service    = find_talent_spell( "Grimoire of Service" );
-  talents.grimoire_of_sacrifice  = find_talent_spell( "Grimoire of Sacrifice" );
-  talents.grimoire_of_synergy    = find_talent_spell( "Grimoire of Synergy" );
-
-  talents.deaths_embrace         = find_talent_spell( "Death's Embrace" );
-
-  talents.wreak_havoc            = find_talent_spell( "Wreak Havoc" );
-  talents.channel_demonfire      = find_talent_spell( "Channel Demonfire" );
-
-  talents.soul_conduit           = find_talent_spell( "Soul Conduit" );
+  talents.demon_skin                    = find_talent_spell("Fire and Brimstone");
+  talents.burning_rush                  = find_talent_spell("Burning Rush");
+  talents.dark_pact                     = find_talent_spell("Dark Pact");
+  talents.darkfury                      = find_talent_spell("Darkfury");
+  talents.mortal_coil                   = find_talent_spell("Mortal Coil");
+  talents.demonic_circle                = find_talent_spell("Demonic Circle");
+  talents.grimoire_of_sacrifice         = find_talent_spell("Grimoire of Sacrifice"); // aff and destro
+  talents.soul_conduit                  = find_talent_spell("Soul Conduit");
 }
 
-void warlock_t::init_base_stats()
-{
+void warlock_t::init_rng() {
+    player_t::init_rng();
+
+    if (specialization() == WARLOCK_AFFLICTION)
+        init_rng_affliction();
+    if (specialization() == WARLOCK_DEMONOLOGY)
+        init_rng_demonology();
+    if (specialization() == WARLOCK_DESTRUCTION)
+        init_rng_destruction();
+
+    demonic_power_rppm = get_rppm("demonic_power", find_spell(196099));
+    grimoire_of_synergy = get_rppm("grimoire_of_synergy", talents.grimoire_of_synergy);
+    grimoire_of_synergy_pet = get_rppm("grimoire_of_synergy_pet", talents.grimoire_of_synergy);
+}
+
+void warlock_t::init_gains() {
+    player_t::init_gains();
+
+    if (specialization() == WARLOCK_AFFLICTION)
+        init_gains_affliction();
+    if (specialization() == WARLOCK_DEMONOLOGY)
+        init_gains_demonology();
+    if (specialization() == WARLOCK_DESTRUCTION)
+        init_gains_destruction();
+
+    gains.conflagrate = get_gain("conflagrate");
+    gains.shadowburn = get_gain("shadowburn");
+    gains.immolate = get_gain("immolate");
+    gains.immolate_crits = get_gain("immolate_crits");
+    gains.shadowburn_shard = get_gain("shadowburn_shard");
+    gains.miss_refund = get_gain("miss_refund");
+    gains.shadow_bolt = get_gain("shadow_bolt");
+    gains.soul_conduit = get_gain("soul_conduit");
+    gains.reverse_entropy = get_gain("reverse_entropy");
+    gains.soulsnatcher = get_gain("soulsnatcher");
+    gains.power_trip = get_gain("power_trip");
+    gains.t19_2pc_demonology = get_gain("t19_2pc_demonology");
+    gains.recurrent_ritual = get_gain("recurrent_ritual");
+    gains.feretory_of_souls = get_gain("feretory_of_souls");
+    gains.power_cord_of_lethtendris = get_gain("power_cord_of_lethtendris");
+    gains.incinerate = get_gain("incinerate");
+    gains.incinerate_crits = get_gain("incinerate_crits");
+    gains.dimensional_rift = get_gain("dimensional_rift");
+    gains.destruction_t20_2pc = get_gain("destruction_t20_2pc");
+}
+
+void warlock_t::init_procs() {
+    player_t::init_procs();
+
+    if (specialization() == WARLOCK_AFFLICTION)
+        init_procs_affliction();
+    if (specialization() == WARLOCK_DEMONOLOGY)
+        init_procs_demonology();
+    if (specialization() == WARLOCK_DESTRUCTION)
+        init_procs_destruction();
+
+    procs.one_shard_hog = get_proc("one_shard_hog");
+    procs.two_shard_hog = get_proc("two_shard_hog");
+    procs.three_shard_hog = get_proc("three_shard_hog");
+    procs.four_shard_hog = get_proc("four_shard_hog");
+    procs.demonic_calling = get_proc("demonic_calling");
+    procs.power_trip = get_proc("power_trip");
+    procs.soul_conduit = get_proc("soul_conduit");
+    procs.t19_2pc_chaos_bolts = get_proc("t19_2pc_chaos_bolt");
+    procs.demonology_t20_2pc = get_proc("demonology_t20_2pc");
+}
+
+void warlock_t::init_base_stats() {
   if ( base.distance < 1 )
     base.distance = 40;
 
@@ -679,131 +775,8 @@ void warlock_t::init_base_stats()
   }
 }
 
-void warlock_t::init_scaling()
-{
+void warlock_t::init_scaling() {
   player_t::init_scaling();
-}
-
-void warlock_t::create_buffs() {
-  player_t::create_buffs();
-
-  if ( specialization() == WARLOCK_AFFLICTION )
-      create_buffs_affliction();
-  if ( specialization() == WARLOCK_DEMONOLOGY )
-      create_buffs_demonology();
-  if ( specialization() == WARLOCK_DESTRUCTION )
-      create_buffs_destruction();
-
-  buffs.demonic_power = buff_creator_t( this, "demonic_power", talents.grimoire_of_sacrifice -> effectN( 2 ).trigger() );
-
-  //legendary buffs
-  buffs.stretens_insanity = buff_creator_t( this, "stretens_insanity", find_spell( 208822 ) )
-    .default_value( find_spell( 208822 ) -> effectN( 1 ).percent() )
-    .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
-    .tick_behavior( BUFF_TICK_NONE );
-  buffs.lessons_of_spacetime = buff_creator_t( this, "lessons_of_spacetime", find_spell( 236176 ) )
-    .default_value( find_spell( 236176 ) -> effectN( 1 ).percent() )
-    .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
-    .refresh_behavior( BUFF_REFRESH_DURATION )
-    .tick_behavior( BUFF_TICK_NONE );
-  buffs.sephuzs_secret =
-    haste_buff_creator_t( this, "sephuzs_secret", find_spell( 208052 ) )
-    .default_value( find_spell( 208052 ) -> effectN( 2 ).percent() )
-    .cd( find_spell( 226262 ) -> duration() );
-  buffs.alythesss_pyrogenics = buff_creator_t( this, "alythesss_pyrogenics", find_spell( 205675 ) )
-    .default_value( find_spell( 205675 ) -> effectN( 1 ).percent() )
-    .refresh_behavior( BUFF_REFRESH_DURATION );
-  buffs.wakeners_loyalty = buff_creator_t( this, "wakeners_loyalty", find_spell( 236200 ) )
-    .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
-    .default_value( find_spell( 236200 ) -> effectN( 1 ).percent() );
-
-  //demonology buffs
-  buffs.demonic_synergy = buff_creator_t( this, "demonic_synergy", find_spell( 171982 ) )
-    .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
-    .chance( 1 );
-  buffs.dreaded_haste = haste_buff_creator_t( this, "dreaded_haste", sets -> set( WARLOCK_DEMONOLOGY, T20, B4 ) -> effectN( 1 ).trigger() )
-    .default_value( sets -> set( WARLOCK_DEMONOLOGY, T20, B4 ) -> effectN( 1 ).trigger() -> effectN( 1 ).percent() );
-  buffs.rage_of_guldan = buff_creator_t(this, "rage_of_guldan", sets->set( WARLOCK_DEMONOLOGY, T21, B2 ) -> effectN( 1 ).trigger() )
-	  .duration( find_spell( 257926 ) -> duration() )
-	  .max_stack( find_spell( 257926 ) -> max_stacks() )
-	  .default_value( find_spell( 257926 ) -> effectN( 1 ).base_value() )
-	  .refresh_behavior( BUFF_REFRESH_DURATION );
-
-  //destruction buffs
-  buffs.backdraft = buff_creator_t( this, "backdraft", find_spell( 117828 ) );
-  buffs.embrace_chaos = buff_creator_t( this, "embrace_chaos", sets->set( WARLOCK_DESTRUCTION,T19, B2 ) -> effectN( 1 ).trigger() )
-    .chance( sets->set( WARLOCK_DESTRUCTION, T19, B2 ) -> proc_chance() );
-  buffs.active_havoc = buff_creator_t( this, "active_havoc" )
-    .tick_behavior( BUFF_TICK_NONE )
-    .refresh_behavior( BUFF_REFRESH_DURATION )
-    .duration( timespan_t::from_seconds( 10 ) );
-}
-
-void warlock_t::init_rng() {
-  player_t::init_rng();
-
-  if (specialization() == WARLOCK_AFFLICTION)
-      init_rng_affliction();
-  if (specialization() == WARLOCK_DEMONOLOGY)
-      init_rng_demonology();
-  if (specialization() == WARLOCK_DESTRUCTION)
-      init_rng_destruction();
-
-  demonic_power_rppm = get_rppm( "demonic_power", find_spell( 196099 ) );
-  grimoire_of_synergy = get_rppm( "grimoire_of_synergy", talents.grimoire_of_synergy );
-  grimoire_of_synergy_pet = get_rppm( "grimoire_of_synergy_pet", talents.grimoire_of_synergy );
-}
-
-void warlock_t::init_gains() {
-  player_t::init_gains();
-
-  if (specialization() == WARLOCK_AFFLICTION)
-      init_gains_affliction();
-  if (specialization() == WARLOCK_DEMONOLOGY)
-      init_gains_demonology();
-  if (specialization() == WARLOCK_DESTRUCTION)
-      init_gains_destruction();
-
-  gains.conflagrate                 = get_gain( "conflagrate" );
-  gains.shadowburn                  = get_gain( "shadowburn" );
-  gains.immolate                    = get_gain( "immolate" );
-  gains.immolate_crits              = get_gain( "immolate_crits" );
-  gains.shadowburn_shard            = get_gain( "shadowburn_shard" );
-  gains.miss_refund                 = get_gain( "miss_refund" );
-  gains.shadow_bolt                 = get_gain( "shadow_bolt" );
-  gains.soul_conduit                = get_gain( "soul_conduit" );
-  gains.reverse_entropy             = get_gain( "reverse_entropy" );
-  gains.soulsnatcher                = get_gain( "soulsnatcher" );
-  gains.power_trip                  = get_gain( "power_trip" );
-  gains.t19_2pc_demonology          = get_gain( "t19_2pc_demonology" );
-  gains.recurrent_ritual            = get_gain( "recurrent_ritual" );
-  gains.feretory_of_souls           = get_gain( "feretory_of_souls" );
-  gains.power_cord_of_lethtendris   = get_gain( "power_cord_of_lethtendris" );
-  gains.incinerate                  = get_gain( "incinerate" );
-  gains.incinerate_crits            = get_gain( "incinerate_crits" );
-  gains.dimensional_rift            = get_gain( "dimensional_rift" );
-  gains.destruction_t20_2pc         = get_gain( "destruction_t20_2pc" );
-}
-
-void warlock_t::init_procs() {
-  player_t::init_procs();
-
-  if (specialization() == WARLOCK_AFFLICTION)
-      init_procs_affliction();
-  if (specialization() == WARLOCK_DEMONOLOGY)
-      init_procs_demonology();
-  if (specialization() == WARLOCK_DESTRUCTION)
-      init_procs_destruction();
-
-  procs.one_shard_hog = get_proc( "one_shard_hog" );
-  procs.two_shard_hog = get_proc( "two_shard_hog" );
-  procs.three_shard_hog = get_proc( "three_shard_hog" );
-  procs.four_shard_hog = get_proc( "four_shard_hog" );
-  procs.demonic_calling = get_proc( "demonic_calling" );
-  procs.power_trip = get_proc( "power_trip" );
-  procs.soul_conduit = get_proc( "soul_conduit" );
-  procs.t19_2pc_chaos_bolts = get_proc( "t19_2pc_chaos_bolt" );
-  procs.demonology_t20_2pc = get_proc( "demonology_t20_2pc" );
 }
 
 void warlock_t::apl_precombat()
