@@ -684,8 +684,7 @@ void warlock_t::init_scaling()
   player_t::init_scaling();
 }
 
-void warlock_t::create_buffs()
-{
+void warlock_t::create_buffs() {
   player_t::create_buffs();
 
   if ( specialization() == WARLOCK_AFFLICTION )
@@ -696,11 +695,6 @@ void warlock_t::create_buffs()
       create_buffs_destruction();
 
   buffs.demonic_power = buff_creator_t( this, "demonic_power", talents.grimoire_of_sacrifice -> effectN( 2 ).trigger() );
-  buffs.soul_harvest = buff_creator_t( this, "soul_harvest", find_spell( 196098 ) )
-    .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
-    .refresh_behavior( BUFF_REFRESH_EXTEND )
-    .cd( timespan_t::zero() )
-    .default_value( find_spell( 196098 ) -> effectN( 1 ).percent() );
 
   //legendary buffs
   buffs.stretens_insanity = buff_creator_t( this, "stretens_insanity", find_spell( 208822 ) )
@@ -722,11 +716,6 @@ void warlock_t::create_buffs()
   buffs.wakeners_loyalty = buff_creator_t( this, "wakeners_loyalty", find_spell( 236200 ) )
     .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
     .default_value( find_spell( 236200 ) -> effectN( 1 ).percent() );
-
-  //affliction buffs
-  buffs.demonic_speed = haste_buff_creator_t( this, "demonic_speed", sets -> set( WARLOCK_AFFLICTION, T20, B4 ) -> effectN( 1 ).trigger() )
-    .chance( sets -> set( WARLOCK_AFFLICTION, T20, B4 ) -> proc_chance() )
-    .default_value( sets -> set( WARLOCK_AFFLICTION, T20, B4 ) -> effectN( 1 ).trigger() -> effectN( 1 ).percent() );
 
   //demonology buffs
   buffs.demonic_synergy = buff_creator_t( this, "demonic_synergy", find_spell( 171982 ) )
@@ -750,11 +739,15 @@ void warlock_t::create_buffs()
     .duration( timespan_t::from_seconds( 10 ) );
 }
 
-void warlock_t::init_rng()
-{
+void warlock_t::init_rng() {
   player_t::init_rng();
 
-  init_rng_affliction();
+  if (specialization() == WARLOCK_AFFLICTION)
+      init_rng_affliction();
+  if (specialization() == WARLOCK_DEMONOLOGY)
+      init_rng_demonology();
+  if (specialization() == WARLOCK_DESTRUCTION)
+      init_rng_destruction();
 
   demonic_power_rppm = get_rppm( "demonic_power", find_spell( 196099 ) );
   grimoire_of_synergy = get_rppm( "grimoire_of_synergy", talents.grimoire_of_synergy );
@@ -764,15 +757,19 @@ void warlock_t::init_rng()
 void warlock_t::init_gains() {
   player_t::init_gains();
 
-  gains.agony                       = get_gain( "agony" );
+  if (specialization() == WARLOCK_AFFLICTION)
+      init_gains_affliction();
+  if (specialization() == WARLOCK_DEMONOLOGY)
+      init_gains_demonology();
+  if (specialization() == WARLOCK_DESTRUCTION)
+      init_gains_destruction();
+
   gains.conflagrate                 = get_gain( "conflagrate" );
   gains.shadowburn                  = get_gain( "shadowburn" );
   gains.immolate                    = get_gain( "immolate" );
   gains.immolate_crits              = get_gain( "immolate_crits" );
   gains.shadowburn_shard            = get_gain( "shadowburn_shard" );
   gains.miss_refund                 = get_gain( "miss_refund" );
-  gains.seed_of_corruption          = get_gain( "seed_of_corruption" );
-  gains.unstable_affliction_refund  = get_gain( "unstable_affliction_refund" );
   gains.shadow_bolt                 = get_gain( "shadow_bolt" );
   gains.soul_conduit                = get_gain( "soul_conduit" );
   gains.reverse_entropy             = get_gain( "reverse_entropy" );
@@ -785,12 +782,18 @@ void warlock_t::init_gains() {
   gains.incinerate                  = get_gain( "incinerate" );
   gains.incinerate_crits            = get_gain( "incinerate_crits" );
   gains.dimensional_rift            = get_gain( "dimensional_rift" );
-  gains.affliction_t20_2pc          = get_gain( "affliction_t20_2pc" );
   gains.destruction_t20_2pc         = get_gain( "destruction_t20_2pc" );
 }
 
 void warlock_t::init_procs() {
   player_t::init_procs();
+
+  if (specialization() == WARLOCK_AFFLICTION)
+      init_procs_affliction();
+  if (specialization() == WARLOCK_DEMONOLOGY)
+      init_procs_demonology();
+  if (specialization() == WARLOCK_DESTRUCTION)
+      init_procs_destruction();
 
   procs.one_shard_hog = get_proc( "one_shard_hog" );
   procs.two_shard_hog = get_proc( "two_shard_hog" );
@@ -799,11 +802,8 @@ void warlock_t::init_procs() {
   procs.demonic_calling = get_proc( "demonic_calling" );
   procs.power_trip = get_proc( "power_trip" );
   procs.soul_conduit = get_proc( "soul_conduit" );
-  procs.the_master_harvester = get_proc( "the_master_harvester" );
-  procs.souls_consumed = get_proc( "souls_consumed" );
   procs.t19_2pc_chaos_bolts = get_proc( "t19_2pc_chaos_bolt" );
   procs.demonology_t20_2pc = get_proc( "demonology_t20_2pc" );
-  procs.affliction_t21_2pc = get_proc("affliction_t21_2pc");
 }
 
 void warlock_t::apl_precombat()

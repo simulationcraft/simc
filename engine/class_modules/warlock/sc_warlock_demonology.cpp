@@ -43,6 +43,9 @@ namespace warlock {
     }
     void warlock_t::init_rng_demonology() {
     }
+    void warlock_t::init_procs_demonology() {
+
+    }
     void warlock_t::create_options_demonology() {
     }
 

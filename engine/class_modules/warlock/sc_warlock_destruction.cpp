@@ -29,6 +29,9 @@ namespace warlock {
     }
     void warlock_t::init_rng_destruction() {
     }
+    void warlock_t::init_procs_destruction() {
+
+    }
     void warlock_t::create_options_destruction() {
     }
 

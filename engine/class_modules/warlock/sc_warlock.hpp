@@ -356,6 +356,7 @@ namespace warlock {
         void init_spells_affliction();
         void init_gains_affliction();
         void init_rng_affliction();
+        void init_procs_affliction();
         void create_options_affliction();
         void create_apl_affliction();
         virtual void legendaries_affliction();
@@ -366,6 +367,7 @@ namespace warlock {
         void init_spells_demonology();
         void init_gains_demonology();
         void init_rng_demonology();
+        void init_procs_demonology();
         void create_options_demonology();
         void create_apl_demonology();
         virtual void legendaries_demonology();
@@ -376,6 +378,7 @@ namespace warlock {
         void init_spells_destruction();
         void init_gains_destruction();
         void init_rng_destruction();
+        void init_procs_destruction();
         void create_options_destruction();
         void create_apl_destruction();
         virtual void legendaries_destruction();

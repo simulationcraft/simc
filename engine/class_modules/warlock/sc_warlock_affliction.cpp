@@ -609,6 +609,10 @@ namespace warlock {
     void warlock_t::init_rng_affliction() {
         affliction_t20_2pc_rppm = get_rppm("affliction_t20_2pc", sets->set(WARLOCK_AFFLICTION, T20, B2));
     }
+    void warlock_t::init_procs_affliction() {
+        procs.the_master_harvester = get_proc("the_master_harvester");
+        procs.affliction_t21_2pc = get_proc("affliction_t21_2pc");
+    }
     void warlock_t::create_options_affliction() {
         add_option(opt_bool("deaths_embrace_fixed_time", deaths_embrace_fixed_time));
     }
