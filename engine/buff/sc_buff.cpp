@@ -247,7 +247,7 @@ buff_t::buff_t( const buff_creation::buff_creator_basics_t& params ) :
   }
 
   // If there's no overridden proc chance (%), setup any potential custom RPPM-affecting attribute
-  if ( params._chance == -1 )
+  if ( params._chance == -1 && params._rppm_scale != RPPM_DISABLE )
   {
     if ( params._rppm_freq > -1 )
     {

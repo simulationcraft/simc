@@ -774,7 +774,7 @@ double special_effect_t::rppm() const
 
 // special_effect_t::rppm_scale =============================================
 
-rppm_scale_e special_effect_t::rppm_scale() const
+unsigned special_effect_t::rppm_scale() const
 {
   if ( rppm_scale_ != RPPM_NONE )
   {
@@ -958,16 +958,19 @@ std::string special_effect_t::to_string() const
   if ( rppm() > 0 )
   {
     s << " rppm=" << rppm() * rppm_modifier();
-    switch ( rppm_scale() )
+    if ( rppm_scale() & RPPM_HASTE )
     {
-      case RPPM_HASTE:
-        s << " (Haste)";
-        break;
-      case RPPM_CRIT:
-        s << " (Crit)";
-        break;
-      default:
-        break;
+      s << " (Haste)";
+    }
+
+    if ( rppm_scale() & RPPM_CRIT )
+    {
+      s << " (Crit)";
+    }
+
+    if ( rppm_scale() & RPPM_ATTACK_SPEED )
+    {
+      s << " (ASpeed)";
     }
   }
 
@@ -1051,11 +1054,11 @@ bool special_effect::parse_special_effect_encoding( special_effect_t& effect,
         effect.ppm_ = -t.value;
 
       if ( util::str_in_str_ci( t.name, "spellcrit" ) )
-        effect.rppm_scale_ = RPPM_CRIT;
+        effect.rppm_scale_ |= RPPM_CRIT;
       else if ( util::str_in_str_ci( t.name, "attackcrit" ) )
-        effect.rppm_scale_ = RPPM_CRIT;
+        effect.rppm_scale_ |= RPPM_CRIT;
       else if ( util::str_in_str_ci( t.name, "haste" ) )
-        effect.rppm_scale_ = RPPM_HASTE;
+        effect.rppm_scale_ |= RPPM_HASTE;
       else
         effect.rppm_scale_ = RPPM_NONE;
     }
@@ -1218,7 +1221,7 @@ void dbc_proc_callback_t::initialize()
 
   // Initialize proc chance triggers. Note that this code only chooses one, and
   // prioritizes RPPM > PPM > proc chance.
-  if ( effect.rppm() > 0 )
+  if ( effect.rppm() > 0 && effect.rppm() != RPPM_DISABLE )
     rppm = listener -> get_rppm( effect.name(), effect.rppm(), effect.rppm_modifier(), effect.rppm_scale() );
   else if ( effect.ppm() > 0 )
     ppm = effect.ppm();

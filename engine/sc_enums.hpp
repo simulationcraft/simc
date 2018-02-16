@@ -1172,13 +1172,13 @@ enum ready_e
 };
 
 /// Real PPM scale stats
-enum rppm_scale_e
+enum rppm_scale_e : uint8_t
 {
-  RPPM_NONE = 0,
-  RPPM_DISABLE,
-  RPPM_HASTE,
-  RPPM_CRIT,
-  RPPM_ATTACK_SPEED
+  RPPM_NONE         = 0x00,
+  RPPM_HASTE        = 0x01,
+  RPPM_CRIT         = 0x02,
+  RPPM_ATTACK_SPEED = 0x04,
+  RPPM_DISABLE      = 0xff
 };
 
 enum action_energize_e

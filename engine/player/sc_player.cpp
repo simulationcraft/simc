@@ -6086,7 +6086,7 @@ real_ppm_t* player_t::get_rppm( const std::string& name, const spell_data_t* dat
   return new_rppm;
 }
 
-real_ppm_t* player_t::get_rppm( const std::string& name, double freq, double mod, rppm_scale_e s )
+real_ppm_t* player_t::get_rppm( const std::string& name, double freq, double mod, unsigned s )
 {
   auto it = range::find_if( rppm_list, [ &name ]( const real_ppm_t* rppm ) {
     return util::str_compare_ci( rppm -> name(), name );
