@@ -361,10 +361,11 @@ namespace actions {
 
         }
 
-        void impact(action_state_t* s) override {
-          warlock_spell_t::impact(s);
-          if (result_is_hit(s->result)) {
-            td(s->target)->debuffs_shadow_embrace->trigger();
+        void impact( action_state_t* s ) override {
+          warlock_spell_t::impact( s );
+          if ( result_is_hit( s -> result ) ) {
+            if( p() -> talents.shadow_embrace -> ok() )
+              td( s -> target ) -> debuffs_shadow_embrace -> trigger();
           }
         }
     };
@@ -430,6 +431,9 @@ warlock( p )
 
   debuffs_haunt = buff_creator_t( *this, "haunt", source -> find_spell( 48181 ) )
     .refresh_behavior( BUFF_REFRESH_PANDEMIC );
+  debuffs_shadow_embrace = buff_creator_t(*this, "shadow_embrace", source->find_spell( 32390 ))
+    .refresh_behavior( BUFF_REFRESH_DURATION )
+    .max_stack( 3 );
   debuffs_agony = buff_creator_t( *this, "agony", source -> find_spell( 980 ) )
     .refresh_behavior( BUFF_REFRESH_PANDEMIC )
     .max_stack( ( warlock.talents.writhe_in_agony -> ok() ? warlock.talents.writhe_in_agony -> effectN( 2 ).base_value() : 10 ) );
@@ -551,7 +555,7 @@ double warlock_t::composite_player_target_multiplier( player_t* target, school_e
   if ( td -> debuffs_haunt -> check() )
     m *= 1.0 + find_spell( 48181 ) -> effectN( 2 ).percent();
   if ( td -> debuffs_shadow_embrace -> check() )
-    m *= 1.0 + find_spell( 32390 ) -> effectN( 1 ).percent();
+    m *= 1.0 + ( find_spell( 32390 ) -> effectN( 1 ).percent() * td -> debuffs_shadow_embrace -> stack() );
 
   for ( int i = 0; i < MAX_UAS; i++ ) {
       if ( td -> dots_unstable_affliction[i] -> is_ticking() ) {
