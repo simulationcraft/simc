@@ -481,7 +481,7 @@ namespace warlock {
         void init_spells_affliction();
         void init_rng_affliction();
         void create_options_affliction();
-        void create_apl_aff();
+        void create_apl_affliction();
         virtual void aff_legendaries();
 
         std::string       default_potion() const override;
@@ -1159,6 +1159,120 @@ namespace warlock {
         };
 
         typedef residual_action::residual_periodic_action_t< warlock_spell_t > residual_action_t;
+
+
+        struct summon_pet_t : public warlock_spell_t
+        {
+            timespan_t summoning_duration;
+            std::string pet_name;
+            pets::warlock_pet_t* pet;
+
+        private:
+            void _init_summon_pet_t()
+            {
+                util::tokenize(pet_name);
+                harmful = false;
+
+                if (data().ok() &&
+                    std::find(p()->pet_name_list.begin(), p()->pet_name_list.end(), pet_name) ==
+                    p()->pet_name_list.end())
+                {
+                    p()->pet_name_list.push_back(pet_name);
+                }
+            }
+
+        public:
+            summon_pet_t(const std::string& n, warlock_t* p, const std::string& sname = "") :
+                warlock_spell_t(p, sname.empty() ? "Summon " + n : sname),
+                summoning_duration(timespan_t::zero()),
+                pet_name(sname.empty() ? n : sname), pet(nullptr)
+            {
+                _init_summon_pet_t();
+            }
+
+            summon_pet_t(const std::string& n, warlock_t* p, int id) :
+                warlock_spell_t(n, p, p -> find_spell(id)),
+                summoning_duration(timespan_t::zero()),
+                pet_name(n), pet(nullptr)
+            {
+                _init_summon_pet_t();
+            }
+
+            summon_pet_t(const std::string& n, warlock_t* p, const spell_data_t* sd) :
+                warlock_spell_t(n, p, sd),
+                summoning_duration(timespan_t::zero()),
+                pet_name(n), pet(nullptr)
+            {
+                _init_summon_pet_t();
+            }
+
+            bool init_finished() override
+            {
+                pet = debug_cast<pets::warlock_pet_t*>(player->find_pet(pet_name));
+                return warlock_spell_t::init_finished();
+            }
+
+            virtual void execute() override
+            {
+                pet->summon(summoning_duration);
+
+                warlock_spell_t::execute();
+            }
+
+            bool ready() override
+            {
+                if (!pet)
+                {
+                    return false;
+                }
+
+                return warlock_spell_t::ready();
+            }
+        };
+
+        struct summon_main_pet_t : public summon_pet_t
+        {
+            cooldown_t* instant_cooldown;
+
+            summon_main_pet_t(const std::string& n, warlock_t* p) :
+                summon_pet_t(n, p), instant_cooldown(p -> get_cooldown("instant_summon_pet"))
+            {
+                instant_cooldown->duration = timespan_t::from_seconds(60);
+                ignore_false_positive = true;
+            }
+
+            virtual void schedule_execute(action_state_t* state = nullptr) override
+            {
+                warlock_spell_t::schedule_execute(state);
+
+                if (p()->warlock_pet_list.active)
+                {
+                    p()->warlock_pet_list.active->dismiss();
+                    p()->warlock_pet_list.active = nullptr;
+                }
+            }
+
+            virtual bool ready() override
+            {
+                if (p()->warlock_pet_list.active == pet)
+                    return false;
+
+                if (p()->talents.grimoire_of_supremacy->ok()) //if we have the uberpets, we can't summon our standard pets
+                    return false;
+                return summon_pet_t::ready();
+            }
+
+            virtual void execute() override
+            {
+                summon_pet_t::execute();
+
+                p()->warlock_pet_list.active = p()->warlock_pet_list.last = pet;
+
+                if (p()->buffs.demonic_power->check())
+                    p()->buffs.demonic_power->expire();
+            }
+        };
+
     }
 
     namespace buffs {

@@ -562,7 +562,7 @@ namespace warlock {
         add_option(opt_bool("deaths_embrace_fixed_time", deaths_embrace_fixed_time));
     }
 
-    void warlock_t::create_apl_aff() {
+    void warlock_t::create_apl_affliction() {
         action_priority_list_t* default = get_action_priority_list("default");
 
         default->add_action("agony,if=refreshable");

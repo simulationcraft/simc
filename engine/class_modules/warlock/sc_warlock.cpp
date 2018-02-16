@@ -5,570 +5,6 @@ namespace warlock {
 #define MAX_UAS 5
 // Pets
 namespace pets {
-struct thalkiels_ascendance_pet_spell_t : public warlock_pet_spell_t
-{
-    bool is_usebale;
-    thalkiels_ascendance_pet_spell_t( warlock_pet_t * p) :
-        warlock_pet_spell_t("thalkiels_ascendance", p, p->o()->find_spell( 242832 ))
-    {
-        if(p->o()->specialization() == WARLOCK_DEMONOLOGY)
-            is_usebale = true;
-        else
-            is_usebale = false;
-        //?? Think thats all we need?
-    }
-
-    void execute() override
-    {
-        if(is_usebale)
-            warlock_pet_spell_t::execute();
-    }
-};
-
-struct rift_shadow_bolt_t: public warlock_pet_spell_t
-{
-  struct rift_shadow_bolt_tick_t : public warlock_pet_spell_t
-  {
-    rift_shadow_bolt_tick_t( warlock_pet_t* p ) :
-      warlock_pet_spell_t( "shadow_bolt", p, p -> find_spell( 196657 ) )
-    {
-      background = dual = true;
-      base_execute_time = timespan_t::zero();
-    }
-
-    virtual double composite_target_multiplier( player_t* target ) const override
-    {
-      double m = warlock_pet_spell_t::composite_target_multiplier( target );
-
-      if ( target == p() -> o() -> havoc_target && p() -> o() -> legendary.odr_shawl_of_the_ymirjar )
-        m *= 1.0 + p() -> find_spell( 212173 ) -> effectN( 1 ).percent();
-
-      return m;
-    }
-  };
-
-  rift_shadow_bolt_t( warlock_pet_t* p ) :
-    warlock_pet_spell_t( "shadow_bolt", p, p -> find_spell( 196657 ) )
-  {
-    may_crit = may_miss = false;
-    tick_may_crit = hasted_ticks = true;
-    spell_power_mod.direct = 0;
-    base_dd_min = base_dd_max = 0;
-    dot_duration = timespan_t::from_millis( 14000 );
-    base_tick_time = timespan_t::from_millis( 2000 );
-    base_execute_time = timespan_t::zero();
-
-    tick_action = new rift_shadow_bolt_tick_t( p );
-  }
-
-  void execute() override
-  {
-    warlock_pet_spell_t::execute();
-
-    cooldown -> start( timespan_t::from_seconds( 16 ) );
-  }
-};
-
-struct chaos_barrage_t : public warlock_pet_spell_t
-{
-  struct chaos_barrage_tick_t : public warlock_pet_spell_t
-  {
-    chaos_barrage_tick_t( warlock_pet_t* p ) :
-      warlock_pet_spell_t( "chaos_barrage", p, p -> find_spell( 187394 ) )
-    {
-      background = dual = true;
-      base_execute_time = timespan_t::zero();
-    }
-
-    virtual double composite_target_multiplier( player_t* target ) const override
-    {
-      double m = warlock_pet_spell_t::composite_target_multiplier( target );
-
-      if ( target == p() -> o() -> havoc_target && p() -> o() -> legendary.odr_shawl_of_the_ymirjar )
-        m *= 1.0 + p() -> find_spell( 212173 ) -> effectN( 1 ).percent();
-
-      return m;
-    }
-  };
-
-  chaos_barrage_t( warlock_pet_t* p ) :
-    warlock_pet_spell_t( "chaos_barrage", p, p -> find_spell( 187394 ) )
-  {
-    may_crit = may_miss = false;
-    tick_may_crit = hasted_ticks = true;
-    spell_power_mod.direct = 0;
-    base_dd_min = base_dd_max = 0;
-    dot_duration = timespan_t::from_millis( 5500 );
-    base_tick_time = timespan_t::from_millis( 250 );
-    base_execute_time = timespan_t::zero();
-
-    tick_action = new chaos_barrage_tick_t( p );
-  }
-
-  void execute() override
-  {
-    warlock_pet_spell_t::execute();
-
-    cooldown -> start( timespan_t::from_seconds( 6 ) );
-  }
-};
-
-struct rift_chaos_bolt_t : public warlock_pet_spell_t
-{
-  rift_chaos_bolt_t( warlock_pet_t* p ) :
-    warlock_pet_spell_t( "chaos_bolt", p, p -> find_spell( 215279 ) )
-  {
-    base_execute_time = timespan_t::from_millis( 3000 );
-    cooldown->duration = timespan_t::from_seconds( 5.5 );
-  }
-
-  virtual double composite_target_multiplier( player_t* target ) const override
-  {
-    double m = warlock_pet_spell_t::composite_target_multiplier( target );
-
-    if ( target == p() -> o() -> havoc_target && p() -> o() -> legendary.odr_shawl_of_the_ymirjar )
-      m *= 1.0 + p() -> find_spell( 212173 ) -> effectN( 1 ).percent();
-
-    return m;
-  }
-
-  // Force spell to always crit
-  double composite_crit_chance() const override
-  {
-    return 1.0;
-  }
-
-  double calculate_direct_amount( action_state_t* state ) const override
-  {
-    warlock_pet_spell_t::calculate_direct_amount( state );
-
-    // Can't use player-based crit chance from the state object as it's hardcoded to 1.0. Use cached
-    // player spell crit instead. The state target crit chance of the state object is correct.
-    // Targeted Crit debuffs function as a separate multiplier.
-    state -> result_total *= 1.0 + player -> cache.spell_crit_chance() + state -> target_crit_chance;
-
-    return state -> result_total;
-  }
-};
-
-struct searing_bolt_t : public warlock_pet_spell_t
-{
-  searing_bolt_t( warlock_pet_t* p ) :
-    warlock_pet_spell_t( "searing_bolt", p, p -> find_spell( 243050 ) )
-  {
-    may_crit = may_miss = hasted_ticks = false;
-    tick_may_crit = true;
-    base_execute_time = timespan_t::from_millis( 500 );
-    base_costs[RESOURCE_ENERGY] = 1.0;
-    resource_current = RESOURCE_ENERGY;
-    dot_max_stack = 20;
-  }
-};
-
-struct firebolt_t: public warlock_pet_spell_t
-{
-  firebolt_t( warlock_pet_t* p ):
-    warlock_pet_spell_t( "Firebolt", p, p -> find_spell( 3110 ) )
-  {
-    base_multiplier *= 1.0;
-  }
-
-  virtual double action_multiplier() const override
-  {
-    double m = warlock_pet_spell_t::action_multiplier();
-
-    m *= 1.0 + p() -> o() -> spec.destruction -> effectN( 3 ).percent();
-
-    return m;
-  }
-
-  virtual double composite_target_multiplier( player_t* target ) const override
-  {
-    double m = warlock_pet_spell_t::composite_target_multiplier( target );
-
-    warlock_td_t* td = this -> td( target );
-
-    double immolate = 0;
-    double multiplier = p() -> o() -> spec.firebolt_2 -> effectN( 1 ).percent();
-
-    if( td -> dots_immolate -> is_ticking() )
-      immolate += multiplier;
-
-    m *= 1.0 + immolate;
-
-    return m;
-  }
-};
-
-struct dreadbite_t : public warlock_pet_melee_attack_t
-{
-  timespan_t dreadstalker_duration;
-  double t21_4pc_increase;
-
-  dreadbite_t( warlock_pet_t* p ) :
-    warlock_pet_melee_attack_t( "Dreadbite", p, p -> find_spell( 205196 ) )
-  {
-    weapon = &( p -> main_hand_weapon );
-    dreadstalker_duration = p -> find_spell( 193332 ) -> duration() +
-                            ( p -> o() -> sets->has_set_bonus( WARLOCK_DEMONOLOGY, T19, B4 )
-                              ? p -> o() -> sets->set( WARLOCK_DEMONOLOGY, T19, B4 ) -> effectN( 1 ).time_value()
-                              : timespan_t::zero() );
-    t21_4pc_increase = p->o()->sets->set( WARLOCK_DEMONOLOGY, T21, B4 )->effectN( 1 ).percent();
-  }
-
-  virtual bool ready() override
-  {
-    if ( p()->dreadbite_executes <= 0 )
-      return false;
-
-    return warlock_pet_melee_attack_t::ready();
-  }
-
-  virtual double action_multiplier() const override
-  {
-    double m = warlock_pet_melee_attack_t::action_multiplier();
-
-    if ( p()->o()->sets->has_set_bonus( WARLOCK_DEMONOLOGY, T21, B4 ) && p()->bites_executed == 1 )
-      m *= 1.0 + t21_4pc_increase;
-
-    return m;
-  }
-
-  void execute() override
-  {
-    warlock_pet_melee_attack_t::execute();
-
-    p()->dreadbite_executes--;
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    warlock_pet_melee_attack_t::impact( s );
-
-    p()->bites_executed++;
-  }
-};
-
-struct legion_strike_t: public warlock_pet_melee_attack_t
-{
-  legion_strike_t( warlock_pet_t* p ):
-    warlock_pet_melee_attack_t( p, "Legion Strike" )
-  {
-    aoe = -1;
-    weapon = &( p -> main_hand_weapon );
-  }
-
-  virtual bool ready() override
-  {
-    if ( p() -> special_action -> get_dot() -> is_ticking() ) return false;
-
-    return warlock_pet_melee_attack_t::ready();
-  }
-};
-
-struct axe_toss_t : public warlock_pet_spell_t
-{
-  axe_toss_t( warlock_pet_t* p ) :
-    warlock_pet_spell_t( "Axe Toss", p, p -> find_spell( 89766 ) )
-  {
-  }
-
-  void execute() override
-  {
-    warlock_pet_spell_t::execute();
-
-    p() -> trigger_sephuzs_secret( execute_state, MECHANIC_STUN );
-  }
-};
-
-struct felstorm_tick_t: public warlock_pet_melee_attack_t
-{
-  felstorm_tick_t( warlock_pet_t* p, const spell_data_t& s ):
-    warlock_pet_melee_attack_t( "felstorm_tick", p, s.effectN( 1 ).trigger() )
-  {
-    aoe = -1;
-    background = true;
-    weapon = &( p -> main_hand_weapon );
-  }
-};
-
-struct felstorm_t: public warlock_pet_melee_attack_t
-{
-  felstorm_t( warlock_pet_t* p ) :
-    warlock_pet_melee_attack_t( "felstorm", p, p -> find_spell( 89751 ) )
-  {
-    tick_zero = true;
-    hasted_ticks = false;
-    may_miss = false;
-    may_crit = false;
-    weapon_multiplier = 0;
-
-    dynamic_tick_action = true;
-    tick_action = new felstorm_tick_t( p, data() );
-  }
-
-  virtual void cancel() override
-  {
-    warlock_pet_melee_attack_t::cancel();
-
-    get_dot() -> cancel();
-  }
-
-  virtual void execute() override
-  {
-    warlock_pet_melee_attack_t::execute();
-
-    p() -> melee_attack -> cancel();
-  }
-
-  virtual void last_tick( dot_t* d ) override
-  {
-    warlock_pet_melee_attack_t::last_tick( d );
-
-    if ( ! p() -> is_sleeping() && ! p() -> melee_attack -> target -> is_sleeping() )
-      p() -> melee_attack -> execute();
-  }
-};
-
-struct shadow_bite_t: public warlock_pet_spell_t
-{
-  double shadow_bite_mult;
-  shadow_bite_t( warlock_pet_t* p ):
-    warlock_pet_spell_t( p, "Shadow Bite" ),
-    shadow_bite_mult( 0.0 )
-  {
-    shadow_bite_mult = p -> o() -> spec.shadow_bite_2 -> effectN( 1 ).percent();
-  }
-
-  virtual double composite_target_multiplier( player_t* target ) const override
-  {
-    double m = warlock_pet_spell_t::composite_target_multiplier( target );
-
-    warlock_td_t* td = this -> td( target );
-
-    double dots = 0;
-
-    for ( int i = 0; i < MAX_UAS; i++ )
-      if ( td -> dots_unstable_affliction[i] -> is_ticking() )
-        dots += shadow_bite_mult;
-
-    if ( td -> dots_agony -> is_ticking() )
-      dots += shadow_bite_mult;
-
-    if ( td -> dots_corruption -> is_ticking() )
-      dots += shadow_bite_mult;
-
-    m *= 1.0 + dots;
-
-    return m;
-  }
-};
-
-struct lash_of_pain_t: public warlock_pet_spell_t
-{
-  lash_of_pain_t( warlock_pet_t* p ):
-    warlock_pet_spell_t( p, "Lash of Pain" )
-  {
-  }
-};
-
-struct whiplash_t: public warlock_pet_spell_t
-{
-  whiplash_t( warlock_pet_t* p ):
-    warlock_pet_spell_t( p, "Whiplash" )
-  {
-    aoe = -1;
-  }
-};
-
-struct torment_t: public warlock_pet_spell_t
-{
-  torment_t( warlock_pet_t* p ):
-    warlock_pet_spell_t( p, "Torment" )
-  { }
-};
-
-struct immolation_tick_t : public warlock_pet_spell_t
-{
-  immolation_tick_t( warlock_pet_t* p, const spell_data_t& s ) :
-    warlock_pet_spell_t( "immolation_tick", p, s.effectN( 1 ).trigger() )
-  {
-    aoe = -1;
-    background = true;
-    may_crit = true;
-  }
-};
-
-struct immolation_t : public warlock_pet_spell_t
-{
-  immolation_t( warlock_pet_t* p, const std::string& options_str ) :
-    warlock_pet_spell_t( "immolation", p, p -> find_spell( 19483 ) )
-  {
-    parse_options( options_str );
-
-    dynamic_tick_action = hasted_ticks = true;
-    tick_action = new immolation_tick_t( p, data() );
-  }
-
-  void init() override
-  {
-    warlock_pet_spell_t::init();
-
-    // Explicitly snapshot haste, as the spell actually has no duration in spell data
-    snapshot_flags |= STATE_HASTE;
-    update_flags |= STATE_HASTE;
-  }
-
-  timespan_t composite_dot_duration( const action_state_t* ) const override
-  {
-    return player -> sim -> expected_iteration_time * 2;
-  }
-
-  virtual void cancel() override
-  {
-    dot_t* dot = find_dot( target );
-    if ( dot && dot -> is_ticking() )
-    {
-      dot -> cancel();
-    }
-    action_t::cancel();
-  }
-};
-
-struct doom_bolt_t: public warlock_pet_spell_t
-{
-  doom_bolt_t( warlock_pet_t* p ):
-    warlock_pet_spell_t( "Doom Bolt", p, p -> find_spell( 85692 ) )
-  {
-    if ( p -> o() -> talents.grimoire_of_supremacy -> ok() )
-      base_multiplier *= 1.0;
-
-    if ( p -> o() -> talents.grimoire_of_supremacy -> ok() )
-      base_multiplier *= 1.0 + p -> find_spell( 152107 ) -> effectN( 6 ).percent();
-  }
-
-  virtual double action_multiplier() const override
-  {
-    double m = warlock_pet_spell_t::action_multiplier();
-
-    if ( p() -> o() -> specialization() == WARLOCK_DESTRUCTION )
-      m *= 1.0 + p() -> o() -> spec.destruction -> effectN( 3 ).percent();
-
-    return m;
-  }
-
-  virtual double composite_target_multiplier( player_t* target ) const override
-  {
-    double m = warlock_pet_spell_t::composite_target_multiplier( target );
-
-    if ( target -> health_percentage() < 20 )
-    {
-      m *= 1.0 + data().effectN( 2 ).percent();
-    }
-    return m;
-  }
-};
-
-struct shadow_lock_t : public warlock_pet_spell_t
-{
-  shadow_lock_t( warlock_pet_t* p ) :
-    warlock_pet_spell_t( "Shadow Lock", p, p -> find_spell( 171138 ) )
-  {
-  }
-
-  void execute() override
-  {
-    warlock_pet_spell_t::execute();
-
-    p() -> trigger_sephuzs_secret( execute_state, MECHANIC_INTERRUPT );
-  }
-};
-
-struct meteor_strike_t: public warlock_pet_spell_t
-{
-  meteor_strike_t( warlock_pet_t* p, const std::string& options_str ):
-    warlock_pet_spell_t( "Meteor Strike", p, p -> find_spell( 171018 ) )
-  {
-    parse_options( options_str );
-    aoe = -1;
-  }
-
-  void execute() override
-  {
-    warlock_pet_spell_t::execute();
-
-    p() -> trigger_sephuzs_secret( execute_state, MECHANIC_STUN );
-  }
-};
-
-struct fel_firebolt_t: public warlock_pet_spell_t
-{
-  double jaws_of_shadow_multiplier;
-  fel_firebolt_t( warlock_pet_t* p ):
-    warlock_pet_spell_t( "fel_firebolt", p, p -> find_spell( 104318 ) )
-  {
-      base_multiplier *= 1.0;
-      jaws_of_shadow_multiplier = p -> o() -> find_spell( 238109 ) -> effectN( 1 ).percent();
-  }
-
-  virtual bool ready() override
-  {
-    return spell_t::ready();
-  }
-
-  void execute() override
-  {
-    warlock_pet_spell_t::execute();
-  }
-
-  virtual void impact( action_state_t* s ) override
-  {
-    warlock_pet_spell_t::impact( s );
-    if ( result_is_hit( s -> result ) )
-    {
-      if ( rng().roll( p() -> o() -> sets->set( WARLOCK_DEMONOLOGY, T18, B4 ) -> effectN( 1 ).percent() ) )
-      {
-        p() -> o() -> buffs.t18_4pc_driver -> trigger();
-      }
-    }
-  }
-
-  virtual double composite_target_multiplier( player_t* target ) const override
-  {
-    double m = warlock_pet_spell_t::composite_target_multiplier( target );
-
-    warlock_td_t* td = this -> td( target );
-
-    m *= td -> agony_stack;
-
-    if ( td -> debuffs_jaws_of_shadow -> check() )
-      m *= 1.0 + jaws_of_shadow_multiplier;
-
-    return m;
-  }
-};
-
-struct eye_laser_t : public warlock_pet_spell_t
-{
-  eye_laser_t( warlock_pet_t* p ) :
-    warlock_pet_spell_t( "eye_laser", p, p -> find_spell( 205231 ) )
-  { }
-
-  void schedule_travel( action_state_t* state ) override
-  {
-    if ( td( state -> target ) -> dots_doom -> is_ticking() )
-    {
-      warlock_pet_spell_t::schedule_travel( state );
-    }
-    // Need to release the state since it's not going to be used by a travel event, nor impacting of
-    // any kind.
-    else
-    {
-      action_state_t::release( state );
-    }
-  }
-};
-
 warlock_pet_t::warlock_pet_t( sim_t* sim, warlock_t* owner, const std::string& pet_name, pet_e pt, bool guardian ):
 pet_t( sim, owner, pet_name, pt, guardian ), special_action( nullptr ), special_action_two( nullptr ), melee_attack( nullptr ), summon_stats( nullptr ), ascendance( nullptr )
 {
@@ -603,7 +39,6 @@ bool warlock_pet_t::create_actions()
     bool check = pet_t::create_actions();
     if(check)
     {
-        ascendance = new thalkiels_ascendance_pet_spell_t( this ); //????
         return true;
     }
     else
@@ -761,615 +196,6 @@ double warlock_pet_t::composite_spell_speed() const
 
   return css;
 }
-
-struct imp_pet_t: public warlock_pet_t
-{
-  imp_pet_t( sim_t* sim, warlock_t* owner, const std::string& name = "imp" ):
-    warlock_pet_t( sim, owner, name, PET_IMP, name != "imp" )
-  {
-    action_list_str = "firebolt";
-    //owner_coeff.sp_from_sp *= 1.2;
-  }
-
-  virtual action_t* create_action( const std::string& name, const std::string& options_str ) override
-  {
-    if ( name == "firebolt" ) return new firebolt_t( this );
-
-    return warlock_pet_t::create_action( name, options_str );
-  }
-};
-
-struct felguard_pet_t: public warlock_pet_t
-{
-  felguard_pet_t( sim_t* sim, warlock_t* owner, const std::string& name = "felguard" ):
-    warlock_pet_t( sim, owner, name, PET_FELGUARD, name != "felguard" )
-  {
-    action_list_str += "/felstorm";
-    action_list_str += "/legion_strike,if=cooldown.felstorm.remains";
-    owner_coeff.ap_from_sp = 1.1; // HOTFIX
-    owner_coeff.ap_from_sp *= 1.2; // PTR
-  }
-
-  virtual void init_base_stats() override
-  {
-    warlock_pet_t::init_base_stats();
-
-    melee_attack = new warlock_pet_melee_t( this );
-    special_action = new felstorm_t( this );
-    special_action_two = new axe_toss_t( this );
-  }
-
-  double composite_player_multiplier( school_e school ) const override
-  {
-    double m = warlock_pet_t::composite_player_multiplier( school );
-
-    if ( !is_grimoire_of_service )
-      m *= 1.0;
-
-    return m;
-  }
-
-  virtual action_t* create_action( const std::string& name, const std::string& options_str ) override
-  {
-    if ( name == "legion_strike" ) return new legion_strike_t( this );
-    if ( name == "felstorm" ) return new felstorm_t( this );
-    if ( name == "axe_toss" ) return new axe_toss_t( this );
-
-    return warlock_pet_t::create_action( name, options_str );
-  }
-};
-
-struct t18_illidari_satyr_t: public warlock_pet_t
-{
-  t18_illidari_satyr_t(sim_t* sim, warlock_t* owner ):
-    warlock_pet_t( sim, owner, "illidari_satyr", PET_FELGUARD, true )
-  {
-    owner_coeff.ap_from_sp = 1;
-    is_demonbolt_enabled = false;
-    regen_type = REGEN_DISABLED;
-    action_list_str = "travel";
-  }
-
-  void init_base_stats() override
-  {
-    warlock_pet_t::init_base_stats();
-    base_energy_regen_per_second = 0;
-    melee_attack = new warlock_pet_melee_t( this );
-  }
-};
-
-struct t18_prince_malchezaar_t: public warlock_pet_t
-{
-  t18_prince_malchezaar_t(  sim_t* sim, warlock_t* owner ):
-    warlock_pet_t( sim, owner, "prince_malchezaar", PET_GHOUL, true )
-  {
-    owner_coeff.ap_from_sp = 1;
-    regen_type = REGEN_DISABLED;
-    action_list_str = "travel";
-  }
-
-  void init_base_stats() override
-  {
-    warlock_pet_t::init_base_stats();
-    base_energy_regen_per_second = 0;
-    melee_attack = new warlock_pet_melee_t( this );
-  }
-
-  double composite_player_multiplier( school_e school ) const override
-  {
-    double m = warlock_pet_t::composite_player_multiplier( school );
-    m *= 9.45; // Prince deals 9.45 times normal damage.. you know.. for reasons.
-    return m;
-  }
-};
-
-struct t18_vicious_hellhound_t: public warlock_pet_t
-{
-  t18_vicious_hellhound_t( sim_t* sim, warlock_t* owner ):
-    warlock_pet_t( sim, owner, "vicious_hellhound", PET_DOG, true )
-  {
-    owner_coeff.ap_from_sp = 1;
-    is_demonbolt_enabled = false;
-    regen_type = REGEN_DISABLED;
-    action_list_str = "travel";
-  }
-
-  void init_base_stats() override
-  {
-    warlock_pet_t::init_base_stats();
-    base_energy_regen_per_second = 0;
-    main_hand_weapon.swing_time = timespan_t::from_seconds( 1.0 );
-    melee_attack = new warlock_pet_melee_t( this );
-    melee_attack -> base_execute_time = timespan_t::from_seconds( 1.0 );
-  }
-};
-
-struct chaos_tear_t : public warlock_pet_t
-{
-  chaos_tear_t( sim_t* sim, warlock_t* owner ) :
-    warlock_pet_t( sim, owner, "chaos_tear", PET_NONE, true )
-  {
-    action_list_str = "chaos_bolt";
-    regen_type = REGEN_DISABLED;
-  }
-
-  void init_base_stats() override
-  {
-    warlock_pet_t::init_base_stats();
-    base_energy_regen_per_second = 0;
-  }
-
-  virtual action_t* create_action( const std::string& name,
-                                   const std::string& options_str ) override
-  {
-    if ( name == "chaos_bolt" ) return new rift_chaos_bolt_t( this );
-
-    return warlock_pet_t::create_action( name, options_str );
-  }
-};
-
-namespace shadowy_tear {
-
-  struct shadowy_tear_t;
-
-  struct shadowy_tear_td_t : public actor_target_data_t
-  {
-    dot_t* dots_shadow_bolt;
-
-  public:
-    shadowy_tear_td_t( player_t* target, shadowy_tear_t* shadowy );
-  };
-
-  struct shadowy_tear_t : public warlock_pet_t
-  {
-    target_specific_t<shadowy_tear_td_t> target_data;
-
-    shadowy_tear_t( sim_t* sim, warlock_t* owner ) :
-      warlock_pet_t( sim, owner, "shadowy_tear", PET_NONE, true )
-    {
-      action_list_str = "shadow_bolt";
-      regen_type = REGEN_DISABLED;
-    }
-
-    void init_base_stats() override
-    {
-      warlock_pet_t::init_base_stats();
-      base_energy_regen_per_second = 0;
-    }
-
-    shadowy_tear_td_t* td( player_t* t ) const
-    {
-      return get_target_data( t );
-    }
-
-    virtual shadowy_tear_td_t* get_target_data( player_t* target ) const override
-    {
-      shadowy_tear_td_t*& td = target_data[target];
-      if ( !td )
-        td = new shadowy_tear_td_t( target, const_cast< shadowy_tear_t* >( this ) );
-      return td;
-    }
-
-    virtual action_t* create_action( const std::string& name, const std::string& options_str ) override
-    {
-      if ( name == "shadow_bolt" ) return new rift_shadow_bolt_t( this );
-
-      return warlock_pet_t::create_action( name, options_str );
-    }
-  };
-
-  shadowy_tear_td_t::shadowy_tear_td_t( player_t* target, shadowy_tear_t* shadowy ):
-    actor_target_data_t( target, shadowy )
-  {
-    dots_shadow_bolt = target -> get_dot( "shadow_bolt", shadowy );
-  }
-}
-
-namespace flame_rift {
-
-  struct flame_rift_t : public warlock_pet_t
-  {
-    flame_rift_t( sim_t* sim, warlock_t* owner ) :
-      warlock_pet_t( sim, owner, "flame_rift", PET_NONE, true )
-    {
-      action_list_str = "searing_bolt";
-    }
-
-    void init_base_stats() override
-    {
-      warlock_pet_t::init_base_stats();
-      base_energy_regen_per_second = 0;
-      resources.base[RESOURCE_ENERGY] = 20.0;
-    }
-
-    virtual action_t* create_action( const std::string& name, const std::string& options_str ) override
-    {
-      if ( name == "searing_bolt" ) return new searing_bolt_t( this );
-
-      return warlock_pet_t::create_action( name, options_str );
-    }
-  };
-}
-
-namespace chaos_portal {
-
-  struct chaos_portal_td_t : public actor_target_data_t
-  {
-    dot_t* dots_chaos_barrage;
-
-  public:
-    chaos_portal_td_t( player_t* target, chaos_portal_t* chaosy );
-  };
-
-  struct chaos_portal_t : public warlock_pet_t
-  {
-    target_specific_t<chaos_portal_td_t> target_data;
-    stats_t** chaos_barrage_stats;
-    stats_t* regular_stats;
-
-    chaos_portal_t( sim_t* sim, warlock_t* owner ) :
-      warlock_pet_t( sim, owner, "chaos_portal", PET_NONE, true ), chaos_barrage_stats( nullptr ), regular_stats( nullptr )
-    {
-      action_list_str = "chaos_barrage";
-      regen_type = REGEN_DISABLED;
-    }
-
-    void init_base_stats() override
-    {
-      warlock_pet_t::init_base_stats();
-      base_energy_regen_per_second = 0;
-    }
-
-    chaos_portal_td_t* td( player_t* t ) const
-    {
-      return get_target_data( t );
-    }
-
-    virtual chaos_portal_td_t* get_target_data( player_t* target ) const override
-    {
-      chaos_portal_td_t*& td = target_data[target];
-      if ( !td )
-        td = new chaos_portal_td_t( target, const_cast< chaos_portal_t* >( this ) );
-      return td;
-    }
-
-    virtual action_t* create_action( const std::string& name, const std::string& options_str ) override
-    {
-      if ( name == "chaos_barrage" ) return new chaos_barrage_t( this );
-
-      return warlock_pet_t::create_action( name, options_str );
-    }
-  };
-
-  chaos_portal_td_t::chaos_portal_td_t( player_t* target, chaos_portal_t* chaosy ):
-    actor_target_data_t( target, chaosy )
-  {
-    dots_chaos_barrage = target -> get_dot( "chaos_barrage", chaosy );
-  }
-}
-
-struct felhunter_pet_t: public warlock_pet_t
-{
-  felhunter_pet_t( sim_t* sim, warlock_t* owner, const std::string& name = "felhunter" ):
-    warlock_pet_t( sim, owner, name, PET_FELHUNTER, name != "felhunter" )
-  {
-    action_list_str = "shadow_bite";
-
-    owner_coeff.ap_from_sp *= 1.2; //Hotfixed no spelldata, live as of 05-24-2017
-  }
-
-  virtual void init_base_stats() override
-  {
-    warlock_pet_t::init_base_stats();
-
-    melee_attack = new warlock_pet_melee_t( this );
-  }
-
-  virtual action_t* create_action( const std::string& name, const std::string& options_str ) override
-  {
-    if ( name == "shadow_bite" ) return new shadow_bite_t( this );
-
-    return warlock_pet_t::create_action( name, options_str );
-  }
-};
-
-struct succubus_pet_t: public warlock_pet_t
-{
-  succubus_pet_t( sim_t* sim, warlock_t* owner, const std::string& name = "succubus" ):
-    warlock_pet_t( sim, owner, name, PET_SUCCUBUS, name != "succubus" )
-  {
-    action_list_str = "lash_of_pain";
-    owner_coeff.ap_from_sp = 0.5;
-    owner_coeff.ap_from_sp *= 1.2;
-  }
-
-  virtual void init_base_stats() override
-  {
-    warlock_pet_t::init_base_stats();
-
-    main_hand_weapon.swing_time = timespan_t::from_seconds( 3.0 );
-    melee_attack = new warlock_pet_melee_t( this );
-    if ( ! util::str_compare_ci( name_str, "service_succubus" ) )
-      special_action = new whiplash_t( this );
-  }
-
-  virtual action_t* create_action( const std::string& name, const std::string& options_str ) override
-  {
-    if ( name == "lash_of_pain" ) return new lash_of_pain_t( this );
-
-    return warlock_pet_t::create_action( name, options_str );
-  }
-};
-
-struct voidwalker_pet_t: public warlock_pet_t
-{
-  voidwalker_pet_t( sim_t* sim, warlock_t* owner, const std::string& name = "voidwalker" ):
-    warlock_pet_t( sim, owner, name, PET_VOIDWALKER, name != "voidwalker" )
-  {
-    action_list_str = "torment";
-    owner_coeff.ap_from_sp *= 1.2; // PTR
-  }
-
-  virtual void init_base_stats() override
-  {
-    warlock_pet_t::init_base_stats();
-
-    melee_attack = new warlock_pet_melee_t( this );
-  }
-
-  virtual action_t* create_action( const std::string& name, const std::string& options_str ) override
-  {
-    if ( name == "torment" ) return new torment_t( this );
-
-    return warlock_pet_t::create_action( name, options_str );
-  }
-};
-
-struct infernal_t: public warlock_pet_t
-{
-  infernal_t( sim_t* sim, warlock_t* owner ):
-    warlock_pet_t( sim, owner, "infernal", PET_INFERNAL )
-  {
-    owner_coeff.health = 0.4;
-  }
-
-  virtual void init_base_stats() override
-  {
-    warlock_pet_t::init_base_stats();
-    action_list_str = "immolation,if=!ticking";
-    if ( o() -> talents.grimoire_of_supremacy -> ok() )
-      action_list_str += "/meteor_strike,if=time>1";
-    melee_attack = new warlock_pet_melee_t( this );
-
-    resources.base[RESOURCE_ENERGY] = 0;
-    base_energy_regen_per_second = 0;
-  }
-
-  double composite_player_multiplier( school_e school ) const override
-  {
-    double m = warlock_pet_t::composite_player_multiplier( school );
-
-    if ( o() -> talents.grimoire_of_supremacy -> ok() )
-      m *= 1.0 / 2.0;
-    return m;
-  }
-
-  virtual action_t* create_action( const std::string& name, const std::string& options_str ) override
-  {
-    if ( name == "immolation" ) return new immolation_t( this, options_str );
-    if ( name == "meteor_strike" ) return new meteor_strike_t( this, options_str );
-
-    return warlock_pet_t::create_action( name, options_str );
-  }
-};
-
-struct lord_of_flames_infernal_t : public warlock_pet_t
-{
-  timespan_t duration;
-
-  lord_of_flames_infernal_t( sim_t* sim, warlock_t* owner ) :
-    warlock_pet_t( sim, owner, "lord_of_flames_infernal", PET_INFERNAL )
-  {
-    duration = o() -> find_spell( 226804 ) -> duration() + timespan_t::from_millis( 1 );
-  }
-
-  virtual void init_base_stats() override
-  {
-    warlock_pet_t::init_base_stats();
-    action_list_str = "immolation,if=!ticking";
-    resources.base[RESOURCE_ENERGY] = 0;
-    base_energy_regen_per_second = 0;
-    melee_attack = new warlock_pet_melee_t( this );
-  }
-
-  virtual action_t* create_action( const std::string& name, const std::string& options_str ) override
-  {
-    if ( name == "immolation" ) return new immolation_t( this, options_str );
-
-    return warlock_pet_t::create_action( name, options_str );
-  }
-
-  void trigger()
-  {
-    if ( ! o() -> buffs.lord_of_flames -> up() )
-      summon( duration );
-  }
-};
-
-struct doomguard_t: public warlock_pet_t
-{
-    doomguard_t( sim_t* sim, warlock_t* owner ):
-    warlock_pet_t( sim, owner, "doomguard", PET_DOOMGUARD )
-  {
-    owner_coeff.health = 0.4;
-    action_list_str = "doom_bolt";
-  }
-
-  virtual void init_base_stats() override
-  {
-    warlock_pet_t::init_base_stats();
-
-    resources.base[RESOURCE_ENERGY] = 100;
-    base_energy_regen_per_second = 12;
-
-    special_action = new shadow_lock_t( this );
-  }
-
-  double composite_player_multiplier( school_e school ) const override
-  {
-    double m = warlock_pet_t::composite_player_multiplier( school );
-
-    if ( o() -> talents.grimoire_of_supremacy -> ok() )
-      m *= 1.0 / 2.0;
-    return m;
-  }
-
-  virtual action_t* create_action( const std::string& name, const std::string& options_str ) override
-  {
-    if ( name == "doom_bolt" ) return new doom_bolt_t( this );
-    if ( name == "shadow_lock" ) return new shadow_lock_t( this );
-
-    return warlock_pet_t::create_action( name, options_str );
-  }
-};
-
-struct wild_imp_pet_t: public warlock_pet_t
-{
-  action_t* firebolt;
-  bool isnotdoge;
-
-  wild_imp_pet_t( sim_t* sim, warlock_t* owner ):
-    warlock_pet_t( sim, owner, "wild_imp", PET_WILD_IMP )
-  {
-  }
-
-  virtual void init_base_stats() override
-  {
-    warlock_pet_t::init_base_stats();
-
-    action_list_str = "fel_firebolt";
-
-    resources.base[RESOURCE_ENERGY] = 1000;
-    base_energy_regen_per_second = 0;
-  }
-
-  void dismiss( bool expired ) override
-  {
-      pet_t::dismiss( expired );
-  }
-
-  virtual action_t* create_action( const std::string& name,
-                                   const std::string& options_str ) override
-  {
-    if ( name == "fel_firebolt" )
-    {
-      firebolt = new fel_firebolt_t( this );
-      return firebolt;
-    }
-
-    return warlock_pet_t::create_action( name, options_str );
-  }
-
-  void arise() override
-  {
-      warlock_pet_t::arise();
-
-      if( isnotdoge )
-      {
-         firebolt -> cooldown -> start( timespan_t::from_millis( rng().range( 500 , 1500 )));
-      }
-  }
-
-  void trigger(int timespan, bool isdoge = false )
-  {
-    isnotdoge = !isdoge;
-    summon( timespan_t::from_millis( timespan ) );
-  }
-};
-
-struct dreadstalker_t : public warlock_pet_t
-{
-  dreadstalker_t( sim_t* sim, warlock_t* owner ) :
-    warlock_pet_t( sim, owner, "dreadstalker", PET_DREADSTALKER )
-  {
-    action_list_str = "travel/dreadbite";
-    regen_type = REGEN_DISABLED;
-    owner_coeff.health = 0.4;
-    owner_coeff.ap_from_sp = 1.1; // HOTFIX
-  }
-
-  virtual double composite_melee_crit_chance() const override
-  {
-      double pw = warlock_pet_t::composite_melee_crit_chance();
-
-      return pw;
-  }
-
-  virtual double composite_spell_crit_chance() const override
-  {
-      double pw = warlock_pet_t::composite_spell_crit_chance();
-      return pw;
-  }
-
-  double composite_player_multiplier( school_e school ) const override
-  {
-    double m = warlock_pet_t::composite_player_multiplier( school );
-    m *= 0.76; // FIXME dreadstalkers do 76% damage for no apparent reason, thanks blizzard.
-    return m;
-  }
-
-  void init_base_stats() override
-  {
-    warlock_pet_t::init_base_stats();
-    resources.base[RESOURCE_ENERGY] = 0;
-    base_energy_regen_per_second = 0;
-    melee_attack = new warlock_pet_melee_t( this );
-  }
-
-  void arise() override
-  {
-    warlock_pet_t::arise();
-
-    dreadbite_executes = 1;
-    bites_executed = 0;
-
-    if ( o()->sets->has_set_bonus( WARLOCK_DEMONOLOGY, T21, B4 ) )
-      t21_4pc_reset = false;
-  }
-
-  virtual action_t* create_action( const std::string& name, const std::string& options_str ) override
-  {
-    if ( name == "dreadbite" ) return new dreadbite_t( this );
-
-    return warlock_pet_t::create_action( name, options_str );
-  }
-};
-
-struct darkglare_t : public warlock_pet_t
-{
-  darkglare_t( sim_t* sim, warlock_t* owner ) :
-    warlock_pet_t( sim, owner, "darkglare", PET_OBSERVER )
-  {
-    action_list_str = "eye_laser";
-    regen_type = REGEN_DISABLED;
-    owner_coeff.health = 0.4;
-  }
-
-  void init_base_stats() override
-  {
-    warlock_pet_t::init_base_stats();
-    resources.base[RESOURCE_ENERGY] = 0;
-    base_energy_regen_per_second = 0;
-  }
-
-  virtual action_t* create_action( const std::string& name, const std::string& options_str ) override
-  {
-    if ( name == "eye_laser" ) return new eye_laser_t( this );
-
-    return warlock_pet_t::create_action( name, options_str );
-  }
-};
-
 } // end namespace pets
 
 void parse_spell_coefficient(action_t& a)
@@ -1384,8 +210,6 @@ void parse_spell_coefficient(action_t& a)
 }
 // Spells
 namespace actions {
-// Demonology Spells
-
 struct shadow_bolt_t: public warlock_spell_t
 {
   cooldown_t* icd;
@@ -1535,203 +359,6 @@ struct doom_t: public warlock_spell_t
     }
   }
 };
-
-struct demonic_empowerment_t: public warlock_spell_t
-{
-  double power_trip_rng;
-
-  demonic_empowerment_t (warlock_t* p) :
-    warlock_spell_t( "demonic empowerment", p, p -> spec.demonic_empowerment )
-  {
-    may_crit = false;
-    harmful = false;
-    dot_duration = timespan_t::zero();
-
-    power_trip_rng = p -> talents.power_trip -> effectN( 1 ).percent();
-  }
-
-  void execute() override
-  {
-    warlock_spell_t::execute();
-    for( auto& pet : p() -> pet_list )
-    {
-      pets::warlock_pet_t *lock_pet = static_cast<pets::warlock_pet_t*> ( pet );
-
-      if( lock_pet != nullptr )
-      {
-        if( !lock_pet -> is_sleeping() )
-        {
-          lock_pet -> buffs.demonic_empowerment -> trigger();
-        }
-      }
-    }
-
-    if ( p()->sets->has_set_bonus( WARLOCK_DEMONOLOGY, T21, B4 ) )
-    {
-      for ( size_t i = 0; i < p()->warlock_pet_list.dreadstalkers.size(); i++ )
-      {
-        if ( !p()->warlock_pet_list.dreadstalkers[i]->is_sleeping() )
-        {
-          if ( !p()->warlock_pet_list.dreadstalkers[i]->t21_4pc_reset )
-          {
-            p()->warlock_pet_list.dreadstalkers[i]->dreadbite_executes++;
-            p()->warlock_pet_list.dreadstalkers[i]->t21_4pc_reset = true;
-          }
-        }
-      }
-    }
-
-    if ( p() -> talents.power_trip -> ok() && rng().roll( power_trip_rng ) )
-    {
-        struct pt_delay_event: public player_event_t
-        {
-          gain_t* shard_gain;
-          warlock_t* pl;
-
-
-          pt_delay_event( warlock_t* p ):
-            player_event_t( *p, timespan_t::from_millis(100) ), shard_gain( p -> gains.soul_conduit ), pl(p)
-          {
-          }
-          virtual const char* name() const override
-          { return "powertrip_delay_event"; }
-          virtual void execute() override
-          {
-              pl -> resource_gain( RESOURCE_SOUL_SHARD, 1, pl -> gains.power_trip );
-
-          }
-        };
-
-        make_event<pt_delay_event>( *p()->sim, p());
-
-
-//        p() -> resource_gain( RESOURCE_SOUL_SHARD, 1, p() -> gains.power_trip );
-    }
-
-    if ( p() -> talents.shadowy_inspiration -> ok() )
-      p() -> buffs.shadowy_inspiration -> trigger();
-
-  }
-};
-
-struct hand_of_guldan_t: public warlock_spell_t
-{
-  struct trigger_imp_event_t : public player_event_t
-  {
-    bool initiator;
-    int count;
-    trigger_imp_event_t( warlock_t* p, int c, bool init = false ) :
-      player_event_t( *p, timespan_t::from_millis(1) ), initiator( init ), count( c )//Use original corruption until DBC acts more friendly.
-    {
-      //add_event( rng().range( timespan_t::from_millis( 500 ),
-      //  timespan_t::from_millis( 1500 ) ) );
-    }
-
-    virtual const char* name() const override
-    {
-      return  "trigger_imp";
-    }
-
-    virtual void execute() override
-    {
-      warlock_t* p = static_cast< warlock_t* >( player() );
-    }
-  };
-
-  trigger_imp_event_t* imp_event;
-  int shards_used;
-  double demonology_trinket_chance;
-  doom_t* doom;
-
-  hand_of_guldan_t( warlock_t* p ):
-    warlock_spell_t( p, "Hand of Gul'dan" ),
-    demonology_trinket_chance( 0.0 ),
-    doom( new doom_t( p ) )
-  {
-    aoe = -1;
-    shards_used = 0;
-
-    parse_effect_data( p -> find_spell( 86040 ) -> effectN( 1 ) );
-
-    doom -> background = true;
-    doom -> dual = true;
-    doom -> base_costs[RESOURCE_MANA] = 0;
-    base_multiplier *= 1.0;
-  }
-
-  virtual timespan_t travel_time() const override
-  {
-    return timespan_t::from_millis( 700 );
-  }
-
-  virtual bool ready() override
-  {
-    bool r = warlock_spell_t::ready();
-
-    if ( p() -> resources.current[RESOURCE_SOUL_SHARD] == 0.0 )
-      r = false;
-
-    return r;
-  }
-
-  virtual double action_multiplier() const override
-  {
-    double m = warlock_spell_t::action_multiplier();
-
-    m *= last_resource_cost;
-
-    return m;
-  }
-
-  void consume_resource() override
-  {
-    warlock_spell_t::consume_resource();
-
-    shards_used = last_resource_cost;
-
-    if ( last_resource_cost == 1.0 )
-      p() -> procs.one_shard_hog -> occur();
-    if ( last_resource_cost == 2.0 )
-      p() -> procs.two_shard_hog -> occur();
-    if ( last_resource_cost == 3.0 )
-      p() -> procs.three_shard_hog -> occur();
-    if ( last_resource_cost == 4.0 )
-      p() -> procs.four_shard_hog -> occur();
-  }
-
-  virtual void impact( action_state_t* s ) override
-  {
-    warlock_spell_t::impact( s );
-
-    if ( result_is_hit( s -> result ) )
-    {
-      if( p() -> talents.hand_of_doom -> ok() )
-      {
-        doom -> target = s -> target;
-        doom -> execute();
-      }
-      if ( p() -> sets->set( WARLOCK_DEMONOLOGY, T17, B2 ) )
-      {
-        if ( rng().roll( p() -> sets->set( WARLOCK_DEMONOLOGY, T17, B2 ) -> proc_chance() ) )
-        {
-          shards_used *= 1.5;
-        }
-      }
-
-      if ( s -> chain_target == 0 )
-        imp_event =  make_event<trigger_imp_event_t>( *sim, p(), floor( shards_used ), true);
-
-	    if ( p()->sets->has_set_bonus(WARLOCK_DEMONOLOGY, T21, B2))
-      {
-		    for (int i = 0; i < shards_used; i++) 
-        {
-			    p()->buffs.rage_of_guldan->trigger();
-		    }
-	    }
-    }
-  }
-};
-
 //Destruction Spells
 
 struct flames_of_argus_t: public residual_action_t
@@ -2252,27 +879,6 @@ struct chaos_bolt_t: public warlock_spell_t
   }
 };
 
-// ARTIFACT SPELLS
-
-struct thalkiels_discord_t : public warlock_spell_t
-{
-  thalkiels_discord_t( warlock_t* p ) :
-    warlock_spell_t( "thalkiels_discord", p, p -> find_spell( 211727 ) )
-  {
-    aoe = -1;
-    background = dual = true;
-    callbacks = false;
-  }
-
-  void init() override
-  {
-    warlock_spell_t::init();
-
-    // Explicitly snapshot haste, as the spell actually has no duration in spell data
-    snapshot_flags |= STATE_HASTE;
-  }
-};
-
 // AOE SPELLS
 struct rain_of_fire_t : public warlock_spell_t
 {
@@ -2394,383 +1000,6 @@ struct demonwrath_t: public warlock_spell_t
   }
 };
 
-// SUMMONING SPELLS
-
-struct summon_pet_t: public warlock_spell_t
-{
-  timespan_t summoning_duration;
-  std::string pet_name;
-  pets::warlock_pet_t* pet;
-
-private:
-  void _init_summon_pet_t()
-  {
-    util::tokenize( pet_name );
-    harmful = false;
-
-    if ( data().ok() &&
-         std::find( p() -> pet_name_list.begin(), p() -> pet_name_list.end(), pet_name ) ==
-         p() -> pet_name_list.end() )
-    {
-      p() -> pet_name_list.push_back( pet_name );
-    }
-  }
-
-public:
-  summon_pet_t( const std::string& n, warlock_t* p, const std::string& sname = "" ):
-    warlock_spell_t( p, sname.empty() ? "Summon " + n : sname ),
-    summoning_duration( timespan_t::zero() ),
-    pet_name( sname.empty() ? n : sname ), pet( nullptr )
-  {
-    _init_summon_pet_t();
-  }
-
-  summon_pet_t( const std::string& n, warlock_t* p, int id ):
-    warlock_spell_t( n, p, p -> find_spell( id ) ),
-    summoning_duration( timespan_t::zero() ),
-    pet_name( n ), pet( nullptr )
-  {
-    _init_summon_pet_t();
-  }
-
-  summon_pet_t( const std::string& n, warlock_t* p, const spell_data_t* sd ):
-    warlock_spell_t( n, p, sd ),
-    summoning_duration( timespan_t::zero() ),
-    pet_name( n ), pet( nullptr )
-  {
-    _init_summon_pet_t();
-  }
-
-  bool init_finished() override
-  {
-    pet = debug_cast<pets::warlock_pet_t*>( player -> find_pet( pet_name ) );
-    return warlock_spell_t::init_finished();
-  }
-
-  virtual void execute() override
-  {
-    pet -> summon( summoning_duration );
-
-    warlock_spell_t::execute();
-  }
-
-  bool ready() override
-  {
-    if ( ! pet )
-    {
-      return false;
-    }
-
-    return warlock_spell_t::ready();
-  }
-};
-
-struct summon_main_pet_t: public summon_pet_t
-{
-  cooldown_t* instant_cooldown;
-
-  summon_main_pet_t( const std::string& n, warlock_t* p ):
-    summon_pet_t( n, p ), instant_cooldown( p -> get_cooldown( "instant_summon_pet" ) )
-  {
-    instant_cooldown -> duration = timespan_t::from_seconds( 60 );
-    ignore_false_positive = true;
-  }
-
-  virtual void schedule_execute( action_state_t* state = nullptr ) override
-  {
-    warlock_spell_t::schedule_execute( state );
-
-    if ( p() -> warlock_pet_list.active )
-    {
-      p() -> warlock_pet_list.active -> dismiss();
-      p() -> warlock_pet_list.active = nullptr;
-    }
-  }
-
-  virtual bool ready() override
-  {
-    if ( p() -> warlock_pet_list.active == pet )
-      return false;
-
-    if ( p() -> talents.grimoire_of_supremacy -> ok() ) //if we have the uberpets, we can't summon our standard pets
-      return false;
-    return summon_pet_t::ready();
-  }
-
-  virtual void execute() override
-  {
-    summon_pet_t::execute();
-
-    p() -> warlock_pet_list.active = p() -> warlock_pet_list.last = pet;
-
-    if ( p() -> buffs.demonic_power -> check() )
-      p() -> buffs.demonic_power -> expire();
-  }
-};
-
-struct summon_doomguard_t: public warlock_spell_t
-{
-  timespan_t doomguard_duration;
-
-  summon_doomguard_t( warlock_t* p ):
-    warlock_spell_t( "summon_doomguard", p, p -> find_spell( 18540 ) )
-  {
-    harmful = may_crit = false;
-
-    cooldown = p -> cooldowns.doomguard;
-    if ( !p -> talents.grimoire_of_supremacy -> ok() )
-      cooldown -> duration = data().cooldown();
-    else
-      cooldown -> duration = timespan_t::zero();
-
-    if ( p -> talents.grimoire_of_supremacy -> ok() )
-      doomguard_duration = timespan_t::from_seconds( -1 );
-    else
-      doomguard_duration = p -> find_spell( 111685 ) -> duration() + timespan_t::from_millis( 1 );
-  }
-
-  virtual void schedule_execute( action_state_t* state = nullptr ) override
-  {
-    warlock_spell_t::schedule_execute( state );
-
-    if ( p() -> talents.grimoire_of_supremacy -> ok() )
-    {
-      for ( auto infernal : p() -> warlock_pet_list.infernal )
-      {
-        if ( !infernal -> is_sleeping() )
-        {
-          infernal -> dismiss();
-        }
-      }
-    }
-  }
-
-  virtual void execute() override
-  {
-    warlock_spell_t::execute();
-
-    if ( !p() -> talents.grimoire_of_supremacy -> ok() )
-      p() -> cooldowns.infernal -> start();
-
-    for ( size_t i = 0; i < p() -> warlock_pet_list.doomguard.size(); i++ )
-    {
-      if ( p() -> warlock_pet_list.doomguard[i] -> is_sleeping() )
-      {
-        p() -> warlock_pet_list.doomguard[i] -> summon( doomguard_duration );
-      }
-    }
-    if ( p() -> cooldowns.sindorei_spite_icd -> up() )
-    {
-      p() -> buffs.sindorei_spite -> up();
-      p() -> buffs.sindorei_spite -> trigger();
-      p() -> cooldowns.sindorei_spite_icd -> start( timespan_t::from_seconds( 180.0 ) );
-    }
-  }
-};
-
-struct infernal_awakening_t : public warlock_spell_t
-{
-  infernal_awakening_t( warlock_t* p, spell_data_t* spell ) :
-    warlock_spell_t( "infernal_awakening", p, spell )
-  {
-    aoe = -1;
-    background = true;
-    dual = true;
-    trigger_gcd = timespan_t::zero();
-  }
-};
-
-struct summon_infernal_t : public warlock_spell_t
-{
-  infernal_awakening_t* infernal_awakening;
-  timespan_t infernal_duration;
-
-  summon_infernal_t( warlock_t* p ) :
-    warlock_spell_t( "Summon_Infernal", p, p -> find_spell( 1122 ) ),
-    infernal_awakening( nullptr )
-  {
-    harmful = may_crit = false;
-
-    cooldown = p -> cooldowns.infernal;
-    if ( !p -> talents.grimoire_of_supremacy -> ok() )
-      cooldown -> duration = data().cooldown();
-    else
-      cooldown -> duration = timespan_t::zero();
-
-    if ( p -> talents.grimoire_of_supremacy -> ok() )
-      infernal_duration = timespan_t::from_seconds( -1 );
-    else
-    {
-      infernal_duration = p -> find_spell( 111685 ) -> duration() + timespan_t::from_millis( 1 );
-      infernal_awakening = new infernal_awakening_t( p, data().effectN( 1 ).trigger() );
-      infernal_awakening -> stats = stats;
-      radius = infernal_awakening -> radius;
-    }
-  }
-
-  virtual void schedule_execute( action_state_t* state = nullptr ) override
-  {
-    warlock_spell_t::schedule_execute( state );
-
-    if ( p() -> talents.grimoire_of_supremacy -> ok() )
-    {
-      for ( auto doomguard : p() -> warlock_pet_list.doomguard )
-      {
-        if ( !doomguard -> is_sleeping() )
-        {
-          doomguard -> dismiss();
-        }
-      }
-    }
-  }
-
-  virtual void execute() override
-  {
-    warlock_spell_t::execute();
-
-    if ( !p() -> talents.grimoire_of_supremacy -> ok() )
-      p() -> cooldowns.doomguard -> start();
-
-    if ( infernal_awakening )
-      infernal_awakening -> execute();
-
-    for ( size_t i = 0; i < p() -> warlock_pet_list.infernal.size(); i++ )
-    {
-      if ( p() -> warlock_pet_list.infernal[i] -> is_sleeping() )
-      {
-        p() -> warlock_pet_list.infernal[i] -> summon( infernal_duration );
-      }
-    }
-
-    if ( p() -> cooldowns.sindorei_spite_icd -> up() )
-    {
-      p() -> buffs.sindorei_spite -> up();
-      p() -> buffs.sindorei_spite -> trigger();
-      p() -> cooldowns.sindorei_spite_icd -> start( timespan_t::from_seconds( 180.0 ) );
-    }
-  }
-};
-
-struct summon_darkglare_t : public warlock_spell_t
-{
-  timespan_t darkglare_duration;
-
-  summon_darkglare_t( warlock_t* p ) :
-    warlock_spell_t( "summon_darkglare", p, p -> talents.summon_darkglare )
-  {
-    harmful = may_crit = may_miss = false;
-
-    darkglare_duration = data().duration() + timespan_t::from_millis( 1 );
-  }
-
-  virtual void execute() override
-  {
-    warlock_spell_t::execute();
-
-    for ( size_t i = 0; i < p() -> warlock_pet_list.darkglare.size(); i++ )
-    {
-      if ( p() -> warlock_pet_list.darkglare[i] -> is_sleeping() )
-      {
-        p() -> warlock_pet_list.darkglare[i] -> summon( darkglare_duration );
-        if(p()->legendary.wilfreds_sigil_of_superior_summoning_flag && !p()->talents.grimoire_of_supremacy->ok())
-        {
-            p()->cooldowns.doomguard->adjust(p()->legendary.wilfreds_sigil_of_superior_summoning);
-            p()->cooldowns.infernal->adjust(p()->legendary.wilfreds_sigil_of_superior_summoning);
-            p()->procs.wilfreds_darkglare->occur();
-        }
-      }
-    }
-  }
-};
-
-struct call_dreadstalkers_t : public warlock_spell_t
-{
-  timespan_t dreadstalker_duration;
-  int dreadstalker_count;
-  size_t improved_dreadstalkers;
-  double recurrent_ritual;
-
-  call_dreadstalkers_t( warlock_t* p ) :
-    warlock_spell_t( "Call_Dreadstalkers", p, p -> find_spell( 104316 ) ),
-    recurrent_ritual( 0.0 )
-  {
-    may_crit = false;
-    dreadstalker_duration = p -> find_spell( 193332 ) -> duration() + ( p -> sets->has_set_bonus( WARLOCK_DEMONOLOGY, T19, B4 ) ? p -> sets->set( WARLOCK_DEMONOLOGY, T19, B4 ) -> effectN( 1 ).time_value() : timespan_t::zero() );
-    dreadstalker_count = data().effectN( 1 ).base_value();
-    improved_dreadstalkers = p -> talents.improved_dreadstalkers -> effectN( 1 ).base_value();
-  }
-
-  double cost() const override
-  {
-    double c = warlock_spell_t::cost();
-
-    if ( p() -> buffs.demonic_calling -> check() )
-    {
-      return 0;
-    }
-
-    return c;
-  }
-
-  virtual void execute() override
-  {
-    warlock_spell_t::execute();
-
-    int j = 0;
-
-    for ( size_t i = 0; i < p() -> warlock_pet_list.dreadstalkers.size(); i++ )
-    {
-      if ( p() -> warlock_pet_list.dreadstalkers[i] -> is_sleeping() )
-      {
-        p() -> warlock_pet_list.dreadstalkers[i] -> summon( dreadstalker_duration );
-        p()->procs.dreadstalker_debug->occur();
-
-        if ( p()->sets->has_set_bonus( WARLOCK_DEMONOLOGY, T21, B2 ))
-        { 
-		      p() -> warlock_pet_list.dreadstalkers[i] -> buffs.rage_of_guldan -> set_duration( dreadstalker_duration );
-		      p() -> warlock_pet_list.dreadstalkers[i] -> buffs.rage_of_guldan -> set_default_value( p() -> buffs.rage_of_guldan -> stack_value());
-		      p() -> warlock_pet_list.dreadstalkers[i] -> buffs.rage_of_guldan -> trigger();
-        }
-        if(p()->legendary.wilfreds_sigil_of_superior_summoning_flag && !p()->talents.grimoire_of_supremacy->ok())
-        {
-            p()->cooldowns.doomguard->adjust(p()->legendary.wilfreds_sigil_of_superior_summoning);
-            p()->cooldowns.infernal->adjust(p()->legendary.wilfreds_sigil_of_superior_summoning);
-            p()->procs.wilfreds_dog->occur();
-        }
-        if ( ++j == dreadstalker_count ) break;
-      }
-    }
-
-    if ( p() -> talents.improved_dreadstalkers -> ok() )
-    {
-      for ( size_t i = 0; i < improved_dreadstalkers; i++ )
-      {
-        //trigger_wild_imp( p(), true, dreadstalker_duration.total_millis() );
-        p() -> procs.improved_dreadstalkers -> occur();
-      }
-    }
-
-    p() -> buffs.demonic_calling -> expire();
-	  p()->buffs.rage_of_guldan->expire();
-
-    if ( recurrent_ritual > 0 )
-    {
-      p() -> resource_gain( RESOURCE_SOUL_SHARD, recurrent_ritual, p() -> gains.recurrent_ritual );
-    }
-
-    if ( p() -> sets -> has_set_bonus( WARLOCK_DEMONOLOGY, T20, B4 ) )
-    {
-      p() -> buffs.dreaded_haste -> trigger();
-    }
-  }
-};
-
-// TALENT SPELLS
-
-// DEMONOLOGY
-
-
-
 struct demonbolt_t : public warlock_spell_t
 {
   cooldown_t* icd;
@@ -2852,62 +1081,6 @@ struct demonbolt_t : public warlock_spell_t
       p() -> procs.demonology_t20_2pc -> occur();
     }
   }
-};
-
-struct implosion_t : public warlock_spell_t
-{
-    struct implosion_aoe_t: public warlock_spell_t
-    {
-
-      implosion_aoe_t( warlock_t* p ):
-        warlock_spell_t( "implosion_aoe", p, p -> find_spell( 196278 ) )
-      {
-        aoe = -1;
-        dual = true;
-        background = true;
-        callbacks = false;
-
-        p -> spells.implosion_aoe = this;
-      }
-    };
-
-    implosion_aoe_t* explosion;
-
-    implosion_t(warlock_t* p) :
-      warlock_spell_t( "implosion", p, p -> talents.implosion ),
-      explosion( new implosion_aoe_t( p ) )
-    {
-      aoe = -1;
-      add_child( explosion );
-    }
-
-    virtual bool ready() override
-    {
-      bool r = warlock_spell_t::ready();
-
-      if(r)
-      {
-          for ( auto imp : p() -> warlock_pet_list.wild_imps )
-          {
-            if ( !imp -> is_sleeping() )
-              return true;
-          }
-      }
-      return false;
-    }
-
-    virtual void execute() override
-    {
-      warlock_spell_t::execute();
-      for( auto imp : p() -> warlock_pet_list.wild_imps )
-      {
-        if( !imp -> is_sleeping() )
-        {
-          explosion -> execute();
-          imp -> dismiss(true);
-        }
-      }
-    }
 };
 
 struct shadowflame_t : public warlock_spell_t
@@ -3173,36 +1346,6 @@ struct soul_harvest_t : public warlock_spell_t
   }
 };
 
-struct grimoire_of_sacrifice_t: public warlock_spell_t
-{
-  grimoire_of_sacrifice_t( warlock_t* p ):
-    warlock_spell_t( "grimoire_of_sacrifice", p, p -> talents.grimoire_of_sacrifice )
-  {
-    harmful = false;
-    ignore_false_positive = true;
-  }
-
-  virtual bool ready() override
-  {
-    if ( ! p() -> warlock_pet_list.active ) return false;
-
-    return warlock_spell_t::ready();
-  }
-
-  virtual void execute() override
-  {
-    if ( p() -> warlock_pet_list.active )
-    {
-      warlock_spell_t::execute();
-
-      p() -> warlock_pet_list.active -> dismiss();
-      p() -> warlock_pet_list.active = nullptr;
-      p() -> buffs.demonic_power -> trigger();
-
-    }
-  }
-};
-
 struct demonic_power_damage_t : public warlock_spell_t
 {
   demonic_power_damage_t( warlock_t* p ) :
@@ -3254,34 +1397,6 @@ struct cry_havoc_t : public warlock_spell_t
     callbacks = true;
     aoe = -1;
     destro_mastery = false;
-  }
-};
-
-struct grimoire_of_service_t: public summon_pet_t
-{
-  grimoire_of_service_t( warlock_t* p, const std::string& pet_name ):
-    summon_pet_t( "service_" + pet_name, p, p -> talents.grimoire_of_service -> ok() ? p -> find_class_spell( "Grimoire: " + pet_name ) : spell_data_t::not_found() )
-  {
-    cooldown = p -> get_cooldown( "grimoire_of_service" );
-    cooldown -> duration = data().cooldown();
-    summoning_duration = data().duration() + timespan_t::from_millis( 1 );
-
-  }
-
-  virtual void execute() override
-  {
-    pet -> is_grimoire_of_service = true;
-
-    summon_pet_t::execute();
-  }
-
-  bool init_finished() override
-  {
-    if ( pet )
-    {
-      pet -> summon_stats = stats;
-    }
-    return summon_pet_t::init_finished();
   }
 };
 
@@ -3450,7 +1565,6 @@ warlock( p )
   dots_agony = target -> get_dot( "agony", &p );
   dots_doom = target -> get_dot( "doom", &p );
   dots_drain_life = target -> get_dot( "drain_life", &p );
-  dots_drain_soul = target -> get_dot( "drain_soul", &p );
   dots_immolate = target -> get_dot( "immolate", &p );
   dots_shadowflame = target -> get_dot( "shadowflame", &p );
   dots_seed_of_corruption = target -> get_dot( "seed_of_corruption", &p );
@@ -3485,14 +1599,6 @@ void warlock_td_t::target_demise()
   if ( !( target -> is_enemy() ) )
   {
     return;
-  }
-  if ( warlock.specialization() == WARLOCK_AFFLICTION && dots_drain_soul -> is_ticking() )
-  {
-    if ( warlock.sim -> log )
-    {
-      warlock.sim -> out_debug.printf( "Player %s demised. Warlock %s gains a shard by channeling drain soul during this.", target -> name(), warlock.name() );
-    }
-    warlock.resource_gain( RESOURCE_SOUL_SHARD, 1, warlock.gains.drain_soul );
   }
   if ( warlock.specialization() == WARLOCK_AFFLICTION )
   {
@@ -3543,9 +1649,6 @@ warlock_t::warlock_t( sim_t* sim, const std::string& name, race_e r ):
     default_pet( "" ),
     shard_react( timespan_t::zero() )
   {
-    cooldowns.infernal = get_cooldown( "summon_infernal" );
-    cooldowns.doomguard = get_cooldown( "summon_doomguard" );
-    cooldowns.dimensional_rift = get_cooldown( "dimensional_rift" );
     cooldowns.haunt = get_cooldown( "haunt" );
     cooldowns.sindorei_spite_icd = get_cooldown( "sindorei_spite_icd" );
     cooldowns.call_dreadstalkers = get_cooldown( "call_dreadstalkers" );
@@ -3600,7 +1703,6 @@ double warlock_t::composite_player_target_multiplier( player_t* target, school_e
   return m;
 }
 
-
 double warlock_t::composite_player_multiplier( school_e school ) const
 {
   double m = player_t::composite_player_multiplier( school );
@@ -3614,17 +1716,9 @@ double warlock_t::composite_player_multiplier( school_e school ) const
   if ( buffs.soul_harvest -> check() )
     m *= 1.0 + buffs.soul_harvest -> stack_value();
 
-  if ( buffs.instability -> check() )
-    m *= 1.0 + find_spell( 216472 ) -> effectN( 1 ).percent();
-
   if ( specialization() == WARLOCK_DESTRUCTION && dbc::is_school( school, SCHOOL_FIRE ) )
   {
     m *= 1.0 + buffs.alythesss_pyrogenics -> stack_value();
-  }
-
-  if ( buffs.deadwind_harvester -> check() )
-  {
-    m *= 1.0 + buffs.deadwind_harvester -> data().effectN( 1 ).percent();
   }
 
   m *= 1.0 + buffs.sindorei_spite -> check_stack_value();
@@ -3723,7 +1817,6 @@ double warlock_t::composite_rating_multiplier( rating_e rating ) const
 
 double warlock_t::resource_gain( resource_e resource_type, double amount, gain_t* source, action_t* action )
 {
-
   return player_t::resource_gain( resource_type, amount, source, action );
 }
 
@@ -3768,9 +1861,6 @@ action_t* warlock_t::create_action( const std::string& action_name,const std::st
   if ( action_name == "demonbolt"             ) return new                         demonbolt_t( this );
   if ( action_name == "doom"                  ) return new                              doom_t( this );
   if ( action_name == "chaos_bolt"            ) return new                        chaos_bolt_t( this );
-  if ( action_name == "demonic_empowerment"   ) return new               demonic_empowerment_t( this );
-  if ( action_name == "drain_soul"            ) return new                        drain_soul_t( this );
-  if ( action_name == "grimoire_of_sacrifice" ) return new             grimoire_of_sacrifice_t( this );
   if ( action_name == "channel_demonfire"     ) return new                 channel_demonfire_t( this );
   if ( action_name == "soul_harvest"          ) return new                      soul_harvest_t( this );
   if ( action_name == "immolate"              ) return new                          immolate_t( this );
@@ -3778,29 +1868,17 @@ action_t* warlock_t::create_action( const std::string& action_name,const std::st
   if ( action_name == "mortal_coil"           ) return new                       mortal_coil_t( this );
   if ( action_name == "shadow_bolt"           ) return new                       shadow_bolt_t( this );
   if ( action_name == "shadowburn"            ) return new                        shadowburn_t( this );
-  if ( action_name == "hand_of_guldan"        ) return new                    hand_of_guldan_t( this );
-  if ( action_name == "implosion"             ) return new                         implosion_t( this );
   if ( action_name == "havoc"                 ) return new                             havoc_t( this );
   if ( action_name == "cataclysm"             ) return new                         cataclysm_t( this );
   if ( action_name == "rain_of_fire"          ) return new         rain_of_fire_t( this, options_str );
   if ( action_name == "demonwrath"            ) return new                        demonwrath_t( this );
   if ( action_name == "shadowflame"           ) return new                       shadowflame_t( this );
-  if ( action_name == "call_dreadstalkers"    ) return new                call_dreadstalkers_t( this );
-  if ( action_name == "summon_infernal"       ) return new                   summon_infernal_t( this );
-  if ( action_name == "summon_doomguard"      ) return new                  summon_doomguard_t( this );
-  if ( action_name == "summon_darkglare"      ) return new                  summon_darkglare_t( this );
   if ( action_name == "summon_felhunter"      ) return new      summon_main_pet_t( "felhunter", this );
   if ( action_name == "summon_felguard"       ) return new       summon_main_pet_t( "felguard", this );
   if ( action_name == "summon_succubus"       ) return new       summon_main_pet_t( "succubus", this );
   if ( action_name == "summon_voidwalker"     ) return new     summon_main_pet_t( "voidwalker", this );
   if ( action_name == "summon_imp"            ) return new            summon_main_pet_t( "imp", this );
   if ( action_name == "summon_pet"            ) return new      summon_main_pet_t( default_pet, this );
-  if ( action_name == "service_felguard"      ) return new               grimoire_of_service_t( this, "felguard" );
-  if ( action_name == "service_felhunter"     ) return new               grimoire_of_service_t( this, "felhunter" );
-  if ( action_name == "service_imp"           ) return new               grimoire_of_service_t( this, "imp" );
-  if ( action_name == "service_succubus"      ) return new               grimoire_of_service_t( this, "succubus" );
-  if ( action_name == "service_voidwalker"    ) return new               grimoire_of_service_t( this, "voidwalker" );
-  if ( action_name == "service_pet"           ) return new               grimoire_of_service_t( this,  talents.grimoire_of_supremacy -> ok() ? "doomguard" : default_pet );
 
   action_t* aff_action = create_action_affliction(action_name, options_str);
   if (aff_action)
@@ -3825,18 +1903,6 @@ pet_t* warlock_t::create_pet( const std::string& pet_name,
 
   using namespace pets;
 
-  if ( pet_name == "felguard"     ) return new    felguard_pet_t( sim, this );
-  if ( pet_name == "felhunter"    ) return new   felhunter_pet_t( sim, this );
-  if ( pet_name == "imp"          ) return new         imp_pet_t( sim, this );
-  if ( pet_name == "succubus"     ) return new    succubus_pet_t( sim, this );
-  if ( pet_name == "voidwalker"   ) return new  voidwalker_pet_t( sim, this );
-
-  if ( pet_name == "service_felguard"     ) return new    felguard_pet_t( sim, this, pet_name );
-  if ( pet_name == "service_felhunter"    ) return new   felhunter_pet_t( sim, this, pet_name );
-  if ( pet_name == "service_imp"          ) return new         imp_pet_t( sim, this, pet_name );
-  if ( pet_name == "service_succubus"     ) return new    succubus_pet_t( sim, this, pet_name );
-  if ( pet_name == "service_voidwalker"   ) return new  voidwalker_pet_t( sim, this, pet_name );
-
   return nullptr;
 }
 
@@ -3847,47 +1913,8 @@ void warlock_t::create_pets()
     create_pet( pet_name_list[ i ] );
   }
 
-  for ( size_t i = 0; i < warlock_pet_list.infernal.size(); i++ )
-  {
-    warlock_pet_list.infernal[i] = new pets::infernal_t( sim, this );
-  }
-  for ( size_t i = 0; i < warlock_pet_list.doomguard.size(); i++ )
-  {
-    warlock_pet_list.doomguard[i] = new pets::doomguard_t( sim, this );
-  }
-
   if ( specialization() == WARLOCK_DEMONOLOGY )
   {
-    for ( size_t i = 0; i < warlock_pet_list.wild_imps.size(); i++ )
-    {
-      warlock_pet_list.wild_imps[ i ] = new pets::wild_imp_pet_t( sim, this );
-      if ( i > 0 )
-        warlock_pet_list.wild_imps[ i ] -> quiet = 1;
-      //warlock_pet_list.wild_imps [ i ].ascendance = new thalkiels_ascendance_pet_spell_t( *warlock_pet_list.wild_imps [ i ] );
-    }
-    for ( size_t i = 0; i < warlock_pet_list.dreadstalkers.size(); i++ )
-    {
-      warlock_pet_list.dreadstalkers[ i ] = new pets::dreadstalker_t( sim, this );
-    }
-    for ( size_t i = 0; i < warlock_pet_list.darkglare.size(); i++ )
-    {
-      warlock_pet_list.darkglare[i] = new pets::darkglare_t( sim, this );
-    }
-    if ( sets->has_set_bonus( WARLOCK_DEMONOLOGY, T18, B4 ) )
-    {
-      for ( size_t i = 0; i < warlock_pet_list.t18_illidari_satyr.size(); i++ )
-      {
-        warlock_pet_list.t18_illidari_satyr[i] = new pets::t18_illidari_satyr_t( sim, this );
-      }
-      for ( size_t i = 0; i < warlock_pet_list.t18_prince_malchezaar.size(); i++ )
-      {
-        warlock_pet_list.t18_prince_malchezaar[i] = new pets::t18_prince_malchezaar_t( sim, this );
-      }
-      for ( size_t i = 0; i < warlock_pet_list.t18_vicious_hellhound.size(); i++ )
-      {
-        warlock_pet_list.t18_vicious_hellhound[i] = new pets::t18_vicious_hellhound_t( sim, this );
-      }
-    }
   }
 }
 
@@ -3930,9 +1957,6 @@ void warlock_t::init_spells()
 
   // Talents
 
-  // Ptr
-  talents.drain_soul             = find_talent_spell( "Drain Soul" );
-
   talents.backdraft              = find_talent_spell( "Backdraft" );
   talents.fire_and_brimstone     = find_talent_spell( "Fire and Brimstone" );
   talents.shadowburn             = find_talent_spell( "Shadowburn" );
@@ -3959,7 +1983,7 @@ void warlock_t::init_spells()
   talents.cataclysm              = find_talent_spell( "Cataclysm" );
 
   talents.hand_of_doom           = find_talent_spell( "Hand of Doom" );
-  talents.power_trip			       = find_talent_spell( "Power Trip" );
+  talents.power_trip			 = find_talent_spell( "Power Trip" );
 
   talents.soul_harvest           = find_talent_spell( "Soul Harvest" );
 
@@ -3984,7 +2008,6 @@ void warlock_t::init_spells()
 
   // Active Spells
   active.demonic_power_proc = new actions::demonic_power_damage_t( this );
-  active.thalkiels_discord = new actions::thalkiels_discord_t( this );
   active.harvester_of_souls = new actions::harvester_of_souls_t( this );
   active.cry_havoc = new actions::cry_havoc_t( this );
   active.rend_soul = new actions::rend_soul_t( this );
@@ -4023,74 +2046,6 @@ void warlock_t::init_scaling()
   player_t::init_scaling();
 }
 
-struct stolen_power_stack_t : public buff_t
-{
-  stolen_power_stack_t( warlock_t* p ) :
-    buff_t( buff_creator_t( p, "stolen_power_stack", p -> find_spell( 211529 ) ).chance( 1.0 ) )
-  {
-  }
-
-  void execute( int a, double b, timespan_t t ) override
-  {
-    warlock_t* p = debug_cast<warlock_t*>( player );
-
-    buff_t::execute( a, b, t );
-
-    if ( p -> buffs.stolen_power_stacks -> stack() == 100 )
-    {
-      p -> buffs.stolen_power_stacks -> reset();
-      p -> buffs.stolen_power -> trigger();
-    }
-  }
-};
-
-struct t18_4pc_driver_t : public buff_t        //kept to force imps to proc
-{
-  timespan_t illidari_satyr_duration;
-  timespan_t vicious_hellhound_duration;
-
-  t18_4pc_driver_t( warlock_t* p ) :
-    buff_t( buff_creator_t( p, "t18_4pc_driver" ).activated( true ).duration( timespan_t::from_millis( 500 ) ).tick_behavior( BUFF_TICK_NONE ) )
-  {
-    vicious_hellhound_duration = p -> find_spell( 189298 ) -> duration();
-    illidari_satyr_duration = p -> find_spell( 189297 ) -> duration();
-  }
-
-  void execute( int a, double b, timespan_t t ) override
-  {
-    warlock_t* p = debug_cast<warlock_t*>( player );
-
-    buff_t::execute( a, b, t );
-
-    //Which pet will we spawn?
-    double pet = rng().range( 0.0, 1.0 );
-    if ( pet <= 0.6 ) // 60% chance to spawn hellhound
-    {
-      for ( size_t i = 0; i < p -> warlock_pet_list.t18_vicious_hellhound.size(); i++ )
-      {
-        if ( p -> warlock_pet_list.t18_vicious_hellhound[i] -> is_sleeping() )
-        {
-          p -> warlock_pet_list.t18_vicious_hellhound[i] -> summon( vicious_hellhound_duration );
-          p -> procs.t18_vicious_hellhound -> occur();
-          break;
-        }
-      }
-    }
-    else // 40% chance to spawn illidari
-    {
-      for ( size_t i = 0; i < p -> warlock_pet_list.t18_illidari_satyr.size(); i++ )
-      {
-        if ( p -> warlock_pet_list.t18_illidari_satyr[i] -> is_sleeping() )
-        {
-          p -> warlock_pet_list.t18_illidari_satyr[i] -> summon( illidari_satyr_duration );
-          p -> procs.t18_illidari_satyr -> occur();
-          break;
-        }
-      }
-    }
-  }
-};
-
 void warlock_t::create_buffs()
 {
   player_t::create_buffs();
@@ -4126,37 +2081,16 @@ void warlock_t::create_buffs()
     .default_value( find_spell( 236200 ) -> effectN( 1 ).percent() );
 
   //affliction buffs
-  buffs.shard_instability = buff_creator_t( this, "shard_instability", find_spell( 216457 ) )
-    .chance( sets->set( WARLOCK_AFFLICTION, T18, B2 ) -> proc_chance() );
-  buffs.instability = buff_creator_t( this, "instability", sets->set( WARLOCK_AFFLICTION, T18, B4 ) -> effectN( 1 ).trigger() )
-    .chance( sets->set( WARLOCK_AFFLICTION, T18, B4 ) -> proc_chance() )
-    .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
-  buffs.deadwind_harvester = buff_creator_t( this, "deadwind_harvester", find_spell( 216708 ) )
-    .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
-    .refresh_behavior( BUFF_REFRESH_EXTEND );
-  buffs.tormented_souls = buff_creator_t( this, "tormented_souls", find_spell( 216695 ) )
-    .tick_behavior( BUFF_TICK_NONE );
-  buffs.compounding_horror = buff_creator_t( this, "compounding_horror", find_spell( 199281 ) );
   buffs.demonic_speed = haste_buff_creator_t( this, "demonic_speed", sets -> set( WARLOCK_AFFLICTION, T20, B4 ) -> effectN( 1 ).trigger() )
     .chance( sets -> set( WARLOCK_AFFLICTION, T20, B4 ) -> proc_chance() )
     .default_value( sets -> set( WARLOCK_AFFLICTION, T20, B4 ) -> effectN( 1 ).trigger() -> effectN( 1 ).percent() );
-  buffs.wrath_of_consumption = buff_creator_t( this, "wrath_of_consumption", find_spell( 199646 ) )
-    .refresh_behavior( BUFF_REFRESH_DURATION )
-    .max_stack( 5 );
-
 
   //demonology buffs
   buffs.demonic_synergy = buff_creator_t( this, "demonic_synergy", find_spell( 171982 ) )
     .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
     .chance( 1 );
-  buffs.tier18_2pc_demonology = buff_creator_t( this, "demon_rush", sets->set( WARLOCK_DEMONOLOGY, T18, B2 ) -> effectN( 1 ).trigger() )
-    .default_value( sets->set( WARLOCK_DEMONOLOGY, T18, B2 ) -> effectN( 1 ).trigger() -> effectN( 1 ).percent() );
   buffs.shadowy_inspiration = buff_creator_t( this, "shadowy_inspiration", find_spell( 196606 ) );
   buffs.demonic_calling = buff_creator_t( this, "demonic_calling", talents.demonic_calling -> effectN( 1 ).trigger() );
-  buffs.t18_4pc_driver = new t18_4pc_driver_t( this );
-  buffs.stolen_power_stacks = new stolen_power_stack_t( this );
-  buffs.stolen_power = buff_creator_t( this, "stolen_power", find_spell( 211583 ) )
-    .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   buffs.dreaded_haste = haste_buff_creator_t( this, "dreaded_haste", sets -> set( WARLOCK_DEMONOLOGY, T20, B4 ) -> effectN( 1 ).trigger() )
     .default_value( sets -> set( WARLOCK_DEMONOLOGY, T20, B4 ) -> effectN( 1 ).trigger() -> effectN( 1 ).percent() );
   buffs.rage_of_guldan = buff_creator_t(this, "rage_of_guldan", sets->set( WARLOCK_DEMONOLOGY, T21, B2 ) -> effectN( 1 ).trigger() )
@@ -4165,11 +2099,8 @@ void warlock_t::create_buffs()
 	  .default_value( find_spell( 257926 ) -> effectN( 1 ).base_value() )
 	  .refresh_behavior( BUFF_REFRESH_DURATION );
 
-
   //destruction buffs
   buffs.backdraft = buff_creator_t( this, "backdraft", find_spell( 117828 ) );
-  buffs.lord_of_flames = buff_creator_t( this, "lord_of_flames", find_spell( 226802 ) )
-    .tick_behavior( BUFF_TICK_NONE );
   buffs.embrace_chaos = buff_creator_t( this, "embrace_chaos", sets->set( WARLOCK_DESTRUCTION,T19, B2 ) -> effectN( 1 ).trigger() )
     .chance( sets->set( WARLOCK_DESTRUCTION, T19, B2 ) -> proc_chance() );
   buffs.active_havoc = buff_creator_t( this, "active_havoc" )
@@ -4226,42 +2157,22 @@ void warlock_t::init_procs()
 {
   player_t::init_procs();
 
-  procs.fatal_echos = get_proc( "fatal_echos" );
-  procs.wild_imp = get_proc( "wild_imp" );
-  procs.fragment_wild_imp = get_proc( "fragment_wild_imp" );
   procs.t18_4pc_destruction = get_proc( "t18_4pc_destruction" );
   procs.t18_prince_malchezaar = get_proc( "t18_prince_malchezaar" );
   procs.t18_vicious_hellhound = get_proc( "t18_vicious_hellhound" );
   procs.t18_illidari_satyr = get_proc( "t18_illidari_satyr" );
-  procs.shadowy_tear = get_proc( "shadowy_tear" );
-  procs.flame_rift = get_proc( "flame_rift" );
-  procs.chaos_tear = get_proc( "chaos_tear" );
-  procs.chaos_portal = get_proc( "chaos_portal" );
-  procs.dreadstalker_debug = get_proc( "dreadstalker_debug" );
-  procs.dimension_ripper = get_proc( "dimension_ripper" );
   procs.one_shard_hog = get_proc( "one_shard_hog" );
   procs.two_shard_hog = get_proc( "two_shard_hog" );
   procs.three_shard_hog = get_proc( "three_shard_hog" );
   procs.four_shard_hog = get_proc( "four_shard_hog" );
   procs.impending_doom = get_proc( "impending_doom" );
-  procs.improved_dreadstalkers = get_proc( "improved_dreadstalkers" );
-  procs.thalkiels_discord = get_proc( "thalkiels_discord" );
   procs.demonic_calling = get_proc( "demonic_calling" );
   procs.power_trip = get_proc( "power_trip" );
-  procs.stolen_power_stack = get_proc( "stolen_power_proc" );
-  procs.stolen_power_used = get_proc( "stolen_power_used" );
   procs.soul_conduit = get_proc( "soul_conduit" );
   procs.the_master_harvester = get_proc( "the_master_harvester" );
-  procs.t18_demo_4p = get_proc( "t18_demo_4p" );
   procs.souls_consumed = get_proc( "souls_consumed" );
-  procs.the_expendables = get_proc( "the_expendables" );
-  procs.wilfreds_dog = get_proc( "wilfreds_dog" );
-  procs.wilfreds_imp = get_proc( "wilfreds_imp" );
-  procs.wilfreds_darkglare = get_proc( "wilfreds_darkglare" );
   procs.t19_2pc_chaos_bolts = get_proc( "t19_2pc_chaos_bolt" );
   procs.demonology_t20_2pc = get_proc( "demonology_t20_2pc" );
-  procs.ua_tick_no_mg = get_proc( "ua_tick_no_mg" );
-  procs.ua_tick_mg = get_proc( "ua_tick_mg" );
   procs.affliction_t21_2pc = get_proc("affliction_t21_2pc");
 }
 
@@ -4327,7 +2238,6 @@ std::string warlock_t::default_rune() const
 
 void warlock_t::apl_global_filler()
 {
-  add_action( "Life Tap" );
 }
 
 void warlock_t::apl_default()
@@ -4336,7 +2246,7 @@ void warlock_t::apl_default()
 
 void warlock_t::apl_affliction()
 {
-    create_apl_aff();
+    create_apl_affliction();
 }
 
 void warlock_t::apl_demonology()
@@ -4422,14 +2332,6 @@ void warlock_t::combat_begin()
 void warlock_t::reset()
 {
   player_t::reset();
-
-  // Figure out up to what actor ID we should reset. This is the max of target list actors, and
-  // their pets
-//  size_t max_idx = sim -> target_list.data().back() -> actor_index + 1;
-//  if ( sim -> target_list.data().back() -> pet_list.size() > 0 )
-//  {
-//    max_idx = sim -> target_list.data().back() -> pet_list.back() -> actor_index + 1;
-//  }
 
   range::for_each( sim -> target_list, [ this ]( const player_t* t ) {
     if ( auto td = target_data[ t ] )
@@ -4524,153 +2426,25 @@ expr_t* warlock_t::create_expression( action_t* a, const std::string& name_str )
     };
     return new shard_react_expr_t( *this );
   }
-
-  else if ( name_str == "felstorm_is_ticking" )
+  else if (name_str == "pet_count")
   {
-    struct felstorm_is_ticking_expr_t: public expr_t
-    {
-      pets::warlock_pet_t* felguard;
-      felstorm_is_ticking_expr_t( pets::warlock_pet_t* f ):
-        expr_t( "felstorm_is_ticking" ), felguard( f ) { }
-      virtual double evaluate() override { return ( felguard ) ? felguard -> special_action -> get_dot() -> is_ticking() : false; }
-    };
-    return new felstorm_is_ticking_expr_t( debug_cast<pets::warlock_pet_t*>( find_pet( "felguard" ) ) );
-  }
-
-  else if( name_str == "wild_imp_count")
-  {
-    struct wild_imp_count_expr_t: public expr_t
-    {
-        warlock_t& player;
-
-        wild_imp_count_expr_t( warlock_t& p ):
-          expr_t( "wild_imp_count" ), player( p ) { }
-        virtual double evaluate() override
-        {
-            double t = 0;
-            for(auto& pet : player.warlock_pet_list.wild_imps)
-            {
-                if(!pet->is_sleeping())
-                    t++;
-            }
-            return t;
-        }
-
-    };
-    return new wild_imp_count_expr_t( *this );
-  }
-
-  else if ( name_str == "darkglare_count" )
-  {
-    struct darkglare_count_expr_t : public expr_t
-    {
-      warlock_t& player;
-
-      darkglare_count_expr_t( warlock_t& p ) :
-        expr_t( "darkglare_count" ), player( p ) { }
-      virtual double evaluate() override
-      {
-        double t = 0;
-        for ( auto& pet : player.warlock_pet_list.darkglare )
-        {
-          if ( !pet -> is_sleeping() )
-            t++;
-        }
-        return t;
-      }
-
-    };
-    return new darkglare_count_expr_t( *this );
-  }
-
-  else if( name_str == "dreadstalker_count")
-  {
-      struct dreadstalker_count_expr_t: public expr_t
+      struct pet_count_expr_t : public expr_t
       {
           warlock_t& player;
 
-          dreadstalker_count_expr_t( warlock_t& p ):
-            expr_t( "dreadstalker_count" ), player( p ) { }
+          pet_count_expr_t(warlock_t& p) :
+              expr_t("pet_count"), player(p) { }
           virtual double evaluate() override
           {
               double t = 0;
-              for(auto& pet : player.warlock_pet_list.dreadstalkers)
+              for (auto& pet : player.pet_list)
               {
-                  if(!pet->is_sleeping())
-                      t++;
-              }
-              return t;
-          }
-
-      };
-      return new dreadstalker_count_expr_t( *this );
-  }
-  else if( name_str == "doomguard_count")
-  {
-      struct doomguard_count_expr_t: public expr_t
-      {
-          warlock_t& player;
-
-          doomguard_count_expr_t( warlock_t& p ):
-            expr_t( "doomguard_count" ), player( p ) { }
-          virtual double evaluate() override
-          {
-              double t = 0;
-              for(auto& pet : player.warlock_pet_list.doomguard)
-              {
-                  if(!pet->is_sleeping())
-                      t++;
-              }
-              return t;
-          }
-
-      };
-      return new doomguard_count_expr_t( *this );
-  }
-  else if( name_str == "infernal_count" )
-  {
-      struct infernal_count_expr_t: public expr_t
-      {
-          warlock_t& player;
-
-          infernal_count_expr_t( warlock_t& p ):
-            expr_t( "infernal_count" ), player( p ) { }
-          virtual double evaluate() override
-          {
-              double t = 0;
-              for(auto& pet : player.warlock_pet_list.infernal)
-              {
-                  if(!pet->is_sleeping())
-                      t++;
-              }
-              return t;
-          }
-
-      };
-      return new infernal_count_expr_t( *this );
-  }
-  else if( name_str == "service_count" )
-  {
-      struct service_count_expr_t: public expr_t
-      {
-          warlock_t& player;
-
-          service_count_expr_t( warlock_t& p ):
-            expr_t( "service_count" ), player( p ) { }
-          virtual double evaluate() override
-          {
-              double t = 0;
-              for(auto& pet : player.pet_list)
-              {
-                  pets::warlock_pet_t *lock_pet = dynamic_cast<pets::warlock_pet_t*> ( pet );
-                  if(lock_pet != nullptr)
+                  pets::warlock_pet_t *lock_pet = dynamic_cast<pets::warlock_pet_t*> (pet);
+                  if (lock_pet != nullptr)
                   {
-                      if(lock_pet->is_grimoire_of_service)
+                      if (!lock_pet->is_sleeping())
                       {
-                          if( !lock_pet->is_sleeping() )
-                          {
-                              t++;
-                          }
+                          t++;
                       }
                   }
               }
@@ -4678,515 +2452,12 @@ expr_t* warlock_t::create_expression( action_t* a, const std::string& name_str )
           }
 
       };
-      return new service_count_expr_t( *this );
+      return new pet_count_expr_t(*this);
   }
-  else if ( name_str == "pet_count" )
-  {
-    struct pet_count_expr_t : public expr_t
-    {
-      warlock_t& player;
-
-      pet_count_expr_t( warlock_t& p ) :
-        expr_t( "pet_count" ), player( p ) { }
-      virtual double evaluate() override
-      {
-        double t = 0;
-        for ( auto& pet : player.pet_list )
-        {
-          pets::warlock_pet_t *lock_pet = dynamic_cast<pets::warlock_pet_t*> ( pet );
-          if ( lock_pet != nullptr )
-          {
-            if ( !lock_pet->is_sleeping() )
-            {
-              t++;
-            }
-          }
-        }
-        return t;
-      }
-
-    };
-    return new pet_count_expr_t( *this );
-  }
-  else if( name_str == "wild_imp_no_de" )
-  {
-      struct wild_imp_without_de_expr_t: public expr_t
-      {
-          warlock_t& player;
-
-          wild_imp_without_de_expr_t( warlock_t& p ):
-            expr_t( "wild_imp_no_de" ), player( p ) { }
-          virtual double evaluate() override
-          {
-              double t = 0;
-              for(auto& pet : player.warlock_pet_list.wild_imps)
-              {
-                  if(!pet->is_sleeping() & !pet->buffs.demonic_empowerment->up())
-                      t++;
-              }
-              return t;
-          }
-
-      };
-      return new wild_imp_without_de_expr_t( *this );
-  }
-
-  else if ( name_str == "darkglare_no_de" )
-  {
-    struct darkglare_without_de_expr_t : public expr_t
-    {
-      warlock_t& player;
-
-      darkglare_without_de_expr_t( warlock_t& p ) :
-        expr_t( "darkglare_no_de" ), player( p ) { }
-      virtual double evaluate() override
-      {
-        double t = 0;
-        for ( auto& pet : player.warlock_pet_list.darkglare )
-        {
-          if ( !pet -> is_sleeping() & !pet -> buffs.demonic_empowerment -> up() )
-            t++;
-        }
-        return t;
-      }
-
-    };
-    return new darkglare_without_de_expr_t( *this );
-  }
-
-  else if( name_str == "dreadstalker_no_de" )
-  {
-      struct dreadstalker_without_de_expr_t: public expr_t
-      {
-          warlock_t& player;
-
-          dreadstalker_without_de_expr_t( warlock_t& p ):
-            expr_t( "dreadstalker_no_de" ), player( p ) { }
-          virtual double evaluate() override
-          {
-              double t = 0;
-              for(auto& pet : player.warlock_pet_list.dreadstalkers)
-              {
-                  if(!pet->is_sleeping() & !pet->buffs.demonic_empowerment->up())
-                      t++;
-              }
-              return t;
-          }
-
-      };
-      return new dreadstalker_without_de_expr_t( *this );
-  }
-  else if( name_str == "doomguard_no_de" )
-  {
-      struct doomguard_without_de_expr_t: public expr_t
-      {
-          warlock_t& player;
-
-          doomguard_without_de_expr_t( warlock_t& p ):
-            expr_t( "doomguard_no_de" ), player( p ) { }
-          virtual double evaluate() override
-          {
-              double t = 0;
-              for(auto& pet : player.warlock_pet_list.doomguard)
-              {
-                  if(!pet->is_sleeping() & !pet->buffs.demonic_empowerment->up())
-                      t++;
-              }
-              return t;
-          }
-
-      };
-      return new doomguard_without_de_expr_t( *this );
-  }
-  else if( name_str == "infernal_no_de" )
-  {
-      struct infernal_without_de_expr_t: public expr_t
-      {
-          warlock_t& player;
-
-          infernal_without_de_expr_t( warlock_t& p ):
-            expr_t( "infernal_no_de" ), player( p ) { }
-          virtual double evaluate() override
-          {
-              double t = 0;
-              for(auto& pet : player.warlock_pet_list.infernal)
-              {
-                  if(!pet->is_sleeping() & !pet->buffs.demonic_empowerment->up())
-                      t++;
-              }
-              return t;
-          }
-
-      };
-      return new infernal_without_de_expr_t( *this );
-  }
-  else if( name_str == "service_no_de" )
-  {
-      struct service_without_de_expr_t: public expr_t
-      {
-          warlock_t& player;
-
-          service_without_de_expr_t( warlock_t& p ):
-            expr_t( "service_no_de" ), player( p ) { }
-          virtual double evaluate() override
-          {
-              double t = 0;
-              for(auto& pet : player.pet_list)
-              {
-                  pets::warlock_pet_t *lock_pet = dynamic_cast<pets::warlock_pet_t*> ( pet );
-                  if(lock_pet != nullptr)
-                  {
-                      if(lock_pet->is_grimoire_of_service)
-                      {
-                          if(!lock_pet->is_sleeping() & !lock_pet->buffs.demonic_empowerment->up())
-                              t++;
-                      }
-                  }
-              }
-              return t;
-          }
-
-      };
-      return new service_without_de_expr_t( *this );
-  }
-
-  else if( name_str == "wild_imp_de_duration" )
-  {
-      struct wild_imp_de_duration_expression_t: public expr_t
-      {
-          warlock_t& player;
-
-          wild_imp_de_duration_expression_t( warlock_t& p ):
-            expr_t( "wild_imp_de_duration" ), player( p ) { }
-          virtual double evaluate() override
-          {
-              double t = 150000;
-              for(auto& pet : player.warlock_pet_list.wild_imps)
-              {
-                  if(!pet->is_sleeping() & !pet->buffs.demonic_empowerment->up())
-                  {
-                    if(pet->buffs.demonic_empowerment->buff_duration.total_seconds() < t)
-                        t = pet->buffs.demonic_empowerment->buff_duration.total_seconds();
-                  }
-              }
-              return t;
-          }
-
-      };
-      return new wild_imp_de_duration_expression_t( *this );
-  }
-
-  else if ( name_str == "darkglare_de_duration" )
-  {
-    struct darkglare_de_duration_expression_t : public expr_t
-    {
-      warlock_t& player;
-
-      darkglare_de_duration_expression_t( warlock_t& p ) :
-        expr_t( "darkglare_de_duration" ), player( p ) { }
-      virtual double evaluate() override
-      {
-        double t = 150000;
-        for ( auto& pet : player.warlock_pet_list.darkglare )
-        {
-          if ( !pet -> is_sleeping() & !pet -> buffs.demonic_empowerment -> up() )
-          {
-            if ( pet -> buffs.demonic_empowerment -> buff_duration.total_seconds() < t )
-              t = pet -> buffs.demonic_empowerment -> buff_duration.total_seconds();
-          }
-        }
-        return t;
-      }
-
-    };
-    return new darkglare_de_duration_expression_t( *this );
-  }
-
-  else if( name_str == "dreadstalkers_de_duration" )
-  {
-      struct dreadstalkers_de_duration_expression_t: public expr_t
-      {
-          warlock_t& player;
-
-          dreadstalkers_de_duration_expression_t( warlock_t& p ):
-            expr_t( "dreadstalkers_de_duration" ), player( p ) { }
-          virtual double evaluate() override
-          {
-              double t = 150000;
-              for(auto& pet : player.warlock_pet_list.dreadstalkers)
-              {
-                  if(!pet->is_sleeping() & !pet->buffs.demonic_empowerment->up())
-                  {
-                    if(pet->buffs.demonic_empowerment->buff_duration.total_seconds() < t)
-                        t = pet->buffs.demonic_empowerment->buff_duration.total_seconds();
-                  }
-              }
-              return t;
-          }
-
-      };
-      return new dreadstalkers_de_duration_expression_t( *this );
-  }
-  else if( name_str == "infernal_de_duration" )
-      {
-          struct infernal_de_duration_expression_t: public expr_t
-          {
-              warlock_t& player;
-
-              infernal_de_duration_expression_t( warlock_t& p ):
-                expr_t( "infernal_de_duration" ), player( p ) { }
-              virtual double evaluate() override
-              {
-                  double t = 150000;
-                  for(auto& pet : player.warlock_pet_list.infernal)
-                  {
-                      if(!pet->is_sleeping() & !pet->buffs.demonic_empowerment->up())
-                      {
-                        if(pet->buffs.demonic_empowerment->buff_duration.total_seconds() < t)
-                            t = pet->buffs.demonic_empowerment->buff_duration.total_seconds();
-                      }
-                  }
-                  return t;
-              }
-
-          };
-          return new infernal_de_duration_expression_t( *this );
-      }
-  else if( name_str == "doomguard_de_duration" )
-      {
-          struct doomguard_de_duration_expression_t: public expr_t
-          {
-              warlock_t& player;
-
-              doomguard_de_duration_expression_t( warlock_t& p ):
-                expr_t( "doomguard_de_duration" ), player( p ) { }
-              virtual double evaluate() override
-              {
-                  double t = 150000;
-                  for(auto& pet : player.warlock_pet_list.doomguard)
-                  {
-                      if(!pet->is_sleeping() & !pet->buffs.demonic_empowerment->up())
-                      {
-                        if(pet->buffs.demonic_empowerment->buff_duration.total_seconds() < t)
-                            t = pet->buffs.demonic_empowerment->buff_duration.total_seconds();
-                      }
-                  }
-                  return t;
-              }
-
-          };
-          return new doomguard_de_duration_expression_t( *this );
-      }
-  else if( name_str == "service_de_duration" )
-  {
-      struct service_de_duration: public expr_t
-      {
-          warlock_t& player;
-
-          service_de_duration( warlock_t& p ):
-            expr_t( "service_de_duration" ), player( p ) { }
-          virtual double evaluate() override
-          {
-              double t = 500000;
-              for(auto& pet : player.pet_list)
-              {
-                  pets::warlock_pet_t *lock_pet = dynamic_cast<pets::warlock_pet_t*> ( pet );
-                  if(lock_pet != nullptr)
-                  {
-                      if(lock_pet->is_grimoire_of_service)
-                      {
-                          if(!lock_pet->is_sleeping() & !lock_pet->buffs.demonic_empowerment->up())
-                          {
-                              if(lock_pet->buffs.demonic_empowerment->buff_duration.total_seconds() )
-                                  t = lock_pet->buffs.demonic_empowerment->buff_duration.total_seconds();
-                          }
-                      }
-                  }
-              }
-              return t;
-          }
-
-      };
-      return new service_de_duration( *this );
-  }
-
-  else if( name_str == "wild_imp_remaining_duration" )
-  {
-    struct wild_imp_remaining_duration_expression_t: public expr_t
-    {
-      warlock_t& player;
-
-      wild_imp_remaining_duration_expression_t( warlock_t& p ):
-        expr_t( "wild_imp_remaining_duration" ), player( p ) { }
-      virtual double evaluate() override
-      {
-        double t = 5000;
-        for( auto& pet : player.warlock_pet_list.wild_imps )
-        {
-          if( !pet -> is_sleeping() )
-          {
-            if( t > pet -> expiration->remains().total_seconds() )
-            {
-              t = pet->expiration->remains().total_seconds();
-            }
-          }
-        }
-        if( t == 5000 )
-        {
-          t = -1;
-        }
-        return t;
-      }
-    };
-
-    return new wild_imp_remaining_duration_expression_t( *this );
-  }
-
-  else if ( name_str == "darkglare_remaining_duration" )
-  {
-    struct darkglare_remaining_duration_expression_t : public expr_t
-    {
-      warlock_t& player;
-
-      darkglare_remaining_duration_expression_t( warlock_t& p ) :
-        expr_t( "darkglare_remaining_duration" ), player( p ) { }
-      virtual double evaluate() override
-      {
-        double t = 5000;
-        for ( auto& pet : player.warlock_pet_list.darkglare )
-        {
-          if ( !pet -> is_sleeping() )
-          {
-            if ( t > pet -> expiration -> remains().total_seconds() )
-            {
-              t = pet -> expiration -> remains().total_seconds();
-            }
-          }
-        }
-        if ( t == 5000 )
-          t = -1;
-        return t;
-      }
-    };
-
-    return new darkglare_remaining_duration_expression_t( *this );
-  }
-
-  else if( name_str == "dreadstalker_remaining_duration" )
-      {
-          struct dreadstalker_remaining_duration_expression_t: public expr_t
-          {
-              warlock_t& player;
-
-              dreadstalker_remaining_duration_expression_t( warlock_t& p ):
-                expr_t( "dreadstalker_remaining_duration" ), player( p ) { }
-              virtual double evaluate() override
-              {
-                  double t = 5000;
-                  for(auto& pet : player.warlock_pet_list.dreadstalkers)
-                  {
-                      if( !pet->is_sleeping() )
-                      {
-                          if( t > pet->expiration->remains().total_seconds() )
-                          t = pet->expiration->remains().total_seconds();
-                      }
-                  }
-                  if( t==5000 )
-                      t = -1;
-                  return t;
-              }
-
-          };
-          return new dreadstalker_remaining_duration_expression_t( *this );
-      }
-  else if( name_str == "infernal_remaining_duration" )
-      {
-          struct infernal_remaining_duration_expression_t: public expr_t
-          {
-              warlock_t& player;
-
-              infernal_remaining_duration_expression_t( warlock_t& p ):
-                expr_t( "infernal_remaining_duration" ), player( p ) { }
-              virtual double evaluate() override
-              {
-                  double t = -1;
-                  for(auto& pet : player.warlock_pet_list.infernal)
-                  {
-                      if(!pet->is_sleeping() )
-                      {
-                          t = pet->expiration->remains().total_seconds();
-                      }
-                  }
-                  return t;
-              }
-
-          };
-          return new infernal_remaining_duration_expression_t( *this );
-      }
-  else if( name_str == "doomguard_remaining_duration" )
-      {
-          struct doomguard_remaining_duration_expression_t: public expr_t
-          {
-              warlock_t& player;
-
-              doomguard_remaining_duration_expression_t( warlock_t& p ):
-                expr_t( "doomguard_remaining_duration" ), player( p ) { }
-              virtual double evaluate() override
-              {
-                  double t = -1;
-                  for(auto& pet : player.warlock_pet_list.doomguard)
-                  {
-                      if(!pet->is_sleeping() )
-                      {
-                          t = pet->expiration->remains().total_seconds();
-                      }
-                  }
-                  return t;
-              }
-
-          };
-          return new doomguard_remaining_duration_expression_t( *this );
-      }
-  else if( name_str == "service_remaining_duration" )
-  {
-      struct service_remaining_duration_expr_t: public expr_t
-      {
-          warlock_t& player;
-
-          service_remaining_duration_expr_t( warlock_t& p ):
-            expr_t( "service_remaining_duration" ), player( p ) { }
-          virtual double evaluate() override
-          {
-              double t = -1;
-              for(auto& pet : player.pet_list)
-              {
-                  pets::warlock_pet_t *lock_pet = dynamic_cast<pets::warlock_pet_t*> ( pet );
-                  if(lock_pet != nullptr)
-                  {
-                      if(lock_pet->is_grimoire_of_service)
-                      {
-                          if(!lock_pet->is_sleeping() )
-                          {
-                              t=lock_pet->expiration->remains().total_seconds();
-                          }
-                      }
-                  }
-              }
-              return t;
-          }
-
-      };
-      return new service_remaining_duration_expr_t( *this );
-  }
-
   else
   {
     return player_t::create_expression( a, name_str );
   }
-}
-
-void warlock_t::trigger_lof_infernal()
-{
 }
 
 /* Report Extension Class
@@ -5287,17 +2558,6 @@ struct kazzaks_final_curse_t : public scoped_action_callback_t<doom_t>
   }
 };
 
-struct recurrent_ritual_t : public scoped_action_callback_t<call_dreadstalkers_t>
-{
-  recurrent_ritual_t() : super( WARLOCK, "call_dreadstalkers" )
-  { }
-
-  void manipulate( call_dreadstalkers_t* a, const special_effect_t& e ) override
-  {
-    a -> recurrent_ritual = e.driver() -> effectN( 1 ).trigger() -> effectN( 1 ).base_value() / 10.0;
-  }
-};
-
 struct wilfreds_sigil_of_superior_summoning_t : public scoped_actor_callback_t<warlock_t>
 {
   wilfreds_sigil_of_superior_summoning_t() : super( WARLOCK )
@@ -5305,8 +2565,7 @@ struct wilfreds_sigil_of_superior_summoning_t : public scoped_actor_callback_t<w
 
   void manipulate( warlock_t* p, const special_effect_t& e ) override
   {
-    p -> legendary.wilfreds_sigil_of_superior_summoning_flag = true;
-    p -> legendary.wilfreds_sigil_of_superior_summoning = e.driver() -> effectN( 1 ).time_value();
+
   }
 };
 
@@ -5433,7 +2692,7 @@ struct warlock_module_t: public module_t
 
     //register_special_effect( 205797, hood_of_eternal_disdain_t() );
     register_special_effect( 214225, kazzaks_final_curse_t() );
-    register_special_effect( 205721, recurrent_ritual_t() );
+    //register_special_effect( 205721, recurrent_ritual_t() );
     register_special_effect( 214345, wilfreds_sigil_of_superior_summoning_t() );
     register_special_effect( 208868, sindorei_spite_t(), true );
     register_special_effect( 212172, odr_shawl_of_the_ymirjar_t() );
@@ -5452,206 +2711,6 @@ struct warlock_module_t: public module_t
 
   virtual void register_hotfixes() const override
   {
-    //hotfix::register_effect( "Warlock", "2017-12-04", "Diabolic Raiment 4-piece – Spending a Soul Shard now has a chance to grant you 10% Haste (was 15%).", 367884 )
-    //  .field( "base_value" )
-    //  .operation( hotfix::HOTFIX_SET )
-    //  .modifier( 10 )
-    //  .verification_value( 15 );
-
-    //hotfix::register_effect( "Warlock", "2017-12-04", "Grim Inquisitor’s Regalia 4-piece – Unstable Affliction and Seed of Corruption now increase the damage targets take from your Agony and Corruption by 15% (was 10%).", 473114 )
-    //  .field( "base_value" )
-    //  .operation( hotfix::HOTFIX_SET )
-    //  .modifier( 15 )
-    //  .verification_value( 10 );
-
-    //hotfix::register_effect( "Warlock", "2017-12-04", "Grim Inquisitor’s Regalia 4-piece – Demonic Empowerment now causes your Dreadstalkers to immediately cast another Dreadbite with 75% increased damage (was 50%).", 471461 )
-    //  .field( "base_value" )
-    //  .operation( hotfix::HOTFIX_SET )
-    //  .modifier( 75 )
-    //  .verification_value( 50 );
-
-    //hotfix::register_effect( "Warlock", "2018-02-05", "Corruption damage reduced by 6%.", 198369 )
-    //  .field( "sp_coefficient" )
-    //  .operation( hotfix::HOTFIX_MUL )
-    //  .modifier( 0.94 )
-    //  .verification_value( 0.324 );
-
-    //hotfix::register_effect( "Warlock", "2018-02-05", "Agony damage reduced by 6%.", 374 )
-    //  .field( "sp_coefficient" )
-    //  .operation( hotfix::HOTFIX_MUL )
-    //  .modifier( 0.94 )
-    //  .verification_value( 0.03540 );
-
-    //hotfix::register_effect( "Warlock", "2017-12-04", "Unstable Affliction 1 damage reduced by 4%", 352664 )
-    //  .field( "sp_coefficient" )
-    //  .operation( hotfix::HOTFIX_MUL )
-    //  .modifier( 0.96 )
-    //  .verification_value( 0.966 );
-
-    //hotfix::register_effect( "Warlock", "2017-12-04", "Unstable Affliction 2 damage reduced by 4%", 352671 )
-    //  .field( "sp_coefficient" )
-    //  .operation( hotfix::HOTFIX_MUL )
-    //  .modifier( 0.96 )
-    //  .verification_value( 0.966 );
-
-    //hotfix::register_effect( "Warlock", "2017-12-04", "Unstable Affliction 3 damage reduced by 4%", 352672 )
-    //  .field( "sp_coefficient" )
-    //  .operation( hotfix::HOTFIX_MUL )
-    //  .modifier( 0.96 )
-    //  .verification_value( 0.966 );
-
-    //hotfix::register_effect( "Warlock", "2017-12-04", "Unstable Affliction 4 damage reduced by 4%", 352673 )
-    //  .field( "sp_coefficient" )
-    //  .operation( hotfix::HOTFIX_MUL )
-    //  .modifier( 0.96 )
-    //  .verification_value( 0.966 );
-
-    //hotfix::register_effect( "Warlock", "2017-12-04", "Unstable Affliction 5 damage reduced by 4%", 352674 )
-    //  .field( "sp_coefficient" )
-    //  .operation( hotfix::HOTFIX_MUL )
-    //  .modifier( 0.96 )
-    //  .verification_value( 0.966 );
-
-
-    //hotfix::register_effect( "Warlock", "2016-09-23", "Drain Life damage increased by 10%", 271 )
-    //  .field( "sp_coefficient" )
-    //  .operation( hotfix::HOTFIX_MUL )
-    //  .modifier( 1.10 )
-    //  .verification_value( 0.35 );
-
-    //hotfix::register_effect( "Warlock", "2016-09-23", "Drain Soul damage increased by 10%", 291909 )
-    //  .field( "sp_coefficient" )
-    //  .operation( hotfix::HOTFIX_MUL )
-    //  .modifier( 1.10 )
-    //  .verification_value( 0.52 );
-
-    //hotfix::register_effect( "Warlock", "2016-09-23", "Seed of Corruption damage increased by 15%", 16922 )
-    //  .field( "sp_coefficient" )
-    //  .operation( hotfix::HOTFIX_MUL )
-    //  .modifier( 1.15 )
-    //  .verification_value( 1.2 );
-
-    //hotfix::register_effect( "Warlock", "2016-09-23", "Siphon Life damage increased by 10%", 57197 )
-    //  .field( "sp_coefficient" )
-    //  .operation( hotfix::HOTFIX_MUL )
-    //  .modifier( 1.1 )
-    //  .verification_value( 0.5 );
-
-    //hotfix::register_effect( "Warlock", "2016-09-23", "Haunt damage increased by 15%", 40331 )
-    //  .field( "sp_coefficient" )
-    //  .operation( hotfix::HOTFIX_MUL )
-    //  .modifier( 1.15 )
-    //  .verification_value( 7.0 );
-
-    //hotfix::register_effect( "Warlock", "2016-09-23", "Phantom Singularity damage increased by 15%", 303063 )
-    //  .field( "sp_coefficient" )
-    //  .operation( hotfix::HOTFIX_MUL )
-    //  .modifier( 1.15 )
-    //  .verification_value( 1.44 );
-
-    //hotfix::register_effect( "Warlock", "2015-09-23", "Hand of Gul�dan impact damage increased by 20%", 87492 )
-    //  .field( "sp_coefficient" )
-    //  .operation( hotfix::HOTFIX_MUL )
-    //  .modifier( 1.2 )
-    //  .verification_value( 0.36 );
-
-    //hotfix::register_effect( "Warlock", "2015-09-23", " Demonwrath damage increased by 15%", 283783 )
-    //  .field( "sp_coefficient" )
-    //  .operation( hotfix::HOTFIX_MUL )
-    //  .modifier( 1.15 )
-    //  .verification_value( 0.3 );
-
-    //hotfix::register_effect( "Warlock", "2015-09-23", "Shadowbolt damage increased by 10%", 267 )
-    //  .field( "sp_coefficient" )
-    //  .operation( hotfix::HOTFIX_MUL )
-    //  .modifier( 1.1 )
-    //  .verification_value( 0.8 );
-
-    //hotfix::register_effect( "Warlock", "2015-09-23", "Doom damage increased by 10%", 246 )
-    //  .field( "sp_coefficient" )
-    //  .operation( hotfix::HOTFIX_MUL )
-    //  .modifier( 1.1 )
-    //  .verification_value( 5.0 );
-
-    //hotfix::register_effect( "Warlock", "2015-09-23", "Wild Imps damage increased by 10%", 113740 )
-    //  .field( "sp_coefficient" )
-    //  .operation( hotfix::HOTFIX_MUL )
-    //  .modifier( 1.1 )
-    //  .verification_value( 0.14 );
-
-    //hotfix::register_effect( "Warlock", "2015-09-23", "Demonbolt (Talent) damage increased by 10%", 219885 )
-    //  .field( "sp_coefficient" )
-    //  .operation( hotfix::HOTFIX_MUL )
-    //  .modifier( 1.1 )
-    //  .verification_value( 0.8 );
-
-    //hotfix::register_effect( "Warlock", "2015-09-23", "Implosion (Talent) damage increased by 15%", 288085 )
-    //  .field( "sp_coefficient" )
-    //  .operation( hotfix::HOTFIX_MUL )
-    //  .modifier( 1.15 )
-    //  .verification_value( 2.0 );
-
-    //hotfix::register_effect( "Warlock", "2015-09-23", "Shadowflame (Talent) damage increased by 10%", 302909 )
-    //  .field( "sp_coefficient" )
-    //  .operation( hotfix::HOTFIX_MUL )
-    //  .modifier( 1.1 )
-    //  .verification_value( 1.0 );
-
-    //hotfix::register_effect( "Warlock", "2015-09-23", "Shadowflame (Talent) damage increased by 10%-2", 302911 )
-    //  .field( "sp_coefficient" )
-    //  .operation( hotfix::HOTFIX_MUL )
-    //  .modifier( 1.1 )
-    //  .verification_value( 0.35 );
-
-    //hotfix::register_effect( "Warlock", "2015-09-23", "Darkglare (Talent) damage increased by 10%", 302984 )
-    //  .field( "sp_coefficient" )
-    //  .operation( hotfix::HOTFIX_MUL )
-    //  .modifier( 1.1 )
-    //  .verification_value( 1.0 );
-
-    //hotfix::register_effect( "Warlock", "2016-09-23", "Chaos bolt damage increased by 11%", 132079 )
-    //  .field( "sp_coefficient" )
-    //  .operation( hotfix::HOTFIX_MUL )
-    //  .modifier( 1.11 )
-    //  .verification_value( 3.3 );
-
-    //hotfix::register_effect( "Warlock", "2016-09-23", "Incinerate damage increased by 11%", 288276 )
-    //  .field( "sp_coefficient" )
-    //  .operation( hotfix::HOTFIX_MUL )
-    //  .modifier( 1.11 )
-    //  .verification_value( 2.1 );
-
-    //hotfix::register_effect( "Warlock", "2016-09-23", "Immolate damage increased by 11%", 145 )
-    //  .field( "sp_coefficient" )
-    //  .operation( hotfix::HOTFIX_MUL )
-    //  .modifier( 1.11 )
-    //  .verification_value( 1.2 );
-
-    //hotfix::register_effect( "Warlock", "2016-09-23", "Conflagrate damage increased by 11%", 9553 )
-    //  .field( "sp_coefficient" )
-    //  .operation( hotfix::HOTFIX_MUL )
-    //  .modifier( 1.11 )
-    //  .verification_value( 2.041 );
-
-    //hotfix::register_effect( "Warlock", "2016-09-23", "Rain of Fire damage increased by 11%, and cast time removed", 33883 )
-    //  .field( "sp_coefficient" )
-    //  .operation( hotfix::HOTFIX_MUL )
-    //  .modifier( 1.11 )
-    //  .verification_value( 0.5 );
-
-    //hotfix::register_effect( "Warlock", "2016-09-23", "Cataclysm damage increased by 11%", 210584 )
-    //  .field( "sp_coefficient" )
-    //  .operation( hotfix::HOTFIX_MUL )
-    //  .modifier( 1.11 )
-    //  .verification_value( 7.0 );
-
-    //hotfix::register_effect( "Warlock", "2016-09-23", "Channel Demonfire damage increased by 11%", 288343 )
-    //  .field( "sp_coefficient" )
-    //  .operation( hotfix::HOTFIX_MUL )
-    //  .modifier( 1.11 )
-    //  .verification_value( 0.42 );
-    //
-
   }
 
   virtual bool valid() const override { return true; }
@@ -5659,7 +2718,6 @@ struct warlock_module_t: public module_t
   virtual void combat_begin( sim_t* ) const override {}
   virtual void combat_end( sim_t* ) const override {}
 };
-
 }
 
 const module_t* module_t::warlock()
