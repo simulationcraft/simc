@@ -3374,17 +3374,6 @@ struct razorice_attack_t : public death_knight_melee_attack_t
     // in
     weapon = &( player -> main_hand_weapon );
   }
-
-  // No double dipping to Frost Vulnerability
-  double composite_target_multiplier( player_t* t ) const override
-  {
-    double m = death_knight_melee_attack_t::composite_target_multiplier( t );
-
-    m /= 1.0 + td( t ) -> debuff.razorice -> check() *
-          td( t ) -> debuff.razorice -> data().effectN( 1 ).percent();
-
-    return m;
-  }
 };
 
 // Crystalline Swords =======================================================
@@ -3673,6 +3662,9 @@ struct freezing_death_t : public death_knight_melee_attack_t
     death_knight_melee_attack_t( "freezing_death", p, p -> find_spell( 253590 ) )
   {
     background = true;
+
+    // The damage scales with weapon damage and has a range without using normalized weapon damage
+    this -> sim -> average_range = 0;
   }
 };
 
