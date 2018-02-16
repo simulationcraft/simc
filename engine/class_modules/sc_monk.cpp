@@ -1856,9 +1856,7 @@ public:
     main_hand_weapon.max_dmg = dbc.spell_scaling( o() -> type, level() );
     main_hand_weapon.damage = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
     main_hand_weapon.swing_time = timespan_t::from_seconds( 1.0 );
-    // At start of 7.3; AP conversion was 450%.
-    owner_coeff.ap_from_ap = 4.508;
-    // After buff to 25%; AP conversion is 563.5%
+    owner_coeff.ap_from_ap = 9.38;
     owner_coeff.ap_from_ap *= 1 + o() -> spec.windwalker_monk -> effectN( 1 ).percent(); 
   }
 
