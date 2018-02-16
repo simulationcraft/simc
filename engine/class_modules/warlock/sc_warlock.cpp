@@ -356,6 +356,12 @@ namespace actions {
         }
     }
 
+    struct shadow_bolt_t : public warlock_spell_t {
+        shadow_bolt_t(warlock_t* p, const std::string& options_str) : warlock_spell_t(p, "Shadow Bolt", p->specialization()) {
+
+        }
+    };
+
     struct drain_life_t : public warlock_spell_t {
         drain_life_t(warlock_t* p, const std::string& options_str) : warlock_spell_t(p, "Drain Life") {
             parse_options(options_str);
@@ -681,6 +687,7 @@ action_t* warlock_t::create_action( const std::string& action_name,const std::st
   if ( action_name == "summon_pet"            ) return new      summon_main_pet_t( default_pet, this );
 
   if ( action_name == "drain_life"            ) return new      drain_life_t(this, options_str);
+  if (action_name == "shadow_bolt")             return new      shadow_bolt_t(this, options_str); //aff and demo
 
   if( specialization() == WARLOCK_AFFLICTION) {
       action_t* aff_action = create_action_affliction(action_name, options_str);

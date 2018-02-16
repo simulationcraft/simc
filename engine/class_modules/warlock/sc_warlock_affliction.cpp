@@ -5,11 +5,6 @@ namespace warlock {
     #define MAX_UAS 5
     namespace actions {
         const int ua_spells[5] = { 233490, 233496, 233497, 233498, 233499 };
-        struct shadow_bolt_t : public warlock_spell_t {
-            shadow_bolt_t(warlock_t* p, const std::string& options_str) : warlock_spell_t(p, "Shadow Bolt", WARLOCK_AFFLICTION) {
-
-            }
-        };
         // Dots
         struct agony_t : public warlock_spell_t {
             int agony_action_id;
@@ -502,7 +497,6 @@ namespace warlock {
         if (action_name == "corruption") return new                     corruption_t(this, options_str);
         if (action_name == "agony") return new                          agony_t(this, options_str);
         if (action_name == "unstable_affliction") return new            unstable_affliction_t(this, options_str);
-        if (action_name == "shadow_bolt") return new                    shadow_bolt_t(this, options_str);
         // aoe
         if (action_name == "seed_of_corruption") return new             seed_of_corruption_t(this, options_str);
         // talents

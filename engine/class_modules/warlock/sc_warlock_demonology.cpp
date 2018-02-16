@@ -2,17 +2,96 @@
 #include "sc_warlock.hpp"
 
 namespace warlock {
-    namespace actions {
-        struct demo_shadow_bolt_t : public warlock_spell_t {
-            demo_shadow_bolt_t(warlock_t* p, const std::string& options_str) : warlock_spell_t(p, "Shadow Bolt", WARLOCK_DEMONOLOGY) {
-                parse_options(options_str);
-                energize_type = ENERGIZE_ON_CAST;
-                energize_resource = RESOURCE_SOUL_SHARD;
-                energize_amount = 1;
-            }
-        };
+    namespace pets {
+        namespace felguard {
+            struct legion_strike_t : public warlock_pet_melee_attack_t {
+                legion_strike_t(warlock_pet_t* p) : warlock_pet_melee_attack_t(p, "Legion Strike") {
+                    aoe = -1;
+                    weapon = &(p->main_hand_weapon);
+                }
+                virtual bool ready() override {
+                    if (p()->special_action->get_dot()->is_ticking()) return false;
+                    return warlock_pet_melee_attack_t::ready();
+                }
+            };
+            struct axe_toss_t : public warlock_pet_spell_t {
+                axe_toss_t(warlock_pet_t* p) : warlock_pet_spell_t("Axe Toss", p, p -> find_spell(89766)) {
+                }
 
-        struct hand_of_guldan_t : public warlock_spell_t {
+                void execute() override {
+                    warlock_pet_spell_t::execute();
+                    p()->trigger_sephuzs_secret(execute_state, MECHANIC_STUN);
+                }
+            };
+            struct felstorm_tick_t : public warlock_pet_melee_attack_t {
+                felstorm_tick_t(warlock_pet_t* p, const spell_data_t& s) : warlock_pet_melee_attack_t("felstorm_tick", p, s.effectN(1).trigger()) {
+                    aoe = -1;
+                    background = true;
+                    weapon = &(p->main_hand_weapon);
+                }
+            };
+            struct felstorm_t : public warlock_pet_melee_attack_t {
+                felstorm_t(warlock_pet_t* p) : warlock_pet_melee_attack_t("felstorm", p, p -> find_spell(89751)) {
+                    tick_zero = true;
+                    hasted_ticks = false;
+                    may_miss = false;
+                    may_crit = false;
+                    weapon_multiplier = 0;
+
+                    dynamic_tick_action = true;
+                    tick_action = new felstorm_tick_t(p, data());
+                }
+
+                virtual void cancel() override {
+                    warlock_pet_melee_attack_t::cancel();
+                    get_dot()->cancel();
+                }
+
+                virtual void execute() override {
+                    warlock_pet_melee_attack_t::execute();
+                    p()->melee_attack->cancel();
+                }
+
+                virtual void last_tick(dot_t* d) override {
+                    warlock_pet_melee_attack_t::last_tick(d);
+                    if (!p()->is_sleeping() && !p()->melee_attack->target->is_sleeping())
+                        p()->melee_attack->execute();
+                }
+            };
+            struct felguard_pet_t : public warlock_pet_t {
+                felguard_pet_t(sim_t* sim, warlock_t* owner, const std::string& name = "felguard") :
+                    warlock_pet_t(sim, owner, name, PET_FELGUARD, name != "felguard") {
+                    action_list_str += "/felstorm";
+                    action_list_str += "/legion_strike,if=cooldown.felstorm.remains";
+                    owner_coeff.ap_from_sp = 1.1; // HOTFIX
+                    owner_coeff.ap_from_sp *= 1.2; // PTR
+                }
+
+                virtual void init_base_stats() override {
+                    warlock_pet_t::init_base_stats();
+
+                    melee_attack = new warlock_pet_melee_t(this);
+                    special_action = new felstorm_t(this);
+                    special_action_two = new axe_toss_t(this);
+                }
+
+                double composite_player_multiplier(school_e school) const override {
+                    double m = warlock_pet_t::composite_player_multiplier(school);
+                    return m;
+                }
+
+                virtual action_t* create_action(const std::string& name, const std::string& options_str) override {
+                    if (name == "legion_strike") return new legion_strike_t(this);
+                    if (name == "felstorm") return new felstorm_t(this);
+                    if (name == "axe_toss") return new axe_toss_t(this);
+
+                    return warlock_pet_t::create_action(name, options_str);
+                }
+            };
+        }
+    }
+    namespace actions {
+struct hand_of_guldan_t : public warlock_spell_t {
             /*
             struct trigger_imp_event_t : public player_event_t {
             bool initiator;
@@ -137,7 +216,6 @@ namespace warlock {
             }
         };
     } // end actions namespace
-
     namespace buffs {
 
     } // end buffs namespace
@@ -146,9 +224,9 @@ namespace warlock {
     action_t* warlock_t::create_action_demonology(const std::string& action_name, const std::string& options_str) {
         using namespace actions;
 
-        if (action_name == "shadow_bolt")   return new        demo_shadow_bolt_t(this, options_str);
         if (action_name == "doom")          return new        doom_t(this, options_str);
 
+        if (action_name == "summon_felguard") return new      summon_main_pet_t("felguard", this);
         if (action_name == "service_felguard") return new     grimoire_of_service_t(this, "felguard", options_str);
         if (action_name == "service_felhunter") return new    grimoire_of_service_t(this, "felhunter", options_str);
         if (action_name == "service_imp") return new          grimoire_of_service_t(this, "imp", options_str);
@@ -157,6 +235,18 @@ namespace warlock {
 
         return nullptr;
     }
+    /*
+    pet_t* warlock_t::create_pet_demonology(const std::string& pet_name, const std::string& ) {
+        pet_t* p = find_pet(pet_name);
+        if (p) return p;
+        using namespace pets;
+
+        if (pet_name == "felguard") return new              felguard::felguard_pet_t(sim, this);
+        if (pet_name == "service_felguard") return new      felguard::felguard_pet_t(sim, this, pet_name);
+
+        return nullptr;
+    }
+    */
     void warlock_t::create_buffs_demonology() {
 
     }
