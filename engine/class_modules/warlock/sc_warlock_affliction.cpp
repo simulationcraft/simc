@@ -435,6 +435,39 @@ namespace warlock {
                 return m;
             }
         };
+        // Buffs
+        struct soul_harvest_t : public warlock_spell_t {
+            int agony_action_id;
+            timespan_t base_duration;
+            timespan_t total_duration;
+            timespan_t time_per_agony;
+            timespan_t max_duration;
+
+            soul_harvest_t(warlock_t* p, const std::string& options_str) : warlock_spell_t("soul_harvest", p, p -> talents.soul_harvest) {
+                parse_options(options_str);
+                harmful = may_crit = may_miss = false;
+                base_duration = data().duration();
+                time_per_agony = timespan_t::from_seconds(data().effectN(2).base_value());
+                max_duration = timespan_t::from_seconds(data().effectN(3).base_value());
+            }
+
+            virtual void execute() override {
+                warlock_spell_t::execute();
+
+                p()->buffs.soul_harvest->expire(); //Potentially bugged check when live
+
+                if (p()->specialization() == WARLOCK_AFFLICTION) {
+                    total_duration = base_duration + time_per_agony * p()->get_active_dots(agony_action_id);
+                    p()->buffs.soul_harvest->trigger(1, buff_t::DEFAULT_VALUE(), 1.0, std::min(total_duration, max_duration));
+                }
+            }
+
+            virtual void init() override {
+                warlock_spell_t::init();
+
+                agony_action_id = p()->find_action_id("agony");
+            }
+        };
         // Summoning
 
         // Tier
@@ -489,14 +522,15 @@ namespace warlock {
     action_t* warlock_t::create_action_affliction(const std::string& action_name,const std::string& options_str) {
         using namespace actions;
 
-        if (action_name == "corruption") return new                          corruption_t(this, options_str);
-        else if (action_name == "agony") return new                          agony_t(this, options_str);
-        else if (action_name == "drain_life") return new                     drain_life_t(this, options_str);
-        else if (action_name == "haunt") return new                          haunt_t(this, options_str);
-        else if (action_name == "phantom_singularity") return new            phantom_singularity_t(this, options_str);
-        else if (action_name == "siphon_life") return new                    siphon_life_t(this, options_str);
-        else if (action_name == "unstable_affliction") return new            unstable_affliction_t(this, options_str);
-        else if (action_name == "seed_of_corruption") return new             seed_of_corruption_t(this, options_str);
+        if (action_name == "corruption") return new                     corruption_t(this, options_str);
+        if (action_name == "agony") return new                          agony_t(this, options_str);
+        if (action_name == "drain_life") return new                     drain_life_t(this, options_str);
+        if (action_name == "haunt") return new                          haunt_t(this, options_str);
+        if (action_name == "phantom_singularity") return new            phantom_singularity_t(this, options_str);
+        if (action_name == "siphon_life") return new                    siphon_life_t(this, options_str);
+        if (action_name == "unstable_affliction") return new            unstable_affliction_t(this, options_str);
+        if (action_name == "seed_of_corruption") return new             seed_of_corruption_t(this, options_str);
+        if (action_name == "soul_harvest") return new                   soul_harvest_t(this, options_str);
 
         return nullptr;
     }
