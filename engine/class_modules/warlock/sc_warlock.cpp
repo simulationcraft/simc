@@ -11,12 +11,9 @@ pet_t( sim, owner, pet_name, pt, guardian ), special_action( nullptr ), special_
   owner_coeff.ap_from_sp = 1.0;
   owner_coeff.sp_from_sp = 1.0;
   owner_coeff.health = 0.5;
-
-//  ascendance = new thalkiels_ascendance_pet_spell_t( this );
 }
 
-void warlock_pet_t::init_base_stats()
-{
+void warlock_pet_t::init_base_stats() {
   pet_t::init_base_stats();
 
   resources.base[RESOURCE_ENERGY] = 200;
@@ -28,8 +25,6 @@ void warlock_pet_t::init_base_stats()
   stamina_per_owner = 0;
 
   main_hand_weapon.type = WEAPON_BEAST;
-
-  //double dmg = dbc.spell_scaling( owner -> type, owner -> level );
 
   main_hand_weapon.swing_time = timespan_t::from_seconds( 2.0 );
 }
@@ -45,18 +40,15 @@ bool warlock_pet_t::create_actions()
         return false;
 }
 
-void warlock_pet_t::init_action_list()
-{
-  if ( special_action )
-  {
+void warlock_pet_t::init_action_list() {
+  if ( special_action ) {
     if ( type == PLAYER_PET )
       special_action -> background = true;
     else
       special_action -> action_list = get_action_priority_list( "default" );
   }
 
-  if ( special_action_two )
-  {
+  if ( special_action_two ) {
     if ( type == PLAYER_PET )
       special_action_two -> background = true;
     else
@@ -70,28 +62,17 @@ void warlock_pet_t::init_action_list()
       summon_stats -> add_child( action_list[i] -> stats );
 }
 
-void warlock_pet_t::create_buffs()
-{
+void warlock_pet_t::create_buffs() {
   pet_t::create_buffs();
 
   buffs.demonic_synergy = buff_creator_t( this, "demonic_synergy", find_spell( 171982 ) )
     .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
     .chance( 1 );
-
-  buffs.demonic_empowerment = haste_buff_creator_t( this, "demonic_empowerment", find_spell( 193396 ) )
-    .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
-    .chance( 1 );
-
-  buffs.the_expendables = buff_creator_t( this, "the_expendables", find_spell( 211218 ))
-    .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
-    .chance( 1 )
-    .default_value( find_spell( 211218 ) -> effectN( 1 ).percent() );
   buffs.rage_of_guldan = buff_creator_t( this, "rage_of_guldan", find_spell( 257926 ) )
 	  .add_invalidate(CACHE_PLAYER_DAMAGE_MULTIPLIER); //change spell id to 253014 when whitelisted
 }
 
-void warlock_pet_t::schedule_ready( timespan_t delta_time, bool waiting )
-{
+void warlock_pet_t::schedule_ready( timespan_t delta_time, bool waiting ) {
   dot_t* d;
   if ( melee_attack && ! melee_attack -> execute_event && ! ( special_action && ( d = special_action -> get_dot() ) && d -> is_ticking() ) )
   {
@@ -101,8 +82,7 @@ void warlock_pet_t::schedule_ready( timespan_t delta_time, bool waiting )
   pet_t::schedule_ready( delta_time, waiting );
 }
 
-double warlock_pet_t::composite_player_multiplier( school_e school ) const
-{
+double warlock_pet_t::composite_player_multiplier( school_e school ) const {
   double m = pet_t::composite_player_multiplier( school );
 
   m *= 1.0;
@@ -110,89 +90,53 @@ double warlock_pet_t::composite_player_multiplier( school_e school ) const
   if ( buffs.demonic_synergy -> up() )
     m *= 1.0 + buffs.demonic_synergy -> data().effectN( 1 ).percent();
 
-  if( buffs.the_expendables -> up() )
-  {
-      m*= 1.0 + buffs.the_expendables -> stack_value();
-  }
-
   if ( buffs.rage_of_guldan->up() )
 	  m *= 1.0 + ( buffs.rage_of_guldan->default_value / 100 );
-
-  if ( o() -> buffs.soul_harvest -> check() )
-    m *= 1.0 + o() -> buffs.soul_harvest -> stack_value() ;
-
+  
   if ( is_grimoire_of_service )
   {
       m *= 1.0 + o() -> find_spell( 216187 ) -> effectN( 1 ).percent();
   }
 
-  if( o() -> mastery_spells.master_demonologist -> ok() && buffs.demonic_empowerment -> check() )
-  {
-     m *= 1.0 +  o() -> cache.mastery_value();
-  }
-
   m *= 1.0 + o() -> buffs.sindorei_spite -> check_stack_value();
   m *= 1.0 + o() -> buffs.lessons_of_spacetime -> check_stack_value();
 
-  if ( o() -> specialization() == WARLOCK_AFFLICTION )
-    m *= 1.0 + o() -> spec.affliction -> effectN( 3 ).percent();
+  if ( o()->specialization() == WARLOCK_AFFLICTION ) {
+      if (o()->buffs.soul_harvest->check())
+          m *= 1.0 + o()->buffs.soul_harvest->stack_value();
+      m *= 1.0 + o()->spec.affliction->effectN(3).percent();
+  }
 
   return m;
 }
 
-double warlock_pet_t::composite_melee_crit_chance() const
-{
+double warlock_pet_t::composite_melee_crit_chance() const {
   double mc = pet_t::composite_melee_crit_chance();
   return mc;
 }
 
-double warlock_pet_t::composite_spell_crit_chance() const
-{
+double warlock_pet_t::composite_spell_crit_chance() const {
   double sc = pet_t::composite_spell_crit_chance();
-
   return sc;
 }
 
-double warlock_pet_t::composite_melee_haste() const
-{
+double warlock_pet_t::composite_melee_haste() const {
   double mh = pet_t::composite_melee_haste();
-
-  if ( buffs.demonic_empowerment -> up() )
-  {
-    mh /= 1.0 + buffs.demonic_empowerment -> data().effectN( 2 ).percent();
-  }
-
   return mh;
 }
 
-double warlock_pet_t::composite_spell_haste() const
-{
+double warlock_pet_t::composite_spell_haste() const {
   double sh = pet_t::composite_spell_haste();
-
-  if ( buffs.demonic_empowerment -> up() )
-    sh /= 1.0 + buffs.demonic_empowerment -> data().effectN( 2 ).percent();
-
   return sh;
 }
 
-double warlock_pet_t::composite_melee_speed() const
-{
-  // Make sure we get our overridden haste values applied to melee_speed
+double warlock_pet_t::composite_melee_speed() const {
   double cmh = pet_t::composite_melee_speed();
-
-  if ( buffs.demonic_empowerment->up() )
-    cmh /= 1.0 + buffs.demonic_empowerment->data().effectN( 2 ).percent();
-
   return cmh;
 }
 
 double warlock_pet_t::composite_spell_speed() const {
-  // Make sure we get our overridden haste values applied to spell_speed
   double css = pet_t::composite_spell_speed();
-
-  if ( buffs.demonic_empowerment->up() )
-    css /= 1.0 + buffs.demonic_empowerment->data().effectN( 2 ).percent();
-
   return css;
 }
 
@@ -332,6 +276,86 @@ void parse_spell_coefficient(action_t& a) {
 }
 // Spells
 namespace actions {
+    void warlock_spell_t::consume_resource() {
+        spell_t::consume_resource();
+
+        if (resource_current == RESOURCE_SOUL_SHARD && p()->in_combat) {
+            if (p()->legendary.the_master_harvester) {
+                timespan_t sh_duration = timespan_t::from_seconds(p()->find_spell(248113)->effectN(4).base_value());
+                double sh_proc_chance;
+                switch (p()->specialization()) {
+                case WARLOCK_AFFLICTION:
+                    sh_proc_chance = p()->find_spell(248113)->effectN(1).percent();
+                    break;
+                case WARLOCK_DEMONOLOGY:
+                    sh_proc_chance = p()->find_spell(248113)->effectN(2).percent();
+                    break;
+                case WARLOCK_DESTRUCTION:
+                    sh_proc_chance = p()->find_spell(248113)->effectN(3).percent();
+                    break;
+                default:
+                    sh_proc_chance = 0;
+                    break;
+                }
+                for (int i = 0; i < last_resource_cost; i++) {
+                    if (p()->rng().roll(sh_proc_chance)) {
+                        p()->buffs.soul_harvest->trigger(1, 0.2, -1.0, sh_duration);
+                        p()->procs.the_master_harvester->occur();
+                    }
+                }
+            }
+
+            if (p()->talents.soul_conduit->ok()) {
+                if (p()->specialization() == WARLOCK_DEMONOLOGY) {
+                    struct demo_sc_event : public player_event_t {
+                        gain_t* shard_gain;
+                        warlock_t* pl;
+                        int shards_used;
+
+                        demo_sc_event(warlock_t* p, int c) :
+                            player_event_t(*p, timespan_t::from_millis(100)), shard_gain(p -> gains.soul_conduit), pl(p), shards_used(c) {
+
+                        }
+                        virtual const char* name() const override {
+                            return "demonology_sc_event";
+                        }
+                        virtual void execute() override {
+                            double soul_conduit_rng = pl->talents.soul_conduit->effectN(1).percent() + pl->spec.destruction->effectN(4).percent();
+
+                            for (int i = 0; i < shards_used; i++) {
+                                if (rng().roll(soul_conduit_rng)) {
+                                    pl->resource_gain(RESOURCE_SOUL_SHARD, 1.0, pl->gains.soul_conduit);
+                                    pl->procs.soul_conduit->occur();
+                                }
+                            }
+
+                        }
+                    };
+                    make_event<demo_sc_event>(*p()->sim, p(), last_resource_cost);
+                }
+                else {
+                    double soul_conduit_rng = p()->talents.soul_conduit->effectN(1).percent() + p()->spec.destruction->effectN(4).percent();
+
+                    for (int i = 0; i < last_resource_cost; i++) {
+                        if (rng().roll(soul_conduit_rng)) {
+                            p()->resource_gain(RESOURCE_SOUL_SHARD, 1.0, p()->gains.soul_conduit);
+                            p()->procs.soul_conduit->occur();
+                        }
+                    }
+                }
+            }
+            if (p()->legendary.wakeners_loyalty_enabled && p()->specialization() == WARLOCK_DEMONOLOGY) {
+                for (int i = 0; i < last_resource_cost; i++) {
+                    p()->buffs.wakeners_loyalty->trigger();
+                }
+            }
+
+            if (p()->specialization() == WARLOCK_AFFLICTION && p()->sets->has_set_bonus(WARLOCK_AFFLICTION, T20, B4)) {
+                p()->buffs.demonic_speed->trigger();
+            }
+        }
+    }
+
     struct drain_life_t : public warlock_spell_t {
         drain_life_t(warlock_t* p, const std::string& options_str) : warlock_spell_t(p, "Drain Life") {
             parse_options(options_str);
@@ -357,9 +381,8 @@ namespace actions {
     };
 } // end actions namespace
 
-namespace buffs
-{
-struct debuff_havoc_t: public warlock_buff_t < buff_t >
+namespace buffs {
+    struct debuff_havoc_t: public warlock_buff_t < buff_t >
 {
   debuff_havoc_t( warlock_td_t& p ):
     base_t( p, buff_creator_t( static_cast<actor_pair_t>( p ), "havoc", p.source -> find_spell( 80240 ) ) )
@@ -507,8 +530,7 @@ void warlock_t::invalidate_cache(cache_e c)
     }
 }
 
-double warlock_t::composite_player_target_multiplier( player_t* target, school_e school ) const
-{
+double warlock_t::composite_player_target_multiplier( player_t* target, school_e school ) const {
   double m = player_t::composite_player_target_multiplier( target, school );
 
   warlock_td_t* td = get_target_data( target );
@@ -526,8 +548,7 @@ double warlock_t::composite_player_target_multiplier( player_t* target, school_e
   return m;
 }
 
-double warlock_t::composite_player_multiplier( school_e school ) const
-{
+double warlock_t::composite_player_multiplier( school_e school ) const {
   double m = player_t::composite_player_multiplier( school );
 
   if ( buffs.demonic_synergy -> check() )
@@ -536,11 +557,13 @@ double warlock_t::composite_player_multiplier( school_e school ) const
   if ( legendary.stretens_insanity )
     m *= 1.0 + buffs.stretens_insanity -> stack() * buffs.stretens_insanity -> data().effectN( 1 ).percent();
 
-  if ( buffs.soul_harvest -> check() )
-    m *= 1.0 + buffs.soul_harvest -> stack_value();
-
   if ( specialization() == WARLOCK_DESTRUCTION && dbc::is_school( school, SCHOOL_FIRE ) ) {
     m *= 1.0 + buffs.alythesss_pyrogenics -> stack_value();
+  }
+
+  if ( specialization() == WARLOCK_AFFLICTION ) {
+      if ( buffs.soul_harvest->check() )
+          m *= 1.0 + buffs.soul_harvest->stack_value();
   }
 
   m *= 1.0 + buffs.sindorei_spite -> check_stack_value();
@@ -549,15 +572,12 @@ double warlock_t::composite_player_multiplier( school_e school ) const
   return m;
 }
 
-double warlock_t::composite_spell_crit_chance() const
-{
+double warlock_t::composite_spell_crit_chance() const {
   double sc = player_t::composite_spell_crit_chance();
-
   return sc;
 }
 
-double warlock_t::composite_spell_haste() const
-{
+double warlock_t::composite_spell_haste() const {
   double h = player_t::composite_spell_haste();
 
   if ( buffs.sephuzs_secret -> check() )
@@ -570,8 +590,10 @@ double warlock_t::composite_spell_haste() const
     h *= 1.0 / ( 1.0 + legendary.sephuzs_passive );
   }
 
-  if ( buffs.demonic_speed -> check() )
-    h *= 1.0 / ( 1.0 + buffs.demonic_speed -> check_value() );
+  if (specialization() == WARLOCK_AFFLICTION) {
+      if (buffs.demonic_speed->check())
+          h *= 1.0 / (1.0 + buffs.demonic_speed->check_value());
+  }
 
   if ( buffs.dreaded_haste -> check() )
     h *= 1.0 / ( 1.0 + buffs.dreaded_haste -> check_value() );
@@ -579,8 +601,7 @@ double warlock_t::composite_spell_haste() const
   return h;
 }
 
-double warlock_t::composite_melee_haste() const
-{
+double warlock_t::composite_melee_haste() const {
   double h = player_t::composite_melee_haste();
 
   if ( buffs.sephuzs_secret -> check() )
@@ -593,8 +614,10 @@ double warlock_t::composite_melee_haste() const
     h *= 1.0 / ( 1.0 + legendary.sephuzs_passive );
   }
 
-  if ( buffs.demonic_speed -> check() )
-    h *= 1.0 / ( 1.0 + buffs.demonic_speed -> check_value() );
+  if (specialization() == WARLOCK_AFFLICTION) {
+      if (buffs.demonic_speed->check())
+          h *= 1.0 / (1.0 + buffs.demonic_speed->check_value());
+  }
 
   if ( buffs.dreaded_haste -> check() )
     h *= 1.0 / ( 1.0 + buffs.dreaded_haste -> check_value() );
@@ -602,58 +625,43 @@ double warlock_t::composite_melee_haste() const
   return h;
 }
 
-double warlock_t::composite_melee_crit_chance() const
-{
+double warlock_t::composite_melee_crit_chance() const {
   double mc = player_t::composite_melee_crit_chance();
-
   return mc;
 }
 
-double warlock_t::composite_mastery() const
-{
+double warlock_t::composite_mastery() const {
   double m = player_t::composite_mastery();
-
   return m;
 }
 
-double warlock_t::composite_rating_multiplier( rating_e rating ) const
-{
+double warlock_t::composite_rating_multiplier( rating_e rating ) const {
   double m = player_t::composite_rating_multiplier( rating );
-
   return m;
 }
 
-double warlock_t::resource_gain( resource_e resource_type, double amount, gain_t* source, action_t* action )
-{
+double warlock_t::resource_gain( resource_e resource_type, double amount, gain_t* source, action_t* action ) {
   return player_t::resource_gain( resource_type, amount, source, action );
 }
 
-double warlock_t::mana_regen_per_second() const
-{
+double warlock_t::mana_regen_per_second() const {
   double mp5 = player_t::mana_regen_per_second();
-
   mp5 /= cache.spell_haste();
-
   return mp5;
 }
 
-double warlock_t::composite_armor() const
-{
+double warlock_t::composite_armor() const {
   return player_t::composite_armor() + spec.fel_armor -> effectN( 2 ).base_value();
 }
 
-void warlock_t::halt()
-{
+void warlock_t::halt() {
   player_t::halt();
-
   if ( spells.melee ) spells.melee -> cancel();
 }
 
-double warlock_t::matching_gear_multiplier( attribute_e attr ) const
-{
+double warlock_t::matching_gear_multiplier( attribute_e attr ) const {
   if ( attr == ATTR_INTELLECT )
     return spec.nethermancy -> effectN( 1 ).percent();
-
   return 0.0;
 }
 
@@ -903,7 +911,7 @@ void warlock_t::init_base_stats() {
     if ( specialization() == WARLOCK_AFFLICTION )
       default_pet = "felhunter";
     else if ( specialization() == WARLOCK_DEMONOLOGY )
-      default_pet = "felguard";
+      default_pet = "felhunter";
     else if ( specialization() == WARLOCK_DESTRUCTION )
       default_pet = "imp";
   }

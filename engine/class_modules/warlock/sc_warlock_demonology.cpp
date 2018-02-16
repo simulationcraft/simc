@@ -3,18 +3,12 @@
 
 namespace warlock {
     namespace actions {
-        struct shadow_bolt_t : public warlock_spell_t {
-            cooldown_t* icd;
-
-            shadow_bolt_t(warlock_t* p, const std::string& options_str) : warlock_spell_t(p, "Shadow Bolt", WARLOCK_DEMONOLOGY) {
+        struct demo_shadow_bolt_t : public warlock_spell_t {
+            demo_shadow_bolt_t(warlock_t* p, const std::string& options_str) : warlock_spell_t(p, "Shadow Bolt", WARLOCK_DEMONOLOGY) {
                 parse_options(options_str);
                 energize_type = ENERGIZE_ON_CAST;
                 energize_resource = RESOURCE_SOUL_SHARD;
                 energize_amount = 1;
-            }
-
-            void execute() override {
-                warlock_spell_t::execute();
             }
         };
 
@@ -152,7 +146,7 @@ namespace warlock {
     action_t* warlock_t::create_action_demonology(const std::string& action_name, const std::string& options_str) {
         using namespace actions;
 
-        if (action_name == "shadow_bolt")   return new        shadow_bolt_t(this, options_str);
+        if (action_name == "shadow_bolt")   return new        demo_shadow_bolt_t(this, options_str);
         if (action_name == "doom")          return new        doom_t(this, options_str);
 
         if (action_name == "service_felguard") return new     grimoire_of_service_t(this, "felguard", options_str);
@@ -167,23 +161,24 @@ namespace warlock {
 
     }
     void warlock_t::init_spells_demonology() {
-        spec.demonology = find_specialization_spell(137044);
-        mastery_spells.master_demonologist = find_mastery_spell(WARLOCK_DEMONOLOGY);
-        // DEMO
-        talents.demonic_strength = find_talent_spell("Demonic Strength");
-        talents.demonic_calling = find_talent_spell("Demonic Calling");
-        talents.doom = find_talent_spell("Doom");
-        talents.riders = find_talent_spell("Riders");
-        talents.power_siphon = find_talent_spell("Power Siphon");
-        talents.summon_vilefiend = find_talent_spell("Summon Vilefiend");
-        talents.overloaded = find_talent_spell("Overloaded");
-        talents.demonic_strength = find_talent_spell("Demonic Strength");
-        talents.biliescourge_bombers = find_talent_spell("Biliescourge Bombers");
-        talents.grimoire_of_synergy = find_talent_spell("Grimoire of Synergy");
-        talents.demonic_consumption = find_talent_spell("Demonic Consumption");
-        talents.grimoire_of_service = find_talent_spell("Grimoire of Service");
-        talents.inner_demons = find_talent_spell("Inner Demons");
-        talents.nether_portal = find_talent_spell("Nether Portal");
+        spec.demonology                         = find_specialization_spell(137044);
+        mastery_spells.master_demonologist      = find_mastery_spell(WARLOCK_DEMONOLOGY);
+        // spells
+        // Talents
+        talents.demonic_strength                = find_talent_spell("Demonic Strength");
+        talents.demonic_calling                 = find_talent_spell("Demonic Calling");
+        talents.doom                            = find_talent_spell("Doom");
+        talents.riders                          = find_talent_spell("Riders");
+        talents.power_siphon                    = find_talent_spell("Power Siphon");
+        talents.summon_vilefiend                = find_talent_spell("Summon Vilefiend");
+        talents.overloaded                      = find_talent_spell("Overloaded");
+        talents.demonic_strength                = find_talent_spell("Demonic Strength");
+        talents.biliescourge_bombers            = find_talent_spell("Biliescourge Bombers");
+        talents.grimoire_of_synergy             = find_talent_spell("Grimoire of Synergy");
+        talents.demonic_consumption             = find_talent_spell("Demonic Consumption");
+        talents.grimoire_of_service             = find_talent_spell("Grimoire of Service");
+        talents.inner_demons                    = find_talent_spell("Inner Demons");
+        talents.nether_portal                   = find_talent_spell("Nether Portal");
     }
     void warlock_t::init_gains_demonology() {
 

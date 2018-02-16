@@ -533,26 +533,26 @@ namespace warlock {
     }
     void warlock_t::init_spells_affliction(){
         // General
-        spec.affliction = find_specialization_spell(137043);
-        mastery_spells.potent_afflictions = find_mastery_spell(WARLOCK_AFFLICTION);
+        spec.affliction                     = find_specialization_spell(137043);
+        mastery_spells.potent_afflictions   = find_mastery_spell(WARLOCK_AFFLICTION);
         // Specialization Spells
-        spec.unstable_affliction = find_specialization_spell("Unstable Affliction");
-        spec.agony = find_specialization_spell("Agony");
+        spec.unstable_affliction            = find_specialization_spell("Unstable Affliction");
+        spec.agony                          = find_specialization_spell("Agony");
         // Talents
-        talents.shadow_embrace = find_talent_spell("Shadow Embrace");
-        talents.haunt = find_talent_spell("Haunt");
-        talents.deathbolt = find_talent_spell("Deathbolt");
-        talents.writhe_in_agony = find_talent_spell("Writhe in Agony");
-        talents.absolute_corruption = find_talent_spell("Absolute Corruption");
-        talents.deaths_embrace = find_talent_spell("Death's Embrace");
-        talents.sow_the_seeds = find_talent_spell("Sow the Seeds");
-        talents.phantom_singularity = find_talent_spell("Phantom Singularity");
-        talents.soul_harvest = find_talent_spell("Soul Harvest");
-        talents.nightfall = find_talent_spell("Nightfall");
-        talents.creeping_death = find_talent_spell("Creeping Death");
-        talents.siphon_life = find_talent_spell("Siphon Life");
+        talents.shadow_embrace              = find_talent_spell("Shadow Embrace");
+        talents.haunt                       = find_talent_spell("Haunt");
+        talents.deathbolt                   = find_talent_spell("Deathbolt");
+        talents.writhe_in_agony             = find_talent_spell("Writhe in Agony");
+        talents.absolute_corruption         = find_talent_spell("Absolute Corruption");
+        talents.deaths_embrace              = find_talent_spell("Death's Embrace");
+        talents.sow_the_seeds               = find_talent_spell("Sow the Seeds");
+        talents.phantom_singularity         = find_talent_spell("Phantom Singularity");
+        talents.soul_harvest                = find_talent_spell("Soul Harvest");
+        talents.nightfall                   = find_talent_spell("Nightfall");
+        talents.creeping_death              = find_talent_spell("Creeping Death");
+        talents.siphon_life                 = find_talent_spell("Siphon Life");
         // Tier
-        active.tormented_agony = new actions::tormented_agony_t(this);
+        active.tormented_agony              = new actions::tormented_agony_t(this);
 
         // seed applies corruption
         if (specialization() == WARLOCK_AFFLICTION) {
