@@ -5,6 +5,7 @@ namespace warlock {
     struct warlock_t;
 
     namespace pets {
+
     }
 
     #define MAX_UAS 5
@@ -373,6 +374,7 @@ namespace warlock {
 
         // sc_warlock_demonology
         action_t* warlock_t::create_action_demonology(const std::string& action_name, const std::string& options_str);
+        pet_t* warlock_t::create_pet_demonology(const std::string& pet_name, const std::string& );
         void create_buffs_demonology();
         void init_spells_demonology();
         void init_gains_demonology();
@@ -407,8 +409,7 @@ namespace warlock {
     void parse_spell_coefficient(action_t& a);
 
     namespace pets {
-        struct warlock_pet_t : public pet_t
-        {
+        struct warlock_pet_t : public pet_t {
             action_t* special_action;
             action_t* special_action_two;
             melee_attack_t* melee_attack;
@@ -652,6 +653,16 @@ namespace warlock {
                 _init_warlock_pet_spell_t();
             }
         };
+
+        namespace felhunter {
+            struct felhunter_pet_t : public warlock_pet_t {
+                felhunter_pet_t(sim_t* sim, warlock_t* owner, const std::string& name = "felhunter");
+
+                virtual void init_base_stats() override;
+
+                virtual action_t* create_action(const std::string& name, const std::string& options_str) override;
+            };
+        }
     }
 
     namespace actions {
@@ -804,8 +815,7 @@ namespace warlock {
                 return c;
             }
 
-            void execute() override
-            {
+            void execute() override {
                 spell_t::execute();
 
                 if (hit_any_target && result_is_hit(execute_state->result) && p()->talents.grimoire_of_synergy->ok())
@@ -987,12 +997,10 @@ namespace warlock {
                 return spell_t::composite_target_multiplier(t) * m;
             }
 
-            double action_multiplier() const override
-            {
+            double action_multiplier() const override {
                 double pm = spell_t::action_multiplier();
 
-                if (p()->mastery_spells.chaotic_energies->ok() && destro_mastery)
-                {
+                if (p()->mastery_spells.chaotic_energies->ok() && destro_mastery) {
                     double destro_mastery_value = p()->cache.mastery_value() / 2.0;
                     double chaotic_energies_rng;
 
@@ -1007,33 +1015,27 @@ namespace warlock {
                 return pm;
             }
 
-            resource_e current_resource() const override
-            {
+            resource_e current_resource() const override {
                 return spell_t::current_resource();
             }
 
-            double composite_target_crit_chance(player_t* target) const override
-            {
+            double composite_target_crit_chance(player_t* target) const override {
                 double c = spell_t::composite_target_crit_chance(target);
                 return c;
             }
 
-            bool consume_cost_per_tick(const dot_t& dot) override
-            {
+            bool consume_cost_per_tick(const dot_t& dot) override {
                 bool consume = spell_t::consume_cost_per_tick(dot);
                 return consume;
             }
 
-            void extend_dot(dot_t* dot, timespan_t extend_duration)
-            {
-                if (dot->is_ticking())
-                {
+            void extend_dot(dot_t* dot, timespan_t extend_duration) {
+                if (dot->is_ticking()) {
                     dot->extend_duration(extend_duration, dot->current_action->dot_duration * 1.5);
                 }
             }
 
-            static void accumulate_seed_of_corruption(warlock_td_t* td, double amount)
-            {
+            static void accumulate_seed_of_corruption(warlock_td_t* td, double amount) {
                 td->soc_threshold -= amount;
 
                 if (td->soc_threshold <= 0)
@@ -1065,23 +1067,19 @@ namespace warlock {
 
         typedef residual_action::residual_periodic_action_t< warlock_spell_t > residual_action_t;
 
-
-        struct summon_pet_t : public warlock_spell_t
-        {
+        struct summon_pet_t : public warlock_spell_t {
             timespan_t summoning_duration;
             std::string pet_name;
             pets::warlock_pet_t* pet;
 
         private:
-            void _init_summon_pet_t()
-            {
+            void _init_summon_pet_t() {
                 util::tokenize(pet_name);
                 harmful = false;
 
                 if (data().ok() &&
                     std::find(p()->pet_name_list.begin(), p()->pet_name_list.end(), pet_name) ==
-                    p()->pet_name_list.end())
-                {
+                    p()->pet_name_list.end()) {
                     p()->pet_name_list.push_back(pet_name);
                 }
             }
@@ -1090,75 +1088,61 @@ namespace warlock {
             summon_pet_t(const std::string& n, warlock_t* p, const std::string& sname = "") :
                 warlock_spell_t(p, sname.empty() ? "Summon " + n : sname),
                 summoning_duration(timespan_t::zero()),
-                pet_name(sname.empty() ? n : sname), pet(nullptr)
-            {
+                pet_name(sname.empty() ? n : sname), pet(nullptr) {
                 _init_summon_pet_t();
             }
 
             summon_pet_t(const std::string& n, warlock_t* p, int id) :
                 warlock_spell_t(n, p, p -> find_spell(id)),
                 summoning_duration(timespan_t::zero()),
-                pet_name(n), pet(nullptr)
-            {
+                pet_name(n), pet(nullptr) {
                 _init_summon_pet_t();
             }
 
             summon_pet_t(const std::string& n, warlock_t* p, const spell_data_t* sd) :
                 warlock_spell_t(n, p, sd),
                 summoning_duration(timespan_t::zero()),
-                pet_name(n), pet(nullptr)
-            {
+                pet_name(n), pet(nullptr) {
                 _init_summon_pet_t();
             }
 
-            bool init_finished() override
-            {
+            bool init_finished() override {
                 pet = debug_cast<pets::warlock_pet_t*>(player->find_pet(pet_name));
                 return warlock_spell_t::init_finished();
             }
 
-            virtual void execute() override
-            {
+            virtual void execute() override {
                 pet->summon(summoning_duration);
-
                 warlock_spell_t::execute();
             }
 
-            bool ready() override
-            {
-                if (!pet)
-                {
+            bool ready() override {
+                if (!pet) {
                     return false;
                 }
-
                 return warlock_spell_t::ready();
             }
         };
 
-        struct summon_main_pet_t : public summon_pet_t
-        {
+        struct summon_main_pet_t : public summon_pet_t {
             cooldown_t* instant_cooldown;
 
             summon_main_pet_t(const std::string& n, warlock_t* p) :
-                summon_pet_t(n, p), instant_cooldown(p -> get_cooldown("instant_summon_pet"))
-            {
+                summon_pet_t(n, p), instant_cooldown(p -> get_cooldown("instant_summon_pet")) {
                 instant_cooldown->duration = timespan_t::from_seconds(60);
                 ignore_false_positive = true;
             }
 
-            virtual void schedule_execute(action_state_t* state = nullptr) override
-            {
+            virtual void schedule_execute(action_state_t* state = nullptr) override {
                 warlock_spell_t::schedule_execute(state);
 
-                if (p()->warlock_pet_list.active)
-                {
+                if (p()->warlock_pet_list.active) {
                     p()->warlock_pet_list.active->dismiss();
                     p()->warlock_pet_list.active = nullptr;
                 }
             }
 
-            virtual bool ready() override
-            {
+            virtual bool ready() override {
                 if (p()->warlock_pet_list.active == pet)
                     return false;
 
@@ -1167,8 +1151,7 @@ namespace warlock {
                 return summon_pet_t::ready();
             }
 
-            virtual void execute() override
-            {
+            virtual void execute() override {
                 summon_pet_t::execute();
 
                 p()->warlock_pet_list.active = p()->warlock_pet_list.last = pet;
@@ -1177,13 +1160,11 @@ namespace warlock {
                     p()->buffs.demonic_power->expire();
             }
         };
-
     }
 
     namespace buffs {
         template <typename Base>
-        struct warlock_buff_t : public Base
-        {
+        struct warlock_buff_t : public Base {
         public:
             typedef warlock_buff_t base_t;
             warlock_buff_t(warlock_td_t& p, const buff_creator_basics_t& params) :

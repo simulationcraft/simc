@@ -186,8 +186,7 @@ double warlock_pet_t::composite_melee_speed() const
   return cmh;
 }
 
-double warlock_pet_t::composite_spell_speed() const
-{
+double warlock_pet_t::composite_spell_speed() const {
   // Make sure we get our overridden haste values applied to spell_speed
   double css = pet_t::composite_spell_speed();
 
@@ -196,6 +195,48 @@ double warlock_pet_t::composite_spell_speed() const
 
   return css;
 }
+namespace felhunter {
+    struct shadow_bite_t : public warlock_pet_spell_t
+    {
+        double shadow_bite_mult;
+        shadow_bite_t(warlock_pet_t* p) : warlock_pet_spell_t(p, "Shadow Bite"), shadow_bite_mult(0.0) {
+            shadow_bite_mult = p->o()->spec.shadow_bite_2->effectN(1).percent();
+        }
+
+        virtual double composite_target_multiplier(player_t* target) const override {
+            double m = warlock_pet_spell_t::composite_target_multiplier(target);
+            warlock_td_t* td = this->td(target);
+            double dots = 0;
+
+            for (int i = 0; i < MAX_UAS; i++)
+                if (td->dots_unstable_affliction[i]->is_ticking())
+                    dots += shadow_bite_mult;
+
+            if (td->dots_agony->is_ticking())
+                dots += shadow_bite_mult;
+
+            if (td->dots_corruption->is_ticking())
+                dots += shadow_bite_mult;
+
+            m *= 1.0 + dots;
+
+            return m;
+        }
+    };
+    felhunter_pet_t::felhunter_pet_t(sim_t* sim, warlock_t* owner, const std::string& name) : warlock_pet_t(sim, owner, name, PET_FELHUNTER, name != "felhunter") {
+        action_list_str = "shadow_bite";
+        owner_coeff.ap_from_sp *= 1.2;
+    };
+    void felhunter_pet_t::init_base_stats() {
+        warlock_pet_t::init_base_stats();
+        melee_attack = new warlock_pet_melee_t(this);
+    };
+    action_t* felhunter_pet_t::create_action(const std::string& name, const std::string& options_str) {
+        if (name == "shadow_bite") return new shadow_bite_t(this);
+        return warlock_pet_t::create_action(name, options_str);
+    };
+}
+
 } // end namespace pets
 
 void parse_spell_coefficient(action_t& a) {
@@ -290,10 +331,8 @@ warlock( p )
   target -> callbacks_on_demise.push_back( std::bind( &warlock_td_t::target_demise, this ) );
 }
 
-void warlock_td_t::target_demise()
-{
-  if ( !( target -> is_enemy() ) )
-  {
+void warlock_td_t::target_demise() {
+  if ( !( target -> is_enemy() ) ) {
     return;
   }
   if ( warlock.specialization() == WARLOCK_AFFLICTION )
@@ -546,10 +585,10 @@ action_t* warlock_t::create_action( const std::string& action_name,const std::st
   }
 
   if ( action_name == "summon_felhunter"      ) return new      summon_main_pet_t( "felhunter", this );
-  if ( action_name == "summon_felguard"       ) return new       summon_main_pet_t( "felguard", this );
-  if ( action_name == "summon_succubus"       ) return new       summon_main_pet_t( "succubus", this );
-  if ( action_name == "summon_voidwalker"     ) return new     summon_main_pet_t( "voidwalker", this );
-  if ( action_name == "summon_imp"            ) return new            summon_main_pet_t( "imp", this );
+  if ( action_name == "summon_felguard"       ) return new      summon_main_pet_t( "felguard", this );
+  if ( action_name == "summon_succubus"       ) return new      summon_main_pet_t( "succubus", this );
+  if ( action_name == "summon_voidwalker"     ) return new      summon_main_pet_t( "voidwalker", this );
+  if ( action_name == "summon_imp"            ) return new      summon_main_pet_t( "imp", this );
   if ( action_name == "summon_pet"            ) return new      summon_main_pet_t( default_pet, this );
 
   if (action_name == "drain_life") return new                     drain_life_t(this, options_str);
@@ -568,13 +607,16 @@ bool warlock_t::create_actions()
 	return player_t::create_actions();
 }
 
-pet_t* warlock_t::create_pet( const std::string& pet_name, const std::string& /* pet_type */ )
-{
+pet_t* warlock_t::create_pet( const std::string& pet_name, const std::string& /* pet_type */ ) {
   pet_t* p = find_pet( pet_name );
-
   if ( p ) return p;
-
   using namespace pets;
+
+  if (pet_name == "felhunter") return new             felhunter::felhunter_pet_t(sim, this);
+  //if (pet_name == "felguard") return new            felguard_pet_t(sim, this);
+  //if (pet_name == "imp") return new                 imp_pet_t(sim, this);
+  //if (pet_name == "succubus") return new            succubus_pet_t(sim, this);
+  //if (pet_name == "voidwalker") return new          voidwalker_pet_t(sim, this);
 
   return nullptr;
 }
@@ -786,6 +828,8 @@ void warlock_t::apl_precombat()
   precombat->add_action( "flask" );
   precombat->add_action( "food" );
   precombat->add_action( "augmentation" );
+
+  precombat->add_action("summon_pet");
 
   precombat->add_action( "snapshot_stats" );
 
