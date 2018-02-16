@@ -535,10 +535,22 @@ namespace warlock {
         return nullptr;
     }
     void warlock_t::create_buffs_affliction() {
+        //spells
         buffs.active_uas = buff_creator_t(this, "active_uas")
             .tick_behavior(BUFF_TICK_NONE)
             .refresh_behavior(BUFF_REFRESH_DURATION)
             .max_stack(20);
+        //talents
+        buffs.soul_harvest = buff_creator_t(this, "soul_harvest", find_spell(196098))
+            .add_invalidate(CACHE_PLAYER_DAMAGE_MULTIPLIER)
+            .refresh_behavior(BUFF_REFRESH_EXTEND)
+            .cd(timespan_t::zero())
+            .default_value(find_spell(196098)->effectN(1).percent());
+        //tier
+        buffs.demonic_speed = haste_buff_creator_t(this, "demonic_speed", sets->set(WARLOCK_AFFLICTION, T20, B4)->effectN(1).trigger())
+            .chance(sets->set(WARLOCK_AFFLICTION, T20, B4)->proc_chance())
+            .default_value(sets->set(WARLOCK_AFFLICTION, T20, B4)->effectN(1).trigger()->effectN(1).percent());
+        //legendary
     }
     void warlock_t::init_spells_affliction(){
         // General
@@ -588,9 +600,14 @@ namespace warlock {
             active.corruption->aoe = -1;
         }
     }
+    void warlock_t::init_gains_affliction() {
+        gains.agony = get_gain("agony");
+        gains.seed_of_corruption = get_gain("seed_of_corruption");
+        gains.unstable_affliction_refund = get_gain("unstable_affliction_refund");
+        gains.affliction_t20_2pc = get_gain("affliction_t20_2pc");
+    }
     void warlock_t::init_rng_affliction() {
         affliction_t20_2pc_rppm = get_rppm("affliction_t20_2pc", sets->set(WARLOCK_AFFLICTION, T20, B2));
-        tormented_souls_rppm = get_rppm("tormented_souls", 4.5);
     }
     void warlock_t::create_options_affliction() {
         add_option(opt_bool("deaths_embrace_fixed_time", deaths_embrace_fixed_time));

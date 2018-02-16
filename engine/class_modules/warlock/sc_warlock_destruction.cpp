@@ -24,6 +24,9 @@ namespace warlock {
     void warlock_t::init_spells_destruction() {
 
     }
+    void warlock_t::init_gains_destruction() {
+
+    }
     void warlock_t::init_rng_destruction() {
     }
     void warlock_t::create_options_destruction() {

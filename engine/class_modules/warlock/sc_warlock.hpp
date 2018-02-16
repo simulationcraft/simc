@@ -224,11 +224,9 @@ namespace warlock {
 
         //Procs and RNG
         real_ppm_t* affliction_t20_2pc_rppm;
-        real_ppm_t* misery_rppm; // affliction t17 4pc
         real_ppm_t* demonic_power_rppm; // grimoire of sacrifice
         real_ppm_t* grimoire_of_synergy; //caster ppm, i.e., if it procs, the wl will create a buff for the pet.
         real_ppm_t* grimoire_of_synergy_pet; //pet ppm, i.e., if it procs, the pet will create a buff for the wl.
-        real_ppm_t* tormented_souls_rppm; // affliction artifact buff
 
                                           // Cooldowns
         struct cooldowns_t
@@ -411,13 +409,9 @@ namespace warlock {
         int initial_soul_shards;
         bool allow_sephuz;
         bool deaths_embrace_fixed_time;
-        double reap_souls_modifier;
         std::string default_pet;
 
         timespan_t shard_react;
-
-        // Artifacts
-        const special_effect_t* ulthalesh_the_dreadwind_harvester, *skull_of_the_manari, *scepter_of_sargeras;
 
         warlock_t(sim_t* sim, const std::string& name, race_e r = RACE_UNDEAD);
 
@@ -461,8 +455,6 @@ namespace warlock {
         virtual void      combat_begin() override;
         virtual expr_t*   create_expression(action_t* a, const std::string& name_str) override;
 
-        void trigger_lof_infernal();
-
         target_specific_t<warlock_td_t> target_data;
 
         virtual warlock_td_t* get_target_data(player_t* target) const override
@@ -479,6 +471,7 @@ namespace warlock {
         action_t* warlock_t::create_action_affliction(const std::string& action_name, const std::string& options_str);
         void create_buffs_affliction();
         void init_spells_affliction();
+        void init_gains_affliction();
         void init_rng_affliction();
         void create_options_affliction();
         void create_apl_affliction();
@@ -488,6 +481,7 @@ namespace warlock {
         action_t* warlock_t::create_action_demonology(const std::string& action_name, const std::string& options_str);
         void create_buffs_demonology();
         void init_spells_demonology();
+        void init_gains_demonology();
         void init_rng_demonology();
         void create_options_demonology();
         void create_apl_demonology();
@@ -497,6 +491,7 @@ namespace warlock {
         action_t* warlock_t::create_action_destruction(const std::string& action_name, const std::string& options_str);
         void create_buffs_destruction();
         void init_spells_destruction();
+        void init_gains_destruction();
         void init_rng_destruction();
         void create_options_destruction();
         void create_apl_destruction();

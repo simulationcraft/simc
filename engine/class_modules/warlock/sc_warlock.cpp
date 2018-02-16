@@ -333,7 +333,6 @@ warlock_t::warlock_t( sim_t* sim, const std::string& name, race_e r ):
     regen_type = REGEN_DYNAMIC;
     regen_caches[CACHE_HASTE] = true;
     regen_caches[CACHE_SPELL_HASTE] = true;
-    reap_souls_modifier = 2.0;
 
     talent_points.register_validity_fn( [this]( const spell_data_t* spell )
     {
