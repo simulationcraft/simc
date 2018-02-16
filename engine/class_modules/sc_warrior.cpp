@@ -30,8 +30,8 @@ struct warrior_td_t: public actor_target_data_t
   warrior_td_t( player_t* target, warrior_t& p );
 };
 
-typedef std::pair<std::string, simple_sample_data_with_min_max_t> data_t;
-typedef std::pair<std::string, simple_sample_data_t> simple_data_t;
+using data_t = std::pair<std::string, simple_sample_data_with_min_max_t>;
+using simple_data_t = std::pair<std::string, simple_sample_data_t>;
 
 template <typename T_CONTAINER, typename T_DATA>
 T_CONTAINER* get_data_entry( const std::string& name, std::vector<T_DATA*>& entries )
@@ -6925,6 +6925,8 @@ private:
   warrior_t& p;
 };
 
+namespace items {
+
 struct raging_fury_t: public unique_gear::scoped_action_callback_t<charge_t>
 {
   raging_fury_t(): super( WARRIOR, "charge" )
@@ -7149,6 +7151,30 @@ struct najentuss_vertebrae_t : public unique_gear::scoped_actor_callback_t<warri
   { warrior -> legendary.najentuss_vertebrae = e.driver(); }
 };
 
+void init()
+{
+  unique_gear::register_special_effect( 205144, archavons_heavy_hand_t() );
+  unique_gear::register_special_effect( 207841, bindings_of_kakushan_t(), true );
+  unique_gear::register_special_effect( 207845, kargaths_sacrificed_hands_t(), true );
+  unique_gear::register_special_effect( 215176, thundergods_vigor_t() ); //NYI
+  unique_gear::register_special_effect( 207779, ceannar_charger_t() );
+  unique_gear::register_special_effect( 207775, kazzalax_fujiedas_fury_t(), true );
+  unique_gear::register_special_effect( 215057, the_walls_fell_t() ); //NYI
+  unique_gear::register_special_effect( 215090, destiny_driver_t(), true );
+  unique_gear::register_special_effect( 207428, prydaz_xavarics_magnum_opus_t(), true ); //Not finished
+  unique_gear::register_special_effect( 208908, mannoroths_bloodletting_manacles_t() ); //NYI
+  unique_gear::register_special_effect( 215096, najentuss_vertebrae_t() );
+  unique_gear::register_special_effect( 207767, ayalas_stone_heart_t(), true );
+  unique_gear::register_special_effect( 208177, weight_of_the_earth_t() );
+  unique_gear::register_special_effect( 222266, raging_fury_t() );
+  unique_gear::register_special_effect( 222266, raging_fury2_t() );
+  unique_gear::register_special_effect( 208051, sephuzs_secret_t() );
+  unique_gear::register_special_effect( 248118, the_great_storms_eye_t(), true );
+  unique_gear::register_special_effect( 248120, valarjar_berserkers_t() );
+}
+
+} // items
+
 struct warrior_module_t: public module_t
 {
   warrior_module_t(): module_t( WARRIOR ) {}
@@ -7164,24 +7190,7 @@ struct warrior_module_t: public module_t
 
   virtual void static_init() const override
   {
-    unique_gear::register_special_effect( 205144, archavons_heavy_hand_t() );
-    unique_gear::register_special_effect( 207841, bindings_of_kakushan_t(), true );
-    unique_gear::register_special_effect( 207845, kargaths_sacrificed_hands_t(), true );
-    unique_gear::register_special_effect( 215176, thundergods_vigor_t() ); //NYI
-    unique_gear::register_special_effect( 207779, ceannar_charger_t() );
-    unique_gear::register_special_effect( 207775, kazzalax_fujiedas_fury_t(), true );
-    unique_gear::register_special_effect( 215057, the_walls_fell_t() ); //NYI
-    unique_gear::register_special_effect( 215090, destiny_driver_t(), true );
-    unique_gear::register_special_effect( 207428, prydaz_xavarics_magnum_opus_t(), true ); //Not finished
-    unique_gear::register_special_effect( 208908, mannoroths_bloodletting_manacles_t() ); //NYI
-    unique_gear::register_special_effect( 215096, najentuss_vertebrae_t() );
-    unique_gear::register_special_effect( 207767, ayalas_stone_heart_t(), true );
-    unique_gear::register_special_effect( 208177, weight_of_the_earth_t() );
-    unique_gear::register_special_effect( 222266, raging_fury_t() );
-    unique_gear::register_special_effect( 222266, raging_fury2_t() );
-    unique_gear::register_special_effect( 208051, sephuzs_secret_t() );
-    unique_gear::register_special_effect( 248118, the_great_storms_eye_t(), true );
-    unique_gear::register_special_effect( 248120, valarjar_berserkers_t() );
+    items::init();
   }
 
   virtual void register_hotfixes() const override
