@@ -360,6 +360,13 @@ namespace actions {
         shadow_bolt_t(warlock_t* p, const std::string& options_str) : warlock_spell_t(p, "Shadow Bolt", p->specialization()) {
 
         }
+
+        void impact(action_state_t* s) override {
+          warlock_spell_t::impact(s);
+          if (result_is_hit(s->result)) {
+            td(s->target)->debuffs_shadow_embrace->trigger();
+          }
+        }
     };
 
     struct drain_life_t : public warlock_spell_t {
@@ -543,6 +550,8 @@ double warlock_t::composite_player_target_multiplier( player_t* target, school_e
 
   if ( td -> debuffs_haunt -> check() )
     m *= 1.0 + find_spell( 48181 ) -> effectN( 2 ).percent();
+  if ( td -> debuffs_shadow_embrace -> check() )
+    m *= 1.0 + find_spell( 32390 ) -> effectN( 1 ).percent();
 
   for ( int i = 0; i < MAX_UAS; i++ ) {
       if ( td -> dots_unstable_affliction[i] -> is_ticking() ) {
