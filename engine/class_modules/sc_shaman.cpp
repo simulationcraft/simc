@@ -13,7 +13,7 @@
 //
 // Elemental
 // - Update flame shock spreader for volcanic rage
-// continue reading code at line ~4200
+// continue reading code at line ~5200
 
 // Legion TODO
 //
@@ -3892,6 +3892,8 @@ struct earth_elemental_t : public shaman_spell_t
   }
 };
 
+// Fire Elemental ===========================================================
+
 struct fire_elemental_t : public shaman_spell_t
 {
   const spell_data_t* base_spell;
@@ -3926,6 +3928,35 @@ struct fire_elemental_t : public shaman_spell_t
     }
 
     return shaman_spell_t::ready();
+  }
+};
+
+// Storm Elemental ==========================================================
+
+struct storm_elemental_t : public shaman_spell_t
+{
+  const spell_data_t* summon_spell;
+
+  storm_elemental_t( shaman_t* player, const std::string& options_str )
+    : shaman_spell_t( "storm_elemental", player, player->talent.storm_elemental, options_str ),
+      summon_spell( player->find_spell( 157299 ) )
+  {
+    harmful = may_crit = false;
+  }
+
+  void execute() override
+  {
+    shaman_spell_t::execute();
+
+    if ( p()->talent.primal_elementalist->ok() && p()->pet.pet_storm_elemental->is_sleeping() )
+    {
+      p()->pet.pet_storm_elemental->summon( summon_spell->duration() );
+    }
+    else if ( !p()->talent.primal_elementalist->ok() )
+    {
+      // Summon first non sleeping Storm Elemental
+      pet::summon( p()->pet.guardian_storm_elemental, summon_spell->duration() );
+    }
   }
 };
 
@@ -4393,7 +4424,10 @@ struct lava_burst_t : public shaman_spell_t
     : shaman_spell_t( "lava_burst", player, player->find_specialization_spell( "Lava Burst" ), options_str )
   {
     // Manacost is only for resto
-    base_costs[ RESOURCE_MANA ] = 0;
+    if ( p()->specialization() == SHAMAN_ELEMENTAL )
+    {
+      base_costs[ RESOURCE_MANA ] = 0;
+    }
 
     if ( player->mastery.elemental_overload->ok() )
     {
@@ -4406,7 +4440,8 @@ struct lava_burst_t : public shaman_spell_t
   {
     shaman_spell_t::init();
 
-    if ( p()->specialization() == SHAMAN_ELEMENTAL && p()->talent.echo_of_the_elements->ok() )
+    // Elemental and Restoration gain a second Lava Burst charge via Echo of the Elements
+    if ( p()->talent.echo_of_the_elements->ok() )
     {
       cooldown->charges = data().charges() + p()->talent.echo_of_the_elements->effectN( 2 ).base_value();
     }
@@ -4430,6 +4465,7 @@ struct lava_burst_t : public shaman_spell_t
 
     if ( p()->spec.lava_burst_2->ok() && td( target )->dot.flame_shock->is_ticking() )
     {
+      // hardcoded because Lava Burst 2 does not have a corresponding value
       m = 1.0;
     }
 
@@ -4493,18 +4529,6 @@ struct lightning_bolt_overload_t : public elemental_overload_spell_t
   {
     maelstrom_gain = player->find_spell( 214816 )->effectN( 1 ).resource( RESOURCE_MAELSTROM );
   }
-
-  double action_multiplier() const override
-  {
-    double m = elemental_overload_spell_t::action_multiplier();
-
-    if ( p()->buff.stormkeeper->up() )
-    {
-      m *= 1.0 + p()->buff.stormkeeper->data().effectN( 1 ).percent();
-    }
-
-    return m;
-  }
 };
 
 struct lightning_bolt_t : public shaman_spell_t
@@ -4565,18 +4589,6 @@ struct lightning_bolt_t : public shaman_spell_t
     return spell_power_mod.direct * ( 1.0 + m_overcharge * cost() );
   }
 
-  double action_multiplier() const override
-  {
-    double m = shaman_spell_t::action_multiplier();
-
-    if ( p()->buff.stormkeeper->up() )
-    {
-      m *= 1.0 + p()->buff.stormkeeper->data().effectN( 1 ).percent();
-    }
-
-    return m;
-  }
-
   timespan_t execute_time() const override
   {
     if ( p()->buff.stormkeeper->up() )
@@ -4590,6 +4602,16 @@ struct lightning_bolt_t : public shaman_spell_t
   void execute() override
   {
     shaman_spell_t::execute();
+
+    /*
+    //high voltage start
+    ///
+    if ( p()->talent.high_voltage->ok() )
+    {
+      const action_state_t* s;
+      shaman_spell_t::trigger_elemental_overload( s );
+    }
+    ///**/
 
     p()->buff.stormkeeper->decrement();
 
@@ -4659,11 +4681,8 @@ struct elemental_blast_t : public shaman_spell_t
   elemental_blast_t( shaman_t* player, const std::string& options_str )
     : shaman_spell_t( "elemental_blast", player, player->talent.elemental_blast, options_str )
   {
-    if ( player->mastery.elemental_overload->ok() )
-    {
-      overload = new elemental_blast_overload_t( player );
-      add_child( overload );
-    }
+    overload = new elemental_blast_overload_t( player );
+    add_child( overload );
   }
 
   void execute() override
@@ -4889,43 +4908,7 @@ struct feral_lunge_t : public shaman_spell_t
   }
 };
 
-struct storm_elemental_t : public shaman_spell_t
-{
-  const spell_data_t* summon_spell;
-
-  storm_elemental_t( shaman_t* player, const std::string& options_str )
-    : shaman_spell_t( "storm_elemental", player, player->talent.storm_elemental, options_str ),
-      summon_spell( player->find_spell( 157299 ) )
-  {
-    harmful = may_crit = false;
-  }
-
-  void execute() override
-  {
-    shaman_spell_t::execute();
-
-    if ( p()->talent.primal_elementalist->ok() && p()->pet.pet_storm_elemental->is_sleeping() )
-    {
-      p()->pet.pet_storm_elemental->summon( summon_spell->duration() );
-    }
-    else if ( !p()->talent.primal_elementalist->ok() )
-    {
-      // Summon first non sleeping Fire Elemental
-      pet::summon( p()->pet.guardian_storm_elemental, summon_spell->duration() );
-    }
-  }
-};
-
 // Earthquake ===============================================================
-
-struct seismic_lightning_t : public shaman_spell_t
-{
-  seismic_lightning_t( shaman_t* p ) : shaman_spell_t( "seismic_lightning", p, p->find_spell( 243073 ) )
-  {
-    background = true;
-    callbacks  = false;
-  }
-};
 
 struct earthquake_damage_t : public shaman_spell_t
 {
@@ -4937,7 +4920,7 @@ struct earthquake_damage_t : public shaman_spell_t
     aoe        = -1;
     ground_aoe = background = true;
     school                  = SCHOOL_PHYSICAL;
-    spell_power_mod.direct  = 0.92;
+    spell_power_mod.direct  = 0.92;  // still cool to hardcode the SP% into tooltip
   }
 
   double target_armor( player_t* ) const override
@@ -5065,11 +5048,8 @@ struct earth_shock_t : public shaman_spell_t
 
 struct flame_shock_t : public shaman_spell_t
 {
-  double duration_multiplier;  // Elemental Bellows
-
   flame_shock_t( shaman_t* player, const std::string& options_str = std::string() )
-    : shaman_spell_t( "flame_shock", player, player->find_specialization_spell( "Flame Shock" ), options_str ),
-      duration_multiplier( 1.0 )
+    : shaman_spell_t( "flame_shock", player, player->find_specialization_spell( "Flame Shock" ), options_str )
   {
     tick_may_crit  = true;
     track_cd_waste = false;
@@ -5085,11 +5065,6 @@ struct flame_shock_t : public shaman_spell_t
     }
 
     return m;
-  }
-
-  timespan_t composite_dot_duration( const action_state_t* ) const override
-  {
-    return dot_duration * duration_multiplier;
   }
 
   double action_ta_multiplier() const override
@@ -5136,11 +5111,6 @@ struct flame_shock_t : public shaman_spell_t
     {
       p()->trigger_t20_2pc_elemental( execute_state );
     }
-  }
-
-  void execute() override
-  {
-    shaman_spell_t::execute();
   }
 };
 
