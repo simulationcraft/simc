@@ -33,6 +33,7 @@ namespace warlock {
         buff_t* debuffs_jaws_of_shadow;
         buff_t* debuffs_tormented_agony;
         buff_t* debuffs_chaotic_flames;
+        buff_t* debuffs_shadow_embrace;
 
         int agony_stack;
         double soc_threshold;
