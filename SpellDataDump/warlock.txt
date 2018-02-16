@@ -4537,7 +4537,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6)
 Effects          :
-#1 (id=349696)   : Apply Aura (6) | Modify Cooldown Charge (411)
+#1 (id=349696)   : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 672 | Target: Self (1)
 Description      : Conflagrate has ${$s1+1} charges.
 

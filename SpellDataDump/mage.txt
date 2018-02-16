@@ -4075,7 +4075,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6)
 Effects          :
-#1 (id=302656)   : Apply Aura (6) | Modify Cooldown Charge (411)
+#1 (id=302656)   : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 1500 | Target: Self (1)
 #2 (id=354871)   : Apply Aura (6) | Modify Recharge Time% (Category) (454)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1500 | Target: Self (1)
@@ -4136,7 +4136,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6)
 Effects          :
-#1 (id=302663)   : Apply Aura (6) | Modify Cooldown Charge (411)
+#1 (id=302663)   : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 1588 | Target: Self (1)
 Description      : Frost Nova now has ${1+$m1} charges.
 
@@ -5019,7 +5019,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6)
 Effects          :
-#1 (id=349285)   : Apply Aura (6) | Modify Cooldown Charge (411)
+#1 (id=349285)   : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 1500 | Target: Self (1)
 #2 (id=354886)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 12 | Target: Self (1)

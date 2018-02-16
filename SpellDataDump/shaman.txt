@@ -2029,11 +2029,11 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=119340)   : Apply Aura (6) | Dummy (4)
                    Base Value: 10 | Scaled Value: 10
-#2 (id=263356)   : Apply Aura (6) | Modify Cooldown Charge (411)
+#2 (id=263356)   : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 1536 | Target: Self (1)
-#3 (id=263363)   : Apply Aura (6) | Modify Cooldown Charge (411)
+#3 (id=263363)   : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 1228 | Target: Self (1)
-#4 (id=263364)   : Apply Aura (6) | Modify Cooldown Charge (411)
+#4 (id=263364)   : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 1569 | Target: Self (1)
 Description      : $?c1[Lava Burst now has ${$s2+1}][Riptide, Healing Stream Totem, and Lava Burst now have ${$s2+1}] charges. Other effects that reset $?c1[its][their] remaining cooldown will instead grant 1 charge.$?c3[
 

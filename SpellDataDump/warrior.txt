@@ -1759,7 +1759,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6)
 Effects          :
-#1 (id=166913)   : Apply Aura (6) | Modify Cooldown Charge (411)
+#1 (id=166913)   : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 1386 | Target: Self (1)
 #2 (id=320495)   : Apply Aura (6) | Modify Recharge Time (Category) (453)
                    Base Value: -3000 | Scaled Value: -3000 | Misc Value: 1386 | Target: Self (1)
@@ -2377,7 +2377,7 @@ Effects          :
 #2 (id=186944)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Damage (22)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Rend (772), Cleave (845), Slam (1464), Hamstring (1715), Execute (5308), Thunder Clap (6343), Revenge (6572), Overpower (7384), Warbringer (7922), Mortal Strike (12294), Devastate (20243), Bloodthirst (23881), Shield Slam (23922), Victory Rush (34428), Whirlwind Off-Hand (44949), Shockwave (46968), Bladestorm (50622), Heroic Leap (52174), Heroic Throw (57755), Raging Blow (85384), Bladestorm Off-Hand (95738), Raging Blow (96103), Furious Slash (100130), Storm Bolt (107570), Deep Wounds (115767), Dragon Roar (118000), Charge (126664), Ravager (156287), Execute Off-Hand (163558), Colossus Smash (167105), Rampage (184707), Rampage (184709), Whirlwind (199658), Whirlwind (199667), Whirlwind (199850), Rampage (201363), Rampage (201364), Impending Victory (202168), Opportunity Strikes (203178), Odyn's Fury (205546), Odyn's Fury (205547), Warbreaker (209577), Rampage (218617), Devastator (236282), Helya's Scorn (243223), Odyn's Glory (243228), Skullsplitter (260643), Execute (260798), Deep Wounds (262115), Warbreaker (262161)
-#3 (id=191017)   : Apply Aura (6) | Modify Cooldown Charge (411)
+#3 (id=191017)   : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 1386 | Target: Self (1)
 #4 (id=191018)   : Apply Aura (6) | Modify Recharge Time (Category) (453)
                    Base Value: -5000 | Scaled Value: -5000 | Misc Value: 1386 | Target: Self (1)
@@ -4911,7 +4911,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6)
 Effects          :
-#1 (id=349779)   : Apply Aura (6) | Modify Cooldown Charge (411)
+#1 (id=349779)   : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 1385 | Target: Self (1)
 Description      : Shield Block has ${$s1+1} charges.
 
@@ -5464,7 +5464,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6), Hidden (7)
 Effects          :
-#1 (id=623181)   : Apply Aura (6) | Modify Cooldown Charge (411)
+#1 (id=623181)   : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 1680 | Target: Self (1)
 #2 (id=623182)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 3 (23)
                    Base Value: 20 | Scaled Value: 20 | Misc Value: 23 | Target: Self (1)

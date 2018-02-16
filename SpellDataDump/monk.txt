@@ -871,7 +871,7 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=128868)   : Apply Aura (6) | Modify Recharge Time (Category) (453)
                    Base Value: -5000 | Scaled Value: -5000 | Misc Value: 1365 | Target: Self (1)
-#2 (id=135980)   : Apply Aura (6) | Modify Cooldown Charge (411)
+#2 (id=135980)   : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 1365 | Target: Self (1)
 Description      : Reduces the cooldown of $?s115008[Chi Torpedo][Roll] by ${$m1/-1000} sec and increases its maximum number of charges by $m2.
 
@@ -3879,7 +3879,7 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=288811)   : Apply Aura (6) | Modify Recharge Time (Category) (453)
                    Base Value: -3000 | Scaled Value: -3000 | Misc Value: 1562 | Target: Self (1)
-#2 (id=288812)   : Apply Aura (6) | Modify Cooldown Charge (411)
+#2 (id=288812)   : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 1562 | Target: Self (1)
 Description      : Reduces the cooldown of Ironskin Brew and Purifying Brew by ${$m1/-1000} sec and increases their maximum number of charges by $m2.
 
@@ -5025,7 +5025,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6)
 Effects          :
-#1 (id=349451)   : Apply Aura (6) | Modify Cooldown Charge (411)
+#1 (id=349451)   : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 1592 | Target: Self (1)
 Description      : Storm, Earth, and Fire has ${$s1+1} charges.
 

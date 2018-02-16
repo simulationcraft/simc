@@ -5064,7 +5064,7 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=294998)   : Apply Aura (6) | Modify Recharge Time (Category) (453)
                    Base Value: -3000 | Scaled Value: -3000 | Misc Value: 1576 | Target: Self (1)
-#2 (id=294999)   : Apply Aura (6) | Modify Cooldown Charge (411)
+#2 (id=294999)   : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 1576 | Target: Self (1)
 Description      : Swiftmend now has ${$m2+1} charges, and its cooldown is reduced by ${$m1/-1000} sec.
 

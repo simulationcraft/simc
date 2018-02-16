@@ -7062,7 +7062,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6), Hidden (7)
 Effects          :
-#1 (id=707688)   : Apply Aura (6) | Modify Cooldown Charge (411)
+#1 (id=707688)   : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 1716 | Target: Self (1)
 Description      : Wildfire Bomb now has ${$s1+1} charges.
 
