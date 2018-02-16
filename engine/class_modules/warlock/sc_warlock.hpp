@@ -475,14 +475,32 @@ namespace warlock {
             return td;
         }
 
-        //aff
+        // sc_warlock_affliction
         action_t* warlock_t::create_action_affliction(const std::string& action_name, const std::string& options_str);
         void create_buffs_affliction();
         void init_spells_affliction();
         void init_rng_affliction();
         void create_options_affliction();
         void create_apl_affliction();
-        virtual void aff_legendaries();
+        virtual void legendaries_affliction();
+
+        // sc_warlock_demonology
+        action_t* warlock_t::create_action_demonology(const std::string& action_name, const std::string& options_str);
+        void create_buffs_demonology();
+        void init_spells_demonology();
+        void init_rng_demonology();
+        void create_options_demonology();
+        void create_apl_demonology();
+        virtual void legendaries_demonology();
+
+        // sc_warlock_destruction
+        action_t* warlock_t::create_action_destruction(const std::string& action_name, const std::string& options_str);
+        void create_buffs_destruction();
+        void init_spells_destruction();
+        void init_rng_destruction();
+        void create_options_destruction();
+        void create_apl_destruction();
+        virtual void legendaries_destruction();
 
         std::string       default_potion() const override;
         std::string       default_flask() const override;
@@ -492,11 +510,7 @@ namespace warlock {
     private:
         void apl_precombat();
         void apl_default();
-        void apl_affliction();
-        void apl_demonology();
-        void apl_destruction();
         void apl_global_filler();
-
     };
 
     void parse_spell_coefficient(action_t& a);

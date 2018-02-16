@@ -627,7 +627,7 @@ namespace warlock {
         }
     };
 
-    void warlock_t::aff_legendaries() {
+    void warlock_t::legendaries_affliction() {
         register_special_effect(205797, hood_of_eternal_disdain_t());
     }
 }

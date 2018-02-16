@@ -895,52 +895,22 @@ void warlock_t::apl_global_filler()
 {
 }
 
-void warlock_t::apl_default()
-{
+void warlock_t::apl_default() {
+    if(specialization() == WARLOCK_AFFLICTION)
+        create_apl_affliction();
+    else if (specialization() == WARLOCK_DEMONOLOGY)
+        create_apl_demonology();
+    else if (specialization() == WARLOCK_DESTRUCTION)
+        create_apl_destruction();
 }
 
-void warlock_t::apl_affliction()
-{
-    create_apl_affliction();
-}
-
-void warlock_t::apl_demonology()
-{
-  action_priority_list_t* default_list = get_action_priority_list("default");
-
-  default_list->add_action("shadow_bolt");
-}
-
-void warlock_t::apl_destruction()
-{
-    action_priority_list_t* default_list = get_action_priority_list("default");
-
-    default_list->add_action("incinerate");
-}
-
-void warlock_t::init_action_list()
-{
-  if ( action_list_str.empty() )
-  {
+void warlock_t::init_action_list() {
+  if ( action_list_str.empty() ) {
     clear_action_priority_lists();
 
     apl_precombat();
 
-    switch ( specialization() )
-    {
-    case WARLOCK_AFFLICTION:
-      apl_affliction();
-      break;
-    case WARLOCK_DESTRUCTION:
-      apl_destruction();
-      break;
-    case WARLOCK_DEMONOLOGY:
-      apl_demonology();
-      break;
-    default:
-      apl_default();
-      break;
-    }
+    apl_default();
 
     use_default_action_list = true;
   }
