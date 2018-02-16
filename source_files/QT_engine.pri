@@ -88,7 +88,10 @@
  SOURCES += engine/dbc/sc_data.cpp
  SOURCES += engine/dbc/sc_const_data.cpp
  SOURCES += engine/class_modules/sc_warrior.cpp
- SOURCES += engine/class_modules/sc_warlock.cpp
+ SOURCES += engine/class_modules/warlock/sc_warlock.cpp
+ SOURCES += engine/class_modules/warlock/sc_warlock_affliction.cpp
+ SOURCES += engine/class_modules/warlock/sc_warlock_demonology.cpp
+ SOURCES += engine/class_modules/warlock/sc_warlock_destruction.cpp
  SOURCES += engine/class_modules/sc_shaman.cpp
  SOURCES += engine/class_modules/sc_rogue.cpp
  SOURCES += engine/class_modules/sc_priest.cpp
