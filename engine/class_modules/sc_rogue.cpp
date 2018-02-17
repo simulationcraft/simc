@@ -209,6 +209,7 @@ struct rogue_t : public player_t
     buff_t* vanish;
     // Assassination
     buff_t* envenom;
+    buff_t* vendetta;
     // Outlaw
     haste_buff_t* adrenaline_rush;
     buff_t* blade_flurry;
@@ -308,8 +309,9 @@ struct rogue_t : public player_t
     gain_t* combat_potency;
     gain_t* energy_refund;
     gain_t* master_of_shadows;
-    gain_t* venomous_wounds;
+    gain_t* vendetta;
     gain_t* venom_rush;
+    gain_t* venomous_wounds;
     gain_t* venomous_wounds_death;
     gain_t* vitality;
     gain_t* relentless_strikes;
@@ -3883,6 +3885,8 @@ struct vendetta_t : public rogue_attack_t
   {
     rogue_attack_t::execute();
 
+    p()->buffs.vendetta->trigger();
+
     rogue_td_t* td = this -> td( execute_state -> target );
     td -> debuffs.vendetta -> trigger();
   }
@@ -5736,10 +5740,9 @@ rogue_td_t::rogue_td_t( player_t* target, rogue_t* source ) :
   debuffs.crippling_poison = new buffs::crippling_poison_t( *this );
   debuffs.leeching_poison = new buffs::leeching_poison_t( *this );
   debuffs.garrote = new buffs::proxy_garrote_t( *this );
-  const spell_data_t* vd = source -> find_specialization_spell( "Vendetta" );
-  debuffs.vendetta = buff_creator_t( *this, "vendetta", vd )
+  debuffs.vendetta = buff_creator_t( *this, "vendetta", source->spec.vendetta )
     .cd( timespan_t::zero() )
-    .default_value( vd -> effectN( 1 ).percent() );
+    .default_value( source->spec.vendetta->effectN( 1 ).percent() );
   debuffs.toxic_blade = buff_creator_t( *this, "toxic_blade", source -> talent.toxic_blade -> effectN( 4 ).trigger() )
     .default_value( source -> talent.toxic_blade -> effectN( 4 ).trigger() -> effectN( 1 ).percent() );
   debuffs.ghostly_strike = buff_creator_t( *this, "ghostly_strike", source -> talent.ghostly_strike )
@@ -6330,7 +6333,7 @@ action_t* rogue_t::create_action( const std::string& name,
   if ( name == "between_the_eyes"    ) return new between_the_eyes_t   ( this, options_str );
   if ( name == "blade_flurry"        ) return new blade_flurry_t       ( this, options_str );
   if ( name == "cannonball_barrage"  ) return new cannonball_barrage_t ( this, options_str );
-  if (name == "crimson_tempest"      ) return new crimson_tempest_t    (this, options_str);
+  if ( name == "crimson_tempest"     ) return new crimson_tempest_t    ( this, options_str );
   if ( name == "death_from_above"    ) return new death_from_above_t   ( this, options_str );
   if ( name == "dispatch"            ) return new dispatch_t           ( this, options_str );
   if ( name == "envenom"             ) return new envenom_t            ( this, options_str );
@@ -6903,8 +6906,9 @@ void rogue_t::init_gains()
   gains.combat_potency           = get_gain( "Combat Potency"           );
   gains.energy_refund            = get_gain( "Energy Refund"            );
   gains.seal_fate                = get_gain( "Seal Fate"                );
+  gains.vendetta                 = get_gain( "Vendetta"                 );
+  gains.venom_rush               = get_gain( "Venom Rush"               );
   gains.venomous_wounds          = get_gain( "Venomous Vim"             );
-  gains.venom_rush               = get_gain("Venom Rush");
   gains.venomous_wounds_death    = get_gain( "Venomous Vim (death)"     );
   gains.quick_draw               = get_gain( "Quick Draw"               );
   gains.broadsides               = get_gain( "Broadsides"               );
@@ -7044,6 +7048,14 @@ void rogue_t::create_buffs()
                                 .duration( timespan_t::min() )
                                 .period( timespan_t::zero() )
                                 .refresh_behavior( BUFF_REFRESH_PANDEMIC );
+  buffs.vendetta              = buff_creator_t( this, "vendetta_energy", find_spell( 256495 ) )
+                                .stack_change_callback( [ this ]( buff_t* b, int, int new_ ) {
+                                  if ( new_ == 1 ) { resource_gain( RESOURCE_ENERGY, b->data().effectN( 1 ).resource( RESOURCE_ENERGY ), gains.vendetta ); }
+                                } )
+                                .tick_callback( [ this ]( buff_t* b, int, const timespan_t& ) {
+                                  resource_gain( RESOURCE_ENERGY, b->data().effectN( 2 ).resource( RESOURCE_ENERGY ), gains.vendetta );
+                                } );
+
   // Outlaw
   buffs.adrenaline_rush       = new buffs::adrenaline_rush_t( this );
   buffs.blade_flurry          = buff_creator_t( this, "blade_flurry", spec.blade_flurry )
@@ -7106,9 +7118,8 @@ void rogue_t::create_buffs()
                                   .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   buffs.dispatch                = buff_creator_t( this, "dispatch", talent.dispatch )
                                   .duration( timespan_t::from_seconds( 10.0 ) ); // I see no buff spell in spell data yet, hardcode for now.
-  buffs.master_assassin_aura    = buff_creator_t(this, "master_assassin", talent.master_assassin)
+  buffs.master_assassin_aura    = buff_creator_t(this, "master_assassin_aura", talent.master_assassin)
                                     .default_value( spec.master_assassin->effectN( 1 ).percent() )
-                                    .duration( sim->max_time/2 )
                                     .add_invalidate(CACHE_CRIT_CHANCE);
   buffs.master_assassin         = buff_creator_t( this, "master_assassin", talent.master_assassin )
                                     .default_value( spec.master_assassin->effectN( 1 ).percent() )
