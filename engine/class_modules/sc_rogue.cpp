@@ -2236,6 +2236,7 @@ struct ambush_t : public rogue_attack_t
   ambush_t( rogue_t* p, const std::string& options_str ) :
     rogue_attack_t( "ambush", p, p -> find_specialization_spell( "Ambush" ), options_str )
   {
+    weapon = &( p -> main_hand_weapon );
     requires_stealth  = true;
   }
 
@@ -2261,6 +2262,7 @@ struct backstab_t : public rogue_attack_t
     rogue_attack_t( "backstab", p, p -> find_specialization_spell( "Backstab" ), options_str )
   {
     requires_weapon = WEAPON_DAGGER;
+    weapon = &( p -> main_hand_weapon );
   }
 
   double composite_da_multiplier( const action_state_t* state ) const override
@@ -2448,6 +2450,7 @@ struct dispatch_t: public rogue_attack_t
   dispatch_t( rogue_t* p, const std::string& options_str ) :
     rogue_attack_t( "dispatch", p, p -> talent.dispatch, options_str )
   {
+    requires_weapon = WEAPON_DAGGER;
     weapon = &( p -> main_hand_weapon );
   }
 
@@ -2767,6 +2770,7 @@ struct gouge_t : public rogue_attack_t
   gouge_t( rogue_t* p, const std::string& options_str ) :
     rogue_attack_t( "gouge", p, p -> find_specialization_spell( "Gouge" ), options_str )
   {
+    weapon = &( p -> main_hand_weapon );
     requires_stealth  = false;
 
     if ( p -> talent.dirty_tricks -> ok() )
@@ -3619,6 +3623,7 @@ struct shadowstrike_t : public rogue_attack_t
     shadow_satyrs_walk( nullptr )
   {
     requires_weapon = WEAPON_DAGGER;
+    weapon = &( p -> main_hand_weapon );
     requires_stealth = true;
   }
 
@@ -3855,6 +3860,7 @@ struct toxic_blade_t : public rogue_attack_t
     rogue_attack_t( "toxic_blade", p, p -> talent.toxic_blade, options_str )
   {
     requires_weapon = WEAPON_DAGGER;
+    weapon = &( p -> main_hand_weapon );
   }
 
   void impact( action_state_t* s ) override
