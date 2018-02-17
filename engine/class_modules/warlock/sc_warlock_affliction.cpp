@@ -358,12 +358,10 @@ namespace warlock {
           }
         };
         struct deathbolt_t : public warlock_spell_t {
-          double dmg_modifier;
           timespan_t ac_max;
 
           deathbolt_t(warlock_t* p, const std::string& options_str) : warlock_spell_t("deathbolt", p, p -> talents.deathbolt) {
             parse_options(options_str);
-            dmg_modifier = data().effectN(2).percent();
             ac_max = timespan_t::from_seconds(data().effectN(3).base_value());
           }
 
@@ -412,7 +410,7 @@ namespace warlock {
             if ( p() -> talents.siphon_life -> ok() ) {
               tick_base_damage = td->dots_siphon_life->state->result_raw;
               ticks_left = td->dots_siphon_life->ticks_left();
-              total_damage_siphon_life = total_damage_siphon_life + ( ticks_left * tick_base_damage );
+              total_damage_siphon_life += ( ticks_left * tick_base_damage );
               if (sim->debug) {
                 sim->out_debug.printf("%s siphon life dot_remains=%.3f duration=%.3f ticks_left=%u amount=%.3f total=%.3f",
                   name(), td->dots_siphon_life->remains().total_seconds(),
@@ -425,7 +423,7 @@ namespace warlock {
             if (p()->talents.phantom_singularity->ok()) {
               tick_base_damage = td->dots_phantom_singularity->state->result_raw;
               ticks_left = td->dots_phantom_singularity->ticks_left();
-              total_damage_phantom_singularity = total_damage_phantom_singularity + (ticks_left * tick_base_damage);
+              total_damage_phantom_singularity += (ticks_left * tick_base_damage);
               if (sim->debug) {
                 sim->out_debug.printf("%s phantom singularity dot_remains=%.3f duration=%.3f ticks_left=%u amount=%.3f total=%.3f",
                   name(), td->dots_phantom_singularity->remains().total_seconds(),
@@ -450,7 +448,7 @@ namespace warlock {
               }
             }
             const double total_dot_dmg = total_damage_agony + total_damage_corruption + total_damage_siphon_life + total_damage_phantom_singularity + total_damage_ua;
-            this->base_dd_min = this->base_dd_max = ( total_dot_dmg * dmg_modifier);
+            this->base_dd_min = this->base_dd_max = ( total_dot_dmg * data().effectN(2).percent() );
             if (sim->debug) {
               sim->out_debug.printf("%s deathbolt damage_remaining=%.3f", name(), total_dot_dmg);
             }
