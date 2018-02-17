@@ -288,6 +288,7 @@ buff_t::buff_t( const buff_creation::buff_creator_basics_t& params )
   set_tick_time_behavior( params._tick_time_behavior );
   if ( tick_time_behavior == BUFF_TICK_TIME_CUSTOM )
   {
+    assert( params._tick_time_callback );
     set_tick_time_callback( params._tick_time_callback );
   }
 
@@ -536,6 +537,10 @@ buff_t* buff_t::add_invalidate( cache_e c )
   {
     invalidate_list.push_back( c );
     requires_invalidation = true;
+    if ( player->regen_caches[ c ] )
+    {
+      change_regen_rate = true;
+    }
   }
   return this;
 }
