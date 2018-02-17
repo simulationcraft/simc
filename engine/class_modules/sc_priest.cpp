@@ -3892,9 +3892,9 @@ struct sephuzs_secret_enabler_t : public scoped_actor_callback_t<priest_t>
   {
   }
 
-  void manipulate( priest_t* shaman, const special_effect_t& e ) override
+  void manipulate( priest_t* priest, const special_effect_t& e ) override
   {
-    shaman->legendary.sephuzs_secret = e.driver();
+    priest->legendary.sephuzs_secret = e.driver();
   }
 };
 
