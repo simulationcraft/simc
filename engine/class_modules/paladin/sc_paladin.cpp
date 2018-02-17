@@ -11,7 +11,6 @@
     + Mana
     + Holy Shock
     + Shock cd
-    + Shock artifact trait
     + HA (haste mod)
     + CM
     + DP - need to review retribution model and update for Holy
@@ -85,8 +84,6 @@ paladin_t::paladin_t( sim_t* sim, const std::string& name, race_e r ) :
   active_enlightened_judgments        = nullptr;
   active_shield_of_vengeance_proc     = nullptr;
   active_holy_shield_proc             = nullptr;
-  active_tyrs_enforcer_proc           = nullptr;
-  active_painful_truths_proc          = nullptr;
   active_judgment_of_light_proc       = nullptr;
   active_sotr                         = nullptr;
   active_protector_of_the_innocent    = nullptr;
@@ -186,9 +183,6 @@ namespace buffs {
     {
       damage_modifier = data().effectN( 1 ).percent();
       healing_modifier = data().effectN( 2 ).percent();
-
-      if ( paladin -> artifact.wrath_of_the_ashbringer.rank() )
-        buff_duration += timespan_t::from_millis(paladin -> artifact.wrath_of_the_ashbringer.value());
     }
 
     // let the ability handle the cooldown
@@ -262,8 +256,6 @@ struct ardent_defender_t : public paladin_spell_t
     harmful = false;
     use_off_gcd = true;
     trigger_gcd = timespan_t::zero();
-
-    cooldown -> duration += timespan_t::from_millis( p -> artifact.unflinching_defense.value( 1 ) );
   }
 
   virtual void execute() override
@@ -271,9 +263,6 @@ struct ardent_defender_t : public paladin_spell_t
     paladin_spell_t::execute();
 
     p() -> buffs.ardent_defender -> trigger();
-
-    if ( p() -> artifact.painful_truths.rank() )
-      p() -> buffs.painful_truths -> trigger();
   }
 };
 
@@ -322,17 +311,10 @@ struct avengers_shield_t : public paladin_spell_t
   {
     paladin_spell_t::impact( s );
 
-    // Bulwark of Order absorb shield. Amount is additive per hit.
-    if ( p() -> artifact.bulwark_of_order.rank() )
-      p() -> buffs.bulwark_of_order -> trigger( 1, p() -> buffs.bulwark_of_order -> value() + s -> result_amount * p() -> artifact.bulwark_of_order.percent() );
-
-  if (p()->gift_of_the_golden_valkyr){
-    timespan_t reduction = timespan_t::from_seconds(-1.0 * p()->spells.gift_of_the_golden_valkyr->effectN(1).base_value());
-    p()->cooldowns.guardian_of_ancient_kings ->adjust(reduction);
-  }
-
-    p() -> trigger_tyrs_enforcer( s );
-
+    if ( p() -> gift_of_the_golden_valkyr ) {
+      timespan_t reduction = timespan_t::from_seconds( -1.0 * p() -> spells.gift_of_the_golden_valkyr -> effectN(1).base_value() );
+      p() -> cooldowns.guardian_of_ancient_kings -> adjust( reduction );
+    }
   }
 };
 
@@ -378,10 +360,6 @@ struct blessing_of_protection_t : public paladin_spell_t
   {
     paladin_spell_t::execute();
 
-    if ( p() -> artifact.endless_resolve.rank() )
-      // Don't trigger forbearance with endless resolve
-      return;
-
     // apply forbearance, track locally for forbearant faithful & force recharge recalculation
     p() -> trigger_forbearance( execute_state -> target );
   }
@@ -426,10 +404,6 @@ struct blessing_of_spellwarding_t : public paladin_spell_t
   virtual void execute() override
   {
     paladin_spell_t::execute();
-
-    if (p()->artifact.endless_resolve.rank())
-      // Don't trigger forbearance with endless resolve
-      return;
 
     // apply forbearance, track locally for forbearant faithful & force recharge recalculation
     p() -> trigger_forbearance( execute_state -> target );
@@ -582,15 +556,6 @@ struct blessed_hammer_tick_t : public paladin_spell_t
     may_crit = true;
   }
 
-  double action_multiplier() const override
-  {
-    double am = paladin_spell_t::action_multiplier();
-
-    am *= 1.0 + p()->artifact.hammer_time.percent(1);
-
-    return am;
-  }
-
   virtual void impact( action_state_t* s ) override
   {
     paladin_spell_t::impact( s );
@@ -709,9 +674,6 @@ struct consecration_t : public paladin_spell_t
     may_miss       = false;
 
     add_child( damage_tick );
-
-    // Consecrated In Flame extends duration
-    ground_effect_duration += timespan_t::from_millis( p -> artifact.consecration_in_flame.value() );
   }
 
   virtual void execute() override
@@ -838,10 +800,6 @@ struct divine_shield_t : public paladin_spell_t
     }
 
     // trigger forbearance
-    if ( p() -> artifact.endless_resolve.rank() )
-      // But not if we have endless resolve!
-      return;
-
     p() -> trigger_forbearance( player, false );
   }
 
@@ -986,12 +944,8 @@ struct blessing_of_sacrifice_t : public paladin_spell_t
   {
     parse_options( options_str );
 
-    cooldown -> duration += timespan_t::from_millis( p -> artifact.sacrifice_of_the_just.value( 1 ) );
-
     harmful = false;
     may_miss = false;
-//    p -> active.blessing_of_sacrifice_redirect = new blessing_of_sacrifice_redirect_t( p );
-
 
     // Create redirect action conditionalized on the existence of HoS.
     if ( ! p -> active.blessing_of_sacrifice_redirect )
@@ -1062,36 +1016,6 @@ struct holy_shield_proc_t : public paladin_spell_t
     may_crit = true;
   }
 
-};
-
-// Painful Truths proc ========================================================
-
-struct painful_truths_proc_t : public paladin_spell_t
-{
-  painful_truths_proc_t( paladin_t* p )
-    : paladin_spell_t( "painful_truths", p, p -> find_spell( 209331 ) ) // damage stored in 209331
-  {
-    background = true;
-    proc = true;
-    may_miss = false;
-    may_crit = true;
-  }
-
-};
-
-// Tyr's Enforcer proc ========================================================
-
-struct tyrs_enforcer_proc_t : public paladin_spell_t
-{
-  tyrs_enforcer_proc_t( paladin_t* p )
-    : paladin_spell_t( "tyrs_enforcer", p, p -> find_spell( 209478 ) ) // damage stored in 209478
-  {
-    background = true;
-    proc = true;
-    may_miss = false;
-    aoe = -1;
-    may_crit = true;
-  }
 };
 
 // Holy Prism ===============================================================
@@ -1224,8 +1148,6 @@ struct holy_shock_damage_t : public paladin_spell_t
 
     // this grabs the 100% base crit bonus from 20473
     crit_chance_multiplier = p -> find_class_spell( "Holy Shock" ) -> effectN( 1 ).base_value() / 10.0;
-    crit_bonus_multiplier *= 1.0 + (2 * p -> artifact.shock_treatment.percent());
-
   }
 
   virtual double composite_crit_chance() const override
@@ -1279,7 +1201,6 @@ struct holy_shock_heal_t : public paladin_heal_t
 
     // this grabs the crit multiplier bonus from 20473
     crit_chance_multiplier = p -> find_class_spell( "Holy Shock" ) -> effectN( 1 ).base_value() / 10.0;
-    crit_bonus_multiplier *= 1.0 + (2 * p -> artifact.shock_treatment.percent());
   }
 
   virtual double composite_crit_chance() const override
@@ -1441,10 +1362,6 @@ struct lay_on_hands_t : public paladin_heal_t
 
     paladin_heal_t::execute();
 
-    if ( p() -> artifact.endless_resolve.rank() )
-      // Don't trigger forbearance with endless resolve
-      return;
-
     // apply forbearance, track locally for forbearant faithful & force recharge recalculation
     p() -> trigger_forbearance( execute_state -> target );
   }
@@ -1508,21 +1425,16 @@ struct light_of_the_protector_t : public paladin_heal_t
       background = true;
 
     // light of the titans object attached to this
-    if ( p -> artifact.light_of_the_titans.rank() ){
-      titans_proc = new light_of_the_titans_t( p );
-    } else {
-      titans_proc = nullptr;
-    }
+    titans_proc = nullptr;
   }
 
   void init() override
   {
     paladin_heal_t::init();
 
-    if (p()->saruans_resolve){
-      cooldown->charges = 2;
+    if ( p() -> saruans_resolve ) {
+      cooldown -> charges = 2;
     }
-
   }
 
   double recharge_multiplier() const override{
@@ -1539,8 +1451,6 @@ struct light_of_the_protector_t : public paladin_heal_t
 
     if ( p() -> standing_in_consecration() || p() -> talents.consecrated_hammer -> ok() )
       am *= 1.0 + p() -> spells.consecration_bonus -> effectN( 2 ).percent();
-
-    am *= 1.0 + p() -> artifact.scatter_the_shadows.percent();
 
     return am;
   }
@@ -1588,22 +1498,16 @@ struct hand_of_the_protector_t : public paladin_heal_t
       background = true;
 
     // light of the titans object attached to this
-    if ( p -> artifact.light_of_the_titans.rank() ){
-      titans_proc = new light_of_the_titans_t( p );
-    } else {
-      titans_proc = nullptr;
-    }
-
+    titans_proc = nullptr;
   }
 
   void init() override
   {
     paladin_heal_t::init();
 
-    if (p()->saruans_resolve){
-      cooldown->charges = 2;
+    if ( p() -> saruans_resolve ) {
+      cooldown -> charges = 2;
     }
-
   }
 
   double recharge_multiplier() const override{
@@ -1620,8 +1524,6 @@ struct hand_of_the_protector_t : public paladin_heal_t
 
     if ( p() -> standing_in_consecration() || p() -> talents.consecrated_hammer -> ok() )
       am *= 1.0 + p() -> spells.consecration_bonus -> effectN( 2 ).percent();
-
-    am *= 1.0 + p() -> artifact.scatter_the_shadows.percent();
 
     return am;
   }
@@ -1777,63 +1679,6 @@ struct seraphim_t : public paladin_spell_t
 
   }
 
-};
-
-// Eye of Tyr (Protection) ====================================================
-
-struct eye_of_tyr_t : public paladin_spell_t
-{
-  eye_of_tyr_t( paladin_t* p, const std::string& options_str )
-    : paladin_spell_t( "eye_of_tyr", p, p -> find_spell( 209202 ) )
-  {
-    parse_options( options_str );
-
-    aoe = -1;
-    may_crit = true;
-
-  }
-
-  void init() override
-  {
-    paladin_spell_t::init();
-    if ( p() -> pillars_of_inmost_light ) {
-      base_multiplier *= 1.0 + p() -> spells.pillars_of_inmost_light -> effectN( 1 ).percent();
-    }
-  }
-
-  bool ready() override
-  {
-    if (!player->artifact->enabled())
-    {
-      return false;
-    }
-
-    if (p()->artifact.eye_of_tyr.rank() == 0)
-    {
-      return false;
-    }
-
-    return paladin_spell_t::ready();
-  }
-
-  virtual void execute() override
-  {
-    paladin_spell_t::execute();
-
-    if ( p() -> pillars_of_inmost_light )
-    {
-      p() -> cooldowns.eye_of_tyr -> ready += (p() -> cooldowns.eye_of_tyr -> duration * (p() -> spells.pillars_of_inmost_light -> effectN( 2 ).percent()));
-    }
-  }
-
-
-  virtual void impact( action_state_t* s ) override
-  {
-    paladin_spell_t::impact( s );
-
-    if ( result_is_hit( s -> result ) )
-      td( s -> target ) -> buffs.eye_of_tyr_debuff -> trigger();
-  }
 };
 
 // Blinding Light (Holy/Prot/Retribution) =====================================
@@ -2006,9 +1851,6 @@ struct crusader_strike_t : public holy_power_generator_t
   {
     parse_options( options_str );
 
-    base_multiplier *= 1.0 + p -> artifact.blade_of_light.percent();
-    base_crit       += p -> artifact.sharpened_edge.percent();
-
     if ( p -> talents.fires_of_justice -> ok() )
     {
       cooldown -> duration += timespan_t::from_millis( p -> talents.fires_of_justice -> effectN( 2 ).base_value() );
@@ -2158,15 +2000,6 @@ struct hammer_of_the_righteous_aoe_t : public paladin_melee_attack_t
     }
     return tl.size();
   }
-
-  double action_multiplier() const override
-  {
-    double am = paladin_melee_attack_t::action_multiplier();
-
-    am *= 1.0 + p() -> artifact.hammer_time.percent( 1 );
-
-    return am;
-  }
 };
 
 struct hammer_of_the_righteous_t : public paladin_melee_attack_t
@@ -2210,15 +2043,6 @@ struct hammer_of_the_righteous_t : public paladin_melee_attack_t
         hotr_aoe -> execute();
       }
     }
-  }
-
-  double action_multiplier() const override
-  {
-    double am = paladin_melee_attack_t::action_multiplier();
-
-    am *= 1.0 + p() -> artifact.hammer_time.percent( 1 );
-
-    return am;
   }
 };
 
@@ -2269,8 +2093,6 @@ struct judgment_aoe_t : public paladin_melee_attack_t
     if ( p -> specialization() == PALADIN_RETRIBUTION )
     {
       aoe = 1 + p -> spec.judgment_2 -> effectN( 1 ).base_value();
-
-      base_multiplier *= 1.0 + p -> artifact.highlords_judgment.percent();
 
       if ( p -> sets -> has_set_bonus( PALADIN_RETRIBUTION, T21, B2 ) )
         base_multiplier *= 1.0 + p -> sets -> set( PALADIN_RETRIBUTION, T21, B2 ) -> effectN( 1 ).percent();
@@ -2353,7 +2175,6 @@ struct judgment_t : public paladin_melee_attack_t
     if ( p -> specialization() == PALADIN_RETRIBUTION )
     {
       base_costs[RESOURCE_MANA] = 0;
-      base_multiplier *= 1.0 + p -> artifact.highlords_judgment.percent();
       if ( p -> sets -> has_set_bonus( PALADIN_RETRIBUTION, T21, B2 ) )
         base_multiplier *= 1.0 + p -> sets -> set( PALADIN_RETRIBUTION, T21, B2 ) -> effectN( 1 ).percent();
       impact_action = new judgment_aoe_t( p, options_str );
@@ -2404,16 +2225,6 @@ struct judgment_t : public paladin_melee_attack_t
         return 1.0;
       }
     }
-
-    return cc;
-  }
-
-  double composite_crit_chance() const override
-  {
-    double cc = paladin_melee_attack_t::composite_crit_chance();
-
-    // Stern Judgment increases crit chance by 10% - assume additive
-    cc += p() -> artifact.stern_judgment.percent( 1 );
 
     return cc;
   }
@@ -2541,8 +2352,6 @@ struct shield_of_the_righteous_t : public paladin_melee_attack_t
 
     if ( p() -> standing_in_consecration() || p() -> talents.consecrated_hammer -> ok() )
       am *= 1.0 + p() -> spells.consecration_bonus -> effectN( 2 ).percent();
-
-    am *= 1.0 + p() -> artifact.righteous_crusader.percent( 1 );
 
     return am;
   }
@@ -2742,7 +2551,6 @@ action_t* paladin_t::create_action( const std::string& name, const std::string& 
   if ( name == "reckoning"                 ) return new reckoning_t                ( this, options_str );
   if ( name == "shield_of_the_righteous"   ) return new shield_of_the_righteous_t  ( this, options_str );
   if ( name == "holy_prism"                ) return new holy_prism_t               ( this, options_str );
-  if ( name == "eye_of_tyr"                ) return new eye_of_tyr_t               ( this, options_str );
   if ( name == "seraphim"                  ) return new seraphim_t                 ( this, options_str );
   if ( name == "holy_light"                ) return new holy_light_t               ( this, options_str );
   if ( name == "flash_of_light"            ) return new flash_of_light_t           ( this, options_str );
@@ -2787,37 +2595,6 @@ void paladin_t::trigger_holy_shield( action_state_t* s )
     active_holy_shield_proc -> target = s -> action -> player;
     active_holy_shield_proc -> schedule_execute();
   }
-}
-
-void paladin_t::trigger_painful_truths( action_state_t* s )
-{
-  // escape if we don't have artifact
-  if ( artifact.painful_truths.rank() == 0 )
-    return;
-
-  // sanity check - no friendly-fire
-  if ( ! s -> action -> player -> is_enemy() )
-    return;
-
-  if ( ! buffs.painful_truths -> up() )
-    return;
-
-  active_painful_truths_proc -> target = s -> action -> player;
-  active_painful_truths_proc -> schedule_execute();
-}
-
-void paladin_t::trigger_tyrs_enforcer( action_state_t* s )
-{
-  // escape if we don't have artifact
-  if ( artifact.tyrs_enforcer.rank() == 0 )
-    return;
-
-  // sanity check - no friendly-fire
-  if ( ! s -> target -> is_enemy() )
-    return;
-
-  active_tyrs_enforcer_proc -> target = s -> target;
-  active_tyrs_enforcer_proc -> schedule_execute();
 }
 
 void paladin_t::trigger_forbearance( player_t* target, bool update_recharge_multipliers )
@@ -2869,27 +2646,7 @@ double paladin_t::get_forbearant_faithful_recharge_multiplier() const
 {
   double m = 1.0;
 
-  if ( artifact.forbearant_faithful.rank() )
-  {
-    int num_buffs = 0;
-
-    // loop over player list to check those
-    for ( size_t i = 0; i < sim -> player_no_pet_list.size(); i++ )
-    {
-      player_t* q = sim -> player_no_pet_list[ i ];
-
-      if ( get_target_data( q ) -> buffs.forbearant_faithful -> check() )
-        num_buffs++;
-    }
-
-    // Forbearant Faithful is not... faithful... to its tooltip.
-    // Testing in-game reveals that the cooldown multiplier is ( 1.0 * num_buffs * 0.25 ) - tested 6/20/2016
-    // It looks like we're getting half of the described effect
-    m -= num_buffs * artifact.forbearant_faithful.percent( 2 ) / 2;
-  }
-
   return m;
-
 }
 
 void paladin_t::update_forbearance_recharge_multipliers() const
@@ -2927,11 +2684,8 @@ void paladin_t::init_base_stats()
   // add Sanctuary expertise
   base.expertise += passives.sanctuary -> effectN( 4 ).percent();
 
-  // Resolve of Truth max HP multiplier
-  resources.initial_multiplier[ RESOURCE_HEALTH ] *= 1.0 + artifact.resolve_of_truth.percent( 1 );
-
   // Holy Insight grants mana regen from spirit during combat
-    base.mana_regen_per_second = resources.base[ RESOURCE_MANA ] * 0.015;
+  base.mana_regen_per_second = resources.base[ RESOURCE_MANA ] * 0.015;
 
   // Holy Insight increases max mana for Holy
 //  resources.base_multiplier[ RESOURCE_MANA ] = 1.0 + passives.holy_insight -> effectN( 1 ).percent();
@@ -3046,7 +2800,6 @@ void paladin_t::create_buffs()
                                           .chance( passives.grand_crusader -> proc_chance() + ( 0.0 + talents.first_avenger -> effectN( 2 ).percent() ) );
   buffs.shield_of_the_righteous        = buff_creator_t( this, "shield_of_the_righteous", find_spell( 132403 ) );
   buffs.ardent_defender                = new buffs::ardent_defender_buff_t( this );
-  buffs.painful_truths                 = buff_creator_t( this, "painful_truths", find_spell( 209332 ) );
   buffs.aegis_of_light                 = buff_creator_t( this, "aegis_of_light", find_talent_spell( "Aegis of Light" ) );
   buffs.seraphim                       = stat_buff_creator_t( this, "seraphim", talents.seraphim )
                                           .add_stat( STAT_HASTE_RATING, talents.seraphim -> effectN( 1 ).average( this ) )
@@ -3442,31 +3195,6 @@ void paladin_t::init_spells()
   talents.seraphim                   = find_talent_spell( "Seraphim" );
   talents.last_defender              = find_talent_spell( "Last Defender" );
 
-  artifact.eye_of_tyr              = find_artifact_spell( "Eye of Tyr" );
-  artifact.truthguards_light       = find_artifact_spell( "Truthguard's Light" );
-  artifact.faiths_armor            = find_artifact_spell( "Faith's Armor" );
-  artifact.scatter_the_shadows     = find_artifact_spell( "Scatter the Shadows" );
-  artifact.righteous_crusader      = find_artifact_spell( "Righteous Crusader" );
-  artifact.unflinching_defense     = find_artifact_spell( "Unflinching Defense" );
-  artifact.sacrifice_of_the_just   = find_artifact_spell( "Sacrifice of the Just" );
-  artifact.hammer_time             = find_artifact_spell( "Hammer Time" );
-  artifact.bastion_of_truth        = find_artifact_spell( "Bastion of Truth" );
-  artifact.resolve_of_truth        = find_artifact_spell( "Resolve of Truth" );
-  artifact.painful_truths          = find_artifact_spell( "Painful Truths" );
-  artifact.forbearant_faithful     = find_artifact_spell( "Forbearant Faithful" );
-  artifact.consecration_in_flame   = find_artifact_spell( "Consecration in Flame" );
-  artifact.stern_judgment          = find_artifact_spell( "Stern Judgment" );
-  artifact.bulwark_of_order        = find_artifact_spell( "Bulwark of Order" );
-  artifact.light_of_the_titans     = find_artifact_spell( "Light of the Titans" );
-  artifact.tyrs_enforcer           = find_artifact_spell( "Tyr's Enforcer" );
-  artifact.unrelenting_light       = find_artifact_spell( "Unrelenting Light" );
-  artifact.holy_aegis              = find_artifact_spell("Holy Aegis");
-  artifact.bulwark_of_the_silver_hand = find_artifact_spell("Bulwark of the Silver Hand");
-
-  artifact.light_of_the_silver_hand = find_artifact_spell( "Light of the Silver Hand");
-  artifact.virtues_of_the_light = find_artifact_spell("Virtues of the Light");
-  artifact.shock_treatment = find_artifact_spell("Shock Treatment");
-
   // Spells
   spells.holy_light                    = find_specialization_spell( "Holy Light" );
   spells.divine_purpose_holy           = find_spell( 197646 );
@@ -3532,12 +3260,6 @@ void paladin_t::init_spells()
 
   if ( talents.holy_shield -> ok() )
     active_holy_shield_proc = new holy_shield_proc_t( this );
-
-  if ( artifact.painful_truths.rank() )
-    active_painful_truths_proc = new painful_truths_proc_t( this );
-
-  if ( artifact.tyrs_enforcer.rank() )
-    active_tyrs_enforcer_proc = new tyrs_enforcer_proc_t( this );
 
   if ( talents.judgment_of_light -> ok() )
     active_judgment_of_light_proc = new judgment_of_light_proc_t( this );
@@ -3647,16 +3369,6 @@ stat_e paladin_t::convert_hybrid_stat( stat_e s ) const
 double paladin_t::composite_attribute( attribute_e attr ) const
 {
   double m = player_t::composite_attribute( attr );
-
-  if ( attr == ATTR_STRENGTH )
-  {
-    if ( artifact.blessing_of_the_ashbringer.rank() )
-    {
-      // TODO(mserrano): fix this to grab from spelldata
-      m *= 1.04;
-    }
-  }
-
   return m;
 }
 
@@ -3745,9 +3457,6 @@ double paladin_t::composite_spell_crit_chance() const
   if ( buffs.avenging_wrath -> check() )
     m += buffs.avenging_wrath -> get_crit_bonus();
 
-  if ( specialization() == PALADIN_HOLY )
-    m += artifact.virtues_of_the_light.percent( 1 );
-
   return m;
 }
 
@@ -3792,12 +3501,6 @@ double paladin_t::composite_mastery_rating() const
 double paladin_t::composite_armor_multiplier() const
 {
   double a = player_t::composite_armor_multiplier();
-
-  // Faith's Armor boosts armor when below 40% health
-  if ( resources.current[ RESOURCE_HEALTH ] / resources.max[ RESOURCE_HEALTH ] < artifact.faiths_armor.percent( 1 ) )
-    a *= 1.0 + artifact.faiths_armor.percent( 2 );
-
-  a *= 1.0 + artifact.unrelenting_light.percent();
 
   return a;
 }
@@ -3855,15 +3558,6 @@ double paladin_t::composite_player_multiplier( school_e school ) const
     // The damage buff is then 1+(1-0.97^n), or 2-(1-0.03)^n.
     m *= 2.0 - std::pow( 1.0 - talents.last_defender -> effectN( 2 ).percent(), buffs.last_defender -> current_stack );
   }
-
-  // artifacts
-  m *= 1.0 + artifact.ashbringers_light.percent();
-  m *= 1.0 + artifact.ferocity_of_the_silver_hand.percent();
-  m *= 1.0 + artifact.bulwark_of_the_silver_hand.percent();
-  m *= 1.0 + artifact.light_of_the_silver_hand.percent();
-
-  if ( school == SCHOOL_HOLY )
-    m *= 1.0 + artifact.truthguards_light.percent();
 
   return m;
 }
@@ -3986,9 +3680,6 @@ double paladin_t::composite_block() const
   // Holy Shield (assuming for now that it's not affected by DR)
   b += talents.holy_shield -> effectN( 1 ).percent();
 
-  // Bastion of Truth (assuming not affected by DR)
-  b += artifact.bastion_of_truth.percent( 1 );
-
   return b;
 }
 
@@ -4031,8 +3722,6 @@ double paladin_t::composite_parry_rating() const
 double paladin_t::composite_parry() const
 {
   double p_r = player_t::composite_parry();
-
-  p_r += artifact.holy_aegis.percent(1);
 
   return p_r;
 }
@@ -4133,10 +3822,6 @@ void paladin_t::target_mitigation( school_e school,
   if ( talents.aegis_of_light -> ok() && buffs.aegis_of_light -> up() )
     s -> result_amount *= 1.0 + talents.aegis_of_light -> effectN( 1 ).percent();
 
-  // Eye of Tyr
-  if ( artifact.eye_of_tyr.rank() && get_target_data( s -> action -> player ) -> buffs.eye_of_tyr_debuff -> up() )
-    s -> result_amount *= 1.0 + artifact.eye_of_tyr.percent( 1 );
-
   if ( sim -> debug && s -> action && ! s -> target -> is_enemy() && ! s -> target -> is_add() )
     sim -> out_debug.printf( "Damage to %s after other mitigation effects but before SotR is %f", s -> target -> name(), s -> result_amount );
 
@@ -4151,10 +3836,6 @@ void paladin_t::target_mitigation( school_e school,
 
     // mastery bonus
     sotr_mitigation += cache.mastery() * passives.divine_bulwark -> effectN( 4 ).mastery_value();
-
-    // 3% more reduction with artifact trait
-    // TODO: test if this is multiplicative or additive. Assumed additive
-    sotr_mitigation += artifact.righteous_crusader.percent( 2 );
 
     // 20% more effective if standing in Cons
     // TODO: test if this is multiplicative or additive. Assumed multiplicative.
@@ -4308,10 +3989,6 @@ void paladin_t::assess_damage( school_e school,
   {
     trigger_grand_crusader();
   }
-
-  // Trigger Painful Truths artifact damage event
-  if ( action_t::result_is_hit( s -> result ) )
-    trigger_painful_truths( s );
 
   player_t::assess_damage( school, dtype, s );
 }

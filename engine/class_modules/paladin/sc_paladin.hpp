@@ -50,8 +50,6 @@ public:
   heal_t*   active_enlightened_judgments;
   action_t* active_shield_of_vengeance_proc;
   action_t* active_holy_shield_proc;
-  action_t* active_painful_truths_proc;
-  action_t* active_tyrs_enforcer_proc;
   action_t* active_judgment_of_light_proc;
   action_t* active_sotr;
   heal_t*   active_protector_of_the_innocent;
@@ -115,10 +113,6 @@ public:
     // Set Bonuses
     buff_t* sacred_judgment;
     buff_t* ret_t21_4p;
-
-    // artifact
-    buff_t* painful_truths;
-    buff_t* righteous_verdict;
   } buffs;
 
   // Gains
@@ -319,62 +313,6 @@ public:
     const spell_data_t* wake_of_ashes;
   } talents;
 
-  struct artifact_spell_data_t
-  {
-    // Ret
-    artifact_power_t wake_of_ashes;
-    artifact_power_t blade_of_light;
-    artifact_power_t deliver_the_justice;
-    artifact_power_t sharpened_edge;
-    artifact_power_t deflection;
-    artifact_power_t echo_of_the_highlord;
-    artifact_power_t wrath_of_the_ashbringer;
-    artifact_power_t healing_storm;                 // NYI
-    artifact_power_t highlords_judgment;
-    artifact_power_t embrace_the_light;             // NYI
-    artifact_power_t divine_tempest;                // Implemented 20% damage gain but not AoE shift
-    artifact_power_t endless_resolve;
-    artifact_power_t might_of_the_templar;
-    artifact_power_t ashes_to_ashes;
-    artifact_power_t protector_of_the_ashen_blade;  // NYI
-    artifact_power_t unbreakable_will;              // NYI
-    artifact_power_t righteous_blade;
-    artifact_power_t ashbringers_light;
-    artifact_power_t ferocity_of_the_silver_hand;
-    artifact_power_t righteous_verdict;
-    artifact_power_t judge_unworthy;
-    artifact_power_t blessing_of_the_ashbringer;
-
-    // Prot
-    artifact_power_t eye_of_tyr;
-    artifact_power_t truthguards_light;
-    artifact_power_t faiths_armor;
-    artifact_power_t scatter_the_shadows;
-    artifact_power_t righteous_crusader;
-    artifact_power_t unflinching_defense;
-    artifact_power_t sacrifice_of_the_just;
-    artifact_power_t hammer_time;
-    artifact_power_t bastion_of_truth;
-    artifact_power_t resolve_of_truth;
-    artifact_power_t painful_truths;
-    artifact_power_t forbearant_faithful;
-    artifact_power_t consecration_in_flame;
-    artifact_power_t stern_judgment;
-    artifact_power_t bulwark_of_order;
-    artifact_power_t light_of_the_titans;
-    artifact_power_t tyrs_enforcer;
-    artifact_power_t unrelenting_light;
-    artifact_power_t holy_aegis;
-    artifact_power_t bulwark_of_the_silver_hand;
-
-      
-      // Holy
-    artifact_power_t light_of_the_silver_hand;
-    artifact_power_t shock_treatment;
-    artifact_power_t virtues_of_the_light;
-
-  } artifact;
-
   player_t* beacon_target;
 
   timespan_t last_extra_regen;
@@ -452,8 +390,6 @@ public:
   double  get_divine_judgment( bool is_judgment = false ) const;
   void    trigger_grand_crusader();
   void    trigger_holy_shield( action_state_t* s );
-  void    trigger_painful_truths( action_state_t* s );
-  void    trigger_tyrs_enforcer( action_state_t* s );
   void    trigger_forbearance( player_t* target, bool update_multiplier = true );
   int     get_local_enemies( double distance ) const;
   double  get_forbearant_faithful_recharge_multiplier() const;

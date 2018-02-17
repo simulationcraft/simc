@@ -17,12 +17,6 @@ namespace buffs {
     haste_bonus = data().effectN( 3 ).percent() / 10.0;
     healing_modifier = 0;
 
-    paladin_t* paladin = static_cast<paladin_t*>( player );
-    if ( paladin -> artifact.wrath_of_the_ashbringer.rank() )
-    {
-      buff_duration += timespan_t::from_millis(paladin -> artifact.wrath_of_the_ashbringer.value());
-    }
-
     // let the ability handle the cooldown
     cooldown -> duration = timespan_t::zero();
 
@@ -44,11 +38,6 @@ namespace buffs {
     shield_of_vengeance_buff_t( player_t* p ):
       absorb_buff_t( absorb_buff_creator_t( p, "shield_of_vengeance", p -> find_spell( 184662 ) ) )
     {
-      paladin_t* pal = static_cast<paladin_t*>( p );
-      if ( pal -> artifact.deflection.rank() )
-      {
-        cooldown -> duration += timespan_t::from_millis( pal -> artifact.deflection.value() );
-      }
     }
 
     void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
@@ -117,11 +106,6 @@ void holy_power_consumer_t::execute()
   {
     int num_stacks = (int)base_cost();
     p() -> buffs.crusade -> trigger( num_stacks );
-  }
-
-  if ( p() -> artifact.righteous_verdict.rank() )
-  {
-    p() -> buffs.righteous_verdict -> trigger();
   }
 }
 
@@ -356,8 +340,6 @@ struct zeal_t : public holy_power_generator_t
   {
     parse_options( options_str );
 
-    base_multiplier *= 1.0 + p -> artifact.blade_of_light.percent();
-    base_crit += p -> artifact.sharpened_edge.percent();
     chain_multiplier = data().effectN( 1 ).chain_multiplier();
 
     // TODO: figure out wtf happened to this spell data
@@ -392,8 +374,6 @@ struct blade_of_justice_t : public holy_power_generator_t
     base_costs[ RESOURCE_MANA ] *= 1.0 +  p -> passives.guarded_by_the_light -> effectN( 5 ).percent();
     base_costs[ RESOURCE_MANA ] = floor( base_costs[ RESOURCE_MANA ] + 0.5 );
 
-    base_multiplier *= 1.0 + p -> artifact.deliver_the_justice.percent();
-
     background = ( p -> talents.divine_hammer -> ok() );
 
     if ( p -> talents.virtues_blade -> ok() )
@@ -403,8 +383,6 @@ struct blade_of_justice_t : public holy_power_generator_t
   virtual double action_multiplier() const override
   {
     double am = holy_power_generator_t::action_multiplier();
-    if ( p() -> buffs.righteous_verdict -> up() )
-      am *= 1.0 + p() -> artifact.righteous_verdict.rank() * 0.08; // todo: fix
     if ( p() -> sets -> has_set_bonus( PALADIN_RETRIBUTION, T20, B2 ) )
       if ( p() -> buffs.sacred_judgment -> up() )
         am *= 1.0 + p() -> buffs.sacred_judgment -> data().effectN( 1 ).percent();
@@ -414,9 +392,6 @@ struct blade_of_justice_t : public holy_power_generator_t
   virtual void execute() override
   {
     holy_power_generator_t::execute();
-    if ( p() -> buffs.righteous_verdict -> up() )
-      p() -> buffs.righteous_verdict -> expire();
-
     if ( p() -> sets -> has_set_bonus( PALADIN_RETRIBUTION, T20, B4 ) )
       p() -> resource_gain( RESOURCE_HOLY_POWER, 1, p() -> gains.hp_t20_2p );
   }
@@ -458,8 +433,6 @@ struct divine_hammer_t : public paladin_spell_t
     // TODO: figure out wtf happened to this spell data
     hasted_cd = hasted_gcd = true;
 
-    base_multiplier *= 1.0 + p -> artifact.deliver_the_justice.percent();
-
     tick_action = new divine_hammer_tick_t( p );
   }
 
@@ -478,8 +451,6 @@ struct divine_hammer_t : public paladin_spell_t
   virtual double composite_persistent_multiplier( const action_state_t* s ) const override
   {
     double am = paladin_spell_t::composite_persistent_multiplier( s );
-    if ( p() -> buffs.righteous_verdict -> up() )
-      am *= 1.0 + p() -> artifact.righteous_verdict.rank() * 0.08; // todo: fix
     if ( p() -> sets -> has_set_bonus( PALADIN_RETRIBUTION, T20, B2 ) )
       if ( p() -> buffs.sacred_judgment -> up() )
         am *= 1.0 + p() -> buffs.sacred_judgment -> data().effectN( 1 ).percent();
@@ -489,9 +460,6 @@ struct divine_hammer_t : public paladin_spell_t
   virtual void execute() override
   {
     paladin_spell_t::execute();
-    if ( p() -> buffs.righteous_verdict -> up() )
-      p() -> buffs.righteous_verdict -> expire();
-
     if ( p() -> sets -> has_set_bonus( PALADIN_RETRIBUTION, T20, B4 ) )
       p() -> resource_gain( RESOURCE_HOLY_POWER, 1, p() -> gains.hp_t20_2p );
   }
@@ -499,65 +467,8 @@ struct divine_hammer_t : public paladin_spell_t
 
 // Divine Storm =============================================================
 
-struct echoed_divine_storm_t: public paladin_melee_attack_t
-{
-  echoed_divine_storm_t( paladin_t* p, const std::string& options_str )
-    : paladin_melee_attack_t( "echoed_divine_storm", p, p -> find_spell( 224239 ), true )
-  {
-    parse_options( options_str );
-
-    weapon = &( p -> main_hand_weapon );
-
-    base_multiplier *= p -> artifact.echo_of_the_highlord.percent();
-
-    base_multiplier *= 1.0 + p -> artifact.righteous_blade.percent();
-    base_multiplier *= 1.0 + p -> artifact.divine_tempest.percent( 2 );
-    if ( p -> talents.final_verdict -> ok() )
-      base_multiplier *= 1.0 + p -> talents.final_verdict -> effectN( 2 ).percent();
-
-    ret_damage_increase = true;
-
-    aoe = -1;
-    background = true;
-  }
-
-  virtual double cost() const override
-  {
-    return 0;
-  }
-
-  double composite_target_multiplier( player_t* t ) const override
-  {
-    double m = paladin_melee_attack_t::composite_target_multiplier( t );
-
-    paladin_td_t* td = this -> td( t );
-
-    if ( td -> buffs.debuffs_judgment -> up() )
-    {
-      double judgment_multiplier = 1.0 + td -> buffs.debuffs_judgment -> data().effectN( 1 ).percent() + p() -> get_divine_judgment();
-      judgment_multiplier += p() -> passives.judgment -> effectN( 1 ).percent();
-      m *= judgment_multiplier;
-    }
-
-    return m;
-  }
-
-
-  virtual double action_multiplier() const override
-  {
-    double am = paladin_melee_attack_t::action_multiplier();
-    if ( p() -> buffs.whisper_of_the_nathrezim -> check() )
-      am *= 1.0 + p() -> buffs.whisper_of_the_nathrezim -> data().effectN( 1 ).percent();
-    if ( p() -> buffs.scarlet_inquisitors_expurgation -> up() )
-      am *= 1.0 + p() -> buffs.scarlet_inquisitors_expurgation -> check_stack_value();
-    return am;
-  }
-};
-
 struct divine_storm_t: public holy_power_consumer_t
 {
-  echoed_divine_storm_t* echoed_spell;
-
   struct divine_storm_damage_t : public paladin_melee_attack_t
   {
     divine_storm_damage_t( paladin_t* p )
@@ -569,8 +480,7 @@ struct divine_storm_t: public holy_power_consumer_t
   };
 
   divine_storm_t( paladin_t* p, const std::string& options_str )
-    : holy_power_consumer_t( "divine_storm", p, p -> find_class_spell( "Divine Storm" ) ),
-      echoed_spell( new echoed_divine_storm_t( p, options_str ) )
+    : holy_power_consumer_t( "divine_storm", p, p -> find_class_spell( "Divine Storm" ) )
   {
     parse_options( options_str );
 
@@ -582,8 +492,6 @@ struct divine_storm_t: public holy_power_consumer_t
 
     weapon = &( p -> main_hand_weapon );
 
-    base_multiplier *= 1.0 + p -> artifact.righteous_blade.percent();
-    base_multiplier *= 1.0 + p -> artifact.divine_tempest.percent( 2 );
     if ( p -> talents.final_verdict -> ok() )
       base_multiplier *= 1.0 + p -> talents.final_verdict -> effectN( 2 ).percent();
 
@@ -626,11 +534,6 @@ struct divine_storm_t: public holy_power_consumer_t
     if ( p() -> buffs.ret_t21_4p -> up() && c > 0 )
       p() -> buffs.ret_t21_4p -> expire();
 
-    if ( p() -> artifact.echo_of_the_highlord.rank() )
-    {
-      make_event<echoed_spell_event_t>( *sim, p(), echoed_spell, timespan_t::from_millis( 600 ) );
-    }
-
     if ( p() -> whisper_of_the_nathrezim )
     {
       if ( p() -> buffs.whisper_of_the_nathrezim -> up() )
@@ -648,59 +551,8 @@ struct divine_storm_t: public holy_power_consumer_t
   void record_data( action_state_t* ) override {}
 };
 
-
-// Templar's Verdict ========================================================================
-
-struct echoed_templars_verdict_t : public paladin_melee_attack_t
-{
-  echoed_templars_verdict_t( paladin_t* p, const std::string& options_str )
-    : paladin_melee_attack_t( "echoed_verdict", p, p -> find_spell( 224266 ), true )
-  {
-    parse_options( options_str );
-
-    base_multiplier *= p -> artifact.echo_of_the_highlord.percent();
-    background = true;
-    base_multiplier *= 1.0 + p -> artifact.might_of_the_templar.percent();
-    if ( p -> talents.final_verdict -> ok() )
-      base_multiplier *= 1.0 + p -> talents.final_verdict -> effectN( 1 ).percent();
-
-    ret_damage_increase = true;
-  }
-
-  virtual double action_multiplier() const override
-  {
-    double am = paladin_melee_attack_t::action_multiplier();
-    if ( p() -> buffs.whisper_of_the_nathrezim -> check() )
-      am *= 1.0 + p() -> buffs.whisper_of_the_nathrezim -> data().effectN( 1 ).percent();
-    return am;
-  }
-
-  double composite_target_multiplier( player_t* t ) const override
-  {
-    double m = paladin_melee_attack_t::composite_target_multiplier( t );
-
-    paladin_td_t* td = this -> td( t );
-
-    if ( td -> buffs.debuffs_judgment -> up() )
-    {
-      double judgment_multiplier = 1.0 + td -> buffs.debuffs_judgment -> data().effectN( 1 ).percent() + p() -> get_divine_judgment();
-      judgment_multiplier += p() -> passives.judgment -> effectN( 1 ).percent();
-      m *= judgment_multiplier;
-    }
-
-    return m;
-  }
-
-  virtual double cost() const override
-  {
-    return 0;
-  }
-};
-
 struct templars_verdict_t : public holy_power_consumer_t
 {
-  echoed_templars_verdict_t* echoed_spell;
-
   struct templars_verdict_damage_t : public paladin_melee_attack_t
   {
     templars_verdict_damage_t( paladin_t *p )
@@ -712,8 +564,7 @@ struct templars_verdict_t : public holy_power_consumer_t
   };
 
   templars_verdict_t( paladin_t* p, const std::string& options_str )
-    : holy_power_consumer_t( "templars_verdict", p, p -> find_specialization_spell( "Templar's Verdict" ), true ),
-    echoed_spell( new echoed_templars_verdict_t( p, options_str ) )
+    : holy_power_consumer_t( "templars_verdict", p, p -> find_specialization_spell( "Templar's Verdict" ), true )
   {
     parse_options( options_str );
 
@@ -723,13 +574,12 @@ struct templars_verdict_t : public holy_power_consumer_t
     impact_action = new templars_verdict_damage_t( p );
     impact_action -> stats = stats;
 
-    base_multiplier *= 1.0 + p -> artifact.might_of_the_templar.percent();
     if ( p -> talents.final_verdict -> ok() )
       base_multiplier *= 1.0 + p -> talents.final_verdict -> effectN( 1 ).percent();
 
     ret_damage_increase = true;
 
-  // Okay, when did this get reset to 1?
+    // Okay, when did this get reset to 1?
     weapon_multiplier = 0;
   }
 
@@ -772,11 +622,6 @@ struct templars_verdict_t : public holy_power_consumer_t
     if ( result_is_miss( execute_state -> result ) && c > 0 )
     {
       p() -> resource_gain( RESOURCE_HOLY_POWER, c, p() -> gains.hp_templars_verdict_refund );
-    }
-
-    if ( p() -> artifact.echo_of_the_highlord.rank() )
-    {
-      make_event<echoed_spell_event_t>( *sim, p(), echoed_spell, timespan_t::from_millis( 800 ) );
     }
 
     if ( p() -> whisper_of_the_nathrezim )
@@ -851,10 +696,6 @@ struct shield_of_vengeance_t : public paladin_absorb_t
 
     may_crit = true;
     attack_power_mod.direct = 20;
-    if ( p -> artifact.deflection.rank() )
-    {
-      cooldown -> duration += timespan_t::from_millis( p -> artifact.deflection.value() );
-    }
   }
 
   void init() override
@@ -912,7 +753,6 @@ void paladin_t::create_buffs_retribution()
   buffs.whisper_of_the_nathrezim       = buff_creator_t( this, "whisper_of_the_nathrezim", find_spell( 207635 ) );
   buffs.liadrins_fury_unleashed        = new buffs::liadrins_fury_unleashed_t( this );
   buffs.shield_of_vengeance            = new buffs::shield_of_vengeance_buff_t( this );
-  buffs.righteous_verdict              = buff_creator_t( this, "righteous_verdict", find_spell( 238996 ) );
   buffs.sacred_judgment                = buff_creator_t( this, "sacred_judgment", find_spell( 246973 ) );
 
   buffs.scarlet_inquisitors_expurgation = buff_creator_t( this, "scarlet_inquisitors_expurgation", find_spell( 248289 ) )
@@ -962,26 +802,6 @@ void paladin_t::init_spells_retribution()
   talents.crusade_talent             = find_talent_spell( "Crusade" );
   talents.wake_of_ashes              = find_talent_spell( "Wake of Ashes" );
 
-  // artifact
-  artifact.wake_of_ashes                = find_artifact_spell( "Wake of Ashes" );
-  artifact.deliver_the_justice          = find_artifact_spell( "Deliver the Justice" );
-  artifact.highlords_judgment           = find_artifact_spell( "Highlord's Judgment" );
-  artifact.righteous_blade              = find_artifact_spell( "Righteous Blade" );
-  artifact.divine_tempest               = find_artifact_spell( "Divine Tempest" );
-  artifact.might_of_the_templar         = find_artifact_spell( "Might of the Templar" );
-  artifact.sharpened_edge               = find_artifact_spell( "Sharpened Edge" );
-  artifact.blade_of_light               = find_artifact_spell( "Blade of Light" );
-  artifact.echo_of_the_highlord         = find_artifact_spell( "Echo of the Highlord" );
-  artifact.wrath_of_the_ashbringer      = find_artifact_spell( "Wrath of the Ashbringer" );
-  artifact.endless_resolve              = find_artifact_spell( "Endless Resolve" );
-  artifact.deflection                   = find_artifact_spell( "Deflection" );
-  artifact.ashbringers_light            = find_artifact_spell( "Ashbringer's Light" );
-  artifact.ferocity_of_the_silver_hand  = find_artifact_spell( "Ferocity of the Silver Hand" );
-  artifact.ashes_to_ashes               = find_artifact_spell( "Ashes to Ashes" );
-  artifact.righteous_verdict            = find_artifact_spell( "Righteous Verdict" );
-  artifact.judge_unworthy               = find_artifact_spell( "Judge Unworthy" );
-  artifact.blessing_of_the_ashbringer   = find_artifact_spell( "Blessing of the Ashbringer" );
-
   // misc spells
   spells.divine_purpose_ret            = find_spell( 223817 );
   spells.liadrins_fury_unleashed       = find_spell( 208408 );
@@ -1004,51 +824,7 @@ void paladin_t::init_spells_retribution()
 }
 
 void paladin_t::init_assessors_retribution()
-{
-  if ( artifact.judge_unworthy.rank() )
-  {
-    paladin_t* p = this;
-    assessor_out_damage.add(
-      assessor::TARGET_DAMAGE - 1,
-      [ p ]( dmg_e, action_state_t* state )
-      {
-        buff_t* judgment = p -> get_target_data( state -> target ) -> buffs.debuffs_judgment;
-        if ( judgment -> check() )
-        {
-          if ( p -> rng().roll(0.5) )
-            return assessor::CONTINUE;
-
-          // Do the spread
-          double max_distance  = 10.0;
-          unsigned max_targets = 1;
-          std::vector<player_t*> valid_targets;
-          range::remove_copy_if(
-              p->sim->target_list.data(), std::back_inserter( valid_targets ),
-              [p, state, max_distance]( player_t* plr ) {
-                paladin_td_t* td = p -> get_target_data( plr );
-                if ( td -> buffs.debuffs_judgment -> check() )
-                  return true;
-                return state -> target -> get_player_distance( *plr ) > max_distance;
-              } );
-          if ( valid_targets.size() > max_targets )
-          {
-            valid_targets.resize( max_targets );
-          }
-          for ( player_t* target : valid_targets )
-          {
-            p -> get_target_data( target ) -> buffs.debuffs_judgment -> trigger(
-                judgment -> check(),
-                judgment -> check_value(),
-                -1.0,
-                judgment -> remains()
-              );
-          }
-        }
-        return assessor::CONTINUE;
-      }
-    );
-  }
-}
+{ }
 
 // Action Priority List Generation
 void paladin_t::generate_action_prio_list_ret()
@@ -1195,7 +971,6 @@ void paladin_t::generate_action_prio_list_ret()
       cds -> add_action( racial_actions[ i ] );
     }
   }
-  cds -> add_talent( this, "Holy Wrath" );
   cds -> add_action( this, "Shield of Vengeance" );
   cds -> add_action( this, "Avenging Wrath" );
   cds -> add_talent( this, "Crusade", "if=holy_power>=3|((equipped.137048|race.blood_elf)&holy_power>=2)" );
