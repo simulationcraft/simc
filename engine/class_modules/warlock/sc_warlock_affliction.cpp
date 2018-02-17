@@ -688,6 +688,7 @@ namespace warlock {
         default->add_action("agony,if=refreshable");
         default->add_action("corruption,if=refreshable");
         default->add_action("soul_harvest,if=buff.active_uas.stack>0");
+        default->add_action("haunt");
         default->add_action("unstable_affliction,if=soul_shard=5");
         default->add_action("unstable_affliction,if=(dot.unstable_affliction_1.ticking+dot.unstable_affliction_2.ticking+dot.unstable_affliction_3.ticking+dot.unstable_affliction_4.ticking+dot.unstable_affliction_5.ticking=0)|soul_shard>2");
         default->add_action("deathbolt");
