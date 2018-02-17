@@ -201,7 +201,8 @@ buff_t::buff_t( const buff_creation::buff_creator_basics_t& params )
     current_value(),
     current_stack(),
     buff_duration( params._duration ),
-    default_chance( -1 ),
+    default_chance( 1.0 ),
+    manual_chance( params._chance ),
     current_tick( 0 ),
     buff_period( timespan_t::min() ),
     tick_time_behavior( BUFF_TICK_TIME_UNHASTED ),
@@ -257,10 +258,6 @@ buff_t::buff_t( const buff_creation::buff_creator_basics_t& params )
   if ( params._chance == -1 )
   {
     set_rppm( params._rppm_scale, params._rppm_freq, params._rppm_mod );
-  }
-  else
-  {
-    set_chance( params._chance );
   }
 
   set_default_value( params._default_value );
@@ -325,10 +322,15 @@ buff_t::buff_t( const buff_creation::buff_creator_basics_t& params )
 
   set_max_stack( _max_stack );
 
+  update_trigger_calculations();
+}
+
+void buff_t::update_trigger_calculations()
+{
   // No override of proc chance or RPPM-related attributes, setup the buff object's proc chance. The
   // spell used for the attributes is either the buff spell (by default), or the given trigger_spell
   // in buff_creator_t.
-  if ( default_chance == -1 )
+  if ( manual_chance == -1 )
   {
     default_chance = 1.0;
     if ( !rppm )
@@ -353,11 +355,16 @@ buff_t::buff_t( const buff_creation::buff_creator_basics_t& params )
       }
     }
   }
+  else
+  {
+    default_chance = manual_chance;
+  }
 }
 
 buff_t* buff_t::set_chance( double chance )
 {
-  default_chance = chance;
+  manual_chance = chance;
+  update_trigger_calculations();
   return this;
 }
 
@@ -665,6 +672,7 @@ buff_t* buff_t::set_trigger_spell( const spell_data_t* s )
   {
     trigger_data = s;
   }
+  update_trigger_calculations();
   return this;
 }
 

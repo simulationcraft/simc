@@ -4725,11 +4725,11 @@ namespace
       sets->set(specialization(), T19OH, B8)->effectN(1).trigger());
     buffs.power_overwhelming->set_trigger_spell(sets->set(specialization(), T19OH, B8));
 
-    buffs.void_vb = buff_creator_t(this, "void", find_spell(211657)).chance(1.0);
+    buffs.void_vb = make_buff(this, "void", find_spell(211657))->set_chance(1.0);
 
-    buffs.empty_mind = buff_creator_t(this, "empty_mind", find_spell(247226))
-      .chance(sets->has_set_bonus(PRIEST_SHADOW, T20, B2))
-      .max_stack(10);  // TODO Update from spelldata
+    buffs.empty_mind = make_buff(this, "empty_mind", find_spell(247226))
+    ->set_chance(sets->has_set_bonus(PRIEST_SHADOW, T20, B2))
+    ->set_max_stack(10);  // TODO Update from spelldata
 
     buffs.overwhelming_darkness = new buffs::overwhelming_darkness_t(*this);
 
@@ -4737,14 +4737,14 @@ namespace
 
     buffs.anunds_last_breath = make_buff(this, "anunds_last_breath", find_spell(215210));
 
-    buffs.iridis_empowerment = buff_creator_t(this, "iridis_empowerment", find_spell(224999))
-      .chance(active_items.zenkaram_iridis_anadem ? 1.0 : 0.0);
+    buffs.iridis_empowerment = make_buff(this, "iridis_empowerment", find_spell(224999))
+    ->set_chance(active_items.zenkaram_iridis_anadem ? 1.0 : 0.0);
     ;
 
-    buffs.the_twins_painful_touch = buff_creator_t(this, "the_twins_painful_touch", find_spell(207721))
-      .chance(active_items.the_twins_painful_touch ? 1.0 : 0.0);
+    buffs.the_twins_painful_touch = make_buff(this, "the_twins_painful_touch", find_spell(207721))
+    ->set_chance(active_items.the_twins_painful_touch ? 1.0 : 0.0);
 
-    buffs.zeks_exterminatus = buff_creator_t(this, "zeks_exterminatus", find_spell(236545)).rppm_scale(RPPM_HASTE);
+    buffs.zeks_exterminatus = make_buff(this, "zeks_exterminatus", find_spell(236545))->set_rppm(RPPM_HASTE);
   }
 
   void priest_t::init_rng()

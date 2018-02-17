@@ -832,6 +832,7 @@ public:
   int current_stack;
   timespan_t buff_duration;
   double default_chance;
+  double manual_chance; // user-specified "overridden" proc-chance
   std::vector<timespan_t> stack_react_time;
   std::vector<event_t*> stack_react_ready_triggers;
 
@@ -1036,6 +1037,9 @@ public:
   { tick_time_behavior = b; return this; }
   buff_t* set_rppm( rppm_scale_e scale = RPPM_NONE, double freq = -1, double mod = -1);
   buff_t* set_trigger_spell( const spell_data_t* s );
+
+private:
+  void update_trigger_calculations();
 
 };
 
