@@ -805,6 +805,13 @@ namespace warlock {
                     base_dd_multiplier *= 1.0 + p()->spec.affliction->effectN(1).percent();
                 if (affliction_dot_increase)
                     base_td_multiplier *= 1.0 + p()->spec.affliction->effectN(2).percent();
+
+                if ( p() -> talents.creeping_death -> ok() ) {
+                  if (data().affected_by(p()->talents.creeping_death->effectN(1)))
+                    base_tick_time *= 1.0 + p()->talents.creeping_death->effectN(1).percent();
+                  if (data().affected_by(p()->talents.creeping_death->effectN(2)))
+                    dot_duration *= 1.0 + p()->talents.creeping_death->effectN(2).percent();
+                }
             }
 
             int n_targets() const override
@@ -915,8 +922,7 @@ namespace warlock {
 
                 double deaths_embrace_health = p()->talents.deaths_embrace->effectN(2).base_value();
 
-                if (p()->talents.deaths_embrace->ok() && target->health_percentage() <= deaths_embrace_health && affected_by_deaths_embrace)
-                {
+                if (p()->talents.deaths_embrace->ok() && target->health_percentage() <= deaths_embrace_health && affected_by_deaths_embrace) {
                     m *= 1.0 + p()->talents.deaths_embrace->effectN(1).percent() * (1 - target->health_percentage() / deaths_embrace_health);
                 }
 
