@@ -173,6 +173,7 @@ namespace warlock {
         } mastery_spells;
 
         //Procs and RNG
+        real_ppm_t* nightfall_rppm;
         real_ppm_t* affliction_t20_2pc_rppm;
         real_ppm_t* demonic_power_rppm; // grimoire of sacrifice
         real_ppm_t* grimoire_of_synergy; //caster ppm, i.e., if it procs, the wl will create a buff for the pet.
@@ -224,6 +225,7 @@ namespace warlock {
 
             //affliction buffs
             buff_t* active_uas;
+            buff_t* nightfall;
             buff_t* demonic_speed; // t20 4pc
 
             //demonology buffs
@@ -279,6 +281,7 @@ namespace warlock {
             proc_t* soul_conduit;
             proc_t* the_master_harvester;
             //aff
+            proc_t* nightfall;
             proc_t* affliction_t21_2pc;
             //demo
             proc_t* demonic_calling;

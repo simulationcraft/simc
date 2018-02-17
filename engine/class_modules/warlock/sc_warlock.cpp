@@ -358,15 +358,32 @@ namespace actions {
 
     struct shadow_bolt_t : public warlock_spell_t {
         shadow_bolt_t(warlock_t* p, const std::string& options_str) : warlock_spell_t(p, "Shadow Bolt", p->specialization()) {
-
+          parse_options(options_str);
         }
-
+        virtual timespan_t execute_time() const override {
+          if (p()->specialization() == WARLOCK_AFFLICTION && p()->buffs.nightfall->check()) {
+            return timespan_t::zero();
+          }
+          return warlock_spell_t::execute_time();
+        }
         void impact( action_state_t* s ) override {
           warlock_spell_t::impact( s );
           if ( result_is_hit( s -> result ) ) {
-            if( p() -> talents.shadow_embrace -> ok() )
+            if(p()->specialization() == WARLOCK_AFFLICTION && p() -> talents.shadow_embrace -> ok() )
               td( s -> target ) -> debuffs_shadow_embrace -> trigger();
           }
+        }
+        virtual double action_multiplier()const override {
+          double m = warlock_spell_t::action_multiplier();
+          if (p()->specialization() == WARLOCK_AFFLICTION && p()->buffs.nightfall->up()) {
+            m *= 1.0 + p()->buffs.nightfall->default_value;
+          }
+          return m;
+        }
+        void execute() override {
+          warlock_spell_t::execute();
+          if (p()->specialization() == WARLOCK_AFFLICTION && p()->buffs.nightfall->check())
+            p()->buffs.nightfall->expire();
         }
     };
 
@@ -844,8 +861,6 @@ void warlock_t::init_spells() {
 }
 
 void warlock_t::init_rng() {
-    player_t::init_rng();
-
     if (specialization() == WARLOCK_AFFLICTION)
         init_rng_affliction();
     if (specialization() == WARLOCK_DEMONOLOGY)
@@ -856,6 +871,8 @@ void warlock_t::init_rng() {
     demonic_power_rppm = get_rppm("demonic_power", find_spell(196099));
     grimoire_of_synergy = get_rppm("grimoire_of_synergy", talents.grimoire_of_synergy);
     grimoire_of_synergy_pet = get_rppm("grimoire_of_synergy_pet", talents.grimoire_of_synergy);
+
+    player_t::init_rng();
 }
 
 void warlock_t::init_gains() {

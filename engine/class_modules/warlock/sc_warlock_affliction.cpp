@@ -154,13 +154,20 @@ namespace warlock {
                 return m;
             }
             virtual void tick(dot_t* d) override {
-                if (result_is_hit(d->state->result) && p()->sets->has_set_bonus(WARLOCK_AFFLICTION, T20, B2)) {
-                    bool procced = p()->affliction_t20_2pc_rppm->trigger(); //check for RPPM
-                    if (procced)
-                        p()->resource_gain(RESOURCE_SOUL_SHARD, 1.0, p()->gains.affliction_t20_2pc); //trigger the buff
+              if (result_is_hit(d->state->result) && p()->talents.nightfall->ok()) {
+                bool procced = p()->nightfall_rppm->trigger(); //check for RPPM
+                if (procced) {
+                  p()->buffs.nightfall->trigger();
+                  p()->procs.nightfall->occur();
                 }
+              }
+              if (result_is_hit(d->state->result) && p()->sets->has_set_bonus(WARLOCK_AFFLICTION, T20, B2)) {
+                  bool procced = p()->affliction_t20_2pc_rppm->trigger(); //check for RPPM
+                  if (procced)
+                      p()->resource_gain(RESOURCE_SOUL_SHARD, 1.0, p()->gains.affliction_t20_2pc); //trigger the buff
+              }
 
-                warlock_spell_t::tick(d);
+              warlock_spell_t::tick(d);
             }
         };
         struct unstable_affliction_t : public warlock_spell_t {
@@ -277,7 +284,7 @@ namespace warlock {
                     aoe = -1;
                     dual = true;
                     background = true;
-
+                    affected_by_deaths_embrace = true;
                     p->spells.seed_of_corruption_aoe = this;
                 }
 
@@ -317,7 +324,7 @@ namespace warlock {
             }
             void execute() override {
                 if (p()->talents.sow_the_seeds->ok()) {
-                    aoe = 3;
+                    aoe = 2;
                 }
                 if (p()->sets->has_set_bonus(WARLOCK_AFFLICTION, T21, B4))
                     p()->active.tormented_agony->schedule_execute();
@@ -363,28 +370,6 @@ namespace warlock {
           void init() override {
             warlock_spell_t::init();
             snapshot_flags |= STATE_MUL_DA | STATE_TGT_MUL_DA | STATE_MUL_PERSISTENT | STATE_VERSATILITY;
-          }
-
-          virtual bool ready() override {
-            warlock_td_t* td = this->td(target);
-
-            if (td->dots_agony->is_ticking()) {
-              return warlock_spell_t::ready();
-            }
-            if (td->dots_corruption->is_ticking()) {
-              return warlock_spell_t::ready();
-            }
-            for (int i = 0; i < MAX_UAS; i++) {
-              if (td->dots_unstable_affliction[i]->is_ticking()) {
-                return warlock_spell_t::ready();
-                break;
-              }
-            }
-            if (td->dots_siphon_life->is_ticking()) {
-              return warlock_spell_t::ready();
-            }
-
-            return false;
           }
 
           void execute() override {
@@ -436,6 +421,19 @@ namespace warlock {
               }
             }
 
+            double total_damage_phantom_singularity = 0.0;
+            if (p()->talents.phantom_singularity->ok()) {
+              tick_base_damage = td->dots_phantom_singularity->state->result_raw;
+              ticks_left = td->dots_phantom_singularity->ticks_left();
+              total_damage_phantom_singularity = total_damage_phantom_singularity + (ticks_left * tick_base_damage);
+              if (sim->debug) {
+                sim->out_debug.printf("%s phantom singularity dot_remains=%.3f duration=%.3f ticks_left=%u amount=%.3f total=%.3f",
+                  name(), td->dots_phantom_singularity->remains().total_seconds(),
+                  td->dots_phantom_singularity->duration().total_seconds(),
+                  td->dots_phantom_singularity->ticks_left(), tick_base_damage, total_damage_phantom_singularity);
+              }
+            }
+
             double total_damage_ua = 0.0;
             for (int i = 0; i < MAX_UAS; i++) {
               if (td->dots_unstable_affliction[i]->is_ticking()) {
@@ -451,7 +449,7 @@ namespace warlock {
                 }
               }
             }
-            const double total_dot_dmg = total_damage_agony + total_damage_corruption + total_damage_siphon_life + total_damage_ua;
+            const double total_dot_dmg = total_damage_agony + total_damage_corruption + total_damage_siphon_life + total_damage_phantom_singularity + total_damage_ua;
             this->base_dd_min = this->base_dd_max = ( total_dot_dmg * dmg_modifier);
             if (sim->debug) {
               sim->out_debug.printf("%s deathbolt damage_remaining=%.3f", name(), total_dot_dmg);
@@ -498,6 +496,7 @@ namespace warlock {
             siphon_life_t(warlock_t* p, const std::string& options_str) : warlock_spell_t("siphon_life", p, p -> talents.siphon_life) {
                 parse_options(options_str);
                 may_crit = false;
+                affected_by_deaths_embrace = true;
             }
 
             virtual double action_multiplier() const override {
@@ -629,6 +628,10 @@ namespace warlock {
             .refresh_behavior(BUFF_REFRESH_EXTEND)
             .cd(timespan_t::zero())
             .default_value(find_spell(196098)->effectN(1).percent());
+        buffs.nightfall = buff_creator_t(this, "nightfall", find_spell(264571))
+          .default_value(find_spell(264571)->effectN(2).percent())
+          .refresh_behavior(BUFF_REFRESH_DURATION)
+          .add_invalidate(CACHE_PLAYER_DAMAGE_MULTIPLIER);
         //tier
         buffs.demonic_speed = haste_buff_creator_t(this, "demonic_speed", sets->set(WARLOCK_AFFLICTION, T20, B4)->effectN(1).trigger())
             .chance(sets->set(WARLOCK_AFFLICTION, T20, B4)->proc_chance())
@@ -673,10 +676,12 @@ namespace warlock {
     }
     void warlock_t::init_rng_affliction() {
         affliction_t20_2pc_rppm = get_rppm("affliction_t20_2pc", sets->set(WARLOCK_AFFLICTION, T20, B2));
+        nightfall_rppm = get_rppm("nightfall", talents.nightfall);
     }
     void warlock_t::init_procs_affliction() {
         procs.the_master_harvester = get_proc("the_master_harvester");
         procs.affliction_t21_2pc = get_proc("affliction_t21_2pc");
+        procs.nightfall = get_proc("nightfall");
     }
     void warlock_t::create_options_affliction() {
         add_option(opt_bool("deaths_embrace_fixed_time", deaths_embrace_fixed_time));
