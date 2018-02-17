@@ -6341,7 +6341,7 @@ struct starfall_tick_t : public druid_spell_t
         druid_spell_t::impact(s);
         if (s->n_targets > 1)
         {
-            p()->active.echoing_stars->target = target;
+            p()->active.echoing_stars->set_target(s->target);
             p()->active.echoing_stars->schedule_execute();
         }
     }
