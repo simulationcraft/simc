@@ -6707,7 +6707,7 @@ struct breath_of_sindragosa_tick_t: public death_knight_spell_t
     {
       double damage = s -> result_amount;
       damage /= execute_state -> n_targets;
-      s -> result_amount = damage;
+      s -> result_amount = s -> result_total = damage;
       death_knight_spell_t::impact( s );
     }
   }
