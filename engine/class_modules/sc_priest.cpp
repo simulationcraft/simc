@@ -3550,19 +3550,9 @@ namespace
     public:
       using base_t = priest_buff_t;  // typedef for priest_buff_t<buff_base_t>
 
-      template <typename Buff_Creator>
-      priest_buff_t(priest_td_t& p, const Buff_Creator& params) : Base(params)
+      priest_buff_t(actor_pair_t q, const std::string& name, const spell_data_t* s = spell_data_t::nil() ) :
+        Base(q, name, s)
       {
-      }
-
-      template <typename Buff_Creator>
-      priest_buff_t(priest_t& p, const Buff_Creator& params) : Base(params)
-      {
-      }
-
-      priest_td_t& get_td(player_t* t) const
-      {
-        return *(priest().get_target_data(t));
       }
 
     protected:
@@ -3615,14 +3605,14 @@ namespace
       propagate_const<stack_increase_event_t*> stack_increase;
 
       insanity_drain_stacks_t(priest_t& p)
-        : base_t(p, buff_creator_t(&p, "insanity_drain_stacks")
-          .max_stack(1)
-          .chance(1.0)
-          .duration(timespan_t::zero())
-          .default_value(1)),
+        : base_t(&p, "insanity_drain_stacks"),
         stack_increase(nullptr)
 
       {
+        set_max_stack(1);
+        set_chance(1.0);
+        set_duration(timespan_t::zero());
+        set_default_value(1);
       }
 
       bool trigger(int stacks, double value, double chance, timespan_t duration) override
@@ -3658,13 +3648,15 @@ namespace
     struct overwhelming_darkness_t final : public priest_buff_t<stat_buff_t>
     {
       overwhelming_darkness_t(priest_t& p)
-        : base_t(p, stat_buff_creator_t(&p, "overwhelming_darkness", p.find_spell(252909))
-          .max_stack(100)
-          .chance(p.sets->has_set_bonus(PRIEST_SHADOW, T21, B4))
-          .period(timespan_t::from_seconds(1))
-          .duration(timespan_t::zero())
-          .refresh_behavior(BUFF_REFRESH_DURATION)
-          .add_invalidate(CACHE_CRIT_CHANCE)) {};
+        : base_t(&p, "overwhelming_darkness", p.find_spell(252909))
+          {
+          set_max_stack(100);
+          set_chance(p.sets->has_set_bonus(PRIEST_SHADOW, T21, B4));
+          set_period(timespan_t::from_seconds(1));
+          set_duration(timespan_t::zero());
+          set_refresh_behavior(BUFF_REFRESH_DURATION);
+          add_invalidate(CACHE_CRIT_CHANCE);
+          }
 
       bool freeze_stacks() override
       {
@@ -3678,11 +3670,11 @@ namespace
     struct voidform_t final : public priest_buff_t<haste_buff_t>
     {
       voidform_t(priest_t& p)
-        : base_t(p, haste_buff_creator_t(&p, "voidform", p.find_spell(194249))
-          .add_invalidate(CACHE_PLAYER_DAMAGE_MULTIPLIER)
-          .add_invalidate(CACHE_HASTE)
-          .add_invalidate(CACHE_PLAYER_HEAL_MULTIPLIER))
+        : base_t(&p, "voidform", p.find_spell(194249))
       {
+          add_invalidate(CACHE_PLAYER_DAMAGE_MULTIPLIER);
+          add_invalidate(CACHE_HASTE);
+          add_invalidate(CACHE_PLAYER_HEAL_MULTIPLIER);
       }
 
       bool trigger(int stacks, double value, double chance, timespan_t duration) override
@@ -3746,7 +3738,7 @@ namespace
     struct surrender_to_madness_t final : public priest_buff_t<buff_t>
     {
       surrender_to_madness_t(priest_t& p)
-        : base_t(p, buff_creator_t(&p, "surrender_to_madness", p.talents.surrender_to_madness))
+        : base_t(&p, "surrender_to_madness", p.talents.surrender_to_madness)
       {
       }
       void expire_override(int stacks, timespan_t remaining_duration) override
@@ -3760,17 +3752,17 @@ namespace
       int hidden_lingering_insanity;
 
       lingering_insanity_t(priest_t& p)
-        : base_t(p, haste_buff_creator_t(&p, "lingering_insanity",
-          p.talents.lingering_insanity)
-          .reverse(true)
-          .duration(timespan_t::from_seconds(50))
-          .period(timespan_t::from_seconds(1))
-          .tick_behavior(BUFF_TICK_REFRESH)
-          .tick_time_behavior(BUFF_TICK_TIME_UNHASTED)
-          .max_stack(p.find_spell(185916)->effectN(4).base_value())  // or 18?
-        ),
+        : base_t(&p, "lingering_insanity",
+          p.talents.lingering_insanity),
         hidden_lingering_insanity(0)
       {
+        set_reverse(true);
+        set_duration(timespan_t::from_seconds(50));
+        set_period(timespan_t::from_seconds(1));
+        set_tick_behavior(BUFF_TICK_REFRESH);
+        set_tick_time_behavior(BUFF_TICK_TIME_UNHASTED);
+        set_max_stack(p.find_spell(185916)->effectN(4).base_value());  // or 18?
+
         // Calculate the amount of stacks lost per second based on the amount of haste lost per second 
         // divided by the amount of haste gained per Voidform stack
         hidden_lingering_insanity = p.find_spell(199849)->effectN(1).base_value()
@@ -3797,8 +3789,9 @@ namespace
     */
     struct archangel_t final : public priest_buff_t<buff_t>
     {
-      archangel_t(priest_t& p) : base_t(p, buff_creator_t(&p, "archangel", p.specs.archangel).max_stack(5))
+      archangel_t(priest_t& p) : base_t(&p, "archangel", p.specs.archangel)
       {
+        set_max_stack(5);
         default_value = data().effectN(1).percent();
       }
 
@@ -4674,46 +4667,45 @@ namespace
       ->add_invalidate(CACHE_SPELL_HASTE)
       ->add_invalidate(CACHE_HASTE);
 
-    buffs.twist_of_fate = buff_creator_t(this, "twist_of_fate", talents.twist_of_fate)
-      .duration(talents.twist_of_fate->effectN(1).trigger()->duration())
-      .default_value(talents.twist_of_fate->effectN(1).trigger()->effectN(2).percent())
-      .add_invalidate(CACHE_PLAYER_DAMAGE_MULTIPLIER)
-      .add_invalidate(CACHE_PLAYER_HEAL_MULTIPLIER);
+    buffs.twist_of_fate = make_buff(this, "twist_of_fate", talents.twist_of_fate)
+    ->set_duration(talents.twist_of_fate->effectN(1).trigger()->duration())
+    ->set_default_value(talents.twist_of_fate->effectN(1).trigger()->effectN(2).percent())
+      ->add_invalidate(CACHE_PLAYER_DAMAGE_MULTIPLIER)
+      ->add_invalidate(CACHE_PLAYER_HEAL_MULTIPLIER);
 
     buffs.shadowform = make_buff(this, "shadowform", find_class_spell("Shadowform"))
       ->add_invalidate(CACHE_PLAYER_DAMAGE_MULTIPLIER);
-    buffs.shadowform_state = buff_creator_t(this, "shadowform_state").chance(1.0).quiet(true);
+    buffs.shadowform_state = make_buff(this, "shadowform_state")->set_chance(1.0)->set_quiet(true);
 
-    buffs.shadowy_insight = buff_creator_t(this, "shadowy_insight", talents.shadowy_insight).rppm_scale(RPPM_HASTE);
-    buffs.shadowy_insight->set_max_stack(1U);  // Spell Data says 2, really is 1 -- 2016/04/17 Twintop
+    buffs.shadowy_insight = make_buff(this, "shadowy_insight", talents.shadowy_insight)->set_rppm(RPPM_HASTE)->set_max_stack(1U);  // Spell Data says 2, really is 1 -- 2016/04/17 Twintop
 
 
     buffs.void_torrent = make_buff(this, "void_torrent", talents.void_torrent);
 
     buffs.surrender_to_madness = new buffs::surrender_to_madness_t(*this);
 
-    buffs.surrender_to_madness_death = buff_creator_t(this, "surrender_to_madness_death", talents.surrender_to_madness)
-      .chance(1.0)
-      .duration(timespan_t::from_seconds(30))
-      .default_value(0.0);
+    buffs.surrender_to_madness_death = make_buff(this, "surrender_to_madness_death", talents.surrender_to_madness)
+    ->set_chance(1.0)
+    ->set_duration(timespan_t::from_seconds(30))
+    ->set_default_value(0.0);
 
-    buffs.sphere_of_insanity = buff_creator_t(this, "sphere_of_insanity", find_spell(194182))
-      .chance(1.0)
-      .default_value(find_spell(194182)->effectN(3).percent());
+    buffs.sphere_of_insanity = make_buff(this, "sphere_of_insanity", find_spell(194182))
+    ->set_chance(1.0)
+    ->set_default_value(find_spell(194182)->effectN(3).percent());
 
     buffs.mind_quickening = make_buff<stat_buff_t>(this, "mind_quickening", find_spell(240673));
 
     // Discipline
     buffs.archangel = new buffs::archangel_t(*this);
 
-    buffs.borrowed_time = buff_creator_t(this, "borrowed_time", find_spell(59889))
-      .chance(specs.borrowed_time->ok())
-      .default_value(find_spell(59889)->effectN(1).percent())
-      .add_invalidate(CACHE_HASTE);
+    buffs.borrowed_time = make_buff(this, "borrowed_time", find_spell(59889))
+    ->set_chance(specs.borrowed_time->ok())
+    ->set_default_value(find_spell(59889)->effectN(1).percent())
+      ->add_invalidate(CACHE_HASTE);
 
-    buffs.holy_evangelism = buff_creator_t(this, "holy_evangelism", find_spell(81661))
-      .chance(specs.evangelism->ok())
-      .activated(false);
+    buffs.holy_evangelism = make_buff(this, "holy_evangelism", find_spell(81661))
+    ->set_chance(specs.evangelism->ok())
+    ->set_activated(false);
 
     // Shadow
 
@@ -4729,9 +4721,9 @@ namespace
     buffs.dispersion = make_buff(this, "dispersion", find_class_spell("Dispersion"));
 
     // Set Bonuses
-    buffs.power_overwhelming = stat_buff_creator_t(this, "power_overwhelming",
-      sets->set(specialization(), T19OH, B8)->effectN(1).trigger())
-      .trigger_spell(sets->set(specialization(), T19OH, B8));
+    buffs.power_overwhelming = make_buff<stat_buff_t>(this, "power_overwhelming",
+      sets->set(specialization(), T19OH, B8)->effectN(1).trigger());
+    buffs.power_overwhelming->set_trigger_spell(sets->set(specialization(), T19OH, B8));
 
     buffs.void_vb = buff_creator_t(this, "void", find_spell(211657)).chance(1.0);
 

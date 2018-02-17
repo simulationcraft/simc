@@ -2777,6 +2777,7 @@ void player_t::create_buffs()
                           .max_stack( 1 )
                           .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   }
+
 }
 
 // player_t::find_item ======================================================

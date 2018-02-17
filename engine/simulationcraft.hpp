@@ -596,7 +596,7 @@ protected:
   buff_refresh_duration_callback_t _refresh_duration_callback;
   buff_stack_change_callback_t _stack_change_callback;
   double _rppm_freq, _rppm_mod;
-  unsigned _rppm_scale;
+  rppm_scale_e _rppm_scale;
   const spell_data_t* _trigger_data;
   std::vector<cache_e> _invalidate_list;
   friend struct ::buff_t;
@@ -672,7 +672,7 @@ public:
   { _rppm_freq = f; return *( static_cast<bufftype*>( this ) ); }
   bufftype& rppm_mod( double m )
   { _rppm_mod = m; return *( static_cast<bufftype*>( this ) ); }
-  bufftype& rppm_scale( unsigned s )
+  bufftype& rppm_scale( rppm_scale_e s )
   { _rppm_scale = s; return *( static_cast<bufftype*>( this ) ); }
   bufftype& trigger_spell( const spell_data_t* s )
   { _trigger_data = s; return *( static_cast<bufftype*>( this ) ); }
@@ -1012,6 +1012,7 @@ public:
 
   bool change_regen_rate;
 
+  buff_t* set_chance( double chance );
   buff_t* set_duration( timespan_t duration );
   buff_t* set_max_stack( int max_stack );
   buff_t* set_cooldown( timespan_t duration );
@@ -1033,6 +1034,8 @@ public:
   { tick_zero = v; return this; }
   buff_t* set_tick_time_behavior( buff_tick_time_e b )
   { tick_time_behavior = b; return this; }
+  buff_t* set_rppm( rppm_scale_e scale = RPPM_NONE, double freq = -1, double mod = -1);
+  buff_t* set_trigger_spell( const spell_data_t* s );
 
 };
 
