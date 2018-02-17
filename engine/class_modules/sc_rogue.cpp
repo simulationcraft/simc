@@ -2395,19 +2395,50 @@ struct cannonball_barrage_t : public rogue_attack_t
 
 struct crimson_tempest_t : public rogue_attack_t
 {
-    crimson_tempest_t(rogue_t* p, const std::string& options_str) :
-        rogue_attack_t("crimson_tempest", p, p -> find_talent_spell("Crimson Tempest"), options_str)
+  struct crimson_tempest_dot_t : public rogue_attack_t
+  {
+    crimson_tempest_dot_t( rogue_t* p ) :
+      rogue_attack_t( "crimson_tempest_dot", p, p->spec.crimson_tempest )
     {
-        aoe = -1;
-        dot_duration = p->spec.crimson_tempest->duration();
-        base_tick_time = p->spec.crimson_tempest->effectN( 1 ).period();
-        attack_power_mod.tick = p->spec.crimson_tempest->effectN( 1 ).ap_coeff();
-        
+      background = dual = hasted_ticks = true;   
     }
 
-    double calculate_tick_amount(action_state_t* s, double dmg_multiplier) const override {
-        return rogue_attack_t::calculate_tick_amount(s, dmg_multiplier * ( 1.0 + p()->cache.mastery_value() ) );
+    // DoT spell data doesn't have a COMBO_POINT cost associated with it, so need to return this manually
+    double attack_tick_power_coefficient( const action_state_t* s ) const override
+    {
+      return attack_power_mod.tick * cast_state( s )->cp;
     }
+  };
+
+  action_t* crimson_tempest_dot;
+
+  crimson_tempest_t( rogue_t* p, const std::string& options_str ) :
+    rogue_attack_t( "crimson_tempest", p, p -> talent.crimson_tempest, options_str )
+  {
+    aoe = -1;
+
+    crimson_tempest_dot = p->find_action( "crimson_tempest_dot" );
+    if ( !crimson_tempest_dot )
+    {
+      crimson_tempest_dot = new crimson_tempest_dot_t( p );
+    }
+    crimson_tempest_dot->stats = stats;
+  }
+
+  void impact( action_state_t* state ) override
+  {
+    rogue_attack_t::impact( state );
+
+    if ( result_is_hit( state->result ) )
+    {
+      // Need to snapshot the state here so we can pass in the CPs used on the base ability
+      crimson_tempest_dot->set_target( state->target );
+      action_state_t* action_state = crimson_tempest_dot->get_state();
+      cast_state( action_state )->cp = cast_state( state )->cp;
+      crimson_tempest_dot->snapshot_state( action_state, DMG_OVER_TIME );
+      crimson_tempest_dot->schedule_execute( action_state );
+    }
+  }
 };
 
 // Dispatch =================================================================
@@ -5729,7 +5760,7 @@ rogue_td_t::rogue_td_t( player_t* target, rogue_t* source ) :
   dots.internal_bleeding  = target -> get_dot( "internal_bleeding", source );
   dots.mutilated_flesh    = target -> get_dot( "mutilated_flesh", source );
   dots.rupture            = target -> get_dot( "rupture", source );
-  dots.crimson_tempest    = target -> get_dot("crimson_tempest", source);
+  dots.crimson_tempest    = target -> get_dot( "crimson_tempest_dot", source );
 
   dots.nightblade         = target -> get_dot( "nightblade", source );
 
@@ -6111,15 +6142,15 @@ void rogue_t::init_action_list()
 
     // Finishers
     action_priority_list_t* finish = get_action_priority_list( "finish", "Finishers" );
+    finish -> add_talent( this, "Crimson Tempest", "if=combo_points>=cp_max_spend" );
     finish -> add_action( this, "Envenom", "if=talent.anticipation.enabled&combo_points>=5&((debuff.toxic_blade.up&buff.virulent_poisons.remains<2)|mantle_duration>=0.2|buff.virulent_poisons.remains<0.2|energy.deficit<=25+variable.energy_regen_combined)" );
     finish -> add_action( this, "Envenom", "if=talent.anticipation.enabled&combo_points>=4&!buff.virulent_poisons.up" );
     finish -> add_action( this, "Envenom", "if=!talent.anticipation.enabled&combo_points>=4+(talent.deeper_stratagem.enabled&!set_bonus.tier19_4pc)&(debuff.vendetta.up|debuff.toxic_blade.up|mantle_duration>=0.2|energy.deficit<=25+variable.energy_regen_combined)" );
     finish -> add_action( this, "Envenom", "if=talent.elaborate_planning.enabled&combo_points>=3+!talent.exsanguinate.enabled&buff.elaborate_planning.remains<0.2" );
 
-    
-
     // AoE Rotation
     action_priority_list_t* aoe = get_action_priority_list( "aoe", "AoE" );
+    aoe -> add_talent( this, "Crimson Tempest", "if=combo_points>=cp_max_spend" );
     aoe -> add_action( this, "Envenom", "if=!buff.envenom.up&combo_points>=cp_max_spend" );
     aoe -> add_action( this, "Rupture", "cycle_targets=1,if=combo_points>=cp_max_spend&refreshable&(pmultiplier<=1|remains<=tick_time)&(!exsanguinated|remains<=tick_time*2)&target.time_to_die-remains>4" );
     aoe -> add_action( this, "Envenom", "if=combo_points>=cp_max_spend" );
@@ -6764,7 +6795,7 @@ void rogue_t::init_spells()
   spec.seal_fate            = find_specialization_spell( "Seal Fate" );
   spec.venomous_wounds      = find_specialization_spell( "Venomous Wounds" );
   spec.vendetta             = find_specialization_spell( "Vendetta" );
-  spec.master_assassin      = find_spell(256735);
+  spec.master_assassin      = find_spell( 256735 );
   spec.garrote              = find_specialization_spell( "Garrote" );
   spec.garrote_2            = find_specialization_spell( 231719 );
   spec.crimson_tempest      = find_spell( 122233 );
