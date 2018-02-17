@@ -376,6 +376,7 @@ struct rogue_t : public player_t
     const spell_data_t* shadowstrike;
     const spell_data_t* shadowstrike_2;
     const spell_data_t* shuriken_combo;
+    const spell_data_t* t20_2pc_subtlety;
   } spec;
 
   // Spell Data
@@ -626,7 +627,6 @@ struct rogue_t : public player_t
   double    composite_spell_crit_chance() const override;
   double    composite_spell_haste() const override;
   double    matching_gear_multiplier( attribute_e attr ) const override;
-  double    composite_player_multiplier( school_e school ) const override;
   double    composite_player_target_multiplier( player_t* target, school_e school ) const override;
   double    energy_regen_per_second() const override;
   double    passive_movement_modifier() const override;
@@ -1093,14 +1093,33 @@ struct rogue_attack_t : public melee_attack_t
   {
     double m = melee_attack_t::composite_da_multiplier( state );
 
+    // Subtlety
     if ( p()->mastery.executioner->ok() && data().affected_by( p()->mastery.executioner->effectN( 1 ) ) )
     {
       m *= 1.0 + p()->cache.mastery_value();
     }
 
+    if ( p()->buffs.symbols_of_death->check() && data().affected_by( p()->buffs.symbols_of_death->data().effectN( 1 ) ) )
+    {
+      m *= 1.0 + p()->buffs.symbols_of_death->data().effectN( 1 ).percent()
+        + p()->spec.t20_2pc_subtlety->effectN( 1 ).percent();
+    }
+
+    if ( p()->buffs.shadow_dance->up() && data().affected_by( p()->buffs.shadow_dance->data().effectN( 4 ) ) )
+    {
+      m *= 1.0 + p()->buffs.shadow_dance->data().effectN( 4 ).percent()
+        + p()->talent.dark_shadow->effectN( 2 ).percent();
+    }
+
+    // Assassination
     if ( p()->mastery.potent_assassin->ok() && data().affected_by( p()->mastery.potent_assassin->effectN( 1 ) ) )
     {
       m *= 1.0 + p()->cache.mastery_value();
+    }
+    
+    if ( p()->buffs.elaborate_planning->check() && data().affected_by( p()->buffs.elaborate_planning->data().effectN( 1 ) ) )
+    {
+      m *= p()->buffs.elaborate_planning->data().effectN( 1 ).percent();
     }
 
     return m;
@@ -1110,14 +1129,34 @@ struct rogue_attack_t : public melee_attack_t
   {
     double m = melee_attack_t::composite_ta_multiplier( state );
 
+    // Subtlety
     if ( p()->mastery.executioner->ok() && data().affected_by( p()->mastery.executioner->effectN( 2 ) ) )
     {
       m *= 1.0 + p()->cache.mastery_value();
     }
 
+    if ( p()->buffs.symbols_of_death->check() && data().affected_by( p()->buffs.symbols_of_death->data().effectN( 2 ) ) )
+    {
+      m *= 1.0 + p()->buffs.symbols_of_death->data().effectN( 2 ).percent()
+        + p()->spec.t20_2pc_subtlety->effectN( 2 ).percent();
+    }
+
+    if ( p()->buffs.shadow_dance->up() && data().affected_by( p()->buffs.shadow_dance->data().effectN( 5 ) ) )
+    {
+      // TOCHECK: The spell data for Dark Shadow effect 3 seems like it might not be configured correctly
+      m *= 1.0 + p()->buffs.shadow_dance->data().effectN( 5 ).percent() 
+        + p()->talent.dark_shadow->effectN( 3 ).percent();
+    }
+
+    // Assassination
     if ( p()->mastery.potent_assassin->ok() && data().affected_by( p()->mastery.potent_assassin->effectN( 2 ) ) )
     {
       m *= 1.0 + p()->cache.mastery_value();
+    }
+
+    if ( p()->buffs.elaborate_planning->check() && data().affected_by( p()->buffs.elaborate_planning->data().effectN( 2 ) ) )
+    {
+      m *= p()->buffs.elaborate_planning->data().effectN( 2 ).percent();
     }
 
     return m;
@@ -2110,13 +2149,6 @@ struct melee_t : public rogue_attack_t
     p -> auto_attack = this;
   }
 
-  void init() override
-  {
-    rogue_attack_t::init();
-
-    affected_by.vendetta = true;
-  }
-
   void reset() override
   {
     rogue_attack_t::reset();
@@ -2141,6 +2173,45 @@ struct melee_t : public rogue_attack_t
       first = false;
     }
     rogue_attack_t::execute();
+  }
+
+  double composite_target_multiplier( player_t* target ) const override
+  {
+    double m = rogue_attack_t::composite_target_multiplier( target );
+
+    rogue_td_t* tdata = td( target );
+    if ( tdata->debuffs.vendetta->check() )
+    {
+      m *= 1.0 + tdata->debuffs.vendetta->data().effectN( 2 ).percent();
+    }
+
+    return m;
+  }
+
+  double action_multiplier() const override
+  {
+    double m = rogue_attack_t::action_multiplier();
+
+    // Subtlety
+    if ( p()->buffs.symbols_of_death->check() )
+    {
+      m *= p()->buffs.symbols_of_death->data().effectN( 2 ).percent() 
+        + p()->spec.t20_2pc_subtlety->effectN( 3 ).percent();
+    }
+
+    if ( p()->buffs.shadow_dance->up() )
+    {
+      m *= 1.0 + p()->buffs.shadow_dance->data().effectN( 2 ).percent()
+        + p()->talent.dark_shadow->effectN( 1 ).percent();
+    }
+
+    // Assassination
+    if ( p()->buffs.elaborate_planning->check() )
+    {
+      m *= p()->buffs.elaborate_planning->data().effectN( 3 ).percent();
+    }
+
+    return m;
   }
 };
 
@@ -5923,32 +5994,6 @@ double rogue_t::matching_gear_multiplier( attribute_e attr ) const
   return 0.0;
 }
 
-// rogue_t::composite_player_multiplier =====================================
-
-double rogue_t::composite_player_multiplier( school_e school ) const
-{
-  double m = player_t::composite_player_multiplier( school );
-
-  // Assassination
-  if (buffs.elaborate_planning->up())
-  {
-    m *= buffs.elaborate_planning->value();
-  }
-
-  // Subtlety
-  if ( buffs.symbols_of_death -> up() )
-  {
-    m *= buffs.symbols_of_death -> check_value();
-  }
-
-  if ( talent.dark_shadow -> ok() && buffs.shadow_dance -> up() )
-  {
-    m *= 1.0 + talent.dark_shadow -> effectN( 1 ).percent();
-  }
-
-  return m;
-}
-
 // rogue_t::composite_player_target_multiplier ==============================
 
 double rogue_t::composite_player_target_multiplier( player_t* target, school_e school ) const
@@ -6327,7 +6372,7 @@ void rogue_t::init_action_list()
 
     // Stealth Action List Starter
     action_priority_list_t* stealth_als = get_action_priority_list( "stealth_als", "Stealth Action List Starter" );
-    stealth_als -> add_action( "call_action_list,name=stealth_cds,if=energy.deficit<=variable.stealth_threshold-25*(!cooldown.goremaws_bite.up)&(!equipped.shadow_satyrs_walk|cooldown.shadow_dance.charges_fractional>=variable.shd_fractional|energy.deficit>=10)" );
+    stealth_als -> add_action( "call_action_list,name=stealth_cds,if=energy.deficit<=variable.stealth_threshold-25&(!equipped.shadow_satyrs_walk|cooldown.shadow_dance.charges_fractional>=variable.shd_fractional|energy.deficit>=10)" );
     stealth_als -> add_action( "call_action_list,name=stealth_cds,if=mantle_duration>2.3" );
     stealth_als -> add_action( "call_action_list,name=stealth_cds,if=spell_targets.shuriken_storm>=4" );
     stealth_als -> add_action( "call_action_list,name=stealth_cds,if=(cooldown.shadowmeld.up&!cooldown.vanish.up&cooldown.shadow_dance.charges<=1)" );
@@ -6828,6 +6873,8 @@ void rogue_t::init_spells()
   spec.shadowstrike         = find_specialization_spell( "Shadowstrike" );
   spec.shadowstrike_2       = find_spell( 245623 );
   spec.shuriken_combo       = find_specialization_spell( "Shuriken Combo" );
+  spec.t20_2pc_subtlety     = sets->has_set_bonus( ROGUE_SUBTLETY, T20, B2 ) ?
+                                sets->set( ROGUE_SUBTLETY, T20, B2 ) : spell_data_t::not_found();
 
   // Masteries
   mastery.potent_assassin   = find_mastery_spell( ROGUE_ASSASSINATION );
@@ -7132,10 +7179,7 @@ void rogue_t::create_buffs()
                                     resource_gain( RESOURCE_ENERGY, sets -> set( ROGUE_SUBTLETY, T20, B4 ) -> effectN( 1 ).base_value(), gains.symbols_of_death );
                                   }
                                 } )
-                                .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
-                                .default_value( 1.0 + spec.symbols_of_death -> effectN( 1 ).percent() +
-                                  ( sets -> has_set_bonus( ROGUE_SUBTLETY, T20, B2 ) ? sets -> set( ROGUE_SUBTLETY, T20, B2 ) -> effectN( 1 ).percent() : 0.0 )
-                                );
+                                .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
 
   // Talents
