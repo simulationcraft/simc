@@ -410,6 +410,38 @@ namespace actions {
             warlock_spell_t::tick(d);
         }
     };
+
+    struct grimoire_of_sacrifice_t : public warlock_spell_t {
+      grimoire_of_sacrifice_t(warlock_t* p, const std::string& options_str) : warlock_spell_t("grimoire_of_sacrifice", p, p -> talents.grimoire_of_sacrifice) {
+        parse_options(options_str);
+        harmful = false;
+        ignore_false_positive = true;
+      }
+
+      virtual bool ready() override {
+        if (!p()->warlock_pet_list.active) return false;
+        return warlock_spell_t::ready();
+      }
+
+      virtual void execute() override {
+        if (p()->warlock_pet_list.active) {
+          warlock_spell_t::execute();
+
+          p()->warlock_pet_list.active->dismiss();
+          p()->warlock_pet_list.active = nullptr;
+          p()->buffs.demonic_power->trigger();
+        }
+      }
+    };
+
+    struct demonic_power_damage_t : public warlock_spell_t {
+      demonic_power_damage_t(warlock_t* p) : warlock_spell_t("demonic_power", p, p -> find_spell(196100)){
+        aoe = -1;
+        background = true;
+        proc = true;
+        destro_mastery = false;
+      }
+    };
 } // end actions namespace
 
 namespace buffs {
@@ -682,7 +714,7 @@ double warlock_t::resource_gain( resource_e resource_type, double amount, gain_t
 
 double warlock_t::mana_regen_per_second() const {
   double mp5 = player_t::mana_regen_per_second();
-  mp5 /= cache.spell_haste();
+  //mp5 /= cache.spell_haste();
   return mp5;
 }
 
@@ -717,7 +749,10 @@ action_t* warlock_t::create_action( const std::string& action_name,const std::st
   if ( action_name == "summon_pet"            ) return new      summon_main_pet_t( default_pet, this );
 
   if ( action_name == "drain_life"            ) return new      drain_life_t(this, options_str);
-  if (action_name == "shadow_bolt")             return new      shadow_bolt_t(this, options_str); //aff and demo
+  if ( action_name == "shadow_bolt"           ) return new      shadow_bolt_t(this, options_str); //aff and demo
+
+  // talents
+  if ( action_name == "grimoire_of_sacrifice" ) return new      grimoire_of_sacrifice_t(this, options_str); //aff and destro
 
   if( specialization() == WARLOCK_AFFLICTION) {
       action_t* aff_action = create_action_affliction(action_name, options_str);
@@ -857,6 +892,7 @@ void warlock_t::init_spells() {
   talents.mortal_coil                   = find_talent_spell("Mortal Coil");
   talents.demonic_circle                = find_talent_spell("Demonic Circle");
   talents.grimoire_of_sacrifice         = find_talent_spell("Grimoire of Sacrifice"); // aff and destro
+  active.demonic_power_proc             = new actions::demonic_power_damage_t(this); // grimoire of sacrifice
   talents.soul_conduit                  = find_talent_spell("Soul Conduit");
 }
 
@@ -969,6 +1005,9 @@ void warlock_t::apl_precombat()
   precombat->add_action("summon_pet");
 
   precombat->add_action( "snapshot_stats" );
+
+  if (specialization() != WARLOCK_DEMONOLOGY)
+    precombat->add_action("grimoire_of_sacrifice,if=talent.grimoire_of_sacrifice.enabled");
 
   if ( sim -> allow_potions )
   {
