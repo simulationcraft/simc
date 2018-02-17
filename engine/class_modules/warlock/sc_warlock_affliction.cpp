@@ -340,15 +340,81 @@ namespace warlock {
         // Talents
         // lvl 15 - shadow embrace|haunt|deathbolt
         struct haunt_t : public warlock_spell_t {
-            haunt_t(warlock_t* p, const std::string& options_str) : warlock_spell_t("haunt", p, p -> talents.haunt) {
-                parse_options(options_str);
+          haunt_t(warlock_t* p, const std::string& options_str) : warlock_spell_t("haunt", p, p -> talents.haunt) {
+            parse_options(options_str);
+          }
+          void impact(action_state_t* s) override {
+              warlock_spell_t::impact(s);
+              if (result_is_hit(s->result)) {
+                  td(s->target)->debuffs_haunt->trigger();
+              }
+          }
+        };
+        struct deathbolt_t : public warlock_spell_t {
+          deathbolt_t* deathbolt;
+
+          deathbolt_t(warlock_t* p, const std::string& options_str) : warlock_spell_t("deathbolt", p, p -> talents.deathbolt) {
+            parse_options(options_str);
+          }
+
+          void execute() override {
+            warlock_td_t* td = this->td(target);
+            td->dots_agony->current_action->calculate_tick_amount(td->dots_agony->state, td->dots_agony->current_stack());
+            td->dots_corruption->current_action->calculate_tick_amount(td->dots_corruption->state, td->dots_corruption->current_stack());
+
+            double tick_base_damage = td->dots_agony->state->result_raw;
+            unsigned ticks_left = td->dots_agony->ticks_left();
+            double total_damage_agony = ticks_left * tick_base_damage;
+            if (sim->debug) {
+              sim->out_debug.printf("%s agony dot_remains=%.3f duration=%.3f ticks_left=%u amount=%.3f total=%.3f",
+                name(), td->dots_agony->remains().total_seconds(),
+                td->dots_agony->duration().total_seconds(),
+                td->dots_agony->ticks_left(), ( tick_base_damage * td->agony_stack ), total_damage_agony );
             }
-            void impact(action_state_t* s) override {
-                warlock_spell_t::impact(s);
-                if (result_is_hit(s->result)) {
-                    td(s->target)->debuffs_haunt->trigger();
+
+            tick_base_damage = td->dots_corruption->state->result_raw;
+            ticks_left = td->dots_corruption->ticks_left();
+            double total_damage_corruption = ticks_left * tick_base_damage;
+            if (sim->debug) {
+              sim->out_debug.printf("%s corruption dot_remains=%.3f duration=%.3f ticks_left=%u amount=%.3f total=%.3f",
+                name(), td->dots_corruption->remains().total_seconds(),
+                td->dots_corruption->duration().total_seconds(),
+                td->dots_corruption->ticks_left(), tick_base_damage, total_damage_corruption );
+            }
+            double total_damage_siphon_life = 0.0;
+            if ( p() -> talents.siphon_life -> ok() ) {
+              tick_base_damage = td->dots_siphon_life->state->result_raw;
+              ticks_left = td->dots_siphon_life->ticks_left();
+              total_damage_siphon_life = total_damage_siphon_life + ( ticks_left * tick_base_damage );
+              if (sim->debug) {
+                sim->out_debug.printf("%s siphon life dot_remains=%.3f duration=%.3f ticks_left=%u amount=%.3f total=%.3f",
+                  name(), td->dots_siphon_life->remains().total_seconds(),
+                  td->dots_siphon_life->duration().total_seconds(),
+                  td->dots_siphon_life->ticks_left(), tick_base_damage, total_damage_siphon_life);
+              }
+            }
+            double total_damage_ua = 0.0;
+            for (int i = 0; i < MAX_UAS; i++) {
+              if (td->dots_unstable_affliction[i]->is_ticking()) {
+                tick_base_damage = td->dots_unstable_affliction[i]->state->result_raw;
+                ticks_left = td->dots_unstable_affliction[i]->ticks_left();
+                double current_ua_total = ticks_left * tick_base_damage;
+                total_damage_ua = total_damage_ua + current_ua_total;
+                if (sim->debug) {
+                  sim->out_debug.printf("%s ua dot_remains=%.3f duration=%.3f ticks_left=%u amount=%.3f total=%.3f",
+                    name(), td->dots_unstable_affliction[i]->remains().total_seconds(),
+                    td->dots_unstable_affliction[i]->duration().total_seconds(),
+                    td->dots_unstable_affliction[i]->ticks_left(), tick_base_damage, current_ua_total);
                 }
+              }
             }
+            const double total_dot_dmg = total_damage_agony + total_damage_corruption + total_damage_siphon_life + total_damage_ua;
+            warlock_spell_t::base_dd_min = warlock_spell_t::base_dd_max = total_dot_dmg * 0.35;
+            if (sim->debug) {
+              sim->out_debug.printf("%s deathbolt damage_remaining=%.3f", name(), total_dot_dmg);
+            }
+            warlock_spell_t::execute();
+          }
         };
         // lvl 30 - writhe|ac|deaths embrace
         // lvl 45 - demon skin|burning rush|dark pact
@@ -501,6 +567,7 @@ namespace warlock {
         if (action_name == "seed_of_corruption") return new             seed_of_corruption_t(this, options_str);
         // talents
         if (action_name == "haunt") return new                          haunt_t(this, options_str);
+        if (action_name == "deathbolt") return new                      deathbolt_t(this, options_str);
         if (action_name == "phantom_singularity") return new            phantom_singularity_t(this, options_str);
         if (action_name == "siphon_life") return new                    siphon_life_t(this, options_str);
         if (action_name == "soul_harvest") return new                   soul_harvest_t(this, options_str);
@@ -580,6 +647,7 @@ namespace warlock {
         default->add_action("soul_harvest,if=buff.active_uas.stack>0");
         default->add_action("unstable_affliction,if=soul_shard=5");
         default->add_action("unstable_affliction,if=(dot.unstable_affliction_1.ticking+dot.unstable_affliction_2.ticking+dot.unstable_affliction_3.ticking+dot.unstable_affliction_4.ticking+dot.unstable_affliction_5.ticking=0)|soul_shard>2");
+        default->add_action("deathbolt");
         default->add_action("shadow_bolt");
     }
 

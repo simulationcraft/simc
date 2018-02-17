@@ -49,7 +49,7 @@ namespace warlock {
         void target_demise();
     };
 
-    struct warlock_t : public player_t
+    struct warlock_t: public player_t
     {
     public:
         player_t * havoc_target;
