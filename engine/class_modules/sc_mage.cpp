@@ -12,24 +12,7 @@ namespace { // UNNAMED NAMESPACE
 // ==========================================================================
 
 // BfA TODO:
-// - Arcane Power, Rune of Power, Incater's Flow, Combustion, Bone Chilling,
-//   Arcane T20 2pc no longer global damage mods (they still have pet damage
-//   mod, double check), MAKE SURE they work correctly with pet spells
-//
-// - Spec passives + Erosion apply to all mage spells (shouldn't be too
-//   relevant)
-//
-// - Arcane Charge changes + Clearcasting, mastery + ABar change, AM doesn't
-//   generate AC, baseline Temporal Flux
-//
-// - New Arcane talents (Rule of Threes, Mana Adept, NYI in last row)
-//
-// - Arcane Intellect (probably gonna be simc wide)
-//
-// - double check coef changes
-//
-// - Clearcasting + extra mana from mastery (shouldn't reduce proc chance,
-//   hopefully)
+// - New Arcane talents (NYI in last row)
 //
 // - Glacial Spike seems to be double dipping on the updated damage mod effects
 //   (Rune of Power, etc).
