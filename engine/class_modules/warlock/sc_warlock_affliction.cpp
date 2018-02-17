@@ -351,19 +351,58 @@ namespace warlock {
           }
         };
         struct deathbolt_t : public warlock_spell_t {
-          deathbolt_t* deathbolt;
+          double dmg_modifier;
+          timespan_t ac_max;
 
           deathbolt_t(warlock_t* p, const std::string& options_str) : warlock_spell_t("deathbolt", p, p -> talents.deathbolt) {
             parse_options(options_str);
+            dmg_modifier = data().effectN(2).percent();
+            ac_max = timespan_t::from_seconds(data().effectN(3).base_value());
+          }
+
+          void init() override {
+            warlock_spell_t::init();
+            snapshot_flags |= STATE_MUL_DA | STATE_TGT_MUL_DA | STATE_MUL_PERSISTENT | STATE_VERSATILITY;
+          }
+
+          virtual bool ready() override {
+            warlock_td_t* td = this->td(target);
+
+            if (td->dots_agony->is_ticking()) {
+              return warlock_spell_t::ready();
+            }
+            if (td->dots_corruption->is_ticking()) {
+              return warlock_spell_t::ready();
+            }
+            for (int i = 0; i < MAX_UAS; i++) {
+              if (td->dots_unstable_affliction[i]->is_ticking()) {
+                return warlock_spell_t::ready();
+                break;
+              }
+            }
+            if (td->dots_siphon_life->is_ticking()) {
+              return warlock_spell_t::ready();
+            }
+
+            return false;
           }
 
           void execute() override {
             warlock_td_t* td = this->td(target);
+
+            double tick_base_damage;
+            unsigned ticks_left;
+
             td->dots_agony->current_action->calculate_tick_amount(td->dots_agony->state, td->dots_agony->current_stack());
             td->dots_corruption->current_action->calculate_tick_amount(td->dots_corruption->state, td->dots_corruption->current_stack());
+            for (int i = 0; i < MAX_UAS; i++) {
+              if (td->dots_unstable_affliction[i]->is_ticking()) {
+                td->dots_unstable_affliction[i]->current_action->calculate_tick_amount(td->dots_unstable_affliction[i]->state, td->dots_unstable_affliction[i]->current_stack());
+              }
+            }
 
-            double tick_base_damage = td->dots_agony->state->result_raw;
-            unsigned ticks_left = td->dots_agony->ticks_left();
+            tick_base_damage = td->dots_agony->state->result_raw;
+            ticks_left = td->dots_agony->ticks_left();
             double total_damage_agony = ticks_left * tick_base_damage;
             if (sim->debug) {
               sim->out_debug.printf("%s agony dot_remains=%.3f duration=%.3f ticks_left=%u amount=%.3f total=%.3f",
@@ -373,7 +412,9 @@ namespace warlock {
             }
 
             tick_base_damage = td->dots_corruption->state->result_raw;
-            ticks_left = td->dots_corruption->ticks_left();
+            ticks_left = td->dots_corruption->remains() / td->dots_corruption->time_to_tick;
+            if (p()->talents.absolute_corruption->ok())
+              ticks_left = ac_max / td->dots_corruption->time_to_tick;
             double total_damage_corruption = ticks_left * tick_base_damage;
             if (sim->debug) {
               sim->out_debug.printf("%s corruption dot_remains=%.3f duration=%.3f ticks_left=%u amount=%.3f total=%.3f",
@@ -381,6 +422,7 @@ namespace warlock {
                 td->dots_corruption->duration().total_seconds(),
                 td->dots_corruption->ticks_left(), tick_base_damage, total_damage_corruption );
             }
+
             double total_damage_siphon_life = 0.0;
             if ( p() -> talents.siphon_life -> ok() ) {
               tick_base_damage = td->dots_siphon_life->state->result_raw;
@@ -393,6 +435,7 @@ namespace warlock {
                   td->dots_siphon_life->ticks_left(), tick_base_damage, total_damage_siphon_life);
               }
             }
+
             double total_damage_ua = 0.0;
             for (int i = 0; i < MAX_UAS; i++) {
               if (td->dots_unstable_affliction[i]->is_ticking()) {
@@ -409,7 +452,7 @@ namespace warlock {
               }
             }
             const double total_dot_dmg = total_damage_agony + total_damage_corruption + total_damage_siphon_life + total_damage_ua;
-            warlock_spell_t::base_dd_min = warlock_spell_t::base_dd_max = total_dot_dmg * 0.35;
+            this->base_dd_min = this->base_dd_max = ( total_dot_dmg * dmg_modifier);
             if (sim->debug) {
               sim->out_debug.printf("%s deathbolt damage_remaining=%.3f", name(), total_dot_dmg);
             }
