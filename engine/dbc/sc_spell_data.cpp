@@ -6,6 +6,8 @@
 #include "simulationcraft.hpp"
 #include "sim/sc_expressions.hpp"
 
+#include "azerite.hpp"
+
 namespace { // anonymous namespace ==========================================
 
 enum sdata_field_type_t

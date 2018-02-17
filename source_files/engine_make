@@ -78,3 +78,4 @@ SRC += \
     action$(PATHSEP)sc_action_state.cpp \
     action$(PATHSEP)sc_action.cpp \
     sc_util.cpp \
+    dbc$(PATHSEP)azerite.cpp \

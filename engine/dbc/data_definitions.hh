@@ -6,8 +6,6 @@
 #include "specialization.hpp"
 #include <cstddef>
 
-#include "util/array_view.hpp"
-
 // Spell.dbc
 
 #ifdef __OpenBSD__
@@ -20,16 +18,6 @@ struct spell_data_t;
 struct spelleffect_data_t;
 struct spellpower_data_t;
 struct talent_data_t;
-
-struct azerite_power_t
-{
-  unsigned id;
-  unsigned spell_id;
-
-  static const azerite_power_t& find( unsigned id, bool ptr = false );
-  static const azerite_power_t& nil();
-  static arv::array_view<azerite_power_t> data( bool ptr = false );
-};
 
 struct item_child_equipment_t
 {

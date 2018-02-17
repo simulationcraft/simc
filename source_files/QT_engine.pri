@@ -111,3 +111,4 @@
  SOURCES += engine/action/sc_action_state.cpp
  SOURCES += engine/action/sc_action.cpp
  SOURCES += engine/sc_util.cpp
+ SOURCES += engine/dbc/azerite.cpp
