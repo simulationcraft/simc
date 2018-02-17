@@ -4749,7 +4749,7 @@ struct nether_tempest_aoe_t: public arcane_mage_spell_t
 
   virtual timespan_t travel_time() const override
   {
-    return timespan_t::from_seconds( 1.3 );
+    return timespan_t::from_seconds( data().missile_speed() );
   }
 };
 
