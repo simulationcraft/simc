@@ -186,8 +186,6 @@ public:
     const spell_data_t* protection_paladin;
     const spell_data_t* holy_paladin;
     const spell_data_t* sanctuary;
-    const spell_data_t* sword_of_light;
-    const spell_data_t* sword_of_light_value;
     const spell_data_t* improved_block; //hidden
 
     const spell_data_t* judgment; // mystery, hidden
@@ -207,7 +205,7 @@ public:
     proc_t* blade_of_wrath;
     proc_t* topless_tower;
   } procs;
-    
+
     struct shuffled_rngs_t
     {
         // Holy
@@ -799,13 +797,9 @@ struct paladin_absorb_t : public paladin_spell_base_t< absorb_t >
 
 struct paladin_melee_attack_t: public paladin_action_t < melee_attack_t >
 {
-  bool use2hspec;
-
   paladin_melee_attack_t( const std::string& n, paladin_t* p,
-                          const spell_data_t* s = spell_data_t::nil(),
-                          bool u2h = true ):
-    base_t( n, p, s ),
-    use2hspec( u2h )
+                          const spell_data_t* s = spell_data_t::nil()) :
+    base_t( n, p, s )
   {
     may_crit = true;
     special = true;
@@ -816,9 +810,8 @@ struct paladin_melee_attack_t: public paladin_action_t < melee_attack_t >
 struct holy_power_generator_t : public paladin_melee_attack_t
 {
   holy_power_generator_t( const std::string& n, paladin_t* p,
-                          const spell_data_t* s = spell_data_t::nil(),
-                          bool u2h = true):
-                          paladin_melee_attack_t( n, p, s, u2h )
+                          const spell_data_t* s = spell_data_t::nil() ):
+                          paladin_melee_attack_t( n, p, s )
   {}
 
   virtual void execute() override;
@@ -827,8 +820,7 @@ struct holy_power_generator_t : public paladin_melee_attack_t
 struct holy_power_consumer_t : public paladin_melee_attack_t
 {
   holy_power_consumer_t( const std::string& n, paladin_t* p,
-                          const spell_data_t* s = spell_data_t::nil(),
-                          bool u2h = true);
+                          const spell_data_t* s = spell_data_t::nil() );
 
   double composite_target_multiplier( player_t* t ) const override;
 

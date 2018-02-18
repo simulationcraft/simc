@@ -57,7 +57,7 @@ namespace buffs {
 }
 
 holy_power_consumer_t::holy_power_consumer_t( const std::string& n, paladin_t* p,
-                                              const spell_data_t* s, bool u2h) : paladin_melee_attack_t( n, p, s, u2h )
+                                              const spell_data_t* s ) : paladin_melee_attack_t( n, p, s )
 {
   if ( p -> sets -> has_set_bonus( PALADIN_RETRIBUTION, T19, B2 ) )
   {
@@ -336,7 +336,7 @@ struct execution_sentence_t : public paladin_spell_t
 struct zeal_t : public holy_power_generator_t
 {
   zeal_t( paladin_t* p, const std::string& options_str )
-    : holy_power_generator_t( "zeal", p, p -> find_talent_spell( "Zeal" ), true )
+    : holy_power_generator_t( "zeal", p, p -> find_talent_spell( "Zeal" ) )
   {
     parse_options( options_str );
 
@@ -366,7 +366,7 @@ struct zeal_t : public holy_power_generator_t
 struct blade_of_justice_t : public holy_power_generator_t
 {
   blade_of_justice_t( paladin_t* p, const std::string& options_str )
-    : holy_power_generator_t( "blade_of_justice", p, p -> find_class_spell( "Blade of Justice" ), true )
+    : holy_power_generator_t( "blade_of_justice", p, p -> find_class_spell( "Blade of Justice" ) )
   {
     parse_options( options_str );
 
@@ -564,7 +564,7 @@ struct templars_verdict_t : public holy_power_consumer_t
   };
 
   templars_verdict_t( paladin_t* p, const std::string& options_str )
-    : holy_power_consumer_t( "templars_verdict", p, p -> find_specialization_spell( "Templar's Verdict" ), true )
+    : holy_power_consumer_t( "templars_verdict", p, p -> find_specialization_spell( "Templar's Verdict" ) )
   {
     parse_options( options_str );
 
@@ -637,7 +637,7 @@ struct templars_verdict_t : public holy_power_consumer_t
 struct justicars_vengeance_t : public holy_power_consumer_t
 {
   justicars_vengeance_t( paladin_t* p, const std::string& options_str )
-    : holy_power_consumer_t( "justicars_vengeance", p, p -> talents.justicars_vengeance, true )
+    : holy_power_consumer_t( "justicars_vengeance", p, p -> talents.justicars_vengeance )
   {
     parse_options( options_str );
 

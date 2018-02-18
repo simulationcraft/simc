@@ -1757,7 +1757,7 @@ struct melee_t : public paladin_melee_attack_t
 {
   bool first;
   melee_t( paladin_t* p ) :
-    paladin_melee_attack_t( "melee", p, spell_data_t::nil(), true ),
+    paladin_melee_attack_t( "melee", p, spell_data_t::nil() ),
     first( true )
   {
     school = SCHOOL_PHYSICAL;
@@ -1807,7 +1807,7 @@ struct melee_t : public paladin_melee_attack_t
 struct auto_melee_attack_t : public paladin_melee_attack_t
 {
   auto_melee_attack_t( paladin_t* p, const std::string& options_str )
-    : paladin_melee_attack_t( "auto_attack", p, spell_data_t::nil(), true )
+    : paladin_melee_attack_t( "auto_attack", p, spell_data_t::nil() )
   {
     school = SCHOOL_PHYSICAL;
     assert( p -> main_hand_weapon.type != WEAPON_NONE );
@@ -1847,7 +1847,7 @@ struct auto_melee_attack_t : public paladin_melee_attack_t
 struct crusader_strike_t : public holy_power_generator_t
 {
   crusader_strike_t( paladin_t* p, const std::string& options_str )
-    : holy_power_generator_t( "crusader_strike", p, p -> find_class_spell( "Crusader Strike" ), true )
+    : holy_power_generator_t( "crusader_strike", p, p -> find_class_spell( "Crusader Strike" ) )
   {
     parse_options( options_str );
 
@@ -1923,7 +1923,7 @@ struct crusader_strike_t : public holy_power_generator_t
 struct hammer_of_justice_damage_spell_t : public paladin_melee_attack_t
 {
   hammer_of_justice_damage_spell_t( paladin_t* p, const std::string& options_str )
-    : paladin_melee_attack_t( "hammer_of_justice_damage", p, p -> find_spell( 211561 ), true )
+    : paladin_melee_attack_t( "hammer_of_justice_damage", p, p -> find_spell( 211561 ) )
   {
     parse_options( options_str );
     weapon = &( p -> main_hand_weapon );
@@ -1974,7 +1974,7 @@ struct hammer_of_justice_t : public paladin_melee_attack_t
 struct hammer_of_the_righteous_aoe_t : public paladin_melee_attack_t
 {
   hammer_of_the_righteous_aoe_t( paladin_t* p )
-    : paladin_melee_attack_t( "hammer_of_the_righteous_aoe", p, p -> find_spell( 88263 ), false )
+    : paladin_melee_attack_t( "hammer_of_the_righteous_aoe", p, p -> find_spell( 88263 ) )
   {
     // AoE effect always hits if single-target attack succeeds
     // Doesn't proc Grand Crusader
@@ -2006,7 +2006,7 @@ struct hammer_of_the_righteous_t : public paladin_melee_attack_t
 {
   hammer_of_the_righteous_aoe_t* hotr_aoe;
   hammer_of_the_righteous_t( paladin_t* p, const std::string& options_str )
-    : paladin_melee_attack_t( "hammer_of_the_righteous", p, p -> find_class_spell( "Hammer of the Righteous" ), true )
+    : paladin_melee_attack_t( "hammer_of_the_righteous", p, p -> find_class_spell( "Hammer of the Righteous" ) )
   {
     parse_options( options_str );
 
@@ -2082,7 +2082,7 @@ struct shield_of_vengeance_proc_t : public paladin_spell_t
 struct judgment_aoe_t : public paladin_melee_attack_t
 {
   judgment_aoe_t( paladin_t* p, const std::string& options_str )
-    : paladin_melee_attack_t( "judgment_aoe", p, p -> find_spell( 228288 ), true )
+    : paladin_melee_attack_t( "judgment_aoe", p, p -> find_spell( 228288 ) )
   {
     parse_options( options_str );
 
@@ -2161,7 +2161,7 @@ struct judgment_t : public paladin_melee_attack_t
 {
   timespan_t sotr_cdr; // needed for sotr interaction for protection
   judgment_t( paladin_t* p, const std::string& options_str )
-    : paladin_melee_attack_t( "judgment", p, p -> find_spell( 20271 ), true )
+    : paladin_melee_attack_t( "judgment", p, p -> find_spell( 20271 ) )
   {
     parse_options( options_str );
 
@@ -2709,7 +2709,7 @@ void paladin_t::init_gains()
   player_t::init_gains();
 
   // Mana
-  gains.extra_regen                 = get_gain( ( specialization() == PALADIN_RETRIBUTION ) ? "sword_of_light" : "guarded_by_the_light" );
+  gains.extra_regen                 = get_gain( "guarded_by_the_light" );
   gains.mana_beacon_of_light        = get_gain( "beacon_of_light" );
 
   // Health
@@ -3245,8 +3245,6 @@ void paladin_t::init_spells()
   passives.improved_block         = find_specialization_spell( "Improved Block" );
 
   // Ret Passives
-  passives.sword_of_light         = find_specialization_spell( "Sword of Light" );
-  passives.sword_of_light_value   = find_spell( passives.sword_of_light -> ok() ? 20113 : 0 );
   passives.judgment             = find_spell( 231663 );
 
   if ( specialization() == PALADIN_PROTECTION )
@@ -3659,7 +3657,7 @@ double paladin_t::composite_attack_power_multiplier() const
 
 double paladin_t::composite_spell_power_multiplier() const
 {
-  if ( passives.sword_of_light -> ok() || specialization() == PALADIN_RETRIBUTION || passives.guarded_by_the_light -> ok() )
+  if ( specialization() == PALADIN_RETRIBUTION || passives.guarded_by_the_light -> ok() )
     return 1.0;
 
   return player_t::composite_spell_power_multiplier();
@@ -3894,7 +3892,7 @@ void paladin_t::invalidate_cache( cache_e c )
 {
   player_t::invalidate_cache( c );
 
-  if ( ( passives.sword_of_light -> ok() || specialization() == PALADIN_RETRIBUTION || passives.guarded_by_the_light -> ok() || passives.divine_bulwark -> ok() )
+  if ( ( specialization() == PALADIN_RETRIBUTION || passives.guarded_by_the_light -> ok() || passives.divine_bulwark -> ok() )
        && ( c == CACHE_STRENGTH || c == CACHE_ATTACK_POWER )
      )
   {
