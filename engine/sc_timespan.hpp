@@ -39,31 +39,31 @@ namespace timespan_adl_barrier
   private:
     using time_t = int_least64_t;
 
-    static time_t native_to_milli(time_t t)
+    static constexpr time_t native_to_milli(time_t t)
     {
       return t;
     }
-    static double native_to_second(time_t t)
+    static constexpr double native_to_second(time_t t)
     {
       return static_cast<double>(t) * (1.0 / 1000);
     }
-    static double native_to_minute(time_t t)
+    static constexpr double native_to_minute(time_t t)
     {
       return static_cast<double>(t) * (1.0 / (60 * 1000));
     }
 
     template<typename Rep>
-    static time_t milli_to_native(Rep t)
+    static constexpr time_t milli_to_native(Rep t)
     {
       return static_cast<time_t>(t);
     }
     template<typename Rep>
-    static time_t second_to_native(Rep t)
+    static constexpr time_t second_to_native(Rep t)
     {
       return static_cast<time_t>(t * 1000);
     }
     template<typename Rep>
-    static time_t minute_to_native(Rep t)
+    static constexpr time_t minute_to_native(Rep t)
     {
       return static_cast<time_t>(t * (60 * 1000));
     }
@@ -71,13 +71,13 @@ namespace timespan_adl_barrier
     time_t time;
 
     template<typename Rep>
-    explicit timespan_t(Rep t) :
+    explicit constexpr timespan_t(Rep t) :
         time(static_cast<time_t>(t))
     {
     }
 
   public:
-    timespan_t() : time( 0 )
+    constexpr timespan_t() : time( 0 )
     { }
 
     double total_minutes() const
@@ -94,21 +94,21 @@ namespace timespan_adl_barrier
     }
 
     template<typename Rep>
-    static typename std::enable_if<std::is_arithmetic<Rep>::value, timespan_t>::type from_millis(
+    static constexpr typename std::enable_if<std::is_arithmetic<Rep>::value, timespan_t>::type from_millis(
         Rep millis)
     {
       return timespan_t(milli_to_native(millis));
     }
 
     template<typename Rep>
-    static typename std::enable_if<std::is_arithmetic<Rep>::value, timespan_t>::type from_seconds(
+    static constexpr typename std::enable_if<std::is_arithmetic<Rep>::value, timespan_t>::type from_seconds(
         Rep seconds)
     {
       return timespan_t(second_to_native(seconds));
     }
 
     template<typename Rep>
-    static typename std::enable_if<std::is_arithmetic<Rep>::value, timespan_t>::type from_minutes(
+    static constexpr typename std::enable_if<std::is_arithmetic<Rep>::value, timespan_t>::type from_minutes(
         Rep minutes)
     {
       return timespan_t(minute_to_native(minutes));
@@ -243,25 +243,23 @@ namespace timespan_adl_barrier
 
     // Only to be used to convert the result of to_native().
     template<typename Rep>
-    static timespan_t from_native(Rep t)
+    static constexpr timespan_t from_native(Rep t)
     {
       return timespan_t(t);
     }
 
-    static timespan_t zero()
+    static constexpr timespan_t zero()
     {
       return timespan_t();
     }
-    static timespan_t max()
+    static constexpr timespan_t max()
     {
       return timespan_t(std::numeric_limits<time_t>::max());
     }
-    static timespan_t min()
+    static constexpr timespan_t min()
     {
-      if (std::is_floating_point<time_t>::value)
-        return timespan_t(-std::numeric_limits<time_t>::max());
-      else
-        return timespan_t(std::numeric_limits<time_t>::min());
+      return std::is_floating_point<time_t>::value ? timespan_t(-std::numeric_limits<time_t>::max()) :
+          timespan_t(std::numeric_limits<time_t>::min());
     }
   };
 

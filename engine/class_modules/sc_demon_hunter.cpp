@@ -66,8 +66,8 @@ public:
 };
 
 constexpr unsigned MAX_SOUL_FRAGMENTS = 5;
-constexpr unsigned DEMONIC_EXTEND_DURATION = 8;
-constexpr unsigned MAX_FIERY_BRAND_DURATION = 10;
+constexpr timespan_t DEMONIC_EXTEND_DURATION = timespan_t::from_seconds(8);
+constexpr timespan_t MAX_FIERY_BRAND_DURATION = timespan_t::from_seconds(10);
 constexpr double VENGEFUL_RETREAT_DISTANCE = 20.0;
 
 enum class soul_fragment
@@ -1568,7 +1568,7 @@ struct eye_beam_t : public demon_hunter_spell_t
 
     if (p()->talent.demonic->ok())
     {
-      timespan_t demonic_time = timespan_t::from_seconds(DEMONIC_EXTEND_DURATION);
+      auto demonic_time = DEMONIC_EXTEND_DURATION;
       if (p()->buff.metamorphosis->check())
       {
         p()->buff.metamorphosis->extend_duration(p(), demonic_time);
@@ -3641,7 +3641,7 @@ struct metamorphosis_buff_t : public demon_hunter_buff_t<buff_t>
         extended_by_demonic = false;
       }
       // If we are triggering from Eye Beam, we should disallow any additional full Demonic extensions
-      else if ( p->executing->id == this->p().spec.eye_beam->id() && extra_seconds == timespan_t::from_seconds( DEMONIC_EXTEND_DURATION ) )
+      else if ( p->executing->id == this->p().spec.eye_beam->id() && extra_seconds == DEMONIC_EXTEND_DURATION )
       {
         if ( extended_by_demonic )
           return;
