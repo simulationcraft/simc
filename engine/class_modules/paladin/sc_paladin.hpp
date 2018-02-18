@@ -407,6 +407,10 @@ public:
   void      init_spells_protection();
   action_t* create_action_protection( const std::string& name, const std::string& options_str );
 
+  void      create_buffs_holy();
+  void      init_spells_holy();
+  action_t* create_action_holy( const std::string& name, const std::string& options_str );
+
   void    update_forbearance_recharge_multipliers() const;
   void    generate_action_prio_list_prot();
   void    generate_action_prio_list_holy();
@@ -495,17 +499,6 @@ namespace buffs {
     double damage_modifier;
     double healing_modifier;
     double haste_bonus;
-  };
-
-  struct holy_avenger_buff_t : public haste_buff_t
-  {
-      holy_avenger_buff_t( player_t* p ):
-      haste_buff_t( haste_buff_creator_t( p, "holy_avenger", p -> find_spell( 105809 ) )
-                    .default_value(1.0 / (1.0 + p -> find_spell(105809) -> effectN(1).percent()))
-                    .add_invalidate(CACHE_HASTE))
-
-      {
-      }
   };
 
   struct forbearance_t : public buff_t

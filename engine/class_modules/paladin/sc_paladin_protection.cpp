@@ -894,6 +894,12 @@ void paladin_t::create_buffs_protection()
                                          .source( get_stats( "bulwark_of_order" ) )
                                          .gain( get_gain( "bulwark_of_order" ) )
                                          .max_stack( 1 ); // not sure why data says 3 stacks
+
+  // Talents
+  buffs.holy_shield_absorb     = absorb_buff_creator_t( this, "holy_shield", find_spell( 157122 ) )
+                                 .school( SCHOOL_MAGIC )
+                                 .source( get_stats( "holy_shield_absorb" ) )
+                                 .gain( get_gain( "holy_shield_absorb" ) );
 }
 
 void paladin_t::init_spells_protection()
@@ -936,6 +942,14 @@ void paladin_t::init_spells_protection()
   passives.sanctuary              = find_specialization_spell( "Sanctuary" );
   passives.riposte                = find_specialization_spell( "Riposte" );
   passives.improved_block         = find_specialization_spell( "Improved Block" );
+
+  if ( specialization() == PALADIN_PROTECTION )
+  {
+    extra_regen_period  = passives.sanctuary -> effectN( 5 ).period();
+    extra_regen_percent = passives.sanctuary -> effectN( 5 ).percent();
+
+    spec.judgment_2 = find_specialization_spell( 231657 );
+  }
 
   if ( talents.holy_shield -> ok() )
     active_holy_shield_proc = new holy_shield_proc_t( this );

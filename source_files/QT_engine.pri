@@ -99,6 +99,7 @@
  SOURCES += engine/class_modules/paladin/sc_paladin.cpp
  SOURCES += engine/class_modules/paladin/sc_paladin_retribution.cpp
  SOURCES += engine/class_modules/paladin/sc_paladin_protection.cpp
+ SOURCES += engine/class_modules/paladin/sc_paladin_holy.cpp
  SOURCES += engine/class_modules/sc_monk.cpp
  SOURCES += engine/class_modules/sc_mage.cpp
  SOURCES += engine/class_modules/sc_hunter.cpp
