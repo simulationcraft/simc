@@ -64,6 +64,7 @@ SRC += \
     class_modules$(PATHSEP)sc_priest.cpp \
     class_modules$(PATHSEP)paladin$(PATHSEP)sc_paladin.cpp \
     class_modules$(PATHSEP)paladin$(PATHSEP)sc_paladin_retribution.cpp \
+    class_modules$(PATHSEP)paladin$(PATHSEP)sc_paladin_protection.cpp \
     class_modules$(PATHSEP)sc_monk.cpp \
     class_modules$(PATHSEP)sc_mage.cpp \
     class_modules$(PATHSEP)sc_hunter.cpp \

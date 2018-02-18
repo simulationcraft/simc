@@ -403,6 +403,10 @@ public:
   void      generate_action_prio_list_ret();
   action_t* create_action_retribution( const std::string& name, const std::string& options_str );
 
+  void      create_buffs_protection();
+  void      init_spells_protection();
+  action_t* create_action_protection( const std::string& name, const std::string& options_str );
+
   void    update_forbearance_recharge_multipliers() const;
   void    generate_action_prio_list_prot();
   void    generate_action_prio_list_holy();

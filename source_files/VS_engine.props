@@ -224,6 +224,9 @@ To change the list of source files, update the QT_ files and run synchronize.py
 		<ClCompile Include="..\engine\class_modules\paladin\sc_paladin_retribution.cpp">
 			
 		</ClCompile>
+		<ClCompile Include="..\engine\class_modules\paladin\sc_paladin_protection.cpp">
+			
+		</ClCompile>
 		<ClCompile Include="..\engine\class_modules\sc_monk.cpp">
 			
 		</ClCompile>
