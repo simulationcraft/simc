@@ -35,6 +35,7 @@
  HEADERS += engine/util/utf8/checked.h
  HEADERS += engine/util/utf8.h
  HEADERS += engine/class_modules/paladin/sc_paladin.hpp
+ HEADERS += engine/class_modules/warlock/sc_warlock.hpp
  SOURCES += engine/util/xml.cpp
  SOURCES += engine/util/str.cpp
  SOURCES += engine/util/stopwatch.cpp
