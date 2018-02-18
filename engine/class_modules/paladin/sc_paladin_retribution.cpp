@@ -42,6 +42,7 @@ namespace buffs {
 
     void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
     {
+      printf("Here!\n");
       absorb_buff_t::expire_override( expiration_stacks, remaining_duration );
 
       paladin_t* p = static_cast<paladin_t*>( player );
@@ -52,6 +53,7 @@ namespace buffs {
         p -> active_shield_of_vengeance_proc -> base_dd_max = p -> active_shield_of_vengeance_proc -> base_dd_min = current_value;
         p -> active_shield_of_vengeance_proc -> execute();
       }
+      printf("I'm out\n");
     }
   };
 }
@@ -682,6 +684,36 @@ struct justicars_vengeance_t : public holy_power_consumer_t
 
 // SoV
 
+struct shield_of_vengeance_proc_t : public paladin_spell_t
+{
+  shield_of_vengeance_proc_t( paladin_t* p )
+    : paladin_spell_t( "shield_of_vengeance_proc", p, spell_data_t::nil() )
+  {
+    school = SCHOOL_HOLY;
+    may_miss    = false;
+    may_dodge   = false;
+    may_parry   = false;
+    may_glance  = false;
+    background  = true;
+    trigger_gcd = timespan_t::zero();
+    id = 184689;
+
+    split_aoe_damage = true;
+    may_crit = true;
+    aoe = -1;
+  }
+
+  void init() override {
+    paladin_spell_t::init();
+    snapshot_flags = 0;
+  }
+
+  proc_types proc_type() const override
+  {
+    return PROC1_MELEE_ABILITY;
+  }
+};
+
 struct shield_of_vengeance_t : public paladin_absorb_t
 {
   shield_of_vengeance_t( paladin_t* p, const std::string& options_str ) :
@@ -693,9 +725,13 @@ struct shield_of_vengeance_t : public paladin_absorb_t
     use_off_gcd = true;
     trigger_gcd = timespan_t::zero();
 
-
     may_crit = true;
     attack_power_mod.direct = 20;
+
+    if ( ! ( p -> active_shield_of_vengeance_proc ) )
+    {
+      p -> active_shield_of_vengeance_proc = new shield_of_vengeance_proc_t( p );
+    }
   }
 
   void init() override

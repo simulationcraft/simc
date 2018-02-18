@@ -2046,37 +2046,6 @@ struct hammer_of_the_righteous_t : public paladin_melee_attack_t
   }
 };
 
-
-struct shield_of_vengeance_proc_t : public paladin_spell_t
-{
-  shield_of_vengeance_proc_t( paladin_t* p )
-    : paladin_spell_t( "shield_of_vengeance_proc", p, spell_data_t::nil() )
-  {
-    school = SCHOOL_HOLY;
-    may_miss    = false;
-    may_dodge   = false;
-    may_parry   = false;
-    may_glance  = false;
-    background  = true;
-    trigger_gcd = timespan_t::zero();
-    id = 184689;
-
-    split_aoe_damage = true;
-    may_crit = true;
-    aoe = -1;
-  }
-
-  void init() override {
-    paladin_spell_t::init();
-    snapshot_flags = 0;
-  }
-
-  proc_types proc_type() const override
-  {
-    return PROC1_MELEE_ABILITY;
-  }
-};
-
 // Judgment =================================================================
 
 struct judgment_aoe_t : public paladin_melee_attack_t
@@ -3088,8 +3057,6 @@ void paladin_t::init_action_list()
     quiet = true;
     return;
   }
-
-  active_shield_of_vengeance_proc    = new shield_of_vengeance_proc_t   ( this );
 
   // create action priority lists
   if ( action_list_str.empty() )
