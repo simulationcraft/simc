@@ -34,7 +34,6 @@ struct paladin_td_t : public actor_target_data_t
     buff_t* debuffs_judgment;
     buff_t* judgment_of_light;
     buff_t* eye_of_tyr_debuff;
-    buffs::forbearance_t* forbearant_faithful;
     buff_t* blessed_hammer_debuff;
   } buffs;
 
@@ -72,9 +71,6 @@ public:
   {
     blessing_of_sacrifice_redirect_t* blessing_of_sacrifice_redirect;
   } active;
-
-  // Forbearant Faithful cooldown shenanigans
-  std::vector<cooldown_t*> forbearant_faithful_cooldowns;
 
   // Buffs
   struct buffs_t
@@ -388,9 +384,8 @@ public:
   double  get_divine_judgment( bool is_judgment = false ) const;
   void    trigger_grand_crusader();
   void    trigger_holy_shield( action_state_t* s );
-  void    trigger_forbearance( player_t* target, bool update_multiplier = true );
+  void    trigger_forbearance( player_t* target );
   int     get_local_enemies( double distance ) const;
-  double  get_forbearant_faithful_recharge_multiplier() const;
   bool    standing_in_consecration() const;
 
   std::vector<paladin_ground_aoe_t*> active_consecrations;
@@ -415,7 +410,6 @@ public:
   void      init_spells_holy();
   action_t* create_action_holy( const std::string& name, const std::string& options_str );
 
-  void    update_forbearance_recharge_multipliers() const;
   void    generate_action_prio_list_prot();
   void    generate_action_prio_list_holy();
   void    generate_action_prio_list_holy_dps();
@@ -518,25 +512,6 @@ namespace buffs {
       buff_t( buff_creator_t( *ap, name, ap -> source -> find_spell( 25771 ) ) ),
       paladin( debug_cast<paladin_t*>( ap -> source ) )
     { }
-
-    void execute( int stacks, double value, timespan_t duration ) override
-    {
-      buff_t::execute( stacks, value, duration );
-
-      paladin -> update_forbearance_recharge_multipliers();
-    }
-
-    void expire( timespan_t delay ) override
-    {
-      bool expired = check() != 0;
-
-      buff_t::expire( delay );
-
-      if ( expired )
-      {
-        paladin -> update_forbearance_recharge_multipliers();
-      }
-    }
   };
 
 }

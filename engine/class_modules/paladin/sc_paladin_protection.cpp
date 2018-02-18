@@ -223,13 +223,6 @@ struct blessing_of_spellwarding_t : public paladin_spell_t
     parse_options(options_str);
   }
 
-  bool init_finished() override
-  {
-    p()->forbearant_faithful_cooldowns.push_back(cooldown);
-
-    return paladin_spell_t::init_finished();
-  }
-
   virtual void execute() override
   {
     paladin_spell_t::execute();
@@ -245,17 +238,6 @@ struct blessing_of_spellwarding_t : public paladin_spell_t
 
     return paladin_spell_t::ready();
   }
-
-  double recharge_multiplier() const override
-  {
-    double cdr = paladin_spell_t::recharge_multiplier();
-
-    // BoP is bugged on beta - doesnot benefit from this, but the forbearance debuff it applies does affect LoH/DS.
-    // cdr *= p() -> get_forbearant_faithful_recharge_multiplier();
-
-    return cdr;
-  }
-
 };
 
 // Guardian of Ancient Kings ============================================

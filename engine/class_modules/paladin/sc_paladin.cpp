@@ -180,13 +180,6 @@ struct blessing_of_protection_t : public paladin_spell_t
     parse_options( options_str );
   }
 
-  bool init_finished() override
-  {
-    p() -> forbearant_faithful_cooldowns.push_back( cooldown );
-
-    return paladin_spell_t::init_finished();
-  }
-
   virtual void execute() override
   {
     paladin_spell_t::execute();
@@ -202,17 +195,6 @@ struct blessing_of_protection_t : public paladin_spell_t
 
     return paladin_spell_t::ready();
   }
-
-  double recharge_multiplier() const override
-  {
-    double cdr = paladin_spell_t::recharge_multiplier();
-
-    // BoP is bugged on beta - doesnot benefit from this, but the forbearance debuff it applies does affect LoH/DS.
-    // cdr *= p() -> get_forbearant_faithful_recharge_multiplier();
-
-    return cdr;
-  }
-
 };
 
 // Avenging Wrath ===========================================================
@@ -390,13 +372,6 @@ struct divine_shield_t : public paladin_spell_t
       cooldown -> duration = data().cooldown() * ( 1 + p -> talents.unbreakable_spirit -> effectN( 1 ).percent() );
   }
 
-  bool init_finished() override
-  {
-    p() -> forbearant_faithful_cooldowns.push_back( cooldown );
-
-    return paladin_spell_t::init_finished();
-  }
-
   virtual void execute() override
   {
     paladin_spell_t::execute();
@@ -420,16 +395,7 @@ struct divine_shield_t : public paladin_spell_t
     }
 
     // trigger forbearance
-    p() -> trigger_forbearance( player, false );
-  }
-
-  double recharge_multiplier() const override
-  {
-    double cdr = paladin_spell_t::recharge_multiplier();
-
-    cdr *= p() -> get_forbearant_faithful_recharge_multiplier();
-
-    return cdr;
+    p() -> trigger_forbearance( player );
   }
 
   virtual bool ready() override
@@ -583,13 +549,6 @@ struct lay_on_hands_t : public paladin_heal_t
       trigger_gcd = timespan_t::zero();
   }
 
-  bool init_finished() override
-  {
-    p() -> forbearant_faithful_cooldowns.push_back( cooldown );
-
-    return paladin_heal_t::init_finished();
-  }
-
   virtual void execute() override
   {
     base_dd_min = base_dd_max = p() -> resources.max[ RESOURCE_HEALTH ];
@@ -606,15 +565,6 @@ struct lay_on_hands_t : public paladin_heal_t
       return false;
 
     return paladin_heal_t::ready();
-  }
-
-  double recharge_multiplier() const override
-  {
-    double cdr = paladin_heal_t::recharge_multiplier();
-
-    cdr *= p() -> get_forbearant_faithful_recharge_multiplier();
-
-    return cdr;
   }
 };
 
@@ -1211,7 +1161,6 @@ paladin_td_t::paladin_td_t( player_t* target, paladin_t* paladin ) :
   buffs.debuffs_judgment = buff_creator_t( *this, "judgment", paladin -> find_spell( 197277 ));
   buffs.judgment_of_light = buff_creator_t( *this, "judgment_of_light", paladin -> find_spell( 196941 ) );
   buffs.eye_of_tyr_debuff = buff_creator_t( *this, "eye_of_tyr", paladin -> find_class_spell( "Eye of Tyr" ) ).cd( timespan_t::zero() );
-  buffs.forbearant_faithful = new buffs::forbearance_t( this, "forbearant_faithful" );
   buffs.blessed_hammer_debuff = buff_creator_t( *this, "blessed_hammer", paladin -> find_spell( 204301 ) );
 }
 
@@ -1250,19 +1199,12 @@ action_t* paladin_t::create_action( const std::string& name, const std::string& 
   return player_t::create_action( name, options_str );
 }
 
-void paladin_t::trigger_forbearance( player_t* target, bool update_recharge_multipliers )
+void paladin_t::trigger_forbearance( player_t* target )
 {
   auto buff = debug_cast<buffs::forbearance_t*>( target -> debuffs.forbearance );
 
   buff -> paladin = this;
   buff -> trigger();
-
-  get_target_data( target ) -> buffs.forbearant_faithful -> trigger();
-
-  if ( update_recharge_multipliers )
-  {
-    update_forbearance_recharge_multipliers();
-  }
 }
 
 int paladin_t::get_local_enemies( double distance ) const
@@ -1275,18 +1217,6 @@ int paladin_t::get_local_enemies( double distance ) const
       num_nearby += 1;
   }
   return num_nearby;
-}
-
-double paladin_t::get_forbearant_faithful_recharge_multiplier() const
-{
-  double m = 1.0;
-
-  return m;
-}
-
-void paladin_t::update_forbearance_recharge_multipliers() const
-{
-  range::for_each( forbearant_faithful_cooldowns, []( cooldown_t* cd ) { cd -> adjust_recharge_multiplier(); } );
 }
 
 // paladin_t::init_base =====================================================
