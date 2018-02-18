@@ -379,14 +379,8 @@ namespace warlock {
             double tick_base_damage;
             unsigned ticks_left;
 
-            td->dots_agony->current_action->calculate_tick_amount(td->dots_agony->state, td->dots_agony->current_stack());
-            td->dots_corruption->current_action->calculate_tick_amount(td->dots_corruption->state, td->dots_corruption->current_stack());
-            for (auto& current_ua : td->dots_unstable_affliction) {
-              if (current_ua->is_ticking()) {
-                current_ua->current_action->calculate_tick_amount(current_ua->state, current_ua->current_stack());
-              }
-            }
-
+            if (td->dots_agony->is_ticking())
+              td->dots_agony->current_action->calculate_tick_amount(td->dots_agony->state, td->dots_agony->current_stack());
             tick_base_damage = td->dots_agony->state->result_raw;
             ticks_left = td->dots_agony->ticks_left();
             double total_damage_agony = ticks_left * tick_base_damage;
@@ -397,6 +391,8 @@ namespace warlock {
                 td->dots_agony->ticks_left(), ( tick_base_damage * td->agony_stack ), total_damage_agony );
             }
 
+            if (td->dots_corruption->is_ticking())
+              td->dots_corruption->current_action->calculate_tick_amount(td->dots_corruption->state, td->dots_corruption->current_stack());
             tick_base_damage = td->dots_corruption->state->result_raw;
             ticks_left = td->dots_corruption->remains() / td->dots_corruption->time_to_tick;
             if (p()->talents.absolute_corruption->ok())
@@ -411,30 +407,41 @@ namespace warlock {
 
             double total_damage_siphon_life = 0.0;
             if ( p() -> talents.siphon_life -> ok() ) {
-              tick_base_damage = td->dots_siphon_life->state->result_raw;
-              ticks_left = td->dots_siphon_life->ticks_left();
-              total_damage_siphon_life += ( ticks_left * tick_base_damage );
-              if (sim->debug) {
-                sim->out_debug.printf("%s siphon life dot_remains=%.3f duration=%.3f ticks_left=%u amount=%.3f total=%.3f",
-                  name(), td->dots_siphon_life->remains().total_seconds(),
-                  td->dots_siphon_life->duration().total_seconds(),
-                  td->dots_siphon_life->ticks_left(), tick_base_damage, total_damage_siphon_life);
+              if (td->dots_siphon_life->is_ticking()) {
+                td->dots_siphon_life->current_action->calculate_tick_amount(td->dots_siphon_life->state, td->dots_siphon_life->current_stack());
+                tick_base_damage = td->dots_siphon_life->state->result_raw;
+                ticks_left = td->dots_siphon_life->ticks_left();
+                total_damage_siphon_life += (ticks_left * tick_base_damage);
+                if (sim->debug) {
+                  sim->out_debug.printf("%s siphon life dot_remains=%.3f duration=%.3f ticks_left=%u amount=%.3f total=%.3f",
+                    name(), td->dots_siphon_life->remains().total_seconds(),
+                    td->dots_siphon_life->duration().total_seconds(),
+                    td->dots_siphon_life->ticks_left(), tick_base_damage, total_damage_siphon_life);
+                }
               }
             }
 
             double total_damage_phantom_singularity = 0.0;
             if (p()->talents.phantom_singularity->ok()) {
-              tick_base_damage = td->dots_phantom_singularity->state->result_raw;
-              ticks_left = td->dots_phantom_singularity->ticks_left();
-              total_damage_phantom_singularity += (ticks_left * tick_base_damage);
-              if (sim->debug) {
-                sim->out_debug.printf("%s phantom singularity dot_remains=%.3f duration=%.3f ticks_left=%u amount=%.3f total=%.3f",
-                  name(), td->dots_phantom_singularity->remains().total_seconds(),
-                  td->dots_phantom_singularity->duration().total_seconds(),
-                  td->dots_phantom_singularity->ticks_left(), tick_base_damage, total_damage_phantom_singularity);
+              if (td->dots_phantom_singularity->is_ticking()) {
+                td->dots_phantom_singularity->current_action->calculate_tick_amount(td->dots_phantom_singularity->state, td->dots_phantom_singularity->current_stack());
+                tick_base_damage = td->dots_phantom_singularity->state->result_raw;
+                ticks_left = td->dots_phantom_singularity->ticks_left();
+                total_damage_phantom_singularity += (ticks_left * tick_base_damage);
+                if (sim->debug) {
+                  sim->out_debug.printf("%s phantom singularity dot_remains=%.3f duration=%.3f ticks_left=%u amount=%.3f total=%.3f",
+                    name(), td->dots_phantom_singularity->remains().total_seconds(),
+                    td->dots_phantom_singularity->duration().total_seconds(),
+                    td->dots_phantom_singularity->ticks_left(), tick_base_damage, total_damage_phantom_singularity);
+                }
               }
             }
 
+            for (auto& current_ua : td->dots_unstable_affliction) {
+              if (current_ua->is_ticking()) {
+                current_ua->current_action->calculate_tick_amount(current_ua->state, current_ua->current_stack());
+              }
+            }
             double total_damage_ua = 0.0;
             for (auto& current_ua : td->dots_unstable_affliction) {
               if (current_ua->is_ticking()) {
