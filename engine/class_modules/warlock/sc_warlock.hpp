@@ -689,6 +689,13 @@ namespace warlock {
                 virtual action_t* create_action(const std::string& name, const std::string& options_str) override;
             };
         }
+        namespace felguard {
+            struct felguard_pet_t : public warlock_pet_t {
+                felguard_pet_t(sim_t* sim, warlock_t* owner, const std::string& name = "felguard");
+                virtual void init_base_stats() override;
+                virtual action_t* create_action(const std::string& name, const std::string& options_str) override;
+            };
+        }
     }
 
     namespace actions {

@@ -58,40 +58,34 @@ namespace warlock {
                         p()->melee_attack->execute();
                 }
             };
-            struct felguard_pet_t : public warlock_pet_t {
-                felguard_pet_t(sim_t* sim, warlock_t* owner, const std::string& name = "felguard") :
-                    warlock_pet_t(sim, owner, name, PET_FELGUARD, name != "felguard") {
-                    action_list_str += "/felstorm";
-                    action_list_str += "/legion_strike,if=cooldown.felstorm.remains";
-                    owner_coeff.ap_from_sp = 1.1; // HOTFIX
-                    owner_coeff.ap_from_sp *= 1.2; // PTR
-                }
 
-                virtual void init_base_stats() override {
-                    warlock_pet_t::init_base_stats();
+            felguard_pet_t::felguard_pet_t(sim_t* sim, warlock_t* owner, const std::string& name) :
+                warlock_pet_t(sim, owner, name, PET_FELGUARD, name != "felguard") {
+                action_list_str += "/felstorm";
+                action_list_str += "/legion_strike,if=cooldown.felstorm.remains";
+                owner_coeff.ap_from_sp = 1.1; // HOTFIX
+                owner_coeff.ap_from_sp *= 1.2; // PTR
+            }
 
-                    melee_attack = new warlock_pet_melee_t(this);
-                    special_action = new felstorm_t(this);
-                    special_action_two = new axe_toss_t(this);
-                }
+            void felguard_pet_t::init_base_stats() {
+                warlock_pet_t::init_base_stats();
 
-                double composite_player_multiplier(school_e school) const override {
-                    double m = warlock_pet_t::composite_player_multiplier(school);
-                    return m;
-                }
+                melee_attack = new warlock_pet_melee_t(this);
+                special_action = new felstorm_t(this);
+                special_action_two = new axe_toss_t(this);
+            }
 
-                virtual action_t* create_action(const std::string& name, const std::string& options_str) override {
-                    if (name == "legion_strike") return new legion_strike_t(this);
-                    if (name == "felstorm") return new felstorm_t(this);
-                    if (name == "axe_toss") return new axe_toss_t(this);
+            action_t* felguard_pet_t::create_action(const std::string& name, const std::string& options_str) {
+                if (name == "legion_strike") return new legion_strike_t(this);
+                if (name == "felstorm") return new felstorm_t(this);
+                if (name == "axe_toss") return new axe_toss_t(this);
 
-                    return warlock_pet_t::create_action(name, options_str);
-                }
-            };
+                return warlock_pet_t::create_action(name, options_str);
+            }
         }
     }
     namespace actions {
-struct hand_of_guldan_t : public warlock_spell_t {
+        struct hand_of_guldan_t : public warlock_spell_t {
             /*
             struct trigger_imp_event_t : public player_event_t {
             bool initiator;
@@ -235,21 +229,11 @@ struct hand_of_guldan_t : public warlock_spell_t {
 
         return nullptr;
     }
-    /*
-    pet_t* warlock_t::create_pet_demonology(const std::string& pet_name, const std::string& ) {
-        pet_t* p = find_pet(pet_name);
-        if (p) return p;
-        using namespace pets;
 
-        if (pet_name == "felguard") return new              felguard::felguard_pet_t(sim, this);
-        if (pet_name == "service_felguard") return new      felguard::felguard_pet_t(sim, this, pet_name);
-
-        return nullptr;
-    }
-    */
     void warlock_t::create_buffs_demonology() {
 
     }
+
     void warlock_t::init_spells_demonology() {
         spec.demonology                         = find_specialization_spell(137044);
         mastery_spells.master_demonologist      = find_mastery_spell(WARLOCK_DEMONOLOGY);
@@ -270,14 +254,18 @@ struct hand_of_guldan_t : public warlock_spell_t {
         talents.inner_demons                    = find_talent_spell("Inner Demons");
         talents.nether_portal                   = find_talent_spell("Nether Portal");
     }
+
     void warlock_t::init_gains_demonology() {
 
     }
+
     void warlock_t::init_rng_demonology() {
     }
+
     void warlock_t::init_procs_demonology() {
 
     }
+
     void warlock_t::create_options_demonology() {
     }
 

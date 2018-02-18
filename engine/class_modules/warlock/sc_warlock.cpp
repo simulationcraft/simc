@@ -782,13 +782,13 @@ pet_t* warlock_t::create_pet( const std::string& pet_name, const std::string& /*
   if (pet_name == "imp") return new                   imp::imp_pet_t(sim, this);
   if (pet_name == "succubus") return new              succubus::succubus_pet_t(sim, this);
   if (pet_name == "voidwalker") return new            voidwalker::voidwalker_pet_t(sim, this);
-  //if (pet_name == "felguard") return new            felguard_pet_t(sim, this);
+  if (pet_name == "felguard") return new              felguard::felguard_pet_t(sim, this);
 
   if (pet_name == "service_felhunter") return new     felhunter::felhunter_pet_t(sim, this, pet_name);
   if (pet_name == "service_imp") return new           imp::imp_pet_t(sim, this, pet_name);
   if (pet_name == "service_succubus") return new      succubus::succubus_pet_t(sim, this, pet_name);
   if (pet_name == "service_voidwalker") return new    voidwalker::voidwalker_pet_t(sim, this, pet_name);
-  //if (pet_name == "service_felguard") return new      felguard_pet_t(sim, this, pet_name);
+  if (pet_name == "service_felguard") return new      felguard::felguard_pet_t(sim, this, pet_name);
 
   return nullptr;
 }
