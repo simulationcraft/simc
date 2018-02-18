@@ -2,9 +2,8 @@
 #include "sc_warlock.hpp"
 
 namespace warlock {
-    #define MAX_UAS 5
     namespace actions {
-        const int ua_spells[5] = { 233490, 233496, 233497, 233498, 233499 };
+        const std::array<int, MAX_UAS> ua_spells = { 233490, 233496, 233497, 233498, 233499 };
         // Dots
         struct agony_t : public warlock_spell_t {
             int agony_action_id;

@@ -2,7 +2,6 @@
 #include "sc_warlock.hpp"
 
 namespace warlock { 
-#define MAX_UAS 5
 // Pets
 namespace pets {
 warlock_pet_t::warlock_pet_t( sim_t* sim, warlock_t* owner, const std::string& pet_name, pet_e pt, bool guardian ):
