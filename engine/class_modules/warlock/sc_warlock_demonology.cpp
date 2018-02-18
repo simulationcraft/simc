@@ -282,15 +282,15 @@ struct hand_of_guldan_t : public warlock_spell_t {
     }
 
     void warlock_t::create_apl_demonology() {
-        action_priority_list_t* default = get_action_priority_list("default");
+        action_priority_list_t* def = get_action_priority_list("default");
 
-        default->add_action("shadow_bolt");
+        def -> add_action("shadow_bolt");
     }
 
     using namespace unique_gear;
     using namespace actions;
 
     void warlock_t::legendaries_demonology() {
-        
+
     }
 }

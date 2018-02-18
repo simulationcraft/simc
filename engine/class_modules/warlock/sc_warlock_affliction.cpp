@@ -686,18 +686,18 @@ namespace warlock {
     }
 
     void warlock_t::create_apl_affliction() {
-        action_priority_list_t* default = get_action_priority_list("default");
+        action_priority_list_t* def = get_action_priority_list("default");
 
-        default->add_action("soul_harvest,if=buff.active_uas.stack>0");
-        default->add_action("haunt");
-        default->add_action("agony,if=refreshable");
-        default->add_action("siphon_life,if=refreshable");
-        default->add_action("corruption,if=refreshable");
-        default->add_action("phantom_singularity");
-        default->add_action("unstable_affliction,if=soul_shard=5");
-        default->add_action("unstable_affliction,if=(dot.unstable_affliction_1.ticking+dot.unstable_affliction_2.ticking+dot.unstable_affliction_3.ticking+dot.unstable_affliction_4.ticking+dot.unstable_affliction_5.ticking=0)|soul_shard>2");
-        default->add_action("deathbolt");
-        default->add_action("shadow_bolt");
+        def -> add_action("soul_harvest,if=buff.active_uas.stack>0");
+        def -> add_action("haunt");
+        def -> add_action("agony,if=refreshable");
+        def -> add_action("siphon_life,if=refreshable");
+        def -> add_action("corruption,if=refreshable");
+        def -> add_action("phantom_singularity");
+        def -> add_action("unstable_affliction,if=soul_shard=5");
+        def -> add_action("unstable_affliction,if=(dot.unstable_affliction_1.ticking+dot.unstable_affliction_2.ticking+dot.unstable_affliction_3.ticking+dot.unstable_affliction_4.ticking+dot.unstable_affliction_5.ticking=0)|soul_shard>2");
+        def -> add_action("deathbolt");
+        def -> add_action("shadow_bolt");
     }
 
     using namespace unique_gear;

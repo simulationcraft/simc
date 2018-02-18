@@ -367,7 +367,7 @@ namespace warlock {
         }
 
         // sc_warlock_affliction
-        action_t* warlock_t::create_action_affliction(const std::string& action_name, const std::string& options_str);
+        action_t* create_action_affliction(const std::string& action_name, const std::string& options_str);
         void create_buffs_affliction();
         void init_spells_affliction();
         void init_gains_affliction();
@@ -378,8 +378,8 @@ namespace warlock {
         virtual void legendaries_affliction();
 
         // sc_warlock_demonology
-        action_t* warlock_t::create_action_demonology(const std::string& action_name, const std::string& options_str);
-        pet_t* warlock_t::create_pet_demonology(const std::string& pet_name, const std::string& );
+        action_t* create_action_demonology(const std::string& action_name, const std::string& options_str);
+        pet_t* create_pet_demonology(const std::string& pet_name, const std::string& );
         void create_buffs_demonology();
         void init_spells_demonology();
         void init_gains_demonology();
@@ -390,7 +390,7 @@ namespace warlock {
         virtual void legendaries_demonology();
 
         // sc_warlock_destruction
-        action_t* warlock_t::create_action_destruction(const std::string& action_name, const std::string& options_str);
+        action_t* create_action_destruction(const std::string& action_name, const std::string& options_str);
         void create_buffs_destruction();
         void init_spells_destruction();
         void init_gains_destruction();

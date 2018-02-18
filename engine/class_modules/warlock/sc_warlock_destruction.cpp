@@ -51,9 +51,9 @@ namespace warlock {
     }
 
     void warlock_t::create_apl_destruction() {
-        action_priority_list_t* default = get_action_priority_list("default");
+        action_priority_list_t* def = get_action_priority_list("default");
 
-        default->add_action("incinerate");
+        def -> add_action("incinerate");
     }
 
     using namespace unique_gear;
