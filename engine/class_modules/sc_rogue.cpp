@@ -783,6 +783,17 @@ struct rogue_attack_t : public melee_attack_t
     tick_may_crit = true;
     hasted_ticks = false;
 
+    // Default Weapon Assignment
+    if ( data().flags( SPELL_ATTR_EX3_MAIN_HAND ) )
+      weapon = &p->main_hand_weapon;
+    else if ( data().flags( SPELL_ATTR_EX3_REQ_OFFHAND ) )
+      weapon = &p->off_hand_weapon;
+
+    // BfA has removed Weapon Damage scaling from all abilites except standard auto attacks. We will keep assigning weapons
+    // for handling things like procs_poison, Main Gauche, or Combat Potency, but disable default weapon multipliers, for now.
+    weapon_multiplier = 0;
+    weapon_power_mod = 0;
+
     memset( &affected_by, 0, sizeof( affected_by ) );
 
     for ( size_t i = 1; i <= s -> effect_count(); i++ )
@@ -878,14 +889,6 @@ struct rogue_attack_t : public melee_attack_t
   {
     melee_attack_t::init();
 
-    // BfA has removed Weapon Damage scaling from all abilites except standard auto attacks. We will keep assigning weapons
-    // for handling things like procs_poison, Main Gauche, or Combat Potency, but disable Weapon multipliers, for now.
-    if ( special )
-    {
-      weapon_multiplier = 0;
-      weapon_power_mod = 0;
-    }
-
     // Figure out the affected flags
     affected_by.shadow_blades = data().affected_by( p() -> spec.shadow_blades -> effectN( 2 ) ) ||
                                 data().affected_by( p() -> spec.shadow_blades -> effectN( 3 ) ) ||
@@ -897,8 +900,7 @@ struct rogue_attack_t : public melee_attack_t
     affected_by.deepening_shadows = base_costs[ RESOURCE_COMBO_POINT ] > 0;
     affected_by.ghostly_strike = data().affected_by( p() -> talent.ghostly_strike -> effectN( 5 ) );
     affected_by.vendetta = data().affected_by( p() -> spec.vendetta -> effectN( 1 ) );
-    affected_by.weaponmaster = p() -> talent.weaponmaster -> ok() && harmful && special &&
-                               ( weapon_multiplier > 0 || attack_power_mod.direct > 0 );
+    affected_by.weaponmaster = p() -> talent.weaponmaster -> ok() && harmful && special && attack_power_mod.direct > 0;
     affected_by.alacrity = base_costs[ RESOURCE_COMBO_POINT ] > 0;
     affected_by.adrenaline_rush_gcd = data().affected_by( p() -> buffs.adrenaline_rush -> data().effectN( 3 ) );
     affected_by.lesser_adrenaline_rush_gcd = data().affected_by( p() -> buffs.t20_4pc_outlaw -> data().effectN( 3 ) );
@@ -1307,11 +1309,8 @@ struct main_gauche_t : public rogue_attack_t
   main_gauche_t( rogue_t* p ) :
     rogue_attack_t( "main_gauche", p, p -> find_spell( 86392 ) )
   {
-    weapon          = &( p -> off_hand_weapon );
-    special         = true;
-    background      = true;
-    may_crit        = true;
-    proc            = true; // it's proc; therefore it cannot trigger main_gauche for chain-procs
+    special = background = may_crit = true;
+    proc = true; // it's proc; therefore it cannot trigger main_gauche for chain-procs
   }
 
   bool procs_combat_potency() const override
@@ -1327,12 +1326,10 @@ struct blade_flurry_attack_t : public rogue_attack_t
     rogue_attack_t( "blade_flurry_attack", p, p -> find_spell( 22482 ) )
   {
     may_miss = may_crit = proc = callbacks = may_dodge = may_parry = may_block = false;
-    background        = true;
-    aoe               = -1;
-    weapon            = &p -> main_hand_weapon;
-    weapon_multiplier = 0;
-    radius            = 5;
-    range             = -1.0;
+    background = true;
+    aoe        = -1;
+    radius     = 5;
+    range      = -1.0;
 
     snapshot_flags |= STATE_MUL_DA;
   }
@@ -1546,8 +1543,6 @@ struct rogue_poison_t : public rogue_attack_t
     may_parry         = false;
     may_block         = false;
     callbacks         = false;
-
-    weapon_multiplier = 0;
 
     proc_chance_  = data().proc_chance();
     if ( s -> affected_by( p -> spec.improved_poisons -> effectN( 1 ) ) )
@@ -2136,12 +2131,12 @@ struct melee_t : public rogue_attack_t
   melee_t( const char* name, rogue_t* p, int sw ) :
     rogue_attack_t( name, p ), sync_weapons( sw ), first( true )
   {
-    school          = SCHOOL_PHYSICAL;
-    background      = true;
-    repeating       = true;
-    trigger_gcd     = timespan_t::zero();
-    special         = false;
-    may_glance      = true;
+    background = repeating = may_glance = true;
+    special           = false;
+    school            = SCHOOL_PHYSICAL;
+    trigger_gcd       = timespan_t::zero();
+    weapon_power_mod  = 1.0 / 3.5;
+    weapon_multiplier = 1.0;
 
     if ( p -> dual_wield() )
       base_hit -= 0.19;
@@ -2307,7 +2302,6 @@ struct ambush_t : public rogue_attack_t
   ambush_t( rogue_t* p, const std::string& options_str ) :
     rogue_attack_t( "ambush", p, p -> find_specialization_spell( "Ambush" ), options_str )
   {
-    weapon = &( p -> main_hand_weapon );
     requires_stealth  = true;
   }
 
@@ -2333,7 +2327,6 @@ struct backstab_t : public rogue_attack_t
     rogue_attack_t( "backstab", p, p -> find_specialization_spell( "Backstab" ), options_str )
   {
     requires_weapon = WEAPON_DAGGER;
-    weapon = &( p -> main_hand_weapon );
   }
 
   double composite_da_multiplier( const action_state_t* state ) const override
@@ -2512,6 +2505,12 @@ struct crimson_tempest_t : public rogue_attack_t
       crimson_tempest_dot->schedule_execute( action_state );
     }
   }
+
+  // Base damage of Crimson Tempest does not scale from CP, just the DoT component
+  double attack_direct_power_coefficient( const action_state_t* s ) const override
+  { 
+    return melee_attack_t::attack_direct_power_coefficient( s );
+  }
 };
 
 // Dispatch =================================================================
@@ -2522,7 +2521,6 @@ struct dispatch_t: public rogue_attack_t
     rogue_attack_t( "dispatch", p, p -> talent.dispatch, options_str )
   {
     requires_weapon = WEAPON_DAGGER;
-    weapon = &( p -> main_hand_weapon );
   }
 
   bool ready() override
@@ -2559,7 +2557,6 @@ struct envenom_t : public rogue_attack_t
   envenom_t( rogue_t* p, const std::string& options_str ) :
     rogue_attack_t( "envenom", p, p -> find_specialization_spell( "Envenom" ), options_str )
   {
-    weapon = &( p -> main_hand_weapon );
     dot_duration = timespan_t::zero();
   }
 
@@ -2633,7 +2630,6 @@ struct eviscerate_t : public rogue_attack_t
   eviscerate_t( rogue_t* p, const std::string& options_str ):
     rogue_attack_t( "eviscerate", p, p -> spec.eviscerate, options_str )
   {
-    weapon = &( player -> main_hand_weapon );
     base_multiplier *= 1.0 + p -> spec.eviscerate_2 -> effectN( 1 ).percent();
   }
 
@@ -2841,7 +2837,6 @@ struct gouge_t : public rogue_attack_t
   gouge_t( rogue_t* p, const std::string& options_str ) :
     rogue_attack_t( "gouge", p, p -> find_specialization_spell( "Gouge" ), options_str )
   {
-    weapon = &( p -> main_hand_weapon );
     requires_stealth  = false;
 
     if ( p -> talent.dirty_tricks -> ok() )
@@ -2869,7 +2864,6 @@ struct ghostly_strike_t : public rogue_attack_t
   ghostly_strike_t( rogue_t* p, const std::string& options_str ) :
     rogue_attack_t( "ghostly_strike", p, p -> talent.ghostly_strike, options_str )
   {
-    weapon = &( p -> main_hand_weapon );
   }
 
   bool procs_main_gauche() const override
@@ -2906,7 +2900,6 @@ struct gloomblade_t : public rogue_attack_t
     rogue_attack_t( "gloomblade", p, p -> talent.gloomblade, options_str )
   {
     requires_weapon = WEAPON_DAGGER;
-    weapon = &( p -> main_hand_weapon );
   }
 
   double action_multiplier() const override
@@ -2992,13 +2985,11 @@ struct killing_spree_t : public rogue_attack_t
     tick_zero = true;
 
     attack_mh = new killing_spree_tick_t( p, "killing_spree_mh", p -> find_spell( 57841 ) );
-    attack_mh -> weapon = &( player -> main_hand_weapon );
     add_child( attack_mh );
 
     if ( player -> off_hand_weapon.type != WEAPON_NONE )
     {
       attack_oh = new killing_spree_tick_t( p, "killing_spree_oh", p -> find_spell( 57841 ) -> effectN( 2 ).trigger() );
-      attack_oh -> weapon = &( player -> off_hand_weapon );
       add_child( attack_oh );
     }
   }
@@ -3119,8 +3110,6 @@ struct run_through_t: public rogue_attack_t
   run_through_t( rogue_t* p, const std::string& options_str ) :
     rogue_attack_t( "run_through", p, p -> find_specialization_spell( "Run Through" ), options_str )
   {
-    weapon = &( player -> main_hand_weapon );
-    weapon_multiplier = 0;
   }
 
   bool procs_main_gauche() const override
@@ -3280,11 +3269,9 @@ struct mutilate_t : public rogue_attack_t
     }
 
     mh_strike = new mutilate_strike_t( p, "mutilate_mh", data().effectN( 3 ).trigger(), toxic_mutilator_crit_chance );
-    mh_strike -> weapon = &( p -> main_hand_weapon );
     add_child( mh_strike );
 
     oh_strike = new mutilate_strike_t( p, "mutilate_oh", data().effectN( 4 ).trigger(), toxic_mutilator_crit_chance );
-    oh_strike -> weapon = &( p -> off_hand_weapon );
     add_child( oh_strike );
   }
 
@@ -3511,7 +3498,6 @@ struct saber_slash_t : public rogue_attack_t
     rogue_attack_t( "saber_slash", p, p -> find_specialization_spell( "Saber Slash" ), options_str ),
     saberslash_proc_event( nullptr ), delay( data().duration() )
   {
-    weapon = &( player -> main_hand_weapon );
   }
 
   double proc_chance_main_gauche() const override
@@ -3573,20 +3559,15 @@ struct saber_slash_t : public rogue_attack_t
 
 struct shadow_blade_t : public rogue_attack_t
 {
-  shadow_blade_t( const std::string& name_str, rogue_t* p, const spell_data_t* s, weapon_t* w ) :
+  shadow_blade_t( const std::string& name_str, rogue_t* p, const spell_data_t* s ) :
     rogue_attack_t( name_str, p, s )
   {
-    weapon = w;
     school  = SCHOOL_SHADOW;
     special = false;
     repeating = true;
     background = true;
     may_glance = false;
-    base_execute_time = w -> swing_time;
-
-    // As of 2018-02-14 BfA Alpha Build 26032, Shadow Blade also only scales with AP.
-    weapon_multiplier = 0;
-    weapon_power_mod = 0;
+    base_execute_time = weapon -> swing_time;
   }
 };
 
@@ -3599,15 +3580,15 @@ struct shadow_blades_t : public rogue_attack_t
 
     if ( ! p -> shadow_blade_main_hand )
     {
-      p -> shadow_blade_main_hand = new shadow_blade_t( "shadow_blade_mh",
-          p, data().effectN( 1 ).trigger(), &( p -> main_hand_weapon ) );
+      p -> shadow_blade_main_hand = 
+        new shadow_blade_t( "shadow_blade_mh", p, data().effectN( 1 ).trigger() );
       add_child( p -> shadow_blade_main_hand );
     }
 
     if ( ! p -> shadow_blade_off_hand && p -> off_hand_weapon.type != WEAPON_NONE )
     {
-      p -> shadow_blade_off_hand = new shadow_blade_t( "shadow_blade_offhand",
-          p, p -> find_spell( data().effectN( 1 ).misc_value1() ), &( p -> off_hand_weapon ) );
+      p -> shadow_blade_off_hand = 
+        new shadow_blade_t( "shadow_blade_offhand", p, p -> find_spell( data().effectN( 1 ).misc_value1() ) );
       add_child( p -> shadow_blade_off_hand );
     }
   }
@@ -3694,7 +3675,6 @@ struct shadowstrike_t : public rogue_attack_t
     shadow_satyrs_walk( nullptr )
   {
     requires_weapon = WEAPON_DAGGER;
-    weapon = &( p -> main_hand_weapon );
     requires_stealth = true;
   }
 
@@ -3931,7 +3911,6 @@ struct toxic_blade_t : public rogue_attack_t
     rogue_attack_t( "toxic_blade", p, p -> talent.toxic_blade, options_str )
   {
     requires_weapon = WEAPON_DAGGER;
-    weapon = &( p -> main_hand_weapon );
   }
 
   void impact( action_state_t* s ) override
@@ -4046,8 +4025,6 @@ struct death_from_above_t : public rogue_attack_t
   death_from_above_t( rogue_t* p, const std::string& options_str ) :
     rogue_attack_t( "death_from_above", p, p -> talent.death_from_above, options_str )
   {
-    weapon = &( p -> main_hand_weapon );
-    weapon_multiplier = 0;
     attack_power_mod.direct /= 5;
 
     base_tick_time = timespan_t::zero();
@@ -4221,8 +4198,6 @@ struct kidney_shot_t : public rogue_attack_t
     internal_bleeding( p -> talent.internal_bleeding ? new internal_bleeding_t( p ) : nullptr )
   {
     may_crit = false;
-    weapon = &( p -> main_hand_weapon );
-    weapon_multiplier = 0;
     if ( internal_bleeding )
     {
       add_child( internal_bleeding );
@@ -4251,8 +4226,6 @@ struct poisoned_knife_t : public rogue_attack_t
   poisoned_knife_t( rogue_t* p, const std::string& options_str ) :
     rogue_attack_t( "poisoned_knife", p, p -> find_specialization_spell( "Poisoned Knife" ), options_str )
   {
-    weapon = &( p -> main_hand_weapon );
-    weapon_multiplier = 0;
   }
 
   bool procs_insignia_of_ravenholdt() const override
