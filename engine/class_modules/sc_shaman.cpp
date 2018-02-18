@@ -13,11 +13,9 @@
 //
 // Elemental
 // - Add Talents
-//   - Add Molten Fury
 //   - Add Elemental Mastery
 //   - Add Volcanic Rage
 //   - Add Spirit Wolf
-//   - Add High Voltage
 //   - Electric Discharge
 // - Add Fulmination
 // - Edit Earthquake cost / model
@@ -460,15 +458,16 @@ public:
     const spell_data_t* molten_fury;
     const spell_data_t* totem_mastery;
 
-    const spell_data_t* elemental_blast;
-    const spell_data_t* echo_of_the_elements;
-
-    const spell_data_t* primal_elementalist;
-
-    const spell_data_t* storm_elemental;
     const spell_data_t* aftershock;
 
+    const spell_data_t* echo_of_the_elements;
+    const spell_data_t* storm_elemental;
+    const spell_data_t* elemental_blast;
+
+    const spell_data_t* high_voltage;
+    const spell_data_t* primal_elementalist;
     const spell_data_t* liquid_magma_totem;
+
     const spell_data_t* stormkeeper;
 
     // Enhancement
@@ -1596,6 +1595,12 @@ public:
     return 0;
   }
 
+  // Additional overload chances
+  virtual size_t n_overload_chances( const action_state_t* ) const
+  {
+    return 0;
+  }
+
   void trigger_elemental_overload( const action_state_t* source_state ) const
   {
     struct elemental_overload_event_t : public event_t
@@ -1635,7 +1640,15 @@ public:
       return;
     }
 
-    unsigned overloads = rng().roll( overload_chance( source_state ) ) + (unsigned)n_overloads( source_state );
+    unsigned overloads = rng().roll( overload_chance( source_state ) );
+
+    // roll for overload for each additional chance to trigger an overload
+    for ( size_t i = 0; i < (unsigned)n_overload_chances( source_state ); i++ )
+    {
+      overloads += rng().roll( overload_chance( source_state ) );
+    }
+
+    overloads += (unsigned)n_overloads( source_state );
 
     for ( size_t i = 0, end = overloads; i < end; ++i )
     {
@@ -4599,6 +4612,11 @@ struct lightning_bolt_t : public shaman_spell_t
     return chance;
   }
 
+  size_t n_overload_chances( const action_state_t* ) const override
+  {
+    return p()->talent.high_voltage->effectN( 1 ).percent();
+  }
+
   double spell_direct_power_coefficient( const action_state_t* /* state */ ) const override
   {
     return spell_power_mod.direct * ( 1.0 + m_overcharge * cost() );
@@ -6325,6 +6343,7 @@ void shaman_t::init_spells()
   talent.storm_elemental      = find_talent_spell( "Storm Elemental" );
   talent.elemental_blast      = find_talent_spell( "Elemental Blast" );
 
+  talent.high_voltage        = find_talent_spell( "High Voltage" );
   talent.primal_elementalist = find_talent_spell( "Primal Elementalist" );
   talent.liquid_magma_totem  = find_talent_spell( "Liquid Magma Totem" );
 
