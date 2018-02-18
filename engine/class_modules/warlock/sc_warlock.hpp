@@ -8,7 +8,7 @@ namespace warlock {
 
     }
 
-    #define MAX_UAS 5
+    constexpr int MAX_UAS = 5;
 
     struct warlock_td_t : public actor_target_data_t {
         propagate_const<dot_t*> dots_agony;
@@ -18,7 +18,7 @@ namespace warlock {
         propagate_const<dot_t*> dots_immolate;
         propagate_const<dot_t*> dots_seed_of_corruption;
         propagate_const<dot_t*> dots_shadowflame;
-        propagate_const<dot_t*> dots_unstable_affliction[MAX_UAS];
+        std::array<propagate_const<dot_t*>, MAX_UAS> dots_unstable_affliction;
         propagate_const<dot_t*> dots_siphon_life;
         propagate_const<dot_t*> dots_phantom_singularity;
         propagate_const<dot_t*> dots_channel_demonfire;

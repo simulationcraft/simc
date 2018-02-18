@@ -78,8 +78,8 @@ namespace warlock {
 
                 if (rng().roll(p()->sets->set(WARLOCK_AFFLICTION, T21, B2)->proc_chance())) {
                     warlock_td_t* target_data = td(d->state->target);
-                    for (int i = 0; i < MAX_UAS; i++) {
-                        auto current_ua = target_data->dots_unstable_affliction[i];
+                    for (auto& current_ua : target_data->dots_unstable_affliction) {
+
                         if (current_ua->is_ticking())
                             current_ua->extend_duration(p()->sets->set(WARLOCK_AFFLICTION, T21, B2)->effectN(1).time_value(), true);
                     }
@@ -219,10 +219,14 @@ namespace warlock {
                     return m;
                 }
             };
-            real_ua_t* ua_dots[MAX_UAS];
-            unstable_affliction_t(warlock_t* p, const std::string& options_str) : warlock_spell_t("unstable_affliction", p, p -> spec.unstable_affliction) {
+            std::array<real_ua_t*, MAX_UAS> ua_dots;
+
+            unstable_affliction_t(warlock_t* p, const std::string& options_str) :
+              warlock_spell_t("unstable_affliction", p, p -> spec.unstable_affliction),
+              ua_dots()
+            {
                 parse_options(options_str);
-                for (int i = 0; i < MAX_UAS; i++) {
+                for (unsigned i = 0; i < ua_dots.size(); ++i) {
                     ua_dots[i] = new real_ua_t(p, i);
                     add_child(ua_dots[i]);
                 }
@@ -266,8 +270,8 @@ namespace warlock {
             virtual void execute() override {
                 warlock_spell_t::execute();
                 bool flag = false;
-                for (int i = 0; i < MAX_UAS; i++) {
-                    if (td(target)->dots_unstable_affliction[i]->is_ticking()) {
+                for (auto& current_ua : td(target)->dots_unstable_affliction) {
+                    if (current_ua->is_ticking()) {
                         flag = true;
                         break;
                     }
@@ -378,9 +382,9 @@ namespace warlock {
 
             td->dots_agony->current_action->calculate_tick_amount(td->dots_agony->state, td->dots_agony->current_stack());
             td->dots_corruption->current_action->calculate_tick_amount(td->dots_corruption->state, td->dots_corruption->current_stack());
-            for (int i = 0; i < MAX_UAS; i++) {
-              if (td->dots_unstable_affliction[i]->is_ticking()) {
-                td->dots_unstable_affliction[i]->current_action->calculate_tick_amount(td->dots_unstable_affliction[i]->state, td->dots_unstable_affliction[i]->current_stack());
+            for (auto& current_ua : td->dots_unstable_affliction) {
+              if (current_ua->is_ticking()) {
+                current_ua->current_action->calculate_tick_amount(current_ua->state, current_ua->current_stack());
               }
             }
 
@@ -433,17 +437,17 @@ namespace warlock {
             }
 
             double total_damage_ua = 0.0;
-            for (int i = 0; i < MAX_UAS; i++) {
-              if (td->dots_unstable_affliction[i]->is_ticking()) {
-                tick_base_damage = td->dots_unstable_affliction[i]->state->result_raw;
-                ticks_left = td->dots_unstable_affliction[i]->ticks_left();
+            for (auto& current_ua : td->dots_unstable_affliction) {
+              if (current_ua->is_ticking()) {
+                tick_base_damage = current_ua->state->result_raw;
+                ticks_left = current_ua->ticks_left();
                 double current_ua_total = ticks_left * tick_base_damage;
                 total_damage_ua = total_damage_ua + current_ua_total;
                 if (sim->debug) {
                   sim->out_debug.printf("%s ua dot_remains=%.3f duration=%.3f ticks_left=%u amount=%.3f total=%.3f",
-                    name(), td->dots_unstable_affliction[i]->remains().total_seconds(),
-                    td->dots_unstable_affliction[i]->duration().total_seconds(),
-                    td->dots_unstable_affliction[i]->ticks_left(), tick_base_damage, current_ua_total);
+                    name(), current_ua->remains().total_seconds(),
+                    current_ua->duration().total_seconds(),
+                    current_ua->ticks_left(), tick_base_damage, current_ua_total);
                 }
               }
             }

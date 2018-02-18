@@ -153,9 +153,13 @@ namespace felhunter {
             warlock_td_t* td = this->td(target);
             double dots = 0;
 
-            for (int i = 0; i < MAX_UAS; i++)
-                if (td->dots_unstable_affliction[i]->is_ticking())
+            for (auto& current_ua : td->dots_unstable_affliction)
+            {
+                if (current_ua->is_ticking())
+                {
                     dots += shadow_bite_mult;
+                }
+            }
 
             if (td->dots_agony->is_ticking())
                 dots += shadow_bite_mult;
@@ -468,8 +472,10 @@ warlock( p )
 {
   using namespace buffs;
   dots_corruption = target -> get_dot( "corruption", &p );
-  for ( int i = 0; i < MAX_UAS; i++ )
+  for ( int i = 0; i < dots_unstable_affliction.size(); i++ )
+  {
     dots_unstable_affliction[i] = target -> get_dot( "unstable_affliction_" + std::to_string( i + 1 ), &p );
+  }
   dots_agony = target -> get_dot( "agony", &p );
   dots_doom = target -> get_dot( "doom", &p );
   dots_drain_life = target -> get_dot( "drain_life", &p );
@@ -508,9 +514,9 @@ void warlock_td_t::target_demise() {
   }
   if ( warlock.specialization() == WARLOCK_AFFLICTION )
   {
-    for ( int i = 0; i < MAX_UAS; ++i )
+    for (auto& current_ua : dots_unstable_affliction)
     {
-      if ( dots_unstable_affliction[i] -> is_ticking() )
+      if ( current_ua -> is_ticking() )
       {
         if ( warlock.sim -> log )
         {
@@ -606,8 +612,8 @@ double warlock_t::composite_player_target_multiplier( player_t* target, school_e
   if ( td -> debuffs_shadow_embrace -> check() )
     m *= 1.0 + ( find_spell( 32390 ) -> effectN( 1 ).percent() * td -> debuffs_shadow_embrace -> stack() );
 
-  for ( int i = 0; i < MAX_UAS; i++ ) {
-      if ( td -> dots_unstable_affliction[i] -> is_ticking() ) {
+  for (auto& current_ua : td -> dots_unstable_affliction) {
+      if ( current_ua -> is_ticking() ) {
         m *= 1.0 + find_spell( 30108 ) -> effectN( 3 ).percent();
         break;
       }

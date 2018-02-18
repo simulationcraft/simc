@@ -831,7 +831,11 @@ namespace
         return RESOURCE_ENERGY;
       }
 
-      priest_t& o() const
+      priest_t& o()
+      {
+        return static_cast<priest_t&>(*owner);
+      }
+      const priest_t& o() const
       {
         return static_cast<priest_t&>(*owner);
       }
@@ -1213,7 +1217,7 @@ namespace
           ab::base_td_multiplier *= 1.0 + p.specs.shadow_priest->effectN(2).percent();
       }
 
-      priest_td_t& get_td(player_t* t) const
+      priest_td_t& get_td(player_t* t)
       {
         return *(priest().get_target_data(t));
       }
@@ -2237,11 +2241,7 @@ namespace
 
         void tick(dot_t* d) override
         {
-          if (const priest_td_t* td = find_td(d->target))
-          {
-            priest_spell_t::tick(d);
-
-          }
+          priest_spell_t::tick(d);
 
           if (priest().sets->has_set_bonus(PRIEST_SHADOW, T20, B2))
           {
@@ -2433,10 +2433,10 @@ namespace
         {
           priest_spell_t::impact(s);
 
-          priest_td_t& td = get_td(s->target);
-
           if (result_is_hit(s->result))
           {
+            priest_td_t& td = get_td(s->target);
+
             // Assumption scamille 2016-07-28: Schism only applied on hit
             td.buffs.schism->trigger();
           }
