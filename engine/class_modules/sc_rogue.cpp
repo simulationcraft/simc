@@ -1091,6 +1091,21 @@ struct rogue_attack_t : public melee_attack_t
     return melee_attack_t::bonus_ta( s );
   }
 
+  double composite_attack_power() const override
+  {
+    double ap = melee_attack_t::composite_attack_power();
+    
+    // Temporary Implementation of Bonus AP from WDPS in BfA
+    // All attacks appear to use the MH weapon by default, unless they specifically use the OH
+    const weapon_t* w = ( weapon == nullptr ) ? &p()->main_hand_weapon : weapon;
+    if ( w )
+    {
+      ap += w->dps * 7.0;
+    }
+
+    return ap;
+  }
+
   double composite_da_multiplier( const action_state_t* state ) const override
   {
     double m = melee_attack_t::composite_da_multiplier( state );
@@ -2207,6 +2222,12 @@ struct melee_t : public rogue_attack_t
     }
 
     return m;
+  }
+
+  // Auto Attacks don't double-dip from the bonus AP from WDPS
+  double composite_attack_power() const override
+  {
+    return melee_attack_t::composite_attack_power();
   }
 };
 
