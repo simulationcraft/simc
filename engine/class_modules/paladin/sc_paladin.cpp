@@ -110,18 +110,17 @@ paladin_td_t* paladin_t::get_target_data( player_t* target ) const
 // containing ones that require action_t definitions to function properly.
 namespace buffs {
   liadrins_fury_unleashed_t::liadrins_fury_unleashed_t( player_t* p ) :
-      buff_t( buff_creator_t( p, "liadrins_fury_unleashed", p -> find_spell( 208410 ) )
-        .tick_zero( true )
-        .tick_callback( [ this, p ]( buff_t*, int, const timespan_t& ) {
-          paladin_t* paladin = debug_cast<paladin_t*>( p );
-          paladin -> resource_gain( RESOURCE_HOLY_POWER, data().effectN( 1 ).base_value(), paladin -> gains.hp_liadrins_fury_unleashed );
-        } ) )
+      buff_t( p, "liadrins_fury_unleashed", p -> find_spell( 208410 ) )
   {
-    // nothing to do here
+    set_tick_zero( true );
+    set_tick_callback( [ this, p ]( buff_t*, int, const timespan_t& ) {
+      paladin_t* paladin = debug_cast<paladin_t*>( p );
+      paladin -> resource_gain( RESOURCE_HOLY_POWER, data().effectN( 1 ).base_value(), paladin -> gains.hp_liadrins_fury_unleashed );
+    } );
   }
 
   avenging_wrath_buff_t::avenging_wrath_buff_t( player_t* p ) :
-      buff_t( buff_creator_t( p, "avenging_wrath", p -> specialization() == PALADIN_HOLY ? p -> find_spell( 31842 ) : p -> find_spell( 31884 ) ) ),
+      buff_t( p, "avenging_wrath", p -> specialization() == PALADIN_HOLY ? p -> find_spell( 31842 ) : p -> find_spell( 31884 ) ),
       damage_modifier( 0.0 ),
       healing_modifier( 0.0 ),
       crit_bonus( 0.0 )
@@ -1079,7 +1078,7 @@ struct blessing_of_sacrifice_t : public buff_t
   double source_health_pool;
 
   blessing_of_sacrifice_t( player_t* p ) :
-    buff_t( buff_creator_t( p, "blessing_of_sacrifice", p -> find_spell( 6940 ) ) ),
+    buff_t( p, "blessing_of_sacrifice", p -> find_spell( 6940 ) ),
     source( nullptr ),
     source_health_pool( 0.0 )
   {

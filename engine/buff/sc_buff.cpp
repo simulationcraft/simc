@@ -2394,6 +2394,11 @@ bool tick_buff_t::trigger( int stacks, double value, double chance, timespan_t d
 }
 */
 
+absorb_buff_t::absorb_buff_t( actor_pair_t q, const std::string& name, const spell_data_t* spell )
+  : absorb_buff_t( absorb_buff_creator_t( q, name, spell ) )
+{
+}
+
 absorb_buff_t::absorb_buff_t( const absorb_buff_creator_t& params )
   : buff_t( params ),
     absorb_school( params._absorb_school ),

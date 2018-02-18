@@ -36,7 +36,7 @@ namespace buffs {
   struct shield_of_vengeance_buff_t : public absorb_buff_t
   {
     shield_of_vengeance_buff_t( player_t* p ):
-      absorb_buff_t( absorb_buff_creator_t( p, "shield_of_vengeance", p -> find_spell( 184662 ) ) )
+      absorb_buff_t( p, "shield_of_vengeance", p -> find_spell( 184662 ) )
     {
     }
 
@@ -783,26 +783,26 @@ void paladin_t::create_buffs_retribution()
 {
   buffs.crusade                = new buffs::crusade_buff_t( this );
 
-  buffs.zeal                           = buff_creator_t( this, "zeal", find_spell( 217020 ) );
-  buffs.the_fires_of_justice           = buff_creator_t( this, "the_fires_of_justice", find_spell( 209785 ) );
-  buffs.blade_of_wrath               = buff_creator_t( this, "blade_of_wrath", find_spell( 231843 ) );
-  buffs.whisper_of_the_nathrezim       = buff_creator_t( this, "whisper_of_the_nathrezim", find_spell( 207635 ) );
+  buffs.zeal                           = make_buff( this, "zeal", find_spell( 217020 ) );
+  buffs.the_fires_of_justice           = make_buff( this, "the_fires_of_justice", find_spell( 209785 ) );
+  buffs.blade_of_wrath               = make_buff( this, "blade_of_wrath", find_spell( 231843 ) );
+  buffs.whisper_of_the_nathrezim       = make_buff( this, "whisper_of_the_nathrezim", find_spell( 207635 ) );
   buffs.liadrins_fury_unleashed        = new buffs::liadrins_fury_unleashed_t( this );
   buffs.shield_of_vengeance            = new buffs::shield_of_vengeance_buff_t( this );
-  buffs.sacred_judgment                = buff_creator_t( this, "sacred_judgment", find_spell( 246973 ) );
+  buffs.sacred_judgment                = make_buff( this, "sacred_judgment", find_spell( 246973 ) );
 
-  buffs.scarlet_inquisitors_expurgation = buff_creator_t( this, "scarlet_inquisitors_expurgation", find_spell( 248289 ) )
-                                          .default_value( find_spell( 248289 ) -> effectN( 1 ).percent() );
-  buffs.scarlet_inquisitors_expurgation_driver = buff_creator_t( this, "scarlet_inquisitors_expurgation_driver", find_spell( 248103 ) )
-                                                 .period( find_spell( 248103 ) -> effectN( 1 ).period() )
-                                                 .quiet( true )
-                                                 .tick_callback([this](buff_t*, int, const timespan_t&) { buffs.scarlet_inquisitors_expurgation -> trigger(); })
-                                                 .tick_time_behavior( BUFF_TICK_TIME_UNHASTED );
+  buffs.scarlet_inquisitors_expurgation = make_buff( this, "scarlet_inquisitors_expurgation", find_spell( 248289 ) )
+    ->set_default_value( find_spell( 248289 ) -> effectN( 1 ).percent() );
+  buffs.scarlet_inquisitors_expurgation_driver = make_buff( this, "scarlet_inquisitors_expurgation_driver", find_spell( 248103 ) )
+    ->set_period( find_spell( 248103 ) -> effectN( 1 ).period() )
+                                                 ->set_quiet( true )
+                                                 ->set_tick_callback([this](buff_t*, int, const timespan_t&) { buffs.scarlet_inquisitors_expurgation -> trigger(); })
+                                                 ->set_tick_time_behavior( BUFF_TICK_TIME_UNHASTED );
 
-  buffs.last_defender = buff_creator_t( this, "last_defender", talents.last_defender  )
-    .chance( talents.last_defender -> ok() )
-    .max_stack( 99 ) //Spell doesn't cite any limits, just has diminishing returns.
-    .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+  buffs.last_defender = make_buff( this, "last_defender", talents.last_defender  )
+    ->set_chance( talents.last_defender -> ok() )
+    ->set_max_stack( 99 ) //Spell doesn't cite any limits, just has diminishing returns.
+    ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
   // Tier Bonuses
   buffs.ret_t21_4p             = buff_creator_t( this, "hidden_retribution_t21_4p", find_spell( 253806 ) );

@@ -9,7 +9,7 @@ struct divine_protection_t : public buff_t
 {
 
   divine_protection_t( paladin_t* p ) :
-    buff_t( buff_creator_t( p, "divine_protection", p -> find_class_spell( "Divine Protection" ) ) )
+    buff_t( p, "divine_protection", p -> find_class_spell( "Divine Protection" ) )
   {
     cooldown -> duration = timespan_t::zero();
   }
@@ -25,11 +25,11 @@ struct divine_protection_t : public buff_t
 struct holy_avenger_buff_t : public haste_buff_t
 {
   holy_avenger_buff_t( player_t* p ):
-    haste_buff_t( haste_buff_creator_t( p, "holy_avenger", p -> find_spell( 105809 ) )
-                  .default_value(1.0 / (1.0 + p -> find_spell(105809) -> effectN(1).percent()))
-                  .add_invalidate(CACHE_HASTE))
+    haste_buff_t( p, "holy_avenger", p -> find_spell( 105809 ) )
 
   {
+    set_default_value(1.0 / (1.0 + p -> find_spell(105809) -> effectN(1).percent()));
+    add_invalidate(CACHE_HASTE);
   }
 };
 
@@ -592,7 +592,7 @@ void paladin_t::create_buffs_holy()
 {
   buffs.divine_protection      = new buffs::divine_protection_t( this );
   buffs.holy_avenger           = new buffs::holy_avenger_buff_t( this );
-  buffs.infusion_of_light      = buff_creator_t( this, "infusion_of_light", find_spell( 54149 ) );
+  buffs.infusion_of_light      = make_buff( this, "infusion_of_light", find_spell( 54149 ) );
 }
 
 void paladin_t::init_spells_holy()

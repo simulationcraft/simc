@@ -10,7 +10,7 @@ namespace buffs {
     bool oneup_triggered;
 
     ardent_defender_buff_t( player_t* p ):
-      buff_t( buff_creator_t( p, "ardent_defender", p -> find_specialization_spell( "Ardent Defender" ) ) ),
+      buff_t( p, "ardent_defender", p -> find_specialization_spell( "Ardent Defender" ) ),
       oneup_triggered( false )
     {
 
@@ -859,13 +859,13 @@ action_t* paladin_t::create_action_protection( const std::string& name, const st
 
 void paladin_t::create_buffs_protection()
 {
-  buffs.guardian_of_ancient_kings      = buff_creator_t( this, "guardian_of_ancient_kings", find_specialization_spell( "Guardian of Ancient Kings" ) )
-                                          .cd( timespan_t::zero() ); // let the ability handle the CD
-  buffs.grand_crusader                 = buff_creator_t( this, "grand_crusader", passives.grand_crusader -> effectN( 1 ).trigger() )
-                                          .chance( passives.grand_crusader -> proc_chance() + ( 0.0 + talents.first_avenger -> effectN( 2 ).percent() ) );
-  buffs.shield_of_the_righteous        = buff_creator_t( this, "shield_of_the_righteous", find_spell( 132403 ) );
+  buffs.guardian_of_ancient_kings      = make_buff( this, "guardian_of_ancient_kings", find_specialization_spell( "Guardian of Ancient Kings" ) )
+                                          ->set_cooldown( timespan_t::zero() ); // let the ability handle the CD
+  buffs.grand_crusader                 = make_buff( this, "grand_crusader", passives.grand_crusader -> effectN( 1 ).trigger() )
+    ->set_chance( passives.grand_crusader -> proc_chance() + ( 0.0 + talents.first_avenger -> effectN( 2 ).percent() ) );
+  buffs.shield_of_the_righteous        = make_buff( this, "shield_of_the_righteous", find_spell( 132403 ) );
   buffs.ardent_defender                = new buffs::ardent_defender_buff_t( this );
-  buffs.aegis_of_light                 = buff_creator_t( this, "aegis_of_light", find_talent_spell( "Aegis of Light" ) );
+  buffs.aegis_of_light                 = make_buff( this, "aegis_of_light", find_talent_spell( "Aegis of Light" ) );
   buffs.seraphim                       = stat_buff_creator_t( this, "seraphim", talents.seraphim )
                                           .add_stat( STAT_HASTE_RATING, talents.seraphim -> effectN( 1 ).average( this ) )
                                           .add_stat( STAT_CRIT_RATING, talents.seraphim -> effectN( 1 ).average( this ) )

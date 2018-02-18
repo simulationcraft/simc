@@ -551,6 +551,7 @@ struct absorb_buff_t : public buff_t
   bool     high_priority; // For tank absorbs that should explicitly "go first"
   std::function< bool( const action_state_t* ) > eligibility; // A custom function whose result determines if the attack is eligible to be absorbed.
 
+  absorb_buff_t( actor_pair_t q, const std::string& name, const spell_data_t* = spell_data_t::nil() );
 protected:
   absorb_buff_t( const absorb_buff_creator_t& params );
   friend struct buff_creation::absorb_buff_creator_t;
