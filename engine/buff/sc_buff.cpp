@@ -2012,6 +2012,25 @@ void buff_t::invalidate_cache()
 
 #endif
 
+buff_t* buff_t::find( sim_t* s, const std::string& name )
+{
+  return find( s -> buff_list, name );
+}
+
+buff_t* buff_t::find( player_t* p, const std::string& name, player_t* source )
+{
+  return find( p -> buff_list, name, source );
+}
+
+std::string buff_t::source_name() const
+{
+  if ( player ) return player -> name_str;
+  return "noone";
+}
+
+rng::rng_t& buff_t::rng()
+{ return sim -> rng(); }
+
 // ==========================================================================
 // STAT_BUFF
 // ==========================================================================
@@ -2505,3 +2524,19 @@ buff_creator_basics_t::buff_creator_basics_t( sim_t* s, const std::string& n, co
 {
   init();
 }
+
+
+buff_creator_t::operator buff_t* () const
+{ return new buff_t( *this ); }
+
+stat_buff_creator_t::operator stat_buff_t* () const
+{ return new stat_buff_t( *this ); }
+
+absorb_buff_creator_t::operator absorb_buff_t* () const
+{ return new absorb_buff_t( *this ); }
+
+cost_reduction_buff_creator_t::operator cost_reduction_buff_t* () const
+{ return new cost_reduction_buff_t( *this ); }
+
+haste_buff_creator_t::operator haste_buff_t* () const
+{ return new haste_buff_t( *this ); }

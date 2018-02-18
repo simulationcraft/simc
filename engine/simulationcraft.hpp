@@ -7448,40 +7448,6 @@ void initialize_concordance( player_t& );
 
 // Inlines ==================================================================
 
-// buff_t inlines
-
-inline buff_t* buff_t::find( sim_t* s, const std::string& name )
-{
-  return find( s -> buff_list, name );
-}
-inline buff_t* buff_t::find( player_t* p, const std::string& name, player_t* source )
-{
-  return find( p -> buff_list, name, source );
-}
-inline std::string buff_t::source_name() const
-{
-  if ( player ) return player -> name_str;
-  return "noone";
-}
-inline rng::rng_t& buff_t::rng()
-{ return sim -> rng(); }
-// sim_t inlines
-
-inline buff_creator_t::operator buff_t* () const
-{ return new buff_t( *this ); }
-
-inline stat_buff_creator_t::operator stat_buff_t* () const
-{ return new stat_buff_t( *this ); }
-
-inline absorb_buff_creator_t::operator absorb_buff_t* () const
-{ return new absorb_buff_t( *this ); }
-
-inline cost_reduction_buff_creator_t::operator cost_reduction_buff_t* () const
-{ return new cost_reduction_buff_t( *this ); }
-
-inline haste_buff_creator_t::operator haste_buff_t* () const
-{ return new haste_buff_t( *this ); }
-
 inline bool player_t::is_my_pet( player_t* t ) const
 { return t -> is_pet() && t -> cast_pet() -> owner == this; }
 
