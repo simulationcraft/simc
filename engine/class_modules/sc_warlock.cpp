@@ -88,6 +88,7 @@ struct warlock_td_t: public actor_target_data_t
   buff_t* debuffs_jaws_of_shadow;
   buff_t* debuffs_tormented_agony;
   buff_t* debuffs_chaotic_flames;
+  buff_t* debuffs_shadowburn;
 
   int agony_stack;
   double soc_threshold;
@@ -5510,37 +5511,10 @@ struct cataclysm_t : public warlock_spell_t
 
 struct shadowburn_t: public warlock_spell_t
 {
-  struct resource_event_t: public player_event_t
-  {
-    shadowburn_t* spell;
-    gain_t* shard_gain;
-    player_t* target;
-
-    resource_event_t( warlock_t* p, shadowburn_t* s, player_t* t ):
-      player_event_t( *p, s -> delay ), spell( s ), shard_gain( p -> gains.shadowburn_shard ), target(t)
-    {
-    }
-    virtual const char* name() const override
-    { return "shadowburn_execute_gain"; }
-    virtual void execute() override
-    {
-      if ( target -> is_sleeping() )
-      {
-        p() -> resource_gain( RESOURCE_SOUL_SHARD, 0.5, shard_gain );
-      }
-    }
-  };
-  resource_event_t* resource_event;
-  timespan_t delay;
-  timespan_t total_duration;
-  timespan_t base_duration;
   shadowburn_t( warlock_t* p ):
-    warlock_spell_t( "shadowburn", p, p -> talents.shadowburn ), resource_event( nullptr )
+    warlock_spell_t( "shadowburn", p, p -> talents.shadowburn )
   {
-    delay = data().effectN( 1 ).trigger() -> duration();
-
     energize_type = ENERGIZE_ON_CAST;
-    base_duration = p -> find_spell( 117828 ) -> duration();
     base_multiplier *= 1.0 + p -> artifact.flames_of_sargeras.percent();
 
     can_havoc = true;
@@ -5555,9 +5529,11 @@ struct shadowburn_t: public warlock_spell_t
   {
     warlock_spell_t::impact( s );
 
-    resource_event = make_event<resource_event_t>( *sim, p(), this, s -> target );
-
-    p() -> resource_gain( RESOURCE_SOUL_SHARD, 0.5, p() -> gains.shadowburn );
+    if ( result_is_hit( s -> result ) )
+    {
+      td( s -> target  ) -> debuffs_shadowburn -> trigger();
+      p() -> resource_gain( RESOURCE_SOUL_SHARD, 0.5, p() -> gains.shadowburn );
+    }
   }
 
   void init() override
@@ -5567,7 +5543,6 @@ struct shadowburn_t: public warlock_spell_t
     cooldown -> hasted = true;
   }
 
-// Force spell to always crit
   double composite_crit_chance() const override
   {
     double cc = warlock_spell_t::composite_crit_chance();
@@ -6188,7 +6163,7 @@ warlock( p )
   debuffs_jaws_of_shadow = buff_creator_t( *this, "jaws_of_shadow", source -> find_spell( 242922 ) );
   debuffs_tormented_agony = buff_creator_t( *this, "tormented_agony", source -> find_spell( 252938 ) );
   debuffs_chaotic_flames = buff_creator_t( *this, "chaotic_flames", source -> find_spell( 253092 ) );
-
+  debuffs_shadowburn = buff_creator_t( *this, "shadowburn", source -> find_spell( 17877 ) );
 
   debuffs_havoc = new buffs::debuff_havoc_t( *this );
 
@@ -6260,6 +6235,14 @@ void warlock_td_t::target_demise()
       warlock.sim -> out_debug.printf( "Player %s demised. Warlock %s gains a stack of Tormented Souls.", target -> name(), warlock.name() );
     }
     warlock.buffs.tormented_souls -> trigger();
+  }
+  if ( warlock.specialization() == WARLOCK_DESTRUCTION && debuffs_shadowburn -> check() )
+  {
+    if ( warlock.sim -> log )
+    {
+      warlock.sim -> out_debug.printf( "Player %s demised. Warlock %s gains soul shard fragments from Shadowburn.", target -> name(), warlock.name() );
+    }
+    warlock.resource_gain( RESOURCE_SOUL_SHARD, 0.5, warlock.gains.shadowburn_shard );
   }
 }
 
