@@ -928,7 +928,7 @@ public:
   /**
    * Get current buff value + NO benefit tracking.
    */
-  double check_value()
+  double check_value() const
   {
     return current_value;
   }
@@ -936,7 +936,7 @@ public:
   /**
    * Get current buff value  multiplied by current stacks + NO benefit tracking.
    */
-  double check_stack_value()
+  double check_stack_value() const
   {
     return current_stack * check_value();
   }

@@ -11,29 +11,29 @@ namespace warlock {
     #define MAX_UAS 5
 
     struct warlock_td_t : public actor_target_data_t {
-        dot_t* dots_agony;
-        dot_t* dots_corruption;
-        dot_t* dots_doom;
-        dot_t* dots_drain_life;
-        dot_t* dots_immolate;
-        dot_t* dots_seed_of_corruption;
-        dot_t* dots_shadowflame;
-        dot_t* dots_unstable_affliction[MAX_UAS];
-        dot_t* dots_siphon_life;
-        dot_t* dots_phantom_singularity;
-        dot_t* dots_channel_demonfire;
+        propagate_const<dot_t*> dots_agony;
+        propagate_const<dot_t*> dots_corruption;
+        propagate_const<dot_t*> dots_doom;
+        propagate_const<dot_t*> dots_drain_life;
+        propagate_const<dot_t*> dots_immolate;
+        propagate_const<dot_t*> dots_seed_of_corruption;
+        propagate_const<dot_t*> dots_shadowflame;
+        propagate_const<dot_t*> dots_unstable_affliction[MAX_UAS];
+        propagate_const<dot_t*> dots_siphon_life;
+        propagate_const<dot_t*> dots_phantom_singularity;
+        propagate_const<dot_t*> dots_channel_demonfire;
 
-        buff_t* debuffs_haunt;
-        buff_t* debuffs_shadowflame;
-        buff_t* debuffs_agony;
-        buff_t* debuffs_flamelicked;
-        buff_t* debuffs_eradication;
-        buff_t* debuffs_roaring_blaze;
-        buff_t* debuffs_havoc;
-        buff_t* debuffs_jaws_of_shadow;
-        buff_t* debuffs_tormented_agony;
-        buff_t* debuffs_chaotic_flames;
-        buff_t* debuffs_shadow_embrace;
+        propagate_const<buff_t*> debuffs_haunt;
+        propagate_const<buff_t*> debuffs_shadowflame;
+        propagate_const<buff_t*> debuffs_agony;
+        propagate_const<buff_t*> debuffs_flamelicked;
+        propagate_const<buff_t*> debuffs_eradication;
+        propagate_const<buff_t*> debuffs_roaring_blaze;
+        propagate_const<buff_t*> debuffs_havoc;
+        propagate_const<buff_t*> debuffs_jaws_of_shadow;
+        propagate_const<buff_t*> debuffs_tormented_agony;
+        propagate_const<buff_t*> debuffs_chaotic_flames;
+        propagate_const<buff_t*> debuffs_shadow_embrace;
 
         int agony_stack;
         double soc_threshold;
@@ -173,11 +173,11 @@ namespace warlock {
         } mastery_spells;
 
         //Procs and RNG
-        real_ppm_t* nightfall_rppm;
-        real_ppm_t* affliction_t20_2pc_rppm;
-        real_ppm_t* demonic_power_rppm; // grimoire of sacrifice
-        real_ppm_t* grimoire_of_synergy; //caster ppm, i.e., if it procs, the wl will create a buff for the pet.
-        real_ppm_t* grimoire_of_synergy_pet; //pet ppm, i.e., if it procs, the pet will create a buff for the wl.
+        propagate_const<real_ppm_t*> nightfall_rppm;
+        propagate_const<real_ppm_t*> affliction_t20_2pc_rppm;
+        propagate_const<real_ppm_t*> demonic_power_rppm; // grimoire of sacrifice
+        propagate_const<real_ppm_t*> grimoire_of_synergy; //caster ppm, i.e., if it procs, the wl will create a buff for the pet.
+        propagate_const<real_ppm_t*> grimoire_of_synergy_pet; //pet ppm, i.e., if it procs, the pet will create a buff for the wl.
 
                                           // Cooldowns
         struct cooldowns_t {
@@ -220,32 +220,32 @@ namespace warlock {
 
         // Buffs
         struct buffs_t  {
-            buff_t* demonic_power;
-            buff_t* soul_harvest;
+            propagate_const<buff_t*> demonic_power;
+            propagate_const<buff_t*> soul_harvest;
 
             //affliction buffs
-            buff_t* active_uas;
-            buff_t* nightfall;
-            buff_t* demonic_speed; // t20 4pc
+            propagate_const<buff_t*> active_uas;
+            propagate_const<buff_t*> nightfall;
+            propagate_const<buff_t*> demonic_speed; // t20 4pc
 
             //demonology buffs
-            buff_t* demonic_synergy;
-            buff_t* dreaded_haste; // t20 4pc
-            buff_t* rage_of_guldan; // t21 2pc
+            propagate_const<buff_t*> demonic_synergy;
+            propagate_const<buff_t*> dreaded_haste; // t20 4pc
+            propagate_const<buff_t*> rage_of_guldan; // t21 2pc
 
             //destruction_buffs
-            buff_t* backdraft;
-            buff_t* conflagration_of_chaos;
-            buff_t* embrace_chaos;
-            buff_t* active_havoc;
+            propagate_const<buff_t*> backdraft;
+            propagate_const<buff_t*> conflagration_of_chaos;
+            propagate_const<buff_t*> embrace_chaos;
+            propagate_const<buff_t*> active_havoc;
 
             // legendary buffs
             buff_t* sindorei_spite;
-            buff_t* stretens_insanity;
-            buff_t* lessons_of_spacetime;
-            haste_buff_t* sephuzs_secret;
-            buff_t* alythesss_pyrogenics;
-            buff_t* wakeners_loyalty;
+            propagate_const<buff_t*> stretens_insanity;
+            propagate_const<buff_t*> lessons_of_spacetime;
+            propagate_const<haste_buff_t*> sephuzs_secret;
+            propagate_const<buff_t*> alythesss_pyrogenics;
+            propagate_const<buff_t*> wakeners_loyalty;
         } buffs;
 
         // Gains
@@ -447,10 +447,10 @@ namespace warlock {
 
             struct buffs_t
             {
-                buff_t* demonic_synergy;
-                haste_buff_t* demonic_empowerment;
-                buff_t* the_expendables;
-                buff_t* rage_of_guldan;
+                propagate_const<buff_t*> demonic_synergy;
+                propagate_const<haste_buff_t*> demonic_empowerment;
+                propagate_const<buff_t*> the_expendables;
+                propagate_const<buff_t*> rage_of_guldan;
             } buffs;
 
             bool is_grimoire_of_service = false;
@@ -709,6 +709,10 @@ namespace warlock {
             }
 
             warlock_t* p()
+            {
+                return static_cast<warlock_t*>(player);
+            }
+            const warlock_t* p() const
             {
                 return static_cast<warlock_t*>(player);
             }

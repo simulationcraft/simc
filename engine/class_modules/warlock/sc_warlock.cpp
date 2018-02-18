@@ -87,10 +87,10 @@ double warlock_pet_t::composite_player_multiplier( school_e school ) const {
 
   m *= 1.0;
 
-  if ( buffs.demonic_synergy -> up() )
+  if ( buffs.demonic_synergy -> check() )
     m *= 1.0 + buffs.demonic_synergy -> data().effectN( 1 ).percent();
 
-  if ( buffs.rage_of_guldan->up() )
+  if ( buffs.rage_of_guldan->check() )
 	  m *= 1.0 + ( buffs.rage_of_guldan->default_value / 100 );
   
   if ( is_grimoire_of_service )
@@ -103,7 +103,7 @@ double warlock_pet_t::composite_player_multiplier( school_e school ) const {
 
   if ( o()->specialization() == WARLOCK_AFFLICTION ) {
       if (o()->buffs.soul_harvest->check())
-          m *= 1.0 + o()->buffs.soul_harvest->stack_value();
+          m *= 1.0 + o()->buffs.soul_harvest->check_stack_value();
       m *= 1.0 + o()->spec.affliction->effectN(3).percent();
   }
 
@@ -375,7 +375,7 @@ namespace actions {
         }
         virtual double action_multiplier()const override {
           double m = warlock_spell_t::action_multiplier();
-          if (p()->specialization() == WARLOCK_AFFLICTION && p()->buffs.nightfall->up()) {
+          if (p()->specialization() == WARLOCK_AFFLICTION && p()->buffs.nightfall->check()) {
             m *= 1.0 + p()->buffs.nightfall->default_value;
           }
           return m;
@@ -623,15 +623,15 @@ double warlock_t::composite_player_multiplier( school_e school ) const {
     m *= 1.0 + buffs.demonic_synergy -> data().effectN( 1 ).percent();
 
   if ( legendary.stretens_insanity )
-    m *= 1.0 + buffs.stretens_insanity -> stack() * buffs.stretens_insanity -> data().effectN( 1 ).percent();
+    m *= 1.0 + buffs.stretens_insanity -> check() * buffs.stretens_insanity -> data().effectN( 1 ).percent();
 
   if ( specialization() == WARLOCK_DESTRUCTION && dbc::is_school( school, SCHOOL_FIRE ) ) {
-    m *= 1.0 + buffs.alythesss_pyrogenics -> stack_value();
+    m *= 1.0 + buffs.alythesss_pyrogenics -> check_stack_value();
   }
 
   if ( specialization() == WARLOCK_AFFLICTION ) {
       if ( buffs.soul_harvest->check() )
-          m *= 1.0 + buffs.soul_harvest->stack_value();
+          m *= 1.0 + buffs.soul_harvest->check_stack_value();
   }
 
   m *= 1.0 + buffs.sindorei_spite -> check_stack_value();
