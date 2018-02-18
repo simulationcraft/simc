@@ -65,11 +65,11 @@ void warlock_pet_t::init_action_list() {
 void warlock_pet_t::create_buffs() {
   pet_t::create_buffs();
 
-  buffs.demonic_synergy = buff_creator_t( this, "demonic_synergy", find_spell( 171982 ) )
-    .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
-    .chance( 1 );
-  buffs.rage_of_guldan = buff_creator_t( this, "rage_of_guldan", find_spell( 257926 ) )
-	  .add_invalidate(CACHE_PLAYER_DAMAGE_MULTIPLIER); //change spell id to 253014 when whitelisted
+  buffs.demonic_synergy = make_buff( this, "demonic_synergy", find_spell( 171982 ) )
+    ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
+    ->set_chance( 1 );
+  buffs.rage_of_guldan = make_buff( this, "rage_of_guldan", find_spell( 257926 ) )
+	  ->add_invalidate(CACHE_PLAYER_DAMAGE_MULTIPLIER); //change spell id to 253014 when whitelisted
 }
 
 void warlock_pet_t::schedule_ready( timespan_t delta_time, bool waiting ) {
@@ -448,14 +448,14 @@ namespace buffs {
     struct debuff_havoc_t: public warlock_buff_t < buff_t >
 {
   debuff_havoc_t( warlock_td_t& p ):
-    base_t( p, buff_creator_t( static_cast<actor_pair_t>( p ), "havoc", p.source -> find_spell( 80240 ) ) )
+    base_t( p, "havoc", p.source -> find_spell( 80240 ) )
   {
   }
 
   void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
   {
     base_t::expire_override( expiration_stacks, remaining_duration );
-    warlock.havoc_target = nullptr;
+    p()->havoc_target = nullptr;
   }
 };
 }
@@ -478,26 +478,26 @@ warlock( p )
   dots_phantom_singularity = target -> get_dot( "phantom_singularity", &p );
   dots_channel_demonfire = target -> get_dot( "channel_demonfire", &p );
 
-  debuffs_haunt = buff_creator_t( *this, "haunt", source -> find_spell( 48181 ) )
-    .refresh_behavior( BUFF_REFRESH_PANDEMIC );
-  debuffs_shadow_embrace = buff_creator_t(*this, "shadow_embrace", source->find_spell( 32390 ))
-    .refresh_behavior( BUFF_REFRESH_DURATION )
-    .max_stack( 3 );
-  debuffs_agony = buff_creator_t( *this, "agony", source -> find_spell( 980 ) )
-    .refresh_behavior( BUFF_REFRESH_PANDEMIC )
-    .max_stack( ( warlock.talents.writhe_in_agony -> ok() ? warlock.talents.writhe_in_agony -> effectN( 2 ).base_value() : 10 ) );
-  debuffs_eradication = buff_creator_t( *this, "eradication", source -> find_spell( 196414 ) )
-    .refresh_behavior( BUFF_REFRESH_PANDEMIC );
-  debuffs_roaring_blaze = buff_creator_t( *this, "roaring_blaze", source -> find_spell( 205690 ) )
-    .max_stack( 100 );
-  debuffs_jaws_of_shadow = buff_creator_t( *this, "jaws_of_shadow", source -> find_spell( 242922 ) );
-  debuffs_tormented_agony = buff_creator_t( *this, "tormented_agony", source -> find_spell( 252938 ) );
-  debuffs_chaotic_flames = buff_creator_t( *this, "chaotic_flames", source -> find_spell( 253092 ) );
+  debuffs_haunt = make_buff( *this, "haunt", source -> find_spell( 48181 ) )
+    ->set_refresh_behavior( BUFF_REFRESH_PANDEMIC );
+  debuffs_shadow_embrace = make_buff(*this, "shadow_embrace", source->find_spell( 32390 ))
+    ->set_refresh_behavior( BUFF_REFRESH_DURATION )
+    ->set_max_stack( 3 );
+  debuffs_agony = make_buff( *this, "agony", source -> find_spell( 980 ) )
+    ->set_refresh_behavior( BUFF_REFRESH_PANDEMIC )
+    ->set_max_stack( ( warlock.talents.writhe_in_agony -> ok() ? warlock.talents.writhe_in_agony -> effectN( 2 ).base_value() : 10 ) );
+  debuffs_eradication = make_buff( *this, "eradication", source -> find_spell( 196414 ) )
+    ->set_refresh_behavior( BUFF_REFRESH_PANDEMIC );
+  debuffs_roaring_blaze = make_buff( *this, "roaring_blaze", source -> find_spell( 205690 ) )
+    ->set_max_stack( 100 );
+  debuffs_jaws_of_shadow = make_buff( *this, "jaws_of_shadow", source -> find_spell( 242922 ) );
+  debuffs_tormented_agony = make_buff( *this, "tormented_agony", source -> find_spell( 252938 ) );
+  debuffs_chaotic_flames = make_buff( *this, "chaotic_flames", source -> find_spell( 253092 ) );
 
   debuffs_havoc = new buffs::debuff_havoc_t( *this );
 
-  debuffs_flamelicked = buff_creator_t( *this, "flamelicked" )
-      .chance( 0 );
+  debuffs_flamelicked = make_buff( *this, "flamelicked" )
+    ->set_chance( 0 );
 
   target -> callbacks_on_demise.push_back( std::bind( &warlock_td_t::target_demise, this ) );
 }
@@ -815,49 +815,49 @@ void warlock_t::create_buffs() {
     if (specialization() == WARLOCK_DESTRUCTION)
         create_buffs_destruction();
 
-    buffs.demonic_power = buff_creator_t(this, "demonic_power", talents.grimoire_of_sacrifice->effectN(2).trigger());
+    buffs.demonic_power = make_buff(this, "demonic_power", talents.grimoire_of_sacrifice->effectN(2).trigger());
 
     //legendary buffs
-    buffs.stretens_insanity = buff_creator_t(this, "stretens_insanity", find_spell(208822))
-        .default_value(find_spell(208822)->effectN(1).percent())
-        .add_invalidate(CACHE_PLAYER_DAMAGE_MULTIPLIER)
-        .tick_behavior(BUFF_TICK_NONE);
-    buffs.lessons_of_spacetime = buff_creator_t(this, "lessons_of_spacetime", find_spell(236176))
-        .default_value(find_spell(236176)->effectN(1).percent())
-        .add_invalidate(CACHE_PLAYER_DAMAGE_MULTIPLIER)
-        .refresh_behavior(BUFF_REFRESH_DURATION)
-        .tick_behavior(BUFF_TICK_NONE);
+    buffs.stretens_insanity = make_buff(this, "stretens_insanity", find_spell(208822))
+        ->set_default_value(find_spell(208822)->effectN(1).percent())
+        ->add_invalidate(CACHE_PLAYER_DAMAGE_MULTIPLIER)
+        ->set_tick_behavior(BUFF_TICK_NONE);
+    buffs.lessons_of_spacetime = make_buff(this, "lessons_of_spacetime", find_spell(236176))
+    ->set_default_value(find_spell(236176)->effectN(1).percent())
+        ->add_invalidate(CACHE_PLAYER_DAMAGE_MULTIPLIER)
+        ->set_refresh_behavior(BUFF_REFRESH_DURATION)
+        ->set_tick_behavior(BUFF_TICK_NONE);
     buffs.sephuzs_secret =
-        haste_buff_creator_t(this, "sephuzs_secret", find_spell(208052))
-        .default_value(find_spell(208052)->effectN(2).percent())
-        .cd(find_spell(226262)->duration());
-    buffs.alythesss_pyrogenics = buff_creator_t(this, "alythesss_pyrogenics", find_spell(205675))
-        .default_value(find_spell(205675)->effectN(1).percent())
-        .refresh_behavior(BUFF_REFRESH_DURATION);
-    buffs.wakeners_loyalty = buff_creator_t(this, "wakeners_loyalty", find_spell(236200))
-        .add_invalidate(CACHE_PLAYER_DAMAGE_MULTIPLIER)
-        .default_value(find_spell(236200)->effectN(1).percent());
+        make_buff<haste_buff_t>(this, "sephuzs_secret", find_spell(208052));
+    buffs.sephuzs_secret->set_default_value(find_spell(208052)->effectN(2).percent())
+    ->set_cooldown(find_spell(226262)->duration());
+    buffs.alythesss_pyrogenics = make_buff(this, "alythesss_pyrogenics", find_spell(205675))
+    ->set_default_value(find_spell(205675)->effectN(1).percent())
+    ->set_refresh_behavior(BUFF_REFRESH_DURATION);
+    buffs.wakeners_loyalty = make_buff(this, "wakeners_loyalty", find_spell(236200))
+        ->add_invalidate(CACHE_PLAYER_DAMAGE_MULTIPLIER)
+        ->set_default_value(find_spell(236200)->effectN(1).percent());
 
     //demonology buffs
-    buffs.demonic_synergy = buff_creator_t(this, "demonic_synergy", find_spell(171982))
-        .add_invalidate(CACHE_PLAYER_DAMAGE_MULTIPLIER)
-        .chance(1);
-    buffs.dreaded_haste = haste_buff_creator_t(this, "dreaded_haste", sets->set(WARLOCK_DEMONOLOGY, T20, B4)->effectN(1).trigger())
-        .default_value(sets->set(WARLOCK_DEMONOLOGY, T20, B4)->effectN(1).trigger()->effectN(1).percent());
-    buffs.rage_of_guldan = buff_creator_t(this, "rage_of_guldan", sets->set(WARLOCK_DEMONOLOGY, T21, B2)->effectN(1).trigger())
-        .duration(find_spell(257926)->duration())
-        .max_stack(find_spell(257926)->max_stacks())
-        .default_value(find_spell(257926)->effectN(1).base_value())
-        .refresh_behavior(BUFF_REFRESH_DURATION);
+    buffs.demonic_synergy = make_buff(this, "demonic_synergy", find_spell(171982))
+        ->add_invalidate(CACHE_PLAYER_DAMAGE_MULTIPLIER)
+        ->set_chance(1);
+    buffs.dreaded_haste = make_buff<haste_buff_t>(this, "dreaded_haste", sets->set(WARLOCK_DEMONOLOGY, T20, B4)->effectN(1).trigger());
+    buffs.dreaded_haste->set_default_value(sets->set(WARLOCK_DEMONOLOGY, T20, B4)->effectN(1).trigger()->effectN(1).percent());
+    buffs.rage_of_guldan = make_buff(this, "rage_of_guldan", sets->set(WARLOCK_DEMONOLOGY, T21, B2)->effectN(1).trigger())
+    ->set_duration(find_spell(257926)->duration())
+    ->set_max_stack(find_spell(257926)->max_stacks())
+    ->set_default_value(find_spell(257926)->effectN(1).base_value())
+    ->set_refresh_behavior(BUFF_REFRESH_DURATION);
 
     //destruction buffs
-    buffs.backdraft = buff_creator_t(this, "backdraft", find_spell(117828));
-    buffs.embrace_chaos = buff_creator_t(this, "embrace_chaos", sets->set(WARLOCK_DESTRUCTION, T19, B2)->effectN(1).trigger())
-        .chance(sets->set(WARLOCK_DESTRUCTION, T19, B2)->proc_chance());
-    buffs.active_havoc = buff_creator_t(this, "active_havoc")
-        .tick_behavior(BUFF_TICK_NONE)
-        .refresh_behavior(BUFF_REFRESH_DURATION)
-        .duration(timespan_t::from_seconds(10));
+    buffs.backdraft = make_buff(this, "backdraft", find_spell(117828));
+    buffs.embrace_chaos = make_buff(this, "embrace_chaos", sets->set(WARLOCK_DESTRUCTION, T19, B2)->effectN(1).trigger())
+    ->set_chance(sets->set(WARLOCK_DESTRUCTION, T19, B2)->proc_chance());
+    buffs.active_havoc = make_buff(this, "active_havoc")
+    ->set_tick_behavior(BUFF_TICK_NONE)
+    ->set_refresh_behavior(BUFF_REFRESH_DURATION)
+    ->set_duration(timespan_t::from_seconds(10));
 }
 
 void warlock_t::init_spells() {

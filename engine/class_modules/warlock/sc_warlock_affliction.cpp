@@ -588,7 +588,7 @@ namespace warlock {
 
     namespace buffs {
         struct debuff_agony_t : public warlock_buff_t < buff_t >{
-            debuff_agony_t(warlock_td_t& p) : base_t(p, buff_creator_t(static_cast<actor_pair_t>(p), "agony", p.source -> find_spell(980))) { }
+            debuff_agony_t(warlock_td_t& p) : base_t(p, "agony", p.source -> find_spell(980)) { }
 
             void expire_override(int expiration_stacks, timespan_t remaining_duration) override {
                 base_t::expire_override(expiration_stacks, remaining_duration);

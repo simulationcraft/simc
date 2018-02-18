@@ -1110,21 +1110,23 @@ namespace warlock {
         struct warlock_buff_t : public Base {
         public:
             typedef warlock_buff_t base_t;
-            warlock_buff_t(warlock_td_t& p, const buff_creator_basics_t& params) :
-                Base(params), warlock(p.warlock)
+            warlock_buff_t(warlock_td_t& p,  const std::string& name, const spell_data_t* s = spell_data_t::nil() ) :
+                Base(p, name, s)
             {}
 
-            warlock_buff_t(warlock_t& p, const buff_creator_basics_t& params) :
-                Base(params), warlock(p)
+            warlock_buff_t(warlock_t& p,  const std::string& name, const spell_data_t* s = spell_data_t::nil() ) :
+                Base(&p, name, s)
             {}
-
-            warlock_td_t& get_td(player_t* t) const
-            {
-                return *(warlock.get_target_data(t));
-            }
 
         protected:
-            warlock_t & warlock;
+            warlock_t* p()
+            {
+                return static_cast<warlock_t*>(Base::source);
+            }
+            const warlock_t* p() const
+            {
+                return static_cast<warlock_t*>(Base::source);
+            }
         };
     }
 }
