@@ -1420,6 +1420,128 @@ void paladin_t::create_buffs()
   buffs.divine_purpose                 = buff_creator_t( this, "divine_purpose", specialization() == PALADIN_HOLY ? find_spell( 197646 ) : find_spell( 223819 ) );
 }
 
+// paladin_t::default_potion ================================================
+
+std::string paladin_t::default_potion() const
+{
+  std::string retribution_pot = (true_level > 100) ? "old_war" :
+                                (true_level >= 90) ? "draenic_strength" :
+                                (true_level >= 85) ? "mogu_power" :
+                                (true_level >= 80) ? "golemblood" :
+                                "disabled";
+
+  bool dps = (primary_role() == ROLE_ATTACK) || (talents.seraphim -> ok());
+  std::string protection_pot = (true_level > 100) ? ( dps ? "prolonged_power" : "unbending_potion" ) :
+                               (true_level >= 90) ? "draenic_strength" :
+                               (true_level >= 85) ? "mogu_power" :
+                               (true_level >= 80) ? "mogu_power" :
+                               "disabled";
+
+  std::string holy_dps_pot = (true_level > 100) ? "old_war" :
+                             "disabled";
+
+  std::string holy_pot = "disabled";
+
+  switch ( specialization() )
+  {
+    case PALADIN_RETRIBUTION:
+      return retribution_pot;
+    case PALADIN_PROTECTION:
+      return protection_pot;
+    case PALADIN_HOLY:
+      return primary_role() == ROLE_ATTACK ? holy_dps_pot : holy_pot;
+    default:
+      return "disabled";
+  }
+}
+
+std::string paladin_t::default_food() const
+{
+  std::string retribution_food = (true_level > 100) ? "azshari_salad" :
+                                 (true_level >= 90) ? "sleeper_sushi" :
+                                 (true_level >= 85) ? "black_pepper_ribs_and_shrimp" :
+                                 (true_level >= 80) ? "beer_basted_crocolisk" :
+                                 "disabled";
+
+  bool dps = (primary_role() == ROLE_ATTACK) || (talents.seraphim -> ok());
+  std::string protection_food = (true_level > 100) ? ( dps ? "lavish_suramar_feast" : "seedbattered_fish_plate" ) :
+                                (true_level >= 90) ? ( dps ? "pickled_eel" : "whiptail_fillet" ) :
+                                (true_level >= 85) ? "chun_tian_spring_rolls" :
+                                (true_level >= 80) ? "seafood_magnifique_feast" :
+                                "disabled";
+
+  std::string holy_dps_food = (true_level > 100) ? "the_hungry_magister" :
+                              (true_level >= 90) ? "pickled_eel" :
+                              (true_level >= 85) ? "mogu_fish_stew" :
+                              (true_level >= 80) ? "seafood_magnifique_feast" :
+                              "disabled";
+
+  std::string holy_food = (true_level > 100) ? "lavish_suramar_feast" :
+                          (true_level >= 90) ? "pickled_eel" :
+                          (true_level >= 85) ? "mogu_fish_stew" :
+                          (true_level >= 80) ? "seafood_magnifique_feast" :
+                          "disabled";
+
+  switch ( specialization() )
+  {
+    case PALADIN_RETRIBUTION:
+      return retribution_food;
+    case PALADIN_PROTECTION:
+      return protection_food;
+    case PALADIN_HOLY:
+      return primary_role() == ROLE_ATTACK ? holy_dps_food : holy_food;
+    default:
+      return "disabled";
+  }
+}
+
+std::string paladin_t::default_flask() const
+{
+  std::string retribution_flask = (true_level > 100) ? "flask_of_the_countless_armies" :
+                                  (true_level >= 90) ? "greater_draenic_strength_flask" :
+                                  (true_level >= 85) ? "winters_bite" :
+                                  (true_level >= 80) ? "titanic_strength" :
+                                  "disabled";
+
+  bool dps = (primary_role() == ROLE_ATTACK) || (talents.seraphim -> ok());
+  std::string protection_flask = (true_level > 100) ? (dps ? "flask_of_the_countless_armies" : "flask_of_ten_thousand_scars") :
+                                 (true_level >= 90) ? (dps ? "greater_draenic_strength_flask" : "greater_draenic_stamina_flask") :
+                                 (true_level >= 85) ? "earth" :
+                                 (true_level >= 80) ? "steelskin" :
+                                 "disabled";
+
+  std::string holy_dps_flask = (true_level > 100) ? "flask_of_the_whispered_pact" :
+                               (true_level >= 90) ? "greater_draenic_intellect_flask" :
+                               (true_level >= 85) ? "warm_sun" :
+                               (true_level >= 80) ? "draconic_mind" :
+                               "disabled";
+
+  std::string holy_flask = (true_level > 100) ? "flask_of_the_whispered_pact" :
+                           (true_level >= 90) ? "greater_draenic_intellect_flask" :
+                           (true_level >= 85) ? "warm_sun" :
+                           (true_level >= 80) ? "draconic_mind" :
+                           "disabled";
+
+  switch ( specialization() )
+  {
+    case PALADIN_RETRIBUTION:
+      return retribution_flask;
+    case PALADIN_PROTECTION:
+      return protection_flask;
+    case PALADIN_HOLY:
+      return primary_role() == ROLE_ATTACK ? holy_dps_flask : holy_flask;
+    default:
+      return "disabled";
+  }
+}
+
+std::string paladin_t::default_rune() const
+{
+  return (true_level >= 110) ? "defiled" :
+         (true_level >= 100) ? "hyper" :
+         "disabled";
+}
+
 // paladin_t::init_actions ==================================================
 
 void paladin_t::init_action_list()

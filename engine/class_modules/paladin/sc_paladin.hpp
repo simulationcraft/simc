@@ -395,6 +395,10 @@ public:
 
   std::vector<paladin_ground_aoe_t*> active_consecrations;
 
+  std::string default_potion() const override;
+  std::string default_flask() const override;
+  std::string default_food() const override;
+  std::string default_rune() const override;
 
   void      create_buffs_retribution();
   void      init_assessors_retribution();

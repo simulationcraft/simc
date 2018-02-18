@@ -867,52 +867,16 @@ void paladin_t::generate_action_prio_list_ret()
 {
   action_priority_list_t* precombat = get_action_priority_list( "precombat" );
 
-  //Flask
-  if ( sim -> allow_flasks && true_level >= 80 )
-  {
-    std::string flask_action = "flask,type=";
-    if ( true_level > 100 )
-      flask_action += "flask_of_the_countless_armies";
-    else if ( true_level > 90 )
-      flask_action += "greater_draenic_strength_flask";
-    else if ( true_level > 85 )
-      flask_action += "winters_bite";
-    else
-      flask_action += "titanic_strength";
-
-    precombat -> add_action( flask_action );
-  }
-
-  // Food
-  if ( sim -> allow_food && level() >= 80 )
-  {
-    std::string food_action = "food,type=";
-    if ( level() > 100 )
-      food_action += "azshari_salad";
-    else if ( level() > 90 )
-      food_action += "sleeper_sushi";
-    else
-      food_action += ( level() > 85 ) ? "black_pepper_ribs_and_shrimp" : "beer_basted_crocolisk";
-
-    precombat -> add_action( food_action );
-  }
-
-  if ( true_level > 100 )
-    precombat -> add_action( "augmentation,type=defiled" );
+  // Raid consumables
+  precombat -> add_action( "flask" );
+  precombat -> add_action( "food" );
+  precombat -> add_action( "augmentation" );
 
   // Snapshot stats
   precombat -> add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
 
   // Pre-potting
-  if ( sim -> allow_potions && true_level >= 80 )
-  {
-    if ( true_level > 100 )
-      precombat -> add_action( "potion,name=old_war" );
-    else if ( true_level > 90 )
-      precombat -> add_action( "potion,name=draenic_strength" );
-    else
-      precombat -> add_action( ( true_level > 85 ) ? "potion,name=mogu_power" : "potion,name=golemblood" );
-  }
+  precombat -> add_action( "potion" );
 
   ///////////////////////
   // Action Priority List
@@ -983,13 +947,9 @@ void paladin_t::generate_action_prio_list_ret()
   if ( sim -> allow_potions )
   {
     if ( true_level > 100 )
-      cds -> add_action( "potion,name=old_war,if=(buff.bloodlust.react|buff.avenging_wrath.up|buff.crusade.up&buff.crusade.remains<25|target.time_to_die<=40)" );
-    else if ( true_level > 90 )
-      cds -> add_action( "potion,name=draenic_strength,if=(buff.bloodlust.react|buff.avenging_wrath.up|target.time_to_die<=40)" );
-    else if ( true_level > 85 )
-      cds -> add_action( "potion,name=mogu_power,if=(buff.bloodlust.react|buff.avenging_wrath.up|target.time_to_die<=40)" );
+      cds -> add_action( "potion,if=(buff.bloodlust.react|buff.avenging_wrath.up|buff.crusade.up&buff.crusade.remains<25|target.time_to_die<=40)" );
     else if ( true_level >= 80 )
-      cds -> add_action( "potion,name=golemblood,if=buff.bloodlust.react|buff.avenging_wrath.up|target.time_to_die<=40" );
+      cds -> add_action( "potion,if=(buff.bloodlust.react|buff.avenging_wrath.up|target.time_to_die<=40)" );
   }
 
   std::vector<std::string> racial_actions = get_racial_actions();
