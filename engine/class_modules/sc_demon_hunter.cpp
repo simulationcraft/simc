@@ -65,27 +65,27 @@ public:
   void target_demise();
 };
 
-const unsigned MAX_SOUL_FRAGMENTS = 5;
-const unsigned DEMONIC_EXTEND_DURATION = 8;
-const unsigned MAX_FIERY_BRAND_DURATION = 10;
-const double VENGEFUL_RETREAT_DISTANCE = 20.0;
+constexpr unsigned MAX_SOUL_FRAGMENTS = 5;
+constexpr unsigned DEMONIC_EXTEND_DURATION = 8;
+constexpr unsigned MAX_FIERY_BRAND_DURATION = 10;
+constexpr double VENGEFUL_RETREAT_DISTANCE = 20.0;
 
-enum soul_fragment_e
+enum class soul_fragment
 {
-  SOUL_FRAGMENT_ALL = 0,
-  SOUL_FRAGMENT_GREATER,
-  SOUL_FRAGMENT_LESSER,
+  ALL,
+  GREATER,
+  LESSER,
 };
 
-const char* get_soul_fragment_str( soul_fragment_e type )
+const char* get_soul_fragment_str( soul_fragment type )
 {
   switch ( type )
   {
-    case SOUL_FRAGMENT_ALL:
+    case soul_fragment::ALL:
       return "soul fragment";
-    case SOUL_FRAGMENT_GREATER:
+    case soul_fragment::GREATER:
       return "greater soul fragment";
-    case SOUL_FRAGMENT_LESSER:
+    case soul_fragment::LESSER:
       return "lesser soul fragment";
     default:
       return "";
@@ -399,7 +399,6 @@ public:
   } options;
 
   demon_hunter_t( sim_t* sim, const std::string& name, race_e r );
-  ~demon_hunter_t();
 
   // overridden player_t init functions
   stat_e convert_hybrid_stat( stat_e s ) const override;
@@ -478,11 +477,11 @@ public:
   void set_out_of_range( timespan_t duration );
   void adjust_movement();
   double calculate_expected_max_health() const;
-  unsigned consume_soul_fragments( soul_fragment_e = SOUL_FRAGMENT_ALL, bool heal = true, unsigned max = MAX_SOUL_FRAGMENTS );
-  unsigned get_active_soul_fragments( soul_fragment_e = SOUL_FRAGMENT_ALL ) const;
-  unsigned get_total_soul_fragments( soul_fragment_e = SOUL_FRAGMENT_ALL ) const;
+  unsigned consume_soul_fragments( soul_fragment = soul_fragment::ALL, bool heal = true, unsigned max = MAX_SOUL_FRAGMENTS );
+  unsigned get_active_soul_fragments( soul_fragment = soul_fragment::ALL ) const;
+  unsigned get_total_soul_fragments( soul_fragment = soul_fragment::ALL ) const;
   void activate_soul_fragment( soul_fragment_t* );
-  void spawn_soul_fragment( soul_fragment_e, unsigned = 1 );
+  void spawn_soul_fragment( soul_fragment, unsigned = 1 );
   double get_target_reach() const
   {
     return target_reach >= 0 ? target_reach : sim -> target -> combat_reach;
@@ -665,9 +664,9 @@ struct soul_fragment_t
   double x, y;
   event_t* activate;
   event_t* expiration;
-  const soul_fragment_e type;
+  const soul_fragment type;
 
-  soul_fragment_t( demon_hunter_t* p, soul_fragment_e t ) : dh( p ), type( t )
+  soul_fragment_t( demon_hunter_t* p, soul_fragment t ) : dh( p ), type( t )
   {
     activate = expiration = nullptr;
 
@@ -713,9 +712,9 @@ struct soul_fragment_t
     }
   }
 
-  bool is_type( soul_fragment_e t ) const
+  bool is_type( soul_fragment t ) const
   {
-    return t == SOUL_FRAGMENT_ALL || type == t;
+    return t == soul_fragment::ALL || type == t;
   }
 
   void set_position()
@@ -753,7 +752,7 @@ struct soul_fragment_t
 
     if ( heal )
     {
-      action_t* consume_action = type == SOUL_FRAGMENT_GREATER ? 
+      action_t* consume_action = type == soul_fragment::GREATER ?
         dh -> active.consume_soul_greater : dh -> active.consume_soul_lesser;
 
       if ( instant )
@@ -786,7 +785,7 @@ struct soul_fragment_t
         dh->buff.metamorphosis->trigger( 1, dh->buff.metamorphosis->default_value, -1.0, duration );
     }
 
-    if (type == SOUL_FRAGMENT_GREATER && dh->sim->target->race == RACE_DEMON)
+    if (type == soul_fragment::GREATER && dh->sim->target->race == RACE_DEMON)
     {
       dh->buff.demon_soul->trigger();
     }
@@ -1256,11 +1255,11 @@ struct consume_soul_t : public demon_hunter_heal_t
     }
   };
 
-  const soul_fragment_e type;
+  const soul_fragment type;
   const spell_data_t* vengeance_heal;
   timespan_t vengeance_heal_interval;
 
-  consume_soul_t( demon_hunter_t* p, const std::string& n, const spell_data_t* s, soul_fragment_e t )
+  consume_soul_t( demon_hunter_t* p, const std::string& n, const spell_data_t* s, soul_fragment t )
     : demon_hunter_heal_t( n, p, s ), 
     type( t ),
     vengeance_heal( p->find_specialization_spell( 203783 ) ),
@@ -1284,7 +1283,7 @@ struct consume_soul_t : public demon_hunter_heal_t
     }
     else
     {
-      if ( type == SOUL_FRAGMENT_LESSER )
+      if ( type == soul_fragment::LESSER )
       {
         // Vengeance-Specific Healing Logic
         // This is not in the heal data and they use SpellId 203783 to control the healing parameters
@@ -2086,7 +2085,7 @@ struct immolation_aura_t : public demon_hunter_spell_t
         // FIXME: placeholder proc chance, lack of info on real proc chance.
         if ( initial && p() -> talent.fallout -> ok() && rng().roll( 0.60 ) )
         {
-          p() -> spawn_soul_fragment( SOUL_FRAGMENT_LESSER, 1 );
+          p() -> spawn_soul_fragment( soul_fragment::LESSER, 1 );
         }
       }
     }
@@ -2257,12 +2256,12 @@ struct pick_up_fragment_t : public demon_hunter_spell_t
     SOUL_FRAGMENT_SELECT_OLDEST,
   };
   soul_fragment_select_e select_mode;
-  soul_fragment_e type;
+  soul_fragment type;
 
   pick_up_fragment_t( demon_hunter_t* p, const std::string& options_str )
     : demon_hunter_spell_t( "pick_up_fragment", p, spell_data_t::nil() ),
       select_mode( SOUL_FRAGMENT_SELECT_OLDEST ),
-      type( SOUL_FRAGMENT_ALL )
+      type( soul_fragment::ALL )
   {
     std::string type_str, mode_str;
     add_option( opt_string( "type", type_str ) );
@@ -2305,15 +2304,15 @@ struct pick_up_fragment_t : public demon_hunter_spell_t
   {
     if ( value == "greater" )
     {
-      type = SOUL_FRAGMENT_GREATER;
+      type = soul_fragment::GREATER;
     }
     else if ( value == "lesser" )
     {
-      type = SOUL_FRAGMENT_LESSER;
+      type = soul_fragment::LESSER;
     }
     else if ( value == "all" || value == "any" )
     {
-      type = SOUL_FRAGMENT_ALL;
+      type = soul_fragment::ALL;
     }
     else if ( value != "" )
     {
@@ -2472,7 +2471,7 @@ struct spirit_bomb_t : public demon_hunter_spell_t
 
     // Soul fragments consumed are capped for Spirit Bomb
     const int fragments_consumed = 
-      p()->consume_soul_fragments(SOUL_FRAGMENT_ALL, true, data().effectN(2).base_value());
+      p()->consume_soul_fragments(soul_fragment::ALL, true, data().effectN(2).base_value());
 
     action_state_t* damage_state = damage->get_state();
     damage->set_target( execute_state->target );
@@ -2943,7 +2942,7 @@ struct chaos_strike_base_t : public demon_hunter_attack_t
     if (p()->talent.demonic_appetite->ok() && p()->rppm.demonic_appetite->trigger())
     {
       p()->proc.demonic_appetite->occur();
-      p()->spawn_soul_fragment(SOUL_FRAGMENT_LESSER);
+      p()->spawn_soul_fragment(soul_fragment::LESSER);
     }
   }
 };
@@ -3252,7 +3251,7 @@ struct fracture_t : public demon_hunter_attack_t
       mh->execute();
       oh->execute();
 
-      p() -> spawn_soul_fragment( SOUL_FRAGMENT_LESSER, 2 );
+      p() -> spawn_soul_fragment( soul_fragment::LESSER, 2 );
     }
   }
 };
@@ -3280,7 +3279,7 @@ struct shear_t : public demon_hunter_attack_t
 
     if ( p() -> rng().roll( chance ) )
     {
-      p() -> spawn_soul_fragment( SOUL_FRAGMENT_LESSER );
+      p() -> spawn_soul_fragment( soul_fragment::LESSER );
       p() -> shear_counter = 0;
     }
     else
@@ -3342,7 +3341,7 @@ struct sever_t : public demon_hunter_attack_t
 
     if (hit_any_target)
     {
-      p()->spawn_soul_fragment(SOUL_FRAGMENT_LESSER);
+      p()->spawn_soul_fragment(soul_fragment::LESSER);
     }
   }
 
@@ -3402,7 +3401,7 @@ struct soul_cleave_t : public demon_hunter_attack_t
     damage->execute();
 
     // Soul fragments consumed are capped for Soul Cleave
-    p()->consume_soul_fragments( SOUL_FRAGMENT_ALL, true, data().effectN( 3 ).base_value() );
+    p()->consume_soul_fragments( soul_fragment::ALL, true, data().effectN( 3 ).base_value() );
   }
 
   bool ready() override
@@ -3805,7 +3804,7 @@ void demon_hunter_td_t::target_demise()
     return;
 
   demon_hunter_t* p = static_cast<demon_hunter_t*>( source );
-  p->spawn_soul_fragment( SOUL_FRAGMENT_GREATER );
+  p->spawn_soul_fragment( soul_fragment::GREATER );
 }
 
 // ==========================================================================
@@ -3841,10 +3840,6 @@ demon_hunter_t::demon_hunter_t(sim_t* sim, const std::string& name, race_e r)
   create_benefits();
 
   regen_type = REGEN_DISABLED;
-}
-
-demon_hunter_t::~demon_hunter_t()
-{
 }
 
 // ==========================================================================
@@ -4200,10 +4195,10 @@ expr_t* demon_hunter_t::create_expression( action_t* a,
     struct soul_fragments_expr_t : public expr_t
     {
       demon_hunter_t* dh;
-      soul_fragment_e type;
+      soul_fragment type;
 
       soul_fragments_expr_t( demon_hunter_t* p, const std::string& n,
-                             soul_fragment_e t )
+                             soul_fragment t )
         : expr_t( n ), dh( p ), type( t )
       {
       }
@@ -4214,18 +4209,18 @@ expr_t* demon_hunter_t::create_expression( action_t* a,
       }
     };
 
-    soul_fragment_e type;
+    soul_fragment type;
     if ( name_str == "soul_fragments" )
     {
-      type = SOUL_FRAGMENT_ALL;
+      type = soul_fragment::ALL;
     }
     else if ( name_str == "greater_soul_fragments" )
     {
-      type = SOUL_FRAGMENT_GREATER;
+      type = soul_fragment::GREATER;
     }
     else
     {
-      type = SOUL_FRAGMENT_LESSER;
+      type = soul_fragment::LESSER;
     }
 
     return new soul_fragments_expr_t( this, name_str, type );
@@ -4580,9 +4575,9 @@ void demon_hunter_t::init_spells()
   using namespace actions::heals;
 
   active.consume_soul_greater 
-    = new consume_soul_t(this, "consume_soul_greater", spec.consume_soul_greater, SOUL_FRAGMENT_GREATER);
+    = new consume_soul_t(this, "consume_soul_greater", spec.consume_soul_greater, soul_fragment::GREATER);
   active.consume_soul_lesser 
-    = new consume_soul_t(this, "consume_soul_lesser", spec.consume_soul_lesser, SOUL_FRAGMENT_LESSER);
+    = new consume_soul_t(this, "consume_soul_lesser", spec.consume_soul_lesser, soul_fragment::LESSER);
 
   if ( talent.demon_blades -> ok() )
   {
@@ -5432,7 +5427,7 @@ void demon_hunter_t::adjust_movement()
 
 // demon_hunter_t::consume_soul_fragments ===================================
 
-unsigned demon_hunter_t::consume_soul_fragments( soul_fragment_e type, bool heal, unsigned max )
+unsigned demon_hunter_t::consume_soul_fragments( soul_fragment type, bool heal, unsigned max )
 {
   unsigned consumed = 0;
   std::vector<soul_fragment_t*> candidates;
@@ -5472,18 +5467,18 @@ unsigned demon_hunter_t::consume_soul_fragments( soul_fragment_e type, bool heal
 
 // demon_hunter_t::get_active_soul_fragments ================================
 
-unsigned demon_hunter_t::get_active_soul_fragments( soul_fragment_e type ) const
+unsigned demon_hunter_t::get_active_soul_fragments( soul_fragment type ) const
 {
   switch ( type )
   {
-    case SOUL_FRAGMENT_GREATER:
-    case SOUL_FRAGMENT_LESSER:
+    case soul_fragment::GREATER:
+    case soul_fragment::LESSER:
       return std::accumulate(
                soul_fragments.begin(), soul_fragments.end(), 0,
       [&type]( unsigned acc, soul_fragment_t* frag ) {
         return acc + ( frag -> is_type( type ) && frag -> active() );
       } );
-    case SOUL_FRAGMENT_ALL:
+    case soul_fragment::ALL:
     default:
       return std::accumulate( soul_fragments.begin(), soul_fragments.end(), 0,
       []( unsigned acc, soul_fragment_t* frag ) {
@@ -5494,17 +5489,17 @@ unsigned demon_hunter_t::get_active_soul_fragments( soul_fragment_e type ) const
 
 // demon_hunter_t::get_total_soul_fragments =================================
 
-unsigned demon_hunter_t::get_total_soul_fragments( soul_fragment_e type ) const
+unsigned demon_hunter_t::get_total_soul_fragments( soul_fragment type ) const
 {
   switch ( type )
   {
-    case SOUL_FRAGMENT_GREATER:
-    case SOUL_FRAGMENT_LESSER:
+    case soul_fragment::GREATER:
+    case soul_fragment::LESSER:
       return std::accumulate( soul_fragments.begin(), soul_fragments.end(), 0,
       [&type]( unsigned acc, soul_fragment_t* frag ) {
         return acc + frag -> is_type( type );
       } );
-    case SOUL_FRAGMENT_ALL:
+    case soul_fragment::ALL:
     default:
       return ( unsigned )soul_fragments.size();
   }
@@ -5514,7 +5509,7 @@ unsigned demon_hunter_t::get_total_soul_fragments( soul_fragment_e type ) const
 
 void demon_hunter_t::activate_soul_fragment(soul_fragment_t* frag)
 {
-  if (frag->type == SOUL_FRAGMENT_LESSER)
+  if (frag->type == soul_fragment::LESSER)
   {
     auto active_fragments = get_active_soul_fragments(frag->type);
     if(active_fragments > MAX_SOUL_FRAGMENTS)
@@ -5523,7 +5518,7 @@ void demon_hunter_t::activate_soul_fragment(soul_fragment_t* frag)
       std::vector<soul_fragment_t*>::iterator it;
       for (it = soul_fragments.begin(); it != soul_fragments.end(); it++)
       {
-        if ((*it)->is_type(SOUL_FRAGMENT_LESSER) && (*it)->active())
+        if ((*it)->is_type(soul_fragment::LESSER) && (*it)->active())
         {
           if (specialization() == DEMON_HUNTER_HAVOC)
           {
@@ -5539,7 +5534,7 @@ void demon_hunter_t::activate_soul_fragment(soul_fragment_t* frag)
             if (sim->debug)
             {
               sim->out_debug.printf("%s consumes overflow fragment %ss. remaining=%u", name(),
-                get_soul_fragment_str(SOUL_FRAGMENT_LESSER), get_total_soul_fragments(SOUL_FRAGMENT_LESSER));
+                get_soul_fragment_str(soul_fragment::LESSER), get_total_soul_fragments(soul_fragment::LESSER));
             }
           }
 
@@ -5550,15 +5545,15 @@ void demon_hunter_t::activate_soul_fragment(soul_fragment_t* frag)
       }
     }
 
-    assert(get_active_soul_fragments(SOUL_FRAGMENT_LESSER) <= MAX_SOUL_FRAGMENTS);
+    assert(get_active_soul_fragments(soul_fragment::LESSER) <= MAX_SOUL_FRAGMENTS);
   }
 }
 
 // demon_hunter_t::spawn_soul_fragment ======================================
 
-void demon_hunter_t::spawn_soul_fragment( soul_fragment_e type, unsigned n )
+void demon_hunter_t::spawn_soul_fragment( soul_fragment type, unsigned n )
 {
-  proc_t* soul_proc = type == SOUL_FRAGMENT_GREATER ? proc.soul_fragment_greater : proc.soul_fragment_lesser;
+  proc_t* soul_proc = type == soul_fragment::GREATER ? proc.soul_fragment_greater : proc.soul_fragment_lesser;
   for (unsigned i = 0; i < n; i++)
   {
     soul_fragments.push_back(new soul_fragment_t(this, type));
