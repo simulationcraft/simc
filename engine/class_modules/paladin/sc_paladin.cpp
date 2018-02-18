@@ -561,23 +561,6 @@ struct divine_steed_t : public paladin_spell_t
 
 };
 
-// Denounce =================================================================
-
-struct denounce_t : public paladin_spell_t
-{
-  denounce_t( paladin_t* p, const std::string& options_str )
-    : paladin_spell_t( "denounce", p, p -> find_specialization_spell( "Denounce" ) )
-  {
-    parse_options( options_str );
-    may_crit = true;
-  }
-
-  void execute() override
-  {
-    paladin_spell_t::execute();
-  }
-};
-
 // Flash of Light Spell =====================================================
 
 struct flash_of_light_t : public paladin_heal_t
@@ -1814,7 +1797,6 @@ action_t* paladin_t::create_action( const std::string& name, const std::string& 
   if ( name == "beacon_of_light"           ) return new beacon_of_light_t          ( this, options_str );
   if ( name == "consecration"              ) return new consecration_t             ( this, options_str );
   if ( name == "crusader_strike"           ) return new crusader_strike_t          ( this, options_str );
-  if ( name == "denounce"                  ) return new denounce_t                 ( this, options_str );
   if ( name == "divine_protection"         ) return new divine_protection_t        ( this, options_str );
   if ( name == "divine_steed"              ) return new divine_steed_t             ( this, options_str );
   if ( name == "divine_shield"             ) return new divine_shield_t            ( this, options_str );
