@@ -987,7 +987,7 @@ public:
   {
     base_t::init_base_stats();
 
-    resources.base[RESOURCE_HEALTH] = util::interpolate( level(), 0, 4253, 6373 );
+    resources.base[RESOURCE_HEALTH] = 6373;
     resources.base[RESOURCE_FOCUS] = 100 + o() -> specs.kindred_spirits -> effectN( 1 ).resource( RESOURCE_FOCUS );
 
     base_gcd = timespan_t::from_seconds( 1.50 );

@@ -146,7 +146,22 @@ struct mana_potion_t : public action_t
     if ( min > max ) std::swap( min, max );
 
     if ( max <= 0 )
-      min = max = util::ability_rank( player -> level(),  30001, 86, 10000, 85, 4300, 80,  2400, 68,  1800, 0 );
+    {
+      struct potion_entry_t { int level, value; };
+      potion_entry_t entries[] = { { 0, 1800 },
+                                   { 68, 2400 },
+                                   { 80, 4300 },
+                                   { 85, 10000 },
+                                   { 86, 30001 },};
+      for ( const auto& entry : entries )
+      {
+        min = max = entry.value;
+        if ( player -> level() > entry.level)
+        {
+          break;
+        }
+      }
+    }
 
     assert( max > 0 );
 

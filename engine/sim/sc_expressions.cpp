@@ -1255,15 +1255,24 @@ static expr_t* build_expression_tree(
     }
     else if ( t.type == expression::TOK_STR )
     {
-      expr_t* e = action->create_expression( t.label );
-      if ( !e )
+      try {
+        expr_t* e = action->create_expression( t.label );
+        if ( !e )
+        {
+          action->sim->errorf(
+              "Player %s action %s : Unable to decode expression function '%s'\n",
+              action->player->name(), action->name(), t.label.c_str() );
+          return nullptr;
+        }
+        stack.push_back( e );
+      }
+      catch ( const std::exception& exc)
       {
         action->sim->errorf(
-            "Player %s action %s : Unable to decode expression function '%s'\n",
-            action->player->name(), action->name(), t.label.c_str() );
+            "Player %s action %s : Exception while decoding expression function '%s': %s\n",
+            action->player->name(), action->name(), t.label.c_str(), exc.what() );
         return nullptr;
       }
-      stack.push_back( e );
     }
     else if ( expression::is_unary( t.type ) )
     {

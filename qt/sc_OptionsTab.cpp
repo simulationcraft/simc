@@ -1170,8 +1170,8 @@ QString SC_OptionsTab::mergeOptions()
           std::vector<std::string> splits = util::string_split( choice.plots_iterations -> currentText().toStdString(), "/" );
           if ( splits.size() > 1 )
           {
-            int base_iter = util::str_to_num<int>( choice.iterations -> currentText().toStdString() );
-            int divisor = util::str_to_num<int>( splits[1].c_str() );
+            int base_iter = std::stoi( choice.iterations -> currentText().toStdString() );
+            int divisor = std::stoi( splits[1] );
             options += QString::number( base_iter / divisor ) + "\n";
           }
           else

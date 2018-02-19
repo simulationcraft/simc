@@ -9028,7 +9028,7 @@ expr_t* player_t::create_expression( action_t* a,
     if ( util::str_in_str_ci( parts[2], "die" ) )
       percent = 0.0;
     else if ( util::str_in_str_ci( parts[2], "pct" ) )
-      percent = static_cast<double>( util::str_to_num<int>( parts[2] ) );
+      percent = static_cast<double>( std::stoi( parts[2] ) );
     else
       percent = -1;
     // skip construction if the percent is nonsensical
@@ -9128,9 +9128,9 @@ expr_t* player_t::create_expression( action_t* a,
     timespan_t window_duration;
 
     if ( util::str_in_str_ci( parts[ 2 ], "ms" ) )
-      window_duration = timespan_t::from_millis( util::str_to_num<int>( parts[ 2 ] ) );
+      window_duration = timespan_t::from_millis( std::stoi( parts[ 2 ] ) );
     else
-      window_duration = timespan_t::from_seconds( util::str_to_num<int>( parts[ 2 ] ) );
+      window_duration = timespan_t::from_seconds( std::stoi( parts[ 2 ] ) );
 
     // skip construction if the duration is nonsensical
     if ( window_duration > timespan_t::zero() )

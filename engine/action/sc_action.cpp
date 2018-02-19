@@ -2784,13 +2784,12 @@ expr_t* action_t::create_expression( const std::string& name_str )
         struct active_enemies_t: public expr_t
         {
           action_t* action;
-          const std::string& yards;
           double yards_from_player;
           int num_targets;
-          active_enemies_t( action_t* p, const std::string& r ):
-            expr_t( "active_enemies_within" ), action( p ), yards( r )
+          active_enemies_t( action_t* p, const std::string& yards ):
+            expr_t( "active_enemies_within" ), action( p )
           {
-            yards_from_player = util::str_to_num<int>( yards );
+            yards_from_player = std::stoi( yards );
             num_targets = 0;
           }
 

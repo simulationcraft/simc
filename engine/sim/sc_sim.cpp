@@ -103,7 +103,7 @@ bool parse_ptr( sim_t*             sim,
   if ( name != "ptr" ) return false;
 
   if ( SC_USE_PTR )
-    sim -> dbc.ptr = util::str_to_num<int>( value ) != 0;
+    sim -> dbc.ptr = std::stoi( value ) != 0;
   else
     sim -> errorf( "SimulationCraft has not been built with PTR data.  The 'ptr=' option is ignored.\n" );
 
@@ -162,7 +162,7 @@ bool parse_optimal_raid( sim_t*             sim,
 {
   if ( name != "optimal_raid" ) return false;
 
-  sim -> use_optimal_buffs_and_debuffs( util::str_to_num<int>( value ) );
+  sim -> use_optimal_buffs_and_debuffs( std::stoi( value ) );
 
   return true;
 }
@@ -262,7 +262,7 @@ bool parse_proxy( sim_t*             sim,
     return false;
   }
 
-  unsigned port = util::str_to_num<unsigned>( splits[ 2 ] );
+  unsigned port = std::stoul( splits[ 2 ] );
   if ( splits[ 0 ] == "http" && port > 0 && port < 65536 )
   {
     http::set_proxy( splits[ 0 ], splits[ 1 ], port );

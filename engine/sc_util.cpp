@@ -227,53 +227,6 @@ bool util::str_in_str_ci( const std::string& l,
   return std::search( l.begin(), l.end(), r.begin(), r.end(), pred_ci ) != l.end();
 }
 
-// rating_t::interpolate ====================================================
-
-double util::interpolate( int    level,
-                          double val_60,
-                          double val_70,
-                          double val_80,
-                          double val_85 )
-{
-  if ( val_85 < 0 ) val_85 = val_80; // TODO
-  if ( level <= 60 )
-  {
-    return val_60;
-  }
-  else if ( level == 70 )
-  {
-    return val_70;
-  }
-  else if ( level == 80 )
-  {
-    return val_80;
-  }
-  else if ( level >= 85 )
-  {
-    return val_85;
-  }
-  else if ( level < 70 )
-  {
-    // Assume linear progression for now.
-    double adjust = ( level - 60 ) / 10.0;
-    return val_60 + adjust * ( val_70 - val_60 );
-  }
-  else if ( level < 80 )
-  {
-    // Assume linear progression for now.
-    double adjust = ( level - 70 ) / 10.0;
-    return val_70 + adjust * ( val_80 - val_70 );
-  }
-  else // ( level < 85 )
-  {
-    // Assume linear progression for now.
-    double adjust = ( level - 80 ) / 5.0;
-    return val_80 + adjust * ( val_85 - val_80 );
-  }
-  assert( 0 );
-  return 0;
-}
-
 // dot_behavior_type_string =================================================
 
 const char* util::dot_behavior_type_string( dot_behavior_e t )
