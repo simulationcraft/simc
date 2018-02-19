@@ -16,8 +16,6 @@
 //   - Add Elemental Mastery
 //   - Add Volcanic Rage
 //   - Add Spirit Wolf
-//   - Electric Discharge
-// - Add Fulmination
 // - Edit Earthquake cost / model
 // - Add Meteor to Primal Fire Elemental instead of Fire Nova
 // - Add Eye of the Storm to Primal Storm Elemental instead of Gale Force
@@ -474,6 +472,7 @@ public:
     const spell_data_t* primal_elementalist;
     const spell_data_t* liquid_magma_totem;
 
+    const spell_data_t* electric_discharge;
     const spell_data_t* stormkeeper;
 
     // Enhancement
@@ -977,7 +976,8 @@ shaman_td_t::shaman_td_t( player_t* target, shaman_t* p ) : actor_target_data_t(
   dot.flame_shock = target->get_dot( "flame_shock", p );
 
   debuff.fulmination = buff_creator_t( *this, "fulmination", p->spec.fulmination )
-                           .default_value( p->spec.fulmination->effectN( 1 ).percent() );
+                           .default_value( p->spec.fulmination->effectN( 1 ).percent() +
+                                           p->talent.electric_discharge->effectN( 1 ).percent() );
 
   debuff.earthen_spike = buff_creator_t( *this, "earthen_spike", p->talent.earthen_spike )
                              .cd( timespan_t::zero() )  // Handled by the action
@@ -4573,7 +4573,7 @@ struct lightning_bolt_overload_t : public elemental_overload_spell_t
 
     if ( td( target )->debuff.fulmination->up() )
     {
-      m *= 1 + p()->spec.fulmination->effectN( 1 ).percent();
+      m *= 1 + p()->spec.fulmination->effectN( 1 ).percent() + p()->talent.electric_discharge->effectN( 1 ).percent();
     }
     return m;
   }
@@ -4648,7 +4648,7 @@ struct lightning_bolt_t : public shaman_spell_t
 
     if ( td( target )->debuff.fulmination->up() )
     {
-      m *= 1 + p()->spec.fulmination->effectN( 1 ).percent();
+      m *= 1 + p()->spec.fulmination->effectN( 1 ).percent() + p()->talent.electric_discharge->effectN( 1 ).percent();
     }
     return m;
   }
@@ -5076,7 +5076,9 @@ struct earth_shock_t : public shaman_spell_t
       cost_steps.push_back( (double)( cost_step_size * steps ) );
     }
     // calculation is hardcoded into Earth Shock tooltip
-    base_coefficient = p()->spec.fulmination->effectN( 1 ).base_value() * 4 / max_cost;
+    base_coefficient =
+        ( p()->spec.fulmination->effectN( 1 ).base_value() + p()->talent.electric_discharge->effectN( 1 ).percent() ) *
+        4 / max_cost;
   }
 
   double cost() const override
@@ -6405,7 +6407,8 @@ void shaman_t::init_spells()
   talent.primal_elementalist = find_talent_spell( "Primal Elementalist" );
   talent.liquid_magma_totem  = find_talent_spell( "Liquid Magma Totem" );
 
-  talent.stormkeeper = find_talent_spell( "Stormkeeper" );
+  talent.electric_discharge = find_talent_spell( "Electric Discharge" );
+  talent.stormkeeper        = find_talent_spell( "Stormkeeper" );
 
   // Enhancement
   talent.windsong    = find_talent_spell( "Windsong" );
