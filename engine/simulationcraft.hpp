@@ -6728,8 +6728,8 @@ namespace unique_gear
 
     // Create a correct type buff creator. Derived classes can override this method to fully
     // customize the buff creation.
-    virtual T_CREATOR creator( const special_effect_t& e ) const
-    { return T_CREATOR( e.player, buff_name ); }
+    virtual T_BUFF* creator( const special_effect_t& e ) const
+    { return new T_BUFF( e.player, buff_name ); }
 
     // An accessor method to return the assignment pointer for the buff (in the actor). Primary use
     // is to automatically assign fallback buffs to correct member variables. If the special effect
@@ -6757,7 +6757,8 @@ namespace unique_gear
 
       // Proc chance is hardcoded to zero, essentially disabling the buff described by creator()
       // call.
-      buff_ptr( e ) = creator( e ).chance( 0 );
+      buff_ptr( e ) = creator( e );
+      buff_ptr( e )->set_chance( 0 );
       if ( e.player -> sim -> debug )
       {
         e.player -> sim -> out_debug.printf( "Player %s created fallback buff for %s",

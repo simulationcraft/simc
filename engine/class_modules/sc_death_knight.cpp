@@ -9693,11 +9693,10 @@ struct skullflowers_haemostasis_t : public class_buff_cb_t<buff_t>
   buff_t*& buff_ptr( const special_effect_t& e ) override
   { return debug_cast<death_knight_t*>( e.player ) -> buffs.skullflowers_haemostasis; }
 
-  buff_creator_t creator( const special_effect_t& e ) const override
+  buff_t* creator( const special_effect_t& e ) const override
   {
-    return super::creator( e )
-           .spell( e.trigger() )
-           .default_value( e.trigger() -> effectN( 1 ).percent() )
+    return make_buff( e.player, buff_name, e.trigger() )
+      ->set_default_value( e.trigger() -> effectN( 1 ).percent() )
            // Grab 1 second ICD from the driver
            // ICD isn't observed in game anymore and counters the application through DRW weapons
            // .cd( e.driver() -> internal_cooldown() )
@@ -9762,8 +9761,8 @@ struct cold_heart_buff_t: public class_buff_cb_t<buff_t>
   buff_t*& buff_ptr( const special_effect_t& e ) override
   { return debug_cast<death_knight_t*>( e.player ) -> buffs.cold_heart; }
 
-  buff_creator_t creator( const special_effect_t& e ) const override
-  { return super::creator( e ).spell( e.player -> find_spell( 235599 ) ); }
+  buff_t* creator( const special_effect_t& e ) const override
+  { return make_buff( e.player, buff_name, e.player -> find_spell( 235599 ) ); }
 };
 
 struct lanathels_lament_t : public scoped_actor_callback_t<death_knight_t>

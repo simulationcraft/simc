@@ -1378,12 +1378,11 @@ struct sindorei_spite_t : public class_buff_cb_t<warlock_t>
     return actor( e ) -> buffs.sindorei_spite;
   }
 
-  buff_creator_t creator( const special_effect_t& e ) const override
+  buff_t* creator( const special_effect_t& e ) const override
   {
-    return super::creator( e )
-      .spell( e.driver() -> effectN( 1 ).trigger() )
-      .default_value( e.driver() -> effectN( 1 ).trigger() -> effectN( 1 ).percent() )
-      .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+    return make_buff( e.player, buff_name, e.driver() -> effectN( 1 ).trigger() )
+      ->set_default_value( e.driver() -> effectN( 1 ).trigger() -> effectN( 1 ).percent() )
+      ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   }
 };
 

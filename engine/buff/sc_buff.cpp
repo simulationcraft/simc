@@ -2131,8 +2131,9 @@ stat_buff_t* stat_buff_t::add_stat( stat_e s, double a, std::function<bool(const
   manual_stats_added = true;
 
   stats.emplace_back( s, a, c );
-
+  return this;
 }
+
 // stat_buff_t::bump ========================================================
 
 void stat_buff_t::bump( int stacks, double /* value */ )

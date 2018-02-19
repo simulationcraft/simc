@@ -10122,13 +10122,13 @@ struct sephuzs_secret_t : public class_buff_cb_t<druid_t, haste_buff_t, haste_bu
       return ((druid_t*)(e.player))->buff.sephuzs_secret;
    }
 
-   haste_buff_creator_t creator(const special_effect_t& e) const override
+   haste_buff_t* creator(const special_effect_t& e) const override
    {
-      return super::creator(e)
-         .spell(e.trigger())
-         .cd(e.player->find_spell(226262)->duration())
-         .default_value(e.trigger()->effectN(2).percent())
-         .add_invalidate(CACHE_RUN_SPEED);
+      auto buff = make_buff<haste_buff_t>( e.player, buff_name, e.trigger());
+      buff->set_cooldown(e.player->find_spell(226262)->duration())
+         ->set_default_value(e.trigger()->effectN(2).percent())
+         ->add_invalidate(CACHE_RUN_SPEED);
+      return buff;
    }
 };
 
@@ -10192,11 +10192,10 @@ struct fiery_red_maimers_t : public class_buff_cb_t<druid_t>
   buff_t*& buff_ptr( const special_effect_t& e ) override
   { return actor( e ) -> buff.fiery_red_maimers; }
 
-  buff_creator_t creator( const special_effect_t& e ) const override
+  buff_t* creator( const special_effect_t& e ) const override
   {
-    return super::creator( e )
-      .spell( e.driver() -> effectN( 1 ).trigger() )
-      .default_value( e.driver() -> effectN( 1 ).trigger() -> effectN( 2 ).percent() );
+    return make_buff( e.player, buff_name, e.driver() -> effectN( 1 ).trigger() )
+      ->set_default_value( e.driver() -> effectN( 1 ).trigger() -> effectN( 2 ).percent() );
   }
 };
 
@@ -10232,10 +10231,9 @@ struct promise_of_elune_t : public class_buff_cb_t<druid_t>
   buff_t*& buff_ptr( const special_effect_t& e ) override
   { return actor( e ) -> buff.power_of_elune; }
 
-  buff_creator_t creator( const special_effect_t& e ) const override
+  buff_t* creator( const special_effect_t& e ) const override
   {
-    return super::creator( e )
-      .spell( e.driver() -> effectN( 1 ).trigger() );
+    return make_buff( e.player, buff_name, e.driver() -> effectN( 1 ).trigger() );
   }
 };
 
@@ -10269,11 +10267,10 @@ struct oneths_intuition_t : public class_buff_cb_t<druid_t>
   buff_t*& buff_ptr( const special_effect_t& e ) override
   { return actor( e ) -> buff.oneths_intuition; }
 
-  buff_creator_t creator( const special_effect_t& e ) const override
+  buff_t* creator( const special_effect_t& e ) const override
   {
-    return super::creator( e )
-      .spell( e.player -> find_spell( 209406 ) )
-      .chance( e.driver() -> proc_chance() );
+    return make_buff( e.player, buff_name, e.player -> find_spell( 209406 ) )
+      ->set_chance( e.driver() -> proc_chance() );
   }
 };
 
@@ -10285,11 +10282,10 @@ struct oneths_overconfidence_t : public class_buff_cb_t<druid_t>
   buff_t*& buff_ptr( const special_effect_t& e ) override
   { return actor( e ) -> buff.oneths_overconfidence; }
 
-  buff_creator_t creator( const special_effect_t& e ) const override
+  buff_t* creator( const special_effect_t& e ) const override
   {
-    return super::creator( e )
-      .spell( e.player -> find_spell( 209407 ) )
-      .chance( e.driver() -> proc_chance() );
+    return make_buff( e.player, buff_name, e.player -> find_spell( 209407 ) )
+      ->set_chance( e.driver() -> proc_chance() );
   }
 };
 
@@ -10301,11 +10297,10 @@ struct the_emerald_dreamcatcher_t : public class_buff_cb_t<druid_t>
   buff_t*& buff_ptr( const special_effect_t& e ) override
   { return actor( e ) -> buff.the_emerald_dreamcatcher; }
 
-  buff_creator_t creator( const special_effect_t& e ) const override
+  buff_t* creator( const special_effect_t& e ) const override
   {
-    return super::creator( e )
-      .spell( e.driver() -> effectN( 1 ).trigger() )
-      .default_value( e.driver() -> effectN( 1 ).trigger()
+    return make_buff( e.player, buff_name, e.driver() -> effectN( 1 ).trigger() )
+      ->set_default_value( e.driver() -> effectN( 1 ).trigger()
         -> effectN( 1 ).resource( RESOURCE_ASTRAL_POWER ) );
   }
 };
@@ -10418,13 +10413,12 @@ struct oakhearts_puny_quods_buff_t : public class_buff_cb_t<druid_t>
     return actor( e ) -> buff.oakhearts_puny_quods;
   }
 
-  buff_creator_t creator(const special_effect_t& e) const override
+  buff_t* creator(const special_effect_t& e) const override
   {
-    return super::creator( e )
-      .spell( e.driver() -> effectN( 1 ).trigger() )
-      .default_value( e.driver() -> effectN( 1 ).trigger()
+    return make_buff( e.player, buff_name, e.driver() -> effectN( 1 ).trigger() )
+      ->set_default_value( e.driver() -> effectN( 1 ).trigger()
         -> effectN( 2 ).resource( RESOURCE_RAGE ) )
-      .tick_callback( []( buff_t* b, int, const timespan_t& ) {
+      ->set_tick_callback( []( buff_t* b, int, const timespan_t& ) {
       assert(b -> player);
       b -> player -> resource_gain( RESOURCE_RAGE,
         b -> default_value,

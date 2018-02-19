@@ -8429,9 +8429,10 @@ struct emalons_charged_core_buff_t : public class_buff_cb_t<buff_t>
     return debug_cast<shaman_t*>( e.player )->buff.emalons_charged_core;
   }
 
-  buff_creator_t creator( const special_effect_t& e ) const override
+  buff_t* creator( const special_effect_t& e ) const override
   {
-    return super::creator( e ).spell( e.player->find_spell( 208742 ) ).add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+    return make_buff( e.player, buff_name, e.player->find_spell( 208742 ) )
+      ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   }
 };
 
@@ -8461,13 +8462,12 @@ struct spiritual_journey_t : public class_buff_cb_t<buff_t>
     return debug_cast<shaman_t*>( e.player )->buff.spiritual_journey;
   }
 
-  buff_creator_t creator( const special_effect_t& e ) const override
+  buff_t* creator( const special_effect_t& e ) const override
   {
     cooldown_t* feral_spirit = e.player->get_cooldown( "feral_spirit" );
 
-    return super::creator( e )
-        .spell( e.player->find_spell( 214170 ) )
-        .stack_change_callback( [feral_spirit]( buff_t*, int, int ) { feral_spirit->adjust_recharge_multiplier(); } );
+    return make_buff( e.player, buff_name, e.player->find_spell( 214170 ) )
+        ->set_stack_change_callback( [feral_spirit]( buff_t*, int, int ) { feral_spirit->adjust_recharge_multiplier(); } );
   }
 };
 
@@ -8522,13 +8522,13 @@ struct sephuzs_secret_t : public class_buff_cb_t<shaman_t, haste_buff_t, haste_b
     return debug_cast<shaman_t*>( e.player )->buff.sephuzs_secret;
   }
 
-  haste_buff_creator_t creator( const special_effect_t& e ) const override
+  haste_buff_t* creator( const special_effect_t& e ) const override
   {
-    return super::creator( e )
-        .spell( e.trigger() )
-        .cd( e.player->find_spell( 226262 )->duration() )
-        .default_value( e.trigger()->effectN( 2 ).percent() )
-        .add_invalidate( CACHE_RUN_SPEED );
+    auto buff = make_buff<haste_buff_t>( e.player, buff_name, e.trigger() );
+    buff->set_cooldown( e.player->find_spell( 226262 )->duration() )
+        ->set_default_value( e.trigger()->effectN( 2 ).percent() )
+        ->add_invalidate( CACHE_RUN_SPEED );
+    return buff;
   }
 };
 

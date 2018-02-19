@@ -9165,13 +9165,13 @@ struct sephuzs_secret_t : public unique_gear::class_buff_cb_t<monk_t, haste_buff
   haste_buff_t*& buff_ptr( const special_effect_t& e ) override
   { return debug_cast<monk_t*>( e.player ) -> buff.sephuzs_secret; }
 
-  haste_buff_creator_t creator( const special_effect_t& e ) const override
+  haste_buff_t* creator( const special_effect_t& e ) const override
   {
-    return super::creator( e )
-           .spell( e.trigger() )
-           .cd( e.player -> find_spell( 226262 ) -> duration() )
-           .default_value( e.trigger() -> effectN( 2 ).percent() )
-           .add_invalidate( CACHE_RUN_SPEED );
+    auto buff = make_buff<haste_buff_t>( e.player, buff_name, e.trigger() );
+    buff->set_cooldown( e.player -> find_spell( 226262 ) -> duration() )
+        ->set_default_value( e.trigger() -> effectN( 2 ).percent() )
+        ->add_invalidate( CACHE_RUN_SPEED );
+    return buff;
   }
 };
 
