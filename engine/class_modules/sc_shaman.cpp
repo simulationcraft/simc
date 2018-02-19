@@ -5060,8 +5060,7 @@ struct earth_shock_t : public shaman_spell_t
       t21_4pc( nullptr )
   {
     // hardcoded because spelldata doesn't provide the resource type
-    resource_current                 = RESOURCE_MAELSTROM;
-    base_costs[ RESOURCE_MAELSTROM ] = 0;
+    resource_current = RESOURCE_MAELSTROM;
 
     if ( player->sets->has_set_bonus( SHAMAN_ELEMENTAL, T21, B4 ) )
     {
@@ -5090,6 +5089,11 @@ struct earth_shock_t : public shaman_spell_t
     return 50.0;
   }
 
+  double base_cost() const override
+  {
+    return cost();
+  }
+
   double spell_direct_power_coefficient( const action_state_t* ) const override
   {
     if ( p()->bugs )
@@ -5112,8 +5116,6 @@ struct earth_shock_t : public shaman_spell_t
   void execute() override
   {
     td( player->target )->debuff.fulmination->increment( (int)( cost() / cost_step_size ) );
-    // last_resource_cost
-    secondary_costs[ RESOURCE_MAELSTROM ] = cost();
     shaman_spell_t::execute();
 
     p()->buff.t21_2pc_elemental->expire();
