@@ -3,7 +3,7 @@
 
 namespace priest
 {
-	namespace actions
+  namespace actions
   {
     namespace spells
     {
@@ -1530,6 +1530,320 @@ namespace priest
       }
     };
   } // Buffs Namespace
+
+  // Insanity Control Methods
+  void priest_t::generate_insanity(double num_amount, gain_t* g, action_t* action)
+    {
+      if (specialization() == PRIEST_SHADOW)
+      {
+        double amount = num_amount;
+        double amount_from_power_infusion = 0.0;
+        double amount_from_surrender_to_madness = 0.0;
+
+        if (buffs.surrender_to_madness_death->check())
+        {
+          double total_amount = 0.0;
+        }
+        else
+        {
+
+          if (buffs.surrender_to_madness->check() && buffs.power_infusion->check())
+          {
+            double total_amount = amount * (1.0 + buffs.power_infusion->data().effectN(2).percent()) *
+              (1.0 + talents.surrender_to_madness->effectN(1).percent());
+
+            amount_from_surrender_to_madness = amount * talents.surrender_to_madness->effectN(1).percent();
+
+            // Since this effect is multiplicitive, we'll give the extra to Power Infusion since it does not last as long as
+            // Surrender to Madness
+            amount_from_power_infusion = total_amount - amount - amount_from_surrender_to_madness;
+
+            // Make sure the maths line up.
+            assert(total_amount == amount + amount_from_power_infusion + amount_from_surrender_to_madness);
+          }
+          else if (buffs.surrender_to_madness->check())
+          {
+            amount_from_surrender_to_madness =
+              (amount * (1.0 + talents.surrender_to_madness->effectN(1).percent())) - amount;
+          }
+          else if (buffs.power_infusion->check())
+          {
+            amount_from_power_infusion =
+              (amount * (1.0 + buffs.power_infusion->data().effectN(2).percent())) - amount;
+          }
+
+          insanity.gain(amount, g, action);
+
+          if (amount_from_power_infusion > 0.0)
+          {
+            insanity.gain(amount_from_power_infusion, gains.insanity_power_infusion, action);
+          }
+
+          if (amount_from_surrender_to_madness > 0.0)
+          {
+            insanity.gain(amount_from_surrender_to_madness, gains.insanity_surrender_to_madness, action);
+          }
+        }
+      }
+    }
+
+    /// Simple insanity expiration event that kicks the actor out of Voidform
+    struct priest_t::insanity_end_event_t : public event_t
+    {
+
+      insanity_end_event_t(priest_t& actor_, const timespan_t& duration_)
+        : event_t(*actor_.sim, duration_), actor(actor_)
+      {
+      }
+
+      void execute() override
+      {
+        if (actor.sim->debug)
+        {
+          actor.sim->out_debug.printf("%s insanity-track insanity-loss", actor.name());
+        }
+
+        actor.buffs.voidform->expire();
+        actor.insanity.end = nullptr;
+      }
+    };
+
+    /**
+    * Insanity tracking
+    *
+    * Handles the resource gaining from abilities, and insanity draining and manages an event that forcibly punts the
+    * actor out of Voidform the exact moment insanity hitszero (millisecond resolution).
+    */
+    struct priest_t::insanity_state_t final
+    {
+
+      const double base_drain_per_sec;
+      const double stack_drain_multiplier;
+      double base_drain_multiplier;
+
+      insanity_state_t(priest_t& a)
+        : end(nullptr),
+        last_drained(timespan_t::zero()),
+        actor(a),
+        base_drain_per_sec(a.find_spell(194249)->effectN(3).base_value() / -500.0),
+        stack_drain_multiplier(2 / 3.0),  // Hardcoded Patch 7.1.5 (2016-12-02)
+        base_drain_multiplier(1.0)
+      {
+      }
+
+      /// Deferred init for actor dependent stuff not ready in the ctor
+      void init()
+      {
+        if (actor.sets->has_set_bonus(PRIEST_SHADOW, T20, B4))
+        {
+          if (actor.talents.surrender_to_madness->ok())
+          {
+            base_drain_multiplier -= actor.sets->set(PRIEST_SHADOW, T20, B4)->effectN(2).percent();
+          }
+          else
+          {
+            base_drain_multiplier -= actor.sets->set(PRIEST_SHADOW, T20, B4)->effectN(1).percent();
+          }
+        }
+      }
+
+      /// Start the insanity drain tracking
+      void set_last_drained()
+      {
+        last_drained = actor.sim->current_time();
+      }
+
+      /// Start (or re-start) tracking of the insanity drain plus end event
+      void begin_tracking()
+      {
+        set_last_drained();
+        adjust_end_event();
+      }
+
+      timespan_t time_to_end() const
+      {
+        return end ? end->remains() : timespan_t::zero();
+      }
+
+      void reset()
+      {
+        end = nullptr;
+        last_drained = timespan_t::zero();
+      }
+
+      /// Compute insanity drain per second with current state of the actor
+      double insanity_drain_per_second() const
+      {
+        if (actor.buffs.voidform->check() == 0)
+        {
+          return 0;
+        }
+
+        // Insanity does not drain during Dispersion
+        if (actor.buffs.dispersion->check())
+        {
+          return 0;
+        }
+
+        // Insanity does not drain during Void Torrent
+        if (actor.buffs.void_torrent->check())
+        {
+          return 0;
+        }
+
+        return base_drain_multiplier *
+          (base_drain_per_sec + (actor.buffs.insanity_drain_stacks->current_value - 1) * stack_drain_multiplier);
+      }
+
+      /// Gain some insanity
+      void gain(double value, gain_t* gain_obj, action_t* source_action = nullptr)
+      {
+        // Drain before gaining, but don't adjust end-event yet
+        drain();
+
+        if (actor.sim->debug)
+        {
+          auto current = actor.resources.current[RESOURCE_INSANITY];
+          auto max = actor.resources.max[RESOURCE_INSANITY];
+
+          actor.sim->out_debug.printf(
+            "%s insanity-track gain, value=%f, current=%.1f/%.1f, "
+            "new=%.1f/%.1f",
+            actor.name(), value, current, max, clamp(current + value, 0.0, max), max);
+        }
+
+        actor.resource_gain(RESOURCE_INSANITY, value, gain_obj, source_action);
+
+        // Explicitly adjust end-event after gaining some insanity
+        adjust_end_event();
+      }
+
+      /**
+      * Triggers the insanity drain, and is called in places that changes the insanity state of the actor in a relevant
+      * way.
+      * These are:
+      * - Right before the actor decides to do something (scans APL for an ability to use)
+      * - Right before insanity drain stack increases (every second)
+      */
+      void drain()
+      {
+        double drain_per_second = insanity_drain_per_second();
+        double drain_interval = (actor.sim->current_time() - last_drained).total_seconds();
+
+        // Don't drain if draining is disabled, or if we have already drained on this timestamp
+        if (drain_per_second == 0 || drain_interval == 0)
+        {
+          return;
+        }
+
+        double drained = drain_per_second * drain_interval;
+        // Ensure we always have enough to drain. This should always be true, since the drain is
+        // always kept track of in relation to time.
+#ifndef NDEBUG
+        if (actor.resources.current[RESOURCE_INSANITY] < drained)
+        {
+          actor.sim->errorf("%s warning, insanity-track overdrain, current=%f drained=%f total=%f", actor.name(),
+            actor.resources.current[RESOURCE_INSANITY], drained,
+            actor.resources.current[RESOURCE_INSANITY] - drained);
+          drained = actor.resources.current[RESOURCE_INSANITY];
+        }
+#else
+        assert(actor.resources.current[RESOURCE_INSANITY] >= drained);
+#endif
+
+        if (actor.sim->debug)
+        {
+          auto current = actor.resources.current[RESOURCE_INSANITY];
+          auto max = actor.resources.max[RESOURCE_INSANITY];
+
+          actor.sim->out_debug.printf(
+            "%s insanity-track drain, "
+            "drain_per_second=%f, last_drained=%.3f, drain_interval=%.3f, "
+            "current=%.1f/%.1f, new=%.1f/%.1f",
+            actor.name(), drain_per_second, last_drained.total_seconds(), drain_interval, current, max,
+            (current - drained), max);
+        }
+
+        // Update last drained, we're about to reduce the amount of insanity the actor has
+        last_drained = actor.sim->current_time();
+
+        actor.resource_loss(RESOURCE_INSANITY, drained, actor.gains.insanity_drain);
+      }
+
+      /**
+      * Predict (with current state) when insanity is going to be fully depleted, and adjust (or create) an event for it.
+      * Called in conjunction with insanity_state_t::drain(), after the insanity drain occurs (and potentially after a
+      * relevant state change such as insanity drain stack buff increase occurs). */
+      void adjust_end_event()
+      {
+        double drain_per_second = insanity_drain_per_second();
+
+        // Ensure that the current insanity level is correct
+        if (last_drained != actor.sim->current_time())
+        {
+          drain();
+        }
+
+        // All drained, cancel voidform. TODO: Can this really even happen?
+        if (actor.resources.current[RESOURCE_INSANITY] == 0 && actor.options.priest_set_voidform_duration == 0)
+        {
+          event_t::cancel(end);
+          actor.buffs.voidform->expire();
+          return;
+        }
+        else if (actor.options.priest_set_voidform_duration > 0 && actor.options.priest_set_voidform_duration < actor.buffs.voidform->stack())
+        {
+          event_t::cancel(end);
+          actor.buffs.voidform->expire();
+          actor.resources.current[RESOURCE_INSANITY] = 0;
+          return;
+        }
+
+        timespan_t seconds_left =
+          drain_per_second ? timespan_t::from_seconds(actor.resources.current[RESOURCE_INSANITY] / drain_per_second)
+          : timespan_t::zero();
+
+        if (actor.sim->debug && drain_per_second > 0 && (!end || (end->remains() != seconds_left)))
+        {
+          auto current = actor.resources.current[RESOURCE_INSANITY];
+          auto max = actor.resources.max[RESOURCE_INSANITY];
+
+          actor.sim->out_debug.printf(
+            "%s insanity-track adjust-end-event, "
+            "drain_per_second=%f, insanity=%.1f/%.1f, seconds_left=%.3f, "
+            "old_left=%.3f",
+            actor.name(), drain_per_second, current, max, seconds_left.total_seconds(),
+            end ? end->remains().total_seconds() : -1.0);
+        }
+
+        // If we have no draining occurring, cancel the event.
+        if (drain_per_second == 0)
+        {
+          event_t::cancel(end);
+        }
+        // We have no drain event yet, so make a new event that triggers the cancellation of Voidform.
+        else if (end == nullptr)
+        {
+          end = make_event<insanity_end_event_t>(*actor.sim, actor, seconds_left);
+        }
+        // Adjust existing event
+        else
+        {
+          // New expiry time is sooner than the current insanity depletion event, create a new event with the new expiry
+          // time.
+          if (seconds_left < end->remains())
+          {
+            event_t::cancel(end);
+            end = make_event<insanity_end_event_t>(*actor.sim, actor, seconds_left);
+          }
+          // End event is in the future, so just reschedule the current end event without creating a new one needlessly.
+          else if (seconds_left > end->remains())
+          {
+            end->reschedule(seconds_left);
+          }
+        }
+      }
+    };
 
   void priest_t::trigger_call_to_the_void(const dot_t* d)
   {
