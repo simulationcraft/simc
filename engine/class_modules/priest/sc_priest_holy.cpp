@@ -1,7 +1,7 @@
 #include "simulationcraft.hpp"
 #include "sc_priest.hpp"
 
-namespace priest 
+namespace priestspace 
 {
   namespace actions
   {
@@ -43,6 +43,16 @@ namespace priest
     } // Spells Namespace
 
   } // Actions Namespace
+
+  void priest_t::create_buffs_holy()
+  {    
+
+  }
+
+  void priest_t::init_rng_holy()
+  {
+   
+  }
 
   void priest_t::init_spells_holy()
   {
@@ -100,20 +110,14 @@ namespace priest
   {
     using namespace actions::spells;
     using namespace actions::heals;
-
-    if (name == "angelic_feather")       return new angelic_feather_t(*this, options_str);
-    if (name == "levitate")              return new levitate_t(*this, options_str);
-    if (name == "smite")                 return new smite_t(*this, options_str);
+    
     if (name == "holy_fire" )            return new holy_fire_t(*this, options_str);
-    if (name == "halo")                  return new halo_t(*this, options_str);
-    if (name == "divine_star")           return new divine_star_t(*this, options_str);    
-    if (name == "power_word_shield")     return new power_word_shield_t(*this, options_str);
-    if ((name == "shadowfiend") || (name == "mindbender"))
-    {
-      return talents.mindbender->ok()
-        ? new summon_mindbender_t(*this, options_str)
-        : new summon_shadowfiend_t(*this, options_str);
-    }
+    
+  }
+
+  expr_t* priest_t::create_expression_holy(action_t* a, const std::string& name_str)
+  {
+    return nullptr;
   }
 
   /** Holy Damage Combat Action Priority List */

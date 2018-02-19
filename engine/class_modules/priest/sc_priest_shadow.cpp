@@ -1,12 +1,62 @@
 #include "simulationcraft.hpp"
 #include "sc_priest.hpp"
 
-namespace priest
+namespace priestspace
 {
   namespace actions
   {
     namespace spells
     {
+
+      struct shadowy_apparition_spell_t final : public priest_spell_t
+      {
+        double insanity_gain;
+
+        shadowy_apparition_spell_t(priest_t& p)
+          : priest_spell_t("shadowy_apparitions", p, p.find_spell(78203)),
+          insanity_gain(priest().talents.auspicious_spirits->effectN(2).percent())
+        {
+          background = true;
+          proc = false;
+          callbacks = true;
+          may_miss = false;
+          trigger_gcd = timespan_t::zero();
+          travel_speed = 6.0;
+          const spell_data_t* dmg_data = p.find_spell(148859);  // Hardcoded into tooltip 2014/06/01
+
+          parse_effect_data(dmg_data->effectN(1));
+          school = SCHOOL_SHADOW;
+        }
+
+        void impact(action_state_t* s) override
+        {
+          priest_spell_t::impact(s);
+
+          if (priest().talents.auspicious_spirits->ok())
+          {
+            priest().generate_insanity(insanity_gain, priest().gains.insanity_auspicious_spirits, s->action);
+          }
+        }
+
+        double composite_da_multiplier(const action_state_t* state) const override
+        {
+          double d = priest_spell_t::composite_da_multiplier(state);
+
+          d *= 1.0 + priest().talents.auspicious_spirits->effectN(1).percent();
+
+          return d;
+        }
+
+        /** Trigger a shadowy apparition */
+        void trigger()
+        {
+          if (priest().sim->debug)
+            priest().sim->out_debug << priest().name() << " triggered shadowy apparition.";
+
+          priest().procs.shadowy_apparition->occur();
+          schedule_execute();
+        }
+      };
 
       struct dispersion_t final : public priest_spell_t
       {
@@ -695,57 +745,7 @@ namespace priest
           priest().buffs.shadowform_state->trigger();
           priest().buffs.shadowform->trigger();
         }
-      };
-
-      struct shadowy_apparition_spell_t final : public priest_spell_t
-      {
-        double insanity_gain;
-
-        shadowy_apparition_spell_t(priest_t& p)
-          : priest_spell_t("shadowy_apparitions", p, p.find_spell(78203)),
-          insanity_gain(priest().talents.auspicious_spirits->effectN(2).percent())
-        {
-          background = true;
-          proc = false;
-          callbacks = true;
-          may_miss = false;
-          trigger_gcd = timespan_t::zero();
-          travel_speed = 6.0;
-          const spell_data_t* dmg_data = p.find_spell(148859);  // Hardcoded into tooltip 2014/06/01
-
-          parse_effect_data(dmg_data->effectN(1));
-          school = SCHOOL_SHADOW;
-        }
-
-        void impact(action_state_t* s) override
-        {
-          priest_spell_t::impact(s);
-
-          if (priest().talents.auspicious_spirits->ok())
-          {
-            priest().generate_insanity(insanity_gain, priest().gains.insanity_auspicious_spirits, s->action);
-          }
-        }
-
-        double composite_da_multiplier(const action_state_t* state) const override
-        {
-          double d = priest_spell_t::composite_da_multiplier(state);
-
-          d *= 1.0 + priest().talents.auspicious_spirits->effectN(1).percent();
-
-          return d;
-        }
-
-        /** Trigger a shadowy apparition */
-        void trigger()
-        {
-          if (priest().sim->debug)
-            priest().sim->out_debug << priest().name() << " triggered shadowy apparition.";
-
-          priest().procs.shadowy_apparition->occur();
-          schedule_execute();
-        }
-      };
+      };     
 
       struct sphere_of_insanity_spell_t final : public priest_spell_t
       {
@@ -900,6 +900,142 @@ namespace priest
             return false;
 
           return priest_spell_t::ready();
+        }
+      };
+
+      
+
+      // ==========================================================================
+      // Shadow Word: Pain
+      // ==========================================================================
+      struct shadow_word_pain_t final : public priest_spell_t
+      {
+        double insanity_gain;
+        bool casted;
+
+        shadow_word_pain_t(priest_t& p, const std::string& options_str, bool _casted = true)
+          : priest_spell_t("shadow_word_pain", p, p.find_class_spell("Shadow Word: Pain")),
+          insanity_gain(data().effectN(3).resource(RESOURCE_INSANITY))
+        {
+          parse_options(options_str);
+          casted = _casted;
+          may_crit = true;
+          tick_zero = false;
+          is_mastery_spell = true;
+          if (!casted)
+          {
+            base_dd_max = 0.0;
+            base_dd_min = 0.0;
+          }
+          energize_type = ENERGIZE_NONE;  // disable resource generation from spell data
+
+          if (p.artifact.to_the_pain.rank())
+          {
+            base_multiplier *= 1.0 + p.artifact.to_the_pain.percent();
+          }
+
+          if (priest().specs.shadowy_apparitions->ok() && !priest().active_spells.shadowy_apparitions)
+          {
+            priest().active_spells.shadowy_apparitions = new shadowy_apparition_spell_t(p);
+            if (!priest().artifact.unleash_the_shadows.rank())
+            {
+              // If SW:P is the only action having SA, then we can add it as a child stat.
+              add_child(priest().active_spells.shadowy_apparitions);
+            }
+          }
+
+          if (priest().artifact.sphere_of_insanity.rank() && !priest().active_spells.sphere_of_insanity)
+          {
+            priest().active_spells.sphere_of_insanity = new sphere_of_insanity_spell_t(p);
+            add_child(priest().active_spells.sphere_of_insanity);
+          }
+        }
+
+        double spell_direct_power_coefficient(const action_state_t* s) const override
+        {
+          return casted ? priest_spell_t::spell_direct_power_coefficient(s) : 0.0;
+        }
+
+        void impact(action_state_t* s) override
+        {
+          priest_spell_t::impact(s);
+
+          if (casted)
+          {
+            priest().generate_insanity(insanity_gain, priest().gains.insanity_shadow_word_pain_onhit, s->action);
+          }
+
+          if (priest().active_items.zeks_exterminatus)
+          {
+            trigger_zeks();
+          }
+          if (priest().artifact.sphere_of_insanity.rank())
+          {
+            priest().active_spells.sphere_of_insanity->target_cache.is_valid = false;
+          }
+        }
+
+        void last_tick(dot_t* d) override
+        {
+          priest_spell_t::last_tick(d);
+          if (priest().artifact.sphere_of_insanity.rank())
+          {
+            priest().active_spells.sphere_of_insanity->target_cache.is_valid = false;
+          }
+        }
+
+        void tick(dot_t* d) override
+        {
+          priest_spell_t::tick(d);
+
+          if (priest().active_spells.shadowy_apparitions && (d->state->result_amount > 0))
+          {
+            if (d->state->result == RESULT_CRIT)
+            {
+              priest().active_spells.shadowy_apparitions->trigger();
+            }
+          }
+
+
+          if (d->state->result_amount > 0)
+          {
+            if (priest().rppm.shadowy_insight->trigger())
+            {
+              trigger_shadowy_insight();
+            }
+          }
+
+          if (priest().active_items.anunds_seared_shackles)
+          {
+            trigger_anunds();
+          }
+
+          if (priest().active_items.zeks_exterminatus)
+          {
+            trigger_zeks();
+          }
+        }
+
+        double cost() const override
+        {
+          double c = priest_spell_t::cost();
+
+          if (priest().specialization() == PRIEST_SHADOW)
+            return 0.0;
+
+          return c;
+        }
+
+        double action_multiplier() const override
+        {
+          double m = priest_spell_t::action_multiplier();
+
+          if (priest().artifact.mass_hysteria.rank())
+          {
+            m *= 1.0 + (priest().buffs.voidform->check() * (priest().artifact.mass_hysteria.percent()));
+          }
+
+          return m;
         }
       };
 
@@ -1392,17 +1528,102 @@ namespace priest
 
   namespace buffs
   {
+    // ==========================================================================
+    // Custom insanity_drain_stacks buff 
+    // ==========================================================================
+    struct insanity_drain_stacks_t final : public priest_buff_t<buff_t>
+    {
+      struct stack_increase_event_t final : public player_event_t
+      {
+        propagate_const<insanity_drain_stacks_t*> ids;
+
+        stack_increase_event_t(insanity_drain_stacks_t* s)
+          : player_event_t(*s->player, timespan_t::from_seconds(1.0)), ids(s)
+        {
+        }
+
+        const char* name() const override
+        {
+          return "insanity_drain_stack_increase";
+        }
+
+        void execute() override
+        {
+          auto priest = debug_cast<priest_t*>(player());
+
+          priest->insanity.drain();
+
+          // If we are currently channeling Void Torrent or Dispersion, we don't gain stacks.
+          if (!(priest->buffs.void_torrent->check() || priest->buffs.dispersion->check()))
+          {
+            priest->buffs.insanity_drain_stacks->increment();
+          }
+          // Once the number of insanity drain stacks are increased, adjust the end-event to the new value
+          priest->insanity.adjust_end_event();
+
+          // Note, the drain() call above may have drained all insanity in very rare cases, in which case voidform is no
+          // longer up. Only keep creating stack increase events if is up.
+          if (priest->buffs.voidform->check())
+          {
+            ids->stack_increase = make_event<stack_increase_event_t>(sim(), ids);
+          }
+        }
+      };
+
+      propagate_const<stack_increase_event_t*> stack_increase;
+
+      insanity_drain_stacks_t(priest_t& p)
+        : base_t(&p, "insanity_drain_stacks"),
+        stack_increase(nullptr)
+
+      {
+        set_max_stack(1);
+        set_chance(1.0);
+        set_duration(timespan_t::zero());
+        set_default_value(1);
+      }
+
+      bool trigger(int stacks, double value, double chance, timespan_t duration) override
+      {
+        bool r = base_t::trigger(stacks, value, chance, duration);
+
+        assert(stack_increase == nullptr);
+        stack_increase = make_event<stack_increase_event_t>(*sim, this);
+        return r;
+      }
+
+      void expire_override(int expiration_stacks, timespan_t remaining_duration) override
+      {
+        event_t::cancel(stack_increase);
+
+        base_t::expire_override(expiration_stacks, remaining_duration);
+      }
+
+      void bump(int stacks, double /* value */) override
+      {
+        buff_t::bump(stacks, current_value + 1);
+        // current_value = value + 1;
+      }
+
+      void reset() override
+      {
+        base_t::reset();
+
+        event_t::cancel(stack_increase);
+      }
+    };
+
     struct overwhelming_darkness_t final : public priest_buff_t<stat_buff_t>
     {
       overwhelming_darkness_t(priest_t& p)
         : base_t(&p, "overwhelming_darkness", p.find_spell(252909))
           {
-          set_max_stack(100);
-          set_chance(p.sets->has_set_bonus(PRIEST_SHADOW, T21, B4));
-          set_period(timespan_t::from_seconds(1));
-          set_duration(timespan_t::zero());
-          set_refresh_behavior(BUFF_REFRESH_DURATION);
-          add_invalidate(CACHE_CRIT_CHANCE);
+            set_max_stack(100);
+            set_chance(p.sets->has_set_bonus(PRIEST_SHADOW, T21, B4));
+            set_period(timespan_t::from_seconds(1));
+            set_duration(timespan_t::zero());
+            set_refresh_behavior(BUFF_REFRESH_DURATION);
+            add_invalidate(CACHE_CRIT_CHANCE);
           }
 
       bool freeze_stacks() override
@@ -1512,8 +1733,8 @@ namespace priest
 
         // Calculate the amount of stacks lost per second based on the amount of haste lost per second 
         // divided by the amount of haste gained per Voidform stack
-        hidden_lingering_insanity = p.find_spell(199849)->effectN(1).base_value()
-          / (p.find_spell(228264)->effectN(2).base_value() / 10.0);
+        hidden_lingering_insanity =    p.find_spell(199849)->effectN(1).base_value()
+                                    / (p.find_spell(228264)->effectN(2).base_value() / 10.0);
       }
 
       void decrement(int, double) override
@@ -1590,6 +1811,7 @@ namespace priest
     /// Simple insanity expiration event that kicks the actor out of Voidform
     struct priest_t::insanity_end_event_t : public event_t
     {
+      priest_t& actor;
 
       insanity_end_event_t(priest_t& actor_, const timespan_t& duration_)
         : event_t(*actor_.sim, duration_), actor(actor_)
@@ -1605,243 +1827,6 @@ namespace priest
 
         actor.buffs.voidform->expire();
         actor.insanity.end = nullptr;
-      }
-    };
-
-    /**
-    * Insanity tracking
-    *
-    * Handles the resource gaining from abilities, and insanity draining and manages an event that forcibly punts the
-    * actor out of Voidform the exact moment insanity hitszero (millisecond resolution).
-    */
-    struct priest_t::insanity_state_t final
-    {
-
-      const double base_drain_per_sec;
-      const double stack_drain_multiplier;
-      double base_drain_multiplier;
-
-      insanity_state_t(priest_t& a)
-        : end(nullptr),
-        last_drained(timespan_t::zero()),
-        actor(a),
-        base_drain_per_sec(a.find_spell(194249)->effectN(3).base_value() / -500.0),
-        stack_drain_multiplier(2 / 3.0),  // Hardcoded Patch 7.1.5 (2016-12-02)
-        base_drain_multiplier(1.0)
-      {
-      }
-
-      /// Deferred init for actor dependent stuff not ready in the ctor
-      void init()
-      {
-        if (actor.sets->has_set_bonus(PRIEST_SHADOW, T20, B4))
-        {
-          if (actor.talents.surrender_to_madness->ok())
-          {
-            base_drain_multiplier -= actor.sets->set(PRIEST_SHADOW, T20, B4)->effectN(2).percent();
-          }
-          else
-          {
-            base_drain_multiplier -= actor.sets->set(PRIEST_SHADOW, T20, B4)->effectN(1).percent();
-          }
-        }
-      }
-
-      /// Start the insanity drain tracking
-      void set_last_drained()
-      {
-        last_drained = actor.sim->current_time();
-      }
-
-      /// Start (or re-start) tracking of the insanity drain plus end event
-      void begin_tracking()
-      {
-        set_last_drained();
-        adjust_end_event();
-      }
-
-      timespan_t time_to_end() const
-      {
-        return end ? end->remains() : timespan_t::zero();
-      }
-
-      void reset()
-      {
-        end = nullptr;
-        last_drained = timespan_t::zero();
-      }
-
-      /// Compute insanity drain per second with current state of the actor
-      double insanity_drain_per_second() const
-      {
-        if (actor.buffs.voidform->check() == 0)
-        {
-          return 0;
-        }
-
-        // Insanity does not drain during Dispersion
-        if (actor.buffs.dispersion->check())
-        {
-          return 0;
-        }
-
-        // Insanity does not drain during Void Torrent
-        if (actor.buffs.void_torrent->check())
-        {
-          return 0;
-        }
-
-        return base_drain_multiplier *
-          (base_drain_per_sec + (actor.buffs.insanity_drain_stacks->current_value - 1) * stack_drain_multiplier);
-      }
-
-      /// Gain some insanity
-      void gain(double value, gain_t* gain_obj, action_t* source_action = nullptr)
-      {
-        // Drain before gaining, but don't adjust end-event yet
-        drain();
-
-        if (actor.sim->debug)
-        {
-          auto current = actor.resources.current[RESOURCE_INSANITY];
-          auto max = actor.resources.max[RESOURCE_INSANITY];
-
-          actor.sim->out_debug.printf(
-            "%s insanity-track gain, value=%f, current=%.1f/%.1f, "
-            "new=%.1f/%.1f",
-            actor.name(), value, current, max, clamp(current + value, 0.0, max), max);
-        }
-
-        actor.resource_gain(RESOURCE_INSANITY, value, gain_obj, source_action);
-
-        // Explicitly adjust end-event after gaining some insanity
-        adjust_end_event();
-      }
-
-      /**
-      * Triggers the insanity drain, and is called in places that changes the insanity state of the actor in a relevant
-      * way.
-      * These are:
-      * - Right before the actor decides to do something (scans APL for an ability to use)
-      * - Right before insanity drain stack increases (every second)
-      */
-      void drain()
-      {
-        double drain_per_second = insanity_drain_per_second();
-        double drain_interval = (actor.sim->current_time() - last_drained).total_seconds();
-
-        // Don't drain if draining is disabled, or if we have already drained on this timestamp
-        if (drain_per_second == 0 || drain_interval == 0)
-        {
-          return;
-        }
-
-        double drained = drain_per_second * drain_interval;
-        // Ensure we always have enough to drain. This should always be true, since the drain is
-        // always kept track of in relation to time.
-#ifndef NDEBUG
-        if (actor.resources.current[RESOURCE_INSANITY] < drained)
-        {
-          actor.sim->errorf("%s warning, insanity-track overdrain, current=%f drained=%f total=%f", actor.name(),
-            actor.resources.current[RESOURCE_INSANITY], drained,
-            actor.resources.current[RESOURCE_INSANITY] - drained);
-          drained = actor.resources.current[RESOURCE_INSANITY];
-        }
-#else
-        assert(actor.resources.current[RESOURCE_INSANITY] >= drained);
-#endif
-
-        if (actor.sim->debug)
-        {
-          auto current = actor.resources.current[RESOURCE_INSANITY];
-          auto max = actor.resources.max[RESOURCE_INSANITY];
-
-          actor.sim->out_debug.printf(
-            "%s insanity-track drain, "
-            "drain_per_second=%f, last_drained=%.3f, drain_interval=%.3f, "
-            "current=%.1f/%.1f, new=%.1f/%.1f",
-            actor.name(), drain_per_second, last_drained.total_seconds(), drain_interval, current, max,
-            (current - drained), max);
-        }
-
-        // Update last drained, we're about to reduce the amount of insanity the actor has
-        last_drained = actor.sim->current_time();
-
-        actor.resource_loss(RESOURCE_INSANITY, drained, actor.gains.insanity_drain);
-      }
-
-      /**
-      * Predict (with current state) when insanity is going to be fully depleted, and adjust (or create) an event for it.
-      * Called in conjunction with insanity_state_t::drain(), after the insanity drain occurs (and potentially after a
-      * relevant state change such as insanity drain stack buff increase occurs). */
-      void adjust_end_event()
-      {
-        double drain_per_second = insanity_drain_per_second();
-
-        // Ensure that the current insanity level is correct
-        if (last_drained != actor.sim->current_time())
-        {
-          drain();
-        }
-
-        // All drained, cancel voidform. TODO: Can this really even happen?
-        if (actor.resources.current[RESOURCE_INSANITY] == 0 && actor.options.priest_set_voidform_duration == 0)
-        {
-          event_t::cancel(end);
-          actor.buffs.voidform->expire();
-          return;
-        }
-        else if (actor.options.priest_set_voidform_duration > 0 && actor.options.priest_set_voidform_duration < actor.buffs.voidform->stack())
-        {
-          event_t::cancel(end);
-          actor.buffs.voidform->expire();
-          actor.resources.current[RESOURCE_INSANITY] = 0;
-          return;
-        }
-
-        timespan_t seconds_left =
-          drain_per_second ? timespan_t::from_seconds(actor.resources.current[RESOURCE_INSANITY] / drain_per_second)
-          : timespan_t::zero();
-
-        if (actor.sim->debug && drain_per_second > 0 && (!end || (end->remains() != seconds_left)))
-        {
-          auto current = actor.resources.current[RESOURCE_INSANITY];
-          auto max = actor.resources.max[RESOURCE_INSANITY];
-
-          actor.sim->out_debug.printf(
-            "%s insanity-track adjust-end-event, "
-            "drain_per_second=%f, insanity=%.1f/%.1f, seconds_left=%.3f, "
-            "old_left=%.3f",
-            actor.name(), drain_per_second, current, max, seconds_left.total_seconds(),
-            end ? end->remains().total_seconds() : -1.0);
-        }
-
-        // If we have no draining occurring, cancel the event.
-        if (drain_per_second == 0)
-        {
-          event_t::cancel(end);
-        }
-        // We have no drain event yet, so make a new event that triggers the cancellation of Voidform.
-        else if (end == nullptr)
-        {
-          end = make_event<insanity_end_event_t>(*actor.sim, actor, seconds_left);
-        }
-        // Adjust existing event
-        else
-        {
-          // New expiry time is sooner than the current insanity depletion event, create a new event with the new expiry
-          // time.
-          if (seconds_left < end->remains())
-          {
-            event_t::cancel(end);
-            end = make_event<insanity_end_event_t>(*actor.sim, actor, seconds_left);
-          }
-          // End event is in the future, so just reschedule the current end event without creating a new one needlessly.
-          else if (seconds_left > end->remains())
-          {
-            end->reschedule(seconds_left);
-          }
-        }
       }
     };
 
@@ -2003,28 +1988,43 @@ namespace priest
     if (name == "shadow_word_pain")       return new shadow_word_pain_t(*this, options_str);
     if (name == "vampiric_touch")         return new vampiric_touch_t(*this, options_str);
     if (name == "dispersion")             return new dispersion_t(*this, options_str);
-    if (name == "power_infusion")         return new power_infusion_t(*this, options_str);
     if (name == "surrender_to_madness")   return new surrender_to_madness_t(*this, options_str);
     if (name == "silence")                return new silence_t(*this, options_str);
     if (name == "mind_bomb")              return new mind_bomb_t(*this, options_str);
     if (name == "vampiric_embrace")       return new vampiric_embrace_t(*this, options_str);
-    if (name == "shadowform")             return new shadowform_t(*this, options_str);
-    if (name == "power_word_shield")      return new power_word_shield_t(*this, options_str);
-    if (name == "levitate")               return new levitate_t(*this, options_str);
+    if (name == "shadowform")             return new shadowform_t(*this, options_str);    
     if ((name == "mind_blast") || (name == "shadow_word_void"))
     {
-      return talents.shadow_word_void->ok() 
-        ? new shadow_word_void_t(*this, options_str)
-        : new mind_blast_t(*this, options_str);
-    }
-    if ((name == "shadowfiend") || (name == "mindbender"))
-    {
-      return talents.mindbender->ok() 
-        ? new summon_mindbender_t(*this, options_str)
-        : new summon_shadowfiend_t(*this, options_str);
-    }
+      if( talents.shadow_word_void->ok() )
+      {
+        return new shadow_word_void_t(*this, options_str);
+      }
+      else
+      {
+        return new mind_blast_t(*this, options_str);
+      }
+    }    
   }
 
+  expr_t* priest_t::create_expression_shadow(action_t* a, const std::string& name_str)
+  {
+    if (name_str == "shadowy_apparitions_in_flight")
+    {
+      return make_fn_expr(name_str, [this]() {
+        if (!active_spells.shadowy_apparitions)
+          return 0.0;
+
+        return static_cast<double>(active_spells.shadowy_apparitions->num_travel_events());
+      });
+    }
+
+    else if (name_str == "current_insanity_drain")
+    {
+      // Current Insanity Drain for the next 1.0 sec.
+      // Does not account for a new stack occurring in the middle and can be anywhere from 0.0 - 0.5 off the real value.
+      return make_fn_expr(name_str, [this]() { return (insanity.insanity_drain_per_second()); });
+    }
+  }
 
   void priest_t::generate_apl_shadow()
   {

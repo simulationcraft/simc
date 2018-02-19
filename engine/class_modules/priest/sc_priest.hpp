@@ -10,11 +10,12 @@
 #pragma once
 #include "simulationcraft.hpp"
 
-namespace priest
+namespace priestspace
 {
   /* Forward declarations
   */
   struct priest_t;
+  
   namespace actions
   {
     namespace spells
@@ -23,7 +24,22 @@ namespace priest
       struct shadowy_apparition_spell_t;
       struct sphere_of_insanity_spell_t;
       struct blessed_dawnlight_medallion_t;
+      struct angelic_feather_t;
+      struct divine_star_t;
+      struct halo_t;
+      struct levitate_t;
+      struct power_infusion_t;
+      struct shadow_word_pain_t;
+      struct smite_t;
+      struct summon_pet_t;
+      struct summon_shadowfiend_t;
+      struct summon_mindbender_t;
     }  // namespace spells
+    namespace heals
+    {
+      struct power_word_shield_t;
+      struct insanity_drain_stacks_t;
+    }
   }  // namespace actions
 
   namespace pets
@@ -397,6 +413,8 @@ namespace priest
       int priest_set_voidform_duration = 0; // Voidform will always have this duration
     } options;
 
+    struct insanity_end_event_t;
+
     priest_t(sim_t* sim, const std::string& name, race_e r);
 
     priest_td_t* find_target_data(player_t* target) const;
@@ -465,6 +483,7 @@ namespace priest
     void init_rng_shadow();
     void init_spells_shadow();
     void generate_apl_shadow();
+    expr_t* create_expression_shadow(action_t* a, const std::string& name_str);
     action_t* create_action_shadow( const std::string& name, const std::string& options_str );
 
     void create_buffs_discipline();
@@ -472,6 +491,7 @@ namespace priest
     void init_rng_discipline();
     void generate_apl_discipline_d();
     void generate_apl_discipline_h();
+    expr_t* create_expression_discipline(action_t* a, const std::string& name_str);
     action_t* create_action_discipline( const std::string& name, const std::string& options_str );
 
     void create_buffs_holy();
@@ -479,22 +499,13 @@ namespace priest
     void init_rng_holy();
     void generate_apl_holy_d();
     void generate_apl_holy_h();
+    expr_t* create_expression_holy(action_t* a, const std::string& name_str);
     action_t* create_action_holy( const std::string& name, const std::string& options_str );
 
     target_specific_t<priest_td_t> _target_data;
 
   public:
     void generate_insanity(double num_amount, gain_t* g, action_t* action);
-
-    /// Simple insanity expiration event that kicks the actor out of Voidform
-    struct insanity_end_event_t : public event_t
-    {
-      priest_t& actor;
-
-      insanity_end_event_t(priest_t& actor_, const timespan_t& duration_);
-
-      void execute() override;
-    };
 
     /**
     * Insanity tracking
@@ -976,45 +987,180 @@ namespace priest
       bool shadow_dot_increase;
 
     public:
-      priest_action_t(const std::string& n, priest_t& p, const spell_data_t* s);
+      priest_action_t(const std::string& n, priest_t& p, const spell_data_t* s = spell_data_t::nil())
+        : ab(n, &p, s),
+        shadow_damage_increase(ab::data().affected_by(p.specs.shadow_priest->effectN(1))),
+        shadow_dot_increase(ab::data().affected_by(p.specs.shadow_priest->effectN(2)))
+      {
+        ab::may_crit = true;
+        ab::tick_may_crit = true;
+        ab::weapon_multiplier = 0.0;
+        if (shadow_damage_increase)
+          ab::base_dd_multiplier *= 1.0 + p.specs.shadow_priest->effectN(1).percent();
+        if (shadow_dot_increase)
+          ab::base_td_multiplier *= 1.0 + p.specs.shadow_priest->effectN(2).percent();
+      }
 
-      priest_td_t& get_td(player_t* t);
-      priest_td_t* find_td(player_t* t);
-      const priest_td_t* find_td(player_t* t) const;
-      bool trigger_shadowy_insight();
-      bool trigger_zeks();
-      void trigger_anunds();
-      double cost() const override;
-      void consume_resource() override;
+      priest_td_t& get_td(player_t* t)
+      {
+        return *(priest().get_target_data(t));
+      }
 
-    protected:
-      priest_t& priest()
-      { return *debug_cast<priest_t*>( ab::player ); }
-      const priest_t& priest() const
-      { return *debug_cast<priest_t*>( ab::player ); }
+      priest_td_t* find_td(player_t* t)
+      {
+        return priest().find_target_data(t);
+      }
 
-      /// typedef for priest_action_t<action_base_t>
-      using base_t = priest_action_t;
+      const priest_td_t* find_td(player_t* t) const
+      {
+        return priest().find_target_data(t);
+      }
 
-    private:
-      /// typedef for the templated action type, eg. spell_t, attack_t, heal_t
-      using ab = Base;
+      bool trigger_shadowy_insight()
+      {
+        int stack = priest().buffs.shadowy_insight->check();
+        if (priest().buffs.shadowy_insight->trigger())
+        {
+          priest().cooldowns.mind_blast->reset(true);
+
+          if (priest().buffs.shadowy_insight->check() == stack)
+          {
+            priest().procs.shadowy_insight_overflow->occur();
+          }
+          else
+          {
+            priest().procs.shadowy_insight->occur();
+          }
+          return true;
+        }
+        return false;
+      }
+
+      bool trigger_zeks()
+      {
+        if (priest().buffs.zeks_exterminatus->trigger())
+        {
+          // proc doesn't reset the CD :
+          // priest().cooldowns.shadow_word_death->reset(true);
+
+          if (priest().buffs.zeks_exterminatus->check())
+          {
+            priest().procs.legendary_zeks_exterminatus_overflow->occur();
+          }
+          else
+          {
+            priest().procs.legendary_zeks_exterminatus->occur();
+          }
+          return true;
+        }
+        return false;
+      }
+
+      void trigger_anunds()
+      {
+        int stack = priest().buffs.anunds_last_breath->check();
+        priest().buffs.anunds_last_breath->trigger();
+
+        if (priest().buffs.anunds_last_breath->check() == stack)
+        {
+          priest().procs.legendary_anunds_last_breath_overflow->occur();
+        }
+        else
+        {
+          priest().procs.legendary_anunds_last_breath->occur();
+        }
+      }
+
+      double cost() const override
+      {
+        double c = ab::cost();
+
+        if (priest().buffs.power_infusion->check() && priest().specialization() != PRIEST_SHADOW)
+        {
+          c *= 1.0 + priest().buffs.power_infusion->data().effectN(2).percent();
+          c = std::floor(c);
+        }
+
+        return c;
+      }
+
+      void consume_resource() override
+      {
+        ab::consume_resource();
+
+        if (ab::base_execute_time > timespan_t::zero() && !this->channeled)
+          priest().buffs.borrowed_time->expire();
+      }
+
+      protected:
+        priest_t& priest()
+        { return *debug_cast<priest_t*>( ab::player ); }
+        const priest_t& priest() const
+      	{ return *debug_cast<priest_t*>( ab::player ); }
+
+
+        /// typedef for priest_action_t<action_base_t>
+        using base_t = priest_action_t;
+
+      private:
+      	/// typedef for the templated action type, eg. spell_t, attack_t, heal_t
+      	using ab = Base;
+
+
     };
 
     struct priest_absorb_t : public priest_action_t<absorb_t>
     {
     public:
-      priest_absorb_t(const std::string& n, priest_t& player, const spell_data_t* s);
+      priest_absorb_t(const std::string& n, priest_t& player, const spell_data_t* s = spell_data_t::nil())
+        : base_t(n, player, s)
+      {
+        may_crit = true;
+        tick_may_crit = false;
+        may_miss = false;
+      }
     };
 
     struct priest_heal_t : public priest_action_t<heal_t>
     {
       priest_heal_t(const std::string& n, priest_t& player, const spell_data_t* s = spell_data_t::nil())
-        : base_t(n, player, s);
+        : base_t(n, player, s)
+      {
+      }
 
-      double action_multiplier() const override;
-      void execute() override;
+      double action_multiplier() const override
+      {
+        double am = base_t::action_multiplier();
+
+        am *= 1.0 + priest().buffs.archangel->current_value;
+
+        return am;
+      }
+
+      void execute() override
+      {
+        priest().buffs.archangel->up();  // benefit tracking
+
+        base_t::execute();
+
+        may_crit = true;
+      }
+
       void impact(action_state_t* s) override
+      {
+        double save_health_percentage = s->target->health_percentage();
+
+        base_t::impact(s);
+
+        if (s->result_amount > 0)
+        {
+          if (priest().specialization() != PRIEST_SHADOW && priest().talents.twist_of_fate->ok() &&
+            (save_health_percentage < priest().talents.twist_of_fate->effectN(1).base_value()))
+          {
+            priest().buffs.twist_of_fate->trigger();
+          }
+        }
+      }
     };
 
     struct priest_spell_t : public priest_action_t<spell_t>
@@ -1023,24 +1169,92 @@ namespace priest
       bool is_mastery_spell;
 
       priest_spell_t(const std::string& n, priest_t& player, const spell_data_t* s = spell_data_t::nil())
-        : base_t(n, player, s);
+        : base_t(n, player, s), is_sphere_of_insanity_spell(false), is_mastery_spell(false)
+      {
+        weapon_multiplier = 0.0;
+      }
 
-      bool usable_moving() const override;
-      void impact(action_state_t* s) override;
-      double action_multiplier() const override;
-      void assess_damage(dmg_e type, action_state_t* s) override;
-      void trigger_vampiric_embrace(action_state_t* s);
+      bool usable_moving() const override
+      {
+        if (priest().buffs.surrender_to_madness->check())
+        {
+          return true;
+        }
+
+        return spell_t::usable_moving();
+      }
+
+      void impact(action_state_t* s) override
+      {
+        double save_health_percentage = s->target->health_percentage();
+
+
+        base_t::impact(s);
+
+        if (result_is_hit(s->result))
+        {
+          if (priest().specialization() == PRIEST_SHADOW && priest().talents.twist_of_fate->ok() &&
+            (save_health_percentage < priest().talents.twist_of_fate->effectN(1).base_value()))
+          {
+            priest().buffs.twist_of_fate->trigger();
+          }
+        }
+      }
+
+      double action_multiplier() const override
+      {
+        double m = spell_t::action_multiplier();
+
+        if (is_mastery_spell && priest().mastery_spells.madness->ok())
+        {
+          m *= 1.0 + priest().cache.mastery_value();
+        }
+
+        return m;
+      }
+
+      void assess_damage(dmg_e type, action_state_t* s) override
+      {
+        base_t::assess_damage(type, s);
+
+        if (is_sphere_of_insanity_spell && priest().buffs.sphere_of_insanity->up() && s->result_amount > 0)
+        {
+          double damage = s->result_amount * priest().buffs.sphere_of_insanity->default_value;
+          priest().active_spells.sphere_of_insanity->base_dd_min = damage;
+          priest().active_spells.sphere_of_insanity->base_dd_max = damage;
+          priest().active_spells.sphere_of_insanity->schedule_execute();
+        }
+        if (aoe == 0 && result_is_hit(s->result) && priest().buffs.vampiric_embrace->up())
+          trigger_vampiric_embrace(s);
+      }
+
+      /* Based on previous implementation ( pets don't count but get full heal )
+      * and http://www.wowhead.com/spell=15286#comments:id=1796701
+      * Last checked 2013/05/25
+      */
+      void trigger_vampiric_embrace(action_state_t* s)
+      {
+        double amount = s->result_amount;
+        amount *= priest().buffs.vampiric_embrace->data().effectN(1).percent();  // FIXME additive or multiplicate?
+
+                                                                               // Get all non-pet, non-sleeping players
+        std::vector<player_t*> ally_list;
+        range::remove_copy_if(sim->player_no_pet_list.data(), back_inserter(ally_list), player_t::_is_sleeping);
+
+        for (player_t* ally : ally_list)
+        {
+          ally->resource_gain(RESOURCE_HEALTH, amount, ally->gains.vampiric_embrace);
+
+          for (pet_t* pet : ally->pet_list)
+          {
+            pet->resource_gain(RESOURCE_HEALTH, amount, pet->gains.vampiric_embrace);
+          }
+        }
+      }
     };
 
     namespace spells
     {
-      struct angelic_feather_t final : public priest_spell_t
-      {
-        angelic_feather_t(priest_t& p, const std::string& options_str);
-        void impact(action_state_t* s) override;
-        bool ready() override;
-      };
-
       /// Divine Star Base Spell, used for both heal and damage spell.
       template <class Base>
       struct divine_star_base_t : public Base
@@ -1080,16 +1294,6 @@ namespace priest
               return_spell->execute();
           }
         }
-      };
-
-      struct divine_star_t final : public priest_spell_t
-      {
-        divine_star_t(priest_t& p, const std::string& options_str);
-        void execute() override;
-
-      private:
-        action_t* _heal_spell;
-        action_t* _dmg_spell;
       };
 
       /// Halo Base Spell, used for both damage and heal spell.
@@ -1132,86 +1336,11 @@ namespace priest
         }
       };
 
-      struct halo_t final : public priest_spell_t
-      {
-        halo_t(priest_t& p, const std::string& options_str);
-        void execute() override;
-
-      private:
-        propagate_const<action_t*> _heal_spell;
-        propagate_const<action_t*> _dmg_spell;
-      };
-
-      struct levitate_t final : public priest_spell_t
-      {
-        levitate_t(priest_t& p, const std::string& options_str);
-      };
-
-      struct power_infusion_t final : public priest_spell_t
-      {
-        power_infusion_t(priest_t& p, const std::string& options_str);
-        void execute() override;
-      };
-
-      struct shadow_word_pain_t final : public priest_spell_t
-      {
-        double insanity_gain;
-        bool casted;
-
-        shadow_word_pain_t(priest_t& p, const std::string& options_str, bool _casted = true);
-
-        double spell_direct_power_coefficient(const action_state_t* s) const override;
-        void impact(action_state_t* s) override;
-        void last_tick(dot_t* d) override;
-        void tick(dot_t* d) override;
-        double cost() const override;
-        double action_multiplier() const override;
-      };
-
-      struct smite_t final : public priest_spell_t
-      {
-        smite_t(priest_t& p, const std::string& options_str);
-
-        void execute() override;
-      };
-
-      /// Priest Pet Summon Base Spell
-      struct summon_pet_t : public priest_spell_t
-      {
-        timespan_t summoning_duration;
-        std::string pet_name;
-        propagate_const<pet_t*> pet;
-
-      public:
-        summon_pet_t(const std::string& n, priest_t& p, const spell_data_t* sd = spell_data_t::nil());
-
-        bool init_finished() override;
-        void execute() override;
-        bool ready() override;
-      };
-
-      struct summon_shadowfiend_t final : public summon_pet_t
-      {
-        summon_shadowfiend_t(priest_t& p, const std::string& options_str);
-      };
-
-      struct summon_mindbender_t final : public summon_pet_t
-      {
-        summon_mindbender_t(priest_t& p, const std::string& options_str);
-      };
-
     } // Spells Namespace
 
     namespace heals
     {
-      struct power_word_shield_t final : public priest_absorb_t
-      {
-        bool ignore_debuff;
-
-        power_word_shield_t(priest_t& p, const std::string& options_str);
-
-        void impact(action_state_t* s) override;
-      };
+      
     } // Heals Namespace
 
   } // Actions Namespace
@@ -1242,29 +1371,7 @@ namespace buffs
       { return *debug_cast<priest_t*>( Base::source ); }
       const priest_t& priest() const
       { return *debug_cast<priest_t*>( Base::source ); }
-    };
-
-    /** Custom insanity_drain_stacks buff */
-    struct insanity_drain_stacks_t final : public priest_buff_t<buff_t>
-    {
-      struct stack_increase_event_t final : public player_event_t
-      {
-        propagate_const<insanity_drain_stacks_t*> ids;
-
-        stack_increase_event_t(insanity_drain_stacks_t* s);
-
-        const char* name() const override;
-        void execute() override;
-      };
-
-      propagate_const<stack_increase_event_t*> stack_increase;
-
-      insanity_drain_stacks_t(priest_t& p);
-      bool trigger(int stacks, double value, double chance, timespan_t duration) override;
-      void expire_override(int expiration_stacks, timespan_t remaining_duration) override;
-      void bump(int stacks, double /* value */) override;
-      void reset() override;
-    };
+    };   
 
   } // Buffs Namespace
 
@@ -1288,54 +1395,136 @@ namespace buffs
 
     struct sephuzs_secret_enabler_t : public scoped_actor_callback_t<priest_t>
     {
-      sephuzs_secret_enabler_t();
+      sephuzs_secret_enabler_t() : scoped_actor_callback_t(PRIEST)
+      {
+      }
 
-      void manipulate(priest_t* priest, const special_effect_t& e) override;
+      void manipulate(priest_t* priest, const special_effect_t& e) override
+      {
+        priest->legendary.sephuzs_secret = e.driver();
+      }
     };
 
     struct sephuzs_secret_t : public class_buff_cb_t<priest_t, haste_buff_t, haste_buff_creator_t>
     {
-      sephuzs_secret_t();
+      sephuzs_secret_t() : super(PRIEST, "sephuzs_secret")
+      {
+      }
 
-      haste_buff_t*& buff_ptr(const special_effect_t& e) override;
-      haste_buff_creator_t creator(const special_effect_t& e) const override;
+      haste_buff_t*& buff_ptr(const special_effect_t& e) override
+      {
+        return debug_cast<priest_t*>(e.player)->buffs.sephuzs_secret;
+      }
+
+      haste_buff_creator_t creator(const special_effect_t& e) const override
+      {
+        return super::creator(e)
+          .spell(e.trigger())
+          .cd(e.player->find_spell(226262)->duration())
+          .default_value(e.trigger()->effectN(2).percent())
+          .add_invalidate(CACHE_RUN_SPEED);
+      }
     };
-
     void init();
 
   } // Items Namespace
 
-  /**
-  * Report Extension Class
-  * Here you can define class specific report extensions/overrides
-  */
+    /**
+    * Report Extension Class
+    * Here you can define class specific report extensions/overrides
+    */
   struct priest_report_t final : public player_report_extension_t
   {
   public:
-    priest_report_t(priest_t& player);
-    void html_customsection(report::sc_html_stream& /* os*/);
+    priest_report_t(priest_t& player) : p(player)
+    {
+    }
 
-  private:
-    priest_t& p;
+    void html_customsection(report::sc_html_stream& /* os*/) override
+    {
+      (void)p;
+      /*// Custom Class Section
+      os << "\t\t\t\t<div class=\"player-section custom_section\">\n"
+      << "\t\t\t\t\t<h3 class=\"toggle open\">Custom Section</h3>\n"
+      << "\t\t\t\t\t<div class=\"toggle-content\">\n";
+
+      os << p.name();
+
+      os << "\t\t\t\t\t\t</div>\n" << "\t\t\t\t\t</div>\n";*/
+    }
+
+    private:
+      priest_t& p;
   };
 
   struct priest_module_t final : public module_t
   {
-    priest_module_t();
+    priest_module_t() : module_t(PRIEST)
+    {
+    }
 
-    player_t* create_player(sim_t* sim, const std::string& name, race_e r) const override;
-    bool valid() const override;
-    void init(player_t* p) const override;
-    void static_init() const override;
-    void register_hotfixes() const override;
-    void combat_begin(sim_t*) const override;
-    void combat_end(sim_t*) const override;
+    player_t* create_player(sim_t* sim, const std::string& name, race_e r = RACE_NONE) const override
+    {
+      auto p = new priest_t(sim, name, r);
+      p->report_extension = std::unique_ptr<player_report_extension_t>(new priest_report_t(*p));
+      return p;
+    }
+    bool valid() const override
+    {
+      return true;
+    }
+    void init(player_t* p) const override
+    {
+      p->buffs.guardian_spirit = buff_creator_t(p, "guardian_spirit",
+        p->find_spell(47788));  // Let the ability handle the CD
+      p->buffs.pain_supression = buff_creator_t(p, "pain_supression",
+        p->find_spell(33206));  // Let the ability handle the CD    
+    }
+    void static_init() const override
+    {
+      items::init();
+    }
+    void register_hotfixes() const override
+    {
+      /** December 5th 2017 hotfixes
+
+      hotfix::register_effect("Priest", "2017-12-05", "Shadow Priest damage increased by 3%", 191068)
+      .field("base_value")
+      .operation(hotfix::HOTFIX_SET)
+      .modifier(23.0)
+      .verification_value(20.0);
+
+      hotfix::register_effect("Priest", "2017-12-05", "Shadow Priest damage increased by 3%", 179717)
+      .field("base_value")
+      .operation(hotfix::HOTFIX_SET)
+      .modifier(23.0)
+      .verification_value(20.0);
+
+      hotfix::register_effect("Priest", "2017-12-05", "Vampiric Touch damage reduced by 15%.", 25010)
+      .field("sp_coefficient")
+      .operation(hotfix::HOTFIX_SET)
+      .modifier(0.579)
+      .verification_value(0.6816);
+
+      hotfix::register_effect("Priest", "2017-12-05", "Shadow Word: Pain damage reduced by 15%.", 254257)
+      .field("sp_coefficient")
+      .operation(hotfix::HOTFIX_SET)
+      .modifier(0.31)
+      .verification_value(0.365);
+      **/
+    }
+
+    void combat_begin(sim_t*) const override
+    {
+    }
+    void combat_end(sim_t*) const override
+    {
+    }
   };
-
 }  // PRIEST NAMESPACE
 
 const module_t* module_t::priest()
 {
-  static priest_module_t m;
+  static priestspace::priest_module_t m;
   return &m;
 }

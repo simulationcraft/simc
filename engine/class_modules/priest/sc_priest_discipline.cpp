@@ -1,7 +1,12 @@
+// ==========================================================================
+// Dedmonwakeen's Raid DPS/TPS Simulator.
+// Send questions to natehieter@gmail.com
+// ==========================================================================
+
 #include "simulationcraft.hpp"
 #include "sc_priest.hpp"
 
-namespace priest 
+namespace priestspace 
 {
 	namespace actions
   {
@@ -98,10 +103,42 @@ namespace priest
         }
       };
 
-      struct power_word_solace_t final : public holy_fire_base_t
+      // ==========================================================================
+      // Shadow Word: Pain
+      // ==========================================================================
+      struct shadow_word_pain_t final : public priest_spell_t
+      {
+        double insanity_gain;
+        bool casted;
+
+        shadow_word_pain_t(priest_t& p, const std::string& options_str, bool _casted = true)
+          : priest_spell_t("shadow_word_pain", p, p.find_class_spell("Shadow Word: Pain")),
+          insanity_gain(data().effectN(3).resource(RESOURCE_INSANITY))
+        {
+          parse_options(options_str);
+          casted = _casted;
+          may_crit = true;
+          tick_zero = false;
+          is_mastery_spell = true;
+          if (!casted)
+          {
+            base_dd_max = 0.0;
+            base_dd_min = 0.0;
+          }
+          energize_type = ENERGIZE_NONE;  // disable resource generation from spell data
+        }
+
+        double spell_direct_power_coefficient(const action_state_t* s) const override
+        {
+          return casted ? priest_spell_t::spell_direct_power_coefficient(s) : 0.0;
+        }
+
+      };
+
+      struct power_word_solace_t final : public priest_spell_t
       {
         power_word_solace_t(priest_t& player, const std::string& options_str)
-          : holy_fire_base_t("power_word_solace", player, player.find_spell(129250))
+          : priest_spell_t("power_word_solace", player, player.find_spell(129250))
         {
           parse_options(options_str);
 
@@ -110,7 +147,7 @@ namespace priest
 
         void impact(action_state_t* s) override
         {
-          holy_fire_base_t::impact(s);
+          priest_spell_t::impact(s);
 
           double amount = data().effectN(3).percent() / 100.0 * priest().resources.max[RESOURCE_MANA];
           priest().resource_gain(RESOURCE_MANA, amount, priest().gains.power_word_solace);
@@ -222,6 +259,11 @@ namespace priest
 
   }
 
+  void priest_t::init_rng_discipline()
+  {
+    
+  }
+
     void priest_t::init_spells_discipline()
   {
     // Talents 
@@ -252,7 +294,7 @@ namespace priest
     // T100
     talents.power_infusion       = find_talent_spell("Power Infusion");
     talents.grace                = find_talent_spell("Grace");
-    talents.Evangelism           = find_talent_spell("Evangelism");
+    talents.evangelism           = find_talent_spell("Evangelism");
 
     // General Spells
     specs.atonement       = find_specialization_spell("Atonement");
@@ -300,33 +342,27 @@ namespace priest
   {
     using namespace actions::spells;
     using namespace actions::heals;
-
-    if (name == "angelic_feather")      return new angelic_feather_t(*this, options_str);
-    if (name == "levitate")      return new levitate_t(*this, options_str);
+        
     if (name == "pain_suppression")      return new pain_suppression_t(*this, options_str);
-    if (name == "power_infusion")      return new power_infusion_t(*this, options_str);   
+    if (name == "penance")               return new penance_t(*this, options_str);
+    if (name == "power_word_solace")     return new power_word_solace_t(*this, options_str);        
+    if (name == "schism")                return new schism_t(*this, options_str);
     if ((name == "shadow_word_pain") || (name == "purge_the_wicked"))
     {
-      return talents.purge_the_wicked->ok()
-        ? new purge_the_wicked_t(*this, options_str)
-        : new shadow_word_pain_t(*this, options_str);
-    }    
-    
-    if ((name == "shadowfiend") || (name == "mindbender"))
-    {
-      return talents.mindbender->ok()
-        ? new summon_mindbender_t(*this, options_str)
-        : new summon_shadowfiend_t(*this, options_str);
-    }
+      if( talents.purge_the_wicked->ok() )
+      {
+        return new purge_the_wicked_t(*this, options_str);
+      }
+      else
+      { 
+        return new shadow_word_pain_t(*this, options_str);
+      }
+    }      
+  }
 
-    // Disc+Holy
-    if (name == "penance")             return new penance_t(*this, options_str);
-    if (name == "smite")               return new smite_t(*this, options_str);
-    if (name == "power_word_solace")   return new power_word_solace_t(*this, options_str);    
-    if (name == "halo")                return new halo_t(*this, options_str);
-    if (name == "divine_star")         return new divine_star_t(*this, options_str);
-    if (name == "schism")              return new schism_t(*this, options_str);
-    if (name == "power_word_shield")   return new power_word_shield_t(*this, options_str);
+  expr_t* priest_t::create_expression_discipline(action_t* a, const std::string& name_str)
+  {
+    return nullptr;
   }
 
   void priest_t::generate_apl_discipline_h()
