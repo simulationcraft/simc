@@ -38,6 +38,7 @@ To change the list of source files, update the QT_ files and run synchronize.py
 		<ClInclude Include="..\engine\util\utf8.h" />
 		<ClInclude Include="..\engine\class_modules\paladin\sc_paladin.hpp" />
 		<ClInclude Include="..\engine\class_modules\warlock\sc_warlock.hpp" />
+		<ClInclude Include="..\engine\class_modules\priest\sc_priest.hpp" />
 		<ClCompile Include="..\engine\util\xml.cpp">
 			
 		</ClCompile>
@@ -215,7 +216,16 @@ To change the list of source files, update the QT_ files and run synchronize.py
 		<ClCompile Include="..\engine\class_modules\sc_rogue.cpp">
 			
 		</ClCompile>
-		<ClCompile Include="..\engine\class_modules\sc_priest.cpp">
+		<ClCompile Include="..\engine\class_modules\priest\sc_priest.cpp">
+			
+		</ClCompile>
+		<ClCompile Include="..\engine\class_modules\priest\sc_priest_discipline.cpp">
+			
+		</ClCompile>
+		<ClCompile Include="..\engine\class_modules\priest\sc_priest_holy.cpp">
+			
+		</ClCompile>
+		<ClCompile Include="..\engine\class_modules\priest\sc_priest_shadow.cpp">
 			
 		</ClCompile>
 		<ClCompile Include="..\engine\class_modules\paladin\sc_paladin.cpp">

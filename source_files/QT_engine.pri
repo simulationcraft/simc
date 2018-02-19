@@ -36,6 +36,7 @@
  HEADERS += engine/util/utf8.h
  HEADERS += engine/class_modules/paladin/sc_paladin.hpp
  HEADERS += engine/class_modules/warlock/sc_warlock.hpp
+ HEADERS += engine/class_modules/priest/sc_priest.hpp
  SOURCES += engine/util/xml.cpp
  SOURCES += engine/util/str.cpp
  SOURCES += engine/util/stopwatch.cpp
@@ -95,7 +96,10 @@
  SOURCES += engine/class_modules/warlock/sc_warlock_destruction.cpp
  SOURCES += engine/class_modules/sc_shaman.cpp
  SOURCES += engine/class_modules/sc_rogue.cpp
- SOURCES += engine/class_modules/sc_priest.cpp
+ SOURCES += engine/class_modules/priest/sc_priest.cpp
+ SOURCES += engine/class_modules/priest/sc_priest_discipline.cpp
+ SOURCES += engine/class_modules/priest/sc_priest_holy.cpp
+ SOURCES += engine/class_modules/priest/sc_priest_shadow.cpp
  SOURCES += engine/class_modules/paladin/sc_paladin.cpp
  SOURCES += engine/class_modules/paladin/sc_paladin_retribution.cpp
  SOURCES += engine/class_modules/paladin/sc_paladin_protection.cpp
