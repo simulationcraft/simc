@@ -4571,7 +4571,7 @@ struct lightning_bolt_overload_t : public elemental_overload_spell_t
   {
     double m = elemental_overload_spell_t::action_multiplier();
 
-    if ( td( player->target )->debuff.fulmination->up() )
+    if ( td( target )->debuff.fulmination->up() )
     {
       m *= 1 + p()->spec.fulmination->effectN( 1 ).percent();
     }
@@ -4646,7 +4646,7 @@ struct lightning_bolt_t : public shaman_spell_t
   {
     double m = shaman_spell_t::action_multiplier();
 
-    if ( td( player->target )->debuff.fulmination->up() )
+    if ( td( target )->debuff.fulmination->up() )
     {
       m *= 1 + p()->spec.fulmination->effectN( 1 ).percent();
     }
@@ -4667,7 +4667,7 @@ struct lightning_bolt_t : public shaman_spell_t
   {
     shaman_spell_t::execute();
 
-    td( player->target )->debuff.fulmination->decrement();
+    td( target )->debuff.fulmination->decrement();
 
     p()->buff.stormkeeper->decrement();
 
@@ -5086,7 +5086,7 @@ struct earth_shock_t : public shaman_spell_t
       if ( p()->resource_available( RESOURCE_MAELSTROM, cost_steps[ steps ] ) )
         return cost_steps[ steps ];
     }
-    return 50.0;
+    return base_costs[ RESOURCE_MAELSTROM ];
   }
 
   double base_cost() const override
@@ -5115,7 +5115,7 @@ struct earth_shock_t : public shaman_spell_t
 
   void execute() override
   {
-    td( player->target )->debuff.fulmination->increment( (int)( cost() / cost_step_size ) );
+    td( target )->debuff.fulmination->increment( (int)( cost() / cost_step_size ) );
     shaman_spell_t::execute();
 
     p()->buff.t21_2pc_elemental->expire();
