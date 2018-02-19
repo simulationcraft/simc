@@ -42,7 +42,6 @@ namespace buffs {
 
     void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
     {
-      printf("Here!\n");
       absorb_buff_t::expire_override( expiration_stacks, remaining_duration );
 
       paladin_t* p = static_cast<paladin_t*>( player );
@@ -53,7 +52,6 @@ namespace buffs {
         p -> active_shield_of_vengeance_proc -> base_dd_max = p -> active_shield_of_vengeance_proc -> base_dd_min = current_value;
         p -> active_shield_of_vengeance_proc -> execute();
       }
-      printf("I'm out\n");
     }
   };
 }
