@@ -324,12 +324,12 @@ namespace warlock {
             snapshot_flags |= STATE_MUL_DA | STATE_TGT_MUL_DA | STATE_MUL_PERSISTENT | STATE_VERSATILITY;
           }
 
-          double get_contribution_from_dot(dot_t* dot, double multiplier=1.0)
+          double get_contribution_from_dot(dot_t* dot)
           {
             if (!(dot->is_ticking()))
               return 0.0;
             action_state_t* state = dot->current_action->get_state(dot->state);
-            dot->current_action->calculate_tick_amount(state, multiplier);
+            dot->current_action->calculate_tick_amount(state, 1.0);
             double tick_base_damage = state->result_raw;
             timespan_t remaining = dot->remains();
             if (dot->duration() > sim -> expected_iteration_time)
@@ -341,12 +341,12 @@ namespace warlock {
             } else {
                 ticks_left += 1;
             }
-            double total_damage = ticks_left * tick_base_damage * multiplier;
+            double total_damage = ticks_left * tick_base_damage;
             if (sim->debug) {
-              sim->out_debug.printf("%s %s dot_remains=%.3f duration=%.3f time_to_next=%.3f tick_time=%.3f ticks_left=%.3f amount=%.3f mult=%.3f total=%.3f",
+              sim->out_debug.printf("%s %s dot_remains=%.3f duration=%.3f time_to_next=%.3f tick_time=%.3f ticks_left=%.3f amount=%.3f total=%.3f",
                 name(), dot->name(), dot->remains().total_seconds(), dot->duration().total_seconds(),
                 dot->time_to_next_tick().total_seconds(), dot_tick_time.total_seconds(),
-                ticks_left, tick_base_damage, multiplier, total_damage);
+                ticks_left, tick_base_damage, total_damage);
             }
             action_state_t::release(state);
             return total_damage;
