@@ -532,11 +532,14 @@ struct stat_buff_t : public buff_t
   };
   std::vector<buff_stat_t> stats;
   gain_t* stat_gain;
+  bool manual_stats_added;
 
   virtual void bump     ( int stacks = 1, double value = -1.0 ) override;
   virtual void decrement( int stacks = 1, double value = -1.0 ) override;
   virtual void expire_override( int expiration_stacks, timespan_t remaining_duration ) override;
   virtual double value() override { stack(); return stats[ 0 ].current_value; }
+
+  stat_buff_t* add_stat( stat_e s, double a, std::function<bool(const stat_buff_t&)> c = std::function<bool(const stat_buff_t&)>() );
 
   stat_buff_t( actor_pair_t q, const std::string& name, const spell_data_t* = spell_data_t::nil() );
 protected:

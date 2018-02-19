@@ -2049,7 +2049,8 @@ stat_buff_t::stat_buff_t( actor_pair_t q, const std::string& name, const spell_d
 
 stat_buff_t::stat_buff_t( const stat_buff_creator_t& params )
   : buff_t( params ),
-    stat_gain( player->get_gain( std::string( name() ) + "_buff" ) )  // append _buff for now to check usage
+    stat_gain( player->get_gain( std::string( name() ) + "_buff" ) ),  // append _buff for now to check usage
+    manual_stats_added(false)
 {
   if ( params.stats.empty() )
   {
@@ -2115,10 +2116,23 @@ stat_buff_t::stat_buff_t( const stat_buff_creator_t& params )
     for ( size_t i = 0; i < params.stats.size(); ++i )
     {
       stats.push_back( buff_stat_t( params.stats[ i ].stat, params.stats[ i ].amount, params.stats[ i ].check_func ) );
+      manual_stats_added = true;
     }
   }
 }
 
+stat_buff_t* stat_buff_t::add_stat( stat_e s, double a, std::function<bool(const stat_buff_t&)> c )
+{
+  if ( ! manual_stats_added )
+  {
+    // If we are the first to add manual stats, clear the spell_data parsed ones.
+    stats.clear();
+  }
+  manual_stats_added = true;
+
+  stats.emplace_back( s, a, c );
+
+}
 // stat_buff_t::bump ========================================================
 
 void stat_buff_t::bump( int stacks, double /* value */ )

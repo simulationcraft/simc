@@ -6999,22 +6999,22 @@ void shaman_t::create_buffs()
                           else
                             buff.spiritual_journey->expire();
                         } );
-  buff.t19_oh_8pc = stat_buff_creator_t( this, "might_of_the_maelstrom",
-                                         sets->set( specialization(), T19OH, B8 )->effectN( 1 ).trigger() )
-                        .trigger_spell( sets->set( specialization(), T19OH, B8 ) );
+  buff.t19_oh_8pc = make_buff<stat_buff_t>( this, "might_of_the_maelstrom",
+                                         sets->set( specialization(), T19OH, B8 )->effectN( 1 ).trigger() );
+  buff.t19_oh_8pc->set_trigger_spell( sets->set( specialization(), T19OH, B8 ) );
 
   //
   // Elemental
   //
-  buff.elemental_blast_crit =
-      stat_buff_creator_t( this, "elemental_blast_critical_strike", find_spell( 118522 ) ).max_stack( 1 );
-  buff.elemental_blast_haste =
-      stat_buff_creator_t( this, "elemental_blast_haste", find_spell( 173183 ) ).max_stack( 1 );
-  buff.elemental_blast_mastery =
-      stat_buff_creator_t( this, "elemental_blast_mastery", find_spell( 173184 ) ).max_stack( 1 );
-  buff.lava_surge = buff_creator_t( this, "lava_surge", find_spell( 77762 ) )
-                        .activated( false )
-                        .chance( 1.0 );  // Proc chance is handled externally
+  buff.elemental_blast_crit = make_buff<stat_buff_t>( this, "elemental_blast_critical_strike", find_spell( 118522 ) );
+  buff.elemental_blast_crit->set_max_stack( 1 );
+  buff.elemental_blast_haste = make_buff<stat_buff_t>( this, "elemental_blast_haste", find_spell( 173183 ) );
+  buff.elemental_blast_haste->set_max_stack( 1 );
+  buff.elemental_blast_mastery = make_buff<stat_buff_t>( this, "elemental_blast_mastery", find_spell( 173184 ) );
+  buff.elemental_blast_mastery->set_max_stack( 1 );
+  buff.lava_surge = make_buff( this, "lava_surge", find_spell( 77762 ) )
+                        ->set_activated( false )
+                        ->set_chance( 1.0 );  // Proc chance is handled externally
   buff.stormkeeper =
       make_buff( this, "stormkeeper", talent.stormkeeper )->set_cooldown( timespan_t::zero() );  // Handled by the action
   // Totem Mastery
@@ -7035,10 +7035,9 @@ void shaman_t::create_buffs()
   buff.ember_totem = make_buff( this, "ember_totem", find_spell( 210658 ) )
     ->set_duration( talent.totem_mastery->effectN( 3 ).trigger()->duration() )
     ->set_default_value( 1.0 + find_spell( 210658 )->effectN( 1 ).percent() );
-  buff.tailwind_totem = haste_buff_creator_t( this, "tailwind_totem", find_spell( 210659 ) )
-                            .add_invalidate( CACHE_HASTE )
-                            .duration( talent.totem_mastery->effectN( 4 ).trigger()->duration() )
-                            .default_value( 1.0 / ( 1.0 + find_spell( 210659 )->effectN( 1 ).percent() ) );
+  buff.tailwind_totem = make_buff<haste_buff_t>( this, "tailwind_totem", find_spell( 210659 ) );
+  buff.tailwind_totem->add_invalidate( CACHE_HASTE )->set_duration( talent.totem_mastery->effectN( 4 ).trigger()->duration() )
+      ->set_default_value( 1.0 / ( 1.0 + find_spell( 210659 )->effectN( 1 ).percent() ) );
   // Tier
   buff.t21_2pc_elemental =
       make_buff( this, "earthen_strength", sets->set( SHAMAN_ELEMENTAL, T21, B2 )->effectN( 1 ).trigger() )
@@ -7074,14 +7073,14 @@ void shaman_t::create_buffs()
   buff.stormlash = new stormlash_buff_t(this);
   buff.unleash_doom = make_buff( this, "unleash_doom", artifact.unleash_doom.data().effectN( 1 ).trigger() )
     ->set_trigger_spell( artifact.unleash_doom );
-  buff.wind_strikes = haste_buff_creator_t( this, "wind_strikes", find_spell( 198293 ) )
-                          .activated( false )
-                          .add_invalidate( CACHE_ATTACK_SPEED )
-                          .chance( artifact.wind_strikes.rank() > 0 )
-                          .default_value( 1.0 / ( 1.0 + artifact.wind_strikes.percent() ) );
-  buff.windsong = haste_buff_creator_t( this, "windsong", talent.windsong )
-                      .add_invalidate( CACHE_ATTACK_SPEED )
-                      .default_value( 1.0 / ( 1.0 + talent.windsong->effectN( 2 ).percent() ) );
+  buff.wind_strikes = make_buff<haste_buff_t>( this, "wind_strikes", find_spell( 198293 ) );
+  buff.wind_strikes->set_activated( false )
+      ->add_invalidate( CACHE_ATTACK_SPEED )
+      ->set_chance( artifact.wind_strikes.rank() > 0 )
+      ->set_default_value( 1.0 / ( 1.0 + artifact.wind_strikes.percent() ) );
+  buff.windsong = make_buff<haste_buff_t>( this, "windsong", talent.windsong );
+  buff.windsong->add_invalidate( CACHE_ATTACK_SPEED )
+      ->set_default_value( 1.0 / ( 1.0 + talent.windsong->effectN( 2 ).percent() ) );
   // Tier
   buff.t18_4pc_enhancement =
       make_buff( this, "natures_reprisal", sets->set( SHAMAN_ENHANCEMENT, T18, B4 )->effectN( 1 ).trigger() )
