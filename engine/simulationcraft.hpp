@@ -156,24 +156,6 @@ const int MAX_TALENT_SLOTS = MAX_TALENT_ROWS * MAX_TALENT_COLS;
 
 // Utilities ================================================================
 
-#if defined ( SC_VS ) && SC_VS < 13 // VS 2015 adds in support for a C99-compliant snprintf
-// C99-compliant snprintf - MSVC _snprintf is NOT the same.
-
-#undef vsnprintf
-int vsnprintf_simc( char* buf, size_t size, const char* fmt, va_list ap );
-#define vsnprintf vsnprintf_simc
-
-#undef snprintf
-inline int snprintf( char* buf, size_t size, const char* fmt, ... )
-{
-  va_list ap;
-  va_start( ap, fmt );
-  int rval = vsnprintf( buf, size, fmt, ap );
-  va_end( ap );
-  return rval;
-}
-#endif
-
 #include "sc_util.hpp"
 
 #include "util/stopwatch.hpp"
