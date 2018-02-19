@@ -511,6 +511,7 @@ public:
   { tick_time_behavior = b; return this; }
   buff_t* set_rppm( rppm_scale_e scale = RPPM_NONE, double freq = -1, double mod = -1);
   buff_t* set_trigger_spell( const spell_data_t* s );
+  buff_t* set_stack_change_callback( const buff_stack_change_callback_t& cb );
 
 private:
   void update_trigger_calculations();

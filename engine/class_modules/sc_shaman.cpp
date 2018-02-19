@@ -751,17 +751,16 @@ struct ascendance_buff_t : public buff_t
   action_t* lava_burst;
 
   ascendance_buff_t( shaman_t* p )
-    : buff_t( buff_creator_t( p, "ascendance" )
-                  .spell( p->specialization() == SHAMAN_ENHANCEMENT ? p->find_spell( 114051 )
-                                                                    : p->find_spell( 114050 ) )  // No resto for now
-                  .trigger_spell( p->talent.ascendance )
-                  .tick_callback( [p]( buff_t* b, int, const timespan_t& ) {
-                    double g = b->data().effectN( 4 ).base_value();
-                    p->resource_gain( RESOURCE_MAELSTROM, g, p->gain.ascendance );
-                  } )
-                  .cd( timespan_t::zero() ) ),  // Cooldown is handled by the action
+    : buff_t( p, "ascendance",p->specialization() == SHAMAN_ENHANCEMENT ? p->find_spell( 114051 )
+                                                                    : p->find_spell( 114050 ) ),  // No resto for now
       lava_burst( nullptr )
   {
+    set_trigger_spell( p->talent.ascendance );
+    set_tick_callback( [p]( buff_t* b, int, const timespan_t& ) {
+      double g = b->data().effectN( 4 ).base_value();
+      p->resource_gain( RESOURCE_MAELSTROM, g, p->gain.ascendance );
+    } );
+    set_cooldown( timespan_t::zero() );  // Cooldown is handled by the action
   }
 
   void ascendance( attack_t* mh, attack_t* oh, timespan_t lvb_cooldown );
@@ -955,8 +954,11 @@ struct stormlash_buff_t : public buff_t
 {
   stormlash_callback_t* callback;
 
-  stormlash_buff_t( const buff_creator_t& creator ) : buff_t( creator ), callback( nullptr )
+  stormlash_buff_t( shaman_t* p ) :
+    buff_t( p, "stormlash", p->find_spell( 195222 ) ), callback( nullptr )
   {
+    set_activated( false );
+    set_cooldown( timespan_t::zero() );
   }
 
   void execute( int stacks, double value, timespan_t duration ) override
@@ -5991,11 +5993,11 @@ struct flametongue_buff_t : public buff_t
   shaman_t* p;
 
   flametongue_buff_t( shaman_t* p )
-    : buff_t( buff_creator_t( p, "flametongue", p->find_specialization_spell( "Flametongue" )->effectN( 3 ).trigger() )
-                  .period( timespan_t::zero() )
-                  .refresh_behavior( BUFF_REFRESH_PANDEMIC ) ),
+    : buff_t( p, "flametongue", p->find_specialization_spell( "Flametongue" )->effectN( 3 ).trigger() ),
       p( p )
   {
+    set_period( timespan_t::zero() );
+    set_refresh_behavior( BUFF_REFRESH_PANDEMIC );
   }
 
   void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
@@ -6984,14 +6986,14 @@ void shaman_t::create_buffs()
   // Shared
   //
   buff.ascendance = new ascendance_buff_t( this );
-  buff.ghost_wolf = buff_creator_t( this, "ghost_wolf", find_class_spell( "Ghost Wolf" ) )
-                        .period( artifact.spirit_of_the_maelstrom.rank() ? find_spell( 198240 )->effectN( 1 ).period()
+  buff.ghost_wolf = make_buff( this, "ghost_wolf", find_class_spell( "Ghost Wolf" ) )
+                        ->set_period( artifact.spirit_of_the_maelstrom.rank() ? find_spell( 198240 )->effectN( 1 ).period()
                                                                          : timespan_t::min() )
-                        .tick_callback( [this]( buff_t*, int, const timespan_t& ) {
+                                                                           ->set_tick_callback( [this]( buff_t*, int, const timespan_t& ) {
                           this->resource_gain( RESOURCE_MAELSTROM, this->artifact.spirit_of_the_maelstrom.value(),
                                                this->gain.spirit_of_the_maelstrom, nullptr );
                         } )
-                        .stack_change_callback( [this]( buff_t*, int, int new_ ) {
+                        ->set_stack_change_callback( [this]( buff_t*, int, int new_ ) {
                           if ( new_ == 1 )
                             buff.spiritual_journey->trigger();
                           else
@@ -7014,65 +7016,64 @@ void shaman_t::create_buffs()
                         .activated( false )
                         .chance( 1.0 );  // Proc chance is handled externally
   buff.stormkeeper =
-      buff_creator_t( this, "stormkeeper", talent.stormkeeper ).cd( timespan_t::zero() );  // Handled by the action
+      make_buff( this, "stormkeeper", talent.stormkeeper )->set_cooldown( timespan_t::zero() );  // Handled by the action
   // Totem Mastery
   buff.resonance_totem =
-      buff_creator_t( this, "resonance_totem", find_spell( 202192 ) )
-          .refresh_behavior( BUFF_REFRESH_DURATION )
-          .duration( talent.totem_mastery->effectN( 1 ).trigger()->duration() )
-          .period( find_spell( 202192 )->effectN( 1 ).period() )
-          .tick_callback( [this]( buff_t* b, int, const timespan_t& ) {
+      make_buff( this, "resonance_totem", find_spell( 202192 ) )
+      ->set_refresh_behavior( BUFF_REFRESH_DURATION )
+      ->set_duration( talent.totem_mastery->effectN( 1 ).trigger()->duration() )
+      ->set_period( find_spell( 202192 )->effectN( 1 ).period() )
+      ->set_tick_callback( [this]( buff_t* b, int, const timespan_t& ) {
             this->resource_gain( RESOURCE_MAELSTROM, b->data().effectN( 1 ).resource( RESOURCE_MAELSTROM ),
                                  this->gain.resonance_totem, nullptr );
           } );
-  buff.storm_totem = buff_creator_t( this, "storm_totem", find_spell( 210651 ) )
-                         .duration( talent.totem_mastery->effectN( 2 ).trigger()->duration() )
-                         .cd( timespan_t::zero() )  // Handled by the action
+  buff.storm_totem = make_buff( this, "storm_totem", find_spell( 210651 ) )
+    ->set_duration( talent.totem_mastery->effectN( 2 ).trigger()->duration() )
+    ->set_cooldown( timespan_t::zero() )  // Handled by the action
                          // FIXME: 7.3 ptr got rid of the 2 effectN, now we need to use 1
-                         .default_value( find_spell( 210651 )->effectN( 1 ).percent() );
-  buff.ember_totem = buff_creator_t( this, "ember_totem", find_spell( 210658 ) )
-                         .duration( talent.totem_mastery->effectN( 3 ).trigger()->duration() )
-                         .default_value( 1.0 + find_spell( 210658 )->effectN( 1 ).percent() );
+    ->set_default_value( find_spell( 210651 )->effectN( 1 ).percent() );
+  buff.ember_totem = make_buff( this, "ember_totem", find_spell( 210658 ) )
+    ->set_duration( talent.totem_mastery->effectN( 3 ).trigger()->duration() )
+    ->set_default_value( 1.0 + find_spell( 210658 )->effectN( 1 ).percent() );
   buff.tailwind_totem = haste_buff_creator_t( this, "tailwind_totem", find_spell( 210659 ) )
                             .add_invalidate( CACHE_HASTE )
                             .duration( talent.totem_mastery->effectN( 4 ).trigger()->duration() )
                             .default_value( 1.0 / ( 1.0 + find_spell( 210659 )->effectN( 1 ).percent() ) );
   // Tier
   buff.t21_2pc_elemental =
-      buff_creator_t( this, "earthen_strength", sets->set( SHAMAN_ELEMENTAL, T21, B2 )->effectN( 1 ).trigger() )
-          .trigger_spell( sets->set( SHAMAN_ELEMENTAL, T21, B2 ) )
-          .default_value( sets->set( SHAMAN_ELEMENTAL, T21, B2 )->effectN( 1 ).trigger()->effectN( 1 ).percent() );
+      make_buff( this, "earthen_strength", sets->set( SHAMAN_ELEMENTAL, T21, B2 )->effectN( 1 ).trigger() )
+      ->set_trigger_spell( sets->set( SHAMAN_ELEMENTAL, T21, B2 ) )
+      ->set_default_value( sets->set( SHAMAN_ELEMENTAL, T21, B2 )->effectN( 1 ).trigger()->effectN( 1 ).percent() );
 
   //
   // Enhancement
   //
-  buff.crash_lightning = buff_creator_t( this, "crash_lightning", find_spell( 187878 ) );
-  buff.doom_winds      = buff_creator_t( this, "doom_winds", &( artifact.doom_winds.data() ) )
-                        .cd( timespan_t::zero() );  // handled by the action
+  buff.crash_lightning = make_buff( this, "crash_lightning", find_spell( 187878 ) );
+  buff.doom_winds      = make_buff( this, "doom_winds", &( artifact.doom_winds.data() ) )
+    ->set_cooldown( timespan_t::zero() );  // handled by the action
   buff.feral_spirit =
-      buff_creator_t( this, "t17_4pc_melee", sets->set( SHAMAN_ENHANCEMENT, T17, B4 )->effectN( 1 ).trigger() )
-          .cd( timespan_t::zero() );
+      make_buff( this, "t17_4pc_melee", sets->set( SHAMAN_ENHANCEMENT, T17, B4 )->effectN( 1 ).trigger() )
+      ->set_cooldown( timespan_t::zero() );
   buff.flametongue      = new flametongue_buff_t( this );
-  buff.gathering_storms = buff_creator_t( this, "gathering_storms", find_spell( 198300 ) );
+  buff.gathering_storms = make_buff( this, "gathering_storms", find_spell( 198300 ) );
   buff.hot_hand =
-      buff_creator_t( this, "hot_hand", talent.hot_hand->effectN( 1 ).trigger() ).trigger_spell( talent.hot_hand );
-  buff.landslide = buff_creator_t( this, "landslide", find_spell( 202004 ) )
-                       .add_invalidate( CACHE_AGILITY )
-                       .chance( talent.landslide->ok() )
-                       .default_value( find_spell( 202004 )->effectN( 1 ).percent() );
-  buff.lightning_shield = buff_creator_t( this, "lightning_shield", find_talent_spell( "Lightning Shield" ) )
-                              .chance( talent.lightning_shield->ok() );
-  buff.spirit_walk = buff_creator_t( this, "spirit_walk", find_specialization_spell( "Spirit Walk" ) );
-  buff.frostbrand  = buff_creator_t( this, "frostbrand", spec.frostbrand )
-                        .period( timespan_t::zero() )
-                        .refresh_behavior( BUFF_REFRESH_PANDEMIC );
-  buff.stormbringer = buff_creator_t( this, "stormbringer", find_spell( 201846 ) )
-                          .activated( false )  // TODO: Need a delay on this
-                          .max_stack( find_spell( 201846 )->initial_stacks() );
-  buff.stormlash = new stormlash_buff_t(
-      buff_creator_t( this, "stormlash", find_spell( 195222 ) ).activated( false ).cd( timespan_t::zero() ) );
-  buff.unleash_doom = buff_creator_t( this, "unleash_doom", artifact.unleash_doom.data().effectN( 1 ).trigger() )
-                          .trigger_spell( artifact.unleash_doom );
+      make_buff( this, "hot_hand", talent.hot_hand->effectN( 1 ).trigger() )->set_trigger_spell( talent.hot_hand );
+  buff.landslide = make_buff( this, "landslide", find_spell( 202004 ) )
+                       ->add_invalidate( CACHE_AGILITY )
+                       ->set_chance( talent.landslide->ok() )
+                       ->set_default_value( find_spell( 202004 )->effectN( 1 ).percent() );
+  buff.lightning_shield = make_buff( this, "lightning_shield", find_talent_spell( "Lightning Shield" ) )
+    ->set_chance( talent.lightning_shield->ok() );
+  buff.spirit_walk = make_buff( this, "spirit_walk", find_specialization_spell( "Spirit Walk" ) );
+  buff.frostbrand  = make_buff( this, "frostbrand", spec.frostbrand )
+    ->set_period( timespan_t::zero() )
+    ->set_refresh_behavior( BUFF_REFRESH_PANDEMIC );
+  buff.stormbringer = make_buff( this, "stormbringer", find_spell( 201846 ) )
+    ->set_activated( false )  // TODO: Need a delay on this
+    ->set_max_stack( find_spell( 201846 )->initial_stacks() );
+  buff.stormlash = new stormlash_buff_t(this);
+  buff.unleash_doom = make_buff( this, "unleash_doom", artifact.unleash_doom.data().effectN( 1 ).trigger() )
+    ->set_trigger_spell( artifact.unleash_doom );
   buff.wind_strikes = haste_buff_creator_t( this, "wind_strikes", find_spell( 198293 ) )
                           .activated( false )
                           .add_invalidate( CACHE_ATTACK_SPEED )
@@ -7083,31 +7084,31 @@ void shaman_t::create_buffs()
                       .default_value( 1.0 / ( 1.0 + talent.windsong->effectN( 2 ).percent() ) );
   // Tier
   buff.t18_4pc_enhancement =
-      buff_creator_t( this, "natures_reprisal", sets->set( SHAMAN_ENHANCEMENT, T18, B4 )->effectN( 1 ).trigger() )
-          .trigger_spell( sets->set( SHAMAN_ENHANCEMENT, T18, B4 ) )
-          .default_value( sets->set( SHAMAN_ENHANCEMENT, T18, B4 )->effectN( 1 ).trigger()->effectN( 1 ).percent() )
-          .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+      make_buff( this, "natures_reprisal", sets->set( SHAMAN_ENHANCEMENT, T18, B4 )->effectN( 1 ).trigger() )
+      ->set_trigger_spell( sets->set( SHAMAN_ENHANCEMENT, T18, B4 ) )
+      ->set_default_value( sets->set( SHAMAN_ENHANCEMENT, T18, B4 )->effectN( 1 ).trigger()->effectN( 1 ).percent() )
+          ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   buff.t20_2pc_enhancement =
-      buff_creator_t( this, "lightning_crash", sets->set( SHAMAN_ENHANCEMENT, T20, B2 )->effectN( 1 ).trigger() )
-          .trigger_spell( sets->set( SHAMAN_ENHANCEMENT, T20, B2 ) )
-          .default_value( sets->set( SHAMAN_ENHANCEMENT, T20, B2 )->effectN( 1 ).trigger()->effectN( 1 ).percent() )
-          .add_invalidate( CACHE_CRIT_CHANCE );
+      make_buff( this, "lightning_crash", sets->set( SHAMAN_ENHANCEMENT, T20, B2 )->effectN( 1 ).trigger() )
+      ->set_trigger_spell( sets->set( SHAMAN_ENHANCEMENT, T20, B2 ) )
+      ->set_default_value( sets->set( SHAMAN_ENHANCEMENT, T20, B2 )->effectN( 1 ).trigger()->effectN( 1 ).percent() )
+          ->add_invalidate( CACHE_CRIT_CHANCE );
   buff.t20_4pc_enhancement =
-      buff_creator_t( this, "crashing_lightning", sets->set( SHAMAN_ENHANCEMENT, T20, B4 )->effectN( 1 ).trigger() )
-          .trigger_spell( sets->set( SHAMAN_ENHANCEMENT, T20, B4 ) )
-          .default_value( sets->set( SHAMAN_ENHANCEMENT, T20, B4 )->effectN( 1 ).trigger()->effectN( 1 ).percent() );
+      make_buff( this, "crashing_lightning", sets->set( SHAMAN_ENHANCEMENT, T20, B4 )->effectN( 1 ).trigger() )
+      ->set_trigger_spell( sets->set( SHAMAN_ENHANCEMENT, T20, B4 ) )
+      ->set_default_value( sets->set( SHAMAN_ENHANCEMENT, T20, B4 )->effectN( 1 ).trigger()->effectN( 1 ).percent() );
   buff.t21_2pc_enhancement =
-      buff_creator_t( this, "force_of_the_mountain", sets->set( SHAMAN_ENHANCEMENT, T21, B2 )->effectN( 1 ).trigger() )
-          .trigger_spell( sets->set( SHAMAN_ENHANCEMENT, T21, B2 ) )
-          .default_value( sets->set( SHAMAN_ENHANCEMENT, T21, B2 )->effectN( 1 ).trigger()->effectN( 1 ).percent() );
+      make_buff( this, "force_of_the_mountain", sets->set( SHAMAN_ENHANCEMENT, T21, B2 )->effectN( 1 ).trigger() )
+      ->set_trigger_spell( sets->set( SHAMAN_ENHANCEMENT, T21, B2 ) )
+      ->set_default_value( sets->set( SHAMAN_ENHANCEMENT, T21, B2 )->effectN( 1 ).trigger()->effectN( 1 ).percent() );
 
   //
   // Restoration
   //
   buff.spiritwalkers_grace =
-      buff_creator_t( this, "spiritwalkers_grace", find_specialization_spell( "Spiritwalker's Grace" ) );
+      make_buff( this, "spiritwalkers_grace", find_specialization_spell( "Spiritwalker's Grace" ) );
   buff.tidal_waves =
-      buff_creator_t( this, "tidal_waves", spec.tidal_waves->ok() ? find_spell( 53390 ) : spell_data_t::not_found() );
+      make_buff( this, "tidal_waves", spec.tidal_waves->ok() ? find_spell( 53390 ) : spell_data_t::not_found() );
 }
 
 // shaman_t::init_gains =====================================================

@@ -319,7 +319,7 @@ buff_t::buff_t( const buff_creation::buff_creator_basics_t& params )
   if ( player && !player->cache.active )
     requires_invalidation = false;
 
-  stack_change_callback = params._stack_change_callback;
+  set_stack_change_callback( params._stack_change_callback );
 
   set_max_stack( _max_stack );
 
@@ -678,6 +678,12 @@ buff_t* buff_t::set_trigger_spell( const spell_data_t* s )
     trigger_data = s;
   }
   update_trigger_calculations();
+  return this;
+}
+
+buff_t* buff_t::set_stack_change_callback( const buff_stack_change_callback_t& cb )
+{
+  stack_change_callback = cb;
   return this;
 }
 
