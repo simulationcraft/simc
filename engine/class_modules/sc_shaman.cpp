@@ -175,6 +175,10 @@ struct shaman_td_t : public actor_target_data_t
 
   struct debuffs
   {
+    // Elemental
+    buff_t* fulmination;
+
+    // Enhancement
     buff_t* earthen_spike;
     buff_t* storm_tempests;  // 7.0 Legendary
     buff_t* lashing_flames;
@@ -362,6 +366,7 @@ public:
   struct
   {
     cooldown_t* ascendance;
+    cooldown_t* earth_shock;
     cooldown_t* fire_elemental;
     cooldown_t* feral_spirits;
     cooldown_t* lava_burst;
@@ -413,7 +418,8 @@ public:
     const spell_data_t* chain_lightning_2;  // 7.1 Chain Lightning additional 2 targets passive
     const spell_data_t* elemental_fury;     // general crit multiplier
     const spell_data_t* elemental_shaman;   // general spec multiplier
-    const spell_data_t* lava_burst_2;       // 7.1 Lava Burst autocrit with FS passive
+    const spell_data_t* fulmination;
+    const spell_data_t* lava_burst_2;  // 7.1 Lava Burst autocrit with FS passive
     const spell_data_t* lava_surge;
 
     // Enhancement
@@ -576,6 +582,7 @@ public:
 
     // Cooldowns
     cooldown.ascendance        = get_cooldown( "ascendance" );
+    cooldown.earth_shock       = get_cooldown( "Earth Shock" );
     cooldown.fire_elemental    = get_cooldown( "fire_elemental" );
     cooldown.storm_elemental   = get_cooldown( "storm_elemental" );
     cooldown.feral_spirits     = get_cooldown( "feral_spirit" );
@@ -968,6 +975,9 @@ struct stormlash_buff_t : public buff_t
 shaman_td_t::shaman_td_t( player_t* target, shaman_t* p ) : actor_target_data_t( target, p )
 {
   dot.flame_shock = target->get_dot( "flame_shock", p );
+
+  debuff.fulmination = buff_creator_t( *this, "fulmination", p->spec.fulmination )
+                           .default_value( p->spec.fulmination->effectN( 1 ).percent() );
 
   debuff.earthen_spike = buff_creator_t( *this, "earthen_spike", p->talent.earthen_spike )
                              .cd( timespan_t::zero() )  // Handled by the action
@@ -4557,6 +4567,16 @@ struct lightning_bolt_overload_t : public elemental_overload_spell_t
   {
     maelstrom_gain = player->find_spell( 214816 )->effectN( 1 ).resource( RESOURCE_MAELSTROM );
   }
+  double action_multiplier() const override
+  {
+    double m = elemental_overload_spell_t::action_multiplier();
+
+    if ( td( player->target )->debuff.fulmination->up() )
+    {
+      m *= 1 + p()->spec.fulmination->effectN( 1 ).percent();
+    }
+    return m;
+  }
 };
 
 struct lightning_bolt_t : public shaman_spell_t
@@ -4614,12 +4634,23 @@ struct lightning_bolt_t : public shaman_spell_t
 
   size_t n_overload_chances( const action_state_t* ) const override
   {
-    return p()->talent.high_voltage->effectN( 1 ).percent();
+    return (size_t)p()->talent.high_voltage->effectN( 1 ).percent();
   }
 
   double spell_direct_power_coefficient( const action_state_t* /* state */ ) const override
   {
     return spell_power_mod.direct * ( 1.0 + m_overcharge * cost() );
+  }
+
+  double action_multiplier() const override
+  {
+    double m = shaman_spell_t::action_multiplier();
+
+    if ( td( player->target )->debuff.fulmination->up() )
+    {
+      m *= 1 + p()->spec.fulmination->effectN( 1 ).percent();
+    }
+    return m;
   }
 
   timespan_t execute_time() const override
@@ -4636,15 +4667,7 @@ struct lightning_bolt_t : public shaman_spell_t
   {
     shaman_spell_t::execute();
 
-    /*
-    //high voltage start
-    ///
-    if ( p()->talent.high_voltage->ok() )
-    {
-      const action_state_t* s;
-      shaman_spell_t::trigger_elemental_overload( s );
-    }
-    ///**/
+    td( player->target )->debuff.fulmination->decrement();
 
     p()->buff.stormkeeper->decrement();
 
@@ -5027,25 +5050,54 @@ struct earth_shock_overload_t : public elemental_overload_spell_t
 
 struct earth_shock_t : public shaman_spell_t
 {
-  double base_coefficient;
-
   action_t* t21_4pc;
+  int cost_step_size;
+  std::vector<double> cost_steps;
+  double base_coefficient;
 
   earth_shock_t( shaman_t* player, const std::string& options_str )
     : shaman_spell_t( "earth_shock", player, player->find_specialization_spell( "Earth Shock" ), options_str ),
-      base_coefficient( data().effectN( 1 ).sp_coeff() / base_cost() ),
       t21_4pc( nullptr )
   {
+    // hardcoded because spelldata doesn't provide the resource type
+    resource_current                 = RESOURCE_MAELSTROM;
+    base_costs[ RESOURCE_MAELSTROM ] = 0;
+
     if ( player->sets->has_set_bonus( SHAMAN_ELEMENTAL, T21, B4 ) )
     {
       t21_4pc = new earth_shock_overload_t( player );
       add_child( t21_4pc );
     }
+
+    // create cost array
+    cost_step_size = p()->find_spell( 260113 )->effectN( 1 ).base_value();
+    int max_cost   = p()->find_spell( 260113 )->effectN( 2 ).base_value();
+    for ( size_t steps = 0; steps <= max_cost / cost_step_size; steps++ )
+    {
+      cost_steps.push_back( (double)( cost_step_size * steps ) );
+    }
+    // calculation is hardcoded into Earth Shock tooltip
+    base_coefficient = p()->spec.fulmination->effectN( 1 ).base_value() * 4 / max_cost;
+  }
+
+  double cost() const override
+  {
+    for ( size_t steps = cost_steps.size() - 1; steps >= 0; steps-- )
+    {
+      if ( p()->resource_available( RESOURCE_MAELSTROM, cost_steps[ steps ] ) )
+        return cost_steps[ steps ];
+    }
+    return 50.0;
   }
 
   double spell_direct_power_coefficient( const action_state_t* ) const override
   {
-    return base_coefficient * cost();
+    if ( p()->bugs )
+      return data().effectN( 1 ).sp_coeff();
+    else
+    {
+      return data().effectN( 1 ).sp_coeff() + base_coefficient * cost();
+    }
   }
 
   double action_multiplier() const override
@@ -5059,6 +5111,9 @@ struct earth_shock_t : public shaman_spell_t
 
   void execute() override
   {
+    td( player->target )->debuff.fulmination->increment( (int)( cost() / cost_step_size ) );
+    // last_resource_cost
+    secondary_costs[ RESOURCE_MAELSTROM ] = cost();
     shaman_spell_t::execute();
 
     p()->buff.t21_2pc_elemental->expire();
@@ -6295,6 +6350,7 @@ void shaman_t::init_spells()
   spec.chain_lightning_2 = find_specialization_spell( 231722 );
   spec.elemental_fury    = find_specialization_spell( "Elemental Fury" );
   spec.elemental_shaman  = find_specialization_spell( "Elemental Shaman" );
+  spec.fulmination       = find_spell( 260111 );
   spec.lava_burst_2      = find_specialization_spell( 231721 );
   spec.lava_surge        = find_specialization_spell( "Lava Surge" );
 
@@ -7247,6 +7303,7 @@ void shaman_t::init_action_list_elemental()
   single_target->add_action( this, "Stormkeeper", "if=raid_event.adds.count<3|raid_event.adds.in>50",
                              "Keep SK for large or soon add waves." );
   single_target->add_talent( this, "Liquid Magma Totem", "if=raid_event.adds.count<3|raid_event.adds.in>50" );
+  single_target->add_action( this, "Earth Shock", "if=maelstrom>=25" );
   single_target->add_action( this, "Lava Burst",
                              "if=dot.flame_shock.remains>cast_time&(cooldown_react|buff.ascendance.up)" );
   single_target->add_action( this, "Flame Shock", "if=maelstrom>=20,target_if=refreshable" );
