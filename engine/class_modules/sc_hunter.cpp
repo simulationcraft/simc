@@ -1658,8 +1658,11 @@ struct pet_auto_attack_t: public hunter_main_pet_attack_t
 
 struct basic_attack_base_t: public hunter_main_pet_attack_t
 {
+  const double wild_hunt_cost_pct;
+
   basic_attack_base_t( const std::string& n, hunter_main_pet_t* p, const spell_data_t* s ):
-    hunter_main_pet_attack_t( n, p, s )
+    hunter_main_pet_attack_t( n, p, s ),
+    wild_hunt_cost_pct( p -> specs.wild_hunt -> effectN( 2 ).percent() )
   {
     school = SCHOOL_PHYSICAL;
 
@@ -1692,24 +1695,20 @@ struct basic_attack_base_t: public hunter_main_pet_attack_t
     if ( o() -> talents.blink_strikes -> ok() && p() == o() -> active.pet )
       am *= 1.0 + o() -> talents.blink_strikes -> effectN( 1 ).percent();
 
-    if ( use_wild_hunt() )
-    {
-      p() -> benefits.wild_hunt -> update( true );
+    const bool used_wild_hunt = use_wild_hunt();
+    if ( used_wild_hunt )
       am *= 1.0 + p() -> specs.wild_hunt -> effectN( 1 ).percent();
-    }
-    else
-      p() -> benefits.wild_hunt -> update( false );
+    p() -> benefits.wild_hunt -> update( used_wild_hunt );
 
     return am;
   }
 
   double cost() const override
   {
-    double base_cost = hunter_main_pet_attack_t::cost();
-    double c = base_cost;
+    double c = hunter_main_pet_attack_t::cost();
 
     if ( use_wild_hunt() )
-      c *= 1.0 + p() -> specs.wild_hunt -> effectN( 2 ).percent();
+      c *= 1.0 + wild_hunt_cost_pct;
 
     return c;
   }
