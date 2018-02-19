@@ -231,11 +231,11 @@ public:
     const spell_data_t* stomp;
     const spell_data_t* dire_frenzy;
     const spell_data_t* chimaera_shot;
-    
+
     const spell_data_t* lock_and_load;
     const spell_data_t* black_arrow;
     const spell_data_t* true_aim;
-    
+
     const spell_data_t* mortal_wounds;
     const spell_data_t* snake_hunter;
 
@@ -248,7 +248,7 @@ public:
     const spell_data_t* one_with_the_pack;
     const spell_data_t* bestial_fury;
     const spell_data_t* blink_strikes;
-    
+
     const spell_data_t* explosive_shot;
     const spell_data_t* sentinel;
     const spell_data_t* patient_sniper;
@@ -1640,7 +1640,7 @@ struct pet_auto_attack_t: public hunter_main_pet_attack_t
     hunter_main_pet_attack_t( "auto_attack", player, nullptr )
   {
     parse_options( options_str );
-    
+
     school = SCHOOL_PHYSICAL;
     trigger_gcd = timespan_t::zero();
 
@@ -2143,7 +2143,7 @@ struct barrage_t: public hunter_spell_t
       may_crit = true;
       aoe = -1;
       radius = 0; //Barrage attacks all targets in front of the hunter, so setting radius to 0 will prevent distance targeting from using a 40 yard radius around the target.
-      // Todo: Add in support to only hit targets in the frontal cone. 
+      // Todo: Add in support to only hit targets in the frontal cone.
 
       if ( data().affected_by( player -> specs.beast_mastery_hunter -> effectN( 5 ) ) )
         base_dd_multiplier *= 1.0 + player -> specs.beast_mastery_hunter -> effectN( 5 ).percent();
@@ -4186,7 +4186,7 @@ struct caltrops_t: public hunter_spell_t
   struct caltrops_tick_t: public hunter_spell_t
   {
     caltrops_tick_t( hunter_t* p ):
-      hunter_spell_t( "caltrops_tick", p, p -> find_spell( 194279 ) ) 
+      hunter_spell_t( "caltrops_tick", p, p -> find_spell( 194279 ) )
     {
       background = true;
       dot_behavior = DOT_CLIP;
@@ -4568,11 +4568,11 @@ void hunter_t::init_spells()
   talents.stomp                             = find_talent_spell( "Stomp" );
   talents.dire_frenzy                       = find_talent_spell( "Dire Frenzy" );
   talents.chimaera_shot                     = find_talent_spell( "Chimaera Shot" );
-  
+
   talents.lock_and_load                     = find_talent_spell( "Lock and Load" );
   talents.black_arrow                       = find_talent_spell( "Black Arrow" );
   talents.true_aim                          = find_talent_spell( "True Aim" );
-  
+
   talents.mortal_wounds                     = find_talent_spell( "Mortal Wounds" );
   talents.snake_hunter                      = find_talent_spell( "Snake Hunter" );
 
@@ -4585,7 +4585,7 @@ void hunter_t::init_spells()
   talents.bestial_fury                      = find_talent_spell( "Bestial Fury" );
   talents.blink_strikes                     = find_talent_spell( "Blink Strikes" );
   talents.one_with_the_pack                 = find_talent_spell( "One with the Pack" );
-  
+
   talents.explosive_shot                    = find_talent_spell( "Explosive Shot" );
   talents.sentinel                          = find_talent_spell( "Sentinel" );
   talents.patient_sniper                    = find_talent_spell( "Patient Sniper" );
@@ -5134,7 +5134,7 @@ void hunter_t::apl_mm()
   // Always keep Volley up if talented
   default_list -> add_talent( this, "Volley", "toggle=on" );
 
-  default_list -> add_action( "variable,name=pooling_for_piercing,value=talent.piercing_shot.enabled&cooldown.piercing_shot.remains<5&lowest_vuln_within.5>0&lowest_vuln_within.5>cooldown.piercing_shot.remains&(buff.trueshot.down|spell_targets=1)", 
+  default_list -> add_action( "variable,name=pooling_for_piercing,value=talent.piercing_shot.enabled&cooldown.piercing_shot.remains<5&lowest_vuln_within.5>0&lowest_vuln_within.5>cooldown.piercing_shot.remains&(buff.trueshot.down|spell_targets=1)",
                               "Start being conservative with focus if expecting a Piercing Shot at the end of the current Vulnerable debuff. "
                               "The expression lowest_vuln_within.<range> is used to check the lowest Vulnerable debuff duration on all enemies within the specified range from the target.");
 
@@ -5195,7 +5195,7 @@ void hunter_t::apl_mm()
   patient_sniper -> add_talent( this, "Piercing Shot", "if=cooldown.piercing_shot.up&spell_targets=1&lowest_vuln_within.5>0&lowest_vuln_within.5<1" );
   patient_sniper -> add_talent( this, "Piercing Shot", "if=cooldown.piercing_shot.up&spell_targets>1&lowest_vuln_within.5>0&((!buff.trueshot.up&focus>80&(lowest_vuln_within.5<1|debuff.hunters_mark.up))|(buff.trueshot.up&focus>105&lowest_vuln_within.5<6))",
                                       "For multitarget, the possible Marked Shots that might be lost while waiting for Patient Sniper to stack are not worth losing, so fire Piercing as soon as Marked Shot is ready before resetting the window. Basically happens immediately under Trushot." );
-  
+
   patient_sniper -> add_action( this, "Aimed Shot", "if=spell_targets>1&talent.trick_shot.enabled&debuff.vulnerability.remains>cast_time&(buff.sentinels_sight.stack>=spell_targets.multishot*5|buff.sentinels_sight.stack+(spell_targets.multishot%2)>20|buff.lock_and_load.up|(set_bonus.tier20_2pc&!buff.t20_2p_critical_aimed_damage.up&action.aimed_shot.in_flight))",
                                       "For multitarget, Aimed Shot is generally only worth using with Trickshot, and depends on if Lock and Load is triggered or Warbelt is equipped and about half of your next multishot's "
                                       "additional Sentinel's Sight stacks would be wasted. Once either of those condition are met, the next Aimed is forced immediately afterwards to trigger the Tier 20 2pc." );
@@ -5212,7 +5212,7 @@ void hunter_t::apl_mm()
 
   patient_sniper -> add_action( this, "Arcane Shot", "if=spell_targets.multishot=1&(!set_bonus.tier20_2pc|!action.aimed_shot.in_flight|buff.t20_2p_critical_aimed_damage.remains>action.aimed_shot.cast_time+gcd)&(variable.vuln_aim_casts>0|action.windburst.in_flight&!set_bonus.tier21_4pc)&variable.can_gcd&focus+cast_regen+action.aimed_shot.cast_regen<focus.max&(!variable.pooling_for_piercing|lowest_vuln_within.5>gcd)",
                                                      "Attempts to use Arcane early in Vulnerable windows if it will not break an Aimed pair while Critical Aimed is down, lose possible Aimed casts in the window, cap focus, or miss the opportunity to use Piercing." );
-  
+
   patient_sniper -> add_action( this, "Aimed Shot", "if=talent.sidewinders.enabled&(debuff.vulnerability.remains>cast_time|(buff.lock_and_load.down&action.windburst.in_flight))&(variable.vuln_window-(execute_time*variable.vuln_aim_casts)<1|focus.deficit<=cast_regen|buff.trueshot.up)&(spell_targets.multishot=1|focus>100)" );
   patient_sniper -> add_action( this, "Aimed Shot", "if=!talent.sidewinders.enabled&(debuff.vulnerability.remains>cast_time|(buff.lock_and_load.down&action.windburst.in_flight&(!set_bonus.tier21_4pc|debuff.hunters_mark.down)))&(!variable.pooling_for_piercing|lowest_vuln_within.5>execute_time+gcd.max)" );
   patient_sniper -> add_action( this, "Marked Shot", "if=!talent.sidewinders.enabled&!variable.pooling_for_piercing&(!action.windburst.in_flight|set_bonus.tier21_4pc)&((focus>65|buff.trueshot.up|(1%attack_haste)>1.217|(1%attack_haste)>1.171&set_bonus.tier20_4pc)|set_bonus.tier21_4pc&!set_bonus.tier20_2pc)" );
@@ -5249,7 +5249,7 @@ void hunter_t::apl_surv()
   precombat -> add_talent( this, "Steel Trap" );
   precombat -> add_talent( this, "Dragonsfire Grenade" );
   precombat -> add_action( this, "Harpoon" );
-  
+
   //Variables
   default_list -> add_action( "variable,name=frizzosEquipped,value=(equipped.137043)" );
   default_list -> add_action( "variable,name=mokTalented,value=(talent.way_of_the_moknathal.enabled)" );
@@ -5264,7 +5264,7 @@ void hunter_t::apl_surv()
   default_list -> add_action( "call_action_list,name=fillers,if=!buff.mongoose_fury.up" );
   default_list -> add_action( "call_action_list,name=biteTrigger,if=!buff.mongoose_fury.up" );
   default_list -> add_action( "call_action_list,name=bitePhase,if=buff.mongoose_fury.up" );
- 
+
   //Mok Maintenance Call List
   mokMaintain -> add_action( this, "Raptor Strike", "if=(buff.moknathal_tactics.remains<(gcd)|(buff.moknathal_tactics.stack<3))" );
 
@@ -5614,7 +5614,7 @@ std::string hunter_t::create_profile( save_e stype )
   std::string profile_str = player_t::create_profile( stype );
 
   profile_str += "summon_pet=" + summon_pet_str + "\n";
-  
+
   if ( stype == SAVE_ALL )
   {
     if ( !hunter_fixed_time )
