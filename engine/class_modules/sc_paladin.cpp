@@ -5364,26 +5364,34 @@ void paladin_t::generate_action_prio_list_holy_dps()
   action_priority_list_t* priority = get_action_priority_list( "priority" );
 
   def -> add_action( "auto_attack" );
+  def -> add_action( "restore_mana,mana=0,if=prev.holy_shock"); // temporary, bad fix for mana, it's never an issue in any realistic scenario
   def -> add_action( "call_action_list,name=cooldowns");
   def -> add_action( "call_action_list,name=priority");
 
-  cds -> add_action("avenging_wrath");
+  cds -> add_action("strict_sequence,name=HA:avenging_wrath:holy_avenger:holy_shock,damage=1,if=talent.holy_avenger.enabled");
+  cds -> add_action("strict_sequence,name=noHA:avenging_wrath:holy_shock,damage=1,if=!talent.holy_avenger.enabled");
+  cds -> add_action("avenging_wrath,if=target.time_to_die<=25");
+  cds -> add_action("holy_avenger,if=buff.avenging_wrath.up|target.time_to_die<=20");
   if ( sim -> allow_potions )
   {
-      cds -> add_action("potion,if=(buff.avenging_wrath.up)");
+      cds -> add_action("potion,if=buff.avenging_wrath.up|target.time_to_die<=25");
   }
-  cds -> add_action("blood_fury,if=(buff.avenging_wrath.up)");
-  cds -> add_action("berserking,if=(buff.avenging_wrath.up)");
-  cds -> add_action("holy_avenger,if=(buff.avenging_wrath.up)");
   cds -> add_action("use_items,if=(buff.avenging_wrath.up)");
 
-  priority -> add_action("judgment");
-  priority -> add_action("holy_shock,damage=1");
-  priority -> add_action("crusader_strike");
+  priority -> add_action("consecration,if=active_enemies>=3");
+  priority -> add_action("holy_prism,target=self,if=active_enemies>=3");
+  priority -> add_action("holy_shock,damage=1,if=debuff.judgment.up");
+  priority -> add_action("consecration,if=active_enemies>=2");
   priority -> add_action("holy_prism,target=self,if=active_enemies>=2");
+  priority -> add_action("judgment,if=cooldown.holy_shock.remains<=gcd");
+  priority -> add_action("holy_prism,if=!debuff.judgment.up&cooldown.judgment.remains<=gcd&cooldown.holy_shock.remains<=gcd*2");
+  priority -> add_action("consecration,if=!debuff.judgment.up&cooldown.judgment.remains<=gcd&cooldown.holy_shock.remains<=gcd*2");
+  priority -> add_action("holy_shock,damage=1,if=cooldown.judgment.remains>gcd");
+  priority -> add_action("crusader_strike");
   priority -> add_action("holy_prism");
   priority -> add_action("consecration");
-  priority -> add_action("light_of_dawn");
+  priority -> add_action("judgment");
+  priority -> add_action("light_of_dawn,if=equipped.151782"); // should be omitted without TTT equipped, haven't tested with
 }
 
 void paladin_t::generate_action_prio_list_holy()
@@ -5548,7 +5556,7 @@ std::string paladin_t::default_food() const
                                 (true_level >= 80) ? "seafood_magnifique_feast" :
                                 "disabled";
 
-  std::string holy_dps_food = (true_level > 100) ? "the_hungry_magister" :
+  std::string holy_dps_food = (true_level > 100) ? "lemon_herb_filet" :
                               (true_level >= 90) ? "pickled_eel" :
                               (true_level >= 85) ? "mogu_fish_stew" :
                               (true_level >= 80) ? "seafood_magnifique_feast" :
