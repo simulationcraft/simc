@@ -7,6 +7,7 @@ namespace warlock {
         // Dots
         struct agony_t : public warlock_spell_t {
             int agony_action_id;
+            int agony_max_stacks;
             double chance;
 
             agony_t(warlock_t* p, const std::string& options_str) : warlock_spell_t(p, "Agony"), agony_action_id(0) {
@@ -38,48 +39,53 @@ namespace warlock {
                 warlock_spell_t::last_tick(d);
             }
 
+            void init() override {
+              agony_max_stacks = (p()->talents.writhe_in_agony->ok() ? p()->talents.writhe_in_agony->effectN(2).base_value() : 10);
+              warlock_spell_t::init();
+            }
+
             virtual void execute() override{
-                warlock_spell_t::execute();
-                td(execute_state->target)->debuffs_agony->trigger();
+              warlock_spell_t::execute();
+              td(execute_state->target)->debuffs_agony->trigger();
+
+              if ( td(execute_state->target ) -> agony_stack < agony_max_stacks )
+                td(execute_state->target)->agony_stack++;
             }
 
             virtual void tick(dot_t* d) override {
-                int agony_max_stacks;
-                agony_max_stacks = (p()->talents.writhe_in_agony->ok() ? p()->talents.writhe_in_agony->effectN(2).base_value() : 10);
-                if (td(d->state->target)->agony_stack < agony_max_stacks)
-                    td(d->state->target)->agony_stack++;
+              td(d->state->target)->debuffs_agony->trigger();
 
-                td(d->state->target)->debuffs_agony->trigger();
+              double tier_bonus = 1.0 + p()->sets->set(WARLOCK_AFFLICTION, T19, B4)->effectN(1).percent();
 
-                double tier_bonus = 1.0 + p()->sets->set(WARLOCK_AFFLICTION, T19, B4)->effectN(1).percent();
+              double active_agonies = p()->get_active_dots(internal_id);
+              double accumulator_increment = rng().range(0.0, p()->sets->has_set_bonus(WARLOCK_AFFLICTION, T19, B4) ? 0.32 * tier_bonus : 0.32) / sqrt(active_agonies);
 
-                double active_agonies = p()->get_active_dots(internal_id);
-                double accumulator_increment = rng().range(0.0, p()->sets->has_set_bonus(WARLOCK_AFFLICTION, T19, B4) ? 0.32 * tier_bonus : 0.32) / sqrt(active_agonies);
+              p()->agony_accumulator += accumulator_increment;
 
-                p()->agony_accumulator += accumulator_increment;
+              if (p()->agony_accumulator >= 1) {
+                  p()->resource_gain(RESOURCE_SOUL_SHARD, 1.0, p()->gains.agony);
+                  p()->agony_accumulator -= 1.0;
+                  if (p()->resources.current[RESOURCE_SOUL_SHARD] == 1)
+                      p()->shard_react = p()->sim->current_time() + p()->total_reaction_time();
+                  else if (p()->resources.current[RESOURCE_SOUL_SHARD] >= 1)
+                      p()->shard_react = p()->sim->current_time();
+                  else
+                      p()->shard_react = timespan_t::max();
+              }
 
-                if (p()->agony_accumulator >= 1) {
-                    p()->resource_gain(RESOURCE_SOUL_SHARD, 1.0, p()->gains.agony);
-                    p()->agony_accumulator -= 1.0;
-                    if (p()->resources.current[RESOURCE_SOUL_SHARD] == 1)
-                        p()->shard_react = p()->sim->current_time() + p()->total_reaction_time();
-                    else if (p()->resources.current[RESOURCE_SOUL_SHARD] >= 1)
-                        p()->shard_react = p()->sim->current_time();
-                    else
-                        p()->shard_react = timespan_t::max();
-                }
+              if (rng().roll(p()->sets->set(WARLOCK_AFFLICTION, T21, B2)->proc_chance())) {
+                  warlock_td_t* target_data = td(d->state->target);
+                  for (auto& current_ua : target_data->dots_unstable_affliction) {
 
-                if (rng().roll(p()->sets->set(WARLOCK_AFFLICTION, T21, B2)->proc_chance())) {
-                    warlock_td_t* target_data = td(d->state->target);
-                    for (auto& current_ua : target_data->dots_unstable_affliction) {
+                      if (current_ua->is_ticking())
+                          current_ua->extend_duration(p()->sets->set(WARLOCK_AFFLICTION, T21, B2)->effectN(1).time_value(), true);
+                  }
+                  p()->procs.affliction_t21_2pc->occur();
+              }
 
-                        if (current_ua->is_ticking())
-                            current_ua->extend_duration(p()->sets->set(WARLOCK_AFFLICTION, T21, B2)->effectN(1).time_value(), true);
-                    }
-                    p()->procs.affliction_t21_2pc->occur();
-                }
-
-                warlock_spell_t::tick(d);
+              warlock_spell_t::tick(d);
+              if (td(d->state->target)->agony_stack < agony_max_stacks)
+                td(d->state->target)->agony_stack++;
             }
         };
 
@@ -349,15 +355,7 @@ namespace warlock {
           void execute() override {
             warlock_td_t* td = this->td(target);
 
-            int agony_max_stacks;
-            double next_agony_stacks = td->agony_stack;
-            agony_max_stacks = (p()->talents.writhe_in_agony->ok() ? p()->talents.writhe_in_agony->effectN(2).base_value() : 10);
-            if (next_agony_stacks < agony_max_stacks)
-                next_agony_stacks += 1;
-            double agony_mult = 1.0;
-            if (td->agony_stack)
-                agony_mult = next_agony_stacks / td->agony_stack;
-            double total_damage_agony = get_contribution_from_dot(td->dots_agony, agony_mult);
+            double total_damage_agony = get_contribution_from_dot(td->dots_agony);
             double total_damage_corruption = get_contribution_from_dot(td->dots_corruption);
             double total_damage_siphon_life = 0.0;
             if ( p() -> talents.siphon_life -> ok() ) {

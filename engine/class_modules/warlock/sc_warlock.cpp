@@ -464,7 +464,7 @@ namespace buffs {
 
 warlock_td_t::warlock_td_t( player_t* target, warlock_t& p ):
 actor_target_data_t( target, &p ),
-agony_stack( 1 ),
+agony_stack( 0 ),
 soc_threshold( 0 ),
 warlock( p )
 {
