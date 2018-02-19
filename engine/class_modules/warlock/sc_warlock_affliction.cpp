@@ -49,7 +49,7 @@ namespace warlock {
                 if (td(d->state->target)->agony_stack < agony_max_stacks)
                     td(d->state->target)->agony_stack++;
 
-                td(d->target)->debuffs_agony->trigger();
+                td(d->state->target)->debuffs_agony->trigger();
 
                 double tier_bonus = 1.0 + p()->sets->set(WARLOCK_AFFLICTION, T19, B4)->effectN(1).percent();
 
@@ -318,90 +318,62 @@ namespace warlock {
             snapshot_flags |= STATE_MUL_DA | STATE_TGT_MUL_DA | STATE_MUL_PERSISTENT | STATE_VERSATILITY;
           }
 
+          double get_contribution_from_dot(dot_t* dot, double multiplier=1.0)
+          {
+            if (!(dot->is_ticking()))
+              return 0.0;
+            action_state_t* state = dot->current_action->get_state(dot->state);
+            dot->current_action->calculate_tick_amount(state, multiplier);
+            double tick_base_damage = state->result_raw;
+            timespan_t remaining = dot->remains();
+            if (dot->duration() > sim -> expected_iteration_time)
+              remaining = ac_max;
+            timespan_t dot_tick_time = dot->current_action->tick_time(state);
+            double ticks_left = (remaining - dot->time_to_next_tick()) / dot_tick_time;
+            if (ticks_left == 0.0) {
+                ticks_left += dot->time_to_next_tick() / dot->current_action->tick_time(state);
+            } else {
+                ticks_left += 1;
+            }
+            double total_damage = ticks_left * tick_base_damage * multiplier;
+            if (sim->debug) {
+              sim->out_debug.printf("%s %s dot_remains=%.3f duration=%.3f time_to_next=%.3f tick_time=%.3f ticks_left=%.3f amount=%.3f mult=%.3f total=%.3f",
+                name(), dot->name(), dot->remains().total_seconds(), dot->duration().total_seconds(),
+                dot->time_to_next_tick().total_seconds(), dot_tick_time.total_seconds(),
+                ticks_left, tick_base_damage, multiplier, total_damage);
+            }
+            action_state_t::release(state);
+            return total_damage;
+          }
+
           void execute() override {
             warlock_td_t* td = this->td(target);
 
-            double tick_base_damage;
-            unsigned ticks_left;
-
-            if (td->dots_agony->is_ticking())
-              td->dots_agony->current_action->calculate_tick_amount(td->dots_agony->state, td->dots_agony->current_stack());
-            tick_base_damage = td->dots_agony->state->result_raw;
-            ticks_left = td->dots_agony->ticks_left();
-            double total_damage_agony = ticks_left * tick_base_damage;
-            if (sim->debug) {
-              sim->out_debug.printf("%s agony dot_remains=%.3f duration=%.3f ticks_left=%u amount=%.3f total=%.3f",
-                name(), td->dots_agony->remains().total_seconds(),
-                td->dots_agony->duration().total_seconds(),
-                td->dots_agony->ticks_left(), ( tick_base_damage * td->agony_stack ), total_damage_agony );
-            }
-
-            if (td->dots_corruption->is_ticking())
-              td->dots_corruption->current_action->calculate_tick_amount(td->dots_corruption->state, td->dots_corruption->current_stack());
-            tick_base_damage = td->dots_corruption->state->result_raw;
-            ticks_left = td->dots_corruption->remains() / td->dots_corruption->time_to_tick;
-            if (p()->talents.absolute_corruption->ok())
-              ticks_left = ac_max / td->dots_corruption->time_to_tick;
-            double total_damage_corruption = ticks_left * tick_base_damage;
-            if (sim->debug) {
-              sim->out_debug.printf("%s corruption dot_remains=%.3f duration=%.3f ticks_left=%u amount=%.3f total=%.3f",
-                name(), td->dots_corruption->remains().total_seconds(),
-                td->dots_corruption->duration().total_seconds(),
-                td->dots_corruption->ticks_left(), tick_base_damage, total_damage_corruption );
-            }
-
+            int agony_max_stacks;
+            double next_agony_stacks = td->agony_stack;
+            agony_max_stacks = (p()->talents.writhe_in_agony->ok() ? p()->talents.writhe_in_agony->effectN(2).base_value() : 10);
+            if (next_agony_stacks < agony_max_stacks)
+                next_agony_stacks += 1;
+            double agony_mult = 1.0;
+            if (td->agony_stack)
+                agony_mult = next_agony_stacks / td->agony_stack;
+            double total_damage_agony = get_contribution_from_dot(td->dots_agony, agony_mult);
+            double total_damage_corruption = get_contribution_from_dot(td->dots_corruption);
             double total_damage_siphon_life = 0.0;
             if ( p() -> talents.siphon_life -> ok() ) {
-              if (td->dots_siphon_life->is_ticking()) {
-                td->dots_siphon_life->current_action->calculate_tick_amount(td->dots_siphon_life->state, td->dots_siphon_life->current_stack());
-                tick_base_damage = td->dots_siphon_life->state->result_raw;
-                ticks_left = td->dots_siphon_life->ticks_left();
-                total_damage_siphon_life += (ticks_left * tick_base_damage);
-                if (sim->debug) {
-                  sim->out_debug.printf("%s siphon life dot_remains=%.3f duration=%.3f ticks_left=%u amount=%.3f total=%.3f",
-                    name(), td->dots_siphon_life->remains().total_seconds(),
-                    td->dots_siphon_life->duration().total_seconds(),
-                    td->dots_siphon_life->ticks_left(), tick_base_damage, total_damage_siphon_life);
-                }
-              }
+              total_damage_siphon_life = get_contribution_from_dot(td->dots_siphon_life);
             }
 
             double total_damage_phantom_singularity = 0.0;
             if (p()->talents.phantom_singularity->ok()) {
-              if (td->dots_phantom_singularity->is_ticking()) {
-                td->dots_phantom_singularity->current_action->calculate_tick_amount(td->dots_phantom_singularity->state, td->dots_phantom_singularity->current_stack());
-                tick_base_damage = td->dots_phantom_singularity->state->result_raw;
-                ticks_left = td->dots_phantom_singularity->ticks_left();
-                total_damage_phantom_singularity += (ticks_left * tick_base_damage);
-                if (sim->debug) {
-                  sim->out_debug.printf("%s phantom singularity dot_remains=%.3f duration=%.3f ticks_left=%u amount=%.3f total=%.3f",
-                    name(), td->dots_phantom_singularity->remains().total_seconds(),
-                    td->dots_phantom_singularity->duration().total_seconds(),
-                    td->dots_phantom_singularity->ticks_left(), tick_base_damage, total_damage_phantom_singularity);
-                }
-              }
+              total_damage_phantom_singularity = get_contribution_from_dot(td->dots_phantom_singularity);
             }
 
-            for (auto& current_ua : td->dots_unstable_affliction) {
-              if (current_ua->is_ticking()) {
-                current_ua->current_action->calculate_tick_amount(current_ua->state, current_ua->current_stack());
-              }
-            }
             double total_damage_ua = 0.0;
             for (auto& current_ua : td->dots_unstable_affliction) {
-              if (current_ua->is_ticking()) {
-                tick_base_damage = current_ua->state->result_raw;
-                ticks_left = current_ua->ticks_left();
-                double current_ua_total = ticks_left * tick_base_damage;
-                total_damage_ua = total_damage_ua + current_ua_total;
-                if (sim->debug) {
-                  sim->out_debug.printf("%s ua dot_remains=%.3f duration=%.3f ticks_left=%u amount=%.3f total=%.3f",
-                    name(), current_ua->remains().total_seconds(),
-                    current_ua->duration().total_seconds(),
-                    current_ua->ticks_left(), tick_base_damage, current_ua_total);
-                }
-              }
+              total_damage_ua += get_contribution_from_dot(current_ua);
             }
+
             const double total_dot_dmg = total_damage_agony + total_damage_corruption + total_damage_siphon_life + total_damage_phantom_singularity + total_damage_ua;
             this->base_dd_min = this->base_dd_max = ( total_dot_dmg * data().effectN(2).percent() );
             if (sim->debug) {
