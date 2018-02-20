@@ -297,16 +297,16 @@ namespace priestspace
     talents.evangelism           = find_talent_spell("Evangelism");
 
     // General Spells
-    specs.atonement       = find_specialization_spell("Atonement");
-    specs.archangel       = find_specialization_spell("Archangel");
-    specs.borrowed_time   = find_specialization_spell("Borrowed Time");
-    specs.divine_aegis    = find_specialization_spell("Divine Aegis");
-    specs.evangelism      = find_specialization_spell("Evangelism");
-    specs.grace           = find_specialization_spell("Grace");
-    specs.meditation_disc = find_specialization_spell("Meditation", PRIEST_DISCIPLINE);
-    specs.mysticism       = find_specialization_spell("Mysticism");
-    specs.spirit_shell    = find_specialization_spell("Spirit Shell");
-    specs.enlightenment   = find_specialization_spell("Enlightenment");
+    specs.atonement              = find_specialization_spell("Atonement");
+    specs.archangel              = find_specialization_spell("Archangel");
+    specs.borrowed_time          = find_specialization_spell("Borrowed Time");
+    specs.divine_aegis           = find_specialization_spell("Divine Aegis");
+    specs.evangelism             = find_specialization_spell("Evangelism");
+    specs.grace                  = find_specialization_spell("Grace");
+    specs.meditation_disc        = find_specialization_spell("Meditation", PRIEST_DISCIPLINE);
+    specs.mysticism              = find_specialization_spell("Mysticism");
+    specs.spirit_shell           = find_specialization_spell("Spirit Shell");
+    specs.enlightenment          = find_specialization_spell("Enlightenment");
 
     // Range Based on Talents
     if (base.distance != 5)

@@ -121,6 +121,141 @@ namespace priestspace
       };
 
       // ==========================================================================
+      // Shadow Word: Pain
+      // ==========================================================================
+      struct shadow_word_pain_t final : public priest_spell_t
+      {
+        double insanity_gain;
+        bool casted;
+
+        shadow_word_pain_t(priest_t& p, const std::string& options_str, bool _casted = true)
+          : priest_spell_t("shadow_word_pain", p, p.find_class_spell("Shadow Word: Pain")),
+          insanity_gain(data().effectN(3).resource(RESOURCE_INSANITY))
+        {
+          parse_options(options_str);
+          casted = _casted;
+          may_crit = true;
+          tick_zero = false;
+          is_mastery_spell = true;
+          if (!casted)
+          {
+            base_dd_max = 0.0;
+            base_dd_min = 0.0;
+          }
+          energize_type = ENERGIZE_NONE;  // disable resource generation from spell data
+
+          if (p.artifact.to_the_pain.rank())
+          {
+            base_multiplier *= 1.0 + p.artifact.to_the_pain.percent();
+          }
+
+          if (priest().sim->debug)
+              priest().sim->out_debug << priest().name() << " initialized correct pain.";
+
+          if (priest().specs.shadowy_apparitions->ok() && !priest().active_spells.shadowy_apparitions)
+          {
+            priest().active_spells.shadowy_apparitions = new shadowy_apparition_spell_t(p);
+            if (!priest().artifact.unleash_the_shadows.rank())
+            {
+              // If SW:P is the only action having SA, then we can add it as a child stat.
+              add_child(priest().active_spells.shadowy_apparitions);
+            }
+          }
+
+          if (priest().artifact.sphere_of_insanity.rank() && !priest().active_spells.sphere_of_insanity)
+          {
+            priest().active_spells.sphere_of_insanity = new sphere_of_insanity_spell_t(p);
+            add_child(priest().active_spells.sphere_of_insanity);
+          }
+        }
+
+        double spell_direct_power_coefficient(const action_state_t* s) const override
+        {
+          return casted ? priest_spell_t::spell_direct_power_coefficient(s) : 0.0;
+        }
+
+        void impact(action_state_t* s) override
+        {
+          priest_spell_t::impact(s);
+
+          if (casted)
+          {
+            priest().generate_insanity(insanity_gain, priest().gains.insanity_shadow_word_pain_onhit, s->action);
+          }
+
+          if (priest().active_items.zeks_exterminatus)
+          {
+            trigger_zeks();
+          }
+          if (priest().artifact.sphere_of_insanity.rank())
+          {
+            priest().active_spells.sphere_of_insanity->target_cache.is_valid = false;
+          }
+        }
+
+        void last_tick(dot_t* d) override
+        {
+          priest_spell_t::last_tick(d);
+          if (priest().artifact.sphere_of_insanity.rank())
+          {
+            priest().active_spells.sphere_of_insanity->target_cache.is_valid = false;
+          }
+        }
+
+        void tick(dot_t* d) override
+        {
+          priest_spell_t::tick(d);
+
+          if (priest().active_spells.shadowy_apparitions && (d->state->result_amount > 0))
+          {
+            if (d->state->result == RESULT_CRIT)
+            {
+              priest().active_spells.shadowy_apparitions->trigger();
+            }
+          }
+
+          if (d->state->result_amount > 0)
+          {
+            if (priest().rppm.shadowy_insight->trigger())
+            {
+              trigger_shadowy_insight();
+            }
+          }
+
+          if (priest().active_items.anunds_seared_shackles)
+          {
+            trigger_anunds();
+          }
+
+          if (priest().active_items.zeks_exterminatus)
+          {
+            trigger_zeks();
+          }
+        }
+
+        double cost() const override
+        {
+          double c = priest_spell_t::cost();
+
+          if (priest().specialization() == PRIEST_SHADOW)
+            return 0.0;
+
+          return c;
+        }
+
+        double action_multiplier() const override
+        {
+          double m = priest_spell_t::action_multiplier();
+
+          if (priest().artifact.mass_hysteria.rank())
+          {
+            m *= 1.0 + (priest().buffs.voidform->check() * (priest().artifact.mass_hysteria.percent()));
+          }
+
+          return m;
+        }
+      };
+      // ==========================================================================
       // Power Infusion
       // ==========================================================================
       struct power_infusion_t final : public priest_spell_t
@@ -845,15 +980,15 @@ namespace priestspace
     using namespace actions::heals;
 
     action_t* shadow_action = create_action_shadow( name, options_str );
-    if ( shadow_action )
+    if ( shadow_action && specialization() == PRIEST_SHADOW )
       return shadow_action;
 
     action_t* discipline_action = create_action_discipline( name, options_str );
-    if ( discipline_action )
+    if ( discipline_action && specialization() == PRIEST_DISCIPLINE )
       return discipline_action;
 
     action_t* holy_action = create_action_holy( name, options_str );
-    if ( holy_action )
+    if ( holy_action && specialization() == PRIEST_HOLY )
       return holy_action;
 
     if (name == "smite")                 return new smite_t(*this, options_str);

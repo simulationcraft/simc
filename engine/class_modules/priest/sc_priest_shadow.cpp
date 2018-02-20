@@ -8,56 +8,6 @@ namespace priestspace
     namespace spells
     {
 
-      struct shadowy_apparition_spell_t final : public priest_spell_t
-      {
-        double insanity_gain;
-
-        shadowy_apparition_spell_t(priest_t& p)
-          : priest_spell_t("shadowy_apparitions", p, p.find_spell(78203)),
-          insanity_gain(priest().talents.auspicious_spirits->effectN(2).percent())
-        {
-          background = true;
-          proc = false;
-          callbacks = true;
-          may_miss = false;
-          trigger_gcd = timespan_t::zero();
-          travel_speed = 6.0;
-          const spell_data_t* dmg_data = p.find_spell(148859);  // Hardcoded into tooltip 2014/06/01
-
-          parse_effect_data(dmg_data->effectN(1));
-          school = SCHOOL_SHADOW;
-        }
-
-        void impact(action_state_t* s) override
-        {
-          priest_spell_t::impact(s);
-
-          if (priest().talents.auspicious_spirits->ok())
-          {
-            priest().generate_insanity(insanity_gain, priest().gains.insanity_auspicious_spirits, s->action);
-          }
-        }
-
-        double composite_da_multiplier(const action_state_t* state) const override
-        {
-          double d = priest_spell_t::composite_da_multiplier(state);
-
-          d *= 1.0 + priest().talents.auspicious_spirits->effectN(1).percent();
-
-          return d;
-        }
-
-        /** Trigger a shadowy apparition */
-        void trigger()
-        {
-          if (priest().sim->debug)
-            priest().sim->out_debug << priest().name() << " triggered shadowy apparition.";
-
-          priest().procs.shadowy_apparition->occur();
-          schedule_execute();
-        }
-      };
-
       struct dispersion_t final : public priest_spell_t
       {
         dispersion_t(priest_t& player, const std::string& options_str)
@@ -903,7 +853,55 @@ namespace priestspace
         }
       };
 
-      
+      struct shadowy_apparition_spell_t final : public priest_spell_t
+      {
+        double insanity_gain;
+
+        shadowy_apparition_spell_t(priest_t& p)
+          : priest_spell_t("shadowy_apparitions", p, p.find_spell(78203)),
+          insanity_gain(priest().talents.auspicious_spirits->effectN(2).percent())
+        {
+          background = true;
+          proc = false;
+          callbacks = true;
+          may_miss = false;
+          trigger_gcd = timespan_t::zero();
+          travel_speed = 6.0;
+          const spell_data_t* dmg_data = p.find_spell(148859);  // Hardcoded into tooltip 2014/06/01
+
+          parse_effect_data(dmg_data->effectN(1));
+          school = SCHOOL_SHADOW;
+        }
+
+        void impact(action_state_t* s) override
+        {
+          priest_spell_t::impact(s);
+
+          if (priest().talents.auspicious_spirits->ok())
+          {
+            priest().generate_insanity(insanity_gain, priest().gains.insanity_auspicious_spirits, s->action);
+          }
+        }
+
+        double composite_da_multiplier(const action_state_t* state) const override
+        {
+          double d = priest_spell_t::composite_da_multiplier(state);
+
+          d *= 1.0 + priest().talents.auspicious_spirits->effectN(1).percent();
+
+          return d;
+        }
+
+        /** Trigger a shadowy apparition */
+        void trigger()
+        {
+          if (priest().sim->debug)
+            priest().sim->out_debug << priest().name() << " triggered shadowy apparition.";
+
+          priest().procs.shadowy_apparition->occur();
+          schedule_execute();
+        }
+      };
 
       // ==========================================================================
       // Shadow Word: Pain
@@ -933,6 +931,9 @@ namespace priestspace
           {
             base_multiplier *= 1.0 + p.artifact.to_the_pain.percent();
           }
+
+          if (priest().sim->debug)
+              priest().sim->out_debug << priest().name() << " initialized correct pain.";
 
           if (priest().specs.shadowy_apparitions->ok() && !priest().active_spells.shadowy_apparitions)
           {
@@ -995,7 +996,6 @@ namespace priestspace
               priest().active_spells.shadowy_apparitions->trigger();
             }
           }
-
 
           if (d->state->result_amount > 0)
           {
@@ -1063,7 +1063,6 @@ namespace priestspace
             child_swp->background = true;
           }
           energize_type = ENERGIZE_NONE;  // disable resource generation from spell data
-
 
           if (p.artifact.touch_of_darkness.rank())
           {
