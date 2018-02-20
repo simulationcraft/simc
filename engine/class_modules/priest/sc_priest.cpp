@@ -49,6 +49,47 @@ namespace priestspace
       // Divine Star
       // ==========================================================================
 
+      /// Divine Star Base Spell, used for both heal and damage spell.
+      template <class Base>
+      struct divine_star_base_t : public Base
+      {
+      private:
+        typedef Base ab;  // the action base ("ab") type (priest_spell_t or priest_heal_t)
+      public:
+        typedef divine_star_base_t base_t;
+
+        propagate_const<divine_star_base_t*> return_spell;
+
+        divine_star_base_t(const std::string& n, priest_t& p, const spell_data_t* spell_data, bool is_return_spell = false)
+          : ab(n, p, spell_data),
+          return_spell((is_return_spell ? nullptr : new divine_star_base_t(n, p, spell_data, true)))
+        {
+          ab::aoe = -1;
+
+          ab::proc = ab::background = true;
+        }
+
+        // Divine Star will damage and heal targets twice, once on the way out and again on the way back. This is determined
+        // by distance from the target. If we are too far away, it misses completely. If we are at the very edge distance
+        // wise, it will only hit once. If we are within range (and aren't moving such that it would miss the target on the
+        // way out and/or back), it will hit twice. Threshold is 24 yards, per tooltip and tests for 2 hits. 28 yards is the
+        // threshold for 1 hit.
+        void execute() override
+        {
+          double distance;
+
+          distance = ab::player->get_player_distance(*ab::target);
+
+          if (distance <= 28)
+          {
+            ab::execute();
+
+            if (return_spell && distance <= 24)
+              return_spell->execute();
+          }
+        }
+      };
+
       struct divine_star_t final : public priest_spell_t
       {
         divine_star_t(priest_t& p, const std::string& options_str)
@@ -80,6 +121,45 @@ namespace priestspace
       // ==========================================================================
       // Halo
       // ==========================================================================
+      /// Halo Base Spell, used for both damage and heal spell.
+      template <class Base>
+      struct halo_base_t : public Base
+      {
+      public:
+        halo_base_t(const std::string& n, priest_t& p, const spell_data_t* s) : Base(n, p, s)
+        {
+          Base::aoe = -1;
+          Base::background = true;
+
+          if (Base::data().ok())
+          {
+            // Reparse the correct effect number, because we have two competing ones ( were 2 > 1 always wins out )
+            Base::parse_effect_data(Base::data().effectN(1));
+          }
+          Base::radius = 30;
+          Base::range = 0;
+        }
+
+        timespan_t distance_targeting_travel_time(action_state_t* s) const override
+        {
+          return timespan_t::from_seconds(s->action->player->get_player_distance(*s->target) / Base::travel_speed);
+        }
+
+        double calculate_direct_amount(action_state_t* s) const override
+        {
+          double cda = Base::calculate_direct_amount(s);
+
+          // Source: Ghostcrawler 2012-06-20 http://us.battle.net/wow/en/forum/topic/5889309137?page=5#97
+
+          double distance;
+          distance = s->action->player->get_player_distance(*s->target);
+
+          // double mult = 0.5 * pow( 1.01, -1 * pow( ( distance - 25 ) / 2, 4 ) ) + 0.1 + 0.015 * distance;
+          double mult = 0.5 * exp(-0.00995 * pow(distance / 2 - 12.5, 4)) + 0.1 + 0.015 * distance;
+
+          return cda * mult;
+        }
+      };
 
       struct halo_t final : public priest_spell_t
       {
@@ -382,6 +462,40 @@ namespace priestspace
       do_trinket_init(priest, PRIEST_SHADOW, priest->active_items.heart_of_the_void, effect);
     }    
 
+    using namespace unique_gear;
+
+    struct sephuzs_secret_enabler_t : public scoped_actor_callback_t<priest_t>
+    {
+      sephuzs_secret_enabler_t() : scoped_actor_callback_t(PRIEST)
+      {
+      }
+
+      void manipulate(priest_t* priest, const special_effect_t& e) override
+      {
+        priest->legendary.sephuzs_secret = e.driver();
+      }
+    };
+
+    struct sephuzs_secret_t : public class_buff_cb_t<priest_t, haste_buff_t, haste_buff_creator_t>
+    {
+      sephuzs_secret_t() : super(PRIEST, "sephuzs_secret")
+      {
+      }
+
+      haste_buff_t*& buff_ptr(const special_effect_t& e) override
+      {
+        return debug_cast<priest_t*>(e.player)->buffs.sephuzs_secret;
+      }
+
+      haste_buff_t* creator(const special_effect_t& e) const override
+      {
+        auto buff = make_buff<haste_buff_t>( e.player, buff_name, e.trigger());
+        buff->set_cooldown(e.player->find_spell(226262)->duration())
+          ->set_default_value(e.trigger()->effectN(2).percent())
+          ->add_invalidate(CACHE_RUN_SPEED);
+        return buff;
+      }
+    };
     void init()
     {
       // Legion Legendaries
@@ -442,7 +556,7 @@ namespace priestspace
      // ==========================================================================
 
   priest_td_t::priest_td_t(player_t* target, priest_t& p)
-    : actor_target_data_t(target, &p), dots(), buffs(), priest(p)
+    : actor_target_data_t(target, &p), dots(), buffs()
   {
     dots.holy_fire = target->get_dot("holy_fire", &p);
     dots.power_word_solace = target->get_dot("power_word_solace", &p);
@@ -460,10 +574,10 @@ namespace priestspace
 
   void priest_td_t::target_demise()
   {
-    if (priest.sim->debug)
+    if (priest().sim->debug)
     {
-      priest.sim->out_debug.printf("Player %s demised. Priest %s resets targetdata for him.", target->name(),
-        priest.name());
+      priest().sim->out_debug.printf("Player %s demised. Priest %s resets targetdata for him.", target->name(),
+        priest().name());
     }
 
     reset();
