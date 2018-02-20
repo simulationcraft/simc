@@ -266,7 +266,7 @@ class DataGenerator(object):
         if isinstance(obj, io.IOBase):
             self._out = obj
         elif isinstance(obj, str):
-            self._out = pathlib.Path(obj).open(append and 'a' or 'w')
+            self._out = pathlib.Path(obj).open(append and 'a' or 'w', encoding="utf-8")
             if not self._out.writable():
                 logging.error('Output file %s is not writable', obj)
                 return False

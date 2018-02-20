@@ -8213,13 +8213,13 @@ struct sephuzs_secret_t : public class_buff_cb_t<mage_t, haste_buff_t, haste_buf
     return debug_cast<mage_t*>( e.player ) -> buffs.sephuzs_secret;
   }
 
-  virtual haste_buff_creator_t creator( const special_effect_t& e ) const override
+  haste_buff_t* creator( const special_effect_t& e ) const override
   {
-    return super::creator( e )
-      .spell( e.trigger() )
-      .cd( e.player -> find_spell( 226262 ) -> duration() )
-      .default_value( e.trigger() -> effectN( 2 ).percent() )
-      .add_invalidate( CACHE_RUN_SPEED );
+    auto buff = make_buff<haste_buff_t>( e.player, buff_name, e.trigger() );
+    buff->set_cooldown( e.player -> find_spell( 226262 ) -> duration() )
+      ->set_default_value( e.trigger() -> effectN( 2 ).percent() )
+      ->add_invalidate( CACHE_RUN_SPEED );
+    return buff;
   }
 };
 
@@ -8257,11 +8257,10 @@ struct rhonins_assaulting_armwraps_t : public class_buff_cb_t<mage_t, buff_t, bu
     return debug_cast<mage_t*>( e.player ) -> buffs.rhonins_assaulting_armwraps;
   }
 
-  virtual buff_creator_t creator( const special_effect_t& e ) const override
+  buff_t* creator( const special_effect_t& e ) const override
   {
-    return super::creator( e )
-      .spell( e.trigger() )
-      .chance( e.driver() -> effectN( 1 ).percent() );
+    return make_buff( e.player, buff_name, e.trigger() )
+      ->set_chance( e.driver() -> effectN( 1 ).percent() );
   }
 };
 
@@ -8276,11 +8275,10 @@ struct cord_of_infinity_t : public class_buff_cb_t<mage_t, buff_t, buff_creator_
     return debug_cast<mage_t*>( e.player ) -> buffs.cord_of_infinity;
   }
 
-  virtual buff_creator_t creator( const special_effect_t& e ) const override
+  buff_t* creator( const special_effect_t& e ) const override
   {
-    return super::creator( e )
-      .spell( e.trigger() )
-      .default_value( e.trigger() -> effectN( 1 ).percent() / 10.0 );
+    return make_buff( e.player, buff_name, e.trigger() )
+      ->set_default_value( e.trigger() -> effectN( 1 ).percent() / 10.0 );
   }
 };
 
@@ -8341,11 +8339,10 @@ struct marquee_bindings_of_the_sun_king_t : public class_buff_cb_t<mage_t, buff_
     return debug_cast<mage_t*>( e.player ) -> buffs.kaelthas_ultimate_ability;
   }
 
-  virtual buff_creator_t creator( const special_effect_t& e ) const override
+  buff_t* creator( const special_effect_t& e ) const override
   {
-    return super::creator( e )
-      .spell( e.player -> find_spell( 209455 ) )
-      .chance( e.driver() -> effectN( 1 ).percent() );
+    return make_buff( e.player, buff_name, e.player -> find_spell( 209455 ) )
+      ->set_chance( e.driver() -> effectN( 1 ).percent() );
   }
 };
 
@@ -8371,10 +8368,9 @@ struct contained_infernal_core_t : public class_buff_cb_t<mage_t, buff_t, buff_c
     return debug_cast<mage_t*>( e.player ) -> buffs.contained_infernal_core;
   }
 
-  virtual buff_creator_t creator( const special_effect_t& e ) const override
+  buff_t* creator( const special_effect_t& e ) const override
   {
-    return super::creator( e )
-      .spell( e.player -> find_spell( 248146 ) );
+    return make_buff( e.player, buff_name, e.player -> find_spell( 248146 ) );
   }
 };
 
@@ -8389,11 +8385,10 @@ struct magtheridons_banished_bracers_t : public class_buff_cb_t<mage_t, buff_t, 
     return debug_cast<mage_t*>( e.player ) -> buffs.magtheridons_might;
   }
 
-  virtual buff_creator_t creator( const special_effect_t& e ) const override
+  buff_t* creator( const special_effect_t& e ) const override
   {
-    return super::creator( e )
-      .spell( e.trigger() )
-      .default_value( e.trigger() -> effectN( 1 ).percent() );
+    return make_buff( e.player, buff_name, e.trigger() )
+      ->set_default_value( e.trigger() -> effectN( 1 ).percent() );
   }
 };
 
@@ -8407,11 +8402,10 @@ struct zannesu_journey_t : public class_buff_cb_t<mage_t, buff_t, buff_creator_t
     return debug_cast<mage_t*>( e.player ) -> buffs.zannesu_journey;
   }
 
-  virtual buff_creator_t creator( const special_effect_t& e ) const override
+  buff_t* creator( const special_effect_t& e ) const override
   {
-    return super::creator( e )
-      .spell( e.trigger() )
-      .default_value( e.trigger() -> effectN( 1 ).percent() );
+    return make_buff( e.player, buff_name, e.trigger() )
+      ->set_default_value( e.trigger() -> effectN( 1 ).percent() );
   }
 };
 
@@ -8447,10 +8441,9 @@ struct shattered_fragments_of_sindragosa_t : public class_buff_cb_t<mage_t, buff
     return debug_cast<mage_t*>( e.player ) -> buffs.shattered_fragments_of_sindragosa;
   }
 
-  virtual buff_creator_t creator( const special_effect_t& e ) const override
+  buff_t* creator( const special_effect_t& e ) const override
   {
-    return super::creator( e )
-      .spell( e.player -> find_spell( 248176 ) );
+    return make_buff( e.player, buff_name, e.player -> find_spell( 248176 ) );
   }
 };
 // MAGE MODULE INTERFACE ====================================================

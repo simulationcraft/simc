@@ -511,6 +511,7 @@ public:
   { tick_time_behavior = b; return this; }
   buff_t* set_rppm( rppm_scale_e scale = RPPM_NONE, double freq = -1, double mod = -1);
   buff_t* set_trigger_spell( const spell_data_t* s );
+  buff_t* set_stack_change_callback( const buff_stack_change_callback_t& cb );
 
 private:
   void update_trigger_calculations();
@@ -531,11 +532,14 @@ struct stat_buff_t : public buff_t
   };
   std::vector<buff_stat_t> stats;
   gain_t* stat_gain;
+  bool manual_stats_added;
 
   virtual void bump     ( int stacks = 1, double value = -1.0 ) override;
   virtual void decrement( int stacks = 1, double value = -1.0 ) override;
   virtual void expire_override( int expiration_stacks, timespan_t remaining_duration ) override;
   virtual double value() override { stack(); return stats[ 0 ].current_value; }
+
+  stat_buff_t* add_stat( stat_e s, double a, std::function<bool(const stat_buff_t&)> c = std::function<bool(const stat_buff_t&)>() );
 
   stat_buff_t( actor_pair_t q, const std::string& name, const spell_data_t* = spell_data_t::nil() );
 protected:

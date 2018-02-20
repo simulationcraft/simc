@@ -6960,12 +6960,11 @@ struct ayalas_stone_heart_t: public unique_gear::class_buff_cb_t<warrior_t>
     return actor( e ) -> buff.ayalas_stone_heart;
   }
 
-  buff_creator_t creator( const special_effect_t& e ) const override
+  buff_t* creator( const special_effect_t& e ) const override
   { 
-    return super::creator( e )
-    .rppm_scale( RPPM_NONE )
-      .spell( e.driver() -> effectN( 1 ).trigger() )
-      .trigger_spell( e.driver() );
+    return make_buff( e.player, buff_name, e.driver() -> effectN( 1 ).trigger() )
+      ->set_trigger_spell( e.driver() )
+      ->set_rppm( RPPM_NONE );
   }
 };
 
@@ -6979,18 +6978,16 @@ struct the_great_storms_eye_t : public unique_gear::class_buff_cb_t<warrior_t>
     return actor( e ) -> buff.tornados_eye;
   }
 
-  buff_creator_t creator( const special_effect_t& e ) const override
+  buff_t* creator( const special_effect_t& e ) const override
   {
     if ( e.player -> talent_points.has_row_col( 6, 3 ) )
-      return super::creator( e )
-      .spell( e.player -> find_spell( 248145 ) )
-      .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
-      .add_invalidate( CACHE_RUN_SPEED );
+      return make_buff( e.player, buff_name, e.player -> find_spell( 248145 ) )
+        ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
+        ->add_invalidate( CACHE_RUN_SPEED );
     else
-      return super::creator( e )
-      .spell( e.player -> find_spell( 248142 ) )
-      .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
-      .add_invalidate( CACHE_RUN_SPEED );
+      return make_buff( e.player, buff_name, e.player -> find_spell( 248142 ) )
+        ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
+        ->add_invalidate( CACHE_RUN_SPEED );
   }
 };
 
@@ -7001,11 +6998,10 @@ struct bindings_of_kakushan_t : public unique_gear::class_buff_cb_t<warrior_t>
   buff_t*& buff_ptr( const special_effect_t& e ) override
   { return actor( e ) -> buff.bindings_of_kakushan; }
 
-  buff_creator_t creator( const special_effect_t& e ) const override
+  buff_t* creator( const special_effect_t& e ) const override
   {
-    return super::creator( e )
-      .spell( e.driver() -> effectN( 1 ).trigger() )
-      .default_value( e.driver() -> effectN( 1 ).trigger() -> effectN( 1 ).percent() );
+    return make_buff( e.player, buff_name, e.driver() -> effectN( 1 ).trigger() )
+      ->set_default_value( e.driver() -> effectN( 1 ).trigger() -> effectN( 1 ).percent() );
   }
 };
 
@@ -7016,11 +7012,10 @@ struct kargaths_sacrificed_hands_t : public unique_gear::class_buff_cb_t<warrior
   buff_t*& buff_ptr( const special_effect_t& e ) override
   { return actor( e ) -> buff.kargaths_sacrificed_hands; }
 
-  buff_creator_t creator( const special_effect_t& e ) const override
+  buff_t* creator( const special_effect_t& e ) const override
   {
-    return super::creator( e )
-      .spell( e.driver() -> effectN( 1 ).trigger() )
-      .default_value( e.driver() -> effectN( 1 ).trigger() -> effectN( 1 ).percent() );
+    return make_buff( e.player, buff_name, e.driver() -> effectN( 1 ).trigger() )
+      ->set_default_value( e.driver() -> effectN( 1 ).trigger() -> effectN( 1 ).percent() );
   }
 };
 
@@ -7031,12 +7026,11 @@ struct kazzalax_fujiedas_fury_t : public unique_gear::class_buff_cb_t<warrior_t>
   buff_t*& buff_ptr( const special_effect_t& e ) override
   { return actor( e ) -> buff.fujiedas_fury; }
 
-  buff_creator_t creator( const special_effect_t& e ) const override
+  buff_t* creator( const special_effect_t& e ) const override
   {
-    return super::creator( e )
-      .spell( e.driver() -> effectN( 1 ).trigger() )
-      .default_value( e.driver() -> effectN( 1 ).trigger() -> effectN( 1 ).percent() )
-      .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+    return make_buff( e.player, buff_name, e.driver() -> effectN( 1 ).trigger() )
+      ->set_default_value( e.driver() -> effectN( 1 ).trigger() -> effectN( 1 ).percent() )
+      ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   }
 };
 
@@ -7047,10 +7041,9 @@ struct destiny_driver_t : public unique_gear::class_buff_cb_t<warrior_t>
   buff_t*& buff_ptr( const special_effect_t& e ) override
   { return actor( e ) -> buff.destiny_driver; }
 
-  buff_creator_t creator( const special_effect_t& e ) const override
+  buff_t* creator( const special_effect_t& e ) const override
   {
-    return super::creator( e )
-      .spell( e.player -> find_spell( 215157 ) );
+    return make_buff( e.player, buff_name, e.player -> find_spell( 215157 ) );
   }
 };
 
@@ -7061,10 +7054,9 @@ struct prydaz_xavarics_magnum_opus_t : public unique_gear::class_buff_cb_t<warri
   buff_t*& buff_ptr( const special_effect_t& e ) override
   { return actor( e ) -> buff.xavarics_magnum_opus; }
 
-  buff_creator_t creator( const special_effect_t& e ) const override
+  buff_t* creator( const special_effect_t& e ) const override
   {
-    return super::creator( e )
-      .spell( e.player -> find_spell( 207472 ) );
+    return make_buff( e.player, buff_name, e.player -> find_spell( 207472 ) );
   }
 };
 
