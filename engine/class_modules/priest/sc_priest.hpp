@@ -1343,56 +1343,7 @@ namespace buffs
 
   namespace items
   {
-
-    void do_trinket_init(const priest_t* priest, specialization_e spec, const special_effect_t*& ptr, const special_effect_t& effect);
-
-        // Legion Legendaries
-
-    // Shadow
-    void anunds_seared_shackles(special_effect_t& effect);
-    void mangazas_madness(special_effect_t& effect);
-    void mother_shahrazs_seduction(special_effect_t& effect);
-    void the_twins_painful_touch(special_effect_t& effect);
-    void zenkaram_iridis_anadem(special_effect_t& effect);
-    void zeks_exterminatus(special_effect_t& effect);
-    void heart_of_the_void(special_effect_t& effect);
-
-    using namespace unique_gear;
-
-    struct sephuzs_secret_enabler_t : public scoped_actor_callback_t<priest_t>
-    {
-      sephuzs_secret_enabler_t() : scoped_actor_callback_t(PRIEST)
-      {
-      }
-
-      void manipulate(priest_t* priest, const special_effect_t& e) override
-      {
-        priest->legendary.sephuzs_secret = e.driver();
-      }
-    };
-
-    struct sephuzs_secret_t : public class_buff_cb_t<priest_t, haste_buff_t, haste_buff_creator_t>
-    {
-      sephuzs_secret_t() : super(PRIEST, "sephuzs_secret")
-      {
-      }
-
-      haste_buff_t*& buff_ptr(const special_effect_t& e) override
-      {
-        return debug_cast<priest_t*>(e.player)->buffs.sephuzs_secret;
-      }
-
-      haste_buff_t* creator(const special_effect_t& e) const override
-      {
-        auto buff = make_buff<haste_buff_t>( e.player, buff_name, e.trigger());
-        buff->set_cooldown(e.player->find_spell(226262)->duration())
-          ->set_default_value(e.trigger()->effectN(2).percent())
-          ->add_invalidate(CACHE_RUN_SPEED);
-        return buff;
-      }
-    };
     void init();
-
   } // Items Namespace
 
     /**

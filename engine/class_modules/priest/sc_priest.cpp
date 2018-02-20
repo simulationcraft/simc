@@ -382,6 +382,40 @@ namespace priestspace
       do_trinket_init(priest, PRIEST_SHADOW, priest->active_items.heart_of_the_void, effect);
     }    
 
+    using namespace unique_gear;
+
+    struct sephuzs_secret_enabler_t : public scoped_actor_callback_t<priest_t>
+    {
+      sephuzs_secret_enabler_t() : scoped_actor_callback_t(PRIEST)
+      {
+      }
+
+      void manipulate(priest_t* priest, const special_effect_t& e) override
+      {
+        priest->legendary.sephuzs_secret = e.driver();
+      }
+    };
+
+    struct sephuzs_secret_t : public class_buff_cb_t<priest_t, haste_buff_t, haste_buff_creator_t>
+    {
+      sephuzs_secret_t() : super(PRIEST, "sephuzs_secret")
+      {
+      }
+
+      haste_buff_t*& buff_ptr(const special_effect_t& e) override
+      {
+        return debug_cast<priest_t*>(e.player)->buffs.sephuzs_secret;
+      }
+
+      haste_buff_t* creator(const special_effect_t& e) const override
+      {
+        auto buff = make_buff<haste_buff_t>( e.player, buff_name, e.trigger());
+        buff->set_cooldown(e.player->find_spell(226262)->duration())
+          ->set_default_value(e.trigger()->effectN(2).percent())
+          ->add_invalidate(CACHE_RUN_SPEED);
+        return buff;
+      }
+    };
     void init()
     {
       // Legion Legendaries
