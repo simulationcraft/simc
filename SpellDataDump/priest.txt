@@ -956,7 +956,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=24949)    : Direct Heal (10)
-                   Base Value: 1 | Scaled Value: 71 | Points Per Level: 1 | SP Coefficient: 1.50000 | Radius: 10 yards | Target: AOE friendly (31)
+                   Base Value: 1 | Scaled Value: 81 | Points Per Level: 1 | SP Coefficient: 1.50000 | Radius: 10 yards | Target: AOE friendly (31)
 #2 (id=288932)   : Dummy (3)
                    Base Value: 6 | Scaled Value: 6
 #3 (id=709475)   : Dummy (3)
@@ -1748,7 +1748,7 @@ Attributes       : ......x. x....... ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6)
 Effects          :
-#1 (id=68105)    : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
+#1 (id=68105)    : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Damage (0)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.40000 | Target: Self (1)
                    Affected Spells: Shadow Word: Pain (589), Vampiric Touch (34914), Void Bolt (205448)
 #2 (id=224463)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Damage (22)
@@ -1932,7 +1932,7 @@ Attributes       : ........ ........ x....... x..x....   .....x.. ..x..... .....
                  : Does not break stealth (37), Not a proc (105)
 Effects          :
 #1 (id=99434)    : Direct Heal (10)
-                   Base Value: 1 | Scaled Value: 110 | Points Per Level: 1 | Target: Friend (21)
+                   Base Value: 1 | Scaled Value: 120 | Points Per Level: 1 | Target: Friend (21)
 Description      : $@spelldesc81749
 
 Name             : Prayer of Healing (id=98367) [Spell Family (6), Hidden] 
@@ -2353,7 +2353,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=155428)   : Apply Aura (6) | Modify Healing% Done (136)
                    Base Value: 10 | Scaled Value: 10 | Misc Value: 127 | Target: Self (1)
-#2 (id=155429)   : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
+#2 (id=155429)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Damage (0)
                    Base Value: 10 | Scaled Value: 10 | Target: Self (1)
                    Affected Spells: Smite (585), Shadow Word: Pain (589), Mind Blast (8092), Holy Fire (14914), Mind Flay (15407), Shadow Word: Death (32379), Vampiric Touch (34914), Penance (47666), Mind Sear (48045), Mind Sear (49821), Holy Word: Chastise (88625), Halo (120696), Divine Star (122128), Power Word: Solace (129250), Holy Nova (132157), Shadowy Apparition (148859), Shadow Word: Death (199911), Purge the Wicked (204197), Purge the Wicked (204213), Void Torrent (205065), Shadow Word: Void (205351), Shadow Crash (205386), Void Bolt (205448), Light's Wrath (207946), Schism (214621), Void Eruption (228360), Void Torrent (263165)
 #3 (id=479983)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Damage (22)
@@ -2579,7 +2579,7 @@ Effects          :
 #3 (id=191077)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 300 (Label) | Target: Self (1)
                    Affected Spells (Label): Insidious Corruption (243941), Spectral Bolt (242571), Spectral Blast (246442), Legion Bombardment (253248), Prototype Personnel Decimator (255629), Legion Bombardment (255713), Legion Bombardment (255724), Legion Bombardment (257376)
-#4 (id=191078)   : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
+#4 (id=191078)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Damage (0)
                    Base Value: 25 | Scaled Value: 25 | Target: Self (1)
                    Affected Spells: Smite (585), Holy Fire (14914), Holy Word: Chastise (88625), Power Word: Solace (129250), Holy Nova (132157), Holy Word: Chastise (200196), Holy Word: Chastise (200200), Purge the Wicked (204197), Purge the Wicked (204213)
 #5 (id=191079)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Damage (22)
@@ -2622,7 +2622,7 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=179716)   : Apply Aura (6) | Modify Mana Regen% (379)
                    Base Value: 25 | Scaled Value: 25 | Target: Self (1)
-#2 (id=191072)   : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
+#2 (id=191072)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Damage (0)
                    Base Value: 53 | Scaled Value: 53 | Target: Self (1)
                    Affected Spells: Shadow Word: Pain (589)
 #3 (id=191073)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Damage (22)
@@ -2631,7 +2631,7 @@ Effects          :
 #4 (id=191074)   : Apply Aura (6) | Add Flat Modifier (107): Spell Duration (1)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1 | Target: Self (1)
                    Affected Spells: Shadow Word: Pain (589)
-#5 (id=191075)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Generic Modifier (0)
+#5 (id=191075)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Damage (0)
                    Base Value: -55 | Scaled Value: -55 | Misc Value 2: 229 (Label) | Target: Self (1)
                    Affected Spells (Label): Nightmare Essence (214350), Withering Consumption (215884), Plague Swarm (221812), Devilsaur Shock Leash (224078), Deadly Grace (188091), Rancid Maw (215405), Thunder Ritual (230224), Pepper Breath (201573), Pepper Breath (225623), Pepper Breath (225624), Recursive Strikes (225739), Fel-Crazed Rage (225777), Cruel Garrote (230011), Fel Barbs (238523), Infernal Cinders (242218), Ceaseless Toxin (242497), Unending Hunger (242536), Spectral Bolt (242571), Fevered Touch (242650), Fel Lash (188505), Wind Bolt (227870), Spectral Blast (246442), Felshield (253278), Void Slash (251034), Torment the Weak (252907), Chaotic Darkness (252896), Secure in the Light (253073), Infusion of Light (253098), Shadow Strike (253324), Isolated Strike (255609), Shadowbind (252879), Norgannon's Fireball (257241), Norgannon's Frostbolt (257242), Norgannon's Arcane Missile (257243), Norgannon's Divine Smite (257532), Norgannon's Wrath (257533), Norgannon's Shadow Bolt (257534), Worldforger's Flame (257244)
 #6 (id=260957)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Periodic Damage (22)
@@ -2643,7 +2643,7 @@ Effects          :
 #8 (id=260959)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 2 (12)
                    Base Value: -55 | Scaled Value: -55 | Misc Value: 12 | Misc Value 2: 358 (Label) | Target: Self (1)
                    Affected Spells (Label): 
-#9 (id=260960)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Generic Modifier (0)
+#9 (id=260960)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Damage (0)
                    Base Value: -65 | Scaled Value: -65 | Misc Value 2: 230 (Label) | Target: Self (1)
                    Affected Spells (Label): Nightfall (213786), Fel Meteor (214052), Orb of Destruction (229700), Solar Collapse (229737), Nether Meteor (225764), Kil'jaeden's Burning Wish (235999), Crystalline Shockwave (225716), Arcane Swipe (225721), Colossal Slam (232044), Dread Torrent (246464), Piercing Anguish (246751), Umbral Glaive Storm (242556), Shattering Umbral Glaives (242557), Void Tendril (250834), Legion Bombardment (253248), Gorshalach's Legacy (253329), Sorrow (253022), Prototype Personnel Decimator (255629), Echo of Gorshalach (255672), Gorshalach's Legacy (255673), Legion Bombardment (255713), Legion Bombardment (255724), Fire Mines (253321), Ravaging Storm (257286), Golganneth's Thunderous Wrath (257430), Legion Bombardment (257376)
 #10 (id=260961)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
@@ -2686,7 +2686,7 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6), Hidden (7)
 Effects          :
-#1 (id=179717)   : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
+#1 (id=179717)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Damage (0)
                    Base Value: 6 | Scaled Value: 6 | Target: Self (1)
                    Affected Spells: Smite (585), Shadow Word: Pain (589), Mind Blast (8092), Holy Fire (14914), Mind Flay (15407), Shadow Word: Death (32379), Vampiric Touch (34914), Penance (47666), Mind Sear (48045), Mind Sear (49821), Holy Word: Chastise (88625), Halo (120696), Divine Star (122128), Power Word: Solace (129250), Holy Nova (132157), Shadowy Apparition (148859), Shadow Word: Death (199911), Purge the Wicked (204197), Purge the Wicked (204213), Void Torrent (205065), Shadow Word: Void (205351), Shadow Crash (205386), Void Bolt (205448), Light's Wrath (207946), Schism (214621), Void Eruption (228360), Void Torrent (263165)
 #2 (id=191068)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Damage (22)
@@ -2705,7 +2705,7 @@ Effects          :
 #7 (id=260938)   : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost (14)
                    Base Value: 150 | Scaled Value: 150 | Misc Value: 14 | Target: Self (1)
                    Affected Spells: Power Word: Shield (17)
-#8 (id=260939)   : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
+#8 (id=260939)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Damage (0)
                    Base Value: -25 | Scaled Value: -25 | Target: Self (1)
                    Affected Spells: Shadow Mend (186263), Shadow Mend (187464)
 #9 (id=260940)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
@@ -2855,7 +2855,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6)
 Effects          :
-#1 (id=215755)   : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
+#1 (id=215755)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Damage (0)
                    Base Value: 100 | Scaled Value: 100 | Target: Self (1)
                    Affected Spells: Shadowy Apparition (148859)
 #2 (id=315218)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)
@@ -3126,7 +3126,7 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6), Hidden (7)
 Effects          :
-#1 (id=283342)   : Apply Aura (6) | Add Percent Modifier (108): Unknown 2 (19)
+#1 (id=283342)   : Apply Aura (6) | Add Percent Modifier (108): Spell Tick Time (19)
                    Base Value: -34 | Scaled Value: -34 | SP Coefficient: 0.25000 | Misc Value: 19 | Target: Self (1)
                    Affected Spells: Penance (47757), Penance (47758)
 Description      : Penance fires one additional bolt of holy light over its duration.
@@ -3196,7 +3196,7 @@ Effects          :
 #3 (id=303043)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Damage (22)
                    Base Value: 10 | Scaled Value: 10 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Mind Flay (15407)
-#4 (id=303044)   : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
+#4 (id=303044)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Damage (0)
                    Base Value: 10 | Scaled Value: 10 | Target: Self (1)
                    Affected Spells: Mind Blast (8092)
 Description      : $?s73510[Mind Spike][Mind Flay] and Mind Blast deal $s3% more damage$?a185916[ and generate $s1% more Insanity][].
@@ -3292,7 +3292,7 @@ Attributes       : ........ ........ ..x..... x..x.x.x   .....x.. ..x..... .....
                  : ........ ........ ......x. ........   ........ ........ ........ ..x..... 
                  : Cannot cancel aura (31), Does not break stealth (37)
 Effects          :
-#1 (id=285130)   : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
+#1 (id=285130)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Damage (0)
                    Base Value: 10 | Scaled Value: 10 | Target: Self (1)
                    Affected Spells: Smite (585), Shadow Word: Pain (589), Mind Blast (8092), Holy Fire (14914), Mind Flay (15407), Shadow Word: Death (32379), Vampiric Touch (34914), Penance (47666), Mind Sear (48045), Mind Sear (49821), Holy Word: Chastise (88625), Halo (120696), Divine Star (122128), Power Word: Solace (129250), Holy Nova (132157), Shadowy Apparition (148859), Shadow Word: Death (199911), Purge the Wicked (204197), Purge the Wicked (204213), Void Torrent (205065), Shadow Word: Void (205351), Shadow Crash (205386), Void Bolt (205448), Light's Wrath (207946), Schism (214621), Void Eruption (228360), Void Torrent (263165)
 #2 (id=285131)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Damage (22)
@@ -4605,7 +4605,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=349531)   : Apply Aura (6) | Dummy (4)
                    Base Value: 20 | Scaled Value: 20 | Misc Value: 12 | Target: Self (1)
-#2 (id=349887)   : Apply Aura (6) | Add Flat Modifier (107): Unknown(37)
+#2 (id=349887)   : Apply Aura (6) | Add Flat Modifier (107): Spell Max Stacks (37)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 37 | Target: Self (1)
                    Affected Spells: Holy Fire (14914), Power Word: Solace (129250), Purge the Wicked (204197), Purge the Wicked (204213)
 Description      : Smite and Holy Nova have a $s1% chance to reset the cooldown of Holy Fire, and Holy Fire's damage over time effect can stack up to ${$s2+1} times.
@@ -4665,7 +4665,7 @@ Attributes       : ........ ........ ........ x.......   ........ ........ .....
                  : ........ ........ ........ ........   ........ ...x.... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=351199)   : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
+#1 (id=351199)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Damage (0)
                    Base Value: 10 | Scaled Value: 10 | Target: Self (1)
                    Affected Spells: Smite (585), Shadow Word: Pain (589), Mind Blast (8092), Holy Fire (14914), Mind Flay (15407), Shadow Word: Death (32379), Vampiric Touch (34914), Penance (47666), Mind Sear (48045), Mind Sear (49821), Holy Word: Chastise (88625), Halo (120696), Divine Star (122128), Power Word: Solace (129250), Holy Nova (132157), Shadowy Apparition (148859), Shadow Word: Death (199911), Purge the Wicked (204197), Purge the Wicked (204213), Void Torrent (205065), Shadow Word: Void (205351), Shadow Crash (205386), Void Bolt (205448), Light's Wrath (207946), Schism (214621), Void Eruption (228360), Void Torrent (263165)
 #2 (id=351200)   : Apply Aura (6) | Modify Damage Taken% (87)
@@ -4937,9 +4937,9 @@ Attributes       : ........ ........ .......x ........   ........ ........ .....
                  : Disable player multipliers (221)
 Effects          :
 #1 (id=479676)   : School Damage (2): holy
-                   Base Value: 0 | Scaled Value: 5150.263 (avg=0.4) | Radius: 0 - 5 yards | Target: Custom (18) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 15564.52 (avg=0.4) | Radius: 0 - 5 yards | Target: Custom (18) -> AOE enemy (instant) (16)
 #2 (id=479677)   : Direct Heal (10)
-                   Base Value: 100000 | Scaled Value: 5150.263 (avg=0.4) | Radius: 0 - 8 yards | Target: Custom (18) -> AOE friendly (31)
+                   Base Value: 100000 | Scaled Value: 15564.52 (avg=0.4) | Radius: 0 - 8 yards | Target: Custom (18) -> AOE friendly (31)
 Description      : Deals $s1 Holy Damage to enemies within $A1.
 
 Heals $s2 to allies within $A1. 
@@ -4997,7 +4997,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6)
 Effects          :
-#1 (id=624379)   : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
+#1 (id=624379)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Damage (0)
                    Base Value: 50 | Scaled Value: 50 | Target: Self (1)
                    Affected Spells: Smite (585)
 Description      : Smite deals $s1% increased damage.
@@ -5136,7 +5136,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=709293)   : Apply Aura (6) | Modify Healing% Done (136)
                    Base Value: 20 | Scaled Value: 20 | Misc Value: 127 | Target: Self (1)
-#2 (id=709294)   : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
+#2 (id=709294)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Damage (0)
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
                    Affected Spells: Smite (585), Shadow Word: Pain (589), Mind Blast (8092), Holy Fire (14914), Mind Flay (15407), Shadow Word: Death (32379), Vampiric Touch (34914), Penance (47666), Mind Sear (48045), Mind Sear (49821), Holy Word: Chastise (88625), Halo (120696), Divine Star (122128), Power Word: Solace (129250), Holy Nova (132157), Shadowy Apparition (148859), Shadow Word: Death (199911), Purge the Wicked (204197), Purge the Wicked (204213), Void Torrent (205065), Shadow Word: Void (205351), Shadow Crash (205386), Void Bolt (205448), Light's Wrath (207946), Schism (214621), Void Eruption (228360), Void Torrent (263165)
 #3 (id=709295)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Damage (22)

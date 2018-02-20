@@ -20,7 +20,7 @@ Effects          :
 #1 (id=86)       : Summon (28)
                    Base Value: 1 | Scaled Value: 1 | Value Multiplier: 1 | Misc Value: 4277 | Misc Value 2: 0x41 | Radius: 100 yards | Target: Unknown(32)
 #2 (id=87)       : Apply Aura (6) | Invisibility Detection (19)
-                   Base Value: 0 | Scaled Value: 430 | Points Per Level: 5 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 480 | Points Per Level: 5 | Target: Self (1)
 Description      : Summons an Eye of Kilrogg and binds your vision to it. The eye is stealthed and moves quickly but is very fragile.
 Tooltip          : Controlling Eye of Kilrogg.
 Detecting Invisibility.
@@ -1395,9 +1395,9 @@ Attributes       : ....x... ........ ........ ........   .....x.. ..x..... .....
                  : Does not break stealth (37)
 Effects          :
 #1 (id=118955)   : Apply Aura (6) | Modify Healing Power (135)
-                   Base Value: 5 | Scaled Value: 101.64 (avg=1.32) | Target: Self (1)
+                   Base Value: 5 | Scaled Value: 324.72 (avg=1.32) | Target: Self (1)
 #2 (id=23584)    : Apply Aura (6) | Damage Done (13)
-                   Base Value: 5 | Scaled Value: 101.64 (avg=1.32) | Points Per Level: 2 | Misc Value: 0x7e | Target: Self (1)
+                   Base Value: 5 | Scaled Value: 324.72 (avg=1.32) | Points Per Level: 2 | Misc Value: 0x7e | Target: Self (1)
 Description      : Increases your spell power by $s2 for $d.
 Tooltip          : Spell power increased by $s2.
 
@@ -1677,7 +1677,7 @@ Effects          :
 #1 (id=68063)    : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Damage (22)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 3.12500 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Corruption (172), Agony (980), Unstable Affliction (30108), Siphon Life (63106), Corruption (146739), Unstable Affliction (233490), Unstable Affliction (233496), Unstable Affliction (233497), Unstable Affliction (233498), Unstable Affliction (233499)
-#2 (id=92150)    : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
+#2 (id=92150)    : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Damage (0)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 3.12500 | Target: Self (1)
                    Affected Spells: Corruption (172), Agony (980), Unstable Affliction (30108), Siphon Life (63106), Corruption (146739), Unstable Affliction (233490), Unstable Affliction (233496), Unstable Affliction (233497), Unstable Affliction (233498), Unstable Affliction (233499)
 Description      : Increases damage done by Agony, Corruption$?s63106[, Siphon Life,][] and Unstable Affliction by ${$77215s1%}.1.
@@ -2360,7 +2360,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .x...
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=124148)   : Summon (28)
-                   Base Value: 0 | Scaled Value: 110 | Points Per Level: 1 | Misc Value: 89 | Misc Value 2: 0x2c7 | Target: Unknown(87)
+                   Base Value: 0 | Scaled Value: 120 | Points Per Level: 1 | Misc Value: 89 | Misc Value 2: 0x2c7 | Target: Unknown(87)
 Description      : $@spelldesc1122
 
 Name             : Demonic Gateway (id=111771) [Spell Family (5)] 
@@ -2959,7 +2959,7 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6), Hidden (7)
 Effects          :
-#1 (id=179727)   : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
+#1 (id=179727)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Damage (0)
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
                    Affected Spells: Immolate (348), Shadow Bolt (686), Agony (980), Hellfire (1949), Hellfire (5857), Soul Fire (6353), Shadowburn (17877), Conflagrate (17962), Seed of Corruption (27243), Seed of Corruption (27285), Incinerate (29722), Rain of Fire (42223), Haunt (48181), Siphon Life (63106), Hand of Gul'dan (86040), Chaos Bolt (116858), Corruption (146739), Cataclysm (152108), Demonbolt (157695), Immolate (157736), Demonic Power (196100), Channel Demonfire (196448), Drain Soul (198590), Soul Flame (199581), Phantom Singularity (205179), Phantom Singularity (205246), Chaos Bolt (213229), Harvester of Souls (218615), Compounding Horror (231489), Shadow Bolt (232670), Unstable Affliction (233490), Unstable Affliction (233496), Unstable Affliction (233497), Unstable Affliction (233498), Unstable Affliction (233499), Drain Life (234153), Rend Soul (242834), Soulfire (264178), Doom (265412), Doom (265469), Roaring Blaze (265931)
 #2 (id=191031)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Damage (22)
@@ -3039,7 +3039,7 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6), Hidden (7)
 Effects          :
-#1 (id=179730)   : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
+#1 (id=179730)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Damage (0)
                    Base Value: 15 | Scaled Value: 15 | Target: Self (1)
                    Affected Spells: Immolate (348), Shadow Bolt (686), Agony (980), Hellfire (1949), Hellfire (5857), Soul Fire (6353), Shadowburn (17877), Conflagrate (17962), Seed of Corruption (27243), Seed of Corruption (27285), Incinerate (29722), Rain of Fire (42223), Haunt (48181), Siphon Life (63106), Hand of Gul'dan (86040), Chaos Bolt (116858), Corruption (146739), Cataclysm (152108), Demonbolt (157695), Immolate (157736), Demonic Power (196100), Channel Demonfire (196448), Drain Soul (198590), Soul Flame (199581), Phantom Singularity (205179), Phantom Singularity (205246), Chaos Bolt (213229), Harvester of Souls (218615), Compounding Horror (231489), Shadow Bolt (232670), Unstable Affliction (233490), Unstable Affliction (233496), Unstable Affliction (233497), Unstable Affliction (233498), Unstable Affliction (233499), Drain Life (234153), Rend Soul (242834), Soulfire (264178), Doom (265412), Doom (265469), Roaring Blaze (265931)
 #2 (id=191023)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Damage (22)
@@ -3109,7 +3109,7 @@ Effects          :
                    Base Value: 157900 | Scaled Value: 157900 | Target: Self (1)
 #5 (id=220239)   : Apply Aura (6) | Dummy (4)
                    Base Value: 157901 | Scaled Value: 157901 | Target: Self (1)
-#6 (id=355824)   : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
+#6 (id=355824)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Damage (0)
                    Base Value: -20 | Scaled Value: -20 | Target: Self (1)
                    Affected Spells: Doom Bolt (85692)
 Description      : You are able to maintain control over even greater demons indefinitely, allowing you to summon a Doomguard or Infernal as a permanent pet.
@@ -3392,7 +3392,7 @@ Effects          :
 #1 (id=244314)   : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 10 | Scaled Value: 10 | Misc Value: 0x7f | Target: Friend (21)
                    Affected School(s): All
-#2 (id=479864)   : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
+#2 (id=479864)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Damage (0)
                    Base Value: 10 | Scaled Value: 10 | Target: Friend (21)
                    Affected Spells: Immolate (348), Shadow Bolt (686), Agony (980), Hellfire (1949), Hellfire (5857), Soul Fire (6353), Shadowburn (17877), Conflagrate (17962), Seed of Corruption (27243), Seed of Corruption (27285), Incinerate (29722), Rain of Fire (42223), Haunt (48181), Siphon Life (63106), Hand of Gul'dan (86040), Chaos Bolt (116858), Corruption (146739), Cataclysm (152108), Demonbolt (157695), Immolate (157736), Demonic Power (196100), Channel Demonfire (196448), Drain Soul (198590), Soul Flame (199581), Phantom Singularity (205179), Phantom Singularity (205246), Chaos Bolt (213229), Harvester of Souls (218615), Compounding Horror (231489), Shadow Bolt (232670), Unstable Affliction (233490), Unstable Affliction (233496), Unstable Affliction (233497), Unstable Affliction (233498), Unstable Affliction (233499), Drain Life (234153), Rend Soul (242834), Soulfire (264178), Doom (265412), Doom (265469), Roaring Blaze (265931)
 #3 (id=479865)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Damage (22)
@@ -3567,7 +3567,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=287829)   : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
+#1 (id=287829)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Damage (0)
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
                    Affected Spells: Immolate (348), Shadow Bolt (686), Agony (980), Hellfire (1949), Hellfire (5857), Soul Fire (6353), Shadowburn (17877), Conflagrate (17962), Seed of Corruption (27243), Seed of Corruption (27285), Incinerate (29722), Rain of Fire (42223), Haunt (48181), Siphon Life (63106), Hand of Gul'dan (86040), Chaos Bolt (116858), Corruption (146739), Cataclysm (152108), Demonbolt (157695), Immolate (157736), Demonic Power (196100), Channel Demonfire (196448), Drain Soul (198590), Soul Flame (199581), Phantom Singularity (205179), Phantom Singularity (205246), Chaos Bolt (213229), Harvester of Souls (218615), Compounding Horror (231489), Shadow Bolt (232670), Unstable Affliction (233490), Unstable Affliction (233496), Unstable Affliction (233497), Unstable Affliction (233498), Unstable Affliction (233499), Drain Life (234153), Rend Soul (242834), Soulfire (264178), Doom (265412), Doom (265469), Roaring Blaze (265931)
 #2 (id=341300)   : Dummy (3)
@@ -3637,7 +3637,7 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6)
 Effects          :
-#1 (id=287835)   : Apply Aura (6) | Add Flat Modifier (107): Unknown(37)
+#1 (id=287835)   : Apply Aura (6) | Add Flat Modifier (107): Spell Max Stacks (37)
                    Base Value: 5 | Scaled Value: 5 | Misc Value: 37 | Target: Self (1)
                    Affected Spells: Agony (980)
 #2 (id=374645)   : Apply Aura (6) | Dummy (4)
@@ -4055,7 +4055,7 @@ Effects          :
 #1 (id=302906)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
 #2 (id=303022)   : Summon (28)
-                   Base Value: 1 | Scaled Value: 110 | Points Per Level: 1 | Misc Value: 103679 | Misc Value 2: 0xeb8 | Radius: 2.5 yards | Target: Unknown(49)
+                   Base Value: 1 | Scaled Value: 120 | Points Per Level: 1 | Misc Value: 103679 | Misc Value 2: 0xeb8 | Radius: 2.5 yards | Target: Unknown(49)
 Description      : Creates a Soul Effigy bound to the target, which is attackable only by you. $205247s1% of all damage taken by the Effigy is duplicated on the original target. Limit 1. Lasts $d.
 Tooltip          : Damage taken by the Soul Effigy is replicated on this target.
 
@@ -4385,10 +4385,10 @@ Effects          :
 #1 (id=322433)   : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 10 | Scaled Value: 10 | Misc Value: 0x7f | Target: Self (1)
                    Affected School(s): All
-#2 (id=331182)   : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
+#2 (id=331182)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Damage (0)
                    Base Value: 100 | Scaled Value: 100 | Target: Self (1)
                    Affected Spells: Inimitable Agony (199111), Hideous Corruption (199112), Drained to a Husk (199120), Inherently Unstable (199152), Seeds of Doom (199153), Perdition (199158), Shadowy Incantations (199163), Shadows of the Flesh (199212), Long Dark Night of the Soul (199214), Sweet Souls (199220), Fatal Echoes (199257), Compounding Horror (199282), Soul Flame (199471), Wrath of Consumption (199472), Soul Flame (199581), Wrath of Consumption (199646), Harvester of Souls (201424), Souls of the Damned (216463), Souls of the Damned (216721), Souls of the Damned (216722), Souls of the Damned (216724), Harvester of Souls (218615), Crystalline Shadows (221862), Winnowing (238072), Sinister Seeds (238108)
-#3 (id=345006)   : Apply Aura (6) | Add Percent Modifier (108): Spell Tick Time (8)
+#3 (id=345006)   : Apply Aura (6) | Add Percent Modifier (108): Spell Effects (8)
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 8 | Target: Self (1)
                    Affected Spells: Inimitable Agony (199111), Hideous Corruption (199112), Drained to a Husk (199120), Inherently Unstable (199152), Seeds of Doom (199153), Perdition (199158), Shadowy Incantations (199163), Shadows of the Flesh (199212), Long Dark Night of the Soul (199214), Sweet Souls (199220), Fatal Echoes (199257), Compounding Horror (199282), Soul Flame (199471), Wrath of Consumption (199472), Soul Flame (199581), Wrath of Consumption (199646), Harvester of Souls (201424), Souls of the Damned (216463), Souls of the Damned (216721), Souls of the Damned (216722), Souls of the Damned (216724), Harvester of Souls (218615), Crystalline Shadows (221862), Winnowing (238072), Sinister Seeds (238108)
 #4 (id=370676)   : Apply Aura (6) | Add Percent Modifier (108): Spell Proc Chance (18)
@@ -4520,7 +4520,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6)
 Effects          :
-#1 (id=349695)   : Apply Aura (6) | Add Flat Modifier (107): Unknown(37)
+#1 (id=349695)   : Apply Aura (6) | Add Flat Modifier (107): Spell Max Stacks (37)
                    Base Value: 4 | Scaled Value: 4 | Misc Value: 37 | Target: Self (1)
                    Affected Spells: Agony (980)
 Description      : Agony may now ramp up to ${$s1+6} stacks.
@@ -4993,9 +4993,9 @@ Attributes       : ........ ........ .......x ........   ........ ........ .....
                  : Disable player multipliers (221)
 Effects          :
 #1 (id=479676)   : School Damage (2): holy
-                   Base Value: 0 | Scaled Value: 5150.263 (avg=0.4) | Radius: 0 - 5 yards | Target: Custom (18) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 15564.52 (avg=0.4) | Radius: 0 - 5 yards | Target: Custom (18) -> AOE enemy (instant) (16)
 #2 (id=479677)   : Direct Heal (10)
-                   Base Value: 100000 | Scaled Value: 5150.263 (avg=0.4) | Radius: 0 - 8 yards | Target: Custom (18) -> AOE friendly (31)
+                   Base Value: 100000 | Scaled Value: 15564.52 (avg=0.4) | Radius: 0 - 8 yards | Target: Custom (18) -> AOE friendly (31)
 Description      : Deals $s1 Holy Damage to enemies within $A1.
 
 Heals $s2 to allies within $A1. 
@@ -5046,7 +5046,7 @@ Attributes       : ....x.x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6)
 Effects          :
-#1 (id=707089)   : Apply Aura (6) | Add Percent Modifier (108): Unknown 2 (19)
+#1 (id=707089)   : Apply Aura (6) | Add Percent Modifier (108): Spell Tick Time (19)
                    Base Value: -15 | Scaled Value: -15 | Misc Value: 19 | Target: Self (1)
                    Affected Spells: Corruption (172), Agony (980), Unstable Affliction (30108), Corruption (146739), Unstable Affliction (233490), Unstable Affliction (233496), Unstable Affliction (233497), Unstable Affliction (233498), Unstable Affliction (233499)
 #2 (id=707090)   : Apply Aura (6) | Add Percent Modifier (108): Spell Duration (1)
@@ -5464,7 +5464,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=710854)   : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
+#1 (id=710854)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Damage (0)
                    Base Value: 5 | Scaled Value: 5 | Target: Self (1)
                    Affected Spells: Chaos Bolt (116858), Chaos Bolt (213229)
 Description      : $@spelldesc266086
@@ -5519,7 +5519,7 @@ Effects          :
 #1 (id=713552)   : Apply Aura (6) | Add Flat Modifier (107): Unknown(31)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 31 | Target: Self (1)
                    Affected Spells: Backdraft (117828)
-#2 (id=713553)   : Apply Aura (6) | Add Flat Modifier (107): Unknown(37)
+#2 (id=713553)   : Apply Aura (6) | Add Flat Modifier (107): Spell Max Stacks (37)
                    Base Value: 2 | Scaled Value: 2 | Misc Value: 37 | Target: Self (1)
                    Affected Spells: Backdraft (117828)
 Description      : Conflagrate grants an additional stack of Backdraft.

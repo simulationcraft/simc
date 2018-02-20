@@ -438,7 +438,7 @@ Attributes       : ....x... ........ ..x.x... .x.xx...   ....x... ..x..... .....
                  : Stop attacks (20), Cannot be used in combat (28)
 Effects          :
 #1 (id=1852)     : Apply Aura (6) | Stealth (16)
-                   Base Value: 80 | Scaled Value: 550 | Points Per Level: 5 | Target: Self (1)
+                   Base Value: 80 | Scaled Value: 600 | Points Per Level: 5 | Target: Self (1)
 #2 (id=1853)     : Apply Aura (6) | Dummy (4)
                    Base Value: -30 | Scaled Value: -30 | Target: Self (1)
 #3 (id=167327)   : Apply Aura (6) | Increase Movement Speed% (Stacking) (129)
@@ -464,7 +464,7 @@ Attributes       : ....x... ........ ..x..... ........   .....x.. ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Does not break stealth (37)
 Effects          :
-#1 (id=1854)     : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
+#1 (id=1854)     : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Damage (0)
                    Base Value: 15 | Scaled Value: 15 | Target: Self (1)
                    Affected Spells: Rip (1079), Rake (1822), Shred (5221), Ferocious Bite (22568), Maim (22570), Swipe (106785), Thrash (106830), Moonfire (155625), Rake (155722), Moonfire (164812), Maim (168877), Maim (168878), Maim (168879), Maim (168880), Maim (168881), Brutal Slash (202028), Shadow Thrash (210687), Ashamane's Rip (210705), Ashamane's Frenzy (210723)
 #2 (id=117350)   : Energize Power (30)
@@ -541,7 +541,7 @@ Attributes       : ......xx x....... ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6), Hidden (7)
 Effects          :
-#1 (id=124697)   : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
+#1 (id=124697)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Damage (0)
                    Base Value: 15 | Scaled Value: 15 | Target: Self (1)
                    Affected Spells: Rejuvenation (774), Regrowth (8936), Swiftmend (18562), Lifebloom (33763), Lifebloom (33778), Wild Growth (48438), Efflorescence (81269), Efflorescence (145205), Tranquility (157982)
 #2 (id=124698)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Damage (22)
@@ -556,7 +556,7 @@ Effects          :
 #5 (id=253736)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Damage (22)
                    Base Value: 50 | Scaled Value: 50 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Rejuvenation (774)
-#6 (id=253737)   : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
+#6 (id=253737)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Damage (0)
                    Base Value: 50 | Scaled Value: 50 | Target: Self (1)
                    Affected Spells: Rejuvenation (774)
 
@@ -1147,7 +1147,7 @@ Effects          :
                    Affected Spells: Wild Charge (102401)
 #8 (id=290490)   : Apply Aura (6) | Modify Attacker Melee Crit Chance (187)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-#9 (id=353641)   : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
+#9 (id=353641)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Damage (0)
                    Base Value: 10 | Scaled Value: 10 | Target: Self (1)
                    Affected Spells: Starsurge (78674), Moonfire (164812), Sunfire (164815), Solar Wrath (190984), Starfall (191037), Lunar Strike (194153), Stellar Flare (202347), Shooting Stars (202497), New Moon (202767), Half Moon (202768), Full Moon (202771), Goldrinn's Fang (203001), Fury of Elune (211545), Echoing Stars (226104)
 #10 (id=479759)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Damage (22)
@@ -1486,7 +1486,7 @@ Attributes       : ....x.xx x....... ........ ........   ...x...x ........ .....
                  : ........ ........ ........ ........   ........ ........ x....... ........ 
                  : Passive (6), Hidden (7)
 Effects          :
-#1 (id=55085)    : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
+#1 (id=55085)    : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Damage (0)
                    Base Value: 100 | Scaled Value: 100 | Target: Self (1)
                    Affected Spells: Maim (22570), Maim (168877), Maim (168878), Maim (168879), Maim (168880), Maim (168881)
 Description      : Increases the damage done by Maim by $s1%.
@@ -1551,7 +1551,7 @@ Attributes       : ....x..x x....... ..x..... .....x..   .....x.. ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Hidden (7), Does not break stealth (37)
 Effects          :
-#1 (id=56034)    : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
+#1 (id=56034)    : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Damage (0)
                    Base Value: 15 | Scaled Value: 15 | Target: Self (1)
                    Affected Spells: Rip (1079), Rake (1822), Shred (5221), Ferocious Bite (22568), Maim (22570), Swipe (106785), Thrash (106830), Moonfire (155625), Rake (155722), Moonfire (164812), Maim (168877), Maim (168878), Maim (168879), Maim (168880), Maim (168881), Brutal Slash (202028), Shadow Thrash (210687), Ashamane's Rip (210705), Ashamane's Frenzy (210723)
 #2 (id=479760)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Damage (22)
@@ -1658,7 +1658,7 @@ Attributes       : ......x. x....... ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6)
 Effects          :
-#1 (id=68110)    : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
+#1 (id=68110)    : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Damage (0)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.25000 | Target: Self (1)
                    Affected Spells: Starsurge (78674), Starfall (191034), Starfall (191037), Starsurge (197626), Echoing Stars (226104)
 #2 (id=90627)    : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 1 (3)
@@ -1678,7 +1678,7 @@ Attributes       : ......x. x....... ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6)
 Effects          :
-#1 (id=68113)    : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
+#1 (id=68113)    : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Damage (0)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.00000 | Target: Self (1)
                    Affected Spells: Rip (1079), Rake (1822), Thrash (106830), Rake (155722), Shadow Thrash (210687), Ashamane's Rip (210705), Ashamane's Frenzy (210722), Ashamane's Frenzy (210723)
 #2 (id=90630)    : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Damage (22)
@@ -2274,7 +2274,7 @@ Attributes       : ....x... ........ ..x.x... .x.x....   ....x... ..x..... .....
                  : Stop attacks (20)
 Effects          :
 #1 (id=111366)   : Apply Aura (6) | Stealth (16)
-                   Base Value: 30 | Scaled Value: 575 | Points Per Level: 5 | Target: Self (1)
+                   Base Value: 30 | Scaled Value: 625 | Points Per Level: 5 | Target: Self (1)
 #2 (id=111367)   : Apply Aura (6) | Dummy (4)
                    Base Value: -30 | Scaled Value: -30 | Target: Self (1)
 #3 (id=111368)   : Unknown(176)
@@ -2343,7 +2343,7 @@ Attributes       : ....x... ........ ..x..... ........   ........ ..x..... x....
                  : ........ ........ ........ ........   ........ ........ ......x. ........ 
                  : ........ .....x.. ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=111387)   : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
+#1 (id=111387)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Damage (0)
                    Base Value: 35 | Scaled Value: 35 | Target: Self (1)
                    Affected Spells: Starsurge (78674), Moonfire (164812), Sunfire (164815), Solar Wrath (190984), Starfall (191037), Lunar Strike (194153), Stellar Flare (202347), Shooting Stars (202497), New Moon (202767), Half Moon (202768), Full Moon (202771), Goldrinn's Fang (203001), Fury of Elune (211545), Echoing Stars (226104)
 #2 (id=310508)   : Apply Aura (6) | Add Percent Modifier (108): Spell Effect 2 (12)
@@ -2446,7 +2446,7 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 1469 | Target: Self (1)
 #5 (id=222092)   : Apply Aura (6) | Modify Recharge Time (Category) (453)
                    Base Value: -60000 | Scaled Value: -60000 | Misc Value: 1469 | Target: Self (1)
-#6 (id=249441)   : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
+#6 (id=249441)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Damage (0)
                    Base Value: 300 | Scaled Value: 300 | Target: Self (1)
                    Affected Spells: Thrash (77758)
 #7 (id=249442)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Damage (22)
@@ -2854,7 +2854,7 @@ Attributes       : ........ ........ ........ ........   ........ ..x..... .....
                  : Cannot crit (93)
 Effects          :
 #1 (id=158340)   : Direct Heal (10)
-                   Base Value: 1 | Scaled Value: 110 | Points Per Level: 1 | Radius: 0 - 40 yards | Target: Custom (18) -> AOE friendly (31)
+                   Base Value: 1 | Scaled Value: 120 | Points Per Level: 1 | Radius: 0 - 40 yards | Target: Custom (18) -> AOE friendly (31)
 Description      : Healed for $124974s3% of single-target damage done by a nearby friendly Druid.
 
 Name             : Nature's Vigil (id=124991) [Spell Family (7)] 
@@ -3022,7 +3022,7 @@ Effects          :
 #2 (id=356844)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
                    Affected Spells: Shred (5221), Swipe (106785), Thrash (106830), Shadow Thrash (210687)
-#3 (id=356845)   : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
+#3 (id=356845)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Damage (0)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
                    Affected Spells: Shred (5221), Swipe (106785), Thrash (106830), Brutal Slash (202028), Shadow Thrash (210687)
 #4 (id=476583)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Damage (22)
@@ -3074,7 +3074,7 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6), Hidden (7)
 Effects          :
-#1 (id=179693)   : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
+#1 (id=179693)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Damage (0)
                    Base Value: 4 | Scaled Value: 4 | Target: Self (1)
                    Affected Spells: Maul (6807), Mangle (33917), Thrash (77758), Pulverize (80313), Moonfire (164812), Thrash (192090), Brambles (203958), Lunar Beam (204069), Brambles (213709), Swipe (213771)
 #2 (id=191158)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Damage (22)
@@ -3083,7 +3083,7 @@ Effects          :
 #3 (id=191159)   : Apply Aura (6) | Add Percent Modifier (108): Spell Cooldown (11)
                    Base Value: 50 | Scaled Value: 50 | Misc Value: 11 | Target: Self (1)
                    Affected Spells: Barkskin (22812)
-#4 (id=191160)   : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
+#4 (id=191160)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Damage (0)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
                    Affected Spells: Regrowth (8936)
 #5 (id=191161)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Damage (22)
@@ -3094,16 +3094,16 @@ Effects          :
                    Affected Spells: Regrowth (8936)
 #7 (id=260758)   : Apply Aura (6) | Modify Recharge Time% (Category) (454)
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 1469 | Target: Self (1)
-#8 (id=260759)   : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
+#8 (id=260759)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Damage (0)
                    Base Value: -46 | Scaled Value: -46 | Target: Self (1)
                    Affected Spells: Moonfire (8921), Moonfire (164812)
-#9 (id=260760)   : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
+#9 (id=260760)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Damage (0)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
                    Affected Spells: Moonfire (8921), Moonfire (164812)
 #10 (id=260761)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Damage (22)
                    Base Value: 8 | Scaled Value: 8 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Moonfire (8921), Moonfire (164812)
-#11 (id=260762)   : Apply Aura (6) | Add Flat Modifier (107): Spell Tick Time (8)
+#11 (id=260762)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effects (8)
                    Base Value: -2 | Scaled Value: -2 | Misc Value: 8 | Target: Self (1)
                    Affected Spells: Astral Influence (197524), Power of the Archdruid (213121)
 #12 (id=260763)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
@@ -3146,7 +3146,7 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6), Hidden (7)
 Effects          :
-#1 (id=179694)   : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
+#1 (id=179694)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Damage (0)
                    Base Value: 43 | Scaled Value: 43 | Target: Self (1)
                    Affected Spells: Rip (1079), Rake (1822), Shred (5221), Ferocious Bite (22568), Maim (22570), Swipe (106785), Thrash (106830), Moonfire (155625), Rake (155722), Moonfire (164812), Maim (168877), Maim (168878), Maim (168879), Maim (168880), Maim (168881), Brutal Slash (202028), Shadow Thrash (210687), Ashamane's Rip (210705), Ashamane's Frenzy (210723)
 #2 (id=191154)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Damage (22)
@@ -3155,7 +3155,7 @@ Effects          :
 #3 (id=191155)   : Apply Aura (6) | Add Flat Modifier (107): Spell Cooldown (11)
                    Base Value: 90000 | Scaled Value: 90000 | Misc Value: 11 | Target: Self (1)
                    Affected Spells: Moonkin Form (24858), Incarnation: Chosen of Elune (102560), Moonkin Form (197625)
-#4 (id=191156)   : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
+#4 (id=191156)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Damage (0)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
                    Affected Spells: Regrowth (8936)
 #5 (id=191157)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Damage (22)
@@ -3166,10 +3166,10 @@ Effects          :
                    Affected Spells: Regrowth (8936)
 #7 (id=260768)   : Apply Aura (6) | Modify Combat Rating Multiplier (405)
                    Base Value: 50 | Scaled Value: 50 | Misc Value: 917504 | Target: Self (1)
-#8 (id=260769)   : Apply Aura (6) | Add Flat Modifier (107): Spell Tick Time (8)
+#8 (id=260769)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effects (8)
                    Base Value: 50 | Scaled Value: 50 | Misc Value: 8 | Target: Self (1)
                    Affected Spells: Luffa Wrappings (208681)
-#9 (id=260770)   : Apply Aura (6) | Add Flat Modifier (107): Spell Tick Time (8)
+#9 (id=260770)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effects (8)
                    Base Value: -2 | Scaled Value: -2 | Misc Value: 8 | Target: Self (1)
                    Affected Spells: Astral Influence (197524), Power of the Archdruid (213121)
 #10 (id=260771)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
@@ -3200,7 +3200,7 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6), Hidden (7)
 Effects          :
-#1 (id=179695)   : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
+#1 (id=179695)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Damage (0)
                    Base Value: -4 | Scaled Value: -4 | Target: Self (1)
                    Affected Spells: Rejuvenation (774), Regrowth (8936), Swiftmend (18562), Lifebloom (33763), Lifebloom (33778), Wild Growth (48438), Efflorescence (81269), Cenarion Ward (102352), Germination (155675), Tranquility (157982), Nature's Essence (189800), Dreamwalker (189853), Cultivation (200389), Spring Blossoms (207386), Mark of Shifting (224392)
 #2 (id=191150)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Damage (22)
@@ -3217,7 +3217,7 @@ Effects          :
 #7 (id=260748)   : Apply Aura (6) | Dummy (4)
                    Base Value: 108294 | Scaled Value: 108294 | Target: Self (1)
                    Affected Spells: Incapacitating Roar (99), Intimidating Roar (236748)
-#8 (id=260749)   : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
+#8 (id=260749)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Damage (0)
                    Base Value: 25 | Scaled Value: 25 | Target: Self (1)
                    Affected Spells: Rip (1079), Rake (1822), Solar Wrath (5176), Shred (5221), Ferocious Bite (22568), Mangle (33917), Thrash (77758), Starsurge (78674), Sunfire (93402), Swipe (106785), Thrash (106830), Rake (155722), Moonfire (164812), Sunfire (164815), Solar Wrath (190984), Thrash (192090), Lunar Strike (194153), Starsurge (197626), Lunar Strike (197628), Solar Wrath (197629), Sunfire (197630), Enraged Mangle (202085), Shadow Thrash (210687), Ashamane's Rip (210705), Swipe (213771)
 #9 (id=260750)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Damage (22)
@@ -3261,7 +3261,7 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6), Hidden (7)
 Effects          :
-#1 (id=179696)   : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
+#1 (id=179696)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Damage (0)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
                    Affected Spells: Starsurge (78674), Moonfire (164812), Sunfire (164815), Solar Wrath (190984), Starfall (191037), Lunar Strike (194153), Stellar Flare (202347), Shooting Stars (202497), New Moon (202767), Half Moon (202768), Full Moon (202771), Goldrinn's Fang (203001), Fury of Elune (211545), Echoing Stars (226104)
 #2 (id=191146)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Damage (22)
@@ -3272,7 +3272,7 @@ Effects          :
                    Affected Spells: Moonfire (8921), Sunfire (93402), Moonfire (164812), Sunfire (164815), Sunfire (197630)
 #4 (id=191148)   : Apply Aura (6) | Unknown(332)
                    Base Value: 102560 | Scaled Value: 102560 | Target: Self (1)
-#5 (id=191149)   : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
+#5 (id=191149)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Damage (0)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
                    Affected Spells: Regrowth (8936)
 #6 (id=260777)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Damage (22)
@@ -3457,7 +3457,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=195368)   : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
+#1 (id=195368)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Damage (0)
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
                    Affected Spells: Shred (5221), Maul (6807), Ferocious Bite (22568), Maim (22570), Mangle (33917), Thrash (77758), Swipe (106785), Maim (168877), Maim (168878), Maim (168879), Maim (168880), Maim (168881), Brutal Slash (202028), Enraged Mangle (202085), Swipe (213771), Enraged Maul (236716)
 Description      : $@spelldesc155672
@@ -3521,7 +3521,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6)
 Effects          :
-#1 (id=216221)   : Apply Aura (6) | Add Flat Modifier (107): Unknown(37)
+#1 (id=216221)   : Apply Aura (6) | Add Flat Modifier (107): Spell Max Stacks (37)
                    Base Value: 2 | Scaled Value: 2 | Misc Value: 37 | Target: Self (1)
                    Affected Spells: Omen of Clarity (16864), Clearcasting (16870), Clearcasting (135700)
 #2 (id=290345)   : Apply Aura (6) | Add Flat Modifier (107): Unknown(31)
@@ -3763,7 +3763,7 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=221437)   : Apply Aura (6) | Dummy (4)
                    Base Value: 5 | Scaled Value: 5 | Target: Self (1)
-#2 (id=464157)   : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
+#2 (id=464157)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Damage (0)
                    Base Value: 5 | Scaled Value: 5 | Target: Self (1)
                    Affected Spells: Ferocious Bite (22568), Maim (22570), Maim (168877), Maim (168878), Maim (168879), Maim (168880), Maim (168881)
 #3 (id=464158)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Damage (22)
@@ -3785,7 +3785,7 @@ Effects          :
 #1 (id=221438)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 4 (32)
                    Base Value: 50 | Scaled Value: 50 | Misc Value: 32 | Target: Self (1)
                    Affected Spells: Mangle (33917), Enraged Mangle (202085)
-#2 (id=221439)   : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
+#2 (id=221439)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Damage (0)
                    Base Value: 25 | Scaled Value: 25 | Target: Self (1)
                    Affected Spells: Mangle (33917), Enraged Mangle (202085)
 Description      : Mangle generates ${$m1/10} more Rage and deals $s2% more damage.
@@ -3989,7 +3989,7 @@ Attributes       : ........ ........ ........ ........   ........ ..x..... .....
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=231955)   : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
+#1 (id=231955)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Damage (0)
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
                    Affected Spells: Solar Wrath (5176), Solar Wrath (190984), Solar Wrath (197629)
 #2 (id=232253)   : Apply Aura (6) | Add Percent Modifier (108): Spell Cast Time (10)
@@ -4018,7 +4018,7 @@ Attributes       : ........ ........ ........ ........   ........ ..x..... .....
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=231957)   : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
+#1 (id=231957)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Damage (0)
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
                    Affected Spells: Lunar Strike (194153), Lunar Strike (197628)
 #2 (id=232254)   : Apply Aura (6) | Add Percent Modifier (108): Spell Cast Time (10)
@@ -4332,7 +4332,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=268012)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 100 | Scaled Value: 3.149993 (avg=0.040909) | Misc Value: 127 | Target: Self (1)
+                   Base Value: 100 | Scaled Value: 10.06361 (avg=0.040909) | Misc Value: 127 | Target: Self (1)
 #2 (id=268108)   : Apply Aura (6) | Dummy (4)
                    Base Value: 90 | Scaled Value: 90 | Misc Value: 127 | Target: Self (1)
 #3 (id=268109)   : Apply Aura (6) | Absorb Damage (69)
@@ -4603,7 +4603,7 @@ Attributes       : ........ ........ ........ ........   ........ ..x..... .....
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ .....x.. ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=285082)   : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
+#1 (id=285082)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Damage (0)
                    Base Value: 30 | Scaled Value: 30 | Target: Self (1)
                    Affected Spells: Starsurge (78674), Moonfire (164812), Sunfire (164815), Solar Wrath (190984), Starfall (191037), Lunar Strike (194153), Stellar Flare (202347), Shooting Stars (202497), New Moon (202767), Half Moon (202768), Full Moon (202771), Goldrinn's Fang (203001), Fury of Elune (211545), Echoing Stars (226104)
 #2 (id=285083)   : Apply Aura (6) | Dummy (4)
@@ -4697,13 +4697,13 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
 #2 (id=340934)   : Apply Aura (6) | Modify Power Regen (110)
                    Base Value: 35 | Scaled Value: 35 | Misc Value: 3 | Target: Self (1)
-#3 (id=340949)   : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
+#3 (id=340949)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Damage (0)
                    Base Value: 15 | Scaled Value: 15 | Target: Self (1)
                    Affected Spells: Swipe (106785)
-#4 (id=344680)   : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
+#4 (id=344680)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Damage (0)
                    Base Value: 15 | Scaled Value: 15 | Target: Self (1)
                    Affected Spells: Ferocious Bite (22568)
-#5 (id=344848)   : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
+#5 (id=344848)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Damage (0)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
                    Affected Spells: Rake (1822), Shred (5221), Rake (155722)
 #6 (id=346473)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Damage (22)
@@ -4773,7 +4773,7 @@ Effects          :
 #3 (id=327253)   : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost (14)
                    Base Value: 60 | Scaled Value: 60 | Misc Value: 14 | Target: Self (1)
                    Affected Spells: Rejuvenation (774)
-#4 (id=328242)   : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
+#4 (id=328242)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Damage (0)
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
                    Affected Spells: Rejuvenation (774), Swiftmend (18562)
 #5 (id=344347)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Damage (22)
@@ -4838,7 +4838,7 @@ Effects          :
                    Base Value: 200 | Scaled Value: 200 | Misc Value: 1 | Target: Self (1)
 #4 (id=290372)   : Apply Aura (6) | Modify Max Health% (133)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-#5 (id=290503)   : Apply Aura (6) | Add Percent Modifier (108): Spell Tick Time (8)
+#5 (id=290503)   : Apply Aura (6) | Add Percent Modifier (108): Spell Effects (8)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 8 | Target: Self (1)
                    Affected Spells: Feral Overrides Passive (197692)
 #6 (id=310756)   : Apply Aura (6) | Unknown(332)
@@ -4998,7 +4998,7 @@ Attributes       : ....x.xx ........ ........ ........   ........ ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6), Hidden (7)
 Effects          :
-#1 (id=290499)   : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
+#1 (id=290499)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Damage (0)
                    Base Value: -90 | Scaled Value: -90 | Target: Self (1)
                    Affected Spells: Moonfire (8921), Moonfire (164812)
 #2 (id=290500)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Damage (22)
@@ -5021,7 +5021,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=290540)   : Server Side Script (77)
                    Base Value: 8 | Scaled Value: 8 | Radius: 0 - 60 yards | Target: Custom (18) -> AOE friendly (31)
-#2 (id=709955)   : Apply Aura (6) | Add Percent Modifier (108): Unknown 2 (19)
+#2 (id=709955)   : Apply Aura (6) | Add Percent Modifier (108): Spell Tick Time (19)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 19 | Target: Self (1)
                    Affected Spells: Rejuvenation (774), Regrowth (8936), Lifebloom (33763), Wild Growth (48438), Cenarion Ward (102351), Cenarion Ward (102352), Tranquility (157982)
 #3 (id=709956)   : Apply Aura (6) | Periodic Trigger Spell (23): Essence of G'Hanir every 0.25 seconds
@@ -5225,7 +5225,7 @@ Attributes       : ....x.x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6)
 Effects          :
-#1 (id=297731)   : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
+#1 (id=297731)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Damage (0)
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
                    Affected Spells: Ferocious Bite (22568)
 Description      : Ferocious Bite deals $s1% increased damage and always refreshes the duration of Rip.
@@ -5241,7 +5241,7 @@ Attributes       : ....x.x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6)
 Effects          :
-#1 (id=297732)   : Apply Aura (6) | Add Percent Modifier (108): Unknown 2 (19)
+#1 (id=297732)   : Apply Aura (6) | Add Percent Modifier (108): Spell Tick Time (19)
                    Base Value: -20 | Scaled Value: -20 | Misc Value: 19 | Target: Self (1)
                    Affected Spells: Rip (1079), Rake (1822), Thrash (106830), Rake (155722), Shadow Thrash (210687), Ashamane's Rip (210705)
 #2 (id=297777)   : Apply Aura (6) | Add Percent Modifier (108): Spell Duration (1)
@@ -5286,13 +5286,13 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
 #2 (id=340945)   : Apply Aura (6) | Modify Power Regen (110)
                    Base Value: 35 | Scaled Value: 35 | Misc Value: 3 | Target: Self (1)
-#3 (id=340951)   : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
+#3 (id=340951)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Damage (0)
                    Base Value: 15 | Scaled Value: 15 | Target: Self (1)
                    Affected Spells: Swipe (106785)
-#4 (id=344681)   : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
+#4 (id=344681)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Damage (0)
                    Base Value: 15 | Scaled Value: 15 | Target: Self (1)
                    Affected Spells: Ferocious Bite (22568)
-#5 (id=344851)   : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
+#5 (id=344851)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Damage (0)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
                    Affected Spells: Rake (1822), Shred (5221), Rake (155722)
 #6 (id=346475)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Damage (22)
@@ -5331,13 +5331,13 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
 #2 (id=340946)   : Apply Aura (6) | Modify Power Regen (110)
                    Base Value: 35 | Scaled Value: 35 | Misc Value: 3 | Target: Self (1)
-#3 (id=340950)   : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
+#3 (id=340950)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Damage (0)
                    Base Value: 15 | Scaled Value: 15 | Target: Self (1)
                    Affected Spells: Swipe (106785)
-#4 (id=344682)   : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
+#4 (id=344682)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Damage (0)
                    Base Value: 15 | Scaled Value: 15 | Target: Self (1)
                    Affected Spells: Ferocious Bite (22568)
-#5 (id=344859)   : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
+#5 (id=344859)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Damage (0)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
                    Affected Spells: Rake (1822), Shred (5221), Rake (155722)
 #6 (id=346477)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Damage (22)
@@ -5431,7 +5431,7 @@ Effects          :
 #1 (id=298306)   : Apply Aura (6) | Add Percent Modifier (108): Spell Radius (6)
                    Base Value: 30 | Scaled Value: 30 | Misc Value: 6 | Target: Self (1)
                    Affected Spells: Starfall (191034), Starfall (191037), Echoing Stars (226104)
-#2 (id=298474)   : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
+#2 (id=298474)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Damage (0)
                    Base Value: 50 | Scaled Value: 50 | Target: Self (1)
                    Affected Spells: Starfall (191034), Starfall (191037), Echoing Stars (226104)
 Description      : Increases Starfall's radius by $s1%, Starfall damage by $s2%, and allows you to cast while moving while within Starfall's radius.
@@ -6015,7 +6015,7 @@ Attributes       : ........ ........ x.x..... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=308116)   : Apply Aura (6) | Add Percent Modifier (108): Unknown 2 (19)
+#1 (id=308116)   : Apply Aura (6) | Add Percent Modifier (108): Spell Tick Time (19)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 19 | Target: Self (1)
                    Affected Spells: Rejuvenation (774), Regrowth (8936), Lifebloom (33763), Wild Growth (48438), Cenarion Ward (102351), Cenarion Ward (102352)
 #2 (id=325987)   : Apply Aura (6) | Periodic Trigger Spell (23): Essence of G'Hanir every 0.25 seconds
@@ -6322,7 +6322,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6), Hidden (7)
 Effects          :
-#1 (id=312759)   : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
+#1 (id=312759)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Damage (0)
                    Base Value: 15 | Scaled Value: 15 | Target: Self (1)
                    Affected Spells: Thrash (106830), Shadow Thrash (210687)
 #2 (id=472586)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Damage (22)
@@ -6666,7 +6666,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6)
 Effects          :
-#1 (id=348349)   : Apply Aura (6) | Add Flat Modifier (107): Unknown(37)
+#1 (id=348349)   : Apply Aura (6) | Add Flat Modifier (107): Spell Max Stacks (37)
                    Base Value: 2 | Scaled Value: 2 | Misc Value: 37 | Target: Self (1)
                    Affected Spells: Solar Empowerment (164545), Lunar Empowerment (164547)
 Description      : The Lunar and Solar Empowerments granted by Starsurge now stack up to ${$s1+1} times.
@@ -6864,7 +6864,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6)
 Effects          :
-#1 (id=348412)   : Apply Aura (6) | Add Flat Modifier (107): Unknown(37)
+#1 (id=348412)   : Apply Aura (6) | Add Flat Modifier (107): Spell Max Stacks (37)
                    Base Value: 5 | Scaled Value: 5 | Misc Value: 37 | Target: Self (1)
                    Affected Spells: Ironfur (192081)
 Description      : Multiple uses of Ironfur may overlap.
@@ -6912,7 +6912,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6)
 Effects          :
-#1 (id=356850)   : Apply Aura (6) | Add Flat Modifier (107): Unknown(37)
+#1 (id=356850)   : Apply Aura (6) | Add Flat Modifier (107): Spell Max Stacks (37)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 37 | Target: Self (1)
                    Affected Spells: Omen of Clarity (16864), Clearcasting (16870), Clearcasting (135700)
 #2 (id=356851)   : Apply Aura (6) | Add Percent Modifier (108): Spell Proc Frequency (26)
@@ -7222,9 +7222,9 @@ Attributes       : ........ ........ .......x ........   ........ ........ .....
                  : Disable player multipliers (221)
 Effects          :
 #1 (id=479676)   : School Damage (2): holy
-                   Base Value: 0 | Scaled Value: 5150.263 (avg=0.4) | Radius: 0 - 5 yards | Target: Custom (18) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 15564.52 (avg=0.4) | Radius: 0 - 5 yards | Target: Custom (18) -> AOE enemy (instant) (16)
 #2 (id=479677)   : Direct Heal (10)
-                   Base Value: 100000 | Scaled Value: 5150.263 (avg=0.4) | Radius: 0 - 8 yards | Target: Custom (18) -> AOE friendly (31)
+                   Base Value: 100000 | Scaled Value: 15564.52 (avg=0.4) | Radius: 0 - 8 yards | Target: Custom (18) -> AOE friendly (31)
 Description      : Deals $s1 Holy Damage to enemies within $A1.
 
 Heals $s2 to allies within $A1. 

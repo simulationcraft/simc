@@ -299,7 +299,7 @@ Effects          :
 #1 (id=541)      : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 30 | Misc Value 2: 0x2 | Target: Self (1)
 #2 (id=542)      : Apply Aura (6) | Dummy (4)
-                   Base Value: 40 | Scaled Value: 565 | Points Per Level: 5 | Target: Self (1)
+                   Base Value: 40 | Scaled Value: 615 | Points Per Level: 5 | Target: Self (1)
 #3 (id=543)      : Apply Aura (6) | Increase Movement Speed% (Stacking) (129)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #4 (id=165804)   : Apply Aura (6) | Dummy (4)
@@ -326,7 +326,7 @@ Attributes       : ....x... ........ x....... ........   ........ ........ .x...
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=553)      : Open Lock (33)
-                   Base Value: 120 | Scaled Value: 550 | Points Per Level: 5 | Misc Value: 1 | Target: Unknown(26)
+                   Base Value: 120 | Scaled Value: 600 | Points Per Level: 5 | Misc Value: 1 | Target: Unknown(26)
 Description      : Allows opening of locked chests and doors that require a skill level of up to ${$PL*5}.
 
 Name             : Cheap Shot (id=1833) [Spell Family (8)] 
@@ -1095,9 +1095,9 @@ Attributes       : ....x... ........ ........ ........   .....x.. ..x..... .....
                  : Does not break stealth (37)
 Effects          :
 #1 (id=11564)    : Apply Aura (6) | Modify Attack Power (99)
-                   Base Value: 3 | Scaled Value: 101.64 (avg=1.32) | Points Per Level: 4 | Target: Self (1)
+                   Base Value: 3 | Scaled Value: 324.72 (avg=1.32) | Points Per Level: 4 | Target: Self (1)
 #2 (id=11565)    : Apply Aura (6) | Modify Ranged Attack Power (124)
-                   Base Value: 3 | Scaled Value: 101.64 (avg=1.32) | Points Per Level: 4 | Target: Self (1)
+                   Base Value: 3 | Scaled Value: 324.72 (avg=1.32) | Points Per Level: 4 | Target: Self (1)
 Description      : Increases attack power by $s1 for $d.
 Tooltip          : Attack power increased by $s1.
 
@@ -1276,7 +1276,7 @@ Attributes       : ........ ........ ........ ...x....   ........ ..x..... .....
                  : ........ ....x... ........ ........   ...x.... ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=21282)    : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
+#1 (id=21282)    : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Damage (0)
                    Base Value: 10 | Scaled Value: 10 | Target: Self (1)
                    Affected Spells: Backstab (53), Garrote (703), Mutilate (1329), Sinister Strike (1752), Rupture (1943), Run Through (2098), Deadly Poison (2818), Mutilate (5374), Ambush (8676), Wound Poison (8680), Mutilate Off-Hand (27576), Envenom (32645), Fan of Knives (51723), Killing Spree (57841), Killing Spree Off-Hand (57842), Main Gauche (86392), Shuriken Toss (114014), Shadow Blade (121473), Shadow Blade Off-hand (121474), Death from Above (152150), Internal Bleeding (154953), Backstab (173458), Shadowstrike (185438), Poisoned Knife (185565), Pistol Shot (185763), Cannonball Barrage (185779), From the Shadows (192434), Poison Bomb (192660), Kingsbane (192759), Kingsbane (192760), Saber Slash (193315), Nightblade (195452), Eviscerate (196819), Ghostly Strike (196937), Finality: Eviscerate (197393), Second Shuriken (197611), Shadow Nova (197800), Shuriken Storm (197835), Riposte (199753), Between the Eyes (199804), Gloomblade (200758), Greed (202822), Greed (202823), Blunderbuss (202895), Goremaw's Bite (209783), Goremaw's Bite (209784), Soul Rip (220893), Kingsbane (222062), Toxic Blade (245388), Toxic Blade (245389), Poison Bomb (255544), Poison Bomb (255546)
 #2 (id=479892)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Damage (22)
@@ -1314,7 +1314,7 @@ Effects          :
 #3 (id=159997)   : Apply Aura (6) | Periodic Dummy (226): every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 18 | Target: Self (1)
                    Affected Spells: Deadly Poison (2823), Crippling Poison (3408), Wound Poison (8679), Leeching Poison (108211), Agonizing Poison (200802)
-#4 (id=220587)   : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
+#4 (id=220587)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Damage (0)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
                    Affected Spells: Mutilate (5374), Mutilate Off-Hand (27576), Dispatch (111240)
 #5 (id=268531)   : Apply Aura (6) | Add Flat Modifier (107): Spell Critical Chance (7)
@@ -1762,7 +1762,7 @@ Attributes       : ......x. x....... ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6)
 Effects          :
-#1 (id=68022)    : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
+#1 (id=68022)    : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Damage (0)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.60000 | Target: Self (1)
                    Affected Spells: Garrote (703), Rupture (1943), Deadly Poison (2818), Deadly Poison (2823), Crippling Poison (3408), Crippling Poison (3409), Wound Poison (8679), Wound Poison (8680), Venomhide Poison (14795), Spore Cloud (32643), Envenom (32645), Deadly Poison (113780), Crimson Tempest (122233), Internal Bleeding (154953), Poison Bomb (192660), Kingsbane (192759), Kingsbane (192760), Agonizing Poison (200803), Curse of the Dreadblades (202665), Kingsbane (222062), Toxic Blade (245388), Poison Bomb (255546)
 #2 (id=68023)    : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Damage (22)
@@ -1805,7 +1805,7 @@ Attributes       : ......x. x....... ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6)
 Effects          :
-#1 (id=68029)    : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
+#1 (id=68029)    : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Damage (0)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.76000 | Target: Self (1)
                    Affected Spells: Rupture (1943), Envenom (32645), Crimson Tempest (121411), Death from Above (152150), Weaponmaster (193536), Nightblade (195452), Eviscerate (196819), Finality: Eviscerate (197393), Finality: Nightblade (197395)
 #2 (id=87762)    : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Damage (22)
@@ -2057,7 +2057,7 @@ Effects          :
 #2 (id=322830)   : Apply Aura (6) | Add Flat Modifier (107): Spell Duration (1)
                    Base Value: 1000 | Scaled Value: 1000 | Misc Value: 1 | Target: Self (1)
                    Affected Spells: Shadow Dance (185313)
-#3 (id=370946)   : Apply Aura (6) | Add Flat Modifier (107): Unknown(33)
+#3 (id=370946)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 5 (33)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 33 | Target: Self (1)
                    Affected Spells: Vanish (11327)
 Description      : Your abilities requiring Stealth can still be used for $115192d after Stealth breaks.$?c3[
@@ -2337,7 +2337,7 @@ Attributes       : ...x.... ........ ........ ........   .....x.. ........ ...x.
                  : Does not break stealth (37)
 Effects          :
 #1 (id=129946)   : Apply Aura (6) | Stealth (16)
-                   Base Value: 400 | Scaled Value: 570 | Points Per Level: 5 | Radius: 30 yards | Target: Raid Members (56)
+                   Base Value: 400 | Scaled Value: 620 | Points Per Level: 5 | Radius: 30 yards | Target: Raid Members (56)
 Description      : Extend a cloak that wraps party and raid members within $115834A1 yards in shadows, concealing them from sight.
 Tooltip          : Concealed in shadows.
 
@@ -2409,7 +2409,7 @@ Effects          :
 #4 (id=150621)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 3 (23)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 23 | Target: Self (1)
                    Affected Spells: Backstab (53), Ambush (8676), Dispatch (111240), Backstab (173458), Shadowstrike (185438), Gloomblade (200758)
-#5 (id=480761)   : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
+#5 (id=480761)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Damage (0)
                    Base Value: 30 | Scaled Value: 30 | Target: Self (1)
                    Affected Spells: Gloomblade (200758)
 Description      : Draws upon surrounding shadows to empower your weapons for $d, causing $?s200758[your Shadowstrike and auto attacks to deal Shadowstrike damage and your Gloomblade to deal $s5% increased damage][your Backstab, Shadowstrike, and auto attacks to deal Shadowstrike damage].
@@ -2547,7 +2547,7 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6), Hidden (7)
 Effects          :
-#1 (id=179719)   : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
+#1 (id=179719)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Damage (0)
                    Base Value: 25 | Scaled Value: 25 | Target: Self (1)
                    Affected Spells: Backstab (53), Garrote (703), Mutilate (1329), Sinister Strike (1752), Rupture (1943), Run Through (2098), Deadly Poison (2818), Mutilate (5374), Ambush (8676), Wound Poison (8680), Mutilate Off-Hand (27576), Envenom (32645), Fan of Knives (51723), Killing Spree (57841), Killing Spree Off-Hand (57842), Main Gauche (86392), Shuriken Toss (114014), Shadow Blade (121473), Shadow Blade Off-hand (121474), Death from Above (152150), Internal Bleeding (154953), Backstab (173458), Shadowstrike (185438), Poisoned Knife (185565), Pistol Shot (185763), Cannonball Barrage (185779), From the Shadows (192434), Poison Bomb (192660), Kingsbane (192759), Kingsbane (192760), Saber Slash (193315), Nightblade (195452), Eviscerate (196819), Ghostly Strike (196937), Finality: Eviscerate (197393), Second Shuriken (197611), Shadow Nova (197800), Shuriken Storm (197835), Riposte (199753), Between the Eyes (199804), Gloomblade (200758), Greed (202822), Greed (202823), Blunderbuss (202895), Goremaw's Bite (209783), Goremaw's Bite (209784), Soul Rip (220893), Kingsbane (222062), Toxic Blade (245388), Toxic Blade (245389), Poison Bomb (255544), Poison Bomb (255546)
 #2 (id=191060)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Damage (22)
@@ -2556,7 +2556,7 @@ Effects          :
 #3 (id=191061)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)
                    Base Value: -38 | Scaled Value: -38 | Misc Value: 12 | Target: Self (1)
                    Affected Spells: Nightstalker (14062)
-#4 (id=191062)   : Apply Aura (6) | Add Flat Modifier (107): Spell Tick Time (8)
+#4 (id=191062)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effects (8)
                    Base Value: -38 | Scaled Value: -38 | Misc Value: 8 | Target: Self (1)
 #5 (id=191063)   : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 1206 | Target: Self (1)
@@ -2595,13 +2595,13 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6), Hidden (7)
 Effects          :
-#1 (id=179720)   : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
+#1 (id=179720)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Damage (0)
                    Base Value: 42 | Scaled Value: 42 | Target: Self (1)
                    Affected Spells: Backstab (53), Garrote (703), Mutilate (1329), Sinister Strike (1752), Rupture (1943), Run Through (2098), Deadly Poison (2818), Mutilate (5374), Ambush (8676), Wound Poison (8680), Mutilate Off-Hand (27576), Envenom (32645), Fan of Knives (51723), Killing Spree (57841), Killing Spree Off-Hand (57842), Main Gauche (86392), Shuriken Toss (114014), Shadow Blade (121473), Shadow Blade Off-hand (121474), Death from Above (152150), Internal Bleeding (154953), Backstab (173458), Shadowstrike (185438), Poisoned Knife (185565), Pistol Shot (185763), Cannonball Barrage (185779), From the Shadows (192434), Poison Bomb (192660), Kingsbane (192759), Kingsbane (192760), Saber Slash (193315), Nightblade (195452), Eviscerate (196819), Ghostly Strike (196937), Finality: Eviscerate (197393), Second Shuriken (197611), Shadow Nova (197800), Shuriken Storm (197835), Riposte (199753), Between the Eyes (199804), Gloomblade (200758), Greed (202822), Greed (202823), Blunderbuss (202895), Goremaw's Bite (209783), Goremaw's Bite (209784), Soul Rip (220893), Kingsbane (222062), Toxic Blade (245388), Toxic Blade (245389), Poison Bomb (255544), Poison Bomb (255546)
 #2 (id=191056)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Damage (22)
                    Base Value: 42 | Scaled Value: 42 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Backstab (53), Garrote (703), Mutilate (1329), Sinister Strike (1752), Rupture (1943), Run Through (2098), Deadly Poison (2818), Mutilate (5374), Ambush (8676), Wound Poison (8680), Mutilate Off-Hand (27576), Envenom (32645), Fan of Knives (51723), Killing Spree (57841), Killing Spree Off-Hand (57842), Main Gauche (86392), Shuriken Toss (114014), Shadow Blade (121473), Shadow Blade Off-hand (121474), Death from Above (152150), Internal Bleeding (154953), Backstab (173458), Shadowstrike (185438), Poisoned Knife (185565), Pistol Shot (185763), Cannonball Barrage (185779), From the Shadows (192434), Poison Bomb (192660), Kingsbane (192759), Kingsbane (192760), Saber Slash (193315), Nightblade (195452), Eviscerate (196819), Ghostly Strike (196937), Finality: Eviscerate (197393), Second Shuriken (197611), Shadow Nova (197800), Shuriken Storm (197835), Riposte (199753), Between the Eyes (199804), Gloomblade (200758), Greed (202822), Greed (202823), Blunderbuss (202895), Goremaw's Bite (209783), Goremaw's Bite (209784), Soul Rip (220893), Kingsbane (222062), Toxic Blade (245388), Toxic Blade (245389), Poison Bomb (255544), Poison Bomb (255546)
-#3 (id=191057)   : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
+#3 (id=191057)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Damage (0)
                    Base Value: 30 | Scaled Value: 30 | Target: Self (1)
                    Affected Spells: Death from Above (152150)
 #4 (id=191058)   : Apply Aura (6) | Dummy (4)
@@ -2642,7 +2642,7 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6), Hidden (7)
 Effects          :
-#1 (id=179721)   : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
+#1 (id=179721)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Damage (0)
                    Base Value: 10 | Scaled Value: 10 | Target: Self (1)
                    Affected Spells: Backstab (53), Garrote (703), Mutilate (1329), Sinister Strike (1752), Rupture (1943), Run Through (2098), Deadly Poison (2818), Mutilate (5374), Ambush (8676), Wound Poison (8680), Mutilate Off-Hand (27576), Envenom (32645), Fan of Knives (51723), Killing Spree (57841), Killing Spree Off-Hand (57842), Main Gauche (86392), Shuriken Toss (114014), Shadow Blade (121473), Shadow Blade Off-hand (121474), Death from Above (152150), Internal Bleeding (154953), Backstab (173458), Shadowstrike (185438), Poisoned Knife (185565), Pistol Shot (185763), Cannonball Barrage (185779), From the Shadows (192434), Poison Bomb (192660), Kingsbane (192759), Kingsbane (192760), Saber Slash (193315), Nightblade (195452), Eviscerate (196819), Ghostly Strike (196937), Finality: Eviscerate (197393), Second Shuriken (197611), Shadow Nova (197800), Shuriken Storm (197835), Riposte (199753), Between the Eyes (199804), Gloomblade (200758), Greed (202822), Greed (202823), Blunderbuss (202895), Goremaw's Bite (209783), Goremaw's Bite (209784), Soul Rip (220893), Kingsbane (222062), Toxic Blade (245388), Toxic Blade (245389), Poison Bomb (255544), Poison Bomb (255546)
 #2 (id=191052)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Damage (22)
@@ -2793,7 +2793,7 @@ Attributes       : ........ ........ ........ x..x....   .....x.. ........ .....
                  : Does not break stealth (37), Disable player procs (112), Disable target procs (113)
 Effects          :
 #1 (id=195536)   : Apply Aura (6) | Modify Rating (189)
-                   Base Value: 5 | Scaled Value: 11.242 (avg=0.146) | Misc Value: 33554432 | Target: Self (1)
+                   Base Value: 5 | Scaled Value: 35.916 (avg=0.146) | Misc Value: 33554432 | Target: Self (1)
 Description      : $@spelldesc145210
 Tooltip          : Mastery increased by $s1.
 
@@ -2969,7 +2969,7 @@ Effects          :
 #1 (id=230554)   : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost (14)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 14 | Target: Self (1)
                    Affected Spells: Run Through (2098), Envenom (32645), Eviscerate (196819), Finality: Eviscerate (197393)
-#2 (id=230555)   : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
+#2 (id=230555)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Damage (0)
                    Base Value: 50 | Scaled Value: 50 | Target: Self (1)
                    Affected Spells: Run Through (2098), Envenom (32645), Eviscerate (196819), Finality: Eviscerate (197393)
 #3 (id=250144)   : Apply Aura (6) | Add Flat Modifier (107): Spell Range (5)
@@ -3046,7 +3046,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #3 (id=334762)   : Apply Aura (6) | Periodic Heal% (20): every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-#4 (id=373905)   : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
+#4 (id=373905)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Damage (0)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
                    Affected Spells: Backstab (53), Garrote (703), Mutilate (1329), Sinister Strike (1752), Rupture (1943), Run Through (2098), Deadly Poison (2818), Mutilate (5374), Ambush (8676), Wound Poison (8680), Mutilate Off-Hand (27576), Envenom (32645), Fan of Knives (51723), Killing Spree (57841), Killing Spree Off-Hand (57842), Main Gauche (86392), Shuriken Toss (114014), Shadow Blade (121473), Shadow Blade Off-hand (121474), Death from Above (152150), Internal Bleeding (154953), Backstab (173458), Shadowstrike (185438), Poisoned Knife (185565), Pistol Shot (185763), Cannonball Barrage (185779), From the Shadows (192434), Poison Bomb (192660), Kingsbane (192759), Kingsbane (192760), Saber Slash (193315), Nightblade (195452), Eviscerate (196819), Ghostly Strike (196937), Finality: Eviscerate (197393), Second Shuriken (197611), Shadow Nova (197800), Shuriken Storm (197835), Riposte (199753), Between the Eyes (199804), Gloomblade (200758), Greed (202822), Greed (202823), Blunderbuss (202895), Goremaw's Bite (209783), Goremaw's Bite (209784), Soul Rip (220893), Kingsbane (222062), Toxic Blade (245388), Toxic Blade (245389), Poison Bomb (255544), Poison Bomb (255546)
 #5 (id=479896)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Damage (22)
@@ -3425,7 +3425,7 @@ Effects          :
 #3 (id=318640)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 12 | Target: Self (1)
                    Affected Spells: Cheap Shot (1833), Pistol Shot (185763), Saber Slash (193315), Blunderbuss (202895)
-#4 (id=370530)   : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
+#4 (id=370530)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Damage (0)
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
                    Affected Spells: Ambush (8676), Pistol Shot (185763), Saber Slash (193315), Blunderbuss (202895)
 Description      : Your combo-point generating abilities generate $s1 additional combo point and deal $s4% increased damage for the duration of Roll the Bones.
@@ -3511,7 +3511,7 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 4 | Target: Self (1)
 #3 (id=297518)   : Apply Aura (6) | Dummy (4)
                    Base Value: 6 | Scaled Value: 6 | Misc Value: 4 | Target: Self (1)
-#4 (id=315625)   : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
+#4 (id=315625)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Damage (0)
                    Base Value: 5 | Scaled Value: 5 | Target: Self (1)
                    Affected Spells: Run Through (2098), Envenom (32645), Death from Above (152150), Eviscerate (196819), Finality: Eviscerate (197393), Between the Eyes (199804)
 #5 (id=315626)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Damage (22)
@@ -3613,7 +3613,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6)
 Effects          :
-#1 (id=283945)   : Apply Aura (6) | Add Percent Modifier (108): Spell Tick Time (8)
+#1 (id=283945)   : Apply Aura (6) | Add Percent Modifier (108): Spell Effects (8)
                    Base Value: 30 | Scaled Value: 30 | Misc Value: 8 | Target: Self (1)
                    Affected Spells: Crimson Vial (185311), Crimson Vial (212198)
 Description      : Increases the healing you receive from Crimson Vial, healing potions, and healthstones by $s1%.
@@ -3653,7 +3653,7 @@ Attributes       : ....x... ........ ..x..... ........   ........ ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=284088)   : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
+#1 (id=284088)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Damage (0)
                    Base Value: 12 | Scaled Value: 12 | Target: Self (1)
                    Affected Spells: Backstab (53), Garrote (703), Mutilate (1329), Sinister Strike (1752), Rupture (1943), Run Through (2098), Deadly Poison (2818), Mutilate (5374), Ambush (8676), Wound Poison (8680), Mutilate Off-Hand (27576), Envenom (32645), Fan of Knives (51723), Killing Spree (57841), Killing Spree Off-Hand (57842), Main Gauche (86392), Shuriken Toss (114014), Shadow Blade (121473), Shadow Blade Off-hand (121474), Death from Above (152150), Internal Bleeding (154953), Backstab (173458), Shadowstrike (185438), Poisoned Knife (185565), Pistol Shot (185763), Cannonball Barrage (185779), From the Shadows (192434), Poison Bomb (192660), Kingsbane (192759), Kingsbane (192760), Saber Slash (193315), Nightblade (195452), Eviscerate (196819), Ghostly Strike (196937), Finality: Eviscerate (197393), Second Shuriken (197611), Shadow Nova (197800), Shuriken Storm (197835), Riposte (199753), Between the Eyes (199804), Gloomblade (200758), Greed (202822), Greed (202823), Blunderbuss (202895), Goremaw's Bite (209783), Goremaw's Bite (209784), Soul Rip (220893), Kingsbane (222062), Toxic Blade (245388), Toxic Blade (245389), Poison Bomb (255544), Poison Bomb (255546)
 #2 (id=479907)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Damage (22)
@@ -3756,7 +3756,7 @@ Effects          :
 #2 (id=294100)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 12 | Target: Self (1)
                    Affected Spells: Pistol Shot (185763), Blunderbuss (202895)
-#3 (id=294101)   : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
+#3 (id=294101)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Damage (0)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
                    Affected Spells: Pistol Shot (185763), Blunderbuss (202895)
 Description      : $@spelldesc193315
@@ -3820,7 +3820,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6)
 Effects          :
-#1 (id=289047)   : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
+#1 (id=289047)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Damage (0)
                    Base Value: 30 | Scaled Value: 30 | Target: Self (1)
                    Affected Spells: Deadly Poison (2818), Deadly Poison (2823), Wound Poison (8679), Wound Poison (8680), Venomhide Poison (14795), Spore Cloud (32643), Deadly Poison (113780), Poison Bomb (192660), Kingsbane (192759), Kingsbane (192760), Agonizing Poison (200803), Curse of the Dreadblades (202665), Kingsbane (222062), Poison Bomb (255546)
 #2 (id=289048)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Damage (22)
@@ -4117,7 +4117,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=290157)   : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
+#1 (id=290157)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Damage (0)
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
                    Affected Spells: Eviscerate (196819), Finality: Eviscerate (197393)
 Tooltip          : Your next Eviscerate deals $w1% increased damage.
@@ -4811,7 +4811,7 @@ Attributes       : ....x... ........ x.x..... ........   .....x.. ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Does not break stealth (37)
 Effects          :
-#1 (id=314702)   : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
+#1 (id=314702)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Damage (0)
                    Base Value: 15 | Scaled Value: 15 | Target: Self (1)
                    Affected Spells: Backstab (53), Garrote (703), Mutilate (1329), Sinister Strike (1752), Rupture (1943), Run Through (2098), Deadly Poison (2818), Mutilate (5374), Ambush (8676), Wound Poison (8680), Mutilate Off-Hand (27576), Envenom (32645), Fan of Knives (51723), Killing Spree (57841), Killing Spree Off-Hand (57842), Main Gauche (86392), Shuriken Toss (114014), Shadow Blade (121473), Shadow Blade Off-hand (121474), Death from Above (152150), Internal Bleeding (154953), Backstab (173458), Shadowstrike (185438), Poisoned Knife (185565), Pistol Shot (185763), Cannonball Barrage (185779), From the Shadows (192434), Poison Bomb (192660), Kingsbane (192759), Kingsbane (192760), Saber Slash (193315), Nightblade (195452), Eviscerate (196819), Ghostly Strike (196937), Finality: Eviscerate (197393), Second Shuriken (197611), Shadow Nova (197800), Shuriken Storm (197835), Riposte (199753), Between the Eyes (199804), Gloomblade (200758), Greed (202822), Greed (202823), Blunderbuss (202895), Goremaw's Bite (209783), Goremaw's Bite (209784), Soul Rip (220893), Kingsbane (222062), Toxic Blade (245388), Toxic Blade (245389), Poison Bomb (255544), Poison Bomb (255546)
 #2 (id=466105)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Damage (22)
@@ -4946,7 +4946,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6)
 Effects          :
-#1 (id=349575)   : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
+#1 (id=349575)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Damage (0)
                    Base Value: 50 | Scaled Value: 50 | Target: Self (1)
                    Affected Spells: Eviscerate (196819), Finality: Eviscerate (197393)
 Description      : Eviscerate's damage is increased by $s1%.
@@ -5147,7 +5147,7 @@ Effects          :
 #1 (id=373801)   : Apply Aura (6) | Add Flat Modifier (107): Spell Range (5)
                    Base Value: 20 | Scaled Value: 20 | Misc Value: 5 | Target: Self (1)
                    Affected Spells: Shadowstrike (185438)
-#2 (id=373802)   : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
+#2 (id=373802)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Damage (0)
                    Base Value: 25 | Scaled Value: 25 | Target: Self (1)
                    Affected Spells: Shadowstrike (185438)
 Description      : $@spelldesc231718
@@ -5184,7 +5184,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=373837)   : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
+#1 (id=373837)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Damage (0)
                    Base Value: 5 | Scaled Value: 5 | Target: Self (1)
                    Affected Spells: Eviscerate (196819), Finality: Eviscerate (197393)
 Description      : $@spelldesc245639
@@ -5207,7 +5207,7 @@ Effects          :
 #2 (id=479894)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 4 (32)
                    Base Value: 25 | Scaled Value: 25 | Misc Value: 32 | Target: Self (1)
                    Affected Spells: Shadow Dance (185313)
-#3 (id=479895)   : Apply Aura (6) | Add Flat Modifier (107): Unknown(33)
+#3 (id=479895)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 5 (33)
                    Base Value: 25 | Scaled Value: 25 | Misc Value: 33 | Target: Self (1)
                    Affected Spells: Shadow Dance (185313)
 Description      : While Shadow Dance is active, all damage you deal is increased by $s1%.
@@ -5630,9 +5630,9 @@ Attributes       : ........ ........ .......x ........   ........ ........ .....
                  : Disable player multipliers (221)
 Effects          :
 #1 (id=479676)   : School Damage (2): holy
-                   Base Value: 0 | Scaled Value: 5150.263 (avg=0.4) | Radius: 0 - 5 yards | Target: Custom (18) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 15564.52 (avg=0.4) | Radius: 0 - 5 yards | Target: Custom (18) -> AOE enemy (instant) (16)
 #2 (id=479677)   : Direct Heal (10)
-                   Base Value: 100000 | Scaled Value: 5150.263 (avg=0.4) | Radius: 0 - 8 yards | Target: Custom (18) -> AOE friendly (31)
+                   Base Value: 100000 | Scaled Value: 15564.52 (avg=0.4) | Radius: 0 - 8 yards | Target: Custom (18) -> AOE friendly (31)
 Description      : Deals $s1 Holy Damage to enemies within $A1.
 
 Heals $s2 to allies within $A1. 
