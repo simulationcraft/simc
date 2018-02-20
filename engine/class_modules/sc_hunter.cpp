@@ -239,8 +239,6 @@ public:
   struct procs_t
   {
     proc_t* wild_call;
-    proc_t* hunting_companion;
-    proc_t* wasted_hunting_companion;
     proc_t* mortal_wounds;
     proc_t* zevrims_hunger;
   } procs;
@@ -369,7 +367,7 @@ public:
   {
     const spell_data_t* master_of_beasts;
     const spell_data_t* sniper_training;
-    const spell_data_t* hunting_companion;
+    const spell_data_t* spirit_bond;
   } mastery;
 
   player_t* last_true_aim_target;
@@ -517,6 +515,7 @@ public:
     // mm
     bool sniper_training;
     // surv
+    bool spirit_bond;
     bool sv_legendary_cloak;
   } affected_by;
 
@@ -540,6 +539,7 @@ public:
 
     affected_by.sniper_training = ab::data().affected_by( p() -> mastery.sniper_training -> effectN( 2 ) );
 
+    affected_by.spirit_bond = ab::data().affected_by( p() -> mastery.spirit_bond -> effectN( 1 ) );
     affected_by.sv_legendary_cloak = ab::data().affected_by( p() -> find_spell( 248212 ) -> effectN( 1 ) );
   }
 
@@ -597,6 +597,9 @@ public:
 
     if ( affected_by.sniper_training && p() -> mastery.sniper_training -> ok() )
       am *= 1.0 + p() -> cache.mastery() * p() -> mastery.sniper_training -> effectN( 2 ).mastery_value();
+
+    if ( affected_by.spirit_bond && p() -> mastery.spirit_bond -> ok() )
+      am *= 1.0 + p() -> cache.mastery() * p() -> mastery.spirit_bond -> effectN( 1 ).mastery_value();
 
     return am;
   }
@@ -1415,52 +1418,29 @@ private:
 public:
   typedef hunter_main_pet_action_t base_t;
 
-  bool can_hunting_companion;
-  double hunting_companion_multiplier;
-
   struct {
     // bm
     bool aotw_crit_chance;
     bool aspect_of_the_beast;
     bool bestial_wrath;
     bool thrill_of_the_hunt;
+    // sv
+    bool spirit_bond;
   } affected_by;
 
   hunter_main_pet_action_t( const std::string& n, hunter_main_pet_t* p, const spell_data_t* s = spell_data_t::nil() ):
                             ab( n, p, s ), affected_by()
   {
-    can_hunting_companion = ab::o() -> specialization() == HUNTER_SURVIVAL;
-    hunting_companion_multiplier = 1.0;
-
     affected_by.aotw_crit_chance = ab::data().affected_by( ab::o() -> specs.aspect_of_the_wild -> effectN( 1 ) );
     affected_by.bestial_wrath = ab::data().affected_by( ab::o() -> specs.bestial_wrath -> effectN( 1 ) );
     affected_by.thrill_of_the_hunt = ab::data().affected_by( ab::o() -> talents.thrill_of_the_hunt -> effectN( 1 ) );
     affected_by.aspect_of_the_beast = ab::data().affected_by( ab::o() -> talents.aspect_of_the_beast -> effectN( 1 ) );
+
+    affected_by.spirit_bond = ab::data().affected_by( ab::o() -> mastery.spirit_bond -> effectN( 1 ) );
   }
 
   hunter_main_pet_td_t* td( player_t* t = nullptr ) const
   { return ab::p() -> get_target_data( t ? t : ab::target ); }
-
-  void execute() override
-  {
-    ab::execute();
-
-    if ( can_hunting_companion )
-    {
-      double proc_chance = ab::o() -> cache.mastery_value() * hunting_companion_multiplier;
-
-      if ( ab::o() -> buffs.aspect_of_the_eagle -> up() )
-        proc_chance += ab::o() -> specs.aspect_of_the_eagle -> effectN( 2 ).percent();
-
-      if ( ab::rng().roll( proc_chance ) )
-      {
-        ab::o() -> procs.hunting_companion -> occur();
-        if ( ab::o() -> cooldowns.mongoose_bite -> current_charge == ab::o() -> cooldowns.mongoose_bite -> charges )
-          ab::o() -> procs.wasted_hunting_companion -> occur();
-        ab::o() -> cooldowns.mongoose_bite -> reset( true );
-      }
-    }
-  }
 
   double action_multiplier() const override
   {
@@ -1471,6 +1451,9 @@ public:
 
     if ( affected_by.aspect_of_the_beast )
       am *= 1.0 + ab::o() -> talents.aspect_of_the_beast -> effectN( 1 ).percent();
+
+    if ( affected_by.spirit_bond && ab::o() -> mastery.spirit_bond -> ok() )
+      am *= 1.0 + ab::o() -> cache.mastery() * ab::o() -> mastery.spirit_bond -> effectN( 1 ).mastery_value();
 
     return am;
   }
@@ -1719,10 +1702,6 @@ struct flanking_strike_t: public hunter_main_pet_attack_t
   {
     attack_power_mod.direct = 4.2; //data hardcoded in tooltip
     background = true;
-    hunting_companion_multiplier = 2.0;
-
-    if ( p -> o() -> sets -> has_set_bonus( HUNTER_SURVIVAL, T19, B2 ) )
-      hunting_companion_multiplier *= p -> o() -> sets -> set( HUNTER_SURVIVAL, T19, B2 ) -> effectN( 1 ).base_value();
   }
 
   double composite_target_multiplier( player_t* t ) const override
@@ -4499,7 +4478,7 @@ void hunter_t::init_spells()
   // Mastery
   mastery.master_of_beasts     = find_mastery_spell( HUNTER_BEAST_MASTERY );
   mastery.sniper_training      = find_mastery_spell( HUNTER_MARKSMANSHIP );
-  mastery.hunting_companion    = find_mastery_spell( HUNTER_SURVIVAL );
+  mastery.spirit_bond          = find_mastery_spell( HUNTER_SURVIVAL );
 
   // Spec spells
   specs.critical_strikes     = find_spell( 157443 );
@@ -4791,8 +4770,6 @@ void hunter_t::init_procs()
   player_t::init_procs();
 
   procs.wild_call                    = get_proc( "wild_call" );
-  procs.hunting_companion            = get_proc( "hunting_companion" );
-  procs.wasted_hunting_companion     = get_proc( "wasted_hunting_companion" );
   procs.mortal_wounds                = get_proc( "mortal_wounds" );
   procs.zevrims_hunger               = get_proc( "zevrims_hunger" );
 }
