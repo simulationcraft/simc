@@ -452,7 +452,7 @@ Attributes       : ........ ........ x.x..... ........   ........ ..x..... .....
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=5130)     : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
+#1 (id=5130)     : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Damage (0)
                    Base Value: 30 | Scaled Value: 30 | Target: Self (1)
                    Affected Spells: Cone of Cold (120), Frost Nova (122), Fireball (133), Arcane Explosion (1449), Flamestrike (2120), Scorch (2948), Arcane Missiles (7268), Pyroblast (11366), Arcane Blast (30451), Dragon's Breath (31661), Waterbolt (31707), Arcane Barrage (44425), Living Bomb (44461), Frostbolt (59638), Frozen Orb (84721), Fireball (88082), Arcane Blast (88084), Fire Blast (108853), Frost Bomb (113092), Nether Tempest (114923), Nether Tempest (114954), Water Jet (135029), Meteor (153564), Comet Storm (153596), Arcane Orb (153640), Meteor Burn (155158), Supernova (157980), Blast Wave (157981), Ice Nova (157997), Blizzard (190357), Aftershocks (194432), Phoenix's Flames (194466), Blast Furnace (194522), Cinderstorm (198928), Ray of Frost (205021), Conflagration Flare Up (205345), Flame Patch (205472), Arcane Rebound (210817), Mark of Aluneth (211088), Phoenix Reborn (215775), Living Bomb (217694), Phoenix's Flames (224637), Arcane Assault (225119), Conflagration (226757), Flurry (228354), Frostbolt (228597), Ice Lance (228598), Ebonbolt (228599), Glacial Spike (228600), Frost Nova (235235), Blazing Barrier (235314), Time and Space (240689), Glacial Eruption (242851), Phoenix Flames (257541), Phoenix Flames (257542)
 #2 (id=5131)     : Apply Aura (6) | Modify Power Cost% (72)
@@ -877,7 +877,7 @@ Effects          :
 #1 (id=22383)    : Unknown(176)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #2 (id=22384)    : Apply Aura (6) | Invisibility (18)
-                   Base Value: 340 | Scaled Value: 680 | Points Per Level: 5 | Target: Self (1)
+                   Base Value: 340 | Scaled Value: 730 | Points Per Level: 5 | Target: Self (1)
 #3 (id=22385)    : Apply Aura (6) | Unknown(335)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #4 (id=470432)   : Apply Aura (6) | Unknown(260)
@@ -948,9 +948,9 @@ Attributes       : ....x... ........ ........ ........   .....x.. ..x..... .....
                  : Does not break stealth (37)
 Effects          :
 #1 (id=118955)   : Apply Aura (6) | Modify Healing Power (135)
-                   Base Value: 5 | Scaled Value: 101.64 (avg=1.32) | Target: Self (1)
+                   Base Value: 5 | Scaled Value: 324.72 (avg=1.32) | Target: Self (1)
 #2 (id=23584)    : Apply Aura (6) | Damage Done (13)
-                   Base Value: 5 | Scaled Value: 101.64 (avg=1.32) | Points Per Level: 2 | Misc Value: 0x7e | Target: Self (1)
+                   Base Value: 5 | Scaled Value: 324.72 (avg=1.32) | Points Per Level: 2 | Misc Value: 0x7e | Target: Self (1)
 Description      : Increases your spell power by $s2 for $d.
 Tooltip          : Spell power increased by $s2.
 
@@ -973,10 +973,10 @@ Attributes       : ........ x....... ..x..... ..x..x..   ........ ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Disable player procs (112), Disable target procs (113), Disable weapon procs (151)
 Effects          :
-#1 (id=26313)    : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
+#1 (id=26313)    : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Damage (0)
                    Base Value: 60 | Scaled Value: 60 | Target: Self (1)
                    Affected Spells: Arcane Blast (30451)
-#2 (id=26314)    : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
+#2 (id=26314)    : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Damage (0)
                    Base Value: 30 | Scaled Value: 30 | Target: Self (1)
                    Affected Spells: Arcane Barrage (44425)
 #3 (id=127870)   : Apply Aura (6) | Add Flat Modifier (107): Spell Targets (17)
@@ -1270,7 +1270,7 @@ Effects          :
                    Affected Spells: Ice Lance (30455), Icicle (148022), Glacial Spike (199786)
 #2 (id=136440)   : Dummy (3)
                    Base Value: 80 | Scaled Value: 80
-#3 (id=341171)   : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
+#3 (id=341171)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Damage (0)
                    Base Value: 5 | Scaled Value: 5 | Target: Self (1)
                    Affected Spells: Ice Lance (30455), Ice Lance (228598)
 Description      : Your Ice Lance and Icicles now deal $s3% increased damage, and hit a second nearby target for $s2% of their damage.$?s199786[
@@ -1605,7 +1605,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.25000 | Misc Value: 911 | Target: Self (1)
 #2 (id=90741)    : Apply Aura (6) | Dummy (4)
                    Base Value: 5 | Scaled Value: 5 | Misc Value: 911 | Target: Self (1)
-#3 (id=202642)   : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
+#3 (id=202642)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Damage (0)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.25000 | Target: Self (1)
                    Affected Spells: Waterbolt (31707), Lonely Winter (205024)
 #4 (id=279323)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Damage (22)
@@ -2007,7 +2007,7 @@ Effects          :
 #1 (id=123204)   : Unknown(176)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #2 (id=123205)   : Apply Aura (6) | Invisibility (18)
-                   Base Value: 340 | Scaled Value: 610 | Points Per Level: 5 | Target: Self (1)
+                   Base Value: 340 | Scaled Value: 660 | Points Per Level: 5 | Target: Self (1)
 #3 (id=123206)   : Apply Aura (6) | Unknown(335)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #4 (id=470477)   : Apply Aura (6) | Unknown(260)
@@ -2217,7 +2217,7 @@ Attributes       : ........ ........ ........ x..x...x   .....x.. ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Cannot cancel aura (31), Does not break stealth (37), Cannot crit (93), Disable player procs (112)
 Effects          :
-#1 (id=130584)   : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
+#1 (id=130584)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Damage (0)
                    Base Value: 40 | Scaled Value: 40 | Target: Self (1)
                    Affected Spells: Cone of Cold (120), Frost Nova (122), Fireball (133), Arcane Explosion (1449), Flamestrike (2120), Scorch (2948), Arcane Missiles (7268), Pyroblast (11366), Arcane Blast (30451), Dragon's Breath (31661), Waterbolt (31707), Arcane Barrage (44425), Living Bomb (44461), Frostbolt (59638), Frozen Orb (84721), Fireball (88082), Arcane Blast (88084), Fire Blast (108853), Frost Bomb (113092), Nether Tempest (114923), Nether Tempest (114954), Water Jet (135029), Meteor (153564), Comet Storm (153596), Arcane Orb (153640), Meteor Burn (155158), Supernova (157980), Blast Wave (157981), Ice Nova (157997), Blizzard (190357), Aftershocks (194432), Phoenix's Flames (194466), Blast Furnace (194522), Cinderstorm (198928), Ray of Frost (205021), Conflagration Flare Up (205345), Flame Patch (205472), Arcane Rebound (210817), Mark of Aluneth (211088), Phoenix Reborn (215775), Living Bomb (217694), Phoenix's Flames (224637), Arcane Assault (225119), Conflagration (226757), Flurry (228354), Frostbolt (228597), Ice Lance (228598), Ebonbolt (228599), Glacial Spike (228600), Frost Nova (235235), Blazing Barrier (235314), Time and Space (240689), Glacial Eruption (242851), Phoenix Flames (257541), Phoenix Flames (257542)
 #2 (id=150697)   : Apply Aura (6) | Periodic Heal% (20): every 1.5 seconds
@@ -2246,7 +2246,7 @@ Attributes       : ........ x....... ........ .......x   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Cannot cancel aura (31)
 Effects          :
-#1 (id=131165)   : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
+#1 (id=131165)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Damage (0)
                    Base Value: 4 | Scaled Value: 4 | Target: Self (1)
                    Affected Spells: Cone of Cold (120), Frost Nova (122), Fireball (133), Arcane Explosion (1449), Flamestrike (2120), Scorch (2948), Arcane Missiles (7268), Pyroblast (11366), Arcane Blast (30451), Dragon's Breath (31661), Waterbolt (31707), Arcane Barrage (44425), Living Bomb (44461), Frostbolt (59638), Frozen Orb (84721), Fireball (88082), Arcane Blast (88084), Fire Blast (108853), Frost Bomb (113092), Nether Tempest (114923), Nether Tempest (114954), Water Jet (135029), Meteor (153564), Comet Storm (153596), Arcane Orb (153640), Meteor Burn (155158), Supernova (157980), Blast Wave (157981), Ice Nova (157997), Blizzard (190357), Aftershocks (194432), Phoenix's Flames (194466), Blast Furnace (194522), Cinderstorm (198928), Ray of Frost (205021), Conflagration Flare Up (205345), Flame Patch (205472), Arcane Rebound (210817), Mark of Aluneth (211088), Phoenix Reborn (215775), Living Bomb (217694), Phoenix's Flames (224637), Arcane Assault (225119), Conflagration (226757), Flurry (228354), Frostbolt (228597), Ice Lance (228598), Ebonbolt (228599), Glacial Spike (228600), Frost Nova (235235), Blazing Barrier (235314), Time and Space (240689), Glacial Eruption (242851), Phoenix Flames (257541), Phoenix Flames (257542)
 #2 (id=168860)   : Apply Aura (6) | Modify Pet Damage Done% (429)
@@ -2476,7 +2476,7 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6), Hidden (7)
 Effects          :
-#1 (id=179702)   : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
+#1 (id=179702)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Damage (0)
                    Base Value: 12 | Scaled Value: 12 | Target: Self (1)
                    Affected Spells: Cone of Cold (120), Frost Nova (122), Fireball (133), Arcane Explosion (1449), Flamestrike (2120), Scorch (2948), Arcane Missiles (7268), Pyroblast (11366), Arcane Blast (30451), Dragon's Breath (31661), Waterbolt (31707), Arcane Barrage (44425), Living Bomb (44461), Frostbolt (59638), Frozen Orb (84721), Fireball (88082), Arcane Blast (88084), Fire Blast (108853), Frost Bomb (113092), Nether Tempest (114923), Nether Tempest (114954), Water Jet (135029), Meteor (153564), Comet Storm (153596), Arcane Orb (153640), Meteor Burn (155158), Supernova (157980), Blast Wave (157981), Ice Nova (157997), Blizzard (190357), Aftershocks (194432), Phoenix's Flames (194466), Blast Furnace (194522), Cinderstorm (198928), Ray of Frost (205021), Conflagration Flare Up (205345), Flame Patch (205472), Arcane Rebound (210817), Mark of Aluneth (211088), Phoenix Reborn (215775), Living Bomb (217694), Phoenix's Flames (224637), Arcane Assault (225119), Conflagration (226757), Flurry (228354), Frostbolt (228597), Ice Lance (228598), Ebonbolt (228599), Glacial Spike (228600), Frost Nova (235235), Blazing Barrier (235314), Time and Space (240689), Glacial Eruption (242851), Phoenix Flames (257541), Phoenix Flames (257542)
 #2 (id=191125)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Damage (22)
@@ -2522,7 +2522,7 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6), Hidden (7)
 Effects          :
-#1 (id=179703)   : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
+#1 (id=179703)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Damage (0)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
                    Affected Spells: Cone of Cold (120), Frost Nova (122), Fireball (133), Arcane Explosion (1449), Flamestrike (2120), Scorch (2948), Arcane Missiles (7268), Pyroblast (11366), Arcane Blast (30451), Dragon's Breath (31661), Waterbolt (31707), Arcane Barrage (44425), Living Bomb (44461), Frostbolt (59638), Frozen Orb (84721), Fireball (88082), Arcane Blast (88084), Fire Blast (108853), Frost Bomb (113092), Nether Tempest (114923), Nether Tempest (114954), Water Jet (135029), Meteor (153564), Comet Storm (153596), Arcane Orb (153640), Meteor Burn (155158), Supernova (157980), Blast Wave (157981), Ice Nova (157997), Blizzard (190357), Aftershocks (194432), Phoenix's Flames (194466), Blast Furnace (194522), Cinderstorm (198928), Ray of Frost (205021), Conflagration Flare Up (205345), Flame Patch (205472), Arcane Rebound (210817), Mark of Aluneth (211088), Phoenix Reborn (215775), Living Bomb (217694), Phoenix's Flames (224637), Arcane Assault (225119), Conflagration (226757), Flurry (228354), Frostbolt (228597), Ice Lance (228598), Ebonbolt (228599), Glacial Spike (228600), Frost Nova (235235), Blazing Barrier (235314), Time and Space (240689), Glacial Eruption (242851), Phoenix Flames (257541), Phoenix Flames (257542)
 #2 (id=191121)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Damage (22)
@@ -2567,7 +2567,7 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6), Hidden (7)
 Effects          :
-#1 (id=179704)   : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
+#1 (id=179704)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Damage (0)
                    Base Value: 3 | Scaled Value: 3 | Target: Self (1)
                    Affected Spells: Cone of Cold (120), Frost Nova (122), Fireball (133), Arcane Explosion (1449), Flamestrike (2120), Scorch (2948), Arcane Missiles (7268), Pyroblast (11366), Arcane Blast (30451), Dragon's Breath (31661), Waterbolt (31707), Arcane Barrage (44425), Living Bomb (44461), Frostbolt (59638), Frozen Orb (84721), Fireball (88082), Arcane Blast (88084), Fire Blast (108853), Frost Bomb (113092), Nether Tempest (114923), Nether Tempest (114954), Water Jet (135029), Meteor (153564), Comet Storm (153596), Arcane Orb (153640), Meteor Burn (155158), Supernova (157980), Blast Wave (157981), Ice Nova (157997), Blizzard (190357), Aftershocks (194432), Phoenix's Flames (194466), Blast Furnace (194522), Cinderstorm (198928), Ray of Frost (205021), Conflagration Flare Up (205345), Flame Patch (205472), Arcane Rebound (210817), Mark of Aluneth (211088), Phoenix Reborn (215775), Living Bomb (217694), Phoenix's Flames (224637), Arcane Assault (225119), Conflagration (226757), Flurry (228354), Frostbolt (228597), Ice Lance (228598), Ebonbolt (228599), Glacial Spike (228600), Frost Nova (235235), Blazing Barrier (235314), Time and Space (240689), Glacial Eruption (242851), Phoenix Flames (257541), Phoenix Flames (257542)
 #2 (id=191116)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Damage (22)
@@ -3377,7 +3377,7 @@ Attributes       : .......x ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Hidden (7)
 Effects          :
-#1 (id=273067)   : Apply Aura (6) | Add Percent Modifier (108): Unknown 2 (19)
+#1 (id=273067)   : Apply Aura (6) | Add Percent Modifier (108): Spell Tick Time (19)
                    Base Value: -43 | Scaled Value: -43 | Misc Value: 19 | Target: Self (1)
                    Affected Spells: Arcane Missiles (5143)
 #2 (id=273068)   : Apply Aura (6) | Dummy (4)
@@ -3544,7 +3544,7 @@ Effects          :
 #1 (id=279086)   : Apply Aura (6) | Add Percent Modifier (108): Spell Cast Time (10)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 10 | Target: Self (1)
                    Affected Spells: Flurry (44614)
-#2 (id=348810)   : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
+#2 (id=348810)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Damage (0)
                    Base Value: 50 | Scaled Value: 50 | Target: Self (1)
                    Affected Spells: Flurry (44614)
 Description      : $@spelldesc190447
@@ -3983,7 +3983,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6)
 Effects          :
-#1 (id=302651)   : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
+#1 (id=302651)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Damage (0)
                    Base Value: 25 | Scaled Value: 25 | Target: Self (1)
                    Affected Spells: Frostbolt (116), Ice Lance (30455), Frozen Orb (84721), Flurry (228354), Frostbolt (228597), Ice Lance (228598)
 Description      : You can no longer summon your Water Elemental, but Frostbolt, Ice Lance, Flurry, and Frozen Orb deal $s1% increased damage. 
@@ -4168,7 +4168,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6)
 Effects          :
-#1 (id=302665)   : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
+#1 (id=302665)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Damage (0)
                    Base Value: 30 | Scaled Value: 30 | Target: Self (1)
                    Affected Spells: Blizzard (190356), Blizzard (190357)
 #2 (id=304112)   : Apply Aura (6) | Add Percent Modifier (108): Spell Radius (6)
@@ -4305,7 +4305,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=304047)   : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
+#1 (id=304047)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Damage (0)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
                    Affected Spells: Cone of Cold (120), Frost Nova (122), Fireball (133), Arcane Explosion (1449), Flamestrike (2120), Scorch (2948), Arcane Missiles (7268), Pyroblast (11366), Arcane Blast (30451), Dragon's Breath (31661), Waterbolt (31707), Arcane Barrage (44425), Living Bomb (44461), Frostbolt (59638), Frozen Orb (84721), Fireball (88082), Arcane Blast (88084), Fire Blast (108853), Frost Bomb (113092), Nether Tempest (114923), Nether Tempest (114954), Water Jet (135029), Meteor (153564), Comet Storm (153596), Arcane Orb (153640), Meteor Burn (155158), Supernova (157980), Blast Wave (157981), Ice Nova (157997), Blizzard (190357), Aftershocks (194432), Phoenix's Flames (194466), Blast Furnace (194522), Cinderstorm (198928), Ray of Frost (205021), Conflagration Flare Up (205345), Flame Patch (205472), Arcane Rebound (210817), Mark of Aluneth (211088), Phoenix Reborn (215775), Living Bomb (217694), Phoenix's Flames (224637), Arcane Assault (225119), Conflagration (226757), Flurry (228354), Frostbolt (228597), Ice Lance (228598), Ebonbolt (228599), Glacial Spike (228600), Frost Nova (235235), Blazing Barrier (235314), Time and Space (240689), Glacial Eruption (242851), Phoenix Flames (257541), Phoenix Flames (257542)
 #2 (id=479797)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Damage (22)
@@ -4708,9 +4708,9 @@ Attributes       : ........ ........ ..x..... ........   ........ ........ .....
                  : ........ ........ ........ ........   ..x..... ........ ........ ........ 
 Effects          :
 #1 (id=331819)   : School Damage (2): fire
-                   Base Value: 0 | Scaled Value: 7700 (avg=100) | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 24600 (avg=100) | Target: Enemy (6)
 #2 (id=342491)   : Apply Aura (6) | Periodic Damage (3): fire every 1 seconds
-                   Base Value: 0 | Scaled Value: 1155 (avg=15) | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 3690 (avg=15) | Target: Enemy (6)
 Description      : Deal $sw1 Fire damage and an additional $sw2 Fire damage over $d.
 Tooltip          : Taking $sw2 Fire damage every $t2 sec.
 
@@ -4729,7 +4729,7 @@ Attributes       : ........ ........ ..x..... ........   ........ ........ .....
                  : ........ ........ ........ ........   ..x..... ........ ........ ........ 
 Effects          :
 #1 (id=331848)   : School Damage (2): frost
-                   Base Value: 0 | Scaled Value: 12705 (avg=165) | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 40590 (avg=165) | Target: Enemy (6)
 #2 (id=342164)   : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -70 | Scaled Value: -70 | Target: Enemy (6)
 Description      : Deal $s1 Frost damage and reduces the target's movement speed by $s2% for $d.
@@ -4748,7 +4748,7 @@ Attributes       : ........ ........ ..x..... ........   ........ ........ .....
                  : ........ ........ ........ ........   ..x..... ........ ........ ........ 
 Effects          :
 #1 (id=331849)   : School Damage (2): arcane
-                   Base Value: 0 | Scaled Value: 13475 (avg=175) | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 43050 (avg=175) | Target: Enemy (6)
 Description      : Deal $s1 Arcane damage.
 
 Name             : Phoenix's Flames (Artifact) (id=224637) [Spell Family (3)] 
@@ -5710,7 +5710,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=473551)   : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
+#1 (id=473551)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Damage (0)
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
                    Affected Spells: Ice Lance (30455), Ice Lance (228598)
 Description      : $@spelldesc251860
@@ -5841,9 +5841,9 @@ Attributes       : ........ ........ .......x ........   ........ ........ .....
                  : Disable player multipliers (221)
 Effects          :
 #1 (id=479676)   : School Damage (2): holy
-                   Base Value: 0 | Scaled Value: 5150.263 (avg=0.4) | Radius: 0 - 5 yards | Target: Custom (18) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 15564.52 (avg=0.4) | Radius: 0 - 5 yards | Target: Custom (18) -> AOE enemy (instant) (16)
 #2 (id=479677)   : Direct Heal (10)
-                   Base Value: 100000 | Scaled Value: 5150.263 (avg=0.4) | Radius: 0 - 8 yards | Target: Custom (18) -> AOE friendly (31)
+                   Base Value: 100000 | Scaled Value: 15564.52 (avg=0.4) | Radius: 0 - 8 yards | Target: Custom (18) -> AOE friendly (31)
 Description      : Deals $s1 Holy Damage to enemies within $A1.
 
 Heals $s2 to allies within $A1. 
@@ -5944,7 +5944,7 @@ Attributes       : .......x ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Hidden (7)
 Effects          :
-#1 (id=707709)   : Apply Aura (6) | Add Flat Modifier (107): Unknown 2 (19)
+#1 (id=707709)   : Apply Aura (6) | Add Flat Modifier (107): Spell Tick Time (19)
                    Base Value: -250 | Scaled Value: -250 | Misc Value: 19 | Target: Self (1)
                    Affected Spells: Arcane Missiles (5143)
 Description      : $@spelldesc264351
