@@ -864,7 +864,7 @@ namespace priestspace
 
           if( priest().talents.sanlayn->ok() )
           {
-            cooldown->duration += priest().talents.sanlayn->effectN( 1 ).time_value();
+            cooldown->duration = data().cooldown() + priest().talents.sanlayn->effectN( 1 ).time_value();
           }
         }
 
