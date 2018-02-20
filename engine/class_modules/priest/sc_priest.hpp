@@ -28,8 +28,7 @@ namespace priestspace
       struct divine_star_t;
       struct halo_t;
       struct levitate_t;
-      struct power_infusion_t;
-      struct shadow_word_pain_t;
+      struct power_infusion_t;      
       struct smite_t;
       struct summon_pet_t;
       struct summon_shadowfiend_t;

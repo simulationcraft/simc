@@ -932,9 +932,6 @@ namespace priestspace
             base_multiplier *= 1.0 + p.artifact.to_the_pain.percent();
           }
 
-          if (priest().sim->debug)
-              priest().sim->out_debug << priest().name() << " initialized correct pain.";
-
           if (priest().specs.shadowy_apparitions->ok() && !priest().active_spells.shadowy_apparitions)
           {
             priest().active_spells.shadowy_apparitions = new shadowy_apparition_spell_t(p);

@@ -6,9 +6,9 @@
 #include "simulationcraft.hpp"
 #include "sc_priest.hpp"
 
-namespace priestspace 
+namespace priestspace
 {
-	namespace actions
+  namespace actions
   {
     namespace spells
     {
@@ -106,12 +106,12 @@ namespace priestspace
       // ==========================================================================
       // Shadow Word: Pain
       // ==========================================================================
-      struct shadow_word_pain_t final : public priest_spell_t
+      struct shadow_word_pain_disc_t final : public priest_spell_t
       {
         double insanity_gain;
         bool casted;
 
-        shadow_word_pain_t(priest_t& p, const std::string& options_str, bool _casted = true)
+        shadow_word_pain_disc_t(priest_t& p, const std::string& options_str, bool _casted = true)
           : priest_spell_t("shadow_word_pain", p, p.find_class_spell("Shadow Word: Pain")),
           insanity_gain(data().effectN(3).resource(RESOURCE_INSANITY))
         {
@@ -126,6 +126,7 @@ namespace priestspace
             base_dd_min = 0.0;
           }
           energize_type = ENERGIZE_NONE;  // disable resource generation from spell data
+
         }
 
         double spell_direct_power_coefficient(const action_state_t* s) const override
@@ -240,8 +241,8 @@ namespace priestspace
       ->add_invalidate(CACHE_HASTE);
 
     buffs.twist_of_fate = make_buff(this, "twist_of_fate", talents.twist_of_fate)
-    ->set_duration(talents.twist_of_fate->effectN(1).trigger()->duration())
-    ->set_default_value(talents.twist_of_fate->effectN(1).trigger()->effectN(2).percent())
+      ->set_duration(talents.twist_of_fate->effectN(1).trigger()->duration())
+      ->set_default_value(talents.twist_of_fate->effectN(1).trigger()->effectN(2).percent())
       ->add_invalidate(CACHE_PLAYER_DAMAGE_MULTIPLIER)
       ->add_invalidate(CACHE_PLAYER_HEAL_MULTIPLIER);
 
@@ -249,64 +250,64 @@ namespace priestspace
     buffs.archangel = new buffs::archangel_t(*this);
 
     buffs.borrowed_time = make_buff(this, "borrowed_time", find_spell(59889))
-    ->set_chance(specs.borrowed_time->ok())
-    ->set_default_value(find_spell(59889)->effectN(1).percent())
+      ->set_chance(specs.borrowed_time->ok())
+      ->set_default_value(find_spell(59889)->effectN(1).percent())
       ->add_invalidate(CACHE_HASTE);
 
     buffs.holy_evangelism = make_buff(this, "holy_evangelism", find_spell(81661))
-    ->set_chance(specs.evangelism->ok())
-    ->set_activated(false);
+      ->set_chance(specs.evangelism->ok())
+      ->set_activated(false);
 
   }
 
   void priest_t::init_rng_discipline()
   {
-    
+
   }
 
-    void priest_t::init_spells_discipline()
+  void priest_t::init_spells_discipline()
   {
     // Talents 
     // T15
-    talents.castigation          = find_talent_spell("Castigation");
-    talents.twist_of_fate        = find_talent_spell("Twist of Fate", PRIEST_DISCIPLINE);
-    talents.schism               = find_talent_spell("Schism");
+    talents.castigation = find_talent_spell("Castigation");
+    talents.twist_of_fate = find_talent_spell("Twist of Fate", PRIEST_DISCIPLINE);
+    talents.schism = find_talent_spell("Schism");
     // T30
-    talents.angelic_feather      = find_talent_spell("Angelic Feather");
-    talents.body_and_soul        = find_talent_spell("Body and Soul");
-    talents.masochism            = find_talent_spell("Masochism");
+    talents.angelic_feather = find_talent_spell("Angelic Feather");
+    talents.body_and_soul = find_talent_spell("Body and Soul");
+    talents.masochism = find_talent_spell("Masochism");
     // T45    
-    talents.power_word_solace    = find_talent_spell("Power Word: Solace");
-    talents.shield_discipline    = find_talent_spell("Shield Discipline");
-    talents.mindbender           = find_talent_spell("Mindbender", PRIEST_DISCIPLINE);
+    talents.power_word_solace = find_talent_spell("Power Word: Solace");
+    talents.shield_discipline = find_talent_spell("Shield Discipline");
+    talents.mindbender = find_talent_spell("Mindbender", PRIEST_DISCIPLINE);
     // T60
-    talents.psychic_voice        = find_talent_spell("Psychic Voice");
-    talents.shining_force        = find_talent_spell("Shining Force");
-    talents.dominant_mind        = find_talent_spell("Dominant Mind");
+    talents.psychic_voice = find_talent_spell("Psychic Voice");
+    talents.shining_force = find_talent_spell("Shining Force");
+    talents.dominant_mind = find_talent_spell("Dominant Mind");
     // T75
-    talents.sanctuary            = find_talent_spell("Sanctuary");
-    talents.clarity_of_will      = find_talent_spell("Clarity of Will");
-    talents.shadow_covenant      = find_talent_spell("Shadow Covenant");
+    talents.sanctuary = find_talent_spell("Sanctuary");
+    talents.clarity_of_will = find_talent_spell("Clarity of Will");
+    talents.shadow_covenant = find_talent_spell("Shadow Covenant");
     // T90
-    talents.purge_the_wicked     = find_talent_spell("Purge the Wicked");
-    talents.divine_star          = find_talent_spell("Divine Star");
-    talents.halo                 = find_talent_spell("Halo");
+    talents.purge_the_wicked = find_talent_spell("Purge the Wicked");
+    talents.divine_star = find_talent_spell("Divine Star");
+    talents.halo = find_talent_spell("Halo");
     // T100
-    talents.power_infusion       = find_talent_spell("Power Infusion");
-    talents.grace                = find_talent_spell("Grace");
-    talents.evangelism           = find_talent_spell("Evangelism");
+    talents.power_infusion = find_talent_spell("Power Infusion");
+    talents.grace = find_talent_spell("Grace");
+    talents.evangelism = find_talent_spell("Evangelism");
 
     // General Spells
-    specs.atonement              = find_specialization_spell("Atonement");
-    specs.archangel              = find_specialization_spell("Archangel");
-    specs.borrowed_time          = find_specialization_spell("Borrowed Time");
-    specs.divine_aegis           = find_specialization_spell("Divine Aegis");
-    specs.evangelism             = find_specialization_spell("Evangelism");
-    specs.grace                  = find_specialization_spell("Grace");
-    specs.meditation_disc        = find_specialization_spell("Meditation", PRIEST_DISCIPLINE);
-    specs.mysticism              = find_specialization_spell("Mysticism");
-    specs.spirit_shell           = find_specialization_spell("Spirit Shell");
-    specs.enlightenment          = find_specialization_spell("Enlightenment");
+    specs.atonement = find_specialization_spell("Atonement");
+    specs.archangel = find_specialization_spell("Archangel");
+    specs.borrowed_time = find_specialization_spell("Borrowed Time");
+    specs.divine_aegis = find_specialization_spell("Divine Aegis");
+    specs.evangelism = find_specialization_spell("Evangelism");
+    specs.grace = find_specialization_spell("Grace");
+    specs.meditation_disc = find_specialization_spell("Meditation", PRIEST_DISCIPLINE);
+    specs.mysticism = find_specialization_spell("Mysticism");
+    specs.spirit_shell = find_specialization_spell("Spirit Shell");
+    specs.enlightenment = find_specialization_spell("Enlightenment");
 
     // Range Based on Talents
     if (base.distance != 5)
@@ -338,26 +339,26 @@ namespace priestspace
     }
   }
 
-  action_t* priest_t::create_action_discipline( const std::string& name, const std::string& options_str )
+  action_t* priest_t::create_action_discipline(const std::string& name, const std::string& options_str)
   {
     using namespace actions::spells;
     using namespace actions::heals;
-        
+
     if (name == "pain_suppression")      return new pain_suppression_t(*this, options_str);
     if (name == "penance")               return new penance_t(*this, options_str);
-    if (name == "power_word_solace")     return new power_word_solace_t(*this, options_str);        
+    if (name == "power_word_solace")     return new power_word_solace_t(*this, options_str);
     if (name == "schism")                return new schism_t(*this, options_str);
     if ((name == "shadow_word_pain") || (name == "purge_the_wicked"))
     {
-      if( talents.purge_the_wicked->ok() )
+      if (talents.purge_the_wicked->ok())
       {
         return new purge_the_wicked_t(*this, options_str);
       }
       else
-      { 
-        return new shadow_word_pain_t(*this, options_str);
+      {
+        return new shadow_word_pain_disc_t(*this, options_str);
       }
-    }      
+    }
 
     return nullptr;
   }
@@ -392,7 +393,7 @@ namespace priestspace
     // Potions
     if (sim->allow_potions && true_level >= 80)
     {
-        def->add_action("potion,if=buff.bloodlust.react|target.time_to_die<=40");
+      def->add_action("potion,if=buff.bloodlust.react|target.time_to_die<=40");
     }
 
     if (race == RACE_BLOOD_ELF)
@@ -425,5 +426,5 @@ namespace priestspace
     def->add_action(this, "Smite");
     def->add_action(this, "Shadow Word: Pain");
   }
-	
+
 } // Priest Namespace

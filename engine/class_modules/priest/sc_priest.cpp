@@ -851,7 +851,7 @@ namespace priestspace
     action_t* discipline_action = create_action_discipline( name, options_str );
     if ( discipline_action && specialization() == PRIEST_DISCIPLINE )
       return discipline_action;
-
+    
     action_t* holy_action = create_action_holy( name, options_str );
     if ( holy_action && specialization() == PRIEST_HOLY )
       return holy_action;
