@@ -270,7 +270,7 @@ namespace priestspace
     // Talents 
     // T15
     talents.castigation = find_talent_spell("Castigation");
-    talents.twist_of_fate = find_talent_spell("Twist of Fate", PRIEST_DISCIPLINE);
+    talents.twist_of_fate = find_talent_spell("Twist of Fate");
     talents.schism = find_talent_spell("Schism");
     // T30
     talents.angelic_feather = find_talent_spell("Angelic Feather");
@@ -279,7 +279,7 @@ namespace priestspace
     // T45    
     talents.power_word_solace = find_talent_spell("Power Word: Solace");
     talents.shield_discipline = find_talent_spell("Shield Discipline");
-    talents.mindbender = find_talent_spell("Mindbender", PRIEST_DISCIPLINE);
+    talents.mindbender = find_talent_spell("Mindbender");
     // T60
     talents.psychic_voice = find_talent_spell("Psychic Voice");
     talents.shining_force = find_talent_spell("Shining Force");
@@ -304,7 +304,7 @@ namespace priestspace
     specs.divine_aegis = find_specialization_spell("Divine Aegis");
     specs.evangelism = find_specialization_spell("Evangelism");
     specs.grace = find_specialization_spell("Grace");
-    specs.meditation_disc = find_specialization_spell("Meditation", PRIEST_DISCIPLINE);
+    specs.meditation_disc = find_specialization_spell("Meditation");
     specs.mysticism = find_specialization_spell("Mysticism");
     specs.spirit_shell = find_specialization_spell("Spirit Shell");
     specs.enlightenment = find_specialization_spell("Enlightenment");

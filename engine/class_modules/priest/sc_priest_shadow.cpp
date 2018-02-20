@@ -2146,7 +2146,7 @@ namespace priestspace
     // T45     
     talents.dark_void                 = find_talent_spell("Dark Void");
     talents.misery                    = find_talent_spell("Misery");
-    talents.twist_of_fate             = find_talent_spell("Twist of Fate", PRIEST_SHADOW);
+    talents.twist_of_fate             = find_talent_spell("Twist of Fate");
     // T60     
     talents.last_word                 = find_talent_spell("Last Word");
     talents.mind_bomb                 = find_talent_spell("Mind Bomb");
@@ -2157,8 +2157,8 @@ namespace priestspace
     talents.shadow_crash              = find_talent_spell("Shadow Crash");
     // T90     
     talents.lingering_insanity        = find_talent_spell("Lingering Insanity");
-    talents.mindbender                = find_talent_spell("Mindbender", PRIEST_SHADOW);
-    talents.power_infusion            = find_talent_spell("Power Infusion", PRIEST_SHADOW);
+    talents.mindbender                = find_talent_spell("Mindbender");
+    talents.power_infusion            = find_talent_spell("Power Infusion");
     // T100     
     talents.legacy_of_the_void        = find_talent_spell("Legacy of the Void");
     talents.void_torrent              = find_talent_spell("Void Torrent");
