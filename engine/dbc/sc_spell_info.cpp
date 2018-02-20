@@ -420,6 +420,7 @@ static const std::unordered_map<int, const std::string> _property_type_strings =
   {  5, "Spell Range"               },
   {  6, "Spell Radius"              },
   {  7, "Spell Critical Chance"     },
+  {  8, "Spell Effects"             },
   {  9, "Spell Pushback"            },
   { 10, "Spell Cast Time"           },
   { 11, "Spell Cooldown"            },
