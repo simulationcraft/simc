@@ -96,11 +96,17 @@ void priest_t::init_spells_holy()
   if ( base.distance != 5 )
   {
     if ( talents.divine_star->ok() )
+    {
       base.distance = 24.0;
+    }
     else if ( talents.halo->ok() )
+    {
       base.distance = 27.0;
+    }
     else
+    {
       base.distance = 27.0;
+    }
   }
 }
 
@@ -110,7 +116,9 @@ action_t* priest_t::create_action_holy( const std::string& name, const std::stri
   using namespace actions::heals;
 
   if ( name == "holy_fire" )
+  {
     return new holy_fire_t( *this, options_str );
+  }
 
   return nullptr;
 }

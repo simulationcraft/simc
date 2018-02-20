@@ -81,7 +81,9 @@ public:
     }
 
     if ( priest().sets->has_set_bonus( PRIEST_SHADOW, T21, B2 ) )
+    {
       crit_bonus_multiplier *= 1.0 + priest().sets->set( PRIEST_SHADOW, T21, B2 )->effectN( 1 ).percent();
+    }
     background = ( priest().talents.shadow_word_void->ok() );
   }
 
@@ -220,7 +222,9 @@ public:
     }
 
     if ( priest().sets->has_set_bonus( PRIEST_SHADOW, T21, B2 ) )
+    {
       crit_bonus_multiplier *= 1.0 + priest().sets->set( PRIEST_SHADOW, T21, B2 )->effectN( 1 ).percent();
+    }
   }
 
   void init() override
@@ -468,7 +472,9 @@ struct mind_flay_t final : public priest_spell_t
     spell_power_mod.tick *= 1.0 + p.talents.fortress_of_the_mind->effectN( 3 ).percent();
 
     if ( priest().sets->has_set_bonus( PRIEST_SHADOW, T21, B2 ) )
+    {
       crit_bonus_multiplier *= 1.0 + ( priest().sets->set( PRIEST_SHADOW, T21, B2 )->effectN( 1 ).percent() );
+    }
   }
 
   virtual double composite_crit_chance() const override
@@ -630,7 +636,9 @@ struct shadow_word_death_t final : public priest_spell_t
   bool ready() override
   {
     if ( !priest_spell_t::ready() )
+    {
       return false;
+    }
 
     if ( priest().buffs.zeks_exterminatus->up() )
     {
@@ -870,7 +878,9 @@ struct vampiric_embrace_t final : public priest_spell_t
   bool ready() override
   {
     if ( priest().buffs.vampiric_embrace->check() )
+    {
       return false;
+    }
 
     return priest_spell_t::ready();
   }
@@ -919,7 +929,9 @@ struct shadowy_apparition_spell_t final : public priest_spell_t
   void trigger()
   {
     if ( priest().sim->debug )
+    {
       priest().sim->out_debug << priest().name() << " triggered shadowy apparition.";
+    }
 
     priest().procs.shadowy_apparition->occur();
     schedule_execute();
@@ -1041,7 +1053,9 @@ struct shadow_word_pain_t final : public priest_spell_t
     double c = priest_spell_t::cost();
 
     if ( priest().specialization() == PRIEST_SHADOW )
+    {
       return 0.0;
+    }
 
     return c;
   }
@@ -1072,7 +1086,9 @@ struct vampiric_touch_t final : public priest_spell_t
   {
     parse_options( options_str );
     if ( !ignore_healing )
+    {
       init_mental_fortitude();
+    }
 
     may_crit         = false;
     is_mastery_spell = true;
@@ -1100,7 +1116,9 @@ struct vampiric_touch_t final : public priest_spell_t
   void trigger_heal( action_state_t* s )
   {
     if ( ignore_healing )
+    {
       return;
+    }
 
     double amount_to_heal = s->result_amount * data().effectN( 2 ).m_value();
 
@@ -1280,7 +1298,9 @@ struct void_bolt_t final : public priest_spell_t
   bool ready() override
   {
     if ( !( priest().buffs.voidform->check() ) )
+    {
       return false;
+    }
 
     return priest_spell_t::ready();
   }
@@ -1521,15 +1541,19 @@ struct mental_fortitude_t final : public priest_absorb_t
 
     // Trigger Absorb Buff
     if ( buff == nullptr )
+    {
       buff = create_buff( s );
+    }
 
     if ( result_is_hit( s->result ) )
     {
       buff->trigger( 1, stacked_amount );
       if ( sim->log )
+      {
         sim->out_log.printf( "%s %s applies absorb on %s for %.0f (%.0f) (%s)", player->name(), name(),
                              s->target->name(), s->result_amount, stacked_amount,
                              util::result_type_string( s->result ) );
+      }
     }
 
     stats->add_result( 0.0, s->result_total, ABSORB, s->result, s->block_result, s->target );
@@ -1647,7 +1671,9 @@ struct overwhelming_darkness_t final : public priest_buff_t<stat_buff_t>
   bool freeze_stacks() override
   {
     if ( priest().buffs.dispersion->check() || !priest().buffs.voidform->check() )
+    {
       return true;
+    }
 
     return base_t::freeze_stacks();
   }
@@ -1688,7 +1714,9 @@ struct voidform_t final : public priest_buff_t<haste_buff_t>
   {
     // Hotfixed 2016-09-24: Voidform stacks no longer increase while Dispersion is active.
     if ( priest().buffs.dispersion->check() )
+    {
       return true;
+    }
 
     return base_t::freeze_stacks();
   }
@@ -1698,7 +1726,9 @@ struct voidform_t final : public priest_buff_t<haste_buff_t>
     priest().buffs.insanity_drain_stacks->expire();
 
     if ( priest().talents.lingering_insanity->ok() )
+    {
       priest().buffs.lingering_insanity->trigger( expiration_stacks );
+    }
 
     priest().buffs.the_twins_painful_touch->expire();
 
@@ -2221,37 +2251,69 @@ action_t* priest_t::create_action_shadow( const std::string& name, const std::st
   using namespace actions::heals;
 
   if ( name == "mind_flay" )
+  {
     return new mind_flay_t( *this, options_str );
+  }
   if ( name == "void_bolt" )
+  {
     return new void_bolt_t( *this, options_str );
+  }
   if ( name == "void_eruption" )
+  {
     return new void_eruption_t( *this, options_str );
+  }
   if ( name == "mind_sear" )
+  {
     return new mind_sear_t( *this, options_str );
+  }
   if ( name == "shadow_crash" )
+  {
     return new shadow_crash_t( *this, options_str );
+  }
   if ( name == "shadow_word_death" )
+  {
     return new shadow_word_death_t( *this, options_str );
+  }
   if ( name == "void_torrent" )
+  {
     return new void_torrent_t( *this, options_str );
+  }
   if ( name == "shadow_word_pain" )
+  {
     return new shadow_word_pain_t( *this, options_str );
+  }
   if ( name == "vampiric_touch" )
+  {
     return new vampiric_touch_t( *this, options_str );
+  }
   if ( name == "dispersion" )
+  {
     return new dispersion_t( *this, options_str );
+  }
   if ( name == "surrender_to_madness" )
+  {
     return new surrender_to_madness_t( *this, options_str );
+  }
   if ( name == "silence" )
+  {
     return new silence_t( *this, options_str );
+  }
   if ( name == "mind_bomb" )
+  {
     return new mind_bomb_t( *this, options_str );
+  }
   if ( name == "psychic_horror" )
+  {
     return new psychic_horror_t( *this, options_str );
+  }
   if ( name == "vampiric_embrace" )
+  {
     return new vampiric_embrace_t( *this, options_str );
+  }
   if ( name == "shadowform" )
+  {
     return new shadowform_t( *this, options_str );
+  }
   if ( ( name == "mind_blast" ) || ( name == "shadow_word_void" ) )
   {
     if ( talents.shadow_word_void->ok() )
@@ -2273,7 +2335,9 @@ expr_t* priest_t::create_expression_shadow( action_t* a, const std::string& name
   {
     return make_fn_expr( name_str, [this]() {
       if ( !active_spells.shadowy_apparitions )
+      {
         return 0.0;
+      }
 
       return static_cast<double>( active_spells.shadowy_apparitions->num_travel_events() );
     } );
@@ -2386,15 +2450,19 @@ void priest_t::generate_apl_shadow()
 
   // Surrender to Madness APL
   if ( !options.priest_suppress_sephuz )
+  {
     s2m->add_action( this, "Silence",
                      "if=equipped.sephuzs_secret&(target.is_add|target.debuff.casting."
                      "react)&cooldown.buff_sephuzs_secret.up&!buff.sephuzs_secret.up"
                      ",cycle_targets=1" );
+  }
   s2m->add_action( this, "Void Bolt", "if=buff.insanity_drain_stacks.value<6&set_bonus.tier19_4pc" );
   if ( !options.priest_suppress_sephuz )
+  {
     s2m->add_talent( this, "Mind Bomb",
                      "if=equipped.sephuzs_secret&target.is_add&cooldown.buff_sephuzs_"
                      "secret.remains<1&!buff.sephuzs_secret.up,cycle_targets=1" );
+  }
   s2m->add_talent( this, "Shadow Crash", "if=talent.shadow_crash.enabled" );
   s2m->add_talent( this, "Mindbender",
                    "if=cooldown.shadow_word_death.charges=0&buff.voidform.stack>(45"
@@ -2407,9 +2475,11 @@ void priest_t::generate_apl_shadow()
                    "if=current_insanity_drain*gcd.max>insanity&(insanity-"
                    "(current_insanity_drain*gcd.max)+(30+30*talent.reaper_of_souls.enabled)<100)" );
   if ( race == RACE_BLOOD_ELF )
+  {
     s2m->add_action(
         "arcane_torrent,if=buff.insanity_drain_stacks.value>=65"
         "&(insanity-(current_insanity_drain*gcd.max)+30)<100" );
+  }
   s2m->add_talent( this, "Power Infusion",
                    "if=cooldown.shadow_word_death.charges=0&buff.voidform.stack"
                    ">(45+25*set_bonus.tier20_4pc)|target.time_to_die<=30" );
@@ -2480,23 +2550,29 @@ void priest_t::generate_apl_shadow()
                   "death.up|buff.shadowy_insight.up)&target.time_to_die<=variable.s2mcheck-"
                   "(buff.insanity_drain_stacks.value)" );
   if ( !options.priest_suppress_sephuz )
+  {
     vf->add_action( this, "Silence",
                     "if=equipped.sephuzs_secret&(target.is_add|target.debuff.casting."
                     "react)&cooldown.buff_sephuzs_secret.up&!buff.sephuzs_secret.up"
                     "&buff.insanity_drain_stacks.value>10,cycle_targets=1" );
+  }
   vf->add_action( this, "Void Bolt" );
   vf->add_action( this, "Shadow Word: Death",
                   "if=equipped.zeks_exterminatus&equipped."
                   "mangazas_madness&buff.zeks_exterminatus.react" );
   if ( race == RACE_BLOOD_ELF )
+  {
     vf->add_action(
         "arcane_torrent,if=buff.insanity_drain_stacks.value>=20&(insanity-"
         "(current_insanity_drain*gcd.max)+15)<100" );
+  }
   if ( !options.priest_suppress_sephuz )
+  {
     vf->add_talent( this, "Mind Bomb",
                     "if=equipped.sephuzs_secret&target.is_add&cooldown.buff_sephuzs_"
                     "secret.remains<1&!buff.sephuzs_secret.up&buff.insanity_drain_stacks.value>10"
                     ",cycle_targets=1" );
+  }
   vf->add_talent( this, "Shadow Crash", "if=talent.shadow_crash.enabled" );
   vf->add_action( this, "Void Torrent",
                   "if=dot.shadow_word_pain.remains>5.5&dot.vampiric_touch.remains"
@@ -2568,7 +2644,9 @@ void priest_t::generate_apl_shadow()
                   "*buff.voidform.stack)*variable.dot_swp_dpgcd*target.time_to_die%(gcd.max*(118"
                   "+variable.sear_dpgcd*(active_enemies-1))))>1,cycle_targets=1" );
   if ( race == RACE_LIGHTFORGED_DRAENEI )
+  {
     vf->add_action( "lights_judgment,if=buff.voidform.stack<10" );
+  }
   vf->add_action( this, "Mind Flay",
                   "chain=1,interrupt_immediate=1,interrupt_if=ticks>=2&(action."
                   "void_"

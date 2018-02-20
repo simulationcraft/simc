@@ -85,7 +85,9 @@ public:
       ab::execute();
 
       if ( return_spell && distance <= 24 )
+      {
         return_spell->execute();
+      }
     }
   }
 };
@@ -544,7 +546,9 @@ action_t* base_fiend_pet_t::create_action( const std::string& name, const std::s
   }
 
   if ( name == "wait_for_shadowcrawl" )
+  {
     return new wait_for_cooldown_t( this, "shadowcrawl" );
+  }
 
   return priest_pet_t::create_action( name, options_str );
 }
@@ -726,7 +730,9 @@ role_e priest_t::primary_role() const
       return ROLE_SPELL;
     default:
       if ( specialization() == PRIEST_HOLY )
+      {
         return ROLE_HEAL;
+      }
       break;
   }
 
@@ -793,7 +799,9 @@ double priest_t::composite_spell_haste() const
   double h = player_t::composite_spell_haste();
 
   if ( buffs.power_infusion->check() )
+  {
     h /= 1.0 + buffs.power_infusion->data().effectN( 1 ).percent();
+  }
 
   if ( buffs.lingering_insanity->check() )
   {
@@ -825,7 +833,9 @@ double priest_t::composite_melee_haste() const
   double h = player_t::composite_melee_haste();
 
   if ( buffs.power_infusion->check() )
+  {
     h /= 1.0 + buffs.power_infusion->data().effectN( 1 ).percent();
+  }
 
   if ( buffs.lingering_insanity->check() )
   {
@@ -845,7 +855,9 @@ double priest_t::composite_spell_speed() const
   double h = player_t::composite_spell_speed();
 
   if ( buffs.borrowed_time->check() )
+  {
     h /= 1.0 + buffs.borrowed_time->data().effectN( 1 ).percent();
+  }
 
   return h;
 }
@@ -855,7 +867,9 @@ double priest_t::composite_melee_speed() const
   double h = player_t::composite_melee_speed();
 
   if ( buffs.borrowed_time->check() )
+  {
     h /= 1.0 + buffs.borrowed_time->data().effectN( 1 ).percent();
+  }
 
   return h;
 }
@@ -911,7 +925,9 @@ double priest_t::composite_player_heal_multiplier( const action_state_t* s ) con
   }
 
   if ( specs.grace->ok() )
+  {
     m *= 1.0 + specs.grace->effectN( 1 ).percent();
+  }
 
   return m;
 }
@@ -921,7 +937,9 @@ double priest_t::composite_player_absorb_multiplier( const action_state_t* s ) c
   double m = player_t::composite_player_absorb_multiplier( s );
 
   if ( specs.grace->ok() )
+  {
     m *= 1.0 + specs.grace->effectN( 2 ).percent();
+  }
 
   return m;
 }
@@ -944,7 +962,9 @@ double priest_t::composite_player_target_multiplier( player_t* t, school_e schoo
 double priest_t::matching_gear_multiplier( attribute_e attr ) const
 {
   if ( attr == ATTR_INTELLECT )
+  {
     return 0.05;
+  }
 
   return 0.0;
 }
@@ -956,30 +976,50 @@ action_t* priest_t::create_action( const std::string& name, const std::string& o
 
   action_t* shadow_action = create_action_shadow( name, options_str );
   if ( shadow_action && specialization() == PRIEST_SHADOW )
+  {
     return shadow_action;
+  }
 
   action_t* discipline_action = create_action_discipline( name, options_str );
   if ( discipline_action && specialization() == PRIEST_DISCIPLINE )
+  {
     return discipline_action;
+  }
 
   action_t* holy_action = create_action_holy( name, options_str );
   if ( holy_action && specialization() == PRIEST_HOLY )
+  {
     return holy_action;
+  }
 
   if ( name == "smite" )
+  {
     return new smite_t( *this, options_str );
+  }
   if ( name == "angelic_feather" )
+  {
     return new angelic_feather_t( *this, options_str );
+  }
   if ( name == "halo" )
+  {
     return new halo_t( *this, options_str );
+  }
   if ( name == "divine_star" )
+  {
     return new divine_star_t( *this, options_str );
+  }
   if ( name == "levitate" )
+  {
     return new levitate_t( *this, options_str );
+  }
   if ( name == "power_word_shield" )
+  {
     return new power_word_shield_t( *this, options_str );
+  }
   if ( name == "power_infusion" )
+  {
     return new power_infusion_t( *this, options_str );
+  }
   if ( ( name == "shadowfiend" ) || ( name == "mindbender" ) )
   {
     if ( talents.mindbender->ok() )
@@ -1000,9 +1040,13 @@ pet_t* priest_t::create_pet( const std::string& pet_name, const std::string& /* 
   // pet_t* p = find_pet( pet_name );
 
   if ( pet_name == "shadowfiend" )
+  {
     return new pets::fiend::shadowfiend_pet_t( sim, *this );
+  }
   if ( pet_name == "mindbender" )
+  {
     return new pets::fiend::mindbender_pet_t( sim, *this );
+  }
 
   sim->errorf( "Tried to create priest pet %s.", pet_name.c_str() );
 
@@ -1033,7 +1077,9 @@ void priest_t::init_base_stats()
   base.spell_power_per_intellect = 1.0;
 
   if ( specialization() == PRIEST_SHADOW )
+  {
     resources.base[ RESOURCE_INSANITY ] = 100.0;
+  }
 
   // Discipline/Holy
   base.mana_regen_from_spirit_multiplier = specs.meditation_disc->ok() ? specs.meditation_disc->effectN( 1 ).percent()
@@ -1053,11 +1099,15 @@ void priest_t::init_scaling()
 
   // Atonement heals are capped at a percentage of the Priest's health, so there may be scaling with stamina.
   if ( specialization() == PRIEST_DISCIPLINE && specs.atonement->ok() && primary_role() == ROLE_HEAL )
+  {
     scaling->enable( STAT_STAMINA );
+  }
 
   if ( specialization() == PRIEST_SHADOW )
+  {
     // Just hook insanity init in here when actor set bonuses are ready
     insanity.init();
+  }
 }
 
 void priest_t::init_spells()
@@ -1229,16 +1279,22 @@ void priest_t::create_apl_default()
 
   // DEFAULT
   if ( sim->allow_potions )
+  {
     def->add_action( "mana_potion,if=mana.pct<=75" );
+  }
 
   if ( find_class_spell( "Shadowfiend" )->ok() )
   {
     def->add_action( this, "Shadowfiend" );
   }
   if ( race == RACE_TROLL )
+  {
     def->add_action( "berserking" );
+  }
   if ( race == RACE_BLOOD_ELF )
+  {
     def->add_action( "arcane_torrent,if=mana.pct<=90" );
+  }
   def->add_action( this, "Shadow Word: Pain", ",if=remains<tick_time|!ticking" );
   def->add_action( this, "Smite" );
 }
@@ -1271,8 +1327,10 @@ void priest_t::init_action_list()
   if ( specialization() == PRIEST_HOLY )
   {
     if ( !quiet )
+    {
       sim->errorf( "Player %s's role (%s) or spec(%s) is currently not supported.", name(),
                    util::role_type_string( primary_role() ), util::specialization_string( specialization() ) );
+    }
     quiet = true;
     return;
   }
@@ -1293,15 +1351,23 @@ void priest_t::init_action_list()
       break;
     case PRIEST_DISCIPLINE:
       if ( primary_role() != ROLE_HEAL )
+      {
         generate_apl_discipline_h();
+      }
       else
+      {
         generate_apl_discipline_d();
+      }
       break;
     case PRIEST_HOLY:
       if ( primary_role() != ROLE_HEAL )
+      {
         generate_apl_holy_d();
+      }
       else
+      {
         generate_apl_holy_h();
+      }
       break;
     default:
       create_apl_default();
@@ -1351,7 +1417,9 @@ void priest_t::pre_analyze_hook()
   }
 
   if ( specialization() == PRIEST_DISCIPLINE || specialization() == PRIEST_HOLY )
+  {
     fixup_atonement_stats( "power_word_solace", "atonement_power_word_solace" );
+  }
 }
 
 void priest_t::target_mitigation( school_e school, dmg_e dt, action_state_t* s )
@@ -1367,7 +1435,9 @@ void priest_t::target_mitigation( school_e school, dmg_e dt, action_state_t* s )
 action_t* priest_t::create_proc_action( const std::string& /*name*/, const special_effect_t& effect )
 {
   if ( effect.driver()->id() == 222275 )
+  {
     return new actions::spells::blessed_dawnlight_medallion_t( *this, effect );
+  }
 
   return nullptr;
 }
@@ -1391,10 +1461,14 @@ std::string priest_t::create_profile( save_e type )
   if ( type == SAVE_ALL )
   {
     if ( !options.autoUnshift )
+    {
       profile_str += "autounshift=" + util::to_string( options.autoUnshift ) + "\n";
+    }
 
     if ( !options.priest_fixed_time )
+    {
       profile_str += "priest_fixed_time=" + util::to_string( options.priest_fixed_time ) + "\n";
+    }
   }
 
   return profile_str;

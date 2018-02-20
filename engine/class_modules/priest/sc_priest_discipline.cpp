@@ -308,11 +308,17 @@ void priest_t::init_spells_discipline()
   if ( base.distance != 5 )
   {
     if ( talents.divine_star->ok() )
+    {
       base.distance = 24.0;
+    }
     else if ( talents.halo->ok() )
+    {
       base.distance = 27.0;
+    }
     else
+    {
       base.distance = 27.0;
+    }
   }
 }
 
@@ -340,13 +346,21 @@ action_t* priest_t::create_action_discipline( const std::string& name, const std
   using namespace actions::heals;
 
   if ( name == "pain_suppression" )
+  {
     return new pain_suppression_t( *this, options_str );
+  }
   if ( name == "penance" )
+  {
     return new penance_t( *this, options_str );
+  }
   if ( name == "power_word_solace" )
+  {
     return new power_word_solace_t( *this, options_str );
+  }
   if ( name == "schism" )
+  {
     return new schism_t( *this, options_str );
+  }
   if ( ( name == "shadow_word_pain" ) || ( name == "purge_the_wicked" ) )
   {
     if ( talents.purge_the_wicked->ok() )
@@ -396,7 +410,9 @@ void priest_t::generate_apl_discipline_d()
   }
 
   if ( race == RACE_BLOOD_ELF )
+  {
     def->add_action( "arcane_torrent,if=mana.pct<=95" );
+  }
 
   if ( find_class_spell( "Shadowfiend" )->ok() )
   {
