@@ -809,11 +809,25 @@ namespace priestspace
         {
           priest().trigger_sephuzs_secret(state, MECHANIC_STUN);
         }
+      };
 
-        bool ready() override
+      struct psychic_horror_t final : public priest_spell_t
+      {
+        psychic_horror_t(priest_t& player, const std::string& options_str)
+          : priest_spell_t("psychic_horror", player, player.talents.psychic_horror)
         {
-          return priest_spell_t::ready();
+          parse_options(options_str);
+          may_miss = may_crit = false;
+          ignore_false_positive = true;
+
+          cooldown = priest().cooldowns.psychic_horror;
         }
+
+        void impact(action_state_t* state) override
+        {
+          priest().trigger_sephuzs_secret(state, MECHANIC_STUN);
+        }
+
       };
 
       struct surrender_to_madness_t final : public priest_spell_t
@@ -2226,6 +2240,7 @@ namespace priestspace
     if (name == "surrender_to_madness")   return new surrender_to_madness_t(*this, options_str);
     if (name == "silence")                return new silence_t(*this, options_str);
     if (name == "mind_bomb")              return new mind_bomb_t(*this, options_str);
+    if (name == "psychic_horror")         return new psychic_horror_t(*this, options_str);
     if (name == "vampiric_embrace")       return new vampiric_embrace_t(*this, options_str);
     if (name == "shadowform")             return new shadowform_t(*this, options_str);    
     if ((name == "mind_blast") || (name == "shadow_word_void"))

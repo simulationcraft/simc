@@ -311,6 +311,7 @@ namespace priestspace
       propagate_const<cooldown_t*> shadow_word_void;
       propagate_const<cooldown_t*> void_bolt;
       propagate_const<cooldown_t*> mind_bomb;
+      propagate_const<cooldown_t*> psychic_horror;
       propagate_const<cooldown_t*> sephuzs_secret;
     } cooldowns;
 

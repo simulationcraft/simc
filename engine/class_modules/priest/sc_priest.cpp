@@ -626,6 +626,7 @@ namespace priestspace
     cooldowns.shadow_word_void = get_cooldown("shadow_word_void");
     cooldowns.void_bolt = get_cooldown("void_bolt");
     cooldowns.mind_bomb = get_cooldown("mind_bomb");
+    cooldowns.psychic_horror = get_cooldown("psychic_horror");
     cooldowns.sephuzs_secret = get_cooldown("sephuzs_secret");
 
     if (specialization() == PRIEST_DISCIPLINE)
