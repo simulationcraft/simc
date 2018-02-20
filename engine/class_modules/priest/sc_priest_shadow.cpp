@@ -745,6 +745,11 @@ namespace priestspace
 
           cooldown = priest().cooldowns.silence;
           cooldown->duration = data().cooldown();
+          if( priest().talents.last_word->ok() )
+          {
+            // Spell data has a negative value
+            cooldown->duration += priest().talents.last_word->effectN( 1 ).time_value();
+          }
         }
 
         void execute() override
