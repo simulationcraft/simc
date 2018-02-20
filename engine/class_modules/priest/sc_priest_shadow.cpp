@@ -1,5 +1,10 @@
-#include "sc_priest.hpp"
+// ==========================================================================
+// Dedmonwakeen's Raid DPS/TPS Simulator.
+// Send questions to natehieter@gmail.com
+// ==========================================================================
+
 #include "simulationcraft.hpp"
+#include "sc_priest.hpp"
 
 namespace priestspace
 {
