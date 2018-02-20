@@ -4278,6 +4278,23 @@ Effects          :
                    Base Value: 35 | Scaled Value: 35 | Radius: 100 yards | Target: Unknown(119)
 Description      : Brings all dead party members back to life with $s1% health and mana. Cannot be cast when in combat.
 
+Name             : Surrendered Soul (id=212570) [Spell Family (6)] 
+Class            : Priest
+School           : Physical
+Duration         : 180 seconds
+Attributes       : ........ ........ ........ ..x..x.x   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ....x... ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Cannot cancel aura (31)
+Effects          :
+#1 (id=315150)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+Description      : $@spelldesc193223
+Tooltip          : Cannot be revived by in-combat resurrections.
+
 Name             : Purify Disease (id=213634) [Spell Family (6)] 
 Class            : Shadow Priest
 School           : Holy
