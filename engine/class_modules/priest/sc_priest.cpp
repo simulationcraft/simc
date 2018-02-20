@@ -476,7 +476,7 @@ namespace priestspace
      // ==========================================================================
 
   priest_td_t::priest_td_t(player_t* target, priest_t& p)
-    : actor_target_data_t(target, &p), dots(), buffs(), priest(p)
+    : actor_target_data_t(target, &p), dots(), buffs()
   {
     dots.holy_fire = target->get_dot("holy_fire", &p);
     dots.power_word_solace = target->get_dot("power_word_solace", &p);
@@ -494,10 +494,10 @@ namespace priestspace
 
   void priest_td_t::target_demise()
   {
-    if (priest.sim->debug)
+    if (priest().sim->debug)
     {
-      priest.sim->out_debug.printf("Player %s demised. Priest %s resets targetdata for him.", target->name(),
-        priest.name());
+      priest().sim->out_debug.printf("Player %s demised. Priest %s resets targetdata for him.", target->name(),
+        priest().name());
     }
 
     reset();

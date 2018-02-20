@@ -65,7 +65,10 @@ namespace priestspace
       propagate_const<buff_t*> schism;
     } buffs;
 
-    priest_t& priest;
+    priest_t& priest()
+    { return *debug_cast<priest_t*>( source ); }
+    const priest_t& priest() const
+    { return *debug_cast<priest_t*>( source ); }
 
     priest_td_t(player_t* target, priest_t& p);
     void reset();
