@@ -767,6 +767,8 @@ namespace priestspace
 
         void impact(action_state_t* state) override
         {
+          priest_spell_t::impact( state );
+
           if (target->type == ENEMY_ADD || target->level() < sim->max_player_level + 3)
           {
             priest().trigger_sephuzs_secret(state, MECHANIC_SILENCE);
@@ -807,6 +809,8 @@ namespace priestspace
 
         void impact(action_state_t* state) override
         {
+          priest_spell_t::impact( state );
+
           priest().trigger_sephuzs_secret(state, MECHANIC_STUN);
         }
       };
@@ -825,6 +829,8 @@ namespace priestspace
 
         void impact(action_state_t* state) override
         {
+          priest_spell_t::impact( state );
+
           priest().trigger_sephuzs_secret(state, MECHANIC_STUN);
         }
 
