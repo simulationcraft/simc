@@ -358,6 +358,8 @@ namespace priestspace
         return new shadow_word_pain_t(*this, options_str);
       }
     }      
+
+    return nullptr;
   }
 
   expr_t* priest_t::create_expression_discipline(action_t* a, const std::string& name_str)

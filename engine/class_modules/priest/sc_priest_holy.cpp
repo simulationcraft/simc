@@ -112,7 +112,8 @@ namespace priestspace
     using namespace actions::heals;
     
     if (name == "holy_fire" )            return new holy_fire_t(*this, options_str);
-    
+
+    return nullptr;
   }
 
   expr_t* priest_t::create_expression_holy(action_t* a, const std::string& name_str)

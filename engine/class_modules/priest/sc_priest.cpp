@@ -7,8 +7,7 @@
 #include "sc_priest.hpp"
 
 namespace priestspace
-{
-
+{  
   namespace actions
   {
     namespace spells
@@ -398,6 +397,45 @@ namespace priestspace
     }
 
   }  // namespace items
+
+  namespace pets
+  {
+    namespace fiend
+    {
+      void base_fiend_pet_t::init_action_list()
+      {
+        main_hand_attack = new actions::fiend_melee_t(*this);
+
+        if (action_list_str.empty())
+        {
+          action_priority_list_t* precombat = get_action_priority_list("precombat");
+          precombat->add_action("snapshot_stats",
+            "Snapshot raid buffed stats before combat begins and "
+            "pre-potting is done.");
+
+          action_priority_list_t* def = get_action_priority_list("default");
+          def->add_action("shadowcrawl");
+          def->add_action("wait_for_shadowcrawl");
+        }
+
+        priest_pet_t::init_action_list();
+      }
+
+      action_t* base_fiend_pet_t::create_action(const std::string& name, const std::string& options_str)
+      {
+        if (name == "shadowcrawl")
+        {
+          shadowcrawl_action = new actions::shadowcrawl_t(*this);
+          return shadowcrawl_action;
+        }
+
+        if (name == "wait_for_shadowcrawl")
+          return new wait_for_cooldown_t(this, "shadowcrawl");
+
+        return priest_pet_t::create_action(name, options_str);
+      }
+    }
+  }
 
      // ==========================================================================
      // Priest Targetdata Definitions
@@ -1256,3 +1294,9 @@ namespace priestspace
   }  
 
 }  // PRIEST NAMESPACE
+
+const module_t* module_t::priest()
+{
+  static priestspace::priest_module_t m;
+  return &m;
+}
