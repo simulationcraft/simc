@@ -121,7 +121,7 @@ namespace priestspace
       propagate_const<buff_t*> overwhelming_darkness;    // T21 Shadow 4pc
 
                                                          // Legion Legendaries
-      haste_buff_t* sephuzs_secret;
+      propagate_const<haste_buff_t*> sephuzs_secret;
       // Shadow
       propagate_const<buff_t*> anunds_last_breath;       // Anund's Seared Shackles stack counter
       propagate_const<buff_t*> the_twins_painful_touch;  // To track first casting

@@ -622,6 +622,11 @@ public:
     return _M_t;
   }
 
+  element_type*& get_ref()
+  {
+    return _M_t;
+  }
+
   // [propagate_const.non_const_observers], non-const observers
 
   element_type* operator->()

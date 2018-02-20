@@ -484,7 +484,7 @@ namespace priestspace
 
       haste_buff_t*& buff_ptr(const special_effect_t& e) override
       {
-        return debug_cast<priest_t*>(e.player)->buffs.sephuzs_secret;
+        return debug_cast<priest_t*>(e.player)->buffs.sephuzs_secret.get_ref();
       }
 
       haste_buff_t* creator(const special_effect_t& e) const override
@@ -810,7 +810,7 @@ namespace priestspace
 
     if (buffs.sephuzs_secret->check())
     {
-      h /= (1.0 + buffs.sephuzs_secret->stack_value());
+      h /= (1.0 + buffs.sephuzs_secret->check_stack_value());
     }
 
     // 7.2 Sephuz's Secret passive haste. If the item is missing, default_chance will be set to 0 (by
