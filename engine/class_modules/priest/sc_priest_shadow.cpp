@@ -841,6 +841,11 @@ namespace priestspace
           parse_options(options_str);
 
           harmful = false;
+
+          if( priest().talents.sanlayn->ok() )
+          {
+            cooldown->duration += priest().talents.sanlayn->effectN( 1 ).time_value();
+          }
         }
 
         void execute() override
