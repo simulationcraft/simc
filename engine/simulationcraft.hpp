@@ -5410,7 +5410,23 @@ public:
   { return 1.0; }
 
   virtual double composite_attack_power() const
-  { return player -> cache.attack_power(); }
+  {
+    // BfA has added inherited attack power from WDPS for almost all attacks in the game
+    // This bonus is equal to 7x the WDPS of the weapon, and applies to anything using AP
+    // However, WDPS-based attacks or auto-attacks do not benefit from this bonus AP
+    if ( weapon_multiplier == 0 )
+    {
+      // All spells use the main-hand WDPS by default if one is not specifically assigned
+      // Otherwise use the assigned weapon so that OH attacks are calculated correctly
+      const weapon_t* w = ( weapon == nullptr ) ? &player->main_hand_weapon : weapon;
+      if ( w )
+      {
+        return player->cache.attack_power() + ( w->dps * 7.0 );
+      }
+    }
+    
+    return player->cache.attack_power();
+  }
 
   virtual double composite_spell_power() const
   {

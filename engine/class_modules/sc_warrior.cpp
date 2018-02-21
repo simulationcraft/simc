@@ -1184,6 +1184,7 @@ struct melee_t: public warrior_attack_t
     special = false;
     background = repeating = may_glance = true;
     trigger_gcd = timespan_t::zero();
+    weapon_multiplier = 1.0;
     if ( p -> dual_wield() )
     {
       base_hit -= 0.19;

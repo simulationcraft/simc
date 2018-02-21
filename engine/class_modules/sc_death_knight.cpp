@@ -1769,6 +1769,7 @@ struct auto_attack_melee_t : public pet_melee_attack_t<T>
     this -> background = this -> repeating = true;
     this -> special = false;
     this -> weapon = &( player -> main_hand_weapon );
+    this -> weapon_multiplier = 1.0;
     this -> base_execute_time = this -> weapon -> swing_time;
   }
 
@@ -3616,12 +3617,13 @@ struct melee_t : public death_knight_melee_attack_t
     death_knight_melee_attack_t( name, p ), sync_weapons( sw ), first ( true ),
     frozen_pulse( p -> talent.frozen_pulse -> ok() ? new frozen_pulse_t( p ) : nullptr )
   {
-    school          = SCHOOL_PHYSICAL;
-    may_glance      = true;
-    background      = true;
-    repeating       = true;
-    trigger_gcd     = timespan_t::zero();
-    special         = false;
+    school            = SCHOOL_PHYSICAL;
+    may_glance        = true;
+    background        = true;
+    repeating         = true;
+    trigger_gcd       = timespan_t::zero();
+    special           = false;
+    weapon_multiplier = 1.0;
 
     if ( p -> dual_wield() )
       base_hit -= 0.19;

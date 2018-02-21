@@ -645,6 +645,7 @@ struct priest_pet_melee_t : public melee_attack_t
   {
     school            = SCHOOL_SHADOW;
     weapon            = &( p.main_hand_weapon );
+    weapon_multiplier = 1.0;
     base_execute_time = weapon->swing_time;
     may_crit          = true;
     background        = true;

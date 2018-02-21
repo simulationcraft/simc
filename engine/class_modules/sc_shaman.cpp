@@ -2067,6 +2067,7 @@ struct spirit_wolf_t : public base_wolf_t
     {
       background = repeating = true;
       special                = false;
+      weapon_multiplier      = 1.0;
     }
 
     void impact( action_state_t* state ) override
@@ -2136,6 +2137,7 @@ struct doom_wolf_base_t : public base_wolf_t
     {
       background = repeating = true;
       special                = false;
+      weapon_multiplier      = 1.0;
     }
 
     void impact( action_state_t* state ) override
@@ -2454,11 +2456,12 @@ struct primal_elemental_t : public shaman_pet_t
 
   attack_t* create_auto_attack() override
   {
-    auto attack        = new pet_melee_attack_t<primal_elemental_t>( this, "melee" );
-    attack->background = true;
-    attack->repeating  = true;
-    attack->special    = false;
-    attack->school     = SCHOOL_PHYSICAL;
+    auto attack               = new pet_melee_attack_t<primal_elemental_t>( this, "melee" );
+    attack->background        = true;
+    attack->repeating         = true;
+    attack->special           = false;
+    attack->school            = SCHOOL_PHYSICAL;
+    attack->weapon_multiplier = 1.0;
     return attack;
   }
 };
@@ -2901,6 +2904,7 @@ struct windlash_t : public shaman_attack_t
     background = repeating = may_miss = may_dodge = may_parry = true;
     may_glance = special = false;
     weapon               = w;
+    weapon_multiplier    = 1.0;
     base_execute_time    = w->swing_time;
     trigger_gcd          = timespan_t::zero();
 
@@ -3193,6 +3197,7 @@ struct melee_t : public shaman_attack_t
     special                             = false;
     trigger_gcd                         = timespan_t::zero();
     weapon                              = w;
+    weapon_multiplier                   = 1.0;
     base_execute_time                   = w->swing_time;
 
     if ( p()->specialization() == SHAMAN_ENHANCEMENT && p()->dual_wield() )

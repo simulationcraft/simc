@@ -589,6 +589,7 @@ namespace warlock {
             {
                 school = SCHOOL_PHYSICAL;
                 weapon = &(p->main_hand_weapon);
+                weapon_multiplier = 1.0;
                 base_execute_time = weapon->swing_time;
                 may_crit = background = repeating = true;
 

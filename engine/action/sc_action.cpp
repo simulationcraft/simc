@@ -457,7 +457,7 @@ action_t::action_t( action_e       ty,
   crit_bonus(),
   base_dd_adder(),
   base_ta_adder(),
-  weapon_multiplier( 1.0 ),
+  weapon_multiplier( 0.0 ),
   chain_multiplier( 1.0 ),
   chain_bonus_damage(),
   base_aoe_multiplier( 1.0 ),
@@ -619,6 +619,16 @@ void action_t::parse_spell_data( const spell_data_t& spell_data )
 
   cooldown -> duration = timespan_t::zero();
 
+  // Default Weapon Assignment
+  if ( spell_data.flags( SPELL_ATTR_EX3_MAIN_HAND ) )
+  {
+    weapon = &( player->main_hand_weapon );
+  }
+  else if ( spell_data.flags( SPELL_ATTR_EX3_REQ_OFFHAND ) )
+  {
+    weapon = &( player->off_hand_weapon );
+  }
+
   if ( spell_data.charges() > 0 && spell_data.charge_cooldown() > timespan_t::zero() )
   {
     cooldown -> duration = spell_data.charge_cooldown();
@@ -710,14 +720,20 @@ void action_t::parse_effect_data( const spelleffect_data_t& spelleffect_data )
     case E_NORMALIZED_WEAPON_DMG:
       normalize_weapon_speed = true;
     case E_WEAPON_DAMAGE:
+      if ( weapon == nullptr )
+      {
+        weapon         = &( player->main_hand_weapon );
+      }
       base_dd_min      = item_scaling ? spelleffect_data.min( item ) : spelleffect_data.min( player, player -> level() );
       base_dd_max      = item_scaling ? spelleffect_data.max( item ) : spelleffect_data.max( player, player -> level() );
-      weapon           = &( player -> main_hand_weapon );
       radius           = spelleffect_data.radius_max();
       break;
 
     case E_WEAPON_PERCENT_DAMAGE:
-      weapon            = &( player -> main_hand_weapon );
+      if ( weapon == nullptr )
+      {
+        weapon          = &( player->main_hand_weapon );
+      }
       weapon_multiplier = item_scaling ? spelleffect_data.min( item ) : spelleffect_data.min( player, player -> level() );
       radius            = spelleffect_data.radius_max();
       break;

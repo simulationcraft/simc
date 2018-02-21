@@ -783,17 +783,6 @@ struct rogue_attack_t : public melee_attack_t
     tick_may_crit = true;
     hasted_ticks = false;
 
-    // Default Weapon Assignment
-    if ( data().flags( SPELL_ATTR_EX3_MAIN_HAND ) )
-      weapon = &p->main_hand_weapon;
-    else if ( data().flags( SPELL_ATTR_EX3_REQ_OFFHAND ) )
-      weapon = &p->off_hand_weapon;
-
-    // BfA has removed Weapon Damage scaling from all abilites except standard auto attacks. We will keep assigning weapons
-    // for handling things like procs_poison, Main Gauche, or Combat Potency, but disable default weapon multipliers, for now.
-    weapon_multiplier = 0;
-    weapon_power_mod = 0;
-
     memset( &affected_by, 0, sizeof( affected_by ) );
 
     for ( size_t i = 1; i <= s -> effect_count(); i++ )
@@ -1089,21 +1078,6 @@ struct rogue_attack_t : public melee_attack_t
     if ( base_costs[ RESOURCE_COMBO_POINT ] )
       return base_ta_adder * cast_state( s ) -> cp;
     return melee_attack_t::bonus_ta( s );
-  }
-
-  double composite_attack_power() const override
-  {
-    double ap = melee_attack_t::composite_attack_power();
-    
-    // Temporary Implementation of Bonus AP from WDPS in BfA
-    // All attacks appear to use the MH weapon by default, unless they specifically use the OH
-    const weapon_t* w = ( weapon == nullptr ) ? &p()->main_hand_weapon : weapon;
-    if ( w )
-    {
-      ap += w->dps * 7.0;
-    }
-
-    return ap;
   }
 
   double composite_da_multiplier( const action_state_t* state ) const override

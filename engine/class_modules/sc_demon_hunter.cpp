@@ -1568,15 +1568,14 @@ struct eye_beam_t : public demon_hunter_spell_t
 
     if (p()->talent.demonic->ok())
     {
-      auto demonic_time = DEMONIC_EXTEND_DURATION;
       if (p()->buff.metamorphosis->check())
       {
-        p()->buff.metamorphosis->extend_duration(p(), demonic_time);
+        p()->buff.metamorphosis->extend_duration(p(), DEMONIC_EXTEND_DURATION );
       }
       else
       {
         // Trigger Meta before the execute so that the duration is affected by Meta haste
-        extend_meta = p()->buff.metamorphosis->trigger(1, p()->buff.metamorphosis->default_value, -1.0, demonic_time);
+        extend_meta = p()->buff.metamorphosis->trigger( 1, p()->buff.metamorphosis->default_value, -1.0, DEMONIC_EXTEND_DURATION );
       }
     }
 
@@ -2526,6 +2525,7 @@ namespace attacks
       background = repeating = may_glance = true;
       trigger_gcd = timespan_t::zero();
       weapon = w;
+      weapon_multiplier = 1.0;
       base_execute_time = weapon->swing_time;
 
       status.main_hand = status.off_hand = LOST_CONTACT_RANGE;

@@ -1001,6 +1001,7 @@ struct force_of_nature_t : public pet_t
     {
       school = SCHOOL_PHYSICAL;
       weapon = &( p -> main_hand_weapon );
+      weapon_multiplier = 1.0;
       base_execute_time = weapon -> swing_time;
       may_crit = background = repeating = true;
     }
@@ -2533,10 +2534,11 @@ struct druid_melee_t : public caster_attack_t
   druid_melee_t( druid_t* p ) :
     caster_attack_t( "melee", p )
   {
-    school      = SCHOOL_PHYSICAL;
-    may_glance  = background = repeating = true;
-    trigger_gcd = timespan_t::zero();
-    special     = false;
+    school            = SCHOOL_PHYSICAL;
+    may_glance        = background = repeating = true;
+    trigger_gcd       = timespan_t::zero();
+    special           = false;
+    weapon_multiplier = 1.0;
   }
 
   virtual timespan_t execute_time() const override
@@ -2942,10 +2944,11 @@ struct cat_melee_t : public cat_attack_t
   {
     form_mask = CAT_FORM;
 
-    school = SCHOOL_PHYSICAL;
     may_glance = background = repeating = true;
-    trigger_gcd = timespan_t::zero();
-    special = false;
+    school            = SCHOOL_PHYSICAL;
+    trigger_gcd       = timespan_t::zero();
+    special           = false;
+    weapon_multiplier = 1.0;
   }
 
   virtual timespan_t execute_time() const override
@@ -4109,10 +4112,11 @@ struct bear_melee_t : public bear_attack_t
   {
     form_mask = BEAR_FORM;
 
-    school      = SCHOOL_PHYSICAL;
-    may_glance  = background = repeating = true;
-    trigger_gcd = timespan_t::zero();
-    special     = false;
+    school            = SCHOOL_PHYSICAL;
+    may_glance        = background = repeating = true;
+    trigger_gcd       = timespan_t::zero();
+    special           = false;
+    weapon_multiplier = 1.0;
 
     energize_type     = ENERGIZE_ON_HIT;
     energize_resource = RESOURCE_RAGE;

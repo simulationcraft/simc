@@ -1197,6 +1197,7 @@ public:
     ab::special = false;
 
     ab::weapon = &( p -> main_hand_weapon );
+    ab::weapon_multiplier = 1.0;
 
     ab::base_execute_time = ab::weapon -> swing_time;
     ab::school = SCHOOL_PHYSICAL;
@@ -1617,6 +1618,7 @@ struct pet_melee_t: public hunter_main_pet_attack_t
     special = false;
 
     weapon = &p -> main_hand_weapon;
+    weapon_multiplier = 1.0;
 
     base_execute_time = weapon -> swing_time;
     school = SCHOOL_PHYSICAL;
@@ -2020,6 +2022,7 @@ struct auto_shot_t: public hunter_action_t < ranged_attack_t >
 
     range = 40.0;
     weapon = &p->main_hand_weapon;
+    weapon_multiplier = 1.0;
     base_execute_time = weapon->swing_time;
 
     if ( p -> talents.volley -> ok() )
@@ -2878,6 +2881,7 @@ struct melee_t: public hunter_melee_attack_t
     school             = SCHOOL_PHYSICAL;
     base_execute_time  = player -> main_hand_weapon.swing_time;
     weapon = &( player -> main_hand_weapon );
+    weapon_multiplier  = 1.0;
     background         = true;
     repeating          = true;
     may_glance         = true;

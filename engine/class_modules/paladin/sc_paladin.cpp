@@ -615,6 +615,7 @@ struct melee_t : public paladin_melee_attack_t
     repeating             = true;
     trigger_gcd           = timespan_t::zero();
     base_execute_time     = p -> main_hand_weapon.swing_time;
+    weapon_multiplier     = 1.0;
   }
 
   virtual timespan_t execute_time() const override
