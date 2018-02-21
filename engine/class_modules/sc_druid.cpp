@@ -3283,7 +3283,7 @@ struct ferocious_bite_t : public cat_attack_t
 
     if ( p() -> buff.apex_predator -> check() )
     {
-       req *= ( 1 - p() -> buff.apex_predator -> data().effectN(1).percent() );
+       req *= ( 1 - abs( p() -> buff.apex_predator -> data().effectN(1).percent() ) );
     }
 
     return req;
@@ -3303,7 +3303,7 @@ struct ferocious_bite_t : public cat_attack_t
 
     if ( p() -> buff.apex_predator -> check() )
     {
-      c *= (1 - p() -> buff.apex_predator -> data().effectN(1).percent() );
+      c *= (1 - abs(p() -> buff.apex_predator -> data().effectN(1).percent()) );
     }
 
     return c;
@@ -3383,7 +3383,16 @@ struct ferocious_bite_t : public cat_attack_t
 
     if ( p() -> buff.apex_predator -> up() )
     {
+      //Apex Predator bites Counts as spending the full 50 energy.
       am *= 2.0;
+
+      //Bugged as of 21/02-2018, as the energy cost reduction (from Berserk/Incarnation) will empower 
+      //the bonus damage (from energy) despite apex predator making the ability completely free
+      if ( p() -> bugs && ( p() -> buff.incarnation_cat -> up() | p() -> buff.berserk -> up()  ))
+      {
+        am *= 1.5;
+      }
+
       return am;
     }
 
