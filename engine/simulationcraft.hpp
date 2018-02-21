@@ -5421,7 +5421,7 @@ public:
       const weapon_t* w = ( weapon == nullptr ) ? &player->main_hand_weapon : weapon;
       if ( w )
       {
-        return player->cache.attack_power() + ( w->dps * 7.0 );
+        return player->cache.attack_power() + ( w->dps * WEAPON_POWER_COEFFICIENT );
       }
     }
     
