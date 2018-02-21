@@ -654,28 +654,29 @@ void priest_t::create_cooldowns()
 /** Construct priest gains */
 void priest_t::create_gains()
 {
-  gains.mindbender                       = get_gain( "Mana Gained from Mindbender" );
-  gains.power_word_solace                = get_gain( "Mana Gained from Power Word: Solace" );
-  gains.insanity_auspicious_spirits      = get_gain( "Insanity Gained from Auspicious Spirits" );
-  gains.insanity_dispersion              = get_gain( "Insanity Saved by Dispersion" );
-  gains.insanity_drain                   = get_gain( "Insanity Drained by Voidform" );
-  gains.insanity_mind_blast              = get_gain( "Insanity Gained from Mind Blast" );
-  gains.insanity_mind_flay               = get_gain( "Insanity Gained from Mind Flay" );
-  gains.insanity_mind_sear               = get_gain( "Insanity Gained from Mind Sear" );
-  gains.insanity_pet                     = get_gain( "Insanity Gained from Shadowfiend" );
-  gains.insanity_power_infusion          = get_gain( "Insanity Gained from Power Infusion" );
-  gains.insanity_shadow_crash            = get_gain( "Insanity Gained from Shadow Crash" );
-  gains.insanity_shadow_word_death       = get_gain( "Insanity Gained from Shadow Word: Death" );
-  gains.insanity_shadow_word_pain_onhit  = get_gain( "Insanity Gained from Shadow Word: Pain Casts" );
-  gains.insanity_shadow_word_void        = get_gain( "Insanity Gained from Shadow Word: Void" );
-  gains.insanity_surrender_to_madness    = get_gain( "Insanity Gained from Surrender to Madness" );
-  gains.insanity_vampiric_touch_ondamage = get_gain( "Insanity Gained from Vampiric Touch Damage (T19 2P)" );
-  gains.insanity_vampiric_touch_onhit    = get_gain( "Insanity Gained from Vampiric Touch Casts" );
-  gains.insanity_void_bolt               = get_gain( "Insanity Gained from Void Bolt" );
-  gains.insanity_void_torrent            = get_gain( "Insanity Saved by Void Torrent" );
-  gains.vampiric_touch_health            = get_gain( "Health from Vampiric Touch Ticks" );
-  gains.insanity_blessing                = get_gain( "Insanity from Blessing Dawnlight Medallion" );
-  gains.insanity_call_to_the_void        = get_gain( "Insanity Gained from Call to the Void" );
+  gains.mindbender                             = get_gain( "Mana Gained from Mindbender" );
+  gains.power_word_solace                      = get_gain( "Mana Gained from Power Word: Solace" );
+  gains.insanity_auspicious_spirits            = get_gain( "Insanity Gained from Auspicious Spirits" );
+  gains.insanity_dispersion                    = get_gain( "Insanity Saved by Dispersion" );
+  gains.insanity_drain                         = get_gain( "Insanity Drained by Voidform" );
+  gains.insanity_mind_blast                    = get_gain( "Insanity Gained from Mind Blast" );
+  gains.insanity_mind_flay                     = get_gain( "Insanity Gained from Mind Flay" );
+  gains.insanity_mind_sear                     = get_gain( "Insanity Gained from Mind Sear" );
+  gains.insanity_pet                           = get_gain( "Insanity Gained from Shadowfiend" );
+  gains.insanity_power_infusion                = get_gain( "Insanity Gained from Power Infusion" );
+  gains.insanity_shadow_crash                  = get_gain( "Insanity Gained from Shadow Crash" );
+  gains.insanity_shadow_word_death             = get_gain( "Insanity Gained from Shadow Word: Death" );
+  gains.insanity_shadow_word_pain_onhit        = get_gain( "Insanity Gained from Shadow Word: Pain Casts" );
+  gains.insanity_shadow_word_void              = get_gain( "Insanity Gained from Shadow Word: Void" );
+  gains.insanity_surrender_to_madness          = get_gain( "Insanity Gained from Surrender to Madness" );
+  gains.insanity_wasted_surrendered_to_madness = get_gain( "Insanity Wasted from Surrendered to Madness" );
+  gains.insanity_vampiric_touch_ondamage       = get_gain( "Insanity Gained from Vampiric Touch Damage (T19 2P)" );
+  gains.insanity_vampiric_touch_onhit          = get_gain( "Insanity Gained from Vampiric Touch Casts" );
+  gains.insanity_void_bolt                     = get_gain( "Insanity Gained from Void Bolt" );
+  gains.insanity_void_torrent                  = get_gain( "Insanity Saved by Void Torrent" );
+  gains.vampiric_touch_health                  = get_gain( "Health from Vampiric Touch Ticks" );
+  gains.insanity_blessing                      = get_gain( "Insanity from Blessing Dawnlight Medallion" );
+  gains.insanity_call_to_the_void              = get_gain( "Insanity Gained from Call to the Void" );
 }
 
 /** Construct priest procs */

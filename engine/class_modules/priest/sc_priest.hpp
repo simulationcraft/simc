@@ -339,6 +339,7 @@ public:
     propagate_const<gain_t*> insanity_shadow_word_pain_onhit;
     propagate_const<gain_t*> insanity_shadow_word_void;
     propagate_const<gain_t*> insanity_surrender_to_madness;
+    propagate_const<gain_t*> insanity_wasted_surrendered_to_madness;
     propagate_const<gain_t*> insanity_vampiric_touch_ondamage;
     propagate_const<gain_t*> insanity_vampiric_touch_onhit;
     propagate_const<gain_t*> insanity_void_bolt;

@@ -1795,52 +1795,55 @@ void priest_t::generate_insanity( double num_amount, gain_t* g, action_t* action
 {
   if ( specialization() == PRIEST_SHADOW )
   {
-    double amount                           = num_amount;
-    double amount_from_power_infusion       = 0.0;
-    double amount_from_surrender_to_madness = 0.0;
+    double amount                               = num_amount;
+    double amount_from_power_infusion           = 0.0;
+    double amount_from_surrender_to_madness     = 0.0;
+    double amount_wasted_surrendered_to_madness = 0.0;
 
     if ( buffs.surrendered_to_madness->check() )
     {
-      amount *= 1.0 + buffs.surrendered_to_madness->data().effectN( 1 ).percent();
+      amount_wasted_surrendered_to_madness = amount * buffs.surrendered_to_madness->data().effectN( 1 ).percent();
+      amount += amount_wasted_surrendered_to_madness;
     }
-    else
+    else if ( buffs.surrender_to_madness->check() && buffs.power_infusion->check() )
     {
-      if ( buffs.surrender_to_madness->check() && buffs.power_infusion->check() )
-      {
-        double total_amount = amount * ( 1.0 + buffs.power_infusion->data().effectN( 2 ).percent() ) *
-                              ( 1.0 + talents.surrender_to_madness->effectN( 1 ).percent() );
+      double total_amount = amount * ( 1.0 + buffs.power_infusion->data().effectN( 2 ).percent() ) *
+                            ( 1.0 + talents.surrender_to_madness->effectN( 1 ).percent() );
 
-        amount_from_surrender_to_madness = amount * talents.surrender_to_madness->effectN( 1 ).percent();
+      amount_from_surrender_to_madness = amount * talents.surrender_to_madness->effectN( 1 ).percent();
 
-        // Since this effect is multiplicitive, we'll give the extra to Power Infusion since it does not last as long as
-        // Surrender to Madness
-        amount_from_power_infusion = total_amount - amount - amount_from_surrender_to_madness;
+      // Since this effect is multiplicitive, we'll give the extra to Power Infusion since it does not last as long as
+      // Surrender to Madness
+      amount_from_power_infusion = total_amount - amount - amount_from_surrender_to_madness;
 
-        // Make sure the maths line up.
-        assert( total_amount == amount + amount_from_power_infusion + amount_from_surrender_to_madness );
-      }
-      else if ( buffs.surrender_to_madness->check() )
-      {
-        amount_from_surrender_to_madness =
-            ( amount * ( 1.0 + talents.surrender_to_madness->effectN( 1 ).percent() ) ) - amount;
-      }
-      else if ( buffs.power_infusion->check() )
-      {
-        amount_from_power_infusion =
-            ( amount * ( 1.0 + buffs.power_infusion->data().effectN( 2 ).percent() ) ) - amount;
-      }
+      // Make sure the maths line up.
+      assert( total_amount == amount + amount_from_power_infusion + amount_from_surrender_to_madness );
+    }
+    else if ( buffs.surrender_to_madness->check() )
+    {
+      amount_from_surrender_to_madness =
+          ( amount * ( 1.0 + talents.surrender_to_madness->effectN( 1 ).percent() ) ) - amount;
+    }
+    else if ( buffs.power_infusion->check() )
+    {
+      amount_from_power_infusion =
+          ( amount * ( 1.0 + buffs.power_infusion->data().effectN( 2 ).percent() ) ) - amount;
+    }
 
-      insanity.gain( amount, g, action );
+    insanity.gain( amount, g, action );
 
-      if ( amount_from_power_infusion > 0.0 )
-      {
-        insanity.gain( amount_from_power_infusion, gains.insanity_power_infusion, action );
-      }
+    if ( amount_from_power_infusion > 0.0 )
+    {
+      insanity.gain( amount_from_power_infusion, gains.insanity_power_infusion, action );
+    }
 
-      if ( amount_from_surrender_to_madness > 0.0 )
-      {
-        insanity.gain( amount_from_surrender_to_madness, gains.insanity_surrender_to_madness, action );
-      }
+    if ( amount_from_surrender_to_madness > 0.0 )
+    {
+      insanity.gain( amount_from_surrender_to_madness, gains.insanity_surrender_to_madness, action );
+    }    
+    if ( amount_wasted_surrendered_to_madness )
+    {
+      insanity.gain( amount_wasted_surrendered_to_madness, gains.insanity_wasted_surrendered_to_madness, action );
     }
   }
 }
