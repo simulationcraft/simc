@@ -2343,8 +2343,8 @@ struct lightning_wolf_t : public doom_wolf_base_t
   {
     doom_wolf_base_t::create_buffs();
 
-    crackling_surge = haste_buff_creator_t( this, "crackling_surge", find_spell( 224127 ) )
-                          .default_value( find_spell( 224127 )->effectN( 1 ).percent() );
+    crackling_surge = make_buff<haste_buff_t>( this, "crackling_surge", find_spell( 224127 ) );
+    crackling_surge->set_default_value( find_spell( 224127 )->effectN( 1 ).percent() );
   }
 
   bool create_actions() override
@@ -8516,7 +8516,7 @@ struct sephuzs_secret_enabler_t : public scoped_actor_callback_t<shaman_t>
   }
 };
 
-struct sephuzs_secret_t : public class_buff_cb_t<shaman_t, haste_buff_t, haste_buff_creator_t>
+struct sephuzs_secret_t : public class_buff_cb_t<shaman_t, haste_buff_t>
 {
   sephuzs_secret_t() : super( SHAMAN, "sephuzs_secret" )
   {
@@ -8557,7 +8557,8 @@ struct shaman_module_t : public module_t
 
   void init( player_t* p ) const override
   {
-    p->buffs.bloodlust = haste_buff_creator_t( p, "bloodlust", p->find_spell( 2825 ) ).max_stack( 1 );
+    p->buffs.bloodlust = make_buff<haste_buff_t>( p, "bloodlust", p->find_spell( 2825 ) );
+    p->buffs.bloodlust->set_max_stack( 1 );
 
     p->buffs.exhaustion = buff_creator_t( p, "exhaustion", p->find_spell( 57723 ) ).max_stack( 1 ).quiet( true );
   }

@@ -1378,7 +1378,7 @@ struct incanters_flow_t : public buff_t
 struct icy_veins_buff_t : public haste_buff_t
 {
   icy_veins_buff_t( mage_t* p ) :
-    haste_buff_t( haste_buff_creator_t( p, "icy_veins", p -> find_spell( 12472 ) ) )
+    haste_buff_t( p, "icy_veins", p -> find_spell( 12472 ) )
   {
     set_default_value( data().effectN( 1 ).percent() );
     set_cooldown( timespan_t::zero() );
@@ -6484,9 +6484,9 @@ void mage_t::create_buffs()
                                   .cd( timespan_t::zero() )
                                   .stack_change_callback( [ this ] ( buff_t*, int, int cur )
                                     { if ( cur == 0 ) cooldowns.presence_of_mind -> start(); } );
-  buffs.quick_thinker         = haste_buff_creator_t( this, "quick_thinker", find_spell( 253299 ) )
-                                  .default_value( find_spell( 253299 ) -> effectN( 1 ).percent() )
-                                  .chance( sets -> set( MAGE_ARCANE, T21, B4 ) -> proc_chance() );
+  buffs.quick_thinker         = make_buff<haste_buff_t>( this, "quick_thinker", find_spell( 253299 ) );
+  buffs.quick_thinker->set_default_value( find_spell( 253299 ) -> effectN( 1 ).percent() )
+      ->set_chance( sets -> set( MAGE_ARCANE, T21, B4 ) -> proc_chance() );
   buffs.rule_of_threes        = buff_creator_t( this, "rule_of_threes", find_spell( 264774 ) )
                                   .default_value( find_spell( 264774 ) -> effectN( 1 ).percent() );
   
@@ -6515,8 +6515,8 @@ void mage_t::create_buffs()
 
   buffs.heating_up             = buff_creator_t( this, "heating_up",  find_spell( 48107 ) );
   buffs.hot_streak             = buff_creator_t( this, "hot_streak",  find_spell( 48108 ) );
-  buffs.streaking              = haste_buff_creator_t( this, "streaking", find_spell( 211399 ) )
-                                   .default_value( find_spell( 211399 ) -> effectN( 1 ).percent() );
+  buffs.streaking              = make_buff<haste_buff_t>( this, "streaking", find_spell( 211399 ) );
+  buffs.streaking->set_default_value( find_spell( 211399 ) -> effectN( 1 ).percent() );
 
   // Frost
   buffs.arctic_blast           = buff_creator_t( this, "arctic_blast", find_spell( 253257 ) )
@@ -8203,7 +8203,7 @@ static void sorcerous_shadowruby_pendant( special_effect_t& effect )
 }
 
 // Mage Legendary Items
-struct sephuzs_secret_t : public class_buff_cb_t<mage_t, haste_buff_t, haste_buff_creator_t>
+struct sephuzs_secret_t : public class_buff_cb_t<mage_t, haste_buff_t>
 {
   sephuzs_secret_t(): super( MAGE, "sephuzs_secret" )
   { }
@@ -8247,7 +8247,7 @@ struct mystic_kilt_of_the_rune_master_t : public scoped_action_callback_t<arcane
   { action -> mystic_kilt_of_the_rune_master_regen = e.driver() -> effectN( 1 ).percent(); }
 };
 
-struct rhonins_assaulting_armwraps_t : public class_buff_cb_t<mage_t, buff_t, buff_creator_t>
+struct rhonins_assaulting_armwraps_t : public class_buff_cb_t<mage_t>
 {
   rhonins_assaulting_armwraps_t() : super( MAGE_ARCANE, "rhonins_assaulting_armwraps" )
   { }
@@ -8264,7 +8264,7 @@ struct rhonins_assaulting_armwraps_t : public class_buff_cb_t<mage_t, buff_t, bu
   }
 };
 
-struct cord_of_infinity_t : public class_buff_cb_t<mage_t, buff_t, buff_creator_t>
+struct cord_of_infinity_t : public class_buff_cb_t<mage_t>
 {
   // TODO: What does this do in BfA?
   cord_of_infinity_t() : super( MAGE_ARCANE, "cord_of_infinity" )
@@ -8329,7 +8329,7 @@ struct darcklis_dragonfire_diadem_t : public scoped_action_callback_t<dragons_br
 };
 
 
-struct marquee_bindings_of_the_sun_king_t : public class_buff_cb_t<mage_t, buff_t, buff_creator_t>
+struct marquee_bindings_of_the_sun_king_t : public class_buff_cb_t<mage_t>
 {
   marquee_bindings_of_the_sun_king_t() : super( MAGE_FIRE, "kaelthas_ultimate_ability" )
   { }
@@ -8358,7 +8358,7 @@ struct pyrotex_ignition_cloth_t : public scoped_action_callback_t<phoenix_flames
   }
 };
 
-struct contained_infernal_core_t : public class_buff_cb_t<mage_t, buff_t, buff_creator_t>
+struct contained_infernal_core_t : public class_buff_cb_t<mage_t>
 {
   contained_infernal_core_t() : super( MAGE_FIRE, "contained_infernal_core" )
   { }
@@ -8375,7 +8375,7 @@ struct contained_infernal_core_t : public class_buff_cb_t<mage_t, buff_t, buff_c
 };
 
 // Frost Legendary Items
-struct magtheridons_banished_bracers_t : public class_buff_cb_t<mage_t, buff_t, buff_creator_t>
+struct magtheridons_banished_bracers_t : public class_buff_cb_t<mage_t>
 {
   magtheridons_banished_bracers_t() : super( MAGE_FROST, "magtheridons_might" )
   { }
@@ -8392,7 +8392,7 @@ struct magtheridons_banished_bracers_t : public class_buff_cb_t<mage_t, buff_t, 
   }
 };
 
-struct zannesu_journey_t : public class_buff_cb_t<mage_t, buff_t, buff_creator_t>
+struct zannesu_journey_t : public class_buff_cb_t<mage_t>
 {
   zannesu_journey_t() : super( MAGE_FROST, "zannesu_journey" )
   { }
@@ -8431,7 +8431,7 @@ struct ice_time_t : public scoped_action_callback_t<frozen_orb_t>
   }
 };
 
-struct shattered_fragments_of_sindragosa_t : public class_buff_cb_t<mage_t, buff_t, buff_creator_t>
+struct shattered_fragments_of_sindragosa_t : public class_buff_cb_t<mage_t>
 {
   shattered_fragments_of_sindragosa_t() : super( MAGE_FROST, "shattered_fragments_of_sindragosa" )
   { }

@@ -456,10 +456,10 @@ namespace buffs {
   {
     cooldown_t* icd;
     sephuzs_secret_buff_t(paladin_t* p) :
-      haste_buff_t(haste_buff_creator_t(p, "sephuzs_secret", p -> find_spell( 208052 ))
-        .default_value(p -> find_spell( 208052 ) -> effectN(2).percent())
-        .add_invalidate( CACHE_HASTE ))
+      haste_buff_t(p, "sephuzs_secret", p -> find_spell( 208052 ))
     {
+      set_default_value(p -> find_spell( 208052 ) -> effectN(2).percent());
+      add_invalidate( CACHE_HASTE );
       icd = p->get_cooldown("sephuzs_secret_cooldown");
       icd->duration = p->find_spell(226262)->duration();
     }

@@ -557,9 +557,10 @@ namespace warlock {
           .refresh_behavior(BUFF_REFRESH_DURATION)
           .add_invalidate(CACHE_PLAYER_DAMAGE_MULTIPLIER);
         //tier
-        buffs.demonic_speed = haste_buff_creator_t(this, "demonic_speed", sets->set(WARLOCK_AFFLICTION, T20, B4)->effectN(1).trigger())
-            .chance(sets->set(WARLOCK_AFFLICTION, T20, B4)->proc_chance())
-            .default_value(sets->set(WARLOCK_AFFLICTION, T20, B4)->effectN(1).trigger()->effectN(1).percent());
+        buffs.demonic_speed = make_buff<haste_buff_t>(this, "demonic_speed", sets->set(WARLOCK_AFFLICTION, T20, B4)->effectN(1).trigger());
+        buffs.demonic_speed
+            ->set_chance(sets->set(WARLOCK_AFFLICTION, T20, B4)->proc_chance())
+            ->set_default_value(sets->set(WARLOCK_AFFLICTION, T20, B4)->effectN(1).trigger()->effectN(1).percent());
         //legendary
     }
 

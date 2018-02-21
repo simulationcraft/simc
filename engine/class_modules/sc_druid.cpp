@@ -7511,10 +7511,10 @@ void druid_t::create_buffs()
   buff.wax_and_wane          = buff_creator_t( this, "wax_and_wane", find_spell( 239952 ) )
                                 .default_value(  find_spell( 239952 ) -> effectN(1).percent() );
 
-  buff.astral_acceleration   = haste_buff_creator_t(this, "astral_acceleration", find_spell(242232))
-                                 .cd(timespan_t::zero())
-                                 .default_value(find_spell(242232)->effectN(1).percent())
-                                 .refresh_behavior(BUFF_REFRESH_DISABLED);
+  buff.astral_acceleration   = make_buff<haste_buff_t>(this, "astral_acceleration", find_spell(242232));
+  buff.astral_acceleration->set_cooldown(timespan_t::zero())
+      ->set_default_value(find_spell(242232)->effectN(1).percent())
+      ->set_refresh_behavior(BUFF_REFRESH_DISABLED);
                                 //.duration( timespan_t::from_seconds( 20.0 ) );
   buff.solar_solstice = buff_creator_t(this, "solar_solstice", find_spell(252767))
       .default_value(find_spell(252767)->effectN(1).percent());
@@ -10116,7 +10116,7 @@ struct sephuzs_t : scoped_actor_callback_t<druid_t>
    };
 };
 
-struct sephuzs_secret_t : public class_buff_cb_t<druid_t, haste_buff_t, haste_buff_creator_t>
+struct sephuzs_secret_t : public class_buff_cb_t<druid_t, haste_buff_t>
 {
    sephuzs_secret_t() : super(DRUID, "sephuzs_secret")
    { }

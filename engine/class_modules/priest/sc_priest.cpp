@@ -478,7 +478,7 @@ struct sephuzs_secret_enabler_t : public scoped_actor_callback_t<priest_t>
   }
 };
 
-struct sephuzs_secret_t : public class_buff_cb_t<priest_t, haste_buff_t, haste_buff_creator_t>
+struct sephuzs_secret_t : public class_buff_cb_t<priest_t, haste_buff_t>
 {
   sephuzs_secret_t() : super( PRIEST, "sephuzs_secret" )
   {

@@ -6695,8 +6695,7 @@ namespace unique_gear
   //
   // First template argument is the actor class (e.g., shaman_t), required parameter
   // Second template argument is the buff type (e.g., buff_t, stat_buff_t, ...)
-  // Third template argument is the creator type (e.g., buff_creator_t, stat_buff_creator_t, ...)
-  template <typename T, typename T_BUFF = buff_t, typename T_CREATOR = buff_creator_t>
+  template <typename T, typename T_BUFF = buff_t>
   struct class_buff_cb_t : public class_scoped_callback_t
   {
     private:
@@ -6705,7 +6704,7 @@ namespace unique_gear
     T_BUFF* __dummy;
 
     public:
-    typedef class_buff_cb_t<T, T_BUFF, T_CREATOR> super;
+    typedef class_buff_cb_t<T, T_BUFF> super;
 
     // The buff name. Optional if create_buff and create_fallback are both overridden. If fallback
     // behavior is required and the method is not overridden, must be provided.
