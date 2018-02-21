@@ -58,6 +58,7 @@ namespace automation {
   QStringList convert_shorthand( QStringList shorthandList, QString sidebar_text );
   QStringList splitOption( QString options_shorthand );
   QStringList splitOnFirst( QString str, const char* delimiter );
+  std::vector<std::pair<QString, QString> > make_shorthand_table(QStringList list);
 
 } // end automation namespace
 
@@ -441,6 +442,18 @@ QStringList automation::splitOnFirst( QString str, const char* delimiter )
   return returnStringList;
 }
 
+std::vector<std::pair<QString, QString> > automation::make_shorthand_table(QStringList list)
+{
+  std::vector<std::pair<QString, QString> > table;
+  for ( int i = 0; i < list.size(); i++ )
+  {
+    QStringList parts = splitOnFirst( list[ i ], "=" );
+    if ( parts.size() > 1 )
+      table.push_back( std::make_pair( parts[ 0 ], parts[ 1 ] ) );
+  }
+  return table;
+}
+
 QStringList automation::convert_shorthand( QStringList shorthandList, QString sidebar_text )
 {
   // STEP 1:  Take the sidebar list and convert it to an abilities table and an options table
@@ -454,33 +467,9 @@ QStringList automation::convert_shorthand( QStringList shorthandList, QString si
   QStringList operatorsList = sidebarSplit[ 2 ].split( "\n", QString::SkipEmptyParts );
 
   typedef std::vector<std::pair<QString, QString> > shorthandTable;
-  shorthandTable abilityTable;
-  shorthandTable optionTable;
-  shorthandTable operatorTable;
-
-  // Construct the table for ability conversions
-  for ( int i = 0; i < abilityList.size(); i++ )
-  {
-    QStringList parts = splitOnFirst( abilityList[ i ], "=" );
-    if ( parts.size() > 1 )
-      abilityTable.push_back( std::make_pair( parts[ 0 ], parts[ 1 ] ) );
-  }
-
-  // Construct the table for option conversions
-  for ( int i = 0; i < optionsList.size(); i++ )
-  {
-    QStringList parts = splitOnFirst( optionsList[ i ], "=" );
-    if ( parts.size() > 1 )
-      optionTable.push_back( std::make_pair( parts[ 0 ], parts[ 1 ] ) );
-  }
-
-  // Construct the table for operator conversions
-  for ( int i = 0; i < operatorsList.size(); i++ )
-  {
-    QStringList parts = splitOnFirst( operatorsList[ i ], "=" );
-    if ( parts.size() > 1 )
-      operatorTable.push_back( std::make_pair( parts[ 0 ], parts[ 1 ] ) );
-  }
+  shorthandTable abilityTable = make_shorthand_table(abilityList);
+  shorthandTable optionTable = make_shorthand_table(optionsList);
+  shorthandTable operatorTable = make_shorthand_table(operatorsList);
 
   // STEP 2: now we take the shorthand and figure out what to do with each element
 
@@ -506,126 +495,124 @@ QStringList automation::convert_shorthand( QStringList shorthandList, QString si
 
     // use abilityTable to replace the abbreviation with the full ability name
     shorthandTable::iterator m = std::find_if( abilityTable.begin(), abilityTable.end(), comp( splits[ 0 ] ) );
-    if ( m != abilityTable.end() )
+    if ( m == abilityTable.end() )
+      continue;
+
+    ability = m -> second;
+
+    // now handle options if there are any
+    if ( splits.size() > 1 )
     {
-      ability = m -> second;
+      // options are specified just as in simc, but with shorthands, e.g. as A&(B|!C)
+      // we need to split on [&|()!], match the resulting abbreviations in the table,
+      // and use those match pairs to replace the appropriate portions of the options string.
+      // This method takes the options QString and returns a QStringList of symbols [&!()!] & abbreviations.
+      QStringList optionsBreakdown = splitOption( splits[ 1 ] );
 
-      // now handle options if there are any
-      if ( splits.size() > 1 )
+      // now cycle through this QStringList and replace any recognized shorthands with their longhand forms
+      for ( int j = 0; j < optionsBreakdown.size(); j++ )
       {
-        // options are specified just as in simc, but with shorthands, e.g. as A&(B|!C)
-        // we need to split on [&|()!], match the resulting abbreviations in the table,
-        // and use those match pairs to replace the appropriate portions of the options string.
-        // This method takes the options QString and returns a QStringList of symbols [&!()!] & abbreviations.
-        QStringList optionsBreakdown = splitOption( splits[ 1 ] );
+        // if this entry is &|()!, skip it
+        if ( optionsBreakdown[ j ].contains( QRegularExpression( "[&|\\(\\)\\!\\+\\-\\>\\<\\=\\*/]+" ) ) )
+          continue;
 
-        // now cycle through this QStringList and replace any recognized shorthands with their longhand forms
-        for ( int j = 0; j < optionsBreakdown.size(); j++ )
+        // otherwise, use regular expressions to determine the syntax and split into components
+        QString operand;
+        QString operation;
+        QString numeric;
+
+        // Checking for operand syntax: Operand.Operator[#] (e.g. DP.BA or DP.BR3)
+        QRegularExpression rxb( "(\\D+)(\\.)(\\D+)(\\d*\\.?\\d*)" );
+        QRegularExpressionMatch match = rxb.match( optionsBreakdown[ j ] );
+        if ( match.hasMatch() )
         {
-          // if this entry is &|()!, skip it
-          if ( optionsBreakdown[ j ].contains( QRegularExpression( "[&|\\(\\)\\!\\+\\-\\>\\<\\=\\*/]+" ) ) )
+          // captures[ 0 ] is the whole string, captures[ 1 ] is the first match, captures[ 2 ] is the second match, etc.
+          QStringList captures = match.capturedTexts();
+
+          // split into components
+          operand   = captures[ 1 ];
+          operation = captures[ 3 ];
+          numeric   = captures[ 4 ];
+        }
+        // if that didn't work, check for simple option syntax: Option[#] (e.g. HP or HP3)
+        else
+        {
+          QRegularExpression rxw( "(\\D+)(\\d*\\.?\\d*)" );
+          match = rxw.match( optionsBreakdown[ j ] );
+          // if we don't have a match by this point, give up
+          if ( ! match.hasMatch() )
             continue;
 
-          // otherwise, use regular expressions to determine the syntax and split into components
-          QString operand;
-          QString operation;
-          QString numeric;
+          // captures[ 0 ] is the whole string, captures[ 1 ] is the first match, captures[ 2 ] is the second match, etc.
+          QStringList captures = match.capturedTexts();
 
-          // Checking for operand syntax: Operand.Operator[#] (e.g. DP.BA or DP.BR3)
-          QRegularExpression rxb( "(\\D+)(\\.)(\\D+)(\\d*\\.?\\d*)" );
-          QRegularExpressionMatch match = rxb.match( optionsBreakdown[ j ] );
-          if ( match.hasMatch() )
-          {
-            // captures[ 0 ] is the whole string, captures[ 1 ] is the first match, captures[ 2 ] is the second match, etc.
-            QStringList captures = match.capturedTexts();
+          // split into components
+          operation = captures[ 1 ];
+          numeric =   captures[ 2 ];
+        }
 
-            // split into components
-            operand =   captures[ 1 ];
-            operation = captures[ 3 ];
-            numeric =   captures[ 4 ];
-          }
-          // if that didn't work, check for simple option syntax: Option[#] (e.g. HP or HP3)
-          else
-          {
-            QRegularExpression rxw( "(\\D+)(\\d*\\.?\\d*)" );
-            match = rxw.match( optionsBreakdown[ j ] );
-            if ( match.hasMatch() )
-            {
-              // captures[ 0 ] is the whole string, captures[ 1 ] is the first match, captures[ 2 ] is the second match, etc.
-              QStringList captures = match.capturedTexts();
+        // now go to work on the components we have
 
-              // split into components
-              operation = captures[ 1 ];
-              numeric =   captures[ 2 ];
-            }
-            // if we don't have a match by this point, give up
-            else
-              continue;
-          }
+        // first, construct the option from the operation and the numeric
+        QString option;
+        if ( numeric.length() == 0 )
+          option = operation;
+        else
+          option = operation + "#";
 
-          // now go to work on the components we have
+        // pick the table we're using
+        shorthandTable* table;
+        if ( operand.length() > 0 )
+          table = &operatorTable;
+        else
+          table = &optionTable;
 
-          // first, construct the option from the operation and the numeric
-          QString option;
-          if ( numeric.length() == 0 )
-            option = operation;
-          else
-            option = operation + "#";
+        //now look for that operation in the table
+        shorthandTable::iterator n = std::find_if( (*table).begin(), (*table).end(), comp( option ) );
+        if ( n != (*table).end() )
+          optionsBreakdown[ j ] = n -> second;
 
-          // pick the table we're using
-          shorthandTable* table;
-          if ( operand.length() > 0 )
-            table = &operatorTable;
-          else
-            table = &optionTable;
+        // replace the # sign with the numeric value if necessary
+        if ( numeric.length() > 0 )
+          optionsBreakdown[ j ].replace( "#", numeric );
 
-          //now look for that operation in the table
-          shorthandTable::iterator n = std::find_if( (*table).begin(), (*table).end(), comp( option ) );
-          if ( n != (*table).end() )
-            optionsBreakdown[ j ] = n -> second;
+        // if we have an operand, look it up in the table and perform the replacement
+        if ( operand.length() > 0 )
+        {
+          shorthandTable::iterator o = std::find_if( abilityTable.begin(), abilityTable.end(), comp( operand ) );
+          QString operand_string = operand;
+          if ( o != abilityTable.end() )
+             operand_string = o -> second;
+          if ( optionsBreakdown[ j ].contains( "$operand" ) )
+            optionsBreakdown[ j ].replace( "$operand", operand_string );
+        }
 
-          // replace the # sign with the numeric value if necessary
-          if ( numeric.length() > 0 )
-            optionsBreakdown[ j ].replace( "#", numeric );
+        // we also need to do some replacements on $ability entries
+        if ( optionsBreakdown[ j ].contains( "$ability" ) )
+          optionsBreakdown[ j ].replace( "$ability", ability );
 
-          // if we have an operand, look it up in the table and perform the replacement
-          if ( operand.length() > 0 )
-          {
-            shorthandTable::iterator o = std::find_if( abilityTable.begin(), abilityTable.end(), comp( operand ) );
-            QString operand_string = operand;
-            if ( o != abilityTable.end() )
-               operand_string = o -> second;
-            if ( optionsBreakdown[ j ].contains( "$operand" ) )
-              optionsBreakdown[ j ].replace( "$operand", operand_string );
-          }
+        // special handling of the +W option
+        if ( optionsBreakdown[ j ].contains( "wait" ) )
+        {
+          waitString = optionsBreakdown[ j ];
+          optionsBreakdown.removeAt( j );
+        }
 
-          // we also need to do some replacements on $ability entries
-          if ( optionsBreakdown[ j ].contains( "$ability" ) )
-            optionsBreakdown[ j ].replace( "$ability", ability );
+      } // end for loop
 
-          // special handling of the +W option
-          if ( optionsBreakdown[ j ].contains( "wait" ) )
-          {
-            waitString = optionsBreakdown[ j ];
-            optionsBreakdown.removeAt( j );
-          }
-
-        } // end for loop
-
-        // at this point, we should be able to merge the optionsBreakdown list into a string
-        options = optionsBreakdown.join( "" );
-      }
-
-      // combine the ability and options into a single string
-      QString entry = "actions+=/" + ability;
-      if ( options.length() > 0 )
-        entry += ",if=" + options;
-
-      // add the entry to actionPriorityList
-      actionPriorityList.append( entry );
-      if ( waitString.length() > 0 )
-        actionPriorityList.append( "actions+=" + waitString );
+      // at this point, we should be able to merge the optionsBreakdown list into a string
+      options = optionsBreakdown.join( "" );
     }
+
+    // combine the ability and options into a single string
+    QString entry = "actions+=/" + ability;
+    if ( options.length() > 0 )
+      entry += ",if=" + options;
+
+    // add the entry to actionPriorityList
+    actionPriorityList.append( entry );
+    if ( waitString.length() > 0 )
+      actionPriorityList.append( "actions+=" + waitString );
   }
 
   return actionPriorityList;
