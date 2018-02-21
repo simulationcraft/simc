@@ -2124,7 +2124,6 @@ struct melee_t : public rogue_attack_t
     special           = false;
     school            = SCHOOL_PHYSICAL;
     trigger_gcd       = timespan_t::zero();
-    weapon_power_mod  = 1.0 / 3.5;
     weapon_multiplier = 1.0;
 
     if ( p -> dual_wield() )

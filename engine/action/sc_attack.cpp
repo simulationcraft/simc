@@ -17,7 +17,7 @@ attack_t::attack_t( const std::string& n, player_t* p, const spell_data_t* s )
   crit_bonus = 1.0;
   special = true; // Make sure to set this to false with autoattacks. 
 
-  weapon_power_mod = 1.0 / 3.5;
+  weapon_power_mod = 1.0 / WEAPON_POWER_COEFFICIENT;
   min_gcd          = p->min_gcd;
   hasted_ticks = false;
 

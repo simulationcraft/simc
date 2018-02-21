@@ -1078,11 +1078,7 @@ double action_t::calculate_weapon_damage( double attack_power ) const
   if ( ! weapon || weapon_multiplier <= 0 ) return 0;
 
   double dmg = sim -> averaged_range( weapon -> min_dmg, weapon -> max_dmg ) + weapon -> bonus_dmg;
-
-  timespan_t weapon_speed  = normalize_weapon_speed  ? weapon -> get_normalized_speed() : weapon -> swing_time;
-
-  double power_damage = weapon_speed.total_seconds() * weapon_power_mod * attack_power;
-
+  double power_damage = weapon -> swing_time.total_seconds() * weapon_power_mod * attack_power;
   double total_dmg = dmg + power_damage;
 
   // OH penalty
@@ -1092,7 +1088,7 @@ double action_t::calculate_weapon_damage( double attack_power ) const
   if ( sim -> debug )
   {
     sim -> out_debug.printf( "%s weapon damage for %s: base=%.0f-%.0f td=%.3f wd=%.3f bd=%.3f ws=%.3f pd=%.3f ap=%.3f",
-                   player -> name(), name(), weapon -> min_dmg, weapon -> max_dmg, total_dmg, dmg, weapon -> bonus_dmg, weapon_speed.total_seconds(), power_damage, attack_power );
+                   player -> name(), name(), weapon -> min_dmg, weapon -> max_dmg, total_dmg, dmg, weapon -> bonus_dmg, weapon -> swing_time.total_seconds(), power_damage, attack_power );
   }
 
   return total_dmg;
