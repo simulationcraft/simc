@@ -232,43 +232,6 @@ public:
   operator absorb_buff_t* () const;
 };
 
-struct cost_reduction_buff_creator_t : public buff_creator_helper_t<cost_reduction_buff_creator_t>
-{
-private:
-  double _amount;
-  school_e _school;
-  friend struct ::cost_reduction_buff_t;
-public:
-  cost_reduction_buff_creator_t( actor_pair_t q, const std::string& name, const spell_data_t* s = spell_data_t::nil(), const item_t* i = nullptr ) :
-    base_t( q, name, s, i ),
-    _amount( 0 ), _school( SCHOOL_NONE )
-  {}
-
-  cost_reduction_buff_creator_t( sim_t* sim, const std::string& name, const spell_data_t* s = spell_data_t::nil(), const item_t* i = nullptr ) :
-    base_t( sim, name, s, i ),
-    _amount( 0 ), _school( SCHOOL_NONE )
-  {}
-
-  bufftype& amount( double a )
-  { _amount = a; return *this; }
-  bufftype& school( school_e s )
-  { _school = s; return *this; }
-
-  operator cost_reduction_buff_t* () const;
-};
-
-struct haste_buff_creator_t : public buff_creator_helper_t<haste_buff_creator_t>
-{
-private:
-  friend struct ::haste_buff_t;
-public:
-  haste_buff_creator_t( actor_pair_t q, const std::string& name, const spell_data_t* s = spell_data_t::nil(), const item_t* i = nullptr ) :
-    base_t( q, name, s, i )
-  { }
-
-  operator haste_buff_t* () const;
-};
-
 } // END NAMESPACE buff_creation
 
 using namespace buff_creation;
@@ -347,7 +310,7 @@ public:
 
   virtual ~buff_t() {}
 
-  buff_t( actor_pair_t q, const std::string& name, const spell_data_t* = spell_data_t::nil() );
+  buff_t( actor_pair_t q, const std::string& name, const spell_data_t* = spell_data_t::nil(), const item_t* item = nullptr );
 protected:
   buff_t( const buff_creator_basics_t& params );
   friend struct buff_creation::buff_creator_t;
@@ -541,7 +504,7 @@ struct stat_buff_t : public buff_t
 
   stat_buff_t* add_stat( stat_e s, double a, std::function<bool(const stat_buff_t&)> c = std::function<bool(const stat_buff_t&)>() );
 
-  stat_buff_t( actor_pair_t q, const std::string& name, const spell_data_t* = spell_data_t::nil() );
+  stat_buff_t( actor_pair_t q, const std::string& name, const spell_data_t* = spell_data_t::nil(), const item_t* item = nullptr );
 protected:
   stat_buff_t( const stat_buff_creator_t& params );
   friend struct buff_creation::stat_buff_creator_t;
@@ -555,7 +518,7 @@ struct absorb_buff_t : public buff_t
   bool     high_priority; // For tank absorbs that should explicitly "go first"
   std::function< bool( const action_state_t* ) > eligibility; // A custom function whose result determines if the attack is eligible to be absorbed.
 
-  absorb_buff_t( actor_pair_t q, const std::string& name, const spell_data_t* = spell_data_t::nil() );
+  absorb_buff_t( actor_pair_t q, const std::string& name, const spell_data_t* = spell_data_t::nil(), const item_t* item = nullptr );
 protected:
   absorb_buff_t( const absorb_buff_creator_t& params );
   friend struct buff_creation::absorb_buff_creator_t;
@@ -576,23 +539,18 @@ struct cost_reduction_buff_t : public buff_t
   double amount;
   school_e school;
 
-protected:
-  cost_reduction_buff_t( const cost_reduction_buff_creator_t& params );
-  friend struct buff_creation::cost_reduction_buff_creator_t;
-public:
+  cost_reduction_buff_t( actor_pair_t q, const std::string& name, const spell_data_t* = spell_data_t::nil(), const item_t* item = nullptr );
   virtual void bump     ( int stacks = 1, double value = -1.0 ) override;
   virtual void decrement( int stacks = 1, double value = -1.0 ) override;
   virtual void expire_override( int expiration_stacks, timespan_t remaining_duration ) override;
+  cost_reduction_buff_t* set_reduction(school_e school, double amount);
 };
 
 struct haste_buff_t : public buff_t
 {
   haste_type_e haste_type;
 
-  haste_buff_t( actor_pair_t q, const std::string& name, const spell_data_t* = spell_data_t::nil() );
-protected:
-  haste_buff_t( const haste_buff_creator_t& params );
-  friend struct buff_creation::haste_buff_creator_t;
+  haste_buff_t( actor_pair_t q, const std::string& name, const spell_data_t* = spell_data_t::nil(), const item_t* item = nullptr );
 public:
   void decrement( int stacks = 1, double value = -1.0 ) override;
   void bump     ( int stacks = 1, double value = -1.0 ) override;

@@ -5,12 +5,12 @@ namespace paladin {
 
 namespace buffs {
   crusade_buff_t::crusade_buff_t( player_t* p ) :
-      haste_buff_t( haste_buff_creator_t( p, "crusade", p -> find_spell( 231895 ) )
-        .refresh_behavior( BUFF_REFRESH_DISABLED ) ),
+      haste_buff_t( p, "crusade", p -> find_spell( 231895 ) ),
       damage_modifier( 0.0 ),
       healing_modifier( 0.0 ),
       haste_bonus( 0.0 )
   {
+    set_refresh_behavior( BUFF_REFRESH_DISABLED );
     // TODO(mserrano): fix this when Blizzard turns the spelldata back to sane
     //  values
     damage_modifier = data().effectN( 1 ).percent() / 10.0;

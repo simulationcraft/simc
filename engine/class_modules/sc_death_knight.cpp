@@ -6740,10 +6740,10 @@ struct sephuzs_secret_buff_t: public haste_buff_t
 {
   cooldown_t* icd;
   sephuzs_secret_buff_t( death_knight_t* p ):
-    haste_buff_t( haste_buff_creator_t( p, "sephuzs_secret", p -> find_spell( 208052 ) )
-            .default_value( p -> find_spell( 208052 ) -> effectN( 2 ).percent() )
-            .add_invalidate( CACHE_HASTE ) )
+    haste_buff_t( p, "sephuzs_secret", p -> find_spell( 208052 ) )
   {
+    set_default_value( p -> find_spell( 208052 ) -> effectN( 2 ).percent() );
+    add_invalidate( CACHE_HASTE );
     icd = p -> get_cooldown( "sephuzs_secret_cooldown" );
     icd  -> duration = p -> find_spell( 226262 ) -> duration();
   }
@@ -8500,9 +8500,9 @@ void death_knight_t::create_buffs()
 
   buffs.sephuzs_secret = new sephuzs_secret_buff_t( this );
 
-  buffs.bone_shield         = haste_buff_creator_t( this, "bone_shield", spell.bone_shield )
-                              .default_value( 1.0 / ( 1.0 + spell.bone_shield -> effectN( 4 ).percent() ) )
-                              .stack_change_callback( talent.foul_bulwark -> ok() ? [ this ]( buff_t*, int old_stacks, int new_stacks ) {
+  buffs.bone_shield         = make_buff<haste_buff_t>( this, "bone_shield", spell.bone_shield );
+  buffs.bone_shield->set_default_value( 1.0 / ( 1.0 + spell.bone_shield -> effectN( 4 ).percent() ) )
+                              ->set_stack_change_callback( talent.foul_bulwark -> ok() ? [ this ]( buff_t*, int old_stacks, int new_stacks ) {
                                 double old_buff = old_stacks * talent.foul_bulwark -> effectN( 1 ).percent();
                                 double new_buff = new_stacks * talent.foul_bulwark -> effectN( 1 ).percent();
                                 resources.initial_multiplier[ RESOURCE_HEALTH ] /= 1.0 + old_buff;
@@ -8533,10 +8533,10 @@ void death_knight_t::create_buffs()
   buffs.icebound_fortitude  = buff_creator_t( this, "icebound_fortitude", spec.icebound_fortitude )
                               .duration( spec.icebound_fortitude -> duration() )
                               .cd( timespan_t::zero() );
-  buffs.icy_talons          = haste_buff_creator_t( this, "icy_talons", find_spell( 194879 ) )
-                              .add_invalidate( CACHE_ATTACK_SPEED )
-                              .default_value( find_spell( 194879 ) -> effectN( 1 ).percent() )
-                              .trigger_spell( talent.icy_talons );
+  buffs.icy_talons          = make_buff<haste_buff_t>( this, "icy_talons", find_spell( 194879 ) );
+  buffs.icy_talons->add_invalidate( CACHE_ATTACK_SPEED )
+      ->set_default_value( find_spell( 194879 ) -> effectN( 1 ).percent() )
+      ->set_trigger_spell( talent.icy_talons );
   buffs.killing_machine     = buff_creator_t( this, "killing_machine", spec.killing_machine -> effectN( 1 ).trigger() )
                               .trigger_spell( spec.killing_machine )
                               .default_value( find_spell( 51124 ) -> effectN( 1 ).percent() );
@@ -8579,12 +8579,12 @@ void death_knight_t::create_buffs()
 
   buffs.blighted_rune_weapon = buff_creator_t( this, "blighted_rune_weapon", talent.blighted_rune_weapon )
                                .cd( timespan_t::zero() ); // Handled by action
-  buffs.unholy_frenzy = haste_buff_creator_t( this, "unholy_frenzy", find_spell( 207290 ) )
-    .add_invalidate( CACHE_ATTACK_SPEED )
-    .trigger_spell( talent.unholy_frenzy )
-    .default_value( 1.0 / ( 1.0 + find_spell( 207290 ) -> effectN( 1 ).percent() ) )
+  buffs.unholy_frenzy = make_buff<haste_buff_t>( this, "unholy_frenzy", find_spell( 207290 ) );
+  buffs.unholy_frenzy->add_invalidate( CACHE_ATTACK_SPEED )
+    ->set_trigger_spell( talent.unholy_frenzy )
+    ->set_default_value( 1.0 / ( 1.0 + find_spell( 207290 ) -> effectN( 1 ).percent() ) )
     // Unholy Frenzy duration is hard capped at 25 seconds
-    .refresh_duration_callback( []( const buff_t* b, const timespan_t& duration ) {
+    ->set_refresh_duration_callback( []( const buff_t* b, const timespan_t& duration ) {
       timespan_t total_duration = b -> remains() + duration;
       if ( total_duration > timespan_t::from_seconds( 25 ) )
       {
@@ -8600,9 +8600,9 @@ void death_knight_t::create_buffs()
     .cd( timespan_t::zero() )
     .trigger_spell( talent.defile );
 
-  buffs.soul_reaper = haste_buff_creator_t( this, "soul_reaper_haste", talent.soul_reaper -> effectN( 2 ).trigger() )
-    .default_value( talent.soul_reaper -> effectN( 2 ).trigger() -> effectN( 1 ).percent() )
-    .trigger_spell( talent.soul_reaper );
+  buffs.soul_reaper = make_buff<haste_buff_t>( this, "soul_reaper_haste", talent.soul_reaper -> effectN( 2 ).trigger() );
+  buffs.soul_reaper->set_default_value( talent.soul_reaper -> effectN( 2 ).trigger() -> effectN( 1 ).percent() )
+    ->set_trigger_spell( talent.soul_reaper );
   buffs.antimagic_barrier = new antimagic_barrier_buff_t( this );
   buffs.tombstone = absorb_buff_creator_t( this, "tombstone", talent.tombstone )
     .cd( timespan_t::zero() ); // Handled by the action
@@ -8617,9 +8617,9 @@ void death_knight_t::create_buffs()
   buffs.remorseless_winter = new remorseless_winter_buff_t( this );
 
 	buffs.hungering_rune_weapon = new hungering_rune_weapon_buff_t( this );
-  buffs.hungering_rune_weapon_haste = haste_buff_creator_t( this, "hungering_rune_weapon_haste", talent.hungering_rune_weapon )
-	  .default_value( talent.hungering_rune_weapon -> effectN( 3 ).percent() )
-	  .trigger_spell( talent.hungering_rune_weapon );
+  buffs.hungering_rune_weapon_haste = make_buff<haste_buff_t>( this, "hungering_rune_weapon_haste", talent.hungering_rune_weapon );
+	buffs.hungering_rune_weapon_haste->set_default_value( talent.hungering_rune_weapon -> effectN( 3 ).percent() )
+	  ->set_trigger_spell( talent.hungering_rune_weapon );
   
   buffs.vampiric_aura = buff_creator_t( this, "vampiric_aura" )
     .spell( spell.vampiric_aura )

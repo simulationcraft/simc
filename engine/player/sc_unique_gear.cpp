@@ -1253,9 +1253,9 @@ void set_bonus::t18_lfr_4pc_platemelee( special_effect_t& effect )
 {
   if ( ! effect.player -> buffs.fel_winds )
   {
-    effect.player -> buffs.fel_winds = haste_buff_creator_t( effect.player, "fel_winds", effect.trigger() )
-      .default_value( effect.trigger() -> effectN( 1 ).percent() )
-      .tick_callback( fel_winds_callback );
+    effect.player -> buffs.fel_winds = make_buff<haste_buff_t>( effect.player, "fel_winds", effect.trigger() );
+    effect.player -> buffs.fel_winds->set_default_value( effect.trigger() -> effectN( 1 ).percent() )
+      ->set_tick_callback( fel_winds_callback );
   }
 
   effect.custom_buff = effect.player -> buffs.fel_winds;

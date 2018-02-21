@@ -170,8 +170,8 @@ struct expiration_delay_t : public buff_event_t
 };
 }  // namespace
 
-buff_t::buff_t( actor_pair_t q, const std::string& name, const spell_data_t* spell_data )
-  : buff_t( buff_creation::buff_creator_basics_t( q, name, spell_data ) )
+buff_t::buff_t( actor_pair_t q, const std::string& name, const spell_data_t* spell_data, const item_t* item )
+  : buff_t( buff_creation::buff_creator_basics_t( q, name, spell_data, item ) )
 {
 }
 
@@ -2041,8 +2041,8 @@ rng::rng_t& buff_t::rng()
 // STAT_BUFF
 // ==========================================================================
 
-stat_buff_t::stat_buff_t( actor_pair_t q, const std::string& name, const spell_data_t* spell )
-  : stat_buff_t( stat_buff_creator_t( q, name, spell ) )
+stat_buff_t::stat_buff_t( actor_pair_t q, const std::string& name, const spell_data_t* spell, const item_t* item )
+  : stat_buff_t( stat_buff_creator_t( q, name, spell, item ) )
 {
 }
 // stat_buff_t::stat_buff_t =================================================
@@ -2215,30 +2215,27 @@ void stat_buff_t::expire_override( int expiration_stacks, timespan_t remaining_d
 // COST_REDUCTION_BUFF
 // ==========================================================================
 
-cost_reduction_buff_t::cost_reduction_buff_t( const cost_reduction_buff_creator_t& params )
-  : buff_t( params ), amount( params._amount ), school( params._school )
+cost_reduction_buff_t::cost_reduction_buff_t( actor_pair_t q, const std::string& name, const spell_data_t* spell, const item_t* item )
+  : buff_t(  q, name, spell, item  ),
+    amount(),
+    school(SCHOOL_NONE)
 {
   // Detect school / amount
-  if ( params._school == SCHOOL_NONE )
+  for ( size_t i = 1, e = data().effect_count(); i <= e; i++ )
   {
-    for ( size_t i = 1, e = data().effect_count(); i <= e; i++ )
-    {
-      const spelleffect_data_t& effect = data().effectN( i );
-      if ( effect.type() != E_APPLY_AURA || effect.subtype() != A_MOD_POWER_COST_SCHOOL )
-        continue;
+    const spelleffect_data_t& effect = data().effectN( i );
+    if ( effect.type() != E_APPLY_AURA || effect.subtype() != A_MOD_POWER_COST_SCHOOL )
+      continue;
 
-      school = dbc::get_school_type( effect.misc_value1() );
-      if ( params._amount == 0 )
-      {
-        if ( params.item )
-          amount = util::round( effect.average( params.item ) );
-        else
-          amount = effect.average( player, std::min( MAX_LEVEL, player->level() ) );
+    school = dbc::get_school_type( effect.misc_value1() );
 
-        amount = std::fabs( amount );
-      }
-      break;
-    }
+    if ( item )
+      amount = util::round( effect.average( item ) );
+    else
+      amount = effect.average( player, std::min( MAX_LEVEL, player->level() ) );
+
+    amount = std::fabs( amount );
+    break;
   }
 }
 
@@ -2287,16 +2284,21 @@ void cost_reduction_buff_t::expire_override( int expiration_stacks, timespan_t r
   buff_t::expire_override( expiration_stacks, remaining_duration );
 }
 
+cost_reduction_buff_t* cost_reduction_buff_t::set_reduction(school_e school, double amount)
+{
+  this->amount = amount;
+  this->school = school;
+  return this;
+}
+
+
 // ==========================================================================
 // HASTE_BUFF
 // ==========================================================================
 
-haste_buff_t::haste_buff_t( actor_pair_t q, const std::string& name, const spell_data_t* spell )
-  : haste_buff_t( haste_buff_creator_t( q, name, spell ) )
-{
-}
-
-haste_buff_t::haste_buff_t( const haste_buff_creator_t& params ) : buff_t( params ), haste_type( HASTE_NONE )
+haste_buff_t::haste_buff_t( actor_pair_t q, const std::string& name, const spell_data_t* spell, const item_t* item )
+  : buff_t( q, name, spell, item ),
+    haste_type( HASTE_NONE )
 {
   // All haste > everything
   if ( range::find( invalidate_list, CACHE_HASTE ) != invalidate_list.end() )
@@ -2415,8 +2417,8 @@ bool tick_buff_t::trigger( int stacks, double value, double chance, timespan_t d
 }
 */
 
-absorb_buff_t::absorb_buff_t( actor_pair_t q, const std::string& name, const spell_data_t* spell )
-  : absorb_buff_t( absorb_buff_creator_t( q, name, spell ) )
+absorb_buff_t::absorb_buff_t( actor_pair_t q, const std::string& name, const spell_data_t* spell, const item_t* item )
+  : absorb_buff_t( absorb_buff_creator_t( q, name, spell, item ) )
 {
 }
 
@@ -2560,9 +2562,3 @@ stat_buff_creator_t::operator stat_buff_t* () const
 
 absorb_buff_creator_t::operator absorb_buff_t* () const
 { return new absorb_buff_t( *this ); }
-
-cost_reduction_buff_creator_t::operator cost_reduction_buff_t* () const
-{ return new cost_reduction_buff_t( *this ); }
-
-haste_buff_creator_t::operator haste_buff_t* () const
-{ return new haste_buff_t( *this ); }

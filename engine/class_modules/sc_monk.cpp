@@ -9160,7 +9160,7 @@ struct sephuzs_secret_enabler_t : public unique_gear::scoped_actor_callback_t<mo
   }
 };
 
-struct sephuzs_secret_t : public unique_gear::class_buff_cb_t<monk_t, haste_buff_t, haste_buff_creator_t>
+struct sephuzs_secret_t : public unique_gear::class_buff_cb_t<monk_t, haste_buff_t>
 {
   sephuzs_secret_t() : super( MONK, "sephuzs_secret" )
   { }

@@ -4638,13 +4638,14 @@ struct adrenaline_rush_t : public haste_buff_t
   rogue_t* r;
 
   adrenaline_rush_t( rogue_t* p ) :
-    haste_buff_t( haste_buff_creator_t( p, "adrenaline_rush", p -> find_class_spell( "Adrenaline Rush" ) )
-                  .cd( timespan_t::zero() )
-                  .default_value( p -> find_class_spell( "Adrenaline Rush" ) -> effectN( 2 ).percent() )
-                  .affects_regen( true )
-                  .add_invalidate( CACHE_ATTACK_SPEED ) ),
+    haste_buff_t( p, "adrenaline_rush", p -> find_class_spell( "Adrenaline Rush" ) ),
     r( p )
-  { }
+  { 
+    set_cooldown( timespan_t::zero() );
+    set_default_value( p -> find_class_spell( "Adrenaline Rush" ) -> effectN( 2 ).percent() );
+    set_affects_regen( true );
+    add_invalidate( CACHE_ATTACK_SPEED );
+  }
 
   void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
   {
@@ -7117,10 +7118,10 @@ void rogue_t::create_buffs()
                                 .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   buffs.buried_treasure       = buff_creator_t( this, "buried_treasure", find_spell( 199600 ) )
                                 .default_value( find_spell( 199600 ) -> effectN( 1 ).percent() );
-  buffs.grand_melee           = haste_buff_creator_t( this, "grand_melee", find_spell( 193358 ) )
-                                .add_invalidate( CACHE_ATTACK_SPEED )
-                                .add_invalidate( CACHE_LEECH )
-                                .default_value( 1.0 / ( 1.0 + find_spell( 193358 ) -> effectN( 1 ).percent() ) );
+  buffs.grand_melee           = make_buff<haste_buff_t>( this, "grand_melee", find_spell( 193358 ) );
+  buffs.grand_melee->add_invalidate( CACHE_ATTACK_SPEED )
+    ->add_invalidate( CACHE_LEECH )
+    ->set_default_value( 1.0 / ( 1.0 + find_spell( 193358 ) -> effectN( 1 ).percent() ) );
   buffs.jolly_roger           = buff_creator_t( this, "jolly_roger", find_spell( 199603 ) )
                                 .default_value( find_spell( 199603 ) -> effectN( 1 ).percent() );
   buffs.shark_infested_waters = buff_creator_t( this, "shark_infested_waters", find_spell( 193357 ) )
@@ -7151,9 +7152,9 @@ void rogue_t::create_buffs()
 
   // Talents
   // Shared
-  buffs.alacrity                = haste_buff_creator_t( this, "alacrity", find_spell( 193538 ) )
-                                  .default_value( find_spell( 193538 ) -> effectN( 1 ).percent() )
-                                  .chance( talent.alacrity -> ok() );
+  buffs.alacrity                = make_buff<haste_buff_t>( this, "alacrity", find_spell( 193538 ) );
+  buffs.alacrity->set_default_value( find_spell( 193538 ) -> effectN( 1 ).percent() )
+    ->set_chance( talent.alacrity -> ok() );
   buffs.death_from_above        = buff_creator_t( this, "death_from_above", spell.death_from_above )
                                   // Note: Duration is set to 1.475s (+/- gauss RNG) on action execution in order to match the current model
                                   // and then let it be trackable in the APL. The driver will also expire this buff when the finisher is scheduled.
@@ -7209,10 +7210,10 @@ void rogue_t::create_buffs()
   const spell_data_t* tddid                = ( specialization() == ROGUE_ASSASSINATION ) ? find_spell( 208693 ): ( specialization() == ROGUE_SUBTLETY ) ? find_spell( 228224 ): spell_data_t::not_found();
   buffs.the_dreadlords_deceit              = buff_creator_t( this, "the_dreadlords_deceit", tddid )
                                              .default_value( tddid -> effectN( 1 ).percent() );
-  buffs.sephuzs_secret                     = haste_buff_creator_t( this, "sephuzs_secret", find_spell( 208052 ) )
-                                             .cd( find_spell( 226262 ) -> duration() )
-                                             .default_value( find_spell( 208052 ) -> effectN( 2 ).percent() )
-                                             .add_invalidate( CACHE_RUN_SPEED );
+  buffs.sephuzs_secret                     = make_buff<haste_buff_t>( this, "sephuzs_secret", find_spell( 208052 ) );
+  buffs.sephuzs_secret->set_cooldown( find_spell( 226262 ) -> duration() )
+    ->set_default_value( find_spell( 208052 ) -> effectN( 2 ).percent() )
+    ->add_invalidate( CACHE_RUN_SPEED );
   // Assassination
   buffs.the_empty_crown                    = buff_creator_t( this, "the_empty_crown", find_spell(248201) )
                                              .period( find_spell(248201) -> effectN( 1 ).period() )
@@ -7237,11 +7238,11 @@ void rogue_t::create_buffs()
   buffs.t20_2pc_outlaw                     = buff_creator_t( this, "headshot", find_spell( 242277 ) )
                                              .default_value( find_spell( 242277 ) -> effectN( 1 ).percent() )
                                              .add_invalidate( CACHE_CRIT_CHANCE );
-  buffs.t20_4pc_outlaw                     = haste_buff_creator_t( this, "lesser_adrenaline_rush", find_spell( 246558 ) )
-                                             .cd( timespan_t::zero() )
-                                             .default_value( find_spell( 246558 ) -> effectN( 2 ).percent() )
-                                             .affects_regen( true )
-                                             .add_invalidate( CACHE_ATTACK_SPEED );
+  buffs.t20_4pc_outlaw                     = make_buff<haste_buff_t>( this, "lesser_adrenaline_rush", find_spell( 246558 ) );
+  buffs.t20_4pc_outlaw->set_cooldown( timespan_t::zero() )
+    ->set_default_value( find_spell( 246558 ) -> effectN( 2 ).percent() )
+    ->set_affects_regen( true )
+    ->add_invalidate( CACHE_ATTACK_SPEED );
   // T21 Raid
   buffs.t21_2pc_assassination              = buff_creator_t( this, "virulent_poisons", sets -> set( ROGUE_ASSASSINATION, T21, B2 ) -> effectN( 1 ).trigger() )
                                              .default_value( sets -> set( ROGUE_ASSASSINATION, T21, B2 ) -> effectN( 1 ).trigger() -> effectN( 1 ).percent() );

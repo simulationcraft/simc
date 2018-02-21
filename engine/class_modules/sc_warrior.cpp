@@ -5616,10 +5616,10 @@ struct sephuzs_secret_buff_t: public haste_buff_t
 {
   cooldown_t* icd;
   sephuzs_secret_buff_t( warrior_t* p ):
-    haste_buff_t( haste_buff_creator_t( p, "sephuzs_secret", p -> find_spell( 208052 ) )
-            .default_value( p -> find_spell( 208052 ) -> effectN( 2 ).percent() )
-            .add_invalidate( CACHE_HASTE ) )
+    haste_buff_t( p, "sephuzs_secret", p -> find_spell( 208052 ) )
   {
+    set_default_value( p -> find_spell( 208052 ) -> effectN( 2 ).percent() );
+    add_invalidate( CACHE_HASTE );
     icd = p -> get_cooldown( "sephuzs_secret_cooldown" );
     icd  -> duration = p -> find_spell( 226262 ) -> duration();
   }
@@ -5868,8 +5868,8 @@ void warrior_t::create_buffs()
 
   buff.sephuzs_secret = new buffs::sephuzs_secret_buff_t( this );
 
-  buff.in_for_the_kill = haste_buff_creator_t( this, "in_for_the_kill", talents.in_for_the_kill -> effectN( 1 ).trigger() )
-    .default_value( talents.in_for_the_kill -> effectN( 1 ).trigger() -> effectN( 1 ).percent() );
+  buff.in_for_the_kill = make_buff<haste_buff_t>( this, "in_for_the_kill", talents.in_for_the_kill -> effectN( 1 ).trigger() );
+  buff.in_for_the_kill->set_default_value( talents.in_for_the_kill -> effectN( 1 ).trigger() -> effectN( 1 ).percent() );
 
   buff.war_veteran = buff_creator_t( this, "war_veteran", sets -> set( WARRIOR_ARMS, T21, B2) -> effectN( 1 ).trigger() )
     .default_value( sets -> set( WARRIOR_ARMS, T21, B2) -> effectN( 1 ).trigger() -> effectN( 1 ).percent() )
