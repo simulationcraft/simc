@@ -1755,17 +1755,6 @@ struct voidform_t final : public priest_buff_t<haste_buff_t>
   }
 };
 
-struct surrender_to_madness_t final : public priest_buff_t<buff_t>
-{
-  surrender_to_madness_t( priest_t& p ) : base_t( &p, "surrender_to_madness", p.talents.surrender_to_madness )
-  {
-  }
-  void expire_override( int stacks, timespan_t remaining_duration ) override
-  {
-    priest().buffs.surrender_to_madness_death->trigger();
-  }
-};
-
 struct lingering_insanity_t final : public priest_buff_t<haste_buff_t>
 {
   int hidden_lingering_insanity;
@@ -1810,9 +1799,9 @@ void priest_t::generate_insanity( double num_amount, gain_t* g, action_t* action
     double amount_from_power_infusion       = 0.0;
     double amount_from_surrender_to_madness = 0.0;
 
-    if ( buffs.surrender_to_madness_death->check() )
+    if ( buffs.surrendered_to_madness->check() )
     {
-      double total_amount = 0.0;
+      amount *= 1.0 + buffs.surrendered_to_madness->data().effectN( 1 ).percent();
     }
     else
     {
@@ -2155,12 +2144,11 @@ void priest_t::create_buffs_shadow()
                             ->set_default_value( talents.twist_of_fate->effectN( 1 ).trigger()->effectN( 2 ).percent() )
                             ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
                             ->add_invalidate( CACHE_PLAYER_HEAL_MULTIPLIER );
-  buffs.void_torrent               = make_buff( this, "void_torrent", talents.void_torrent );
-  buffs.surrender_to_madness       = new buffs::surrender_to_madness_t( *this );
-  buffs.surrender_to_madness_death = make_buff( this, "surrender_to_madness_death", talents.surrender_to_madness )
-                                         ->set_chance( 1.0 )
-                                         ->set_duration( timespan_t::from_seconds( 30 ) )
-                                         ->set_default_value( 0.0 );
+  buffs.void_torrent           = make_buff( this, "void_torrent", talents.void_torrent );
+  buffs.surrender_to_madness   = make_buff( this, "surrender_to_madness", talents.surrender_to_madness )
+                                         ->set_stack_change_callback( [ this ] ( buff_t*, int, int after )
+                                               { if( after == 0 ) buffs.surrendered_to_madness->trigger(); } );
+  buffs.surrendered_to_madness = make_buff( this, "surrendered_to_madness", find_spell( 263406 ) );
   buffs.lingering_insanity = new buffs::lingering_insanity_t( *this );
 
   // Legendaries

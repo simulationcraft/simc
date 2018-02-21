@@ -112,7 +112,7 @@ public:
     propagate_const<buff_t*> shadowy_insight;
     propagate_const<buff_t*> sphere_of_insanity;
     propagate_const<buff_t*> surrender_to_madness;
-    propagate_const<buff_t*> surrender_to_madness_death;
+    propagate_const<buff_t*> surrendered_to_madness;
     propagate_const<buff_t*> vampiric_embrace;
     propagate_const<buff_t*> void_ray;
     propagate_const<buff_t*> void_torrent;
@@ -918,7 +918,7 @@ struct fiend_melee_t : public priest_pet_melee_t
       if ( p().o().specialization() == PRIEST_SHADOW )
       {
         double amount = p().insanity_gain();
-        if ( p().o().buffs.surrender_to_madness_death->up() )
+        if ( p().o().buffs.surrendered_to_madness->up() )
         {
           amount = 0.0;  // generation with debuff is zero N1gh7h4wk 2018/01/26
         }
