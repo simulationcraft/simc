@@ -1738,6 +1738,8 @@ struct arcane_mage_spell_t : public mage_spell_t
   {
     buff_t* ac = p() -> buffs.arcane_charge;
 
+    int before = ac -> check();
+
     if ( p() -> bugs )
     {
       // The damage bonus given by mastery seems to be snapshot at the moment
@@ -1752,6 +1754,13 @@ struct arcane_mage_spell_t : public mage_spell_t
     else
     {
       ac -> trigger( stacks );
+    }
+
+    int after = ac -> check();
+
+    if ( p() -> talents.rule_of_threes -> ok() && before < 3 && after >= 3 )
+    {
+      p() -> buffs.rule_of_threes -> trigger();
     }
   }
 
@@ -2529,13 +2538,6 @@ struct arcane_blast_t : public arcane_mage_spell_t
     if ( hit_any_target )
     {
       trigger_arcane_charge();
-
-      // Behavior assumes only builders ( AE/AB ) will trigger. If CU ends up triggering, will need to change.
-      // For now, only AB seems to trigger it.
-      if ( p() -> talents.rule_of_threes -> ok() && p() -> buffs.arcane_charge -> check() == 3 )
-      {
-        p() -> buffs.rule_of_threes -> trigger();
-      }
     }
 
     if ( p() -> buffs.presence_of_mind -> up() )
