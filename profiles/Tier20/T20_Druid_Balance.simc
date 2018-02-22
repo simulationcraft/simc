@@ -34,8 +34,8 @@ actions.precombat+=/new_moon
 
 # Executed every time the actor is available.
 actions=potion,name=potion_of_prolonged_power,if=buff.celestial_alignment.up|buff.incarnation.up
-actions+=/blessing_of_elune,if=active_enemies<=2&talent.blessing_of_the_ancients.enabled&buff.blessing_of_elune.down
-actions+=/blessing_of_elune,if=active_enemies>=3&talent.blessing_of_the_ancients.enabled&buff.blessing_of_anshe.down
+actions+=/blessing_of_elune,if=active_enemies<=2
+actions+=/blessing_of_anshe,if=active_enemies>=3
 actions+=/blood_fury,if=buff.celestial_alignment.up|buff.incarnation.up
 actions+=/berserking,if=buff.celestial_alignment.up|buff.incarnation.up
 actions+=/arcane_torrent,if=buff.celestial_alignment.up|buff.incarnation.up
@@ -51,7 +51,7 @@ actions+=/celestial_alignment,if=astral_power>=40
 actions+=/call_action_list,name=aoe,if=(spell_targets.starfall>=2&talent.stellar_drift.enabled)|spell_targets.starfall>=3
 actions+=/call_action_list,name=st
 
-actions.aoe=starfall,if=debuff.stellar_empowerment.remains<gcd.max*2|astral_power.deficit<22.5|(buff.celestial_alignment.remains>8|buff.incarnation.remains>8)|target.time_to_die<8
+actions.aoe=starfall,if=buff.stellar_empowerment.remains<gcd.max*2|astral_power.deficit<22.5|(buff.celestial_alignment.remains>8|buff.incarnation.remains>8)|target.time_to_die<8
 actions.aoe+=/stellar_flare,target_if=refreshable,if=target.time_to_die>10
 actions.aoe+=/sunfire,target_if=refreshable,if=astral_power.deficit>7&target.time_to_die>4
 actions.aoe+=/moonfire,target_if=refreshable,if=astral_power.deficit>7&target.time_to_die>4
@@ -118,7 +118,7 @@ actions.st+=/stellar_flare,target_if=refreshable,if=target.time_to_die>10
 actions.st+=/moonfire,target_if=refreshable,if=((talent.natures_balance.enabled&remains<3)|remains<6.6)&astral_power.deficit>7&target.time_to_die>8
 actions.st+=/sunfire,target_if=refreshable,if=((talent.natures_balance.enabled&remains<3)|remains<5.4)&astral_power.deficit>7&target.time_to_die>8
 actions.st+=/starsurge,if=buff.oneths_intuition.react
-actions.st+=/starfall,if=(buff.oneths_overconfidence.react&(!buff.astral_acceleration.up|buff.astral_acceleration.remains>5|astral_power.deficit<40))|(variable.starfall_st&!debuff.stellar_empowerment.up)
+actions.st+=/starfall,if=(buff.oneths_overconfidence.react&(!buff.astral_acceleration.up|buff.astral_acceleration.remains>5|astral_power.deficit<40))|(variable.starfall_st&!buff.stellar_empowerment.up)
 actions.st+=/solar_wrath,if=buff.solar_empowerment.stack=3&astral_power.deficit>10
 actions.st+=/lunar_strike,if=buff.lunar_empowerment.stack=3&astral_power.deficit>15
 actions.st+=/starsurge,if=astral_power.deficit<40|(buff.celestial_alignment.up|buff.incarnation.up|buff.astral_acceleration.remains>5|(set_bonus.tier21_4pc&!buff.solar_solstice.up))|(gcd.max*(astral_power%40))>target.time_to_die
