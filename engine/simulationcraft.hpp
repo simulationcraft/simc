@@ -827,6 +827,9 @@ public:
   bool reverse, constant, quiet, overridden, can_cancel;
   bool requires_invalidation;
 
+  // Optimization-related values
+  bool manual_chance_used; /// Is the buff triggered with a manual (positive) chance?
+
   // dynamic values
   double current_value;
   int current_stack;
