@@ -1,4 +1,4 @@
-SimulationCraft 801-01 for World of Warcraft 8.0.1 bfa-BETA (wow build 25902)
+SimulationCraft 801-01 for World of Warcraft 8.0.1 bfa-BETA (wow build 26095)
 
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
 Class            : Discipline Shadow Priest
@@ -161,9 +161,9 @@ Attributes       : ........ ........ x.x..... ........   ........ ........ .....
                  : Periodic effect affected by haste (173)
 Effects          :
 #1 (id=242)      : School Damage (2): shadow
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.07500 | Target: Enemy (6)
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.15000 | Target: Enemy (6)
 #2 (id=254257)   : Apply Aura (6) | Periodic Damage (3): shadow every 2 seconds
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.11250 | Target: Enemy (6)
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.15000 | Target: Enemy (6)
 #3 (id=323674)   : Energize Power (30)
                    Base Value: 400 | Scaled Value: 400 | Misc Value: insanity | Target: Self (1)
 Description      : A word of darkness that causes $s1 Shadow damage instantly, and an additional $o2 Shadow damage over $d.$?a185916[
@@ -371,7 +371,7 @@ Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Charges          : 1 (7.5 seconds cooldown)
 Category         : 1602: Priest (137030 effect#2)
-Affecting spells : Twist of Fate (123254 effect#2), Shadowy Insight (124430 effect#1), Priest (137030 effect#2), Shadow Priest (137033 effect#1), Lucidity (137323 effect#1), Mental Fatigue (185104 effect#1), Fortress of the Mind (193195 effect#2), Mind Shattering (193643 effect#1), Voidform (194249 effect#1), Shadowform (232698 effect#1), Empty Mind (247226 effect#1), Item - Priest T21 Shadow 2P Bonus (251845 effect#1), Overwhelming Darkness (252909 effect#1), Twist of Fate (265258 effect#2), 
+Affecting spells : Mastery: Madness (77486 effect#1), Twist of Fate (123254 effect#2), Shadowy Insight (124430 effect#1), Priest (137030 effect#2), Shadow Priest (137033 effect#1), Lucidity (137323 effect#1), Mental Fatigue (185104 effect#1), Fortress of the Mind (193195 effect#2), Mind Shattering (193643 effect#1), Voidform (194249 effect#1), Shadowform (232698 effect#1), Empty Mind (247226 effect#1), Item - Priest T21 Shadow 2P Bonus (251845 effect#1), Overwhelming Darkness (252909 effect#1), Twist of Fate (265258 effect#2), 
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -380,7 +380,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=3283)     : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.50000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.20000 | Target: Enemy (6)
 #2 (id=139174)   : Energize Power (30)
                    Base Value: 1200 | Scaled Value: 1200 | Misc Value: insanity | Target: Self (1)
 Description      : Blasts the target's mind for $s1 Shadow damage.$?a185916[
@@ -522,7 +522,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 3 seconds
 Stance Mask      : 0x08000000
-Affecting spells : Twist of Fate (123254 effect#2), Shadow Priest (137033 effect#1), Lucidity (137323 effect#1), Mental Fatigue (185104 effect#1), Fortress of the Mind (193195 effect#1), Voidform (194249 effect#1), Void Siphon (215322 effect#2), Shadowform (232698 effect#1), Item - Priest T21 Shadow 2P Bonus (251845 effect#1), Overwhelming Darkness (252909 effect#1), Twist of Fate (265258 effect#2), 
+Affecting spells : Mastery: Madness (77486 effect#1), Twist of Fate (123254 effect#2), Shadow Priest (137033 effect#1), Lucidity (137323 effect#1), Mental Fatigue (185104 effect#1), Fortress of the Mind (193195 effect#1), Voidform (194249 effect#1), Void Siphon (215322 effect#2), Shadowform (232698 effect#1), Item - Priest T21 Shadow 2P Bonus (251845 effect#1), Overwhelming Darkness (252909 effect#1), Twist of Fate (265258 effect#2), 
 Attributes       : ........ ........ x....... ........   ..x..... ......x. ........ .....x.. 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .....x.. ........ ...x.... 
@@ -988,7 +988,7 @@ Effects          :
 #1 (id=25009)    : Apply Aura (6) | Dummy (4)
                    Base Value: 2 | Scaled Value: 2 | Target: Enemy (6)
 #2 (id=25010)    : Apply Aura (6) | Periodic Health Leech (53)
-                   Base Value: 1 | Scaled Value: 1 | Value Multiplier: 0.3 | SP Coefficient: 0.19500 | Target: Enemy (6)
+                   Base Value: 1 | Scaled Value: 1 | Value Multiplier: 0.3 | SP Coefficient: 0.23000 | Target: Enemy (6)
 #3 (id=323673)   : Energize Power (30)
                    Base Value: 600 | Scaled Value: 600 | Misc Value: insanity | Target: Self (1)
 Description      : A touch of darkness that causes $34914o2 Shadow damage over $34914d, and heals you for ${$e2*100}% of damage dealt.
@@ -1278,7 +1278,7 @@ Spell Level      : 26
 Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 3 seconds
-Affecting spells : Twist of Fate (123254 effect#2), Shadow Priest (137033 effect#1), Voidform (194249 effect#1), Shadowform (232698 effect#1), Twist of Fate (265258 effect#2), 
+Affecting spells : Mastery: Madness (77486 effect#1), Twist of Fate (123254 effect#2), Shadow Priest (137033 effect#1), Voidform (194249 effect#1), Shadowform (232698 effect#1), Twist of Fate (265258 effect#2), 
 Attributes       : ........ ........ x.....x. ........   ..x....x ........ ........ .....x.. 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .....x.. ........ ........ 
@@ -1301,7 +1301,7 @@ Class            : Priest
 School           : Shadow
 Spell Level      : 1
 Range            : 100 yards
-Affecting spells : Twist of Fate (123254 effect#2), Shadow Priest (137033 effect#1), Voidform (194249 effect#1), Shadowform (232698 effect#1), Twist of Fate (265258 effect#2), 
+Affecting spells : Mastery: Madness (77486 effect#1), Twist of Fate (123254 effect#2), Shadow Priest (137033 effect#1), Voidform (194249 effect#1), Shadowform (232698 effect#1), Twist of Fate (265258 effect#2), 
 Triggered by     : Mind Sear (48045)
 Attributes       : ........ ........ ........ ........   ...x...x .x...... ........ ........ 
                  : ........ ........ ........ ......x.   x....... .x...... ........ .x....x. 
@@ -1656,7 +1656,7 @@ Cooldown         : 90 seconds
 Mechanic         : Unknown(50)
 Affecting spells : Lucidity (137323 effect#1)
 Attributes       : ........ ........ ........ ........   ........ ........ ...x.... ........ 
-                 : ........ x....... ........ ........   ........ ........ ........ ........ 
+                 : ...x.... x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ..x.....   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1749,12 +1749,12 @@ Attributes       : ......x. x....... ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=68105)    : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Damage (0)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.40000 | Target: Self (1)
-                   Affected Spells: Shadow Word: Pain (589), Vampiric Touch (34914), Void Bolt (205448)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.20000 | Target: Self (1)
+                   Affected Spells: Shadow Word: Pain (589), Mind Blast (8092), Mind Flay (15407), Vampiric Touch (34914), Mind Sear (48045), Mind Sear (49821), Shadow Word: Void (205351), Void Bolt (205448), Void Eruption (228260), Void Eruption (228360)
 #2 (id=224463)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Damage (22)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.40000 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Shadow Word: Pain (589), Vampiric Touch (34914)
-Description      : Increases the damage of your Shadow Word: Pain, Vampiric Touch, $?s205351[Shadow Word: Void][Mind Blast], Mind Flay, Void Eruption, and Void Bolt by ${$m1}.1%.
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.20000 | Misc Value: 22 | Target: Self (1)
+                   Affected Spells: Shadow Word: Pain (589), Mind Blast (8092), Mind Flay (15407), Vampiric Touch (34914), Mind Sear (48045), Mind Sear (49821), Shadow Word: Void (205351), Void Bolt (205448), Void Eruption (228260), Void Eruption (228360)
+Description      : Increases the damage of your Shadow Word: Pain, Vampiric Touch, $?s205351[Shadow Word: Void][Mind Blast], Mind Flay, Mind Sear, Void Eruption, and Void Bolt by ${$m1}.1%.
 
 Name             : Echo of Light (id=77489) [Spell Family (6)] 
 Class            : Priest
@@ -2810,12 +2810,12 @@ Spell Level      : 1
 Range            : 100 yards
 Affecting spells : Twist of Fate (123254 effect#2), Shadow Priest (137033 effect#1), Auspicious Spirits (155271 effect#1), Voidform (194249 effect#1), Shadowform (232698 effect#1), Twist of Fate (265258 effect#2), 
 Attributes       : ........ ........ ........ x..x....   .....x.x ..x..... ........ ........ 
-                 : ........ ......x. ...x.... ........   ........ ........ ......x. ......x. 
+                 : ........ ......x. ...x.... .....x..   ........ ........ ......x. ......x. 
                  : ........ ........ ........ ........   ...x.... ........ .xx..... ........ 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : .....x.. ........ ........ ........   ........ ...x.... ........ ........ 
                  : ........ ........ ......x. ........   ........ ........ ........ ..x..... 
-                 : Does not break stealth (37)
+                 : Does not break stealth (37), Cannot crit (93)
 Effects          :
 #1 (id=203471)   : School Damage (2): shadow
                    Base Value: 1 | Scaled Value: 0 (avg=0.375) | SP Coefficient: 0.25000 | Target: Enemy (6)
@@ -3576,7 +3576,7 @@ Effects          :
 #2 (id=294136)   : Apply Aura (6) | Add Percent Modifier (108): Spell Effect 1 (3)
                    Base Value: 25 | Scaled Value: 25 | Misc Value: 3 | Target: Self (1)
                    Affected Spells: Vampiric Embrace (15286)
-Description      : Reduces the cooldown of Vampiric Embrace by ${$m1/-1000} sec increases its healing done by $s2%.
+Description      : Reduces the cooldown of Vampiric Embrace by ${$m1/-1000} sec and increases its healing done by $s2%.
 
 Name             : Shadow Word: Death (id=199911) [Spell Family (6)] 
 Class            : Priest
@@ -4010,7 +4010,7 @@ Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Charges          : 2 (9 seconds cooldown)
 Category         : 1590: Shadow Priest (137033 effect#10)
-Affecting spells : Twist of Fate (123254 effect#2), Shadow Priest (137033 effect#1), Voidform (194249 effect#1), Shadowform (232698 effect#1), Twist of Fate (265258 effect#2), 
+Affecting spells : Mastery: Madness (77486 effect#1), Twist of Fate (123254 effect#2), Shadow Priest (137033 effect#1), Voidform (194249 effect#1), Shadowform (232698 effect#1), Twist of Fate (265258 effect#2), 
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4019,7 +4019,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=303208)   : School Damage (2): shadow
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.75000 | Target: Enemy (6)
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.30000 | Target: Enemy (6)
 #2 (id=303209)   : Energize Power (30)
                    Base Value: 1500 | Scaled Value: 1500 | Misc Value: insanity | Target: Self (1)
 Description      : Blasts the target with a word of void for $s1 Shadow damage.$?a185916[
@@ -4130,7 +4130,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=303255)   : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.12500 | Radius: 0 - 8 yards | Target: Unknown(87) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.25000 | Radius: 0 - 8 yards | Target: Unknown(87) -> AOE enemy (instant) (16)
 Description      : $@spelldesc205385
 
 Name             : Void Bolt (id=205448) [Spell Family (6)] 
@@ -4152,7 +4152,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=303382)   : School Damage (2): shadow
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.05000 | Target: Enemy (6)
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.20000 | Target: Enemy (6)
 #2 (id=303383)   : Trigger Missiles (32)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 234746 | Target: Enemy (6)
 #3 (id=308158)   : Energize Power (30)
@@ -4513,10 +4513,8 @@ Spell Level      : 20
 Range            : 40 yards
 Cast Time        : 2.5 seconds
 GCD              : 1.5 seconds
-Cooldown         : 1.5 seconds
 Category         : 1660
-Category Cooldown: 1.5 seconds
-Affecting spells : Priest (137030 effect#1), Legacy of the Void (193225 effect#1), Voidform (194249 effect#12), Heart of the Void (248296 effect#1)
+Affecting spells : Mastery: Madness (77486 effect#1), Priest (137030 effect#1), Legacy of the Void (193225 effect#1), Voidform (194249 effect#12), Heart of the Void (248296 effect#1)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4578,7 +4576,7 @@ School           : Shadow
 Spell Level      : 10
 Range            : 100 yards
 Velocity         : 30 yards/sec
-Affecting spells : Twist of Fate (123254 effect#2), Priest (137030 effect#1), Shadow Priest (137033 effect#1), Legacy of the Void (193225 effect#1), Voidform (194249 effect#1), Shadowform (232698 effect#1), Heart of the Void (248296 effect#1), Twist of Fate (265258 effect#2), 
+Affecting spells : Mastery: Madness (77486 effect#1), Twist of Fate (123254 effect#2), Priest (137030 effect#1), Shadow Priest (137033 effect#1), Legacy of the Void (193225 effect#1), Voidform (194249 effect#1), Shadowform (232698 effect#1), Heart of the Void (248296 effect#1), Twist of Fate (265258 effect#2), 
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4587,7 +4585,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=343748)   : School Damage (2): shadow
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.12500 | Target: Enemy (6)
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.90000 | Target: Enemy (6)
 Description      : $@spelldesc228260
 
 Name             : Smite (Rank 2) (id=231682) [Spell Family (6), Passive] 

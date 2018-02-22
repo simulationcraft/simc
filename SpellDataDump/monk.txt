@@ -1,4 +1,4 @@
-SimulationCraft 801-01 for World of Warcraft 8.0.1 bfa-BETA (wow build 25902)
+SimulationCraft 801-01 for World of Warcraft 8.0.1 bfa-BETA (wow build 26095)
 
 Name             : Dual Wield (Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
@@ -352,22 +352,16 @@ Attributes       : ........ ........ ..x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ....x... ........ ........ ........ 
 Effects          :
 #1 (id=108867)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.76937 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
+                   Base Value: 7700 | Scaled Value: 7700 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
 #2 (id=487715)   : Dummy (3)
                    Base Value: 1000 | Scaled Value: 1000
-Description      : Kick with a blast of Chi energy, dealing $s1 Physical damage.$?c3[
+Description      : Kick with a blast of Chi energy, dealing $?s137025[${$s1/10000*$<CAP>}][${$s1/10000*$SP}] Physical damage.$?c3[
 
 Reduces the cooldown of Rising Sun Kick and Fists of Fury by ${$m2/1000}.1 sec when used.][]
-Variables        : $stnc=$?a103985[${1.05*(1+$@versadmg)}][${1.0*(1+$@versadmg)}]
-$dwm=$?a108561|a115697[${1}][${0.857143}]
-$offm=$?a108561|a115697[${0}][${1}]
-
-$offlow=$?s121278[${$mwb/2/$mws}][${$owb/2/$ows}]
-$offhigh=$?s121278[${$MWB/2/$mws}][${$OWB/2/$ows}]
-
-$low=${$<stnc>*($<dwm>*(($mwb)/($MWS)+$<offm>*$<offlow>)+$AP/3.5-1)}
-$high=${$<stnc>*($<dwm>*(($MWB)/($MWS)+$<offm>*$<offhigh>)+$AP/3.5+1)}
-
+Variables        : $MHDPS=${($mwb+$MWB)/(2*$MWS)}
+$OHDPS=${($owb+$OWB)/(2*$OWS)}
+$CDPS=${(2*$<MHDPS>+$<OHDPS>)/3}
+$CAP=${$ap+$<CDPS>*6}
 
 Name             : Flying Serpent Kick (id=101545) [Spell Family (53)] 
 Class            : Windwalker Monk
@@ -2276,7 +2270,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Not a proc (105)
 Effects          :
 #1 (id=156720)   : School Damage (2): nature
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.04095 | Radius: 0 - 10 yards | Target: At Caster (22) -> AOE enemy (15)
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.35000 | Radius: 0 - 10 yards | Target: At Caster (22) -> AOE enemy (15)
 Description      : $@spelldesc123904
 
 Name             : Crackling Tiger Lightning Driver (id=123999) [Scaling Spell (6), Spell Family (53), Hidden] 
@@ -5513,7 +5507,7 @@ Attributes       : ........ ........ ........ .......x   ........ ........ .....
                  : Cannot cancel aura (31)
 Effects          :
 #1 (id=488066)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.12500 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.87750 | Target: Enemy (6)
 #2 (id=568996)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
 #3 (id=569000)   : Trigger Spell (64): Fist of the White Tiger
@@ -5536,7 +5530,7 @@ Attributes       : ........ ........ ........ .......x   ........ ........ .....
                  : Cannot cancel aura (31)
 Effects          :
 #1 (id=568997)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.12500 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.87750 | Target: Enemy (6)
 #2 (id=568998)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
 Description      : $@spelldesc261947
@@ -5632,7 +5626,7 @@ Attributes       : ........ ........ ........ .......x   ........ ........ .....
                  : Cannot cancel aura (31)
 Effects          :
 #1 (id=623127)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.67500 | Radius: 8 yards | Target: Unknown(129)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.52650 | Radius: 8 yards | Target: Unknown(129)
 #2 (id=623128)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Unknown(129)
 Description      : $@spelldesc262112

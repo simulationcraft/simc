@@ -1,4 +1,4 @@
-SimulationCraft 801-01 for World of Warcraft 8.0.1 bfa-BETA (wow build 25902)
+SimulationCraft 801-01 for World of Warcraft 8.0.1 bfa-BETA (wow build 26095)
 
 Name             : Block (Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
@@ -60,7 +60,7 @@ Spell Level      : 1
 Range            : 40 yards
 Cast Time        : 2 seconds
 GCD              : 1.5 seconds
-Affecting spells : Elemental Fury (60188 effect#1), Spiritwalker's Grace (79206 effect#1), Shaman (137038 effect#2), Restoration Shaman (137039 effect#1), Elemental Shaman (137040 effect#1), Enhancement Shaman (137041 effect#1), Lucidity (137326 effect#1), Stormkeeper (191634 effect#1), Stormkeeper (205495 effect#1), Overcharge (210727 effect#3), Item - Shaman T19 Elemental 2P Bonus (211951 effect#1), Surge of Power (215414 effect#1), Lightning Crash (242284 effect#1), Fulmination (260111 effect#1), Wind Gust (263806 effect#1)
+Affecting spells : Elemental Fury (60188 effect#1), Spiritwalker's Grace (79206 effect#1), Shaman (137038 effect#2), Restoration Shaman (137039 effect#1), Elemental Shaman (137040 effect#1), Enhancement Shaman (137041 effect#1), Lucidity (137326 effect#1), Stormkeeper (191634 effect#1), Stormkeeper (205495 effect#1), Overcharge (210727 effect#3), Item - Shaman T19 Elemental 2P Bonus (211951 effect#1), Surge of Power (215414 effect#1), Lightning Crash (242284 effect#1), Master of the Elements (260734 effect#1), Wind Gust (263806 effect#1)
 Triggered by     : Refreshing Currents (207356)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -82,7 +82,7 @@ Range            : 40 yards
 Cast Time        : 2 seconds
 GCD              : 1.5 seconds
 Category         : 85
-Affecting spells : Elemental Fury (60188 effect#1), Spiritwalker's Grace (79206 effect#1), Ascendance (114050 effect#2), Restoration Shaman (137039 effect#1), Elemental Shaman (137040 effect#1), Enhancement Shaman (137041 effect#1), Lucidity (137326 effect#1), Electric Discharge (191577 effect#1), Stormkeeper (191634 effect#1), Stormkeeper (205495 effect#1), Al'Akir's Acrimony (208699 effect#1), Chain Lightning (231722 effect#1), Lightning Crash (242284 effect#1), Lightningburn (263792 effect#1), Wind Gust (263806 effect#1)
+Affecting spells : Elemental Fury (60188 effect#1), Spiritwalker's Grace (79206 effect#1), Ascendance (114050 effect#2), Restoration Shaman (137039 effect#1), Elemental Shaman (137040 effect#1), Enhancement Shaman (137041 effect#1), Lucidity (137326 effect#1), Electric Discharge (191577 effect#1), Stormkeeper (191634 effect#1), Stormkeeper (205495 effect#1), Al'Akir's Acrimony (208699 effect#1), Chain Lightning (231722 effect#1), Lightning Crash (242284 effect#1), Master of the Elements (260734 effect#1), Lightningburn (263792 effect#1), Wind Gust (263806 effect#1)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -337,11 +337,11 @@ Description      : A quick surge of healing energy that restores $s1 of a friend
 Name             : Earth Shock (id=8042) [Spell Family (11)] 
 Class            : Elemental Shaman
 School           : Nature
+Resource         : 60 Maelstrom (11) (id=191554)
 Spell Level      : 10
 Range            : 40 yards
 GCD              : 1.5 seconds
-Cooldown         : 6 seconds
-Affecting spells : Shaman Shock Range Bonus (32973 effect#1), Elemental Fury (60188 effect#1), Restoration Shaman (137039 effect#1), Elemental Shaman (137040 effect#1), Enhancement Shaman (137041 effect#1), Lucidity (137326 effect#1), Earthen Attunement (191598 effect#1), Swelling Maelstrom (238105 effect#2), Lightning Crash (242284 effect#1), Earthen Strength (252141 effect#1)
+Affecting spells : Shaman Shock Range Bonus (32973 effect#1), Elemental Fury (60188 effect#1), Restoration Shaman (137039 effect#1), Elemental Shaman (137040 effect#1), Enhancement Shaman (137041 effect#1), Lucidity (137326 effect#1), Earthen Attunement (191598 effect#1), Swelling Maelstrom (238105 effect#2), Lightning Crash (242284 effect#1), Earthen Strength (252141 effect#1), Master of the Elements (260734 effect#1)
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -350,10 +350,8 @@ Attributes       : ........ ........ x.x..... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=3248)     : School Damage (2): nature
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.20000 | Target: Enemy (6)
-Description      : Instantly shocks the target with concussive force, causing $s1 Nature damage and up to ${$260111m1*4} additional Nature damage based on Maelstrom spent.
-
-Consumes up to $260113s2 Maelstrom when cast.
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.25000 | Target: Enemy (6)
+Description      : Instantly shocks the target with concussive force, causing $s1 Nature damage.
 
 Name             : Tremor Totem (Earth Totem) (id=8143) [Spell Family (11)] 
 Class            : Shaman
@@ -434,7 +432,7 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | Target: Enemy (6)
 Description      : $@spelldesc193796
 
-Name             : Elemental Mastery (id=16166) [Spell Family (11), Passive] 
+Name             : Master of the Elements (id=16166) [Spell Family (11), Passive] 
 Class            : Shaman
 School           : Nature
 Cooldown         : 120 seconds
@@ -449,11 +447,9 @@ Attributes       : ......x. ........ x.x..... ........   ........ ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6)
 Effects          :
-#1 (id=7950)     : Apply Aura (6) | Dummy (4)
-                   Base Value: 10 | Scaled Value: 10 | Misc Value: 10 | Target: Self (1)
-#2 (id=486104)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 20 | Scaled Value: 20 | Misc Value: 10 | Target: Self (1)
-Description      : Lightning Bolt has a $s1% chance to cause your Earth Shock to not consume any Maelstrom for $260734d. Lava Burst has a chance to cause Frost Shock to deal $s2% increased damage for $260734d.
+#1 (id=7950)     : Apply Aura (6) | Proc Trigger Spell (42): Master of the Elements
+                   Base Value: 20 | Scaled Value: 20 | Trigger Spell: 260734 | Target: Self (1)
+Description      : Casting Lava Burst increases the damage of your next Nature or Frost spell by $260734s1%.
 
 Name             : Resurgence (id=16196) [Spell Family (11), Passive] 
 Class            : Restoration Shaman
@@ -572,7 +568,7 @@ Effects          :
 #1 (id=15497)    : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
 #2 (id=211033)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.15300 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.11934 | Target: Enemy (6)
 Description      : $@spelldesc33757
 
 Name             : Gift of the Naaru (Racial) (id=28880) [Spell Family (4)] 
@@ -658,7 +654,7 @@ Attributes       : ........ ........ ..x..... ........   ........ .x...... .....
                  : Not a proc (105)
 Effects          :
 #1 (id=21915)    : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.14750 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.89505 | Target: Enemy (6)
 #2 (id=172084)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
 Description      : $@spelldesc17364
@@ -679,7 +675,7 @@ Attributes       : ....x... ........ ..x..... ........   ........ ........ .....
                  : Not a proc (105)
 Effects          :
 #1 (id=21916)    : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.25000 | AP Coefficient: 1.14750 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.25000 | AP Coefficient: 0.89505 | Target: Enemy (6)
 #2 (id=172085)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
 Description      : $@spelldesc17364
@@ -750,7 +746,7 @@ Effects          :
 #1 (id=23633)    : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
 #2 (id=211034)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.15300 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.11934 | Target: Enemy (6)
 Description      : $@spelldesc8232
 
 Name             : Windfury (id=33757) [Spell Family (11), Passive] 
@@ -795,7 +791,7 @@ Class            : Shaman
 School           : Nature
 Spell Level      : 1
 Range            : 100 yards
-Affecting spells : Elemental Fury (60188 effect#1), Restoration Shaman (137039 effect#1), Elemental Shaman (137040 effect#1), Enhancement Shaman (137041 effect#1), Item - Shaman T19 Elemental 2P Bonus (211951 effect#1), Surge of Power (215414 effect#1), Lightning Crash (242284 effect#1), Fulmination (260111 effect#1)
+Affecting spells : Elemental Fury (60188 effect#1), Restoration Shaman (137039 effect#1), Elemental Shaman (137040 effect#1), Enhancement Shaman (137041 effect#1), Item - Shaman T19 Elemental 2P Bonus (211951 effect#1), Surge of Power (215414 effect#1), Lightning Crash (242284 effect#1), Master of the Elements (260734 effect#1)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : .......x .......x ........ ........   ........ ........ ........ ........ 
@@ -812,7 +808,7 @@ Class            : Shaman
 School           : Nature
 Spell Level      : 32 (max 37)
 Range            : 100 yards
-Affecting spells : Elemental Fury (60188 effect#1), Restoration Shaman (137039 effect#1), Elemental Shaman (137040 effect#1), Enhancement Shaman (137041 effect#1), Electric Discharge (191577 effect#1), Al'Akir's Acrimony (208699 effect#1), Chain Lightning (231722 effect#1), Lightning Crash (242284 effect#1)
+Affecting spells : Elemental Fury (60188 effect#1), Restoration Shaman (137039 effect#1), Elemental Shaman (137040 effect#1), Enhancement Shaman (137041 effect#1), Electric Discharge (191577 effect#1), Al'Akir's Acrimony (208699 effect#1), Chain Lightning (231722 effect#1), Lightning Crash (242284 effect#1), Master of the Elements (260734 effect#1)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : .......x .......x ........ ........   ........ ........ ........ ........ 
@@ -855,7 +851,7 @@ Duration         : 5 seconds
 Cooldown         : 45 seconds
 Category         : 1223
 Category Cooldown: 45 seconds
-Affecting spells : Elemental Fury (60188 effect#1), Restoration Shaman (137039 effect#1), Elemental Shaman (137040 effect#1), Enhancement Shaman (137041 effect#1), Lightning Crash (242284 effect#1)
+Affecting spells : Elemental Fury (60188 effect#1), Restoration Shaman (137039 effect#1), Elemental Shaman (137040 effect#1), Enhancement Shaman (137041 effect#1), Lightning Crash (242284 effect#1), Master of the Elements (260734 effect#1)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -894,7 +890,7 @@ Effects          :
 #1 (id=43841)    : School Damage (2): fire
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.53125 | Target: Enemy (6)
 #2 (id=287537)   : Energize Power (30)
-                   Base Value: 12 | Scaled Value: 12 | Misc Value: maelstrom | Target: Self (1)
+                   Base Value: 8 | Scaled Value: 8 | Misc Value: maelstrom | Target: Self (1)
 Description      : Hurls molten lava at the target, dealing $s1 Fire damage.$?a231721[ Lava Burst will always critically strike if the target is affected by Flame Shock.][]$?s137039[][
 
 |cFFFFFFFFGenerates $s2 Maelstrom.|r ]
@@ -1252,7 +1248,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : Not a proc (105)
 Effects          :
 #1 (id=53784)    : School Damage (2): fire
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.19250 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.93015 | Target: Enemy (6)
 #2 (id=53785)    : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
 Description      : Charges your off-hand weapon with lava and burns your target, dealing $s1 Fire damage.
@@ -1304,13 +1300,11 @@ Tooltip          : Heals $w2 every $t2 seconds.
 Name             : Earthquake (id=61882) [Spell Family (11)] 
 Class            : Elemental Shaman
 School           : Nature
-Resource         : 0 Maelstrom (11) and 30 Maelstrom (11) per tick (id=2792)
+Resource         : 75 Maelstrom (11) (id=2792)
 Spell Level      : 48
 Range            : 35 yards
-Cast Time        : 2.5 seconds
 GCD              : 1.5 seconds
-Duration         : 12 seconds
-Cooldown         : 15 seconds
+Duration         : 6 seconds
 Proc Chance      : 100%
 Affecting spells : Elemental Fury (60188 effect#1), Spiritwalker's Grace (79206 effect#1), Lucidity (137326 effect#1), The Ground Trembles (191499 effect#1), Echoes of the Great Sundering (208723 effect#1)
 Attributes       : ........ ........ x....... ........   ...x...x ..x..... ........ ....x... 
@@ -1631,7 +1625,7 @@ Effects          :
 #1 (id=68090)    : School Damage (2): fire
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.53125 | Target: Enemy (6)
 #2 (id=287602)   : Energize Power (30)
-                   Base Value: 9 | Scaled Value: 9 | Misc Value: maelstrom | Target: Self (1)
+                   Base Value: 4 | Scaled Value: 4 | Misc Value: maelstrom | Target: Self (1)
 Description      : You hurl molten lava at the target, dealing $s1 Fire damage. If your Flame Shock is on the target, Lava Burst will deal a critical strike.
 
 Name             : Healing Wave (id=77472) [Spell Family (11)] 
@@ -1748,7 +1742,7 @@ Name             : Hand of Gul'dan (id=86040) [Spell Family (5)]
 Class            : Shaman, Warlock
 School           : Shadowflame
 Range            : 50000 yards
-Affecting spells : Affliction Warlock (137043 effect#1), Destruction Warlock (137046 effect#1), Demonic Synergy (171982 effect#2), Soul Harvest (196098 effect#1), Dirty Hands (211105 effect#1)
+Affecting spells : Affliction Warlock (137043 effect#1), Destruction Warlock (137046 effect#1), Soul Harvest (196098 effect#1), Dirty Hands (211105 effect#1)
 Attributes       : ........ ........ .......x ........   ...x...x ........ ........ ........ 
                  : ..x..... ........ ........ ....x...   x....... ........ ........ ......x. 
                  : ........ ........ ........ .x......   ........ ..x..... ........ ..x..... 
@@ -2140,7 +2134,7 @@ Effects          :
 #2 (id=188522)   : Dummy (3)
                    Base Value: 10 | Scaled Value: 10
 #3 (id=325441)   : Dummy (3)
-                   Base Value: 4 | Scaled Value: 4
+                   Base Value: 3 | Scaled Value: 3
 Description      : Unleashes a blast of superheated flame at the enemy, dealing $s1 Fire damage and then jumping to additional nearby enemies. Damage is increased by $s2% after each jump. Affects $x1 total targets.  
 
 |cFFFFFFFFGenerates $s3 Maelstrom per target hit.|r 
@@ -2158,8 +2152,8 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ .x......   ........ ........ ........ ........ 
                  : Not a proc (105)
 Effects          :
-#1 (id=127209)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.15300 | Target: Enemy (6)
+#1 (id=127209)   : Weapon Damage% (31)
+                   Base Value: 100 | Scaled Value: 1 | Target: Enemy (6)
 Description      : A massive gust of air that deals $s1 Physical damage.
 
 Name             : Windlash Off-Hand (id=114093) [Spell Family (11)] 
@@ -2174,8 +2168,8 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ .x......   ........ ........ ........ ........ 
                  : Not a proc (105)
 Effects          :
-#1 (id=127218)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.15300 | Target: Enemy (6)
+#1 (id=127218)   : Weapon Damage% (31)
+                   Base Value: 100 | Scaled Value: 1 | Target: Enemy (6)
 Description      : A massive gust of air that deals $s1 Physical damage.
 
 Name             : Lava Beam Overload (id=114738) [Scaling Spell (10), Spell Family (11)] 
@@ -2269,7 +2263,7 @@ Attributes       : ........ ........ x.x..... ........   ........ .x...... .....
                  : Not a proc (105)
 Effects          :
 #1 (id=129139)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.14750 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.89505 | Target: Enemy (6)
 #2 (id=197633)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
 Description      : $@spelldesc115356
@@ -2291,7 +2285,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ ........ .....
                  : Not a proc (105)
 Effects          :
 #1 (id=129143)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.14750 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.89505 | Target: Enemy (6)
 #2 (id=197634)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
 Description      : $@spelldesc115356
@@ -2352,7 +2346,7 @@ Cast Time        : 2 seconds
 GCD              : 1.5 seconds
 Velocity         : 40 yards/sec
 Cooldown         : 12 seconds
-Affecting spells : Elemental Fury (60188 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effect#1), Elemental Shaman (137040 effect#1), Enhancement Shaman (137041 effect#1), Lucidity (137326 effect#1), Lightning Crash (242284 effect#1)
+Affecting spells : Elemental Fury (60188 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effect#1), Elemental Shaman (137040 effect#1), Enhancement Shaman (137041 effect#1), Lucidity (137326 effect#1), Lightning Crash (242284 effect#1), Master of the Elements (260734 effect#1)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2489,7 +2483,7 @@ School           : Elemental
 Range            : 40 yards
 Cast Time        : 2 seconds
 Velocity         : 40 yards/sec
-Affecting spells : Elemental Fury (60188 effect#1), Restoration Shaman (137039 effect#1), Elemental Shaman (137040 effect#1), Enhancement Shaman (137041 effect#1), Lightning Crash (242284 effect#1)
+Affecting spells : Elemental Fury (60188 effect#1), Restoration Shaman (137039 effect#1), Elemental Shaman (137040 effect#1), Enhancement Shaman (137041 effect#1), Lightning Crash (242284 effect#1), Master of the Elements (260734 effect#1)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2990,7 +2984,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=219326)   : School Damage (2): nature
                    Base Value: 1 | Scaled Value: 1 | Value Multiplier: 1 | SP Coefficient: 0.15000 | Target: Enemy (6)
-Description      : Conjures a gust of wind that deals $s1 Nature damage to an enemy and generates $226180s2 Maelstrom for the Shaman.
+Description      : Conjures a gust of wind that deals $s1 Nature damage to an enemy.
 
 Name             : Call Lightning (id=157348) [Spell Family (11)] 
 Class            : Shaman
@@ -3328,7 +3322,7 @@ Resource         : 0 - 40 Maelstrom (11) (id=11199) w/ Overcharge (id=210727)
 Spell Level      : 1
 Range            : 40 yards
 GCD              : 1.5 seconds
-Affecting spells : Elemental Fury (60188 effect#1), Mastery: Enhanced Elements (77223 effect#1), Spiritwalker's Grace (79206 effect#1), Shaman (137038 effect#2), Restoration Shaman (137039 effect#1), Elemental Shaman (137040 effect#1), Enhancement Shaman (137041 effect#1), Lucidity (137326 effect#1), Stormkeeper (191634 effect#1), Stormkeeper (205495 effect#1), Overcharge (210727 effect#3), Item - Shaman T19 Elemental 2P Bonus (211951 effect#1), Surge of Power (215414 effect#1), Lightning Crash (242284 effect#1), Fulmination (260111 effect#1), Wind Gust (263806 effect#1)
+Affecting spells : Elemental Fury (60188 effect#1), Mastery: Enhanced Elements (77223 effect#1), Spiritwalker's Grace (79206 effect#1), Shaman (137038 effect#2), Restoration Shaman (137039 effect#1), Elemental Shaman (137040 effect#1), Enhancement Shaman (137041 effect#1), Lucidity (137326 effect#1), Stormkeeper (191634 effect#1), Stormkeeper (205495 effect#1), Overcharge (210727 effect#3), Item - Shaman T19 Elemental 2P Bonus (211951 effect#1), Surge of Power (215414 effect#1), Lightning Crash (242284 effect#1), Master of the Elements (260734 effect#1), Wind Gust (263806 effect#1)
 Attributes       : ........ ........ x....... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3357,7 +3351,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=274038)   : School Damage (2): nature
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.18000 | Radius: 8 yards | Target: Cone Front (104)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.14040 | Radius: 8 yards | Target: Cone Front (104)
 #2 (id=274039)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Radius: 8 yards | Target: Cone Front (104)
 Description      : Electrocutes all enemies in front of you, dealing $s1 Nature damage. Hitting 2 or more targets enhances your weapons for $187878d, causing Stormstrike and Lava Lash to also deal $195592sw1 Nature damage to all targets in front of you.  
@@ -3472,7 +3466,7 @@ Spell Level      : 1
 Range            : 40 yards
 Cast Time        : 2 seconds
 GCD              : 1.5 seconds
-Affecting spells : Elemental Fury (60188 effect#1), Spiritwalker's Grace (79206 effect#1), Shaman (137038 effect#2), Restoration Shaman (137039 effect#1), Elemental Shaman (137040 effect#1), Enhancement Shaman (137041 effect#1), Lucidity (137326 effect#1), Stormkeeper (191634 effect#1), Stormkeeper (205495 effect#1), Overcharge (210727 effect#3), Item - Shaman T19 Elemental 2P Bonus (211951 effect#1), Surge of Power (215414 effect#1), Lightning Crash (242284 effect#1), Fulmination (260111 effect#1), Wind Gust (263806 effect#1)
+Affecting spells : Elemental Fury (60188 effect#1), Spiritwalker's Grace (79206 effect#1), Shaman (137038 effect#2), Restoration Shaman (137039 effect#1), Elemental Shaman (137040 effect#1), Enhancement Shaman (137041 effect#1), Lucidity (137326 effect#1), Stormkeeper (191634 effect#1), Stormkeeper (205495 effect#1), Overcharge (210727 effect#3), Item - Shaman T19 Elemental 2P Bonus (211951 effect#1), Surge of Power (215414 effect#1), Lightning Crash (242284 effect#1), Master of the Elements (260734 effect#1), Wind Gust (263806 effect#1)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3520,7 +3514,7 @@ Range            : 40 yards
 Cast Time        : 2 seconds
 GCD              : 1.5 seconds
 Category         : 85
-Affecting spells : Elemental Fury (60188 effect#1), Spiritwalker's Grace (79206 effect#1), Ascendance (114050 effect#2), Restoration Shaman (137039 effect#1), Elemental Shaman (137040 effect#1), Enhancement Shaman (137041 effect#1), Lucidity (137326 effect#1), Electric Discharge (191577 effect#1), Stormkeeper (191634 effect#1), Stormkeeper (205495 effect#1), Al'Akir's Acrimony (208699 effect#1), Chain Lightning (231722 effect#1), Lightning Crash (242284 effect#1), Lightningburn (263792 effect#1), Wind Gust (263806 effect#1)
+Affecting spells : Elemental Fury (60188 effect#1), Spiritwalker's Grace (79206 effect#1), Ascendance (114050 effect#2), Restoration Shaman (137039 effect#1), Elemental Shaman (137040 effect#1), Enhancement Shaman (137041 effect#1), Lucidity (137326 effect#1), Electric Discharge (191577 effect#1), Stormkeeper (191634 effect#1), Stormkeeper (205495 effect#1), Al'Akir's Acrimony (208699 effect#1), Chain Lightning (231722 effect#1), Lightning Crash (242284 effect#1), Master of the Elements (260734 effect#1), Lightningburn (263792 effect#1), Wind Gust (263806 effect#1)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3531,7 +3525,7 @@ Effects          :
 #1 (id=275203)   : School Damage (2): nature
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.30000 | Chain Multiplier: 1 | Chain Targets: 3 | Target: Enemy (6)
 #2 (id=325428)   : Dummy (3)
-                   Base Value: 4 | Scaled Value: 4
+                   Base Value: 3 | Scaled Value: 3
 Description      : Hurls a lightning bolt at the enemy, dealing $s1 Nature damage and then jumping to additional nearby enemies. Affects $x1 total targets.
 
 |cFFFFFFFFGenerates $s2 Maelstrom per target hit.|r 
@@ -4294,7 +4288,7 @@ Effects          :
 #1 (id=287112)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Radius: 8 yards | Target: Cone Front (104)
 #2 (id=287113)   : School Damage (2): nature
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.22950 | Radius: 8 yards | Target: Cone Front (104)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.17901 | Radius: 8 yards | Target: Cone Front (104)
 Description      : $@spelldesc187874
 
 Name             : Maelstrom Power Decrease (id=195769) [Spell Family (11), Hidden] 
@@ -4368,7 +4362,7 @@ Spell Level      : 38
 Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 5 seconds
-Affecting spells : Shaman Shock Range Bonus (32973 effect#1), Elemental Fury (60188 effect#1), Restoration Shaman (137039 effect#1), Elemental Shaman (137040 effect#1), Enhancement Shaman (137041 effect#1), Lucidity (137326 effect#1), Icefury (210714 effect#3), Lightning Crash (242284 effect#1), Earthen Strength (252141 effect#2)
+Affecting spells : Shaman Shock Range Bonus (32973 effect#1), Elemental Fury (60188 effect#1), Restoration Shaman (137039 effect#1), Elemental Shaman (137040 effect#1), Enhancement Shaman (137041 effect#1), Lucidity (137326 effect#1), Icefury (210714 effect#3), Lightning Crash (242284 effect#1), Earthen Strength (252141 effect#2), Master of the Elements (260734 effect#1)
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5699,7 +5693,7 @@ Stacks           : 4 initial, 4 maximum
 Proc Chance      : 100%
 Proc Flags       : ........ ....x... x....... ........ 
                  : AOE Hostile Spell, Hostile Spell
-Affecting spells : Elemental Fury (60188 effect#1), Restoration Shaman (137039 effect#1), Elemental Shaman (137040 effect#1), Enhancement Shaman (137041 effect#1), Lightning Crash (242284 effect#1)
+Affecting spells : Elemental Fury (60188 effect#1), Restoration Shaman (137039 effect#1), Elemental Shaman (137040 effect#1), Enhancement Shaman (137041 effect#1), Lightning Crash (242284 effect#1), Master of the Elements (260734 effect#1)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ....x... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5710,7 +5704,7 @@ Effects          :
 #1 (id=312134)   : School Damage (2): frost
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 2.25000 | Target: Enemy (6)
 #2 (id=312135)   : Energize Power (30)
-                   Base Value: 24 | Scaled Value: 24 | Misc Value: maelstrom | Target: Self (1)
+                   Base Value: 15 | Scaled Value: 15 | Misc Value: maelstrom | Target: Self (1)
 #3 (id=312136)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Damage (0)
                    Base Value: 400 | Scaled Value: 400 | Target: Self (1)
                    Affected Spells: Frost Shock (196840)
@@ -5825,7 +5819,7 @@ Effects          :
 #1 (id=312326)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
 #2 (id=312327)   : School Damage (2): frost
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.04500 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.03510 | Target: Enemy (6)
 Description      : $@spelldesc210853
 
 Name             : Hex (id=210873) [Spell Family (11)] 
@@ -6044,7 +6038,7 @@ School           : Nature
 Spell Level      : 1
 Range            : 30 yards
 Cast Time        : 2 seconds
-Affecting spells : Elemental Fury (60188 effect#1), Spiritwalker's Grace (79206 effect#1), Shaman (137038 effect#2), Lucidity (137326 effect#1), Stormkeeper (191634 effect#1), Stormkeeper (205495 effect#1), Overcharge (210727 effect#3), Item - Shaman T19 Elemental 2P Bonus (211951 effect#1), Surge of Power (215414 effect#1), Fulmination (260111 effect#1), Wind Gust (263806 effect#1)
+Affecting spells : Elemental Fury (60188 effect#1), Spiritwalker's Grace (79206 effect#1), Shaman (137038 effect#2), Lucidity (137326 effect#1), Stormkeeper (191634 effect#1), Stormkeeper (205495 effect#1), Overcharge (210727 effect#3), Item - Shaman T19 Elemental 2P Bonus (211951 effect#1), Surge of Power (215414 effect#1), Master of the Elements (260734 effect#1), Wind Gust (263806 effect#1)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6053,7 +6047,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=319073)   : Energize Power (30)
-                   Base Value: 8 | Scaled Value: 8 | Misc Value: maelstrom | Target: Self (1)
+                   Base Value: 6 | Scaled Value: 6 | Misc Value: maelstrom | Target: Self (1)
 Description      : $@spelldesc188196
 
 Name             : Lightning Bolt Overload (id=214816) [Spell Family (11)] 
@@ -6062,7 +6056,7 @@ School           : Nature
 Spell Level      : 1
 Range            : 30 yards
 Cast Time        : 2 seconds
-Affecting spells : Elemental Fury (60188 effect#1), Spiritwalker's Grace (79206 effect#1), Shaman (137038 effect#2), Lucidity (137326 effect#1), Stormkeeper (191634 effect#1), Stormkeeper (205495 effect#1), Overcharge (210727 effect#3), Item - Shaman T19 Elemental 2P Bonus (211951 effect#1), Surge of Power (215414 effect#1), Fulmination (260111 effect#1), Wind Gust (263806 effect#1)
+Affecting spells : Elemental Fury (60188 effect#1), Spiritwalker's Grace (79206 effect#1), Shaman (137038 effect#2), Lucidity (137326 effect#1), Stormkeeper (191634 effect#1), Stormkeeper (205495 effect#1), Overcharge (210727 effect#3), Item - Shaman T19 Elemental 2P Bonus (211951 effect#1), Surge of Power (215414 effect#1), Master of the Elements (260734 effect#1), Wind Gust (263806 effect#1)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6071,7 +6065,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=319074)   : Energize Power (30)
-                   Base Value: 6 | Scaled Value: 6 | Misc Value: maelstrom | Target: Self (1)
+                   Base Value: 3 | Scaled Value: 3 | Misc Value: maelstrom | Target: Self (1)
 Description      : $@spelldesc45284
 
 Name             : Hot Hand (id=215785) [Spell Family (11)] 
@@ -6155,7 +6149,7 @@ School           : Frost
 Spell Level      : 1
 Range            : 40 yards
 Velocity         : 40 yards/sec
-Affecting spells : Elemental Fury (60188 effect#1), Restoration Shaman (137039 effect#1), Elemental Shaman (137040 effect#1), Enhancement Shaman (137041 effect#1), Lightning Crash (242284 effect#1)
+Affecting spells : Elemental Fury (60188 effect#1), Restoration Shaman (137039 effect#1), Elemental Shaman (137040 effect#1), Enhancement Shaman (137041 effect#1), Lightning Crash (242284 effect#1), Master of the Elements (260734 effect#1)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ....x... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6228,22 +6222,6 @@ Effects          :
                    Affected Spells: Stormstrike (17364), Windstrike (115356)
 Description      : $@spelldesc262624
 Tooltip          : The cooldown of Stormstrike is reduced by $s1% and the Maelstrom cost of Stormstrike is reduced by $s2%.
-
-Name             : Wind Gust (id=226180) [Spell Family (11)] 
-Class            : Shaman
-School           : Nature
-Spell Level      : 1
-Range            : 100 yards
-Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ......x. ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=339432)   : Energize Power (30)
-                   Base Value: 10 | Scaled Value: 10 | Misc Value: maelstrom | Target: Friend (21)
-Description      : $@spelldesc157331
 
 Name             : Totem Mastery (id=226772) [Spell Family (5)] 
 Class            : Shaman
@@ -6588,65 +6566,6 @@ Description      : Deals $s1 Holy Damage to enemies within $A1.
 
 Heals $s2 to allies within $A1. 
 
-Name             : Epicenter (id=259965) [Spell Family (11), Passive] 
-Class            : Elemental Shaman
-School           : Fire
-Spell Level      : 13
-Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Passive (6)
-Effects          :
-#1 (id=484865)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 20 | Scaled Value: 20 | Misc Value: 17 | Target: Self (1)
-Description      : Each target hit by Chain Lightning increases the damage of your next Earthquake by $s1% and reduces the cast time of your next Earthquake by $s2%.
-
-Name             : Fulmination (0) (id=260111) [Spell Family (11)] 
-Class            : Shaman
-School           : Nature
-Spell Level      : 13
-Range            : 100 yards
-Duration         : 15 seconds
-Stacks           : 10 maximum
-Proc Chance      : 101%
-Proc Flags       : ........ ........ .x...... ........ 
-                 : Hostile Spell Taken
-Affecting spells : Electric Discharge (260895 effect#1)
-Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ..x..... ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=485109)   : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271)
-                   Base Value: 100 | Scaled Value: 100 | Target: Enemy (6)
-                   Affected Spells: Lightning Bolt (403), Lightning Bolt Overload (45284), Lightning Bolt (187837), Lightning Bolt (188196), Lightning Bolt (214815), Lightning Bolt Overload (214816)
-Description      : $@spelldesc259965
-Tooltip          : Damage taken from the Shaman's Lightning Bolt increased by $s1%.
-
-Name             : Fulmination (Passive) (id=260113) [Spell Family (11), Passive] 
-Class            : Elemental Shaman
-School           : Nature
-Spell Level      : 13
-Range            : 100 yards
-Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
-                 : ..x..... ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Passive (6)
-Effects          :
-#1 (id=485111)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 25 | Scaled Value: 25 | Target: Self (1)
-#2 (id=707595)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 75 | Scaled Value: 75 | Target: Self (1)
-Description      : When you Earth Shock a target, every $s1 Maelstrom you have, up to $s2,  will cause the target to take an additional $260111s1% damage from Lightning Bolt. 
-
 Name             : Molten Fury (id=260694) [Spell Family (11), Passive] 
 Class            : Shaman
 School           : Physical
@@ -6664,11 +6583,14 @@ Effects          :
                    Affected Spells: Lava Surge (77762)
 Description      : Lava Surge now also causes Lava Burst to generate $s1% more Maelstrom.
 
-Name             : Earth Mastery (id=260734) [Spell Family (11)] 
+Name             : Master of the Elements (id=260734) [Spell Family (11)] 
 Class            : Shaman
 School           : Nature
-Duration         : 5 seconds
-Cooldown         : 120 seconds
+Duration         : 15 seconds
+Proc Chance      : 101%
+Proc Flags       : ........ ....x... x.x..... ........ 
+                 : AOE Hostile Spell, Hostile Spell, Periodic
+Triggered by     : Master of the Elements (16166)
 Attributes       : ........ ........ x.x..... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -6676,31 +6598,11 @@ Attributes       : ........ ........ x.x..... ........   ........ ..x..... .....
                  : ........ .....x.. ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=486101)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 20 | Scaled Value: 20 | Misc Value: 10 | Target: Self (1)
+#1 (id=486101)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Damage (0)
+                   Base Value: 20 | Scaled Value: 20 | Target: Self (1)
+                   Affected Spells: Lightning Bolt (403), Chain Lightning (421), Earth Shock (8042), Lightning Bolt Overload (45284), Chain Lightning Overload (45297), Thunderstorm (51490), Elemental Blast (117014), Elemental Blast Overload (120588), Lightning Bolt (187837), Lightning Bolt (188196), Chain Lightning (188443), Frost Shock (196840), Icefury (210714), Lightning Bolt (214815), Lightning Bolt Overload (214816), Icefury Overload (219271)
 Description      : $@spelldesc16166
-Tooltip          : Earth Shock will not consume any Maelstrom.
-
-Name             : Volcanic Rage (id=260876) [Spell Family (11)] 
-Class            : Shaman
-School           : Fire
-Spell Level      : 1
-Range            : 40 yards
-Cast Time        : 1.5 seconds
-GCD              : 1.5 seconds
-Cooldown         : 45 seconds
-Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=486329)   : School Damage (2): fire
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 2.50000 | Radius: 0 - 8 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
-#2 (id=486330)   : Dummy (3)
-                   Base Value: 12000 | Scaled Value: 12000 | Target: Enemy (6)
-Description      : Erupt a volcano under your target's location, causing $s1 Fire damage to all enemies within $A1 and applying Flame Shock to all targets hit for ${$m2/1000}.1 sec.
+Tooltip          : Your next Frost or Nature spell will deal $s1 increased damage.
 
 Name             : Spirit Wolf (id=260878) [Spell Family (11), Passive] 
 Class            : Shaman
@@ -6780,9 +6682,9 @@ Attributes       : ......x. x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=486355)   : Apply Aura (6) | Dummy (4)
                    Base Value: 100 | Scaled Value: 100 | Target: Self (1)
-Description      : Lightning Bolt can now cause a second Elemental Overload.
+Description      : Lightning Bolt and Chain Lightning can now cause a second Elemental Overload.
 
-Name             : Electric Discharge (id=260895) [Spell Family (11), Passive] 
+Name             : Elemental Attunement (id=260895) [Spell Family (11), Passive] 
 Class            : Shaman
 School           : Physical
 Spell Level      : 1
@@ -6794,10 +6696,9 @@ Attributes       : ......x. x....... ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6)
 Effects          :
-#1 (id=486363)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 1 (3)
-                   Base Value: 20 | Scaled Value: 20 | Misc Value: 3 | Target: Self (1)
-                   Affected Spells: Fulmination (260111)
-Description      : Increases the bonus damage of Lightning Bolt from Fulmination by $s1%.
+#1 (id=486363)   : Apply Aura (6) | Unknown(341)
+                   Base Value: -30000 | Scaled Value: -30000 | Misc Value: 1572 | Target: Self (1)
+Description      : The cooldown of your $?s192249[Storm][Fire] Elemental is reduced by ${$m1/-1000} sec.
 
 Name             : Seismic Armor (id=260897) [Spell Family (11), Passive] 
 Class            : Shaman
@@ -7007,7 +6908,7 @@ Attributes       : ........ ........ ........ .......x   ........ ........ .....
                  : Cannot cancel aura (31)
 Effects          :
 #1 (id=624110)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.33750 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.26325 | Target: Enemy (6)
 #2 (id=624111)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
 Description      : $@pelldesc262647
