@@ -441,6 +441,10 @@ void the_twins_painful_touch( special_effect_t& effect )
   priest_t* priest = debug_cast<priest_t*>( effect.player );
   assert( priest );
   do_trinket_init( priest, PRIEST_SHADOW, priest->active_items.the_twins_painful_touch, effect );
+
+  // Activate buff proc chance
+  priest->buffs.the_twins_painful_touch->set_chance(-1.0); // Reset chance to default value, so we get values from spell_data.
+  priest->buffs.the_twins_painful_touch->set_trigger_spell(priest->active_items.the_twins_painful_touch->driver());
 }
 
 void zenkaram_iridis_anadem( special_effect_t& effect )

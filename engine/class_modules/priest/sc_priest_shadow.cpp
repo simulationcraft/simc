@@ -2157,14 +2157,12 @@ void priest_t::create_buffs_shadow()
   buffs.anunds_last_breath = make_buff( this, "anunds_last_breath", find_spell( 215210 ) );
   buffs.iridis_empowerment = make_buff( this, "iridis_empowerment", find_spell( 224999 ) )
                                  ->set_chance( active_items.zenkaram_iridis_anadem ? 1.0 : 0.0 );
-  buffs.the_twins_painful_touch = make_buff( this, "the_twins_painful_touch", find_spell( 207721 ) )
-                                      ->set_chance( active_items.the_twins_painful_touch ? 1.0 : 0.0 );
+  buffs.the_twins_painful_touch = make_buff( this, "the_twins_painful_touch", find_spell( 207724 ) )
+      ->set_chance(0.0); // By default, set chance to 0. Set trigger spell chance in the_twins_painful_touch if item is available.
   buffs.zeks_exterminatus = make_buff( this, "zeks_exterminatus", find_spell( 236545 ) )->set_rppm( RPPM_HASTE );
 
   // Artifact
-  buffs.sphere_of_insanity = make_buff( this, "sphere_of_insanity", find_spell( 194182 ) )
-                                 ->set_chance( 1.0 )
-                                 ->set_default_value( find_spell( 194182 )->effectN( 3 ).percent() );
+  buffs.sphere_of_insanity = make_buff( this, "sphere_of_insanity", find_spell( 194182 ) );
   buffs.mind_quickening = make_buff<stat_buff_t>( this, "mind_quickening", find_spell( 240673 ) );
 }
 

@@ -1197,7 +1197,7 @@ struct priest_spell_t : public priest_action_t<spell_t>
 
     if ( is_sphere_of_insanity_spell && priest().buffs.sphere_of_insanity->up() && s->result_amount > 0 )
     {
-      double damage = s->result_amount * priest().buffs.sphere_of_insanity->default_value;
+      double damage = s->result_amount * priest().buffs.sphere_of_insanity->data().effectN( 3 ).percent();
       priest().active_spells.sphere_of_insanity->base_dd_min = damage;
       priest().active_spells.sphere_of_insanity->base_dd_max = damage;
       priest().active_spells.sphere_of_insanity->schedule_execute();
