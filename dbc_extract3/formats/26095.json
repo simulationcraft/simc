@@ -394,6 +394,15 @@
     { "data_type": "i", "field": "min_cast_time" },
     { "data_type": "h", "field": "cast_time_per_level" }
   ],
+  "SpellCastingRequirements": [
+    { "data_type": "I", "field": "id_spell" },
+    { "data_type": "h", "field": "unk_2" },
+    { "data_type": "h", "field": "unk_3" },
+    { "data_type": "h", "field": "unk_4" },
+    { "data_type": "b", "field": "facing_flags" },
+    { "data_type": "b", "field": "unk_6" },
+    { "data_type": "b", "field": "unk_8" }
+  ],
   "SpellCategories": [
     { "data_type": "H", "field": "cooldown_category", "formats": { "cpp": "%4u" } },
     { "data_type": "H", "field": "start_recovery_category" },
@@ -576,6 +585,15 @@
     { "data_type": "I", "field": "flags_not", "elements": 2 },
     { "data_type": "I", "field": "flags", "elements": 2, "formats": { "cpp": "%#.8x" } },
     { "data_type": "B", "field": "unk" }
+  ],
+  "SpellTargetRestrictions": [
+    { "data_type": "f", "field": "cone" },
+    { "data_type": "f", "field": "unk_2" },
+    { "data_type": "I", "field": "unk_flags" },
+    { "data_type": "h", "field": "unk_4" },
+    { "data_type": "b", "field": "unk_5" },
+    { "data_type": "b", "field": "max_affected_targets" },
+    { "data_type": "b", "field": "max_target_level" }
   ],
   "SpellXDescriptionVariables": [
     { "data_type": "I", "field": "id_spell" },
