@@ -4069,17 +4069,7 @@ struct glacial_spike_t : public frost_mage_spell_t
 
     icicle_damage_ratio = 0.0;
 
-    if ( p() -> bugs )
-    {
-      icicle_amount *= s -> composite_da_multiplier();
-      icicle_amount /= s -> versatility;
-      // TODO: Figure out a better way to do this.
-      icicle_amount /= p() -> cache.player_multiplier( school );
-    }
-    else
-    {
-      icicle_amount *= s -> target_da_multiplier;
-    }
+    icicle_amount *= s -> target_da_multiplier;
 
     if ( s -> chain_target > 0 )
       icicle_amount *= base_aoe_multiplier;
