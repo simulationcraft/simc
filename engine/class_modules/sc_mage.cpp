@@ -913,7 +913,18 @@ struct water_elemental_spell_t : public mage_pet_spell_t
 {
   water_elemental_spell_t( const std::string& n, mage_pet_t* p, const spell_data_t* s )
     : mage_pet_spell_t( n, p, s )
-  { }
+  {
+    affected_by.arcane_mage = false;
+    affected_by.fire_mage = false;
+
+    affected_by.arcane_power = false;
+    affected_by.bone_chilling = false;
+    affected_by.incanters_flow = false;
+    affected_by.rune_of_power = false;
+
+    affected_by.combustion = false;
+    affected_by.erosion = false;
+  }
 
   virtual double action_multiplier() const override
   {
@@ -7304,11 +7315,8 @@ double mage_t::composite_player_pet_damage_multiplier( const action_state_t* s )
 {
   double m = player_t::composite_player_pet_damage_multiplier( s );
 
-  if ( bugs )
-  {
-    m *= 1.0 + buffs.rune_of_power -> check_value();
-    m *= 1.0 + buffs.incanters_flow -> check_stack_value();
-  }
+  m *= 1.0 + buffs.rune_of_power -> check_value();
+  m *= 1.0 + buffs.incanters_flow -> check_stack_value();
 
   return m;
 }
