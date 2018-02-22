@@ -8125,8 +8125,8 @@ void druid_t::apl_balance()
   if ( sim -> allow_potions && true_level >= 80 )
     default_list -> add_action( potion_action + ",if=buff.celestial_alignment.up|buff.incarnation.up" );
 
-  default_list -> add_action( "blessing_of_elune,if=active_enemies<=2&talent.blessing_of_the_ancients.enabled&buff.blessing_of_elune.down" );
-  default_list -> add_action( "blessing_of_elune,if=active_enemies>=3&talent.blessing_of_the_ancients.enabled&buff.blessing_of_anshe.down" );
+  default_list -> add_action( "blessing_of_elune,if=active_enemies<=2" );
+  default_list -> add_action( "blessing_of_anshe,if=active_enemies>=3" );
 
   for ( size_t i = 0; i < racial_actions.size(); i++ )
     default_list -> add_action( racial_actions[i] + ",if=buff.celestial_alignment.up|buff.incarnation.up" );
