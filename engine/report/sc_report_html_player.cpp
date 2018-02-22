@@ -2849,6 +2849,21 @@ void print_html_player_buff( report::sc_html_stream& os, const buff_t& b,
         b.buff_duration.total_seconds(), b.cooldown->duration.total_seconds(),
         b.default_chance * 100, b.default_value );
 
+    if ( b.rppm )
+    {
+      os << "<h4>RPPM Buff details</h4>\n"
+         << "<ul>\n";
+
+      os.format(
+          "<li><span class=\"label\">scaling:</span>%s</li>\n"
+          "<li><span class=\"label\">frequency:</span>%.2f</li>\n"
+          "<li><span class=\"label\">modifier:</span>%.2f</li>\n",
+          util::rppm_scaling_string(b.rppm->get_scaling()).c_str(),
+          b.rppm->get_frequency(),
+          b.rppm->get_modifier());
+      os << "</ul>\n";
+    }
+
     if ( const stat_buff_t* stat_buff = dynamic_cast<const stat_buff_t*>( &b ) )
     {
       os << "<h4>Stat Buff details</h4>\n"

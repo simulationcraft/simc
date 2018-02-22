@@ -2120,9 +2120,8 @@ void priest_t::create_buffs_shadow()
   buffs.shadowform = make_buff( this, "shadowform", find_class_spell( "Shadowform" ) )
                          ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   buffs.shadowform_state = make_buff( this, "shadowform_state" )->set_chance( 1.0 )->set_quiet( true );
-  buffs.shadowy_insight  = make_buff( this, "shadowy_insight", talents.shadowy_insight )
-                              ->set_rppm( RPPM_HASTE )
-                              ->set_max_stack( 1U );  // Spell Data says 2, really is 1 -- 2016/04/17 Twintop
+  buffs.shadowy_insight  = make_buff( this, "shadowy_insight", talents.shadowy_insight->effectN(1).trigger() )
+                              ->set_trigger_spell(talents.shadowy_insight);
   buffs.voidform              = new buffs::voidform_t( *this );
   buffs.insanity_drain_stacks = new buffs::insanity_drain_stacks_t( *this );
   buffs.vampiric_embrace      = make_buff( this, "vampiric_embrace", find_class_spell( "Vampiric Embrace" ) );

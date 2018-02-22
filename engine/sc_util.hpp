@@ -68,6 +68,7 @@ const char* movement_direction_string( movement_direction_e );
 const char* class_id_string( player_e type );
 const char* spec_string_no_class( const player_t&p );
 const char* retarget_event_string     ( retarget_event_e );
+std::string rppm_scaling_string     ( unsigned );
 
 uint32_t    school_type_component     ( school_e s_type, school_e c_type );
 bool is_match_slot( slot_e slot );

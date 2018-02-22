@@ -2437,6 +2437,11 @@ public:
     initial_precombat_time = precombat;
   }
 
+  unsigned get_scaling() const
+  {
+    return scales_with;
+  }
+
   double get_frequency() const
   { return freq; }
 

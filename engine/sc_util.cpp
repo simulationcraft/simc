@@ -2173,6 +2173,32 @@ const char* util::retarget_event_string( retarget_event_e event )
   }
 }
 
+std::string util::rppm_scaling_string( unsigned s )
+{
+  if ( s == RPPM_NONE )
+  {
+    return "none";
+  }
+  else if ( s == RPPM_DISABLE )
+  {
+    return "disabled";
+  }
+  std::string r;
+  if ( s & RPPM_HASTE )
+  {
+    r += "haste_";
+  }
+  if ( s & RPPM_CRIT )
+  {
+    r += "crit_";
+  }
+  if ( s & RPPM_ATTACK_SPEED )
+  {
+    r += "attack_speed_";
+  }
+  return r;
+}
+
 // specialization_string ====================================================
 
 const char* util::specialization_string( specialization_e spec )
