@@ -357,6 +357,7 @@ struct mind_sear_tick_t final : public priest_spell_t
     callbacks     = false;
     direct_tick   = true;
     use_off_gcd   = true;
+    is_mastery_spell = true;
     energize_type = ENERGIZE_NONE;  // disable resource generation from spell data
   }
 
@@ -381,6 +382,7 @@ struct mind_sear_t final : public priest_spell_t
     may_crit            = false;
     hasted_ticks        = false;
     dynamic_tick_action = true;
+    is_mastery_spell    = true;
     tick_zero           = false;
 
     if ( p.artifact.void_corruption.rank() )
@@ -903,6 +905,7 @@ struct shadowy_apparition_spell_t final : public priest_spell_t
     proc                         = false;
     callbacks                    = true;
     may_miss                     = false;
+    may_crit                     = false;
     trigger_gcd                  = timespan_t::zero();
     travel_speed                 = 6.0;
     const spell_data_t* dmg_data = p.find_spell( 148859 );  // Hardcoded into tooltip 2014/06/01
