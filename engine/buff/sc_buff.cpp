@@ -52,7 +52,7 @@ struct expiration_t : public buff_event_t
 
   expiration_t( buff_t* b, timespan_t d ) : buff_event_t( b, d ), stack( 0 )
   {
-    if ( b->stack_behavior == BUFF_STACK_ASYNCHRONOUS )
+    if ( b->stack_behavior == buff_stack_behavior::ASYNCHRONOUS )
     {
       b->sim->errorf( "Asynchronous buff %s on %s creates expiration with no stack count.", buff->name(),
                       buff->player->name() );
@@ -66,7 +66,7 @@ struct expiration_t : public buff_event_t
 
     buff->expiration.erase( buff->expiration.begin() );
 
-    if ( buff->stack_behavior == BUFF_STACK_ASYNCHRONOUS )
+    if ( buff->stack_behavior == buff_stack_behavior::ASYNCHRONOUS )
       buff->decrement( stack );
     else
       buff->expire();
@@ -205,8 +205,8 @@ buff_t::buff_t( const buff_creation::buff_creator_basics_t& params )
     manual_chance( params._chance ),
     current_tick( 0 ),
     buff_period( timespan_t::min() ),
-    tick_time_behavior( BUFF_TICK_TIME_UNHASTED ),
-    tick_behavior( BUFF_TICK_NONE ),
+    tick_time_behavior( buff_tick_time_behavior::UNHASTED ),
+    tick_behavior( buff_tick_behavior::NONE ),
     tick_event( nullptr ),
     tick_zero( false ),
     last_start( timespan_t() ),
@@ -279,14 +279,14 @@ buff_t::buff_t( const buff_creation::buff_creator_basics_t& params )
 
   set_period( params._period );
 
-  set_tick_behavior( params._behavior );
+  set_tick_behavior( params._tick_behavior );
 
   if ( params._tick_callback )
     set_tick_callback( std::move( params._tick_callback ) );
 
   set_tick_zero( params._initial_tick );
   set_tick_time_behavior( params._tick_time_behavior );
-  if ( tick_time_behavior == BUFF_TICK_TIME_CUSTOM )
+  if ( tick_time_behavior == buff_tick_time_behavior::CUSTOM )
   {
     assert( params._tick_time_callback );
     set_tick_time_callback( params._tick_time_callback );
@@ -311,7 +311,7 @@ buff_t::buff_t( const buff_creation::buff_creator_basics_t& params )
 
   stack_behavior = params._stack_behavior;
 
-  assert( refresh_behavior != BUFF_REFRESH_CUSTOM || refresh_duration_callback );
+  assert( refresh_behavior != buff_refresh_behavior::CUSTOM || refresh_duration_callback );
 
   invalidate_list       = params._invalidate_list;
   requires_invalidation = !invalidate_list.empty();
@@ -575,16 +575,16 @@ buff_t* buff_t::set_can_cancel( bool cc )
   return this;
 }
 
-buff_t* buff_t::set_tick_behavior( buff_tick_behavior_e behavior )
+buff_t* buff_t::set_tick_behavior( buff_tick_behavior behavior )
 {
-  if ( behavior != BUFF_TICK_NONE )
+  if ( behavior != buff_tick_behavior::NONE )
   {
     tick_behavior = behavior;
   }
   // If period is set, buf no buff tick behavior, set the behavior automatically to clipped ticks
-  else if ( buff_period > timespan_t::zero() && behavior == BUFF_TICK_NONE )
+  else if ( buff_period > timespan_t::zero() && behavior == buff_tick_behavior::NONE )
   {
-    tick_behavior = BUFF_TICK_CLIP;
+    tick_behavior = buff_tick_behavior::CLIP;
   }
 
   return this;
@@ -598,7 +598,7 @@ buff_t* buff_t::set_tick_callback( buff_tick_callback_t fn )
 
 buff_t* buff_t::set_tick_time_callback( buff_tick_time_callback_t cb )
 {
-  set_tick_time_behavior( BUFF_TICK_TIME_CUSTOM );
+  set_tick_time_behavior( buff_tick_time_behavior::CUSTOM );
   tick_time_callback = std::move( cb );
   return this;
 }
@@ -609,26 +609,26 @@ buff_t* buff_t::set_affects_regen( bool state )
   return this;
 }
 
-buff_t* buff_t::set_refresh_behavior( buff_refresh_behavior_e b )
+buff_t* buff_t::set_refresh_behavior( buff_refresh_behavior b )
 {
-  if ( b == BUFF_REFRESH_NONE )
+  if ( b == buff_refresh_behavior::NONE )
   {
     // In wod, default behavior for ticking buffs is to pandemic-extend the duration
-    if ( tick_behavior == BUFF_TICK_CLIP || tick_behavior == BUFF_TICK_REFRESH )
+    if ( tick_behavior == buff_tick_behavior::CLIP || tick_behavior == buff_tick_behavior::REFRESH )
     {
-      refresh_behavior = BUFF_REFRESH_PANDEMIC;
+      refresh_behavior = buff_refresh_behavior::PANDEMIC;
     }
     // Otherwise, just do the full-duration refresh
     else
     {
-      refresh_behavior = BUFF_REFRESH_DURATION;
+      refresh_behavior = buff_refresh_behavior::DURATION;
     }
   }
   else
   {
     refresh_behavior = b;
   }
-  assert( refresh_behavior != BUFF_REFRESH_CUSTOM || refresh_duration_callback );
+  assert( refresh_behavior != buff_refresh_behavior::CUSTOM || refresh_duration_callback );
   return this;
 }
 
@@ -636,7 +636,7 @@ buff_t* buff_t::set_refresh_duration_callback( buff_refresh_duration_callback_t 
 {
   if ( cb )
   {
-    refresh_behavior          = BUFF_REFRESH_CUSTOM;
+    refresh_behavior          = buff_refresh_behavior::CUSTOM;
     refresh_duration_callback = std::move( cb );
   }
   return this;
@@ -738,11 +738,11 @@ timespan_t buff_t::refresh_duration( const timespan_t& new_duration ) const
 {
   switch ( refresh_behavior )
   {
-    case BUFF_REFRESH_DISABLED:
+    case buff_refresh_behavior::DISABLED:
       return timespan_t::zero();
-    case BUFF_REFRESH_DURATION:
+    case buff_refresh_behavior::DURATION:
       return new_duration;
-    case BUFF_REFRESH_TICK:
+    case buff_refresh_behavior::TICK:
     {
       assert( tick_event );
       timespan_t residual = remains() % static_cast<tick_t*>( tick_event )->tick_time;
@@ -754,7 +754,7 @@ timespan_t buff_t::refresh_duration( const timespan_t& new_duration ) const
 
       return new_duration + residual;
     }
-    case BUFF_REFRESH_PANDEMIC:
+    case buff_refresh_behavior::PANDEMIC:
     {
       timespan_t residual = std::min( new_duration * 0.3, remains() );
       if ( sim->debug )
@@ -765,9 +765,9 @@ timespan_t buff_t::refresh_duration( const timespan_t& new_duration ) const
 
       return new_duration + residual;
     }
-    case BUFF_REFRESH_EXTEND:
+    case buff_refresh_behavior::EXTEND:
       return remains() + new_duration;
-    case BUFF_REFRESH_CUSTOM:
+    case buff_refresh_behavior::CUSTOM:
       return refresh_duration_callback( this, new_duration );
     default:
     {
@@ -783,10 +783,10 @@ timespan_t buff_t::tick_time() const
 {
   switch ( tick_time_behavior )
   {
-    case BUFF_TICK_TIME_HASTED:
+    case buff_tick_time_behavior::HASTED:
       assert( player );
       return buff_period * player->cache.spell_speed();
-    case BUFF_TICK_TIME_CUSTOM:
+    case buff_tick_time_behavior::CUSTOM:
       assert( tick_time_callback );
       return tick_time_callback( this, current_tick );
     default:
@@ -953,7 +953,7 @@ bool buff_t::trigger( int stacks, double value, double chance, timespan_t durati
       return false;
   }
 
-  if ( ( !activated || stack_behavior == BUFF_STACK_ASYNCHRONOUS ) && player && player->in_combat &&
+  if ( ( !activated || stack_behavior == buff_stack_behavior::ASYNCHRONOUS ) && player && player->in_combat &&
        sim->default_aura_delay > timespan_t::zero() )
   {
     // In-game, procs that happen "close to eachother" are usually delayed into the
@@ -1024,7 +1024,7 @@ void buff_t::increment( int stacks, double value, timespan_t duration )
   if ( _max_stack == 0 )
     return;
 
-  if ( current_stack == 0 || stack_behavior == BUFF_STACK_ASYNCHRONOUS )
+  if ( current_stack == 0 || stack_behavior == buff_stack_behavior::ASYNCHRONOUS )
   {
     start( stacks, value, duration );
   }
@@ -1088,7 +1088,7 @@ void buff_t::extend_duration( player_t* p, timespan_t extra_seconds )
     return;
   }
 
-  if ( stack_behavior == BUFF_STACK_ASYNCHRONOUS )
+  if ( stack_behavior == buff_stack_behavior::ASYNCHRONOUS )
   {
     sim->errorf( "%s attempts to extend asynchronous buff %s.", p->name(), name() );
     sim->cancel();
@@ -1145,7 +1145,7 @@ void buff_t::start( int stacks, double value, timespan_t duration )
     return;
 
 #ifndef NDEBUG
-  if ( stack_behavior != BUFF_STACK_ASYNCHRONOUS && current_stack != 0 )
+  if ( stack_behavior != buff_stack_behavior::ASYNCHRONOUS && current_stack != 0 )
   {
     sim->errorf( "buff_t::start assertion error current_stack is not zero, buff %s from %s.\n", name_str.c_str(),
                  source_name().c_str() );
@@ -1202,7 +1202,7 @@ void buff_t::start( int stacks, double value, timespan_t duration )
   {
     expiration.push_back( make_event<expiration_t>( *sim, this, stacks, d ) );
     /* TOCHECK: This seems wrong, since bump() already removes expiration events when we are at max stacks
-    if ( check() == before_stacks && stack_behavior == BUFF_STACK_ASYNCHRONOUS )
+    if ( check() == before_stacks && stack_behavior == buff_stack_behavior::ASYNCHRONOUS )
     {
       event_t::cancel( expiration.front() );
       expiration.erase( expiration.begin() );
@@ -1211,7 +1211,7 @@ void buff_t::start( int stacks, double value, timespan_t duration )
   }
 
   timespan_t period = tick_time();
-  if ( tick_behavior != BUFF_TICK_NONE && period > timespan_t::zero() && ( period <= d || d == timespan_t::zero() ) )
+  if ( tick_behavior != buff_tick_behavior::NONE && period > timespan_t::zero() && ( period <= d || d == timespan_t::zero() ) )
   {
     current_tick = 0;
 
@@ -1247,7 +1247,7 @@ void buff_t::refresh( int stacks, double value, timespan_t duration )
   else
     d = refresh_duration( buff_duration );
 
-  if ( refresh_behavior == BUFF_REFRESH_DISABLED && duration != timespan_t::zero() )
+  if ( refresh_behavior == buff_refresh_behavior::DISABLED && duration != timespan_t::zero() )
     return;
 
   // Make sure we always cancel the expiration event if we get an
@@ -1281,7 +1281,7 @@ void buff_t::refresh( int stacks, double value, timespan_t duration )
       }
     }
 
-    if ( tick_event && tick_behavior == BUFF_TICK_CLIP )
+    if ( tick_event && tick_behavior == buff_tick_behavior::CLIP )
     {
       event_t::cancel( tick_event );
       current_tick      = 0;
@@ -1330,7 +1330,7 @@ void buff_t::bump( int stacks, double value )
       overflow_total += overflow;
       current_stack = max_stack();
 
-      if ( stack_behavior == BUFF_STACK_ASYNCHRONOUS )
+      if ( stack_behavior == buff_stack_behavior::ASYNCHRONOUS )
       {
         // Can't trigger more than max stack at a time
         overflow -= std::max( 0, stacks - max_stack() );
@@ -2516,10 +2516,10 @@ void buff_creator_basics_t::init()
   _reverse            = -1;
   _activated          = -1;
   _can_cancel         = -1;
-  _tick_time_behavior = BUFF_TICK_TIME_UNHASTED;
-  _behavior           = BUFF_TICK_NONE;
-  _refresh_behavior   = BUFF_REFRESH_NONE;
-  _stack_behavior     = BUFF_STACK_DEFAULT;
+  _tick_time_behavior = buff_tick_time_behavior::UNHASTED;
+  _tick_behavior           = buff_tick_behavior::NONE;
+  _refresh_behavior   = buff_refresh_behavior::NONE;
+  _stack_behavior     = buff_stack_behavior::DEFAULT;
   _default_value      = buff_t::DEFAULT_VALUE();
   _affects_regen      = -1;
   _initial_tick       = false;

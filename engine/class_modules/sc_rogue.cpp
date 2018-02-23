@@ -7099,7 +7099,7 @@ void rogue_t::create_buffs()
   buffs.envenom               = buff_creator_t( this, "envenom", find_specialization_spell( "Envenom" ) )
                                 .duration( timespan_t::min() )
                                 .period( timespan_t::zero() )
-                                .refresh_behavior( BUFF_REFRESH_PANDEMIC );
+                                .refresh_behavior( buff_refresh_behavior::PANDEMIC );
   buffs.vendetta              = buff_creator_t( this, "vendetta_energy", find_spell( 256495 ) )
                                 .stack_change_callback( [ this ]( buff_t* b, int, int new_ ) {
                                   if ( new_ == 1 ) { resource_gain( RESOURCE_ENERGY, b->data().effectN( 1 ).resource( RESOURCE_ENERGY ), gains.vendetta ); }
@@ -7132,7 +7132,7 @@ void rogue_t::create_buffs()
   // Note, since I (navv) am a slacker, this needs to be constructed after the secondary buffs.
   buff_creator_t rtb_creator  = buff_creator_t( this, "roll_the_bones", spec.roll_the_bones )
                                 .period( timespan_t::zero() ) // Disable ticking
-                                .refresh_behavior( BUFF_REFRESH_PANDEMIC );
+                                .refresh_behavior( buff_refresh_behavior::PANDEMIC );
   buffs.roll_the_bones        = new buffs::roll_the_bones_t( this, rtb_creator );
   // Subtlety
   buffs.shuriken_combo        = buff_creator_t( this, "shuriken_combo", find_spell( 245640 ) )
@@ -7140,7 +7140,7 @@ void rogue_t::create_buffs()
   buffs.shadow_blades         = new buffs::shadow_blades_t( this );
   buffs.shadow_dance          = new buffs::shadow_dance_t( this );
   buffs.symbols_of_death      = buff_creator_t( this, "symbols_of_death", spec.symbols_of_death )
-                                .refresh_behavior( BUFF_REFRESH_PANDEMIC )
+                                .refresh_behavior( buff_refresh_behavior::PANDEMIC )
                                 .period( spec.symbols_of_death -> effectN( 3 ).period() )
                                 .tick_callback( [ this ]( buff_t*, int, const timespan_t& ) {
                                   if ( sets -> has_set_bonus( ROGUE_SUBTLETY, T20, B4 ) ) {
@@ -7180,7 +7180,7 @@ void rogue_t::create_buffs()
   buffs.loaded_dice             = buff_creator_t( this, "loaded_dice", talent.loaded_dice -> effectN( 1 ).trigger() );
   buffs.slice_and_dice          = buff_creator_t( this, "slice_and_dice", talent.slice_and_dice )
                                   .period( timespan_t::zero() )
-                                  .refresh_behavior( BUFF_REFRESH_PANDEMIC )
+                                  .refresh_behavior( buff_refresh_behavior::PANDEMIC )
                                   .add_invalidate( CACHE_ATTACK_SPEED );
   // Subtlety
   buffs.master_of_shadows       = buff_creator_t( this, "master_of_shadows", find_spell( 196980 ) )
@@ -7188,7 +7188,7 @@ void rogue_t::create_buffs()
                                   .tick_callback( [ this ]( buff_t*, int, const timespan_t& ) {
                                     resource_gain( RESOURCE_ENERGY, find_spell( 196980 ) -> effectN( 1 ).base_value(), gains.master_of_shadows );
                                   } )
-                                  .refresh_behavior( BUFF_REFRESH_DURATION );
+                                  .refresh_behavior( buff_refresh_behavior::DURATION );
 
 
   // Legendaries
@@ -7206,7 +7206,7 @@ void rogue_t::create_buffs()
                                              .quiet( true )
                                              .tick_callback( [this]( buff_t*, int, const timespan_t& ) {
                                               buffs.the_dreadlords_deceit -> trigger(); } )
-                                             .tick_time_behavior( BUFF_TICK_TIME_UNHASTED );
+                                             .tick_time_behavior( buff_tick_time_behavior::UNHASTED );
   const spell_data_t* tddid                = ( specialization() == ROGUE_ASSASSINATION ) ? find_spell( 208693 ): ( specialization() == ROGUE_SUBTLETY ) ? find_spell( 228224 ): spell_data_t::not_found();
   buffs.the_dreadlords_deceit              = buff_creator_t( this, "the_dreadlords_deceit", tddid )
                                              .default_value( tddid -> effectN( 1 ).percent() );

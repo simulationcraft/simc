@@ -1366,7 +1366,7 @@ struct incanters_flow_t : public buff_t
   {
     set_duration( p -> sim -> max_time * 3 ); // Long enough duration to trip twice_expected_event
     set_period( p -> talents.incanters_flow -> effectN( 1 ).period() ); // Period is in the talent
-    set_tick_behavior( BUFF_TICK_CLIP );
+    set_tick_behavior( buff_tick_behavior::CLIP );
     set_default_value( data().effectN( 1 ).percent() );
   }
 
@@ -6461,8 +6461,8 @@ void mage_t::create_buffs()
   buffs.arcane_familiar       = buff_creator_t( this, "arcane_familiar", find_spell( 210126 ) )
                                   .default_value( find_spell( 210126 ) -> effectN( 1 ).percent() )
                                   .period( timespan_t::from_seconds( 3.0 ) )
-                                  .tick_behavior( BUFF_TICK_CLIP )
-                                  .tick_time_behavior( BUFF_TICK_TIME_HASTED )
+                                  .tick_behavior( buff_tick_behavior::CLIP )
+                                  .tick_time_behavior( buff_tick_time_behavior::HASTED )
                                   .tick_callback( [ this ] ( buff_t*, int, const timespan_t& )
                                     {
                                       assert( action.arcane_assault );
@@ -6582,7 +6582,7 @@ void mage_t::create_buffs()
                        resources.max[ RESOURCE_MANA ] * 0.002 * blessing_of_wisdom_count,
                        gains.greater_blessing_of_wisdom ); } )
     -> set_period( find_spell( 203539 ) -> effectN( 2 ).period() )
-    -> set_tick_behavior( BUFF_TICK_CLIP );
+    -> set_tick_behavior( buff_tick_behavior::CLIP );
   buffs.t19_oh_buff = stat_buff_creator_t( this, "ancient_knowledge", sets -> set( specialization(), T19OH, B8 ) -> effectN( 1 ).trigger() )
                         .trigger_spell( sets -> set( specialization(), T19OH, B8 ) );
   buffs.shimmer     = buff_creator_t( this, "shimmer", find_spell( 212653 ) );

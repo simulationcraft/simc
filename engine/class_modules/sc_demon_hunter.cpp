@@ -3588,7 +3588,7 @@ struct metamorphosis_buff_t : public demon_hunter_buff_t<buff_t>
     {
       default_value = p->spec.metamorphosis_buff->effectN( 6 ).percent();
       buff_period = timespan_t::zero();
-      tick_behavior = BUFF_TICK_NONE;
+      tick_behavior = buff_tick_behavior::NONE;
       add_invalidate( CACHE_HASTE );
       add_invalidate( CACHE_LEECH );
     }
@@ -3690,7 +3690,7 @@ struct demon_spikes_t : public demon_hunter_buff_t<buff_t>
     : demon_hunter_buff_t<buff_t>(
       *p, buff_creator_t(p, "demon_spikes", p->find_spell(203819))
       .default_value(p->find_spell(203819)->effectN(1).percent())
-      .refresh_behavior(BUFF_REFRESH_EXTEND)
+      .refresh_behavior(buff_refresh_behavior::EXTEND)
       .add_invalidate(CACHE_PARRY)
       .add_invalidate(CACHE_LEECH)
       .add_invalidate(CACHE_PLAYER_DAMAGE_MULTIPLIER)),

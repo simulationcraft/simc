@@ -543,18 +543,18 @@ namespace warlock {
     void warlock_t::create_buffs_affliction() {
         //spells
         buffs.active_uas = buff_creator_t(this, "active_uas")
-            .tick_behavior(BUFF_TICK_NONE)
-            .refresh_behavior(BUFF_REFRESH_DURATION)
+            .tick_behavior(buff_tick_behavior::NONE)
+            .refresh_behavior(buff_refresh_behavior::DURATION)
             .max_stack(20);
         //talents
         buffs.soul_harvest = buff_creator_t(this, "soul_harvest", find_spell(196098))
             .add_invalidate(CACHE_PLAYER_DAMAGE_MULTIPLIER)
-            .refresh_behavior(BUFF_REFRESH_EXTEND)
+            .refresh_behavior(buff_refresh_behavior::EXTEND)
             .cd(timespan_t::zero())
             .default_value(find_spell(196098)->effectN(1).percent());
         buffs.nightfall = buff_creator_t(this, "nightfall", find_spell(264571))
           .default_value(find_spell(264571)->effectN(2).percent())
-          .refresh_behavior(BUFF_REFRESH_DURATION)
+          .refresh_behavior(buff_refresh_behavior::DURATION)
           .add_invalidate(CACHE_PLAYER_DAMAGE_MULTIPLIER);
         //tier
         buffs.demonic_speed = make_buff<haste_buff_t>(this, "demonic_speed", sets->set(WARLOCK_AFFLICTION, T20, B4)->effectN(1).trigger());

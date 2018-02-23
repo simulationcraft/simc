@@ -10,7 +10,7 @@ namespace buffs {
       healing_modifier( 0.0 ),
       haste_bonus( 0.0 )
   {
-    set_refresh_behavior( BUFF_REFRESH_DISABLED );
+    set_refresh_behavior( buff_refresh_behavior::DISABLED );
     // TODO(mserrano): fix this when Blizzard turns the spelldata back to sane
     //  values
     damage_modifier = data().effectN( 1 ).percent() / 10.0;
@@ -668,7 +668,7 @@ void paladin_t::create_buffs_retribution()
     ->set_period( find_spell( 248103 ) -> effectN( 1 ).period() )
                                                  ->set_quiet( true )
                                                  ->set_tick_callback([this](buff_t*, int, const timespan_t&) { buffs.scarlet_inquisitors_expurgation -> trigger(); })
-                                                 ->set_tick_time_behavior( BUFF_TICK_TIME_UNHASTED );
+                                                 ->set_tick_time_behavior( buff_tick_time_behavior::UNHASTED );
 
   buffs.last_defender = make_buff( this, "last_defender", talents.last_defender  )
     ->set_chance( talents.last_defender -> ok() )

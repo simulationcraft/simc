@@ -6987,7 +6987,7 @@ struct remorseless_winter_buff_t : public buff_t
   remorseless_winter_buff_t( death_knight_t* p ) :
     buff_t( buff_creator_t( p, "remorseless_winter", p -> spec.remorseless_winter )
       .cd( timespan_t::zero() ) // Controlled by the action
-      .refresh_behavior( BUFF_REFRESH_DURATION )
+      .refresh_behavior( buff_refresh_behavior::DURATION )
       .tick_callback( [ this ]( buff_t* /* buff */, int /* total_ticks */, timespan_t /* tick_time */ ) {
         damage -> execute();
       } ) ),
@@ -8629,7 +8629,7 @@ void death_knight_t::create_buffs()
     .trigger_spell( sets -> set( DEATH_KNIGHT_UNHOLY, T20, B2 ) )
     .default_value( find_spell( 246995 ) -> effectN( 1 ).percent() )
     .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
-    .refresh_behavior( BUFF_REFRESH_EXTEND );
+    .refresh_behavior( buff_refresh_behavior::EXTEND );
   buffs.t20_4pc_frost = buff_creator_t( this, "icy edge" )
     .default_value( 0.01 )
     .chance( sets -> has_set_bonus( DEATH_KNIGHT_FROST, T20, B4 ) );

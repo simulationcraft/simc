@@ -4783,7 +4783,7 @@ void hunter_t::create_buffs()
   buffs.mongoose_fury =
     buff_creator_t( this, "mongoose_fury", find_spell( 190931 ) )
       .default_value( find_spell( 190931 ) -> effectN( 1 ).percent() )
-      .refresh_behavior( BUFF_REFRESH_DISABLED )
+      .refresh_behavior( buff_refresh_behavior::DISABLED )
       .max_stack( find_spell( 190931 ) -> max_stacks() );
 
   buffs.sentinels_sight =

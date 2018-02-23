@@ -60,18 +60,18 @@ enum regen_type_e
   REGEN_DISABLED
 };
 
-enum buff_tick_behavior_e
+enum class buff_tick_behavior
 {
-  BUFF_TICK_NONE = -1,
-  BUFF_TICK_CLIP,
-  BUFF_TICK_REFRESH
+  NONE,
+  CLIP,
+  REFRESH
 };
 
-enum buff_tick_time_e
+enum class buff_tick_time_behavior
 {
-  BUFF_TICK_TIME_UNHASTED,
-  BUFF_TICK_TIME_HASTED,
-  BUFF_TICK_TIME_CUSTOM
+  UNHASTED,
+  HASTED,
+  CUSTOM
 };
 
 /**
@@ -80,35 +80,35 @@ enum buff_tick_time_e
  * Defaults to _PANDEMIC for ticking buffs,
  * _DURATION for normal buffs.
  */
-enum buff_refresh_behavior_e
+enum class buff_refresh_behavior
 {
   /// Constructor default, determines "autodetection" in buff_t::buff_t
-  BUFF_REFRESH_NONE = -1,
+  NONE = -1,
 
   /// Disable refresh by triggering
-  BUFF_REFRESH_DISABLED,
+  DISABLED,
 
   /// Refresh to given duration
-  BUFF_REFRESH_DURATION,
+  DURATION,
 
   /// Refresh to given duration plus remaining duration
-  BUFF_REFRESH_EXTEND,
+  EXTEND,
 
   /// Refresh to given duration plus min( 0.3 * new_duration, remaining_duration
   /// )
-  BUFF_REFRESH_PANDEMIC,
+  PANDEMIC,
 
   /// Refresh to given duration plus ongoing tick time
-  BUFF_REFRESH_TICK,
+  TICK,
 
   /// Refresh to duration returned by the custom callback
-  BUFF_REFRESH_CUSTOM,
+  CUSTOM,
 };
 
-enum buff_stack_behavior_e
+enum class buff_stack_behavior
 {
-  BUFF_STACK_DEFAULT,
-  BUFF_STACK_ASYNCHRONOUS,
+  DEFAULT,
+  ASYNCHRONOUS,
 };
 
 enum movement_direction_e

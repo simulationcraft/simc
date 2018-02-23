@@ -989,8 +989,8 @@ shaman_td_t::shaman_td_t( player_t* target, shaman_t* p ) : actor_target_data_t(
                              // -10% resistance in spell data, treat it as a multiplier instead
                              .default_value( 1.0 + p->talent.earthen_spike->effectN( 2 ).percent() );
   debuff.storm_tempests = buff_creator_t( *this, "storm_tempests", p->find_spell( 214265 ) )
-                              .refresh_behavior( BUFF_REFRESH_DURATION )
-                              .tick_behavior( BUFF_TICK_REFRESH )
+                              .refresh_behavior( buff_refresh_behavior::DURATION )
+                              .tick_behavior( buff_tick_behavior::REFRESH )
                               .tick_callback( [p]( buff_t* b, int, timespan_t ) {
                                 p->action.storm_tempests->set_target( b->player );
                                 p->action.storm_tempests->execute();
@@ -2015,7 +2015,7 @@ struct base_wolf_t : public shaman_pet_t
     shaman_pet_t::create_buffs();
 
     alpha_wolf_buff = buff_creator_t( this, "alpha_wolf", o()->find_spell( 198486 ) )
-                          .tick_behavior( BUFF_TICK_REFRESH )
+                          .tick_behavior( buff_tick_behavior::REFRESH )
                           .tick_callback( [this]( buff_t*, int, timespan_t ) {
                             alpha_wolf->target = o()->target;
                             alpha_wolf->schedule_execute();
@@ -6002,7 +6002,7 @@ struct flametongue_buff_t : public buff_t
       p( p )
   {
     set_period( timespan_t::zero() );
-    set_refresh_behavior( BUFF_REFRESH_PANDEMIC );
+    set_refresh_behavior( buff_refresh_behavior::PANDEMIC );
   }
 
   void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
@@ -7025,7 +7025,7 @@ void shaman_t::create_buffs()
   // Totem Mastery
   buff.resonance_totem =
       make_buff( this, "resonance_totem", find_spell( 202192 ) )
-      ->set_refresh_behavior( BUFF_REFRESH_DURATION )
+      ->set_refresh_behavior( buff_refresh_behavior::DURATION )
       ->set_duration( talent.totem_mastery->effectN( 1 ).trigger()->duration() )
       ->set_period( find_spell( 202192 )->effectN( 1 ).period() )
       ->set_tick_callback( [this]( buff_t* b, int, const timespan_t& ) {
@@ -7071,7 +7071,7 @@ void shaman_t::create_buffs()
   buff.spirit_walk = make_buff( this, "spirit_walk", find_specialization_spell( "Spirit Walk" ) );
   buff.frostbrand  = make_buff( this, "frostbrand", spec.frostbrand )
     ->set_period( timespan_t::zero() )
-    ->set_refresh_behavior( BUFF_REFRESH_PANDEMIC );
+    ->set_refresh_behavior( buff_refresh_behavior::PANDEMIC );
   buff.stormbringer = make_buff( this, "stormbringer", find_spell( 201846 ) )
     ->set_activated( false )  // TODO: Need a delay on this
     ->set_max_stack( find_spell( 201846 )->initial_stacks() );

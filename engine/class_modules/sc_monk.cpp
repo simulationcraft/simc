@@ -6461,7 +6461,7 @@ struct windwalking_driver_t: public monk_buff_t < buff_t >
     cooldown -> duration = timespan_t::zero();
     buff_duration = timespan_t::zero();
     buff_period = timespan_t::from_seconds( 1 );
-    tick_behavior = BUFF_TICK_CLIP;
+    tick_behavior = buff_tick_behavior::CLIP;
     movement_increase = p.buffs.windwalking_movement_aura -> data().effectN( 1 ).percent();
   }
 };
@@ -6481,7 +6481,7 @@ monk( *p )
   {
     debuff.mark_of_the_crane = buff_creator_t( *this, "mark_of_the_crane", p -> passives.mark_of_the_crane )
       .default_value( p -> passives.cyclone_strikes -> effectN( 1 ).percent() )
-      .refresh_behavior( BUFF_REFRESH_DURATION );
+      .refresh_behavior( buff_refresh_behavior::DURATION );
     debuff.flying_serpent_kick = buff_creator_t ( *this, "flying_serpent_kick", p -> passives.flying_serpent_kick_damage )
       .default_value( p -> passives.flying_serpent_kick_damage-> effectN( 2 ).percent() );
     debuff.touch_of_karma = buff_creator_t( *this, "touch_of_karma_debuff", p -> spec.touch_of_karma )
@@ -7140,7 +7140,7 @@ void monk_t::create_buffs()
   buff.rushing_jade_wind = buff_creator_t( this, "rushing_jade_wind", talent.rushing_jade_wind )
     .cd( timespan_t::zero() )
     .duration( talent.rushing_jade_wind -> duration() * ( 1 + spec.brewmaster_monk -> effectN( 11 ).percent() ) )
-    .refresh_behavior( BUFF_REFRESH_PANDEMIC );
+    .refresh_behavior( buff_refresh_behavior::PANDEMIC );
 
   buff.dampen_harm = buff_creator_t( this, "dampen_harm", talent.dampen_harm );
 
@@ -7167,14 +7167,14 @@ void monk_t::create_buffs()
   buff.ironskin_brew = buff_creator_t(this, "ironskin_brew", passives.ironskin_brew )
     .default_value( passives.ironskin_brew -> effectN( 1 ).percent() 
       + ( sets -> has_set_bonus( MONK_BREWMASTER, T19, B2 ) ? sets -> set( MONK_BREWMASTER, T19, B2 ) -> effectN( 1 ).percent() : 0 ) )
-    .refresh_behavior( BUFF_REFRESH_EXTEND );
+    .refresh_behavior( buff_refresh_behavior::EXTEND );
 
   buff.keg_smash_talent = buff_creator_t( this, "keg_smash", talent.gift_of_the_mists -> effectN( 1 ).trigger() )
     .chance( talent.gift_of_the_mists -> proc_chance() ); 
 
   buff.gift_of_the_ox = buff_creator_t( this, "gift_of_the_ox", passives.gift_of_the_ox_summon )
     .duration( passives.gift_of_the_ox_summon -> duration() )
-    .refresh_behavior( BUFF_REFRESH_NONE )
+    .refresh_behavior( buff_refresh_behavior::NONE )
     .max_stack( 99 );
 
   // Mistweaver
@@ -7195,11 +7195,11 @@ void monk_t::create_buffs()
 
   buff.refreshing_jade_wind = buff_creator_t( this, "refreshing_jade_wind", talent.refreshing_jade_wind )
     .default_value( talent.refreshing_jade_wind -> effectN( 1 ).trigger() -> effectN( 1 ).percent() )
-    .refresh_behavior( BUFF_REFRESH_PANDEMIC );
+    .refresh_behavior( buff_refresh_behavior::PANDEMIC );
 
   buff.spinning_crane_kick = buff_creator_t( this, "spinning_crane_kick", spec.spinning_crane_kick )
     .default_value( spec.spinning_crane_kick -> effectN( 2 ).percent() )
-    .refresh_behavior( BUFF_REFRESH_PANDEMIC );
+    .refresh_behavior( buff_refresh_behavior::PANDEMIC );
 
   buff.teachings_of_the_monastery = buff_creator_t( this, "teachings_of_the_monastery", passives.teachings_of_the_monastery_buff )
     .default_value( passives.teachings_of_the_monastery_buff -> effectN( 1 ).percent() );
@@ -7240,7 +7240,7 @@ void monk_t::create_buffs()
 
   buff.pressure_point = buff_creator_t( this, "pressure_point", passives.pressure_point )
                        .default_value( passives.pressure_point -> effectN( 1 ).percent() )
-                       .refresh_behavior( BUFF_REFRESH_NONE );
+                       .refresh_behavior( buff_refresh_behavior::NONE );
 
   buff.touch_of_karma = new buffs::touch_of_karma_buff_t( *this, "touch_of_karma", passives.touch_of_karma_buff );
 

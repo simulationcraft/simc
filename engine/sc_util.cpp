@@ -2173,27 +2173,49 @@ const char* util::retarget_event_string( retarget_event_e event )
   }
 }
 
-const char* util::buff_refresh_behavior_string( buff_refresh_behavior_e behavior )
+const char* util::buff_refresh_behavior_string( buff_refresh_behavior behavior )
 {
   switch ( behavior )
   {
-    case BUFF_REFRESH_NONE: return "none";
-    case BUFF_REFRESH_DISABLED: return "disabled";
-    case BUFF_REFRESH_DURATION: return "duration";
-    case BUFF_REFRESH_EXTEND: return "extend";
-    case BUFF_REFRESH_PANDEMIC: return "pandemic";
-    case BUFF_REFRESH_TICK: return "tick";
-    case BUFF_REFRESH_CUSTOM: return "custom";
+    case buff_refresh_behavior::NONE: return "none";
+    case buff_refresh_behavior::DISABLED: return "disabled";
+    case buff_refresh_behavior::DURATION: return "duration";
+    case buff_refresh_behavior::EXTEND: return "extend";
+    case buff_refresh_behavior::PANDEMIC: return "pandemic";
+    case buff_refresh_behavior::TICK: return "tick";
+    case buff_refresh_behavior::CUSTOM: return "custom";
     default: return "unknown";
   }
 }
 
-const char* util::buff_stack_behavior_string( buff_stack_behavior_e behavior)
+const char* util::buff_stack_behavior_string( buff_stack_behavior behavior )
 {
   switch ( behavior )
   {
-    case BUFF_STACK_DEFAULT: return "default";
-    case BUFF_STACK_ASYNCHRONOUS: return "asynchronous";
+    case buff_stack_behavior::DEFAULT: return "default";
+    case buff_stack_behavior::ASYNCHRONOUS: return "asynchronous";
+    default: return "unknown";
+  }
+}
+
+const char* util::buff_tick_behavior_string( buff_tick_behavior behavior )
+{
+  switch ( behavior )
+  {
+    case buff_tick_behavior::NONE: return "none";
+    case buff_tick_behavior::CLIP: return "clip";
+    case buff_tick_behavior::REFRESH: return "refresh";
+    default: return "unknown";
+  }
+}
+
+const char* util::buff_tick_time_behavior_string( buff_tick_time_behavior behavior )
+{
+  switch ( behavior )
+  {
+    case buff_tick_time_behavior::UNHASTED: return "unhasted";
+    case buff_tick_time_behavior::HASTED: return "hasted";
+    case buff_tick_time_behavior::CUSTOM: return "custom";
     default: return "unknown";
   }
 }

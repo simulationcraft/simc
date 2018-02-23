@@ -7474,7 +7474,7 @@ void druid_t::create_buffs()
   // Balance
 
   buff.blessing_of_anshe     = buff_creator_t( this, "blessing_of_anshe", spec.blessing_of_anshe )
-                               .tick_time_behavior( BUFF_TICK_TIME_HASTED )
+                               .tick_time_behavior( buff_tick_time_behavior::HASTED )
                                .tick_callback( [ this ]( buff_t*, int, const timespan_t& ) {
                                  resource_gain( RESOURCE_ASTRAL_POWER, spec.blessing_of_anshe -> effectN( 1 ).resource( RESOURCE_ASTRAL_POWER ),
                                  gain.blessing_of_anshe ); } );
@@ -7514,7 +7514,7 @@ void druid_t::create_buffs()
   buff.astral_acceleration   = make_buff<haste_buff_t>(this, "astral_acceleration", find_spell(242232));
   buff.astral_acceleration->set_cooldown(timespan_t::zero())
       ->set_default_value(find_spell(242232)->effectN(1).percent())
-      ->set_refresh_behavior(BUFF_REFRESH_DISABLED);
+      ->set_refresh_behavior(buff_refresh_behavior::DISABLED);
                                 //.duration( timespan_t::from_seconds( 20.0 ) );
   buff.solar_solstice = buff_creator_t(this, "solar_solstice", find_spell(252767))
       .default_value(find_spell(252767)->effectN(1).percent());
@@ -7544,9 +7544,9 @@ void druid_t::create_buffs()
 
   buff.savage_roar           = buff_creator_t( this, "savage_roar", talent.savage_roar )
                                .default_value( talent.savage_roar -> effectN( 2 ).percent() )
-                               .refresh_behavior( BUFF_REFRESH_DURATION ) // Pandemic refresh is done by the action
+                               .refresh_behavior( buff_refresh_behavior::DURATION ) // Pandemic refresh is done by the action
                                .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
-                               .tick_behavior( BUFF_TICK_NONE );
+                               .tick_behavior( buff_tick_behavior::NONE );
 
   buff.scent_of_blood        = buff_creator_t( this, "scent_of_blood", find_spell( 210664 ) )
                                .chance( artifact.scent_of_blood.rank() > 0 )
@@ -7574,7 +7574,7 @@ void druid_t::create_buffs()
                                .cd( timespan_t::zero() )
                                .default_value( find_specialization_spell( "Barkskin" ) -> effectN( 2 ).percent() )
                                .duration( find_specialization_spell( "Barkskin" ) -> duration() + artifact.ursocs_endurance.time_value() )
-                               .tick_behavior( talent.brambles -> ok() ? BUFF_TICK_REFRESH : BUFF_TICK_NONE )
+                               .tick_behavior( talent.brambles -> ok() ? buff_tick_behavior::REFRESH : buff_tick_behavior::NONE )
                                .tick_callback( [ this ] ( buff_t*, int, const timespan_t& ) {
                                  if ( talent.brambles -> ok() )
                                    active.brambles_pulse -> execute();
@@ -7596,7 +7596,7 @@ void druid_t::create_buffs()
                                .default_value( spec.ironfur -> effectN( 1 ).percent() + artifact.reinforced_fur.percent() )
                                .add_invalidate( CACHE_ARMOR )
                                .max_stack( 20 ) // many stacks, handle it
-                               .stack_behavior( BUFF_STACK_ASYNCHRONOUS )
+                               .stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
                                .cd( timespan_t::zero() );
 
   buff.mark_of_ursol         = buff_creator_t( this, "mark_of_ursol", find_specialization_spell( "Mark of Ursol" ) )
@@ -7606,7 +7606,7 @@ void druid_t::create_buffs()
 
   buff.pulverize             = buff_creator_t( this, "pulverize", find_spell( 158792 ) )
                                .default_value( find_spell( 158792 ) -> effectN( 1 ).percent() )
-                               .refresh_behavior( BUFF_REFRESH_PANDEMIC );
+                               .refresh_behavior( buff_refresh_behavior::PANDEMIC );
 
   buff.rage_of_the_sleeper   = buff_creator_t( this, "rage_of_the_sleeper", &artifact.rage_of_the_sleeper.data() )
                                .cd( timespan_t::zero() )

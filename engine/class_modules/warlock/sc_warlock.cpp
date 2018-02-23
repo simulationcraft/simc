@@ -484,15 +484,15 @@ warlock( p )
   dots_channel_demonfire = target -> get_dot( "channel_demonfire", &p );
 
   debuffs_haunt = make_buff( *this, "haunt", source -> find_spell( 48181 ) )
-    ->set_refresh_behavior( BUFF_REFRESH_PANDEMIC );
+    ->set_refresh_behavior( buff_refresh_behavior::PANDEMIC );
   debuffs_shadow_embrace = make_buff(*this, "shadow_embrace", source->find_spell( 32390 ))
-    ->set_refresh_behavior( BUFF_REFRESH_DURATION )
+    ->set_refresh_behavior( buff_refresh_behavior::DURATION )
     ->set_max_stack( 3 );
   debuffs_agony = make_buff( *this, "agony", source -> find_spell( 980 ) )
-    ->set_refresh_behavior( BUFF_REFRESH_PANDEMIC )
+    ->set_refresh_behavior( buff_refresh_behavior::PANDEMIC )
     ->set_max_stack( ( warlock.talents.writhe_in_agony -> ok() ? warlock.talents.writhe_in_agony -> effectN( 2 ).base_value() : 10 ) );
   debuffs_eradication = make_buff( *this, "eradication", source -> find_spell( 196414 ) )
-    ->set_refresh_behavior( BUFF_REFRESH_PANDEMIC );
+    ->set_refresh_behavior( buff_refresh_behavior::PANDEMIC );
   debuffs_roaring_blaze = make_buff( *this, "roaring_blaze", source -> find_spell( 205690 ) )
     ->set_max_stack( 100 );
   debuffs_jaws_of_shadow = make_buff( *this, "jaws_of_shadow", source -> find_spell( 242922 ) );
@@ -826,19 +826,19 @@ void warlock_t::create_buffs() {
     buffs.stretens_insanity = make_buff(this, "stretens_insanity", find_spell(208822))
         ->set_default_value(find_spell(208822)->effectN(1).percent())
         ->add_invalidate(CACHE_PLAYER_DAMAGE_MULTIPLIER)
-        ->set_tick_behavior(BUFF_TICK_NONE);
+        ->set_tick_behavior(buff_tick_behavior::NONE);
     buffs.lessons_of_spacetime = make_buff(this, "lessons_of_spacetime", find_spell(236176))
     ->set_default_value(find_spell(236176)->effectN(1).percent())
         ->add_invalidate(CACHE_PLAYER_DAMAGE_MULTIPLIER)
-        ->set_refresh_behavior(BUFF_REFRESH_DURATION)
-        ->set_tick_behavior(BUFF_TICK_NONE);
+        ->set_refresh_behavior(buff_refresh_behavior::DURATION)
+        ->set_tick_behavior(buff_tick_behavior::NONE);
     buffs.sephuzs_secret =
         make_buff<haste_buff_t>(this, "sephuzs_secret", find_spell(208052));
     buffs.sephuzs_secret->set_default_value(find_spell(208052)->effectN(2).percent())
     ->set_cooldown(find_spell(226262)->duration());
     buffs.alythesss_pyrogenics = make_buff(this, "alythesss_pyrogenics", find_spell(205675))
     ->set_default_value(find_spell(205675)->effectN(1).percent())
-    ->set_refresh_behavior(BUFF_REFRESH_DURATION);
+    ->set_refresh_behavior(buff_refresh_behavior::DURATION);
     buffs.wakeners_loyalty = make_buff(this, "wakeners_loyalty", find_spell(236200))
         ->add_invalidate(CACHE_PLAYER_DAMAGE_MULTIPLIER)
         ->set_default_value(find_spell(236200)->effectN(1).percent());
@@ -853,15 +853,15 @@ void warlock_t::create_buffs() {
     ->set_duration(find_spell(257926)->duration())
     ->set_max_stack(find_spell(257926)->max_stacks())
     ->set_default_value(find_spell(257926)->effectN(1).base_value())
-    ->set_refresh_behavior(BUFF_REFRESH_DURATION);
+    ->set_refresh_behavior(buff_refresh_behavior::DURATION);
 
     //destruction buffs
     buffs.backdraft = make_buff(this, "backdraft", find_spell(117828));
     buffs.embrace_chaos = make_buff(this, "embrace_chaos", sets->set(WARLOCK_DESTRUCTION, T19, B2)->effectN(1).trigger())
     ->set_chance(sets->set(WARLOCK_DESTRUCTION, T19, B2)->proc_chance());
     buffs.active_havoc = make_buff(this, "active_havoc")
-    ->set_tick_behavior(BUFF_TICK_NONE)
-    ->set_refresh_behavior(BUFF_REFRESH_DURATION)
+    ->set_tick_behavior(buff_tick_behavior::NONE)
+    ->set_refresh_behavior(buff_refresh_behavior::DURATION)
     ->set_duration(timespan_t::from_seconds(10));
 }
 

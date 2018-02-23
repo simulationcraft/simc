@@ -1552,7 +1552,7 @@ void item::skeers_bloodsoaked_talisman( special_effect_t& effect )
 
   stat_buff_t* b = stat_buff_creator_t( effect.item -> player, buff_name, buff, effect.item )
                    .add_stat( STAT_CRIT_RATING, spell -> effectN( 1 ).average( effect.item ) )
-                   .tick_behavior( BUFF_TICK_CLIP )
+                   .tick_behavior( buff_tick_behavior::CLIP )
                    .period( spell -> effectN( 1 ).period() )
                    .duration( spell -> duration() );
 
@@ -1577,7 +1577,7 @@ void item::blackiron_micro_crucible( special_effect_t& effect )
   stat_buff_t* b = stat_buff_creator_t( effect.item -> player, buff_name, spell, effect.item )
                    .add_stat( STAT_MASTERY_RATING, spell -> effectN( 1 ).average( effect.item ) )
                    .max_stack( 20 ) // Hardcoded for now - spell->max_stacks() returns 0
-                   .tick_behavior( BUFF_TICK_CLIP )
+                   .tick_behavior( buff_tick_behavior::CLIP )
                    .period( spell -> effectN( 1 ).period() )
                    .duration( spell -> duration() );
 
@@ -1602,7 +1602,7 @@ void item::humming_blackiron_trigger( special_effect_t& effect )
   stat_buff_t* b = stat_buff_creator_t( effect.item -> player, buff_name, spell, effect.item )
                    .add_stat( STAT_CRIT_RATING, spell -> effectN( 1 ).average( effect.item ) )
                    .max_stack( 20 ) // Hardcoded for now - spell->max_stacks() returns 0
-                   .tick_behavior( BUFF_TICK_CLIP )
+                   .tick_behavior( buff_tick_behavior::CLIP )
                    .period( spell -> effectN( 1 ).period() )
                    .duration( spell -> duration() );
 
@@ -1830,7 +1830,7 @@ void item::battering_talisman_trigger( special_effect_t& effect )
   stat_buff_t* b = stat_buff_creator_t( effect.item -> player, buff_name, spell, effect.item )
     .add_stat( STAT_HASTE_RATING, spell -> effectN( 1 ).average( effect.item ) )
     .max_stack( stacks -> max_stacks() )
-    .tick_behavior( BUFF_TICK_CLIP )
+    .tick_behavior( buff_tick_behavior::CLIP )
     .period( spell -> effectN( 1 ).period() )
     .duration( spell -> duration() );
 
@@ -1855,7 +1855,7 @@ void item::forgemasters_insignia( special_effect_t& effect )
   stat_buff_t* b = stat_buff_creator_t( effect.item -> player, buff_name, spell, effect.item )
                    .add_stat( STAT_MASTERY_RATING, spell -> effectN( 1 ).average( effect.item ) )
                    .max_stack( 20 ) // Hardcoded for now - spell->max_stacks() returns 0
-                   .tick_behavior( BUFF_TICK_CLIP )
+                   .tick_behavior( buff_tick_behavior::CLIP )
                    .period( spell -> effectN( 1 ).period() )
                    .duration( spell -> duration() );
 
@@ -1880,7 +1880,7 @@ void item::autorepairing_autoclave( special_effect_t& effect )
   stat_buff_t* b = stat_buff_creator_t( effect.item -> player, buff_name, spell, effect.item )
                    .add_stat( STAT_HASTE_RATING, spell -> effectN( 1 ).average( effect.item ) )
                    .max_stack( 20 ) // Hardcoded for now - spell->max_stacks() returns 0
-                   .tick_behavior( BUFF_TICK_CLIP )
+                   .tick_behavior( buff_tick_behavior::CLIP )
                    .period( spell -> effectN( 1 ).period() )
                    .duration( spell -> duration() );
 
@@ -2202,7 +2202,7 @@ void item::black_blood_of_yshaarj( special_effect_t& effect )
 
   stat_buff_t* b = stat_buff_creator_t( effect.item -> player, buff_name, buff, effect.item )
                    .add_stat( STAT_INTELLECT, ticker -> effectN( 1 ).average( effect.item ) )
-                   .tick_behavior( BUFF_TICK_CLIP )
+                   .tick_behavior( buff_tick_behavior::CLIP )
                    .period( ticker -> effectN( 1 ).period() )
                    .duration( ticker -> duration () );
 
@@ -2799,7 +2799,7 @@ struct fel_burn_t : public buff_t
 {
   fel_burn_t( const actor_pair_t& p, const special_effect_t& source_effect ) :
     buff_t( buff_creator_t( p, "fel_burn", p.source -> find_spell( 184256 ), source_effect.item )
-    .refresh_behavior( BUFF_REFRESH_DISABLED )
+    .refresh_behavior( buff_refresh_behavior::DISABLED )
     // Add a millisecond of duration to the debuff so we ensure that the last tick (at 15 seconds)
     // will always have the correct number of stacks.
     .duration( timespan_t::from_seconds( 15.001 ) ) )
@@ -2954,7 +2954,7 @@ struct hammering_blows_buff_t : public stat_buff_t
   hammering_blows_buff_t( const special_effect_t& source_effect ) :
     stat_buff_t( stat_buff_creator_t( source_effect.player, "hammering_blows",
                  source_effect.trigger(), source_effect.item )
-                 .refresh_behavior( BUFF_REFRESH_DISABLED ) ),
+                 .refresh_behavior( buff_refresh_behavior::DISABLED ) ),
     stack_driver( 0 )
   { }
 
@@ -3002,9 +3002,9 @@ struct hammering_blows_driver_cb_t : public dbc_proc_callback_t
     // without refreshing the whole buff.
     else
     {
-      proc_buff -> refresh_behavior = BUFF_REFRESH_DURATION;
+      proc_buff -> refresh_behavior = buff_refresh_behavior::DURATION;
       proc_buff -> refresh( 0, buff_t::DEFAULT_VALUE(), proc_buff -> data().duration() );
-      proc_buff -> refresh_behavior = BUFF_REFRESH_DISABLED;
+      proc_buff -> refresh_behavior = buff_refresh_behavior::DISABLED;
     }
   }
 };
@@ -3546,7 +3546,7 @@ void item::tyrants_decree( special_effect_t& effect )
   
   buff_t* driver  = buff_creator_t( effect.player, "tyrants_decree_driver", effect.driver() )
                     .period( effect.driver() -> effectN( 1 ).period() )
-                    .tick_behavior( BUFF_TICK_REFRESH )
+                    .tick_behavior( buff_tick_behavior::REFRESH )
                     .tick_callback( tyrants_decree_driver_callback )
                     .quiet( true );
   buff_t* trigger = stat_buff_creator_t( effect.player, "tyrants_immortality", effect.player -> find_spell( 184770 ) )

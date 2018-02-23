@@ -756,7 +756,7 @@ void item::erratic_metronome( special_effect_t& effect )
         .cd( timespan_t::zero() )
         .add_stat( STAT_HASTE_RATING, amount )
         .max_stack( 5 )
-        .refresh_behavior( BUFF_REFRESH_DISABLED )
+        .refresh_behavior( buff_refresh_behavior::DISABLED )
         .duration( timespan_t::from_seconds( 12.0 ) );
     }
 
@@ -1288,7 +1288,7 @@ void item::engine_of_eradication( special_effect_t& effect )
 
     buff = stat_buff_creator_t( effect.player, "demonic_vigor", effect.trigger(), effect.item )
            .add_stat( primary_stat, amount )
-           .refresh_behavior( BUFF_REFRESH_EXTEND )
+           .refresh_behavior( buff_refresh_behavior::EXTEND )
            .duration( effect.trigger() -> duration() + extra_seconds )
            .cd( timespan_t::from_seconds( 4.0 ) ); // ICD reportedly resets when the player collects all orbs
   }
@@ -3363,9 +3363,9 @@ void item::nightblooming_frond( special_effect_t& effect )
     // seconds of additional buff time.
     void execute( action_t*, action_state_t* ) override
     {
-      proc_buff -> refresh_behavior = BUFF_REFRESH_DURATION;
+      proc_buff -> refresh_behavior = buff_refresh_behavior::DURATION;
       proc_buff -> trigger();
-      proc_buff -> refresh_behavior = BUFF_REFRESH_DISABLED;
+      proc_buff -> refresh_behavior = buff_refresh_behavior::DISABLED;
     }
   };
 
@@ -3384,7 +3384,7 @@ void item::nightblooming_frond( special_effect_t& effect )
   if ( b == nullptr )
   {
     b = buff_creator_t( effect.player, "recursive_strikes", effect.trigger() )
-      .refresh_behavior( BUFF_REFRESH_DISABLED ) // Don't refresh duration when the buff gains stacks
+      .refresh_behavior( buff_refresh_behavior::DISABLED ) // Don't refresh duration when the buff gains stacks
       .stack_change_callback( [ cb ]( buff_t*, int old_, int new_ ) {
         if ( old_ == 0 ) // Buff goes up the first time
         {
@@ -4946,7 +4946,7 @@ void item::moonlit_prism( special_effect_t& effect )
   // Create buff.
   effect.custom_buff = stat_buff_creator_t( effect.player, "elunes_light", effect.driver(), effect.item )
     .cd( timespan_t::zero() )
-    .refresh_behavior( BUFF_REFRESH_DISABLED )
+    .refresh_behavior( buff_refresh_behavior::DISABLED )
     .stack_change_callback( [ callback ]( buff_t*, int old, int new_ )
     {
       if ( old == 0 ) {
@@ -6373,7 +6373,7 @@ void item::sixfeather_fan( special_effect_t& effect )
       bolt -> schedule_execute();
     } )
     .tick_zero( true )
-    .tick_behavior( BUFF_TICK_CLIP ); // TOCHECK
+    .tick_behavior( buff_tick_behavior::CLIP ); // TOCHECK
 
   new wind_bolt_callback_t( effect.item, effect, bolt );
 }

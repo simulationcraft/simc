@@ -323,14 +323,14 @@ stat_buff_t* special_effect_t::initialize_stat_buff() const
   if ( tick > timespan_t::zero() )
   {
     creator.period( tick );
-    creator.tick_behavior( BUFF_TICK_CLIP );
+    creator.tick_behavior( buff_tick_behavior::CLIP );
   }
 
   // Make the buff always proc. The proc chance is handled by the proc callback, so the buff should
   // always trigger.
   creator.chance( 1 );
 
-  creator.refresh_behavior( BUFF_REFRESH_DURATION );
+  creator.refresh_behavior( buff_refresh_behavior::DURATION );
 
   // If user given stat is defined, override whatever the spell would contain
   if ( stat != STAT_NONE )
@@ -386,14 +386,14 @@ absorb_buff_t* special_effect_t::initialize_absorb_buff() const
   if ( tick > timespan_t::zero() )
   {
     creator.period( tick );
-    creator.tick_behavior( BUFF_TICK_CLIP );
+    creator.tick_behavior( buff_tick_behavior::CLIP );
   }
 
   // Make the buff always proc. The proc chance is handled by the proc callback, so the buff should
   // always trigger.
   creator.chance( 1 );
 
-  creator.refresh_behavior( BUFF_REFRESH_DURATION );
+  creator.refresh_behavior( buff_refresh_behavior::DURATION );
 
   return creator;
 }

@@ -1666,7 +1666,7 @@ struct overwhelming_darkness_t final : public priest_buff_t<stat_buff_t>
     set_chance( p.sets->has_set_bonus( PRIEST_SHADOW, T21, B4 ) );
     set_period( timespan_t::from_seconds( 1 ) );
     set_duration( timespan_t::zero() );
-    set_refresh_behavior( BUFF_REFRESH_DURATION );
+    set_refresh_behavior( buff_refresh_behavior::DURATION );
     add_invalidate( CACHE_CRIT_CHANCE );
   }
 
@@ -1762,8 +1762,8 @@ struct lingering_insanity_t final : public priest_buff_t<haste_buff_t>
     set_reverse( true );
     set_duration( timespan_t::from_seconds( 50 ) );
     set_period( timespan_t::from_seconds( 1 ) );
-    set_tick_behavior( BUFF_TICK_REFRESH );
-    set_tick_time_behavior( BUFF_TICK_TIME_UNHASTED );
+    set_tick_behavior( buff_tick_behavior::REFRESH );
+    set_tick_time_behavior( buff_tick_time_behavior::UNHASTED );
     set_max_stack( p.find_spell( 185916 )->effectN( 4 ).base_value() );  // or 18?
 
     // Calculate the amount of stacks lost per second based on the amount of haste lost per second
