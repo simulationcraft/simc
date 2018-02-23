@@ -260,7 +260,12 @@ private: // private because changing max_stacks requires resizing some stack-dep
   const spell_data_t* trigger_data;
 public:
   double default_value;
-  bool activated, reactable;
+  /**
+   * Is buff manually activated or not (eg. a proc).
+   * non-activated player buffs have a delayed trigger event
+   */
+  bool activated;
+  bool reactable;
   bool reverse, constant, quiet, overridden, can_cancel;
   bool requires_invalidation;
 
