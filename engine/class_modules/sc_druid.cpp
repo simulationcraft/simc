@@ -7718,6 +7718,7 @@ std::string druid_t::default_potion() const
 std::string druid_t::default_food() const
 {
    return (true_level > 100 && specialization() == DRUID_FERAL) ? "lemon_herb_filet" :
+          (true_level > 100 && specialization() == DRUID_BALANCE) ? "lemon_herb_filet" :
           (true_level >  100) ? "lavish_suramar_feast" :
           (true_level >  90) ?  "pickled_eel" :
           (true_level >= 90) ?  "sea_mist_rice_noodles" :
