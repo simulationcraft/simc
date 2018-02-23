@@ -1628,14 +1628,13 @@ public:
       return;
     }
 
-    // TODO: Right now it uses max mana including mastery and other effects, probably makes more sense if
-    // it used base mana (might be a bug).
-    double mana_pct_consumed = last_resource_cost / p() -> resources.max[ RESOURCE_MANA ];
-    double cc_proc_chance = mana_pct_consumed * p() -> spec.clearcasting -> effectN( 1 ).percent();
+    // Mana spending required for 1% chance.
+    double mana_step = p() -> spec.clearcasting -> cost( POWER_MANA ) * p() -> resources.base[ RESOURCE_MANA ];
+    mana_step /= p() -> spec.clearcasting -> effectN( 1 ).percent();
+
+    double cc_proc_chance = 0.01 * last_resource_cost / mana_step;
 
     p() -> buffs.clearcasting -> trigger( 1, buff_t::DEFAULT_VALUE(), cc_proc_chance );
-
-    // TODO: Arcane Explosion consumes its own CC proc. Check.
   }
 
   virtual void update_ready( timespan_t cd ) override
