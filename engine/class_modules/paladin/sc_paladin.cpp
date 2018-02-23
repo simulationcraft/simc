@@ -415,10 +415,6 @@ struct divine_steed_t : public paladin_spell_t
   {
     parse_options( options_str );
 
-    // disable for Ret unless talent is taken
-    if ( p -> specialization() == PALADIN_RETRIBUTION && ! p -> talents.divine_steed -> ok() )
-      background = true;
-
     // adjust cooldown based on Knight Templar talent for prot
     if ( p -> talents.knight_templar -> ok() )
       cooldown -> duration *= 1.0 + p -> talents.knight_templar -> effectN( 1 ).percent();
@@ -716,21 +712,19 @@ struct crusader_strike_t : public holy_power_generator_t
       base_multiplier *= 1.0 + p -> passives.retribution_paladin -> effectN( 8 ).percent();
     }
 
-      if (p->specialization() == PALADIN_HOLY) {
-          base_multiplier *= 1.0 + p->passives.holy_paladin->effectN(5).percent();
-      }
-
-    background = ( p -> talents.zeal -> ok() );
+    if ( p -> specialization() == PALADIN_HOLY ) {
+      base_multiplier *= 1.0 + p -> passives.holy_paladin -> effectN( 5 ).percent();
+    }
   }
 
   void impact( action_state_t* s ) override
   {
     holy_power_generator_t::impact( s );
 
-      if ( p() -> talents.crusaders_might -> ok() ) {
-          p() -> cooldowns.holy_shock -> adjust( timespan_t::from_seconds( -1.5) );
-          p() -> cooldowns.light_of_dawn -> adjust( timespan_t::from_seconds( -1.5));
-      }
+    if ( p() -> talents.crusaders_might -> ok() ) {
+      p() -> cooldowns.holy_shock -> adjust( timespan_t::from_seconds( -1.5 ) );
+      p() -> cooldowns.light_of_dawn -> adjust( timespan_t::from_seconds( -1.5 ) );
+    }
 
     // Special things that happen when CS connects
     if ( result_is_hit( s -> result ) )
@@ -744,28 +738,26 @@ struct crusader_strike_t : public holy_power_generator_t
         if ( success )
           p() -> procs.the_fires_of_justice -> occur();
       }
-
     }
   }
 
-    double composite_target_multiplier( player_t* t ) const override
-    {
-        double m = paladin_melee_attack_t::composite_target_multiplier( t );
+  double composite_target_multiplier( player_t* t ) const override
+  {
+    double m = paladin_melee_attack_t::composite_target_multiplier( t );
 
-        if (p() -> specialization() == PALADIN_HOLY) {
-            paladin_td_t* td = this -> td( t );
+    if ( p() -> specialization() == PALADIN_HOLY ) {
+      paladin_td_t* td = this -> td( t );
 
-            if ( td -> buffs.debuffs_judgment -> up() )
-            {
-                double judgment_multiplier = 1.0 + td -> buffs.debuffs_judgment -> data().effectN( 1 ).percent() + p() -> get_divine_judgment();
-                judgment_multiplier += p() -> passives.judgment -> effectN( 1 ).percent();
-                m *= judgment_multiplier;
-            }
-        }
-
-        return m;
+      if ( td -> buffs.debuffs_judgment -> up() )
+      {
+        double judgment_multiplier = 1.0 + td -> buffs.debuffs_judgment -> data().effectN( 1 ).percent();
+        judgment_multiplier += p() -> passives.judgment -> effectN( 1 ).percent();
+        m *= judgment_multiplier;
+      }
     }
 
+    return m;
+  }
 };
 
 // Hammer of Justice, Fist of Justice =======================================
@@ -821,84 +813,6 @@ struct hammer_of_justice_t : public paladin_melee_attack_t
 
 // Judgment =================================================================
 
-struct judgment_aoe_t : public paladin_melee_attack_t
-{
-  judgment_aoe_t( paladin_t* p, const std::string& options_str )
-    : paladin_melee_attack_t( "judgment_aoe", p, p -> find_spell( 228288 ) )
-  {
-    parse_options( options_str );
-
-    may_glance = may_block = may_parry = may_dodge = false;
-    weapon_multiplier = 0;
-    background = true;
-
-    if ( p -> specialization() == PALADIN_RETRIBUTION )
-    {
-      aoe = 1 + p -> spec.judgment_2 -> effectN( 1 ).base_value();
-
-      if ( p -> sets -> has_set_bonus( PALADIN_RETRIBUTION, T21, B2 ) )
-        base_multiplier *= 1.0 + p -> sets -> set( PALADIN_RETRIBUTION, T21, B2 ) -> effectN( 1 ).percent();
-
-      if ( p -> talents.greater_judgment -> ok() )
-      {
-        aoe += p -> talents.greater_judgment -> effectN( 2 ).base_value();
-      }
-    }
-    else
-    {
-      assert( false );
-    }
-  }
-
-  bool impact_targeting( action_state_t* s ) const override
-  {
-    // this feels like some kind of horrifying hack
-    if ( s -> chain_target == 0 )
-      return false;
-    return paladin_melee_attack_t::impact_targeting( s );
-  }
-
-  virtual double composite_target_crit_chance( player_t* t ) const override
-  {
-    double cc = paladin_melee_attack_t::composite_target_crit_chance( t );
-
-    if ( p() -> talents.greater_judgment -> ok() )
-    {
-      double threshold = p() -> talents.greater_judgment -> effectN( 1 ).base_value();
-      if ( ( t -> health_percentage() > threshold ) )
-      {
-        // TODO: is this correct? where does this come from?
-        return 1.0;
-      }
-    }
-
-    return cc;
-  }
-
-  // Special things that happen when Judgment damages target
-  virtual void impact( action_state_t* s ) override
-  {
-    paladin_melee_attack_t::impact( s );
-
-    if ( result_is_hit( s -> result ) )
-    {
-      td( s -> target ) -> buffs.debuffs_judgment -> trigger();
-    }
-  }
-
-  double action_multiplier() const override
-  {
-    double am = paladin_melee_attack_t::action_multiplier();
-    am *= 1.0 + p() -> get_divine_judgment( true );
-    return am;
-  }
-
-  proc_types proc_type() const override
-  {
-    return PROC1_MELEE_ABILITY;
-  }
-};
-
 struct judgment_t : public paladin_melee_attack_t
 {
   timespan_t sotr_cdr; // needed for sotr interaction for protection
@@ -919,7 +833,6 @@ struct judgment_t : public paladin_melee_attack_t
       base_costs[RESOURCE_MANA] = 0;
       if ( p -> sets -> has_set_bonus( PALADIN_RETRIBUTION, T21, B2 ) )
         base_multiplier *= 1.0 + p -> sets -> set( PALADIN_RETRIBUTION, T21, B2 ) -> effectN( 1 ).percent();
-      impact_action = new judgment_aoe_t( p, options_str );
     }
     else if ( p -> specialization() == PALADIN_HOLY )
     {
@@ -981,6 +894,11 @@ struct judgment_t : public paladin_melee_attack_t
       if ( p() -> talents.judgment_of_light -> ok() )
         td( s -> target ) -> buffs.judgment_of_light -> trigger( 40 );
 
+      if ( p() -> specialization() == PALADIN_RETRIBUTION )
+      {
+        p() -> resource_gain( RESOURCE_HOLY_POWER, 1, p() -> gains.judgment );
+      }
+
       // Judgment hits/crits reduce SotR recharge time
       if ( p() -> specialization() == PALADIN_PROTECTION )
       {
@@ -995,14 +913,6 @@ struct judgment_t : public paladin_melee_attack_t
     }
 
     paladin_melee_attack_t::impact( s );
-  }
-
-  double action_multiplier() const override
-  {
-    double am = paladin_melee_attack_t::action_multiplier();
-    // todo: refer to actual spelldata instead of magic constant
-    am *= 1.0 + p() -> get_divine_judgment( true );
-    return am;
   }
 };
 
@@ -1156,8 +1066,7 @@ void blessing_of_sacrifice_t::execute()
 paladin_td_t::paladin_td_t( player_t* target, paladin_t* paladin ) :
   actor_target_data_t( target, paladin )
 {
-  dots.execution_sentence = target -> get_dot( "execution_sentence", paladin );
-  dots.wake_of_ashes = target -> get_dot( "wake_of_ashes", paladin );
+  buffs.execution_sentence = buff_creator_t( *this, "execution_sentence", paladin -> find_spell( 267799 ) );
   buffs.debuffs_judgment = buff_creator_t( *this, "judgment", paladin -> find_spell( 197277 ));
   buffs.judgment_of_light = buff_creator_t( *this, "judgment_of_light", paladin -> find_spell( 196941 ) );
   buffs.eye_of_tyr_debuff = buff_creator_t( *this, "eye_of_tyr", paladin -> find_class_spell( "Eye of Tyr" ) ).cd( timespan_t::zero() );
@@ -1744,6 +1653,9 @@ double paladin_t::composite_melee_haste() const
   if ( buffs.sephuz -> check() )
     h /= 1.0 + buffs.sephuz -> check_value();
 
+  if ( buffs.inquisition -> check() )
+    h /= 1.0 + buffs.inquisition -> data().effectN( 3 ).percent();
+
   if ( sephuz )
     h /= 1.0 + sephuz -> effectN( 3 ).percent() ;
 
@@ -1786,7 +1698,10 @@ double paladin_t::composite_spell_haste() const
     h /= 1.0 + buffs.sephuz -> check_value();
 
   if ( sephuz )
-    h /= 1.0 + sephuz -> effectN( 3 ).percent() ;
+    h /= 1.0 + sephuz -> effectN( 3 ).percent();
+
+  if ( buffs.inquisition -> check() )
+    h /= 1.0 + buffs.inquisition -> data().effectN( 3 ).percent();
 
   // TODO: HA
   if (buffs.holy_avenger -> check())
@@ -1870,24 +1785,6 @@ double paladin_t::composite_player_multiplier( school_e school ) const
     // Mitigation is 0.97^n, or (1-0.03)^n, where the 0.03 is in the spell data.
     // The damage buff is then 1+(1-0.97^n), or 2-(1-0.03)^n.
     m *= 2.0 - std::pow( 1.0 - talents.last_defender -> effectN( 2 ).percent(), buffs.last_defender -> current_stack );
-  }
-
-  return m;
-}
-
-
-double paladin_t::composite_player_target_multiplier( player_t* target, school_e school ) const
-{
-  double m = player_t::composite_player_target_multiplier( target, school );
-
-  paladin_td_t* td = get_target_data( target );
-
-  if ( td -> dots.wake_of_ashes -> is_ticking() )
-  {
-    if ( ashes_to_dust )
-    {
-      m *= 1.0 + spells.ashes_to_dust -> effectN( 1 ).percent();
-    }
   }
 
   return m;
@@ -2296,23 +2193,32 @@ void paladin_t::activate()
 }
 
 
-// paladin_t::get_divine_judgment =============================================
+// paladin_t::get_hand_of_light =============================================
 
-double paladin_t::get_divine_judgment(bool is_judgment) const
+double paladin_t::get_hand_of_light() const
 {
   if ( specialization() != PALADIN_RETRIBUTION ) return 0.0;
 
-  if ( ! passives.divine_judgment -> ok() ) return 0.0;
+  if ( ! passives.hand_of_light -> ok() ) return 0.0;
 
   double handoflight;
   handoflight = cache.mastery_value(); // HoL modifier is in effect #1
-  if ( is_judgment ) {
-    handoflight *= passives.divine_judgment -> effectN( 3 ).sp_coeff();
-    handoflight /= passives.divine_judgment -> effectN( 1 ).sp_coeff();
-  }
 
   return handoflight;
 }
+
+bool paladin_t::get_how_availability() const
+{
+  if ( buffs.avenging_wrath -> up() || buffs.crusade -> up() )
+    return true;
+
+  // Otherwise, not available if target is above 20% health. Improved HoW perk raises the threshold to 35%
+  if ( target -> health_percentage() > 20 )
+    return false;
+
+  return true;
+}
+
 
 // player_t::create_expression ==============================================
 
@@ -2334,11 +2240,17 @@ expr_t* paladin_t::create_expression( action_t* a,
     cooldown_t* cs_cd;
     cooldown_t* boj_cd;
     cooldown_t* j_cd;
+    cooldown_t* how_cd;
+    cooldown_t* cons_cd;
+    cooldown_t* wake_cd;
 
     time_to_hpg_expr_t( const std::string& n, paladin_t& p ) :
       paladin_expr_t( n, p ), cs_cd( p.get_cooldown( "crusader_strike" ) ),
       boj_cd ( p.get_cooldown( "blade_of_justice" )),
-      j_cd( p.get_cooldown( "judgment" ) )
+      j_cd( p.get_cooldown( "judgment" ) ),
+      how_cd( p.get_cooldown( "hammer_of_wrath" ) ),
+      cons_cd( p.get_cooldown( "consecration" ) ),
+      wake_cd( p.get_cooldown( "wake_of_ashes" ) )
     { }
 
     virtual double evaluate() override
@@ -2350,6 +2262,14 @@ expr_t* paladin_t::create_expression( action_t* a,
 
       if ( boj_cd -> remains() < shortest_hpg_time )
         shortest_hpg_time = boj_cd -> remains();
+
+      if ( paladin.talents.hammer_of_wrath -> ok() )
+        if ( paladin.get_how_availability() && how_cd -> remains() < shortest_hpg_time )
+          shortest_hpg_time = how_cd -> remains();
+      if ( paladin.talents.wake_of_ashes -> ok() && wake_cd -> remains() < shortest_hpg_time )
+        shortest_hpg_time = wake_cd -> remains();
+      if ( paladin.talents.consecration -> ok() && cons_cd -> remains() < shortest_hpg_time )
+        shortest_hpg_time = cons_cd -> remains();
 
       if ( gcd_ready > shortest_hpg_time )
         return gcd_ready.total_seconds();

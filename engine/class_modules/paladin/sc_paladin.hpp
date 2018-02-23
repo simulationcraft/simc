@@ -25,12 +25,11 @@ struct paladin_td_t : public actor_target_data_t
 {
   struct dots_t
   {
-    dot_t* execution_sentence;
-    dot_t* wake_of_ashes;
   } dots;
 
   struct buffs_t
   {
+    buff_t* execution_sentence;
     buff_t* debuffs_judgment;
     buff_t* judgment_of_light;
     buff_t* eye_of_tyr_debuff;
@@ -94,13 +93,16 @@ public:
     // talents
     absorb_buff_t* holy_shield_absorb; // Dummy buff to trigger spell damage "blocking" absorb effect
 
-    buff_t* zeal;
     buff_t* the_fires_of_justice;
     buff_t* blade_of_wrath;
     buff_t* divine_purpose;
+    buff_t* righteous_verdict;
+    buff_t* inquisition;
+
     buff_t* divine_steed;
     buff_t* aegis_of_light;
     stat_buff_t* seraphim;
+
     buff_t* whisper_of_the_nathrezim;
     buffs::liadrins_fury_unleashed_t* liadrins_fury_unleashed;
     buff_t* scarlet_inquisitors_expurgation_driver;
@@ -135,7 +137,6 @@ public:
   struct spec_t
   {
     const spell_data_t* judgment_2;
-    const spell_data_t* judgment_3;
     const spell_data_t* retribution_paladin;
   } spec;
 
@@ -171,7 +172,7 @@ public:
     const spell_data_t* divine_bulwark;
     const spell_data_t* grand_crusader;
     const spell_data_t* guarded_by_the_light;
-    const spell_data_t* divine_judgment;
+    const spell_data_t* hand_of_light;
     const spell_data_t* holy_insight;
     const spell_data_t* infusion_of_light;
     const spell_data_t* lightbringer;
@@ -185,6 +186,7 @@ public:
     const spell_data_t* improved_block; //hidden
 
     const spell_data_t* judgment; // mystery, hidden
+    const spell_data_t* execution_sentence;
   } passives;
 
   // Procs and RNG
@@ -284,27 +286,28 @@ public:
     const spell_data_t* last_defender;
 
     // Retribution
-    const spell_data_t* final_verdict;
-    const spell_data_t* execution_sentence;
-    const spell_data_t* consecration;
-    const spell_data_t* fires_of_justice;
     const spell_data_t* greater_judgment;
-    const spell_data_t* zeal;
+    const spell_data_t* righteous_verdict;
+    const spell_data_t* execution_sentence;
+    const spell_data_t* fires_of_justice;
+    const spell_data_t* blade_of_wrath;
+    const spell_data_t* hammer_of_wrath;
     const spell_data_t* fist_of_justice;
     const spell_data_t* repentance;
     const spell_data_t* blinding_light;
-    const spell_data_t* virtues_blade;
-    const spell_data_t* blade_of_wrath;
-    const spell_data_t* divine_hammer;
-    const spell_data_t* justicars_vengeance;
+    const spell_data_t* divine_vengeance;
+    const spell_data_t* consecration;
+    const spell_data_t* wake_of_ashes;
+    // skip cavalier
+    // skip unbreakable spirit
     const spell_data_t* eye_for_an_eye;
+    // skip JoL
     const spell_data_t* word_of_glory;
-    const spell_data_t* divine_intervention;
-    const spell_data_t* divine_steed;
+    const spell_data_t* justicars_vengeance;
     const spell_data_t* divine_purpose;
     const spell_data_t* crusade;
     const spell_data_t* crusade_talent;
-    const spell_data_t* wake_of_ashes;
+    const spell_data_t* inquisition;
   } talents;
 
   player_t* beacon_target;
@@ -349,7 +352,6 @@ public:
   virtual double    composite_spell_crit_chance() const override;
   virtual double    composite_spell_haste() const override;
   virtual double    composite_player_multiplier( school_e school ) const override;
-  virtual double    composite_player_target_multiplier( player_t* target, school_e school ) const override;
   virtual double    composite_player_heal_multiplier( const action_state_t* s ) const override;
   virtual double    composite_spell_power( school_e school ) const override;
   virtual double    composite_spell_power_multiplier() const override;
@@ -381,7 +383,8 @@ public:
 
   virtual double current_health() const override;
 
-  double  get_divine_judgment( bool is_judgment = false ) const;
+  double  get_hand_of_light() const;
+  bool    get_how_availability() const;
   void    trigger_grand_crusader();
   void    trigger_holy_shield( action_state_t* s );
   void    trigger_forbearance( player_t* target );
@@ -535,6 +538,9 @@ public:
   bool ret_damage_increase;
   bool ret_dot_increase;
   bool ret_damage_increase_two;
+  bool ret_mastery_direct;
+  bool ret_execution_sentence;
+  bool ret_inquisition;
 
   paladin_action_t( const std::string& n, paladin_t* player,
                     const spell_data_t* s = spell_data_t::nil() ) :
@@ -543,12 +549,21 @@ public:
     hasted_gcd( ab::data().affected_by( player -> passives.paladin -> effectN( 3 ) ) ),
     ret_damage_increase( ab::data().affected_by( player -> spec.retribution_paladin -> effectN( 1 ) ) ),
     ret_dot_increase( ab::data().affected_by( player -> spec.retribution_paladin -> effectN( 2 ) ) ),
-    ret_damage_increase_two( ab::data().affected_by( player -> spec.retribution_paladin -> effectN( 7 ) ) )
+    ret_damage_increase_two( ab::data().affected_by( player -> spec.retribution_paladin -> effectN( 7 ) ) ),
+    ret_mastery_direct( ab::data().affected_by( player -> passives.hand_of_light -> effectN( 1 ) ) || ab::data().affected_by( player -> passives.hand_of_light -> effectN( 2 ) ) )
   {
     // Aura buff to protection paladin added in 7.3
     if ( this -> data().affected_by( p() -> passives.protection_paladin -> effectN( 10 ) ) && p() -> specialization() == PALADIN_PROTECTION )
     {
       this -> base_dd_multiplier *= 1.0 + p() -> passives.protection_paladin -> effectN( 10 ).percent();
+    }
+
+    if ( p() -> specialization() == PALADIN_RETRIBUTION ) {
+      ret_execution_sentence = ab::data().affected_by( p() -> passives.execution_sentence -> effectN( 1 ) );
+      ret_inquisition = ab::data().affected_by( p() -> talents.inquisition -> effectN( 1 ) );
+    } else {
+      ret_execution_sentence = false;
+      ret_inquisition = false;
     }
   }
 
@@ -629,6 +644,31 @@ public:
   }
 
   virtual double cooldown_multiplier() { return 1.0; }
+
+  virtual double action_multiplier() const override
+  {
+    double am = ab::action_multiplier();
+    if ( p() -> specialization() == PALADIN_RETRIBUTION ) {
+      if ( ret_mastery_direct )
+        am *= 1.0 + p() -> get_hand_of_light();
+      if ( ret_inquisition ) {
+        if ( p() -> buffs.inquisition -> up() )
+          am *= 1.0 + p() -> buffs.inquisition -> data().effectN( 1 ).percent();
+      }
+    }
+    return am;
+  }
+
+  virtual double composite_target_multiplier( player_t* t ) const override
+  {
+    double ctm = ab::composite_target_multiplier( t );
+    if ( ret_execution_sentence )
+    {
+      if ( td( t ) -> buffs.execution_sentence -> up() )
+        ctm *= 1.0 + p() -> passives.execution_sentence -> effectN( 1 ).percent();
+    }
+    return ctm;
+  }
 };
 
 // paladin "Spell" Base for paladin_spell_t, paladin_heal_t and paladin_absorb_t
@@ -801,6 +841,7 @@ struct holy_power_consumer_t : public paladin_melee_attack_t
   double composite_target_multiplier( player_t* t ) const override;
 
   virtual void execute() override;
+  virtual void impact( action_state_t* s ) override;
 };
 
 }

@@ -295,22 +295,21 @@ struct holy_shock_damage_t : public paladin_spell_t
     return cc;
   }
 
-    double composite_target_multiplier( player_t* t ) const override
+  double composite_target_multiplier( player_t* t ) const override
+  {
+    double m = paladin_spell_t::composite_target_multiplier( t );
+
+    paladin_td_t* td = this -> td( t );
+
+    if ( td -> buffs.debuffs_judgment -> up() )
     {
-        double m = paladin_spell_t::composite_target_multiplier( t );
-
-        paladin_td_t* td = this -> td( t );
-
-        if ( td -> buffs.debuffs_judgment -> up() )
-        {
-            double judgment_multiplier = 1.0 + td -> buffs.debuffs_judgment -> data().effectN( 1 ).percent() + p() -> get_divine_judgment();
-            judgment_multiplier += p() -> passives.judgment -> effectN( 1 ).percent();
-            m *= judgment_multiplier;
-        }
-
-        return m;
+      double judgment_multiplier = 1.0 + td -> buffs.debuffs_judgment -> data().effectN( 1 ).percent();
+      judgment_multiplier += p() -> passives.judgment -> effectN( 1 ).percent();
+      m *= judgment_multiplier;
     }
 
+    return m;
+  }
 };
 
 // Holy Shock Heal Spell ====================================================
