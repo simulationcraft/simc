@@ -1386,12 +1386,6 @@ struct void_eruption_t final : public priest_spell_t
     {
       priest().buffs.void_vb->trigger();
     }
-    else
-    {
-      priest().cooldowns.void_bolt->start( void_bolt );
-      priest().cooldowns.void_bolt->adjust(
-          -timespan_t::from_millis( 1000 * ( 3.0 * priest().composite_spell_speed() ) ), true );
-    }
 
     if ( priest().active_items.mother_shahrazs_seduction )
     {
