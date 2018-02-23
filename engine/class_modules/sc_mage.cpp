@@ -920,6 +920,7 @@ struct water_elemental_spell_t : public mage_pet_spell_t
 
     affected_by.arcane_power = false;
     affected_by.bone_chilling = false;
+    affected_by.crackling_energy = false;
     affected_by.incanters_flow = false;
     affected_by.rune_of_power = false;
 
