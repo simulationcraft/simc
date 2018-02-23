@@ -108,6 +108,11 @@ enum class buff_refresh_behavior
 enum class buff_stack_behavior
 {
   DEFAULT,
+
+  /**
+   * Asynchronous buffs use separate duration for each stack application.
+   * -> Each stack expires on its own.
+   */
   ASYNCHRONOUS,
 };
 
