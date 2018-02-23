@@ -102,7 +102,9 @@ void holy_power_consumer_t::execute()
   {
     bool success = p() -> buffs.divine_purpose -> trigger( 1,
       p() -> buffs.divine_purpose -> default_value,
-      p() -> spells.divine_purpose_ret -> proc_chance() );
+      // for some reason the proc chance is 100% and the actual proc chance is stored
+      // as a dummy value
+      p() -> spells.divine_purpose_ret -> effectN( 1 ).percent() );
     if ( success )
       p() -> procs.divine_purpose -> occur();
   }
@@ -314,7 +316,7 @@ struct divine_storm_t: public holy_power_consumer_t
 
     aoe = -1;
 
-    ret_damage_increase = ret_mastery_direct = ret_execution_sentence = true;
+    ret_damage_increase = ret_mastery_direct = ret_execution_sentence = ret_inquisition = true;
 
     // TODO: Okay, when did this get reset to 1?
     weapon_multiplier = 0;
@@ -391,7 +393,7 @@ struct templars_verdict_t : public holy_power_consumer_t
     impact_action = new templars_verdict_damage_t( p );
     impact_action -> stats = stats;
 
-    ret_damage_increase = ret_mastery_direct = ret_execution_sentence = true;
+    ret_damage_increase = ret_mastery_direct = ret_execution_sentence = ret_inquisition = true;
 
     // Okay, when did this get reset to 1?
     weapon_multiplier = 0;
