@@ -31,7 +31,7 @@ enum
   ITEM_TRINKET_BURST_CATEGORY = 1141, /// Trinket On-Use effect default category (for shared CD)
   MAX_GEM_SLOTS = 4, /// Global maximum number of gem slots in any specific item
 
-  WEAPON_POWER_COEFFICIENT = 7, // WDPS -> Attack Power Coefficient used for BfA Attack Power calculations
+  WEAPON_POWER_COEFFICIENT = 6, // WDPS -> Attack Power Coefficient used for BfA Attack Power calculations
 };
 
 enum regen_type_e
