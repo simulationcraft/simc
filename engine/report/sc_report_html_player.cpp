@@ -2777,6 +2777,44 @@ void print_html_player_charts( report::sc_html_stream& os, const player_t& p,
      << "</div>\n";
 }
 
+void print_html_player_buff_spelldata( report::sc_html_stream& os, const buff_t& b, const spell_data_t& data, std::string data_name )
+{
+  // Spelldata
+   if ( data.ok() )
+   {
+     os.format(
+         "<td style=\"vertical-align: top;\" class=\"filler\">\n"
+         "<h4>%s details</h4>\n"
+         "<ul>\n"
+         "<li><span class=\"label\">id:</span>%i</li>\n"
+         "<li><span class=\"label\">name:</span>%s</li>\n"
+         "<li><span class=\"label\">tooltip:</span><span "
+         "class=\"tooltip\">%s</span></li>\n"
+         "<li><span class=\"label\">description:</span><span "
+         "class=\"tooltip\">%s</span></li>\n"
+         "<li><span class=\"label\">max_stacks:</span>%.i</li>\n"
+         "<li><span class=\"label\">duration:</span>%.2f</li>\n"
+         "<li><span class=\"label\">cooldown:</span>%.2f</li>\n"
+         "<li><span class=\"label\">default_chance:</span>%.2f%%</li>\n"
+         "</ul>\n"
+         "</td>\n",
+         data_name.c_str(),
+         data.id(), data.name_cstr(),
+         b.player
+             ? util::encode_html(
+                   report::pretty_spell_text( data, data.tooltip(),
+                                              *b.player ) )
+                   .c_str()
+             : data.tooltip(),
+         b.player
+             ? util::encode_html( report::pretty_spell_text(
+                                      data, data.desc(), *b.player ) )
+                   .c_str()
+             : data.desc(),
+         data.max_stacks(), data.duration().total_seconds(),
+         data.cooldown().total_seconds(), data.proc_chance() * 100 );
+   }
+}
 // This function MUST accept non-player buffs as well!
 void print_html_player_buff( report::sc_html_stream& os, const buff_t& b,
                              int report_details, size_t i,
@@ -2834,7 +2872,9 @@ void print_html_player_buff( report::sc_html_stream& os, const buff_t& b,
         "<table><tr>\n"
         "<td style=\"vertical-align: top;\" class=\"filler\">\n"
         "<h4>Buff details</h4>\n"
-        "<ul>\n"
+        "<ul>\n",
+        b.constant ? 1 : 9);
+    os.format(
         "<li><span class=\"label\">buff initial source:</span>%s</li>\n"
         "<li><span class=\"label\">cooldown name:</span>%s</li>\n"
         "<li><span class=\"label\">max_stacks:</span>%.i</li>\n"
@@ -2842,12 +2882,29 @@ void print_html_player_buff( report::sc_html_stream& os, const buff_t& b,
         "<li><span class=\"label\">cooldown:</span>%.2f</li>\n"
         "<li><span class=\"label\">default_chance:</span>%.2f%%</li>\n"
         "<li><span class=\"label\">default_value:</span>%.2f</li>\n"
-        "</ul>\n",
-        b.constant ? 1 : 9,
+        "<li><span class=\"label\">activated:</span>%s</li>\n"
+        "<li><span class=\"label\">reactable:</span>%s</li>\n"
+        "<li><span class=\"label\">reverse:</span>%s</li>\n"
+        "<li><span class=\"label\">refresh behavior:</span>%s</li>\n"
+        "<li><span class=\"label\">stack behavior:</span>%s</li>\n",
         b.source ? util::encode_html( b.source->name() ).c_str() : "",
         b.cooldown->name_str.c_str(), b.max_stack(),
         b.buff_duration.total_seconds(), b.cooldown->duration.total_seconds(),
-        b.default_chance * 100, b.default_value );
+        b.default_chance * 100, b.default_value,
+        b.activated ? "true" : "false",
+        b.reactable ? "true" : "false",
+        b.reverse ? "true" : "false",
+        util::buff_refresh_behavior_string(b.refresh_behavior),
+        util::buff_stack_behavior_string(b.stack_behavior));
+    if ( b.item )
+    {
+      os.format(
+          "<li><span class=\"label\">associated item:</span>%s</li>\n",
+          b.item->full_name().c_str());
+
+    }
+    os.format(
+        "</ul>\n");
 
     if ( b.rppm )
     {
@@ -2903,40 +2960,13 @@ void print_html_player_buff( report::sc_html_stream& os, const buff_t& b,
     }
     os << "</td>\n";
 
-    // Spelldata
-    if ( b.data().ok() )
+    print_html_player_buff_spelldata(os, b, b.data(), "Spelldata" );
+
+    if ( b.get_trigger_data()->ok() && b.get_trigger_data()->id() != b.data().id() )
     {
-      os.format(
-          "<td style=\"vertical-align: top;\" class=\"filler\">\n"
-          "<h4>Spelldata details</h4>\n"
-          "<ul>\n"
-          "<li><span class=\"label\">id:</span>%i</li>\n"
-          "<li><span class=\"label\">name:</span>%s</li>\n"
-          "<li><span class=\"label\">tooltip:</span><span "
-          "class=\"tooltip\">%s</span></li>\n"
-          "<li><span class=\"label\">description:</span><span "
-          "class=\"tooltip\">%s</span></li>\n"
-          "<li><span class=\"label\">max_stacks:</span>%.i</li>\n"
-          "<li><span class=\"label\">duration:</span>%.2f</li>\n"
-          "<li><span class=\"label\">cooldown:</span>%.2f</li>\n"
-          "<li><span class=\"label\">default_chance:</span>%.2f%%</li>\n"
-          "</ul>\n"
-          "</td>\n",
-          b.data().id(), b.data().name_cstr(),
-          b.player
-              ? util::encode_html(
-                    report::pretty_spell_text( b.data(), b.data().tooltip(),
-                                               *b.player ) )
-                    .c_str()
-              : b.data().tooltip(),
-          b.player
-              ? util::encode_html( report::pretty_spell_text(
-                                       b.data(), b.data().desc(), *b.player ) )
-                    .c_str()
-              : b.data().desc(),
-          b.data().max_stacks(), b.data().duration().total_seconds(),
-          b.data().cooldown().total_seconds(), b.data().proc_chance() * 100 );
+      print_html_player_buff_spelldata(os, b, *b.get_trigger_data(), "Trigger Spell" );
     }
+
     os << "</tr>";
 
     if ( !b.constant && !b.overridden && b.sim->buff_uptime_timeline &&

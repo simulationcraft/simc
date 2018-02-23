@@ -2173,6 +2173,31 @@ const char* util::retarget_event_string( retarget_event_e event )
   }
 }
 
+const char* util::buff_refresh_behavior_string( buff_refresh_behavior_e behavior )
+{
+  switch ( behavior )
+  {
+    case BUFF_REFRESH_NONE: return "none";
+    case BUFF_REFRESH_DISABLED: return "disabled";
+    case BUFF_REFRESH_DURATION: return "duration";
+    case BUFF_REFRESH_EXTEND: return "extend";
+    case BUFF_REFRESH_PANDEMIC: return "pandemic";
+    case BUFF_REFRESH_TICK: return "tick";
+    case BUFF_REFRESH_CUSTOM: return "custom";
+    default: return "unknown";
+  }
+}
+
+const char* util::buff_stack_behavior_string( buff_stack_behavior_e behavior)
+{
+  switch ( behavior )
+  {
+    case BUFF_STACK_DEFAULT: return "default";
+    case BUFF_STACK_ASYNCHRONOUS: return "asynchronous";
+    default: return "unknown";
+  }
+}
+
 /// Textual representation of rppm scaling bitfield
 std::string util::rppm_scaling_string( unsigned s )
 {

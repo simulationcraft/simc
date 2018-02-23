@@ -445,6 +445,8 @@ public:
   const char* name() const { return name_str.c_str(); }
   std::string source_name() const;
   int max_stack() const { return _max_stack; }
+  const spell_data_t* get_trigger_data() const
+  { return trigger_data; }
 
   rng::rng_t& rng();
 
