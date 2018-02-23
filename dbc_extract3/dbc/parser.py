@@ -144,39 +144,51 @@ class DBCacheParser:
         if not self.parse_header():
             return False
 
-        entry_unpacker = struct.Struct('<4sIiIIII')
+        entry_unpacker = struct.Struct('<4sIiIIIBBBB')
 
         n_entries = 0
+        all_entries = []
         while self.parse_offset < len(self.data):
-            magic, unk_1, unk_2, length, sig, record_id, unk_3 = entry_unpacker.unpack_from(self.data, self.parse_offset)
+            magic, game_type, unk_2, length, sig, record_id, enabled, unk_4, unk_5, unk_6 = \
+                    entry_unpacker.unpack_from(self.data, self.parse_offset)
+
             if magic != b'XFTH':
                 logging.error('Invalid hotfix magic %s', magic.decode('utf-8'))
                 return False
 
             self.parse_offset += entry_unpacker.size
-            if length == 0:
-                continue
 
             entry = {
                 'record_id': record_id,
-                'unk_1': unk_1,
+                'game_type': game_type,
                 'unk_2': unk_2,
-                'unk_3': unk_3,
+                'enabled': enabled,
+                'unk_4': unk_4,
+                'unk_5': unk_5,
+                'unk_6': unk_6,
                 'length': length,
-                'offset': self.parse_offset
+                'offset': self.parse_offset,
+                'sig': sig,
             }
-
-            logging.debug('header: { magic=%s, unk_1=%u, unk_2=%u, length=%u, sig=%u, record_id=%u, unk_3=%u }, entry: { %s }',
-                magic, unk_1, unk_2, length, sig, record_id, unk_3, 'record_id=%(record_id)u, unk_1=%(unk_1)u, unk_2=%(unk_2)u, unk_3=%(unk_3)u, length=%(length)u, offset=%(offset)u' % entry)
 
             if sig not in self.entries:
                 self.entries[sig] = []
 
-            self.entries[sig].append(entry)
+            if enabled:
+                self.entries[sig].append(entry)
+                all_entries.append(entry)
 
             # Skip data
             self.parse_offset += length
             n_entries += 1
+
+        if self.options.debug:
+            for entry in sorted(all_entries, key = lambda e: (e['unk_2'], e['sig'], e['record_id'])):
+                logging.debug('entry: { %s }',
+                    ('record_id=%(record_id)-6u game_type=%(game_type)u table_hash=%(sig)#.8x ' +
+                     'unk_2=%(unk_2)-5u enabled=%(enabled)u, unk_4=%(unk_4)-3u unk_5=%(unk_5)-3u ' +
+                     'unk_6=%(unk_6)-3u length=%(length)-3u offset=%(offset)-7u') % entry)
+
 
         logging.debug('Parsed %d hotfix entries', n_entries)
 
