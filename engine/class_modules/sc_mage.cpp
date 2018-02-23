@@ -916,6 +916,7 @@ struct water_elemental_spell_t : public mage_pet_spell_t
   {
     affected_by.arcane_mage = false;
     affected_by.fire_mage = false;
+    affected_by.frost_mage = false;  // TODO: Probably a bug
 
     affected_by.arcane_power = false;
     affected_by.bone_chilling = false;
