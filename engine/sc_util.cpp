@@ -2173,6 +2173,7 @@ const char* util::retarget_event_string( retarget_event_e event )
   }
 }
 
+/// Textual representation of rppm scaling bitfield
 std::string util::rppm_scaling_string( unsigned s )
 {
   if ( s == RPPM_NONE )
@@ -2183,18 +2184,23 @@ std::string util::rppm_scaling_string( unsigned s )
   {
     return "disabled";
   }
+  using sp = std::pair<rppm_scale_e, const char*>;
+  const auto scalings = {sp{RPPM_HASTE, "haste"},
+                         sp{RPPM_CRIT, "crit"},
+                         sp{RPPM_ATTACK_SPEED, "attack_speed"}};
   std::string r;
-  if ( s & RPPM_HASTE )
+  int i = 0;
+  for ( const auto& scaling : scalings )
   {
-    r += "haste_";
-  }
-  if ( s & RPPM_CRIT )
-  {
-    r += "crit_";
-  }
-  if ( s & RPPM_ATTACK_SPEED )
-  {
-    r += "attack_speed_";
+    if ( s & scaling.first )
+    {
+      if ( i > 0 )
+      {
+        r += "&";
+      }
+      r += scaling.second;
+      i += 1;
+    }
   }
   return r;
 }
