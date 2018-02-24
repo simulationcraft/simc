@@ -58,6 +58,7 @@ public:
 
     // Vengeance
     buff_t* frailty;
+    buff_t* void_reaver;
   } debuffs;
 
   demon_hunter_td_t( player_t* target, demon_hunter_t& p );
@@ -227,7 +228,7 @@ public:
     const spell_data_t* spirit_bomb;
 
     const spell_data_t* last_resort;        // NYI
-    // NYI
+    const spell_data_t* void_reaver;
     const spell_data_t* soul_barrier;
   } talent;
 
@@ -263,11 +264,11 @@ public:
 
     // Vengeance
     const spell_data_t* vengeance;
+    const spell_data_t* demon_spikes;
     const spell_data_t* demonic_wards;
     const spell_data_t* fiery_brand_dr;
     const spell_data_t* immolation_aura;
     const spell_data_t* riposte;
-    const spell_data_t* sever;
     const spell_data_t* soul_cleave;
   } spec;
 
@@ -442,6 +443,7 @@ public:
   std::string default_rune() const override;
 
   // overridden player_t stat functions
+  double composite_armor() const override;
   double composite_armor_multiplier() const override;
   double composite_attack_power_multiplier() const override;
   double composite_attribute_multiplier( attribute_e attr ) const override;
@@ -1218,18 +1220,6 @@ struct demon_hunter_attack_t : public demon_hunter_action_t<melee_attack_t>
     : base_t( n, p, s, o )
   {
     special = true;
-
-    parse_special_effect_data( data() );
-  }
-
-  void parse_special_effect_data( const spell_data_t& spell )
-  {
-    /* Only set weapon if the attack deals weapon damage. weapon_multiplier
-    defaults to 1.0 so the way we check that is if weapon is defined. */
-    if ( weapon && spell.flags( SPELL_ATTR_EX3_REQ_OFFHAND ) )
-    {
-      weapon = &( p()->off_hand_weapon );
-    }
   }
 };
 
@@ -1315,7 +1305,6 @@ struct fel_devastation_heal_t : public demon_hunter_heal_t
     : demon_hunter_heal_t( "fel_devastation_heal", p, p -> find_spell( 212106 ) )
   {
     background = true;
-    may_crit   = false;
   }
 };
 
@@ -1486,7 +1475,7 @@ struct consume_magic_t : public demon_hunter_spell_t
 struct demon_spikes_t : public demon_hunter_spell_t
 {
   demon_spikes_t( demon_hunter_t* p, const std::string& options_str )
-    : demon_hunter_spell_t("demon_spikes", p, p -> find_specialization_spell("Demon Spikes"), options_str)
+    : demon_hunter_spell_t("demon_spikes", p, p->spec.demon_spikes, options_str)
   {
     may_miss = may_block = may_dodge = may_parry = may_crit = false;
     use_off_gcd = true;
@@ -1635,45 +1624,39 @@ struct fel_devastation_t : public demon_hunter_spell_t
   struct fel_devastation_tick_t : public demon_hunter_spell_t
   {
     fel_devastation_tick_t( demon_hunter_t* p )
-      : demon_hunter_spell_t( "fel_devastation_tick", p,
-                              p -> find_spell( 212105 ) )
+      : demon_hunter_spell_t( "fel_devastation_tick", p, p -> talent.fel_devastation->effectN( 1 ).trigger() )
     {
-      aoe        = -1;
       background = dual = true;
+      aoe = -1;
     }
 
     dmg_e amount_type( const action_state_t*, bool ) const override
     {
       return DMG_OVER_TIME;
-    }  // TOCHECK
+    }
   };
 
-  heals::fel_devastation_heal_t* heal;
-  fel_devastation_tick_t* damage;
+  action_t* heal;
+  action_t* damage;
 
   fel_devastation_t( demon_hunter_t* p, const std::string& options_str )
-    : demon_hunter_spell_t( "fel_devastation", p, p -> talent.fel_devastation,
-                            options_str )
+    : demon_hunter_spell_t( "fel_devastation", p, p -> talent.fel_devastation, options_str )
   {
-    channeled = true;
     may_miss = may_crit = false;
-    harmful       = false;  // Disables bleeding on the target.
-    heal          = new heals::fel_devastation_heal_t( p );
-    damage        = new fel_devastation_tick_t( p );
+    channeled = true;
+
+    heal = p->find_action( "fel_devastation_heal" );
+    if ( !heal )
+    {
+      heal = new heals::fel_devastation_heal_t( p );
+    }
+
+    damage = p->find_action( "fel_devastation_tick" );
+    if ( !damage )
+    {
+      damage = new fel_devastation_tick_t( p );
+    }
     damage -> stats = stats;
-  }
-
-  // Don't record data for this action.
-  void record_data( action_state_t* s ) override
-  {
-    ( void )s;
-    assert( s -> result_amount == 0.0 );
-  }
-
-  // Channel is not hasted.
-  timespan_t tick_time( const action_state_t* ) const override
-  {
-    return base_tick_time;
   }
 
   void tick( dot_t* d ) override
@@ -1691,8 +1674,7 @@ struct fel_devastation_t : public demon_hunter_spell_t
 struct fel_eruption_t : public demon_hunter_spell_t
 {
   fel_eruption_t( demon_hunter_t* p, const std::string& options_str )
-    : demon_hunter_spell_t( "fel_eruption", p, p -> talent.fel_eruption,
-                            options_str )
+    : demon_hunter_spell_t( "fel_eruption", p, p -> talent.fel_eruption, options_str )
   {
     may_crit         = false;
     resource_current = p -> specialization() == DEMON_HUNTER_HAVOC
@@ -2869,7 +2851,7 @@ struct chaos_strike_base_t : public demon_hunter_attack_t
     {
       assert( eff.type() == E_TRIGGER_SPELL );
       dual = background = true;
-      may_refund = weapon == &( p -> off_hand_weapon );
+      may_refund = ( weapon == &( p->off_hand_weapon ) );
     }
     
     virtual double composite_target_multiplier( player_t* target ) const override
@@ -3232,7 +3214,6 @@ struct fracture_t : public demon_hunter_attack_t
     : demon_hunter_attack_t( "fracture", p, p -> talent.fracture, options_str )
   {
     may_crit = false;
-    weapon_multiplier = 0;
 
     mh = new fracture_damage_t( "fracture_mh", p, data().effectN( 2 ).trigger() );
     oh = new fracture_damage_t( "fracture_oh", p, data().effectN( 3 ).trigger() );
@@ -3260,99 +3241,25 @@ struct fracture_t : public demon_hunter_attack_t
 
 struct shear_t : public demon_hunter_attack_t
 {
-  std::array<double, 8> shatter_chance;
-
   shear_t( demon_hunter_t* p, const std::string& options_str )
     : demon_hunter_attack_t("shear", p, p -> find_specialization_spell( "Shear" ), options_str )
   {
-    /* Proc chance increases on each consecutive failed attempt, rates
-       from http://us.battle.net/wow/en/forum/topic/20743504316?page=4#75 */
-    shatter_chance = {{0.04, 0.12, 0.25, 0.40, 0.60, 0.80, 0.90, 1.00}};
-  }
-
-  void shatter( action_state_t* /* s */ )
-  {
-    assert( p() -> shear_counter < 8 );
-
-    double chance = shatter_chance[ p() -> shear_counter ];
-    chance *= 1.10; // 7.2.5 -- Lesser Soul Fragment generation from Shear has been increased by 10%
-
-    if ( p() -> rng().roll( chance ) )
-    {
-      p() -> spawn_soul_fragment( soul_fragment::LESSER );
-      p() -> shear_counter = 0;
-    }
-    else
-    {
-      p() -> shear_counter++;
-    }
   }
 
   void impact( action_state_t* s ) override
   {
     demon_hunter_attack_t::impact( s );
     trigger_felblade(s);
-  }
 
-  void execute() override
-  {
-    demon_hunter_attack_t::execute();
-
-    if ( hit_any_target )
+    if ( result_is_hit( s->result ) )
     {
-      shatter( execute_state );
+      p()->spawn_soul_fragment( soul_fragment::LESSER );
     }
   }
 
   bool ready() override
   {
     if ( p()->talent.fracture->ok() )
-    {
-      return false;
-    }
-
-    if (p()->buff.metamorphosis->check())
-    {
-      return false;
-    }
-
-    return demon_hunter_attack_t::ready();
-  }
-};
-
-// Sever ====================================================================
-
-struct sever_t : public demon_hunter_attack_t
-{
-  sever_t(demon_hunter_t* p, const std::string& options_str)
-    : demon_hunter_attack_t("sever", p, p -> spec.sever, options_str)
-  {
-  }
-
-  void impact(action_state_t* s) override
-  {
-    demon_hunter_attack_t::impact(s);
-    trigger_felblade(s);
-  }
-
-  void execute() override
-  {
-    demon_hunter_attack_t::execute();
-
-    if (hit_any_target)
-    {
-      p()->spawn_soul_fragment(soul_fragment::LESSER);
-    }
-  }
-
-  bool ready() override
-  {
-    if ( p()->talent.fracture->ok() )
-    {
-      return false;
-    }
-
-    if (!p()->buff.metamorphosis->check())
     {
       return false;
     }
@@ -3372,6 +3279,16 @@ struct soul_cleave_t : public demon_hunter_attack_t
     {
       background = dual = true;
       aoe = -1;
+    }
+    
+    void impact( action_state_t* s ) override
+    {
+      demon_hunter_attack_t::impact( s );
+
+      if ( result_is_hit( s->result ) && p()->talent.void_reaver->ok() )
+      {
+        td( s->target )->debuffs.void_reaver->trigger();
+      }
     }
   };
 
@@ -3688,14 +3605,17 @@ struct demon_spikes_t : public demon_hunter_buff_t<buff_t>
 
   demon_spikes_t(demon_hunter_t* p)
     : demon_hunter_buff_t<buff_t>(
-      *p, buff_creator_t(p, "demon_spikes", p->find_spell(203819))
-      .default_value(p->find_spell(203819)->effectN(1).percent())
-      .refresh_behavior(buff_refresh_behavior::EXTEND)
-      .add_invalidate(CACHE_PARRY)
-      .add_invalidate(CACHE_LEECH)
-      .add_invalidate(CACHE_PLAYER_DAMAGE_MULTIPLIER)),
-    max_duration(buff_duration * 3) // Demon Spikes can only be extended to 3x its base duration
+      *p, buff_creator_t( p, "demon_spikes", p->find_spell( 203819 ) )
+      .default_value( p->find_spell( 203819 )->effectN( 1 ).percent() )
+      .refresh_behavior( buff_refresh_behavior::EXTEND )
+      .add_invalidate( CACHE_PARRY )
+      .add_invalidate( CACHE_ARMOR ) ),
+    max_duration( buff_duration * 3 ) // Demon Spikes can only be extended to 3x its base duration
   {
+    if ( p->talent.razor_spikes->ok() )
+    {
+      add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+    }
   }
 
   virtual bool trigger(int stacks, double value, double chance, timespan_t duration) override
@@ -3789,8 +3709,10 @@ demon_hunter_td_t::demon_hunter_td_t( player_t* target, demon_hunter_t& p )
   {
     dots.fiery_brand = target->get_dot("fiery_brand", &p);
     dots.sigil_of_flame = target->get_dot("sigil_of_flame", &p);
-    debuffs.frailty = make_buff(target, "frailty", p.find_spell(247456))
-      ->set_default_value(p.find_spell(247456)->effectN(1).percent());
+    debuffs.frailty = make_buff( target, "frailty", p.find_spell( 247456 ) )
+      ->set_default_value( p.find_spell( 247456 )->effectN( 1 ).percent() );
+    debuffs.void_reaver = make_buff( target, "void_reaver", p.find_spell( 268178 ) )
+      ->set_default_value( p.find_spell( 268178 )->effectN( 1 ).percent() );
   }
 
   // TODO: Make an option to register this for testing M+/dungeon scenarios
@@ -3952,8 +3874,6 @@ action_t* demon_hunter_t::create_action( const std::string& name,
     return new fel_rush_t( this, options_str );
   if ( name == "fracture" )
     return new fracture_t( this, options_str );
-  if (name == "sever")
-    return new sever_t(this, options_str);
   if ( name == "shear" )
     return new shear_t( this, options_str );
   if ( name == "soul_cleave" )
@@ -4477,27 +4397,27 @@ void demon_hunter_t::init_spells()
   spec.chaos_brand            = find_spell( 255260 );
 
   // Havoc
-  spec.havoc                = find_specialization_spell( "Havoc Demon Hunter" );
-  spec.annihilation         = find_spell( 201427 );
-  spec.blade_dance          = find_class_spell( "Blade Dance" );
-  spec.blur                 = find_class_spell( "Blur" );
-  spec.chaos_nova           = find_class_spell( "Chaos Nova" );
-  spec.chaos_strike         = find_class_spell( "Chaos Strike" );
-  spec.chaos_strike_refund  = find_spell( 197125 );
-  spec.chaos_strike_fury    = find_spell( 193840 );
-  spec.death_sweep          = find_spell( 210152 );
-  spec.demonic_appetite_fury = find_spell( 210041 );
-  spec.eye_beam             = find_class_spell( "Eye Beam" );
-  spec.fel_rush_damage      = find_spell( 192611 );
-  spec.vengeful_retreat     = find_class_spell( "Vengeful Retreat" );
+  spec.havoc                  = find_specialization_spell( "Havoc Demon Hunter" );
+  spec.annihilation           = find_spell( 201427 );
+  spec.blade_dance            = find_class_spell( "Blade Dance" );
+  spec.blur                   = find_class_spell( "Blur" );
+  spec.chaos_nova             = find_class_spell( "Chaos Nova" );
+  spec.chaos_strike           = find_class_spell( "Chaos Strike" );
+  spec.chaos_strike_refund    = find_spell( 197125 );
+  spec.chaos_strike_fury      = find_spell( 193840 );
+  spec.death_sweep            = find_spell( 210152 );
+  spec.demonic_appetite_fury  = find_spell( 210041 );
+  spec.eye_beam               = find_class_spell( "Eye Beam" );
+  spec.fel_rush_damage        = find_spell( 192611 );
+  spec.vengeful_retreat       = find_class_spell( "Vengeful Retreat" );
 
   // Vengeance
-  spec.vengeance        = find_specialization_spell("Vengeance Demon Hunter");
-  spec.demonic_wards    = find_specialization_spell("Demonic Wards");
-  spec.fiery_brand_dr   = find_spell(207744);
-  spec.riposte          = find_specialization_spell("Riposte");
-  spec.soul_cleave      = find_specialization_spell("Soul Cleave");
-  spec.sever            = find_spell(235964);
+  spec.vengeance              = find_specialization_spell( "Vengeance Demon Hunter" );
+  spec.demon_spikes           = find_specialization_spell( "Demon Spikes" );
+  spec.demonic_wards          = find_specialization_spell( "Demonic Wards" );
+  spec.fiery_brand_dr         = find_spell( 207744 );
+  spec.riposte                = find_specialization_spell( "Riposte" );
+  spec.soul_cleave            = find_specialization_spell( "Soul Cleave" );
 
   // Masteries ==============================================================
 
@@ -4565,7 +4485,7 @@ void demon_hunter_t::init_spells()
   talent.spirit_bomb          = find_talent_spell( "Spirit Bomb" );
 
   talent.last_resort          = find_talent_spell( "Last Resort" );
-  // NYI
+  talent.void_reaver          = find_talent_spell( "Void Reaver" );
   talent.soul_barrier         = find_talent_spell( "Soul Barrier" );
 
   // Spell Initialization ===================================================
@@ -4601,8 +4521,10 @@ void demon_hunter_t::invalidate_cache( cache_e c )
   switch ( c )
   {
     case CACHE_MASTERY:
-      if ( mastery.demonic_presence -> ok() )
+      if ( mastery.demonic_presence->ok() )
         invalidate_cache( CACHE_RUN_SPEED );
+      if ( mastery.fel_blood->ok() )
+        invalidate_cache( CACHE_ARMOR );
       break;
     case CACHE_CRIT_CHANCE:
       if ( spec.riposte -> ok() )
@@ -4610,6 +4532,10 @@ void demon_hunter_t::invalidate_cache( cache_e c )
       break;
     case CACHE_RUN_SPEED:
       adjust_movement();
+      break;
+    case CACHE_AGILITY:
+      if ( buff.demon_spikes->check() )
+        invalidate_cache( CACHE_ARMOR );
       break;
     default:
       break;
@@ -4808,7 +4734,6 @@ void demon_hunter_t::apl_vengeance()
   def->add_action( this, "Soul Cleave" );
   def->add_action( this, "Sigil of Flame" );
   def->add_talent( this, "Fracture" );
-  def->add_action( this, spec.sever, "sever" );
   def->add_action( this, "Shear" );
 }
 
@@ -4875,6 +4800,21 @@ void demon_hunter_t::create_benefits()
 // overridden player_t stat functions
 // ==========================================================================
 
+// demon_hunter_t::composite_armor ==========================================
+
+double demon_hunter_t::composite_armor() const
+{
+  double a = player_t::composite_armor();
+
+  if ( buff.demon_spikes->up() )
+  {
+    const double mastery_value = cache.mastery() * mastery.fel_blood ->effectN( 1 ).mastery_value();
+    a += ( buff.demon_spikes->data().effectN( 2 ).percent() + mastery_value ) * cache.agility();
+  }
+
+  return a;
+}
+
 // demon_hunter_t::composite_armor_multiplier ===============================
 
 double demon_hunter_t::composite_armor_multiplier() const
@@ -4885,7 +4825,7 @@ double demon_hunter_t::composite_armor_multiplier() const
 
   if (specialization() == DEMON_HUNTER_VENGEANCE && buff.metamorphosis -> check())
   {
-    am *= 1.0 + spec.metamorphosis_buff->effectN( 8 ).percent();
+    am *= 1.0 + spec.metamorphosis_buff->effectN( 7 ).percent();
   }
 
   return am;
@@ -5356,24 +5296,29 @@ void demon_hunter_t::target_mitigation( school_e school, dmg_e dt, action_state_
     return;
   }
 
-  s -> result_amount *= 1.0 + buff.blur -> value();
-
-  if ( dbc::is_school( school, SCHOOL_PHYSICAL ) && buff.demon_spikes -> up() )
+  if ( specialization() == DEMON_HUNTER_HAVOC )
   {
-    s -> result_amount *= 1.0 + buff.demon_spikes -> data().effectN( 2 ).percent() - cache.mastery_value();
+    s->result_amount *= 1.0 + buff.blur->value();
   }
-
-  s->result_amount *= 1.0 + spec.demonic_wards->effectN( 1 ).percent();
-
-  if ( dbc::get_school_mask( school ) & SCHOOL_MAGIC_MASK )
+  else // DEMON_HUNTER_VENGEANCE
   {
-    s->result_amount *= 1.0 + buff.empower_wards->value();
-  }
+    s->result_amount *= 1.0 + spec.demonic_wards->effectN( 1 ).percent();
 
-  const dot_t* fiery_brand = get_target_data( s->action->player )->dots.fiery_brand;
-  if ( fiery_brand && fiery_brand->is_ticking() )
-  {
-    s->result_amount *= 1.0 + spec.fiery_brand_dr->effectN( 1 ).percent();
+    if ( dbc::get_school_mask( school ) & SCHOOL_MAGIC_MASK )
+    {
+      s->result_amount *= 1.0 + buff.empower_wards->value();
+    }
+
+    const demon_hunter_td_t* td = get_target_data( s->action->player );
+    if ( td->dots.fiery_brand && td->dots.fiery_brand->is_ticking() )
+    {
+      s->result_amount *= 1.0 + spec.fiery_brand_dr->effectN( 1 ).percent();
+    }
+
+    if ( td->debuffs.void_reaver )
+    {
+      s->result_amount *= 1.0 + td->debuffs.void_reaver->stack_value();
+    }
   }
 }
 
