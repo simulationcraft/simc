@@ -292,7 +292,6 @@ struct consecration_t : public paladin_spell_t
     // disable if Ret and not talented
     if ( p -> specialization() == PALADIN_RETRIBUTION ) {
       background = ! ( p -> talents.consecration -> ok() );
-      hasted_gcd = true;
     }
     dot_duration = timespan_t::zero(); // the periodic event is handled by ground_aoe_event_t
     may_miss       = false;
@@ -813,7 +812,6 @@ struct judgment_t : public paladin_melee_attack_t
     weapon_multiplier = 0.0;
     may_block = may_parry = may_dodge = false;
     cooldown -> charges = 1;
-    hasted_cd = hasted_gcd = true;
 
     // TODO: this is a hack; figure out what's really going on here.
     if ( p -> specialization() == PALADIN_RETRIBUTION )

@@ -600,31 +600,35 @@ public:
     }
 
     // TODO(mserrano): this is incorrect. Hackfixed temporarily, but this needs real logic.
-    hasted_cd = ab::data().affected_by( player -> passives.paladin -> effectN( 2 ) ) ||
-                ab::data().affected_by( player -> passives.paladin -> effectN( 3 ) ) ||
-                ab::data().affected_by( player -> passives.paladin -> effectN( 4 ) ) ||
-                ab::data().affected_by( player -> passives.paladin -> effectN( 5 ) ) ||
-                ab::data().affected_by( player -> passives.paladin -> effectN( 6 ) ) ||
-                ab::data().affected_by( player -> passives.paladin -> effectN( 7 ) ) ||
-                ab::data().affected_by( player -> passives.paladin -> effectN( 8 ) );
-    if ( !hasted_cd ) {
-      if ( p() -> specialization() == PALADIN_RETRIBUTION ) {
-        hasted_cd = ab::data().affected_by( player -> spec.retribution_paladin -> effectN( 1 ) ) ||
-                    ab::data().affected_by( player -> spec.retribution_paladin -> effectN( 3 ) ) ||
-                    ab::data().affected_by( player -> spec.retribution_paladin -> effectN( 4 ) ) ||
-                    ab::data().affected_by( player -> spec.retribution_paladin -> effectN( 5 ) );
-      } else if ( p() -> specialization() == PALADIN_PROTECTION ) {
-        hasted_cd = ab::data().affected_by( player -> passives.protection_paladin -> effectN( 1 ) ) ||
-                    ab::data().affected_by( player -> passives.protection_paladin -> effectN( 3 ) );
-      } else {
-        hasted_cd = ab::data().affected_by( player -> passives.holy_paladin -> effectN( 2 ) ) ||
-                    ab::data().affected_by( player -> passives.holy_paladin -> effectN( 4 ) );
+    hasted_cd = false;
+    auto update_hasted_cooldowns_by_passive = [&](const spell_data_t* passive) {
+      for (uint32_t i = 1; i <= passive -> effect_count(); i++) {
+        auto effect = passive -> effectN( i );
+        if ( effect.subtype() == A_HASTED_CATEGORY ) {
+          uint32_t affected_category = effect.misc_value1();
+          if ( affected_category == ab::data().category() ) {
+            hasted_cd = true;
+          }
+        } else if ( effect.subtype() == A_HASTED_COOLDOWN ) {
+          if ( ab::data().affected_by( effect ) ) {
+            hasted_cd = true;
+          }
+        } else if ( effect.subtype() == A_HASTED_GCD ) {
+          if ( ab::data().affected_by( effect ) ) {
+            hasted_gcd = true;
+          }
+        }
       }
+    };
+    update_hasted_cooldowns_by_passive( player -> passives.paladin );
+    if ( p() -> specialization() == PALADIN_RETRIBUTION ) {
+      update_hasted_cooldowns_by_passive( player -> spec.retribution_paladin );
+    } else if ( p() -> specialization() == PALADIN_PROTECTION ) {
+      update_hasted_cooldowns_by_passive( player -> passives.protection_paladin );
+    } else {
+      update_hasted_cooldowns_by_passive( player -> passives.holy_paladin );
     }
-    hasted_gcd = hasted_cd ||
-                 ( p() -> specialization() == PALADIN_RETRIBUTION && ab::data().affected_by( player -> spec.retribution_paladin -> effectN( 2 ) ) ) ||
-                 ( p() -> specialization() == PALADIN_PROTECTION && ab::data().affected_by( player -> passives.protection_paladin -> effectN( 2 ) ) ) ||
-                 ( p() -> specialization() == PALADIN_HOLY && ab::data().affected_by( player -> passives.holy_paladin -> effectN( 3 ) ) );
+    if ( hasted_cd && !hasted_gcd ) hasted_gcd = true;
   }
 
   paladin_t* p()
@@ -646,6 +650,7 @@ public:
       cd_wasted_iter = p() -> template get_data_entry<simple_sample_data_t, simple_data_t>( ab::name_str, p() -> cd_waste_iter );
     }
 
+    printf("Action %s has hasted_cd=%d and hasted_gcd=%d\n", ab::name(), hasted_cd, hasted_gcd);
     if ( hasted_cd )
     {
       ab::cooldown -> hasted = hasted_cd;

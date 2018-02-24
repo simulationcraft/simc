@@ -306,8 +306,6 @@ struct divine_storm_t: public holy_power_consumer_t
   {
     parse_options( options_str );
 
-    hasted_gcd = true;
-
     may_block = false;
     impact_action = new divine_storm_damage_t( p );
     impact_action -> stats = stats;
@@ -387,8 +385,6 @@ struct templars_verdict_t : public holy_power_consumer_t
   {
     parse_options( options_str );
 
-    hasted_gcd = true;
-
     may_block = false;
     impact_action = new templars_verdict_damage_t( p );
     impact_action -> stats = stats;
@@ -466,6 +462,7 @@ struct justicars_vengeance_t : public holy_power_consumer_t
   {
     parse_options( options_str );
 
+    // Spelldata doesn't have this
     hasted_gcd = true;
 
     weapon_multiplier = 0; // why is this needed?
@@ -582,6 +579,7 @@ struct wake_of_ashes_t : public paladin_spell_t
     parse_options( options_str );
     if ( ! ( p -> talents.wake_of_ashes -> ok() ) )
       background = true;
+    // spell data doesn't have this
     hasted_gcd = true;
     may_crit = true;
   }
@@ -595,6 +593,7 @@ struct inquisition_t : public paladin_heal_t
     parse_options( options_str );
     if ( ! ( p -> talents.inquisition -> ok() ) )
       background = true;
+    // spelldata doesn't have this
     hasted_gcd = true;
   }
 
