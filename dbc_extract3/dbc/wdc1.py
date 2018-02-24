@@ -1,14 +1,14 @@
-import logging, math, collections, sys
+import logging, math, collections, sys, binascii
 
 from struct import Struct
 
 from bitarray import bitarray
 
+import dbc
+
 from dbc import HeaderFieldInfo, DBCRecordInfo
 
 from dbc.parser import DBCParserBase
-
-import dbc.data
 
 X_ID_BLOCK   = 0x04
 X_OFFSET_MAP = 0x01
@@ -97,6 +97,45 @@ def get_decoder(column):
 
     return None
 
+# A specialized parser for the hotfix file that dynamically parses the
+# remaining bytes of the record, based on the magnitude of the existing key
+# block info (i.e., the number of bytes required to store the high key id of
+# the client data file)
+#
+# TODO: 24 bits?
+class WDC1HotfixKeyIdParser:
+    def __init__(self, record_parser, unpack_bytes):
+        self.record_parser = record_parser
+        self.field_size = unpack_bytes
+
+        if unpack_bytes == 1:
+            self.unpacker = Struct('<B')
+        elif unpack_bytes == 2:
+            self.unpacker = Struct('<H')
+        elif unpack_bytes == 4:
+            self.unpacker = Struct('<I')
+        else:
+            raise ValueError('Invalid hotfix cache key field length {} for {}'.format(
+                unpack_bytes, record_parser.parser()))
+
+    def __str__(self):
+        return 'uint:key({})'.format(self.field_size * 8)
+
+    def size(self):
+        return self.field_size
+
+    def __call__(self, id, data, offset, bytes_left):
+        pad = bytes_left - self.field_size
+
+        if pad < 0:
+            raise ValueError('Negative pad: {} for {}'.format(pad, self.record_parser.parser()))
+
+        if bytes_left < self.unpacker_size:
+            raise ValueError('Too few bytes to parse, wanted {}, got {} for {}'.format(
+                self.unpacker.size, bytes_left, self.record_parser.parser()))
+
+        return self.unpacker.unpack_from(data, offset + pad)
+
 # Parse a segment of the record data, and return a tuple containing the column data
 class WDC1SegmentParser:
     def __init__(self, record_parser, columns):
@@ -143,6 +182,7 @@ class WDC1StructSegmentParser(WDC1SegmentParser):
         fmt = '<'
         for column in self.columns:
             column_type = column.struct_type()
+            # Expand fields to 4 bytes for "expanded data" hotfixes, only SpellEffect thus far..
             if expanded_data:
                 if column.is_signed():
                     column_type = 'i'
@@ -193,7 +233,7 @@ class WDC1PackedBitSegmentParser(WDC1SegmentParser):
     # single WDC1PackedBitSegmentParser. Should be a safe assumption, they seem
     # to be always inserted at the end of the DB2 file in a continuous segment.
     def size(self):
-        return math.ceil(sum([c.ext_data().bit_size() for c in self.columns]) / 8)
+        return math.ceil(sum([c.bit_size() for c in self.columns]) / 8)
 
     def __call__(self, id, data, offset, bytes_left):
         barr = bitarray(endian = 'little')
@@ -372,8 +412,7 @@ class RecordParser:
         # Base offset into the record start
         base_offset = self._base_offset + self._record_id * self._record_size
 
-        self.__dbc_id, _, _, _, _ = self._parser.get_record_info(self._record_id)
-
+        self.__dbc_id, _, size, _ = self._parser.get_record_info(self._record_id)
         self._record_id += 1
 
         # Byte offset into current record, incremented after each segment parser
@@ -386,7 +425,21 @@ class RecordParser:
 
             data += decoder(self.__dbc_id, self.__data, segment_offset, bytes_left)
 
-            record_offset += decoder.size()
+            decoded = decoder.size();
+            if decoded < 0:
+                raise ValueError('Decoded negative bytes ({}), record={}, data={}, bytes={}'.format(
+                    decoded, self.__dbc_id, parsed_data,
+                    binascii.hexlify(self.__data[base_offset:base_offset+size])))
+
+            record_offset += decoded
+
+        unparsed_bytes = size - record_offset
+
+        # Sanity check parsing when offset map is not used
+        if not self.parser().has_offset_map() and (unparsed_bytes < 0 or unparsed_bytes > 3):
+            raise ValueError('Parse error: parsed_bytes={}, bytes_left={}, record={}, data={}, remains={}'.format(
+                record_offset, unparsed_bytes, size, parsed_data,
+                binascii.hexlify(data[offset + record_offset:offset + size])))
 
         return data
 
@@ -409,7 +462,20 @@ class RecordParser:
 
             parsed_data += decoder(dbc_id, data, segment_offset, bytes_left)
 
-            record_offset += decoder.size()
+            decoded = decoder.size();
+            if decoded < 0:
+                raise ValueError('Decoded negative bytes ({}), record={}, data={}, bytes={}'.format(
+                    decoded, dbc_id, parsed_data, binascii.hexlify(data[offset:offset+size])))
+
+            record_offset += decoded
+
+        unparsed_bytes = size - record_offset
+
+        # Sanity check parsing when offset map is not used
+        if not self.parser().has_offset_map() and (unparsed_bytes < 0 or unparsed_bytes > 3):
+            raise ValueError('Parse error: parsed_bytes={}, bytes_left={}, record={}, data={}, remains={}'.format(
+                record_offset, unparsed_bytes, size, parsed_data,
+                binascii.hexlify(data[offset + record_offset:offset + size])))
 
         return parsed_data
 
@@ -442,7 +508,7 @@ class ExpandedRecordParser(RecordParser):
             column = self.parser().column(column_idx)
 
             # Hotfixed columns always have inlined strings
-            if column.is_string() and (self.parser().has_offset_map() or self._cache):
+            if column.is_string() and (self.parser().has_offset_map() or self._hotfix_parser):
                 if len(columns) > 0:
                     decoders.append(WDC1StructSegmentParser(self, columns, expanded_data = True))
                     columns = []
@@ -500,6 +566,13 @@ class WDC1RecordParser(RecordParser):
         # Presume the record ends with a bit-packed set of columns
         if len(bitpack_columns) > 0:
             decoders.append(WDC1PackedBitSegmentParser(self, bitpack_columns))
+
+        # Grab the key block id from the end of the hotfix record, if this
+        # hotfix entry is not for one of the client data files where the data
+        # is already incorporated into the record itself
+        if self._hotfix_parser and self.parser().has_key_block() and \
+                not dbc.use_hotfix_key_field(self.parser().class_name()):
+            decoders.append(WDC1HotfixKeyIdParser(self, self.parser().key_bytes()))
 
         self._decoders = decoders
 
@@ -562,8 +635,6 @@ class WDC1Column:
     def bit_size(self):
         if self.__size_type in [0, 8, 16, 24, -32]:
             return (32 - self.__size_type)
-        elif self.__ext.block_type() in [COLUMN_TYPE_SPARSE, COLUMN_TYPE_INDEXED, COLUMN_TYPE_ARRAY]:
-            return 32
         else:
             return self.__ext.bit_size()
 
@@ -654,9 +725,9 @@ class WDC1Column:
         )
 
     def __str__(self):
-        return 'Column[ idx={}, offset={}, size={}, elements={}{} ]'.format(
-            self.__index, self.__offset, self.bit_size(), self.elements(),
-            (self.ext_data() and self.ext_data().block_type() != 0) and (', info=' + str(self.ext_data())) or ''
+        return 'Column[ idx={}, offset={}, size={} ({}), elements={}{} ]'.format(
+            self.__index, self.__offset, self.bit_size(), self.__size_type, self.elements(),
+            self.ext_data().block_type() != 0 and (', info=' + str(self.ext_data())) or ''
         )
 
 # A faked colum representing a 32-bit value in the record. Used in association
@@ -694,7 +765,7 @@ class WDC1ProxyColumn(WDC1Column):
         return 'I'
 
     def short_type(self):
-        return 'uint:32'
+        return 'uint:32[p]'
 
     def __str__(self):
         return 'Column[ idx={}, offset={}, size={}, elements={} ]'.format(
@@ -825,6 +896,16 @@ class WDC1Parser(DBCParserBase):
         self.__id_format = '%%%uu' % n_digits
         return self.__id_format
 
+    # Bytes required for the foreign key, needed for hotfix cache to parse it out
+    def key_bytes(self):
+        length = self.__key_high.bit_length()
+        if length > 16:
+            return 4
+        elif length > 8:
+            return 2
+        else:
+            return 1
+
     # Note, wdb_name is ignored, as WDC1 parsers are always bound to a single
     # wdb file (e.g., Spell.db2)
     def key_format(self):
@@ -857,7 +938,10 @@ class WDC1Parser(DBCParserBase):
         else:
             parser = WDC1RecordParser(self, hotfix = hotfix_parser)
 
-        logging.debug('Unpacking plan for %s: %s', self.full_name(), parser)
+        logging.debug('Unpacking plan for %s%s: %s',
+                self.full_name(),
+                hotfix_parser and ' (hotfix)' or '',
+                parser)
 
         return parser
 

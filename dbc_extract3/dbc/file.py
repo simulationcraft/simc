@@ -13,6 +13,10 @@ class HotfixIterator:
         self._wdb_parser = wdb_parser
         self._records = f.parser.n_entries(wdb_parser)
 
+        self._key_field_name = dbc.use_hotfix_key_field(self._wdb_parser.class_name())
+        if self._key_field_name:
+            self._key_field_index = self._data_class._cd[self._key_field_name]
+
         self._record = 0
 
     def __iter__(self):
@@ -29,8 +33,6 @@ class HotfixIterator:
         # separate the record id and the key block id from the parsed data,
         # since they are included as the first and last element of the parsed
         # tuple, respectively
-        #
-        # TODO: Can we have key blocks in hotfix data somehow other than as an expanded record?
         if self._wdb_parser.class_name() in dbc.EXPANDED_HOTFIX_RECORDS:
             start_offset = 0
             end_offset = len(data)
@@ -48,6 +50,16 @@ class HotfixIterator:
                 end_offset -= 1
 
             data = data[start_offset:end_offset]
+        # Not an expanded parser, but the client data file uses a key block
+        elif self._wdb_parser.has_key_block():
+            # If the key block id is not duplicated in the record, it'll be at
+            # the end of the hotfix entry
+            if not self._key_field_name:
+                key_id = data[-1]
+                data = data[:-1]
+            # Duplicated, just grab it from the record index
+            else:
+                key_id = data[self._key_field_index]
 
         self._record += 1
 

@@ -160,7 +160,7 @@
     { "data_type": "I", "field": "duration" },
     { "data_type": "f", "field": "dmg_range" },
 
-    { "data_type": "H", "field": "class_mask", "formats": { "cpp": "%#.8x" } },
+    { "data_type": "H", "field": "class_mask", "formats": { "cpp": "%#.4x" } },
     { "data_type": "H", "field": "ilevel" },
     { "data_type": "H", "field": "req_skill" },
     { "data_type": "H", "field": "req_skill_rank" },
@@ -315,7 +315,7 @@
     { "data_type": "S", "field": "name" }
   ],
   "MinorTalent": [
-    { "data_type": "h", "field": "id_spec" },
+    { "data_type": "I", "field": "id_spell" },
     { "data_type": "b", "field": "index" }
   ],
   "RandPropPoints": [
@@ -336,8 +336,8 @@
   ],
   "ScalingStatDistribution": [
     { "data_type": "H", "field": "id_curve",  "formats": { "cpp": "%5u" } },
-    { "data_type": "B", "field": "min_level", "formats": { "cpp": "%3u" } },
-    { "data_type": "B", "field": "max_level", "formats": { "cpp": "%3u" } }
+    { "data_type": "I", "field": "min_level", "formats": { "cpp": "%3u" } },
+    { "data_type": "I", "field": "max_level", "formats": { "cpp": "%3u" } }
   ],
   "SkillLine": [
     { "data_type": "S", "field": "name" },
@@ -360,11 +360,11 @@
     { "data_type": "H", "field": "index" },
     { "data_type": "H", "field": "id_filter" },
     { "data_type": "B", "field": "reward_skill_points" },
-    { "data_type": "I", "field": "mask_class", "formats": { "cpp": "%#.8x" } },
-    { "data_type": "I", "field": "req_skill_level" },
-    { "data_type": "I", "field": "unk_13" },
-    { "data_type": "I", "field": "unk_14" },
-    { "data_type": "I", "field": "unk_15" }
+    { "data_type": "H", "field": "mask_class", "formats": { "cpp": "%#.4x" } },
+    { "data_type": "H", "field": "req_skill_level" },
+    { "data_type": "B", "field": "unk_13" },
+    { "data_type": "B", "field": "unk_14" },
+    { "data_type": "B", "field": "unk_15" }
   ],
   "SpecializationSpells": [
     { "data_type": "I", "field": "unk_1" },
@@ -532,7 +532,7 @@
     { "data_type": "I", "field": "id_icon" },
     { "data_type": "f", "field": "proj_speed" },
     { "data_type": "I", "field": "id_active_icon" },
-    { "data_type": "I", "field": "unk_1" },
+    { "data_type": "B", "field": "unk_1" },
     { "data_type": "I", "field": "unk_2" },
     { "data_type": "I", "field": "flags", "elements": 14 }
   ],
@@ -553,7 +553,7 @@
   ],
   "SpellProcsPerMinute": [
     { "data_type": "f", "field": "ppm" },
-    { "data_type": "B", "field": "unk_1" }
+    { "data_type": "B", "field": "flags" }
   ],
   "SpellProcsPerMinuteMod": [
     { "data_type": "f", "field": "coefficient" },
@@ -576,9 +576,9 @@
   "SpellScaling": [
     { "data_type": "I", "field": "id_spell" },
     { "data_type": "H", "field": "max_scaling_ilevel" },
-    { "data_type": "b", "field": "id_class" },
-    { "data_type": "b", "field": "min_scaling_level" },
-    { "data_type": "h", "field": "max_scaling_level" }
+    { "data_type": "i", "field": "id_class" },
+    { "data_type": "I", "field": "min_scaling_level" },
+    { "data_type": "I", "field": "max_scaling_level" }
   ],
   "SpellShapeshift": [
     { "data_type": "I", "field": "id_spell" },
@@ -588,8 +588,8 @@
   ],
   "SpellTargetRestrictions": [
     { "data_type": "f", "field": "cone" },
-    { "data_type": "f", "field": "unk_2" },
-    { "data_type": "I", "field": "unk_flags" },
+    { "data_type": "f", "field": "width" },
+    { "data_type": "I", "field": "targets" },
     { "data_type": "h", "field": "unk_4" },
     { "data_type": "b", "field": "unk_5" },
     { "data_type": "b", "field": "max_affected_targets" },

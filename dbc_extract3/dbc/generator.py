@@ -1974,7 +1974,7 @@ class SpellDataGenerator(DataGenerator):
             if spell_id == 0:
                 continue
 
-            spec_data = self._chrspecialization_db[perk_data.id_spec]
+            spec_data = self._chrspecialization_db[perk_data.id_parent]
             if spec_data.id == 0:
                 continue
 
