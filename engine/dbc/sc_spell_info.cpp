@@ -382,8 +382,8 @@ static const std::unordered_map<int, const std::string> _resource_strings =
   { 13, "Insanity",      },
   { 14, "Burning Ember", },
   { 15, "Demonic Fury",  },
-  { 16, "Fury",          },
-  { 17, "Pain",          },
+  { 17, "Fury",          },
+  { 18, "Pain",          },
 };
 
 const std::map<unsigned, std::string> _attribute_strings = {
