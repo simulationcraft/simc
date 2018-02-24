@@ -681,6 +681,7 @@ static const std::unordered_map<unsigned, const std::string> _effect_subtype_str
   { 253, "Modify Critical Block Chance"                 },
   { 259, "Modify Periodic Healing Recevied%"            },
   { 263, "Disable Abilities"                            },
+  { 268, "Modify Armor by Primary Stat%"                },
   { 269, "Modify Damage Done% to Caster"                },
   { 270, "Modify Damage Taken% from Caster"             },
   { 271, "Modify Damage Taken% from Caster's Spells"    },
