@@ -1082,10 +1082,6 @@ double action_t::calculate_weapon_damage( double attack_power ) const
   double power_damage = weapon_speed.total_seconds() * weapon_power_mod * attack_power;
   double total_dmg = dmg + power_damage;
 
-  // OH penalty
-  if ( weapon -> slot == SLOT_OFF_HAND )
-    total_dmg *= 0.5;
-
   if ( sim -> debug )
   {
     sim -> out_debug.printf( "%s weapon damage for %s: base=%.0f-%.0f td=%.3f wd=%.3f bd=%.3f ws=%.3f pd=%.3f ap=%.3f",
@@ -1167,6 +1163,15 @@ double action_t::calculate_direct_amount( action_state_t* state ) const
   amount += attack_direct_power_coefficient( state ) * ( state -> composite_attack_power() );
   amount *= state -> composite_da_multiplier();
 
+  // OH penalty, this applies to any OH attack even if is not based on weapon damage
+  double weapon_slot_modifier = 1.0;
+  if ( weapon && weapon->slot == SLOT_OFF_HAND )
+  {
+    weapon_slot_modifier = 0.5;
+    amount *= weapon_slot_modifier;
+    weapon_amount *= weapon_slot_modifier;
+  }
+
   // damage variation in WoD is based on the delta field in the spell data, applied to entire amount
   double delta_mod = amount_delta_modifier( state );
   if ( ! sim -> average_range &&  delta_mod > 0 )
@@ -1231,11 +1236,11 @@ double action_t::calculate_direct_amount( action_state_t* state ) const
 
   if ( sim -> debug )
   {
-    sim -> out_debug.printf( "%s amount for %s: dd=%.0f i_dd=%.0f w_dd=%.0f b_dd=%.0f s_mod=%.2f s_power=%.0f a_mod=%.2f a_power=%.0f mult=%.2f w_mult=%.2f",
+    sim -> out_debug.printf( "%s amount for %s: dd=%.0f i_dd=%.0f w_dd=%.0f b_dd=%.0f s_mod=%.2f s_power=%.0f a_mod=%.2f a_power=%.0f mult=%.2f w_mult=%.2f w_slot=%.1f",
                    player -> name(), name(), amount, state -> result_raw, weapon_amount, base_direct_amount,
                    spell_direct_power_coefficient( state ), state -> composite_spell_power(),
                    attack_direct_power_coefficient( state ), state -> composite_attack_power(),
-                   state -> composite_da_multiplier(), weapon_multiplier );
+                   state -> composite_da_multiplier(), weapon_multiplier, weapon_slot_modifier );
   }
 
   // Record total amount to state
