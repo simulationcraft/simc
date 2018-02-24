@@ -599,8 +599,7 @@ public:
       ret_inquisition = false;
     }
 
-    // TODO(mserrano): this is incorrect. Hackfixed temporarily, but this needs real logic.
-    hasted_cd = false;
+    hasted_cd = hasted_gcd = false;
     auto update_hasted_cooldowns_by_passive = [&](const spell_data_t* passive) {
       for (uint32_t i = 1; i <= passive -> effect_count(); i++) {
         auto effect = passive -> effectN( i );
