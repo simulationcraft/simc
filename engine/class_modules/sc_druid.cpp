@@ -7791,7 +7791,7 @@ void druid_t::apl_precombat()
   {
     precombat -> add_action( this, "Moonkin Form" );
     precombat -> add_action( "blessing_of_elune" );
-    precombat -> add_action("variable,name=starfall_st,value=talent.soul_of_the_forest.enabled&set_bonus.tier21_4pc");
+    precombat -> add_action("variable,name=starfall_st,value=talent.soul_of_the_forest.enabled");
   }
   //else if (specialization() == DRUID_RESTORATION && (primary_role() == ROLE_DPS || primary_role() == ROLE_SPELL))
   //{
