@@ -255,10 +255,6 @@ struct consecration_tick_t: public paladin_spell_t {
     background = true;
     may_crit = true;
     ground_aoe = true;
-    if ( p -> specialization() == PALADIN_RETRIBUTION )
-    {
-      base_multiplier *= 1.0 + p -> passives.retribution_paladin -> effectN( 9 ).percent();
-    }
 
     if (p->specialization() == PALADIN_PROTECTION)
     {
@@ -294,9 +290,10 @@ struct consecration_t : public paladin_spell_t
     parse_options( options_str );
 
     // disable if Ret and not talented
-    if ( p -> specialization() == PALADIN_RETRIBUTION )
+    if ( p -> specialization() == PALADIN_RETRIBUTION ) {
       background = ! ( p -> talents.consecration -> ok() );
-
+      hasted_gcd = true;
+    }
     dot_duration = timespan_t::zero(); // the periodic event is handled by ground_aoe_event_t
     may_miss       = false;
 
@@ -316,7 +313,7 @@ struct consecration_t : public paladin_spell_t
         // spawn at feet of player
         .x( execute_state -> action -> player -> x_position )
         .y( execute_state -> action -> player -> y_position )
-        .n_pulses( 13 )
+        .n_pulses( 11 )
         .start_time( sim -> current_time()  )
         .action( damage_tick )
         .hasted( ground_aoe_params_t::SPELL_HASTE ), true );
@@ -706,15 +703,6 @@ struct crusader_strike_t : public holy_power_generator_t
     {
       cooldown -> charges += crusader_strike_2 -> effectN( 1 ).base_value();
     }
-
-    if ( p -> specialization() == PALADIN_RETRIBUTION )
-    {
-      base_multiplier *= 1.0 + p -> passives.retribution_paladin -> effectN( 8 ).percent();
-    }
-
-    if ( p -> specialization() == PALADIN_HOLY ) {
-      base_multiplier *= 1.0 + p -> passives.holy_paladin -> effectN( 5 ).percent();
-    }
   }
 
   void impact( action_state_t* s ) override
@@ -825,7 +813,7 @@ struct judgment_t : public paladin_melee_attack_t
     weapon_multiplier = 0.0;
     may_block = may_parry = may_dodge = false;
     cooldown -> charges = 1;
-    hasted_cd = true;
+    hasted_cd = hasted_gcd = true;
 
     // TODO: this is a hack; figure out what's really going on here.
     if ( p -> specialization() == PALADIN_RETRIBUTION )
@@ -1751,12 +1739,6 @@ double paladin_t::composite_player_multiplier( school_e school ) const
 
   // These affect all damage done by the paladin
 
-  // "Sword of Light" buffs everything now
-  if ( specialization() == PALADIN_RETRIBUTION )
-  {
-    m *= 1.0 + passives.retribution_paladin -> effectN( 6 ).percent();
-  }
-
   // Avenging Wrath buffs everything
   if ( buffs.avenging_wrath -> check() )
   {
@@ -1831,7 +1813,7 @@ double paladin_t::composite_spell_power( school_e school ) const
       sp = passives.guarded_by_the_light -> effectN( 1 ).percent() * cache.attack_power() * composite_attack_power_multiplier();
       break;
     case PALADIN_RETRIBUTION:
-        sp = passives.retribution_paladin -> effectN( 5 ).percent() * cache.attack_power() * composite_attack_power_multiplier();
+      sp = passives.retribution_paladin -> effectN( 10 ).percent() * cache.attack_power() * composite_attack_power_multiplier();
       break;
     default:
       break;
@@ -1843,12 +1825,11 @@ double paladin_t::composite_spell_power( school_e school ) const
 
 double paladin_t::composite_melee_attack_power() const
 {
-    if ( specialization() == PALADIN_HOLY ) //thx for Mistweaver maintainer
-        return composite_spell_power( SCHOOL_MAX );
-
+  if ( specialization() == PALADIN_HOLY ) //thx for Mistweaver maintainer
+    return composite_spell_power( SCHOOL_MAX );
   double ap = player_t::composite_melee_attack_power();
-
-  ap += passives.bladed_armor -> effectN( 1 ).percent() * current.stats.get_stat( STAT_BONUS_ARMOR );
+  if ( specialization() == PALADIN_PROTECTION )
+    ap += passives.bladed_armor -> effectN( 1 ).percent() * current.stats.get_stat( STAT_BONUS_ARMOR );
 
   return ap;
 }
@@ -1860,7 +1841,8 @@ double paladin_t::composite_attack_power_multiplier() const
   double ap = player_t::composite_attack_power_multiplier();
 
   // Mastery bonus is multiplicative with other effects
-  ap *= 1.0 + cache.mastery() * passives.divine_bulwark -> effectN( 5 ).mastery_value();
+  if ( specialization() == PALADIN_PROTECTION )
+    ap *= 1.0 + cache.mastery() * passives.divine_bulwark -> effectN( 5 ).mastery_value();
 
   return ap;
 }

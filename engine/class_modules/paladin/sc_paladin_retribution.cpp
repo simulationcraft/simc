@@ -549,7 +549,7 @@ struct shield_of_vengeance_t : public paladin_absorb_t
     trigger_gcd = timespan_t::zero();
 
     may_crit = true;
-    attack_power_mod.direct = 20;
+    attack_power_mod.direct = 5;
 
     if ( ! ( p -> active_shield_of_vengeance_proc ) )
     {
@@ -582,6 +582,8 @@ struct wake_of_ashes_t : public paladin_spell_t
     parse_options( options_str );
     if ( ! ( p -> talents.wake_of_ashes -> ok() ) )
       background = true;
+    hasted_gcd = true;
+    may_crit = true;
   }
 };
 
@@ -593,6 +595,7 @@ struct inquisition_t : public paladin_heal_t
     parse_options( options_str );
     if ( ! ( p -> talents.inquisition -> ok() ) )
       background = true;
+    hasted_gcd = true;
   }
 
   virtual double cost() const override
@@ -622,6 +625,7 @@ struct hammer_of_wrath_t : public holy_power_generator_t
     : holy_power_generator_t( "hammer_of_wrath", p, p -> find_talent_spell( "Hammer of Wrath" ) )
   {
     parse_options( options_str );
+    hasted_cd = hasted_gcd = true;
   }
 
   virtual bool ready() override
@@ -717,7 +721,7 @@ void paladin_t::init_spells_retribution()
 
   // Mastery
   passives.hand_of_light             = find_mastery_spell( PALADIN_RETRIBUTION );
-  passives.execution_sentence        = find_spell( 267798 );
+  passives.execution_sentence        = find_spell( 267799 );
 
   // Spec aura
   spec.retribution_paladin = find_specialization_spell( "Retribution Paladin" );

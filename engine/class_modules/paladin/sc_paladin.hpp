@@ -538,6 +538,8 @@ public:
   bool ret_damage_increase;
   bool ret_dot_increase;
   bool ret_damage_increase_two;
+  bool ret_damage_increase_three;
+  bool ret_damage_increase_four;
   bool ret_mastery_direct;
   bool ret_execution_sentence;
   bool ret_inquisition;
@@ -545,11 +547,11 @@ public:
   paladin_action_t( const std::string& n, paladin_t* player,
                     const spell_data_t* s = spell_data_t::nil() ) :
     ab( n, player, s ),
-    hasted_cd( ab::data().affected_by( player -> passives.paladin -> effectN( 2 ) ) ),
-    hasted_gcd( ab::data().affected_by( player -> passives.paladin -> effectN( 3 ) ) ),
-    ret_damage_increase( ab::data().affected_by( player -> spec.retribution_paladin -> effectN( 1 ) ) ),
-    ret_dot_increase( ab::data().affected_by( player -> spec.retribution_paladin -> effectN( 2 ) ) ),
-    ret_damage_increase_two( ab::data().affected_by( player -> spec.retribution_paladin -> effectN( 7 ) ) ),
+    ret_damage_increase( ab::data().affected_by( player -> spec.retribution_paladin -> effectN( 6 ) ) ),
+    ret_dot_increase( ab::data().affected_by( player -> spec.retribution_paladin -> effectN( 7 ) ) ),
+    ret_damage_increase_two( ab::data().affected_by( player -> spec.retribution_paladin -> effectN( 11 ) ) ),
+    ret_damage_increase_three( ab::data().affected_by( player -> spec.retribution_paladin -> effectN( 12 ) ) ),
+    ret_damage_increase_four( ab::data().affected_by( player -> spec.retribution_paladin -> effectN( 13 ) ) ),
     ret_mastery_direct( ab::data().affected_by( player -> passives.hand_of_light -> effectN( 1 ) ) || ab::data().affected_by( player -> passives.hand_of_light -> effectN( 2 ) ) )
   {
     // Aura buff to protection paladin added in 7.3
@@ -565,6 +567,33 @@ public:
       ret_execution_sentence = false;
       ret_inquisition = false;
     }
+
+    // TODO(mserrano): this is incorrect. Hackfixed temporarily, but this needs real logic.
+    hasted_cd = ab::data().affected_by( player -> passives.paladin -> effectN( 2 ) ) ||
+                ab::data().affected_by( player -> passives.paladin -> effectN( 3 ) ) ||
+                ab::data().affected_by( player -> passives.paladin -> effectN( 4 ) ) ||
+                ab::data().affected_by( player -> passives.paladin -> effectN( 5 ) ) ||
+                ab::data().affected_by( player -> passives.paladin -> effectN( 6 ) ) ||
+                ab::data().affected_by( player -> passives.paladin -> effectN( 7 ) ) ||
+                ab::data().affected_by( player -> passives.paladin -> effectN( 8 ) );
+    if ( !hasted_cd ) {
+      if ( p() -> specialization() == PALADIN_RETRIBUTION ) {
+        hasted_cd = ab::data().affected_by( player -> spec.retribution_paladin -> effectN( 1 ) ) ||
+                    ab::data().affected_by( player -> spec.retribution_paladin -> effectN( 3 ) ) ||
+                    ab::data().affected_by( player -> spec.retribution_paladin -> effectN( 4 ) ) ||
+                    ab::data().affected_by( player -> spec.retribution_paladin -> effectN( 5 ) );
+      } else if ( p() -> specialization() == PALADIN_PROTECTION ) {
+        hasted_cd = ab::data().affected_by( player -> passives.protection_paladin -> effectN( 1 ) ) ||
+                    ab::data().affected_by( player -> passives.protection_paladin -> effectN( 3 ) );
+      } else {
+        hasted_cd = ab::data().affected_by( player -> passives.holy_paladin -> effectN( 2 ) ) ||
+                    ab::data().affected_by( player -> passives.holy_paladin -> effectN( 4 ) );
+      }
+    }
+    hasted_gcd = hasted_cd ||
+                 ( p() -> specialization() == PALADIN_RETRIBUTION && ab::data().affected_by( player -> spec.retribution_paladin -> effectN( 2 ) ) ) ||
+                 ( p() -> specialization() == PALADIN_PROTECTION && ab::data().affected_by( player -> passives.protection_paladin -> effectN( 2 ) ) ) ||
+                 ( p() -> specialization() == PALADIN_HOLY && ab::data().affected_by( player -> passives.holy_paladin -> effectN( 3 ) ) );
   }
 
   paladin_t* p()
@@ -595,11 +624,15 @@ public:
       }
     }
     if ( ret_damage_increase )
-      ab::base_dd_multiplier *= 1.0 + p() -> spec.retribution_paladin -> effectN( 1 ).percent();
+      ab::base_dd_multiplier *= 1.0 + p() -> spec.retribution_paladin -> effectN( 6 ).percent();
     if ( ret_dot_increase )
-      ab::base_td_multiplier *= 1.0 + p() -> spec.retribution_paladin -> effectN( 2 ).percent();
+      ab::base_td_multiplier *= 1.0 + p() -> spec.retribution_paladin -> effectN( 7 ).percent();
     if ( ret_damage_increase_two )
-      ab::base_dd_multiplier *= 1.0 + p() -> spec.retribution_paladin -> effectN( 7 ).percent();
+      ab::base_dd_multiplier *= 1.0 + p() -> spec.retribution_paladin -> effectN( 11 ).percent();
+    if ( ret_damage_increase_three )
+      ab::base_dd_multiplier *= 1.0 + p() -> spec.retribution_paladin -> effectN( 12 ).percent();
+    if ( ret_damage_increase_four )
+      ab::base_dd_multiplier *= 1.0 + p() -> spec.retribution_paladin -> effectN( 13 ).percent();
   }
 
   double cost() const override
