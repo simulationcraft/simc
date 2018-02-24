@@ -4272,8 +4272,8 @@ struct ice_lance_t : public frost_mage_spell_t
 
   virtual void snapshot_state( action_state_t* s, dmg_e rt ) override
   {
-    frost_mage_spell_t::snapshot_state( s, rt );
     debug_cast<ice_lance_state_t*>( s ) -> fingers_of_frost = p() -> buffs.fingers_of_frost -> check() != 0;
+    frost_mage_spell_t::snapshot_state( s, rt );
   }
 
   virtual timespan_t travel_time() const override
