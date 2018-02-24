@@ -3,6 +3,8 @@
 
 namespace paladin {
 // Forward declarations
+typedef std::pair<std::string, simple_sample_data_with_min_max_t> data_t;
+typedef std::pair<std::string, simple_sample_data_t> simple_data_t;
 struct paladin_t;
 struct blessing_of_sacrifice_redirect_t;
 struct paladin_ground_aoe_t;
@@ -42,6 +44,10 @@ struct paladin_td_t : public actor_target_data_t
 struct paladin_t : public player_t
 {
 public:
+
+  // waste tracking
+  auto_dispose< std::vector<data_t*> > cd_waste_exec, cd_waste_cumulative;
+  auto_dispose< std::vector<simple_data_t*> > cd_waste_iter;
 
   // Active
   heal_t*   active_beacon_of_light;
@@ -420,6 +426,25 @@ public:
   target_specific_t<paladin_td_t> target_data;
 
   virtual paladin_td_t* get_target_data( player_t* target ) const override;
+
+
+  template <typename T_CONTAINER, typename T_DATA>
+  T_CONTAINER* get_data_entry( const std::string& name, std::vector<T_DATA*>& entries )
+  {
+    for ( size_t i = 0; i < entries.size(); i++ )
+    {
+      if ( entries[ i ]->first == name )
+      {
+        return &( entries[ i ]->second );
+      }
+    }
+
+    entries.push_back( new T_DATA( name, T_CONTAINER() ) );
+    return &( entries.back()->second );
+  }
+  virtual void merge( player_t& other ) override;
+  virtual void datacollection_begin() override;
+  virtual void datacollection_end() override;
 };
 
 namespace buffs {
@@ -532,6 +557,10 @@ private:
 public:
   typedef paladin_action_t base_t;
 
+  bool track_cd_waste;
+  simple_sample_data_with_min_max_t* cd_wasted_exec, *cd_wasted_cumulative;
+  simple_sample_data_t* cd_wasted_iter;
+
   // haste scaling bools
   bool hasted_cd;
   bool hasted_gcd;
@@ -547,6 +576,8 @@ public:
   paladin_action_t( const std::string& n, paladin_t* player,
                     const spell_data_t* s = spell_data_t::nil() ) :
     ab( n, player, s ),
+    track_cd_waste( s -> cooldown() > timespan_t::zero() || s -> charge_cooldown() > timespan_t::zero() ),
+    cd_wasted_exec( nullptr ), cd_wasted_cumulative( nullptr ), cd_wasted_iter( nullptr ),
     ret_damage_increase( ab::data().affected_by( player -> spec.retribution_paladin -> effectN( 6 ) ) ),
     ret_dot_increase( ab::data().affected_by( player -> spec.retribution_paladin -> effectN( 7 ) ) ),
     ret_damage_increase_two( ab::data().affected_by( player -> spec.retribution_paladin -> effectN( 11 ) ) ),
@@ -607,6 +638,13 @@ public:
   void init() override
   {
     ab::init();
+
+    if ( track_cd_waste )
+    {
+      cd_wasted_exec = p() -> template get_data_entry<simple_sample_data_with_min_max_t, data_t>( ab::name_str, p() -> cd_waste_exec );
+      cd_wasted_cumulative = p() -> template get_data_entry<simple_sample_data_with_min_max_t, data_t>( ab::name_str, p() -> cd_waste_cumulative );
+      cd_wasted_iter = p() -> template get_data_entry<simple_sample_data_t, simple_data_t>( ab::name_str, p() -> cd_waste_iter );
+    }
 
     if ( hasted_cd )
     {
@@ -701,6 +739,32 @@ public:
         ctm *= 1.0 + p() -> passives.execution_sentence -> effectN( 1 ).percent();
     }
     return ctm;
+  }
+
+  virtual void update_ready( timespan_t cd = timespan_t::min() ) override
+  {
+    if ( cd_wasted_exec &&
+         ( cd > timespan_t::zero() || ( cd <= timespan_t::zero() && ab::cooldown -> duration > timespan_t::zero() ) ) &&
+         ab::cooldown -> current_charge == ab::cooldown -> charges &&
+         ab::cooldown -> last_charged > timespan_t::zero() &&
+         ab::cooldown -> last_charged < ab::sim -> current_time() )
+    {
+      double time_ = ( ab::sim -> current_time() - ab::cooldown -> last_charged ).total_seconds();
+      if ( p() -> sim -> debug )
+      {
+        p() -> sim -> out_debug.printf( "%s %s cooldown waste tracking waste=%.3f exec_time=%.3f",
+            p() -> name(), ab::name(), time_, ab::time_to_execute.total_seconds() );
+      }
+      time_ -= ab::time_to_execute.total_seconds();
+
+      if ( time_ > 0 )
+      {
+        cd_wasted_exec -> add( time_ );
+        cd_wasted_iter -> add( time_ );
+      }
+    }
+
+    ab::update_ready( cd );
   }
 };
 

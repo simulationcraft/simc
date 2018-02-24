@@ -2268,6 +2268,46 @@ expr_t* paladin_t::create_expression( action_t* a,
   return player_t::create_expression( a, name_str );
 }
 
+void paladin_t::merge( player_t& other )
+{
+  player_t::merge( other );
+
+  const paladin_t& op = static_cast<paladin_t&>( other );
+
+  for ( size_t i = 0, end = cd_waste_exec.size(); i < end; i++ )
+  {
+    cd_waste_exec[ i ] -> second.merge( op.cd_waste_exec[ i ] -> second );
+    cd_waste_cumulative[ i ] -> second.merge( op.cd_waste_cumulative[ i ] -> second );
+  }
+}
+
+void paladin_t::datacollection_begin()
+{
+  if ( active_during_iteration )
+  {
+    for ( size_t i = 0, end = cd_waste_iter.size(); i < end; ++i )
+    {
+      cd_waste_iter[ i ] -> second.reset();
+    }
+  }
+
+  player_t::datacollection_begin();
+}
+
+void paladin_t::datacollection_end()
+{
+  if ( requires_data_collection() )
+  {
+    for ( size_t i = 0, end = cd_waste_iter.size(); i < end; ++i )
+    {
+      cd_waste_cumulative[ i ] -> second.add( cd_waste_iter[ i ] -> second.sum() );
+    }
+  }
+
+  player_t::datacollection_end();
+}
+
+
 /* Report Extension Class
  * Here you can define class specific report extensions/overrides
  */
@@ -2280,17 +2320,84 @@ public:
 
   }
 
-  virtual void html_customsection( report::sc_html_stream& /* os*/ ) override
+  void cdwaste_table_header( report::sc_html_stream& os )
   {
-    (void) p;
-    /*// Custom Class Section
-    os << "\t\t\t\t<div class=\"player-section custom_section\">\n"
-        << "\t\t\t\t\t<h3 class=\"toggle open\">Custom Section</h3>\n"
-        << "\t\t\t\t\t<div class=\"toggle-content\">\n";
+    os << "<table class=\"sc\" style=\"float: left;margin-right: 10px;\">\n"
+         << "<tr>\n"
+           << "<th></th>\n"
+           << "<th colspan=\"3\">Seconds per Execute</th>\n"
+           << "<th colspan=\"3\">Seconds per Iteration</th>\n"
+         << "</tr>\n"
+         << "<tr>\n"
+           << "<th>Ability</th>\n"
+           << "<th>Average</th>\n"
+           << "<th>Minimum</th>\n"
+           << "<th>Maximum</th>\n"
+           << "<th>Average</th>\n"
+           << "<th>Minimum</th>\n"
+           << "<th>Maximum</th>\n"
+         << "</tr>\n";
+  }
 
-    os << p.name();
+  void cdwaste_table_footer( report::sc_html_stream& os )
+  {
+    os << "</table>\n";
+  }
 
-    os << "\t\t\t\t\t\t</div>\n" << "\t\t\t\t\t</div>\n";*/
+  void cdwaste_table_contents( report::sc_html_stream& os )
+  {
+    size_t n = 0;
+    for ( size_t i = 0; i < p.cd_waste_exec.size(); i++ )
+    {
+      const data_t* entry = p.cd_waste_exec[ i ];
+      if ( entry -> second.count() == 0 )
+      {
+        continue;
+      }
+
+      const data_t* iter_entry = p.cd_waste_cumulative[ i ];
+
+      action_t* a = p.find_action( entry -> first );
+      std::string name_str = entry -> first;
+      if ( a )
+      {
+        name_str = report::action_decorator_t( a ).decorate();
+      }
+
+      std::string row_class_str = "";
+      if ( ++n & 1 )
+        row_class_str = " class=\"odd\"";
+
+      os.format( "<tr%s>", row_class_str.c_str() );
+      os << "<td class=\"left\">" << name_str << "</td>";
+      os.format("<td class=\"right\">%.3f</td>", entry -> second.mean() );
+      os.format("<td class=\"right\">%.3f</td>", entry -> second.min() );
+      os.format("<td class=\"right\">%.3f</td>", entry -> second.max() );
+      os.format("<td class=\"right\">%.3f</td>", iter_entry -> second.mean() );
+      os.format("<td class=\"right\">%.3f</td>", iter_entry -> second.min() );
+      os.format("<td class=\"right\">%.3f</td>", iter_entry -> second.max() );
+      os << "</tr>\n";
+    }
+  }
+
+  virtual void html_customsection( report::sc_html_stream& os ) override
+  {
+    os << "\t\t\t\t<div class=\"player-section custom_section\">\n";
+    if ( p.cd_waste_exec.size() > 0 )
+    {
+      os << "\t\t\t\t\t<h3 class=\"toggle open\">Cooldown waste details</h3>\n"
+         << "\t\t\t\t\t<div class=\"toggle-content\">\n";
+
+      cdwaste_table_header( os );
+      cdwaste_table_contents( os );
+      cdwaste_table_footer( os );
+
+      os << "\t\t\t\t\t</div>\n";
+
+      os << "<div class=\"clear\"></div>\n";
+    }
+
+    os << "\t\t\t\t\t</div>\n";
   }
 private:
   paladin_t& p;
