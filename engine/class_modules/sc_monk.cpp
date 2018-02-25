@@ -1013,7 +1013,7 @@ struct storm_earth_and_fire_pet_t : public pet_t
       sef_melee_attack_t( n, player, spell_data_t::nil(), w )
     {
       background = repeating = may_crit = may_glance = true;
-
+      weapon_multiplier = 1.0;
       base_execute_time = w -> swing_time;
       trigger_gcd = timespan_t::zero();
       special = false;
@@ -1752,7 +1752,7 @@ private:
     {
       background = repeating = may_crit = may_glance = true;
       school = SCHOOL_PHYSICAL;
-
+      weapon_multiplier = 1.0;
       // Use damage numbers from the level-scaled weapon
       weapon = &( player -> main_hand_weapon );
       base_execute_time = weapon -> swing_time;
@@ -1896,7 +1896,7 @@ private:
     {
       background = repeating = may_crit = may_glance = true;
       school = SCHOOL_PHYSICAL;
-
+      weapon_multiplier = 1.0;
       // Use damage numbers from the level-scaled weapon
       weapon = &( player -> main_hand_weapon );
       base_execute_time = weapon -> swing_time;
@@ -3908,6 +3908,7 @@ struct melee_t: public monk_melee_attack_t
     trigger_gcd = timespan_t::zero();
     special = false;
     school = SCHOOL_PHYSICAL;
+    weapon_multiplier = 1.0;
 
     if ( player -> main_hand_weapon.group() == WEAPON_1H )
     {
