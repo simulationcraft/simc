@@ -1619,7 +1619,7 @@ struct insanity_drain_stacks_t final : public priest_buff_t<buff_t>
 
   propagate_const<stack_increase_event_t*> stack_increase;
 
-  insanity_drain_stacks_t( priest_t& p ) : base_t( &p, "insanity_drain_stacks" ), stack_increase( nullptr )
+  insanity_drain_stacks_t( priest_t& p ) : base_t( p, "insanity_drain_stacks" ), stack_increase( nullptr )
 
   {
     set_max_stack( 1 );
@@ -1660,7 +1660,7 @@ struct insanity_drain_stacks_t final : public priest_buff_t<buff_t>
 
 struct overwhelming_darkness_t final : public priest_buff_t<stat_buff_t>
 {
-  overwhelming_darkness_t( priest_t& p ) : base_t( &p, "overwhelming_darkness", p.find_spell( 252909 ) )
+  overwhelming_darkness_t( priest_t& p ) : base_t( p, "overwhelming_darkness", p.find_spell( 252909 ) )
   {
     set_max_stack( 100 );
     set_chance( p.sets->has_set_bonus( PRIEST_SHADOW, T21, B4 ) );
@@ -1683,7 +1683,7 @@ struct overwhelming_darkness_t final : public priest_buff_t<stat_buff_t>
 
 struct voidform_t final : public priest_buff_t<haste_buff_t>
 {
-  voidform_t( priest_t& p ) : base_t( &p, "voidform", p.find_spell( 194249 ) )
+  voidform_t( priest_t& p ) : base_t( p, "voidform", p.find_spell( 194249 ) )
   {
     add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
     add_invalidate( CACHE_HASTE );
@@ -1757,7 +1757,7 @@ struct lingering_insanity_t final : public priest_buff_t<haste_buff_t>
   int hidden_lingering_insanity;
 
   lingering_insanity_t( priest_t& p )
-    : base_t( &p, "lingering_insanity", p.talents.lingering_insanity ), hidden_lingering_insanity( 0 )
+    : base_t( p, "lingering_insanity", p.talents.lingering_insanity ), hidden_lingering_insanity( 0 )
   {
     set_reverse( true );
     set_duration( timespan_t::from_seconds( 50 ) );
