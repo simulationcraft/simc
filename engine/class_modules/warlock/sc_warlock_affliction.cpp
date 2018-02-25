@@ -3,8 +3,10 @@
 
 namespace warlock
 {
-  namespace actions
+  namespace actions_affliction
   {
+    using namespace actions;
+
     const std::array<int, MAX_UAS> ua_spells = { 233490, 233496, 233497, 233498, 233499 };
 
     // Dots
@@ -657,8 +659,10 @@ namespace warlock
     };
   } // end actions namespace
 
-  namespace buffs
+  namespace buffs_affliction
   {
+    using namespace buffs;
+
     struct debuff_agony_t : public warlock_buff_t < buff_t >
     {
       debuff_agony_t( warlock_td_t& p ) : base_t( p, "agony", p.source -> find_spell( 980 ) ) { }
@@ -673,7 +677,7 @@ namespace warlock
     // add actions
   action_t* warlock_t::create_action_affliction( const std::string& action_name, const std::string& options_str )
   {
-    using namespace actions;
+    using namespace actions_affliction;
 
     if ( action_name == "corruption" ) return new                     corruption_t( this, options_str );
     if ( action_name == "agony" ) return new                          agony_t( this, options_str );
@@ -717,6 +721,7 @@ namespace warlock
 
   void warlock_t::init_spells_affliction()
   {
+    using namespace actions_affliction;
     // General
     spec.affliction                     = find_specialization_spell( 137043 );
     mastery_spells.potent_afflictions   = find_mastery_spell( WARLOCK_AFFLICTION );
@@ -737,12 +742,12 @@ namespace warlock
     talents.creeping_death              = find_talent_spell( "Creeping Death" );
     talents.siphon_life                 = find_talent_spell( "Siphon Life" );
     // Tier
-    active.tormented_agony              = new actions::tormented_agony_t( this );
+    active.tormented_agony              = new tormented_agony_t( this );
 
     // seed applies corruption
     if ( specialization() == WARLOCK_AFFLICTION )
     {
-      active.corruption = new actions::corruption_t( this );
+      active.corruption = new corruption_t( this );
       active.corruption->background = true;
       active.corruption->aoe = -1;
     }
@@ -792,22 +797,22 @@ namespace warlock
 
   using namespace unique_gear;
   using namespace actions;
-  struct hood_of_eternal_disdain_t : public scoped_action_callback_t<agony_t>
+  struct hood_of_eternal_disdain_t : public scoped_action_callback_t<actions_affliction::agony_t>
   {
     hood_of_eternal_disdain_t() : super( WARLOCK, "agony" ) { }
 
-    void manipulate( agony_t* a, const special_effect_t& e ) override
+    void manipulate( actions_affliction::agony_t* a, const special_effect_t& e ) override
     {
       a->base_tick_time *= 1.0 + e.driver()->effectN( 2 ).percent();
       a->dot_duration *= 1.0 + e.driver()->effectN( 1 ).percent();
     }
   };
 
-  struct sacrolashs_dark_strike_t : public scoped_action_callback_t<corruption_t>
+  struct sacrolashs_dark_strike_t : public scoped_action_callback_t<actions_affliction::corruption_t>
   {
     sacrolashs_dark_strike_t() : super( WARLOCK, "corruption" ) { }
 
-    void manipulate( corruption_t* a, const special_effect_t& e ) override
+    void manipulate( actions_affliction::corruption_t* a, const special_effect_t& e ) override
     {
       a->base_multiplier *= 1.0 + e.driver()->effectN( 1 ).percent();
     }
