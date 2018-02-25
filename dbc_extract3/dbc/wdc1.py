@@ -50,18 +50,6 @@ def transform_sign(value, mask, bit_size):
     else:
         return value
 
-def get_column_type_str(type):
-    if type == COLUMN_TYPE_BIT:
-        return 'bits'
-    elif type == COLUMN_TYPE_SPARSE:
-        return 'sparse'
-    elif type == COLUMN_TYPE_INDEXED:
-        return 'index'
-    elif type == COLUMN_TYPE_ARRAY:
-        return 'array'
-    else:
-        return 'unknown'
-
 def get_struct_type(is_float, is_signed, bit_size):
     if is_float:
         return 'f'
@@ -86,13 +74,13 @@ def get_struct_type(is_float, is_signed, bit_size):
 # Creates a data decored for the packed bitfields, based on the extended column
 # information type
 def get_decoder(column):
-    if column.ext_data().block_type() == COLUMN_TYPE_BIT:
+    if column.field_ext_type() == COLUMN_TYPE_BIT:
         return WDC1BitPackedValue(column)
-    elif column.ext_data().block_type() == COLUMN_TYPE_SPARSE:
+    elif column.field_ext_type() == COLUMN_TYPE_SPARSE:
         return WDC1SparseDataValue(column)
-    elif column.ext_data().block_type() == COLUMN_TYPE_INDEXED:
+    elif column.field_ext_type() == COLUMN_TYPE_INDEXED:
         return WDC1ColumnDataValue(column)
-    elif column.ext_data().block_type() == COLUMN_TYPE_ARRAY:
+    elif column.field_ext_type() == COLUMN_TYPE_ARRAY:
         return WDC1ArrayDataValue(column)
 
     return None
@@ -233,7 +221,7 @@ class WDC1PackedBitSegmentParser(WDC1SegmentParser):
     # single WDC1PackedBitSegmentParser. Should be a safe assumption, they seem
     # to be always inserted at the end of the DB2 file in a continuous segment.
     def size(self):
-        return math.ceil(sum([c.bit_size() for c in self.columns]) / 8)
+        return math.ceil(sum([c.field_bit_size() for c in self.columns]) / 8)
 
     def __call__(self, id, data, offset, bytes_left):
         barr = bitarray(endian = 'little')
@@ -246,7 +234,7 @@ class WDC1PackedBitSegmentParser(WDC1SegmentParser):
         for idx in range(0, len(self.columns)):
             column = self.columns[idx]
             decoder = self.decoders[idx]
-            size = column.ext_data().bit_size()
+            size = column.field_bit_size()
 
             raw_value = barr[bit_offset:bit_offset + size].tobytes()
 
@@ -294,11 +282,11 @@ class WDC1ExtendedColumnValue:
         self.column = column
 
         self.element_mask = 0
-        for bit in range(0, self.column.ext_data().element_bit_size()):
+        for bit in range(0, self.column.value_bit_size()):
             self.element_mask |= (1 << bit)
 
         self.cell_mask = 0
-        for bit in range(0, self.column.ext_data().bit_size()):
+        for bit in range(0, self.column.field_bit_size()):
             self.cell_mask |= (1 << bit)
 
     def __call__(self, id, data, bytes_):
@@ -309,7 +297,7 @@ class WDC1BitPackedValue(WDC1ExtendedColumnValue):
         value = int.from_bytes(bytes_, byteorder = 'little')
 
         if self.column.is_signed():
-            value = transform_sign(value, self.element_mask, self.column.ext_data().element_bit_size())
+            value = transform_sign(value, self.element_mask, self.column.value_bit_size())
 
         return (value,)
 
@@ -327,8 +315,8 @@ class WDC1ColumnDataValue(WDC1ExtendedColumnValue):
                 break
 
             other_column = self.column.parser().column(column_idx)
-            if other_column.ext_data().block_type() in [COLUMN_TYPE_INDEXED, COLUMN_TYPE_ARRAY]:
-                column_data_offset += other_column.ext_data().block_size()
+            if other_column.field_ext_type() in [COLUMN_TYPE_INDEXED, COLUMN_TYPE_ARRAY]:
+                column_data_offset += other_column.field_block_size()
 
         self.base_offset = self.column.parser().column_data_block_offset + column_data_offset
         logging.debug('%s column data for %s at base offset %d',
@@ -355,7 +343,7 @@ class WDC1SparseDataValue(WDC1ExtendedColumnValue):
         # Value is the id_th value in the block
         value_offset = self.column.parser().sparse_data_offset(self.column, id_)
         if value_offset == -1:
-            return (0,)
+            return (self.column.default(),)
 
         return self.unpacker.unpack_from(data, value_offset)
 
@@ -363,10 +351,11 @@ class WDC1ArrayDataValue(WDC1ColumnDataValue):
     def __init__(self, column):
         super().__init__(column)
 
-        self.__array_size = 4 * self.column.ext_data().elements()
+        # Array values are stored as 32-bit values
+        self.__array_size = 4 * self.column.elements()
 
         struct_type = get_struct_type(column.is_float(), column.is_signed(), 32)
-        self.unpacker = Struct('<{}{}'.format(column.ext_data().elements(), struct_type))
+        self.unpacker = Struct('<{}{}'.format(column.elements(), struct_type))
 
     def __call__(self, id_, data, bytes_):
         # Convert the bytes to a proper int value (our id into the block)
@@ -374,9 +363,10 @@ class WDC1ArrayDataValue(WDC1ColumnDataValue):
 
         value_offset = self.base_offset + ptr_ * self.__array_size
 
-        if value_offset > self.base_offset + self.column.ext_data().block_size():
+        if value_offset > self.base_offset + self.column.field_block_size():
             logging.error('%s array column exceeds block size, offset %d, max %s',
-                self.column.parser().full_name(), value_offset, self.base_offset + self.column.ext_data().block_size())
+                self.column.parser().full_name(), value_offset,
+                self.base_offset + self.column.field_block_size())
             raise IndexError
 
         return self.unpacker.unpack_from(data, value_offset)
@@ -550,7 +540,7 @@ class WDC1RecordParser(RecordParser):
                 decoders.append(WDC1StringSegmentParser(self, column))
 
             # Presume that bitpack is a continious segment that runs to the end of the record
-            elif column.size_type() == WDC1_SPECIAL_COLUMN:
+            elif column.field_base_type() == WDC1_SPECIAL_COLUMN:
                 # Bit-packed data (special columns) seem to be expanded for cache files
                 if self._hotfix_parser:
                     struct_columns.append(column)
@@ -576,46 +566,6 @@ class WDC1RecordParser(RecordParser):
 
         self._decoders = decoders
 
-class WDC1ExtendedColumn:
-    def __init__(self, column, data):
-        self.__column = column
-
-        # Data is a tuple containing all fields, unpack into values
-        self.__record_offset = data[0]
-        self.__size = data[1]
-        self.__block_size = data[2]
-        self.__block_type = data[3]
-        self.__pack_offset = data[4]
-        self.__element_size = data[5]
-        self.__elements = data[6]
-
-    def record_offset(self):
-        return self.__record_offset
-
-    def bit_size(self):
-        return self.__size
-
-    def block_size(self):
-        return self.__block_size
-
-    def block_type(self):
-        return self.__block_type
-
-    def element_bit_size(self):
-        return self.__element_size
-
-    def elements(self):
-        return self.__elements
-
-    def pack_offset(self):
-        return self.__pack_offset
-
-    def __str__(self):
-        return 'Ext[ r_offset={}, type={} ({}), c_size={}, b_size={}, p_offset={}, e_size={}, elements={} ]'.format(
-            self.__record_offset, get_column_type_str(self.__block_type), self.__block_type, self.__size, self.__block_size, self.__pack_offset,
-            self.__element_size, self.__elements
-        )
-
 # A representation of a data column type in a WDC1 file
 class WDC1Column:
     def __init__(self, parser, fobj, index, size_type, offset):
@@ -624,79 +574,152 @@ class WDC1Column:
         self.__index = index
         self.__size_type = size_type
         self.__offset = offset
-        self.__ext = None
+        self.__elements = 1
 
-    def ext_data(self, tuple_ = None):
-        if not tuple_:
-            return self.__ext
-
-        self.__ext = WDC1ExtendedColumn(self, tuple_)
-
-    def bit_size(self):
-        if self.__size_type in [0, 8, 16, 24, -32]:
-            return (32 - self.__size_type)
-        else:
-            return self.__ext.bit_size()
-
-    def elements(self):
-        bit_size_ = self.bit_size()
-        if not self.__ext:
-            return 1
-
-        field_width_ = self.ext_data().bit_size()
-        elements_ = self.ext_data().elements()
-        type_ = self.ext_data().block_type()
-
-        if elements_ > 0:
-            return elements_
-        elif type_ == COLUMN_TYPE_INDEXED:
-            return 1
-        elif type_ == COLUMN_TYPE_SPARSE:
-            return 1
-        else:
-            return field_width_ // bit_size_
+        self.__bit_offset = 0
+        self.__packed_bit_offset = 0
+        self.__field_size = 0
+        self.__block_size = 0
+        self.__block_type = 0
+        self.__value_size = 0
+        self.__is_signed = False
+        self.__default_value = 0
 
     def parser(self):
         return self.__parser
 
+    def format(self):
+        return self.__format
+
+    def format_bit_size(self):
+        if not self.__format:
+            return 0
+        elif self.__format in ['b', 'B']:
+            return 8
+        elif self.__format in ['h', 'H']:
+            return 16
+        elif self.__format in ['i', 'I']:
+            return 32
+        elif self.__format in ['q', 'Q']:
+            return 64
+        else:
+            return 0
+
     def index(self):
         return self.__index
 
-    def size_type(self):
+    def set_ext_data(self, ext_data):
+        self.__bit_offset = ext_data[0]
+        self.__field_size = ext_data[1]
+        self.__block_size = ext_data[2]
+        self.__block_type = ext_data[3]
+
+        # Conditional fields
+        if self.__block_type == COLUMN_TYPE_BIT:
+            self.__packed_bit_offset = ext_data[4]
+            self.__value_size = ext_data[5]
+            self.__is_signed = ext_data[6] != 0
+        elif self.__block_type == COLUMN_TYPE_SPARSE:
+            self.__default_value = ext_data[4]
+
+            if ext_data[5] > 0 or ext_data[6] > 0:
+                logging.warn('Sparse data field has unexpted non-zero values (%d, %d)',
+                    ext_data[5], ext_data[6])
+
+        elif self.__block_type == COLUMN_TYPE_INDEXED or self.__block_type == COLUMN_TYPE_ARRAY:
+            self.__packed_bit_offset = ext_data[4]
+
+            if self.__field_size != ext_data[5]:
+                logging.warn('Column %s field sizes differ (%d vs %d)',
+                    self.__index, self.__field_size, ext_data[5])
+
+            self.__field_size = ext_data[5]
+            self.__elements   = ext_data[6]
+
+    def field_base_type(self):
         return self.__size_type
 
-    def size(self):
-        return self.ext_data().bit_size()
+    def field_ext_type(self):
+        return self.__block_type
 
-    def offset(self):
+    def field_block_size(self):
+        return self.__block_size
+
+    def field_offset(self):
         return self.__offset
 
-    def bit_offset(self):
-        return self.__offset * 8
+    def field_bit_offset(self):
+        if self.__bit_offset > 0:
+            return self.__bit_offset
+        else:
+            return self.__offset * 8
 
-    def format(self):
-        return self.__format
+    def field_packet_bit_offset(self):
+        return self.__packed_bit_offset
+
+    def field_byte_offset(self):
+        bit_offset = self.field_bit_offset()
+
+        return bit_offset // 8
+
+    def field_bit_size(self):
+        if self.__size_type in [0, 8, 16, 24, -32]:
+            return (32 - self.__size_type)
+        else:
+            return self.__field_size
+
+    def value_bit_size(self):
+        if self.__size_type in [0, 8, 16, 24, -32]:
+            return (32 - self.__size_type)
+        elif self.__block_type == COLUMN_TYPE_BIT:
+            return self.__value_size
+        else:
+            format_bit_size = self.format_bit_size()
+            if format_bit_size > 0:
+                return format_bit_size
+            # Just default to 32 bits for the other extended column types
+            # if we can find nothing else
+            else:
+                return 32
+
+    def default(self):
+        return self.__default_value
+
+    def elements(self):
+        if self.__size_type in [0, 8, 16, 24, -32]:
+            return self.__field_size // self.field_bit_size()
+        else:
+            return self.__elements
+
+    def struct_type(self):
+        if self.__size_type != WDC1_SPECIAL_COLUMN:
+            if not self.__format:
+                return get_struct_type(False, self.is_signed(), self.value_bit_size())
+            else:
+                return self.__format and self.__format.data_type.replace('S', 'I')
+        else:
+            if not self.__format:
+                return get_struct_type(False, True, 32)
+            else:
+                return self.__format.data_type.replace('S', 'I')
 
     def is_float(self):
         return self.__format and self.__format.data_type == 'f' or False
 
     def is_signed(self):
-        if self.__format:
-            return self.__format.data_type in ['b', 'h', 'i']
+        if self.__block_type == COLUMN_TYPE_BIT:
+            return self.__is_signed
         else:
-            return True
+            if self.__format:
+                return self.__format.data_type in ['b', 'h', 'i', 'q']
+            else:
+                return True
 
     def is_string(self):
         if self.__format:
             return self.__format.data_type == 'S'
         else:
             return False
-
-    def struct_type(self):
-        if not self.__format:
-            return get_struct_type(False, True, self.bit_size())
-        else:
-            return self.__format and self.__format.data_type.replace('S', 'I')
 
     def short_type(self):
         if self.is_float():
@@ -708,27 +731,43 @@ class WDC1Column:
         else:
             base_type = 'int'
 
-        bit_size = self.bit_size()
+        bit_size = self.value_bit_size()
 
-        elements = 1
-        extra_type = ''
-        if self.__ext:
-            if self.ext_data().block_type() == COLUMN_TYPE_SPARSE:
-                extra_type = 's'
-            elif self.ext_data().block_type == COLUMN_TYPE_INDEXED:
-                extra_type = 'i'
-
-
-        return '{}:{}{}'.format(
-            base_type, bit_size,
-            elements > 1 and '[{}]'.format(elements) or (len(extra_type) and '[{}]'.format(extra_type) or '')
-        )
+        return '{}{}'.format(base_type, bit_size)
 
     def __str__(self):
-        return 'Column[ idx={}, offset={}, size={} ({}), elements={}{} ]'.format(
-            self.__index, self.__offset, self.bit_size(), self.__size_type, self.elements(),
-            self.ext_data().block_type() != 0 and (', info=' + str(self.ext_data())) or ''
-        )
+        fields = []
+        fields.append('byte_offset={:<3d}'.format(self.__offset))
+        if self.__block_type == COLUMN_TYPE_BIT:
+            fields.append('type={:<6s}'.format('bits'))
+        elif self.__block_type == COLUMN_TYPE_SPARSE:
+            fields.append('type={:<6s}'.format('sparse'))
+        elif self.__block_type == COLUMN_TYPE_INDEXED:
+            fields.append('type={:<6s}'.format('index'))
+        elif self.__block_type == COLUMN_TYPE_ARRAY:
+            fields.append('type={:<6s}'.format('array'))
+        else:
+            fields.append('type={:<6s}'.format('bytes'))
+        fields.append('{:<10s}'.format('({})'.format(self.short_type())))
+
+        fields.append('bit_offset={:<3d}'.format(self.field_bit_offset()))
+
+        if self.__block_type in [COLUMN_TYPE_BIT, COLUMN_TYPE_INDEXED, COLUMN_TYPE_ARRAY]:
+            fields.append('packed_bit_offset={:<3d}'.format(self.__packed_bit_offset))
+
+        if self.__block_type in [COLUMN_TYPE_BIT]:
+            fields.append('signed={!s:<5}'.format(self.__is_signed))
+
+        if self.__block_type in [COLUMN_TYPE_ARRAY]:
+            fields.append('elements={:<2d}'.format(self.__elements))
+
+        if self.__block_type in [COLUMN_TYPE_SPARSE]:
+            fields.append('default={}'.format(self.__default_value))
+
+        if self.__block_type in [COLUMN_TYPE_SPARSE, COLUMN_TYPE_INDEXED, COLUMN_TYPE_ARRAY]:
+            fields.append('block_size={:<7d}'.format(self.field_block_size()))
+
+        return 'Field{:<2d}: {}'.format(self.__index, ' '.join(fields))
 
 # A faked colum representing a 32-bit value in the record. Used in association
 # with expanded parsers, where the record id and the potential key block id
@@ -1003,7 +1042,9 @@ class WDC1Parser(DBCParserBase):
         for idx in range(0, self.fields):
             size_type, offset = _COLUMN_INFO.unpack_from(self.data, self.parse_offset)
 
-            self.column_info.append(WDC1Column(self, (formats and idx < len(formats)) and formats[idx] or None, idx, size_type, offset))
+            self.column_info.append(WDC1Column(self,
+                (formats and idx < len(formats)) and formats[idx] or None,
+                idx, size_type, offset))
 
             self.parse_offset += _COLUMN_INFO.size
 
@@ -1023,26 +1064,30 @@ class WDC1Parser(DBCParserBase):
         self.id_table = []
         self.dbc_id_table = [ None ] * (self.last_id + 1)
 
-        # Offset where the bit data starts for the record where the ID field is in
-        record_offset = column.bit_offset()
-        # Start bit in the bitfield
-        start_offset = column.ext_data().record_offset() - record_offset
-        end_offset = start_offset + column.ext_data().bit_size()
-        bitfield_size = self.record_size - column.offset()
+        # Start bit in the bytes that include the id column
+        start_offset = column.field_bit_offset() % 8
+        end_offset = start_offset + column.value_bit_size()
         # Length of the id field in whole bytes
         n_bytes = math.ceil((end_offset - start_offset) / 8)
 
         for record_id in range(0, self.records):
             record_start = self.data_offset + record_id * self.record_size
-            # Bitfield starts at this address always in each record
-            bitfield_start = record_start + column.offset()
-            barr = bitarray(endian = 'little')
+            bitfield_start = record_start + column.field_byte_offset()
 
-            # Read enough bytes to the bitarray from the segment
-            barr.frombytes(self.data[bitfield_start:bitfield_start + n_bytes])
-            field_data = barr[start_offset:end_offset].tobytes()
+            # Whole bytes, just direct convert the bytes
+            if column.field_bit_size() % 8 == 0:
+                field_data = self.data[bitfield_start:bitfield_start + n_bytes]
+            # Grab specific bits
+            else:
+                # Read enough bytes to the bitarray from the segment
+                barr = bitarray(endian = 'little')
+                barr.frombytes(self.data[bitfield_start:bitfield_start + n_bytes])
+                # Grab bits, convert to unsigned int
+                field_data = barr[start_offset:end_offset].tobytes()
+
             dbc_id = int.from_bytes(field_data, byteorder = 'little')
 
+            # Parse key block at this point too, so we can create full record information
             if self.has_key_block():
                 key_id, _ = _CLONE_INFO.unpack_from(self.data,
                     self.key_block_offset + _WDC1_KEY_HEADER.size + _CLONE_INFO.size * record_id)
@@ -1139,7 +1184,7 @@ class WDC1Parser(DBCParserBase):
         for idx in range(0, self.fields):
             data = _WDC1_COLUMN_INFO.unpack_from(self.data, offset)
 
-            self.column_info[idx].ext_data(data)
+            self.column_info[idx].set_ext_data(data)
 
             offset += _WDC1_COLUMN_INFO.size
 
@@ -1154,28 +1199,31 @@ class WDC1Parser(DBCParserBase):
             block = {}
             column = self.column(column_idx)
 
+            if column.field_ext_type() != COLUMN_TYPE_SPARSE:
+                self.sparse_blocks.append(block)
+                continue
+
             # TODO: Are sparse blocks always <dbc_id, value> tuples with 4 bytes for a value?
             # TODO: Do we want to preparse the sparse block? Would save an
             # unpack call at the cost of increased memory
-            if column.ext_data().block_type() == COLUMN_TYPE_SPARSE:
-                if column.ext_data().block_size() == 0 or column.ext_data().block_size() % 8 != 0:
-                    logging.error('%s: Unknown sparse block type for column %s',
-                        self.class_name(), column)
-                    return False
+            if column.field_block_size() == 0 or column.field_block_size() % 8 != 0:
+                logging.error('%s: Unknown sparse block type for column %s',
+                    self.class_name(), column)
+                return False
 
-                logging.debug('%s unpacking sparse block for %s at %d, %d entries',
-                    self.full_name(), column, offset, column.ext_data().block_size() // 8)
+            logging.debug('%s unpacking sparse block for %s at %d, %d entries',
+                self.full_name(), column, offset, column.field_block_size() // 8)
 
-                unpack_full_str = '<' + ((column.ext_data().block_size() // 8) * 'I4x')
-                unpacker = Struct(unpack_full_str)
-                value_index = 0
-                for dbc_id in unpacker.unpack_from(self.data, offset):
-                    # Store <dbc_id, offset> tuples into the sparse block
-                    block[dbc_id] = offset + value_index * 8 + 4
+            unpack_full_str = '<' + ((column.field_block_size() // 8) * 'I4x')
+            unpacker = Struct(unpack_full_str)
+            value_index = 0
+            for dbc_id in unpacker.unpack_from(self.data, offset):
+                # Store <dbc_id, offset> tuples into the sparse block
+                block[dbc_id] = offset + value_index * 8 + 4
 
-                    value_index += 1
+                value_index += 1
 
-                offset += column.ext_data().block_size()
+            offset += column.field_block_size()
 
             self.sparse_blocks.append(block)
 
