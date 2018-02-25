@@ -385,53 +385,6 @@ namespace warlock
       }
     }
 
-    struct shadow_bolt_t : public warlock_spell_t
-    {
-      shadow_bolt_t( warlock_t* p, const std::string& options_str ) :
-        warlock_spell_t( p, "Shadow Bolt", p->specialization() )
-      {
-        parse_options( options_str );
-      }
-
-      virtual timespan_t execute_time() const override
-      {
-        if ( p()->specialization() == WARLOCK_AFFLICTION && p()->buffs.nightfall->check() )
-        {
-          return timespan_t::zero();
-        }
-
-        return warlock_spell_t::execute_time();
-      }
-
-      void impact( action_state_t* s ) override
-      {
-        warlock_spell_t::impact( s );
-        if ( result_is_hit( s->result ) )
-        {
-          if ( p()->specialization() == WARLOCK_AFFLICTION && p()->talents.shadow_embrace->ok() )
-            td( s->target )->debuffs_shadow_embrace->trigger();
-        }
-      }
-
-      virtual double action_multiplier()const override
-      {
-        double m = warlock_spell_t::action_multiplier();
-        if ( p()->specialization() == WARLOCK_AFFLICTION && p()->buffs.nightfall->check() )
-        {
-          m *= 1.0 + p()->buffs.nightfall->default_value;
-        }
-
-        return m;
-      }
-
-      void execute() override
-      {
-        warlock_spell_t::execute();
-        if ( p()->specialization() == WARLOCK_AFFLICTION && p()->buffs.nightfall->check() )
-          p()->buffs.nightfall->expire();
-      }
-    };
-
     struct drain_life_t : public warlock_spell_t
     {
       drain_life_t( warlock_t* p, const std::string& options_str ) :
@@ -842,8 +795,6 @@ action_t* warlock_t::create_action( const std::string& action_name, const std::s
   if ( action_name == "summon_pet"            ) return new          summon_main_pet_t( default_pet, this );
   // Base Spells
   if ( action_name == "drain_life"            ) return new               drain_life_t( this, options_str );
-  if ( action_name == "shadow_bolt"           ) return new              shadow_bolt_t( this, options_str ); //aff and demo
-  // Talents
   if ( action_name == "grimoire_of_sacrifice" ) return new    grimoire_of_sacrifice_t( this, options_str ); //aff and destro
 
   if ( specialization() == WARLOCK_AFFLICTION )

@@ -84,8 +84,22 @@ namespace warlock {
             }
         }
     }
-    namespace actions {
-        struct hand_of_guldan_t : public warlock_spell_t {
+    namespace actions_demonology {
+      using namespace actions;
+
+      struct shadow_bolt_t : public warlock_spell_t
+      {
+        shadow_bolt_t(warlock_t* p, const std::string& options_str) :
+          warlock_spell_t(p, "Shadow Bolt", p->specialization())
+        {
+          parse_options(options_str);
+          energize_type = ENERGIZE_ON_CAST;
+          energize_resource = RESOURCE_SOUL_SHARD;
+          energize_amount = 1;
+        }
+      };
+
+      struct hand_of_guldan_t : public warlock_spell_t {
             /*
             struct trigger_imp_event_t : public player_event_t {
             bool initiator;
@@ -160,8 +174,8 @@ namespace warlock {
             }
         };
 
-        // Talents
-        struct doom_t : public warlock_spell_t {
+      // Talents
+      struct doom_t : public warlock_spell_t {
             doom_t(warlock_t* p, const std::string& options_str) : warlock_spell_t("doom", p, p -> talents.doom) {
                 parse_options(options_str);
                 may_crit = true;
@@ -190,7 +204,7 @@ namespace warlock {
             }
         };
 
-        struct grimoire_of_service_t : public summon_pet_t {
+      struct grimoire_of_service_t : public summon_pet_t {
             grimoire_of_service_t(warlock_t* p, const std::string& pet_name, const std::string& options_str) :
                 summon_pet_t("service_" + pet_name, p, p -> talents.grimoire_of_service -> ok() ? p -> find_class_spell("Grimoire: " + pet_name) : spell_data_t::not_found()) {
                 parse_options(options_str);
@@ -216,9 +230,11 @@ namespace warlock {
 
       // add actions
     action_t* warlock_t::create_action_demonology(const std::string& action_name, const std::string& options_str) {
-        using namespace actions;
+        using namespace actions_demonology;
 
+        if (action_name == "shadow_bolt") return new          shadow_bolt_t(this, options_str);
         if (action_name == "doom")          return new        doom_t(this, options_str);
+        if (action_name == "hand_of_guldan") return new       hand_of_guldan_t(this, options_str);
 
         if (action_name == "summon_felguard") return new      summon_main_pet_t("felguard", this);
         if (action_name == "service_felguard") return new     grimoire_of_service_t(this, "felguard", options_str);

@@ -9,6 +9,53 @@ namespace warlock
 
     const std::array<int, MAX_UAS> ua_spells = { 233490, 233496, 233497, 233498, 233499 };
 
+    struct shadow_bolt_t : public warlock_spell_t
+    {
+      shadow_bolt_t(warlock_t* p, const std::string& options_str) :
+        warlock_spell_t(p, "Shadow Bolt", p->specialization())
+      {
+        parse_options(options_str);
+      }
+
+      virtual timespan_t execute_time() const override
+      {
+        if (p()->buffs.nightfall->check())
+        {
+          return timespan_t::zero();
+        }
+
+        return warlock_spell_t::execute_time();
+      }
+
+      void impact(action_state_t* s) override
+      {
+        warlock_spell_t::impact(s);
+        if (result_is_hit(s->result))
+        {
+          if (p()->talents.shadow_embrace->ok())
+            td(s->target)->debuffs_shadow_embrace->trigger();
+        }
+      }
+
+      virtual double action_multiplier()const override
+      {
+        double m = warlock_spell_t::action_multiplier();
+        if (p()->buffs.nightfall->check())
+        {
+          m *= 1.0 + p()->buffs.nightfall->default_value;
+        }
+
+        return m;
+      }
+
+      void execute() override
+      {
+        warlock_spell_t::execute();
+        if (p()->buffs.nightfall->check())
+          p()->buffs.nightfall->expire();
+      }
+    };
+
     // Dots
     struct agony_t : public warlock_spell_t
     {
@@ -679,6 +726,7 @@ namespace warlock
   {
     using namespace actions_affliction;
 
+    if ( action_name == "shadow_bolt" ) return new                    shadow_bolt_t(this, options_str);
     if ( action_name == "corruption" ) return new                     corruption_t( this, options_str );
     if ( action_name == "agony" ) return new                          agony_t( this, options_str );
     if ( action_name == "unstable_affliction" ) return new            unstable_affliction_t( this, options_str );
