@@ -419,7 +419,6 @@ public:
   double    composite_spell_crit_chance() const override;
   double    composite_melee_haste() const override;
   double    composite_spell_haste() const override;
-  double    composite_mastery_value() const override;
   double    composite_player_critical_damage_multiplier( const action_state_t* ) const override;
   double    composite_rating_multiplier( rating_e rating ) const override;
   double    composite_player_multiplier( school_e school ) const override;
@@ -5547,15 +5546,6 @@ double hunter_t::composite_player_pet_damage_multiplier( const action_state_t* s
 
   if ( buffs.parsels_tongue -> up() )
     m *= 1.0 + buffs.parsels_tongue -> data().effectN( 2 ).percent() * buffs.parsels_tongue -> current_stack;
-
-  return m;
-}
-
-// hunter_t::composite_mastery_value  ====================================
-
-double hunter_t::composite_mastery_value() const
-{
-  double m = player_t::composite_mastery_value();
 
   return m;
 }
