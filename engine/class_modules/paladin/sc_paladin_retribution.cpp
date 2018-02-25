@@ -620,6 +620,7 @@ struct inquisition_t : public paladin_heal_t
 
 struct hammer_of_wrath_t : public holy_power_generator_t
 {
+  bool last_ready_was_ineligible = false;
   hammer_of_wrath_t( paladin_t* p, const std::string& options_str )
     : holy_power_generator_t( "hammer_of_wrath", p, p -> find_talent_spell( "Hammer of Wrath" ) )
   {
@@ -627,13 +628,26 @@ struct hammer_of_wrath_t : public holy_power_generator_t
     hasted_cd = hasted_gcd = true;
   }
 
+  void init() override
+  {
+    holy_power_generator_t::init();
+    last_ready_was_ineligible = false;
+  }
+
   virtual bool ready() override
   {
+    // TODO(mserrano): this is also probably incorrect
     if ( p() -> get_how_availability() )
-      return holy_power_generator_t::ready();
-    else if ( holy_power_generator_t::ready() )
-      // TODO(mserrano): this is a horrible hack
-      cooldown -> last_charged = sim -> current_time();
+    {
+      bool result = holy_power_generator_t::ready();
+      if ( last_ready_was_ineligible && result )
+      {
+        last_ready_was_ineligible = false;
+        cooldown -> last_charged = sim -> current_time();
+      }
+      return result;
+    }
+    last_ready_was_ineligible = true;
     return false;
   }
 };
