@@ -38,6 +38,54 @@ struct spell_data_ptr_t
   const spell_data_t* data_;
 };
 
+void parse_affecting_aura( action_t *const action, const spell_data_t *const spell )
+{
+  for ( size_t i = 1; i <= spell -> effect_count(); i++ )
+  {
+    const spelleffect_data_t& effect = spell -> effectN( i );
+    if ( ! effect.ok() || effect.type() != E_APPLY_AURA )
+      continue;
+
+    switch ( effect.subtype() )
+    {
+    case A_HASTED_GCD:
+      if ( action -> data().affected_by( effect ) )
+        action -> gcd_haste = HASTE_ATTACK;
+      break;
+
+    case A_HASTED_COOLDOWN:
+      if ( action -> data().affected_by( effect ) )
+        action -> cooldown -> hasted = true;
+      break;
+
+    case A_HASTED_CATEGORY:
+      if ( action -> data().category() == effect.misc_value1() )
+        action -> cooldown -> hasted = true;
+      break;
+
+    case A_ADD_PCT_MODIFIER:
+      if ( action -> data().affected_by( effect ) )
+      {
+        switch ( effect.misc_value1() )
+        {
+        case P_GENERIC:
+          action -> base_dd_multiplier *= 1.0 + effect.percent();
+          break;
+
+        case P_TICK_DAMAGE:
+          action -> base_td_multiplier *= 1.0 + effect.percent();
+          break;
+
+        default: break;
+        }
+      }
+      break;
+
+    default: break;
+    }
+  }
+}
+
 // ==========================================================================
 // Hunter
 // ==========================================================================
@@ -488,11 +536,13 @@ public:
 
     ab::special = true;
 
-    if ( ab::data().affected_by( p() -> specs.hunter -> effectN( 3 ) ) )
-      hasted_gcd = true;
+    parse_affecting_aura( this, p() -> specs.hunter );
+    parse_affecting_aura( this, p() -> specs.beast_mastery_hunter );
+    parse_affecting_aura( this, p() -> specs.marksmanship_hunter );
+    parse_affecting_aura( this, p() -> specs.survival_hunter );
 
-    if ( ab::data().affected_by( p() -> specs.hunter -> effectN( 2 ) ) )
-      ab::cooldown -> hasted = true;
+    if ( ab::gcd_haste != HASTE_NONE )
+      hasted_gcd = true;
 
     affected_by.sniper_training = ab::data().affected_by( p() -> mastery.sniper_training -> effectN( 2 ) );
     affected_by.aotw_gcd_reduce = ab::data().affected_by( p() -> specs.aspect_of_the_wild -> effectN( 3 ) );
@@ -519,24 +569,6 @@ public:
 
     // disable default gcd scaling from haste as we are rolling our own because of AotW
     ab::gcd_haste = HASTE_NONE;
-
-    if ( ab::data().affected_by( p() -> specs.beast_mastery_hunter -> effectN( 1 ) ) )
-      ab::base_dd_multiplier *= 1.0 + p() -> specs.beast_mastery_hunter -> effectN( 1 ).percent();
-
-    if ( ab::data().affected_by( p() -> specs.beast_mastery_hunter -> effectN( 2 ) ) )
-      ab::base_td_multiplier *= 1.0 + p() -> specs.beast_mastery_hunter -> effectN( 2 ).percent();
-
-    if ( ab::data().affected_by( p() -> specs.marksmanship_hunter -> effectN( 4 ) ) )
-      ab::base_dd_multiplier *= 1.0 + p() -> specs.marksmanship_hunter -> effectN( 4 ).percent();
-
-    if ( ab::data().affected_by( p() -> specs.marksmanship_hunter -> effectN( 5 ) ) )
-      ab::base_td_multiplier *= 1.0 + p() -> specs.marksmanship_hunter -> effectN( 5 ).percent();
-
-    if ( ab::data().affected_by( p() -> specs.survival_hunter -> effectN( 1 ) ) )
-      ab::base_dd_multiplier *= 1.0 + p() -> specs.survival_hunter -> effectN( 1 ).percent();
-
-    if ( ab::data().affected_by( p() -> specs.survival_hunter -> effectN( 2 ) ) )
-      ab::base_td_multiplier *= 1.0 + p() -> specs.survival_hunter -> effectN( 2 ).percent();
   }
 
   timespan_t gcd() const override
@@ -870,14 +902,10 @@ public:
   {
     ab::init();
 
-    if ( ab::data().affected_by( o() -> specs.beast_mastery_hunter -> effectN( 1 ) ) )
-      ab::base_dd_multiplier *= 1.0 + o() -> specs.beast_mastery_hunter -> effectN( 1 ).percent();
-
-    if ( ab::data().affected_by( o() -> specs.survival_hunter -> effectN( 1 ) ) )
-      ab::base_dd_multiplier *= 1.0 + o() -> specs.survival_hunter -> effectN( 1 ).percent();
-
-    if ( ab::data().affected_by( o() -> specs.survival_hunter -> effectN( 2 ) ) )
-      ab::base_td_multiplier *= 1.0 + o() -> specs.survival_hunter -> effectN( 2 ).percent();
+    parse_affecting_aura( this, o() -> specs.hunter );
+    parse_affecting_aura( this, o() -> specs.beast_mastery_hunter );
+    parse_affecting_aura( this, o() -> specs.marksmanship_hunter );
+    parse_affecting_aura( this, o() -> specs.survival_hunter );
   }
 };
 
@@ -1944,9 +1972,6 @@ struct volley_tick_t: hunter_ranged_attack_t
     aoe = -1;
     attack_power_mod.direct = data().effectN( 1 ).ap_coeff();
     travel_speed = 0.0;
-
-    if ( data().affected_by( p -> specs.beast_mastery_hunter -> effectN( 6 ) ) )
-      base_multiplier *= 1.0 + p -> specs.beast_mastery_hunter -> effectN( 6 ).percent();
   }
 };
 
@@ -2142,9 +2167,6 @@ struct barrage_t: public hunter_spell_t
       aoe = -1;
       radius = 0; //Barrage attacks all targets in front of the hunter, so setting radius to 0 will prevent distance targeting from using a 40 yard radius around the target.
       // Todo: Add in support to only hit targets in the frontal cone.
-
-      if ( data().affected_by( player -> specs.beast_mastery_hunter -> effectN( 5 ) ) )
-        base_dd_multiplier *= 1.0 + player -> specs.beast_mastery_hunter -> effectN( 5 ).percent();
     }
 
     void schedule_travel( action_state_t* s ) override {
@@ -2825,7 +2847,6 @@ struct sidewinders_t: hunter_ranged_attack_t
 
     aoe                       = -1;
     attack_power_mod.direct   = p -> find_spell( 214581 ) -> effectN( 1 ).ap_coeff();
-    cooldown -> hasted        = true; // not in spell data for some reason
 
     if ( p -> sets -> has_set_bonus( HUNTER_MARKSMANSHIP, T21, B2 ) )
     {
@@ -2946,7 +2967,6 @@ struct mongoose_bite_t: hunter_melee_attack_t
     hunter_melee_attack_t( "mongoose_bite", p, p -> specs.mongoose_bite )
   {
     parse_options( options_str );
-    cooldown -> hasted = true; // not in spell data for some reason
 
     for ( size_t i = 0; i < stats_.at_fury.size(); i++ )
       stats_.at_fury[ i ] = p -> get_proc( "bite_at_" + std::to_string( i ) + "_fury" );
