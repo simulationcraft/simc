@@ -326,7 +326,6 @@ public:
     gain_t* momentum;
 
     // Vengeance
-    gain_t* damage_taken;
     gain_t* metamorphosis;
   } gain;
 
@@ -469,7 +468,6 @@ public:
 
   // overridden player_t combat functions
   void assess_damage( school_e, dmg_e, action_state_t* s ) override;
-  void assess_damage_imminent_pre_absorb( school_e, dmg_e, action_state_t* ) override;
   void combat_begin() override;
   demon_hunter_td_t* get_target_data( player_t* target ) const override;
   void interrupt() override;
@@ -4797,7 +4795,6 @@ void demon_hunter_t::create_gains()
   gain.momentum                 = get_gain("momentum");
 
   // Vengeance
-  gain.damage_taken             = get_gain("damage_taken");
   gain.metamorphosis            = get_gain("metamorphosis");
 }
 
@@ -5187,26 +5184,6 @@ void demon_hunter_t::assess_damage( school_e school, dmg_e dt,
   if ( s -> action -> may_parry )
   {
     buff.demon_spikes -> up();
-  }
-}
-
-// demon_hunter_t::damage_imminent_pre_absorb ===============================
-
-void demon_hunter_t::assess_damage_imminent_pre_absorb( school_e school,
-                                                        dmg_e rt,
-                                                        action_state_t* s )
-{
-  player_t::assess_damage_imminent_pre_absorb( school, rt, s );
-
-  if ( s -> result_amount <= 0 )
-  {
-    return;
-  }
-
-  if ( specialization() == DEMON_HUNTER_VENGEANCE )
-  {
-    resource_gain( RESOURCE_PAIN, 
-      s -> result_amount / expected_max_health * 50.0, gain.damage_taken );
   }
 }
 
