@@ -122,7 +122,6 @@ public:
   actions::attacks::auto_attack_damage_t* melee_main_hand;
   actions::attacks::auto_attack_damage_t* melee_off_hand;
 
-  unsigned shear_counter;         // # of failed Shears since last proc
   double metamorphosis_health;    // Vengeance temp health from meta;
   double expected_max_health;
 
@@ -355,6 +354,9 @@ public:
     proc_t* gluttony;
     proc_t* soul_fragment_expire;
     proc_t* soul_fragment_overflow;
+    proc_t* soul_fragment_from_shear;
+    proc_t* soul_fragment_from_fracture;
+    proc_t* soul_fragment_from_fallout;
   } proc;
 
   // RPPM objects
@@ -1312,29 +1314,31 @@ struct fel_devastation_heal_t : public demon_hunter_heal_t
 
 struct soul_barrier_t : public demon_hunter_action_t<absorb_t>
 {
-  double soul_coefficient;
+  unsigned souls_consumed;
 
   soul_barrier_t( demon_hunter_t* p, const std::string& options_str )
     : demon_hunter_action_t( "soul_barrier", p, p -> talent.soul_barrier,
-                             options_str )
+                             options_str ),
+    souls_consumed( 0 )
   {
-    soul_coefficient = data().effectN( 2 ).ap_coeff();
+    // Doesn't get populated from spell data correctly since this is not actually an AP coefficient
+    base_dd_min = base_dd_max = 0;
+    attack_power_mod.direct = data().effectN( 1 ).percent();
   }
 
   double attack_direct_power_coefficient( const action_state_t* s ) const override
   {
     double c = demon_hunter_action_t<absorb_t>::attack_direct_power_coefficient( s );
 
-    c += p() -> get_active_soul_fragments() * soul_coefficient;
+    c += souls_consumed * data().effectN( 2 ).percent();
 
     return c;
   }
 
   void execute() override
   {
+    souls_consumed = p()->consume_soul_fragments();
     demon_hunter_action_t<absorb_t>::execute();
-
-    p() -> consume_soul_fragments();
   }
 
   void impact( action_state_t* s ) override
@@ -2067,6 +2071,7 @@ struct immolation_aura_t : public demon_hunter_spell_t
         if ( initial && p() -> talent.fallout -> ok() && rng().roll( 0.60 ) )
         {
           p() -> spawn_soul_fragment( soul_fragment::LESSER, 1 );
+          p()->proc.soul_fragment_from_fallout->occur();
         }
       }
     }
@@ -3232,7 +3237,9 @@ struct fracture_t : public demon_hunter_attack_t
       mh->execute();
       oh->execute();
 
-      p() -> spawn_soul_fragment( soul_fragment::LESSER, 2 );
+      p()->spawn_soul_fragment( soul_fragment::LESSER, 2 );
+      p()->proc.soul_fragment_from_fracture->occur();
+      p()->proc.soul_fragment_from_fracture->occur();
     }
   }
 };
@@ -3254,6 +3261,7 @@ struct shear_t : public demon_hunter_attack_t
     if ( result_is_hit( s->result ) )
     {
       p()->spawn_soul_fragment( soul_fragment::LESSER );
+      p()->proc.soul_fragment_from_shear->occur();
     }
   }
 
@@ -4319,9 +4327,12 @@ void demon_hunter_t::init_procs()
   proc.demons_bite_in_meta    = get_proc( "demons_bite_in_meta" );
 
   // Vengeance
-  proc.gluttony               = get_proc( "gluttony" );
-  proc.soul_fragment_expire   = get_proc( "soul_fragment_expire" );
-  proc.soul_fragment_overflow = get_proc( "soul_fragment_overflow" );
+  proc.gluttony                     = get_proc( "gluttony" );
+  proc.soul_fragment_expire         = get_proc( "soul_fragment_expire" );
+  proc.soul_fragment_overflow       = get_proc( "soul_fragment_overflow" );
+  proc.soul_fragment_from_shear     = get_proc( "soul_fragment_from_shear" );
+  proc.soul_fragment_from_fracture  = get_proc( "soul_fragment_from_fracture" );
+  proc.soul_fragment_from_fallout   = get_proc( "soul_fragment_from_fallout" );
 }
 
 // demon_hunter_t::init_resources ===========================================
@@ -4726,10 +4737,10 @@ void demon_hunter_t::apl_vengeance()
   def->add_action( this, "Demon Spikes" );
   def->add_action( this, "Empower Wards" );
   def->add_action( this, "Infernal Strike" );
-  def->add_talent( this, "Spirit Bomb" );
   def->add_action( this, "Immolation Aura" );
   def->add_talent( this, "Felblade" );
   def->add_talent( this, "Soul Barrier" );
+  def->add_talent( this, "Spirit Bomb" );
   def->add_talent( this, "Fel Devastation" );
   def->add_action( this, "Soul Cleave" );
   def->add_action( this, "Sigil of Flame" );
@@ -5272,7 +5283,6 @@ void demon_hunter_t::reset()
   spirit_bomb_driver      = nullptr;
   exit_melee_event        = nullptr;
   next_fragment_spawn     = 0;
-  shear_counter           = 0;
   metamorphosis_health    = 0;
   spirit_bomb_accumulator = 0.0;
   sigil_of_flame_activates = timespan_t::zero();
@@ -5418,8 +5428,7 @@ unsigned demon_hunter_t::get_active_soul_fragments( soul_fragment type ) const
   {
     case soul_fragment::GREATER:
     case soul_fragment::LESSER:
-      return std::accumulate(
-               soul_fragments.begin(), soul_fragments.end(), 0,
+      return std::accumulate( soul_fragments.begin(), soul_fragments.end(), 0,
       [&type]( unsigned acc, soul_fragment_t* frag ) {
         return acc + ( frag -> is_type( type ) && frag -> active() );
       } );
