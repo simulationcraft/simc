@@ -6257,23 +6257,35 @@ namespace buffs
   struct monk_buff_t: public buff_t
   {
     public:
-    typedef monk_buff_t buff_t;
+    using base_t = monk_buff_t;
 
-    monk_buff_t( monk_td_t& p, const std::string&n, const spell_data_t*s ):
-      buff_t( p, n, s ), monk( p.monk )
+    monk_buff_t( monk_td_t& p, const std::string& name, const spell_data_t* s = spell_data_t::nil(), const item_t* item = nullptr ):
+      buff_t( p, name, s )
     {}
 
-    monk_buff_t( monk_t& p, const std::string&n, const spell_data_t*s):
-      Base( p, n, s ), monk( p )
+    monk_buff_t( monk_t& p, const std::string& name, const spell_data_t* s = spell_data_t::nil(), const item_t* item = nullptr ):
+      buff_t( &p, name, s )
     {}
 
-    monk_td_t& get_td( player_t* t ) const
+    monk_td_t& get_td( player_t* t )
     {
-      return *( monk.get_target_data( t ) );
+      return *( p().get_target_data( t ) );
     }
 
-    protected:
-    monk_t& monk;    
+    const monk_td_t& get_td( player_t* t ) const
+    {
+      return *( p().get_target_data( t ) );
+    }
+
+    monk_t& p()
+    {
+      return *debug_cast<monk_t*>( buff_t::source );
+    }
+
+    const monk_t& p() const
+    {
+      return *debug_cast<monk_t*>( buff_t::source );
+    }
   };
 
 // Fortifying Brew Buff ==========================================================
@@ -6289,17 +6301,17 @@ struct fortifying_brew_t: public monk_buff_t < buff_t >
   bool trigger( int stacks, double value, double chance, timespan_t duration ) override
   {
     // Extra Health is set by current max_health, doesn't change when max_health changes.
-    health_gain = static_cast<int>( monk.resources.max[RESOURCE_HEALTH] * ( monk.spec.fortifying_brew -> effectN( 1 ).percent() ) );
-    monk.stat_gain( STAT_MAX_HEALTH, health_gain, ( gain_t* )nullptr, ( action_t* )nullptr, true );
-    monk.stat_gain( STAT_HEALTH, health_gain, ( gain_t* )nullptr, ( action_t* )nullptr, true );
+    health_gain = static_cast<int>( p().resources.max[RESOURCE_HEALTH] * ( p().spec.fortifying_brew -> effectN( 1 ).percent() ) );
+    p().stat_gain( STAT_MAX_HEALTH, health_gain, ( gain_t* )nullptr, ( action_t* )nullptr, true );
+    p().stat_gain( STAT_HEALTH, health_gain, ( gain_t* )nullptr, ( action_t* )nullptr, true );
     return buff_t::trigger( stacks, value, chance, duration );
   }
 
   void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
   {
     buff_t::expire_override( expiration_stacks, remaining_duration );
-    monk.stat_loss( STAT_MAX_HEALTH, health_gain, ( gain_t* )nullptr, ( action_t* )nullptr, true );
-    monk.stat_loss( STAT_HEALTH, health_gain, ( gain_t* )nullptr, ( action_t* )nullptr, true );
+    p().stat_loss( STAT_MAX_HEALTH, health_gain, ( gain_t* )nullptr, ( action_t* )nullptr, true );
+    p().stat_loss( STAT_HEALTH, health_gain, ( gain_t* )nullptr, ( action_t* )nullptr, true );
   }
 };
 
@@ -6359,19 +6371,19 @@ struct serenity_buff_t: public monk_buff_t < buff_t > {
   {
     // Executing Serenity reduces any current cooldown by 50%
     // Have to manually adjust each of the affected spells
-    cooldown_reduction( monk.cooldown.blackout_kick );
+    cooldown_reduction( p().cooldown.blackout_kick );
 
-    cooldown_reduction( monk.cooldown.blackout_strike );
+    cooldown_reduction( p().cooldown.blackout_strike );
 
-    cooldown_reduction( monk.cooldown.rushing_jade_wind );
+    cooldown_reduction( p().cooldown.rushing_jade_wind );
 
-    cooldown_reduction( monk.cooldown.refreshing_jade_wind );
+    cooldown_reduction( p().cooldown.refreshing_jade_wind );
 
-    cooldown_reduction( monk.cooldown.rising_sun_kick );
+    cooldown_reduction( p().cooldown.rising_sun_kick );
 
-    cooldown_reduction( monk.cooldown.fists_of_fury );
+    cooldown_reduction( p().cooldown.fists_of_fury );
 
-    cooldown_reduction( monk.cooldown.fist_of_the_white_tiger );
+    cooldown_reduction( p().cooldown.fist_of_the_white_tiger );
 
     return buff_t::trigger( stacks, value, chance, duration );
   }
@@ -6380,19 +6392,19 @@ struct serenity_buff_t: public monk_buff_t < buff_t > {
   {
     // When Serenity expires, it reverts any current cooldown by 50%
     // Have to manually adjust each of the affected spells
-    cooldown_extension( monk.cooldown.blackout_kick );
+    cooldown_extension( p().cooldown.blackout_kick );
 
-    cooldown_extension( monk.cooldown.blackout_strike );
+    cooldown_extension( p().cooldown.blackout_strike );
 
-    cooldown_extension( monk.cooldown.rushing_jade_wind );
+    cooldown_extension( p().cooldown.rushing_jade_wind );
 
-    cooldown_extension( monk.cooldown.refreshing_jade_wind );
+    cooldown_extension( p().cooldown.refreshing_jade_wind );
 
-    cooldown_extension( monk.cooldown.rising_sun_kick );
+    cooldown_extension( p().cooldown.rising_sun_kick );
 
-    cooldown_extension( monk.cooldown.fists_of_fury );
+    cooldown_extension( p().cooldown.fists_of_fury );
 
-    cooldown_extension( monk.cooldown.fist_of_the_white_tiger );
+    cooldown_extension( p().cooldown.fist_of_the_white_tiger );
 
     buff_t::expire_override( expiration_stacks, remaining_duration );
   }
