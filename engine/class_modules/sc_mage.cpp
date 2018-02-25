@@ -5582,6 +5582,9 @@ struct freeze_t : public action_t
     trigger_gcd = timespan_t::zero();
     ignore_false_positive = true;
     action_skill = 1;
+
+    if ( p -> talents.lonely_winter -> ok() )
+      background = true;
   }
 
   virtual bool init_finished() override
@@ -5655,6 +5658,9 @@ struct water_jet_t : public action_t
     trigger_gcd = timespan_t::zero();
     ignore_false_positive = true;
     action_skill = 1;
+
+    if ( p -> talents.lonely_winter -> ok() )
+      background = true;
   }
 
   virtual bool init_finished() override
@@ -7117,13 +7123,11 @@ void mage_t::apl_frost()
 
   single -> add_talent( this, "Ice Nova", "if=debuff.winters_chill.up",
     "In some circumstances, it is possible for both Ice Lance and Ice Nova to benefit from a single Winter's Chill." );
-  single -> add_action( this, "Frostbolt", "if=prev_off_gcd.water_jet" );
-  single -> add_action( "water_jet,if=prev_gcd.1.frostbolt&buff.fingers_of_frost.stack<2&!buff.brain_freeze.react",
-    "Basic Water Jet combo. Since Water Jet can only be used if the actor is not casting, we use it right after Frostbolt is executed. "
-    "At the default distance, Frostbolt travels slightly over 1 s, giving Water Jet enough time to apply the DoT (Water Jet's cast time "
-    "is 1 s, with haste scaling). The APL then forces another Frostbolt to guarantee getting both FoFs from the Water Jet. This works for "
-    "most haste values (roughly from 0% to 160%). When changing the default distance, great care must be taken otherwise this action "
-    "won't produce two FoFs." );
+  single -> add_action( this, "Frostbolt", "if=prev_off_gcd.water_jet|debuff.water_jet.remains>cast_time+travel_time" );
+  single -> add_action( "water_jet,if=action.frostbolt.travel_time>=spell_haste&prev_gcd.1.frostbolt&buff.fingers_of_frost.stack<2&!buff.brain_freeze.react",
+    "Standard Frostbolt -> Water Jet -> Frostbolt combo. Used when the actor has higher haste or is far from the target." );
+  single -> add_action( "water_jet,if=action.frostbolt.travel_time<spell_haste&buff.fingers_of_frost.stack<1&!buff.brain_freeze.react",
+    "Alternate Water Jet -> Frostbolt -> Frostbolt combo. Used when the actor has low haste or is close to the target." );
   single -> add_talent( this, "Ray of Frost", "if=buff.icy_veins.up|cooldown.icy_veins.remains>action.ray_of_frost.cooldown&buff.rune_of_power.down" );
   single -> add_action( this, "Flurry",
     "if=buff.brain_freeze.react&(prev_gcd.1.glacial_spike|prev_gcd.1.frostbolt&(!talent.glacial_spike.enabled"
@@ -7159,12 +7163,13 @@ void mage_t::apl_frost()
   single -> add_action( this, "Ice Lance", "",
     "Use Ice Lance to do at least some damage while moving." );
 
-  aoe -> add_action( this, "Frostbolt", "if=prev_off_gcd.water_jet" );
+  aoe -> add_action( this, "Frostbolt", "if=prev_off_gcd.water_jet|debuff.water_jet.remains>cast_time+travel_time" );
   aoe -> add_action( this, "Blizzard" );
   aoe -> add_action( this, "Frozen Orb" );
   aoe -> add_talent( this, "Comet Storm" );
   aoe -> add_talent( this, "Ice Nova" );
-  aoe -> add_action( "water_jet,if=prev_gcd.1.frostbolt&buff.fingers_of_frost.stack<2&!buff.brain_freeze.react" );
+  aoe -> add_action( "water_jet,if=action.frostbolt.travel_time>=spell_haste&prev_gcd.1.frostbolt&buff.fingers_of_frost.stack<2&!buff.brain_freeze.react" );
+  aoe -> add_action( "water_jet,if=action.frostbolt.travel_time<spell_haste&buff.fingers_of_frost.stack<1&!buff.brain_freeze.react" );
   aoe -> add_action( this, "Flurry", "if=buff.brain_freeze.react&(prev_gcd.1.glacial_spike|prev_gcd.1.frostbolt)" );
   aoe -> add_talent( this, "Frost Bomb", "if=debuff.frost_bomb.remains<action.ice_lance.travel_time&buff.fingers_of_frost.react" );
   aoe -> add_action( this, "Ice Lance", "if=buff.fingers_of_frost.react" );

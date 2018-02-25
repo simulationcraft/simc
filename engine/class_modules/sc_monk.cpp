@@ -257,14 +257,7 @@ public:
     gain_t* fortuitous_spheres;
     gain_t* gift_of_the_ox;
     gain_t* healing_elixir;
-    gain_t* keg_smash;
-    gain_t* mana_tea;
-    gain_t* renewing_mist;
     gain_t* serenity;
-    gain_t* soothing_mist;
-    gain_t* spinning_crane_kick;
-    gain_t* rushing_jade_wind;
-    gain_t* effuse;
     gain_t* spirit_of_the_crane;
     gain_t* tiger_palm;
   } gain;
@@ -465,19 +458,15 @@ public:
     const spell_data_t* aura_monk;
     const spell_data_t* chi_burst_damage;
     const spell_data_t* chi_burst_heal;
-    const spell_data_t* chi_torpedo;
     const spell_data_t* chi_wave_damage;
     const spell_data_t* chi_wave_heal;
     const spell_data_t* healing_elixir;
-    const spell_data_t* rushing_jade_wind_tick;
-    const spell_data_t* spinning_crane_kick_tick;
     // Brewmaster
     const spell_data_t* breath_of_fire_dot;
     const spell_data_t* celestial_fortune;
     const spell_data_t* elusive_brawler;
     const spell_data_t* elusive_dance;
     const spell_data_t* gift_of_the_ox_heal;
-    const spell_data_t* gift_of_the_ox_summon;
     const spell_data_t* ironskin_brew;
     const spell_data_t* keg_smash_buff;
     const spell_data_t* special_delivery;
@@ -485,15 +474,11 @@ public:
     const spell_data_t* stomp;
 
     // Mistweaver
-    const spell_data_t* lifecycles_enveloping_mist;
-    const spell_data_t* lifecycles_vivify;
     const spell_data_t* renewing_mist_heal;
     const spell_data_t* soothing_mist_heal;
     const spell_data_t* soothing_mist_statue;
     const spell_data_t* spirit_of_the_crane;
-    const spell_data_t* teachings_of_the_monastery_buff;
     const spell_data_t* totm_bok_proc;
-    const spell_data_t* uplifting_trance;
     const spell_data_t* zen_pulse_heal;
 
     // Windwalker
@@ -507,15 +492,11 @@ public:
     const spell_data_t* focus_of_xuen;
     const spell_data_t* hit_combo;
     const spell_data_t* mark_of_the_crane;
-    const spell_data_t* pressure_point;
-    const spell_data_t* touch_of_karma_buff;
     const spell_data_t* touch_of_karma_tick;
     const spell_data_t* whirling_dragon_punch_tick;
     const spell_data_t* wind_strikes_dmg;
-    const spell_data_t* tier19_4pc_melee;
 
     // Legendaries
-    const spell_data_t* hidden_masters_forbidden_touch;
     const spell_data_t* the_emperors_capacitor;
   } passives;
 
@@ -1405,7 +1386,7 @@ struct storm_earth_and_fire_pet_t : public pet_t
       weapon_power_mod = 0;
 
       tick_action = new sef_tick_action_t( "spinning_crane_kick_tick", player, 
-          player -> o() -> passives.spinning_crane_kick_tick );
+          player -> o() -> spec.spinning_crane_kick -> effectN( 1 ).trigger() );
     }
   };
 
@@ -1764,10 +1745,9 @@ private:
     {
       background = repeating = may_crit = may_glance = true;
       school = SCHOOL_PHYSICAL;
-
+      weapon_multiplier = 1.0;
       // Use damage numbers from the level-scaled weapon
       weapon = &( player -> main_hand_weapon );
-      weapon_multiplier = 1.0;
       base_execute_time = weapon -> swing_time;
       trigger_gcd = timespan_t::zero();
       special = false;
@@ -1857,8 +1837,8 @@ public:
     main_hand_weapon.max_dmg = dbc.spell_scaling( o() -> type, level() );
     main_hand_weapon.damage = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
     main_hand_weapon.swing_time = timespan_t::from_seconds( 1.0 );
-    owner_coeff.ap_from_ap = 9.38;
-    owner_coeff.ap_from_ap *= 1 + o() -> spec.windwalker_monk -> effectN( 1 ).percent(); 
+    owner_coeff.ap_from_ap = 1.00;
+    // owner_coeff.ap_from_ap *= 1 + o() -> spec.windwalker_monk -> effectN( 1 ).percent(); 
   }
 
   monk_t* o()
@@ -1909,10 +1889,9 @@ private:
     {
       background = repeating = may_crit = may_glance = true;
       school = SCHOOL_PHYSICAL;
-
+      weapon_multiplier = 1.0;
       // Use damage numbers from the level-scaled weapon
       weapon = &( player -> main_hand_weapon );
-      weapon_multiplier = 1.0;
       base_execute_time = weapon -> swing_time;
       trigger_gcd = timespan_t::zero();
       special = false;
@@ -3470,10 +3449,7 @@ struct rushing_jade_wind_t : public monk_melee_attack_t
 
     pm *= 1 + p() -> spec.windwalker_monk -> effectN( 2 ).percent();
 
-    // Remove if statement once Blizz fixes the spell effect to point to the correct affected spell id
-    if ( p() -> passives.rushing_jade_wind_tick -> affected_by( p() -> spec.windwalker_monk-> effectN( 7 ) ) )
-      pm *= 1 + p() -> spec.windwalker_monk -> effectN( 7 ).percent();
-
+    pm *= 1 + p() -> spec.windwalker_monk -> effectN( 7 ).percent();
 
     pm *= 1 + p() -> spec.brewmaster_monk -> effectN( 1 ).percent();
 
@@ -3537,7 +3513,7 @@ struct spinning_crane_kick_t: public monk_melee_attack_t
     spell_power_mod.direct = 0.0;
     dot_behavior = DOT_REFRESH; // Spell uses Pandemic Mechanics.
 
-    tick_action = new tick_action_t( "spinning_crane_kick_tick", p, p -> passives.spinning_crane_kick_tick );
+    tick_action = new tick_action_t( "spinning_crane_kick_tick", p, p -> spec.spinning_crane_kick -> effectN( 1 ).trigger() );
   }
 
   // N full ticks, but never additional ones.
@@ -6461,7 +6437,7 @@ struct windwalking_driver_t: public monk_buff_t < buff_t >
     cooldown -> duration = timespan_t::zero();
     buff_duration = timespan_t::zero();
     buff_period = timespan_t::from_seconds( 1 );
-    tick_behavior = buff_tick_behavior::CLIP;
+    tick_behavior = buff_tick_behavior::CLIP;;
     movement_increase = p.buffs.windwalking_movement_aura -> data().effectN( 1 ).percent();
   }
 };
@@ -6951,12 +6927,9 @@ void monk_t::init_spells()
   passives.aura_monk                        = find_spell( 137022 );
   passives.chi_burst_damage                 = find_spell( 148135 );
   passives.chi_burst_heal                   = find_spell( 130654 );
-  passives.chi_torpedo                      = find_spell( 119085 );
   passives.chi_wave_damage                  = find_spell( 132467 );
   passives.chi_wave_heal                    = find_spell( 132463 );
   passives.healing_elixir                   = find_spell( 122281 ); // talent.healing_elixir -> effectN( 1 ).trigger() -> effectN( 1 ).trigger()
-  passives.spinning_crane_kick_tick         = find_spell( 107270 );
-  passives.rushing_jade_wind_tick           = find_spell( 148187 );
 
   // Brewmaster
   passives.breath_of_fire_dot               = find_spell( 123725 );
@@ -6964,7 +6937,6 @@ void monk_t::init_spells()
   passives.elusive_brawler                  = find_spell( 195630 );
   passives.elusive_dance                    = find_spell( 196739 );
   passives.gift_of_the_ox_heal              = find_spell( 124507 );
-  passives.gift_of_the_ox_summon            = find_spell( 124503 );
   passives.ironskin_brew                    = find_spell( 215479 );
   passives.keg_smash_buff                   = find_spell( 196720 );
   passives.special_delivery                 = find_spell( 196733 );
@@ -6973,14 +6945,10 @@ void monk_t::init_spells()
 
   // Mistweaver
   passives.totm_bok_proc                    = find_spell( 228649 );
-  passives.lifecycles_enveloping_mist       = find_spell( 197919 );
-  passives.lifecycles_vivify                = find_spell( 197916 );
   passives.renewing_mist_heal               = find_spell( 119611 );
   passives.soothing_mist_heal               = find_spell( 115175 );
   passives.soothing_mist_statue             = find_spell( 198533 );
   passives.spirit_of_the_crane              = find_spell( 210803 );
-  passives.teachings_of_the_monastery_buff  = find_spell( 202090 );
-  passives.uplifting_trance                 = find_spell( 197206 );
   passives.zen_pulse_heal                   = find_spell( 198487 );
 
   // Windwalker
@@ -6994,15 +6962,11 @@ void monk_t::init_spells()
   passives.focus_of_xuen                    = find_spell( 252768 );
   passives.hit_combo                        = find_spell( 196741 );
   passives.mark_of_the_crane                = find_spell( 228287 );
-  passives.pressure_point                   = find_spell( 247255 );
-  passives.touch_of_karma_buff              = find_spell( 125174 );
   passives.touch_of_karma_tick              = find_spell( 124280 );
   passives.whirling_dragon_punch_tick       = find_spell( 158221 );
   passives.wind_strikes_dmg                 = find_spell( 262117 );
-  passives.tier19_4pc_melee                 = find_spell( 211432 );
 
   // Legendaries
-  passives.hidden_masters_forbidden_touch   = find_spell( 213114 );
   passives.the_emperors_capacitor           = find_spell( 235054 );
 
   // Mastery spells =========================================
@@ -7129,8 +7093,8 @@ void monk_t::create_buffs()
   base_t::create_buffs();
 
   // General
-  buff.chi_torpedo = buff_creator_t( this, "chi_torpedo", passives.chi_torpedo )
-    .default_value( passives.chi_torpedo -> effectN( 1 ).percent() );
+  buff.chi_torpedo = buff_creator_t( this, "chi_torpedo", find_spell( 119085 ) )
+    .default_value( find_spell( 119085 ) -> effectN( 1 ).percent() );
 
   buff.fortifying_brew = new buffs::fortifying_brew_t( *this, "fortifying_brew", find_spell( 120954 ) );
 
@@ -7159,10 +7123,11 @@ void monk_t::create_buffs()
   buff.elusive_brawler = buff_creator_t( this, "elusive_brawler", mastery.elusive_brawler -> effectN( 3 ).trigger() )
     .add_invalidate( CACHE_DODGE );
 
-  buff.elusive_dance = buff_creator_t(this, "elusive_dance", passives.elusive_dance)
-    .default_value( talent.elusive_dance -> effectN( 1 ).percent() ) // 5% per stack
-    .max_stack( 3 ) // Cap of 15%
-    .add_invalidate( CACHE_DODGE );
+  buff.elusive_dance = buff_creator_t(this, "elusive_dance", find_spell( 196739 ))
+    .default_value( talent.elusive_dance -> effectN( 2 ).percent() / 3 ) // 6.66% per stack
+    .max_stack( 3 ) // Cap of 20%
+    .add_invalidate( CACHE_DODGE )
+    .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
   buff.ironskin_brew = buff_creator_t(this, "ironskin_brew", passives.ironskin_brew )
     .default_value( passives.ironskin_brew -> effectN( 1 ).percent() 
@@ -7172,8 +7137,8 @@ void monk_t::create_buffs()
   buff.keg_smash_talent = buff_creator_t( this, "keg_smash", talent.gift_of_the_mists -> effectN( 1 ).trigger() )
     .chance( talent.gift_of_the_mists -> proc_chance() ); 
 
-  buff.gift_of_the_ox = buff_creator_t( this, "gift_of_the_ox", passives.gift_of_the_ox_summon )
-    .duration( passives.gift_of_the_ox_summon -> duration() )
+  buff.gift_of_the_ox = buff_creator_t( this, "gift_of_the_ox", find_spell( 124503 ) )
+    .duration( find_spell( 124503 ) -> duration() )
     .refresh_behavior( buff_refresh_behavior::NONE )
     .max_stack( 99 );
 
@@ -7187,11 +7152,11 @@ void monk_t::create_buffs()
   buff.mana_tea = buff_creator_t( this, "mana_tea", talent.mana_tea )
     .default_value( talent.mana_tea -> effectN( 1 ).percent() );
 
-  buff.lifecycles_enveloping_mist = buff_creator_t( this, "lifecycles_enveloping_mist", passives.lifecycles_enveloping_mist )
-    .default_value( passives.lifecycles_enveloping_mist -> effectN( 1 ).percent() );
+  buff.lifecycles_enveloping_mist = buff_creator_t( this, "lifecycles_enveloping_mist", find_spell( 197919 ) )
+    .default_value( find_spell( 197919 ) -> effectN( 1 ).percent() );
 
-  buff.lifecycles_vivify = buff_creator_t( this, "lifecycles_vivify", passives.lifecycles_vivify )
-    .default_value( passives.lifecycles_vivify -> effectN( 1 ).percent() );
+  buff.lifecycles_vivify = buff_creator_t( this, "lifecycles_vivify", find_spell( 197916 ) )
+    .default_value( find_spell( 197916 ) -> effectN( 1 ).percent() );
 
   buff.refreshing_jade_wind = buff_creator_t( this, "refreshing_jade_wind", talent.refreshing_jade_wind )
     .default_value( talent.refreshing_jade_wind -> effectN( 1 ).trigger() -> effectN( 1 ).percent() )
@@ -7201,23 +7166,23 @@ void monk_t::create_buffs()
     .default_value( spec.spinning_crane_kick -> effectN( 2 ).percent() )
     .refresh_behavior( buff_refresh_behavior::PANDEMIC );
 
-  buff.teachings_of_the_monastery = buff_creator_t( this, "teachings_of_the_monastery", passives.teachings_of_the_monastery_buff )
-    .default_value( passives.teachings_of_the_monastery_buff -> effectN( 1 ).percent() );
+  buff.teachings_of_the_monastery = buff_creator_t( this, "teachings_of_the_monastery", find_spell( 202090 ) )
+    .default_value( find_spell( 202090 ) -> effectN( 1 ).percent() );
 
   buff.thunder_focus_tea = buff_creator_t( this, "thunder_focus_tea", spec.thunder_focus_tea )
     .max_stack( 1 + ( talent.focused_thunder ? talent.focused_thunder -> effectN( 1 ).base_value()  : 0 ) );
 
-  buff.uplifting_trance = buff_creator_t( this, "uplifting_trance", passives.uplifting_trance )
+  buff.uplifting_trance = buff_creator_t( this, "uplifting_trance", find_spell( 197916 ) )
     .chance( spec.renewing_mist -> effectN( 2 ).percent() 
       + ( sets -> has_set_bonus( MONK_MISTWEAVER, T19, B2 ) ? sets -> set( MONK_MISTWEAVER, T19, B2 ) -> effectN( 1 ).percent() : 0 ) )
-    .default_value( passives.uplifting_trance -> effectN( 1 ).percent() );
+    .default_value( find_spell( 197916 ) -> effectN( 1 ).percent() );
 
   // Windwalker
   buff.bok_proc = buff_creator_t( this, "bok_proc", passives.bok_proc )
     .chance( spec.combo_breaker -> effectN( 1 ).percent() );
 
-  buff.combo_master = buff_creator_t( this, "combo_master", passives.tier19_4pc_melee )
-    .default_value( passives.tier19_4pc_melee -> effectN( 1 ).base_value() )
+  buff.combo_master = buff_creator_t( this, "combo_master", find_spell( 211432 ) )
+    .default_value( find_spell( 211432 ) -> effectN( 1 ).base_value() )
     .add_invalidate( CACHE_MASTERY );
 
   buff.combo_strikes = buff_creator_t( this, "combo_strikes" )
@@ -7238,11 +7203,11 @@ void monk_t::create_buffs()
                               .add_invalidate( CACHE_PLAYER_HEAL_MULTIPLIER )
                               .cd( timespan_t::zero() );
 
-  buff.pressure_point = buff_creator_t( this, "pressure_point", passives.pressure_point )
-                       .default_value( passives.pressure_point -> effectN( 1 ).percent() )
+  buff.pressure_point = buff_creator_t( this, "pressure_point", find_spell( 247255 ) )
+                       .default_value( find_spell( 247255 ) -> effectN( 1 ).percent() )
                        .refresh_behavior( buff_refresh_behavior::NONE );
 
-  buff.touch_of_karma = new buffs::touch_of_karma_buff_t( *this, "touch_of_karma", passives.touch_of_karma_buff );
+  buff.touch_of_karma = new buffs::touch_of_karma_buff_t( *this, "touch_of_karma", find_spell( 125174 ) );
 
   buff.wind_strikes = buff_creator_t( this, "wind_strikes", talent.wind_strikes -> effectN( 1 ).trigger() );
 
@@ -7250,7 +7215,7 @@ void monk_t::create_buffs()
 
   // Legendaries
   buff.hidden_masters_forbidden_touch = new buffs::hidden_masters_forbidden_touch_t( 
-    *this, "hidden_masters_forbidden_touch", passives.hidden_masters_forbidden_touch );
+    *this, "hidden_masters_forbidden_touch", find_spell( 213114 ) );
 
   buff.the_emperors_capacitor = buff_creator_t( this, "the_emperors_capacitor", passives.the_emperors_capacitor )
     .default_value( passives.the_emperors_capacitor -> effectN( 1 ).percent() );
@@ -7267,21 +7232,14 @@ void monk_t::init_gains()
   gain.chi_refund               = get_gain( "chi_refund" );
   gain.chi_burst                = get_gain( "chi_burst" );
   gain.crackling_jade_lightning = get_gain( "crackling_jade_lightning" );
-  gain.effuse                   = get_gain( "effuse" );
   gain.energizing_elixir_energy = get_gain( "energizing_elixir_energy" );
   gain.energizing_elixir_chi    = get_gain( "energizing_elixir_chi" );
   gain.energy_refund            = get_gain( "energy_refund" );
   gain.fist_of_the_white_tiger  = get_gain( "fist_of_the_white_tiger" );
   gain.focus_of_xuen            = get_gain( "focus_of_xuen" );
   gain.gift_of_the_ox           = get_gain( "gift_of_the_ox" );
-  gain.keg_smash                = get_gain( "keg_smash" );
-  gain.mana_tea                 = get_gain( "mana_tea" );
   gain.power_strikes            = get_gain( "power_strikes" );
-  gain.renewing_mist            = get_gain( "renewing_mist" );
-  gain.rushing_jade_wind        = get_gain( "rushing_jade_wind" );
   gain.serenity                 = get_gain( "serenity" );
-  gain.soothing_mist            = get_gain( "soothing_mist" );
-  gain.spinning_crane_kick      = get_gain( "spinning_crane_kick" );
   gain.spirit_of_the_crane      = get_gain( "spirit_of_the_crane" );
   gain.tiger_palm               = get_gain( "tiger_palm" );
 }
@@ -7634,6 +7592,9 @@ double monk_t::composite_player_multiplier( school_e school ) const
 
   if ( talent.hit_combo -> ok() )
     m *= 1.0 + buff.hit_combo -> stack_value();
+
+  if ( buff.elusive_dance -> up() )
+    m *= 1 + buff.elusive_dance ->stack_value();
 
   return m;
 }
@@ -8057,6 +8018,10 @@ void monk_t::target_mitigation( school_e school,
   // Diffuse Magic
   if ( buff.diffuse_magic -> up() && school != SCHOOL_PHYSICAL )
     s -> result_amount *= 1.0 + buff.diffuse_magic -> default_value; // Stored as -60%
+
+  // If Breath of Fire is ticking on the source target, the player receives 5% less damage
+  if ( get_target_data( s -> action -> player ) -> dots.breath_of_fire -> is_ticking() )
+    s -> result_amount *= 1.0 + passives.breath_of_fire_dot -> effectN( 2 ).percent();
 
   // Damage Reduction Cooldowns
   if ( buff.fortifying_brew -> up() )
@@ -9171,9 +9136,9 @@ struct sephuzs_secret_t : public unique_gear::class_buff_cb_t<monk_t, haste_buff
   haste_buff_t* creator( const special_effect_t& e ) const override
   {
     auto buff = make_buff<haste_buff_t>( e.player, buff_name, e.trigger() );
-    buff->set_cooldown( e.player -> find_spell( 226262 ) -> duration() )
-        ->set_default_value( e.trigger() -> effectN( 2 ).percent() )
-        ->add_invalidate( CACHE_RUN_SPEED );
+    buff -> set_cooldown( e.player -> find_spell( 226262 ) -> duration() )
+         -> set_default_value( e.trigger() -> effectN( 2 ).percent() )
+         -> add_invalidate( CACHE_RUN_SPEED );
     return buff;
   }
 };
