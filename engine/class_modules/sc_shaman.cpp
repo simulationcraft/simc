@@ -17,7 +17,6 @@
 //   - Add Spirit Wolf
 //   - Add Icefury
 //   - Add Elemental Attunement
-// - Fix Earth Shock
 // - Add Meteor to Primal Fire Elemental instead of Fire Nova
 // - Add Eye of the Storm to Primal Storm Elemental instead of Gale Force
 
@@ -309,6 +308,7 @@ public:
     buff_t* lava_surge;
 
     // Elemental
+    buff_t* icefury;
     buff_t* liquid_magma;
     buff_t* stormkeeper;
     stat_buff_t* elemental_blast_crit;
@@ -460,16 +460,17 @@ public:
     const spell_data_t* molten_fury;
     const spell_data_t* totem_mastery;
 
-    const spell_data_t* aftershock;
-    const spell_data_t* volcanic_rage;
-
     const spell_data_t* echo_of_the_elements;
-    const spell_data_t* storm_elemental;
     const spell_data_t* elemental_blast;
+    const spell_data_t* icefury;
+
+    const spell_data_t* aftershock;
+    const spell_data_t* storm_elemental;
+    const spell_data_t* liquid_magma_totem;
+    const spell_data_t* volcanic_rage;
 
     const spell_data_t* high_voltage;
     const spell_data_t* primal_elementalist;
-    const spell_data_t* liquid_magma_totem;
 
     const spell_data_t* stormkeeper;
 
@@ -4730,6 +4731,35 @@ struct elemental_blast_t : public shaman_spell_t
   }
 };
 
+// Icefury Spell ====================================================
+
+struct icefury_overload_t : public elemental_overload_spell_t
+{
+  icefury_overload_t( shaman_t* p ) : elemental_overload_spell_t( p, "icefury_overload", p->find_spell( 219271 ) )
+  {
+  }
+};
+
+struct icefury_t : public shaman_spell_t
+{
+  icefury_t( shaman_t* player, const std::string& options_str )
+    : shaman_spell_t( "icefury", player, player->talent.icefury, options_str )
+  {
+    if ( player->mastery.elemental_overload->ok() )
+    {
+      overload = new icefury_overload_t( player );
+      add_child( overload );
+    }
+  }
+
+  void execute() override
+  {
+    shaman_spell_t::execute();
+
+    p()->buff.icefury->trigger( data().initial_stacks(), ( p()->talent.icefury->effectN( 3 ).percent() ) );
+  }
+};
+
 // Spirit Wolf Spell ========================================================
 
 struct feral_spirit_spell_t : public shaman_spell_t
@@ -5173,7 +5203,6 @@ struct frost_shock_t : public shaman_spell_t
       damage_coefficient( data().effectN( 3 ).percent() / secondary_costs[ RESOURCE_MAELSTROM ] ),
       t21_4pc( nullptr )
   {
-    // maybe this ability will get an increase at one point
     if ( player->sets->has_set_bonus( SHAMAN_ELEMENTAL, T21, B4 ) )
     {
       t21_4pc = new frost_shock_overload_t( player );
@@ -5187,6 +5216,8 @@ struct frost_shock_t : public shaman_spell_t
 
     m *= 1.0 + cost() * damage_coefficient;
 
+    m *= 1.0 + p()->buff.icefury->value();
+
     m *= 1.0 + p()->buff.t21_2pc_elemental->stack_value();
 
     return m;
@@ -5195,6 +5226,8 @@ struct frost_shock_t : public shaman_spell_t
   void execute() override
   {
     shaman_spell_t::execute();
+
+    p()->buff.icefury->decrement();
 
     p()->buff.t21_2pc_elemental->expire();
   }
@@ -5988,6 +6021,8 @@ action_t* shaman_t::create_action( const std::string& name, const std::string& o
     return new flame_shock_t( this, options_str );
   if ( name == "frost_shock" )
     return new frost_shock_t( this, options_str );
+  if ( name == "icefury" )
+    return new icefury_t( this, options_str );
   if ( name == "lava_beam" )
     return new lava_beam_t( this, options_str );
   if ( name == "lava_burst" )
@@ -6360,16 +6395,17 @@ void shaman_t::init_spells()
   talent.molten_fury   = find_talent_spell( "Molten Fury" );
   talent.totem_mastery = find_talent_spell( "Totem Mastery" );
 
-  talent.aftershock    = find_talent_spell( "Aftershock" );
-  talent.volcanic_rage = find_talent_spell( "Volcanic Rage" );
-
   talent.echo_of_the_elements = find_talent_spell( "Echo of the Elements" );
-  talent.storm_elemental      = find_talent_spell( "Storm Elemental" );
   talent.elemental_blast      = find_talent_spell( "Elemental Blast" );
+  talent.icefury              = find_talent_spell( "Icefury" );
+
+  talent.aftershock         = find_talent_spell( "Aftershock" );
+  talent.storm_elemental    = find_talent_spell( "Storm Elemental" );
+  talent.liquid_magma_totem = find_talent_spell( "Liquid Magma Totem" );
+  talent.volcanic_rage      = find_talent_spell( "Volcanic Rage" );
 
   talent.high_voltage        = find_talent_spell( "High Voltage" );
   talent.primal_elementalist = find_talent_spell( "Primal Elementalist" );
-  talent.liquid_magma_totem  = find_talent_spell( "Liquid Magma Totem" );
 
   talent.stormkeeper = find_talent_spell( "Stormkeeper" );
 
@@ -6971,6 +7007,9 @@ void shaman_t::create_buffs()
   buff.tailwind_totem->add_invalidate( CACHE_HASTE )
       ->set_duration( talent.totem_mastery->effectN( 4 ).trigger()->duration() )
       ->set_default_value( 1.0 / ( 1.0 + find_spell( 210659 )->effectN( 1 ).percent() ) );
+  buff.icefury = make_buff( this, "icefury", talent.icefury )
+                     ->set_cooldown( timespan_t::zero() )  // Handled by the action
+                     ->set_default_value( talent.icefury->effectN( 3 ).percent() );
   // Tier
   buff.t21_2pc_elemental =
       make_buff( this, "earthen_strength", sets->set( SHAMAN_ELEMENTAL, T21, B2 )->effectN( 1 ).trigger() )
@@ -7273,11 +7312,14 @@ void shaman_t::init_action_list_elemental()
   single_target->add_action( this, "Flame Shock", "if=!ticking|dot.flame_shock.remains<=gcd" );
   single_target->add_talent( this, "Volcanic Rage" );
   single_target->add_talent( this, "Ascendance", "if=(time>=60|buff.bloodlust.up)&cooldown.lava_burst.remains>0" );
+
   single_target->add_talent( this, "Elemental Blast" );
+  single_target->add_talent( this, "Icefury" );
   single_target->add_action( this, "Stormkeeper", "if=raid_event.adds.count<3|raid_event.adds.in>50",
                              "Keep SK for large or soon add waves." );
   single_target->add_talent( this, "Liquid Magma Totem", "if=raid_event.adds.count<3|raid_event.adds.in>50" );
-  single_target->add_action( this, "Earth Shock", "if=maelstrom>=25" );
+  single_target->add_action( this, "Frost Shock", "if=buff.icefury.up&maelstrom>=20" );
+  single_target->add_action( this, "Earth Shock" );
   single_target->add_action( this, "Lava Burst",
                              "if=dot.flame_shock.remains>cast_time&(cooldown_react|buff.ascendance.up)" );
   single_target->add_action( this, "Flame Shock", "if=maelstrom>=20,target_if=refreshable" );
