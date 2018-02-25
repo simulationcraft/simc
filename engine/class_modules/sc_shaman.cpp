@@ -15,7 +15,6 @@
 // - Add Talents
 //   - Add Master of the Elements
 //   - Add Spirit Wolf
-//   - Add Icefury
 //   - Add Elemental Attunement
 // - Add Meteor to Primal Fire Elemental instead of Fire Nova
 // - Add Eye of the Storm to Primal Storm Elemental instead of Gale Force
@@ -367,7 +366,6 @@ public:
     cooldown_t* feral_spirits;
     cooldown_t* lava_burst;
     cooldown_t* storm_elemental;
-    cooldown_t* volcanic_rage;
     cooldown_t* strike;  // shared CD of Storm Strike and Windstrike
     cooldown_t* rockbiter;
     cooldown_t* t20_2pc_elemental;
@@ -467,7 +465,6 @@ public:
     const spell_data_t* aftershock;
     const spell_data_t* storm_elemental;
     const spell_data_t* liquid_magma_totem;
-    const spell_data_t* volcanic_rage;
 
     const spell_data_t* high_voltage;
     const spell_data_t* primal_elementalist;
@@ -585,7 +582,6 @@ public:
     cooldown.storm_elemental   = get_cooldown( "storm_elemental" );
     cooldown.feral_spirits     = get_cooldown( "feral_spirit" );
     cooldown.lava_burst        = get_cooldown( "lava_burst" );
-    cooldown.volcanic_rage     = get_cooldown( "volcanic_rage" );
     cooldown.strike            = get_cooldown( "strike" );
     cooldown.rockbiter         = get_cooldown( "rockbiter" );
     cooldown.t20_2pc_elemental = get_cooldown( "t20_2pc_elemental" );
@@ -5330,31 +5326,6 @@ struct totem_mastery_t : public shaman_spell_t
   }
 };
 
-// Volcanic Rage ============================================================
-
-struct volcanic_rage_t : public shaman_spell_t
-{
-  shaman_spell_t* child_fs;
-
-  volcanic_rage_t( shaman_t* player, const std::string& options_str )
-    : shaman_spell_t( "volcanic_rage", player, player->talent.volcanic_rage, options_str )
-  {
-    aoe                    = -1;
-    child_fs               = new flame_shock_t( p(), std::string( "" ) );
-    child_fs->background   = true;
-    child_fs->dot_duration = p()->talent.volcanic_rage->effectN( 2 ).time_value();
-  }
-
-  void impact( action_state_t* state ) override
-  {
-    shaman_spell_t::impact( state );
-    if ( result_is_hit( state->result ) )
-    {
-      child_fs->set_target( state->target );
-      child_fs->execute();
-    }
-  }
-};
 // Healing Surge Spell ======================================================
 
 struct healing_surge_t : public shaman_heal_t
@@ -6037,8 +6008,6 @@ action_t* shaman_t::create_action( const std::string& name, const std::string& o
     return new thunderstorm_t( this, options_str );
   if ( name == "totem_mastery" )
     return new totem_mastery_t( this, options_str );
-  if ( name == "volcanic_rage" )
-    return new volcanic_rage_t( this, options_str );
 
   // enhancement
   if ( name == "crash_lightning" )
@@ -6402,7 +6371,6 @@ void shaman_t::init_spells()
   talent.aftershock         = find_talent_spell( "Aftershock" );
   talent.storm_elemental    = find_talent_spell( "Storm Elemental" );
   talent.liquid_magma_totem = find_talent_spell( "Liquid Magma Totem" );
-  talent.volcanic_rage      = find_talent_spell( "Volcanic Rage" );
 
   talent.high_voltage        = find_talent_spell( "High Voltage" );
   talent.primal_elementalist = find_talent_spell( "Primal Elementalist" );
@@ -7310,7 +7278,6 @@ void shaman_t::init_action_list_elemental()
 
   // Single target - Ascendance
   single_target->add_action( this, "Flame Shock", "if=!ticking|dot.flame_shock.remains<=gcd" );
-  single_target->add_talent( this, "Volcanic Rage" );
   single_target->add_talent( this, "Ascendance", "if=(time>=60|buff.bloodlust.up)&cooldown.lava_burst.remains>0" );
 
   single_target->add_talent( this, "Elemental Blast" );
