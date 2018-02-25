@@ -675,7 +675,7 @@ void paladin_t::create_buffs_retribution()
 
   buffs.righteous_verdict              = make_buff( this, "righteous_verdict", find_spell( 267611 ) );
   buffs.inquisition                    = new buffs::inquisition_buff_t( this );
-  buffs.the_fires_of_justice           = make_buff( this, "the_fires_of_justice", find_spell( 209785 ) );
+  buffs.the_fires_of_justice           = make_buff( this, "fires_of_justice", find_spell( 209785 ) );
   buffs.blade_of_wrath                 = make_buff( this, "blade_of_wrath", find_spell( 231843 ) );
   buffs.whisper_of_the_nathrezim       = make_buff( this, "whisper_of_the_nathrezim", find_spell( 207635 ) );
   buffs.liadrins_fury_unleashed        = new buffs::liadrins_fury_unleashed_t( this );
@@ -710,7 +710,7 @@ void paladin_t::init_spells_retribution()
   talents.greater_judgment           = find_talent_spell( "Greater Judgment" );
   talents.righteous_verdict          = find_talent_spell( "Righteous Verdict" );
   talents.execution_sentence         = find_talent_spell( "Execution Sentence" );
-  talents.fires_of_justice           = find_talent_spell( "The Fires of Justice" );
+  talents.fires_of_justice           = find_talent_spell( "Fires of Justice" );
   talents.blade_of_wrath             = find_talent_spell( "Blade of Wrath" );
   talents.hammer_of_wrath            = find_talent_spell( "Hammer of Wrath" );
   talents.fist_of_justice            = find_talent_spell( "Fist of Justice" );
