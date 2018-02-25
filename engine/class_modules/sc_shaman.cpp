@@ -751,8 +751,9 @@ struct ascendance_buff_t : public buff_t
   action_t* lava_burst;
 
   ascendance_buff_t( shaman_t* p )
-    : buff_t( p, "ascendance",p->specialization() == SHAMAN_ENHANCEMENT ? p->find_spell( 114051 )
-                                                                    : p->find_spell( 114050 ) ),  // No resto for now
+    : buff_t( p, "ascendance",
+              p->specialization() == SHAMAN_ENHANCEMENT ? p->find_spell( 114051 )
+                                                        : p->find_spell( 114050 ) ),  // No resto for now
       lava_burst( nullptr )
   {
     set_trigger_spell( p->talent.ascendance );
@@ -954,8 +955,7 @@ struct stormlash_buff_t : public buff_t
 {
   stormlash_callback_t* callback;
 
-  stormlash_buff_t( shaman_t* p ) :
-    buff_t( p, "stormlash", p->find_spell( 195222 ) ), callback( nullptr )
+  stormlash_buff_t( shaman_t* p ) : buff_t( p, "stormlash", p->find_spell( 195222 ) ), callback( nullptr )
   {
     set_activated( false );
     set_cooldown( timespan_t::zero() );
@@ -5998,8 +5998,7 @@ struct flametongue_buff_t : public buff_t
   shaman_t* p;
 
   flametongue_buff_t( shaman_t* p )
-    : buff_t( p, "flametongue", p->find_specialization_spell( "Flametongue" )->effectN( 3 ).trigger() ),
-      p( p )
+    : buff_t( p, "flametongue", p->find_specialization_spell( "Flametongue" )->effectN( 3 ).trigger() ), p( p )
   {
     set_period( timespan_t::zero() );
     set_refresh_behavior( buff_refresh_behavior::PANDEMIC );
@@ -6991,21 +6990,22 @@ void shaman_t::create_buffs()
   // Shared
   //
   buff.ascendance = new ascendance_buff_t( this );
-  buff.ghost_wolf = make_buff( this, "ghost_wolf", find_class_spell( "Ghost Wolf" ) )
-                        ->set_period( artifact.spirit_of_the_maelstrom.rank() ? find_spell( 198240 )->effectN( 1 ).period()
-                                                                         : timespan_t::min() )
-                                                                           ->set_tick_callback( [this]( buff_t*, int, const timespan_t& ) {
-                          this->resource_gain( RESOURCE_MAELSTROM, this->artifact.spirit_of_the_maelstrom.value(),
-                                               this->gain.spirit_of_the_maelstrom, nullptr );
-                        } )
-                        ->set_stack_change_callback( [this]( buff_t*, int, int new_ ) {
-                          if ( new_ == 1 )
-                            buff.spiritual_journey->trigger();
-                          else
-                            buff.spiritual_journey->expire();
-                        } );
+  buff.ghost_wolf =
+      make_buff( this, "ghost_wolf", find_class_spell( "Ghost Wolf" ) )
+          ->set_period( artifact.spirit_of_the_maelstrom.rank() ? find_spell( 198240 )->effectN( 1 ).period()
+                                                                : timespan_t::min() )
+          ->set_tick_callback( [this]( buff_t*, int, const timespan_t& ) {
+            this->resource_gain( RESOURCE_MAELSTROM, this->artifact.spirit_of_the_maelstrom.value(),
+                                 this->gain.spirit_of_the_maelstrom, nullptr );
+          } )
+          ->set_stack_change_callback( [this]( buff_t*, int, int new_ ) {
+            if ( new_ == 1 )
+              buff.spiritual_journey->trigger();
+            else
+              buff.spiritual_journey->expire();
+          } );
   buff.t19_oh_8pc = make_buff<stat_buff_t>( this, "might_of_the_maelstrom",
-                                         sets->set( specialization(), T19OH, B8 )->effectN( 1 ).trigger() );
+                                            sets->set( specialization(), T19OH, B8 )->effectN( 1 ).trigger() );
   buff.t19_oh_8pc->set_trigger_spell( sets->set( specialization(), T19OH, B8 ) );
 
   //
@@ -7020,44 +7020,46 @@ void shaman_t::create_buffs()
   buff.lava_surge = make_buff( this, "lava_surge", find_spell( 77762 ) )
                         ->set_activated( false )
                         ->set_chance( 1.0 );  // Proc chance is handled externally
-  buff.stormkeeper =
-      make_buff( this, "stormkeeper", talent.stormkeeper )->set_cooldown( timespan_t::zero() );  // Handled by the action
+  buff.stormkeeper = make_buff( this, "stormkeeper", talent.stormkeeper )
+                         ->set_cooldown( timespan_t::zero() );  // Handled by the action
+
   // Totem Mastery
   buff.resonance_totem =
       make_buff( this, "resonance_totem", find_spell( 202192 ) )
-      ->set_refresh_behavior( buff_refresh_behavior::DURATION )
-      ->set_duration( talent.totem_mastery->effectN( 1 ).trigger()->duration() )
-      ->set_period( find_spell( 202192 )->effectN( 1 ).period() )
-      ->set_tick_callback( [this]( buff_t* b, int, const timespan_t& ) {
+          ->set_refresh_behavior( buff_refresh_behavior::DURATION )
+          ->set_duration( talent.totem_mastery->effectN( 1 ).trigger()->duration() )
+          ->set_period( find_spell( 202192 )->effectN( 1 ).period() )
+          ->set_tick_callback( [this]( buff_t* b, int, const timespan_t& ) {
             this->resource_gain( RESOURCE_MAELSTROM, b->data().effectN( 1 ).resource( RESOURCE_MAELSTROM ),
                                  this->gain.resonance_totem, nullptr );
           } );
   buff.storm_totem = make_buff( this, "storm_totem", find_spell( 210651 ) )
-    ->set_duration( talent.totem_mastery->effectN( 2 ).trigger()->duration() )
-    ->set_cooldown( timespan_t::zero() )  // Handled by the action
+                         ->set_duration( talent.totem_mastery->effectN( 2 ).trigger()->duration() )
+                         ->set_cooldown( timespan_t::zero() )  // Handled by the action
                          // FIXME: 7.3 ptr got rid of the 2 effectN, now we need to use 1
-    ->set_default_value( find_spell( 210651 )->effectN( 1 ).percent() );
+                         ->set_default_value( find_spell( 210651 )->effectN( 1 ).percent() );
   buff.ember_totem = make_buff( this, "ember_totem", find_spell( 210658 ) )
-    ->set_duration( talent.totem_mastery->effectN( 3 ).trigger()->duration() )
-    ->set_default_value( 1.0 + find_spell( 210658 )->effectN( 1 ).percent() );
+                         ->set_duration( talent.totem_mastery->effectN( 3 ).trigger()->duration() )
+                         ->set_default_value( 1.0 + find_spell( 210658 )->effectN( 1 ).percent() );
   buff.tailwind_totem = make_buff<haste_buff_t>( this, "tailwind_totem", find_spell( 210659 ) );
-  buff.tailwind_totem->add_invalidate( CACHE_HASTE )->set_duration( talent.totem_mastery->effectN( 4 ).trigger()->duration() )
+  buff.tailwind_totem->add_invalidate( CACHE_HASTE )
+      ->set_duration( talent.totem_mastery->effectN( 4 ).trigger()->duration() )
       ->set_default_value( 1.0 / ( 1.0 + find_spell( 210659 )->effectN( 1 ).percent() ) );
   // Tier
   buff.t21_2pc_elemental =
       make_buff( this, "earthen_strength", sets->set( SHAMAN_ELEMENTAL, T21, B2 )->effectN( 1 ).trigger() )
-      ->set_trigger_spell( sets->set( SHAMAN_ELEMENTAL, T21, B2 ) )
-      ->set_default_value( sets->set( SHAMAN_ELEMENTAL, T21, B2 )->effectN( 1 ).trigger()->effectN( 1 ).percent() );
+          ->set_trigger_spell( sets->set( SHAMAN_ELEMENTAL, T21, B2 ) )
+          ->set_default_value( sets->set( SHAMAN_ELEMENTAL, T21, B2 )->effectN( 1 ).trigger()->effectN( 1 ).percent() );
 
   //
   // Enhancement
   //
   buff.crash_lightning = make_buff( this, "crash_lightning", find_spell( 187878 ) );
   buff.doom_winds      = make_buff( this, "doom_winds", &( artifact.doom_winds.data() ) )
-    ->set_cooldown( timespan_t::zero() );  // handled by the action
+                        ->set_cooldown( timespan_t::zero() );  // handled by the action
   buff.feral_spirit =
       make_buff( this, "t17_4pc_melee", sets->set( SHAMAN_ENHANCEMENT, T17, B4 )->effectN( 1 ).trigger() )
-      ->set_cooldown( timespan_t::zero() );
+          ->set_cooldown( timespan_t::zero() );
   buff.flametongue      = new flametongue_buff_t( this );
   buff.gathering_storms = make_buff( this, "gathering_storms", find_spell( 198300 ) );
   buff.hot_hand =
@@ -7067,17 +7069,17 @@ void shaman_t::create_buffs()
                        ->set_chance( talent.landslide->ok() )
                        ->set_default_value( find_spell( 202004 )->effectN( 1 ).percent() );
   buff.lightning_shield = make_buff( this, "lightning_shield", find_talent_spell( "Lightning Shield" ) )
-    ->set_chance( talent.lightning_shield->ok() );
+                              ->set_chance( talent.lightning_shield->ok() );
   buff.spirit_walk = make_buff( this, "spirit_walk", find_specialization_spell( "Spirit Walk" ) );
   buff.frostbrand  = make_buff( this, "frostbrand", spec.frostbrand )
-    ->set_period( timespan_t::zero() )
-    ->set_refresh_behavior( buff_refresh_behavior::PANDEMIC );
+                        ->set_period( timespan_t::zero() )
+                        ->set_refresh_behavior( buff_refresh_behavior::PANDEMIC );
   buff.stormbringer = make_buff( this, "stormbringer", find_spell( 201846 ) )
-    ->set_activated( false )  // TODO: Need a delay on this
-    ->set_max_stack( find_spell( 201846 )->initial_stacks() );
-  buff.stormlash = new stormlash_buff_t(this);
+                          ->set_activated( false )  // TODO: Need a delay on this
+                          ->set_max_stack( find_spell( 201846 )->initial_stacks() );
+  buff.stormlash    = new stormlash_buff_t( this );
   buff.unleash_doom = make_buff( this, "unleash_doom", artifact.unleash_doom.data().effectN( 1 ).trigger() )
-    ->set_trigger_spell( artifact.unleash_doom );
+                          ->set_trigger_spell( artifact.unleash_doom );
   buff.wind_strikes = make_buff<haste_buff_t>( this, "wind_strikes", find_spell( 198293 ) );
   buff.wind_strikes->set_activated( false )
       ->add_invalidate( CACHE_ATTACK_SPEED )
@@ -7089,22 +7091,26 @@ void shaman_t::create_buffs()
   // Tier
   buff.t18_4pc_enhancement =
       make_buff( this, "natures_reprisal", sets->set( SHAMAN_ENHANCEMENT, T18, B4 )->effectN( 1 ).trigger() )
-      ->set_trigger_spell( sets->set( SHAMAN_ENHANCEMENT, T18, B4 ) )
-      ->set_default_value( sets->set( SHAMAN_ENHANCEMENT, T18, B4 )->effectN( 1 ).trigger()->effectN( 1 ).percent() )
+          ->set_trigger_spell( sets->set( SHAMAN_ENHANCEMENT, T18, B4 ) )
+          ->set_default_value(
+              sets->set( SHAMAN_ENHANCEMENT, T18, B4 )->effectN( 1 ).trigger()->effectN( 1 ).percent() )
           ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   buff.t20_2pc_enhancement =
       make_buff( this, "lightning_crash", sets->set( SHAMAN_ENHANCEMENT, T20, B2 )->effectN( 1 ).trigger() )
-      ->set_trigger_spell( sets->set( SHAMAN_ENHANCEMENT, T20, B2 ) )
-      ->set_default_value( sets->set( SHAMAN_ENHANCEMENT, T20, B2 )->effectN( 1 ).trigger()->effectN( 1 ).percent() )
+          ->set_trigger_spell( sets->set( SHAMAN_ENHANCEMENT, T20, B2 ) )
+          ->set_default_value(
+              sets->set( SHAMAN_ENHANCEMENT, T20, B2 )->effectN( 1 ).trigger()->effectN( 1 ).percent() )
           ->add_invalidate( CACHE_CRIT_CHANCE );
   buff.t20_4pc_enhancement =
       make_buff( this, "crashing_lightning", sets->set( SHAMAN_ENHANCEMENT, T20, B4 )->effectN( 1 ).trigger() )
-      ->set_trigger_spell( sets->set( SHAMAN_ENHANCEMENT, T20, B4 ) )
-      ->set_default_value( sets->set( SHAMAN_ENHANCEMENT, T20, B4 )->effectN( 1 ).trigger()->effectN( 1 ).percent() );
+          ->set_trigger_spell( sets->set( SHAMAN_ENHANCEMENT, T20, B4 ) )
+          ->set_default_value(
+              sets->set( SHAMAN_ENHANCEMENT, T20, B4 )->effectN( 1 ).trigger()->effectN( 1 ).percent() );
   buff.t21_2pc_enhancement =
       make_buff( this, "force_of_the_mountain", sets->set( SHAMAN_ENHANCEMENT, T21, B2 )->effectN( 1 ).trigger() )
-      ->set_trigger_spell( sets->set( SHAMAN_ENHANCEMENT, T21, B2 ) )
-      ->set_default_value( sets->set( SHAMAN_ENHANCEMENT, T21, B2 )->effectN( 1 ).trigger()->effectN( 1 ).percent() );
+          ->set_trigger_spell( sets->set( SHAMAN_ENHANCEMENT, T21, B2 ) )
+          ->set_default_value(
+              sets->set( SHAMAN_ENHANCEMENT, T21, B2 )->effectN( 1 ).trigger()->effectN( 1 ).percent() );
 
   //
   // Restoration
@@ -8056,12 +8062,12 @@ stat_e shaman_t::convert_hybrid_stat( stat_e s ) const
         return STAT_AGILITY;
       else
         return STAT_INTELLECT;
-    // This is a guess at how AGI/STR gear will work for Resto/Elemental, TODO: confirm
     case STAT_STR_AGI:
+      // This is a guess at how AGI/STR gear will work for Resto/Elemental, TODO: confirm
       return STAT_AGILITY;
-    // This is a guess at how STR/INT gear will work for Enhance, TODO: confirm
-    // this should probably never come up since shamans can't equip plate, but....
     case STAT_STR_INT:
+      // This is a guess at how STR/INT gear will work for Enhance, TODO: confirm
+      // this should probably never come up since shamans can't equip plate, but....
       return STAT_INTELLECT;
     case STAT_SPIRIT:
       if ( specialization() == SHAMAN_RESTORATION )
@@ -8088,11 +8094,11 @@ public:
   void mwgen_table_header( report::sc_html_stream& os )
   {
     os << "<table class=\"sc\" style=\"float: left;margin-right: 10px;\">\n"
-         << "<tr>\n"
-           << "<th>Ability</th>\n"
-           << "<th>Generated</th>\n"
-           << "<th>Wasted</th>\n"
-         << "</tr>\n";
+                     << "<tr>\n"
+                                   << "<th>Ability</th>\n"
+                                   << "<th>Generated</th>\n"
+                                   << "<th>Wasted</th>\n"
+                     << "</tr>\n";
   }
 
   void mwuse_table_header( report::sc_html_stream& os )
@@ -8100,18 +8106,18 @@ public:
     const shaman_t& s = static_cast<const shaman_t&>( p );
     size_t n_mwstack = s.buff.maelstrom_weapon -> max_stack();
     os << "<table class=\"sc\" style=\"float: left;\">\n"
-         << "<tr style=\"vertical-align: bottom;\">\n"
-           << "<th rowspan=\"2\">Ability</th>\n"
-           << "<th rowspan=\"2\">Event</th>\n";
+                     << "<tr style=\"vertical-align: bottom;\">\n"
+                                   << "<th rowspan=\"2\">Ability</th>\n"
+                                   << "<th rowspan=\"2\">Event</th>\n";
 
     for ( size_t i = 0; i <= n_mwstack; ++i )
     {
-      os   << "<th rowspan=\"2\">" << i << "</th>\n";
+                  os   << "<th rowspan=\"2\">" << i << "</th>\n";
     }
 
     os     << "<th colspan=\"2\">Total</th>\n"
-         << "</tr>\n"
-         << "<tr><th>casts</th><th>charges</th></tr>\n";
+                     << "</tr>\n"
+                     << "<tr><th>casts</th><th>charges</th></tr>\n";
   }
   */
   void cdwaste_table_header( report::sc_html_stream& os )
@@ -8156,35 +8162,35 @@ public:
 
     for ( size_t i = 0, end = p.stats_list.size(); i < end; i++ )
     {
-      stats_t* stats = p.stats_list[ i ];
-      double n_generated = 0, n_wasted = 0;
+                  stats_t* stats = p.stats_list[ i ];
+                  double n_generated = 0, n_wasted = 0;
 
-      for (auto & elem : stats -> action_list)
-      {
-        shaman_attack_t* a = dynamic_cast<shaman_attack_t*>( elem );
-        if ( ! a )
-          continue;
+                  for (auto & elem : stats -> action_list)
+                  {
+                    shaman_attack_t* a = dynamic_cast<shaman_attack_t*>( elem );
+                    if ( ! a )
+                                  continue;
 
-        if ( ! a -> may_proc_maelstrom )
-          continue;
+                    if ( ! a -> may_proc_maelstrom )
+                                  continue;
 
-        n_generated += a -> maelstrom_procs -> mean();
-        total_generated += a -> maelstrom_procs -> mean();
-        n_wasted += a -> maelstrom_procs_wasted -> mean();
-        total_wasted += a -> maelstrom_procs_wasted -> mean();
-      }
+                    n_generated += a -> maelstrom_procs -> mean();
+                    total_generated += a -> maelstrom_procs -> mean();
+                    n_wasted += a -> maelstrom_procs_wasted -> mean();
+                    total_wasted += a -> maelstrom_procs_wasted -> mean();
+                  }
 
-      if ( n_generated > 0 || n_wasted > 0 )
-      {
-        std::string name_str = report::decorated_action_name( stats -> action_list[ 0 ] );
-        std::string row_class_str = "";
-        if ( ++n & 1 )
-          row_class_str = " class=\"odd\"";
+                  if ( n_generated > 0 || n_wasted > 0 )
+                  {
+                    std::string name_str = report::decorated_action_name( stats -> action_list[ 0 ] );
+                    std::string row_class_str = "";
+                    if ( ++n & 1 )
+                                  row_class_str = " class=\"odd\"";
 
-        os.format("<tr%s><td class=\"left\">%s</td><td class=\"right\">%.2f</td><td class=\"right\">%.2f
+                    os.format("<tr%s><td class=\"left\">%s</td><td class=\"right\">%.2f</td><td class=\"right\">%.2f
   (%.2f%%)</td></tr>\n", row_class_str.c_str(), name_str.c_str(), util::round( n_generated, 2 ), util::round( n_wasted,
   2 ), util::round( 100.0 * n_wasted / n_generated, 2 ) );
-      }
+                  }
     }
 
     os.format("<tr><td class=\"left\">Total</td><td class=\"right\">%.2f</td><td class=\"right\">%.2f
@@ -8202,100 +8208,101 @@ public:
 
     for ( size_t i = 0, end = p.action_list.size(); i < end; i++ )
     {
-      if ( shaman_spell_t* s = dynamic_cast<shaman_spell_t*>( p.action_list[ i ] ) )
-      {
-        for ( size_t j = 0, end2 = s -> maelstrom_weapon_cast.size() - 1; j < end2; j++ )
-        {
-          total_mw_cast[ j ] += s -> maelstrom_weapon_cast[ j ] -> mean();
-          total_mw_cast[ n_mwstack + 1 ] += s -> maelstrom_weapon_cast[ j ] -> mean();
+                  if ( shaman_spell_t* s = dynamic_cast<shaman_spell_t*>( p.action_list[ i ] ) )
+                  {
+                    for ( size_t j = 0, end2 = s -> maelstrom_weapon_cast.size() - 1; j < end2; j++ )
+                    {
+                                  total_mw_cast[ j ] += s -> maelstrom_weapon_cast[ j ] -> mean();
+                                  total_mw_cast[ n_mwstack + 1 ] += s -> maelstrom_weapon_cast[ j ] -> mean();
 
-          total_mw_executed[ j ] += s -> maelstrom_weapon_executed[ j ] -> mean();
-          total_mw_executed[ n_mwstack + 1 ] += s -> maelstrom_weapon_executed[ j ] -> mean();
-        }
-      }
+                                  total_mw_executed[ j ] += s -> maelstrom_weapon_executed[ j ] -> mean();
+                                  total_mw_executed[ n_mwstack + 1 ] += s -> maelstrom_weapon_executed[ j ] -> mean();
+                    }
+                  }
     }
 
     for ( size_t i = 0, end = p.stats_list.size(); i < end; i++ )
     {
-      stats_t* stats = p.stats_list[ i ];
-      std::vector<double> n_cast( n_mwstack + 2 );
-      std::vector<double> n_executed( n_mwstack + 2 );
-      double n_cast_charges = 0, n_executed_charges = 0;
-      bool has_data = false;
+                  stats_t* stats = p.stats_list[ i ];
+                  std::vector<double> n_cast( n_mwstack + 2 );
+                  std::vector<double> n_executed( n_mwstack + 2 );
+                  double n_cast_charges = 0, n_executed_charges = 0;
+                  bool has_data = false;
 
-      for (auto & elem : stats -> action_list)
-      {
-        if ( shaman_spell_t* s = dynamic_cast<shaman_spell_t*>( elem ) )
-        {
-          for ( size_t k = 0, end3 = s -> maelstrom_weapon_cast.size() - 1; k < end3; k++ )
-          {
-            if ( s -> maelstrom_weapon_cast[ k ] -> mean() > 0 || s -> maelstrom_weapon_executed[ k ] -> mean() > 0 )
-              has_data = true;
+                  for (auto & elem : stats -> action_list)
+                  {
+                    if ( shaman_spell_t* s = dynamic_cast<shaman_spell_t*>( elem ) )
+                    {
+                                  for ( size_t k = 0, end3 = s -> maelstrom_weapon_cast.size() - 1; k < end3; k++ )
+                                  {
+                                    if ( s -> maelstrom_weapon_cast[ k ] -> mean() > 0 || s ->
+  maelstrom_weapon_executed[ k ] -> mean() > 0 ) has_data = true;
 
-            n_cast[ k ] += s -> maelstrom_weapon_cast[ k ] -> mean();
-            n_cast[ n_mwstack + 1 ] += s -> maelstrom_weapon_cast[ k ] -> mean();
+                                    n_cast[ k ] += s -> maelstrom_weapon_cast[ k ] -> mean();
+                                    n_cast[ n_mwstack + 1 ] += s -> maelstrom_weapon_cast[ k ] -> mean();
 
-            n_cast_charges += s -> maelstrom_weapon_cast[ k ] -> mean() * k;
+                                    n_cast_charges += s -> maelstrom_weapon_cast[ k ] -> mean() * k;
 
-            n_executed[ k ] += s -> maelstrom_weapon_executed[ k ] -> mean();
-            n_executed[ n_mwstack + 1 ] += s -> maelstrom_weapon_executed[ k ] -> mean();
+                                    n_executed[ k ] += s -> maelstrom_weapon_executed[ k ] -> mean();
+                                    n_executed[ n_mwstack + 1 ] += s -> maelstrom_weapon_executed[ k ] -> mean();
 
-            n_executed_charges += s -> maelstrom_weapon_executed[ k ] -> mean() * k;
-          }
-        }
-      }
+                                    n_executed_charges += s -> maelstrom_weapon_executed[ k ] -> mean() * k;
+                                  }
+                    }
+                  }
 
-      if ( has_data )
-      {
-        row_class_str = "";
-        if ( ++n & 1 )
-          row_class_str = " class=\"odd\"";
+                  if ( has_data )
+                  {
+                    row_class_str = "";
+                    if ( ++n & 1 )
+                                  row_class_str = " class=\"odd\"";
 
-        std::string name_str = report::decorated_action_name( stats -> action_list[ 0 ] );
+                    std::string name_str = report::decorated_action_name( stats -> action_list[ 0 ] );
 
-        os.format("<tr%s><td rowspan=\"2\" class=\"left\" style=\"vertical-align: top;\">%s</td>",
-            row_class_str.c_str(), name_str.c_str() );
+                    os.format("<tr%s><td rowspan=\"2\" class=\"left\" style=\"vertical-align: top;\">%s</td>",
+                                    row_class_str.c_str(), name_str.c_str() );
 
-        os << "<td class=\"left\">Cast</td>";
+                    os << "<td class=\"left\">Cast</td>";
 
-        for ( size_t j = 0, end2 = n_cast.size(); j < end2; j++ )
-        {
-          double pct = 0;
-          if ( total_mw_cast[ j ] > 0 )
-            pct = 100.0 * n_cast[ j ] / n_cast[ n_mwstack + 1 ];
+                    for ( size_t j = 0, end2 = n_cast.size(); j < end2; j++ )
+                    {
+                                  double pct = 0;
+                                  if ( total_mw_cast[ j ] > 0 )
+                                    pct = 100.0 * n_cast[ j ] / n_cast[ n_mwstack + 1 ];
 
-          if ( j < end2 - 1 )
-            os.format("<td class=\"right\">%.1f (%.1f%%)</td>", util::round( n_cast[ j ], 1 ), util::round( pct, 1 ) );
-          else
-          {
-            os.format("<td class=\"right\">%.1f</td>", util::round( n_cast[ j ], 1 ) );
-            os.format("<td class=\"right\">%.1f</td>", util::round( n_cast_charges, 1 ) );
-          }
-        }
+                                  if ( j < end2 - 1 )
+                                    os.format("<td class=\"right\">%.1f (%.1f%%)</td>", util::round( n_cast[ j ], 1 ),
+  util::round( pct, 1 ) ); else
+                                  {
+                                    os.format("<td class=\"right\">%.1f</td>", util::round( n_cast[ j ], 1 ) );
+                                    os.format("<td class=\"right\">%.1f</td>", util::round( n_cast_charges, 1 ) );
+                                  }
+                    }
 
-        os << "</tr>\n";
+                    os << "</tr>\n";
 
-        os.format("<tr%s>", row_class_str.c_str() );
+                    os.format("<tr%s>", row_class_str.c_str() );
 
-        os << "<td class=\"left\">Execute</td>";
+                    os << "<td class=\"left\">Execute</td>";
 
-        for ( size_t j = 0, end2 = n_executed.size(); j < end2; j++ )
-        {
-          double pct = 0;
-          if ( total_mw_executed[ j ] > 0 )
-            pct = 100.0 * n_executed[ j ] / n_executed[ n_mwstack + 1 ];
+                    for ( size_t j = 0, end2 = n_executed.size(); j < end2; j++ )
+                    {
+                                  double pct = 0;
+                                  if ( total_mw_executed[ j ] > 0 )
+                                    pct = 100.0 * n_executed[ j ] / n_executed[ n_mwstack + 1 ];
 
-          if ( j < end2 - 1 )
-            os.format("<td class=\"right\">%.1f (%.1f%%)</td>", util::round( n_executed[ j ], 1 ), util::round( pct, 1 )
+                                  if ( j < end2 - 1 )
+                                    os.format("<td class=\"right\">%.1f (%.1f%%)</td>", util::round( n_executed[ j ], 1
+  ), util::round( pct, 1 )
   ); else
-          {
-            os.format("<td class=\"right\">%.1f</td>", util::round( n_executed[ j ], 1 ) );
-            os.format("<td class=\"right\">%.1f</td>", util::round( n_executed_charges, 1 ) );
-          }
-        }
+                                  {
+                                    os.format("<td class=\"right\">%.1f</td>", util::round( n_executed[ j ], 1 ) );
+                                    os.format("<td class=\"right\">%.1f</td>", util::round( n_executed_charges, 1 ) );
+                                  }
+                    }
 
-        os << "</tr>\n";
-      }
+                    os << "</tr>\n";
+                  }
     }
   }
   */
@@ -8340,23 +8347,23 @@ public:
     // Custom Class Section
     os << "\t\t\t\t<div class=\"player-section custom_section\">\n";
     /*
-        if ( p.specialization() == SHAMAN_ENHANCEMENT )
-        {
-          os << "\t\t\t\t\t<h3 class=\"toggle open\">Maelstrom Weapon details</h3>\n"
-             << "\t\t\t\t\t<div class=\"toggle-content\">\n";
+                    if ( p.specialization() == SHAMAN_ENHANCEMENT )
+                    {
+                      os << "\t\t\t\t\t<h3 class=\"toggle open\">Maelstrom Weapon details</h3>\n"
+                                     << "\t\t\t\t\t<div class=\"toggle-content\">\n";
 
-          mwgen_table_header( os );
-          mwgen_table_contents( os );
-          mwgen_table_footer( os );
+                      mwgen_table_header( os );
+                      mwgen_table_contents( os );
+                      mwgen_table_footer( os );
 
-          mwuse_table_header( os );
-          mwuse_table_contents( os );
-          mwuse_table_footer( os );
+                      mwuse_table_header( os );
+                      mwuse_table_contents( os );
+                      mwuse_table_footer( os );
 
-          os << "\t\t\t\t\t\t</div>\n";
+                      os << "\t\t\t\t\t\t</div>\n";
 
-          os << "<div class=\"clear\"></div>\n";
-        }
+                      os << "<div class=\"clear\"></div>\n";
+                    }
     */
     if ( p.cd_waste_exec.size() > 0 )
     {
@@ -8437,7 +8444,7 @@ struct emalons_charged_core_buff_t : public class_buff_cb_t<buff_t>
   buff_t* creator( const special_effect_t& e ) const override
   {
     return make_buff( e.player, buff_name, e.player->find_spell( 208742 ) )
-      ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+        ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   }
 };
 
@@ -8472,7 +8479,8 @@ struct spiritual_journey_t : public class_buff_cb_t<buff_t>
     cooldown_t* feral_spirit = e.player->get_cooldown( "feral_spirit" );
 
     return make_buff( e.player, buff_name, e.player->find_spell( 214170 ) )
-        ->set_stack_change_callback( [feral_spirit]( buff_t*, int, int ) { feral_spirit->adjust_recharge_multiplier(); } );
+        ->set_stack_change_callback(
+            [feral_spirit]( buff_t*, int, int ) { feral_spirit->adjust_recharge_multiplier(); } );
   }
 };
 
@@ -8645,16 +8653,16 @@ struct shaman_module_t : public module_t
       .verification_value( 10 );
       */
     /*   hotfix::register_spell("Shaman", "2016-10-25", "Earth Shock damage increased by 15%. ", 8042)
-       .field("sp_coefficient")
-       .operation(hotfix::HOTFIX_MUL)
-       .modifier(1.15)
-       .verification_value(8);
+                   .field("sp_coefficient")
+                   .operation(hotfix::HOTFIX_MUL)
+                   .modifier(1.15)
+                   .verification_value(8);
 
      hotfix::register_spell("Shaman", "2016-10-25", "Frost Shock damage increased by 15%. ", 196840)
-       .field("sp_coefficient")
-       .operation(hotfix::HOTFIX_MUL)
-       .modifier(1.15)
-       .verification_value(0.56);*/
+                   .field("sp_coefficient")
+                   .operation(hotfix::HOTFIX_MUL)
+                   .modifier(1.15)
+                   .verification_value(0.56);*/
   }
 
   void combat_begin( sim_t* ) const override
