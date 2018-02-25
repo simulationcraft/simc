@@ -85,7 +85,7 @@ namespace warlock
       virtual double composite_target_multiplier( player_t* target ) const override
       {
         double m = warlock_spell_t::composite_target_multiplier( target );
-        warlock_td_t* td = this->td( target );
+        auto td = this->td( target );
 
         m *= td->agony_stack;
 
@@ -609,7 +609,7 @@ namespace warlock
       virtual double composite_target_multiplier( player_t* target ) const override
       {
         double m = warlock_spell_t::composite_target_multiplier( target );
-        warlock_td_t* td = this->td( target );
+        auto td = this->td( target );
 
         if ( td->debuffs_tormented_agony->check() )
           m *= 1.0 + td->debuffs_tormented_agony->data().effectN( 1 ).percent();

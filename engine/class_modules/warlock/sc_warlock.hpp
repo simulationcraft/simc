@@ -5,7 +5,9 @@ namespace warlock
 {
     struct warlock_t;
 
-    namespace pets { }
+    namespace pets {
+    struct warlock_pet_t;
+    }
 
     constexpr int MAX_UAS = 5;
 
@@ -59,8 +61,8 @@ namespace warlock
       // Active Pet
       struct pets_t
       {
-        pet_t* active;
-        pet_t* last;
+        pets::warlock_pet_t* active;
+        pets::warlock_pet_t* last;
       } warlock_pet_list;
 
       std::vector<std::string> pet_name_list;
@@ -186,8 +188,8 @@ namespace warlock
                                         // Cooldowns
       struct cooldowns_t
       {
-        cooldown_t* haunt;
-        cooldown_t* sindorei_spite_icd;
+        propagate_const<cooldown_t*> haunt;
+        propagate_const<cooldown_t*> sindorei_spite_icd;
       } cooldowns;
 
       // Passives
@@ -324,48 +326,52 @@ namespace warlock
       warlock_t( sim_t* sim, const std::string& name, race_e r = RACE_UNDEAD );
 
       // Character Definition
-      virtual void      init_spells() override;
-      virtual void      init_base_stats() override;
-      virtual void      init_scaling() override;
-      virtual void      create_buffs() override;
-      virtual void      init_gains() override;
-      virtual void      init_procs() override;
-      virtual void      init_rng() override;
-      virtual void      init_action_list() override;
-      virtual void      init_resources( bool force ) override;
-      virtual void      reset() override;
-      virtual void      create_options() override;
-      virtual action_t* create_action( const std::string& name, const std::string& options ) override;
+      void      init_spells() override;
+      void      init_base_stats() override;
+      void      init_scaling() override;
+      void      create_buffs() override;
+      void      init_gains() override;
+      void      init_procs() override;
+      void      init_rng() override;
+      void      init_action_list() override;
+      void      init_resources( bool force ) override;
+      void      reset() override;
+      void      create_options() override;
+      action_t* create_action( const std::string& name, const std::string& options ) override;
       bool create_actions() override;
-      virtual pet_t*    create_pet( const std::string& name, const std::string& type = std::string() ) override;
-      virtual void      create_pets() override;
-      virtual std::string      create_profile( save_e = SAVE_ALL ) override;
-      virtual void      copy_from( player_t* source ) override;
-      virtual resource_e primary_resource() const override { return RESOURCE_MANA; }
-      virtual role_e    primary_role() const override { return ROLE_SPELL; }
-      virtual stat_e    convert_hybrid_stat( stat_e s ) const override;
-      virtual stat_e    primary_stat() const override { return STAT_INTELLECT; }
-      virtual double    matching_gear_multiplier( attribute_e attr ) const override;
-      virtual double    composite_player_multiplier( school_e school ) const override;
-      virtual double    composite_player_target_multiplier( player_t* target, school_e school ) const override;
-      virtual double    composite_rating_multiplier( rating_e rating ) const override;
-      virtual void      invalidate_cache( cache_e ) override;
-      virtual double    composite_spell_crit_chance() const override;
-      virtual double    composite_spell_haste() const override;
-      virtual double    composite_melee_haste() const override;
-      virtual double    composite_melee_crit_chance() const override;
-      virtual double    composite_mastery() const override;
-      virtual double    resource_gain( resource_e, double, gain_t* = nullptr, action_t* = nullptr ) override;
-      virtual double    mana_regen_per_second() const override;
-      virtual double    composite_armor() const override;
+      pet_t*    create_pet( const std::string& name, const std::string& type = std::string() ) override;
+      void      create_pets() override;
+      std::string      create_profile( save_e = SAVE_ALL ) override;
+      void      copy_from( player_t* source ) override;
+      resource_e primary_resource() const override { return RESOURCE_MANA; }
+      role_e    primary_role() const override { return ROLE_SPELL; }
+      stat_e    convert_hybrid_stat( stat_e s ) const override;
+      stat_e    primary_stat() const override { return STAT_INTELLECT; }
+      double    matching_gear_multiplier( attribute_e attr ) const override;
+      double    composite_player_multiplier( school_e school ) const override;
+      double    composite_player_target_multiplier( player_t* target, school_e school ) const override;
+      double    composite_rating_multiplier( rating_e rating ) const override;
+      void      invalidate_cache( cache_e ) override;
+      double    composite_spell_crit_chance() const override;
+      double    composite_spell_haste() const override;
+      double    composite_melee_haste() const override;
+      double    composite_melee_crit_chance() const override;
+      double    composite_mastery() const override;
+      double    resource_gain( resource_e, double, gain_t* = nullptr, action_t* = nullptr ) override;
+      double    mana_regen_per_second() const override;
+      double    composite_armor() const override;
+      void      halt() override;
+      void      combat_begin() override;
+      expr_t*   create_expression( action_t* a, const std::string& name_str ) override;
+      std::string       default_potion() const override;
+      std::string       default_flask() const override;
+      std::string       default_food() const override;
+      std::string       default_rune() const override;
 
-      virtual void      halt() override;
-      virtual void      combat_begin() override;
-      virtual expr_t*   create_expression( action_t* a, const std::string& name_str ) override;
 
       target_specific_t<warlock_td_t> target_data;
 
-      virtual warlock_td_t* get_target_data( player_t* target ) const override
+      warlock_td_t* get_target_data( player_t* target ) const override
       {
         warlock_td_t*& td = target_data[target];
         if ( !td )
@@ -384,7 +390,7 @@ namespace warlock
       void init_procs_affliction();
       void create_options_affliction();
       void create_apl_affliction();
-      virtual void legendaries_affliction();
+      void legendaries_affliction();
 
       // sc_warlock_demonology
       action_t* create_action_demonology( const std::string& action_name, const std::string& options_str );
@@ -396,7 +402,7 @@ namespace warlock
       void init_procs_demonology();
       void create_options_demonology();
       void create_apl_demonology();
-      virtual void legendaries_demonology();
+      void legendaries_demonology();
 
       // sc_warlock_destruction
       action_t* create_action_destruction( const std::string& action_name, const std::string& options_str );
@@ -407,12 +413,7 @@ namespace warlock
       void init_procs_destruction();
       void create_options_destruction();
       void create_apl_destruction();
-      virtual void legendaries_destruction();
-
-      std::string       default_potion() const override;
-      std::string       default_flask() const override;
-      std::string       default_food() const override;
-      std::string       default_rune() const override;
+      void legendaries_destruction();
 
     private:
       void apl_precombat();
@@ -430,30 +431,6 @@ namespace warlock
         stats_t* summon_stats;
         spell_t *ascendance;
 
-        warlock_pet_t( sim_t* sim, warlock_t* owner, const std::string& pet_name, pet_e pt, bool guardian = false );
-        virtual void init_base_stats() override;
-        virtual void init_action_list() override;
-        virtual void create_buffs() override;
-        virtual bool create_actions() override;
-        virtual void schedule_ready( timespan_t delta_time = timespan_t::zero(),
-          bool   waiting = false ) override;
-        virtual double composite_player_multiplier( school_e school ) const override;
-        virtual double composite_melee_crit_chance() const override;
-        virtual double composite_spell_crit_chance() const override;
-        virtual double composite_melee_haste() const override;
-        virtual double composite_spell_haste() const override;
-        virtual double composite_melee_speed() const override;
-        virtual double composite_spell_speed() const override;
-        virtual resource_e primary_resource() const override { return RESOURCE_ENERGY; }
-        warlock_t* o()
-        {
-          return static_cast< warlock_t* >( owner );
-        }
-        const warlock_t* o() const
-        {
-          return static_cast< warlock_t* >( owner );
-        }
-
         struct buffs_t
         {
           propagate_const<buff_t*> demonic_synergy;
@@ -469,6 +446,31 @@ namespace warlock
         bool is_warlock_pet = true;
         int bites_executed = 0;
         int dreadbite_executes = 0;
+
+        warlock_pet_t( sim_t* sim, warlock_t* owner, const std::string& pet_name, pet_e pt, bool guardian = false );
+        void init_base_stats() override;
+        void init_action_list() override;
+        void create_buffs() override;
+        bool create_actions() override;
+        void schedule_ready( timespan_t delta_time = timespan_t::zero(),
+          bool   waiting = false ) override;
+        double composite_player_multiplier( school_e school ) const override;
+        double composite_melee_crit_chance() const override;
+        double composite_spell_crit_chance() const override;
+        double composite_melee_haste() const override;
+        double composite_spell_haste() const override;
+        double composite_melee_speed() const override;
+        double composite_spell_speed() const override;
+        resource_e primary_resource() const override { return RESOURCE_ENERGY; }
+
+        warlock_t* o()
+        {
+          return static_cast<warlock_t*>( owner );
+        }
+        const warlock_t* o() const
+        {
+          return static_cast<warlock_t*>( owner );
+        }
 
         void trigger_sephuzs_secret( const action_state_t* state, spell_mechanic mechanic )
         {
@@ -503,6 +505,7 @@ namespace warlock
           return pet_t::create_action( name, options_str );
         }
       };
+
       // Template for common warlock pet action code. See priest_action_t.
       template <class ACTION_BASE>
       struct warlock_pet_action_t : public ACTION_BASE
@@ -524,7 +527,7 @@ namespace warlock
           if ( !ab::sim->report_pets_separately )
           {
             auto first_pet = p->owner->find_pet( p->name_str );
-            if ( first_pet != nullptr && first_pet != p )
+            if ( first_pet && first_pet != p )
             {
               auto it = range::find( p->stats_list, ab::stats );
               if ( it != p->stats_list.end() )
@@ -540,11 +543,11 @@ namespace warlock
 
         warlock_pet_t* p()
         {
-          return static_cast< warlock_pet_t* >( ab::player );
+          return static_cast<warlock_pet_t*>( ab::player );
         }
         const warlock_pet_t* p() const
         {
-          return static_cast< warlock_pet_t* >( ab::player );
+          return static_cast<warlock_pet_t*>( ab::player );
         }
 
         virtual void execute()
@@ -568,12 +571,15 @@ namespace warlock
           }
         }
 
-        warlock_td_t* td( player_t* t ) const
+        warlock_td_t* td( player_t* t )
         {
           return p()->o()->get_target_data( t );
         }
 
-
+        const warlock_td_t* td( player_t* t ) const
+        {
+          return p()->o()->get_target_data( t );
+        }
       };
 
       struct warlock_pet_melee_t : public warlock_pet_action_t<melee_attack_t>
@@ -732,11 +738,11 @@ namespace warlock
 
         warlock_t* p()
         {
-          return static_cast< warlock_t* >( player );
+          return static_cast<warlock_t*>( player );
         }
         const warlock_t* p() const
         {
-          return static_cast< warlock_t* >( player );
+          return static_cast<warlock_t*>( player );
         }
       };
 
@@ -762,7 +768,7 @@ namespace warlock
       public:
         gain_t * gain;
 
-        mutable std::vector< player_t* > havoc_targets;
+        mutable std::vector<player_t*> havoc_targets;
         bool can_havoc;
         bool affected_by_destruction_t20_4pc;
         bool affected_by_flamelicked;
@@ -795,14 +801,19 @@ namespace warlock
 
         warlock_t* p()
         {
-          return static_cast< warlock_t* >( player );
+          return static_cast<warlock_t*>( player );
         }
         const warlock_t* p() const
         {
-          return static_cast< warlock_t* >( player );
+          return static_cast<warlock_t*>( player );
         }
 
-        warlock_td_t* td( player_t* t ) const
+        warlock_td_t* td( player_t* t )
+        {
+          return p()->get_target_data( t );
+        }
+
+        const warlock_td_t* td( player_t* t ) const
         {
           return p()->get_target_data( t );
         }
@@ -862,7 +873,7 @@ namespace warlock
           return spell_t::n_targets();
         }
 
-        std::vector< player_t* >& target_list() const override
+        std::vector<player_t*>& target_list() const override
         {
           if ( use_havoc() )
           {
@@ -898,8 +909,8 @@ namespace warlock
 
           if ( hit_any_target && result_is_hit( execute_state->result ) && p()->talents.grimoire_of_synergy->ok() )
           {
-            pets::warlock_pet_t* my_pet = static_cast< pets::warlock_pet_t* >( p()->warlock_pet_list.active ); //get active pet
-            if ( my_pet != nullptr )
+            auto my_pet = p()->warlock_pet_list.active; //get active pet
+            if ( my_pet )
             {
               bool procced = p()->grimoire_of_synergy->trigger();
               if ( procced ) my_pet->buffs.demonic_synergy->trigger();
@@ -949,7 +960,7 @@ namespace warlock
         {
           double m = 1.0;
 
-          warlock_td_t* td = this->td( t );
+          auto td = this->td( t );
 
           if ( td->debuffs_eradication->check() )
             m *= 1.0 + p()->find_spell( 196414 )->effectN( 1 ).percent();
@@ -1041,7 +1052,7 @@ namespace warlock
         */
       };
 
-      typedef residual_action::residual_periodic_action_t< warlock_spell_t > residual_action_t;
+      using residual_action_t = residual_action::residual_periodic_action_t<warlock_spell_t>;
 
       struct summon_pet_t : public warlock_spell_t
       {
@@ -1172,11 +1183,11 @@ namespace warlock
       protected:
         warlock_t* p()
         {
-          return static_cast< warlock_t* >( Base::source );
+          return static_cast<warlock_t*>( Base::source );
         }
         const warlock_t* p() const
         {
-          return static_cast< warlock_t* >( Base::source );
+          return static_cast<warlock_t*>( Base::source );
         }
       };
     }

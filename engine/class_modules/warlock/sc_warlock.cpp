@@ -480,12 +480,11 @@ namespace warlock
   warlock_td_t::warlock_td_t( player_t* target, warlock_t& p ) :
     actor_target_data_t( target, &p ),
     agony_stack( 1 ),
-    soc_threshold( 0 ),
+    soc_threshold( 0.0 ),
     warlock( p )
   {
-    using namespace buffs;
     dots_corruption = target->get_dot( "corruption", &p );
-    for ( int i = 0; i < dots_unstable_affliction.size(); i++ )
+    for ( unsigned i = 0; i < dots_unstable_affliction.size(); ++i )
     {
       dots_unstable_affliction[i] = target->get_dot( "unstable_affliction_" + std::to_string( i + 1 ), &p );
     }
@@ -518,7 +517,7 @@ namespace warlock
     debuffs_flamelicked = make_buff( *this, "flamelicked" )
       ->set_chance( 0 );
 
-    target->callbacks_on_demise.push_back( std::bind( &warlock_td_t::target_demise, this ) );
+    target->callbacks_on_demise.push_back( [this]( player_t* ) { target_demise(); } );
   }
 
   void warlock_td_t::target_demise()
@@ -561,22 +560,22 @@ namespace warlock
 warlock_t::warlock_t( sim_t* sim, const std::string& name, race_e r ):
   player_t( sim, WARLOCK, name, r ),
     havoc_target( nullptr ),
-    agony_accumulator( 0 ),
-    warlock_pet_list( pets_t() ),
-    active( active_t() ),
-    talents( talents_t() ),
-    legendary( legendary_t() ),
-    mastery_spells( mastery_spells_t() ),
-    cooldowns( cooldowns_t() ),
-    spec( specs_t() ),
-    buffs( buffs_t() ),
-    gains( gains_t() ),
-    procs( procs_t() ),
-    spells( spells_t() ),
+    agony_accumulator( 0.0 ),
+    warlock_pet_list(),
+    active(),
+    talents(),
+    legendary(),
+    mastery_spells(),
+    cooldowns(),
+    spec(),
+    buffs(),
+    gains(),
+    procs(),
+    spells(),
     initial_soul_shards( 3 ),
     allow_sephuz( false ),
     deaths_embrace_fixed_time( true ),
-    default_pet( "" ),
+    default_pet(),
     shard_react( timespan_t::zero() )
   {
     cooldowns.haunt = get_cooldown( "haunt" );
@@ -626,12 +625,12 @@ double warlock_t::composite_player_target_multiplier( player_t* target, school_e
 {
   double m = player_t::composite_player_target_multiplier( target, school );
 
-  warlock_td_t* td = get_target_data( target );
+  const warlock_td_t* td = get_target_data( target );
 
   if ( td->debuffs_haunt->check() )
     m *= 1.0 + find_spell( 48181 )->effectN( 2 ).percent();
   if ( td->debuffs_shadow_embrace->check() )
-    m *= 1.0 + ( find_spell( 32390 )->effectN( 1 ).percent() * td->debuffs_shadow_embrace->stack() );
+    m *= 1.0 + ( find_spell( 32390 )->effectN( 1 ).percent() * td->debuffs_shadow_embrace->check() );
 
   for ( auto& current_ua : td->dots_unstable_affliction )
   {
@@ -816,7 +815,6 @@ action_t* warlock_t::create_action( const std::string& action_name, const std::s
 
 bool warlock_t::create_actions()
 {
-	using namespace actions;
 	return player_t::create_actions();
 }
 
@@ -843,9 +841,9 @@ pet_t* warlock_t::create_pet( const std::string& pet_name, const std::string& /*
 
 void warlock_t::create_pets()
 {
-  for ( size_t i = 0; i < pet_name_list.size(); ++i )
+  for ( auto& pet : pet_name_list )
   {
-    create_pet( pet_name_list[ i ] );
+    create_pet( pet );
   }
 }
 
@@ -1014,8 +1012,8 @@ void warlock_t::init_procs()
 
 void warlock_t::init_base_stats()
 {
-  if ( base.distance < 1 )
-    base.distance = 40;
+  if ( base.distance < 1.0 )
+    base.distance = 40.0;
 
   player_t::init_base_stats();
 
@@ -1154,9 +1152,8 @@ void warlock_t::combat_begin()
   {
     if ( deaths_embrace_fixed_time )
     {
-      for ( size_t i = 0; i < sim->player_list.size(); ++i )
+      for ( auto& p : sim->player_list )
       {
-        player_t* p = sim->player_list[i];
         if ( p->specialization() != WARLOCK_AFFLICTION && p->type != PLAYER_PET )
         {
           deaths_embrace_fixed_time = false;
@@ -1262,51 +1259,29 @@ expr_t* warlock_t::create_expression( action_t* a, const std::string& name_str )
 {
   if ( name_str == "shard_react" )
   {
-    struct shard_react_expr_t : public expr_t
-    {
-      warlock_t& player;
-      shard_react_expr_t( warlock_t& p ) :
-        expr_t( "shard_react" ), player( p ) { }
-
-      virtual double evaluate() override
-      { 
-        return player.resources.current[RESOURCE_SOUL_SHARD] >= 1 && player.sim->current_time() >= player.shard_react;
-      }
-    };
-    return new shard_react_expr_t( *this );
+    return make_fn_expr( name_str, [this, a]()
+        { return resources.current[RESOURCE_SOUL_SHARD] >= 1 && sim->current_time() >= shard_react; } );
   }
   else if ( name_str == "pet_count" )
   {
-    struct pet_count_expr_t : public expr_t
-    {
-      warlock_t& player;
-
-      pet_count_expr_t( warlock_t& p ) :
-        expr_t( "pet_count" ), player( p ) { }
-      virtual double evaluate() override
-      {
-        double t = 0;
-        for ( auto& pet : player.pet_list )
+    return make_fn_expr(name_str,
+        [this, a]()
         {
-          pets::warlock_pet_t *lock_pet = dynamic_cast< pets::warlock_pet_t* > ( pet );
-          if ( lock_pet != nullptr )
+          double t = 0;
+          for ( const auto& pet : pet_list )
           {
-            if ( !lock_pet->is_sleeping() )
+            if ( auto lock_pet = dynamic_cast<pets::warlock_pet_t*>( pet ) )
             {
-              t++;
+              if ( !lock_pet->is_sleeping() )
+              {
+                t++;
+              }
             }
           }
-        }
-        return t;
-      }
+          return t;});
+  }
 
-    };
-    return new pet_count_expr_t( *this );
-  }
-  else
-  {
-    return player_t::create_expression( a, name_str );
-  }
+  return player_t::create_expression( a, name_str );
 }
 
 /* Report Extension Class
