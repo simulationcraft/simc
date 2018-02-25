@@ -6253,18 +6253,18 @@ struct power_strikes_event_t: public player_event_t
 
 namespace buffs
 {
-  template <typename Base>
-  struct monk_buff_t: public Base
+  template <typename buff_t>
+  struct monk_buff_t: public buff_t
   {
     public:
-    typedef monk_buff_t base_t;
+    typedef monk_buff_t buff_t;
 
-    monk_buff_t( monk_td_t& p, const buff_creator_basics_t& params ):
-      Base( params ), monk( p.monk )
+    monk_buff_t( monk_td_t& p, const std::string&n, const spell_data_t*s ):
+      buff_t( p, n, s ), monk( p.monk )
     {}
 
-    monk_buff_t( monk_t& p, const buff_creator_basics_t& params ):
-      Base( params ), monk( p )
+    monk_buff_t( monk_t& p, const std::string&n, const spell_data_t*s):
+      Base( p, n, s ), monk( p )
     {}
 
     monk_td_t& get_td( player_t* t ) const
@@ -6281,8 +6281,10 @@ struct fortifying_brew_t: public monk_buff_t < buff_t >
 {
   int health_gain;
   fortifying_brew_t( monk_t& p, const std::string&n, const spell_data_t*s ):
-    base_t( p, buff_creator_t( &p, n, s ).cd( timespan_t::zero() ) ), health_gain( 0 )
-  {}
+    monk_buff_t( p, n, s ), health_gain( 0 )
+  {
+    cooldown -> duration = timespan_t::zero();
+  }
 
   bool trigger( int stacks, double value, double chance, timespan_t duration ) override
   {
@@ -6290,12 +6292,12 @@ struct fortifying_brew_t: public monk_buff_t < buff_t >
     health_gain = static_cast<int>( monk.resources.max[RESOURCE_HEALTH] * ( monk.spec.fortifying_brew -> effectN( 1 ).percent() ) );
     monk.stat_gain( STAT_MAX_HEALTH, health_gain, ( gain_t* )nullptr, ( action_t* )nullptr, true );
     monk.stat_gain( STAT_HEALTH, health_gain, ( gain_t* )nullptr, ( action_t* )nullptr, true );
-    return base_t::trigger( stacks, value, chance, duration );
+    return buff_t::trigger( stacks, value, chance, duration );
   }
 
   void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
   {
-    base_t::expire_override( expiration_stacks, remaining_duration );
+    buff_t::expire_override( expiration_stacks, remaining_duration );
     monk.stat_loss( STAT_MAX_HEALTH, health_gain, ( gain_t* )nullptr, ( action_t* )nullptr, true );
     monk.stat_loss( STAT_HEALTH, health_gain, ( gain_t* )nullptr, ( action_t* )nullptr, true );
   }
@@ -6305,12 +6307,12 @@ struct fortifying_brew_t: public monk_buff_t < buff_t >
 struct hidden_masters_forbidden_touch_t : public monk_buff_t < buff_t >
 {
   hidden_masters_forbidden_touch_t( monk_t& p, const std::string&n, const spell_data_t*s ):
-    base_t( p, buff_creator_t( &p, n, s ) )
+    monk_buff_t( p, n, s )
   {
   }
   void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
   {
-    base_t::expire_override( expiration_stacks, remaining_duration );
+    buff_t::expire_override( expiration_stacks, remaining_duration );
     cooldown_t* touch_of_death = source -> get_cooldown( "touch_of_death" );
     if ( touch_of_death -> up() )
       touch_of_death -> start();
@@ -6321,7 +6323,7 @@ struct hidden_masters_forbidden_touch_t : public monk_buff_t < buff_t >
 struct serenity_buff_t: public monk_buff_t < buff_t > {
   double percent_adjust;
   serenity_buff_t( monk_t& p, const std::string& n, const spell_data_t* s ):
-    base_t( p, buff_creator_t( &p, n, s ) ),
+    monk_buff_t( p, n, s ),
     percent_adjust( 0 )
   {
     default_value = s -> effectN( 2 ).percent();
@@ -6371,7 +6373,7 @@ struct serenity_buff_t: public monk_buff_t < buff_t > {
 
     cooldown_reduction( monk.cooldown.fist_of_the_white_tiger );
 
-    return base_t::trigger( stacks, value, chance, duration );
+    return buff_t::trigger( stacks, value, chance, duration );
   }
 
   void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
@@ -6391,13 +6393,14 @@ struct serenity_buff_t: public monk_buff_t < buff_t > {
     cooldown_extension( monk.cooldown.fists_of_fury );
 
     cooldown_extension( monk.cooldown.fist_of_the_white_tiger );
-    base_t::expire_override( expiration_stacks, remaining_duration );
+
+    buff_t::expire_override( expiration_stacks, remaining_duration );
   }
 };
 
 struct touch_of_karma_buff_t: public monk_buff_t < buff_t > {
   touch_of_karma_buff_t( monk_t& p, const std::string& n, const spell_data_t* s ):
-    base_t( p, buff_creator_t( &p, n, s ) )
+    monk_buff_t( p, n, s )
   {
     default_value = 0;
     cooldown -> duration = timespan_t::zero();
@@ -6410,12 +6413,12 @@ struct touch_of_karma_buff_t: public monk_buff_t < buff_t > {
     // Make sure the value is reset upon each trigger
     current_value = 0;
 
-    return base_t::trigger( stacks, value, chance, duration );
+    return buff_t::trigger( stacks, value, chance, duration );
   }
 
   void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
   {
-    base_t::expire_override( expiration_stacks, remaining_duration );
+    buff_t::expire_override( expiration_stacks, remaining_duration );
   }
 };
 
@@ -6423,11 +6426,11 @@ struct windwalking_driver_t: public monk_buff_t < buff_t >
 {
   double movement_increase;
   windwalking_driver_t( monk_t& p, const std::string& n, const spell_data_t* s ):
-    base_t( p, buff_creator_t(&p, n, s ) ),
+    monk_buff_t( p, n, s ),
     movement_increase( 0 )
   {
-    set_tick_callback( [&p, this]( buff_t*, int /* total_ticks */, timespan_t /* tick_time */ ) {
-      range::for_each( p.windwalking_aura->target_list(), [&p, this]( player_t* target ) {
+    set_tick_callback( [&p, this]( buff_t*, int /* total_ticks */, const timespan_t& /* tick_time */ ) {
+      range::for_each( p.windwalking_aura -> target_list(), [&p, this]( player_t* target ) {
         target -> buffs.windwalking_movement_aura -> trigger(
             1, ( movement_increase +
                  ( ( p.legendary.march_of_the_legion && p.level() < 120 ) ? p.legendary.march_of_the_legion -> effectN( 1 ).percent() : 0.0 ) ),
