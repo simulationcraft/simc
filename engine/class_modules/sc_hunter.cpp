@@ -162,7 +162,7 @@ public:
     buff_t* celerity_of_the_windrunners;
     buff_t* parsels_tongue;
 
-    haste_buff_t* sephuzs_secret;
+    buff_t* sephuzs_secret;
   } buffs;
 
   // Cooldowns
@@ -4759,9 +4759,10 @@ void hunter_t::create_buffs()
     buff_creator_t( this, "trick_shot", find_spell(227272) )
       .default_value( find_spell( 227272 ) -> effectN( 1 ).percent() );
 
-  buffs.trueshot = make_buff<haste_buff_t>( this, "trueshot", specs.trueshot );
-  buffs.trueshot->set_default_value( specs.trueshot -> effectN( 1 ).percent() )
-      ->set_cooldown( timespan_t::zero() );
+  buffs.trueshot =
+    make_buff<haste_buff_t>( this, "trueshot", specs.trueshot )
+      -> set_default_value( specs.trueshot -> effectN( 1 ).percent() )
+      -> set_cooldown( timespan_t::zero() );
 
   // Survival
 
@@ -4814,9 +4815,8 @@ void hunter_t::create_buffs()
       .default_value( find_spell( 247993 ) -> effectN( 1 ).percent() );
 
   buffs.celerity_of_the_windrunners =
-      make_buff<haste_buff_t>( this, "celerity_of_the_windrunners", find_spell( 248088 ) );
-  buffs.celerity_of_the_windrunners
-      ->set_default_value( find_spell( 248088 ) -> effectN( 1 ).percent() );
+    make_buff<haste_buff_t>( this, "celerity_of_the_windrunners", find_spell( 248088 ) )
+      -> set_default_value( find_spell( 248088 ) -> effectN( 1 ).percent() );
 
   buffs.parsels_tongue =
     buff_creator_t( this, "parsels_tongue", find_spell( 248085 ) )
@@ -4849,9 +4849,10 @@ void hunter_t::create_buffs()
     buff_creator_t( this, "t21_4p_in_for_the_kill", find_spell( 252095 ) )
       .default_value( find_spell( 252095 ) -> effectN( 1 ).percent() );
 
-  buffs.sephuzs_secret = make_buff<haste_buff_t>( this, "sephuzs_secret", find_spell( 208052 ) );
-  buffs.sephuzs_secret->set_default_value( find_spell( 208052 ) -> effectN( 2 ).percent() )
-      ->set_cooldown( find_spell( 226262 ) -> duration() );
+  buffs.sephuzs_secret =
+    make_buff<haste_buff_t>( this, "sephuzs_secret", find_spell( 208052 ) )
+      -> set_default_value( find_spell( 208052 ) -> effectN( 2 ).percent() )
+      -> set_cooldown( find_spell( 226262 ) -> duration() );
 }
 
 // hunter_t::init_special_effects ===========================================
