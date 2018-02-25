@@ -5582,6 +5582,9 @@ struct freeze_t : public action_t
     trigger_gcd = timespan_t::zero();
     ignore_false_positive = true;
     action_skill = 1;
+
+    if ( p -> talents.lonely_winter -> ok() )
+      background = true;
   }
 
   virtual bool init_finished() override
@@ -5655,6 +5658,9 @@ struct water_jet_t : public action_t
     trigger_gcd = timespan_t::zero();
     ignore_false_positive = true;
     action_skill = 1;
+
+    if ( p -> talents.lonely_winter -> ok() )
+      background = true;
   }
 
   virtual bool init_finished() override
