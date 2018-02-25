@@ -779,7 +779,7 @@ void paladin_t::generate_action_prio_list_ret()
 
   def -> add_action( "auto_attack" );
   def -> add_action( this, "Rebuke" );
-  def -> add_action( "call_action_list,name=opener,if=time<3" );
+  def -> add_action( "call_action_list,name=opener,if=time<2" );
   def -> add_action( "call_action_list,name=cooldowns" );
   def -> add_action( "call_action_list,name=generators" );
 
@@ -826,32 +826,33 @@ void paladin_t::generate_action_prio_list_ret()
     }
   }
   cds -> add_action( this, "Shield of Vengeance" );
-  cds -> add_action( this, "Avenging Wrath" );
+  cds -> add_action( this, "Avenging Wrath", "if=buff.inquisition.up|!talent.inquisition.enabled" );
   cds -> add_talent( this, "Crusade", "if=holy_power>=4" );
 
-  opener -> add_action( this, "Blade of Justice" );
-  opener -> add_talent( this, "Inquisition" );
-  opener -> add_action( this, "Judgment" );
+  opener -> add_talent( this, "Wake of Ashes" );
+  opener -> add_talent( this, "Inquisition", "if=talent.wake_of_ashes.enabled" );
+  opener -> add_action( "arcane_torrent,if=holy_power<5" );
+  opener -> add_action( this, "Blade of Justice", "if=holy_power<5" );
+  opener -> add_action( this, "Judgment", "if=holy_power<5" );
 
-  finishers -> add_talent( this, "Inquisition", "if=buff.inquisition.remains<gcd*5" );
-  finishers -> add_talent( this, "Execution Sentence", "if=spell_targets.divine_storm<=4&debuff.judgment.up" );
+  finishers -> add_talent( this, "Inquisition", "if=buff.inquisition.down|buff.inquisition.remains<3&holy_power>=2" );
+  finishers -> add_talent( this, "Execution Sentence", "if=spell_targets.divine_storm<=4" );
   finishers -> add_action( this, "Divine Storm", "if=variable.ds_castable&buff.divine_purpose.react" );
-  finishers -> add_action( this, "Divine Storm", "if=variable.ds_castable&(!talent.crusade.enabled|cooldown.crusade.remains>time_to_hpg>2)" );
-  finishers -> add_talent( this, "Justicar's Vengeance", "if=buff.divine_purpose.react" );
-  finishers -> add_action( this, "Templar's Verdict", "if=buff.divine_purpose.react" );
-  finishers -> add_action( this, "Templar's Verdict", "if=!talent.crusade.enabled|cooldown.crusade.remains>time_to_hpg>2" );
+  finishers -> add_action( this, "Divine Storm", "if=variable.ds_castable&(!talent.crusade.enabled|cooldown.crusade.remains>gcd*2)" );
+  finishers -> add_talent( this, "Justicar's Vengeance", "if=buff.divine_purpose.react&!talent.righteous_verdict.enabled" );
+  finishers -> add_action( this, "Templar's Verdict", "if=buff.divine_purpose.react&(!talent.execution_sentence.enabled|cooldown.execution_sentence.remains>gcd)" );
+  finishers -> add_action( this, "Templar's Verdict", "if=(!talent.crusade.enabled|cooldown.crusade.remains>gcd*2)&(!talent.execution_sentence.enabled|cooldown.execution_sentence.remains>gcd*3)" );
 
   generators -> add_action( "variable,name=ds_castable,value=spell_targets.divine_storm>=3" );
-  generators -> add_action( "call_action_list,name=finishers,if=buff.crusade.up&buff.crusade.stack<10|holy_power>=5" );
+  generators -> add_action( "call_action_list,name=finishers,if=holy_power>=5" );
   generators -> add_talent( this, "Hammer of Wrath" );
+  generators -> add_talent( this, "Wake of Ashes", "if=(!raid_event.adds.exists|raid_event.adds.in>20)&(holy_power<=0|holy_power=1&cooldown.blade_of_justice.remains>gcd)&(cooldown.crusade.remains>20|!talent.crusade.enabled)" );
   generators -> add_action( this, "Blade of Justice", "if=holy_power<=2|(holy_power=3&(!talent.hammer_of_wrath.enabled|cooldown.hammer_of_wrath.remains>gcd*2|target.health.pct>=20&(buff.avenging_wrath.down|buff.crusade.down)))" );
-  generators -> add_talent( this, "Wake of Ashes", "if=(!raid_event.adds.exists|raid_event.adds.in>15)&(holy_power<=0|holy_power=1&cooldown.blade_of_justice.remains>gcd|holy_power=2&((cooldown.consecration.remains>gcd|cooldown.crusader_strike.charges_fractional<=0.75|cooldown.judgment.remains>gcd|cooldown.hammer_of_wrath.remains>gcd)))" );
   generators -> add_action( this, "Judgment", "if=holy_power<=2|holy_power<=3&cooldown.blade_of_justice.remains>gcd*2|(holy_power=4&cooldown.blade_of_justice.remains>gcd*2&(!talent.hammer_of_wrath.enabled|target.health.pct>=20&(buff.avenging_wrath.down|buff.crusade.down)))" );
-  generators -> add_action( this, "Crusader Strike", "if=cooldown.crusader_strike.charges_fractional>=1.75&(holy_power<=2|holy_power<=3&cooldown.blade_of_justice.remains>gcd*2|holy_power=4&cooldown.blade_of_justice.remains>gcd*2&cooldown.judgment.remains>gcd*2&(!talent.hammer_of_wrath.enabled|target.health.pct>=20&(buff.avenging_wrath.down|buff.crusade.down)))" );
-  generators -> add_talent( this, "Consecration", "if=holy_power<=2|holy_power<=3&cooldown.blade_of_justice.remains>gcd*2|(holy_power=4&cooldown.blade_of_justice.remains>gcd*2&cooldown.judgment.remains>gcd*2&cooldown.crusader_strike.charges_fractional<=1.5&(!talent.hammer_of_wrath.enabled|target.health.pct>=20&(buff.avenging_wrath.down|buff.crusade.down)))" );
-  generators -> add_action( "call_action_list,name=finishers,if=holy_power>=4" );
-  generators -> add_action( this, "Crusader Strike", "if=holy_power<=2|holy_power<=3&cooldown.blade_of_justice.remains>gcd*2|(holy_power=4&cooldown.blade_of_justice.remains>gcd*2&cooldown.judgment.remains>gcd*2&cooldown.consecration.remains>gcd*2&(!talent.hammer_of_wrath.enabled|target.health.pct>=20&(buff.avenging_wrath.down|buff.crusade.down)))" );
-  generators -> add_action( "call_action_list,name=finishers,if=holy_power>=3" );
+  generators -> add_talent( this, "Consecration", "if=holy_power<=2|holy_power<=3&cooldown.blade_of_justice.remains>gcd*2|(holy_power=4&cooldown.blade_of_justice.remains>gcd*2&cooldown.judgment.remains>gcd*2&(!talent.hammer_of_wrath.enabled|target.health.pct>=20&(buff.avenging_wrath.down|buff.crusade.down)))" );
+  generators -> add_action( this, "Crusader Strike", "if=cooldown.crusader_strike.charges_fractional>=1.75&(holy_power<=2|holy_power<=3&cooldown.blade_of_justice.remains>gcd*2|holy_power=4&cooldown.blade_of_justice.remains>gcd*2&cooldown.judgment.remains>gcd*2&cooldown.consecration.remains>gcd*2&(!talent.hammer_of_wrath.enabled|target.health.pct>=20&(buff.avenging_wrath.down|buff.crusade.down)))" );
+  generators -> add_action( "call_action_list,name=finishers" );
+  generators -> add_action( this, "Crusader Strike" );
 }
 
 } // end namespace paladin
