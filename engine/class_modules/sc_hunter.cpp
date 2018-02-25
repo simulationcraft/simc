@@ -178,7 +178,6 @@ public:
   {
     buff_t* aspect_of_the_wild;
     buff_t* bestial_wrath;
-    buff_t* big_game_hunter;
     buff_t* bombardment;
     buff_t* careful_aim;
     std::array<buff_t*, DIRE_BEASTS_MAX > dire_regen;
@@ -742,6 +741,29 @@ void trigger_sephuzs_secret( hunter_t* p, const action_state_t* state, spell_mec
     p -> buffs.sephuzs_secret -> trigger();
   }
 }
+
+struct big_game_hunter_tracker_t
+{
+  benefit_t *const benefit;
+  const int threshold;
+  const double crit_chance;
+
+  big_game_hunter_tracker_t( hunter_t* p, const std::string& n ):
+    benefit( p -> talents.big_game_hunter -> ok() ? p -> get_benefit( n ) : nullptr ),
+    threshold( p -> talents.big_game_hunter -> effectN( 2 ).base_value() ),
+    crit_chance( p -> talents.big_game_hunter -> effectN( 1 ).percent() )
+  {}
+
+  bool up( player_t *const t ) const
+  {
+    if ( !benefit )
+      return false;
+
+    const bool bgh_active = t -> health_percentage() > threshold;
+    benefit -> update( bgh_active );
+    return bgh_active;
+  }
+};
 
 struct hunter_ranged_attack_t: public hunter_action_t < ranged_attack_t >
 {
@@ -2032,9 +2054,11 @@ struct auto_shot_t: public hunter_action_t < ranged_attack_t >
   volley_tick_t* volley_tick;
   double volley_tick_cost;
   bool first_shot;
+  big_game_hunter_tracker_t big_game_hunter;
 
   auto_shot_t( hunter_t* p ): base_t( "auto_shot", p, spell_data_t::nil() ), volley_tick( nullptr ),
-    volley_tick_cost( 0 ), first_shot( true )
+    volley_tick_cost( 0 ), first_shot( true ),
+    big_game_hunter( p, "auto_in_big_game_hunter" )
   {
     school = SCHOOL_PHYSICAL;
     background = true;
@@ -2117,7 +2141,8 @@ struct auto_shot_t: public hunter_action_t < ranged_attack_t >
   {
     double cc = base_t::composite_target_crit_chance( t );
 
-    cc += p() -> buffs.big_game_hunter -> value();
+    if ( big_game_hunter.up( t ) )
+      cc += big_game_hunter.crit_chance;
 
     return cc;
   }
@@ -2362,11 +2387,11 @@ struct chimaera_shot_t: public hunter_ranged_attack_t
 
 struct cobra_shot_t: public hunter_ranged_attack_t
 {
-  const spell_data_t* cobra_commander;
+  big_game_hunter_tracker_t big_game_hunter;
 
   cobra_shot_t( hunter_t* player, const std::string& options_str ):
     hunter_ranged_attack_t( "cobra_shot", player, player -> find_specialization_spell( "Cobra Shot" ) ),
-    cobra_commander( player -> find_spell( 243042 ) )
+    big_game_hunter( player, "cobra_in_big_game_hunter" )
   {
     parse_options( options_str );
 
@@ -2392,7 +2417,8 @@ struct cobra_shot_t: public hunter_ranged_attack_t
   {
     double cc = hunter_ranged_attack_t::composite_target_crit_chance( t );
 
-    cc += p() -> buffs.big_game_hunter -> value();
+    if ( big_game_hunter.up( t ) )
+      cc += big_game_hunter.crit_chance;
 
     return cc;
   }
@@ -4733,11 +4759,6 @@ void hunter_t::create_buffs()
         .default_value( specs.bestial_wrath -> effectN( 1 ).percent() +
                         talents.bestial_fury -> effectN( 1 ).percent() );
 
-  buffs.big_game_hunter =
-    buff_creator_t( this, "big_game_hunter", talents.big_game_hunter )
-      .activated( true )
-      .default_value( talents.big_game_hunter -> effectN( 1 ).percent() );
-
   // initialize dire beast/frenzy buffs
   const spell_data_t* dire_spell =
     find_spell( talents.dire_frenzy -> ok() ? 246152 : 120694 );
@@ -5688,21 +5709,6 @@ void hunter_t::schedule_ready( timespan_t delta_time, bool waiting )
     {
       if ( ca_now )
         buffs.careful_aim -> expire();
-    }
-  }
-  else if ( talents.big_game_hunter -> ok() )
-  {
-    int bgh_now = buffs.big_game_hunter -> check();
-    int threshold = talents.big_game_hunter -> effectN( 2 ).base_value();
-    if ( target -> health_percentage() > threshold )
-    {
-      if ( ! bgh_now )
-        buffs.big_game_hunter -> trigger();
-    }
-    else
-    {
-      if ( bgh_now )
-        buffs.big_game_hunter -> expire();
     }
   }
   player_t::schedule_ready( delta_time, waiting );
