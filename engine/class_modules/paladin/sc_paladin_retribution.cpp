@@ -631,6 +631,9 @@ struct hammer_of_wrath_t : public holy_power_generator_t
   {
     if ( p() -> get_how_availability() )
       return holy_power_generator_t::ready();
+    else if ( holy_power_generator_t::ready() )
+      // TODO(mserrano): this is a horrible hack
+      cooldown -> last_charged = sim -> current_time();
     return false;
   }
 };

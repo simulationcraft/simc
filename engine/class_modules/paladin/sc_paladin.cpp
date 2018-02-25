@@ -2272,39 +2272,38 @@ void paladin_t::merge( player_t& other )
 
   const paladin_t& op = static_cast<paladin_t&>( other );
 
-  for ( size_t i = 0, end = cd_waste_exec.size(); i < end; i++ )
+  for ( size_t i = 0; i < cooldown_waste_data_list.size(); i++ )
   {
-    cd_waste_exec[ i ] -> second.merge( op.cd_waste_exec[ i ] -> second );
-    cd_waste_cumulative[ i ] -> second.merge( op.cd_waste_cumulative[ i ] -> second );
+    cooldown_waste_data_list[ i ] -> merge( *op.cooldown_waste_data_list[ i ] );
+  }
+}
+
+void paladin_t::analyze( sim_t& s )
+{
+  player_t::analyze( s );
+  for ( auto cdw : cooldown_waste_data_list )
+  {
+    cdw -> analyze();
   }
 }
 
 void paladin_t::datacollection_begin()
 {
-  if ( active_during_iteration )
-  {
-    for ( size_t i = 0, end = cd_waste_iter.size(); i < end; ++i )
-    {
-      cd_waste_iter[ i ] -> second.reset();
-    }
-  }
-
   player_t::datacollection_begin();
+  for ( auto cdw : cooldown_waste_data_list )
+  {
+    cdw -> datacollection_begin();
+  }
 }
 
 void paladin_t::datacollection_end()
 {
-  if ( requires_data_collection() )
-  {
-    for ( size_t i = 0, end = cd_waste_iter.size(); i < end; ++i )
-    {
-      cd_waste_cumulative[ i ] -> second.add( cd_waste_iter[ i ] -> second.sum() );
-    }
-  }
-
   player_t::datacollection_end();
+  for ( auto cdw : cooldown_waste_data_list )
+  {
+    cdw -> datacollection_end();
+  }
 }
-
 
 /* Report Extension Class
  * Here you can define class specific report extensions/overrides
@@ -2344,36 +2343,25 @@ public:
 
   void cdwaste_table_contents( report::sc_html_stream& os )
   {
-    size_t n = 0;
-    for ( size_t i = 0; i < p.cd_waste_exec.size(); i++ )
+    size_t row = 0;
+    for ( const cooldown_waste_data_t* data : p.cooldown_waste_data_list )
     {
-      const data_t* entry = p.cd_waste_exec[ i ];
-      if ( entry -> second.count() == 0 )
-      {
-        continue;
-      }
+      if ( ! data -> active() ) continue;
 
-      const data_t* iter_entry = p.cd_waste_cumulative[ i ];
+      std::string name = data -> cd -> name_str;
+      if ( action_t* a = p.find_action( name ) )
+        name = report::action_decorator_t( a ).decorate();
 
-      action_t* a = p.find_action( entry -> first );
-      std::string name_str = entry -> first;
-      if ( a )
-      {
-        name_str = report::action_decorator_t( a ).decorate();
-      }
-
-      std::string row_class_str = "";
-      if ( ++n & 1 )
-        row_class_str = " class=\"odd\"";
-
-      os.format( "<tr%s>", row_class_str.c_str() );
-      os << "<td class=\"left\">" << name_str << "</td>";
-      os.format("<td class=\"right\">%.3f</td>", entry -> second.mean() );
-      os.format("<td class=\"right\">%.3f</td>", entry -> second.min() );
-      os.format("<td class=\"right\">%.3f</td>", entry -> second.max() );
-      os.format("<td class=\"right\">%.3f</td>", iter_entry -> second.mean() );
-      os.format("<td class=\"right\">%.3f</td>", iter_entry -> second.min() );
-      os.format("<td class=\"right\">%.3f</td>", iter_entry -> second.max() );
+      std::string row_class;
+      if ( ++row & 1 ) row_class = " class=\"odd\"";
+      os.format( "<tr%s>", row_class.c_str() );
+      os << "<td class=\"left\">" << name << "</td>";
+      os.format( "<td class=\"right\">%.3f</td>", data -> normal.mean() );
+      os.format( "<td class=\"right\">%.3f</td>", data -> normal.min() );
+      os.format( "<td class=\"right\">%.3f</td>", data -> normal.max() );
+      os.format( "<td class=\"right\">%.3f</td>", data -> cumulative.mean() );
+      os.format( "<td class=\"right\">%.3f</td>", data -> cumulative.min() );
+      os.format( "<td class=\"right\">%.3f</td>", data -> cumulative.max() );
       os << "</tr>\n";
     }
   }
@@ -2381,7 +2369,7 @@ public:
   virtual void html_customsection( report::sc_html_stream& os ) override
   {
     os << "\t\t\t\t<div class=\"player-section custom_section\">\n";
-    if ( p.cd_waste_exec.size() > 0 )
+    if ( p.cooldown_waste_data_list.size() > 0 )
     {
       os << "\t\t\t\t\t<h3 class=\"toggle open\">Cooldown waste details</h3>\n"
          << "\t\t\t\t\t<div class=\"toggle-content\">\n";

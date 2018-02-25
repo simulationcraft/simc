@@ -41,13 +41,83 @@ struct paladin_td_t : public actor_target_data_t
   paladin_td_t( player_t* target, paladin_t* paladin );
 };
 
+struct cooldown_waste_data_t : public noncopyable
+{
+  const cooldown_t* cd;
+  double buffer;
+
+  extended_sample_data_t normal;
+  extended_sample_data_t cumulative;
+
+  cooldown_waste_data_t( const cooldown_t* cooldown, bool simple = true ) :
+    cd( cooldown ), buffer( 0.0 ), normal( cd -> name_str + " waste", simple ),
+    cumulative( cd -> name_str + " cumulative waste", simple ) {}
+
+  virtual bool may_add( timespan_t cd_override = timespan_t::min() ) const
+  {
+    return ( cd -> duration > timespan_t::zero() || cd_override > timespan_t::zero() )
+        && ( ( cd -> charges == 1 && cd -> up() ) || ( cd -> charges >= 2 && cd -> current_charge == cd -> charges ) )
+        && ( cd -> last_charged > timespan_t::zero() && cd -> last_charged < cd -> sim.current_time() ); 
+  }
+
+  virtual double get_wasted_time()
+  {
+    return (cd -> sim.current_time() - cd -> last_charged).total_seconds();
+  }
+
+  void add( timespan_t cd_override = timespan_t::min(), timespan_t time_to_execute = timespan_t::zero() )
+  {
+    if ( may_add( cd_override ) )
+    {
+      double wasted = get_wasted_time();
+      if ( cd -> charges == 1 )
+      {
+        wasted -= time_to_execute.total_seconds();
+      }
+      normal.add( wasted );
+      buffer += wasted;
+    }
+  }
+
+  bool active() const
+  {
+    return normal.count() > 0 && cumulative.sum() > 0;
+  }
+
+  void merge( const cooldown_waste_data_t& other )
+  {
+    normal.merge( other.normal );
+    cumulative.merge( other.cumulative );
+  }
+
+  void analyze()
+  {
+    normal.analyze();
+    cumulative.analyze();
+  }
+
+  void datacollection_begin()
+  {
+    buffer = 0.0;
+  }
+
+  void datacollection_end()
+  {
+    if ( may_add() )
+      buffer += get_wasted_time();
+    cumulative.add( buffer );
+    buffer = 0.0;
+  }
+
+  virtual ~cooldown_waste_data_t() { }
+};
+
 struct paladin_t : public player_t
 {
 public:
 
   // waste tracking
-  auto_dispose< std::vector<data_t*> > cd_waste_exec, cd_waste_cumulative;
-  auto_dispose< std::vector<simple_data_t*> > cd_waste_iter;
+  auto_dispose<std::vector<cooldown_waste_data_t*> > cooldown_waste_data_list;
 
   // Active
   heal_t*   active_beacon_of_light;
@@ -427,22 +497,25 @@ public:
 
   virtual paladin_td_t* get_target_data( player_t* target ) const override;
 
-
-  template <typename T_CONTAINER, typename T_DATA>
-  T_CONTAINER* get_data_entry( const std::string& name, std::vector<T_DATA*>& entries )
+  cooldown_waste_data_t* get_cooldown_waste_data( cooldown_t* cd, cooldown_waste_data_t *(*factory)(cooldown_t*) = nullptr )
   {
-    for ( size_t i = 0; i < entries.size(); i++ )
+    for ( auto cdw : cooldown_waste_data_list )
     {
-      if ( entries[ i ]->first == name )
-      {
-        return &( entries[ i ]->second );
-      }
+      if ( cdw -> cd -> name_str == cd -> name_str )
+        return cdw;
     }
 
-    entries.push_back( new T_DATA( name, T_CONTAINER() ) );
-    return &( entries.back()->second );
+    cooldown_waste_data_t* cdw = nullptr;
+    if ( factory == nullptr ) {
+      cdw = new cooldown_waste_data_t( cd );
+    } else {
+      cdw = factory( cd );
+    }
+    cooldown_waste_data_list.push_back( cdw );
+    return cdw;
   }
   virtual void merge( player_t& other ) override;
+  virtual void analyze( sim_t& s ) override;
   virtual void datacollection_begin() override;
   virtual void datacollection_end() override;
 };
@@ -558,8 +631,8 @@ public:
   typedef paladin_action_t base_t;
 
   bool track_cd_waste;
-  simple_sample_data_with_min_max_t* cd_wasted_exec, *cd_wasted_cumulative;
-  simple_sample_data_t* cd_wasted_iter;
+  cooldown_waste_data_t* cd_waste;
+  cooldown_waste_data_t* (*cd_waste_factory)(cooldown_t *);
 
   // haste scaling bools
   bool hasted_cd;
@@ -577,7 +650,7 @@ public:
                     const spell_data_t* s = spell_data_t::nil() ) :
     ab( n, player, s ),
     track_cd_waste( s -> cooldown() > timespan_t::zero() || s -> charge_cooldown() > timespan_t::zero() ),
-    cd_wasted_exec( nullptr ), cd_wasted_cumulative( nullptr ), cd_wasted_iter( nullptr ),
+    cd_waste( nullptr ), cd_waste_factory( nullptr ),
     ret_damage_increase( ab::data().affected_by( player -> spec.retribution_paladin -> effectN( 6 ) ) ),
     ret_dot_increase( ab::data().affected_by( player -> spec.retribution_paladin -> effectN( 7 ) ) ),
     ret_damage_increase_two( ab::data().affected_by( player -> spec.retribution_paladin -> effectN( 11 ) ) ),
@@ -642,14 +715,11 @@ public:
   {
     ab::init();
 
-    if ( track_cd_waste )
+    if ( track_cd_waste && ab::sim -> report_details != 0 )
     {
-      cd_wasted_exec = p() -> template get_data_entry<simple_sample_data_with_min_max_t, data_t>( ab::name_str, p() -> cd_waste_exec );
-      cd_wasted_cumulative = p() -> template get_data_entry<simple_sample_data_with_min_max_t, data_t>( ab::name_str, p() -> cd_waste_cumulative );
-      cd_wasted_iter = p() -> template get_data_entry<simple_sample_data_t, simple_data_t>( ab::name_str, p() -> cd_waste_iter );
+      cd_waste = p() -> get_cooldown_waste_data( ab::cooldown, cd_waste_factory );
     }
 
-    printf("Action %s has hasted_cd=%d and hasted_gcd=%d\n", ab::name(), hasted_cd, hasted_gcd);
     if ( hasted_cd )
     {
       ab::cooldown -> hasted = hasted_cd;
@@ -747,27 +817,7 @@ public:
 
   virtual void update_ready( timespan_t cd = timespan_t::min() ) override
   {
-    if ( cd_wasted_exec &&
-         ( cd > timespan_t::zero() || ( cd <= timespan_t::zero() && ab::cooldown -> duration > timespan_t::zero() ) ) &&
-         ab::cooldown -> current_charge == ab::cooldown -> charges &&
-         ab::cooldown -> last_charged > timespan_t::zero() &&
-         ab::cooldown -> last_charged < ab::sim -> current_time() )
-    {
-      double time_ = ( ab::sim -> current_time() - ab::cooldown -> last_charged ).total_seconds();
-      if ( p() -> sim -> debug )
-      {
-        p() -> sim -> out_debug.printf( "%s %s cooldown waste tracking waste=%.3f exec_time=%.3f",
-            p() -> name(), ab::name(), time_, ab::time_to_execute.total_seconds() );
-      }
-      time_ -= ab::time_to_execute.total_seconds();
-
-      if ( time_ > 0 )
-      {
-        cd_wasted_exec -> add( time_ );
-        cd_wasted_iter -> add( time_ );
-      }
-    }
-
+    if ( cd_waste ) cd_waste -> add( cd, ab::time_to_execute );
     ab::update_ready( cd );
   }
 };
