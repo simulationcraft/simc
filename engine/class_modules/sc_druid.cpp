@@ -1173,31 +1173,40 @@ struct druid_buff_t : public BuffBase
 {
 protected:
   typedef druid_buff_t base_t;
-  druid_t& druid;
 
   // Used when shapeshifting to switch to a new attack & schedule it to occur
   // when the current swing timer would have ended.
   void swap_melee( attack_t* new_attack, weapon_t& new_weapon )
   {
-    if ( druid.main_hand_attack && druid.main_hand_attack -> execute_event )
+    if ( p().main_hand_attack && p().main_hand_attack -> execute_event )
     {
       new_attack -> base_execute_time = new_weapon.swing_time;
       new_attack -> execute_event = new_attack -> start_action_execute_event(
-                                      druid.main_hand_attack -> execute_event -> remains() );
-      druid.main_hand_attack -> cancel();
+                                      p().main_hand_attack -> execute_event -> remains() );
+      p().main_hand_attack -> cancel();
     }
     new_attack -> weapon = &new_weapon;
-    druid.main_hand_attack = new_attack;
-    druid.main_hand_weapon = new_weapon;
+    p().main_hand_attack = new_attack;
+    p().main_hand_weapon = new_weapon;
   }
 
 public:
-  druid_buff_t( druid_t& p, const buff_creator_basics_t& params ) :
-    BuffBase( params ),
-    druid( p )
+  druid_buff_t( druid_t& p, const std::string& name, const spell_data_t* s = spell_data_t::nil(), const item_t* item = nullptr ) :
+    BuffBase( &p, name, s, item )
+  { }
+  druid_buff_t( druid_td_t& td, const std::string& name, const spell_data_t* s = spell_data_t::nil(), const item_t* item = nullptr ) :
+    BuffBase( td, name, s, item )
   { }
 
-  druid_t& p() const { return druid; }
+  druid_t& p()
+  {
+    return *debug_cast<druid_t*>( BuffBase::source );
+  }
+  const druid_t& p() const
+  {
+    return *debug_cast<druid_t*>( BuffBase::source );
+  }
+
 };
 
 // Adaptive Fur =============================================================
@@ -1207,10 +1216,11 @@ public:
 struct adaptive_fur_t : public druid_buff_t< buff_t >
 {
   adaptive_fur_t( druid_t& p, const std::string& element ) :
-    base_t( p, buff_creator_t( &p, "adaptive_fur_" + element, p.find_spell( 200945 ) )
-      .chance( p.artifact.adaptive_fur.data().proc_chance() )
-      .default_value( p.find_spell( 200945 ) -> effectN( 1 ).percent() ) )
-  {}
+    base_t( p, "adaptive_fur_" + element, p.find_spell( 200945 ) )
+  {
+    set_chance( p.artifact.adaptive_fur.data().proc_chance() );
+    set_default_value( p.find_spell( 200945 ) -> effectN( 1 ).percent() );
+  }
 
   void no_benefit()
   { down_count++; }
@@ -1222,7 +1232,7 @@ struct bear_form_t : public druid_buff_t< buff_t >
 {
 public:
   bear_form_t( druid_t& p ) :
-    base_t( p, buff_creator_t( &p, "bear_form", p.find_class_spell( "Bear Form" ) ) ),
+    base_t( p, "bear_form", p.find_class_spell( "Bear Form" ) ),
     rage_spell( p.find_spell( 17057 ) )
   {
     add_invalidate( CACHE_ATTACK_POWER );
@@ -1239,29 +1249,29 @@ public:
   {
     base_t::expire_override( expiration_stacks, remaining_duration );
 
-    swap_melee( druid.caster_melee_attack, druid.caster_form_weapon );
+    swap_melee( p().caster_melee_attack, p().caster_form_weapon );
 
-    druid.recalculate_resource_max( RESOURCE_HEALTH );
+    p().recalculate_resource_max( RESOURCE_HEALTH );
   }
 
   virtual void start( int stacks, double value, timespan_t duration ) override
   {
-    druid.buff.moonkin_form -> expire();
-    druid.buff.moonkin_form_affinity -> expire(); //Balance affinity moonkin form.
-    druid.buff.cat_form -> expire();
+    p().buff.moonkin_form -> expire();
+    p().buff.moonkin_form_affinity -> expire(); //Balance affinity moonkin form.
+    p().buff.cat_form -> expire();
 
-    druid.buff.tigers_fury -> expire(); // Mar 03 2016: Tiger's Fury ends when you enter bear form.
+    p().buff.tigers_fury -> expire(); // Mar 03 2016: Tiger's Fury ends when you enter bear form.
 
-    swap_melee( druid.bear_melee_attack, druid.bear_weapon );
+    swap_melee( p().bear_melee_attack, p().bear_weapon );
 
     // Set rage to 0 and then gain rage to 10
-    druid.resource_loss( RESOURCE_RAGE, druid.resources.current[ RESOURCE_RAGE ] );
-    druid.resource_gain( RESOURCE_RAGE, rage_spell -> effectN( 1 ).base_value() / 10.0, druid.gain.bear_form );
+    p().resource_loss( RESOURCE_RAGE, p().resources.current[ RESOURCE_RAGE ] );
+    p().resource_gain( RESOURCE_RAGE, rage_spell -> effectN( 1 ).base_value() / 10.0, p().gain.bear_form );
     // TODO: Clear rage on bear form exit instead of entry.
 
     base_t::start( stacks, value, duration );
 
-    druid.recalculate_resource_max( RESOURCE_HEALTH );
+    p().recalculate_resource_max( RESOURCE_HEALTH );
   }
 private:
   const spell_data_t* rage_spell;
@@ -1274,10 +1284,12 @@ struct berserk_buff_base_t : public druid_buff_t<buff_t>
   double increased_max_energy;
 
   berserk_buff_base_t( druid_t& p, const std::string& name, const spell_data_t* spell ) :
-    druid_buff_t<buff_t>( p, buff_creator_t( &p, name, spell )
-                          .cd( timespan_t::zero() ) ), increased_max_energy(0)
+    base_t( p, name, spell ),
+    increased_max_energy(0)
   // Cooldown handled by ability
-  {}
+  {
+    set_cooldown( timespan_t::zero() );
+  }
 
   virtual bool trigger( int stacks, double value, double chance, timespan_t duration ) override
   {
@@ -1330,17 +1342,18 @@ struct incarnation_cat_buff_t : public berserk_buff_base_t
 struct incarnation_moonkin_buff_t : public druid_buff_t< buff_t >
 {
   incarnation_moonkin_buff_t( druid_t& p ) :
-    base_t( p, buff_creator_t( &p, "incarnation_chosen_of_elune", p.talent.incarnation_moonkin )
-      .default_value( p.talent.incarnation_moonkin -> effectN( 1 ).percent() )
-      .cd( timespan_t::zero() )
-      .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER ) )
-  {}
+    base_t( p, "incarnation_chosen_of_elune", p.talent.incarnation_moonkin )
+  {
+    set_default_value( p.talent.incarnation_moonkin -> effectN( 1 ).percent() );
+    set_cooldown( timespan_t::zero() );
+    add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+  }
 
   void expire_override( int stacks, timespan_adl_barrier::timespan_t duration ) override
   {
-    druid_buff_t<buff_t>::expire_override( stacks, duration );
+    base_t::expire_override( stacks, duration );
 
-    druid.buff.star_power -> expire();
+    p().buff.star_power -> expire();
   }
 };
 
@@ -1349,7 +1362,7 @@ struct incarnation_moonkin_buff_t : public druid_buff_t< buff_t >
 struct cat_form_t : public druid_buff_t< buff_t >
 {
   cat_form_t( druid_t& p ) :
-    base_t( p, buff_creator_t( &p, "cat_form", p.find_class_spell( "Cat Form" ) ) )
+    base_t( p, "cat_form", p.find_class_spell( "Cat Form" ) )
   {
     add_invalidate( CACHE_ATTACK_POWER );
 
@@ -1361,17 +1374,17 @@ struct cat_form_t : public druid_buff_t< buff_t >
   {
     base_t::expire_override( expiration_stacks, remaining_duration );
 
-    swap_melee( druid.caster_melee_attack, druid.caster_form_weapon );
-    druid.buff.protection_of_ashamane -> trigger();
+    swap_melee( p().caster_melee_attack, p().caster_form_weapon );
+    p().buff.protection_of_ashamane -> trigger();
   }
 
   virtual void start( int stacks, double value, timespan_t duration ) override
   {
-    druid.buff.bear_form -> expire();
-    druid.buff.moonkin_form -> expire();
-    druid.buff.moonkin_form_affinity -> expire(); //Balance affinity moonkin form.
+    p().buff.bear_form -> expire();
+    p().buff.moonkin_form -> expire();
+    p().buff.moonkin_form_affinity -> expire(); //Balance affinity moonkin form.
 
-    swap_melee( druid.cat_melee_attack, druid.cat_weapon );
+    swap_melee( p().cat_melee_attack, p().cat_weapon );
 
     base_t::start( stacks, value, duration );
   }
@@ -1379,20 +1392,21 @@ struct cat_form_t : public druid_buff_t< buff_t >
 
 // Celestial Alignment Buff =================================================
 
-struct celestial_alignment_buff_t : public druid_buff_t < buff_t >
+struct celestial_alignment_buff_t : public druid_buff_t<buff_t>
 {
   celestial_alignment_buff_t( druid_t& p ) :
-    druid_buff_t<buff_t>( p, buff_creator_t( &p, "celestial_alignment", p.spec.celestial_alignment )
-                          .cd( timespan_t::zero() ) // handled by spell
-                          .default_value( p.spec.celestial_alignment -> effectN( 1 ).percent() )
-                          .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER ) )
-  {}
+    base_t( p, "celestial_alignment", p.spec.celestial_alignment )
+  {
+    set_cooldown( timespan_t::zero() ); // handled by spell
+    set_default_value( p.spec.celestial_alignment -> effectN( 1 ).percent() );
+    add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+  }
 
   void expire_override( int stacks, timespan_adl_barrier::timespan_t duration ) override
   {
     druid_buff_t<buff_t>::expire_override( stacks, duration );
 
-    druid.buff.star_power -> expire();
+    p().buff.star_power -> expire();
   }
 };
 
@@ -1401,16 +1415,17 @@ struct celestial_alignment_buff_t : public druid_buff_t < buff_t >
 struct moonkin_form_t : public druid_buff_t< buff_t >
 {
   moonkin_form_t( druid_t& p ) :
-    base_t( p, buff_creator_t( &p, "moonkin_form", p.find_affinity_spell( "Moonkin Form" ) )
-            .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
-            .add_invalidate( CACHE_ARMOR )
-            .chance( 1.0 ) )
-  {}
+    base_t( p, "moonkin_form", p.find_affinity_spell( "Moonkin Form" ) )
+  {
+    add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+    add_invalidate( CACHE_ARMOR );
+    set_chance( 1.0 );
+  }
 
   virtual void start( int stacks, double value, timespan_t duration ) override
   {
-    druid.buff.bear_form -> expire();
-    druid.buff.cat_form  -> expire();
+    p().buff.bear_form -> expire();
+    p().buff.cat_form  -> expire();
 
     base_t::start( stacks, value, duration );
   }
@@ -1421,16 +1436,17 @@ struct moonkin_form_t : public druid_buff_t< buff_t >
 struct moonkin_form_affinity_t : public druid_buff_t< buff_t >
 {
   moonkin_form_affinity_t(druid_t& p) :
-    base_t(p, buff_creator_t(&p, "moonkin_form_affinity", p.spec.moonkin_form_affinity)
-      .add_invalidate(CACHE_PLAYER_DAMAGE_MULTIPLIER)
-      .add_invalidate(CACHE_ARMOR)
-      .chance(1.0))
-  {}
+    base_t(p, "moonkin_form_affinity", p.spec.moonkin_form_affinity)
+  {
+    add_invalidate(CACHE_PLAYER_DAMAGE_MULTIPLIER);
+    add_invalidate(CACHE_ARMOR);
+    set_chance(1.0);
+  }
 
   virtual void start(int stacks, double value, timespan_t duration) override
   {
-    druid.buff.bear_form->expire();
-    druid.buff.cat_form->expire();
+    p().buff.bear_form->expire();
+    p().buff.cat_form->expire();
 
     base_t::start(stacks, value, duration);
   }
@@ -1441,7 +1457,7 @@ struct moonkin_form_affinity_t : public druid_buff_t< buff_t >
 struct warrior_of_elune_buff_t : public druid_buff_t<buff_t>
 {
   warrior_of_elune_buff_t( druid_t& p ) :
-    druid_buff_t<buff_t>( p, buff_creator_t( &p, "warrior_of_elune", p.talent.warrior_of_elune ) )
+    base_t( p, "warrior_of_elune", p.talent.warrior_of_elune )
   {}
 
   virtual void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
