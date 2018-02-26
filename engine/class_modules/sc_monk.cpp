@@ -1697,12 +1697,12 @@ public:
   {
     pet_t::create_buffs();
 
-    buff.bok_proc_sef = buff_creator_t( this, "bok_proc_sef", o() -> passives.bok_proc )
-                    .quiet( true ); // In-game does not show this buff but I would like to use it for background stuff;
+    buff.bok_proc_sef = make_buff( this, "bok_proc_sef", o() -> passives.bok_proc )
+                        -> set_quiet( true ); // In-game does not show this buff but I would like to use it for background stuff;
 
-    buff.hit_combo_sef = buff_creator_t( this, "hit_combo_sef", o() -> passives.hit_combo )
-                    .default_value( o() -> passives.hit_combo -> effectN( 1 ).percent() )
-                    .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+    buff.hit_combo_sef = make_buff( this, "hit_combo_sef", o() -> passives.hit_combo )
+                         -> set_default_value( o() -> passives.hit_combo -> effectN( 1 ).percent() )
+                         -> add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   }
 
   void trigger_attack( sef_ability_e ability, const action_t* source_action )
@@ -6470,24 +6470,24 @@ monk( *p )
 {
   if ( p -> specialization() == MONK_WINDWALKER )
   {
-    debuff.mark_of_the_crane = buff_creator_t( *this, "mark_of_the_crane", p -> passives.mark_of_the_crane )
-      .default_value( p -> passives.cyclone_strikes -> effectN( 1 ).percent() )
-      .refresh_behavior( buff_refresh_behavior::DURATION );
-    debuff.flying_serpent_kick = buff_creator_t ( *this, "flying_serpent_kick", p -> passives.flying_serpent_kick_damage )
-      .default_value( p -> passives.flying_serpent_kick_damage-> effectN( 2 ).percent() );
-    debuff.touch_of_karma = buff_creator_t( *this, "touch_of_karma_debuff", p -> spec.touch_of_karma )
-      // set the percent of the max hp as the default value.
-      .default_value( p -> spec.touch_of_karma -> effectN( 3 ).percent() );
+    debuff.mark_of_the_crane = make_buff( *this, "mark_of_the_crane", p -> passives.mark_of_the_crane )
+                               -> set_default_value( p -> passives.cyclone_strikes -> effectN( 1 ).percent() )
+                               -> set_refresh_behavior( buff_refresh_behavior::DURATION );
+    debuff.flying_serpent_kick = make_buff( *this, "flying_serpent_kick", p -> passives.flying_serpent_kick_damage )
+                                 -> set_default_value( p -> passives.flying_serpent_kick_damage-> effectN( 2 ).percent() );
+    debuff.touch_of_karma = make_buff( *this, "touch_of_karma_debuff", p -> spec.touch_of_karma )
+                            // set the percent of the max hp as the default value.
+                            -> set_default_value( p -> spec.touch_of_karma -> effectN( 3 ).percent() );
   }
 
   if ( p -> specialization() == MONK_BREWMASTER )
   {
-    debuff.keg_smash = buff_creator_t( *this, "keg_smash", p -> spec.keg_smash )
-      .default_value( p -> spec.keg_smash -> effectN( 3 ).percent() );
+    debuff.keg_smash = make_buff( *this, "keg_smash", p -> spec.keg_smash )
+                       -> set_default_value( p -> spec.keg_smash -> effectN( 3 ).percent() );
   }
 
-  debuff.storm_earth_and_fire = buff_creator_t( *this, "storm_earth_and_fire_target" )
-    .cd( timespan_t::zero() );
+  debuff.storm_earth_and_fire = make_buff( *this, "storm_earth_and_fire_target" )
+                                -> set_cooldown( timespan_t::zero() );
 
   dots.breath_of_fire = target -> get_dot( "breath_of_fire_dot", p );
   dots.enveloping_mist = target -> get_dot( "enveloping_mist", p );
@@ -7108,132 +7108,131 @@ void monk_t::create_buffs()
   base_t::create_buffs();
 
   // General
-  buff.chi_torpedo = buff_creator_t( this, "chi_torpedo", find_spell( 119085 ) )
-    .default_value( find_spell( 119085 ) -> effectN( 1 ).percent() );
+  buff.chi_torpedo = make_buff( this, "chi_torpedo", find_spell( 119085 ) )
+                     -> set_default_value( find_spell( 119085 ) -> effectN( 1 ).percent() );
 
   buff.fortifying_brew = new buffs::fortifying_brew_t( *this, "fortifying_brew", find_spell( 120954 ) );
 
-  buff.power_strikes = buff_creator_t( this, "power_strikes", talent.power_strikes -> effectN( 1 ).trigger() )
-    .default_value( talent.power_strikes -> effectN( 1 ).trigger() -> effectN( 1 ).base_value() );
+  buff.power_strikes = make_buff( this, "power_strikes", talent.power_strikes -> effectN( 1 ).trigger() )
+                       -> set_default_value( talent.power_strikes -> effectN( 1 ).trigger() -> effectN( 1 ).base_value() );
 
-  buff.rushing_jade_wind = buff_creator_t( this, "rushing_jade_wind", talent.rushing_jade_wind )
-    .cd( timespan_t::zero() )
-    .duration( talent.rushing_jade_wind -> duration() * ( 1 + spec.brewmaster_monk -> effectN( 11 ).percent() ) )
-    .refresh_behavior( buff_refresh_behavior::PANDEMIC );
+  buff.rushing_jade_wind = make_buff( this, "rushing_jade_wind", talent.rushing_jade_wind )
+                           -> set_cooldown( timespan_t::zero() )
+                           -> set_duration( talent.rushing_jade_wind -> duration() * ( 1 + spec.brewmaster_monk -> effectN( 11 ).percent() ) )
+                           -> set_refresh_behavior( buff_refresh_behavior::PANDEMIC );
 
-  buff.dampen_harm = buff_creator_t( this, "dampen_harm", talent.dampen_harm );
+  buff.dampen_harm = make_buff( this, "dampen_harm", talent.dampen_harm );
 
-  buff.diffuse_magic = buff_creator_t( this, "diffuse_magic", talent.diffuse_magic )
-    .default_value( talent.diffuse_magic -> effectN( 1 ).percent() );
+  buff.diffuse_magic = make_buff( this, "diffuse_magic", talent.diffuse_magic )
+                       -> set_default_value( talent.diffuse_magic -> effectN( 1 ).percent() );
 
-  buff.tier19_oh_8pc = stat_buff_creator_t( this, "grandmasters_wisdom", sets -> set( specialization(), T19OH, B8 ) -> effectN( 1 ).trigger() );
+  buff.tier19_oh_8pc = make_buff<stat_buff_t>( this, "grandmasters_wisdom", sets -> set( specialization(), T19OH, B8 ) -> effectN( 1 ).trigger() );
 
   // Brewmaster
-  buff.bladed_armor = buff_creator_t( this, "bladed_armor", spec.bladed_armor )
-    .default_value( spec.bladed_armor -> effectN( 1 ).percent() )
-    .add_invalidate( CACHE_ATTACK_POWER );
+  buff.bladed_armor = make_buff( this, "bladed_armor", spec.bladed_armor )
+                      -> set_default_value( spec.bladed_armor -> effectN( 1 ).percent() )
+                      -> add_invalidate( CACHE_ATTACK_POWER );
 
-  buff.blackout_combo = buff_creator_t( this, "blackout_combo", talent.blackout_combo -> effectN( 5 ).trigger() );
+  buff.blackout_combo = make_buff( this, "blackout_combo", talent.blackout_combo -> effectN( 5 ).trigger() );
 
-  buff.elusive_brawler = buff_creator_t( this, "elusive_brawler", mastery.elusive_brawler -> effectN( 3 ).trigger() )
-    .add_invalidate( CACHE_DODGE );
+  buff.elusive_brawler = make_buff( this, "elusive_brawler", mastery.elusive_brawler -> effectN( 3 ).trigger() )
+                         -> add_invalidate( CACHE_DODGE );
 
-  buff.elusive_dance = buff_creator_t(this, "elusive_dance", find_spell( 196739 ))
-    .default_value( talent.elusive_dance -> effectN( 2 ).percent() / 3 ) // 6.66% per stack
-    .max_stack( 3 ) // Cap of 20%
-    .add_invalidate( CACHE_DODGE )
-    .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+  buff.elusive_dance = make_buff( this, "elusive_dance", find_spell( 196739 ) )
+                       -> set_default_value( talent.elusive_dance -> effectN( 2 ).percent() / 3 ) // 6.66% per stack
+                       -> set_max_stack( 3 ) // Cap of 20%
+                       -> add_invalidate( CACHE_DODGE )
+                       -> add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
-  buff.ironskin_brew = buff_creator_t(this, "ironskin_brew", passives.ironskin_brew )
-    .default_value( passives.ironskin_brew -> effectN( 1 ).percent() 
-      + ( sets -> has_set_bonus( MONK_BREWMASTER, T19, B2 ) ? sets -> set( MONK_BREWMASTER, T19, B2 ) -> effectN( 1 ).percent() : 0 ) )
-    .refresh_behavior( buff_refresh_behavior::EXTEND );
+  buff.ironskin_brew = make_buff( this, "ironskin_brew", passives.ironskin_brew )
+                       -> set_default_value( passives.ironskin_brew -> effectN( 1 ).percent() 
+                          + ( sets -> has_set_bonus( MONK_BREWMASTER, T19, B2 ) ? sets -> set( MONK_BREWMASTER, T19, B2 ) -> effectN( 1 ).percent() : 0 ) )
+                       -> set_refresh_behavior( buff_refresh_behavior::EXTEND );
 
-  buff.keg_smash_talent = buff_creator_t( this, "keg_smash", talent.gift_of_the_mists -> effectN( 1 ).trigger() )
-    .chance( talent.gift_of_the_mists -> proc_chance() ); 
+  buff.keg_smash_talent = make_buff( this, "keg_smash", talent.gift_of_the_mists -> effectN( 1 ).trigger() )
+                          -> set_chance( talent.gift_of_the_mists -> proc_chance() ); 
 
-  buff.gift_of_the_ox = buff_creator_t( this, "gift_of_the_ox", find_spell( 124503 ) )
-    .duration( find_spell( 124503 ) -> duration() )
-    .refresh_behavior( buff_refresh_behavior::NONE )
-    .max_stack( 99 );
+  buff.gift_of_the_ox = make_buff( this, "gift_of_the_ox", find_spell( 124503 ) )
+                        -> set_duration( find_spell( 124503 ) -> duration() )
+                        -> set_refresh_behavior( buff_refresh_behavior::NONE )
+                        -> set_max_stack( 99 );
 
   // Mistweaver
-  buff.channeling_soothing_mist = buff_creator_t( this, "channeling_soothing_mist", passives.soothing_mist_heal );
+  buff.channeling_soothing_mist = make_buff( this, "channeling_soothing_mist", passives.soothing_mist_heal );
 
   buff.life_cocoon = absorb_buff_creator_t( this, "life_cocoon", spec.life_cocoon )
-    .source( get_stats( "life_cocoon" ) )
-    .cd( timespan_t::zero() );
+                    .source( get_stats( "life_cocoon" ) )
+                    .cd( timespan_t::zero() );
 
-  buff.mana_tea = buff_creator_t( this, "mana_tea", talent.mana_tea )
-    .default_value( talent.mana_tea -> effectN( 1 ).percent() );
+  buff.mana_tea = make_buff( this, "mana_tea", talent.mana_tea )
+                  -> set_default_value( talent.mana_tea -> effectN( 1 ).percent() );
 
-  buff.lifecycles_enveloping_mist = buff_creator_t( this, "lifecycles_enveloping_mist", find_spell( 197919 ) )
-    .default_value( find_spell( 197919 ) -> effectN( 1 ).percent() );
+  buff.lifecycles_enveloping_mist = make_buff( this, "lifecycles_enveloping_mist", find_spell( 197919 ) )
+                                    -> set_default_value( find_spell( 197919 ) -> effectN( 1 ).percent() );
 
-  buff.lifecycles_vivify = buff_creator_t( this, "lifecycles_vivify", find_spell( 197916 ) )
-    .default_value( find_spell( 197916 ) -> effectN( 1 ).percent() );
+  buff.lifecycles_vivify = make_buff( this, "lifecycles_vivify", find_spell( 197916 ) )
+                           -> set_default_value( find_spell( 197916 ) -> effectN( 1 ).percent() );
 
-  buff.refreshing_jade_wind = buff_creator_t( this, "refreshing_jade_wind", talent.refreshing_jade_wind )
-    .default_value( talent.refreshing_jade_wind -> effectN( 1 ).trigger() -> effectN( 1 ).percent() )
-    .refresh_behavior( buff_refresh_behavior::PANDEMIC );
+  buff.refreshing_jade_wind = make_buff( this, "refreshing_jade_wind", talent.refreshing_jade_wind )
+                              -> set_default_value( talent.refreshing_jade_wind -> effectN( 1 ).trigger() -> effectN( 1 ).percent() )
+                              -> set_refresh_behavior( buff_refresh_behavior::PANDEMIC );
 
-  buff.spinning_crane_kick = buff_creator_t( this, "spinning_crane_kick", spec.spinning_crane_kick )
-    .default_value( spec.spinning_crane_kick -> effectN( 2 ).percent() )
-    .refresh_behavior( buff_refresh_behavior::PANDEMIC );
+  buff.spinning_crane_kick = make_buff( this, "spinning_crane_kick", spec.spinning_crane_kick )
+                             -> set_default_value( spec.spinning_crane_kick -> effectN( 2 ).percent() )
+                             -> set_refresh_behavior( buff_refresh_behavior::PANDEMIC );
 
-  buff.teachings_of_the_monastery = buff_creator_t( this, "teachings_of_the_monastery", find_spell( 202090 ) )
-    .default_value( find_spell( 202090 ) -> effectN( 1 ).percent() );
+  buff.teachings_of_the_monastery = make_buff( this, "teachings_of_the_monastery", find_spell( 202090 ) )
+                                    -> set_default_value( find_spell( 202090 ) -> effectN( 1 ).percent() );
 
-  buff.thunder_focus_tea = buff_creator_t( this, "thunder_focus_tea", spec.thunder_focus_tea )
-    .max_stack( 1 + ( talent.focused_thunder ? talent.focused_thunder -> effectN( 1 ).base_value()  : 0 ) );
+  buff.thunder_focus_tea = make_buff( this, "thunder_focus_tea", spec.thunder_focus_tea )
+                           -> set_max_stack( 1 + ( talent.focused_thunder ? talent.focused_thunder -> effectN( 1 ).base_value() : 0 ) );
 
-  buff.uplifting_trance = buff_creator_t( this, "uplifting_trance", find_spell( 197916 ) )
-    .chance( spec.renewing_mist -> effectN( 2 ).percent() 
-      + ( sets -> has_set_bonus( MONK_MISTWEAVER, T19, B2 ) ? sets -> set( MONK_MISTWEAVER, T19, B2 ) -> effectN( 1 ).percent() : 0 ) )
-    .default_value( find_spell( 197916 ) -> effectN( 1 ).percent() );
+  buff.uplifting_trance = make_buff( this, "uplifting_trance", find_spell( 197916 ) )
+                          -> set_chance( spec.renewing_mist -> effectN( 2 ).percent() 
+                             + ( sets -> has_set_bonus( MONK_MISTWEAVER, T19, B2 ) ? sets -> set( MONK_MISTWEAVER, T19, B2 ) -> effectN( 1 ).percent() : 0 ) )
+                          -> set_default_value( find_spell( 197916 ) -> effectN( 1 ).percent() );
 
   // Windwalker
-  buff.bok_proc = buff_creator_t( this, "bok_proc", passives.bok_proc )
-    .chance( spec.combo_breaker -> effectN( 1 ).percent() );
+  buff.bok_proc = make_buff( this, "bok_proc", passives.bok_proc )
+                  -> set_chance( spec.combo_breaker -> effectN( 1 ).percent() );
 
-  buff.combo_master = buff_creator_t( this, "combo_master", find_spell( 211432 ) )
-    .default_value( find_spell( 211432 ) -> effectN( 1 ).base_value() )
-    .add_invalidate( CACHE_MASTERY );
+  buff.combo_master = make_buff( this, "combo_master", find_spell( 211432 ) )
+                      -> set_default_value( find_spell( 211432 ) -> effectN( 1 ).base_value() )
+                      -> add_invalidate( CACHE_MASTERY );
 
-  buff.combo_strikes = buff_creator_t( this, "combo_strikes" )
-    .duration( timespan_t::from_minutes( 60 ) )
-    .quiet( true ) // In-game does not show this buff but I would like to use it for background stuff
-    .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+  buff.combo_strikes = make_buff( this, "combo_strikes" )
+                       -> set_duration( timespan_t::from_minutes( 60 ) )
+                       -> set_quiet( true ) // In-game does not show this buff but I would like to use it for background stuff
+                       -> add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
-  buff.flying_serpent_kick_movement = buff_creator_t( this, "flying_serpent_kick_movement" ); // find_spell( 115057 )
+  buff.flying_serpent_kick_movement = make_buff( this, "flying_serpent_kick_movement" ); // find_spell( 115057 )
 
-  buff.hit_combo = buff_creator_t( this, "hit_combo", passives.hit_combo )
-    .default_value( passives.hit_combo -> effectN( 1 ).percent() )
-    .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+  buff.hit_combo = make_buff( this, "hit_combo", passives.hit_combo )
+                   -> set_default_value( passives.hit_combo -> effectN( 1 ).percent() )
+                   -> add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
   buff.serenity = new buffs::serenity_buff_t( *this, "serenity", talent.serenity );
 
-  buff.storm_earth_and_fire = buff_creator_t( this, "storm_earth_and_fire", spec.storm_earth_and_fire )
-                              .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
-                              .add_invalidate( CACHE_PLAYER_HEAL_MULTIPLIER )
-                              .cd( timespan_t::zero() );
+  buff.storm_earth_and_fire = make_buff( this, "storm_earth_and_fire", spec.storm_earth_and_fire )
+                              -> add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
+                              -> add_invalidate( CACHE_PLAYER_HEAL_MULTIPLIER )
+                              -> set_cooldown( timespan_t::zero() );
 
-  buff.pressure_point = buff_creator_t( this, "pressure_point", find_spell( 247255 ) )
-                       .default_value( find_spell( 247255 ) -> effectN( 1 ).percent() )
-                       .refresh_behavior( buff_refresh_behavior::NONE );
+  buff.pressure_point = make_buff( this, "pressure_point", find_spell( 247255 ) )
+                        -> set_default_value( find_spell( 247255 ) -> effectN( 1 ).percent() )
+                        -> set_refresh_behavior( buff_refresh_behavior::NONE );
 
   buff.touch_of_karma = new buffs::touch_of_karma_buff_t( *this, "touch_of_karma", find_spell( 125174 ) );
 
-  buff.wind_strikes = buff_creator_t( this, "wind_strikes", talent.wind_strikes -> effectN( 1 ).trigger() );
+  buff.wind_strikes = make_buff( this, "wind_strikes", talent.wind_strikes -> effectN( 1 ).trigger() );
 
   buff.windwalking_driver = new buffs::windwalking_driver_t( *this, "windwalking_aura_driver", find_spell( 166646 ) );
 
   // Legendaries
-  buff.hidden_masters_forbidden_touch = new buffs::hidden_masters_forbidden_touch_t( 
-    *this, "hidden_masters_forbidden_touch", find_spell( 213114 ) );
+  buff.hidden_masters_forbidden_touch = new buffs::hidden_masters_forbidden_touch_t( *this, "hidden_masters_forbidden_touch", find_spell( 213114 ) );
 
-  buff.the_emperors_capacitor = buff_creator_t( this, "the_emperors_capacitor", passives.the_emperors_capacitor )
-    .default_value( passives.the_emperors_capacitor -> effectN( 1 ).percent() );
+  buff.the_emperors_capacitor = make_buff( this, "the_emperors_capacitor", passives.the_emperors_capacitor )
+                                -> set_default_value( passives.the_emperors_capacitor -> effectN( 1 ).percent() );
 }
 
 // monk_t::init_gains =======================================================
