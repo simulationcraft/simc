@@ -209,6 +209,12 @@ struct buff_expr_t : public expr_t
       return true;
     }
 
+    // If there is no static buff, we cannot do the constant optimization for now
+    if ( static_buff == nullptr )
+    {
+      return false;
+    }
+
     auto b = buff();
 
     // Buff cannot proc, so it is constant.
