@@ -3230,6 +3230,36 @@ struct blackout_kick_t: public monk_melee_attack_t
     return am;
   }
 
+  virtual double composite_attack_power() const override
+  {
+    if (weapon_multiplier == 0)
+    {
+      const weapon_t* mh = ( weapon == nullptr ) ? &player -> main_hand_weapon : weapon;
+      const weapon_t* oh = (weapon == nullptr) ? &player -> off_hand_weapon : weapon;
+      if ( mh && mh -> type != WEAPON_NONE && p() -> specialization() == MONK_WINDWALKER )
+      {
+        assert( mh -> slot != SLOT_OFF_HAND );
+
+        double mhdps = ( mh -> min_dmg + mh -> max_dmg ) / ( 2 * mh -> swing_time.total_seconds() );
+
+        double ohdps = 0;
+
+        if ( oh && oh -> type != WEAPON_NONE )
+        {
+          assert( oh -> slot == SLOT_OFF_HAND );
+
+          ohdps += ( oh -> min_dmg + oh -> max_dmg ) / ( 2 * oh -> swing_time.total_seconds() );
+        }
+
+        double cdps = ( ( 2 * mhdps ) + ohdps ) / 3;
+
+        return player -> cache.attack_power() + ( cdps * WEAPON_POWER_COEFFICIENT );
+      }
+    }
+
+    return player -> cache.attack_power();
+  }
+
   virtual void consume_resource() override
   {
     monk_melee_attack_t::consume_resource();
