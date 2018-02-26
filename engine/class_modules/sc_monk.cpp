@@ -7136,9 +7136,8 @@ void monk_t::create_buffs()
   // Mistweaver
   buff.channeling_soothing_mist = make_buff( this, "channeling_soothing_mist", passives.soothing_mist_heal );
 
-  buff.life_cocoon = absorb_buff_creator_t( this, "life_cocoon", spec.life_cocoon )
-                    .source( get_stats( "life_cocoon" ) )
-                    .cd( timespan_t::zero() );
+  buff.life_cocoon = make_buff<absorb_buff_t>( this, "life_cocoon", spec.life_cocoon );
+  buff.life_cocoon->set_absorb_source( get_stats( "life_cocoon" ) )->set_cooldown( timespan_t::zero() );
 
   buff.mana_tea = make_buff( this, "mana_tea", talent.mana_tea )
                   -> set_default_value( talent.mana_tea -> effectN( 1 ).percent() );

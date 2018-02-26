@@ -5922,12 +5922,8 @@ public:
 struct absorb_t : public spell_base_t
 {
   target_specific_t<absorb_buff_t> target_specific;
-  absorb_buff_creator_t creator_;
 
   absorb_t( const std::string& name, player_t* p, const spell_data_t* s = spell_data_t::nil() );
-
-  virtual absorb_buff_creator_t& creator()
-  { return creator_; }
 
   // Allows customization of the absorb_buff_t that we are creating.
   virtual absorb_buff_t* create_buff( const action_state_t* s )
@@ -5945,10 +5941,10 @@ struct absorb_t : public spell_base_t
       // Add absorb target stats as a child to the main stats object for reporting
       stats -> add_child( stats_obj );
     }
-    creator_.source( stats_obj );
-    creator_.actors( s -> target );
+    auto buff = make_buff<absorb_buff_t>( s -> target, name_str, &data() );
+    buff->set_absorb_source( stats_obj );
 
-    return creator();
+    return buff;
   }
 
   virtual void assess_damage( dmg_e, action_state_t* ) override;

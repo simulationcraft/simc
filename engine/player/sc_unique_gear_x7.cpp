@@ -532,7 +532,7 @@ struct gaseous_bubble_t : public absorb_buff_t
   action_t* explosion;
 
   gaseous_bubble_t( special_effect_t& effect, action_t* a ) :
-    absorb_buff_t( absorb_buff_creator_t( effect.player, "gaseous_bubble", effect.driver(), effect.item ) ),
+    absorb_buff_t( effect.player, "gaseous_bubble", effect.driver(), effect.item ),
     explosion( a )
   {
     // Set correct damage amount for explosion.
@@ -2495,7 +2495,7 @@ struct bulwark_of_flame_t : public absorb_buff_t
   action_t* explosion;
 
   bulwark_of_flame_t( special_effect_t& effect ) :
-    absorb_buff_t( absorb_buff_creator_t( effect.player, "bulwark_of_flame", effect.driver(), effect.item ) ),
+    absorb_buff_t( effect.player, "bulwark_of_flame", effect.driver(), effect.item ),
     explosion( new wave_of_flame_t( effect ) )
   { }
 
@@ -2612,7 +2612,7 @@ void item::riftworld_codex( special_effect_t& effect )
   action_t* damage = new flames_of_ruvaraad_damage_t( effect );
 
   buffs = {
-    absorb_buff_creator_t( effect.player, "light_of_absolarn", effect.player -> find_spell( 252545 ), effect.item ),
+    make_buff<absorb_buff_t>( effect.player, "light_of_absolarn", effect.player -> find_spell( 252545 ), effect.item ),
     buff_creator_t( effect.player, "winds_of_kareth", effect.player -> find_spell( 251938 ), effect.item ),
     buff_creator_t( effect.player, "flames_of_ruvaraad", effect.player -> find_spell( 256415 ), effect.item )
       .tick_callback( [ damage ] ( buff_t*, int, const timespan_t& ) {
@@ -4784,7 +4784,7 @@ struct archimondes_hatred_reborn_shield_t : public absorb_buff_t
   special_effect_t& spell_effect;
 
   archimondes_hatred_reborn_shield_t( special_effect_t& effect, action_t* a ) :
-    absorb_buff_t( absorb_buff_creator_t( effect.player, "archimondes_hatred_reborn", effect.driver(), effect.item ) ),
+    absorb_buff_t( effect.player, "archimondes_hatred_reborn", effect.driver(), effect.item ),
     spell_effect( effect ),
     explosion( a )
   {

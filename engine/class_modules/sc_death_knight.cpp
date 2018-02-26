@@ -4919,11 +4919,12 @@ struct death_coil_t : public death_knight_spell_t
 struct blood_shield_buff_t : public absorb_buff_t
 {
   blood_shield_buff_t( death_knight_t* player ) :
-    absorb_buff_t( absorb_buff_creator_t( player, "blood_shield", player -> spell.blood_shield )
-                   .add_invalidate( CACHE_LEECH )
-                   .school( SCHOOL_PHYSICAL )
-                   .source( player -> get_stats( "blood_shield" ) ) )
-  { }
+    absorb_buff_t( player, "blood_shield", player -> spell.blood_shield )
+  {
+    add_invalidate( CACHE_LEECH );
+    set_absorb_school( SCHOOL_PHYSICAL );
+    set_absorb_source( player -> get_stats( "blood_shield" ) );
+  }
 };
 
 struct death_strike_offhand_t : public death_knight_melee_attack_t
@@ -8604,8 +8605,8 @@ void death_knight_t::create_buffs()
   buffs.soul_reaper->set_default_value( talent.soul_reaper -> effectN( 2 ).trigger() -> effectN( 1 ).percent() )
     ->set_trigger_spell( talent.soul_reaper );
   buffs.antimagic_barrier = new antimagic_barrier_buff_t( this );
-  buffs.tombstone = absorb_buff_creator_t( this, "tombstone", talent.tombstone )
-    .cd( timespan_t::zero() ); // Handled by the action
+  buffs.tombstone = make_buff<absorb_buff_t>( this, "tombstone", talent.tombstone );
+  buffs.tombstone->set_cooldown( timespan_t::zero() ); // Handled by the action
   buffs.t19oh_8pc = stat_buff_creator_t( this, "deathlords_might", sets -> set( specialization(), T19OH, B8 ) -> effectN( 1 ).trigger() )
     .trigger_spell( sets -> set( specialization(), T19OH, B8 ) );
 

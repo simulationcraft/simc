@@ -361,41 +361,48 @@ absorb_buff_t* special_effect_t::initialize_absorb_buff() const
     return debug_cast<absorb_buff_t*>( b );
   }
 
-  absorb_buff_creator_t creator( player, name(), spell_data_t::nil(),
+  // Setup the spell for the buff
+  const spell_data_t* buff_spell = spell_data_t::nil();
+  if ( trigger() -> id() > 0 )
+  {
+    buff_spell = trigger();
+  }
+  else if ( driver() -> id() > 0 )
+  {
+    buff_spell = driver();
+  }
+
+  auto buff = make_buff<absorb_buff_t>( player, name(), buff_spell,
                                source == SPECIAL_EFFECT_SOURCE_ITEM ? item : nullptr );
 
-  // Setup the spell for the stat buff
-  if ( trigger() -> id() > 0 )
-    creator.spell( trigger() );
-  else if ( driver() -> id() > 0 )
-    creator.spell( driver() );
+
 
   // Setup user option overrides. Note that if there are no user set overrides,
   // the buff will automagically deduce correct options from the spell data,
   // the special_effect_t object should not issue overrides to the creator
   // object.
   if ( max_stacks > 0 )
-    creator.max_stack( max_stacks );
+    buff->set_max_stack( max_stacks );
 
   if ( duration_ > timespan_t::zero() )
-    creator.duration( duration_ );
+    buff->set_duration( duration_ );
 
   if ( reverse )
-    creator.reverse( true );
+    buff->set_reverse( true );
 
   if ( tick > timespan_t::zero() )
   {
-    creator.period( tick );
-    creator.tick_behavior( buff_tick_behavior::CLIP );
+    buff->set_period( tick );
+    buff->set_tick_behavior( buff_tick_behavior::CLIP );
   }
 
   // Make the buff always proc. The proc chance is handled by the proc callback, so the buff should
   // always trigger.
-  creator.chance( 1 );
+  buff->set_chance( 1 );
 
-  creator.refresh_behavior( buff_refresh_behavior::DURATION );
+  buff->set_refresh_behavior( buff_refresh_behavior::DURATION );
 
-  return creator;
+  return buff;
 }
 
 // special_effect_t::buff_type ==============================================

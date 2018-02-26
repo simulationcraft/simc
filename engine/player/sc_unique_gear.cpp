@@ -423,12 +423,11 @@ void enchants::colossus( special_effect_t& effect )
 {
   const spell_data_t* spell = effect.item -> player-> find_spell( 116631 );
 
-  absorb_buff_t* buff =
-      absorb_buff_creator_t( effect.item -> player,
+  auto buff = make_buff<absorb_buff_t>( effect.item -> player,
                              tokenized_name( spell ) + suffix( effect.item ),
-                             spell )
-      .source( effect.item -> player -> get_stats( tokenized_name( spell ) + suffix( effect.item ) ) )
-      .activated( false );
+                             spell );
+  buff->set_absorb_source( effect.item -> player -> get_stats( tokenized_name( spell ) + suffix( effect.item ) ) )
+      ->set_activated( false );
 
   effect.custom_buff = buff;
 
@@ -678,8 +677,8 @@ struct grounded_plasma_shield_t : public engineering_effect_t
   grounded_plasma_shield_t( player_t* p ) :
     engineering_effect_t( p, "grounded_plasma_shield" )
   {
-    buff = absorb_buff_creator_t( p, "grounded_plasma_shield", p -> find_spell( 82626 ) )
-           .cd( timespan_t::zero() );
+    buff = make_buff<absorb_buff_t>( p, "grounded_plasma_shield", p -> find_spell( 82626 ) );
+    buff->set_cooldown( timespan_t::zero() );
   }
 
   void execute() override
