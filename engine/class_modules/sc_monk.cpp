@@ -1161,7 +1161,12 @@ struct storm_earth_and_fire_pet_t : public pet_t
 
     sef_blackout_kick_t( storm_earth_and_fire_pet_t* player ) :
       sef_melee_attack_t( "blackout_kick", player, player -> o() -> spec.blackout_kick )
-    { }
+    { 
+      // Hard Code the divider
+      base_dd_min = base_dd_max = 1;
+      double ap_mod_direct = o() -> spec.blackout_kick -> effectN( 1 ).base_value();
+      attack_power_mod.direct = ap_mod_direct / 10000;
+    }
 
     double composite_persistent_multiplier( const action_state_t* action_state ) const override
     {
@@ -1443,20 +1448,8 @@ struct storm_earth_and_fire_pet_t : public pet_t
     {
       may_dodge = may_parry = may_block = may_miss = true;
       dual = true;
-      aoe = -1;
-      radius = data().effectN( 2 ).base_value();
-      weapon = &( player -> off_hand_weapon );
-    }
 
-    // Damage must be divided on non-main target by the number of targets
-    double composite_aoe_multiplier( const action_state_t* state ) const override
-    {
-      if ( state -> target != target )
-      {
-        return 1.0 / state -> n_targets;
-      }
-
-      return 1.0;
+      energize_type = ENERGIZE_NONE;
     }
   };
 
@@ -1467,21 +1460,6 @@ struct storm_earth_and_fire_pet_t : public pet_t
     {
       may_dodge = may_parry = may_block = may_miss = true;
       dual = true;
-      aoe = -1;
-      radius = data().effectN( 2 ).base_value();
-      weapon = &( player -> main_hand_weapon );
-      normalize_weapon_speed = true;
-    }
-
-    // Damage must be divided on non-main target by the number of targets
-    double composite_aoe_multiplier( const action_state_t* state ) const override
-    {
-      if ( state -> target != target )
-      {
-        return 1.0 / state -> n_targets;
-      }
-
-      return 1.0;
     }
   };
 
@@ -1645,10 +1623,10 @@ public:
     attacks.at( SEF_RUSHING_JADE_WIND ) = new sef_rushing_jade_wind_t( this );
     attacks.at( SEF_WHIRLING_DRAGON_PUNCH ) =
         new sef_whirling_dragon_punch_t( this );
-//    attacks.at( SEF_FIST_OF_THE_WHITE_TIGER) =
-//        new sef_fist_of_the_white_tiger_t( this );
-//    attacks.at( SEF_FIST_OF_THE_WHITE_TIGER_OH ) =
-//        new sef_fist_of_the_white_tiger_oh_t( this );
+    attacks.at( SEF_FIST_OF_THE_WHITE_TIGER) =
+        new sef_fist_of_the_white_tiger_t( this );
+    attacks.at( SEF_FIST_OF_THE_WHITE_TIGER_OH ) =
+        new sef_fist_of_the_white_tiger_oh_t( this );
 
     spells.at( sef_spell_idx( SEF_CHI_BURST ) ) = new sef_chi_burst_t( this );
     spells.at( sef_spell_idx( SEF_CHI_WAVE ) )  = new sef_chi_wave_t( this );
@@ -3159,14 +3137,15 @@ struct blackout_kick_t: public monk_melee_attack_t
   blackout_kick_totm_proc* bok_totm_proc;
 
   blackout_kick_t( monk_t* p, const std::string& options_str ):
-    monk_melee_attack_t( "blackout_kick", p, ( p -> specialization() == MONK_BREWMASTER ? spell_data_t::nil() : p -> spec.blackout_kick ) )
+    monk_melee_attack_t( "blackout_kick", p, p -> spec.blackout_kick )
   {
     parse_options( options_str );
 
+    // Hard Code the divider
+    base_dd_min = base_dd_max = 1;
+    double ap_mod_direct = p -> spec.blackout_kick -> effectN( 1 ).base_value();
+    attack_power_mod.direct = ap_mod_direct / 10000;
 
-    mh = &( player -> main_hand_weapon );
-    oh = &( player -> off_hand_weapon );
-    spell_power_mod.direct = 0.0;
     switch ( p -> specialization() )
     {
       case MONK_MISTWEAVER:
@@ -3802,23 +3781,23 @@ struct fist_of_the_white_tiger_off_hand_t: public monk_melee_attack_t
   fist_of_the_white_tiger_off_hand_t( monk_t* p, const char* name, const spell_data_t* s ):
     monk_melee_attack_t( name, p, s )
   {
-//    sef_ability = SEF_FIST_OF_THE_WHITE_TIGER_OH;
+    sef_ability = SEF_FIST_OF_THE_WHITE_TIGER_OH;
     may_dodge = may_parry = may_block = may_miss = true;
     dual = true;
+    attack_power_mod.direct = p -> talent.fist_of_the_white_tiger -> effectN( 1 ).ap_coeff();
+    // This is the off-hand damage and is reduced by 50% baseline.
+    attack_power_mod.direct *= 0.5;
   }
 
   double composite_persistent_multiplier( const action_state_t* action_state ) const override
   {
     double pm = monk_melee_attack_t::composite_persistent_multiplier( action_state );
 
-//    if ( p() -> buff.combo_strikes -> up() )
-//      pm *= 1 + p() -> cache.mastery_value();
+    if ( p() -> buff.combo_strikes -> up() )
+      pm *= 1 + p() -> cache.mastery_value();
 
-    // Because this is the off-hand attack, it does 50% less damage by default
-    pm *= 0.5;
-
-//    if ( p() -> buff.storm_earth_and_fire -> up() )
-//      pm *= 1.0 + p() -> spec.storm_earth_and_fire -> effectN( 1 ).percent();
+    if ( p() -> buff.storm_earth_and_fire -> up() )
+      pm *= 1.0 + p() -> spec.storm_earth_and_fire -> effectN( 1 ).percent();
 
     return pm;
   }
@@ -3829,7 +3808,6 @@ struct fist_of_the_white_tiger_off_hand_t: public monk_melee_attack_t
 
 //    p() -> resource_gain( RESOURCE_CHI, data().effectN( 1 ).base_value(), p() -> gain.fist_of_the_white_tiger );
   }
-
 };
 
 struct fist_of_the_white_tiger_t: public monk_melee_attack_t
@@ -3839,14 +3817,16 @@ struct fist_of_the_white_tiger_t: public monk_melee_attack_t
     monk_melee_attack_t( "fist_of_the_white_tiger", p, p -> talent.fist_of_the_white_tiger ),
     oh_attack( nullptr )
   {
-//    sef_ability = SEF_FIST_OF_THE_WHITE_TIGER;
+    sef_ability = SEF_FIST_OF_THE_WHITE_TIGER;
 
     parse_options( options_str );
     may_dodge = may_parry = may_block = true;
-    attack_power_mod.direct = data().effectN( 3 ).trigger() -> effectN( 1 ).percent();
+//    attack_power_mod.direct = p -> talent.fist_of_the_white_tiger -> effectN( 3 ).trigger() -> effectN( 1 ).ap_coeff();
     trigger_gcd = data().gcd();
 
-    oh_attack = new fist_of_the_white_tiger_off_hand_t( p, "fist_of_the_white_tiger_offhand", data().effectN( 4 ).trigger() );
+//    energize_type = ENERGIZE_NONE;
+
+    oh_attack = new fist_of_the_white_tiger_off_hand_t( p, "fist_of_the_white_tiger_offhand", p -> talent.fist_of_the_white_tiger -> effectN( 4 ).trigger() );
     add_child( oh_attack );
   }
 
@@ -3854,11 +3834,11 @@ struct fist_of_the_white_tiger_t: public monk_melee_attack_t
   {
     double pm = monk_melee_attack_t::composite_persistent_multiplier( action_state );
 
-//    if ( p() -> buff.combo_strikes -> up() )
-//      pm *= 1 + p() -> cache.mastery_value();
+    if ( p() -> buff.combo_strikes -> up() )
+      pm *= 1 + p() -> cache.mastery_value();
 
-//    if ( p() -> buff.storm_earth_and_fire -> up() )
-//      pm *= 1.0 + p() -> spec.storm_earth_and_fire -> effectN( 1 ).percent();
+    if ( p() -> buff.storm_earth_and_fire -> up() )
+      pm *= 1.0 + p() -> spec.storm_earth_and_fire -> effectN( 1 ).percent();
 
     return pm;
   }
@@ -3875,7 +3855,7 @@ struct fist_of_the_white_tiger_t: public monk_melee_attack_t
   {
     // Trigger Combo Strikes
     // registers even on a miss
-//    combo_strikes_trigger( CS_FIST_OF_THE_WHITE_TIGER );
+    combo_strikes_trigger( CS_FIST_OF_THE_WHITE_TIGER );
 
     monk_melee_attack_t::execute(); // this is the MH attack
 
@@ -6979,8 +6959,6 @@ void monk_t::init_spells()
 
   if ( specialization() == MONK_BREWMASTER )
     active_actions.stagger_self_damage = new actions::stagger_self_damage_t( this );
-//  if ( specialization() == MONK_WINDWALKER )
-//    windwalking_aura = new actions::windwalking_aura_t( this );
 }
 
 // monk_t::init_base ========================================================
