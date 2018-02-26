@@ -211,7 +211,7 @@ namespace buffs
  */
 struct archangel_t final : public priest_buff_t<buff_t>
 {
-  archangel_t( priest_t& p ) : base_t( &p, "archangel", p.specs.archangel )
+  archangel_t( priest_t& p ) : base_t( p, "archangel", p.specs.archangel )
   {
     set_max_stack( 5 );
     default_value = data().effectN( 1 ).percent();

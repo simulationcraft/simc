@@ -532,7 +532,7 @@ struct gaseous_bubble_t : public absorb_buff_t
   action_t* explosion;
 
   gaseous_bubble_t( special_effect_t& effect, action_t* a ) :
-    absorb_buff_t( absorb_buff_creator_t( effect.player, "gaseous_bubble", effect.driver(), effect.item ) ),
+    absorb_buff_t( effect.player, "gaseous_bubble", effect.driver(), effect.item ),
     explosion( a )
   {
     // Set correct damage amount for explosion.
@@ -712,8 +712,8 @@ void item::eye_of_command( special_effect_t& effect )
   stat_buff_t* b = debug_cast<stat_buff_t*>( buff_t::find( effect.player, "legions_gaze" ) );
   if ( ! b )
   {
-    b = stat_buff_creator_t( effect.player, "legions_gaze", effect.trigger(), effect.item )
-        .add_stat( STAT_CRIT_RATING, amount );
+    b = make_buff<stat_buff_t>( effect.player, "legions_gaze", effect.trigger(), effect.item )
+        ->add_stat( STAT_CRIT_RATING, amount );
   }
 
   effect.custom_buff = b;
@@ -752,12 +752,13 @@ void item::erratic_metronome( special_effect_t& effect )
       dbc_proc_callback_t( effect.item, effect )
     {
       // TODO: FIX HARDCODED VALUES
-      proc_buff = stat_buff_creator_t( effect.player, "accelerando", effect.player -> find_spell( 225719 ), effect.item )
-        .cd( timespan_t::zero() )
-        .add_stat( STAT_HASTE_RATING, amount )
-        .max_stack( 5 )
-        .refresh_behavior( buff_refresh_behavior::DISABLED )
-        .duration( timespan_t::from_seconds( 12.0 ) );
+      auto buff = make_buff<stat_buff_t>( effect.player, "accelerando", effect.player -> find_spell( 225719 ), effect.item );
+      buff->add_stat( STAT_HASTE_RATING, amount )
+          ->set_cooldown( timespan_t::zero() )
+          ->set_max_stack( 5 )
+          ->set_refresh_behavior( buff_refresh_behavior::DISABLED )
+          ->set_duration( timespan_t::from_seconds( 12.0 ) );
+      proc_buff = buff;
     }
 
     void execute(action_t*, action_state_t*) override
@@ -1286,11 +1287,11 @@ void item::engine_of_eradication( special_effect_t& effect )
     auto extra_seconds = timespan_t::from_seconds( effect.driver() -> effectN( 1 ).base_value() );
     extra_seconds *= effect.player -> sim -> expansion_opts.engine_of_eradication_orbs;
 
-    buff = stat_buff_creator_t( effect.player, "demonic_vigor", effect.trigger(), effect.item )
-           .add_stat( primary_stat, amount )
-           .refresh_behavior( buff_refresh_behavior::EXTEND )
-           .duration( effect.trigger() -> duration() + extra_seconds )
-           .cd( timespan_t::from_seconds( 4.0 ) ); // ICD reportedly resets when the player collects all orbs
+    buff = make_buff<stat_buff_t>( effect.player, "demonic_vigor", effect.trigger(), effect.item );
+    buff->add_stat( primary_stat, amount )
+        ->set_refresh_behavior( buff_refresh_behavior::EXTEND )
+        ->set_duration( effect.trigger() -> duration() + extra_seconds )
+        ->set_cooldown( timespan_t::from_seconds( 4.0 ) ); // ICD reportedly resets when the player collects all orbs
   }
 
   effect.custom_buff = buff;
@@ -1526,8 +1527,8 @@ void item::cradle_of_anguish( special_effect_t& effect )
 
   if ( buff == nullptr )
   {
-    buff = stat_buff_creator_t( effect.player, "strength_of_will", buff_spell, effect.item )
-           .add_stat( effect.player -> convert_hybrid_stat( STAT_STR_AGI ) , amount );
+    buff = make_buff<stat_buff_t>( effect.player, "strength_of_will", buff_spell, effect.item )
+           ->add_stat( effect.player -> convert_hybrid_stat( STAT_STR_AGI ) , amount );
   }
 
   effect.player -> callbacks_on_arise.emplace_back( [ buff, effect ]() {
@@ -1577,8 +1578,8 @@ void item::amanthuls_vision( special_effect_t& effect )
   // Empower effect
   auto empower_spell = effect.player -> find_spell( 256832 );
   auto empower_amount = empower_spell -> effectN( 1 ).average( effect.item );
-  stat_buff_t* empower_buff = stat_buff_creator_t( effect.player, "amanthuls_grandeur", empower_spell, effect.item )
-    .add_stat( effect.player -> convert_hybrid_stat( STAT_STR_AGI_INT ), empower_amount );
+  stat_buff_t* empower_buff = make_buff<stat_buff_t>( effect.player, "amanthuls_grandeur", empower_spell, effect.item )
+    ->add_stat( effect.player -> convert_hybrid_stat( STAT_STR_AGI_INT ), empower_amount );
 
   effect.player -> sim -> expansion_data.pantheon_proxy -> register_pantheon_effect( effect.custom_buff, [ empower_buff ]() {
     empower_buff -> trigger();
@@ -1665,29 +1666,29 @@ void item::khazgoroths_courage( special_effect_t& effect )
   auto empower_spell = effect.player -> find_spell( 256835 );
   auto stat_amount = item_database::apply_combat_rating_multiplier( *effect.item,
       empower_spell -> effectN( 1 ).average( effect.item ) );
-  stat_buff_t* empower_buff = stat_buff_creator_t( effect.player, "khazgoroths_shaping", empower_spell, effect.item )
-    .add_stat( STAT_CRIT_RATING, stat_amount, []( const stat_buff_t& b ) {
+  stat_buff_t* empower_buff = make_buff<stat_buff_t>( effect.player, "khazgoroths_shaping", empower_spell, effect.item )
+    ->add_stat( STAT_CRIT_RATING, stat_amount, []( const stat_buff_t& b ) {
       auto crit = b.source -> composite_spell_crit_rating();
       auto haste = b.source -> composite_spell_haste_rating();
       auto mastery = b.source -> composite_mastery_rating();
       auto versatility = b.source -> composite_damage_versatility_rating();
       return crit > haste && crit > mastery && crit > versatility;
     } )
-    .add_stat( STAT_HASTE_RATING, stat_amount, []( const stat_buff_t& b ) {
+    ->add_stat( STAT_HASTE_RATING, stat_amount, []( const stat_buff_t& b ) {
       auto crit = b.source -> composite_spell_crit_rating();
       auto haste = b.source -> composite_spell_haste_rating();
       auto mastery = b.source -> composite_mastery_rating();
       auto versatility = b.source -> composite_damage_versatility_rating();
       return haste > crit && haste > mastery && haste > versatility;
     } )
-    .add_stat( STAT_MASTERY_RATING, stat_amount, []( const stat_buff_t& b ) {
+    ->add_stat( STAT_MASTERY_RATING, stat_amount, []( const stat_buff_t& b ) {
       auto crit = b.source -> composite_spell_crit_rating();
       auto haste = b.source -> composite_spell_haste_rating();
       auto mastery = b.source -> composite_mastery_rating();
       auto versatility = b.source -> composite_damage_versatility_rating();
       return mastery > crit && mastery > haste && mastery > versatility;
     } )
-    .add_stat( STAT_VERSATILITY_RATING, stat_amount, []( const stat_buff_t& b ) {
+    ->add_stat( STAT_VERSATILITY_RATING, stat_amount, []( const stat_buff_t& b ) {
       auto crit = b.source -> composite_spell_crit_rating();
       auto haste = b.source -> composite_spell_haste_rating();
       auto mastery = b.source -> composite_mastery_rating();
@@ -1883,8 +1884,8 @@ void item::aggramars_conviction( special_effect_t& effect )
   auto empower_amount = empower_spell -> effectN( 1 ).average( effect.item );
   // TODO : check if the max health increase is affected by % health mods or added after.
   // Currently assumes that the health increase is affected by % health increase effects
-  stat_buff_t* empower_buff = stat_buff_creator_t( effect.player, "aggramars_fortitude", empower_spell, effect.item )
-    .add_stat( STAT_MAX_HEALTH, empower_amount );
+  stat_buff_t* empower_buff = make_buff<stat_buff_t>( effect.player, "aggramars_fortitude", empower_spell, effect.item )
+    ->add_stat( STAT_MAX_HEALTH, empower_amount );
 
   effect.player -> sim -> expansion_data.pantheon_proxy -> register_pantheon_effect( effect.custom_buff, [ empower_buff ]() {
     empower_buff -> trigger();
@@ -1986,31 +1987,31 @@ void item::acrid_catalyst_injector( special_effect_t& effect )
   auto crit = debug_cast<stat_buff_t*>( buff_t::find( p, "brutality_of_the_legion" ) );
   if ( ! crit )
   {
-    crit = stat_buff_creator_t( p, "brutality_of_the_legion", p -> find_spell( 255742 ), effect.item )
-      .add_stat( STAT_CRIT_RATING, small_amount );
+    crit = make_buff<stat_buff_t>( p, "brutality_of_the_legion", p -> find_spell( 255742 ), effect.item )
+      ->add_stat( STAT_CRIT_RATING, small_amount );
   }
 
   auto haste = debug_cast<stat_buff_t*>( buff_t::find( p, "fervor_of_the_legion" ) );
   if ( ! haste )
   {
-    haste = stat_buff_creator_t( p, "fervor_of_the_legion", p -> find_spell( 253261 ), effect.item )
-      .add_stat( STAT_HASTE_RATING, small_amount );
+    haste = make_buff<stat_buff_t>( p, "fervor_of_the_legion", p -> find_spell( 253261 ), effect.item )
+      ->add_stat( STAT_HASTE_RATING, small_amount );
   }
 
   auto mastery = debug_cast<stat_buff_t*>( buff_t::find( p, "malice_of_the_legion" ) );
   if ( ! mastery )
   {
-    mastery = stat_buff_creator_t( p, "malice_of_the_legion", p -> find_spell( 255744 ), effect.item )
-      .add_stat( STAT_MASTERY_RATING, small_amount );
+    mastery = make_buff<stat_buff_t>( p, "malice_of_the_legion", p -> find_spell( 255744 ), effect.item )
+      ->add_stat( STAT_MASTERY_RATING, small_amount );
   }
 
   auto all = debug_cast<stat_buff_t*>( buff_t::find( p, "cycle_of_the_legion" ) );
   if ( ! all )
   {
-    all = stat_buff_creator_t( p, "cycle_of_the_legion", p -> find_spell( 253260 ), effect.item )
-      .add_stat( STAT_CRIT_RATING,    large_amount )
-      .add_stat( STAT_HASTE_RATING,   large_amount )
-      .add_stat( STAT_MASTERY_RATING, large_amount );
+    all = make_buff<stat_buff_t>( p, "cycle_of_the_legion", p -> find_spell( 253260 ), effect.item )
+      ->add_stat( STAT_CRIT_RATING,    large_amount )
+      ->add_stat( STAT_HASTE_RATING,   large_amount )
+      ->add_stat( STAT_MASTERY_RATING, large_amount );
   }
 
   dbc_proc_callback_t* cb = new injector_proc_cb_t( effect, { crit, haste, mastery }, all );
@@ -2069,9 +2070,9 @@ void item::vitality_resonator( special_effect_t& effect )
   auto buff = debug_cast<stat_buff_t*>( buff_t::find( p, "reverberating_vitality" ) );
   if ( ! buff )
   {
-    buff = stat_buff_creator_t( p, "reverberating_vitality", p -> find_spell( 253258 ), effect.item )
-      .add_stat( STAT_INTELLECT, effect.driver() -> effectN( 2 ).average( effect.item ) )
-      .cd( timespan_t::zero() );
+    buff = make_buff<stat_buff_t>( p, "reverberating_vitality", p -> find_spell( 253258 ), effect.item );
+    buff->add_stat( STAT_INTELLECT, effect.driver() -> effectN( 2 ).average( effect.item ) )
+        ->set_cooldown( timespan_t::zero() );
   }
 
   effect.execute_action = create_proc_action<reverberating_vitality_t>( "reverberating_vitality", effect, buff );
@@ -2495,7 +2496,7 @@ struct bulwark_of_flame_t : public absorb_buff_t
   action_t* explosion;
 
   bulwark_of_flame_t( special_effect_t& effect ) :
-    absorb_buff_t( absorb_buff_creator_t( effect.player, "bulwark_of_flame", effect.driver(), effect.item ) ),
+    absorb_buff_t( effect.player, "bulwark_of_flame", effect.driver(), effect.item ),
     explosion( new wave_of_flame_t( effect ) )
   { }
 
@@ -2612,7 +2613,7 @@ void item::riftworld_codex( special_effect_t& effect )
   action_t* damage = new flames_of_ruvaraad_damage_t( effect );
 
   buffs = {
-    absorb_buff_creator_t( effect.player, "light_of_absolarn", effect.player -> find_spell( 252545 ), effect.item ),
+    make_buff<absorb_buff_t>( effect.player, "light_of_absolarn", effect.player -> find_spell( 252545 ), effect.item ),
     buff_creator_t( effect.player, "winds_of_kareth", effect.player -> find_spell( 251938 ), effect.item ),
     buff_creator_t( effect.player, "flames_of_ruvaraad", effect.player -> find_spell( 256415 ), effect.item )
       .tick_callback( [ damage ] ( buff_t*, int, const timespan_t& ) {
@@ -2682,21 +2683,27 @@ struct majordomos_dinner_bell_t : proc_spell_t
   majordomos_dinner_bell_t(const special_effect_t& effect) :
     proc_spell_t("dinner_bell", effect.player, effect.player -> find_spell(230101), effect.item)
   {
+    struct common_buff_t : public stat_buff_t
+    {
+      common_buff_t( player_t* p, std::string n, const spell_data_t* spell, const item_t* item, stat_e stat ) :
+        stat_buff_t ( p, "deathbringers_will_" + n, spell )
+      {
+        const double buff_amount = item_database::apply_combat_rating_multiplier(*item,
+          spell->effectN(1).average(item)) * util::composite_karazhan_empower_multiplier(p);
+
+        add_stat( stat, buff_amount );
+      }
+    };
+
     // Spell used for tooltips, game uses buffs 230102-230105 based on a script but not all are in DBC spell data
     const spell_data_t* buff_spell = effect.player->find_spell(230102);
-    const double buff_amount = item_database::apply_combat_rating_multiplier(*effect.item,
-      buff_spell->effectN(1).average(effect.item)) * util::composite_karazhan_empower_multiplier(effect.player);
 
     buffs =
     {
-      stat_buff_creator_t(effect.player, "quite_satisfied_crit", buff_spell, effect.item)
-        .add_stat(STAT_CRIT_RATING, buff_amount),
-      stat_buff_creator_t(effect.player, "quite_satisfied_haste", buff_spell, effect.item)
-        .add_stat(STAT_HASTE_RATING, buff_amount),
-      stat_buff_creator_t(effect.player, "quite_satisfied_mastery", buff_spell, effect.item)
-        .add_stat(STAT_MASTERY_RATING, buff_amount),
-      stat_buff_creator_t(effect.player, "quite_satisfied_vers", buff_spell, effect.item)
-        .add_stat(STAT_VERSATILITY_RATING, buff_amount),
+      make_buff<common_buff_t>(effect.player, "quite_satisfied_crit", buff_spell, effect.item, STAT_CRIT_RATING),
+      make_buff<common_buff_t>(effect.player, "quite_satisfied_haste", buff_spell, effect.item, STAT_HASTE_RATING),
+      make_buff<common_buff_t>(effect.player, "quite_satisfied_mastery", buff_spell, effect.item, STAT_MASTERY_RATING),
+      make_buff<common_buff_t>(effect.player, "quite_satisfied_vers", buff_spell, effect.item, STAT_VERSATILITY_RATING)
     };
   }
 
@@ -2781,6 +2788,15 @@ void item::memento_of_angerboda( special_effect_t& effect )
 {
   double rating_amount = item_database::apply_combat_rating_multiplier( *effect.item,
       effect.driver() -> effectN( 2 ).average( effect.item ) );
+
+  struct common_buff_t : public stat_buff_t
+  {
+    common_buff_t( player_t* p, std::string n, const spell_data_t* spell, stat_e stat, double amount ) :
+      stat_buff_t ( p, "deathbringers_will_" + n, spell )
+    {
+      add_stat( stat, amount );
+    }
+  };
 
   std::vector<buff_t*> buffs;
 
@@ -4784,7 +4800,7 @@ struct archimondes_hatred_reborn_shield_t : public absorb_buff_t
   special_effect_t& spell_effect;
 
   archimondes_hatred_reborn_shield_t( special_effect_t& effect, action_t* a ) :
-    absorb_buff_t( absorb_buff_creator_t( effect.player, "archimondes_hatred_reborn", effect.driver(), effect.item ) ),
+    absorb_buff_t( effect.player, "archimondes_hatred_reborn", effect.driver(), effect.item ),
     spell_effect( effect ),
     explosion( a )
   {

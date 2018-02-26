@@ -239,6 +239,8 @@ struct execution_sentence_t : public holy_power_consumer_t
     if ( ! ( p -> talents.execution_sentence -> ok() ) )
       background = true;
 
+    // Spelldata doesn't seem to have this
+    hasted_gcd = true;
     if ( p -> sets -> has_set_bonus( PALADIN_RETRIBUTION, T19, B2 ) )
     {
       base_multiplier *= 1.0 + p -> sets -> set( PALADIN_RETRIBUTION, T19, B2 ) -> effectN( 2 ).percent();

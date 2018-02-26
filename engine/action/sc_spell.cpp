@@ -564,8 +564,7 @@ absorb_t::absorb_t( const std::string&  token,
                     player_t*           p,
                     const spell_data_t* s ) :
   spell_base_t( ACTION_ABSORB, token, p, s ),
-  target_specific( false ),
-  creator_( target, token, s )
+  target_specific( false )
 {
   if ( sim -> heal_target && target == sim -> target )
     target = sim -> heal_target;

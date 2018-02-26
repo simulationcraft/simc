@@ -1249,8 +1249,13 @@ struct priest_buff_t : public Base
 public:
   using base_t = priest_buff_t;  // typedef for priest_buff_t<buff_base_t>
 
-  priest_buff_t( actor_pair_t q, const std::string& name, const spell_data_t* s = spell_data_t::nil() )
-    : Base( q, name, s )
+  priest_buff_t( priest_td_t& td, const std::string& name, const spell_data_t* s = spell_data_t::nil(), const item_t* item = nullptr )
+    : Base( td, name, s, item )
+  {
+  }
+
+  priest_buff_t( priest_t& p, const std::string& name, const spell_data_t* s = spell_data_t::nil(), const item_t* item = nullptr )
+    : Base( &p, name, s, item )
   {
   }
 

@@ -3454,9 +3454,6 @@ double player_t::temporary_movement_modifier() const
 
   if ( ! is_enemy() )
   {
-    if ( buffs.windwalking_movement_aura -> check() )
-      temporary = std::max( buffs.windwalking_movement_aura -> current_value, temporary );
-
     if ( buffs.stampeding_roar -> check() )
       temporary = std::max( buffs.stampeding_roar -> data().effectN( 1 ).percent(), temporary );
   }

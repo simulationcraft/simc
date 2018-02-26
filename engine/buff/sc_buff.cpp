@@ -2418,42 +2418,16 @@ bool tick_buff_t::trigger( int stacks, double value, double chance, timespan_t d
 */
 
 absorb_buff_t::absorb_buff_t( actor_pair_t q, const std::string& name, const spell_data_t* spell, const item_t* item )
-  : absorb_buff_t( absorb_buff_creator_t( q, name, spell, item ) )
-{
-}
-
-absorb_buff_t::absorb_buff_t( const absorb_buff_creator_t& params )
-  : buff_t( params ),
-    absorb_school( params._absorb_school ),
-    absorb_source( params._absorb_source ),
-    absorb_gain( params._absorb_gain ),
-    high_priority( params._high_priority ),
-    eligibility( params._eligibility )
+  : buff_t( q, name, spell, item ),
+    absorb_school(SCHOOL_CHAOS),
+    absorb_source(),
+    absorb_gain(),
+    high_priority(false),
+    eligibility()
 {
   assert( player && "Absorb Buffs only supported for player!" );
 
-  if ( absorb_source )
-    absorb_source->type = STATS_ABSORB;
-
-  if ( params._absorb_school == SCHOOL_CHAOS )
-  {
-    for ( size_t i = 1, e = data().effect_count(); i <= e; i++ )
-    {
-      const spelleffect_data_t& effect = data().effectN( i );
-      if ( effect.type() != E_APPLY_AURA || effect.subtype() != A_SCHOOL_ABSORB )
-        continue;
-
-      absorb_school = dbc::get_school_type( effect.misc_value1() );
-      if ( params._default_value == DEFAULT_VALUE() )
-      {
-        if ( params.item )
-          default_value = util::round( effect.average( params.item ) );
-        else
-          default_value = effect.average( player, std::min( MAX_LEVEL, player->level() ) );
-      }
-      break;
-    }
-  }
+  set_absorb_school(absorb_school);
 }
 
 void absorb_buff_t::start( int stacks, double value, timespan_t duration )
@@ -2503,6 +2477,61 @@ double absorb_buff_t::consume( double amount )
     expire();
 
   return amount;
+}
+
+absorb_buff_t* absorb_buff_t::set_absorb_gain( gain_t* g )
+{
+  absorb_gain = g;
+  return this;
+}
+
+absorb_buff_t* absorb_buff_t::set_absorb_source( stats_t* s )
+{
+  if ( s )
+    s->type = STATS_ABSORB;
+  absorb_source = s;
+  return this;
+}
+
+absorb_buff_t* absorb_buff_t::set_absorb_school( school_e s )
+{
+  absorb_school = s;
+  if ( s == SCHOOL_CHAOS )
+  {
+    for ( size_t i = 1, e = data().effect_count(); i <= e; i++ )
+    {
+      const spelleffect_data_t& effect = data().effectN( i );
+      if ( effect.type() != E_APPLY_AURA || effect.subtype() != A_SCHOOL_ABSORB )
+        continue;
+
+      absorb_school = dbc::get_school_type( effect.misc_value1() );
+      if ( manual_chance == DEFAULT_VALUE() )
+      {
+        if ( item )
+          default_value = util::round( effect.average( item ) );
+        else
+          default_value = effect.average( player, std::min( MAX_LEVEL, player->level() ) );
+      }
+      break;
+    }
+  }
+  return this;
+}
+
+absorb_buff_t* absorb_buff_t::set_absorb_high_priority( bool hp )
+{
+  high_priority = hp;
+  // TODO: check if player absorb_priority and instant_absorb_list could be automatically
+  // populated from here somehow.
+  return this;
+}
+
+absorb_buff_t* absorb_buff_t::set_absorb_eligibility( absorb_eligibility e )
+{
+  eligibility = e;
+  // TODO: check if player absorb_priority and instant_absorb_list could be automatically
+  // populated from here somehow.
+  return this;
 }
 
 void buff_creator_basics_t::init()
@@ -2559,6 +2588,3 @@ buff_creator_t::operator buff_t* () const
 
 stat_buff_creator_t::operator stat_buff_t* () const
 { return new stat_buff_t( *this ); }
-
-absorb_buff_creator_t::operator absorb_buff_t* () const
-{ return new absorb_buff_t( *this ); }

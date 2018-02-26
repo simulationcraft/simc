@@ -293,7 +293,7 @@ void enchants::mark_of_the_thunderlord( special_effect_t& effect )
     unsigned max_extensions;
 
     mott_buff_t( const item_t* item, const std::string& name, unsigned max_ext ) :
-      stat_buff_t( stat_buff_creator_t( item -> player, name, item -> player -> find_spell( 159234 ) ) ),
+      stat_buff_t( item -> player, name, item -> player -> find_spell( 159234 ) ),
       extensions( 0 ), max_extensions( max_ext )
     { }
 
@@ -376,7 +376,7 @@ void enchants::mark_of_the_frostwolf( special_effect_t& effect )
   stat_buff_t* buff = static_cast<stat_buff_t*>( buff_t::find( effect.player, "mark_of_the_frostwolf" ) );
   if ( ! buff )
   {
-    buff = stat_buff_creator_t( effect.player, "mark_of_the_frostwolf", effect.player -> find_spell( 159676 ) );
+    buff = make_buff<stat_buff_t>( effect.player, "mark_of_the_frostwolf", effect.player -> find_spell( 159676 ) );
   }
   effect.custom_buff = buff;
 
@@ -423,12 +423,11 @@ void enchants::colossus( special_effect_t& effect )
 {
   const spell_data_t* spell = effect.item -> player-> find_spell( 116631 );
 
-  absorb_buff_t* buff =
-      absorb_buff_creator_t( effect.item -> player,
+  auto buff = make_buff<absorb_buff_t>( effect.item -> player,
                              tokenized_name( spell ) + suffix( effect.item ),
-                             spell )
-      .source( effect.item -> player -> get_stats( tokenized_name( spell ) + suffix( effect.item ) ) )
-      .activated( false );
+                             spell );
+  buff->set_absorb_source( effect.item -> player -> get_stats( tokenized_name( spell ) + suffix( effect.item ) ) )
+      ->set_activated( false );
 
   effect.custom_buff = buff;
 
@@ -442,8 +441,10 @@ void enchants::rivers_song( special_effect_t& effect )
   stat_buff_t* buff = static_cast<stat_buff_t*>( buff_t::find( effect.item -> player, tokenized_name( spell ) ) );
 
   if ( ! buff )
-    buff = stat_buff_creator_t( effect.item -> player, tokenized_name( spell ), spell )
-           .activated( false );
+  {
+    buff = make_buff<stat_buff_t>( effect.item -> player, tokenized_name( spell ), spell );
+    buff->set_activated( false );
+  }
 
   effect.custom_buff = buff;
 
@@ -460,10 +461,10 @@ void enchants::dancing_steel( special_effect_t& effect )
   stat_buff_t* buff = static_cast<stat_buff_t*>( buff_t::find( effect.item -> player, effect.name() ) );
   if ( ! buff )
   {
-    buff = stat_buff_creator_t( effect.item -> player, effect.name(), spell )
-                       .activated( false )
-                       .add_stat( STAT_STRENGTH, value, select_attr<std::greater>() )
-                       .add_stat( STAT_AGILITY,  value, select_attr<std::greater>() );
+    buff = make_buff<stat_buff_t>( effect.item -> player, effect.name(), spell );
+    buff->add_stat( STAT_STRENGTH, value, select_attr<std::greater>() )
+        ->add_stat( STAT_AGILITY,  value, select_attr<std::greater>() )
+        ->set_activated( false );
   }
 
   effect.custom_buff = buff;
@@ -495,10 +496,10 @@ void enchants::jade_spirit( special_effect_t& effect )
 
   stat_buff_t* buff = static_cast<stat_buff_t*>( buff_t::find( effect.item -> player, effect.name() ) );
   if ( ! buff )
-    buff = stat_buff_creator_t( effect.item -> player, effect.name(), spell )
-           .activated( false )
-           .add_stat( STAT_INTELLECT, int_value )
-           .add_stat( STAT_SPIRIT, spi_value, jade_spirit_check_func() );
+    buff = make_buff<stat_buff_t>( effect.item -> player, effect.name(), spell );
+    buff->add_stat( STAT_INTELLECT, int_value )
+        ->add_stat( STAT_SPIRIT, spi_value, jade_spirit_check_func() )
+        ->set_activated( false );
 
   effect.custom_buff = buff;
 
@@ -542,12 +543,12 @@ void enchants::windsong( special_effect_t& effect )
   const spell_data_t* haste = effect.item -> player -> find_spell( 104423 );
   const spell_data_t* crit = effect.item -> player -> find_spell( 104509 );
 
-  stat_buff_t* mastery_buff = stat_buff_creator_t( effect.item -> player, "windsong_mastery" + suffix( effect.item ), mastery )
-                              .activated( false );
-  stat_buff_t* haste_buff   = stat_buff_creator_t( effect.item -> player, "windsong_haste" + suffix( effect.item ), haste )
-                              .activated( false );
-  stat_buff_t* crit_buff    = stat_buff_creator_t( effect.item -> player, "windsong_crit" + suffix( effect.item ), crit )
-                              .activated( false );
+  stat_buff_t* mastery_buff = make_buff<stat_buff_t>( effect.item -> player, "windsong_mastery" + suffix( effect.item ), mastery );
+  mastery_buff->set_activated( false );
+  stat_buff_t* haste_buff   = make_buff<stat_buff_t>( effect.item -> player, "windsong_haste" + suffix( effect.item ), haste );
+  haste_buff->set_activated( false );
+  stat_buff_t* crit_buff    = make_buff<stat_buff_t>( effect.item -> player, "windsong_crit" + suffix( effect.item ), crit );
+  crit_buff->set_activated( false );
 
   //effect.name_str = tokenized_name( mastery ) + suffix( item );
 
@@ -598,8 +599,8 @@ void enchants::hurricane_spell( special_effect_t& effect )
 
   const spell_data_t* driver = effect.item -> player -> find_spell( effect.spell_id );
   const spell_data_t* spell = driver -> effectN( 1 ).trigger();
-  stat_buff_t* spell_buff = stat_buff_creator_t( effect.item -> player, "hurricane_spell", spell )
-                            .activated( false );
+  stat_buff_t* spell_buff = make_buff<stat_buff_t>( effect.item -> player, "hurricane_spell", spell );
+  spell_buff->set_activated( false );
 
   new hurricane_spell_proc_t( effect, mh_buff, oh_buff, spell_buff );
 
@@ -611,8 +612,10 @@ void enchants::executioner( special_effect_t& effect )
   stat_buff_t* buff = static_cast<stat_buff_t*>( buff_t::find( effect.item -> player, tokenized_name( spell ) ) );
 
   if ( ! buff )
-    buff = stat_buff_creator_t( effect.item -> player, tokenized_name( spell ), spell )
-           .activated( false );
+  {
+    buff = make_buff<stat_buff_t>( effect.item -> player, tokenized_name( spell ), spell );
+    buff->set_activated( false );
+  }
 
   effect.name_str = tokenized_name( spell );
   effect.ppm_ = 1.0;
@@ -678,8 +681,8 @@ struct grounded_plasma_shield_t : public engineering_effect_t
   grounded_plasma_shield_t( player_t* p ) :
     engineering_effect_t( p, "grounded_plasma_shield" )
   {
-    buff = absorb_buff_creator_t( p, "grounded_plasma_shield", p -> find_spell( 82626 ) )
-           .cd( timespan_t::zero() );
+    buff = make_buff<absorb_buff_t>( p, "grounded_plasma_shield", p -> find_spell( 82626 ) );
+    buff->set_cooldown( timespan_t::zero() );
   }
 
   void execute() override
@@ -715,25 +718,22 @@ void profession::zen_alchemist_stone( special_effect_t& effect )
     {
       const spell_data_t* spell = listener -> find_spell( 105574 );
 
-      struct common_buff_creator : public stat_buff_creator_t
+      struct common_buff_t : public stat_buff_t
       {
-        common_buff_creator( player_t* p, const std::string& n, const spell_data_t* spell, const item_t* item ) :
-          stat_buff_creator_t ( p, "zen_alchemist_stone_" + n, spell, item )
+        common_buff_t( player_t* p, const std::string& n, stat_e stat, const spell_data_t* spell, const item_t* item ) :
+          stat_buff_t ( p, "zen_alchemist_stone_" + n, spell, item )
         {
-          duration( p -> find_spell( 60229 ) -> duration() );
-          chance( 1.0 );
-          activated( false );
+          double value = spell -> effectN( 1 ).average( *item );
+          add_stat( stat, value );
+          set_duration( p -> find_spell( 60229 ) -> duration() );
+          set_chance( 1.0 );
+          set_activated( false );
         }
       };
 
-      double value = spell -> effectN( 1 ).average( *i );
-
-      buff_str = common_buff_creator( listener, "str", spell, effect.item )
-                 .add_stat( STAT_STRENGTH, value );
-      buff_agi = common_buff_creator( listener, "agi", spell, effect.item )
-                 .add_stat( STAT_AGILITY, value );
-      buff_int = common_buff_creator( listener, "int", spell, effect.item )
-                 .add_stat( STAT_INTELLECT, value );
+      buff_str = make_buff<common_buff_t>( listener, "str", STAT_STRENGTH, spell, effect.item );
+      buff_agi = make_buff<common_buff_t>( listener, "agi", STAT_AGILITY, spell, effect.item );
+      buff_int = make_buff<common_buff_t>( listener, "int", STAT_INTELLECT, spell, effect.item );
     }
 
     virtual void execute( action_t* a, action_state_t* /* state */ ) override
@@ -772,25 +772,23 @@ void profession::draenor_philosophers_stone( special_effect_t& effect )
     {
       const spell_data_t* spell = listener -> find_spell( 157136 );
 
-      struct common_buff_creator : public stat_buff_creator_t
+      struct common_buff_t : public stat_buff_t
       {
-        common_buff_creator( player_t* p, const std::string& n, const spell_data_t* spell, const item_t* item ) :
-          stat_buff_creator_t ( p, "draenor_philosophers_stone_" + n, spell, item )
+        common_buff_t( player_t* p, const std::string& n, stat_e stat, const spell_data_t* spell, const item_t* item ) :
+          stat_buff_t ( p, "draenor_philosophers_stone_" + n, spell, item )
         {
-          duration( p -> find_spell( 60229 ) -> duration() );
-          chance( 1.0 );
-          activated( false );
+          double value = spell -> effectN( 1 ).average( *item );
+          add_stat( stat, value );
+          set_duration( p -> find_spell( 60229 ) -> duration() );
+          set_chance( 1.0 );
+          set_activated( false );
         }
       };
 
-      double value = spell -> effectN( 1 ).average( *i );
 
-      buff_str = common_buff_creator( listener, "str", spell, data.item )
-                 .add_stat( STAT_STRENGTH, value );
-      buff_agi = common_buff_creator( listener, "agi", spell, data.item )
-                 .add_stat( STAT_AGILITY, value );
-      buff_int = common_buff_creator( listener, "int", spell, data.item )
-                 .add_stat( STAT_INTELLECT, value );
+      buff_str = make_buff<common_buff_t>( listener, "str", STAT_STRENGTH, spell, data.item );
+      buff_agi = make_buff<common_buff_t>( listener, "agi", STAT_AGILITY, spell, data.item );
+      buff_int = make_buff<common_buff_t>( listener, "int", STAT_INTELLECT, spell, data.item );
     }
 
     virtual void execute( action_t* a, action_state_t* /* state */ ) override
@@ -1429,11 +1427,11 @@ void item::rune_of_reorigination( special_effect_t& effect )
   std::string buff_name = spell -> name_cstr();
   util::tokenize( buff_name );
 
-  stat_buff_t* buff = stat_buff_creator_t( effect.item -> player, buff_name, spell, effect.item )
-                      .activated( false )
-                      .add_stat( STAT_CRIT_RATING, 0 )
-                      .add_stat( STAT_HASTE_RATING, 0 )
-                      .add_stat( STAT_MASTERY_RATING, 0 );
+  stat_buff_t* buff = make_buff<stat_buff_t>( effect.item -> player, buff_name, spell, effect.item );
+  buff->add_stat( STAT_CRIT_RATING, 0 )
+      ->add_stat( STAT_HASTE_RATING, 0 )
+      ->add_stat( STAT_MASTERY_RATING, 0 )
+      ->set_activated( false );
 
   effect.custom_buff  = buff;
 
@@ -1449,7 +1447,7 @@ void item::spark_of_zandalar( special_effect_t& effect )
   std::string buff_name = buff -> name_cstr();
   util::tokenize( buff_name );
 
-  stat_buff_t* b = stat_buff_creator_t( effect.item -> player, buff_name, buff, effect.item );
+  stat_buff_t* b = make_buff<stat_buff_t>( effect.item -> player, buff_name, buff, effect.item );
 
   effect.custom_buff = b;
 
@@ -1550,11 +1548,11 @@ void item::skeers_bloodsoaked_talisman( special_effect_t& effect )
   // Require a damaging result, instead of any harmful spell hit
   effect.proc_flags2_ = PF2_ALL_HIT;
 
-  stat_buff_t* b = stat_buff_creator_t( effect.item -> player, buff_name, buff, effect.item )
-                   .add_stat( STAT_CRIT_RATING, spell -> effectN( 1 ).average( effect.item ) )
-                   .tick_behavior( buff_tick_behavior::CLIP )
-                   .period( spell -> effectN( 1 ).period() )
-                   .duration( spell -> duration() );
+  stat_buff_t* b = make_buff<stat_buff_t>( effect.item -> player, buff_name, buff, effect.item );
+  b->add_stat( STAT_CRIT_RATING, spell -> effectN( 1 ).average( effect.item ) )
+      ->set_tick_behavior( buff_tick_behavior::CLIP )
+      ->set_period( spell -> effectN( 1 ).period() )
+      ->set_duration( spell -> duration() );
 
   effect.custom_buff = b;
 
@@ -1574,12 +1572,12 @@ void item::blackiron_micro_crucible( special_effect_t& effect )
   // Require a damaging result, instead of any harmful spell hit
   effect.proc_flags2_ = PF2_ALL_HIT;
 
-  stat_buff_t* b = stat_buff_creator_t( effect.item -> player, buff_name, spell, effect.item )
-                   .add_stat( STAT_MASTERY_RATING, spell -> effectN( 1 ).average( effect.item ) )
-                   .max_stack( 20 ) // Hardcoded for now - spell->max_stacks() returns 0
-                   .tick_behavior( buff_tick_behavior::CLIP )
-                   .period( spell -> effectN( 1 ).period() )
-                   .duration( spell -> duration() );
+  stat_buff_t* b = make_buff<stat_buff_t>( effect.item -> player, buff_name, spell, effect.item );
+  b->add_stat( STAT_MASTERY_RATING, spell -> effectN( 1 ).average( effect.item ) )
+      ->set_max_stack( 20 ) // Hardcoded for now - spell->max_stacks() returns 0
+      ->set_tick_behavior( buff_tick_behavior::CLIP )
+      ->set_period( spell -> effectN( 1 ).period() )
+      ->set_duration( spell -> duration() );
 
   effect.custom_buff = b;
 
@@ -1599,12 +1597,12 @@ void item::humming_blackiron_trigger( special_effect_t& effect )
   // Require a damaging result, instead of any harmful spell hit
   effect.proc_flags2_ = PF2_ALL_HIT;
 
-  stat_buff_t* b = stat_buff_creator_t( effect.item -> player, buff_name, spell, effect.item )
-                   .add_stat( STAT_CRIT_RATING, spell -> effectN( 1 ).average( effect.item ) )
-                   .max_stack( 20 ) // Hardcoded for now - spell->max_stacks() returns 0
-                   .tick_behavior( buff_tick_behavior::CLIP )
-                   .period( spell -> effectN( 1 ).period() )
-                   .duration( spell -> duration() );
+  stat_buff_t* b = make_buff<stat_buff_t>( effect.item -> player, buff_name, spell, effect.item );
+  b->add_stat( STAT_CRIT_RATING, spell -> effectN( 1 ).average( effect.item ) )
+      ->set_max_stack( 20 ) // Hardcoded for now - spell->max_stacks() returns 0
+      ->set_tick_behavior( buff_tick_behavior::CLIP )
+      ->set_period( spell -> effectN( 1 ).period() )
+      ->set_duration( spell -> duration() );
 
   effect.custom_buff = b;
 
@@ -1623,23 +1621,19 @@ void item::darkmoon_card_greatness( special_effect_t& effect )
     darkmoon_card_greatness_callback( const item_t* i, const special_effect_t& data ) :
       dbc_proc_callback_t( i -> player, data )
     {
-      struct common_buff_creator : public stat_buff_creator_t
+      struct common_buff_t : public stat_buff_t
       {
-        common_buff_creator( player_t* p, const std::string& n ) :
-          stat_buff_creator_t ( p, "greatness_" + n, p -> find_spell( 60235 ) )
-        {}
+        common_buff_t( player_t* p, const item_t* i, std::string n, stat_e stat, int id ) :
+          stat_buff_t ( p, "deathbringers_will_" + n, p -> find_spell( id ) )
+        {
+          add_stat( stat, p -> find_spell( id ) -> effectN( 1 ).average( *i ) );
+        }
       };
 
-      double value = listener -> find_spell( 60235 ) -> effectN( 1 ).average( *i );
-
-      buff_str = common_buff_creator( listener, "str" )
-                 .add_stat( STAT_STRENGTH, value );
-      buff_agi = common_buff_creator( listener, "agi" )
-                 .add_stat( STAT_AGILITY, value );
-      buff_int = common_buff_creator( listener, "int" )
-                 .add_stat( STAT_INTELLECT, value );
-      buff_spi = common_buff_creator( listener, "spi" )
-                 .add_stat( STAT_SPIRIT, value );
+      buff_str = make_buff<common_buff_t>( listener, i, "str", STAT_STRENGTH, 60235 );
+      buff_agi = make_buff<common_buff_t>( listener, i, "agi", STAT_AGILITY, 60235 );
+      buff_int = make_buff<common_buff_t>( listener, i, "int", STAT_INTELLECT, 60235 );
+      buff_spi = make_buff<common_buff_t>( listener, i, "spi", STAT_SPIRIT, 60235 );
     }
 
     virtual void execute( action_t* a, action_state_t* /* state */ ) override
@@ -1778,20 +1772,20 @@ void item::deathbringers_will( special_effect_t& effect )
     deathbringers_will_callback( const item_t* i, const special_effect_t& data ) :
       dbc_proc_callback_t( i -> player, data )
     {
-      struct common_buff_creator : public stat_buff_creator_t
+      struct common_buff_t : public stat_buff_t
       {
-        common_buff_creator( player_t* p, const item_t* i, std::string n, stat_e stat, int id ) :
-          stat_buff_creator_t ( p, "deathbringers_will_" + n, p -> find_spell( id ) )
+        common_buff_t( player_t* p, const item_t* i, std::string n, stat_e stat, int id ) :
+          stat_buff_t ( p, "deathbringers_will_" + n, p -> find_spell( id ) )
         {
           add_stat( stat, p -> find_spell( id ) -> effectN( 2 ).average( *i ) );
         }
       };
 
-      str   = common_buff_creator( listener, i, "str",   STAT_STRENGTH,     data.spell_id == 71562 ? 71561 : 71484 );
-      agi   = common_buff_creator( listener, i, "agi",   STAT_AGILITY,      data.spell_id == 71562 ? 71556 : 71485 );
-      ap    = common_buff_creator( listener, i, "ap",    STAT_ATTACK_POWER, data.spell_id == 71562 ? 71558 : 71486 );
-      crit  = common_buff_creator( listener, i, "crit",  STAT_CRIT_RATING,  data.spell_id == 71562 ? 71559 : 71491 );
-      haste = common_buff_creator( listener, i, "haste", STAT_HASTE_RATING, data.spell_id == 71562 ? 71560 : 71492 );
+      str   = make_buff<common_buff_t>( listener, i, "str",   STAT_STRENGTH,     data.spell_id == 71562 ? 71561 : 71484 );
+      agi   = make_buff<common_buff_t>( listener, i, "agi",   STAT_AGILITY,      data.spell_id == 71562 ? 71556 : 71485 );
+      ap    = make_buff<common_buff_t>( listener, i, "ap",    STAT_ATTACK_POWER, data.spell_id == 71562 ? 71558 : 71486 );
+      crit  = make_buff<common_buff_t>( listener, i, "crit",  STAT_CRIT_RATING,  data.spell_id == 71562 ? 71559 : 71491 );
+      haste = make_buff<common_buff_t>( listener, i, "haste", STAT_HASTE_RATING, data.spell_id == 71562 ? 71560 : 71492 );
 
       switch( i -> player -> type )
       {
@@ -1827,12 +1821,12 @@ void item::battering_talisman_trigger( special_effect_t& effect )
   // Require a damaging result, instead of any harmful spell hit
   effect.proc_flags2_ = PF2_ALL_HIT;
 
-  stat_buff_t* b = stat_buff_creator_t( effect.item -> player, buff_name, spell, effect.item )
-    .add_stat( STAT_HASTE_RATING, spell -> effectN( 1 ).average( effect.item ) )
-    .max_stack( stacks -> max_stacks() )
-    .tick_behavior( buff_tick_behavior::CLIP )
-    .period( spell -> effectN( 1 ).period() )
-    .duration( spell -> duration() );
+  stat_buff_t* b = make_buff<stat_buff_t>( effect.item -> player, buff_name, spell, effect.item );
+  b->add_stat( STAT_HASTE_RATING, spell -> effectN( 1 ).average( effect.item ) )
+      ->set_max_stack( stacks -> max_stacks() )
+      ->set_tick_behavior( buff_tick_behavior::CLIP )
+      ->set_period( spell -> effectN( 1 ).period() )
+      ->set_duration( spell -> duration() );
 
   effect.custom_buff = b;
 
@@ -1852,12 +1846,12 @@ void item::forgemasters_insignia( special_effect_t& effect )
   // Require a damaging result, instead of any harmful spell hit
   effect.proc_flags2_ = PF2_ALL_HIT;
 
-  stat_buff_t* b = stat_buff_creator_t( effect.item -> player, buff_name, spell, effect.item )
-                   .add_stat( STAT_MASTERY_RATING, spell -> effectN( 1 ).average( effect.item ) )
-                   .max_stack( 20 ) // Hardcoded for now - spell->max_stacks() returns 0
-                   .tick_behavior( buff_tick_behavior::CLIP )
-                   .period( spell -> effectN( 1 ).period() )
-                   .duration( spell -> duration() );
+  stat_buff_t* b = make_buff<stat_buff_t>( effect.item -> player, buff_name, spell, effect.item );
+  b->add_stat( STAT_MASTERY_RATING, spell -> effectN( 1 ).average( effect.item ) )
+      ->set_max_stack( 20 ) // Hardcoded for now - spell->max_stacks() returns 0
+      ->set_tick_behavior( buff_tick_behavior::CLIP )
+      ->set_period( spell -> effectN( 1 ).period() )
+      ->set_duration( spell -> duration() );
 
   effect.custom_buff = b;
 
@@ -1877,12 +1871,12 @@ void item::autorepairing_autoclave( special_effect_t& effect )
   // Require a damaging result, instead of any harmful spell hit
   effect.proc_flags2_ = PF2_ALL_HIT;
 
-  stat_buff_t* b = stat_buff_creator_t( effect.item -> player, buff_name, spell, effect.item )
-                   .add_stat( STAT_HASTE_RATING, spell -> effectN( 1 ).average( effect.item ) )
-                   .max_stack( 20 ) // Hardcoded for now - spell->max_stacks() returns 0
-                   .tick_behavior( buff_tick_behavior::CLIP )
-                   .period( spell -> effectN( 1 ).period() )
-                   .duration( spell -> duration() );
+  stat_buff_t* b = make_buff<stat_buff_t>( effect.item -> player, buff_name, spell, effect.item );
+  b->add_stat( STAT_HASTE_RATING, spell -> effectN( 1 ).average( effect.item ) )
+      ->set_max_stack( 20 ) // Hardcoded for now - spell->max_stacks() returns 0
+      ->set_tick_behavior( buff_tick_behavior::CLIP )
+      ->set_period( spell -> effectN( 1 ).period() )
+      ->set_duration( spell -> duration() );
 
   effect.custom_buff = b;
 
@@ -2155,7 +2149,7 @@ void item::legendary_ring( special_effect_t& effect )
 
 void item::gronntooth_war_horn( special_effect_t& effect )
 {
-  stat_buff_t* buff = stat_buff_creator_t( effect.player, "demonbane", effect.driver() -> effectN( 1 ).trigger(), effect.item );
+  stat_buff_t* buff = make_buff<stat_buff_t>( effect.player, "demonbane", effect.driver() -> effectN( 1 ).trigger(), effect.item );
   effect.custom_buff = buff;
   effect.player -> buffs.demon_damage_buff = buff;
 
@@ -2180,7 +2174,7 @@ void item::infallible_tracking_charm( special_effect_t& effect )
 
 void item::orb_of_voidsight( special_effect_t& effect )
 {
-  stat_buff_t* buff = stat_buff_creator_t( effect.player, "voidsight", effect.driver() -> effectN( 1 ).trigger(), effect.item );
+  stat_buff_t* buff = make_buff<stat_buff_t>( effect.player, "voidsight", effect.driver() -> effectN( 1 ).trigger(), effect.item );
   effect.custom_buff = buff;
   effect.player -> buffs.demon_damage_buff = buff;
 
@@ -2200,11 +2194,11 @@ void item::black_blood_of_yshaarj( special_effect_t& effect )
   std::string buff_name = buff -> name_cstr();
   util::tokenize( buff_name );
 
-  stat_buff_t* b = stat_buff_creator_t( effect.item -> player, buff_name, buff, effect.item )
-                   .add_stat( STAT_INTELLECT, ticker -> effectN( 1 ).average( effect.item ) )
-                   .tick_behavior( buff_tick_behavior::CLIP )
-                   .period( ticker -> effectN( 1 ).period() )
-                   .duration( ticker -> duration () );
+  stat_buff_t* b = make_buff<stat_buff_t>( effect.item -> player, buff_name, buff, effect.item );
+  b->add_stat( STAT_INTELLECT, ticker -> effectN( 1 ).average( effect.item ) )
+      ->set_tick_behavior( buff_tick_behavior::CLIP )
+      ->set_period( ticker -> effectN( 1 ).period() )
+      ->set_duration( ticker -> duration () );
 
   effect.custom_buff = b;
 
@@ -2952,11 +2946,12 @@ struct hammering_blows_buff_t : public stat_buff_t
   dbc_proc_callback_t* stack_driver;
 
   hammering_blows_buff_t( const special_effect_t& source_effect ) :
-    stat_buff_t( stat_buff_creator_t( source_effect.player, "hammering_blows",
-                 source_effect.trigger(), source_effect.item )
-                 .refresh_behavior( buff_refresh_behavior::DISABLED ) ),
+    stat_buff_t( source_effect.player, "hammering_blows",
+                 source_effect.trigger(), source_effect.item ),
     stack_driver( 0 )
-  { }
+  {
+    set_refresh_behavior( buff_refresh_behavior::DISABLED );
+  }
 
   void execute( int stacks, double value, timespan_t duration ) override
   {
@@ -3549,9 +3544,9 @@ void item::tyrants_decree( special_effect_t& effect )
                     .tick_behavior( buff_tick_behavior::REFRESH )
                     .tick_callback( tyrants_decree_driver_callback )
                     .quiet( true );
-  buff_t* trigger = stat_buff_creator_t( effect.player, "tyrants_immortality", effect.player -> find_spell( 184770 ) )
-                    .add_stat( STAT_STAMINA, effect.player -> find_spell( 184770 ) -> effectN( 1 ).average( effect.item ) )
-                    .duration( timespan_t::zero() ); // indefinite, this will never expire naturally so might as well save some CPU cycles
+  stat_buff_t* trigger = make_buff<stat_buff_t>( effect.player, "tyrants_immortality", effect.player -> find_spell( 184770 ) );
+  trigger->add_stat( STAT_STAMINA, effect.player -> find_spell( 184770 ) -> effectN( 1 ).average( effect.item ) )
+      ->set_duration( timespan_t::zero() ); // indefinite, this will never expire naturally so might as well save some CPU cycles
 
   // Driver is triggered in player_t::arise()
   effect.player -> buffs.tyrants_decree_driver = driver;

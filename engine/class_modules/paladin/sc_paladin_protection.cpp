@@ -872,16 +872,16 @@ void paladin_t::create_buffs_protection()
                                           .add_stat( STAT_MASTERY_RATING, talents.seraphim -> effectN( 1 ).average( this ) )
                                           .add_stat( STAT_VERSATILITY_RATING, talents.seraphim -> effectN( 1 ).average( this ) )
                                           .cd( timespan_t::zero() ); // let the ability handle the cooldown
-  buffs.bulwark_of_order               = absorb_buff_creator_t( this, "bulwark_of_order", find_spell( 209388 ) )
-                                         .source( get_stats( "bulwark_of_order" ) )
-                                         .gain( get_gain( "bulwark_of_order" ) )
-                                         .max_stack( 1 ); // not sure why data says 3 stacks
+  buffs.bulwark_of_order               = make_buff<absorb_buff_t>( this, "bulwark_of_order", find_spell( 209388 ) );
+  buffs.bulwark_of_order->set_absorb_source( get_stats( "bulwark_of_order" ) )
+    ->set_absorb_gain( get_gain( "bulwark_of_order" ) )
+    ->set_max_stack( 1 ); // not sure why data says 3 stacks
 
   // Talents
-  buffs.holy_shield_absorb     = absorb_buff_creator_t( this, "holy_shield", find_spell( 157122 ) )
-                                 .school( SCHOOL_MAGIC )
-                                 .source( get_stats( "holy_shield_absorb" ) )
-                                 .gain( get_gain( "holy_shield_absorb" ) );
+  buffs.holy_shield_absorb     = make_buff<absorb_buff_t>( this, "holy_shield", find_spell( 157122 ) );
+  buffs.holy_shield_absorb->set_absorb_school( SCHOOL_MAGIC )
+      ->set_absorb_source( get_stats( "holy_shield_absorb" ) )
+      ->set_absorb_gain( get_gain( "holy_shield_absorb" ) );
 }
 
 void paladin_t::init_spells_protection()

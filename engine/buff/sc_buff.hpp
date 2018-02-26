@@ -194,44 +194,6 @@ public:
   operator stat_buff_t* () const;
 };
 
-struct absorb_buff_creator_t : public buff_creator_helper_t<absorb_buff_creator_t>
-{
-private:
-  school_e _absorb_school;
-  stats_t* _absorb_source;
-  gain_t*  _absorb_gain;
-  bool     _high_priority; // For tank absorbs that should explicitly "go first"
-  std::function< bool( const action_state_t* ) > _eligibility; // A custom function whose result determines if the attack is eligible to be absorbed.
-  friend struct ::absorb_buff_t;
-public:
-  absorb_buff_creator_t( actor_pair_t q, const std::string& name, const spell_data_t* s = spell_data_t::nil(), const item_t* i = nullptr ) :
-    base_t( q, name, s, i ),
-    _absorb_school( SCHOOL_CHAOS ), _absorb_source( nullptr ), _absorb_gain( nullptr ), _high_priority( false )
-  { }
-
-  absorb_buff_creator_t( sim_t* sim, const std::string& name, const spell_data_t* s = spell_data_t::nil(), const item_t* i = nullptr ) :
-    base_t( sim, name, s, i ),
-    _absorb_school( SCHOOL_CHAOS ), _absorb_source( nullptr ), _absorb_gain( nullptr ), _high_priority( false )
-  { }
-
-  bufftype& source( stats_t* s )
-  { _absorb_source = s; return *this; }
-
-  bufftype& school( school_e school )
-  { _absorb_school = school; return *this; }
-
-  bufftype& gain( gain_t* g )
-  { _absorb_gain = g; return *this; }
-
-  bufftype& high_priority( bool h )
-  { _high_priority = h; return *this; }
-
-  bufftype& eligibility( std::function<bool(const action_state_t*)> e )
-  { _eligibility = e; return *this; }
-
-  operator absorb_buff_t* () const;
-};
-
 } // END NAMESPACE buff_creation
 
 using namespace buff_creation;
@@ -519,16 +481,15 @@ protected:
 
 struct absorb_buff_t : public buff_t
 {
+  using absorb_eligibility = std::function<bool(const action_state_t*)>;
   school_e absorb_school;
   stats_t* absorb_source;
   gain_t*  absorb_gain;
   bool     high_priority; // For tank absorbs that should explicitly "go first"
-  std::function< bool( const action_state_t* ) > eligibility; // A custom function whose result determines if the attack is eligible to be absorbed.
+  absorb_eligibility eligibility; // A custom function whose result determines if the attack is eligible to be absorbed.
 
   absorb_buff_t( actor_pair_t q, const std::string& name, const spell_data_t* = spell_data_t::nil(), const item_t* item = nullptr );
 protected:
-  absorb_buff_t( const absorb_buff_creator_t& params );
-  friend struct buff_creation::absorb_buff_creator_t;
 
   // Hook for derived classes to recieve notification when some of the absorb is consumed.
   // Called after the adjustment to current_value.
@@ -539,6 +500,11 @@ public:
   virtual void expire_override( int expiration_stacks, timespan_t remaining_duration ) override;
 
   virtual double consume( double amount );
+  absorb_buff_t* set_absorb_gain( gain_t* );
+  absorb_buff_t* set_absorb_source( stats_t* );
+  absorb_buff_t* set_absorb_school( school_e );
+  absorb_buff_t* set_absorb_high_priority( bool );
+  absorb_buff_t* set_absorb_eligibility( absorb_eligibility );
 };
 
 struct cost_reduction_buff_t : public buff_t

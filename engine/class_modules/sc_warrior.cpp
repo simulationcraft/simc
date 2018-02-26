@@ -4404,10 +4404,11 @@ struct battle_cry_t: public warrior_spell_t
 struct ignore_pain_buff_t: public absorb_buff_t
 {
   ignore_pain_buff_t( warrior_t* player ):
-    absorb_buff_t( absorb_buff_creator_t( player, "ignore_pain", player -> spec.ignore_pain )
-                   .source( player -> get_stats( "ignore_pain" ) )
-    .gain( player -> get_gain( "ignore_pain" ) ) )
-  {}
+    absorb_buff_t( player, "ignore_pain", player -> spec.ignore_pain )
+  {
+    set_absorb_source( player -> get_stats( "ignore_pain" ) );
+    set_absorb_gain( player -> get_gain( "ignore_pain" ) );
+  }
 
   // Custom consume implementation to allow minimum absorb amount.
   double consume( double amount ) override
