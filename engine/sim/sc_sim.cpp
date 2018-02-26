@@ -2420,7 +2420,7 @@ bool sim_t::init()
   }
   else if ( timewalk > 0 )
   {
-    if ( scale_to_itemlevel != -1 )
+    if ( scale_to_itemlevel == -1 )
     {
       switch ( timewalk )
       {
