@@ -13,9 +13,7 @@
 //
 // Elemental
 // - Add Talents
-//   - Add Master of the Elements
 //   - Add Spirit Wolf
-//   - Add Elemental Attunement
 // - Add Meteor to Primal Fire Elemental instead of Fire Nova
 // - Add Eye of the Storm to Primal Storm Elemental instead of Gale Force
 
@@ -309,6 +307,7 @@ public:
     // Elemental
     buff_t* icefury;
     buff_t* liquid_magma;
+    buff_t* master_of_the_elements;
     buff_t* stormkeeper;
     stat_buff_t* elemental_blast_crit;
     stat_buff_t* elemental_blast_haste;
@@ -468,6 +467,7 @@ public:
 
     const spell_data_t* high_voltage;
     const spell_data_t* primal_elementalist;
+    const spell_data_t* master_of_the_elements;
 
     const spell_data_t* elemental_attunement;
     const spell_data_t* stormkeeper;
@@ -1538,6 +1538,7 @@ struct shaman_spell_t : public shaman_spell_base_t<spell_t>
 public:
   bool may_proc_stormbringer = false;
   proc_t* proc_sb;
+  bool affected_by_master_of_the_elements = false;
 
   shaman_spell_t( const std::string& token, shaman_t* p, const spell_data_t* s = spell_data_t::nil(),
                   const std::string& options = std::string() )
@@ -1555,6 +1556,11 @@ public:
       base_crit += player->sets->set( SHAMAN_ELEMENTAL, T19, B2 )->effectN( 1 ).percent();
     }
 
+    if ( data().affected_by( p->find_spell( 260734 )->effectN( 1 ) ) )
+    {
+      affected_by_master_of_the_elements = true;
+    }
+
     may_proc_stormbringer = false;
   }
 
@@ -1567,11 +1573,28 @@ public:
     return base_t::init_finished();
   }
 
+  double action_multiplier() const override
+  {
+    double m = spell_t::action_multiplier();
+    // BfA Elemental talent - Master of the Elements
+    if ( affected_by_master_of_the_elements )
+    {
+      m *= 1.0 + p()->buff.master_of_the_elements->value();
+    }
+    return m;
+  }
+
   void execute() override
   {
     base_t::execute();
 
     p()->trigger_earthen_rage( execute_state );
+
+    // BfA Elemental talent - Master of the Elements
+    if ( affected_by_master_of_the_elements && !background )
+    {
+      p()->buff.master_of_the_elements->decrement();
+    }
   }
 
   void schedule_travel( action_state_t* s ) override
@@ -3936,6 +3959,7 @@ struct fire_elemental_t : public shaman_spell_t
       base_spell( player->find_spell( 188592 ) )
   {
     harmful = may_crit = false;
+
     if ( p()->talent.elemental_attunement->ok() )
       cooldown->duration += p()->talent.elemental_attunement->effectN( 1 ).time_value();
   }
@@ -3977,6 +4001,7 @@ struct storm_elemental_t : public shaman_spell_t
       summon_spell( player->find_spell( 157299 ) )
   {
     harmful = may_crit = false;
+
     if ( p()->talent.elemental_attunement->ok() )
       cooldown->duration += p()->talent.elemental_attunement->effectN( 1 ).time_value();
   }
@@ -4527,6 +4552,9 @@ struct lava_burst_t : public shaman_spell_t
   void execute() override
   {
     shaman_spell_t::execute();
+
+    if ( p()->talent.master_of_the_elements->ok() )
+      p()->buff.master_of_the_elements->trigger();
 
     // Molten Fury benefits only the main cast. Alpha 8.0.1.26032
     if ( p()->buff.lava_surge->up() )
@@ -6377,8 +6405,9 @@ void shaman_t::init_spells()
   talent.storm_elemental    = find_talent_spell( "Storm Elemental" );
   talent.liquid_magma_totem = find_talent_spell( "Liquid Magma Totem" );
 
-  talent.high_voltage        = find_talent_spell( "High Voltage" );
-  talent.primal_elementalist = find_talent_spell( "Primal Elementalist" );
+  talent.high_voltage           = find_talent_spell( "High Voltage" );
+  talent.primal_elementalist    = find_talent_spell( "Primal Elementalist" );
+  talent.master_of_the_elements = find_talent_spell( "Master of the Elements" );
 
   talent.elemental_attunement = find_talent_spell( "Elemental Attunement" );
   talent.stormkeeper          = find_talent_spell( "Stormkeeper" );
@@ -6984,6 +7013,8 @@ void shaman_t::create_buffs()
   buff.icefury = make_buff( this, "icefury", talent.icefury )
                      ->set_cooldown( timespan_t::zero() )  // Handled by the action
                      ->set_default_value( talent.icefury->effectN( 3 ).percent() );
+  buff.master_of_the_elements = make_buff( this, "master_of_the_elements", find_spell( 260734 ) )
+                                    ->set_default_value( find_spell( 260734 )->effectN( 1 ).percent() );
   // Tier
   buff.t21_2pc_elemental =
       make_buff( this, "earthen_strength", sets->set( SHAMAN_ELEMENTAL, T21, B2 )->effectN( 1 ).trigger() )
