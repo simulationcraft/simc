@@ -2047,7 +2047,7 @@ struct immolation_aura_t : public demon_hunter_spell_t
     bool initial;
 
     // TOCHECK: Direct, over time, or both?
-    immolation_aura_damage_t( demon_hunter_t* p, spell_data_t* s )
+    immolation_aura_damage_t( demon_hunter_t* p, const spell_data_t* s )
       : demon_hunter_spell_t( "immolation_aura_tick", p, s ), initial( false )
     {
       background = dual = true;
@@ -3280,7 +3280,7 @@ struct soul_cleave_t : public demon_hunter_attack_t
 {
   struct soul_cleave_damage_t : public demon_hunter_attack_t
   {
-    soul_cleave_damage_t( const std::string& n, demon_hunter_t* p, spell_data_t* s )
+    soul_cleave_damage_t( const std::string& n, demon_hunter_t* p, const spell_data_t* s )
       : demon_hunter_attack_t( n, p, s )
     {
       background = dual = true;
