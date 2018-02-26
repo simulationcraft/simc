@@ -412,7 +412,7 @@ const std::map<unsigned, std::string> _attribute_strings = {
 
 static const std::unordered_map<int, const std::string> _property_type_strings =
 {
-  {  0, "Spell Direct Damage"       },
+  {  0, "Spell Direct Amount"       },
   {  1, "Spell Duration"            },
   {  2, "Spell Generated Threat"    },
   {  3, "Spell Effect 1"            },
@@ -433,7 +433,7 @@ static const std::unordered_map<int, const std::string> _property_type_strings =
   { 19, "Spell Tick Time"           },
   { 20, "Spell Target Bonus"        },
   { 21, "Spell Global Cooldown"     },
-  { 22, "Spell Periodic Damage"     },
+  { 22, "Spell Periodic Amount"     },
   { 23, "Spell Effect 3"            },
   { 24, "Spell Power"               },
   { 26, "Spell Proc Frequency"      },
