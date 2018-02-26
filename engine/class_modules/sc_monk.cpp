@@ -231,7 +231,6 @@ public:
     buff_t* serenity;
     buff_t* touch_of_karma;
     buff_t* wind_strikes;
-    buff_t* windwalking_driver;
 
     // Legendaries
     buff_t* hidden_masters_forbidden_touch;
@@ -2121,8 +2120,8 @@ public:
         if ( windwalker_damage_increase_dot_four )
           ab::base_td_multiplier *= 1.0 + player -> spec.windwalker_monk -> effectN( 8 ).percent();
 
-        if ( ab::data().affected_by( player -> spec.stance_of_the_fierce_tiger -> effectN( 5 ) ) )
-          ab::trigger_gcd += player -> spec.stance_of_the_fierce_tiger -> effectN( 5 ).time_value(); // Saved as -500 milliseconds
+        if ( ab::data().affected_by( player -> spec.stance_of_the_fierce_tiger -> effectN( 3 ) ) )
+          ab::trigger_gcd += player -> spec.stance_of_the_fierce_tiger -> effectN( 3 ).time_value(); // Saved as -500 milliseconds
       // Technically minimum GCD is 750ms but nothing brings the GCD below 1 sec
         ab::min_gcd = timespan_t::from_seconds( 1.0 );
         // Hasted Cooldown
@@ -6433,29 +6432,6 @@ struct touch_of_karma_buff_t: public monk_buff_t < buff_t > {
     buff_t::expire_override( expiration_stacks, remaining_duration );
   }
 };
-
-struct windwalking_driver_t: public monk_buff_t < buff_t >
-{
-  double movement_increase;
-  windwalking_driver_t( monk_t& p, const std::string& n, const spell_data_t* s ):
-    monk_buff_t( p, n, s ),
-    movement_increase( 0 )
-  {
-    set_tick_callback( [&p, this]( buff_t*, int /* total_ticks */, const timespan_t& /* tick_time */ ) {
-      range::for_each( p.windwalking_aura -> target_list(), [&p, this]( player_t* target ) {
-        target -> buffs.windwalking_movement_aura -> trigger(
-            1, ( movement_increase +
-                 ( ( p.legendary.march_of_the_legion && p.level() < 120 ) ? p.legendary.march_of_the_legion -> effectN( 1 ).percent() : 0.0 ) ),
-            1, timespan_t::from_seconds( 10 ) );
-      } );
-    } );
-    cooldown -> duration = timespan_t::zero();
-    buff_duration = timespan_t::zero();
-    buff_period = timespan_t::from_seconds( 1 );
-    tick_behavior = buff_tick_behavior::CLIP;;
-    movement_increase = p.buffs.windwalking_movement_aura -> data().effectN( 1 ).percent();
-  }
-};
 }
 
 // ==========================================================================
@@ -7003,8 +6979,8 @@ void monk_t::init_spells()
 
   if ( specialization() == MONK_BREWMASTER )
     active_actions.stagger_self_damage = new actions::stagger_self_damage_t( this );
-  if ( specialization() == MONK_WINDWALKER )
-    windwalking_aura = new actions::windwalking_aura_t( this );
+//  if ( specialization() == MONK_WINDWALKER )
+//    windwalking_aura = new actions::windwalking_aura_t( this );
 }
 
 // monk_t::init_base ========================================================
@@ -7046,13 +7022,13 @@ void monk_t::init_base_stats()
     {
       if ( base.distance < 1 )
         base.distance = 5;
-      base_gcd += spec.stance_of_the_fierce_tiger -> effectN( 5 ).time_value(); // Saved as -500 milliseconds
+      base_gcd += spec.stance_of_the_fierce_tiger -> effectN( 3 ).time_value(); // Saved as -500 milliseconds
       base.attack_power_per_agility = 1.0;
       resources.base[RESOURCE_ENERGY] = 100;
       resources.base[RESOURCE_ENERGY] += talent.ascension -> effectN( 3 ).base_value();
       resources.base[RESOURCE_MANA] = 0;
       resources.base[RESOURCE_CHI] = 4;
-      resources.base[RESOURCE_CHI] += spec.stance_of_the_fierce_tiger -> effectN( 6 ).base_value();
+      resources.base[RESOURCE_CHI] += spec.stance_of_the_fierce_tiger -> effectN( 4 ).base_value();
       resources.base[RESOURCE_CHI] += talent.ascension -> effectN( 1 ).base_value();
       base_energy_regen_per_second = 10.0;
       break;
@@ -7225,8 +7201,6 @@ void monk_t::create_buffs()
   buff.touch_of_karma = new buffs::touch_of_karma_buff_t( *this, "touch_of_karma", find_spell( 125174 ) );
 
   buff.wind_strikes = make_buff( this, "wind_strikes", talent.wind_strikes -> effectN( 1 ).trigger() );
-
-  buff.windwalking_driver = new buffs::windwalking_driver_t( *this, "windwalking_aura_driver", find_spell( 166646 ) );
 
   // Legendaries
   buff.hidden_masters_forbidden_touch = new buffs::hidden_masters_forbidden_touch_t( *this, "hidden_masters_forbidden_touch", find_spell( 213114 ) );
@@ -7599,8 +7573,6 @@ double monk_t::composite_player_multiplier( school_e school ) const
 {
   double m = player_t::composite_player_multiplier( school );
 
-  m *= 1.0 + spec.stance_of_the_fierce_tiger -> effectN( 3 ).percent();
-
   if ( buff.serenity -> up() )
     m *= 1 + talent.serenity -> effectN( 2 ).percent();
 
@@ -7944,15 +7916,6 @@ void monk_t::combat_begin()
 
   if ( specialization() == MONK_WINDWALKER)
   {
-    if ( sim -> distance_targeting_enabled )
-    {
-      buff.windwalking_driver -> trigger();
-    }
-    else
-    {
-      buffs.windwalking_movement_aura -> trigger(1, buffs.windwalking_movement_aura -> data().effectN( 1 ).percent() + 
-        ( ( legendary.march_of_the_legion && level() < 120 ) ? legendary.march_of_the_legion -> effectN( 1 ).percent() : 0.0 ), 1, timespan_t::zero() );
-    }
     resources.current[RESOURCE_CHI] = 0;
 
     if ( talent.power_strikes -> ok() )
@@ -8568,7 +8531,7 @@ void monk_t::apl_combat_windwalker()
   serenity -> add_action( "call_action_list,name=cd" );
   serenity -> add_talent( this, "Serenity" );
   serenity -> add_action( this, "Rising Sun Kick", "target_if=min:debuff.mark_of_the_crane.remains,if=active_enemies<3" );
-  serenity -> add_action( this, "Strike of the Windlord" );
+  serenity -> add_action( this, "Fist of the White Tiger" );
   serenity -> add_action( this, "Blackout Kick", "target_if=min:debuff.mark_of_the_crane.remains,if=(!prev_gcd.1.blackout_kick)&(prev_gcd.1.fist_of_the_white_tiger|prev_gcd.1.fists_of_fury)&active_enemies<2" );
   serenity -> add_action( this, "Fists of Fury", "if=((equipped.drinking_horn_cover&buff.pressure_point.remains<=2&set_bonus.tier20_4pc)&(cooldown.rising_sun_kick.remains>1|active_enemies>1)),interrupt=1" );
   serenity -> add_action( this, "Fists of Fury", "if=((!equipped.drinking_horn_cover|buff.bloodlust.up|buff.serenity.remains<1)&(cooldown.rising_sun_kick.remains>1|active_enemies>1)),interrupt=1" );
@@ -8591,7 +8554,7 @@ void monk_t::apl_combat_windwalker()
   serenity_opener -> add_action( "call_action_list,name=cd,if=cooldown.fists_of_fury.remains>1" );
   serenity_opener -> add_talent( this, "Serenity", "if=cooldown.fists_of_fury.remains>1" );
   serenity_opener -> add_action( this, "Rising Sun Kick", "target_if=min:debuff.mark_of_the_crane.remains,if=active_enemies<3&buff.serenity.up" );
-  serenity_opener -> add_action( this, "Strike of the Windlord", "if=buff.serenity.up" );
+  serenity_opener -> add_action( this, "Fist of the White Tiger", "if=buff.serenity.up" );
   serenity_opener -> add_action( this, "Blackout Kick", "target_if=min:debuff.mark_of_the_crane.remains,if=(!prev_gcd.1.blackout_kick)&(prev_gcd.1.fist_of_the_white_tiger)" );
   serenity_opener -> add_action( this, "Fists of Fury", "if=cooldown.rising_sun_kick.remains>1|buff.serenity.down,interrupt=1" );
   serenity_opener -> add_action( this, "Blackout Kick", "target_if=min:debuff.mark_of_the_crane.remains,if=buff.serenity.down&chi<=2&cooldown.serenity.remains<=0&prev_gcd.1.tiger_palm" );
@@ -8613,7 +8576,7 @@ void monk_t::apl_combat_windwalker()
   aoe -> add_action( this, "Fists of Fury", "if=!talent.serenity.enabled&energy.time_to_max>2" );
   aoe -> add_action( this, "Fists of Fury", "if=cooldown.rising_sun_kick.remains>=3.5&chi<=5" );
   aoe -> add_talent( this, "Whirling Dragon Punch" );
-  aoe -> add_action( this, "Strike of the Windlord", "if=!talent.serenity.enabled|cooldown.serenity.remains>=10" );
+  aoe -> add_action( this, "Fist of the White Tiger", "if=!talent.serenity.enabled|cooldown.serenity.remains>=10" );
   aoe -> add_action( this, "Rising Sun Kick", "target_if=cooldown.whirling_dragon_punch.remains>=gcd&!prev_gcd.1.rising_sun_kick&cooldown.fists_of_fury.remains>gcd" );
   aoe -> add_talent( this, "Rushing Jade Wind", "if=chi.max-chi>1&!prev_gcd.1.rushing_jade_wind" );
   aoe -> add_talent( this, "Chi Burst", "if=chi<=3&(cooldown.rising_sun_kick.remains>=5|cooldown.whirling_dragon_punch.remains>=5)&energy.time_to_max>1" );
@@ -8643,7 +8606,7 @@ void monk_t::apl_combat_windwalker()
 
   st -> add_action( this, "Blackout Kick", "target_if=min:debuff.mark_of_the_crane.remains,if=!prev_gcd.1.blackout_kick&chi.max-chi>=1&set_bonus.tier21_4pc&buff.bok_proc.up" );
   st -> add_action( this, "Tiger Palm", "target_if=min:debuff.mark_of_the_crane.remains,if=!prev_gcd.1.tiger_palm&!prev_gcd.1.energizing_elixir&energy.time_to_max<=1&chi.max-chi>=2" );
-  st -> add_action( this, "Strike of the Windlord", "if=!talent.serenity.enabled|cooldown.serenity.remains>=10" );
+  st -> add_talent( this, "Fist of the White Tiger", "if=!talent.serenity.enabled|cooldown.serenity.remains>=10" );
   st -> add_talent( this, "Whirling Dragon Punch" );
   st -> add_action( this, "Rising Sun Kick", "target_if=min:debuff.mark_of_the_crane.remains,if=((chi>=3&energy>=40)|chi>=5)&(!talent.serenity.enabled|cooldown.serenity.remains>=6)" );
   st -> add_action( this, "Fists of Fury", "if=talent.serenity.enabled&!equipped.drinking_horn_cover&cooldown.serenity.remains>=5&energy.time_to_max>2" );
@@ -9432,12 +9395,7 @@ struct monk_module_t: public module_t
       .verification_value( -3000 );*/
   }
 
-  virtual void init( player_t* p ) const override
-  {
-    p -> buffs.windwalking_movement_aura = buff_creator_t( p, "windwalking_movement_aura",
-                                                            p -> find_spell( 166646 ) )
-      .add_invalidate( CACHE_RUN_SPEED );
-  }
+  virtual void init( player_t* p ) const override {}
   virtual void combat_begin( sim_t* ) const override {}
   virtual void combat_end( sim_t* ) const override {}
 };
