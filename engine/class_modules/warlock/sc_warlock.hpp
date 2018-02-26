@@ -1174,11 +1174,11 @@ namespace warlock
       {
       public:
         typedef warlock_buff_t base_t;
-        warlock_buff_t( warlock_td_t& p, const std::string& name, const spell_data_t* s = spell_data_t::nil() ) :
-          Base( p, name, s ) { }
+        warlock_buff_t( warlock_td_t& p, const std::string& name, const spell_data_t* s = spell_data_t::nil(), const item_t* item = nullptr ) :
+          Base( p, name, s, item ) { }
 
-        warlock_buff_t( warlock_t& p, const std::string& name, const spell_data_t* s = spell_data_t::nil() ) :
-          Base( &p, name, s ) { }
+        warlock_buff_t( warlock_t& p, const std::string& name, const spell_data_t* s = spell_data_t::nil(), const item_t* item = nullptr ) :
+          Base( &p, name, s, item ) { }
 
       protected:
         warlock_t* p()

@@ -63,6 +63,15 @@ public:
 
   demon_hunter_td_t( player_t* target, demon_hunter_t& p );
 
+  demon_hunter_t& dh()
+  {
+    return *debug_cast<demon_hunter_t*>( source );
+  }
+  const demon_hunter_t& dh() const
+  {
+    return *debug_cast<demon_hunter_t*>( source );
+  }
+
   void target_demise();
 };
 
@@ -3427,31 +3436,25 @@ namespace buffs
 template <typename BuffBase>
 struct demon_hunter_buff_t : public BuffBase
 {
-  demon_hunter_t& dh;
+  using base_t = demon_hunter_buff_t;
 
-  demon_hunter_buff_t( demon_hunter_t& p, const buff_creator_basics_t& params )
-    : BuffBase( params ), dh( p )
-  {
-  }
-
-  demon_hunter_t& p() const
-  {
-    return dh;
-  }
-
-  virtual void start( int stacks, double value, timespan_t duration ) override
-  {
-    bb::start( stacks, value, duration );
-  }
-
-  virtual void expire_override( int expiration_stacks,
-                                timespan_t remaining_duration ) override
-  {
-    bb::expire_override( expiration_stacks, remaining_duration );
-  }
+  demon_hunter_buff_t( demon_hunter_t& p, const std::string& name, const spell_data_t* s = spell_data_t::nil(), const item_t* item = nullptr )
+    : BuffBase( &p, name, s, item )
+  { }
+  demon_hunter_buff_t( demon_hunter_td_t& td, const std::string& name, const spell_data_t* s = spell_data_t::nil(), const item_t* item = nullptr )
+    : BuffBase( td, name, s, item )
+  { }
 
 protected:
-  typedef demon_hunter_buff_t base_t;
+
+  demon_hunter_t& p()
+  {
+    return *debug_cast<demon_hunter_t*>( BuffBase::source );
+  }
+  const demon_hunter_t& p() const
+  {
+    return *debug_cast<demon_hunter_t*>( BuffBase::source );
+  }
 
 private:
   typedef BuffBase bb;
@@ -3461,13 +3464,11 @@ private:
 
 struct nemesis_debuff_t : public demon_hunter_buff_t<buff_t>
 {
-  nemesis_debuff_t( demon_hunter_t* p, player_t* target )
-    : demon_hunter_buff_t<buff_t>(
-        *p, buff_creator_t( actor_pair_t( target, p ), "nemesis",
-                            p -> talent.nemesis )
-        .default_value( p -> talent.nemesis -> effectN( 1 ).percent() )
-        .cd( timespan_t::zero() ) )
+  nemesis_debuff_t( demon_hunter_td_t& td )
+    : base_t(td, "nemesis", td.dh().talent.nemesis )
   {
+    set_default_value( p().talent.nemesis -> effectN( 1 ).percent() );
+    set_cooldown( timespan_t::zero() );
   }
 
   virtual void expire_override( int expiration_stacks,
@@ -3498,10 +3499,9 @@ struct metamorphosis_buff_t : public demon_hunter_buff_t<buff_t>
   }
 
   metamorphosis_buff_t(demon_hunter_t* p)
-    : demon_hunter_buff_t<buff_t>(
-      *p, buff_creator_t(p, "metamorphosis", p->spec.metamorphosis_buff)
-      .cd(timespan_t::zero()))
+    : base_t(*p, "metamorphosis", p->spec.metamorphosis_buff)
   {
+    set_cooldown(timespan_t::zero());
     if (p->specialization() == DEMON_HUNTER_HAVOC)
     {
       default_value = p->spec.metamorphosis_buff->effectN( 6 ).percent();
@@ -3605,14 +3605,14 @@ struct demon_spikes_t : public demon_hunter_buff_t<buff_t>
   const timespan_t max_duration;
 
   demon_spikes_t(demon_hunter_t* p)
-    : demon_hunter_buff_t<buff_t>(
-      *p, buff_creator_t( p, "demon_spikes", p->find_spell( 203819 ) )
-      .default_value( p->find_spell( 203819 )->effectN( 1 ).percent() )
-      .refresh_behavior( buff_refresh_behavior::EXTEND )
-      .add_invalidate( CACHE_PARRY )
-      .add_invalidate( CACHE_ARMOR ) ),
-    max_duration( buff_duration * 3 ) // Demon Spikes can only be extended to 3x its base duration
+    : base_t(
+      *p, "demon_spikes", p->find_spell( 203819 ) ),
+      max_duration( buff_duration * 3 ) // Demon Spikes can only be extended to 3x its base duration
   {
+    set_default_value( p->find_spell( 203819 )->effectN( 1 ).percent() );
+    set_refresh_behavior( buff_refresh_behavior::EXTEND );
+    add_invalidate( CACHE_PARRY );
+    add_invalidate( CACHE_ARMOR );
     if ( p->talent.razor_spikes->ok() )
     {
       add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
@@ -3704,7 +3704,7 @@ demon_hunter_td_t::demon_hunter_td_t( player_t* target, demon_hunter_t& p )
       debuffs.dark_slash = buff_creator_t( target, "dark_slash", dark_slash )
         .default_value( dark_slash->effectN( 3 ).percent() );
     }
-    debuffs.nemesis = new buffs::nemesis_debuff_t(&p, target);
+    debuffs.nemesis = new buffs::nemesis_debuff_t(*this);
   }
   else // DEMON_HUNTER_VENGEANCE
   {
