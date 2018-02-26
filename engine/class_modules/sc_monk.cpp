@@ -6934,7 +6934,7 @@ void monk_t::init_spells()
   spec.storm_earth_and_fire_2        = find_specialization_spell( 231627 );
   spec.touch_of_karma                = find_specialization_spell( "Touch of Karma" );
   spec.touch_of_death                = find_specialization_spell( "Touch of Death" );
-  spec.windwalker_monk               = find_specialization_spell( "Windwalker Monk" );
+  spec.windwalker_monk               = find_specialization_spell( 137025 );
   spec.windwalking                   = find_specialization_spell( "Windwalking" );
 
   // Passives =========================================
