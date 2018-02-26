@@ -174,7 +174,6 @@ public:
     buff_t* vengeance_ignore_pain;
     buff_t* wrecking_ball;
     buff_t* scales_of_earth;
-    buff_t* protection_rage;
 
     buff_t* raging_thirst;
     buff_t* t20_fury_4p;
@@ -188,9 +187,12 @@ public:
     buff_t* xavarics_magnum_opus;
     haste_buff_t* sephuzs_secret;
     haste_buff_t* in_for_the_kill;
-  buff_t* war_veteran; // Arms T21 2PC
-  buff_t* weighted_blade; // Arms T21 4PC
-  buff_t* outrage; // Fury T21 4PC
+
+    buff_t* war_veteran; // Arms T21 2PC
+    buff_t* weighted_blade; // Arms T21 4PC
+    buff_t* outrage; // Fury T21 4PC
+    buff_t* protection_rage; // Protection T20 2P
+    buff_t* wall_of_iron; // Protection T21 2PC
   } buff;
 
   // Cooldowns
@@ -3572,6 +3574,16 @@ struct shield_slam_t: public warrior_attack_t
     return cc;
   }
 
+  void update_ready( timespan_t cd_duration = timespan_t::min() ) override
+  {
+    if ( p() -> buff.wall_of_iron -> up() )
+    {
+      cd_duration = timespan_t::zero();
+    }
+
+    warrior_attack_t::update_ready( cd_duration );
+  }
+
   void execute() override
   {
     warrior_attack_t::execute();
@@ -4394,7 +4406,13 @@ struct battle_cry_t: public warrior_spell_t
     p() -> buff.battle_cry -> trigger( 1, bonus_crit );
     p() -> buff.battle_cry_deadly_calm -> trigger();
     p() -> buff.corrupted_blood_of_zakajz -> trigger();
-  p() -> buff.outrage -> trigger();
+    p() -> buff.outrage -> trigger();
+
+    if ( p() -> sets -> has_set_bonus ( WARRIOR_PROTECTION, T21, B2 ) )
+    {
+      p() -> cooldown.shield_slam -> reset( false );
+      p() -> buff.wall_of_iron -> trigger();
+    }
   }
 };
 
@@ -5872,7 +5890,7 @@ void warrior_t::create_buffs()
 
   buff.war_veteran = buff_creator_t( this, "war_veteran", sets -> set( WARRIOR_ARMS, T21, B2) -> effectN( 1 ).trigger() )
     .default_value( sets -> set( WARRIOR_ARMS, T21, B2) -> effectN( 1 ).trigger() -> effectN( 1 ).percent() )
-  .chance( sets -> has_set_bonus( WARRIOR_ARMS, T21, B2) );
+    .chance( sets -> has_set_bonus( WARRIOR_ARMS, T21, B2) );
 
   buff.weighted_blade = buff_creator_t ( this, "weighted_blade", sets -> set( WARRIOR_ARMS, T21, B4) -> effectN( 1 ).trigger() )
     .default_value( sets -> set( WARRIOR_ARMS, T21, B4) -> effectN( 1 ).trigger() -> effectN( 1 ).percent() )
@@ -5883,6 +5901,10 @@ void warrior_t::create_buffs()
     .chance( sets -> has_set_bonus( WARRIOR_FURY, T21, B4) );
 
   buff.protection_rage = new protection_rage_t( *this, "protection_rage", find_spell( 242303 ) );
+
+  buff.wall_of_iron = buff_creator_t( this, "wall of iron", sets -> set( WARRIOR_PROTECTION, T21, B2 ) -> effectN( 1 ).trigger() )
+    .default_value( sets -> set( WARRIOR_PROTECTION, T21, B2 ) -> effectN( 1 ).trigger() -> effectN( 1 ).percent() )
+    .chance ( sets -> has_set_bonus( WARRIOR_PROTECTION, T21, B2 ) );
 }
 
 // warrior_t::init_scaling ==================================================
