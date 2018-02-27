@@ -861,10 +861,7 @@ struct mage_pet_spell_t : public mage_spell_base_t
   mage_pet_spell_t( const std::string& n, mage_pet_t* p, const spell_data_t* s )
     : mage_spell_base_t( n, p, s, p -> o() )
   {
-    if ( p -> o() -> bugs )
-    {
-      affected_by.erosion = false;
-    }
+      affected_by.erosion = affected_by.combustion = false;
   }
 
   mage_t* o()
