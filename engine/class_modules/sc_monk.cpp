@@ -3151,6 +3151,7 @@ struct blackout_kick_t: public monk_melee_attack_t
       case MONK_MISTWEAVER:
       {
         bok_totm_proc = new blackout_kick_totm_proc( p );
+        weapon_multiplier = 1;
         break;
       }
       case MONK_WINDWALKER:
