@@ -4,7 +4,7 @@
 #ifndef MAX_CLASS
 #define MAX_CLASS (13)
 #endif
-// Class based active abilities, wow build 26095
+// Class based active abilities, wow build 26131
 static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SIZE] = {
   {
     {
@@ -850,7 +850,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       234153, // Drain Life
       111898, // Grimoire: Felguard (Summon)
       105174, // Hand of Gul'dan
-      265339, // Imp Swarm
+      196277, // Implosion
          686, // Shadow Bolt
        30283, // Shadowfury
       196606, // Shadowy Inspiration
@@ -1203,7 +1203,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
 };
 #define TREE_SPECIALIZATION_SIZE (36)
 
-// Talent tree specialization abilities, wow build 26095
+// Talent tree specialization abilities, wow build 26131
 static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZATION_SIZE] = {
   // Specialization abilities for Hunter pets
   {
@@ -1278,6 +1278,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
       260708, // Sweeping Strikes
         7384, // Overpower
       262304, // Deep Wounds
+      231830, // Execute (Rank 2)
            0,
     },
     // Specialization abilities for Fury
@@ -1395,7 +1396,6 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
         6940, // Blessing of Sacrifice
        96231, // Rebuke
       184092, // Light of the Protector
-      157488, // Improved Block
          853, // Hammer of Justice
       213644, // Cleanse Toxins
        19750, // Flash of Light
@@ -1854,7 +1854,6 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
       193786, // Rockbiter
       193796, // Flametongue
        60103, // Lava Lash
-      195255, // Stormlash
       187874, // Crash Lightning
       190899, // Healing Surge (Rank 2)
       196834, // Frostbrand
@@ -2012,10 +2011,10 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
       231811, // Soulstone (Rank 2)
       234153, // Drain Life
        30283, // Shadowfury
-      265339, // Imp Swarm
       264178, // Soulfire
       267102, // Molten Core
       265187, // Demon Commander
+      196277, // Implosion
            0,
     },
     // Specialization abilities for Destruction
@@ -2319,7 +2318,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
 };
 #define CLASS_MASTERY_ABILITY_SIZE (1)
 
-// Class mastery abilities, wow build 26095
+// Class mastery abilities, wow build 26131
 static unsigned __class_mastery_ability_data[MAX_CLASS][MAX_SPECS_PER_CLASS][CLASS_MASTERY_ABILITY_SIZE] = {
   {
     {
@@ -2558,7 +2557,7 @@ static unsigned __class_mastery_ability_data[MAX_CLASS][MAX_SPECS_PER_CLASS][CLA
 #define MAX_RACE (31)
 #endif
 
-// Racial abilities, wow build 26095
+// Racial abilities, wow build 26131
 static unsigned __race_ability_data[MAX_RACE][MAX_CLASS][RACE_ABILITY_SIZE] = {
   {
     {     0, },
@@ -3470,7 +3469,7 @@ static unsigned __race_ability_data[MAX_RACE][MAX_CLASS][RACE_ABILITY_SIZE] = {
 };
 #define SET_BONUS_DATA_SIZE (688)
 
-// Set bonus data, wow build 26095
+// Set bonus data, wow build 26131
 static item_set_bonus_t __set_bonus_data[SET_BONUS_DATA_SIZE] = {
   // Set bonus name                              ,      OptName, EnumID, SetID, Tier, Bns, Cls, Spec,  Spell, Items
   { "Gladiator's Battlegear"                     ,        "pvp",      0,  1230,    0,   2,   1,   71, 165636, { 127055, 127081, 127092, 127103, 127114,  0 } },
@@ -4189,9 +4188,9 @@ static item_set_bonus_t __set_bonus_data[SET_BONUS_DATA_SIZE] = {
   { "Felreaper Vestments"                        ,     "tier21",     14,  1329,   21,   4,  12,  577, 251769, { 152118, 152119, 152120, 152121, 152122, 152123,  0 } },
   { "Felreaper Vestments"                        ,     "tier21",     14,  1329,   21,   4,  12,  581, 251774, { 152118, 152119, 152120, 152121, 152122, 152123,  0 } },
 };
-#define RPPMMOD_SIZE (859)
+#define RPPMMOD_SIZE (858)
 
-// 859 RPPM Modifiers, wow build level 26095
+// 858 RPPM Modifiers, wow build level 26131
 static struct rppm_modifier_t __rppmmodifier_data[] = {
   {  17495,    4,  1,  1.0000 },
   {  27656,    4,  1,  1.0000 },
@@ -4328,7 +4327,6 @@ static struct rppm_modifier_t __rppmmodifier_data[] = {
   { 191048,    4,  1,  1.0000 },
   { 192623,    4,  1,  1.0000 },
   { 193371,    4,  1,  1.0000 },
-  { 195255,    4,  1,  1.0000 },
   { 195679,    4,  2,  1.0000 },
   { 196099,    5,  1,  1.0000 },
   { 196777,    4,  1,  1.0000 },
@@ -5056,7 +5054,7 @@ static struct rppm_modifier_t __rppmmodifier_data[] = {
 };
 #define ARTIFACT_SIZE (41)
 
-// Artifact base data, wow build 26095
+// Artifact base data, wow build 26131
 static struct artifact_t __artifact_data[ARTIFACT_SIZE] = {
   {  2,  70 },
   {  3, 577 },
@@ -5103,7 +5101,7 @@ static struct artifact_t __artifact_data[ARTIFACT_SIZE] = {
 
 #define ARTIFACT_POWER_SIZE (908)
 
-// Artifact power data, wow build 26095
+// Artifact power data, wow build 26131
 static struct artifact_power_data_t __artifact_power_data[ARTIFACT_POWER_SIZE] = {
   { 1739,   0,  64,  0,   3, 250879, "Netherlight Fortification"          }, // Netherlight Fortification (id=250879, n_ranks=3)
   { 1770,   0,  64,  0,   3, 252088, "Light Speed"                        }, // Light Speed (id=252088, n_ranks=3)
@@ -6016,7 +6014,7 @@ static struct artifact_power_data_t __artifact_power_data[ARTIFACT_POWER_SIZE] =
 };
 #define ARTIFACT_POWER_RANK_SIZE (7746)
 
-// Artifact power rank data, wow build 26095
+// Artifact power rank data, wow build 26131
 static struct artifact_power_rank_t __artifact_power_rank_data[ARTIFACT_POWER_RANK_SIZE] = {
   {  2316,   40,  0, 205273,      0.000, 0x00000000, 0 },
   {  2317,   41,  0, 186941,      8.000, 0x00000000, 0 },
@@ -13767,7 +13765,7 @@ static struct artifact_power_rank_t __artifact_power_rank_data[ARTIFACT_POWER_RA
 };
 #define ARTIFACT_POWER_RANK_HOTFIX_SIZE (0)
 
-// 0 artifact_power_rank hotfix entries, wow build level 26095
+// 0 artifact_power_rank hotfix entries, wow build level 26131
 static hotfix::client_hotfix_entry_t __artifact_power_rank_hotfix_data[] = {
   {      0,  0, 0, 0 },
 };
