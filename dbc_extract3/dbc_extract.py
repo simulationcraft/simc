@@ -152,12 +152,20 @@ elif options.type == 'view':
 
     logging.debug(dbc_file)
     if id == 0:
+        replaced_ids = []
         # If cache has entries for the dbc_file, grab cache values into a database
         for record in dbc_file:
             if record.id in entries:
                 print('{}'.format(str(entries[record.id])))
+                replaced_ids.append(record.id)
             else:
                 print('{}'.format(str(record)))
+
+        for id, entry in entries.items():
+            if id in replaced_ids:
+                continue
+
+            print('{} [hotfix]'.format(entry))
     else:
         if id in entries:
             record = entries[id]
@@ -191,16 +199,25 @@ elif options.type == 'csv':
     first = True
     logging.debug(dbc_file)
     if id == None:
+        replaced_ids = []
         for record in dbc_file:
             if first:
                 print('{}'.format(record.field_names(options.delim)))
 
             if record.id in entries:
                 print('{}'.format(entries[record.id].csv(options.delim, first)))
+                replaced_ids.append(record.id)
             else:
                 print('{}'.format(record.csv(options.delim, first)))
 
             first = False
+
+        for id, entry in entries.items():
+            if id in replaced_ids:
+                continue
+
+            print('{}'.format(entry.csv(options.delim, first)))
+
     else:
         if id in entries:
             record = entries[id]
