@@ -73,7 +73,10 @@ class DBCacheIterator:
 
         self._record += 1
 
-        return self._data_class(self._parser, dbc_id, data, key_id)
+        return self._data_class(self._parser,
+                                self._wdb_parser.has_id_block() and dbc_id or -1,
+                                data,
+                                self._wdb_parser.has_key_block() and key_id or 0)
 
 class DBCache:
     def __init__(self, options):
