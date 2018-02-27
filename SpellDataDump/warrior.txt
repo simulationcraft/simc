@@ -125,14 +125,12 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .x...
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Periodic effect affected by haste (173)
 Effects          :
-#1 (id=310)      : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
-#2 (id=357783)   : School Damage (2): physical
+#1 (id=310)      : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.23213 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
-#3 (id=374148)   : Apply Aura (6) | Periodic Damage (3): physical every 2 seconds
+#2 (id=357783)   : Apply Aura (6) | Periodic Damage (3): physical every 2 seconds
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.20280 | Chain Multiplier: 1 | Mechanic: Bleed | Chain Targets: 1 | Target: Enemy (6)
-Description      : Wounds the target, causing $s2 Physical damage instantly and an additional $o3 Bleed damage over $d.
-Tooltip          : Bleeding for $w3 damage every $t3 sec.
+Description      : Wounds the target, causing $s1 Physical damage instantly and an additional $o2 Bleed damage over $d.
+Tooltip          : Bleeding for $w2 damage every $t2 sec.
 
 Name             : Cleave (id=845) [Spell Family (4)] 
 Class            : Warrior
@@ -222,11 +220,9 @@ Attributes       : ....x... ........ x....... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ .......x   ........ ........ ........ ........ 
 Effects          :
-#1 (id=462)      : Dummy (3)
-                   Base Value: 1 | Scaled Value: 1 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
-#2 (id=119511)   : School Damage (2): physical
+#1 (id=462)      : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.55614 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
-Description      : Slams an opponent, causing $s2 Physical damage.
+Description      : Slams an opponent, causing $s1 Physical damage.
 
 Name             : Whirlwind (id=1680) [Spell Family (4)] 
 Class            : Arms Warrior
@@ -249,8 +245,8 @@ Effects          :
 #3 (id=293811)   : Trigger Spell (64): Whirlwind
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 400 | Trigger Spell: 199850 | Target: Self (1)
 Description      : Unleashes a whirlwind of steel, striking $?s202316[your primary target for $<fervorDmg> Physical damage, and all other][all] enemies within $199658A1 yards for $<baseDmg> Physical damage.
-Variables        : $baseDmg=${3*$199658sw2}
-$fervorDmg=${(3*$199658sw2)*((100+$202316s1)/100)}
+Variables        : $baseDmg=${3*$199658s2}
+$fervorDmg=${(3*$199658s2)*((100+$202316s1)/100)}
 
 Name             : Hamstring (id=1715) [Spell Family (4)] 
 Class            : Arms Warrior
@@ -260,7 +256,7 @@ Spell Level      : 32
 Range            : 5 yards
 GCD              : 1.5 seconds
 Duration         : 15 seconds
-Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Hamstring Rage Reduction (22778 effect#1), Improved Hamstring (24428 effect#1), Warrior (137047 effect#2), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Colossus Smash (208086 effect#1), Sweeping Strikes (260708 effect#1), Deadly Calm (262228 effect#1)
+Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Hamstring Rage Reduction (22778 effect#1), Improved Hamstring (24428 effect#1), Warrior (137047 effect#2), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Colossus Smash (208086 effect#1), Deadly Calm (262228 effect#1)
 Attributes       : ........ ........ x.x..... ........   ...x...x .x...... ........ ........ 
                  : ........ ........ ........ ........   ...x.... ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -431,7 +427,7 @@ Resource         : 25 Rage (1) (id=12400)
 Spell Level      : 8 (max 80)
 Range            : 5 yards
 GCD              : 1.5 seconds
-Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Sudden Death (52437 effect#1), Warrior (137047 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Death Sentence (144442 effect#1), Deathdealer (200846 effect#1), Sense Death (200979 effect#1), Juggernaut (201009 effect#1), Colossus Smash (208086 effect#1), Deathblow (209481 effect#1), Precise Strikes (209493 effect#1), Shattered Defenses (209706 effect#1), Stone Heart (225947 effect#1), Execute (231827 effect#1), Shattered Defenses (248625 effect#1), Sweeping Strikes (260708 effect#1), Deadly Calm (262228 effect#1), 
+Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Sudden Death (52437 effect#1), Warrior (137047 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Death Sentence (144442 effect#1), Deathdealer (200846 effect#1), Sense Death (200979 effect#1), Juggernaut (201009 effect#1), Colossus Smash (208086 effect#1), Deathblow (209481 effect#1), Precise Strikes (209493 effect#1), Shattered Defenses (209706 effect#1), Stone Heart (225947 effect#1), Execute (231827 effect#1), Shattered Defenses (248625 effect#1), Deadly Calm (262228 effect#1), 
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ .x...... ........ ........   ........ ....x... ........ ........ 
@@ -567,7 +563,7 @@ School           : Physical
 Spell Level      : 20
 Range            : 5 yards
 GCD              : 1.5 seconds
-Duration         : 8 seconds
+Duration         : 15 seconds
 Charges          : 1 (12 seconds cooldown)
 Category         : 1680
 Stacks           : 2 maximum
@@ -583,16 +579,14 @@ Attributes       : ....x... ........ x.x..x.. ........   ........ .x...... .....
                  : ........ ........ ........ .......x   ........ ........ ........ ........ 
                  : Cannot dodge/parry/block (21)
 Effects          :
-#1 (id=2780)     : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
-#2 (id=126946)   : School Damage (2): physical
+#1 (id=2780)     : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.38688 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
-#3 (id=164582)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+#2 (id=126946)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
                    Affected Spells: Mortal Strike (12294)
-Description      : Overpower the enemy, critically striking them for ${$s2*2} Physical damage. Cannot be blocked, dodged, or parried.
+Description      : Overpower the enemy, critically striking them for ${$s1*2} Physical damage. Cannot be blocked, dodged, or parried.
 
-Increases the damage of your next Mortal Strike by $s3%, stacking up to $u times.
+Increases the damage of your next Mortal Strike by $s2%, stacking up to $u times.
 Tooltip          : Your next Mortal Strike will deal $w3% increased damage.
 
 Name             : Warbringer (id=7922) [Spell Family (4)] 
@@ -645,7 +639,7 @@ Spell Level      : 10
 Range            : 5 yards
 GCD              : 1.5 seconds
 Cooldown         : 6 seconds
-Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Overpower (7384 effect#3), Warrior (137047 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Item - Warrior T17 Arms 4P Bonus (165336 effect#1), Vicious Strike (165638 effect#1), Archavon's Heavy Hand (205144 effect#1), Colossus Smash (208086 effect#1), Thoradin's Might (209480 effect#1), Precise Strikes (209493 effect#1), Shattered Defenses (209706 effect#1), Executioner's Precision (242188 effect#1), Shattered Defenses (248625 effect#1), Sweeping Strikes (260708 effect#1), Executioner's Precision (262128 effect#1), Deadly Calm (262228 effect#1)
+Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Overpower (7384 effect#2), Warrior (137047 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Item - Warrior T17 Arms 4P Bonus (165336 effect#1), Vicious Strike (165638 effect#1), Archavon's Heavy Hand (205144 effect#1), Colossus Smash (208086 effect#1), Thoradin's Might (209480 effect#1), Precise Strikes (209493 effect#1), Shattered Defenses (209706 effect#1), Executioner's Precision (242188 effect#1), Shattered Defenses (248625 effect#1), Sweeping Strikes (260708 effect#1), Deadly Calm (262228 effect#1)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ..xx.... 
                  : ........ ....x... ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ....x... ........ ........ 
@@ -655,11 +649,9 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
 Effects          :
 #1 (id=5274)     : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
-#2 (id=5275)     : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
-#3 (id=99581)    : School Damage (2): physical
+#2 (id=5275)     : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.87048 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
-Description      : A vicious strike that deals $s3 Physical damage and reduces the effectiveness of healing on the target by $115804s1% for $115804d.
+Description      : A vicious strike that deals $s2 Physical damage and reduces the effectiveness of healing on the target by $115804s1% for $115804d.
 Variables        : $mult=${($max(0,$min($pl-5,15))*8+207)/327}
 
 Name             : Piercing Howl (id=12323) [Spell Family (4)] 
@@ -2326,17 +2318,17 @@ Effects          :
 #6 (id=260729)   : Apply Aura (6) | Hasted Cooldown Duration (Category) (457)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 971 | Target: Self (1)
                    Affected Spells (Category): Bloodthirst (23881)
-#7 (id=260730)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
+#7 (id=260730)   : Apply Aura (6) | Modify Block% (51)
+                   Base Value: 7 | Scaled Value: 7 | Misc Value: 11 | Target: Self (1)
+#8 (id=260731)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 249 (Label) | Target: Self (1)
                    Affected Spells (Label): Orb of Destruction (229700), Void Tendril (250834)
-#8 (id=260731)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
+#9 (id=260732)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 298 (Label) | Target: Self (1)
                    Affected Spells (Label): Cleansing Matrix (242619), Fruitful Machinations (242623), Guiding Hand (242622), Infusion of Light (242621), Felshield (253277), Tarratus Keystone (253282), Refreshing Agony (253284), L'ura's Word (250781), Tarratus Keystone (255924), Refreshing Agony (255981), Highfather's Timekeeping (253288), Felshield (253278), Highfather's Timekeeping (255932), Emerald Blossom (257442), Verdant Embrace (257444)
-#9 (id=260732)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
+#10 (id=260733)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 300 (Label) | Target: Self (1)
                    Affected Spells (Label): Insidious Corruption (243941), Spectral Bolt (242571), Spectral Blast (246442), Legion Bombardment (253248), Prototype Personnel Decimator (255629), Legion Bombardment (255713), Legion Bombardment (255724), Legion Bombardment (257376)
-#10 (id=260733)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #11 (id=260734)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #12 (id=260735)   : Apply Aura (6) | Dummy (4)
@@ -2356,6 +2348,8 @@ Effects          :
 #19 (id=320058)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #20 (id=320059)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+#21 (id=716211)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 
 Name             : Protection Warrior (id=137048) [Spell Family (4), Passive, Hidden] 
@@ -2400,29 +2394,27 @@ Effects          :
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 2 | Target: Self (1)
                    Affected Spells: Victory Rush (118779)
 #13 (id=261034)   : Apply Aura (6) | Modify Block% (51)
-                   Base Value: 15 | Scaled Value: 15 | Misc Value: 11 | Target: Self (1)
-#14 (id=261035)   : Apply Aura (6) | Modify Block Effectiveness (150)
-                   Base Value: 5 | Scaled Value: 5 | Target: Self (1)
-#15 (id=261036)   : Apply Aura (6) | Unknown(463)
+                   Base Value: 8 | Scaled Value: 8 | Misc Value: 11 | Target: Self (1)
+#14 (id=261035)   : Apply Aura (6) | Unknown(463)
                    Base Value: 100 | Scaled Value: 100 | Target: Self (1)
-#16 (id=362031)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Periodic Amount (22)
+#15 (id=261036)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Periodic Amount (22)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 22 | Misc Value 2: 248 (Label) | Target: Self (1)
                    Affected Spells (Label): Fel-Crazed Rage (225777), Colossal Slam (232044), Dread Torrent (246464), Ceaseless Toxin (242497), Umbral Glaive Storm (242556), Shattering Umbral Glaives (242557), Infernal Cinders (242218), Shadow Strike (253324), Worldforger's Flame (257244), Gorshalach's Legacy (255673), Gorshalach's Legacy (253329)
-#17 (id=368363)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
+#16 (id=362031)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 289 (Label) | Target: Self (1)
                    Affected Spells (Label): Rethu's Incessant Courage (242597)
-#18 (id=474888)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
+#17 (id=368363)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 333 (Label) | Target: Self (1)
                    Affected Spells (Label): Void Slash (251034), Isolated Strike (255609), Fire Mines (253321), Ravaging Storm (257286), Golganneth's Thunderous Wrath (257430)
-#19 (id=477129)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
+#18 (id=474888)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -40 | Scaled Value: -40 | Misc Value: 3 | Misc Value 2: 276 (Label) | Target: Self (1)
                    Affected Spells (Label): Xavaric's Magnum Opus (207472)
-#20 (id=485707)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
+#19 (id=477129)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 248 (Label) | Target: Self (1)
                    Affected Spells (Label): Fel-Crazed Rage (225777), Colossal Slam (232044), Dread Torrent (246464), Ceaseless Toxin (242497), Umbral Glaive Storm (242556), Shattering Umbral Glaives (242557), Infernal Cinders (242218), Shadow Strike (253324), Worldforger's Flame (257244), Gorshalach's Legacy (255673), Gorshalach's Legacy (253329)
-#21 (id=485710)   : Apply Aura (6) | Dummy (4)
+#20 (id=485707)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-#22 (id=714538)   : Apply Aura (6) | Dummy (4)
+#21 (id=485710)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 
 Name             : Arms Warrior (id=137049) [Spell Family (4), Passive, Hidden] 
@@ -2787,7 +2779,7 @@ Effects          :
                    Base Value: 30 | Scaled Value: 30 | Target: Enemy (6)
 Description      : Attempts to finish off a foe, causing up to $<damage> Physical damage based on Rage spent. Only usable on enemies that have less than 20% health.$?s231830[
 
-If your foe survives, they take $262128s1% more damage from your next Mortal Strike. Stacks up to $262128u times.][]
+If your foe survives, $s2% of the Rage spent is refunded.][]
 Variables        : $damage=${2.0*$260798sw2}
 
 Name             : Execute Off-Hand (id=163558) [Spell Family (4)] 
@@ -2825,9 +2817,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=236210)   : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
-#2 (id=236211)   : School Damage (2): physical
+#1 (id=236210)   : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.01556 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
 Description      : Smashes the enemy's armor, dealing $s1 Physical damage, and increasing damage you deal to them by $208086s1% for $208086d.
 
@@ -3534,7 +3524,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=298254)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 200 | Scaled Value: 200 | Misc Value: 11 | Target: Self (1)
+                   Base Value: 145 | Scaled Value: 145 | Misc Value: 11 | Target: Self (1)
 Description      : Whirlwind deals $s1% increased damage to your primary target. 
 
 Name             : Frenzy (id=202539) [Spell Family (4)] 
@@ -4062,7 +4052,7 @@ Spell Level      : 1
 Range            : 50000 yards
 Duration         : 10 seconds
 Proc Chance      : 101%
-Affecting spells : Recklessness (1719 effect#4), Mastery: Colossal Might (76838 effect#1), Focus in Battle (209554 effect#1), Sweeping Strikes (260708 effect#1), Deadly Calm (262228 effect#1)
+Affecting spells : Recklessness (1719 effect#4), Mastery: Colossal Might (76838 effect#1), Focus in Battle (209554 effect#1), Deadly Calm (262228 effect#1)
 Attributes       : ....x... ........ x.x..x.. ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   .......x ..x..... x.x..... ......x. 
                  : x....... ........ ........ ........   ........ ........ ........ ...x.... 
@@ -4810,13 +4800,10 @@ Effects          :
                    Affected Spells: Execute (5308), Execute (163201), Execute Off-Hand (163558), Execute (260798)
 Description      : Execute's damage is increased by $s1%.
 
-Name             : Executioner's Precision (Rank 2) (id=231830) [Spell Family (4), Passive] 
-Class            : Warrior
+Name             : Execute (Rank 2) (id=231830) [Spell Family (4), Passive] 
+Class            : Arms Warrior
 School           : Physical
 Spell Level      : 28
-Proc Chance      : 100%
-Proc Flags       : ....x... ........ ........ ........ 
-                 : Yellow Melee
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4825,9 +4812,9 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6)
 Effects          :
-#1 (id=349749)   : Apply Aura (6) | Proc Trigger Spell (42): Executioner's Precision
-                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 262128 | Target: Self (1)
-Description      : Execute causes the target to take $262128s1% more damage from your next Mortal Strike, stacking up to $262128u times.
+#1 (id=349749)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+Description      : If your foe survives your Execute, $163201s2% of the Rage spent is refunded.
 
 Name             : Shield Slam (Rank 2) (id=231834) [Spell Family (4), Passive] 
 Class            : Protection Warrior
@@ -5252,13 +5239,11 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
 Effects          :
 #1 (id=485944)   : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.67704 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
-#2 (id=485945)   : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
-#3 (id=485946)   : Energize Power (30)
+#2 (id=485945)   : Energize Power (30)
                    Base Value: 300 | Scaled Value: 300 | Misc Value: rage | Target: Self (1)
 Description      : Bash an enemy's skull, dealing $s1 Physical damage.
 
-|cFFFFFFFFGenerates ${$s3/10} Rage.|r
+|cFFFFFFFFGenerates ${$s2/10} Rage.|r
 
 Name             : Sweeping Strikes (id=260708) [Spell Family (4)] 
 Class            : Arms Warrior
@@ -5275,7 +5260,7 @@ Attributes       : ....x... ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=486061)   : Apply Aura (6) | Add Flat Modifier (107): Spell Targets (17)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 17 | Target: Self (1)
-                   Affected Spells: Rend (772), Slam (1464), Hamstring (1715), Execute (5308), Overpower (7384), Mortal Strike (12294), Improved Hamstring (24428), Colossus Smash (167105), Colossus Smash (208086), Skullsplitter (260643), Execute (260798)
+                   Affected Spells: Rend (772), Slam (1464), Overpower (7384), Mortal Strike (12294), Colossus Smash (167105), Skullsplitter (260643), Execute (260798)
 #2 (id=486062)   : Apply Aura (6) | Dummy (4)
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 17 | Target: Self (1)
                    Affected Spells: Mortal Strike (12294)
@@ -5367,29 +5352,6 @@ Effects          :
 Description      : $@spelldesc262111
 Tooltip          : Bleeding for $w1 every $t1 sec.
 
-Name             : Executioner's Precision (id=262128) [Spell Family (4)] 
-Class            : Warrior
-School           : Physical
-Range            : 100 yards
-Duration         : 12 seconds
-Stacks           : 2 maximum
-Proc Chance      : 100%
-Proc Flags       : .....x.. ........ ........ ........ 
-                 : Yellow Melee Taken
-Triggered by     : Executioner's Precision (231830)
-Attributes       : ........ ........ ........ ..x.....   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   .......x ........ ........ ..x...x. 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=623145)   : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271)
-                   Base Value: 25 | Scaled Value: 25 | Target: Enemy (6)
-                   Affected Spells: Mortal Strike (12294)
-Description      : $@spelldesc163201
-Tooltip          : Damage from the Warrior's next Mortal Strike increased by $w1%.
-
 Name             : Mortal Combo (id=262144) [Spell Family (4)] 
 Class            : Warrior
 School           : Physical
@@ -5446,9 +5408,7 @@ Attributes       : ....x... ........ ..x..... ........   ........ .x...... .....
                  : Requires line of sight (186)
 Effects          :
 #1 (id=623203)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.20900 | Radius: 0 - 8 yards | Target: At Caster (22) -> AOE enemy (15)
-#2 (id=623204)   : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0 | Radius: 0 - 8 yards | Target: At Caster (22) -> AOE enemy (15)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.01556 | Radius: 0 - 8 yards | Target: At Caster (22) -> AOE enemy (15)
 Description      : Smash the ground and shatter the armor of all enemies within $A1 yds, dealing $s1 Physical damage and increasing damage you deal to them by $208086s1% for $208086d.
 
 Name             : Deadly Calm (id=262228) [Spell Family (4)] 
@@ -5530,19 +5490,22 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 262115 | Target: Self (1)
 Description      : Mortal Strike, Execute, and Bladestorm inflict Deep Wounds, causing $262115o1 Bleed damage over $262115d.
 
-Name             : Coming Soon (id=264186) [Spell Family (4), Passive, Hidden] 
+Name             : Collateral Damage (id=268243) [Spell Family (4), Passive, Hidden] 
 Class            : Warrior
 School           : Physical
-Attributes       : ......xx x....... ........ ........   ........ ........ ........ ........ 
+Proc Chance      : 100%
+Proc Flags       : ....x... ........ ........ ........ 
+                 : Yellow Melee
+Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ .......x ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6), Hidden (7)
 Effects          :
-#1 (id=707430)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-Description      : Despite all our rage, this talent's just NYI on the page.
+#1 (id=715448)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 30 | Scaled Value: 30 | Target: Self (1)
+Description      : When your abilities damage a second target due to Sweeping Strikes, they refund $s1% of their Rage cost.
 
 

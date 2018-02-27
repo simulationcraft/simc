@@ -772,7 +772,7 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5 | Target: Enemy (6)
 #5 (id=331354)   : Dummy (3)
                    Base Value: 10 | Scaled Value: 10 | Target: Enemy (6)
-Description      : Focuses dark power into a strike$?s49143[ with both weapons, that deals a total of ${$s1+$66188sw1}][ that deals $s1] Physical damage and heals you for $s3% of all damage taken in the last $s4 sec, minimum $m5% of maximum health.
+Description      : Focuses dark power into a strike$?s49143[ with both weapons, that deals a total of ${$s2+$66188s2}][ that deals $s1] Physical damage and heals you for $s3% of all damage taken in the last $s4 sec, minimum $m5% of maximum health.
 
 Name             : Razorice (id=50401) [Spell Family (15)] 
 Class            : Death Knight
