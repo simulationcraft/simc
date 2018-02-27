@@ -541,14 +541,14 @@ Attributes       : ........ ........ x....... .....x..   ........ ..x....x .....
                  : .....x.. ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ....x...   ........ ........ ........ ........ 
 Effects          :
-#1 (id=10779)    : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Damage (0)
+#1 (id=10779)    : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 25 | Scaled Value: 25 | Target: Self (1)
                    Affected Spells: Multi-Shot (2643), Aimed Shot (19434), Kill Command (34026), Barrage (120361), A Murder of Crows (131900), Steel Trap (162487), Chimaera Shot (171454), Chimaera Shot (171457), Quick Shot (185358), Raptor Strike (186270), Bursting Shot (186387), Cobra Shot (193455), Piercing Shot (198670), Stomp (199530), Stampede (201594), Fury of the Eagle (203413), Talon Strike (203525), On the Trail (204081), Butchery (212436), Explosive Shot (212680), Sidewinders (214581), Echo of Ohn'ara (242798), Rapid Fire (257044), Rapid Fire (257045), Multi-Shot (257620), Flanking Strike (259278), Mongoose Bite (259387), Chakrams (259396), Chakrams (259398), Kill Command (259489), Serpent Sting (259491), Wildfire Bomb (259496), Scorching Wildfire (259587), Rapid Fire (263585), Wildfire Bomb (265157), Raptor Strike (265189)
 #2 (id=10780)    : Trigger Spell (64): Bestial Wrath
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 186254
 #3 (id=342782)   : Dummy (3)
                    Base Value: 12 | Scaled Value: 12 | Target: Self (1)
-#4 (id=479792)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Damage (22)
+#4 (id=479792)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 25 | Scaled Value: 25 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Multi-Shot (2643), Aimed Shot (19434), Kill Command (34026), Barrage (120361), A Murder of Crows (131900), Steel Trap (162487), Chimaera Shot (171454), Chimaera Shot (171457), Quick Shot (185358), Raptor Strike (186270), Bursting Shot (186387), Cobra Shot (193455), Piercing Shot (198670), Stomp (199530), Stampede (201594), Fury of the Eagle (203413), Talon Strike (203525), On the Trail (204081), Butchery (212436), Explosive Shot (212680), Sidewinders (214581), Echo of Ohn'ara (242798), Rapid Fire (257044), Rapid Fire (257045), Multi-Shot (257620), Flanking Strike (259278), Mongoose Bite (259387), Chakrams (259396), Chakrams (259398), Kill Command (259489), Serpent Sting (259491), Wildfire Bomb (259496), Scorching Wildfire (259587), Rapid Fire (263585), Wildfire Bomb (265157), Raptor Strike (265189)
 Description      : Sends you and your pet into a rage, increasing all damage you both deal by $s1% for $d. $?s231548&s217200[
@@ -1706,7 +1706,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.25000 | Target: Self (1)
 #2 (id=90635)    : Apply Aura (6) | Dummy (4)
                    Base Value: 225 | Scaled Value: 225 | Target: Self (1)
-#3 (id=171318)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Damage (0)
+#3 (id=171318)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.25000 | Target: Self (1)
                    Affected Spells: A Murder of Crows (131894), A Murder of Crows (131900), Stampede (201594)
 Description      : Increases the damage done by your pets by ${$s1}.1%.
@@ -2477,7 +2477,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6)
 Effects          :
-#1 (id=167609)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Damage (0)
+#1 (id=167609)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 100 | Scaled Value: 100 | Target: Self (1)
                    Affected Spells: Claw (16827), Bite (17253), Smack (49966), Talon Slash (242735)
 #2 (id=191547)   : Dummy (3)
@@ -2671,27 +2671,27 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6), Hidden (7)
 Effects          :
-#1 (id=179698)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Damage (0)
+#1 (id=179698)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 6 | Scaled Value: 6 | Target: Self (1)
                    Affected Spells: Multi-Shot (2643), Aimed Shot (19434), Kill Command (34026), Barrage (120361), A Murder of Crows (131900), Steel Trap (162487), Chimaera Shot (171454), Chimaera Shot (171457), Quick Shot (185358), Raptor Strike (186270), Bursting Shot (186387), Cobra Shot (193455), Piercing Shot (198670), Stomp (199530), Stampede (201594), Fury of the Eagle (203413), Talon Strike (203525), On the Trail (204081), Butchery (212436), Explosive Shot (212680), Sidewinders (214581), Echo of Ohn'ara (242798), Rapid Fire (257044), Rapid Fire (257045), Multi-Shot (257620), Flanking Strike (259278), Mongoose Bite (259387), Chakrams (259396), Chakrams (259398), Kill Command (259489), Serpent Sting (259491), Wildfire Bomb (259496), Scorching Wildfire (259587), Rapid Fire (263585), Wildfire Bomb (265157), Raptor Strike (265189)
-#2 (id=191138)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Damage (22)
+#2 (id=191138)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 6 | Scaled Value: 6 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Multi-Shot (2643), Aimed Shot (19434), Kill Command (34026), Barrage (120361), A Murder of Crows (131900), Steel Trap (162487), Chimaera Shot (171454), Chimaera Shot (171457), Quick Shot (185358), Raptor Strike (186270), Bursting Shot (186387), Cobra Shot (193455), Piercing Shot (198670), Stomp (199530), Stampede (201594), Fury of the Eagle (203413), Talon Strike (203525), On the Trail (204081), Butchery (212436), Explosive Shot (212680), Sidewinders (214581), Echo of Ohn'ara (242798), Rapid Fire (257044), Rapid Fire (257045), Multi-Shot (257620), Flanking Strike (259278), Mongoose Bite (259387), Chakrams (259396), Chakrams (259398), Kill Command (259489), Serpent Sting (259491), Wildfire Bomb (259496), Scorching Wildfire (259587), Rapid Fire (263585), Wildfire Bomb (265157), Raptor Strike (265189)
 #3 (id=191139)   : Apply Aura (6) | Modify Pet Damage Done% (429)
                    Base Value: 6 | Scaled Value: 6 | Target: Self (1)
                    Affected Spells: Bestial Wrath (19574), Bestial Wrath (186254)
-#4 (id=191140)   : Apply Aura (6) | Add Flat Modifier (107): Spell Direct Damage (0)
+#4 (id=191140)   : Apply Aura (6) | Add Flat Modifier (107): Spell Direct Amount (0)
                    Base Value: -45 | Scaled Value: -45 | Target: Self (1)
                    Affected Spells: A Murder of Crows (131894), A Murder of Crows (131900)
-#5 (id=191141)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Damage (0)
+#5 (id=191141)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 100 | Scaled Value: 100 | Target: Self (1)
                    Affected Spells: Barrage (120361)
-#6 (id=260897)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Damage (0)
+#6 (id=260897)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 50 | Scaled Value: 50 | Target: Self (1)
 #7 (id=260898)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 248 (Label) | Target: Self (1)
                    Affected Spells (Label): Fel-Crazed Rage (225777), Colossal Slam (232044), Dread Torrent (246464), Ceaseless Toxin (242497), Umbral Glaive Storm (242556), Shattering Umbral Glaives (242557), Infernal Cinders (242218), Shadow Strike (253324), Worldforger's Flame (257244), Gorshalach's Legacy (255673), Gorshalach's Legacy (253329)
-#8 (id=260899)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Periodic Damage (22)
+#8 (id=260899)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Periodic Amount (22)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 22 | Misc Value 2: 248 (Label) | Target: Self (1)
                    Affected Spells (Label): Fel-Crazed Rage (225777), Colossal Slam (232044), Dread Torrent (246464), Ceaseless Toxin (242497), Umbral Glaive Storm (242556), Shattering Umbral Glaives (242557), Infernal Cinders (242218), Shadow Strike (253324), Worldforger's Flame (257244), Gorshalach's Legacy (255673), Gorshalach's Legacy (253329)
 #9 (id=260900)   : Apply Aura (6) | Dummy (4)
@@ -2715,10 +2715,10 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6), Hidden (7)
 Effects          :
-#1 (id=179699)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Damage (0)
+#1 (id=179699)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 12 | Scaled Value: 12 | Target: Self (1)
                    Affected Spells: Multi-Shot (2643), Aimed Shot (19434), Kill Command (34026), Barrage (120361), A Murder of Crows (131900), Steel Trap (162487), Chimaera Shot (171454), Chimaera Shot (171457), Quick Shot (185358), Raptor Strike (186270), Bursting Shot (186387), Cobra Shot (193455), Piercing Shot (198670), Stomp (199530), Stampede (201594), Fury of the Eagle (203413), Talon Strike (203525), On the Trail (204081), Butchery (212436), Explosive Shot (212680), Sidewinders (214581), Echo of Ohn'ara (242798), Rapid Fire (257044), Rapid Fire (257045), Multi-Shot (257620), Flanking Strike (259278), Mongoose Bite (259387), Chakrams (259396), Chakrams (259398), Kill Command (259489), Serpent Sting (259491), Wildfire Bomb (259496), Scorching Wildfire (259587), Rapid Fire (263585), Wildfire Bomb (265157), Raptor Strike (265189)
-#2 (id=191134)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Damage (22)
+#2 (id=191134)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 12 | Scaled Value: 12 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Multi-Shot (2643), Aimed Shot (19434), Kill Command (34026), Barrage (120361), A Murder of Crows (131900), Steel Trap (162487), Chimaera Shot (171454), Chimaera Shot (171457), Quick Shot (185358), Raptor Strike (186270), Bursting Shot (186387), Cobra Shot (193455), Piercing Shot (198670), Stomp (199530), Stampede (201594), Fury of the Eagle (203413), Talon Strike (203525), On the Trail (204081), Butchery (212436), Explosive Shot (212680), Sidewinders (214581), Echo of Ohn'ara (242798), Rapid Fire (257044), Rapid Fire (257045), Multi-Shot (257620), Flanking Strike (259278), Mongoose Bite (259387), Chakrams (259396), Chakrams (259398), Kill Command (259489), Serpent Sting (259491), Wildfire Bomb (259496), Scorching Wildfire (259587), Rapid Fire (263585), Wildfire Bomb (265157), Raptor Strike (265189)
 #3 (id=191135)   : Apply Aura (6) | Modify Pet Damage Done% (429)
@@ -2730,7 +2730,7 @@ Effects          :
 #5 (id=191137)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 248 (Label) | Target: Self (1)
                    Affected Spells (Label): Fel-Crazed Rage (225777), Colossal Slam (232044), Dread Torrent (246464), Ceaseless Toxin (242497), Umbral Glaive Storm (242556), Shattering Umbral Glaives (242557), Infernal Cinders (242218), Shadow Strike (253324), Worldforger's Flame (257244), Gorshalach's Legacy (255673), Gorshalach's Legacy (253329)
-#6 (id=260887)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Periodic Damage (22)
+#6 (id=260887)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Periodic Amount (22)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 22 | Misc Value 2: 248 (Label) | Target: Self (1)
                    Affected Spells (Label): Fel-Crazed Rage (225777), Colossal Slam (232044), Dread Torrent (246464), Ceaseless Toxin (242497), Umbral Glaive Storm (242556), Shattering Umbral Glaives (242557), Infernal Cinders (242218), Shadow Strike (253324), Worldforger's Flame (257244), Gorshalach's Legacy (255673), Gorshalach's Legacy (253329)
 #7 (id=260888)   : Apply Aura (6) | Modify Power Regen (110)
@@ -2767,10 +2767,10 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6), Hidden (7)
 Effects          :
-#1 (id=179700)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Damage (0)
+#1 (id=179700)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
                    Affected Spells: Multi-Shot (2643), Aimed Shot (19434), Kill Command (34026), Barrage (120361), A Murder of Crows (131900), Steel Trap (162487), Chimaera Shot (171454), Chimaera Shot (171457), Quick Shot (185358), Raptor Strike (186270), Bursting Shot (186387), Cobra Shot (193455), Piercing Shot (198670), Stomp (199530), Stampede (201594), Fury of the Eagle (203413), Talon Strike (203525), On the Trail (204081), Butchery (212436), Explosive Shot (212680), Sidewinders (214581), Echo of Ohn'ara (242798), Rapid Fire (257044), Rapid Fire (257045), Multi-Shot (257620), Flanking Strike (259278), Mongoose Bite (259387), Chakrams (259396), Chakrams (259398), Kill Command (259489), Serpent Sting (259491), Wildfire Bomb (259496), Scorching Wildfire (259587), Rapid Fire (263585), Wildfire Bomb (265157), Raptor Strike (265189)
-#2 (id=191130)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Damage (22)
+#2 (id=191130)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Multi-Shot (2643), Aimed Shot (19434), Kill Command (34026), Barrage (120361), A Murder of Crows (131900), Steel Trap (162487), Chimaera Shot (171454), Chimaera Shot (171457), Quick Shot (185358), Raptor Strike (186270), Bursting Shot (186387), Cobra Shot (193455), Piercing Shot (198670), Stomp (199530), Stampede (201594), Fury of the Eagle (203413), Talon Strike (203525), On the Trail (204081), Butchery (212436), Explosive Shot (212680), Sidewinders (214581), Echo of Ohn'ara (242798), Rapid Fire (257044), Rapid Fire (257045), Multi-Shot (257620), Flanking Strike (259278), Mongoose Bite (259387), Chakrams (259396), Chakrams (259398), Kill Command (259489), Serpent Sting (259491), Wildfire Bomb (259496), Scorching Wildfire (259587), Rapid Fire (263585), Wildfire Bomb (265157), Raptor Strike (265189)
 #3 (id=191131)   : Apply Aura (6) | Modify Pet Damage Done% (429)
@@ -2892,10 +2892,10 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6)
 Effects          :
-#1 (id=215686)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Damage (0)
+#1 (id=215686)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 18 | Scaled Value: 18 | Target: Self (1)
                    Affected Spells: Multi-Shot (2643), Aimed Shot (19434), Kill Command (34026), Barrage (120361), A Murder of Crows (131900), Steel Trap (162487), Chimaera Shot (171454), Chimaera Shot (171457), Quick Shot (185358), Raptor Strike (186270), Bursting Shot (186387), Cobra Shot (193455), Piercing Shot (198670), Stomp (199530), Stampede (201594), Fury of the Eagle (203413), Talon Strike (203525), On the Trail (204081), Butchery (212436), Explosive Shot (212680), Sidewinders (214581), Echo of Ohn'ara (242798), Rapid Fire (257044), Rapid Fire (257045), Multi-Shot (257620), Flanking Strike (259278), Mongoose Bite (259387), Chakrams (259396), Chakrams (259398), Kill Command (259489), Serpent Sting (259491), Wildfire Bomb (259496), Scorching Wildfire (259587), Rapid Fire (263585), Wildfire Bomb (265157), Raptor Strike (265189)
-#2 (id=479794)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Damage (22)
+#2 (id=479794)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 18 | Scaled Value: 18 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Multi-Shot (2643), Aimed Shot (19434), Kill Command (34026), Barrage (120361), A Murder of Crows (131900), Steel Trap (162487), Chimaera Shot (171454), Chimaera Shot (171457), Quick Shot (185358), Raptor Strike (186270), Bursting Shot (186387), Cobra Shot (193455), Piercing Shot (198670), Stomp (199530), Stampede (201594), Fury of the Eagle (203413), Talon Strike (203525), On the Trail (204081), Butchery (212436), Explosive Shot (212680), Sidewinders (214581), Echo of Ohn'ara (242798), Rapid Fire (257044), Rapid Fire (257045), Multi-Shot (257620), Flanking Strike (259278), Mongoose Bite (259387), Chakrams (259396), Chakrams (259398), Kill Command (259489), Serpent Sting (259491), Wildfire Bomb (259496), Scorching Wildfire (259587), Rapid Fire (263585), Wildfire Bomb (265157), Raptor Strike (265189)
 #3 (id=484729)   : Apply Aura (6) | Dummy (4)
@@ -4072,13 +4072,13 @@ Effects          :
 #1 (id=283823)   : Apply Aura (6) | Add Percent Modifier (108): Spell Range (5)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.62500 | Misc Value: 5 | Target: Self (1)
                    Affected Spells: Flare (1543), Multi-Shot (2643), Concussive Shot (5116), Wyvern Sting (19386), Aimed Shot (19434), Chimaera Shot (53209), Steady Shot (56641), Binding Shot (109248), Barrage (120361), A Murder of Crows (131894), Counter Shot (147362), Chimaera Shot (171454), Chimaera Shot (171457), Piercing Shot (198670), Windburst (204147), Explosive Shot (212431), Scatter Shot (213691), Sidewinders (214579), Multi-Shot (257620)
-#2 (id=283906)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Damage (0)
+#2 (id=283906)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.50000 | Target: Self (1)
                    Affected Spells: Aimed Shot (19434), Barrage (120361), A Murder of Crows (131894), A Murder of Crows (131900), Bursting Shot (186387), Aimed Shot (191043), Piercing Shot (198670), Windburst (204147), Explosive Shot (212680), Piercing Shot (213678), Bursting Shot (224729)
 #3 (id=316221)   : Apply Aura (6) | Add Percent Modifier (108): Spell Radius (6)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.62500 | Misc Value: 6 | Target: Self (1)
                    Affected Spells: Barrage (120361), Sidewinders (214579), Sidewinders (214581)
-#4 (id=345392)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Damage (22)
+#4 (id=345392)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.50000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Aimed Shot (19434), Barrage (120361), A Murder of Crows (131894), A Murder of Crows (131900), Bursting Shot (186387), Aimed Shot (191043), Piercing Shot (198670), Piercing Shot (213678), Bursting Shot (224729)
 Description      : Range of all your ranged abilities is increased by ${$s1}.1% and damage of all Focus spending abilities increased by ${$s2}.1%.
@@ -4234,7 +4234,7 @@ Effects          :
 #2 (id=285663)   : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost (14)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 14 | Target: Self (1)
                    Affected Spells: Aimed Shot (19434), Aimed Shot (191043)
-#3 (id=285664)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Damage (0)
+#3 (id=285664)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
                    Affected Spells: Aimed Shot (19434), Aimed Shot (191043)
 #4 (id=285665)   : Apply Aura (6) | Unknown(408)
@@ -5664,7 +5664,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=483865)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Damage (0)
+#1 (id=483865)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
                    Affected Spells: Mongoose Bite (259387)
 Description      : $@spelldesc259387
@@ -5926,7 +5926,7 @@ Effects          :
 #1 (id=485307)   : Apply Aura (6) | Add Flat Modifier (107): Spell Targets (17)
                    Base Value: 2 | Scaled Value: 2 | Misc Value: 17 | Target: Self (1)
                    Affected Spells: Serpent Sting (259491)
-#2 (id=485308)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Damage (22)
+#2 (id=485308)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 30 | Scaled Value: 30 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Serpent Sting (259491)
 Description      : Serpent Sting fires arrows at $s1 additional enemies near your target, and its damage over time is increased by $s2%.
@@ -6059,7 +6059,7 @@ Attributes       : ........ ........ ..x..... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Not a proc (105), Disable player procs (112), Disable target procs (113), Disable weapon procs (151)
 Effects          :
-#1 (id=485367)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Damage (0)
+#1 (id=485367)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 15 | Scaled Value: 15 | Target: Self (1)
                    Affected Spells: Raptor Strike (186270), Raptor Strike (265189)
 Description      : $@spelldesc260285
@@ -6297,7 +6297,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6)
 Effects          :
-#1 (id=624334)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Damage (0)
+#1 (id=624334)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 100 | Scaled Value: 100 | Target: Self (1)
                    Affected Spells: Cobra Shot (193455)
 Description      : Cobra Shot deals $s1% increased damage.
@@ -6314,7 +6314,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6)
 Effects          :
-#1 (id=624335)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Damage (0)
+#1 (id=624335)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 40 | Scaled Value: 40 | Target: Self (1)
                    Affected Spells: Raptor Strike (186270), Raptor Strike (265189)
 Description      : Raptor Strike deals $s1% increased damage.
@@ -6332,10 +6332,10 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6)
 Effects          :
-#1 (id=651809)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Damage (0)
+#1 (id=651809)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Target: Unknown(120)
                    Affected Spells: Claw (16827), Bite (17253), Smack (49966), A Murder of Crows (131894), A Murder of Crows (131900), Raptor Strike (186270), Talon Slash (242735), Mongoose Bite (259387), Serpent Sting (259491), Raptor Strike (265189)
-#2 (id=651810)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Damage (22)
+#2 (id=651810)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Misc Value: 22 | Target: Unknown(120)
                    Affected Spells: Claw (16827), Bite (17253), Smack (49966), A Murder of Crows (131894), A Murder of Crows (131900), Raptor Strike (186270), Talon Slash (242735), Mongoose Bite (259387), Serpent Sting (259491), Raptor Strike (265189)
 #3 (id=651811)   : Apply Aura (6) | Periodic Trigger Spell (23): Spirit Bond every 5 seconds
@@ -7153,10 +7153,10 @@ Attributes       : ....x... ........ x....... ........   .....x.. ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Does not break stealth (37)
 Effects          :
-#1 (id=712710)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Damage (0)
+#1 (id=712710)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
                    Affected Spells: Multi-Shot (2643), Aimed Shot (19434), Kill Command (34026), Barrage (120361), A Murder of Crows (131900), Steel Trap (162487), Chimaera Shot (171454), Chimaera Shot (171457), Quick Shot (185358), Raptor Strike (186270), Bursting Shot (186387), Cobra Shot (193455), Piercing Shot (198670), Stomp (199530), Stampede (201594), Fury of the Eagle (203413), Talon Strike (203525), On the Trail (204081), Butchery (212436), Explosive Shot (212680), Sidewinders (214581), Echo of Ohn'ara (242798), Rapid Fire (257044), Rapid Fire (257045), Multi-Shot (257620), Flanking Strike (259278), Mongoose Bite (259387), Chakrams (259396), Chakrams (259398), Kill Command (259489), Serpent Sting (259491), Wildfire Bomb (259496), Scorching Wildfire (259587), Rapid Fire (263585), Wildfire Bomb (265157), Raptor Strike (265189)
-#2 (id=712711)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Damage (22)
+#2 (id=712711)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 20 | Scaled Value: 20 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Multi-Shot (2643), Aimed Shot (19434), Kill Command (34026), Barrage (120361), A Murder of Crows (131900), Steel Trap (162487), Chimaera Shot (171454), Chimaera Shot (171457), Quick Shot (185358), Raptor Strike (186270), Bursting Shot (186387), Cobra Shot (193455), Piercing Shot (198670), Stomp (199530), Stampede (201594), Fury of the Eagle (203413), Talon Strike (203525), On the Trail (204081), Butchery (212436), Explosive Shot (212680), Sidewinders (214581), Echo of Ohn'ara (242798), Rapid Fire (257044), Rapid Fire (257045), Multi-Shot (257620), Flanking Strike (259278), Mongoose Bite (259387), Chakrams (259396), Chakrams (259398), Kill Command (259489), Serpent Sting (259491), Wildfire Bomb (259496), Scorching Wildfire (259587), Rapid Fire (263585), Wildfire Bomb (265157), Raptor Strike (265189)
 #3 (id=712712)   : Apply Aura (6) | Modify Damage Done% (79)

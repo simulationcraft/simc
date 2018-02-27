@@ -55,7 +55,7 @@ Effects          :
 #1 (id=3695)     : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f | Target: Self (1)
                    Affected School(s): All
-#2 (id=3696)     : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Damage (22)
+#2 (id=3696)     : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 22 | Target: Self (1)
 Tooltip          : Damage increased by $s1%.
 
@@ -1324,7 +1324,7 @@ Effects          :
 #1 (id=131804)   : Apply Aura (6) | Add Percent Modifier (108): Spell Cooldown (11)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 11 | Target: Self (1)
                    Affected Spells: Renewing Mist (115151)
-#2 (id=214145)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Damage (0)
+#2 (id=214145)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 200 | Scaled Value: 200 | Target: Self (1)
                    Affected Spells: Effuse (116694)
 #3 (id=289634)   : Apply Aura (6) | Add Percent Modifier (108): Spell Cast Time (10)
@@ -1437,7 +1437,7 @@ Effects          :
 #2 (id=135586)   : Apply Aura (6) | Unknown(262)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
                    Affected Spells: Blackout Kick (100784), Blackout Strike (205523), Blackout Kick (228649)
-#3 (id=196421)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Damage (0)
+#3 (id=196421)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
                    Affected Spells: Blackout Kick (100784), Blackout Strike (205523), Blackout Kick (228649)
 Description      : $@spelldesc137384
@@ -2862,7 +2862,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=166762)   : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
-#2 (id=487652)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Damage (0)
+#2 (id=487652)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
                    Affected Spells: Tiger Palm (100780)
 Description      : $@spelldesc121817
@@ -3044,10 +3044,10 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6), Hidden (7)
 Effects          :
-#1 (id=179707)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Damage (0)
+#1 (id=179707)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 9 | Scaled Value: 9 | Target: Self (1)
                    Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (107270), Breath of Fire (115181), Fists of Fury (117418), Crackling Jade Lightning (117952), Keg Smash (121253), Flying Serpent Kick (123586), Zen Pulse (124081), Chi Wave (132467), Chi Burst (148135), Rushing Jade Wind (148187), Whirling Dragon Punch (158221), Rising Sun Kick (185099), Crosswinds (196061), Eye of the Tiger (196608), Special Delivery (196733), Strike of the Windlord (205414), Blackout Strike (205523), Strike of the Windlord (222029), Blackout Kick (228649), Thunderfist (242390)
-#2 (id=191108)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Damage (22)
+#2 (id=191108)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 9 | Scaled Value: 9 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (107270), Breath of Fire (115181), Fists of Fury (117418), Crackling Jade Lightning (117952), Keg Smash (121253), Flying Serpent Kick (123586), Zen Pulse (124081), Chi Wave (132467), Chi Burst (148135), Rushing Jade Wind (148187), Whirling Dragon Punch (158221), Rising Sun Kick (185099), Crosswinds (196061), Eye of the Tiger (196608), Special Delivery (196733), Strike of the Windlord (205414), Blackout Strike (205523), Strike of the Windlord (222029), Blackout Kick (228649), Thunderfist (242390)
 #3 (id=191109)   : Apply Aura (6) | Modify Pet Damage Done% (429)
@@ -3060,19 +3060,19 @@ Effects          :
 #5 (id=191111)   : Apply Aura (6) | Hasted Cooldown Duration (Category) (457)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1562 | Target: Self (1)
                    Affected Spells (Category): Ironskin Brew (115308), Purifying Brew (119582)
-#6 (id=260837)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Damage (0)
+#6 (id=260837)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: -44 | Scaled Value: -44 | Target: Self (1)
                    Affected Spells: Rushing Jade Wind (116847), Rushing Jade Wind (148187), Rushing Jade Wind (261715)
-#7 (id=260838)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Damage (0)
+#7 (id=260838)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: -10 | Scaled Value: -10 | Target: Self (1)
                    Affected Spells: Tiger Palm (100780), Chi Burst (123986), Chi Burst (130654), Chi Wave (132466), Chi Wave (132467), Chi Burst (148135), Song of Chi-Ji (198898)
-#8 (id=260839)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Damage (22)
+#8 (id=260839)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: -10 | Scaled Value: -10 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Eye of the Tiger (196608)
 #9 (id=260840)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 248 (Label) | Target: Self (1)
                    Affected Spells (Label): Fel-Crazed Rage (225777), Colossal Slam (232044), Dread Torrent (246464), Ceaseless Toxin (242497), Umbral Glaive Storm (242556), Shattering Umbral Glaives (242557), Infernal Cinders (242218), Shadow Strike (253324), Worldforger's Flame (257244), Gorshalach's Legacy (255673), Gorshalach's Legacy (253329)
-#10 (id=260841)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Periodic Damage (22)
+#10 (id=260841)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Periodic Amount (22)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 22 | Misc Value 2: 248 (Label) | Target: Self (1)
                    Affected Spells (Label): Fel-Crazed Rage (225777), Colossal Slam (232044), Dread Torrent (246464), Ceaseless Toxin (242497), Umbral Glaive Storm (242556), Shattering Umbral Glaives (242557), Infernal Cinders (242218), Shadow Strike (253324), Worldforger's Flame (257244), Gorshalach's Legacy (255673), Gorshalach's Legacy (253329)
 #11 (id=260842)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
@@ -3112,10 +3112,10 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6), Hidden (7)
 Effects          :
-#1 (id=179708)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Damage (0)
+#1 (id=179708)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 4 | Scaled Value: 4 | Target: Self (1)
                    Affected Spells: Soothing Mist (115175), Revival (115310), Vivify (116670), Effuse (116694), Renewing Mist (119611), Enveloping Mist (124682), Chi Burst (130654), Chi Wave (132463), Refreshing Jade Wind (162530), Essence Font (191840), Gust of Mists (191894), Zen Pulse (198487), Crane Heal (198756), Celestial Breath (199656), The Mists of Sheilun (199894), Sheilun's Gift (205406), Whispers of Shaohao (242400)
-#2 (id=191104)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Damage (22)
+#2 (id=191104)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 4 | Scaled Value: 4 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Soothing Mist (115175), Revival (115310), Vivify (116670), Effuse (116694), Renewing Mist (119611), Enveloping Mist (124682), Chi Burst (130654), Chi Wave (132463), Refreshing Jade Wind (162530), Essence Font (191840), Gust of Mists (191894), Zen Pulse (198487), Crane Heal (198756), Celestial Breath (199656), The Mists of Sheilun (199894), Sheilun's Gift (205406), Whispers of Shaohao (242400)
 #3 (id=191105)   : Apply Aura (6) | Unknown(312)
@@ -3137,19 +3137,19 @@ Effects          :
 #10 (id=260831)   : Apply Aura (6) | Modify Recharge Time (Category) (453)
                    Base Value: 2000 | Scaled Value: 2000 | Misc Value: 1518
                    Affected Spells: Rising Sun Kick (107428), Rising Sun Kick (185099)
-#11 (id=260832)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Damage (0)
+#11 (id=260832)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: -20 | Scaled Value: -20
                    Affected Spells: Rising Sun Kick (107428), Rising Sun Kick (185099)
-#12 (id=260833)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Damage (0)
+#12 (id=260833)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 0 | Scaled Value: 0
                    Affected Spells: Blackout Kick (100784), Blackout Strike (205523), Blackout Kick (228649)
-#13 (id=260834)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Damage (0)
+#13 (id=260834)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 0 | Scaled Value: 0
                    Affected Spells: Tiger Palm (100780)
-#14 (id=260835)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Damage (0)
+#14 (id=260835)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: -44 | Scaled Value: -44
                    Affected Spells: Spinning Crane Kick (107270)
-#15 (id=260836)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Damage (22)
+#15 (id=260836)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 400 | Scaled Value: 400 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Crackling Jade Lightning (117952)
 #16 (id=290682)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
@@ -3158,7 +3158,7 @@ Effects          :
 #17 (id=290683)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 248 (Label) | Target: Self (1)
                    Affected Spells (Label): Fel-Crazed Rage (225777), Colossal Slam (232044), Dread Torrent (246464), Ceaseless Toxin (242497), Umbral Glaive Storm (242556), Shattering Umbral Glaives (242557), Infernal Cinders (242218), Shadow Strike (253324), Worldforger's Flame (257244), Gorshalach's Legacy (255673), Gorshalach's Legacy (253329)
-#18 (id=290684)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Periodic Damage (22)
+#18 (id=290684)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Periodic Amount (22)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 22 | Misc Value 2: 248 (Label) | Target: Self (1)
                    Affected Spells (Label): Fel-Crazed Rage (225777), Colossal Slam (232044), Dread Torrent (246464), Ceaseless Toxin (242497), Umbral Glaive Storm (242556), Shattering Umbral Glaives (242557), Infernal Cinders (242218), Shadow Strike (253324), Worldforger's Flame (257244), Gorshalach's Legacy (255673), Gorshalach's Legacy (253329)
 #19 (id=290685)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
@@ -3182,10 +3182,10 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6), Hidden (7)
 Effects          :
-#1 (id=179709)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Damage (0)
+#1 (id=179709)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 5 | Scaled Value: 5 | Target: Self (1)
                    Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (107270), Breath of Fire (115181), Fists of Fury (117418), Crackling Jade Lightning (117952), Keg Smash (121253), Flying Serpent Kick (123586), Zen Pulse (124081), Chi Wave (132467), Chi Burst (148135), Rushing Jade Wind (148187), Whirling Dragon Punch (158221), Rising Sun Kick (185099), Crosswinds (196061), Eye of the Tiger (196608), Special Delivery (196733), Strike of the Windlord (205414), Blackout Strike (205523), Strike of the Windlord (222029), Blackout Kick (228649), Thunderfist (242390)
-#2 (id=191100)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Damage (22)
+#2 (id=191100)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 5 | Scaled Value: 5 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (107270), Breath of Fire (115181), Fists of Fury (117418), Crackling Jade Lightning (117952), Keg Smash (121253), Flying Serpent Kick (123586), Zen Pulse (124081), Chi Wave (132467), Chi Burst (148135), Rushing Jade Wind (148187), Whirling Dragon Punch (158221), Rising Sun Kick (185099), Crosswinds (196061), Eye of the Tiger (196608), Special Delivery (196733), Strike of the Windlord (205414), Blackout Strike (205523), Strike of the Windlord (222029), Blackout Kick (228649), Thunderfist (242390)
 #3 (id=191101)   : Apply Aura (6) | Dummy (4)
@@ -3197,13 +3197,13 @@ Effects          :
 #5 (id=191103)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)
                    Base Value: 2 | Scaled Value: 2 | Misc Value: 12 | Target: Self (1)
                    Affected Spells: Tiger Palm (100780)
-#6 (id=260817)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Damage (0)
+#6 (id=260817)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 26 | Scaled Value: 26 | Target: Self (1)
                    Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Rising Sun Kick (107428), Rising Sun Kick (185099), Blackout Strike (205523), Blackout Kick (228649)
-#7 (id=260818)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Damage (0)
+#7 (id=260818)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 22 | Scaled Value: 22 | Target: Self (1)
                    Affected Spells: Rushing Jade Wind (116847), Chi Wave (132466), Chi Wave (132467), Rushing Jade Wind (148187), Rushing Jade Wind (261715)
-#8 (id=260819)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Damage (22)
+#8 (id=260819)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 22 | Scaled Value: 22 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Eye of the Tiger (196608)
 #9 (id=260820)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
@@ -3212,10 +3212,10 @@ Effects          :
 #10 (id=260821)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 298 (Label) | Target: Self (1)
                    Affected Spells (Label): Cleansing Matrix (242619), Fruitful Machinations (242623), Guiding Hand (242622), Infusion of Light (242621), Felshield (253277), Tarratus Keystone (253282), Refreshing Agony (253284), L'ura's Word (250781), Tarratus Keystone (255924), Refreshing Agony (255981), Highfather's Timekeeping (253288), Felshield (253278), Highfather's Timekeeping (255932), Emerald Blossom (257442), Verdant Embrace (257444)
-#11 (id=260822)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Damage (0)
+#11 (id=260822)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 200 | Scaled Value: 200 | Target: Self (1)
                    Affected Spells: Spinning Crane Kick (107270)
-#12 (id=260823)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Damage (0)
+#12 (id=260823)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 50 | Scaled Value: 50 | Target: Self (1)
                    Affected Spells: Blackout Kick (100784), Blackout Strike (205523), Blackout Kick (228649)
 #13 (id=260824)   : Apply Aura (6) | Dummy (4)
@@ -3264,10 +3264,10 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=180816)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Damage (0)
+#1 (id=180816)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: -55 | Scaled Value: -55 | Target: Self (1)
                    Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (107270), Rising Sun Kick (107428), Rushing Jade Wind (116847), Fists of Fury (117418), Crackling Jade Lightning (117952), Chi Burst (123986), Chi Burst (130654), Chi Wave (132463), Chi Wave (132466), Chi Wave (132467), Chi Burst (148135), Rushing Jade Wind (148187), Whirling Dragon Punch (152175), Whirling Dragon Punch (158221), Rising Sun Kick (185099), Song of Chi-Ji (198898), Strike of the Windlord (205320), Strike of the Windlord (205414), Blackout Strike (205523), Strike of the Windlord (222029), Blackout Kick (228649), Rushing Jade Wind (261715)
-#2 (id=181516)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Damage (22)
+#2 (id=181516)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: -55 | Scaled Value: -55 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (107270), Rising Sun Kick (107428), Rushing Jade Wind (116847), Fists of Fury (117418), Crackling Jade Lightning (117952), Chi Burst (123986), Chi Burst (130654), Chi Wave (132463), Chi Wave (132466), Chi Wave (132467), Chi Burst (148135), Rushing Jade Wind (148187), Whirling Dragon Punch (152175), Whirling Dragon Punch (158221), Rising Sun Kick (185099), Song of Chi-Ji (198898), Strike of the Windlord (205320), Strike of the Windlord (205414), Blackout Strike (205523), Strike of the Windlord (222029), Blackout Kick (228649), Rushing Jade Wind (261715)
 #3 (id=181626)   : Apply Aura (6) | Modify Auto Attack Damage Done% (344)
@@ -3338,7 +3338,7 @@ Effects          :
 #1 (id=210678)   : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost (14)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 14 | Target: Self (1)
                    Affected Spells: Blackout Kick (100784), Spinning Crane Kick (101546), Rising Sun Kick (107428), Fists of Fury (113656), Rushing Jade Wind (116847), Fists of Fury (120086), Rushing Jade Wind (148187), Item - Monk T17 Windwalker2P Bonus (165403), Rising Sun Kick (185099), Strike of the Windlord (205320), Strike of the Windlord (205414), Blackout Strike (205523), Strike of the Windlord (222029), Blackout Kick (228649), Rushing Jade Wind (261715)
-#2 (id=303755)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Damage (0)
+#2 (id=303755)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 40 | Scaled Value: 40 | Target: Self (1)
                    Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (107270), Breath of Fire (115181), Fists of Fury (117418), Crackling Jade Lightning (117952), Keg Smash (121253), Flying Serpent Kick (123586), Zen Pulse (124081), Chi Wave (132467), Chi Burst (148135), Rushing Jade Wind (148187), Whirling Dragon Punch (158221), Rising Sun Kick (185099), Crosswinds (196061), Eye of the Tiger (196608), Special Delivery (196733), Strike of the Windlord (205414), Blackout Strike (205523), Strike of the Windlord (222029), Blackout Kick (228649), Thunderfist (242390)
 #3 (id=303756)   : Apply Aura (6) | Modify Healing% Done (136)
@@ -3349,7 +3349,7 @@ Effects          :
 #5 (id=330099)   : Apply Aura (6) | Unknown(148)
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 359 | Target: Self (1)
                    Affected Spells: Blackout Kick (100784), Spinning Crane Kick (101546), Rising Sun Kick (107428), Fists of Fury (113656), Rushing Jade Wind (116847), Fists of Fury (120086), Rushing Jade Wind (148187), Item - Monk T17 Windwalker2P Bonus (165403), Rising Sun Kick (185099), Strike of the Windlord (205320), Strike of the Windlord (205414), Blackout Strike (205523), Strike of the Windlord (222029), Blackout Kick (228649), Rushing Jade Wind (261715)
-#6 (id=479822)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Damage (22)
+#6 (id=479822)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 40 | Scaled Value: 40 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (107270), Breath of Fire (115181), Fists of Fury (117418), Crackling Jade Lightning (117952), Keg Smash (121253), Flying Serpent Kick (123586), Zen Pulse (124081), Chi Wave (132467), Chi Burst (148135), Rushing Jade Wind (148187), Whirling Dragon Punch (158221), Rising Sun Kick (185099), Crosswinds (196061), Eye of the Tiger (196608), Special Delivery (196733), Strike of the Windlord (205414), Blackout Strike (205523), Strike of the Windlord (222029), Blackout Kick (228649), Thunderfist (242390)
 Description      : Enter an elevated state of mental and physical serenity for $?s115069[$s1 sec][$d]. While in this state, you deal $s2% increased damage and healing, and all Chi consumers are free and cool down $s4% more quickly.
@@ -4058,10 +4058,10 @@ Attributes       : ....x... ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=288841)   : Apply Aura (6) | Modify Dodge% (49)
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
-#2 (id=344117)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Damage (0)
+#2 (id=344117)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
                    Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (107270), Breath of Fire (115181), Fists of Fury (117418), Crackling Jade Lightning (117952), Keg Smash (121253), Flying Serpent Kick (123586), Zen Pulse (124081), Chi Wave (132467), Chi Burst (148135), Rushing Jade Wind (148187), Whirling Dragon Punch (158221), Rising Sun Kick (185099), Crosswinds (196061), Eye of the Tiger (196608), Special Delivery (196733), Strike of the Windlord (205414), Blackout Strike (205523), Strike of the Windlord (222029), Blackout Kick (228649), Thunderfist (242390)
-#3 (id=479819)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Damage (22)
+#3 (id=479819)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 20 | Scaled Value: 20 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (107270), Breath of Fire (115181), Fists of Fury (117418), Crackling Jade Lightning (117952), Keg Smash (121253), Flying Serpent Kick (123586), Zen Pulse (124081), Chi Wave (132467), Chi Burst (148135), Rushing Jade Wind (148187), Whirling Dragon Punch (158221), Rising Sun Kick (185099), Crosswinds (196061), Eye of the Tiger (196608), Special Delivery (196733), Strike of the Windlord (205414), Blackout Strike (205523), Strike of the Windlord (222029), Blackout Kick (228649), Thunderfist (242390)
 #4 (id=479887)   : Apply Aura (6) | Modify Auto Attack Damage Done% (344)
@@ -4099,10 +4099,10 @@ Attributes       : ....x... ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=288843)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Damage (0)
+#1 (id=288843)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
                    Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (107270), Breath of Fire (115181), Fists of Fury (117418), Crackling Jade Lightning (117952), Keg Smash (121253), Flying Serpent Kick (123586), Zen Pulse (124081), Chi Wave (132467), Chi Burst (148135), Rushing Jade Wind (148187), Whirling Dragon Punch (158221), Rising Sun Kick (185099), Crosswinds (196061), Eye of the Tiger (196608), Special Delivery (196733), Strike of the Windlord (205414), Blackout Strike (205523), Strike of the Windlord (222029), Blackout Kick (228649), Thunderfist (242390)
-#2 (id=479821)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Damage (22)
+#2 (id=479821)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 2 | Scaled Value: 2 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (107270), Breath of Fire (115181), Fists of Fury (117418), Crackling Jade Lightning (117952), Keg Smash (121253), Flying Serpent Kick (123586), Zen Pulse (124081), Chi Wave (132467), Chi Burst (148135), Rushing Jade Wind (148187), Whirling Dragon Punch (158221), Rising Sun Kick (185099), Crosswinds (196061), Eye of the Tiger (196608), Special Delivery (196733), Strike of the Windlord (205414), Blackout Strike (205523), Strike of the Windlord (222029), Blackout Kick (228649), Thunderfist (242390)
 #3 (id=479888)   : Apply Aura (6) | Modify Auto Attack Damage Done% (344)
@@ -4128,7 +4128,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=289621)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Damage (0)
+#1 (id=289621)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 40 | Scaled Value: 40 | Target: Self (1)
                    Affected Spells: Vivify (116670)
 Description      : $@spelldesc115151
@@ -4643,7 +4643,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=316119)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-#2 (id=370575)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Damage (0)
+#2 (id=370575)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 40 | Scaled Value: 40 | Target: Self (1)
                    Affected Spells: Touch of Death (115080)
 Description      : Touch of Death deals $s2% increased damage and can be used a second time within $213114d before its cooldown is triggered.
@@ -4821,7 +4821,7 @@ Attributes       : .......x ........ .......x ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Hidden (7)
 Effects          :
-#1 (id=328547)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Damage (0)
+#1 (id=328547)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 10 | Scaled Value: 10 | Target: Self (1)
                    Affected Spells: Spinning Crane Kick (107270)
 #2 (id=328548)   : Apply Aura (6) | Unknown(408)
@@ -4916,7 +4916,7 @@ Attributes       : ....x... ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=344191)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Damage (0)
+#1 (id=344191)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 200 | Scaled Value: 200 | Target: Self (1)
                    Affected Spells: Tiger Palm (100780)
 #2 (id=344192)   : Apply Aura (6) | Add Flat Modifier (107): Spell Cooldown (11)
@@ -4968,7 +4968,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6)
 Effects          :
-#1 (id=349339)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Damage (0)
+#1 (id=349339)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 60 | Scaled Value: 60 | Target: Self (1)
                    Affected Spells: Effuse (116694)
 Description      : Effuse's healing is increased by $s1%.
@@ -5643,7 +5643,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6)
 Effects          :
-#1 (id=624336)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Damage (0)
+#1 (id=624336)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 70 | Scaled Value: 70 | Target: Self (1)
                    Affected Spells: Rising Sun Kick (107428), Rising Sun Kick (185099)
 Description      : Rising Sun Kick deals $s1% increased damage.

@@ -1481,7 +1481,7 @@ Attributes       : ........ ........ ..x..... ........   ........ ........ .....
 Effects          :
 #1 (id=66866)    : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.87500 | Target: Friend (21)
-#2 (id=66867)    : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Damage (0)
+#2 (id=66867)    : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 45 | Scaled Value: 45 | Target: Self (1)
                    Affected Spells: Chain Heal (1064), Healing Surge (8004), Healing Wave (77472), Healing Surge (188070)
 #3 (id=90747)    : Apply Aura (6) | Dummy (4)
@@ -1572,7 +1572,7 @@ Attributes       : ......x. x....... ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6)
 Effects          :
-#1 (id=68076)    : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Damage (0)
+#1 (id=68076)    : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.00000 | Target: Self (1)
                    Affected Spells: Flametongue Attack (10444), Lava Lash (60103), Lightning Bolt (187837), Crash Lightning (187874), Lightning Shield (192109), Rockbiter (193786), Flametongue (193796), Crash Lightning (195592), Frostbrand (196834), Fury of Air (197385), Unleash Lava (199053), Unleash Lightning (199054), Doom Vortex (199116), Crashing Storm (210801), Hailstorm (210854), Stormlash (213307), Storm Tempests (214452)
 #2 (id=92143)    : Apply Aura (6) | Dummy (4)
@@ -1583,7 +1583,7 @@ Effects          :
 #4 (id=297948)   : Apply Aura (6) | Add Flat Modifier (107): Spell Proc Chance (18)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.08000 | Misc Value: 18 | Target: Self (1)
                    Affected Spells: Windfury (33757)
-#5 (id=479847)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Damage (22)
+#5 (id=479847)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.00000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Flametongue Attack (10444), Lava Lash (60103), Lightning Bolt (187837), Crash Lightning (187874), Lightning Shield (192109), Rockbiter (193786), Flametongue (193796), Crash Lightning (195592), Frostbrand (196834), Fury of Air (197385), Unleash Lava (199053), Unleash Lightning (199054), Doom Vortex (199116), Crashing Storm (210801), Hailstorm (210854), Stormlash (213307), Storm Tempests (214452)
 Description      : Increases your chance to trigger Stormbringer and Windfury by ${$m3}.2%, and increases all Fire, Frost, and Nature damage you deal by ${$77223m1}.1%.
@@ -2572,17 +2572,17 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6), Hidden (7)
 Effects          :
-#1 (id=179723)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Damage (0)
+#1 (id=179723)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 25 | Scaled Value: 25 | Target: Self (1)
                    Affected Spells: Lightning Bolt (403), Chain Lightning (421), Earth Shock (8042), Flametongue Attack (10444), Windfury Attack (25504), Stormstrike (32175), Stormstrike Off-Hand (32176), Windfury Attack (33750), Lightning Bolt Overload (45284), Chain Lightning Overload (45297), Thunderstorm (51490), Lava Burst (51505), Lava Lash (60103), Lava Burst Overload (77451), Earthquake (77478), Lava Beam (114074), Lava Beam Overload (114738), Windstrike (115357), Windstrike Off-Hand (115360), Elemental Blast (117014), Elemental Blast Overload (120588), Earthen Rage (170379), Lightning Bolt (187837), Crash Lightning (187874), Earthen Spike (188089), Lightning Bolt (188196), Flame Shock (188389), Chain Lightning (188443), Flame Shock (188838), Lightning Shield (192109), Rockbiter (193786), Flametongue (193796), Crash Lightning (195592), Frostbrand (196834), Frost Shock (196840), Sundering (197214), Fury of Air (197385), Unleash Lava (199053), Unleash Lightning (199054), Doom Vortex (199116), Volcanic Inferno (205533), Icefury (210714), Crashing Storm (210801), Hailstorm (210854), Stormlash (213307), Storm Tempests (214452), Feral Lunge (215802), Icefury Overload (219271), Pristine Proto-Scale Girdle (224852), Seismic Lightning (243073)
-#2 (id=191046)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Damage (22)
+#2 (id=191046)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 25 | Scaled Value: 25 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Lightning Bolt (403), Chain Lightning (421), Earth Shock (8042), Flametongue Attack (10444), Windfury Attack (25504), Stormstrike (32175), Stormstrike Off-Hand (32176), Windfury Attack (33750), Lightning Bolt Overload (45284), Chain Lightning Overload (45297), Thunderstorm (51490), Lava Burst (51505), Lava Lash (60103), Lava Burst Overload (77451), Earthquake (77478), Lava Beam (114074), Lava Beam Overload (114738), Windstrike (115357), Windstrike Off-Hand (115360), Elemental Blast (117014), Elemental Blast Overload (120588), Earthen Rage (170379), Lightning Bolt (187837), Crash Lightning (187874), Earthen Spike (188089), Lightning Bolt (188196), Flame Shock (188389), Chain Lightning (188443), Flame Shock (188838), Lightning Shield (192109), Rockbiter (193786), Flametongue (193796), Crash Lightning (195592), Frostbrand (196834), Frost Shock (196840), Sundering (197214), Fury of Air (197385), Unleash Lava (199053), Unleash Lightning (199054), Doom Vortex (199116), Volcanic Inferno (205533), Icefury (210714), Crashing Storm (210801), Hailstorm (210854), Stormlash (213307), Storm Tempests (214452), Feral Lunge (215802), Icefury Overload (219271), Pristine Proto-Scale Girdle (224852), Seismic Lightning (243073)
 #3 (id=191047)   : Apply Aura (6) | Modify Max Mana% (178)
                    Base Value: 400 | Scaled Value: 400 | Target: Self (1)
 #4 (id=191048)   : Apply Aura (6) | Modify Mana Regen% (379)
                    Base Value: 25 | Scaled Value: 25 | Target: Self (1)
-#5 (id=191049)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Damage (0)
+#5 (id=191049)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 14 | Scaled Value: 14 | Target: Self (1)
                    Affected Spells: Lava Burst (51505)
 #6 (id=260997)   : Apply Aura (6) | Add Flat Modifier (107): Spell Proc Chance (18)
@@ -2593,7 +2593,7 @@ Effects          :
 #8 (id=260999)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 248 (Label) | Target: Self (1)
                    Affected Spells (Label): Fel-Crazed Rage (225777), Colossal Slam (232044), Dread Torrent (246464), Ceaseless Toxin (242497), Umbral Glaive Storm (242556), Shattering Umbral Glaives (242557), Infernal Cinders (242218), Shadow Strike (253324), Worldforger's Flame (257244), Gorshalach's Legacy (255673), Gorshalach's Legacy (253329)
-#9 (id=261000)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Periodic Damage (22)
+#9 (id=261000)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Periodic Amount (22)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 22 | Misc Value 2: 248 (Label) | Target: Self (1)
                    Affected Spells (Label): Fel-Crazed Rage (225777), Colossal Slam (232044), Dread Torrent (246464), Ceaseless Toxin (242497), Umbral Glaive Storm (242556), Shattering Umbral Glaives (242557), Infernal Cinders (242218), Shadow Strike (253324), Worldforger's Flame (257244), Gorshalach's Legacy (255673), Gorshalach's Legacy (253329)
 #10 (id=261001)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
@@ -2639,10 +2639,10 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6), Hidden (7)
 Effects          :
-#1 (id=179724)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Damage (0)
+#1 (id=179724)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 9 | Scaled Value: 9 | Target: Self (1)
                    Affected Spells: Lightning Bolt (403), Chain Lightning (421), Earth Shock (8042), Flametongue Attack (10444), Windfury Attack (25504), Stormstrike (32175), Stormstrike Off-Hand (32176), Windfury Attack (33750), Lightning Bolt Overload (45284), Chain Lightning Overload (45297), Thunderstorm (51490), Lava Burst (51505), Lava Lash (60103), Lava Burst Overload (77451), Earthquake (77478), Lava Beam (114074), Lava Beam Overload (114738), Windstrike (115357), Windstrike Off-Hand (115360), Elemental Blast (117014), Elemental Blast Overload (120588), Earthen Rage (170379), Lightning Bolt (187837), Crash Lightning (187874), Earthen Spike (188089), Lightning Bolt (188196), Flame Shock (188389), Chain Lightning (188443), Flame Shock (188838), Lightning Shield (192109), Rockbiter (193786), Flametongue (193796), Crash Lightning (195592), Frostbrand (196834), Frost Shock (196840), Sundering (197214), Fury of Air (197385), Unleash Lava (199053), Unleash Lightning (199054), Doom Vortex (199116), Volcanic Inferno (205533), Icefury (210714), Crashing Storm (210801), Hailstorm (210854), Stormlash (213307), Storm Tempests (214452), Feral Lunge (215802), Icefury Overload (219271), Pristine Proto-Scale Girdle (224852), Seismic Lightning (243073)
-#2 (id=191042)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Damage (22)
+#2 (id=191042)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 9 | Scaled Value: 9 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Lightning Bolt (403), Chain Lightning (421), Earth Shock (8042), Flametongue Attack (10444), Windfury Attack (25504), Stormstrike (32175), Stormstrike Off-Hand (32176), Windfury Attack (33750), Lightning Bolt Overload (45284), Chain Lightning Overload (45297), Thunderstorm (51490), Lava Burst (51505), Lava Lash (60103), Lava Burst Overload (77451), Earthquake (77478), Lava Beam (114074), Lava Beam Overload (114738), Windstrike (115357), Windstrike Off-Hand (115360), Elemental Blast (117014), Elemental Blast Overload (120588), Earthen Rage (170379), Lightning Bolt (187837), Crash Lightning (187874), Earthen Spike (188089), Lightning Bolt (188196), Flame Shock (188389), Chain Lightning (188443), Flame Shock (188838), Lightning Shield (192109), Rockbiter (193786), Flametongue (193796), Crash Lightning (195592), Frostbrand (196834), Frost Shock (196840), Sundering (197214), Fury of Air (197385), Unleash Lava (199053), Unleash Lightning (199054), Doom Vortex (199116), Volcanic Inferno (205533), Icefury (210714), Crashing Storm (210801), Hailstorm (210854), Stormlash (213307), Storm Tempests (214452), Feral Lunge (215802), Icefury Overload (219271), Pristine Proto-Scale Girdle (224852), Seismic Lightning (243073)
 #3 (id=191043)   : Apply Aura (6) | Modify Pet Damage Done% (429)
@@ -2656,7 +2656,7 @@ Effects          :
 #6 (id=260987)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 248 (Label) | Target: Self (1)
                    Affected Spells (Label): Fel-Crazed Rage (225777), Colossal Slam (232044), Dread Torrent (246464), Ceaseless Toxin (242497), Umbral Glaive Storm (242556), Shattering Umbral Glaives (242557), Infernal Cinders (242218), Shadow Strike (253324), Worldforger's Flame (257244), Gorshalach's Legacy (255673), Gorshalach's Legacy (253329)
-#7 (id=260988)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Periodic Damage (22)
+#7 (id=260988)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Periodic Amount (22)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 22 | Misc Value 2: 248 (Label) | Target: Self (1)
                    Affected Spells (Label): Fel-Crazed Rage (225777), Colossal Slam (232044), Dread Torrent (246464), Ceaseless Toxin (242497), Umbral Glaive Storm (242556), Shattering Umbral Glaives (242557), Infernal Cinders (242218), Shadow Strike (253324), Worldforger's Flame (257244), Gorshalach's Legacy (255673), Gorshalach's Legacy (253329)
 #8 (id=260989)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
@@ -2694,10 +2694,10 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6), Hidden (7)
 Effects          :
-#1 (id=179725)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Damage (0)
+#1 (id=179725)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 10 | Scaled Value: 10 | Target: Self (1)
                    Affected Spells: Lightning Bolt (403), Chain Lightning (421), Earth Shock (8042), Flametongue Attack (10444), Windfury Attack (25504), Stormstrike (32175), Stormstrike Off-Hand (32176), Windfury Attack (33750), Lightning Bolt Overload (45284), Chain Lightning Overload (45297), Thunderstorm (51490), Lava Burst (51505), Lava Lash (60103), Lava Burst Overload (77451), Earthquake (77478), Lava Beam (114074), Lava Beam Overload (114738), Windstrike (115357), Windstrike Off-Hand (115360), Elemental Blast (117014), Elemental Blast Overload (120588), Earthen Rage (170379), Lightning Bolt (187837), Crash Lightning (187874), Earthen Spike (188089), Lightning Bolt (188196), Flame Shock (188389), Chain Lightning (188443), Flame Shock (188838), Lightning Shield (192109), Rockbiter (193786), Flametongue (193796), Crash Lightning (195592), Frostbrand (196834), Frost Shock (196840), Sundering (197214), Fury of Air (197385), Unleash Lava (199053), Unleash Lightning (199054), Doom Vortex (199116), Volcanic Inferno (205533), Icefury (210714), Crashing Storm (210801), Hailstorm (210854), Stormlash (213307), Storm Tempests (214452), Feral Lunge (215802), Icefury Overload (219271), Pristine Proto-Scale Girdle (224852), Seismic Lightning (243073)
-#2 (id=191038)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Damage (22)
+#2 (id=191038)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 10 | Scaled Value: 10 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Lightning Bolt (403), Chain Lightning (421), Earth Shock (8042), Flametongue Attack (10444), Windfury Attack (25504), Stormstrike (32175), Stormstrike Off-Hand (32176), Windfury Attack (33750), Lightning Bolt Overload (45284), Chain Lightning Overload (45297), Thunderstorm (51490), Lava Burst (51505), Lava Lash (60103), Lava Burst Overload (77451), Earthquake (77478), Lava Beam (114074), Lava Beam Overload (114738), Windstrike (115357), Windstrike Off-Hand (115360), Elemental Blast (117014), Elemental Blast Overload (120588), Earthen Rage (170379), Lightning Bolt (187837), Crash Lightning (187874), Earthen Spike (188089), Lightning Bolt (188196), Flame Shock (188389), Chain Lightning (188443), Flame Shock (188838), Lightning Shield (192109), Rockbiter (193786), Flametongue (193796), Crash Lightning (195592), Frostbrand (196834), Frost Shock (196840), Sundering (197214), Fury of Air (197385), Unleash Lava (199053), Unleash Lightning (199054), Doom Vortex (199116), Volcanic Inferno (205533), Icefury (210714), Crashing Storm (210801), Hailstorm (210854), Stormlash (213307), Storm Tempests (214452), Feral Lunge (215802), Icefury Overload (219271), Pristine Proto-Scale Girdle (224852), Seismic Lightning (243073)
 #3 (id=191039)   : Apply Aura (6) | Modify Pet Damage Done% (429)
@@ -2714,7 +2714,7 @@ Effects          :
 #8 (id=261009)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 249 (Label) | Target: Self (1)
                    Affected Spells (Label): Orb of Destruction (229700), Void Tendril (250834)
-#9 (id=261010)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Damage (0)
+#9 (id=261010)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
                    Base Value: -30 | Scaled Value: -30 | Misc Value 2: 265 (Label) | Target: Self (1)
                    Affected Spells (Label): Infernal Cinders (242218), Fevered Touch (242650), Legion Bombardment (253248), Wave of Flame (251948), Prototype Personnel Decimator (255629), Legion Bombardment (255713), Legion Bombardment (255724), Felshield (253278), Fire Mines (253321), Norgannon's Fireball (257241), Worldforger's Flame (257244), Gorshalach's Legacy (253329), Gorshalach's Legacy (255673)
 #10 (id=261011)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
@@ -2772,7 +2772,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6)
 Effects          :
-#1 (id=199258)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Damage (0)
+#1 (id=199258)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
                    Affected Spells: Healing Stream (5672), Healing Stream Totem (52042)
 Description      : Healing Stream Totem now heals two targets at once.
@@ -4683,7 +4683,7 @@ Attributes       : ........ ........ ........ .......x   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Cannot cancel aura (31)
 Effects          :
-#1 (id=291440)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Damage (0)
+#1 (id=291440)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 2 | Scaled Value: 2 | Target: Self (1)
                    Affected Spells: Stormstrike (32175), Stormstrike Off-Hand (32176), Windstrike (115357), Windstrike Off-Hand (115360)
 Description      : $@spelldesc198299
@@ -4978,7 +4978,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6)
 Effects          :
-#1 (id=294502)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Damage (0)
+#1 (id=294502)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 30 | Scaled Value: 30 | Target: Self (1)
                    Affected Spells: Riptide (61295)
 Description      : Increases the initial heal from Riptide by $s1%.
@@ -5064,7 +5064,7 @@ Effects          :
 #3 (id=297910)   : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost (14)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 14 | Target: Self (1)
                    Affected Spells: Stormstrike (17364), Windstrike (115356)
-#4 (id=302446)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Damage (0)
+#4 (id=302446)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
                    Affected Spells: Stormstrike (32175), Stormstrike Off-Hand (32176), Windstrike (115357), Windstrike Off-Hand (115360)
 #5 (id=342303)   : Apply Aura (6) | Add Flat Modifier (107): Spell Critical Chance (7)
@@ -5220,7 +5220,7 @@ Effects          :
 #1 (id=302536)   : Apply Aura (6) | Add Flat Modifier (107): Spell Proc Chance (18)
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 18 | Target: Self (1)
                    Affected Spells: Windfury (33757)
-#2 (id=302537)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Damage (0)
+#2 (id=302537)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 200 | Scaled Value: 200 | Target: Self (1)
                    Affected Spells: Windfury Attack (25504), Windfury Attack (33750)
 #3 (id=316924)   : Apply Aura (6) | Add Percent Modifier (108): Unknown(38)
@@ -5249,7 +5249,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=303466)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Damage (0)
+#1 (id=303466)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 200 | Scaled Value: 200 | Target: Self (1)
                    Affected Spells: Lightning Bolt (403), Chain Lightning (421), Lava Beam (114074), Lightning Bolt (187837), Lightning Bolt (188196), Chain Lightning (188443), Lightning Bolt (214815), Lightning Bolt Overload (214816)
 #2 (id=303467)   : Dummy (3)
@@ -5593,7 +5593,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6)
 Effects          :
-#1 (id=312060)   : Apply Owner Area Aura (143) | Add Percent Modifier (108): Spell Periodic Damage (22)
+#1 (id=312060)   : Apply Owner Area Aura (143) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 10 | Scaled Value: 10 | Misc Value: 22 | Radius: 40 yards | Target: Self (1)
                    Affected Spells: Flame Shock (188389), Flame Shock (188838)
 Description      : $@spelldesc210657
@@ -5705,7 +5705,7 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 2.25000 | Target: Enemy (6)
 #2 (id=312135)   : Energize Power (30)
                    Base Value: 15 | Scaled Value: 15 | Misc Value: maelstrom | Target: Self (1)
-#3 (id=312136)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Damage (0)
+#3 (id=312136)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 400 | Scaled Value: 400 | Target: Self (1)
                    Affected Spells: Frost Shock (196840)
 Description      : Hurls frigid ice at the target, dealing $s1 Frost damage and causing your next $n Frost Shocks to deal $s3% increased damage.
@@ -5747,7 +5747,7 @@ Effects          :
 #1 (id=312159)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 12 | Target: Self (1)
                    Affected Spells: Stormlash (195222), Stormlash (195255), Stormlash (195256), Stormlash (213307)
-#2 (id=312160)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Damage (0)
+#2 (id=312160)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 50 | Scaled Value: 50 | Target: Self (1)
                    Affected Spells: Stormlash (195222), Stormlash (195255), Stormlash (195256), Stormlash (213307)
 Description      : Stormlash now spreads to $s1 additional target and deals $s2% additional damage.
@@ -6084,7 +6084,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=320892)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Damage (0)
+#1 (id=320892)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 100 | Scaled Value: 100 | Target: Self (1)
                    Affected Spells: Lava Lash (60103)
 #2 (id=320893)   : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost (14)
@@ -6378,7 +6378,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=374522)   : Apply Aura (6) | Modify Recharge Time% (Category) (454)
                    Base Value: -15 | Scaled Value: -15 | Misc Value: 1634 | Target: Self (1)
-#2 (id=376272)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Damage (0)
+#2 (id=376272)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
                    Affected Spells: Rockbiter (193786)
 Description      : Rockbiter's recharge time is reduced by $s1% and it deals $s2% increased damage.
@@ -6598,7 +6598,7 @@ Attributes       : ........ ........ x.x..... ........   ........ ..x..... .....
                  : ........ .....x.. ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=486101)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Damage (0)
+#1 (id=486101)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
                    Affected Spells: Lightning Bolt (403), Chain Lightning (421), Earth Shock (8042), Lightning Bolt Overload (45284), Chain Lightning Overload (45297), Thunderstorm (51490), Elemental Blast (117014), Elemental Blast Overload (120588), Lightning Bolt (187837), Lightning Bolt (188196), Chain Lightning (188443), Frost Shock (196840), Icefury (210714), Lightning Bolt (214815), Lightning Bolt Overload (214816), Icefury Overload (219271)
 Description      : $@spelldesc16166
