@@ -119,6 +119,59 @@ unsigned sef_spell_idx( unsigned x )
   return x - as<unsigned>(static_cast<int>( SEF_SPELL_MIN ));
 }
 
+namespace monk_util
+{
+  // Special Monk composite_attack_power calculation, if the pointers mh or oh are
+  // set, instead of the classical action_t::weapon Damage is divided instead of
+  // multiplied by the weapon speed, AP portion is not multiplied by weapon
+  // speed.  Both MH and OH are directly weaved into one damage number
+  double monk_weapon_damage( const action_t* action,
+                             const weapon_t* mh,
+                             const weapon_t* oh,
+                             double ap )
+  {
+    player_t* player = action -> player;
+    sim_t* sim = player -> sim;
+
+    double mhdps = 0;
+    double ohdps = 0; 
+    double cdps = 0;
+    // Main Hand
+    if ( mh && mh -> type != WEAPON_NONE  )
+    {
+      assert( mh -> slot != SLOT_OFF_HAND );
+      
+      mhdps += ( mh -> min_dmg + mh -> max_dmg ) / ( 2 * mh -> swing_time.total_seconds() );
+
+      if ( sim -> debug )
+      {
+        sim -> out_debug.printf( "%s main hand weapon damage portion for %s: td=%.3f min_dmg=%.0f max_dmg=%.0f wd=%.3f bd=%.3f ws=%.3f ap=%.3f",
+                                 player -> name(), action -> name(),
+                                 mhdps, mh -> min_dmg, mh -> max_dmg, mhdps,
+                                 mh -> bonus_dmg, mh -> swing_time.total_seconds(), ap );
+      }
+    }
+
+    // Off Hand
+    if ( oh && oh -> type != WEAPON_NONE )
+    {
+      assert( oh -> slot == SLOT_OFF_HAND );
+      
+      ohdps += ( oh -> min_dmg + oh -> max_dmg ) / ( 2 * oh -> swing_time.total_seconds() );
+
+      if ( sim -> debug )
+      {
+        sim -> out_debug.printf( "%s off-hand weapon damage portion for %s: td=%.3f min_dmg=%.0f max_dmg=%.0f wd=%.3f bd=%.3f ws=%.3f ap=%.3f",
+                                player -> name(), action -> name(), ( mhdps + ohdps ), oh -> min_dmg, oh -> max_dmg, ohdps, oh -> bonus_dmg, oh -> swing_time.total_seconds(), ap );
+      }
+    }
+
+    cdps = ( ( 2 * mhdps ) + ohdps ) / 3;
+
+    return ap + ( cdps * WEAPON_POWER_COEFFICIENT );
+  }
+}
+
 struct monk_td_t: public actor_target_data_t
 {
 public:
