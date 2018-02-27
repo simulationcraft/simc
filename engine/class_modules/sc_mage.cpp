@@ -861,7 +861,18 @@ struct mage_pet_spell_t : public mage_spell_base_t
   mage_pet_spell_t( const std::string& n, mage_pet_t* p, const spell_data_t* s )
     : mage_spell_base_t( n, p, s, p -> o() )
   {
-      affected_by.erosion = affected_by.combustion = false;
+    affected_by.arcane_mage = false;
+    affected_by.fire_mage = false;
+    affected_by.frost_mage = false;
+
+    affected_by.arcane_power = false;
+    affected_by.bone_chilling = false;
+    affected_by.crackling_energy = false;
+    affected_by.incanters_flow = false;
+    affected_by.rune_of_power = false;
+
+    affected_by.combustion = false;
+    affected_by.erosion = false;
   }
 
   mage_t* o()
@@ -910,19 +921,7 @@ struct water_elemental_spell_t : public mage_pet_spell_t
 {
   water_elemental_spell_t( const std::string& n, mage_pet_t* p, const spell_data_t* s )
     : mage_pet_spell_t( n, p, s )
-  {
-    affected_by.arcane_mage = false;
-    affected_by.fire_mage = false;
-    affected_by.frost_mage = false;  // TODO: Probably a bug
-
-    affected_by.arcane_power = false;
-    affected_by.crackling_energy = false;
-    affected_by.incanters_flow = false;
-    affected_by.rune_of_power = false;
-
-    affected_by.combustion = false;
-    affected_by.erosion = false;
-  }
+  { }
 
   virtual double action_multiplier() const override
   {
@@ -7309,8 +7308,9 @@ double mage_t::composite_player_pet_damage_multiplier( const action_state_t* s )
 {
   double m = player_t::composite_player_pet_damage_multiplier( s );
 
-  m *= 1.0 + buffs.rune_of_power -> check_value();
+  m *= 1.0 + buffs.bone_chilling -> check_stack_value();
   m *= 1.0 + buffs.incanters_flow -> check_stack_value();
+  m *= 1.0 + buffs.rune_of_power -> check_value();
 
   return m;
 }
