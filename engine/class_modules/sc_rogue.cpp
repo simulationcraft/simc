@@ -3020,21 +3020,28 @@ struct pistol_shot_t : public rogue_attack_t
 
   double cost() const override
   {
+    double c = rogue_attack_t::cost();
+
     if ( p() -> buffs.opportunity -> check() )
     {
-      return 0;
+      c *= 1 - p() -> buffs.opportunity -> data().effectN( 1 ).percent();
     }
 
-    return rogue_attack_t::cost();
+    return c;
   }
 
   double action_multiplier() const override
   {
     double m = rogue_attack_t::action_multiplier();
 
-    if ( p() -> talent.quick_draw -> ok() && p() -> buffs.opportunity -> up() )
+    if ( p() -> buffs.opportunity -> up() )
     {
-      m *= 1.0 + p() -> talent.quick_draw -> effectN( 1 ).percent();
+      m *= 1.0 + p() -> buffs.opportunity -> data().effectN( 3 ).percent();
+
+      if ( p() -> talent.quick_draw -> ok() )
+      {
+        m *= 1.0 + p() -> talent.quick_draw -> effectN( 1 ).percent();
+      }
     }
 
     if ( p() -> buffs.greenskins_waterlogged_wristcuffs -> up() )
