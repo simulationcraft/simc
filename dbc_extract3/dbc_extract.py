@@ -323,20 +323,38 @@ elif options.type == 'view':
     if not dbc_file.open():
         sys.exit(1)
 
+    cache = dbc.file.DBCache(options)
+    if not cache.open():
+        sys.exit(1)
+    else:
+        entries = {}
+        for entry in cache.entries(dbc_file.parser):
+            entries[entry.id] = entry
+
     logging.debug(dbc_file)
     if id == 0:
+        # If cache has entries for the dbc_file, grab cache values into a database
         for record in dbc_file:
-            sys.stdout.write('%s\n' % str(record))
+            if record.id in entries:
+                print('{}'.format(str(entries[record.id])))
+            else:
+                print('{}'.format(str(record)))
     else:
         if options.raw and not dbc_file.searchable():
             logging.error('DBC file %s is not searchable in raw mode', path)
             sys.exit(1)
         else:
-            record = dbc_file.find(id)
-            if record:
-                print(record)
+            if id in entries:
+                record = entries[id]
+                hotfix = True
             else:
-                print('No record for DBC ID %d found', id)
+                record = dbc_file.find(id)
+                hotfix = False
+
+            if record:
+                print('{}{}'.format(record, hotfix and ' [hotfix]' or ''))
+            else:
+                print('No record for DBC ID {} found'.format(id))
 elif options.type == 'csv':
     path = os.path.abspath(os.path.join(options.path, options.args[0]))
     id = None
@@ -347,25 +365,41 @@ elif options.type == 'csv':
     if not dbc_file.open():
         sys.exit(1)
 
+    cache = dbc.file.DBCache(options)
+    if not cache.open():
+        sys.exit(1)
+    else:
+        entries = {}
+        for entry in cache.entries(dbc_file.parser):
+            entries[entry.id] = entry
+
     first = True
     logging.debug(dbc_file)
     if id == None:
         for record in dbc_file:
             if first:
-                sys.stdout.write('%s\n' % record.field_names(options.delim))
+                print('{}'.format(record.field_names(options.delim)))
 
-            sys.stdout.write('%s\n' % record.csv(options.delim, first))
+            if record.id in entries:
+                print('{}'.format(entries[record.id].csv(options.delim, first)))
+            else:
+                print('{}'.format(record.csv(options.delim, first)))
+
             first = False
     else:
         if options.raw and not dbc_file.searchable():
             logging.error('DBC file %s is not searchable in raw mode', path)
             sys.exit(1)
         else:
-            record = dbc_file.find(id)
-            if record:
+            if id in entries:
+                record = entries[id]
+            else:
+                record = dbc_file.find(id)
+
+            if not isinstance(record, str):
                 print(record.csv(options.delim, first))
             else:
-                print('No record for DBC ID %d found', id)
+                print(record)
 
 elif options.type == 'scale':
     g = dbc.generator.CSVDataGenerator(options, {
