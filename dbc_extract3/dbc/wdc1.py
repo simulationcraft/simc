@@ -961,8 +961,11 @@ class WDC1Parser(DBCParserBase):
     def sparse_data_offset(self, column, id_):
         return self.sparse_blocks[column.index()].get(id_, -1)
 
-    def create_raw_parser(self):
-        return WDC1RecordParser(self)
+    def create_raw_parser(self, hotfix_parser = False, expanded_parser = False):
+        if expanded_parser:
+            return ExpandedRecordParser(self)
+        else:
+            return WDC1RecordParser(self, hotfix = hotfix_parser)
 
     def create_formatted_parser(self, hotfix_parser = False, expanded_parser = False):
         formats = self.fmt.objs(self.class_name(), True)
@@ -1293,6 +1296,8 @@ class WDC1Parser(DBCParserBase):
         else:
             self.record_parser = self.create_formatted_parser()
 
+        return self.record_parser != None
+
     def parse_header(self):
         if not super().parse_header():
             return False
@@ -1329,7 +1334,8 @@ class WDC1Parser(DBCParserBase):
         if not super().open():
             return False
 
-        self.build_parser()
+        if not self.build_parser():
+            return False
 
         # Setup some data class-wide variables
         if self.options.raw:
