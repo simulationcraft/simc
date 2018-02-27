@@ -81,6 +81,9 @@ class DBCParserBase:
         if self.data:
             return True
 
+        if not self.file:
+            return True
+
         self.data = self.file.read()
         self.file.close()
 
