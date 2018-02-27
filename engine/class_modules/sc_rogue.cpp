@@ -3514,7 +3514,7 @@ struct saber_slash_t : public rogue_attack_t
 
   double saber_slash_proc_chance() const
   {
-    double opportunity_proc_chance = data().effectN( 4 ).percent();
+    double opportunity_proc_chance = data().effectN( 3 ).percent();
     opportunity_proc_chance += p() -> talent.swordmaster -> effectN( 1 ).percent();
     opportunity_proc_chance += p() -> buffs.jolly_roger -> stack_value();
     return opportunity_proc_chance;
