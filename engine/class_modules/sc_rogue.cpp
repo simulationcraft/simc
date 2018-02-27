@@ -832,10 +832,6 @@ struct rogue_attack_t : public melee_attack_t
     {
       base_td_multiplier *= 1.0 + p->spec.outlaw_rogue->effectN( 2 ).percent();
     }
-    if ( data().affected_by( p->spec.outlaw_rogue->effectN( 3 ) ) ) // DfA-Specific Modifier
-    {
-      base_dd_multiplier *= 1.0 + p->spec.outlaw_rogue->effectN( 3 ).percent();
-    }
 
     // Subtlety Class Passive
     if ( data().affected_by( p->spec.subtlety_rogue->effectN( 1 ) ) )
