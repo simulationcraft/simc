@@ -166,7 +166,7 @@ namespace monk_util
       }
     }
 
-    cdps = ( ( 2 * mhdps ) + ohdps ) / 3;
+    cdps += ( ( 2 * mhdps ) + ohdps ) / 3;
 
     return ap + ( cdps * WEAPON_POWER_COEFFICIENT );
   }
