@@ -3024,7 +3024,7 @@ struct pistol_shot_t : public rogue_attack_t
 
     if ( p() -> buffs.opportunity -> check() )
     {
-      c *= 1 - p() -> buffs.opportunity -> data().effectN( 1 ).percent();
+      c *= 1.0 + p() -> buffs.opportunity -> data().effectN( 1 ).percent();
     }
 
     return c;
@@ -3088,7 +3088,7 @@ struct pistol_shot_t : public rogue_attack_t
             p() -> gains.quick_draw, this );
       }
 
-      if ( p() -> sets -> has_set_bonus( ROGUE_OUTLAW, T20, B2 ) && p() -> buffs.opportunity -> up() )
+      if ( p() -> sets -> has_set_bonus( ROGUE_OUTLAW, T20, B2 ) && p() -> buffs.opportunity -> check() )
       {
         p() -> buffs.t20_2pc_outlaw -> trigger();
       }
