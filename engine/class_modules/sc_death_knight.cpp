@@ -6681,7 +6681,9 @@ struct tombstone_t : public death_knight_spell_t
       p() -> cooldown.dancing_rune_weapon -> adjust( 
         charges * timespan_t::from_millis( p() -> sets -> set( DEATH_KNIGHT_BLOOD, T21, B2) -> effectN( 1 ).base_value() ), false );
     }
-    p() -> cooldown.blood_tap -> adjust( timespan_t::from_seconds( -2.0 * charges ), false );
+
+    // Tombstone doesn't actually reduce blood tap cooldown by 2s per charge, but only 1s : https://github.com/SimCMinMax/WoW-BugTracker/issues/178
+    p() -> cooldown.blood_tap -> adjust( timespan_t::from_seconds( ( p() -> bugs ? -1.0 : -2.0 ) * charges ), false );
   }
 };
 
