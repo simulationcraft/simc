@@ -3519,6 +3519,15 @@ struct saber_slash_t : public rogue_attack_t
     return rogue_attack_t::cost();
   }
 
+  double composite_energize_amount( const action_state_t* state ) const override
+  {
+    // Do not grant CP on extra proc event
+    if ( saberslash_proc_event )
+      return 0;
+
+    return rogue_attack_t::composite_energize_amount( state );
+  }
+
   double saber_slash_proc_chance() const
   {
     double opportunity_proc_chance = data().effectN( 3 ).percent();
@@ -6185,8 +6194,8 @@ void rogue_t::init_action_list()
 
     // Main Rotation
     def -> add_action( "variable,name=rtb_reroll,value=!talent.slice_and_dice.enabled&buff.loaded_dice.up&(rtb_buffs<2|(rtb_buffs<4&!buff.true_bearing.up))", "Reroll when Loaded Dice is up and if you have less than 2 buffs or less than 4 and no True Bearing. With SnD, consider that we never have to reroll." );
-    def -> add_action( "variable,name=ss_useable_noreroll,value=(combo_points<4+talent.deeper_stratagem.enabled)", "Condition to use Saber Slash when not rerolling RtB or when using SnD" );
-    def -> add_action( "variable,name=ss_useable,value=(talent.anticipation.enabled&combo_points<5)|(!talent.anticipation.enabled&((variable.rtb_reroll&combo_points<4+talent.deeper_stratagem.enabled)|(!variable.rtb_reroll&variable.ss_useable_noreroll)))", "Condition to use Saber Slash, when you have RtB or not" );
+    def -> add_action( "variable,name=ss_useable_noreroll,value=(combo_points<5+talent.deeper_stratagem.enabled)", "Condition to use Saber Slash when not rerolling RtB or when using SnD" );
+    def -> add_action( "variable,name=ss_useable,value=(talent.anticipation.enabled&combo_points<5)|(!talent.anticipation.enabled&((variable.rtb_reroll&combo_points<5+talent.deeper_stratagem.enabled)|(!variable.rtb_reroll&variable.ss_useable_noreroll)))", "Condition to use Saber Slash, when you have RtB or not" );
     def -> add_action( "call_action_list,name=bf", "Normal rotation" );
     def -> add_action( "call_action_list,name=cds" );
     def -> add_action( "call_action_list,name=stealth,if=stealthed.rogue|cooldown.vanish.up|cooldown.shadowmeld.up", "Conditions are here to avoid worthless check if nothing is available" );
