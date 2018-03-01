@@ -107,7 +107,7 @@ namespace {
 		// will probably be wrong in many cases, but what can we do.
 		else
 		{
-			enchant_name = enchant.name;
+			enchant_name = enchant.name ? enchant.name : "unknown";
 			util::tokenize(enchant_name);
 
 			for (size_t i = 0; i < sizeof_array(enchant.ench_prop); i++)

@@ -4231,7 +4231,7 @@ const item_data_t* unique_gear::find_consumable( const dbc_t& dbc,
 
   // Poor man's longest matching prefix!
   const item_data_t* item = dbc::find_consumable( type, dbc.ptr, [&name]( const item_data_t* i ) {
-    std::string n = i -> name;
+    std::string n = i -> name ? i -> name : "unknown";
     util::tokenize( n );
     return util::str_in_str_ci( n, name );
   } );
