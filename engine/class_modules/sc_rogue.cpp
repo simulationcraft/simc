@@ -352,7 +352,6 @@ struct rogue_t : public player_t
     const spell_data_t* master_assassin;
     const spell_data_t* garrote;
     const spell_data_t* garrote_2;
-    const spell_data_t* crimson_tempest;
 
     // Outlaw
     const spell_data_t* blade_flurry;
@@ -1020,25 +1019,11 @@ struct rogue_attack_t : public melee_attack_t
     return melee_attack_t::attack_direct_power_coefficient( s );
   }
 
-  double attack_tick_power_coefficient( const action_state_t* s ) const override
-  {
-    if ( base_costs[ RESOURCE_COMBO_POINT ] )
-      return attack_power_mod.tick * cast_state( s ) -> cp;
-    return melee_attack_t::attack_tick_power_coefficient( s );
-  }
-
   double spell_direct_power_coefficient( const action_state_t* s ) const override
   {
     if ( base_costs[ RESOURCE_COMBO_POINT ] )
       return spell_power_mod.direct * cast_state( s ) -> cp;
     return melee_attack_t::spell_direct_power_coefficient( s );
-  }
-
-  double spell_tick_power_coefficient( const action_state_t* s ) const override
-  {
-    if ( base_costs[ RESOURCE_COMBO_POINT ] )
-      return spell_power_mod.tick * cast_state( s ) -> cp;
-    return melee_attack_t::spell_tick_power_coefficient( s );
   }
 
   double base_da_min( const action_state_t* s ) const override
@@ -2451,55 +2436,31 @@ struct cannonball_barrage_t : public rogue_attack_t
 
 struct crimson_tempest_t : public rogue_attack_t
 {
-  struct crimson_tempest_dot_t : public rogue_attack_t
-  {
-    crimson_tempest_dot_t( rogue_t* p ) :
-      rogue_attack_t( "crimson_tempest_dot", p, p->spec.crimson_tempest )
-    {
-      background = dual = hasted_ticks = true;   
-    }
-
-    // DoT spell data doesn't have a COMBO_POINT cost associated with it, so need to return this manually
-    double attack_tick_power_coefficient( const action_state_t* s ) const override
-    {
-      return attack_power_mod.tick * cast_state( s )->cp;
-    }
-  };
-
-  action_t* crimson_tempest_dot;
-
   crimson_tempest_t( rogue_t* p, const std::string& options_str ) :
     rogue_attack_t( "crimson_tempest", p, p -> talent.crimson_tempest, options_str )
   {
     aoe = -1;
-
-    crimson_tempest_dot = p->find_action( "crimson_tempest_dot" );
-    if ( !crimson_tempest_dot )
-    {
-      crimson_tempest_dot = new crimson_tempest_dot_t( p );
-    }
-    crimson_tempest_dot->stats = stats;
+    hasted_ticks = true;
   }
 
-  void impact( action_state_t* state ) override
+  timespan_t composite_dot_duration( const action_state_t* s ) const override
   {
-    rogue_attack_t::impact( state );
+    const rogue_attack_state_t* state = cast_state( s );
 
-    if ( result_is_hit( state->result ) )
+    timespan_t duration = data().duration() + timespan_t::from_seconds( 2 * state -> cp );
+    // Exsang NYI because it does not work on alpha as well.
+    /*if ( state -> exsanguinated )
     {
-      // Need to snapshot the state here so we can pass in the CPs used on the base ability
-      crimson_tempest_dot->set_target( state->target );
-      action_state_t* action_state = crimson_tempest_dot->get_state();
-      cast_state( action_state )->cp = cast_state( state )->cp;
-      crimson_tempest_dot->snapshot_state( action_state, DMG_OVER_TIME );
-      crimson_tempest_dot->schedule_execute( action_state );
-    }
+      duration *= 1.0 / ( 1.0 + p() -> talent.exsanguinate -> effectN( 1 ).percent() );
+    }*/
+
+    return duration;
   }
 
-  // Base damage of Crimson Tempest does not scale from CP, just the DoT component
+  // Base damage of Crimson Tempest does scale with CP+1, calling melee_attack_t instead of rogue parent on purpose
   double attack_direct_power_coefficient( const action_state_t* s ) const override
   { 
-    return melee_attack_t::attack_direct_power_coefficient( s );
+    return melee_attack_t::attack_direct_power_coefficient( s ) * ( cast_state( s ) -> cp + 1 );
   }
 };
 
@@ -3319,10 +3280,6 @@ struct nightblade_t : public rogue_attack_t
     affected_by.weaponmaster = true;
   }
 
-  // Nightblade does not gain power from combo points like typical damage effects
-  double attack_tick_power_coefficient( const action_state_t* s ) const override
-  { return melee_attack_t::attack_tick_power_coefficient( s ); }
-
   timespan_t composite_dot_duration( const action_state_t* s ) const override
   {
     timespan_t base_per_tick = data().effectN( 1 ).period();
@@ -3408,10 +3365,6 @@ struct rupture_t : public rogue_attack_t
 
     return duration;
   }
-
-  // Rupture no longer gain power from combo points like typical damage effects (since 7.1.5)
-  double attack_tick_power_coefficient( const action_state_t* s ) const override
-  { return melee_attack_t::attack_tick_power_coefficient( s ); }
 
   void execute() override
   {
@@ -5817,7 +5770,7 @@ rogue_td_t::rogue_td_t( player_t* target, rogue_t* source ) :
   dots.internal_bleeding  = target -> get_dot( "internal_bleeding", source );
   dots.mutilated_flesh    = target -> get_dot( "mutilated_flesh", source );
   dots.rupture            = target -> get_dot( "rupture", source );
-  dots.crimson_tempest    = target -> get_dot( "crimson_tempest_dot", source );
+  dots.crimson_tempest    = target -> get_dot( "crimson_tempest", source );
 
   dots.nightblade         = target -> get_dot( "nightblade", source );
 
@@ -6829,7 +6782,6 @@ void rogue_t::init_spells()
   spec.master_assassin      = find_spell( 256735 );
   spec.garrote              = find_specialization_spell( "Garrote" );
   spec.garrote_2            = find_specialization_spell( 231719 );
-  spec.crimson_tempest      = find_spell( 122233 );
 
   // Outlaw
   spec.blade_flurry         = find_specialization_spell( "Blade Flurry" );
