@@ -11303,7 +11303,7 @@ player_collected_data_t::action_sequence_data_t::action_sequence_data_t( const t
 bool player_collected_data_t::tank_container_type( const player_t* for_actor,
                                                    int             target_statistics_level )
 {
-  if ( for_actor -> primary_role() == ROLE_TANK && for_actor -> level() == MAX_LEVEL )
+  if ( true ) // FIXME: cannot use virtual function calls here! for_actor -> primary_role() == ROLE_TANK && for_actor -> level() == MAX_LEVEL )
   {
     return for_actor -> sim -> statistics_level < target_statistics_level;
   }
