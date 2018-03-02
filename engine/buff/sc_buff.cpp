@@ -516,6 +516,10 @@ buff_t* buff_t::set_period( timespan_t period )
       }
     }
   }
+
+  // Recheck tick behaviour, which is dependent on buff_period.
+  set_tick_behavior(tick_behavior);
+
   return this;
 }
 
@@ -577,12 +581,10 @@ buff_t* buff_t::set_can_cancel( bool cc )
 
 buff_t* buff_t::set_tick_behavior( buff_tick_behavior behavior )
 {
-  if ( behavior != buff_tick_behavior::NONE )
-  {
-    tick_behavior = behavior;
-  }
-  // If period is set, buf no buff tick behavior, set the behavior automatically to clipped ticks
-  else if ( buff_period > timespan_t::zero() && behavior == buff_tick_behavior::NONE )
+  tick_behavior = behavior;
+
+  // If period is set, but no buff tick behavior, set the behavior automatically to clipped ticks
+  if ( behavior == buff_tick_behavior::NONE && buff_period > timespan_t::zero() )
   {
     tick_behavior = buff_tick_behavior::CLIP;
   }

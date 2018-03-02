@@ -2888,7 +2888,8 @@ void print_html_player_buff( report::sc_html_stream& os, const buff_t& b,
         "<li><span class=\"label\">refresh behavior:</span>%s</li>\n"
         "<li><span class=\"label\">stack behavior:</span>%s</li>\n"
         "<li><span class=\"label\">tick behavior:</span>%s</li>\n"
-        "<li><span class=\"label\">tick_time behavior:</span>%s</li>\n",
+        "<li><span class=\"label\">tick_time behavior:</span>%s</li>\n"
+        "<li><span class=\"label\">period:</span>%.2f</li>\n",
         b.source ? util::encode_html( b.source->name() ).c_str() : "",
         b.cooldown->name_str.c_str(), b.max_stack(),
         b.buff_duration.total_seconds(), b.cooldown->duration.total_seconds(),
@@ -2899,7 +2900,8 @@ void print_html_player_buff( report::sc_html_stream& os, const buff_t& b,
         util::buff_refresh_behavior_string(b.refresh_behavior),
         util::buff_stack_behavior_string(b.stack_behavior),
         util::buff_tick_behavior_string(b.tick_behavior),
-        util::buff_tick_time_behavior_string(b.tick_time_behavior));
+        util::buff_tick_time_behavior_string(b.tick_time_behavior),
+        b.buff_period.total_seconds());
     if ( b.item )
     {
       os.format(
