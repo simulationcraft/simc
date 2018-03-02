@@ -3602,11 +3602,16 @@ struct shield_slam_t: public warrior_attack_t
 
     if ( p() -> buff.bindings_of_kakushan -> check() )
     {
-      p() -> resource_gain( RESOURCE_RAGE, rage_gain * ( 1.0 + p() -> buff.bindings_of_kakushan -> check_value() ) * ( 1.0 + ( p() -> buff.demoralizing_shout -> check() ? p() -> artifact.might_of_the_vrykul.percent() : 0 ) ), p() -> gain.shield_slam );
+      p() -> resource_gain( RESOURCE_RAGE, rage_gain * 
+          ( 1.0 + p() -> buff.bindings_of_kakushan -> check_value() ) * 
+          ( 1.0 + ( p() -> buff.demoralizing_shout -> check() && p() -> artifact.might_of_the_vrykul.rank() ? p() -> find_spell( 188783 ) -> effectN( 2 ).percent() : 0 ) ),
+          p() -> gain.shield_slam );
     }
     else
     {
-      p() -> resource_gain( RESOURCE_RAGE, rage_gain * ( 1.0 + ( p() -> buff.demoralizing_shout -> check() ? p() -> artifact.might_of_the_vrykul.percent() : 0 ) ), p() -> gain.shield_slam );
+      p() -> resource_gain( RESOURCE_RAGE, rage_gain *
+          ( 1.0 + ( p() -> buff.demoralizing_shout -> check() && p() -> artifact.might_of_the_vrykul.rank() ? p() -> find_spell( 188783 ) -> effectN( 2 ).percent() : 0 ) ),
+          p() -> gain.shield_slam );
     }
     p() -> buff.bindings_of_kakushan -> expire();
 
@@ -3810,11 +3815,16 @@ struct thunder_clap_t: public warrior_attack_t
 
     if ( p() -> buff.bindings_of_kakushan -> check() )
     {
-      p() -> resource_gain( RESOURCE_RAGE, rage_gain * ( 1.0 + p() -> buff.bindings_of_kakushan -> check_value() ) * ( 1.0 + ( p() -> buff.demoralizing_shout -> check() ? p() -> artifact.might_of_the_vrykul.percent() : 0 ) ), p() -> gain.thunder_clap );
+      p() -> resource_gain( RESOURCE_RAGE, rage_gain * 
+          ( 1.0 + p() -> buff.bindings_of_kakushan -> check_value() ) *
+          ( 1.0 + ( p() -> buff.demoralizing_shout -> check() && p() -> artifact.might_of_the_vrykul.rank() ? p() -> find_spell( 188783 ) -> effectN( 2 ).percent() : 0 ) ),
+          p() -> gain.thunder_clap );
     }
     else
     {
-      p() -> resource_gain( RESOURCE_RAGE, rage_gain * ( 1.0 + ( p() -> buff.demoralizing_shout -> check() ? p() -> artifact.might_of_the_vrykul.percent() : 0 ) ), p() -> gain.thunder_clap );
+      p() -> resource_gain( RESOURCE_RAGE, rage_gain * 
+          ( 1.0 + ( p() -> buff.demoralizing_shout -> check() && p() -> artifact.might_of_the_vrykul.rank() ? p() -> find_spell( 188783 ) -> effectN( 1 ).percent() : 0 ) ),
+          p() -> gain.thunder_clap );
     }
 
     p() -> buff.bindings_of_kakushan -> expire();
