@@ -4569,7 +4569,14 @@ struct shield_block_t: public warrior_spell_t
     parse_options( options_str );
     use_off_gcd = true;
     cooldown -> hasted = true;
-    cooldown -> charges += p -> spec.shield_block_2 -> effectN( 1 ).base_value();
+    cooldown -> charges += p -> spec.shield_block_2 -> effectN( 1 ).base_value();    
+  }
+
+  void init() override
+  {
+    warrior_spell_t::init();
+
+    cooldown -> charges += p() -> legendary.ararats_bloodmirror -> effectN( 1 ).base_value();
   }
 
   void execute() override
@@ -4626,6 +4633,13 @@ struct spell_reflection_t: public warrior_spell_t
   {
     parse_options( options_str );
     use_off_gcd = true;
+  }
+
+  void init() override
+  {
+    warrior_spell_t::init();
+
+    cooldown -> charges += p() -> legendary.ararats_bloodmirror -> effectN( 1 ).base_value();
   }
 
   void execute() override
@@ -7173,6 +7187,15 @@ struct najentuss_vertebrae_t : public unique_gear::scoped_actor_callback_t<warri
   { warrior -> legendary.najentuss_vertebrae = e.driver(); }
 };
 
+struct ararats_bloodmirror_t : public unique_gear::scoped_actor_callback_t<warrior_t>
+{
+  ararats_bloodmirror_t() : super( WARRIOR )
+  {}
+
+  void manipulate( warrior_t* warrior, const special_effect_t& e ) override
+  { warrior -> legendary.ararats_bloodmirror = e.driver(); }
+};
+
 void init()
 {
   unique_gear::register_special_effect( 205144, archavons_heavy_hand_t() );
@@ -7193,6 +7216,7 @@ void init()
   unique_gear::register_special_effect( 208051, sephuzs_secret_t() );
   unique_gear::register_special_effect( 248118, the_great_storms_eye_t(), true );
   unique_gear::register_special_effect( 248120, valarjar_berserkers_t() );
+  unique_gear::register_special_effect( 248117, ararats_bloodmirror_t() );
 }
 
 } // items
