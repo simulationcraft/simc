@@ -950,19 +950,26 @@ public:
   {
     if ( rage > 0 )
     {
-      //Anger management takes the amount of rage spent and reduces the cooldown of abilities by 1 second per 10 rage.
-      rage /= p() -> talents.anger_management -> effectN( 1 ).base_value();
+      //Anger management takes the amount of rage spent and reduces the cooldown of abilities by 1 second per 20 rage (arms) or 10 (prot)
       rage *= -1;
 
-      p() -> cooldown.battle_cry -> adjust( timespan_t::from_seconds( rage ) );
-      p() -> cooldown.bladestorm -> adjust( timespan_t::from_seconds( rage ) );
-
-      if ( p() -> specialization() == WARRIOR_PROTECTION )
+      if ( p() -> specialization() == WARRIOR_ARMS )
       {
+        rage /= p() -> talents.anger_management -> effectN( 1 ).base_value();
+
+        p() -> cooldown.bladestorm -> adjust( timespan_t::from_seconds( rage ) );
+      }
+      else if ( p() -> specialization() == WARRIOR_PROTECTION )
+      {
+        rage /= p() -> talents.anger_management -> effectN( 2 ).base_value();
+
         p() -> cooldown.last_stand -> adjust( timespan_t::from_seconds( rage ) );
         p() -> cooldown.shield_wall -> adjust( timespan_t::from_seconds( rage ) );
         p() -> cooldown.demoralizing_shout -> adjust( timespan_t::from_seconds( rage ) );
       }
+
+      p() -> cooldown.battle_cry -> adjust( timespan_t::from_seconds( rage ) );
+
     }
   }
 };
