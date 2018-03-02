@@ -1113,8 +1113,8 @@ struct mirror_image_pet_t : public mage_pet_t
     mage_pet_t::create_buffs();
 
     // MI Arcane Charge is hardcoded as 25% damage increase.
-    arcane_charge = buff_creator_t( this, "arcane_charge", o() -> spec.arcane_charge )
-                      .default_value( 0.25 );
+    arcane_charge = make_buff( this, "arcane_charge", o() -> spec.arcane_charge )
+                      -> set_default_value( 0.25 );
   }
 };
 
@@ -1278,8 +1278,7 @@ struct erosion_t : public buff_t
   event_t* decay_event;
 
   erosion_t( mage_td_t* td ) :
-    buff_t( buff_creator_t( *td, "erosion",
-                            td -> source -> find_spell( 210134 ) ) ),
+    buff_t( *td, "erosion", td -> source -> find_spell( 210134 ) ),
     erosion_event_data( td -> source -> find_spell( 210154 ) ),
     decay_event( nullptr )
   {
@@ -1322,7 +1321,7 @@ struct erosion_t : public buff_t
 struct brain_freeze_buff_t : public buff_t
 {
   brain_freeze_buff_t( mage_t* p ) :
-    buff_t( buff_creator_t( p, "brain_freeze", p -> find_spell( 190446 ) ) )
+    buff_t( p, "brain_freeze", p -> find_spell( 190446 ) )
   { }
 
   virtual void execute( int stacks, double value, timespan_t duration ) override
@@ -1410,7 +1409,7 @@ struct lady_vashjs_grasp_t : public buff_t
   proc_t* proc_fof;
 
   lady_vashjs_grasp_t( mage_t* p ) :
-    buff_t( buff_creator_t( p, "lady_vashjs_grasp", p -> find_spell( 208147 ) ) )
+    buff_t( p, "lady_vashjs_grasp", p -> find_spell( 208147 ) )
   {
     // Disable by default.
     default_chance = 0.0;
@@ -1429,7 +1428,7 @@ struct ray_of_frost_buff_t : public buff_t
   timespan_t rof_cd;
 
   ray_of_frost_buff_t( mage_t* p ) :
-    buff_t( buff_creator_t( p, "ray_of_frost", p -> find_spell( 208141 ) ) )
+    buff_t( p, "ray_of_frost", p -> find_spell( 208141 ) )
   {
     set_default_value( data().effectN( 1 ).percent() );
     const spell_data_t* rof_data = p -> find_spell( 205021 );
@@ -5935,15 +5934,15 @@ mage_td_t::mage_td_t( player_t* target, mage_t* mage ) :
   dots.living_bomb       = target -> get_dot( "living_bomb",       mage );
   dots.nether_tempest    = target -> get_dot( "nether_tempest",    mage );
 
-  debuffs.erosion           = new buffs::erosion_t( this );
-  debuffs.slow              = buff_creator_t( *this, "slow", mage -> find_spell( 31589 ) );
-  debuffs.frost_bomb        = buff_creator_t( *this, "frost_bomb", mage -> talents.frost_bomb );
-  debuffs.frozen            = buff_creator_t( *this, "frozen" )
-                                .duration( timespan_t::from_seconds( 0.5 ) );
-  debuffs.water_jet         = buff_creator_t( *this, "water_jet", mage -> find_spell( 135029 ) )
-                                .cd( timespan_t::zero() );
-  debuffs.winters_chill     = buff_creator_t( *this, "winters_chill", mage -> find_spell( 228358 ) )
-                                .chance( mage -> spec.brain_freeze_2 -> ok() ? 1.0 : 0.0 );
+  debuffs.erosion       = make_buff<buffs::erosion_t>( this );
+  debuffs.slow          = make_buff( *this, "slow", mage -> find_spell( 31589 ) );
+  debuffs.frost_bomb    = make_buff( *this, "frost_bomb", mage -> talents.frost_bomb );
+  debuffs.frozen        = make_buff( *this, "frozen" )
+                            -> set_duration( timespan_t::from_seconds( 0.5 ) );
+  debuffs.water_jet     = make_buff( *this, "water_jet", mage -> find_spell( 135029 ) )
+                            -> set_cooldown( timespan_t::zero() );
+  debuffs.winters_chill = make_buff( *this, "winters_chill", mage -> find_spell( 228358 ) )
+                            -> set_chance( mage -> spec.brain_freeze_2 -> ok() ? 1.0 : 0.0 );
 }
 
 mage_t::mage_t( sim_t* sim, const std::string& name, race_e r ) :
@@ -6458,82 +6457,83 @@ void mage_t::create_buffs()
   player_t::create_buffs();
 
   // Arcane
-  buffs.arcane_charge         = buff_creator_t( this, "arcane_charge", spec.arcane_charge );
-  buffs.arcane_familiar       = buff_creator_t( this, "arcane_familiar", find_spell( 210126 ) )
-                                  .default_value( find_spell( 210126 ) -> effectN( 1 ).percent() )
-                                  .period( timespan_t::from_seconds( 3.0 ) )
-                                  .tick_behavior( buff_tick_behavior::CLIP )
-                                  .tick_time_behavior( buff_tick_time_behavior::HASTED )
-                                  .tick_callback( [ this ] ( buff_t*, int, const timespan_t& )
-                                    {
-                                      assert( action.arcane_assault );
-                                      action.arcane_assault -> set_target( target );
-                                      action.arcane_assault -> execute();
-                                    } )
-                                  .stack_change_callback( [ this ] ( buff_t*, int, int )
-                                    { recalculate_resource_max( RESOURCE_MANA ); } );
-  buffs.arcane_power          = buff_creator_t( this, "arcane_power", find_spell( 12042 ) )
-                                  .default_value( find_spell( 12042 ) -> effectN( 1 ).percent()
-                                                + talents.overpowered -> effectN( 1 ).percent() );
-  buffs.chrono_shift          = buff_creator_t( this, "chrono_shift", find_spell( 236298 ) )
-                                  .default_value( find_spell( 236298 ) -> effectN( 1 ).percent() )
-                                  .add_invalidate( CACHE_RUN_SPEED );
-  buffs.clearcasting          = buff_creator_t( this, "clearcasting", find_spell( 263725 ) )
-                                  .default_value( find_spell( 263725 ) -> effectN( 1 ).percent() );
-  buffs.crackling_energy      = buff_creator_t( this, "crackling_energy", find_spell( 246224 ) )
-                                  .default_value( find_spell( 246224 ) -> effectN( 1 ).percent() );
-  buffs.expanding_mind        = buff_creator_t( this, "expanding_mind", find_spell( 253262 ) )
-                                  .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
-  buffs.presence_of_mind      = buff_creator_t( this, "presence_of_mind", find_spell( 205025 ) )
-                                  .cd( timespan_t::zero() )
-                                  .stack_change_callback( [ this ] ( buff_t*, int, int cur )
-                                    { if ( cur == 0 ) cooldowns.presence_of_mind -> start(); } );
-  buffs.quick_thinker         = make_buff<haste_buff_t>( this, "quick_thinker", find_spell( 253299 ) );
-  buffs.quick_thinker->set_default_value( find_spell( 253299 ) -> effectN( 1 ).percent() )
-      ->set_chance( sets -> set( MAGE_ARCANE, T21, B4 ) -> proc_chance() );
-  buffs.rule_of_threes        = buff_creator_t( this, "rule_of_threes", find_spell( 264774 ) )
-                                  .default_value( find_spell( 264774 ) -> effectN( 1 ).percent() );
+  buffs.arcane_charge    = make_buff( this, "arcane_charge", spec.arcane_charge );
+  buffs.arcane_familiar  = make_buff( this, "arcane_familiar", find_spell( 210126 ) )
+                             -> set_default_value( find_spell( 210126 ) -> effectN( 1 ).percent() )
+                             -> set_period( timespan_t::from_seconds( 3.0 ) )
+                             -> set_tick_time_behavior( buff_tick_time_behavior::HASTED )
+                             -> set_tick_callback( [ this ] ( buff_t*, int, const timespan_t& )
+                                {
+                                  assert( action.arcane_assault );
+                                  action.arcane_assault -> set_target( target );
+                                  action.arcane_assault -> execute();
+                                } )
+                             -> set_stack_change_callback( [ this ] ( buff_t*, int, int )
+                                { recalculate_resource_max( RESOURCE_MANA ); } );
+  buffs.arcane_power     = make_buff( this, "arcane_power", find_spell( 12042 ) )
+                             -> set_default_value( find_spell( 12042 ) -> effectN( 1 ).percent()
+                                                 + talents.overpowered -> effectN( 1 ).percent() );
+  buffs.chrono_shift     = make_buff( this, "chrono_shift", find_spell( 236298 ) )
+                             -> set_default_value( find_spell( 236298 ) -> effectN( 1 ).percent() )
+                             -> add_invalidate( CACHE_RUN_SPEED );
+  buffs.clearcasting     = make_buff( this, "clearcasting", find_spell( 263725 ) )
+                             -> set_default_value( find_spell( 263725 ) -> effectN( 1 ).percent() );
+  buffs.crackling_energy = make_buff( this, "crackling_energy", find_spell( 246224 ) )
+                             -> set_default_value( find_spell( 246224 ) -> effectN( 1 ).percent() );
+  buffs.expanding_mind   = make_buff( this, "expanding_mind", find_spell( 253262 ) )
+                             -> add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+  buffs.presence_of_mind = make_buff( this, "presence_of_mind", find_spell( 205025 ) )
+                             -> set_cooldown( timespan_t::zero() )
+                             -> set_stack_change_callback( [ this ] ( buff_t*, int, int cur )
+                                { if ( cur == 0 ) cooldowns.presence_of_mind -> start(); } );
+  buffs.quick_thinker    = make_buff<haste_buff_t>( this, "quick_thinker", find_spell( 253299 ) )
+                             -> set_default_value( find_spell( 253299 ) -> effectN( 1 ).percent() )
+                             -> set_chance( sets -> set( MAGE_ARCANE, T21, B4 ) -> proc_chance() );
+  buffs.rule_of_threes   = make_buff( this, "rule_of_threes", find_spell( 264774 ) )
+                             -> set_default_value( find_spell( 264774 ) -> effectN( 1 ).percent() );
   
+
   // Fire
-  buffs.combustion             = buff_creator_t( this, "combustion", find_spell( 190319 ) )
-                                   .cd( timespan_t::zero() )
-                                   .add_invalidate( CACHE_MASTERY )
-                                   .default_value( find_spell( 190319 ) -> effectN( 1 ).percent() );
+  buffs.combustion             = make_buff( this, "combustion", find_spell( 190319 ) )
+                                   -> set_cooldown( timespan_t::zero() )
+                                   -> add_invalidate( CACHE_MASTERY )
+                                   -> set_default_value( find_spell( 190319 ) -> effectN( 1 ).percent() );
   buffs.combustion -> buff_duration += sets -> set( MAGE_FIRE, T21, B2 ) -> effectN( 1 ).time_value();
 
-  buffs.critical_massive       = buff_creator_t( this, "critical_massive", find_spell( 242251 ) )
-                                   .default_value( find_spell( 242251 ) -> effectN( 1 ).percent() );
-  buffs.enhanced_pyrotechnics  = buff_creator_t( this, "enhanced_pyrotechnics", find_spell( 157644 ) )
-                                   .chance( spec.enhanced_pyrotechnics -> ok() ? 1.0 : 0.0 )
-                                   .default_value( find_spell( 157644 ) -> effectN( 1 ).percent()
-                                       + sets -> set( MAGE_FIRE, T19, B2 ) -> effectN( 1 ).percent() );
-  buffs.erupting_infernal_core = buff_creator_t( this, "erupting_infernal_core", find_spell( 248147 ) );
-  buffs.frenetic_speed         = buff_creator_t( this, "frenetic_speed", find_spell( 236060 ) )
-                                   .default_value( find_spell( 236060 ) -> effectN( 1 ).percent() )
-                                   .add_invalidate( CACHE_RUN_SPEED );
-  buffs.ignition               = buff_creator_t( this, "ignition", find_spell( 246261 ) )
-                                   .trigger_spell( sets -> set( MAGE_FIRE, T20, B2 ) );
-  buffs.inferno                = buff_creator_t( this, "inferno", find_spell( 253220 ) )
-                                    .default_value( find_spell( 253220 ) -> effectN( 1 ).percent() );
+  buffs.critical_massive       = make_buff( this, "critical_massive", find_spell( 242251 ) )
+                                   -> set_default_value( find_spell( 242251 ) -> effectN( 1 ).percent() );
+  buffs.enhanced_pyrotechnics  = make_buff( this, "enhanced_pyrotechnics", find_spell( 157644 ) )
+                                   -> set_chance( spec.enhanced_pyrotechnics -> ok() ? 1.0 : 0.0 )
+                                   -> set_default_value( find_spell( 157644 ) -> effectN( 1 ).percent()
+                                        + sets -> set( MAGE_FIRE, T19, B2 ) -> effectN( 1 ).percent() );
+  buffs.erupting_infernal_core = make_buff( this, "erupting_infernal_core", find_spell( 248147 ) );
+  buffs.frenetic_speed         = make_buff( this, "frenetic_speed", find_spell( 236060 ) )
+                                   -> set_default_value( find_spell( 236060 ) -> effectN( 1 ).percent() )
+                                   -> add_invalidate( CACHE_RUN_SPEED );
+  buffs.ignition               = make_buff( this, "ignition", find_spell( 246261 ) )
+                                   -> set_trigger_spell( sets -> set( MAGE_FIRE, T20, B2 ) );
+  buffs.inferno                = make_buff( this, "inferno", find_spell( 253220 ) )
+                                   -> set_default_value( find_spell( 253220 ) -> effectN( 1 ).percent() );
   buffs.inferno -> buff_duration = buffs.combustion -> buff_duration;
 
-  buffs.heating_up             = buff_creator_t( this, "heating_up",  find_spell( 48107 ) );
-  buffs.hot_streak             = buff_creator_t( this, "hot_streak",  find_spell( 48108 ) );
-  buffs.streaking              = make_buff<haste_buff_t>( this, "streaking", find_spell( 211399 ) );
-  buffs.streaking->set_default_value( find_spell( 211399 ) -> effectN( 1 ).percent() );
+  buffs.heating_up             = make_buff( this, "heating_up",  find_spell( 48107 ) );
+  buffs.hot_streak             = make_buff( this, "hot_streak",  find_spell( 48108 ) );
+  buffs.streaking              = make_buff<haste_buff_t>( this, "streaking", find_spell( 211399 ) )
+                                   -> set_default_value( find_spell( 211399 ) -> effectN( 1 ).percent() );
+
 
   // Frost
-  buffs.arctic_blast           = buff_creator_t( this, "arctic_blast", find_spell( 253257 ) )
-                                   .default_value( find_spell( 253257 ) -> effectN( 1 ).percent() )
-                                   .chance( sets -> has_set_bonus( MAGE_FROST, T21, B4 ) ? 1.0 : 0.0 );
-  buffs.brain_freeze           = new buffs::brain_freeze_buff_t( this );
-  buffs.bone_chilling          = buff_creator_t( this, "bone_chilling", find_spell( 205766 ) )
-                                   .default_value( talents.bone_chilling -> effectN( 1 ).percent() / 10 );
-  buffs.fingers_of_frost       = buff_creator_t( this, "fingers_of_frost", find_spell( 44544 ) )
-                                   .max_stack( find_spell( 44544 ) -> max_stacks() );
-  buffs.frozen_mass            = buff_creator_t( this, "frozen_mass", find_spell( 242253 ) )
-                                   .default_value( find_spell( 242253 ) -> effectN( 1 ).percent() );
-  buffs.rage_of_the_frost_wyrm = buff_creator_t( this, "rage_of_the_frost_wyrm", find_spell( 248177 ) );
+  buffs.arctic_blast           = make_buff( this, "arctic_blast", find_spell( 253257 ) )
+                                   -> set_default_value( find_spell( 253257 ) -> effectN( 1 ).percent() )
+                                   -> set_chance( sets -> has_set_bonus( MAGE_FROST, T21, B4 ) ? 1.0 : 0.0 );
+  buffs.brain_freeze           = make_buff<buffs::brain_freeze_buff_t>( this );
+  buffs.bone_chilling          = make_buff( this, "bone_chilling", find_spell( 205766 ) )
+                                   -> set_default_value( talents.bone_chilling -> effectN( 1 ).percent() / 10 );
+  buffs.fingers_of_frost       = make_buff( this, "fingers_of_frost", find_spell( 44544 ) )
+                                   -> set_max_stack( find_spell( 44544 ) -> max_stacks() );
+  buffs.frozen_mass            = make_buff( this, "frozen_mass", find_spell( 242253 ) )
+                                   -> set_default_value( find_spell( 242253 ) -> effectN( 1 ).percent() );
+  buffs.rage_of_the_frost_wyrm = make_buff( this, "rage_of_the_frost_wyrm", find_spell( 248177 ) );
 
   // Buff to track icicles. This does not, however, track the true amount of icicles present.
   // Instead, as it does in game, it tracks icicle buff stack count based on the number of *casts*
@@ -6560,33 +6560,37 @@ void mage_t::create_buffs()
   //
   // This explains why some Icicle stacks remain if Glacial Spike executes with 5 Icicle stacks but less
   // than 5 actual Icicles.
-  buffs.icicles                = buff_creator_t( this, "icicles", find_spell( 205473 ) );
-  buffs.icy_veins              = new buffs::icy_veins_buff_t( this );
-  buffs.ray_of_frost           = new buffs::ray_of_frost_buff_t( this );
+  buffs.icicles                = make_buff( this, "icicles", find_spell( 205473 ) );
+  buffs.icy_veins              = make_buff<buffs::icy_veins_buff_t>( this );
+  buffs.ray_of_frost           = make_buff<buffs::ray_of_frost_buff_t>( this );
+
 
   // Talents
-  buffs.ice_floes              = buff_creator_t( this, "ice_floes", talents.ice_floes );
-  buffs.incanters_flow         = new buffs::incanters_flow_t( this );
-  buffs.rune_of_power          = buff_creator_t( this, "rune_of_power", find_spell( 116014 ) )
-                                   .duration( find_spell( 116011 ) -> duration() )
-                                   .default_value( find_spell( 116014 ) -> effectN( 1 ).percent() );
+  buffs.ice_floes      = make_buff( this, "ice_floes", talents.ice_floes );
+  buffs.incanters_flow = make_buff<buffs::incanters_flow_t>( this );
+  buffs.rune_of_power  = make_buff( this, "rune_of_power", find_spell( 116014 ) )
+                           -> set_duration( find_spell( 116011 ) -> duration() )
+                           -> set_default_value( find_spell( 116014 ) -> effectN( 1 ).percent() );
+
 
   // Legendary
-  buffs.lady_vashjs_grasp  = new buffs::lady_vashjs_grasp_t( this );
+  buffs.lady_vashjs_grasp = make_buff<buffs::lady_vashjs_grasp_t>( this );
 
-  //Misc
+
+  // Misc
 
   // N active GBoWs are modeled by a single buff that gives N times as much mana.
-  buffs.greater_blessing_of_widsom = make_buff( this, "greater_blessing_of_wisdom", find_spell( 203539 ) )
-    -> set_tick_callback( [ this ]( buff_t*, int, const timespan_t& )
-      { resource_gain( RESOURCE_MANA,
-                       resources.max[ RESOURCE_MANA ] * 0.002 * blessing_of_wisdom_count,
-                       gains.greater_blessing_of_wisdom ); } )
-    -> set_period( find_spell( 203539 ) -> effectN( 2 ).period() )
-    -> set_tick_behavior( buff_tick_behavior::CLIP );
-  buffs.t19_oh_buff = stat_buff_creator_t( this, "ancient_knowledge", sets -> set( specialization(), T19OH, B8 ) -> effectN( 1 ).trigger() )
-                        .trigger_spell( sets -> set( specialization(), T19OH, B8 ) );
-  buffs.shimmer     = buff_creator_t( this, "shimmer", find_spell( 212653 ) );
+  buffs.greater_blessing_of_widsom =
+    make_buff( this, "greater_blessing_of_wisdom", find_spell( 203539 ) )
+      -> set_tick_callback( [ this ]( buff_t*, int, const timespan_t& )
+         { resource_gain( RESOURCE_MANA,
+                          resources.max[ RESOURCE_MANA ] * 0.002 * blessing_of_wisdom_count,
+                          gains.greater_blessing_of_wisdom ); } )
+      -> set_period( find_spell( 203539 ) -> effectN( 2 ).period() )
+      -> set_tick_behavior( buff_tick_behavior::CLIP );
+  buffs.t19_oh_buff = make_buff<stat_buff_t>( this, "ancient_knowledge", sets -> set( specialization(), T19OH, B8 ) -> effectN( 1 ).trigger() )
+                        -> set_trigger_spell( sets -> set( specialization(), T19OH, B8 ) );
+  buffs.shimmer     = make_buff( this, "shimmer", find_spell( 212653 ) );
 }
 
 // mage_t::init_gains =======================================================
