@@ -3812,6 +3812,13 @@ struct thunder_clap_t: public warrior_attack_t
 
     p() -> buff.bindings_of_kakushan -> expire();
   }
+
+  void impact( action_state_t* s ) override
+  {
+    warrior_attack_t::impact( s );
+
+    p() -> cooldown.demoralizing_shout -> adjust( timespan_t::from_seconds( -1.0 * p() -> legendary.thundergods_vigor -> effectN( 1 ).base_value() ), false );
+  }
 };
 
 // Victory Rush =============================================================
