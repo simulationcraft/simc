@@ -1036,14 +1036,13 @@ void print_html_style( report::sc_html_stream& os, const sim_t& )
 {
   // Logo
   os << "<style type=\"text/css\" media=\"all\">\n"
-     << "#logo {display: block;position: absolute;top: 7px;left: 15px;width: "
-        "375px;height: 153px;background: ";
+     << "#logo {background-image: url(data:image/png;base64,";
   print_text_array( os, __logo );
-  os << " 0px 0px no-repeat; }\n"
+  os << "); background-repeat: no-repeat; position: absolute;width: 375px; height: 200px; background-size: cover; }\n"
      << "</style>\n";
 
   // Rest
-  print_text_array( os, __mop_stylesheet );
+  print_text_array( os, __html_stylesheet );
 }
 
 // print_html_masthead ======================================================

@@ -33,17 +33,20 @@ def print_as_char_array( name, input ):
     return out
         
 def main():
+    line_length = 116
     with open( "report_data.inc", "w") as f:
         f.write( "// Automatically generated report data.\n\n")
-        f.write( print_as_char_array( "__logo", get_file_as_lines( "simc_logo.txt", 80 ) ) )
+        # base-64 encoded png image. Use eg. https://www.browserling.com/tools/image-to-base64 to create from
+        # simc logo with transparent background.
+        f.write( print_as_char_array( "__logo", get_file_as_lines( "simc_logo.txt", line_length ) ) )
         f.write( "\n\n" )
-        f.write( print_as_char_array( "__image_load_script", get_file_as_lines( "image_load_script.js", 80 ) ) )
+        f.write( print_as_char_array( "__image_load_script", get_file_as_lines( "image_load_script.js", line_length ) ) )
         f.write( "\n\n" )
-        f.write( print_as_char_array( "__mop_stylesheet", get_file_as_lines( "mop_style.css", 80 ) ) )
+        f.write( print_as_char_array( "__html_stylesheet", get_file_as_lines( "style.css", line_length ) ) )
         f.write( "\n\n" )
-        f.write( print_as_char_array( "__highcharts_include", get_file_as_lines( "highcharts.inc", 80 ) ) )
+        f.write( print_as_char_array( "__highcharts_include", get_file_as_lines( "highcharts.inc", line_length ) ) )
         f.write( "\n\n" )
-        f.write( print_as_char_array( "__jquery_include", get_file_as_lines( "jquery-1.12.1.min.js", 80 ) ) )
+        f.write( print_as_char_array( "__jquery_include", get_file_as_lines( "jquery-1.12.1.min.js", line_length ) ) )
     print( "done")
     
 if __name__ == "__main__":
