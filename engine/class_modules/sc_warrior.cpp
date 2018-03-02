@@ -3554,6 +3554,13 @@ struct shield_slam_t: public warrior_attack_t
     energize_type = ENERGIZE_NONE;
   }
 
+  void init () override
+  {
+    warrior_attack_t::init();
+
+    rage_gain += p() -> legendary.the_walls_fell -> effectN( 2 ).resource( RESOURCE_RAGE );
+  }
+
   double action_multiplier() const override
   {
     double am = warrior_attack_t::action_multiplier();
@@ -3619,6 +3626,8 @@ struct shield_slam_t: public warrior_attack_t
     {
       p() -> cooldown.berserker_rage -> adjust( timespan_t::from_seconds( -0.1 * p() -> sets -> set( WARRIOR_PROTECTION, T20, B4) -> effectN( 1 ).base_value() ), false );
     }
+
+    p() -> cooldown.shield_wall -> adjust( timespan_t::from_seconds( -1.0 * p() -> legendary.the_walls_fell -> effectN( 1 ).base_value() ) );
   }
 
   bool ready() override
@@ -7218,10 +7227,10 @@ void init()
   unique_gear::register_special_effect( 205144, archavons_heavy_hand_t() );
   unique_gear::register_special_effect( 207841, bindings_of_kakushan_t(), true );
   unique_gear::register_special_effect( 207845, kargaths_sacrificed_hands_t(), true );
-  unique_gear::register_special_effect( 215176, thundergods_vigor_t() ); //NYI
+  unique_gear::register_special_effect( 215176, thundergods_vigor_t() );
   unique_gear::register_special_effect( 207779, ceannar_charger_t() );
   unique_gear::register_special_effect( 207775, kazzalax_fujiedas_fury_t(), true );
-  unique_gear::register_special_effect( 215057, the_walls_fell_t() ); //NYI
+  unique_gear::register_special_effect( 215057, the_walls_fell_t() );
   unique_gear::register_special_effect( 215090, destiny_driver_t(), true );
   unique_gear::register_special_effect( 207428, prydaz_xavarics_magnum_opus_t(), true ); //Not finished
   unique_gear::register_special_effect( 208908, mannoroths_bloodletting_manacles_t() ); //NYI
