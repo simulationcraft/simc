@@ -993,6 +993,7 @@ struct holy_power_consumer_t : public paladin_melee_attack_t
 
   virtual void execute() override;
   virtual void impact( action_state_t* s ) override;
+  virtual double cost() const override;
 };
 
 }

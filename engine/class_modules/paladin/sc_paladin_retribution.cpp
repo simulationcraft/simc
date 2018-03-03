@@ -97,6 +97,11 @@ void holy_power_consumer_t::execute()
       p() -> buffs.divine_purpose -> expire();
     }
   }
+  else
+  {
+    if ( p() -> buffs.the_fires_of_justice -> check() )
+      p() -> buffs.the_fires_of_justice -> expire();
+  }
 
   if ( p() -> talents.divine_purpose -> ok() )
   {
@@ -125,6 +130,18 @@ void holy_power_consumer_t::impact( action_state_t* s )
     if ( td -> buffs.debuffs_judgment -> up() )
       td -> buffs.debuffs_judgment -> expire();
   }
+}
+
+double holy_power_consumer_t::cost() const
+{
+  double base_cost = paladin_melee_attack_t::cost();
+
+  int discounts = 0;
+  if ( p() -> buffs.the_fires_of_justice -> up() && base_cost > discounts )
+    discounts++;
+  if ( p() -> buffs.ret_t21_4p -> up() && base_cost > discounts )
+    discounts++;
+  return base_cost - discounts;
 }
 
 void holy_power_generator_t::execute()
@@ -322,17 +339,6 @@ struct divine_storm_t: public holy_power_consumer_t
     weapon_multiplier = 0;
   }
 
-  virtual double cost() const override
-  {
-    double base_cost = holy_power_consumer_t::cost();
-    int discounts = 0;
-    if ( p() -> buffs.the_fires_of_justice -> up() && base_cost > discounts )
-      discounts++;
-    if ( p() -> buffs.ret_t21_4p -> up() && base_cost > discounts )
-      discounts++;
-    return base_cost - discounts;
-  }
-
   virtual double action_multiplier() const override
   {
     double am = holy_power_consumer_t::action_multiplier();
@@ -399,17 +405,6 @@ struct templars_verdict_t : public holy_power_consumer_t
 
   void record_data( action_state_t* ) override {}
 
-  virtual double cost() const override
-  {
-    double base_cost = holy_power_consumer_t::cost();
-    int discounts = 0;
-    if ( p() -> buffs.the_fires_of_justice -> up() && base_cost > discounts )
-      discounts++;
-    if ( p() -> buffs.ret_t21_4p -> up() && base_cost > discounts )
-      discounts++;
-    return base_cost - discounts;
-  }
-
   virtual double action_multiplier() const override
   {
     double am = holy_power_consumer_t::action_multiplier();
@@ -468,17 +463,6 @@ struct justicars_vengeance_t : public holy_power_consumer_t
     hasted_gcd = true;
 
     weapon_multiplier = 0; // why is this needed?
-  }
-
-  virtual double cost() const override
-  {
-    double base_cost = holy_power_consumer_t::cost();
-    int discounts = 0;
-    if ( p() -> buffs.the_fires_of_justice -> up() && base_cost > discounts )
-      discounts++;
-    if ( p() -> buffs.ret_t21_4p -> up() && base_cost > discounts )
-      discounts++;
-    return base_cost - discounts;
   }
 
   virtual void execute() override
