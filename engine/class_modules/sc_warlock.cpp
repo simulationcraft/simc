@@ -2804,6 +2804,41 @@ public:
 
 typedef residual_action::residual_periodic_action_t< warlock_spell_t > residual_action_t;
 
+
+//proc_sephuz gives control over how and when sephuz proc to the
+//APL creator to allow for more flexible modelling
+struct proc_sephuz_t : public action_t
+{
+   proc_sephuz_t(warlock_t* p)
+      : action_t(ACTION_USE, "proc_sephuz", p)
+   {
+      trigger_gcd = timespan_t::zero();
+      harmful = false;
+      cooldown -> duration = player -> find_spell(226262) -> duration();
+      ignore_false_positive = true;
+      action_skill = 1;
+   }
+
+   virtual void execute() override
+   {
+      warlock_t* p = (warlock_t*)(player);
+      p -> buffs.sephuzs_secret -> trigger();
+   }
+
+   bool ready() override
+   {
+      warlock_t* p = (warlock_t*)(player);
+      if ( !(p -> legendary.sephuzs_secret) )
+	 return false;
+
+
+      if ( p -> buffs.sephuzs_secret -> cooldown -> up() )
+	 return action_t::ready();
+
+      return false;
+   }
+};
+
 // Affliction Spells
 struct agony_t: public warlock_spell_t
 {
@@ -6592,6 +6627,7 @@ action_t* warlock_t::create_action( const std::string& action_name,
   else if ( action_name == "service_succubus"      ) a = new               grimoire_of_service_t( this, "succubus" );
   else if ( action_name == "service_voidwalker"    ) a = new               grimoire_of_service_t( this, "voidwalker" );
   else if ( action_name == "service_pet"           ) a = new               grimoire_of_service_t( this,  talents.grimoire_of_supremacy -> ok() ? "doomguard" : default_pet );
+  else if ( action_name == "proc_sephuz"           ) a = new                       proc_sephuz_t( this );
   else return player_t::create_action( action_name, options_str );
 
   a -> parse_options( options_str );
