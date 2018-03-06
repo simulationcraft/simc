@@ -5,9 +5,6 @@ project(simc)
 
 set (CMAKE_CXX_STANDARD 11)
 
-add_subdirectory(engine)
-add_subdirectory(qt)
-
 ### Git Hash ###
 # Get the current working branch
 execute_process(
@@ -26,6 +23,12 @@ execute_process(
 )
 add_definitions("-DSC_GIT_REV=\"${GIT_COMMIT_HASH}\"")
 add_definitions("-DSC_GIT_BRANCH=\"${GIT_BRANCH}\"")
+add_custom_target(update_git_info ALL
+                  DEPENDS engine/util/git_info.cpp)
+
+add_subdirectory(engine)
+add_subdirectory(qt)
+add_dependencies(engine update_git_info)
 
 # 'simc' command line interface target
 add_executable(simc engine/sc_main.cpp)
