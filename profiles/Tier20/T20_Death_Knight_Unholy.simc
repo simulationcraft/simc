@@ -44,8 +44,8 @@ actions+=/use_item,name=ring_of_collapsing_futures,if=(buff.temptation.stack=0&t
 actions+=/potion,if=buff.unholy_strength.react
 actions+=/blighted_rune_weapon,if=debuff.festering_wound.stack<=4
 # Opener
-actions+=/sequence,if=equipped.137075&talent.dark_arbiter.enabled,name=opener:outbreak:chains_of_ice:festering_strike:festering_strike:apocalypse:festering_strike:dark_arbiter:death_coil:dark_transformation
-actions+=/sequence,if=!equipped.137075&talent.dark_arbiter.enabled,name=opener:outbreak:chains_of_ice:festering_strike:festering_strike:apocalypse:dark_transformation:festering_strike:dark_arbiter
+actions+=/sequence,if=equipped.137075&talent.dark_arbiter.enabled&!talent.blighted_rune_weapon.enabled,name=opener:outbreak:chains_of_ice:festering_strike:festering_strike:apocalypse:festering_strike:dark_arbiter:death_coil:dark_transformation
+actions+=/sequence,if=!equipped.137075&talent.dark_arbiter.enabled&!talent.blighted_rune_weapon.enabled,name=opener:outbreak:chains_of_ice:festering_strike:festering_strike:apocalypse:dark_transformation:festering_strike:dark_arbiter
 # Maintain Virulent Plague
 actions+=/outbreak,target_if=(dot.virulent_plague.tick_time_remains+tick_time<=dot.virulent_plague.remains)&dot.virulent_plague.remains<=gcd
 actions+=/call_action_list,name=cooldowns
