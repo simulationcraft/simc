@@ -11,7 +11,7 @@ crucible=1739:3:1780:3:1039:2:1038:1
 # Default consumables
 potion=potion_of_prolonged_power
 flask=whispered_pact
-food=lavish_suramar_feast
+food=lemon_herb_filet
 augmentation=defiled
 
 # This default action priority list is automatically created based on your character.
@@ -26,7 +26,7 @@ actions.precombat+=/food
 actions.precombat+=/augmentation
 actions.precombat+=/moonkin_form
 actions.precombat+=/blessing_of_elune
-actions.precombat+=/variable,name=starfall_st,value=talent.soul_of_the_forest.enabled&set_bonus.tier21_4pc
+actions.precombat+=/variable,name=starfall_st,value=talent.soul_of_the_forest.enabled
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
 actions.precombat+=/potion
