@@ -6752,17 +6752,18 @@ stat_e warrior_t::convert_hybrid_stat( stat_e s ) const
 void warrior_t::assess_damage_imminent_pre_absorb( school_e school, dmg_e dmg, action_state_t* s )
 {
   player_t::assess_damage_imminent_pre_absorb( school, dmg, s );
-}
-
-void warrior_t::assess_damage_imminent( school_e school, dmg_e dmg, action_state_t*s )
-{
-  player_t::assess_damage_imminent( school, dmg, s );
-  if ( specialization() == WARRIOR_PROTECTION && s -> result_amount > 0 ) //This is after absorbs and damage mitigation. Boo.
+  
+  if ( specialization() == WARRIOR_PROTECTION && s -> result_amount > 0 )
   {
     double rage_gain_from_damage_taken;
     rage_gain_from_damage_taken = 50.0 * s -> result_amount / expected_max_health;
     resource_gain( RESOURCE_RAGE, rage_gain_from_damage_taken, gain.rage_from_damage_taken );
   }
+}
+
+void warrior_t::assess_damage_imminent( school_e school, dmg_e dmg, action_state_t*s )
+{
+  player_t::assess_damage_imminent( school, dmg, s );
 }
 
 void warrior_t::assess_damage( school_e school, dmg_e type, action_state_t* s )
