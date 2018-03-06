@@ -8524,6 +8524,9 @@ void death_knight_t::default_apl_unholy()
                   "if=(buff.temptation.stack=0&target.time_to_die>60)|target.time_to_die<60" );
   def -> add_action( "potion,if=buff.unholy_strength.react" );
   def -> add_talent( this, "Blighted Rune Weapon", "if=debuff.festering_wound.stack<=4" );
+  // Opener
+  def -> add_action( "sequence,if=equipped.137075&talent.dark_arbiter.enabled,name=opener:outbreak:chains_of_ice:festering_strike:festering_strike:apocalypse:festering_strike:dark_arbiter:death_coil:dark_transformation", "Opener" );
+  def -> add_action( "sequence,if=!equipped.137075&talent.dark_arbiter.enabled,name=opener:outbreak:chains_of_ice:festering_strike:festering_strike:apocalypse:dark_transformation:festering_strike:dark_arbiter" );
   // Maintain Virulent Plague
   def -> add_action( this, "Outbreak", "target_if=(dot.virulent_plague.tick_time_remains+tick_time<=dot.virulent_plague.remains)&dot.virulent_plague.remains<=gcd", "Maintain Virulent Plague" );
   // Action Lists
