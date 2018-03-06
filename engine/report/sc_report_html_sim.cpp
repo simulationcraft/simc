@@ -1038,7 +1038,7 @@ void print_html_style( report::sc_html_stream& os, const sim_t& )
   os << "<style type=\"text/css\" media=\"all\">\n"
      << "#logo {background-image: url(data:image/png;base64,";
   print_text_array( os, __logo );
-  os << "); background-repeat: no-repeat; position: absolute;width: 375px; height: 200px; background-size: cover; }\n"
+  os << "); background-repeat: no-repeat; position: absolute;width: 324px; height: 200px; background-size: cover; }\n"
      << "</style>\n";
 
   // Rest
