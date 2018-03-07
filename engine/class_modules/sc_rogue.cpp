@@ -177,7 +177,6 @@ struct rogue_t : public player_t
   actions::rogue_poison_t* active_lethal_poison;
   actions::rogue_poison_t* active_nonlethal_poison;
   action_t* active_main_gauche;
-  action_t* weaponmaster_dot_strike;
   action_t* poison_bomb;
   action_t* t19_2pc_assassination;
 
@@ -533,7 +532,6 @@ struct rogue_t : public player_t
     active_lethal_poison( nullptr ),
     active_nonlethal_poison( nullptr ),
     active_main_gauche( nullptr ),
-    weaponmaster_dot_strike( nullptr ),
     poison_bomb( nullptr ),
     insignia_of_ravenholdt_( nullptr ),
     auto_attack( nullptr ), melee_main_hand( nullptr ), melee_off_hand( nullptr ),
@@ -757,7 +755,6 @@ struct rogue_attack_t : public melee_attack_t
     bool ruthlessness;
     bool relentless_strikes;
     bool deepening_shadows;
-    bool weaponmaster;
     bool ghostly_strike;
     bool vendetta;
     bool alacrity;
@@ -884,7 +881,6 @@ struct rogue_attack_t : public melee_attack_t
     affected_by.deepening_shadows = base_costs[ RESOURCE_COMBO_POINT ] > 0;
     affected_by.ghostly_strike = data().affected_by( p() -> talent.ghostly_strike -> effectN( 5 ) );
     affected_by.vendetta = data().affected_by( p() -> spec.vendetta -> effectN( 1 ) );
-    affected_by.weaponmaster = p() -> talent.weaponmaster -> ok() && harmful && special && attack_power_mod.direct > 0;
     affected_by.alacrity = base_costs[ RESOURCE_COMBO_POINT ] > 0;
     affected_by.adrenaline_rush_gcd = data().affected_by( p() -> buffs.adrenaline_rush -> data().effectN( 3 ) );
     affected_by.lesser_adrenaline_rush_gcd = data().affected_by( p() -> buffs.t20_4pc_outlaw -> data().effectN( 3 ) );
@@ -1376,25 +1372,6 @@ struct internal_bleeding_t : public rogue_attack_t
     rogue_attack_t::tick( d );
 
     p() -> trigger_venomous_wounds( d -> state );
-  }
-};
-
-struct weaponmaster_strike_t : public rogue_attack_t
-{
-  weaponmaster_strike_t( rogue_t* p ) :
-    rogue_attack_t( "weaponmaster", p, p -> find_spell( 193536 ) )
-  {
-    background = true;
-    callbacks = may_crit = may_miss = may_dodge = may_parry = false;
-  }
-
-  double target_armor( player_t* ) const override
-  { return 0; }
-
-  double calculate_direct_amount( action_state_t* state ) const override
-  { 
-    state->result_raw = state->result_total = base_dd_min;
-    return base_dd_min;
   }
 };
 
@@ -1937,7 +1914,6 @@ void rogue_attack_t::impact( action_state_t* state )
   p() -> trigger_combat_potency( state );
   p() -> trigger_blade_flurry( state );
   p() -> trigger_shadow_techniques( state );
-  p() -> trigger_weaponmaster( state );
   p() -> trigger_insignia_of_ravenholdt( state );
   p() -> trigger_expose_armor( state );
 
@@ -2087,7 +2063,6 @@ void rogue_attack_t::tick( dot_t* d )
 {
   melee_attack_t::tick( d );
 
-  p() -> trigger_weaponmaster( d -> state );
   p() -> trigger_expose_armor( d -> state );
 }
 
@@ -2337,6 +2312,13 @@ struct backstab_t : public rogue_attack_t
     }
 
     p() -> trigger_t21_4pc_subtlety( execute_state );
+  }
+
+  void impact( action_state_t* state ) override
+  {
+    rogue_attack_t::impact( state );
+
+    p() -> trigger_weaponmaster( state );
   }
 };
 
@@ -3267,17 +3249,6 @@ struct nightblade_t : public rogue_attack_t
   {
     may_crit = false;
     hasted_ticks = true;
-    if ( p -> talent.weaponmaster -> ok() )
-    {
-      add_child( p -> weaponmaster_dot_strike );
-    }
-  }
-
-  void init() override
-  {
-    rogue_attack_t::init();
-
-    affected_by.weaponmaster = true;
   }
 
   timespan_t composite_dot_duration( const action_state_t* s ) const override
@@ -3683,6 +3654,8 @@ struct shadowstrike_t : public rogue_attack_t
 
     if ( p() -> talent.find_weakness ->ok() )
       td( state -> target ) -> debuffs.find_weakness -> trigger();
+
+    p() -> trigger_weaponmaster( state );
   }
 
   double action_multiplier() const override
@@ -4035,8 +4008,6 @@ struct death_from_above_t : public rogue_attack_t
     affected_by.relentless_strikes = false;
     affected_by.deepening_shadows = false;
     affected_by.alacrity = false;
-    // 06/26/2016 Weaponmaster won't proc a second DFA, however the finisher can weaponmaster proc
-    affected_by.weaponmaster = false;
   }
 
   void adjust_attack( attack_t* attack, const timespan_t& oor_delay )
@@ -5328,11 +5299,6 @@ void rogue_t::trigger_deepening_shadows( const action_state_t* state )
     return;
   }
 
-  if ( attack -> secondary_trigger == TRIGGER_WEAPONMASTER )
-  {
-    return;
-  }
-
   const actions::rogue_attack_state_t* s = actions::rogue_attack_t::cast_state( state );
   if ( s -> cp == 0 )
   {
@@ -5388,7 +5354,7 @@ void rogue_t::trigger_weaponmaster( const action_state_t* s )
   }
 
   actions::rogue_attack_t* attack = cast_attack( s -> action );
-  if ( ! s -> action -> result_is_hit( s -> result ) || ! attack -> affected_by.weaponmaster )
+  if ( ! s -> action -> result_is_hit( s -> result ) )
   {
     return;
   }
@@ -5412,18 +5378,8 @@ void rogue_t::trigger_weaponmaster( const action_state_t* s )
   }
 
   // Direct damage re-computes on execute
-  if ( s -> result_type == DMG_DIRECT )
-  {
-    make_event<actions::secondary_ability_trigger_t>( *sim, s -> target, s -> action,
-        actions::rogue_attack_t::cast_state( s ) -> cp, TRIGGER_WEAPONMASTER );
-  }
-  // Dot damage is always a "snapshot"
-  else
-  {
-    weaponmaster_dot_strike -> base_dd_min = weaponmaster_dot_strike -> base_dd_max = s -> result_amount;
-    weaponmaster_dot_strike -> set_target( s -> target );
-    weaponmaster_dot_strike -> schedule_execute();
-  }
+  make_event<actions::secondary_ability_trigger_t>( *sim, s -> target, s -> action,
+      actions::rogue_attack_t::cast_state( s ) -> cp, TRIGGER_WEAPONMASTER );
 }
 
 void rogue_t::trigger_elaborate_planning( const action_state_t* s )
@@ -5545,11 +5501,6 @@ void rogue_t::trigger_relentless_strikes( const action_state_t* state )
 
   const rogue_attack_t* attack = cast_attack( state -> action );
   if ( ! attack -> affected_by.relentless_strikes )
-  {
-    return;
-  }
-
-  if ( attack -> secondary_trigger == TRIGGER_WEAPONMASTER )
   {
     return;
   }
@@ -6890,11 +6841,6 @@ void rogue_t::init_spells()
 
   if ( spec.blade_flurry -> ok() )
     active_blade_flurry = new actions::blade_flurry_attack_t( this );
-
-  if ( talent.weaponmaster -> ok() )
-  {
-    weaponmaster_dot_strike = new actions::weaponmaster_strike_t( this );
-  }
 
   if ( talent.poison_bomb -> ok() )
   {
