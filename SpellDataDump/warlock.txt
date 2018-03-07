@@ -256,7 +256,7 @@ GCD              : 1.5 seconds
 Duration         : 18 seconds
 Stacks           : 6 maximum
 Proc Chance      : 101%
-Affecting spells : Mastery: Potent Afflictions (77215 effect#1), Affliction Warlock (137043 effect#1), Destruction Warlock (137046 effect#1), Epidemic (184922 effect#1), Soul Harvest (196098 effect#1), Writhe in Agony (196102 effect#1), Drain Soul (198590 effect#2), Inimitable Agony (199111 effect#1), Perdition (199158 effect#1), Wrath of Consumption (199646 effect#1), Hood of Eternal Disdain (205797 effect#1), Agony (231792 effect#1), Winnowing (238072 effect#1), Tormented Agony (252938 effect#1), Creeping Death (264000 effect#1), 
+Affecting spells : Mastery: Potent Afflictions (77215 effect#1), Affliction Warlock (137043 effect#1), Destruction Warlock (137046 effect#1), Epidemic (184922 effect#1), Soul Harvest (196098 effect#1), Writhe in Agony (196102 effect#1), Drain Soul (198590 effect#2), Inimitable Agony (199111 effect#1), Perdition (199158 effect#1), Wrath of Consumption (199646 effect#1), Hood of Eternal Disdain (205797 effect#1), Agony (231792 effect#1), Winnowing (238072 effect#1), Tormented Agony (252938 effect#1), Creeping Death (264000 effect#1), Suffer (269372 effect#1), 
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   .......x ........ ........ ........ 
                  : ........ ........ ....x... ........   ........ .....x.. ........ ........ 
@@ -1748,7 +1748,7 @@ Name             : Hand of Gul'dan (id=86040) [Spell Family (5)]
 Class            : Shaman, Warlock
 School           : Shadowflame
 Range            : 50000 yards
-Affecting spells : Affliction Warlock (137043 effect#1), Destruction Warlock (137046 effect#1), Soul Harvest (196098 effect#1), Dirty Hands (211105 effect#1)
+Affecting spells : Affliction Warlock (137043 effect#1), Destruction Warlock (137046 effect#1), Soul Harvest (196098 effect#1), Dirty Hands (211105 effect#1), Meteoric Flare (269594 effect#2)
 Attributes       : ........ ........ .......x ........   ...x...x ........ ........ ........ 
                  : ..x..... ........ ........ ....x...   x....... ........ ........ ......x. 
                  : ........ ........ ........ .x......   ........ ..x..... ........ ..x..... 
@@ -2085,7 +2085,7 @@ Immune to interrupt and silence effects.
 Name             : Hand of Gul'dan (id=105174) [Spell Family (5)] 
 Class            : Demonology Shaman, Warlock
 School           : Shadowflame
-Resource         : 1 - 4 Soul Shard (7) (id=4987)
+Resource         : 1 - 3 Soul Shard (7) (id=4987)
 Spell Level      : 10
 Range            : 40 yards
 Cast Time        : 1.5 seconds
@@ -2099,7 +2099,7 @@ Attributes       : ........ ........ x....... ........   .......x .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=114885)   : Dummy (3)
-                   Base Value: 4 | Scaled Value: 4 | Radius: 8 yards | Target: Enemy (6)
+                   Base Value: 3 | Scaled Value: 3 | Radius: 8 yards | Target: Enemy (6)
 Description      : Calls down a demonic meteor full of Wild Imps which burst forth to attack the target.
 
 Deals up to ${$m1*$86040m1} Shadowflame damage on impact to all enemies within $86040A1 yds of the target$?s196283[, applies Doom to each target,][] and summons up to ${$m1*$104317m2} Wild Imps, based on Soul Shards consumed.
@@ -2651,7 +2651,7 @@ Range            : 40 yards
 Cast Time        : 3 seconds
 GCD              : 1.5 seconds
 Velocity         : 20 yards/sec
-Affecting spells : Backdraft (117828 effect#1), Affliction Warlock (137043 effect#1), Destruction Warlock (137046 effect#1), Item - Warlock T17 Destruction 4P Bonus (165452 effect#1), Flamelicked (185229 effect#1), Item - Warlock T18 Destruction 2P Bonus (185965 effect#1), Soul Harvest (196098 effect#1), Chaotic Instability (196217 effect#1), Embrace Chaos (212019 effect#1), Odr, Shawl of the Ymirjar (212173 effect#1), Grimoire of Supremacy (266091 effect#1)
+Affecting spells : Backdraft (117828 effect#1), Affliction Warlock (137043 effect#1), Destruction Warlock (137046 effect#1), Item - Warlock T17 Destruction 4P Bonus (165452 effect#1), Flamelicked (185229 effect#1), Item - Warlock T18 Destruction 2P Bonus (185965 effect#1), Soul Harvest (196098 effect#1), Chaotic Instability (196217 effect#1), Embrace Chaos (212019 effect#1), Odr, Shawl of the Ymirjar (212173 effect#1), Grimoire of Supremacy (266091 effect#1), Unshackled Fel (269432 effect#2)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ...x.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2860,7 +2860,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 672 | Target: Self (1)
                    Affected Spells (Category): Conflagrate (17962)
 #3 (id=191035)   : Apply Aura (6) | Modify Mechanic Duration% (Stacking) (232)
-                   Base Value: -30 | Scaled Value: -30 | Misc Value: 26 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 26 | Target: Self (1)
 #4 (id=191036)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 247 (Label) | Target: Self (1)
                    Affected Spells (Label): Infernal Contract (225140), Living Carapace (225033), Sands of Time (225124), Vampiric Aura (225130), Wailing Souls (242609), Unending Hunger (242536), Chilling Nova (251940), Bulwark of Flame (251946), Hammer-Forged (251952), Pool of Pure Void (250766), Wave of Flame (251948)
@@ -2914,10 +2914,10 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=179727)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
-                   Affected Spells: Immolate (348), Shadow Bolt (686), Agony (980), Hellfire (1949), Hellfire (5857), Soul Fire (6353), Shadowburn (17877), Conflagrate (17962), Seed of Corruption (27243), Seed of Corruption (27285), Incinerate (29722), Rain of Fire (42223), Haunt (48181), Siphon Life (63106), Hand of Gul'dan (86040), Chaos Bolt (116858), Corruption (146739), Cataclysm (152108), Demonbolt (157695), Immolate (157736), Demonic Power (196100), Implosion (196278), Channel Demonfire (196448), Drain Soul (198590), Soul Flame (199581), Phantom Singularity (205179), Phantom Singularity (205246), Chaos Bolt (213229), Harvester of Souls (218615), Compounding Horror (231489), Shadow Bolt (232670), Unstable Affliction (233490), Unstable Affliction (233496), Unstable Affliction (233497), Unstable Affliction (233498), Unstable Affliction (233499), Drain Life (234153), Rend Soul (242834), Soulfire (264178), Doom (265412), Doom (265469), Roaring Blaze (265931), Bilescourge Bombers (267213)
+                   Affected Spells: Immolate (348), Shadow Bolt (686), Agony (980), Hellfire (1949), Hellfire (5857), Soul Fire (6353), Shadowburn (17877), Conflagrate (17962), Seed of Corruption (27243), Seed of Corruption (27285), Incinerate (29722), Rain of Fire (42223), Haunt (48181), Siphon Life (63106), Hand of Gul'dan (86040), Chaos Bolt (116858), Corruption (146739), Cataclysm (152108), Demonbolt (157695), Immolate (157736), Demonic Power (196100), Implosion (196278), Channel Demonfire (196448), Drain Soul (198590), Soul Flame (199581), Phantom Singularity (205179), Phantom Singularity (205246), Chaos Bolt (213229), Harvester of Souls (218615), Compounding Horror (231489), Shadow Bolt (232670), Unstable Affliction (233490), Unstable Affliction (233496), Unstable Affliction (233497), Unstable Affliction (233498), Unstable Affliction (233499), Drain Life (234153), Rend Soul (242834), Demonbolt (264178), Doom (265412), Doom (265469), Roaring Blaze (265931), Bilescourge Bombers (267213)
 #2 (id=191031)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 20 | Scaled Value: 20 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Immolate (348), Shadow Bolt (686), Agony (980), Hellfire (1949), Hellfire (5857), Soul Fire (6353), Shadowburn (17877), Conflagrate (17962), Seed of Corruption (27243), Seed of Corruption (27285), Incinerate (29722), Rain of Fire (42223), Haunt (48181), Siphon Life (63106), Hand of Gul'dan (86040), Chaos Bolt (116858), Corruption (146739), Cataclysm (152108), Demonbolt (157695), Immolate (157736), Demonic Power (196100), Implosion (196278), Channel Demonfire (196448), Drain Soul (198590), Soul Flame (199581), Phantom Singularity (205179), Phantom Singularity (205246), Chaos Bolt (213229), Harvester of Souls (218615), Compounding Horror (231489), Shadow Bolt (232670), Unstable Affliction (233490), Unstable Affliction (233496), Unstable Affliction (233497), Unstable Affliction (233498), Unstable Affliction (233499), Drain Life (234153), Rend Soul (242834), Soulfire (264178), Doom (265412), Doom (265469), Roaring Blaze (265931), Bilescourge Bombers (267213)
+                   Affected Spells: Immolate (348), Shadow Bolt (686), Agony (980), Hellfire (1949), Hellfire (5857), Soul Fire (6353), Shadowburn (17877), Conflagrate (17962), Seed of Corruption (27243), Seed of Corruption (27285), Incinerate (29722), Rain of Fire (42223), Haunt (48181), Siphon Life (63106), Hand of Gul'dan (86040), Chaos Bolt (116858), Corruption (146739), Cataclysm (152108), Demonbolt (157695), Immolate (157736), Demonic Power (196100), Implosion (196278), Channel Demonfire (196448), Drain Soul (198590), Soul Flame (199581), Phantom Singularity (205179), Phantom Singularity (205246), Chaos Bolt (213229), Harvester of Souls (218615), Compounding Horror (231489), Shadow Bolt (232670), Unstable Affliction (233490), Unstable Affliction (233496), Unstable Affliction (233497), Unstable Affliction (233498), Unstable Affliction (233499), Drain Life (234153), Rend Soul (242834), Demonbolt (264178), Doom (265412), Doom (265469), Roaring Blaze (265931), Bilescourge Bombers (267213)
 #3 (id=191032)   : Apply Aura (6) | Modify Pet Damage Done% (429)
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
 #4 (id=191033)   : Apply Aura (6) | Dummy (4)
@@ -2994,10 +2994,10 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=179730)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 15 | Scaled Value: 15 | Target: Self (1)
-                   Affected Spells: Immolate (348), Shadow Bolt (686), Agony (980), Hellfire (1949), Hellfire (5857), Soul Fire (6353), Shadowburn (17877), Conflagrate (17962), Seed of Corruption (27243), Seed of Corruption (27285), Incinerate (29722), Rain of Fire (42223), Haunt (48181), Siphon Life (63106), Hand of Gul'dan (86040), Chaos Bolt (116858), Corruption (146739), Cataclysm (152108), Demonbolt (157695), Immolate (157736), Demonic Power (196100), Implosion (196278), Channel Demonfire (196448), Drain Soul (198590), Soul Flame (199581), Phantom Singularity (205179), Phantom Singularity (205246), Chaos Bolt (213229), Harvester of Souls (218615), Compounding Horror (231489), Shadow Bolt (232670), Unstable Affliction (233490), Unstable Affliction (233496), Unstable Affliction (233497), Unstable Affliction (233498), Unstable Affliction (233499), Drain Life (234153), Rend Soul (242834), Soulfire (264178), Doom (265412), Doom (265469), Roaring Blaze (265931), Bilescourge Bombers (267213)
+                   Affected Spells: Immolate (348), Shadow Bolt (686), Agony (980), Hellfire (1949), Hellfire (5857), Soul Fire (6353), Shadowburn (17877), Conflagrate (17962), Seed of Corruption (27243), Seed of Corruption (27285), Incinerate (29722), Rain of Fire (42223), Haunt (48181), Siphon Life (63106), Hand of Gul'dan (86040), Chaos Bolt (116858), Corruption (146739), Cataclysm (152108), Demonbolt (157695), Immolate (157736), Demonic Power (196100), Implosion (196278), Channel Demonfire (196448), Drain Soul (198590), Soul Flame (199581), Phantom Singularity (205179), Phantom Singularity (205246), Chaos Bolt (213229), Harvester of Souls (218615), Compounding Horror (231489), Shadow Bolt (232670), Unstable Affliction (233490), Unstable Affliction (233496), Unstable Affliction (233497), Unstable Affliction (233498), Unstable Affliction (233499), Drain Life (234153), Rend Soul (242834), Demonbolt (264178), Doom (265412), Doom (265469), Roaring Blaze (265931), Bilescourge Bombers (267213)
 #2 (id=191023)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 15 | Scaled Value: 15 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Immolate (348), Shadow Bolt (686), Agony (980), Hellfire (1949), Hellfire (5857), Soul Fire (6353), Shadowburn (17877), Conflagrate (17962), Seed of Corruption (27243), Seed of Corruption (27285), Incinerate (29722), Rain of Fire (42223), Haunt (48181), Siphon Life (63106), Hand of Gul'dan (86040), Chaos Bolt (116858), Corruption (146739), Cataclysm (152108), Demonbolt (157695), Immolate (157736), Demonic Power (196100), Implosion (196278), Channel Demonfire (196448), Drain Soul (198590), Soul Flame (199581), Phantom Singularity (205179), Phantom Singularity (205246), Chaos Bolt (213229), Harvester of Souls (218615), Compounding Horror (231489), Shadow Bolt (232670), Unstable Affliction (233490), Unstable Affliction (233496), Unstable Affliction (233497), Unstable Affliction (233498), Unstable Affliction (233499), Drain Life (234153), Rend Soul (242834), Soulfire (264178), Doom (265412), Doom (265469), Roaring Blaze (265931), Bilescourge Bombers (267213)
+                   Affected Spells: Immolate (348), Shadow Bolt (686), Agony (980), Hellfire (1949), Hellfire (5857), Soul Fire (6353), Shadowburn (17877), Conflagrate (17962), Seed of Corruption (27243), Seed of Corruption (27285), Incinerate (29722), Rain of Fire (42223), Haunt (48181), Siphon Life (63106), Hand of Gul'dan (86040), Chaos Bolt (116858), Corruption (146739), Cataclysm (152108), Demonbolt (157695), Immolate (157736), Demonic Power (196100), Implosion (196278), Channel Demonfire (196448), Drain Soul (198590), Soul Flame (199581), Phantom Singularity (205179), Phantom Singularity (205246), Chaos Bolt (213229), Harvester of Souls (218615), Compounding Horror (231489), Shadow Bolt (232670), Unstable Affliction (233490), Unstable Affliction (233496), Unstable Affliction (233497), Unstable Affliction (233498), Unstable Affliction (233499), Drain Life (234153), Rend Soul (242834), Demonbolt (264178), Doom (265412), Doom (265469), Roaring Blaze (265931), Bilescourge Bombers (267213)
 #3 (id=191024)   : Apply Aura (6) | Modify Pet Damage Done% (429)
                    Base Value: 15 | Scaled Value: 15 | Target: Self (1)
                    Affected Spells: Burning Rush (111400)
@@ -3477,7 +3477,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=287829)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
-                   Affected Spells: Immolate (348), Shadow Bolt (686), Agony (980), Hellfire (1949), Hellfire (5857), Soul Fire (6353), Shadowburn (17877), Conflagrate (17962), Seed of Corruption (27243), Seed of Corruption (27285), Incinerate (29722), Rain of Fire (42223), Haunt (48181), Siphon Life (63106), Hand of Gul'dan (86040), Chaos Bolt (116858), Corruption (146739), Cataclysm (152108), Demonbolt (157695), Immolate (157736), Demonic Power (196100), Implosion (196278), Channel Demonfire (196448), Drain Soul (198590), Soul Flame (199581), Phantom Singularity (205179), Phantom Singularity (205246), Chaos Bolt (213229), Harvester of Souls (218615), Compounding Horror (231489), Shadow Bolt (232670), Unstable Affliction (233490), Unstable Affliction (233496), Unstable Affliction (233497), Unstable Affliction (233498), Unstable Affliction (233499), Drain Life (234153), Rend Soul (242834), Soulfire (264178), Doom (265412), Doom (265469), Roaring Blaze (265931), Bilescourge Bombers (267213)
+                   Affected Spells: Immolate (348), Shadow Bolt (686), Agony (980), Hellfire (1949), Hellfire (5857), Soul Fire (6353), Shadowburn (17877), Conflagrate (17962), Seed of Corruption (27243), Seed of Corruption (27285), Incinerate (29722), Rain of Fire (42223), Haunt (48181), Siphon Life (63106), Hand of Gul'dan (86040), Chaos Bolt (116858), Corruption (146739), Cataclysm (152108), Demonbolt (157695), Immolate (157736), Demonic Power (196100), Implosion (196278), Channel Demonfire (196448), Drain Soul (198590), Soul Flame (199581), Phantom Singularity (205179), Phantom Singularity (205246), Chaos Bolt (213229), Harvester of Souls (218615), Compounding Horror (231489), Shadow Bolt (232670), Unstable Affliction (233490), Unstable Affliction (233496), Unstable Affliction (233497), Unstable Affliction (233498), Unstable Affliction (233499), Drain Life (234153), Rend Soul (242834), Demonbolt (264178), Doom (265412), Doom (265469), Roaring Blaze (265931), Bilescourge Bombers (267213)
 #2 (id=341300)   : Dummy (3)
                    Base Value: 6 | Scaled Value: 6 | Target: Self (1)
 #3 (id=341301)   : Dummy (3)
@@ -3486,7 +3486,7 @@ Effects          :
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
 #5 (id=479875)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 20 | Scaled Value: 20 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Immolate (348), Shadow Bolt (686), Agony (980), Hellfire (1949), Hellfire (5857), Soul Fire (6353), Shadowburn (17877), Conflagrate (17962), Seed of Corruption (27243), Seed of Corruption (27285), Incinerate (29722), Rain of Fire (42223), Haunt (48181), Siphon Life (63106), Hand of Gul'dan (86040), Chaos Bolt (116858), Corruption (146739), Cataclysm (152108), Demonbolt (157695), Immolate (157736), Demonic Power (196100), Implosion (196278), Channel Demonfire (196448), Drain Soul (198590), Soul Flame (199581), Phantom Singularity (205179), Phantom Singularity (205246), Chaos Bolt (213229), Harvester of Souls (218615), Compounding Horror (231489), Shadow Bolt (232670), Unstable Affliction (233490), Unstable Affliction (233496), Unstable Affliction (233497), Unstable Affliction (233498), Unstable Affliction (233499), Drain Life (234153), Rend Soul (242834), Soulfire (264178), Doom (265412), Doom (265469), Roaring Blaze (265931), Bilescourge Bombers (267213)
+                   Affected Spells: Immolate (348), Shadow Bolt (686), Agony (980), Hellfire (1949), Hellfire (5857), Soul Fire (6353), Shadowburn (17877), Conflagrate (17962), Seed of Corruption (27243), Seed of Corruption (27285), Incinerate (29722), Rain of Fire (42223), Haunt (48181), Siphon Life (63106), Hand of Gul'dan (86040), Chaos Bolt (116858), Corruption (146739), Cataclysm (152108), Demonbolt (157695), Immolate (157736), Demonic Power (196100), Implosion (196278), Channel Demonfire (196448), Drain Soul (198590), Soul Flame (199581), Phantom Singularity (205179), Phantom Singularity (205246), Chaos Bolt (213229), Harvester of Souls (218615), Compounding Horror (231489), Shadow Bolt (232670), Unstable Affliction (233490), Unstable Affliction (233496), Unstable Affliction (233497), Unstable Affliction (233498), Unstable Affliction (233499), Drain Life (234153), Rend Soul (242834), Demonbolt (264178), Doom (265412), Doom (265469), Roaring Blaze (265931), Bilescourge Bombers (267213)
 Description      : Increases your damage and your pets' damage by $s1%. Lasts $d, increased by $s2 sec for each target afflicted by your $?s137043[Agony][]$?s137044[Doom][]$?s137046[Immolate][], up to a maximum of $s3 sec.
 Tooltip          : Damage increased by $s1%.
 
@@ -3623,9 +3623,7 @@ Effects          :
                    Base Value: 3 | Scaled Value: 3 | Target: Enemy (6)
 #2 (id=302944)   : Dummy (3)
                    Base Value: 50 | Scaled Value: 50 | Radius: 100 yards | Target: Unknown(120)
-Description      : Demonic forces suck all of your Wild Imps toward the target, and then cause them to violently explode, dealing $196278s2 Shadowflame damage to all enemies within $196278A2 yards.
-
-If the explosion hits $s1 or more enemies, you have a $s2% chance to generate a Soul Shard.
+Description      : Demonic forces suck all of your Wild Imps toward the target, and then cause them to violently explode, dealing $196278s2 Shadowflame damage to all enemies within $196278A2 yards.
 
 Name             : Implosion (id=196278) [Spell Family (5)] 
 Class            : Warlock
@@ -3644,7 +3642,9 @@ Effects          :
 #1 (id=288084)   : Instant Kill (1)
                    Base Value: 0 | Scaled Value: 0 | Target: Unknown(25)
 #2 (id=288085)   : School Damage (2): shadowflame
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.46250 | Radius: 0 - 8 yards | Target: Unknown(63) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.23000 | Target: Enemy (6)
+#3 (id=716396)   : School Damage (2): shadowflame
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.23000 | Radius: 0 - 8 yards | Target: Unknown(63) -> AOE enemy (instant) (16)
 Description      : $@spelldesc196277
 
 Name             : Hand of Doom (id=196283) [Spell Family (5), Passive] 
@@ -4196,7 +4196,7 @@ Class            : Warlock
 School           : Chromatic
 Spell Level      : 26
 Range            : 50000 yards
-Affecting spells : Backdraft (117828 effect#1), Affliction Warlock (137043 effect#1), Destruction Warlock (137046 effect#1), Item - Warlock T17 Destruction 4P Bonus (165452 effect#1), Flamelicked (185229 effect#1), Item - Warlock T18 Destruction 2P Bonus (185965 effect#1), Soul Harvest (196098 effect#1), Chaotic Instability (196217 effect#1), Embrace Chaos (212019 effect#1), Odr, Shawl of the Ymirjar (212173 effect#1), Grimoire of Supremacy (266091 effect#1)
+Affecting spells : Backdraft (117828 effect#1), Affliction Warlock (137043 effect#1), Destruction Warlock (137046 effect#1), Item - Warlock T17 Destruction 4P Bonus (165452 effect#1), Flamelicked (185229 effect#1), Item - Warlock T18 Destruction 2P Bonus (185965 effect#1), Soul Harvest (196098 effect#1), Chaotic Instability (196217 effect#1), Embrace Chaos (212019 effect#1), Odr, Shawl of the Ymirjar (212173 effect#1), Grimoire of Supremacy (266091 effect#1), Unshackled Fel (269432 effect#2)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ...x.... 
                  : ........ x....... ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5020,7 +5020,7 @@ Attributes       : ......x. ........ x....... ........   .......x ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=707240)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 25 | Scaled Value: 25 | Target: Self (1)
+                   Base Value: 33 | Scaled Value: 33 | Target: Self (1)
 Description      : Hand of Gul'dan has a $s1% chance per Soul Shard spent to spawn an additional Wild Imp.
 
 Name             : Deathbolt (id=264106) [Spell Family (5)] 
@@ -5076,7 +5076,7 @@ Class            : Warlock
 School           : Shadow
 Range            : 100 yards
 GCD              : 1.5 seconds
-Cooldown         : 60 seconds
+Cooldown         : 30 seconds
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5085,7 +5085,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=707327)   : Dummy (3)
-                   Base Value: 4 | Scaled Value: 4 | Radius: 40 yards | Target: Unknown(120)
+                   Base Value: 2 | Scaled Value: 2 | Radius: 40 yards | Target: Unknown(120)
 Description      : Instantly sacrifice up to $s1 Wild Imps to generate $s1 charges of Molten Core.
 
 Name             : Molten Core (id=264173) [Spell Family (5)] 
@@ -5107,14 +5107,14 @@ Attributes       : ........ ........ ........ .......x   ........ ........ .....
                  : Cannot cancel aura (31)
 Effects          :
 #1 (id=707410)   : Apply Aura (6) | Add Percent Modifier (108): Spell Cast Time (10)
-                   Base Value: -75 | Scaled Value: -75 | Misc Value: 10 | Target: Self (1)
-                   Affected Spells: Soulfire (264178)
+                   Base Value: -100 | Scaled Value: -100 | Misc Value: 10 | Target: Self (1)
+                   Affected Spells: Demonbolt (264178)
 Description      : $@spelldesc105174
-Tooltip          : The cast time of Soulfire is reduced by $s1%.
+Tooltip          : The cast time of Demonbolt is reduced by $s1%.
 
-Name             : Soulfire (id=264178) [Spell Family (5)] 
+Name             : Demonbolt (id=264178) [Spell Family (5)] 
 Class            : Demonology Warlock
-School           : Fire
+School           : Shadowflame
 Spell Level      : 22
 Range            : 40 yards
 Cast Time        : 6 seconds
@@ -5128,9 +5128,9 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=707419)   : School Damage (2): fire
+#1 (id=707419)   : School Damage (2): shadowflame
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.62000 | Target: Enemy (6)
-Description      : Send the fiery soul of a Wild Imp at the enemy, causing $s1 Fire damage.$?c2[
+Description      : Send the fiery soul of a Wild Imp at the enemy, causing $s1 Shadowflame damage.$?c2[
 
 |cFFFFFFFFGenerates 2 Soul Shards.|r][]
 
@@ -5419,7 +5419,7 @@ Effects          :
                    Base Value: 15 | Scaled Value: 15 | Misc Value: 10 | Target: Self (1)
 Description      : When your Wild Imps expend all of their energy, they have a $s1% chance to combust into a ball of energy, granting you a stack of Molten Core. 
 
-Molten Core reduces the cast time of Soulfire by $264173s1%. Maximum $264173u stacks.
+Molten Core reduces the cast time of Demonbolt by $264173s1%. Maximum $264173u stacks.
 
 Name             : Flashover (id=267115) [Spell Family (5), Passive] 
 Class            : Warlock
@@ -5457,7 +5457,7 @@ Effects          :
 #1 (id=713653)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 1 (3)
                    Base Value: -25 | Scaled Value: -25 | Misc Value: 3 | Target: Self (1)
                    Affected Spells: Dark Soul (113858), Molten Core (264173)
-Description      : Molten Core now makes Soulfire instant cast.
+Description      : Molten Core now makes Demonbolt instant cast.
 
 Name             : Demonic Strength (id=267171) [Spell Family (5)] 
 Class            : Warlock
@@ -5570,7 +5570,7 @@ Attributes       : ......x. ........ x....... ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=713718)   : Apply Aura (6) | Periodic Dummy (226): every 10 seconds
-                   Base Value: 20 | Scaled Value: 20 | Target: Self (1)
+                   Base Value: 10 | Scaled Value: 10 | Target: Self (1)
 #2 (id=715033)   : Dummy (3)
                    Base Value: 15 | Scaled Value: 15
 Description      : You passively summon a Wild Imp to fight for you every $t1 sec, and have a $s1% chance to also a summon an additional Demon to fight for you for $s2 sec.

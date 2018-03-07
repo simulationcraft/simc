@@ -343,7 +343,7 @@ Cooldown         : 3 seconds
 Category         : 1561
 Category Cooldown: 3 seconds
 Proc Chance      : 101%
-Affecting spells : Stance of the Fierce Tiger (103985 effect#3), Stagger (115069 effect#11), Blackout Kick! (116768 effect#1), Brewmaster Monk (137023 effect#1), Mistweaver Monk (137024 effect#6), Windwalker Monk (137025 effect#1), Storm, Earth, and Fire (137639 effect#1), Serenity (152173 effect#1), Extend Life (185158 effect#2), Dark Skies (195265 effect#1), Elusive Dance (196739 effect#2), Hit Combo (196741 effect#1), Obsidian Fists (213051 effect#1), Draught of Darkness (238057 effect#1), Blackout Kick (261916 effect#1), Blackout Kick (261917 effect#1)
+Affecting spells : Stance of the Fierce Tiger (103985 effect#3), Stagger (115069 effect#11), Blackout Kick! (116768 effect#1), Brewmaster Monk (137023 effect#1), Mistweaver Monk (137024 effect#6), Windwalker Monk (137025 effect#1), Storm, Earth, and Fire (137639 effect#1), Serenity (152173 effect#1), Extend Life (185158 effect#2), Dark Skies (195265 effect#1), Elusive Dance (196739 effect#2), Hit Combo (196741 effect#1), Obsidian Fists (213051 effect#1), Draught of Darkness (238057 effect#1), Blackout Kick (261916 effect#1), Blackout Kick (261917 effect#1), [PH] Blackout Kick (269435 effect#1), 
 Attributes       : ........ ........ ..x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -887,7 +887,7 @@ Effects          :
 #1 (id=128871)   : Apply Aura (6) | Periodic Heal (8): every 1 seconds
                    Base Value: 1 | Scaled Value: 1 | Value Multiplier: 1 | SP Coefficient: 0.32000 | Chain Multiplier: 100 | Chain Targets: 1 | Target: Friend (21)
 Description      : $@spelldesc193884
-Tooltip          : Healing for $w1 every $t1.
+Tooltip          : Healing for $w1 every $t1 sec.
 
 Name             : Zen Meditation (id=115176) [Spell Family (53)] 
 Class            : Brewmaster Monk
@@ -1289,7 +1289,7 @@ Spell Level      : 28
 Range            : 40 yards
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
-Affecting spells : Thunder Focus Tea (116680 effect#5), Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effect#1), Extend Life (185158 effect#2), Uplifting Trance (197206 effect#1), Infusion of Life (199380 effect#1)
+Affecting spells : Thunder Focus Tea (116680 effect#5), Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effect#1), Extend Life (185158 effect#2), Uplifting Trance (197206 effect#1), Infusion of Life (199380 effect#1), Invigorating Brew (269622 effect#1)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1959,7 +1959,7 @@ Cooldown         : 1 seconds
 Charges          : 1 (8 seconds cooldown)
 Category         : 1490: Brewmaster Monk (137023 effect#4)
 Proc Chance      : 101%
-Affecting spells : Brewmaster Monk (137023 effect#1), Windwalker Monk (137025 effect#1), Serenity (152173 effect#2), Extend Life (185158 effect#2), Elusive Dance (196739 effect#2), Hit Combo (196741 effect#1), Smashed (213050 effect#1), Full Keg (214428 effect#1), Stormstout's Last Gasp (248044 effect#2)
+Affecting spells : Brewmaster Monk (137023 effect#1), Windwalker Monk (137025 effect#1), Serenity (152173 effect#2), Extend Life (185158 effect#2), Elusive Dance (196739 effect#2), Hit Combo (196741 effect#1), Smashed (213050 effect#1), Full Keg (214428 effect#1), Stormstout's Last Gasp (248044 effect#2), Fit to Burst (269431 effect#2)
 Attributes       : ........ ........ ........ ........   ...x...x .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4101,10 +4101,10 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
                    Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (107270), Breath of Fire (115181), Fists of Fury (117418), Crackling Jade Lightning (117952), Keg Smash (121253), Flying Serpent Kick (123586), Zen Pulse (124081), Chi Wave (132467), Chi Burst (148135), Rushing Jade Wind (148187), Whirling Dragon Punch (158221), Rising Sun Kick (185099), Crosswinds (196061), Eye of the Tiger (196608), Special Delivery (196733), Strike of the Windlord (205414), Blackout Strike (205523), Strike of the Windlord (222029), Blackout Kick (228649), Thunderfist (242390)
 #2 (id=479821)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 2 | Scaled Value: 2 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (107270), Breath of Fire (115181), Fists of Fury (117418), Crackling Jade Lightning (117952), Keg Smash (121253), Flying Serpent Kick (123586), Zen Pulse (124081), Chi Wave (132467), Chi Burst (148135), Rushing Jade Wind (148187), Whirling Dragon Punch (158221), Rising Sun Kick (185099), Crosswinds (196061), Eye of the Tiger (196608), Special Delivery (196733), Strike of the Windlord (205414), Blackout Strike (205523), Strike of the Windlord (222029), Blackout Kick (228649), Thunderfist (242390)
 #3 (id=479888)   : Apply Aura (6) | Modify Auto Attack Damage Done% (344)
-                   Base Value: 2 | Scaled Value: 2 | Target: Self (1)
+                   Base Value: 1 | Scaled Value: 1 | Target: Self (1)
                    Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (107270), Breath of Fire (115181), Fists of Fury (117418), Crackling Jade Lightning (117952), Keg Smash (121253), Flying Serpent Kick (123586), Zen Pulse (124081), Chi Wave (132467), Chi Burst (148135), Rushing Jade Wind (148187), Whirling Dragon Punch (158221), Rising Sun Kick (185099), Crosswinds (196061), Eye of the Tiger (196608), Special Delivery (196733), Strike of the Windlord (205414), Blackout Strike (205523), Strike of the Windlord (222029), Blackout Kick (228649), Thunderfist (242390)
 Description      : $@spelldesc196740
 Tooltip          : Damage dealt increased by $s1%.
@@ -4474,7 +4474,7 @@ Range            : 5 yards
 GCD              : 1.5 seconds
 Cooldown         : 3 seconds
 Proc Chance      : 101%
-Affecting spells : Stance of the Fierce Tiger (103985 effect#3), Stagger (115069 effect#11), Blackout Kick! (116768 effect#1), Brewmaster Monk (137023 effect#1), Mistweaver Monk (137024 effect#6), Windwalker Monk (137025 effect#1), Storm, Earth, and Fire (137639 effect#1), Serenity (152173 effect#1), Extend Life (185158 effect#2), Dark Skies (195265 effect#1), Elusive Dance (196739 effect#2), Hit Combo (196741 effect#1), Obsidian Fists (213051 effect#1), Draught of Darkness (238057 effect#1), Blackout Kick (261916 effect#1), Blackout Kick (261917 effect#1)
+Affecting spells : Stance of the Fierce Tiger (103985 effect#3), Stagger (115069 effect#11), Blackout Kick! (116768 effect#1), Brewmaster Monk (137023 effect#1), Mistweaver Monk (137024 effect#6), Windwalker Monk (137025 effect#1), Storm, Earth, and Fire (137639 effect#1), Serenity (152173 effect#1), Extend Life (185158 effect#2), Dark Skies (195265 effect#1), Elusive Dance (196739 effect#2), Hit Combo (196741 effect#1), Obsidian Fists (213051 effect#1), Draught of Darkness (238057 effect#1), Blackout Kick (261916 effect#1), Blackout Kick (261917 effect#1), [PH] Blackout Kick (269435 effect#1), 
 Attributes       : ........ ........ ..x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4931,7 +4931,7 @@ Class            : Monk
 School           : Physical
 Spell Level      : 3
 Range            : 5 yards
-Affecting spells : Stance of the Fierce Tiger (103985 effect#3), Stagger (115069 effect#11), Blackout Kick! (116768 effect#1), Brewmaster Monk (137023 effect#1), Mistweaver Monk (137024 effect#6), Windwalker Monk (137025 effect#1), Storm, Earth, and Fire (137639 effect#1), Serenity (152173 effect#1), Extend Life (185158 effect#2), Dark Skies (195265 effect#1), Elusive Dance (196739 effect#2), Hit Combo (196741 effect#1), Obsidian Fists (213051 effect#1), Draught of Darkness (238057 effect#1), Blackout Kick (261916 effect#1), Blackout Kick (261917 effect#1)
+Affecting spells : Stance of the Fierce Tiger (103985 effect#3), Stagger (115069 effect#11), Blackout Kick! (116768 effect#1), Brewmaster Monk (137023 effect#1), Mistweaver Monk (137024 effect#6), Windwalker Monk (137025 effect#1), Storm, Earth, and Fire (137639 effect#1), Serenity (152173 effect#1), Extend Life (185158 effect#2), Dark Skies (195265 effect#1), Elusive Dance (196739 effect#2), Hit Combo (196741 effect#1), Obsidian Fists (213051 effect#1), Draught of Darkness (238057 effect#1), Blackout Kick (261916 effect#1), Blackout Kick (261917 effect#1), [PH] Blackout Kick (269435 effect#1), 
 Attributes       : ........ ........ ..x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 

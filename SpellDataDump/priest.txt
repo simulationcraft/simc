@@ -108,7 +108,7 @@ Spell Level      : 1
 Range            : 40 yards
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
-Affecting spells : Twist of Fate (123254 effect#2), Holy Priest (137031 effect#4), Shadow Priest (137033 effect#1), Voidform (194249 effect#1), Muze's Unwavering Will (210632 effect#1), Invoke the Light (216122 effect#1), Shadowform (232698 effect#1), Smite (262861 effect#1), Twist of Fate (265258 effect#2), 
+Affecting spells : Twist of Fate (123254 effect#2), Holy Priest (137031 effect#4), Shadow Priest (137033 effect#1), Voidform (194249 effect#1), Muze's Unwavering Will (210632 effect#1), Invoke the Light (216122 effect#1), Shadowform (232698 effect#1), Smite (262861 effect#1), Twist of Fate (265258 effect#2), Pillar of Light (269556 effect#1), Bindings of Fate (269561 effect#2)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ....x... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -149,7 +149,7 @@ GCD              : 1.5 seconds
 Duration         : 14 seconds
 Proc Chance      : 100%
 Stance Mask      : 0x08000000
-Affecting spells : Mastery: Madness (77486 effect#1), Twist of Fate (123254 effect#2), Discipline Priest (137032 effect#2), Shadow Priest (137033 effect#1), To the Pain (193644 effect#1), Voidform (194249 effect#1), The Edge of Dark and Light (197715 effect#1), Shadowform (232698 effect#1), Twist of Fate (265258 effect#2), 
+Affecting spells : Mastery: Madness (77486 effect#1), Twist of Fate (123254 effect#2), Discipline Priest (137032 effect#2), Shadow Priest (137033 effect#1), To the Pain (193644 effect#1), Voidform (194249 effect#1), The Edge of Dark and Light (197715 effect#1), Shadowform (232698 effect#1), Twist of Fate (265258 effect#2), Torment of Torments (269555 effect#1), 
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
                  : ........ ........ ....x... ........   ........ .....x.. ........ ........ 
@@ -276,7 +276,7 @@ Range            : 40 yards
 Cast Time        : 2.5 seconds
 GCD              : 1.5 seconds
 Stance Mask      : 0x80000000
-Affecting spells : Rapid Healing (24546 effect#2), Healing Trance (37706 effect#1), Complete Healing (184914 effect#1), Reverence (196418 effect#1), Light of T'uure (208065 effect#1), Muze's Unwavering Will (210632 effect#1), Rammal's Ulterior Motive (234711 effect#1), Answered Prayers (253437 effect#1)
+Affecting spells : Rapid Healing (24546 effect#2), Healing Trance (37706 effect#1), Complete Healing (184914 effect#1), Reverence (196418 effect#1), Light of T'uure (208065 effect#1), Muze's Unwavering Will (210632 effect#1), Rammal's Ulterior Motive (234711 effect#1), Answered Prayers (253437 effect#1), Bindings of Fate (269561 effect#2)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2686,7 +2686,7 @@ Effects          :
 #4 (id=191070)   : Apply Aura (6) | Modify Mana Pool (419)
                    Base Value: -80 | Scaled Value: -80 | Target: Self (1)
 #5 (id=191071)   : Apply Aura (6) | Modify Mechanic Duration% (Stacking) (232)
-                   Base Value: -30 | Scaled Value: -30 | Misc Value: 26 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 26 | Target: Self (1)
 #6 (id=260937)   : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost (14)
                    Base Value: 65 | Scaled Value: 65 | Misc Value: 14 | Target: Self (1)
                    Affected Spells: Mass Dispel (32375), Mass Dispel (32592), Shadow Mend (186263), Shadow Mend (187464)

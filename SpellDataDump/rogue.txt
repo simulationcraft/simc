@@ -527,7 +527,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
 Effects          :
 #1 (id=622)      : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.35000 | Target: Enemy (6)
-Description      : Lunging finishing move that causes damage per combo point and has increased range:
+Description      : Lunging finishing move that causes damage per combo point:
    1 point  : ${$m1*1} damage
    2 points: ${$m1*2} damage
    3 points: ${$m1*3} damage
@@ -754,7 +754,7 @@ Class            : Rogue
 School           : Physical
 Spell Level      : 1
 Range            : 5 yards
-Affecting spells : Master of Subtlety (31665 effect#1), Envenom (32645 effect#4), Vendetta (79140 effect#1), Subtlety Rogue (137035 effect#1), Outlaw Rogue (137036 effect#1), Assassination Rogue (137037 effect#1), Cold Blood (170882 effect#1), Shadow Dance (185313 effect#4), Balanced Blades (192326 effect#1), Shark Infested Waters (193357 effect#1), Elaborate Planning (193641 effect#1), Symbols of Death (212283 effect#1), Assassin's Blades (214368 effect#1), Headshot (242277 effect#1)
+Affecting spells : Master of Subtlety (31665 effect#1), Envenom (32645 effect#4), Vendetta (79140 effect#1), Subtlety Rogue (137035 effect#1), Outlaw Rogue (137036 effect#1), Assassination Rogue (137037 effect#1), Cold Blood (170882 effect#1), Shadow Dance (185313 effect#4), Balanced Blades (192326 effect#1), Shark Infested Waters (193357 effect#1), Elaborate Planning (193641 effect#1), Symbols of Death (212283 effect#1), Assassin's Blades (214368 effect#1), Headshot (242277 effect#1), Contaminant (269308 effect#2)
 Triggered by     : Mutilate (1329)
 Attributes       : ....x... ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .xx..... ........ ........ 
@@ -1195,7 +1195,7 @@ Class            : Rogue
 School           : Physical
 Spell Level      : 1
 Range            : 5 yards
-Affecting spells : Master of Subtlety (31665 effect#1), Envenom (32645 effect#4), Vendetta (79140 effect#1), Subtlety Rogue (137035 effect#1), Outlaw Rogue (137036 effect#1), Assassination Rogue (137037 effect#1), Cold Blood (170882 effect#1), Shadow Dance (185313 effect#4), Balanced Blades (192326 effect#1), Shark Infested Waters (193357 effect#1), Elaborate Planning (193641 effect#1), Symbols of Death (212283 effect#1), Assassin's Blades (214368 effect#1), Headshot (242277 effect#1)
+Affecting spells : Master of Subtlety (31665 effect#1), Envenom (32645 effect#4), Vendetta (79140 effect#1), Subtlety Rogue (137035 effect#1), Outlaw Rogue (137036 effect#1), Assassination Rogue (137037 effect#1), Cold Blood (170882 effect#1), Shadow Dance (185313 effect#4), Balanced Blades (192326 effect#1), Shark Infested Waters (193357 effect#1), Elaborate Planning (193641 effect#1), Symbols of Death (212283 effect#1), Assassin's Blades (214368 effect#1), Headshot (242277 effect#1), Contaminant (269308 effect#2)
 Triggered by     : Mutilate (1329)
 Attributes       : ....x... ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .x...... ........ x....... 
@@ -1406,7 +1406,7 @@ Attributes       : ......x. x....... ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=25764)    : Apply Aura (6) | Proc Trigger Spell (42): Combat Potency
-                   Base Value: 40 | Scaled Value: 40 | SP Coefficient: 0.25000 | Trigger Spell: 35546 | Target: Self (1)
+                   Base Value: 40 | Scaled Value: 40 | Trigger Spell: 35546 | Target: Self (1)
 Description      : Your off-hand attacks have a $s1% chance to generate $35546s1 Energy.
 
 Name             : Shadowstep (id=36554) [Spell Family (8)] 
@@ -1798,7 +1798,7 @@ Name             : Mastery: Main Gauche (id=76806) [Spell Family (8), Passive]
 Class            : Outlaw Rogue
 School           : Physical
 Spell Level      : 78
-Proc Chance      : 100%
+Proc Chance      : 30%
 Proc Flags       : ..x.x.x. x....... ........ ........ 
                  : White Melee, Yellow Melee, White Ranged, Yellow Ranged
 Attributes       : ......x. x....... ........ ........   ........ ........ ........ ........ 
@@ -1810,10 +1810,11 @@ Attributes       : ......x. x....... ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=68026)    : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.20000 | Misc Value: 10737 | Target: Self (1)
-#2 (id=92121)    : Apply Aura (6) | Dummy (4)
-                   Base Value: 220 | Scaled Value: 220 | Target: Self (1)
-Description      : Your main-hand attacks have a ${$m1}.1% chance to trigger an attack with your off-hand that deals $86392sw2 Physical damage.
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Misc Value: 24 | Target: Self (1)
+#2 (id=717709)   : Apply Aura (6) | Add Flat Modifier (107): Spell Power (24)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.02000 | Misc Value: 24 | Target: Self (1)
+                   Affected Spells: Main Gauche (86392)
+Description      : Your main-hand attacks have a $h% chance to trigger an attack with your off-hand that deals $86392s1 Physical damage.
 
 Name             : Mastery: Executioner (id=76808) [Spell Family (8), Passive] 
 Class            : Subtlety Rogue
@@ -1980,20 +1981,18 @@ Class            : Rogue
 School           : Physical
 Spell Level      : 1
 Range            : 100 yards
-Affecting spells : Master of Subtlety (31665 effect#1), Vendetta (79140 effect#1), Subtlety Rogue (137035 effect#1), Outlaw Rogue (137036 effect#1), Assassination Rogue (137037 effect#1), Shadow Dance (185313 effect#4), Shark Infested Waters (193357 effect#1), Elaborate Planning (193641 effect#1), Fortune's Strike (202521 effect#1), Symbols of Death (212283 effect#1), Headshot (242277 effect#1)
+Affecting spells : Master of Subtlety (31665 effect#1), Mastery: Main Gauche (76806 effect#2), Vendetta (79140 effect#1), Subtlety Rogue (137035 effect#1), Outlaw Rogue (137036 effect#1), Assassination Rogue (137037 effect#1), Shadow Dance (185313 effect#4), Shark Infested Waters (193357 effect#1), Elaborate Planning (193641 effect#1), Fortune's Strike (202521 effect#1), Symbols of Death (212283 effect#1), Headshot (242277 effect#1)
 Attributes       : ....x... ........ ..x..... ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ......x.   .....x.. .x...... ........ x.....x. 
+                 : ........ ........ ........ ......x.   .....x.. .x...... ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .....x.. ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Not a proc (105)
 Effects          :
-#1 (id=87938)    : Dummy (3)
-                   Base Value: 1 | Scaled Value: 1 | Target: Enemy (6)
-#2 (id=295577)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.24921 | Target: Enemy (6)
-Description      : A vicious attack that deals $86392sw2 Physical damage with your off-hand.
+#1 (id=87938)    : School Damage (2): physical
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.00100 | Target: Enemy (6)
+Description      : $@spelldesc76806
 
 Name             : Find Weakness (id=91021) [Spell Family (8)] 
 Class            : Rogue
@@ -2010,7 +2009,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=94449)    : Apply Aura (6) | Ignore Armor% (345)
-                   Base Value: 75 | Scaled Value: 75 | Target: Enemy (6)
+                   Base Value: 40 | Scaled Value: 40 | Target: Enemy (6)
 Description      : $@spelldesc91023
 Tooltip          : $w1% of armor is ignored by the attacking Rogue.
 
@@ -2164,7 +2163,7 @@ Effects          :
                    Base Value: 30 | Scaled Value: 30 | Target: Self (1)
 #5 (id=709929)   : Dummy (3)
                    Base Value: 35 | Scaled Value: 35 | Target: Self (1)
-Description      : Exploits the vulnerability of foes with less than $s4% health, causing $s2 Physical damage to the target. 
+Description      : Exploits the vulnerability of foes with less than $s4% health, dealing $s2 Physical damage to the target. 
 
 Mutilate has a $s5% chance to make your next Dispatch free and usable on any target, regardless of their health.
 
@@ -3355,7 +3354,7 @@ Resource         : 45 Energy (3) (id=10438)
 Spell Level      : 10
 Range            : 5 yards
 GCD              : 1 seconds
-Affecting spells : Adrenaline Rush (13750 effect#3), Master of Subtlety (31665 effect#1), Vendetta (79140 effect#1), Subtlety Rogue (137035 effect#1), Outlaw Rogue (137036 effect#1), Assassination Rogue (137037 effect#1), Cold Blood (182304 effect#1), Shadow Dance (185313 effect#4), Broadsides (193356 effect#3), Shark Infested Waters (193357 effect#1), Elaborate Planning (193641 effect#1), Acrobatic Strikes (196924 effect#1), Jolly Roger (199603 effect#1), Swordmaster (200733 effect#1), Cursed Edges (202463 effect#1), Swordplay (211669 effect#1), Symbols of Death (212283 effect#1), Sabermetrics (238067 effect#1), Headshot (242277 effect#1), Lesser Adrenaline Rush (246558 effect#3)
+Affecting spells : Adrenaline Rush (13750 effect#3), Master of Subtlety (31665 effect#1), Vendetta (79140 effect#1), Subtlety Rogue (137035 effect#1), Outlaw Rogue (137036 effect#1), Assassination Rogue (137037 effect#1), Cold Blood (182304 effect#1), Shadow Dance (185313 effect#4), Broadsides (193356 effect#3), Shark Infested Waters (193357 effect#1), Elaborate Planning (193641 effect#1), Acrobatic Strikes (196924 effect#1), Jolly Roger (199603 effect#1), Swordmaster (200733 effect#1), Cursed Edges (202463 effect#1), Swordplay (211669 effect#1), Symbols of Death (212283 effect#1), Sabermetrics (238067 effect#1), Headshot (242277 effect#1), Lesser Adrenaline Rush (246558 effect#3), Swashbuckler (269297 effect#1), Subtle Blade (269342 effect#2)
 Attributes       : ....x... ........ x.x..... .......x   ........ .x...... ........ ..xx.... 
                  : ........ ........ ........ ........   ........ .xx..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ...x.... 
@@ -3538,7 +3537,7 @@ Class            : Rogue
 School           : Shadow
 Spell Level      : 1
 Range            : 100 yards
-Affecting spells : Mastery: Executioner (76808 effect#1), Deeper Stratagem (193531 effect#1), Demon's Kiss (197233 effect#1), Feeding Frenzy (242705 effect#1)
+Affecting spells : Mastery: Executioner (76808 effect#1), Deeper Stratagem (193531 effect#1), Demon's Kiss (197233 effect#1), Feeding Frenzy (242705 effect#1), Subtle Blade (269342 effect#1), 
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ .....x..   ........ ........ x.x..... .....xx. 
                  : ........ x....... ........ ........   ........ ........ ........ ........ 
@@ -3555,7 +3554,7 @@ Name             : Weaponmaster (id=193537) [Spell Family (8), Passive]
 Class            : Rogue
 School           : Physical
 Internal Cooldown: 0.5 seconds
-Proc Chance      : 6%
+Proc Chance      : 15%
 Proc Flags       : ....x... x...x... x.x..... ........ 
                  : Yellow Melee, Yellow Ranged, AOE Hostile Spell, Hostile Spell, Periodic
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -3567,8 +3566,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=283933)   : Apply Aura (6) | Duplicate Ability (360)
-                   Base Value: 6 | Scaled Value: 6 | Target: Self (1)
-Description      : Your abilities have a $h% chance to hit the target twice each time they deal damage.
+                   Base Value: 15 | Scaled Value: 15 | Target: Self (1)
+Description      : Your Shadowstrike and Backstab have a $s1% chance to hit the target twice each time they deal damage.
 
 Name             : Alacrity (id=193538) [Spell Family (8)] 
 Class            : Rogue
@@ -3686,7 +3685,7 @@ Internal Cooldown: 1 seconds
 Proc Chance      : 100%
 Proc Flags       : ...x.x.x .x.x.x.. .x...... ........ 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Heal Taken, AOE Hostile Spell Taken, Hostile Spell Taken
-Affecting spells : Master of Subtlety (31665 effect#1), Mastery: Executioner (76808 effect#1), Vendetta (79140 effect#1), Subtlety Rogue (137035 effect#1), Outlaw Rogue (137036 effect#1), Assassination Rogue (137037 effect#1), Shadow Dance (185313 effect#4), Shark Infested Waters (193357 effect#1), Deeper Stratagem (193531 effect#1), Elaborate Planning (193641 effect#1), Demon's Kiss (197233 effect#1), Symbols of Death (212283 effect#1), Headshot (242277 effect#1), Feeding Frenzy (242705 effect#1)
+Affecting spells : Master of Subtlety (31665 effect#1), Mastery: Executioner (76808 effect#1), Vendetta (79140 effect#1), Subtlety Rogue (137035 effect#1), Outlaw Rogue (137036 effect#1), Assassination Rogue (137037 effect#1), Shadow Dance (185313 effect#4), Shark Infested Waters (193357 effect#1), Deeper Stratagem (193531 effect#1), Elaborate Planning (193641 effect#1), Demon's Kiss (197233 effect#1), Symbols of Death (212283 effect#1), Headshot (242277 effect#1), Feeding Frenzy (242705 effect#1), Subtle Blade (269342 effect#1), 
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ...x.... ........ ....x... ........   ........ .....x.. ........ ........ 
@@ -3978,7 +3977,7 @@ Effects          :
 #2 (id=294102)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.25000 | Misc Value: 12 | Target: Self (1)
                    Affected Spells: Opportunity (195627)
-Description      : Free uses of Pistol Shot granted by Saber Slash now generate $s2 additional combo point, and deal $s1% additional damage.
+Description      : Half-cost uses of Pistol Shot granted by Saber Slash now generate $s2 additional combo point, and deal $s1% additional damage.
 
 Name             : Strike from the Shadows (Passive Talent) (id=196951) [Spell Family (8), Passive] 
 Class            : Rogue
@@ -4090,7 +4089,7 @@ Duration         : 6 seconds
 Proc Chance      : 100%
 Proc Flags       : ...x.x.x .x.x.x.. .x...... ........ 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Heal Taken, AOE Hostile Spell Taken, Hostile Spell Taken
-Affecting spells : Mastery: Executioner (76808 effect#1), Deeper Stratagem (193531 effect#1), Demon's Kiss (197233 effect#1), Feeding Frenzy (242705 effect#1)
+Affecting spells : Mastery: Executioner (76808 effect#1), Deeper Stratagem (193531 effect#1), Demon's Kiss (197233 effect#1), Feeding Frenzy (242705 effect#1), Subtle Blade (269342 effect#1), 
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ...x.... ........ ....x... ........   ........ ........ ........ ........ 
@@ -4185,10 +4184,10 @@ Attributes       : ....x... ........ ..x..... .....x.x   .....x.. ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Cannot cancel aura (31), Does not break stealth (37)
 Effects          :
-#1 (id=293719)   : Apply Aura (6) | Modify Power Regen (110)
-                   Base Value: 30 | Scaled Value: 30 | Misc Value: 3 | Target: Self (1)
-Description      : Your base Energy regeneration is increased by $s1% for the duration of Roll the Bones.
-Tooltip          : Increases Energy regeneration by $s1%.
+#1 (id=293719)   : Apply Aura (6) | Restore Power (85)
+                   Base Value: 20 | Scaled Value: 20 | Misc Value: 3 | Target: Self (1)
+Description      : Your base Energy regeneration is increased by ${$s1/5} per sec for the duration of Roll the Bones.
+Tooltip          : Increases Energy regeneration by ${$s1/5} per sec.
 
 Name             : Jolly Roger (id=199603) [Scaling Spell (9), Spell Family (8)] 
 Class            : Rogue
@@ -4203,8 +4202,8 @@ Attributes       : ....x... ........ ..x..... .....x.x   .....x.. ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Cannot cancel aura (31), Does not break stealth (37)
 Effects          :
-#1 (id=293724)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 4 (32)
-                   Base Value: 25 | Scaled Value: 25 | Misc Value: 32 | Target: Self (1)
+#1 (id=293724)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 3 (23)
+                   Base Value: 25 | Scaled Value: 25 | Misc Value: 23 | Target: Self (1)
                    Affected Spells: Saber Slash (193315)
 Description      : Causes Saber Slash to have an additional $s1% chance of striking an additional time for the duration of Roll the Bones.
 Tooltip          : Saber Slash has an additional $s1% chance of striking an additional time.
@@ -4612,6 +4611,7 @@ Range            : 5 yards
 Duration         : 8 seconds
 Stacks           : 1 maximum
 Proc Chance      : 101%
+Affecting spells : Subtle Blade (269342 effect#1)
 Attributes       : ........ ........ ........ ........   ...x...x ........ .x...... ........ 
                  : ........ ........ ........ x.......   ........ ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
