@@ -4065,6 +4065,8 @@ struct flamestrike_t : public fire_mage_spell_t
     {
       p() -> buffs.hot_streak -> expire();
 
+      p() -> buffs.kaelthas_ultimate_ability -> trigger();
+
       if ( p() -> talents.pyromaniac -> ok()
         && rng().roll( p() -> talents.pyromaniac -> effectN( 1 ).percent() ) )
       {
@@ -5705,9 +5707,9 @@ struct pyroblast_t : public fire_mage_spell_t
   {
     double am = fire_mage_spell_t::action_multiplier();
 
-    if ( p() -> buffs.kaelthas_ultimate_ability -> check() && ! benefits_from_hot_streak() )
+    if ( ! benefits_from_hot_streak() )
     {
-      am *= 1.0 + p() -> buffs.kaelthas_ultimate_ability -> data().effectN( 1 ).percent();
+      am *= 1.0 + p() -> buffs.kaelthas_ultimate_ability -> check_value();
     }
 
     am *= 1.0 + p() -> buffs.critical_massive -> value();
@@ -5736,15 +5738,6 @@ struct pyroblast_t : public fire_mage_spell_t
 
     fire_mage_spell_t::execute();
 
-    if ( p() -> buffs.kaelthas_ultimate_ability -> check() && ! hot_streak )
-    {
-      p() -> buffs.kaelthas_ultimate_ability -> expire();
-    }
-    if ( hot_streak )
-    {
-      p() -> buffs.kaelthas_ultimate_ability -> trigger();
-    }
-
     // Ignition/Critical Massive buffs are removed shortly after Flamestrike/Pyroblast cast.
     // In a situation where you're hardcasting FS/PB followed by a Hot Streak FS/FB, both
     // spells actually benefit. As of build 25881, 2018-01-22.
@@ -5755,6 +5748,8 @@ struct pyroblast_t : public fire_mage_spell_t
     {
       p() -> buffs.hot_streak -> expire();
 
+      p() -> buffs.kaelthas_ultimate_ability -> trigger();
+
       if ( p() -> talents.pyromaniac -> ok()
         && rng().roll( p() -> talents.pyromaniac -> effectN( 1 ).percent() ) )
       {
@@ -5762,6 +5757,10 @@ struct pyroblast_t : public fire_mage_spell_t
         p() -> procs.hot_streak_pyromaniac -> occur();
         p() -> buffs.hot_streak -> trigger();
       }
+    }
+    else
+    {
+      p() -> buffs.kaelthas_ultimate_ability -> expire();
     }
   }
 
@@ -9448,6 +9447,7 @@ struct marquee_bindings_of_the_sun_king_t : public class_buff_cb_t<mage_t, buff_
   {
     return super::creator( e )
       .spell( e.player -> find_spell( 209455 ) )
+      .default_value( e.player -> find_spell( 209455 ) -> effectN( 1 ).percent() )
       .chance( e.driver() -> effectN( 1 ).percent() );
   }
 };
