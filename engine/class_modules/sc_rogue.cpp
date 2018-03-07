@@ -5130,12 +5130,7 @@ void rogue_t::trigger_main_gauche( const action_state_t* state, double chance )
   if ( ! attack -> procs_main_gauche() )
     return;
 
-  if ( chance == 0 )
-  {
-    chance = cache.mastery_value();
-  }
-
-  if ( ! rng().roll( chance ) )
+  if ( ! rng().roll( mastery.main_gauche -> proc_chance() ) )
     return;
 
   active_main_gauche -> set_target( state -> target );
