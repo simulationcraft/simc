@@ -172,6 +172,9 @@ struct rogue_t : public player_t
   // Venom Rush poison tracking
   unsigned poisoned_enemies;
 
+  // Static mods to base energy regen per sec
+  double base_energy_regen_mods;
+
   // Active
   attack_t* active_blade_flurry;
   actions::rogue_poison_t* active_lethal_poison;
@@ -528,6 +531,7 @@ struct rogue_t : public player_t
     df_counter( 0 ),
     shadow_techniques( 0 ),
     poisoned_enemies( 0 ),
+    base_energy_regen_mods( 1.0 ),
     active_blade_flurry( nullptr ),
     active_lethal_poison( nullptr ),
     active_nonlethal_poison( nullptr ),
@@ -6676,11 +6680,11 @@ void rogue_t::init_base_stats()
 
   resources.base[ RESOURCE_ENERGY ] = 100;
   resources.base[ RESOURCE_ENERGY ] += talent.vigor -> effectN( 1 ).base_value();
-
   resources.base[ RESOURCE_ENERGY ] += spec.assassination_rogue -> effectN( 5 ).base_value();
 
-  base_energy_regen_per_second = 10 * ( 1.0 + spec.vitality -> effectN( 1 ).percent() );
-  base_energy_regen_per_second *= 1.0 + talent.vigor -> effectN( 2 ).percent();
+  base_energy_regen_per_second = 10;
+  base_energy_regen_mods = 1.0 + spec.vitality -> effectN( 1 ).percent();
+  base_energy_regen_mods *= 1.0 + talent.vigor -> effectN( 2 ).percent();
 
   base_gcd = timespan_t::from_seconds( 1.0 );
   min_gcd  = timespan_t::from_seconds( 1.0 );
@@ -7022,7 +7026,8 @@ void rogue_t::create_buffs()
   buffs.broadsides            = buff_creator_t( this, "broadsides", find_spell( 193356 ) )
                                 .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   buffs.buried_treasure       = buff_creator_t( this, "buried_treasure", find_spell( 199600 ) )
-                                .default_value( find_spell( 199600 ) -> effectN( 1 ).percent() );
+                                .affects_regen( true )
+                                .default_value( find_spell( 199600 ) -> effectN( 1 ).base_value() / 5.0 );
   buffs.grand_melee           = make_buff<haste_buff_t>( this, "grand_melee", find_spell( 193358 ) );
   buffs.grand_melee->add_invalidate( CACHE_ATTACK_SPEED )
     ->add_invalidate( CACHE_LEECH )
@@ -7086,6 +7091,7 @@ void rogue_t::create_buffs()
   buffs.slice_and_dice          = buff_creator_t( this, "slice_and_dice", talent.slice_and_dice )
                                   .period( timespan_t::zero() )
                                   .refresh_behavior( buff_refresh_behavior::PANDEMIC )
+                                  .affects_regen( true )
                                   .add_invalidate( CACHE_ATTACK_SPEED );
   // Subtlety
   buffs.master_of_shadows       = buff_creator_t( this, "master_of_shadows", find_spell( 196980 ) )
@@ -7594,9 +7600,11 @@ double rogue_t::energy_regen_per_second() const
 {
   double r = player_t::energy_regen_per_second();
 
+  r *= base_energy_regen_mods;
+
   if ( buffs.buried_treasure -> up() )
   {
-    r *= 1.0 + buffs.buried_treasure -> check_value();
+    r *= 1.0 + buffs.buried_treasure -> check_value() / base_energy_regen_per_second;
   }
 
   if ( buffs.slice_and_dice -> up() )
