@@ -94,7 +94,6 @@ struct mage_td_t : public actor_target_data_t
 {
   struct dots_t
   {
-    dot_t* conflagration_dot;
     dot_t* ignite;
     dot_t* living_bomb;
     dot_t* nether_tempest;
@@ -335,7 +334,6 @@ public:
 
   // Miscellaneous
   double distance_from_rune;
-  double global_cinder_count;
   timespan_t firestarter_time;
   int blessing_of_wisdom_count;
   bool allow_shimmer_lance;
@@ -554,7 +552,7 @@ public:
     const spell_data_t* mana_adept;
     const spell_data_t* arcane_familiar;
     const spell_data_t* pyromaniac;
-    const spell_data_t* conflagration;
+    const spell_data_t* searing_touch;
     const spell_data_t* firestarter;
     const spell_data_t* ray_of_frost;
     const spell_data_t* lonely_winter;
@@ -606,7 +604,7 @@ public:
     const spell_data_t* temporal_flux;
     const spell_data_t* arcane_orb;
     const spell_data_t* kindling;
-    const spell_data_t* cinderstorm;
+    const spell_data_t* pyroclasm;
     const spell_data_t* meteor;
     const spell_data_t* thermal_void;
     const spell_data_t* glacial_spike;
@@ -1200,31 +1198,6 @@ action_t* mirror_image_pet_t::create_action( const std::string& name,
 }  // mirror_image
 
 }  // pets
-
-// Cinderstorm impact helper event ============================================
-namespace events {
-struct cinder_impact_event_t : public event_t
-{
-  action_t* cinder;
-  player_t* target;
-
-  cinder_impact_event_t( actor_t& m, action_t* c, player_t* t,
-                         timespan_t impact_time ) :
-    event_t( m, impact_time ), cinder( c ), target( t )
-  { }
-
-  virtual const char* name() const override
-  { return "cinder_impact_event"; }
-
-  virtual void execute() override
-  {
-    cinder -> set_target( target );
-    cinder -> execute();
-  }
-};
-
-
-}
 
 namespace buffs {
 struct erosion_t : public buff_t
@@ -2317,40 +2290,12 @@ struct presence_of_mind_t : public arcane_mage_spell_t
   }
 };
 
-// Conflagration Spell =====================================================
-
-struct conflagration_dot_t : public fire_mage_spell_t
-{
-  conflagration_dot_t( mage_t* p ) :
-    fire_mage_spell_t( "conflagration_dot", p, p -> find_spell( 226757 ) )
-  {
-    hasted_ticks = false;
-    tick_may_crit = may_crit = false;
-    background = true;
-  }
-};
-
-struct conflagration_t : public fire_mage_spell_t
-{
-  conflagration_t( mage_t* p ) :
-    fire_mage_spell_t( "conflagration_explosion", p, p -> talents.conflagration )
-  {
-    parse_effect_data( p -> find_spell( 205345 ) -> effectN( 1 ) );
-    callbacks = false;
-    background = true;
-    aoe = -1;
-  }
-};
-
 // Ignite Spell ===================================================================
 
 struct ignite_t : public residual_action_t
 {
-  conflagration_t* conflagration;
-
   ignite_t( mage_t* p ) :
-    residual_action_t( "ignite", p, p -> find_spell( 12846 ) ),
-    conflagration( nullptr )
+    residual_action_t( "ignite", p, p -> find_spell( 12846 ) )
   {
     dot_duration = p -> find_spell( 12654 ) -> duration();
     base_tick_time = p -> find_spell( 12654 ) -> effectN( 1 ).period();
@@ -2359,11 +2304,6 @@ struct ignite_t : public residual_action_t
     //!! NOTE NOTE NOTE !! This is super dangerous and means we have to be extra careful with correctly
     // flagging thats that proc off events, to not proc off ignite if they shouldn't!
     callbacks = true;
-
-    if ( p -> talents.conflagration -> ok() )
-    {
-      conflagration = new conflagration_t( p );
-    }
   }
 
   virtual void init() override
@@ -2372,18 +2312,6 @@ struct ignite_t : public residual_action_t
 
     snapshot_flags |= STATE_TGT_MUL_TA;
     update_flags |= STATE_TGT_MUL_TA;
-  }
-
-  virtual void tick( dot_t* dot ) override
-  {
-    residual_action_t::tick( dot );
-
-    if ( p() -> talents.conflagration -> ok() &&
-         rng().roll( p() -> talents.conflagration -> effectN( 1 ).percent() ) )
-    {
-      conflagration -> set_target( dot -> target );
-      conflagration -> execute();
-    }
   }
 };
 
@@ -3049,123 +2977,6 @@ struct charged_up_t : public arcane_mage_spell_t
   }
 };
 
-
-// Cinderstorm Spell ==========================================================
-// Cinderstorm travel mechanism:
-// http://blue.mmo-champion.com/topic/409203-theorycrafting-questions/#post114
-// "9.17 degrees" is assumed to be a rounded value of 0.16 radians.
-// For distance k and deviation angle x, the arclength is k * x / sin(x).
-// From testing, cinders have a variable velocity, averaging ~30 yards/second.
-
-struct cinder_t : public fire_mage_spell_t
-{
-  cinder_t( mage_t* p ) :
-    fire_mage_spell_t( "cinder", p, p -> find_spell( 198928 ) )
-  {
-    background = true;
-    aoe = -1;
-    triggers_ignite = true;
-  }
-
-  virtual double composite_target_multiplier( player_t* target ) const override
-  {
-    double m = fire_mage_spell_t::composite_target_multiplier( target );
-
-    if ( p() -> ignite -> get_dot( target ) -> is_ticking() )
-    {
-      m *= 1.0 + p() -> talents.cinderstorm -> effectN( 1 ).percent();
-    }
-
-    return m;
-  }
-};
-
-struct cinderstorm_t : public fire_mage_spell_t
-{
-  cinder_t* cinder;
-  int cinder_count;
-
-  const double cinder_velocity_mean = 30.0; // Yards per second
-  const double cinder_velocity_range = 6.0; // Yards per second
-  const double cinder_converge_mean = 31.0; // Yards
-  const double cinder_converge_range = 2.0; // Yards
-  const double cinder_angle = 0.16; // Radians
-
-  cinderstorm_t( mage_t* p, const std::string& options_str ) :
-    fire_mage_spell_t( "cinderstorm", p, p -> talents.cinderstorm ),
-    cinder( new cinder_t( p ) ),
-    cinder_count( 6 )
-  {
-    add_option( opt_int( "cinders", cinder_count ) );
-    parse_options( options_str );
-
-    cooldown -> hasted = true;
-    add_child( cinder );
-  }
-
-  virtual void execute() override
-  {
-    if ( p() -> global_cinder_count > 0 )
-    {
-      cinder_count = static_cast<int>( p() -> global_cinder_count );
-    }
-    fire_mage_spell_t::execute();
-
-    double target_dist = player -> get_player_distance( *execute_state -> target );
-    double cinder_converge_distance =
-      rng().range( cinder_converge_mean - cinder_converge_range,
-                   cinder_converge_mean + cinder_converge_range );
-
-    // When cinder_count < 6, we assume "curviest" cinders are first to miss
-    for ( int i = 1; i <= cinder_count; i++ )
-    {
-      // TODO: Optimize this code by caching theta and trig functions
-      timespan_t travel_time;
-
-      // Cinder deviation angle from "forward"
-      double theta = cinder_angle * i;
-      // Radius of arc drawn by cinder
-      double radius = cinder_converge_distance / ( 2.0 * sin( theta ) );
-      // Randomized cinder velocity
-      double cinder_velocity =
-        rng().range( cinder_velocity_mean - cinder_velocity_range,
-                     cinder_velocity_mean + cinder_velocity_range);
-
-      if ( target_dist > cinder_converge_distance )
-      {
-        // Time spent "curving around"
-        timespan_t arc_time =
-          timespan_t::from_seconds( radius * 2 * theta / cinder_velocity );
-        // Time spent travelling straight at an angle, after curving
-        timespan_t straight_time = timespan_t::from_seconds(
-          // Residual distance beyond point of convergence
-          ( target_dist - cinder_converge_distance ) /
-          // Divided by magnitude of velocity in forward direction
-          ( cinder_velocity * cos( theta ) )
-        );
-        // Travel time is equal to the sum of traversing arc and straight path
-        travel_time = arc_time + straight_time;
-      }
-      else
-      {
-        // Use Cinderstorm's arc's symmetry to simplify calculations
-        // First calculate the offset distance and angle from halfway
-        double offset_dist = target_dist - ( cinder_converge_distance / 2.0 );
-        double offset_angle = asin( offset_dist / radius );
-        // Using this offset, we calculate the arc angle traced before impact,
-        // which also gives us arc length
-        double arc_angle = theta + offset_angle;
-        double arc_dist = radius * arc_angle;
-        // Divide by cinder velocity to obtain travel time
-        travel_time = timespan_t::from_seconds( arc_dist / cinder_velocity );
-      }
-
-      make_event<events::cinder_impact_event_t>( *sim, *p(), cinder, target,
-                                                  travel_time);
-    }
-  }
-};
-
 // Cold Snap Spell ============================================================
 
 struct cold_snap_t : public frost_mage_spell_t
@@ -3385,16 +3196,12 @@ struct evocation_t : public arcane_mage_spell_t
 
 struct fireball_t : public fire_mage_spell_t
 {
-  conflagration_dot_t* conflagration_dot;
-
   fireball_t( mage_t* p, const std::string& options_str ) :
-    fire_mage_spell_t( "fireball", p, p -> find_class_spell( "Fireball" ) ),
-    conflagration_dot( new conflagration_dot_t( p ) )
+    fire_mage_spell_t( "fireball", p, p -> find_class_spell( "Fireball" ) )
   {
     parse_options( options_str );
     triggers_hot_streak = true;
     triggers_ignite = true;
-    add_child( conflagration_dot );
     if ( p -> specialization() == MAGE_FIRE && p -> action.unstable_magic_explosion )
     {
       add_child( p -> action.unstable_magic_explosion );
@@ -3438,11 +3245,6 @@ struct fireball_t : public fire_mage_spell_t
         p() -> cooldowns.combustion
             -> adjust( -1000 * p() -> talents.kindling
                                    -> effectN( 1 ).time_value() );
-      }
-      if ( p() -> talents.conflagration -> ok() )
-      {
-        conflagration_dot -> set_target ( s -> target );
-        conflagration_dot -> execute();
       }
 
       trigger_unstable_magic( s );
@@ -5929,7 +5731,6 @@ mage_td_t::mage_td_t( player_t* target, mage_t* mage ) :
   dots( dots_t() ),
   debuffs( debuffs_t() )
 {
-  dots.conflagration_dot = target -> get_dot( "conflagration_dot", mage );
   dots.ignite            = target -> get_dot( "ignite",            mage );
   dots.living_bomb       = target -> get_dot( "living_bomb",       mage );
   dots.nether_tempest    = target -> get_dot( "nether_tempest",    mage );
@@ -5953,7 +5754,6 @@ mage_t::mage_t( sim_t* sim, const std::string& name, race_e r ) :
   ignite_spread_event( nullptr ),
   last_bomb_target( nullptr ),
   distance_from_rune( 0.0 ),
-  global_cinder_count( 0.0 ),
   firestarter_time( timespan_t::zero() ),
   blessing_of_wisdom_count( 0 ),
   allow_shimmer_lance( false ),
@@ -6075,7 +5875,6 @@ action_t* mage_t::create_action( const std::string& name,
 
   // Fire
   if ( name == "blast_wave"             ) return new             blast_wave_t( this, options_str );
-  if ( name == "cinderstorm"            ) return new            cinderstorm_t( this, options_str );
   if ( name == "combustion"             ) return new             combustion_t( this, options_str );
   if ( name == "dragons_breath"         ) return new         dragons_breath_t( this, options_str );
   if ( name == "fireball"               ) return new               fireball_t( this, options_str );
@@ -6186,7 +5985,6 @@ bool mage_t::create_actions()
 // mage_t::create_options =====================================================
 void mage_t::create_options()
 {
-  add_option( opt_float( "global_cinder_count", global_cinder_count ) );
   add_option( opt_timespan( "firestarter_time", firestarter_time ) );
   add_option( opt_int( "blessing_of_wisdom_count", blessing_of_wisdom_count ) );
   add_option( opt_bool( "allow_shimmer_lance", allow_shimmer_lance ) );
@@ -6218,7 +6016,6 @@ void mage_t::copy_from( player_t* source )
 
   mage_t* p = debug_cast<mage_t*>( source );
 
-  global_cinder_count       = p -> global_cinder_count;
   firestarter_time          = p -> firestarter_time;
   blessing_of_wisdom_count  = p -> blessing_of_wisdom_count;
   allow_shimmer_lance       = p -> allow_shimmer_lance;
@@ -6349,7 +6146,7 @@ void mage_t::init_spells()
   talents.mana_adept         = find_talent_spell( "Mana Adept"         );
   talents.arcane_familiar    = find_talent_spell( "Arcane Familiar"    );
   talents.pyromaniac         = find_talent_spell( "Pyromaniac"         );
-  talents.conflagration      = find_talent_spell( "Conflagration"      );
+  talents.searing_touch      = find_talent_spell( "Searing Touch"      );
   talents.firestarter        = find_talent_spell( "Firestarter"        );
   talents.ray_of_frost       = find_talent_spell( "Ray of Frost"       );
   talents.lonely_winter      = find_talent_spell( "Lonely Winter"      );
@@ -6395,7 +6192,7 @@ void mage_t::init_spells()
   talents.temporal_flux      = find_talent_spell( "Temporal Flux"      );
   talents.arcane_orb         = find_talent_spell( "Arcane Orb"         );
   talents.kindling           = find_talent_spell( "Kindling"           );
-  talents.cinderstorm        = find_talent_spell( "Cinderstorm"        );
+  talents.pyroclasm          = find_talent_spell( "Pyroclasm"          );
   talents.meteor             = find_talent_spell( "Meteor"             );
   talents.thermal_void       = find_talent_spell( "Thermal Void"       );
   talents.glacial_spike      = find_talent_spell( "Glacial Spike"      );
@@ -7064,7 +6861,6 @@ void mage_t::apl_fire()
 
   active_talents   -> add_talent( this, "Blast Wave", "if=(buff.combustion.down)|(buff.combustion.up&action.fire_blast.charges<1)" );
   active_talents   -> add_talent( this, "Meteor", "if=cooldown.combustion.remains>40|(cooldown.combustion.remains>target.time_to_die)|buff.rune_of_power.up|firestarter.active" );
-  active_talents   -> add_talent( this, "Cinderstorm", "if=cooldown.combustion.remains<cast_time&(buff.rune_of_power.up|!talent.rune_of_power.enabled)|cooldown.combustion.remains>10*spell_haste&!buff.combustion.up" );
   active_talents   -> add_action( this, "Dragon's Breath", "if=equipped.132863|(talent.alexstraszas_fury.enabled&!buff.hot_streak.react)" );
   active_talents   -> add_talent( this, "Living Bomb", "if=active_enemies>1&buff.combustion.down" );
 
